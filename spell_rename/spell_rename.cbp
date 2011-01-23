@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="spell_rename" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Release">
+				<Option output="bin\Release\spell_rename" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj\Release\" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-fexceptions" />
+		</Compiler>
+		<Unit filename="..\base\ESMReader.cpp" />
+		<Unit filename="..\base\ESMReader.h" />
+		<Unit filename="..\base\ESMWriter.cpp" />
+		<Unit filename="..\base\ESMWriter.h" />
+		<Unit filename="..\base\Enchantment.h" />
+		<Unit filename="..\base\GameSettings.cpp" />
+		<Unit filename="..\base\GameSettings.h" />
+		<Unit filename="..\base\HelperIO.cpp" />
+		<Unit filename="..\base\HelperIO.h" />
+		<Unit filename="..\base\MW_Constants.h" />
+		<Unit filename="..\base\MagicEffects.cpp" />
+		<Unit filename="..\base\MagicEffects.h" />
+		<Unit filename="..\base\Spells.cpp" />
+		<Unit filename="..\base\Spells.h" />
+		<Unit filename="main.cpp" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

@@ -3,8 +3,8 @@
     This file is part of the Morrowind Tools Project.
     Copyright (C) 2011 Thoronador
 
-    The Morrowind Tools are free software: you can redistribute it and/or
-    modify it under the terms of the GNU General Public License as published
+    The Morrowind Tools are free software: you can redistribute them and/or
+    modify them under the terms of the GNU General Public License as published
     by the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
@@ -47,7 +47,7 @@ void showHelp()
   std::cout << "\nspell_rename [-o FILENAME1] [--allow-truncate] -d DIRECTORY\n"
             << "\n"
             << "options:\n"
-            << "  --help           - displays this help message\n"
+            << "  --help           - displays this help message and quits\n"
             << "  -?               - same as --help\n"
             << "  -o FILENAME1     - sets the name of the created output file to FILENAME1.\n"
             << "                     If omitted, the default output file is \"out.esp\".\n"
@@ -71,12 +71,34 @@ void showHelp()
             << "                     few letters). You have been warned.\n";
 }
 
+void showGPLNotice()
+{
+  std::cout << "Spell renamer for Morrowind\n"
+            << "  This programme is part of the Morrowind Tools Project.\n"
+            << "  Copyright (C) 2011 Thoronador\n"
+            << "\n"
+            << "  The Morrowind Tools are free software: you can redistribute them and/or\n"
+            << "  modify them under the terms of the GNU General Public License as published\n"
+            << "  by the Free Software Foundation, either version 3 of the License, or\n"
+            << "  (at your option) any later version.\n"
+            << "\n"
+            << "  The Morrowind Tools are distributed in the hope that they will be useful,\n"
+            << "  but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+            << "  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the\n"
+            << "  GNU General Public License for more details.\n"
+            << "\n"
+            << "  You should have received a copy of the GNU General Public License\n"
+            << "  along with the Morrowind Tools.  If not, see <http://www.gnu.org/licenses/>.\n"
+            << "\n";
+}
+
 int main(int argc, char **argv)
 {
+  showGPLNotice();
   std::string outputFileName = "out.esp";
   std::string baseDir = "C:\\Program Files\\Bethesda Softworks\\Morrowind\\Data Files\\";
   bool allowTruncatedName = false;
-  bool verbose = true;
+  bool verbose = false;
   //list of .esp files to scan for spells
   std::vector<std::string> files;
   files.clear();

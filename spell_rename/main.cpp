@@ -49,6 +49,7 @@ void showHelp()
             << "options:\n"
             << "  --help           - displays this help message and quits\n"
             << "  -?               - same as --help\n"
+            << "  --version        - displays the version of the programme and quits\n"
             << "  -o FILENAME1     - sets the name of the created output file to FILENAME1.\n"
             << "                     If omitted, the default output file is \"out.esp\".\n"
             << "  -d DIRECTORY     - path to the Data Files directory of Morrowind, including\n"
@@ -92,6 +93,11 @@ void showGPLNotice()
             << "\n";
 }
 
+void showVersion()
+{
+  std::cout << "Spell renamer for Morrowind, version 0.1_rev004, 2011-01-24\n";
+}
+
 int main(int argc, char **argv)
 {
   showGPLNotice();
@@ -117,6 +123,12 @@ int main(int argc, char **argv)
           showHelp();
           return 0;
         }//if help wanted
+        //version information requested?
+        else if (param=="--version")
+        {
+          showVersion();
+          return 0;
+        }
         //allow truncated names parameter
         else if (param=="--allow-truncate")
         {
@@ -400,20 +412,6 @@ int main(int argc, char **argv)
   }//while
 
   std::cout << "Info: "<<Spells::getSingleton().getNumberOfSpells()<<" spell(s) processed.\n";
-
-  /*
-  //just list a few to check whether it works
-  spell_end = Spells::getSingleton().getEnd();
-  spell_cur = Spells::getSingleton().getBegin();
-  unsigned int count = 0;
-  std::cout << "Names of the first spells:\n";
-  while (spell_cur!=spell_end and count<25)
-  {
-    std::cout<< spell_cur->second.Name << "\n";
-    ++spell_cur;
-    ++count;
-  }//while
-  */
 
   //write spells to file
   if (Spells::getSingleton().getNumberOfSpells()==0)

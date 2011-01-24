@@ -56,7 +56,7 @@ void showHelp()
             << "  -d DIRECTORY     - path to the Data Files directory of Morrowind, including\n"
             << "                     trailing backslash (If omitted, the programme might end or\n"
             << "                     crash before doing its job.)\n"
-            << "  -dir DIRECTORY    - same as -d\n"
+            << "  -dir DIRECTORY   - same as -d\n"
             << "  --verbose        - shows some additional information about data files\n"
             << "  --silent         - opposite of --verbose; does not show additonal information\n"
             << "  --allow-truncate - In order to avoid errors during loading of the created\n"
@@ -96,7 +96,7 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Spell renamer for Morrowind, version 0.1_rev005, 2011-01-24\n";
+  std::cout << "Spell renamer for Morrowind, version 0.1_rev007, 2011-01-24\n";
 }
 
 int main(int argc, char **argv)

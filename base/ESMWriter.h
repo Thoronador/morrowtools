@@ -22,18 +22,32 @@
 #define ESMWRITER_H
 
 #include <string>
+#include <vector>
 
 /*---------------------------------------------------------------------------
 
   To do:
   ======
-    - add file dependencies into header
     - enforce proper file extension (.esm or .esp) depending on given params
 
   --------------------------------------------------------------------------*/
 
+struct DepFile
+{
+  /* standard constructor */
+  DepFile();
 
+  /* constructor for file-only data */
+  DepFile(const std::string& fileName);
 
-bool WriteESMofSpells(const std::string& FileName, const bool IsMasterFile);
+  /* constructor for file-only data via old C string*/
+  DepFile(const char* fileName);
+
+  /* data members */
+  std::string name;
+  int64_t size;
+};//struct
+
+bool WriteESMofSpells(const std::string& FileName, const bool IsMasterFile, const std::vector<DepFile>& deps);
 
 #endif // ESMWRITER_H

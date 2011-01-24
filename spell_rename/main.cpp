@@ -35,6 +35,7 @@
 #include "..\base\GameSettings.h"
 #include "..\base\MagicEffects.h"
 #include "..\base\Spells.h"
+#include "..\base\HelperFunctions.h"
 
 //return codes
 const int rcInvalidParameter = 1;
@@ -95,7 +96,7 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Spell renamer for Morrowind, version 0.1_rev004, 2011-01-24\n";
+  std::cout << "Spell renamer for Morrowind, version 0.1_rev005, 2011-01-24\n";
 }
 
 int main(int argc, char **argv)
@@ -106,7 +107,7 @@ int main(int argc, char **argv)
   bool allowTruncatedName = false;
   bool verbose = false;
   //list of .esp files to scan for spells
-  std::vector<std::string> files;
+  std::vector<DepFile> files;
   files.clear();
 
   if (argc>1 and argv!=NULL)
@@ -226,12 +227,14 @@ int main(int argc, char **argv)
   unsigned int i;
   for (i=0; i<files.size(); ++i)
   {
-    if (!ReadESM(baseDir+files.at(i), verbose))
+    if (!ReadESM(baseDir+files.at(i).name, verbose))
     {
-      std::cout << "Error while reading file \""<<baseDir+files.at(i)
+      std::cout << "Error while reading file \""<<baseDir+files.at(i).name
                 <<"\".\nAborting.\n";
       return rcFileError;
     }
+    //try to get file size (used later in writing plugin file header)
+    files.at(i).size = getFileSize64(baseDir+files.at(i).name);
   }//for
   std::cout << "Info: "<<files.size()<<" Master/ Plugin file(s) containing "
             << Spells::getSingleton().getNumberOfSpells()<<" spell(s) were read.\n";
@@ -419,7 +422,7 @@ int main(int argc, char **argv)
     std::cout << "No spells available. No new file will be created.\n";
     return 0;
   }
-  if (WriteESMofSpells(baseDir+outputFileName, false))
+  if (WriteESMofSpells(baseDir+outputFileName, false, files))
   {
     std::cout << "Output file \""<<baseDir+outputFileName<<"\" was created successfully.\n";
     return 0;

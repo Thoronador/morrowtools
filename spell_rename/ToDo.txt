@@ -4,6 +4,5 @@ To do:
 ======
   - allow to read a customized list of master and plugin files and not just
     the standard files (Morrowind.esm, Tribunal.esm, Bloodmoon.esm)
-  - write header files into created plugin file
   - [IMPORTANT] write some documentation that's easy to understand
   - [Wishlist] graphical wrapper application

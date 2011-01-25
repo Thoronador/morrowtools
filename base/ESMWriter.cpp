@@ -45,7 +45,30 @@ DepFile::DepFile(const char* fileName)
   size = -1;
 }
 
-bool WriteESMofSpells(const std::string& FileName, const bool IsMasterFile, const std::vector<DepFile>& deps)
+bool hasDepFile(const DepFileList& deps, const std::string& fileName)
+{
+  unsigned int i;
+  for (i=0; i<deps.size(); ++i)
+  {
+    if (deps.at(i).name == fileName)
+    {
+      return true;
+    }
+  }//for
+  //file not found, return false
+  return false;
+}
+
+void writeDeps(const DepFileList& deps)
+{
+  unsigned int i;
+  for (i=0; i<deps.size(); ++i)
+  {
+    std::cout << "  "<<deps.at(i).name<<"\n";
+  }//for
+}
+
+bool WriteESMofSpells(const std::string& FileName, const bool IsMasterFile, const DepFileList& deps)
 {
   std::ofstream output;
   output.open(FileName.c_str(), std::ios::out | std::ios::binary | std::ios::trunc);
@@ -97,7 +120,7 @@ bool WriteESMofSpells(const std::string& FileName, const bool IsMasterFile, cons
   const char company[33] = "Thoronador\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
   output.write(company, 32);
   //description (256 Bytes)
-  std::string description = "Umbenannte/ umsortierte Zauber fuer Morrowind";
+  std::string description = "Umbenannte/ umsortierte Zauber fuer Morrowind (generiert durch spell_rename.exe)";
   description = description + std::string(256-description.length(), '\0');
   output.write(description.c_str(), 256);
   //number of records

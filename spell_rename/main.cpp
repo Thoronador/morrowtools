@@ -45,7 +45,7 @@ const int rcOutputFailed = 4;
 
 void showHelp()
 {
-  std::cout << "\nspell_rename [-o FILENAME1] [--allow-truncate] -d DIRECTORY\n"
+  std::cout << "\nspell_rename [-o FILENAME1] [--allow-truncate] -d DIRECTORY [-f PLUGINFILE]\n"
             << "\n"
             << "options:\n"
             << "  --help           - displays this help message and quits\n"
@@ -57,6 +57,8 @@ void showHelp()
             << "                     trailing backslash (If omitted, the programme might end or\n"
             << "                     crash before doing its job.)\n"
             << "  -dir DIRECTORY   - same as -d\n"
+            << "  -f PLUGINFILE    - adds the plugin PLUGINFILE to the list of files that will\n"
+            << "                     be searched for spells\n"
             << "  --verbose        - shows some additional information about data files\n"
             << "  --silent         - opposite of --verbose; does not show additonal information\n"
             << "  --allow-truncate - In order to avoid errors during loading of the created\n"
@@ -96,7 +98,7 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Spell renamer for Morrowind, version 0.1_rev007, 2011-01-24\n";
+  std::cout << "Spell renamer for Morrowind, version 0.1_rev008, 2011-01-25\n";
 }
 
 int main(int argc, char **argv)
@@ -195,6 +197,23 @@ int main(int argc, char **argv)
             return rcInvalidParameter;
           }
         }//data files directory
+        //add plugin file to list
+        else if ((param=="-f") or (param=="--add-file"))
+        {
+          if ((i+1<argc) and (argv[i+1]!=NULL))
+          {
+            const std::string pluginFileName = std::string(argv[i+1]);
+            ++i; //skip next parameter, because it's used as file name already
+            files.push_back(pluginFileName);
+            std::cout << "Plugin file \""<<pluginFileName<<"\" was added.\n";
+          }
+          else
+          {
+            std::cout << "Error: You have to specify a file name after \""
+                      << param<<"\".\n";
+            return rcInvalidParameter;
+          }
+        }//plugin file
         else
         {
           //unknown or wrong parameter
@@ -218,9 +237,34 @@ int main(int argc, char **argv)
   if (files.empty())
   {
     files.push_back("Morrowind.esm");
-    files.push_back("Tribunal.esm");
-    files.push_back("Bloodmoon.esm");
+    if (FileExists(baseDir+"Tribunal.esm"))
+    {
+      files.push_back("Tribunal.esm");
+    }
+    if (FileExists(baseDir+"Bloodmoon.esm"))
+    {
+      files.push_back("Bloodmoon.esm");
+    }
   }
+  else
+  { //There are already some files in the list, but are the master files in there, too?
+    //Let's add master files, if neccessary.
+    if (!hasDepFile(files, "Bloodmoon.esm") and FileExists(baseDir+"Bloodmoon.esm"))
+    {
+      files.insert(files.begin(), "Bloodmoon.esm");
+    }//if
+    if (!hasDepFile(files, "Tribunal.esm") and FileExists(baseDir+"Tribunal.esm"))
+    {
+      files.insert(files.begin(), "Tribunal.esm");
+    }//if
+    if (!hasDepFile(files, "Morrowind.esm"))
+    {
+      files.insert(files.begin(), "Morrowind.esm");
+    }//if
+  }//else
+
+  std::cout << "List of active files:\n";
+  writeDeps(files);
 
   //read all files
   std::cout << "Reading files, this may take a while.\n";

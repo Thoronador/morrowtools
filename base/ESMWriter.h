@@ -48,6 +48,14 @@ struct DepFile
   int64_t size;
 };//struct
 
-bool WriteESMofSpells(const std::string& FileName, const bool IsMasterFile, const std::vector<DepFile>& deps);
+typedef std::vector<DepFile> DepFileList;
+
+//utility functions
+bool hasDepFile(const DepFileList& deps, const std::string& fileName);
+
+void writeDeps(const DepFileList& deps);
+
+//writes data to an .esm/.esp file
+bool WriteESMofSpells(const std::string& FileName, const bool IsMasterFile, const DepFileList& deps);
 
 #endif // ESMWRITER_H

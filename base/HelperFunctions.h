@@ -31,4 +31,11 @@
 */
 int64_t getFileSize64(const std::string& FileName);
 
+/* Checks for existence of file FileName and returns true, if it exists.
+
+  parameters:
+      FileName - the file whose existence shall be determined
+*/
+bool FileExists(const std::string& FileName);
+
 #endif // HELPERFUNCTIONS_H

@@ -20,6 +20,7 @@
 
 #include "HelperFunctions.h"
 #include <sys/stat.h>
+#include <unistd.h>
 
 int64_t getFileSize64(const std::string& FileName)
 {
@@ -33,3 +34,8 @@ int64_t getFileSize64(const std::string& FileName)
   // Return -1 in this case to indicate an error.
   return -1;
 }//function
+
+bool FileExists(const std::string& FileName)
+{
+  return (access(FileName.c_str(), F_OK)==0);
+}

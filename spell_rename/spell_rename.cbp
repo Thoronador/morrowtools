@@ -23,6 +23,8 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="..\base\DepFiles.cpp" />
+		<Unit filename="..\base\DepFiles.h" />
 		<Unit filename="..\base\ESMReader.cpp" />
 		<Unit filename="..\base\ESMReader.h" />
 		<Unit filename="..\base\ESMWriter.cpp" />

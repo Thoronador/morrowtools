@@ -22,7 +22,7 @@
 #define ESMWRITER_H
 
 #include <string>
-#include <vector>
+#include "DepFiles.h"
 
 /*---------------------------------------------------------------------------
 
@@ -31,29 +31,6 @@
     - enforce proper file extension (.esm or .esp) depending on given params
 
   --------------------------------------------------------------------------*/
-
-struct DepFile
-{
-  /* standard constructor */
-  DepFile();
-
-  /* constructor for file-only data */
-  DepFile(const std::string& fileName);
-
-  /* constructor for file-only data via old C string*/
-  DepFile(const char* fileName);
-
-  /* data members */
-  std::string name;
-  int64_t size;
-};//struct
-
-typedef std::vector<DepFile> DepFileList;
-
-//utility functions
-bool hasDepFile(const DepFileList& deps, const std::string& fileName);
-
-void writeDeps(const DepFileList& deps);
 
 //writes data to an .esm/.esp file
 bool WriteESMofSpells(const std::string& FileName, const bool IsMasterFile, const DepFileList& deps);

@@ -27,47 +27,6 @@
 const int32_t cMasterFileFlag = 1;
 const int32_t cPluginFileFlag = 0;
 
-DepFile::DepFile()
-{
-  size = -1;
-  name = "";
-}
-
-DepFile::DepFile(const std::string& fileName)
-{
-  name = fileName;
-  size = -1;
-}
-
-DepFile::DepFile(const char* fileName)
-{
-  name = fileName;
-  size = -1;
-}
-
-bool hasDepFile(const DepFileList& deps, const std::string& fileName)
-{
-  unsigned int i;
-  for (i=0; i<deps.size(); ++i)
-  {
-    if (deps.at(i).name == fileName)
-    {
-      return true;
-    }
-  }//for
-  //file not found, return false
-  return false;
-}
-
-void writeDeps(const DepFileList& deps)
-{
-  unsigned int i;
-  for (i=0; i<deps.size(); ++i)
-  {
-    std::cout << "  "<<deps.at(i).name<<"\n";
-  }//for
-}
-
 bool WriteESMofSpells(const std::string& FileName, const bool IsMasterFile, const DepFileList& deps)
 {
   std::ofstream output;
@@ -82,10 +41,10 @@ bool WriteESMofSpells(const std::string& FileName, const bool IsMasterFile, cons
   output.write((char*) &cTES3, 4);
   //write size (308 bytes for fixed header without any master file dependencies)
   int32_t Size = 308;
-  if (!deps.empty())
+  if (!deps.isEmpty())
   {
     unsigned int j;
-    for (j=0; j<deps.size(); ++j)
+    for (j=0; j<deps.getSize(); ++j)
     {
       Size = Size +4 /* MAST */ +4 /* size */
              +1 +deps.at(j).name.length() /* space for filename + NUL-termination */
@@ -134,7 +93,7 @@ bool WriteESMofSpells(const std::string& FileName, const bool IsMasterFile, cons
   }
   //write dependencies
   unsigned int i;
-  for (i=0; i<deps.size(); ++i)
+  for (i=0; i<deps.getSize(); ++i)
   {
     // write MAST subrecord
     // -- MAST header

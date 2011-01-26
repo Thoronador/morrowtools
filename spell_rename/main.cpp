@@ -59,6 +59,10 @@ void showHelp()
             << "  -dir DIRECTORY   - same as -d\n"
             << "  -f PLUGINFILE    - adds the plugin PLUGINFILE to the list of files that will\n"
             << "                     be searched for spells\n"
+            << " -i                - tries to load list of plugin files from Morrowind.ini\n"
+            << " --ini             - same as -i\n"
+            << " -id               - tries to load list of plugin files from Morrowind.ini and\n"
+            << "                     discards all files that have been added via -f parameters\n"
             << "  --verbose        - shows some additional information about data files\n"
             << "  --silent         - opposite of --verbose; does not show additonal information\n"
             << "  --allow-truncate - In order to avoid errors during loading of the created\n"
@@ -98,7 +102,7 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Spell renamer for Morrowind, version 0.1_rev008, 2011-01-25\n";
+  std::cout << "Spell renamer for Morrowind, version 0.1_rev009, 2011-01-26\n";
 }
 
 int main(int argc, char **argv)
@@ -108,8 +112,10 @@ int main(int argc, char **argv)
   std::string baseDir = "C:\\Program Files\\Bethesda Softworks\\Morrowind\\Data Files\\";
   bool allowTruncatedName = false;
   bool verbose = false;
+  bool doIni = false;
+  bool discardBeforeIni = false;
   //list of .esp files to scan for spells
-  std::vector<DepFile> files;
+  DepFileList files;
   files.clear();
 
   if (argc>1 and argv!=NULL)
@@ -214,6 +220,17 @@ int main(int argc, char **argv)
             return rcInvalidParameter;
           }
         }//plugin file
+        //try to read from Morrowind.ini?
+        else if ((param=="-i") or (param=="--ini"))
+        {
+          doIni = true;
+          discardBeforeIni = false;
+        }
+        else if ((param=="-id") or (param=="--ini-with-discard"))
+        {
+          doIni = true;
+          discardBeforeIni = true;
+        }
         else
         {
           //unknown or wrong parameter
@@ -232,9 +249,78 @@ int main(int argc, char **argv)
     }//while
   }//if argc
 
+  //now do the Morrowind.ini stuff
+  if (doIni)
+  {
+    if (discardBeforeIni)
+    {
+      if (!files.isEmpty())
+      {
+        std::cout << "Discarding all listed file names as specified by "
+                  << "--ini-with-discard parameter.\n";
+        files.clear();
+      }
+    }
+
+    //check for Morrowind.ini
+    if (!FileExists(baseDir+"..\\Morrowind.ini"))
+    {
+      std::cout << "Couldn't find Morrowind.ini!\n";
+      return rcFileError;
+    }
+    //now read the files from the .ini
+    std::ifstream iniFile;
+    iniFile.open((baseDir+"..\\Morrowind.ini").c_str(), std::ios::in | std::ios::binary);
+    if (!iniFile)
+    {
+      std::cout << "Could not open Morrowind.ini!\n";
+      return rcFileError;
+    }
+    const size_t bufferSize = 512;
+    char Buffer[bufferSize];
+    memset(Buffer, 0, bufferSize);
+    std::string ini_line = "";
+    bool in_gf_section = false;
+    while (iniFile.getline(Buffer, bufferSize-1))
+    {
+      ini_line = std::string(Buffer);
+      //skip empty lines
+      if (ini_line.length()>0)
+      {
+        //clear carriage return at end of line, if present
+        if (ini_line.at(ini_line.length()-1)=='\r')
+        {
+          ini_line.erase(ini_line.length()-1);
+        }
+
+        if (!in_gf_section)
+        {
+          in_gf_section = (ini_line == "[Game Files]");
+        }
+        else
+        {
+          if (ini_line.length()>10)
+          {
+            if (ini_line.substr(0,8) == "GameFile")
+            {
+              //we've got one line
+              const size_t pos = ini_line.find('=');
+              if ((pos>8) &&  (pos!=std::string::npos))
+              {
+                files.push_back(ini_line.substr(pos+1, std::string::npos));
+              }
+            }//if is GameFile line
+          }//required minimum length?
+        }//else
+      }//if line not empty
+      memset(Buffer, 0, bufferSize);
+    }//while
+    iniFile.close();
+  }//if ini
+
 
   //check file list
-  if (files.empty())
+  if (files.isEmpty())
   {
     files.push_back("Morrowind.esm");
     if (FileExists(baseDir+"Tribunal.esm"))
@@ -249,27 +335,27 @@ int main(int argc, char **argv)
   else
   { //There are already some files in the list, but are the master files in there, too?
     //Let's add master files, if neccessary.
-    if (!hasDepFile(files, "Bloodmoon.esm") and FileExists(baseDir+"Bloodmoon.esm"))
+    if (!files.hasDepFile("Bloodmoon.esm") and FileExists(baseDir+"Bloodmoon.esm"))
     {
-      files.insert(files.begin(), "Bloodmoon.esm");
+      files.push_front("Bloodmoon.esm");
     }//if
-    if (!hasDepFile(files, "Tribunal.esm") and FileExists(baseDir+"Tribunal.esm"))
+    if (!files.hasDepFile("Tribunal.esm") and FileExists(baseDir+"Tribunal.esm"))
     {
-      files.insert(files.begin(), "Tribunal.esm");
+      files.push_front("Tribunal.esm");
     }//if
-    if (!hasDepFile(files, "Morrowind.esm"))
+    if (!files.hasDepFile("Morrowind.esm"))
     {
-      files.insert(files.begin(), "Morrowind.esm");
+      files.push_front("Morrowind.esm");
     }//if
   }//else
 
   std::cout << "List of active files:\n";
-  writeDeps(files);
+  files.writeDeps();
 
   //read all files
   std::cout << "Reading files, this may take a while.\n";
   unsigned int i;
-  for (i=0; i<files.size(); ++i)
+  for (i=0; i<files.getSize(); ++i)
   {
     if (!ReadESM(baseDir+files.at(i).name, verbose))
     {
@@ -280,7 +366,7 @@ int main(int argc, char **argv)
     //try to get file size (used later in writing plugin file header)
     files.at(i).size = getFileSize64(baseDir+files.at(i).name);
   }//for
-  std::cout << "Info: "<<files.size()<<" Master/ Plugin file(s) containing "
+  std::cout << "Info: "<<files.getSize()<<" Master/ Plugin file(s) containing "
             << Spells::getSingleton().getNumberOfSpells()<<" spell(s) were read.\n";
 
   std::vector<std::string> prefixes;

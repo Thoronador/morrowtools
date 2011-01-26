@@ -1,0 +1,148 @@
+% Copyright 2011 - Thoronador
+\documentclass[12pt,twoside,a4paper]{article}
+\usepackage{amsmath}
+\title{Spell Renamer f\"{u}r Morrowind}
+\author{Thoronador}
+\date{26. Januar 2011}
+\usepackage{hyperref}
+\begin{document}
+\maketitle
+
+\begin{section}{Zweck des Programmes}
+Das Programm \textbf{Spell Renamer} soll dazu dienen, die Zauber im Zaubermen\"{u}
+von Morrowind nach Zugeh\"{o}rigkeit zu den Zauberschulen zu sortieren, indem
+ein entsprechendes Plugin erstellt wird, welches die Zaubernamen \"{a}ndert.
+Dazu wird jedem Zauber der Name seiner Schule vorangestellt - also B bei
+\textbf{B}eschw\"{o}rung, I bei \textbf{I}llusion, M bei \textbf{M}ystik, V bei
+\textbf{V}er\"{a}nderung, W bei \textbf{W}iederherstellung, Z bei
+\textbf{Z}erst\"{o}rung.
+% \- teilt LaTeX mit, dass das Wort nur an diesen Stellen getrennt werden darf.
+Dadurch entstehen dann Zau\-ber\-na\-men wie beispielsweise:\\
+
+\begin{tabular}{l}
+B Beschworenes Langschwert\\
+I Unsichtbarkeit\\
+M Almsivi Intervention\\
+V Festes Wasser\\
+Z Feuerball\\
+\end{tabular}
+\\
+
+Dies funktioniert auch mit der englischen Version von Morrowind. Dort werden
+den Zaubern dann aber entsprechend andere Buchstaben vorangestellt (A bei
+\textbf{A}lteration, C bei \textbf{C}onjuration, D bei \textbf{D}estruction,
+I bei \textbf{I}llusion, M bei \textbf{M}ysticism, R bei \textbf{R}estoration).
+Prinzipiell sollte das Programm mit jeder Sprachversion von Morrowind zurechtkommen
+und die vorangestellten Buchstaben entsprechend der Sprache der Master- und
+Plugindateien anpassen, da hierf\"{u}r die zugeh\"{o}rigen GMST-Werte ausgelesen werden,
+aber bisher wurde es nur mit der deutschen Version getestet.
+
+\subsection{Weitere Buchstabenmuster}
+In zuk\"{u}nftigen Versionen des Programmes wird es m\"{o}glicherweise mehrere
+Buchstabenmuster oder Kombinationen aus Buchstaben und Ziffern geben, welche
+dem Namen eines Zaubers ja nach Wahl vorangestellt werden k\"{o}nnen. Allerdings
+sind mir daf\"{u}r bisher keine sinnvollen Muster eingefallen. Wer eine Idee dazu
+hat, kann sich ja bei mir melden und mir diese mitteilen, vielleicht wird diese
+dann auch in das Programm eingebaut. Jedoch sollten diese Kombinationen nicht
+l\"{a}nger als drei oder vier Zeichen sein, da es sonst Probleme bei den l\"{a}ngeren
+Zaubernamen geben k\"{o}nnte.
+
+\subsection{Programmversionen}
+Wenn nichts anderes angegeben ist, so beziehen sich die Angaben in dieser Datei
+allesamt auf die Version 0.1\_rev009 des Programmes, welche am 26. Januar 2011
+erstellt wurde. In neueren Programmversionen kann sich die Funktionalit\"{a}t des
+Programmes \"{a}ndern oder neue Funktionen hinzukommen, die hier noch nicht
+dokumentiert sind.
+\end{section}
+
+\section{Programmaufruf}
+Der Aufruf erfolgt \"{u}ber die Kommandozeile, das Programm selbst kann in ein
+beliebiges Verzeichnis entpackt werden und muss nicht im Morrowindverzeichnis
+landen. Ein typischer Aufruf sieht so aus:
+
+\texttt{spell\_rename.exe -d "D:\textbackslash{}Spiele\textbackslash{}Bethesda\textbackslash{}Morrowind\textbackslash{}Data Files" -o "Neue Datei.esp"}
+
+Zu den zwei Pfadangaben: hinter \texttt{-d} muss der Pfad zum Data Files-
+Verzeichnis angegeben werden, in dem sich die Master-Dateien von Morrowind befinden.
+Nach \texttt{-o} kann man den Namen der neu zu erstellenden .esp-Datei angeben.
+Diese wird dann im gleichen Verzeichnis erstellt, man sollte also Schreibrechte
+in diesem Verzeichnis haben. Beide Angaben kann man auch weglassen, allerdings
+wird dann ein Standardverzeichnis (z.Z. \texttt{C:\textbackslash{}Program Files\textbackslash{}Bethesda Softworks\textbackslash{}Morrowind\textbackslash{}Data Files})
+und ein vorgegebener Dateiname (\texttt{out.esp}) benutzt, sodass das nicht auf
+jedem System funktioniert oder das gew\"{u}nschte Ergebnis produziert.
+
+Falls man noch weitere Plugins, z.B. Zauberplugins, mit einbeziehen m\"{o}chte,
+l\"{a}sst sich das nun auch bewerkstelligen, indem man dies zus\"{a}tzlich nach
+dem Parameter \texttt{-f} angibt:
+
+\texttt{spell\_rename.exe -d "D:\textbackslash{}Spiele\textbackslash{}Bethesda\textbackslash{}Morrowind\textbackslash{}Data Files" -o "Neue Datei.esp" -f "Zauberplugin.esp"}
+
+Dies kann man auch beliebig oft f\"{u}r weitere Plugins wiederholen.
+Folgendes w\"{a}re also auch denkbar:
+
+\texttt{spell\_rename.exe -d "D:\textbackslash{}Spiele\textbackslash{}Bethesda\textbackslash{}Morrowind\textbackslash{}Data Files" -o "Neue Datei.esp" -f "Zauberplugin.esp" -f "anderes Plugin.esp" -f "VieleTolleZauber.esp"}
+
+Voraussetzung ist nat\"{u}rlich, dass die angegebenen Plugins auch existieren.
+Werden die Plugins nicht gefunden, bricht das Programm ab.
+
+\section{Parameter}
+In diesem Abschnitt folgt eine Liste der m\"{o}glichen Programmparameter f\"{u}r Spell Renamer.
+Alle Parameter sind optional, das hei\ss{}t, sie m\"{u}ssen nicht angegeben werden.
+Allerdings kann das Fehlen eines Parameters dazu f\"{u}hren, dass das Programm nicht
+korrekt ausgef\"{u}hrt werden kann und vor dem Erstellen des Plugins abbricht.
+Deshalb sollte man in der Regel mindestens den Pfad zum Data Files-Verzeichnis
+von Morrowind angeben, indem man den Parameter \texttt{-d} benutzt.
+\newline
+
+\begin{tabular}{p{7cm} p{8cm}}
+\texttt{--data-files VERZEICHNIS} & legt das Verzeichnis VERZEICHNIS als Data Files-Verzeichnis von Morrowind fest. In diesem Verzeichnis m\"{u}ssen Morrowind.esm und alle andere Plugindateien, welche verarbeitet werden sollen, zu finden sein. Existiert das Verzeichnis nicht, wird das Programm vorzeitig abbrechen und keine Plugindatei erstellen.\\
+\texttt{-d VERZEICHNIS}           & Kurzform von \texttt{--data-files}.\\
+\texttt{--output NeuesPlugin.esp} & legt \textit{NeuesPlugin.esp} als Name f\"{u}r die neu erstellte Plugindatei fest. Wird dieser Parameter nicht angegeben, so heißt die Ausgabedatei einfach nur \textit{NeuesPlugin.esp}.\\
+\texttt{-o NeuesPlugin.esp}       & Kurzform von \texttt{--output}.\\
+\end{tabular}
+\newline
+\begin{tabular}{p{7cm} p{8cm}}
+\texttt{--add-files Plugin.esp}   & f\"{u}gt die Datei Plugin.esp zur Liste der zu durchsuchenden Plugins hinzu. Zauber aus \textit{Plugin.esp} werden dann ebenfalls mit dem Buchstabenmuster versehen. Dieser Pa\-ra\-me\-ter kann wiederholt werden, um so mehrere Plugindateien anzugeben.\\
+\texttt{-f Plugin.esp}            & Kurzform von \texttt{--add-files}\\
+\end{tabular}
+\newline
+\begin{tabular}{p{7cm} p{8cm}}
+\texttt{--ini}                    & \textit{(experimentell)} liest die Plugindateien aus dem Abschnitt [Game Files] der Morrowind.ini aus und f\"{u}gt diese Dateien der Liste der zu durchsuchenden Plugins hinzu. Ist keine Morrowind.ini vorhanden (was bei einer normalen Morrowindinstallation nicht passieren sollte), so bricht das Programm ab und erzeugt keine Plugindatei.\\
+\texttt{-i}                       & Kurzform von \texttt{--ini}.\\
+\texttt{--ini-with-discard}       & wie \texttt{--ini}, allerdings werden zuvor alle m\"{o}glicherweise \"{u}ber den Parameter \texttt{--add-files} bzw. \texttt{-f} hinzugef\"{u}gten Plugindateien aus der Pluginliste herausgenommen.\\
+\end{tabular}
+\newline
+\begin{tabular}{p{7cm} p{8cm}}
+\texttt{--allow-truncate}         & Normalerweise werden diejenigen Zaubernamen vom Programm nicht ge\"{a}ndert, welche durch das Hinzuf\"{u}gen des Buchstabenmusters der Zauberschule zu lang werden, um Fehler beim Laden des Plugins im Spiel zu vermeiden. Aus diesem Grund kann es aber dazu kommen, dass einige Zauber nicht entsprechend sortiert werden. Durch Angabe dieses Parameters werden solche Zauber auch mit einem Buchstabenmuster versehen, allerdings kann es dann dazu kommen, dass einige Buchstaben am Ende des Zaubernamens abgeschnitten sind, oder dass es beim Laden des erstellten Plugins zu Fehlermeldungen kommt.\\
+\end{tabular}
+\newline
+\begin{tabular}{p{7cm} p{8cm}}
+\texttt{--verbose}                & zeigt ein paar Informationen zu den verarbeiteten Plugindateien an.\\
+\texttt{--silent}                 & Gegenteil von \texttt{--verbose}; zeigt jene Informationen nicht an.\\
+\end{tabular}
+\newline
+\begin{tabular}{p{7cm} p{8cm}}
+\texttt{--help}                   & zeigt einen Hilfetext zu den Parametern des Programmes an und beendet das Programm. Alle anderen Parameter werden dann verworfen und es wird keine Plugindatei erstellt.\\
+\texttt{-?}                       & Kurzform von \texttt{--help}.\\
+\texttt{--version}                & zeigt die Version des Programmes an und beendet das Programm. Alle anderen Parameter werden dann verworfen und es wird keine Plugindatei erstellt.\\
+\end{tabular}
+
+\section{Lizenz und Quellcode}
+Das Programm spell\_renamer.exe steht unter der GNU General Public Licence 3,
+einer freien Softwarelizenz. Der volle Text der Lizenz ist in der Datei GPL.txt
+enthalten und kann auch auf http://www.gnu.org/licenses\slash gpl-3.0.html eingesehen werden.
+
+Der Quellcode des Programms l\"{a}sst sich auf Sourceforge.net einsehen, das Projekt
+findet sich unter http://sourceforge.net/projects/morrowtools/
+
+\begin{section}{Danksagung}
+Vielen Dank an Bethesda Softworks f\"{u}r The Elder Scrolls III: Morrowind.
+Ohne dieses tolle Spiel w\"{u}rde es dieses Programm auch nicht geben.\\
+Mein besonderer Dank gilt Dave Humphrey von UESP.net f\"{u}r seine \"{U}bersicht
+zum ESM-Dateiformat, welche mir beim Erstellen des Programms eine gro\ss{}e
+Hilfe war. Jene \"{U}bersicht findet sich auf \texttt{http://www.uesp.net/morrow\slash tech/mw\_esm.txt}
+wieder.
+\end{section}
+
+\end{document}
+

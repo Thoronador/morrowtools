@@ -29,7 +29,26 @@
   parameters:
       FileName - the file whose size shall be obtained
 */
-int64_t getFileSize64(const std::string& FileName);
+//int64_t getFileSize64(const std::string& FileName);
+
+/* returns the time when file FileName was last modified. If the file does not
+   exist or if an error occured, -1 will be returned.
+
+  parameters:
+      FileName - the file whose time of last modification shall be obtained
+*/
+//time_t getFileModificationTime(const std::string& FileName);
+
+/* returns the file size of file FileName and the time of its last modification.
+   If the file does not exist or if an error occured, false will be returned and
+   the values will be set to -1.
+
+  parameters:
+      FileName - the file whose size shall be obtained
+      FileSize - reference to the 64bit integer that will store the file's size
+      FileTime - reference to the time_t that will store the file's mtime
+*/
+bool getFileSizeAndModificationTime(const std::string& FileName, int64_t& FileSize, time_t& FileTime);
 
 /* Checks for existence of file FileName and returns true, if it exists.
 

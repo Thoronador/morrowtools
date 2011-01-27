@@ -35,9 +35,13 @@ struct DepFile
   /* constructor for file-only data via old C string*/
   DepFile(const char* fileName);
 
+  /* returns true, if the specified file name has the .esm extension */
+  bool isMasterFile() const;
+
   /* data members */
   std::string name;
   int64_t size;
+  time_t modified;
 };//struct
 
 //typedef std::vector<DepFile> DepFileList;
@@ -96,6 +100,16 @@ class DepFileList
 
     /* writes the names of the files in the list to the standard output */
     void writeDeps() const;
+
+    /* sorts the list of files - master files first, plugin files second */
+    void sort();
+
+    /* removes duplicate files from the list. This only works properly, if the
+       list has been sorted previous to the call of removeDuplicates(), i.e. by
+       calling sort(), and the contents of the list haven't changed in between.
+       The function returns the number of elements that have been removed.
+    */
+    unsigned int removeDuplicates();
 
     /* removes all files from the list */
     void clear();

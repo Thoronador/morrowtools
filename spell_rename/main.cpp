@@ -42,6 +42,7 @@ const int rcInvalidParameter = 1;
 const int rcFileError = 2;
 const int rcDataError = 3;
 const int rcOutputFailed = 4;
+const int rcNoSpells = 5;
 
 void showHelp()
 {
@@ -102,7 +103,7 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Spell renamer for Morrowind, version 0.1_rev009, 2011-01-26\n";
+  std::cout << "Spell renamer for Morrowind, version 0.1_rev011, 2011-01-27\n";
 }
 
 int main(int argc, char **argv)
@@ -349,12 +350,36 @@ int main(int argc, char **argv)
     }//if
   }//else
 
+  //try to get file information
+  unsigned int i;
+  for (i=0; i<files.getSize(); ++i)
+  {
+    getFileSizeAndModificationTime(baseDir+files.at(i).name, files.at(i).size,
+                                   files.at(i).modified);
+  }//for
+
+
+  //sort files according to Morrowind's load order
+  files.sort();
+  //remove duplicate entries in list
+  const unsigned int duplicates = files.removeDuplicates();
+  if (duplicates!=0)
+  {
+    if (duplicates==1)
+    {
+      std::cout << "One duplicate file has been removed from the list.\n";
+    }
+    else
+    {
+      std::cout << duplicates <<" duplicates files have been removed from the list.\n";
+    }
+  }
+
   std::cout << "List of active files:\n";
   files.writeDeps();
 
   //read all files
   std::cout << "Reading files, this may take a while.\n";
-  unsigned int i;
   for (i=0; i<files.getSize(); ++i)
   {
     if (!ReadESM(baseDir+files.at(i).name, verbose))
@@ -364,7 +389,7 @@ int main(int argc, char **argv)
       return rcFileError;
     }
     //try to get file size (used later in writing plugin file header)
-    files.at(i).size = getFileSize64(baseDir+files.at(i).name);
+    //files.at(i).size = getFileSize64(baseDir+files.at(i).name);
   }//for
   std::cout << "Info: "<<files.getSize()<<" Master/ Plugin file(s) containing "
             << Spells::getSingleton().getNumberOfSpells()<<" spell(s) were read.\n";
@@ -550,7 +575,7 @@ int main(int argc, char **argv)
   if (Spells::getSingleton().getNumberOfSpells()==0)
   {
     std::cout << "No spells available. No new file will be created.\n";
-    return 0;
+    return rcNoSpells;
   }
   if (WriteESMofSpells(baseDir+outputFileName, false, files))
   {

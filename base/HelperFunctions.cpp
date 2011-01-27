@@ -22,6 +22,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+/*
 int64_t getFileSize64(const std::string& FileName)
 {
   struct stat buffer;
@@ -33,6 +34,37 @@ int64_t getFileSize64(const std::string& FileName)
   //An error occured, so we don't have a proper value for file size.
   // Return -1 in this case to indicate an error.
   return -1;
+}//function
+
+time_t getFileModificationTime(const std::string& FileName)
+{
+  struct stat buffer;
+  if (stat(FileName.c_str(), &buffer)==0)
+  {
+    //stat() was successful
+    return buffer.st_mtime;
+  }//if
+  //An error occured, so we don't have a proper value for time.
+  // Return -1 in this case to indicate an error.
+  return -1;
+}//function
+*/
+
+bool getFileSizeAndModificationTime(const std::string& FileName, int64_t& FileSize, time_t& FileTime)
+{
+  struct stat buffer;
+  if (stat(FileName.c_str(), &buffer)==0)
+  {
+    //stat() was successful
+    FileSize = buffer.st_size;
+    FileTime = buffer.st_mtime;
+    return true;
+  }//if
+  //An error occured, so we don't have any proper values for that file.
+  // Set values to -1 and return false in this case to indicate an error.
+  FileSize = -1;
+  FileTime = -1;
+  return false;
 }//function
 
 bool FileExists(const std::string& FileName)

@@ -18,8 +18,9 @@
  -------------------------------------------------------------------------------
 */
 
-#include "HelperFunctions.h"
+#include "FileFunctions.h"
 #include <sys/stat.h>
+#include <utime.h>
 #include <unistd.h>
 
 /*
@@ -49,6 +50,23 @@ time_t getFileModificationTime(const std::string& FileName)
   return -1;
 }//function
 */
+
+bool setFileModificationTime(const std::string& FileName, const time_t new_mtime)
+{
+  struct stat buffer;
+  if (stat(FileName.c_str(), &buffer)==0)
+  {
+    //stat() was successful
+    if (buffer.st_mtime==new_mtime) return true;
+    //change time
+    struct utimbuf fileTimes;
+    fileTimes.actime = buffer.st_atime;
+    fileTimes.modtime = new_mtime;
+    return (utime(FileName.c_str(), &fileTimes)==0);
+  }//if
+  //An error occured, so return false.
+  return false;
+}
 
 bool getFileSizeAndModificationTime(const std::string& FileName, int64_t& FileSize, time_t& FileTime)
 {

@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef HELPERFUNCTIONS_H
-#define HELPERFUNCTIONS_H
+#ifndef FILEFUNCTIONS_H
+#define FILEFUNCTIONS_H
 
 #include <string>
 
@@ -31,13 +31,13 @@
 */
 //int64_t getFileSize64(const std::string& FileName);
 
-/* returns the time when file FileName was last modified. If the file does not
-   exist or if an error occured, -1 will be returned.
+/* sets the time when file FileName was last modified. If the file does not
+   exist or if an error occured, false will be returned.
 
   parameters:
-      FileName - the file whose time of last modification shall be obtained
+      FileName - the file whose time of last modification shall be changed
 */
-//time_t getFileModificationTime(const std::string& FileName);
+bool setFileModificationTime(const std::string& FileName, const time_t new_mtime);
 
 /* returns the file size of file FileName and the time of its last modification.
    If the file does not exist or if an error occured, false will be returned and
@@ -57,4 +57,4 @@ bool getFileSizeAndModificationTime(const std::string& FileName, int64_t& FileSi
 */
 bool FileExists(const std::string& FileName);
 
-#endif // HELPERFUNCTIONS_H
+#endif // FILEFUNCTIONS_H

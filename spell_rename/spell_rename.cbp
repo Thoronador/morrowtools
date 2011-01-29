@@ -30,10 +30,10 @@
 		<Unit filename="..\base\ESMWriter.cpp" />
 		<Unit filename="..\base\ESMWriter.h" />
 		<Unit filename="..\base\Enchantment.h" />
+		<Unit filename="..\base\FileFunctions.cpp" />
+		<Unit filename="..\base\FileFunctions.h" />
 		<Unit filename="..\base\GameSettings.cpp" />
 		<Unit filename="..\base\GameSettings.h" />
-		<Unit filename="..\base\HelperFunctions.cpp" />
-		<Unit filename="..\base\HelperFunctions.h" />
 		<Unit filename="..\base\HelperIO.cpp" />
 		<Unit filename="..\base\HelperIO.h" />
 		<Unit filename="..\base\MW_Constants.h" />

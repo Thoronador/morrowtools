@@ -35,7 +35,7 @@
 #include "..\base\GameSettings.h"
 #include "..\base\MagicEffects.h"
 #include "..\base\Spells.h"
-#include "..\base\HelperFunctions.h"
+#include "..\base\FileFunctions.h"
 
 //return codes
 const int rcInvalidParameter = 1;
@@ -82,7 +82,7 @@ void showHelp()
 
 void showGPLNotice()
 {
-  std::cout << "Spell renamer for Morrowind\n"
+  std::cout << "Spell Renamer for Morrowind\n"
             << "  This programme is part of the Morrowind Tools Project.\n"
             << "  Copyright (C) 2011 Thoronador\n"
             << "\n"
@@ -103,7 +103,7 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Spell renamer for Morrowind, version 0.1_rev011, 2011-01-27\n";
+  std::cout << "Spell Renamer for Morrowind, version 0.1_rev014, 2011-01-29\n";
 }
 
 int main(int argc, char **argv)
@@ -580,6 +580,32 @@ int main(int argc, char **argv)
   if (WriteESMofSpells(baseDir+outputFileName, false, files))
   {
     std::cout << "Output file \""<<baseDir+outputFileName<<"\" was created successfully.\n";
+    //now check file time of created file
+    DepFile outDep = outputFileName;
+    if (getFileSizeAndModificationTime(baseDir+outputFileName, outDep.size, outDep.modified))
+    {
+      //only change, if last file isn't master, because plugins will be loaded
+      // after master anyway. And output is plugin.
+      if (!files.at(files.getSize()-1).isMasterFile())
+      {
+        //do we need to change plugin's modification time
+        if (files.at(files.getSize()-1).modified>=outDep.modified)
+        {
+          if (setFileModificationTime(baseDir+outputFileName, files.at(files.getSize()-1).modified+60))
+          {
+            std::cout << "Hint: Could not change modification time of \""
+                      << outputFileName<<"\" to ensure loading order.\n";
+            return 0; //return zero anyway, file was created
+          }
+          else
+          {
+            std::cout << "Hint: Modification time of \""<<outputFileName
+                      <<"\" was changed to ensure loading order.\n";
+            return 0; //return zero, success
+          }
+        }//if
+      }//if not master
+    }//if
     return 0;
   }//if
   std::cout << "Error: Could not create or write to output file \""<<baseDir+outputFileName<<"\".\n";

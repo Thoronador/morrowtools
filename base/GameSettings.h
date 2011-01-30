@@ -23,6 +23,7 @@
 
 #include <string>
 #include <map>
+#include <fstream>
 
 enum GMSTType {gtInteger, gtFloat, gtString};
 
@@ -43,6 +44,7 @@ class GameSettings
     bool hasSetting(const std::string& Name) const;
     const GMSTRecord& getSetting(const std::string& Name) const;
     unsigned int getNumberOfSettings() const;
+    bool readGMST(std::ifstream& in_File, const int32_t FileSize);
     void clearAll();
   private:
     GameSettings();

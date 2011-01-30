@@ -23,6 +23,7 @@
 
 #include <string>
 #include <map>
+#include <fstream>
 
 //spell schools
 const int32_t cAlteration = 0;
@@ -113,18 +114,50 @@ typedef std::map<int, MGEF_Data>::const_iterator EffectListIterator;
 class MagicEffects
 {
   public:
+    /* destructor */
     ~MagicEffects();
+
+    /* singleton access */
     static MagicEffects& getSingleton();
+
+    /* adds an effect to the list */
     void addEffect(const int Index, const MGEF_Data& Data);
+
+    /* returns true, if an effect with the given index exists */
     bool hasEffect(const int Index) const;
+
+    /* returns the number of different effects */
     unsigned int getNumberOfEffects() const;
+
+    /* retrieves data of a specific magic effect
+
+       parameters:
+           Index - the index of the effect
+
+       remarks:
+           If there is no effect with the given index, the function throws an
+           error. Use hasEffect() to determine if an effect exists.
+    */
     const MGEF_Data& getEffect(const int Index) const;
-    void clearAll();
+
+    /* tries to read a magic effect record from the given input file and returns
+       true on succes. If an error occured, false is returned.
+    */
+    bool readMGEF(std::ifstream& in_File);
+
     EffectListIterator getBegin() const;
     EffectListIterator getEnd() const;
+
+    /* deletes all effects */
+    void clearAll();
   private:
+    /* constructor */
     MagicEffects();
+
+    /* copy constructor - empty */
     MagicEffects(const MGEF_Data& op) {}
+
+    /* internal list of effects */
     std::map<int, MGEF_Data> m_Effects;
 }; //class
 

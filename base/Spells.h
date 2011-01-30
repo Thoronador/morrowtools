@@ -49,21 +49,79 @@ typedef std::map<std::string, SpellRecord>::const_iterator SpellListIterator;
 class Spells
 {
   public:
+    /* destructor */
     ~Spells();
+
+    /* singleton access method */
     static Spells& getSingleton();
+
+    /* adds a spell to the list */
     void addSpell(const std::string& ID, const SpellRecord& record);
+
+    /* returns true, if a spell with the given ID exists
+
+       parameters:
+           ID - the ID of the spell
+    */
     bool hasSpell(const std::string& ID) const;
+
+    /* returns the number of spells in the list */
     unsigned int getNumberOfSpells() const;
+
+    /* returns a reference to the spell record of the spell with the gien ID
+
+       parameters:
+           ID - the ID of the spell
+
+       remarks:
+           If no spell with the given ID is present, the function will throw an
+           exception. Use hasSpell() to determine, if a spell with the desired
+           ID is present.
+    */
     const SpellRecord& getSpell(const std::string& ID) const;
-    bool removeSpell(const std::string& ID);
-    void clearAll();
+
+    /* tries to read one spell record (without first 32 bits of header) from the
+       given input file stream and returns true on success, false on error
+
+       parameters:
+           in_File - the input file stream that is used for the operation
+    */
+    bool readSPEL(std::ifstream& in_File);
+
     SpellListIterator getBegin() const;
     SpellListIterator getEnd() const;
+
+    /* tries to save all available spells to the given stream and returns true
+       on success, false on failure
+
+       parameters:
+           output - the output file stream that shall be used to save the spells
+    */
     bool saveAllToStream(std::ofstream& output) const;
+
+    /* removes the spell with the given ID from the list and returns true, if
+       such a spell was present
+
+       parameters:
+           ID - the ID of the spell that shall be removed
+    */
+    bool removeSpell(const std::string& ID);
+
+    /* removes all spells from the list */
+    void clearAll();
+
+    /* constant that holds the maximum length of spell name, that Morrowind can
+       still handle properly (excluding terminating NUL character)
+    */
     static const size_t cMaximumSpellNameLength;
   private:
+    /* constructor */
     Spells();
+
+    /* compy constructor - empty due to singleton pattern */
     Spells(const Spells& op) {}
+
+    /* internal spell data list */
     std::map<std::string, SpellRecord> m_Spells;
 }; //class
 

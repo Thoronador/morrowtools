@@ -29,8 +29,4 @@ bool ReadESM(const std::string& FileName, const bool verbose);
 //"dispatcher"
 bool ProcessNextRecord(std::ifstream& in_File, const int32_t FileSize);
 
-bool ReadGMST(std::ifstream& in_File, const int32_t FileSize);
-bool ReadMGEF(std::ifstream& in_File);
-bool ReadSPEL(std::ifstream& in_File);
-
 #endif // ESMREADER_H

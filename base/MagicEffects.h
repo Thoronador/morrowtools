@@ -60,6 +60,9 @@ struct MGEF_Data
   std::string BoltSound; //optional
   std::string HitSound; //optional
   std::string AreaSound; //optional
+
+  /* returns true, of content of other record is equal to this one */
+  bool equals(const MGEF_Data& other) const;
 }; //struct
 
 //spell effect indices (hard-coded in MW)
@@ -144,6 +147,19 @@ class MagicEffects
        true on succes. If an error occured, false is returned.
     */
     bool readMGEF(std::ifstream& in_File);
+
+    /* tries to read a magic effect record from the given input file stream.
+
+       return value:
+           If an error occured, the function returns -1. Otherwise it returns
+           the number of updated records. (Usually that is one. If, however, the
+           record that was read is equal to the one already in the list, zero is
+           returned.)
+
+       parameters:
+           in_File - the input file stream that is used to read the record
+    */
+    int readRecordMGEF(std::ifstream& in_File);
 
     EffectListIterator getBegin() const;
     EffectListIterator getEnd() const;

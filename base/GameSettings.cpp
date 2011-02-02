@@ -23,6 +23,31 @@
 #include "MW_Constants.h"
 #include "HelperIO.h"
 
+bool GMSTRecord::equals(const GMSTRecord& other) const
+{
+  if (Type!=other.Type)
+  {
+    return false;
+  }
+  switch (Type)
+  {
+    case gtInteger:
+         return (iVal==other.iVal);
+         break;
+    case gtFloat:
+         //Is it really a good idea to use direct equality tests for floats here?
+         //Things like 4.0000000001 and 3.999999998 can basically be the same,
+         //but have a different bit representation.
+         return (fVal==other.fVal);
+         break;
+    case gtString:
+         return (sVal==other.sVal);
+         break;
+  }//swi
+  //should never reach this point here
+  throw 42;
+}
+
 GameSettings::GameSettings()
 {
   //empty
@@ -195,6 +220,143 @@ bool GameSettings::readGMST(std::ifstream& in_File, const int32_t FileSize)
   }
   return false;
 }//readGMST
+
+int GameSettings::readRecordGMST(std::ifstream& in_File, const int32_t FileSize)
+{
+  int32_t Size, HeaderOne, Flags;
+  in_File.read((char*) &Size, 4);
+  in_File.read((char*) &HeaderOne, 4);
+  in_File.read((char*) &Flags, 4);
+
+  /*GMST: Game Setting
+    NAME = Setting ID string
+    STRV = String value/ INTV = Integer value (4 btes)/FLTV = Float value (4 bytes)
+  */
+  int32_t SubRecName, SubLength;
+  SubRecName = SubLength = 0;
+
+  //read NAME
+  in_File.read((char*) &SubRecName, 4);
+  if (SubRecName!=cNAME)
+  {
+    UnexpectedRecord(cNAME, SubRecName);
+    return -1;
+  }
+  //NAME's length
+  in_File.read((char*) &SubLength, 4);
+  if (SubLength>511)
+  {
+    std::cout << "Sub record NAME of GMST is longer than 511 characters!\n";
+    return -1;
+  }
+  if (SubLength<=0)
+  {
+    std::cout << "Sub record NAME of GMST is shorter than one character!\n";
+    return -1;
+  }
+  char Buffer[512];
+  memset(Buffer, '\0', 512);
+  in_File.read(Buffer, SubLength);
+  if (!in_File.good())
+  {
+    std::cout << "Error while reading sub record NAME of GMST!\n";
+    return -1;
+  }
+  const std::string SettingName = std::string(Buffer);
+  const char NameFirstChar = SettingName.at(0);
+
+  GMSTRecord temp;
+  temp.fVal = 0.0f;
+  temp.iVal = 0;
+  temp.sVal = "";
+
+  //read value record based on first character of setting name
+  switch(NameFirstChar)
+  {
+    case 'f':
+         //read FLTV
+         in_File.read((char*) &SubRecName, 4);
+         if (SubRecName!=cFLTV)
+         {
+           UnexpectedRecord(cFLTV, SubRecName);
+           return -1;
+         }
+         //FLTV's length
+         in_File.read((char*) &SubLength, 4);
+         if (SubLength != 4)
+         {
+           std::cout << "Error: sub record FLTV of GMST has invalid length ("
+                     << SubLength << " bytes). Should be 4 bytes.\n";
+           return -1;
+         }
+         //read FLTV
+         in_File.read((char*) &(temp.fVal), 4);
+         temp.Type = gtFloat;
+         break;
+    case 'i':
+         //read INTV
+         in_File.read((char*) &SubRecName, 4);
+         if (SubRecName!=cINTV)
+         {
+           UnexpectedRecord(cINTV, SubRecName);
+           return -1;
+         }
+         //INTV's length
+         in_File.read((char*) &SubLength, 4);
+         if (SubLength != 4)
+         {
+           std::cout << "Error: sub record INTV of GMST has invalid length ("
+                     << SubLength << " bytes). Should be 4 bytes.\n";
+           return -1;
+         }
+         //read INTV
+         in_File.read((char*) &(temp.iVal), 4);
+         temp.Type = gtInteger;
+         break;
+    default: //'s'
+         temp.Type = gtString;
+         // if string is empty, STRV sub-record may not be present at all
+         if (in_File.tellg()<FileSize)
+         {
+           //read STRV
+           in_File.read((char*) &SubRecName, 4);
+           if (SubRecName==cSTRV)
+           {
+             //STRV's length
+             in_File.read((char*) &SubLength, 4);
+             if (SubLength>511)
+             {
+               std::cout << "Sub record STRV of GMST is longer than 511 characters!\n";
+               return -1;
+             }
+             //read STRV
+             memset(Buffer, '\0', 512);
+             in_File.read(Buffer, SubLength);
+             temp.sVal = std::string(Buffer);
+           }
+           else
+           { //seek four bytes towards beginning to be before next record name
+             in_File.seekg(-4, std::ios::cur);
+           }
+         }
+         break;
+  }//switch
+  if (in_File.good())
+  {
+    //check for presence of setting
+    if (hasSetting(SettingName))
+    {
+      if (getSetting(SettingName).equals(temp))
+      {
+        return 0; //return zero, nothing was changed
+      }
+    }//if
+    addSetting(SettingName, temp);
+    return 1;
+  }
+  std::cout << "Error while reading data subrecord of GMST.\n";
+  return -1;
+}//readRecordGMST (integer version of readGMST)
 
 void GameSettings::clearAll()
 {

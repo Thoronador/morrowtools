@@ -33,22 +33,84 @@ struct GMSTRecord
   int32_t iVal;
   float fVal;
   std::string sVal;
+
+  /* returns true, if the other record contains the same relevant data */
+  bool equals(const GMSTRecord& other) const;
 };
 
 class GameSettings
 {
   public:
+    /* destructor */
     ~GameSettings();
+
+    /* singleton access */
     static GameSettings& getSingleton();
+
+    /* adds a setting to the list */
     void addSetting(const std::string& Name, const GMSTRecord& value);
+
+    /* returns true, if a setting with the given name is present
+
+       parameters:
+           Name - the name of the setting
+
+       remarks:
+           In the current implementation the names of settings are case-
+           sensitive, which means that "sSchoolDestruction" is different from
+           setting "sSCHOOLDESTRECUTION". I am aware, that Morrowind itself does
+           not distinguish between upper and lower case letters in this case,
+           but case insensitivity is not implemented (yet).
+    */
     bool hasSetting(const std::string& Name) const;
+
+    /* retrieves the data record of a given setting. This setting must exist,
+       or the function will throw an exception.
+
+       parameters:
+           Name - the name of the setting
+
+       remarks:
+           See remarks for hasSetting() above.
+    */
     const GMSTRecord& getSetting(const std::string& Name) const;
+
+    /* returns the current number of present setting */
     unsigned int getNumberOfSettings() const;
+
+    /* tries to read a GMST record from the given stream an returns true on
+       success, false on error
+
+       parameters:
+           in_File  - the input file stream that's used to read the record
+           FileSize - the total size of the file
+    */
     bool readGMST(std::ifstream& in_File, const int32_t FileSize);
+
+    /* tries to read a GMST record from the given input file stream.
+
+       return value:
+           If an error occured, the function returns -1. Otherwise it returns
+           the number of updated records. (Usually that is one. If, however, the
+           record that was read is equal to one already in the list, zero is
+           returned.)
+
+       parameters:
+           in_File  - the input file stream that is used to read the record
+           FileSize - the total size of the file associated with the stream
+    */
+    int readRecordGMST(std::ifstream& in_File, const int32_t FileSize);
+
+    /* deletes all GMST data */
     void clearAll();
   private:
+    /* constructor - private due to singleton pattern */
     GameSettings();
+
+    /* copy constructor - empty due to singleton pattern */
     GameSettings(const GameSettings& op) {}
+
+    /* internal data */
     std::map<std::string, GMSTRecord> m_Settings;
 }; //class
 

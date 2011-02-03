@@ -22,8 +22,7 @@
 
   To do:
   ======
-    - automatically detect plugin files that do not contain any relevant data
-      (i.e. spells, magic effects or GMSTs)
+    - [wishlist] more patterns
 
   --------------------------------------------------------------------------*/
 
@@ -103,7 +102,7 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Spell Renamer for Morrowind, version 0.1_rev018, 2011-02-03\n";
+  std::cout << "Spell Renamer for Morrowind, version 0.1_rev019, 2011-02-03\n";
 }
 
 int main(int argc, char **argv)
@@ -319,7 +318,6 @@ int main(int argc, char **argv)
     iniFile.close();
   }//if ini
 
-
   //check file list
   if (files.isEmpty())
   {
@@ -358,7 +356,6 @@ int main(int argc, char **argv)
                                    files.at(i).modified);
   }//for
 
-
   //sort files according to Morrowind's load order
   files.sort();
   //remove duplicate entries in list
@@ -381,17 +378,52 @@ int main(int argc, char **argv)
   //read all files
   ESMReaderSpells reader;
   std::cout << "Reading files, this may take a while.\n";
-  for (i=0; i<files.getSize(); ++i)
+  DepFileList removedFiles;
+  i = 0;
+  while (i<files.getSize())
   {
-    if (reader.readESM(baseDir+files.at(i).name, verbose)==-1)
+    const int read_result = reader.readESM(baseDir+files.at(i).name, verbose);
+    if (read_result==-1)
     {
       std::cout << "Error while reading file \""<<baseDir+files.at(i).name
                 <<"\".\nAborting.\n";
       return rcFileError;
+    }//if
+    else if (read_result==0)
+    {
+      //file contains no relevant data, so push it onto the list of unneccessary
+      //files and remove it
+      removedFiles.push_back(files.at(i));
+      files.removeEntry(i);
+      //We do nit increase counter (i) here, because the index will now contain
+      //the next file, which will be read in the next iteration.
     }
-    //try to get file size (used later in writing plugin file header)
-    //files.at(i).size = getFileSize64(baseDir+files.at(i).name);
-  }//for
+    else
+    {
+      //somethin was read and file was not removed from list, so increase counter
+      ++i;
+    }
+  }//while
+
+  //check for removed files
+  if (removedFiles.getSize()>0)
+  {
+    if (removedFiles.getSize()==1)
+    {
+      std::cout << "Info: The following file was removed from the list, "
+                << "because it didn't contain any spell data:\n";
+    }
+    else
+    {
+      //two or more files
+      std::cout << "Info: The following "<<removedFiles.getSize()<<" files were"
+                << " removed from the list, because they didn't contain any "
+                << "spell data:\n";
+    }
+    removedFiles.writeDeps();
+    std::cout << std::endl;
+  }//if
+
   std::cout << "Info: "<<files.getSize()<<" Master/ Plugin file(s) containing "
             << Spells::getSingleton().getNumberOfSpells()<<" spell(s) were read.\n";
 

@@ -205,6 +205,17 @@ unsigned int DepFileList::removeDuplicates()
   return ret;
 }
 
+bool DepFileList::removeEntry(size_t index)
+{
+  if (index>=m_List.size())
+  {
+    //index is out of range, we can't remove an entry
+    return false;
+  }
+  m_List.erase(m_List.begin()+index);
+  return true;
+}
+
 void DepFileList::clear()
 {
   m_List.clear();

@@ -111,6 +111,14 @@ class DepFileList
     */
     unsigned int removeDuplicates();
 
+    /* removes an element at the specified index from the list and returns
+       true, if an element was removed - false otherwise
+
+       parameters:
+           index - zero-based index of the element
+    */
+    bool removeEntry(size_t index);
+
     /* removes all files from the list */
     void clear();
   private:

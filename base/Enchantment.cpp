@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011 Thoronador
+    Copyright (C) 2011 Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -18,28 +18,12 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef ESMREADER_H
-#define ESMREADER_H
+#include "Enchantment.h"
 
-#include <string>
-#include <fstream>
-
-bool ReadESM(const std::string& FileName, const bool verbose);
-
-//"dispatcher"
-bool ProcessNextRecord(std::ifstream& in_File, const int32_t FileSize);
-
-class ESMReader
+bool EnchantmentData::equals(const EnchantmentData& other) const
 {
-  public:
-    /* constructor */
-    ESMReader();
-
-    /* destructor */
-    ~ESMReader();
-
-    /* skips a record and returns 0 on success, and -1 on error */
-    static int skipRecord(std::ifstream& in_File);
-};//class
-
-#endif // ESMREADER_H
+  return ((EffectID==other.EffectID) and (SkillID==other.SkillID)
+      and (AttributeID==other.AttributeID) and (RangeType==other.RangeType)
+      and (Area==other.Area) and (Duration==other.Duration)
+      and (MagnitudeMin==other.MagnitudeMin) and (MagnitudeMax==other.MagnitudeMax));
+}

@@ -29,6 +29,7 @@
 		<Unit filename="..\base\ESMReader.h" />
 		<Unit filename="..\base\ESMWriter.cpp" />
 		<Unit filename="..\base\ESMWriter.h" />
+		<Unit filename="..\base\Enchantment.cpp" />
 		<Unit filename="..\base\Enchantment.h" />
 		<Unit filename="..\base\FileFunctions.cpp" />
 		<Unit filename="..\base\FileFunctions.h" />

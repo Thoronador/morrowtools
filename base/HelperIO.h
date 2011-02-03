@@ -29,7 +29,4 @@ std::string IntTo4Char(const int32_t value);
 //helper function for message on wrong records
 void UnexpectedRecord(const int32_t expected, const int32_t unexpected);
 
-//skips unwanted record
-bool SkipRecord(std::ifstream& in_File);
-
 #endif // HELPERIO_H

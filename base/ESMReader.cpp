@@ -247,7 +247,7 @@ bool ProcessNextRecord(std::ifstream& in_File, const int32_t FileSize)
     case cENCH:
     case cFACT:
     case cGLOB:
-         Success = SkipRecord(in_File);
+         Success = (ESMReader::skipRecord(in_File)==0);
          break;
     case cGMST:
          Success = GameSettings::getSingleton().readGMST(in_File, FileSize);
@@ -260,7 +260,7 @@ bool ProcessNextRecord(std::ifstream& in_File, const int32_t FileSize)
     case cLIGH:
     case cLOCK:
     case cLTEX:
-         Success = SkipRecord(in_File);
+         Success = (ESMReader::skipRecord(in_File)==0);
          break;
     case cMGEF:
          Success = MagicEffects::getSingleton().readMGEF(in_File);
@@ -276,7 +276,7 @@ bool ProcessNextRecord(std::ifstream& in_File, const int32_t FileSize)
     case cSKIL:
     case cSNDG:
     case cSOUN:
-         Success = SkipRecord(in_File);
+         Success = (ESMReader::skipRecord(in_File)==0);
          break;
     case cSPEL:
          Success = Spells::getSingleton().readSPEL(in_File);
@@ -284,7 +284,7 @@ bool ProcessNextRecord(std::ifstream& in_File, const int32_t FileSize)
     case cSSCR:
     case cSTAT:
     case cWEAP:
-         Success = SkipRecord(in_File);
+         Success = (ESMReader::skipRecord(in_File)==0);
          break;
     default:
          std::cout << "ProcessRecords: ERROR: unknown record type found: \""
@@ -295,3 +295,34 @@ bool ProcessNextRecord(std::ifstream& in_File, const int32_t FileSize)
   }//swi
   return Success;
 }//ProcessNextRecord
+
+ESMReader::ESMReader()
+{
+  //empty
+}
+ESMReader::~ESMReader()
+{
+  //empty
+}
+
+int ESMReader::skipRecord(std::ifstream& in_File)
+{
+  int32_t Size, HeaderOne, Flags;
+  Size = 0;
+  in_File.read((char*) &Size, 4);
+  if (Size<0)
+  {
+    std::cout << "Error: record size is negative.\n";
+    return -1;
+  }
+  in_File.read((char*) &HeaderOne, 4);
+  in_File.read((char*) &Flags, 4);
+  /* data does not really matter here */
+  in_File.seekg(Size, std::ios::cur);
+  if (in_File.good())
+  {
+    return 0;
+  }
+  return -1;
+}
+

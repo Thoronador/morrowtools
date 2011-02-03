@@ -22,8 +22,8 @@
 
   To do:
   ======
-    - allow to read a customized list of master and plugin files and not just
-      the standard files (Morrowind.esm, Tribunal.esm, Bloodmoon.esm)
+    - automatically detect plugin files that do not contain any relevant data
+      (i.e. spells, magic effects or GMSTs)
 
   --------------------------------------------------------------------------*/
 
@@ -103,7 +103,7 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Spell Renamer for Morrowind, version 0.1_rev016, 2011-02-02\n";
+  std::cout << "Spell Renamer for Morrowind, version 0.1_rev017, 2011-02-03\n";
 }
 
 int main(int argc, char **argv)

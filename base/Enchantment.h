@@ -21,6 +21,8 @@
 #ifndef ENCHANTMENT_H
 #define ENCHANTMENT_H
 
+#include <stdint.h>
+
 //range types
 const int32_t rtSelf = 0;
 const int32_t rtTouch = 1;
@@ -37,6 +39,9 @@ struct EnchantmentData //24 bytes
   int32_t Duration;
   int32_t MagnitudeMin;
   int32_t MagnitudeMax;
+
+  /* returns true, if the other enchantment is the same */
+  bool equals(const EnchantmentData& other) const;
 }; //struct
 
 #endif // ENCHANTMENT_H

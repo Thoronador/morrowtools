@@ -114,6 +114,27 @@ bool SpellRecord::saveToStream(std::ofstream& output, const std::string& SpellID
   return output.good();
 }
 
+bool SpellRecord::equals(const SpellRecord& other) const
+{
+  if ((Name!=other.Name) or (Type!=other.Type) or (Cost!=other.Cost)
+     or (Flags!=other.Flags) or (Enchs.size()!=other.Enchs.size()))
+  {
+    return false;
+  }
+  size_t i;
+  for (i=0; i<Enchs.size(); ++i)
+  {
+    if (!Enchs.at(i).equals(other.Enchs.at(i)))
+    {
+      return false;
+    }
+  }//for
+  return true;
+}
+
+
+/* **** Spells functions **** */
+
 Spells::Spells()
 {
   //empty
@@ -296,6 +317,163 @@ bool Spells::readSPEL(std::ifstream& in_File)
   addSpell(SpellID, temp);
   return in_File.good();
 }//readSPEL
+
+int Spells::readRecordSPEL(std::ifstream& in_File)
+{
+  int32_t Size, HeaderOne, Flags;
+  in_File.read((char*) &Size, 4);
+  in_File.read((char*) &HeaderOne, 4);
+  in_File.read((char*) &Flags, 4);
+
+  /*Spell:
+    NAME = Spell ID
+    FNAM = Spell Name
+    SPDT = Spell Data (12 bytes)
+        long Type (0 = Spell,1 = Ability,2 = Blight,3 = Disease,4 = Curse,5 = Power)
+        long SpellCost
+        long Flags (0x0001 = AutoCalc,0x0002 = PC Start,0x0004 = Always Succeeds)
+    ENAM = Enchantment data (24 bytes, 0 to 8) */
+
+  int32_t SubRecName, SubLength;
+  SubRecName = SubLength = 0;
+
+  //read NAME
+  in_File.read((char*) &SubRecName, 4);
+  if (SubRecName!=cNAME)
+  {
+    UnexpectedRecord(cNAME, SubRecName);
+    return -1;
+  }
+  //NAME's length
+  in_File.read((char*) &SubLength, 4);
+  if (SubLength>255)
+  {
+    std::cout << "readRecordSPEL: Error: ID is longer than 255 characters.\n";
+    std::cout << "File pos.: "<<in_File.tellg()<<"\n";
+    return -1;
+  }
+  char Buffer[256];
+  Buffer[0] = Buffer[255] = '\0';
+  //read ID
+  in_File.read(Buffer, SubLength);
+  if (!in_File.good())
+  {
+    std::cout << "readRecordSPEL: Error while reading ID from stream.\n";
+    std::cout << "File pos.: "<<in_File.tellg()<<"\n";
+    return -1;
+  }
+  const std::string SpellID = std::string(Buffer);
+
+  //read FNAM
+  in_File.read((char*) &SubRecName, 4);
+  if (SubRecName!=cFNAM)
+  {
+    UnexpectedRecord(cFNAM, SubRecName);
+    return -1;
+  }
+  //FNAM's length
+  in_File.read((char*) &SubLength, 4);
+  if (SubLength>255)
+  {
+    std::cout << "readRecordSPEL: Error: name is longer than 255 characters.\n";
+    std::cout << "File pos.: "<<in_File.tellg()<<"\n";
+    return -1;
+  }
+  //read spell name
+  Buffer[0] = Buffer[255] = '\0';
+  in_File.read(Buffer, SubLength);
+  if (!in_File.good())
+  {
+    std::cout << "readRecordSPEL: Error while reading name from stream.\n";
+    std::cout << "File pos.: "<<in_File.tellg()<<"\n";
+    return -1;
+  }
+  SpellRecord temp;
+  temp.Name = std::string(Buffer);
+
+  //read SPDT
+  in_File.read((char*) &SubRecName, 4);
+  if (SubRecName!=cSPDT)
+  {
+    UnexpectedRecord(cSPDT, SubRecName);
+    return -1;
+  }
+  //SPDT's length
+  in_File.read((char*) &SubLength, 4);
+  if (SubLength!=12)
+  {
+    std::cout << "Error: sub record SPDT of SPEL has invalid length ("
+              <<SubLength<< " bytes). Should be 12 bytes.\n";
+    return -1;
+  }
+  // ---- read spell data
+  //type
+  in_File.read((char*) &(temp.Type), 4);
+  //cost
+  in_File.read((char*) &(temp.Cost), 4);
+  //flags
+  in_File.read((char*) &(temp.Flags), 4);
+  if (!in_File.good())
+  {
+    std::cout << "Error while reading sub record SPDT of SPEL.\n";
+    return -1;
+  }
+
+  temp.Enchs.clear();
+  //read multiple ENAM records
+  do
+  {
+    in_File.read((char*) &SubRecName, 4);
+    if (SubRecName==cENAM)
+    {
+      //ENAM's length
+      in_File.read((char*) &SubLength, 4);
+      if (SubLength!=24)
+      {
+        std::cout << "Error: sub record ENAM of SPEL has invalid length ("
+                  <<SubLength<< " bytes). Should be 24 bytes.\n";
+        return -1;
+      }
+      //read enchantment data
+      EnchantmentData ench;
+      in_File.read((char*) &(ench.EffectID), 2);
+      in_File.read((char*) &(ench.SkillID), 1);
+      in_File.read((char*) &(ench.AttributeID), 1);
+      in_File.read((char*) &(ench.RangeType), 4);
+      in_File.read((char*) &(ench.Area), 4);
+      in_File.read((char*) &(ench.Duration), 4);
+      in_File.read((char*) &(ench.MagnitudeMin), 4);
+      in_File.read((char*) &(ench.MagnitudeMax), 4);
+      if (in_File.good())
+      {
+        temp.Enchs.push_back(ench);
+      }
+      else
+      {
+        std::cout << "Error while reading sub record ENAM of SPEL.\n";
+        return -1;
+      }
+    }
+  } while (SubRecName == cENAM);
+  //seek four bytes towards beginning to land before the name of the next record
+  in_File.seekg(-4, std::ios::cur);
+  if (!in_File.good())
+  {
+    std::cout << "Error while reading spell data.\n";
+    return -1;
+  }
+  //check for presence of spell
+  if (hasSpell(SpellID))
+  {
+    if (getSpell(SpellID).equals(temp))
+    {
+      return 0; //return zero and do nothing, spell record is the same
+    }
+  }//if
+  //add spell and return 1, since one record was added/changed
+  addSpell(SpellID, temp);
+  return 1;
+}//readRecordSPEL (integer version of readSPEL()
 
 SpellListIterator Spells::getBegin() const
 {

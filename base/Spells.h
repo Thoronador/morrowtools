@@ -41,9 +41,21 @@ struct SpellRecord
   int32_t Cost;
   int32_t Flags;
   std::vector<EnchantmentData> Enchs;
+
+  /* tries to save the spell record to an output file stream and returns true
+     on success, false on failure.
+
+     parameters:
+         output  - the output file stream that is used to save the spell data
+         SpellID - ID of the spell
+  */
   bool saveToStream(std::ofstream& output, const std::string& SpellID) const;
+
+  /* returns true, if the other spell record contains the same data */
+  bool equals(const SpellRecord& other) const;
 };//struct
 
+//iterator type for Spells class
 typedef std::map<std::string, SpellRecord>::const_iterator SpellListIterator;
 
 class Spells
@@ -88,7 +100,23 @@ class Spells
     */
     bool readSPEL(std::ifstream& in_File);
 
+    /* tries to read a spell record from the given input file stream.
+
+       return value:
+           If an error occured, the function returns -1. Otherwise it returns
+           the number of updated records. (Usually that is one. If, however, the
+           record that was read is equal to the one already in the list, zero is
+           returned.)
+
+       parameters:
+           in_File - the input file stream that is used to read the record
+    */
+    int readRecordSPEL(std::ifstream& in_File);
+
+    /* returns constant iterator to the beginning of the internal list */
     SpellListIterator getBegin() const;
+
+    /* returns constant iterator to the end of the internal list */
     SpellListIterator getEnd() const;
 
     /* tries to save all available spells to the given stream and returns true

@@ -38,20 +38,3 @@ void UnexpectedRecord(const int32_t expected, const int32_t unexpected)
             <<"\" was found.\n";
   return;
 }
-
-bool SkipRecord(std::ifstream& in_File)
-{
-  int32_t Size, HeaderOne, Flags;
-  Size = 0;
-  in_File.read((char*) &Size, 4);
-  if (Size<0)
-  {
-    std::cout << "Error: record size is negative.\n";
-    return false;
-  }
-  in_File.read((char*) &HeaderOne, 4);
-  in_File.read((char*) &Flags, 4);
-  /* data does not really matter here */
-  in_File.seekg(Size, std::ios::cur);
-  return in_File.good();
-}//SkipRecord

@@ -2,7 +2,7 @@ List of things that should be done for spell_rename sooner or later:
 
 To do:
 ======
-  - allow to read a customized list of master and plugin files and not just
-    the standard files (Morrowind.esm, Tribunal.esm, Bloodmoon.esm)
+  - automatically detect plugin files that do not contain any relevant data,
+    i.e. spells, magic effects or GMSTs
   - [IMPORTANT] write some documentation that's easy to understand
   - [Wishlist] graphical wrapper application

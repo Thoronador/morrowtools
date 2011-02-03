@@ -4,7 +4,9 @@ Contents of repository:
 - base         - This directory contains the source code for stuff that could
                  be used in other programmes of morrowtools, too. However,
                  there are no other programmes besides spell_rename yet.
-                 
+
+- doc          - files for documentation of the programme(s)
+
 - spell_rename - directory containing files specific to the spell renamer
                  programme
 

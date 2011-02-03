@@ -2,7 +2,6 @@ List of things that should be done for spell_rename sooner or later:
 
 To do:
 ======
-  - automatically detect plugin files that do not contain any relevant data,
-    i.e. spells, magic effects or GMSTs
   - [IMPORTANT] write some documentation that's easy to understand
   - [Wishlist] graphical wrapper application
+  - [Wishlist] more patterns to select from

@@ -30,7 +30,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "..\base\ESMReader.h"
+#include "ESMReaderSpells.h"
 #include "..\base\ESMWriter.h"
 #include "..\base\GameSettings.h"
 #include "..\base\MagicEffects.h"
@@ -103,7 +103,7 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Spell Renamer for Morrowind, version 0.1_rev017, 2011-02-03\n";
+  std::cout << "Spell Renamer for Morrowind, version 0.1_rev018, 2011-02-03\n";
 }
 
 int main(int argc, char **argv)
@@ -379,10 +379,11 @@ int main(int argc, char **argv)
   files.writeDeps();
 
   //read all files
+  ESMReaderSpells reader;
   std::cout << "Reading files, this may take a while.\n";
   for (i=0; i<files.getSize(); ++i)
   {
-    if (!ReadESM(baseDir+files.at(i).name, verbose))
+    if (reader.readESM(baseDir+files.at(i).name, verbose)==-1)
     {
       std::cout << "Error while reading file \""<<baseDir+files.at(i).name
                 <<"\".\nAborting.\n";

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011 Thoronador
+    Copyright (C) 2011 Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -18,46 +18,19 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef ESMREADER_H
-#define ESMREADER_H
+#ifndef ESMREADERSPELLS_H
+#define ESMREADERSPELLS_H
 
-#include <string>
-#include <fstream>
+#include "../base/ESMReader.h"
 
-/* ESMReader class
-
-   This is the basic class for reading master (.esm) and plugin (.esp) files of
-   Morrowind. The ESMReader class reads the header of the file; all subsequent
-   records will be read by processNextRecord() function. In this class, the
-   function just skips all records and reads no real data.
-   To change that behaviour and actually read some data, you have to derive a
-   new class from ESMReader and reimplement the protected processNextRecord()
-   function, which has to take care that the required data is read and not
-   skipped.
-*/
-
-class ESMReader
+class ESMReaderSpells: public ESMReader
 {
   public:
     /* constructor */
-    ESMReader();
+    ESMReaderSpells();
 
     /* destructor */
-    virtual ~ESMReader();
-
-    /* skips a record and returns 0 on success, and -1 on error */
-    static int skipRecord(std::ifstream& in_File);
-
-    /* tries to read an .esm/.esp file and returns the number of relevant
-       records that were read. If an error occured, -1 is returned.
-
-       parameters:
-           FileName - name of the .esm/.esp file
-           verbose  - if true, some additional information will be written to
-                      standard output
-    */
-    int readESM(const std::string& FileName, const bool verbose);
-
+    virtual ~ESMReaderSpells();
   protected:
     /* tries to read the next record from a file and returns the number of
        relevant records that were read (usually one). If an error occured,
@@ -71,4 +44,4 @@ class ESMReader
     virtual int processNextRecord(std::ifstream& in_File, const int32_t FileSize);
 };//class
 
-#endif // ESMREADER_H
+#endif // ESMREADERSPELLS_H

@@ -26,7 +26,37 @@
 #include "MW_Constants.h"
 #include "HelperIO.h"
 
-bool ReadESM(const std::string& FileName, const bool verbose)
+ESMReader::ESMReader()
+{
+  //empty
+}
+ESMReader::~ESMReader()
+{
+  //empty
+}
+
+int ESMReader::skipRecord(std::ifstream& in_File)
+{
+  int32_t Size, HeaderOne, Flags;
+  Size = 0;
+  in_File.read((char*) &Size, 4);
+  if (Size<0)
+  {
+    std::cout << "Error: record size is negative.\n";
+    return -1;
+  }
+  in_File.read((char*) &HeaderOne, 4);
+  in_File.read((char*) &Flags, 4);
+  /* data does not really matter here */
+  in_File.seekg(Size, std::ios::cur);
+  if (in_File.good())
+  {
+    return 0;
+  }
+  return -1;
+}
+
+int ESMReader::readESM(const std::string& FileName, const bool verbose)
 {
   std::ifstream input;
   char Buffer[4];
@@ -35,7 +65,7 @@ bool ReadESM(const std::string& FileName, const bool verbose)
   if (!input)
   {
     std::cout << "Error: could not open file \""<<FileName<<"\".\n";
-    return false;
+    return -1;
   }
 
   //set file pointer to end
@@ -46,12 +76,13 @@ bool ReadESM(const std::string& FileName, const bool verbose)
 
   //read the header
   //TES3
+  Buffer[0] = Buffer[1] = Buffer[2] = Buffer[3] = '\0';
   input.read(Buffer, 4);
   if (Buffer[0]!='T' || Buffer[1]!='E' || Buffer[2]!='S' || Buffer[3]!='3')
   {
     std::cout << "Error: File \""<<FileName<<"\" is not a valid .esp/.esm file.\n";
     input.close();
-    return false;
+    return -1;
   }
   int32_t Size, Header_One, Flags, SubSize;
   input.read((char*) &Size, 4);
@@ -61,7 +92,7 @@ bool ReadESM(const std::string& FileName, const bool verbose)
   {
     std::cout << "Error while reading from \""<<FileName<<"\".\n";
     input.close();
-    return false;
+    return -1;
   }
 
   //HEDR
@@ -71,7 +102,7 @@ bool ReadESM(const std::string& FileName, const bool verbose)
     std::cout << "Error: File \""<<FileName<<"\" is not a valid .esp/.esm file."
               << "Record HEDR is not present.\n";
     input.close();
-    return false;
+    return -1;
   }
 
   /*HEDR (300bytes)
@@ -88,7 +119,7 @@ bool ReadESM(const std::string& FileName, const bool verbose)
     std::cout << "Error: record HEDR of file \""<<FileName<<"\" has wrong size."
               << " Actual size: "<<SubSize<<" bytes. Must-have size: 300 bytes.\n";
     input.close();
-    return false;
+    return -1;
   }
 
   float Version = 0.0f;
@@ -108,7 +139,7 @@ bool ReadESM(const std::string& FileName, const bool verbose)
   {
     std::cout << "Error while reading HEDR data from file \""<<FileName<<"\".\n";
     input.close();
-    return false;
+    return -1;
   }
 
   if (verbose)
@@ -165,7 +196,7 @@ bool ReadESM(const std::string& FileName, const bool verbose)
                   << "record expected, but got: \""<<Buffer[0]<<Buffer[1]
                   <<Buffer[2]<<Buffer[3]<<"\".\n";
         input.close();
-        return false;
+        return -1;
       }
       //reading size of DATA record
       input.read((char*) &SubSize, 4);
@@ -174,7 +205,7 @@ bool ReadESM(const std::string& FileName, const bool verbose)
         std::cout << "Error: Record DATA has invalid size ("<<SubSize
                   <<" bytes). Should be 8 bytes.\n";
         input.close();
-        return false;
+        return -1;
       }
       //skip 8 bytes of DATA
       input.seekg(8, std::ios::cur);
@@ -195,18 +226,26 @@ bool ReadESM(const std::string& FileName, const bool verbose)
   // name of the next record
   input.seekg(-4, std::ios::cur);
 
-  bool Go_on_processing = input.good();
-  uint32_t Processed_Records = 0;
-  //now read all the records
-  while (Go_on_processing)
+  if (!input.good())
   {
-    Go_on_processing = ProcessNextRecord(input, FileSize);
-    ++Processed_Records;
-    if (input.tellg()>=FileSize)
-    {
-      Go_on_processing = false;
-    }
+    std::cout << "Error while reading file \""<<FileName<<"\".\n";
+    input.close();
+    return -1;
   }
+  //bool Go_on_processing = true;
+  uint32_t Processed_Records = 0;
+  int relevantRecords = 0;
+  int lastResult = 0;
+  //now read all the records
+  while ((input.tellg()<FileSize) and (lastResult!=-1))
+  {
+    lastResult = processNextRecord(input, FileSize);
+    ++Processed_Records;
+    if (lastResult!=-1)
+    {
+      relevantRecords += lastResult;
+    }
+  }//while
 
   if (verbose)
   {
@@ -215,16 +254,20 @@ bool ReadESM(const std::string& FileName, const bool verbose)
               << "Current file position: "<<input.tellg()<< " bytes.\n";
   }//if verbose
   //end
-  const bool Result = input.good();
+  const bool good_result = input.good();
   input.close();
+  if (!good_result)
+  {
+    return -1;
+  }
   //save data and return
-  return Result;
-}  //ReadESM
+  return relevantRecords;
+}//readESM of ESMReader class
 
-bool ProcessNextRecord(std::ifstream& in_File, const int32_t FileSize)
+int ESMReader::processNextRecord(std::ifstream& in_File, const int32_t FileSize)
 {
   int32_t RecordName = 0; //normally should be 4 char, but char is not eligible for switch
-  bool Success = false;
+  int lastResult = 0;
 
   //read record name
   in_File.read((char*) &RecordName, 4);
@@ -247,11 +290,7 @@ bool ProcessNextRecord(std::ifstream& in_File, const int32_t FileSize)
     case cENCH:
     case cFACT:
     case cGLOB:
-         Success = (ESMReader::skipRecord(in_File)==0);
-         break;
     case cGMST:
-         Success = GameSettings::getSingleton().readGMST(in_File, FileSize);
-         break;
     case cINFO:
     case cINGR:
     case cLAND:
@@ -260,11 +299,7 @@ bool ProcessNextRecord(std::ifstream& in_File, const int32_t FileSize)
     case cLIGH:
     case cLOCK:
     case cLTEX:
-         Success = (ESMReader::skipRecord(in_File)==0);
-         break;
     case cMGEF:
-         Success = MagicEffects::getSingleton().readMGEF(in_File);
-         break;
     case cMISC:
     case cNPC_:
     case cPGRD:
@@ -276,53 +311,18 @@ bool ProcessNextRecord(std::ifstream& in_File, const int32_t FileSize)
     case cSKIL:
     case cSNDG:
     case cSOUN:
-         Success = (ESMReader::skipRecord(in_File)==0);
-         break;
     case cSPEL:
-         Success = Spells::getSingleton().readSPEL(in_File);
-         break;
     case cSSCR:
     case cSTAT:
     case cWEAP:
-         Success = (ESMReader::skipRecord(in_File)==0);
+         lastResult = ESMReader::skipRecord(in_File);
          break;
     default:
-         std::cout << "ProcessRecords: ERROR: unknown record type found: \""
+         std::cout << "processNextRecord: ERROR: unknown record type found: \""
                    <<IntTo4Char(RecordName)<<"\".\n"
                    << "Current file position: "<<in_File.tellg()<< " bytes.\n";
-         Success = false;
+         lastResult = -1;
          break;
   }//swi
-  return Success;
-}//ProcessNextRecord
-
-ESMReader::ESMReader()
-{
-  //empty
-}
-ESMReader::~ESMReader()
-{
-  //empty
-}
-
-int ESMReader::skipRecord(std::ifstream& in_File)
-{
-  int32_t Size, HeaderOne, Flags;
-  Size = 0;
-  in_File.read((char*) &Size, 4);
-  if (Size<0)
-  {
-    std::cout << "Error: record size is negative.\n";
-    return -1;
-  }
-  in_File.read((char*) &HeaderOne, 4);
-  in_File.read((char*) &Flags, 4);
-  /* data does not really matter here */
-  in_File.seekg(Size, std::ios::cur);
-  if (in_File.good())
-  {
-    return 0;
-  }
-  return -1;
-}
-
+  return lastResult;
+}//processNextRecord of ESMReader class

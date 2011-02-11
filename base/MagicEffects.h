@@ -138,8 +138,8 @@ const int EffectReflect = 68;
 const int EffectCureCommonDisease = 69;
 const int EffectCureBlightDisease = 70;
 const int EffectCureCorprusDisease = 71;
-const int EffectCurePoision = 72;
-const int EffectCureParalization = 73;
+const int EffectCurePoison = 72;
+const int EffectCureParalyzation = 73;
 const int EffectRestoreAttribute = 74;
 const int EffectRestoreHealth = 75;
 const int EffectRestoreSpellPoints = 76;
@@ -147,7 +147,7 @@ const int EffectRestoreFatigue = 77;
 const int EffectRestoreSkill = 78;
 const int EffectFortifyAttribute = 79;
 const int EffectFortifyHealth = 80;
-const int EffectFortifySpellPoints = 81;
+const int EffectFortifySpellpoints = 81;
 const int EffectFortifyFatigue = 82;
 const int EffectFortifySkill = 83;
 const int EffectFortifyMagickaMultiplier = 84;
@@ -177,27 +177,27 @@ const int EffectSummonSkeletalMinion = 107;
 const int EffectSummonLeastBonewalker = 108;
 const int EffectSummonGreaterBonewalker = 109;
 const int EffectSummonBonelord = 110;
-const int EffectSummonGreaterWingedTwilight = 111;
+const int EffectSummonWingedTwilight = 111;
 const int EffectSummonHunger = 112;
 const int EffectSummonGoldenSaint = 113;
 const int EffectSummonFlameAtronach = 114;
 const int EffectSummonFrostAtronach = 115;
 const int EffectSummonStormAtronach = 116;
-const int EffectSummonFortifyAttackBonus = 117;
-const int EffectSummonCommandCreatures = 118;
-const int EffectSummonCommandHumanoides = 119;
-const int EffectSummonBoundDagger = 120;
-const int EffectSummonBoundLongsword = 121;
-const int EffectSummonBoundMace = 122;
-const int EffectSummonBoundBattleAxe = 123;
-const int EffectSummonBoundSpear = 124;
-const int EffectSummonBoundLongBow = 125;
+const int EffectFortifyAttackBonus = 117;
+const int EffectCommandCreatures = 118;
+const int EffectCommandHumanoids = 119;
+const int EffectBoundDagger = 120;
+const int EffectBoundLongsword = 121;
+const int EffectBoundMace = 122;
+const int EffectBoundBattleAxe = 123;
+const int EffectBoundSpear = 124;
+const int EffectBoundLongbow = 125;
 const int EffectExtraSpell = 126;
-const int EffectSummonBoundCuirass = 127;
-const int EffectSummonBoundHelm = 128;
-const int EffectSummonBoundBoots = 129;
-const int EffectSummonBoundShield = 130;
-const int EffectSummonBoundGloves = 131;
+const int EffectBoundCuirass = 127;
+const int EffectBoundHelm = 128;
+const int EffectBoundBoots = 129;
+const int EffectBoundShield = 130;
+const int EffectBoundGloves = 131;
 const int EffectCorprus = 132;
 const int EffectVampirism = 133;
 const int EffectSummonCenturionSphere = 134;
@@ -236,6 +236,14 @@ class MagicEffects
            error. Use hasEffect() to determine if an effect exists.
     */
     const MGEF_Data& getEffect(const int Index) const;
+
+    /* returns the name of the game setting that contains the name of the
+       effect specified by the given index
+
+       parameters:
+           Index - the index of the effect
+    */
+    static std::string getSettingNameForEffect(const int Index);
 
     /* tries to read a magic effect record from the given input file and returns
        true on succes. If an error occured, false is returned.

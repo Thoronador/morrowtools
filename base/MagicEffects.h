@@ -245,6 +245,20 @@ class MagicEffects
     */
     static std::string getSettingNameForEffect(const int Index);
 
+    /* returns true, if the given skill index identifies a skill-related effec
+
+       parameters:
+           Index - the index of the effect
+    */
+    static bool isSkillRelatedEffect(const int Index);
+
+    /* returns true, if the given skill index identifies a attribute-related effec
+
+       parameters:
+           Index - the index of the effect
+    */
+    static bool isAttributeRelatedEffect(const int Index);
+
     /* tries to read a magic effect record from the given input file and returns
        true on succes. If an error occured, false is returned.
     */

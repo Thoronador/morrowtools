@@ -132,6 +132,21 @@ bool SpellRecord::equals(const SpellRecord& other) const
   return true;
 }
 
+bool SpellRecord::autoCalculateCosts() const
+{
+  return ((Flags & sfAutoCalcCosts)>0);
+}
+
+bool SpellRecord::isPCStartSpell() const
+{
+  return ((Flags & sfPCStartSpell)>0);
+}
+
+bool SpellRecord::alwaysSucceeds() const
+{
+  return ((Flags & sfAlwaysSucceeds)>0);
+}
+
 
 /* **** Spells functions **** */
 

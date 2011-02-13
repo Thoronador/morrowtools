@@ -34,6 +34,10 @@ const int32_t stDisease = 3;
 const int32_t stCurse = 4;
 const int32_t stPower = 5;
 
+const int32_t sfAutoCalcCosts = 1;
+const int32_t sfPCStartSpell = 2;
+const int32_t sfAlwaysSucceeds = 4;
+
 struct SpellRecord
 {
   std::string Name;
@@ -53,6 +57,15 @@ struct SpellRecord
 
   /* returns true, if the other spell record contains the same data */
   bool equals(const SpellRecord& other) const;
+
+  /* returns true, if the Auto Calculate Costs flag is set */
+  bool autoCalculateCosts() const;
+
+  /* returns true, if the spell is a start spell */
+  bool isPCStartSpell() const;
+
+  /* returns true, if the "always succeed" flag is set */
+  bool alwaysSucceeds() const;
 };//struct
 
 //iterator type for Spells class

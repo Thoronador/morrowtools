@@ -507,6 +507,20 @@ std::string MagicEffects::getSettingNameForEffect(const int Index)
   throw 42;
 }
 
+bool MagicEffects::isSkillRelatedEffect(const int Index)
+{
+  return ((Index==EffectDrainSkill) or (Index==EffectDamageSkill)
+     or (Index==EffectRestoreSkill) or (Index==EffectFortifySkill)
+     or (Index==EffectAbsorbSkill));
+}
+
+bool MagicEffects::isAttributeRelatedEffect(const int Index)
+{
+  return ((Index==EffectDrainAttribute) or (Index==EffectDamageAttribute)
+       or (Index==EffectRestoreAttribute) or (Index==EffectFortifyAttribute)
+       or (Index==EffectAbsorbAttribute));
+}
+
 bool MagicEffects::readMGEF(std::ifstream& in_File)
 {
   int32_t Size, HeaderOne, Flags;

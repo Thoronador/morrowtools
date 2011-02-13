@@ -53,12 +53,12 @@ MagicEffects& MagicEffects::getSingleton()
   return Instance;
 }
 
-void MagicEffects::addEffect(const int Index, const MGEF_Data& Data)
+void MagicEffects::addEffect(const int32_t Index, const MGEF_Data& Data)
 {
   m_Effects[Index] = Data;
 }
 
-bool MagicEffects::hasEffect(const int Index) const
+bool MagicEffects::hasEffect(const int32_t Index) const
 {
   return m_Effects.find(Index)!=m_Effects.end();
 }
@@ -68,7 +68,7 @@ unsigned int MagicEffects::getNumberOfEffects() const
   return m_Effects.size();
 }
 
-const MGEF_Data& MagicEffects::getEffect(const int Index) const
+const MGEF_Data& MagicEffects::getEffect(const int32_t Index) const
 {
   std::map<int, MGEF_Data>::const_iterator iter;
   iter = m_Effects.find(Index);
@@ -81,7 +81,7 @@ const MGEF_Data& MagicEffects::getEffect(const int Index) const
   throw 1;
 }
 
-std::string MagicEffects::getSettingNameForEffect(const int Index)
+std::string MagicEffects::getSettingNameForEffect(const int32_t Index)
 {
   if ((Index<0) or (Index>136))
   {
@@ -507,14 +507,14 @@ std::string MagicEffects::getSettingNameForEffect(const int Index)
   throw 42;
 }
 
-bool MagicEffects::isSkillRelatedEffect(const int Index)
+bool MagicEffects::isSkillRelatedEffect(const int32_t Index)
 {
   return ((Index==EffectDrainSkill) or (Index==EffectDamageSkill)
      or (Index==EffectRestoreSkill) or (Index==EffectFortifySkill)
      or (Index==EffectAbsorbSkill));
 }
 
-bool MagicEffects::isAttributeRelatedEffect(const int Index)
+bool MagicEffects::isAttributeRelatedEffect(const int32_t Index)
 {
   return ((Index==EffectDrainAttribute) or (Index==EffectDamageAttribute)
        or (Index==EffectRestoreAttribute) or (Index==EffectFortifyAttribute)

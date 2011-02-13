@@ -34,18 +34,18 @@ const int32_t cMysticism = 4;
 const int32_t cRestoration = 5;
 
 //flags
-const int FlagSpellmaking = 0x0200;
-const int FlagEnchanting = 0x0400;
-const int FlagNegative = 0x0800;
+const int32_t FlagSpellmaking = 0x0200;
+const int32_t FlagEnchanting = 0x0400;
+const int32_t FlagNegative = 0x0800;
 
 struct MGEF_Data
 {
   int32_t SpellSchool;
   float BaseCost;
-  int Flags;
-  int Red;
-  int Green;
-  int Blue;
+  int32_t Flags;
+  int32_t Red;
+  int32_t Green;
+  int32_t Blue;
   float SpeedX;
   float SizeX;
   float SizeCap;
@@ -66,147 +66,147 @@ struct MGEF_Data
 }; //struct
 
 //spell effect indices (hard-coded in MW)
-const int EffectWaterBreathing = 0;
-const int EffectSwiftSwim = 1;
-const int EffectWaterWalking = 2;
-const int EffectShield = 3;
-const int EffectFireShield = 4;
-const int EffectLightningShield = 5;
-const int EffectFrostShield = 6;
-const int EffectBurden = 7;
-const int EffectFeather = 8;
-const int EffectJump = 9;
-const int EffectLevitate = 10;
-const int EffectSlowFall = 11;
-const int EffectLock = 12;
-const int EffectOpen = 13;
-const int EffectFireDamage = 14;
-const int EffectShockDamage = 15;
-const int EffectFrostDamage = 16;
-const int EffectDrainAttribute = 17;
-const int EffectDrainHealth = 18;
-const int EffectDrainSpellpoints = 19;
-const int EffectDrainFatigue = 20;
-const int EffectDrainSkill = 21;
-const int EffectDamageAttribute = 22;
-const int EffectDamageHealth = 23;
-const int EffectDamageMagicka = 24;
-const int EffectDamageFatigue = 25;
-const int EffectDamageSkill = 26;
-const int EffectPoison = 27;
-const int EffectWeaknessToFire = 28;
-const int EffectWeaknessToFrost = 29;
-const int EffectWeaknessToShock = 30;
-const int EffectWeaknessToMagicka = 31;
-const int EffectWeaknessToCommonDisease = 32;
-const int EffectWeaknessToBlightDisease = 33;
-const int EffectWeaknessToCorprusDisease = 34;
-const int EffectWeaknessToPoison = 35;
-const int EffectWeaknessToNormalWeapons = 36;
-const int EffectDisintegrateWeapon = 37;
-const int EffectDisintegrateArmor = 38;
-const int EffectInvisibility = 39;
-const int EffectChameleon = 40;
-const int EffectLight = 41;
-const int EffectSanctuary = 42;
-const int EffectNightEye = 43;
-const int EffectCharm = 44;
-const int EffectParalyze = 45;
-const int EffectSilence = 46;
-const int EffectBlind = 47;
-const int EffectSound = 48;
-const int EffectCalmHumanoid = 49;
-const int EffectCalmCreature = 50;
-const int EffectFrenzyHumanoid = 51;
-const int EffectFrenzyCreature = 52;
-const int EffectDemoralizeHumanoid = 53;
-const int EffectDemoralizeCreature = 54;
-const int EffectRallyHumanoid = 55;
-const int EffectRallyCreature = 56;
-const int EffectDispel = 57;
-const int EffectSoultrap = 58;
-const int EffectTelekinesis = 59;
-const int EffectMark = 60;
-const int EffectRecall = 61;
-const int EffectDivineIntervention = 62;
-const int EffectAlmsiviIntervention = 63;
-const int EffectDetectAnimal = 64;
-const int EffectDetectEnchantment = 65;
-const int EffectDetectKey = 66;
-const int EffectSpellAbsorption = 67;
-const int EffectReflect = 68;
-const int EffectCureCommonDisease = 69;
-const int EffectCureBlightDisease = 70;
-const int EffectCureCorprusDisease = 71;
-const int EffectCurePoison = 72;
-const int EffectCureParalyzation = 73;
-const int EffectRestoreAttribute = 74;
-const int EffectRestoreHealth = 75;
-const int EffectRestoreSpellPoints = 76;
-const int EffectRestoreFatigue = 77;
-const int EffectRestoreSkill = 78;
-const int EffectFortifyAttribute = 79;
-const int EffectFortifyHealth = 80;
-const int EffectFortifySpellpoints = 81;
-const int EffectFortifyFatigue = 82;
-const int EffectFortifySkill = 83;
-const int EffectFortifyMagickaMultiplier = 84;
-const int EffectAbsorbAttribute = 85;
-const int EffectAbsorbHealth = 86;
-const int EffectAbsorbSpellPoints = 87;
-const int EffectAbsorbFatigue = 88;
-const int EffectAbsorbSkill = 89;
-const int EffectResistFire = 90;
-const int EffectResistFrost = 91;
-const int EffectResistShock = 92;
-const int EffectResistMagicka = 93;
-const int EffectResistCommonDisease = 94;
-const int EffectResistBlightDisease = 95;
-const int EffectResistCorprusDisease = 96;
-const int EffectResistPoison = 97;
-const int EffectResistNormalWeapons = 98;
-const int EffectResistParalysis = 99;
-const int EffectRemoveCurse = 100;
-const int EffectTurnUndead = 101;
-const int EffectSummonScamp = 102;
-const int EffectSummonClannfear = 103;
-const int EffectSummonDaedroth = 104;
-const int EffectSummonDremora = 105;
-const int EffectSummonAncestralGhost = 106;
-const int EffectSummonSkeletalMinion = 107;
-const int EffectSummonLeastBonewalker = 108;
-const int EffectSummonGreaterBonewalker = 109;
-const int EffectSummonBonelord = 110;
-const int EffectSummonWingedTwilight = 111;
-const int EffectSummonHunger = 112;
-const int EffectSummonGoldenSaint = 113;
-const int EffectSummonFlameAtronach = 114;
-const int EffectSummonFrostAtronach = 115;
-const int EffectSummonStormAtronach = 116;
-const int EffectFortifyAttackBonus = 117;
-const int EffectCommandCreatures = 118;
-const int EffectCommandHumanoids = 119;
-const int EffectBoundDagger = 120;
-const int EffectBoundLongsword = 121;
-const int EffectBoundMace = 122;
-const int EffectBoundBattleAxe = 123;
-const int EffectBoundSpear = 124;
-const int EffectBoundLongbow = 125;
-const int EffectExtraSpell = 126;
-const int EffectBoundCuirass = 127;
-const int EffectBoundHelm = 128;
-const int EffectBoundBoots = 129;
-const int EffectBoundShield = 130;
-const int EffectBoundGloves = 131;
-const int EffectCorprus = 132;
-const int EffectVampirism = 133;
-const int EffectSummonCenturionSphere = 134;
-const int EffectSunDamage = 135;
-const int EffectStuntedMagicka = 136;
+const int32_t EffectWaterBreathing = 0;
+const int32_t EffectSwiftSwim = 1;
+const int32_t EffectWaterWalking = 2;
+const int32_t EffectShield = 3;
+const int32_t EffectFireShield = 4;
+const int32_t EffectLightningShield = 5;
+const int32_t EffectFrostShield = 6;
+const int32_t EffectBurden = 7;
+const int32_t EffectFeather = 8;
+const int32_t EffectJump = 9;
+const int32_t EffectLevitate = 10;
+const int32_t EffectSlowFall = 11;
+const int32_t EffectLock = 12;
+const int32_t EffectOpen = 13;
+const int32_t EffectFireDamage = 14;
+const int32_t EffectShockDamage = 15;
+const int32_t EffectFrostDamage = 16;
+const int32_t EffectDrainAttribute = 17;
+const int32_t EffectDrainHealth = 18;
+const int32_t EffectDrainSpellpoints = 19;
+const int32_t EffectDrainFatigue = 20;
+const int32_t EffectDrainSkill = 21;
+const int32_t EffectDamageAttribute = 22;
+const int32_t EffectDamageHealth = 23;
+const int32_t EffectDamageMagicka = 24;
+const int32_t EffectDamageFatigue = 25;
+const int32_t EffectDamageSkill = 26;
+const int32_t EffectPoison = 27;
+const int32_t EffectWeaknessToFire = 28;
+const int32_t EffectWeaknessToFrost = 29;
+const int32_t EffectWeaknessToShock = 30;
+const int32_t EffectWeaknessToMagicka = 31;
+const int32_t EffectWeaknessToCommonDisease = 32;
+const int32_t EffectWeaknessToBlightDisease = 33;
+const int32_t EffectWeaknessToCorprusDisease = 34;
+const int32_t EffectWeaknessToPoison = 35;
+const int32_t EffectWeaknessToNormalWeapons = 36;
+const int32_t EffectDisintegrateWeapon = 37;
+const int32_t EffectDisintegrateArmor = 38;
+const int32_t EffectInvisibility = 39;
+const int32_t EffectChameleon = 40;
+const int32_t EffectLight = 41;
+const int32_t EffectSanctuary = 42;
+const int32_t EffectNightEye = 43;
+const int32_t EffectCharm = 44;
+const int32_t EffectParalyze = 45;
+const int32_t EffectSilence = 46;
+const int32_t EffectBlind = 47;
+const int32_t EffectSound = 48;
+const int32_t EffectCalmHumanoid = 49;
+const int32_t EffectCalmCreature = 50;
+const int32_t EffectFrenzyHumanoid = 51;
+const int32_t EffectFrenzyCreature = 52;
+const int32_t EffectDemoralizeHumanoid = 53;
+const int32_t EffectDemoralizeCreature = 54;
+const int32_t EffectRallyHumanoid = 55;
+const int32_t EffectRallyCreature = 56;
+const int32_t EffectDispel = 57;
+const int32_t EffectSoultrap = 58;
+const int32_t EffectTelekinesis = 59;
+const int32_t EffectMark = 60;
+const int32_t EffectRecall = 61;
+const int32_t EffectDivineIntervention = 62;
+const int32_t EffectAlmsiviIntervention = 63;
+const int32_t EffectDetectAnimal = 64;
+const int32_t EffectDetectEnchantment = 65;
+const int32_t EffectDetectKey = 66;
+const int32_t EffectSpellAbsorption = 67;
+const int32_t EffectReflect = 68;
+const int32_t EffectCureCommonDisease = 69;
+const int32_t EffectCureBlightDisease = 70;
+const int32_t EffectCureCorprusDisease = 71;
+const int32_t EffectCurePoison = 72;
+const int32_t EffectCureParalyzation = 73;
+const int32_t EffectRestoreAttribute = 74;
+const int32_t EffectRestoreHealth = 75;
+const int32_t EffectRestoreSpellPoints = 76;
+const int32_t EffectRestoreFatigue = 77;
+const int32_t EffectRestoreSkill = 78;
+const int32_t EffectFortifyAttribute = 79;
+const int32_t EffectFortifyHealth = 80;
+const int32_t EffectFortifySpellpoints = 81;
+const int32_t EffectFortifyFatigue = 82;
+const int32_t EffectFortifySkill = 83;
+const int32_t EffectFortifyMagickaMultiplier = 84;
+const int32_t EffectAbsorbAttribute = 85;
+const int32_t EffectAbsorbHealth = 86;
+const int32_t EffectAbsorbSpellPoints = 87;
+const int32_t EffectAbsorbFatigue = 88;
+const int32_t EffectAbsorbSkill = 89;
+const int32_t EffectResistFire = 90;
+const int32_t EffectResistFrost = 91;
+const int32_t EffectResistShock = 92;
+const int32_t EffectResistMagicka = 93;
+const int32_t EffectResistCommonDisease = 94;
+const int32_t EffectResistBlightDisease = 95;
+const int32_t EffectResistCorprusDisease = 96;
+const int32_t EffectResistPoison = 97;
+const int32_t EffectResistNormalWeapons = 98;
+const int32_t EffectResistParalysis = 99;
+const int32_t EffectRemoveCurse = 100;
+const int32_t EffectTurnUndead = 101;
+const int32_t EffectSummonScamp = 102;
+const int32_t EffectSummonClannfear = 103;
+const int32_t EffectSummonDaedroth = 104;
+const int32_t EffectSummonDremora = 105;
+const int32_t EffectSummonAncestralGhost = 106;
+const int32_t EffectSummonSkeletalMinion = 107;
+const int32_t EffectSummonLeastBonewalker = 108;
+const int32_t EffectSummonGreaterBonewalker = 109;
+const int32_t EffectSummonBonelord = 110;
+const int32_t EffectSummonWingedTwilight = 111;
+const int32_t EffectSummonHunger = 112;
+const int32_t EffectSummonGoldenSaint = 113;
+const int32_t EffectSummonFlameAtronach = 114;
+const int32_t EffectSummonFrostAtronach = 115;
+const int32_t EffectSummonStormAtronach = 116;
+const int32_t EffectFortifyAttackBonus = 117;
+const int32_t EffectCommandCreatures = 118;
+const int32_t EffectCommandHumanoids = 119;
+const int32_t EffectBoundDagger = 120;
+const int32_t EffectBoundLongsword = 121;
+const int32_t EffectBoundMace = 122;
+const int32_t EffectBoundBattleAxe = 123;
+const int32_t EffectBoundSpear = 124;
+const int32_t EffectBoundLongbow = 125;
+const int32_t EffectExtraSpell = 126;
+const int32_t EffectBoundCuirass = 127;
+const int32_t EffectBoundHelm = 128;
+const int32_t EffectBoundBoots = 129;
+const int32_t EffectBoundShield = 130;
+const int32_t EffectBoundGloves = 131;
+const int32_t EffectCorprus = 132;
+const int32_t EffectVampirism = 133;
+const int32_t EffectSummonCenturionSphere = 134;
+const int32_t EffectSunDamage = 135;
+const int32_t EffectStuntedMagicka = 136;
 
 
 //iterator type for list
-typedef std::map<int, MGEF_Data>::const_iterator EffectListIterator;
+typedef std::map<int32_t, MGEF_Data>::const_iterator EffectListIterator;
 
 class MagicEffects
 {
@@ -218,10 +218,10 @@ class MagicEffects
     static MagicEffects& getSingleton();
 
     /* adds an effect to the list */
-    void addEffect(const int Index, const MGEF_Data& Data);
+    void addEffect(const int32_t Index, const MGEF_Data& Data);
 
     /* returns true, if an effect with the given index exists */
-    bool hasEffect(const int Index) const;
+    bool hasEffect(const int32_t Index) const;
 
     /* returns the number of different effects */
     unsigned int getNumberOfEffects() const;
@@ -235,7 +235,7 @@ class MagicEffects
            If there is no effect with the given index, the function throws an
            error. Use hasEffect() to determine if an effect exists.
     */
-    const MGEF_Data& getEffect(const int Index) const;
+    const MGEF_Data& getEffect(const int32_t Index) const;
 
     /* returns the name of the game setting that contains the name of the
        effect specified by the given index
@@ -243,21 +243,21 @@ class MagicEffects
        parameters:
            Index - the index of the effect
     */
-    static std::string getSettingNameForEffect(const int Index);
+    static std::string getSettingNameForEffect(const int32_t Index);
 
-    /* returns true, if the given skill index identifies a skill-related effec
-
-       parameters:
-           Index - the index of the effect
-    */
-    static bool isSkillRelatedEffect(const int Index);
-
-    /* returns true, if the given skill index identifies a attribute-related effec
+    /* returns true, if the given skill index identifies a skill-related effect
 
        parameters:
            Index - the index of the effect
     */
-    static bool isAttributeRelatedEffect(const int Index);
+    static bool isSkillRelatedEffect(const int32_t Index);
+
+    /* returns true, if the given skill index identifies an attribute-related effect
+
+       parameters:
+           Index - the index of the effect
+    */
+    static bool isAttributeRelatedEffect(const int32_t Index);
 
     /* tries to read a magic effect record from the given input file and returns
        true on succes. If an error occured, false is returned.
@@ -290,7 +290,7 @@ class MagicEffects
     MagicEffects(const MGEF_Data& op) {}
 
     /* internal list of effects */
-    std::map<int, MGEF_Data> m_Effects;
+    std::map<int32_t, MGEF_Data> m_Effects;
 }; //class
 
 #endif // MAGICEFFECTS_H

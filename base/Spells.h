@@ -93,7 +93,7 @@ class Spells
     /* returns the number of spells in the list */
     unsigned int getNumberOfSpells() const;
 
-    /* returns a reference to the spell record of the spell with the gien ID
+    /* returns a reference to the spell record of the spell with the given ID
 
        parameters:
            ID - the ID of the spell

@@ -98,7 +98,6 @@ void Activators::clearAll()
 
 int Activators::readRecordACTI(std::ifstream& in_File, const int32_t FileSize)
 {
-  #warning Replace with proper code!
   int32_t Size, HeaderOne, Flags;
   in_File.read((char*) &Size, 4);
   in_File.read((char*) &HeaderOne, 4);

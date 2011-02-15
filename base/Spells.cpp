@@ -349,8 +349,8 @@ int Spells::readRecordSPEL(std::ifstream& in_File)
         long Flags (0x0001 = AutoCalc,0x0002 = PC Start,0x0004 = Always Succeeds)
     ENAM = Enchantment data (24 bytes, 0 to 8) */
 
-  int32_t SubRecName, SubLength;
-  SubRecName = SubLength = 0;
+  int32_t SubRecName, SubLength, BytesRead;
+  SubRecName = SubLength = BytesRead = 0;
 
   //read NAME
   in_File.read((char*) &SubRecName, 4);
@@ -359,8 +359,10 @@ int Spells::readRecordSPEL(std::ifstream& in_File)
     UnexpectedRecord(cNAME, SubRecName);
     return -1;
   }
+  BytesRead += 4;
   //NAME's length
   in_File.read((char*) &SubLength, 4);
+  BytesRead += 4;
   if (SubLength>255)
   {
     std::cout << "readRecordSPEL: Error: ID is longer than 255 characters.\n";
@@ -369,6 +371,7 @@ int Spells::readRecordSPEL(std::ifstream& in_File)
   }
   char Buffer[256];
   Buffer[0] = Buffer[255] = '\0';
+  memset(Buffer, '\0', 256);
   //read ID
   in_File.read(Buffer, SubLength);
   if (!in_File.good())
@@ -378,6 +381,7 @@ int Spells::readRecordSPEL(std::ifstream& in_File)
     return -1;
   }
   const std::string SpellID = std::string(Buffer);
+  BytesRead += SubLength;
 
   //read FNAM
   in_File.read((char*) &SubRecName, 4);
@@ -386,6 +390,7 @@ int Spells::readRecordSPEL(std::ifstream& in_File)
     UnexpectedRecord(cFNAM, SubRecName);
     return -1;
   }
+  BytesRead += 4;
   //FNAM's length
   in_File.read((char*) &SubLength, 4);
   if (SubLength>255)
@@ -394,6 +399,7 @@ int Spells::readRecordSPEL(std::ifstream& in_File)
     std::cout << "File pos.: "<<in_File.tellg()<<"\n";
     return -1;
   }
+  BytesRead += 4;
   //read spell name
   Buffer[0] = Buffer[255] = '\0';
   in_File.read(Buffer, SubLength);
@@ -403,6 +409,7 @@ int Spells::readRecordSPEL(std::ifstream& in_File)
     std::cout << "File pos.: "<<in_File.tellg()<<"\n";
     return -1;
   }
+  BytesRead += SubLength;
   SpellRecord temp;
   temp.Name = std::string(Buffer);
 
@@ -413,6 +420,7 @@ int Spells::readRecordSPEL(std::ifstream& in_File)
     UnexpectedRecord(cSPDT, SubRecName);
     return -1;
   }
+  BytesRead += 4;
   //SPDT's length
   in_File.read((char*) &SubLength, 4);
   if (SubLength!=12)
@@ -421,6 +429,7 @@ int Spells::readRecordSPEL(std::ifstream& in_File)
               <<SubLength<< " bytes). Should be 12 bytes.\n";
     return -1;
   }
+  BytesRead += 4;
   // ---- read spell data
   //type
   in_File.read((char*) &(temp.Type), 4);
@@ -433,16 +442,19 @@ int Spells::readRecordSPEL(std::ifstream& in_File)
     std::cout << "Error while reading sub record SPDT of SPEL.\n";
     return -1;
   }
+  BytesRead += 12;
 
   temp.Enchs.clear();
   //read multiple ENAM records
-  do
+  while (BytesRead<Size)
   {
     in_File.read((char*) &SubRecName, 4);
+    BytesRead += 4;
     if (SubRecName==cENAM)
     {
       //ENAM's length
       in_File.read((char*) &SubLength, 4);
+      BytesRead += 4;
       if (SubLength!=24)
       {
         std::cout << "Error: sub record ENAM of SPEL has invalid length ("
@@ -459,6 +471,7 @@ int Spells::readRecordSPEL(std::ifstream& in_File)
       in_File.read((char*) &(ench.Duration), 4);
       in_File.read((char*) &(ench.MagnitudeMin), 4);
       in_File.read((char*) &(ench.MagnitudeMax), 4);
+      BytesRead += 24;
       if (in_File.good())
       {
         temp.Enchs.push_back(ench);
@@ -469,10 +482,14 @@ int Spells::readRecordSPEL(std::ifstream& in_File)
                   << "Current file position is "<<in_File.tellg()<<".\n";
         return -1;
       }
-    }
-  } while (SubRecName == cENAM);
-  //seek four bytes towards beginning to land before the name of the next record
-  in_File.seekg(-4, std::ios::cur);
+    }//if
+    else
+    {
+      //seek four bytes towards beginning to land before the name of the next record
+      in_File.seekg(-4, std::ios::cur);
+      BytesRead = Size;
+    }//else
+  } //while
   if (!in_File.good())
   {
     std::cout << "Error while reading spell data.\n";

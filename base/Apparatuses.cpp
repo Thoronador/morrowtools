@@ -43,6 +43,94 @@ bool ApparatusRecord::equals(const ApparatusRecord& other) const
       and (InventoryIcon==other.InventoryIcon) and (ScriptName==other.ScriptName));
 }
 
+bool ApparatusRecord::saveToStream(std::ofstream& output, const std::string& ApparatusID) const
+{
+  output.write((char*) &cAPPA, 4);
+  int32_t Size, HeaderOne, H_Flags;
+  HeaderOne = H_Flags = 0;
+  Size = 4 /* NAME */ +4 /* 4 bytes for length */
+        +ApparatusID.length()+1 /* length of ID +1 byte for NUL termination */
+        +4 /* MODL */ +4 /* 4 bytes for MODL's length */
+        +Model.length()+1 /*length of mesh plus one for NUL-termination */
+        +4 /* FNAM */ +4 /* 4 bytes for length */
+        +ItemName.length() +1 /* length of name +1 byte for NUL termination */
+        +4 /* AADT */ +4 /* 4 bytes for length */ +16 /* length of AADT */
+        +4 /* ITEX */ +4 /* 4 bytes for length */
+        +InventoryIcon.length() +1 /* length of icon path +1 byte for NUL termination */;
+  if (ScriptName!="")
+  {
+    Size = Size + 4 /* SCRI */ +4 /* 4 bytes for length */
+          +ScriptName.length()+1 /*length of script ID + one byte for NUL-termination */;
+  }
+  output.write((char*) &Size, 4);
+  #warning HeaderOne and H_Flags might not be initialized properly!
+  output.write((char*) &HeaderOne, 4);
+  output.write((char*) &H_Flags, 4);
+
+  /*Alchemy Apparatus:
+    NAME = Item ID, required
+    MODL = Model Name, required
+    FNAM = Item Name, required
+    AADT = Alchemy Data (16 bytes), required
+        long    Type (0=Mortar and Pestle,1=Albemic,2=Calcinator,3=Retort)
+        float	Quality
+        float	Weight
+        long	Value
+    ITEX = Inventory Icon
+    SCRI = Script Name (optional) */
+
+  //write NAME
+  output.write((char*) &cNAME, 4);
+  int32_t SubLength = ApparatusID.length()+1;
+  //write NAME's length
+  output.write((char*) &SubLength, 4);
+  //write NAME/ID
+  output.write(ApparatusID.c_str(), SubLength);
+  //write MODL
+  output.write((char*) &cMODL, 4);
+  SubLength = Model.length()+1;
+  //write MODL's length
+  output.write((char*) &SubLength, 4);
+  //write MODL/ mesh path
+  output.write(Model.c_str(), SubLength);
+  //write FNAM
+  output.write((char*) &cFNAM, 4);
+  SubLength = ItemName.length()+1;
+  //write FNAM's length
+  output.write((char*) &SubLength, 4);
+  //write FNAM/ item name
+  output.write(ItemName.c_str(), SubLength);
+  //write AADT
+  output.write((char*) &cAADT, 4);
+  SubLength = 16;
+  //write AADT's length
+  output.write((char*) &SubLength, 4);
+  //write AADT/ alchemy apparatus data
+  output.write((char*) &Type, 4);
+  output.write((char*) &Quality, 4);
+  output.write((char*) &Weight, 4);
+  output.write((char*) &Value, 4);
+
+  //write ITEX
+  output.write((char*) &cITEX, 4);
+  SubLength = InventoryIcon.length()+1;
+  //write ITEX's length
+  output.write((char*) &SubLength, 4);
+  //write ITEX/ inventory icon
+  output.write(InventoryIcon.c_str(), SubLength);
+  if (ScriptName!="")
+  {
+    //write SCRI
+    output.write((char*) &cSCRI, 4);
+    SubLength = ScriptName.length()+1;
+    //write SCRI's length
+    output.write((char*) &SubLength, 4);
+    //write Script ID
+    output.write(ScriptName.c_str(), SubLength);
+  }//if script ID present
+  return output.good();
+}
+
 Apparatuses::Apparatuses()
 {
   //empty
@@ -96,6 +184,28 @@ ApparatusListIterator Apparatuses::getBegin() const
 ApparatusListIterator Apparatuses::getEnd() const
 {
   return m_Apparatuses.end();
+}
+
+bool Apparatuses::saveAllToStream(std::ofstream& output) const
+{
+  if (!output.good())
+  {
+    std::cout << "Apparatuses::saveAllToStream: Error: bad stream.\n";
+    return false;
+  }
+  ApparatusListIterator iter = m_Apparatuses.begin();
+  const ApparatusListIterator end_iter = m_Apparatuses.end();
+  while (iter!=end_iter)
+  {
+    if (!iter->second.saveToStream(output, iter->first))
+    {
+      std::cout << "Apparatusess::saveAllToStream: Error while writing record for \""
+                << iter->first <<"\".\n";
+      return false;
+    }
+    ++iter;
+  }//while
+  return output.good();
 }
 
 void Apparatuses::clearAll()

@@ -35,6 +35,14 @@ struct ActivatorRecord
 
   /* returns true, if the other record contains the same data */
   bool equals(const ActivatorRecord& other) const;
+
+  /* writes the record to the given output stream and returns true on success
+
+    parameters:
+        output      - the output file stream
+        ActivatorID - the ID of the activator
+  */
+  bool saveToStream(std::ofstream& output, const std::string& ActivatorID) const;
 };//struct
 
 //iterator type for activator list
@@ -94,6 +102,15 @@ class Activators
 
     /* returns constant iterator to the end of the internal list */
     ActivatorListIterator getEnd() const;
+
+    /* tries to save all available activators to the given stream and returns
+       true on success, false on failure
+
+       parameters:
+           output - the output file stream that shall be used to save the
+                    activators
+    */
+    bool saveAllToStream(std::ofstream& output) const;
 
     /* removes all activators from the list */
     void clearAll();

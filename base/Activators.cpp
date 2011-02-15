@@ -36,6 +36,67 @@ bool ActivatorRecord::equals(const ActivatorRecord& other) const
          and (ScriptName==other.ScriptName));
 }
 
+bool ActivatorRecord::saveToStream(std::ofstream& output, const std::string& ActivatorID) const
+{
+  output.write((char*) &cACTI, 4);
+  int32_t Size, HeaderOne, H_Flags;
+  HeaderOne = H_Flags = 0;
+  Size = 4 /* NAME */ +4 /* 4 bytes for length */
+        +ActivatorID.length()+1 /* length of ID +1 byte for NUL termination */
+        +4 /* MODL */ +4 /* 4 bytes for MODL's length */
+        +ModelPath.length()+1 /*length of mesh plus one for NUL-termination */
+        +4 /* FNAM */ +4 /* 4 bytes for length */
+        +ItemName.length() +1 /* length of name +1 byte for NUL termination */;
+  if (ScriptName!="")
+  {
+    Size = Size + 4 /* SCRI */ +4 /* 4 bytes for length */
+          +ScriptName.length()+1 /*length of script ID + one byte for NUL-termination */;
+  }
+  output.write((char*) &Size, 4);
+  #warning HeaderOne and H_Flags might not be initialized properly!
+  output.write((char*) &HeaderOne, 4);
+  output.write((char*) &H_Flags, 4);
+
+  /*Activators:
+    NAME = Item ID, required
+    MODL = Model Name, required
+    FNAM = Item Name, required
+    SCRI = Script Name (optional) */
+
+  //write NAME
+  output.write((char*) &cNAME, 4);
+  int32_t SubLength = ActivatorID.length()+1;
+  //write NAME's length
+  output.write((char*) &SubLength, 4);
+  //write NAME/ID
+  output.write(ActivatorID.c_str(), SubLength);
+  //write MODL
+  output.write((char*) &cMODL, 4);
+  SubLength = ModelPath.length()+1;
+  //write MODL's length
+  output.write((char*) &SubLength, 4);
+  //write MODL/ mesh path
+  output.write(ModelPath.c_str(), SubLength);
+  //write FNAM
+  output.write((char*) &cFNAM, 4);
+  SubLength = ItemName.length()+1;
+  //write FNAM's length
+  output.write((char*) &SubLength, 4);
+  //write FNAM/ item name
+  output.write(ItemName.c_str(), SubLength);
+  if (ScriptName!="")
+  {
+    //write SCRI
+    output.write((char*) &cSCRI, 4);
+    SubLength = ScriptName.length()+1;
+    //write SCRI's length
+    output.write((char*) &SubLength, 4);
+    //write Script ID
+    output.write(ScriptName.c_str(), SubLength);
+  }//if script ID present
+  return output.good();
+}
+
 Activators::Activators()
 {
   //empty
@@ -89,6 +150,28 @@ ActivatorListIterator Activators::getBegin() const
 ActivatorListIterator Activators::getEnd() const
 {
   return m_Activators.end();
+}
+
+bool Activators::saveAllToStream(std::ofstream& output) const
+{
+  if (!output.good())
+  {
+    std::cout << "Activators::saveAllToStream: Error: bad stream.\n";
+    return false;
+  }
+  ActivatorListIterator iter = m_Activators.begin();
+  const ActivatorListIterator end_iter = m_Activators.end();
+  while (iter!=end_iter)
+  {
+    if (!iter->second.saveToStream(output, iter->first))
+    {
+      std::cout << "Activators::saveAllToStream: Error while writing record for \""
+                << iter->first <<"\".\n";
+      return false;
+    }
+    ++iter;
+  }//while
+  return output.good();
 }
 
 void Activators::clearAll()

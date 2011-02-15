@@ -236,6 +236,7 @@ int ESMReader::readESM(const std::string& FileName, const bool verbose)
   uint32_t Processed_Records = 0;
   int relevantRecords = 0;
   int lastResult = 0;
+  int32_t lastGoodPosition = input.tellg();
   //now read all the records
   while ((input.tellg()<FileSize) and (lastResult!=-1))
   {
@@ -244,6 +245,7 @@ int ESMReader::readESM(const std::string& FileName, const bool verbose)
     if (lastResult!=-1)
     {
       relevantRecords += lastResult;
+      lastGoodPosition = input.tellg();
     }
   }//while
 
@@ -258,6 +260,8 @@ int ESMReader::readESM(const std::string& FileName, const bool verbose)
   input.close();
   if (!good_result)
   {
+    std::cout << "Error: readESM of file \""<<FileName<<"\" failed. Last known "
+              << "good position was "<<lastGoodPosition<<".\n";
     return -1;
   }
   //save data and return

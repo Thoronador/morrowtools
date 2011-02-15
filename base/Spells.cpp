@@ -465,7 +465,8 @@ int Spells::readRecordSPEL(std::ifstream& in_File)
       }
       else
       {
-        std::cout << "Error while reading sub record ENAM of SPEL.\n";
+        std::cout << "Error while reading sub record ENAM of SPEL.\n"
+                  << "Current file position is "<<in_File.tellg()<<".\n";
         return -1;
       }
     }

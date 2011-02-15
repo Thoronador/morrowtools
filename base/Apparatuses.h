@@ -40,6 +40,14 @@ struct ApparatusRecord
 
   /* returns true, if the other record contains the same data */
   bool equals(const ApparatusRecord& other) const;
+
+  /* writes the record to the given output stream and returns true on success
+
+    parameters:
+        output      - the output file stream
+        ApparatusID - the ID of the apparatus
+  */
+  bool saveToStream(std::ofstream& output, const std::string& ApparatusID) const;
 };//struct
 
 //iterator type for apparatus list
@@ -99,6 +107,15 @@ class Apparatuses
 
     /* returns constant iterator to the end of the internal list */
     ApparatusListIterator getEnd() const;
+
+    /* tries to save all available apparatuses to the given stream and returns
+       true on success, false on failure
+
+       parameters:
+           output - the output file stream that shall be used to save the
+                    apparatuses
+    */
+    bool saveAllToStream(std::ofstream& output) const;
 
     /* removes all apparatuses from the list */
     void clearAll();

@@ -70,6 +70,13 @@ struct SkillRecord
 
   /* returns true, if this record contains the same data as the other record */
   bool equals(const SkillRecord& other) const;
+
+  /* writes the record to the given output stream and returns true on success
+
+    parameters:
+        output - the output file stream
+  */
+  bool saveToStream(std::ofstream& output, const int32_t SkillIndex) const;
 };
 
 //iterator type
@@ -140,6 +147,14 @@ class Skills
 
     /* returns a constant iterator to the end of the list */
     SkillListIterator getEnd() const;
+
+    /* tries to save all available skills to the given stream and returns true
+       on success, false on failure
+
+       parameters:
+           output - the output file stream that shall be used to save the skills
+    */
+    bool saveAllToStream(std::ofstream& output) const;
 
     /* removes all skills from the list */
     void clearAll();

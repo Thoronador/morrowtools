@@ -31,6 +31,58 @@ bool SkillRecord::equals(const SkillRecord& other) const
          and (UseValue[3]==other.UseValue[3]));
 }
 
+bool SkillRecord::saveToStream(std::ofstream& output, const int32_t SkillIndex) const
+{
+  output.write((char*) &cSKIL, 4);
+  int32_t Size, HeaderOne, H_Flags;
+  HeaderOne = H_Flags = 0;
+  Size = 4 /* INDX */ +4 /* 4 bytes for length */ +4 /* 4 bytes for index */
+        +4 /* SKDT */ +4 /* 4 bytes for length */ +24 /* 24 bytes for Skill data */
+        +4 /* DESC */ +4 /* 4 bytes for length */
+        +Description.length()+1 /* length of description +1 for NUL-termination */;
+  output.write((char*) &Size, 4);
+  #warning HeaderOne and H_Flags might not be initialized properly!
+  output.write((char*) &HeaderOne, 4);
+  output.write((char*) &H_Flags, 4);
+
+  /*Skills:
+    INDX = Skill ID (4 bytes, long)
+        The Skill ID (0 to 26) since skills are hardcoded in the game
+    SKDT = Skill Data (24 bytes)
+        long Attribute
+        long Specialization (0 = Combat,1 = Magic,2 = Stealth)
+        float UseValue[4] (The use types for each skill are hard-coded.)
+    DESC = Skill description string */
+
+  //write INDX
+  output.write((char*) &cINDX, 4);
+  //write length
+  int32_t SubLength = 4;
+  output.write((char*) &SubLength, 4);
+  //write index
+  output.write((char*) &SkillIndex, 4);
+  //write SKDT
+  output.write((char*) &cSKDT, 4);
+  //write length
+  SubLength = 24;
+  output.write((char*) &SubLength, 4);
+  //write skill data
+  output.write((char*) &Attribute, 4);
+  output.write((char*) &Specialization, 4);
+  output.write((char*) &(UseValue[0]), 4);
+  output.write((char*) &(UseValue[1]), 4);
+  output.write((char*) &(UseValue[2]), 4);
+  output.write((char*) &(UseValue[3]), 4);
+  //write DESC
+  output.write((char*) &cDESC, 4);
+  //write length
+  SubLength = Description.length()+1;
+  output.write((char*) &SubLength, 4);
+  //write description text
+  output.write(Description.c_str(), SubLength);
+  return output.good();
+}
+
 Skills::Skills()
 {
   //empty
@@ -283,6 +335,28 @@ SkillListIterator Skills::getBegin() const
 SkillListIterator Skills::getEnd() const
 {
   return m_Skills.end();
+}
+
+bool Skills::saveAllToStream(std::ofstream& output) const
+{
+  if (!output.good())
+  {
+    std::cout << "Skills::saveAllToStream: Error: bad stream.\n";
+    return false;
+  }
+  SkillListIterator iter = m_Skills.begin();
+  const SkillListIterator end_iter = m_Skills.end();
+  while (iter!=end_iter)
+  {
+    if (!iter->second.saveToStream(output, iter->first))
+    {
+      std::cout << "Skills::saveAllToStream: Error while writing record for "
+                << "skill index "<<iter->first<<".\n";
+      return false;
+    }
+    ++iter;
+  }//while
+  return output.good();
 }
 
 void Skills::clearAll()

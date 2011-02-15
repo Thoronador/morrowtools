@@ -31,6 +31,13 @@ struct StaticRecord
 
   /* returns true, if the other record contains the same data */
   bool equals(const StaticRecord& other) const;
+
+  /* writes the record to the given output stream and returns true on success
+
+    parameters:
+        output - the output file stream
+  */
+  bool saveToStream(std::ofstream& output, const std::string& StaticID) const;
 };//struct
 
 //iterator type for static list
@@ -88,6 +95,14 @@ class Statics
 
     /* returns constant iterator to the end of the internal list */
     StaticListIterator getEnd() const;
+
+    /* tries to save all available statics to the given stream and returns true
+       on success, false on failure
+
+       parameters:
+           output - the output file stream that shall be used to save the statics
+    */
+    bool saveAllToStream(std::ofstream& output) const;
 
     /* removes all statics from the list */
     void clearAll();

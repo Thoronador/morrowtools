@@ -28,6 +28,41 @@ bool StaticRecord::equals(const StaticRecord& other) const
   return (Mesh==other.Mesh);
 }
 
+bool StaticRecord::saveToStream(std::ofstream& output, const std::string& StaticID) const
+{
+  output.write((char*) &cSTAT, 4);
+  int32_t Size, HeaderOne, H_Flags;
+  HeaderOne = H_Flags = 0;
+  Size = 4 /* NAME */ +4 /* 4 bytes for length */
+        +StaticID.length()+1 /* length of ID +1 byte for NUL termination */
+        +4 /* MODL */ +4 /* 4 bytes for MODL's length */
+        +Mesh.length()+1 /*length of mesh plus one for NUL-termination */;
+  output.write((char*) &Size, 4);
+  #warning HeaderOne and H_Flags might not be initialized properly!
+  output.write((char*) &HeaderOne, 4);
+  output.write((char*) &H_Flags, 4);
+
+  /*Static:
+    NAME = ID string
+    MODL = NIF model*/
+
+  //write NAME
+  output.write((char*) &cNAME, 4);
+  int32_t SubLength = StaticID.length()+1;
+  //write NAME's length
+  output.write((char*) &SubLength, 4);
+  //write NAME/ID
+  output.write(StaticID.c_str() ,SubLength);
+  //write MODL
+  output.write((char*) &cMODL, 4);
+  SubLength = Mesh.length()+1;
+  //write MODL's length
+  output.write((char*) &SubLength, 4);
+  //write MODL/ mesh path
+  output.write(Mesh.c_str() ,SubLength);
+  return output.good();
+}
+
 Statics::Statics()
 {
   //empty
@@ -81,6 +116,28 @@ StaticListIterator Statics::getBegin() const
 StaticListIterator Statics::getEnd() const
 {
   return m_Statics.end();
+}
+
+bool Statics::saveAllToStream(std::ofstream& output) const
+{
+  if (!output.good())
+  {
+    std::cout << "Statics::saveAllToStream: Error: bad stream.\n";
+    return false;
+  }
+  StaticListIterator iter = m_Statics.begin();
+  const StaticListIterator end_iter = m_Statics.end();
+  while (iter!=end_iter)
+  {
+    if (!iter->second.saveToStream(output, iter->first))
+    {
+      std::cout << "Statics::saveAllToStream: Error while writing record for \""
+                << iter->first <<"\".\n";
+      return false;
+    }
+    ++iter;
+  }//while
+  return output.good();
 }
 
 void Statics::clearAll()

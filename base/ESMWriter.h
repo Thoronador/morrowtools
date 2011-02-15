@@ -32,7 +32,45 @@
 
   --------------------------------------------------------------------------*/
 
-//writes data to an .esm/.esp file
-bool WriteESMofSpells(const std::string& FileName, const bool IsMasterFile, const DepFileList& deps);
+
+/* ESMWriter class
+
+   This is the basic class to write ESM (and ESP, too) files to a certain file.
+   It just implements the write process of the header - the rest has to be done
+   by deriving from this class and implementing the function getTotalRecords()
+   and writeRecords(), which do the actual work.
+*/
+class ESMWriter
+{
+  public:
+    /* constructor */
+    ESMWriter();
+
+    /* destructor */
+    virtual ~ESMWriter();
+
+    /* tries to write an .esm/.esp file and returns true on success, false on
+       failure.
+
+       parameters:
+           FileName     - name of the .esm/.esp file
+           IsMasterFile - if true, the file will be treated as master file
+           deps         - the list of dependency files
+           Description  - the description of the file that will be placed in the
+                          file header
+    */
+    bool writeESM(const std::string& FileName, const bool IsMasterFile, const DepFileList& deps, const std::string& Description);
+
+  protected:
+    /* returns the number of records that will be written to the stream */
+    virtual int32_t getTotalRecords() const = 0;
+
+    /* tries to write all data records and returns true on success
+
+       parameters:
+           output - the output file stream that's used to write the records
+    */
+    virtual bool writeRecords(std::ofstream& output) const = 0;
+};//class
 
 #endif // ESMWRITER_H

@@ -44,6 +44,8 @@
 		<Unit filename="..\base\Spells.h" />
 		<Unit filename="ESMReaderSpells.cpp" />
 		<Unit filename="ESMReaderSpells.h" />
+		<Unit filename="ESMWriterSpells.cpp" />
+		<Unit filename="ESMWriterSpells.h" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />

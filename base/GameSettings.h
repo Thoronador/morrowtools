@@ -36,7 +36,17 @@ struct GMSTRecord
 
   /* returns true, if the other record contains the same relevant data */
   bool equals(const GMSTRecord& other) const;
+
+  /* writes the record to the given output stream and returns true on success
+
+    parameters:
+        out_File - the output file stream
+  */
+  bool saveToStream(std::ofstream& out_File, const std::string& GMSTID) const;
 };
+
+//iterator type for GMST list
+typedef std::map<std::string, GMSTRecord>::const_iterator GMSTListIterator;
 
 class GameSettings
 {
@@ -100,6 +110,20 @@ class GameSettings
            FileSize - the total size of the file associated with the stream
     */
     int readRecordGMST(std::ifstream& in_File, const int32_t FileSize);
+
+    /* tries to save all available GMSTs to the given stream and returns true
+       on success, false on failure
+
+       parameters:
+           output - the output file stream that shall be used to save the GMSTs
+    */
+    bool saveAllToStream(std::ofstream& output) const;
+
+    /* returns constant iterator to the beginning of the internal list */
+    GMSTListIterator getBegin() const;
+
+    /* returns constant iterator to the end of the internal list */
+    GMSTListIterator getEnd() const;
 
     /* deletes all GMST data */
     void clearAll();

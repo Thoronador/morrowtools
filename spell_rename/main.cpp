@@ -30,11 +30,11 @@
 #include <string>
 #include <vector>
 #include "ESMReaderSpells.h"
-#include "..\base\ESMWriter.h"
-#include "..\base\GameSettings.h"
-#include "..\base\MagicEffects.h"
-#include "..\base\Spells.h"
-#include "..\base\FileFunctions.h"
+#include "ESMWriterSpells.h"
+#include "../base/GameSettings.h"
+#include "../base/MagicEffects.h"
+#include "../base/Spells.h"
+#include "../base/FileFunctions.h"
 
 //return codes
 const int rcInvalidParameter = 1;
@@ -102,7 +102,7 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Spell Renamer for Morrowind, version 0.1_rev019, 2011-02-03\n";
+  std::cout << "Spell Renamer for Morrowind, version 0.1_rev030, 2011-02-15\n";
 }
 
 int main(int argc, char **argv)
@@ -610,7 +610,10 @@ int main(int argc, char **argv)
     std::cout << "No spells available. No new file will be created.\n";
     return rcNoSpells;
   }
-  if (WriteESMofSpells(baseDir+outputFileName, false, files))
+
+  ESMWriterSpells writer;
+  if (writer.writeESM(baseDir+outputFileName, false, files,
+      "Umbenannte/ umsortierte Zauber fuer Morrowind (generiert durch spell_rename.exe)"))
   {
     std::cout << "Output file \""<<baseDir+outputFileName<<"\" was created successfully.\n";
     //now check file time of created file

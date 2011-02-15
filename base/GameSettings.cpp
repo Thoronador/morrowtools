@@ -48,6 +48,76 @@ bool GMSTRecord::equals(const GMSTRecord& other) const
   throw 42;
 }
 
+bool GMSTRecord::saveToStream(std::ofstream& output, const std::string& GMSTID) const
+{
+  //write GMST
+  output.write((char*) &cGMST, 4);
+  int32_t Size, HeaderOne, HeaderFlags;
+  HeaderOne = HeaderFlags = 0;
+  Size = 4 /* NAME */ +4 /* four bytes for length */
+        +GMSTID.length() /* length of ID */
+        +4 /* STRV/ INTV/ FLTV */ + 4 /* four bytes for length of data */;
+  switch(Type)
+  {
+    case gtInteger:
+    case gtFloat:
+         Size = Size + 4 /* four bytes for integer/float value */;
+         break;
+    case gtString:
+         Size = Size + sVal.length();
+         break;
+  }//swi
+  output.write((char*) &Size, 4);
+  #warning HeaderOne and H_Flags might not be initialized properly!
+  output.write((char*) &HeaderOne, 4);
+  output.write((char*) &HeaderFlags, 4);
+
+  /*GMST: Game Setting
+    NAME = Setting ID string
+    STRV = String value/ INTV = Integer value (4 btes)/FLTV = Float value (4 bytes)
+  */
+  //write NAME
+  output.write((char*) &cNAME, 4);
+  //NAME's length
+  int32_t SubLength;
+  SubLength = GMSTID.length(); //length of string
+  output.write((char*) &SubLength, 4);
+  //write ID
+  output.write(GMSTID.c_str(), SubLength);
+  //write STRV/ FLTV/ INTV
+  switch(Type)
+  {
+    case gtInteger:
+         //write INTV
+         output.write((char*) &cINTV, 4);
+         //write length
+         SubLength = 4;
+         output.write((char*) &SubLength, 4);
+         //write integer
+         output.write((char*) &iVal, 4);
+         break;
+    case gtFloat:
+         //write FLTV
+         output.write((char*) &cFLTV, 4);
+         //write length
+         SubLength = 4;
+         output.write((char*) &SubLength, 4);
+         //write float
+         output.write((char*) &fVal, 4);
+         break;
+    case gtString:
+         //write STRV
+         output.write((char*) &cSTRV, 4);
+         //write length
+         SubLength = sVal.length();
+         output.write((char*) &SubLength, 4);
+         //write string
+         output.write(sVal.c_str(), SubLength);
+         break;
+  }//swi
+  return output.good();
+}
+
 GameSettings::GameSettings()
 {
   //empty
@@ -100,7 +170,7 @@ bool GameSettings::readGMST(std::ifstream& in_File, const int32_t FileSize)
 
   /*GMST: Game Setting
     NAME = Setting ID string
-    STRV = String value/ INTV = Integer value (4 btes)/FLTV = Float value (4 bytes)
+    STRV = String value/ INTV = Integer value (4 bytes)/FLTV = Float value (4 bytes)
   */
   int32_t SubRecName, SubLength;
   SubRecName = SubLength = 0;
@@ -357,6 +427,38 @@ int GameSettings::readRecordGMST(std::ifstream& in_File, const int32_t FileSize)
   std::cout << "Error while reading data subrecord of GMST.\n";
   return -1;
 }//readRecordGMST (integer version of readGMST)
+
+
+bool GameSettings::saveAllToStream(std::ofstream& output) const
+{
+  if (!output.good())
+  {
+    std::cout << "GameSettings::saveAllToStream: Error: bad stream.\n";
+    return false;
+  }
+  GMSTListIterator iter = m_Settings.begin();
+  const GMSTListIterator end_iter = m_Settings.end();
+  while (iter!=end_iter)
+  {
+    if (!iter->second.saveToStream(output, iter->first))
+    {
+      std::cout << "GameSettings::saveAllToStream: Error while writing record.\n";
+      return false;
+    }
+    ++iter;
+  }//while
+  return output.good();
+}
+
+GMSTListIterator GameSettings::getBegin() const
+{
+  return m_Settings.begin();
+}
+
+GMSTListIterator GameSettings::getEnd() const
+{
+  return m_Settings.end();
+}
 
 void GameSettings::clearAll()
 {

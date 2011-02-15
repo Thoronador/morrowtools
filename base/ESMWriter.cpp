@@ -27,7 +27,17 @@
 const int32_t cMasterFileFlag = 1;
 const int32_t cPluginFileFlag = 0;
 
-bool WriteESMofSpells(const std::string& FileName, const bool IsMasterFile, const DepFileList& deps)
+ESMWriter::ESMWriter()
+{
+  //empty
+}
+
+ESMWriter::~ESMWriter()
+{
+  //empty
+}
+
+bool ESMWriter::writeESM(const std::string& FileName, const bool IsMasterFile, const DepFileList& deps, const std::string& Description)
 {
   std::ofstream output;
   output.open(FileName.c_str(), std::ios::out | std::ios::binary | std::ios::trunc);
@@ -79,11 +89,16 @@ bool WriteESMofSpells(const std::string& FileName, const bool IsMasterFile, cons
   const char company[33] = "Thoronador\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
   output.write(company, 32);
   //description (256 Bytes)
-  std::string description = "Umbenannte/ umsortierte Zauber fuer Morrowind (generiert durch spell_rename.exe)";
-  description = description + std::string(256-description.length(), '\0');
-  output.write(description.c_str(), 256);
+  std::string real_description = Description;
+  if (Description.length()>255)
+  {
+    real_description = Description.substr(0,255);
+    std::cout << "Info: Description was too long and was shortened to 255 characters.\n";
+  }
+  real_description = real_description + std::string(256-real_description.length(), '\0');
+  output.write(real_description.c_str(), 256);
   //number of records
-  Size = Spells::getSingleton().getNumberOfSpells();
+  Size = getTotalRecords();
   output.write((char*) &Size, 4);
   if (!output.good())
   {
@@ -112,13 +127,13 @@ bool WriteESMofSpells(const std::string& FileName, const bool IsMasterFile, cons
     // -- write file size (currently always zero)
     output.write((char*) &(deps.at(i).size), 8);
   }//for
-  //now write the spell data
-  if (!Spells::getSingleton().saveAllToStream(output))
+  //now write the data
+  if (!writeRecords(output))
   {
-    std::cout << "Error while writing spell information for file \""<<FileName<<"\".\n";
+    std::cout << "Error while writing data records for file \""<<FileName<<"\".\n";
     output.close();
     return false;
   }
   output.close();
   return true;
-}
+}//writeESM

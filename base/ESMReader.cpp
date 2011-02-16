@@ -256,7 +256,7 @@ int ESMReader::readESM(const std::string& FileName, const bool verbose)
               << "Current file position: "<<input.tellg()<< " bytes.\n";
   }//if verbose
   //end
-  const bool good_result = input.good();
+  const bool good_result = (input.good() and (lastResult!=-1));
   input.close();
   if (!good_result)
   {

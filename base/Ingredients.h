@@ -55,10 +55,21 @@ struct IngredRec
   // end of Ingred data
   std::string InventoryIcon;
   std::string ScriptName;
+
+  /* shows the content of the record by writing it to the standard output */
   void show();
 
   /* returns true, if the other record contains the same data */
   bool equals(const IngredRec& other) const;
+
+  /* tries to save the ingredient record to an output file stream and returns
+     true on success, false on failure.
+
+     parameters:
+         output   - the output file stream that is used to save the record
+         IngredID - ID of the ingredient
+  */
+  bool saveToStream(std::ofstream& output, const std::string& IngredID) const;
 };//struct
 
 typedef std::map<const std::string, IngredRec>::const_iterator IngredListIterator;
@@ -117,6 +128,14 @@ class Ingredients
            FileSize - the total size of the file associated with the stream
     */
     int readRecordINGR(std::ifstream& in_File, const int32_t FileSize);
+
+    /* tries to save all available ingredientss to the given stream and returns
+       true on success, false on failure
+
+       parameters:
+           output - the output file stream that shall be used to save the records
+    */
+    bool saveAllToStream(std::ofstream& output) const;
 
     /* removes all ingredients from the list */
     void clearAll();

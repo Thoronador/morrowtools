@@ -57,7 +57,7 @@ bool SpellRecord::saveToStream(std::ofstream& output, const std::string& SpellID
   output.write((char*) &cNAME, 4);
   //NAME's length
   int32_t SubLength;
-  SubLength = SpellID.length()+1; //lenght of string plus one for NUL-termination
+  SubLength = SpellID.length()+1; //length of string plus one for NUL-termination
   output.write((char*) &SubLength, 4);
   //write ID
   output.write(SpellID.c_str(), SubLength);
@@ -65,7 +65,7 @@ bool SpellRecord::saveToStream(std::ofstream& output, const std::string& SpellID
   //write FNAM
   output.write((char*) &cFNAM, 4);
   //FNAM's length
-  SubLength = Name.length()+1; //lenght of string plus one for NUL-termination
+  SubLength = Name.length()+1; //length of string plus one for NUL-termination
   output.write((char*) &SubLength, 4);
   //write spell name
   output.write(Name.c_str(), SubLength);
@@ -73,7 +73,7 @@ bool SpellRecord::saveToStream(std::ofstream& output, const std::string& SpellID
   //write SPDT
   output.write((char*) &cSPDT, 4);
   //SPDT's length
-  SubLength = 12; //lenght of SPDT (spell data) is always 12 bytes
+  SubLength = 12; //length of SPDT (spell data) is always 12 bytes
   output.write((char*) &SubLength, 4);
   // ---- write spell data
   //type

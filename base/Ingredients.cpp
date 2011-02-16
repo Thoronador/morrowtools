@@ -68,6 +68,110 @@ void IngredRec::show()
             <<"Script: \""<<ScriptName<<"\"\n";
 }
 
+bool IngredRec::saveToStream(std::ofstream& output, const std::string& IngredID) const
+{
+  output.write((char*) &cINGR, 4);
+  int32_t Size, HeaderOne, H_Flags;
+  HeaderOne = H_Flags = 0;
+  Size = 4 /* NAME */ +4 /* 4 bytes for length */
+        +IngredID.length()+1 /* length of ID +1 byte for NUL-termination */
+        +4 /* MODL */ +4 /* 4 bytes for MODL's lenght */
+        +ModelName.length()+1 /*length of name plus one for NUL-termination */
+        +4 /* FNAM */ +4 /* 4 bytes for FNAM's lenght */
+        +IngredName.length()+1 /*length of name plus one for NUL-termination */
+        +4 /* IRDT */ +4 /* IRDT's length */ +56 /*size of ingredient data (IRDT)*/
+        +4 /* ITEX */ +4 /* ITEX's length */
+        +InventoryIcon.length() +1 /* length of path +1 byte for NUL-termination */;
+  if (ScriptName!="")
+  {
+    Size = Size +4 /* SCRI */ +4 /* 4 bytes for SCRI's lenght */
+          +ScriptName.length()+1 /* length of script ID +1 byte for NUL-termination */;
+  }
+  output.write((char*) &Size, 4);
+  #warning HeaderOne and H_Flags might not be initialized properly!
+  output.write((char*) &HeaderOne, 4);
+  output.write((char*) &H_Flags, 4);
+
+  /*Ingredients:
+    NAME = Item ID, required
+    MODL = Model Name, required
+    FNAM = Item Name, required
+    IRDT = Ingredient Data (56 bytes), required
+        float  Weight
+        long   Value
+        long   EffectID[4]	0 or -1 means no effect
+        long   SkillID[4]	only for Skill related effects, 0 or -1 otherwise
+        long   AttributeID[4]  only for Attribute related effects, 0 or -1 otherwise
+    ITEX = Inventory Icon
+    SCRI = Script Name (optional) */
+
+  //write NAME
+  output.write((char*) &cNAME, 4);
+  //NAME's length
+  int32_t SubLength;
+  SubLength = IngredID.length()+1; //length of string plus one for NUL-termination
+  output.write((char*) &SubLength, 4);
+  //write ID
+  output.write(IngredID.c_str(), SubLength);
+
+  //write MODL
+  output.write((char*) &cMODL, 4);
+  //MODL's length
+  SubLength = ModelName.length()+1; //length of string plus one for NUL-termination
+  output.write((char*) &SubLength, 4);
+  //write model path
+  output.write(ModelName.c_str(), SubLength);
+
+  //write FNAM
+  output.write((char*) &cFNAM, 4);
+  //FNAM's length
+  SubLength = IngredName.length()+1; //length of string plus one for NUL-termination
+  output.write((char*) &SubLength, 4);
+  //write ingredient name
+  output.write(IngredName.c_str(), SubLength);
+
+  //write IRDT
+  output.write((char*) &cIRDT, 4);
+  //IRDT's length
+  SubLength = 56; //Fixed size for IRDT is 56 bytes.
+  output.write((char*) &SubLength, 4);
+  //write ingredient data
+  output.write((char*) &Weight, 4);
+  output.write((char*) &Value, 4);
+  output.write((char*) &(EffectID[0]), 4);
+  output.write((char*) &(EffectID[1]), 4);
+  output.write((char*) &(EffectID[2]), 4);
+  output.write((char*) &(EffectID[3]), 4);
+  output.write((char*) &(SkillID[0]), 4);
+  output.write((char*) &(SkillID[1]), 4);
+  output.write((char*) &(SkillID[2]), 4);
+  output.write((char*) &(SkillID[3]), 4);
+  output.write((char*) &(AttributeID[0]), 4);
+  output.write((char*) &(AttributeID[1]), 4);
+  output.write((char*) &(AttributeID[2]), 4);
+  output.write((char*) &(AttributeID[3]), 4);
+
+  //write ITEX
+  output.write((char*) &cITEX, 4);
+  //MODL's length
+  SubLength = InventoryIcon.length()+1; //length of string plus one for NUL-termination
+  output.write((char*) &SubLength, 4);
+  //write inventory icon
+  output.write(InventoryIcon.c_str(), SubLength);
+
+  if (ScriptName!="")
+  {
+    //write SCRI
+    output.write((char*) &cSCRI, 4);
+    SubLength = ScriptName.length()+1; //length of string plus one for NUL-termination
+    //write SCRI's length
+    output.write((char*) &SubLength, 4);
+    //write Script ID
+    output.write(ScriptName.c_str(), SubLength);
+  }//if script ID present
+  return output.good();
+}
+
 Ingredients::Ingredients()
 {
   m_Ingredients.clear();
@@ -324,4 +428,25 @@ int Ingredients::readRecordINGR(std::ifstream& in_File, const int32_t FileSize)
   }
   std::cout << "Error while reading ingredient record.\n";
   return -1;
-}//ReadINGR
+}//readRecordINGR
+
+bool Ingredients::saveAllToStream(std::ofstream& output) const
+{
+  if (!output.good())
+  {
+    std::cout << "Ingredients::saveAllToStream: Error: bad stream.\n";
+    return false;
+  }
+  IngredListIterator iter = m_Ingredients.begin();
+  const IngredListIterator end_iter = m_Ingredients.end();
+  while (iter!=end_iter)
+  {
+    if (!iter->second.saveToStream(output, iter->first))
+    {
+      std::cout << "Ingredients::saveAllToStream: Error while writing record.\n";
+      return false;
+    }
+    ++iter;
+  }//while
+  return output.good();
+}

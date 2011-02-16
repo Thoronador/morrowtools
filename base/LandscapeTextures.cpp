@@ -62,7 +62,7 @@ const LandscapeTextureRecord& LandscapeTextures::getLandscapeTexture(const std::
   {
     return iter->second;
   }
-  std::cout << "No activator with the ID \""<<ID<<"\" is present.\n";
+  std::cout << "No landscape texture with the ID \""<<ID<<"\" is present.\n";
   throw 42;
 }
 

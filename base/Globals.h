@@ -22,34 +22,11 @@
 #define GLOBALS_H
 
 #include <string>
-#include <map>
-
-enum GlobalType {globShort, globLong, globFloat};
-
-struct GlobalRecord
-{
-  GlobalType Type;
-  int16_t shortVal;
-  int32_t longVal;
-  float floatVal;
-
-  /* constructor */
-  GlobalRecord();
-
-  /* returns true, if the other record contains the same data */
-  bool equals(const GlobalRecord& other) const;
-
-  /* writes the record to the given output stream and returns true on success
-
-    parameters:
-        output   - the output file stream
-        GlobalID - the ID of the global var
-  */
-  bool saveToStream(std::ofstream& output, const std::string& GlobalID) const;
-};//struct
+#include <set>
+#include "records/GlobalRecord.h"
 
 //iterator type for global list
-typedef std::map<std::string, GlobalRecord>::const_iterator GlobalListIterator;
+typedef std::set<GlobalRecord>::const_iterator GlobalListIterator;
 
 class Globals
 {
@@ -61,12 +38,12 @@ class Globals
     static Globals& getSingleton();
 
     /* adds a global to the list */
-    void addGlobal(const std::string& ID, const GlobalRecord& record);
+    void addGlobal(const GlobalRecord& record);
 
     /* returns true, if a global with the given ID is present
 
        parameters:
-           ID - the ID of the global object
+           ID - the ID of the global variable
     */
     bool hasGlobal(const std::string& ID) const;
 
@@ -77,7 +54,7 @@ class Globals
        given ID
 
        parameters:
-           ID - the ID of the global
+           ID - the ID of the global variable
 
        remarks:
            If no global with the given ID is present, the function will throw
@@ -124,7 +101,7 @@ class Globals
     Globals(const Globals& op) {}
 
     /* internal data */
-    std::map<std::string, GlobalRecord> m_Globals;
+    std::set<GlobalRecord> m_Globals;
 };//class
 
 #endif // GLOBALS_H

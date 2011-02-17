@@ -22,11 +22,11 @@
 #define BODYPARTS_H
 
 #include <string>
-#include <map>
+#include <set>
 #include "records/BodyPartRecord.h"
 
 //iterator type for body part list
-typedef std::map<std::string, BodyPartRecord>::const_iterator BodyPartListIterator;
+typedef std::set<BodyPartRecord>::const_iterator BodyPartListIterator;
 
 class BodyParts
 {
@@ -38,7 +38,7 @@ class BodyParts
     static BodyParts& getSingleton();
 
     /* adds a body part to the list */
-    void addBodyPart(const std::string& ID, const BodyPartRecord& record);
+    void addBodyPart(const BodyPartRecord& record);
 
     /* returns true, if a body part with the given ID is present
 
@@ -101,7 +101,7 @@ class BodyParts
     BodyParts(const BodyParts& op) {}
 
     /* internal data */
-    std::map<std::string, BodyPartRecord> m_BodyParts;
+    std::set<BodyPartRecord> m_BodyParts;
 };//class
 
 #endif // BODYPARTS_H

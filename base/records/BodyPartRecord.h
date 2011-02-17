@@ -39,6 +39,9 @@ struct BodyPartRecord
   /* constructor */
   BodyPartRecord();
 
+  /* alternative constructor */
+  BodyPartRecord(const std::string& ID);
+
   /* returns true, if the other record contains the same data */
   bool equals(const BodyPartRecord& other) const;
 
@@ -56,5 +59,8 @@ struct BodyPartRecord
   */
   bool loadFromStream(std::ifstream& in_File);
 };//struct
+
+//comparison operator for BodyPartRecords
+bool operator<(const BodyPartRecord& left, const BodyPartRecord& right);
 
 #endif // BODYPARTRECORD_H

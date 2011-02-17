@@ -37,11 +37,11 @@ BodyParts& BodyParts::getSingleton()
   return Instance;
 }
 
-void BodyParts::addBodyPart(const std::string& ID, const BodyPartRecord& record)
+void BodyParts::addBodyPart(const BodyPartRecord& record)
 {
-  if (ID!="")
+  if (record.BodyPartID!="")
   {
-    m_BodyParts[ID] = record;
+    m_BodyParts.insert(record);
   }
 }
 
@@ -57,10 +57,10 @@ unsigned int BodyParts::getNumberOfBodyParts() const
 
 const BodyPartRecord& BodyParts::getBodyPart(const std::string& ID) const
 {
-  std::map<std::string, BodyPartRecord>::const_iterator iter = m_BodyParts.find(ID);
+  std::set<BodyPartRecord>::const_iterator iter = m_BodyParts.find(ID);
   if (iter!=m_BodyParts.end())
   {
-    return iter->second;
+    return *iter;
   }
   std::cout << "No body part with the ID \""<<ID<<"\" is present.\n";
   throw 42;
@@ -87,10 +87,10 @@ bool BodyParts::saveAllToStream(std::ofstream& output) const
   const BodyPartListIterator end_iter = m_BodyParts.end();
   while (iter!=end_iter)
   {
-    if (!iter->second.saveToStream(output))
+    if (!iter->saveToStream(output))
     {
       std::cout << "BodyParts::saveAllToStream: Error while writing record for \""
-                << iter->first <<"\".\n";
+                << iter->BodyPartID <<"\".\n";
       return false;
     }
     ++iter;
@@ -120,6 +120,6 @@ int BodyParts::readRecordBODY(std::ifstream& in_File)
       return 0;
     }
   }//if activator present
-  addBodyPart(temp.BodyPartID, temp);
+  addBodyPart(temp);
   return 1;
 } //readRecordACTI

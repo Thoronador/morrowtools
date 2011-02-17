@@ -35,6 +35,18 @@ BodyPartRecord::BodyPartRecord()
   PartType = 0;
 }
 
+BodyPartRecord::BodyPartRecord(const std::string& ID)
+{
+  BodyPartID = ID;
+  MeshPath = "";
+  RaceID = "";
+  //body data
+  Part = 0;
+  Vampire = 0;
+  Flags = 0;
+  PartType = 0;
+}
+
 bool BodyPartRecord::equals(const BodyPartRecord& other) const
 {
   return ((BodyPartID==other.BodyPartID) and (MeshPath==other.MeshPath)
@@ -263,4 +275,9 @@ bool BodyPartRecord::loadFromStream(std::ifstream& in_File)
   in_File.read((char*) &Flags, 1);
   in_File.read((char*) &PartType, 1);
   return in_File.good();
+}
+
+bool operator<(const BodyPartRecord& left, const BodyPartRecord& right)
+{
+  return (left.BodyPartID.compare(right.BodyPartID)<0);
 }

@@ -23,32 +23,8 @@
 
 #include <string>
 #include <map>
-
-struct ApparatusRecord
-{
-  std::string Model;
-  std::string ItemName;
-  int32_t Type;
-  float Quality;
-  float Weight;
-  int32_t Value;
-  std::string InventoryIcon;
-  std::string ScriptName;
-
-  /* constructor */
-  ApparatusRecord();
-
-  /* returns true, if the other record contains the same data */
-  bool equals(const ApparatusRecord& other) const;
-
-  /* writes the record to the given output stream and returns true on success
-
-    parameters:
-        output      - the output file stream
-        ApparatusID - the ID of the apparatus
-  */
-  bool saveToStream(std::ofstream& output, const std::string& ApparatusID) const;
-};//struct
+#include <fstream>
+#include "records/ApparatusRecord.h"
 
 //iterator type for apparatus list
 typedef std::map<std::string, ApparatusRecord>::const_iterator ApparatusListIterator;
@@ -63,7 +39,7 @@ class Apparatuses
     static Apparatuses& getSingleton();
 
     /* adds an apparatus to the list */
-    void addApparatus(const std::string& ID, const ApparatusRecord& record);
+    void addApparatus(const ApparatusRecord& record);
 
     /* returns true, if an apparatus with the given ID is present
 
@@ -98,9 +74,8 @@ class Apparatuses
 
        parameters:
            in_File  - the input file stream that is used to read the record
-           FileSize - size of the associated file in bytes
     */
-    int readRecordAPPA(std::ifstream& in_File, const int32_t FileSize);
+    int readRecordAPPA(std::ifstream& in_File);
 
     /* returns constant iterator to the beginning of the internal list */
     ApparatusListIterator getBegin() const;

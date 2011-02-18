@@ -23,27 +23,7 @@
 
 #include <string>
 #include <map>
-
-struct ActivatorRecord
-{
-  std::string ModelPath;
-  std::string ItemName;
-  std::string ScriptName;
-
-  /* constructor */
-  ActivatorRecord();
-
-  /* returns true, if the other record contains the same data */
-  bool equals(const ActivatorRecord& other) const;
-
-  /* writes the record to the given output stream and returns true on success
-
-    parameters:
-        output      - the output file stream
-        ActivatorID - the ID of the activator
-  */
-  bool saveToStream(std::ofstream& output, const std::string& ActivatorID) const;
-};//struct
+#include "records/ActivatorRecord.h"
 
 //iterator type for activator list
 typedef std::map<std::string, ActivatorRecord>::const_iterator ActivatorListIterator;
@@ -58,7 +38,7 @@ class Activators
     static Activators& getSingleton();
 
     /* adds an activator to the list */
-    void addActivator(const std::string& ID, const ActivatorRecord& record);
+    void addActivator(const ActivatorRecord& record);
 
     /* returns true, if an activator with the given ID is present
 
@@ -93,9 +73,8 @@ class Activators
 
        parameters:
            in_File  - the input file stream that is used to read the record
-           FileSize - size of the associated file in bytes
     */
-    int readRecordACTI(std::ifstream& in_File, const int32_t FileSize);
+    int readRecordACTI(std::ifstream& in_File);
 
     /* returns constant iterator to the beginning of the internal list */
     ActivatorListIterator getBegin() const;

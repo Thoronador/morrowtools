@@ -25,7 +25,7 @@
 
 bool GMSTRecord::equals(const GMSTRecord& other) const
 {
-  if (Type!=other.Type)
+  if ((Type!=other.Type) or (SettingName!=other.SettingName))
   {
     return false;
   }

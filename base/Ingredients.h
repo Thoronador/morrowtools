@@ -24,53 +24,7 @@
 #include <string>
 #include <map>
 #include <fstream>
-
-/*Ingredients:
-    NAME = Item ID, required
-    MODL = Model Name, required
-    FNAM = Item Name, required
-    IRDT = Ingredient Data (56 bytes), required
-        float  Weight
-        long   Value
-        long   EffectID[4]	0 or -1 means no effect
-        long   SkillID[4]	only for Skill related effects, 0 or -1 otherwise
-        long   AttributeID[4]  only for Attribute related effects, 0 or -1 otherwise
-    ITEX = Inventory Icon
-    SCRI = Script Name (optional) */
-
-struct IngredRec
-{
-  /* constructor */
-  IngredRec();
-
-  //data
-  std::string ModelName;
-  std::string IngredName;
-  //IngredData
-  float Weight;
-  int32_t Value;
-  int32_t EffectID[4];
-  int32_t SkillID[4];
-  int32_t AttributeID[4];
-  // end of Ingred data
-  std::string InventoryIcon;
-  std::string ScriptName;
-
-  /* shows the content of the record by writing it to the standard output */
-  void show();
-
-  /* returns true, if the other record contains the same data */
-  bool equals(const IngredRec& other) const;
-
-  /* tries to save the ingredient record to an output file stream and returns
-     true on success, false on failure.
-
-     parameters:
-         output   - the output file stream that is used to save the record
-         IngredID - ID of the ingredient
-  */
-  bool saveToStream(std::ofstream& output, const std::string& IngredID) const;
-};//struct
+#include "records/IngredientRecord.h"
 
 typedef std::map<const std::string, IngredRec>::const_iterator IngredListIterator;
 
@@ -84,7 +38,7 @@ class Ingredients
     static Ingredients& getSingleton();
 
     /* adds an ingredient to the list */
-    void addIngredient(const std::string& IngredID, const IngredRec& data);
+    void addIngredient(const IngredRec& data);
 
     /* returns the number of ingredients that are currently in the list */
     unsigned int getNumberOfIngredients() const;
@@ -125,9 +79,8 @@ class Ingredients
 
        parameters:
            in_File  - the input file stream that is used to read the record
-           FileSize - the total size of the file associated with the stream
     */
-    int readRecordINGR(std::ifstream& in_File, const int32_t FileSize);
+    int readRecordINGR(std::ifstream& in_File);
 
     /* tries to save all available ingredientss to the given stream and returns
        true on success, false on failure

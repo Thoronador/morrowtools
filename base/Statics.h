@@ -24,21 +24,7 @@
 #include <string>
 #include <map>
 #include <fstream>
-
-struct StaticRecord
-{
-  std::string Mesh;
-
-  /* returns true, if the other record contains the same data */
-  bool equals(const StaticRecord& other) const;
-
-  /* writes the record to the given output stream and returns true on success
-
-    parameters:
-        output - the output file stream
-  */
-  bool saveToStream(std::ofstream& output, const std::string& StaticID) const;
-};//struct
+#include "records/StaticRecord.h"
 
 //iterator type for static list
 typedef std::map<std::string, StaticRecord>::const_iterator StaticListIterator;
@@ -53,7 +39,7 @@ class Statics
     static Statics& getSingleton();
 
     /* adds a static to the list */
-    void addStatic(const std::string& ID, const StaticRecord& record);
+    void addStatic(const StaticRecord& record);
 
     /* returns true, if a static with the given ID is present
 

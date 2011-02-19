@@ -102,7 +102,7 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Spell Renamer for Morrowind, version 0.1_rev030, 2011-02-15\n";
+  std::cout << "Spell Renamer for Morrowind, version 0.1_rev046, 2011-02-19\n";
 }
 
 int main(int argc, char **argv)

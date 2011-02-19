@@ -65,7 +65,7 @@ int ESMReaderSpells::processNextRecord(std::ifstream& in_File, const int32_t Fil
          lastResult = ESMReader::skipRecord(in_File);
          break;
     case cGMST:
-         lastResult = GameSettings::getSingleton().readRecordGMST(in_File, FileSize);
+         lastResult = GameSettings::getSingleton().readRecordGMST(in_File);
          break;
     case cINFO:
     case cINGR:

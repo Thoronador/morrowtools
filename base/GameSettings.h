@@ -24,26 +24,7 @@
 #include <string>
 #include <map>
 #include <fstream>
-
-enum GMSTType {gtInteger, gtFloat, gtString};
-
-struct GMSTRecord
-{
-  GMSTType Type;
-  int32_t iVal;
-  float fVal;
-  std::string sVal;
-
-  /* returns true, if the other record contains the same relevant data */
-  bool equals(const GMSTRecord& other) const;
-
-  /* writes the record to the given output stream and returns true on success
-
-    parameters:
-        out_File - the output file stream
-  */
-  bool saveToStream(std::ofstream& out_File, const std::string& GMSTID) const;
-};
+#include "records/GMSTRecord.h"
 
 //iterator type for GMST list
 typedef std::map<std::string, GMSTRecord>::const_iterator GMSTListIterator;
@@ -58,7 +39,7 @@ class GameSettings
     static GameSettings& getSingleton();
 
     /* adds a setting to the list */
-    void addSetting(const std::string& Name, const GMSTRecord& value);
+    void addSetting(const GMSTRecord& value);
 
     /* returns true, if a setting with the given name is present
 
@@ -88,15 +69,6 @@ class GameSettings
     /* returns the current number of present setting */
     unsigned int getNumberOfSettings() const;
 
-    /* tries to read a GMST record from the given stream an returns true on
-       success, false on error
-
-       parameters:
-           in_File  - the input file stream that's used to read the record
-           FileSize - the total size of the file
-    */
-    bool readGMST(std::ifstream& in_File, const int32_t FileSize);
-
     /* tries to read a GMST record from the given input file stream.
 
        return value:
@@ -107,9 +79,8 @@ class GameSettings
 
        parameters:
            in_File  - the input file stream that is used to read the record
-           FileSize - the total size of the file associated with the stream
     */
-    int readRecordGMST(std::ifstream& in_File, const int32_t FileSize);
+    int readRecordGMST(std::ifstream& in_File);
 
     /* tries to save all available GMSTs to the given stream and returns true
        on success, false on failure

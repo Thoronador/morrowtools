@@ -102,7 +102,7 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Spell Renamer for Morrowind, version 0.1_rev052, 2011-02-20\n";
+  std::cout << "Spell Renamer for Morrowind, version 0.1_rev053, 2011-02-20\n";
 }
 
 int main(int argc, char **argv)
@@ -567,7 +567,7 @@ int main(int argc, char **argv)
           if (allowTruncatedName or (newName.length()<=Spells::cMaximumSpellNameLength))
           {
             rec.Name = newName;
-            Spells::getSingleton().addSpell(spell_cur->first, rec);
+            Spells::getSingleton().addSpell(rec);
           }//if
           else
           {

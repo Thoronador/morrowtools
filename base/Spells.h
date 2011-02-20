@@ -105,14 +105,6 @@ class Spells
     */
     const SpellRecord& getSpell(const std::string& ID) const;
 
-    /* tries to read one spell record (without first 32 bits of header) from the
-       given input file stream and returns true on success, false on error
-
-       parameters:
-           in_File - the input file stream that is used for the operation
-    */
-    bool readSPEL(std::ifstream& in_File);
-
     /* tries to read a spell record from the given input file stream.
 
        return value:

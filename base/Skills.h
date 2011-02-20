@@ -24,60 +24,7 @@
 #include <map>
 #include <string>
 #include <fstream>
-
-//constants for skill indices
-const int32_t SkillBlock = 0;
-const int32_t SkillArmorer = 1;
-const int32_t SkillMediumArmor = 2;
-const int32_t SkillHeavyArmor = 3;
-const int32_t SkillBluntWeapon = 4;
-const int32_t SkillLongBlade = 5;
-const int32_t SkillAxe = 6;
-const int32_t SkillSpear = 7;
-const int32_t SkillAthletics = 8;
-const int32_t SkillEnchant = 9;
-const int32_t SkillDestruction = 10;
-const int32_t SkillAlteration = 11;
-const int32_t SkillIllusion = 12;
-const int32_t SkillConjuration = 13;
-const int32_t SkillMysticism = 14;
-const int32_t SkillRestoration = 15;
-const int32_t SkillAlchemy = 16;
-const int32_t SkillUnarmored = 17;
-const int32_t SkillSecurity = 18;
-const int32_t SkillSneak = 19;
-const int32_t SkillAcrobatics = 20;
-const int32_t SkillLightArmor = 21;
-const int32_t SkillShortBlade = 22;
-const int32_t SkillMarksman = 23;
-const int32_t SkillMercantile = 24;
-const int32_t SkillSpeechcraft = 25;
-const int32_t SkillHandToHand = 26;
-
-
-//constants for specialization of skills
-const int32_t cSpecializationCombat = 0;
-const int32_t cSpecializationMagic = 1;
-const int32_t cSpecializationStealth = 2;
-
-//record type for skill data
-struct SkillRecord
-{
-  int32_t Attribute;
-  int32_t Specialization;
-  float UseValue[4];
-  std::string Description;
-
-  /* returns true, if this record contains the same data as the other record */
-  bool equals(const SkillRecord& other) const;
-
-  /* writes the record to the given output stream and returns true on success
-
-    parameters:
-        output - the output file stream
-  */
-  bool saveToStream(std::ofstream& output, const int32_t SkillIndex) const;
-};
+#include "records/SkillRecord.h"
 
 //iterator type
 typedef std::map<int32_t, SkillRecord>::const_iterator SkillListIterator;
@@ -94,10 +41,9 @@ class Skills
     /* adds a new skill record to the list
 
        parameters:
-           Index     - the index of the skill
            SkillData - data record of the skill
     */
-    void addSkill(const int32_t Index, const SkillRecord& SkillData);
+    void addSkill(const SkillRecord& SkillData);
 
     /* returns true, if the skill with the given index exists
 

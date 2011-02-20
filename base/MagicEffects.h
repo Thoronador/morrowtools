@@ -99,6 +99,15 @@ class MagicEffects
     /* returns constant iterator to the end of the internal list */
     EffectListIterator getEnd() const;
 
+    /* tries to save all available magic effects to the given stream and returns
+       true on success, false on failure
+
+       parameters:
+           output - the output file stream that shall be used to save the magic
+                    effects
+    */
+    bool saveAllToStream(std::ofstream& output) const;
+
     /* deletes all effects */
     void clearAll();
   private:

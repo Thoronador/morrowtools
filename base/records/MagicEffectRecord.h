@@ -64,6 +64,13 @@ struct MGEF_Data
   /* returns true, of content of other record is equal to this one */
   bool equals(const MGEF_Data& other) const;
 
+  /* writes the record to the given output stream and returns true on success
+
+    parameters:
+        output - the output file stream
+  */
+  bool saveToStream(std::ofstream& output) const;
+
   /* loads the record from the given input stream and returns true on success
 
     parameters:

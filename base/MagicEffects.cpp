@@ -536,6 +536,27 @@ EffectListIterator MagicEffects::getEnd() const
   return m_Effects.end();
 }
 
+bool MagicEffects::saveAllToStream(std::ofstream& output) const
+{
+  if (!output.good())
+  {
+    std::cout << "MagicEffects::saveAllToStream: Error: bad stream.\n";
+    return false;
+  }
+  EffectListIterator iter = m_Effects.begin();
+  const EffectListIterator end_iter = m_Effects.end();
+  while (iter!=end_iter)
+  {
+    if (!iter->second.saveToStream(output))
+    {
+      std::cout << "MagicEffects::saveAllToStream: Error while writing record.\n";
+      return false;
+    }
+    ++iter;
+  }//while
+  return output.good();
+}
+
 void MagicEffects::clearAll()
 {
   m_Effects.clear();

@@ -30,8 +30,8 @@ bool SpellRecord::saveToStream(std::ofstream& output) const
   HeaderOne = H_Flags = 0;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
         +SpellID.length()+1 /* length of ID +1 byte for NUL termination */
-        +4 /* FNAM */ +4 /* 4 bytes for FNAM's lenght */
-        +Name.length()+1 /*lenght of name plus one for NUL-termination */
+        +4 /* FNAM */ +4 /* 4 bytes for FNAM's length */
+        +Name.length()+1 /*length of name plus one for NUL-termination */
         +4 /* SPDT */ +4 /* SPDT's length */ +12 /*size of spell data (SPDT)*/;
   //now calculate additional size of enchantment data
   Size = Size + Enchs.size()

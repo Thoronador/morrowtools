@@ -393,6 +393,7 @@ bool AlchemyPotionRecord::readSubRecordSCRI(std::ifstream& in_File, char* Buffer
   //SCRI's length
   int32_t SubLength = 0;
   in_File.read((char*) &SubLength, 4);
+  BytesRead += 4;
   if (SubLength>255)
   {
     std::cout << "Error: subrecord SCRI of ALCH is longer than 255 characters.\n";
@@ -401,6 +402,7 @@ bool AlchemyPotionRecord::readSubRecordSCRI(std::ifstream& in_File, char* Buffer
   //read potion script ID
   memset(Buffer, '\0', 256);
   in_File.read(Buffer, SubLength);
+  BytesRead += SubLength;
   if (!in_File.good())
   {
     std::cout << "Error while reading subrecord SCRI of ALCH.\n";

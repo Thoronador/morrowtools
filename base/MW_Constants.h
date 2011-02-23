@@ -120,6 +120,7 @@ const int32_t cSSCR = 0x52435353; //"SSCR" = 53 53 43 52
 const int32_t cSTAT = 0x54415453; //"STAT" = 53 54 41 54
 const int32_t cSTRV = 0x56525453; //"STRV" = 53 54 52 56
 const int32_t cTES3 = 0x33534554; //"TES3" = 54 45 53 33
+const int32_t cTNAM = 0x4D414E54; //"TNAM" = 54 4E 41 4D
 const int32_t cTEXT = 0x54584554; //"TEXT" = 54 45 58 54
 const int32_t cVCLR = 0x524C4356; //"VCLR" = 56 43 4C 52
 const int32_t cVHGT = 0x54474856; //"VHGT" = 56 48 47 54

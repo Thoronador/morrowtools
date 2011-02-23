@@ -125,7 +125,7 @@ bool DialogueTopicRecord::loadFromStream(std::ifstream& in_File)
   }
   DialogueID = std::string(Buffer);
 
-  //read DTA
+  //read DATA
   in_File.read((char*) &SubRecName, 4);
   if (SubRecName!=cDATA)
   {

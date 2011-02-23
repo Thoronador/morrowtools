@@ -23,8 +23,9 @@
 
 #include <string>
 #include <fstream>
+#include "BasicRecord.h"
 
-struct LandscapeTextureRecord
+struct LandscapeTextureRecord: public BasicRecord
 {
   std::string TextureID;
   int32_t Index;

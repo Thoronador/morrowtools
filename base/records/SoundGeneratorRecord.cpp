@@ -40,8 +40,7 @@ bool SoundGeneratorRecord::equals(const SoundGeneratorRecord& other) const
 bool SoundGeneratorRecord::saveToStream(std::ofstream& output) const
 {
   output.write((char*) &cSNDG, 4);
-  int32_t Size, HeaderOne, H_Flags;
-  HeaderOne = H_Flags = 0;
+  int32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
         +Name.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* DATA */ +4 /* DATA's length */ +4 /*size of sound gen data (DATA)*/
@@ -53,9 +52,8 @@ bool SoundGeneratorRecord::saveToStream(std::ofstream& output) const
           +CreatureID.length()+1; /* length of ID +1 byte for NUL termination */
   }
   output.write((char*) &Size, 4);
-  #warning HeaderOne and H_Flags might not be initialized properly!
   output.write((char*) &HeaderOne, 4);
-  output.write((char*) &H_Flags, 4);
+  output.write((char*) &HeaderFlags, 4);
 
   /*Sound Generator:
     NAME = Name? (DEFAULT0001, ALIT0001, etc...)
@@ -107,10 +105,10 @@ bool SoundGeneratorRecord::saveToStream(std::ofstream& output) const
 
 bool SoundGeneratorRecord::loadFromStream(std::ifstream& in_File)
 {
-  int32_t Size, HeaderOne, H_Flags;
+  int32_t Size;
   in_File.read((char*) &Size, 4);
   in_File.read((char*) &HeaderOne, 4);
-  in_File.read((char*) &H_Flags, 4);
+  in_File.read((char*) &HeaderFlags, 4);
 
   /*Sound Generator:
     NAME = Name? (DEFAULT0001, ALIT0001, etc...)

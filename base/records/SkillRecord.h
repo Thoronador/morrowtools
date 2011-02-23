@@ -23,6 +23,7 @@
 
 #include <string>
 #include <fstream>
+#include "BasicRecord.h"
 
 //constants for skill indices
 const int32_t SkillBlock = 0;
@@ -60,7 +61,7 @@ const int32_t cSpecializationMagic = 1;
 const int32_t cSpecializationStealth = 2;
 
 //record type for skill data
-struct SkillRecord
+struct SkillRecord: public BasicRecord
 {
   int32_t SkillIndex;
   int32_t Attribute;

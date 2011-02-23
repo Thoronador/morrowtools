@@ -102,7 +102,7 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Spell Renamer for Morrowind, version 0.1_rev053, 2011-02-20\n";
+  std::cout << "Spell Renamer for Morrowind, version 0.1_rev063, 2011-02-24\n";
 }
 
 int main(int argc, char **argv)
@@ -557,7 +557,7 @@ int main(int argc, char **argv)
         if (MagicEffects::getSingleton().hasEffect(rec.Enchs.at(0).EffectID))
         {
           const int school = MagicEffects::getSingleton().getEffect(rec.Enchs.at(0).EffectID).SpellSchool;
-          if (school<0 or school>=prefixes.size())
+          if ((school<0) or (school>=prefixes.size()))
           {
             std::cout << "Error: effect "<<rec.Enchs.at(0).EffectID<<" has an "
                       << "invalid spell school index of "<<school<<".\n";

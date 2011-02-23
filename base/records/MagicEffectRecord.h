@@ -23,6 +23,7 @@
 
 #include <string>
 #include <fstream>
+#include "BasicRecord.h"
 
 //spell schools
 const int32_t cAlteration = 0;
@@ -37,7 +38,7 @@ const int32_t FlagSpellmaking = 0x0200;
 const int32_t FlagEnchanting = 0x0400;
 const int32_t FlagNegative = 0x0800;
 
-struct MGEF_Data
+struct MGEF_Data: public BasicRecord
 {
   int32_t Index;
   int32_t SpellSchool;

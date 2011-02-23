@@ -23,8 +23,9 @@
 
 #include <string>
 #include <fstream>
+#include "BasicRecord.h"
 
-struct StartScriptRecord
+struct StartScriptRecord: public BasicRecord
 {
   std::string Data;
   std::string Name;

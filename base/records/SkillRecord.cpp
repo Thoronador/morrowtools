@@ -34,16 +34,14 @@ bool SkillRecord::equals(const SkillRecord& other) const
 bool SkillRecord::saveToStream(std::ofstream& output) const
 {
   output.write((char*) &cSKIL, 4);
-  int32_t Size, HeaderOne, H_Flags;
-  HeaderOne = H_Flags = 0;
+  int32_t Size;
   Size = 4 /* INDX */ +4 /* 4 bytes for length */ +4 /* 4 bytes for index */
         +4 /* SKDT */ +4 /* 4 bytes for length */ +24 /* 24 bytes for Skill data */
         +4 /* DESC */ +4 /* 4 bytes for length */
         +Description.length()+1 /* length of description +1 for NUL-termination */;
   output.write((char*) &Size, 4);
-  #warning HeaderOne and H_Flags might not be initialized properly!
   output.write((char*) &HeaderOne, 4);
-  output.write((char*) &H_Flags, 4);
+  output.write((char*) &HeaderFlags, 4);
 
   /*Skills:
     INDX = Skill ID (4 bytes, long)
@@ -85,10 +83,10 @@ bool SkillRecord::saveToStream(std::ofstream& output) const
 
 bool SkillRecord::loadFromStream(std::ifstream& in_File)
 {
-  int32_t Size, HeaderOne, Flags;
+  int32_t Size;
   in_File.read((char*) &Size, 4);
   in_File.read((char*) &HeaderOne, 4);
-  in_File.read((char*) &Flags, 4);
+  in_File.read((char*) &HeaderFlags, 4);
 
   /*Skills:
     INDX = Skill ID (4 bytes, long)

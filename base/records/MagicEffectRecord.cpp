@@ -41,8 +41,7 @@ bool MGEF_Data::saveToStream(std::ofstream& output) const
 {
   //write MGEF
   output.write((char*) &cMGEF, 4);
-  int32_t Size, HeaderOne, HeaderFlags;
-  HeaderOne = HeaderFlags = 0;
+  int32_t Size;
   Size = 4 /* INDX */ +4 /* four bytes for length */ +4 /* length of index */
         +4 /* MEDT */ +4 /* four bytes for length */ +36 /* length of effect data */
         +4 /* ITEX */ +4 /* four bytes for length */
@@ -96,7 +95,6 @@ bool MGEF_Data::saveToStream(std::ofstream& output) const
   }
 
   output.write((char*) &Size, 4);
-  #warning HeaderOne and H_Flags might not be initialized properly!
   output.write((char*) &HeaderOne, 4);
   output.write((char*) &HeaderFlags, 4);
 
@@ -279,10 +277,10 @@ bool MGEF_Data::saveToStream(std::ofstream& output) const
 
 bool MGEF_Data::loadFromStream(std::ifstream& in_File)
 {
-  int32_t Size, HeaderOne, H_Flags;
+  int32_t Size;
   in_File.read((char*) &Size, 4);
   in_File.read((char*) &HeaderOne, 4);
-  in_File.read((char*) &H_Flags, 4);
+  in_File.read((char*) &HeaderFlags, 4);
 
   /*Magic effects:
     INDX = The Effect ID (4 bytes, long)
@@ -437,6 +435,11 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
            //read effect string
            memset(Buffer, '\0', 1024);
            in_File.read(Buffer, SubLength);
+           if (!in_File.good())
+           {
+             std::cout << "Error while reading subrecord CVFX of MGEF.\n";
+             return false;
+           }
            CastingVisual = std::string(Buffer);
            //read next optional header
            in_File.read((char*) &SubRecName, 4);
@@ -447,6 +450,11 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
            //read effect string
            memset(Buffer, '\0', 1024);
            in_File.read(Buffer, SubLength);
+           if (!in_File.good())
+           {
+             std::cout << "Error while reading subrecord BVFX of MGEF.\n";
+             return false;
+           }
            BoltVisual = std::string(Buffer);
            //read next optional header
            in_File.read((char*) &SubRecName, 4);
@@ -457,6 +465,11 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
            //read effect string
            memset(Buffer, '\0', 1024);
            in_File.read(Buffer, SubLength);
+           if (!in_File.good())
+           {
+             std::cout << "Error while reading subrecord HVFX of MGEF.\n";
+             return false;
+           }
            HitVisual = std::string(Buffer);
            //read next optional header
            in_File.read((char*) &SubRecName, 4);
@@ -467,6 +480,11 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
            //read effect string
            memset(Buffer, '\0', 1024);
            in_File.read(Buffer, SubLength);
+           if (!in_File.good())
+           {
+             std::cout << "Error while reading subrecord AVFX of MGEF.\n";
+             return false;
+           }
            AreaVisual = std::string(Buffer);
            //read next optional header
            in_File.read((char*) &SubRecName, 4);
@@ -477,6 +495,11 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
            //read effect description
            memset(Buffer, '\0', 1024);
            in_File.read(Buffer, SubLength);
+           if (!in_File.good())
+           {
+             std::cout << "Error while reading subrecord DESC of MGEF.\n";
+             return false;
+           }
            Description = std::string(Buffer);
            //read next optional header
            in_File.read((char*) &SubRecName, 4);
@@ -487,6 +510,11 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
            //read sound string
            memset(Buffer, '\0', 1024);
            in_File.read(Buffer, SubLength);
+           if (!in_File.good())
+           {
+             std::cout << "Error while reading subrecord CSND of MGEF.\n";
+             return false;
+           }
            CastSound = std::string(Buffer);
            //read next optional header
            in_File.read((char*) &SubRecName, 4);
@@ -497,6 +525,11 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
            //read sound string
            memset(Buffer, '\0', 1024);
            in_File.read(Buffer, SubLength);
+           if (!in_File.good())
+           {
+             std::cout << "Error while reading subrecord BSND of MGEF.\n";
+             return false;
+           }
            BoltSound = std::string(Buffer);
            //read next optional header
            in_File.read((char*) &SubRecName, 4);
@@ -507,6 +540,11 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
            //read sound string
            memset(Buffer, '\0', 1024);
            in_File.read(Buffer, SubLength);
+           if (!in_File.good())
+           {
+             std::cout << "Error while reading subrecord HSND of MGEF.\n";
+             return false;
+           }
            HitSound = std::string(Buffer);
            //read next optional header
            in_File.read((char*) &SubRecName, 4);
@@ -517,6 +555,11 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
            //read sound string
            memset(Buffer, '\0', 1024);
            in_File.read(Buffer, SubLength);
+           if (!in_File.good())
+           {
+             std::cout << "Error while reading subrecord ASND of MGEF.\n";
+             return false;
+           }
            AreaSound = std::string(Buffer);
            //read next optional header
            in_File.read((char*) &SubRecName, 4);

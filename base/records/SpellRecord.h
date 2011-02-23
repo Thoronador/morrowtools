@@ -25,6 +25,7 @@
 #include <string>
 #include <vector>
 #include "../Enchantment.h"
+#include "BasicRecord.h"
 
 const int32_t stSpell = 0;
 const int32_t stAbility = 1;
@@ -37,7 +38,7 @@ const int32_t sfAutoCalcCosts = 1;
 const int32_t sfPCStartSpell = 2;
 const int32_t sfAlwaysSucceeds = 4;
 
-struct SpellRecord
+struct SpellRecord: public BasicRecord
 {
   std::string SpellID;
   std::string Name;

@@ -42,17 +42,15 @@ bool SoundRecord::equals(const SoundRecord& other) const
 bool SoundRecord::saveToStream(std::ofstream& output) const
 {
   output.write((char*) &cSOUN, 4);
-  int32_t Size, HeaderOne, H_Flags;
-  HeaderOne = H_Flags = 0;
+  int32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
         +SoundID.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* FNAM */ +4 /* 4 bytes for FNAM's length */
         +Filename.length()+1 /*length of name plus one for NUL-termination */
         +4 /* DATA */ +4 /* DATA's length */ +3 /*size of sound data (DATA)*/;
   output.write((char*) &Size, 4);
-  #warning HeaderOne and H_Flags might not be initialized properly!
   output.write((char*) &HeaderOne, 4);
-  output.write((char*) &H_Flags, 4);
+  output.write((char*) &HeaderFlags, 4);
 
   /*Sound:
     NAME = Sound ID
@@ -94,10 +92,10 @@ bool SoundRecord::saveToStream(std::ofstream& output) const
 
 bool SoundRecord::loadFromStream(std::ifstream& in_File)
 {
-  int32_t Size, HeaderOne, H_Flags;
+  int32_t Size;
   in_File.read((char*) &Size, 4);
   in_File.read((char*) &HeaderOne, 4);
-  in_File.read((char*) &H_Flags, 4);
+  in_File.read((char*) &HeaderFlags, 4);
 
   /*Sound:
     NAME = Sound ID

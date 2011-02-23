@@ -23,8 +23,9 @@
 
 #include <string>
 #include <fstream>
+#include "BasicRecord.h"
 
-struct StaticRecord
+struct StaticRecord: public BasicRecord
 {
   std::string StaticID;
   std::string Mesh;

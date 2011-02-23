@@ -23,8 +23,9 @@
 
 #include <string>
 #include <fstream>
+#include "BasicRecord.h"
 
-struct SoundRecord
+struct SoundRecord: public BasicRecord
 {
   std::string SoundID;
   std::string Filename;

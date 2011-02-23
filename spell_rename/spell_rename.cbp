@@ -42,6 +42,8 @@
 		<Unit filename="..\base\MagicEffects.h" />
 		<Unit filename="..\base\Spells.cpp" />
 		<Unit filename="..\base\Spells.h" />
+		<Unit filename="..\base\records\BasicRecord.cpp" />
+		<Unit filename="..\base\records\BasicRecord.h" />
 		<Unit filename="..\base\records\GMSTRecord.cpp" />
 		<Unit filename="..\base\records\GMSTRecord.h" />
 		<Unit filename="..\base\records\MagicEffectRecord.cpp" />

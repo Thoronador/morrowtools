@@ -43,16 +43,14 @@ bool StartScriptRecord::equals(const StartScriptRecord& other) const
 bool StartScriptRecord::saveToStream(std::ofstream& output) const
 {
   output.write((char*) &cSSCR, 4);
-  int32_t Size, HeaderOne, H_Flags;
-  HeaderOne = H_Flags = 0;
+  int32_t Size;
   Size = 4 /* DATA */ +4 /* 4 bytes for length */
         +Data.length()+1 /* length of sequence (no NUL termination) */
         +4 /* NAME */ +4 /* 4 bytes for length */
         +Name.length() /* length of name (no NUL termination) */;
   output.write((char*) &Size, 4);
-  #warning HeaderOne and H_Flags might not be initialized properly!
   output.write((char*) &HeaderOne, 4);
-  output.write((char*) &H_Flags, 4);
+  output.write((char*) &HeaderFlags, 4);
 
   /*Start Script(?): (no documentation known)
     DATA = ? (a sequence of digits)
@@ -78,10 +76,10 @@ bool StartScriptRecord::saveToStream(std::ofstream& output) const
 
 bool StartScriptRecord::loadFromStream(std::ifstream& in_File)
 {
-  int32_t Size, HeaderOne, H_Flags;
+  int32_t Size;
   in_File.read((char*) &Size, 4);
   in_File.read((char*) &HeaderOne, 4);
-  in_File.read((char*) &H_Flags, 4);
+  in_File.read((char*) &HeaderFlags, 4);
 
   /*Start Script(?): (no documentation known)
     DATA = ? (a sequence of digits)

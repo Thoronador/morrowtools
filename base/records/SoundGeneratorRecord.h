@@ -23,8 +23,9 @@
 
 #include <string>
 #include <fstream>
+#include "BasicRecord.h"
 
-struct SoundGeneratorRecord
+struct SoundGeneratorRecord: public BasicRecord
 {
   std::string Name;
   int32_t Type;

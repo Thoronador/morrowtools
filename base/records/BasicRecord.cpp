@@ -25,3 +25,9 @@ BasicRecord::BasicRecord()
   HeaderOne = 0;
   HeaderFlags = 0;
 }
+
+BasicRecord::~BasicRecord()
+{
+  //empty
+  //Purpose is to have a virtual destructor to get rid of compiler warnings.
+}

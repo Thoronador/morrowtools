@@ -60,8 +60,7 @@ bool BirthSignRecord::equals(const BirthSignRecord& other) const
 bool BirthSignRecord::saveToStream(std::ofstream& output) const
 {
   output.write((char*) &cBSGN, 4);
-  int32_t Size, HeaderOne, H_Flags;
-  HeaderOne = H_Flags = 0;
+  int32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
         +BirthSignID.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* FNAM */ +4 /* 4 bytes for length */
@@ -72,9 +71,8 @@ bool BirthSignRecord::saveToStream(std::ofstream& output) const
         +Description.length()+1 /* length of name +1 byte for NUL termination */
         +SignSpells.size()*(4 /* NPCS */ +4 /* 4 bytes for length */ +32 /* fixed length of 32 bytes - rest is filled with NUL */);
   output.write((char*) &Size, 4);
-  #warning HeaderOne and H_Flags might not be initialized properly!
   output.write((char*) &HeaderOne, 4);
-  output.write((char*) &H_Flags, 4);
+  output.write((char*) &HeaderFlags, 4);
 
   /*Birth Sign
 	NAME = Sign ID string
@@ -140,10 +138,10 @@ bool BirthSignRecord::saveToStream(std::ofstream& output) const
 
 bool BirthSignRecord::loadFromStream(std::ifstream& in_File)
 {
-  int32_t Size, HeaderOne, H_Flags;
+  int32_t Size;
   in_File.read((char*) &Size, 4);
   in_File.read((char*) &HeaderOne, 4);
-  in_File.read((char*) &H_Flags, 4);
+  in_File.read((char*) &HeaderFlags, 4);
 
   /*Birth Sign
     NAME = Sign ID string

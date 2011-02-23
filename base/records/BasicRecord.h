@@ -29,6 +29,9 @@ struct BasicRecord
     /* constructor */
     BasicRecord();
 
+    /* destructor */
+    virtual ~BasicRecord();
+
     /* writes the record to the given output stream and returns true on success
 
       parameters:

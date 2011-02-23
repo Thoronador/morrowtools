@@ -24,8 +24,9 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include "BasicRecord.h"
 
-struct BirthSignRecord
+struct BirthSignRecord: public BasicRecord
 {
   std::string BirthSignID;
   std::string Name;

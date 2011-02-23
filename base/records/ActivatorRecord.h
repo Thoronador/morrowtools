@@ -23,8 +23,9 @@
 
 #include <string>
 #include <fstream>
+#include "BasicRecord.h"
 
-struct ActivatorRecord
+struct ActivatorRecord: public BasicRecord
 {
   std::string ActivatorID;
   std::string ModelPath;

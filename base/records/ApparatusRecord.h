@@ -22,8 +22,9 @@
 #define APPARATUSRECORD_H
 
 #include <string>
+#include "BasicRecord.h"
 
-struct ApparatusRecord
+struct ApparatusRecord: public BasicRecord
 {
   std::string ApparatusID;
   std::string Model;

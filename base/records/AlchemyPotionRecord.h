@@ -24,9 +24,10 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include "BasicRecord.h"
 #include "../Enchantment.h"
 
-struct AlchemyPotionRecord
+struct AlchemyPotionRecord: public BasicRecord
 {
   public:
     std::string AlchemyID;

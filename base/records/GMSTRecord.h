@@ -22,10 +22,11 @@
 #define GMSTRECORD_H
 
 #include <string>
+#include "BasicRecord.h"
 
 enum GMSTType {gtInteger, gtFloat, gtString};
 
-struct GMSTRecord
+struct GMSTRecord: public BasicRecord
 {
   std::string SettingName;
   GMSTType Type;

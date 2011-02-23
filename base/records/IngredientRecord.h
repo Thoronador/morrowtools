@@ -23,6 +23,7 @@
 
 #include <string>
 #include <fstream>
+#include "BasicRecord.h"
 
 /*Ingredients:
     NAME = Item ID, required
@@ -37,7 +38,7 @@
     ITEX = Inventory Icon
     SCRI = Script Name (optional) */
 
-struct IngredRec
+struct IngredRec: public BasicRecord
 {
   /* constructor */
   IngredRec();

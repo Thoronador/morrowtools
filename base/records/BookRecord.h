@@ -23,8 +23,9 @@
 
 #include <string>
 #include <fstream>
+#include "BasicRecord.h"
 
-struct BookRecord
+struct BookRecord: public BasicRecord
 {
   public:
     std::string BookID;

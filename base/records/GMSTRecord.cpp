@@ -52,8 +52,7 @@ bool GMSTRecord::saveToStream(std::ofstream& output) const
 {
   //write GMST
   output.write((char*) &cGMST, 4);
-  int32_t Size, HeaderOne, HeaderFlags;
-  HeaderOne = HeaderFlags = 0;
+  int32_t Size;
   Size = 4 /* NAME */ +4 /* four bytes for length */
         +SettingName.length() /* length of ID */
         +4 /* STRV/ INTV/ FLTV */ + 4 /* four bytes for length of data */;
@@ -68,7 +67,6 @@ bool GMSTRecord::saveToStream(std::ofstream& output) const
          break;
   }//swi
   output.write((char*) &Size, 4);
-  #warning HeaderOne and H_Flags might not be initialized properly!
   output.write((char*) &HeaderOne, 4);
   output.write((char*) &HeaderFlags, 4);
 
@@ -120,10 +118,10 @@ bool GMSTRecord::saveToStream(std::ofstream& output) const
 
 bool GMSTRecord::loadFromStream(std::ifstream& in_File)
 {
-  int32_t Size, HeaderOne, Flags;
+  int32_t Size;
   in_File.read((char*) &Size, 4);
   in_File.read((char*) &HeaderOne, 4);
-  in_File.read((char*) &Flags, 4);
+  in_File.read((char*) &HeaderFlags, 4);
 
   /*GMST: Game Setting
     NAME = Setting ID string

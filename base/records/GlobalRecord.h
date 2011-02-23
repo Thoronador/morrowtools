@@ -23,10 +23,11 @@
 
 #include <string>
 #include <fstream>
+#include "BasicRecord.h"
 
 enum GlobalType {globShort, globLong, globFloat};
 
-struct GlobalRecord
+struct GlobalRecord: public BasicRecord
 {
   std::string GlobalID;
   GlobalType Type;

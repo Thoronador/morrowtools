@@ -23,8 +23,9 @@
 
 #include <string>
 #include <fstream>
+#include "BasicRecord.h"
 
-struct BodyPartRecord
+struct BodyPartRecord: public BasicRecord
 {
   std::string BodyPartID;
   std::string MeshPath;

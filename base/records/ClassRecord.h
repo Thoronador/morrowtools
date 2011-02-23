@@ -23,8 +23,9 @@
 
 #include <string>
 #include <fstream>
+#include "BasicRecord.h"
 
-struct ClassRecord
+struct ClassRecord: public BasicRecord
 {
   std::string ClassID;
   std::string Name;

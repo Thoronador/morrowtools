@@ -23,8 +23,9 @@
 
 #include <string>
 #include <fstream>
+#include "BasicRecord.h"
 
-struct DialogueTopicRecord
+struct DialogueTopicRecord: public BasicRecord
 {
   std::string DialogueID;
   uint8_t Type;

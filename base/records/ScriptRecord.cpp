@@ -50,14 +50,55 @@ ScriptRecord::ScriptRecord(const ScriptRecord& source)
   //copy the script data
   if (source.ScriptData==NULL)
   {
+    /** I know there's a possible memory leak here in the next line, but
+      changing that will crash the programme that uses lots of ScriptRecords
+      for no obvious reason.
+    */
     ScriptData = NULL;
   }
   else
   {
+    /** I know there's a possible memory leak here in the next line, but
+      changing that will crash the programme that uses lots of ScriptRecords
+      for no obvious reason.
+    */
     ScriptData = new char[ScriptDataSize];
     memcpy(ScriptData, source.ScriptData, ScriptDataSize);
   }
   ScriptText = source.ScriptText;
+}
+
+ScriptRecord& ScriptRecord::operator=(const ScriptRecord& rhs)
+{
+  //script header
+  ScriptID = rhs.ScriptID;
+  NumShorts = rhs.NumShorts;
+  NumLongs = rhs.NumLongs;
+  NumFloats = rhs.NumFloats;
+  ScriptDataSize = rhs.ScriptDataSize;
+  LocalVarSize = rhs.LocalVarSize;
+  //end of script header
+  LocalVars = rhs.LocalVars;
+  //copy the script data
+  if (rhs.ScriptData==NULL)
+  {
+    /** I know there's a possible memory leak here in the next line, but
+      changing that will crash the programme that uses lots of ScriptRecords
+      for no obvious reason.
+    */
+    ScriptData = NULL;
+  }
+  else
+  {
+    /** I know there's a possible memory leak here in the next line, but
+      changing that will crash the programme that uses lots of ScriptRecords
+      for no obvious reason.
+    */
+    ScriptData = new char[ScriptDataSize];
+    memcpy(ScriptData, rhs.ScriptData, ScriptDataSize);
+  }
+  ScriptText = rhs.ScriptText;
+  return *this;
 }
 
 ScriptRecord::~ScriptRecord()

@@ -44,6 +44,9 @@ struct ScriptRecord: public BasicRecord
   /* copy constructor */
   ScriptRecord(const ScriptRecord& source);
 
+  /* assignment operator */
+  ScriptRecord& operator=(const ScriptRecord& rhs);
+
   /* destructor */
   ~ScriptRecord();
 

@@ -31,6 +31,32 @@ void CompiledChunk::pushCode(const uint16_t code)
   data.push_back(code>>8);
 }
 
+void CompiledChunk::pushString(const std::string& str)
+{
+  unsigned int i;
+  const unsigned int len = str.length();
+  for (i=0; i<len; ++i)
+  {
+    data.push_back(str[i]);
+  }//for
+}
+
+//tries to get the integer representation of a string
+uint16_t stringToShort(const std::string& str)
+{
+  uint16_t result = 0;
+  unsigned int i;
+  for (i=0; i<str.length(); ++i)
+  {
+    if ((str.at(i)>='0') and (str.at(i)<='9'))
+    {
+      result = result * 10;
+      result = result + (str.at(i)-'0');
+    }//if
+  }//for
+  return result;
+}
+
 void trimLeft(std::string& str1)
 {
   if (str1=="") return;
@@ -100,6 +126,57 @@ void trim(std::string& str1)
   trimRight(str1);
   return;
 } //end of trim
+
+void StripEnclosingQuotes(std::string& str1)
+{
+  if ((str1=="") or (str1.length()<2)) return;
+  if ((str1.at(0)=='"') and (str1.at(str1.length()-1)=='"'))
+  {
+    str1 = str1.substr(1, str1.length()-2);
+  }
+  return;
+}
+
+std::vector<std::string> explodeParams(const std::string& source)
+{
+  std::vector<std::string> result;
+  if (source.empty()) return result;
+
+  const unsigned int len = source.length();
+  unsigned int look = 0;
+  unsigned int offset = 0;
+  bool insideQuote = false;
+  while (look<len)
+  {
+    if (source.at(look)=='"')
+    {
+      insideQuote = not insideQuote;
+    }
+    else if ((not insideQuote) and ((source.at(look)==' ') or (source.at(look)==',')))
+    {
+      //found a place where to split
+      unsigned int len = look-offset;
+      if (len>0)//skip empty params
+      {
+        result.push_back(source.substr(offset, len));
+        StripEnclosingQuotes(result.back());
+      }//if
+      offset=look+1;
+    }//else
+    ++look;
+  }//while
+  //add the rest, if not finished yet
+  if (offset<len)
+  {
+    result.push_back(source.substr(offset));
+    StripEnclosingQuotes(result.back());
+  }
+  if (insideQuote)
+  {
+    std::cout << "Warning: explodeParams: Quotes did not match!\n";
+  }
+  return result;
+}
 
 std::string lowerCase(const std::string& str1)
 {
@@ -233,6 +310,45 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       }
       varsFloat.push_back(WorkString);
     }//if float
+    //check for Journal
+    else if (lowerCase(lines.at(i).substr(0,8))=="journal ")
+    {
+      CompiledData.pushCode(CodeJournal);
+      WorkString = lines.at(i).substr(8);
+      trimLeft(WorkString);
+      std::vector<std::string> params = explodeParams(WorkString);
+      if (params.size() != 2)
+      {
+        std::cout << "ScriptCompiler: Error: Journal command expects two params"
+                  << ", not "<<params.size()<<".\n";
+        return false;
+      }
+      StripEnclosingQuotes(params[0]);
+      //push journal ID's length
+      CompiledData.data.push_back(params[0].length());
+      CompiledData.pushString(params[0]);
+      //second parameter should be index
+      CompiledData.pushCode(stringToShort(params[1]));
+      //fill data so it's four bytes
+      CompiledData.data.push_back(255);
+      CompiledData.data.push_back(255);
+    }//if StopScript
+
+    //check for StopScript
+    else if (lowerCase(lines.at(i).substr(0,11))=="stopscript ")
+    {
+      CompiledData.pushCode(CodeStopScript);
+      WorkString = lines.at(i).substr(11);
+      trimLeft(WorkString);
+      StripEnclosingQuotes(WorkString);
+      CompiledData.data.push_back(WorkString.length());
+      CompiledData.pushString(WorkString);
+    }//if StopScript
+    //check for return
+    else if (lowerCase(lines.at(i))=="return")
+    {
+      CompiledData.pushCode(CodeReturn);
+    }//if return found
     //check for end of script
     else if ((lowerCase(lines.at(i))=="end") or (lowerCase(lines.at(i).substr(0,4))=="end "))
     {
@@ -255,6 +371,8 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
     return false;
   }
 
+
+  /***** copy the data into result *****/
   //set result values
   result.NumShorts = varsShort.size();
   result.NumLongs = varsLong.size();
@@ -292,7 +410,7 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
   result.ScriptDataSize = CompiledData.data.size();
 
   /// TODO: properly transform data of CompiledChunk into result.ScriptData
-  /** memory leak here **/
+  /** possible memory leak here **/
   result.ScriptData = new char[CompiledData.data.size()];
   //fill
   for (i=0; i<CompiledData.data.size(); ++i)

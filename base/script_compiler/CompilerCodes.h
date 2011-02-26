@@ -26,6 +26,9 @@ namespace ScriptCompiler
   /* op-codes for scripts' compiled data */
   const uint16_t CodeEnd   = 0x0101; //"0101"
   //const uint16_t CodeEndif = 0x0109; //"0901"
+  const uint16_t CodeJournal = 0x10CC; //"CC10"
+  const uint16_t CodeReturn = 0x0124; //"2401"
+  const uint16_t CodeStopScript = 0x101C; //"1C10"
 } //namespace
 
 #endif // COMPILERCODES_H

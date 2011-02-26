@@ -39,6 +39,13 @@ struct CompiledChunk
          code - the op-code
   */
   void pushCode(const uint16_t code);
+
+  /* pushes a string onto the back of the data
+
+     parameters:
+         str - the string
+  */
+  void pushString(const std::string& str);
 }; //struct
 
 /* removes all leading and trailing spaces and (horizontal) tabulators from the
@@ -49,6 +56,15 @@ struct CompiledChunk
 
 */
 void trim(std::string& str1);
+
+/* removes the first and the last character of the given string, if they both
+   are double quotes. For example, '"ABC"' becomes 'ABC'.
+
+   parameters:
+       str1 - the affected string
+
+*/
+void StripEnclosingQuotes(std::string& str1);
 
 /* This function tries to "compile" the script given in text and stores the
    compiled script in result. If the function succeeded, true is returned. If an

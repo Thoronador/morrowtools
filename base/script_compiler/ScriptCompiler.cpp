@@ -41,6 +41,12 @@ void CompiledChunk::pushString(const std::string& str)
   }//for
 }
 
+SC_VarRef::SC_VarRef(const SC_VarType t, const uint16_t i)
+{
+  Type = t;
+  Index = i;
+}
+
 //tries to get the integer representation of a string
 uint16_t stringToShort(const std::string& str)
 {
@@ -196,6 +202,40 @@ std::string lowerCase(const std::string& str1)
   return result;
 }
 
+SC_VarRef getVariableTypeWithIndex(const std::string& varName, const std::vector<std::string>& vShorts,
+                  const std::vector<std::string>& vLongs, const std::vector<std::string>& vFloats)
+{
+  const std::string lcVar = lowerCase(varName);
+  unsigned int i;
+  //check list of shorts
+  for (i=0; i<vShorts.size(); ++i)
+  {
+    if (lcVar==lowerCase(vShorts.at(i)))
+    {
+      return SC_VarRef(vtShort, i+1);
+    }
+  }//for
+  //check list of longs
+  for (i=0; i<vLongs.size(); ++i)
+  {
+    if (lcVar==lowerCase(vLongs.at(i)))
+    {
+      return SC_VarRef(vtLong, i+1);
+    }
+  }//for
+  //check list of floats
+  for (i=0; i<vFloats.size(); ++i)
+  {
+    if (lcVar==lowerCase(vFloats.at(i)))
+    {
+      return SC_VarRef(vtFloat, i+1);
+    }
+  }//for
+  //if we get to this point, nothing was found and it has to be a non-local var,
+  // i.e. a global (or some other kind of expression we can't identify yet).
+  return SC_VarRef(vtGlobal, 0);
+}
+
 bool CompileScript(const std::string& Text, ScriptRecord& result)
 {
   std::vector<std::string> lines;
@@ -333,6 +373,84 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       CompiledData.data.push_back(255);
       CompiledData.data.push_back(255);
     }//if Journal
+    //check for Set
+    else if (lowerCase(lines.at(i).substr(0,4))=="set ")
+    {
+      CompiledData.pushCode(CodeSet);
+      WorkString = lines.at(i).substr(4);
+      trimLeft(WorkString);
+      WorkString = lowerCase(WorkString);
+      //now select the bits of "set variable To value/expression"
+      const std::string::size_type pos = WorkString.find(" to ");
+      if (pos==std::string::npos)
+      {
+        std::cout << "ScriptCompiler: Error: Set statement has to be like "
+                  << "'set variable to value', but no 'to' was found.\n";
+        return false;
+      }
+      std::string varName = WorkString.substr(0, pos);
+      trim(varName);
+      //now search for the variable name
+      SC_VarRef ref = getVariableTypeWithIndex(varName, varsShort, varsLong, varsFloat);
+      if (ref.Type!=vtGlobal)
+      {
+        //push type indicator
+        switch(ref.Type)
+        {
+          case vtShort:
+               CompiledData.data.push_back('s');
+               break;
+          case vtLong:
+               CompiledData.data.push_back('l');
+               break;
+          case vtFloat:
+               CompiledData.data.push_back('f');
+               break;
+        }//switch
+        //push index (one byte)
+        CompiledData.data.push_back((ref.Index)&255);
+        //fill byte
+        CompiledData.data.push_back(0);
+      }
+      else
+      {
+        //global var identifier or more complex expression found
+        // So we assume global here.
+        //push type indicator - G for global
+        CompiledData.data.push_back('G');
+        //push length of global name
+        CompiledData.data.push_back(varName.length());
+        //push name
+        CompiledData.pushString(varName);
+      }//else
+      //get stuff after keyword "to"
+      WorkString.erase(0, pos+4); //pos is position of " to " (including spaces)
+                                  //We add four to get rid of "to" and both spaces, too.
+      trimLeft(WorkString);
+      if (WorkString=="")
+      {
+        std::cout << "ScriptCompiler: Error: empty value/expression at end of "
+                  << "SET statement.\n";
+        return false;
+      }
+      //assume literal value, i.e. "123.4", "5" or something like that
+      /* Literal: We can push the value's length +1 space byte for stack push-op.
+         <length> <space> <literal as string>
+         Where: <length> is the length of the data, including space
+                <space>  is a space character (' ')
+                <literal as string> - the name says it
+      */
+      //push length
+      CompiledData.data.push_back(WorkString.length()+1);
+      //push space (=stack push operator)
+      CompiledData.data.push_back(' ');//space is used as push by MW's interpreter
+      //push value, finally
+      CompiledData.pushString(WorkString);
+      //We are basically done, but issue a warning for cases where the last part
+      // is not a literal value.
+      std::cout << "ScriptCompiler: Warning: Set statement not completely "
+                << "implemented yet.\n";
+    }//if Set
     //check for StartScript
     else if (lowerCase(lines.at(i).substr(0,12))=="startscript ")
     {
@@ -373,7 +491,6 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
 
   }//for
 
-  std::cout << "Debug: SC done. Name is \""<<ScriptName<<"\". Shorts: "<<varsShort.size()<<", Longs: "<<varsLong.size()<<", Floats: "<<varsFloat.size()<<"\n";
   if (!EndLineFound)
   {
     std::cout << "ScriptCompiler: Error: there is no End line in the script!\n";

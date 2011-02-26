@@ -48,6 +48,17 @@ struct CompiledChunk
   void pushString(const std::string& str);
 }; //struct
 
+enum SC_VarType {vtShort, vtLong, vtFloat, vtGlobal};
+
+struct SC_VarRef
+{
+  SC_VarType Type;
+  uint16_t Index;
+
+  /* constructor */
+  SC_VarRef(const SC_VarType t, const uint16_t i);
+};//struct
+
 /* removes all leading and trailing spaces and (horizontal) tabulators from the
    given string
 

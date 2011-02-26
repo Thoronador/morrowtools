@@ -332,8 +332,17 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       //fill data so it's four bytes
       CompiledData.data.push_back(255);
       CompiledData.data.push_back(255);
-    }//if StopScript
-
+    }//if Journal
+    //check for StartScript
+    else if (lowerCase(lines.at(i).substr(0,12))=="startscript ")
+    {
+      CompiledData.pushCode(CodeStartScript);
+      WorkString = lines.at(i).substr(12);
+      trimLeft(WorkString);
+      StripEnclosingQuotes(WorkString);
+      CompiledData.data.push_back(WorkString.length());
+      CompiledData.pushString(WorkString);
+    }//if StartScript
     //check for StopScript
     else if (lowerCase(lines.at(i).substr(0,11))=="stopscript ")
     {

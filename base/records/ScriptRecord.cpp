@@ -23,8 +23,6 @@
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 
-const char NULof32[32] = "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
-
 ScriptRecord::ScriptRecord()
 {
   //script header

@@ -24,6 +24,8 @@
 #include <string>
 #include <fstream>
 
+const char NULof32[32] = "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
+
 //converting "integer strings" to real C++ string
 std::string IntTo4Char(const int32_t value);
 //helper function for message on wrong records

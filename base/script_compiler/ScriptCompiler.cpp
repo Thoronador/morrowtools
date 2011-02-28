@@ -236,6 +236,102 @@ SC_VarRef getVariableTypeWithIndex(const std::string& varName, const std::vector
   return SC_VarRef(vtGlobal, 0);
 }
 
+bool ScriptFunctions(const std::string& line, CompiledChunk& chunk)
+{
+  if (line=="") return false;
+  const std::string lowerLine = lowerCase(line);
+  if (lowerLine=="forcesneak")
+  {
+    chunk.pushCode(CodeForceSneak);
+    return true;
+  }
+  if (lowerLine.substr(0,3)=="get")
+  {
+    if (lowerLine=="getacrobatics")
+    {
+      chunk.pushCode(CodeGetAcrobatics);
+      return true;
+    }
+    if (lowerLine=="getalchemy")
+    {
+      chunk.pushCode(CodeGetAlchemy);
+      return true;
+    }
+    if (lowerLine=="getalteration")
+    {
+      chunk.pushCode(CodeGetAlteration);
+      return true;
+    }
+    if (lowerLine=="getathletics")
+    {
+      chunk.pushCode(CodeGetAthletics);
+      return true;
+    }
+    if (lowerLine=="getarmorer")
+    {
+      chunk.pushCode(CodeGetArmorer);
+      return true;
+    }
+    if (lowerLine=="getaxe")
+    {
+      chunk.pushCode(CodeGetAxe);
+      return true;
+    }
+    if (lowerLine=="getblock")
+    {
+      chunk.pushCode(CodeGetBlock);
+      return true;
+    }
+    if (lowerLine=="getbluntweapon")
+    {
+      chunk.pushCode(CodeGetBluntWeapon);
+      return true;
+    }
+    if (lowerLine=="getchameleon")
+    {
+      chunk.pushCode(CodeGetChameleon);
+      return true;
+    }
+
+    if (lowerLine=="getconjuration")
+    {
+      chunk.pushCode(CodeGetConjuration);
+      return true;
+    }
+    if (lowerLine=="getdestruction")
+    {
+      chunk.pushCode(CodeGetDestruction);
+      return true;
+    }
+    if (lowerLine=="getdisposition")
+    {
+      chunk.pushCode(CodeGetDisposition);
+      return true;
+    }
+    if (lowerLine=="getenchant")
+    {
+      chunk.pushCode(CodeGetEnchant);
+      return true;
+    }
+    if (lowerLine=="getillusion")
+    {
+      chunk.pushCode(CodeGetIllusion);
+      return true;
+    }
+    if (lowerLine=="getmysticism")
+    {
+      chunk.pushCode(CodeGetMysticism);
+      return true;
+    }
+    if (lowerLine=="getrestoration")
+    {
+      chunk.pushCode(CodeGetRestoration);
+      return true;
+    }
+  }//get functions
+  return false;
+}
+
 bool CompileScript(const std::string& Text, ScriptRecord& result)
 {
   std::vector<std::string> lines;
@@ -488,6 +584,11 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
         return false;
       }
     }//if End found
+    //check for functions
+    else if (ScriptFunctions(lines.at(i), CompiledData))
+    {
+      std::cout << "Debug: ScriptCompiler: Hint: Function processed.\n";
+    }
 
   }//for
 

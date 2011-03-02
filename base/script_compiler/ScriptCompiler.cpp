@@ -245,36 +245,65 @@ bool ScriptFunctions(const std::string& line, CompiledChunk& chunk)
     chunk.pushCode(CodeForceSneak);
     return true;
   }
-  if (lowerLine.substr(0,3)=="get")
+  if ((lowerLine.substr(0,3)=="get") and (line.length()>3))
   {
-    if (lowerLine=="getacrobatics")
+    if (lowerLine.at(3)=='a')
     {
-      chunk.pushCode(CodeGetAcrobatics);
-      return true;
-    }
-    if (lowerLine=="getalchemy")
+      if (lowerLine=="getacrobatics")
+      {
+        chunk.pushCode(CodeGetAcrobatics);
+        return true;
+      }
+      if (lowerLine=="getagility")
+      {
+        chunk.pushCode(CodeGetAgility);
+        return true;
+      }
+      if (lowerLine=="getalarm")
+      {
+        chunk.pushCode(CodeGetAlarm);
+        return true;
+      }
+      if (lowerLine=="getalchemy")
+      {
+        chunk.pushCode(CodeGetAlchemy);
+        return true;
+      }
+      if (lowerLine=="getalteration")
+      {
+        chunk.pushCode(CodeGetAlteration);
+        return true;
+      }
+      if (lowerLine=="getarmorbonus")
+      {
+        chunk.pushCode(CodeGetArmorBonus);
+        return true;
+      }
+      if (lowerLine=="getarmorer")
+      {
+        chunk.pushCode(CodeGetArmorer);
+        return true;
+      }
+      if (lowerLine=="getathletics")
+      {
+        chunk.pushCode(CodeGetAthletics);
+        return true;
+      }
+      if (lowerLine=="getatttackbonus")
+      {
+        chunk.pushCode(CodeGetAttackBonus);
+        return true;
+      }
+      if (lowerLine=="getaxe")
+      {
+        chunk.pushCode(CodeGetAxe);
+        return true;
+      }
+      return false;//all zero argument functions with "GetA..." done
+    }//if fourth character is 'a'
+    if (lowerLine=="getblindness")
     {
-      chunk.pushCode(CodeGetAlchemy);
-      return true;
-    }
-    if (lowerLine=="getalteration")
-    {
-      chunk.pushCode(CodeGetAlteration);
-      return true;
-    }
-    if (lowerLine=="getathletics")
-    {
-      chunk.pushCode(CodeGetAthletics);
-      return true;
-    }
-    if (lowerLine=="getarmorer")
-    {
-      chunk.pushCode(CodeGetArmorer);
-      return true;
-    }
-    if (lowerLine=="getaxe")
-    {
-      chunk.pushCode(CodeGetAxe);
+      chunk.pushCode(CodeGetBlindness);
       return true;
     }
     if (lowerLine=="getblock")
@@ -287,15 +316,24 @@ bool ScriptFunctions(const std::string& line, CompiledChunk& chunk)
       chunk.pushCode(CodeGetBluntWeapon);
       return true;
     }
+    if (lowerLine=="getcastpenalty")
+    {
+      chunk.pushCode(CodeGetCastPenalty);
+      return true;
+    }
     if (lowerLine=="getchameleon")
     {
       chunk.pushCode(CodeGetChameleon);
       return true;
     }
-
     if (lowerLine=="getconjuration")
     {
       chunk.pushCode(CodeGetConjuration);
+      return true;
+    }
+    if (lowerLine=="getdefendbonus")
+    {
+      chunk.pushCode(CodeGetDefendBonus);
       return true;
     }
     if (lowerLine=="getdestruction")
@@ -313,9 +351,105 @@ bool ScriptFunctions(const std::string& line, CompiledChunk& chunk)
       chunk.pushCode(CodeGetEnchant);
       return true;
     }
+    if (lowerLine=="getendurance")
+    {
+      chunk.pushCode(CodeGetEndurance);
+      return true;
+    }
+    if (lowerLine=="getfatigue")
+    {
+      chunk.pushCode(CodeGetFatigue);
+      return true;
+    }
+    if (lowerLine=="getfight")
+    {
+      chunk.pushCode(CodeGetFight);
+      return true;
+    }
+    if (lowerLine=="getflee")
+    {
+      chunk.pushCode(CodeGetFlee);
+      return true;
+    }
+    if (lowerLine=="getflying")
+    {
+      chunk.pushCode(CodeGetFlying);
+      return true;
+    }
+    if (lowerLine=="gethandtohand")
+    {
+      chunk.pushCode(CodeGetHandToHand);
+      return true;
+    }
+    if (lowerLine=="gethealth")
+    {
+      chunk.pushCode(CodeGetHealth);
+      return true;
+    }
+    if (lowerLine=="getheavyarmor")
+    {
+      chunk.pushCode(CodeGetHeavyArmor);
+      return true;
+    }
+    if (lowerLine=="gethello")
+    {
+      chunk.pushCode(CodeGetHello);
+      return true;
+    }
     if (lowerLine=="getillusion")
     {
       chunk.pushCode(CodeGetIllusion);
+      return true;
+    }
+    if (lowerLine=="getintelligence")
+    {
+      chunk.pushCode(CodeGetIntelligence);
+      return true;
+    }
+    //check for both correct and earlier misspelled version of function name
+    if ((lowerLine=="getinvisible") or (lowerLine=="getinvisibile"))
+    {
+      chunk.pushCode(CodeGetInvisible);
+      return true;
+    }
+    if (lowerLine=="getlevel")
+    {
+      chunk.pushCode(CodeGetLevel);
+      return true;
+    }
+    if (lowerLine=="getlightarmor")
+    {
+      chunk.pushCode(CodeGetLightArmor);
+      return true;
+    }
+    if (lowerLine=="getlongblade")
+    {
+      chunk.pushCode(CodeGetLongBlade);
+      return true;
+    }
+    if (lowerLine=="getluck")
+    {
+      chunk.pushCode(CodeGetLuck);
+      return true;
+    }
+    if (lowerLine=="getmagicka")
+    {
+      chunk.pushCode(CodeGetMagicka);
+      return true;
+    }
+    if (lowerLine=="getmarksman")
+    {
+      chunk.pushCode(CodeGetMarksman);
+      return true;
+    }
+    if (lowerLine=="getmediumarmor")
+    {
+      chunk.pushCode(CodeGetMediumArmor);
+      return true;
+    }
+    if (lowerLine=="getmercantile")
+    {
+      chunk.pushCode(CodeGetMercantile);
       return true;
     }
     if (lowerLine=="getmysticism")

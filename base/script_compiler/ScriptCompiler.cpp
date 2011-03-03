@@ -244,6 +244,36 @@ bool ScriptFunctions_ZeroParameters(const std::string& line, CompiledChunk& chun
     chunk.pushCode(CodeActivate);
     return true;
   }
+  if (lowerLine=="becomewerewolf")
+  {
+    chunk.pushCode(CodeBecomeWerewolf);
+    return true;
+  }
+  if (lowerLine=="cellchanged")
+  {
+    chunk.pushCode(CodeCellChanged);
+    return true;
+  }
+  if (lowerLine=="clearforcejump")
+  {
+    chunk.pushCode(CodeClearForceJump);
+    return true;
+  }
+  if (lowerLine=="clearforcemovejump")
+  {
+    chunk.pushCode(CodeClearForceMoveJump);
+    return true;
+  }
+  if (lowerLine=="clearforcerun")
+  {
+    chunk.pushCode(CodeClearForceRun);
+    return true;
+  }
+  if (lowerLine=="clearforcesneak")
+  {
+    chunk.pushCode(CodeClearForceSneak);
+    return true;
+  }
   if (lowerLine=="forcesneak")
   {
     chunk.pushCode(CodeForceSneak);
@@ -700,6 +730,46 @@ bool ScriptFunctions_TwoParameters(const std::string& line, CompiledChunk& chunk
     chunk.pushString(params[1]);
     return true;
   }
+  if (lowerLine.substr(0,4) == "cast")
+  {
+    std::vector<std::string> params = explodeParams(line.substr(4));
+    if (params.size()!=2)
+    {
+      std::cout << "ScriptCompiler: Error: Cast needs two parameters!\n";
+      return false;
+    }
+    //first parameter is ID of spell, second is ID of target
+    chunk.pushCode(CodeCast);
+    //push ID's length
+    chunk.data.push_back(params[0].length());
+    //push ID
+    chunk.pushString(params[0]);
+    //push ID's length
+    chunk.data.push_back(params[1].length());
+    //push ID
+    chunk.pushString(params[1]);
+    return true;
+  }
+  if (lowerLine.substr(0,13) == "changeweather")
+  {
+    std::vector<std::string> params = explodeParams(line.substr(13));
+    if (params.size()!=2)
+    {
+      std::cout << "ScriptCompiler: Error: Change needs two parameters!\n";
+      return false;
+    }
+    //first parameter is ID of region, second is short that indicates the new weather
+    chunk.pushCode(CodeChangeWeather);
+    //push ID's length
+    chunk.data.push_back(params[0].length());
+    //push ID
+    chunk.pushString(params[0]);
+    //push new weather type
+    chunk.pushCode(stringToShort(params[1]));
+    return true;
+  }
+
+
   //end - no matching function found, if we are here
   return false;
 }

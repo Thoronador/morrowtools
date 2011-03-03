@@ -457,9 +457,159 @@ bool ScriptFunctions(const std::string& line, CompiledChunk& chunk)
       chunk.pushCode(CodeGetMysticism);
       return true;
     }
+    if (lowerLine=="getparalysis")
+    {
+      chunk.pushCode(CodeGetParalysis);
+      return true;
+    }
+    if (lowerLine=="getpccrimelevel")
+    {
+      chunk.pushCode(CodeGetPCCrimeLevel);
+      return true;
+    }
+    if (lowerLine=="getpcvisionbonus")
+    {
+      chunk.pushCode(CodeGetPCVisionBonus);
+      return true;
+    }
+    if (lowerLine=="getpersonality")
+    {
+      chunk.pushCode(CodeGetPersonality);
+      return true;
+    }
+    if (lowerLine=="getreputation")
+    {
+      chunk.pushCode(CodeGetReputation);
+      return true;
+    }
+    if (lowerLine=="getresistblight")
+    {
+      chunk.pushCode(CodeGetResistBlight);
+      return true;
+    }
+    if (lowerLine=="getresistcorprus")
+    {
+      chunk.pushCode(CodeGetResistCorprus);
+      return true;
+    }
+    if (lowerLine=="getresistdisease")
+    {
+      chunk.pushCode(CodeGetResistDisease);
+      return true;
+    }
+    if (lowerLine=="getresistfire")
+    {
+      chunk.pushCode(CodeGetResistFire);
+      return true;
+    }
+    if (lowerLine=="getresistfrost")
+    {
+      chunk.pushCode(CodeGetResistFrost);
+      return true;
+    }
+    if (lowerLine=="getresistmagicka")
+    {
+      chunk.pushCode(CodeGetResistMagicka);
+      return true;
+    }
+    if (lowerLine=="getresistnormalweapons")
+    {
+      chunk.pushCode(CodeGetResistNormalWeapons);
+      return true;
+    }
+    if (lowerLine=="getresistparalysis")
+    {
+      chunk.pushCode(CodeGetResistParalysis);
+      return true;
+    }
+    if (lowerLine=="getresistpoison")
+    {
+      chunk.pushCode(CodeGetResistPoison);
+      return true;
+    }
+    if (lowerLine=="getresistshock")
+    {
+      chunk.pushCode(CodeGetResistShock);
+      return true;
+    }
     if (lowerLine=="getrestoration")
     {
       chunk.pushCode(CodeGetRestoration);
+      return true;
+    }
+    if (lowerLine=="getscale")
+    {
+      chunk.pushCode(CodeGetScale);
+      return true;
+    }
+    if (lowerLine=="getsecurity")
+    {
+      chunk.pushCode(CodeGetSecurity);
+      return true;
+    }
+    if (lowerLine=="getshortblade")
+    {
+      chunk.pushCode(CodeGetShortBlade);
+      return true;
+    }
+    if (lowerLine=="getsilence")
+    {
+      chunk.pushCode(CodeGetSilence);
+      return true;
+    }
+    if (lowerLine=="getsneak")
+    {
+      chunk.pushCode(CodeGetSneak);
+      return true;
+    }
+    if (lowerLine=="getspear")
+    {
+      chunk.pushCode(CodeGetSpear);
+      return true;
+    }
+    if (lowerLine=="getspeechcraft")
+    {
+      chunk.pushCode(CodeGetSpeechcraft);
+      return true;
+    }
+    if (lowerLine=="getspeed")
+    {
+      chunk.pushCode(CodeGetSpeed);
+      return true;
+    }
+    if (lowerLine=="getstrength")
+    {
+      chunk.pushCode(CodeGetStrength);
+      return true;
+    }
+    if (lowerLine=="getsuperjump")
+    {
+      chunk.pushCode(CodeGetSuperJump);
+      return true;
+    }
+    if (lowerLine=="getswimspeed")
+    {
+      chunk.pushCode(CodeGetSwimSpeed);
+      return true;
+    }
+    if (lowerLine=="getunarmored")
+    {
+      chunk.pushCode(CodeGetUnarmored);
+      return true;
+    }
+    if (lowerLine=="getwaterbreathing")
+    {
+      chunk.pushCode(CodeGetWaterBreathing);
+      return true;
+    }
+    if (lowerLine=="getwaterwalking")
+    {
+      chunk.pushCode(CodeGetWaterWalking);
+      return true;
+    }
+    if (lowerLine=="getwillpower")
+    {
+      chunk.pushCode(CodeGetWillpower);
       return true;
     }
   }//get functions

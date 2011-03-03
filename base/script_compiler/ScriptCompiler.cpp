@@ -236,10 +236,14 @@ SC_VarRef getVariableTypeWithIndex(const std::string& varName, const std::vector
   return SC_VarRef(vtGlobal, 0);
 }
 
-bool ScriptFunctions(const std::string& line, CompiledChunk& chunk)
+bool ScriptFunctions_ZeroParameters(const std::string& line, CompiledChunk& chunk)
 {
-  if (line=="") return false;
   const std::string lowerLine = lowerCase(line);
+  if (lowerLine=="activate")
+  {
+    chunk.pushCode(CodeActivate);
+    return true;
+  }
   if (lowerLine=="forcesneak")
   {
     chunk.pushCode(CodeForceSneak);
@@ -614,6 +618,104 @@ bool ScriptFunctions(const std::string& line, CompiledChunk& chunk)
     }
   }//get functions
   return false;
+}
+
+bool ScriptFunctions_OneParameter(const std::string& line, CompiledChunk& chunk)
+{
+  const std::string lowerLine = lowerCase(line);
+  if (lowerLine.substr(0,8) == "addspell")
+  {
+    std::vector<std::string> params = explodeParams(line.substr(8));
+    if (params.size()!=1)
+    {
+      std::cout << "ScriptCompiler: Error: AddSpell needs one parameter!\n";
+      return false;
+    }
+    //parameter is ID of spell
+    chunk.pushCode(CodeAddSpell);
+    //push ID's length
+    chunk.data.push_back(params[0].length());
+    //push ID
+    chunk.pushString(params[0]);
+    return true;
+  }
+  if (lowerLine.substr(0,8) == "addtopic")
+  {
+    std::vector<std::string> params = explodeParams(line.substr(8));
+    if (params.size()!=1)
+    {
+      std::cout << "ScriptCompiler: Error: AddTopic needs one parameter!\n";
+      return false;
+    }
+    //parameter is ID of topic
+    chunk.pushCode(CodeAddTopic);
+    //push ID's length
+    chunk.data.push_back(params[0].length());
+    //push ID
+    chunk.pushString(params[0]);
+    return true;
+  }
+  //no match found
+  return false;
+}
+
+bool ScriptFunctions_TwoParameters(const std::string& line, CompiledChunk& chunk)
+{
+  const std::string lowerLine = lowerCase(line);
+  if (lowerLine.substr(0,7) == "additem")
+  {
+    std::vector<std::string> params = explodeParams(line.substr(7));
+    if (params.size()!=2)
+    {
+      std::cout << "ScriptCompiler: Error: AddItem needs two parameters!\n";
+      return false;
+    }
+    //first parameter is ID of item, second is number (short)
+    chunk.pushCode(CodeAddItem);
+    //push ID's length
+    chunk.data.push_back(params[0].length());
+    //push ID
+    chunk.pushString(params[0]);
+    //push count
+    chunk.pushCode(stringToShort(params[1]));
+    return true;
+  }
+  if (lowerLine.substr(0,10) == "addsoulgem")
+  {
+    std::vector<std::string> params = explodeParams(line.substr(10));
+    if (params.size()!=2)
+    {
+      std::cout << "ScriptCompiler: Error: AddSoulGem needs two parameters!\n";
+      return false;
+    }
+    //first parameter is ID of creature, second is ID of gem
+    chunk.pushCode(CodeAddSoulGem);
+    //push ID's length
+    chunk.data.push_back(params[0].length());
+    //push ID
+    chunk.pushString(params[0]);
+    //push ID's length
+    chunk.data.push_back(params[1].length());
+    //push ID
+    chunk.pushString(params[1]);
+    return true;
+  }
+  //end - no matching function found, if we are here
+  return false;
+}
+
+bool ScriptFunctions(const std::string& line, CompiledChunk& chunk)
+{
+  if (line=="") return false;
+  if (ScriptFunctions_ZeroParameters(line, chunk))
+  {
+    return true;
+  }
+  if (ScriptFunctions_OneParameter(line, chunk))
+  {
+    return true;
+  }
+  return ScriptFunctions_TwoParameters(line, chunk);
 }
 
 bool CompileScript(const std::string& Text, ScriptRecord& result)

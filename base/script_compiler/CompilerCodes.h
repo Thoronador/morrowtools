@@ -24,7 +24,12 @@
 namespace ScriptCompiler
 {
   /* op-codes for scripts' compiled data */
-  const uint16_t CodeEnd   = 0x0101; //"0101"
+  const uint16_t CodeActivate = 0x1017; //"1710"
+  const uint16_t CodeAddItem = 0x10D4; //"D410"
+  const uint16_t CodeAddSoulGem = 0x10EB; //"EB10"
+  const uint16_t CodeAddSpell = 0x111D; //"1D11"
+  const uint16_t CodeAddTopic = 0x1022; //"2210"
+  const uint16_t CodeEnd = 0x0101; //"0101"
   //const uint16_t CodeEndif = 0x0109; //"0901"
   const uint16_t CodeForceSneak = 0x1163; //"6311"
   const uint16_t CodeGetAcrobatics = 0x1077; //"7710"

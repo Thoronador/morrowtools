@@ -329,6 +329,112 @@ bool ScriptFunctions_ZeroParameters(const std::string& line, CompiledChunk& chun
     chunk.pushCode(CodeDontSaveObject);
     return true;
   }
+  if (lowerLine=="enable")
+  {
+    chunk.pushCode(CodeEnable);
+    return true;
+  }
+  if (lowerLine=="enablebirthmenu")
+  {
+    chunk.pushCode(CodeEnableBirthMenu);
+    return true;
+  }
+  if (lowerLine=="enableclassmenu")
+  {
+    chunk.pushCode(CodeEnableClassMenu);
+    return true;
+  }
+  if (lowerLine=="enableinventorymenu")
+  {
+    chunk.pushCode(CodeEnableInventoryMenu);
+    return true;
+  }
+  if (lowerLine=="enablelevelupmenu")
+  {
+    chunk.pushCode(CodeEnableLevelUpMenu);
+    return true;
+  }
+  if (lowerLine=="enablelevitation")
+  {
+    chunk.pushCode(CodeEnableLevitation);
+    return true;
+  }
+  if (lowerLine=="enablemagicmenu")
+  {
+    chunk.pushCode(CodeEnableMagicMenu);
+    return true;
+  }
+  if (lowerLine=="enablemapmenu")
+  {
+    chunk.pushCode(CodeEnableMapMenu);
+    return true;
+  }
+  if (lowerLine=="enablenamemenu")
+  {
+    chunk.pushCode(CodeEnableNameMenu);
+    return true;
+  }
+  if (lowerLine=="enableplayercontrols")
+  {
+    chunk.pushCode(CodeEnablePlayerControls);
+    return true;
+  }
+  if (lowerLine=="enableplayerfighting")
+  {
+    chunk.pushCode(CodeEnablePlayerFighting);
+    return true;
+  }
+  if (lowerLine=="enableplayerjumping")
+  {
+    chunk.pushCode(CodeEnablePlayerJumping);
+    return true;
+  }
+  if (lowerLine=="enableplayerlooking")
+  {
+    chunk.pushCode(CodeEnablePlayerLooking);
+    return true;
+  }
+  if (lowerLine=="enableplayermagic")
+  {
+    chunk.pushCode(CodeEnablePlayerMagic);
+    return true;
+  }
+  if (lowerLine=="enableplayerviewswitch")
+  {
+    chunk.pushCode(CodeEnablePlayerViewSwitch);
+    return true;
+  }
+  if (lowerLine=="enableracemenu")
+  {
+    chunk.pushCode(CodeEnableRaceMenu);
+    return true;
+  }
+  if (lowerLine=="enablerest")
+  {
+    chunk.pushCode(CodeEnableRest);
+    return true;
+  }
+  if (lowerLine=="enablestatreviewmenu")
+  {
+    chunk.pushCode(CodeEnableStatReviewMenu);
+    return true;
+  }
+  if (lowerLine=="enablestatsmenu")
+  {
+    chunk.pushCode(CodeEnableStatsMenu);
+    return true;
+  }
+  if (lowerLine=="enableteleporting")
+  {
+    chunk.pushCode(CodeEnableTeleporting);
+    return true;
+  }
+  if (lowerLine=="enablevanitymode")
+  {
+    chunk.pushCode(CodeEnableVanityMode);
+    return true;
+  }
+
 
   if (lowerLine=="forcesneak")
   {
@@ -757,6 +863,39 @@ bool ScriptFunctions_OneParameter(const std::string& line, CompiledChunk& chunk)
     chunk.pushString(params[0]);
     return true;
   }
+  if (lowerLine.substr(0,5) == "equip")
+  {
+    std::vector<std::string> params = explodeParams(line.substr(5));
+    if (params.size()!=1)
+    {
+      std::cout << "ScriptCompiler: Error: Equip needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodeEquip);
+    //parameter is ID of item
+    //push ID's length
+    chunk.data.push_back(params[0].length());
+    //push item ID
+    chunk.pushString(params[0]);
+    return true;
+  }
+  if (lowerLine.substr(0,12) == "explodespell")
+  {
+    std::vector<std::string> params = explodeParams(line.substr(12));
+    if (params.size()!=1)
+    {
+      std::cout << "ScriptCompiler: Error: ExplodeSpell needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodeExplodeSpell);
+    //parameter is ID of spell
+    //push ID's length
+    chunk.data.push_back(params[0].length());
+    //push spell ID
+    chunk.pushString(params[0]);
+    return true;
+  }
+
   //no match found
   return false;
 }

@@ -274,6 +274,62 @@ bool ScriptFunctions_ZeroParameters(const std::string& line, CompiledChunk& chun
     chunk.pushCode(CodeClearForceSneak);
     return true;
   }
+  if (lowerLine=="disable")
+  {
+    chunk.pushCode(CodeDisable);
+    return true;
+  }
+  if (lowerLine=="disablelevitation")
+  {
+    chunk.pushCode(CodeDisableLevitation);
+    return true;
+  }
+  if (lowerLine=="disableplayercontrols")
+  {
+    chunk.pushCode(CodeDisablePlayerControls);
+    return true;
+  }
+  if (lowerLine=="disableplayerfighting")
+  {
+    chunk.pushCode(CodeDisablePlayerFighting);
+    return true;
+  }
+  if (lowerLine=="disableplayerjumping")
+  {
+    chunk.pushCode(CodeDisablePlayerJumping);
+    return true;
+  }
+  if (lowerLine=="disableplayerlooking")
+  {
+    chunk.pushCode(CodeDisablePlayerLooking);
+    return true;
+  }
+  if (lowerLine=="disableplayermagic")
+  {
+    chunk.pushCode(CodeDisablePlayerMagic);
+    return true;
+  }
+  if (lowerLine=="disableplayerviewswitch")
+  {
+    chunk.pushCode(CodeDisablePlayerViewSwitch);
+    return true;
+  }
+  if (lowerLine=="disableteleporting")
+  {
+    chunk.pushCode(CodeDisableTeleporting);
+    return true;
+  }
+  if (lowerLine=="disablevanitymode")
+  {
+    chunk.pushCode(CodeDisableVanityMode);
+    return true;
+  }
+  if (lowerLine=="dontsaveobject")
+  {
+    chunk.pushCode(CodeDontSaveObject);
+    return true;
+  }
+
   if (lowerLine=="forcesneak")
   {
     chunk.pushCode(CodeForceSneak);
@@ -685,6 +741,22 @@ bool ScriptFunctions_OneParameter(const std::string& line, CompiledChunk& chunk)
     chunk.pushString(params[0]);
     return true;
   }
+  if (lowerLine.substr(0,11) == "dropsoulgem")
+  {
+    std::vector<std::string> params = explodeParams(line.substr(11));
+    if (params.size()!=1)
+    {
+      std::cout << "ScriptCompiler: Error: DropSoulGem needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodeDropSoulGem);
+    //parameter is ID of creature
+    //push ID's length
+    chunk.data.push_back(params[0].length());
+    //push creature ID
+    chunk.pushString(params[0]);
+    return true;
+  }
   //no match found
   return false;
 }
@@ -755,7 +827,7 @@ bool ScriptFunctions_TwoParameters(const std::string& line, CompiledChunk& chunk
     std::vector<std::string> params = explodeParams(line.substr(13));
     if (params.size()!=2)
     {
-      std::cout << "ScriptCompiler: Error: Change needs two parameters!\n";
+      std::cout << "ScriptCompiler: Error: ChangeWeather needs two parameters!\n";
       return false;
     }
     //first parameter is ID of region, second is short that indicates the new weather
@@ -768,8 +840,24 @@ bool ScriptFunctions_TwoParameters(const std::string& line, CompiledChunk& chunk
     chunk.pushCode(stringToShort(params[1]));
     return true;
   }
-
-
+  if ((lowerLine.substr(0,4) == "drop") and ((lowerLine.at(4)==' ') or (lowerLine.at(4)==',')))
+  {
+    std::vector<std::string> params = explodeParams(line.substr(5));
+    if (params.size()!=2)
+    {
+      std::cout << "ScriptCompiler: Error: Drop needs two parameters!\n";
+      return false;
+    }
+    //first parameter is ID of item, second is short that indicates the count
+    chunk.pushCode(CodeDrop);
+    //push item ID's length
+    chunk.data.push_back(params[0].length());
+    //push item ID
+    chunk.pushString(params[0]);
+    //push count
+    chunk.pushCode(stringToShort(params[1]));
+    return true;
+  }
   //end - no matching function found, if we are here
   return false;
 }

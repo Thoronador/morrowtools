@@ -31,6 +31,21 @@ void CompiledChunk::pushCode(const uint16_t code)
   data.push_back(code>>8);
 }
 
+void CompiledChunk::pushShort(const int16_t value)
+{
+  data.push_back(value&255);
+  data.push_back(value>>8);
+}
+
+void CompiledChunk::pushFloat(const float value)
+{
+  const int32_t * ptr = (int32_t*) &value;
+  data.push_back(*ptr & 255);
+  data.push_back((*ptr>>8)&255);
+  data.push_back((*ptr>>16)&255);
+  data.push_back((*ptr>>24)&255);
+}
+
 void CompiledChunk::pushString(const std::string& str)
 {
   unsigned int i;
@@ -48,19 +63,37 @@ SC_VarRef::SC_VarRef(const SC_VarType t, const uint16_t i)
 }
 
 //tries to get the integer representation of a string
-uint16_t stringToShort(const std::string& str)
+bool stringToShort(const std::string& str, int16_t& value)
 {
-  uint16_t result = 0;
+  if (str.length()==0) return false;
+  value = 0;
   unsigned int i;
-  for (i=0; i<str.length(); ++i)
+  bool negative;
+  if (str.at(0)=='-')
+  {
+    i=1;
+    negative = true;
+  }
+  else
+  {
+    i=0;
+    negative = false;
+  }
+  for ( ; i<str.length(); ++i)
   {
     if ((str.at(i)>='0') and (str.at(i)<='9'))
     {
-      result = result * 10;
-      result = result + (str.at(i)-'0');
+      value = value * 10;
+      value = value + (str.at(i)-'0');
     }//if
+    else
+    {
+      //unknown or invalid character detected
+      return false;
+    }
   }//for
-  return result;
+  if (negative) value = -value;
+  return true;
 }
 
 void trimLeft(std::string& str1)
@@ -918,7 +951,16 @@ bool ScriptFunctions_TwoParameters(const std::string& line, CompiledChunk& chunk
     //push ID
     chunk.pushString(params[0]);
     //push count
-    chunk.pushCode(stringToShort(params[1]));
+    int16_t count;
+    if (stringToShort(params[1], count))
+    {
+      chunk.pushShort(count);
+    }
+    else
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[1]<<"\" is no short value!\n";
+      return false;
+    }
     return true;
   }
   if (lowerLine.substr(0,10) == "addsoulgem")
@@ -976,7 +1018,16 @@ bool ScriptFunctions_TwoParameters(const std::string& line, CompiledChunk& chunk
     //push ID
     chunk.pushString(params[0]);
     //push new weather type
-    chunk.pushCode(stringToShort(params[1]));
+    int16_t weather_type;
+    if (stringToShort(params[1], weather_type))
+    {
+      chunk.pushShort(weather_type);
+    }
+    else
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[1]<<"\" is no short value!\n";
+      return false;
+    }
     return true;
   }
   if ((lowerLine.substr(0,4) == "drop") and ((lowerLine.at(4)==' ') or (lowerLine.at(4)==',')))
@@ -994,7 +1045,16 @@ bool ScriptFunctions_TwoParameters(const std::string& line, CompiledChunk& chunk
     //push item ID
     chunk.pushString(params[0]);
     //push count
-    chunk.pushCode(stringToShort(params[1]));
+    int16_t count;
+    if (stringToShort(params[1], count))
+    {
+      chunk.pushShort(count);
+    }
+    else
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[1]<<"\" is no short value!\n";
+      return false;
+    }
     return true;
   }
   //end - no matching function found, if we are here
@@ -1147,7 +1207,18 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       CompiledData.data.push_back(params[0].length());
       CompiledData.pushString(params[0]);
       //second parameter should be index
-      CompiledData.pushCode(stringToShort(params[1]));
+      int16_t journal_index;
+      if (stringToShort(params[1], journal_index))
+      {
+        CompiledData.pushShort(journal_index);
+      }
+      else
+      {
+        std::cout << "ScriptCompiler: Error: Journal command expects short value"
+                  << " as second parameter, but \""<<params[1]<<"\" is not a "
+                  << "short value.\n";
+        return false;
+      }
       //fill data so it's four bytes
       CompiledData.data.push_back(255);
       CompiledData.data.push_back(255);

@@ -40,6 +40,20 @@ struct CompiledChunk
   */
   void pushCode(const uint16_t code);
 
+  /* pushes a short value onto the back of the data
+
+     parameters:
+         value - the short value
+  */
+  void pushShort(const int16_t value);
+
+  /* pushes a float value onto the back of the data
+
+     parameters:
+         value - the floating point
+  */
+  void pushFloat(const float value);
+
   /* pushes a string onto the back of the data
 
      parameters:

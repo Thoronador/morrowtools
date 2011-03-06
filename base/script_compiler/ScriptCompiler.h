@@ -62,6 +62,18 @@ struct CompiledChunk
   void pushString(const std::string& str);
 }; //struct
 
+/* tries to convert a the string representation of a floating point value into
+   a float and returns true on success, false on failure.
+
+   parameters:
+       str   - the string that contains the number
+       value - the float that will be used to store the result
+
+   remarks:
+       If false is returned, the value of parameter value is undefined.
+*/
+bool stringToFloat(const std::string& str, float& value);
+
 enum SC_VarType {vtShort, vtLong, vtFloat, vtGlobal};
 
 struct SC_VarRef

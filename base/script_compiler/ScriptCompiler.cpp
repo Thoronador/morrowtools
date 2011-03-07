@@ -37,6 +37,14 @@ void CompiledChunk::pushShort(const int16_t value)
   data.push_back(value>>8);
 }
 
+void CompiledChunk::pushLong(const int32_t value)
+{
+  data.push_back(value&255);
+  data.push_back((value>>8)&255);
+  data.push_back((value>>16)&255);
+  data.push_back(value>>24);
+}
+
 void CompiledChunk::pushFloat(const float value)
 {
   const int32_t * ptr = (int32_t*) &value;
@@ -64,6 +72,39 @@ SC_VarRef::SC_VarRef(const SC_VarType t, const uint16_t i)
 
 //tries to get the integer representation of a string
 bool stringToShort(const std::string& str, int16_t& value)
+{
+  if (str.length()==0) return false;
+  value = 0;
+  unsigned int i;
+  bool negative;
+  if (str.at(0)=='-')
+  {
+    i=1;
+    negative = true;
+  }
+  else
+  {
+    i=0;
+    negative = false;
+  }
+  for ( ; i<str.length(); ++i)
+  {
+    if ((str.at(i)>='0') and (str.at(i)<='9'))
+    {
+      value = value * 10;
+      value = value + (str.at(i)-'0');
+    }//if
+    else
+    {
+      //unknown or invalid character detected
+      return false;
+    }
+  }//for
+  if (negative) value = -value;
+  return true;
+}
+
+bool stringToLong(const std::string& str, int32_t& value)
 {
   if (str.length()==0) return false;
   value = 0;
@@ -132,7 +173,6 @@ bool stringToFloat(const std::string& str, float& value)
     else
     {
       //unknown or invalid character detected
-      std::cout << "Character at "<<i<<" is not valid.\n";
       return false;
     }
   }//for
@@ -148,7 +188,6 @@ bool stringToFloat(const std::string& str, float& value)
     else
     {
       //unknown or invalid character detected
-      std::cout << "Character at "<<i<<" is not valid.\n";
       return false;
     }
   }//for, second loop
@@ -529,7 +568,31 @@ bool ScriptFunctions_ZeroParameters(const std::string& line, CompiledChunk& chun
     chunk.pushCode(CodeEnableVanityMode);
     return true;
   }
-
+  if (lowerLine=="fall")
+  {
+    chunk.pushCode(CodeFall);
+    return true;
+  }
+  if (lowerLine=="forcegreeting")
+  {
+    chunk.pushCode(CodeForceGreeting);
+    return true;
+  }
+  if (lowerLine=="forcejump")
+  {
+    chunk.pushCode(CodeForceJump);
+    return true;
+  }
+  if (lowerLine=="forcemovejump")
+  {
+    chunk.pushCode(CodeForceMoveJump);
+    return true;
+  }
+  if (lowerLine=="forcerun")
+  {
+    chunk.pushCode(CodeForceRun);
+    return true;
+  }
 
   if (lowerLine=="forcesneak")
   {
@@ -990,6 +1053,54 @@ bool ScriptFunctions_OneParameter(const std::string& line, CompiledChunk& chunk)
     chunk.pushString(params[0]);
     return true;
   }
+  if (lowerLine.substr(0,6) == "fadein")
+  {
+    std::vector<std::string> params = explodeParams(line.substr(6));
+    if (params.size()!=1)
+    {
+      std::cout << "ScriptCompiler: Error: FadeIn needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodeFadeIn);
+    //parameter is time for fading (float)
+    //push float
+    float fade_time;
+    if (stringToFloat(params[0], fade_time))
+    {
+      chunk.pushFloat(fade_time);
+    }//if
+    else
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[0]<<"\" is not a "
+                << "floating point value.\n";
+      return false;
+    }
+    return true;
+  }
+  if (lowerLine.substr(0,7) == "fadeout")
+  {
+    std::vector<std::string> params = explodeParams(line.substr(7));
+    if (params.size()!=1)
+    {
+      std::cout << "ScriptCompiler: Error: FadeOut needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodeFadeOut);
+    //parameter is time for fading (float)
+    //push float
+    float fade_time;
+    if (stringToFloat(params[0], fade_time))
+    {
+      chunk.pushFloat(fade_time);
+    }//if
+    else
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[0]<<"\" is not a "
+                << "floating point value.\n";
+      return false;
+    }
+    return true;
+  }
 
   //no match found
   return false;
@@ -1119,6 +1230,46 @@ bool ScriptFunctions_TwoParameters(const std::string& line, CompiledChunk& chunk
     }
     return true;
   }
+  if (lowerLine.substr(0,6) == "fadeto")
+  {
+    std::vector<std::string> params = explodeParams(line.substr(6));
+    if (params.size()!=1)
+    {
+      std::cout << "ScriptCompiler: Error: FadeTo needs two parameters!\n";
+      return false;
+    }
+    chunk.pushCode(CodeFadeTo);
+    //first parameter is amount of fading (long?)
+    //push long
+    int32_t fade_amount;
+    if (stringToLong(params[0], fade_amount))
+    {
+      chunk.pushLong(fade_amount);
+    }//if
+    else
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[0]<<"\" is not a "
+                << "long value.\n";
+      return false;
+    }
+    //second parameter is time for fading (float)
+    //push float
+    float fade_time;
+    if (stringToFloat(params[1], fade_time))
+    {
+      chunk.pushFloat(fade_time);
+    }//if
+    else
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[1]<<"\" is not a "
+                << "floating point value.\n";
+      return false;
+    }
+    return true;
+  }
+
+
+
   //end - no matching function found, if we are here
   return false;
 }

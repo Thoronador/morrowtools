@@ -47,6 +47,13 @@ struct CompiledChunk
   */
   void pushShort(const int16_t value);
 
+  /* pushes a long value onto the back of the data
+
+     parameters:
+         value - the long value
+  */
+  void pushLong(const int32_t value);
+
   /* pushes a float value onto the back of the data
 
      parameters:

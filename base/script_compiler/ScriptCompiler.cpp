@@ -277,6 +277,27 @@ void StripEnclosingQuotes(std::string& str1)
   return;
 }
 
+std::string::size_type getCommentStart(const std::string& line)
+{
+  const std::string::size_type len = line.length();
+  std::string::size_type look = 0;
+  bool outsideQuote = true;
+  while (look<len)
+  {
+    if (line.at(look)=='"')
+    {
+      outsideQuote = not outsideQuote;
+    }
+    else if ((outsideQuote) and (line.at(look)==';'))
+    {
+      //found a place where comment starts
+      return look;
+    }//else
+    ++look;
+  }//while
+  return std::string::npos;
+}
+
 std::vector<std::string> explodeParams(const std::string& source)
 {
   std::vector<std::string> result;
@@ -321,7 +342,7 @@ std::vector<std::string> explodeParams(const std::string& source)
 std::string lowerCase(const std::string& str1)
 {
   /* We assume ASCII or compatible charset where the characters for letters are
-     in sequence.
+     in alphabetical sequence.
   */
   const char lowerDiff = 'a'-'A';
   std::string result = str1;
@@ -370,598 +391,599 @@ SC_VarRef getVariableTypeWithIndex(const std::string& varName, const std::vector
   return SC_VarRef(vtGlobal, 0);
 }
 
-bool ScriptFunctions_ZeroParameters(const std::string& line, CompiledChunk& chunk)
+bool ScriptFunctions_ZeroParameters(const std::vector<std::string>& params, CompiledChunk& chunk)
 {
-  const std::string lowerLine = lowerCase(line);
-  if (lowerLine=="activate")
+  //entry at index zero is the function's name
+  const std::string lowerFunction = lowerCase(params.at(0));
+  if (lowerFunction=="activate")
   {
     chunk.pushCode(CodeActivate);
     return true;
   }
-  if (lowerLine=="becomewerewolf")
+  if (lowerFunction=="becomewerewolf")
   {
     chunk.pushCode(CodeBecomeWerewolf);
     return true;
   }
-  if (lowerLine=="cellchanged")
+  if (lowerFunction=="cellchanged")
   {
     chunk.pushCode(CodeCellChanged);
     return true;
   }
-  if (lowerLine=="clearforcejump")
+  if (lowerFunction=="clearforcejump")
   {
     chunk.pushCode(CodeClearForceJump);
     return true;
   }
-  if (lowerLine=="clearforcemovejump")
+  if (lowerFunction=="clearforcemovejump")
   {
     chunk.pushCode(CodeClearForceMoveJump);
     return true;
   }
-  if (lowerLine=="clearforcerun")
+  if (lowerFunction=="clearforcerun")
   {
     chunk.pushCode(CodeClearForceRun);
     return true;
   }
-  if (lowerLine=="clearforcesneak")
+  if (lowerFunction=="clearforcesneak")
   {
     chunk.pushCode(CodeClearForceSneak);
     return true;
   }
-  if (lowerLine=="disable")
+  if (lowerFunction=="disable")
   {
     chunk.pushCode(CodeDisable);
     return true;
   }
-  if (lowerLine=="disablelevitation")
+  if (lowerFunction=="disablelevitation")
   {
     chunk.pushCode(CodeDisableLevitation);
     return true;
   }
-  if (lowerLine=="disableplayercontrols")
+  if (lowerFunction=="disableplayercontrols")
   {
     chunk.pushCode(CodeDisablePlayerControls);
     return true;
   }
-  if (lowerLine=="disableplayerfighting")
+  if (lowerFunction=="disableplayerfighting")
   {
     chunk.pushCode(CodeDisablePlayerFighting);
     return true;
   }
-  if (lowerLine=="disableplayerjumping")
+  if (lowerFunction=="disableplayerjumping")
   {
     chunk.pushCode(CodeDisablePlayerJumping);
     return true;
   }
-  if (lowerLine=="disableplayerlooking")
+  if (lowerFunction=="disableplayerlooking")
   {
     chunk.pushCode(CodeDisablePlayerLooking);
     return true;
   }
-  if (lowerLine=="disableplayermagic")
+  if (lowerFunction=="disableplayermagic")
   {
     chunk.pushCode(CodeDisablePlayerMagic);
     return true;
   }
-  if (lowerLine=="disableplayerviewswitch")
+  if (lowerFunction=="disableplayerviewswitch")
   {
     chunk.pushCode(CodeDisablePlayerViewSwitch);
     return true;
   }
-  if (lowerLine=="disableteleporting")
+  if (lowerFunction=="disableteleporting")
   {
     chunk.pushCode(CodeDisableTeleporting);
     return true;
   }
-  if (lowerLine=="disablevanitymode")
+  if (lowerFunction=="disablevanitymode")
   {
     chunk.pushCode(CodeDisableVanityMode);
     return true;
   }
-  if (lowerLine=="dontsaveobject")
+  if (lowerFunction=="dontsaveobject")
   {
     chunk.pushCode(CodeDontSaveObject);
     return true;
   }
-  if (lowerLine=="enable")
+  if (lowerFunction=="enable")
   {
     chunk.pushCode(CodeEnable);
     return true;
   }
-  if (lowerLine=="enablebirthmenu")
+  if (lowerFunction=="enablebirthmenu")
   {
     chunk.pushCode(CodeEnableBirthMenu);
     return true;
   }
-  if (lowerLine=="enableclassmenu")
+  if (lowerFunction=="enableclassmenu")
   {
     chunk.pushCode(CodeEnableClassMenu);
     return true;
   }
-  if (lowerLine=="enableinventorymenu")
+  if (lowerFunction=="enableinventorymenu")
   {
     chunk.pushCode(CodeEnableInventoryMenu);
     return true;
   }
-  if (lowerLine=="enablelevelupmenu")
+  if (lowerFunction=="enablelevelupmenu")
   {
     chunk.pushCode(CodeEnableLevelUpMenu);
     return true;
   }
-  if (lowerLine=="enablelevitation")
+  if (lowerFunction=="enablelevitation")
   {
     chunk.pushCode(CodeEnableLevitation);
     return true;
   }
-  if (lowerLine=="enablemagicmenu")
+  if (lowerFunction=="enablemagicmenu")
   {
     chunk.pushCode(CodeEnableMagicMenu);
     return true;
   }
-  if (lowerLine=="enablemapmenu")
+  if (lowerFunction=="enablemapmenu")
   {
     chunk.pushCode(CodeEnableMapMenu);
     return true;
   }
-  if (lowerLine=="enablenamemenu")
+  if (lowerFunction=="enablenamemenu")
   {
     chunk.pushCode(CodeEnableNameMenu);
     return true;
   }
-  if (lowerLine=="enableplayercontrols")
+  if (lowerFunction=="enableplayercontrols")
   {
     chunk.pushCode(CodeEnablePlayerControls);
     return true;
   }
-  if (lowerLine=="enableplayerfighting")
+  if (lowerFunction=="enableplayerfighting")
   {
     chunk.pushCode(CodeEnablePlayerFighting);
     return true;
   }
-  if (lowerLine=="enableplayerjumping")
+  if (lowerFunction=="enableplayerjumping")
   {
     chunk.pushCode(CodeEnablePlayerJumping);
     return true;
   }
-  if (lowerLine=="enableplayerlooking")
+  if (lowerFunction=="enableplayerlooking")
   {
     chunk.pushCode(CodeEnablePlayerLooking);
     return true;
   }
-  if (lowerLine=="enableplayermagic")
+  if (lowerFunction=="enableplayermagic")
   {
     chunk.pushCode(CodeEnablePlayerMagic);
     return true;
   }
-  if (lowerLine=="enableplayerviewswitch")
+  if (lowerFunction=="enableplayerviewswitch")
   {
     chunk.pushCode(CodeEnablePlayerViewSwitch);
     return true;
   }
-  if (lowerLine=="enableracemenu")
+  if (lowerFunction=="enableracemenu")
   {
     chunk.pushCode(CodeEnableRaceMenu);
     return true;
   }
-  if (lowerLine=="enablerest")
+  if (lowerFunction=="enablerest")
   {
     chunk.pushCode(CodeEnableRest);
     return true;
   }
-  if (lowerLine=="enablestatreviewmenu")
+  if (lowerFunction=="enablestatreviewmenu")
   {
     chunk.pushCode(CodeEnableStatReviewMenu);
     return true;
   }
-  if (lowerLine=="enablestatsmenu")
+  if (lowerFunction=="enablestatsmenu")
   {
     chunk.pushCode(CodeEnableStatsMenu);
     return true;
   }
-  if (lowerLine=="enableteleporting")
+  if (lowerFunction=="enableteleporting")
   {
     chunk.pushCode(CodeEnableTeleporting);
     return true;
   }
-  if (lowerLine=="enablevanitymode")
+  if (lowerFunction=="enablevanitymode")
   {
     chunk.pushCode(CodeEnableVanityMode);
     return true;
   }
-  if (lowerLine=="fall")
+  if (lowerFunction=="fall")
   {
     chunk.pushCode(CodeFall);
     return true;
   }
-  if (lowerLine=="forcegreeting")
+  if (lowerFunction=="forcegreeting")
   {
     chunk.pushCode(CodeForceGreeting);
     return true;
   }
-  if (lowerLine=="forcejump")
+  if (lowerFunction=="forcejump")
   {
     chunk.pushCode(CodeForceJump);
     return true;
   }
-  if (lowerLine=="forcemovejump")
+  if (lowerFunction=="forcemovejump")
   {
     chunk.pushCode(CodeForceMoveJump);
     return true;
   }
-  if (lowerLine=="forcerun")
+  if (lowerFunction=="forcerun")
   {
     chunk.pushCode(CodeForceRun);
     return true;
   }
 
-  if (lowerLine=="forcesneak")
+  if (lowerFunction=="forcesneak")
   {
     chunk.pushCode(CodeForceSneak);
     return true;
   }
-  if ((lowerLine.substr(0,3)=="get") and (line.length()>3))
+  if ((lowerFunction.substr(0,3)=="get") and (lowerFunction.length()>3))
   {
-    if (lowerLine.at(3)=='a')
+    if (lowerFunction.at(3)=='a')
     {
-      if (lowerLine=="getacrobatics")
+      if (lowerFunction=="getacrobatics")
       {
         chunk.pushCode(CodeGetAcrobatics);
         return true;
       }
-      if (lowerLine=="getagility")
+      if (lowerFunction=="getagility")
       {
         chunk.pushCode(CodeGetAgility);
         return true;
       }
-      if (lowerLine=="getalarm")
+      if (lowerFunction=="getalarm")
       {
         chunk.pushCode(CodeGetAlarm);
         return true;
       }
-      if (lowerLine=="getalchemy")
+      if (lowerFunction=="getalchemy")
       {
         chunk.pushCode(CodeGetAlchemy);
         return true;
       }
-      if (lowerLine=="getalteration")
+      if (lowerFunction=="getalteration")
       {
         chunk.pushCode(CodeGetAlteration);
         return true;
       }
-      if (lowerLine=="getarmorbonus")
+      if (lowerFunction=="getarmorbonus")
       {
         chunk.pushCode(CodeGetArmorBonus);
         return true;
       }
-      if (lowerLine=="getarmorer")
+      if (lowerFunction=="getarmorer")
       {
         chunk.pushCode(CodeGetArmorer);
         return true;
       }
-      if (lowerLine=="getathletics")
+      if (lowerFunction=="getathletics")
       {
         chunk.pushCode(CodeGetAthletics);
         return true;
       }
-      if (lowerLine=="getatttackbonus")
+      if (lowerFunction=="getatttackbonus")
       {
         chunk.pushCode(CodeGetAttackBonus);
         return true;
       }
-      if (lowerLine=="getaxe")
+      if (lowerFunction=="getaxe")
       {
         chunk.pushCode(CodeGetAxe);
         return true;
       }
       return false;//all zero argument functions with "GetA..." done
     }//if fourth character is 'a'
-    if (lowerLine=="getblindness")
+    if (lowerFunction=="getblindness")
     {
       chunk.pushCode(CodeGetBlindness);
       return true;
     }
-    if (lowerLine=="getblock")
+    if (lowerFunction=="getblock")
     {
       chunk.pushCode(CodeGetBlock);
       return true;
     }
-    if (lowerLine=="getbluntweapon")
+    if (lowerFunction=="getbluntweapon")
     {
       chunk.pushCode(CodeGetBluntWeapon);
       return true;
     }
-    if (lowerLine=="getcastpenalty")
+    if (lowerFunction=="getcastpenalty")
     {
       chunk.pushCode(CodeGetCastPenalty);
       return true;
     }
-    if (lowerLine=="getchameleon")
+    if (lowerFunction=="getchameleon")
     {
       chunk.pushCode(CodeGetChameleon);
       return true;
     }
-    if (lowerLine=="getconjuration")
+    if (lowerFunction=="getconjuration")
     {
       chunk.pushCode(CodeGetConjuration);
       return true;
     }
-    if (lowerLine=="getdefendbonus")
+    if (lowerFunction=="getdefendbonus")
     {
       chunk.pushCode(CodeGetDefendBonus);
       return true;
     }
-    if (lowerLine=="getdestruction")
+    if (lowerFunction=="getdestruction")
     {
       chunk.pushCode(CodeGetDestruction);
       return true;
     }
-    if (lowerLine=="getdisposition")
+    if (lowerFunction=="getdisposition")
     {
       chunk.pushCode(CodeGetDisposition);
       return true;
     }
-    if (lowerLine=="getenchant")
+    if (lowerFunction=="getenchant")
     {
       chunk.pushCode(CodeGetEnchant);
       return true;
     }
-    if (lowerLine=="getendurance")
+    if (lowerFunction=="getendurance")
     {
       chunk.pushCode(CodeGetEndurance);
       return true;
     }
-    if (lowerLine=="getfatigue")
+    if (lowerFunction=="getfatigue")
     {
       chunk.pushCode(CodeGetFatigue);
       return true;
     }
-    if (lowerLine=="getfight")
+    if (lowerFunction=="getfight")
     {
       chunk.pushCode(CodeGetFight);
       return true;
     }
-    if (lowerLine=="getflee")
+    if (lowerFunction=="getflee")
     {
       chunk.pushCode(CodeGetFlee);
       return true;
     }
-    if (lowerLine=="getflying")
+    if (lowerFunction=="getflying")
     {
       chunk.pushCode(CodeGetFlying);
       return true;
     }
-    if (lowerLine=="gethandtohand")
+    if (lowerFunction=="gethandtohand")
     {
       chunk.pushCode(CodeGetHandToHand);
       return true;
     }
-    if (lowerLine=="gethealth")
+    if (lowerFunction=="gethealth")
     {
       chunk.pushCode(CodeGetHealth);
       return true;
     }
-    if (lowerLine=="getheavyarmor")
+    if (lowerFunction=="getheavyarmor")
     {
       chunk.pushCode(CodeGetHeavyArmor);
       return true;
     }
-    if (lowerLine=="gethello")
+    if (lowerFunction=="gethello")
     {
       chunk.pushCode(CodeGetHello);
       return true;
     }
-    if (lowerLine=="getillusion")
+    if (lowerFunction=="getillusion")
     {
       chunk.pushCode(CodeGetIllusion);
       return true;
     }
-    if (lowerLine=="getintelligence")
+    if (lowerFunction=="getintelligence")
     {
       chunk.pushCode(CodeGetIntelligence);
       return true;
     }
     //check for both correct and earlier misspelled version of function name
-    if ((lowerLine=="getinvisible") or (lowerLine=="getinvisibile"))
+    if ((lowerFunction=="getinvisible") or (lowerFunction=="getinvisibile"))
     {
       chunk.pushCode(CodeGetInvisible);
       return true;
     }
-    if (lowerLine=="getlevel")
+    if (lowerFunction=="getlevel")
     {
       chunk.pushCode(CodeGetLevel);
       return true;
     }
-    if (lowerLine=="getlightarmor")
+    if (lowerFunction=="getlightarmor")
     {
       chunk.pushCode(CodeGetLightArmor);
       return true;
     }
-    if (lowerLine=="getlongblade")
+    if (lowerFunction=="getlongblade")
     {
       chunk.pushCode(CodeGetLongBlade);
       return true;
     }
-    if (lowerLine=="getluck")
+    if (lowerFunction=="getluck")
     {
       chunk.pushCode(CodeGetLuck);
       return true;
     }
-    if (lowerLine=="getmagicka")
+    if (lowerFunction=="getmagicka")
     {
       chunk.pushCode(CodeGetMagicka);
       return true;
     }
-    if (lowerLine=="getmarksman")
+    if (lowerFunction=="getmarksman")
     {
       chunk.pushCode(CodeGetMarksman);
       return true;
     }
-    if (lowerLine=="getmediumarmor")
+    if (lowerFunction=="getmediumarmor")
     {
       chunk.pushCode(CodeGetMediumArmor);
       return true;
     }
-    if (lowerLine=="getmercantile")
+    if (lowerFunction=="getmercantile")
     {
       chunk.pushCode(CodeGetMercantile);
       return true;
     }
-    if (lowerLine=="getmysticism")
+    if (lowerFunction=="getmysticism")
     {
       chunk.pushCode(CodeGetMysticism);
       return true;
     }
-    if (lowerLine=="getparalysis")
+    if (lowerFunction=="getparalysis")
     {
       chunk.pushCode(CodeGetParalysis);
       return true;
     }
-    if (lowerLine=="getpccrimelevel")
+    if (lowerFunction=="getpccrimelevel")
     {
       chunk.pushCode(CodeGetPCCrimeLevel);
       return true;
     }
-    if (lowerLine=="getpcvisionbonus")
+    if (lowerFunction=="getpcvisionbonus")
     {
       chunk.pushCode(CodeGetPCVisionBonus);
       return true;
     }
-    if (lowerLine=="getpersonality")
+    if (lowerFunction=="getpersonality")
     {
       chunk.pushCode(CodeGetPersonality);
       return true;
     }
-    if (lowerLine=="getreputation")
+    if (lowerFunction=="getreputation")
     {
       chunk.pushCode(CodeGetReputation);
       return true;
     }
-    if (lowerLine=="getresistblight")
+    if (lowerFunction=="getresistblight")
     {
       chunk.pushCode(CodeGetResistBlight);
       return true;
     }
-    if (lowerLine=="getresistcorprus")
+    if (lowerFunction=="getresistcorprus")
     {
       chunk.pushCode(CodeGetResistCorprus);
       return true;
     }
-    if (lowerLine=="getresistdisease")
+    if (lowerFunction=="getresistdisease")
     {
       chunk.pushCode(CodeGetResistDisease);
       return true;
     }
-    if (lowerLine=="getresistfire")
+    if (lowerFunction=="getresistfire")
     {
       chunk.pushCode(CodeGetResistFire);
       return true;
     }
-    if (lowerLine=="getresistfrost")
+    if (lowerFunction=="getresistfrost")
     {
       chunk.pushCode(CodeGetResistFrost);
       return true;
     }
-    if (lowerLine=="getresistmagicka")
+    if (lowerFunction=="getresistmagicka")
     {
       chunk.pushCode(CodeGetResistMagicka);
       return true;
     }
-    if (lowerLine=="getresistnormalweapons")
+    if (lowerFunction=="getresistnormalweapons")
     {
       chunk.pushCode(CodeGetResistNormalWeapons);
       return true;
     }
-    if (lowerLine=="getresistparalysis")
+    if (lowerFunction=="getresistparalysis")
     {
       chunk.pushCode(CodeGetResistParalysis);
       return true;
     }
-    if (lowerLine=="getresistpoison")
+    if (lowerFunction=="getresistpoison")
     {
       chunk.pushCode(CodeGetResistPoison);
       return true;
     }
-    if (lowerLine=="getresistshock")
+    if (lowerFunction=="getresistshock")
     {
       chunk.pushCode(CodeGetResistShock);
       return true;
     }
-    if (lowerLine=="getrestoration")
+    if (lowerFunction=="getrestoration")
     {
       chunk.pushCode(CodeGetRestoration);
       return true;
     }
-    if (lowerLine=="getscale")
+    if (lowerFunction=="getscale")
     {
       chunk.pushCode(CodeGetScale);
       return true;
     }
-    if (lowerLine=="getsecurity")
+    if (lowerFunction=="getsecurity")
     {
       chunk.pushCode(CodeGetSecurity);
       return true;
     }
-    if (lowerLine=="getshortblade")
+    if (lowerFunction=="getshortblade")
     {
       chunk.pushCode(CodeGetShortBlade);
       return true;
     }
-    if (lowerLine=="getsilence")
+    if (lowerFunction=="getsilence")
     {
       chunk.pushCode(CodeGetSilence);
       return true;
     }
-    if (lowerLine=="getsneak")
+    if (lowerFunction=="getsneak")
     {
       chunk.pushCode(CodeGetSneak);
       return true;
     }
-    if (lowerLine=="getspear")
+    if (lowerFunction=="getspear")
     {
       chunk.pushCode(CodeGetSpear);
       return true;
     }
-    if (lowerLine=="getspeechcraft")
+    if (lowerFunction=="getspeechcraft")
     {
       chunk.pushCode(CodeGetSpeechcraft);
       return true;
     }
-    if (lowerLine=="getspeed")
+    if (lowerFunction=="getspeed")
     {
       chunk.pushCode(CodeGetSpeed);
       return true;
     }
-    if (lowerLine=="getstrength")
+    if (lowerFunction=="getstrength")
     {
       chunk.pushCode(CodeGetStrength);
       return true;
     }
-    if (lowerLine=="getsuperjump")
+    if (lowerFunction=="getsuperjump")
     {
       chunk.pushCode(CodeGetSuperJump);
       return true;
     }
-    if (lowerLine=="getswimspeed")
+    if (lowerFunction=="getswimspeed")
     {
       chunk.pushCode(CodeGetSwimSpeed);
       return true;
     }
-    if (lowerLine=="getunarmored")
+    if (lowerFunction=="getunarmored")
     {
       chunk.pushCode(CodeGetUnarmored);
       return true;
     }
-    if (lowerLine=="getwaterbreathing")
+    if (lowerFunction=="getwaterbreathing")
     {
       chunk.pushCode(CodeGetWaterBreathing);
       return true;
     }
-    if (lowerLine=="getwaterwalking")
+    if (lowerFunction=="getwaterwalking")
     {
       chunk.pushCode(CodeGetWaterWalking);
       return true;
     }
-    if (lowerLine=="getwillpower")
+    if (lowerFunction=="getwillpower")
     {
       chunk.pushCode(CodeGetWillpower);
       return true;
@@ -970,13 +992,13 @@ bool ScriptFunctions_ZeroParameters(const std::string& line, CompiledChunk& chun
   return false;
 }
 
-bool ScriptFunctions_OneParameter(const std::string& line, CompiledChunk& chunk)
+bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, CompiledChunk& chunk)
 {
-  const std::string lowerLine = lowerCase(line);
-  if (lowerLine.substr(0,8) == "addspell")
+  //entry at index zero is the function's name
+  const std::string lowerFunction = lowerCase(params.at(0));
+  if (lowerFunction == "addspell")
   {
-    std::vector<std::string> params = explodeParams(line.substr(8));
-    if (params.size()!=1)
+    if (params.size()<2)
     {
       std::cout << "ScriptCompiler: Error: AddSpell needs one parameter!\n";
       return false;
@@ -984,15 +1006,14 @@ bool ScriptFunctions_OneParameter(const std::string& line, CompiledChunk& chunk)
     //parameter is ID of spell
     chunk.pushCode(CodeAddSpell);
     //push ID's length
-    chunk.data.push_back(params[0].length());
+    chunk.data.push_back(params[1].length());
     //push ID
-    chunk.pushString(params[0]);
+    chunk.pushString(params[1]);
     return true;
   }
-  if (lowerLine.substr(0,8) == "addtopic")
+  if (lowerFunction == "addtopic")
   {
-    std::vector<std::string> params = explodeParams(line.substr(8));
-    if (params.size()!=1)
+    if (params.size()<2)
     {
       std::cout << "ScriptCompiler: Error: AddTopic needs one parameter!\n";
       return false;
@@ -1000,15 +1021,14 @@ bool ScriptFunctions_OneParameter(const std::string& line, CompiledChunk& chunk)
     //parameter is ID of topic
     chunk.pushCode(CodeAddTopic);
     //push ID's length
-    chunk.data.push_back(params[0].length());
+    chunk.data.push_back(params[1].length());
     //push ID
-    chunk.pushString(params[0]);
+    chunk.pushString(params[1]);
     return true;
   }
-  if (lowerLine.substr(0,11) == "dropsoulgem")
+  if (lowerFunction == "dropsoulgem")
   {
-    std::vector<std::string> params = explodeParams(line.substr(11));
-    if (params.size()!=1)
+    if (params.size()<2)
     {
       std::cout << "ScriptCompiler: Error: DropSoulGem needs one parameter!\n";
       return false;
@@ -1016,15 +1036,14 @@ bool ScriptFunctions_OneParameter(const std::string& line, CompiledChunk& chunk)
     chunk.pushCode(CodeDropSoulGem);
     //parameter is ID of creature
     //push ID's length
-    chunk.data.push_back(params[0].length());
+    chunk.data.push_back(params[1].length());
     //push creature ID
-    chunk.pushString(params[0]);
+    chunk.pushString(params[1]);
     return true;
   }
-  if (lowerLine.substr(0,5) == "equip")
+  if (lowerFunction == "equip")
   {
-    std::vector<std::string> params = explodeParams(line.substr(5));
-    if (params.size()!=1)
+    if (params.size()<2)
     {
       std::cout << "ScriptCompiler: Error: Equip needs one parameter!\n";
       return false;
@@ -1032,15 +1051,14 @@ bool ScriptFunctions_OneParameter(const std::string& line, CompiledChunk& chunk)
     chunk.pushCode(CodeEquip);
     //parameter is ID of item
     //push ID's length
-    chunk.data.push_back(params[0].length());
+    chunk.data.push_back(params[1].length());
     //push item ID
-    chunk.pushString(params[0]);
+    chunk.pushString(params[1]);
     return true;
   }
-  if (lowerLine.substr(0,12) == "explodespell")
+  if (lowerFunction == "explodespell")
   {
-    std::vector<std::string> params = explodeParams(line.substr(12));
-    if (params.size()!=1)
+    if (params.size()<2)
     {
       std::cout << "ScriptCompiler: Error: ExplodeSpell needs one parameter!\n";
       return false;
@@ -1048,15 +1066,14 @@ bool ScriptFunctions_OneParameter(const std::string& line, CompiledChunk& chunk)
     chunk.pushCode(CodeExplodeSpell);
     //parameter is ID of spell
     //push ID's length
-    chunk.data.push_back(params[0].length());
+    chunk.data.push_back(params[1].length());
     //push spell ID
-    chunk.pushString(params[0]);
+    chunk.pushString(params[1]);
     return true;
   }
-  if (lowerLine.substr(0,6) == "fadein")
+  if (lowerFunction == "fadein")
   {
-    std::vector<std::string> params = explodeParams(line.substr(6));
-    if (params.size()!=1)
+    if (params.size()<2)
     {
       std::cout << "ScriptCompiler: Error: FadeIn needs one parameter!\n";
       return false;
@@ -1065,194 +1082,27 @@ bool ScriptFunctions_OneParameter(const std::string& line, CompiledChunk& chunk)
     //parameter is time for fading (float)
     //push float
     float fade_time;
-    if (stringToFloat(params[0], fade_time))
+    if (stringToFloat(params[1], fade_time))
     {
       chunk.pushFloat(fade_time);
     }//if
     else
     {
-      std::cout << "ScriptCompiler: Error: \""<<params[0]<<"\" is not a "
+      std::cout << "ScriptCompiler: Error: \""<<params[1]<<"\" is not a "
                 << "floating point value.\n";
       return false;
     }
     return true;
   }
-  if (lowerLine.substr(0,7) == "fadeout")
+  if (lowerFunction == "fadeout")
   {
-    std::vector<std::string> params = explodeParams(line.substr(7));
-    if (params.size()!=1)
+    if (params.size()<2)
     {
       std::cout << "ScriptCompiler: Error: FadeOut needs one parameter!\n";
       return false;
     }
     chunk.pushCode(CodeFadeOut);
     //parameter is time for fading (float)
-    //push float
-    float fade_time;
-    if (stringToFloat(params[0], fade_time))
-    {
-      chunk.pushFloat(fade_time);
-    }//if
-    else
-    {
-      std::cout << "ScriptCompiler: Error: \""<<params[0]<<"\" is not a "
-                << "floating point value.\n";
-      return false;
-    }
-    return true;
-  }
-
-  //no match found
-  return false;
-}
-
-bool ScriptFunctions_TwoParameters(const std::string& line, CompiledChunk& chunk)
-{
-  const std::string lowerLine = lowerCase(line);
-  if (lowerLine.substr(0,7) == "additem")
-  {
-    std::vector<std::string> params = explodeParams(line.substr(7));
-    if (params.size()!=2)
-    {
-      std::cout << "ScriptCompiler: Error: AddItem needs two parameters!\n";
-      return false;
-    }
-    //first parameter is ID of item, second is number (short)
-    chunk.pushCode(CodeAddItem);
-    //push ID's length
-    chunk.data.push_back(params[0].length());
-    //push ID
-    chunk.pushString(params[0]);
-    //push count
-    int16_t count;
-    if (stringToShort(params[1], count))
-    {
-      chunk.pushShort(count);
-    }
-    else
-    {
-      std::cout << "ScriptCompiler: Error: \""<<params[1]<<"\" is no short value!\n";
-      return false;
-    }
-    return true;
-  }
-  if (lowerLine.substr(0,10) == "addsoulgem")
-  {
-    std::vector<std::string> params = explodeParams(line.substr(10));
-    if (params.size()!=2)
-    {
-      std::cout << "ScriptCompiler: Error: AddSoulGem needs two parameters!\n";
-      return false;
-    }
-    //first parameter is ID of creature, second is ID of gem
-    chunk.pushCode(CodeAddSoulGem);
-    //push ID's length
-    chunk.data.push_back(params[0].length());
-    //push ID
-    chunk.pushString(params[0]);
-    //push ID's length
-    chunk.data.push_back(params[1].length());
-    //push ID
-    chunk.pushString(params[1]);
-    return true;
-  }
-  if (lowerLine.substr(0,4) == "cast")
-  {
-    std::vector<std::string> params = explodeParams(line.substr(4));
-    if (params.size()!=2)
-    {
-      std::cout << "ScriptCompiler: Error: Cast needs two parameters!\n";
-      return false;
-    }
-    //first parameter is ID of spell, second is ID of target
-    chunk.pushCode(CodeCast);
-    //push ID's length
-    chunk.data.push_back(params[0].length());
-    //push ID
-    chunk.pushString(params[0]);
-    //push ID's length
-    chunk.data.push_back(params[1].length());
-    //push ID
-    chunk.pushString(params[1]);
-    return true;
-  }
-  if (lowerLine.substr(0,13) == "changeweather")
-  {
-    std::vector<std::string> params = explodeParams(line.substr(13));
-    if (params.size()!=2)
-    {
-      std::cout << "ScriptCompiler: Error: ChangeWeather needs two parameters!\n";
-      return false;
-    }
-    //first parameter is ID of region, second is short that indicates the new weather
-    chunk.pushCode(CodeChangeWeather);
-    //push ID's length
-    chunk.data.push_back(params[0].length());
-    //push ID
-    chunk.pushString(params[0]);
-    //push new weather type
-    int16_t weather_type;
-    if (stringToShort(params[1], weather_type))
-    {
-      chunk.pushShort(weather_type);
-    }
-    else
-    {
-      std::cout << "ScriptCompiler: Error: \""<<params[1]<<"\" is no short value!\n";
-      return false;
-    }
-    return true;
-  }
-  if ((lowerLine.substr(0,4) == "drop") and ((lowerLine.at(4)==' ') or (lowerLine.at(4)==',')))
-  {
-    std::vector<std::string> params = explodeParams(line.substr(5));
-    if (params.size()!=2)
-    {
-      std::cout << "ScriptCompiler: Error: Drop needs two parameters!\n";
-      return false;
-    }
-    //first parameter is ID of item, second is short that indicates the count
-    chunk.pushCode(CodeDrop);
-    //push item ID's length
-    chunk.data.push_back(params[0].length());
-    //push item ID
-    chunk.pushString(params[0]);
-    //push count
-    int16_t count;
-    if (stringToShort(params[1], count))
-    {
-      chunk.pushShort(count);
-    }
-    else
-    {
-      std::cout << "ScriptCompiler: Error: \""<<params[1]<<"\" is no short value!\n";
-      return false;
-    }
-    return true;
-  }
-  if (lowerLine.substr(0,6) == "fadeto")
-  {
-    std::vector<std::string> params = explodeParams(line.substr(6));
-    if (params.size()!=1)
-    {
-      std::cout << "ScriptCompiler: Error: FadeTo needs two parameters!\n";
-      return false;
-    }
-    chunk.pushCode(CodeFadeTo);
-    //first parameter is amount of fading (long?)
-    //push long
-    int32_t fade_amount;
-    if (stringToLong(params[0], fade_amount))
-    {
-      chunk.pushLong(fade_amount);
-    }//if
-    else
-    {
-      std::cout << "ScriptCompiler: Error: \""<<params[0]<<"\" is not a "
-                << "long value.\n";
-      return false;
-    }
-    //second parameter is time for fading (float)
     //push float
     float fade_time;
     if (stringToFloat(params[1], fade_time))
@@ -1268,7 +1118,166 @@ bool ScriptFunctions_TwoParameters(const std::string& line, CompiledChunk& chunk
     return true;
   }
 
+  //no match found
+  return false;
+}
 
+bool ScriptFunctions_TwoParameters(const std::vector<std::string>& params, CompiledChunk& chunk)
+{
+  //entry at index zero is the function's name
+  const std::string lowerFunction = lowerCase(params.at(0));
+  if (lowerFunction == "additem")
+  {
+    if (params.size()<3)
+    {
+      std::cout << "ScriptCompiler: Error: AddItem needs two parameters!\n";
+      return false;
+    }
+    //first parameter is ID of item, second is number (short)
+    chunk.pushCode(CodeAddItem);
+    //push ID's length
+    chunk.data.push_back(params[1].length());
+    //push ID
+    chunk.pushString(params[1]);
+    //push count
+    int16_t count;
+    if (stringToShort(params[2], count))
+    {
+      chunk.pushShort(count);
+    }
+    else
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is no short value!\n";
+      return false;
+    }
+    return true;
+  }
+  if (lowerFunction == "addsoulgem")
+  {
+    if (params.size()<3)
+    {
+      std::cout << "ScriptCompiler: Error: AddSoulGem needs two parameters!\n";
+      return false;
+    }
+    //first parameter is ID of creature, second is ID of gem
+    chunk.pushCode(CodeAddSoulGem);
+    //push creature ID's length
+    chunk.data.push_back(params[1].length());
+    //push creature ID
+    chunk.pushString(params[1]);
+    //push gem ID's length
+    chunk.data.push_back(params[2].length());
+    //push gem ID
+    chunk.pushString(params[2]);
+    return true;
+  }
+  if (lowerFunction == "cast")
+  {
+    if (params.size()<3)
+    {
+      std::cout << "ScriptCompiler: Error: Cast needs two parameters!\n";
+      return false;
+    }
+    //first parameter is ID of spell, second is ID of target
+    chunk.pushCode(CodeCast);
+    //push spell ID's length
+    chunk.data.push_back(params[1].length());
+    //push spell ID
+    chunk.pushString(params[1]);
+    //push target ID's length
+    chunk.data.push_back(params[2].length());
+    //push target ID
+    chunk.pushString(params[2]);
+    return true;
+  }
+  if (lowerFunction == "changeweather")
+  {
+    if (params.size()<3)
+    {
+      std::cout << "ScriptCompiler: Error: ChangeWeather needs two parameters!\n";
+      return false;
+    }
+    //first parameter is ID of region, second is short that indicates the new weather
+    chunk.pushCode(CodeChangeWeather);
+    //push region ID's length
+    chunk.data.push_back(params[1].length());
+    //push region ID
+    chunk.pushString(params[1]);
+    //push new weather type
+    int16_t weather_type;
+    if (stringToShort(params[2], weather_type))
+    {
+      chunk.pushShort(weather_type);
+    }
+    else
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is no short value!\n";
+      return false;
+    }
+    return true;
+  }
+  if (lowerFunction == "drop")
+  {
+    if (params.size()<3)
+    {
+      std::cout << "ScriptCompiler: Error: Drop needs two parameters!\n";
+      return false;
+    }
+    //first parameter is ID of item, second is short that indicates the count
+    chunk.pushCode(CodeDrop);
+    //push item ID's length
+    chunk.data.push_back(params[1].length());
+    //push item ID
+    chunk.pushString(params[1]);
+    //push count
+    int16_t count;
+    if (stringToShort(params[2], count))
+    {
+      chunk.pushShort(count);
+    }
+    else
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is no short value!\n";
+      return false;
+    }
+    return true;
+  }
+  if (lowerFunction == "fadeto")
+  {
+    if (params.size()<3)
+    {
+      std::cout << "ScriptCompiler: Error: FadeTo needs two parameters!\n";
+      return false;
+    }
+    chunk.pushCode(CodeFadeTo);
+    //first parameter is amount of fading (long?)
+    //push long
+    int32_t fade_amount;
+    if (stringToLong(params[1], fade_amount))
+    {
+      chunk.pushLong(fade_amount);
+    }//if
+    else
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[1]<<"\" is not a "
+                << "long value.\n";
+      return false;
+    }
+    //second parameter is time for fading (float)
+    //push float
+    float fade_time;
+    if (stringToFloat(params[2], fade_time))
+    {
+      chunk.pushFloat(fade_time);
+    }//if
+    else
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is not a "
+                << "floating point value.\n";
+      return false;
+    }
+    return true;
+  }
 
   //end - no matching function found, if we are here
   return false;
@@ -1277,15 +1286,37 @@ bool ScriptFunctions_TwoParameters(const std::string& line, CompiledChunk& chunk
 bool ScriptFunctions(const std::string& line, CompiledChunk& chunk)
 {
   if (line=="") return false;
-  if (ScriptFunctions_ZeroParameters(line, chunk))
+  //split line into seperate parameters
+  std::vector<std::string> parameters = explodeParams(line);
+  /* Now the first entry in vector params should be the function name, the rest
+     is the list of parameters. That's why the size of the vector is one more
+     than the number of parameters.
+  */
+  switch(parameters.size())
   {
-    return true;
-  }
-  if (ScriptFunctions_OneParameter(line, chunk))
-  {
-    return true;
-  }
-  return ScriptFunctions_TwoParameters(line, chunk);
+    case 3:
+         if (ScriptFunctions_TwoParameters(parameters, chunk))
+         {
+           return true;
+         }
+    case 2:
+         if (ScriptFunctions_OneParameter(parameters, chunk))
+         {
+           return true;
+         }
+    case 1:
+         if (ScriptFunctions_ZeroParameters(parameters, chunk))
+         {
+           return true;
+         }
+         return false;
+         break;
+    default:
+         std::cout << "ScriptCompiler: Warning: no functions defined for "
+                   << parameters.size()-1 << " parameters.\nLine was \""
+                   << line << "\".\n";
+         return false;
+  }//switch
 }
 
 bool CompileScript(const std::string& Text, ScriptRecord& result)
@@ -1315,7 +1346,7 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
     }//else
 
     // -> remove any commments, if present (comments start with ';')
-    pos = new_line.find(";");
+    pos = getCommentStart(new_line);
     if (pos!=std::string::npos)
     {
       //remove comment - everything after ";" is a comment

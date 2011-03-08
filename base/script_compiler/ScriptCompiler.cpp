@@ -635,6 +635,11 @@ bool ScriptFunctions_ZeroParameters(const std::vector<std::string>& params, Comp
         chunk.pushCode(CodeGetAgility);
         return true;
       }
+      if (lowerFunction=="getaipackagedone")
+      {
+        chunk.pushCode(CodeGetAIPackageDone);
+        return true;
+      }
       if (lowerFunction=="getalarm")
       {
         chunk.pushCode(CodeGetAlarm);
@@ -665,9 +670,14 @@ bool ScriptFunctions_ZeroParameters(const std::vector<std::string>& params, Comp
         chunk.pushCode(CodeGetAthletics);
         return true;
       }
-      if (lowerFunction=="getatttackbonus")
+      if (lowerFunction=="getattackbonus")
       {
         chunk.pushCode(CodeGetAttackBonus);
+        return true;
+      }
+      if (lowerFunction=="getattacked")
+      {
+        chunk.pushCode(CodeGetAttacked);
         return true;
       }
       if (lowerFunction=="getaxe")
@@ -677,6 +687,11 @@ bool ScriptFunctions_ZeroParameters(const std::vector<std::string>& params, Comp
       }
       return false;//all zero argument functions with "GetA..." done
     }//if fourth character is 'a'
+    if (lowerFunction=="getblightdisease")
+    {
+      chunk.pushCode(CodeGetBlightDisease);
+      return true;
+    }
     if (lowerFunction=="getblindness")
     {
       chunk.pushCode(CodeGetBlindness);
@@ -692,6 +707,11 @@ bool ScriptFunctions_ZeroParameters(const std::vector<std::string>& params, Comp
       chunk.pushCode(CodeGetBluntWeapon);
       return true;
     }
+    if (lowerFunction=="getbuttonpressed")
+    {
+      chunk.pushCode(CodeGetButtonPressed);
+      return true;
+    }
     if (lowerFunction=="getcastpenalty")
     {
       chunk.pushCode(CodeGetCastPenalty);
@@ -702,9 +722,39 @@ bool ScriptFunctions_ZeroParameters(const std::vector<std::string>& params, Comp
       chunk.pushCode(CodeGetChameleon);
       return true;
     }
+    if (lowerFunction=="getcollidingactor")
+    {
+      chunk.pushCode(CodeGetCollidingActor);
+      return true;
+    }
+    if (lowerFunction=="getcollidingpc")
+    {
+      chunk.pushCode(CodeGetCollidingPC);
+      return true;
+    }
+    if (lowerFunction=="getcommondisease")
+    {
+      chunk.pushCode(CodeGetCommonDisease);
+      return true;
+    }
     if (lowerFunction=="getconjuration")
     {
       chunk.pushCode(CodeGetConjuration);
+      return true;
+    }
+    if (lowerFunction=="getcurrentaipackage")
+    {
+      chunk.pushCode(CodeGetCurrentAIPackage);
+      return true;
+    }
+    if (lowerFunction=="getcurrenttime")
+    {
+      chunk.pushCode(CodeGetCurrentTime);
+      return true;
+    }
+    if (lowerFunction=="getcurrentweather")
+    {
+      chunk.pushCode(CodeGetCurrentWeather);
       return true;
     }
     if (lowerFunction=="getdefendbonus")
@@ -715,6 +765,11 @@ bool ScriptFunctions_ZeroParameters(const std::vector<std::string>& params, Comp
     if (lowerFunction=="getdestruction")
     {
       chunk.pushCode(CodeGetDestruction);
+      return true;
+    }
+    if (lowerFunction=="getdisabled")
+    {
+      chunk.pushCode(CodeGetDisabled);
       return true;
     }
     if (lowerFunction=="getdisposition")
@@ -1117,6 +1172,95 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
     }
     return true;
   }
+  if (lowerFunction == "getangle")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: GetAngle needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodeGetAngle);
+    //parameter is axis, given as upper case character
+    //push axis
+    const char Axis = toupper(params[1].at(0));
+    /*The CS does not check, if the parameter is really X, Y or Z, but allows
+      any letter, as it seems. I'm not sure about the consequences in-game.
+      We should put a warning at least.
+    */
+    if ((Axis!='X') and (Axis!='Y') and (Axis!='Z'))
+    {
+      std::cout << "ScriptCompiler: Warning: invalid parameter to GetAngle.\n";
+    }
+    chunk.data.push_back(Axis);
+    return true;
+  }//if
+  if (lowerFunction == "getarmortype")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: GetArmorType needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodeGetArmorType);
+    //parameter is slot index
+    int16_t slot;
+    if (stringToShort(params[1], slot))
+    {
+      chunk.pushShort(slot);
+    }//if
+    else
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[1]<<"\" is not a "
+                << "short value.\n";
+      return false;
+    }
+    return true;
+  }//if
+  if (lowerFunction == "getdeadcount")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: GetDeathCount needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodeGetDeathCount);
+    //parameter is creature/NPC ID
+    //push ID's length
+    chunk.data.push_back(params[1].length());
+    //push ID itself
+    chunk.pushString(params[1]);
+    return true;
+  }//if
+  if (lowerFunction == "getdetected")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: GetDetected needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodeGetDetected);
+    //parameter is NPC ID
+    //push ID's length
+    chunk.data.push_back(params[1].length());
+    //push ID itself
+    chunk.pushString(params[1]);
+    return true;
+  }//if
+  if (lowerFunction == "getdistance")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: GetDistance needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodeGetDistance);
+    //parameter is object ID
+    //push ID's length
+    chunk.data.push_back(params[1].length());
+    //push ID
+    chunk.pushString(params[1]);
+    return true;
+  }//if
 
   //no match found
   return false;

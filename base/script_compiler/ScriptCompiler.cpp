@@ -1044,6 +1044,36 @@ bool ScriptFunctions_ZeroParameters(const std::vector<std::string>& params, Comp
       return true;
     }
   }//get functions
+  if (lowerFunction=="turnmoonred")
+  {
+    chunk.pushCode(CodeTurnMoonRed);
+    return true;
+  }
+  if (lowerFunction=="turnmoonwhite")
+  {
+    chunk.pushCode(CodeTurnMoonWhite);
+    return true;
+  }
+  if (lowerFunction=="undowerewolf")
+  {
+    chunk.pushCode(CodeUndoWerewolf);
+    return true;
+  }
+  if (lowerFunction=="unlock")
+  {
+    chunk.pushCode(CodeUnlock);
+    return true;
+  }
+  if (lowerFunction=="wakeuppc")
+  {
+    chunk.pushCode(CodeWakeUpPC);
+    return true;
+  }
+  if (lowerFunction=="xbox")
+  {
+    chunk.pushCode(CodeXBox);
+    return true;
+  }
   return false;
 }
 
@@ -1258,6 +1288,36 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
     //push ID's length
     chunk.data.push_back(params[1].length());
     //push ID
+    chunk.pushString(params[1]);
+    return true;
+  }//if
+  if (lowerFunction == "stopsound")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: StopSound needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodeStopSound);
+    //parameter is sound ID
+    //push IDs length
+    chunk.data.push_back(params[1].length());
+    //push ID
+    chunk.pushString(params[1]);
+    return true;
+  }//if
+  if (lowerFunction == "streammusic")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: StreamMusic needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodeStreamMusic);
+    //parameter is music file (MP3, Wave or Midi)
+    //push file name's length
+    chunk.data.push_back(params[1].length());
+    //push file name
     chunk.pushString(params[1]);
     return true;
   }//if

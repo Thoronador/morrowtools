@@ -177,6 +177,14 @@ namespace ScriptCompiler
   const uint16_t CodeSet = 0x0105; //"0501"
   const uint16_t CodeStartScript = 0x101B; //"1B10"
   const uint16_t CodeStopScript = 0x101C; //"1C10"
+  const uint16_t CodeStopSound = 0x1151; //"5111"
+  const uint16_t CodeStreamMusic = 0x1003; //"0310"
+  const uint16_t CodeTurnMoonRed = 0x11B7; //"B711"
+  const uint16_t CodeTurnMoonWhite = 0x11B8; //"B811"
+  const uint16_t CodeUndoWerewolf = 0x11B4; //"B411"
+  const uint16_t CodeUnlock = 0x1137; //"3711"
+  const uint16_t CodeWakeUpPC = 0x10E1; //"E110"
+  const uint16_t CodeXBox = 0x113A; //"3A11"
 } //namespace
 
 #endif // COMPILERCODES_H

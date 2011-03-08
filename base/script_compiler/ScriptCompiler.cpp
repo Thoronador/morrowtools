@@ -21,6 +21,7 @@
 #include "ScriptCompiler.h"
 #include <iostream>
 #include "CompilerCodes.h"
+#include "../MagicEffects.h"
 
 namespace ScriptCompiler
 {
@@ -807,6 +808,26 @@ bool ScriptFunctions_ZeroParameters(const std::vector<std::string>& params, Comp
       chunk.pushCode(CodeGetFlying);
       return true;
     }
+    if (lowerFunction=="getforcejump")
+    {
+      chunk.pushCode(CodeGetForceJump);
+      return true;
+    }
+    if (lowerFunction=="getforcemovejump")
+    {
+      chunk.pushCode(CodeGetForceMoveJump);
+      return true;
+    }
+    if (lowerFunction=="getforcerun")
+    {
+      chunk.pushCode(CodeGetForceRun);
+      return true;
+    }
+    if (lowerFunction=="getforcesneak")
+    {
+      chunk.pushCode(CodeGetForceSneak);
+      return true;
+    }
     if (lowerFunction=="gethandtohand")
     {
       chunk.pushCode(CodeGetHandToHand);
@@ -815,6 +836,11 @@ bool ScriptFunctions_ZeroParameters(const std::vector<std::string>& params, Comp
     if (lowerFunction=="gethealth")
     {
       chunk.pushCode(CodeGetHealth);
+      return true;
+    }
+    if (lowerFunction=="gethealthgetratio")
+    {
+      chunk.pushCode(CodeGetHealthGetRatio);
       return true;
     }
     if (lowerFunction=="getheavyarmor")
@@ -837,6 +863,11 @@ bool ScriptFunctions_ZeroParameters(const std::vector<std::string>& params, Comp
       chunk.pushCode(CodeGetIntelligence);
       return true;
     }
+    if (lowerFunction=="getinterior")
+    {
+      chunk.pushCode(CodeGetInterior);
+      return true;
+    }
     //check for both correct and earlier misspelled version of function name
     if ((lowerFunction=="getinvisible") or (lowerFunction=="getinvisibile"))
     {
@@ -851,6 +882,11 @@ bool ScriptFunctions_ZeroParameters(const std::vector<std::string>& params, Comp
     if (lowerFunction=="getlightarmor")
     {
       chunk.pushCode(CodeGetLightArmor);
+      return true;
+    }
+    if (lowerFunction=="getlocked")
+    {
+      chunk.pushCode(CodeGetLocked);
       return true;
     }
     if (lowerFunction=="getlongblade")
@@ -871,6 +907,11 @@ bool ScriptFunctions_ZeroParameters(const std::vector<std::string>& params, Comp
     if (lowerFunction=="getmarksman")
     {
       chunk.pushCode(CodeGetMarksman);
+      return true;
+    }
+    if (lowerFunction=="getmasserphase")
+    {
+      chunk.pushCode(CodeGetMasserPhase);
       return true;
     }
     if (lowerFunction=="getmediumarmor")
@@ -898,6 +939,36 @@ bool ScriptFunctions_ZeroParameters(const std::vector<std::string>& params, Comp
       chunk.pushCode(CodeGetPCCrimeLevel);
       return true;
     }
+    if (lowerFunction=="getpcinjail")
+    {
+      chunk.pushCode(CodeGetPCInJail);
+      return true;
+    }
+    if (lowerFunction=="getpcjumping")
+    {
+      chunk.pushCode(CodeGetPCJumping);
+      return true;
+    }
+    if (lowerFunction=="getpcrunning")
+    {
+      chunk.pushCode(CodeGetPCRunning);
+      return true;
+    }
+    if (lowerFunction=="getpcsleep")
+    {
+      chunk.pushCode(CodeGetPCSleep);
+      return true;
+    }
+    if (lowerFunction=="getpcsneaking")
+    {
+      chunk.pushCode(CodeGetPCSneaking);
+      return true;
+    }
+    if (lowerFunction=="getpctraveling")
+    {
+      chunk.pushCode(CodeGetPCTraveling);
+      return true;
+    }
     if (lowerFunction=="getpcvisionbonus")
     {
       chunk.pushCode(CodeGetPCVisionBonus);
@@ -906,6 +977,31 @@ bool ScriptFunctions_ZeroParameters(const std::vector<std::string>& params, Comp
     if (lowerFunction=="getpersonality")
     {
       chunk.pushCode(CodeGetPersonality);
+      return true;
+    }
+    if (lowerFunction=="getplayercontrolsdisabled")
+    {
+      chunk.pushCode(CodeGetPlayerControlsDisabled);
+      return true;
+    }
+    if (lowerFunction=="getplayerfightingdisabled")
+    {
+      chunk.pushCode(CodeGetPlayerFightingDisabled);
+      return true;
+    }
+    if (lowerFunction=="getplayerjumpingdisabled")
+    {
+      chunk.pushCode(CodeGetPlayerJumpingDisabled);
+      return true;
+    }
+    if (lowerFunction=="getplayerlookingdisabled")
+    {
+      chunk.pushCode(CodeGetPlayerLookingDisabled);
+      return true;
+    }
+    if (lowerFunction=="getplayermagicdisabled")
+    {
+      chunk.pushCode(CodeGetPlayerMagicDisabled);
       return true;
     }
     if (lowerFunction=="getreputation")
@@ -971,6 +1067,11 @@ bool ScriptFunctions_ZeroParameters(const std::vector<std::string>& params, Comp
     if (lowerFunction=="getscale")
     {
       chunk.pushCode(CodeGetScale);
+      return true;
+    }
+    if (lowerFunction=="getsecundaphase")
+    {
+      chunk.pushCode(CodeGetSecundaPhase);
       return true;
     }
     if (lowerFunction=="getsecurity")
@@ -1289,6 +1390,121 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
     chunk.data.push_back(params[1].length());
     //push ID
     chunk.pushString(params[1]);
+    return true;
+  }//if
+  if (lowerFunction == "geteffect")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: GetEffect needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodeGetEffect);
+    //parameter is mgef ID as string, but the chunk needs it as short
+    //That's why we do some ugly brute force here, but an inverse function would
+    // be the weapon of choice.
+    int16_t effectID = -1;
+    const std::string lowerEffect = lowerCase(params[1]);
+    int i;
+    for (i=0; i<=136; ++i)
+    {
+      if (lowerEffect==lowerCase(MagicEffects::getSettingNameForEffect(i)))
+      {
+        //found it!
+        effectID = i;
+        break;
+      }
+    }//for
+    if (effectID==-1)
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[1]<<"\" does not name a "
+                << "magic effect for GetEffect.\n";
+      return false;
+    }
+    //push effect ID
+    chunk.pushShort(effectID);
+    return true;
+  }//if
+  if (lowerFunction == "getitemcount")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: GetItemCount needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodeGetItemCount);
+    //parameter is item ID
+    //push ID's length
+    chunk.data.push_back(params[1].length());
+    //push ID
+    chunk.pushString(params[1]);
+    return true;
+  }//if
+  if (lowerFunction == "getjournalindex")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: GetJounalIndex needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodeGetJournalIndex);
+    //parameter is quest ID
+    //push ID's length
+    chunk.data.push_back(params[1].length());
+    //push quest ID
+    chunk.pushString(params[1]);
+    return true;
+  }//if
+  if ((lowerFunction == "getlineofsight") or (lowerFunction == "getlos"))
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: GetLineOfSight needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodeGetLineOfSight);
+    //parameter is object ID
+    //push ID's length
+    chunk.data.push_back(params[1].length());
+    //push ID
+    chunk.pushString(params[1]);
+    return true;
+  }//if
+  if (lowerFunction == "getpccell")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: GetPCCell needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodeGetPCCell);
+    //parameter is cell name or a part thereof
+    //push name's length
+    chunk.data.push_back(params[1].length());
+    //push name
+    chunk.pushString(params[1]);
+    return true;
+  }//if
+  if (lowerFunction == "getpos")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: GetPos needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodeGetPos);
+    //parameter is axis name as upper case letter
+    const char Axis = toupper(params[1].at(0));
+    /*The CS does not check, if the parameter is really X, Y or Z, but allows
+      any letter, as it seems. I'm not sure about the consequences in-game.
+      We should put a warning at least.
+    */
+    if ((Axis!='X') and (Axis!='Y') and (Axis!='Z'))
+    {
+      std::cout << "ScriptCompiler: Warning: invalid parameter to GetPos.\n";
+    }
+    //push axis
+    chunk.data.push_back(Axis);
     return true;
   }//if
   if (lowerFunction == "stopsound")

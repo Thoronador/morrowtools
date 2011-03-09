@@ -1202,6 +1202,16 @@ bool ScriptFunctions_ZeroParameters(const std::vector<std::string>& params, Comp
     chunk.pushCode(CodeGotoJail);
     return true;
   }
+  if (lowerFunction=="iswerewolf")
+  {
+    chunk.pushCode(CodeIsWerewolf);
+    return true;
+  }
+  if (lowerFunction=="menumode")
+  {
+    chunk.pushCode(CodeMenuMode);
+    return true;
+  }
   if (lowerFunction=="turnmoonred")
   {
     chunk.pushCode(CodeTurnMoonRed);
@@ -1710,6 +1720,136 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
     chunk.pushString(params[1]);
     return true;
   }//if
+  if (lowerFunction == "hasitemequipped")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: HasItemEquipped needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodeHasItemEquipped);
+    //parameter is item ID
+    //push IDs length
+    chunk.data.push_back(params[1].length());
+    //push ID
+    chunk.pushString(params[1]);
+    return true;
+  }//if
+  if (lowerFunction == "hassoulgem")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: HasSoulgem needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodeHasSoulgem);
+    //parameter is creature ID
+    //push IDs length
+    chunk.data.push_back(params[1].length());
+    //push ID
+    chunk.pushString(params[1]);
+    return true;
+  }//if
+  if (lowerFunction == "hitattemptonme")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: HitAttemptOnMe needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodeHitAttemptOnMe);
+    //parameter is weapon ID
+    //push IDs length
+    chunk.data.push_back(params[1].length());
+    //push ID
+    chunk.pushString(params[1]);
+    return true;
+  }//if
+  if (lowerFunction == "hitonme")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: HitOnMe needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodeHitOnMe);
+    //parameter is weapon ID
+    //push IDs length
+    chunk.data.push_back(params[1].length());
+    //push ID
+    chunk.pushString(params[1]);
+    return true;
+  }//if
+  if (lowerFunction == "hurtcollidingactor")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: HurtCollidingActor needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodeHurtCollidingActor);
+    //parameter is damage per second as float
+    float f_value;
+    if (stringToFloat(params[1], f_value))
+    {
+      //push float
+      chunk.pushFloat(f_value);
+    }
+    else
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[1]<<"\" is not a proper "
+                << "floating point value.\n";
+      return false;
+    }
+    return true;
+  }//if
+  if (lowerFunction == "hurtstandingactor")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: HurtStandingActor needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodeHurtStandingActor);
+    //parameter is damage per second as float
+    float f_value;
+    if (stringToFloat(params[1], f_value))
+    {
+      //push float
+      chunk.pushFloat(f_value);
+    }
+    else
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[1]<<"\" is not a proper "
+                << "floating point value.\n";
+      return false;
+    }
+    return true;
+  }//if
+  if (lowerFunction == "lock")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: Lock needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodeLock);
+    //parameter is lock level
+    int16_t lock_level;
+    if (stringToShort(params[1], lock_level))
+    {
+      chunk.pushShort(lock_level);
+    }
+    else
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[1]<<"\" is not a proper "
+                << "short value.\n";
+      return false;
+    }
+
+    return true;
+  }//if
+
 
   if (lowerFunction == "stopsound")
   {
@@ -1903,6 +2043,37 @@ bool ScriptFunctions_TwoParameters(const std::vector<std::string>& params, Compi
     return true;
   }
 
+
+  if (lowerFunction == "journal")
+  {
+    if (params.size() != 2)
+    {
+      std::cout << "ScriptCompiler: Error: Journal command expects two params"
+                << ", not "<<params.size()<<".\n";
+      return false;
+    }
+    chunk.pushCode(CodeJournal);
+    //push journal ID's length
+    chunk.data.push_back(params[1].length());
+    chunk.pushString(params[1]);
+    //second parameter should be index
+    int16_t journal_index;
+    if (stringToShort(params[2], journal_index))
+    {
+      chunk.pushShort(journal_index);
+    }
+    else
+    {
+      std::cout << "ScriptCompiler: Error: Journal command expects short value"
+                << " as second parameter, but \""<<params[2]<<"\" is not a "
+                << "short value.\n";
+      return false;
+    }
+    //fill data so it's four bytes
+    chunk.data.push_back(255);
+    chunk.data.push_back(255);
+  }//if Journal
+
   //end - no matching function found, if we are here
   return false;
 }
@@ -2057,40 +2228,6 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       }
       varsFloat.push_back(WorkString);
     }//if float
-    //check for Journal
-    else if (lowerCase(lines.at(i).substr(0,8))=="journal ")
-    {
-      CompiledData.pushCode(CodeJournal);
-      WorkString = lines.at(i).substr(8);
-      trimLeft(WorkString);
-      std::vector<std::string> params = explodeParams(WorkString);
-      if (params.size() != 2)
-      {
-        std::cout << "ScriptCompiler: Error: Journal command expects two params"
-                  << ", not "<<params.size()<<".\n";
-        return false;
-      }
-      StripEnclosingQuotes(params[0]);
-      //push journal ID's length
-      CompiledData.data.push_back(params[0].length());
-      CompiledData.pushString(params[0]);
-      //second parameter should be index
-      int16_t journal_index;
-      if (stringToShort(params[1], journal_index))
-      {
-        CompiledData.pushShort(journal_index);
-      }
-      else
-      {
-        std::cout << "ScriptCompiler: Error: Journal command expects short value"
-                  << " as second parameter, but \""<<params[1]<<"\" is not a "
-                  << "short value.\n";
-        return false;
-      }
-      //fill data so it's four bytes
-      CompiledData.data.push_back(255);
-      CompiledData.data.push_back(255);
-    }//if Journal
     //check for Set
     else if (lowerCase(lines.at(i).substr(0,4))=="set ")
     {

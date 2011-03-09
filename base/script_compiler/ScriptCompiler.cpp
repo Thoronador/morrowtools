@@ -1069,6 +1069,11 @@ bool ScriptFunctions_ZeroParameters(const std::vector<std::string>& params, Comp
       chunk.pushCode(CodeGetScale);
       return true;
     }
+    if (lowerFunction=="getsecondspassed")
+    {
+      chunk.pushCode(CodeGetSecondsPassed);
+      return true;
+    }
     if (lowerFunction=="getsecundaphase")
     {
       chunk.pushCode(CodeGetSecundaPhase);
@@ -1109,6 +1114,21 @@ bool ScriptFunctions_ZeroParameters(const std::vector<std::string>& params, Comp
       chunk.pushCode(CodeGetSpeed);
       return true;
     }
+    if (lowerFunction=="getspellreadied")
+    {
+      chunk.pushCode(CodeGetSpellReadied);
+      return true;
+    }
+    if (lowerFunction=="getstandingactor")
+    {
+      chunk.pushCode(CodeGetStandingActor);
+      return true;
+    }
+    if (lowerFunction=="getstandingpc")
+    {
+      chunk.pushCode(CodeGetStandingPC);
+      return true;
+    }
     if (lowerFunction=="getstrength")
     {
       chunk.pushCode(CodeGetStrength);
@@ -1129,9 +1149,19 @@ bool ScriptFunctions_ZeroParameters(const std::vector<std::string>& params, Comp
       chunk.pushCode(CodeGetUnarmored);
       return true;
     }
+    if (lowerFunction=="getvanitymodedisabled")
+    {
+      chunk.pushCode(CodeGetVanityModeDisabled);
+      return true;
+    }
     if (lowerFunction=="getwaterbreathing")
     {
       chunk.pushCode(CodeGetWaterBreathing);
+      return true;
+    }
+    if (lowerFunction=="getwaterlevel")
+    {
+      chunk.pushCode(CodeGetWaterLevel);
       return true;
     }
     if (lowerFunction=="getwaterwalking")
@@ -1139,12 +1169,39 @@ bool ScriptFunctions_ZeroParameters(const std::vector<std::string>& params, Comp
       chunk.pushCode(CodeGetWaterWalking);
       return true;
     }
+    if (lowerFunction=="getweapondrawn")
+    {
+      chunk.pushCode(CodeGetWeaponDrawn);
+      return true;
+    }
+    if (lowerFunction=="getweapontype")
+    {
+      chunk.pushCode(CodeGetWeaponType);
+      return true;
+    }
+    if (lowerFunction=="getwerewolfkills")
+    {
+      chunk.pushCode(CodeGetWerewolfKills);
+      return true;
+    }
     if (lowerFunction=="getwillpower")
     {
       chunk.pushCode(CodeGetWillpower);
       return true;
     }
+    if (lowerFunction=="getwindspeed")
+    {
+      chunk.pushCode(CodeGetWindSpeed);
+      return true;
+    }
+    //no appropriate get function found, return here
+    return false;
   }//get functions
+  if (lowerFunction=="gotojail")
+  {
+    chunk.pushCode(CodeGotoJail);
+    return true;
+  }
   if (lowerFunction=="turnmoonred")
   {
     chunk.pushCode(CodeTurnMoonRed);
@@ -1507,6 +1564,153 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
     chunk.data.push_back(Axis);
     return true;
   }//if
+  if (lowerFunction == "getrace")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: GetRace needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodeGetRace);
+    //parameter is race name
+    //push name's length
+    chunk.data.push_back(params[1].length());
+    //push name
+    chunk.pushString(params[1]);
+    return true;
+  }//if
+  if (lowerFunction == "getsoundplaying")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: GetSoundPlaying needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodeGetSoundPlaying);
+    //parameter is sound name
+    //push name's length
+    chunk.data.push_back(params[1].length());
+    //push sound name
+    chunk.pushString(params[1]);
+    return true;
+  }//if
+  if (lowerFunction == "getspell")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: GetSpell needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodeGetSpell);
+    //parameter is spell ID
+    //push ID's length
+    chunk.data.push_back(params[1].length());
+    //push spell ID
+    chunk.pushString(params[1]);
+    return true;
+  }//if
+  if (lowerFunction == "getspelleffects")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: GetSpellEffects needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodeGetSpellEffects);
+    //parameter is spell ID
+    //push ID's length
+    chunk.data.push_back(params[1].length());
+    //push spell ID
+    chunk.pushString(params[1]);
+    return true;
+  }//if
+  if (lowerFunction == "getsquareroot")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: GetSquareRoot needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodeGetSquareRoot);
+    //parameter is spell ID or float var
+    //However, we only do floats yet.
+    /* TODO: Implement possibility to use float variables, too. */
+    //push ID's length
+    float float_value;
+    if (stringToFloat(params[1], float_value))
+    {
+      //push float
+      chunk.pushFloat(float_value);
+    }
+    else
+    {
+      //Should go for the (local) var here, but we don't support that yet.
+      std::cout << "ScriptCompiler: Error: only floats implemented for GetSquareRoot."
+                << " Floating point variables will follow later!\n";
+      return false;
+    }
+    return true;
+  }//if
+  if (lowerFunction == "getstartingangle")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: GetStartingAngle needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodeGetStartingAngle);
+    //parameter is axis, given as upper case character
+    //push axis
+    const char Axis = toupper(params[1].at(0));
+    /*The CS does not check, if the parameter is really X, Y or Z, but allows
+      any letter, as it seems. I'm not sure about the consequences in-game.
+      We should put a warning at least.
+    */
+    if ((Axis!='X') and (Axis!='Y') and (Axis!='Z'))
+    {
+      std::cout << "ScriptCompiler: Warning: invalid parameter to GetStartingAngle.\n";
+    }
+    chunk.data.push_back(Axis);
+    return true;
+  }//if
+  if (lowerFunction == "getstartingpos")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: GetStartingPos needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodeGetStartingPos);
+    //parameter is axis, given as upper case character
+    //push axis
+    const char Axis = toupper(params[1].at(0));
+    /*The CS does not check, if the parameter is really X, Y or Z, but allows
+      any letter, as it seems. I'm not sure about the consequences in-game.
+      We should put a warning at least.
+    */
+    if ((Axis!='X') and (Axis!='Y') and (Axis!='Z'))
+    {
+      std::cout << "ScriptCompiler: Warning: invalid parameter to GetStartingPos.\n";
+    }
+    chunk.data.push_back(Axis);
+    return true;
+  }//if
+  if (lowerFunction == "gettarget")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: GetTarget needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodeGetTarget);
+    //parameter is npc/creature ID
+    //push IDs length
+    chunk.data.push_back(params[1].length());
+    //push ID
+    chunk.pushString(params[1]);
+    return true;
+  }//if
+
   if (lowerFunction == "stopsound")
   {
     if (params.size()<2)

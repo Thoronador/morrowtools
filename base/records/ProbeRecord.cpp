@@ -18,80 +18,80 @@
  -------------------------------------------------------------------------------
 */
 
-#include "RepairItemRecord.h"
+#include "ProbeRecord.h"
 #include <iostream>
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 
-RepairItemRecord::RepairItemRecord()
+ProbeRecord::ProbeRecord()
 {
-  RepairItemID = ModelPath = Name = "";
-  //repair data
+  ProbeID = ModelPath = Name = "";
+  //probe data
   Weight = 0.0f;
   Value = 0;
-  Uses = 0;
   Quality = 0.0f;
-  //end of repair data
+  Uses = 0;
+  //end of probe data
   InventoryIcon = ScriptName = "";
 }
 
-RepairItemRecord::RepairItemRecord(const std::string& ID)
+ProbeRecord::ProbeRecord(const std::string& ID)
 {
-  RepairItemID = ID;
+  ProbeID = ID;
   ModelPath = Name = "";
-  //repair data
+  //probe data
   Weight = 0.0f;
   Value = 0;
-  Uses = 0;
   Quality = 0.0f;
-  //end of repair data
+  Uses = 0;
+  //end of probe data
   InventoryIcon = ScriptName = "";
 }
 
-RepairItemRecord::~RepairItemRecord()
+ProbeRecord::~ProbeRecord()
 {
   //empty
 }
 
-bool RepairItemRecord::equals(const RepairItemRecord& other) const
+bool ProbeRecord::equals(const ProbeRecord& other) const
 {
-  return ((RepairItemID==other.RepairItemID) and (ModelPath==other.ModelPath)
+  return ((ProbeID==other.ProbeID) and (ModelPath==other.ModelPath)
       and (Name==other.Name) and (Weight==other.Weight) and (Value==other.Value)
-      and (Uses==other.Uses) and (Quality==other.Quality)
+      and (Quality==other.Quality) and (Uses==other.Uses)
       and (InventoryIcon==other.InventoryIcon) and (ScriptName==other.ScriptName));
 }
 
-bool RepairItemRecord::saveToStream(std::ofstream& output) const
+bool ProbeRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cREPA, 4);
+output.write((char*) &cPROB, 4);
   int32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +RepairItemID.length()+1 /* length of ID +1 byte for NUL termination */
+        +ProbeID.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* MODL */ +4 /* 4 bytes for length */
         +ModelPath.length()+1 /* length of path +1 byte for NUL termination */
         +4 /* FNAM */ +4 /* 4 bytes for length */
         +Name.length()+1 /* length of name +1 byte for NUL termination */
-        +4 /* RIDT */ +4 /* RIDT's length */ +16 /*size of RIDT (always 16 bytes)*/
+        +4 /* PBDT */ +4 /* PBDT's length */ +16 /*size of PBDT (always 16 bytes)*/
         +4 /* ITEX */ +4 /* 4 bytes for length */
         +InventoryIcon.length()+1 /* length of icon path +1 byte for NUL termination */;
   if (ScriptName!="")
   {
-    Size = Size +4 /* SCRIM */ +4 /* 4 bytes for length */
+    Size = Size +4 /* SCRI */ +4 /* 4 bytes for length */
           +ScriptName.length()+1; /* length of script ID +1 byte for NUL termination */;
   }
   output.write((char*) &Size, 4);
   output.write((char*) &HeaderOne, 4);
   output.write((char*) &HeaderFlags, 4);
 
-  /*Repair Item:
+  /*Probe Item:
     NAME = Item ID, required
     MODL = Model Name, required
     FNAM = Item Name, required
-    RIDT = Repair Data (16 bytes), required
+    PBDT = Probe Data (16 bytes), required
         float	Weight
         long	Value
-        long	Uses
         float	Quality
+        long 	Uses
     ITEX = Inventory Icon
     SCRI = Script Name (optional) */
 
@@ -99,10 +99,10 @@ bool RepairItemRecord::saveToStream(std::ofstream& output) const
   output.write((char*) &cNAME, 4);
   //NAME's length
   int32_t SubLength;
-  SubLength = RepairItemID.length()+1;//length of string plus one for NUL-termination
+  SubLength = ProbeID.length()+1;//length of string plus one for NUL-termination
   output.write((char*) &SubLength, 4);
   //write ID
-  output.write(RepairItemID.c_str(), SubLength);
+  output.write(ProbeID.c_str(), SubLength);
 
   //write MODL
   output.write((char*) &cMODL, 4);
@@ -117,19 +117,19 @@ bool RepairItemRecord::saveToStream(std::ofstream& output) const
   //FNAM's length
   SubLength = Name.length()+1;//length of string plus one for NUL-termination
   output.write((char*) &SubLength, 4);
-  //write repair item name
+  //write probe name
   output.write(Name.c_str(), SubLength);
 
-  //write RIDT
-  output.write((char*) &cRIDT, 4);
-  //RIDT's length
-  SubLength = 16;//length of RIDT is always 16 bytes
+  //write PBDT
+  output.write((char*) &cPBDT, 4);
+  //PBDT's length
+  SubLength = 16;//length of PBDT is always 16 bytes
   output.write((char*) &SubLength, 4);
   //write repair item data
   output.write((char*) &Weight, 4);
   output.write((char*) &Value, 4);
-  output.write((char*) &Uses, 4);
   output.write((char*) &Quality, 4);
+  output.write((char*) &Uses, 4);
 
   //write ITEX
   output.write((char*) &cITEX, 4);
@@ -153,22 +153,22 @@ bool RepairItemRecord::saveToStream(std::ofstream& output) const
   return output.good();
 }
 
-bool RepairItemRecord::loadFromStream(std::ifstream& in_File)
+bool ProbeRecord::loadFromStream(std::ifstream& in_File)
 {
   int32_t Size;
   in_File.read((char*) &Size, 4);
   in_File.read((char*) &HeaderOne, 4);
   in_File.read((char*) &HeaderFlags, 4);
 
-  /*Repair Item:
+  /*Probe Item:
     NAME = Item ID, required
     MODL = Model Name, required
     FNAM = Item Name, required
-    RIDT = Repair Data (16 bytes), required
+    PBDT = Probe Data (16 bytes), required
         float	Weight
         long	Value
-        long	Uses
         float	Quality
+        long 	Uses
     ITEX = Inventory Icon
     SCRI = Script Name (optional) */
 
@@ -188,7 +188,7 @@ bool RepairItemRecord::loadFromStream(std::ifstream& in_File)
   BytesRead += 4;
   if (SubLength>255)
   {
-    std::cout << "Error: subrecord NAME of REPA is longer than 255 characters.\n";
+    std::cout << "Error: subrecord NAME of PROB is longer than 255 characters.\n";
     return false;
   }
   //read repair item ID
@@ -198,10 +198,10 @@ bool RepairItemRecord::loadFromStream(std::ifstream& in_File)
   BytesRead += SubLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord NAME of REPA.\n";
+    std::cout << "Error while reading subrecord NAME of PROB.\n";
     return false;
   }
-  RepairItemID = std::string(Buffer);
+  ProbeID = std::string(Buffer);
 
   //read MODL
   in_File.read((char*) &SubRecName, 4);
@@ -216,7 +216,7 @@ bool RepairItemRecord::loadFromStream(std::ifstream& in_File)
   BytesRead += 4;
   if (SubLength>255)
   {
-    std::cout << "Error: subrecord MODL of REPA is longer than 255 characters.\n";
+    std::cout << "Error: subrecord MODL of PROB is longer than 255 characters.\n";
     return false;
   }
   //read model path
@@ -225,7 +225,7 @@ bool RepairItemRecord::loadFromStream(std::ifstream& in_File)
   BytesRead += SubLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord MODL of REPA.\n";
+    std::cout << "Error while reading subrecord MODL of PROB.\n";
     return false;
   }
   ModelPath = std::string(Buffer);
@@ -243,7 +243,7 @@ bool RepairItemRecord::loadFromStream(std::ifstream& in_File)
   BytesRead += 4;
   if (SubLength>255)
   {
-    std::cout << "Error: subrecord FNAM of REPA is longer than 255 characters.\n";
+    std::cout << "Error: subrecord FNAM of PROB is longer than 255 characters.\n";
     return false;
   }
   //read name
@@ -252,37 +252,37 @@ bool RepairItemRecord::loadFromStream(std::ifstream& in_File)
   BytesRead += SubLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord FNAM of REPA.\n";
+    std::cout << "Error while reading subrecord FNAM of PROB.\n";
     return false;
   }
   Name = std::string(Buffer);
 
-  //read RIDT
+  //read PBDT
   in_File.read((char*) &SubRecName, 4);
   BytesRead += 4;
-  if (SubRecName!=cRIDT)
+  if (SubRecName!=cPBDT)
   {
-    UnexpectedRecord(cRIDT, SubRecName);
+    UnexpectedRecord(cPBDT, SubRecName);
     return false;
   }
-  //RIDT's length
+  //PBDT's length
   in_File.read((char*) &SubLength, 4);
   BytesRead += 4;
   if (SubLength!=16)
   {
-    std::cout << "Error: sub record RIDT of REPA has invalid length ("
+    std::cout << "Error: sub record PBDT of REPA has invalid length ("
               <<SubLength<< " bytes). Should be 16 bytes.\n";
     return false;
   }//if
   //read item data
   in_File.read((char*) &Weight, 4);
   in_File.read((char*) &Value, 4);
-  in_File.read((char*) &Uses, 4);
   in_File.read((char*) &Quality, 4);
+  in_File.read((char*) &Uses, 4);
   BytesRead += 16;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord RIDT of REPA.\n";
+    std::cout << "Error while reading subrecord PBDT of REPA.\n";
     return false;
   }
 
@@ -299,7 +299,7 @@ bool RepairItemRecord::loadFromStream(std::ifstream& in_File)
   BytesRead += 4;
   if (SubLength>255)
   {
-    std::cout << "Error: subrecord FNAM of REPA is longer than 255 characters.\n";
+    std::cout << "Error: subrecord FNAM of PROB is longer than 255 characters.\n";
     return false;
   }
   //read icon texture path
@@ -308,7 +308,7 @@ bool RepairItemRecord::loadFromStream(std::ifstream& in_File)
   BytesRead += SubLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord ITEX of REPA.\n";
+    std::cout << "Error while reading subrecord ITEX of PROB.\n";
     return false;
   }
   InventoryIcon = std::string(Buffer);
@@ -326,7 +326,7 @@ bool RepairItemRecord::loadFromStream(std::ifstream& in_File)
     in_File.read((char*) &SubLength, 4);
     if (SubLength>255)
     {
-      std::cout << "Error: subrecord SCRI of REPA is longer than 255 characters.\n";
+      std::cout << "Error: subrecord SCRI of PROB is longer than 255 characters.\n";
       return false;
     }
     //read script name
@@ -334,7 +334,7 @@ bool RepairItemRecord::loadFromStream(std::ifstream& in_File)
     in_File.read(Buffer, SubLength);
     if (!in_File.good())
     {
-      std::cout << "Error while reading subrecord SCRI of REPA.\n";
+      std::cout << "Error while reading subrecord SCRI of PROB.\n";
       return false;
     }
     ScriptName = std::string(Buffer);
@@ -346,7 +346,8 @@ bool RepairItemRecord::loadFromStream(std::ifstream& in_File)
   return in_File.good();
 }
 
-bool operator<(const RepairItemRecord& left, const RepairItemRecord& right)
+bool operator<(const ProbeRecord& left, const ProbeRecord& right)
 {
-  return (left.RepairItemID.compare(right.RepairItemID)<0);
+  return (left.ProbeID.compare(right.ProbeID)<0);
 }
+

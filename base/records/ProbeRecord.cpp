@@ -63,7 +63,7 @@ bool ProbeRecord::equals(const ProbeRecord& other) const
 
 bool ProbeRecord::saveToStream(std::ofstream& output) const
 {
-output.write((char*) &cPROB, 4);
+  output.write((char*) &cPROB, 4);
   int32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
         +ProbeID.length()+1 /* length of ID +1 byte for NUL termination */

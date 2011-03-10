@@ -31,7 +31,7 @@ const int32_t rtTarget = 2;
 //single enchantment data
 struct EnchantmentData //24 bytes
 {
-  short int EffectID;
+  int16_t EffectID;
   char SkillID;
   char AttributeID;
   int32_t RangeType;

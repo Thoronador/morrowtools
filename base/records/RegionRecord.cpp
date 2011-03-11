@@ -182,7 +182,7 @@ bool RegionRecord::saveToStream(std::ofstream& output, const bool forceBloodmoon
 
 
   //write CNAM
-  output.write((char*) &cFNAM, 4);
+  output.write((char*) &cCNAM, 4);
   //CNAM's length
   SubLength = 4;//fixed size is four bytes
   output.write((char*) &SubLength, 4);
@@ -197,7 +197,7 @@ bool RegionRecord::saveToStream(std::ofstream& output, const bool forceBloodmoon
   for (i=0; i<SoundChances.size(); ++i)
   {
     //write SNAM
-    output.write((char*) &cFNAM, 4);
+    output.write((char*) &cSNAM, 4);
     //SNAM's length
     SubLength = 33;//fixed size is 33 bytes - 32 for name and one for chance
     output.write((char*) &SubLength, 4);

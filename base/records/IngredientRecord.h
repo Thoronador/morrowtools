@@ -40,43 +40,65 @@
 
 struct IngredRec: public BasicRecord
 {
-  /* constructor */
-  IngredRec();
+  public:
+    /* constructor */
+    IngredRec();
 
-  //data
-  std::string IngredID;
-  std::string ModelName;
-  std::string IngredName;
-  //IngredData
-  float Weight;
-  int32_t Value;
-  int32_t EffectID[4];
-  int32_t SkillID[4];
-  int32_t AttributeID[4];
-  // end of Ingred data
-  std::string InventoryIcon;
-  std::string ScriptName;
+    //data
+    std::string IngredID;
+    std::string ModelName;
+    std::string IngredName;
+    //IngredData
+    float Weight;
+    int32_t Value;
+    int32_t EffectID[4];
+    int32_t SkillID[4];
+    int32_t AttributeID[4];
+    // end of Ingred data
+    std::string InventoryIcon;
+    std::string ScriptName;
 
-  /* shows the content of the record by writing it to the standard output */
-  void show();
+    /* shows the content of the record by writing it to the standard output */
+    void show();
 
-  /* returns true, if the other record contains the same data */
-  bool equals(const IngredRec& other) const;
+    /* returns true, if the other record contains the same data */
+    bool equals(const IngredRec& other) const;
 
-  /* tries to save the ingredient record to an output file stream and returns
-     true on success, false on failure.
+    /* tries to save the ingredient record to an output file stream and returns
+       true on success, false on failure.
 
-     parameters:
-         output   - the output file stream that is used to save the record
-  */
-  bool saveToStream(std::ofstream& output) const;
+       parameters:
+           output   - the output file stream that is used to save the record
+    */
+    bool saveToStream(std::ofstream& output) const;
 
-  /* loads the record from the given input stream and returns true on success
+    /* loads the record from the given input stream and returns true on success
 
-    parameters:
-        in_File - the input file stream
-  */
-  bool loadFromStream(std::ifstream& in_File);
+      parameters:
+          in_File - the input file stream
+    */
+    bool loadFromStream(std::ifstream& in_File);
+  private:
+    /*tries to read the subrecord for the inventory icon and returns true on
+      success, false on failure
+
+      parameters:
+          in_File   - the input file stream
+          Buffer    - pointer to a buffer of at least 256 bytes length
+          BytesRead - reference to a variable that counts the number of bytes
+                      that were read from the stream
+    */
+    bool readSubRecordITEX(std::ifstream& in_File, char* Buffer, int32_t& BytesRead);
+
+    /*tries to read the subrecord for the script ID and returns true on success
+
+      parameters:
+          in_File   - the input file stream
+          Buffer    - pointer to a buffer of at least 256 bytes length
+          BytesRead - reference to a variable that counts the number of bytes
+                      that were read from the stream
+    */
+    bool readSubRecordSCRI(std::ifstream& in_File, char* Buffer, int32_t& BytesRead);
 };//struct
 
 #endif // INGREDIENTRECORD_H

@@ -191,11 +191,12 @@ bool IngredRec::loadFromStream(std::ifstream& in_File)
     ITEX = Inventory Icon
     SCRI = Script Name (optional) */
 
-  int32_t SubRecName, SubLength;
+  int32_t SubRecName, SubLength, BytesRead;
   SubRecName = SubLength = 0;
 
   //read NAME
   in_File.read((char*) &SubRecName, 4);
+  BytesRead = 4;
   if (SubRecName!=cNAME)
   {
     UnexpectedRecord(cNAME, SubRecName);
@@ -203,6 +204,7 @@ bool IngredRec::loadFromStream(std::ifstream& in_File)
   }
   //NAME's length
   in_File.read((char*) &SubLength, 4);
+  BytesRead += 4;
   if (SubLength>255)
   {
     std::cout << "Sub record NAME of INGR is longer than 255 characters!\n";
@@ -212,6 +214,7 @@ bool IngredRec::loadFromStream(std::ifstream& in_File)
   char Buffer[256];
   memset(Buffer, '\0', 256);
   in_File.read(Buffer, SubLength);
+  BytesRead += SubLength;
   if (!in_File.good())
   {
     std::cout << "Error while reading subrecord NAME of INGR.\n";
@@ -221,6 +224,7 @@ bool IngredRec::loadFromStream(std::ifstream& in_File)
 
   //read MODL
   in_File.read((char*) &SubRecName, 4);
+  BytesRead += 4;
   if (SubRecName!=cMODL)
   {
     UnexpectedRecord(cMODL, SubRecName);
@@ -228,6 +232,7 @@ bool IngredRec::loadFromStream(std::ifstream& in_File)
   }
   //MODL's length
   in_File.read((char*) &SubLength, 4);
+  BytesRead += 4;
   if (SubLength>255)
   {
     std::cout << "Sub record MODL of INGR is longer than 255 characters!\n";
@@ -236,6 +241,7 @@ bool IngredRec::loadFromStream(std::ifstream& in_File)
   //read model path
   memset(Buffer, '\0', 256);
   in_File.read(Buffer, SubLength);
+  BytesRead += SubLength;
   if (!in_File.good())
   {
     std::cout << "Error while reading subrecord MODL of INGR.\n";
@@ -245,6 +251,7 @@ bool IngredRec::loadFromStream(std::ifstream& in_File)
 
   //read FNAM
   in_File.read((char*) &SubRecName, 4);
+  BytesRead += 4;
   if (SubRecName!=cFNAM)
   {
     UnexpectedRecord(cFNAM, SubRecName);
@@ -252,6 +259,7 @@ bool IngredRec::loadFromStream(std::ifstream& in_File)
   }
   //FNAM's length
   in_File.read((char*) &SubLength, 4);
+  BytesRead += 4;
   if (SubLength>255)
   {
     std::cout << "Sub record FNAM of INGR is longer than 255 characters!\n";
@@ -260,10 +268,17 @@ bool IngredRec::loadFromStream(std::ifstream& in_File)
   //read "real" name of ingred
   memset(Buffer, '\0', 256);
   in_File.read(Buffer, SubLength);
+  BytesRead += SubLength;
+  if (!in_File.good())
+  {
+    std::cout << "Error while reading subrecord FNAM of INGR.\n";
+    return false;
+  }
   IngredName = std::string(Buffer);
 
   //read IRDT
   in_File.read((char*) &SubRecName, 4);
+  BytesRead += 4;
   if (SubRecName!=cIRDT)
   {
     UnexpectedRecord(cIRDT, SubRecName);
@@ -271,6 +286,7 @@ bool IngredRec::loadFromStream(std::ifstream& in_File)
   }
   //IRDT's length
   in_File.read((char*) &SubLength, 4);
+  BytesRead += 4;
   if (SubLength!=56)
   {
     std::cout <<"Error: sub record IRDT of INGR has invalid length ("<<SubLength
@@ -292,56 +308,97 @@ bool IngredRec::loadFromStream(std::ifstream& in_File)
   in_File.read((char*) &(AttributeID[1]), 4);
   in_File.read((char*) &(AttributeID[2]), 4);
   in_File.read((char*) &(AttributeID[3]), 4);
+  BytesRead += 56;
   if (!in_File.good())
   {
     std::cout << "Error while reading IRDT values.\n";
     return false;
   }
 
-  //read optional SCRI
-  in_File.read((char*) &SubRecName, 4);
-  if (SubRecName==cSCRI)
+  //read SCRI (optional) and ITEX (mandatory)
+  ScriptName = "";
+  InventoryIcon = "";
+  bool Success = false;
+  while (BytesRead<Size)
   {
-    //SCRI's length
-    in_File.read((char*) &SubLength, 4);
-    if (SubLength>255)
+    //read next record name
+    in_File.read((char*) &SubRecName, 4);
+    BytesRead += 4;
+    switch(SubRecName)
     {
-      std::cout <<"Error: sub record SCRI of INGR is longer than 255 "
-                <<"characters.\n";
-      return false;
-    }
-    memset(Buffer, '\0', 256);
-    //read ingredient's script name
-    in_File.read(Buffer, SubLength);
-    if (!in_File.good())
+      case cITEX:
+           Success = readSubRecordITEX(in_File, Buffer, BytesRead);
+           break;
+      case cSCRI:
+           Success = readSubRecordSCRI(in_File, Buffer, BytesRead);
+           break;
+      default:
+           //other subrecord means error, so quit here
+           std::cout << "IngredRec: Error: expected record name ITEX or SCRI. "
+                     << "Instead, \""<<IntTo4Char(SubRecName)<<"\" was found.\n"
+                     << "Position is "<<in_File.tellg()<<".\n";
+           return false;
+    }//swi
+    if (!Success)
     {
-      std::cout << "Error while reading script name of INGR.\n";
+      //An error occured, quit here.
       return false;
-    }
-    ScriptName = std::string(Buffer);
+    }//if
+  }//while
+  if (InventoryIcon=="")
+  {
+    std::cout << "IngredRec::loadFromStream: Warning: Empty or no inventory "
+              << "icon path read.\n";
+    /* Maybe we should return false here and nit just put a warning. This way
+       the application knows that something was not quite right. */
   }
-  else
-  { //search four bytes towards beginning to land before name of next record
-    in_File.seekg(-4, std::ios::cur);
-  }
+  return in_File.good();
+}
 
-  //read ITEX
-  in_File.read((char*) &SubRecName, 4);
-  if (SubRecName!=cITEX)
+bool IngredRec::readSubRecordITEX(std::ifstream& in_File, char* Buffer, int32_t& BytesRead)
+{
+  //ITEX's length
+  int32_t SubLength = 0;
+  in_File.read((char*) &SubLength, 4);
+  BytesRead += 4;
+  if (SubLength>255)
   {
-    UnexpectedRecord(cITEX, SubRecName);
+    std::cout <<"Error: sub record ITEX of INGR is longer than 255 characters.\n";
     return false;
   }
-  //ITEX's length
-  in_File.read((char*) &SubLength, 4);
   //read icon path
   memset(Buffer, '\0', 256);
   in_File.read(Buffer, SubLength);
+  BytesRead += SubLength;
   if (!in_File.good())
   {
     std::cout << "Error while reading icon path of INGR.\n";
     return false;
   }
   InventoryIcon = std::string(Buffer);
-  return in_File.good();
+  return true;
+}
+
+bool IngredRec::readSubRecordSCRI(std::ifstream& in_File, char* Buffer, int32_t& BytesRead)
+{
+  //SCRI's length
+  int32_t SubLength = 0;
+  in_File.read((char*) &SubLength, 4);
+  BytesRead += 4;
+  if (SubLength>255)
+  {
+    std::cout <<"Error: sub record SCRI of INGR is longer than 255 characters.\n";
+    return false;
+  }
+  memset(Buffer, '\0', 256);
+  //read ingredient's script name
+  in_File.read(Buffer, SubLength);
+  BytesRead += SubLength;
+  if (!in_File.good())
+  {
+    std::cout << "Error while reading subrecord SCRI of INGR.\n";
+    return false;
+  }
+  ScriptName = std::string(Buffer);
+  return true;
 }

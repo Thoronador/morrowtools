@@ -113,7 +113,7 @@ ScriptRecord::~ScriptRecord()
 bool ScriptRecord::equals(const ScriptRecord& other) const
 {
   if ((ScriptID==other.ScriptID) and (NumShorts==other.NumShorts)
-    and (NumLongs==other.NumFloats) and (NumFloats==other.NumFloats)
+    and (NumLongs==other.NumLongs) and (NumFloats==other.NumFloats)
     and (ScriptDataSize==other.ScriptDataSize) and (LocalVarSize==other.LocalVarSize)
     and (LocalVars==other.LocalVars) and (ScriptText==other.ScriptText))
   {

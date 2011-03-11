@@ -23,6 +23,18 @@
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 
+MGEF_Data::MGEF_Data()
+{
+  Index = -1;
+  SpellSchool = -1;
+  BaseCost = 0.0f;
+  Flags = 0;
+  Red = Green = Blue = 0;
+  SpeedX = SizeX = SizeCap = 0.0f;
+  EffectIcon = ParticleTexture = CastingVisual = BoltVisual = HitVisual = "";
+  AreaVisual = Description = CastSound = BoltSound = HitSound = AreaSound = "";
+}
+
 bool MGEF_Data::equals(const MGEF_Data& other) const
 {
   return ((Index==other.Index)
@@ -30,7 +42,7 @@ bool MGEF_Data::equals(const MGEF_Data& other) const
       and (Flags==other.Flags) and (Red==other.Red) and (Green==other.Green)
       and (Blue==other.Blue) and (SpeedX==other.SpeedX) and (SizeX==other.SizeX)
       and (SizeCap==other.SizeCap) and (EffectIcon==other.EffectIcon)
-      and(ParticleTexture==other.ParticleTexture) and (CastingVisual==other.CastingVisual)
+      and (ParticleTexture==other.ParticleTexture) and (CastingVisual==other.CastingVisual)
       and (BoltVisual==other.BoltVisual) and (HitVisual==other.HitVisual)
       and (AreaVisual==other.AreaVisual) and (Description==other.Description)
       and (CastSound==other.CastSound) and (BoltSound==other.BoltSound)
@@ -222,7 +234,7 @@ bool MGEF_Data::saveToStream(std::ofstream& output) const
     //write DESC
     output.write((char*) &cDESC, 4);
     //DESC's length
-    SubLength = AreaVisual.length(); /* length of description (no NUL-termination) */
+    SubLength = Description.length(); /* length of description (no NUL-termination) */
     output.write((char*) &SubLength, 4);
     //write DESC
     output.write(Description.c_str(), SubLength);
@@ -266,7 +278,7 @@ bool MGEF_Data::saveToStream(std::ofstream& output) const
     //write ASND
     output.write((char*) &cASND, 4);
     //ASND's length
-    SubLength = HitSound.length()+1; /* length of area sound +1 byte for NUL-termination */
+    SubLength = AreaSound.length()+1; /* length of area sound +1 byte for NUL-termination */
     output.write((char*) &SubLength, 4);
     //write ASND
     output.write(AreaSound.c_str(), SubLength);
@@ -379,8 +391,14 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
   }
   //ITEX's length
   in_File.read((char*) &SubLength, 4);
-  char Buffer [1024];
-  memset(Buffer, '\0', 1024);
+  if (SubLength>255)
+  {
+    std::cout << "Error: subrecord ITEX of MGEF is longer than 255 characters.\n";
+    return false;
+  }
+  const size_t BufferSize = 1024;
+  char Buffer [BufferSize];
+  memset(Buffer, '\0', BufferSize);
   //read tex name
   in_File.read(Buffer, SubLength);
   if (!in_File.good())
@@ -399,8 +417,13 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
   }
   //PTEX's length
   in_File.read((char*) &SubLength, 4);
+  if (SubLength>255)
+  {
+    std::cout << "Error: subrecord PTEX of MGEF is longer than 255 characters.\n";
+    return false;
+  }
   //read particle tex name
-  memset(Buffer, '\0', 1024);
+  memset(Buffer, '\0', BufferSize);
   in_File.read(Buffer, SubLength);
   if (!in_File.good())
   {
@@ -432,8 +455,13 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
       case cCVFX: //read optional CVFX
            //CVFX's length
            in_File.read((char*) &SubLength, 4);
+           if (SubLength>255)
+           {
+             std::cout << "Error: subrecord CVFX of MGEF is longer than 255 characters.\n";
+             return false;
+           }
            //read effect string
-           memset(Buffer, '\0', 1024);
+           memset(Buffer, '\0', BufferSize);
            in_File.read(Buffer, SubLength);
            if (!in_File.good())
            {
@@ -447,8 +475,13 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
       case cBVFX: //read optional BVFX
            //BVFX's length
            in_File.read((char*) &SubLength, 4);
+           if (SubLength>255)
+           {
+             std::cout << "Error: subrecord BVFX of MGEF is longer than 255 characters.\n";
+             return false;
+           }
            //read effect string
-           memset(Buffer, '\0', 1024);
+           memset(Buffer, '\0', BufferSize);
            in_File.read(Buffer, SubLength);
            if (!in_File.good())
            {
@@ -462,8 +495,13 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
       case cHVFX: //read optional HVFX
            //HVFX's length
            in_File.read((char*) &SubLength, 4);
+           if (SubLength>255)
+           {
+             std::cout << "Error: subrecord HVFX of MGEF is longer than 255 characters.\n";
+             return false;
+           }
            //read effect string
-           memset(Buffer, '\0', 1024);
+           memset(Buffer, '\0', BufferSize);
            in_File.read(Buffer, SubLength);
            if (!in_File.good())
            {
@@ -477,8 +515,13 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
       case cAVFX: //read optional AVFX
            //AVFX's length
            in_File.read((char*) &SubLength, 4);
+           if (SubLength>255)
+           {
+             std::cout << "Error: subrecord AVFX of MGEF is longer than 255 characters.\n";
+             return false;
+           }
            //read effect string
-           memset(Buffer, '\0', 1024);
+           memset(Buffer, '\0', BufferSize);
            in_File.read(Buffer, SubLength);
            if (!in_File.good())
            {
@@ -492,8 +535,14 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
       case cDESC: //read optional DESC
            //DESC's length
            in_File.read((char*) &SubLength, 4);
+           if (SubLength>=BufferSize)
+           {
+             std::cout << "Error: subrecord DESC of MGEF is longer than "
+                       << BufferSize-1 <<" characters.\n";
+             return false;
+           }
            //read effect description
-           memset(Buffer, '\0', 1024);
+           memset(Buffer, '\0', BufferSize);
            in_File.read(Buffer, SubLength);
            if (!in_File.good())
            {
@@ -507,8 +556,13 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
       case cCSND:
            //CSND's length
            in_File.read((char*) &SubLength, 4);
+           if (SubLength>255)
+           {
+             std::cout << "Error: subrecord CSND of MGEF is longer than 255 characters.\n";
+             return false;
+           }
            //read sound string
-           memset(Buffer, '\0', 1024);
+           memset(Buffer, '\0', BufferSize);
            in_File.read(Buffer, SubLength);
            if (!in_File.good())
            {
@@ -522,8 +576,13 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
       case cBSND:
            //BSND's length
            in_File.read((char*) &SubLength, 4);
+           if (SubLength>255)
+           {
+             std::cout << "Error: subrecord BSND of MGEF is longer than 255 characters.\n";
+             return false;
+           }
            //read sound string
-           memset(Buffer, '\0', 1024);
+           memset(Buffer, '\0', BufferSize);
            in_File.read(Buffer, SubLength);
            if (!in_File.good())
            {
@@ -537,8 +596,13 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
       case cHSND:
            //HSND's length
            in_File.read((char*) &SubLength, 4);
+           if (SubLength>255)
+           {
+             std::cout << "Error: subrecord HSND of MGEF is longer than 255 characters.\n";
+             return false;
+           }
            //read sound string
-           memset(Buffer, '\0', 1024);
+           memset(Buffer, '\0', BufferSize);
            in_File.read(Buffer, SubLength);
            if (!in_File.good())
            {
@@ -552,8 +616,13 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
       case cASND:
            //ASND's length
            in_File.read((char*) &SubLength, 4);
+           if (SubLength>255)
+           {
+             std::cout << "Error: subrecord ASND of MGEF is longer than 255 characters.\n";
+             return false;
+           }
            //read sound string
-           memset(Buffer, '\0', 1024);
+           memset(Buffer, '\0', BufferSize);
            in_File.read(Buffer, SubLength);
            if (!in_File.good())
            {

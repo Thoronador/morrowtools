@@ -62,6 +62,9 @@ struct MGEF_Data: public BasicRecord
   std::string HitSound; //optional
   std::string AreaSound; //optional
 
+  /* constructor */
+  MGEF_Data();
+
   /* returns true, of content of other record is equal to this one */
   bool equals(const MGEF_Data& other) const;
 

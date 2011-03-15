@@ -1245,6 +1245,147 @@ bool ScriptFunctions_ZeroParameters(const std::vector<std::string>& params, Comp
   return false;
 }
 
+bool ScriptFunctions_ModStatFunctions(const std::vector<std::string>& params, CompiledChunk& chunk)
+{
+  //entry at index zero is the function's name
+  const std::string lowerFunction = lowerCase(params.at(0));
+  uint16_t functionCode = 0;
+  if (lowerFunction == "modacrobatics")
+  {
+    functionCode = CodeModAcrobatics;
+  }
+  else if (lowerFunction == "modagility")
+  {
+    functionCode = CodeModAgility;
+  }
+  else if (lowerFunction == "modalarm")
+  {
+    functionCode = CodeModAlarm;
+  }
+  else if (lowerFunction == "modalchemy")
+  {
+    functionCode = CodeModAlchemy;
+  }
+  else if (lowerFunction == "modalteration")
+  {
+    functionCode = CodeModAlteration;
+  }
+  else if (lowerFunction == "modarmorbonus")
+  {
+    functionCode = CodeModArmorBonus;
+  }
+  else if (lowerFunction == "modarmorer")
+  {
+    functionCode = CodeModArmorer;
+  }
+  else if (lowerFunction == "modathletics")
+  {
+    functionCode = CodeModAthletics;
+  }
+  else if (lowerFunction == "modttackbonus")
+  {
+    functionCode = CodeModAttackBonus;
+  }
+  else if (lowerFunction == "modaxe")
+  {
+    functionCode = CodeModAxe;
+  }
+  else if (lowerFunction == "modblindness")
+  {
+    functionCode = CodeModBlindness;
+  }
+  else if (lowerFunction == "modblock")
+  {
+    functionCode = CodeModBlock;
+  }
+  else if (lowerFunction == "modbluntweapon")
+  {
+    functionCode = CodeModBluntWeapon;
+  }
+  else if (lowerFunction == "modcastpenalty")
+  {
+    functionCode = CodeModCastPenalty;
+  }
+  else if (lowerFunction == "modchameleon")
+  {
+    functionCode = CodeModChameleon;
+  }
+  else if (lowerFunction == "modconjuration")
+  {
+    functionCode = CodeModConjuration;
+  }
+  else if (lowerFunction == "modcurrentfatigue")
+  {
+    functionCode = CodeModCurrentFatigue;
+  }
+  else if (lowerFunction == "modcurrenthealth")
+  {
+    functionCode = CodeModCurrentHealth;
+  }
+  else if (lowerFunction == "modcurrentmagicka")
+  {
+    functionCode = CodeModCurrentMagicka;
+  }
+  //Found something? If not, return false.
+  if (functionCode==0) return false;
+
+  if (params.size()<2)
+  {
+    std::cout << "ScriptCompiler: Error: Function \""<<params[0]<<"\" needs one parameter!\n";
+    return false;
+  }
+  chunk.pushCode(functionCode);
+  //parameter is float value or float var
+  float mod_value;
+  if (stringToFloat(params[1], mod_value))
+  {
+    chunk.pushFloat(mod_value);
+  }
+  else
+  {
+    //could still be a local var here
+    SC_VarRef localRef = getVariableTypeWithIndex(params[1], chunk.varsShort, chunk.varsLong, chunk.varsFloat);
+    //if type is float, push
+    switch(localRef.Type)
+    {
+      case vtFloat:
+           //push f for float
+           chunk.data.push_back('f');
+           //push index
+           chunk.data.push_back(localRef.Index);
+           //now push two zero bytes to fill up - needs four bytes
+           chunk.data.push_back(0);
+           chunk.data.push_back(0);
+           break;
+      case vtLong:
+           //push l for long
+           chunk.data.push_back('l');
+           //push index
+           chunk.data.push_back(localRef.Index);
+           //now push two zero bytes to fill up - needs four bytes
+           chunk.data.push_back(0);
+           chunk.data.push_back(0);
+           break;
+      case vtShort:
+           //push s for short
+           chunk.data.push_back('s');
+           //push index
+           chunk.data.push_back(localRef.Index);
+           //now push two zero bytes to fill up - needs four bytes
+           chunk.data.push_back(0);
+           chunk.data.push_back(0);
+           break;
+      default:
+           //encountered unknown variable name - error!
+           std::cout << "ScriptCompiler: Error: \""<<params[1]<<"\" is not a proper "
+                     << "float value and does not name a local var either.\n";
+           return false;
+           break;//pro forma
+    }//swi
+  }//else
+  return true;
+}
+
 bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, CompiledChunk& chunk)
 {
   //entry at index zero is the function's name
@@ -1850,6 +1991,19 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
     return true;
   }//if
 
+  if (lowerFunction.substr(0,3)=="mod")
+  {
+    //could be a function that modifies stats like ModAcrobatics, so check
+    if (ScriptFunctions_ModStatFunctions(params, chunk))
+    {
+      return true;
+    }
+    //Since all ModSomething functions with on param should be handled in the
+    //function above and nothing was found, but function name begins with "mod...",
+    //we can return false here. Checking the other founctions would not bring a
+    // result (instead of taking more time).
+    return false;
+  }
 
   if (lowerFunction == "stopsound")
   {

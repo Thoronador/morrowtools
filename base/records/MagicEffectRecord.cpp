@@ -321,11 +321,12 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
       Note (Thoronador):
         sequence of the (at least) last four optional sub records can vary.*/
 
-  int32_t SubRecName, SubLength;
+  int32_t SubRecName, SubLength, BytesRead;
   SubRecName = SubLength = 0;
 
   //read INDX
   in_File.read((char*) &SubRecName, 4);
+  BytesRead = 4;
   if (SubRecName!=cINDX)
   {
     UnexpectedRecord(cINDX, SubRecName);
@@ -333,6 +334,7 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
   }
   //INDX's length
   in_File.read((char*) &SubLength, 4);
+  BytesRead += 4;
   if (SubLength!=4)
   {
     std::cout << "Error: sub record INDX of MGEF has invalid length ("
@@ -342,9 +344,16 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
 
   Index = -1;
   in_File.read((char*) &Index, 4); //read the index
+  BytesRead += 4;
+  if (!in_File.good())
+  {
+    std::cout << "Error while reading subrecord INDX of MGEF.\n";
+    return false;
+  }
 
   //read MEDT
   in_File.read((char*) &SubRecName, 4);
+  BytesRead += 4;
   if (SubRecName!=cMEDT)
   {
     UnexpectedRecord(cMEDT, SubRecName);
@@ -352,6 +361,7 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
   }
   //MEDT's length
   in_File.read((char*) &SubLength, 4);
+  BytesRead += 4;
   if (SubLength!=36)
   {
     std::cout << "Error: sub record MEDT of MGEF has invalid length ("
@@ -375,6 +385,7 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
   in_File.read((char*) &SizeX, 4);
   //size cap
   in_File.read((char*) &SizeCap, 4);
+  BytesRead += 36;
 
   if (!in_File.good())
   {
@@ -384,6 +395,7 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
 
   //read ITEX
   in_File.read((char*) &SubRecName, 4);
+  BytesRead += 4;
   if (SubRecName!=cITEX)
   {
     UnexpectedRecord(cITEX, SubRecName);
@@ -391,6 +403,7 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
   }
   //ITEX's length
   in_File.read((char*) &SubLength, 4);
+  BytesRead += 4;
   if (SubLength>255)
   {
     std::cout << "Error: subrecord ITEX of MGEF is longer than 255 characters.\n";
@@ -401,6 +414,7 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
   memset(Buffer, '\0', BufferSize);
   //read tex name
   in_File.read(Buffer, SubLength);
+  BytesRead += SubLength;
   if (!in_File.good())
   {
     std::cout << "Error while reading subrecord ITEX of MGEF.\n";
@@ -410,6 +424,7 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
 
   //read PTEX
   in_File.read((char*) &SubRecName, 4);
+  BytesRead += 4;
   if (SubRecName!=cPTEX)
   {
     UnexpectedRecord(cPTEX, SubRecName);
@@ -417,6 +432,7 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
   }
   //PTEX's length
   in_File.read((char*) &SubLength, 4);
+  BytesRead += 4;
   if (SubLength>255)
   {
     std::cout << "Error: subrecord PTEX of MGEF is longer than 255 characters.\n";
@@ -425,15 +441,13 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
   //read particle tex name
   memset(Buffer, '\0', BufferSize);
   in_File.read(Buffer, SubLength);
+  BytesRead += SubLength;
   if (!in_File.good())
   {
     std::cout << "Error while reading subrecord PTEX of MGEF.\n";
     return false;
   }
   ParticleTexture = std::string(Buffer);
-
-  //read next subrecord
-  in_File.read((char*) &SubRecName, 4);
 
   //visual strings, partially optional
   CastingVisual = "";
@@ -447,14 +461,17 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
   BoltSound = "";
   HitSound = "";
   AreaSound = "";
-  bool go_on_with_subs = true;
-  do
+  while (BytesRead<Size)
   {
+    //read next subrecord
+    in_File.read((char*) &SubRecName, 4);
+    BytesRead += 4;
     switch(SubRecName)
     {
       case cCVFX: //read optional CVFX
            //CVFX's length
            in_File.read((char*) &SubLength, 4);
+           BytesRead += 4;
            if (SubLength>255)
            {
              std::cout << "Error: subrecord CVFX of MGEF is longer than 255 characters.\n";
@@ -463,18 +480,18 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
            //read effect string
            memset(Buffer, '\0', BufferSize);
            in_File.read(Buffer, SubLength);
+           BytesRead += SubLength;
            if (!in_File.good())
            {
              std::cout << "Error while reading subrecord CVFX of MGEF.\n";
              return false;
            }
            CastingVisual = std::string(Buffer);
-           //read next optional header
-           in_File.read((char*) &SubRecName, 4);
            break;
       case cBVFX: //read optional BVFX
            //BVFX's length
            in_File.read((char*) &SubLength, 4);
+           BytesRead += 4;
            if (SubLength>255)
            {
              std::cout << "Error: subrecord BVFX of MGEF is longer than 255 characters.\n";
@@ -483,18 +500,18 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
            //read effect string
            memset(Buffer, '\0', BufferSize);
            in_File.read(Buffer, SubLength);
+           BytesRead += SubLength;
            if (!in_File.good())
            {
              std::cout << "Error while reading subrecord BVFX of MGEF.\n";
              return false;
            }
            BoltVisual = std::string(Buffer);
-           //read next optional header
-           in_File.read((char*) &SubRecName, 4);
            break;
       case cHVFX: //read optional HVFX
            //HVFX's length
            in_File.read((char*) &SubLength, 4);
+           BytesRead += 4;
            if (SubLength>255)
            {
              std::cout << "Error: subrecord HVFX of MGEF is longer than 255 characters.\n";
@@ -503,18 +520,18 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
            //read effect string
            memset(Buffer, '\0', BufferSize);
            in_File.read(Buffer, SubLength);
+           BytesRead += SubLength;
            if (!in_File.good())
            {
              std::cout << "Error while reading subrecord HVFX of MGEF.\n";
              return false;
            }
            HitVisual = std::string(Buffer);
-           //read next optional header
-           in_File.read((char*) &SubRecName, 4);
            break;
       case cAVFX: //read optional AVFX
            //AVFX's length
            in_File.read((char*) &SubLength, 4);
+           BytesRead += 4;
            if (SubLength>255)
            {
              std::cout << "Error: subrecord AVFX of MGEF is longer than 255 characters.\n";
@@ -523,18 +540,18 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
            //read effect string
            memset(Buffer, '\0', BufferSize);
            in_File.read(Buffer, SubLength);
+           BytesRead += SubLength;
            if (!in_File.good())
            {
              std::cout << "Error while reading subrecord AVFX of MGEF.\n";
              return false;
            }
            AreaVisual = std::string(Buffer);
-           //read next optional header
-           in_File.read((char*) &SubRecName, 4);
            break;
       case cDESC: //read optional DESC
            //DESC's length
            in_File.read((char*) &SubLength, 4);
+           BytesRead += 4;
            if (SubLength>=BufferSize)
            {
              std::cout << "Error: subrecord DESC of MGEF is longer than "
@@ -544,18 +561,18 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
            //read effect description
            memset(Buffer, '\0', BufferSize);
            in_File.read(Buffer, SubLength);
+           BytesRead += SubLength;
            if (!in_File.good())
            {
              std::cout << "Error while reading subrecord DESC of MGEF.\n";
              return false;
            }
            Description = std::string(Buffer);
-           //read next optional header
-           in_File.read((char*) &SubRecName, 4);
            break;
       case cCSND:
            //CSND's length
            in_File.read((char*) &SubLength, 4);
+           BytesRead += 4;
            if (SubLength>255)
            {
              std::cout << "Error: subrecord CSND of MGEF is longer than 255 characters.\n";
@@ -564,18 +581,18 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
            //read sound string
            memset(Buffer, '\0', BufferSize);
            in_File.read(Buffer, SubLength);
+           BytesRead += SubLength;
            if (!in_File.good())
            {
              std::cout << "Error while reading subrecord CSND of MGEF.\n";
              return false;
            }
            CastSound = std::string(Buffer);
-           //read next optional header
-           in_File.read((char*) &SubRecName, 4);
            break;
       case cBSND:
            //BSND's length
            in_File.read((char*) &SubLength, 4);
+           BytesRead += 4;
            if (SubLength>255)
            {
              std::cout << "Error: subrecord BSND of MGEF is longer than 255 characters.\n";
@@ -584,18 +601,18 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
            //read sound string
            memset(Buffer, '\0', BufferSize);
            in_File.read(Buffer, SubLength);
+           BytesRead += SubLength;
            if (!in_File.good())
            {
              std::cout << "Error while reading subrecord BSND of MGEF.\n";
              return false;
            }
            BoltSound = std::string(Buffer);
-           //read next optional header
-           in_File.read((char*) &SubRecName, 4);
            break;
       case cHSND:
            //HSND's length
            in_File.read((char*) &SubLength, 4);
+           BytesRead += 4;
            if (SubLength>255)
            {
              std::cout << "Error: subrecord HSND of MGEF is longer than 255 characters.\n";
@@ -604,18 +621,18 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
            //read sound string
            memset(Buffer, '\0', BufferSize);
            in_File.read(Buffer, SubLength);
+           BytesRead += SubLength;
            if (!in_File.good())
            {
              std::cout << "Error while reading subrecord HSND of MGEF.\n";
              return false;
            }
            HitSound = std::string(Buffer);
-           //read next optional header
-           in_File.read((char*) &SubRecName, 4);
            break;
       case cASND:
            //ASND's length
            in_File.read((char*) &SubLength, 4);
+           BytesRead += 4;
            if (SubLength>255)
            {
              std::cout << "Error: subrecord ASND of MGEF is longer than 255 characters.\n";
@@ -624,23 +641,21 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
            //read sound string
            memset(Buffer, '\0', BufferSize);
            in_File.read(Buffer, SubLength);
+           BytesRead += SubLength;
            if (!in_File.good())
            {
              std::cout << "Error while reading subrecord ASND of MGEF.\n";
              return false;
            }
            AreaSound = std::string(Buffer);
-           //read next optional header
-           in_File.read((char*) &SubRecName, 4);
            break;
       default:
-           //unknown sub record, thus stop here, it's beginning of new record
-           go_on_with_subs = false;
+           //unknown sub record, thus stop here, some error occured
+           std::cout << "Error in MGEF_Data::loadFromStream: unexpected header "
+                     << "found: \""<<IntTo4Char(SubRecName)<<"\".\n";
+           return false;
     }//switch
-  } while (go_on_with_subs);
+  }// while
 
-  //seek four bytes into the direction if the beginning to land before the
-  // name of the next record
-  in_File.seekg(-4, std::ios::cur);
   return in_File.good();
 }

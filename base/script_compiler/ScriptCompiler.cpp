@@ -2160,9 +2160,6 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
     }
   }//while
 
-  std::vector<std::string> varsShort;
-  std::vector<std::string> varsLong;
-  std::vector<std::string> varsFloat;
   std::string ScriptName = "";
   std::string WorkString;
 
@@ -2202,7 +2199,7 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
         std::cout << "ScriptCompiler: Error: incomplete declaration of short found!\n";
         return false;
       }
-      varsShort.push_back(WorkString);
+      CompiledData.varsShort.push_back(WorkString);
     }//if short
     //check for longs
     else if (lowerCase(lines.at(i).substr(0,5))=="long ")
@@ -2214,7 +2211,7 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
         std::cout << "ScriptCompiler: Error: incomplete declaration of long found!\n";
         return false;
       }
-      varsLong.push_back(WorkString);
+      CompiledData.varsLong.push_back(WorkString);
     }//if long
     //check for floats
     else if (lowerCase(lines.at(i).substr(0,6))=="float ")
@@ -2226,7 +2223,7 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
         std::cout << "ScriptCompiler: Error: incomplete declaration of float found!\n";
         return false;
       }
-      varsFloat.push_back(WorkString);
+      CompiledData.varsFloat.push_back(WorkString);
     }//if float
     //check for Set
     else if (lowerCase(lines.at(i).substr(0,4))=="set ")
@@ -2246,7 +2243,7 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       std::string varName = WorkString.substr(0, pos);
       trim(varName);
       //now search for the variable name
-      SC_VarRef ref = getVariableTypeWithIndex(varName, varsShort, varsLong, varsFloat);
+      SC_VarRef ref = getVariableTypeWithIndex(varName, CompiledData.varsShort, CompiledData.varsLong, CompiledData.varsFloat);
       if (ref.Type!=vtGlobal)
       {
         //push type indicator
@@ -2360,32 +2357,32 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
 
   /***** copy the data into result *****/
   //set result values
-  result.NumShorts = varsShort.size();
-  result.NumLongs = varsLong.size();
-  result.NumFloats = varsFloat.size();
+  result.NumShorts = CompiledData.varsShort.size();
+  result.NumLongs = CompiledData.varsLong.size();
+  result.NumFloats = CompiledData.varsFloat.size();
   //variables
   result.LocalVars = "";
   result.LocalVarSize = 0;
   // ---- write shorts
-  for (i=0; i<varsShort.size(); ++i)
+  for (i=0; i<CompiledData.varsShort.size(); ++i)
   {
-    result.LocalVars.append(varsShort.at(i));
+    result.LocalVars.append(CompiledData.varsShort.at(i));
     result.LocalVars.append(1, '\0');
-    result.LocalVarSize += varsShort.at(i).length()+1;
+    result.LocalVarSize += CompiledData.varsShort.at(i).length()+1;
   }//for
   // ---- write longs
-  for (i=0; i<varsLong.size(); ++i)
+  for (i=0; i<CompiledData.varsLong.size(); ++i)
   {
-    result.LocalVars.append(varsLong.at(i));
+    result.LocalVars.append(CompiledData.varsLong.at(i));
     result.LocalVars.append(1, '\0');
-    result.LocalVarSize += varsLong.at(i).length()+1;
+    result.LocalVarSize += CompiledData.varsLong.at(i).length()+1;
   }//for
   // ---- write floats
-  for (i=0; i<varsFloat.size(); ++i)
+  for (i=0; i<CompiledData.varsFloat.size(); ++i)
   {
-    result.LocalVars.append(varsFloat.at(i));
+    result.LocalVars.append(CompiledData.varsFloat.at(i));
     result.LocalVars.append(1, '\0');
-    result.LocalVarSize += varsFloat.at(i).length()+1;
+    result.LocalVarSize += CompiledData.varsFloat.at(i).length()+1;
   }//for
 
   //script's ID

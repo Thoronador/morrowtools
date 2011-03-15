@@ -33,6 +33,11 @@ struct CompiledChunk
   //the byte data
   std::vector<uint8_t> data;
 
+  //the list of local variables - split by data types
+  std::vector<std::string> varsShort;
+  std::vector<std::string> varsLong;
+  std::vector<std::string> varsFloat;
+
   /* pushes an op-code onto the back of the data
 
      parameters:

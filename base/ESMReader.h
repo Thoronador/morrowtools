@@ -23,6 +23,7 @@
 
 #include <string>
 #include <fstream>
+#include "DepFiles.h"
 
 /* ESMReader class
 
@@ -53,10 +54,11 @@ class ESMReader
 
        parameters:
            FileName - name of the .esm/.esp file
+           deps     - the list that will be used to store the dependency files
            verbose  - if true, some additional information will be written to
                       standard output
     */
-    int readESM(const std::string& FileName, const bool verbose);
+    int readESM(const std::string& FileName, DepFileList& deps, const bool verbose);
 
   protected:
     /* tries to read the next record from a file and returns the number of

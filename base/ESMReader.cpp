@@ -56,7 +56,7 @@ int ESMReader::skipRecord(std::ifstream& in_File)
   return -1;
 }
 
-int ESMReader::readESM(const std::string& FileName, const bool verbose)
+int ESMReader::readESM(const std::string& FileName, DepFileList& deps, const bool verbose)
 {
   std::ifstream input;
   char Buffer[4];
@@ -94,9 +94,19 @@ int ESMReader::readESM(const std::string& FileName, const bool verbose)
     input.close();
     return -1;
   }
+  if (Size<308)
+  {
+    std::cout << "Error while reading from \""<<FileName<<"\": size of TES3 "
+              << "record is less than 308 bytes, it cannot contain a valid "
+              << ".esp/.esm file header.\n";
+    input.close();
+    return -1;
+  }
+  int32_t BytesRead;
 
   //HEDR
   input.read(Buffer, 4);
+  BytesRead = 4;
   if (Buffer[0]!='H' || Buffer[1]!='E' || Buffer[2]!='D' || Buffer[3]!='R')
   {
     std::cout << "Error: File \""<<FileName<<"\" is not a valid .esp/.esm file."
@@ -114,6 +124,7 @@ int ESMReader::readESM(const std::string& FileName, const bool verbose)
   */
   SubSize = 0;
   input.read((char*) &SubSize, 4);//size of HEDR record
+  BytesRead += 4;
   if (SubSize!=300)
   {
     std::cout << "Error: record HEDR of file \""<<FileName<<"\" has wrong size."
@@ -126,6 +137,7 @@ int ESMReader::readESM(const std::string& FileName, const bool verbose)
   int32_t FileFlag, NumRecords;
   input.read((char*) &Version, 4);//version of file
   input.read((char*) &FileFlag, 4);//unknown value (file flag?)
+  BytesRead += 8;
 
   char CName[33];
   char Description[257];
@@ -134,6 +146,7 @@ int ESMReader::readESM(const std::string& FileName, const bool verbose)
   input.read(CName, 32);//company name
   input.read(Description, 256);//file description
   input.read((char*) &NumRecords, 4);//total number of records
+  BytesRead += (32+256+4);
 
   if (!input.good())
   {
@@ -162,34 +175,51 @@ int ESMReader::readESM(const std::string& FileName, const bool verbose)
     std::cout << "Master files:\n";
   }//verbose
 
-  do
+  //read the master files
+  deps.clear();
+  while (BytesRead<Size)
   {
+    DepFile temp_file_info;
     memset(Buffer, '\0', 4);
     input.read(Buffer, 4);
+    BytesRead += 4;
     if (Buffer[0]=='M' && Buffer[1]=='A' && Buffer[2]=='S' && Buffer[3]=='T')
     {
       //read the data
       SubSize = 0;
       input.read((char*) &SubSize, 4);
+      BytesRead += 4;
       if (SubSize<=256)
       {
         memset(Description, '\0', 256);
         input.read(Description, SubSize);
+        BytesRead += SubSize;
+        if (!input.good())
+        {
+          std::cout << "Error while reading subrecord MAST of TES3 in file \""
+                    << FileName<<"\".\n";
+          input.close();
+          return -1;
+        }
         if (verbose)
         {
           std::cout << " Master File: "<<Description<<"\n";
         }//if verbose
+        temp_file_info.name = Description;
       }
       else
       {
         //skip the data
         input.seekg(SubSize, std::ios::cur);
+        BytesRead += SubSize;
         std::cout << " Skipping one master file due to long ("<<SubSize
                   << " bytes) file name.\n";
+        temp_file_info.name = "(file name was too long and got skipped)";
       }
       //reading DATA record
       memset(Buffer, '\0', 4);
       input.read(Buffer, 4);
+      BytesRead += 4;
       if (Buffer[0]!='D' || Buffer[1]!='A' || Buffer[2]!='T' || Buffer[3]!='A')
       {
         std::cout << "Error while reading file \""<<FileName<<"\": DATA "
@@ -200,6 +230,7 @@ int ESMReader::readESM(const std::string& FileName, const bool verbose)
       }
       //reading size of DATA record
       input.read((char*) &SubSize, 4);
+      BytesRead += 4;
       if (SubSize!=8)
       {
         std::cout << "Error: Record DATA has invalid size ("<<SubSize
@@ -207,32 +238,39 @@ int ESMReader::readESM(const std::string& FileName, const bool verbose)
         input.close();
         return -1;
       }
-      //skip 8 bytes of DATA
-      input.seekg(8, std::ios::cur);
+      //read 8 bytes of DATA
+      input.read((char*) &(temp_file_info.size), 8);
+      BytesRead += 8;
+      if (!input.good())
+      {
+        std::cout << "Error while reading subrecord DATA of TES3 in file \""
+                  << FileName<<"\".\n";
+        input.close();
+        return -1;
+      }
+      temp_file_info.modified = -1; //guess/preset
+      deps.push_back(temp_file_info);
     }//read master file info
     else
     {
-      if (verbose)
-      {
-        std::cout <<"End of Master File list.\n\n First record is \""<<Buffer[0]
-                  <<Buffer[1]<<Buffer[2]<<Buffer[3]<<"\".\n";
-      }//if verbose
+
     }//else
 
-  } while //(RecordType == Master / Data);
-    (Buffer[0]=='D' && Buffer[1]=='A' && Buffer[2]=='T' && Buffer[3]=='A');
+  }//while
 
-  //seek four bytes into the direction if the beginning to land before the
-  // name of the next record
-  input.seekg(-4, std::ios::cur);
+  if (verbose)
+  {
+    std::cout <<"End of Master File list.\n\n";
+  }//if verbose
 
   if (!input.good())
   {
-    std::cout << "Error while reading file \""<<FileName<<"\".\n";
+    std::cout << "Error while reading header of file \""<<FileName<<"\".\n";
     input.close();
     return -1;
   }
-  //bool Go_on_processing = true;
+
+  //Now we will read the real data records that follow after the header.
   uint32_t Processed_Records = 0;
   int relevantRecords = 0;
   int lastResult = 0;

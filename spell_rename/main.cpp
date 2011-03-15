@@ -102,7 +102,7 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Spell Renamer for Morrowind, version 0.1_rev063, 2011-02-24\n";
+  std::cout << "Spell Renamer for Morrowind, version 0.1_rev097, 2011-03-15\n";
 }
 
 int main(int argc, char **argv)
@@ -382,7 +382,9 @@ int main(int argc, char **argv)
   i = 0;
   while (i<files.getSize())
   {
-    const int read_result = reader.readESM(baseDir+files.at(i).name, verbose);
+    DepFileList DummyDeps;//It's not actually used after the read function, but
+                          // readESM() needs one as parameter.
+    const int read_result = reader.readESM(baseDir+files.at(i).name, DummyDeps, verbose);
     if (read_result==-1)
     {
       std::cout << "Error while reading file \""<<baseDir+files.at(i).name

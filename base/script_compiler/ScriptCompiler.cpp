@@ -71,6 +71,32 @@ SC_VarRef::SC_VarRef(const SC_VarType t, const uint16_t i)
   Index = i;
 }
 
+void pushNonGlobalRefWithTwoZeroFillers(const SC_VarRef ref, CompiledChunk& chunk)
+{
+  if (ref.Type==vtGlobal)
+  {
+    std::cout << "Script Compiler: Error: Trying to push global ref, but that's"
+              << " not allowed here.\n";
+    throw 42;
+    return;
+  }
+
+  switch (ref.Type)
+  {
+    case vtShort:
+         chunk.data.push_back('s');
+         break;
+    case vtLong:
+         chunk.data.push_back('l');
+         break;
+    case vtFloat:
+         chunk.data.push_back('f');
+         break;
+  }//swi
+  chunk.data.push_back(ref.Index);
+  return;
+}
+
 //tries to get the integer representation of a string
 bool stringToShort(const std::string& str, int16_t& value)
 {
@@ -390,6 +416,57 @@ SC_VarRef getVariableTypeWithIndex(const std::string& varName, const std::vector
   //if we get to this point, nothing was found and it has to be a non-local var,
   // i.e. a global (or some other kind of expression we can't identify yet).
   return SC_VarRef(vtGlobal, 0);
+}
+
+bool getAnimationGroupIndex(const std::string& groupName, int16_t& result)
+{
+  const std::string lcGroup = lowerCase(groupName);
+  if (lcGroup == "idle")
+  {
+    result = 0;
+    return true;
+  }
+  if (lcGroup == "idle2")
+  {
+    result = 1;
+    return true;
+  }
+  if (lcGroup == "idle3")
+  {
+    result = 2;
+    return true;
+  }
+  if (lcGroup == "idle4")
+  {
+    result = 3;
+    return true;
+  }
+  if (lcGroup == "idle5")
+  {
+    result = 4;
+    return true;
+  }
+  if (lcGroup == "idle6")
+  {
+    result = 5;
+    return true;
+  }
+  if (lcGroup == "idle7")
+  {
+    result = 6;
+    return true;
+  }
+  if (lcGroup == "idle8")
+  {
+    result = 7;
+    return true;
+  }
+  if (lcGroup == "idle9")
+  {
+    result = 8;
+    return true;
+  }
+  return false;
 }
 
 bool ScriptFunctions_ZeroParameters(const std::vector<std::string>& params, CompiledChunk& chunk)
@@ -2142,6 +2219,33 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
     return true;
   }//if
 
+  if (lowerFunction == "playgroup")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: PlayGroup expects one parameters"
+                << ", not "<<params.size()<<".\n";
+      return false;
+    }
+    //first parameter is group name (will be converted into short later)
+    //second parameter is a byte flag (but omitted here, default is zero)
+    // -- check for group name
+    int16_t groupIndex = 0;
+    if (!getAnimationGroupIndex(params[1], groupIndex))
+    {
+      std::cout << "ScriptCompiler: Error: Couldn't find animation group index "
+                << "for group name \""<<params[1]<<"\".\n";
+      return false;
+    }
+    //push function
+    chunk.pushCode(CodePlayGroup);
+    //push group index
+    chunk.pushShort(groupIndex);
+    //push flag - use zero as default
+    chunk.pushShort(0);
+    return true;
+  }//if PlayGroup
+
   if (lowerFunction == "stopsound")
   {
     if (params.size()<2)
@@ -2337,7 +2441,7 @@ bool ScriptFunctions_TwoParameters(const std::vector<std::string>& params, Compi
 
   if (lowerFunction == "journal")
   {
-    if (params.size() != 2)
+    if (params.size() < 3)
     {
       std::cout << "ScriptCompiler: Error: Journal command expects two params"
                 << ", not "<<params.size()<<".\n";
@@ -2363,7 +2467,71 @@ bool ScriptFunctions_TwoParameters(const std::vector<std::string>& params, Compi
     //fill data so it's four bytes
     chunk.data.push_back(255);
     chunk.data.push_back(255);
+    return true;
   }//if Journal
+  if (lowerFunction == "playbink")
+  {
+    if (params.size() < 3)
+    {
+      std::cout << "ScriptCompiler: Error: PlayBink expects two params"
+                << ", not "<<params.size()<<".\n";
+      return false;
+    }
+    chunk.pushCode(CodePlayBink);
+    //push bink file's length
+    chunk.data.push_back(params[1].length());
+    //push bink file
+    chunk.pushString(params[1]);
+    //second parameter should be flag (0 or 1, byte)
+    int16_t bink_flag;
+    if (stringToShort(params[2], bink_flag))
+    {
+      chunk.data.push_back(bink_flag);//flag uses just one byte!
+    }
+    else
+    {
+      std::cout << "ScriptCompiler: Error: PlayBink expects byte value as "
+                << "second parameter, but \""<<params[2]<<"\" is not a short "
+                << "value.\n";
+      return false;
+    }
+    return true;
+  }//if PlayBink
+  if (lowerFunction == "playgroup")
+  {
+    if (params.size() < 3)
+    {
+      std::cout << "ScriptCompiler: Error: PlayGroup expects two params"
+                << ", not "<<params.size()<<".\n";
+      return false;
+    }
+    //first parameter is group name (will be converted into short later)
+    //second parameter is a byte flag
+    // -- check for group name
+    int16_t groupIndex = 0;
+    if (!getAnimationGroupIndex(params[1], groupIndex))
+    {
+      std::cout << "ScriptCompiler: Error: Couldn't find animation group index "
+                << "for group name \""<<params[1]<<"\".\n";
+      return false;
+    }
+    //second parameter should be flag (byte, not short!)
+    int16_t groupFlag;
+    if (!stringToShort(params[2], groupFlag))
+    {
+      std::cout << "ScriptCompiler: Error: PlayGroup expects byte value as "
+                << "second parameter, but \""<<params[2]<<"\" is not a short "
+                << "value.\n";
+      return false;
+    }
+    //push function
+    chunk.pushCode(CodePlayGroup);
+    //push group index
+    chunk.pushShort(groupIndex);
+    //push flag
+    chunk.pushShort(groupFlag);
+    return true;
+  }//if PlayGroup
 
   //end - no matching function found, if we are here
   return false;
@@ -2457,10 +2625,267 @@ bool ScriptFunctions_FourParameters(const std::vector<std::string>& params, Comp
     chunk.pushShort(direction);
     return true;
   }
-
-
+  //nothing found, return false
   return false;
 }
+
+bool ScriptFunctions_FiveParameters(const std::vector<std::string>& params, CompiledChunk& chunk)
+{
+  //entry at index zero is the function's name
+  const std::string lowerFunction = lowerCase(params.at(0));
+  if (lowerFunction == "placeitem")
+  {
+    if (params.size()<6)
+    {
+      std::cout << "ScriptCompiler: Error: PlaceItem needs five parameters!\n";
+      return false;
+    }
+    //first parameter is ID of item
+    // second to fourth is X, Y, Z (all float)
+    // fifth is ZRot (float)
+
+    //check coordinates
+    // ---- X
+    float x_coord;
+    SC_VarRef x_ref = SC_VarRef(vtGlobal, 0);
+    if (!stringToFloat(params[2], x_coord))
+    {
+      //could still be a float var
+      x_ref = getVariableTypeWithIndex(params[2], chunk.varsShort, chunk.varsLong, chunk.varsFloat);
+      if (x_ref.Type==vtGlobal)
+      {
+        std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is no float value or var!\n";
+        return false;
+      }
+    }
+    // ---- Y
+    float y_coord;
+    SC_VarRef y_ref = SC_VarRef(vtGlobal, 0);
+    if (!stringToFloat(params[3], y_coord))
+    {
+      //could still be a float var
+      y_ref = getVariableTypeWithIndex(params[3], chunk.varsShort, chunk.varsLong, chunk.varsFloat);
+      if (y_ref.Type==vtGlobal)
+      {
+        std::cout << "ScriptCompiler: Error: \""<<params[3]<<"\" is no float value or var!\n";
+        return false;
+      }
+    }
+    // ---- Z
+    float z_coord;
+    SC_VarRef z_ref = SC_VarRef(vtGlobal, 0);
+    if (!stringToFloat(params[4], z_coord))
+    {
+      //could still be a float var
+      z_ref = getVariableTypeWithIndex(params[4], chunk.varsShort, chunk.varsLong, chunk.varsFloat);
+      if (z_ref.Type==vtGlobal)
+      {
+        std::cout << "ScriptCompiler: Error: \""<<params[4]<<"\" is no float value or var!\n";
+        return false;
+      }
+    }
+    // ---- rot
+    float rot_coord;
+    SC_VarRef rot_ref = SC_VarRef(vtGlobal, 0);
+    if (!stringToFloat(params[5], rot_coord))
+    {
+      //could still be a float var
+      rot_ref = getVariableTypeWithIndex(params[5], chunk.varsShort, chunk.varsLong, chunk.varsFloat);
+      if (rot_ref.Type==vtGlobal)
+      {
+        std::cout << "ScriptCompiler: Error: \""<<params[5]<<"\" is no float value or var!\n";
+        return false;
+      }
+    }
+    //push function
+    chunk.pushCode(CodePlaceItem);
+    //now push params
+    //ID first
+    //ID's length
+    chunk.data.push_back(params[1].length());
+    //the ID itself
+    chunk.pushString(params[1]);
+    // push x
+    if (x_ref.Type!=vtGlobal)
+    {
+      //it's a reference to a local var, so push here!
+      pushNonGlobalRefWithTwoZeroFillers(x_ref, chunk);
+    }
+    else
+    {
+      //it's a plain float
+      chunk.pushFloat(x_coord);
+    }
+    // push y
+    if (y_ref.Type!=vtGlobal)
+    {
+      //it's a reference to a local var, so push here!
+      pushNonGlobalRefWithTwoZeroFillers(y_ref, chunk);
+    }
+    else
+    {
+      //it's a plain float
+      chunk.pushFloat(y_coord);
+    }
+    // push z
+    if (z_ref.Type!=vtGlobal)
+    {
+      //it's a reference to a local var, so push here!
+      pushNonGlobalRefWithTwoZeroFillers(z_ref, chunk);
+    }
+    else
+    {
+      //it's a plain float
+      chunk.pushFloat(z_coord);
+    }
+    // push rotation
+    if (rot_ref.Type!=vtGlobal)
+    {
+      //it's a reference to a local var, so push here!
+      pushNonGlobalRefWithTwoZeroFillers(rot_ref, chunk);
+    }
+    else
+    {
+      //it's a plain float
+      chunk.pushFloat(rot_coord);
+    }
+    return true;
+  }//if function==PlaceItem
+  //nothing found, return false
+  return false;
+}//function Five
+
+bool ScriptFunctions_SixParameters(const std::vector<std::string>& params, CompiledChunk& chunk)
+{
+  //entry at index zero is the function's name
+  const std::string lowerFunction = lowerCase(params.at(0));
+  if (lowerFunction == "placeitemcell")
+  {
+    if (params.size()<7)
+    {
+      std::cout << "ScriptCompiler: Error: PlaceItem needs six parameters!\n";
+      return false;
+    }
+    //first parameter is ID of item
+    // second is cell ID
+    // third to fifth is X, Y, Z (all float)
+    // sixth is ZRot (float)
+
+    //check coordinates
+    // ---- X
+    float x_coord;
+    SC_VarRef x_ref = SC_VarRef(vtGlobal, 0);
+    if (!stringToFloat(params[3], x_coord))
+    {
+      //could still be a float var
+      x_ref = getVariableTypeWithIndex(params[3], chunk.varsShort, chunk.varsLong, chunk.varsFloat);
+      if (x_ref.Type==vtGlobal)
+      {
+        std::cout << "ScriptCompiler: Error: \""<<params[3]<<"\" is no float value or var!\n";
+        return false;
+      }
+    }
+    // ---- Y
+    float y_coord;
+    SC_VarRef y_ref = SC_VarRef(vtGlobal, 0);
+    if (!stringToFloat(params[4], y_coord))
+    {
+      //could still be a float var
+      y_ref = getVariableTypeWithIndex(params[4], chunk.varsShort, chunk.varsLong, chunk.varsFloat);
+      if (y_ref.Type==vtGlobal)
+      {
+        std::cout << "ScriptCompiler: Error: \""<<params[4]<<"\" is no float value or var!\n";
+        return false;
+      }
+    }
+    // ---- Z
+    float z_coord;
+    SC_VarRef z_ref = SC_VarRef(vtGlobal, 0);
+    if (!stringToFloat(params[5], z_coord))
+    {
+      //could still be a float var
+      z_ref = getVariableTypeWithIndex(params[5], chunk.varsShort, chunk.varsLong, chunk.varsFloat);
+      if (z_ref.Type==vtGlobal)
+      {
+        std::cout << "ScriptCompiler: Error: \""<<params[5]<<"\" is no float value or var!\n";
+        return false;
+      }
+    }
+    // ---- rot
+    float rot_coord;
+    SC_VarRef rot_ref = SC_VarRef(vtGlobal, 0);
+    if (!stringToFloat(params[6], rot_coord))
+    {
+      //could still be a float var
+      rot_ref = getVariableTypeWithIndex(params[6], chunk.varsShort, chunk.varsLong, chunk.varsFloat);
+      if (rot_ref.Type==vtGlobal)
+      {
+        std::cout << "ScriptCompiler: Error: \""<<params[6]<<"\" is no float value or var!\n";
+        return false;
+      }
+    }
+    //push function
+    chunk.pushCode(CodePlaceItemCell);
+    //now push params
+    //item ID first
+    //ID's length
+    chunk.data.push_back(params[1].length());
+    //the ID itself
+    chunk.pushString(params[1]);
+    //cell ID second
+    //ID's length
+    chunk.data.push_back(params[2].length());
+    //the ID itself
+    chunk.pushString(params[2]);
+    // push x
+    if (x_ref.Type!=vtGlobal)
+    {
+      //it's a reference to a local var, so push here!
+      pushNonGlobalRefWithTwoZeroFillers(x_ref, chunk);
+    }
+    else
+    {
+      //it's a plain float
+      chunk.pushFloat(x_coord);
+    }
+    // push y
+    if (y_ref.Type!=vtGlobal)
+    {
+      //it's a reference to a local var, so push here!
+      pushNonGlobalRefWithTwoZeroFillers(y_ref, chunk);
+    }
+    else
+    {
+      //it's a plain float
+      chunk.pushFloat(y_coord);
+    }
+    // push z
+    if (z_ref.Type!=vtGlobal)
+    {
+      //it's a reference to a local var, so push here!
+      pushNonGlobalRefWithTwoZeroFillers(z_ref, chunk);
+    }
+    else
+    {
+      //it's a plain float
+      chunk.pushFloat(z_coord);
+    }
+    // push rotation
+    if (rot_ref.Type!=vtGlobal)
+    {
+      //it's a reference to a local var, so push here!
+      pushNonGlobalRefWithTwoZeroFillers(rot_ref, chunk);
+    }
+    else
+    {
+      //it's a plain float
+      chunk.pushFloat(rot_coord);
+    }
+    return true;
+  }//if function==PlaceItemCell
+  //nothing found, return false
+  return false;
+}//function Six
 
 bool ScriptFunctions(const std::string& line, CompiledChunk& chunk)
 {
@@ -2473,21 +2898,36 @@ bool ScriptFunctions(const std::string& line, CompiledChunk& chunk)
   */
   switch(parameters.size())
   {
+    case 7:
+         if (ScriptFunctions_SixParameters(parameters, chunk))
+         {
+           return true;
+         }
+         break;
+    case 6:
+         if (ScriptFunctions_FiveParameters(parameters, chunk))
+         {
+           return true;
+         }
+         break;
     case 5:
          if (ScriptFunctions_FourParameters(parameters, chunk))
          {
            return true;
          }
+         break;
     case 3:
          if (ScriptFunctions_TwoParameters(parameters, chunk))
          {
            return true;
          }
+         break;
     case 2:
          if (ScriptFunctions_OneParameter(parameters, chunk))
          {
            return true;
          }
+         break;
     case 1:
          if (ScriptFunctions_ZeroParameters(parameters, chunk))
          {
@@ -2501,6 +2941,8 @@ bool ScriptFunctions(const std::string& line, CompiledChunk& chunk)
                    << line << "\".\n";
          return false;
   }//switch
+  //If we get to this point, no matching function was found
+  return false;
 }
 
 bool CompileScript(const std::string& Text, ScriptRecord& result)

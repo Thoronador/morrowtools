@@ -266,6 +266,10 @@ namespace ScriptCompiler
   const uint16_t CodePCRaiseRank = 0x10D0; //"D010"
   const uint16_t CodePlaceAtMe = 0x11BA; //"BA11"
   const uint16_t CodePlaceAtPC = 0x10E6; //"E610"
+  const uint16_t CodePlaceItem = 0x1195; //"9511"
+  const uint16_t CodePlaceItemCell = 0x1196; //"9611"
+  const uint16_t CodePlayBink = 0x1155; //"5511"
+  const uint16_t CodePlayGroup = 0x1410; //"1410"
 
 
   const uint16_t CodeReturn = 0x0124; //"2401"

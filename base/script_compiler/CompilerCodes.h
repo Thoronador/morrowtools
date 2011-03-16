@@ -272,6 +272,7 @@ namespace ScriptCompiler
   const uint16_t CodePlayGroup = 0x1410; //"1410"
 
 
+  const uint16_t CodeQualifier = 0x010C; //"0C01"
   const uint16_t CodeReturn = 0x0124; //"2401"
   const uint16_t CodeSet = 0x0105; //"0501"
   const uint16_t CodeStartScript = 0x101B; //"1B10"

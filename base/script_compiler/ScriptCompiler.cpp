@@ -92,6 +92,11 @@ void CompiledChunk::pushNonGlobalRefWithTwoZeroFillers(const SC_VarRef& ref)
     case vtFloat:
          data.push_back('f');
          break;
+    case vtGlobal:
+         //This branch is only here to shut up the compiler warning, but it will
+         // never be reached. (vtGlobal is checked above.)
+         throw 42;
+         break;
   }//swi
   data.push_back(ref.Index);
   return;
@@ -319,6 +324,32 @@ std::string::size_type getCommentStart(const std::string& line)
     {
       //found a place where comment starts
       return look;
+    }//else
+    ++look;
+  }//while
+  return std::string::npos;
+}
+
+std::string::size_type getQualifierStart(const std::string& line)
+{
+  const std::string::size_type len = line.length();
+  std::string::size_type look = 0;
+  bool outsideQuote = true;
+  while (look<len)
+  {
+    if (line.at(look)=='"')
+    {
+      outsideQuote = not outsideQuote;
+    }
+    else if ((outsideQuote) and (line.at(look)=='-'))
+    {
+      //found a place where arrow could start
+      if (look+1<len)
+      {
+        //check if next character is ">"
+        if (line.at(look+1)=='>')
+          return look;
+      }
     }//else
     ++look;
   }//while
@@ -3020,6 +3051,7 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
   unsigned int i;
   for (i=1; i<lines.size(); ++i)
   {
+    const std::string::size_type qualStart = getQualifierStart(lines[i]);
     //check for shorts
     if (lowerCase(lines.at(i).substr(0,6))=="short ")
     {
@@ -3171,6 +3203,32 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
         return false;
       }
     }//if End found
+    //check for arrow (qualifier)
+    else if (qualStart!=std::string::npos)
+    {
+      //part before qualifier should be object name
+      WorkString = lines.at(i).substr(0, qualStart);
+      StripEnclosingQuotes(WorkString);
+      if ((WorkString=="") or (qualStart+2<=lines.at(i).length()))
+      {
+        std::cout << "ScriptCompiler: Error: invalid position of -> encountered.\n";
+        return false;
+      }
+      //push qualifier code
+      CompiledData.pushCode(CodeQualifier);
+      //push length of object name
+      CompiledData.data.push_back(WorkString.length());
+      //push object name
+      CompiledData.pushString(WorkString);
+      //Now the rest of the expression after -> should be a function. If not,
+      // return false/error.
+      if (ScriptFunctions(lines.at(i).substr(qualStart+2) , CompiledData))
+      {
+        std::cout << "ScriptCompiler: Error: could not handle part after "
+                  << "qualifier in line \""<<lines.at(i)<<"\".\n";
+        return false;
+      }
+    }//if qualifier found
     //check for functions
     else if (ScriptFunctions(lines.at(i), CompiledData))
     {

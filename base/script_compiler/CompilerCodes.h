@@ -249,6 +249,25 @@ namespace ScriptCompiler
   const uint16_t CodeModCurrentMagicka = 0x1133; //"3311"
 
 
+  const uint16_t CodeOnActivate = 0x1018; //"1810"
+  const uint16_t CodeOnDeath = 0x10F0; //"F010"
+  const uint16_t CodeOnKnockout = 0x10F1; //"F110"
+  const uint16_t CodeOnMurder = 0x10F2; //"F210"
+  const uint16_t CodePayFine = 0x114F; //"4F11"
+  const uint16_t CodePayFineThief = 0x1189; //"8911"
+  const uint16_t CodePCClearExpelled = 0x10D3; //"D310"
+  const uint16_t CodePCExpell = 0x10D2; //"D210"
+  const uint16_t CodePCExpelled = 0x109F; //"9F10"
+  const uint16_t CodePCForce1stPerson = 0x113D; //"3D11"
+  const uint16_t CodePCForce3rdPerson = 0x113C; //"3C11"
+  const uint16_t CodePCGet3rdPerson = 0x113E; //"3E11"
+  const uint16_t CodePCJoinFaction = 0x113B; //"3B11"
+  const uint16_t CodePCLowerRank = 0x10D1; //"D110"
+  const uint16_t CodePCRaiseRank = 0x10D0; //"D010"
+  const uint16_t CodePlaceAtMe = 0x11BA; //"BA11"
+  const uint16_t CodePlaceAtPC = 0x10E6; //"E610"
+
+
   const uint16_t CodeReturn = 0x0124; //"2401"
   const uint16_t CodeSet = 0x0105; //"0501"
   const uint16_t CodeStartScript = 0x101B; //"1B10"

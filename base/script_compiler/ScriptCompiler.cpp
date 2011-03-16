@@ -1212,6 +1212,52 @@ bool ScriptFunctions_ZeroParameters(const std::vector<std::string>& params, Comp
     chunk.pushCode(CodeMenuMode);
     return true;
   }
+  if (lowerFunction=="onactivate")
+  {
+    chunk.pushCode(CodeOnActivate);
+    return true;
+  }
+  if (lowerFunction=="ondeath")
+  {
+    chunk.pushCode(CodeOnDeath);
+    return true;
+  }
+  if (lowerFunction=="onknockout")
+  {
+    chunk.pushCode(CodeOnKnockout);
+    return true;
+  }
+  if (lowerFunction=="onmurder")
+  {
+    chunk.pushCode(CodeOnMurder);
+    return true;
+  }
+  if (lowerFunction=="payfine")
+  {
+    chunk.pushCode(CodePayFine);
+    return true;
+  }
+  if (lowerFunction=="payfinethief")
+  {
+    chunk.pushCode(CodePayFineThief);
+    return true;
+  }
+  if (lowerFunction=="pcforce1stperson")
+  {
+    chunk.pushCode(CodePCForce1stPerson);
+    return true;
+  }
+  if (lowerFunction=="pcforce3rdperson")
+  {
+    chunk.pushCode(CodePCForce3rdPerson);
+    return true;
+  }
+  if (lowerFunction=="pcget3rdperson")
+  {
+    chunk.pushCode(CodePCGet3rdPerson);
+    return true;
+  }
+
   if (lowerFunction=="turnmoonred")
   {
     chunk.pushCode(CodeTurnMoonRed);
@@ -2005,6 +2051,97 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
     return false;
   }
 
+  if (lowerFunction == "pcclearexpelled")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: PCClearExpelled needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodePCClearExpelled);
+    //parameter is faction ID
+    //push IDs length
+    chunk.data.push_back(params[1].length());
+    //push ID
+    chunk.pushString(params[1]);
+    return true;
+  }//if
+  if (lowerFunction == "pcexpell")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: PCExpell needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodePCExpell);
+    //parameter is faction ID
+    //push IDs length
+    chunk.data.push_back(params[1].length());
+    //push ID
+    chunk.pushString(params[1]);
+    return true;
+  }//if
+  if (lowerFunction == "pcexpelled")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: PCExpelled needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodePCExpelled);
+    //parameter is faction ID
+    //push IDs length
+    chunk.data.push_back(params[1].length());
+    //push ID
+    chunk.pushString(params[1]);
+    return true;
+  }//if
+  if (lowerFunction == "pcjoinfaction")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: PCJoinFaction needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodePCJoinFaction);
+    //parameter is faction ID
+    //push IDs length
+    chunk.data.push_back(params[1].length());
+    //push ID
+    chunk.pushString(params[1]);
+    return true;
+  }//if
+  if (lowerFunction == "pclowerrank")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: PCLowerRank needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodePCLowerRank);
+    //parameter is faction ID
+    //push IDs length
+    chunk.data.push_back(params[1].length());
+    //push ID
+    chunk.pushString(params[1]);
+    return true;
+  }//if
+  if (lowerFunction == "pcraiserank")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: PCRaiseRank needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodePCRaiseRank);
+    //parameter is faction ID
+    //push IDs length
+    chunk.data.push_back(params[1].length());
+    //push ID
+    chunk.pushString(params[1]);
+    return true;
+  }//if
+
   if (lowerFunction == "stopsound")
   {
     if (params.size()<2)
@@ -2232,6 +2369,99 @@ bool ScriptFunctions_TwoParameters(const std::vector<std::string>& params, Compi
   return false;
 }
 
+bool ScriptFunctions_FourParameters(const std::vector<std::string>& params, CompiledChunk& chunk)
+{
+  //entry at index zero is the function's name
+  const std::string lowerFunction = lowerCase(params.at(0));
+  if (lowerFunction == "placeatme")
+  {
+    if (params.size()<5)
+    {
+      std::cout << "ScriptCompiler: Error: PlaceAtMe needs four parameters!\n";
+      return false;
+    }
+    //first parameter is ID of item, second is short that indicates the count,
+    //third is distance (float), fourth is direction (short)
+    //check for count
+    int16_t count;
+    if (!stringToShort(params[2], count))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is no short value!\n";
+      return false;
+    }
+    //check for distance
+    float distance;
+    if (!stringToFloat(params[3], distance))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[3]<<"\" is no float value!\n";
+      return false;
+    }
+    //check for direction
+    int16_t direction;
+    if (!stringToShort(params[4], direction))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is no short value!\n";
+      return false;
+    }
+    //push function code
+    chunk.pushCode(CodePlaceAtMe);
+    //push item ID's length
+    chunk.data.push_back(params[1].length());
+    //push item ID
+    chunk.pushString(params[1]);
+    //push further parameters
+    chunk.pushShort(count);
+    chunk.pushFloat(distance);
+    chunk.pushShort(direction);
+    return true;
+  }
+  if (lowerFunction == "placeatpc")
+  {
+    if (params.size()<5)
+    {
+      std::cout << "ScriptCompiler: Error: PlaceAtPC needs four parameters!\n";
+      return false;
+    }
+    //first parameter is ID of item, second is short that indicates the count,
+    //third is distance (float), fourth is direction (short)
+    //check for count
+    int16_t count;
+    if (!stringToShort(params[2], count))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is no short value!\n";
+      return false;
+    }
+    //check for distance
+    float distance;
+    if (!stringToFloat(params[3], distance))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[3]<<"\" is no float value!\n";
+      return false;
+    }
+    //check for direction
+    int16_t direction;
+    if (!stringToShort(params[4], direction))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is no short value!\n";
+      return false;
+    }
+    //push function code
+    chunk.pushCode(CodePlaceAtPC);
+    //push item ID's length
+    chunk.data.push_back(params[1].length());
+    //push item ID
+    chunk.pushString(params[1]);
+    //push further parameters
+    chunk.pushShort(count);
+    chunk.pushFloat(distance);
+    chunk.pushShort(direction);
+    return true;
+  }
+
+
+  return false;
+}
+
 bool ScriptFunctions(const std::string& line, CompiledChunk& chunk)
 {
   if (line=="") return false;
@@ -2243,6 +2473,11 @@ bool ScriptFunctions(const std::string& line, CompiledChunk& chunk)
   */
   switch(parameters.size())
   {
+    case 5:
+         if (ScriptFunctions_FourParameters(parameters, chunk))
+         {
+           return true;
+         }
     case 3:
          if (ScriptFunctions_TwoParameters(parameters, chunk))
          {

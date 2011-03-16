@@ -27,6 +27,17 @@
 namespace ScriptCompiler
 {
 
+enum SC_VarType {vtShort, vtLong, vtFloat, vtGlobal};
+
+struct SC_VarRef
+{
+  SC_VarType Type;
+  uint16_t Index;
+
+  /* constructor */
+  SC_VarRef(const SC_VarType t, const uint16_t i);
+};//struct
+
 /* class to basically hold an array/vector of bytes */
 struct CompiledChunk
 {
@@ -72,6 +83,13 @@ struct CompiledChunk
          str - the string
   */
   void pushString(const std::string& str);
+
+  /* pushes a non-global reference to a local var with 0x0000 as filler
+
+     parameters:
+         ref - the variable reference
+  */
+  void pushNonGlobalRefWithTwoZeroFillers(const SC_VarRef& ref);
 }; //struct
 
 /* tries to convert a the string representation of a floating point value into
@@ -85,17 +103,6 @@ struct CompiledChunk
        If false is returned, the value of parameter value is undefined.
 */
 bool stringToFloat(const std::string& str, float& value);
-
-enum SC_VarType {vtShort, vtLong, vtFloat, vtGlobal};
-
-struct SC_VarRef
-{
-  SC_VarType Type;
-  uint16_t Index;
-
-  /* constructor */
-  SC_VarRef(const SC_VarType t, const uint16_t i);
-};//struct
 
 /* removes all leading and trailing spaces and (horizontal) tabulators from the
    given string

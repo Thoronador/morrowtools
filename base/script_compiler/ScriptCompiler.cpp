@@ -26,6 +26,12 @@
 namespace ScriptCompiler
 {
 
+SC_VarRef::SC_VarRef(const SC_VarType t, const uint16_t i)
+{
+  Type = t;
+  Index = i;
+}
+
 void CompiledChunk::pushCode(const uint16_t code)
 {
   data.push_back(code&255);
@@ -65,13 +71,7 @@ void CompiledChunk::pushString(const std::string& str)
   }//for
 }
 
-SC_VarRef::SC_VarRef(const SC_VarType t, const uint16_t i)
-{
-  Type = t;
-  Index = i;
-}
-
-void pushNonGlobalRefWithTwoZeroFillers(const SC_VarRef ref, CompiledChunk& chunk)
+void CompiledChunk::pushNonGlobalRefWithTwoZeroFillers(const SC_VarRef& ref)
 {
   if (ref.Type==vtGlobal)
   {
@@ -84,16 +84,16 @@ void pushNonGlobalRefWithTwoZeroFillers(const SC_VarRef ref, CompiledChunk& chun
   switch (ref.Type)
   {
     case vtShort:
-         chunk.data.push_back('s');
+         data.push_back('s');
          break;
     case vtLong:
-         chunk.data.push_back('l');
+         data.push_back('l');
          break;
     case vtFloat:
-         chunk.data.push_back('f');
+         data.push_back('f');
          break;
   }//swi
-  chunk.data.push_back(ref.Index);
+  data.push_back(ref.Index);
   return;
 }
 
@@ -2709,7 +2709,7 @@ bool ScriptFunctions_FiveParameters(const std::vector<std::string>& params, Comp
     if (x_ref.Type!=vtGlobal)
     {
       //it's a reference to a local var, so push here!
-      pushNonGlobalRefWithTwoZeroFillers(x_ref, chunk);
+      chunk.pushNonGlobalRefWithTwoZeroFillers(x_ref);
     }
     else
     {
@@ -2720,7 +2720,7 @@ bool ScriptFunctions_FiveParameters(const std::vector<std::string>& params, Comp
     if (y_ref.Type!=vtGlobal)
     {
       //it's a reference to a local var, so push here!
-      pushNonGlobalRefWithTwoZeroFillers(y_ref, chunk);
+      chunk.pushNonGlobalRefWithTwoZeroFillers(y_ref);
     }
     else
     {
@@ -2731,7 +2731,7 @@ bool ScriptFunctions_FiveParameters(const std::vector<std::string>& params, Comp
     if (z_ref.Type!=vtGlobal)
     {
       //it's a reference to a local var, so push here!
-      pushNonGlobalRefWithTwoZeroFillers(z_ref, chunk);
+      chunk.pushNonGlobalRefWithTwoZeroFillers(z_ref);
     }
     else
     {
@@ -2742,7 +2742,7 @@ bool ScriptFunctions_FiveParameters(const std::vector<std::string>& params, Comp
     if (rot_ref.Type!=vtGlobal)
     {
       //it's a reference to a local var, so push here!
-      pushNonGlobalRefWithTwoZeroFillers(rot_ref, chunk);
+      chunk.pushNonGlobalRefWithTwoZeroFillers(rot_ref);
     }
     else
     {
@@ -2841,7 +2841,7 @@ bool ScriptFunctions_SixParameters(const std::vector<std::string>& params, Compi
     if (x_ref.Type!=vtGlobal)
     {
       //it's a reference to a local var, so push here!
-      pushNonGlobalRefWithTwoZeroFillers(x_ref, chunk);
+      chunk.pushNonGlobalRefWithTwoZeroFillers(x_ref);
     }
     else
     {
@@ -2852,7 +2852,7 @@ bool ScriptFunctions_SixParameters(const std::vector<std::string>& params, Compi
     if (y_ref.Type!=vtGlobal)
     {
       //it's a reference to a local var, so push here!
-      pushNonGlobalRefWithTwoZeroFillers(y_ref, chunk);
+      chunk.pushNonGlobalRefWithTwoZeroFillers(y_ref);
     }
     else
     {
@@ -2863,7 +2863,7 @@ bool ScriptFunctions_SixParameters(const std::vector<std::string>& params, Compi
     if (z_ref.Type!=vtGlobal)
     {
       //it's a reference to a local var, so push here!
-      pushNonGlobalRefWithTwoZeroFillers(z_ref, chunk);
+      chunk.pushNonGlobalRefWithTwoZeroFillers(z_ref);
     }
     else
     {
@@ -2874,7 +2874,7 @@ bool ScriptFunctions_SixParameters(const std::vector<std::string>& params, Compi
     if (rot_ref.Type!=vtGlobal)
     {
       //it's a reference to a local var, so push here!
-      pushNonGlobalRefWithTwoZeroFillers(rot_ref, chunk);
+      chunk.pushNonGlobalRefWithTwoZeroFillers(rot_ref);
     }
     else
     {

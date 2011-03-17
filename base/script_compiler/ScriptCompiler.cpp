@@ -84,12 +84,15 @@ void CompiledChunk::pushNonGlobalRefWithTwoZeroFillers(const SC_VarRef& ref)
   switch (ref.Type)
   {
     case vtShort:
+         //push s for short
          data.push_back('s');
          break;
     case vtLong:
+         //push l for long
          data.push_back('l');
          break;
     case vtFloat:
+         //push f for float
          data.push_back('f');
          break;
     case vtGlobal:
@@ -98,7 +101,11 @@ void CompiledChunk::pushNonGlobalRefWithTwoZeroFillers(const SC_VarRef& ref)
          throw 42;
          break;
   }//swi
+  //push index
   data.push_back(ref.Index);
+  //push fillers
+  data.push_back(0);
+  data.push_back(0);
   return;
 }
 
@@ -1640,6 +1647,70 @@ bool ScriptFunctions_ModStatFunctions(const std::vector<std::string>& params, Co
   {
     functionCode = CodeModRestoration;
   }
+  else if (lowerFunction == "modscale")
+  {
+    functionCode = CodeModScale;
+  }
+  else if (lowerFunction == "modsecurity")
+  {
+    functionCode = CodeModSecurity;
+  }
+  else if (lowerFunction == "modshortblade")
+  {
+    functionCode = CodeModShortBlade;
+  }
+  else if (lowerFunction == "modsilence")
+  {
+    functionCode = CodeModSilence;
+  }
+  else if (lowerFunction == "modsneak")
+  {
+    functionCode = CodeModSneak;
+  }
+  else if (lowerFunction == "modspear")
+  {
+    functionCode = CodeModSpear;
+  }
+  else if (lowerFunction == "modspeechcraft")
+  {
+    functionCode = CodeModSpeechcraft;
+  }
+  else if (lowerFunction == "modspeed")
+  {
+    functionCode = CodeModSpeed;
+  }
+  else if (lowerFunction == "modstrength")
+  {
+    functionCode = CodeModStrength;
+  }
+  else if (lowerFunction == "modsuperjump")
+  {
+    functionCode = CodeModSuperJump;
+  }
+  else if (lowerFunction == "modswimspeed")
+  {
+    functionCode = CodeModSwimSpeed;
+  }
+  else if (lowerFunction == "modunarmored")
+  {
+    functionCode = CodeModUnarmored;
+  }
+  else if (lowerFunction == "modwaterbreathing")
+  {
+    functionCode = CodeModWaterBreathing;
+  }
+  else if (lowerFunction == "modwaterlevel")
+  {
+    functionCode = CodeModWaterLevel;
+  }
+  else if (lowerFunction == "modwaterwalking")
+  {
+    functionCode = CodeModWaterWalking;
+  }
+  else if (lowerFunction == "modwillpower")
+  {
+    functionCode = CodeModWillpower;
+  }
   //Found something? If not, return false.
   if (functionCode==0) return false;
 
@@ -1663,31 +1734,10 @@ bool ScriptFunctions_ModStatFunctions(const std::vector<std::string>& params, Co
     switch(localRef.Type)
     {
       case vtFloat:
-           //push f for float
-           chunk.data.push_back('f');
-           //push index
-           chunk.data.push_back(localRef.Index);
-           //now push two zero bytes to fill up - needs four bytes
-           chunk.data.push_back(0);
-           chunk.data.push_back(0);
-           break;
       case vtLong:
-           //push l for long
-           chunk.data.push_back('l');
-           //push index
-           chunk.data.push_back(localRef.Index);
-           //now push two zero bytes to fill up - needs four bytes
-           chunk.data.push_back(0);
-           chunk.data.push_back(0);
-           break;
       case vtShort:
-           //push s for short
-           chunk.data.push_back('s');
-           //push index
-           chunk.data.push_back(localRef.Index);
-           //now push two zero bytes to fill up - needs four bytes
-           chunk.data.push_back(0);
-           chunk.data.push_back(0);
+           //push reference and add two NUL bytes to fill up (needs four bytes)
+           chunk.pushNonGlobalRefWithTwoZeroFillers(localRef);
            break;
       default:
            //encountered unknown variable name - error!
@@ -2710,6 +2760,73 @@ bool ScriptFunctions_TwoParameters(const std::vector<std::string>& params, Compi
     chunk.pushString(params[2]);
     return true;
   }//if ModPCFacRep
+
+  if (lowerFunction == "move")
+  {
+    if (params.size()<3)
+    {
+      std::cout << "ScriptCompiler: Error: Move needs two parameters!\n";
+      return false;
+    }
+    //first parameter is axis, second is float
+    //get/check floating point valued parameter
+    float move_value;
+    if (!stringToFloat(params[2], move_value))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is not a float"
+                << " value.\n";
+      return false;
+    }
+    //push function
+    chunk.pushCode(CodeMove);
+    //push axis
+    const char Axis = toupper(params[1].at(0));
+    /*The CS does not check, if the parameter is really X, Y or Z, but allows
+      any letter and even longer strings, as it seems. I'm not sure about the
+      consequences in-game. We should put a warning at least.
+    */
+    if ((Axis!='X') and (Axis!='Y') and (Axis!='Z'))
+    {
+      std::cout << "ScriptCompiler: Warning: invalid parameter to Move.\n";
+    }
+    chunk.data.push_back(Axis);
+    //push float (2nd param)
+    chunk.pushFloat(move_value);
+    return true;
+  }//if Move
+  if (lowerFunction == "moveworld")
+  {
+    if (params.size()<3)
+    {
+      std::cout << "ScriptCompiler: Error: MoveWorld needs two parameters!\n";
+      return false;
+    }
+    //first parameter is axis, second is float
+    //get/check floating point valued parameter
+    float move_value;
+    if (!stringToFloat(params[2], move_value))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is not a float"
+                << " value.\n";
+      return false;
+    }
+    //push function
+    chunk.pushCode(CodeMoveWorld);
+    //push axis
+    const char Axis = toupper(params[1].at(0));
+    /*The CS does not check, if the parameter is really X, Y or Z, but allows
+      any letter and even longer strings, as it seems. I'm not sure about the
+      consequences in-game. We should put a warning at least.
+    */
+    if ((Axis!='X') and (Axis!='Y') and (Axis!='Z'))
+    {
+      std::cout << "ScriptCompiler: Warning: invalid parameter to MoveWorld.\n";
+    }
+    chunk.data.push_back(Axis);
+    //push float (2nd param)
+    chunk.pushFloat(move_value);
+    return true;
+  }//if MoveWorld
   if (lowerFunction == "playbink")
   {
     if (params.size() < 3)

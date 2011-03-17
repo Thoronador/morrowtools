@@ -1480,6 +1480,102 @@ bool ScriptFunctions_ModStatFunctions(const std::vector<std::string>& params, Co
   {
     functionCode = CodeModCurrentMagicka;
   }
+  else if (lowerFunction == "moddefendbonus")
+  {
+    functionCode = CodeModDefendBonus;
+  }
+  else if (lowerFunction == "moddestruction")
+  {
+    functionCode = CodeModDestruction;
+  }
+  else if (lowerFunction == "moddisposition")
+  {
+    functionCode = CodeModDisposition;
+  }
+  else if (lowerFunction == "modenchant")
+  {
+    functionCode = CodeModEnchant;
+  }
+  else if (lowerFunction == "modendurance")
+  {
+    functionCode = CodeModEndurance;
+  }
+  else if (lowerFunction == "modfatigue")
+  {
+    functionCode = CodeModFatigue;
+  }
+  else if (lowerFunction == "modfight")
+  {
+    functionCode = CodeModFight;
+  }
+  else if (lowerFunction == "modflee")
+  {
+    functionCode = CodeModFlee;
+  }
+  else if (lowerFunction == "modflying")
+  {
+    functionCode = CodeModFlying;
+  }
+  else if (lowerFunction == "modhandtohand")
+  {
+    functionCode = CodeModHandToHand;
+  }
+  else if (lowerFunction == "modhealth")
+  {
+    functionCode = CodeModHealth;
+  }
+  else if (lowerFunction == "modheavyarmor")
+  {
+    functionCode = CodeModHeavyArmor;
+  }
+  else if (lowerFunction == "modhello")
+  {
+    functionCode = CodeModHello;
+  }
+  else if (lowerFunction == "modillusion")
+  {
+    functionCode = CodeModIllusion;
+  }
+  else if (lowerFunction == "modintelligence")
+  {
+    functionCode = CodeModIntelligence;
+  }
+  else if (lowerFunction == "modinvisible")
+  {
+    functionCode = CodeModInvisible;
+  }
+  else if (lowerFunction == "modlightarmor")
+  {
+    functionCode = CodeModLightArmor;
+  }
+  else if (lowerFunction == "modlongblade")
+  {
+    functionCode = CodeModLongBlade;
+  }
+  else if (lowerFunction == "modluck")
+  {
+    functionCode = CodeModLuck;
+  }
+  else if (lowerFunction == "modmagicka")
+  {
+    functionCode = CodeModMagicka;
+  }
+  else if (lowerFunction == "modmarksman")
+  {
+    functionCode = CodeModMarksman;
+  }
+  else if (lowerFunction == "modmediumarmor")
+  {
+    functionCode = CodeModMediumArmor;
+  }
+  else if (lowerFunction == "modmercantile")
+  {
+    functionCode = CodeModMercantile;
+  }
+  else if (lowerFunction == "modmysticism")
+  {
+    functionCode = CodeModMysticism;
+  }
   //Found something? If not, return false.
   if (functionCode==0) return false;
 
@@ -2568,6 +2664,44 @@ bool ScriptFunctions_TwoParameters(const std::vector<std::string>& params, Compi
   return false;
 }
 
+bool ScriptFunctions_ThreeParameters(const std::vector<std::string>& params, CompiledChunk& chunk)
+{
+  //entry at index zero is the function's name
+  const std::string lowerFunction = lowerCase(params.at(0));
+  if (lowerFunction == "modfactionreaction")
+  {
+    if (params.size()<4)
+    {
+      std::cout << "ScriptCompiler: Error: ModFactionReaction needs three parameters!\n";
+      return false;
+    }
+    //first parameter is ID of first faction, second is ID of other faction
+    //third is reaction (short)
+    //check for reaction
+    int16_t new_reaction;
+    if (!stringToShort(params[3], new_reaction))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[3]<<"\" is no short value!\n";
+      return false;
+    }
+    //push function code
+    chunk.pushCode(CodeModFactionReaction);
+    //first ID's length
+    chunk.data.push_back(params[1].length());
+    //push first ID
+    chunk.pushString(params[1]);
+    //second ID's length
+    chunk.data.push_back(params[2].length());
+    //push second ID
+    chunk.pushString(params[2]);
+    //push new reaction
+    chunk.pushShort(new_reaction);
+    return true;
+  }
+  //if we get to this point, no match was found
+  return false;
+}
+
 bool ScriptFunctions_FourParameters(const std::vector<std::string>& params, CompiledChunk& chunk)
 {
   //entry at index zero is the function's name
@@ -2943,6 +3077,12 @@ bool ScriptFunctions(const std::string& line, CompiledChunk& chunk)
          break;
     case 5:
          if (ScriptFunctions_FourParameters(parameters, chunk))
+         {
+           return true;
+         }
+         break;
+    case 4:
+         if (ScriptFunctions_ThreeParameters(parameters, chunk))
          {
            return true;
          }

@@ -2680,7 +2680,39 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
     chunk.pushString(params[1]);
     return true;
   }//if RemoveSpellEffects
-
+  if (lowerFunction =="startscript")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: StartScript needs one parameter!\n";
+      return false;
+    }
+    //parameter is script ID
+    //push function
+    chunk.pushCode(CodeStartScript);
+    //push Script ID's length
+    chunk.data.push_back(params[1].length());
+    //push script ID
+    chunk.pushString(params[1]);
+    return true;
+  }//if StartScript
+  //check for StopScript
+  if (lowerFunction == "stopscript")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: StopScript needs one parameter!\n";
+      return false;
+    }
+    //parameter is script ID
+    //push function
+    chunk.pushCode(CodeStopScript);
+    //push script ID's length
+    chunk.data.push_back(params[1].length());
+    //push script ID
+    chunk.pushString(params[1]);
+    return true;
+  }//if StopScript
   if (lowerFunction == "stopsound")
   {
     if (params.size()<2)
@@ -4299,26 +4331,6 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       std::cout << "ScriptCompiler: Warning: Set statement not completely "
                 << "implemented yet.\n";
     }//if Set
-    //check for StartScript
-    else if (lowerCase(lines.at(i).substr(0,12))=="startscript ")
-    {
-      CompiledData.pushCode(CodeStartScript);
-      WorkString = lines.at(i).substr(12);
-      trimLeft(WorkString);
-      StripEnclosingQuotes(WorkString);
-      CompiledData.data.push_back(WorkString.length());
-      CompiledData.pushString(WorkString);
-    }//if StartScript
-    //check for StopScript
-    else if (lowerCase(lines.at(i).substr(0,11))=="stopscript ")
-    {
-      CompiledData.pushCode(CodeStopScript);
-      WorkString = lines.at(i).substr(11);
-      trimLeft(WorkString);
-      StripEnclosingQuotes(WorkString);
-      CompiledData.data.push_back(WorkString.length());
-      CompiledData.pushString(WorkString);
-    }//if StopScript
     //check for return
     else if (lowerCase(lines.at(i))=="return")
     {
@@ -4367,7 +4379,6 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
     {
       std::cout << "Debug: ScriptCompiler: Hint: Function processed.\n";
     }
-
   }//for
 
   if (!EndLineFound)

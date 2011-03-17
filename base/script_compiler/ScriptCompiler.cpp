@@ -1372,6 +1372,16 @@ bool ScriptFunctions_ZeroParameters(const std::vector<std::string>& params, Comp
     chunk.pushCode(CodePCGet3rdPerson);
     return true;
   }
+  if (lowerFunction=="raiserank")
+  {
+    chunk.pushCode(CodeRaiseRank);
+    return true;
+  }
+  if (lowerFunction=="resurrect")
+  {
+    chunk.pushCode(CodeResurrect);
+    return true;
+  }
 
   if (lowerFunction=="turnmoonred")
   {
@@ -2555,7 +2565,121 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
     chunk.pushString(params[1]);
     return true;
   }//if PlaySound3D
-
+  if (lowerFunction == "random")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: Random needs one parameter!\n";
+      return false;
+    }
+    //parameter is short value
+    int16_t limit;
+    if (!stringToShort(params[1], limit))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[1]<<"\" is not a proper "
+                << "short value.\n";
+      return false;
+    }
+    //push function
+    chunk.pushCode(CodeRandom);
+    //push limit
+    chunk.pushShort(limit);
+    return true;
+  }//if Random
+  if (lowerFunction == "removeeffects")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: RemoveEffects needs one parameter!\n";
+      return false;
+    }
+    //parameter is short value (effect index)
+    int16_t effect_index;
+    if (!stringToShort(params[1], effect_index))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[1]<<"\" is not a proper "
+                << "short value.\n";
+      return false;
+    }
+    /* Valid effect indices range from zero to 136. Indices outside of that
+       range will be accepted by the Construction Set, too, but trying to move
+       an effect that does not exist is kind of useless. We put a warning here,
+       just in case.
+    */
+    if ((effect_index<0) or (effect_index>136))
+    {
+      std::cout << "ScriptCompiler: Warning: given index for RemoveEffects is "
+                << effect_index <<", but valid range is [0;136].\n";
+    }
+    //push function
+    chunk.pushCode(CodeRemoveEffects);
+    //push limit
+    chunk.pushShort(effect_index);
+    return true;
+  }//if RemoveEffects
+  if (lowerFunction == "removesoulgem")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: RemoveSoulgem needs one parameter!\n";
+      return false;
+    }
+    //parameter is creature ID
+    //push function
+    chunk.pushCode(CodeRemoveSoulGem);
+    //push ID's length
+    chunk.data.push_back(params[1].length());
+    chunk.pushString(params[1]);
+    return true;
+  }//if RemoveSoulGem
+  if (lowerFunction == "removespell")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: RemoveSpell needs one parameter!\n";
+      return false;
+    }
+    //parameter is spell ID
+    //push function
+    chunk.pushCode(CodeRemoveSpell);
+    //push ID's length
+    chunk.data.push_back(params[1].length());
+    //push ID
+    chunk.pushString(params[1]);
+    return true;
+  }//if RemoveSpell
+  if (lowerFunction == "removespelleffects")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: RemoveSpellEffects needs one parameter!\n";
+      return false;
+    }
+    //parameter is spell ID
+    //push function
+    chunk.pushCode(CodeRemoveSpellEffects);
+    //push ID's length
+    chunk.data.push_back(params[1].length());
+    //push ID
+    chunk.pushString(params[1]);
+    return true;
+  }//if RemoveSpellEffects
+  if (lowerFunction == "repairedonme")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: RepairedOnMe needs one parameter!\n";
+      return false;
+    }
+    //parameter is repair item ID
+    //push function
+    chunk.pushCode(CodeRepairedOnMe);
+    //push ID's length
+    chunk.data.push_back(params[1].length());
+    //push ID
+    chunk.pushString(params[1]);
+    return true;
+  }//if RemoveSpellEffects
 
   if (lowerFunction == "stopsound")
   {
@@ -2936,7 +3060,101 @@ bool ScriptFunctions_TwoParameters(const std::vector<std::string>& params, Compi
     chunk.pushShort(groupFlag);
     return true;
   }//if PlayGroup
-
+  if (lowerFunction == "removeitem")
+  {
+    if (params.size() < 3)
+    {
+      std::cout << "ScriptCompiler: Error: RemoveItem expects two params"
+                << ", not "<<params.size()<<".\n";
+      return false;
+    }
+    //first parameter is item's ID, second is count (short)
+    int16_t count;
+    if (!stringToShort(params[2], count))
+    {
+      std::cout << "ScriptCompiler: Error: RemoveItem expects byte value as "
+                << "second parameter, but \""<<params[2]<<"\" is not a short "
+                << "value.\n";
+      return false;
+    }
+    //push function
+    chunk.pushCode(CodeRemoveItem);
+    //push item ID's length
+    chunk.data.push_back(params[1].length());
+    //push item ID
+    chunk.pushString(params[1]);
+    //push count
+    chunk.pushShort(count);
+    return true;
+  }//if RemoveItem
+  if (lowerFunction == "rotate")
+  {
+    if (params.size() < 3)
+    {
+      std::cout << "ScriptCompiler: Error: Rotate expects two params"
+                << ", not "<<params.size()<<".\n";
+      return false;
+    }
+    //first parameter is axis, second is amount (float)
+    // ---- get axis
+    const char Axis = toupper(params[1].at(0));
+    /*The CS does not check, if the parameter is really X, Y or Z, but allows
+      any letter, as it seems. I'm not sure about the consequences in-game.
+      We should put a warning at least.
+    */
+    if ((Axis!='X') and (Axis!='Y') and (Axis!='Z'))
+    {
+      std::cout << "ScriptCompiler: Warning: invalid axis parameter to Rotate.\n";
+    }
+    // ---- second param
+    float amount;
+    if (!stringToFloat(params[2], amount))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is not a float.\n";
+      return false;
+    }
+    //push function
+    chunk.pushCode(CodeRotate);
+    //push axis
+    chunk.data.push_back(Axis);
+    //push amount (float)
+    chunk.pushFloat(amount);
+    return true;
+  }//if Rotate
+  if (lowerFunction == "rotateworld")
+  {
+    if (params.size() < 3)
+    {
+      std::cout << "ScriptCompiler: Error: RotateWorld expects two params, not "
+                <<params.size()<<".\n";
+      return false;
+    }
+    //first parameter is axis, second is amount (float)
+    // ---- get axis
+    const char Axis = toupper(params[1].at(0));
+    /*The CS does not check, if the parameter is really X, Y or Z, but allows
+      any letter, as it seems. I'm not sure about the consequences in-game.
+      We should put a warning at least.
+    */
+    if ((Axis!='X') and (Axis!='Y') and (Axis!='Z'))
+    {
+      std::cout << "ScriptCompiler: Warning: invalid axis parameter to RotateWorld.\n";
+    }
+    // ---- second param
+    float amount;
+    if (!stringToFloat(params[2], amount))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is not a float.\n";
+      return false;
+    }
+    //push function
+    chunk.pushCode(CodeRotateWorld);
+    //push axis
+    chunk.data.push_back(Axis);
+    //push amount (float)
+    chunk.pushFloat(amount);
+    return true;
+  }//if RotateWorld
   //end - no matching function found, if we are here
   return false;
 }
@@ -3083,6 +3301,67 @@ bool ScriptFunctions_ThreeParameters(const std::vector<std::string>& params, Com
     chunk.pushFloat(pitch);
     return true;
   }//if PlaySound3DVP
+  if (lowerFunction == "removefromlevcreature")
+  {
+    if (params.size()<4)
+    {
+      std::cout << "ScriptCompiler: Error: RemoveFromLevCreature needs three parameters!\n";
+      return false;
+    }
+    //first parameter is ID of leveled creature, second is ID of creature to be removed
+    //third is corresponding level (float, believe it or not)
+    // ---- check for level
+    float level;
+    if (!stringToFloat(params[3], level))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[3]<<"\" is no float value!\n";
+      return false;
+    }
+    //push functio code
+    chunk.pushCode(CodeRemoveFromLevCreature);
+    //push list ID's length
+    chunk.data.push_back(params[1].length());
+    //push list ID
+    chunk.pushString(params[1]);
+    //push creature ID's length
+    chunk.data.push_back(params[2].length());
+    //push creature ID
+    chunk.pushString(params[2]);
+    //push level
+    chunk.pushFloat(level);
+    return true;
+  }//if RemoveFromLevCreature
+  if (lowerFunction == "removefromlevitem")
+  {
+    if (params.size()<4)
+    {
+      std::cout << "ScriptCompiler: Error: RemoveFromLevItem needs three parameters!\n";
+      return false;
+    }
+    //first parameter is ID of leveled item, second is ID of item to be removed
+    //third is corresponding level (float, believe it or not)
+    // ---- check for level
+    float level;
+    if (!stringToFloat(params[3], level))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[3]<<"\" is no float value!\n";
+      return false;
+    }
+    //push functio code
+    chunk.pushCode(CodeRemoveFromLevItem);
+    //push list ID's length
+    chunk.data.push_back(params[1].length());
+    //push list ID
+    chunk.pushString(params[1]);
+    //push item ID's length
+    chunk.data.push_back(params[2].length());
+    //push item ID
+    chunk.pushString(params[2]);
+    //push level
+    chunk.pushFloat(level);
+    return true;
+  }//if RemoveFromLevItem
+
   //if we get to this point, no match was found
   return false;
 }

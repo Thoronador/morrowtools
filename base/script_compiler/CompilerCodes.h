@@ -337,10 +337,23 @@ namespace ScriptCompiler
   const uint16_t CodePlaySound3DVP = 0x112D; //"2D11"
   const uint16_t CodePosition = 0x1004; //"0410"
   const uint16_t CodePositionCell = 0x1005; //"0510"
-
-
   const uint16_t CodeQualifier = 0x010C; //"0C01"
+  const uint16_t CodeRaiseRank = 0x10CE; //"CE10"
+  const uint16_t CodeRandom = 0x1021; //"2110"
+  const uint16_t CodeRemoveEffects = 0x1122; //"2211"
+  const uint16_t CodeRemoveFromLevCreature = 0x11A7; //"A711"
+  const uint16_t CodeRemoveFromLevItem = 0x11A9; //"A911"
+  const uint16_t CodeRemoveItem = 0x10D5; //"D510"
+  const uint16_t CodeRemoveSoulGem = 0x10EC; //"EC10"
+  const uint16_t CodeRemoveSpell = 0x111E; //"1E11"
+  const uint16_t CodeRemoveSpellEffects = 0x1120; //"2011"
+  const uint16_t CodeRepairedOnMe = 0x110F; //"0F11"
+  const uint16_t CodeResurrect = 0x10E7; //"E710"
   const uint16_t CodeReturn = 0x0124; //"2401"
+  const uint16_t CodeRotate = 0x1007; //"0710"
+  const uint16_t CodeRotateWorld = 0x1009; //"0910"
+
+
   const uint16_t CodeSet = 0x0105; //"0501"
   const uint16_t CodeStartScript = 0x101B; //"1B10"
   const uint16_t CodeStopScript = 0x101C; //"1C10"

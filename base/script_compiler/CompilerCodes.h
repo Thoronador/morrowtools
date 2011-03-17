@@ -329,6 +329,14 @@ namespace ScriptCompiler
   const uint16_t CodePlaceItemCell = 0x1196; //"9611"
   const uint16_t CodePlayBink = 0x1155; //"5511"
   const uint16_t CodePlayGroup = 0x1014; //"1410"
+  const uint16_t CodePlayLoopSound3D = 0x112E; //"2E11"
+  const uint16_t CodePlayLoopSound3DVP = 0x112F; //"2F11"
+  const uint16_t CodePlaySound = 0x1002; //"0210"
+  const uint16_t CodePlaySoundVP = 0x112B; //"2B11"
+  const uint16_t CodePlaySound3D = 0x112C; //"2C11"
+  const uint16_t CodePlaySound3DVP = 0x112D; //"2D11"
+  const uint16_t CodePosition = 0x1004; //"0410"
+  const uint16_t CodePositionCell = 0x1005; //"0510"
 
 
   const uint16_t CodeQualifier = 0x010C; //"0C01"

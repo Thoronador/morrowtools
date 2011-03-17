@@ -2510,6 +2510,52 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
     chunk.pushShort(0);
     return true;
   }//if PlayGroup
+  if (lowerFunction == "playloopsound3d")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: PlayLoopSound3D needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodePlayLoopSound3D);
+    //parameter is sound ID
+    //push IDs length
+    chunk.data.push_back(params[1].length());
+    //push ID
+    chunk.pushString(params[1]);
+    return true;
+  }//if PlayLoopSound3D
+  if (lowerFunction == "playsound")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: PlaySound needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodePlaySound);
+    //parameter is sound ID
+    //push IDs length
+    chunk.data.push_back(params[1].length());
+    //push ID
+    chunk.pushString(params[1]);
+    return true;
+  }//if PlaySound
+  if (lowerFunction == "playsound3d")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: PlaySound3D needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodePlaySound3D);
+    //parameter is sound ID
+    //push IDs length
+    chunk.data.push_back(params[1].length());
+    //push ID
+    chunk.pushString(params[1]);
+    return true;
+  }//if PlaySound3D
+
 
   if (lowerFunction == "stopsound")
   {
@@ -2929,6 +2975,114 @@ bool ScriptFunctions_ThreeParameters(const std::vector<std::string>& params, Com
     chunk.pushShort(new_reaction);
     return true;
   }
+  if (lowerFunction == "playloopsound3dvp")
+  {
+    if (params.size()<4)
+    {
+      std::cout << "ScriptCompiler: Error: PlayLoopSound3DVP needs three parameters!\n";
+      return false;
+    }
+    //first parameter is sound ID, second is volume (float), third is pitch (float)
+    // ---- go for volume
+    float volume;
+    if (!stringToFloat(params[2], volume))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is not a float "
+                << "value.\n";
+      return false;
+    }
+    // ---- go for pitch
+    float pitch;
+    if (!stringToFloat(params[3], pitch))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[3]<<"\" is not a float "
+                << "value.\n";
+      return false;
+    }
+    //push function
+    chunk.pushCode(CodePlayLoopSound3DVP);
+    //push sound ID's length
+    chunk.data.push_back(params[1].length());
+    //push sound ID
+    chunk.pushString(params[1]);
+    //push volume
+    chunk.pushFloat(volume);
+    //push pitch
+    chunk.pushFloat(pitch);
+    return true;
+  }//if PlayLoopSound3DVP
+  if (lowerFunction == "playsoundvp")
+  {
+    if (params.size()<4)
+    {
+      std::cout << "ScriptCompiler: Error: PlaySoundVP needs three parameters!\n";
+      return false;
+    }
+    //first parameter is sound ID, second is volume (float), third is pitch (float)
+    // ---- go for volume
+    float volume;
+    if (!stringToFloat(params[2], volume))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is not a float "
+                << "value.\n";
+      return false;
+    }
+    // ---- go for pitch
+    float pitch;
+    if (!stringToFloat(params[3], pitch))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[3]<<"\" is not a float "
+                << "value.\n";
+      return false;
+    }
+    //push function
+    chunk.pushCode(CodePlaySoundVP);
+    //push sound ID's length
+    chunk.data.push_back(params[1].length());
+    //push sound ID
+    chunk.pushString(params[1]);
+    //push volume
+    chunk.pushFloat(volume);
+    //push pitch
+    chunk.pushFloat(pitch);
+    return true;
+  }//if PlaySoundVP
+  if (lowerFunction == "playsound3dvp")
+  {
+    if (params.size()<4)
+    {
+      std::cout << "ScriptCompiler: Error: PlaySound3DVP needs three parameters!\n";
+      return false;
+    }
+    //first parameter is sound ID, second is volume (float), third is pitch (float)
+    // ---- go for volume
+    float volume;
+    if (!stringToFloat(params[2], volume))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is not a float "
+                << "value.\n";
+      return false;
+    }
+    // ---- go for pitch
+    float pitch;
+    if (!stringToFloat(params[3], pitch))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[3]<<"\" is not a float "
+                << "value.\n";
+      return false;
+    }
+    //push function
+    chunk.pushCode(CodePlaySound3DVP);
+    //push sound ID's length
+    chunk.data.push_back(params[1].length());
+    //push sound ID
+    chunk.pushString(params[1]);
+    //push volume
+    chunk.pushFloat(volume);
+    //push pitch
+    chunk.pushFloat(pitch);
+    return true;
+  }//if PlaySound3DVP
   //if we get to this point, no match was found
   return false;
 }
@@ -2978,7 +3132,7 @@ bool ScriptFunctions_FourParameters(const std::vector<std::string>& params, Comp
     chunk.pushFloat(distance);
     chunk.pushShort(direction);
     return true;
-  }
+  }//if PlaceAtMe
   if (lowerFunction == "placeatpc")
   {
     if (params.size()<5)
@@ -3020,7 +3174,55 @@ bool ScriptFunctions_FourParameters(const std::vector<std::string>& params, Comp
     chunk.pushFloat(distance);
     chunk.pushShort(direction);
     return true;
-  }
+  }//if PlaceAtPC
+  if (lowerFunction == "position")
+  {
+    if (params.size()<5)
+    {
+      std::cout << "ScriptCompiler: Error: Position needs four parameters!\n";
+      return false;
+    }
+    //first parameter is x-coordinate, second is y-coordinate, third is z-coord.
+    //fourth is z-rotation
+    // ---- check for x-coord
+    float x_coord;
+    if (!stringToFloat(params[1], x_coord))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[1]<<"\" is no float value!\n";
+      return false;
+    }
+    // ---- check for y-coord
+    float y_coord;
+    if (!stringToFloat(params[2], y_coord))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is no float value!\n";
+      return false;
+    }
+    // ---- check for z-coord
+    float z_coord;
+    if (!stringToFloat(params[3], z_coord))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[3]<<"\" is no float value!\n";
+      return false;
+    }
+    // ---- check for z-coord
+    float z_rotation;
+    if (!stringToFloat(params[4], z_rotation))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[4]<<"\" is no float value!\n";
+      return false;
+    }
+    //push function
+    chunk.pushCode(CodePosition);
+    //push coordinates and rotation value
+    chunk.pushFloat(x_coord);
+    chunk.pushFloat(y_coord);
+    chunk.pushFloat(z_coord);
+    chunk.pushFloat(z_rotation);
+    return true;
+  }//if Position
+
+
   //nothing found, return false
   return false;
 }
@@ -3147,6 +3349,58 @@ bool ScriptFunctions_FiveParameters(const std::vector<std::string>& params, Comp
     }
     return true;
   }//if function==PlaceItem
+
+  if (lowerFunction == "positioncell")
+  {
+    if (params.size()<6)
+    {
+      std::cout << "ScriptCompiler: Error: PositionCell needs five parameters!\n";
+      return false;
+    }
+    //first parameter is x-coordinate, second is y-coordinate, third is z-coord.
+    //fourth is z-rotation, fifth is cell name
+    // ---- check for x-coord
+    float x_coord;
+    if (!stringToFloat(params[1], x_coord))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[1]<<"\" is no float value!\n";
+      return false;
+    }
+    // ---- check for y-coord
+    float y_coord;
+    if (!stringToFloat(params[2], y_coord))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is no float value!\n";
+      return false;
+    }
+    // ---- check for z-coord
+    float z_coord;
+    if (!stringToFloat(params[3], z_coord))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[3]<<"\" is no float value!\n";
+      return false;
+    }
+    // ---- check for z-coord
+    float z_rotation;
+    if (!stringToFloat(params[4], z_rotation))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[4]<<"\" is no float value!\n";
+      return false;
+    }
+    //push function
+    chunk.pushCode(CodePositionCell);
+    //push coordinates and rotation value
+    chunk.pushFloat(x_coord);
+    chunk.pushFloat(y_coord);
+    chunk.pushFloat(z_coord);
+    chunk.pushFloat(z_rotation);
+    //push cell name's length
+    chunk.data.push_back(params[5].length());
+    //push cell name
+    chunk.pushString(params[5]);
+    return true;
+  }//if PositionCell
+
   //nothing found, return false
   return false;
 }//function Five

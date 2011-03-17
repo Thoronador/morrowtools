@@ -272,6 +272,12 @@ namespace ScriptCompiler
   const uint16_t CodeModMediumArmor = 0x1043; //"4310"
   const uint16_t CodeModMercantile = 0x1085; //"8510"
   const uint16_t CodeModMysticism = 0x1067; //"6710"
+  const uint16_t CodeModParalysis = 0x1184; //"8411"
+  const uint16_t CodeModPCCrimeLevel = 0x109D; //"9D10"
+  const uint16_t CodeModPCFacRep = 0x10D9; //"D910"
+  const uint16_t CodeModPCVisionBonus = 0x11B2; //"B211"
+  const uint16_t CodeModPersonality = 0x1037; //"3710"
+  const uint16_t CodeModRegion = 0x1125; //"2511"
 
 
   const uint16_t CodeOnActivate = 0x1018; //"1810"

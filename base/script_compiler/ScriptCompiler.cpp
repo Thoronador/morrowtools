@@ -1576,6 +1576,22 @@ bool ScriptFunctions_ModStatFunctions(const std::vector<std::string>& params, Co
   {
     functionCode = CodeModMysticism;
   }
+  else if (lowerFunction == "modparalysis")
+  {
+    functionCode = CodeModParalysis;
+  }
+  else if (lowerFunction == "modpccrimelevel")
+  {
+    functionCode = CodeModPCCrimeLevel;
+  }
+  else if (lowerFunction == "modpcvisionbonus")
+  {
+    functionCode = CodeModPCVisionBonus;
+  }
+  else if (lowerFunction == "modpersonality")
+  {
+    functionCode = CodeModPersonality;
+  }
   //Found something? If not, return false.
   if (functionCode==0) return false;
 
@@ -2248,8 +2264,32 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
     {
       return true;
     }
+    if (lowerFunction == "modpcfacrep")
+    {
+      if (params.size()<2)
+      {
+        std::cout << "ScriptCompiler: Error: ModPCFacRep needs one parameter!\n";
+        return false;
+      }
+      //get/check floating point valued parameter
+      float mod_value;
+      if (!stringToFloat(params[1], mod_value))
+      {
+        std::cout << "ScriptCompiler: Error: \""<<params[1]<<"\" is not a float"
+                  << " value.\n";
+        return false;
+      }
+      //push function
+      chunk.pushCode(CodeModPCFacRep);
+      //first parameter is float value, second is omitted
+      //push float
+      chunk.pushFloat(mod_value);
+      //instead of pushing string (optional, we push a zero byte to indicate no string)
+      chunk.data.push_back(0);
+      return true;
+    }//if ModPCFacRep
     //Since all ModSomething functions with on param should be handled in the
-    //function above and nothing was found, but function name begins with "mod...",
+    //section above and nothing was found, but function name begins with "mod...",
     //we can return false here. Checking the other founctions would not bring a
     // result (instead of taking more time).
     return false;
@@ -2596,6 +2636,32 @@ bool ScriptFunctions_TwoParameters(const std::vector<std::string>& params, Compi
     chunk.data.push_back(255);
     return true;
   }//if Journal
+  if (lowerFunction == "modpcfacrep")
+  {
+    if (params.size()<3)
+    {
+      std::cout << "ScriptCompiler: Error: ModPCFacRep needs two parameters!\n";
+      return false;
+    }
+    //get/check floating point valued parameter
+    float mod_value;
+    if (!stringToFloat(params[1], mod_value))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[1]<<"\" is not a float"
+                << " value.\n";
+      return false;
+    }
+    //push function
+    chunk.pushCode(CodeModPCFacRep);
+    //first parameter is float value, second is faction ID
+    //push float (1st param)
+    chunk.pushFloat(mod_value);
+    //ID's length
+    chunk.data.push_back(params[2].length());
+    //push ID
+    chunk.pushString(params[2]);
+    return true;
+  }//if ModPCFacRep
   if (lowerFunction == "playbink")
   {
     if (params.size() < 3)
@@ -3052,6 +3118,223 @@ bool ScriptFunctions_SixParameters(const std::vector<std::string>& params, Compi
   return false;
 }//function Six
 
+bool ScriptFunctions_NineParameters(const std::vector<std::string>& params, CompiledChunk& chunk)
+{
+  //entry at index zero is the function's name
+  const std::string lowerFunction = lowerCase(params.at(0));
+  if (lowerFunction == "modregion")
+  {
+    if (params.size()<10)
+    {
+      std::cout << "ScriptCompiler: Error: ModRegion needs nine parameters!\n";
+      return false;
+    }
+    //first parameter is region ID
+    //second to ninth parameter is possibility for certain weather types
+    // ---- clear (2nd param)
+    int16_t chanceClear;
+    if (!stringToShort(params[2], chanceClear))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is not a valid "
+                << "short value.\n";
+      return false;
+    }
+    // ---- cloudy (3rd param)
+    int16_t chanceCloudy;
+    if (!stringToShort(params[3], chanceCloudy))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[3]<<"\" is not a valid "
+                << "short value.\n";
+      return false;
+    }
+    // ---- foggy (4th param)
+    int16_t chanceFoggy;
+    if (!stringToShort(params[4], chanceFoggy))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[4]<<"\" is not a valid "
+                << "short value.\n";
+      return false;
+    }
+    // ---- overcast (5th param)
+    int16_t chanceOvercast;
+    if (!stringToShort(params[5], chanceOvercast))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[5]<<"\" is not a valid "
+                << "short value.\n";
+      return false;
+    }
+    // ---- rain (6th param)
+    int16_t chanceRain;
+    if (!stringToShort(params[6], chanceRain))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[6]<<"\" is not a valid "
+                << "short value.\n";
+      return false;
+    }
+    // ---- thunder (7th param)
+    int16_t chanceThunder;
+    if (!stringToShort(params[7], chanceThunder))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[7]<<"\" is not a valid "
+                << "short value.\n";
+      return false;
+    }
+    // ---- ash (8th param)
+    int16_t chanceAsh;
+    if (!stringToShort(params[8], chanceAsh))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[8]<<"\" is not a valid "
+                << "short value.\n";
+      return false;
+    }
+    // ---- blight (9th param)
+    int16_t chanceBlight;
+    if (!stringToShort(params[9], chanceBlight))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[9]<<"\" is not a valid "
+                << "short value.\n";
+      return false;
+    }
+    //push function code
+    chunk.pushCode(CodeModRegion);
+    //push region ID's length
+    chunk.data.push_back(params[1].length());
+    //push region ID
+    chunk.pushString(params[1]);
+    //push weather chances
+    chunk.data.push_back(chanceClear);
+    chunk.data.push_back(chanceCloudy);
+    chunk.data.push_back(chanceFoggy);
+    chunk.data.push_back(chanceOvercast);
+    chunk.data.push_back(chanceRain);
+    chunk.data.push_back(chanceThunder);
+    chunk.data.push_back(chanceAsh);
+    chunk.data.push_back(chanceBlight);
+    //push snow and blizzard chances (Bloodmoon only), which are zero in that case
+    chunk.data.push_back(0);//snow
+    chunk.data.push_back(0);//blizzard
+    return true;
+  }//if ModRegion
+  //end reached, no match found
+  return false;
+}//function Nine
+
+bool ScriptFunctions_ElevenParameters(const std::vector<std::string>& params, CompiledChunk& chunk)
+{
+  //entry at index zero is the function's name
+  const std::string lowerFunction = lowerCase(params.at(0));
+  if (lowerFunction == "modregion")
+  {
+    if (params.size()<12)
+    {
+      std::cout << "ScriptCompiler: Error: ModRegion needs eleven parameters!\n";
+      return false;
+    }
+    //first parameter is region ID
+    //second to eleventh parameter is possibility for certain weather types
+    // ---- clear (2nd param)
+    int16_t chanceClear;
+    if (!stringToShort(params[2], chanceClear))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is not a valid "
+                << "short value.\n";
+      return false;
+    }
+    // ---- cloudy (3rd param)
+    int16_t chanceCloudy;
+    if (!stringToShort(params[3], chanceCloudy))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[3]<<"\" is not a valid "
+                << "short value.\n";
+      return false;
+    }
+    // ---- foggy (4th param)
+    int16_t chanceFoggy;
+    if (!stringToShort(params[4], chanceFoggy))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[4]<<"\" is not a valid "
+                << "short value.\n";
+      return false;
+    }
+    // ---- overcast (5th param)
+    int16_t chanceOvercast;
+    if (!stringToShort(params[5], chanceOvercast))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[5]<<"\" is not a valid "
+                << "short value.\n";
+      return false;
+    }
+    // ---- rain (6th param)
+    int16_t chanceRain;
+    if (!stringToShort(params[6], chanceRain))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[6]<<"\" is not a valid "
+                << "short value.\n";
+      return false;
+    }
+    // ---- thunder (7th param)
+    int16_t chanceThunder;
+    if (!stringToShort(params[7], chanceThunder))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[7]<<"\" is not a valid "
+                << "short value.\n";
+      return false;
+    }
+    // ---- ash (8th param)
+    int16_t chanceAsh;
+    if (!stringToShort(params[8], chanceAsh))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[8]<<"\" is not a valid "
+                << "short value.\n";
+      return false;
+    }
+    // ---- blight (9th param)
+    int16_t chanceBlight;
+    if (!stringToShort(params[9], chanceBlight))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[9]<<"\" is not a valid "
+                << "short value.\n";
+      return false;
+    }
+    // ---- snow (10th param)
+    int16_t chanceSnow;
+    if (!stringToShort(params[10], chanceSnow))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[10]<<"\" is not a valid "
+                << "short value.\n";
+      return false;
+    }
+    // ---- blizzard (11th param)
+    int16_t chanceBlizzard;
+    if (!stringToShort(params[11], chanceBlizzard))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[11]<<"\" is not a valid "
+                << "short value.\n";
+      return false;
+    }
+    //push function code
+    chunk.pushCode(CodeModRegion);
+    //push region ID's length
+    chunk.data.push_back(params[1].length());
+    //push region ID
+    chunk.pushString(params[1]);
+    //push weather chances
+    chunk.data.push_back(chanceClear);
+    chunk.data.push_back(chanceCloudy);
+    chunk.data.push_back(chanceFoggy);
+    chunk.data.push_back(chanceOvercast);
+    chunk.data.push_back(chanceRain);
+    chunk.data.push_back(chanceThunder);
+    chunk.data.push_back(chanceAsh);
+    chunk.data.push_back(chanceBlight);
+    chunk.data.push_back(chanceSnow);
+    chunk.data.push_back(chanceBlizzard);
+    return true;
+  }
+  //end reached, no match found
+  return false;
+}//function Eleven
+
 bool ScriptFunctions(const std::string& line, CompiledChunk& chunk)
 {
   if (line=="") return false;
@@ -3063,6 +3346,18 @@ bool ScriptFunctions(const std::string& line, CompiledChunk& chunk)
   */
   switch(parameters.size())
   {
+    case 12:
+         if (ScriptFunctions_ElevenParameters(parameters, chunk))
+         {
+           return true;
+         }
+         break;
+    case 10:
+         if (ScriptFunctions_NineParameters(parameters, chunk))
+         {
+           return true;
+         }
+         break;
     case 7:
          if (ScriptFunctions_SixParameters(parameters, chunk))
          {

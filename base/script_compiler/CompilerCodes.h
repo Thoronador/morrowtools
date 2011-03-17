@@ -278,6 +278,18 @@ namespace ScriptCompiler
   const uint16_t CodeModPCVisionBonus = 0x11B2; //"B211"
   const uint16_t CodeModPersonality = 0x1037; //"3710"
   const uint16_t CodeModRegion = 0x1125; //"2511"
+  const uint16_t CodeModReputation = 0x1097; //"9710"
+  const uint16_t CodeModResistBlight = 0x10B9; //"B910"
+  const uint16_t CodeModResistCorprus = 0x10BC; //"BC10"
+  const uint16_t CodeModResistDisease = 0x10B6; //"B610"
+  const uint16_t CodeModResistFire = 0x10AD; //"AD10"
+  const uint16_t CodeModResistFrost = 0x10B0; //"B010"
+  const uint16_t CodeModResistMagicka = 0x10AA; //"AA10"
+  const uint16_t CodeModResistNormalWeapons = 0x10C8; //"C810"
+  const uint16_t CodeModResistParalysis = 0x10C2; //"C210"
+  const uint16_t CodeModResistPoison = 0x10BF; //"BF10"
+  const uint16_t CodeModResistShock = 0x10B3; //"B310"
+  const uint16_t CodeModRestoration = 0x106A; //"6A10"
 
 
   const uint16_t CodeOnActivate = 0x1018; //"1810"

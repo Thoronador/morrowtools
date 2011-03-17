@@ -1592,6 +1592,54 @@ bool ScriptFunctions_ModStatFunctions(const std::vector<std::string>& params, Co
   {
     functionCode = CodeModPersonality;
   }
+  else if (lowerFunction == "modreputation")
+  {
+    functionCode = CodeModReputation;
+  }
+  else if (lowerFunction == "modresistblight")
+  {
+    functionCode = CodeModResistBlight;
+  }
+  else if (lowerFunction == "modresistcorprus")
+  {
+    functionCode = CodeModResistCorprus;
+  }
+  else if (lowerFunction == "modresistdisease")
+  {
+    functionCode = CodeModResistDisease;
+  }
+  else if (lowerFunction == "modresistfire")
+  {
+    functionCode = CodeModResistFire;
+  }
+  else if (lowerFunction == "modresistfrost")
+  {
+    functionCode = CodeModResistFrost;
+  }
+  else if (lowerFunction == "modresistmagicka")
+  {
+    functionCode = CodeModResistMagicka;
+  }
+  else if (lowerFunction == "modresistnormalweapons")
+  {
+    functionCode = CodeModResistNormalWeapons;
+  }
+  else if (lowerFunction == "modresistparalysis")
+  {
+    functionCode = CodeModResistParalysis;
+  }
+  else if (lowerFunction == "modresistpoison")
+  {
+    functionCode = CodeModResistPoison;
+  }
+  else if (lowerFunction == "modresistshock")
+  {
+    functionCode = CodeModResistShock;
+  }
+  else if (lowerFunction == "modrestoration")
+  {
+    functionCode = CodeModRestoration;
+  }
   //Found something? If not, return false.
   if (functionCode==0) return false;
 

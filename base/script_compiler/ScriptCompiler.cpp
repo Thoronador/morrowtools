@@ -1382,6 +1382,16 @@ bool ScriptFunctions_ZeroParameters(const std::vector<std::string>& params, Comp
     chunk.pushCode(CodeResurrect);
     return true;
   }
+  if (lowerFunction=="samefaction")
+  {
+    chunk.pushCode(CodeSameFaction);
+    return true;
+  }
+  if (lowerFunction=="saydone")
+  {
+    chunk.pushCode(CodeSayDone);
+    return true;
+  }
 
   if (lowerFunction=="turnmoonred")
   {
@@ -1758,7 +1768,69 @@ bool ScriptFunctions_ModStatFunctions(const std::vector<std::string>& params, Co
     }//swi
   }//else
   return true;
-}
+}//function ScriptFunctions_ModStatFunctions
+
+
+bool ScriptFunctions_SetStatFunctions(const std::vector<std::string>& params, CompiledChunk& chunk)
+{
+  //entry at index zero is the function's name
+  const std::string lowerFunction = lowerCase(params.at(0));
+  uint16_t functionCode = 0;
+  if (lowerFunction == "setacrobatics")
+  {
+    functionCode = CodeSetAcrobatics;
+  }
+  else if (lowerFunction == "setagility")
+  {
+    functionCode = CodeSetAgility;
+  }
+  else if (lowerFunction == "setalarm")
+  {
+    functionCode = CodeSetAlarm;
+  }
+  else if (lowerFunction == "setalchemy")
+  {
+    functionCode = CodeSetAlchemy;
+  }
+  //Found something? If not, return false.
+  if (functionCode==0) return false;
+
+  if (params.size()<2)
+  {
+    std::cout << "ScriptCompiler: Error: Function \""<<params[0]<<"\" needs one parameter!\n";
+    return false;
+  }
+  //push function
+  chunk.pushCode(functionCode);
+  //parameter is float value or float var
+  float set_value;
+  if (stringToFloat(params[1], set_value))
+  {
+    chunk.pushFloat(set_value);
+  }
+  else
+  {
+    //could still be a local var here
+    SC_VarRef localRef = getVariableTypeWithIndex(params[1], chunk.varsShort, chunk.varsLong, chunk.varsFloat);
+    //if type is float, push
+    switch(localRef.Type)
+    {
+      case vtFloat:
+      case vtLong:
+      case vtShort:
+           //push reference and add two NUL bytes to fill up (needs four bytes)
+           chunk.pushNonGlobalRefWithTwoZeroFillers(localRef);
+           break;
+      default:
+           //encountered unknown variable name - error!
+           std::cout << "ScriptCompiler: Error: \""<<params[1]<<"\" is not a proper "
+                     << "float value and does not name a local var either.\n";
+           return false;
+           break;//pro forma
+    }//swi
+  }//else
+  return true;
+}//ScriptFunctions_SetStatFunctions
 
 bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, CompiledChunk& chunk)
 {
@@ -2396,7 +2468,7 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
       chunk.data.push_back(0);
       return true;
     }//if ModPCFacRep
-    //Since all ModSomething functions with on param should be handled in the
+    //Since all ModSomething functions with one param should be handled in the
     //section above and nothing was found, but function name begins with "mod...",
     //we can return false here. Checking the other founctions would not bring a
     // result (instead of taking more time).
@@ -2679,7 +2751,39 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
     //push ID
     chunk.pushString(params[1]);
     return true;
-  }//if RemoveSpellEffects
+  }//if RepairedOnMe
+  if (lowerFunction == "scriptrunning")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: ScriptRunning needs one parameter!\n";
+      return false;
+    }
+    //parameter is script ID
+    //push function
+    chunk.pushCode(CodeScriptRunning);
+    //push script ID's length
+    chunk.data.push_back(params[1].length());
+    //push ID
+    chunk.pushString(params[1]);
+    return true;
+  }//if ScriptRunning
+
+  if (lowerFunction.substr(0,3)=="set")
+  {
+    //could be a function that sets stats like SetAcrobatics, so check
+    if (ScriptFunctions_SetStatFunctions(params, chunk))
+    {
+      return true;
+    }
+    //Since all SetSomething functions with one param should be handled in the
+    //section above and nothing was found, but function name begins with "set...",
+    //we can return false here. Checking the other founctions would not bring a
+    // result (besides of taking more time).
+    return false;
+  }//if substr(0,3)=="Set..."
+
+
   if (lowerFunction =="startscript")
   {
     if (params.size()<2)
@@ -3187,6 +3291,78 @@ bool ScriptFunctions_TwoParameters(const std::vector<std::string>& params, Compi
     chunk.pushFloat(amount);
     return true;
   }//if RotateWorld
+  if (lowerFunction == "say")
+  {
+    if (params.size() < 3)
+    {
+      std::cout << "ScriptCompiler: Error: Say expects two params, not "
+                <<params.size()<<".\n";
+      return false;
+    }
+    //first parameter is Wave/MIDI/MP3 file, second is text
+    //push function
+    chunk.pushCode(CodeSay);
+    //push file name's length
+    chunk.data.push_back(params[1].length());
+    //push file name
+    chunk.pushString(params[1]);
+    //push text's length as short(!), not byte
+    chunk.pushShort(params[2].length());
+    //push text
+    chunk.pushString(params[2]);
+    return true;
+  }//if Say
+  if (lowerFunction == "setangle")
+  {
+    if (params.size()<3)
+    {
+      std::cout << "ScriptCompiler: Error: SetAngle needs two parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodeSetAngle);
+    //first parameter is axis, given as upper case character
+    //second parameter is new angle value (float)
+    //get axis
+    const char Axis = toupper(params[1].at(0));
+    /*The CS does not check, if the parameter is really X, Y or Z, but allows
+      any letter, as it seems. I'm not sure about the consequences in-game.
+      We should put a warning at least.
+    */
+    if ((Axis!='X') and (Axis!='Y') and (Axis!='Z'))
+    {
+      std::cout << "ScriptCompiler: Warning: invalid parameter to SetAngle.\n";
+    }
+    //second param
+    float new_angle;
+    SC_VarRef localRef = SC_VarRef(vtGlobal, 0);
+    if (!stringToFloat(params[2], new_angle))
+    {
+      //In Tribunal or Bloodmoon, local vars are allowed, too.
+      localRef = getVariableTypeWithIndex(params[2], chunk.varsShort, chunk.varsLong, chunk.varsFloat);
+      if (localRef.Type==vtGlobal)
+      {
+        std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is neither a "
+                  << "float value nor a local var.\n";
+        return false;
+      }
+    }
+
+    //push function
+    chunk.pushCode(CodeSetAngle);
+    //push axis
+    chunk.data.push_back(Axis);
+    if (localRef.Type!=vtGlobal)
+    {
+      //It's a global var, push it!
+      chunk.pushNonGlobalRefWithTwoZeroFillers(localRef);
+    }
+    else
+    {
+      //It's a simple float, push!
+      chunk.pushFloat(new_angle);
+    }
+    return true;
+  }//if
   //end - no matching function found, if we are here
   return false;
 }

@@ -352,9 +352,18 @@ namespace ScriptCompiler
   const uint16_t CodeReturn = 0x0124; //"2401"
   const uint16_t CodeRotate = 0x1007; //"0710"
   const uint16_t CodeRotateWorld = 0x1009; //"0910"
-
-
+  const uint16_t CodeSameFaction = 0x109E; //"9E10"
+  const uint16_t CodeSay = 0x111B; //"1B11"
+  const uint16_t CodeSayDone = 0x111C; //"1C11"
+  const uint16_t CodeScriptRunning = 0x101D; //"1D10"
   const uint16_t CodeSet = 0x0105; //"0501"
+  const uint16_t CodeSetAcrobatics = 0x1078; //"7810"
+  const uint16_t CodeSetAgility = 0x102D; //"2D10"
+  const uint16_t CodeSetAlarm = 0x1106; //"0611"
+  const uint16_t CodeSetAlchemy = 0x106C; //"6C10"
+  const uint16_t CodeSetAngle = 0x100D; //"0D10"
+
+
   const uint16_t CodeStartScript = 0x101B; //"1B10"
   const uint16_t CodeStopScript = 0x101C; //"1C10"
   const uint16_t CodeStopSound = 0x1151; //"5111"

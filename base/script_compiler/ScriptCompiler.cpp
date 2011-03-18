@@ -1877,6 +1877,62 @@ bool ScriptFunctions_SetStatFunctions(const std::vector<std::string>& params, Co
   {
     functionCode = CodeSetFlying;
   }
+  else if (lowerFunction == "sethandtohand")
+  {
+    functionCode = CodeSetHandToHand;
+  }
+  else if (lowerFunction == "sethealth")
+  {
+    functionCode = CodeSetHealth;
+  }
+  else if (lowerFunction == "setheavyarmor")
+  {
+    functionCode = CodeSetHeavyArmor;
+  }
+  else if (lowerFunction == "sethello")
+  {
+    functionCode = CodeSetHello;
+  }
+  else if (lowerFunction == "setillusion")
+  {
+    functionCode = CodeSetIllusion;
+  }
+  else if (lowerFunction == "setintelligence")
+  {
+    functionCode = CodeSetIntelligence;
+  }
+  else if (lowerFunction == "setinvisible")
+  {
+    functionCode = CodeSetInvisible;
+  }
+  else if (lowerFunction == "setlightarmor")
+  {
+    functionCode = CodeSetLightArmor;
+  }
+  else if (lowerFunction == "setlongblade")
+  {
+    functionCode = CodeSetLongBlade;
+  }
+  else if (lowerFunction == "setluck")
+  {
+    functionCode = CodeSetLuck;
+  }
+  else if (lowerFunction == "setmagicka")
+  {
+    functionCode = CodeSetMagicka;
+  }
+  else if (lowerFunction == "setmarksman")
+  {
+    functionCode = CodeSetMarksman;
+  }
+  else if (lowerFunction == "setmediumarmor")
+  {
+    functionCode = CodeSetMediumArmor;
+  }
+  else if (lowerFunction == "setmercantile")
+  {
+    functionCode = CodeSetMercantile;
+  }
   //Found something? If not, return false.
   if (functionCode==0) return false;
 
@@ -2889,6 +2945,28 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
       chunk.pushShort(delete_flag);
       return true;
     }//if SetDelete
+    //check other set functions
+    if (lowerFunction =="setlevel")
+    {
+      if (params.size()<2)
+      {
+        std::cout << "ScriptCompiler: Error: SetLevel needs one parameter!\n";
+        return false;
+      }
+      //Parameter is new level.
+      int16_t new_level;
+      if (!stringToShort(params[1], new_level))
+      {
+        std::cout << "ScriptCompiler: Error: SetLevel requires a short value, "
+                  << "but \""<<params[1]<<"\" is no short.\n";
+        return false;
+      }//if
+      //push function
+      chunk.pushCode(CodeSetLevel);
+      //push new level
+      chunk.pushShort(new_level);
+      return true;
+    }//if SetLevel
 
     //Since all SetSomething functions with one param should be handled in the
     //section above and nothing was found, but function name begins with "set...",

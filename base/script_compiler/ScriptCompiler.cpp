@@ -1392,6 +1392,11 @@ bool ScriptFunctions_ZeroParameters(const std::vector<std::string>& params, Comp
     chunk.pushCode(CodeSayDone);
     return true;
   }
+  if (lowerFunction=="setatstart")
+  {
+    chunk.pushCode(CodeSetAtStart);
+    return true;
+  }
 
   if (lowerFunction=="turnmoonred")
   {
@@ -1791,6 +1796,86 @@ bool ScriptFunctions_SetStatFunctions(const std::vector<std::string>& params, Co
   else if (lowerFunction == "setalchemy")
   {
     functionCode = CodeSetAlchemy;
+  }
+  else if (lowerFunction == "setarmorbonus")
+  {
+    functionCode = CodeSetArmorBonus;
+  }
+  else if (lowerFunction == "setarmorer")
+  {
+    functionCode = CodeSetArmorer;
+  }
+  else if (lowerFunction == "setathletics")
+  {
+    functionCode = CodeSetAthletics;
+  }
+  else if (lowerFunction == "setattackbonus")
+  {
+    functionCode = CodeSetAttackBonus;
+  }
+  else if (lowerFunction == "setaxe")
+  {
+    functionCode = CodeSetAxe;
+  }
+  else if (lowerFunction == "setblindness")
+  {
+    functionCode = CodeSetBlindness;
+  }
+  else if (lowerFunction == "setblock")
+  {
+    functionCode = CodeSetBlock;
+  }
+  else if (lowerFunction == "setbluntweapon")
+  {
+    functionCode = CodeSetBluntWeapon;
+  }
+  else if (lowerFunction == "setcastpenalty")
+  {
+    functionCode = CodeSetCastPenalty;
+  }
+  else if (lowerFunction == "setchameleon")
+  {
+    functionCode = CodeSetChameleon;
+  }
+  else if (lowerFunction == "setconjuration")
+  {
+    functionCode = CodeSetConjuration;
+  }
+  else if (lowerFunction == "setdefendbonus")
+  {
+    functionCode = CodeSetDefendBonus;
+  }
+  else if (lowerFunction == "setdestruction")
+  {
+    functionCode = CodeSetDestruction;
+  }
+  else if (lowerFunction == "setdisposition")
+  {
+    functionCode = CodeSetDisposition;
+  }
+  else if (lowerFunction == "setenchant")
+  {
+    functionCode = CodeSetEnchant;
+  }
+  else if (lowerFunction == "setendurance")
+  {
+    functionCode = CodeSetEndurance;
+  }
+  else if (lowerFunction == "setfatigue")
+  {
+    functionCode = CodeSetFatigue;
+  }
+  else if (lowerFunction == "setfight")
+  {
+    functionCode = CodeSetFight;
+  }
+  else if (lowerFunction == "setflee")
+  {
+    functionCode = CodeSetFlee;
+  }
+  else if (lowerFunction == "setflying")
+  {
+    functionCode = CodeSetFlying;
   }
   //Found something? If not, return false.
   if (functionCode==0) return false;
@@ -2436,7 +2521,6 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
 
     return true;
   }//if
-
   if (lowerFunction.substr(0,3)=="mod")
   {
     //could be a function that modifies stats like ModAcrobatics, so check
@@ -2474,7 +2558,6 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
     // result (instead of taking more time).
     return false;
   }
-
   if (lowerFunction == "pcclearexpelled")
   {
     if (params.size()<2)
@@ -2489,7 +2572,7 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
     //push ID
     chunk.pushString(params[1]);
     return true;
-  }//if
+  }//if PCClearExpelled
   if (lowerFunction == "pcexpell")
   {
     if (params.size()<2)
@@ -2504,7 +2587,7 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
     //push ID
     chunk.pushString(params[1]);
     return true;
-  }//if
+  }//if PCExpell
   if (lowerFunction == "pcexpelled")
   {
     if (params.size()<2)
@@ -2519,7 +2602,7 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
     //push ID
     chunk.pushString(params[1]);
     return true;
-  }//if
+  }//if PCExpelled
   if (lowerFunction == "pcjoinfaction")
   {
     if (params.size()<2)
@@ -2534,7 +2617,7 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
     //push ID
     chunk.pushString(params[1]);
     return true;
-  }//if
+  }//if PCJoinFaction
   if (lowerFunction == "pclowerrank")
   {
     if (params.size()<2)
@@ -2776,6 +2859,37 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
     {
       return true;
     }
+    //check other set functions
+    if (lowerFunction =="setdelete")
+    {
+      if (params.size()<2)
+      {
+        std::cout << "ScriptCompiler: Error: SetDelete needs one parameter!\n";
+        return false;
+      }
+      //SetDelete was introduced in Tribunal, it's not available in MW-only.
+      //First parameter is flag, which can be either 0 or 1. Other values are
+      // not allowed.
+      int16_t delete_flag;
+      if (!stringToShort(params[1], delete_flag))
+      {
+        std::cout << "ScriptCompiler: Error: SetDelete requires a short value, "
+                  << "but \""<<params[1]<<"\" is no short.\n";
+        return false;
+      }//if
+      if ((delete_flag!=0) and (delete_flag!=1))
+      {
+        std::cout << "ScriptCompiler: Error: SetDelete's flaghas to be 0 or 1, "
+                  << "but the given value is "<<delete_flag<<".\n";
+        return false;
+      }
+      //push function
+      chunk.pushCode(CodeSetDelete);
+      //push flag
+      chunk.pushShort(delete_flag);
+      return true;
+    }//if SetDelete
+
     //Since all SetSomething functions with one param should be handled in the
     //section above and nothing was found, but function name begins with "set...",
     //we can return false here. Checking the other founctions would not bring a
@@ -3400,7 +3514,7 @@ bool ScriptFunctions_ThreeParameters(const std::vector<std::string>& params, Com
     //push new reaction
     chunk.pushShort(new_reaction);
     return true;
-  }
+  }//if ModFactionReaction
   if (lowerFunction == "playloopsound3dvp")
   {
     if (params.size()<4)
@@ -3569,6 +3683,36 @@ bool ScriptFunctions_ThreeParameters(const std::vector<std::string>& params, Com
     chunk.pushFloat(level);
     return true;
   }//if RemoveFromLevItem
+  if (lowerFunction == "setfactionreaction")
+  {
+    if (params.size()<4)
+    {
+      std::cout << "ScriptCompiler: Error: SetFactionReaction needs three parameters!\n";
+      return false;
+    }
+    //first parameter is ID of first faction, second is ID of other faction
+    //third is reaction change (short)
+    //check for reaction
+    int16_t add_reaction;
+    if (!stringToShort(params[3], add_reaction))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[3]<<"\" is no short value!\n";
+      return false;
+    }
+    //push function code
+    chunk.pushCode(CodeSetFactionReaction);
+    //first ID's length
+    chunk.data.push_back(params[1].length());
+    //push first ID
+    chunk.pushString(params[1]);
+    //second ID's length
+    chunk.data.push_back(params[2].length());
+    //push second ID
+    chunk.pushString(params[2]);
+    //push new reaction
+    chunk.pushShort(add_reaction);
+    return true;
+  }//if SetFactionReaction
 
   //if we get to this point, no match was found
   return false;

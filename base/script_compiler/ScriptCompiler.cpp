@@ -1933,6 +1933,74 @@ bool ScriptFunctions_SetStatFunctions(const std::vector<std::string>& params, Co
   {
     functionCode = CodeSetMercantile;
   }
+  else if (lowerFunction == "setmysticism")
+  {
+    functionCode = CodeSetMysticism;
+  }
+  else if (lowerFunction == "setparalysis")
+  {
+    functionCode = CodeSetParalysis;
+  }
+  else if (lowerFunction == "setpccrimelevel")
+  {
+    functionCode = CodeSetPCCrimeLevel;
+  }
+  else if (lowerFunction == "setpcvisionbonus")
+  {
+    functionCode = CodeSetPCVisionBonus;
+  }
+  else if (lowerFunction == "setpersonality")
+  {
+    functionCode = CodeSetPersonality;
+  }
+  else if (lowerFunction == "setreputation")
+  {
+    functionCode = CodeSetReputation;
+  }
+  else if (lowerFunction == "setresistblight")
+  {
+    functionCode = CodeSetResistBlight;
+  }
+  else if (lowerFunction == "setresistcorpurs")
+  {
+    functionCode = CodeSetResistCorprus;
+  }
+  else if (lowerFunction == "setresistdisease")
+  {
+    functionCode = CodeSetResistDisease;
+  }
+  else if (lowerFunction == "setresistfire")
+  {
+    functionCode = CodeSetResistFire;
+  }
+  else if (lowerFunction == "setresistfrost")
+  {
+    functionCode = CodeSetResistFrost;
+  }
+  else if (lowerFunction == "setresistmagicka")
+  {
+    functionCode = CodeSetResistMagicka;
+  }
+  else if (lowerFunction == "setresistnormalweapons")
+  {
+    functionCode = CodeSetResistNormalWeapons;
+  }
+  else if (lowerFunction == "setresistparalysis")
+  {
+    functionCode = CodeSetResistParalysis;
+  }
+  else if (lowerFunction == "setresistpoison")
+  {
+    functionCode = CodeSetResistPoison;
+  }
+  else if (lowerFunction == "setresistshock")
+  {
+    functionCode = CodeSetResistShock;
+  }
+  else if (lowerFunction == "setrestoration")
+  {
+    functionCode = CodeSetRestoration;
+  }
   //Found something? If not, return false.
   if (functionCode==0) return false;
 
@@ -2967,6 +3035,28 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
       chunk.pushShort(new_level);
       return true;
     }//if SetLevel
+    if (lowerFunction == "setpcfacrep")
+    {
+      if (params.size()<2)
+      {
+        std::cout << "ScriptCompiler: Error: SetPCFacRep needs one parameter!\n";
+        return false;
+      }
+      //first parameter is new reputation value, second is ID of faction, but omitted here
+      float new_reputation;
+      if (!stringToFloat(params[1], new_reputation))
+      {
+        std::cout << "ScriptCompiler: Error: \""<<params[1]<<"\" is not a float.\n";
+        return false;
+      }//if
+      //push function
+      chunk.pushCode(CodeSetPCFacRep);
+      //push float
+      chunk.pushFloat(new_reputation);
+      //push zero
+      chunk.data.push_back(0);
+      return true;
+    }//if SetPCFacRep
 
     //Since all SetSomething functions with one param should be handled in the
     //section above and nothing was found, but function name begins with "set...",
@@ -3508,10 +3598,9 @@ bool ScriptFunctions_TwoParameters(const std::vector<std::string>& params, Compi
   {
     if (params.size()<3)
     {
-      std::cout << "ScriptCompiler: Error: SetAngle needs two parameter!\n";
+      std::cout << "ScriptCompiler: Error: SetAngle needs two parameters!\n";
       return false;
     }
-    chunk.pushCode(CodeSetAngle);
     //first parameter is axis, given as upper case character
     //second parameter is new angle value (float)
     //get axis
@@ -3554,7 +3643,81 @@ bool ScriptFunctions_TwoParameters(const std::vector<std::string>& params, Compi
       chunk.pushFloat(new_angle);
     }
     return true;
-  }//if
+  }//if SetAngle
+  if (lowerFunction == "setpcfacrep")
+  {
+    if (params.size()<3)
+    {
+      std::cout << "ScriptCompiler: Error: SetPCFacRep needs two parameters!\n";
+      return false;
+    }
+    //first parameter is new reputation value, second is ID of faction
+    float new_reputation;
+    if (!stringToFloat(params[1], new_reputation))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[1]<<"\" is not a float.\n";
+      return false;
+    }//if
+    //push function
+    chunk.pushCode(CodeSetPCFacRep);
+    //push float
+    chunk.pushFloat(new_reputation);
+    //push faction ID's length
+    chunk.data.push_back(params[2].length());
+    //push faction ID
+    chunk.pushString(params[2]);
+    return true;
+  }//if SetPCFacRep
+  if (lowerFunction == "setpos")
+  {
+    if (params.size()<3)
+    {
+      std::cout << "ScriptCompiler: Error: SetPos needs two parameters!\n";
+      return false;
+    }
+    //first parameter is axis, given as upper case character
+    //second parameter is new position value (float or local var)
+    //get axis
+    const char Axis = toupper(params[1].at(0));
+    /*The CS does not check, if the parameter is really X, Y or Z, but allows
+      any letter, as it seems. I'm not sure about the consequences in-game.
+      We should put a warning at least.
+    */
+    if ((Axis!='X') and (Axis!='Y') and (Axis!='Z'))
+    {
+      std::cout << "ScriptCompiler: Warning: invalid parameter to SetPos.\n";
+    }
+    //second param
+    float new_pos;
+    SC_VarRef localRef = SC_VarRef(vtGlobal, 0);
+    if (!stringToFloat(params[2], new_pos))
+    {
+      //In Tribunal or Bloodmoon, local vars are allowed, too.
+      localRef = getVariableTypeWithIndex(params[2], chunk.varsShort, chunk.varsLong, chunk.varsFloat);
+      if (localRef.Type==vtGlobal)
+      {
+        std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is neither a "
+                  << "float value nor a local var.\n";
+        return false;
+      }
+    }
+    //push function
+    chunk.pushCode(CodeSetPos);
+    //push axis
+    chunk.data.push_back(Axis);
+    if (localRef.Type!=vtGlobal)
+    {
+      //It's a global var, push it!
+      chunk.pushNonGlobalRefWithTwoZeroFillers(localRef);
+    }
+    else
+    {
+      //It's a simple float, push!
+      chunk.pushFloat(new_pos);
+    }
+    return true;
+  }//if SetPos
+
   //end - no matching function found, if we are here
   return false;
 }

@@ -254,6 +254,7 @@ namespace ScriptCompiler
   //TODO: LowerRank
   const uint16_t CodeMenuMode = 0x1020; //"2010"
   //TODO: MenuTest
+  //TODO: MessageBox
   const uint16_t CodeModAcrobatics = 0x1079; //"7910"
   const uint16_t CodeModAgility = 0x102E; //"2E10"
   const uint16_t CodeModAlarm = 0x1107; //"0711"

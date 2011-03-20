@@ -526,6 +526,11 @@ bool ScriptFunctions_ZeroParameters(const std::vector<std::string>& params, Comp
     chunk.pushCode(CodeCellChanged);
     return true;
   }
+  if (lowerFunction=="cellupdate")
+  {
+    chunk.pushCode(CodeCellUpdate);
+    return true;
+  }
   if (lowerFunction=="clearforcejump")
   {
     chunk.pushCode(CodeClearForceJump);
@@ -544,6 +549,11 @@ bool ScriptFunctions_ZeroParameters(const std::vector<std::string>& params, Comp
   if (lowerFunction=="clearforcesneak")
   {
     chunk.pushCode(CodeClearForceSneak);
+    return true;
+  }
+  if (lowerFunction=="clearinfoactor")
+  {
+    chunk.pushCode(CodeClearInfoActor);
     return true;
   }
   if (lowerFunction=="disable")
@@ -711,6 +721,16 @@ bool ScriptFunctions_ZeroParameters(const std::vector<std::string>& params, Comp
     chunk.pushCode(CodeFall);
     return true;
   }
+  if (lowerFunction=="fillmap")
+  {
+    chunk.pushCode(CodeFillMap);
+    return true;
+  }
+  if (lowerFunction=="fixme")
+  {
+    chunk.pushCode(CodeFixMe);
+    return true;
+  }
   if (lowerFunction=="forcegreeting")
   {
     chunk.pushCode(CodeForceGreeting);
@@ -731,7 +751,6 @@ bool ScriptFunctions_ZeroParameters(const std::vector<std::string>& params, Comp
     chunk.pushCode(CodeForceRun);
     return true;
   }
-
   if (lowerFunction=="forcesneak")
   {
     chunk.pushCode(CodeForceSneak);
@@ -1312,6 +1331,11 @@ bool ScriptFunctions_ZeroParameters(const std::vector<std::string>& params, Comp
     //no appropriate get function found, return here
     return false;
   }//get functions
+  if (lowerFunction=="goodbye")
+  {
+    chunk.pushCode(CodeGoodbye);
+    return true;
+  }
   if (lowerFunction=="gotojail")
   {
     chunk.pushCode(CodeGotoJail);

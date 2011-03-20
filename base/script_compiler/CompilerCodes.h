@@ -41,14 +41,14 @@ namespace ScriptCompiler
   const uint16_t CodeBecomeWerewolf = 0x11B3; //"B311"
   const uint16_t CodeCast = 0x1123; //"2311"
   const uint16_t CodeCellChanged = 0x101F; //"1F10"
-  //TODO: CellUpdate
+  const uint16_t CodeCellUpdate = 0x1013; //"1310"
   const uint16_t CodeChangeWeather = 0x1124; //"2411"
   //TODO: Choice
   const uint16_t CodeClearForceJump = 0x119E; //"9E11"
   const uint16_t CodeClearForceMoveJump = 0x11A1; //"A111"
   const uint16_t CodeClearForceRun = 0x119B; //"9B11"
   const uint16_t CodeClearForceSneak = 0x1164; //"6411"
-  //TODO: ClearInfoActor
+  const uint16_t CodeClearInfoActor = 0x10CB; //"CB10"
   const uint16_t CodeDisable = 0x10DB; //"DB10"
   const uint16_t CodeDisableLevitation = 0x1194; //"9411"
   const uint16_t CodeDisablePlayerControls = 0x10DE; //"DE10"
@@ -87,7 +87,7 @@ namespace ScriptCompiler
   const uint16_t CodeEnableVanityMode = 0x114B; //"4B11"
   const uint16_t CodeEnd = 0x0101; //"0101"
   //TODO: const uint16_t CodeEndif = 0x0109; //"0901"
-  //TODO: EndWhile
+  //TODO: const uint16_t CodeEndWhile = 0x010B; //"0B01"
   const uint16_t CodeEquip = 0x110E; //"0E11"
   const uint16_t CodeExplodeSpell = 0x11AD; //"AD11"
   //TODO: Face
@@ -95,8 +95,8 @@ namespace ScriptCompiler
   const uint16_t CodeFadeOut = 0x1130; //"3011"
   const uint16_t CodeFadeTo = 0x1145; //"4511"
   const uint16_t CodeFall = 0x1166; //"6611"
-  //TODO: FillMap
-  //TODO: FixMe
+  const uint16_t CodeFillMap = 0x013E; //"3E01"
+  const uint16_t CodeFixMe = 0x0131; //"3101"
   const uint16_t CodeForceGreeting = 0x10E8; //"E810"
   const uint16_t CodeForceJump = 0x119D; //"9D11"
   const uint16_t CodeForceMoveJump = 0x11A0; //"A011"
@@ -238,7 +238,7 @@ namespace ScriptCompiler
   const uint16_t CodeGetWerewolfKills = 0x11B6; //"B611"
   const uint16_t CodeGetWillpower = 0x1029; //"2910"
   const uint16_t CodeGetWindSpeed = 0x10A0; //"A010"
-  //TODO: Goodbye
+  const uint16_t CodeGoodbye = 0x10CA; //"CA10"
   const uint16_t CodeGotoJail = 0x10E9; //"E910"
   const uint16_t CodeHasItemEquipped = 0x1199; //"9911"
   const uint16_t CodeHasSoulgem = 0x10EA; //"EA10"
@@ -476,7 +476,6 @@ namespace ScriptCompiler
   const uint16_t CodeTurnMoonWhite = 0x11B8; //"B811"
   const uint16_t CodeUndoWerewolf = 0x11B4; //"B411"
   const uint16_t CodeUnlock = 0x1137; //"3711"
-  //TODO: UsedOnMe
   const uint16_t CodeWakeUpPC = 0x10E1; //"E110"
   //TODO: While
   const uint16_t CodeXBox = 0x113A; //"3A11"

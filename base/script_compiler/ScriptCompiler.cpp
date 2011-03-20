@@ -1397,6 +1397,26 @@ bool ScriptFunctions_ZeroParameters(const std::vector<std::string>& params, Comp
     chunk.pushCode(CodeSetAtStart);
     return true;
   }
+  if (lowerFunction=="setwerewolfacrobatics")
+  {
+    chunk.pushCode(CodeSetWerewolfAcrobatics);
+    return true;
+  }
+  if (lowerFunction=="showrestmenu")
+  {
+    chunk.pushCode(CodeShowRestMenu);
+    return true;
+  }
+  if (lowerFunction=="skipanim")
+  {
+    chunk.pushCode(CodeSkipAnim);
+    return true;
+  }
+  if (lowerFunction=="stopcombat")
+  {
+    chunk.pushCode(CodeStopCombat);
+    return true;
+  }
 
   if (lowerFunction=="turnmoonred")
   {
@@ -2000,6 +2020,70 @@ bool ScriptFunctions_SetStatFunctions(const std::vector<std::string>& params, Co
   else if (lowerFunction == "setrestoration")
   {
     functionCode = CodeSetRestoration;
+  }
+  else if (lowerFunction == "setscale")
+  {
+    functionCode = CodeSetScale;
+  }
+  else if (lowerFunction == "setsecurity")
+  {
+    functionCode = CodeSetSecurity;
+  }
+  else if (lowerFunction == "setshortblade")
+  {
+    functionCode = CodeSetShortBlade;
+  }
+  else if (lowerFunction == "setsilence")
+  {
+    functionCode = CodeSetSilence;
+  }
+  else if (lowerFunction == "setneak")
+  {
+    functionCode = CodeSetSneak;
+  }
+  else if (lowerFunction == "setspear")
+  {
+    functionCode = CodeSetSpear;
+  }
+  else if (lowerFunction == "setspeechcraft")
+  {
+    functionCode = CodeSetSpeechcraft;
+  }
+  else if (lowerFunction == "setspeed")
+  {
+    functionCode = CodeSetSpeed;
+  }
+  else if (lowerFunction == "setstrength")
+  {
+    functionCode = CodeSetStrength;
+  }
+  else if (lowerFunction == "setsuperjump")
+  {
+    functionCode = CodeSetSuperJump;
+  }
+  else if (lowerFunction == "setswimspeed")
+  {
+    functionCode = CodeSetSwimSpeed;
+  }
+  else if (lowerFunction == "setumarmored")
+  {
+    functionCode = CodeSetUnarmored;
+  }
+  else if (lowerFunction == "setwaterbreathing")
+  {
+    functionCode = CodeSetWaterBreathing;
+  }
+  else if (lowerFunction == "setwaterlevel")
+  {
+    functionCode = CodeSetWaterLevel;
+  }
+  else if (lowerFunction == "setwaterwalking")
+  {
+    functionCode = CodeSetWaterWalking;
+  }
+  else if (lowerFunction == "setwillpower")
+  {
+    functionCode = CodeSetWillpower;
   }
   //Found something? If not, return false.
   if (functionCode==0) return false;
@@ -3064,8 +3148,22 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
     // result (besides of taking more time).
     return false;
   }//if substr(0,3)=="Set..."
-
-
+  if (lowerFunction =="showmap")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: ShowMap needs one parameter!\n";
+      return false;
+    }
+    //parameter is cell name or part thereof
+    //push function
+    chunk.pushCode(CodeShowMap);
+    //push cell name's length
+    chunk.data.push_back(params[1].length());
+    //push cell ID
+    chunk.pushString(params[1]);
+    return true;
+  }//if ShowMap
   if (lowerFunction =="startscript")
   {
     if (params.size()<2)
@@ -3082,6 +3180,22 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
     chunk.pushString(params[1]);
     return true;
   }//if StartScript
+  if (lowerFunction == "startcombat")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: StartCombat needs one parameter!\n";
+      return false;
+    }
+    //parameter is NPC ID
+    //push function
+    chunk.pushCode(CodeStartCombat);
+    //push NPC ID's length
+    chunk.data.push_back(params[1].length());
+    //push NPC ID
+    chunk.pushString(params[1]);
+    return true;
+  }//if StartCombat
   //check for StopScript
   if (lowerFunction == "stopscript")
   {

@@ -28,15 +28,27 @@ namespace ScriptCompiler
   const uint16_t CodeAddItem = 0x10D4; //"D410"
   const uint16_t CodeAddSoulGem = 0x10EB; //"EB10"
   const uint16_t CodeAddSpell = 0x111D; //"1D11"
+  //TODO: AddToLevCreature
+  //TODO: AddToLevItem
   const uint16_t CodeAddTopic = 0x1022; //"2210"
+  //TODO: AIActivate
+  //TODO: AIEscort
+  //TODO: AIEscortCell
+  //TODO: AIFollow
+  //TODO: AIFollowCell
+  //TODO: AITravel
+  //TODO: AIWander
   const uint16_t CodeBecomeWerewolf = 0x11B3; //"B311"
   const uint16_t CodeCast = 0x1123; //"2311"
   const uint16_t CodeCellChanged = 0x101F; //"1F10"
+  //TODO: CellUpdate
   const uint16_t CodeChangeWeather = 0x1124; //"2411"
+  //TODO: Choice
   const uint16_t CodeClearForceJump = 0x119E; //"9E11"
   const uint16_t CodeClearForceMoveJump = 0x11A1; //"A111"
   const uint16_t CodeClearForceRun = 0x119B; //"9B11"
   const uint16_t CodeClearForceSneak = 0x1164; //"6411"
+  //TODO: ClearInfoActor
   const uint16_t CodeDisable = 0x10DB; //"DB10"
   const uint16_t CodeDisableLevitation = 0x1194; //"9411"
   const uint16_t CodeDisablePlayerControls = 0x10DE; //"DE10"
@@ -50,6 +62,8 @@ namespace ScriptCompiler
   const uint16_t CodeDontSaveObject = 0x115F; //"5F11"
   const uint16_t CodeDrop = 0x110D; //"0D11"
   const uint16_t CodeDropSoulGem = 0x10ED; //"ED10"
+  //TODO: Else
+  //TODO: ElseIf
   const uint16_t CodeEnable = 0x10DA; //"DA10"
   const uint16_t CodeEnableBirthMenu = 0x1129; //"2911"
   const uint16_t CodeEnableClassMenu = 0x1128; //"2811"
@@ -72,13 +86,17 @@ namespace ScriptCompiler
   const uint16_t CodeEnableTeleporting = 0x10EE; //"EE10"
   const uint16_t CodeEnableVanityMode = 0x114B; //"4B11"
   const uint16_t CodeEnd = 0x0101; //"0101"
-  //const uint16_t CodeEndif = 0x0109; //"0901"
+  //TODO: const uint16_t CodeEndif = 0x0109; //"0901"
+  //TODO: EndWhile
   const uint16_t CodeEquip = 0x110E; //"0E11"
   const uint16_t CodeExplodeSpell = 0x11AD; //"AD11"
+  //TODO: Face
   const uint16_t CodeFadeIn = 0x1131; //"3111"
   const uint16_t CodeFadeOut = 0x1130; //"3011"
   const uint16_t CodeFadeTo = 0x1145; //"4511"
   const uint16_t CodeFall = 0x1166; //"6611"
+  //TODO: FillMap
+  //TODO: FixMe
   const uint16_t CodeForceGreeting = 0x10E8; //"E810"
   const uint16_t CodeForceJump = 0x119D; //"9D11"
   const uint16_t CodeForceMoveJump = 0x11A0; //"A011"
@@ -122,6 +140,7 @@ namespace ScriptCompiler
   const uint16_t CodeGetEffect = 0x1138; //"3811"
   const uint16_t CodeGetEnchant = 0x1056; //"5610"
   const uint16_t CodeGetEndurance = 0x1032; //"3210"
+  //TODO: GetFactionReaction
   const uint16_t CodeGetFatigue = 0x1092; //"9210"
   const uint16_t CodeGetFight = 0x10FF; //"FF10"
   const uint16_t CodeGetFlee = 0x1002; //"0210"
@@ -157,8 +176,10 @@ namespace ScriptCompiler
   const uint16_t CodeGetParalysis = 0x1182; //"8211"
   const uint16_t CodeGetPCCell = 0x1112; //"1211"
   const uint16_t CodeGetPCCrimeLevel = 0x109B; //"9B10"
+  //TODO: GetPCFacRep
   const uint16_t CodeGetPCInJail = 0x11BB; //"BB11"
   const uint16_t CodeGetPCJumping = 0x118C; //"8C11"
+  //TODO: GetPCRank
   const uint16_t CodeGetPCRunning = 0x118B; //"8B11"
   const uint16_t CodeGetPCSleep = 0x10E0; //"E010"
   const uint16_t CodeGetPCSneaking = 0x118A; //"8A11"
@@ -217,6 +238,7 @@ namespace ScriptCompiler
   const uint16_t CodeGetWerewolfKills = 0x11B6; //"B611"
   const uint16_t CodeGetWillpower = 0x1029; //"2910"
   const uint16_t CodeGetWindSpeed = 0x10A0; //"A010"
+  //TODO: Goodbye
   const uint16_t CodeGotoJail = 0x10E9; //"E910"
   const uint16_t CodeHasItemEquipped = 0x1199; //"9911"
   const uint16_t CodeHasSoulgem = 0x10EA; //"EA10"
@@ -224,10 +246,14 @@ namespace ScriptCompiler
   const uint16_t CodeHitOnMe = 0x1115; //"1511"
   const uint16_t CodeHurtCollidingActor = 0x11A5; //"A511"
   const uint16_t CodeHurtStandingActor = 0x1135; //"3511"
+  //TODO: If
   const uint16_t CodeIsWerewolf = 0x11B5; //"B511"
   const uint16_t CodeJournal = 0x10CC; //"CC10"
   const uint16_t CodeLock = 0x1136; //"3611"
+  //TODO: LoopGroup
+  //TODO: LowerRank
   const uint16_t CodeMenuMode = 0x1020; //"2010"
+  //TODO: MenuTest
   const uint16_t CodeModAcrobatics = 0x1079; //"7910"
   const uint16_t CodeModAgility = 0x102E; //"2E10"
   const uint16_t CodeModAlarm = 0x1107; //"0711"
@@ -299,8 +325,8 @@ namespace ScriptCompiler
   const uint16_t CodeModSpeechcraft = 0x1088; //"8810"
   const uint16_t CodeModSpeed = 0x1031; //"3110"
   const uint16_t CodeModStrength = 0x1025; //"2510"
-  const uint16_t CodeModSwimSpeed = 0x116F; //"6F11"
   const uint16_t CodeModSuperJump = 0x1172; //"7211"
+  const uint16_t CodeModSwimSpeed = 0x116F; //"6F11"
   const uint16_t CodeModUnarmored = 0x1070; //"7010"
   const uint16_t CodeModWaterBreathing = 0x1169; //"6911"
   const uint16_t CodeModWaterLevel = 0x9211; //"9211"
@@ -392,6 +418,7 @@ namespace ScriptCompiler
   const uint16_t CodeSetIllusion = 0x1060; //"6010"
   const uint16_t CodeSetIntelligence = 0x1027; //"2710"
   const uint16_t CodeSetInvisible = 0x1186; //"8611"
+  //TODO: SetJournalIndex
   const uint16_t CodeSetLevel = 0x1156; //"5611"
   const uint16_t CodeSetLightArmor = 0x107B; //"7B10"
   const uint16_t CodeSetLongBlade = 0x104B; //"4B10"
@@ -449,7 +476,9 @@ namespace ScriptCompiler
   const uint16_t CodeTurnMoonWhite = 0x11B8; //"B811"
   const uint16_t CodeUndoWerewolf = 0x11B4; //"B411"
   const uint16_t CodeUnlock = 0x1137; //"3711"
+  //TODO: UsedOnMe
   const uint16_t CodeWakeUpPC = 0x10E1; //"E110"
+  //TODO: While
   const uint16_t CodeXBox = 0x113A; //"3A11"
 } //namespace
 

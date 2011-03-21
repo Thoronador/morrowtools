@@ -22,6 +22,7 @@
 #define SCRIPTRECORD_H
 
 #include <string>
+#include <vector>
 #include "BasicRecord.h"
 
 struct ScriptRecord: public BasicRecord
@@ -34,7 +35,7 @@ struct ScriptRecord: public BasicRecord
   int32_t ScriptDataSize;
   int32_t LocalVarSize;
   //end of script header
-  std::string LocalVars;
+  std::vector<std::string> LocalVars;
   char * ScriptData;
   std::string ScriptText;
 

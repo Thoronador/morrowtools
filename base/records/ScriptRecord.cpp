@@ -29,7 +29,7 @@ ScriptRecord::ScriptRecord()
   ScriptID = "";
   NumShorts = NumLongs = NumFloats = ScriptDataSize = LocalVarSize = 0;
   //end of script header
-  LocalVars = "";
+  LocalVars.clear();
   ScriptData = NULL;
   ScriptText = "";
 }
@@ -136,10 +136,14 @@ bool ScriptRecord::saveToStream(std::ofstream& output) const
         +4 /* SCDT */ +4 /* 4 bytes for length */ +ScriptDataSize
         +4 /* SCTX */ +4 /* 4 bytes for length */
         +ScriptText.length() /* length of text (no NUL termination) */;
-  if (LocalVars!="")
+  if (!LocalVars.empty())
   {
-    Size = Size + 4 /* SCVR */ +4 /* 4 bytes for length */
-          +LocalVars.length()+1; /* length of list +1 for NUL termination */;
+    Size = Size + 4 /* SCVR */ +4 /* 4 bytes for length */;
+    unsigned int i;
+    for (i=0; i<LocalVars.size(); ++i)
+    {
+      Size = Size + LocalVars.at(i).length()+1;/*length of string +1 for NUL termination*/
+    }
   }
   output.write((char*) &Size, 4);
   output.write((char*) &HeaderOne, 4);
@@ -180,15 +184,24 @@ bool ScriptRecord::saveToStream(std::ofstream& output) const
   output.write((char*) &ScriptDataSize, 4);
   output.write((char*) &LocalVarSize, 4);
 
-  if (LocalVars!="")
+  if (!LocalVars.empty())
   {
     //write SCVR
     output.write((char*) &cSCVR, 4);
-    SubLength = LocalVars.length()+1; /* length of list +1 for NUL termination */
+    //length is sum of lengths of individual strings
+    SubLength = 0;
+    unsigned int i;
+    for (i=0; i<LocalVars.size(); ++i)
+    {
+      SubLength += LocalVars.at(i).length()+1;/*length of string +1 for NUL termination*/
+    }
     //write SCVR's length
     output.write((char*) &SubLength, 4);
     //write script's variable list
-    output.write(LocalVars.c_str(), SubLength);
+    for (i=0; i<LocalVars.size(); ++i)
+    {
+      output.write(LocalVars.at(i).c_str(), LocalVars.at(i).length()+1);/*length of string +1 for NUL termination*/
+    }
   }
 
   //check if data is present
@@ -296,9 +309,9 @@ bool ScriptRecord::loadFromStream(std::ifstream& in_File)
     return false;
   }
 
-
+  int32_t currentPos;
   //preset data
-  LocalVars = "";
+  LocalVars.clear();
   ScriptText = "";
   if (ScriptData!=NULL)
   {
@@ -335,7 +348,21 @@ bool ScriptRecord::loadFromStream(std::ifstream& in_File)
              delete[] Buffer;
              return false;
            }
-           LocalVars = std::string(Buffer);
+           //add local vars
+           currentPos = 0;
+           do
+           {
+             //push next var
+             LocalVars.push_back(&Buffer[currentPos]);
+             //find end of previous var name in buffer
+             while (Buffer[currentPos]!='\0')
+             {
+               ++currentPos;
+             }//while
+             ++currentPos; //puts currentPos one after NUL, i.e. to the position
+                           // where the next string starts
+           } while (currentPos<SubLength);
+           //LocalVars = std::string(Buffer);
            break;
       case cSCDT:
            //SCDT's length

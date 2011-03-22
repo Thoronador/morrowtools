@@ -31,11 +31,11 @@ namespace ScriptCompiler
   //TODO: AddToLevCreature
   //TODO: AddToLevItem
   const uint16_t CodeAddTopic = 0x1022; //"2210"
-  //TODO: AIActivate
-  //TODO: AIEscort
-  //TODO: AIEscortCell
-  //TODO: AIFollow
-  //TODO: AIFollowCell
+  const uint16_t CodeAIActivate = 0x10F3; //"F310"
+  const uint16_t CodeAIEscort = 0x10F4; //"F410"
+  const uint16_t CodeAIEscortCell = 0x10F5; //"F510"
+  const uint16_t CodeAIFollow = 0x10F6; //"F610"
+  const uint16_t CodeAIFollowCell = 0x10F7; //"F710"
   //TODO: AITravel
   //TODO: AIWander
   const uint16_t CodeBecomeWerewolf = 0x11B3; //"B311"

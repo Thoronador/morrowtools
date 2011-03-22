@@ -2182,6 +2182,23 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
     //push ID
     chunk.pushString(params[1]);
     return true;
+  }//AddTopic
+  if (lowerFunction == "aiactivate")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: AIActivate needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodeAIActivate);
+    //parameter is ID of target
+    //push ID's length
+    chunk.data.push_back(params[1].length());
+    //push target ID
+    chunk.pushString(params[1]);
+    //after ID, a NUL byte is pushed in that one-param version
+    chunk.data.push_back(0);
+    return true;
   }
   if (lowerFunction == "dropsoulgem")
   {
@@ -4241,6 +4258,68 @@ bool ScriptFunctions_FiveParameters(const std::vector<std::string>& params, Comp
 {
   //entry at index zero is the function's name
   const std::string lowerFunction = lowerCase(params.at(0));
+  uint16_t functionCode = 0;
+  if (lowerFunction == "aiescort")
+  {
+    functionCode = CodeAIEscort;
+  }
+  else if (lowerFunction == "aifollow")
+  {
+    functionCode = CodeAIFollow;
+  }
+  if (functionCode!=0)
+  {
+    if (params.size()<6)
+    {
+      std::cout << "ScriptCompiler: Error: "<<params[0]<<" needs five parameters!\n";
+      return false;
+    }
+    //first parameter is NPC ID
+    //second parameter is duration (short, as far as I can see)
+    //third, fourth and fifth parameters are x, y, z-coordinates (float)
+    //sixth parameter is flag of some kind, but absent in this version
+    int16_t duration;
+    if (!stringToShort(params[2], duration))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is no short value!\n";
+      return false;
+    }
+    float x_coord;
+    if (!stringToFloat(params[3], x_coord))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[3]<<"\" is no float value!\n";
+      return false;
+    }
+    float y_coord;
+    if (!stringToFloat(params[4], y_coord))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[4]<<"\" is no float value!\n";
+      return false;
+    }
+    float z_coord;
+    if (!stringToFloat(params[5], z_coord))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[5]<<"\" is no float value!\n";
+      return false;
+    }
+    //push function
+    chunk.pushCode(functionCode);
+    //push target ID's length
+    chunk.data.push_back(params[1].length());
+    //push target ID
+    chunk.pushString(params[1]);
+    //push duration
+    chunk.pushShort(duration);
+    //push x, y, z
+    chunk.pushFloat(x_coord);
+    chunk.pushFloat(y_coord);
+    chunk.pushFloat(z_coord);
+    //push NUL byte (it always seems to be there and indicate the absence of the
+    // flag)
+    chunk.data.push_back(0);
+    return true;
+  }//if AIEscort or AIFollow
+
   if (lowerFunction == "placeitem")
   {
     if (params.size()<6)
@@ -4419,6 +4498,136 @@ bool ScriptFunctions_SixParameters(const std::vector<std::string>& params, Compi
 {
   //entry at index zero is the function's name
   const std::string lowerFunction = lowerCase(params.at(0));
+  uint16_t functionCode = 0;
+  if (lowerFunction == "aiescort")
+  {
+    functionCode = CodeAIEscort;
+  }
+  else if (lowerFunction == "aifollow")
+  {
+    functionCode = CodeAIFollow;
+  }
+  if (functionCode!=0)
+  {
+    if (params.size()<7)
+    {
+      std::cout << "ScriptCompiler: Error: "<<params[0]<<" needs six parameters!\n";
+      return false;
+    }
+    //first parameter is NPC ID
+    //second parameter is duration (short, as far as I can see)
+    //third, fourth and fifth parameters are x, y, z-coordinates (float)
+    //sixth parameter is flag of some kind
+    int16_t duration;
+    if (!stringToShort(params[2], duration))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is no short value!\n";
+      return false;
+    }
+    float x_coord;
+    if (!stringToFloat(params[3], x_coord))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[3]<<"\" is no float value!\n";
+      return false;
+    }
+    float y_coord;
+    if (!stringToFloat(params[4], y_coord))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[4]<<"\" is no float value!\n";
+      return false;
+    }
+    float z_coord;
+    if (!stringToFloat(params[5], z_coord))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[5]<<"\" is no float value!\n";
+      return false;
+    }
+    //Sixth param is flag, but it does not seem to have an impact on the compiled
+    //script data, so we ignore it, whatever it is.
+
+    //push function
+    chunk.pushCode(functionCode);
+    //push target ID's length
+    chunk.data.push_back(params[1].length());
+    //push target ID
+    chunk.pushString(params[1]);
+    //push duration
+    chunk.pushShort(duration);
+    //push x, y, z
+    chunk.pushFloat(x_coord);
+    chunk.pushFloat(y_coord);
+    chunk.pushFloat(z_coord);
+    //push 01 byte (it always seems to be there and indicate the presence of the
+    // flag)
+    chunk.data.push_back(1);
+    return true;
+  }//if AIEscort or AIFollow
+
+  if (lowerFunction == "aiescortcell")
+  {
+    functionCode = CodeAIEscortCell;
+  }
+  else if (lowerFunction == "aifollowcell")
+  {
+    functionCode = CodeAIFollowCell;
+  }
+  if (functionCode!=0)
+  {
+    if (params.size()<7)
+    {
+      std::cout << "ScriptCompiler: Error: "<<params[0]<<" needs six parameters!\n";
+      return false;
+    }
+    //first parameter is NPC ID
+    //second parameter is cell ID
+    //third parameter is duration (short, as far as I can see)
+    //fourth, fifth and sixth parameters are x, y, z-coordinates (float)
+    int16_t duration;
+    if (!stringToShort(params[3], duration))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[3]<<"\" is no short value!\n";
+      return false;
+    }
+    float x_coord;
+    if (!stringToFloat(params[4], x_coord))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[4]<<"\" is no float value!\n";
+      return false;
+    }
+    float y_coord;
+    if (!stringToFloat(params[5], y_coord))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[5]<<"\" is no float value!\n";
+      return false;
+    }
+    float z_coord;
+    if (!stringToFloat(params[6], z_coord))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[6]<<"\" is no float value!\n";
+      return false;
+    }
+    //push function
+    chunk.pushCode(functionCode);
+    //push target ID's length
+    chunk.data.push_back(params[1].length());
+    //push target ID
+    chunk.pushString(params[1]);
+    //push cell ID's length
+    chunk.data.push_back(params[2].length());
+    //push cell ID
+    chunk.pushString(params[2]);
+    //push duration
+    chunk.pushShort(duration);
+    //push x, y, z
+    chunk.pushFloat(x_coord);
+    chunk.pushFloat(y_coord);
+    chunk.pushFloat(z_coord);
+    //push NUL byte (it always seems to be there and indicate the absence of the
+    // flag)
+    chunk.data.push_back(0);
+    return true;
+  }//if AIEscortCell or AI FollowCell
+
   if (lowerFunction == "placeitemcell")
   {
     if (params.size()<7)
@@ -4546,6 +4755,82 @@ bool ScriptFunctions_SixParameters(const std::vector<std::string>& params, Compi
   //nothing found, return false
   return false;
 }//function Six
+
+bool ScriptFunctions_SevenParameters(const std::vector<std::string>& params, CompiledChunk& chunk)
+{
+  //entry at index zero is the function's name
+  const std::string lowerFunction = lowerCase(params.at(0));
+  uint16_t functionCode = 0;
+  if (lowerFunction == "aiescortcell")
+  {
+    functionCode = CodeAIEscortCell;
+  }
+  else if (lowerFunction == "aifollowcell")
+  {
+    functionCode = CodeAIFollowCell;
+  }
+  if (functionCode!=0)
+  {
+    if (params.size()<8)
+    {
+      std::cout << "ScriptCompiler: Error: "<<params.at(0)<<" needs seven parameters!\n";
+      return false;
+    }
+    //first parameter is NPC ID
+    //second parameter is cell ID
+    //third parameter is duration (short, as far as I can see)
+    //fourth, fifth and sixth parameters are x, y, z-coordinates (float)
+    //seventh parameter is a flag
+    int16_t duration;
+    if (!stringToShort(params[3], duration))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[3]<<"\" is no short value!\n";
+      return false;
+    }
+    float x_coord;
+    if (!stringToFloat(params[4], x_coord))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[4]<<"\" is no float value!\n";
+      return false;
+    }
+    float y_coord;
+    if (!stringToFloat(params[5], y_coord))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[5]<<"\" is no float value!\n";
+      return false;
+    }
+    float z_coord;
+    if (!stringToFloat(params[6], z_coord))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[6]<<"\" is no float value!\n";
+      return false;
+    }
+    //seventh parameter, the flag, is ignored. What counts is its presence.
+
+    //push function
+    chunk.pushCode(functionCode);
+    //push target ID's length
+    chunk.data.push_back(params[1].length());
+    //push target ID
+    chunk.pushString(params[1]);
+    //push cell ID's length
+    chunk.data.push_back(params[2].length());
+    //push cell ID
+    chunk.pushString(params[2]);
+    //push duration
+    chunk.pushShort(duration);
+    //push x, y, z
+    chunk.pushFloat(x_coord);
+    chunk.pushFloat(y_coord);
+    chunk.pushFloat(z_coord);
+    //push 01 byte (it always seems to be there and indicate the presence of the
+    // flag)
+    chunk.data.push_back(1);
+    return true;
+  }//if AIEscortCell or AIFollowCell
+  //nothing found, return false here
+  return false;
+}
 
 bool ScriptFunctions_NineParameters(const std::vector<std::string>& params, CompiledChunk& chunk)
 {
@@ -4783,6 +5068,12 @@ bool ScriptFunctions(const std::string& line, CompiledChunk& chunk)
          break;
     case 10:
          if (ScriptFunctions_NineParameters(parameters, chunk))
+         {
+           return true;
+         }
+         break;
+    case 8:
+         if (ScriptFunctions_SevenParameters(parameters, chunk))
          {
            return true;
          }

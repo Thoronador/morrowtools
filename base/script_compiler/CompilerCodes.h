@@ -28,8 +28,8 @@ namespace ScriptCompiler
   const uint16_t CodeAddItem = 0x10D4; //"D410"
   const uint16_t CodeAddSoulGem = 0x10EB; //"EB10"
   const uint16_t CodeAddSpell = 0x111D; //"1D11"
-  //TODO: AddToLevCreature
-  //TODO: AddToLevItem
+  const uint16_t CodeAddToLevCreature = 0x11A6; //"A611"
+  const uint16_t CodeAddToLevItem = 0x11A8; //"A811"
   const uint16_t CodeAddTopic = 0x1022; //"2210"
   const uint16_t CodeAIActivate = 0x10F3; //"F310"
   const uint16_t CodeAIEscort = 0x10F4; //"F410"
@@ -43,7 +43,7 @@ namespace ScriptCompiler
   const uint16_t CodeCellChanged = 0x101F; //"1F10"
   const uint16_t CodeCellUpdate = 0x1013; //"1310"
   const uint16_t CodeChangeWeather = 0x1124; //"2411"
-  //TODO: Choice
+  const uint16_t CodeChoice = 0x10C9; //"C910"
   const uint16_t CodeClearForceJump = 0x119E; //"9E11"
   const uint16_t CodeClearForceMoveJump = 0x11A1; //"A111"
   const uint16_t CodeClearForceRun = 0x119B; //"9B11"
@@ -86,8 +86,8 @@ namespace ScriptCompiler
   const uint16_t CodeEnableTeleporting = 0x10EE; //"EE10"
   const uint16_t CodeEnableVanityMode = 0x114B; //"4B11"
   const uint16_t CodeEnd = 0x0101; //"0101"
-  //TODO: const uint16_t CodeEndif = 0x0109; //"0901"
-  //TODO: const uint16_t CodeEndWhile = 0x010B; //"0B01"
+  const uint16_t CodeEndIf = 0x0109; //"0901"
+  const uint16_t CodeEndWhile = 0x010B; //"0B01"
   const uint16_t CodeEquip = 0x110E; //"0E11"
   const uint16_t CodeExplodeSpell = 0x11AD; //"AD11"
   //TODO: Face
@@ -253,7 +253,7 @@ namespace ScriptCompiler
   //TODO: LoopGroup
   //TODO: LowerRank
   const uint16_t CodeMenuMode = 0x1020; //"2010"
-  //TODO: MenuTest
+  const uint16_t CodeMenuTest = 0x0126; //"2601"
   //TODO: MessageBox
   const uint16_t CodeModAcrobatics = 0x1079; //"7910"
   const uint16_t CodeModAgility = 0x102E; //"2E10"

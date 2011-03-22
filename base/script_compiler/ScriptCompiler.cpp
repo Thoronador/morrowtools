@@ -1351,6 +1351,14 @@ bool ScriptFunctions_ZeroParameters(const std::vector<std::string>& params, Comp
     chunk.pushCode(CodeMenuMode);
     return true;
   }
+  if (lowerFunction == "menutest")
+  {
+    chunk.pushCode(CodeMenuTest);
+    //parameter is usually a short value, but it's omitted in this variant
+    //push string's length as short (not byte)
+    chunk.pushShort(0);
+    return true;
+  }//if
   if (lowerFunction=="onactivate")
   {
     chunk.pushCode(CodeOnActivate);
@@ -2769,6 +2777,21 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
     }
 
     return true;
+  }//if Lock
+  if (lowerFunction == "menutest")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: MenuTest needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodeMenuTest);
+    //parameter is usually a short value, but this function takes it as string
+    //push string's length as short (not byte)
+    chunk.pushShort(params[1].length());
+    //push parameter string
+    chunk.pushString(params[1]);
+    return true;
   }//if
   if (lowerFunction.substr(0,3)=="mod")
   {
@@ -3881,6 +3904,66 @@ bool ScriptFunctions_ThreeParameters(const std::vector<std::string>& params, Com
 {
   //entry at index zero is the function's name
   const std::string lowerFunction = lowerCase(params.at(0));
+  if (lowerFunction == "addtolevcreature")
+  {
+    if (params.size()<4)
+    {
+      std::cout << "ScriptCompiler: Error: AddToLevCreature needs three parameters!\n";
+      return false;
+    }
+    //first parameter is ID of leveled creature, second is ID of creature to be added
+    //third is corresponding level (float, believe it or not)
+    // ---- check for level
+    float level;
+    if (!stringToFloat(params[3], level))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[3]<<"\" is no float value!\n";
+      return false;
+    }
+    //push functio code
+    chunk.pushCode(CodeAddToLevCreature);
+    //push list ID's length
+    chunk.data.push_back(params[1].length());
+    //push list ID
+    chunk.pushString(params[1]);
+    //push creature ID's length
+    chunk.data.push_back(params[2].length());
+    //push creature ID
+    chunk.pushString(params[2]);
+    //push level
+    chunk.pushFloat(level);
+    return true;
+  }//if AddToLevCreature
+  if (lowerFunction == "addtolevitem")
+  {
+    if (params.size()<4)
+    {
+      std::cout << "ScriptCompiler: Error: AddToLevItem needs three parameters!\n";
+      return false;
+    }
+    //first parameter is ID of leveled item, second is ID of item to be added
+    //third is corresponding level (float, believe it or not)
+    // ---- check for level
+    float level;
+    if (!stringToFloat(params[3], level))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[3]<<"\" is no float value!\n";
+      return false;
+    }
+    //push functio code
+    chunk.pushCode(CodeAddToLevItem);
+    //push list ID's length
+    chunk.data.push_back(params[1].length());
+    //push list ID
+    chunk.pushString(params[1]);
+    //push item ID's length
+    chunk.data.push_back(params[2].length());
+    //push item ID
+    chunk.pushString(params[2]);
+    //push level
+    chunk.pushFloat(level);
+    return true;
+  }//if AddToLevItem
   if (lowerFunction == "modfactionreaction")
   {
     if (params.size()<4)
@@ -5321,11 +5404,32 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       std::cout << "ScriptCompiler: Warning: Set statement not completely "
                 << "implemented yet.\n";
     }//if Set
+    //check for choice (rarely present, but check anyway)
+    else if ((lowerCase(lines.at(i).substr(0,7))=="choice ") or (lowerCase(lines.at(i).substr(0,7))=="choice,"))
+    {
+      WorkString = lines.at(i).substr(7);
+      trimLeft(WorkString);
+      //push code
+      CompiledData.pushCode(CodeChoice);
+      //push length of string as short (not byte)
+      CompiledData.pushShort(WorkString.length());
+      CompiledData.pushString(WorkString);
+    }//if Choice found
     //check for return
     else if (lowerCase(lines.at(i))=="return")
     {
       CompiledData.pushCode(CodeReturn);
     }//if return found
+    //check for endif
+    else if (lowerCase(lines.at(i))=="endif")
+    {
+      CompiledData.pushCode(CodeEndIf);
+    }//if EndIf found
+    //check for endWhile
+    else if (lowerCase(lines.at(i))=="endwhile")
+    {
+      CompiledData.pushCode(CodeEndWhile);
+    }//if EndWhile found
     //check for end of script
     else if ((lowerCase(lines.at(i))=="end") or (lowerCase(lines.at(i).substr(0,4))=="end "))
     {

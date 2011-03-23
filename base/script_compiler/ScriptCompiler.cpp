@@ -23,6 +23,7 @@
 #include "CompilerCodes.h"
 #include "CompiledChunk.h"
 #include "UtilityFunctions.h"
+#include "ParserNode.h"
 #include "../MagicEffects.h"
 
 namespace ScriptCompiler
@@ -5340,23 +5341,39 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
                   << "SET statement.\n";
         return false;
       }
-      //assume literal value, i.e. "123.4", "5" or something like that
-      /* Literal: We can push the value's length +1 space byte for stack push-op.
-         <length> <space> <literal as string>
-         Where: <length> is the length of the data, including space
-                <space>  is a space character (' ')
-                <literal as string> - the name says it
-      */
-      //push length
-      CompiledData.data.push_back(WorkString.length()+1);
-      //push space (=stack push operator)
-      CompiledData.data.push_back(' ');//space is used as push by MW's interpreter
-      //push value, finally
-      CompiledData.pushString(WorkString);
-      //We are basically done, but issue a warning for cases where the last part
-      // is not a literal value.
-      std::cout << "ScriptCompiler: Warning: Set statement not completely "
-                << "implemented yet.\n";
+
+      // Try to "parse" the expression
+      ParserNode setNode;
+      if (setNode.splitToTree(WorkString))
+      {
+        //parsing was successful, get the result and push it
+        WorkString = setNode.getStackOrderedContent();
+        //push length
+        CompiledData.data.push_back(WorkString.length());
+        //push values
+        CompiledData.pushString(WorkString);
+      }
+      else
+      {
+        //Assume literal value, i.e. "123.4", "5" or something like that.
+        //I know it isn't right here, but so we preserve the old behaviour.
+        /* Literal: We can push the value's length +1 space byte for stack push-op.
+           <length> <space> <literal as string>
+           Where: <length> is the length of the data, including space
+                  <space>  is a space character (' ')
+                  <literal as string> - the name says it
+        */
+        //push length
+        CompiledData.data.push_back(WorkString.length()+1);
+        //push space (=stack push operator)
+        CompiledData.data.push_back(' ');//space is used as push by MW's interpreter
+        //push value, finally
+        CompiledData.pushString(WorkString);
+        //We are basically done, but issue a warning for cases where the last part
+        // is not a literal value.
+        std::cout << "ScriptCompiler: Warning: Set statement not completely "
+                  << "implemented yet.\n";
+      }
     }//if Set
     //check for choice (rarely present, but check anyway)
     else if ((lowerCase(lines.at(i).substr(0,7))=="choice ") or (lowerCase(lines.at(i).substr(0,7))=="choice,"))

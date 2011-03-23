@@ -92,7 +92,7 @@ struct CompiledChunk
   void pushNonGlobalRefWithTwoZeroFillers(const SC_VarRef& ref);
 
   /* checks whether varName does name a local var of the script */
-  SC_VarRef CompiledChunk::getVariableTypeWithIndex(const std::string& varName) const;
+  SC_VarRef getVariableTypeWithIndex(const std::string& varName) const;
 }; //struct
 
 } //namespace

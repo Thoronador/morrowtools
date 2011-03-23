@@ -1073,6 +1073,14 @@ bool ScriptFunctions_ZeroParameters(const std::vector<std::string>& params, Comp
       chunk.pushCode(CodeGetPCCrimeLevel);
       return true;
     }
+    if (lowerFunction=="getpcfacrep")
+    {
+      //push function code
+      chunk.pushCode(CodeGetPCFacRep);
+      //push NUL byte to indicate absence of optional parameter
+      chunk.data.push_back(0);
+      return true;
+    }
     if (lowerFunction=="getpcinjail")
     {
       chunk.pushCode(CodeGetPCInJail);
@@ -1081,6 +1089,14 @@ bool ScriptFunctions_ZeroParameters(const std::vector<std::string>& params, Comp
     if (lowerFunction=="getpcjumping")
     {
       chunk.pushCode(CodeGetPCJumping);
+      return true;
+    }
+    if (lowerFunction=="getpcrank")
+    {
+      //push function code
+      chunk.pushCode(CodeGetPCRank);
+      //push NUL byte to indicate absence of optional parameter
+      chunk.data.push_back(0);
       return true;
     }
     if (lowerFunction=="getpcrunning")
@@ -1344,6 +1360,11 @@ bool ScriptFunctions_ZeroParameters(const std::vector<std::string>& params, Comp
   if (lowerFunction=="iswerewolf")
   {
     chunk.pushCode(CodeIsWerewolf);
+    return true;
+  }
+  if (lowerFunction=="lowerrank")
+  {
+    chunk.pushCode(CodeLowerRank);
     return true;
   }
   if (lowerFunction=="menumode")
@@ -2480,7 +2501,37 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
     //push name
     chunk.pushString(params[1]);
     return true;
-  }//if
+  }//if GetPCCell
+  if (lowerFunction == "getpcfacrep")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: GetPCFacRep needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodeGetPCFacRep);
+    //parameter is faction ID
+    //push ID's length
+    chunk.data.push_back(params[1].length());
+    //push faction ID
+    chunk.pushString(params[1]);
+    return true;
+  }//if GetPCFacRep
+  if (lowerFunction == "getpcrank")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: GetPCRank needs one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodeGetPCRank);
+    //parameter is faction ID
+    //push ID's length
+    chunk.data.push_back(params[1].length());
+    //push faction ID
+    chunk.pushString(params[1]);
+    return true;
+  }//if GetPCRank
   if (lowerFunction == "getpos")
   {
     if (params.size()<2)
@@ -2502,7 +2553,7 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
     //push axis
     chunk.data.push_back(Axis);
     return true;
-  }//if
+  }//if GetPos
   if (lowerFunction == "getrace")
   {
     if (params.size()<2)
@@ -3431,7 +3482,36 @@ bool ScriptFunctions_TwoParameters(const std::vector<std::string>& params, Compi
       return false;
     }
     return true;
-  }
+  }//if Drop
+  if (lowerFunction == "face")
+  {
+    if (params.size()<3)
+    {
+      std::cout << "ScriptCompiler: Error: Face needs two parameters!\n";
+      return false;
+    }
+    //first parameter is float, and so is second
+    float first;
+    if (!stringToFloat(params[1], first))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[1]<<"\" is not a "
+                << "float value.\n";
+      return false;
+    }//if
+    float second;
+    if (!stringToFloat(params[2], second))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is not a "
+                << "floating point value.\n";
+      return false;
+    }
+    //push function code
+    chunk.pushCode(CodeFace);
+    //push both floats
+    chunk.pushFloat(first);
+    chunk.pushFloat(second);
+    return true;
+  }//if Face
   if (lowerFunction == "fadeto")
   {
     if (params.size()<3)
@@ -3467,9 +3547,7 @@ bool ScriptFunctions_TwoParameters(const std::vector<std::string>& params, Compi
       return false;
     }
     return true;
-  }
-
-
+  }//if FadeTo
   if (lowerFunction == "journal")
   {
     if (params.size() < 3)
@@ -3500,6 +3578,39 @@ bool ScriptFunctions_TwoParameters(const std::vector<std::string>& params, Compi
     chunk.data.push_back(255);
     return true;
   }//if Journal
+  if (lowerFunction == "loopgroup")
+  {
+    if (params.size()<3)
+    {
+      std::cout << "ScriptCompiler: Error: LoopGroup needs two parameters!\n";
+      return false;
+    }
+    //first parameter is group name (will be translated into short)
+    //second parameters is number (short)
+    //third parameter will be omitted, so we push zero-byte.
+    int16_t groupIndex = 0;
+    if (!getAnimationGroupIndex(params[1], groupIndex))
+    {
+      std::cout << "ScriptCompiler: Error: Couldn't find animation group index "
+                << "for group name \""<<params[1]<<"\".\n";
+      return false;
+    }
+    int16_t number;
+    if (!stringToShort(params[2], number))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is no short value.\n";
+      return false;
+    }//if
+    //push function
+    chunk.pushCode(CodeLoopGroup);
+    //push animation group index
+    chunk.pushShort(groupIndex);
+    //push number as byte(!)
+    chunk.data.push_back(number);
+    //push zero-byte to indicate no flags
+    chunk.data.push_back(0);
+    return true;
+  }//if LoopGroup
   if (lowerFunction == "modpcfacrep")
   {
     if (params.size()<3)
@@ -3822,6 +3933,33 @@ bool ScriptFunctions_TwoParameters(const std::vector<std::string>& params, Compi
     }
     return true;
   }//if SetAngle
+  if (lowerFunction == "setjournalindex")
+  {
+    if (params.size()<3)
+    {
+      std::cout << "ScriptCompiler: Error: SetJournalIndex needs two parameters!\n";
+      return false;
+    }
+    //first parameter is journal ID, second is index (short)
+    int16_t j_index;
+    if (!stringToShort(params[2], j_index))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is not a short.\n";
+      return false;
+    }
+    //push function
+    chunk.pushCode(CodeSetJournalIndex);
+    //push journal ID's length
+    chunk.data.push_back(params[1].length());
+    //push ID
+    chunk.pushString(params[1]);
+    //push index
+    chunk.pushShort(j_index);
+    //push two FF bytes as filler
+    chunk.data.push_back(255);
+    chunk.data.push_back(255);
+    return true;
+  }//if SetJournalIndex
   if (lowerFunction == "setpcfacrep")
   {
     if (params.size()<3)
@@ -3964,6 +4102,82 @@ bool ScriptFunctions_ThreeParameters(const std::vector<std::string>& params, Com
     chunk.pushFloat(level);
     return true;
   }//if AddToLevItem
+  if (lowerFunction == "aitravel")
+  {
+    if (params.size()<4)
+    {
+      std::cout << "ScriptCompiler: Error: AITravel needs three parameters!\n";
+      return false;
+    }
+    //first, second and third parameter is x, y, z coord. (float)
+    // ---- check x
+    float x_coord;
+    if (!stringToFloat(params[1], x_coord))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[1]<<"\" is no float value!\n";
+      return false;
+    }
+    float y_coord;
+    if (!stringToFloat(params[2], y_coord))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is no float value!\n";
+      return false;
+    }
+    float z_coord;
+    if (!stringToFloat(params[3], z_coord))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[3]<<"\" is no float value!\n";
+      return false;
+    }
+    //push function code
+    chunk.pushCode(CodeAITravel);
+    //push coordinates
+    chunk.pushFloat(x_coord);
+    chunk.pushFloat(y_coord);
+    chunk.pushFloat(z_coord);
+    //push NUL byte to indicate absence of reset flag
+    chunk.data.push_back(0);
+    return true;
+  }//if AITravel
+  if (lowerFunction == "loopgroup")
+  {
+    if (params.size()<4)
+    {
+      std::cout << "ScriptCompiler: Error: LoopGroup needs three parameters!\n";
+      return false;
+    }
+    //first parameter is group name (will be translated into short)
+    //second parameters is number (short)
+    //third parameter is flag (byte-sized integer)
+    int16_t groupIndex = 0;
+    if (!getAnimationGroupIndex(params[1], groupIndex))
+    {
+      std::cout << "ScriptCompiler: Error: Couldn't find animation group index "
+                << "for group name \""<<params[1]<<"\".\n";
+      return false;
+    }
+    int16_t number;
+    if (!stringToShort(params[2], number))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is no short value.\n";
+      return false;
+    }//if
+    int16_t flag;
+    if (!stringToShort(params[3], flag))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[3]<<"\" is no short value.\n";
+      return false;
+    }//if
+    //push function
+    chunk.pushCode(CodeLoopGroup);
+    //push animation group index
+    chunk.pushShort(groupIndex);
+    //push number as byte(!)
+    chunk.data.push_back(number);
+    //push flag as byte (not as short)
+    chunk.data.push_back(flag);
+    return true;
+  }//if LoopGroup
   if (lowerFunction == "modfactionreaction")
   {
     if (params.size()<4)
@@ -4201,6 +4415,44 @@ bool ScriptFunctions_FourParameters(const std::vector<std::string>& params, Comp
 {
   //entry at index zero is the function's name
   const std::string lowerFunction = lowerCase(params.at(0));
+  if (lowerFunction == "aitravel")
+  {
+    if (params.size()<5)
+    {
+      std::cout << "ScriptCompiler: Error: AITravel needs four parameters!\n";
+      return false;
+    }
+    //first, second and third parameter is x, y, z coord. (float)
+    //fourth parameter is length of flag
+    // ---- check x
+    float x_coord;
+    if (!stringToFloat(params[1], x_coord))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[1]<<"\" is no float value!\n";
+      return false;
+    }
+    float y_coord;
+    if (!stringToFloat(params[2], y_coord))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is no float value!\n";
+      return false;
+    }
+    float z_coord;
+    if (!stringToFloat(params[3], z_coord))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[3]<<"\" is no float value!\n";
+      return false;
+    }
+    //push function code
+    chunk.pushCode(CodeAITravel);
+    //push coordinates
+    chunk.pushFloat(x_coord);
+    chunk.pushFloat(y_coord);
+    chunk.pushFloat(z_coord);
+    //push length of reset flag's string (yeah, that's what it does)
+    chunk.data.push_back(params[4].length());
+    return true;
+  }//if AITravel
   if (lowerFunction == "placeatme")
   {
     if (params.size()<5)
@@ -4331,8 +4583,6 @@ bool ScriptFunctions_FourParameters(const std::vector<std::string>& params, Comp
     chunk.pushFloat(z_rotation);
     return true;
   }//if Position
-
-
   //nothing found, return false
   return false;
 }

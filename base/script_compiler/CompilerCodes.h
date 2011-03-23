@@ -36,7 +36,7 @@ namespace ScriptCompiler
   const uint16_t CodeAIEscortCell = 0x10F5; //"F510"
   const uint16_t CodeAIFollow = 0x10F6; //"F610"
   const uint16_t CodeAIFollowCell = 0x10F7; //"F710"
-  //TODO: AITravel
+  const uint16_t CodeAITravel = 0x10F8; //"F810"
   //TODO: AIWander
   const uint16_t CodeBecomeWerewolf = 0x11B3; //"B311"
   const uint16_t CodeCast = 0x1123; //"2311"
@@ -90,7 +90,7 @@ namespace ScriptCompiler
   const uint16_t CodeEndWhile = 0x010B; //"0B01"
   const uint16_t CodeEquip = 0x110E; //"0E11"
   const uint16_t CodeExplodeSpell = 0x11AD; //"AD11"
-  //TODO: Face
+  const uint16_t CodeFace = 0x1162; //"6211"
   const uint16_t CodeFadeIn = 0x1131; //"3111"
   const uint16_t CodeFadeOut = 0x1130; //"3011"
   const uint16_t CodeFadeTo = 0x1145; //"4511"
@@ -176,10 +176,10 @@ namespace ScriptCompiler
   const uint16_t CodeGetParalysis = 0x1182; //"8211"
   const uint16_t CodeGetPCCell = 0x1112; //"1211"
   const uint16_t CodeGetPCCrimeLevel = 0x109B; //"9B10"
-  //TODO: GetPCFacRep
+  const uint16_t CodeGetPCFacRep = 0x10D7; //"D710"
   const uint16_t CodeGetPCInJail = 0x11BB; //"BB11"
   const uint16_t CodeGetPCJumping = 0x118C; //"8C11"
-  //TODO: GetPCRank
+  const uint16_t CodeGetPCRank = 0x110C; //"0C11"
   const uint16_t CodeGetPCRunning = 0x118B; //"8B11"
   const uint16_t CodeGetPCSleep = 0x10E0; //"E010"
   const uint16_t CodeGetPCSneaking = 0x118A; //"8A11"
@@ -250,8 +250,8 @@ namespace ScriptCompiler
   const uint16_t CodeIsWerewolf = 0x11B5; //"B511"
   const uint16_t CodeJournal = 0x10CC; //"CC10"
   const uint16_t CodeLock = 0x1136; //"3611"
-  //TODO: LoopGroup
-  //TODO: LowerRank
+  const uint16_t CodeLoopGroup = 0x1015; //"1510"
+  const uint16_t CodeLowerRank = 0x10CF; //"CF10"
   const uint16_t CodeMenuMode = 0x1020; //"2010"
   const uint16_t CodeMenuTest = 0x0126; //"2601"
   //TODO: MessageBox
@@ -419,7 +419,7 @@ namespace ScriptCompiler
   const uint16_t CodeSetIllusion = 0x1060; //"6010"
   const uint16_t CodeSetIntelligence = 0x1027; //"2710"
   const uint16_t CodeSetInvisible = 0x1186; //"8611"
-  //TODO: SetJournalIndex
+  const uint16_t CodeSetJournalIndex = 0x11AA; //"AA11"
   const uint16_t CodeSetLevel = 0x1156; //"5611"
   const uint16_t CodeSetLightArmor = 0x107B; //"7B10"
   const uint16_t CodeSetLongBlade = 0x104B; //"4B10"

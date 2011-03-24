@@ -161,6 +161,30 @@ SC_VarRef getVariableTypeWithIndex(const std::string& varName, const std::vector
   return SC_VarRef(vtGlobal, 0);
 }
 
+unsigned int getEndOfIf(const std::vector<std::string>& lines, const unsigned int start)
+{
+  /******
+   * TODO:
+   *
+   * This won't work properly with nested if!
+   */
+  const std::vector<std::string>::size_type len = lines.size();
+  if (start>=len) return start;
+  unsigned int look = start;
+  while (look<len)
+  {
+    const std::string lowerLine = lowerCase(lines.at(look));
+    if ((lowerLine=="endif") or (lowerLine=="else")
+        or (lowerLine.substr(0,7)=="elseif "))
+    {
+      return look;
+    }
+    ++look;
+  }//while
+  //nothing found, return -1 (i.e. failure)
+  return start;
+}
+
 bool getAnimationGroupIndex(const std::string& groupName, int16_t& result)
 {
   const std::string lcGroup = lowerCase(groupName);
@@ -5376,6 +5400,35 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
     {
       CompiledData.pushCode(CodeReturn);
     }//if return found
+    //check for if
+    else if (lowerCase(lines.at(i).substr(0,3))=="if ")
+    {
+      unsigned int end_of_if = getEndOfIf(lines, i);
+      if (end_of_if==i)
+      {
+        std::cout << "ScriptCompiler: Error: if/elseif/endif does not match.\n";
+        return false;
+      }
+      //first try to implement if-statement - It's still far from correct or
+      //complete, but we have to start somewhere.
+      CompiledData.pushCode(CodeIf);
+      //next is statement count (byte)
+      CompiledData.data.push_back(end_of_if-i-1);
+      //next is compare statement, but this can get complicated
+      WorkString = lines.at(i).substr(3);
+      trim(WorkString);
+      if (removeEnclosingBrackets(WorkString))
+      {
+        trim(WorkString);
+      }
+      //Assume that whole string is just a simple statement like 3 < 5.
+      //push length of compare statement
+      CompiledData.data.push_back(WorkString.length()+1);
+      //push one space
+      CompiledData.data.push_back(' ');
+      //push the string
+      CompiledData.pushString(WorkString);
+    }//if IF found
     //check for endif
     else if (lowerCase(lines.at(i))=="endif")
     {

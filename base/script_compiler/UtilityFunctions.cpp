@@ -233,3 +233,43 @@ std::string lowerCase(const std::string& str1)
   }//for
   return result;
 }
+
+/*tries to remove the bracket pair surrounding the rest of the string, if they
+  match. Returns true, if something was removed, false otherwise.
+*/
+bool removeEnclosingBrackets(std::string& expr)
+{
+  const std::string::size_type len = expr.length();
+  //can't remove brackets, if there is not enough space for them
+  if (len<2) return false;
+  //... or if there aren't any
+  if ((expr.at(0)!='(') or (expr.at(len-1)!=')')) return false;
+
+  std::string::size_type look = 0;
+  int bracket_level = 0;
+  while (look<len)
+  {
+    if (expr.at(look)=='(')
+    {
+      ++bracket_level;
+    }
+    else if (expr.at(look)==')')
+    {
+      --bracket_level;
+      if (bracket_level==0)
+      {
+        //Are we at the end?
+        if (len-1==look)
+        {
+          //remove first and last character of string
+          expr.erase(len-1, 1); //last one
+          expr.erase(0,1); //first one
+          return true;
+        }
+        return false;
+      }
+    }
+    ++look;
+  }//while
+  return false;
+}

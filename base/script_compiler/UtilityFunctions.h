@@ -81,4 +81,12 @@ void trimLeft(std::string& str1);
 */
 std::string lowerCase(const std::string& str1);
 
+/*tries to remove the bracket pair surrounding the rest of the string, if they
+  match. Returns true, if something was removed, false otherwise.
+
+  parameters:
+      expr - the string
+*/
+bool removeEnclosingBrackets(std::string& expr);
+
 #endif // UTILITYFUNCTIONS_H

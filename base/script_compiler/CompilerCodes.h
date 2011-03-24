@@ -246,7 +246,7 @@ namespace ScriptCompiler
   const uint16_t CodeHitOnMe = 0x1115; //"1511"
   const uint16_t CodeHurtCollidingActor = 0x11A5; //"A511"
   const uint16_t CodeHurtStandingActor = 0x1135; //"3511"
-  //TODO: If
+  const uint16_t CodeIf = 0x0106; //"0601"
   const uint16_t CodeIsWerewolf = 0x11B5; //"B511"
   const uint16_t CodeJournal = 0x10CC; //"CC10"
   const uint16_t CodeLock = 0x1136; //"3611"

@@ -3080,24 +3080,22 @@ bool ScriptFunctions_TwoParameters(const std::vector<std::string>& params, Compi
       return false;
     }
     //first parameter is ID of item, second is number (short)
+    //check count
+    int16_t count;
+    if (!stringToShort(params[2], count))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is no short value!\n";
+      return false;
+    }
     chunk.pushCode(CodeAddItem);
     //push ID's length
     chunk.data.push_back(params[1].length());
     //push ID
     chunk.pushString(params[1]);
     //push count
-    int16_t count;
-    if (stringToShort(params[2], count))
-    {
-      chunk.pushShort(count);
-    }
-    else
-    {
-      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is no short value!\n";
-      return false;
-    }
+    chunk.pushShort(count);
     return true;
-  }
+  }//if AddItem
   if (lowerFunction == "addsoulgem")
   {
     if (params.size()<3)
@@ -3116,7 +3114,7 @@ bool ScriptFunctions_TwoParameters(const std::vector<std::string>& params, Compi
     //push gem ID
     chunk.pushString(params[2]);
     return true;
-  }
+  }//if AddSoulGem
   if (lowerFunction == "cast")
   {
     if (params.size()<3)
@@ -3135,7 +3133,7 @@ bool ScriptFunctions_TwoParameters(const std::vector<std::string>& params, Compi
     //push target ID
     chunk.pushString(params[2]);
     return true;
-  }
+  }//if Cast
   if (lowerFunction == "changeweather")
   {
     if (params.size()<3)
@@ -3144,24 +3142,23 @@ bool ScriptFunctions_TwoParameters(const std::vector<std::string>& params, Compi
       return false;
     }
     //first parameter is ID of region, second is short that indicates the new weather
+    //check new weather type
+    int16_t weather_type;
+    if (!stringToShort(params[2], weather_type))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is no short value!\n";
+      return false;
+    }
+    //push function
     chunk.pushCode(CodeChangeWeather);
     //push region ID's length
     chunk.data.push_back(params[1].length());
     //push region ID
     chunk.pushString(params[1]);
     //push new weather type
-    int16_t weather_type;
-    if (stringToShort(params[2], weather_type))
-    {
-      chunk.pushShort(weather_type);
-    }
-    else
-    {
-      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is no short value!\n";
-      return false;
-    }
+    chunk.pushShort(weather_type);
     return true;
-  }
+  }//if ChangeWeather
   if (lowerFunction == "drop")
   {
     if (params.size()<3)
@@ -3170,22 +3167,20 @@ bool ScriptFunctions_TwoParameters(const std::vector<std::string>& params, Compi
       return false;
     }
     //first parameter is ID of item, second is short that indicates the count
+    //check count
+    int16_t count;
+    if (!stringToShort(params[2], count))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is no short value!\n";
+      return false;
+    }
     chunk.pushCode(CodeDrop);
     //push item ID's length
     chunk.data.push_back(params[1].length());
     //push item ID
     chunk.pushString(params[1]);
     //push count
-    int16_t count;
-    if (stringToShort(params[2], count))
-    {
-      chunk.pushShort(count);
-    }
-    else
-    {
-      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is no short value!\n";
-      return false;
-    }
+    chunk.pushShort(count);
     return true;
   }//if Drop
   if (lowerFunction == "face")
@@ -3224,33 +3219,30 @@ bool ScriptFunctions_TwoParameters(const std::vector<std::string>& params, Compi
       std::cout << "ScriptCompiler: Error: FadeTo needs two parameters!\n";
       return false;
     }
-    chunk.pushCode(CodeFadeTo);
     //first parameter is amount of fading (long?)
-    //push long
+    //check long
     int32_t fade_amount;
-    if (stringToLong(params[1], fade_amount))
-    {
-      chunk.pushLong(fade_amount);
-    }//if
-    else
+    if (!stringToLong(params[1], fade_amount))
     {
       std::cout << "ScriptCompiler: Error: \""<<params[1]<<"\" is not a "
                 << "long value.\n";
       return false;
-    }
+    }//if
     //second parameter is time for fading (float)
     //push float
     float fade_time;
-    if (stringToFloat(params[2], fade_time))
-    {
-      chunk.pushFloat(fade_time);
-    }//if
-    else
+    if (!stringToFloat(params[2], fade_time))
     {
       std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is not a "
                 << "floating point value.\n";
       return false;
-    }
+    }//if
+    //push function
+    chunk.pushCode(CodeFadeTo);
+    //push long
+    chunk.pushLong(fade_amount);
+    //push float
+    chunk.pushFloat(fade_time);
     return true;
   }//if FadeTo
   if (lowerFunction == "journal")
@@ -3261,23 +3253,22 @@ bool ScriptFunctions_TwoParameters(const std::vector<std::string>& params, Compi
                 << ", not "<<params.size()<<".\n";
       return false;
     }
-    chunk.pushCode(CodeJournal);
-    //push journal ID's length
-    chunk.data.push_back(params[1].length());
-    chunk.pushString(params[1]);
     //second parameter should be index
     int16_t journal_index;
-    if (stringToShort(params[2], journal_index))
-    {
-      chunk.pushShort(journal_index);
-    }
-    else
+    if (!stringToShort(params[2], journal_index))
     {
       std::cout << "ScriptCompiler: Error: Journal command expects short value"
                 << " as second parameter, but \""<<params[2]<<"\" is not a "
                 << "short value.\n";
       return false;
     }
+    chunk.pushCode(CodeJournal);
+    //push journal ID's length
+    chunk.data.push_back(params[1].length());
+    //push journal ID itself
+    chunk.pushString(params[1]);
+    //push index
+    chunk.pushShort(journal_index);
     //fill data so it's four bytes
     chunk.data.push_back(255);
     chunk.data.push_back(255);
@@ -3342,7 +3333,6 @@ bool ScriptFunctions_TwoParameters(const std::vector<std::string>& params, Compi
     chunk.pushString(params[2]);
     return true;
   }//if ModPCFacRep
-
   if (lowerFunction == "move")
   {
     if (params.size()<3)
@@ -3417,24 +3407,22 @@ bool ScriptFunctions_TwoParameters(const std::vector<std::string>& params, Compi
                 << ", not "<<params.size()<<".\n";
       return false;
     }
-    chunk.pushCode(CodePlayBink);
-    //push bink file's length
-    chunk.data.push_back(params[1].length());
-    //push bink file
-    chunk.pushString(params[1]);
     //second parameter should be flag (0 or 1, byte)
     int16_t bink_flag;
-    if (stringToShort(params[2], bink_flag))
-    {
-      chunk.data.push_back(bink_flag);//flag uses just one byte!
-    }
-    else
+    if (!stringToShort(params[2], bink_flag))
     {
       std::cout << "ScriptCompiler: Error: PlayBink expects byte value as "
                 << "second parameter, but \""<<params[2]<<"\" is not a short "
                 << "value.\n";
       return false;
     }
+    chunk.pushCode(CodePlayBink);
+    //push bink file's length
+    chunk.data.push_back(params[1].length());
+    //push bink file
+    chunk.pushString(params[1]);
+    //push flag
+    chunk.data.push_back(bink_flag);//flag uses just one byte!
     return true;
   }//if PlayBink
   if (lowerFunction == "playgroup")
@@ -3469,7 +3457,7 @@ bool ScriptFunctions_TwoParameters(const std::vector<std::string>& params, Compi
     //push group index
     chunk.pushShort(groupIndex);
     //push flag
-    chunk.pushShort(groupFlag);
+    chunk.data.push_back(groupFlag); //(byte, not short!)
     return true;
   }//if PlayGroup
   if (lowerFunction == "removeitem")
@@ -3621,7 +3609,6 @@ bool ScriptFunctions_TwoParameters(const std::vector<std::string>& params, Compi
         return false;
       }
     }
-
     //push function
     chunk.pushCode(CodeSetAngle);
     //push axis
@@ -3738,7 +3725,6 @@ bool ScriptFunctions_TwoParameters(const std::vector<std::string>& params, Compi
     }
     return true;
   }//if SetPos
-
   //end - no matching function found, if we are here
   return false;
 }
@@ -4111,7 +4097,6 @@ bool ScriptFunctions_ThreeParameters(const std::vector<std::string>& params, Com
     chunk.pushShort(add_reaction);
     return true;
   }//if SetFactionReaction
-
   //if we get to this point, no match was found
   return false;
 }

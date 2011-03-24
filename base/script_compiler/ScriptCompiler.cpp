@@ -1986,20 +1986,19 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
       std::cout << "ScriptCompiler: Error: FadeIn needs one parameter!\n";
       return false;
     }
-    chunk.pushCode(CodeFadeIn);
     //parameter is time for fading (float)
-    //push float
+    //check float
     float fade_time;
-    if (stringToFloat(params[1], fade_time))
-    {
-      chunk.pushFloat(fade_time);
-    }//if
-    else
+    if (!stringToFloat(params[1], fade_time))
     {
       std::cout << "ScriptCompiler: Error: \""<<params[1]<<"\" is not a "
                 << "floating point value.\n";
       return false;
     }
+    //push function
+    chunk.pushCode(CodeFadeIn);
+    //push float
+    chunk.pushFloat(fade_time);
     return true;
   }
   if (lowerFunction == "fadeout")
@@ -2009,20 +2008,19 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
       std::cout << "ScriptCompiler: Error: FadeOut needs one parameter!\n";
       return false;
     }
-    chunk.pushCode(CodeFadeOut);
     //parameter is time for fading (float)
-    //push float
+    //check float
     float fade_time;
-    if (stringToFloat(params[1], fade_time))
-    {
-      chunk.pushFloat(fade_time);
-    }//if
-    else
+    if (!stringToFloat(params[1], fade_time))
     {
       std::cout << "ScriptCompiler: Error: \""<<params[1]<<"\" is not a "
                 << "floating point value.\n";
       return false;
     }
+    //push function name
+    chunk.pushCode(CodeFadeOut);
+    //push float
+    chunk.pushFloat(fade_time);
     return true;
   }
   if (lowerFunction == "getangle")
@@ -2054,19 +2052,18 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
       std::cout << "ScriptCompiler: Error: GetArmorType needs one parameter!\n";
       return false;
     }
-    chunk.pushCode(CodeGetArmorType);
     //parameter is slot index
     int16_t slot;
-    if (stringToShort(params[1], slot))
-    {
-      chunk.pushShort(slot);
-    }//if
-    else
+    if (!stringToShort(params[1], slot))
     {
       std::cout << "ScriptCompiler: Error: \""<<params[1]<<"\" is not a "
                 << "short value.\n";
       return false;
     }
+    //function code
+    chunk.pushCode(CodeGetArmorType);
+    //push slot index
+    chunk.pushShort(slot);
     return true;
   }//if
   if (lowerFunction == "getdeadcount")
@@ -2083,7 +2080,7 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
     //push ID itself
     chunk.pushString(params[1]);
     return true;
-  }//if
+  }//if GetDeadCount
   if (lowerFunction == "getdetected")
   {
     if (params.size()<2)
@@ -2098,7 +2095,7 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
     //push ID itself
     chunk.pushString(params[1]);
     return true;
-  }//if
+  }//if GetDetected
   if (lowerFunction == "getdistance")
   {
     if (params.size()<2)
@@ -2113,7 +2110,7 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
     //push ID
     chunk.pushString(params[1]);
     return true;
-  }//if
+  }//if GetDistance
   if (lowerFunction == "geteffect")
   {
     if (params.size()<2)
@@ -2121,7 +2118,6 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
       std::cout << "ScriptCompiler: Error: GetEffect needs one parameter!\n";
       return false;
     }
-    chunk.pushCode(CodeGetEffect);
     //parameter is mgef ID as string, but the chunk needs it as short
     //That's why we do some ugly brute force here, but an inverse function would
     // be the weapon of choice.
@@ -2143,10 +2139,12 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
                 << "magic effect for GetEffect.\n";
       return false;
     }
+    //push function code
+    chunk.pushCode(CodeGetEffect);
     //push effect ID
     chunk.pushShort(effectID);
     return true;
-  }//if
+  }//if GetEffect
   if (lowerFunction == "getitemcount")
   {
     if (params.size()<2)
@@ -2326,26 +2324,36 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
       std::cout << "ScriptCompiler: Error: GetSquareRoot needs one parameter!\n";
       return false;
     }
-    chunk.pushCode(CodeGetSquareRoot);
-    //parameter is spell ID or float var
-    //However, we only do floats yet.
-    /* TODO: Implement possibility to use float variables, too. */
-    //push ID's length
+    //parameter is floating point value or float var
+    //check for float or local var
     float float_value;
-    if (stringToFloat(params[1], float_value))
+    SC_VarRef localRef = SC_VarRef(vtGlobal, 0);
+    if (!stringToFloat(params[1], float_value))
+    {
+      //Go for the local var here.
+      localRef = chunk.getVariableTypeWithIndex(params[1]);
+      if (localRef.Type==vtGlobal)
+      {
+        //No match found, we have an invalid expression here.
+        std::cout << "ScriptCompiler: Error: \""<<params[1]<<"\" is no floating"
+                  << " point value and no local var either!\n";
+        return false;
+      }
+    }
+    //push function code
+    chunk.pushCode(CodeGetSquareRoot);
+    if (localRef.Type==vtGlobal)
     {
       //push float
       chunk.pushFloat(float_value);
     }
     else
     {
-      //Should go for the (local) var here, but we don't support that yet.
-      std::cout << "ScriptCompiler: Error: only floats implemented for GetSquareRoot."
-                << " Floating point variables will follow later!\n";
-      return false;
+      //push local var
+      chunk.pushNonGlobalRefWithTwoZeroFillers(localRef);
     }
     return true;
-  }//if
+  }//if GetSquareRoot
   if (lowerFunction == "getstartingangle")
   {
     if (params.size()<2)
@@ -2472,20 +2480,18 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
       std::cout << "ScriptCompiler: Error: HurtCollidingActor needs one parameter!\n";
       return false;
     }
-    chunk.pushCode(CodeHurtCollidingActor);
     //parameter is damage per second as float
     float f_value;
-    if (stringToFloat(params[1], f_value))
-    {
-      //push float
-      chunk.pushFloat(f_value);
-    }
-    else
+    if (!stringToFloat(params[1], f_value))
     {
       std::cout << "ScriptCompiler: Error: \""<<params[1]<<"\" is not a proper "
                 << "floating point value.\n";
       return false;
     }
+    //push function code
+    chunk.pushCode(CodeHurtCollidingActor);
+    //push float
+    chunk.pushFloat(f_value);
     return true;
   }//if
   if (lowerFunction == "hurtstandingactor")
@@ -2495,20 +2501,18 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
       std::cout << "ScriptCompiler: Error: HurtStandingActor needs one parameter!\n";
       return false;
     }
-    chunk.pushCode(CodeHurtStandingActor);
     //parameter is damage per second as float
     float f_value;
-    if (stringToFloat(params[1], f_value))
-    {
-      //push float
-      chunk.pushFloat(f_value);
-    }
-    else
+    if (!stringToFloat(params[1], f_value))
     {
       std::cout << "ScriptCompiler: Error: \""<<params[1]<<"\" is not a proper "
                 << "floating point value.\n";
       return false;
     }
+    //push function
+    chunk.pushCode(CodeHurtStandingActor);
+    //push float
+    chunk.pushFloat(f_value);
     return true;
   }//if
   if (lowerFunction == "lock")
@@ -2518,20 +2522,18 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
       std::cout << "ScriptCompiler: Error: Lock needs one parameter!\n";
       return false;
     }
-    chunk.pushCode(CodeLock);
     //parameter is lock level
     int16_t lock_level;
-    if (stringToShort(params[1], lock_level))
-    {
-      chunk.pushShort(lock_level);
-    }
-    else
+    if (!stringToShort(params[1], lock_level))
     {
       std::cout << "ScriptCompiler: Error: \""<<params[1]<<"\" is not a proper "
                 << "short value.\n";
       return false;
     }
-
+    //push function code
+    chunk.pushCode(CodeLock);
+    //push lock level
+    chunk.pushShort(lock_level);
     return true;
   }//if Lock
   if (lowerFunction == "menutest")
@@ -2675,8 +2677,7 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
     //push ID
     chunk.pushString(params[1]);
     return true;
-  }//if
-
+  }//if PCRaiseRank
   if (lowerFunction == "playgroup")
   {
     if (params.size()<2)
@@ -2879,7 +2880,6 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
     chunk.pushString(params[1]);
     return true;
   }//if ScriptRunning
-
   if (lowerFunction.substr(0,3)=="set")
   {
     //could be a function that sets stats like SetAcrobatics, so check

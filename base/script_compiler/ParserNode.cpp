@@ -20,9 +20,46 @@
 
 #include "ParserNode.h"
 #include <iostream>
+#include "UtilityFunctions.h"
 
 namespace ScriptCompiler
 {
+
+void removeEnclosingBrackets(std::string& expr)
+{
+  const std::string::size_type len = expr.length();
+  //can't remove brackets, if there is not enough space for them
+  if (len<2) return;
+  //... or if there aren't any
+  if ((expr.at(0)!='(') or (expr.at(len-1)!=')')) return;
+
+  std::string::size_type look = 0;
+  int bracket_level = 0;
+  while (look<len)
+  {
+    if (expr.at(look)=='(')
+    {
+      ++bracket_level;
+    }
+    else if (expr.at(look)==')')
+    {
+      --bracket_level;
+      if (bracket_level==0)
+      {
+        //Are we at the end?
+        if (len-1==look)
+        {
+          //remove first and last character of string
+          expr.erase(len-1, 1); //last one
+          expr.erase(0,1); //first one
+        }
+        return;
+      }
+    }
+    ++look;
+  }//while
+  return;
+}
 
 ParserNode::ParserNode()
 {
@@ -52,8 +89,10 @@ void ParserNode::clearBranches()
   }
 }
 
-bool ParserNode::splitToTree(const std::string& expression)
+bool ParserNode::splitToTree(std::string expression)
 {
+  trim(expression);
+  removeEnclosingBrackets(expression);
   std::string::size_type pos = getNextOperatorPos(expression, 0);
   clearBranches();
   if (pos==std::string::npos)

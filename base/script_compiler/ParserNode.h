@@ -66,7 +66,7 @@ struct ParserNode
        parameters:
            expression - the string that contains the mathematical expression
     */
-    bool splitToTree(const std::string& expression);
+    bool splitToTree(std::string expression);
 
     /*returns the data of the node and its branches in the order MW would use it*/
     std::string getStackOrderedContent() const;

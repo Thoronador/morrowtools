@@ -25,13 +25,16 @@
 namespace ScriptCompiler
 {
 
-void removeEnclosingBrackets(std::string& expr)
+/*tries to remove the bracket pair surrounding the rest of the string, if they
+  match. Returns true, if something was removed, false otherwise.
+*/
+bool removeEnclosingBrackets(std::string& expr)
 {
   const std::string::size_type len = expr.length();
   //can't remove brackets, if there is not enough space for them
-  if (len<2) return;
+  if (len<2) return false;
   //... or if there aren't any
-  if ((expr.at(0)!='(') or (expr.at(len-1)!=')')) return;
+  if ((expr.at(0)!='(') or (expr.at(len-1)!=')')) return false;
 
   std::string::size_type look = 0;
   int bracket_level = 0;
@@ -52,13 +55,14 @@ void removeEnclosingBrackets(std::string& expr)
           //remove first and last character of string
           expr.erase(len-1, 1); //last one
           expr.erase(0,1); //first one
+          return true;
         }
-        return;
+        return false;
       }
     }
     ++look;
   }//while
-  return;
+  return false;
 }
 
 ParserNode::ParserNode()
@@ -92,7 +96,12 @@ void ParserNode::clearBranches()
 bool ParserNode::splitToTree(std::string expression)
 {
   trim(expression);
-  removeEnclosingBrackets(expression);
+  if (removeEnclosingBrackets(expression))
+  {
+    //There might be new spaces at the beginning and end of the string after the
+    //brackets were removed, so we have to trim again.
+    trim(expression);
+  }
   std::string::size_type pos = getNextOperatorPos(expression, 0);
   clearBranches();
   if (pos==std::string::npos)

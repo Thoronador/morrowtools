@@ -161,16 +161,40 @@ SC_VarRef getVariableTypeWithIndex(const std::string& varName, const std::vector
   return SC_VarRef(vtGlobal, 0);
 }
 
-unsigned int getEndOfIf(const std::vector<std::string>& lines, const unsigned int start)
+unsigned int getEndifForIf(const std::vector<std::string>& lines, const unsigned int start)
 {
-  /******
-   * TODO:
-   *
-   * This won't work properly with nested if!
-   */
   const std::vector<std::string>::size_type len = lines.size();
   if (start>=len) return start;
-  unsigned int look = start;
+  unsigned int look = start+1;
+  while (look<len)
+  {
+    const std::string lowerLine = lowerCase(lines.at(look));
+    if (lowerLine=="endif")
+    {
+      return look;
+    }
+    else if (lowerLine.substr(0,3) == "if ")
+    {
+      const unsigned int res = getEndifForIf(lines, look);
+      if (res==look)
+      {
+        //no match found
+        return start;
+      }
+      //set look to the position of endif of the inner if block
+      look = res;
+    }//else
+    ++look;
+  }//while
+  //nothing found, return start (i.e. failure)
+  return start;
+}
+
+unsigned int getEndOfIf(const std::vector<std::string>& lines, const unsigned int start)
+{
+  const std::vector<std::string>::size_type len = lines.size();
+  if (start>=len) return start;
+  unsigned int look = start+1;
   while (look<len)
   {
     const std::string lowerLine = lowerCase(lines.at(look));
@@ -179,9 +203,50 @@ unsigned int getEndOfIf(const std::vector<std::string>& lines, const unsigned in
     {
       return look;
     }
+    else if (lowerLine.substr(0,3) == "if ")
+    {
+      const unsigned int res = getEndifForIf(lines, look);
+      if (res==look)
+      {
+        //no match found
+        return start;
+      }
+      //set look to the position of endif of the inner if block
+      look = res;
+    }//else
     ++look;
   }//while
-  //nothing found, return -1 (i.e. failure)
+  //nothing found, return start (i.e. failure)
+  return start;
+}//func getEndOfIf
+
+unsigned int getEndOfWhile(const std::vector<std::string>& lines, const unsigned int start)
+{
+  const std::vector<std::string>::size_type len = lines.size();
+  if (start>=len) return start;
+  unsigned int look = start+1;
+  while (look<len)
+  {
+    const std::string lowerLine = lowerCase(lines.at(look));
+    //Is this the end of the loop?
+    if (lowerLine=="endwhile")
+    {
+      return look;
+    }
+    else if (lowerLine.substr(0,6) == "while ")
+    {
+      const unsigned int res = getEndOfWhile(lines, look);
+      if (res==look)
+      {
+        //no match found
+        return start;
+      }
+      //set look to the position of endwhile of the inner while loop
+      look = res;
+    }//else
+    ++look;
+  }//while
+  //nothing found, return start (i.e. failure)
   return start;
 }
 
@@ -5409,6 +5474,13 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
         std::cout << "ScriptCompiler: Error: if/elseif/endif does not match.\n";
         return false;
       }
+      //Does the if-block contain more than 255 statements/lines?
+      if (end_of_if-i-1>255)
+      {
+        std::cout << "ScriptCompiler: Error: if-block contains more than 255"
+                  << " statements, it cannot be handled properly!\n";
+        return false;
+      }
       //first try to implement if-statement - It's still far from correct or
       //complete, but we have to start somewhere.
       CompiledData.pushCode(CodeIf);
@@ -5434,6 +5506,49 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
     {
       CompiledData.pushCode(CodeEndIf);
     }//if EndIf found
+    //check for while loop
+    else if (lowerCase(lines.at(i).substr(0,6))=="while ")
+    {
+      unsigned int end_of_while = getEndOfWhile(lines, i);
+      if (end_of_while==i)
+      {
+        std::cout << "ScriptCompiler: Error: while/endwhile does not match.\n";
+        return false;
+      }
+      //Does the while loop contain more than 255 statements/lines?
+      if (end_of_while-i-1>255)
+      {
+        std::cout << "ScriptCompiler: Error: while loop contains more than 255"
+                  << " statements, it cannot be handled properly!\n";
+        return false;
+      }
+      //first try to implement while-statement - It's still far from correct or
+      //complete, but we have to start somewhere.
+      CompiledData.pushCode(CodeWhile);
+      //next is statement count (byte)
+      /*******
+       * TODO:
+       *
+       * -Statement count is one too much for nested while, as far as I can see.
+       *  I guess, MW does not count either while or endwhile as a statement.
+       *
+       *******/
+      CompiledData.data.push_back(end_of_while-i-1);
+      //next is compare statement, but this can get complicated
+      WorkString = lines.at(i).substr(6);
+      trim(WorkString);
+      if (removeEnclosingBrackets(WorkString))
+      {
+        trim(WorkString);
+      }
+      //Assume that whole string is just a simple statement like 3 < 5.
+      //push length of compare statement
+      CompiledData.data.push_back(WorkString.length()+1);
+      //push one space
+      CompiledData.data.push_back(' ');
+      //push the string
+      CompiledData.pushString(WorkString);
+    }//if While found
     //check for endWhile
     else if (lowerCase(lines.at(i))=="endwhile")
     {

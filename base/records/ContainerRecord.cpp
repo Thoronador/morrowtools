@@ -23,6 +23,9 @@
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 
+const int32_t ContainerFlag_Organic = 1;
+const int32_t ContainerFlag_Respawns = 2;
+
 ContainerRecord::ContainerRecord()
 {
   ContainerID = ModelPath = ContainerName = "";
@@ -156,7 +159,7 @@ bool ContainerRecord::saveToStream(std::ofstream& output) const
     if (len>32)
     {
       len=32;
-      std::cout << "ContainerRecord::saveToStream: Warning: item name of region \""
+      std::cout << "ContainerRecord::saveToStream: Warning: item name of container \""
                 << ContainerID<< "\" got truncated for index "<<i<<".\n";
     }
     output.write(Items.at(i).Item.c_str(), len);
@@ -402,4 +405,14 @@ bool ContainerRecord::loadFromStream(std::ifstream& in_File)
     Items.push_back(temp);
   } //while
   return in_File.good();
+}
+
+bool ContainerRecord::isOrganic() const
+{
+  return ((ContainerFlags & ContainerFlag_Organic)!=0);
+}
+
+bool ContainerRecord::doesRespawn() const
+{
+  return ((ContainerFlags & ContainerFlag_Respawns)!=0);
 }

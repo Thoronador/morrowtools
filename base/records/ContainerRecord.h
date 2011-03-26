@@ -28,7 +28,7 @@
 
 struct ItemRecord
 {
-  uint32_t Count;
+  int32_t Count;
   std::string Item;
 };//struct
 
@@ -62,6 +62,12 @@ struct ContainerRecord: public BasicRecord
         in_File - the input file stream
   */
   bool loadFromStream(std::ifstream& in_File);
+
+  /* returns true, if the container is an organic container */
+  bool isOrganic() const;
+
+  /* returns true, if the container content will respawn (orangic containers only) */
+  bool doesRespawn() const;
 };//struct
 
 #endif // CONTAINERRECORD_H

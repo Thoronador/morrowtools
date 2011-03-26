@@ -45,6 +45,18 @@ struct BasicRecord
           in_File - the input file stream
     */
     virtual bool loadFromStream(std::ifstream& in_File) = 0;
+
+    //returns the first header part of this record
+    int32_t getHeaderOne() const;
+
+    //returns the header flags of this record
+    int32_t getHeaderFlags() const;
+
+    //returns true, if the blocked flag for this record is set
+    bool isBlocked() const;
+
+    //returns true, if the "References Persist" flag for this record is set
+    bool isPersistent() const;
   protected:
      int32_t HeaderOne;
      int32_t HeaderFlags;

@@ -20,6 +20,9 @@
 
 #include "BasicRecord.h"
 
+const int32_t FlagPersists = 1024;
+const int32_t FlagBlocked = 8192;
+
 BasicRecord::BasicRecord()
 {
   HeaderOne = 0;
@@ -30,4 +33,24 @@ BasicRecord::~BasicRecord()
 {
   //empty
   //Purpose is to have a virtual destructor to get rid of compiler warnings.
+}
+
+int32_t BasicRecord::getHeaderOne() const
+{
+  return HeaderOne;
+}
+
+int32_t BasicRecord::getHeaderFlags() const
+{
+  return HeaderFlags;
+}
+
+bool BasicRecord::isBlocked() const
+{
+  return ((HeaderFlags & FlagBlocked)!=0);
+}
+
+bool BasicRecord::isPersistent() const
+{
+  return ((HeaderFlags & FlagPersists)!=0);
 }

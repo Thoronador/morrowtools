@@ -66,7 +66,7 @@ struct ContainerRecord: public BasicRecord
   /* returns true, if the container is an organic container */
   bool isOrganic() const;
 
-  /* returns true, if the container content will respawn (orangic containers only) */
+  /* returns true, if the container content will respawn (organic containers only) */
   bool doesRespawn() const;
 };//struct
 

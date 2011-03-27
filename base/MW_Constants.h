@@ -88,6 +88,7 @@ const int32_t cMGEF = 0x4645474D; //"MGEF" = 4D 47 45 46
 const int32_t cMISC = 0x4353494D; //"MISC" = 4D 49 53 43
 const int32_t cMODL = 0x4C444F4D; //"MODL" = 4D 4F 44 4C
 const int32_t cNAME = 0x454D414E; //"NAME" = 4E 41 4D 45
+const int32_t cNNAM = 0x4D414E4E; //"NNAM" = 4E 4E 41 4D
 const int32_t cNPCO = 0x4F43504E; //"NPCO" = 4E 50 43 4F
 const int32_t cNPCS = 0x5343504E; //"NPCS" = 4E 50 43 53
 const int32_t cNPC_ = 0x5F43504E; //"NPC_" = 4E 50 43 5F

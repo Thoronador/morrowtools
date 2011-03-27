@@ -67,6 +67,7 @@ const int32_t cGMST = 0x54534D47; //"GMST" = 47 4D 53 54
 const int32_t cHEDR = 0x52444548; //"HEDR" = 48 45 44 52
 const int32_t cHSND = 0x444E5348; //"HSND" = 48 53 4E 44
 const int32_t cHVFX = 0x58465648; //"HVFX" = 48 56 46 58
+const int32_t cINAM = 0x4D414E49; //"INAM" = 49 4E 41 4D
 const int32_t cINDX = 0x58444E49; //"INDX" = 49 4E 44 58
 const int32_t cINFO = 0x4F464E49; //"INFO" = 49 4E 46 4F
 const int32_t cINGR = 0x52474E49; //"INGR" = 49 4E 47 52

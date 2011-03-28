@@ -2699,6 +2699,25 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
     chunk.pushString(params[1]);
     return true;
   }//if
+  if (lowerFunction == "messagebox")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: MessageBox needs (at least) one parameter!\n";
+      return false;
+    }
+    chunk.pushCode(CodeMessageBox);
+    //parameter is a string (in one param version)
+    //push string's length as short (not byte)
+    chunk.pushShort(params[1].length());
+    //push parameter string
+    chunk.pushString(params[1]);
+    //push number of arguments (zero in this case)
+    chunk.data.push_back(0);
+    //push number of buttons (zero in this case)
+    chunk.data.push_back(0);
+    return true;
+  }//if
   if (lowerFunction.substr(0,3)=="mod")
   {
     //could be a function that modifies stats like ModAcrobatics, so check

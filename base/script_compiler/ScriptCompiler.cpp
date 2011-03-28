@@ -220,6 +220,35 @@ unsigned int getEndOfIf(const std::vector<std::string>& lines, const unsigned in
   return start;
 }//func getEndOfIf
 
+unsigned int getEndOfElse(const std::vector<std::string>& lines, const unsigned int start)
+{
+  const std::vector<std::string>::size_type len = lines.size();
+  if (start>=len) return start;
+  unsigned int look = start+1;
+  while (look<len)
+  {
+    const std::string lowerLine = lowerCase(lines.at(look));
+    if (lowerLine=="endif")
+    {
+      return look;
+    }
+    else if (lowerLine.substr(0,3) == "if ")
+    {
+      const unsigned int res = getEndifForIf(lines, look);
+      if (res==look)
+      {
+        //no match found
+        return start;
+      }
+      //set look to the position of endif of the inner if block
+      look = res;
+    }//else
+    ++look;
+  }//while
+  //nothing found, return start (i.e. failure)
+  return start;
+}
+
 unsigned int getEndOfWhile(const std::vector<std::string>& lines, const unsigned int start)
 {
   const std::vector<std::string>::size_type len = lines.size();
@@ -5501,6 +5530,28 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       //push the string
       CompiledData.pushString(WorkString);
     }//if IF found
+    //check for else
+    else if (lowerCase(lines.at(i))=="else")
+    {
+      unsigned int end_of_else = getEndOfElse(lines, i);
+      if (end_of_else==i)
+      {
+        std::cout << "ScriptCompiler: Error: if/elseif/endif does not match.\n";
+        return false;
+      }
+      //Does the else-block contain more than 255 statements/lines?
+      if (end_of_else-i-1>255)
+      {
+        std::cout << "ScriptCompiler: Error: else-block contains more than 255"
+                  << " statements, it cannot be handled properly!\n";
+        return false;
+      }
+      //First try to implement else-block - It's still far from complete, but we
+      // have to start somewhere.
+      CompiledData.pushCode(CodeElse);
+      //next is statement count (byte)
+      CompiledData.data.push_back(end_of_else-i-1);
+    }//if Else found
     //check for endif
     else if (lowerCase(lines.at(i))=="endif")
     {

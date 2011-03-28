@@ -62,7 +62,7 @@ namespace ScriptCompiler
   const uint16_t CodeDontSaveObject = 0x115F; //"5F11"
   const uint16_t CodeDrop = 0x110D; //"0D11"
   const uint16_t CodeDropSoulGem = 0x10ED; //"ED10"
-  //TODO: Else
+  const uint16_t CodeElse = 0x0107; //"0701"
   //TODO: ElseIf
   const uint16_t CodeEnable = 0x10DA; //"DA10"
   const uint16_t CodeEnableBirthMenu = 0x1129; //"2911"

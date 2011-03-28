@@ -21,6 +21,8 @@
 #include "ParserNode.h"
 #include <iostream>
 #include "UtilityFunctions.h"
+#include "CompiledChunk.h"
+#include "ScriptCompiler.h"
 
 namespace ScriptCompiler
 {
@@ -28,6 +30,7 @@ namespace ScriptCompiler
 ParserNode::ParserNode()
 {
   content = "";
+  type = ctNone;
   left = NULL;
   right = NULL;
 }
@@ -64,11 +67,41 @@ bool ParserNode::splitToTree(std::string expression)
   }
   std::string::size_type pos = getNextOperatorPos(expression, 0);
   clearBranches();
+  binary_content.clear();
   if (pos==std::string::npos)
   {
     //There is no operator here, whole thing is one expression.
     //TODO: We should check for float or function here
     content = expression;
+    //check for float
+    float fVal;
+    if (stringToFloat(expression, fVal))
+    {
+      type = ctFloat;
+      CompiledChunk temp_chunk;
+      temp_chunk.pushString(expression);
+      binary_content = temp_chunk.data;
+    }
+    else
+    {
+      //guess it has to be a function
+      CompiledChunk temp_chunk;
+      if (ScriptFunctions(expression, temp_chunk))
+      {
+        //success
+        type = ctFunction;
+        binary_content = temp_chunk.data;
+        //push X at start of function
+        binary_content.insert(binary_content.begin(), 'X');
+      }
+      else
+      {
+        //failure
+        std::cout << "ScriptCompiler: Error: Couldn't match expression \""
+                  << expression <<"\" with any function!\n";
+        return false;
+      }
+    }
     return true;
   }//if
   //There's an operator, so we have to split.
@@ -116,6 +149,8 @@ bool ParserNode::splitToTree(std::string expression)
     return false;
   }
   content = expression.at(pos);
+  type = ctOperator;
+  binary_content.push_back(expression.at(pos));
   return true;
 }
 
@@ -133,6 +168,35 @@ std::string ParserNode::getStackOrderedContent() const
   if (!content.empty())
   {
     result = result + " "+content;
+  }
+  return result;
+}
+
+std::vector<uint8_t> ParserNode::getBinaryContent() const
+{
+  std::vector<uint8_t> result;
+  if (left!=NULL)
+  {
+    result = left->getBinaryContent();
+  }
+  if (right!=NULL)
+  {
+    const std::vector<uint8_t> right_part = right->getBinaryContent();
+    unsigned int i;
+    for (i=0; i<right_part.size(); ++i)
+    {
+      result.push_back(right_part.at(i));
+    }
+  }
+  if (!binary_content.empty())
+  {
+    //push space
+    result.push_back(' ');
+    unsigned int i;
+    for (i=0; i<binary_content.size(); ++i)
+    {
+      result.push_back(binary_content.at(i));
+    }
   }
   return result;
 }

@@ -22,6 +22,7 @@
 #define SCRIPTCOMPILER_H
 
 #include "../records/ScriptRecord.h"
+#include "CompiledChunk.h"
 
 namespace ScriptCompiler
 {
@@ -50,6 +51,9 @@ void StripEnclosingQuotes(std::string& str1);
        NOT contain the data you want - yet.
 */
 bool CompileScript(const std::string& Text, ScriptRecord& result);
+
+/* aux. function for compiling of function< */
+bool ScriptFunctions(const std::string& line, CompiledChunk& chunk);
 
 }//namespace
 

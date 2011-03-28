@@ -22,6 +22,7 @@
 #define PARSERNODE_H
 
 #include <string>
+#include <vector>
 
 namespace ScriptCompiler
 {
@@ -70,9 +71,17 @@ struct ParserNode
 
     /*returns the data of the node and its branches in the order MW would use it*/
     std::string getStackOrderedContent() const;
+
+    /*returns the data of the node and its branches in the order MW would use it*/
+    std::vector<uint8_t> getBinaryContent() const;
   private:
     //content of this node
     std::string content;
+
+    enum ContentType {ctNone, ctFloat, ctOperator, ctFunction};
+    //type of content
+    ContentType type;
+    std::vector<uint8_t> binary_content;
     //pointers to the left and right branch
     ParserNode* left;
     ParserNode* right;

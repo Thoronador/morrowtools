@@ -29,6 +29,9 @@
 namespace ScriptCompiler
 {
 
+enum SC_CompareType{compNone, compLess, compLessEqual, compEqual,
+                    compGreaterEqual, compGreater, compNotEqual};
+
 void StripEnclosingQuotes(std::string& str1)
 {
   if ((str1=="") or (str1.length()<2)) return;
@@ -83,6 +86,73 @@ std::string::size_type getQualifierStart(const std::string& line)
     }//else
     ++look;
   }//while
+  return std::string::npos;
+}
+
+std::string::size_type getComparePos(const std::string& line, SC_CompareType& comp)
+{
+  const std::string::size_type len = line.length();
+  std::string::size_type look = 0;
+  bool outsideQuote = true;
+  while (look<len)
+  {
+    if (line.at(look)=='"')
+    {
+      outsideQuote = not outsideQuote;
+    }
+    else if (outsideQuote)
+    {
+      switch (line.at(look))
+      {
+        case '<':
+             if (look<len-1)
+             {
+               if (line.at(look+1)=='=')
+               {
+                 comp = compLessEqual;
+                 return look;
+               }
+             }
+             comp = compLess;
+             return look;
+             break;
+        case '=':
+             if (look<len-1)
+             {
+               if (line.at(look+1)=='=')
+               {
+                 comp = compEqual;
+                 return look;
+               }
+             }
+             break;
+        case '>':
+             if (look<len-1)
+             {
+               if (line.at(look+1)=='=')
+               {
+                 comp = compGreaterEqual;
+                 return look;
+               }
+             }
+             comp = compGreater;
+             return look;
+             break;
+        case '!':
+             if (look<len-1)
+             {
+               if (line.at(look+1)=='=')
+               {
+                 comp = compNotEqual;
+                 return look;
+               }
+             }
+             break;
+      }//swi
+    }//else
+    ++look;
+  }//while
+  comp = compNone;
   return std::string::npos;
 }
 
@@ -5571,13 +5641,128 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       {
         trim(WorkString);
       }
-      //Assume that whole string is just a simple statement like 3 < 5.
+      /*//Assume that whole string is just a simple statement like 3 < 5.
       //push length of compare statement
       CompiledData.data.push_back(WorkString.length()+1);
       //push one space
       CompiledData.data.push_back(' ');
       //push the string
-      CompiledData.pushString(WorkString);
+      CompiledData.pushString(WorkString);*/
+
+      //search for comparision operator
+      SC_CompareType comparator = compNone;
+      std::string::size_type compPos = getComparePos(WorkString, comparator);
+      if (compPos!=std::string::npos)
+      {
+        //found it
+        //parse left part
+        ParserNode leftPart;
+        if (!leftPart.splitToTree(WorkString.substr(0, compPos)))
+        {
+          std::cout << "Script Compiler: Error: splitToTree() failed for if-statement.\n";
+          return false;
+        }
+        //parse right part
+        ParserNode rightPart;
+        bool right_success = false;
+        switch (comparator)
+        {
+          case compEqual:
+          case compLessEqual:
+          case compGreaterEqual:
+          case compNotEqual:
+               right_success = rightPart.splitToTree(WorkString.substr(compPos+2));
+               break;
+          case compLess:
+          case compGreater:
+               right_success = rightPart.splitToTree(WorkString.substr(compPos+1));
+               break;
+          case compNone:
+               //this should never happen
+               std::cout << "Script Compiler: Error: no comparator found!\n";
+               return false;
+               break;
+        }//swi
+        if (!right_success)
+        {
+          std::cout << "Script Compiler: Error: splitToTree() failed for if-statement.\n";
+          return false;
+        }
+        const std::vector<uint8_t> leftBin = leftPart.getBinaryContent();
+        const std::vector<uint8_t> rightBin = rightPart.getBinaryContent();
+        unsigned int compLength = leftBin.size() + rightBin.size();
+        switch (comparator)
+        {
+          case compEqual:
+          case compLessEqual:
+          case compGreaterEqual:
+          case compNotEqual:
+               compLength += 3;
+               break;
+          case compLess:
+          case compGreater:
+               compLength += 2;
+               break;
+          case compNone:
+               //this should never happen
+               std::cout << "Script Compiler: Error: no comparator found!\n";
+               return false;
+               break;
+        }//swi
+        //push length of compare statement
+        CompiledData.data.push_back(compLength);
+        //push left part of statement
+        unsigned int counter;
+        for (counter=0; counter<leftBin.size(); ++counter)
+        {
+          CompiledData.data.push_back(leftBin[counter]);
+        }
+        //push compare operator
+        // --- one space first
+        CompiledData.data.push_back(' ');
+        // --- operator itself
+        switch (comparator)
+        {
+          case compEqual:
+               CompiledData.data.push_back('=');
+               CompiledData.data.push_back('=');
+               break;
+          case compLessEqual:
+               CompiledData.data.push_back('<');
+               CompiledData.data.push_back('=');
+               break;
+          case compGreaterEqual:
+               CompiledData.data.push_back('>');
+               CompiledData.data.push_back('=');
+               break;
+          case compNotEqual:
+               CompiledData.data.push_back('!');
+               CompiledData.data.push_back('=');
+               break;
+          case compLess:
+               CompiledData.data.push_back('<');
+               break;
+          case compGreater:
+               CompiledData.data.push_back('>');
+               break;
+          case compNone:
+               //this should never happen
+               std::cout << "Script Compiler: Error: no comparator found!\n";
+               return false;
+               break;
+        }//swi
+        //push right part of statement
+        for (counter=0; counter<rightBin.size(); ++counter)
+        {
+          CompiledData.data.push_back(rightBin[counter]);
+        }
+      }//if compare operator found
+      else
+      {
+        //no comparator found
+        std::cout << "Script Compiler: Error: no comparator found in if-statement!\n";
+        return false;
+      }
     }//if IF found
     //check for elseif
     else if (lowerCase(lines.at(i).substr(0,7))=="elseif ")

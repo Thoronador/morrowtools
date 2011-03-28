@@ -5940,6 +5940,14 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
     else if (ScriptFunctions(lines.at(i), CompiledData))
     {
       std::cout << "Debug: ScriptCompiler: Hint: Function processed.\n";
+    }//functions
+    else
+    {
+      //None of the above pissibilities did match, so this is an invalid line
+      // or something we can't handle yet.
+      std::cout << "ScriptCompiler: Error: could not process line \""
+                << lines.at(i) <<"\".\n";
+      return false;
     }
   }//for
 

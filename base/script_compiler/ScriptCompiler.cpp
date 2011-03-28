@@ -5755,10 +5755,10 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
         {
           CompiledData.data.push_back(comparePart[counter]);
         }//for
-      }//if compare operator found
+      }//if compare statement could be processed
       else
       {
-        //no comparator found
+        //no comparator found or invalid statement
         std::cout << "Script Compiler: Error: invalid compare part in if-statement!\n";
         return false;
       }
@@ -5791,13 +5791,25 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       {
         trim(WorkString);
       }
-      //Assume that whole string is just a simple statement like 3 < 5.
-      //push length of compare statement
-      CompiledData.data.push_back(WorkString.length()+1);
-      //push one space
-      CompiledData.data.push_back(' ');
-      //push the string
-      CompiledData.pushString(WorkString);
+      //process comparison statement
+      std::vector<uint8_t> comparePart;
+      if (CompareToBinary(WorkString, comparePart))
+      {
+        //push length of compare statement
+        CompiledData.data.push_back(comparePart.size());
+        //push compare statement itself
+        unsigned int counter;
+        for (counter=0; counter<comparePart.size(); ++counter)
+        {
+          CompiledData.data.push_back(comparePart[counter]);
+        }//for
+      }//if compare statement was processed successfully
+      else
+      {
+        //no comparator found or invalid statement
+        std::cout << "Script Compiler: Error: invalid compare part in elseif-statement!\n";
+        return false;
+      }
     }//if ElseIf found
     //check for else
     else if (lowerCase(lines.at(i))=="else")
@@ -5861,13 +5873,25 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       {
         trim(WorkString);
       }
-      //Assume that whole string is just a simple statement like 3 < 5.
-      //push length of compare statement
-      CompiledData.data.push_back(WorkString.length()+1);
-      //push one space
-      CompiledData.data.push_back(' ');
-      //push the string
-      CompiledData.pushString(WorkString);
+      //process comparison statement
+      std::vector<uint8_t> comparePart;
+      if (CompareToBinary(WorkString, comparePart))
+      {
+        //push length of compare statement
+        CompiledData.data.push_back(comparePart.size());
+        //push compare statement itself
+        unsigned int counter;
+        for (counter=0; counter<comparePart.size(); ++counter)
+        {
+          CompiledData.data.push_back(comparePart[counter]);
+        }//for
+      }//if compare statement was processed successfully
+      else
+      {
+        //no comparator found or invalid statement
+        std::cout << "Script Compiler: Error: invalid compare part in while-statement!\n";
+        return false;
+      }
     }//if While found
     //check for endWhile
     else if (lowerCase(lines.at(i))=="endwhile")

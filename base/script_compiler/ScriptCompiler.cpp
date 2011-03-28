@@ -247,7 +247,37 @@ unsigned int getEndOfElse(const std::vector<std::string>& lines, const unsigned 
   }//while
   //nothing found, return start (i.e. failure)
   return start;
-}
+}//function getEndOfElse
+
+unsigned int getEndOfElseIf(const std::vector<std::string>& lines, const unsigned int start)
+{
+  const std::vector<std::string>::size_type len = lines.size();
+  if (start>=len) return start;
+  unsigned int look = start+1;
+  while (look<len)
+  {
+    const std::string lowerLine = lowerCase(lines.at(look));
+    if ((lowerLine=="endif") or (lowerLine=="else")
+      or (lowerLine.substr(0,7)=="elseif "))
+    {
+      return look;
+    }
+    else if (lowerLine.substr(0,3) == "if ")
+    {
+      const unsigned int res = getEndifForIf(lines, look);
+      if (res==look)
+      {
+        //no match found
+        return start;
+      }
+      //set look to the position of endif of the inner if block
+      look = res;
+    }//else
+    ++look;
+  }//while
+  //nothing found, return start (i.e. failure)
+  return start;
+}//func getEndOfElseIf
 
 unsigned int getEndOfWhile(const std::vector<std::string>& lines, const unsigned int start)
 {
@@ -5530,6 +5560,42 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       //push the string
       CompiledData.pushString(WorkString);
     }//if IF found
+    //check for elseif
+    else if (lowerCase(lines.at(i).substr(0,7))=="elseif ")
+    {
+      unsigned int end_of_elseif = getEndOfElseIf(lines, i);
+      if (end_of_elseif==i)
+      {
+        std::cout << "ScriptCompiler: Error: if/elseif/endif does not match.\n";
+        return false;
+      }
+      //Does the elseif-block contain more than 255 statements/lines?
+      if (end_of_elseif-i-1>255)
+      {
+        std::cout << "ScriptCompiler: Error: elseif-block contains more than 255"
+                  << " statements, it cannot be handled properly!\n";
+        return false;
+      }
+      //First try to implement elseif-block - It's still far from complete, but we
+      // have to start somewhere.
+      CompiledData.pushCode(CodeElseIf);
+      //next is statement count (byte)
+      CompiledData.data.push_back(end_of_elseif-i-1);
+      //next is compare statement, but this can get complicated
+      WorkString = lines.at(i).substr(7);
+      trim(WorkString);
+      if (removeEnclosingBrackets(WorkString))
+      {
+        trim(WorkString);
+      }
+      //Assume that whole string is just a simple statement like 3 < 5.
+      //push length of compare statement
+      CompiledData.data.push_back(WorkString.length()+1);
+      //push one space
+      CompiledData.data.push_back(' ');
+      //push the string
+      CompiledData.pushString(WorkString);
+    }//if ElseIf found
     //check for else
     else if (lowerCase(lines.at(i))=="else")
     {

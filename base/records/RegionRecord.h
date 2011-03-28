@@ -93,7 +93,7 @@ struct RegionRecord: public BasicRecord
   bool loadFromStream(std::ifstream& in_File);
 };//struct
 
-//comparision operator for ordered set
+//comparison operator for ordered set
 bool operator<(const RegionRecord& left, const RegionRecord& right);
 
 #endif // REGIONRECORD_H

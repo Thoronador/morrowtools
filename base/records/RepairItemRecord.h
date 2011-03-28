@@ -65,7 +65,7 @@ struct RepairItemRecord: public BasicRecord
   bool loadFromStream(std::ifstream& in_File);
 };//struct
 
-//comparision operator for ordered set
+//comparison operator for ordered set
 bool operator<(const RepairItemRecord& left, const RepairItemRecord& right);
 
 #endif // REPAIRITEMRECORD_H

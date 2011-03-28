@@ -79,7 +79,7 @@ struct RaceRecord: public BasicRecord
   bool loadFromStream(std::ifstream& in_File);
 };//struct
 
-//comparision operator for ordered set
+//comparison operator for ordered set
 bool operator<(const RaceRecord& left, const RaceRecord& right);
 
 #endif // RACERECORD_H

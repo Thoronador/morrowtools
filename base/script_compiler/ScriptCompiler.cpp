@@ -5391,6 +5391,100 @@ bool ScriptFunctions(const std::string& line, CompiledChunk& chunk)
   return false;
 }
 
+bool CompareToBinary(const std::string& compareStatement, std::vector<uint8_t>& bin_out)
+{
+  //search for comparison operator
+  SC_CompareType comparator = compNone;
+  std::string::size_type compPos = getComparePos(compareStatement, comparator);
+  if (compPos!=std::string::npos)
+  {
+    //found it
+    //parse left part
+    ParserNode leftPart;
+    if (!leftPart.splitToTree(compareStatement.substr(0, compPos)))
+    {
+      std::cout << "Script Compiler: Error: left splitToTree() failed for compare statement.\n";
+      return false;
+    }
+    //parse right part
+    ParserNode rightPart;
+    bool right_success = false;
+    switch (comparator)
+    {
+      case compEqual:
+      case compLessEqual:
+      case compGreaterEqual:
+      case compNotEqual:
+           right_success = rightPart.splitToTree(compareStatement.substr(compPos+2));
+           break;
+      case compLess:
+      case compGreater:
+           right_success = rightPart.splitToTree(compareStatement.substr(compPos+1));
+           break;
+      case compNone:
+           //this should never happen
+           std::cout << "Script Compiler: Error: no comparator found!\n";
+           return false;
+           break;
+    }//swi
+    if (!right_success)
+    {
+      std::cout << "Script Compiler: Error: right splitToTree() failed for compare statement.\n";
+      return false;
+    }
+    //first part of binary data
+    bin_out = leftPart.getBinaryContent();
+    //push compare operator
+    // --- one space first
+    bin_out.push_back(' ');
+    // --- compare operator itself
+    switch (comparator)
+    {
+      case compEqual:
+           bin_out.push_back('=');
+           bin_out.push_back('=');
+           break;
+      case compLessEqual:
+           bin_out.push_back('<');
+           bin_out.push_back('=');
+           break;
+      case compGreaterEqual:
+           bin_out.push_back('>');
+           bin_out.push_back('=');
+           break;
+      case compNotEqual:
+           bin_out.push_back('!');
+           bin_out.push_back('=');
+           break;
+      case compLess:
+           bin_out.push_back('<');
+           break;
+      case compGreater:
+           bin_out.push_back('>');
+           break;
+      case compNone:
+           //this should never happen
+           std::cout << "Script Compiler: Error: no comparator found!\n";
+           return false;
+           break;
+    }//swi
+    //push right part of statement
+    const std::vector<uint8_t> rightBin = rightPart.getBinaryContent();
+    unsigned int counter;
+    for (counter=0; counter<rightBin.size(); ++counter)
+    {
+      bin_out.push_back(rightBin[counter]);
+    }
+    return true;
+  }//if compare operator found
+  else
+  {
+    //no comparator found
+    std::cout << "Script Compiler: Error: no comparator found in compare statement!\n";
+    return false;
+  }
+}//function CompareToBinary
+
 bool CompileScript(const std::string& Text, ScriptRecord& result)
 {
   std::vector<std::string> lines;
@@ -5649,118 +5743,23 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       //push the string
       CompiledData.pushString(WorkString);*/
 
-      //search for comparision operator
-      SC_CompareType comparator = compNone;
-      std::string::size_type compPos = getComparePos(WorkString, comparator);
-      if (compPos!=std::string::npos)
+      //process comparison statement
+      std::vector<uint8_t> comparePart;
+      if (CompareToBinary(WorkString, comparePart))
       {
-        //found it
-        //parse left part
-        ParserNode leftPart;
-        if (!leftPart.splitToTree(WorkString.substr(0, compPos)))
-        {
-          std::cout << "Script Compiler: Error: splitToTree() failed for if-statement.\n";
-          return false;
-        }
-        //parse right part
-        ParserNode rightPart;
-        bool right_success = false;
-        switch (comparator)
-        {
-          case compEqual:
-          case compLessEqual:
-          case compGreaterEqual:
-          case compNotEqual:
-               right_success = rightPart.splitToTree(WorkString.substr(compPos+2));
-               break;
-          case compLess:
-          case compGreater:
-               right_success = rightPart.splitToTree(WorkString.substr(compPos+1));
-               break;
-          case compNone:
-               //this should never happen
-               std::cout << "Script Compiler: Error: no comparator found!\n";
-               return false;
-               break;
-        }//swi
-        if (!right_success)
-        {
-          std::cout << "Script Compiler: Error: splitToTree() failed for if-statement.\n";
-          return false;
-        }
-        const std::vector<uint8_t> leftBin = leftPart.getBinaryContent();
-        const std::vector<uint8_t> rightBin = rightPart.getBinaryContent();
-        unsigned int compLength = leftBin.size() + rightBin.size();
-        switch (comparator)
-        {
-          case compEqual:
-          case compLessEqual:
-          case compGreaterEqual:
-          case compNotEqual:
-               compLength += 3;
-               break;
-          case compLess:
-          case compGreater:
-               compLength += 2;
-               break;
-          case compNone:
-               //this should never happen
-               std::cout << "Script Compiler: Error: no comparator found!\n";
-               return false;
-               break;
-        }//swi
         //push length of compare statement
-        CompiledData.data.push_back(compLength);
-        //push left part of statement
+        CompiledData.data.push_back(comparePart.size());
+        //push compare statement itself
         unsigned int counter;
-        for (counter=0; counter<leftBin.size(); ++counter)
+        for (counter=0; counter<comparePart.size(); ++counter)
         {
-          CompiledData.data.push_back(leftBin[counter]);
-        }
-        //push compare operator
-        // --- one space first
-        CompiledData.data.push_back(' ');
-        // --- operator itself
-        switch (comparator)
-        {
-          case compEqual:
-               CompiledData.data.push_back('=');
-               CompiledData.data.push_back('=');
-               break;
-          case compLessEqual:
-               CompiledData.data.push_back('<');
-               CompiledData.data.push_back('=');
-               break;
-          case compGreaterEqual:
-               CompiledData.data.push_back('>');
-               CompiledData.data.push_back('=');
-               break;
-          case compNotEqual:
-               CompiledData.data.push_back('!');
-               CompiledData.data.push_back('=');
-               break;
-          case compLess:
-               CompiledData.data.push_back('<');
-               break;
-          case compGreater:
-               CompiledData.data.push_back('>');
-               break;
-          case compNone:
-               //this should never happen
-               std::cout << "Script Compiler: Error: no comparator found!\n";
-               return false;
-               break;
-        }//swi
-        //push right part of statement
-        for (counter=0; counter<rightBin.size(); ++counter)
-        {
-          CompiledData.data.push_back(rightBin[counter]);
-        }
+          CompiledData.data.push_back(comparePart[counter]);
+        }//for
       }//if compare operator found
       else
       {
         //no comparator found
-        std::cout << "Script Compiler: Error: no comparator found in if-statement!\n";
+        std::cout << "Script Compiler: Error: invalid compare part in if-statement!\n";
         return false;
       }
     }//if IF found

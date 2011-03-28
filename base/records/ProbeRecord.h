@@ -65,7 +65,7 @@ struct ProbeRecord: public BasicRecord
   bool loadFromStream(std::ifstream& in_File);
 };//struct
 
-//comparision operator for ordered set
+//comparison operator for ordered set
 bool operator<(const ProbeRecord& left, const ProbeRecord& right);
 
 #endif // PROBERECORD_H

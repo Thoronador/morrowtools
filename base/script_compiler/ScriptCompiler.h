@@ -52,7 +52,7 @@ void StripEnclosingQuotes(std::string& str1);
 */
 bool CompileScript(const std::string& Text, ScriptRecord& result);
 
-/* aux. function for compiling of function< */
+/* aux. function for compiling of functions */
 bool ScriptFunctions(const std::string& line, CompiledChunk& chunk);
 
 }//namespace

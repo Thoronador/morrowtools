@@ -158,6 +158,23 @@ bool ParserNode::splitToTree(std::string expression, const CompiledChunk& chunkV
   }//if
   //There's an operator, so we have to split.
 
+  // --- check for minus in first character
+  if (expression.at(0)=='-')
+  {
+    //could still be a negative float value
+    //check for float
+    float fVal;
+    if (stringToFloat(expression, fVal))
+    {
+      type = ctFloat;
+      CompiledChunk temp_chunk;
+      temp_chunk.pushString(expression);
+      binary_content = temp_chunk.data;
+      content = expression;
+      return true;
+    }
+  }//if minus as first character
+
   //check for presence of next operator to get precedence
   const std::string::size_type pos2 = getNextOperatorPos(expression, pos+1);
   //If there is no next operator, then go ahead
@@ -171,12 +188,14 @@ bool ParserNode::splitToTree(std::string expression, const CompiledChunk& chunkV
   }
   if (pos==0)
   {
-    std::cout << "ScriptCompiler: Error: operator at beginning of expression!\n";
+    std::cout << "ScriptCompiler: Error: operator at beginning of expression!\n"
+              << "Expression was \""<<expression<<"\".\n";
     return false;
   }
   else if (pos==expression.length()-1)
   {
-    std::cout << "ScriptCompiler: Error: operator at end of expression!\n";
+    std::cout << "ScriptCompiler: Error: operator at end of expression!\n"
+              << "Expression was \""<<expression<<"\".\n";
     return false;
   }
 
@@ -256,24 +275,57 @@ std::vector<uint8_t> ParserNode::getBinaryContent() const
 std::string::size_type getNextOperatorPos(const std::string& expr, const std::string::size_type offset)
 {
   const std::string::size_type len = expr.length();
-  std::string::size_type look = offset;
+  bool outsideQuote = true;
+  std::string::size_type look = 0;
+  //check for quotes before offset
+  while ((look<offset) and (look<len))
+  {
+    if (expr.at(look)=='"')
+    {
+      outsideQuote = not outsideQuote;
+    }
+    ++look;
+  }//while
+  //now go for the part at offset and thereafter
+  look = offset;
   int bracket_level = 0;
   while (look<len)
   {
-    if (expr.at(look)=='(')
+    if (expr.at(look)=='"')
     {
-      ++bracket_level;
+      outsideQuote = not outsideQuote;
     }
-    else if (expr.at(look)==')')
+    else if (outsideQuote)
     {
-      --bracket_level;
-    }
-    else if ((bracket_level==0) and ((expr.at(look)=='+') or (expr.at(look)=='-')
-                                  or (expr.at(look)=='*') or (expr.at(look)=='/')))
-    {
-      //found a place where next operator is located
-      return look;
-    }//else
+      //Brackets and operators only count outside of quotes.
+      if (expr.at(look)=='(')
+      {
+        ++bracket_level;
+      }
+      else if (expr.at(look)==')')
+      {
+        --bracket_level;
+      }
+      else if (bracket_level==0)
+      {
+        if ((expr.at(look)=='+') or (expr.at(look)=='*') or (expr.at(look)=='/'))
+        {
+          //found a place where next operator is located
+          return look;
+        }//if
+        //minus could also be start of qualifier "->", so make sure that's not
+        // the case here
+        else if (expr.at(look)=='-')
+        {
+          if (look+1<len)
+          {
+            if (expr.at(look+1)!='>') return look;
+          }
+          //string is too short or next character isn't '>'
+          return look;
+        }//else if minus
+      }//else if (bracket level is zero)
+    }//else if not within quotes
     ++look;
   }//while
   return std::string::npos;

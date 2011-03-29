@@ -165,8 +165,20 @@ std::string::size_type getComparePos(const std::string& line, SC_CompareType& co
                  return look;
                }
              }
-             comp = compGreater;
-             return look;
+             //make sure we don't split a qualifier ("->") here
+             if (look>0)
+             {
+               if (line.at(look-1)!='-')
+               {
+                 comp = compGreater;
+                 return look;
+               }
+             }
+             else
+             {
+               comp = compGreater;
+               return look;
+             }
              break;
         case '!':
              if (look<len-1)
@@ -201,7 +213,8 @@ std::vector<std::string> explodeParams(const std::string& source)
     {
       insideQuote = not insideQuote;
     }
-    else if ((not insideQuote) and ((source.at(look)==' ') or (source.at(look)==',')))
+    else if ((not insideQuote) and ((source.at(look)==' ')
+              or (source.at(look)==',') or (source.at(look)=='\t')))
     {
       //found a place where to split
       unsigned int len = look-offset;
@@ -6084,7 +6097,8 @@ bool CompareToBinary(const std::string& compareStatement, std::vector<uint8_t>& 
   else
   {
     //no comparator found
-    std::cout << "ScriptCompiler: Error: no comparator found in compare statement!\n";
+    std::cout << "ScriptCompiler: Error: no comparator found in compare "
+              << "statement!\nStatement was \""<< compareStatement <<"\".\n";
     return false;
   }
 }//function CompareToBinary

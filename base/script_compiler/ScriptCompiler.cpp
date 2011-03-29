@@ -197,40 +197,6 @@ std::vector<std::string> explodeParams(const std::string& source)
   return result;
 }
 
-SC_VarRef getVariableTypeWithIndex(const std::string& varName, const std::vector<std::string>& vShorts,
-                  const std::vector<std::string>& vLongs, const std::vector<std::string>& vFloats)
-{
-  const std::string lcVar = lowerCase(varName);
-  unsigned int i;
-  //check list of shorts
-  for (i=0; i<vShorts.size(); ++i)
-  {
-    if (lcVar==lowerCase(vShorts.at(i)))
-    {
-      return SC_VarRef(vtShort, i+1);
-    }
-  }//for
-  //check list of longs
-  for (i=0; i<vLongs.size(); ++i)
-  {
-    if (lcVar==lowerCase(vLongs.at(i)))
-    {
-      return SC_VarRef(vtLong, i+1);
-    }
-  }//for
-  //check list of floats
-  for (i=0; i<vFloats.size(); ++i)
-  {
-    if (lcVar==lowerCase(vFloats.at(i)))
-    {
-      return SC_VarRef(vtFloat, i+1);
-    }
-  }//for
-  //if we get to this point, nothing was found and it has to be a non-local var,
-  // i.e. a global (or some other kind of expression we can't identify yet).
-  return SC_VarRef(vtGlobal, 0);
-}
-
 unsigned int getEndifForIf(const std::vector<std::string>& lines, const unsigned int start)
 {
   const std::vector<std::string>::size_type len = lines.size();
@@ -1750,7 +1716,7 @@ bool ScriptFunctions_ModStatFunctions(const std::vector<std::string>& params, Co
   else
   {
     //could still be a local var here
-    SC_VarRef localRef = getVariableTypeWithIndex(params[1], chunk.varsShort, chunk.varsLong, chunk.varsFloat);
+    SC_VarRef localRef = chunk.getVariableTypeWithIndex(params[1]);
     //if type is float, push
     switch(localRef.Type)
     {
@@ -2080,7 +2046,7 @@ bool ScriptFunctions_SetStatFunctions(const std::vector<std::string>& params, Co
   else
   {
     //could still be a local var here
-    SC_VarRef localRef = getVariableTypeWithIndex(params[1], chunk.varsShort, chunk.varsLong, chunk.varsFloat);
+    SC_VarRef localRef = chunk.getVariableTypeWithIndex(params[1]);
     //if type is float, push
     switch(localRef.Type)
     {
@@ -3838,7 +3804,7 @@ bool ScriptFunctions_TwoParameters(const std::vector<std::string>& params, Compi
     if (!stringToFloat(params[2], new_angle))
     {
       //In Tribunal or Bloodmoon, local vars are allowed, too.
-      localRef = getVariableTypeWithIndex(params[2], chunk.varsShort, chunk.varsLong, chunk.varsFloat);
+      localRef = chunk.getVariableTypeWithIndex(params[2]);
       if (localRef.Type==vtGlobal)
       {
         std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is neither a "
@@ -3938,7 +3904,7 @@ bool ScriptFunctions_TwoParameters(const std::vector<std::string>& params, Compi
     if (!stringToFloat(params[2], new_pos))
     {
       //In Tribunal or Bloodmoon, local vars are allowed, too.
-      localRef = getVariableTypeWithIndex(params[2], chunk.varsShort, chunk.varsLong, chunk.varsFloat);
+      localRef = chunk.getVariableTypeWithIndex(params[2]);
       if (localRef.Type==vtGlobal)
       {
         std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is neither a "
@@ -4598,7 +4564,7 @@ bool ScriptFunctions_FiveParameters(const std::vector<std::string>& params, Comp
     if (!stringToFloat(params[2], x_coord))
     {
       //could still be a float var
-      x_ref = getVariableTypeWithIndex(params[2], chunk.varsShort, chunk.varsLong, chunk.varsFloat);
+      x_ref = chunk.getVariableTypeWithIndex(params[2]);
       if (x_ref.Type==vtGlobal)
       {
         std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is no float value or var!\n";
@@ -4611,7 +4577,7 @@ bool ScriptFunctions_FiveParameters(const std::vector<std::string>& params, Comp
     if (!stringToFloat(params[3], y_coord))
     {
       //could still be a float var
-      y_ref = getVariableTypeWithIndex(params[3], chunk.varsShort, chunk.varsLong, chunk.varsFloat);
+      y_ref = chunk.getVariableTypeWithIndex(params[3]);
       if (y_ref.Type==vtGlobal)
       {
         std::cout << "ScriptCompiler: Error: \""<<params[3]<<"\" is no float value or var!\n";
@@ -4624,7 +4590,7 @@ bool ScriptFunctions_FiveParameters(const std::vector<std::string>& params, Comp
     if (!stringToFloat(params[4], z_coord))
     {
       //could still be a float var
-      z_ref = getVariableTypeWithIndex(params[4], chunk.varsShort, chunk.varsLong, chunk.varsFloat);
+      z_ref = chunk.getVariableTypeWithIndex(params[4]);
       if (z_ref.Type==vtGlobal)
       {
         std::cout << "ScriptCompiler: Error: \""<<params[4]<<"\" is no float value or var!\n";
@@ -4637,7 +4603,7 @@ bool ScriptFunctions_FiveParameters(const std::vector<std::string>& params, Comp
     if (!stringToFloat(params[5], rot_coord))
     {
       //could still be a float var
-      rot_ref = getVariableTypeWithIndex(params[5], chunk.varsShort, chunk.varsLong, chunk.varsFloat);
+      rot_ref = chunk.getVariableTypeWithIndex(params[5]);
       if (rot_ref.Type==vtGlobal)
       {
         std::cout << "ScriptCompiler: Error: \""<<params[5]<<"\" is no float value or var!\n";
@@ -4907,7 +4873,7 @@ bool ScriptFunctions_SixParameters(const std::vector<std::string>& params, Compi
     if (!stringToFloat(params[3], x_coord))
     {
       //could still be a float var
-      x_ref = getVariableTypeWithIndex(params[3], chunk.varsShort, chunk.varsLong, chunk.varsFloat);
+      x_ref = chunk.getVariableTypeWithIndex(params[3]);
       if (x_ref.Type==vtGlobal)
       {
         std::cout << "ScriptCompiler: Error: \""<<params[3]<<"\" is no float value or var!\n";
@@ -4920,7 +4886,7 @@ bool ScriptFunctions_SixParameters(const std::vector<std::string>& params, Compi
     if (!stringToFloat(params[4], y_coord))
     {
       //could still be a float var
-      y_ref = getVariableTypeWithIndex(params[4], chunk.varsShort, chunk.varsLong, chunk.varsFloat);
+      y_ref = chunk.getVariableTypeWithIndex(params[4]);
       if (y_ref.Type==vtGlobal)
       {
         std::cout << "ScriptCompiler: Error: \""<<params[4]<<"\" is no float value or var!\n";
@@ -4933,7 +4899,7 @@ bool ScriptFunctions_SixParameters(const std::vector<std::string>& params, Compi
     if (!stringToFloat(params[5], z_coord))
     {
       //could still be a float var
-      z_ref = getVariableTypeWithIndex(params[5], chunk.varsShort, chunk.varsLong, chunk.varsFloat);
+      z_ref = chunk.getVariableTypeWithIndex(params[5]);
       if (z_ref.Type==vtGlobal)
       {
         std::cout << "ScriptCompiler: Error: \""<<params[5]<<"\" is no float value or var!\n";
@@ -4946,7 +4912,7 @@ bool ScriptFunctions_SixParameters(const std::vector<std::string>& params, Compi
     if (!stringToFloat(params[6], rot_coord))
     {
       //could still be a float var
-      rot_ref = getVariableTypeWithIndex(params[6], chunk.varsShort, chunk.varsLong, chunk.varsFloat);
+      rot_ref = chunk.getVariableTypeWithIndex(params[6]);
       if (rot_ref.Type==vtGlobal)
       {
         std::cout << "ScriptCompiler: Error: \""<<params[6]<<"\" is no float value or var!\n";
@@ -5391,7 +5357,7 @@ bool ScriptFunctions(const std::string& line, CompiledChunk& chunk)
   return false;
 }
 
-bool CompareToBinary(const std::string& compareStatement, std::vector<uint8_t>& bin_out)
+bool CompareToBinary(const std::string& compareStatement, std::vector<uint8_t>& bin_out, const CompiledChunk& theChunk)
 {
   //search for comparison operator
   SC_CompareType comparator = compNone;
@@ -5401,7 +5367,7 @@ bool CompareToBinary(const std::string& compareStatement, std::vector<uint8_t>& 
     //found it
     //parse left part
     ParserNode leftPart;
-    if (!leftPart.splitToTree(compareStatement.substr(0, compPos)))
+    if (!leftPart.splitToTree(compareStatement.substr(0, compPos), theChunk))
     {
       std::cout << "Script Compiler: Error: left splitToTree() failed for compare statement.\n";
       return false;
@@ -5415,11 +5381,11 @@ bool CompareToBinary(const std::string& compareStatement, std::vector<uint8_t>& 
       case compLessEqual:
       case compGreaterEqual:
       case compNotEqual:
-           right_success = rightPart.splitToTree(compareStatement.substr(compPos+2));
+           right_success = rightPart.splitToTree(compareStatement.substr(compPos+2), theChunk);
            break;
       case compLess:
       case compGreater:
-           right_success = rightPart.splitToTree(compareStatement.substr(compPos+1));
+           right_success = rightPart.splitToTree(compareStatement.substr(compPos+1), theChunk);
            break;
       case compNone:
            //this should never happen
@@ -5615,7 +5581,7 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       std::string varName = WorkString.substr(0, pos);
       trim(varName);
       //now search for the variable name
-      SC_VarRef ref = getVariableTypeWithIndex(varName, CompiledData.varsShort, CompiledData.varsLong, CompiledData.varsFloat);
+      SC_VarRef ref = CompiledData.getVariableTypeWithIndex(varName);
       if (ref.Type!=vtGlobal)
       {
         //push type indicator
@@ -5660,7 +5626,7 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
 
       // Try to "parse" the expression
       ParserNode setNode;
-      if (setNode.splitToTree(WorkString))
+      if (setNode.splitToTree(WorkString, CompiledData))
       {
         //parsing was successful, get the result and push it
         WorkString = setNode.getStackOrderedContent();
@@ -5745,7 +5711,7 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
 
       //process comparison statement
       std::vector<uint8_t> comparePart;
-      if (CompareToBinary(WorkString, comparePart))
+      if (CompareToBinary(WorkString, comparePart, CompiledData))
       {
         //push length of compare statement
         CompiledData.data.push_back(comparePart.size());
@@ -5793,7 +5759,7 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       }
       //process comparison statement
       std::vector<uint8_t> comparePart;
-      if (CompareToBinary(WorkString, comparePart))
+      if (CompareToBinary(WorkString, comparePart, CompiledData))
       {
         //push length of compare statement
         CompiledData.data.push_back(comparePart.size());
@@ -5875,7 +5841,7 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       }
       //process comparison statement
       std::vector<uint8_t> comparePart;
-      if (CompareToBinary(WorkString, comparePart))
+      if (CompareToBinary(WorkString, comparePart, CompiledData))
       {
         //push length of compare statement
         CompiledData.data.push_back(comparePart.size());

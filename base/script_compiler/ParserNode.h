@@ -23,6 +23,7 @@
 
 #include <string>
 #include <vector>
+#include "CompiledChunk.h"
 
 namespace ScriptCompiler
 {
@@ -66,8 +67,10 @@ struct ParserNode
 
        parameters:
            expression - the string that contains the mathematical expression
+           chunkVars  - the compiled chunk that holds the local vars for this
+                        expression/ script
     */
-    bool splitToTree(std::string expression);
+    bool splitToTree(std::string expression, const CompiledChunk& chunkVars);
 
     /*returns the data of the node and its branches in the order MW would use it*/
     std::string getStackOrderedContent() const;
@@ -78,7 +81,7 @@ struct ParserNode
     //content of this node
     std::string content;
 
-    enum ContentType {ctNone, ctFloat, ctOperator, ctFunction};
+    enum ContentType {ctNone, ctFloat, ctOperator, ctLocalVar, ctFunction};
     //type of content
     ContentType type;
     std::vector<uint8_t> binary_content;

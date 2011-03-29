@@ -56,7 +56,7 @@ void ParserNode::clearBranches()
   }
 }
 
-bool ParserNode::splitToTree(std::string expression)
+bool ParserNode::splitToTree(std::string expression, const CompiledChunk& chunkVars)
 {
   trim(expression);
   if (removeEnclosingBrackets(expression))
@@ -84,9 +84,36 @@ bool ParserNode::splitToTree(std::string expression)
     }
     else
     {
-      //guess it has to be a function
+      //guess it has to be a function or a local var
       CompiledChunk temp_chunk;
-      if (ScriptFunctions(expression, temp_chunk))
+      SC_VarRef locRef = chunkVars.getVariableTypeWithIndex(expression);
+      if (locRef.Type!=vtGlobal)
+      {
+        //found a local var here
+        type = ctLocalVar;
+        switch (locRef.Type)
+        {
+          case vtShort:
+               binary_content.push_back('s');
+               break;
+          case vtLong:
+               binary_content.push_back('l');
+               break;
+          case vtFloat:
+               binary_content.push_back('f');
+               break;
+          case vtGlobal:
+               //this should never happen
+               std::cout << "ScriptCompiler: Error: got global var, but only "
+                         << "local vars are accepted.\n";
+               return false;
+        }//swi
+        //push index as short
+        binary_content.push_back(locRef.Index&255);
+        binary_content.push_back(locRef.Index>>8);
+      }
+      //check for function
+      else if (ScriptFunctions(expression, temp_chunk))
       {
         //success
         type = ctFunction;
@@ -98,7 +125,7 @@ bool ParserNode::splitToTree(std::string expression)
       {
         //failure
         std::cout << "ScriptCompiler: Error: Couldn't match expression \""
-                  << expression <<"\" with any function!\n";
+                  << expression <<"\" with any function or variable!\n";
         return false;
       }
     }
@@ -130,7 +157,7 @@ bool ParserNode::splitToTree(std::string expression)
 
   //get left part
   left = new ParserNode;
-  if (!(left->splitToTree(expression.substr(0, pos))))
+  if (!(left->splitToTree(expression.substr(0, pos), chunkVars)))
   {
     std::cout << "ScriptCompiler: Error: could not handle expression!\n";
     //clear up left side
@@ -140,7 +167,7 @@ bool ParserNode::splitToTree(std::string expression)
   }
   //get right part
   right = new ParserNode;
-  if (!(right->splitToTree(expression.substr(pos+1))))
+  if (!(right->splitToTree(expression.substr(pos+1), chunkVars)))
   {
     std::cout << "ScriptCompiler: Error: could not handle expression!\n";
     //clear up left side

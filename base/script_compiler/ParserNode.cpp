@@ -23,6 +23,7 @@
 #include "UtilityFunctions.h"
 #include "CompiledChunk.h"
 #include "ScriptCompiler.h"
+#include "../Globals.h"
 
 namespace ScriptCompiler
 {
@@ -118,6 +119,24 @@ bool ParserNode::splitToTree(std::string expression, const CompiledChunk& chunkV
         binary_content.push_back(locRef.Index&255);
         binary_content.push_back(locRef.Index>>8);
       }
+      //check for global
+      else if (Globals::getSingleton().hasGlobal(expression))
+      {
+        //found a global var
+        type = ctGlobalVar;
+        content = Globals::getSingleton().getGlobal(expression).GlobalID;
+        //push G for global
+        binary_content.push_back('s');
+        //push length of name
+        const unsigned int glob_len = content.length();
+        binary_content.push_back(glob_len);
+        //push global itself
+        unsigned int i;
+        for (i=0; i<glob_len; ++i)
+        {
+          binary_content.push_back(content[i]);
+        }
+      }//globals
       //check for function
       else if (ScriptFunctions(expression, temp_chunk))
       {

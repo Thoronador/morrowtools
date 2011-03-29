@@ -81,7 +81,8 @@ struct ParserNode
     //content of this node
     std::string content;
 
-    enum ContentType {ctNone, ctFloat, ctOperator, ctLocalVar, ctFunction};
+    enum ContentType {ctNone, ctFloat, ctOperator, ctLocalVar, ctGlobalVar,
+                      ctFunction};
     //type of content
     ContentType type;
     std::vector<uint8_t> binary_content;

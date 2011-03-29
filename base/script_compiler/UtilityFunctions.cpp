@@ -273,3 +273,27 @@ bool removeEnclosingBrackets(std::string& expr)
   }//while
   return false;
 }
+
+int lowerCaseCompare(const std::string& left, const std::string& right)
+{
+  const std::string::size_type l_size = left.size();
+  const std::string::size_type r_size = right.size();
+  const std::string::size_type len = std::min(l_size, r_size);
+
+  std::string::size_type i;
+  for (i=0; i<len; ++i)
+  {
+    const char l = tolower(left.at(i));
+    const char r = tolower(right.at(i));
+    if (l<r)
+    {
+      return -1;
+    }
+    if (l>r)
+    {
+      return 1;
+    }
+  }//for
+  //if they are equal so far, the length decides
+  return l_size-r_size;
+}

@@ -89,4 +89,16 @@ std::string lowerCase(const std::string& str1);
 */
 bool removeEnclosingBrackets(std::string& expr);
 
+/* returns an integer less than zero, if the left string is ordered before the
+   right string. Returns zero, if they are equivalent. Returns a value greater
+   than zero if the left string is ordered after the right string. The
+   comparison is case-insensitive (i.e. it treats the strings as if all
+   characters were lower case).
+
+   parameters:
+       left  - the left string
+       right - the other string
+*/
+int lowerCaseCompare(const std::string& left, const std::string& right);
+
 #endif // UTILITYFUNCTIONS_H

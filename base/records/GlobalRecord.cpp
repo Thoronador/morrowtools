@@ -22,6 +22,7 @@
 #include <iostream>
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
+#include "../script_compiler/UtilityFunctions.h"
 
 GlobalRecord::GlobalRecord()
 {
@@ -244,5 +245,5 @@ bool GlobalRecord::loadFromStream(std::ifstream& in_File)
 
 bool operator<(const GlobalRecord& left, const GlobalRecord& right)
 {
-  return (left.GlobalID.compare(right.GlobalID)<0);
+  return (lowerCaseCompare(left.GlobalID, right.GlobalID)<0);
 }

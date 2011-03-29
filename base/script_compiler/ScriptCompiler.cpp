@@ -4033,6 +4033,49 @@ bool ScriptFunctions_ThreeParameters(const std::vector<std::string>& params, Com
     chunk.data.push_back(0);
     return true;
   }//if AITravel
+  if (lowerFunction == "aiwander")
+  {
+    if (params.size()<4)
+    {
+      std::cout << "ScriptCompiler: Error: AIWander needs three parameters!\n";
+      return false;
+    }
+    //first, second and third parameter is range, duration, time (each float)
+    // ---- check range
+    float range;
+    if (!stringToFloat(params[1], range))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[1]<<"\" is no float value!\n";
+      return false;
+    }
+    // ---- check duration
+    float duration;
+    if (!stringToFloat(params[2], duration))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is no float value!\n";
+      return false;
+    }
+    // ---- check time
+    float wander_time;
+    if (!stringToFloat(params[3], wander_time))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[3]<<"\" is no float value!\n";
+      return false;
+    }
+    //push function code
+    chunk.pushCode(CodeAIWander);
+    //push range
+    chunk.pushFloat(range);
+    //push duration
+    chunk.pushFloat(duration);
+    //push time
+    chunk.pushFloat(wander_time);
+    //push seems like three NUL bytes follow in that three param version
+    chunk.data.push_back(0);
+    chunk.data.push_back(0);
+    chunk.data.push_back(0);
+    return true;
+  }//if AIWander
   if (lowerFunction == "loopgroup")
   {
     if (params.size()<4)
@@ -4854,6 +4897,76 @@ bool ScriptFunctions_SixParameters(const std::vector<std::string>& params, Compi
     return true;
   }//if AIEscortCell or AI FollowCell
 
+
+  if (lowerFunction == "aiwander")
+  {
+    if (params.size()<7)
+    {
+      std::cout << "ScriptCompiler: Error: AIWander needs six parameters!\n";
+      return false;
+    }
+    //first, second and third parameter is range, duration, time (each float)
+    //fourth to sixth parameter is idle2 to idle4 (each short)
+    // ---- check range
+    float range;
+    if (!stringToFloat(params[1], range))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[1]<<"\" is no float value!\n";
+      return false;
+    }
+    // ---- check duration
+    float duration;
+    if (!stringToFloat(params[2], duration))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is no float value!\n";
+      return false;
+    }
+    // ---- check time
+    float wander_time;
+    if (!stringToFloat(params[3], wander_time))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[3]<<"\" is no float value!\n";
+      return false;
+    }
+    //check Idle2
+    int16_t idle2;
+    if (!stringToShort(params[4], idle2))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[4]<<"\" is no short value!\n";
+      return false;
+    }
+    //check Idle3
+    int16_t idle3;
+    if (!stringToShort(params[5], idle3))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[5]<<"\" is no short value!\n";
+      return false;
+    }
+    //check Idle4
+    int16_t idle4;
+    if (!stringToShort(params[6], idle4))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[6]<<"\" is no short value!\n";
+      return false;
+    }
+    //push function code
+    chunk.pushCode(CodeAIWander);
+    //push range
+    chunk.pushFloat(range);
+    //push duration
+    chunk.pushFloat(duration);
+    //push time
+    chunk.pushFloat(wander_time);
+    //push number of relevant shorts - two in this case (as short)
+    chunk.pushShort(2);
+    //idle2 seems to be omitted in compiled code, so we don't push that
+    //push idle3 to idle4
+    chunk.pushShort(idle3);
+    chunk.pushShort(idle4);
+    //seems like there's a 02 byte at the end
+    chunk.data.push_back(2);
+    return true;
+  }//if AIWander
   if (lowerFunction == "placeitemcell")
   {
     if (params.size()<7)
@@ -5062,6 +5175,99 @@ bool ScriptFunctions_NineParameters(const std::vector<std::string>& params, Comp
 {
   //entry at index zero is the function's name
   const std::string lowerFunction = lowerCase(params.at(0));
+  if (lowerFunction == "aiwander")
+  {
+    if (params.size()<10)
+    {
+      std::cout << "ScriptCompiler: Error: AIWander needs nine parameters!\n";
+      return false;
+    }
+    //first, second and third parameter is range, duration, time (each float)
+    //fourth to ninth parameter is idle2 to idle7 (each short)
+    // ---- check range
+    float range;
+    if (!stringToFloat(params[1], range))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[1]<<"\" is no float value!\n";
+      return false;
+    }
+    // ---- check duration
+    float duration;
+    if (!stringToFloat(params[2], duration))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is no float value!\n";
+      return false;
+    }
+    // ---- check time
+    float wander_time;
+    if (!stringToFloat(params[3], wander_time))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[3]<<"\" is no float value!\n";
+      return false;
+    }
+    //check Idle2
+    int16_t idle2;
+    if (!stringToShort(params[4], idle2))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[4]<<"\" is no short value!\n";
+      return false;
+    }
+    //check Idle3
+    int16_t idle3;
+    if (!stringToShort(params[5], idle3))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[5]<<"\" is no short value!\n";
+      return false;
+    }
+    //check Idle4
+    int16_t idle4;
+    if (!stringToShort(params[6], idle4))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[6]<<"\" is no short value!\n";
+      return false;
+    }
+    //check Idle5
+    int16_t idle5;
+    if (!stringToShort(params[7], idle5))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[7]<<"\" is no short value!\n";
+      return false;
+    }
+    //check Idle6
+    int16_t idle6;
+    if (!stringToShort(params[8], idle6))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[8]<<"\" is no short value!\n";
+      return false;
+    }
+    //check Idle7
+    int16_t idle7;
+    if (!stringToShort(params[9], idle7))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[9]<<"\" is no short value!\n";
+      return false;
+    }
+    //push function code
+    chunk.pushCode(CodeAIWander);
+    //push range
+    chunk.pushFloat(range);
+    //push duration
+    chunk.pushFloat(duration);
+    //push time
+    chunk.pushFloat(wander_time);
+    //push number of relevant shorts - five in this case (as short)
+    chunk.pushShort(5);
+    //idle2 seems to be omitted in compiled code, so we don't push that
+    //push idle3 to idle7
+    chunk.pushShort(idle3);
+    chunk.pushShort(idle4);
+    chunk.pushShort(idle5);
+    chunk.pushShort(idle6);
+    chunk.pushShort(idle7);
+    //seems like there's a 01 byte at the end
+    chunk.data.push_back(1);
+    return true;
+  }//if AIWander
   if (lowerFunction == "modregion")
   {
     if (params.size()<10)
@@ -5159,10 +5365,228 @@ bool ScriptFunctions_NineParameters(const std::vector<std::string>& params, Comp
   return false;
 }//function Nine
 
+bool ScriptFunctions_TenParameters(const std::vector<std::string>& params, CompiledChunk& chunk)
+{
+  //entry at index zero is the function's name
+  const std::string lowerFunction = lowerCase(params.at(0));
+  if (lowerFunction == "aiwander")
+  {
+    if (params.size()<11)
+    {
+      std::cout << "ScriptCompiler: Error: AIWander needs ten parameters!\n";
+      return false;
+    }
+    //first, second and third parameter is range, duration, time (each float)
+    //fourth to 10th parameter is idle2 to idle8 (each short)
+    // ---- check range
+    float range;
+    if (!stringToFloat(params[1], range))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[1]<<"\" is no float value!\n";
+      return false;
+    }
+    // ---- check duration
+    float duration;
+    if (!stringToFloat(params[2], duration))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is no float value!\n";
+      return false;
+    }
+    // ---- check time
+    float wander_time;
+    if (!stringToFloat(params[3], wander_time))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[3]<<"\" is no float value!\n";
+      return false;
+    }
+    //check Idle2
+    int16_t idle2;
+    if (!stringToShort(params[4], idle2))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[4]<<"\" is no short value!\n";
+      return false;
+    }
+    //check Idle3
+    int16_t idle3;
+    if (!stringToShort(params[5], idle3))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[5]<<"\" is no short value!\n";
+      return false;
+    }
+    //check Idle4
+    int16_t idle4;
+    if (!stringToShort(params[6], idle4))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[6]<<"\" is no short value!\n";
+      return false;
+    }
+    //check Idle5
+    int16_t idle5;
+    if (!stringToShort(params[7], idle5))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[7]<<"\" is no short value!\n";
+      return false;
+    }
+    //check Idle6
+    int16_t idle6;
+    if (!stringToShort(params[8], idle6))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[8]<<"\" is no short value!\n";
+      return false;
+    }
+    //check Idle7
+    int16_t idle7;
+    if (!stringToShort(params[9], idle7))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[9]<<"\" is no short value!\n";
+      return false;
+    }
+    //check Idle8
+    int16_t idle8;
+    if (!stringToShort(params[10], idle8))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[10]<<"\" is no short value!\n";
+      return false;
+    }
+    //push function code
+    chunk.pushCode(CodeAIWander);
+    //push range
+    chunk.pushFloat(range);
+    //push duration
+    chunk.pushFloat(duration);
+    //push time
+    chunk.pushFloat(wander_time);
+    //push number of relevant shorts - six in this case (as short)
+    chunk.pushShort(6);
+    //idle2 seems to be omitted in compiled code, so we don't push that
+    //push idle3 to idle8
+    chunk.pushShort(idle3);
+    chunk.pushShort(idle4);
+    chunk.pushShort(idle5);
+    chunk.pushShort(idle6);
+    chunk.pushShort(idle7);
+    chunk.pushShort(idle8);
+    //seems like there's a 01 byte at the end
+    chunk.data.push_back(1);
+    return true;
+  }//if AIWander
+  //end reached, no match found
+  return false;
+}//function Ten
+
 bool ScriptFunctions_ElevenParameters(const std::vector<std::string>& params, CompiledChunk& chunk)
 {
   //entry at index zero is the function's name
   const std::string lowerFunction = lowerCase(params.at(0));
+  if (lowerFunction == "aiwander")
+  {
+    if (params.size()<12)
+    {
+      std::cout << "ScriptCompiler: Error: AIWander needs eleven parameters!\n";
+      return false;
+    }
+    //first, second and third parameter is range, duration, time (each float)
+    //fourth to 11th parameter is idle2 to idle9 (each short)
+    // ---- check range
+    float range;
+    if (!stringToFloat(params[1], range))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[1]<<"\" is no float value!\n";
+      return false;
+    }
+    // ---- check duration
+    float duration;
+    if (!stringToFloat(params[2], duration))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is no float value!\n";
+      return false;
+    }
+    // ---- check time
+    float wander_time;
+    if (!stringToFloat(params[3], wander_time))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[3]<<"\" is no float value!\n";
+      return false;
+    }
+    //check Idle2
+    int16_t idle2;
+    if (!stringToShort(params[4], idle2))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[4]<<"\" is no short value!\n";
+      return false;
+    }
+    //check Idle3
+    int16_t idle3;
+    if (!stringToShort(params[5], idle3))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[5]<<"\" is no short value!\n";
+      return false;
+    }
+    //check Idle4
+    int16_t idle4;
+    if (!stringToShort(params[6], idle4))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[6]<<"\" is no short value!\n";
+      return false;
+    }
+    //check Idle5
+    int16_t idle5;
+    if (!stringToShort(params[7], idle5))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[7]<<"\" is no short value!\n";
+      return false;
+    }
+    //check Idle6
+    int16_t idle6;
+    if (!stringToShort(params[8], idle6))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[8]<<"\" is no short value!\n";
+      return false;
+    }
+    //check Idle7
+    int16_t idle7;
+    if (!stringToShort(params[9], idle7))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[9]<<"\" is no short value!\n";
+      return false;
+    }
+    //check Idle8
+    int16_t idle8;
+    if (!stringToShort(params[10], idle8))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[10]<<"\" is no short value!\n";
+      return false;
+    }
+    //check Idle9
+    int16_t idle9;
+    if (!stringToShort(params[11], idle9))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[11]<<"\" is no short value!\n";
+      return false;
+    }
+    //push function code
+    chunk.pushCode(CodeAIWander);
+    //push range
+    chunk.pushFloat(range);
+    //push duration
+    chunk.pushFloat(duration);
+    //push time
+    chunk.pushFloat(wander_time);
+    //push number of relevant shorts - seven in this case (as short)
+    chunk.pushShort(7);
+    //idle2 seems to be omitted in compiled code, so we don't push that
+    //push idle3 to idle9
+    chunk.pushShort(idle3);
+    chunk.pushShort(idle4);
+    chunk.pushShort(idle5);
+    chunk.pushShort(idle6);
+    chunk.pushShort(idle7);
+    chunk.pushShort(idle8);
+    chunk.pushShort(idle9);
+    //seems like there's a 02 byte at the end
+    chunk.data.push_back(2);
+    return true;
+  }//if AIWander
   if (lowerFunction == "modregion")
   {
     if (params.size()<12)
@@ -5270,10 +5694,137 @@ bool ScriptFunctions_ElevenParameters(const std::vector<std::string>& params, Co
     chunk.data.push_back(chanceSnow);
     chunk.data.push_back(chanceBlizzard);
     return true;
-  }
+  }//if ModRegion
   //end reached, no match found
   return false;
 }//function Eleven
+
+bool ScriptFunctions_TwelveParameters(const std::vector<std::string>& params, CompiledChunk& chunk)
+{
+  //entry at index zero is the function's name
+  const std::string lowerFunction = lowerCase(params.at(0));
+  if (lowerFunction == "aiwander")
+  {
+    if (params.size()<13)
+    {
+      std::cout << "ScriptCompiler: Error: AIWander needs twelve parameters!\n";
+      return false;
+    }
+    //first, second and third parameter is range, duration, time (each float)
+    //fourth to 11th parameter is idle2 to idle9 (each short)
+    //12th is reset flag (short?)
+    // ---- check range
+    float range;
+    if (!stringToFloat(params[1], range))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[1]<<"\" is no float value!\n";
+      return false;
+    }
+    // ---- check duration
+    float duration;
+    if (!stringToFloat(params[2], duration))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is no float value!\n";
+      return false;
+    }
+    // ---- check time
+    float wander_time;
+    if (!stringToFloat(params[3], wander_time))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[3]<<"\" is no float value!\n";
+      return false;
+    }
+    //check Idle2
+    int16_t idle2;
+    if (!stringToShort(params[4], idle2))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[4]<<"\" is no short value!\n";
+      return false;
+    }
+    //check Idle3
+    int16_t idle3;
+    if (!stringToShort(params[5], idle3))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[5]<<"\" is no short value!\n";
+      return false;
+    }
+    //check Idle4
+    int16_t idle4;
+    if (!stringToShort(params[6], idle4))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[6]<<"\" is no short value!\n";
+      return false;
+    }
+    //check Idle5
+    int16_t idle5;
+    if (!stringToShort(params[7], idle5))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[7]<<"\" is no short value!\n";
+      return false;
+    }
+    //check Idle6
+    int16_t idle6;
+    if (!stringToShort(params[8], idle6))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[8]<<"\" is no short value!\n";
+      return false;
+    }
+    //check Idle7
+    int16_t idle7;
+    if (!stringToShort(params[9], idle7))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[9]<<"\" is no short value!\n";
+      return false;
+    }
+    //check Idle8
+    int16_t idle8;
+    if (!stringToShort(params[10], idle8))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[10]<<"\" is no short value!\n";
+      return false;
+    }
+    //check Idle9
+    int16_t idle9;
+    if (!stringToShort(params[11], idle9))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[11]<<"\" is no short value!\n";
+      return false;
+    }
+    //check flag
+    int16_t reset_flag;
+    if (!stringToShort(params[12], reset_flag))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[12]<<"\" is no short value!\n";
+      return false;
+    }
+    //push function code
+    chunk.pushCode(CodeAIWander);
+    //push range
+    chunk.pushFloat(range);
+    //push duration
+    chunk.pushFloat(duration);
+    //push time
+    chunk.pushFloat(wander_time);
+    //push number of relevant shorts - eight in this case (as short)
+    chunk.pushShort(8);
+    //idle2 seems to be omitted in compiled code, so we don't push that
+    //push idle3 to idle9
+    chunk.pushShort(idle3);
+    chunk.pushShort(idle4);
+    chunk.pushShort(idle5);
+    chunk.pushShort(idle6);
+    chunk.pushShort(idle7);
+    chunk.pushShort(idle8);
+    chunk.pushShort(idle9);
+    //push flag
+    chunk.pushShort(reset_flag);
+    //seems like there's a 02 byte at the end
+    chunk.data.push_back(2);
+    return true;
+  }
+  //end reached, no match found
+  return false;
+}//function Twelve
 
 bool ScriptFunctions(const std::string& line, CompiledChunk& chunk)
 {
@@ -5286,8 +5837,20 @@ bool ScriptFunctions(const std::string& line, CompiledChunk& chunk)
   */
   switch(parameters.size())
   {
+    case 13:
+         if (ScriptFunctions_TwelveParameters(parameters, chunk))
+         {
+           return true;
+         }
+         break;
     case 12:
          if (ScriptFunctions_ElevenParameters(parameters, chunk))
+         {
+           return true;
+         }
+         break;
+    case 11:
+         if (ScriptFunctions_TenParameters(parameters, chunk))
          {
            return true;
          }

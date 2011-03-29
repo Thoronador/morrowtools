@@ -37,7 +37,7 @@ namespace ScriptCompiler
   const uint16_t CodeAIFollow = 0x10F6; //"F610"
   const uint16_t CodeAIFollowCell = 0x10F7; //"F710"
   const uint16_t CodeAITravel = 0x10F8; //"F810"
-  //TODO: AIWander
+  const uint16_t CodeAIWander = 0x10F9; //"F910"
   const uint16_t CodeBecomeWerewolf = 0x11B3; //"B311"
   const uint16_t CodeCast = 0x1123; //"2311"
   const uint16_t CodeCellChanged = 0x101F; //"1F10"

@@ -31,6 +31,12 @@ SC_VarRef::SC_VarRef(const SC_VarType t, const uint16_t i)
   Index = i;
 }
 
+SC_VarRef::SC_VarRef()
+{
+  Type = vtGlobal;
+  Index = 0;
+}
+
 void CompiledChunk::pushCode(const uint16_t code)
 {
   data.push_back(code&255);

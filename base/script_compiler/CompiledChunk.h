@@ -36,6 +36,9 @@ struct SC_VarRef
 
   /* constructor */
   SC_VarRef(const SC_VarType t, const uint16_t i);
+
+  /* default constructor */
+  SC_VarRef();
 };//struct
 
 /* class to basically hold an array/vector of bytes */

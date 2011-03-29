@@ -2224,6 +2224,111 @@ bool ScriptFunctions_SetStatFunctions(const std::vector<std::string>& params, Co
   return true;
 }//ScriptFunctions_SetStatFunctions
 
+bool ScriptFunctions_MessageBox(const std::vector<std::string>& params, CompiledChunk& chunk)
+{
+  //entry at index zero is the function's name
+  const std::string lowerFunction = lowerCase(params.at(0));
+  if (lowerFunction == "messagebox")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: MessageBox needs at least one parameter!\n";
+      return false;
+    }
+    if (params.size()>257)
+    {
+      std::cout << "ScriptCompiler: Error: MessageBox shouldn't have more than 256 parameters!\n";
+      return false;
+    }
+    //push function
+    chunk.pushCode(CodeMessageBox);
+    //first parameter is a string
+    //second to n-th parameters are either a local var or another string
+    //push string's length as short (not byte)
+    chunk.pushShort(params[1].length());
+    //push parameter string
+    chunk.pushString(params[1]);
+    //now check if params are local vars
+    uint8_t arg_count = 0;
+    uint8_t button_count = 0;
+    SC_VarRef refArray[params.size()-2];
+
+    uint16_t i;
+    for (i=2; i<params.size(); ++i)
+    {
+      //check for vars
+      refArray[i-2] = chunk.getVariableTypeWithIndex(params[i]);
+      if (refArray[i-2].Type!=vtGlobal)
+      {
+        //it's a local var
+        ++arg_count;
+      }
+      else if (Globals::getSingleton().hasGlobal(params[i]))
+      {
+        //It's a global var, that counts as argument.
+        ++arg_count;
+      }
+      else
+      {
+        //It's a string.
+        ++button_count;
+        //Since all of the other params are now strings, too, we can exit the
+        // loop here.
+        break;
+        i = params.size();//just to be sure
+      }
+    }//for
+    //adjust button count
+    button_count = params.size()-2-arg_count;
+    //push number of arguments
+    chunk.data.push_back(arg_count);
+    //push arguments, if present
+    if (arg_count>0)
+    {
+      for (i=0; i<arg_count; ++i)
+      {
+        if (refArray[i].Type!=vtGlobal)
+        {
+          //push local ref
+          chunk.pushNonGlobalRef(refArray[i]);
+        }
+        else
+        {
+          //push global
+          const std::string& globName = Globals::getSingleton().getGlobal(params[i+2]).GlobalID;
+          //push G for global
+          chunk.data.push_back('G');
+          //push length (including null-terminating byte)
+          chunk.data.push_back(globName.length()+1);
+          //push global name itself
+          chunk.pushString(globName);
+          //push terminating NUL character
+          chunk.data.push_back(0);
+        }//else
+      }//for
+    }//arguments
+    //push number of buttons
+    chunk.data.push_back(button_count);
+    //push buttons, if present
+    if (button_count>0)
+    {
+      unsigned int i;
+      for (i=2+arg_count; i<params.size(); ++i)
+      {
+        //push length of string + one byte for NUL
+        chunk.data.push_back(params[i].length()+1);
+        //push the string
+        chunk.pushString(params[i]);
+        //push NUL byte
+        chunk.data.push_back(0);
+      }//for
+    }//buttons
+    return true;
+  }//if MessageBox
+  //no match here
+  return false;
+}//function for MessageBox
+
 bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, CompiledChunk& chunk)
 {
   //entry at index zero is the function's name
@@ -6351,6 +6456,14 @@ bool ScriptFunctions(const std::string& line, CompiledChunk& chunk)
      is the list of parameters. That's why the size of the vector is one more
      than the number of parameters.
   */
+  if (parameters.size()>2)
+  {
+    //check for message box
+    if (ScriptFunctions_MessageBox(parameters, chunk))
+    {
+      return true;
+    }
+  }
   switch(parameters.size())
   {
     case 13:

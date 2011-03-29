@@ -5977,7 +5977,7 @@ bool CompareToBinary(const std::string& compareStatement, std::vector<uint8_t>& 
     ParserNode leftPart;
     if (!leftPart.splitToTree(compareStatement.substr(0, compPos), theChunk))
     {
-      std::cout << "Script Compiler: Error: left splitToTree() failed for compare statement.\n";
+      std::cout << "ScriptCompiler: Error: left splitToTree() failed for compare statement.\n";
       return false;
     }
     //parse right part
@@ -5997,13 +5997,13 @@ bool CompareToBinary(const std::string& compareStatement, std::vector<uint8_t>& 
            break;
       case compNone:
            //this should never happen
-           std::cout << "Script Compiler: Error: no comparator found!\n";
+           std::cout << "ScriptCompiler: Error: no comparator found!\n";
            return false;
            break;
     }//swi
     if (!right_success)
     {
-      std::cout << "Script Compiler: Error: right splitToTree() failed for compare statement.\n";
+      std::cout << "ScriptCompiler: Error: right splitToTree() failed for compare statement.\n";
       return false;
     }
     //first part of binary data
@@ -6038,7 +6038,7 @@ bool CompareToBinary(const std::string& compareStatement, std::vector<uint8_t>& 
            break;
       case compNone:
            //this should never happen
-           std::cout << "Script Compiler: Error: no comparator found!\n";
+           std::cout << "ScriptCompiler: Error: no comparator found!\n";
            return false;
            break;
     }//swi
@@ -6054,7 +6054,7 @@ bool CompareToBinary(const std::string& compareStatement, std::vector<uint8_t>& 
   else
   {
     //no comparator found
-    std::cout << "Script Compiler: Error: no comparator found in compare statement!\n";
+    std::cout << "ScriptCompiler: Error: no comparator found in compare statement!\n";
     return false;
   }
 }//function CompareToBinary
@@ -6333,7 +6333,7 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       else
       {
         //no comparator found or invalid statement
-        std::cout << "Script Compiler: Error: invalid compare part in if-statement!\n";
+        std::cout << "ScriptCompiler: Error: invalid compare part in if-statement!\n";
         return false;
       }
     }//if IF found
@@ -6381,7 +6381,7 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       else
       {
         //no comparator found or invalid statement
-        std::cout << "Script Compiler: Error: invalid compare part in elseif-statement!\n";
+        std::cout << "ScriptCompiler: Error: invalid compare part in elseif-statement!\n";
         return false;
       }
     }//if ElseIf found
@@ -6463,7 +6463,7 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       else
       {
         //no comparator found or invalid statement
-        std::cout << "Script Compiler: Error: invalid compare part in while-statement!\n";
+        std::cout << "ScriptCompiler: Error: invalid compare part in while-statement!\n";
         return false;
       }
     }//if While found

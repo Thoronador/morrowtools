@@ -74,7 +74,7 @@ void CompiledChunk::pushNonGlobalRefWithTwoZeroFillers(const SC_VarRef& ref)
 {
   if (ref.Type==vtGlobal)
   {
-    std::cout << "Script Compiler: Error: Trying to push global ref, but that's"
+    std::cout << "ScriptCompiler: Error: Trying to push global ref, but that's"
               << " not allowed here.\n";
     throw 42;
     return;

@@ -6228,7 +6228,7 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
 
   //now check the lines of the script
   //first line should always be begin
-  if (lowerCase(lines.at(0).substr(0,6))=="begin ")
+  if ((lowerCase(lines.at(0).substr(0,6))=="begin ") or (lowerCase(lines.at(0).substr(0,6))=="begin\t"))
   {
     ScriptName = lines.at(0).substr(6);
     trimLeft(ScriptName);//We only trim left side, because right side was
@@ -6252,7 +6252,7 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
   {
     const std::string::size_type qualStart = getQualifierStart(lines[i]);
     //check for shorts
-    if (lowerCase(lines.at(i).substr(0,6))=="short ")
+    if ((lowerCase(lines.at(i).substr(0,6))=="short ") or (lowerCase(lines.at(i).substr(0,6))=="short\t"))
     {
       WorkString = lines.at(i).substr(6);
       trim(WorkString);
@@ -6264,7 +6264,7 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       CompiledData.varsShort.push_back(WorkString);
     }//if short
     //check for longs
-    else if (lowerCase(lines.at(i).substr(0,5))=="long ")
+    else if ((lowerCase(lines.at(i).substr(0,5))=="long ") or (lowerCase(lines.at(i).substr(0,5))=="long\t"))
     {
       WorkString = lines.at(i).substr(5);
       trim(WorkString);
@@ -6276,7 +6276,7 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       CompiledData.varsLong.push_back(WorkString);
     }//if long
     //check for floats
-    else if (lowerCase(lines.at(i).substr(0,6))=="float ")
+    else if ((lowerCase(lines.at(i).substr(0,6))=="float ") or (lowerCase(lines.at(i).substr(0,6))=="float\t"))
     {
       WorkString = lines.at(i).substr(6);
       trim(WorkString);

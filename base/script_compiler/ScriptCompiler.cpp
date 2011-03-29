@@ -348,6 +348,31 @@ unsigned int getEndOfWhile(const std::vector<std::string>& lines, const unsigned
 bool getAnimationGroupIndex(const std::string& groupName, int16_t& result)
 {
   const std::string lcGroup = lowerCase(groupName);
+  if (lcGroup == "death1")
+  {
+    result = 27;
+    return true;
+  }
+  if (lcGroup == "death2")
+  {
+    result = 28;
+    return true;
+  }
+  if (lcGroup == "death3")
+  {
+    result = 29;
+    return true;
+  }
+  if (lcGroup == "death4")
+  {
+    result = 30;
+    return true;
+  }
+  if (lcGroup == "death5")
+  {
+    result = 31;
+    return true;
+  }
   if (lcGroup == "idle")
   {
     result = 0;
@@ -391,6 +416,26 @@ bool getAnimationGroupIndex(const std::string& groupName, int16_t& result)
   if (lcGroup == "idle9")
   {
     result = 8;
+    return true;
+  }
+  if (lcGroup == "walkback")
+  {
+    result = 54;
+    return true;
+  }
+  if (lcGroup == "walkforward")
+  {
+    result = 53;
+    return true;
+  }
+  if (lcGroup == "walkleft")
+  {
+    result = 55;
+    return true;
+  }
+  if (lcGroup == "walkright")
+  {
+    result = 56;
     return true;
   }
   return false;

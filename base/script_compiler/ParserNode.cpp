@@ -86,6 +86,12 @@ bool ParserNode::splitToTree(std::string expression, const CompiledChunk& chunkV
     {
       //guess it has to be a function or a local var
       CompiledChunk temp_chunk;
+      //temp_chunk should get the same local vars as the real chunk, because
+      // they will be needed to properly compile functions with local vars.
+      temp_chunk.varsShort = chunkVars.varsShort;
+      temp_chunk.varsLong = chunkVars.varsLong;
+      temp_chunk.varsFloat = chunkVars.varsFloat;
+      //check for local var
       SC_VarRef locRef = chunkVars.getVariableTypeWithIndex(expression);
       if (locRef.Type!=vtGlobal)
       {

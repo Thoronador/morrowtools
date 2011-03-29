@@ -184,7 +184,7 @@ namespace ScriptCompiler
   const uint16_t CodeGetPCSleep = 0x10E0; //"E010"
   const uint16_t CodeGetPCSneaking = 0x118A; //"8A11"
   const uint16_t CodeGetPCTraveling = 0x11BC; //"BC11"
-  const uint16_t CodeGetPCVisionBonus = 0x111B0; //"B011"
+  const uint16_t CodeGetPCVisionBonus = 0x11B0; //"B011"
   const uint16_t CodeGetPersonality = 0x1035; //"3510"
   const uint16_t CodeGetPlayerControlsDisabled = 0x10DF; //"DF10"
   const uint16_t CodeGetPlayerFightingDisabled = 0x115B; //"5B11"

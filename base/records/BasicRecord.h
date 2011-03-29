@@ -22,6 +22,7 @@
 #define BASICRECORD_H
 
 #include <fstream>
+#include <stdint.h>
 
 struct BasicRecord
 {

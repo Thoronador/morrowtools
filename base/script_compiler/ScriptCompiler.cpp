@@ -6092,10 +6092,14 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       //remove comment - everything after ";" is a comment
       new_line.erase(pos);
     }//if comment found
-    // -> remove \r characters at the end, if present
-    if (new_line.at(new_line.length()-1)=='\r')
+    //Make sure we don't access an empty string with at() here.
+    if (!new_line.empty())
     {
-      new_line.erase(new_line.length()-1);
+      // -> remove \r characters at the end, if present
+      if (new_line.at(new_line.length()-1)=='\r')
+      {
+        new_line.erase(new_line.length()-1);
+      }
     }
     //cut off spaces and tabulators
     trim(new_line);

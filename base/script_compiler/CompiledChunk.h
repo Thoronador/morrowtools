@@ -91,6 +91,13 @@ struct CompiledChunk
   */
   void pushNonGlobalRefWithTwoZeroFillers(const SC_VarRef& ref);
 
+  /* pushes a non-global reference to a local var, no fillers
+
+     parameters:
+         ref - the variable reference
+  */
+  void pushNonGlobalRef(const SC_VarRef& ref);
+
   /* checks whether varName does name a local var of the script */
   SC_VarRef getVariableTypeWithIndex(const std::string& varName) const;
 }; //struct

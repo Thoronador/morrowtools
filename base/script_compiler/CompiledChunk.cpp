@@ -108,6 +108,40 @@ void CompiledChunk::pushNonGlobalRefWithTwoZeroFillers(const SC_VarRef& ref)
   return;
 }
 
+void CompiledChunk::pushNonGlobalRef(const SC_VarRef& ref)
+{
+  if (ref.Type==vtGlobal)
+  {
+    std::cout << "ScriptCompiler: Error: Trying to push global ref, but that's"
+              << " not allowed here.\n";
+    throw 42;
+    return;
+  }
+  switch (ref.Type)
+  {
+    case vtShort:
+         //push s for short
+         data.push_back('s');
+         break;
+    case vtLong:
+         //push l for long
+         data.push_back('l');
+         break;
+    case vtFloat:
+         //push f for float
+         data.push_back('f');
+         break;
+    case vtGlobal:
+         //This branch is only here to shut up the compiler warning, but it will
+         // never be reached. (vtGlobal is checked above.)
+         throw 42;
+         break;
+  }//swi
+  //push index
+  data.push_back(ref.Index);
+  return;
+}
+
 SC_VarRef CompiledChunk::getVariableTypeWithIndex(const std::string& varName) const
 {
   const std::string lcVar = lowerCase(varName);

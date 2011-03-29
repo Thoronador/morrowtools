@@ -25,6 +25,7 @@
 #include "UtilityFunctions.h"
 #include "ParserNode.h"
 #include "../MagicEffects.h"
+#include "../Globals.h"
 
 namespace ScriptCompiler
 {
@@ -3666,6 +3667,77 @@ bool ScriptFunctions_TwoParameters(const std::vector<std::string>& params, Compi
     chunk.data.push_back(0);
     return true;
   }//if LoopGroup
+  if (lowerFunction == "messagebox")
+  {
+    if (params.size()<3)
+    {
+      std::cout << "ScriptCompiler: Error: MessageBox needs two parameters!\n";
+      return false;
+    }
+    chunk.pushCode(CodeMessageBox);
+    //first parameter is a string
+    //second parameter is either a local var or another string
+    //push string's length as short (not byte)
+    chunk.pushShort(params[1].length());
+    //push parameter string
+    chunk.pushString(params[1]);
+    //now check if second param is a local var
+    uint8_t arg_count = 0;
+    uint8_t button_count = 0;
+    SC_VarRef localRef = chunk.getVariableTypeWithIndex(params[2]);
+    if (localRef.Type!=vtGlobal)
+    {
+      //it's a local var
+      arg_count = 1;
+    }
+    else if (Globals::getSingleton().hasGlobal(params[2]))
+    {
+      //It's a global var, that counts as argument.
+      arg_count = 1;
+    }
+    else
+    {
+      //It's a string.
+      button_count = 1;
+    }
+    //push number of arguments
+    chunk.data.push_back(arg_count);
+    //push argument, if present
+    if (arg_count==1)
+    {
+      if (localRef.Type!=vtGlobal)
+      {
+        //push local ref
+        chunk.pushNonGlobalRef(localRef);
+      }
+      else
+      {
+        //push global
+        const std::string& globName = Globals::getSingleton().getGlobal(params[2]).GlobalID;
+        //push G for global
+        chunk.data.push_back('G');
+        //push length (including null-terminating byte)
+        chunk.data.push_back(globName.length()+1);
+        //push global name itself
+        chunk.pushString(globName);
+        //push terminating NUL character
+        chunk.data.push_back(0);
+      }
+    }//argument
+    //push number of buttons
+    chunk.data.push_back(button_count);
+    //push button, if present
+    if (button_count==1)
+    {
+      //push length of string + one byte for NUL
+      chunk.data.push_back(params[2].length()+1);
+      //push the string
+      chunk.pushString(params[2]);
+      //push NUL byte
+      chunk.data.push_back(0);
+    }
+    return true;
+  }//if MessageBox
   if (lowerFunction == "modpcfacrep")
   {
     if (params.size()<3)
@@ -4271,6 +4343,124 @@ bool ScriptFunctions_ThreeParameters(const std::vector<std::string>& params, Com
     chunk.data.push_back(flag);
     return true;
   }//if LoopGroup
+  if (lowerFunction == "messagebox")
+  {
+    if (params.size()<4)
+    {
+      std::cout << "ScriptCompiler: Error: MessageBox needs three parameters!\n";
+      return false;
+    }
+    chunk.pushCode(CodeMessageBox);
+    //first parameter is a string
+    //second and third parameters are either a local var or another string
+    //push string's length as short (not byte)
+    chunk.pushShort(params[1].length());
+    //push parameter string
+    chunk.pushString(params[1]);
+    //now check if second param is a local var
+    uint8_t arg_count = 0;
+    uint8_t button_count = 0;
+    SC_VarRef firstRef = chunk.getVariableTypeWithIndex(params[2]);
+    if (firstRef.Type!=vtGlobal)
+    {
+      //it's a local var
+      arg_count = 1;
+    }
+    else if (Globals::getSingleton().hasGlobal(params[2]))
+    {
+      //It's a global var, that counts as argument.
+      arg_count = 1;
+    }
+    else
+    {
+      //It's a string.
+      button_count = 1;
+    }
+    SC_VarRef secondRef = SC_VarRef(vtGlobal, 0);
+    //only check this one if previous param was a variable
+    if (arg_count>0)
+    {
+      secondRef = chunk.getVariableTypeWithIndex(params[3]);
+      if (secondRef.Type!=vtGlobal)
+      {
+        //it's a local var
+        ++arg_count;
+      }
+      else if (Globals::getSingleton().hasGlobal(params[3]))
+      {
+        //It's a global var, that counts as argument.
+        ++arg_count;
+      }
+      else
+      {
+        //It's a string.
+        ++button_count;
+      }
+    }//if first param was var
+
+    //push number of arguments
+    chunk.data.push_back(arg_count);
+    //push arguments, if present
+    if (arg_count>0)
+    {
+      if (firstRef.Type!=vtGlobal)
+      {
+        //push local ref
+        chunk.pushNonGlobalRef(firstRef);
+      }
+      else
+      {
+        //push global
+        const std::string& globName = Globals::getSingleton().getGlobal(params[2]).GlobalID;
+        //push G for global
+        chunk.data.push_back('G');
+        //push length (including null-terminating byte)
+        chunk.data.push_back(globName.length()+1);
+        //push global name itself
+        chunk.pushString(globName);
+        //push terminating NUL character
+        chunk.data.push_back(0);
+      }
+    }//first argument
+    if (arg_count>1)
+    {
+      if (secondRef.Type!=vtGlobal)
+      {
+        //push local ref
+        chunk.pushNonGlobalRef(secondRef);
+      }
+      else
+      {
+        //push global
+        const std::string& globName = Globals::getSingleton().getGlobal(params[3]).GlobalID;
+        //push G for global
+        chunk.data.push_back('G');
+        //push length (including null-terminating byte)
+        chunk.data.push_back(globName.length()+1);
+        //push global name itself
+        chunk.pushString(globName);
+        //push terminating NUL character
+        chunk.data.push_back(0);
+      }
+    }//second argument
+    //push number of buttons
+    chunk.data.push_back(button_count);
+    //push button, if present
+    if (button_count>0)
+    {
+      unsigned int i;
+      for (i=2+arg_count; i<=3; ++i)
+      {
+        //push length of string + one byte for NUL
+        chunk.data.push_back(params[i].length()+1);
+        //push the string
+        chunk.pushString(params[i]);
+        //push NUL byte
+        chunk.data.push_back(0);
+      }//for
+    }//buttons
+    return true;
+  }//if MessageBox
   if (lowerFunction == "modfactionreaction")
   {
     if (params.size()<4)
@@ -5323,9 +5513,179 @@ bool ScriptFunctions_SevenParameters(const std::vector<std::string>& params, Com
     chunk.data.push_back(1);
     return true;
   }//if AIEscortCell or AIFollowCell
+  if (lowerFunction == "aiwander")
+  {
+    if (params.size()<8)
+    {
+      std::cout << "ScriptCompiler: Error: AIWander needs seven parameters!\n";
+      return false;
+    }
+    //first, second and third parameter is range, duration, time (each float)
+    //fourth to seventh parameter is idle2 to idle5 (each short)
+    // ---- check range
+    float range;
+    if (!stringToFloat(params[1], range))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[1]<<"\" is no float value!\n";
+      return false;
+    }
+    // ---- check duration
+    float duration;
+    if (!stringToFloat(params[2], duration))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is no float value!\n";
+      return false;
+    }
+    // ---- check time
+    float wander_time;
+    if (!stringToFloat(params[3], wander_time))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[3]<<"\" is no float value!\n";
+      return false;
+    }
+    //check Idle2
+    int16_t idle2;
+    if (!stringToShort(params[4], idle2))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[4]<<"\" is no short value!\n";
+      return false;
+    }
+    //check Idle3
+    int16_t idle3;
+    if (!stringToShort(params[5], idle3))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[5]<<"\" is no short value!\n";
+      return false;
+    }
+    //check Idle4
+    int16_t idle4;
+    if (!stringToShort(params[6], idle4))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[6]<<"\" is no short value!\n";
+      return false;
+    }
+    //check Idle5
+    int16_t idle5;
+    if (!stringToShort(params[7], idle5))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[7]<<"\" is no short value!\n";
+      return false;
+    }
+    //push function code
+    chunk.pushCode(CodeAIWander);
+    //push range
+    chunk.pushFloat(range);
+    //push duration
+    chunk.pushFloat(duration);
+    //push time
+    chunk.pushFloat(wander_time);
+    //push number of relevant shorts - three in this case (as short)
+    chunk.pushShort(3);
+    //idle2 seems to be omitted in compiled code, so we don't push that
+    //push idle3 to idle5
+    chunk.pushShort(idle3);
+    chunk.pushShort(idle4);
+    chunk.pushShort(idle5);
+    //seems like there's a 03 byte at the end
+    chunk.data.push_back(3);
+    return true;
+  }//if AIWander
   //nothing found, return false here
   return false;
 }
+
+bool ScriptFunctions_EightParameters(const std::vector<std::string>& params, CompiledChunk& chunk)
+{
+  //entry at index zero is the function's name
+  const std::string lowerFunction = lowerCase(params.at(0));
+  if (lowerFunction == "aiwander")
+  {
+    if (params.size()<9)
+    {
+      std::cout << "ScriptCompiler: Error: AIWander needs eight parameters!\n";
+      return false;
+    }
+    //first, second and third parameter is range, duration, time (each float)
+    //fourth to eightth parameter is idle2 to idle6 (each short)
+    // ---- check range
+    float range;
+    if (!stringToFloat(params[1], range))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[1]<<"\" is no float value!\n";
+      return false;
+    }
+    // ---- check duration
+    float duration;
+    if (!stringToFloat(params[2], duration))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is no float value!\n";
+      return false;
+    }
+    // ---- check time
+    float wander_time;
+    if (!stringToFloat(params[3], wander_time))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[3]<<"\" is no float value!\n";
+      return false;
+    }
+    //check Idle2
+    int16_t idle2;
+    if (!stringToShort(params[4], idle2))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[4]<<"\" is no short value!\n";
+      return false;
+    }
+    //check Idle3
+    int16_t idle3;
+    if (!stringToShort(params[5], idle3))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[5]<<"\" is no short value!\n";
+      return false;
+    }
+    //check Idle4
+    int16_t idle4;
+    if (!stringToShort(params[6], idle4))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[6]<<"\" is no short value!\n";
+      return false;
+    }
+    //check Idle5
+    int16_t idle5;
+    if (!stringToShort(params[7], idle5))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[7]<<"\" is no short value!\n";
+      return false;
+    }
+    //check Idle6
+    int16_t idle6;
+    if (!stringToShort(params[8], idle6))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[8]<<"\" is no short value!\n";
+      return false;
+    }
+    //push function code
+    chunk.pushCode(CodeAIWander);
+    //push range
+    chunk.pushFloat(range);
+    //push duration
+    chunk.pushFloat(duration);
+    //push time
+    chunk.pushFloat(wander_time);
+    //push number of relevant shorts - four in this case (as short)
+    chunk.pushShort(4);
+    //idle2 seems to be omitted in compiled code, so we don't push that
+    //push idle3 to idle5
+    chunk.pushShort(idle3);
+    chunk.pushShort(idle4);
+    chunk.pushShort(idle5);
+    chunk.pushShort(idle6);
+    //seems like there's a 03 byte at the end
+    chunk.data.push_back(3);
+    return true;
+  }//if AIWander
+  //nothing found, return false here
+  return false;
+}//function Eight
 
 bool ScriptFunctions_NineParameters(const std::vector<std::string>& params, CompiledChunk& chunk)
 {
@@ -6013,6 +6373,12 @@ bool ScriptFunctions(const std::string& line, CompiledChunk& chunk)
          break;
     case 10:
          if (ScriptFunctions_NineParameters(parameters, chunk))
+         {
+           return true;
+         }
+         break;
+    case 9:
+         if (ScriptFunctions_EightParameters(parameters, chunk))
          {
            return true;
          }

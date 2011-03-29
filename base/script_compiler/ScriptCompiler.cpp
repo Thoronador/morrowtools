@@ -261,6 +261,18 @@ std::vector<std::string> explodeParams(const std::string& source)
   return result;
 }
 
+//returns true, if the given string is one piece that will not be divided
+bool isSingleToken(const std::string& line)
+{
+  if ((getDotPosition(line)==std::string::npos)
+      and (getNextOperatorPos(line, 0)==std::string::npos))
+  {
+    //all things checkes? I hope so.
+    return (explodeParams(line).size()<2);
+  }
+  return false;
+}//function
+
 unsigned int getEndifForIf(const std::vector<std::string>& lines, const unsigned int start)
 {
   const std::vector<std::string>::size_type len = lines.size();
@@ -6404,23 +6416,49 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       }
       //first try to implement if-statement - It's still far from correct or
       //complete, but we have to start somewhere.
-      CompiledData.pushCode(CodeIf);
-      //next is statement count (byte)
-      CompiledData.data.push_back(end_of_if-i-1);
-      //next is compare statement, but this can get complicated
+
+      //rest of line is compare statement, but this can get complicated
       WorkString = lines.at(i).substr(3);
       trim(WorkString);
       if (removeEnclosingBrackets(WorkString))
       {
         trim(WorkString);
       }
-      /*//Assume that whole string is just a simple statement like 3 < 5.
-      //push length of compare statement
-      CompiledData.data.push_back(WorkString.length()+1);
-      //push one space
-      CompiledData.data.push_back(' ');
-      //push the string
-      CompiledData.pushString(WorkString);*/
+      //check left side for statement with qualifier - that gets pushed before
+      //the if statement itself, if present
+      SC_CompareType dummy;//not used later
+      const std::string::size_type comp_pos = getComparePos(WorkString, dummy);
+      const std::string::size_type qual_pos = getQualifierStart(WorkString);
+      //check if qualifier is before compare statement
+      if ((comp_pos!=std::string::npos) and (qual_pos!=std::string::npos) and
+          (qual_pos+2<comp_pos))
+      {
+        //we have a qualifier on the left side, extract part before qualifier
+        std::string leftist = WorkString.substr(0, qual_pos);
+        if (isSingleToken(leftist))
+        {
+          //remove brackets and trim afterwards
+          if (removeEnclosingBrackets(leftist))
+          {
+            trim(leftist);
+          }
+          //We can push the qualifier stuff here
+          //push qualifier
+          CompiledData.pushCode(CodeQualifier);
+          //push length of object name
+          CompiledData.data.push_back(leftist.length());
+          //push object name
+          CompiledData.pushString(leftist);
+          //qualifier's part is done, now chop off the part that we already did
+          // from the compare statement's string
+          WorkString.erase(0, qual_pos+2);
+        }//if single token
+      }//if qualifier and that stuff
+
+      //push if
+      CompiledData.pushCode(CodeIf);
+      //next is statement count (byte)
+      CompiledData.data.push_back(end_of_if-i-1);
 
       //process comparison statement
       std::vector<uint8_t> comparePart;
@@ -6460,9 +6498,7 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       }
       //First try to implement elseif-block - It's still far from complete, but we
       // have to start somewhere.
-      CompiledData.pushCode(CodeElseIf);
-      //next is statement count (byte)
-      CompiledData.data.push_back(end_of_elseif-i-1);
+
       //next is compare statement, but this can get complicated
       WorkString = lines.at(i).substr(7);
       trim(WorkString);
@@ -6470,6 +6506,40 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       {
         trim(WorkString);
       }
+      //Check left side for statement with qualifier - that gets pushed before
+      //the elseif statement itself, if present.
+      SC_CompareType dummy;//not used later
+      const std::string::size_type comp_pos = getComparePos(WorkString, dummy);
+      const std::string::size_type qual_pos = getQualifierStart(WorkString);
+      //check if qualifier is before compare statement
+      if ((comp_pos!=std::string::npos) and (qual_pos!=std::string::npos) and
+          (qual_pos+2<comp_pos))
+      {
+        //we have a qualifier on the left side, extract part before qualifier
+        std::string leftist = WorkString.substr(0, qual_pos);
+        if (isSingleToken(leftist))
+        {
+          //remove brackets and trim afterwards
+          if (removeEnclosingBrackets(leftist))
+          {
+            trim(leftist);
+          }
+          //We can push the qualifier stuff here
+          //push qualifier
+          CompiledData.pushCode(CodeQualifier);
+          //push length of object name
+          CompiledData.data.push_back(leftist.length());
+          //push object name
+          CompiledData.pushString(leftist);
+          //qualifier's part is done, now chop off the part that we already did
+          // from the compare statement's string
+          WorkString.erase(0, qual_pos+2);
+        }//if single token
+      }//if qualifier and that stuff
+      //push elseif
+      CompiledData.pushCode(CodeElseIf);
+      //next is statement count (byte)
+      CompiledData.data.push_back(end_of_elseif-i-1);
       //process comparison statement
       std::vector<uint8_t> comparePart;
       if (CompareToBinary(WorkString, comparePart, CompiledData))
@@ -6535,6 +6605,46 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       }
       //first try to implement while-statement - It's still far from correct or
       //complete, but we have to start somewhere.
+
+      //next is compare statement, but this can get complicated
+      WorkString = lines.at(i).substr(6);
+      trim(WorkString);
+      if (removeEnclosingBrackets(WorkString))
+      {
+        trim(WorkString);
+      }
+      //Check left side for statement with qualifier - that gets pushed before
+      //the while statement itself, if present.
+      SC_CompareType dummy;//not used later
+      const std::string::size_type comp_pos = getComparePos(WorkString, dummy);
+      const std::string::size_type qual_pos = getQualifierStart(WorkString);
+      //check if qualifier is before compare statement
+      if ((comp_pos!=std::string::npos) and (qual_pos!=std::string::npos) and
+          (qual_pos+2<comp_pos))
+      {
+        //we have a qualifier on the left side, extract part before qualifier
+        std::string leftist = WorkString.substr(0, qual_pos);
+        if (isSingleToken(leftist))
+        {
+          //remove brackets and trim afterwards
+          if (removeEnclosingBrackets(leftist))
+          {
+            trim(leftist);
+          }
+          //We can push the qualifier stuff here.
+          //push qualifier
+          CompiledData.pushCode(CodeQualifier);
+          //push length of object name
+          CompiledData.data.push_back(leftist.length());
+          //push object name
+          CompiledData.pushString(leftist);
+          //qualifier's part is done, now chop off the part that we already did
+          // from the compare statement's string
+          WorkString.erase(0, qual_pos+2);
+        }//if single token
+      }//if qualifier and that stuff
+
+      //push While
       CompiledData.pushCode(CodeWhile);
       //next is statement count (byte)
       /*******
@@ -6545,13 +6655,6 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
        *
        *******/
       CompiledData.data.push_back(end_of_while-i-1);
-      //next is compare statement, but this can get complicated
-      WorkString = lines.at(i).substr(6);
-      trim(WorkString);
-      if (removeEnclosingBrackets(WorkString))
-      {
-        trim(WorkString);
-      }
       //process comparison statement
       std::vector<uint8_t> comparePart;
       if (CompareToBinary(WorkString, comparePart, CompiledData))

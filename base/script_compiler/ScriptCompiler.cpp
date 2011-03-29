@@ -6494,9 +6494,12 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       //part before qualifier should be object name
       WorkString = lines.at(i).substr(0, qualStart);
       StripEnclosingQuotes(WorkString);
-      if ((WorkString=="") or (qualStart+2<=lines.at(i).length()))
+      if ((WorkString=="") or (qualStart+2>=lines.at(i).length()))
       {
-        std::cout << "ScriptCompiler: Error: invalid position of -> encountered.\n";
+        std::cout << "ScriptCompiler: Error: invalid position of -> encountered.\n"
+                  << "String is \""<<WorkString<<"\", pos. of qual. is "
+                  <<qualStart<<" and line's length is "<<lines.at(i).length()
+                  <<".\nThe line itself is \""<<lines.at(i)<<"\".\n";
         return false;
       }
       //push qualifier code
@@ -6507,7 +6510,7 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       CompiledData.pushString(WorkString);
       //Now the rest of the expression after -> should be a function. If not,
       // return false/error.
-      if (ScriptFunctions(lines.at(i).substr(qualStart+2) , CompiledData))
+      if (not ScriptFunctions(lines.at(i).substr(qualStart+2) , CompiledData))
       {
         std::cout << "ScriptCompiler: Error: could not handle part after "
                   << "qualifier in line \""<<lines.at(i)<<"\".\n";

@@ -29,9 +29,9 @@ struct ScriptRecord: public BasicRecord
 {
   //script header
   std::string ScriptID;
-  int32_t NumShorts;
-  int32_t NumLongs;
-  int32_t NumFloats;
+  uint32_t NumShorts;
+  uint32_t NumLongs;
+  uint32_t NumFloats;
   int32_t ScriptDataSize;
   int32_t LocalVarSize;
   //end of script header

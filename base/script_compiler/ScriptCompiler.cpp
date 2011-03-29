@@ -198,6 +198,27 @@ std::string::size_type getComparePos(const std::string& line, SC_CompareType& co
   return std::string::npos;
 }
 
+std::string::size_type getDotPosition(const std::string& line)
+{
+  const std::string::size_type len = line.length();
+  std::string::size_type look = 0;
+  bool outsideQuote = true;
+  while (look<len)
+  {
+    if (line.at(look)=='"')
+    {
+      outsideQuote = not outsideQuote;
+    }
+    else if ((outsideQuote) and (line.at(look)=='.'))
+    {
+      //found a dot
+      return look;
+    }//else
+    ++look;
+  }//while
+  return std::string::npos;
+}
+
 std::vector<std::string> explodeParams(const std::string& source)
 {
   std::vector<std::string> result;
@@ -390,6 +411,7 @@ unsigned int getEndOfWhile(const std::vector<std::string>& lines, const unsigned
 
 bool getAnimationGroupIndex(const std::string& groupName, int16_t& result)
 {
+  /***** TODO: add more animation groups *****/
   const std::string lcGroup = lowerCase(groupName);
   if (lcGroup == "death1")
   {
@@ -483,6 +505,40 @@ bool getAnimationGroupIndex(const std::string& groupName, int16_t& result)
   }
   return false;
 }
+
+SC_VarRef getScriptsVariableTypeWithIndex(const ScriptRecord& theScript, const std::string& varName)
+{
+  if (theScript.LocalVars.size()!=(theScript.NumShorts+theScript.NumLongs
+                                  +theScript.NumFloats))
+  {
+    std::cout << "ScriptCompiler: Error: number of local vars of script \""
+              << theScript.ScriptID<<"\" does not match the variables inside.\n";
+    return SC_VarRef(vtGlobal, 0);
+  }//if
+  const std::string lcName = lowerCase(varName);
+  unsigned int i;
+  for (i=0; i<theScript.LocalVars.size(); ++i)
+  {
+    if (lcName==lowerCase(theScript.LocalVars.at(i)))
+    {
+      //match found
+      //Is it a float var?
+      if (i>=theScript.NumShorts+theScript.NumLongs)
+      {
+        return SC_VarRef(vtFloat, i-(theScript.NumShorts+theScript.NumLongs)+1);
+      }
+      //Is it a long var?
+      if (i>=theScript.NumShorts)
+      {
+        return SC_VarRef(vtLong, i-theScript.NumShorts+1);
+      }
+      //it's a short
+      else return SC_VarRef(vtLong, i+1);
+    }//if
+  }//for
+  //no match found
+  return SC_VarRef(vtGlobal, 0);
+}//function getObjectsVariableTypeWithIndex
 
 bool ScriptFunctions_ZeroParameters(const std::vector<std::string>& params, CompiledChunk& chunk)
 {

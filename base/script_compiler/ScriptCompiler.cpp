@@ -63,6 +63,36 @@ std::string::size_type getCommentStart(const std::string& line)
   return std::string::npos;
 }
 
+std::string::size_type getPosOf_To_(const std::string& line)
+{
+  const std::string::size_type len = line.length();
+  std::string::size_type look = 0;
+  bool outsideQuote = true;
+  while (look<len)
+  {
+    if (line.at(look)=='"')
+    {
+      outsideQuote = not outsideQuote;
+    }
+    else if (outsideQuote and ((line.at(look)==' ') or (line.at(look)=='\t')))
+    {
+      //found a place where " to " could start
+      if (look+3<len)
+      {
+        if ((line.at(look+1)=='t') or (line.at(look+1)=='T'))
+        {
+          if ((line.at(look+2)=='o') or (line.at(look+2)=='O'))
+          {
+            if ((line.at(look+3)==' ') or (line.at(look+3)=='\t')) return look;
+          }//'o' found
+        }//'t' found
+      }
+    }//else
+    ++look;
+  }//while
+  return std::string::npos;
+}
+
 std::string::size_type getQualifierStart(const std::string& line)
 {
   const std::string::size_type len = line.length();
@@ -6181,16 +6211,17 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       CompiledData.pushCode(CodeSet);
       WorkString = lines.at(i).substr(4);
       trimLeft(WorkString);
-      WorkString = lowerCase(WorkString);
+      //WorkString = lowerCase(WorkString);
       //now select the bits of "set variable To value/expression"
-      const std::string::size_type pos = WorkString.find(" to ");
-      if (pos==std::string::npos)
+      const std::string::size_type pos_of_to = getPosOf_To_(WorkString);
+      if (pos_of_to==std::string::npos)
       {
         std::cout << "ScriptCompiler: Error: Set statement has to be like "
-                  << "'set variable to value', but no 'to' was found.\n";
+                  << "'set variable to value', but no 'to' was found.\n"
+                  << "Complete line was \""<<lines.at(i)<<"\".\n";
         return false;
       }
-      std::string varName = WorkString.substr(0, pos);
+      std::string varName = WorkString.substr(0, pos_of_to);
       trim(varName);
       //now search for the variable name
       SC_VarRef ref = CompiledData.getVariableTypeWithIndex(varName);
@@ -6226,7 +6257,7 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
         CompiledData.pushString(varName);
       }//else
       //get stuff after keyword "to"
-      WorkString.erase(0, pos+4); //pos is position of " to " (including spaces)
+      WorkString.erase(0, pos_of_to+4); //pos is position of " to " (including spaces)
                                   //We add four to get rid of "to" and both spaces, too.
       trimLeft(WorkString);
       if (WorkString=="")

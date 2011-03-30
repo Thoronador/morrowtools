@@ -21,6 +21,8 @@
 #ifndef MW_CONSTANTS_H
 #define MW_CONSTANTS_H
 
+#include <stdint.h>
+
 const int32_t cAADT = 0x54444141; //"AADT" = 41 41 44 54
 const int32_t cACTI = 0x49544341; //"ACTI" = 41 43 54 49
 const int32_t cALCH = 0x48434C41; //"ALCH" = 41 4C 43 48

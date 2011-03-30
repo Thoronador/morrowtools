@@ -20,9 +20,6 @@
 
 #include "ESMReader.h"
 #include <iostream>
-#include "MagicEffects.h"
-#include "Spells.h"
-#include "GameSettings.h"
 #include "MW_Constants.h"
 #include "HelperIO.h"
 

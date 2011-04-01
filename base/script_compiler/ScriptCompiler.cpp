@@ -6806,17 +6806,24 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
         //fill byte
         CompiledData.data.push_back(0);
       }
-      else
+      else if (Globals::getSingleton().hasGlobal(varName))
       {
         //global var identifier or more complex expression found
         // So we assume global here.
         //push type indicator - G for global
         CompiledData.data.push_back('G');
         //push length of global name
-        CompiledData.data.push_back(varName.length());
+        const std::string& vn_ref = Globals::getSingleton().getGlobal(varName).GlobalID;
+        CompiledData.data.push_back(vn_ref.length());
         //push name
-        CompiledData.pushString(varName);
-      }//else
+        CompiledData.pushString(vn_ref);
+      }//else if GLobal
+      else
+      {
+        std::cout << "ScriptCompiler: Error: \""<<varName<<"\" does not name a "
+                  << "local or global variable for SET statement.\n";
+        return false;
+      }
       //get stuff after keyword "to"
       WorkString.erase(0, pos_of_to+4); //pos is position of " to " (including spaces)
                                   //We add four to get rid of "to" and both spaces, too.

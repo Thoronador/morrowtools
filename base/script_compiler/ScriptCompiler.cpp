@@ -26,6 +26,8 @@
 #include "ParserNode.h"
 #include "../MagicEffects.h"
 #include "../Globals.h"
+#include "../Activators.h"
+#include "../Scripts.h"
 
 namespace ScriptCompiler
 {
@@ -551,7 +553,25 @@ SC_VarRef getScriptsVariableTypeWithIndex(const ScriptRecord& theScript, const s
   }//for
   //no match found
   return SC_VarRef(vtGlobal, 0);
-}//function getObjectsVariableTypeWithIndex
+}//function getScriptsVariableTypeWithIndex
+
+SC_VarRef getForeignVariableTypeWithIndex(const std::string& objectID, const std::string& varName)
+{
+  std::string ScriptID = "";
+  if (Activators::getSingleton().hasActivator(objectID))
+  {
+    ScriptID = Activators::getSingleton().getActivator(objectID).ScriptName;
+  }
+  ///TODO: add more stuff (e.g. NPCs) later
+  if (ScriptID!="")
+  {
+    if (Scripts::getSingleton().hasScript(ScriptID))
+    {
+      return getScriptsVariableTypeWithIndex(Scripts::getSingleton().getScript(ScriptID), varName);
+    }
+  }
+  return SC_VarRef(vtGlobal, 0);
+}//func
 
 bool ScriptFunctions_ZeroParameters(const std::vector<std::string>& params, CompiledChunk& chunk)
 {
@@ -6820,9 +6840,33 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       }//else if GLobal
       else
       {
-        std::cout << "ScriptCompiler: Error: \""<<varName<<"\" does not name a "
-                  << "local or global variable for SET statement.\n";
-        return false;
+        //could still be a foreign reference
+        const std::string::size_type dot_pos = getDotPosition(varName);
+        if (dot_pos==std::string::npos)
+        {
+          std::cout << "ScriptCompiler: Error: \""<<varName<<"\" does not name a "
+                    << "local or global variable or foreign reference for SET "
+                    << "statement.\n";
+          return false;
+        }
+        std::string objectName = varName.substr(0, dot_pos);
+        StripEnclosingQuotes(objectName);
+        const SC_VarRef foreignRef = getForeignVariableTypeWithIndex(objectName,
+                                         varName.substr(dot_pos+1));
+        if (foreignRef.Type==vtGlobal)
+        {
+          std::cout << "ScriptCompiler: Error: couldn't find foreign reference in \""
+                    << varName<<"\" for SET statement.\n";
+          return false;
+        }//if
+        //push r for reference
+        CompiledData.data.push_back('r');
+        //push object ID's length
+        CompiledData.data.push_back(objectName.length());
+        //push object ID
+        CompiledData.pushString(objectName);
+        //push reference
+        CompiledData.pushNonGlobalRef(foreignRef);
       }
       //get stuff after keyword "to"
       WorkString.erase(0, pos_of_to+4); //pos is position of " to " (including spaces)

@@ -40,7 +40,7 @@ struct LandscapeCoords
 };//struct
 
 //iterator type for landscape record list
-typedef std::map<LandscapeCoords, LandscapeRecord>::const_iterator LandscapeListIterator;
+typedef std::map<LandscapeCoords, LandscapeRecord*>::const_iterator LandscapeListIterator;
 
 class Landscape
 {
@@ -51,8 +51,18 @@ class Landscape
     /* singleton access method */
     static Landscape& getSingleton();
 
-    /* adds a landscape record to the list */
-    void addLandscapeRecord(const LandscapeRecord& record);
+    /* adds a landscape record to the list
+
+       parameters:
+           record - a pointer to the landscape record that has to be added
+
+       remarks:
+           The record pointed to by record MUST NOT be deleted by the
+           application in order to avoid a double free. The Landscape class will
+           take care of further management of the record and free it when it's
+           neccessary.
+    */
+    void addLandscapeRecord(LandscapeRecord* record);
 
     /* returns true, if a landscape record for the given exterior cell is
        present
@@ -117,7 +127,7 @@ class Landscape
     Landscape(const Landscape& op) {}
 
     /* internal data */
-    std::map<LandscapeCoords, LandscapeRecord> m_Landscape;
+    std::map<LandscapeCoords, LandscapeRecord*> m_Landscape;
 };//class
 
 #endif // LANDSCAPE_H

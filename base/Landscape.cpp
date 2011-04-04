@@ -47,7 +47,7 @@ Landscape::Landscape()
 
 Landscape::~Landscape()
 {
-  //empty
+  clearAll();
 }
 
 Landscape& Landscape::getSingleton()
@@ -56,9 +56,22 @@ Landscape& Landscape::getSingleton()
   return Instance;
 }
 
-void Landscape::addLandscapeRecord(const LandscapeRecord& record)
+void Landscape::addLandscapeRecord(LandscapeRecord* record)
 {
-  m_Landscape[record] = record;
+  if (record!=NULL)
+  {
+    std::map<LandscapeCoords, LandscapeRecord*>::iterator iter = m_Landscape.find(*record);
+    if (iter!=m_Landscape.end())
+    {
+      //record with same coordinates is already present - delete it first
+      delete iter->second;
+      //iter->second = NULL;
+      iter->second = record;
+      return;
+    }
+    //assign new record
+    m_Landscape[*record] = record;
+  }//if record is not NULL
 }
 
 bool Landscape::hasLandscapeRecord(const LandscapeCoords& coords) const
@@ -76,7 +89,7 @@ const LandscapeRecord& Landscape::getLandscapeRecord(const LandscapeCoords& coor
   LandscapeListIterator iter = m_Landscape.find(coords);
   if (iter!=m_Landscape.end())
   {
-    return iter->second;
+    return *(iter->second);
   }
   std::cout << "No landscape record with the coordinates ("<<coords.X<<";"
             << coords.Y<<") is present.\n";
@@ -104,7 +117,7 @@ bool Landscape::saveAllToStream(std::ofstream& output) const
   const LandscapeListIterator end_iter = m_Landscape.end();
   while (iter!=end_iter)
   {
-    if (!iter->second.saveToStream(output))
+    if (!(iter->second->saveToStream(output)))
     {
       std::cout << "Landscape::saveAllToStream: Error while writing record for "
                 << "cell ("<<iter->first.X<<";"<<iter->first.Y<<").\n";
@@ -117,24 +130,37 @@ bool Landscape::saveAllToStream(std::ofstream& output) const
 
 void Landscape::clearAll()
 {
+  std::map<LandscapeCoords, LandscapeRecord*>::iterator iter = m_Landscape.begin();
+  while (iter!=m_Landscape.end())
+  {
+    delete (iter->second);
+    iter->second = NULL;
+    ++iter;
+  }//while
+  //clear all pointers from list - should be NULL by now anyway
   m_Landscape.clear();
 }
 
 int Landscape::readRecordLAND(std::ifstream& in_File)
 {
-  LandscapeRecord temp;
-  if(!temp.loadFromStream(in_File))
+  LandscapeRecord* temp;
+  temp = new LandscapeRecord;
+  if(!temp->loadFromStream(in_File))
   {
     std::cout << "Landscape::readRecordLAND: Error while reading landscape record.\n";
+    delete temp;
+    temp = NULL;
     return -1;
   }
 
   //add it to the list, if not present with same data
-  if (hasLandscapeRecord(temp))
+  if (hasLandscapeRecord(*temp))
   {
-    if (getLandscapeRecord(temp).equals(temp))
+    if (getLandscapeRecord(*temp).equals(*temp))
     {
       //same record with equal data is already present, return zero
+      delete temp;
+      temp = NULL;
       return 0;
     }
   }//if landscape record present

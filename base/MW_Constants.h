@@ -25,6 +25,11 @@
 
 const int32_t cAADT = 0x54444141; //"AADT" = 41 41 44 54
 const int32_t cACTI = 0x49544341; //"ACTI" = 41 43 54 49
+const int32_t cAIDT = 0x54444941; //"AIDT" = 41 49 44 54
+const int32_t cAI_E = 0x455F4941; //"AI_E" = 41 49 5F 45
+const int32_t cAI_F = 0x465F4941; //"AI_F" = 41 49 5F 46
+const int32_t cAI_T = 0x545F4941; //"AI_T" = 41 49 5F 54
+const int32_t cAI_W = 0x575F4941; //"AI_W" = 41 49 5F 57
 const int32_t cALCH = 0x48434C41; //"ALCH" = 41 4C 43 48
 const int32_t cALDT = 0x54444C41; //"ALDT" = 41 4C 44 54
 const int32_t cANAM = 0x4D414E41; //"ANAM" = 41 4E 41 4D
@@ -55,6 +60,8 @@ const int32_t cCVFX = 0x58465643; //"CVFX" = 43 56 46 58
 const int32_t cDATA = 0x41544144; //"DATA" = 44 41 54 41
 const int32_t cDESC = 0x43534544; //"DESC" = 44 45 53 43
 const int32_t cDIAL = 0x4C414944; //"DIAL" = 44 49 41 4C
+const int32_t cDNAM = 0x4D414E44; //"DNAM" = 44 4E 41 4D
+const int32_t cDODT = 0x54444F44; //"DODT" = 44 4F 44 54
 const int32_t cDOOR = 0x524F4F44; //"DOOR" = 44 4F 4F 52
 const int32_t cENAM = 0x4D414E45; //"ENAM" = 45 4E 41 4D
 const int32_t cENCH = 0x48434E45; //"ENCH" = 45 4E 43 48
@@ -76,6 +83,7 @@ const int32_t cINGR = 0x52474E49; //"INGR" = 49 4E 47 52
 const int32_t cINTV = 0x56544E49; //"INTV" = 49 4E 54 56
 const int32_t cIRDT = 0x54445249; //"IRDT" = 49 52 44 54
 const int32_t cITEX = 0x58455449; //"ITEX" = 49 54 45 58
+const int32_t cKNAM = 0x4D414E4B; //"KNAM" = 4B 4E 41 4D
 const int32_t cLAND = 0x444E414C; //"LAND" = 4C 41 4E 44
 const int32_t cLEVC = 0x4356454C; //"LEVC" = 4C 45 56 43
 const int32_t cLEVI = 0x4956454C; //"LEVI" = 4C 45 56 49
@@ -95,6 +103,7 @@ const int32_t cNNAM = 0x4D414E4E; //"NNAM" = 4E 4E 41 4D
 const int32_t cNPCO = 0x4F43504E; //"NPCO" = 4E 50 43 4F
 const int32_t cNPCS = 0x5343504E; //"NPCS" = 4E 50 43 53
 const int32_t cNPC_ = 0x5F43504E; //"NPC_" = 4E 50 43 5F
+const int32_t cNPDT = 0x5444504E; //"NPDT" = 4E 50 44 54
 const int32_t cPBDT = 0x54444250; //"PBDT" = 50 42 44 54
 const int32_t cPGRC = 0x43524750; //"PGRC" = 50 47 52 43
 const int32_t cPGRD = 0x44524750; //"PGRD" = 50 47 52 44

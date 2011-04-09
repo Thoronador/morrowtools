@@ -25,12 +25,7 @@
 #include <fstream>
 #include <vector>
 #include "BasicRecord.h"
-
-struct ItemRecord
-{
-  int32_t Count;
-  std::string Item;
-};//struct
+#include "ItemRecord.h"
 
 struct ContainerRecord: public BasicRecord
 {

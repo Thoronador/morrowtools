@@ -55,6 +55,12 @@ bool CompileScript(const std::string& Text, ScriptRecord& result);
 /* aux. function for compiling of functions */
 bool ScriptFunctions(const std::string& line, CompiledChunk& chunk);
 
+/* returns the position of the first real dot in the given line */
+std::string::size_type getDotPosition(const std::string& line);
+
+/* aux. function */
+SC_VarRef getForeignVariableTypeWithIndex(const std::string& objectID, const std::string& varName);
+
 }//namespace
 
 #endif // SCRIPTCOMPILER_H

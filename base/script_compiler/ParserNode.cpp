@@ -74,6 +74,7 @@ bool ParserNode::splitToTree(std::string expression, const CompiledChunk& chunkV
     //There is no operator here, whole thing is one expression.
     //TODO: We should check for float or function here
     content = expression;
+    const std::string::size_type dotPos = getDotPosition(expression);
     //check for float
     float fVal;
     if (stringToFloat(expression, fVal))
@@ -137,6 +138,32 @@ bool ParserNode::splitToTree(std::string expression, const CompiledChunk& chunkV
           binary_content.push_back(content[i]);
         }
       }//globals
+      //check for foreign ref
+      else if (dotPos!=std::string::npos)
+      {
+        std::string objectName = expression.substr(0, dotPos);
+        StripEnclosingQuotes(objectName);
+        const SC_VarRef foreignRef = getForeignVariableTypeWithIndex(objectName,
+                                         expression.substr(dotPos+1));
+        if (foreignRef.Type==vtGlobal)
+        {
+          std::cout << "ScriptCompiler: Error: couldn't find foreign reference in \""
+                    << expression<<"\" for compare/parsed statement.\n";
+          return false;
+        }//if
+        temp_chunk.data.clear();
+        //push r for reference
+        temp_chunk.data.push_back('r');
+        //push object ID's length
+        temp_chunk.data.push_back(objectName.length());
+        //push object ID
+        temp_chunk.pushString(objectName);
+        //push reference
+        temp_chunk.pushNonGlobalRef(foreignRef);
+        //get binary data from chunk
+        binary_content = temp_chunk.data;
+        type = ctForeignRef;
+      }
       //check for function
       else if (ScriptFunctions(expression, temp_chunk))
       {

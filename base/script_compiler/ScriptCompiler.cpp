@@ -24,6 +24,7 @@
 #include "CompiledChunk.h"
 #include "UtilityFunctions.h"
 #include "ParserNode.h"
+#include "../NPCs.h"
 #include "../MagicEffects.h"
 #include "../Globals.h"
 #include "../Activators.h"
@@ -270,7 +271,7 @@ bool isSingleToken(const std::string& line)
   if ((getDotPosition(line)==std::string::npos)
       and (getNextOperatorPos(line, 0)==std::string::npos))
   {
-    //all things checkes? I hope so.
+    //all things checked? I hope so.
     return (explodeParams(line).size()<2);
   }
   return false;
@@ -548,7 +549,7 @@ SC_VarRef getScriptsVariableTypeWithIndex(const ScriptRecord& theScript, const s
         return SC_VarRef(vtLong, i-theScript.NumShorts+1);
       }
       //it's a short
-      else return SC_VarRef(vtLong, i+1);
+      else return SC_VarRef(vtShort, i+1);
     }//if
   }//for
   //no match found
@@ -562,7 +563,11 @@ SC_VarRef getForeignVariableTypeWithIndex(const std::string& objectID, const std
   {
     ScriptID = Activators::getSingleton().getActivator(objectID).ScriptName;
   }
-  ///TODO: add more stuff (e.g. NPCs) later
+  else if (NPCs::getSingleton().hasNPC(objectID))
+  {
+    ScriptID = NPCs::getSingleton().getNPC(objectID).ScriptID;
+  }
+  ///TODO: add more stuff (e.g. creatures) later
   if (ScriptID!="")
   {
     if (Scripts::getSingleton().hasScript(ScriptID))

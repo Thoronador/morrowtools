@@ -42,6 +42,7 @@ void NPC_AIData::clear()
 
 bool NPC_AIData::operator==(const NPC_AIData& other) const
 {
+  if (!isPresent and !other.isPresent) return true;
   return ((isPresent==other.isPresent) and (Hello==other.Hello)
       and (Unknown1==other.Unknown1) and (Fight==other.Fight)
       and (Flee==other.Flee) and (Alarm==other.Alarm)
@@ -82,13 +83,16 @@ void NPC_AIEscortFollow::clear()
   Duration = 0;
   TargetID = "";
   Reset = 0;
+  CellName = "";
 }
 
 bool NPC_AIEscortFollow::operator==(const NPC_AIEscortFollow& other) const
 {
+  if (!isPresent and !other.isPresent) return true;
   return ((isPresent==other.isPresent) and (X==other.X) and (Y==other.Y)
       and (Z==other.Z) and (Duration==other.Duration)
-      and (TargetID==other.TargetID) and (Reset==other.Reset));
+      and (TargetID==other.TargetID) and (Reset==other.Reset)
+      and (CellName==other.CellName));
 }
 
 /* **** AITravel's functions ****/
@@ -145,7 +149,7 @@ NPCRecord::NPCRecord()
   AIData.clear();
   AIEscort.clear();
   AIFollow.clear();
-  EscortFollowCell = "";
+  //EscortFollowCell = "";
   //AITravel.clear();
   //AIWander.clear();
   AIPackages.clear();
@@ -207,7 +211,7 @@ NPCRecord& NPCRecord::operator=(const NPCRecord& source)
   AIData = source.AIData;
   AIEscort = source.AIEscort;
   AIFollow = source.AIFollow;
-  EscortFollowCell = source.EscortFollowCell;
+  //EscortFollowCell = source.EscortFollowCell;
   //AITravel.clear();
   //AIWander.clear();
   removeAIPackages();
@@ -253,7 +257,7 @@ bool NPCRecord::equals(const NPCRecord& other) const
       and (NPC_Flag==other.NPC_Flag) and (Items==other.Items)
       and (NPC_Spells==other.NPC_Spells) and (AIData==other.AIData)
       and (AIEscort==other.AIEscort) and (AIFollow==other.AIFollow)
-      and (EscortFollowCell==other.EscortFollowCell)
+      //and (EscortFollowCell==other.EscortFollowCell)
       //and (AITravel==other.AITravel) and (AIWander==other.AIWander)
       and (hasEqualAIPackages(other))
       and (Destinations==other.Destinations));
@@ -261,8 +265,579 @@ bool NPCRecord::equals(const NPCRecord& other) const
 
 bool NPCRecord::saveToStream(std::ofstream& output) const
 {
-  #warning Not implemented yet!
-  return false;
+  output.write((char*) &cNPC_, 4);
+  int32_t Size;
+  Size = 4 /* NAME */ +4 /* 4 bytes for length */
+        +NPCID.length()+1 /* length of ID +1 byte for NUL termination */
+        +4 /* RNAM */ +4 /* 4 bytes for length */
+        +RaceID.length()+1 /* length of race ID +1 byte for NUL termination */
+        +4 /* ANAM */ +4 /* 4 bytes for length */
+        +FactionID.length()+1 /* length of faction ID +1 byte for NUL termination */
+        +4 /* BNAM */ +4 /* 4 bytes for length */
+        +HeadModel.length()+1 /* length of head model +1 byte for NUL termination */
+        +4 /* KNAM */ +4 /* 4 bytes for length */
+        +HairModel.length()+1 /* length of hair model +1 byte for NUL termination */
+        +4 /* NPDT */ +4 /* 4 bytes for length */;
+  switch (NPCDataType)
+  {
+    case ndt12Bytes:
+         Size += 12; //fixed length of 12 bytes
+         break;
+    case ndt52Bytes:
+         Size += 52; //fixed length of 52 bytes
+         break;
+    case ndtNone:
+         std::cout << "Error: No data type specified for NPDT subrecord.\n";
+         return false;
+         break;
+  }//swi
+  Size = Size + 4 /* FLAG */ +4 /* 4 bytes for length */ +4 /* fixed length of four bytes */
+        +Items.size()*(4 /* NPCO */ +4 /* 4 bytes for length */ +36 /* fixed length of 36 bytes */)
+        +NPC_Spells.size()*(4 /* NPCS */ +4 /* 4 bytes for length */ +32 /* fixed length of 36 bytes */);
+
+
+  //add size of the optional stuff
+  if (Name!="")
+  {
+    Size = Size +4 /* FNAM */ +4 /* 4 bytes for length */
+          +Name.length()+1 /* length of name +1 byte for NUL termination */;
+  }
+  if (ModelPath!="")
+  {
+    Size = Size +4 /* MODL */ +4 /* 4 bytes for length */
+          +ModelPath.length()+1 /* length of path +1 byte for NUL termination */;
+  }
+  if (ClassID!="")
+  {
+    Size = Size +4 /* CNAM */ +4 /* 4 bytes for length */
+          +ClassID.length()+1 /* length of class ID +1 byte for NUL termination */;
+  }
+  if (ScriptID!="")
+  {
+    Size = Size +4 /* SCRI */ +4 /* 4 bytes for length */
+          +ScriptID.length()+1 /* length of script+1 byte for NUL termination */;
+  }
+  if (AIData.isPresent)
+  {
+    Size = Size +4 /* AIDT */ +4 /* 4 bytes for length */ +12 /* fixed length of 12 bytes */;
+  }
+
+  //AI escort
+  if (AIEscort.isPresent)
+  {
+    Size = Size +4 /* AI_E */ +4 /* 4 bytes for length */ +48 /* fixed length of 48 bytes */;
+    //Is there a cell name?
+    if (AIEscort.CellName!="")
+    {
+      Size = Size + 4 /* CNDT */ + 4 /* 4 bytes for length */
+            +AIEscort.CellName.length()+1 /* length of cell name +1 byte for NUL termination */;
+    }//if
+  }//if
+
+  //AI follow
+  if (AIFollow.isPresent)
+  {
+    Size = Size +4 /* AI_F */ +4 /* 4 bytes for length */ +48 /* fixed length of 48 bytes */;
+    //Is there a cell name?
+    if (AIFollow.CellName!="")
+    {
+      Size = Size + 4 /* CNDT */ + 4 /* 4 bytes for length */
+            +AIFollow.CellName.length()+1 /* length of cell name +1 byte for NUL termination */;
+    }//if
+  }//if
+
+  //other AI packages (Note to self: still need to simplify that)
+  unsigned int i;
+  for (i=0; i<AIPackages.size(); ++i)
+  {
+    switch( AIPackages[i]->getPackageType())
+    {
+      case ptTravel:
+           Size = Size + 4 /* AI_T */ + 4 /* 4 bytes for length */ +16 /* fixed length of 16 bytes */;
+           break;
+      case ptWander:
+           Size = Size + 4 /* AI_W */ + 4 /* 4 bytes for length */ +14 /* fixed length of 14 bytes */;
+           break;
+    }//swi
+  }//for (AIPackages)
+
+  //travel service destinations
+  for (i=0; i<Destinations.size(); ++i)
+  {
+    Size = Size + +4 /* DODT */ +4 /* 4 bytes for length */ +24 /*fixed length of 24 bytes */;
+    if (Destinations[i].CellName!="")
+    {
+      Size = Size + +4 /* DNAM */ +4 /* 4 bytes for length */
+            +Destinations[i].CellName.length()+1 /*length of cell name +1 byte for NUL termination */;
+    }//if
+  }//for
+  output.write((char*) &Size, 4);
+  output.write((char*) &HeaderOne, 4);
+  output.write((char*) &HeaderFlags, 4);
+  /*NPCs:
+    NAME = NPC ID string
+    FNAM = NPC name (optional, e.g. todwendy in DV)
+    MODL = Animation file (optional)
+    RNAM = Race Name    }
+    ANAM = Faction name } Required, even if empty
+    BNAM = Head model   }
+    CNAM = Class name (optional)
+    KNAM = Hair model   }
+    SCRI = Script ID (optional)
+    NPDT = NPC Data (12 bytes or 52 bytes?)
+        short Level
+        byte  Strength
+		byte  Intelligence
+		byte  Willpower
+		byte  Agility
+		byte  Speed
+		byte  Endurance
+		byte  Personality
+		byte  Luck
+		byte  Skills[27]  } According to the skillID (0-26)
+		byte  Reputation
+		short Health
+		short SpellPts
+		short Fatigue
+		byte  Disposition
+		byte  FactionID
+		byte  Rank
+		byte  Unknown1
+		long  Gold
+
+		12 byte Version
+		short Level
+		byte  Disposition
+		byte  FactionID?
+		byte  Rank
+		byte  Unknown1
+		byte  Unknown2
+		byte  Unknown3
+		long  Gold?
+    FLAG = NPC Flags (4 bytes, long)
+        0x0001 = Female, 0x0002 = Essential, 0x0004 = Respawn, 0x0008 = None?
+        0x0010 = Autocalc, 0x0400 = Blood Skel, 0x0800 = Blood Metal
+	NPCO = NPC item (36 bytes, occurs 0+ times)
+		long	Count	  Number of the item
+		char	Name[32]  The ID of the item
+	NPCS = NPC spell (32 bytes, occurs 0+ times)
+		char	Name[32]  The ID of the item
+	AIDT = AI data (12 bytes)
+		byte Hello
+		byte Unknown1
+		byte Fight
+		byte Flee
+		byte Alarm
+		byte Unknown2
+		byte Unknown3
+		byte Unknown4
+		long Flags
+            0x00001 = Weapon, 0x00002 = Armor, 0x00004 = Clothing,
+            0x00008 = Books, 0x00010 = Ingredients, 0x00020 = Picks,
+            0x00040 = Probes, 0x00080 = Lights, 0x00100 = Apparatus,
+            0x00200 = Repair, 0x00400 = Misc, 0x00800 = Spells,
+            0x01000 = Magic Items, 0x02000 = Potions, 0x04000 = Training,
+            0x08000 = Spellmaking, 0x10000 = Enchanting, 0x20000 = Repair Item
+	AI_W = AI bytes (14 bytes)
+		short Distance
+		short Duration
+		byte  TimeOfDay
+		byte  Idle[8]
+		byte  Unknown (1?)
+	AI_T = AI Travel (16 bytes)
+		float X
+		float Y
+		float Z
+		long  Unknown (1?)
+	AI_F = AI Follow (48 bytes)
+		float X
+		float Y
+		float Z
+		short Duration
+		char  ID[32]
+		short Unknown (0100?)
+	AI_E = AI Escort (48 bytes)
+		float X
+		float Y
+		float Z
+		short Duration
+		char  ID[32]
+		short Unknown (0100?)
+	CNDT = Cell escort/follow to string (optional)
+	AI_A = AI Activate (33 bytes)
+		char Name[32]
+		byte Unknown (1?)
+	DODT = Cell Travel Destination
+		float XPos
+		float YPos
+		float ZPos
+		float XRot
+		float YRot
+		float ZRot
+	DNAM = Cell name for previous DODT, if interior
+	XSCL = Scale (4 bytes, float, optional)
+		Only present if the scale is not 1.0 */
+
+  //write NAME
+  output.write((char*) &cNAME, 4);
+  int32_t SubLength = NPCID.length()+1;
+  //write NAME's length
+  output.write((char*) &SubLength, 4);
+  //write ID
+  output.write(NPCID.c_str(), SubLength);
+
+  if (Name!="")
+  {
+    //write FNAM
+    output.write((char*) &cFNAM, 4);
+    SubLength = Name.length()+1;
+    //write FNAM's length
+    output.write((char*) &SubLength, 4);
+    //write sign's name
+    output.write(Name.c_str(), SubLength);
+  }
+
+  if (ModelPath!="")
+  {
+    //write MODL
+    output.write((char*) &cMODL, 4);
+    SubLength = ModelPath.length()+1;
+    //write MODL's length
+    output.write((char*) &SubLength, 4);
+    //write NPC's model path
+    output.write(ModelPath.c_str(), SubLength);
+  }
+
+  //write RNAM
+  output.write((char*) &cRNAM, 4);
+  SubLength = RaceID.length()+1;
+  //write RNAM's length
+  output.write((char*) &SubLength, 4);
+  //write race ID
+  output.write(RaceID.c_str(), SubLength);
+
+  //write ANAM
+  output.write((char*) &cANAM, 4);
+  SubLength = FactionID.length()+1;
+  //write ANAM's length
+  output.write((char*) &SubLength, 4);
+  //write faction ID
+  output.write(FactionID.c_str(), SubLength);
+
+  //write BNAM
+  output.write((char*) &cBNAM, 4);
+  SubLength = HeadModel.length()+1;
+  //write BNAM's length
+  output.write((char*) &SubLength, 4);
+  //write head model
+  output.write(HeadModel.c_str(), SubLength);
+
+  if (ClassID!="")
+  {
+    //write CNAM
+    output.write((char*) &cCNAM, 4);
+    SubLength = ClassID.length()+1;
+    //write CNAM's length
+    output.write((char*) &SubLength, 4);
+    //write class ID
+    output.write(ClassID.c_str(), SubLength);
+  }
+
+  //write KNAM
+  output.write((char*) &cKNAM, 4);
+  SubLength = HairModel.length()+1;
+  //write KNAM's length
+  output.write((char*) &SubLength, 4);
+  //write hair model
+  output.write(HairModel.c_str(), SubLength);
+
+  if (ScriptID!="")
+  {
+    //write SCRI
+    output.write((char*) &cSCRI, 4);
+    SubLength = ScriptID.length()+1;
+    //write SCRI's length
+    output.write((char*) &SubLength, 4);
+    //write script ID
+    output.write(ScriptID.c_str(), SubLength);
+  }
+
+  //write NPDT
+  output.write((char*) &cNPDT, 4);
+  switch ( NPCDataType)
+  {
+    case ndt12Bytes:
+         SubLength = 12; //fixed length of 12 bytes
+         break;
+    case ndt52Bytes:
+         SubLength = 52; //fixed length of 52 bytes
+         break;
+    case ndtNone:
+         std::cout << "Error: No data type specified for NPDT subrecord.\n";
+         return false;
+         break;
+  }//swi
+  //write NPDT's length
+  output.write((char*) &SubLength, 4);
+  //write NPC data
+  if (SubLength==52)
+  {
+    // ---- level
+    output.write((char*) &Level, 2);
+    // ---- attributes
+    output.write((char*) &Strength, 1);
+    output.write((char*) &Intelligence, 1);
+    output.write((char*) &Willpower, 1);
+    output.write((char*) &Agility, 1);
+    output.write((char*) &Speed, 1);
+    output.write((char*) &Endurance, 1);
+    output.write((char*) &Personality, 1);
+    output.write((char*) &Luck, 1);
+    // ---- skills
+    output.write((char*) Skills, 27);
+    // ---- reputations
+    output.write((char*) &Reputation, 1);
+    // ---- secondary attribs
+    output.write((char*) &Health, 2);
+    output.write((char*) &SpellPoints, 2);
+    output.write((char*) &Fatigue, 2);
+    // ---- disposition
+    output.write((char*) &Disposition, 1);
+    // ---- faction stuff
+    output.write((char*) &Data_FactionID, 1);
+    output.write((char*) &Rank, 1);
+    // ---- others
+    output.write((char*) &Unknown1, 1);
+    output.write((char*) &Gold, 4);
+  }
+  else
+  {
+    //12 byte version
+    // ---- level
+    output.write((char*) &Level, 2);
+    // ---- disposition
+    output.write((char*) &Disposition, 1);
+    // ---- faction stuff
+    output.write((char*) &Data_FactionID, 1);
+    output.write((char*) &Rank, 1);
+    // ---- others
+    output.write((char*) &Unknown1, 1);
+    output.write(NULof32, 2);//skip the two unknown bytes
+    output.write((char*) &Gold, 4);
+  }
+
+  //write FLAG
+  output.write((char*) &cFLAG, 4);
+  SubLength = 4; //fixed length of four bytes
+  //write FLAG's length
+  output.write((char*) &SubLength, 4);
+  //write NPC flag
+  output.write((char*) &NPC_Flag, 4);
+
+  //items and spells
+  unsigned int len;
+  for (i=0; i<Items.size(); ++i)
+  {
+    //Items
+    //write NPCO
+    output.write((char*) &cNPCO, 4);
+    SubLength = 36; //fixed length of 36 bytes
+    //write NPCO's length
+    output.write((char*) &SubLength, 4);
+    //write item stuff
+    // ---- count
+    output.write((char*) &(Items[i].Count), 4);
+    // ---- item ID
+    len = Items[i].Item.length();
+    if (len>31)
+    {
+      len = 31;
+    }
+    output.write(Items[i].Item.c_str(), len);
+    //fill rest with NUL bytes
+    output.write(NULof32, 32-len);
+  }//for
+
+  for (i=0; i<NPC_Spells.size(); ++i)
+  {
+    //Spells
+    //write NPCS
+    output.write((char*) &cNPCS, 4);
+    SubLength = 32; //fixed length of 32 bytes
+    //write NPCS's length
+    output.write((char*) &SubLength, 4);
+    //write spell ID
+    len = NPC_Spells[i].length();
+    if (len>31)
+    {
+      len = 31;
+    }
+    output.write(NPC_Spells[i].c_str(), len);
+    //fill rest with NUL bytes
+    output.write(NULof32, 32-len);
+  }//for
+
+  if (AIData.isPresent)
+  {
+    //write AIDT
+    output.write((char*) &cAIDT, 4);
+    SubLength = 12; //fixed length of 12 bytes
+    //write AIDT's length
+    output.write((char*) &SubLength, 4);
+    //write AI data
+    output.write((char*) &(AIData.Hello), 1);
+    output.write((char*) &(AIData.Unknown1), 1);
+    output.write((char*) &(AIData.Fight), 1);
+    output.write((char*) &(AIData.Flee), 1);
+    output.write((char*) &(AIData.Alarm), 1);
+    output.write((char*) &(AIData.Unknown2), 1);
+    output.write((char*) &(AIData.Unknown3), 1);
+    output.write((char*) &(AIData.Unknown4), 1);
+    output.write((char*) &(AIData.Flags), 4);
+  }//if AIData is present
+
+  if (AIEscort.isPresent)
+  {
+    //write AI_E
+    output.write((char*) &cAI_E, 4);
+    SubLength = 48; //fixed length of 48 bytes
+    //write AI_E's length
+    output.write((char*) &SubLength, 4);
+    //write AI escort data
+    output.write((char*) &(AIEscort.X), 4);
+    output.write((char*) &(AIEscort.Y), 4);
+    output.write((char*) &(AIEscort.Z), 4);
+    output.write((char*) &(AIEscort.Duration), 2);
+    // ---- write target ID
+    len = AIEscort.TargetID.length();
+    if (len>31)
+    {
+      len = 31;
+    }
+    output.write(AIEscort.TargetID.c_str(), len);
+    // ---- fill rest with NUL
+    output.write(NULof32, 32-len);
+    // ---- reset flag
+    output.write((char*) &(AIEscort.Reset), 2);
+
+    //check for presence of cell
+    if (AIEscort.CellName!="")
+    {
+      //write CNDT
+      output.write((char*) &cCNDT, 4);
+      SubLength = AIEscort.CellName.length()+1; //length of cell name +1 byte for NUL
+      //write CNDT's length
+      output.write((char*) &SubLength, 4);
+      //write AI escort's cell name
+      output.write(AIEscort.CellName.c_str(), SubLength);
+    }
+  }//if AIEscort
+
+  if (AIFollow.isPresent)
+  {
+    //write AI_F
+    output.write((char*) &cAI_F, 4);
+    SubLength = 48; //fixed length of 48 bytes
+    //write AI_F's length
+    output.write((char*) &SubLength, 4);
+    //write AI follow data
+    output.write((char*) &(AIFollow.X), 4);
+    output.write((char*) &(AIFollow.Y), 4);
+    output.write((char*) &(AIFollow.Z), 4);
+    output.write((char*) &(AIFollow.Duration), 2);
+    // ---- write target ID
+    len = AIFollow.TargetID.length();
+    if (len>31)
+    {
+      len = 31;
+    }
+    output.write(AIFollow.TargetID.c_str(), len);
+    // ---- fill rest with NUL
+    output.write(NULof32, 32-len);
+    // ---- reset flag
+    output.write((char*) &(AIFollow.Reset), 2);
+
+    //check for presence of cell
+    if (AIFollow.CellName!="")
+    {
+      //write CNDT
+      output.write((char*) &cCNDT, 4);
+      SubLength = AIFollow.CellName.length()+1; //length of cell name +1 byte for NUL
+      //write CNDT's length
+      output.write((char*) &SubLength, 4);
+      //write AI follow's cell name
+      output.write(AIFollow.CellName.c_str(), SubLength);
+    }
+  }//if AIFollow
+
+  //other AI packages (note: still need to merge that with escort/follow)
+  NPC_AITravel* travelPointer;
+  NPC_AIWander* wanderPointer;
+  for (i=0; i<AIPackages.size(); ++i)
+  {
+    switch ( AIPackages[i]->getPackageType())
+    {
+      case ptTravel:
+           //write AI_T
+           output.write((char*) &cAI_T, 4);
+           SubLength = 16; //fixed length of 16 bytes
+           //write AI_T's length
+           output.write((char*) &SubLength, 4);
+           //write AI travel data
+           travelPointer = static_cast<NPC_AITravel*>(AIPackages[i]);
+           output.write((char*) &(travelPointer->X), 4);
+           output.write((char*) &(travelPointer->Y), 4);
+           output.write((char*) &(travelPointer->Z), 4);
+           output.write((char*) &(travelPointer->Reset), 4);
+           break;
+      case ptWander:
+           //write AI_W
+           output.write((char*) &cAI_W, 4);
+           SubLength = 14; //fixed length of 14 bytes
+           //write AI_W's length
+           output.write((char*) &SubLength, 4);
+           //write AI wander data
+           wanderPointer = static_cast<NPC_AIWander*>(AIPackages[i]);
+           output.write((char*) &(wanderPointer->Distance), 2);
+           output.write((char*) &(wanderPointer->Duration), 2);
+           output.write((char*) &(wanderPointer->Time), 1);
+           output.write((char*) (wanderPointer->Idle), 8);
+           output.write((char*) &(wanderPointer->Reset), 1);
+           break;
+    }//swi
+  }//for AIPackages
+
+  #warning Some AI records (e.g. activate) are still missing!
+
+  //travel service destinations
+  for (i=0; i<Destinations.size(); ++i)
+  {
+    //write DODT
+    output.write((char*) &cDODT, 4);
+    SubLength = 24; //fixed length of 24 bytes
+    //write DODT's length
+    output.write((char*) &SubLength, 4);
+    //write destination data
+    output.write((char*) &(Destinations[i].XPos), 4);
+    output.write((char*) &(Destinations[i].YPos), 4);
+    output.write((char*) &(Destinations[i].ZPos), 4);
+    output.write((char*) &(Destinations[i].XRot), 4);
+    output.write((char*) &(Destinations[i].YRot), 4);
+    output.write((char*) &(Destinations[i].ZRot), 4);
+    //see if there's a cell name, too
+    if (Destinations[i].CellName!="")
+    {
+      //write DNAM
+      output.write((char*) &cDNAM, 4);
+      SubLength = Destinations[i].CellName.length()+1; //length of cell name +1 byte for NUL
+      //write DNAM's length
+      output.write((char*) &SubLength, 4);
+      //write destination cell name
+      output.write(Destinations[i].CellName.c_str(), SubLength);
+    }//if
+  }//for
+
+  return output.good();
 }
 
 bool NPCRecord::loadFromStream(std::ifstream& in_File)
@@ -280,9 +855,9 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
     RNAM = Race Name    }
     ANAM = Faction name } Required, even if empty
     BNAM = Head model   }
-    CNAM = Class name
+    CNAM = Class name (optional)
     KNAM = Hair model   }
-    SCRI = Script ID
+    SCRI = Script ID (optional)
     NPDT = NPC Data (12 bytes or 52 bytes?)
         short Level
         byte  Strength
@@ -781,7 +1356,7 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
   AIData.clear();
   AIEscort.clear();
   AIFollow.clear();
-  EscortFollowCell = "";
+  //EscortFollowCell = "";
   //AITravel.clear();
   //AIWander.clear();
   AIPackages.clear();
@@ -798,6 +1373,7 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
 
   NPC_AITravel* travelPointer = NULL;
   NPC_AIWander* wanderPointer = NULL;
+  int32_t previousSubRecord = 0;
 
   while (BytesRead<Size)
   {
@@ -830,6 +1406,7 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
            }
            temp.Item = std::string(Buffer);
            Items.push_back(temp);
+           previousSubRecord = cNPCO;
            break;
       case cNPCS:
            //NPCS's length
@@ -851,6 +1428,7 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            NPC_Spells.push_back(std::string(Buffer));
+           previousSubRecord = cNPCS;
            break;
       case cAIDT:
            if (hasAIDT)
@@ -885,6 +1463,7 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
            }
            AIData.isPresent = true;
            hasAIDT = true;
+           previousSubRecord = cAIDT;
            break;
       case cAI_E:
            if (hasAI_E)
@@ -917,8 +1496,10 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error while reading subrecord AI_E of NPC_!\n";
              return false;
            }
+           AIEscort.CellName = "";
            AIEscort.isPresent = true;
            hasAI_E = true;
+           previousSubRecord = cAI_E;
            break;
       case cAI_F:
            if (hasAI_F)
@@ -952,7 +1533,9 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            AIFollow.isPresent = true;
+           AIFollow.CellName = "";
            hasAI_F = true;
+           previousSubRecord = cAI_F;
            break;
       case cAI_T:
            /*if (hasAI_T)
@@ -986,6 +1569,7 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
            travelPointer = NULL; //just to be safe later
            //AITravel.isPresent = true;
            //hasAI_T = true;
+           previousSubRecord = cAI_T;
            break;
       case cAI_W:
            /*if (hasAI_W)
@@ -1021,6 +1605,7 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
            //AITravel.isPresent = true;
            //AIWander.isPresent = true;
            //hasAI_W = true;
+           previousSubRecord = cAI_W;
            break;
       case cCNDT:
            if (hasCNDT)
@@ -1045,8 +1630,25 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error while reading subrecord CNDT of NPC_!\n";
              return false;
            }
-           EscortFollowCell = std::string(Buffer);
+           if (previousSubRecord==cAI_E)
+           {
+             //last record was AI escort, so set it's cell name
+             AIEscort.CellName = std::string(Buffer);
+           }
+           else if (previousSubRecord==cAI_F)
+           {
+             //last record was AI follow, so set it's cell name
+             AIFollow.CellName = std::string(Buffer);
+           }
+           else
+           {
+             std::cout << "Error: Subrecord before CNDT of NPC_ was neither "
+                       << "AI_E nor AI_F, but \""<<IntTo4Char(previousSubRecord)
+                       << "\".\n";
+             return false;
+           }
            hasCNDT = true;
+           previousSubRecord = cCNDT;
            break;
       case cDODT:
            if (hasReadDestination)
@@ -1078,6 +1680,7 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
            }
            tempDest.CellName = "";
            hasReadDestination = true;
+           previousSubRecord = cDODT;
            break;
       case cDNAM:
            if (!hasReadDestination)
@@ -1107,10 +1710,12 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
            //push record
            Destinations.push_back(tempDest);
            hasReadDestination = false;
+           previousSubRecord = cDNAM;
            break;
       default:
            std::cout << "Unexpected record name \""<<IntTo4Char(SubRecName)
-                     <<"\" found. Expected NPCO, NPCS, AIDT or AI_W.\n";
+                     << "\" found. Expected NPCO, NPCS, AIDT, AI_E, AI_F, AI_T,"
+                     << " AI_W, DODT or DNAM.\n";
            return false;
     }//swi
   }//while
@@ -1136,7 +1741,7 @@ bool NPCRecord::hasEqualAIPackages(const NPCRecord& other) const
     if (AIPackages.at(i)!=NULL)
     {
       //Do they have the same type?
-      if (!(AIPackages.at(i)->getPackageType()!=other.AIPackages.at(i)->getPackageType()))
+      if (AIPackages.at(i)->getPackageType()!=other.AIPackages.at(i)->getPackageType())
       {
         return false;
       }

@@ -85,6 +85,7 @@ struct NPC_AIEscortFollow
   int16_t Duration;
   std::string TargetID;
   int16_t Reset;
+  std::string CellName;
 
   /* sets all members to zero */
   void clear();
@@ -167,7 +168,7 @@ struct NPCRecord: public BasicRecord
   NPC_AIData AIData;
   NPC_AIEscortFollow AIEscort;
   NPC_AIEscortFollow AIFollow;
-  std::string EscortFollowCell;
+  //std::string EscortFollowCell;
   //NPC_AITravel AITravel;
   //NPC_AIWander AIWander;
   std::vector<NPC_BasicAIPackage*> AIPackages;

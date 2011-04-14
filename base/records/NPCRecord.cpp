@@ -50,11 +50,17 @@ bool NPC_AIData::operator==(const NPC_AIData& other) const
       and (Unknown4==other.Unknown4) and (Flags==other.Flags));
 }
 
+/* **** BasicAIPackage's functions ****/
+
+NPC_BasicAIPackage::~NPC_BasicAIPackage()
+{
+  //empty - just here to get rid of compiler warnings
+}
+
 /* **** AIWander's functions ****/
 
 void NPC_AIWander::clear()
 {
-  //isPresent = false;
   Distance = Duration = 0;
   Time = 0;
   Idle[0] = Idle[1] = Idle[2] = Idle[3] = Idle[4] = Idle[5] = Idle[6] =
@@ -74,11 +80,22 @@ PackageType NPC_AIWander::getPackageType() const
   return ptWander;
 }
 
+/* **** AIActivate's functions ****/
+
+bool NPC_AIActivate::equals(const NPC_AIActivate& other) const
+{
+  return ((TargetID==other.TargetID) and (Reset==other.Reset));
+}
+
+PackageType NPC_AIActivate::getPackageType() const
+{
+  return ptActivate;
+}
+
 /* **** AIEscortFollow's functions ****/
 
 void NPC_AIEscortFollow::clear()
 {
-  isPresent = false;
   X = Y = Z = 0.0f;
   Duration = 0;
   TargetID = "";
@@ -86,20 +103,39 @@ void NPC_AIEscortFollow::clear()
   CellName = "";
 }
 
-bool NPC_AIEscortFollow::operator==(const NPC_AIEscortFollow& other) const
+bool NPC_AIEscortFollow::equals(const NPC_AIEscortFollow& other) const
 {
-  if (!isPresent and !other.isPresent) return true;
-  return ((isPresent==other.isPresent) and (X==other.X) and (Y==other.Y)
-      and (Z==other.Z) and (Duration==other.Duration)
-      and (TargetID==other.TargetID) and (Reset==other.Reset)
-      and (CellName==other.CellName));
+  /* Note: Usually it should be enough to check X, Y and Z for equality with
+           their counterparts in 'other', but if one of them is a NaN, we have
+           a problem, because one NaN is (by definition of IEEE 754) never equal
+           to another NaN, even if their internal bit representation is exactly
+           the same. That's why we have expressions like (X!=X) down there, they
+           catch the NaNs. */
+  return (((X==other.X) or ((X!=X) and (other.X!=other.X)))
+      and ((Y==other.Y) or ((Y!=Y) and (other.Y!=other.Y)))
+      and ((Z==other.Z) or ((Z!=Z) and (other.Z!=other.Z)))
+      and (Duration==other.Duration) and (TargetID==other.TargetID)
+      and (Reset==other.Reset) and (CellName==other.CellName));
+}
+
+/* **** AIEscort functions ****/
+
+PackageType NPC_AIEscort::getPackageType() const
+{
+  return ptEscort;
+}
+
+/* **** AIFollow functions ****/
+
+PackageType NPC_AIFollow::getPackageType() const
+{
+  return ptFollow;
 }
 
 /* **** AITravel's functions ****/
 
 void NPC_AITravel::clear()
 {
-  //isPresent = false;
   X = Y = Z = 0.0f;
   Reset = 0;
 }
@@ -147,11 +183,6 @@ NPCRecord::NPCRecord()
   Items.clear();
   NPC_Spells.clear();
   AIData.clear();
-  AIEscort.clear();
-  AIFollow.clear();
-  //EscortFollowCell = "";
-  //AITravel.clear();
-  //AIWander.clear();
   AIPackages.clear();
   Destinations.clear();
 }
@@ -209,11 +240,6 @@ NPCRecord& NPCRecord::operator=(const NPCRecord& source)
   Items = source.Items;
   NPC_Spells = source.NPC_Spells;
   AIData = source.AIData;
-  AIEscort = source.AIEscort;
-  AIFollow = source.AIFollow;
-  //EscortFollowCell = source.EscortFollowCell;
-  //AITravel.clear();
-  //AIWander.clear();
   removeAIPackages();
   unsigned int i;
   NPC_BasicAIPackage* pkgPtr;
@@ -221,6 +247,21 @@ NPCRecord& NPCRecord::operator=(const NPCRecord& source)
   {
     switch (source.AIPackages[i]->getPackageType())
     {
+      case ptActivate:
+           pkgPtr = new NPC_AIActivate;
+           *pkgPtr = *(static_cast<NPC_AIActivate*>(source.AIPackages[i]));
+           AIPackages.push_back(pkgPtr);
+           break;
+      case ptEscort:
+           pkgPtr = new NPC_AIEscort;
+           *pkgPtr = *(static_cast<NPC_AIEscort*>(source.AIPackages[i]));
+           AIPackages.push_back(pkgPtr);
+           break;
+      case ptFollow:
+           pkgPtr = new NPC_AIFollow;
+           *pkgPtr = *(static_cast<NPC_AIFollow*>(source.AIPackages[i]));
+           AIPackages.push_back(pkgPtr);
+           break;
       case ptTravel:
            pkgPtr = new NPC_AITravel;
            *pkgPtr = *(static_cast<NPC_AITravel*>(source.AIPackages[i]));
@@ -256,9 +297,6 @@ bool NPCRecord::equals(const NPCRecord& other) const
       and (Gold==other.Gold) and (NPCDataType==other.NPCDataType)
       and (NPC_Flag==other.NPC_Flag) and (Items==other.Items)
       and (NPC_Spells==other.NPC_Spells) and (AIData==other.AIData)
-      and (AIEscort==other.AIEscort) and (AIFollow==other.AIFollow)
-      //and (EscortFollowCell==other.EscortFollowCell)
-      //and (AITravel==other.AITravel) and (AIWander==other.AIWander)
       and (hasEqualAIPackages(other))
       and (Destinations==other.Destinations));
 }
@@ -322,36 +360,24 @@ bool NPCRecord::saveToStream(std::ofstream& output) const
     Size = Size +4 /* AIDT */ +4 /* 4 bytes for length */ +12 /* fixed length of 12 bytes */;
   }
 
-  //AI escort
-  if (AIEscort.isPresent)
-  {
-    Size = Size +4 /* AI_E */ +4 /* 4 bytes for length */ +48 /* fixed length of 48 bytes */;
-    //Is there a cell name?
-    if (AIEscort.CellName!="")
-    {
-      Size = Size + 4 /* CNDT */ + 4 /* 4 bytes for length */
-            +AIEscort.CellName.length()+1 /* length of cell name +1 byte for NUL termination */;
-    }//if
-  }//if
-
-  //AI follow
-  if (AIFollow.isPresent)
-  {
-    Size = Size +4 /* AI_F */ +4 /* 4 bytes for length */ +48 /* fixed length of 48 bytes */;
-    //Is there a cell name?
-    if (AIFollow.CellName!="")
-    {
-      Size = Size + 4 /* CNDT */ + 4 /* 4 bytes for length */
-            +AIFollow.CellName.length()+1 /* length of cell name +1 byte for NUL termination */;
-    }//if
-  }//if
-
-  //other AI packages (Note to self: still need to simplify that)
+  //AI packages
   unsigned int i;
   for (i=0; i<AIPackages.size(); ++i)
   {
-    switch( AIPackages[i]->getPackageType())
+    switch(AIPackages[i]->getPackageType())
     {
+      case ptActivate:
+           Size = Size + 4 /* AI_A */ + 4 /* 4 bytes for length */ +33 /* fixed length of 33 bytes */;
+           break;
+      case ptEscort:
+      case ptFollow:
+           Size = Size + 4 /* AI_E / AI_F */ + 4 /* 4 bytes for length */ +48 /* fixed length of 48 bytes */;
+           if (static_cast<NPC_AIEscortFollow*>(AIPackages[i])->CellName!="")
+           {
+             Size = Size +4 /* CNDT */ +4 /* 4 bytes for length */
+                    +static_cast<NPC_AIEscortFollow*>(AIPackages[i])->CellName.length()+1 /* length of cell name +1 byte for NUL */;
+           }
+           break;
       case ptTravel:
            Size = Size + 4 /* AI_T */ + 4 /* 4 bytes for length */ +16 /* fixed length of 16 bytes */;
            break;
@@ -696,87 +722,80 @@ bool NPCRecord::saveToStream(std::ofstream& output) const
     output.write((char*) &(AIData.Flags), 4);
   }//if AIData is present
 
-  if (AIEscort.isPresent)
-  {
-    //write AI_E
-    output.write((char*) &cAI_E, 4);
-    SubLength = 48; //fixed length of 48 bytes
-    //write AI_E's length
-    output.write((char*) &SubLength, 4);
-    //write AI escort data
-    output.write((char*) &(AIEscort.X), 4);
-    output.write((char*) &(AIEscort.Y), 4);
-    output.write((char*) &(AIEscort.Z), 4);
-    output.write((char*) &(AIEscort.Duration), 2);
-    // ---- write target ID
-    len = AIEscort.TargetID.length();
-    if (len>31)
-    {
-      len = 31;
-    }
-    output.write(AIEscort.TargetID.c_str(), len);
-    // ---- fill rest with NUL
-    output.write(NULof32, 32-len);
-    // ---- reset flag
-    output.write((char*) &(AIEscort.Reset), 2);
-
-    //check for presence of cell
-    if (AIEscort.CellName!="")
-    {
-      //write CNDT
-      output.write((char*) &cCNDT, 4);
-      SubLength = AIEscort.CellName.length()+1; //length of cell name +1 byte for NUL
-      //write CNDT's length
-      output.write((char*) &SubLength, 4);
-      //write AI escort's cell name
-      output.write(AIEscort.CellName.c_str(), SubLength);
-    }
-  }//if AIEscort
-
-  if (AIFollow.isPresent)
-  {
-    //write AI_F
-    output.write((char*) &cAI_F, 4);
-    SubLength = 48; //fixed length of 48 bytes
-    //write AI_F's length
-    output.write((char*) &SubLength, 4);
-    //write AI follow data
-    output.write((char*) &(AIFollow.X), 4);
-    output.write((char*) &(AIFollow.Y), 4);
-    output.write((char*) &(AIFollow.Z), 4);
-    output.write((char*) &(AIFollow.Duration), 2);
-    // ---- write target ID
-    len = AIFollow.TargetID.length();
-    if (len>31)
-    {
-      len = 31;
-    }
-    output.write(AIFollow.TargetID.c_str(), len);
-    // ---- fill rest with NUL
-    output.write(NULof32, 32-len);
-    // ---- reset flag
-    output.write((char*) &(AIFollow.Reset), 2);
-
-    //check for presence of cell
-    if (AIFollow.CellName!="")
-    {
-      //write CNDT
-      output.write((char*) &cCNDT, 4);
-      SubLength = AIFollow.CellName.length()+1; //length of cell name +1 byte for NUL
-      //write CNDT's length
-      output.write((char*) &SubLength, 4);
-      //write AI follow's cell name
-      output.write(AIFollow.CellName.c_str(), SubLength);
-    }
-  }//if AIFollow
-
-  //other AI packages (note: still need to merge that with escort/follow)
+  //AI packages
+  NPC_AIActivate* activatePointer;
+  NPC_AIEscortFollow* escort_followPointer;
   NPC_AITravel* travelPointer;
   NPC_AIWander* wanderPointer;
   for (i=0; i<AIPackages.size(); ++i)
   {
-    switch ( AIPackages[i]->getPackageType())
+    switch (AIPackages[i]->getPackageType())
     {
+      case ptActivate:
+           //write AI_A
+           output.write((char*) &cAI_A, 4);
+           SubLength = 33; //fixed length of 33 bytes
+           //write AI_A's length
+           output.write((char*) &SubLength, 4);
+           //write AI activate data
+           activatePointer = static_cast<NPC_AIActivate*>(AIPackages[i]);
+           // ---- write target ID
+           len = activatePointer->TargetID.length();
+           if (len>31)
+           {
+             len = 31;
+           }
+           output.write(activatePointer->TargetID.c_str(), len);
+           // ---- fill rest with NUL
+           output.write(NULof32, 32-len);
+           // ---- reset flag
+           output.write((char*) &(activatePointer->Reset), 1);
+           break;
+      case ptEscort:
+      case ptFollow:
+           if (AIPackages[i]->getPackageType()==ptEscort)
+           {
+             //write AI_E
+             output.write((char*) &cAI_E, 4);
+           }
+           else
+           {
+             //write AI_F
+             output.write((char*) &cAI_F, 4);
+           }
+           SubLength = 48; //fixed length of 48 bytes
+           //write AI_E's/AI_F's length
+           output.write((char*) &SubLength, 4);
+           //write AI escort/follow data
+           escort_followPointer = static_cast<NPC_AIEscortFollow*>(AIPackages[i]);
+           output.write((char*) &(escort_followPointer->X), 4);
+           output.write((char*) &(escort_followPointer->Y), 4);
+           output.write((char*) &(escort_followPointer->Z), 4);
+           output.write((char*) &(escort_followPointer->Duration), 2);
+           // ---- write target ID
+           len = escort_followPointer->TargetID.length();
+           if (len>31)
+           {
+             len = 31;
+           }
+           output.write(escort_followPointer->TargetID.c_str(), len);
+           // ---- fill rest with NUL
+           output.write(NULof32, 32-len);
+           // ---- reset flag
+           output.write((char*) &(escort_followPointer->Reset), 2);
+
+           //check for presence of cell
+           if (escort_followPointer->CellName!="")
+           {
+             //write CNDT
+             output.write((char*) &cCNDT, 4);
+             SubLength = escort_followPointer->CellName.length()+1; //length of cell name +1 byte for NUL
+             //write CNDT's length
+             output.write((char*) &SubLength, 4);
+             //write AI escort's/follow's cell name
+             output.write(escort_followPointer->CellName.c_str(), SubLength);
+           }
+           break;
       case ptTravel:
            //write AI_T
            output.write((char*) &cAI_T, 4);
@@ -806,8 +825,6 @@ bool NPCRecord::saveToStream(std::ofstream& output) const
            break;
     }//swi
   }//for AIPackages
-
-  #warning Some AI records (e.g. activate) are still missing!
 
   //travel service destinations
   for (i=0; i<Destinations.size(); ++i)
@@ -843,7 +860,7 @@ bool NPCRecord::saveToStream(std::ofstream& output) const
 bool NPCRecord::loadFromStream(std::ifstream& in_File)
 {
   #warning Not completely implemented yet!\
-           The XSCL and AI_A subrecords are still missing.
+           The XSCL subrecord is still missing.
   int32_t Size;
   in_File.read((char*) &Size, 4);
   in_File.read((char*) &HeaderOne, 4);
@@ -1354,23 +1371,15 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
   ItemRecord temp;
   NPC_Spells.clear();
   AIData.clear();
-  AIEscort.clear();
-  AIFollow.clear();
-  //EscortFollowCell = "";
-  //AITravel.clear();
-  //AIWander.clear();
   AIPackages.clear();
   Destinations.clear();
 
   bool hasAIDT = false;
-  bool hasAI_E = false;
-  bool hasAI_F = false;
-  bool hasCNDT = false;
-  //bool hasAI_T = false;
-  //bool hasAI_W = false;
   bool hasReadDestination = false;
   TravelDestination tempDest;
 
+  NPC_AIActivate* activatePointer = NULL;
+  NPC_AIEscortFollow* escortFollowPointer = NULL;
   NPC_AITravel* travelPointer = NULL;
   NPC_AIWander* wanderPointer = NULL;
   int32_t previousSubRecord = 0;
@@ -1465,12 +1474,36 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
            hasAIDT = true;
            previousSubRecord = cAIDT;
            break;
-      case cAI_E:
-           if (hasAI_E)
+      case cAI_A:
+           //AI_A's length
+           in_File.read((char*) &SubLength, 4);
+           BytesRead += 4;
+           if (SubLength!=33)
            {
-             std::cout << "Error: record NPC_ seems to have two AI_E subrecords.\n";
+             std::cout << "Error: Subrecord AI_A of NPC_ has invalid length ("
+                       << SubLength<< " bytes). Should be 33 bytes.\n";
              return false;
            }
+           //read AI activate data
+           activatePointer = new NPC_AIActivate;
+           // ---- read target ID
+           memset(Buffer, '\0', 33);
+           in_File.read(Buffer, 32);
+           // ---- reset flag
+           in_File.read((char*) &(activatePointer->Reset), 1);
+           BytesRead += 33;
+           if (!in_File.good())
+           {
+             std::cout << "Error while reading subrecord AI_A of NPC_!\n";
+             delete activatePointer;
+             return false;
+           }
+           activatePointer->TargetID = std::string(Buffer);
+           AIPackages.push_back(activatePointer);
+           activatePointer = NULL; //just to be safe
+           previousSubRecord = cAI_A;
+           break;
+      case cAI_E:
            //AI_E's length
            in_File.read((char*) &SubLength, 4);
            BytesRead += 4;
@@ -1481,32 +1514,29 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read AI escort data
-           in_File.read((char*) &(AIEscort.X), 4);
-           in_File.read((char*) &(AIEscort.Y), 4);
-           in_File.read((char*) &(AIEscort.Z), 4);
-           in_File.read((char*) &(AIEscort.Duration), 2);
+           escortFollowPointer = new NPC_AIEscort;
+           in_File.read((char*) &(escortFollowPointer->X), 4);
+           in_File.read((char*) &(escortFollowPointer->Y), 4);
+           in_File.read((char*) &(escortFollowPointer->Z), 4);
+           in_File.read((char*) &(escortFollowPointer->Duration), 2);
            // ---- read target ID
            memset(Buffer, '\0', 33);
            in_File.read(Buffer, 32);
-           AIEscort.TargetID = std::string(Buffer);
-           in_File.read((char*) &(AIEscort.Reset), 2);
+           escortFollowPointer->TargetID = std::string(Buffer);
+           in_File.read((char*) &(escortFollowPointer->Reset), 2);
            BytesRead += 48;
            if (!in_File.good())
            {
              std::cout << "Error while reading subrecord AI_E of NPC_!\n";
+             delete escortFollowPointer;
              return false;
            }
-           AIEscort.CellName = "";
-           AIEscort.isPresent = true;
-           hasAI_E = true;
+           escortFollowPointer->CellName = "";
+           AIPackages.push_back(escortFollowPointer);
+           escortFollowPointer = NULL; //just to be safe
            previousSubRecord = cAI_E;
            break;
       case cAI_F:
-           if (hasAI_F)
-           {
-             std::cout << "Error: record NPC_ seems to have two AI_F subrecords.\n";
-             return false;
-           }
            //AI_F's length
            in_File.read((char*) &SubLength, 4);
            BytesRead += 4;
@@ -1517,24 +1547,26 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read AI follow data
-           in_File.read((char*) &(AIFollow.X), 4);
-           in_File.read((char*) &(AIFollow.Y), 4);
-           in_File.read((char*) &(AIFollow.Z), 4);
-           in_File.read((char*) &(AIFollow.Duration), 2);
+           escortFollowPointer = new NPC_AIFollow;
+           in_File.read((char*) &(escortFollowPointer->X), 4);
+           in_File.read((char*) &(escortFollowPointer->Y), 4);
+           in_File.read((char*) &(escortFollowPointer->Z), 4);
+           in_File.read((char*) &(escortFollowPointer->Duration), 2);
            // ---- read target ID
            memset(Buffer, '\0', 33);
            in_File.read(Buffer, 32);
-           AIFollow.TargetID = std::string(Buffer);
-           in_File.read((char*) &(AIFollow.Reset), 2);
+           escortFollowPointer->TargetID = std::string(Buffer);
+           in_File.read((char*) &(escortFollowPointer->Reset), 2);
            BytesRead += 48;
            if (!in_File.good())
            {
              std::cout << "Error while reading subrecord AI_F of NPC_!\n";
+             delete escortFollowPointer;
              return false;
            }
-           AIFollow.isPresent = true;
-           AIFollow.CellName = "";
-           hasAI_F = true;
+           escortFollowPointer->CellName = "";
+           AIPackages.push_back(escortFollowPointer);
+           escortFollowPointer = NULL; //just to be safe
            previousSubRecord = cAI_F;
            break;
       case cAI_T:
@@ -1567,16 +1599,9 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
            }
            AIPackages.push_back(travelPointer);
            travelPointer = NULL; //just to be safe later
-           //AITravel.isPresent = true;
-           //hasAI_T = true;
            previousSubRecord = cAI_T;
            break;
       case cAI_W:
-           /*if (hasAI_W)
-           {
-             std::cout << "Error: record NPC_ seems to have two AI_W subrecords.\n";
-             return false;
-           }*/
            //AI_W's length
            in_File.read((char*) &SubLength, 4);
            BytesRead += 4;
@@ -1602,17 +1627,9 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
            }
            AIPackages.push_back(wanderPointer);
            wanderPointer = NULL; //just to be safe later
-           //AITravel.isPresent = true;
-           //AIWander.isPresent = true;
-           //hasAI_W = true;
            previousSubRecord = cAI_W;
            break;
       case cCNDT:
-           if (hasCNDT)
-           {
-             std::cout << "Error: record NPC_ seems to have two CNDT subrecords.\n";
-             return false;
-           }
            //CNDT's length
            in_File.read((char*) &SubLength, 4);
            BytesRead += 4;
@@ -1630,15 +1647,10 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error while reading subrecord CNDT of NPC_!\n";
              return false;
            }
-           if (previousSubRecord==cAI_E)
+           if ((previousSubRecord==cAI_E) or (previousSubRecord==cAI_F))
            {
-             //last record was AI escort, so set it's cell name
-             AIEscort.CellName = std::string(Buffer);
-           }
-           else if (previousSubRecord==cAI_F)
-           {
-             //last record was AI follow, so set it's cell name
-             AIFollow.CellName = std::string(Buffer);
+             //last record was AI escort or follow, so set it's cell name
+             (static_cast<NPC_AIEscortFollow*>(AIPackages.back()))->CellName = std::string(Buffer);
            }
            else
            {
@@ -1647,7 +1659,6 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
                        << "\".\n";
              return false;
            }
-           hasCNDT = true;
            previousSubRecord = cCNDT;
            break;
       case cDODT:
@@ -1747,6 +1758,15 @@ bool NPCRecord::hasEqualAIPackages(const NPCRecord& other) const
       }
       switch (AIPackages.at(i)->getPackageType())
       {
+        case ptActivate:
+             if (!(dynamic_cast<NPC_AIActivate*>(AIPackages.at(i)))->equals(*dynamic_cast<NPC_AIActivate*>(other.AIPackages.at(i))))
+               return false;
+             break;
+        case ptEscort:
+        case ptFollow:
+             if (!(dynamic_cast<NPC_AIEscortFollow*>(AIPackages.at(i)))->equals(*dynamic_cast<NPC_AIEscortFollow*>(other.AIPackages.at(i))))
+               return false;
+             break;
         case ptTravel:
              if (!(dynamic_cast<NPC_AITravel*>(AIPackages.at(i)))->equals(*dynamic_cast<NPC_AITravel*>(other.AIPackages.at(i))))
                return false;

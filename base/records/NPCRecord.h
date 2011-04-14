@@ -49,17 +49,20 @@ struct NPC_AIData
   bool operator==(const NPC_AIData& other) const;
 };//struct
 
-enum PackageType {ptTravel, ptWander};
-//dummy structure for use as ancestor of NPC_AIWander and NPC_AITravel
+enum PackageType {ptActivate, ptEscort, ptFollow, ptTravel, ptWander};
+//dummy structure for use as ancestor of real AI packages like NPC_AIWander or NPC_AITravel
 struct NPC_BasicAIPackage
 {
+  /*destructor */
+  virtual ~NPC_BasicAIPackage();
+
+  /* returns enum indicating the type */
   virtual PackageType getPackageType() const = 0;
 };//struct
 
 /* structure to hold the wandering data of an NPC */
 struct NPC_AIWander: public NPC_BasicAIPackage
 {
-  //bool isPresent;
   int16_t Distance;
   int16_t Duration;
   int8_t Time;
@@ -78,9 +81,8 @@ struct NPC_AIWander: public NPC_BasicAIPackage
 
 /* structure to hold the escort/follow data of an NPC (both escort and follow
      have the same data members, so we need only one structure for both) */
-struct NPC_AIEscortFollow
+struct NPC_AIEscortFollow: public NPC_BasicAIPackage
 {
-  bool isPresent;
   float X, Y, Z;
   int16_t Duration;
   std::string TargetID;
@@ -90,14 +92,37 @@ struct NPC_AIEscortFollow
   /* sets all members to zero */
   void clear();
 
-  /* comparison operator */
-  bool operator==(const NPC_AIEscortFollow& other) const;
+  /* "comparison operator" */
+  bool equals(const NPC_AIEscortFollow& other) const;
+};//struct
+
+struct NPC_AIEscort: public NPC_AIEscortFollow
+{
+  /* returns enum for type */
+  virtual PackageType getPackageType() const;
+};//struct
+
+struct NPC_AIActivate: public NPC_BasicAIPackage
+{
+  std::string TargetID;
+  int8_t Reset;
+
+  /* "comparison operator" */
+  bool equals(const NPC_AIActivate& other) const;
+
+  /* returns enum for type */
+  virtual PackageType getPackageType() const;
+};//struct
+
+struct NPC_AIFollow: public NPC_AIEscortFollow
+{
+  /* returns enum for type */
+  virtual PackageType getPackageType() const;
 };//struct
 
 /* structure to hold the travel data of an NPC */
 struct NPC_AITravel: public NPC_BasicAIPackage
 {
-  //bool isPresent;
   float X, Y, Z;
   int32_t Reset;
 
@@ -166,8 +191,8 @@ struct NPCRecord: public BasicRecord
   std::vector<std::string> NPC_Spells;
   //AI data
   NPC_AIData AIData;
-  NPC_AIEscortFollow AIEscort;
-  NPC_AIEscortFollow AIFollow;
+  //NPC_AIEscortFollow AIEscort;
+  //NPC_AIEscortFollow AIFollow;
   //std::string EscortFollowCell;
   //NPC_AITravel AITravel;
   //NPC_AIWander AIWander;

@@ -26,6 +26,7 @@
 const int32_t cAADT = 0x54444141; //"AADT" = 41 41 44 54
 const int32_t cACTI = 0x49544341; //"ACTI" = 41 43 54 49
 const int32_t cAIDT = 0x54444941; //"AIDT" = 41 49 44 54
+const int32_t cAI_A = 0x415F4941; //"AI_A" = 41 49 5F 41
 const int32_t cAI_E = 0x455F4941; //"AI_E" = 41 49 5F 45
 const int32_t cAI_F = 0x465F4941; //"AI_F" = 41 49 5F 46
 const int32_t cAI_T = 0x545F4941; //"AI_T" = 41 49 5F 54

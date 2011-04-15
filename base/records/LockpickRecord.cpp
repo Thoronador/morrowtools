@@ -47,7 +47,7 @@ bool LockpickRecord::equals(const LockpickRecord& other) const
 bool LockpickRecord::saveToStream(std::ofstream& output) const
 {
   output.write((char*) &cLOCK, 4);
-  int32_t Size;
+  uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
         +LockpickID.length()+1 /* length of mesh path +1 byte for NUL termination */
         +4 /* MODL */ +4 /* 4 bytes for length */
@@ -81,7 +81,7 @@ bool LockpickRecord::saveToStream(std::ofstream& output) const
 
   //write NAME
   output.write((char*) &cNAME, 4);
-  int32_t SubLength = LockpickID.length()+1;
+  uint32_t SubLength = LockpickID.length()+1;
   //write NAME's length
   output.write((char*) &SubLength, 4);
   //write ID
@@ -138,7 +138,7 @@ bool LockpickRecord::saveToStream(std::ofstream& output) const
 
 bool LockpickRecord::loadFromStream(std::ifstream& in_File)
 {
-  int32_t Size;
+  uint32_t Size;
   in_File.read((char*) &Size, 4);
   in_File.read((char*) &HeaderOne, 4);
   in_File.read((char*) &HeaderFlags, 4);
@@ -158,7 +158,8 @@ bool LockpickRecord::loadFromStream(std::ifstream& in_File)
     Note: Sequence of ITEX and SCRI could also be changed.
   */
 
-  int32_t SubRecName, SubLength, BytesRead;
+  int32_t SubRecName;
+  uint32_t SubLength, BytesRead;
   SubRecName = SubLength = 0;
 
   //read NAME

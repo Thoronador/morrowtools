@@ -67,7 +67,7 @@ bool operator<(const BookRecord& left, const BookRecord& right)
 bool BookRecord::saveToStream(std::ofstream& output) const
 {
   output.write((char*) &cBOOK, 4);
-  int32_t Size;
+  uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
         +BookID.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* MODL */ +4 /* 4 bytes for length */
@@ -114,7 +114,7 @@ bool BookRecord::saveToStream(std::ofstream& output) const
 
   //write NAME
   output.write((char*) &cNAME, 4);
-  int32_t SubLength = BookID.length()+1;
+  uint32_t SubLength = BookID.length()+1;
   //write NAME's length
   output.write((char*) &SubLength, 4);
   //write ID
@@ -194,7 +194,7 @@ bool BookRecord::saveToStream(std::ofstream& output) const
 
 bool BookRecord::loadFromStream(std::ifstream& in_File)
 {
-  int32_t Size;
+  uint32_t Size;
   in_File.read((char*) &Size, 4);
   in_File.read((char*) &HeaderOne, 4);
   in_File.read((char*) &HeaderFlags, 4);
@@ -214,7 +214,8 @@ bool BookRecord::loadFromStream(std::ifstream& in_File)
     TEXT = Book text (not always present, believe it or not!)
     ENAM = name of enchantment (optional) */
 
-  int32_t SubRecName, SubLength, BytesRead;
+  int32_t SubRecName;
+  uint32_t SubLength, BytesRead;
   SubRecName = SubLength = BytesRead = 0;
 
   //read NAME
@@ -386,10 +387,10 @@ bool BookRecord::loadFromStream(std::ifstream& in_File)
   return in_File.good();
 }
 
-bool BookRecord::readSubRecordITEX(std::ifstream& in_File, char* Buffer, int32_t& BytesRead)
+bool BookRecord::readSubRecordITEX(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead)
 {
   //ITEX's length
-  int32_t SubLength = 0;
+  uint32_t SubLength = 0;
   in_File.read((char*) &SubLength, 4);
   BytesRead += 4;
   if (SubLength>255)
@@ -410,10 +411,10 @@ bool BookRecord::readSubRecordITEX(std::ifstream& in_File, char* Buffer, int32_t
   return true;
 }
 
-bool BookRecord::readSubRecordSCRI(std::ifstream& in_File, char* Buffer, int32_t& BytesRead)
+bool BookRecord::readSubRecordSCRI(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead)
 {
   //SCRI's length
-  int32_t SubLength = 0;
+  uint32_t SubLength = 0;
   in_File.read((char*) &SubLength, 4);
   BytesRead += 4;
   if (SubLength>255)
@@ -434,10 +435,10 @@ bool BookRecord::readSubRecordSCRI(std::ifstream& in_File, char* Buffer, int32_t
   return true;
 }
 
-bool BookRecord::readSubRecordENAM(std::ifstream& in_File, char* Buffer, int32_t& BytesRead)
+bool BookRecord::readSubRecordENAM(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead)
 {
   //ENAM's length
-  int32_t SubLength = 0;
+  uint32_t SubLength = 0;
   in_File.read((char*) &SubLength, 4);
   BytesRead += 4;
   if (SubLength>255)
@@ -458,10 +459,10 @@ bool BookRecord::readSubRecordENAM(std::ifstream& in_File, char* Buffer, int32_t
   return true;
 }
 
-bool BookRecord::readSubRecordTEXT(std::ifstream& in_File, char** Buffer, int32_t& BytesRead)
+bool BookRecord::readSubRecordTEXT(std::ifstream& in_File, char** Buffer, uint32_t& BytesRead)
 {
   //TEXT's length
-  int32_t SubLength = 0;
+  uint32_t SubLength = 0;
   in_File.read((char*) &SubLength, 4);
   BytesRead += 4;
   if (SubLength>65535)

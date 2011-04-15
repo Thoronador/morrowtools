@@ -31,7 +31,7 @@ bool StaticRecord::equals(const StaticRecord& other) const
 bool StaticRecord::saveToStream(std::ofstream& output) const
 {
   output.write((char*) &cSTAT, 4);
-  int32_t Size;
+  uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
         +StaticID.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* MODL */ +4 /* 4 bytes for MODL's length */
@@ -46,7 +46,7 @@ bool StaticRecord::saveToStream(std::ofstream& output) const
 
   //write NAME
   output.write((char*) &cNAME, 4);
-  int32_t SubLength = StaticID.length()+1;
+  uint32_t SubLength = StaticID.length()+1;
   //write NAME's length
   output.write((char*) &SubLength, 4);
   //write NAME/ID
@@ -63,7 +63,7 @@ bool StaticRecord::saveToStream(std::ofstream& output) const
 
 bool StaticRecord::loadFromStream(std::ifstream& in_File)
 {
-  int32_t Size;
+  uint32_t Size;
   in_File.read((char*) &Size, 4);
   in_File.read((char*) &HeaderOne, 4);
   in_File.read((char*) &HeaderFlags, 4);
@@ -72,21 +72,22 @@ bool StaticRecord::loadFromStream(std::ifstream& in_File)
     NAME = ID string
     MODL = NIF model*/
 
-  int32_t SubRecName, SubLength;
+  int32_t SubRecName;
+  uint32_t SubLength;
   SubRecName = SubLength = 0;
   //read NAME
   in_File.read((char*) &SubRecName, 4);
   if (SubRecName!=cNAME)
   {
     UnexpectedRecord(cNAME, SubRecName);
-    return -1;
+    return false;
   }
   //NAME's length
   in_File.read((char*) &SubLength, 4);
   if (SubLength>255)
   {
     std::cout << "Error: subrecord NAME of STAT is longer than 255 characters.\n";
-    return -1;
+    return false;
   }
   //read NAME
   char Buffer[256];
@@ -95,7 +96,7 @@ bool StaticRecord::loadFromStream(std::ifstream& in_File)
   if (!in_File.good())
   {
     std::cout << "Error while reading subrecord NAME of STAT.\n";
-    return -1;
+    return false;
   }
   StaticID = std::string(Buffer);
   //read MODL
@@ -103,14 +104,14 @@ bool StaticRecord::loadFromStream(std::ifstream& in_File)
   if (SubRecName!=cMODL)
   {
     UnexpectedRecord(cMODL, SubRecName);
-    return -1;
+    return false;
   }
   //MODL's length
   in_File.read((char*) &SubLength, 4);
   if (SubLength>255)
   {
     std::cout << "Error: subrecord MODL of STAT is longer than 255 characters.\n";
-    return -1;
+    return false;
   }
   //read MODL
   memset(Buffer, '\0', 256);
@@ -118,7 +119,7 @@ bool StaticRecord::loadFromStream(std::ifstream& in_File)
   if (!in_File.good())
   {
     std::cout << "Error while reading subrecord MODL of STAT.\n";
-    return -1;
+    return false;
   }
   Mesh = std::string(Buffer);
   return true;

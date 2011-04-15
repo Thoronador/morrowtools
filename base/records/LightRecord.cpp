@@ -54,7 +54,7 @@ bool LightRecord::equals(const LightRecord& other) const
 bool LightRecord::saveToStream(std::ofstream& output) const
 {
   output.write((char*) &cLIGH, 4);
-  int32_t Size;
+  uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
         +LightID.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* MODL */ +4 /* 4 bytes for length */
@@ -107,7 +107,7 @@ bool LightRecord::saveToStream(std::ofstream& output) const
   //write NAME
   output.write((char*) &cNAME, 4);
   //NAME's length
-  int32_t SubLength;
+  uint32_t SubLength;
   SubLength = LightID.length()+1;//length of ID plus one for NUL-termination
   output.write((char*) &SubLength, 4);
   //write light's ID
@@ -183,7 +183,7 @@ bool LightRecord::saveToStream(std::ofstream& output) const
 
 bool LightRecord::loadFromStream(std::ifstream& in_File)
 {
-  int32_t Size;
+  uint32_t Size;
   in_File.read((char*) &Size, 4);
   in_File.read((char*) &HeaderOne, 4);
   in_File.read((char*) &HeaderFlags, 4);
@@ -208,7 +208,8 @@ bool LightRecord::loadFromStream(std::ifstream& in_File)
     SCRI = Script name (optional)
     SNAM = Sound name (optional?) */
 
-  long int SubRecName, SubLength, BytesRead;
+  int32_t SubRecName;
+  uint32_t SubLength, BytesRead;
   SubRecName = SubLength = 0;
 
   //read NAME

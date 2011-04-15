@@ -32,7 +32,7 @@ struct ScriptRecord: public BasicRecord
   uint32_t NumShorts;
   uint32_t NumLongs;
   uint32_t NumFloats;
-  int32_t ScriptDataSize;
+  uint32_t ScriptDataSize;
   int32_t LocalVarSize;
   //end of script header
   std::vector<std::string> LocalVars;

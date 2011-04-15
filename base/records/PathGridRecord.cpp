@@ -55,7 +55,7 @@ bool PathGridRecord::equals(const PathGridRecord& other) const
 bool PathGridRecord::saveToStream(std::ofstream& output) const
 {
   output.write((char*) &cPGRD, 4);
-  int32_t Size;
+  uint32_t Size;
   Size = 4 /* DATA */ +4 /* 4 bytes for length */ + 12 /* size of data */
         +4 /* NAME */ +4 /* 4 bytes for length */
         +CellName.length()+1 /* length of cell name +1 byte for NUL termination */;
@@ -100,7 +100,7 @@ bool PathGridRecord::saveToStream(std::ofstream& output) const
   //write DATA
   output.write((char*) &cDATA, 4);
   //DATA's length
-  int32_t SubLength;
+  uint32_t SubLength;
   SubLength = 12; //length is always twelve bytes
   output.write((char*) &SubLength, 4);
   //write path grid data
@@ -158,7 +158,7 @@ bool PathGridRecord::saveToStream(std::ofstream& output) const
 
 bool PathGridRecord::loadFromStream(std::ifstream& in_File)
 {
-  int32_t Size;
+  uint32_t Size;
   in_File.read((char*) &Size, 4);
   in_File.read((char*) &HeaderOne, 4);
   in_File.read((char*) &HeaderFlags, 4);
@@ -187,7 +187,8 @@ bool PathGridRecord::loadFromStream(std::ifstream& in_File)
              and second value is index of the end point.
   */
 
-  int32_t SubRecName, SubLength, BytesRead;
+  int32_t SubRecName;
+  uint32_t SubLength, BytesRead;
   SubRecName = SubLength = 0;
 
   //read DATA

@@ -76,7 +76,7 @@ struct BookRecord: public BasicRecord
           BytesRead - reference to a variable that counts the number of bytes
                       that were read from the stream
     */
-    bool readSubRecordITEX(std::ifstream& in_File, char* Buffer, int32_t& BytesRead);
+    bool readSubRecordITEX(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead);
 
     /*tries to read the subrecord for the script ID and returns true on success
 
@@ -86,7 +86,7 @@ struct BookRecord: public BasicRecord
           BytesRead - reference to a variable that counts the number of bytes
                       that were read from the stream
     */
-    bool readSubRecordSCRI(std::ifstream& in_File, char* Buffer, int32_t& BytesRead);
+    bool readSubRecordSCRI(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead);
 
     /*tries to read a subrecord for the enchantment ID and returns true on
       success
@@ -97,7 +97,7 @@ struct BookRecord: public BasicRecord
           BytesRead - reference to a variable that counts the number of bytes
                       that were read from the stream
     */
-    bool readSubRecordENAM(std::ifstream& in_File, char* Buffer, int32_t& BytesRead);
+    bool readSubRecordENAM(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead);
 
     /*tries to read the subrecord for the book's text
 
@@ -107,7 +107,7 @@ struct BookRecord: public BasicRecord
           BytesRead - reference to a variable that counts the number of bytes
                       that were read from the stream
     */
-    bool readSubRecordTEXT(std::ifstream& in_File, char** Buffer, int32_t& BytesRead);
+    bool readSubRecordTEXT(std::ifstream& in_File, char** Buffer, uint32_t& BytesRead);
 };//struct
 
 //comparison operator for BookRecords

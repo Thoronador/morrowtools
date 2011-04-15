@@ -39,7 +39,7 @@ bool LandscapeTextureRecord::equals(const LandscapeTextureRecord& other) const
 bool LandscapeTextureRecord::saveToStream(std::ofstream& output) const
 {
   output.write((char*) &cLTEX, 4);
-  int32_t Size;
+  uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
         +TextureID.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* INTV */ +4 /* 4 bytes for INTV's length */ +4 /* size of INTV */
@@ -56,7 +56,7 @@ bool LandscapeTextureRecord::saveToStream(std::ofstream& output) const
 
   //write NAME
   output.write((char*) &cNAME, 4);
-  int32_t SubLength = TextureID.length()+1;
+  uint32_t SubLength = TextureID.length()+1;
   //write NAME's length
   output.write((char*) &SubLength, 4);
   //write NAME/ID
@@ -82,7 +82,7 @@ bool LandscapeTextureRecord::saveToStream(std::ofstream& output) const
 
 bool LandscapeTextureRecord::loadFromStream(std::ifstream& in_File)
 {
-  int32_t Size;
+  uint32_t Size;
   in_File.read((char*) &Size, 4);
   in_File.read((char*) &HeaderOne, 4);
   in_File.read((char*) &HeaderFlags, 4);
@@ -92,7 +92,8 @@ bool LandscapeTextureRecord::loadFromStream(std::ifstream& in_File)
     INTV = Index (unique?), required
     DATA = Texture path, required */
 
-  int32_t SubRecName, SubLength;
+  int32_t SubRecName;
+  uint32_t SubLength;
   SubRecName = SubLength = 0;
 
   //read NAME

@@ -67,7 +67,7 @@ bool GlobalRecord::equals(const GlobalRecord& other) const
 bool GlobalRecord::saveToStream(std::ofstream& output) const
 {
   output.write((char*) &cGLOB, 4);
-  int32_t Size;
+  uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
         +GlobalID.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* FNAM */ +4 /* 4 bytes for length */ +1 /* length of FNAM */
@@ -86,7 +86,7 @@ bool GlobalRecord::saveToStream(std::ofstream& output) const
 
   //write NAME
   output.write((char*) &cNAME, 4);
-  int32_t SubLength = GlobalID.length()+1;
+  uint32_t SubLength = GlobalID.length()+1;
   //write NAME's length
   output.write((char*) &SubLength, 4);
   //write ID
@@ -136,7 +136,7 @@ bool GlobalRecord::saveToStream(std::ofstream& output) const
 
 bool GlobalRecord::loadFromStream(std::ifstream& in_File)
 {
-  int32_t Size;
+  uint32_t Size;
   in_File.read((char*) &Size, 4);
   in_File.read((char*) &HeaderOne, 4);
   in_File.read((char*) &HeaderFlags, 4);
@@ -148,7 +148,8 @@ bool GlobalRecord::loadFromStream(std::ifstream& in_File)
         'l' = long
         'f' = float
     FLTV = Float data (4 bytes) */
-  int32_t SubRecName, SubLength;
+  int32_t SubRecName;
+  uint32_t SubLength;
   SubRecName = SubLength = 0;
   char TypeChar = '\0';
 

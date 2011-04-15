@@ -52,7 +52,7 @@ bool GMSTRecord::saveToStream(std::ofstream& output) const
 {
   //write GMST
   output.write((char*) &cGMST, 4);
-  int32_t Size;
+  uint32_t Size;
   Size = 4 /* NAME */ +4 /* four bytes for length */
         +SettingName.length() /* length of ID */
         +4 /* STRV/ INTV/ FLTV */ + 4 /* four bytes for length of data */;
@@ -77,7 +77,7 @@ bool GMSTRecord::saveToStream(std::ofstream& output) const
   //write NAME
   output.write((char*) &cNAME, 4);
   //NAME's length
-  int32_t SubLength;
+  uint32_t SubLength;
   SubLength = SettingName.length(); //length of string
   output.write((char*) &SubLength, 4);
   //write ID
@@ -118,7 +118,7 @@ bool GMSTRecord::saveToStream(std::ofstream& output) const
 
 bool GMSTRecord::loadFromStream(std::ifstream& in_File)
 {
-  int32_t Size;
+  uint32_t Size;
   in_File.read((char*) &Size, 4);
   in_File.read((char*) &HeaderOne, 4);
   in_File.read((char*) &HeaderFlags, 4);
@@ -127,7 +127,8 @@ bool GMSTRecord::loadFromStream(std::ifstream& in_File)
     NAME = Setting ID string
     STRV = String value/ INTV = Integer value (4 btes)/FLTV = Float value (4 bytes)
   */
-  int32_t SubRecName, SubLength, BytesRead;
+  int32_t SubRecName;
+  uint32_t SubLength, BytesRead;
   SubRecName = SubLength = 0;
 
   //read NAME

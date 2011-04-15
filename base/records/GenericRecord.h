@@ -54,12 +54,12 @@ struct GenericRecord: public BasicRecord
     const char* getDataPointer() const;
 
     /* returns the size of the data in bytes */
-    int32_t getDataSize() const;
+    uint32_t getDataSize() const;
 
     /* holds the header for the record */
     int32_t Header;
   protected:
-     int32_t m_DataSize;
+     uint32_t m_DataSize;
      char* m_Data;
 }; //struct
 

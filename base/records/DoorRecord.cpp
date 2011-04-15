@@ -43,7 +43,7 @@ bool DoorRecord::equals(const DoorRecord& other) const
 bool DoorRecord::saveToStream(std::ofstream& output) const
 {
   output.write((char*) &cDOOR, 4);
-  int32_t Size;
+  uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
         +DoorID.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* MODL */ +4 /* 4 bytes for length */
@@ -84,7 +84,7 @@ bool DoorRecord::saveToStream(std::ofstream& output) const
   //write NAME
   output.write((char*) &cNAME, 4);
   //NAME's length
-  int32_t SubLength;
+  uint32_t SubLength;
   SubLength = DoorID.length()+1;//length of string plus one for NUL-termination
   output.write((char*) &SubLength, 4);
   //write ID
@@ -144,7 +144,7 @@ bool DoorRecord::saveToStream(std::ofstream& output) const
 
 bool DoorRecord::loadFromStream(std::ifstream& in_File)
 {
-  int32_t Size;
+  uint32_t Size;
   in_File.read((char*) &Size, 4);
   in_File.read((char*) &HeaderOne, 4);
   in_File.read((char*) &HeaderFlags, 4);
@@ -158,7 +158,8 @@ bool DoorRecord::loadFromStream(std::ifstream& in_File)
     ANAM = Sound name close (optional)
   */
 
-  int32_t SubRecName, SubLength, BytesRead;
+  int32_t SubRecName;
+  uint32_t SubLength, BytesRead;
   SubRecName = SubLength = 0;
 
   //read NAME
@@ -270,9 +271,9 @@ bool DoorRecord::loadFromStream(std::ifstream& in_File)
   return in_File.good();
 }
 
-bool DoorRecord::readSubRecordString(std::ifstream& in_File, char* Buffer, int32_t& BytesRead, std::string& Destination)
+bool DoorRecord::readSubRecordString(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead, std::string& Destination)
 {
-  int32_t SubLength = 0;
+  uint32_t SubLength = 0;
   //read string's length
   in_File.read((char*) &SubLength, 4);
   BytesRead += 4;

@@ -65,7 +65,7 @@ bool FactionRecord::equals(const FactionRecord& other) const
 bool FactionRecord::saveToStream(std::ofstream& output) const
 {
   output.write((char*) &cFACT, 4);
-  int32_t Size;
+  uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
         +FactionID.length()+1 /*length of string +1 byte for NUL-termination */
         +4 /* FNAM */ +4 /* 4 bytes for length */
@@ -108,7 +108,7 @@ bool FactionRecord::saveToStream(std::ofstream& output) const
   //write NAME
   output.write((char*) &cNAME, 4);
   //NAME's length
-  int32_t SubLength;
+  uint32_t SubLength;
   SubLength = FactionID.length()+1;//length of string plus one for NUL-termination
   output.write((char*) &SubLength, 4);
   //write faction ID
@@ -197,7 +197,7 @@ bool FactionRecord::saveToStream(std::ofstream& output) const
 
 bool FactionRecord::loadFromStream(std::ifstream& in_File)
 {
-  int32_t Size;
+  uint32_t Size;
   in_File.read((char*) &Size, 4);
   in_File.read((char*) &HeaderOne, 4);
   in_File.read((char*) &HeaderFlags, 4);
@@ -224,7 +224,8 @@ bool FactionRecord::loadFromStream(std::ifstream& in_File)
         The ANAM/INTV occur in pairs for each faction with
         a reaction adjustment (usually -4 to +4) */
 
-  int32_t SubRecName, SubLength, BytesRead;
+  int32_t SubRecName;
+  uint32_t SubLength, BytesRead;
   SubRecName = SubLength = 0;
 
   //read NAME

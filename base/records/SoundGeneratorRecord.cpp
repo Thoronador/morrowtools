@@ -40,7 +40,7 @@ bool SoundGeneratorRecord::equals(const SoundGeneratorRecord& other) const
 bool SoundGeneratorRecord::saveToStream(std::ofstream& output) const
 {
   output.write((char*) &cSNDG, 4);
-  int32_t Size;
+  uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
         +Name.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* DATA */ +4 /* DATA's length */ +4 /*size of sound gen data (DATA)*/
@@ -67,7 +67,7 @@ bool SoundGeneratorRecord::saveToStream(std::ofstream& output) const
   //write NAME
   output.write((char*) &cNAME, 4);
   //NAME's length
-  int32_t SubLength;
+  uint32_t SubLength;
   SubLength = Name.length()+1;//length of string plus one for NUL-termination
   output.write((char*) &SubLength, 4);
   //write name/ID
@@ -105,7 +105,7 @@ bool SoundGeneratorRecord::saveToStream(std::ofstream& output) const
 
 bool SoundGeneratorRecord::loadFromStream(std::ifstream& in_File)
 {
-  int32_t Size;
+  uint32_t Size;
   in_File.read((char*) &Size, 4);
   in_File.read((char*) &HeaderOne, 4);
   in_File.read((char*) &HeaderFlags, 4);
@@ -118,7 +118,8 @@ bool SoundGeneratorRecord::loadFromStream(std::ifstream& in_File)
     CNAM = Creature name (optional)
     SNAM = Sound ID string */
 
-  int32_t SubRecName, SubLength;
+  int32_t SubRecName;
+  uint32_t SubLength;
   SubRecName = SubLength = 0;
 
   //read NAME

@@ -68,7 +68,7 @@ struct DoorRecord: public BasicRecord
                         that were read from the stream
           Destination - the string that will hold the read string after success
     */
-    bool readSubRecordString(std::ifstream& in_File, char* Buffer, int32_t& BytesRead, std::string& Destination);
+    bool readSubRecordString(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead, std::string& Destination);
 };//struct
 
 #endif // DOORRECORD_H

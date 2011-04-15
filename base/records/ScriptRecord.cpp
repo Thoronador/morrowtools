@@ -131,7 +131,7 @@ bool ScriptRecord::equals(const ScriptRecord& other) const
 bool ScriptRecord::saveToStream(std::ofstream& output) const
 {
   output.write((char*) &cSCPT, 4);
-  int32_t Size;
+  uint32_t Size;
   Size = 4 /* SCHD */ +4 /* 4 bytes for length */ +52 /* fixed length is 52 bytes */
         +4 /* SCDT */ +4 /* 4 bytes for length */ +ScriptDataSize
         +4 /* SCTX */ +4 /* 4 bytes for length */
@@ -165,7 +165,7 @@ bool ScriptRecord::saveToStream(std::ofstream& output) const
 
   //write SCHD
   output.write((char*) &cSCHD, 4);
-  int32_t SubLength = 52; /* length is fixed at 52 bytes */
+  uint32_t SubLength = 52; /* length is fixed at 52 bytes */
   //write SCHD's length
   output.write((char*) &SubLength, 4);
   //write script header
@@ -233,7 +233,7 @@ bool ScriptRecord::saveToStream(std::ofstream& output) const
 
 bool ScriptRecord::loadFromStream(std::ifstream& in_File)
 {
-  int32_t Size;
+  uint32_t Size;
   in_File.read((char*) &Size, 4);
   in_File.read((char*) &HeaderOne, 4);
   in_File.read((char*) &HeaderFlags, 4);
@@ -252,7 +252,8 @@ bool ScriptRecord::loadFromStream(std::ifstream& in_File)
       Note (thoronador): SCVR may not be present at all, if there are no local
           vars. Moreover, SCVR, SCDT and SCTX can occur in any order.*/
 
-  int32_t SubRecName, SubLength, BytesRead;
+  int32_t SubRecName;
+  uint32_t SubLength, BytesRead;
   SubRecName = SubLength = 0;
 
   //read SCHD
@@ -276,7 +277,7 @@ bool ScriptRecord::loadFromStream(std::ifstream& in_File)
   char * Buffer = NULL;
   Buffer = new char[256];
   memset(Buffer, '\0', 256);
-  int32_t BufferSize = 256;
+  uint32_t BufferSize = 256;
   // ---- read script name
   in_File.read(Buffer, 32);
   BytesRead += 32;
@@ -309,7 +310,7 @@ bool ScriptRecord::loadFromStream(std::ifstream& in_File)
     return false;
   }
 
-  int32_t currentPos;
+  uint32_t currentPos;
   //preset data
   LocalVars.clear();
   ScriptText = "";

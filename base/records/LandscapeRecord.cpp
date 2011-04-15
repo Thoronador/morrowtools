@@ -95,7 +95,7 @@ bool LandscapeRecord::equals(const LandscapeRecord& other) const
 bool LandscapeRecord::saveToStream(std::ofstream& output) const
 {
   output.write((char*) &cLAND, 4);
-  int32_t Size;
+  uint32_t Size;
   Size = 4 /* INTV */ +4 /* 4 bytes for length */ +8 /* size of INTV */
         +4 /* DATA */ +4 /* 4 bytes for length */ +4 /* size of DATA */;
   if (hasHeightSubrecord)
@@ -158,7 +158,7 @@ bool LandscapeRecord::saveToStream(std::ofstream& output) const
 
   //write INTV
   output.write((char*) &cINTV, 4);
-  int32_t SubLength = 8; /* fixed size is eight bytes*/
+  uint32_t SubLength = 8; /* fixed size is eight bytes*/
   //write INTV's length
   output.write((char*) &SubLength, 4);
   //write cell offsets
@@ -240,7 +240,7 @@ bool LandscapeRecord::saveToStream(std::ofstream& output) const
 
 bool LandscapeRecord::loadFromStream(std::ifstream& in_File)
 {
-  int32_t Size;
+  uint32_t Size;
   in_File.read((char*) &Size, 4);
   in_File.read((char*) &HeaderOne, 4);
   in_File.read((char*) &HeaderFlags, 4);
@@ -279,7 +279,8 @@ bool LandscapeRecord::loadFromStream(std::ifstream& in_File)
     VTEX (512 bytes) optional
         A 16x16 array of short texture indices (from a LTEX record I think). */
 
-  int32_t SubRecName, SubLength, BytesRead;
+  int32_t SubRecName;
+  uint32_t SubLength, BytesRead;
   SubRecName = SubLength = 0;
 
   //read INTV

@@ -70,7 +70,7 @@ struct AlchemyPotionRecord: public BasicRecord
           BytesRead - reference to a variable that counts the number of bytes
                       that were read from the stream
     */
-    bool readSubRecordALDT(std::ifstream& in_File, char* Buffer, int32_t& BytesRead);
+    bool readSubRecordALDT(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead);
 
     /*tries to read a subrecord for the enchantment and returns true on success
 
@@ -80,7 +80,7 @@ struct AlchemyPotionRecord: public BasicRecord
           BytesRead - reference to a variable that counts the number of bytes
                       that were read from the stream
     */
-    bool readSubRecordENAM(std::ifstream& in_File, char* Buffer, int32_t& BytesRead);
+    bool readSubRecordENAM(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead);
 
     /*tries to read a subrecord for the item name and returns true on success
 
@@ -90,7 +90,7 @@ struct AlchemyPotionRecord: public BasicRecord
           BytesRead - reference to a variable that counts the number of bytes
                       that were read from the stream
     */
-    bool readSubRecordFNAM(std::ifstream& in_File, char* Buffer, int32_t& BytesRead);
+    bool readSubRecordFNAM(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead);
 
     /*tries to read a subrecord for the script ID and returns true on success
 
@@ -100,7 +100,7 @@ struct AlchemyPotionRecord: public BasicRecord
           BytesRead - reference to a variable that counts the number of bytes
                       that were read from the stream
     */
-    bool readSubRecordSCRI(std::ifstream& in_File, char* Buffer, int32_t& BytesRead);
+    bool readSubRecordSCRI(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead);
 
     /*tries to read a subrecord for the inventory icon and returns true on
       success
@@ -111,7 +111,7 @@ struct AlchemyPotionRecord: public BasicRecord
           BytesRead - reference to a variable that counts the number of bytes
                       that were read from the stream
     */
-    bool readSubRecordTEXT(std::ifstream& in_File, char* Buffer, int32_t& BytesRead);
+    bool readSubRecordTEXT(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead);
 }; //struct
 
 #endif // ALCHEMYPOTIONRECORD_H

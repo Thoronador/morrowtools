@@ -64,7 +64,7 @@ bool EnchantingRecord::equals(const EnchantingRecord& other) const
 bool EnchantingRecord::saveToStream(std::ofstream& output) const
 {
   output.write((char*) &cENCH, 4);
-  int32_t Size;
+  uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
         +EnchantingID.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* ENDT */ +4 /* ENDT's length */ +16 /*size of ENDT (always 16 bytes)*/
@@ -94,7 +94,7 @@ bool EnchantingRecord::saveToStream(std::ofstream& output) const
   //write NAME
   output.write((char*) &cNAME, 4);
   //NAME's length
-  int32_t SubLength;
+  uint32_t SubLength;
   SubLength = EnchantingID.length()+1;//length of string plus one for NUL-termination
   output.write((char*) &SubLength, 4);
   //write ID
@@ -134,7 +134,7 @@ bool EnchantingRecord::saveToStream(std::ofstream& output) const
 
 bool EnchantingRecord::loadFromStream(std::ifstream& in_File)
 {
-  int32_t Size;
+  uint32_t Size;
   in_File.read((char*) &Size, 4);
   in_File.read((char*) &HeaderOne, 4);
   in_File.read((char*) &HeaderFlags, 4);
@@ -156,7 +156,8 @@ bool EnchantingRecord::loadFromStream(std::ifstream& in_File)
         long  MagMin
         long  MagMax */
 
-  int32_t SubRecName, SubLength, BytesRead;
+  int32_t SubRecName;
+  uint32_t SubLength, BytesRead;
   SubRecName = SubLength = 0;
 
   //read NAME

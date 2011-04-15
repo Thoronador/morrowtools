@@ -50,13 +50,8 @@ bool GenericRecord::saveToStream(std::ofstream& output) const
 
 bool GenericRecord::loadFromStream(std::ifstream& in_File)
 {
-  int32_t Size;
+  uint32_t Size;
   in_File.read((char*) &Size, 4);
-  if (Size<0)
-  {
-    std::cout << "GenericRecord::loadFromStream: Error: record size is negative.\n";
-    return false;
-  }
   //prevent excessive memory usage
   if (Size>256*1024)
   {
@@ -89,7 +84,7 @@ const char* GenericRecord::getDataPointer() const
   return m_Data;
 }
 
-int32_t GenericRecord::getDataSize() const
+uint32_t GenericRecord::getDataSize() const
 {
   return m_DataSize;
 }

@@ -72,7 +72,7 @@ void IngredRec::show()
 bool IngredRec::saveToStream(std::ofstream& output) const
 {
   output.write((char*) &cINGR, 4);
-  int32_t Size;
+  uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
         +IngredID.length()+1 /* length of ID +1 byte for NUL-termination */
         +4 /* MODL */ +4 /* 4 bytes for MODL's lenght */
@@ -107,7 +107,7 @@ bool IngredRec::saveToStream(std::ofstream& output) const
   //write NAME
   output.write((char*) &cNAME, 4);
   //NAME's length
-  int32_t SubLength;
+  uint32_t SubLength;
   SubLength = IngredID.length()+1; //length of string plus one for NUL-termination
   output.write((char*) &SubLength, 4);
   //write ID
@@ -173,7 +173,7 @@ bool IngredRec::saveToStream(std::ofstream& output) const
 
 bool IngredRec::loadFromStream(std::ifstream& in_File)
 {
-  int32_t Size;
+  uint32_t Size;
   in_File.read((char*) &Size, 4);
   in_File.read((char*) &HeaderOne, 4);
   in_File.read((char*) &HeaderFlags, 4);
@@ -191,7 +191,8 @@ bool IngredRec::loadFromStream(std::ifstream& in_File)
     ITEX = Inventory Icon
     SCRI = Script Name (optional) */
 
-  int32_t SubRecName, SubLength, BytesRead;
+  int32_t SubRecName;
+  uint32_t SubLength, BytesRead;
   SubRecName = SubLength = 0;
 
   //read NAME
@@ -355,10 +356,10 @@ bool IngredRec::loadFromStream(std::ifstream& in_File)
   return in_File.good();
 }
 
-bool IngredRec::readSubRecordITEX(std::ifstream& in_File, char* Buffer, int32_t& BytesRead)
+bool IngredRec::readSubRecordITEX(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead)
 {
   //ITEX's length
-  int32_t SubLength = 0;
+  uint32_t SubLength = 0;
   in_File.read((char*) &SubLength, 4);
   BytesRead += 4;
   if (SubLength>255)
@@ -379,10 +380,10 @@ bool IngredRec::readSubRecordITEX(std::ifstream& in_File, char* Buffer, int32_t&
   return true;
 }
 
-bool IngredRec::readSubRecordSCRI(std::ifstream& in_File, char* Buffer, int32_t& BytesRead)
+bool IngredRec::readSubRecordSCRI(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead)
 {
   //SCRI's length
-  int32_t SubLength = 0;
+  uint32_t SubLength = 0;
   in_File.read((char*) &SubLength, 4);
   BytesRead += 4;
   if (SubLength>255)

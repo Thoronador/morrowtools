@@ -88,7 +88,7 @@ struct IngredRec: public BasicRecord
           BytesRead - reference to a variable that counts the number of bytes
                       that were read from the stream
     */
-    bool readSubRecordITEX(std::ifstream& in_File, char* Buffer, int32_t& BytesRead);
+    bool readSubRecordITEX(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead);
 
     /*tries to read the subrecord for the script ID and returns true on success
 
@@ -98,7 +98,7 @@ struct IngredRec: public BasicRecord
           BytesRead - reference to a variable that counts the number of bytes
                       that were read from the stream
     */
-    bool readSubRecordSCRI(std::ifstream& in_File, char* Buffer, int32_t& BytesRead);
+    bool readSubRecordSCRI(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead);
 };//struct
 
 #endif // INGREDIENTRECORD_H

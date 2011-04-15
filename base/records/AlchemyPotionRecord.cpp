@@ -58,7 +58,7 @@ bool AlchemyPotionRecord::equals(const AlchemyPotionRecord& other) const
 
 bool AlchemyPotionRecord::loadFromStream(std::ifstream& in_File)
 {
-  int32_t Size;
+  uint32_t Size;
   in_File.read((char*) &Size, 4);
   in_File.read((char*) &HeaderOne, 4);
   in_File.read((char*) &HeaderFlags, 4);
@@ -83,7 +83,8 @@ bool AlchemyPotionRecord::loadFromStream(std::ifstream& in_File)
     TEXT = Inventory Icon
     SCRI = Script Name (optional) */
 
-  int32_t SubRecName, SubLength, BytesRead;
+  int32_t SubRecName;
+  uint32_t SubLength, BytesRead;
   SubRecName = SubLength = 0;
 
   //read NAME
@@ -189,7 +190,7 @@ bool AlchemyPotionRecord::loadFromStream(std::ifstream& in_File)
 bool AlchemyPotionRecord::saveToStream(std::ofstream& output) const
 {
   output.write((char*) &cALCH, 4);
-  int32_t Size;
+  uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
         +AlchemyID.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* MODL */ +4 /* 4 bytes for length */
@@ -233,7 +234,7 @@ bool AlchemyPotionRecord::saveToStream(std::ofstream& output) const
   //write NAME
   output.write((char*) &cNAME, 4);
   //NAME's length
-  int32_t SubLength;
+  uint32_t SubLength;
   SubLength = AlchemyID.length()+1;//length of string plus one for NUL-termination
   output.write((char*) &SubLength, 4);
   //write ID
@@ -305,9 +306,9 @@ bool AlchemyPotionRecord::saveToStream(std::ofstream& output) const
   return output.good();
 }
 
-bool AlchemyPotionRecord::readSubRecordALDT(std::ifstream& in_File, char* Buffer, int32_t& BytesRead)
+bool AlchemyPotionRecord::readSubRecordALDT(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead)
 {
-  int32_t SubLength = 0;
+  uint32_t SubLength = 0;
   //ALDT's length
   in_File.read((char*) &SubLength, 4);
   BytesRead += 4;
@@ -330,10 +331,10 @@ bool AlchemyPotionRecord::readSubRecordALDT(std::ifstream& in_File, char* Buffer
   return true;
 }
 
-bool AlchemyPotionRecord::readSubRecordENAM(std::ifstream& in_File, char* Buffer, int32_t& BytesRead)
+bool AlchemyPotionRecord::readSubRecordENAM(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead)
 {
   //ENAM's length
-  int32_t SubLength = 0;
+  uint32_t SubLength = 0;
   in_File.read((char*) &SubLength, 4);
   BytesRead += 4;
   if (SubLength!=24)
@@ -362,10 +363,10 @@ bool AlchemyPotionRecord::readSubRecordENAM(std::ifstream& in_File, char* Buffer
   return true;
 }
 
-bool AlchemyPotionRecord::readSubRecordFNAM(std::ifstream& in_File, char* Buffer, int32_t& BytesRead)
+bool AlchemyPotionRecord::readSubRecordFNAM(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead)
 {
   //FNAM's length
-  int32_t SubLength = 0;
+  uint32_t SubLength = 0;
   in_File.read((char*) &SubLength, 4);
   BytesRead += 4;
   if (SubLength>255)
@@ -386,10 +387,10 @@ bool AlchemyPotionRecord::readSubRecordFNAM(std::ifstream& in_File, char* Buffer
   return true;
 }
 
-bool AlchemyPotionRecord::readSubRecordSCRI(std::ifstream& in_File, char* Buffer, int32_t& BytesRead)
+bool AlchemyPotionRecord::readSubRecordSCRI(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead)
 {
   //SCRI's length
-  int32_t SubLength = 0;
+  uint32_t SubLength = 0;
   in_File.read((char*) &SubLength, 4);
   BytesRead += 4;
   if (SubLength>255)
@@ -410,9 +411,9 @@ bool AlchemyPotionRecord::readSubRecordSCRI(std::ifstream& in_File, char* Buffer
   return true;
 }
 
-bool AlchemyPotionRecord::readSubRecordTEXT(std::ifstream& in_File, char* Buffer, int32_t& BytesRead)
+bool AlchemyPotionRecord::readSubRecordTEXT(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead)
 {
-  int32_t SubLength = 0;
+  uint32_t SubLength = 0;
   //TEXT's length
   in_File.read((char*) &SubLength, 4);
   BytesRead += 4;

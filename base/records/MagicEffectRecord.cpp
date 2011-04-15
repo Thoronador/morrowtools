@@ -53,7 +53,7 @@ bool MGEF_Data::saveToStream(std::ofstream& output) const
 {
   //write MGEF
   output.write((char*) &cMGEF, 4);
-  int32_t Size;
+  uint32_t Size;
   Size = 4 /* INDX */ +4 /* four bytes for length */ +4 /* length of index */
         +4 /* MEDT */ +4 /* four bytes for length */ +36 /* length of effect data */
         +4 /* ITEX */ +4 /* four bytes for length */
@@ -140,7 +140,7 @@ bool MGEF_Data::saveToStream(std::ofstream& output) const
   //write INDX
   output.write((char*) &cINDX, 4);
   //INDX's length
-  int32_t SubLength;
+  uint32_t SubLength;
   SubLength = 4; //fixed length of four bytes
   output.write((char*) &SubLength, 4);
   //write INDX
@@ -289,7 +289,7 @@ bool MGEF_Data::saveToStream(std::ofstream& output) const
 
 bool MGEF_Data::loadFromStream(std::ifstream& in_File)
 {
-  int32_t Size;
+  uint32_t Size;
   in_File.read((char*) &Size, 4);
   in_File.read((char*) &HeaderOne, 4);
   in_File.read((char*) &HeaderFlags, 4);
@@ -321,7 +321,8 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
       Note (Thoronador):
         sequence of the (at least) last four optional sub records can vary.*/
 
-  int32_t SubRecName, SubLength, BytesRead;
+  int32_t SubRecName;
+  uint32_t SubLength, BytesRead;
   SubRecName = SubLength = 0;
 
   //read INDX

@@ -56,7 +56,7 @@ bool LeveledCreatureRecord::equals(const LeveledCreatureRecord& other) const
 bool LeveledCreatureRecord::saveToStream(std::ofstream& output) const
 {
   output.write((char*) &cLEVC, 4);
-  int32_t Size;
+  uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
         +LevCreatureID.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* DATA */ +4 /* 4 bytes for length */ +4 /* size of list data */
@@ -87,7 +87,7 @@ bool LeveledCreatureRecord::saveToStream(std::ofstream& output) const
   //write NAME
   output.write((char*) &cNAME, 4);
   //NAME's length
-  int32_t SubLength;
+  uint32_t SubLength;
   SubLength = LevCreatureID.length()+1;//length of string plus one for NUL-termination
   output.write((char*) &SubLength, 4);
   //write leveled list's ID
@@ -142,7 +142,7 @@ bool LeveledCreatureRecord::saveToStream(std::ofstream& output) const
 
 bool LeveledCreatureRecord::loadFromStream(std::ifstream& in_File)
 {
-  int32_t Size;
+  uint32_t Size;
   in_File.read((char*) &Size, 4);
   in_File.read((char*) &HeaderOne, 4);
   in_File.read((char*) &HeaderFlags, 4);
@@ -158,7 +158,8 @@ bool LeveledCreatureRecord::loadFromStream(std::ifstream& in_File)
 		The CNAM/INTV can occur many times in pairs
   */
 
-  int32_t SubRecName, SubLength, BytesRead;
+  int32_t SubRecName;
+  uint32_t SubLength, BytesRead;
   SubRecName = SubLength = 0;
 
   //read NAME

@@ -34,7 +34,7 @@ bool SkillRecord::equals(const SkillRecord& other) const
 bool SkillRecord::saveToStream(std::ofstream& output) const
 {
   output.write((char*) &cSKIL, 4);
-  int32_t Size;
+  uint32_t Size;
   Size = 4 /* INDX */ +4 /* 4 bytes for length */ +4 /* 4 bytes for index */
         +4 /* SKDT */ +4 /* 4 bytes for length */ +24 /* 24 bytes for Skill data */
         +4 /* DESC */ +4 /* 4 bytes for length */
@@ -55,7 +55,7 @@ bool SkillRecord::saveToStream(std::ofstream& output) const
   //write INDX
   output.write((char*) &cINDX, 4);
   //write length
-  int32_t SubLength = 4;
+  uint32_t SubLength = 4;
   output.write((char*) &SubLength, 4);
   //write index
   output.write((char*) &SkillIndex, 4);
@@ -83,7 +83,7 @@ bool SkillRecord::saveToStream(std::ofstream& output) const
 
 bool SkillRecord::loadFromStream(std::ifstream& in_File)
 {
-  int32_t Size;
+  uint32_t Size;
   in_File.read((char*) &Size, 4);
   in_File.read((char*) &HeaderOne, 4);
   in_File.read((char*) &HeaderFlags, 4);
@@ -97,7 +97,8 @@ bool SkillRecord::loadFromStream(std::ifstream& in_File)
         float UseValue[4] (The use types for each skill are hard-coded.)
     DESC = Skill description string */
 
-  int32_t SubRecName, SubLength;
+  int32_t SubRecName;
+  uint32_t SubLength;
   SubRecName = SubLength = 0;
 
   //read INDX

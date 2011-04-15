@@ -43,7 +43,7 @@ bool StartScriptRecord::equals(const StartScriptRecord& other) const
 bool StartScriptRecord::saveToStream(std::ofstream& output) const
 {
   output.write((char*) &cSSCR, 4);
-  int32_t Size;
+  uint32_t Size;
   Size = 4 /* DATA */ +4 /* 4 bytes for length */
         +Data.length()+1 /* length of sequence (no NUL termination) */
         +4 /* NAME */ +4 /* 4 bytes for length */
@@ -58,7 +58,7 @@ bool StartScriptRecord::saveToStream(std::ofstream& output) const
 
   //write DATA
   output.write((char*) &cDATA, 4);
-  int32_t SubLength = Data.length();
+  uint32_t SubLength = Data.length();
   //write DATA's length
   output.write((char*) &SubLength, 4);
   //write data
@@ -76,7 +76,7 @@ bool StartScriptRecord::saveToStream(std::ofstream& output) const
 
 bool StartScriptRecord::loadFromStream(std::ifstream& in_File)
 {
-  int32_t Size;
+  uint32_t Size;
   in_File.read((char*) &Size, 4);
   in_File.read((char*) &HeaderOne, 4);
   in_File.read((char*) &HeaderFlags, 4);
@@ -84,7 +84,8 @@ bool StartScriptRecord::loadFromStream(std::ifstream& in_File)
   /*Start Script(?): (no documentation known)
     DATA = ? (a sequence of digits)
     NAME = ID string */
-  int32_t SubRecName, SubLength;
+  int32_t SubRecName;
+  uint32_t SubLength;
   SubRecName = SubLength = 0;
 
   //read DATA

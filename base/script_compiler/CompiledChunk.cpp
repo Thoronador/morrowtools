@@ -20,7 +20,7 @@
 
 #include "CompiledChunk.h"
 #include <iostream>
-#include "UtilityFunctions.h"
+#include "../UtilityFunctions.h"
 
 namespace ScriptCompiler
 {

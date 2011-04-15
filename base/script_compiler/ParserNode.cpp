@@ -20,7 +20,7 @@
 
 #include "ParserNode.h"
 #include <iostream>
-#include "UtilityFunctions.h"
+#include "../UtilityFunctions.h"
 #include "CompiledChunk.h"
 #include "ScriptCompiler.h"
 #include "../Globals.h"

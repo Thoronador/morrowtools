@@ -22,7 +22,7 @@
 #include <iostream>
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
-#include "../script_compiler/UtilityFunctions.h"
+#include "../UtilityFunctions.h"
 
 GlobalRecord::GlobalRecord()
 {

@@ -7216,7 +7216,8 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       CompiledData.pushCode(CodeEndWhile);
     }//if EndWhile found
     //check for end of script
-    else if ((lowerCase(lines.at(i))=="end") or (lowerCase(lines.at(i).substr(0,4))=="end "))
+    else if ((lowerCase(lines.at(i))=="end") or (lowerCase(lines.at(i).substr(0,4))=="end ")
+             or (lowerCase(lines.at(i).substr(0,4))=="end\t"))
     {
       CompiledData.pushCode(CodeEnd);
       EndLineFound = true;

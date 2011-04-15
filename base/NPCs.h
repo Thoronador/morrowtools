@@ -24,6 +24,7 @@
 #include <string>
 #include <map>
 #include "records/NPCRecord.h"
+#include "ComparisonFunctor.h"
 
 //iterator type for NPC list
 typedef std::map<std::string, NPCRecord>::const_iterator NPCListIterator;
@@ -101,7 +102,7 @@ class NPCs
     NPCs(const NPCs& op) {}
 
     /* internal data */
-    std::map<std::string, NPCRecord> m_NPCs;
+    std::map<std::string, NPCRecord, ci_less> m_NPCs;
 };//class
 
 #endif // NPCS_H

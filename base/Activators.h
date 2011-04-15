@@ -24,6 +24,7 @@
 #include <string>
 #include <map>
 #include "records/ActivatorRecord.h"
+#include "ComparisonFunctor.h"
 
 //iterator type for activator list
 typedef std::map<std::string, ActivatorRecord>::const_iterator ActivatorListIterator;
@@ -101,7 +102,7 @@ class Activators
     Activators(const Activators& op) {}
 
     /* internal data */
-    std::map<std::string, ActivatorRecord> m_Activators;
+    std::map<std::string, ActivatorRecord, ci_less> m_Activators;
 };//class
 
 #endif // ACTIVATORS_H

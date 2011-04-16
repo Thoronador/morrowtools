@@ -24,6 +24,7 @@
 #include <string>
 #include <map>
 #include "records/CreatureRecord.h"
+#include "ComparisonFunctor.h"
 
 //iterator type for creature list
 typedef std::map<std::string, CreatureRecord>::const_iterator CreatureListIterator;
@@ -101,7 +102,7 @@ class Creatures
     Creatures(const Creatures& op) {}
 
     /* internal data */
-    std::map<std::string, CreatureRecord> m_Creatures;
+    std::map<std::string, CreatureRecord, ci_less> m_Creatures;
 };//class
 
 #endif // CREATURES_H

@@ -27,6 +27,7 @@
 #include "../NPCs.h"
 #include "../MagicEffects.h"
 #include "../Globals.h"
+#include "../Creatures.h"
 #include "../Activators.h"
 #include "../Scripts.h"
 
@@ -567,7 +568,11 @@ SC_VarRef getForeignVariableTypeWithIndex(const std::string& objectID, const std
   {
     ScriptID = NPCs::getSingleton().getNPC(objectID).ScriptID;
   }
-  ///TODO: add more stuff (e.g. creatures) later
+  else if (Creatures::getSingleton().hasCreature(objectID))
+  {
+    ScriptID = Creatures::getSingleton().getCreature(objectID).ScriptID;
+  }
+  ///TODO: add more stuff (e.g. weapons) later
   if (ScriptID!="")
   {
     if (Scripts::getSingleton().hasScript(ScriptID))
@@ -6862,6 +6867,9 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
         {
           std::cout << "ScriptCompiler: Error: couldn't find foreign reference in \""
                     << varName<<"\" for SET statement.\n";
+          std::cout << "Debug: object name was \""<<objectName<<"\", var name was \""
+                    << varName.substr(dot_pos+1)<<"\".\n";
+          std::cout << "Debug: creatures has such an object: "<<Creatures::getSingleton().hasCreature(objectName)<<"\n";
           return false;
         }//if
         //push r for reference
@@ -7260,7 +7268,8 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
     //check for functions
     else if (ScriptFunctions(lines.at(i), CompiledData))
     {
-      std::cout << "Debug: ScriptCompiler: Hint: Function processed.\n";
+      //empty
+      //std::cout << "Debug: ScriptCompiler: Hint: Function processed.\n";
     }//functions
     else
     {

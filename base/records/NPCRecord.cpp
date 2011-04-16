@@ -253,10 +253,10 @@ bool NPCRecord::saveToStream(std::ofstream& output) const
   //travel service destinations
   for (i=0; i<Destinations.size(); ++i)
   {
-    Size = Size + +4 /* DODT */ +4 /* 4 bytes for length */ +24 /*fixed length of 24 bytes */;
+    Size = Size +4 /* DODT */ +4 /* 4 bytes for length */ +24 /*fixed length of 24 bytes */;
     if (Destinations[i].CellName!="")
     {
-      Size = Size + +4 /* DNAM */ +4 /* 4 bytes for length */
+      Size = Size +4 /* DNAM */ +4 /* 4 bytes for length */
             +Destinations[i].CellName.length()+1 /*length of cell name +1 byte for NUL termination */;
     }//if
   }//for
@@ -382,7 +382,7 @@ bool NPCRecord::saveToStream(std::ofstream& output) const
     SubLength = Name.length()+1;
     //write FNAM's length
     output.write((char*) &SubLength, 4);
-    //write sign's name
+    //write NPC's name
     output.write(Name.c_str(), SubLength);
   }
 

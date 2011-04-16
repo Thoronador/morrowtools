@@ -154,8 +154,471 @@ bool CreatureRecord::equals(const CreatureRecord& other) const
 
 bool CreatureRecord::saveToStream(std::ofstream& output) const
 {
-  #warning Not implemented yet!
-  return false;
+  output.write((char*) &cCREA, 4);
+  uint32_t Size;
+  Size = 4 /* NAME */ +4 /* 4 bytes for length */
+        +CreatureID.length()+1 /* length of ID +1 byte for NUL termination */
+        +4 /* MODL */ +4 /* 4 bytes for length */
+        +Model.length()+1 /* length of model path +1 byte for NUL termination */
+        +4 /* FNAM */ +4 /* 4 bytes for length */
+        +Name.length()+1 /* length of name +1 byte for NUL termination */
+        +4 /* NPDT */ +4 /* 4 bytes for length */ +96 /* fixed length of 96 bytes */
+        +4 /* FLAG */ +4 /* 4 bytes for length */ +4 /* fixed length of 96 bytes */
+        +Items.size()*(4 /* NPCO */ +4 /* 4 bytes for length */ +36 /* fixed length of 36 bytes */)
+        +CreatureSpells.size()*(4 /* NPCS */ +4 /* 4 bytes for length */ +32 /* fixed length of 32 bytes */);
+  if (SoundGenCreature!="")
+  {
+    Size = Size + 4 /* CNAM */ +4 /* 4 bytes for length */
+          +SoundGenCreature.length()+1 /* length of ID +1 byte for NUL termination */;
+  }
+  if (AIData.isPresent)
+  {
+    Size = Size +4 /* AIDT */ +4 /* 4 bytes for length */ +12 /* fixed length of 12 bytes */;
+  }
+  if (ScriptID!="")
+  {
+    Size = Size + 4 /* SCRI */ +4 /* 4 bytes for length */
+          +ScriptID.length()+1 /* length of ID +1 byte for NUL termination */;
+  }
+
+  //AI packages
+  unsigned int i;
+  for (i=0; i<AIPackages.size(); ++i)
+  {
+    switch(AIPackages[i]->getPackageType())
+    {
+      case ptActivate:
+           Size = Size + 4 /* AI_A */ + 4 /* 4 bytes for length */ +33 /* fixed length of 33 bytes */;
+           break;
+      case ptEscort:
+      case ptFollow:
+           Size = Size + 4 /* AI_E / AI_F */ + 4 /* 4 bytes for length */ +48 /* fixed length of 48 bytes */;
+           if (static_cast<NPC_AIEscortFollow*>(AIPackages[i])->CellName!="")
+           {
+             Size = Size +4 /* CNDT */ +4 /* 4 bytes for length */
+                    +static_cast<NPC_AIEscortFollow*>(AIPackages[i])->CellName.length()+1 /* length of cell name +1 byte for NUL */;
+           }
+           break;
+      case ptTravel:
+           Size = Size + 4 /* AI_T */ + 4 /* 4 bytes for length */ +16 /* fixed length of 16 bytes */;
+           break;
+      case ptWander:
+           Size = Size + 4 /* AI_W */ + 4 /* 4 bytes for length */ +14 /* fixed length of 14 bytes */;
+           break;
+    }//swi
+  }//for (AIPackages)
+
+  //travel service destinations
+  for (i=0; i<Destinations.size(); ++i)
+  {
+    Size = Size +4 /* DODT */ +4 /* 4 bytes for length */ +24 /*fixed length of 24 bytes */;
+    if (Destinations[i].CellName!="")
+    {
+      Size = Size +4 /* DNAM */ +4 /* 4 bytes for length */
+            +Destinations[i].CellName.length()+1 /*length of cell name +1 byte for NUL termination */;
+    }//if
+  }//for
+  //scale?
+  if (Scale!=1.0f)
+  {
+    Size = Size +4 /* XSCL */ +4 /* 4 bytes for length */ +4 /*fixed length of 4 bytes */;
+  }
+
+  output.write((char*) &Size, 4);
+  output.write((char*) &HeaderOne, 4);
+  output.write((char*) &HeaderFlags, 4);
+
+  /*Creature:
+    NAME = ID
+	MODL = NIF Model
+	CNAM = Sound Gen Creature ID (optional)
+	FNAM = Creature name
+	SCRI = Script (optional)
+	NPDT = Creature data, 96 bytes
+		long Type
+			0 = Creature
+			1 = Daedra
+			2 = Undead
+			3 = Humanoid
+		long Level
+		long Strength
+		long Intelligence
+		long Willpower
+		long Agility
+		long Speed
+		long Endurance
+		long Personality
+		long Luck
+		long Health
+		long SpellPts
+		long Fatigue
+		long Soul
+		long Combat
+		long Magic
+		long Stealth
+		long AttackMin1
+		long AttackMax1
+		long AttackMin2
+		long AttackMax2
+		long AttackMin3
+		long AttackMax3
+		long Gold
+	FLAG = Creature Flags (4 bytes, bit field)
+        0x0001 = Biped, 0x0002 = Respawn, 0x0004 = Weapon and shield,
+        0x0008 = None, 0x0010 = Swims, 0x0020 = Flies, 0x0040 = Walks
+        0x0048 = Default flags, 0x0080 = Essential, 0x0400 = Skeleton Blood
+        0x0800 = Metal Blood
+    NPCO = Item record (36 bytes, 0+ times)
+        long    Count     Number of the item
+        char    Name[32]  The ID of the item
+    NPCS = creature spell (32 bytes, occurs 0+ times)
+        char    Name[32]  The ID of the item
+    AIDT = AI data (12 bytes)
+        byte Hello
+        byte Unknown1
+        byte Fight
+        byte Flee
+        byte Alarm
+        byte Unknown2
+        byte Unknown3
+        byte Unknown4
+        long Flags
+            0x00001 = Weapon, 0x00002 = Armor, 0x00004 = Clothing,
+            0x00008 = Books, 0x00010 = Ingredients, 0x00020 = Picks,
+            0x00040 = Probes, 0x00080 = Lights, 0x00100 = Apparatus,
+            0x00200 = Repair, 0x00400 = Misc, 0x00800 = Spells,
+            0x01000 = Magic Items, 0x02000 = Potions, 0x04000 = Training,
+            0x08000 = Spellmaking, 0x10000 = Enchanting, 0x20000 = Repair Item
+    AI_E = AI Escort (48 bytes, occurs 0+ times)
+        float X
+        float Y
+        float Z
+        short Duration
+        char  ID[32]
+        short Unknown (0100?)
+    AI_F = AI Follow (48 bytes, occurs 0+ times)
+        float X
+        float Y
+        float Z
+        short Duration
+        char  ID[32]
+        short Unknown (0100?)
+    AI_T = AI Travel (16 bytes, occurs 0+ times)
+        float X
+        float Y
+        float Z
+        long  Unknown (1?)
+    AI_W = AI Wander (14 bytes)
+        short Distance
+        byte  Duration
+        byte  TimeOfDay
+        byte  Idle[10]
+    AI_A = AI Activate (33 bytes, occurs 0+ times)
+        char Name[32]
+        byte Unknown (1?)
+    DODT = Cell Travel Destination
+        float XPos
+        float YPos
+        float ZPos
+        float XRot
+        float YRot
+        float ZRot
+    DNAM = Cell name for previous DODT, if interior
+    XSCL = Scale (4 bytes, float, optional)
+        Only present if the scale is not 1.0
+  */
+
+  //write NAME
+  output.write((char*) &cNAME, 4);
+  uint32_t SubLength = CreatureID.length()+1;
+  //write NAME's length
+  output.write((char*) &SubLength, 4);
+  //write ID
+  output.write(CreatureID.c_str(), SubLength);
+
+  //write MODL
+  output.write((char*) &cMODL, 4);
+  SubLength = Model.length()+1;
+  //write MODL's length
+  output.write((char*) &SubLength, 4);
+  //write creature's model path
+  output.write(Model.c_str(), SubLength);
+
+  if (SoundGenCreature!="")
+  {
+    //write CNAM
+    output.write((char*) &cCNAM, 4);
+    SubLength = SoundGenCreature.length()+1;
+    //write CNAM's length
+    output.write((char*) &SubLength, 4);
+    //write sound gen creature's ID
+    output.write(SoundGenCreature.c_str(), SubLength);
+  }
+
+  //write FNAM
+  output.write((char*) &cFNAM, 4);
+  SubLength = Name.length()+1;
+  //write FNAM's length
+  output.write((char*) &SubLength, 4);
+  //write creature's name
+  output.write(Name.c_str(), SubLength);
+
+  if (ScriptID!="")
+  {
+    //write SCRI
+    output.write((char*) &cSCRI, 4);
+    SubLength = ScriptID.length()+1;
+    //write SCRI's length
+    output.write((char*) &SubLength, 4);
+    //write creature's script ID
+    output.write(ScriptID.c_str(), SubLength);
+  }
+
+  //write NPDT
+  output.write((char*) &cNPDT, 4);
+  SubLength = 96; //fixed length of 96 bytes
+  //write NPDT's length
+  output.write((char*) &SubLength, 4);
+  //write creature data
+  output.write((char*) &CreatureType, 4);
+  output.write((char*) &Level, 4);
+  output.write((char*) &Strength, 4);
+  output.write((char*) &Intelligence, 4);
+  output.write((char*) &Willpower, 4);
+  output.write((char*) &Agility, 4);
+  output.write((char*) &Speed, 4);
+  output.write((char*) &Endurance, 4);
+  output.write((char*) &Personality, 4);
+  output.write((char*) &Luck, 4);
+  output.write((char*) &Health, 4);
+  output.write((char*) &SpellPoints, 4);
+  output.write((char*) &Fatigue, 4);
+  output.write((char*) &Soul, 4);
+  output.write((char*) &Combat, 4);
+  output.write((char*) &Magic, 4);
+  output.write((char*) &Stealth, 4);
+  output.write((char*) &AttackMin1, 4);
+  output.write((char*) &AttackMax1, 4);
+  output.write((char*) &AttackMin2, 4);
+  output.write((char*) &AttackMax2, 4);
+  output.write((char*) &AttackMin3, 4);
+  output.write((char*) &AttackMax3, 4);
+  output.write((char*) &Gold, 4);
+
+  //write FLAG
+  output.write((char*) &cFLAG, 4);
+  SubLength = 4; //fixed length of four bytes
+  //write FLAG's length
+  output.write((char*) &SubLength, 4);
+  //write creature flag
+  output.write((char*) &CreatureFlag, SubLength);
+
+  //items and spells
+  unsigned int len;
+  for (i=0; i<Items.size(); ++i)
+  {
+    //Items
+    //write NPCO
+    output.write((char*) &cNPCO, 4);
+    SubLength = 36; //fixed length of 36 bytes
+    //write NPCO's length
+    output.write((char*) &SubLength, 4);
+    //write item stuff
+    // ---- count
+    output.write((char*) &(Items[i].Count), 4);
+    // ---- item ID
+    len = Items[i].Item.length();
+    if (len>31)
+    {
+      len = 31;
+    }
+    output.write(Items[i].Item.c_str(), len);
+    //fill rest with NUL bytes
+    output.write(NULof32, 32-len);
+  }//for
+
+  for (i=0; i<CreatureSpells.size(); ++i)
+  {
+    //Spells
+    //write NPCS
+    output.write((char*) &cNPCS, 4);
+    SubLength = 32; //fixed length of 32 bytes
+    //write NPCS's length
+    output.write((char*) &SubLength, 4);
+    //write spell ID
+    len = CreatureSpells[i].length();
+    if (len>31)
+    {
+      len = 31;
+    }
+    output.write(CreatureSpells[i].c_str(), len);
+    //fill rest with NUL bytes
+    output.write(NULof32, 32-len);
+  }//for
+
+  if (AIData.isPresent)
+  {
+    //write AIDT
+    output.write((char*) &cAIDT, 4);
+    SubLength = 12; //fixed length of 12 bytes
+    //write AIDT's length
+    output.write((char*) &SubLength, 4);
+    //write AI data
+    output.write((char*) &(AIData.Hello), 1);
+    output.write((char*) &(AIData.Unknown1), 1);
+    output.write((char*) &(AIData.Fight), 1);
+    output.write((char*) &(AIData.Flee), 1);
+    output.write((char*) &(AIData.Alarm), 1);
+    output.write((char*) &(AIData.Unknown2), 1);
+    output.write((char*) &(AIData.Unknown3), 1);
+    output.write((char*) &(AIData.Unknown4), 1);
+    output.write((char*) &(AIData.Flags), 4);
+  }//if AIData is present
+
+  //AI packages
+  NPC_AIActivate* activatePointer;
+  NPC_AIEscortFollow* escort_followPointer;
+  NPC_AITravel* travelPointer;
+  NPC_AIWander* wanderPointer;
+  for (i=0; i<AIPackages.size(); ++i)
+  {
+    switch (AIPackages[i]->getPackageType())
+    {
+      case ptActivate:
+           //write AI_A
+           output.write((char*) &cAI_A, 4);
+           SubLength = 33; //fixed length of 33 bytes
+           //write AI_A's length
+           output.write((char*) &SubLength, 4);
+           //write AI activate data
+           activatePointer = static_cast<NPC_AIActivate*>(AIPackages[i]);
+           // ---- write target ID
+           len = activatePointer->TargetID.length();
+           if (len>31)
+           {
+             len = 31;
+           }
+           output.write(activatePointer->TargetID.c_str(), len);
+           // ---- fill rest with NUL
+           output.write(NULof32, 32-len);
+           // ---- reset flag
+           output.write((char*) &(activatePointer->Reset), 1);
+           break;
+      case ptEscort:
+      case ptFollow:
+           if (AIPackages[i]->getPackageType()==ptEscort)
+           {
+             //write AI_E
+             output.write((char*) &cAI_E, 4);
+           }
+           else
+           {
+             //write AI_F
+             output.write((char*) &cAI_F, 4);
+           }
+           SubLength = 48; //fixed length of 48 bytes
+           //write AI_E's/AI_F's length
+           output.write((char*) &SubLength, 4);
+           //write AI escort/follow data
+           escort_followPointer = static_cast<NPC_AIEscortFollow*>(AIPackages[i]);
+           output.write((char*) &(escort_followPointer->X), 4);
+           output.write((char*) &(escort_followPointer->Y), 4);
+           output.write((char*) &(escort_followPointer->Z), 4);
+           output.write((char*) &(escort_followPointer->Duration), 2);
+           // ---- write target ID
+           len = escort_followPointer->TargetID.length();
+           if (len>31)
+           {
+             len = 31;
+           }
+           output.write(escort_followPointer->TargetID.c_str(), len);
+           // ---- fill rest with NUL
+           output.write(NULof32, 32-len);
+           // ---- reset flag
+           output.write((char*) &(escort_followPointer->Reset), 2);
+
+           //check for presence of cell
+           if (escort_followPointer->CellName!="")
+           {
+             //write CNDT
+             output.write((char*) &cCNDT, 4);
+             SubLength = escort_followPointer->CellName.length()+1; //length of cell name +1 byte for NUL
+             //write CNDT's length
+             output.write((char*) &SubLength, 4);
+             //write AI escort's/follow's cell name
+             output.write(escort_followPointer->CellName.c_str(), SubLength);
+           }
+           break;
+      case ptTravel:
+           //write AI_T
+           output.write((char*) &cAI_T, 4);
+           SubLength = 16; //fixed length of 16 bytes
+           //write AI_T's length
+           output.write((char*) &SubLength, 4);
+           //write AI travel data
+           travelPointer = static_cast<NPC_AITravel*>(AIPackages[i]);
+           output.write((char*) &(travelPointer->X), 4);
+           output.write((char*) &(travelPointer->Y), 4);
+           output.write((char*) &(travelPointer->Z), 4);
+           output.write((char*) &(travelPointer->Reset), 4);
+           break;
+      case ptWander:
+           //write AI_W
+           output.write((char*) &cAI_W, 4);
+           SubLength = 14; //fixed length of 14 bytes
+           //write AI_W's length
+           output.write((char*) &SubLength, 4);
+           //write AI wander data
+           wanderPointer = static_cast<NPC_AIWander*>(AIPackages[i]);
+           output.write((char*) &(wanderPointer->Distance), 2);
+           output.write((char*) &(wanderPointer->Duration), 2);
+           output.write((char*) &(wanderPointer->Time), 1);
+           output.write((char*) (wanderPointer->Idle), 8);
+           output.write((char*) &(wanderPointer->Reset), 1);
+           break;
+    }//swi
+  }//for AIPackages
+
+  //travel service destinations
+  for (i=0; i<Destinations.size(); ++i)
+  {
+    //write DODT
+    output.write((char*) &cDODT, 4);
+    SubLength = 24; //fixed length of 24 bytes
+    //write DODT's length
+    output.write((char*) &SubLength, 4);
+    //write destination data
+    output.write((char*) &(Destinations[i].XPos), 4);
+    output.write((char*) &(Destinations[i].YPos), 4);
+    output.write((char*) &(Destinations[i].ZPos), 4);
+    output.write((char*) &(Destinations[i].XRot), 4);
+    output.write((char*) &(Destinations[i].YRot), 4);
+    output.write((char*) &(Destinations[i].ZRot), 4);
+    //see if there's a cell name, too
+    if (Destinations[i].CellName!="")
+    {
+      //write DNAM
+      output.write((char*) &cDNAM, 4);
+      SubLength = Destinations[i].CellName.length()+1; //length of cell name +1 byte for NUL
+      //write DNAM's length
+      output.write((char*) &SubLength, 4);
+      //write destination cell name
+      output.write(Destinations[i].CellName.c_str(), SubLength);
+    }//if
+  }//for
+
+  if (Scale!=1.0f)
+  {
+    //write XSCL
+    output.write((char*) &cXSCL, 4);
+    SubLength = 4; //fixed length of four bytes
+    //write XSCL's length
+    output.write((char*) &SubLength, 4);
+    //write creature's scale
+    output.write((char*) &Scale, SubLength);
+  }
+
+  return output.good();
 }
 
 bool CreatureRecord::loadFromStream(std::ifstream& in_File)

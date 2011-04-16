@@ -23,134 +23,6 @@
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 
-/* *** AIData's functions ****/
-
-void NPC_AIData::clear()
-{
-  Hello = 0;
-  Unknown1 = 0;
-  Fight = 0;
-  Flee = 0;
-  Alarm = 0;
-  Unknown2 = 0;
-  Unknown3 = 0;
-  Unknown4 = 0;
-  Flags = 0;
-
-  isPresent = false;
-}
-
-bool NPC_AIData::operator==(const NPC_AIData& other) const
-{
-  if (!isPresent and !other.isPresent) return true;
-  return ((isPresent==other.isPresent) and (Hello==other.Hello)
-      and (Unknown1==other.Unknown1) and (Fight==other.Fight)
-      and (Flee==other.Flee) and (Alarm==other.Alarm)
-      and (Unknown2==other.Unknown2) and (Unknown3==other.Unknown3)
-      and (Unknown4==other.Unknown4) and (Flags==other.Flags));
-}
-
-/* **** BasicAIPackage's functions ****/
-
-NPC_BasicAIPackage::~NPC_BasicAIPackage()
-{
-  //empty - just here to get rid of compiler warnings
-}
-
-/* **** AIWander's functions ****/
-
-void NPC_AIWander::clear()
-{
-  Distance = Duration = 0;
-  Time = 0;
-  Idle[0] = Idle[1] = Idle[2] = Idle[3] = Idle[4] = Idle[5] = Idle[6] =
-    Idle[7] = 0;
-  Reset = 0;
-}
-
-bool NPC_AIWander::equals(const NPC_AIWander& other) const
-{
-  return (/*(isPresent==other.isPresent) and*/ (Distance==other.Distance)
-      and (Duration==other.Duration) and (Time==other.Time)
-      and (Reset==other.Reset) and (memcmp(Idle, other.Idle, 8)==0));
-}
-
-PackageType NPC_AIWander::getPackageType() const
-{
-  return ptWander;
-}
-
-/* **** AIActivate's functions ****/
-
-bool NPC_AIActivate::equals(const NPC_AIActivate& other) const
-{
-  return ((TargetID==other.TargetID) and (Reset==other.Reset));
-}
-
-PackageType NPC_AIActivate::getPackageType() const
-{
-  return ptActivate;
-}
-
-/* **** AIEscortFollow's functions ****/
-
-void NPC_AIEscortFollow::clear()
-{
-  X = Y = Z = 0.0f;
-  Duration = 0;
-  TargetID = "";
-  Reset = 0;
-  CellName = "";
-}
-
-bool NPC_AIEscortFollow::equals(const NPC_AIEscortFollow& other) const
-{
-  /* Note: Usually it should be enough to check X, Y and Z for equality with
-           their counterparts in 'other', but if one of them is a NaN, we have
-           a problem, because one NaN is (by definition of IEEE 754) never equal
-           to another NaN, even if their internal bit representation is exactly
-           the same. That's why we have expressions like (X!=X) down there, they
-           catch the NaNs. */
-  return (((X==other.X) or ((X!=X) and (other.X!=other.X)))
-      and ((Y==other.Y) or ((Y!=Y) and (other.Y!=other.Y)))
-      and ((Z==other.Z) or ((Z!=Z) and (other.Z!=other.Z)))
-      and (Duration==other.Duration) and (TargetID==other.TargetID)
-      and (Reset==other.Reset) and (CellName==other.CellName));
-}
-
-/* **** AIEscort functions ****/
-
-PackageType NPC_AIEscort::getPackageType() const
-{
-  return ptEscort;
-}
-
-/* **** AIFollow functions ****/
-
-PackageType NPC_AIFollow::getPackageType() const
-{
-  return ptFollow;
-}
-
-/* **** AITravel's functions ****/
-
-void NPC_AITravel::clear()
-{
-  X = Y = Z = 0.0f;
-  Reset = 0;
-}
-
-bool NPC_AITravel::equals(const NPC_AITravel& other) const
-{
-  return (/*(isPresent==other.isPresent) and */(X==other.X) and (Y==other.Y)
-      and (Z==other.Z) and (Reset==other.Reset));
-}
-
-PackageType NPC_AITravel::getPackageType() const
-{
-  return ptTravel;
-}
-
 /* **** TravelDestination's functions ****/
 
 bool TravelDestination::operator==(const TravelDestination& other) const
@@ -443,21 +315,21 @@ bool NPCRecord::saveToStream(std::ofstream& output) const
     FLAG = NPC Flags (4 bytes, long)
         0x0001 = Female, 0x0002 = Essential, 0x0004 = Respawn, 0x0008 = None?
         0x0010 = Autocalc, 0x0400 = Blood Skel, 0x0800 = Blood Metal
-	NPCO = NPC item (36 bytes, occurs 0+ times)
-		long	Count	  Number of the item
-		char	Name[32]  The ID of the item
-	NPCS = NPC spell (32 bytes, occurs 0+ times)
-		char	Name[32]  The ID of the item
-	AIDT = AI data (12 bytes)
-		byte Hello
-		byte Unknown1
-		byte Fight
-		byte Flee
-		byte Alarm
-		byte Unknown2
-		byte Unknown3
-		byte Unknown4
-		long Flags
+    NPCO = NPC item (36 bytes, occurs 0+ times)
+        long    Count     Number of the item
+        char    Name[32]  The ID of the item
+    NPCS = NPC spell (32 bytes, occurs 0+ times)
+        char    Name[32]  The ID of the item
+    AIDT = AI data (12 bytes)
+        byte Hello
+        byte Unknown1
+        byte Fight
+        byte Flee
+        byte Alarm
+        byte Unknown2
+        byte Unknown3
+        byte Unknown4
+        long Flags
             0x00001 = Weapon, 0x00002 = Armor, 0x00004 = Clothing,
             0x00008 = Books, 0x00010 = Ingredients, 0x00020 = Picks,
             0x00040 = Probes, 0x00080 = Lights, 0x00100 = Apparatus,
@@ -908,66 +780,66 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
     FLAG = NPC Flags (4 bytes, long)
         0x0001 = Female, 0x0002 = Essential, 0x0004 = Respawn, 0x0008 = None?
         0x0010 = Autocalc, 0x0400 = Blood Skel, 0x0800 = Blood Metal
-	NPCO = NPC item (36 bytes, occurs 0+ times)
-		long	Count	  Number of the item
-		char	Name[32]  The ID of the item
-	NPCS = NPC spell (32 bytes, occurs 0+ times)
-		char	Name[32]  The ID of the item
-	AIDT = AI data (12 bytes)
-		byte Hello
-		byte Unknown1
-		byte Fight
-		byte Flee
-		byte Alarm
-		byte Unknown2
-		byte Unknown3
-		byte Unknown4
-		long Flags
+    NPCO = NPC item (36 bytes, occurs 0+ times)
+        long    Count     Number of the item
+        char    Name[32]  The ID of the item
+    NPCS = NPC spell (32 bytes, occurs 0+ times)
+        char    Name[32]  The ID of the item
+    AIDT = AI data (12 bytes)
+        byte Hello
+        byte Unknown1
+        byte Fight
+        byte Flee
+        byte Alarm
+        byte Unknown2
+        byte Unknown3
+        byte Unknown4
+        long Flags
             0x00001 = Weapon, 0x00002 = Armor, 0x00004 = Clothing,
             0x00008 = Books, 0x00010 = Ingredients, 0x00020 = Picks,
             0x00040 = Probes, 0x00080 = Lights, 0x00100 = Apparatus,
             0x00200 = Repair, 0x00400 = Misc, 0x00800 = Spells,
             0x01000 = Magic Items, 0x02000 = Potions, 0x04000 = Training,
             0x08000 = Spellmaking, 0x10000 = Enchanting, 0x20000 = Repair Item
-	AI_W = AI bytes (14 bytes)
-		short Distance
-		short Duration
-		byte  TimeOfDay
-		byte  Idle[8]
-		byte  Unknown (1?)
-	AI_T = AI Travel (16 bytes)
-		float X
-		float Y
-		float Z
-		long  Unknown (1?)
-	AI_F = AI Follow (48 bytes)
-		float X
-		float Y
-		float Z
-		short Duration
-		char  ID[32]
-		short Unknown (0100?)
-	AI_E = AI Escort (48 bytes)
-		float X
-		float Y
-		float Z
-		short Duration
-		char  ID[32]
-		short Unknown (0100?)
-	CNDT = Cell escort/follow to string (optional)
-	AI_A = AI Activate (33 bytes)
-		char Name[32]
-		byte Unknown (1?)
-	DODT = Cell Travel Destination
-		float XPos
-		float YPos
-		float ZPos
-		float XRot
-		float YRot
-		float ZRot
-	DNAM = Cell name for previous DODT, if interior
-	XSCL = Scale (4 bytes, float, optional)
-		Only present if the scale is not 1.0 */
+    AI_W = AI bytes (14 bytes)
+        short Distance
+        short Duration
+        byte  TimeOfDay
+        byte  Idle[8]
+        byte  Unknown (1?)
+    AI_T = AI Travel (16 bytes)
+        float X
+        float Y
+        float Z
+        long  Unknown (1?)
+    AI_F = AI Follow (48 bytes)
+        float X
+        float Y
+        float Z
+        short Duration
+        char  ID[32]
+        short Unknown (0100?)
+    AI_E = AI Escort (48 bytes)
+        float X
+        float Y
+        float Z
+        short Duration
+        char  ID[32]
+        short Unknown (0100?)
+    CNDT = Cell escort/follow to string (optional)
+    AI_A = AI Activate (33 bytes)
+        char Name[32]
+        byte Unknown (1?)
+    DODT = Cell Travel Destination
+        float XPos
+        float YPos
+        float ZPos
+        float XRot
+        float YRot
+        float ZRot
+    DNAM = Cell name for previous DODT, if interior
+    XSCL = Scale (4 bytes, float, optional)
+        Only present if the scale is not 1.0 */
 
   int32_t SubRecName;
   uint32_t SubLength, BytesRead;

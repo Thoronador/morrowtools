@@ -23,16 +23,7 @@
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 
-/* **** TravelDestination's functions ****/
-
-bool TravelDestination::operator==(const TravelDestination& other) const
-{
-  return ((XPos==other.XPos) and (YPos==other.YPos) and (ZPos==other.ZPos)
-      and (XRot==other.XRot) and (YRot==other.YRot) and (ZRot==other.ZRot)
-      and (CellName==other.CellName));
-}
-
-/***** functions for NPCRecord ****/
+/* **** functions for NPCRecord ****/
 
 NPCRecord::NPCRecord()
 {
@@ -347,20 +338,20 @@ bool NPCRecord::saveToStream(std::ofstream& output) const
 		float Y
 		float Z
 		long  Unknown (1?)
-	AI_F = AI Follow (48 bytes)
-		float X
-		float Y
-		float Z
-		short Duration
-		char  ID[32]
-		short Unknown (0100?)
-	AI_E = AI Escort (48 bytes)
-		float X
-		float Y
-		float Z
-		short Duration
-		char  ID[32]
-		short Unknown (0100?)
+    AI_F = AI Follow (48 bytes)
+        float X
+        float Y
+        float Z
+        short Duration
+        char  ID[32]
+        short Unknown (0100?)
+    AI_E = AI Escort (48 bytes)
+        float X
+        float Y
+        float Z
+        short Duration
+        char  ID[32]
+        short Unknown (0100?)
 	CNDT = Cell escort/follow to string (optional)
 	AI_A = AI Activate (33 bytes)
 		char Name[32]
@@ -750,33 +741,33 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
     NPDT = NPC Data (12 bytes or 52 bytes?)
         short Level
         byte  Strength
-		byte  Intelligence
-		byte  Willpower
-		byte  Agility
-		byte  Speed
-		byte  Endurance
-		byte  Personality
-		byte  Luck
-		byte  Skills[27]  } According to the skillID (0-26)
-		byte  Reputation
-		short Health
-		short SpellPts
-		short Fatigue
-		byte  Disposition
-		byte  FactionID
-		byte  Rank
-		byte  Unknown1
-		long  Gold
+        byte  Intelligence
+        byte  Willpower
+        byte  Agility
+        byte  Speed
+        byte  Endurance
+        byte  Personality
+        byte  Luck
+        byte  Skills[27]  } According to the skillID (0-26)
+        byte  Reputation
+        short Health
+        short SpellPts
+        short Fatigue
+        byte  Disposition
+        byte  FactionID
+        byte  Rank
+        byte  Unknown1
+        long  Gold
 
-		12 byte Version
-		short Level
-		byte  Disposition
-		byte  FactionID?
-		byte  Rank
-		byte  Unknown1
-		byte  Unknown2
-		byte  Unknown3
-		long  Gold?
+        12 byte Version
+        short Level
+        byte  Disposition
+        byte  FactionID?
+        byte  Rank
+        byte  Unknown1
+        byte  Unknown2
+        byte  Unknown3
+        long  Gold?
     FLAG = NPC Flags (4 bytes, long)
         0x0001 = Female, 0x0002 = Essential, 0x0004 = Respawn, 0x0008 = None?
         0x0010 = Autocalc, 0x0400 = Blood Skel, 0x0800 = Blood Metal
@@ -801,25 +792,25 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
             0x00200 = Repair, 0x00400 = Misc, 0x00800 = Spells,
             0x01000 = Magic Items, 0x02000 = Potions, 0x04000 = Training,
             0x08000 = Spellmaking, 0x10000 = Enchanting, 0x20000 = Repair Item
-    AI_W = AI bytes (14 bytes)
+    AI_W = AI bytes (14 bytes, occurs 0+ times)
         short Distance
         short Duration
         byte  TimeOfDay
         byte  Idle[8]
         byte  Unknown (1?)
-    AI_T = AI Travel (16 bytes)
+    AI_T = AI Travel (16 bytes, occurs 0+ times)
         float X
         float Y
         float Z
         long  Unknown (1?)
-    AI_F = AI Follow (48 bytes)
+    AI_F = AI Follow (48 bytes, occurs 0+ times)
         float X
         float Y
         float Z
         short Duration
         char  ID[32]
         short Unknown (0100?)
-    AI_E = AI Escort (48 bytes)
+    AI_E = AI Escort (48 bytes, occurs 0+ times)
         float X
         float Y
         float Z
@@ -827,7 +818,7 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
         char  ID[32]
         short Unknown (0100?)
     CNDT = Cell escort/follow to string (optional)
-    AI_A = AI Activate (33 bytes)
+    AI_A = AI Activate (33 bytes, occurs 0+ times)
         char Name[32]
         byte Unknown (1?)
     DODT = Cell Travel Destination
@@ -1244,7 +1235,8 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
   ItemRecord temp;
   NPC_Spells.clear();
   AIData.clear();
-  AIPackages.clear();
+  removeAIPackages();
+  //AIPackages.clear();
   Destinations.clear();
 
   bool hasAIDT = false;

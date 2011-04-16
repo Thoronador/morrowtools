@@ -28,16 +28,7 @@
 #include "ItemRecord.h"
 #include "AIData.h"
 #include "AIPackages.h"
-
-struct TravelDestination
-{
-  float XPos, YPos, ZPos;
-  float XRot, YRot, ZRot;
-  std::string CellName;//is usually empty for exterior cells
-
-  /* comparison operator */
-  bool operator==(const TravelDestination& other) const;
-};//struct
+#include "TravelDestination.h"
 
 /* enumeration type for the NPDT subrecord: there are two versions. One is
     12 bytes and the other one is 52 bytes. This enumeration type will be used

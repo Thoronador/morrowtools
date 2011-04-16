@@ -144,5 +144,6 @@ const int32_t cWEAP = 0x50414557; //"WEAP" = 57 45 41 50
 const int32_t cWEAT = 0x54414557; //"WEAT" = 57 45 41 54
 const int32_t cWPDT = 0x54445057; //"WPDT" = 57 50 44 54
 const int32_t cWNAM = 0x4D414E57; //"WNAM" = 57 4E 41 4D
+const int32_t cXSCL = 0x4C435358; //"XSCL" = 58 53 43 4C
 
 #endif // MW_CONSTANTS_H

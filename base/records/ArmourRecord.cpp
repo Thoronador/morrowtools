@@ -23,12 +23,6 @@
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 
-bool BodyPartAssociation::operator==(const BodyPartAssociation& other) const
-{
-  return ((Index==other.Index) and (MaleBodyPart==other.MaleBodyPart)
-      and (FemaleBodyPart==other.FemaleBodyPart));
-}
-
 ArmourRecord::ArmourRecord()
 {
   ArmourID = "";

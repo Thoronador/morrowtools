@@ -24,15 +24,7 @@
 #include <string>
 #include <vector>
 #include "BasicRecord.h"
-
-struct BodyPartAssociation
-{
-  uint8_t Index;
-  std::string MaleBodyPart;
-  std::string FemaleBodyPart;
-
-  bool operator==(const BodyPartAssociation& other) const;
-};
+#include "BodyPartAssociation.h"
 
 struct ArmourRecord: public BasicRecord
 {

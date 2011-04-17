@@ -160,7 +160,7 @@ bool ClothingRecord::saveToStream(std::ofstream& output) const
   {
     //write SCRI
     output.write((char*) &cSCRI, 4);
-    SubLength = InventoryIcon.length()+1;
+    SubLength = ScriptID.length()+1;
     //write SCRI's length
     output.write((char*) &SubLength, 4);
     //write clothings's script ID

@@ -126,8 +126,8 @@ bool RaceRecord::loadFromStream(std::ifstream& in_File)
         float Height[2]
         float Weight[2]
         long Flags (1 = Playable,2 = Beast Race)
-    NPCS = Special power/ability name string (32 bytes), multiple
-    DESC = Race description */
+    NPCS = Special power/ability name string (32 bytes), occurs 0+ times
+    DESC = Race description (optional) */
 
   int32_t SubRecName;
   uint32_t SubLength, BytesRead;
@@ -250,59 +250,70 @@ bool RaceRecord::loadFromStream(std::ifstream& in_File)
 
   //read multiple NPCS
   Powers.clear();
+  Description = "";
+  bool hasDESC = false;
   while (BytesRead<Size)
   {
-    //read NPCS
+    //read NPCS or DESC
     in_File.read((char*) &SubRecName, 4);
     BytesRead += 4;
-    if (SubRecName!=cNPCS)
+    switch (SubRecName)
     {
-      break;
-    }
-    //NPCS's length
-    in_File.read((char*) &SubLength, 4);
-    BytesRead += 4;
-    if (SubLength!=32)
-    {
-      std::cout << "Error: sub record NPCS of RACE has invalid length ("
-                <<SubLength<< " bytes). Should be 32 bytes.\n";
-      return false;
-    }//if
-    //read spell ID
-    memset(Buffer, '\0', 256);
-    in_File.read(Buffer, 32);
-    BytesRead += 32;
-    if (!in_File.good())
-    {
-      std::cout << "Error while reading subrecord NPCS of RACE.\n";
-      return false;
-    }
-    //add spell ID
-    Powers.push_back(std::string(Buffer));
+      case cNPCS:
+           //NPCS's length
+           in_File.read((char*) &SubLength, 4);
+           BytesRead += 4;
+           if (SubLength!=32)
+           {
+             std::cout << "Error: sub record NPCS of RACE has invalid length ("
+                       <<SubLength<< " bytes). Should be 32 bytes.\n";
+             return false;
+           }//if
+           //read spell ID
+           memset(Buffer, '\0', 256);
+           in_File.read(Buffer, 32);
+           BytesRead += 32;
+           if (!in_File.good())
+           {
+             std::cout << "Error while reading subrecord NPCS of RACE.\n";
+             return false;
+           }
+           //add spell ID
+           Powers.push_back(std::string(Buffer));
+           break;
+      case cDESC:
+           if (hasDESC)
+           {
+             std::cout << "Error: record RACE seems to have two DESC subrecords.\n";
+             return false;
+           }
+           //DESC's length
+           in_File.read((char*) &SubLength, 4);
+           BytesRead += 4;
+           if (SubLength>1023)
+           {
+             std::cout << "Error: subrecord DESC of RACE is longer than 1023 characters.\n";
+             return false;
+           }
+           //read race description
+           memset(Buffer, '\0', 1024);
+           in_File.read(Buffer, SubLength);
+           BytesRead += SubLength;
+           if (!in_File.good())
+           {
+             std::cout << "Error while reading subrecord DESC of RACE.\n";
+             return false;
+           }
+           Description = std::string(Buffer);
+           hasDESC = true;
+           break;
+      default:
+           std::cout << "Unexpected record name \""<<IntTo4Char(SubRecName)
+                     << "\" found. Expected NPCS or DESC.\n";
+           return false;
+    }//swi
   } //while
 
-  //read DESC (record name was already read in loop above)
-  if (SubRecName!=cDESC)
-  {
-    UnexpectedRecord(cDESC, SubRecName);
-    return false;
-  }
-  //DESC's length
-  in_File.read((char*) &SubLength, 4);
-  if (SubLength>1023)
-  {
-    std::cout << "Error: subrecord DESC of RACE is longer than 1023 characters.\n";
-    return false;
-  }
-  //read race description
-  memset(Buffer, '\0', 1024);
-  in_File.read(Buffer, SubLength);
-  if (!in_File.good())
-  {
-    std::cout << "Error while reading subrecord DESC of RACE.\n";
-    return false;
-  }
-  Description = std::string(Buffer);
   return in_File.good();
 }
 
@@ -316,9 +327,12 @@ bool RaceRecord::saveToStream(std::ofstream& output) const
         +RaceName.length()+1 /* length of name +1 byte for NUL termination */
         +4 /* RADT */ +4 /* RADT's length */ +140 /*size of RADT (always 140 bytes)*/
         +Powers.size()*(4 /* NPCS */ +4 /* NPCS's length */
-              +32 /*size of NPCS (always 32 bytes, rest is filled with null bytes)*/)
-        +4 /* DESC */ +4 /* 4 bytes for length */
-        +Description.length() /* length of decription (no NUL termination) */;
+              +32 /*size of NPCS (always 32 bytes, rest is filled with null bytes)*/);
+  if (Description!="")
+  {
+    Size = Size +4 /* DESC */ +4 /* 4 bytes for length */
+          +Description.length() /* length of decription (no NUL termination) */;
+  }
   output.write((char*) &Size, 4);
   output.write((char*) &HeaderOne, 4);
   output.write((char*) &HeaderFlags, 4);
@@ -341,8 +355,8 @@ bool RaceRecord::saveToStream(std::ofstream& output) const
         float Height[2]
         float Weight[2]
         long Flags (1 = Playable,2 = Beast Race)
-    NPCS = Special power/ability name string (32 bytes), multiple
-    DESC = Race description */
+    NPCS = Special power/ability name string (32 bytes), occurs 0+ times
+    DESC = Race description (optional) */
 
   //write NAME
   output.write((char*) &cNAME, 4);
@@ -432,13 +446,16 @@ bool RaceRecord::saveToStream(std::ofstream& output) const
     output.write(NULof32, 32-SubLength);
   }//for
 
-  //write DESC
-  output.write((char*) &cDESC, 4);
-  //DESC's length
-  SubLength = Description.length();//length of string (no NUL-termination)
-  output.write((char*) &SubLength, 4);
-  //write description
-  output.write(Description.c_str(), SubLength);
+  if (Description!="")
+  {
+    //write DESC
+    output.write((char*) &cDESC, 4);
+    //DESC's length
+    SubLength = Description.length();//length of string (no NUL-termination)
+    output.write((char*) &SubLength, 4);
+    //write description
+    output.write(Description.c_str(), SubLength);
+  }
 
   return output.good();
 }

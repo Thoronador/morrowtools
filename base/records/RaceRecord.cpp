@@ -23,6 +23,9 @@
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 
+const int32_t rfPlayable = 1;
+const int32_t rfBeastRace = 2;
+
 RaceRecord::RaceRecord()
 {
   RaceID = RaceName = "";
@@ -458,6 +461,16 @@ bool RaceRecord::saveToStream(std::ofstream& output) const
   }
 
   return output.good();
+}
+
+bool RaceRecord::isPlayable() const
+{
+  return ((rfPlayable & RaceFlags)!=0);
+}
+
+bool RaceRecord::isBeastRace() const
+{
+  return ((rfBeastRace & RaceFlags)!=0);
 }
 
 bool operator<(const RaceRecord& left, const RaceRecord& right)

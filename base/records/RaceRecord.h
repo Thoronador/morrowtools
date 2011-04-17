@@ -77,6 +77,12 @@ struct RaceRecord: public BasicRecord
         in_File - the input file stream
   */
   bool loadFromStream(std::ifstream& in_File);
+
+  /* returns true, if it is a playable race */
+  bool isPlayable() const;
+
+  /* returns true, if it is a beast race */
+  bool isBeastRace() const;
 };//struct
 
 //comparison operator for ordered set

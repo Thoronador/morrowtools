@@ -25,6 +25,17 @@
 
 /* **** functions for NPCRecord ****/
 
+const int32_t nfFemale = 1;
+const int32_t nfEssential = 2;
+const int32_t nfRespawn = 4;
+const int32_t nfAutoCalcStats = 16;
+const int32_t nfSkeletonWhiteBloodTex = 1024;
+const int32_t nfMetalGoldBloodTex = 2048;
+
+/*FLAG = NPC Flags (4 bytes, long)
+        0x0001 = Female, 0x0002 = Essential, 0x0004 = Respawn, 0x0008 = None? (seems to be set always)
+        0x0010 = Autocalc, 0x0400 = Blood Skel, 0x0800 = Blood Metal*/
+
 NPCRecord::NPCRecord()
 {
   NPCID = Name = ModelPath = RaceID = FactionID = HeadModel = ClassID =
@@ -1644,4 +1655,34 @@ bool NPCRecord::hasEqualAIPackages(const NPCRecord& other) const
     }//not NULL
   }//for
   return true;
+}
+
+bool NPCRecord::isFemale() const
+{
+  return ((nfFemale & NPC_Flag)!=0);
+}
+
+bool NPCRecord::isEssential() const
+{
+  return ((nfEssential & NPC_Flag)!=0);
+}
+
+bool NPCRecord::doesRespawn() const
+{
+  return ((nfRespawn & NPC_Flag)!=0);
+}
+
+bool NPCRecord::hasAutoCalcStats() const
+{
+  return ((nfAutoCalcStats & NPC_Flag)!=0);
+}
+
+bool NPCRecord::hasWhiteBloodTex() const
+{
+  return ((nfSkeletonWhiteBloodTex & NPC_Flag)!=0);
+}
+
+bool NPCRecord::hasGoldBloodTex() const
+{
+  return ((nfMetalGoldBloodTex & NPC_Flag)!=0);
 }

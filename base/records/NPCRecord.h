@@ -111,7 +111,26 @@ struct NPCRecord: public BasicRecord
   */
   bool loadFromStream(std::ifstream& in_File);
 
+  /* returns true, if the other NPCRecord has the same AI packages*/
   bool hasEqualAIPackages(const NPCRecord& other) const;
+
+  /* returns true, if the female flag is set */
+  bool isFemale() const;
+
+  /* returns true, if the Essential flag is set */
+  bool isEssential() const;
+
+  /* returns true, if the Respawn flag is set */
+  bool doesRespawn() const;
+
+  /* returns true, if the Auto Calculate Stats flag is set */
+  bool hasAutoCalcStats() const;
+
+  /* returns true, if the white blood texture (skeleton) flag is set */
+  bool hasWhiteBloodTex() const;
+
+  /* returns true, if the gold blood texture (metal) flag is set */
+  bool hasGoldBloodTex() const;
 
   private:
     void removeAIPackages();

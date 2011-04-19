@@ -105,12 +105,17 @@ const int32_t cNPCO = 0x4F43504E; //"NPCO" = 4E 50 43 4F
 const int32_t cNPCS = 0x5343504E; //"NPCS" = 4E 50 43 53
 const int32_t cNPC_ = 0x5F43504E; //"NPC_" = 4E 50 43 5F
 const int32_t cNPDT = 0x5444504E; //"NPDT" = 4E 50 44 54
+const int32_t cONAM = 0x4D414E4F; //"ONAM" = 4F 4E 41 4D
 const int32_t cPBDT = 0x54444250; //"PBDT" = 50 42 44 54
 const int32_t cPGRC = 0x43524750; //"PGRC" = 50 47 52 43
 const int32_t cPGRD = 0x44524750; //"PGRD" = 50 47 52 44
 const int32_t cPGRP = 0x50524750; //"PGRP" = 50 47 52 50
 const int32_t cPROB = 0x424F5250; //"PROB" = 50 52 4F 42
+const int32_t cPNAM = 0x4D414E50; //"PNAM" = 50 4E 41 4D
 const int32_t cPTEX = 0x58455450; //"PTEX" = 50 54 45 58
+const int32_t cQSTF = 0x46545351; //"QSTF" = 51 53 54 46
+const int32_t cQSTN = 0x4E545351; //"QSTN" = 51 53 54 4E
+const int32_t cQSTR = 0x52545351; //"QSTR" = 51 53 54 52
 const int32_t cRACE = 0x45434152; //"RACE" = 52 41 43 45
 const int32_t cRADT = 0x54444152; //"RADT" = 52 41 44 54
 const int32_t cREGN = 0x4E474552; //"REGN" = 52 45 47 4E

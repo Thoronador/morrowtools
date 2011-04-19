@@ -23,6 +23,12 @@
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 
+const uint8_t DialogueTopicRecord::dttRegular = 0;
+const uint8_t DialogueTopicRecord::dttVoice = 1;
+const uint8_t DialogueTopicRecord::dttGreeting = 2;
+const uint8_t DialogueTopicRecord::dttPersuasion = 3;
+const uint8_t DialogueTopicRecord::dttJournal = 4;
+
 DialogueTopicRecord::DialogueTopicRecord()
 {
   DialogueID = "";
@@ -147,4 +153,19 @@ bool DialogueTopicRecord::loadFromStream(std::ifstream& in_File)
     return false;
   }
   return true;
+}
+
+bool DialogueTopicRecord::isRegularTopic() const
+{
+  return (Type==dttRegular);
+}
+
+bool DialogueTopicRecord::isGreeting() const
+{
+  return (Type==dttGreeting);
+}
+
+bool DialogueTopicRecord::isJournal() const
+{
+  return (Type==dttJournal);
 }

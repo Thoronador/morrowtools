@@ -49,6 +49,23 @@ struct DialogueTopicRecord: public BasicRecord
         in_File - the input file stream
   */
   bool loadFromStream(std::ifstream& in_File);
+
+  /* type constants to indicate the type of a topic (regular topic, voice,
+     greeting, persuasion, Journal) */
+  static const uint8_t dttRegular;
+  static const uint8_t dttVoice;
+  static const uint8_t dttGreeting;
+  static const uint8_t dttPersuasion;
+  static const uint8_t dttJournal;
+
+  /* returns true, if the topic type indicates a regular topic */
+  bool isRegularTopic() const;
+
+  /* returns true, if the topic type indicates a greeting entry */
+  bool isGreeting() const;
+
+  /* returns true, if the topic type indicates a journal entry */
+  bool isJournal() const;
 };//struct
 
 #endif // DIALOGUETOPICRECORD_H

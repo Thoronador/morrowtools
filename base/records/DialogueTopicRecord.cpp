@@ -119,7 +119,7 @@ bool DialogueTopicRecord::loadFromStream(std::ifstream& in_File)
     std::cout << "Error: Subrecord NAME of DIAL is longer than 255 characters.\n";
     return false;
   }
-  //read book ID
+  //read dialogue topic ID
   char Buffer[256];
   memset(Buffer, '\0', 256);
   in_File.read(Buffer, SubLength);
@@ -141,11 +141,11 @@ bool DialogueTopicRecord::loadFromStream(std::ifstream& in_File)
   in_File.read((char*) &SubLength, 4);
   if (SubLength!=1)
   {
-    std::cout << "Error: Subrecord DATA of BOOK has wrong size ("<<SubLength
+    std::cout << "Error: Subrecord DATA of DIAL has wrong size ("<<SubLength
               << " bytes), should be one byte.\n";
     return false;
   }
-  //read book data
+  //read dialogue data
   in_File.read((char*) &Type, 1);
   if (!in_File.good())
   {

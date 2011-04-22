@@ -39,9 +39,8 @@ class ESMReaderSpells: public ESMReader
 
        parameters:
            in_File  - the input file stream the record shall be read from
-           FileSize - size of the file associated with the stream
     */
-    virtual int processNextRecord(std::ifstream& in_File, const int32_t FileSize);
+    virtual int processNextRecord(std::ifstream& in_File);
 };//class
 
 #endif // ESMREADERSPELLS_H

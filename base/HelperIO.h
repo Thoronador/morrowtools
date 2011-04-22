@@ -23,6 +23,7 @@
 
 #include <string>
 #include <fstream>
+#include <stdint.h>
 
 const char NULof32[32] = "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
 

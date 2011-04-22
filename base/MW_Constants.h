@@ -33,6 +33,7 @@ const int32_t cAI_T = 0x545F4941; //"AI_T" = 41 49 5F 54
 const int32_t cAI_W = 0x575F4941; //"AI_W" = 41 49 5F 57
 const int32_t cALCH = 0x48434C41; //"ALCH" = 41 4C 43 48
 const int32_t cALDT = 0x54444C41; //"ALDT" = 41 4C 44 54
+const int32_t cAMBI = 0x49424D41; //"AMBI" = 41 4D 42 49
 const int32_t cANAM = 0x4D414E41; //"ANAM" = 41 4E 41 4D
 const int32_t cAODT = 0x54444F41; //"AODT" = 41 4F 44 54
 const int32_t cAPPA = 0x41505041; //"APPA" = 41 50 50 41
@@ -72,6 +73,7 @@ const int32_t cFADT = 0x54444146; //"FADT" = 46 41 44 54
 const int32_t cFLAG = 0x47414C46; //"FLAG" = 46 4C 41 47
 const int32_t cFLTV = 0x56544C46; //"FLTV" = 46 4C 54 56
 const int32_t cFNAM = 0x4D414E46; //"FNAM" = 46 4E 41 4D
+const int32_t cFRMR = 0x524D5246; //"FRMR" = 46 52 4D 52
 const int32_t cGLOB = 0x424F4C47; //"GLOB" = 47 4C 4F 42
 const int32_t cGMST = 0x54534D47; //"GMST" = 47 4D 53 54
 const int32_t cHEDR = 0x52444548; //"HEDR" = 48 45 44 52
@@ -99,6 +101,8 @@ const int32_t cMEDT = 0x5444454D; //"MEDT" = 4D 45 44 54
 const int32_t cMGEF = 0x4645474D; //"MGEF" = 4D 47 45 46
 const int32_t cMISC = 0x4353494D; //"MISC" = 4D 49 53 43
 const int32_t cMODL = 0x4C444F4D; //"MODL" = 4D 4F 44 4C
+const int32_t cNAM0 = 0x304D414E; //"NAM0" = 4E 41 4D 30
+const int32_t cNAM5 = 0x354D414E; //"NAM5" = 4E 41 4D 35
 const int32_t cNAME = 0x454D414E; //"NAME" = 4E 41 4D 45
 const int32_t cNNAM = 0x4D414E4E; //"NNAM" = 4E 4E 41 4D
 const int32_t cNPCO = 0x4F43504E; //"NPCO" = 4E 50 43 4F
@@ -120,6 +124,7 @@ const int32_t cRACE = 0x45434152; //"RACE" = 52 41 43 45
 const int32_t cRADT = 0x54444152; //"RADT" = 52 41 44 54
 const int32_t cREGN = 0x4E474552; //"REGN" = 52 45 47 4E
 const int32_t cREPA = 0x41504552; //"REPA" = 52 45 50 41
+const int32_t cRGNN = 0x4E4E4752; //"RGNN" = 52 47 4E 4E
 const int32_t cRIDT = 0x54444952; //"RIDT" = 52 49 44 54
 const int32_t cRNAM = 0x4D414E52; //"RNAM" = 52 4E 41 4D
 const int32_t cSCDT = 0x54444353; //"SCDT" = 53 43 44 54
@@ -147,6 +152,7 @@ const int32_t cVNML = 0x4C4D4E56; //"VNML" = 56 4E 4D 4C
 const int32_t cVTEX = 0x58455456; //"VTEX" = 56 54 45 58
 const int32_t cWEAP = 0x50414557; //"WEAP" = 57 45 41 50
 const int32_t cWEAT = 0x54414557; //"WEAT" = 57 45 41 54
+const int32_t cWHGT = 0x54474857; //"WHGT" = 57 48 47 54
 const int32_t cWPDT = 0x54445057; //"WPDT" = 57 50 44 54
 const int32_t cWNAM = 0x4D414E57; //"WNAM" = 57 4E 41 4D
 const int32_t cXSCL = 0x4C435358; //"XSCL" = 58 53 43 4C

@@ -22,6 +22,7 @@
 #define AIPACKAGES_H
 
 #include <string>
+#include <stdint.h>
 
 /* enumeration type for types of AI packages */
 enum PackageType {ptActivate, ptEscort, ptFollow, ptTravel, ptWander};

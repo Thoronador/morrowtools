@@ -22,6 +22,7 @@
 #define ITEMRECORD_H
 
 #include <string>
+#include <stdint.h>
 
 struct ItemRecord
 {

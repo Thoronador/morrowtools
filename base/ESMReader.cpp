@@ -275,7 +275,7 @@ int ESMReader::readESM(const std::string& FileName, DepFileList& deps, const boo
   //now read all the records
   while ((input.tellg()<FileSize) and (lastResult!=-1))
   {
-    lastResult = processNextRecord(input, FileSize);
+    lastResult = processNextRecord(input);
     ++Processed_Records;
     if (lastResult!=-1)
     {
@@ -303,7 +303,7 @@ int ESMReader::readESM(const std::string& FileName, DepFileList& deps, const boo
   return relevantRecords;
 }//readESM of ESMReader class
 
-int ESMReader::processNextRecord(std::ifstream& in_File, const int32_t FileSize)
+int ESMReader::processNextRecord(std::ifstream& in_File)
 {
   int32_t RecordName = 0; //normally should be 4 char, but char is not eligible for switch
   int lastResult = 0;

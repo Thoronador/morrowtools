@@ -60,6 +60,7 @@ const int32_t cCSND = 0x444E5343; //"CSND" = 43 53 4E 44
 const int32_t cCTDT = 0x54445443; //"CTDT" = 43 54 44 54
 const int32_t cCVFX = 0x58465643; //"CVFX" = 43 56 46 58
 const int32_t cDATA = 0x41544144; //"DATA" = 44 41 54 41
+const int32_t cDELE = 0x454C4544; //"DELE" = 44 45 4C 45
 const int32_t cDESC = 0x43534544; //"DESC" = 44 45 53 43
 const int32_t cDIAL = 0x4C414944; //"DIAL" = 44 49 41 4C
 const int32_t cDNAM = 0x4D414E44; //"DNAM" = 44 4E 41 4D
@@ -103,6 +104,7 @@ const int32_t cMISC = 0x4353494D; //"MISC" = 4D 49 53 43
 const int32_t cMODL = 0x4C444F4D; //"MODL" = 4D 4F 44 4C
 const int32_t cNAM0 = 0x304D414E; //"NAM0" = 4E 41 4D 30
 const int32_t cNAM5 = 0x354D414E; //"NAM5" = 4E 41 4D 35
+const int32_t cNAM9 = 0x394D414E; //"NAM9" = 4E 41 4D 39
 const int32_t cNAME = 0x454D414E; //"NAME" = 4E 41 4D 45
 const int32_t cNNAM = 0x4D414E4E; //"NNAM" = 4E 4E 41 4D
 const int32_t cNPCO = 0x4F43504E; //"NPCO" = 4E 50 43 4F
@@ -146,6 +148,7 @@ const int32_t cSTRV = 0x56525453; //"STRV" = 53 54 52 56
 const int32_t cTES3 = 0x33534554; //"TES3" = 54 45 53 33
 const int32_t cTNAM = 0x4D414E54; //"TNAM" = 54 4E 41 4D
 const int32_t cTEXT = 0x54584554; //"TEXT" = 54 45 58 54
+const int32_t cUNAM = 0x4D414E55; //"UNAM" = 55 4E 41 4D
 const int32_t cVCLR = 0x524C4356; //"VCLR" = 56 43 4C 52
 const int32_t cVHGT = 0x54474856; //"VHGT" = 56 48 47 54
 const int32_t cVNML = 0x4C4D4E56; //"VNML" = 56 4E 4D 4C
@@ -155,6 +158,8 @@ const int32_t cWEAT = 0x54414557; //"WEAT" = 57 45 41 54
 const int32_t cWHGT = 0x54474857; //"WHGT" = 57 48 47 54
 const int32_t cWPDT = 0x54445057; //"WPDT" = 57 50 44 54
 const int32_t cWNAM = 0x4D414E57; //"WNAM" = 57 4E 41 4D
+const int32_t cXCHG = 0x47484358; //"XCHG" = 58 43 48 47
 const int32_t cXSCL = 0x4C435358; //"XSCL" = 58 53 43 4C
+const int32_t cXSOL = 0x4C4F5358; //"XSOL" = 58 53 4F 4C
 
 #endif // MW_CONSTANTS_H

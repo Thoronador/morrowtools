@@ -68,6 +68,14 @@ class ESMReader
 
        parameters:
            in_File  - the input file stream the record shall be read from
+
+       remarks:
+           If you actually want to read some data, you have to derive a class
+           from ESMReader and set its processNextRecord() function up in a way
+           that does not just skip all data records - because that is what the
+           implementation here in ESMReader basically does.
+           So naturally, this function will never return values larger than
+           zero.
     */
     virtual int processNextRecord(std::ifstream& in_File);
 };//class

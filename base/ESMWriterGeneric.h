@@ -18,18 +18,16 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef ESMREADERGENERIC_H
-#define ESMREADERGENERIC_H
+#ifndef ESMWRITERGENERIC_H
+#define ESMWRITERGENERIC_H
 
-#include <vector>
-#include "ESMReader.h"
+#include "ESMWriter.h"
 #include "records/BasicRecord.h"
 
-/* This descendant of the ESMReader class tries to read all records from the
-   given .esm/.esp file and uses the supplied std::vector of GenericRecord
-   structures (hence the name) to store the read data records.
+/* This descendant of the ESMWriter class tries to write all records in the
+   supplied std::vector of BasicRecord structures to a file.
 */
-class ESMReaderGeneric: public ESMReader
+class ESMWriterGeneric: public ESMWriter
 {
   public:
     //shortcut for the type of the used vector
@@ -39,31 +37,26 @@ class ESMReaderGeneric: public ESMReader
 
        parameters:
            vec - pointer to the vector that will hold the records that will be
-                 read. This pointer must not be NULL and has to live as long as
-                 the ESMReaderGeneric, at least.
+                 written. This pointer must not be NULL and has to live as long as
+                 the ESMWriterGeneric, at least.
     */
-    ESMReaderGeneric(VectorType* vec);
+    ESMWriterGeneric(VectorType* vec);
 
     /* destructor */
-    virtual ~ESMReaderGeneric();
-
-    /* tries to remove all record pointers from the given vector and deallocates
-       them in turn
-    */
-    void deallocateRecordsInVector();
+    virtual ~ESMWriterGeneric();
   protected:
-    /* tries to read the next record from a file and returns the number of
-       relevant records that were read (usually one). If an error occured,
-       -1 is returned. If the record was skipped or contained no relevant data,
-       zero is returned.
+    /* returns the number of records that will be written to the stream */
+    virtual int32_t getTotalRecords() const;
+
+    /* tries to write all data records and returns true on success
 
        parameters:
-           in_File  - the input file stream the record shall be read from
+           output - the output file stream that's used to write the records
     */
-    virtual int processNextRecord(std::ifstream& in_File);
+    virtual bool writeRecords(std::ofstream& output) const;
 
     /* pointer to the vector where the read data will be stored*/
     VectorType* m_VectorPointer;
-};//class
+}; //class
 
-#endif // ESMREADERGENERIC_H
+#endif // ESMWRITERGENERIC_H

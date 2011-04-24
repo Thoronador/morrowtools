@@ -22,10 +22,15 @@
 #include <iostream>
 #include "HelperIO.h"
 #include "MW_Constants.h"
+#include "records/GenericRecord.h"
 
-ESMReaderGeneric::ESMReaderGeneric(std::vector<GenericRecord*>* vec)
+ESMReaderGeneric::ESMReaderGeneric(VectorType* vec)
 {
-  //empty
+  if (NULL==vec)
+  {
+    std::cout << "ESMReaderGeneric: Error: supplied pointer is NULL!\n";
+    throw 42;
+  }
   m_VectorPointer = vec;
 }
 
@@ -108,3 +113,16 @@ int ESMReaderGeneric::processNextRecord(std::ifstream& in_File)
   }//swi
   return lastResult;
 }//processNextRecord of ESMReaderGeneric class
+
+void ESMReaderGeneric::deallocateRecordsInVector()
+{
+  while (!(m_VectorPointer->empty()))
+  {
+    BasicRecord* ptr = m_VectorPointer->back();
+    if (ptr!=NULL)
+    {
+      delete ptr;
+    }
+    m_VectorPointer->pop_back();
+  }//while
+}

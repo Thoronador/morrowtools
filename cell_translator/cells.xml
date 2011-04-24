@@ -1,253 +1,330 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE cellnames [
-<!ELEMENT cell((de, en?) | (en, de?))>
+<!ELEMENT cell ((de, en?) | (en, de?))>
 <!ELEMENT de (#PCDATA)>
 <!ELEMENT en (#PCDATA)>
 <!ELEMENT cellnames (cell*)>
 ]>
 <cellnames>
   <cell>
-    <de>Abaelun Mine</de>
-  </cell>
-  <cell>
     <de>Abaelun-Mine</de>
+    <en>Abaelun Mine</en>
   </cell>
   <cell>
     <de>Abaesen-Pulu, Eiermine</de>
+    <en>Abaesen-Pulu Egg Mine</en>
   </cell>
   <cell>
     <de>Abanabi</de>
+    <en>Abanabi</en>
   </cell>
   <cell>
     <de>Abebaal, Eiermine</de>
+    <en>Abebaal Egg Mine</en>
   </cell>
   <cell>
     <de>Abernanit</de>
+    <en>Abernanit</en>
   </cell>
   <cell>
     <de>Abinabi</de>
+    <en>Abinabi</en>
   </cell>
   <cell>
     <de>Adanumuran</de>
+    <en>Adanumuran</en>
   </cell>
   <cell>
     <de>Addadshashanammu, Schrein</de>
+    <en>Addadshashanammu, Shrine</en>
   </cell>
   <cell>
     <de>Addamasartus</de>
+    <en>Addamasartus</en>
   </cell>
   <cell>
     <de>Ahallaraddon, Eiermine</de>
+    <en>Ahallaraddon Egg Mine</en>
   </cell>
   <cell>
     <de>Ahanibi-Malmus, Eiermine</de>
+    <en>Ahanibi-Malmus Egg Mine</en>
   </cell>
   <cell>
     <de>Aharasaplit-Lager, Zallays Zelt</de>
+    <en>Aharasaplit Camp, Zallay's Yurt</en>
   </cell>
   <cell>
     <de>Aharnabi</de>
+    <en>Aharnabi</en>
   </cell>
   <cell>
     <de>Aharunartus</de>
+    <en>Aharunartus</en>
   </cell>
   <cell>
     <de>Ahemmusa-Lager</de>
+    <en>Ahemmusa Camp</en>
   </cell>
   <cell>
     <de>Ahemmusa-Lager, Addammus' Zelt</de>
+    <en>Ahemmusa Camp, Addammus's Yurt</en>
   </cell>
   <cell>
     <de>Ahemmusa-Lager, Assamma-Idans Zelt</de>
+    <en>Ahemmusa Camp, Assamma-Idan's Yurt</en>
   </cell>
   <cell>
     <de>Ahemmusa-Lager, Dutadalks Zelt</de>
+    <en>Ahemmusa Camp, Dutadalk's Yurt</en>
   </cell>
   <cell>
     <de>Ahemmusa-Lager, Kausis Zelt</de>
+    <en>Ahemmusa Camp, Kausi's Yurt</en>
   </cell>
   <cell>
     <de>Ahemmusa-Lager, Lanabis Zelt</de>
+    <en>Ahemmusa Camp, Lanabi's Yurt</en>
   </cell>
   <cell>
     <de>Ahemmusa-Lager, Mamaeas Zelt</de>
+    <en>Ahemmusa Camp, Mamaea's Yurt</en>
   </cell>
   <cell>
     <de>Ahemmusa-Lager, Nummus Zelt</de>
+    <en>Ahemmusa Camp, Nummu's Yurt</en>
   </cell>
   <cell>
     <de>Ahemmusa-Lager, Zelt der Weisen Frau</de>
+    <en>Ahemmusa Camp, Wise Woman's Yurt</en>
   </cell>
   <cell>
     <de>Ahemmusa-Lager, Zelt des Ashkhan</de>
+    <en>Ahemmusa Camp, Ashkhan's Yurt</en>
   </cell>
   <cell>
     <de>Ahinipalit</de>
+    <en>Ahinipalit</en>
   </cell>
   <cell>
     <de>Aidanat-Lager, Abassels Zelt</de>
+    <en>Aidanat Camp, Abassel's Yurt</en>
   </cell>
   <cell>
     <de>Ainab</de>
+    <en>Ainab</en>
   </cell>
   <cell>
     <de>Ainab, Schrein</de>
+    <en>Ainab, Shrine</en>
   </cell>
   <cell>
     <de>Ainat</de>
+    <en>Ainat</en>
   </cell>
   <cell>
     <de>Akimaes-Grotte</de>
+    <en>Akimaes Grotto</en>
   </cell>
   <cell>
     <de>Akimaes-Ilanipu, Eiermine</de>
+    <en>Akimaes-Ilanipu Egg Mine</en>
   </cell>
   <cell>
     <de>Akulakhans Kammer</de>
+    <en>Akulakhan's Chamber</en>
   </cell>
   <cell>
     <de>Alas-Ahnengruft</de>
+    <en>Alas Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Ald Daedroth</de>
+    <en>Ald Daedroth</en>
   </cell>
   <cell>
     <de>Ald Daedroth, Innerer Schrein</de>
+    <en>Ald Daedroth, Inner Shrine</en>
   </cell>
   <cell>
     <de>Ald Daedroth, Linker Flügel</de>
+    <en>Ald Daedroth, Left Wing</en>
   </cell>
   <cell>
     <de>Ald Daedroth, Rechter Flügel</de>
+    <en>Ald Daedroth, Right Wing</en>
   </cell>
   <cell>
     <de>Ald Daedroth, Vorraum</de>
+    <en>Ald Daedroth, Antechamber</en>
   </cell>
   <cell>
     <de>Ald Daedroth, Äußerer Schrein</de>
+    <en>Ald Daedroth, Outer Shrine</en>
   </cell>
   <cell>
     <de>Ald Redaynia</de>
+    <en>Ald Redaynia</en>
   </cell>
   <cell>
     <de>Ald Redaynia, Turm</de>
+    <en>Ald Redaynia, Tower</en>
   </cell>
   <cell>
     <de>Ald Sotha</de>
+    <en>Ald Sotha</en>
   </cell>
   <cell>
     <de>Ald Sotha, Obere Ebene</de>
+    <en>Ald Sotha, Upper Level</en>
   </cell>
   <cell>
     <de>Ald Sotha, Schrein</de>
+    <en>Ald Sotha, Shrine</en>
   </cell>
   <cell>
     <de>Ald Sotha, Untere Ebene</de>
+    <en>Ald Sotha, Lower Level</en>
   </cell>
   <cell>
     <de>Ald Velothi</de>
+    <en>Ald Velothi</en>
   </cell>
   <cell>
     <de>Ald Velothi, Außenposten</de>
+    <en>Ald Velothi, Outpost</en>
   </cell>
   <cell>
     <de>Ald Velothi, Fevila Bethranos Hütte</de>
+    <en>Ald Velothi, Fevila Bethrano's Shack</en>
   </cell>
   <cell>
     <de>Ald Velothi, Ganus Lloryns Hütte</de>
+    <en>Ald Velothi, Ganus Lloryn's Shack</en>
   </cell>
   <cell>
     <de>Ald Velothi, Ienas Arvels Hütte</de>
+    <en>Ald Velothi, Ienas Arvel's Shack</en>
   </cell>
   <cell>
     <de>Ald Velothi, Lledsea Relas' Hütte</de>
+    <en>Ald Velothi, Lledsea Relas's Shack</en>
   </cell>
   <cell>
     <de>Ald Velothi, Llerar Vindens Hütte</de>
+    <en>Ald Velothi, Llerar Vinden's Shack</en>
   </cell>
   <cell>
     <de>Ald Velothi, Sathas Rivuls Hütte</de>
+    <en>Ald Velothi, Sathas Rivul's Shack</en>
   </cell>
   <cell>
     <de>Ald Velothi, Vireveri Darethrans Hütte</de>
+    <en>Ald Velothi, Vireveri Darethran's Shack</en>
   </cell>
   <cell>
     <de>Ald'ruhn</de>
+    <en>Ald-ruhn</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Arobar, Privatquartiere</de>
+    <en>Ald-ruhn, Arobar Private Quarters</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Arobar-Wachquartiere</de>
+    <en>Ald-ruhn, Arobar Guard Quarters</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Aryni Orethis Haus</de>
+    <en>Ald-ruhn, Aryni Orethi's House</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Bevene Releth: Schneiderin</de>
+    <en>Ald-ruhn, Bevene Releth: Clothier</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Bivale Teneran: Schneiderin</de>
+    <en>Ald-ruhn, Bivale Teneran: Clothier</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Boldrisa Andranos Haus</de>
+    <en>Ald-ruhn, Boldrisa Andrano's House</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Braynas Hlervus Haus</de>
+    <en>Ald-ruhn, Braynas Hlervu's House</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Cienne Sintieve: Alchemistin</de>
+    <en>Ald-ruhn, Cienne Sintieve: Alchemist</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Codus Callonus: Buchhändler</de>
+    <en>Ald-ruhn, Codus Callonus: Bookseller</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Dandera Selaro: Schmiedin</de>
+    <en>Ald-ruhn, Dandera Selaro: Smith</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Daynes Redothril: Pfandleiher</de>
+    <en>Ald-ruhn, Daynes Redothril: Pawnbroker</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Die Ratte und der Topf</de>
+    <en>Ald-ruhn, The Rat In The Pot</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Dravasa Andrethis Haus</de>
+    <en>Ald-ruhn, Dravasa Andrethi's House</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Drinar Varyons Haus</de>
+    <en>Ald-ruhn, Drinar Varyon's House</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Eingang zum Haus Arobar</de>
+    <en>Ald-ruhn, Arobar Manor Entrance</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Eingang zum Haus Llethri</de>
+    <en>Ald-ruhn, Llethri Manor Entrance</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Eingang zum Haus Venim</de>
+    <en>Ald-ruhn, Venim Manor Entrance</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Galsa Gindus Haus</de>
+    <en>Ald-ruhn, Galsa Gindu's House</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Galthragoths Haus</de>
+    <en>Ald-ruhn, Galthragoth's House</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Gildans Haus</de>
+    <en>Ald-ruhn, Gildan's House</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Gildehalle der Morag Tong </de>
+    <en>Ald-ruhn, Morag Tong Guildhall</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Gindrala Hlerans Haus</de>
+    <en>Ald-ruhn, Gindrala Hleran's House</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Goras Andrelos Haus</de>
+    <en>Ald-ruhn, Goras Andrelo's House</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Guls Llervus Haus</de>
+    <en>Ald-ruhn, Guls Llervu's House</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Hanarai Assutlanipals Haus</de>
+    <en>Ald-ruhn, Hanarai Assutlanipal's House</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Haus Arobar</de>
@@ -272,36 +349,47 @@
   </cell>
   <cell>
     <de>Ald'ruhn, Ienas Sarandas' Haus</de>
+    <en>Ald-ruhn, Ienas Sarandas's House</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Ilmirils Haus</de>
+    <en>Ald-ruhn, Ilmiril's House</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Kriegergilde</de>
+    <en>Ald-ruhn, Guild of Fighters</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Llether Vari: Verzauberungen</de>
+    <en>Ald-ruhn, Llether Vari: Enchanter</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Llethri Wachquartiere</de>
+    <en>Ald-ruhn, Llethri Guard Quarters</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Llethri, Privatquartiere</de>
+    <en>Ald-ruhn, Llethri Private Quarters</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Magiergilde</de>
+    <en>Ald-ruhn, Guild of Mages</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Malpenix Blonia: Händler</de>
+    <en>Ald-ruhn, Malpenix Blonia: Trader</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Morvayn-Quartiere</de>
+    <en>Ald-ruhn, Morvayn Quarters</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Pellecia Aurrus' Haus</de>
+    <en>Ald-ruhn, Pellecia Aurrus's House</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Ramoran, Privatquartiere</de>
+    <en>Ald-ruhn, Ramoran Private Quarters</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Ratsherberge</de>
@@ -314,24 +402,30 @@
   </cell>
   <cell>
     <de>Ald'ruhn, Sarethi-Wachquartiere</de>
+    <en>Ald-ruhn, Sarethi Guard Quarters</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Tauryons Haus</de>
+    <en>Ald-ruhn, Tauryon's House</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Taverne Ald Skar</de>
   </cell>
   <cell>
     <de>Ald'ruhn, Tempel</de>
+    <en>Ald-ruhn, Temple</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Tiras Sadus: Händler</de>
+    <en>Ald-ruhn, Tiras Sadus: General Merchandise</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Tuveso Beleth: Schmiedin</de>
+    <en>Ald-ruhn, Tuveso Beleth: Smith</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Venim-Wachquartiere</de>
+    <en>Ald-ruhn, Venim Manor Guard Quarters</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Wachturm 1</de>
@@ -347,36 +441,43 @@
   </cell>
   <cell>
     <de>Ald'ruhn, Übungsraum</de>
-  </cell>
-  <cell>
-    <de>Ald-ruhn, Guild of Mages</de>
+    <en>Ald-ruhn, Practice Room</en>
   </cell>
   <cell>
     <de>Aleft</de>
+    <en>Aleft</en>
   </cell>
   <cell>
     <de>Alen-Ahnengruft</de>
+    <en>Alen Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Almurbalarammi, Schrein</de>
+    <en>Almurbalarammi, Shrine</en>
   </cell>
   <cell>
     <de>Alofs Bauernhaus</de>
+    <en>Alof's Farmhouse</en>
   </cell>
   <cell>
     <de>Alt-Gramfeste: Basar-Abwasserkanäle</de>
+    <en>Old Mournhold: Bazaar Sewers</en>
   </cell>
   <cell>
     <de>Alt-Gramfeste: Gedna Relvels Grab</de>
+    <en>Old Mournhold: Gedna Relvel's Tomb</en>
   </cell>
   <cell>
     <de>Alt-Gramfeste: Haus Moril, Hof</de>
+    <en>Old Mournhold: Moril Manor, Courtyard</en>
   </cell>
   <cell>
     <de>Alt-Gramfeste: Haus Moril, Nordgebäude</de>
+    <en>Old Mournhold: Moril Manor, North Building</en>
   </cell>
   <cell>
     <de>Alt-Gramfeste: Haus Moril, Ostgebäude</de>
+    <en>Old Mournhold: Moril Manor, East Building</en>
   </cell>
   <cell>
     <de>Alt-Gramfeste: Häuser-Abwasserkanäle</de>
@@ -389,6 +490,7 @@
   </cell>
   <cell>
     <de>Alt-Gramfeste: Palastkanäle</de>
+    <en>Old Mournhold: Palace Sewers</en>
   </cell>
   <cell>
     <de>Alt-Gramfeste: Schlachtfeld</de>
@@ -398,36 +500,47 @@
   </cell>
   <cell>
     <de>Alt-Gramfeste: Tempelgruft</de>
+    <en>Old Mournhold: Temple Crypt</en>
   </cell>
   <cell>
     <de>Alt-Gramfeste: Tempelgärten</de>
+    <en>Old Mournhold: Temple Gardens</en>
   </cell>
   <cell>
     <de>Alt-Gramfeste: Tempelkanäle</de>
+    <en>Old Mournhold: Temple Sewers</en>
   </cell>
   <cell>
     <de>Alt-Gramfeste: Tempelkanäle Ost</de>
+    <en>Old Mournhold: Temple Sewers East</en>
   </cell>
   <cell>
     <de>Alt-Gramfeste: Tempelkanäle West</de>
+    <en>Old Mournhold: Temple Sewers West</en>
   </cell>
   <cell>
     <de>Alt-Gramfeste: Tempelkatakomben</de>
+    <en>Old Mournhold: Temple Catacombs</en>
   </cell>
   <cell>
     <de>Alt-Gramfeste: Tempelschrein</de>
+    <en>Old Mournhold: Temple Shrine</en>
   </cell>
   <cell>
     <de>Alt-Gramfeste: Teran-Halle</de>
+    <en>Old Mournhold: Teran Hall</en>
   </cell>
   <cell>
     <de>Alt-Gramfeste: Teran-Halle, Ostgebäude</de>
+    <en>Old Mournhold: Teran Hall, East Bldg</en>
   </cell>
   <cell>
     <de>Alt-Gramfeste: Tränen von Amun-Shae</de>
+    <en>Old Mournhold: Tears of Amun-Shae</en>
   </cell>
   <cell>
     <de>Alt-Gramfeste: Verlassene Gruft</de>
+    <en>Old Mournhold: Abandoned Crypt</en>
   </cell>
   <cell>
     <de>Alt-Gramfeste: Verlassene Kanäle</de>
@@ -437,9 +550,11 @@
   </cell>
   <cell>
     <de>Alt-Gramfeste: Waffenkammer-Ruinen</de>
+    <en>Old Mournhold: Armory Ruins</en>
   </cell>
   <cell>
     <de>Alt-Gramfeste: West-Kanäle</de>
+    <en>Old Mournhold: West Sewers</en>
   </cell>
   <cell>
     <de>Altes Schiffswrack, Kabine</de>
@@ -452,39 +567,51 @@
   </cell>
   <cell>
     <de>Andalen-Ahnengruft</de>
+    <en>Andalen Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Andalor-Ahnengruft</de>
+    <en>Andalor Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Andas-Ahnengruft</de>
+    <en>Andas Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Andasreth</de>
+    <en>Andasreth</en>
   </cell>
   <cell>
     <de>Andasreth, Obere Ebene</de>
+    <en>Andasreth, Upper Level</en>
   </cell>
   <cell>
     <de>Andasreth, Propylon-Kammer</de>
+    <en>Andasreth, Propylon Chamber</en>
   </cell>
   <cell>
     <de>Andasreth, Untere Ebene</de>
+    <en>Andasreth, Lower Level</en>
   </cell>
   <cell>
     <de>Andavel-Ahnengruft</de>
+    <en>Andavel Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Andrano-Ahnengruft</de>
+    <en>Andrano Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Andrethi-Ahnengruft</de>
+    <en>Andrethi Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Andules-Ahnengruft</de>
+    <en>Andules Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Ansi</de>
+    <en>Ansi</en>
   </cell>
   <cell>
     <de>Aralen-Ahnengruft</de>
@@ -4277,11 +4404,14 @@
   </cell>
   <cell>
     <de>Zergonipal</de>
+    <en>Zergonipal</en>
   </cell>
   <cell>
     <de>Zergonipal, Schrein</de>
+    <en>Zergonipal, Shrine</en>
   </cell>
   <cell>
     <de>ken's test hole</de>
+    <en>ken's test hole</en>
   </cell>
 </cellnames>

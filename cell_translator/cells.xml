@@ -1,0 +1,4287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE cellnames [
+<!ELEMENT cell((de, en?) | (en, de?))>
+<!ELEMENT de (#PCDATA)>
+<!ELEMENT en (#PCDATA)>
+<!ELEMENT cellnames (cell*)>
+]>
+<cellnames>
+  <cell>
+    <de>Abaelun Mine</de>
+  </cell>
+  <cell>
+    <de>Abaelun-Mine</de>
+  </cell>
+  <cell>
+    <de>Abaesen-Pulu, Eiermine</de>
+  </cell>
+  <cell>
+    <de>Abanabi</de>
+  </cell>
+  <cell>
+    <de>Abebaal, Eiermine</de>
+  </cell>
+  <cell>
+    <de>Abernanit</de>
+  </cell>
+  <cell>
+    <de>Abinabi</de>
+  </cell>
+  <cell>
+    <de>Adanumuran</de>
+  </cell>
+  <cell>
+    <de>Addadshashanammu, Schrein</de>
+  </cell>
+  <cell>
+    <de>Addamasartus</de>
+  </cell>
+  <cell>
+    <de>Ahallaraddon, Eiermine</de>
+  </cell>
+  <cell>
+    <de>Ahanibi-Malmus, Eiermine</de>
+  </cell>
+  <cell>
+    <de>Aharasaplit-Lager, Zallays Zelt</de>
+  </cell>
+  <cell>
+    <de>Aharnabi</de>
+  </cell>
+  <cell>
+    <de>Aharunartus</de>
+  </cell>
+  <cell>
+    <de>Ahemmusa-Lager</de>
+  </cell>
+  <cell>
+    <de>Ahemmusa-Lager, Addammus' Zelt</de>
+  </cell>
+  <cell>
+    <de>Ahemmusa-Lager, Assamma-Idans Zelt</de>
+  </cell>
+  <cell>
+    <de>Ahemmusa-Lager, Dutadalks Zelt</de>
+  </cell>
+  <cell>
+    <de>Ahemmusa-Lager, Kausis Zelt</de>
+  </cell>
+  <cell>
+    <de>Ahemmusa-Lager, Lanabis Zelt</de>
+  </cell>
+  <cell>
+    <de>Ahemmusa-Lager, Mamaeas Zelt</de>
+  </cell>
+  <cell>
+    <de>Ahemmusa-Lager, Nummus Zelt</de>
+  </cell>
+  <cell>
+    <de>Ahemmusa-Lager, Zelt der Weisen Frau</de>
+  </cell>
+  <cell>
+    <de>Ahemmusa-Lager, Zelt des Ashkhan</de>
+  </cell>
+  <cell>
+    <de>Ahinipalit</de>
+  </cell>
+  <cell>
+    <de>Aidanat-Lager, Abassels Zelt</de>
+  </cell>
+  <cell>
+    <de>Ainab</de>
+  </cell>
+  <cell>
+    <de>Ainab, Schrein</de>
+  </cell>
+  <cell>
+    <de>Ainat</de>
+  </cell>
+  <cell>
+    <de>Akimaes-Grotte</de>
+  </cell>
+  <cell>
+    <de>Akimaes-Ilanipu, Eiermine</de>
+  </cell>
+  <cell>
+    <de>Akulakhans Kammer</de>
+  </cell>
+  <cell>
+    <de>Alas-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Ald Daedroth</de>
+  </cell>
+  <cell>
+    <de>Ald Daedroth, Innerer Schrein</de>
+  </cell>
+  <cell>
+    <de>Ald Daedroth, Linker Flügel</de>
+  </cell>
+  <cell>
+    <de>Ald Daedroth, Rechter Flügel</de>
+  </cell>
+  <cell>
+    <de>Ald Daedroth, Vorraum</de>
+  </cell>
+  <cell>
+    <de>Ald Daedroth, Äußerer Schrein</de>
+  </cell>
+  <cell>
+    <de>Ald Redaynia</de>
+  </cell>
+  <cell>
+    <de>Ald Redaynia, Turm</de>
+  </cell>
+  <cell>
+    <de>Ald Sotha</de>
+  </cell>
+  <cell>
+    <de>Ald Sotha, Obere Ebene</de>
+  </cell>
+  <cell>
+    <de>Ald Sotha, Schrein</de>
+  </cell>
+  <cell>
+    <de>Ald Sotha, Untere Ebene</de>
+  </cell>
+  <cell>
+    <de>Ald Velothi</de>
+  </cell>
+  <cell>
+    <de>Ald Velothi, Außenposten</de>
+  </cell>
+  <cell>
+    <de>Ald Velothi, Fevila Bethranos Hütte</de>
+  </cell>
+  <cell>
+    <de>Ald Velothi, Ganus Lloryns Hütte</de>
+  </cell>
+  <cell>
+    <de>Ald Velothi, Ienas Arvels Hütte</de>
+  </cell>
+  <cell>
+    <de>Ald Velothi, Lledsea Relas' Hütte</de>
+  </cell>
+  <cell>
+    <de>Ald Velothi, Llerar Vindens Hütte</de>
+  </cell>
+  <cell>
+    <de>Ald Velothi, Sathas Rivuls Hütte</de>
+  </cell>
+  <cell>
+    <de>Ald Velothi, Vireveri Darethrans Hütte</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Arobar, Privatquartiere</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Arobar-Wachquartiere</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Aryni Orethis Haus</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Bevene Releth: Schneiderin</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Bivale Teneran: Schneiderin</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Boldrisa Andranos Haus</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Braynas Hlervus Haus</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Cienne Sintieve: Alchemistin</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Codus Callonus: Buchhändler</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Dandera Selaro: Schmiedin</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Daynes Redothril: Pfandleiher</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Die Ratte und der Topf</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Dravasa Andrethis Haus</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Drinar Varyons Haus</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Eingang zum Haus Arobar</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Eingang zum Haus Llethri</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Eingang zum Haus Venim</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Galsa Gindus Haus</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Galthragoths Haus</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Gildans Haus</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Gildehalle der Morag Tong </de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Gindrala Hlerans Haus</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Goras Andrelos Haus</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Guls Llervus Haus</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Hanarai Assutlanipals Haus</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Haus Arobar</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Haus Llethri</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Haus Ramoran</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Haus Sarethi</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Haus Venim</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Haus Venim, Privatquartiere</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Haus Venim, rechter Flügel</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Ienas Sarandas' Haus</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Ilmirils Haus</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Kriegergilde</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Llether Vari: Verzauberungen</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Llethri Wachquartiere</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Llethri, Privatquartiere</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Magiergilde</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Malpenix Blonia: Händler</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Morvayn-Quartiere</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Pellecia Aurrus' Haus</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Ramoran, Privatquartiere</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Ratsherberge</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Ratstaverne</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Redoranische Ratshalle</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Sarethi-Wachquartiere</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Tauryons Haus</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Taverne Ald Skar</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Tempel</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Tiras Sadus: Händler</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Tuveso Beleth: Schmiedin</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Venim-Wachquartiere</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Wachturm 1</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Wachturm 2</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Wohndistrikt</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Zugang zum Redoranischen Rat</de>
+  </cell>
+  <cell>
+    <de>Ald'ruhn, Übungsraum</de>
+  </cell>
+  <cell>
+    <de>Ald-ruhn, Guild of Mages</de>
+  </cell>
+  <cell>
+    <de>Aleft</de>
+  </cell>
+  <cell>
+    <de>Alen-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Almurbalarammi, Schrein</de>
+  </cell>
+  <cell>
+    <de>Alofs Bauernhaus</de>
+  </cell>
+  <cell>
+    <de>Alt-Gramfeste: Basar-Abwasserkanäle</de>
+  </cell>
+  <cell>
+    <de>Alt-Gramfeste: Gedna Relvels Grab</de>
+  </cell>
+  <cell>
+    <de>Alt-Gramfeste: Haus Moril, Hof</de>
+  </cell>
+  <cell>
+    <de>Alt-Gramfeste: Haus Moril, Nordgebäude</de>
+  </cell>
+  <cell>
+    <de>Alt-Gramfeste: Haus Moril, Ostgebäude</de>
+  </cell>
+  <cell>
+    <de>Alt-Gramfeste: Häuser-Abwasserkanäle</de>
+  </cell>
+  <cell>
+    <de>Alt-Gramfeste: Häuser-Distrikt</de>
+  </cell>
+  <cell>
+    <de>Alt-Gramfeste: Häuserruinen</de>
+  </cell>
+  <cell>
+    <de>Alt-Gramfeste: Palastkanäle</de>
+  </cell>
+  <cell>
+    <de>Alt-Gramfeste: Schlachtfeld</de>
+  </cell>
+  <cell>
+    <de>Alt-Gramfeste: Stadttor</de>
+  </cell>
+  <cell>
+    <de>Alt-Gramfeste: Tempelgruft</de>
+  </cell>
+  <cell>
+    <de>Alt-Gramfeste: Tempelgärten</de>
+  </cell>
+  <cell>
+    <de>Alt-Gramfeste: Tempelkanäle</de>
+  </cell>
+  <cell>
+    <de>Alt-Gramfeste: Tempelkanäle Ost</de>
+  </cell>
+  <cell>
+    <de>Alt-Gramfeste: Tempelkanäle West</de>
+  </cell>
+  <cell>
+    <de>Alt-Gramfeste: Tempelkatakomben</de>
+  </cell>
+  <cell>
+    <de>Alt-Gramfeste: Tempelschrein</de>
+  </cell>
+  <cell>
+    <de>Alt-Gramfeste: Teran-Halle</de>
+  </cell>
+  <cell>
+    <de>Alt-Gramfeste: Teran-Halle, Ostgebäude</de>
+  </cell>
+  <cell>
+    <de>Alt-Gramfeste: Tränen von Amun-Shae</de>
+  </cell>
+  <cell>
+    <de>Alt-Gramfeste: Verlassene Gruft</de>
+  </cell>
+  <cell>
+    <de>Alt-Gramfeste: Verlassene Kanäle</de>
+  </cell>
+  <cell>
+    <de>Alt-Gramfeste: Verlassener Gang</de>
+  </cell>
+  <cell>
+    <de>Alt-Gramfeste: Waffenkammer-Ruinen</de>
+  </cell>
+  <cell>
+    <de>Alt-Gramfeste: West-Kanäle</de>
+  </cell>
+  <cell>
+    <de>Altes Schiffswrack, Kabine</de>
+  </cell>
+  <cell>
+    <de>Altes Schiffswrack, Oberdeck</de>
+  </cell>
+  <cell>
+    <de>Altes Schiffswrack, Unterdeck</de>
+  </cell>
+  <cell>
+    <de>Andalen-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Andalor-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Andas-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Andasreth</de>
+  </cell>
+  <cell>
+    <de>Andasreth, Obere Ebene</de>
+  </cell>
+  <cell>
+    <de>Andasreth, Propylon-Kammer</de>
+  </cell>
+  <cell>
+    <de>Andasreth, Untere Ebene</de>
+  </cell>
+  <cell>
+    <de>Andavel-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Andrano-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Andrethi-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Andules-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Ansi</de>
+  </cell>
+  <cell>
+    <de>Aralen-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Aran-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Arano-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Arano-Plantage</de>
+  </cell>
+  <cell>
+    <de>Arenim-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Arethan-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Arkngthand, Halle der Zentrifuge</de>
+  </cell>
+  <cell>
+    <de>Arkngthand, Himmelsgalerie</de>
+  </cell>
+  <cell>
+    <de>Arkngthand, Klageläuten-Halle</de>
+  </cell>
+  <cell>
+    <de>Arkngthand, Landblutgalerie</de>
+  </cell>
+  <cell>
+    <de>Arkngthand, Tiefe Erzpassage</de>
+  </cell>
+  <cell>
+    <de>Arkngthand, Zellen der Hohlen Hand</de>
+  </cell>
+  <cell>
+    <de>Arkngthunch-Sturdumz</de>
+  </cell>
+  <cell>
+    <de>Arvel-Plantage</de>
+  </cell>
+  <cell>
+    <de>Aryon-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Arys-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Asha-Ahhe, Eiermine</de>
+  </cell>
+  <cell>
+    <de>Ashalmawia</de>
+  </cell>
+  <cell>
+    <de>Ashalmawia, Schrein</de>
+  </cell>
+  <cell>
+    <de>Ashalmawia, Schrein, Versunkene Gewölbe</de>
+  </cell>
+  <cell>
+    <de>Ashalmimilkala, Schrein</de>
+  </cell>
+  <cell>
+    <de>Ashamanu-Lager, Kaushas Zelt</de>
+  </cell>
+  <cell>
+    <de>Ashanammu</de>
+  </cell>
+  <cell>
+    <de>Ashimanu, Eiermine</de>
+  </cell>
+  <cell>
+    <de>Ashimanu, Eiermine, Nest der Königin</de>
+  </cell>
+  <cell>
+    <de>Ashinabi</de>
+  </cell>
+  <cell>
+    <de>Ashinabi, Schmugglerhöhle</de>
+  </cell>
+  <cell>
+    <de>Ashir-Dan</de>
+  </cell>
+  <cell>
+    <de>Ashirbadon</de>
+  </cell>
+  <cell>
+    <de>Ashmelech</de>
+  </cell>
+  <cell>
+    <de>Ashunartes, Schrein</de>
+  </cell>
+  <cell>
+    <de>Ashurnabitashpi</de>
+  </cell>
+  <cell>
+    <de>Ashurnibibi</de>
+  </cell>
+  <cell>
+    <de>Ashurnibibi, Schrein</de>
+  </cell>
+  <cell>
+    <de>Assalkushalit, Schrein</de>
+  </cell>
+  <cell>
+    <de>Assarnatamat, Schrein</de>
+  </cell>
+  <cell>
+    <de>Assarnibibiberg</de>
+  </cell>
+  <cell>
+    <de>Assarnud</de>
+  </cell>
+  <cell>
+    <de>Assemanu</de>
+  </cell>
+  <cell>
+    <de>Assemanu, Schrein</de>
+  </cell>
+  <cell>
+    <de>Assernerairan, Schrein</de>
+  </cell>
+  <cell>
+    <de>Assu</de>
+  </cell>
+  <cell>
+    <de>Assumanu</de>
+  </cell>
+  <cell>
+    <de>Assurdirapal, Innerer Schrein</de>
+  </cell>
+  <cell>
+    <de>Assurdirapal, Schrein</de>
+  </cell>
+  <cell>
+    <de>Assurnabitashpi</de>
+  </cell>
+  <cell>
+    <de>Assurnabitashpi, Schrein</de>
+  </cell>
+  <cell>
+    <de>Aufgegebenes Schiffswrack, Kabine</de>
+  </cell>
+  <cell>
+    <de>Aufgegebenes Schiffswrack, Oberdeck</de>
+  </cell>
+  <cell>
+    <de>Aufgegebenes Schiffswrack, Unterdeck</de>
+  </cell>
+  <cell>
+    <de>Azuras Schrein</de>
+  </cell>
+  <cell>
+    <de>Bal Fell</de>
+  </cell>
+  <cell>
+    <de>Bal Fell, Innerer Schrein</de>
+  </cell>
+  <cell>
+    <de>Bal Fell, Westlicher Flügel</de>
+  </cell>
+  <cell>
+    <de>Bal Fell, Äußerer Schrein</de>
+  </cell>
+  <cell>
+    <de>Bal Fell, Östlicher Flügel</de>
+  </cell>
+  <cell>
+    <de>Bal Isra</de>
+  </cell>
+  <cell>
+    <de>Bal Ur</de>
+  </cell>
+  <cell>
+    <de>Bal Ur, Schrein</de>
+  </cell>
+  <cell>
+    <de>Bal Ur, Untergrund</de>
+  </cell>
+  <cell>
+    <de>Balmora</de>
+  </cell>
+  <cell>
+    <de>Balmora, Acht Teller</de>
+  </cell>
+  <cell>
+    <de>Balmora, Astius Hanotepelus' Haus</de>
+  </cell>
+  <cell>
+    <de>Balmora, Balyn Omarels Haus</de>
+  </cell>
+  <cell>
+    <de>Balmora, Caius Cosades’ Haus</de>
+  </cell>
+  <cell>
+    <de>Balmora, Clagius Clanler: Händler</de>
+  </cell>
+  <cell>
+    <de>Balmora, Die Klingengrube</de>
+  </cell>
+  <cell>
+    <de>Balmora, Dorisa Darvel: Buchhändlerin</de>
+  </cell>
+  <cell>
+    <de>Balmora, Dralasa Nithryon: Pfandleiherin</de>
+  </cell>
+  <cell>
+    <de>Balmora, Dralcea Arethis Haus</de>
+  </cell>
+  <cell>
+    <de>Balmora, Dralosa Athrens Haus</de>
+  </cell>
+  <cell>
+    <de>Balmora, Drarayne Thelas Haus</de>
+  </cell>
+  <cell>
+    <de>Balmora, Drarayne Thelas Lager</de>
+  </cell>
+  <cell>
+    <de>Balmora, Dura gra-Bol's Haus</de>
+  </cell>
+  <cell>
+    <de>Balmora, Flinkfinger-Eddis Haus</de>
+  </cell>
+  <cell>
+    <de>Balmora, Haus Hlaalo</de>
+  </cell>
+  <cell>
+    <de>Balmora, Haus Nerano</de>
+  </cell>
+  <cell>
+    <de>Balmora, Haus Tyravel</de>
+  </cell>
+  <cell>
+    <de>Balmora, Haus des Hlaalu-Rates</de>
+  </cell>
+  <cell>
+    <de>Balmora, Hecerindes Haus</de>
+  </cell>
+  <cell>
+    <de>Balmora, Itans Haus</de>
+  </cell>
+  <cell>
+    <de>Balmora, Karlirahs Haus</de>
+  </cell>
+  <cell>
+    <de>Balmora, Kriegergilde</de>
+  </cell>
+  <cell>
+    <de>Balmora, Magiergilde</de>
+  </cell>
+  <cell>
+    <de>Balmora, Meldor: Waffenschmied</de>
+  </cell>
+  <cell>
+    <de>Balmora, Milie Hastien: Schneiderin</de>
+  </cell>
+  <cell>
+    <de>Balmora, Morag Tong, Gilde</de>
+  </cell>
+  <cell>
+    <de>Balmora, Nalcarya von Weißhafen: Alchemistin</de>
+  </cell>
+  <cell>
+    <de>Balmora, Neunzehs Haus</de>
+  </cell>
+  <cell>
+    <de>Balmora, Ra'Virr: Händler</de>
+  </cell>
+  <cell>
+    <de>Balmora, Rarayn Radarys Haus</de>
+  </cell>
+  <cell>
+    <de>Balmora, Ratstaverne</de>
+  </cell>
+  <cell>
+    <de>Balmora, Rithleens Haus</de>
+  </cell>
+  <cell>
+    <de>Balmora, Südwall-Taverne</de>
+  </cell>
+  <cell>
+    <de>Balmora, Tempel</de>
+  </cell>
+  <cell>
+    <de>Balmora, Tsiyas Haus</de>
+  </cell>
+  <cell>
+    <de>Balmora, Tyermaillins Haus</de>
+  </cell>
+  <cell>
+    <de>Balmora, Vorar Helas Haus</de>
+  </cell>
+  <cell>
+    <de>Balmora, Voris Haus</de>
+  </cell>
+  <cell>
+    <de>Balmora, Westlicher Wachturm, Nord</de>
+  </cell>
+  <cell>
+    <de>Balmora, Westlicher Wachturm, Süd</de>
+  </cell>
+  <cell>
+    <de>Balmora, Zum Glückspilz</de>
+  </cell>
+  <cell>
+    <de>Balmora, Östlicher Wachturm</de>
+  </cell>
+  <cell>
+    <de>Balurs Bauernhaus</de>
+  </cell>
+  <cell>
+    <de>Bamz-Amschend, Halle des Herdfeuers</de>
+  </cell>
+  <cell>
+    <de>Bamz-Amschend, Halle des Heulens</de>
+  </cell>
+  <cell>
+    <de>Bamz-Amschend, Halle des Windes</de>
+  </cell>
+  <cell>
+    <de>Bamz-Amschend, Himmelsspalt-Galerie</de>
+  </cell>
+  <cell>
+    <de>Bamz-Amschend, Königsgang</de>
+  </cell>
+  <cell>
+    <de>Bamz-Amschend, Passage des Flüsterns</de>
+  </cell>
+  <cell>
+    <de>Bamz-Amschend, Passage des Wandernden</de>
+  </cell>
+  <cell>
+    <de>Bamz-Amschend, Radacs Schmiede</de>
+  </cell>
+  <cell>
+    <de>Band, Eiermine</de>
+  </cell>
+  <cell>
+    <de>Bensamsi</de>
+  </cell>
+  <cell>
+    <de>Bensiberib-Lager, Odaishahs Zelt</de>
+  </cell>
+  <cell>
+    <de>Beram-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Beran-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Berandas</de>
+  </cell>
+  <cell>
+    <de>Berandas, Festung, Oberste Ebene</de>
+  </cell>
+  <cell>
+    <de>Berandas, Festung, Unterste Ebene</de>
+  </cell>
+  <cell>
+    <de>Berandas, Propylon-Kammer</de>
+  </cell>
+  <cell>
+    <de>Berandas, Untergrund</de>
+  </cell>
+  <cell>
+    <de>Beshara</de>
+  </cell>
+  <cell>
+    <de>Bthanchend</de>
+  </cell>
+  <cell>
+    <de>Bthuand</de>
+  </cell>
+  <cell>
+    <de>Bthungthumz</de>
+  </cell>
+  <cell>
+    <de>Caldera</de>
+  </cell>
+  <cell>
+    <de>Caldera, Bashuk gra-Bats Haus</de>
+  </cell>
+  <cell>
+    <de>Caldera, Canodia Felannus' Haus</de>
+  </cell>
+  <cell>
+    <de>Caldera, Dro'Shavirs Haus</de>
+  </cell>
+  <cell>
+    <de>Caldera, Elmussa Damoris Haus</de>
+  </cell>
+  <cell>
+    <de>Caldera, Erste Sklavenhütte</de>
+  </cell>
+  <cell>
+    <de>Caldera, Falanaamo: Schneider</de>
+  </cell>
+  <cell>
+    <de>Caldera, Halle des Regenten</de>
+  </cell>
+  <cell>
+    <de>Caldera, Haus Ghorak</de>
+  </cell>
+  <cell>
+    <de>Caldera, Hodlismod: Waffenschmied</de>
+  </cell>
+  <cell>
+    <de>Caldera, Irgola: Pfandleiher</de>
+  </cell>
+  <cell>
+    <de>Caldera, Keel-Raniurs Haus</de>
+  </cell>
+  <cell>
+    <de>Caldera, Magiergilde</de>
+  </cell>
+  <cell>
+    <de>Caldera, Minen, Schreibstube</de>
+  </cell>
+  <cell>
+    <de>Caldera, Minen, Unterkünfte</de>
+  </cell>
+  <cell>
+    <de>Caldera, Nedhelas' Haus</de>
+  </cell>
+  <cell>
+    <de>Caldera, Nördliche Wachtürme</de>
+  </cell>
+  <cell>
+    <de>Caldera, Odairan Ashummi-Ammus' Haus</de>
+  </cell>
+  <cell>
+    <de>Caldera, Shenks Hütte</de>
+  </cell>
+  <cell>
+    <de>Caldera, Surane Leorianes Haus</de>
+  </cell>
+  <cell>
+    <de>Caldera, Südliche Wachtürme</de>
+  </cell>
+  <cell>
+    <de>Caldera, Valvius Mevureius Haus</de>
+  </cell>
+  <cell>
+    <de>Caldera, Verick Gemain: Händler</de>
+  </cell>
+  <cell>
+    <de>Caldera, Wachturm der Mine</de>
+  </cell>
+  <cell>
+    <de>Caldera, Zweite Sklavenhütte</de>
+  </cell>
+  <cell>
+    <de>Caldera-Mine</de>
+  </cell>
+  <cell>
+    <de>Chun-Ook, Kabine</de>
+  </cell>
+  <cell>
+    <de>Chun-Ook, Oberdeck</de>
+  </cell>
+  <cell>
+    <de>Chun-Ook, Unterdeck</de>
+  </cell>
+  <cell>
+    <de>Corprusarium</de>
+  </cell>
+  <cell>
+    <de>Dagon Fel</de>
+  </cell>
+  <cell>
+    <de>Dagon Fel, Andre Maahuls Turm</de>
+  </cell>
+  <cell>
+    <de>Dagon Fel, Anjah Segelschwinges Haus</de>
+  </cell>
+  <cell>
+    <de>Dagon Fel, Das Ende der Welt</de>
+  </cell>
+  <cell>
+    <de>Dagon Fel, Fanar Forkbards Haus</de>
+  </cell>
+  <cell>
+    <de>Dagon Fel, Fjorrods Haus</de>
+  </cell>
+  <cell>
+    <de>Dagon Fel, Gasthaus Zum Ende der Welt</de>
+  </cell>
+  <cell>
+    <de>Dagon Fel, Greidil Halbtrolls Haus</de>
+  </cell>
+  <cell>
+    <de>Dagon Fel, Haus von Itar dem Sanftmütigen</de>
+  </cell>
+  <cell>
+    <de>Dagon Fel, Heifnir: Händler</de>
+  </cell>
+  <cell>
+    <de>Dagon Fel, Hurgs Haus</de>
+  </cell>
+  <cell>
+    <de>Dagon Fel, Leer stehender Turm</de>
+  </cell>
+  <cell>
+    <de>Dagon Fel, Mettes Haus</de>
+  </cell>
+  <cell>
+    <de>Dagon Fel, Onmi Hartmunds Haus</de>
+  </cell>
+  <cell>
+    <de>Dagon Fel, Sorkvilds Turm</de>
+  </cell>
+  <cell>
+    <de>Dagon Fel, Wachurm</de>
+  </cell>
+  <cell>
+    <de>Dagoth Ur</de>
+  </cell>
+  <cell>
+    <de>Dagoth Ur, Facility Cavern</de>
+  </cell>
+  <cell>
+    <de>Dagoth Ur, Höhle</de>
+  </cell>
+  <cell>
+    <de>Dagoth Ur, Innere Höhle</de>
+  </cell>
+  <cell>
+    <de>Dagoth Ur, Innerer Turm</de>
+  </cell>
+  <cell>
+    <de>Dagoth Ur, Untere Höhle</de>
+  </cell>
+  <cell>
+    <de>Dagoth Ur, Äußere Höhle</de>
+  </cell>
+  <cell>
+    <de>Dareleth-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Das Innere des Corprusariums</de>
+  </cell>
+  <cell>
+    <de>Diraras Bauernhaus</de>
+  </cell>
+  <cell>
+    <de>Dissapla-Mine</de>
+  </cell>
+  <cell>
+    <de>Dralas-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Drath-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Draugr Test</de>
+  </cell>
+  <cell>
+    <de>Dreloth-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Dren-Plantage</de>
+  </cell>
+  <cell>
+    <de>Dren-Plantage, Doves Hütte</de>
+  </cell>
+  <cell>
+    <de>Dren-Plantage, Drens Herrenhaus</de>
+  </cell>
+  <cell>
+    <de>Dren-Plantage, Helvis Hütte</de>
+  </cell>
+  <cell>
+    <de>Dren-Plantage, Hlevalas Hütte</de>
+  </cell>
+  <cell>
+    <de>Dren-Plantage, Lager</de>
+  </cell>
+  <cell>
+    <de>Dren-Plantage, Lagerhaus</de>
+  </cell>
+  <cell>
+    <de>Dren-Plantage, Rethans Hütte</de>
+  </cell>
+  <cell>
+    <de>Dren-Plantage, Turmhütte</de>
+  </cell>
+  <cell>
+    <de>Dren-Plantage, Verethi und Dralor</de>
+  </cell>
+  <cell>
+    <de>Dren-Plantage, Wachhaus</de>
+  </cell>
+  <cell>
+    <de>Drethan-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Drinith-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Drulene Falens Hütte</de>
+  </cell>
+  <cell>
+    <de>Druscashti, Obere Ebene</de>
+  </cell>
+  <cell>
+    <de>Druscashti, Untere Ebene</de>
+  </cell>
+  <cell>
+    <de>Dubdilla</de>
+  </cell>
+  <cell>
+    <de>Dubdilla, Unbekannte Höhlen</de>
+  </cell>
+  <cell>
+    <de>Dubdilla, Unbekannte Höhlen, Untere Ebene</de>
+  </cell>
+  <cell>
+    <de>Dulo-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Dun-Ahhe</de>
+  </cell>
+  <cell>
+    <de>Dunirai-Höhlen</de>
+  </cell>
+  <cell>
+    <de>Dushariran, Schrein</de>
+  </cell>
+  <cell>
+    <de>Düsteres Schiffswrack, Kabine</de>
+  </cell>
+  <cell>
+    <de>Düsteres Schiffswrack, Oberdeck</de>
+  </cell>
+  <cell>
+    <de>Düsteres Schiffswrack, Unterdeck</de>
+  </cell>
+  <cell>
+    <de>Ebenherz</de>
+  </cell>
+  <cell>
+    <de>Ebenherz, Argonische Mission</de>
+  </cell>
+  <cell>
+    <de>Ebenherz, Falkenfalter-Türme</de>
+  </cell>
+  <cell>
+    <de>Ebenherz, Garnison der Falkenfalter-Legion</de>
+  </cell>
+  <cell>
+    <de>Ebenherz, Garnison der Kaiserlichen Wachen</de>
+  </cell>
+  <cell>
+    <de>Ebenherz, Himmelsrand-Mission</de>
+  </cell>
+  <cell>
+    <de>Ebenherz, Kaiserliche Kapellen</de>
+  </cell>
+  <cell>
+    <de>Ebenherz, Kaiserliche Kommission</de>
+  </cell>
+  <cell>
+    <de>Ebenherz, Ost-Kaiserliche Händlergilde, Halle</de>
+  </cell>
+  <cell>
+    <de>Ebenherz, Ost-Kaiserliche Händlergilde, Nördliches Warenhaus</de>
+  </cell>
+  <cell>
+    <de>Ebenherz, Ost-Kaiserliche Händlergilde, Südliches Warenhaus</de>
+  </cell>
+  <cell>
+    <de>Ebenherz, Saal des Großen Rates</de>
+  </cell>
+  <cell>
+    <de>Ebenherz, Sechs Fische</de>
+  </cell>
+  <cell>
+    <de>Ebenherz, Turmsaal des Großen Rates</de>
+  </cell>
+  <cell>
+    <de>Ebenherz, Unterirdische Höhlen</de>
+  </cell>
+  <cell>
+    <de>Ebernanit, Schrein</de>
+  </cell>
+  <cell>
+    <de>Eine verlassene Hütte</de>
+  </cell>
+  <cell>
+    <de>Eingang der Koal-Höhle</de>
+  </cell>
+  <cell>
+    <de>Einsames Schiffswrack, Kabine</de>
+  </cell>
+  <cell>
+    <de>Einsames Schiffswrack, Oberdeck</de>
+  </cell>
+  <cell>
+    <de>Einsames Schiffswrack, Unterdeck</de>
+  </cell>
+  <cell>
+    <de>Eisfalter-Festung</de>
+  </cell>
+  <cell>
+    <de>Eisfalter-Festung, Carius' Kammern</de>
+  </cell>
+  <cell>
+    <de>Eisfalter-Festung, Kerker</de>
+  </cell>
+  <cell>
+    <de>Eisfalter-Festung, Quartiere</de>
+  </cell>
+  <cell>
+    <de>Eisfalter-Festung, Quartiere, obere Etage</de>
+  </cell>
+  <cell>
+    <de>Eisfalter-Festung, Schrein des Kaiserlichen Kults</de>
+  </cell>
+  <cell>
+    <de>Eisfalter-Festung, Vorratskammer</de>
+  </cell>
+  <cell>
+    <de>Eisfalter-Festung, Waffenkammer</de>
+  </cell>
+  <cell>
+    <de>Eisfalter-Festung, Zwischenwand</de>
+  </cell>
+  <cell>
+    <de>Elanius-Lager, Yapals Zelt</de>
+  </cell>
+  <cell>
+    <de>Elf-Skerring, Kabine</de>
+  </cell>
+  <cell>
+    <de>Elf-Skerring, Oberdeck</de>
+  </cell>
+  <cell>
+    <de>Elf-Skerring, Unterdeck</de>
+  </cell>
+  <cell>
+    <de>Elith-Pal-Mine</de>
+  </cell>
+  <cell>
+    <de>Eluba-Addon, Eiermine</de>
+  </cell>
+  <cell>
+    <de>Eluba-Addon-Grotte</de>
+  </cell>
+  <cell>
+    <de>Endusal, Kagrenacs Arbeitszimmer</de>
+  </cell>
+  <cell>
+    <de>Entferntes Schiffswrack, Kabine</de>
+  </cell>
+  <cell>
+    <de>Entferntes Schiffswrack, Oberdeck</de>
+  </cell>
+  <cell>
+    <de>Entferntes Schiffswrack, Unterdeck</de>
+  </cell>
+  <cell>
+    <de>Erabenimsun-Lager</de>
+  </cell>
+  <cell>
+    <de>Erabenimsun-Lager, Addut-Lamanus Zelt</de>
+  </cell>
+  <cell>
+    <de>Erabenimsun-Lager, Ainabs Zelt</de>
+  </cell>
+  <cell>
+    <de>Erabenimsun-Lager, Ashu-Ahhes Zelt</de>
+  </cell>
+  <cell>
+    <de>Erabenimsun-Lager, Assemmus Zelt</de>
+  </cell>
+  <cell>
+    <de>Erabenimsun-Lager, Han-Ammus Zelt</de>
+  </cell>
+  <cell>
+    <de>Erabenimsun-Lager, Massarapals Zelt</de>
+  </cell>
+  <cell>
+    <de>Erabenimsun-Lager, Ranabis Zelt</de>
+  </cell>
+  <cell>
+    <de>Erabenimsun-Lager, Salattanats Zelt</de>
+  </cell>
+  <cell>
+    <de>Erabenimsun-Lager, Zelt der Weisen Frau</de>
+  </cell>
+  <cell>
+    <de>Erabenimsun-Lager, Zelt des Ashkhan</de>
+  </cell>
+  <cell>
+    <de>Eretammus-Sennammu, Eiermine</de>
+  </cell>
+  <cell>
+    <de>Esutanamus, Schrein</de>
+  </cell>
+  <cell>
+    <de>Fadathram-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Fair Helas, Kabine</de>
+  </cell>
+  <cell>
+    <de>Fair Helas, Oberdeck</de>
+  </cell>
+  <cell>
+    <de>Fair Helas, Unterdeck</de>
+  </cell>
+  <cell>
+    <de>Falas-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Falasmaryon</de>
+  </cell>
+  <cell>
+    <de>Falasmaryon, Abwasserkanäle</de>
+  </cell>
+  <cell>
+    <de>Falasmaryon, Missun Akins Hütte</de>
+  </cell>
+  <cell>
+    <de>Falasmaryon, Obere Ebene</de>
+  </cell>
+  <cell>
+    <de>Falasmaryon, Propylon-Kammer</de>
+  </cell>
+  <cell>
+    <de>Falasmaryon, Untere Ebene</de>
+  </cell>
+  <cell>
+    <de>Falensarano</de>
+  </cell>
+  <cell>
+    <de>Falensarano, Obere Ebene</de>
+  </cell>
+  <cell>
+    <de>Falensarano, Propylon-Kammer</de>
+  </cell>
+  <cell>
+    <de>Falensarano, Untere Ebene</de>
+  </cell>
+  <cell>
+    <de>Falvillos Streben, Kabine</de>
+  </cell>
+  <cell>
+    <de>Falvillos Streben, Oberdeck</de>
+  </cell>
+  <cell>
+    <de>Falvillos Streben, Unterdeck</de>
+  </cell>
+  <cell>
+    <de>Favel-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Felder von Kummu</de>
+  </cell>
+  <cell>
+    <de>Festung der Buckfalter-Legion</de>
+  </cell>
+  <cell>
+    <de>Festung der Buckfalter-Legion, Gefängnis</de>
+  </cell>
+  <cell>
+    <de>Festung der Buckfalter-Legion, Innen</de>
+  </cell>
+  <cell>
+    <de>Festung der Buckfalter-Legion, Türme</de>
+  </cell>
+  <cell>
+    <de>Festung der Mondfalter-Legion</de>
+  </cell>
+  <cell>
+    <de>Festung der Mondfalter-Legion, Gefängnistürme</de>
+  </cell>
+  <cell>
+    <de>Festung der Mondfalter-Legion, Innenbereich</de>
+  </cell>
+  <cell>
+    <de>Galom Daeus, Eingang</de>
+  </cell>
+  <cell>
+    <de>Galom Daeus, Observatorium</de>
+  </cell>
+  <cell>
+    <de>Geisterpforte</de>
+  </cell>
+  <cell>
+    <de>Geisterpforte, Tempel</de>
+  </cell>
+  <cell>
+    <de>Geisterpforte, Turm der Abenddämmerung</de>
+  </cell>
+  <cell>
+    <de>Geisterpforte, Turm der Abenddämmerung, Untere Ebene</de>
+  </cell>
+  <cell>
+    <de>Geisterpforte, Turm der Morgendämmerung</de>
+  </cell>
+  <cell>
+    <de>Geisterpforte, Turm der Morgendämmerung, Untere Ebene</de>
+  </cell>
+  <cell>
+    <de>Gemiedenes Schiffswrack, Kabine</de>
+  </cell>
+  <cell>
+    <de>Gemiedenes Schiffswrack, Oberdeck</de>
+  </cell>
+  <cell>
+    <de>Gemiedenes Schiffswrack, Unterdeck</de>
+  </cell>
+  <cell>
+    <de>Gimothran-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Ginith-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Gnaar Mok</de>
+  </cell>
+  <cell>
+    <de>Gnaar Mok, Anglalos' Hütte</de>
+  </cell>
+  <cell>
+    <de>Gnaar Mok, Caryarels Hütte</de>
+  </cell>
+  <cell>
+    <de>Gnaar Mok, Dreugh-jiggers Ruh</de>
+  </cell>
+  <cell>
+    <de>Gnaar Mok, Haus Arenim</de>
+  </cell>
+  <cell>
+    <de>Gnaar Mok, Jerian Dolbanittes Hütte</de>
+  </cell>
+  <cell>
+    <de>Gnaar Mok, Mush-Meres Hütte</de>
+  </cell>
+  <cell>
+    <de>Gnaar Mok, Nadene Rotherans Hütte</de>
+  </cell>
+  <cell>
+    <de>Gnaar Mok, Rostlogis Hütte</de>
+  </cell>
+  <cell>
+    <de>Gnisis</de>
+  </cell>
+  <cell>
+    <de>Gnisis, Abelmawias Hütte</de>
+  </cell>
+  <cell>
+    <de>Gnisis, Almu-Höhle</de>
+  </cell>
+  <cell>
+    <de>Gnisis, Arvs-Drelen</de>
+  </cell>
+  <cell>
+    <de>Gnisis, Bethamez</de>
+  </cell>
+  <cell>
+    <de>Gnisis, Darius-Festung</de>
+  </cell>
+  <cell>
+    <de>Gnisis, Dinadads Hütte</de>
+  </cell>
+  <cell>
+    <de>Gnisis, Eiermine</de>
+  </cell>
+  <cell>
+    <de>Gnisis, Handelshaus Madach</de>
+  </cell>
+  <cell>
+    <de>Gnisis, Kaserne</de>
+  </cell>
+  <cell>
+    <de>Gnisis, Lasamsi-Höhle</de>
+  </cell>
+  <cell>
+    <de>Gnisis, Man-llus Hütte</de>
+  </cell>
+  <cell>
+    <de>Gnisis, Mantiti-Höhle</de>
+  </cell>
+  <cell>
+    <de>Gnisis, Shands Hütte</de>
+  </cell>
+  <cell>
+    <de>Gnisis, Shisharas Hütte</de>
+  </cell>
+  <cell>
+    <de>Gnisis, Tansumiran-Höhle</de>
+  </cell>
+  <cell>
+    <de>Gnisis, Tempel</de>
+  </cell>
+  <cell>
+    <de>Gnisis, Untere Eiermine</de>
+  </cell>
+  <cell>
+    <de>Gnisis, Unterirdischer Fluss</de>
+  </cell>
+  <cell>
+    <de>Gnisis, Vabdas Hütte</de>
+  </cell>
+  <cell>
+    <de>Gnisis, Yahaz' Hütte</de>
+  </cell>
+  <cell>
+    <de>Gramfeste</de>
+  </cell>
+  <cell>
+    <de>Gramfeste, Artefakt-Museum</de>
+  </cell>
+  <cell>
+    <de>Gramfeste, Brindisi-Dorom-Platz</de>
+  </cell>
+  <cell>
+    <de>Gramfeste, Buchhändler</de>
+  </cell>
+  <cell>
+    <de>Gramfeste, Der geflügelte Guar</de>
+  </cell>
+  <cell>
+    <de>Gramfeste, Geheime Schreibstube</de>
+  </cell>
+  <cell>
+    <de>Gramfeste, Geon Aulines Haus</de>
+  </cell>
+  <cell>
+    <de>Gramfeste, Großer Basar</de>
+  </cell>
+  <cell>
+    <de>Gramfeste, Göttergriff</de>
+  </cell>
+  <cell>
+    <de>Gramfeste, Halle der Handwerker</de>
+  </cell>
+  <cell>
+    <de>Gramfeste, Haus Andoren</de>
+  </cell>
+  <cell>
+    <de>Gramfeste, Haus Llethan</de>
+  </cell>
+  <cell>
+    <de>Gramfeste, Haus Sadri</de>
+  </cell>
+  <cell>
+    <de>Gramfeste, Haus Thendas</de>
+  </cell>
+  <cell>
+    <de>Gramfeste, Haus Velas</de>
+  </cell>
+  <cell>
+    <de>Gramfeste, Händler</de>
+  </cell>
+  <cell>
+    <de>Gramfeste, Ignatius Flaccus' Haus</de>
+  </cell>
+  <cell>
+    <de>Gramfeste, Königspalast</de>
+  </cell>
+  <cell>
+    <de>Gramfeste, Königspalast: Barenziahs Gemächer</de>
+  </cell>
+  <cell>
+    <de>Gramfeste, Königspalast: Dienste des Kaiserlichen Kults</de>
+  </cell>
+  <cell>
+    <de>Gramfeste, Königspalast: Empfangsbereich</de>
+  </cell>
+  <cell>
+    <de>Gramfeste, Königspalast: Helseths Gemächer</de>
+  </cell>
+  <cell>
+    <de>Gramfeste, Königspalast: Hof</de>
+  </cell>
+  <cell>
+    <de>Gramfeste, Königspalast: Keller</de>
+  </cell>
+  <cell>
+    <de>Gramfeste, Königspalast: Kerker</de>
+  </cell>
+  <cell>
+    <de>Gramfeste, Königspalast: Legionsdepot</de>
+  </cell>
+  <cell>
+    <de>Gramfeste, Königspalast: Quartiere der Wachen</de>
+  </cell>
+  <cell>
+    <de>Gramfeste, Magieladen</de>
+  </cell>
+  <cell>
+    <de>Gramfeste, Pfandleiher</de>
+  </cell>
+  <cell>
+    <de>Gramfeste, Schneider</de>
+  </cell>
+  <cell>
+    <de>Gramfeste, Tempelhof</de>
+  </cell>
+  <cell>
+    <de>Gramfeste, Thronraum des Königspalasts</de>
+  </cell>
+  <cell>
+    <de>Gramfeste, Waffenkammer</de>
+  </cell>
+  <cell>
+    <de>Gramfeste, leeres Haus</de>
+  </cell>
+  <cell>
+    <de>Gramfeste-Tempel</de>
+  </cell>
+  <cell>
+    <de>Gramfeste-Tempel: Büro des Erzkanonikers</de>
+  </cell>
+  <cell>
+    <de>Gramfeste-Tempel: Empfangsbereich</de>
+  </cell>
+  <cell>
+    <de>Gramfeste-Tempel: Halle der Geistlichkeit</de>
+  </cell>
+  <cell>
+    <de>Gramfeste-Tempel: Hochkapelle</de>
+  </cell>
+  <cell>
+    <de>Gramfeste-Tempel: Keller</de>
+  </cell>
+  <cell>
+    <de>Gramfeste-Tempel: Krankenstube</de>
+  </cell>
+  <cell>
+    <de>Gro-Bagrat-Plantage</de>
+  </cell>
+  <cell>
+    <de>Großkopfs Hütte</de>
+  </cell>
+  <cell>
+    <de>Grytewake, Kabine</de>
+  </cell>
+  <cell>
+    <de>Grytewake, Oberdeck</de>
+  </cell>
+  <cell>
+    <de>Grytewake, Unterdeck</de>
+  </cell>
+  <cell>
+    <de>Habinbaes</de>
+  </cell>
+  <cell>
+    <de>Hairat-Vassamsi, Eiermine</de>
+  </cell>
+  <cell>
+    <de>Hairat-Vassamsi, Eiermine, Nest der Königin</de>
+  </cell>
+  <cell>
+    <de>Halit-Mine</de>
+  </cell>
+  <cell>
+    <de>Hanud</de>
+  </cell>
+  <cell>
+    <de>Hanud, Turm</de>
+  </cell>
+  <cell>
+    <de>Hassour</de>
+  </cell>
+  <cell>
+    <de>Hassour, Schrein</de>
+  </cell>
+  <cell>
+    <de>Haus Arvel</de>
+  </cell>
+  <cell>
+    <de>Haus Arvel, Hütte des Sklavenaufsehers</de>
+  </cell>
+  <cell>
+    <de>Haus Arvel, Lagerhütte</de>
+  </cell>
+  <cell>
+    <de>Haus Arvel, Sklavenhütte</de>
+  </cell>
+  <cell>
+    <de>Haus Morvayn</de>
+  </cell>
+  <cell>
+    <de>Haus Omani</de>
+  </cell>
+  <cell>
+    <de>Haus Rethan</de>
+  </cell>
+  <cell>
+    <de>Haus Rethan, Berendas’ Haus</de>
+  </cell>
+  <cell>
+    <de>Haus Rethan, Drelas’ Haus</de>
+  </cell>
+  <cell>
+    <de>Haus Rethan, Gols’ Haus</de>
+  </cell>
+  <cell>
+    <de>Haus Rethan, Tures’ Haus</de>
+  </cell>
+  <cell>
+    <de>Hawia, Eiermine</de>
+  </cell>
+  <cell>
+    <de>Helan-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Helas-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Heleran-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Heran-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Hinnabi</de>
+  </cell>
+  <cell>
+    <de>Hla Oad</de>
+  </cell>
+  <cell>
+    <de>Hla Oad, Fadila Balvels Haus</de>
+  </cell>
+  <cell>
+    <de>Hla Oad, Fettis Versteck</de>
+  </cell>
+  <cell>
+    <de>Hla Oad, Murudius Flaeus’ Haus</de>
+  </cell>
+  <cell>
+    <de>Hla Oad, Okurs Haus</de>
+  </cell>
+  <cell>
+    <de>Hla Oad, Relien Rirnes Haus</de>
+  </cell>
+  <cell>
+    <de>Hla Oad, Shurkul gro-Shargas Haus</de>
+  </cell>
+  <cell>
+    <de>Hlaalu-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Hleran-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Hlervi-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Hlervu-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Hlormaren</de>
+  </cell>
+  <cell>
+    <de>Hlormaren, Abwasserkanäle</de>
+  </cell>
+  <cell>
+    <de>Hlormaren, Festung, Oberste Ebene</de>
+  </cell>
+  <cell>
+    <de>Hlormaren, Festung, Unterste Ebene</de>
+  </cell>
+  <cell>
+    <de>Hlormaren, Kuppel</de>
+  </cell>
+  <cell>
+    <de>Hlormaren, Propylon-Kammer</de>
+  </cell>
+  <cell>
+    <de>Hlormaren, Untergrund</de>
+  </cell>
+  <cell>
+    <de>Holamayan</de>
+  </cell>
+  <cell>
+    <de>Holamayan-Kloster</de>
+  </cell>
+  <cell>
+    <de>Höhle des Fleisch-Gewordenen</de>
+  </cell>
+  <cell>
+    <de>Ibar-Dad</de>
+  </cell>
+  <cell>
+    <de>Ibishammus, Schrein</de>
+  </cell>
+  <cell>
+    <de>Ienith-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Ihinipalit, Schrein</de>
+  </cell>
+  <cell>
+    <de>Ilanipu-Grotte</de>
+  </cell>
+  <cell>
+    <de>Ilunibi, Beflecktes Mark</de>
+  </cell>
+  <cell>
+    <de>Ilunibi, Leichnam des Heiligen</de>
+  </cell>
+  <cell>
+    <de>Ilunibi, Marowaks Rücken</de>
+  </cell>
+  <cell>
+    <de>Ilunibi, Schwarzes Herz</de>
+  </cell>
+  <cell>
+    <de>Ilunibi, Seelenklapper</de>
+  </cell>
+  <cell>
+    <de>Inanius, Eiermine</de>
+  </cell>
+  <cell>
+    <de>Indalen-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Indaren-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Indarys-Anwesen</de>
+  </cell>
+  <cell>
+    <de>Indarys-Anwesen, Berendas' Haus</de>
+  </cell>
+  <cell>
+    <de>Indarys-Anwesen, Dienste</de>
+  </cell>
+  <cell>
+    <de>Indarys-Anwesen, Rarams Haus</de>
+  </cell>
+  <cell>
+    <de>Indoranyon</de>
+  </cell>
+  <cell>
+    <de>Indoranyon, Propylon-Kammer</de>
+  </cell>
+  <cell>
+    <de>Kaiserliches Gefangenenschiff</de>
+  </cell>
+  <cell>
+    <de>Kandberg</de>
+  </cell>
+  <cell>
+    <de>Kandberg, Höhle</de>
+  </cell>
+  <cell>
+    <de>Kaushtababi-Lager, Adibaels Zelt</de>
+  </cell>
+  <cell>
+    <de>Kaushtarari, Schrein</de>
+  </cell>
+  <cell>
+    <de>Kens Testloch</de>
+  </cell>
+  <cell>
+    <de>Khartag</de>
+  </cell>
+  <cell>
+    <de>Khuul</de>
+  </cell>
+  <cell>
+    <de>Khuul, Aldhis Hütte</de>
+  </cell>
+  <cell>
+    <de>Khuul, Brurids Hütte</de>
+  </cell>
+  <cell>
+    <de>Khuul, Endris Dilmyns Hütte</de>
+  </cell>
+  <cell>
+    <de>Khuul, H'lgis Hütte</de>
+  </cell>
+  <cell>
+    <de>Khuul, Miron Garers Hütte</de>
+  </cell>
+  <cell>
+    <de>Khuul, Nelmyne Andules’ Hütte</de>
+  </cell>
+  <cell>
+    <de>Khuul, Rivame Samandas’ Hütte</de>
+  </cell>
+  <cell>
+    <de>Khuul, Svadstars Hütte</de>
+  </cell>
+  <cell>
+    <de>Khuul, Thongars Handelshaus</de>
+  </cell>
+  <cell>
+    <de>Kleines Gutshaus</de>
+  </cell>
+  <cell>
+    <de>Koal-Höhle</de>
+  </cell>
+  <cell>
+    <de>Kogoruhn</de>
+  </cell>
+  <cell>
+    <de>Kogoruhn, Aerodes Gewölbe</de>
+  </cell>
+  <cell>
+    <de>Kogoruhn, Blutendes Herz</de>
+  </cell>
+  <cell>
+    <de>Kogoruhn, Charmas Atem</de>
+  </cell>
+  <cell>
+    <de>Kogoruhn, Halle des Wachsamens Gefühls</de>
+  </cell>
+  <cell>
+    <de>Kogoruhn, Makis Halle</de>
+  </cell>
+  <cell>
+    <de>Kogoruhn, Nabith-Kanal</de>
+  </cell>
+  <cell>
+    <de>Kogoruhn, Phistos Halle</de>
+  </cell>
+  <cell>
+    <de>Kogoruhn, Pollocks Kuppel</de>
+  </cell>
+  <cell>
+    <de>Kogoruhn, Tempel der Todgeweihten</de>
+  </cell>
+  <cell>
+    <de>Kogoruhn, Ursos Kuppel</de>
+  </cell>
+  <cell>
+    <de>Kora-Dur</de>
+  </cell>
+  <cell>
+    <de>Kudanat</de>
+  </cell>
+  <cell>
+    <de>Kumarahaz</de>
+  </cell>
+  <cell>
+    <de>Kunirai</de>
+  </cell>
+  <cell>
+    <de>Kushtashpi, Schrein</de>
+  </cell>
+  <cell>
+    <de>Llando-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Lleran-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Llervu-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Lliralas Hütte</de>
+  </cell>
+  <cell>
+    <de>Llovyns, Bauernhaus</de>
+  </cell>
+  <cell>
+    <de>Maar Gan</de>
+  </cell>
+  <cell>
+    <de>Maar Gan, Andus Handelshaus</de>
+  </cell>
+  <cell>
+    <de>Maar Gan, Assi Serimilks Hütte</de>
+  </cell>
+  <cell>
+    <de>Maar Gan, Assirari Zama-Rasours Hütte</de>
+  </cell>
+  <cell>
+    <de>Maar Gan, Außenposten</de>
+  </cell>
+  <cell>
+    <de>Maar Gan, Garrys Hütte</de>
+  </cell>
+  <cell>
+    <de>Maar Gan, Huleens Hütte</de>
+  </cell>
+  <cell>
+    <de>Maar Gan, Khind Erusharas Hütte</de>
+  </cell>
+  <cell>
+    <de>Maar Gan, Mabrelle Geles's Hütte</de>
+  </cell>
+  <cell>
+    <de>Maar Gan, Schrein</de>
+  </cell>
+  <cell>
+    <de>Maar Gan, Shilipuran Zama-Rasours Hütte</de>
+  </cell>
+  <cell>
+    <de>Maar Gan, Tashpi Ashibaels Hütte</de>
+  </cell>
+  <cell>
+    <de>Maar Gan, Ulisamsi Shaddarnurans Hütte</de>
+  </cell>
+  <cell>
+    <de>Maar Gan, Wachturm 1</de>
+  </cell>
+  <cell>
+    <de>Maar Gan, Wachturm 2</de>
+  </cell>
+  <cell>
+    <de>Maar Gan, Wachturm 3</de>
+  </cell>
+  <cell>
+    <de>Maar Gan, Yeherradads Hütte</de>
+  </cell>
+  <cell>
+    <de>Maba-Ilu</de>
+  </cell>
+  <cell>
+    <de>Mababi</de>
+  </cell>
+  <cell>
+    <de>Madas-Grotte</de>
+  </cell>
+  <cell>
+    <de>Madas-Zebba, Eiermine</de>
+  </cell>
+  <cell>
+    <de>Maelkashishi, Schrein</de>
+  </cell>
+  <cell>
+    <de>Maelkashishi, Schrein, Vergessene Empore</de>
+  </cell>
+  <cell>
+    <de>Maelu, Eiermine</de>
+  </cell>
+  <cell>
+    <de>Maesa-Shammus, Eiermine</de>
+  </cell>
+  <cell>
+    <de>Magas Volar</de>
+  </cell>
+  <cell>
+    <de>Mallapi</de>
+  </cell>
+  <cell>
+    <de>Malmus-Grotte</de>
+  </cell>
+  <cell>
+    <de>Mamaea, Heiligtum der Schwarzen Hoffnung</de>
+  </cell>
+  <cell>
+    <de>Mamaea, Heiligtum des Erwachens</de>
+  </cell>
+  <cell>
+    <de>Mamaea, Schrein der Düsteren Träume</de>
+  </cell>
+  <cell>
+    <de>Mamshar-Disamus Lager, Maesats Zelt</de>
+  </cell>
+  <cell>
+    <de>Manats Bauernhaus</de>
+  </cell>
+  <cell>
+    <de>Mannammu</de>
+  </cell>
+  <cell>
+    <de>Maran-Adon</de>
+  </cell>
+  <cell>
+    <de>Marandus</de>
+  </cell>
+  <cell>
+    <de>Marandus, Kuppel</de>
+  </cell>
+  <cell>
+    <de>Marandus, Obere Ebene</de>
+  </cell>
+  <cell>
+    <de>Marandus, Propylon-Kammer</de>
+  </cell>
+  <cell>
+    <de>Marandus, Untere Ebene</de>
+  </cell>
+  <cell>
+    <de>Maren-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Mark's Script Testing Cell</de>
+  </cell>
+  <cell>
+    <de>Marks Vampir-Testzelle</de>
+  </cell>
+  <cell>
+    <de>Marvani-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Massahanud-Lager, Sargons Zelt</de>
+  </cell>
+  <cell>
+    <de>Massama-Höhle</de>
+  </cell>
+  <cell>
+    <de>Masseranit</de>
+  </cell>
+  <cell>
+    <de>Mat</de>
+  </cell>
+  <cell>
+    <de>Matus-Akin, Eiermine</de>
+  </cell>
+  <cell>
+    <de>Matus-Akin, Eiermine, Nest der Königin</de>
+  </cell>
+  <cell>
+    <de>Mausur-Höhlen</de>
+  </cell>
+  <cell>
+    <de>Mawia</de>
+  </cell>
+  <cell>
+    <de>Mila-Nipal, Manats Zelt</de>
+  </cell>
+  <cell>
+    <de>Minabi</de>
+  </cell>
+  <cell>
+    <de>Minabi, Banditenversteck</de>
+  </cell>
+  <cell>
+    <de>Ministerium der Wahrheit, Arrestzellen</de>
+  </cell>
+  <cell>
+    <de>Ministerium der Wahrheit, Gefängnis</de>
+  </cell>
+  <cell>
+    <de>Ministerium der Wahrheit, Verfahrenssaal</de>
+  </cell>
+  <cell>
+    <de>Missamsi</de>
+  </cell>
+  <cell>
+    <de>Missir-Dadalit, Eiermine</de>
+  </cell>
+  <cell>
+    <de>Molag Mar</de>
+  </cell>
+  <cell>
+    <de>Molag Mar, Bodensektion</de>
+  </cell>
+  <cell>
+    <de>Molag Mar, Festung der Kriegswappenträger</de>
+  </cell>
+  <cell>
+    <de>Molag Mar, Herberge Zum Wallfahrer</de>
+  </cell>
+  <cell>
+    <de>Molag Mar, Herberge zum Hl. Veloth</de>
+  </cell>
+  <cell>
+    <de>Molag Mar, Kanäle</de>
+  </cell>
+  <cell>
+    <de>Molag Mar, Redoranische Festung</de>
+  </cell>
+  <cell>
+    <de>Molag Mar, Saetring der Nord: Schmied</de>
+  </cell>
+  <cell>
+    <de>Molag Mar, Tempel</de>
+  </cell>
+  <cell>
+    <de>Molag Mar, Unterirdische Kanäle</de>
+  </cell>
+  <cell>
+    <de>Molag Mar, Vasesius Viciulus: Händler</de>
+  </cell>
+  <cell>
+    <de>Mudan, Alter Dwemer-Kontrollpunkt</de>
+  </cell>
+  <cell>
+    <de>Mudan, Gewölbe</de>
+  </cell>
+  <cell>
+    <de>Mudan, Rechter Turm</de>
+  </cell>
+  <cell>
+    <de>Mudan-Grotte</de>
+  </cell>
+  <cell>
+    <de>Mudan-Mul, Eiermine</de>
+  </cell>
+  <cell>
+    <de>Mul-Grotte</de>
+  </cell>
+  <cell>
+    <de>Mylk</de>
+  </cell>
+  <cell>
+    <de>Mzahnch</de>
+  </cell>
+  <cell>
+    <de>Mzahnch, Untere Ebene</de>
+  </cell>
+  <cell>
+    <de>Mzanchend</de>
+  </cell>
+  <cell>
+    <de>Mzuleft</de>
+  </cell>
+  <cell>
+    <de>Nallit</de>
+  </cell>
+  <cell>
+    <de>Nammu</de>
+  </cell>
+  <cell>
+    <de>Nchardahrk</de>
+  </cell>
+  <cell>
+    <de>Nchardumz</de>
+  </cell>
+  <cell>
+    <de>Nchardumz, Untere Ebene</de>
+  </cell>
+  <cell>
+    <de>Nchuleft</de>
+  </cell>
+  <cell>
+    <de>Nchuleftingth</de>
+  </cell>
+  <cell>
+    <de>Nchuleftingth, Obere Ebenen</de>
+  </cell>
+  <cell>
+    <de>Nchuleftingth, Prüfung der Muster</de>
+  </cell>
+  <cell>
+    <de>Nchuleftingth, Untere Ebenen</de>
+  </cell>
+  <cell>
+    <de>Nchurdamz</de>
+  </cell>
+  <cell>
+    <de>Nchurdamz, Innenbereich</de>
+  </cell>
+  <cell>
+    <de>Nelas-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Nerano-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Nicht verzeichnetes Schiffswrack, Oberdeck</de>
+  </cell>
+  <cell>
+    <de>Nicht verzeichnetes Schiffswrack, Unterdeck</de>
+  </cell>
+  <cell>
+    <de>Nileras Bauernhaus</de>
+  </cell>
+  <cell>
+    <de>Nimawia-Grotte</de>
+  </cell>
+  <cell>
+    <de>Nissintu</de>
+  </cell>
+  <cell>
+    <de>Norenen-dur</de>
+  </cell>
+  <cell>
+    <de>Norenen-dur, Basilika des göttlichen Flüsterns</de>
+  </cell>
+  <cell>
+    <de>Norenen-dur, Der Jammergraben</de>
+  </cell>
+  <cell>
+    <de>Norenen-dur, Die große Treppe</de>
+  </cell>
+  <cell>
+    <de>Norenen-dur, Die knirschenden Zähne</de>
+  </cell>
+  <cell>
+    <de>Norenen-dur, Zitadelle von Myn Dhrur</de>
+  </cell>
+  <cell>
+    <de>Norvayn-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Nund</de>
+  </cell>
+  <cell>
+    <de>Odai-Plateau</de>
+  </cell>
+  <cell>
+    <de>Odaishah</de>
+  </cell>
+  <cell>
+    <de>Odibaal</de>
+  </cell>
+  <cell>
+    <de>Odirnamat</de>
+  </cell>
+  <cell>
+    <de>Odirniran</de>
+  </cell>
+  <cell>
+    <de>Odirniran, Turm</de>
+  </cell>
+  <cell>
+    <de>Odrosal</de>
+  </cell>
+  <cell>
+    <de>Odrosal, Ausbildungsakademie der Dwemer</de>
+  </cell>
+  <cell>
+    <de>Odrosal, Turm</de>
+  </cell>
+  <cell>
+    <de>Omalen-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Omaren-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Onnissiralis, Schrein</de>
+  </cell>
+  <cell>
+    <de>Orethi-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Othrelas-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Palansour</de>
+  </cell>
+  <cell>
+    <de>Panabanit-Nimawia, Eiermine</de>
+  </cell>
+  <cell>
+    <de>Panat</de>
+  </cell>
+  <cell>
+    <de>Panud, Eiermine</de>
+  </cell>
+  <cell>
+    <de>Pelagiad</de>
+  </cell>
+  <cell>
+    <de>Pelagiad, Adanjas Haus</de>
+  </cell>
+  <cell>
+    <de>Pelagiad, Ahnassis Haus</de>
+  </cell>
+  <cell>
+    <de>Pelagiad, Dralas Gilus Haus</de>
+  </cell>
+  <cell>
+    <de>Pelagiad, Ervals Haus</de>
+  </cell>
+  <cell>
+    <de>Pelagiad, Farusea Salas’ Haus</de>
+  </cell>
+  <cell>
+    <de>Pelagiad, Festung Pelagiad</de>
+  </cell>
+  <cell>
+    <de>Pelagiad, Herberge Zur Mitte</de>
+  </cell>
+  <cell>
+    <de>Pelagiad, Junal-leis Haus</de>
+  </cell>
+  <cell>
+    <de>Pelagiad, Madres Navurs Haus</de>
+  </cell>
+  <cell>
+    <de>Pelagiad, Mebestien Ence: Händler</de>
+  </cell>
+  <cell>
+    <de>Pelagiad, Murberius Harmevus’ Haus</de>
+  </cell>
+  <cell>
+    <de>Pelagiad, Nordmauer</de>
+  </cell>
+  <cell>
+    <de>Pelagiad, Südmauer</de>
+  </cell>
+  <cell>
+    <de>Pelagiad, Uulernil: Waffenschmied</de>
+  </cell>
+  <cell>
+    <de>Pelagiad, Wachturm</de>
+  </cell>
+  <cell>
+    <de>Piernettes Bauernhaus</de>
+  </cell>
+  <cell>
+    <de>Pinsun</de>
+  </cell>
+  <cell>
+    <de>Piran</de>
+  </cell>
+  <cell>
+    <de>Prelude-Schiffswrack, Kabine</de>
+  </cell>
+  <cell>
+    <de>Prelude-Schiffswrack, Oberdeck</de>
+  </cell>
+  <cell>
+    <de>Prelude-Schiffswrack, Unterdeck</de>
+  </cell>
+  <cell>
+    <de>Pudai, Eiermine</de>
+  </cell>
+  <cell>
+    <de>Pudai, Eiermine, Nest der Königin</de>
+  </cell>
+  <cell>
+    <de>Pulk</de>
+  </cell>
+  <cell>
+    <de>Punabi</de>
+  </cell>
+  <cell>
+    <de>Punammu</de>
+  </cell>
+  <cell>
+    <de>Punsabanit</de>
+  </cell>
+  <cell>
+    <de>Rabenfels</de>
+  </cell>
+  <cell>
+    <de>Rabenfels, Afer Flaccus' Haus</de>
+  </cell>
+  <cell>
+    <de>Rabenfels, Anwesen des Verwalters</de>
+  </cell>
+  <cell>
+    <de>Rabenfels, Garnas Uvalens Haus</de>
+  </cell>
+  <cell>
+    <de>Rabenfels, Gidar Verothans Haus</de>
+  </cell>
+  <cell>
+    <de>Rabenfels, Gratian Caerellius' Haus</de>
+  </cell>
+  <cell>
+    <de>Rabenfels, Händler</de>
+  </cell>
+  <cell>
+    <de>Rabenfels, Leeres Haus</de>
+  </cell>
+  <cell>
+    <de>Rabenfels, Mine</de>
+  </cell>
+  <cell>
+    <de>Rabenfels, Mineneingang</de>
+  </cell>
+  <cell>
+    <de>Rabenfels, Nördliches Lager</de>
+  </cell>
+  <cell>
+    <de>Rabenfels, Sabinus Oranius' Haus</de>
+  </cell>
+  <cell>
+    <de>Rabenfels, Sados Relothans Haus</de>
+  </cell>
+  <cell>
+    <de>Rabenfels, Schmied</de>
+  </cell>
+  <cell>
+    <de>Rabenfels, Seler Favelnims Haus</de>
+  </cell>
+  <cell>
+    <de>Rabenfels, Südliches Lager</de>
+  </cell>
+  <cell>
+    <de>Rabenfels, Südöstliches Lager</de>
+  </cell>
+  <cell>
+    <de>Rabenfels, Taverne</de>
+  </cell>
+  <cell>
+    <de>Rabenfels, Uryn Marens Haus</de>
+  </cell>
+  <cell>
+    <de>Rabenfels, Verlassener Minenschacht</de>
+  </cell>
+  <cell>
+    <de>Rabenfels, Versorgungsschiff</de>
+  </cell>
+  <cell>
+    <de>Ramimilk, Schrein</de>
+  </cell>
+  <cell>
+    <de>Randas-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Ravel-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Raviro-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Rayna Drolans Hütte</de>
+  </cell>
+  <cell>
+    <de>Redas-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Redoran-Innenbereich</de>
+  </cell>
+  <cell>
+    <de>Redoran-Innenbereich2</de>
+  </cell>
+  <cell>
+    <de>Releth-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Reloth-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Rethandus-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Rissun</de>
+  </cell>
+  <cell>
+    <de>Rothan-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Rotheran</de>
+  </cell>
+  <cell>
+    <de>Rotheran, Arena</de>
+  </cell>
+  <cell>
+    <de>Rotheran, Gemeindehütte</de>
+  </cell>
+  <cell>
+    <de>Rotheran, Propylon-Kammer</de>
+  </cell>
+  <cell>
+    <de>Ruine Mzahnch</de>
+  </cell>
+  <cell>
+    <de>Ruine Mzuleft</de>
+  </cell>
+  <cell>
+    <de>Ruine Nchuleft</de>
+  </cell>
+  <cell>
+    <de>Sadrith Mora</de>
+  </cell>
+  <cell>
+    <de>Sadrith Mora, Anis Seloth: Alchemistin</de>
+  </cell>
+  <cell>
+    <de>Sadrith Mora, Balen Vendu: Mönchsdienste</de>
+  </cell>
+  <cell>
+    <de>Sadrith Mora, Faras Loch in der Wand</de>
+  </cell>
+  <cell>
+    <de>Sadrith Mora, Hleras Gidrens Haus</de>
+  </cell>
+  <cell>
+    <de>Sadrith Mora, Llaalam Madalas: Magier</de>
+  </cell>
+  <cell>
+    <de>Sadrith Mora, Madran Ulvels Haus</de>
+  </cell>
+  <cell>
+    <de>Sadrith Mora, Meluria Seleths Haus</de>
+  </cell>
+  <cell>
+    <de>Sadrith Mora, Milara Vedrans Haus</de>
+  </cell>
+  <cell>
+    <de>Sadrith Mora, Morag Tong, Gilde</de>
+  </cell>
+  <cell>
+    <de>Sadrith Mora, Nevrila Areloths Haus</de>
+  </cell>
+  <cell>
+    <de>Sadrith Mora, Nirasa Arens Haus</de>
+  </cell>
+  <cell>
+    <de>Sadrith Mora, Pierlette Rostorard: Trankmischerin</de>
+  </cell>
+  <cell>
+    <de>Sadrith Mora, Rolis Garvons Haus</de>
+  </cell>
+  <cell>
+    <de>Sadrith Mora, Taverne Zum Torbogen</de>
+  </cell>
+  <cell>
+    <de>Sadrith Mora, Taverne Zum Torbogen, Nordflügel</de>
+  </cell>
+  <cell>
+    <de>Sadrith Mora, Taverne Zum Torbogen, Südflügel</de>
+  </cell>
+  <cell>
+    <de>Sadrith Mora, Taverne Zum Torbogen, Westflügel</de>
+  </cell>
+  <cell>
+    <de>Sadrith Mora, Tel Naga, Unterkünfte</de>
+  </cell>
+  <cell>
+    <de>Sadrith Mora, Tel Naga, große Halle</de>
+  </cell>
+  <cell>
+    <de>Sadrith Mora, Tel Naga, obere Halle</de>
+  </cell>
+  <cell>
+    <de>Sadrith Mora, Tel Naga, oberer Turm</de>
+  </cell>
+  <cell>
+    <de>Sadrith Mora, Telvanni-Ratshaus</de>
+  </cell>
+  <cell>
+    <de>Sadrith Mora, Telvanni-Ratshaus, Eingang</de>
+  </cell>
+  <cell>
+    <de>Sadrith Mora, Telvanni-Ratshaus, Gemächer</de>
+  </cell>
+  <cell>
+    <de>Sadrith Mora, Telvanni-Ratshaus, Klause</de>
+  </cell>
+  <cell>
+    <de>Sadrith Mora, Thervul Serethi: Heiler</de>
+  </cell>
+  <cell>
+    <de>Sadrith Mora, Trendrus Drals Haus</de>
+  </cell>
+  <cell>
+    <de>Sadrith Mora, Urtisa Romayns Haus</de>
+  </cell>
+  <cell>
+    <de>Sadrith Mora, Urtiso Faryon: Hexenmeisterin</de>
+  </cell>
+  <cell>
+    <de>Sadrith Mora, Vaden Belas Haus</de>
+  </cell>
+  <cell>
+    <de>Sadrith Mora, Volmyni Drals Haus</de>
+  </cell>
+  <cell>
+    <de>Sadrith Mora, Wolfenhalle</de>
+  </cell>
+  <cell>
+    <de>Sadrith Mora, Wolfenhalle: Kaiserlicher Schrein</de>
+  </cell>
+  <cell>
+    <de>Sadrith Mora, Wolfenhalle: Kriegergilde</de>
+  </cell>
+  <cell>
+    <de>Sadrith Mora, Wolfenhalle: Magiergilde</de>
+  </cell>
+  <cell>
+    <de>Sadrith Mora, Zur Dreckigen Muriel</de>
+  </cell>
+  <cell>
+    <de>Sadryon-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Salit-Lager, Zalits Zelt</de>
+  </cell>
+  <cell>
+    <de>Salit-Lager, Zelays Zelt</de>
+  </cell>
+  <cell>
+    <de>Salmantu</de>
+  </cell>
+  <cell>
+    <de>Salmantu, Schrein</de>
+  </cell>
+  <cell>
+    <de>Salothan-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Salothran-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Salvel-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Samarys-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Sanabi</de>
+  </cell>
+  <cell>
+    <de>Sandas-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Sandus-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Sanit</de>
+  </cell>
+  <cell>
+    <de>Sanit, Schrein</de>
+  </cell>
+  <cell>
+    <de>Sanktus-Schrein</de>
+  </cell>
+  <cell>
+    <de>Sanni</de>
+  </cell>
+  <cell>
+    <de>Sarano-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Saren-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Sarethi-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Sargon</de>
+  </cell>
+  <cell>
+    <de>Sarimisun-Assa, Eiermine</de>
+  </cell>
+  <cell>
+    <de>Sarimisun-Assa, Eiermine, Nest der Königin</de>
+  </cell>
+  <cell>
+    <de>Sarys-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Saturan</de>
+  </cell>
+  <cell>
+    <de>Savel-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Schneller Pfeil, Kabine</de>
+  </cell>
+  <cell>
+    <de>Schneller Pfeil, Oberdeck</de>
+  </cell>
+  <cell>
+    <de>Schneller Pfeil, Unterdeck</de>
+  </cell>
+  <cell>
+    <de>Seltsames Schiffswrack, Kabine</de>
+  </cell>
+  <cell>
+    <de>Seltsames Schiffswrack, Oberdeck</de>
+  </cell>
+  <cell>
+    <de>Seltsames Schiffswrack, Unterdeck</de>
+  </cell>
+  <cell>
+    <de>Senim-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Sennananit</de>
+  </cell>
+  <cell>
+    <de>Seran-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Serano-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Sethan-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Setus, Eiermine</de>
+  </cell>
+  <cell>
+    <de>Seyda Neen</de>
+  </cell>
+  <cell>
+    <de>Seyda Neen, Arrilles Handelshaus</de>
+  </cell>
+  <cell>
+    <de>Seyda Neen, Draren Thiralas Haus</de>
+  </cell>
+  <cell>
+    <de>Seyda Neen, Eldafires Haus</de>
+  </cell>
+  <cell>
+    <de>Seyda Neen, Erene Llenims Hütte</de>
+  </cell>
+  <cell>
+    <de>Seyda Neen, Fargoths Haus</de>
+  </cell>
+  <cell>
+    <de>Seyda Neen, Finomoldos Hütte</de>
+  </cell>
+  <cell>
+    <de>Seyda Neen, Foryn Gilniths Hütte</de>
+  </cell>
+  <cell>
+    <de>Seyda Neen, Indrele Rathryons Hütte</de>
+  </cell>
+  <cell>
+    <de>Seyda Neen, Leuchtturm</de>
+  </cell>
+  <cell>
+    <de>Seyda Neen, Terurise Girvaynes Haus</de>
+  </cell>
+  <cell>
+    <de>Seyda Neen, Vodunius Nuccius’ Haus</de>
+  </cell>
+  <cell>
+    <de>Seyda Neen, Zensus- und Steueramt</de>
+  </cell>
+  <cell>
+    <de>Seyda Neen, Zensus- und Steueramt Lagerhaus</de>
+  </cell>
+  <cell>
+    <de>Sha-Adnius</de>
+  </cell>
+  <cell>
+    <de>Shal</de>
+  </cell>
+  <cell>
+    <de>Shallit</de>
+  </cell>
+  <cell>
+    <de>Shara</de>
+  </cell>
+  <cell>
+    <de>Sharapli</de>
+  </cell>
+  <cell>
+    <de>Shashmanu-Lager, Anits Zelt</de>
+  </cell>
+  <cell>
+    <de>Shashpilamat</de>
+  </cell>
+  <cell>
+    <de>Shashpilamat, Schrein</de>
+  </cell>
+  <cell>
+    <de>Shashurari-Lager, Zennammus Zelt</de>
+  </cell>
+  <cell>
+    <de>Shishara</de>
+  </cell>
+  <cell>
+    <de>Shishi</de>
+  </cell>
+  <cell>
+    <de>Shulk, Eiermine</de>
+  </cell>
+  <cell>
+    <de>Shulk, Eiermine, Nest der Königin</de>
+  </cell>
+  <cell>
+    <de>Shulk, Eiermine, Schürflager</de>
+  </cell>
+  <cell>
+    <de>Shurdan-Raplay, Eiermine</de>
+  </cell>
+  <cell>
+    <de>Shurinbaal</de>
+  </cell>
+  <cell>
+    <de>Shushan</de>
+  </cell>
+  <cell>
+    <de>Shushishi</de>
+  </cell>
+  <cell>
+    <de>Sinamusa, Eiermine</de>
+  </cell>
+  <cell>
+    <de>Sinarralit, Eiermine</de>
+  </cell>
+  <cell>
+    <de>Sinsibadon</de>
+  </cell>
+  <cell>
+    <de>Sjorvar Nüsters Haus</de>
+  </cell>
+  <cell>
+    <de>Skaal-Dorf</de>
+  </cell>
+  <cell>
+    <de>Skaal-Dorf, Blodskaals Haus</de>
+  </cell>
+  <cell>
+    <de>Skaal-Dorf, Die Große Halle</de>
+  </cell>
+  <cell>
+    <de>Skaal-Dorf, Eismähnes Hütte</de>
+  </cell>
+  <cell>
+    <de>Skaal-Dorf, Haus von Bronrod dem Brüllenden</de>
+  </cell>
+  <cell>
+    <de>Skaal-Dorf, Haus von Erna der Ruhigen</de>
+  </cell>
+  <cell>
+    <de>Skaal-Dorf, Ingmars Haus</de>
+  </cell>
+  <cell>
+    <de>Skaal-Dorf, Lassnrs Haus</de>
+  </cell>
+  <cell>
+    <de>Skaal-Dorf, Rigmors Hütte</de>
+  </cell>
+  <cell>
+    <de>Skaal-Dorf, Schamanenhütte</de>
+  </cell>
+  <cell>
+    <de>Skaal-Dorf, Snedbrir der Schmied</de>
+  </cell>
+  <cell>
+    <de>Sobitbael-Lager, Mals Zelt</de>
+  </cell>
+  <cell>
+    <de>Solstheim</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Aesliips Höhle</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Aesliips Höhle, Gewölbe</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Altar von Thrond</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Behausung von Geilir dem Murmler</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Benkongerike</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Bjorn</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Blutskal-Hügelgrab</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Brodir-Hain</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Burg Karstaag</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Burg Karstaag, Bankettsaal</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Burg Karstaag, Gewölbe</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Burg Karstaag, Karstaags Kammern</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Burg Karstaag, Thronsaal</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Burg Karstaag, Turm</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Connorflenge-Hügelgrab</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Domme</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Düstere Höhle</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Eddard-Hügelgrab</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Eingang Gyldenhul-Hügelgrab</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Fjalding-Höhlen</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Fjalding-See</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Fjell</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Frossel</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Frosselmane-Hügelgrab</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Frykte</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Gandrung-Höhlen</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Glenschuls Grab</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Grarings Haus</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Gronn</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Gruft von Skaalara</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Gyldenhul-Hügelgrab</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Himmelhost-Hügelgrab</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Hrothmunds Fluch</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Hrothmunds Hügelgrab</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Hvitkald-Gipfel</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Höhle der verborgenen Melodie</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Höhle des Udyrfrykte</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Jolgeirr-Hügelgrab</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Kammer des Lieds</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Kelsedolk-Hügelgrab</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Kjolvers Behausung</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Kolbjorn-Hügelgrab</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Kolfinnas Behausung</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Legge</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Lukesturm-Hügelgrab</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Mortrag-Gletscher</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Mortrag-Gletscher: Eingang</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Mortrag-Gletscher: Innerer Ring</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Mortrag-Gletscher: Jagdmann-Hallen</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Mortrag-Gletscher: Äußerer Ring</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Onkel Schleckermauls Werkstatt</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Penumbra-Hallen</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Rimhull</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Sjobal</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Skogsdrake-Hügelgrab</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Skygge</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Solvjord</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Stahlman-Schlucht</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Stormpfund-Hügelgrab</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Thirsk</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Thormoors Wacht</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Ulfgars des Endlosen Behausung</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Valbrandr-Hügelgrab</de>
+  </cell>
+  <cell>
+    <de>Solstheim, Varstaad-Höhlen</de>
+  </cell>
+  <cell>
+    <de>Sotha Sil</de>
+  </cell>
+  <cell>
+    <de>Sotha Sil, Halle des Deliriums</de>
+  </cell>
+  <cell>
+    <de>Sotha Sil, Halle von Mileitho</de>
+  </cell>
+  <cell>
+    <de>Sotha Sil, Halle von Sallaemu</de>
+  </cell>
+  <cell>
+    <de>Sotha Sil, Halle von Theuda</de>
+  </cell>
+  <cell>
+    <de>Sotha Sil, Innere überflutete Hallen</de>
+  </cell>
+  <cell>
+    <de>Sotha Sil, Kammer von Sohleh</de>
+  </cell>
+  <cell>
+    <de>Sotha Sil, Kuppel der Unfertigen</de>
+  </cell>
+  <cell>
+    <de>Sotha Sil, Kuppel von Kasia</de>
+  </cell>
+  <cell>
+    <de>Sotha Sil, Kuppel von Serlyn</de>
+  </cell>
+  <cell>
+    <de>Sotha Sil, Kuppel von Sotha Sil</de>
+  </cell>
+  <cell>
+    <de>Sotha Sil, Kuppel von Udok</de>
+  </cell>
+  <cell>
+    <de>Sotha Sil, Zentrale Mechanik</de>
+  </cell>
+  <cell>
+    <de>Sotha Sil, Äußere überflutete Hallen</de>
+  </cell>
+  <cell>
+    <de>Sterdecans Hof</de>
+  </cell>
+  <cell>
+    <de>Subdun</de>
+  </cell>
+  <cell>
+    <de>Subdun, Schrein</de>
+  </cell>
+  <cell>
+    <de>Sud</de>
+  </cell>
+  <cell>
+    <de>Sudanit, Mine</de>
+  </cell>
+  <cell>
+    <de>Sulipund</de>
+  </cell>
+  <cell>
+    <de>Sur, Eiermine</de>
+  </cell>
+  <cell>
+    <de>Suran</de>
+  </cell>
+  <cell>
+    <de>Suran, Deseles Haus der irdischen Freuden</de>
+  </cell>
+  <cell>
+    <de>Suran, Garothmuk gro-Muzgub: Schmied</de>
+  </cell>
+  <cell>
+    <de>Suran, Goldyn Belaram: Pfandleiher</de>
+  </cell>
+  <cell>
+    <de>Suran, Handelshaus</de>
+  </cell>
+  <cell>
+    <de>Suran, Haus Oran</de>
+  </cell>
+  <cell>
+    <de>Suran, Ibarnadad Assirnarari: Trankmischer</de>
+  </cell>
+  <cell>
+    <de>Suran, Ralds Oril: Händler</de>
+  </cell>
+  <cell>
+    <de>Suran, Ranosa Gilvayn: Ausstatterin</de>
+  </cell>
+  <cell>
+    <de>Suran, Sklavenmarkt</de>
+  </cell>
+  <cell>
+    <de>Suran, Tempel</de>
+  </cell>
+  <cell>
+    <de>Suran, Verara Rendo: Schneiderin</de>
+  </cell>
+  <cell>
+    <de>Suran, Wachturm</de>
+  </cell>
+  <cell>
+    <de>Surirulk</de>
+  </cell>
+  <cell>
+    <de>Tel Aruhn</de>
+  </cell>
+  <cell>
+    <de>Tel Aruhn, Aryne Telnim: Schmiedin</de>
+  </cell>
+  <cell>
+    <de>Tel Aruhn, Bildren Areleth: Trankmischer</de>
+  </cell>
+  <cell>
+    <de>Tel Aruhn, Ferele Athram: Händler</de>
+  </cell>
+  <cell>
+    <de>Tel Aruhn, Maren Uvaren: Verzauberungen</de>
+  </cell>
+  <cell>
+    <de>Tel Aruhn, Oberer Turm</de>
+  </cell>
+  <cell>
+    <de>Tel Aruhn, Pech und Schwefel</de>
+  </cell>
+  <cell>
+    <de>Tel Aruhn, Turm-Wohnquartiere</de>
+  </cell>
+  <cell>
+    <de>Tel Aruhn, Turmzugang</de>
+  </cell>
+  <cell>
+    <de>Tel Aruhn, Untergrund</de>
+  </cell>
+  <cell>
+    <de>Tel Branora</de>
+  </cell>
+  <cell>
+    <de>Tel Branora, Ervyna Hlervus Hütte</de>
+  </cell>
+  <cell>
+    <de>Tel Branora, Evos Gorans Haus</de>
+  </cell>
+  <cell>
+    <de>Tel Branora, Fadase Selvayn: Händlerin</de>
+  </cell>
+  <cell>
+    <de>Tel Branora, Fedar Davus’ Haus</de>
+  </cell>
+  <cell>
+    <de>Tel Branora, Galen Berer: Waffenschmied</de>
+  </cell>
+  <cell>
+    <de>Tel Branora, Giron Manas’ Hütte</de>
+  </cell>
+  <cell>
+    <de>Tel Branora, Manos Vavyns Haus</de>
+  </cell>
+  <cell>
+    <de>Tel Branora, Oberer Turm</de>
+  </cell>
+  <cell>
+    <de>Tel Branora, Oberer Turm: Theranas Kammern</de>
+  </cell>
+  <cell>
+    <de>Tel Branora, Seryne Relas’ Haus</de>
+  </cell>
+  <cell>
+    <de>Tel Branora, Sethans Handelshaus</de>
+  </cell>
+  <cell>
+    <de>Tel Branora, Turm-Wachposten</de>
+  </cell>
+  <cell>
+    <de>Tel Branora, Turmverlies</de>
+  </cell>
+  <cell>
+    <de>Tel Branora, Unterer Turm</de>
+  </cell>
+  <cell>
+    <de>Tel Fyr</de>
+  </cell>
+  <cell>
+    <de>Tel Mora</de>
+  </cell>
+  <cell>
+    <de>Tel Mora, Berwen: Händlerin</de>
+  </cell>
+  <cell>
+    <de>Tel Mora, Elegnan: Schneiderin</de>
+  </cell>
+  <cell>
+    <de>Tel Mora, Jolda: Trankmischerin</de>
+  </cell>
+  <cell>
+    <de>Tel Mora, Kirstys Haus</de>
+  </cell>
+  <cell>
+    <de>Tel Mora, Liettes Haus</de>
+  </cell>
+  <cell>
+    <de>Tel Mora, Nonas Haus</de>
+  </cell>
+  <cell>
+    <de>Tel Mora, Oberer Turm</de>
+  </cell>
+  <cell>
+    <de>Tel Mora, Radras: Schmiedin</de>
+  </cell>
+  <cell>
+    <de>Tel Mora, Turm der Dienste</de>
+  </cell>
+  <cell>
+    <de>Tel Mora, Unterer Turm</de>
+  </cell>
+  <cell>
+    <de>Tel Mora, Zum feierlichen Schwur</de>
+  </cell>
+  <cell>
+    <de>Tel Uvirith, Arelas’ Haus</de>
+  </cell>
+  <cell>
+    <de>Tel Uvirith, Menas’ Haus</de>
+  </cell>
+  <cell>
+    <de>Tel Uvirith, Oberer Turm</de>
+  </cell>
+  <cell>
+    <de>Tel Uvirith, Omavels Haus</de>
+  </cell>
+  <cell>
+    <de>Tel Uvirith, Seleths Haus</de>
+  </cell>
+  <cell>
+    <de>Tel Uvirith, Turmverlies</de>
+  </cell>
+  <cell>
+    <de>Tel Uvirith, Unterer Turm</de>
+  </cell>
+  <cell>
+    <de>Tel Vos</de>
+  </cell>
+  <cell>
+    <de>Tel Vos, Aryons Kammern</de>
+  </cell>
+  <cell>
+    <de>Tel Vos, Gefängnis</de>
+  </cell>
+  <cell>
+    <de>Tel Vos, Kaserne und Waffenkammer</de>
+  </cell>
+  <cell>
+    <de>Tel Vos, Nordöstlicher Turm</de>
+  </cell>
+  <cell>
+    <de>Tel Vos, Südlicher Turm</de>
+  </cell>
+  <cell>
+    <de>Tel Vos, Turm der Dienste</de>
+  </cell>
+  <cell>
+    <de>Tel Vos, Verlies</de>
+  </cell>
+  <cell>
+    <de>Tel Vos, Zentraler Turm</de>
+  </cell>
+  <cell>
+    <de>Telasero</de>
+  </cell>
+  <cell>
+    <de>Telasero, Obere Ebene</de>
+  </cell>
+  <cell>
+    <de>Telasero, Propylon-Kammer</de>
+  </cell>
+  <cell>
+    <de>Telasero, Untere Ebene</de>
+  </cell>
+  <cell>
+    <de>Telvayn-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Thalas-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Tharys-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Thelas-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Thiralas-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Thirsk</de>
+  </cell>
+  <cell>
+    <de>Tin-Ahhe</de>
+  </cell>
+  <cell>
+    <de>ToddTest</de>
+  </cell>
+  <cell>
+    <de>Trödelverkauf – Alles muss weg!</de>
+  </cell>
+  <cell>
+    <de>Tukushapal</de>
+  </cell>
+  <cell>
+    <de>Tukushapal, Grabmal</de>
+  </cell>
+  <cell>
+    <de>Tureynulal</de>
+  </cell>
+  <cell>
+    <de>Tureynulal, Auge von Duggan</de>
+  </cell>
+  <cell>
+    <de>Tureynulal, Auge von Thom Wye</de>
+  </cell>
+  <cell>
+    <de>Tureynulal, Blase von Clovis</de>
+  </cell>
+  <cell>
+    <de>Tureynulal, Kagrenacs Bibliothek</de>
+  </cell>
+  <cell>
+    <de>Turm von Tel Fyr, Halle von Fyr</de>
+  </cell>
+  <cell>
+    <de>Turm von Tel Fyr, Onyxhalle</de>
+  </cell>
+  <cell>
+    <de>Tusenend, Schrein</de>
+  </cell>
+  <cell>
+    <de>Ularradallaku, Schrein</de>
+  </cell>
+  <cell>
+    <de>Ules-Anwesen</de>
+  </cell>
+  <cell>
+    <de>Ules-Anwesen, Hütte des Sklavenmeisters</de>
+  </cell>
+  <cell>
+    <de>Ules-Anwesen, Sklavenhütte</de>
+  </cell>
+  <cell>
+    <de>Ulummusa</de>
+  </cell>
+  <cell>
+    <de>Unbekanntes Schiffswrack, Kabine</de>
+  </cell>
+  <cell>
+    <de>Unbekanntes Schiffswrack, Oberdeck</de>
+  </cell>
+  <cell>
+    <de>Unbekanntes Schiffswrack, Unterdeck</de>
+  </cell>
+  <cell>
+    <de>Unentdecktes Schiffswrack, Kabine</de>
+  </cell>
+  <cell>
+    <de>Unentdecktes Schiffswrack, Oberdeck</de>
+  </cell>
+  <cell>
+    <de>Unentdecktes Schiffswrack, Unterdeck</de>
+  </cell>
+  <cell>
+    <de>Unerforschtes Schiffswrack, Kabine</de>
+  </cell>
+  <cell>
+    <de>Unerforschtes Schiffswrack, Oberdeck</de>
+  </cell>
+  <cell>
+    <de>Unerforschtes Schiffswrack, Unterdeck</de>
+  </cell>
+  <cell>
+    <de>Urshilaku, Astralgrab</de>
+  </cell>
+  <cell>
+    <de>Urshilaku, Bruchgrab</de>
+  </cell>
+  <cell>
+    <de>Urshilaku, Juno-Grab</de>
+  </cell>
+  <cell>
+    <de>Urshilaku, Kakuna-Grab</de>
+  </cell>
+  <cell>
+    <de>Urshilaku, Karma-Grab</de>
+  </cell>
+  <cell>
+    <de>Urshilaku, Kefka-Grab</de>
+  </cell>
+  <cell>
+    <de>Urshilaku, Laterus-Grab</de>
+  </cell>
+  <cell>
+    <de>Urshilaku-Lager</de>
+  </cell>
+  <cell>
+    <de>Urshilaku-Lager, Ahasours Zelt</de>
+  </cell>
+  <cell>
+    <de>Urshilaku-Lager, Kuraplis Zelt</de>
+  </cell>
+  <cell>
+    <de>Urshilaku-Lager, Maelis Zelt</de>
+  </cell>
+  <cell>
+    <de>Urshilaku-Lager, Sakirans Zelt</de>
+  </cell>
+  <cell>
+    <de>Urshilaku-Lager, Sharas Zelt</de>
+  </cell>
+  <cell>
+    <de>Urshilaku-Lager, Shimsuns Zelt</de>
+  </cell>
+  <cell>
+    <de>Urshilaku-Lager, Zabamunds Zelt</de>
+  </cell>
+  <cell>
+    <de>Urshilaku-Lager, Zanummus Zelt</de>
+  </cell>
+  <cell>
+    <de>Urshilaku-Lager, Zelt der Weisen Frau</de>
+  </cell>
+  <cell>
+    <de>Urshilaku-Lager, Zelt des Ashkhan</de>
+  </cell>
+  <cell>
+    <de>Uveran-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Uviriths Grab</de>
+  </cell>
+  <cell>
+    <de>Valenvaryon</de>
+  </cell>
+  <cell>
+    <de>Valenvaryon, Durzs Hütte</de>
+  </cell>
+  <cell>
+    <de>Valenvaryon, Gashnas Hütte</de>
+  </cell>
+  <cell>
+    <de>Valenvaryon, Lambugs Hütte</de>
+  </cell>
+  <cell>
+    <de>Valenvaryon, Lurogs Hütte</de>
+  </cell>
+  <cell>
+    <de>Valenvaryon, Propylon-Kammer</de>
+  </cell>
+  <cell>
+    <de>Valenvaryon, Umugs Hütte</de>
+  </cell>
+  <cell>
+    <de>Vandus-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Vansunalit, Eiermine</de>
+  </cell>
+  <cell>
+    <de>Vas</de>
+  </cell>
+  <cell>
+    <de>Vas, Turm</de>
+  </cell>
+  <cell>
+    <de>Vas, Zugangsebene</de>
+  </cell>
+  <cell>
+    <de>Vassamsi-Grotte</de>
+  </cell>
+  <cell>
+    <de>Vassir-Didanat Höhle</de>
+  </cell>
+  <cell>
+    <de>Velas-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Veloth-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Vemynal</de>
+  </cell>
+  <cell>
+    <de>Vemynal, Halle der Drehungen</de>
+  </cell>
+  <cell>
+    <de>Vemynal, Äußere Festung</de>
+  </cell>
+  <cell>
+    <de>Venim-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Verelnim-Ahnengruft</de>
+  </cell>
+  <cell>
+    <de>Verfallendes Schiffswrack, Kabine</de>
+  </cell>
+  <cell>
+    <de>Verfallendes Schiffswrack, Oberdeck</de>
+  </cell>
+  <cell>
+    <de>Verfallendes Schiffswrack, Unterdeck</de>
+  </cell>
+  <cell>
+    <de>Vergessene Gewölbe von Anudnabia, Hilbongard-Schmiede</de>
+  </cell>
+  <cell>
+    <de>Vergessenes Schiffswrack</de>
+  </cell>
+  <cell>
+    <de>Verlassenes Schiffswrack, Kabine</de>
+  </cell>
+  <cell>
+    <de>Verlassenes Schiffswrack, Oberdeck</de>
+  </cell>
+  <cell>
+    <de>Verlassenes Schiffswrack, Unterdeck</de>
+  </cell>
+  <cell>
+    <de>Verrottendes Schiffswrack, Kabine</de>
+  </cell>
+  <cell>
+    <de>Verrottendes Schiffswrack, Oberdeck</de>
+  </cell>
+  <cell>
+    <de>Verrottendes Schiffswrack, Unterdeck</de>
+  </cell>
+  <cell>
+    <de>Verschollenes Schiffswrack, Kabine</de>
+  </cell>
+  <cell>
+    <de>Verschollenes Schiffswrack, Oberdeck</de>
+  </cell>
+  <cell>
+    <de>Verschollenes Schiffswrack, Unterdeck</de>
+  </cell>
+  <cell>
+    <de>Verwaistes Schiffswrack, Kabine</de>
+  </cell>
+  <cell>
+    <de>Verwaistes Schiffswrack, Oberdeck</de>
+  </cell>
+  <cell>
+    <de>Verwaistes Schiffswrack, Unterdeck</de>
+  </cell>
+  <cell>
+    <de>Vivec</de>
+  </cell>
+  <cell>
+    <de>Vivec, Abtei des Hl. Delyn des Weisen</de>
+  </cell>
+  <cell>
+    <de>Vivec, Agrippina Herennia: Schneiderin</de>
+  </cell>
+  <cell>
+    <de>Vivec, Alusaron: Schmied</de>
+  </cell>
+  <cell>
+    <de>Vivec, Andilu Drothan: Alchemistin</de>
+  </cell>
+  <cell>
+    <de>Vivec, Arena</de>
+  </cell>
+  <cell>
+    <de>Vivec, Arena, Bodensektion</de>
+  </cell>
+  <cell>
+    <de>Vivec, Arena, Grube</de>
+  </cell>
+  <cell>
+    <de>Vivec, Arena, Kanäle</de>
+  </cell>
+  <cell>
+    <de>Vivec, Arena, Kämpfer-Ausbildungsbereich</de>
+  </cell>
+  <cell>
+    <de>Vivec, Arena, Lager</de>
+  </cell>
+  <cell>
+    <de>Vivec, Arena, Quartiere der Kämpfer</de>
+  </cell>
+  <cell>
+    <de>Vivec, Arena, Unterirdische Kanäle</de>
+  </cell>
+  <cell>
+    <de>Vivec, Arena, Versteckter Bereich</de>
+  </cell>
+  <cell>
+    <de>Vivec, Arena, Zellen</de>
+  </cell>
+  <cell>
+    <de>Vivec, Aurane Frernis: Trankmischerin</de>
+  </cell>
+  <cell>
+    <de>Vivec, Bibliothek von Vivec</de>
+  </cell>
+  <cell>
+    <de>Vivec, Der Echsenkopf</de>
+  </cell>
+  <cell>
+    <de>Vivec, Fremdenviertel</de>
+  </cell>
+  <cell>
+    <de>Vivec, Fremdenviertel, Gruft</de>
+  </cell>
+  <cell>
+    <de>Vivec, Fremdenviertel, Kanäle</de>
+  </cell>
+  <cell>
+    <de>Vivec, Fremdenviertel, Obere Bodensektion</de>
+  </cell>
+  <cell>
+    <de>Vivec, Fremdenviertel, Platz</de>
+  </cell>
+  <cell>
+    <de>Vivec, Fremdenviertel, Untere Bodensektion</de>
+  </cell>
+  <cell>
+    <de>Vivec, Fremdenviertel, Unterirdische Kanäle</de>
+  </cell>
+  <cell>
+    <de>Vivec, Gesetzeshallen</de>
+  </cell>
+  <cell>
+    <de>Vivec, Halle der Gerechtigkeit</de>
+  </cell>
+  <cell>
+    <de>Vivec, Halle der Gerechtigkeit, Geheimbibliothek</de>
+  </cell>
+  <cell>
+    <de>Vivec, Halle der Weisheit</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hallen der Wache</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hallen, Unterirdische Kanäle</de>
+  </cell>
+  <cell>
+    <de>Vivec, Haus Curio</de>
+  </cell>
+  <cell>
+    <de>Vivec, Haus Dralor</de>
+  </cell>
+  <cell>
+    <de>Vivec, Haus Saren</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl. Delyn</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl. Olms</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl.Delyn, Bodensektion</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl.Delyn, Bodensektion Nord-Eins</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl.Delyn, Bodensektion Nord-Zwei</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl.Delyn, Bodensektion Süd-Eins</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl.Delyn, Bodensektion Süd-Zwei</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl.Delyn, Glashütte</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl.Delyn, Kanal Nord-Drei</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl.Delyn, Kanal Nord-Eins</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl.Delyn, Kanal Nord-Zwei</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl.Delyn, Kanal Süd-Drei</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl.Delyn, Kanal Süd-Eins</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl.Delyn, Kanal Süd-Zwei</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl.Delyn, Kanäle</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl.Delyn, Lager</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl.Delyn, Platz</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl.Delyn, Töpferer-Halle</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl.Delyn, Unterirdische Kanäle</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl.Olms, Bauern und Arbeiter-Halle</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl.Olms, Bodensektion</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl.Olms, Bodensektion Nord-Eins</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl.Olms, Bodensektion Nord-Zwei</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl.Olms, Bodensektion Süd-Eins</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl.Olms, Bodensektion Süd-Zwei</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl.Olms, Brauer und Fischhändler-Halle</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl.Olms, Gerber und Schürfer-Halle</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl.Olms, Haus Yngling</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl.Olms, Haus Yngling, Erdgeschoss</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl.Olms, Kanal Nord Zwei</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl.Olms, Kanal Nord-Drei</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl.Olms, Kanal Nord-Eins</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl.Olms, Kanal Süd-Drei</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl.Olms, Kanal Süd-Eins</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl.Olms, Kanal Süd-Zwei</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl.Olms, Kanäle</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl.Olms, Lager</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl.Olms, Obere Ebene Nord-Eins</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl.Olms, Obere Ebene Nord-Zwei</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl.Olms, Obere Ebene Süd-Eins</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl.Olms, Platz</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl.Olms, Schneider und Färber-Halle</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl.Olms, Spukhaus</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl.Olms, Tempel</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hl.Olms, Unterirdische Kanäle</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hlaalu</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hlaalu, Ahnengewölbe</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hlaalu, Alchemist</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hlaalu, Archive</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hlaalu, Bodensektion</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hlaalu, Edryno Arethis Haus</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hlaalu, Gefängniszellen</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hlaalu, Gewölbe</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hlaalu, Kanäle</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hlaalu, Pfandleiher</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hlaalu, Platz</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hlaalu, Schatzhaus</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hlaalu, Tempel</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hlaalu, Unterirdische Kanäle</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hlaalu, Waffenschmied</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hlaalu, Waren aller Art</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hlaren-Residenz</de>
+  </cell>
+  <cell>
+    <de>Vivec, Hoher Tempel</de>
+  </cell>
+  <cell>
+    <de>Vivec, J'Rasha: Heiler</de>
+  </cell>
+  <cell>
+    <de>Vivec, Jeanne: Händlerin</de>
+  </cell>
+  <cell>
+    <de>Vivec, Jobashas Seltene Bücher</de>
+  </cell>
+  <cell>
+    <de>Vivec, Kanonikat</de>
+  </cell>
+  <cell>
+    <de>Vivec, Kanoniker-Quartiere</de>
+  </cell>
+  <cell>
+    <de>Vivec, Kriegergilde</de>
+  </cell>
+  <cell>
+    <de>Vivec, Lucretinaus Olcinius: Händler</de>
+  </cell>
+  <cell>
+    <de>Vivec, Magiergilde</de>
+  </cell>
+  <cell>
+    <de>Vivec, Mevel Fererus: Händler</de>
+  </cell>
+  <cell>
+    <de>Vivec, Milos Quartiere</de>
+  </cell>
+  <cell>
+    <de>Vivec, Miun-Gei: Verzauberungen</de>
+  </cell>
+  <cell>
+    <de>Vivec, Palast des Vivec</de>
+  </cell>
+  <cell>
+    <de>Vivec, Ralen Tilvur: Schmied</de>
+  </cell>
+  <cell>
+    <de>Vivec, Redoran</de>
+  </cell>
+  <cell>
+    <de>Vivec, Redoran, Ahnengewölbe</de>
+  </cell>
+  <cell>
+    <de>Vivec, Redoran, Archive</de>
+  </cell>
+  <cell>
+    <de>Vivec, Redoran, Bodensektion</de>
+  </cell>
+  <cell>
+    <de>Vivec, Redoran, Gefängniszellen</de>
+  </cell>
+  <cell>
+    <de>Vivec, Redoran, Gewölbe</de>
+  </cell>
+  <cell>
+    <de>Vivec, Redoran, Händler</de>
+  </cell>
+  <cell>
+    <de>Vivec, Redoran, Kanäle</de>
+  </cell>
+  <cell>
+    <de>Vivec, Redoran, Kundschafter und Ausbilder</de>
+  </cell>
+  <cell>
+    <de>Vivec, Redoran, Platz</de>
+  </cell>
+  <cell>
+    <de>Vivec, Redoran, Schatzhaus</de>
+  </cell>
+  <cell>
+    <de>Vivec, Redoran, Schmied</de>
+  </cell>
+  <cell>
+    <de>Vivec, Redoran, Tempelschrein</de>
+  </cell>
+  <cell>
+    <de>Vivec, Redoran, Unterirdische Kanäle</de>
+  </cell>
+  <cell>
+    <de>Vivec, Rätsel-Kanal, Ebene 1</de>
+  </cell>
+  <cell>
+    <de>Vivec, Rätsel-Kanal, Ebene 2</de>
+  </cell>
+  <cell>
+    <de>Vivec, Rätsel-Kanal, Ebene 3</de>
+  </cell>
+  <cell>
+    <de>Vivec, Rätsel-Kanal, Ebene 4</de>
+  </cell>
+  <cell>
+    <de>Vivec, Rätsel-Kanal, Ebene 5</de>
+  </cell>
+  <cell>
+    <de>Vivec, Rätsel-Kanal, Zentrum</de>
+  </cell>
+  <cell>
+    <de>Vivec, Simine Fralinie: Buchhändler</de>
+  </cell>
+  <cell>
+    <de>Vivec, Taverne Elfennation</de>
+  </cell>
+  <cell>
+    <de>Vivec, Taverne Goldblume</de>
+  </cell>
+  <cell>
+    <de>Vivec, Taverne Zum Schwarzen Shalk</de>
+  </cell>
+  <cell>
+    <de>Vivec, Taverne ohne Namen</de>
+  </cell>
+  <cell>
+    <de>Vivec, Telvanni</de>
+  </cell>
+  <cell>
+    <de>Vivec, Telvanni, Alchemist</de>
+  </cell>
+  <cell>
+    <de>Vivec, Telvanni, Bodensektion</de>
+  </cell>
+  <cell>
+    <de>Vivec, Telvanni, Gefängniszellen</de>
+  </cell>
+  <cell>
+    <de>Vivec, Telvanni, Gewölbe</de>
+  </cell>
+  <cell>
+    <de>Vivec, Telvanni, Hexenmeister</de>
+  </cell>
+  <cell>
+    <de>Vivec, Telvanni, Kanäle</de>
+  </cell>
+  <cell>
+    <de>Vivec, Telvanni, Magier</de>
+  </cell>
+  <cell>
+    <de>Vivec, Telvanni, Monster-Labor</de>
+  </cell>
+  <cell>
+    <de>Vivec, Telvanni, Oberes Lager</de>
+  </cell>
+  <cell>
+    <de>Vivec, Telvanni, Platz</de>
+  </cell>
+  <cell>
+    <de>Vivec, Telvanni, Tempel</de>
+  </cell>
+  <cell>
+    <de>Vivec, Telvanni, Trankmischer</de>
+  </cell>
+  <cell>
+    <de>Vivec, Telvanni, Turm</de>
+  </cell>
+  <cell>
+    <de>Vivec, Telvanni, Unterirdische Kanäle</de>
+  </cell>
+  <cell>
+    <de>Vivec, Telvanni, Verzauberungen</de>
+  </cell>
+  <cell>
+    <de>Vivec, Telvanni-Notunterkünfte</de>
+  </cell>
+  <cell>
+    <de>Vivec, Tempel</de>
+  </cell>
+  <cell>
+    <de>Vivec, Tervur Braven: Händler</de>
+  </cell>
+  <cell>
+    <de>Vivec, Unterkünfte der Ordinatoren</de>
+  </cell>
+  <cell>
+    <de>Vor Lair, Chambers of Alta Vor</de>
+  </cell>
+  <cell>
+    <de>Vor Lair, Interior</de>
+  </cell>
+  <cell>
+    <de>Vos</de>
+  </cell>
+  <cell>
+    <de>Vos, Dreynos Elvuls Bauernhaus</de>
+  </cell>
+  <cell>
+    <de>Vos, Fanisea Iranos Bauernhaus</de>
+  </cell>
+  <cell>
+    <de>Vos, Ienasa Radas’ Bauernhaus</de>
+  </cell>
+  <cell>
+    <de>Vos, Kapelle</de>
+  </cell>
+  <cell>
+    <de>Vos, Maela Kaushads Bauernhaus</de>
+  </cell>
+  <cell>
+    <de>Vos, Mandyn Ralas’ Bauernhaus</de>
+  </cell>
+  <cell>
+    <de>Vos, Menus Felas’ Bauernhaus</de>
+  </cell>
+  <cell>
+    <de>Vos, Runethyne Andas’ Bauernhaus</de>
+  </cell>
+  <cell>
+    <de>Vos, Thilse Aralas’ Bauernhaus</de>
+  </cell>
+  <cell>
+    <de>Vos, Trilam Drolnors Bauernhaus</de>
+  </cell>
+  <cell>
+    <de>Vos, Ulvil Llothas’ Bauernhaus</de>
+  </cell>
+  <cell>
+    <de>Vos, Varo-Handelshaus</de>
+  </cell>
+  <cell>
+    <de>Vos, Varo-Handelshaus, Eingang</de>
+  </cell>
+  <cell>
+    <de>Vos, Varo-Handelshaus, Lager</de>
+  </cell>
+  <cell>
+    <de>Wolfenhalle</de>
+  </cell>
+  <cell>
+    <de>Wunderland</de>
+  </cell>
+  <cell>
+    <de>Yakanalit</de>
+  </cell>
+  <cell>
+    <de>Yakaridan-Lager, Kitbaels Zelt</de>
+  </cell>
+  <cell>
+    <de>Yakin</de>
+  </cell>
+  <cell>
+    <de>Yakin, Schrein</de>
+  </cell>
+  <cell>
+    <de>Yanemus, Mine</de>
+  </cell>
+  <cell>
+    <de>Yansirramus</de>
+  </cell>
+  <cell>
+    <de>Yansirramus, Schrein</de>
+  </cell>
+  <cell>
+    <de>Yasammidan, Schrein</de>
+  </cell>
+  <cell>
+    <de>Yasamsi</de>
+  </cell>
+  <cell>
+    <de>Yassu Mine</de>
+  </cell>
+  <cell>
+    <de>Yesamsi</de>
+  </cell>
+  <cell>
+    <de>Zainab Lager, Ababael Timsar-Dadisuns Zelt</de>
+  </cell>
+  <cell>
+    <de>Zainab Lager, Ashibaals Zelt</de>
+  </cell>
+  <cell>
+    <de>Zainab Lager, Ashur-Dans Zelt</de>
+  </cell>
+  <cell>
+    <de>Zainab Lager, Kudas Zelt</de>
+  </cell>
+  <cell>
+    <de>Zainab Lager, Kummus Zelt</de>
+  </cell>
+  <cell>
+    <de>Zainab Lager, Minassours Zelt</de>
+  </cell>
+  <cell>
+    <de>Zainab Lager, Patababis Zelt</de>
+  </cell>
+  <cell>
+    <de>Zainab Lager, Thusys Zelt</de>
+  </cell>
+  <cell>
+    <de>Zainab Lager, Zelt der Weisen Frau</de>
+  </cell>
+  <cell>
+    <de>Zainab Lager, Zelt des Ashkhan</de>
+  </cell>
+  <cell>
+    <de>Zainab-Lager</de>
+  </cell>
+  <cell>
+    <de>Zainsipilu</de>
+  </cell>
+  <cell>
+    <de>Zaintirari</de>
+  </cell>
+  <cell>
+    <de>Zaintiraris</de>
+  </cell>
+  <cell>
+    <de>Zaintiraris, Schrein</de>
+  </cell>
+  <cell>
+    <de>Zalkin-Grotte</de>
+  </cell>
+  <cell>
+    <de>Zalkin-Sul, Eiermine</de>
+  </cell>
+  <cell>
+    <de>Zanabi</de>
+  </cell>
+  <cell>
+    <de>Zebabi</de>
+  </cell>
+  <cell>
+    <de>Zenarbael</de>
+  </cell>
+  <cell>
+    <de>Zerfallenes Schiffswrack, Kabine</de>
+  </cell>
+  <cell>
+    <de>Zerfallenes Schiffswrack, Oberdeck</de>
+  </cell>
+  <cell>
+    <de>Zerfallenes Schiffswrack, Unterdeck</de>
+  </cell>
+  <cell>
+    <de>Zergonipal</de>
+  </cell>
+  <cell>
+    <de>Zergonipal, Schrein</de>
+  </cell>
+  <cell>
+    <de>ken's test hole</de>
+  </cell>
+</cellnames>

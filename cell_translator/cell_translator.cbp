@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="cell_translator" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Release">
+				<Option output="bin\Release\cell_translator" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj\Release\" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-fexceptions" />
+		</Compiler>
+		<Unit filename="..\base\DepFiles.cpp" />
+		<Unit filename="..\base\DepFiles.h" />
+		<Unit filename="..\base\ESMReader.cpp" />
+		<Unit filename="..\base\ESMReader.h" />
+		<Unit filename="..\base\ESMReaderGeneric.cpp" />
+		<Unit filename="..\base\ESMReaderGeneric.h" />
+		<Unit filename="..\base\ESMWriter.cpp" />
+		<Unit filename="..\base\ESMWriter.h" />
+		<Unit filename="..\base\ESMWriterGeneric.cpp" />
+		<Unit filename="..\base\ESMWriterGeneric.h" />
+		<Unit filename="..\base\HelperIO.cpp" />
+		<Unit filename="..\base\HelperIO.h" />
+		<Unit filename="..\base\MW_Constants.h" />
+		<Unit filename="..\base\records\AIData.cpp" />
+		<Unit filename="..\base\records\AIData.h" />
+		<Unit filename="..\base\records\AIPackages.cpp" />
+		<Unit filename="..\base\records\AIPackages.h" />
+		<Unit filename="..\base\records\BasicRecord.cpp" />
+		<Unit filename="..\base\records\BasicRecord.h" />
+		<Unit filename="..\base\records\CreatureRecord.cpp" />
+		<Unit filename="..\base\records\CreatureRecord.h" />
+		<Unit filename="..\base\records\GenericRecord.cpp" />
+		<Unit filename="..\base\records\GenericRecord.h" />
+		<Unit filename="..\base\records\ItemRecord.cpp" />
+		<Unit filename="..\base\records\ItemRecord.h" />
+		<Unit filename="..\base\records\NPCRecord.cpp" />
+		<Unit filename="..\base\records\NPCRecord.h" />
+		<Unit filename="..\base\records\PathGridRecord.cpp" />
+		<Unit filename="..\base\records\PathGridRecord.h" />
+		<Unit filename="..\base\records\TravelDestination.cpp" />
+		<Unit filename="..\base\records\TravelDestination.h" />
+		<Unit filename="ESMReaderTranslator.cpp" />
+		<Unit filename="ESMReaderTranslator.h" />
+		<Unit filename="TranslatorXML.cpp" />
+		<Unit filename="TranslatorXML.h" />
+		<Unit filename="XMLParser.cpp" />
+		<Unit filename="XMLParser.h" />
+		<Unit filename="main.cpp" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

@@ -1,0 +1,19 @@
+List of things that should be done for cell_translate sooner or later:
+
+To do:
+======
+
+[General stuff]
+===============
+  - [important] write some documentation that's easy to understand
+  - [important] improve script "compiler" until it can handle all valid scripts
+  - [Wishlist] graphical wrapper application
+
+[To reach v0.2]
+===============
+  - add translate<Name>Record() functions for all records
+
+[To reach v0.3]
+===============
+  - add translateScriptRecord() function
+  - add a parameter that disables translation of scripts, if desired

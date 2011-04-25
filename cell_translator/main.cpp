@@ -38,7 +38,7 @@ const int rcOutputFailed = 4;
 const int rcXMLError = 6;
 const int rcXMLEmpty = 7;
 
-bool translateCreatureRecord(CreatureRecord* c_rec, const CellListType& cells)
+bool translatePreNPCRecord(PreNPCRecord* c_rec, const CellListType& cells)
 {
   if (c_rec==NULL) return false;
 
@@ -306,6 +306,7 @@ int main(int argc, char **argv)
 
   const std::string genericID = typeid(GenericRecord*).name();
   const std::string creatureID = typeid(CreatureRecord*).name();
+  const std::string npcID = typeid(NPCRecord*).name();
   const std::string pathgridID = typeid(PathGridRecord*).name();
 
   std::cout << "typeid of GenericRecord is \""<<genericID<<"\".\n"
@@ -324,10 +325,10 @@ int main(int argc, char **argv)
         dynamic_cast<PathGridRecord*>(*v_iter)->CellName = cell_iter->second;
       }
     }//if path grid
-    else if (type_name==creatureID)
+    else if ((type_name==creatureID) or (type_name==npcID))
     {
-      translateCreatureRecord(dynamic_cast<CreatureRecord*>(*v_iter), cells);
-    }//if creature
+      translatePreNPCRecord(dynamic_cast<PreNPCRecord*>(*v_iter), cells);
+    }//if creature or NPC
 
     /// TODO: add stuff for other record types. It's still missing here.
 

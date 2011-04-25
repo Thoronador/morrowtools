@@ -42,6 +42,8 @@
 		<Unit filename="..\base\records\AIPackages.h" />
 		<Unit filename="..\base\records\BasicRecord.cpp" />
 		<Unit filename="..\base\records\BasicRecord.h" />
+		<Unit filename="..\base\records\CellRecord.cpp" />
+		<Unit filename="..\base\records\CellRecord.h" />
 		<Unit filename="..\base\records\CreatureRecord.cpp" />
 		<Unit filename="..\base\records\CreatureRecord.h" />
 		<Unit filename="..\base\records\GenericRecord.cpp" />
@@ -52,6 +54,10 @@
 		<Unit filename="..\base\records\NPCRecord.h" />
 		<Unit filename="..\base\records\PathGridRecord.cpp" />
 		<Unit filename="..\base\records\PathGridRecord.h" />
+		<Unit filename="..\base\records\PreNPCRecord.cpp" />
+		<Unit filename="..\base\records\PreNPCRecord.h" />
+		<Unit filename="..\base\records\ScriptRecord.cpp" />
+		<Unit filename="..\base\records\ScriptRecord.h" />
 		<Unit filename="..\base\records\TravelDestination.cpp" />
 		<Unit filename="..\base\records\TravelDestination.h" />
 		<Unit filename="ESMReaderTranslator.cpp" />

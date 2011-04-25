@@ -47,12 +47,12 @@ struct GridConnection
 
 struct PathGridRecord: public BasicRecord
 {
+  //path grid data
   int32_t GridX;
   int32_t GridY;
-  //unknown data (4 bytes)
   uint16_t Granularity;
   uint16_t NumQuads;
-  //end of unknown data
+  //end of path grid data
   std::string CellName;
   std::vector<GridPointData> Points;
   std::vector<GridConnection> Connections;

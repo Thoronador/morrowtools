@@ -61,15 +61,6 @@ NPCRecord::NPCRecord()
   Destinations.clear();
 }
 
-void NPCRecord::removeAIPackages()
-{
-  while (!AIPackages.empty())
-  {
-    delete AIPackages.back();
-    AIPackages.pop_back();
-  }//while
-}
-
 NPCRecord::~NPCRecord()
 {
   removeAIPackages();
@@ -1614,47 +1605,6 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
   }
 
   return in_File.good();
-}
-
-bool NPCRecord::hasEqualAIPackages(const NPCRecord& other) const
-{
-  const size_t len = AIPackages.size();
-  if (other.AIPackages.size()!=len) return false;
-  unsigned int i;
-  for (i=0; i<len; ++i)
-  {
-    if ((AIPackages.at(i)==NULL) xor (other.AIPackages.at(i)==NULL))
-      return false;
-    if (AIPackages.at(i)!=NULL)
-    {
-      //Do they have the same type?
-      if (AIPackages.at(i)->getPackageType()!=other.AIPackages.at(i)->getPackageType())
-      {
-        return false;
-      }
-      switch (AIPackages.at(i)->getPackageType())
-      {
-        case ptActivate:
-             if (!(dynamic_cast<NPC_AIActivate*>(AIPackages.at(i)))->equals(*dynamic_cast<NPC_AIActivate*>(other.AIPackages.at(i))))
-               return false;
-             break;
-        case ptEscort:
-        case ptFollow:
-             if (!(dynamic_cast<NPC_AIEscortFollow*>(AIPackages.at(i)))->equals(*dynamic_cast<NPC_AIEscortFollow*>(other.AIPackages.at(i))))
-               return false;
-             break;
-        case ptTravel:
-             if (!(dynamic_cast<NPC_AITravel*>(AIPackages.at(i)))->equals(*dynamic_cast<NPC_AITravel*>(other.AIPackages.at(i))))
-               return false;
-             break;
-        case ptWander:
-             if (!(dynamic_cast<NPC_AIWander*>(AIPackages.at(i)))->equals(*dynamic_cast<NPC_AIWander*>(other.AIPackages.at(i))))
-               return false;
-             break;
-      }//swi
-    }//not NULL
-  }//for
-  return true;
 }
 
 bool NPCRecord::isFemale() const

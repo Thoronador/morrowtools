@@ -23,13 +23,10 @@
 
 #include <string>
 #include <vector>
-#include "BasicRecord.h"
+#include "PreNPCRecord.h"
 #include "ItemRecord.h"
-#include "AIData.h"
-#include "AIPackages.h"
-#include "TravelDestination.h"
 
-struct CreatureRecord: public BasicRecord
+struct CreatureRecord: public PreNPCRecord
 {
   std::string CreatureID;
   std::string Model;
@@ -64,11 +61,8 @@ struct CreatureRecord: public BasicRecord
   int32_t CreatureFlag;
   std::vector<ItemRecord> Items;
   std::vector<std::string> CreatureSpells;
-  NPC_AIData AIData;
-  std::vector<NPC_BasicAIPackage*> AIPackages;
 
-  //travel destinations
-  std::vector<TravelDestination> Destinations;
+  //The AI-related data members are already declared in PreNPCRecord.
 
   std::string ScriptID;
   float Scale;
@@ -98,13 +92,6 @@ struct CreatureRecord: public BasicRecord
         in_File - the input file stream
   */
   bool loadFromStream(std::ifstream& in_File);
-
-  /* returns true, if this record and the other creature record have the same
-     AI packages */
-  bool hasEqualAIPackages(const CreatureRecord& other) const;
-
-  private:
-    void removeAIPackages();
 };//struct
 
 #endif // CREATURERECORD_H

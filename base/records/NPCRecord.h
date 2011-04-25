@@ -24,11 +24,8 @@
 #include <string>
 #include <fstream>
 #include <vector>
-#include "BasicRecord.h"
+#include "PreNPCRecord.h"
 #include "ItemRecord.h"
-#include "AIData.h"
-#include "AIPackages.h"
-#include "TravelDestination.h"
 
 /* enumeration type for the NPDT subrecord: there are two versions. One is
     12 bytes and the other one is 52 bytes. This enumeration type will be used
@@ -37,7 +34,7 @@
 enum NPDT_Type {ndtNone, ndt12Bytes, ndt52Bytes};
 
 /* the NPC record - holds all data about an NPC */
-struct NPCRecord: public BasicRecord
+struct NPCRecord: public PreNPCRecord
 {
   std::string NPCID;
   std::string Name;
@@ -74,16 +71,7 @@ struct NPCRecord: public BasicRecord
   std::vector<ItemRecord> Items;
   std::vector<std::string> NPC_Spells;
   //AI data
-  NPC_AIData AIData;
-  //NPC_AIEscortFollow AIEscort;
-  //NPC_AIEscortFollow AIFollow;
-  //std::string EscortFollowCell;
-  //NPC_AITravel AITravel;
-  //NPC_AIWander AIWander;
-  std::vector<NPC_BasicAIPackage*> AIPackages;
-
-  //travel destinations
-  std::vector<TravelDestination> Destinations;
+  //This stuff is now part of PreNPCRecord structure, search there.
 
   /* constructor */
   NPCRecord();
@@ -111,9 +99,6 @@ struct NPCRecord: public BasicRecord
   */
   bool loadFromStream(std::ifstream& in_File);
 
-  /* returns true, if the other NPCRecord has the same AI packages*/
-  bool hasEqualAIPackages(const NPCRecord& other) const;
-
   /* returns true, if the female flag is set */
   bool isFemale() const;
 
@@ -131,9 +116,6 @@ struct NPCRecord: public BasicRecord
 
   /* returns true, if the gold blood texture (metal) flag is set */
   bool hasGoldBloodTex() const;
-
-  private:
-    void removeAIPackages();
 };//struct
 
 #endif // NPCRECORD_H

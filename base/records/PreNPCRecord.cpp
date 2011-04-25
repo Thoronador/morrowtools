@@ -20,6 +20,11 @@
 
 #include "PreNPCRecord.h"
 
+const int32_t pnfTraining = 16384;
+const int32_t pnfSpellmaking = 32768;
+const int32_t pnfEnchanting = 65536;
+const int32_t pnfRepair = 131072;
+
 PreNPCRecord::~PreNPCRecord()
 {
   removeAIPackages();
@@ -75,3 +80,59 @@ void PreNPCRecord::removeAIPackages()
   }//while
 }
 
+void PreNPCRecord::copyAIPackages(const PreNPCRecord& source)
+{
+  unsigned int i;
+  NPC_BasicAIPackage* pkgPtr;
+  for (i=0; i<source.AIPackages.size(); ++i)
+  {
+    switch (source.AIPackages[i]->getPackageType())
+    {
+      case ptActivate:
+           pkgPtr = new NPC_AIActivate;
+           *pkgPtr = *(static_cast<NPC_AIActivate*>(source.AIPackages[i]));
+           AIPackages.push_back(pkgPtr);
+           break;
+      case ptEscort:
+           pkgPtr = new NPC_AIEscort;
+           *pkgPtr = *(static_cast<NPC_AIEscort*>(source.AIPackages[i]));
+           AIPackages.push_back(pkgPtr);
+           break;
+      case ptFollow:
+           pkgPtr = new NPC_AIFollow;
+           *pkgPtr = *(static_cast<NPC_AIFollow*>(source.AIPackages[i]));
+           AIPackages.push_back(pkgPtr);
+           break;
+      case ptTravel:
+           pkgPtr = new NPC_AITravel;
+           *pkgPtr = *(static_cast<NPC_AITravel*>(source.AIPackages[i]));
+           AIPackages.push_back(pkgPtr);
+           break;
+      case ptWander:
+           pkgPtr = new NPC_AIWander;
+           *pkgPtr = *(static_cast<NPC_AIWander*>(source.AIPackages[i]));
+           AIPackages.push_back(pkgPtr);
+           break;
+    }//swi
+  }//for
+}
+
+bool PreNPCRecord::isTrainer() const
+{
+  return (AIData.isPresent and ((AIData.Flags & pnfTraining)!=0));
+}
+
+bool PreNPCRecord::isEnchanter() const
+{
+  return (AIData.isPresent and ((AIData.Flags & pnfEnchanting)!=0));
+}
+
+bool PreNPCRecord::isSpellmaker() const
+{
+  return (AIData.isPresent and ((AIData.Flags & pnfSpellmaking)!=0));
+}
+
+bool PreNPCRecord::doesRepair() const
+{
+  return (AIData.isPresent and ((AIData.Flags & pnfRepair)!=0));
+}

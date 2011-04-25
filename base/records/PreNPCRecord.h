@@ -45,8 +45,29 @@ struct PreNPCRecord: public BasicRecord
   /* returns true, if the other PreNPCRecord has the same AI packages*/
   bool hasEqualAIPackages(const PreNPCRecord& other) const;
 
+  /* returns true, if the trainer flag is set in the creature's/NPC's AI
+     data flags */
+  bool isTrainer() const;
+
+  /* returns true, if the enchanting flag is set in the creature's/NPC's AI
+     data flags */
+  bool isEnchanter() const;
+
+  /* returns true, if the spellmaking flag is set in the creature's/NPC's AI
+     data flags */
+  bool isSpellmaker() const;
+
+  /* returns true, if the repair flag is set in the creature's/NPC's AI
+     data flags */
+  bool doesRepair() const;
+
   protected:
+    /* removes all AI packages from the vector and deletes the pointed to memory
+    */
     void removeAIPackages();
+
+    /* adds the AI packages from the source record to this record*/
+    void copyAIPackages(const PreNPCRecord& source);
 };//struct
 
 #endif // PRENPCRECORD_H

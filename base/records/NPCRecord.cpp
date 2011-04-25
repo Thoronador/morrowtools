@@ -106,39 +106,7 @@ NPCRecord& NPCRecord::operator=(const NPCRecord& source)
   NPC_Spells = source.NPC_Spells;
   AIData = source.AIData;
   removeAIPackages();
-  unsigned int i;
-  NPC_BasicAIPackage* pkgPtr;
-  for (i=0; i<source.AIPackages.size(); ++i)
-  {
-    switch (source.AIPackages[i]->getPackageType())
-    {
-      case ptActivate:
-           pkgPtr = new NPC_AIActivate;
-           *pkgPtr = *(static_cast<NPC_AIActivate*>(source.AIPackages[i]));
-           AIPackages.push_back(pkgPtr);
-           break;
-      case ptEscort:
-           pkgPtr = new NPC_AIEscort;
-           *pkgPtr = *(static_cast<NPC_AIEscort*>(source.AIPackages[i]));
-           AIPackages.push_back(pkgPtr);
-           break;
-      case ptFollow:
-           pkgPtr = new NPC_AIFollow;
-           *pkgPtr = *(static_cast<NPC_AIFollow*>(source.AIPackages[i]));
-           AIPackages.push_back(pkgPtr);
-           break;
-      case ptTravel:
-           pkgPtr = new NPC_AITravel;
-           *pkgPtr = *(static_cast<NPC_AITravel*>(source.AIPackages[i]));
-           AIPackages.push_back(pkgPtr);
-           break;
-      case ptWander:
-           pkgPtr = new NPC_AIWander;
-           *pkgPtr = *(static_cast<NPC_AIWander*>(source.AIPackages[i]));
-           AIPackages.push_back(pkgPtr);
-           break;
-    }//swi
-  }//for
+  copyAIPackages(source);
   Destinations = source.Destinations;
   return *this;
 }

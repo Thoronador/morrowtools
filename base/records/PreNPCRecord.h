@@ -23,6 +23,7 @@
 
 #include <vector>
 #include "BasicRecord.h"
+#include "ItemRecord.h"
 #include "AIData.h"
 #include "AIPackages.h"
 #include "TravelDestination.h"
@@ -32,6 +33,10 @@
 */
 struct PreNPCRecord: public BasicRecord
 {
+  //Items and spells
+  std::vector<ItemRecord> Items;
+  std::vector<std::string> NPC_Spells;
+
   //AI data
   NPC_AIData AIData;
   std::vector<NPC_BasicAIPackage*> AIPackages;
@@ -68,6 +73,8 @@ struct PreNPCRecord: public BasicRecord
 
     /* adds the AI packages from the source record to this record*/
     void copyAIPackages(const PreNPCRecord& source);
+
+    bool writeItemsSpellsAIDataDestinations(std::ofstream& output) const;
 };//struct
 
 #endif // PRENPCRECORD_H

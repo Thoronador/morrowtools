@@ -24,7 +24,6 @@
 #include <string>
 #include <vector>
 #include "PreNPCRecord.h"
-#include "ItemRecord.h"
 
 struct CreatureRecord: public PreNPCRecord
 {
@@ -59,9 +58,7 @@ struct CreatureRecord: public PreNPCRecord
   int32_t Gold;
   //end of creature data
   int32_t CreatureFlag;
-  std::vector<ItemRecord> Items;
-  std::vector<std::string> CreatureSpells;
-
+  //Items and spells are already declared in PreNPCRecord.
   //The AI-related data members are already declared in PreNPCRecord.
 
   std::string ScriptID;

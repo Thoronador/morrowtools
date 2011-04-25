@@ -25,7 +25,6 @@
 #include <fstream>
 #include <vector>
 #include "PreNPCRecord.h"
-#include "ItemRecord.h"
 
 /* enumeration type for the NPDT subrecord: there are two versions. One is
     12 bytes and the other one is 52 bytes. This enumeration type will be used
@@ -68,8 +67,7 @@ struct NPCRecord: public PreNPCRecord
   NPDT_Type NPCDataType;
   //end of NPC data
   int32_t NPC_Flag;
-  std::vector<ItemRecord> Items;
-  std::vector<std::string> NPC_Spells;
+  //Items and spells are now part of PreNPCRecord structure, search there.
   //AI data
   //This stuff is now part of PreNPCRecord structure, search there.
 

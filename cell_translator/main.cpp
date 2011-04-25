@@ -26,7 +26,9 @@
 #include "TranslatorXML.h"
 #include "../base/ESMWriterGeneric.h"
 #include "../base/records/GenericRecord.h"
+#include "../base/records/CellRecord.h"
 #include "../base/records/CreatureRecord.h"
+#include "../base/records/DialogueInfoRecord.h"
 #include "../base/records/NPCRecord.h"
 #include "../base/records/PathGridRecord.h"
 
@@ -76,6 +78,52 @@ bool translatePreNPCRecord(PreNPCRecord* c_rec, const CellListType& cells)
   return true;
 }
 
+bool translateCellRecord(CellRecord* c_rec, const CellListType& cells)
+{
+  if (c_rec==NULL) return false;
+
+  CellListType::const_iterator cells_iter;
+  //translate cell name
+  cells_iter = cells.find(c_rec->CellID);
+  if (cells_iter!=cells.end())
+  {
+    c_rec->CellID = cells_iter->second;
+  }
+  //on to the references we go!
+  unsigned int i;
+  for (i=0; i<c_rec->References.size(); ++i)
+  {
+    if (c_rec->References.at(i).hasDoorData)
+    {
+      cells_iter = cells.find(c_rec->References.at(i).DoorData.ExitName);
+      if (cells_iter!=cells.end())
+      {
+        c_rec->References.at(i).DoorData.ExitName = cells_iter->second;
+      }
+    }//if
+  }//for
+  return true;
+}
+
+bool translateInfoRecord(DialogueInfoRecord* di_rec, const CellListType& cells)
+{
+  if (di_rec==NULL) return false;
+
+  CellListType::const_iterator cells_iter;
+  //translate cell ID
+  cells_iter = cells.find(di_rec->CellID);
+  if (cells_iter!=cells.end())
+  {
+    di_rec->CellID = cells_iter->second;
+  }
+  //result string might be a script
+  if (!di_rec->ResultString.empty())
+  {
+    ///TODO: translate script stuff here
+  }
+  return true;
+}
+
 void showHelp()
 {
   std::cout << "\ncell_translator -f PLUGINFILE [-o FILENAME1] [-xml FILENAME2]\n"
@@ -117,7 +165,7 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Cell Translator for Morrowind, version 0.1_rev206, 2011-04-25\n";
+  std::cout << "Cell Translator for Morrowind, version 0.2_rev209, 2011-04-25\n";
 }
 
 int main(int argc, char **argv)
@@ -305,7 +353,9 @@ int main(int argc, char **argv)
   /** Yes, right here! **/
 
   const std::string genericID = typeid(GenericRecord*).name();
+  const std::string cellID = typeid(CellRecord*).name();
   const std::string creatureID = typeid(CreatureRecord*).name();
+  const std::string infoID = typeid(DialogueInfoRecord*).name();
   const std::string npcID = typeid(NPCRecord*).name();
   const std::string pathgridID = typeid(PathGridRecord*).name();
 
@@ -325,13 +375,20 @@ int main(int argc, char **argv)
         dynamic_cast<PathGridRecord*>(*v_iter)->CellName = cell_iter->second;
       }
     }//if path grid
+    else if (type_name==cellID)
+    {
+      translateCellRecord(dynamic_cast<CellRecord*>(*v_iter), cells);
+    }
     else if ((type_name==creatureID) or (type_name==npcID))
     {
       translatePreNPCRecord(dynamic_cast<PreNPCRecord*>(*v_iter), cells);
     }//if creature or NPC
-
-    /// TODO: add stuff for other record types. It's still missing here.
-
+    else if (type_name==infoID)
+    {
+      translateInfoRecord(dynamic_cast<DialogueInfoRecord*>(*v_iter), cells);
+    }
+    /// TODO: add stuff for script record type. It's still missing here.
+    /// And maybe translate region names, too.
     ++v_iter;
   }//while
 

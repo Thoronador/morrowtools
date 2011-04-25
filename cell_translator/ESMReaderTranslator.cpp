@@ -26,6 +26,7 @@
 #include "../base/records/GenericRecord.h"
 #include "../base/records/CellRecord.h"
 #include "../base/records/CreatureRecord.h"
+#include "../base/records/DialogueInfoRecord.h"
 #include "../base/records/NPCRecord.h"
 #include "../base/records/PathGridRecord.h"
 #include "../base/records/ScriptRecord.h"
@@ -57,28 +58,7 @@ int ESMReaderTranslator::processNextRecord(std::ifstream& in_File)
   in_File.read((char*) &RecordName, 4);
   switch(RecordName)
   {
-    case cACTI: //no cell names
-    case cALCH: //no cell names
-    case cAPPA: //no cell names
-    case cARMO: //no cell names
-    case cBODY: //no cell names
-    case cBOOK: //no cell names
-    case cBSGN: //no cell names
-         genRec = new GenericRecord;
-         if (genRec->loadFromStream(in_File))
-         {
-           genRec->Header = RecordName;
-           m_VectorPointer->push_back(genRec);
-           return 1;
-         }
-         else
-         {
-           delete genRec;
-           std::cout << "Error: failed to load generic record!\n!";
-           return -1;
-         }
-         break;
-    case cCELL: //has cell info, but not translated yet!
+    case cCELL: //has cell names
          baseRec = new CellRecord;
          if (baseRec->loadFromStream(in_File))
          {
@@ -89,23 +69,6 @@ int ESMReaderTranslator::processNextRecord(std::ifstream& in_File)
          {
            delete baseRec;
            std::cout << "Error: failed to load cell record!\n!";
-           return -1;
-         }
-         break;
-    case cCLAS: //no cell names
-    case cCLOT: //no cell names
-    case cCONT: //no cell names
-         genRec = new GenericRecord;
-         if (genRec->loadFromStream(in_File))
-         {
-           genRec->Header = RecordName;
-           m_VectorPointer->push_back(genRec);
-           return 1;
-         }
-         else
-         {
-           delete genRec;
-           std::cout << "Error: failed to load generic record!\n!";
            return -1;
          }
          break;
@@ -123,33 +86,17 @@ int ESMReaderTranslator::processNextRecord(std::ifstream& in_File)
            return -1;
          }
          break;
-    case cDIAL: //no cell names
-    case cDOOR: //no cell names
-    case cENCH: //no cell names
-    case cFACT: //no cell names
-    case cGLOB: //no cell names
-    case cGMST: //no cell names(?)
     case cINFO: //has cell info, but isn't processed yet
-    case cINGR: //no cell names
-    case cLAND: //no cell names (besides cell offset)
-    case cLEVC: //no cell names
-    case cLEVI: //no cell names
-    case cLIGH: //no cell names
-    case cLOCK: //no cell names
-    case cLTEX: //no cell names
-    case cMGEF: //no cell names
-    case cMISC: //no cell names
-         genRec = new GenericRecord;
-         if (genRec->loadFromStream(in_File))
+         baseRec = new DialogueInfoRecord;
+         if (baseRec->loadFromStream(in_File))
          {
-           genRec->Header = RecordName;
-           m_VectorPointer->push_back(genRec);
+           m_VectorPointer->push_back(baseRec);
            return 1;
          }
          else
          {
-           delete genRec;
-           std::cout << "Error: failed to load generic record!\n!";
+           delete baseRec;
+           std::cout << "Error: failed to load dialogue info record!\n!";
            return -1;
          }
          break;
@@ -181,10 +128,6 @@ int ESMReaderTranslator::processNextRecord(std::ifstream& in_File)
            return -1;
          }
          break;
-    case cPROB: //no cell names
-    case cRACE: //no cell names
-    case cREGN: //no cell names, but region name that could be translated later
-    case cREPA: //no cell names
     case cSCPT: //might have cell names in script text
          baseRec = new ScriptRecord;
          if (baseRec->loadFromStream(in_File))
@@ -199,6 +142,35 @@ int ESMReaderTranslator::processNextRecord(std::ifstream& in_File)
            return -1;
          }
          break;
+    case cACTI: //no cell names
+    case cALCH: //no cell names
+    case cAPPA: //no cell names
+    case cARMO: //no cell names
+    case cBODY: //no cell names
+    case cBOOK: //no cell names
+    case cBSGN: //no cell names
+    case cCLAS: //no cell names
+    case cCLOT: //no cell names
+    case cCONT: //no cell names
+    case cDIAL: //no cell names
+    case cDOOR: //no cell names
+    case cENCH: //no cell names
+    case cFACT: //no cell names
+    case cGLOB: //no cell names
+    case cGMST: //no cell names(?)
+    case cINGR: //no cell names
+    case cLAND: //no cell names (but cell offset)
+    case cLEVC: //no cell names
+    case cLEVI: //no cell names
+    case cLIGH: //no cell names
+    case cLOCK: //no cell names
+    case cLTEX: //no cell names
+    case cMGEF: //no cell names
+    case cMISC: //no cell names
+    case cPROB: //no cell names
+    case cRACE: //no cell names
+    case cREGN: //no cell names, but region name that could be translated later
+    case cREPA: //no cell names
     case cSKIL: //no cell names
     case cSNDG: //no cell names
     case cSOUN: //no cell names

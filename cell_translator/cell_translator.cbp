@@ -46,6 +46,8 @@
 		<Unit filename="..\base\records\CellRecord.h" />
 		<Unit filename="..\base\records\CreatureRecord.cpp" />
 		<Unit filename="..\base\records\CreatureRecord.h" />
+		<Unit filename="..\base\records\DialogueInfoRecord.cpp" />
+		<Unit filename="..\base\records\DialogueInfoRecord.h" />
 		<Unit filename="..\base\records\GenericRecord.cpp" />
 		<Unit filename="..\base\records\GenericRecord.h" />
 		<Unit filename="..\base\records\ItemRecord.cpp" />

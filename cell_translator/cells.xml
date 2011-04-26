@@ -671,102 +671,134 @@
   </cell>
   <cell>
     <de>Aryon-Ahnengruft</de>
+    <en>Aryon Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Arys-Ahnengruft</de>
+    <en>Arys Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Asha-Ahhe, Eiermine</de>
+    <en>Asha-Ahhe Egg Mine</en>
   </cell>
   <cell>
     <de>Ashalmawia</de>
+    <en>Ashalmawia</en>
   </cell>
   <cell>
     <de>Ashalmawia, Schrein</de>
+    <en>Ashalmawia, Shrine</en>
   </cell>
   <cell>
     <de>Ashalmawia, Schrein, Versunkene Gewölbe</de>
+    <en>Ashalmawia, Shrine, Sunken Vaults</en>
   </cell>
   <cell>
     <de>Ashalmimilkala, Schrein</de>
+    <en>Ashalmimilkala, Shrine</en>
   </cell>
   <cell>
     <de>Ashamanu-Lager, Kaushas Zelt</de>
+    <en>Ashamanu Camp, Kausha's Yurt</en>
   </cell>
   <cell>
     <de>Ashanammu</de>
+    <en>Ashanammu</en>
   </cell>
   <cell>
     <de>Ashimanu, Eiermine</de>
+    <en>Ashimanu Egg Mine</en>
   </cell>
   <cell>
     <de>Ashimanu, Eiermine, Nest der Königin</de>
+    <en>Ashimanu Egg Mine, Queen's Lair</en>
   </cell>
   <cell>
     <de>Ashinabi</de>
+    <en>Ashinabi</en>
   </cell>
   <cell>
     <de>Ashinabi, Schmugglerhöhle</de>
+    <en>Ashinabi, Smuggler Den</en>
   </cell>
   <cell>
     <de>Ashir-Dan</de>
+    <en>Ashir-Dan</en>
   </cell>
   <cell>
     <de>Ashirbadon</de>
+    <en>Ashirbadon</en>
   </cell>
   <cell>
     <de>Ashmelech</de>
+    <en>Ashmelech</en>
   </cell>
   <cell>
     <de>Ashunartes, Schrein</de>
+    <en>Ashunartes, Shrine</en>
   </cell>
   <cell>
     <de>Ashurnabitashpi</de>
+    <en>Ashurnabitashpi</en>
   </cell>
   <cell>
     <de>Ashurnibibi</de>
+    <en>Ashurnibibi</en>
   </cell>
   <cell>
     <de>Ashurnibibi, Schrein</de>
+    <en>Ashurnibibi, Shrine</en>
   </cell>
   <cell>
     <de>Assalkushalit, Schrein</de>
+    <en>Assalkushalit, Shrine</en>
   </cell>
   <cell>
     <de>Assarnatamat, Schrein</de>
+    <en>Assarnatamat, Shrine</en>
   </cell>
   <cell>
     <de>Assarnibibiberg</de>
   </cell>
   <cell>
     <de>Assarnud</de>
+    <en>Assarnud</en>
   </cell>
   <cell>
     <de>Assemanu</de>
+    <en>Assemanu</en>
   </cell>
   <cell>
     <de>Assemanu, Schrein</de>
+    <en>Assemanu, Shrine</en>
   </cell>
   <cell>
     <de>Assernerairan, Schrein</de>
+    <en>Assernerairan, Shrine</en>
   </cell>
   <cell>
     <de>Assu</de>
+    <en>Assu</en>
   </cell>
   <cell>
     <de>Assumanu</de>
+    <en>Assumanu</en>
   </cell>
   <cell>
     <de>Assurdirapal, Innerer Schrein</de>
+    <en>Assurdirapal, Inner Shrine</en>
   </cell>
   <cell>
     <de>Assurdirapal, Schrein</de>
+    <en>Assurdirapal, Shrine</en>
   </cell>
   <cell>
     <de>Assurnabitashpi</de>
+    <en>Assurnabitashpi</en>
   </cell>
   <cell>
     <de>Assurnabitashpi, Schrein</de>
+    <en>Assurnabitashpi, Shrine</en>
   </cell>
   <cell>
     <de>Aufgegebenes Schiffswrack, Kabine</de>
@@ -782,153 +814,200 @@
   </cell>
   <cell>
     <de>Bal Fell</de>
+    <en>Bal Fell</en>
   </cell>
   <cell>
     <de>Bal Fell, Innerer Schrein</de>
+    <en>Bal Fell, Inner Shrine</en>
   </cell>
   <cell>
     <de>Bal Fell, Westlicher Flügel</de>
+    <en>Bal Fell, West Wing</en>
   </cell>
   <cell>
     <de>Bal Fell, Äußerer Schrein</de>
+    <en>Bal Fell, Outer Shrine</en>
   </cell>
   <cell>
     <de>Bal Fell, Östlicher Flügel</de>
+    <en>Bal Fell, East Wing</en>
   </cell>
   <cell>
     <de>Bal Isra</de>
+    <en>Bal Isra</en>
   </cell>
   <cell>
     <de>Bal Ur</de>
+    <en>Bal Ur</en>
   </cell>
   <cell>
     <de>Bal Ur, Schrein</de>
+    <en>Bal Ur, Shrine</en>
   </cell>
   <cell>
     <de>Bal Ur, Untergrund</de>
+    <en>Bal Ur, Underground</en>
   </cell>
   <cell>
     <de>Balmora</de>
+    <en>Balmora</en>
   </cell>
   <cell>
     <de>Balmora, Acht Teller</de>
+    <en>Balmora, Eight Plates</en>
   </cell>
   <cell>
     <de>Balmora, Astius Hanotepelus' Haus</de>
+    <en>Balmora, Astius Hanotepelus' House</en>
   </cell>
   <cell>
     <de>Balmora, Balyn Omarels Haus</de>
+    <en>Balmora, Balyn Omarel's House</en>
   </cell>
   <cell>
     <de>Balmora, Caius Cosades’ Haus</de>
+    <en>Balmora, Caius Cosades' House</en>
   </cell>
   <cell>
     <de>Balmora, Clagius Clanler: Händler</de>
+    <en>Balmora, Clagius Clanler: Outfitter</en>
   </cell>
   <cell>
     <de>Balmora, Die Klingengrube</de>
   </cell>
   <cell>
     <de>Balmora, Dorisa Darvel: Buchhändlerin</de>
+    <en>Balmora, Dorisa Darvel: Bookseller</en>
   </cell>
   <cell>
     <de>Balmora, Dralasa Nithryon: Pfandleiherin</de>
+    <en>Balmora, Dralasa Nithryon: Pawnbroker</en>
   </cell>
   <cell>
     <de>Balmora, Dralcea Arethis Haus</de>
+    <en>Balmora, Dralcea Arethi's House</en>
   </cell>
   <cell>
     <de>Balmora, Dralosa Athrens Haus</de>
+    <en>Balmora, Dralosa Athren's House</en>
   </cell>
   <cell>
     <de>Balmora, Drarayne Thelas Haus</de>
+    <en>Balmora, Drarayne Thelas' House</en>
   </cell>
   <cell>
     <de>Balmora, Drarayne Thelas Lager</de>
+    <en>Balmora, Drarayne Thelas' Storage</en>
   </cell>
   <cell>
     <de>Balmora, Dura gra-Bol's Haus</de>
+    <en>Balmora, Dura gra-Bol's House</en>
   </cell>
   <cell>
     <de>Balmora, Flinkfinger-Eddis Haus</de>
+    <en>Balmora, Fast Eddie's House</en>
   </cell>
   <cell>
     <de>Balmora, Haus Hlaalo</de>
+    <en>Balmora, Hlaalo Manor</en>
   </cell>
   <cell>
     <de>Balmora, Haus Nerano</de>
+    <en>Balmora, Nerano Manor</en>
   </cell>
   <cell>
     <de>Balmora, Haus Tyravel</de>
+    <en>Balmora, Tyravel Manor</en>
   </cell>
   <cell>
     <de>Balmora, Haus des Hlaalu-Rates</de>
   </cell>
   <cell>
     <de>Balmora, Hecerindes Haus</de>
+    <en>Balmora, Hecerinde's House</en>
   </cell>
   <cell>
     <de>Balmora, Itans Haus</de>
+    <en>Balmora, Itan's House</en>
   </cell>
   <cell>
     <de>Balmora, Karlirahs Haus</de>
+    <en>Balmora, Karlirah's House</en>
   </cell>
   <cell>
     <de>Balmora, Kriegergilde</de>
+    <en>Balmora, Guild of Fighters</en>
   </cell>
   <cell>
     <de>Balmora, Magiergilde</de>
+    <en>Balmora, Guild of Mages</en>
   </cell>
   <cell>
     <de>Balmora, Meldor: Waffenschmied</de>
+    <en>Balmora, Meldor: Armorer</en>
   </cell>
   <cell>
     <de>Balmora, Milie Hastien: Schneiderin</de>
+    <en>Balmora, Milie Hastien: Fine Clothier</en>
   </cell>
   <cell>
     <de>Balmora, Morag Tong, Gilde</de>
+    <en>Balmora, Morag Tong Guild</en>
   </cell>
   <cell>
     <de>Balmora, Nalcarya von Weißhafen: Alchemistin</de>
+    <en>Balmora, Nalcarya of White Haven: Fine Alchemist</en>
   </cell>
   <cell>
     <de>Balmora, Neunzehs Haus</de>
+    <en>Balmora, Nine Toes' House</en>
   </cell>
   <cell>
     <de>Balmora, Ra'Virr: Händler</de>
+    <en>Balmora, Ra'Virr: Trader</en>
   </cell>
   <cell>
     <de>Balmora, Rarayn Radarys Haus</de>
+    <en>Balmora, Rarayn Radarys' House</en>
   </cell>
   <cell>
     <de>Balmora, Ratstaverne</de>
   </cell>
   <cell>
     <de>Balmora, Rithleens Haus</de>
+    <en>Balmora, Rithleen's House</en>
   </cell>
   <cell>
     <de>Balmora, Südwall-Taverne</de>
+    <en>Balmora, South Wall Cornerclub</en>
   </cell>
   <cell>
     <de>Balmora, Tempel</de>
+    <en>Balmora, Temple</en>
   </cell>
   <cell>
     <de>Balmora, Tsiyas Haus</de>
+    <en>Balmora, Tsiya's House</en>
   </cell>
   <cell>
     <de>Balmora, Tyermaillins Haus</de>
+    <en>Balmora, Tyermaillin's House</en>
   </cell>
   <cell>
     <de>Balmora, Vorar Helas Haus</de>
+    <en>Balmora, Vorar Helas' House</en>
   </cell>
   <cell>
     <de>Balmora, Voris Haus</de>
+    <en>Balmora, Vori's House</en>
   </cell>
   <cell>
     <de>Balmora, Westlicher Wachturm, Nord</de>
+    <en>Balmora, Western Guard Tower North</en>
   </cell>
   <cell>
     <de>Balmora, Westlicher Wachturm, Süd</de>
+    <en>Balmora, Western Guard Tower South</en>
   </cell>
   <cell>
     <de>Balmora, Zum Glückspilz</de>
@@ -938,111 +1017,146 @@
   </cell>
   <cell>
     <de>Balurs Bauernhaus</de>
+    <en>Balur's Farmhouse</en>
   </cell>
   <cell>
     <de>Bamz-Amschend, Halle des Herdfeuers</de>
+    <en>Bamz-Amschend, Hearthfire Hall</en>
   </cell>
   <cell>
     <de>Bamz-Amschend, Halle des Heulens</de>
+    <en>Bamz-Amschend, Hall of Wails</en>
   </cell>
   <cell>
     <de>Bamz-Amschend, Halle des Windes</de>
+    <en>Bamz-Amschend, Hall of Winds</en>
   </cell>
   <cell>
     <de>Bamz-Amschend, Himmelsspalt-Galerie</de>
+    <en>Bamz-Amschend, Skybreak Gallery</en>
   </cell>
   <cell>
     <de>Bamz-Amschend, Königsgang</de>
+    <en>Bamz-Amschend, King's Walk</en>
   </cell>
   <cell>
     <de>Bamz-Amschend, Passage des Flüsterns</de>
+    <en>Bamz-Amschend, Passage of Whispers</en>
   </cell>
   <cell>
     <de>Bamz-Amschend, Passage des Wandernden</de>
+    <en>Bamz-Amschend, Passage of the Walker</en>
   </cell>
   <cell>
     <de>Bamz-Amschend, Radacs Schmiede</de>
+    <en>Bamz-Amschend, Radac's Forge</en>
   </cell>
   <cell>
     <de>Band, Eiermine</de>
+    <en>Band Egg Mine</en>
   </cell>
   <cell>
     <de>Bensamsi</de>
+    <en>Bensamsi</en>
   </cell>
   <cell>
     <de>Bensiberib-Lager, Odaishahs Zelt</de>
+    <en>Bensiberib Camp, Odaishah's Yurt</en>
   </cell>
   <cell>
     <de>Beram-Ahnengruft</de>
   </cell>
   <cell>
     <de>Beran-Ahnengruft</de>
+    <en>Beran Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Berandas</de>
+    <en>Berandas</en>
   </cell>
   <cell>
     <de>Berandas, Festung, Oberste Ebene</de>
+    <en>Berandas, Keep, Top Level</en>
   </cell>
   <cell>
     <de>Berandas, Festung, Unterste Ebene</de>
+    <en>Berandas, Keep, Bottom Level</en>
   </cell>
   <cell>
     <de>Berandas, Propylon-Kammer</de>
+    <en>Berandas, Propylon Chamber</en>
   </cell>
   <cell>
     <de>Berandas, Untergrund</de>
+    <en>Berandas, Underground</en>
   </cell>
   <cell>
     <de>Beshara</de>
+    <en>Beshara</en>
   </cell>
   <cell>
     <de>Bthanchend</de>
+    <en>Bthanchend</en>
   </cell>
   <cell>
     <de>Bthuand</de>
+    <en>Bthuand</en>
   </cell>
   <cell>
     <de>Bthungthumz</de>
+    <en>Bthungthumz</en>
   </cell>
   <cell>
     <de>Caldera</de>
+    <en>Caldera</en>
   </cell>
   <cell>
     <de>Caldera, Bashuk gra-Bats Haus</de>
+    <en>Caldera, Bashuk gra-Bat's House</en>
   </cell>
   <cell>
     <de>Caldera, Canodia Felannus' Haus</de>
+    <en>Caldera, Canodia Felannus' House</en>
   </cell>
   <cell>
     <de>Caldera, Dro'Shavirs Haus</de>
+    <en>Caldera, Dro'Shavir's House</en>
   </cell>
   <cell>
     <de>Caldera, Elmussa Damoris Haus</de>
+    <en>Caldera, Elmussa Damori's House</en>
   </cell>
   <cell>
     <de>Caldera, Erste Sklavenhütte</de>
+    <en>Caldera, Slave Shack One</en>
   </cell>
   <cell>
     <de>Caldera, Falanaamo: Schneider</de>
+    <en>Caldera, Falanaamo: Clothier</en>
   </cell>
   <cell>
     <de>Caldera, Halle des Regenten</de>
+    <en>Caldera, Governor's Hall</en>
   </cell>
   <cell>
     <de>Caldera, Haus Ghorak</de>
+    <en>Caldera, Ghorak Manor</en>
   </cell>
   <cell>
     <de>Caldera, Hodlismod: Waffenschmied</de>
+    <en>Caldera, Hodlismod: Armorer</en>
   </cell>
   <cell>
     <de>Caldera, Irgola: Pfandleiher</de>
+    <en>Caldera, Irgola: Pawnbroker</en>
   </cell>
   <cell>
     <de>Caldera, Keel-Raniurs Haus</de>
+    <en>Caldera, Keel-Raniur's House</en>
   </cell>
   <cell>
     <de>Caldera, Magiergilde</de>
+    <en>Caldera, Guild of Mages</en>
   </cell>
   <cell>
     <de>Caldera, Minen, Schreibstube</de>
@@ -1052,99 +1166,128 @@
   </cell>
   <cell>
     <de>Caldera, Nedhelas' Haus</de>
+    <en>Caldera, Nedhelas' House</en>
   </cell>
   <cell>
     <de>Caldera, Nördliche Wachtürme</de>
+    <en>Caldera, North Guard Towers</en>
   </cell>
   <cell>
     <de>Caldera, Odairan Ashummi-Ammus' Haus</de>
+    <en>Caldera, Odairan Ashummi-Ammus' House</en>
   </cell>
   <cell>
     <de>Caldera, Shenks Hütte</de>
+    <en>Caldera, Shenk's Shovel</en>
   </cell>
   <cell>
     <de>Caldera, Surane Leorianes Haus</de>
+    <en>Caldera, Surane Leoriane's House</en>
   </cell>
   <cell>
     <de>Caldera, Südliche Wachtürme</de>
+    <en>Caldera, South Guard Towers</en>
   </cell>
   <cell>
     <de>Caldera, Valvius Mevureius Haus</de>
+    <en>Caldera, Valvius Mevureius' House</en>
   </cell>
   <cell>
     <de>Caldera, Verick Gemain: Händler</de>
+    <en>Caldera, Verick Gemain: Trader</en>
   </cell>
   <cell>
     <de>Caldera, Wachturm der Mine</de>
   </cell>
   <cell>
     <de>Caldera, Zweite Sklavenhütte</de>
+    <en>Caldera, Slave Shack Two</en>
   </cell>
   <cell>
     <de>Caldera-Mine</de>
+    <en>Caldera Mine</en>
   </cell>
   <cell>
     <de>Chun-Ook, Kabine</de>
+    <en>Chun-Ook, Cabin</en>
   </cell>
   <cell>
     <de>Chun-Ook, Oberdeck</de>
+    <en>Chun-Ook, Upper Level</en>
   </cell>
   <cell>
     <de>Chun-Ook, Unterdeck</de>
+    <en>Chun-Ook, Lower Level</en>
   </cell>
   <cell>
     <de>Corprusarium</de>
+    <en>Corprusarium</en>
   </cell>
   <cell>
     <de>Dagon Fel</de>
+    <en>Dagon Fel</en>
   </cell>
   <cell>
     <de>Dagon Fel, Andre Maahuls Turm</de>
+    <en>Dagon Fel, Andre Maul's Tower</en>
   </cell>
   <cell>
     <de>Dagon Fel, Anjah Segelschwinges Haus</de>
+    <en>Dagon Fel, Anja Swift-Sailer's House</en>
   </cell>
   <cell>
     <de>Dagon Fel, Das Ende der Welt</de>
   </cell>
   <cell>
     <de>Dagon Fel, Fanar Forkbards Haus</de>
+    <en>Dagon Fel, Fanar Fork-Beard's House</en>
   </cell>
   <cell>
     <de>Dagon Fel, Fjorrods Haus</de>
+    <en>Dagon Fel, Fjorrod's House</en>
   </cell>
   <cell>
     <de>Dagon Fel, Gasthaus Zum Ende der Welt</de>
   </cell>
   <cell>
     <de>Dagon Fel, Greidil Halbtrolls Haus</de>
+    <en>Dagon Fel, Greidil Half-Troll's House</en>
   </cell>
   <cell>
     <de>Dagon Fel, Haus von Itar dem Sanftmütigen</de>
+    <en>Dagon Fel, Itar the Gentle's House</en>
   </cell>
   <cell>
     <de>Dagon Fel, Heifnir: Händler</de>
+    <en>Dagon Fel, Heifnir: Trader</en>
   </cell>
   <cell>
     <de>Dagon Fel, Hurgs Haus</de>
+    <en>Dagon Fel, Hurg's House</en>
   </cell>
   <cell>
     <de>Dagon Fel, Leer stehender Turm</de>
+    <en>Dagon Fel, Vacant Tower</en>
   </cell>
   <cell>
     <de>Dagon Fel, Mettes Haus</de>
+    <en>Dagon Fel, Mette's House</en>
   </cell>
   <cell>
     <de>Dagon Fel, Onmi Hartmunds Haus</de>
+    <en>Dagon Fel, Onmi Hard-mouth's House</en>
   </cell>
   <cell>
     <de>Dagon Fel, Sorkvilds Turm</de>
+    <en>Dagon Fel, Sorkvild's Tower</en>
   </cell>
   <cell>
     <de>Dagon Fel, Wachurm</de>
+    <en>Dagon Fel, Watch Tower</en>
   </cell>
   <cell>
     <de>Dagoth Ur</de>
+    <en>Dagoth Ur</en>
   </cell>
   <cell>
     <de>Dagoth Ur, Facility Cavern</de>
@@ -1157,6 +1300,7 @@
   </cell>
   <cell>
     <de>Dagoth Ur, Innerer Turm</de>
+    <en>Dagoth Ur, Inner Tower</en>
   </cell>
   <cell>
     <de>Dagoth Ur, Untere Höhle</de>
@@ -1166,42 +1310,54 @@
   </cell>
   <cell>
     <de>Dareleth-Ahnengruft</de>
+    <en>Dareleth Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Das Innere des Corprusariums</de>
   </cell>
   <cell>
     <de>Diraras Bauernhaus</de>
+    <en>Dirara's Farmhouse</en>
   </cell>
   <cell>
     <de>Dissapla-Mine</de>
+    <en>Dissapla Mine</en>
   </cell>
   <cell>
     <de>Dralas-Ahnengruft</de>
+    <en>Dralas Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Drath-Ahnengruft</de>
+    <en>Drath Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Draugr Test</de>
+    <en>Draugr Test</en>
   </cell>
   <cell>
     <de>Dreloth-Ahnengruft</de>
+    <en>Dreloth Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Dren-Plantage</de>
+    <en>Dren Plantation</en>
   </cell>
   <cell>
     <de>Dren-Plantage, Doves Hütte</de>
+    <en>Dren Plantation, Doves' Shack</en>
   </cell>
   <cell>
     <de>Dren-Plantage, Drens Herrenhaus</de>
+    <en>Dren Plantation, Dren's Villa</en>
   </cell>
   <cell>
     <de>Dren-Plantage, Helvis Hütte</de>
+    <en>Dren Plantation, Helvi's Shack</en>
   </cell>
   <cell>
     <de>Dren-Plantage, Hlevalas Hütte</de>
+    <en>Dren Plantation, Hlevala's Shack</en>
   </cell>
   <cell>
     <de>Dren-Plantage, Lager</de>
@@ -1211,51 +1367,67 @@
   </cell>
   <cell>
     <de>Dren-Plantage, Rethans Hütte</de>
+    <en>Dren Plantation, Rethan's Shack</en>
   </cell>
   <cell>
     <de>Dren-Plantage, Turmhütte</de>
+    <en>Dren Plantation, Tower Shack</en>
   </cell>
   <cell>
     <de>Dren-Plantage, Verethi und Dralor</de>
+    <en>Dren Plantation, Verethi and Dralor</en>
   </cell>
   <cell>
     <de>Dren-Plantage, Wachhaus</de>
+    <en>Dren Plantation, Guardhouse</en>
   </cell>
   <cell>
     <de>Drethan-Ahnengruft</de>
+    <en>Drethan Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Drinith-Ahnengruft</de>
+    <en>Drinith Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Drulene Falens Hütte</de>
+    <en>Drulene Falen's Hut</en>
   </cell>
   <cell>
     <de>Druscashti, Obere Ebene</de>
+    <en>Druscashti, Upper Level</en>
   </cell>
   <cell>
     <de>Druscashti, Untere Ebene</de>
+    <en>Druscashti, Lower Level</en>
   </cell>
   <cell>
     <de>Dubdilla</de>
+    <en>Dubdilla</en>
   </cell>
   <cell>
     <de>Dubdilla, Unbekannte Höhlen</de>
+    <en>Dubdilla, Uncharted Caverns</en>
   </cell>
   <cell>
     <de>Dubdilla, Unbekannte Höhlen, Untere Ebene</de>
+    <en>Dubdilla, Uncharted Caverns, Lower</en>
   </cell>
   <cell>
     <de>Dulo-Ahnengruft</de>
+    <en>Dulo Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Dun-Ahhe</de>
+    <en>Dun-Ahhe</en>
   </cell>
   <cell>
     <de>Dunirai-Höhlen</de>
+    <en>Dunirai Caverns</en>
   </cell>
   <cell>
     <de>Dushariran, Schrein</de>
+    <en>Dushariran, Shrine</en>
   </cell>
   <cell>
     <de>Düsteres Schiffswrack, Kabine</de>
@@ -1268,51 +1440,67 @@
   </cell>
   <cell>
     <de>Ebenherz</de>
+    <en>Ebonheart</en>
   </cell>
   <cell>
     <de>Ebenherz, Argonische Mission</de>
+    <en>Ebonheart, Argonian Mission</en>
   </cell>
   <cell>
     <de>Ebenherz, Falkenfalter-Türme</de>
+    <en>Ebonheart, Hawkmoth Towers</en>
   </cell>
   <cell>
     <de>Ebenherz, Garnison der Falkenfalter-Legion</de>
+    <en>Ebonheart, Hawkmoth Legion Garrison</en>
   </cell>
   <cell>
     <de>Ebenherz, Garnison der Kaiserlichen Wachen</de>
+    <en>Ebonheart, Imperial Guard Garrison</en>
   </cell>
   <cell>
     <de>Ebenherz, Himmelsrand-Mission</de>
+    <en>Ebonheart, Skyrim Mission</en>
   </cell>
   <cell>
     <de>Ebenherz, Kaiserliche Kapellen</de>
+    <en>Ebonheart, Imperial Chapels</en>
   </cell>
   <cell>
     <de>Ebenherz, Kaiserliche Kommission</de>
+    <en>Ebonheart, Imperial Commission</en>
   </cell>
   <cell>
     <de>Ebenherz, Ost-Kaiserliche Händlergilde, Halle</de>
+    <en>Ebonheart, East Empire Company Hall</en>
   </cell>
   <cell>
     <de>Ebenherz, Ost-Kaiserliche Händlergilde, Nördliches Warenhaus</de>
+    <en>Ebonheart, East Empire North Warehouse</en>
   </cell>
   <cell>
     <de>Ebenherz, Ost-Kaiserliche Händlergilde, Südliches Warenhaus</de>
+    <en>Ebonheart, East Empire South Warehouse</en>
   </cell>
   <cell>
     <de>Ebenherz, Saal des Großen Rates</de>
+    <en>Ebonheart, Grand Council Chambers</en>
   </cell>
   <cell>
     <de>Ebenherz, Sechs Fische</de>
+    <en>Ebonheart, Six Fishes</en>
   </cell>
   <cell>
     <de>Ebenherz, Turmsaal des Großen Rates</de>
+    <en>Ebonheart, Grand Council Chambers Tower</en>
   </cell>
   <cell>
     <de>Ebenherz, Unterirdische Höhlen</de>
+    <en>Ebonheart, Underground Caves</en>
   </cell>
   <cell>
     <de>Ebernanit, Schrein</de>
+    <en>Ebernanit, Shrine</en>
   </cell>
   <cell>
     <de>Eine verlassene Hütte</de>
@@ -1766,6 +1954,7 @@
   </cell>
   <cell>
     <de>Großkopfs Hütte</de>
+    <en>Big Head's Shack</en>
   </cell>
   <cell>
     <de>Grytewake, Kabine</de>

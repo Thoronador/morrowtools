@@ -89,7 +89,15 @@ void NPC_AITravel::clear()
 
 bool NPC_AITravel::equals(const NPC_AITravel& other) const
 {
-  return ((X==other.X) and (Y==other.Y) and (Z==other.Z)
+  /* Note: Usually it should be enough to check X, Y and Z for equality with
+           their counterparts in 'other', but if one of them is a NaN, we have
+           a problem, because one NaN is (by definition of IEEE 754) never equal
+           to another NaN, even if their internal bit representation is exactly
+           the same. That's why we have expressions like (X!=X) down there, they
+           catch the NaNs. */
+  return (((X==other.X) or ((X!=X) and (other.X!=other.X)))
+      and ((Y==other.Y) or ((Y!=Y) and (other.Y!=other.Y)))
+      and ((Z==other.Z) or ((Z!=Z) and (other.Z!=other.Z)))
       and (Reset==other.Reset));
 }
 

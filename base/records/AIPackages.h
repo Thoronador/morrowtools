@@ -23,6 +23,7 @@
 
 #include <string>
 #include <stdint.h>
+#include <fstream>
 
 /* enumeration type for types of AI packages */
 enum PackageType {ptActivate, ptEscort, ptFollow, ptTravel, ptWander};
@@ -39,6 +40,14 @@ struct NPC_BasicAIPackage
          Each derived class has to implement its own version of that function.
   */
   virtual PackageType getPackageType() const = 0;
+
+  /* writes the package subrecord to the given output stream and returns true
+     on success
+
+     parameters:
+         output - the output file stream
+  */
+  virtual bool saveToStream(std::ofstream& output) const = 0;
 };//struct
 
 /* structure to hold tha AI activate data of an NPC */
@@ -52,6 +61,14 @@ struct NPC_AIActivate: public NPC_BasicAIPackage
 
   /* returns enum for type */
   virtual PackageType getPackageType() const;
+
+  /* writes the package subrecord to the given output stream and returns true
+     on success
+
+     parameters:
+         output - the output file stream
+  */
+  virtual bool saveToStream(std::ofstream& output) const;
 };//struct
 
 /* structure to hold the escort/follow data of an NPC (both escort and follow
@@ -69,6 +86,14 @@ struct NPC_AIEscortFollow: public NPC_BasicAIPackage
 
   /* "comparison operator" */
   bool equals(const NPC_AIEscortFollow& other) const;
+
+  /* writes the package subrecord to the given output stream and returns true
+     on success
+
+     parameters:
+         output - the output file stream
+  */
+  virtual bool saveToStream(std::ofstream& output) const;
 };//struct
 
 struct NPC_AIEscort: public NPC_AIEscortFollow
@@ -97,6 +122,14 @@ struct NPC_AITravel: public NPC_BasicAIPackage
 
   /* returns enum for type */
   virtual PackageType getPackageType() const;
+
+  /* writes the package subrecord to the given output stream and returns true
+     on success
+
+     parameters:
+         output - the output file stream
+  */
+  virtual bool saveToStream(std::ofstream& output) const;
 };//struct
 
 /* structure to hold the wandering data of an NPC */
@@ -116,6 +149,14 @@ struct NPC_AIWander: public NPC_BasicAIPackage
 
   /* returns enum indicating the type */
   virtual PackageType getPackageType() const;
+
+  /* writes the package subrecord to the given output stream and returns true
+     on success
+
+     parameters:
+         output - the output file stream
+  */
+  virtual bool saveToStream(std::ofstream& output) const;
 };//struct
 
 #endif // AIPACKAGES_H

@@ -19,6 +19,7 @@
 */
 
 #include "AIPackages.h"
+#include "../MW_Constants.h"
 
 /* **** BasicAIPackage's functions ****/
 
@@ -37,6 +38,29 @@ bool NPC_AIActivate::equals(const NPC_AIActivate& other) const
 PackageType NPC_AIActivate::getPackageType() const
 {
   return ptActivate;
+}
+
+bool NPC_AIActivate::saveToStream(std::ofstream& output) const
+{
+  //write AI_A
+  output.write((char*) &cAI_A, 4);
+  uint32_t SubLength = 33; //fixed length of 33 bytes
+  //write AI_A's length
+  output.write((char*) &SubLength, 4);
+  //write AI activate data
+  // ---- write target ID
+  unsigned int len = TargetID.length();
+  if (len>31)
+  {
+    len = 31;
+  }
+  output.write(TargetID.c_str(), len);
+  // ---- fill rest with NUL
+  output.write(NULof32, 32-len);
+  // ---- reset flag
+  output.write((char*) &Reset, 1);
+
+  return output.good();
 }
 
 /* **** AIEscortFollow's functions ****/
@@ -63,6 +87,53 @@ bool NPC_AIEscortFollow::equals(const NPC_AIEscortFollow& other) const
       and ((Z==other.Z) or ((Z!=Z) and (other.Z!=other.Z)))
       and (Duration==other.Duration) and (TargetID==other.TargetID)
       and (Reset==other.Reset) and (CellName==other.CellName));
+}
+
+bool NPC_AIEscortFollow::saveToStream(std::ofstream& output) const
+{
+  if (getPackageType()==ptEscort)
+  {
+    //write AI_E
+    output.write((char*) &cAI_E, 4);
+  }
+  else
+  {
+    //write AI_F
+    output.write((char*) &cAI_F, 4);
+  }
+  uint32_t SubLength = 48; //fixed length of 48 bytes
+  //write AI_E's/AI_F's length
+  output.write((char*) &SubLength, 4);
+  //write AI escort/follow data
+  output.write((char*) &X, 4);
+  output.write((char*) &Y, 4);
+  output.write((char*) &Z, 4);
+  output.write((char*) &Duration, 2);
+  // ---- write target ID
+  unsigned int len = TargetID.length();
+  if (len>31)
+  {
+    len = 31;
+  }
+  output.write(TargetID.c_str(), len);
+  // ---- fill rest with NUL
+  output.write(NULof32, 32-len);
+  // ---- reset flag
+  output.write((char*) &Reset, 2);
+
+  //check for presence of cell
+  if (CellName!="")
+  {
+    //write CNDT
+    output.write((char*) &cCNDT, 4);
+    SubLength = CellName.length()+1; //length of cell name +1 byte for NUL
+    //write CNDT's length
+    output.write((char*) &SubLength, 4);
+    //write AI escort's/follow's cell name
+    output.write(CellName.c_str(), SubLength);
+  }
+
+  return output.good();
 }
 
 /* **** AIEscort functions ****/
@@ -106,6 +177,22 @@ PackageType NPC_AITravel::getPackageType() const
   return ptTravel;
 }
 
+bool NPC_AITravel::saveToStream(std::ofstream& output) const
+{
+  //write AI_T
+  output.write((char*) &cAI_T, 4);
+  uint32_t SubLength = 16; //fixed length of 16 bytes
+  //write AI_T's length
+  output.write((char*) &SubLength, 4);
+  //write AI travel data
+  output.write((char*) &X, 4);
+  output.write((char*) &Y, 4);
+  output.write((char*) &Z, 4);
+  output.write((char*) &Reset, 4);
+
+  return output.good();
+}
+
 /* **** AIWander's functions ****/
 
 void NPC_AIWander::clear()
@@ -127,4 +214,21 @@ bool NPC_AIWander::equals(const NPC_AIWander& other) const
 PackageType NPC_AIWander::getPackageType() const
 {
   return ptWander;
+}
+
+bool NPC_AIWander::saveToStream(std::ofstream& output) const
+{
+  //write AI_W
+  output.write((char*) &cAI_W, 4);
+  uint32_t SubLength = 14; //fixed length of 14 bytes
+  //write AI_W's length
+  output.write((char*) &SubLength, 4);
+  //write AI wander data
+  output.write((char*) &Distance, 2);
+  output.write((char*) &Duration, 2);
+  output.write((char*) &Time, 1);
+  output.write((char*) &Idle, 8);
+  output.write((char*) &Reset, 1);
+
+  return output.good();
 }

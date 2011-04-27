@@ -1507,6 +1507,7 @@
   </cell>
   <cell>
     <de>Eingang der Koal-Höhle</de>
+    <en>Koal Cave Entrance</en>
   </cell>
   <cell>
     <de>Einsames Schiffswrack, Kabine</de>
@@ -1519,54 +1520,71 @@
   </cell>
   <cell>
     <de>Eisfalter-Festung</de>
+    <en>Fort Frostmoth</en>
   </cell>
   <cell>
     <de>Eisfalter-Festung, Carius' Kammern</de>
+    <en>Fort Frostmoth, Carius' Chambers</en>
   </cell>
   <cell>
     <de>Eisfalter-Festung, Kerker</de>
+    <en>Fort Frostmoth, Prison</en>
   </cell>
   <cell>
     <de>Eisfalter-Festung, Quartiere</de>
+    <en>Fort Frostmoth, General Quarters</en>
   </cell>
   <cell>
     <de>Eisfalter-Festung, Quartiere, obere Etage</de>
+    <en>Fort Frostmoth, General Quarters, Upper Level</en>
   </cell>
   <cell>
     <de>Eisfalter-Festung, Schrein des Kaiserlichen Kults</de>
+    <en>Fort Frostmoth, Imperial Cult Shrine</en>
   </cell>
   <cell>
     <de>Eisfalter-Festung, Vorratskammer</de>
+    <en>Fort Frostmoth, Supply Room</en>
   </cell>
   <cell>
     <de>Eisfalter-Festung, Waffenkammer</de>
+    <en>Fort Frostmoth, Armory</en>
   </cell>
   <cell>
     <de>Eisfalter-Festung, Zwischenwand</de>
+    <en>Fort Frostmoth, Curtain Wall</en>
   </cell>
   <cell>
     <de>Elanius-Lager, Yapals Zelt</de>
+    <en>Elanius Camp, Yapal's Yurt</en>
   </cell>
   <cell>
     <de>Elf-Skerring, Kabine</de>
+    <en>Elf-Skerring, Cabin</en>
   </cell>
   <cell>
     <de>Elf-Skerring, Oberdeck</de>
+    <en>Elf-Skerring, Upper Level</en>
   </cell>
   <cell>
     <de>Elf-Skerring, Unterdeck</de>
+    <en>Elf-Skerring, Lower Level</en>
   </cell>
   <cell>
     <de>Elith-Pal-Mine</de>
+    <en>Elith-Pal Mine</en>
   </cell>
   <cell>
     <de>Eluba-Addon, Eiermine</de>
+    <en>Eluba-Addon Egg Mine</en>
   </cell>
   <cell>
     <de>Eluba-Addon-Grotte</de>
+    <en>Eluba-Addon Grotto</en>
   </cell>
   <cell>
     <de>Endusal, Kagrenacs Arbeitszimmer</de>
+    <en>Endusal, Kagrenac's study</en>
   </cell>
   <cell>
     <de>Entferntes Schiffswrack, Kabine</de>
@@ -1579,102 +1597,135 @@
   </cell>
   <cell>
     <de>Erabenimsun-Lager</de>
+    <en>Erabenimsun Camp</en>
   </cell>
   <cell>
     <de>Erabenimsun-Lager, Addut-Lamanus Zelt</de>
+    <en>Erabenimsun Camp, Addut-Lamanu's Yurt</en>
   </cell>
   <cell>
     <de>Erabenimsun-Lager, Ainabs Zelt</de>
+    <en>Erabenimsun Camp, Ainab's Yurt</en>
   </cell>
   <cell>
     <de>Erabenimsun-Lager, Ashu-Ahhes Zelt</de>
+    <en>Erabenimsun Camp, Ashu-Ahhe's Yurt</en>
   </cell>
   <cell>
     <de>Erabenimsun-Lager, Assemmus Zelt</de>
+    <en>Erabenimsun Camp, Assemmus' Yurt</en>
   </cell>
   <cell>
     <de>Erabenimsun-Lager, Han-Ammus Zelt</de>
+    <en>Erabenimsun Camp, Han-Ammu's Yurt</en>
   </cell>
   <cell>
     <de>Erabenimsun-Lager, Massarapals Zelt</de>
+    <en>Erabenimsun Camp, Massarapal's Yurt</en>
   </cell>
   <cell>
     <de>Erabenimsun-Lager, Ranabis Zelt</de>
+    <en>Erabenimsun Camp, Ranabi's Yurt</en>
   </cell>
   <cell>
     <de>Erabenimsun-Lager, Salattanats Zelt</de>
+    <en>Erabenimsun Camp, Salattanat's Yurt</en>
   </cell>
   <cell>
     <de>Erabenimsun-Lager, Zelt der Weisen Frau</de>
+    <en>Erabenimsun Camp, Wise Woman's Yurt</en>
   </cell>
   <cell>
     <de>Erabenimsun-Lager, Zelt des Ashkhan</de>
+    <en>Erabenimsun Camp, Ashkhan's Yurt</en>
   </cell>
   <cell>
     <de>Eretammus-Sennammu, Eiermine</de>
+    <en>Eretammus-Sennammu Egg Mine</en>
   </cell>
   <cell>
     <de>Esutanamus, Schrein</de>
+    <en>Esutanamus, Shrine</en>
   </cell>
   <cell>
     <de>Fadathram-Ahnengruft</de>
+    <en>Fadathram Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Fair Helas, Kabine</de>
+    <en>Fair Helas, Cabin</en>
   </cell>
   <cell>
     <de>Fair Helas, Oberdeck</de>
+    <en>Fair Helas, Upper Level</en>
   </cell>
   <cell>
     <de>Fair Helas, Unterdeck</de>
+    <en>Fair Helas, Lower Level</en>
   </cell>
   <cell>
     <de>Falas-Ahnengruft</de>
+    <en>Falas Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Falasmaryon</de>
+    <en>Falasmaryon</en>
   </cell>
   <cell>
     <de>Falasmaryon, Abwasserkanäle</de>
+    <en>Falasmaryon, Sewers</en>
   </cell>
   <cell>
     <de>Falasmaryon, Missun Akins Hütte</de>
+    <en>Falasmaryon, Missun Akin's Hut</en>
   </cell>
   <cell>
     <de>Falasmaryon, Obere Ebene</de>
+    <en>Falasmaryon, Upper Level</en>
   </cell>
   <cell>
     <de>Falasmaryon, Propylon-Kammer</de>
+    <en>Falasmaryon, Propylon Chamber</en>
   </cell>
   <cell>
     <de>Falasmaryon, Untere Ebene</de>
+    <en>Falasmaryon, Lower Level</en>
   </cell>
   <cell>
     <de>Falensarano</de>
+    <en>Falensarano</en>
   </cell>
   <cell>
     <de>Falensarano, Obere Ebene</de>
+    <en>Falensarano, Upper Level</en>
   </cell>
   <cell>
     <de>Falensarano, Propylon-Kammer</de>
+    <en>Falensarano, Propylon Chamber</en>
   </cell>
   <cell>
     <de>Falensarano, Untere Ebene</de>
+    <en>Falensarano, Lower Level</en>
   </cell>
   <cell>
     <de>Falvillos Streben, Kabine</de>
+    <en>Falvillo's Endeavor, Cabin</en>
   </cell>
   <cell>
     <de>Falvillos Streben, Oberdeck</de>
+    <en>Falvilo's Endeavor, Upper Level</en>
   </cell>
   <cell>
     <de>Falvillos Streben, Unterdeck</de>
+    <en>Falvillo's Endeavor, Lower Level</en>
   </cell>
   <cell>
     <de>Favel-Ahnengruft</de>
+    <en>Favel Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Felder von Kummu</de>
+    <en>Fields of Kummu</en>
   </cell>
   <cell>
     <de>Festung der Buckfalter-Legion</de>
@@ -1699,27 +1750,35 @@
   </cell>
   <cell>
     <de>Galom Daeus, Eingang</de>
+    <en>Galom Daeus, Entry</en>
   </cell>
   <cell>
     <de>Galom Daeus, Observatorium</de>
+    <en>Galom Daeus, Observatory</en>
   </cell>
   <cell>
     <de>Geisterpforte</de>
+    <en>Ghostgate</en>
   </cell>
   <cell>
     <de>Geisterpforte, Tempel</de>
+    <en>Ghostgate, Temple</en>
   </cell>
   <cell>
     <de>Geisterpforte, Turm der Abenddämmerung</de>
+    <en>Ghostgate, Tower of Dusk</en>
   </cell>
   <cell>
     <de>Geisterpforte, Turm der Abenddämmerung, Untere Ebene</de>
+    <en>Ghostgate, Tower of Dusk Lower Level</en>
   </cell>
   <cell>
     <de>Geisterpforte, Turm der Morgendämmerung</de>
+    <en>Ghostgate, Tower of Dawn</en>
   </cell>
   <cell>
     <de>Geisterpforte, Turm der Morgendämmerung, Untere Ebene</de>
+    <en>Ghostgate, Tower of Dawn Lower Level</en>
   </cell>
   <cell>
     <de>Gemiedenes Schiffswrack, Kabine</de>
@@ -1732,225 +1791,299 @@
   </cell>
   <cell>
     <de>Gimothran-Ahnengruft</de>
+    <en>Gimothran Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Ginith-Ahnengruft</de>
+    <en>Ginith Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Gnaar Mok</de>
+    <en>Gnaar Mok</en>
   </cell>
   <cell>
     <de>Gnaar Mok, Anglalos' Hütte</de>
+    <en>Gnaar Mok, Anglalos's Shack</en>
   </cell>
   <cell>
     <de>Gnaar Mok, Caryarels Hütte</de>
+    <en>Gnaar Mok, Caryarel's Shack</en>
   </cell>
   <cell>
     <de>Gnaar Mok, Dreugh-jiggers Ruh</de>
+    <en>Gnaar Mok, Druegh-jigger's Rest</en>
   </cell>
   <cell>
     <de>Gnaar Mok, Haus Arenim</de>
+    <en>Gnaar Mok, Arenim Manor</en>
   </cell>
   <cell>
     <de>Gnaar Mok, Jerian Dolbanittes Hütte</de>
+    <en>Gnaar Mok, Jerian Dolbanitte's Shack</en>
   </cell>
   <cell>
     <de>Gnaar Mok, Mush-Meres Hütte</de>
+    <en>Gnaar Mok, Mush-Mere's Shack</en>
   </cell>
   <cell>
     <de>Gnaar Mok, Nadene Rotherans Hütte</de>
+    <en>Gnaar Mok, Nadene Rotheran's Shack</en>
   </cell>
   <cell>
     <de>Gnaar Mok, Rostlogis Hütte</de>
+    <en>Gnaar Mok, Rostlogi's Shack</en>
   </cell>
   <cell>
     <de>Gnisis</de>
+    <en>Gnisis</en>
   </cell>
   <cell>
     <de>Gnisis, Abelmawias Hütte</de>
+    <en>Gnisis, Abelmawia Hut</en>
   </cell>
   <cell>
     <de>Gnisis, Almu-Höhle</de>
+    <en>Gnisis, Almu Cave Dwelling</en>
   </cell>
   <cell>
     <de>Gnisis, Arvs-Drelen</de>
+    <en>Gnisis, Arvs-Drelen</en>
   </cell>
   <cell>
     <de>Gnisis, Bethamez</de>
+    <en>Gnisis, Bethamez</en>
   </cell>
   <cell>
     <de>Gnisis, Darius-Festung</de>
+    <en>Gnisis, Fort Darius</en>
   </cell>
   <cell>
     <de>Gnisis, Dinadads Hütte</de>
+    <en>Gnisis, Dinadad Hut</en>
   </cell>
   <cell>
     <de>Gnisis, Eiermine</de>
+    <en>Gnisis, Eggmine</en>
   </cell>
   <cell>
     <de>Gnisis, Handelshaus Madach</de>
+    <en>Gnisis, Madach Tradehouse</en>
   </cell>
   <cell>
     <de>Gnisis, Kaserne</de>
+    <en>Gnisis, Barracks</en>
   </cell>
   <cell>
     <de>Gnisis, Lasamsi-Höhle</de>
+    <en>Gnisis, Lasamsi Cave Dwelling</en>
   </cell>
   <cell>
     <de>Gnisis, Man-llus Hütte</de>
+    <en>Gnisis, Man-llu Hut</en>
   </cell>
   <cell>
     <de>Gnisis, Mantiti-Höhle</de>
+    <en>Gnisis, Mantiti Cave Dwelling</en>
   </cell>
   <cell>
     <de>Gnisis, Shands Hütte</de>
+    <en>Gnisis, Shand Hut</en>
   </cell>
   <cell>
     <de>Gnisis, Shisharas Hütte</de>
+    <en>Gnisis, Shishara Hut</en>
   </cell>
   <cell>
     <de>Gnisis, Tansumiran-Höhle</de>
+    <en>Gnisis, Tansumiran Cave Dwelling</en>
   </cell>
   <cell>
     <de>Gnisis, Tempel</de>
+    <en>Gnisis, Temple</en>
   </cell>
   <cell>
     <de>Gnisis, Untere Eiermine</de>
+    <en>Gnisis, Lower Eggmine</en>
   </cell>
   <cell>
     <de>Gnisis, Unterirdischer Fluss</de>
+    <en>Gnisis, Underground Stream</en>
   </cell>
   <cell>
     <de>Gnisis, Vabdas Hütte</de>
+    <en>Gnisis, Vabdas Hut</en>
   </cell>
   <cell>
     <de>Gnisis, Yahaz' Hütte</de>
+    <en>Gnisis, Yahaz Hut</en>
   </cell>
   <cell>
     <de>Gramfeste</de>
+    <en>Mournhold</en>
   </cell>
   <cell>
     <de>Gramfeste, Artefakt-Museum</de>
+    <en>Mournhold, Museum of Artifacts</en>
   </cell>
   <cell>
     <de>Gramfeste, Brindisi-Dorom-Platz</de>
+    <en>Mournhold, Plaza Brindisi Dorom</en>
   </cell>
   <cell>
     <de>Gramfeste, Buchhändler</de>
+    <en>Mournhold, Bookseller</en>
   </cell>
   <cell>
     <de>Gramfeste, Der geflügelte Guar</de>
+    <en>Mournhold, The Winged Guar</en>
   </cell>
   <cell>
     <de>Gramfeste, Geheime Schreibstube</de>
+    <en>Mournhold, Secret Office</en>
   </cell>
   <cell>
     <de>Gramfeste, Geon Aulines Haus</de>
+    <en>Mournhold, Geon Auline's House</en>
   </cell>
   <cell>
     <de>Gramfeste, Großer Basar</de>
+    <en>Mournhold, Great Bazaar</en>
   </cell>
   <cell>
     <de>Gramfeste, Göttergriff</de>
+    <en>Mournhold, Godsreach</en>
   </cell>
   <cell>
     <de>Gramfeste, Halle der Handwerker</de>
+    <en>Mournhold, Craftsmen's Hall</en>
   </cell>
   <cell>
     <de>Gramfeste, Haus Andoren</de>
+    <en>Mournhold, Andoren Manor</en>
   </cell>
   <cell>
     <de>Gramfeste, Haus Llethan</de>
+    <en>Mournhold, Llethan Manor</en>
   </cell>
   <cell>
     <de>Gramfeste, Haus Sadri</de>
+    <en>Mournhold, Sadri Manor</en>
   </cell>
   <cell>
     <de>Gramfeste, Haus Thendas</de>
+    <en>Mournhold, Thendas Manor</en>
   </cell>
   <cell>
     <de>Gramfeste, Haus Velas</de>
+    <en>Mournhold, Velas Manor</en>
   </cell>
   <cell>
     <de>Gramfeste, Händler</de>
+    <en>Mournhold, Trader</en>
   </cell>
   <cell>
     <de>Gramfeste, Ignatius Flaccus' Haus</de>
+    <en>Mournhold, Ignatius Flaccus' House</en>
   </cell>
   <cell>
     <de>Gramfeste, Königspalast</de>
+    <en>Mournhold, Royal Palace</en>
   </cell>
   <cell>
     <de>Gramfeste, Königspalast: Barenziahs Gemächer</de>
+    <en>Mournhold, Royal Palace: Barenziah's Chambers</en>
   </cell>
   <cell>
     <de>Gramfeste, Königspalast: Dienste des Kaiserlichen Kults</de>
+    <en>Mournhold, Royal Palace: Imperial Cult Services</en>
   </cell>
   <cell>
     <de>Gramfeste, Königspalast: Empfangsbereich</de>
+    <en>Mournhold, Royal Palace: Reception Area</en>
   </cell>
   <cell>
     <de>Gramfeste, Königspalast: Helseths Gemächer</de>
+    <en>Mournhold, Royal Palace: Helseth's Chambers</en>
   </cell>
   <cell>
     <de>Gramfeste, Königspalast: Hof</de>
+    <en>Mournhold, Royal Palace: Courtyard</en>
   </cell>
   <cell>
     <de>Gramfeste, Königspalast: Keller</de>
+    <en>Mournhold, Royal Palace: Basement</en>
   </cell>
   <cell>
     <de>Gramfeste, Königspalast: Kerker</de>
+    <en>Mournhold, Royal Palace: Jail</en>
   </cell>
   <cell>
     <de>Gramfeste, Königspalast: Legionsdepot</de>
+    <en>Mournhold, Royal Palace: Legion Depot</en>
   </cell>
   <cell>
     <de>Gramfeste, Königspalast: Quartiere der Wachen</de>
+    <en>Mournhold, Royal Palace: Guards' Quarters</en>
   </cell>
   <cell>
     <de>Gramfeste, Magieladen</de>
+    <en>Mournhold, Magic Shop</en>
   </cell>
   <cell>
     <de>Gramfeste, Pfandleiher</de>
+    <en>Mournhold, Pawnbroker</en>
   </cell>
   <cell>
     <de>Gramfeste, Schneider</de>
+    <en>Mournhold, Clothier</en>
   </cell>
   <cell>
     <de>Gramfeste, Tempelhof</de>
+    <en>Mournhold, Temple Courtyard</en>
   </cell>
   <cell>
     <de>Gramfeste, Thronraum des Königspalasts</de>
+    <en>Mournhold, Royal Palace Throne Room</en>
   </cell>
   <cell>
     <de>Gramfeste, Waffenkammer</de>
+    <en>Mournhold, Armory</en>
   </cell>
   <cell>
     <de>Gramfeste, leeres Haus</de>
+    <en>Mournhold, Vacant Manor</en>
   </cell>
   <cell>
     <de>Gramfeste-Tempel</de>
+    <en>Mournhold Temple</en>
   </cell>
   <cell>
     <de>Gramfeste-Tempel: Büro des Erzkanonikers</de>
+    <en>Mournhold Temple: Office of the Lord Archcanon</en>
   </cell>
   <cell>
     <de>Gramfeste-Tempel: Empfangsbereich</de>
+    <en>Mournhold Temple: Reception Area</en>
   </cell>
   <cell>
     <de>Gramfeste-Tempel: Halle der Geistlichkeit</de>
+    <en>Mournhold Temple: Hall of Ministry</en>
   </cell>
   <cell>
     <de>Gramfeste-Tempel: Hochkapelle</de>
+    <en>Mournhold Temple: High Chapel</en>
   </cell>
   <cell>
     <de>Gramfeste-Tempel: Keller</de>
+    <en>Mournhold Temple: Basement</en>
   </cell>
   <cell>
     <de>Gramfeste-Tempel: Krankenstube</de>
+    <en>Mournhold Temple: Infirmary</en>
   </cell>
   <cell>
     <de>Gro-Bagrat-Plantage</de>
+    <en>Gro-Bagrat Plantation</en>
   </cell>
   <cell>
     <de>Großkopfs Hütte</de>
@@ -1958,378 +2091,499 @@
   </cell>
   <cell>
     <de>Grytewake, Kabine</de>
+    <en>Grytewake, Cabin</en>
   </cell>
   <cell>
     <de>Grytewake, Oberdeck</de>
+    <en>Grytewake, Upper Level</en>
   </cell>
   <cell>
     <de>Grytewake, Unterdeck</de>
+    <en>Grytewake, Lower Level</en>
   </cell>
   <cell>
     <de>Habinbaes</de>
+    <en>Habinbaes</en>
   </cell>
   <cell>
     <de>Hairat-Vassamsi, Eiermine</de>
+    <en>Hairat-Vassamsi Egg Mine</en>
   </cell>
   <cell>
     <de>Hairat-Vassamsi, Eiermine, Nest der Königin</de>
+    <en>Hairat-Vassamsi Egg Mine, Queen's Lair</en>
   </cell>
   <cell>
     <de>Halit-Mine</de>
+    <en>Halit Mine</en>
   </cell>
   <cell>
     <de>Hanud</de>
+    <en>Hanud</en>
   </cell>
   <cell>
     <de>Hanud, Turm</de>
+    <en>Hanud, Tower</en>
   </cell>
   <cell>
     <de>Hassour</de>
+    <en>Hassour</en>
   </cell>
   <cell>
     <de>Hassour, Schrein</de>
+    <en>Hassour, Shrine</en>
   </cell>
   <cell>
     <de>Haus Arvel</de>
+    <en>Arvel Manor</en>
   </cell>
   <cell>
     <de>Haus Arvel, Hütte des Sklavenaufsehers</de>
+    <en>Arvel Manor, Slavemaster's Shack</en>
   </cell>
   <cell>
     <de>Haus Arvel, Lagerhütte</de>
+    <en>Arvel Manor, Storage Shack</en>
   </cell>
   <cell>
     <de>Haus Arvel, Sklavenhütte</de>
+    <en>Arvel Manor, Slave Shack</en>
   </cell>
   <cell>
     <de>Haus Morvayn</de>
+    <en>Morvayn Manor</en>
   </cell>
   <cell>
     <de>Haus Omani</de>
+    <en>Omani Manor</en>
   </cell>
   <cell>
     <de>Haus Rethan</de>
+    <en>Rethan Manor</en>
   </cell>
   <cell>
     <de>Haus Rethan, Berendas’ Haus</de>
+    <en>Rethan Manor, Berendas' House</en>
   </cell>
   <cell>
     <de>Haus Rethan, Drelas’ Haus</de>
+    <en>Rethan Manor, Drelas' House</en>
   </cell>
   <cell>
     <de>Haus Rethan, Gols’ Haus</de>
+    <en>Rethan Manor, Gols' House</en>
   </cell>
   <cell>
     <de>Haus Rethan, Tures’ Haus</de>
+    <en>Rethan Manor, Tures' House</en>
   </cell>
   <cell>
     <de>Hawia, Eiermine</de>
+    <en>Hawia Egg Mine</en>
   </cell>
   <cell>
     <de>Helan-Ahnengruft</de>
+    <en>Helan Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Helas-Ahnengruft</de>
+    <en>Helas Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Heleran-Ahnengruft</de>
+    <en>Heleran Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Heran-Ahnengruft</de>
+    <en>Heran Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Hinnabi</de>
+    <en>Hinnabi</en>
   </cell>
   <cell>
     <de>Hla Oad</de>
+    <en>Hla Oad</en>
   </cell>
   <cell>
     <de>Hla Oad, Fadila Balvels Haus</de>
+    <en>Hla Oad, Fadila Balvel's House</en>
   </cell>
   <cell>
     <de>Hla Oad, Fettis Versteck</de>
+    <en>Hla Oad, Fatleg's Drop Off</en>
   </cell>
   <cell>
     <de>Hla Oad, Murudius Flaeus’ Haus</de>
+    <en>Hla Oad, Murudius Flaeus's House</en>
   </cell>
   <cell>
     <de>Hla Oad, Okurs Haus</de>
+    <en>Hla Oad, Okur's House</en>
   </cell>
   <cell>
     <de>Hla Oad, Relien Rirnes Haus</de>
+    <en>Hla Oad, Relien Rirne's House</en>
   </cell>
   <cell>
     <de>Hla Oad, Shurkul gro-Shargas Haus</de>
+    <en>Hla Oad, Shurkul gro-Sharga's House</en>
   </cell>
   <cell>
     <de>Hlaalu-Ahnengruft</de>
+    <en>Hlaalu Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Hleran-Ahnengruft</de>
+    <en>Hleran Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Hlervi-Ahnengruft</de>
+    <en>Hlervi Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Hlervu-Ahnengruft</de>
+    <en>Hlervu Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Hlormaren</de>
+    <en>Hlormaren</en>
   </cell>
   <cell>
     <de>Hlormaren, Abwasserkanäle</de>
+    <en>Hlormaren, Sewers</en>
   </cell>
   <cell>
     <de>Hlormaren, Festung, Oberste Ebene</de>
+    <en>Hlormaren, Keep, Top Level</en>
   </cell>
   <cell>
     <de>Hlormaren, Festung, Unterste Ebene</de>
+    <en>Hlormaren, Keep, Bottom Level</en>
   </cell>
   <cell>
     <de>Hlormaren, Kuppel</de>
+    <en>Hlormaren, Dome</en>
   </cell>
   <cell>
     <de>Hlormaren, Propylon-Kammer</de>
+    <en>Hlormaren, Propylon Chamber</en>
   </cell>
   <cell>
     <de>Hlormaren, Untergrund</de>
+    <en>Hlormaren, Underground</en>
   </cell>
   <cell>
     <de>Holamayan</de>
+    <en>Holamayan</en>
   </cell>
   <cell>
     <de>Holamayan-Kloster</de>
+    <en>Holamayan Monastery</en>
   </cell>
   <cell>
     <de>Höhle des Fleisch-Gewordenen</de>
   </cell>
   <cell>
     <de>Ibar-Dad</de>
+    <en>Ibar-Dad</en>
   </cell>
   <cell>
     <de>Ibishammus, Schrein</de>
+    <en>Ibishammus, Shrine</en>
   </cell>
   <cell>
     <de>Ienith-Ahnengruft</de>
+    <en>Ienith Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Ihinipalit, Schrein</de>
+    <en>Ihinipalit, Shrine</en>
   </cell>
   <cell>
     <de>Ilanipu-Grotte</de>
+    <en>Ilanipu Grotto</en>
   </cell>
   <cell>
     <de>Ilunibi, Beflecktes Mark</de>
+    <en>Ilunibi, Tainted Marrow</en>
   </cell>
   <cell>
     <de>Ilunibi, Leichnam des Heiligen</de>
+    <en>Ilunibi, Carcass of the Saint</en>
   </cell>
   <cell>
     <de>Ilunibi, Marowaks Rücken</de>
+    <en>Ilunibi, Marowak's Spine</en>
   </cell>
   <cell>
     <de>Ilunibi, Schwarzes Herz</de>
+    <en>Ilunibi, Blackened Heart</en>
   </cell>
   <cell>
     <de>Ilunibi, Seelenklapper</de>
+    <en>Ilunibi, Soul's Rattle</en>
   </cell>
   <cell>
     <de>Inanius, Eiermine</de>
+    <en>Inanius Egg Mine</en>
   </cell>
   <cell>
     <de>Indalen-Ahnengruft</de>
+    <en>Indalen Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Indaren-Ahnengruft</de>
+    <en>Indaren Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Indarys-Anwesen</de>
+    <en>Indarys Manor</en>
   </cell>
   <cell>
     <de>Indarys-Anwesen, Berendas' Haus</de>
+    <en>Indarys Manor, Berendas' House</en>
   </cell>
   <cell>
     <de>Indarys-Anwesen, Dienste</de>
+    <en>Indarys Manor, Manor Services</en>
   </cell>
   <cell>
     <de>Indarys-Anwesen, Rarams Haus</de>
+    <en>Indarys Manor, Raram's House</en>
   </cell>
   <cell>
     <de>Indoranyon</de>
+    <en>Indoranyon</en>
   </cell>
   <cell>
     <de>Indoranyon, Propylon-Kammer</de>
+    <en>Indoranyon, Propylon Chamber</en>
   </cell>
   <cell>
     <de>Kaiserliches Gefangenenschiff</de>
+    <en>Imperial Prison Ship</en>
   </cell>
   <cell>
     <de>Kandberg</de>
+    <en>Mount Kand</en>
   </cell>
   <cell>
     <de>Kandberg, Höhle</de>
+    <en>Mount Kand, Cavern</en>
   </cell>
   <cell>
     <de>Kaushtababi-Lager, Adibaels Zelt</de>
+    <en>Kaushtababi Camp, Adibael's Yurt</en>
   </cell>
   <cell>
     <de>Kaushtarari, Schrein</de>
+    <en>Kaushtarari, Shrine</en>
   </cell>
   <cell>
     <de>Kens Testloch</de>
   </cell>
   <cell>
     <de>Khartag</de>
+    <en>Khartag Point</en>
   </cell>
   <cell>
     <de>Khuul</de>
+    <en>Khuul</en>
   </cell>
   <cell>
     <de>Khuul, Aldhis Hütte</de>
+    <en>Khuul, Aldi's Shack</en>
   </cell>
   <cell>
     <de>Khuul, Brurids Hütte</de>
+    <en>Khuul, Brurid's Shack</en>
   </cell>
   <cell>
     <de>Khuul, Endris Dilmyns Hütte</de>
+    <en>Khuul, Endris Dilmyn's Shack</en>
   </cell>
   <cell>
     <de>Khuul, H'lgis Hütte</de>
   </cell>
   <cell>
     <de>Khuul, Miron Garers Hütte</de>
+    <en>Khuul, Miron Garer's Shack</en>
   </cell>
   <cell>
     <de>Khuul, Nelmyne Andules’ Hütte</de>
+    <en>Khuul, Nelmyne Andules's Shack</en>
   </cell>
   <cell>
     <de>Khuul, Rivame Samandas’ Hütte</de>
+    <en>Khuul, Rivame Samandas's Shack</en>
   </cell>
   <cell>
     <de>Khuul, Svadstars Hütte</de>
+    <en>Khuul, Svadstar's Shack</en>
   </cell>
   <cell>
     <de>Khuul, Thongars Handelshaus</de>
+    <en>Khuul, Thongar's Tradehouse</en>
   </cell>
   <cell>
     <de>Kleines Gutshaus</de>
   </cell>
   <cell>
     <de>Koal-Höhle</de>
+    <en>Koal Cave</en>
   </cell>
   <cell>
     <de>Kogoruhn</de>
+    <en>Kogoruhn</en>
   </cell>
   <cell>
     <de>Kogoruhn, Aerodes Gewölbe</de>
+    <en>Kogoruhn, Vault of Aerode</en>
   </cell>
   <cell>
     <de>Kogoruhn, Blutendes Herz</de>
+    <en>Kogoruhn, Bleeding Heart</en>
   </cell>
   <cell>
     <de>Kogoruhn, Charmas Atem</de>
+    <en>Kogoruhn, Charma's Breath</en>
   </cell>
   <cell>
     <de>Kogoruhn, Halle des Wachsamens Gefühls</de>
+    <en>Kogoruhn, Hall of the Watchful Touch</en>
   </cell>
   <cell>
     <de>Kogoruhn, Makis Halle</de>
+    <en>Kogoruhn, Hall of Maki</en>
   </cell>
   <cell>
     <de>Kogoruhn, Nabith-Kanal</de>
+    <en>Kogoruhn, Nabith Waterway</en>
   </cell>
   <cell>
     <de>Kogoruhn, Phistos Halle</de>
+    <en>Kogoruhn, Hall of Phisto</en>
   </cell>
   <cell>
     <de>Kogoruhn, Pollocks Kuppel</de>
+    <en>Kogoruhn, Dome of Pollock's Eve</en>
   </cell>
   <cell>
     <de>Kogoruhn, Tempel der Todgeweihten</de>
+    <en>Kogoruhn, Temple of Fey</en>
   </cell>
   <cell>
     <de>Kogoruhn, Ursos Kuppel</de>
+    <en>Kogoruhn, Dome of Urso</en>
   </cell>
   <cell>
     <de>Kora-Dur</de>
+    <en>Kora-Dur</en>
   </cell>
   <cell>
     <de>Kudanat</de>
+    <en>Kudanat</en>
   </cell>
   <cell>
     <de>Kumarahaz</de>
+    <en>Kumarahaz</en>
   </cell>
   <cell>
     <de>Kunirai</de>
+    <en>Kunirai</en>
   </cell>
   <cell>
     <de>Kushtashpi, Schrein</de>
+    <en>Kushtashpi, Shrine</en>
   </cell>
   <cell>
     <de>Llando-Ahnengruft</de>
+    <en>Llando Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Lleran-Ahnengruft</de>
+    <en>Lleran Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Llervu-Ahnengruft</de>
+    <en>Llervu Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Lliralas Hütte</de>
+    <en>Llirala's Shack</en>
   </cell>
   <cell>
     <de>Llovyns, Bauernhaus</de>
+    <en>Llovyn's Farmhouse</en>
   </cell>
   <cell>
     <de>Maar Gan</de>
+    <en>Maar Gan</en>
   </cell>
   <cell>
     <de>Maar Gan, Andus Handelshaus</de>
+    <en>Maar Gan, Andus Tradehouse</en>
   </cell>
   <cell>
     <de>Maar Gan, Assi Serimilks Hütte</de>
+    <en>Maar Gan, Assi Serimilk's Hut</en>
   </cell>
   <cell>
     <de>Maar Gan, Assirari Zama-Rasours Hütte</de>
+    <en>Maar Gan, Assirari Zama-Rasour's Hut</en>
   </cell>
   <cell>
     <de>Maar Gan, Außenposten</de>
+    <en>Maar Gan, Outpost</en>
   </cell>
   <cell>
     <de>Maar Gan, Garrys Hütte</de>
+    <en>Maar Gan, Garry's Hut</en>
   </cell>
   <cell>
     <de>Maar Gan, Huleens Hütte</de>
+    <en>Maar Gan, Huleen's Hut</en>
   </cell>
   <cell>
     <de>Maar Gan, Khind Erusharas Hütte</de>
+    <en>Maar Gan, Kind Erushara's Hut</en>
   </cell>
   <cell>
     <de>Maar Gan, Mabrelle Geles's Hütte</de>
+    <en>Maar Gan, Mabrelle Geles's Hut</en>
   </cell>
   <cell>
     <de>Maar Gan, Schrein</de>
+    <en>Maar Gan, Shrine</en>
   </cell>
   <cell>
     <de>Maar Gan, Shilipuran Zama-Rasours Hütte</de>
+    <en>Maar Gan, Shilipuran Zama-Rasour's Hut</en>
   </cell>
   <cell>
     <de>Maar Gan, Tashpi Ashibaels Hütte</de>
+    <en>Maar Gan, Tashpi Ashibael's Hut</en>
   </cell>
   <cell>
     <de>Maar Gan, Ulisamsi Shaddarnurans Hütte</de>
+    <en>Maar Gan, Ulisamsi Shaddarnuran's Hut</en>
   </cell>
   <cell>
     <de>Maar Gan, Wachturm 1</de>
+    <en>Maar Gan, Guard Tower 1</en>
   </cell>
   <cell>
     <de>Maar Gan, Wachturm 2</de>
+    <en>Maar Gan, Guard Tower 2</en>
   </cell>
   <cell>
     <de>Maar Gan, Wachturm 3</de>
+    <en>Maar Gan, Guard Tower 3</en>
   </cell>
   <cell>
     <de>Maar Gan, Yeherradads Hütte</de>
+    <en>Maar Gan, Yeherradad's Hut</en>
   </cell>
   <cell>
     <de>Maba-Ilu</de>

@@ -2587,135 +2587,179 @@
   </cell>
   <cell>
     <de>Maba-Ilu</de>
+    <en>Maba-Ilu</en>
   </cell>
   <cell>
     <de>Mababi</de>
+    <en>Mababi</en>
   </cell>
   <cell>
     <de>Madas-Grotte</de>
+    <en>Madas Grotto</en>
   </cell>
   <cell>
     <de>Madas-Zebba, Eiermine</de>
+    <en>Madas-Zebba Egg Mine</en>
   </cell>
   <cell>
     <de>Maelkashishi, Schrein</de>
+    <en>Maelkashishi, Shrine</en>
   </cell>
   <cell>
     <de>Maelkashishi, Schrein, Vergessene Empore</de>
+    <en>Maelkashishi, Shrine, Forgotten Galleries</en>
   </cell>
   <cell>
     <de>Maelu, Eiermine</de>
+    <en>Maelu Egg Mine</en>
   </cell>
   <cell>
     <de>Maesa-Shammus, Eiermine</de>
+    <en>Maesa-Shammus Egg Mine</en>
   </cell>
   <cell>
     <de>Magas Volar</de>
+    <en>Magas Volar</en>
   </cell>
   <cell>
     <de>Mallapi</de>
+    <en>Mallapi</en>
   </cell>
   <cell>
     <de>Malmus-Grotte</de>
+    <en>Malmus Grotto</en>
   </cell>
   <cell>
     <de>Mamaea, Heiligtum der Schwarzen Hoffnung</de>
+    <en>Mamaea, Sanctum of Black Hope</en>
   </cell>
   <cell>
     <de>Mamaea, Heiligtum des Erwachens</de>
+    <en>Mamaea, Sanctum of Awakening</en>
   </cell>
   <cell>
     <de>Mamaea, Schrein der Düsteren Träume</de>
+    <en>Mamaea, Shrine of Pitted Dreams</en>
   </cell>
   <cell>
     <de>Mamshar-Disamus Lager, Maesats Zelt</de>
+    <en>Mamshar-Disamus Camp, Maesat's Yurt</en>
   </cell>
   <cell>
     <de>Manats Bauernhaus</de>
+    <en>Manat's Farmhouse</en>
   </cell>
   <cell>
     <de>Mannammu</de>
+    <en>Mannammu</en>
   </cell>
   <cell>
     <de>Maran-Adon</de>
+    <en>Maran-Adon</en>
   </cell>
   <cell>
     <de>Marandus</de>
+    <en>Marandus</en>
   </cell>
   <cell>
     <de>Marandus, Kuppel</de>
+    <en>Marandus, Dome</en>
   </cell>
   <cell>
     <de>Marandus, Obere Ebene</de>
+    <en>Marandus, Upper Level</en>
   </cell>
   <cell>
     <de>Marandus, Propylon-Kammer</de>
+    <en>Marandus, Propylon Chamber</en>
   </cell>
   <cell>
     <de>Marandus, Untere Ebene</de>
+    <en>Marandus, Lower Level</en>
   </cell>
   <cell>
     <de>Maren-Ahnengruft</de>
+    <en>Maren Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Mark's Script Testing Cell</de>
+    <en>Mark's Script Testing Cell</en>
   </cell>
   <cell>
     <de>Marks Vampir-Testzelle</de>
+    <en>Mark's Vampire Test Cell</en>
   </cell>
   <cell>
     <de>Marvani-Ahnengruft</de>
+    <en>Marvani Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Massahanud-Lager, Sargons Zelt</de>
+    <en>Massahanud Camp, Sargon's Yurt</en>
   </cell>
   <cell>
     <de>Massama-Höhle</de>
+    <en>Massama Cave</en>
   </cell>
   <cell>
     <de>Masseranit</de>
+    <en>Masseranit</en>
   </cell>
   <cell>
     <de>Mat</de>
+    <en>Mat</en>
   </cell>
   <cell>
     <de>Matus-Akin, Eiermine</de>
+    <en>Matus-Akin Egg Mine</en>
   </cell>
   <cell>
     <de>Matus-Akin, Eiermine, Nest der Königin</de>
+    <en>Matus-Akin Egg Mine, Queen's Lair</en>
   </cell>
   <cell>
     <de>Mausur-Höhlen</de>
+    <en>Mausur Caverns</en>
   </cell>
   <cell>
     <de>Mawia</de>
+    <en>Mawia</en>
   </cell>
   <cell>
     <de>Mila-Nipal, Manats Zelt</de>
+    <en>Mila-Nipal, Manat's Yurt</en>
   </cell>
   <cell>
     <de>Minabi</de>
+    <en>Minabi</en>
   </cell>
   <cell>
     <de>Minabi, Banditenversteck</de>
+    <en>Minabi, Bandit Lair</en>
   </cell>
   <cell>
     <de>Ministerium der Wahrheit, Arrestzellen</de>
+    <en>Ministry of Truth, Holding Cells</en>
   </cell>
   <cell>
     <de>Ministerium der Wahrheit, Gefängnis</de>
+    <en>Ministry of Truth, Prison Keep</en>
   </cell>
   <cell>
     <de>Ministerium der Wahrheit, Verfahrenssaal</de>
+    <en>Ministry of Truth, Hall of Processing</en>
   </cell>
   <cell>
     <de>Missamsi</de>
+    <en>Missamsi</en>
   </cell>
   <cell>
     <de>Missir-Dadalit, Eiermine</de>
+    <en>Missir-Dadalit Egg Mine</en>
   </cell>
   <cell>
     <de>Molag Mar</de>
+    <en>Molag Mar</en>
   </cell>
   <cell>
     <de>Molag Mar, Bodensektion</de>
@@ -2725,60 +2769,76 @@
   </cell>
   <cell>
     <de>Molag Mar, Herberge Zum Wallfahrer</de>
+    <en>Molag Mar, The Pilgrim's Rest</en>
   </cell>
   <cell>
     <de>Molag Mar, Herberge zum Hl. Veloth</de>
+    <en>Molag Mar, St. Veloth's Hostel</en>
   </cell>
   <cell>
     <de>Molag Mar, Kanäle</de>
   </cell>
   <cell>
     <de>Molag Mar, Redoranische Festung</de>
+    <en>Molag Mar, Redoran Stronghold</en>
   </cell>
   <cell>
     <de>Molag Mar, Saetring der Nord: Schmied</de>
+    <en>Molag Mar, Saetring the Nord: Smith</en>
   </cell>
   <cell>
     <de>Molag Mar, Tempel</de>
+    <en>Molag Mar, Temple</en>
   </cell>
   <cell>
     <de>Molag Mar, Unterirdische Kanäle</de>
   </cell>
   <cell>
     <de>Molag Mar, Vasesius Viciulus: Händler</de>
+    <en>Molag Mar, Vasesius Viciulus: Trader</en>
   </cell>
   <cell>
     <de>Mudan, Alter Dwemer-Kontrollpunkt</de>
+    <en>Mudan, Lost Dwemer Checkpoint</en>
   </cell>
   <cell>
     <de>Mudan, Gewölbe</de>
+    <en>Mudan, Central Vault</en>
   </cell>
   <cell>
     <de>Mudan, Rechter Turm</de>
+    <en>Mudan, Right Tower</en>
   </cell>
   <cell>
     <de>Mudan-Grotte</de>
+    <en>Mudan Grotto</en>
   </cell>
   <cell>
     <de>Mudan-Mul, Eiermine</de>
+    <en>Mudan-Mul Egg Mine</en>
   </cell>
   <cell>
     <de>Mul-Grotte</de>
+    <en>Mul Grotto</en>
   </cell>
   <cell>
     <de>Mylk</de>
   </cell>
   <cell>
     <de>Mzahnch</de>
+    <en>Mzahnch</en>
   </cell>
   <cell>
     <de>Mzahnch, Untere Ebene</de>
+    <en>Mzahnch Lower Level</en>
   </cell>
   <cell>
     <de>Mzanchend</de>
+    <en>Mzanchend</en>
   </cell>
   <cell>
     <de>Mzuleft</de>
+    <en>Mzuleft</en>
   </cell>
   <cell>
     <de>Nallit</de>
@@ -3115,12 +3175,15 @@
   </cell>
   <cell>
     <de>Ruine Mzahnch</de>
+    <en>Mzahnch Ruin</en>
   </cell>
   <cell>
     <de>Ruine Mzuleft</de>
+    <en>Mzuleft Ruin</en>
   </cell>
   <cell>
     <de>Ruine Nchuleft</de>
+    <en>Nchuleft Ruin</en>
   </cell>
   <cell>
     <de>Sadrith Mora</de>

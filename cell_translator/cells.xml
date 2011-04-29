@@ -2842,45 +2842,59 @@
   </cell>
   <cell>
     <de>Nallit</de>
+    <en>Nallit</en>
   </cell>
   <cell>
     <de>Nammu</de>
+    <en>Nammu</en>
   </cell>
   <cell>
     <de>Nchardahrk</de>
+    <en>Nchardahrk</en>
   </cell>
   <cell>
     <de>Nchardumz</de>
+    <en>Nchardumz</en>
   </cell>
   <cell>
     <de>Nchardumz, Untere Ebene</de>
+    <en>Nchardumz Lower Level</en>
   </cell>
   <cell>
     <de>Nchuleft</de>
+    <en>Nchuleft</en>
   </cell>
   <cell>
     <de>Nchuleftingth</de>
+    <en>Nchuleftingth</en>
   </cell>
   <cell>
     <de>Nchuleftingth, Obere Ebenen</de>
+    <en>Nchuleftingth, Upper Levels</en>
   </cell>
   <cell>
     <de>Nchuleftingth, Prüfung der Muster</de>
+    <en>Nchuleftingth, Test of Pattern</en>
   </cell>
   <cell>
     <de>Nchuleftingth, Untere Ebenen</de>
+    <en>Nchuleftingth, Lower Levels</en>
   </cell>
   <cell>
     <de>Nchurdamz</de>
+    <en>Nchurdamz</en>
   </cell>
   <cell>
     <de>Nchurdamz, Innenbereich</de>
+    <en>Nchurdamz, Interior</en>
   </cell>
   <cell>
     <de>Nelas-Ahnengruft</de>
+    <en>Nelas Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Nerano-Ahnengruft</de>
+    <en>Nerano Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Nicht verzeichnetes Schiffswrack, Oberdeck</de>
@@ -2890,78 +2904,103 @@
   </cell>
   <cell>
     <de>Nileras Bauernhaus</de>
+    <en>Nilera's Farmhouse</en>
   </cell>
   <cell>
     <de>Nimawia-Grotte</de>
+    <en>Nimawia Grotto</en>
   </cell>
   <cell>
     <de>Nissintu</de>
+    <en>Nissintu</en>
   </cell>
   <cell>
     <de>Norenen-dur</de>
+    <en>Norenen-dur</en>
   </cell>
   <cell>
     <de>Norenen-dur, Basilika des göttlichen Flüsterns</de>
+    <en>Norenen-dur, Basilica of Divine Whispers</en>
   </cell>
   <cell>
     <de>Norenen-dur, Der Jammergraben</de>
+    <en>Norenen-dur, The Wailingdelve</en>
   </cell>
   <cell>
     <de>Norenen-dur, Die große Treppe</de>
+    <en>Norenen-dur, The Grand Stair</en>
   </cell>
   <cell>
     <de>Norenen-dur, Die knirschenden Zähne</de>
+    <en>Norenen-dur, The Teeth that Gnash</en>
   </cell>
   <cell>
     <de>Norenen-dur, Zitadelle von Myn Dhrur</de>
+    <en>Norenen-dur, Citadel of Myn Dhrur</en>
   </cell>
   <cell>
     <de>Norvayn-Ahnengruft</de>
+    <en>Norvayn Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Nund</de>
+    <en>Nund</en>
   </cell>
   <cell>
     <de>Odai-Plateau</de>
+    <en>Odai Plateau</en>
   </cell>
   <cell>
     <de>Odaishah</de>
+    <en>Odaishah</en>
   </cell>
   <cell>
     <de>Odibaal</de>
+    <en>Odibaal</en>
   </cell>
   <cell>
     <de>Odirnamat</de>
+    <en>Odirnamat</en>
   </cell>
   <cell>
     <de>Odirniran</de>
+    <en>Odirniran</en>
   </cell>
   <cell>
     <de>Odirniran, Turm</de>
+    <en>Odirniran, Tower</en>
   </cell>
   <cell>
     <de>Odrosal</de>
+    <en>Odrosal</en>
   </cell>
   <cell>
     <de>Odrosal, Ausbildungsakademie der Dwemer</de>
+    <en>Odrosal, Dwemer Training Academy</en>
   </cell>
   <cell>
     <de>Odrosal, Turm</de>
+    <en>Odrosal, Tower</en>
   </cell>
   <cell>
     <de>Omalen-Ahnengruft</de>
+    <en>Omalen Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Omaren-Ahnengruft</de>
+    <en>Omaren Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Onnissiralis, Schrein</de>
+    <en>Onnissiralis, Shrine</en>
   </cell>
   <cell>
     <de>Orethi-Ahnengruft</de>
+    <en>Orethi Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Othrelas-Ahnengruft</de>
+    <en>Othrelas Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Palansour</de>

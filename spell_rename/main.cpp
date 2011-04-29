@@ -397,7 +397,7 @@ int main(int argc, char **argv)
       //files and remove it
       removedFiles.push_back(files.at(i));
       files.removeEntry(i);
-      //We do nit increase counter (i) here, because the index will now contain
+      //We do not increase counter (i) here, because the index will now contain
       //the next file, which will be read in the next iteration.
     }
     else

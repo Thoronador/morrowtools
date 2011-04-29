@@ -40,7 +40,7 @@ aber bisher wurde es nur mit der deutschen Version getestet.
 \subsection{Weitere Buchstabenmuster}
 In zuk\"{u}nftigen Versionen des Programmes wird es m\"{o}glicherweise mehrere
 Buchstabenmuster oder Kombinationen aus Buchstaben und Ziffern geben, welche
-dem Namen eines Zaubers ja nach Wahl vorangestellt werden k\"{o}nnen. Allerdings
+dem Namen eines Zaubers je nach Wahl vorangestellt werden k\"{o}nnen. Allerdings
 sind mir daf\"{u}r bisher keine sinnvollen Muster eingefallen. Wer eine Idee dazu
 hat, kann sich ja bei mir melden und mir diese mitteilen, vielleicht wird diese
 dann auch in das Programm eingebaut. Jedoch sollten diese Kombinationen nicht
@@ -96,9 +96,9 @@ von Morrowind angeben, indem man den Parameter \texttt{-d} benutzt.
 
 \begin{tabular}{p{7cm} p{8cm}}
 \texttt{--data-files VERZEICHNIS} & legt das Verzeichnis VERZEICHNIS als Data Files-Verzeichnis von Morrowind fest. In diesem Verzeichnis m\"{u}ssen Morrowind.esm und alle andere Plugindateien, welche verarbeitet werden sollen, zu finden sein. Existiert das Verzeichnis nicht, wird das Programm vorzeitig abbrechen und keine Plugindatei erstellen.\\
-\texttt{-d VERZEICHNIS}           & Kurzform von \texttt{--data-files}.\\
-\texttt{--output NeuesPlugin.esp} & legt \textit{NeuesPlugin.esp} als Name f\"{u}r die neu erstellte Plugindatei fest. Wird dieser Parameter nicht angegeben, so heißt die Ausgabedatei einfach nur \textit{out.esp}.\\
-\texttt{-o NeuesPlugin.esp}       & Kurzform von \texttt{--output}.\\
+\texttt{-d VERZEICHNIS}           & Kurzform von \texttt{--data-files}\\
+\texttt{--output NeuesPlugin.esp} & legt \textit{NeuesPlugin.esp} als Name f\"{u}r die neu erstellte Plugindatei fest. Wird dieser Parameter nicht angegeben, so hei\ss{}t die Ausgabedatei einfach nur \textit{out.esp}.\\
+\texttt{-o NeuesPlugin.esp}       & Kurzform von \texttt{--output}\\
 \end{tabular}
 \newline
 \begin{tabular}{p{7cm} p{8cm}}
@@ -108,7 +108,7 @@ von Morrowind angeben, indem man den Parameter \texttt{-d} benutzt.
 \newline
 \begin{tabular}{p{7cm} p{8cm}}
 \texttt{--ini}                    & liest die Plugindateien aus dem Abschnitt [Game Files] der Morrowind.ini aus und f\"{u}gt diese Dateien der Liste der zu durchsuchenden Plugins hinzu. Ist keine Morrowind.ini vorhanden (was bei einer normalen Morrowindinstallation nicht passieren sollte), so bricht das Programm ab und erzeugt keine Plugindatei.\\
-\texttt{-i}                       & Kurzform von \texttt{--ini}.\\
+\texttt{-i}                       & Kurzform von \texttt{--ini}\\
 \texttt{--ini-with-discard}       & wie \texttt{--ini}, allerdings werden zuvor alle m\"{o}glicherweise \"{u}ber den Parameter \texttt{--add-files} bzw. \texttt{-f} hinzugef\"{u}gten Plugindateien aus der Pluginliste herausgenommen.\\
 \end{tabular}
 \newline
@@ -123,7 +123,7 @@ von Morrowind angeben, indem man den Parameter \texttt{-d} benutzt.
 \newline
 \begin{tabular}{p{7cm} p{8cm}}
 \texttt{--help}                   & zeigt einen Hilfetext zu den Parametern des Programmes an und beendet das Programm. Alle anderen Parameter werden dann verworfen und es wird keine Plugindatei erstellt.\\
-\texttt{-?}                       & Kurzform von \texttt{--help}.\\
+\texttt{-?}                       & Kurzform von \texttt{--help}\\
 \texttt{--version}                & zeigt die Version des Programmes an und beendet das Programm. Alle anderen Parameter werden dann verworfen und es wird keine Plugindatei erstellt.\\
 \end{tabular}
 

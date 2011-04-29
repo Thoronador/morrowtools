@@ -55,11 +55,18 @@ bool MGEF_Data::saveToStream(std::ofstream& output) const
   output.write((char*) &cMGEF, 4);
   uint32_t Size;
   Size = 4 /* INDX */ +4 /* four bytes for length */ +4 /* length of index */
-        +4 /* MEDT */ +4 /* four bytes for length */ +36 /* length of effect data */
-        +4 /* ITEX */ +4 /* four bytes for length */
-        +EffectIcon.length()+1 /* length of effect icon +1 byte for NUL-termination */
-        +4 /* PTEX */ +4 /* four bytes for length */
-        +ParticleTexture.length()+1 /* length of particle texture +1 byte for NUL-termination */;
+        +4 /* MEDT */ +4 /* four bytes for length */ +36 /* length of effect data */;
+
+  if ( EffectIcon!="")
+  {
+    Size += 4 /* ITEX */ +4 /* four bytes for length */
+           +EffectIcon.length()+1 /* length of effect icon +1 byte for NUL-termination */;
+  }
+  if (ParticleTexture!="")
+  {
+    Size += 4 /* PTEX */ +4 /* four bytes for length */
+           +ParticleTexture.length()+1 /* length of particle texture +1 byte for NUL-termination */;
+  }
   if (CastingVisual!="")
   {
     Size += 4 /* CVFX */ +4 /* four bytes for length */
@@ -123,8 +130,8 @@ bool MGEF_Data::saveToStream(std::ofstream& output) const
         float SpeedX
         float SizeX
         float SizeCap
-    ITEX = Effect Icon string
-    PTEX = Particle texture string
+    ITEX = Effect Icon string (optional)
+    PTEX = Particle texture string (optional)
     CVFX = Casting visual string (optional?)
     BVFX = Bolt visual string (optional?)
     HVFX = Hit visual string (optional?)
@@ -169,21 +176,27 @@ bool MGEF_Data::saveToStream(std::ofstream& output) const
   // ---- size cap
   output.write((char*) &SizeCap, 4);
 
-  //write ITEX
-  output.write((char*) &cITEX, 4);
-  //ITEX's length
-  SubLength = EffectIcon.length()+1; /* length of effect icon +1 byte for NUL-termination */
-  output.write((char*) &SubLength, 4);
-  //write ITEX
-  output.write(EffectIcon.c_str(), SubLength);
+  if (EffectIcon!="")
+  {
+    //write ITEX
+    output.write((char*) &cITEX, 4);
+    //ITEX's length
+    SubLength = EffectIcon.length()+1; /* length of effect icon +1 byte for NUL-termination */
+    output.write((char*) &SubLength, 4);
+    //write ITEX
+    output.write(EffectIcon.c_str(), SubLength);
+  }
 
-  //write PTEX
-  output.write((char*) &cPTEX, 4);
-  //PTEX's length
-  SubLength = ParticleTexture.length()+1; /* length of particle +1 byte for NUL-termination */
-  output.write((char*) &SubLength, 4);
-  //write PTEX
-  output.write(ParticleTexture.c_str(), SubLength);
+  if (ParticleTexture!="")
+  {
+    //write PTEX
+    output.write((char*) &cPTEX, 4);
+    //PTEX's length
+    SubLength = ParticleTexture.length()+1; /* length of particle +1 byte for NUL-termination */
+    output.write((char*) &SubLength, 4);
+    //write PTEX
+    output.write(ParticleTexture.c_str(), SubLength);
+  }
 
   if (CastingVisual!="")
   {
@@ -307,8 +320,8 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
         float SpeedX
         float SizeX
         float SizeCap
-    ITEX = Effect Icon string
-    PTEX = Particle texture string
+    ITEX = Effect Icon string (optional)
+    PTEX = Particle texture string (optional)
     CVFX = Casting visual string (optional?)
     BVFX = Bolt visual string (optional?)
     HVFX = Hit visual string (optional?)
@@ -394,74 +407,36 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
     return false;
   }
 
-  //read ITEX
-  in_File.read((char*) &SubRecName, 4);
-  BytesRead += 4;
-  if (SubRecName!=cITEX)
-  {
-    UnexpectedRecord(cITEX, SubRecName);
-    return false;
-  }
-  //ITEX's length
-  in_File.read((char*) &SubLength, 4);
-  BytesRead += 4;
-  if (SubLength>255)
-  {
-    std::cout << "Error: subrecord ITEX of MGEF is longer than 255 characters.\n";
-    return false;
-  }
   const size_t BufferSize = 1024;
   char Buffer [BufferSize];
   memset(Buffer, '\0', BufferSize);
-  //read tex name
-  in_File.read(Buffer, SubLength);
-  BytesRead += SubLength;
-  if (!in_File.good())
-  {
-    std::cout << "Error while reading subrecord ITEX of MGEF.\n";
-    return false;
-  }
-  EffectIcon = std::string(Buffer);
 
-  //read PTEX
-  in_File.read((char*) &SubRecName, 4);
-  BytesRead += 4;
-  if (SubRecName!=cPTEX)
-  {
-    UnexpectedRecord(cPTEX, SubRecName);
-    return false;
-  }
-  //PTEX's length
-  in_File.read((char*) &SubLength, 4);
-  BytesRead += 4;
-  if (SubLength>255)
-  {
-    std::cout << "Error: subrecord PTEX of MGEF is longer than 255 characters.\n";
-    return false;
-  }
-  //read particle tex name
-  memset(Buffer, '\0', BufferSize);
-  in_File.read(Buffer, SubLength);
-  BytesRead += SubLength;
-  if (!in_File.good())
-  {
-    std::cout << "Error while reading subrecord PTEX of MGEF.\n";
-    return false;
-  }
-  ParticleTexture = std::string(Buffer);
-
+  //effect icon tex and particle texture, both rarely optional
+  EffectIcon = "";
+  ParticleTexture = "";
+  bool hasITEX = false;
+  bool hasPTEX = false;
   //visual strings, partially optional
   CastingVisual = "";
   BoltVisual = "";
   HitVisual = "";
   AreaVisual = "";
+  bool hasCVFX = false;
+  bool hasBVFX = false;
+  bool hasHVFX = false;
+  bool hasAVFX = false;
   //description, optional
   Description = "";
+  bool hasDESC = false;
   //effect sounds, all optional
   CastSound = "";
   BoltSound = "";
   HitSound = "";
   AreaSound = "";
+  bool hasCSND = false;
+  bool hasBSND = false;
+  bool hasHSND = false;
+  bool hasASND = false;
   while (BytesRead<Size)
   {
     //read next subrecord
@@ -469,7 +444,64 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
     BytesRead += 4;
     switch(SubRecName)
     {
+      case cITEX: //rarely optional, might not be present in some plugins
+           if (hasITEX)
+           {
+             std::cout << "Error: record MGEF seems to have two ITEX subrecords.\n";
+             return false;
+           }
+           //ITEX's length
+           in_File.read((char*) &SubLength, 4);
+           BytesRead += 4;
+           if (SubLength>255)
+           {
+             std::cout << "Error: subrecord ITEX of MGEF is longer than 255 characters.\n";
+             return false;
+           }
+           //read tex name
+           memset(Buffer, '\0', BufferSize);
+           in_File.read(Buffer, SubLength);
+           BytesRead += SubLength;
+           if (!in_File.good())
+           {
+             std::cout << "Error while reading subrecord ITEX of MGEF.\n";
+             return false;
+           }
+           EffectIcon = std::string(Buffer);
+           hasITEX = true;
+           break;
+      case cPTEX: //rarely optional, might not be present in some plugins
+           if (hasPTEX)
+           {
+             std::cout << "Error: record MGEF seems to have two PTEX subrecords.\n";
+             return false;
+           }
+           //PTEX's length
+           in_File.read((char*) &SubLength, 4);
+           BytesRead += 4;
+           if (SubLength>255)
+           {
+             std::cout << "Error: subrecord PTEX of MGEF is longer than 255 characters.\n";
+             return false;
+           }
+           //read particle tex name
+           memset(Buffer, '\0', BufferSize);
+           in_File.read(Buffer, SubLength);
+           BytesRead += SubLength;
+           if (!in_File.good())
+           {
+             std::cout << "Error while reading subrecord PTEX of MGEF.\n";
+             return false;
+           }
+           ParticleTexture = std::string(Buffer);
+           hasPTEX = true;
+           break;
       case cCVFX: //read optional CVFX
+           if (hasCVFX)
+           {
+             std::cout << "Error: record MGEF seems to have two CVFX subrecords.\n";
+             return false;
+           }
            //CVFX's length
            in_File.read((char*) &SubLength, 4);
            BytesRead += 4;
@@ -488,8 +520,14 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
              return false;
            }
            CastingVisual = std::string(Buffer);
+           hasCVFX = true;
            break;
       case cBVFX: //read optional BVFX
+           if (hasBVFX)
+           {
+             std::cout << "Error: record MGEF seems to have two BVFX subrecords.\n";
+             return false;
+           }
            //BVFX's length
            in_File.read((char*) &SubLength, 4);
            BytesRead += 4;
@@ -508,8 +546,14 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
              return false;
            }
            BoltVisual = std::string(Buffer);
+           hasBVFX = true;
            break;
       case cHVFX: //read optional HVFX
+           if (hasHVFX)
+           {
+             std::cout << "Error: record MGEF seems to have two HVFX subrecords.\n";
+             return false;
+           }
            //HVFX's length
            in_File.read((char*) &SubLength, 4);
            BytesRead += 4;
@@ -528,8 +572,14 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
              return false;
            }
            HitVisual = std::string(Buffer);
+           hasHVFX = true;
            break;
       case cAVFX: //read optional AVFX
+           if (hasAVFX)
+           {
+             std::cout << "Error: record MGEF seems to have two AVFX subrecords.\n";
+             return false;
+           }
            //AVFX's length
            in_File.read((char*) &SubLength, 4);
            BytesRead += 4;
@@ -548,8 +598,14 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
              return false;
            }
            AreaVisual = std::string(Buffer);
+           hasAVFX = true;
            break;
       case cDESC: //read optional DESC
+           if (hasDESC)
+           {
+             std::cout << "Error: record MGEF seems to have two DESC subrecords.\n";
+             return false;
+           }
            //DESC's length
            in_File.read((char*) &SubLength, 4);
            BytesRead += 4;
@@ -569,8 +625,14 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
              return false;
            }
            Description = std::string(Buffer);
+           hasDESC = true;
            break;
       case cCSND:
+           if (hasCSND)
+           {
+             std::cout << "Error: record MGEF seems to have two CSND subrecords.\n";
+             return false;
+           }
            //CSND's length
            in_File.read((char*) &SubLength, 4);
            BytesRead += 4;
@@ -589,8 +651,14 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
              return false;
            }
            CastSound = std::string(Buffer);
+           hasCSND = true;
            break;
       case cBSND:
+           if (hasBSND)
+           {
+             std::cout << "Error: record MGEF seems to have two BSND subrecords.\n";
+             return false;
+           }
            //BSND's length
            in_File.read((char*) &SubLength, 4);
            BytesRead += 4;
@@ -609,8 +677,14 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
              return false;
            }
            BoltSound = std::string(Buffer);
+           hasBSND = true;
            break;
       case cHSND:
+           if (hasHSND)
+           {
+             std::cout << "Error: record MGEF seems to have two HSND subrecords.\n";
+             return false;
+           }
            //HSND's length
            in_File.read((char*) &SubLength, 4);
            BytesRead += 4;
@@ -629,8 +703,14 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
              return false;
            }
            HitSound = std::string(Buffer);
+           hasHSND = true;
            break;
       case cASND:
+           if (hasASND)
+           {
+             std::cout << "Error: record MGEF seems to have two ASND subrecords.\n";
+             return false;
+           }
            //ASND's length
            in_File.read((char*) &SubLength, 4);
            BytesRead += 4;
@@ -649,6 +729,7 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
              return false;
            }
            AreaSound = std::string(Buffer);
+           hasASND = true;
            break;
       default:
            //unknown sub record, thus stop here, some error occured

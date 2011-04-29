@@ -42,9 +42,11 @@ struct SpellRecord: public BasicRecord
 {
   std::string SpellID;
   std::string Name;
+  //spell data
   int32_t Type;
   int32_t Cost;
   int32_t Flags;
+  //end of spell data
   std::vector<EnchantmentData> Enchs;
 
   /* tries to save the spell record to an output file stream and returns true

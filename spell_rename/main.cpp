@@ -54,14 +54,13 @@ void showHelp()
             << "  -o FILENAME1     - sets the name of the created output file to FILENAME1.\n"
             << "                     If omitted, the default output file is \"out.esp\".\n"
             << "  -d DIRECTORY     - path to the Data Files directory of Morrowind, including\n"
-            << "                     trailing backslash (If omitted, the programme might end or\n"
-            << "                     crash before doing its job.)\n"
+            << "                     trailing backslash\n"
             << "  -dir DIRECTORY   - same as -d\n"
             << "  -f PLUGINFILE    - adds the plugin PLUGINFILE to the list of files that will\n"
             << "                     be searched for spells\n"
-            << " -i                - tries to load list of plugin files from Morrowind.ini\n"
-            << " --ini             - same as -i\n"
-            << " -id               - tries to load list of plugin files from Morrowind.ini and\n"
+            << "  -i               - tries to load list of plugin files from Morrowind.ini\n"
+            << "  --ini            - same as -i\n"
+            << "  -id              - tries to load list of plugin files from Morrowind.ini and\n"
             << "                     discards all files that have been added via -f parameters\n"
             << "  --verbose        - shows some additional information about data files\n"
             << "  --silent         - opposite of --verbose; does not show additonal information\n"
@@ -102,7 +101,7 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Spell Renamer for Morrowind, version 0.1_rev097, 2011-03-15\n";
+  std::cout << "Spell Renamer for Morrowind, version 0.1_rev219, 2011-04-29\n";
 }
 
 int main(int argc, char **argv)
@@ -385,7 +384,7 @@ int main(int argc, char **argv)
     DepFileList DummyDeps;//It's not actually used after the read function, but
                           // readESM() needs one as parameter.
     const int read_result = reader.readESM(baseDir+files.at(i).name, DummyDeps, verbose);
-    if (read_result==-1)
+    if (read_result<=-1)
     {
       std::cout << "Error while reading file \""<<baseDir+files.at(i).name
                 <<"\".\nAborting.\n";

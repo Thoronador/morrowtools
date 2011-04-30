@@ -3004,213 +3004,283 @@
   </cell>
   <cell>
     <de>Palansour</de>
+    <en>Palansour</en>
   </cell>
   <cell>
     <de>Panabanit-Nimawia, Eiermine</de>
+    <en>Panabanit-Nimawia Egg Mine</en>
   </cell>
   <cell>
     <de>Panat</de>
+    <en>Panat</en>
   </cell>
   <cell>
     <de>Panud, Eiermine</de>
+    <en>Panud Egg Mine</en>
   </cell>
   <cell>
     <de>Pelagiad</de>
+    <en>Pelagiad</en>
   </cell>
   <cell>
     <de>Pelagiad, Adanjas Haus</de>
+    <en>Pelagiad, Adanja's House</en>
   </cell>
   <cell>
     <de>Pelagiad, Ahnassis Haus</de>
+    <en>Pelagiad, Ahnassi's House</en>
   </cell>
   <cell>
     <de>Pelagiad, Dralas Gilus Haus</de>
+    <en>Pelagiad, Dralas Gilu's House</en>
   </cell>
   <cell>
     <de>Pelagiad, Ervals Haus</de>
+    <en>Pelagiad, Erval's House</en>
   </cell>
   <cell>
     <de>Pelagiad, Farusea Salas’ Haus</de>
+    <en>Pelagiad, Farusea Salas' House</en>
   </cell>
   <cell>
     <de>Pelagiad, Festung Pelagiad</de>
+    <en>Pelagiad, Fort Pelagiad</en>
   </cell>
   <cell>
     <de>Pelagiad, Herberge Zur Mitte</de>
+    <en>Pelagiad, Halfway Tavern</en>
   </cell>
   <cell>
     <de>Pelagiad, Junal-leis Haus</de>
+    <en>Pelagiad, Junal-lei's House</en>
   </cell>
   <cell>
     <de>Pelagiad, Madres Navurs Haus</de>
+    <en>Pelagiad, Madres Navur's House</en>
   </cell>
   <cell>
     <de>Pelagiad, Mebestien Ence: Händler</de>
+    <en>Pelagiad, Mebestien Ence: Trader</en>
   </cell>
   <cell>
     <de>Pelagiad, Murberius Harmevus’ Haus</de>
+    <en>Pelagiad, Murberius Harmevus' House</en>
   </cell>
   <cell>
     <de>Pelagiad, Nordmauer</de>
+    <en>Pelagiad, North Wall</en>
   </cell>
   <cell>
     <de>Pelagiad, Südmauer</de>
+    <en>Pelagiad, South Wall</en>
   </cell>
   <cell>
     <de>Pelagiad, Uulernil: Waffenschmied</de>
+    <en>Pelagiad, Uulernil : Armorer</en>
   </cell>
   <cell>
     <de>Pelagiad, Wachturm</de>
+    <en>Pelagiad, Guard Tower</en>
   </cell>
   <cell>
     <de>Piernettes Bauernhaus</de>
+    <en>Piernette's Farmhouse</en>
   </cell>
   <cell>
     <de>Pinsun</de>
+    <en>Pinsun</en>
   </cell>
   <cell>
     <de>Piran</de>
+    <en>Piran</en>
   </cell>
   <cell>
     <de>Prelude-Schiffswrack, Kabine</de>
+    <en>Prelude Shipwreck, Cabin</en>
   </cell>
   <cell>
     <de>Prelude-Schiffswrack, Oberdeck</de>
+    <en>Prelude Shipwreck, Upper Level</en>
   </cell>
   <cell>
     <de>Prelude-Schiffswrack, Unterdeck</de>
+    <en>Prelude Shipwreck, Lower Level</en>
   </cell>
   <cell>
     <de>Pudai, Eiermine</de>
+    <en>Pudai Egg Mine</en>
   </cell>
   <cell>
     <de>Pudai, Eiermine, Nest der Königin</de>
+    <en>Pudai Egg Mine, Queen's Lair</en>
   </cell>
   <cell>
     <de>Pulk</de>
+    <en>Pulk</en>
   </cell>
   <cell>
     <de>Punabi</de>
+    <en>Punabi</en>
   </cell>
   <cell>
     <de>Punammu</de>
+    <en>Punammu</en>
   </cell>
   <cell>
     <de>Punsabanit</de>
+    <en>Punsabanit</en>
   </cell>
   <cell>
     <de>Rabenfels</de>
+    <en>Raven Rock</en>
   </cell>
   <cell>
     <de>Rabenfels, Afer Flaccus' Haus</de>
+    <en>Raven Rock, Afer Flaccus' House</en>
   </cell>
   <cell>
     <de>Rabenfels, Anwesen des Verwalters</de>
+    <en>Raven Rock, Factor's Estate</en>
   </cell>
   <cell>
     <de>Rabenfels, Garnas Uvalens Haus</de>
+    <en>Raven Rock, Garnas Uvalen's House</en>
   </cell>
   <cell>
     <de>Rabenfels, Gidar Verothans Haus</de>
+    <en>Raven Rock, Gidar Verothan's House</en>
   </cell>
   <cell>
     <de>Rabenfels, Gratian Caerellius' Haus</de>
+    <en>Raven Rock, Gratian Caerellius' House</en>
   </cell>
   <cell>
     <de>Rabenfels, Händler</de>
+    <en>Raven Rock, Trader</en>
   </cell>
   <cell>
     <de>Rabenfels, Leeres Haus</de>
+    <en>Raven Rock, Vacant House</en>
   </cell>
   <cell>
     <de>Rabenfels, Mine</de>
+    <en>Raven Rock, Mine</en>
   </cell>
   <cell>
     <de>Rabenfels, Mineneingang</de>
+    <en>Raven Rock, Mine Entrance</en>
   </cell>
   <cell>
     <de>Rabenfels, Nördliches Lager</de>
+    <en>Raven Rock, North Storehouse</en>
   </cell>
   <cell>
     <de>Rabenfels, Sabinus Oranius' Haus</de>
+    <en>Raven Rock, Sabinus Oranius' House</en>
   </cell>
   <cell>
     <de>Rabenfels, Sados Relothans Haus</de>
+    <en>Raven Rock, Sados Relothan's House</en>
   </cell>
   <cell>
     <de>Rabenfels, Schmied</de>
+    <en>Raven Rock, Smith</en>
   </cell>
   <cell>
     <de>Rabenfels, Seler Favelnims Haus</de>
+    <en>Raven Rock, Seler Favelnim's House</en>
   </cell>
   <cell>
     <de>Rabenfels, Südliches Lager</de>
+    <en>Raven Rock, South Storehouse</en>
   </cell>
   <cell>
     <de>Rabenfels, Südöstliches Lager</de>
+    <en>Raven Rock, SouthEast Storehouse</en>
   </cell>
   <cell>
     <de>Rabenfels, Taverne</de>
+    <en>Raven Rock, Bar</en>
   </cell>
   <cell>
     <de>Rabenfels, Uryn Marens Haus</de>
+    <en>Raven Rock, Uryn Maren's House</en>
   </cell>
   <cell>
     <de>Rabenfels, Verlassener Minenschacht</de>
+    <en>Raven Rock, Abandoned Mine Shaft</en>
   </cell>
   <cell>
     <de>Rabenfels, Versorgungsschiff</de>
+    <en>Raven Rock, Supply Ship</en>
   </cell>
   <cell>
     <de>Ramimilk, Schrein</de>
+    <en>Ramimilk, Shrine</en>
   </cell>
   <cell>
     <de>Randas-Ahnengruft</de>
+    <en>Randas Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Ravel-Ahnengruft</de>
+    <en>Ravel Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Raviro-Ahnengruft</de>
+    <en>Raviro Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Rayna Drolans Hütte</de>
+    <en>Rayna Drolan's Shack</en>
   </cell>
   <cell>
     <de>Redas-Ahnengruft</de>
+    <en>Redas Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Redoran-Innenbereich</de>
+    <en>Redoran interior</en>
   </cell>
   <cell>
     <de>Redoran-Innenbereich2</de>
+    <en>Redoran interior2</en>
   </cell>
   <cell>
     <de>Releth-Ahnengruft</de>
+    <en>Releth Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Reloth-Ahnengruft</de>
+    <en>Reloth Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Rethandus-Ahnengruft</de>
+    <en>Rethandus Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Rissun</de>
+    <en>Rissun</en>
   </cell>
   <cell>
     <de>Rothan-Ahnengruft</de>
+    <en>Rothan Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Rotheran</de>
+    <en>Rotheran</en>
   </cell>
   <cell>
     <de>Rotheran, Arena</de>
+    <en>Rotheran, Arena</en>
   </cell>
   <cell>
     <de>Rotheran, Gemeindehütte</de>
+    <en>Rotheran, Communal Hut</en>
   </cell>
   <cell>
     <de>Rotheran, Propylon-Kammer</de>
+    <en>Rotheran, Propylon Chamber</en>
   </cell>
   <cell>
     <de>Ruine Mzahnch</de>
@@ -3226,189 +3296,251 @@
   </cell>
   <cell>
     <de>Sadrith Mora</de>
+    <en>Sadrith Mora</en>
   </cell>
   <cell>
     <de>Sadrith Mora, Anis Seloth: Alchemistin</de>
+    <en>Sadrith Mora, Anis Seloth: Alchemist</en>
   </cell>
   <cell>
     <de>Sadrith Mora, Balen Vendu: Mönchsdienste</de>
+    <en>Sadrith Mora, Balen Vendu: Monk</en>
   </cell>
   <cell>
     <de>Sadrith Mora, Faras Loch in der Wand</de>
+    <en>Sadrith Mora, Fara's Hole in the Wall</en>
   </cell>
   <cell>
     <de>Sadrith Mora, Hleras Gidrens Haus</de>
+    <en>Sadrith Mora, Hleras Gidren's House</en>
   </cell>
   <cell>
     <de>Sadrith Mora, Llaalam Madalas: Magier</de>
+    <en>Sadrith Mora, Llaalam Madalas: Mage</en>
   </cell>
   <cell>
     <de>Sadrith Mora, Madran Ulvels Haus</de>
+    <en>Sadrith Mora, Madran Ulvel's House</en>
   </cell>
   <cell>
     <de>Sadrith Mora, Meluria Seleths Haus</de>
+    <en>Sadrith Mora, Meluria Seleth's House</en>
   </cell>
   <cell>
     <de>Sadrith Mora, Milara Vedrans Haus</de>
+    <en>Sadrith Mora, Milara Vedran's House</en>
   </cell>
   <cell>
     <de>Sadrith Mora, Morag Tong, Gilde</de>
+    <en>Sadrith Mora, Morag Tong Guild</en>
   </cell>
   <cell>
     <de>Sadrith Mora, Nevrila Areloths Haus</de>
+    <en>Sadrith Mora, Nevrila Areloth's House</en>
   </cell>
   <cell>
     <de>Sadrith Mora, Nirasa Arens Haus</de>
+    <en>Sadrith Mora, Nirasa Aren's House</en>
   </cell>
   <cell>
     <de>Sadrith Mora, Pierlette Rostorard: Trankmischerin</de>
+    <en>Sadrith Mora, Pierlette Rostorard: Apothecary</en>
   </cell>
   <cell>
     <de>Sadrith Mora, Rolis Garvons Haus</de>
+    <en>Sadrith Mora, Rolis Garvon's House</en>
   </cell>
   <cell>
     <de>Sadrith Mora, Taverne Zum Torbogen</de>
+    <en>Sadrith Mora, Gateway Inn</en>
   </cell>
   <cell>
     <de>Sadrith Mora, Taverne Zum Torbogen, Nordflügel</de>
+    <en>Sadrith Mora, Gateway Inn: North Wing</en>
   </cell>
   <cell>
     <de>Sadrith Mora, Taverne Zum Torbogen, Südflügel</de>
+    <en>Sadrith Mora, Gateway Inn: South Wing</en>
   </cell>
   <cell>
     <de>Sadrith Mora, Taverne Zum Torbogen, Westflügel</de>
+    <en>Sadrith Mora, Gateway Inn: West Wing</en>
   </cell>
   <cell>
     <de>Sadrith Mora, Tel Naga, Unterkünfte</de>
+    <en>Sadrith Mora, Tel Naga General Quarters</en>
   </cell>
   <cell>
     <de>Sadrith Mora, Tel Naga, große Halle</de>
+    <en>Sadrith Mora, Tel Naga Great Hall</en>
   </cell>
   <cell>
     <de>Sadrith Mora, Tel Naga, obere Halle</de>
+    <en>Sadrith Mora, Tel Naga Upper Hall</en>
   </cell>
   <cell>
     <de>Sadrith Mora, Tel Naga, oberer Turm</de>
+    <en>Sadrith Mora, Tel Naga Upper Tower</en>
   </cell>
   <cell>
     <de>Sadrith Mora, Telvanni-Ratshaus</de>
+    <en>Sadrith Mora, Telvanni Council House</en>
   </cell>
   <cell>
     <de>Sadrith Mora, Telvanni-Ratshaus, Eingang</de>
+    <en>Sadrith Mora, Telvanni Council House, Entry</en>
   </cell>
   <cell>
     <de>Sadrith Mora, Telvanni-Ratshaus, Gemächer</de>
+    <en>Sadrith Mora, Telvanni Council House, Chambers</en>
   </cell>
   <cell>
     <de>Sadrith Mora, Telvanni-Ratshaus, Klause</de>
+    <en>Sadrith Mora, Telvanni Council House, Hermitage</en>
   </cell>
   <cell>
     <de>Sadrith Mora, Thervul Serethi: Heiler</de>
+    <en>Sadrith Mora, Thervul Serethi: Healer</en>
   </cell>
   <cell>
     <de>Sadrith Mora, Trendrus Drals Haus</de>
+    <en>Sadrith Mora, Trendrus Dral's House</en>
   </cell>
   <cell>
     <de>Sadrith Mora, Urtisa Romayns Haus</de>
+    <en>Sadrith Mora, Urtisa Romayn's House</en>
   </cell>
   <cell>
     <de>Sadrith Mora, Urtiso Faryon: Hexenmeisterin</de>
+    <en>Sadrith Mora, Urtiso Faryon: Sorcerer</en>
   </cell>
   <cell>
     <de>Sadrith Mora, Vaden Belas Haus</de>
+    <en>Sadrith Mora, Vaden Belas' House</en>
   </cell>
   <cell>
     <de>Sadrith Mora, Volmyni Drals Haus</de>
+    <en>Sadrith Mora, Volmyni Dral's House</en>
   </cell>
   <cell>
     <de>Sadrith Mora, Wolfenhalle</de>
+    <en>Sadrith Mora, Wolverine Hall</en>
   </cell>
   <cell>
     <de>Sadrith Mora, Wolfenhalle: Kaiserlicher Schrein</de>
+    <en>Sadrith Mora, Wolverine Hall: Imperial Shrine</en>
   </cell>
   <cell>
     <de>Sadrith Mora, Wolfenhalle: Kriegergilde</de>
+    <en>Sadrith Mora, Wolverine Hall: Fighter's Guild</en>
   </cell>
   <cell>
     <de>Sadrith Mora, Wolfenhalle: Magiergilde</de>
+    <en>Sadrith Mora, Wolverine Hall: Mage's Guild</en>
   </cell>
   <cell>
     <de>Sadrith Mora, Zur Dreckigen Muriel</de>
+    <en>Sadrith Mora, Dirty Muriel's Cornerclub</en>
   </cell>
   <cell>
     <de>Sadryon-Ahnengruft</de>
+    <en>Sadryon Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Salit-Lager, Zalits Zelt</de>
+    <en>Salit Camp, Zalit's Yurt</en>
   </cell>
   <cell>
     <de>Salit-Lager, Zelays Zelt</de>
+    <en>Salit Camp, Zelay's Yurt</en>
   </cell>
   <cell>
     <de>Salmantu</de>
+    <en>Salmantu</en>
   </cell>
   <cell>
     <de>Salmantu, Schrein</de>
+    <en>Salmantu, Shrine</en>
   </cell>
   <cell>
     <de>Salothan-Ahnengruft</de>
+    <en>Salothan Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Salothran-Ahnengruft</de>
+    <en>Salothran Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Salvel-Ahnengruft</de>
+    <en>Salvel Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Samarys-Ahnengruft</de>
+    <en>Samarys Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Sanabi</de>
+    <en>Sanabi</en>
   </cell>
   <cell>
     <de>Sandas-Ahnengruft</de>
+    <en>Sandas Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Sandus-Ahnengruft</de>
+    <en>Sandus Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Sanit</de>
+    <en>Sanit</en>
   </cell>
   <cell>
     <de>Sanit, Schrein</de>
+    <en>Sanit, Shrine</en>
   </cell>
   <cell>
     <de>Sanktus-Schrein</de>
+    <en>Sanctus Shrine</en>
   </cell>
   <cell>
     <de>Sanni</de>
+    <en>Sanni</en>
   </cell>
   <cell>
     <de>Sarano-Ahnengruft</de>
+    <en>Sarano Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Saren-Ahnengruft</de>
+    <en>Saren Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Sarethi-Ahnengruft</de>
+    <en>Sarethi Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Sargon</de>
+    <en>Sargon</en>
   </cell>
   <cell>
     <de>Sarimisun-Assa, Eiermine</de>
+    <en>Sarimisun-Assa Egg Mine</en>
   </cell>
   <cell>
     <de>Sarimisun-Assa, Eiermine, Nest der Königin</de>
+    <en>Sarimisun-Assa Egg Mine, Queen's Lair</en>
   </cell>
   <cell>
     <de>Sarys-Ahnengruft</de>
+    <en>Sarys Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Saturan</de>
+    <en>Saturan</en>
   </cell>
   <cell>
     <de>Savel-Ahnengruft</de>
+    <en>Savel Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Schneller Pfeil, Kabine</de>
@@ -3430,462 +3562,611 @@
   </cell>
   <cell>
     <de>Senim-Ahnengruft</de>
+    <en>Senim Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Sennananit</de>
+    <en>Sennananit</en>
   </cell>
   <cell>
     <de>Seran-Ahnengruft</de>
+    <en>Seran Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Serano-Ahnengruft</de>
+    <en>Serano Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Sethan-Ahnengruft</de>
+    <en>Sethan Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Setus, Eiermine</de>
+    <en>Setus Egg Mine</en>
   </cell>
   <cell>
     <de>Seyda Neen</de>
+    <en>Seyda Neen</en>
   </cell>
   <cell>
     <de>Seyda Neen, Arrilles Handelshaus</de>
+    <en>Seyda Neen, Arrille's Tradehouse</en>
   </cell>
   <cell>
     <de>Seyda Neen, Draren Thiralas Haus</de>
+    <en>Seyda Neen, Draren Thiralas' House</en>
   </cell>
   <cell>
     <de>Seyda Neen, Eldafires Haus</de>
+    <en>Seyda Neen, Eldafire's House</en>
   </cell>
   <cell>
     <de>Seyda Neen, Erene Llenims Hütte</de>
+    <en>Seyda Neen, Erene Llenim's Shack</en>
   </cell>
   <cell>
     <de>Seyda Neen, Fargoths Haus</de>
+    <en>Seyda Neen, Fargoth's House</en>
   </cell>
   <cell>
     <de>Seyda Neen, Finomoldos Hütte</de>
   </cell>
   <cell>
     <de>Seyda Neen, Foryn Gilniths Hütte</de>
+    <en>Seyda Neen, Foryn Gilnith's Shack</en>
   </cell>
   <cell>
     <de>Seyda Neen, Indrele Rathryons Hütte</de>
+    <en>Seyda Neen, Indrele Rathryon's Shack</en>
   </cell>
   <cell>
     <de>Seyda Neen, Leuchtturm</de>
+    <en>Seyda Neen, Lighthouse</en>
   </cell>
   <cell>
     <de>Seyda Neen, Terurise Girvaynes Haus</de>
+    <en>Seyda Neen, Terurise Girvayne's House</en>
   </cell>
   <cell>
     <de>Seyda Neen, Vodunius Nuccius’ Haus</de>
+    <en>Seyda Neen, Vodunius Nuccius' House</en>
   </cell>
   <cell>
     <de>Seyda Neen, Zensus- und Steueramt</de>
+    <en>Seyda Neen, Census and Excise Office</en>
   </cell>
   <cell>
     <de>Seyda Neen, Zensus- und Steueramt Lagerhaus</de>
+    <en>Seyda Neen, Census and Excise Warehouse</en>
   </cell>
   <cell>
     <de>Sha-Adnius</de>
+    <en>Sha-Adnius</en>
   </cell>
   <cell>
     <de>Shal</de>
+    <en>Shal</en>
   </cell>
   <cell>
     <de>Shallit</de>
+    <en>Shallit</en>
   </cell>
   <cell>
     <de>Shara</de>
+    <en>Shara</en>
   </cell>
   <cell>
     <de>Sharapli</de>
+    <en>Sharapli</en>
   </cell>
   <cell>
     <de>Shashmanu-Lager, Anits Zelt</de>
+    <en>Shashmanu Camp, Anit's Yurt</en>
   </cell>
   <cell>
     <de>Shashpilamat</de>
+    <en>Shashpilamat</en>
   </cell>
   <cell>
     <de>Shashpilamat, Schrein</de>
+    <en>Shashpilamat, Shrine</en>
   </cell>
   <cell>
     <de>Shashurari-Lager, Zennammus Zelt</de>
+    <en>Shashurari Camp, Zennammu's Yurt</en>
   </cell>
   <cell>
     <de>Shishara</de>
+    <en>Shishara</en>
   </cell>
   <cell>
     <de>Shishi</de>
+    <en>Shishi</en>
   </cell>
   <cell>
     <de>Shulk, Eiermine</de>
+    <en>Shulk Egg Mine</en>
   </cell>
   <cell>
     <de>Shulk, Eiermine, Nest der Königin</de>
+    <en>Shulk Egg Mine, Queen's Lair</en>
   </cell>
   <cell>
     <de>Shulk, Eiermine, Schürflager</de>
+    <en>Shulk Egg Mine, Mining Camp</en>
   </cell>
   <cell>
     <de>Shurdan-Raplay, Eiermine</de>
+    <en>Shurdan-Raplay Egg Mine</en>
   </cell>
   <cell>
     <de>Shurinbaal</de>
+    <en>Shurinbaal</en>
   </cell>
   <cell>
     <de>Shushan</de>
+    <en>Shushan</en>
   </cell>
   <cell>
     <de>Shushishi</de>
+    <en>Shushishi</en>
   </cell>
   <cell>
     <de>Sinamusa, Eiermine</de>
+    <en>Sinamusa Egg Mine</en>
   </cell>
   <cell>
     <de>Sinarralit, Eiermine</de>
+    <en>Sinarralit Egg Mine</en>
   </cell>
   <cell>
     <de>Sinsibadon</de>
+    <en>Sinsibadon</en>
   </cell>
   <cell>
     <de>Sjorvar Nüsters Haus</de>
+    <en>Sjorvar Horse-Mouth's House</en>
   </cell>
   <cell>
     <de>Skaal-Dorf</de>
+    <en>Skaal Village</en>
   </cell>
   <cell>
     <de>Skaal-Dorf, Blodskaals Haus</de>
+    <en>Skaal Village, The Blodskaal's House</en>
   </cell>
   <cell>
     <de>Skaal-Dorf, Die Große Halle</de>
+    <en>Skaal Village, The Greathall</en>
   </cell>
   <cell>
     <de>Skaal-Dorf, Eismähnes Hütte</de>
+    <en>Skaal Village, Ice-Mane's Hut</en>
   </cell>
   <cell>
     <de>Skaal-Dorf, Haus von Bronrod dem Brüllenden</de>
+    <en>Skaal Village, Bronrod the Roarer's House</en>
   </cell>
   <cell>
     <de>Skaal-Dorf, Haus von Erna der Ruhigen</de>
+    <en>Skaal Village, Erna the Quiet's House</en>
   </cell>
   <cell>
     <de>Skaal-Dorf, Ingmars Haus</de>
+    <en>Skaal Village, Ingmar's House</en>
   </cell>
   <cell>
     <de>Skaal-Dorf, Lassnrs Haus</de>
+    <en>Skaal Village, Lassnr's House</en>
   </cell>
   <cell>
     <de>Skaal-Dorf, Rigmors Hütte</de>
+    <en>Skaal Village, Rigmor's Hut</en>
   </cell>
   <cell>
     <de>Skaal-Dorf, Schamanenhütte</de>
+    <en>Skaal Village, Shaman's Hut</en>
   </cell>
   <cell>
     <de>Skaal-Dorf, Snedbrir der Schmied</de>
+    <en>Skaal village, Snedbrir the Smith</en>
   </cell>
   <cell>
     <de>Sobitbael-Lager, Mals Zelt</de>
+    <en>Sobitbael Camp, Mal's Yurt</en>
   </cell>
   <cell>
     <de>Solstheim</de>
+    <en>Solstheim</en>
   </cell>
   <cell>
     <de>Solstheim, Aesliips Höhle</de>
+    <en>Solstheim, Aesliip's Lair</en>
   </cell>
   <cell>
     <de>Solstheim, Aesliips Höhle, Gewölbe</de>
+    <en>Solstheim, Aesliip's Lair, Caverns</en>
   </cell>
   <cell>
     <de>Solstheim, Altar von Thrond</de>
+    <en>Solstheim, Altar of Thrond</en>
   </cell>
   <cell>
     <de>Solstheim, Behausung von Geilir dem Murmler</de>
   </cell>
   <cell>
     <de>Solstheim, Benkongerike</de>
+    <en>Solstheim, Benkongerike</en>
   </cell>
   <cell>
     <de>Solstheim, Bjorn</de>
+    <en>Solstheim, Bjorn</en>
   </cell>
   <cell>
     <de>Solstheim, Blutskal-Hügelgrab</de>
+    <en>Solstheim, Bloodskal Barrow</en>
   </cell>
   <cell>
     <de>Solstheim, Brodir-Hain</de>
+    <en>Solstheim, Brodir Grove</en>
   </cell>
   <cell>
     <de>Solstheim, Burg Karstaag</de>
+    <en>Solstheim, Castle Karstaag</en>
   </cell>
   <cell>
     <de>Solstheim, Burg Karstaag, Bankettsaal</de>
+    <en>Solstheim, Castle Karstaag, Banquet Hall</en>
   </cell>
   <cell>
     <de>Solstheim, Burg Karstaag, Gewölbe</de>
+    <en>Solstheim, Castle Karstaag, Caverns of Karstaag</en>
   </cell>
   <cell>
     <de>Solstheim, Burg Karstaag, Karstaags Kammern</de>
+    <en>Solstheim, Castle Karstaag, Karstaag's Chambers</en>
   </cell>
   <cell>
     <de>Solstheim, Burg Karstaag, Thronsaal</de>
+    <en>Solstheim, Castle Karstaag, Throne Room</en>
   </cell>
   <cell>
     <de>Solstheim, Burg Karstaag, Turm</de>
+    <en>Solstheim, Castle Karstaag, Tower</en>
   </cell>
   <cell>
     <de>Solstheim, Connorflenge-Hügelgrab</de>
+    <en>Solstheim, Connorflenge Barrow</en>
   </cell>
   <cell>
     <de>Solstheim, Domme</de>
+    <en>Solstheim, Domme</en>
   </cell>
   <cell>
     <de>Solstheim, Düstere Höhle</de>
+    <en>Solstheim, Gloomy Cave</en>
   </cell>
   <cell>
     <de>Solstheim, Eddard-Hügelgrab</de>
+    <en>Solstheim, Eddard Barrow</en>
   </cell>
   <cell>
     <de>Solstheim, Eingang Gyldenhul-Hügelgrab</de>
   </cell>
   <cell>
     <de>Solstheim, Fjalding-Höhlen</de>
+    <en>Solstheim, Caves of Fjalding</en>
   </cell>
   <cell>
     <de>Solstheim, Fjalding-See</de>
+    <en>Solstheim, Lake Fjalding</en>
   </cell>
   <cell>
     <de>Solstheim, Fjell</de>
+    <en>Solstheim, Fjell</en>
   </cell>
   <cell>
     <de>Solstheim, Frossel</de>
+    <en>Solstheim, Frossel</en>
   </cell>
   <cell>
     <de>Solstheim, Frosselmane-Hügelgrab</de>
+    <en>Solstheim, Frosselmane Barrow</en>
   </cell>
   <cell>
     <de>Solstheim, Frykte</de>
+    <en>Solstheim, Frykte</en>
   </cell>
   <cell>
     <de>Solstheim, Gandrung-Höhlen</de>
+    <en>Solstheim, Gandrung Caverns</en>
   </cell>
   <cell>
     <de>Solstheim, Glenschuls Grab</de>
+    <en>Solstheim, Glenschul's Tomb</en>
   </cell>
   <cell>
     <de>Solstheim, Grarings Haus</de>
+    <en>Solstheim, Graring's House</en>
   </cell>
   <cell>
     <de>Solstheim, Gronn</de>
+    <en>Solstheim, Gronn</en>
   </cell>
   <cell>
     <de>Solstheim, Gruft von Skaalara</de>
+    <en>Solstheim, Tombs of Skaalara</en>
   </cell>
   <cell>
     <de>Solstheim, Gyldenhul-Hügelgrab</de>
+    <en>Solstheim, Gyldenhul Barrow</en>
   </cell>
   <cell>
     <de>Solstheim, Himmelhost-Hügelgrab</de>
+    <en>Solstheim, Himmelhost Barrow</en>
   </cell>
   <cell>
     <de>Solstheim, Hrothmunds Fluch</de>
+    <en>Solstheim, Hrothmund's Bane</en>
   </cell>
   <cell>
     <de>Solstheim, Hrothmunds Hügelgrab</de>
+    <en>Solstheim, Hrothmund's Barrow</en>
   </cell>
   <cell>
     <de>Solstheim, Hvitkald-Gipfel</de>
+    <en>Solstheim, Hvitkald Peak</en>
   </cell>
   <cell>
     <de>Solstheim, Höhle der verborgenen Melodie</de>
+    <en>Solstheim, Cave of Hidden Music</en>
   </cell>
   <cell>
     <de>Solstheim, Höhle des Udyrfrykte</de>
+    <en>Solstheim, Lair of the Udyrfrykte</en>
   </cell>
   <cell>
     <de>Solstheim, Jolgeirr-Hügelgrab</de>
+    <en>Solstheim, Jolgeirr Barrow</en>
   </cell>
   <cell>
     <de>Solstheim, Kammer des Lieds</de>
+    <en>Solstheim, Chamber of Song</en>
   </cell>
   <cell>
     <de>Solstheim, Kelsedolk-Hügelgrab</de>
+    <en>Solstheim, Kelsedolk Barrow</en>
   </cell>
   <cell>
     <de>Solstheim, Kjolvers Behausung</de>
+    <en>Solstheim, Kjolver's Dwelling</en>
   </cell>
   <cell>
     <de>Solstheim, Kolbjorn-Hügelgrab</de>
+    <en>Solstheim, Kolbjorn Barrow</en>
   </cell>
   <cell>
     <de>Solstheim, Kolfinnas Behausung</de>
+    <en>Solstheim, Kolfinna's Dwelling</en>
   </cell>
   <cell>
     <de>Solstheim, Legge</de>
+    <en>Solstheim, Legge</en>
   </cell>
   <cell>
     <de>Solstheim, Lukesturm-Hügelgrab</de>
+    <en>Solstheim, Lukesturm Barrow</en>
   </cell>
   <cell>
     <de>Solstheim, Mortrag-Gletscher</de>
+    <en>Solstheim, Mortrag Glacier</en>
   </cell>
   <cell>
     <de>Solstheim, Mortrag-Gletscher: Eingang</de>
+    <en>Solstheim, Mortrag Glacier: Entry</en>
   </cell>
   <cell>
     <de>Solstheim, Mortrag-Gletscher: Innerer Ring</de>
+    <en>Solstheim, Mortrag Glacier: Inner Ring</en>
   </cell>
   <cell>
     <de>Solstheim, Mortrag-Gletscher: Jagdmann-Hallen</de>
+    <en>Solstheim, Mortrag Glacier: Huntsman's Hall</en>
   </cell>
   <cell>
     <de>Solstheim, Mortrag-Gletscher: Äußerer Ring</de>
+    <en>Solstheim, Mortrag Glacier: Outer Ring</en>
   </cell>
   <cell>
     <de>Solstheim, Onkel Schleckermauls Werkstatt</de>
+    <en>Solstheim, Uncle Sweetshare's Workshop</en>
   </cell>
   <cell>
     <de>Solstheim, Penumbra-Hallen</de>
+    <en>Solstheim, Halls of Penumbra</en>
   </cell>
   <cell>
     <de>Solstheim, Rimhull</de>
+    <en>Solstheim, Rimhull</en>
   </cell>
   <cell>
     <de>Solstheim, Sjobal</de>
+    <en>Solstheim, Sjobal</en>
   </cell>
   <cell>
     <de>Solstheim, Skogsdrake-Hügelgrab</de>
+    <en>Solstheim, Skogsdrake Barrow</en>
   </cell>
   <cell>
     <de>Solstheim, Skygge</de>
+    <en>Solstheim, Skygge</en>
   </cell>
   <cell>
     <de>Solstheim, Solvjord</de>
+    <en>Solstheim, Solvjord</en>
   </cell>
   <cell>
     <de>Solstheim, Stahlman-Schlucht</de>
+    <en>Solstheim, Stahlman's Gorge</en>
   </cell>
   <cell>
     <de>Solstheim, Stormpfund-Hügelgrab</de>
+    <en>Solstheim, Stormpfund Barrow</en>
   </cell>
   <cell>
     <de>Solstheim, Thirsk</de>
+    <en>Solstheim, Thirsk</en>
   </cell>
   <cell>
     <de>Solstheim, Thormoors Wacht</de>
+    <en>Solstheim, Thormoor's Watch</en>
   </cell>
   <cell>
     <de>Solstheim, Ulfgars des Endlosen Behausung</de>
+    <en>Solstheim, Ulfgar the Unending's Dwelling</en>
   </cell>
   <cell>
     <de>Solstheim, Valbrandr-Hügelgrab</de>
+    <en>Solstheim, Valbrandr Barrow</en>
   </cell>
   <cell>
     <de>Solstheim, Varstaad-Höhlen</de>
+    <en>Solstheim, Varstaad Caves</en>
   </cell>
   <cell>
     <de>Sotha Sil</de>
   </cell>
   <cell>
     <de>Sotha Sil, Halle des Deliriums</de>
+    <en>Sotha Sil, Hall of Delirium</en>
   </cell>
   <cell>
     <de>Sotha Sil, Halle von Mileitho</de>
+    <en>Sotha Sil, Hall of Mileitho</en>
   </cell>
   <cell>
     <de>Sotha Sil, Halle von Sallaemu</de>
+    <en>Sotha Sil, Hall of Sallaemu</en>
   </cell>
   <cell>
     <de>Sotha Sil, Halle von Theuda</de>
+    <en>Sotha Sil, Hall of Theuda</en>
   </cell>
   <cell>
     <de>Sotha Sil, Innere überflutete Hallen</de>
+    <en>Sotha Sil, Inner Flooded Halls</en>
   </cell>
   <cell>
     <de>Sotha Sil, Kammer von Sohleh</de>
+    <en>Sotha Sil, Chamber of Sohleh</en>
   </cell>
   <cell>
     <de>Sotha Sil, Kuppel der Unfertigen</de>
+    <en>Sotha Sil, Dome of the Imperfect</en>
   </cell>
   <cell>
     <de>Sotha Sil, Kuppel von Kasia</de>
+    <en>Sotha Sil, Dome of Kasia</en>
   </cell>
   <cell>
     <de>Sotha Sil, Kuppel von Serlyn</de>
+    <en>Sotha Sil, Dome of Serlyn</en>
   </cell>
   <cell>
     <de>Sotha Sil, Kuppel von Sotha Sil</de>
+    <en>Sotha Sil, Dome of Sotha Sil</en>
   </cell>
   <cell>
     <de>Sotha Sil, Kuppel von Udok</de>
+    <en>Sotha Sil, Dome of Udok</en>
   </cell>
   <cell>
     <de>Sotha Sil, Zentrale Mechanik</de>
+    <en>Sotha Sil, Central Gearworks</en>
   </cell>
   <cell>
     <de>Sotha Sil, Äußere überflutete Hallen</de>
+    <en>Sotha Sil, Outer Flooded Halls</en>
   </cell>
   <cell>
     <de>Sterdecans Hof</de>
+    <en>Sterdecan's Farmhouse</en>
   </cell>
   <cell>
     <de>Subdun</de>
+    <en>Subdun</en>
   </cell>
   <cell>
     <de>Subdun, Schrein</de>
+    <en>Subdun, Shrine</en>
   </cell>
   <cell>
     <de>Sud</de>
+    <en>Sud</en>
   </cell>
   <cell>
     <de>Sudanit, Mine</de>
+    <en>Sudanit Mine</en>
   </cell>
   <cell>
     <de>Sulipund</de>
+    <en>Sulipund</en>
   </cell>
   <cell>
     <de>Sur, Eiermine</de>
+    <en>Sur Egg Mine</en>
   </cell>
   <cell>
     <de>Suran</de>
+    <en>Suran</en>
   </cell>
   <cell>
     <de>Suran, Deseles Haus der irdischen Freuden</de>
+    <en>Suran, Desele's House of Earthly Delights</en>
   </cell>
   <cell>
     <de>Suran, Garothmuk gro-Muzgub: Schmied</de>
+    <en>Suran, Garothmuk gro-Muzgub: Smith</en>
   </cell>
   <cell>
     <de>Suran, Goldyn Belaram: Pfandleiher</de>
+    <en>Suran, Goldyn Belaram: Pawnbroker</en>
   </cell>
   <cell>
     <de>Suran, Handelshaus</de>
+    <en>Suran, Suran Tradehouse</en>
   </cell>
   <cell>
     <de>Suran, Haus Oran</de>
+    <en>Suran, Oran Manor</en>
   </cell>
   <cell>
     <de>Suran, Ibarnadad Assirnarari: Trankmischer</de>
+    <en>Suran, Ibarnadad Assirnarari: Apothecary</en>
   </cell>
   <cell>
     <de>Suran, Ralds Oril: Händler</de>
+    <en>Suran, Ralds Oril: Trader</en>
   </cell>
   <cell>
     <de>Suran, Ranosa Gilvayn: Ausstatterin</de>
+    <en>Suran, Ranosa Gilvayn: Outfitter</en>
   </cell>
   <cell>
     <de>Suran, Sklavenmarkt</de>
+    <en>Suran, Suran Slave Market</en>
   </cell>
   <cell>
     <de>Suran, Tempel</de>
+    <en>Suran, Suran Temple</en>
   </cell>
   <cell>
     <de>Suran, Verara Rendo: Schneiderin</de>
+    <en>Suran, Verara Rendo: Clothier</en>
   </cell>
   <cell>
     <de>Suran, Wachturm</de>
+    <en>Suran, Guard Tower</en>
   </cell>
   <cell>
     <de>Surirulk</de>

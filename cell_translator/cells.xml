@@ -328,24 +328,30 @@
   </cell>
   <cell>
     <de>Ald'ruhn, Haus Arobar</de>
+    <en>Ald-ruhn, Arobar Manor Bedrooms</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Haus Llethri</de>
+    <en>Ald-ruhn, Llethri Manor Bedrooms</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Haus Ramoran</de>
   </cell>
   <cell>
     <de>Ald'ruhn, Haus Sarethi</de>
+    <en>Ald-ruhn, Sarethi Manor</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Haus Venim</de>
+    <en>Ald-ruhn, Venim Manor Bedrooms</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Haus Venim, Privatquartiere</de>
+    <en>Ald-ruhn, Venim Manor Private Quarters</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Haus Venim, rechter Flügel</de>
+    <en>Ald-ruhn, Venim Manor Right Wing</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Ienas Sarandas' Haus</de>
@@ -396,9 +402,11 @@
   </cell>
   <cell>
     <de>Ald'ruhn, Ratstaverne</de>
+    <en>Ald-ruhn, Council Club</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Redoranische Ratshalle</de>
+    <en>Ald-ruhn, Redoran Council Hall</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Sarethi-Wachquartiere</de>
@@ -410,6 +418,7 @@
   </cell>
   <cell>
     <de>Ald'ruhn, Taverne Ald Skar</de>
+    <en>Ald-ruhn, Ald Skar Inn</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Tempel</de>
@@ -435,9 +444,11 @@
   </cell>
   <cell>
     <de>Ald'ruhn, Wohndistrikt</de>
+    <en>Ald-ruhn, Manor District</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Zugang zum Redoranischen Rat</de>
+    <en>Ald-ruhn, Redoran Council Entrance</en>
   </cell>
   <cell>
     <de>Ald'ruhn, Übungsraum</de>
@@ -759,6 +770,7 @@
   </cell>
   <cell>
     <de>Assarnibibiberg</de>
+    <en>Mount Assarnibibi</en>
   </cell>
   <cell>
     <de>Assarnud</de>
@@ -811,6 +823,7 @@
   </cell>
   <cell>
     <de>Azuras Schrein</de>
+    <en>Shrine of Azura</en>
   </cell>
   <cell>
     <de>Bal Fell</de>
@@ -874,6 +887,7 @@
   </cell>
   <cell>
     <de>Balmora, Die Klingengrube</de>
+    <en>Balmora, The Razor Hole</en>
   </cell>
   <cell>
     <de>Balmora, Dorisa Darvel: Buchhändlerin</de>
@@ -921,6 +935,7 @@
   </cell>
   <cell>
     <de>Balmora, Haus des Hlaalu-Rates</de>
+    <en>Balmora, Hlaalu Council Manor</en>
   </cell>
   <cell>
     <de>Balmora, Hecerindes Haus</de>
@@ -972,6 +987,7 @@
   </cell>
   <cell>
     <de>Balmora, Ratstaverne</de>
+    <en>Balmora, Council Club</en>
   </cell>
   <cell>
     <de>Balmora, Rithleens Haus</de>
@@ -1011,6 +1027,7 @@
   </cell>
   <cell>
     <de>Balmora, Zum Glückspilz</de>
+    <en>Balmora, Lucky Lockup</en>
   </cell>
   <cell>
     <de>Balmora, Östlicher Wachturm</de>
@@ -1065,6 +1082,7 @@
   </cell>
   <cell>
     <de>Beram-Ahnengruft</de>
+    <en>Baram Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Beran-Ahnengruft</de>
@@ -1198,6 +1216,7 @@
   </cell>
   <cell>
     <de>Caldera, Wachturm der Mine</de>
+    <en>Caldera, Mining Guard Tower</en>
   </cell>
   <cell>
     <de>Caldera, Zweite Sklavenhütte</de>
@@ -1294,9 +1313,11 @@
   </cell>
   <cell>
     <de>Dagoth Ur, Höhle</de>
+    <en>Dagoth Ur, Facility Cavern</en>
   </cell>
   <cell>
     <de>Dagoth Ur, Innere Höhle</de>
+    <en>Dagoth Ur, Inner Facility</en>
   </cell>
   <cell>
     <de>Dagoth Ur, Innerer Turm</de>
@@ -1304,9 +1325,11 @@
   </cell>
   <cell>
     <de>Dagoth Ur, Untere Höhle</de>
+    <en>Dagoth Ur, Lower Facility</en>
   </cell>
   <cell>
     <de>Dagoth Ur, Äußere Höhle</de>
+    <en>Dagoth Ur, Outer Facility</en>
   </cell>
   <cell>
     <de>Dareleth-Ahnengruft</de>
@@ -1314,6 +1337,7 @@
   </cell>
   <cell>
     <de>Das Innere des Corprusariums</de>
+    <en>Corprusarium Bowels</en>
   </cell>
   <cell>
     <de>Diraras Bauernhaus</de>
@@ -1361,9 +1385,11 @@
   </cell>
   <cell>
     <de>Dren-Plantage, Lager</de>
+    <en>Dren Plantation, Storage Shack</en>
   </cell>
   <cell>
     <de>Dren-Plantage, Lagerhaus</de>
+    <en>Dren Plantation, Shipping House</en>
   </cell>
   <cell>
     <de>Dren-Plantage, Rethans Hütte</de>
@@ -1729,24 +1755,31 @@
   </cell>
   <cell>
     <de>Festung der Buckfalter-Legion</de>
+    <en>Buckmoth Legion Fort</en>
   </cell>
   <cell>
     <de>Festung der Buckfalter-Legion, Gefängnis</de>
+    <en>Buckmoth Legion Fort, Prison</en>
   </cell>
   <cell>
     <de>Festung der Buckfalter-Legion, Innen</de>
+    <en>Buckmoth Legion Fort, Interior</en>
   </cell>
   <cell>
     <de>Festung der Buckfalter-Legion, Türme</de>
+    <en>Buckmoth Legion Fort, Towers</en>
   </cell>
   <cell>
     <de>Festung der Mondfalter-Legion</de>
+    <en>Moonmoth Legion Fort</en>
   </cell>
   <cell>
     <de>Festung der Mondfalter-Legion, Gefängnistürme</de>
+    <en>Moonmoth Legion Fort, Prison Towers</en>
   </cell>
   <cell>
     <de>Festung der Mondfalter-Legion, Innenbereich</de>
+    <en>Moonmoth Legion Fort, Interior</en>
   </cell>
   <cell>
     <de>Galom Daeus, Eingang</de>
@@ -2405,6 +2438,7 @@
   </cell>
   <cell>
     <de>Khuul, H'lgis Hütte</de>
+    <en>Khuul, Helga's Shack</en>
   </cell>
   <cell>
     <de>Khuul, Miron Garers Hütte</de>
@@ -2428,6 +2462,7 @@
   </cell>
   <cell>
     <de>Kleines Gutshaus</de>
+    <en>Small Farmhouse</en>
   </cell>
   <cell>
     <de>Koal-Höhle</de>
@@ -2763,9 +2798,11 @@
   </cell>
   <cell>
     <de>Molag Mar, Bodensektion</de>
+    <en>Molag Mar, Waistworks</en>
   </cell>
   <cell>
     <de>Molag Mar, Festung der Kriegswappenträger</de>
+    <en>Molag Mar, Armigers Stronghold</en>
   </cell>
   <cell>
     <de>Molag Mar, Herberge Zum Wallfahrer</de>
@@ -2777,6 +2814,7 @@
   </cell>
   <cell>
     <de>Molag Mar, Kanäle</de>
+    <en>Molag Mar, Canalworks</en>
   </cell>
   <cell>
     <de>Molag Mar, Redoranische Festung</de>
@@ -2792,6 +2830,7 @@
   </cell>
   <cell>
     <de>Molag Mar, Unterirdische Kanäle</de>
+    <en>Molag Mar, Underworks</en>
   </cell>
   <cell>
     <de>Molag Mar, Vasesius Viciulus: Händler</de>
@@ -2823,6 +2862,7 @@
   </cell>
   <cell>
     <de>Mylk</de>
+    <en>Milk</en>
   </cell>
   <cell>
     <de>Mzahnch</de>
@@ -3544,21 +3584,27 @@
   </cell>
   <cell>
     <de>Schneller Pfeil, Kabine</de>
+    <en>Arrow, Cabin</en>
   </cell>
   <cell>
     <de>Schneller Pfeil, Oberdeck</de>
+    <en>Arrow, Upper Level</en>
   </cell>
   <cell>
     <de>Schneller Pfeil, Unterdeck</de>
+    <en>Arrow, Lower Level</en>
   </cell>
   <cell>
     <de>Seltsames Schiffswrack, Kabine</de>
+    <en>Strange Shipwreck, Cabin</en>
   </cell>
   <cell>
     <de>Seltsames Schiffswrack, Oberdeck</de>
+    <en>Strange Shipwreck, Upper Level</en>
   </cell>
   <cell>
     <de>Seltsames Schiffswrack, Unterdeck</de>
+    <en>Strange Shipwreck, Lower Level</en>
   </cell>
   <cell>
     <de>Senim-Ahnengruft</de>
@@ -3793,6 +3839,7 @@
   </cell>
   <cell>
     <de>Solstheim, Behausung von Geilir dem Murmler</de>
+    <en>Solstheim, Geilir the Mumbling's Dwelling</en>
   </cell>
   <cell>
     <de>Solstheim, Benkongerike</de>
@@ -4170,612 +4217,813 @@
   </cell>
   <cell>
     <de>Surirulk</de>
+    <en>Surirulk</en>
   </cell>
   <cell>
     <de>Tel Aruhn</de>
+    <en>Tel Aruhn</en>
   </cell>
   <cell>
     <de>Tel Aruhn, Aryne Telnim: Schmiedin</de>
+    <en>Tel Aruhn, Aryne Telnim: Smith</en>
   </cell>
   <cell>
     <de>Tel Aruhn, Bildren Areleth: Trankmischer</de>
+    <en>Tel Aruhn, Bildren Areleth: Apothecary</en>
   </cell>
   <cell>
     <de>Tel Aruhn, Ferele Athram: Händler</de>
+    <en>Tel Aruhn, Ferele Athram: Trader</en>
   </cell>
   <cell>
     <de>Tel Aruhn, Maren Uvaren: Verzauberungen</de>
+    <en>Tel Aruhn, Maren Uvaren: Enchanter</en>
   </cell>
   <cell>
     <de>Tel Aruhn, Oberer Turm</de>
+    <en>Tel Aruhn, Upper Tower</en>
   </cell>
   <cell>
     <de>Tel Aruhn, Pech und Schwefel</de>
+    <en>Tel Aruhn, Plot and Plaster</en>
   </cell>
   <cell>
     <de>Tel Aruhn, Turm-Wohnquartiere</de>
+    <en>Tel Aruhn, Tower Living Quarters</en>
   </cell>
   <cell>
     <de>Tel Aruhn, Turmzugang</de>
+    <en>Tel Aruhn, Tower Entry</en>
   </cell>
   <cell>
     <de>Tel Aruhn, Untergrund</de>
+    <en>Tel Aruhn, Underground</en>
   </cell>
   <cell>
     <de>Tel Branora</de>
+    <en>Tel Branora</en>
   </cell>
   <cell>
     <de>Tel Branora, Ervyna Hlervus Hütte</de>
+    <en>Tel Branora, Ervyna Hlervu's Shack</en>
   </cell>
   <cell>
     <de>Tel Branora, Evos Gorans Haus</de>
+    <en>Tel Branora, Evos Goran's House</en>
   </cell>
   <cell>
     <de>Tel Branora, Fadase Selvayn: Händlerin</de>
+    <en>Tel Branora, Fadase Selvayn: Trader</en>
   </cell>
   <cell>
     <de>Tel Branora, Fedar Davus’ Haus</de>
+    <en>Tel Branora, Fedar Davus's House</en>
   </cell>
   <cell>
     <de>Tel Branora, Galen Berer: Waffenschmied</de>
+    <en>Tel Branora, Galen Berer: Armorer</en>
   </cell>
   <cell>
     <de>Tel Branora, Giron Manas’ Hütte</de>
+    <en>Tel Branora, Giron Manas's Shack</en>
   </cell>
   <cell>
     <de>Tel Branora, Manos Vavyns Haus</de>
+    <en>Tel Branora, Manos Vavyn's House</en>
   </cell>
   <cell>
     <de>Tel Branora, Oberer Turm</de>
+    <en>Tel Branora, Upper Tower</en>
   </cell>
   <cell>
     <de>Tel Branora, Oberer Turm: Theranas Kammern</de>
+    <en>Tel Branora, Upper Tower: Therana's Chamber</en>
   </cell>
   <cell>
     <de>Tel Branora, Seryne Relas’ Haus</de>
+    <en>Tel Branora, Seryne Relas's House</en>
   </cell>
   <cell>
     <de>Tel Branora, Sethans Handelshaus</de>
+    <en>Tel Branora, Sethan's Tradehouse</en>
   </cell>
   <cell>
     <de>Tel Branora, Turm-Wachposten</de>
+    <en>Tel Branora, Tower Guardpost</en>
   </cell>
   <cell>
     <de>Tel Branora, Turmverlies</de>
+    <en>Tel Branora, Tower Dungeon</en>
   </cell>
   <cell>
     <de>Tel Branora, Unterer Turm</de>
+    <en>Tel Branora, Lower Tower</en>
   </cell>
   <cell>
     <de>Tel Fyr</de>
+    <en>Tel Fyr</en>
   </cell>
   <cell>
     <de>Tel Mora</de>
+    <en>Tel Mora</en>
   </cell>
   <cell>
     <de>Tel Mora, Berwen: Händlerin</de>
+    <en>Tel Mora, Berwen: Trader</en>
   </cell>
   <cell>
     <de>Tel Mora, Elegnan: Schneiderin</de>
+    <en>Tel Mora, Elegnan: Clothier</en>
   </cell>
   <cell>
     <de>Tel Mora, Jolda: Trankmischerin</de>
+    <en>Tel Mora, Jolda: Apothecary</en>
   </cell>
   <cell>
     <de>Tel Mora, Kirstys Haus</de>
+    <en>Tel Mora, Kirsty's House</en>
   </cell>
   <cell>
     <de>Tel Mora, Liettes Haus</de>
+    <en>Tel Mora, Liette's House</en>
   </cell>
   <cell>
     <de>Tel Mora, Nonas Haus</de>
+    <en>Tel Mora, Nona's House</en>
   </cell>
   <cell>
     <de>Tel Mora, Oberer Turm</de>
+    <en>Tel Mora, Upper Tower</en>
   </cell>
   <cell>
     <de>Tel Mora, Radras: Schmiedin</de>
+    <en>Tel Mora, Radras: Smith</en>
   </cell>
   <cell>
     <de>Tel Mora, Turm der Dienste</de>
+    <en>Tel Mora, Tower Services</en>
   </cell>
   <cell>
     <de>Tel Mora, Unterer Turm</de>
+    <en>Tel Mora, Lower Tower</en>
   </cell>
   <cell>
     <de>Tel Mora, Zum feierlichen Schwur</de>
+    <en>Tel Mora, The Covenant</en>
   </cell>
   <cell>
     <de>Tel Uvirith, Arelas’ Haus</de>
+    <en>Tel Uvirith, Arelas' House</en>
   </cell>
   <cell>
     <de>Tel Uvirith, Menas’ Haus</de>
+    <en>Tel Uvirith, Menas' House</en>
   </cell>
   <cell>
     <de>Tel Uvirith, Oberer Turm</de>
+    <en>Tel Uvirith, Tower Upper</en>
   </cell>
   <cell>
     <de>Tel Uvirith, Omavels Haus</de>
+    <en>Tel Uvirith, Omavel's House</en>
   </cell>
   <cell>
     <de>Tel Uvirith, Seleths Haus</de>
+    <en>Tel Uvirith, Seleth's House</en>
   </cell>
   <cell>
     <de>Tel Uvirith, Turmverlies</de>
+    <en>Tel Uvirith, Tower Dungeon</en>
   </cell>
   <cell>
     <de>Tel Uvirith, Unterer Turm</de>
+    <en>Tel Uvirith, Tower Lower</en>
   </cell>
   <cell>
     <de>Tel Vos</de>
+    <en>Tel Vos</en>
   </cell>
   <cell>
     <de>Tel Vos, Aryons Kammern</de>
+    <en>Tel Vos, Aryon's Chambers</en>
   </cell>
   <cell>
     <de>Tel Vos, Gefängnis</de>
+    <en>Tel Vos, Jail</en>
   </cell>
   <cell>
     <de>Tel Vos, Kaserne und Waffenkammer</de>
+    <en>Tel Vos, Barracks and Armory</en>
   </cell>
   <cell>
     <de>Tel Vos, Nordöstlicher Turm</de>
+    <en>Tel Vos, Northeastern Tower</en>
   </cell>
   <cell>
     <de>Tel Vos, Südlicher Turm</de>
+    <en>Tel Vos, Southern Tower</en>
   </cell>
   <cell>
     <de>Tel Vos, Turm der Dienste</de>
+    <en>Tel Vos, Services Tower</en>
   </cell>
   <cell>
     <de>Tel Vos, Verlies</de>
+    <en>Tel Vos, Dungeon</en>
   </cell>
   <cell>
     <de>Tel Vos, Zentraler Turm</de>
+    <en>Tel Vos, Central Tower</en>
   </cell>
   <cell>
     <de>Telasero</de>
+    <en>Telasero</en>
   </cell>
   <cell>
     <de>Telasero, Obere Ebene</de>
+    <en>Telasero, Upper Level</en>
   </cell>
   <cell>
     <de>Telasero, Propylon-Kammer</de>
+    <en>Telasero, Propylon Chamber</en>
   </cell>
   <cell>
     <de>Telasero, Untere Ebene</de>
+    <en>Telasero, Lower Level</en>
   </cell>
   <cell>
     <de>Telvayn-Ahnengruft</de>
+    <en>Telvayn Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Thalas-Ahnengruft</de>
+    <en>Thalas Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Tharys-Ahnengruft</de>
+    <en>Tharys Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Thelas-Ahnengruft</de>
+    <en>Thelas Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Thiralas-Ahnengruft</de>
+    <en>Thiralas Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Thirsk</de>
+    <en>Thirsk</en>
   </cell>
   <cell>
     <de>Tin-Ahhe</de>
+    <en>Tin-Ahhe</en>
   </cell>
   <cell>
     <de>ToddTest</de>
+    <en>ToddTest</en>
   </cell>
   <cell>
     <de>Trödelverkauf – Alles muss weg!</de>
+    <en>Clutter Warehouse - Everything Must Go!</en>
   </cell>
   <cell>
     <de>Tukushapal</de>
+    <en>Tukushapal</en>
   </cell>
   <cell>
     <de>Tukushapal, Grabmal</de>
+    <en>Tukushapal, Sepulcher</en>
   </cell>
   <cell>
     <de>Tureynulal</de>
+    <en>Tureynulal</en>
   </cell>
   <cell>
     <de>Tureynulal, Auge von Duggan</de>
+    <en>Tureynulal, Eye of Duggan</en>
   </cell>
   <cell>
     <de>Tureynulal, Auge von Thom Wye</de>
+    <en>Tureynulal, Eye of Thom Wye</en>
   </cell>
   <cell>
     <de>Tureynulal, Blase von Clovis</de>
+    <en>Tureynulal, Bladder of Clovis</en>
   </cell>
   <cell>
     <de>Tureynulal, Kagrenacs Bibliothek</de>
+    <en>Tureynulal, Kagrenac's Library</en>
   </cell>
   <cell>
     <de>Turm von Tel Fyr, Halle von Fyr</de>
+    <en>Tower of Tel Fyr, Hall of Fyr</en>
   </cell>
   <cell>
     <de>Turm von Tel Fyr, Onyxhalle</de>
+    <en>Tower of Tel Fyr, Onyx Hall</en>
   </cell>
   <cell>
     <de>Tusenend, Schrein</de>
+    <en>Tusenend, Shrine</en>
   </cell>
   <cell>
     <de>Ularradallaku, Schrein</de>
+    <en>Ularradallaku, Shrine</en>
   </cell>
   <cell>
     <de>Ules-Anwesen</de>
+    <en>Ules Manor</en>
   </cell>
   <cell>
     <de>Ules-Anwesen, Hütte des Sklavenmeisters</de>
+    <en>Ules Manor, Slavemaster's Shack</en>
   </cell>
   <cell>
     <de>Ules-Anwesen, Sklavenhütte</de>
+    <en>Ules Manor, Slave Shack</en>
   </cell>
   <cell>
     <de>Ulummusa</de>
+    <en>Ulummusa</en>
   </cell>
   <cell>
     <de>Unbekanntes Schiffswrack, Kabine</de>
+    <en>Unknown Shipwreck, Cabin</en>
   </cell>
   <cell>
     <de>Unbekanntes Schiffswrack, Oberdeck</de>
+    <en>Unknown Shipwreck, Upper Level</en>
   </cell>
   <cell>
     <de>Unbekanntes Schiffswrack, Unterdeck</de>
+    <en>Unknown Shipwreck, Lower Level</en>
   </cell>
   <cell>
     <de>Unentdecktes Schiffswrack, Kabine</de>
+    <en>Unchartered Shipwreck, Cabin</en>
   </cell>
   <cell>
     <de>Unentdecktes Schiffswrack, Oberdeck</de>
+    <en>Unchartered Shipwreck, Upper Level</en>
   </cell>
   <cell>
     <de>Unentdecktes Schiffswrack, Unterdeck</de>
+    <en>Uncharted Shipwreck, Lower Level</en>
   </cell>
   <cell>
     <de>Unerforschtes Schiffswrack, Kabine</de>
+    <en>Unexplored Shipwreck, Cabin</en>
   </cell>
   <cell>
     <de>Unerforschtes Schiffswrack, Oberdeck</de>
+    <en>Unexplored Shipwreck, Upper Level</en>
   </cell>
   <cell>
     <de>Unerforschtes Schiffswrack, Unterdeck</de>
+    <en>Unexplored Shipwreck, Lower Level</en>
   </cell>
   <cell>
     <de>Urshilaku, Astralgrab</de>
+    <en>Urshilaku, Astral Burial</en>
   </cell>
   <cell>
     <de>Urshilaku, Bruchgrab</de>
+    <en>Urshilaku, Fragile Burial</en>
   </cell>
   <cell>
     <de>Urshilaku, Juno-Grab</de>
+    <en>Urshilaku, Juno Burial</en>
   </cell>
   <cell>
     <de>Urshilaku, Kakuna-Grab</de>
+    <en>Urshilaku, Kakuna Burial</en>
   </cell>
   <cell>
     <de>Urshilaku, Karma-Grab</de>
+    <en>Urshilaku, Karma Burial</en>
   </cell>
   <cell>
     <de>Urshilaku, Kefka-Grab</de>
+    <en>Urshilaku, Kefka Burial</en>
   </cell>
   <cell>
     <de>Urshilaku, Laterus-Grab</de>
+    <en>Urshilaku, Laterus Burial</en>
   </cell>
   <cell>
     <de>Urshilaku-Lager</de>
+    <en>Urshilaku Camp</en>
   </cell>
   <cell>
     <de>Urshilaku-Lager, Ahasours Zelt</de>
+    <en>Urshilaku Camp, Ahasour's Yurt</en>
   </cell>
   <cell>
     <de>Urshilaku-Lager, Kuraplis Zelt</de>
+    <en>Urshilaku Camp, Kurapli's Yurt</en>
   </cell>
   <cell>
     <de>Urshilaku-Lager, Maelis Zelt</de>
+    <en>Urshilaku Camp, Maeli's Yurt</en>
   </cell>
   <cell>
     <de>Urshilaku-Lager, Sakirans Zelt</de>
+    <en>Urshilaku Camp, Sakiran's Yurt</en>
   </cell>
   <cell>
     <de>Urshilaku-Lager, Sharas Zelt</de>
+    <en>Urshilaku Camp, Shara's Yurt</en>
   </cell>
   <cell>
     <de>Urshilaku-Lager, Shimsuns Zelt</de>
+    <en>Urshilaku Camp, Shimsun's Yurt</en>
   </cell>
   <cell>
     <de>Urshilaku-Lager, Zabamunds Zelt</de>
+    <en>Urshilaku Camp, Zabamund's Yurt</en>
   </cell>
   <cell>
     <de>Urshilaku-Lager, Zanummus Zelt</de>
+    <en>Urshilaku Camp, Zanummu's Yurt</en>
   </cell>
   <cell>
     <de>Urshilaku-Lager, Zelt der Weisen Frau</de>
+    <en>Urshilaku Camp, Wise Woman's Yurt</en>
   </cell>
   <cell>
     <de>Urshilaku-Lager, Zelt des Ashkhan</de>
+    <en>Urshilaku Camp, Ashkhan's Yurt</en>
   </cell>
   <cell>
     <de>Uveran-Ahnengruft</de>
+    <en>Uveran Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Uviriths Grab</de>
+    <en>Uvirith's Grave</en>
   </cell>
   <cell>
     <de>Valenvaryon</de>
+    <en>Valenvaryon</en>
   </cell>
   <cell>
     <de>Valenvaryon, Durzs Hütte</de>
+    <en>Valenvaryon, Durz's Hut</en>
   </cell>
   <cell>
     <de>Valenvaryon, Gashnas Hütte</de>
+    <en>Valenvaryon, Gashna's Hut</en>
   </cell>
   <cell>
     <de>Valenvaryon, Lambugs Hütte</de>
+    <en>Valenvaryon, Lambug's Hut</en>
   </cell>
   <cell>
     <de>Valenvaryon, Lurogs Hütte</de>
+    <en>Valenvaryon, Lurog's Hut</en>
   </cell>
   <cell>
     <de>Valenvaryon, Propylon-Kammer</de>
+    <en>Valenvaryon, Propylon Chamber</en>
   </cell>
   <cell>
     <de>Valenvaryon, Umugs Hütte</de>
+    <en>Valenvaryon, Umug's Hut</en>
   </cell>
   <cell>
     <de>Vandus-Ahnengruft</de>
+    <en>Vandus Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Vansunalit, Eiermine</de>
+    <en>Vansunalit Egg Mine</en>
   </cell>
   <cell>
     <de>Vas</de>
+    <en>Vas</en>
   </cell>
   <cell>
     <de>Vas, Turm</de>
+    <en>Vas, Tower</en>
   </cell>
   <cell>
     <de>Vas, Zugangsebene</de>
+    <en>Vas, Entry Level</en>
   </cell>
   <cell>
     <de>Vassamsi-Grotte</de>
+    <en>Vassamsi Grotto</en>
   </cell>
   <cell>
     <de>Vassir-Didanat Höhle</de>
+    <en>Vassir-Didanat Cave</en>
   </cell>
   <cell>
     <de>Velas-Ahnengruft</de>
+    <en>Velas Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Veloth-Ahnengruft</de>
+    <en>Veloth Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Vemynal</de>
+    <en>Vemynal</en>
   </cell>
   <cell>
     <de>Vemynal, Halle der Drehungen</de>
+    <en>Vemynal, Hall of Torque</en>
   </cell>
   <cell>
     <de>Vemynal, Äußere Festung</de>
+    <en>Vemynal, Outer Fortress</en>
   </cell>
   <cell>
     <de>Venim-Ahnengruft</de>
+    <en>Venim Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Verelnim-Ahnengruft</de>
+    <en>Verelnim Ancestral Tomb</en>
   </cell>
   <cell>
     <de>Verfallendes Schiffswrack, Kabine</de>
+    <en>Derelict Shipwreck, Cabin</en>
   </cell>
   <cell>
     <de>Verfallendes Schiffswrack, Oberdeck</de>
+    <en>Derelict Shipwreck, Upper Level</en>
   </cell>
   <cell>
     <de>Verfallendes Schiffswrack, Unterdeck</de>
+    <en>Derelict Shipwreck, Lower Level</en>
   </cell>
   <cell>
     <de>Vergessene Gewölbe von Anudnabia, Hilbongard-Schmiede</de>
+    <en>Forgotten Vaults of Anudnabia, Forge of Hilbongard</en>
   </cell>
   <cell>
     <de>Vergessenes Schiffswrack</de>
+    <en>Forgotten Shipwreck</en>
   </cell>
   <cell>
     <de>Verlassenes Schiffswrack, Kabine</de>
+    <en>Abandoned Shipwreck, Cabin</en>
   </cell>
   <cell>
     <de>Verlassenes Schiffswrack, Oberdeck</de>
+    <en>Abandoned Shipwreck, Upper Level</en>
   </cell>
   <cell>
     <de>Verlassenes Schiffswrack, Unterdeck</de>
+    <en>Abandoned Shipwreck, Lower Level</en>
   </cell>
   <cell>
     <de>Verrottendes Schiffswrack, Kabine</de>
+    <en>Neglected Shipwreck, Cabin</en>
   </cell>
   <cell>
     <de>Verrottendes Schiffswrack, Oberdeck</de>
+    <en>Neglected Shipwreck, Upper Level</en>
   </cell>
   <cell>
     <de>Verrottendes Schiffswrack, Unterdeck</de>
+    <en>Neglected Shipwreck, Lower Level</en>
   </cell>
   <cell>
     <de>Verschollenes Schiffswrack, Kabine</de>
+    <en>Lonesome Shipwreck, Cabin</en>
   </cell>
   <cell>
     <de>Verschollenes Schiffswrack, Oberdeck</de>
+    <en>Lonesome Shipwreck, Upper Level</en>
   </cell>
   <cell>
     <de>Verschollenes Schiffswrack, Unterdeck</de>
+    <en>Lonesome Shipwreck, Lower Level</en>
   </cell>
   <cell>
     <de>Verwaistes Schiffswrack, Kabine</de>
+    <en>Deserted Shipwreck, Cabin</en>
   </cell>
   <cell>
     <de>Verwaistes Schiffswrack, Oberdeck</de>
+    <en>Deserted Shipwreck, Upper Level</en>
   </cell>
   <cell>
     <de>Verwaistes Schiffswrack, Unterdeck</de>
+    <en>Deserted Shipwreck, Lower Level</en>
   </cell>
   <cell>
     <de>Vivec</de>
+    <en>Vivec</en>
   </cell>
   <cell>
     <de>Vivec, Abtei des Hl. Delyn des Weisen</de>
+    <en>Vivec, The Abbey of St. Delyn the Wise</en>
   </cell>
   <cell>
     <de>Vivec, Agrippina Herennia: Schneiderin</de>
+    <en>Vivec, Agrippina Herennia: Clothier</en>
   </cell>
   <cell>
     <de>Vivec, Alusaron: Schmied</de>
+    <en>Vivec, Alusaron: Smith</en>
   </cell>
   <cell>
     <de>Vivec, Andilu Drothan: Alchemistin</de>
+    <en>Vivec, Andilu Drothan: Alchemist</en>
   </cell>
   <cell>
     <de>Vivec, Arena</de>
+    <en>Vivec, Arena</en>
   </cell>
   <cell>
     <de>Vivec, Arena, Bodensektion</de>
+    <en>Vivec, Arena Waistworks</en>
   </cell>
   <cell>
     <de>Vivec, Arena, Grube</de>
+    <en>Vivec, Arena Pit</en>
   </cell>
   <cell>
     <de>Vivec, Arena, Kanäle</de>
+    <en>Vivec, Arena Canalworks</en>
   </cell>
   <cell>
     <de>Vivec, Arena, Kämpfer-Ausbildungsbereich</de>
   </cell>
   <cell>
     <de>Vivec, Arena, Lager</de>
+    <en>Vivec, Arena Storage</en>
   </cell>
   <cell>
     <de>Vivec, Arena, Quartiere der Kämpfer</de>
+    <en>Vivec, Arena Fighters Quarters</en>
   </cell>
   <cell>
     <de>Vivec, Arena, Unterirdische Kanäle</de>
   </cell>
   <cell>
     <de>Vivec, Arena, Versteckter Bereich</de>
+    <en>Vivec, Arena Hidden Area</en>
   </cell>
   <cell>
     <de>Vivec, Arena, Zellen</de>
+    <en>Vivec, Arena Holding Cells</en>
   </cell>
   <cell>
     <de>Vivec, Aurane Frernis: Trankmischerin</de>
+    <en>Vivec, Aurane Frernis: Apothecary</en>
   </cell>
   <cell>
     <de>Vivec, Bibliothek von Vivec</de>
+    <en>Vivec, Library of Vivec</en>
   </cell>
   <cell>
     <de>Vivec, Der Echsenkopf</de>
+    <en>Vivec, The Lizard's Head</en>
   </cell>
   <cell>
     <de>Vivec, Fremdenviertel</de>
+    <en>Vivec, Foreign Quarter</en>
   </cell>
   <cell>
     <de>Vivec, Fremdenviertel, Gruft</de>
+    <en>Vivec, Foreign Quarter Tomb</en>
   </cell>
   <cell>
     <de>Vivec, Fremdenviertel, Kanäle</de>
+    <en>Vivec, Foreign Quarter Canalworks</en>
   </cell>
   <cell>
     <de>Vivec, Fremdenviertel, Obere Bodensektion</de>
+    <en>Vivec, Foreign Quarter Upper Waistworks</en>
   </cell>
   <cell>
     <de>Vivec, Fremdenviertel, Platz</de>
+    <en>Vivec, Foreign Quarter Plaza</en>
   </cell>
   <cell>
     <de>Vivec, Fremdenviertel, Untere Bodensektion</de>
+    <en>Vivec, Foreign Quarter Lower Waistworks</en>
   </cell>
   <cell>
     <de>Vivec, Fremdenviertel, Unterirdische Kanäle</de>
+    <en>Vivec, Foreign Quarter Underworks</en>
   </cell>
   <cell>
     <de>Vivec, Gesetzeshallen</de>
+    <en>Vivec, Justice Offices</en>
   </cell>
   <cell>
     <de>Vivec, Halle der Gerechtigkeit</de>
+    <en>Vivec, Hall of Justice</en>
   </cell>
   <cell>
     <de>Vivec, Halle der Gerechtigkeit, Geheimbibliothek</de>
+    <en>Vivec, Hall of Justice Secret Library</en>
   </cell>
   <cell>
     <de>Vivec, Halle der Weisheit</de>
+    <en>Vivec, Hall of Wisdom</en>
   </cell>
   <cell>
     <de>Vivec, Hallen der Wache</de>
+    <en>Vivec, Office of the Watch</en>
   </cell>
   <cell>
     <de>Vivec, Hallen, Unterirdische Kanäle</de>
+    <en>Vivec, Hall Underworks</en>
   </cell>
   <cell>
     <de>Vivec, Haus Curio</de>
+    <en>Vivec, Curio Manor</en>
   </cell>
   <cell>
     <de>Vivec, Haus Dralor</de>
+    <en>Vivec, Dralor Manor</en>
   </cell>
   <cell>
     <de>Vivec, Haus Saren</de>
+    <en>Vivec, Saren Manor</en>
   </cell>
   <cell>
     <de>Vivec, Hl. Delyn</de>
+    <en>Vivec, St. Delyn</en>
   </cell>
   <cell>
     <de>Vivec, Hl. Olms</de>
+    <en>Vivec, St. Olms</en>
   </cell>
   <cell>
     <de>Vivec, Hl.Delyn, Bodensektion</de>
+    <en>Vivec, St. Delyn Waistworks</en>
   </cell>
   <cell>
     <de>Vivec, Hl.Delyn, Bodensektion Nord-Eins</de>
+    <en>Vivec, St. Delyn Waist North-One</en>
   </cell>
   <cell>
     <de>Vivec, Hl.Delyn, Bodensektion Nord-Zwei</de>
+    <en>Vivec, St. Delyn Waist North-Two</en>
   </cell>
   <cell>
     <de>Vivec, Hl.Delyn, Bodensektion Süd-Eins</de>
+    <en>Vivec, St. Delyn Waist South-One</en>
   </cell>
   <cell>
     <de>Vivec, Hl.Delyn, Bodensektion Süd-Zwei</de>
+    <en>Vivec, St. Delyn Waist South-Two</en>
   </cell>
   <cell>
     <de>Vivec, Hl.Delyn, Glashütte</de>
+    <en>Vivec, St. Delyn Glassworker's Hall</en>
   </cell>
   <cell>
     <de>Vivec, Hl.Delyn, Kanal Nord-Drei</de>
+    <en>Vivec, St. Delyn Canal North-Three</en>
   </cell>
   <cell>
     <de>Vivec, Hl.Delyn, Kanal Nord-Eins</de>
+    <en>Vivec, St. Delyn Canal North-One</en>
   </cell>
   <cell>
     <de>Vivec, Hl.Delyn, Kanal Nord-Zwei</de>
+    <en>Vivec, St. Delyn Canal North-Two</en>
   </cell>
   <cell>
     <de>Vivec, Hl.Delyn, Kanal Süd-Drei</de>
+    <en>Vivec, St. Delyn Canal South-Three</en>
   </cell>
   <cell>
     <de>Vivec, Hl.Delyn, Kanal Süd-Eins</de>
+    <en>Vivec, St. Delyn Canal South-One</en>
   </cell>
   <cell>
     <de>Vivec, Hl.Delyn, Kanal Süd-Zwei</de>
+    <en>Vivec, St. Delyn Canal North-Two</en>
   </cell>
   <cell>
     <de>Vivec, Hl.Delyn, Kanäle</de>
+    <en>Vivec, St. Delyn Canalworks</en>
   </cell>
   <cell>
     <de>Vivec, Hl.Delyn, Lager</de>
+    <en>Vivec, St. Delyn Storage</en>
   </cell>
   <cell>
     <de>Vivec, Hl.Delyn, Platz</de>
+    <en>Vivec, St. Delyn Plaza</en>
   </cell>
   <cell>
     <de>Vivec, Hl.Delyn, Töpferer-Halle</de>
+    <en>Vivec, St. Delyn Potter's Hall</en>
   </cell>
   <cell>
     <de>Vivec, Hl.Delyn, Unterirdische Kanäle</de>
+    <en>Vivec, St. Delyn Underworks</en>
   </cell>
   <cell>
     <de>Vivec, Hl.Olms, Bauern und Arbeiter-Halle</de>

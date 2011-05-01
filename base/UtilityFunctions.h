@@ -89,6 +89,14 @@ std::string lowerCase(const std::string& str1);
 */
 bool removeEnclosingBrackets(std::string& expr);
 
+/*tries to remove the quote pair surrounding the rest of the string. Returns
+  true, if something was removed, false otherwise.
+
+  parameters:
+      str1 - the string
+*/
+bool StripEnclosingQuotes(std::string& str1);
+
 /* returns an integer less than zero, if the left string is ordered before the
    right string. Returns zero, if they are equivalent. Returns a value greater
    than zero if the left string is ordered after the right string. The

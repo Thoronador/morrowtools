@@ -30,10 +30,19 @@ struct DepFile
   /* standard constructor */
   DepFile();
 
-  /* constructor for file-only data */
+  /* constructor for file-only data
+
+     parameters:
+         fileName - name of the file
+  */
   DepFile(const std::string& fileName);
 
-  /* constructor for file-only data via old C string*/
+  /* constructor for file-only data via old C string
+
+     parameters:
+         fileName - pointer to a character string containing the name of the
+                    file
+  */
   DepFile(const char* fileName);
 
   /* returns true, if the specified file name has the .esm extension */
@@ -72,7 +81,7 @@ class DepFileList
            less than getSize(). Otherwise the function will throw an exception.
            The function will always throw an exception for empty lists.
     */
-    const DepFile& at(size_t index) const;
+    const DepFile& at(const size_t index) const;
 
     /* returns a reference to the index-th entry in the list
 
@@ -84,12 +93,20 @@ class DepFileList
            less than getSize(). Otherwise the function will throw an exception.
            The function will always throw an exception for empty lists.
     */
-    DepFile& at(size_t index);
+    DepFile& at(const size_t index);
 
-    /* adds an entry to the end of the list */
+    /* adds an entry to the end of the list
+
+       parameters:
+           val - the entry that will be added to the end of the list
+    */
     void push_back(const DepFile& val);
 
-    /* adds an entry to the beginning of the list */
+    /* adds an entry to the beginning of the list
+
+       parameters:
+           val - the entry that will be added to the beginning of the list
+    */
     void push_front(const DepFile& val);
 
     /* returns true, if the file fileName is in the list
@@ -118,7 +135,7 @@ class DepFileList
        parameters:
            index - zero-based index of the element
     */
-    bool removeEntry(size_t index);
+    bool removeEntry(const size_t index);
 
     /* removes all files from the list */
     void clear();

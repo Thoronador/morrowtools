@@ -31,6 +31,8 @@
 #include "../base/records/DialogueInfoRecord.h"
 #include "../base/records/NPCRecord.h"
 #include "../base/records/PathGridRecord.h"
+#include "../base/records/ScriptRecord.h"
+#include "../base/UtilityFunctions.h"
 
 //return codes
 const int rcInvalidParameter = 1;
@@ -39,6 +41,7 @@ const int rcOutputFailed = 4;
 
 const int rcXMLError = 6;
 const int rcXMLEmpty = 7;
+const int rcScriptError = 8;
 
 bool translatePreNPCRecord(PreNPCRecord* c_rec, const CellListType& cells)
 {
@@ -105,6 +108,228 @@ bool translateCellRecord(CellRecord* c_rec, const CellListType& cells)
   return true;
 }
 
+bool getNextScriptParameter(const std::string& scriptText, size_t& start, std::string& param)
+{
+  const std::string::size_type len = scriptText.length();
+  if (start>=len) return false;
+
+  unsigned int look = start;
+  unsigned int offset = start;
+  bool insideQuote = false;
+  while (look<len)
+  {
+    if (scriptText.at(look)=='"')
+    {
+      insideQuote = not insideQuote;
+    }
+    else if ((not insideQuote) and ((scriptText.at(look)==' ')
+              or (scriptText.at(look)==',') or (scriptText.at(look)=='\t')))
+    {
+      //found a place where to split
+      const unsigned int param_len = look-offset;
+      if (param_len>0)//skip empty params
+      {
+        param = scriptText.substr(offset, param_len);
+        StripEnclosingQuotes(param);
+        start = look+1;
+        return true;
+      }//if
+      offset=look+1;
+    }//else
+    ++look;
+  }//while
+  //we are at the end of the string, whole stuff is one piece
+  param = scriptText.substr(offset);
+  StripEnclosingQuotes(param);
+  start = len;
+  if (param.length()>0) return true;
+  return false;
+}
+
+bool replaceCellsInScriptText(std::string& scriptText, const CellListType& cells)
+{
+  std::string::size_type offset = 0;
+  std::string lowerText = lowerCase(scriptText);
+  std::string newText = scriptText;
+
+  bool changed = false;
+  //potential endless loop
+  while (true)
+  {
+    /*Instead of searching for thousands of cell names, we just try to find the
+      script functions that take cell names as one of their parameters. That's
+      much faster.
+    */
+    std::string::size_type pos_AIEscortCell = lowerText.find("aiescortcell", offset);
+    std::string::size_type pos_AIFollowCell = lowerText.find("aifollowcell", offset);
+    std::string::size_type pos_GetPCCell = lowerText.find("getpccell", offset);
+    std::string::size_type pos_PlaceItemCell = lowerText.find("placeitemcell", offset);
+    std::string::size_type pos_PositionCell = lowerText.find("positioncell", offset);
+
+    if ((std::string::npos!=pos_AIEscortCell) or (std::string::npos!=pos_AIFollowCell))
+    {
+      //replace cell name in AIEscortCell/AIFollowCell command
+      //params: 6 or 7: target ID, cell ID, duration, x, y, z[, reset]
+      // --> skip first param, get second
+      std::string param;
+      size_t param_start;
+      if (std::string::npos!=pos_AIEscortCell)
+      {
+        param_start = pos_AIEscortCell;
+      }
+      else param_start = pos_AIFollowCell;
+      //skip function name
+      if (getNextScriptParameter(newText, param_start, param))
+      {
+        //skip first param
+        if (getNextScriptParameter(newText, param_start, param))
+        {
+          //remember position where cell name starts
+          const size_t cell_start = param_start;
+          //get and skip cell name
+          if (getNextScriptParameter(newText, param_start, param))
+          {
+            //now param contains the cell name
+            const CellListType::const_iterator iter = cells.find(param);
+            if (iter!=cells.end())
+            {
+              newText = newText.substr(0, cell_start)+"\""+iter->second
+                       +"\" "+newText.substr(param_start);
+              lowerText = lowerCase(newText);
+              changed = true;
+            }//if some match found
+          }//if (cell)
+        }//if (1st param)
+      }//if (function name)
+      //when done, set offset to occurence +1
+      if (std::string::npos!=pos_AIEscortCell)
+      {
+        offset = pos_AIEscortCell+1;
+      }
+      else param_start = pos_AIFollowCell;
+    }
+    else if (std::string::npos!=pos_GetPCCell)
+    {
+      //replace cell name in GetPCCell command
+      //params: 1: cell ID
+      // --> get first param
+      std::string param;
+      size_t param_start = pos_GetPCCell;
+      //skip function name
+      if (getNextScriptParameter(newText, param_start, param))
+      {
+        //remember position where cell name starts
+        const size_t cell_start = param_start;
+        //get first param
+        if (getNextScriptParameter(newText, param_start, param))
+        {
+          const CellListType::const_iterator iter = cells.find(param);
+          if (iter!=cells.end())
+          {
+            newText = newText.substr(0, cell_start)+"\""+iter->second
+                     +"\" "+newText.substr(param_start);
+            lowerText = lowerCase(newText);
+            changed = true;
+          }//if some match found
+        }//if first param
+      }//if function name
+      //when done, set offset to occurence +1
+      offset = pos_GetPCCell+1;
+    }
+    else if (std::string::npos!=pos_PlaceItemCell)
+    {
+      //replace cell name in PlaceItemCell command
+      //params: 6: ObjectID, CellID, X, Y, Z, ZRot
+      // --> skip first, get second
+      std::string param;
+      size_t param_start = pos_PlaceItemCell;
+      //skip function name
+      if (getNextScriptParameter(newText, param_start, param))
+      {
+        //skip first param
+        if (getNextScriptParameter(newText, param_start, param))
+        {
+          //remember position where cell name starts
+          const size_t cell_start = param_start;
+          //get and skip cell name
+          if (getNextScriptParameter(newText, param_start, param))
+          {
+            //now param contains the cell name
+            const CellListType::const_iterator iter = cells.find(param);
+            if (iter!=cells.end())
+            {
+              newText = newText.substr(0, cell_start)+"\""+iter->second
+                       +"\" "+newText.substr(param_start);
+              lowerText = lowerCase(newText);
+              changed = true;
+            }//if some match found
+          }//if (cell)
+        }//if (1st param)
+      }//if (function name)
+      //when done, set offset to occurence +1
+      offset = pos_PlaceItemCell+1;
+    }
+    else if (std::string::npos!=pos_PositionCell)
+    {
+      //replace cell name in PositionCell command
+      //params: 5: x, y, z, zRot, CellID
+      // --> skip first four params, get fifth
+      std::string param;
+      size_t param_start = pos_PositionCell;
+      //skip function name
+      if (getNextScriptParameter(newText, param_start, param))
+      {
+        //skip first param
+        if (getNextScriptParameter(newText, param_start, param))
+        {
+          //skip second param
+          if (getNextScriptParameter(newText, param_start, param))
+          {
+            //skip third param
+            if (getNextScriptParameter(newText, param_start, param))
+            {
+              //skip fourth param
+              if (getNextScriptParameter(newText, param_start, param))
+              {
+                //remember position where cell name starts
+                const size_t cell_start = param_start;
+                //get and skip cell name
+                if (getNextScriptParameter(newText, param_start, param))
+                {
+                  //now param contains the cell name
+                  const CellListType::const_iterator iter = cells.find(param);
+                  if (iter!=cells.end())
+                  {
+                    newText = newText.substr(0, cell_start)+"\""+iter->second
+                             +"\" "+newText.substr(param_start);
+                    lowerText = lowerCase(newText);
+                    changed = true;
+                  }//if some match found
+                }//if fifth param/cell name
+              }//if fourth param
+            }//if third param
+          }//if second param
+        }//if first param
+      }//if function name
+      //when done, set offset to occurence +1
+      offset = pos_PositionCell+1;
+    }
+    else
+    {
+      //break out of loop
+      break;
+    }
+    #warning Might not work properly yet!
+  }//while
+
+  if (changed)
+  {
+    scriptText = newText;
+    return true;
+  }
+  return false;
+}
+
 bool translateInfoRecord(DialogueInfoRecord* di_rec, const CellListType& cells)
 {
   if (di_rec==NULL) return false;
@@ -119,8 +344,20 @@ bool translateInfoRecord(DialogueInfoRecord* di_rec, const CellListType& cells)
   //result string might be a script
   if (!di_rec->ResultString.empty())
   {
-    ///TODO: translate script stuff here
+    replaceCellsInScriptText(di_rec->ResultString, cells);
   }
+  return true;
+}
+
+bool translateScriptRecord(ScriptRecord* script_rec, const CellListType& cells)
+{
+  if (script_rec==NULL) return false;
+  if (replaceCellsInScriptText(script_rec->ScriptText, cells))
+  {
+    //something was replaced, so we have to recompile the script here
+    ///TODO: translate script here
+    #warning Incomplete function!
+  }//if stuff was replaces
   return true;
 }
 
@@ -165,7 +402,7 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Cell Translator for Morrowind, version 0.2_rev209, 2011-04-25\n";
+  std::cout << "Cell Translator for Morrowind, version 0.3_rev225, 2011-05-01\n";
 }
 
 int main(int argc, char **argv)
@@ -311,23 +548,13 @@ int main(int argc, char **argv)
   CellListType cells;
   if (readCellListFromXML(pathToCellsXML, cells, td_en_de))
   {
-    std::cout << "Parsing XML was successful. There are "<<cells.size()<<" pairs in the list.\n";
-    if (cells.size()>0)
-    {
-      CellListType::const_iterator iter = cells.begin();
-      std::cout << "Cells in list:\n";
-      while (iter!=cells.end())
-      {
-        std::cout << "Cell pair: \""<<iter->first<<"\" & \""<<iter->second<<"\"\n";
-        ++iter;
-      }//while
-    }//if (inner)
-    else
+    if (cells.size()==0)
     {
       std::cout << "The XML file \""<<pathToCellsXML<<"\" did not contain any "
                 << "cell name pairs. Thus, nothing can be translated here.\n";
       return rcXMLEmpty;
-    }
+    }//if (the inner one)
+    std::cout << "Parsing XML was successful. There are "<<cells.size()<<" pairs in the list.\n";
   }
   else
   {
@@ -347,20 +574,13 @@ int main(int argc, char **argv)
     return rcFileError;
   }
 
-
-  /// TODO: translate the cells and stuff here
-
-  /** Yes, right here! **/
-
   const std::string genericID = typeid(GenericRecord*).name();
   const std::string cellID = typeid(CellRecord*).name();
   const std::string creatureID = typeid(CreatureRecord*).name();
   const std::string infoID = typeid(DialogueInfoRecord*).name();
   const std::string npcID = typeid(NPCRecord*).name();
   const std::string pathgridID = typeid(PathGridRecord*).name();
-
-  std::cout << "typeid of GenericRecord is \""<<genericID<<"\".\n"
-            << "typeid of PathGridRecord is \""<<pathgridID<<"\".\n";
+  const std::string scriptID = typeid(ScriptRecord*).name();
 
   CellListType::const_iterator cell_iter;
   ESMReaderGeneric::VectorType::const_iterator v_iter = recordVec.begin();
@@ -387,11 +607,19 @@ int main(int argc, char **argv)
     {
       translateInfoRecord(dynamic_cast<DialogueInfoRecord*>(*v_iter), cells);
     }
-    /// TODO: add stuff for script record type. It's still missing here.
-    /// And maybe translate region names, too.
+    else if (type_name==scriptID)
+    {
+      if (!translateScriptRecord(dynamic_cast<ScriptRecord*>(*v_iter), cells))
+      {
+        std::cout << "Error: couldn't translate cells in script \""
+                  << dynamic_cast<ScriptRecord*>(*v_iter)->ScriptID<<"\"!\n";
+        reader.deallocateRecordsInVector();
+        return rcScriptError;
+      }//if not translated
+    }//if script record
+    /// TODO: Maybe translate region names, too.
     ++v_iter;
   }//while
-
 
   //try to write stuff to the output file
   ESMWriterGeneric writer(&recordVec);

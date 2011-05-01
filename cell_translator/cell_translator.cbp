@@ -36,6 +36,8 @@
 		<Unit filename="..\base\HelperIO.cpp" />
 		<Unit filename="..\base\HelperIO.h" />
 		<Unit filename="..\base\MW_Constants.h" />
+		<Unit filename="..\base\UtilityFunctions.cpp" />
+		<Unit filename="..\base\UtilityFunctions.h" />
 		<Unit filename="..\base\records\AIData.cpp" />
 		<Unit filename="..\base\records\AIData.h" />
 		<Unit filename="..\base\records\AIPackages.cpp" />

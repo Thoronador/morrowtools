@@ -118,12 +118,12 @@ bool DepFileList::isEmpty() const
   return m_List.empty();
 }
 
-const DepFile& DepFileList::at(size_t index) const
+const DepFile& DepFileList::at(const size_t index) const
 {
   return m_List.at(index);
 }
 
-DepFile& DepFileList::at(size_t index)
+DepFile& DepFileList::at(const size_t index)
 {
   return m_List.at(index);
 }
@@ -205,7 +205,7 @@ unsigned int DepFileList::removeDuplicates()
   return ret;
 }
 
-bool DepFileList::removeEntry(size_t index)
+bool DepFileList::removeEntry(const size_t index)
 {
   if (index>=m_List.size())
   {

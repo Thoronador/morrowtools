@@ -26,6 +26,7 @@
 #include "TranslatorXML.h"
 #include "TranslateRecords.h"
 #include "../base/ESMWriterGeneric.h"
+#include "../base/ESMReaderScriptCompiler.h"
 #include "../base/records/GenericRecord.h"
 #include "../base/records/CreatureRecord.h"
 #include "../base/records/NPCRecord.h"
@@ -82,7 +83,7 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Cell Translator for Morrowind, version 0.3_rev227, 2011-05-06\n";
+  std::cout << "Cell Translator for Morrowind, version 0.3_rev228, 2011-05-06\n";
 }
 
 int main(int argc, char **argv)
@@ -247,12 +248,55 @@ int main(int argc, char **argv)
   DepFileList deps;
   deps.clear();
   ESMReaderTranslator reader(&recordVec);
-  if (!reader.readESM(pluginFile, deps, false))
+  std::cout << "Reading plugin file and dependencies. This may take a while.\n";
+  if (reader.readESM(pluginFile, deps, false)<0)
   {
     std::cout << "Error while reading file \""<<pluginFile<<"\".\nAborting.\n";
     reader.deallocateRecordsInVector();
     return rcFileError;
   }
+
+  const std::string::size_type pos = pluginFile.rfind('\\');
+  std::string baseDir;
+  if (pos!=std::string::npos)
+  {
+    baseDir = pluginFile.substr(0,pos+1);
+  }
+  else
+  {
+    baseDir = ".\\";
+  }
+
+  std::cout <<"Debug: deps before sort:\n";
+  deps.writeDeps();
+  deps.sort();
+  deps.removeDuplicates();
+  std::cout <<"Debug: deps after sort:\n";
+  deps.writeDeps();
+  std::cout << "---End of info---\n";
+
+  //read the dependency files to get the neccessary data for the script compiler
+  unsigned int i;
+  ESMReaderScriptCompiler sc_reader;
+  for (i=0; i<deps.getSize(); ++i)
+  {
+    DepFileList dummy_deps;
+    if (sc_reader.readESM(baseDir+deps.at(i).name, dummy_deps, false)<0)
+    {
+      std::cout << "Error while reading file \""<<baseDir+deps.at(i).name
+                << "\".\nAborting.\n";
+      reader.deallocateRecordsInVector();
+      return rcFileError;
+    }//if
+  }//for
+
+  //feeding plugin file to script compiler
+  if (sc_reader.readESM(pluginFile, deps, false)<0)
+  {
+    std::cout << "Error while reading file \""<<pluginFile<<"\".\nAborting.\n";
+    reader.deallocateRecordsInVector();
+    return rcFileError;
+  }//if
 
   const std::string genericID = typeid(GenericRecord*).name();
   const std::string cellID = typeid(CellRecord*).name();

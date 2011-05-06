@@ -27,8 +27,9 @@
 
 #include <string>
 #include <map>
+#include "../base/ComparisonFunctor.h"
 
-typedef std::map<std::string, std::string> CellListType;
+typedef std::map<std::string, std::string, ci_less> CellListType;
 
 /* Enumeration type for the direction of translation. */
 enum TransDir {td_en_de, td_de_en};

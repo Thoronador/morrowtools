@@ -25,6 +25,7 @@
 		</Compiler>
 		<Unit filename="..\base\Activators.cpp" />
 		<Unit filename="..\base\Activators.h" />
+		<Unit filename="..\base\ComparisonFunctor.h" />
 		<Unit filename="..\base\Creatures.cpp" />
 		<Unit filename="..\base\Creatures.h" />
 		<Unit filename="..\base\DepFiles.cpp" />
@@ -33,6 +34,8 @@
 		<Unit filename="..\base\ESMReader.h" />
 		<Unit filename="..\base\ESMReaderGeneric.cpp" />
 		<Unit filename="..\base\ESMReaderGeneric.h" />
+		<Unit filename="..\base\ESMReaderScriptCompiler.cpp" />
+		<Unit filename="..\base\ESMReaderScriptCompiler.h" />
 		<Unit filename="..\base\ESMWriter.cpp" />
 		<Unit filename="..\base\ESMWriter.h" />
 		<Unit filename="..\base\ESMWriterGeneric.cpp" />

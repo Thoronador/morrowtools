@@ -46,9 +46,8 @@ void StripEnclosingQuotes(std::string& str1);
        result - the ScriptRecord structure that will hold the processed script
 
    remarks:
-       This function is still VERY far from complete. Currently everything
-       besides variable declarations is ignored. Hence, result will most likely
-       NOT contain the data you want - yet.
+       This function is still VERY far from complete. Hence, result will most
+       likely NOT contain the data you want - yet.
 */
 bool CompileScript(const std::string& Text, ScriptRecord& result);
 

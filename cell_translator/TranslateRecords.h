@@ -1,0 +1,75 @@
+/*
+ -------------------------------------------------------------------------------
+    This file is part of the Morrowind Tools Project.
+    Copyright (C) 2011 Thoronador
+
+    The Morrowind Tools are free software: you can redistribute them and/or
+    modify them under the terms of the GNU General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    The Morrowind Tools are distributed in the hope that they will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with the Morrowind Tools.  If not, see <http://www.gnu.org/licenses/>.
+ -------------------------------------------------------------------------------
+*/
+
+#ifndef TRANSLATERECORDS_H
+#define TRANSLATERECORDS_H
+
+#include "TranslatorXML.h"
+#include "../base/records/CellRecord.h"
+#include "../base/records/DialogueInfoRecord.h"
+#include "../base/records/PreNPCRecord.h"
+#include "../base/records/ScriptRecord.h"
+
+/* tries to translate the cell names in the given NPC/creature record and
+   returns true on success, false on failure
+
+   parameters:
+       c_rec - pointer to the record that has to be translated
+       cells - the list of cell names and their translations
+*/
+bool translatePreNPCRecord(PreNPCRecord* c_rec, const CellListType& cells);
+
+/* tries to translate the cell names in the given cell record and returns true
+   on success, false on failure
+
+   parameters:
+       c_rec - pointer to the record that has to be translated
+       cells - the list of cell names and their translations
+*/
+bool translateCellRecord(CellRecord* c_rec, const CellListType& cells);
+
+/* tries to translate the cell names in the given dialogue info record and
+   returns true on success, false on failure
+
+   parameters:
+       di_rec - pointer to the dialogue info record that has to be translated
+       cells  - the list of cell names and their translations
+*/
+bool translateInfoRecord(DialogueInfoRecord* di_rec, const CellListType& cells);
+
+/* tries to translate the cell names in the given script record and returns true
+   on success, false on failure
+
+   parameters:
+       script_rec - pointer to the ScriptRecord that has to be translated
+       cells      - the list of cell names and their translations
+*/
+bool translateScriptRecord(ScriptRecord* script_rec, const CellListType& cells);
+
+/* tries to translate the script text given in scriptText, and returns true, if
+   something had to be (and was) changed, or false if nothing was changed
+
+   parameters:
+       scriptText - reference to the script text that has to be translated
+       cells      - the list of cell names and their translations
+*/
+bool replaceCellsInScriptText(std::string& scriptText, const CellListType& cells);
+
+#endif // TRANSLATERECORDS_H

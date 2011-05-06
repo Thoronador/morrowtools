@@ -1399,6 +1399,7 @@ bool CellRecord::loadFromStream(std::ifstream& in_File)
   bool hasNAM0 = false;
   bool hasNAM5 = false;
   bool hasRGNN = false;
+  bool hasUnknownINTV = false;
   Ambience.isPresent = false;
   hasWHGT = false;
   while (BytesRead<Size)
@@ -1545,9 +1546,36 @@ bool CellRecord::loadFromStream(std::ifstream& in_File)
            }
            hasNAM5 = true;
            break;
+      case cINTV: //Somehow some of the english plugin files seem to have an
+                  //  INTV record after DATA and before AMBI, but I can't see
+                  //  what value they represent in game, so we just skip it.
+           if (hasUnknownINTV)
+           {
+             std::cout << "Error: record CELL seems to have two INTV subrecords.\n";
+             return false;
+           }
+           //INTV's length
+           in_File.read((char*) &SubLength, 4);
+           BytesRead += 4;
+           if (SubLength!=4)
+           {
+             std::cout << "Error: subrecord INTV of CELL has invalid length ("<<SubLength
+                       << " bytes). Should be four bytes.\n";
+             return false;
+           }
+           //read int value
+           in_File.read((char*) &SubLength, 4);//we don't actually use this value
+           BytesRead += 4;
+           if (!in_File.good())
+           {
+             std::cout << "Error while reading subrecord INTV of CELL!\n";
+             return false;
+           }
+           hasUnknownINTV = true;
+           break;
       default:
            std::cout << "Error while reading CELL: expected record name FRMR, "
-                     << "RGNN, WHGT, AMBI, NAM0 or NAM5 not found. Instead, \""
+                     << "RGNN, WHGT, AMBI, NAM0, NAM5 or INTV not found. Instead, \""
                      << IntTo4Char(SubRecName)<<"\" was found.\n";
            return false;
            break;

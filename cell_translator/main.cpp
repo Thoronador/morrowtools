@@ -83,7 +83,7 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Cell Translator for Morrowind, version 0.3_rev228, 2011-05-06\n";
+  std::cout << "Cell Translator for Morrowind, version 0.3_rev229, 2011-05-06\n";
 }
 
 int main(int argc, char **argv)
@@ -298,20 +298,20 @@ int main(int argc, char **argv)
     return rcFileError;
   }//if
 
-  const std::string genericID = typeid(GenericRecord*).name();
-  const std::string cellID = typeid(CellRecord*).name();
-  const std::string creatureID = typeid(CreatureRecord*).name();
-  const std::string infoID = typeid(DialogueInfoRecord*).name();
-  const std::string npcID = typeid(NPCRecord*).name();
-  const std::string pathgridID = typeid(PathGridRecord*).name();
-  const std::string scriptID = typeid(ScriptRecord*).name();
+  const std::string genericID = typeid(GenericRecord).name();
+  const std::string cellID = typeid(CellRecord).name();
+  const std::string creatureID = typeid(CreatureRecord).name();
+  const std::string infoID = typeid(DialogueInfoRecord).name();
+  const std::string npcID = typeid(NPCRecord).name();
+  const std::string pathgridID = typeid(PathGridRecord).name();
+  const std::string scriptID = typeid(ScriptRecord).name();
 
   CellListType::const_iterator cell_iter;
   ESMReaderGeneric::VectorType::const_iterator v_iter = recordVec.begin();
   unsigned int changedRecords = 0;
   while (v_iter!=recordVec.end())
   {
-    const std::string type_name = typeid(*v_iter).name();
+    const std::string type_name = typeid(**v_iter).name();
     if (type_name==pathgridID)
     {
       cell_iter = cells.find(dynamic_cast<PathGridRecord*>(*v_iter)->CellName);
@@ -323,7 +323,10 @@ int main(int argc, char **argv)
     }//if path grid
     else if (type_name==cellID)
     {
-      translateCellRecord(dynamic_cast<CellRecord*>(*v_iter), cells, changedRecords);
+      if (!translateCellRecord(dynamic_cast<CellRecord*>(*v_iter), cells, changedRecords))
+      {
+        std::cout << "Error: couldn't translate cell record.\n";
+      }
     }
     else if ((type_name==creatureID) or (type_name==npcID))
     {

@@ -31,37 +31,49 @@
    returns true on success, false on failure
 
    parameters:
-       c_rec - pointer to the record that has to be translated
-       cells - the list of cell names and their translations
+       c_rec          - pointer to the record that has to be translated
+       cells          - the list of cell names and their translations
+       changedRecords - variable that counts the number of changed record. It
+                        will be increased by one, if any changes were made to
+                        the PreNPCRecord.
 */
-bool translatePreNPCRecord(PreNPCRecord* c_rec, const CellListType& cells);
+bool translatePreNPCRecord(PreNPCRecord* c_rec, const CellListType& cells, unsigned int& changedRecords);
 
 /* tries to translate the cell names in the given cell record and returns true
    on success, false on failure
 
    parameters:
-       c_rec - pointer to the record that has to be translated
-       cells - the list of cell names and their translations
+       c_rec          - pointer to the record that has to be translated
+       cells          - the list of cell names and their translations
+       changedRecords - variable that counts the number of changed record. It
+                        will be increased by one, if any changes were made to
+                        the CellRecord.
 */
-bool translateCellRecord(CellRecord* c_rec, const CellListType& cells);
+bool translateCellRecord(CellRecord* c_rec, const CellListType& cells, unsigned int& changedRecords);
 
 /* tries to translate the cell names in the given dialogue info record and
    returns true on success, false on failure
 
    parameters:
-       di_rec - pointer to the dialogue info record that has to be translated
-       cells  - the list of cell names and their translations
+       di_rec         - pointer to the dialogue info record that has to be translated
+       cells          - the list of cell names and their translations
+       changedRecords - variable that counts the number of changed record. It
+                        will be increased by one, if any changes were made to
+                        the DialogueInfoRecord.
 */
-bool translateInfoRecord(DialogueInfoRecord* di_rec, const CellListType& cells);
+bool translateInfoRecord(DialogueInfoRecord* di_rec, const CellListType& cells, unsigned int& changedRecords);
 
 /* tries to translate the cell names in the given script record and returns true
    on success, false on failure
 
    parameters:
-       script_rec - pointer to the ScriptRecord that has to be translated
-       cells      - the list of cell names and their translations
+       script_rec     - pointer to the ScriptRecord that has to be translated
+       cells          - the list of cell names and their translations
+       changedRecords - variable that counts the number of changed record. It
+                        will be increased by one, if any changes were made to
+                        the ScriptRecord.
 */
-bool translateScriptRecord(ScriptRecord* script_rec, const CellListType& cells);
+bool translateScriptRecord(ScriptRecord* script_rec, const CellListType& cells, unsigned int& changedRecords);
 
 /* tries to translate the script text given in scriptText, and returns true, if
    something had to be (and was) changed, or false if nothing was changed

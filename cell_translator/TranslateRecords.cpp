@@ -22,10 +22,11 @@
 #include "../base/UtilityFunctions.h"
 #include "../base/script_compiler/ScriptCompiler.h"
 
-bool translatePreNPCRecord(PreNPCRecord* c_rec, const CellListType& cells)
+bool translatePreNPCRecord(PreNPCRecord* c_rec, const CellListType& cells, unsigned int& changedRecords)
 {
   if (c_rec==NULL) return false;
 
+  bool changed = false;
   CellListType::const_iterator cells_iter;
   //translate destinations
   unsigned int i;
@@ -35,6 +36,7 @@ bool translatePreNPCRecord(PreNPCRecord* c_rec, const CellListType& cells)
     if (cells_iter!=cells.end())
     {
       c_rec->Destinations.at(i).CellName = cells_iter->second;
+      changed = true;
     }
   }//for
   //translate AI packages
@@ -53,25 +55,29 @@ bool translatePreNPCRecord(PreNPCRecord* c_rec, const CellListType& cells)
            if (cells_iter!=cells.end())
            {
              static_cast<NPC_AIEscortFollow*>(c_rec->AIPackages.at(i))->CellName = cells_iter->second;
+             changed = true;
            }
            break;
     }//swi
   }//for
+  if (changed) ++changedRecords;
   return true;
 }
 
-bool translateCellRecord(CellRecord* c_rec, const CellListType& cells)
+bool translateCellRecord(CellRecord* c_rec, const CellListType& cells, unsigned int& changedRecords)
 {
   if (c_rec==NULL) return false;
 
+  bool changed = false;
   CellListType::const_iterator cells_iter;
   //translate cell name
   cells_iter = cells.find(c_rec->CellID);
   if (cells_iter!=cells.end())
   {
     c_rec->CellID = cells_iter->second;
+    changed = true;
   }
-  //on to the references we go!
+  //On to the references we go!
   unsigned int i;
   for (i=0; i<c_rec->References.size(); ++i)
   {
@@ -81,9 +87,11 @@ bool translateCellRecord(CellRecord* c_rec, const CellListType& cells)
       if (cells_iter!=cells.end())
       {
         c_rec->References.at(i).DoorData.ExitName = cells_iter->second;
+        changed = true;
       }
     }//if
   }//for
+  if (changed) ++changedRecords;
   return true;
 }
 
@@ -315,30 +323,37 @@ bool replaceCellsInScriptText(std::string& scriptText, const CellListType& cells
   return false;
 }
 
-bool translateInfoRecord(DialogueInfoRecord* di_rec, const CellListType& cells)
+bool translateInfoRecord(DialogueInfoRecord* di_rec, const CellListType& cells, unsigned int& changedRecords)
 {
   if (di_rec==NULL) return false;
 
+  bool changed = false;
   CellListType::const_iterator cells_iter;
   //translate cell ID
   cells_iter = cells.find(di_rec->CellID);
   if (cells_iter!=cells.end())
   {
     di_rec->CellID = cells_iter->second;
+    changed = true;
   }
   //result string might be a script
   if (!di_rec->ResultString.empty())
   {
-    replaceCellsInScriptText(di_rec->ResultString, cells);
+    if (replaceCellsInScriptText(di_rec->ResultString, cells))
+    {
+      changed = true;
+    }
   }
+  if (changed) ++changedRecords;
   return true;
 }
 
-bool translateScriptRecord(ScriptRecord* script_rec, const CellListType& cells)
+bool translateScriptRecord(ScriptRecord* script_rec, const CellListType& cells, unsigned int& changedRecords)
 {
   if (script_rec==NULL) return false;
   if (replaceCellsInScriptText(script_rec->ScriptText, cells))
   {
+    ++changedRecords;
     //something was replaced, so we have to recompile the script here
     return ScriptCompiler::CompileScript(script_rec->ScriptText, *script_rec);
   }//if stuff was replaces

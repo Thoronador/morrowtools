@@ -39,6 +39,7 @@ const int rcOutputFailed = 4;
 const int rcXMLError = 6;
 const int rcXMLEmpty = 7;
 const int rcScriptError = 8;
+const int rcNoChange = 9;
 
 void showHelp()
 {
@@ -81,7 +82,7 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Cell Translator for Morrowind, version 0.3_rev226, 2011-05-06\n";
+  std::cout << "Cell Translator for Morrowind, version 0.3_rev227, 2011-05-06\n";
 }
 
 int main(int argc, char **argv)
@@ -263,6 +264,7 @@ int main(int argc, char **argv)
 
   CellListType::const_iterator cell_iter;
   ESMReaderGeneric::VectorType::const_iterator v_iter = recordVec.begin();
+  unsigned int changedRecords = 0;
   while (v_iter!=recordVec.end())
   {
     const std::string type_name = typeid(*v_iter).name();
@@ -272,23 +274,24 @@ int main(int argc, char **argv)
       if (cell_iter!=cells.end())
       {
         dynamic_cast<PathGridRecord*>(*v_iter)->CellName = cell_iter->second;
+        ++changedRecords;
       }
     }//if path grid
     else if (type_name==cellID)
     {
-      translateCellRecord(dynamic_cast<CellRecord*>(*v_iter), cells);
+      translateCellRecord(dynamic_cast<CellRecord*>(*v_iter), cells, changedRecords);
     }
     else if ((type_name==creatureID) or (type_name==npcID))
     {
-      translatePreNPCRecord(dynamic_cast<PreNPCRecord*>(*v_iter), cells);
+      translatePreNPCRecord(dynamic_cast<PreNPCRecord*>(*v_iter), cells, changedRecords);
     }//if creature or NPC
     else if (type_name==infoID)
     {
-      translateInfoRecord(dynamic_cast<DialogueInfoRecord*>(*v_iter), cells);
+      translateInfoRecord(dynamic_cast<DialogueInfoRecord*>(*v_iter), cells, changedRecords);
     }
     else if (type_name==scriptID)
     {
-      if (!translateScriptRecord(dynamic_cast<ScriptRecord*>(*v_iter), cells))
+      if (!translateScriptRecord(dynamic_cast<ScriptRecord*>(*v_iter), cells, changedRecords))
       {
         std::cout << "Error: couldn't translate cells in script \""
                   << dynamic_cast<ScriptRecord*>(*v_iter)->ScriptID<<"\"!\n";
@@ -299,6 +302,23 @@ int main(int argc, char **argv)
     /// TODO: Maybe translate region names, too.
     ++v_iter;
   }//while
+
+  if (changedRecords==0)
+  {
+    std::cout << "No records of the file \""<<pluginFile<<"\" were changed.";
+    reader.deallocateRecordsInVector();
+    return rcNoChange;
+  }
+  else if (changedRecords==1)
+  {
+    std::cout << "One single record was changed during the translation "
+              << "process.\n";
+  }
+  else
+  {
+    std::cout << changedRecords<<" records were changed during the translation "
+              << "process.\n";
+  }
 
   //try to write stuff to the output file
   ESMWriterGeneric writer(&recordVec);

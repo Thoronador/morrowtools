@@ -25,9 +25,10 @@
 #include <string>
 #include <map>
 #include "records/ContainerRecord.h"
+#include "ComparisonFunctor.h"
 
 //iterator type for container list
-typedef std::map<std::string, ContainerRecord>::const_iterator ContainerListIterator;
+typedef std::map<std::string, ContainerRecord, ci_less>::const_iterator ContainerListIterator;
 
 class Containers
 {
@@ -102,7 +103,7 @@ class Containers
     Containers(const Containers& op) {}
 
     /* internal data */
-    std::map<std::string, ContainerRecord> m_Containers;
+    std::map<std::string, ContainerRecord, ci_less> m_Containers;
 };//class
 
 #endif // CONTAINERS_H

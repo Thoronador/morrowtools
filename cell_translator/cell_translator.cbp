@@ -26,6 +26,8 @@
 		<Unit filename="..\base\Activators.cpp" />
 		<Unit filename="..\base\Activators.h" />
 		<Unit filename="..\base\ComparisonFunctor.h" />
+		<Unit filename="..\base\Containers.cpp" />
+		<Unit filename="..\base\Containers.h" />
 		<Unit filename="..\base\Creatures.cpp" />
 		<Unit filename="..\base\Creatures.h" />
 		<Unit filename="..\base\DepFiles.cpp" />
@@ -51,6 +53,8 @@
 		<Unit filename="..\base\NPCs.h" />
 		<Unit filename="..\base\Scripts.cpp" />
 		<Unit filename="..\base\Scripts.h" />
+		<Unit filename="..\base\Statics.cpp" />
+		<Unit filename="..\base\Statics.h" />
 		<Unit filename="..\base\UtilityFunctions.cpp" />
 		<Unit filename="..\base\UtilityFunctions.h" />
 		<Unit filename="..\base\records\AIData.cpp" />
@@ -63,6 +67,8 @@
 		<Unit filename="..\base\records\BasicRecord.h" />
 		<Unit filename="..\base\records\CellRecord.cpp" />
 		<Unit filename="..\base\records\CellRecord.h" />
+		<Unit filename="..\base\records\ContainerRecord.cpp" />
+		<Unit filename="..\base\records\ContainerRecord.h" />
 		<Unit filename="..\base\records\CreatureRecord.cpp" />
 		<Unit filename="..\base\records\CreatureRecord.h" />
 		<Unit filename="..\base\records\DialogueInfoRecord.cpp" />
@@ -83,6 +89,8 @@
 		<Unit filename="..\base\records\PreNPCRecord.h" />
 		<Unit filename="..\base\records\ScriptRecord.cpp" />
 		<Unit filename="..\base\records\ScriptRecord.h" />
+		<Unit filename="..\base\records\StaticRecord.cpp" />
+		<Unit filename="..\base\records\StaticRecord.h" />
 		<Unit filename="..\base\records\TravelDestination.cpp" />
 		<Unit filename="..\base\records\TravelDestination.h" />
 		<Unit filename="..\base\script_compiler\CompiledChunk.cpp" />

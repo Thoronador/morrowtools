@@ -20,6 +20,7 @@
 
 #include "ESMReaderScriptCompiler.h"
 #include <iostream>
+#include "../base/Containers.h"
 #include "../base/Creatures.h"
 #include "../base/Globals.h"
 #include "../base/MagicEffects.h"
@@ -58,8 +59,10 @@ int ESMReaderScriptCompiler::processNextRecord(std::ifstream& in_File)
     case cCELL:
     case cCLAS:
     case cCLOT:
-    case cCONT:
          lastResult = ESMReader::skipRecord(in_File);
+         break;
+    case cCONT:
+         lastResult = Containers::getSingleton().readRecordCONT(in_File);
          break;
     case cCREA:
          lastResult = Creatures::getSingleton().readRecordCREA(in_File);

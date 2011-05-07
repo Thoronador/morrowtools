@@ -24,13 +24,14 @@
 #include "CompiledChunk.h"
 #include "../UtilityFunctions.h"
 #include "ParserNode.h"
+#include "../Statics.h"
 #include "../NPCs.h"
 #include "../MagicEffects.h"
 #include "../Globals.h"
 #include "../Creatures.h"
+#include "../Containers.h"
 #include "../Activators.h"
 #include "../Scripts.h"
-#include "../Statics.h"
 
 namespace ScriptCompiler
 {
@@ -573,6 +574,10 @@ SC_VarRef getForeignVariableTypeWithIndex(const std::string& objectID, const std
   {
     ScriptID = Creatures::getSingleton().getCreature(objectID).ScriptID;
   }
+  else if (Containers::getSingleton().hasContainer(objectID))
+  {
+    ScriptID = Containers::getSingleton().getContainer(objectID).ScriptName;
+  }
   ///TODO: add more stuff (e.g. weapons) later
   if (ScriptID!="")
   {
@@ -604,6 +609,10 @@ const std::string& getObjectsProperID(const std::string& objectID)
   if (Statics::getSingleton().hasStatic(objectID))
   {
     return Statics::getSingleton().getStatic(objectID).StaticID;
+  }
+  if (Containers::getSingleton().hasContainer(objectID))
+  {
+    return Containers::getSingleton().getContainer(objectID).ContainerID;
   }
   return objectID;
 }
@@ -2692,7 +2701,15 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
       std::cout << "ScriptCompiler: Error: GetLineOfSight needs one parameter!\n";
       return false;
     }
+    //push function code
     chunk.pushCode(CodeGetLineOfSight);
+    if (isCompare)
+    {
+      /*I don't know why this is there in the compiled data, but it has to be
+        there to produce identical compiled data.*/
+      chunk.data.push_back(0x20);
+      chunk.data.push_back(0x72);
+    }//if
     //parameter is object ID
     //push ID's length
     chunk.data.push_back(params[1].length());
@@ -6931,11 +6948,11 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       if (setNode.splitToTree(WorkString, CompiledData))
       {
         //parsing was successful, get the result and push it
-        WorkString = setNode.getStackOrderedContent();
+        const std::vector<uint8_t> binContent = setNode.getBinaryContent();
         //push length
-        CompiledData.data.push_back(WorkString.length());
+        CompiledData.data.push_back(binContent.size());
         //push values
-        CompiledData.pushString(WorkString);
+        CompiledData.data.insert(CompiledData.data.end(), binContent.begin(), binContent.end());
       }
       else
       {

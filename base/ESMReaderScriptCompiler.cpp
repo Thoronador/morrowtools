@@ -20,6 +20,7 @@
 
 #include "ESMReaderScriptCompiler.h"
 #include <iostream>
+#include "../base/Activators.h"
 #include "../base/Containers.h"
 #include "../base/Creatures.h"
 #include "../base/Globals.h"
@@ -50,6 +51,8 @@ int ESMReaderScriptCompiler::processNextRecord(std::ifstream& in_File)
   switch(RecordName)
   {
     case cACTI:
+         lastResult = Activators::getSingleton().readRecordACTI(in_File);
+         break;
     case cALCH:
     case cAPPA:
     case cARMO:

@@ -2662,7 +2662,16 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
       std::cout << "ScriptCompiler: Error: GetItemCount needs one parameter!\n";
       return false;
     }
+    //push function code
     chunk.pushCode(CodeGetItemCount);
+    //push extra data for compare
+    if (isCompare)
+    {
+      /*I don't know why this is there in the compiled data, but it has to be
+        there to produce identical compiled data.*/
+      chunk.data.push_back(0x20);
+      chunk.data.push_back(0x6F);
+    }
     //parameter is item ID
     //push ID's length
     chunk.data.push_back(params[1].length());
@@ -6898,7 +6907,7 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
         CompiledData.data.push_back(vn_ref.length());
         //push name
         CompiledData.pushString(vn_ref);
-      }//else if GLobal
+      }//else if Global
       else
       {
         //could still be a foreign reference
@@ -6920,11 +6929,12 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
                     << varName<<"\" for SET statement.\n";
           std::cout << "Debug: object name was \""<<objectName<<"\", var name was \""
                     << varName.substr(dot_pos+1)<<"\".\n";
-          std::cout << "Debug: creatures has such an object: "<<Creatures::getSingleton().hasCreature(objectName)<<"\n";
           return false;
         }//if
         //push r for reference
         CompiledData.data.push_back('r');
+        //get proper object name (=ID)
+        objectName = getObjectsProperID(objectName);
         //push object ID's length
         CompiledData.data.push_back(objectName.length());
         //push object ID

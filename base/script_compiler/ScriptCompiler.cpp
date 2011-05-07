@@ -30,6 +30,7 @@
 #include "../Creatures.h"
 #include "../Activators.h"
 #include "../Scripts.h"
+#include "../Statics.h"
 
 namespace ScriptCompiler
 {
@@ -599,6 +600,10 @@ const std::string& getObjectsProperID(const std::string& objectID)
   if (Creatures::getSingleton().hasCreature(objectID))
   {
     return Creatures::getSingleton().getCreature(objectID).CreatureID;
+  }
+  if (Statics::getSingleton().hasStatic(objectID))
+  {
+    return Statics::getSingleton().getStatic(objectID).StaticID;
   }
   return objectID;
 }
@@ -7017,7 +7022,7 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
           //We can push the qualifier stuff here
           //push qualifier
           CompiledData.pushCode(CodeQualifier);
-          //get proper ID
+          //get proper ID of object
           leftist = getObjectsProperID(leftist);
           //push length of object name
           CompiledData.data.push_back(leftist.length());
@@ -7101,7 +7106,7 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
           //We can push the qualifier stuff here
           //push qualifier
           CompiledData.pushCode(CodeQualifier);
-          //get proper ID
+          //get proper ID of object
           leftist = getObjectsProperID(leftist);
           //push length of object name
           CompiledData.data.push_back(leftist.length());

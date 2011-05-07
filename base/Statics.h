@@ -25,9 +25,10 @@
 #include <map>
 #include <fstream>
 #include "records/StaticRecord.h"
+#include "ComparisonFunctor.h"
 
 //iterator type for static list
-typedef std::map<std::string, StaticRecord>::const_iterator StaticListIterator;
+typedef std::map<std::string, StaticRecord, ci_less>::const_iterator StaticListIterator;
 
 class Statics
 {
@@ -100,7 +101,7 @@ class Statics
     Statics(const Statics& op) {}
 
     /* internal data */
-    std::map<std::string, StaticRecord> m_Statics;
+    std::map<std::string, StaticRecord, ci_less> m_Statics;
 };//class
 
 #endif // STATICS_H

@@ -25,6 +25,7 @@
 #include "../base/MagicEffects.h"
 #include "../base/NPCs.h"
 #include "../base/Scripts.h"
+#include "../base/Statics.h"
 #include "../base/MW_Constants.h"
 #include "../base/HelperIO.h"
 
@@ -107,7 +108,11 @@ int ESMReaderScriptCompiler::processNextRecord(std::ifstream& in_File)
     case cSOUN:
     case cSPEL:
     case cSSCR:
+         lastResult = ESMReader::skipRecord(in_File);
+         break;
     case cSTAT:
+         lastResult = Statics::getSingleton().readRecordSTAT(in_File);
+         break;
     case cWEAP:
          lastResult = ESMReader::skipRecord(in_File);
          break;

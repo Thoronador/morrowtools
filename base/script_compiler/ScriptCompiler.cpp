@@ -2613,7 +2613,16 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
       std::cout << "ScriptCompiler: Error: GetDistance needs one parameter!\n";
       return false;
     }
+    //push function code
     chunk.pushCode(CodeGetDistance);
+    //push extra data for compare
+    if (isCompare)
+    {
+      /*I don't know why this is there in the compiled data, but it has to be
+        there to produce identical compiled data.*/
+      chunk.data.push_back(0x20);
+      chunk.data.push_back(0x72);
+    }
     //parameter is object ID
     //push ID's length
     chunk.data.push_back(params[1].length());
@@ -3237,8 +3246,7 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
   {
     if (params.size()<2)
     {
-      std::cout << "ScriptCompiler: Error: PlayGroup expects one parameters"
-                << ", not "<<params.size()<<".\n";
+      std::cout << "ScriptCompiler: Error: PlayGroup expects one parameter.\n";
       return false;
     }
     //first parameter is group name (will be converted into short later)
@@ -3255,8 +3263,8 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
     chunk.pushCode(CodePlayGroup);
     //push group index
     chunk.pushShort(groupIndex);
-    //push flag - use zero as default
-    chunk.pushShort(0);
+    //push flag (byte, not short) - use zero as default
+    chunk.data.push_back(0);
     return true;
   }//if PlayGroup
   if (lowerFunction == "playloopsound3d")

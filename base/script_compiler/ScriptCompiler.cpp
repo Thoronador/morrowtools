@@ -2660,8 +2660,8 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
     }
     //push function code
     chunk.pushCode(CodeGetEffect);
-    //push effect ID
-    chunk.pushShort(effectID);
+    //push effect ID (as byte, not short)
+    chunk.data.push_back(effectID);
     return true;
   }//if GetEffect
   if (lowerFunction == "getitemcount")
@@ -2721,6 +2721,7 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
     }
     //push function code
     chunk.pushCode(CodeGetLineOfSight);
+    //push extra compare data
     if (isCompare)
     {
       /*I don't know why this is there in the compiled data, but it has to be
@@ -2839,7 +2840,16 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
       std::cout << "ScriptCompiler: Error: GetSpell needs one parameter!\n";
       return false;
     }
+    //push function code
     chunk.pushCode(CodeGetSpell);
+    //push extra compare data
+    if (isCompare)
+    {
+      /*I don't know why this is there in the compiled data, but it has to be
+        there to produce identical compiled data.*/
+      chunk.data.push_back(0x20);
+      chunk.data.push_back(0x6F);
+    }//if
     //parameter is spell ID
     //push ID's length
     chunk.data.push_back(params[1].length());

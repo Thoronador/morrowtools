@@ -27,7 +27,7 @@
 #include "ComparisonFunctor.h"
 
 //iterator type for NPC list
-typedef std::map<std::string, NPCRecord>::const_iterator NPCListIterator;
+typedef std::map<std::string, NPCRecord, ci_less>::const_iterator NPCListIterator;
 
 class NPCs
 {

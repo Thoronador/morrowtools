@@ -583,6 +583,26 @@ SC_VarRef getForeignVariableTypeWithIndex(const std::string& objectID, const std
   return SC_VarRef(vtGlobal, 0);
 }//func
 
+/*returns the proper ID (with exact upper/lower case spelling) of an object, if
+  present. If no object can be found, objectID is returned.
+*/
+const std::string& getObjectsProperID(const std::string& objectID)
+{
+  if (Activators::getSingleton().hasActivator(objectID))
+  {
+    return Activators::getSingleton().getActivator(objectID).ActivatorID;
+  }
+  if (NPCs::getSingleton().hasNPC(objectID))
+  {
+    return NPCs::getSingleton().getNPC(objectID).NPCID;
+  }
+  if (Creatures::getSingleton().hasCreature(objectID))
+  {
+    return Creatures::getSingleton().getCreature(objectID).CreatureID;
+  }
+  return objectID;
+}
+
 bool ScriptFunctions_ZeroParameters(const std::vector<std::string>& params, CompiledChunk& chunk)
 {
   //entry at index zero is the function's name
@@ -6988,6 +7008,8 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
           //We can push the qualifier stuff here
           //push qualifier
           CompiledData.pushCode(CodeQualifier);
+          //get proper ID
+          leftist = getObjectsProperID(leftist);
           //push length of object name
           CompiledData.data.push_back(leftist.length());
           //push object name
@@ -7070,6 +7092,8 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
           //We can push the qualifier stuff here
           //push qualifier
           CompiledData.pushCode(CodeQualifier);
+          //get proper ID
+          leftist = getObjectsProperID(leftist);
           //push length of object name
           CompiledData.data.push_back(leftist.length());
           //push object name
@@ -7177,6 +7201,8 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
           //We can push the qualifier stuff here.
           //push qualifier
           CompiledData.pushCode(CodeQualifier);
+          //get object's proper ID
+          leftist = getObjectsProperID(leftist);
           //push length of object name
           CompiledData.data.push_back(leftist.length());
           //push object name
@@ -7252,6 +7278,8 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       }
       //push qualifier code
       CompiledData.pushCode(CodeQualifier);
+      //get proper object ID
+      WorkString = getObjectsProperID(WorkString);
       //push length of object name
       CompiledData.data.push_back(WorkString.length());
       //push object name

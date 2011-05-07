@@ -27,7 +27,7 @@
 #include "ComparisonFunctor.h"
 
 //iterator type for activator list
-typedef std::map<std::string, ActivatorRecord>::const_iterator ActivatorListIterator;
+typedef std::map<std::string, ActivatorRecord, ci_less>::const_iterator ActivatorListIterator;
 
 class Activators
 {

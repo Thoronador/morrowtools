@@ -27,7 +27,7 @@
 #include "ComparisonFunctor.h"
 
 //iterator type for creature list
-typedef std::map<std::string, CreatureRecord>::const_iterator CreatureListIterator;
+typedef std::map<std::string, CreatureRecord, ci_less>::const_iterator CreatureListIterator;
 
 class Creatures
 {

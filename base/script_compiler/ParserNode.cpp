@@ -127,7 +127,7 @@ bool ParserNode::splitToTree(std::string expression, const CompiledChunk& chunkV
         type = ctGlobalVar;
         content = Globals::getSingleton().getGlobal(expression).GlobalID;
         //push G for global
-        binary_content.push_back('s');
+        binary_content.push_back('G');
         //push length of name
         const unsigned int glob_len = content.length();
         binary_content.push_back(glob_len);

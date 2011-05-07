@@ -2379,7 +2379,7 @@ bool ScriptFunctions_MessageBox(const std::vector<std::string>& params, Compiled
   return false;
 }//function for MessageBox
 
-bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, CompiledChunk& chunk)
+bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, CompiledChunk& chunk, const bool isCompare)
 {
   //entry at index zero is the function's name
   const std::string lowerFunction = lowerCase(params.at(0));
@@ -2663,7 +2663,16 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
       std::cout << "ScriptCompiler: Error: GetJounalIndex needs one parameter!\n";
       return false;
     }
+    //push function code
     chunk.pushCode(CodeGetJournalIndex);
+    //push extra data for compare
+    if (isCompare)
+    {
+      /*I don't know why this is there in the compiled data, but it has to be
+        there to produce identical compiled data.*/
+      chunk.data.push_back(0x20);
+      chunk.data.push_back(0x64);
+    }
     //parameter is quest ID
     //push ID's length
     chunk.data.push_back(params[1].length());
@@ -6497,7 +6506,7 @@ bool ScriptFunctions_TwelveParameters(const std::vector<std::string>& params, Co
   return false;
 }//function Twelve
 
-bool ScriptFunctions(const std::string& line, CompiledChunk& chunk)
+bool ScriptFunctions(const std::string& line, CompiledChunk& chunk, const bool isCompare)
 {
   if (line=="") return false;
   //split line into seperate parameters
@@ -6583,7 +6592,7 @@ bool ScriptFunctions(const std::string& line, CompiledChunk& chunk)
          }
          break;
     case 2:
-         if (ScriptFunctions_OneParameter(parameters, chunk))
+         if (ScriptFunctions_OneParameter(parameters, chunk, isCompare))
          {
            return true;
          }
@@ -7286,7 +7295,7 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       CompiledData.pushString(WorkString);
       //Now the rest of the expression after -> should be a function. If not,
       // return false/error.
-      if (not ScriptFunctions(lines.at(i).substr(qualStart+2) , CompiledData))
+      if (not ScriptFunctions(lines.at(i).substr(qualStart+2) , CompiledData, false))
       {
         std::cout << "ScriptCompiler: Error: could not handle part after "
                   << "qualifier in line \""<<lines.at(i)<<"\".\n";
@@ -7294,7 +7303,7 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       }
     }//if qualifier found
     //check for functions
-    else if (ScriptFunctions(lines.at(i), CompiledData))
+    else if (ScriptFunctions(lines.at(i), CompiledData, false))
     {
       //empty
       //std::cout << "Debug: ScriptCompiler: Hint: Function processed.\n";

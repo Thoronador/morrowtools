@@ -165,7 +165,7 @@ bool ParserNode::splitToTree(std::string expression, const CompiledChunk& chunkV
         type = ctForeignRef;
       }
       //check for function
-      else if (ScriptFunctions(expression, temp_chunk))
+      else if (ScriptFunctions(expression, temp_chunk, true))
       {
         //success
         type = ctFunction;

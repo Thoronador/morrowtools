@@ -52,7 +52,7 @@ void StripEnclosingQuotes(std::string& str1);
 bool CompileScript(const std::string& Text, ScriptRecord& result);
 
 /* aux. function for compiling of functions */
-bool ScriptFunctions(const std::string& line, CompiledChunk& chunk);
+bool ScriptFunctions(const std::string& line, CompiledChunk& chunk, const bool isCompare);
 
 /* returns the position of the first real dot in the given line */
 std::string::size_type getDotPosition(const std::string& line);

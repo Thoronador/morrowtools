@@ -59,7 +59,11 @@ void showHelp()
             << "  -xml FILENAME2     - sets the name of the XML file that contains the cell\n"
             << "                       names to FILENAME2. If omitted, the default XML file\n"
             << "                       name is \"cells.xml\".\n"
-            << "  --no-scripts       - script records will not be processed, if this parameter\n"
+            << "  -de                - sets translation mode to translate from English to\n"
+            << "                       German. Mutually exclusive with -en.\n"
+            << "  -en                - sets translation mode to translate from German to\n"
+            << "                       English. Mutually exclusive with -de.\n"
+            << "  --no-scripts       - Script records will not be processed, if this parameter\n"
             << "                       is specified.\n";
 }
 
@@ -86,7 +90,7 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Cell Translator for Morrowind, version 0.3_rev238, 2011-05-08\n";
+  std::cout << "Cell Translator for Morrowind, version 0.3_rev239, 2011-05-08\n";
 }
 
 int main(int argc, char **argv)
@@ -97,6 +101,8 @@ int main(int argc, char **argv)
   std::string pluginFile = "";
   std::string outputFileName = "";
   bool process_scripts = true;
+  bool translationDirectionSpecified = false;
+  TransDir translationDirection = td_en_de;
 
   if ((argc>1) and (argv!=NULL))
   {
@@ -189,6 +195,28 @@ int main(int argc, char **argv)
           process_scripts = false;
           std::cout << "Scripts will not be processed, as requested via --no-scripts.\n";
         }
+        else if ((param=="-de") or (param=="--deutsch"))
+        {
+          if (translationDirectionSpecified)
+          {
+            std::cout << "Error: more than one translation mode was specified.\n";
+            return rcInvalidParameter;
+          }
+          translationDirection = td_en_de;
+          translationDirectionSpecified = true;
+          std::cout << "Translation mode was set: English to German.\n";
+        }//if de
+        else if ((param=="-en") or (param=="--english"))
+        {
+          if (translationDirectionSpecified)
+          {
+            std::cout << "Error: more than one translation mode was specified.\n";
+            return rcInvalidParameter;
+          }
+          translationDirection = td_de_en;
+          translationDirectionSpecified = true;
+          std::cout << "Translation mode was set: German to English.\n";
+        }//if de
         else
         {
           //unknown or wrong parameter
@@ -234,6 +262,13 @@ int main(int argc, char **argv)
     std::cout << "Setting output file name to out.esp, because no output file "
               << "name was specified.\n";
   }
+  //check translation direction
+  if (!translationDirectionSpecified)
+  {
+    translationDirection = td_en_de;
+    std::cout << "No translation mode was specified, setting default: English "
+              << "to German.\n";
+  }
 
   if (pluginFile==outputFileName)
   {
@@ -242,7 +277,7 @@ int main(int argc, char **argv)
   }
 
   CellListType cells;
-  if (readCellListFromXML(pathToCellsXML, cells, td_en_de))
+  if (readCellListFromXML(pathToCellsXML, cells, translationDirection))
   {
     if (cells.size()==0)
     {

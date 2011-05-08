@@ -48,16 +48,19 @@ void showHelp()
             << "\n"
             << "(Note: This help is still incomplete.)\n"
             << "options:\n"
-            << "  --help           - displays this help message and quits\n"
-            << "  -?               - same as --help\n"
-            << "  --version        - displays the version of the programme and quits\n"
-            << "  -f PLUGINFILE    - sets the plugin PLUGINFILE as the files that will be\n"
-            << "                     translated by this programme. This option is required.\n"
-            << "  -o FILENAME1     - sets the name of the created output file to FILENAME1.\n"
-            << "                     If omitted, the default output file is \"out.esp\".\n"
-            << "  -xml FILENAME2   - sets the name of the XML file that contains the cell names\n"
-            << "                     to FILENAME2. If omitted, the default XML file name is\n"
-            << "                     \"cells.xml\".\n";
+            << "  --help             - displays this help message and quits\n"
+            << "  -?                 - same as --help\n"
+            << "  --version          - displays the version of the programme and quits\n"
+            << "  -f PLUGINFILE      - sets the plugin PLUGINFILE as the files that will be\n"
+            << "                       translated by this programme. This option is required.\n"
+            << "  --output FILENAME1 - sets the name of the created output file to FILENAME1.\n"
+            << "                       If omitted, the default output file is \"out.esp\".\n"
+            << "  -o FILENAME1       - short for --output\n"
+            << "  -xml FILENAME2     - sets the name of the XML file that contains the cell\n"
+            << "                       names to FILENAME2. If omitted, the default XML file\n"
+            << "                       name is \"cells.xml\".\n"
+            << "  --no-scripts       - script records will not be processed, if this parameter\n"
+            << "                       is specified.\n";
 }
 
 void showGPLNotice()
@@ -83,7 +86,7 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Cell Translator for Morrowind, version 0.3_rev229, 2011-05-06\n";
+  std::cout << "Cell Translator for Morrowind, version 0.3_rev238, 2011-05-08\n";
 }
 
 int main(int argc, char **argv)
@@ -93,6 +96,7 @@ int main(int argc, char **argv)
   std::string pathToCellsXML = "";
   std::string pluginFile = "";
   std::string outputFileName = "";
+  bool process_scripts = true;
 
   if ((argc>1) and (argv!=NULL))
   {
@@ -134,7 +138,7 @@ int main(int argc, char **argv)
             return rcInvalidParameter;
           }
         }
-        else if (param=="-o")
+        else if ((param=="-o") or (param=="--output"))
         {
           if ((i+1<argc) and (argv[i+1]!=NULL))
           {
@@ -173,6 +177,17 @@ int main(int argc, char **argv)
                       << param <<"\".\n";
             return rcInvalidParameter;
           }
+        }
+        else if (param=="--no-scripts")
+        {
+          if (!process_scripts)
+          {
+            std::cout << "Error: parameter --no-script was given more than "
+                      << "once.\n";
+            return rcInvalidParameter;
+          }
+          process_scripts = false;
+          std::cout << "Scripts will not be processed, as requested via --no-scripts.\n";
         }
         else
         {
@@ -256,47 +271,50 @@ int main(int argc, char **argv)
     return rcFileError;
   }
 
-  const std::string::size_type pos = pluginFile.rfind('\\');
-  std::string baseDir;
-  if (pos!=std::string::npos)
+  if (process_scripts)
   {
-    baseDir = pluginFile.substr(0,pos+1);
-  }
-  else
-  {
-    baseDir = ".\\";
-  }
-
-  std::cout <<"Debug: deps before sort:\n";
-  deps.writeDeps();
-  deps.sort();
-  deps.removeDuplicates();
-  std::cout <<"Debug: deps after sort:\n";
-  deps.writeDeps();
-  std::cout << "---End of info---\n";
-
-  //read the dependency files to get the neccessary data for the script compiler
-  unsigned int i;
-  ESMReaderScriptCompiler sc_reader;
-  for (i=0; i<deps.getSize(); ++i)
-  {
-    DepFileList dummy_deps;
-    if (sc_reader.readESM(baseDir+deps.at(i).name, dummy_deps, false)<0)
+    const std::string::size_type pos = pluginFile.rfind('\\');
+    std::string baseDir;
+    if (pos!=std::string::npos)
     {
-      std::cout << "Error while reading file \""<<baseDir+deps.at(i).name
-                << "\".\nAborting.\n";
+      baseDir = pluginFile.substr(0,pos+1);
+    }
+    else
+    {
+      baseDir = ".\\";
+    }
+
+    std::cout <<"Debug: deps before sort:\n";
+    deps.writeDeps();
+    deps.sort();
+    deps.removeDuplicates();
+    std::cout <<"Debug: deps after sort:\n";
+    deps.writeDeps();
+    std::cout << "---End of info---\n";
+
+    //read the dependency files to get the neccessary data for the script compiler
+    unsigned int i;
+    ESMReaderScriptCompiler sc_reader;
+    for (i=0; i<deps.getSize(); ++i)
+    {
+      DepFileList dummy_deps;
+      if (sc_reader.readESM(baseDir+deps.at(i).name, dummy_deps, false)<0)
+      {
+        std::cout << "Error while reading file \""<<baseDir+deps.at(i).name
+                  << "\".\nAborting.\n";
+        reader.deallocateRecordsInVector();
+        return rcFileError;
+      }//if
+    }//for
+
+    //feeding plugin file to script compiler
+    if (sc_reader.readESM(pluginFile, deps, false)<0)
+    {
+      std::cout << "Error while reading file \""<<pluginFile<<"\".\nAborting.\n";
       reader.deallocateRecordsInVector();
       return rcFileError;
     }//if
-  }//for
-
-  //feeding plugin file to script compiler
-  if (sc_reader.readESM(pluginFile, deps, false)<0)
-  {
-    std::cout << "Error while reading file \""<<pluginFile<<"\".\nAborting.\n";
-    reader.deallocateRecordsInVector();
-    return rcFileError;
-  }//if
+  }//if process scripts
 
   const std::string genericID = typeid(GenericRecord).name();
   const std::string cellID = typeid(CellRecord).name();
@@ -336,7 +354,7 @@ int main(int argc, char **argv)
     {
       translateInfoRecord(dynamic_cast<DialogueInfoRecord*>(*v_iter), cells, changedRecords);
     }
-    else if (type_name==scriptID)
+    else if ((type_name==scriptID) and (process_scripts))
     {
       if (!translateScriptRecord(dynamic_cast<ScriptRecord*>(*v_iter), cells, changedRecords))
       {

@@ -50,7 +50,7 @@ Programmversionen
 =================
 
 Wenn nichts anderes angegeben ist, so beziehen sich die Angaben in dieser Datei
-allesamt auf die Version 0.1_rev219 des Programmes, welche am 30.April 2011 er-
+allesamt auf die Version 0.1_rev219 des Programmes, welche am 30. April 2011 er-
 stellt wurde. In neueren Programmversionen kann sich die Funktionalität des
 Programmes ändern oder neue Funktionen hinzukommen, die hier noch nicht doku-
 mentiert sind.

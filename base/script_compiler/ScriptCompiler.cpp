@@ -1535,6 +1535,15 @@ bool ScriptFunctions_ZeroParameters(const std::vector<std::string>& params, Comp
     chunk.pushCode(CodePCGet3rdPerson);
     return true;
   }
+  if (lowerFunction == "pcraiserank")
+  {
+    //push function
+    chunk.pushCode(CodePCRaiseRank);
+    //parameter is faction ID, but it's omitted here
+    //push IDs length
+    chunk.data.push_back(0);
+    return true;
+  }//if PCRaiseRank
   if (lowerFunction=="raiserank")
   {
     chunk.pushCode(CodeRaiseRank);
@@ -1580,7 +1589,6 @@ bool ScriptFunctions_ZeroParameters(const std::vector<std::string>& params, Comp
     chunk.pushCode(CodeStopCombat);
     return true;
   }
-
   if (lowerFunction=="turnmoonred")
   {
     chunk.pushCode(CodeTurnMoonRed);
@@ -1979,6 +1987,10 @@ bool ScriptFunctions_SetStatFunctions(const std::vector<std::string>& params, Co
   else if (lowerFunction == "setalchemy")
   {
     functionCode = CodeSetAlchemy;
+  }
+  else if (lowerFunction == "setalteration")
+  {
+    functionCode = CodeSetAlteration;
   }
   else if (lowerFunction == "setarmorbonus")
   {
@@ -3589,6 +3601,14 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
     chunk.pushString(params[1]);
     return true;
   }//if StartCombat
+
+  if (lowerFunction=="stopcombat")
+  {
+    //StopCombat usually has no parameters, but some scripts specify an ID for
+    // a target, too. However, this ID will not be compiled into the script.
+    chunk.pushCode(CodeStopCombat);
+    return true;
+  }//if stopCombat
   //check for StopScript
   if (lowerFunction == "stopscript")
   {
@@ -4131,6 +4151,25 @@ bool ScriptFunctions_TwoParameters(const std::vector<std::string>& params, Compi
     chunk.pushShort(count);
     return true;
   }//if RemoveItem
+  if (lowerFunction == "removesoulgem")
+  {
+    if (params.size()<2)
+    {
+      std::cout << "ScriptCompiler: Error: RemoveSoulgem needs one parameter!\n";
+      return false;
+    }
+    //parameter is creature ID
+    // second parameter is count, according to some references, but there is no
+    //   true second parameter, the function just removes one soul gem. Thus,
+    //   the second "parameter" is ignored.
+    //push function
+    chunk.pushCode(CodeRemoveSoulGem);
+    //push ID's length
+    chunk.data.push_back(params[1].length());
+    //push creature ID
+    chunk.pushString(params[1]);
+    return true;
+  }//if RemoveSoulGem
   if (lowerFunction == "rotate")
   {
     if (params.size() < 3)

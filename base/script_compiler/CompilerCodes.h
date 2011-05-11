@@ -388,6 +388,7 @@ namespace ScriptCompiler
   const uint16_t CodeSetAgility = 0x102D; //"2D10"
   const uint16_t CodeSetAlarm = 0x1106; //"0611"
   const uint16_t CodeSetAlchemy = 0x106C; //"6C10"
+  const uint16_t CodeSetAlteration = 0x105D; //"5D10"
   const uint16_t CodeSetAngle = 0x100D; //"0D10"
   const uint16_t CodeSetArmorBonus = 0x1177; //"7711"
   const uint16_t CodeSetArmorer = 0x103F; //"3F10"

@@ -6808,6 +6808,17 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
     }
   }//while
 
+  //split lines like "else set var to 5" into two lines "else" and "set var to 5"
+  for (offset=0; offset<lines.size(); ++offset)
+  {
+    if ((lines.at(offset).substr(0,5)=="else ") or (lines.at(offset).substr(0,5)=="else\t"))
+    {
+      lines.insert(lines.begin()+offset+1, lines.at(offset).substr(5));
+      trimLeft(lines.at(offset+1));
+      lines.at(offset) = "else";
+    }//if
+  }//for
+
   std::string ScriptName = "";
   std::string WorkString;
 
@@ -7317,8 +7328,9 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       //this should be the end of the script - if not, there's junk ahead.
       if (i+1<lines.size())
       {
-        std::cout << "ScriptCompiler: Error: there is more code after end clause.\n";
-        return false;
+        std::cout << "ScriptCompiler: Warning: there is more code after end clause.\n";
+        i = lines.size();
+        break;
       }
     }//if End found
     //check for arrow (qualifier)

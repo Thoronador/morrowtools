@@ -4556,6 +4556,37 @@ bool ScriptFunctions_ThreeParameters(const std::vector<std::string>& params, Com
     chunk.data.push_back(0);
     return true;
   }//if AIWander
+  //workaorund for 3-param-version of Face
+  if (lowerFunction == "face")
+  {
+    if (params.size()<4)
+    {
+      std::cout << "ScriptCompiler: Error: Face needs two (three) parameters!\n";
+      return false;
+    }
+    //first parameter is float, and so is second
+    //third parameter is ignored, because it won't be in the script data anyway
+    float first;
+    if (!stringToFloat(params[1], first))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[1]<<"\" is not a "
+                << "float value.\n";
+      return false;
+    }//if
+    float second;
+    if (!stringToFloat(params[2], second))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is not a "
+                << "floating point value.\n";
+      return false;
+    }
+    //push function code
+    chunk.pushCode(CodeFace);
+    //push both floats
+    chunk.pushFloat(first);
+    chunk.pushFloat(second);
+    return true;
+  }//if Face
   if (lowerFunction == "loopgroup")
   {
     if (params.size()<4)

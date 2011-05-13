@@ -6977,7 +6977,7 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
           position of " to " (including spaces). We add four to get rid of "to"
           and both spaces, too. */
       trim(set_expr);
-      if (stripEnclosingBrackets(set_expr))
+      if (removeEnclosingBrackets(set_expr))
       {
         //We need to trim again, because there are most likely spaces between
         //  the brackets and the first resp. last non-space character of the

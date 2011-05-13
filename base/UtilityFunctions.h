@@ -97,14 +97,6 @@ bool removeEnclosingBrackets(std::string& expr);
 */
 bool stripEnclosingQuotes(std::string& str1);
 
-/*tries to remove the bracket pair surrounding the rest of the string. Returns
-  true, if something was removed, false otherwise.
-
-  parameters:
-      str1 - the string
-*/
-bool stripEnclosingBrackets(std::string& str1);
-
 /* returns an integer less than zero, if the left string is ordered before the
    right string. Returns zero, if they are equivalent. Returns a value greater
    than zero if the left string is ordered after the right string. The

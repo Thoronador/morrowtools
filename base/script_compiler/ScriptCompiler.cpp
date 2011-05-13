@@ -6927,10 +6927,9 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
     //check for Set
     else if (lowerCase(lines.at(i).substr(0,4))=="set ")
     {
-      CompiledData.pushCode(CodeSet);
+      //erase "set " from the line
       WorkString = lines.at(i).substr(4);
       trimLeft(WorkString);
-      //WorkString = lowerCase(WorkString);
       //now select the bits of "set variable To value/expression"
       const std::string::size_type pos_of_to = getPosOf_To_(WorkString);
       if (pos_of_to==std::string::npos)
@@ -6940,6 +6939,48 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
                   << "Complete line was \""<<lines.at(i)<<"\".\n";
         return false;
       }
+
+      /*If there is a qualifier in expression, that one has to be pushed before
+        the set function code.*/
+      std::string set_expr = WorkString.substr(pos_of_to+4);/*pos_of_to is
+          position of " to " (including spaces). We add four to get rid of "to"
+          and both spaces, too. */
+      trim(set_expr);
+      if (stripEnclosingBrackets(set_expr))
+      {
+        //We need to trim again, because there are most likely spaces between
+        //  the brackets and the first resp. last non-space character of the
+        //  string.
+        trim(set_expr);
+      }
+      const size_t expr_qual_pos = getQualifierStart(set_expr);
+      if (expr_qual_pos!=std::string::npos)
+      {
+        //there's a qualifier -> extract part before it
+        std::string objectName = set_expr.substr(0, expr_qual_pos);
+        trim(objectName);
+        StripEnclosingQuotes(objectName);
+        if (objectName.empty())
+        {
+          std::cout << "ScriptCompiler: Error: no object name before qualifier "
+                    << "in set expression found.\n";
+          return false;
+        }
+        //get proper upper/ lower case spelling
+        objectName = getObjectsProperID(objectName);
+        //push qualifier code
+        CompiledData.pushCode(CodeQualifier);
+        //push length byte for object name
+        CompiledData.data.push_back(objectName.length());
+        //push object's ID
+        CompiledData.pushString(objectName);
+        //strip stuff before qualifier and qualifier itself from set expression
+        set_expr.erase(0, expr_qual_pos+2);
+      }//if qualifier found in expression
+
+      //push set code
+      CompiledData.pushCode(CodeSet);
+      //get name of variable that will be set
       std::string varName = WorkString.substr(0, pos_of_to);
       trim(varName);
       //now search for the variable name
@@ -7011,10 +7052,9 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
         CompiledData.pushNonGlobalRef(foreignRef);
       }
       //get stuff after keyword "to"
-      WorkString.erase(0, pos_of_to+4); //pos is position of " to " (including spaces)
-                                  //We add four to get rid of "to" and both spaces, too.
-      trimLeft(WorkString);
-      if (WorkString=="")
+      //---> it's already in set_expr
+      trimLeft(set_expr);
+      if (set_expr.empty())
       {
         std::cout << "ScriptCompiler: Error: empty value/expression at end of "
                   << "SET statement.\n";
@@ -7023,7 +7063,7 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
 
       // Try to "parse" the expression
       ParserNode setNode;
-      if (setNode.splitToTree(WorkString, CompiledData))
+      if (setNode.splitToTree(set_expr, CompiledData))
       {
         //parsing was successful, get the result and push it
         const std::vector<uint8_t> binContent = setNode.getBinaryContent();
@@ -7043,11 +7083,11 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
                   <literal as string> - the name says it
         */
         //push length
-        CompiledData.data.push_back(WorkString.length()+1);
+        CompiledData.data.push_back(set_expr.length()+1);
         //push space (=stack push operator)
         CompiledData.data.push_back(' ');//space is used as push by MW's interpreter
         //push value, finally
-        CompiledData.pushString(WorkString);
+        CompiledData.pushString(set_expr);
         //We are basically done, but issue a warning for cases where the last part
         // is not a literal value.
         std::cout << "ScriptCompiler: Warning: Set statement not completely "

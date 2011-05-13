@@ -274,10 +274,21 @@ bool removeEnclosingBrackets(std::string& expr)
   return false;
 }
 
-bool StripEnclosingQuotes(std::string& str1)
+bool stripEnclosingQuotes(std::string& str1)
 {
   if ((str1=="") or (str1.length()<2)) return false;
   if ((str1.at(0)=='"') and (str1.at(str1.length()-1)=='"'))
+  {
+    str1 = str1.substr(1, str1.length()-2);
+    return true;
+  }
+  return false;
+}
+
+bool stripEnclosingBrackets(std::string& str1)
+{
+  if ((str1=="") or (str1.length()<2)) return false;
+  if ((str1.at(0)=='(') and (str1.at(str1.length()-1)==')'))
   {
     str1 = str1.substr(1, str1.length()-2);
     return true;

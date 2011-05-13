@@ -130,7 +130,7 @@ namespace ScriptCompiler
   const uint16_t CodeGetCurrentAIPackage = 0x10FA; //"FA10"
   const uint16_t CodeGetCurrentTime = 0x1011; //"1110"
   const uint16_t CodeGetCurrentWeather = 0x10A1; //"A110"
-  const uint16_t CodeGetDeathCount = 0x10A5; //"FE10"
+  const uint16_t CodeGetDeathCount = 0x10FE; //"FE10"
   const uint16_t CodeGetDefendBonus = 0x10A5; //"A510"
   const uint16_t CodeGetDestruction = 0x1059; //"5910"
   const uint16_t CodeGetDetected = 0x114E; //"4E11"

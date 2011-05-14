@@ -20,6 +20,7 @@
 
 #include "CreatureRecord.h"
 #include <iostream>
+#include <cstring>
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 

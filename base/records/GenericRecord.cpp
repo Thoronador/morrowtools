@@ -20,6 +20,7 @@
 
 #include "GenericRecord.h"
 #include <iostream>
+#include <cstring>
 
 GenericRecord::GenericRecord()
 {

@@ -19,6 +19,7 @@
 */
 
 #include "AIPackages.h"
+#include <cstring>
 #include "../MW_Constants.h"
 
 /* **** BasicAIPackage's functions ****/

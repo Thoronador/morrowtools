@@ -22,6 +22,7 @@
 #define FILEFUNCTIONS_H
 
 #include <string>
+#include <stdint.h>
 
 /* returns the file size of file FileName. If the file does not exist or if an
    error occured, -1 will be returned.

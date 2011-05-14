@@ -20,6 +20,7 @@
 
 #include "GlobalRecord.h"
 #include <iostream>
+#include <cstring>
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 #include "../UtilityFunctions.h"

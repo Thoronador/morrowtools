@@ -117,7 +117,7 @@ bool getNextScriptParameter(const std::string& scriptText, size_t& start, std::s
       if (param_len>0)//skip empty params
       {
         param = scriptText.substr(offset, param_len);
-        StripEnclosingQuotes(param);
+        stripEnclosingQuotes(param);
         start = look+1;
         return true;
       }//if
@@ -127,7 +127,7 @@ bool getNextScriptParameter(const std::string& scriptText, size_t& start, std::s
   }//while
   //we are at the end of the string, whole stuff is one piece
   param = scriptText.substr(offset);
-  StripEnclosingQuotes(param);
+  stripEnclosingQuotes(param);
   start = len;
   if (param.length()>0) return true;
   return false;

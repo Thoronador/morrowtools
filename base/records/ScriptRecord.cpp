@@ -20,6 +20,7 @@
 
 #include "ScriptRecord.h"
 #include <iostream>
+#include <cstring>
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 

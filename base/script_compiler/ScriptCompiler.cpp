@@ -5796,6 +5796,59 @@ bool ScriptFunctions_SevenParameters(const std::vector<std::string>& params, Com
     chunk.data.push_back(1);
     return true;
   }//if AIEscortCell or AIFollowCell
+
+  //workaround for wrong number of parameters AIFollow (usually only six or five)
+  if (lowerFunction == "aifollow")
+  {
+    //first parameter is NPC ID
+    //second parameter is duration (short, as far as I can see)
+    //third, fourth and fifth parameters are x, y, z-coordinates (float)
+    //sixth parameter is flag of some kind
+    //seventh parameter is too much, but that's what we're here for
+    int16_t duration;
+    if (!stringToShort(params[2], duration))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is no short value!\n";
+      return false;
+    }
+    float x_coord;
+    if (!stringToFloat(params[3], x_coord))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[3]<<"\" is no float value!\n";
+      return false;
+    }
+    float y_coord;
+    if (!stringToFloat(params[4], y_coord))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[4]<<"\" is no float value!\n";
+      return false;
+    }
+    float z_coord;
+    if (!stringToFloat(params[5], z_coord))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[5]<<"\" is no float value!\n";
+      return false;
+    }
+    //Sixth param is flag, but it does not seem to have an impact on the compiled
+    //script data, so we ignore it, whatever it is.
+
+    //push function code
+    chunk.pushCode(CodeAIFollow);
+    //push target ID's length
+    chunk.data.push_back(params[1].length());
+    //push target ID
+    chunk.pushString(params[1]);
+    //push duration
+    chunk.pushShort(duration);
+    //push x, y, z
+    chunk.pushFloat(x_coord);
+    chunk.pushFloat(y_coord);
+    chunk.pushFloat(z_coord);
+    //push 01 byte (it always seems to be there and indicate the presence of the
+    // flag)
+    chunk.data.push_back(1);
+    return true;
+  }//if AIFollow
   if (lowerFunction == "aiwander")
   {
     if (params.size()<8)
@@ -5881,6 +5934,60 @@ bool ScriptFunctions_EightParameters(const std::vector<std::string>& params, Com
 {
   //entry at index zero is the function's name
   const std::string lowerFunction = lowerCase(params.at(0));
+  //workaround for wrong number of parameters AIFollow (usually only six or five)
+  if (lowerFunction == "aifollow")
+  {
+    //first parameter is NPC ID
+    //second parameter is duration (short, as far as I can see)
+    //third, fourth and fifth parameters are x, y, z-coordinates (float)
+    //sixth parameter is flag of some kind
+    //seventh & eighth parameters are too much, but that's what we're here for
+    int16_t duration;
+    if (!stringToShort(params[2], duration))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is no short value!\n";
+      return false;
+    }
+    float x_coord;
+    if (!stringToFloat(params[3], x_coord))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[3]<<"\" is no float value!\n";
+      return false;
+    }
+    float y_coord;
+    if (!stringToFloat(params[4], y_coord))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[4]<<"\" is no float value!\n";
+      return false;
+    }
+    float z_coord;
+    if (!stringToFloat(params[5], z_coord))
+    {
+      std::cout << "ScriptCompiler: Error: \""<<params[5]<<"\" is no float value!\n";
+      return false;
+    }
+    //Sixth param is flag, but it does not seem to have an impact on the compiled
+    //script data, so we ignore it, whatever it is. Seventh and eighth parameter
+    //are ignored any way.
+
+    //push function code
+    chunk.pushCode(CodeAIFollow);
+    //push target ID's length
+    chunk.data.push_back(params[1].length());
+    //push target ID
+    chunk.pushString(params[1]);
+    //push duration
+    chunk.pushShort(duration);
+    //push x, y, z
+    chunk.pushFloat(x_coord);
+    chunk.pushFloat(y_coord);
+    chunk.pushFloat(z_coord);
+    //push 01 byte (it always seems to be there and indicate the presence of the
+    // flag)
+    chunk.data.push_back(1);
+    return true;
+  }//if AIFollow
+
   if (lowerFunction == "aiwander")
   {
     if (params.size()<9)

@@ -5592,8 +5592,8 @@ bool ScriptFunctions_SixParameters(const std::vector<std::string>& params, Compi
     //push idle3 to idle4
     chunk.pushShort(idle3);
     chunk.pushShort(idle4);
-    //seems like there's a 02 byte at the end
-    chunk.data.push_back(2);
+    //seems like there's a 01 byte at the end (or was it 02?)
+    chunk.data.push_back(1);
     return true;
   }//if AIWander
   if (lowerFunction == "placeitemcell")

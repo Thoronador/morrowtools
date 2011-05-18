@@ -6821,10 +6821,22 @@ bool CompareToBinary(const std::string& compareStatement, std::vector<uint8_t>& 
   }//if compare operator found
   else
   {
-    //no comparator found
-    std::cout << "ScriptCompiler: Error: no comparator found in compare "
+    //no comparator found, so try single function statement
+    //parse left part
+    ParserNode completePart;
+    if (!completePart.splitToTree(compareStatement, theChunk))
+    {
+      std::cout << "ScriptCompiler: Error: splitToTree() failed for compare "
+                << "statement without comparator.\n";
+      return false;
+    }
+    //first part of binary data
+    bin_out = completePart.getBinaryContent();
+    //push null byte at the end
+    bin_out.push_back(0);
+    std::cout << "ScriptCompiler: Warning: no comparator found in compare "
               << "statement!\nStatement was \""<< compareStatement <<"\".\n";
-    return false;
+    return true;
   }
 }//function CompareToBinary
 

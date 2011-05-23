@@ -26,7 +26,7 @@
 #include <fstream>
 #include "records/IngredientRecord.h"
 
-typedef std::map<const std::string, IngredRec>::const_iterator IngredListIterator;
+typedef std::map<const std::string, IngredientRecord>::const_iterator IngredListIterator;
 
 class Ingredients
 {
@@ -38,7 +38,7 @@ class Ingredients
     static Ingredients& getSingleton();
 
     /* adds an ingredient to the list */
-    void addIngredient(const IngredRec& data);
+    void addIngredient(const IngredientRecord& data);
 
     /* returns the number of ingredients that are currently in the list */
     unsigned int getNumberOfIngredients() const;
@@ -58,7 +58,7 @@ class Ingredients
        parameters:
            ID - the ID of the ingredient
     */
-    const IngredRec& getIngredientData(const std::string& ID) const;
+    const IngredientRecord& getIngredientData(const std::string& ID) const;
 
     /* lists the IDs and names of all ingredients in the list */
     void listAll() const;
@@ -100,7 +100,7 @@ class Ingredients
     Ingredients(const Ingredients& op) {}
 
     /* internal data */
-    std::map<const std::string, IngredRec> m_Ingredients;
+    std::map<const std::string, IngredientRecord> m_Ingredients;
 };//class
 
 #endif // INGREDIENTS_H

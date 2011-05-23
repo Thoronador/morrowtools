@@ -37,9 +37,9 @@ Ingredients& Ingredients::getSingleton()
   return Instance;
 }
 
-void Ingredients::addIngredient(const IngredRec& data)
+void Ingredients::addIngredient(const IngredientRecord& data)
 {
-  m_Ingredients[data.IngredID] = data;
+  m_Ingredients[data.IngredientID] = data;
 }
 
 void Ingredients::clearAll()
@@ -57,9 +57,9 @@ bool Ingredients::hasIngredient(const std::string& ID) const
   return m_Ingredients.find(ID)!=m_Ingredients.end();
 }
 
-const IngredRec& Ingredients::getIngredientData(const std::string& ID) const
+const IngredientRecord& Ingredients::getIngredientData(const std::string& ID) const
 {
-  const std::map<const std::string, IngredRec>::const_iterator iter =
+  const std::map<const std::string, IngredientRecord>::const_iterator iter =
         m_Ingredients.find(ID);
   if (iter!=m_Ingredients.end())
   {
@@ -71,10 +71,10 @@ const IngredRec& Ingredients::getIngredientData(const std::string& ID) const
 void Ingredients::listAll() const
 {
   std::cout << "Ingredient list ("<<m_Ingredients.size()<<" items):\n";
-  std::map<const std::string, IngredRec>::const_iterator iter = m_Ingredients.begin();
+  std::map<const std::string, IngredientRecord>::const_iterator iter = m_Ingredients.begin();
   while (iter!=m_Ingredients.end())
   {
-    std::cout << "  "<<iter->first <<" (\""<<iter->second.IngredName<<"\")\n";
+    std::cout << "  "<<iter->first <<" (\""<<iter->second.IngredientName<<"\")\n";
     ++iter;
   }//while
 }
@@ -90,13 +90,13 @@ IngredListIterator Ingredients::getEnd() const
 
 int Ingredients::readRecordINGR(std::ifstream& in_File)
 {
-  IngredRec tempRec;
+  IngredientRecord tempRec;
   if (tempRec.loadFromStream(in_File))
   {
     //check for presence of ingredient
-    if (hasIngredient(tempRec.IngredID))
+    if (hasIngredient(tempRec.IngredientID))
     {
-      if (getIngredientData(tempRec.IngredID).equals(tempRec))
+      if (getIngredientData(tempRec.IngredientID).equals(tempRec))
       {
         return 0; //return zero, nothing was changed
       }

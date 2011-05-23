@@ -49,7 +49,6 @@ bool ClothingRecord::equals(const ClothingRecord& other) const
 
 bool ClothingRecord::saveToStream(std::ofstream& output) const
 {
-  #warning Not completly implemented!
   output.write((char*) &cCLOT, 4);
   uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
@@ -227,7 +226,6 @@ bool ClothingRecord::saveToStream(std::ofstream& output) const
 
 bool ClothingRecord::loadFromStream(std::ifstream& in_File)
 {
-  #warning Not implemented yet! SCRI is still missing.
   uint32_t Size;
   in_File.read((char*) &Size, 4);
   in_File.read((char*) &HeaderOne, 4);

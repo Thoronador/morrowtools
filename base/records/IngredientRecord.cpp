@@ -23,25 +23,25 @@
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 
-IngredRec::IngredRec()
+IngredientRecord::IngredientRecord()
 {
-  IngredID = ModelName = IngredName = "";
-  //IngredData
+  IngredientID = ModelName = IngredientName = "";
+  //IngredientData
   Weight = 0.0f;
   Value = 0;
   EffectID[0]=EffectID[1]=EffectID[2]=EffectID[3]=0;
   SkillID[0]=SkillID[1]=SkillID[2]=SkillID[3]=0;
   AttributeID[0]=AttributeID[1]=AttributeID[2]=AttributeID[3]=0;
-  // end of Ingred data
+  // end of Ingredient data
   InventoryIcon = ScriptName = "";
 }
 
-bool IngredRec::equals(const IngredRec& other) const
+bool IngredientRecord::equals(const IngredientRecord& other) const
 {
-  if ((ModelName==other.ModelName) and (IngredName==other.IngredName)
+  if ((ModelName==other.ModelName) and (IngredientName==other.IngredientName)
       and (Weight==other.Weight) and (Value==other.Value)
       and (InventoryIcon==other.InventoryIcon) and (ScriptName==other.ScriptName)
-      and (IngredID==other.IngredID))
+      and (IngredientID==other.IngredientID))
   {
     //compare effects
     unsigned int i;
@@ -56,9 +56,9 @@ bool IngredRec::equals(const IngredRec& other) const
   return false;
 }//equals()
 
-void IngredRec::show()
+void IngredientRecord::show()
 {
-  std::cout <<"Name: \""<<IngredName<<"\"\n"
+  std::cout <<"Name: \""<<IngredientName<<"\"\n"
             <<"Mesh: \""<<ModelName<<"\"\n"
             <<"Weight: "<<Weight<<"\n"
             <<"Value: "<<Value<<"\n"
@@ -69,16 +69,16 @@ void IngredRec::show()
             <<"Script: \""<<ScriptName<<"\"\n";
 }
 
-bool IngredRec::saveToStream(std::ofstream& output) const
+bool IngredientRecord::saveToStream(std::ofstream& output) const
 {
   output.write((char*) &cINGR, 4);
   uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +IngredID.length()+1 /* length of ID +1 byte for NUL-termination */
+        +IngredientID.length()+1 /* length of ID +1 byte for NUL-termination */
         +4 /* MODL */ +4 /* 4 bytes for MODL's lenght */
         +ModelName.length()+1 /*length of name plus one for NUL-termination */
         +4 /* FNAM */ +4 /* 4 bytes for FNAM's lenght */
-        +IngredName.length()+1 /*length of name plus one for NUL-termination */
+        +IngredientName.length()+1 /*length of name plus one for NUL-termination */
         +4 /* IRDT */ +4 /* IRDT's length */ +56 /*size of ingredient data (IRDT)*/
         +4 /* ITEX */ +4 /* ITEX's length */
         +InventoryIcon.length() +1 /* length of path +1 byte for NUL-termination */;
@@ -108,10 +108,10 @@ bool IngredRec::saveToStream(std::ofstream& output) const
   output.write((char*) &cNAME, 4);
   //NAME's length
   uint32_t SubLength;
-  SubLength = IngredID.length()+1; //length of string plus one for NUL-termination
+  SubLength = IngredientID.length()+1; //length of string plus one for NUL-termination
   output.write((char*) &SubLength, 4);
   //write ID
-  output.write(IngredID.c_str(), SubLength);
+  output.write(IngredientID.c_str(), SubLength);
 
   //write MODL
   output.write((char*) &cMODL, 4);
@@ -124,10 +124,10 @@ bool IngredRec::saveToStream(std::ofstream& output) const
   //write FNAM
   output.write((char*) &cFNAM, 4);
   //FNAM's length
-  SubLength = IngredName.length()+1; //length of string plus one for NUL-termination
+  SubLength = IngredientName.length()+1; //length of string plus one for NUL-termination
   output.write((char*) &SubLength, 4);
   //write ingredient name
-  output.write(IngredName.c_str(), SubLength);
+  output.write(IngredientName.c_str(), SubLength);
 
   //write IRDT
   output.write((char*) &cIRDT, 4);
@@ -171,7 +171,7 @@ bool IngredRec::saveToStream(std::ofstream& output) const
   return output.good();
 }
 
-bool IngredRec::loadFromStream(std::ifstream& in_File)
+bool IngredientRecord::loadFromStream(std::ifstream& in_File)
 {
   uint32_t Size;
   in_File.read((char*) &Size, 4);
@@ -221,7 +221,7 @@ bool IngredRec::loadFromStream(std::ifstream& in_File)
     std::cout << "Error while reading subrecord NAME of INGR.\n";
     return false;
   }
-  IngredID = std::string(Buffer);
+  IngredientID = std::string(Buffer);
 
   //read MODL
   in_File.read((char*) &SubRecName, 4);
@@ -275,7 +275,7 @@ bool IngredRec::loadFromStream(std::ifstream& in_File)
     std::cout << "Error while reading subrecord FNAM of INGR.\n";
     return false;
   }
-  IngredName = std::string(Buffer);
+  IngredientName = std::string(Buffer);
 
   //read IRDT
   in_File.read((char*) &SubRecName, 4);
@@ -356,7 +356,7 @@ bool IngredRec::loadFromStream(std::ifstream& in_File)
   return in_File.good();
 }
 
-bool IngredRec::readSubRecordITEX(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead)
+bool IngredientRecord::readSubRecordITEX(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead)
 {
   //ITEX's length
   uint32_t SubLength = 0;
@@ -380,7 +380,7 @@ bool IngredRec::readSubRecordITEX(std::ifstream& in_File, char* Buffer, uint32_t
   return true;
 }
 
-bool IngredRec::readSubRecordSCRI(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead)
+bool IngredientRecord::readSubRecordSCRI(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead)
 {
   //SCRI's length
   uint32_t SubLength = 0;

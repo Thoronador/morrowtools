@@ -38,23 +38,23 @@
     ITEX = Inventory Icon
     SCRI = Script Name (optional) */
 
-struct IngredRec: public BasicRecord
+struct IngredientRecord: public BasicRecord
 {
   public:
     /* constructor */
-    IngredRec();
+    IngredientRecord();
 
     //data
-    std::string IngredID;
+    std::string IngredientID;
     std::string ModelName;
-    std::string IngredName;
-    //IngredData
+    std::string IngredientName;
+    //IngredientData
     float Weight;
     int32_t Value;
     int32_t EffectID[4];
     int32_t SkillID[4];
     int32_t AttributeID[4];
-    // end of Ingred data
+    // end of Ingredient data
     std::string InventoryIcon;
     std::string ScriptName;
 
@@ -62,7 +62,7 @@ struct IngredRec: public BasicRecord
     void show();
 
     /* returns true, if the other record contains the same data */
-    bool equals(const IngredRec& other) const;
+    bool equals(const IngredientRecord& other) const;
 
     /* tries to save the ingredient record to an output file stream and returns
        true on success, false on failure.

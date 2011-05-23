@@ -47,8 +47,8 @@ bool CellRef::operator<(const CellRef& rhs) const
 
 std::string CellRef::toString() const
 {
-  std::ostringstream sstr("PRG(");
-  sstr<<X<<";"<<Y<<"; \""<<Cell<<"\")";
+  std::ostringstream sstr;
+  sstr<< "PRG(" <<X<<";"<<Y<<"; \""<<Cell<<"\")";
   return sstr.str();
 }
 

@@ -26,8 +26,17 @@
 #include "../base/DepFiles.h"
 #include "../base/ComparisonFunctor.h"
 
+/* tries to get all master and plugin files in the specified directory and adds
+   them to the file list 'files'
+
+   parameters:
+       dir   - the directory that is searched for master and plugin files
+       files - the list that will hold the file names
+*/
 void getAllDataFiles(const std::string& dir, DepFileList& files);
 
-void getDeletables(const std::string& dir, const std::set<std::string, ci_less>& positives, std::set<std::string>& deletables);
+void getDeletableMeshes(const std::string& dir, const std::set<std::string, ci_less>& positives, std::set<std::string>& deletables);
+
+void getDeletableIcons(const std::string& dir, const std::set<std::string, ci_less>& positives, std::set<std::string>& deletables);
 
 #endif // DIRECTORYTRAVERSAL_H

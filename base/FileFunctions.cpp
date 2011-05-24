@@ -89,3 +89,8 @@ bool FileExists(const std::string& FileName)
 {
   return (access(FileName.c_str(), F_OK)==0);
 }
+
+bool deleteFile(const std::string& fileName)
+{
+  return (remove(fileName.c_str())==0);
+}

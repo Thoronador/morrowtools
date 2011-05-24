@@ -117,7 +117,7 @@ void getAllDataFiles(const std::string& dir, DepFileList& files)
   }//for
 }
 
-void getDeletables(const std::string& dir, const std::set<std::string, ci_less>& positives, std::set<std::string>& deletables)
+void getDeletableMeshes(const std::string& dir, const std::set<std::string, ci_less>& positives, std::set<std::string>& deletables)
 {
   std::vector<FileEntry> files = getFilesInDirectory(dir);
   unsigned int i;
@@ -130,7 +130,7 @@ void getDeletables(const std::string& dir, const std::set<std::string, ci_less>&
       if ((files[i].FileName!="..") and (files[i].FileName!="."))
       {
         //go down in directory hierarchy
-        getDeletables(dir+files[i].FileName+"\\", positives, deletables);
+        getDeletableMeshes(dir+files[i].FileName+"\\", positives, deletables);
       }
     }
     else
@@ -139,8 +139,64 @@ void getDeletables(const std::string& dir, const std::set<std::string, ci_less>&
       if (positives.find(dir+files[i].FileName)==positives.end())
       {
         //It's not in the list, so add it to the list of deletable files.
-        deletables.insert(dir+files[i].FileName);
+        // ...if it's a .nif file!
+        const unsigned int nameLen = files[i].FileName.length();
+        if (nameLen>4)
+        {
+          if (lowerCase(files[i].FileName.substr(nameLen-4, 4))==".nif")
+          {
+            deletables.insert(dir+files[i].FileName);
+          }
+        }//name longer than four characters
       }
     }
   }//for
-}//function
+}//function getDeletableMeshes
+
+void getDeletableIcons(const std::string& dir, const std::set<std::string, ci_less>& positives, std::set<std::string>& deletables)
+{
+  std::vector<FileEntry> files = getFilesInDirectory(dir);
+  unsigned int i;
+  const unsigned int len = files.size();
+  for (i=0; i<len; ++i)
+  {
+    if (files[i].IsDirectory)
+    {
+      //It's a directory, so check that one, too.
+      if ((files[i].FileName!="..") and (files[i].FileName!="."))
+      {
+        //go down in directory hierarchy
+        getDeletableIcons(dir+files[i].FileName+"\\", positives, deletables);
+      }
+    }
+    else
+    {
+      //It's a file. Is it in the list of required files?
+      if (positives.find(dir+files[i].FileName)==positives.end())
+      {
+        //It's not in the list, so add it to the list of deletable files.
+        const unsigned int nameLen = files[i].FileName.length();
+        if (nameLen>4)
+        {
+          const std::string ext = lowerCase(files[i].FileName.substr(nameLen-4, 4));
+          if (ext==".dds")
+          {
+            //Maybe there is one as .tga instead?
+            if (positives.find(dir+files[i].FileName.substr(0,nameLen-4)+".tga")==positives.end())
+            {
+              deletables.insert(dir+files[i].FileName);
+            }
+          }
+          else if (ext==".tga")
+          {
+            //Maybe it's a .dds instead?
+            if (positives.find(dir+files[i].FileName.substr(0,nameLen-4)+".dds")==positives.end())
+            {
+              deletables.insert(dir+files[i].FileName);
+            }
+          }
+        }//if name is longer than four characters
+      }
+    }
+  }//for
+}//function getDeletableIcons

@@ -70,7 +70,7 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Data Files Cleaner for Morrowind, version 0.1_rev252, 2011-05-24\n";
+  std::cout << "Data Files Cleaner for Morrowind, version 0.1_rev253, 2011-05-24\n";
 }
 
 int main(int argc, char **argv)
@@ -271,31 +271,76 @@ int main(int argc, char **argv)
   std::set<std::string> DeletableIcons;
 
   //get mesh files
-  getDeletables(baseDir+"Meshes\\", reader.MeshSet, DeletableMeshes);
-  getDeletables(baseDir+"Icons\\", reader.IconSet, DeletableIcons);
+  getDeletableMeshes(baseDir+"Meshes\\", reader.MeshSet, DeletableMeshes);
+  getDeletableIcons(baseDir+"Icons\\", reader.IconSet, DeletableIcons);
 
-  std::cout << "There are "<<DeletableMeshes.size()<<" meshes and "
-            <<DeletableIcons.size()<<" icons that could be deleted.\n";
-  i=0;
-  std::set<std::string>::const_iterator iter = DeletableMeshes.begin();
-  std::cout << "\n\nDeletable meshes:\n";
-  while (iter!=DeletableMeshes.end() and (i<25))
+  if ((DeletableIcons.size()>0) or (DeletableMeshes.size()>0))
   {
-    std::cout << *iter << "\n";
-    ++iter;
-    ++i;
-  }//while
-  std::cout << "\n\nDeletable icons:\n";
-  iter = DeletableIcons.begin();
-  i=0;
-  while (iter!=DeletableIcons.end() and (i<25))
+    std::cout << "There are "<<DeletableMeshes.size()<<" meshes and "
+              <<DeletableIcons.size()<<" icons that could be deleted.\n";
+    i=0;
+    std::set<std::string>::const_iterator iter;
+    /*iter = DeletableMeshes.begin();
+    std::cout << "\n\nDeletable meshes:\n";
+    while (iter!=DeletableMeshes.end() and (i<25))
+    {
+      std::cout << *iter << "\n";
+      ++iter;
+      ++i;
+    }//while
+    std::cout << "\n\nDeletable icons:\n";
+    iter = DeletableIcons.begin();
+    i=0;
+    while (iter!=DeletableIcons.end() and (i<25))
+    {
+      std::cout << *iter << "\n";
+      ++iter;
+      ++i;
+    }//while */
+
+    std::string input;
+    do
+    {
+      std::cout << "Do you want to delete those files (y/n)?\n";
+      std::cin >> input;
+      trim(input);
+      input = lowerCase(input);
+    } while ((input!="y") and (input!="yes") and (input!="j") and (input!="ja")
+         and (input!="n") and (input!="no") and (input!="nein"));
+    //Does the user want to delete the stuff?
+    if ((input=="y") or (input=="yes") or (input=="j") or (input=="ja"))
+    {
+      std::cout << "Deleting files...\n";
+      //delete meshes
+      iter = DeletableMeshes.begin();
+      while (iter!=DeletableMeshes.end())
+      {
+        if (!deleteFile(*iter))
+        {
+          std::cout << "Error: Could not delete file \""<<*iter<<"\".\n";
+        }
+        ++iter;
+      }//while
+      //delete icons
+      iter = DeletableIcons.begin();
+      while (iter!=DeletableIcons.end())
+      {
+        if (!deleteFile(*iter))
+        {
+          std::cout << "Error: Could not delete file \""<<*iter<<"\".\n";
+        }
+        ++iter;
+      }//while
+      std::cout << "Done.\n";
+    }
+    else
+    {
+      std::cout << "You chose not to delete the unused files.\n";
+    }
+  }//if there are any files that could be deleted
+  else
   {
-    std::cout << *iter << "\n";
-    ++iter;
-    ++i;
-  }//while
-
-
-  std::cout << "Hello world!" << std::endl;
+    std::cout << "There are no unused icons or meshes that could be deleted.\n";
+  }
   return 0;
 }

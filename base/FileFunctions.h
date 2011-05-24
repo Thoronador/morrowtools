@@ -58,4 +58,12 @@ bool getFileSizeAndModificationTime(const std::string& FileName, int64_t& FileSi
 */
 bool FileExists(const std::string& FileName);
 
+/* tries to delete the file fileName and returns true, if it could be deleted,
+   or false if en error occured.
+
+  parameters:
+      fileName - the file that shall be deleted
+*/
+bool deleteFile(const std::string& fileName);
+
 #endif // FILEFUNCTIONS_H

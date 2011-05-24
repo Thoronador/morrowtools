@@ -22,12 +22,13 @@
 #include <sys/stat.h>
 #include <utime.h>
 #include <unistd.h>
+#include <cmath>
+#include "UtilityFunctions.h"
 
-/*
-int64_t getFileSize64(const std::string& FileName)
+int64_t getFileSize64(const std::string& fileName)
 {
   struct stat buffer;
-  if (stat(FileName.c_str(), &buffer)==0)
+  if (stat(fileName.c_str(), &buffer)==0)
   {
     //stat() was successful
     return buffer.st_size;
@@ -37,6 +38,7 @@ int64_t getFileSize64(const std::string& FileName)
   return -1;
 }//function
 
+/*
 time_t getFileModificationTime(const std::string& FileName)
 {
   struct stat buffer;
@@ -84,6 +86,32 @@ bool getFileSizeAndModificationTime(const std::string& FileName, int64_t& FileSi
   FileTime = -1;
   return false;
 }//function
+
+
+float round(const float f)
+{
+  return floor(f + 0.5);
+}
+
+std::string getSizeString(const int64_t fileSize)
+{
+  if (fileSize<0) return "-"+getSizeString(-fileSize);
+
+  //giga
+  if (fileSize>1024*1024*1024)
+  {
+    return floatToString(round((fileSize*100.0f)/(1024.0f*1024*1024))/100.0f)+" GB";
+  }
+  if (fileSize>1024*1024)
+  {
+    return floatToString(round((fileSize*100.0f)/(1024.0f*1024))/100.0f)+" MB";
+  }
+  if (fileSize>1024)
+  {
+    return floatToString(round((fileSize*100.0f)/1024.0f)/100.0f)+" KB";
+  }
+  return floatToString(fileSize)+" byte";
+}
 
 bool FileExists(const std::string& FileName)
 {

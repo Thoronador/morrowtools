@@ -24,13 +24,13 @@
 #include <string>
 #include <stdint.h>
 
-/* returns the file size of file FileName. If the file does not exist or if an
+/* returns the file size of file fileName. If the file does not exist or if an
    error occured, -1 will be returned.
 
   parameters:
       FileName - the file whose size shall be obtained
 */
-//int64_t getFileSize64(const std::string& FileName);
+int64_t getFileSize64(const std::string& fileName);
 
 /* sets the time when file FileName was last modified. If the file does not
    exist or if an error occured, false will be returned.
@@ -50,6 +50,14 @@ bool setFileModificationTime(const std::string& FileName, const time_t new_mtime
       FileTime - reference to the time_t that will store the file's mtime
 */
 bool getFileSizeAndModificationTime(const std::string& FileName, int64_t& FileSize, time_t& FileTime);
+
+/* returns a human readable, nicer string representing the file size passed
+   as fileSize
+
+   parameters:
+       fileSize - size of the file in bytes
+*/
+std::string getSizeString(const int64_t fileSize);
 
 /* Checks for existence of file FileName and returns true, if it exists.
 

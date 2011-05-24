@@ -19,6 +19,7 @@
 */
 
 #include "UtilityFunctions.h"
+#include <sstream>
 
 //tries to get the integer representation of a string
 bool stringToShort(const std::string& str, int16_t& value)
@@ -144,6 +145,13 @@ bool stringToFloat(const std::string& str, float& value)
   value = value + second;
   if (negative) value = -value;
   return true;
+}
+
+std::string floatToString(const float f)
+{
+  std::stringstream s_str;
+  s_str << f;
+  return s_str.str();
 }
 
 void trimLeft(std::string& str1)

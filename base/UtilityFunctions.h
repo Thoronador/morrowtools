@@ -60,6 +60,13 @@ bool stringToLong(const std::string& str, int32_t& value);
 */
 bool stringToFloat(const std::string& str, float& value);
 
+/* converts a floating point value into its string representation
+
+   parameters:
+       f - the floating point value
+*/
+std::string floatToString(const float f);
+
 /* removes all leading and trailing spaces and (horizontal) tabulators from the
    given string
 

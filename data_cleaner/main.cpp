@@ -70,7 +70,7 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Data Files Cleaner for Morrowind, version 0.1_rev253, 2011-05-24\n";
+  std::cout << "Data Files Cleaner for Morrowind, version 0.1_rev254, 2011-05-24\n";
 }
 
 int main(int argc, char **argv)
@@ -280,6 +280,56 @@ int main(int argc, char **argv)
               <<DeletableIcons.size()<<" icons that could be deleted.\n";
     i=0;
     std::set<std::string>::const_iterator iter;
+
+    //Try to get the cumulative size of all files in question.
+    int64_t sizeSum = 0;
+    // ---- the meshes first
+    iter = DeletableMeshes.begin();
+    while (iter!=DeletableMeshes.end())
+    {
+      const int64_t fs = getFileSize64(*iter);
+      if (fs==-1)
+      {
+        iter = DeletableMeshes.end();
+        sizeSum = -1;
+      }
+      else
+      {
+        sizeSum += fs;
+        ++iter;
+      }
+    }//while
+    // ---- and the icons follow
+    if (sizeSum!=-1)
+    {
+      iter = DeletableIcons.begin();
+      while (iter!=DeletableIcons.end())
+      {
+        const int64_t fs = getFileSize64(*iter);
+        if (fs==-1)
+        {
+          iter = DeletableIcons.end();
+          sizeSum = -1;
+        }
+        else
+        {
+          sizeSum += fs;
+          ++iter;
+        }
+      }//while
+      if (sizeSum!=-1)
+      {
+        //print the size
+        std::cout << "This would free "<<getSizeString(sizeSum);
+        if (sizeSum>1024)
+        {
+          std::cout << " ("<<sizeSum<<" bytes)";
+        }
+        std::cout <<".\n";
+      }//if
+    }//if no error occured
+
+
     /*iter = DeletableMeshes.begin();
     std::cout << "\n\nDeletable meshes:\n";
     while (iter!=DeletableMeshes.end() and (i<25))

@@ -31,16 +31,7 @@
 #include "../base/records/CreatureRecord.h"
 #include "../base/records/NPCRecord.h"
 #include "../base/records/PathGridRecord.h"
-
-//return codes
-const int rcInvalidParameter = 1;
-const int rcFileError = 2;
-const int rcOutputFailed = 4;
-
-const int rcXMLError = 6;
-const int rcXMLEmpty = 7;
-const int rcScriptError = 8;
-const int rcNoChange = 9;
+#include "../base/ReturnCodes.h"
 
 void showHelp()
 {
@@ -90,7 +81,7 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Cell Translator for Morrowind, version 0.3_rev239, 2011-05-08\n";
+  std::cout << "Cell Translator for Morrowind, version 0.3_rev250, 2011-05-24\n";
 }
 
 int main(int argc, char **argv)

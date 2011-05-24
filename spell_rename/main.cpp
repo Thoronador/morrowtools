@@ -31,17 +31,13 @@
 #include <vector>
 #include "ESMReaderSpells.h"
 #include "ESMWriterSpells.h"
-#include "../base/GameSettings.h"
-#include "../base/MagicEffects.h"
-#include "../base/Spells.h"
 #include "../base/FileFunctions.h"
+#include "../base/GameSettings.h"
+#include "../base/IniFunctions.h"
+#include "../base/MagicEffects.h"
+#include "../base/ReturnCodes.h"
+#include "../base/Spells.h"
 
-//return codes
-const int rcInvalidParameter = 1;
-const int rcFileError = 2;
-const int rcDataError = 3;
-const int rcOutputFailed = 4;
-const int rcNoSpells = 5;
 
 void showHelp()
 {
@@ -101,7 +97,7 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Spell Renamer for Morrowind, version 0.1_rev219, 2011-04-29\n";
+  std::cout << "Spell Renamer for Morrowind, version 0.1_rev250, 2011-05-24\n";
 }
 
 int main(int argc, char **argv)
@@ -260,61 +256,11 @@ int main(int argc, char **argv)
         files.clear();
       }
     }
-
-    //check for Morrowind.ini
-    if (!FileExists(baseDir+"..\\Morrowind.ini"))
+    const int iniReturnCode = getFilesFromMorrowindIni(baseDir, files);
+    if (iniReturnCode!=0)
     {
-      std::cout << "Couldn't find Morrowind.ini!\n";
-      return rcFileError;
+      return iniReturnCode;
     }
-    //now read the files from the .ini
-    std::ifstream iniFile;
-    iniFile.open((baseDir+"..\\Morrowind.ini").c_str(), std::ios::in | std::ios::binary);
-    if (!iniFile)
-    {
-      std::cout << "Could not open Morrowind.ini!\n";
-      return rcFileError;
-    }
-    const size_t bufferSize = 512;
-    char Buffer[bufferSize];
-    memset(Buffer, 0, bufferSize);
-    std::string ini_line = "";
-    bool in_gf_section = false;
-    while (iniFile.getline(Buffer, bufferSize-1))
-    {
-      ini_line = std::string(Buffer);
-      //skip empty lines
-      if (ini_line.length()>0)
-      {
-        //clear carriage return at end of line, if present
-        if (ini_line.at(ini_line.length()-1)=='\r')
-        {
-          ini_line.erase(ini_line.length()-1);
-        }
-
-        if (!in_gf_section)
-        {
-          in_gf_section = (ini_line == "[Game Files]");
-        }
-        else
-        {
-          if (ini_line.length()>10)
-          {
-            if (ini_line.substr(0,8) == "GameFile")
-            {
-              //we've got one line
-              const size_t pos = ini_line.find('=');
-              if ((pos>8) &&  (pos!=std::string::npos))
-              {
-                files.push_back(ini_line.substr(pos+1, std::string::npos));
-              }
-            }//if is GameFile line
-          }//required minimum length?
-        }//else
-      }//if line not empty
-      memset(Buffer, 0, bufferSize);
-    }//while
-    iniFile.close();
   }//if ini
 
   //check file list
@@ -401,7 +347,7 @@ int main(int argc, char **argv)
     }
     else
     {
-      //somethin was read and file was not removed from list, so increase counter
+      //something was read and file was not removed from list, so increase counter
       ++i;
     }
   }//while

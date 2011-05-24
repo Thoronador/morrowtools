@@ -37,9 +37,12 @@
 		<Unit filename="..\base\GameSettings.h" />
 		<Unit filename="..\base\HelperIO.cpp" />
 		<Unit filename="..\base\HelperIO.h" />
+		<Unit filename="..\base\IniFunctions.cpp" />
+		<Unit filename="..\base\IniFunctions.h" />
 		<Unit filename="..\base\MW_Constants.h" />
 		<Unit filename="..\base\MagicEffects.cpp" />
 		<Unit filename="..\base\MagicEffects.h" />
+		<Unit filename="..\base\ReturnCodes.h" />
 		<Unit filename="..\base\Spells.cpp" />
 		<Unit filename="..\base\Spells.h" />
 		<Unit filename="..\base\records\BasicRecord.cpp" />

@@ -51,6 +51,7 @@
 		<Unit filename="..\base\MagicEffects.h" />
 		<Unit filename="..\base\NPCs.cpp" />
 		<Unit filename="..\base\NPCs.h" />
+		<Unit filename="..\base\ReturnCodes.h" />
 		<Unit filename="..\base\Scripts.cpp" />
 		<Unit filename="..\base\Scripts.h" />
 		<Unit filename="..\base\Statics.cpp" />

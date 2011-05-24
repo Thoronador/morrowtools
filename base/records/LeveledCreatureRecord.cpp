@@ -60,8 +60,11 @@ bool LeveledCreatureRecord::saveToStream(std::ofstream& output) const
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
         +LevCreatureID.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* DATA */ +4 /* 4 bytes for length */ +4 /* size of list data */
-        +4 /* NNAM */ +4 /* 4 bytes for length */ +1 /* size of chance byte */
-        +4 /* INDX */ +4 /* INDX's length */ +4 /*size of index (always 4 bytes)*/;
+        +4 /* NNAM */ +4 /* 4 bytes for length */ +1 /* size of chance byte */;
+  if ((NumberOfCreatures>0) or (Entries.size()>0))
+  {
+    Size = Size +4 /* INDX */ +4 /* INDX's length */ +4 /*size of index (always 4 bytes)*/;
+  }
   unsigned int i;
   for (i=0;i<Entries.size(); ++i)
   {
@@ -109,13 +112,16 @@ bool LeveledCreatureRecord::saveToStream(std::ofstream& output) const
   //write chance
   output.write((char*) &ChanceNone, 1);
 
-  //write INDX
-  output.write((char*) &cINDX, 4);
-  //INDX's length
-  SubLength = 4; //length is always four bytes
-  output.write((char*) &SubLength, 4);
-  //write number of items in list
-  output.write((char*) &NumberOfCreatures, 4);
+  if ((NumberOfCreatures>0) or (Entries.size()>0))
+  {
+    //write INDX
+    output.write((char*) &cINDX, 4);
+    //INDX's length
+    SubLength = 4; //length is always four bytes
+    output.write((char*) &SubLength, 4);
+    //write number of items in list
+    output.write((char*) &NumberOfCreatures, 4);
+  }
 
   //write list's entries
   for (i=0; i<Entries.size(); ++i)
@@ -242,30 +248,38 @@ bool LeveledCreatureRecord::loadFromStream(std::ifstream& in_File)
     return false;
   }
 
-  //read INDX
-  in_File.read((char*) &SubRecName, 4);
-  BytesRead += 4;
-  if (SubRecName!=cINDX)
+  //empty lists don't have index in every case, so check for size
+  if (BytesRead<Size)
   {
-    UnexpectedRecord(cINDX, SubRecName);
-    return false;
+    //read INDX
+    in_File.read((char*) &SubRecName, 4);
+    BytesRead += 4;
+    if (SubRecName!=cINDX)
+    {
+      UnexpectedRecord(cINDX, SubRecName);
+      return false;
+    }
+    //INDX's length
+    in_File.read((char*) &SubLength, 4);
+    BytesRead += 4;
+    if (SubLength!=4)
+    {
+      std::cout << "Error: subrecord INDX of LEVC has invalid length ("<<SubLength
+                << " bytes). Should be four bytes.\n";
+      return false;
+    }
+    //read number of creatures in list
+    in_File.read((char*) &NumberOfCreatures, 4);
+    BytesRead += 4;
+    if (!in_File.good())
+    {
+      std::cout << "Error while reading subrecord INDX of LEVC.\n";
+      return false;
+    }
   }
-  //INDX's length
-  in_File.read((char*) &SubLength, 4);
-  BytesRead += 4;
-  if (SubLength!=4)
+  else
   {
-    std::cout << "Error: subrecord INDX of LEVC has invalid length ("<<SubLength
-              << " bytes). Should be four bytes.\n";
-    return false;
-  }
-  //read number of creatures in list
-  in_File.read((char*) &NumberOfCreatures, 4);
-  BytesRead += 4;
-  if (!in_File.good())
-  {
-    std::cout << "Error while reading subrecord INDX of LEVC.\n";
-    return false;
+    NumberOfCreatures = 0;
   }
 
   Entries.clear();

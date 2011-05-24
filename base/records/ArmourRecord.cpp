@@ -62,9 +62,7 @@ bool ArmourRecord::saveToStream(std::ofstream& output) const
         +Model.length()+1 /* length of model path +1 byte for NUL termination */
         +4 /* FNAM */ +4 /* 4 bytes for length */
         +Name.length()+1 /* length of name +1 byte for NUL termination */
-        +4 /* AODT */ +4 /* 4 bytes for length */ +24 /* fixed length of 24 bytes */
-        +4 /* ITEX */ +4 /* 4 bytes for length */
-        +InventoryIcon.length()+1 /* length of icon +1 byte for NUL termination */;
+        +4 /* AODT */ +4 /* 4 bytes for length */ +24 /* fixed length of 24 bytes */;
   unsigned int i;
   //body part stuff
   for (i=0; i<ArmourBodyParts.size(); ++i)
@@ -91,6 +89,11 @@ bool ArmourRecord::saveToStream(std::ofstream& output) const
   {
     Size = Size + 4 /* ENAM */ +4 /* 4 bytes for length */
           +EnchantmentID.length()+1 /* length of ID +1 byte for NUL termination */;
+  }
+  if (InventoryIcon!="")
+  {
+    Size = Size +4 /* ITEX */ +4 /* 4 bytes for length */
+        +InventoryIcon.length()+1 /* length of icon +1 byte for NUL termination */;
   }
   output.write((char*) &Size, 4);
   output.write((char*) &HeaderOne, 4);
@@ -173,13 +176,16 @@ bool ArmourRecord::saveToStream(std::ofstream& output) const
   output.write((char*) &EnchantmentPoints, 4);
   output.write((char*) &ArmourRating, 4);
 
-  //write ITEX
-  output.write((char*) &cITEX, 4);
-  SubLength = InventoryIcon.length()+1;
-  //write ITEX's length
-  output.write((char*) &SubLength, 4);
-  //write armour's inventory icon
-  output.write(InventoryIcon.c_str(), SubLength);
+  if (InventoryIcon!="")
+  {
+    //write ITEX
+    output.write((char*) &cITEX, 4);
+    SubLength = InventoryIcon.length()+1;
+    //write ITEX's length
+    output.write((char*) &SubLength, 4);
+    //write armour's inventory icon
+    output.write(InventoryIcon.c_str(), SubLength);
+  }
 
   //body part associations
   for (i=0; i<ArmourBodyParts.size(); ++i)
@@ -249,7 +255,7 @@ bool ArmourRecord::loadFromStream(std::ifstream& in_File)
         long  Health
         long  EnchantPts
         long  Armour
-    ITEX = Icon Filename, required
+    ITEX = Icon Filename (optional)
     INDX = Body Part Index (1 byte)
         (0=Head,1=Hair,2=Neck,3=Cuirass,4=Groin,5=Skirt,6=Right Hand,
          7=Left Hand,8=Right Wrist,9=Left Wrist,10=Shield,11=Right Forearm,
@@ -413,37 +419,12 @@ bool ArmourRecord::loadFromStream(std::ifstream& in_File)
     return false;
   }
 
-  //read ITEX
-  in_File.read((char*) &SubRecName, 4);
-  BytesRead += 4;
-  if (SubRecName!=cITEX)
-  {
-    UnexpectedRecord(cITEX, SubRecName);
-    return false;
-  }
-  //ITEX's length
-  in_File.read((char*) &SubLength, 4);
-  BytesRead += 4;
-  if (SubLength>255)
-  {
-    std::cout << "Error: subrecord ITEX of ARMO is longer than 255 characters.\n";
-    return false;
-  }
-  //read path to armour icon texture
-  memset(Buffer, '\0', 256);
-  in_File.read(Buffer, SubLength);
-  BytesRead += SubLength;
-  if (!in_File.good())
-  {
-    std::cout << "Error while reading subrecord ITEX of ARMO!\n";
-    return false;
-  }
-  InventoryIcon = std::string(Buffer);
-
   EnchantmentID = "";
+  InventoryIcon = "";
   ArmourBodyParts.clear();
   BodyPartAssociation tempAssoc;
   bool hasENAM = false;
+  bool hasITEX = false;
   int32_t prevSubrecord = 0;
   while (BytesRead<Size)
   {
@@ -556,6 +537,33 @@ bool ArmourRecord::loadFromStream(std::ifstream& in_File)
            EnchantmentID = std::string(Buffer);
            hasENAM = true;
            prevSubrecord = cENAM;
+           break;
+      case cITEX:
+           if (hasITEX)
+           {
+             std::cout << "Error: record ARMO seems to have two ITEX subrecords.\n";
+             return false;
+           }
+           //ITEX's length
+           in_File.read((char*) &SubLength, 4);
+           BytesRead += 4;
+           if (SubLength>255)
+           {
+             std::cout << "Error: subrecord ITEX of ARMO is longer than 255 characters.\n";
+             return false;
+           }
+           //read path to armour icon texture
+           memset(Buffer, '\0', 256);
+           in_File.read(Buffer, SubLength);
+           BytesRead += SubLength;
+           if (!in_File.good())
+           {
+             std::cout << "Error while reading subrecord ITEX of ARMO!\n";
+             return false;
+           }
+           InventoryIcon = std::string(Buffer);
+           hasITEX = true;
+           prevSubrecord = cITEX;
            break;
       default:
            std::cout << "Unexpected record name \""<<IntTo4Char(SubRecName)

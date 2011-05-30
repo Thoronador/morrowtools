@@ -91,13 +91,21 @@ Plugins abbricht.
                            figer passieren kann.
 
 
-Lizenz und Quellcode
-====================
+Lizenz, Gewährleistungsausschluss und Quellcode
+===============================================
 
 Das Programm cell_translator.exe steht unter der GNU General Public Licence 3,
 einer freien Softwarelizenz. Der volle Text der Lizenz ist in der Datei GPL.txt
 enthalten und kann auch auf http://www.gnu.org/licenses/gpl-3.0.html eingesehen
 werden.
+
+Das Programm wurde in der Hoffnung, dass es nützlich ist, erstellt und verfügbar
+gemacht. Das Programm ist nicht vollendet und kann daher Fehler („bugs“) ent-
+halten. Aus den genannten Gründen wird es unter dieser Lizenz „so wie es ist“
+ohne jegliche Gewährleistung zur Verfügung gestellt. Dies gilt unter anderem
+– aber nicht ausschließlich – für Verwendbarkeit für einen bestimmten Zweck,
+Mängelfreiheit und Richtigkeit (siehe dazu die entsprechenden Abschnitte der
+GNU General Public Licence 3).
 
 Der Quellcode des Programms lässt sich auf Sourceforge.net einsehen, das
 Projekt findet sich unter http://sourceforge.net/projects/morrowtools/

@@ -147,12 +147,16 @@ parameter -d.
                            is created.
 
 
-Licence and source code
-=======================
+Licence, disclaimer and source code
+===================================
 
 The programme spell_renamer.exe is released under the GNU General Public Licence 3,
 a free software licence. For the full text of the licence consult the file GPL.txt
 or view it online at http://www.gnu.org/licenses/gpl-3.0.html
+
+This programme is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
 The programme's source code is published at Sourceforge.net, the project itself
 is located at http://sourceforge.net/projects/morrowtools/

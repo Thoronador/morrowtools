@@ -36,13 +36,18 @@ void showHelp()
             << "  --version        - displays the version of the programme and quits\n"
             << "  -d DIRECTORY     - path to the Data Files directory of Morrowind\n"
             << "  -dir DIRECTORY   - same as -d\n"
-            << "  -f PLUGINFILE    - adds the plugin PLUGINFILE to the list of files that will\n"
-            << "                     be searched for data files\n"
-            << "  --ini            - tries to load list of plugin files from Morrowind.ini\n"
-            << "  -i               - same as --ini\n"
             << "  --all            - tries to load all master and plugin files from the given\n"
-            << "                     Data Files directory.\n"
+            << "                     Data Files directory (default).\n"
             << "  --all-data-files - same as --all\n"
+            << "  --explicit       - sets explicit mode where every data file that has to be\n"
+            << "                     scanned has to be given explicitly. This option is\n"
+            << "                     mutually exclusive with --all.\n"
+            << "  -e               - same as --explicit\n"
+            << "  -f PLUGINFILE    - adds the plugin PLUGINFILE to the list of files that will\n"
+            << "                     be searched for data files (only in explicit mode)\n"
+            << "  --ini            - tries to load list of plugin files from Morrowind.ini\n"
+            << "                     (only allowed in explicit mode)\n"
+            << "  -i               - same as --ini\n"
             << "  --verbose        - shows some additional information about data files\n"
             << "  --silent         - opposite of --verbose; does not show additonal information\n";
 }
@@ -70,7 +75,7 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Data Files Cleaner for Morrowind, version 0.1_rev254, 2011-05-24\n";
+  std::cout << "Data Files Cleaner for Morrowind, version 0.1_rev255, 2011-05-30\n";
 }
 
 int main(int argc, char **argv)
@@ -79,7 +84,8 @@ int main(int argc, char **argv)
   std::string baseDir = "C:\\Program Files\\Bethesda Softworks\\Morrowind\\Data Files\\";
   bool verbose = false;
   bool doIni = false;
-  bool doAllPlugins = false;
+  bool doAllPlugins = true;
+  bool specifiedMode = false;
 
   //list of .esp files to consider for scan
   DepFileList files;
@@ -151,29 +157,81 @@ int main(int argc, char **argv)
         //add plugin file to list
         else if ((param=="-f") or (param=="--add-file"))
         {
-          if ((i+1<argc) and (argv[i+1]!=NULL))
+          if (!doAllPlugins)
           {
-            const std::string pluginFileName = std::string(argv[i+1]);
-            ++i; //skip next parameter, because it's used as file name already
-            files.push_back(pluginFileName);
-            std::cout << "Plugin file \""<<pluginFileName<<"\" was added.\n";
+            if ((i+1<argc) and (argv[i+1]!=NULL))
+            {
+              const std::string pluginFileName = std::string(argv[i+1]);
+              ++i; //skip next parameter, because it's used as file name already
+              files.push_back(pluginFileName);
+              std::cout << "Plugin file \""<<pluginFileName<<"\" was added.\n";
+            }
+            else
+            {
+              std::cout << "Error: You have to specify a file name after \""
+                        << param<<"\".\n";
+              return rcInvalidParameter;
+            }
           }
           else
           {
-            std::cout << "Error: You have to specify a file name after \""
-                      << param<<"\".\n";
+            std::cout << "Error: parameter \""<<param<<"\" can only be specified"
+                      << " in explicit mode.\n";
             return rcInvalidParameter;
           }
         }//plugin file
         //try to read from Morrowind.ini?
         else if ((param=="-i") or (param=="--ini"))
         {
-          doIni = true;
+          if (!doAllPlugins)
+          {
+            if (!doIni)
+            {
+              doIni = true;
+            }
+            else
+            {
+              std::cout << "Error: parameter \""<<param<<"\" has been specified"
+                        << " more than once.\n";
+              return rcInvalidParameter;
+            }
+          }
+          else
+          {
+            std::cout << "Error: parameter \""<<param<<"\" can only be specified"
+                      << " in explicit mode.\n";
+            return rcInvalidParameter;
+          }
         }
         //try to get all plugin and master files from Data Files directory
         else if ((param=="--all-data-files") or (param=="--all"))
         {
-          doAllPlugins = true;
+          if (!specifiedMode)
+          {
+            doAllPlugins = true;
+            specifiedMode = true;
+          }
+          else
+          {
+            std::cout << "Error: parameter \""<<param<<"\" is not allowed here,"
+                      << " because mode of operation has already been specified.\n";
+            return rcInvalidParameter;
+          }
+        }
+        //sets explicit mode
+        else if ((param=="--explicit") or (param=="-e"))
+        {
+          if (!specifiedMode)
+          {
+            doAllPlugins = false;
+            specifiedMode = true;
+          }
+          else
+          {
+            std::cout << "Error: parameter \""<<param<<"\" is not allowed here,"
+                      << " because mode of operation has already been specified.\n";
+            return rcInvalidParameter;
+          }
         }
         else
         {
@@ -255,7 +313,7 @@ int main(int argc, char **argv)
     DepFileList DummyDeps;//It's not actually used after the read function, but
                           // readESM() needs one as parameter.
     const int read_result = reader.readESM(baseDir+files.at(i).name, DummyDeps, verbose);
-    if (read_result<=-1)
+    if (read_result<0)
     {
       std::cout << "Error while reading file \""<<baseDir+files.at(i).name
                 <<"\".\nAborting.\n";
@@ -328,25 +386,6 @@ int main(int argc, char **argv)
         std::cout <<".\n";
       }//if
     }//if no error occured
-
-
-    /*iter = DeletableMeshes.begin();
-    std::cout << "\n\nDeletable meshes:\n";
-    while (iter!=DeletableMeshes.end() and (i<25))
-    {
-      std::cout << *iter << "\n";
-      ++iter;
-      ++i;
-    }//while
-    std::cout << "\n\nDeletable icons:\n";
-    iter = DeletableIcons.begin();
-    i=0;
-    while (iter!=DeletableIcons.end() and (i<25))
-    {
-      std::cout << *iter << "\n";
-      ++iter;
-      ++i;
-    }//while */
 
     std::string input;
     do

@@ -23,6 +23,9 @@
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 
+namespace MWTP
+{
+
 const int32_t rfPlayable = 1;
 const int32_t rfBeastRace = 2;
 
@@ -477,3 +480,5 @@ bool operator<(const RaceRecord& left, const RaceRecord& right)
 {
   return (left.RaceID.compare(right.RaceID)<0);
 }
+
+} //namespace

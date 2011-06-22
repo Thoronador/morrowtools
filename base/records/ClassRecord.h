@@ -25,6 +25,9 @@
 #include <fstream>
 #include "BasicRecord.h"
 
+namespace MWTP
+{
+
 struct ClassRecord: public BasicRecord
 {
   std::string ClassID;
@@ -72,5 +75,6 @@ struct ClassRecord: public BasicRecord
   bool loadFromStream(std::ifstream& in_File);
 };//struct
 
+} //namespace
 
 #endif // CLASSRECORD_H

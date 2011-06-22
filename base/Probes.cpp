@@ -21,6 +21,9 @@
 #include "Probes.h"
 #include <iostream>
 
+namespace MWTP
+{
+
 Probes::Probes()
 {
   //empty
@@ -123,3 +126,5 @@ int Probes::readRecordPROB(std::ifstream& in_File)
   addProbe(temp);
   return 1;
 } //readRecordPROB
+
+} //namespace

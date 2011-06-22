@@ -26,6 +26,9 @@
 #include <fstream>
 #include "records/IngredientRecord.h"
 
+namespace MWTP
+{
+
 typedef std::map<const std::string, IngredientRecord>::const_iterator IngredListIterator;
 
 class Ingredients
@@ -102,5 +105,7 @@ class Ingredients
     /* internal data */
     std::map<const std::string, IngredientRecord> m_Ingredients;
 };//class
+
+} //namespace
 
 #endif // INGREDIENTS_H

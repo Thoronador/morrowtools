@@ -25,6 +25,9 @@
 #include <map>
 #include "records/LeveledItemRecord.h"
 
+namespace MWTP
+{
+
 //iterator type for leveled item list
 typedef std::map<std::string, LeveledItemRecord>::const_iterator LeveledItemListIterator;
 
@@ -103,5 +106,7 @@ class LeveledItems
     /* internal data */
     std::map<std::string, LeveledItemRecord> m_LeveledItems;
 };//class
+
+} //namespace
 
 #endif // LEVELEDITEMS_H

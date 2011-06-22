@@ -25,6 +25,9 @@
 #include <map>
 #include "records/EnchantingRecord.h"
 
+namespace MWTP
+{
+
 //iterator type for enchanting list
 typedef std::map<std::string, EnchantingRecord>::const_iterator EnchantingListIterator;
 
@@ -103,5 +106,7 @@ class Enchantings
     /* internal data */
     std::map<std::string, EnchantingRecord> m_Enchantings;
 };//class
+
+} //namespace
 
 #endif // ENCHANTINGS_H

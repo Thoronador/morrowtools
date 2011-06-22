@@ -25,6 +25,9 @@
 #include <map>
 #include "records/LandscapeTextureRecord.h"
 
+namespace MWTP
+{
+
 //iterator type for landscape texture list
 typedef std::map<std::string, LandscapeTextureRecord>::const_iterator LandscapeTextureListIterator;
 
@@ -103,5 +106,7 @@ class LandscapeTextures
     /* internal data */
     std::map<std::string, LandscapeTextureRecord> m_LandscapeTextures;
 };//class
+
+} //namespace
 
 #endif // LANDSCAPETEXTURES_H

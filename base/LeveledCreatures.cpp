@@ -21,6 +21,9 @@
 #include "LeveledCreatures.h"
 #include <iostream>
 
+namespace MWTP
+{
+
 LeveledCreatures::LeveledCreatures()
 {
   //empty
@@ -124,3 +127,5 @@ int LeveledCreatures::readRecordLEVC(std::ifstream& in_File)
   addLeveledCreature(temp);
   return 1;
 } //readRecordLEVC
+
+} //namespace

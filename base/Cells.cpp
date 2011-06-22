@@ -22,6 +22,9 @@
 #include <iostream>
 #include <sstream>
 
+namespace MWTP
+{
+
 CellRef::CellRef(const CellRecord& rec)
 {
   X = rec.GridX;
@@ -152,3 +155,5 @@ int Cells::readRecordCELL(std::ifstream& in_File)
   addCell(temp);
   return 1;
 } //readRecordCELL
+
+} //namespace

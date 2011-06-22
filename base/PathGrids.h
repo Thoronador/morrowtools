@@ -25,6 +25,9 @@
 #include <map>
 #include "records/PathGridRecord.h"
 
+namespace MWTP
+{
+
 struct PathGridRef
 {
   int32_t X;
@@ -122,5 +125,7 @@ class PathGrids
     /* internal data */
     std::map<PathGridRef, PathGridRecord> m_PathGrids;
 };//class
+
+} //namespace
 
 #endif // PATHGRIDS_H

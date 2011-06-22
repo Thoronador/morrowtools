@@ -25,6 +25,9 @@
 #include <map>
 #include "records/LockpickRecord.h"
 
+namespace MWTP
+{
+
 //iterator type for lockpick list
 typedef std::map<std::string, LockpickRecord>::const_iterator LockpickListIterator;
 
@@ -102,5 +105,7 @@ class Lockpicks
     /* internal data */
     std::map<std::string, LockpickRecord> m_Lockpicks;
 };//class
+
+} //namespace
 
 #endif // LOCKPICKS_H

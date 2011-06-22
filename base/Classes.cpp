@@ -21,6 +21,9 @@
 #include "Classes.h"
 #include <iostream>
 
+namespace MWTP
+{
+
 Classes::Classes()
 {
   //empty
@@ -124,3 +127,5 @@ int Classes::readRecordCLAS(std::ifstream& in_File)
   addClass(temp);
   return 1;
 } //readRecordCLAS
+
+} //namespace

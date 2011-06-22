@@ -26,6 +26,9 @@
 #include <vector>
 #include "BasicRecord.h"
 
+namespace MWTP
+{
+
 struct LevCreatureListEntry
 {
   std::string CreatureID;
@@ -60,5 +63,7 @@ struct LeveledCreatureRecord: public BasicRecord
   */
   bool loadFromStream(std::ifstream& in_File);
 };//struct
+
+} //namespace
 
 #endif // LEVELEDCREATURERECORD_H

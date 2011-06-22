@@ -25,6 +25,9 @@
 #include <set>
 #include "records/RaceRecord.h"
 
+namespace MWTP
+{
+
 //iterator type for race list
 typedef std::set<RaceRecord>::const_iterator RaceListIterator;
 
@@ -103,5 +106,7 @@ class Races
     /* internal data */
     std::set<RaceRecord> m_Races;
 };//class
+
+} //namespace
 
 #endif // RACES_H

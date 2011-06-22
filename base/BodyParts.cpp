@@ -21,6 +21,9 @@
 #include "BodyParts.h"
 #include <iostream>
 
+namespace MWTP
+{
+
 BodyParts::BodyParts()
 {
   //empty
@@ -123,3 +126,5 @@ int BodyParts::readRecordBODY(std::ifstream& in_File)
   addBodyPart(temp);
   return 1;
 } //readRecordACTI
+
+} //namespace

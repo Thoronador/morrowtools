@@ -21,6 +21,9 @@
 #include "Skills.h"
 #include <iostream>
 
+namespace MWTP
+{
+
 Skills::Skills()
 {
   //empty
@@ -214,3 +217,5 @@ void Skills::clearAll()
 {
   m_Skills.clear();
 }
+
+} //namespace

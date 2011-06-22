@@ -65,6 +65,9 @@
 #include "SoundGenerators.h"
 #include "Weapons.h"
 
+namespace MWTP
+{
+
 ESMReaderAll::ESMReaderAll()
 {
   //empty
@@ -219,3 +222,5 @@ int ESMReaderAll::processNextRecord(std::ifstream& in_File)
   }//swi
   return lastResult;
 }//processNextRecord of ESMReaderAll class
+
+} //namespace

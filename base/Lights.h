@@ -25,6 +25,9 @@
 #include <map>
 #include "records/LightRecord.h"
 
+namespace MWTP
+{
+
 //iterator type for light list
 typedef std::map<std::string, LightRecord>::const_iterator LightListIterator;
 
@@ -102,5 +105,7 @@ class Lights
     /* internal data */
     std::map<std::string, LightRecord> m_Lights;
 };//class
+
+} //namespace
 
 #endif // LIGHTS_H

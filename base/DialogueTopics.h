@@ -24,6 +24,9 @@
 #include <map>
 #include "records/DialogueTopicRecord.h"
 
+namespace MWTP
+{
+
 //iterator type for dialogue topic list
 typedef std::map<std::string, DialogueTopicRecord>::const_iterator DialogueTopicListIterator;
 
@@ -102,5 +105,7 @@ class DialogueTopics
     /* internal data */
     std::map<std::string, DialogueTopicRecord> m_DialogueTopics;
 };//class
+
+} //namespace
 
 #endif // DIALOGUETOPICS_H

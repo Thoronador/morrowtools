@@ -21,6 +21,9 @@
 #include "Doors.h"
 #include <iostream>
 
+namespace MWTP
+{
+
 Doors::Doors()
 {
   //empty
@@ -124,3 +127,5 @@ int Doors::readRecordDOOR(std::ifstream& in_File)
   addDoor(temp);
   return 1;
 } //readRecordDOOR
+
+} //namespace

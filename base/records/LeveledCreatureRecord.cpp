@@ -23,6 +23,9 @@
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 
+namespace MWTP
+{
+
 LeveledCreatureRecord::LeveledCreatureRecord()
 {
   LevCreatureID = "";
@@ -353,3 +356,5 @@ bool LeveledCreatureRecord::loadFromStream(std::ifstream& in_File)
 
   return in_File.good();
 }
+
+} //namespace

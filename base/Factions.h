@@ -25,6 +25,9 @@
 #include <map>
 #include "records/FactionRecord.h"
 
+namespace MWTP
+{
+
 //iterator type for faction list
 typedef std::map<std::string, FactionRecord>::const_iterator FactionListIterator;
 
@@ -103,5 +106,7 @@ class Factions
     /* internal data */
     std::map<std::string, FactionRecord> m_Factions;
 };//class
+
+} //namespace
 
 #endif // FACTIONS_H

@@ -21,6 +21,9 @@
 #include "Lights.h"
 #include <iostream>
 
+namespace MWTP
+{
+
 Lights::Lights()
 {
   //empty
@@ -123,3 +126,5 @@ int Lights::readRecordLIGH(std::ifstream& in_File)
   addLight(temp);
   return 1;
 } //readRecordLIGH
+
+} //namespace

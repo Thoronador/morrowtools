@@ -21,6 +21,9 @@
 #include "Clothings.h"
 #include <iostream>
 
+namespace MWTP
+{
+
 Clothings::Clothings()
 {
   //empty
@@ -124,3 +127,5 @@ int Clothings::readRecordCLOT(std::ifstream& in_File)
   addClothing(temp);
   return 1;
 } //readRecordCLOT
+
+} //namespace MWTP

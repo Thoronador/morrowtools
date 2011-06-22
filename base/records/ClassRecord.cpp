@@ -23,6 +23,9 @@
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 
+namespace MWTP
+{
+
 ClassRecord::ClassRecord()
 {
   ClassID = "";
@@ -378,3 +381,5 @@ bool ClassRecord::loadFromStream(std::ifstream& in_File)
   delete[] Buffer;
   return in_File.good();
 }
+
+} //namespace

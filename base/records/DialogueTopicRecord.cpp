@@ -23,6 +23,9 @@
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 
+namespace MWTP
+{
+
 const uint8_t DialogueTopicRecord::dttRegular = 0;
 const uint8_t DialogueTopicRecord::dttVoice = 1;
 const uint8_t DialogueTopicRecord::dttGreeting = 2;
@@ -169,3 +172,5 @@ bool DialogueTopicRecord::isJournal() const
 {
   return (Type==dttJournal);
 }
+
+} //namespace

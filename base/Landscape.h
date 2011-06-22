@@ -24,6 +24,9 @@
 #include <map>
 #include "records/LandscapeRecord.h"
 
+namespace MWTP
+{
+
 struct LandscapeCoords
 {
   int32_t X;
@@ -129,5 +132,7 @@ class Landscape
     /* internal data */
     std::map<LandscapeCoords, LandscapeRecord*> m_Landscape;
 };//class
+
+} //namespace
 
 #endif // LANDSCAPE_H

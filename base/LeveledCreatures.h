@@ -25,6 +25,9 @@
 #include <map>
 #include "records/LeveledCreatureRecord.h"
 
+namespace MWTP
+{
+
 //iterator type for leveled creature list
 typedef std::map<std::string, LeveledCreatureRecord>::const_iterator LeveledCreatureListIterator;
 
@@ -103,5 +106,7 @@ class LeveledCreatures
     /* internal data */
     std::map<std::string, LeveledCreatureRecord> m_LeveledCreatures;
 };//class
+
+} //namespace
 
 #endif // LEVELEDCREATURES_H

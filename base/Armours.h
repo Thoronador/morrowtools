@@ -26,6 +26,9 @@
 #include "records/ArmourRecord.h"
 #include "ComparisonFunctor.h"
 
+namespace MWTP
+{
+
 //iterator type for armour list
 typedef std::map<std::string, ArmourRecord>::const_iterator ArmourListIterator;
 
@@ -104,5 +107,7 @@ class Armours
     /* internal data */
     std::map<std::string, ArmourRecord, ci_less> m_Armours;
 };//class
+
+} //namespace
 
 #endif // ARMOURS_H

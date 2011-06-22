@@ -25,6 +25,9 @@
 #include <map>
 #include "records/BookRecord.h"
 
+namespace MWTP
+{
+
 //iterator type for book list
 typedef std::map<std::string, BookRecord>::const_iterator BookListIterator;
 
@@ -103,5 +106,7 @@ class Books
     /* internal data */
     std::map<std::string, BookRecord> m_Books;
 };//class
+
+} //namespace
 
 #endif // BOOKS_H

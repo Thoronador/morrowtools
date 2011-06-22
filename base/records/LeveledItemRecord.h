@@ -26,6 +26,9 @@
 #include <vector>
 #include "BasicRecord.h"
 
+namespace MWTP
+{
+
 struct LevItemListEntry
 {
   std::string ItemID;
@@ -60,5 +63,7 @@ struct LeveledItemRecord: public BasicRecord
   */
   bool loadFromStream(std::ifstream& in_File);
 };//struct
+
+} //namespace
 
 #endif // LEVELEDITEMRECORD_H

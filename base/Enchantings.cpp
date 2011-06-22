@@ -21,6 +21,9 @@
 #include "Enchantings.h"
 #include <iostream>
 
+namespace MWTP
+{
+
 Enchantings::Enchantings()
 {
   //empty
@@ -124,3 +127,5 @@ int Enchantings::readRecordENCH(std::ifstream& in_File)
   addEnchanting(temp);
   return 1;
 } //readRecordENCH
+
+} //namespace

@@ -21,6 +21,9 @@
 #include "AlchemyPotions.h"
 #include <iostream>
 
+namespace MWTP
+{
+
 AlchemyPotions::AlchemyPotions()
 {
   //empty
@@ -124,3 +127,5 @@ int AlchemyPotions::readRecordALCH(std::ifstream& in_File)
   addAlchemyPotion(temp);
   return 1;
 } //readRecordALCH
+
+} //namespace

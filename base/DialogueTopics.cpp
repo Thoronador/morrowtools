@@ -21,6 +21,9 @@
 #include "DialogueTopics.h"
 #include <iostream>
 
+namespace MWTP
+{
+
 DialogueTopics::DialogueTopics()
 {
   //empty
@@ -124,3 +127,5 @@ int DialogueTopics::readRecordDIAL(std::ifstream& in_File)
   addDialogueTopic(temp);
   return 1;
 } //readRecordDIAL
+
+} //namespace

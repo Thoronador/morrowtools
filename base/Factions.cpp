@@ -21,6 +21,9 @@
 #include "Factions.h"
 #include <iostream>
 
+namespace MWTP
+{
+
 Factions::Factions()
 {
   //empty
@@ -124,3 +127,5 @@ int Factions::readRecordFACT(std::ifstream& in_File)
   addFaction(temp);
   return 1;
 } //readRecordFACT
+
+} //namespace

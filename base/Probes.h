@@ -25,6 +25,9 @@
 #include <set>
 #include "records/ProbeRecord.h"
 
+namespace MWTP
+{
+
 //iterator type for probe list
 typedef std::set<ProbeRecord>::const_iterator ProbeListIterator;
 
@@ -103,5 +106,7 @@ class Probes
     /* internal data */
     std::set<ProbeRecord> m_Probes;
 };//class
+
+} //namespace
 
 #endif // PROBES_H

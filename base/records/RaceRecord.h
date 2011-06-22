@@ -25,6 +25,9 @@
 #include <vector>
 #include "BasicRecord.h"
 
+namespace MWTP
+{
+
 struct SkillBonus
 {
   int32_t SkillID;
@@ -87,5 +90,7 @@ struct RaceRecord: public BasicRecord
 
 //comparison operator for ordered set
 bool operator<(const RaceRecord& left, const RaceRecord& right);
+
+} //namespace
 
 #endif // RACERECORD_H

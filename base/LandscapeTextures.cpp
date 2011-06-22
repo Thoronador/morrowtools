@@ -21,6 +21,9 @@
 #include "LandscapeTextures.h"
 #include <iostream>
 
+namespace MWTP
+{
+
 LandscapeTextures::LandscapeTextures()
 {
   //empty
@@ -122,4 +125,6 @@ int LandscapeTextures::readRecordLTEX(std::ifstream& in_File)
   }//if activator present
   addLandscapeTexture(temp.TextureID, temp);
   return 1;
-} //readRecordACTI
+} //readRecordLTEX
+
+} //namespace

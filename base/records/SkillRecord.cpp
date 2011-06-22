@@ -23,6 +23,9 @@
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 
+namespace MWTP
+{
+
 bool SkillRecord::equals(const SkillRecord& other) const
 {
   return ((Attribute==other.Attribute) and (Specialization==other.Specialization)
@@ -179,3 +182,5 @@ bool SkillRecord::loadFromStream(std::ifstream& in_File)
   Description = std::string(Buffer);
   return true;
 }
+
+} //namespace

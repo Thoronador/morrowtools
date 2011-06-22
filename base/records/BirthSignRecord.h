@@ -26,6 +26,9 @@
 #include <vector>
 #include "BasicRecord.h"
 
+namespace MWTP
+{
+
 struct BirthSignRecord: public BasicRecord
 {
   std::string BirthSignID;
@@ -60,5 +63,7 @@ struct BirthSignRecord: public BasicRecord
 
 //comparison operator for BirthSignRecords
 bool operator<(const BirthSignRecord& left, const BirthSignRecord& right);
+
+} //namespace
 
 #endif // BIRTHSIGNRECORD_H

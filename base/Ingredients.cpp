@@ -21,6 +21,9 @@
 #include "Ingredients.h"
 #include <iostream>
 
+namespace MWTP
+{
+
 Ingredients::Ingredients()
 {
   m_Ingredients.clear();
@@ -128,3 +131,5 @@ bool Ingredients::saveAllToStream(std::ofstream& output) const
   }//while
   return output.good();
 }
+
+} //namespace

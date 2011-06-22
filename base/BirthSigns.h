@@ -25,6 +25,9 @@
 #include <set>
 #include "records/BirthSignRecord.h"
 
+namespace MWTP
+{
+
 //iterator type for birth sign list
 typedef std::set<BirthSignRecord>::const_iterator BirthSignListIterator;
 
@@ -103,5 +106,7 @@ class BirthSigns
     /* internal data */
     std::set<BirthSignRecord> m_BirthSigns;
 };//class
+
+} //namespace
 
 #endif // BIRTHSIGNS_H

@@ -21,6 +21,9 @@
 #include "BirthSigns.h"
 #include <iostream>
 
+namespace MWTP
+{
+
 BirthSigns::BirthSigns()
 {
   //empty
@@ -124,3 +127,5 @@ int BirthSigns::readRecordBSGN(std::ifstream& in_File)
   addBirthSign(temp);
   return 1;
 } //readRecordBSGN
+
+} //namespace

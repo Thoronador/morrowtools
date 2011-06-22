@@ -25,6 +25,9 @@
 #include <map>
 #include "records/CellRecord.h"
 
+namespace MWTP
+{
+
 struct CellRef
 {
   int32_t X;
@@ -122,5 +125,7 @@ class Cells
     /* internal data */
     std::map<CellRef, CellRecord> m_Cells;
 };//class
+
+} //namespace
 
 #endif // CELLS_H

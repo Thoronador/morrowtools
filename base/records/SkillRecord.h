@@ -25,6 +25,9 @@
 #include <fstream>
 #include "BasicRecord.h"
 
+namespace MWTP
+{
+
 //constants for skill indices
 const int32_t SkillBlock = 0;
 const int32_t SkillArmorer = 1;
@@ -86,5 +89,7 @@ struct SkillRecord: public BasicRecord
   */
   bool loadFromStream(std::ifstream& in_File);
 };
+
+} //namespace
 
 #endif // SKILLRECORD_H

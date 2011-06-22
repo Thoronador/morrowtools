@@ -25,6 +25,9 @@
 #include <fstream>
 #include "BasicRecord.h"
 
+namespace MWTP
+{
+
 struct DialogueTopicRecord: public BasicRecord
 {
   std::string DialogueID;
@@ -67,5 +70,7 @@ struct DialogueTopicRecord: public BasicRecord
   /* returns true, if the topic type indicates a journal entry */
   bool isJournal() const;
 };//struct
+
+} //namespace
 
 #endif // DIALOGUETOPICRECORD_H

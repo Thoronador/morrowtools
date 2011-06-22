@@ -23,6 +23,9 @@
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 
+namespace MWTP
+{
+
 BirthSignRecord::BirthSignRecord()
 {
   BirthSignID = Name = Texture = Description = "";
@@ -302,3 +305,5 @@ bool operator<(const BirthSignRecord& left, const BirthSignRecord& right)
 {
   return (left.BirthSignID.compare(right.BirthSignID)<0);
 }
+
+} //namespace

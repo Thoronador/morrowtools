@@ -25,6 +25,9 @@
 #include <map>
 #include "records/AlchemyPotionRecord.h"
 
+namespace MWTP
+{
+
 //iterator type for potion list
 typedef std::map<std::string, AlchemyPotionRecord>::const_iterator AlchemyPotionListIterator;
 
@@ -103,5 +106,7 @@ class AlchemyPotions
     /* internal data */
     std::map<std::string, AlchemyPotionRecord> m_AlchemyPotions;
 };//class
+
+} //namespace
 
 #endif // ALCHEMYPOTIONS_H

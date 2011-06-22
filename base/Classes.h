@@ -25,6 +25,9 @@
 #include <map>
 #include "records/ClassRecord.h"
 
+namespace MWTP
+{
+
 //iterator type for class list
 typedef std::map<std::string, ClassRecord>::const_iterator ClassListIterator;
 
@@ -102,5 +105,7 @@ class Classes
     /* internal data */
     std::map<std::string, ClassRecord> m_Classes;
 };//class
+
+} //namespace
 
 #endif // CLASSES_H

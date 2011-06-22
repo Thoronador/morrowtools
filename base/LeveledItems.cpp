@@ -21,6 +21,9 @@
 #include "LeveledItems.h"
 #include <iostream>
 
+namespace MWTP
+{
+
 LeveledItems::LeveledItems()
 {
   //empty
@@ -124,3 +127,5 @@ int LeveledItems::readRecordLEVI(std::ifstream& in_File)
   addLeveledItem(temp);
   return 1;
 } //readRecordLEVI
+
+} //namespace

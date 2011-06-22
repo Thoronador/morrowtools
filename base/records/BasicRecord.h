@@ -24,6 +24,9 @@
 #include <fstream>
 #include <stdint.h>
 
+namespace MWTP
+{
+
 struct BasicRecord
 {
   public:
@@ -62,5 +65,7 @@ struct BasicRecord
      int32_t HeaderOne;
      int32_t HeaderFlags;
 }; //struct
+
+} //namespace
 
 #endif // BASICRECORD_H

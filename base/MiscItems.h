@@ -25,6 +25,9 @@
 #include <map>
 #include "records/MiscItemRecord.h"
 
+namespace MWTP
+{
+
 //iterator type for misc. item list
 typedef std::map<std::string, MiscItemRecord>::const_iterator MiscItemListIterator;
 
@@ -103,5 +106,7 @@ class MiscItems
     /* internal data */
     std::map<std::string, MiscItemRecord> m_MiscItems;
 };//class
+
+} //namespace
 
 #endif // MISCITEMS_H

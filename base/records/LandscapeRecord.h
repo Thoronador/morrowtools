@@ -24,6 +24,9 @@
 #include <fstream>
 #include "BasicRecord.h"
 
+namespace MWTP
+{
+
 struct LandscapeRecord: public BasicRecord
 {
   int32_t CellX;
@@ -64,5 +67,7 @@ struct LandscapeRecord: public BasicRecord
   */
   bool loadFromStream(std::ifstream& in_File);
 };//struct
+
+} //namespace
 
 #endif // LANDSCAPERECORD_H

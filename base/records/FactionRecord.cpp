@@ -23,6 +23,9 @@
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 
+namespace MWTP
+{
+
 bool FactionRankData::operator==(const FactionRankData& other) const
 {
   return ((Attr1==other.Attr1) and (Attr2==other.Attr2)
@@ -432,3 +435,5 @@ bool FactionRecord::loadFromStream(std::ifstream& in_File)
 
   return in_File.good();
 }
+
+} //namespace MWTP

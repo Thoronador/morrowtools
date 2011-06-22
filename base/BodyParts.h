@@ -25,6 +25,9 @@
 #include <set>
 #include "records/BodyPartRecord.h"
 
+namespace MWTP
+{
+
 //iterator type for body part list
 typedef std::set<BodyPartRecord>::const_iterator BodyPartListIterator;
 
@@ -103,5 +106,7 @@ class BodyParts
     /* internal data */
     std::set<BodyPartRecord> m_BodyParts;
 };//class
+
+} //namespace
 
 #endif // BODYPARTS_H

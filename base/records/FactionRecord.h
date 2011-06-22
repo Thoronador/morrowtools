@@ -25,6 +25,9 @@
 #include <vector>
 #include "BasicRecord.h"
 
+namespace MWTP
+{
+
 struct FactionRankData
 {
   int32_t Attr1;
@@ -81,5 +84,7 @@ struct FactionRecord: public BasicRecord
   */
   bool loadFromStream(std::ifstream& in_File);
 };//struct
+
+} //namespace
 
 #endif // FACTIONRECORD_H

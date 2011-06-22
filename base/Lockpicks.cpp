@@ -21,6 +21,9 @@
 #include "Lockpicks.h"
 #include <iostream>
 
+namespace MWTP
+{
+
 Lockpicks::Lockpicks()
 {
   //empty
@@ -123,3 +126,5 @@ int Lockpicks::readRecordLOCK(std::ifstream& in_File)
   addLockpick(temp);
   return 1;
 } //readRecordLOCK
+
+} //namespace

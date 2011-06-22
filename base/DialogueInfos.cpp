@@ -21,6 +21,9 @@
 #include "DialogueInfos.h"
 #include <iostream>
 
+namespace MWTP
+{
+
 DialogueInfos::DialogueInfos()
 {
   //empty
@@ -124,3 +127,5 @@ int DialogueInfos::readRecordINFO(std::ifstream& in_File)
   addDialogueInfo(temp);
   return 1;
 } //readRecordINFO
+
+} //namespace

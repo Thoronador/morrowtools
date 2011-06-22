@@ -23,6 +23,9 @@
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 
+namespace MWTP
+{
+
 LandscapeTextureRecord::LandscapeTextureRecord()
 {
   TextureID = "";
@@ -170,3 +173,5 @@ bool LandscapeTextureRecord::loadFromStream(std::ifstream& in_File)
   Path = std::string(Buffer);
   return true;
 }
+
+} //namespace

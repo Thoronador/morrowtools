@@ -26,6 +26,9 @@
 #include "BasicRecord.h"
 #include "../Enchantment.h"
 
+namespace MWTP
+{
+
 struct EnchantingRecord: public BasicRecord
 {
   std::string EnchantingID;
@@ -60,5 +63,7 @@ struct EnchantingRecord: public BasicRecord
   */
   bool loadFromStream(std::ifstream& in_File);
 };//struct
+
+} //namespace
 
 #endif // ENCHANTINGRECORD_H

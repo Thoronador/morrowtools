@@ -21,6 +21,9 @@
 #include "Landscape.h"
 #include <iostream>
 
+namespace MWTP
+{
+
 LandscapeCoords::LandscapeCoords(const LandscapeRecord& rec)
 {
   X = rec.CellX;
@@ -167,3 +170,5 @@ int Landscape::readRecordLAND(std::ifstream& in_File)
   addLandscapeRecord(temp);
   return 1;
 } //readRecordLAND
+
+} //namespace

@@ -25,6 +25,9 @@
 #include <map>
 #include "records/DoorRecord.h"
 
+namespace MWTP
+{
+
 //iterator type for door list
 typedef std::map<std::string, DoorRecord>::const_iterator DoorListIterator;
 
@@ -103,5 +106,7 @@ class Doors
     /* internal data */
     std::map<std::string, DoorRecord> m_Doors;
 };//class
+
+} //namespace
 
 #endif // DOORS_H

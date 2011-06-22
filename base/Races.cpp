@@ -21,6 +21,9 @@
 #include "Races.h"
 #include <iostream>
 
+namespace MWTP
+{
+
 Races::Races()
 {
   //empty
@@ -123,3 +126,5 @@ int Races::readRecordRACE(std::ifstream& in_File)
   addRace(temp);
   return 1;
 } //readRecordRACE
+
+} //namespace

@@ -26,6 +26,9 @@
 #include <fstream>
 #include "records/ApparatusRecord.h"
 
+namespace MWTP
+{
+
 //iterator type for apparatus list
 typedef std::map<std::string, ApparatusRecord>::const_iterator ApparatusListIterator;
 
@@ -104,5 +107,7 @@ class Apparatuses
     /* internal data */
     std::map<std::string, ApparatusRecord> m_Apparatuses;
 };//class
+
+} //namespace
 
 #endif // APPARATUSES_H

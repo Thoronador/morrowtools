@@ -23,6 +23,9 @@
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 
+namespace MWTP
+{
+
 LeveledItemRecord::LeveledItemRecord()
 {
   LevItemID = "";
@@ -341,3 +344,5 @@ bool LeveledItemRecord::loadFromStream(std::ifstream& in_File)
 
   return in_File.good();
 }
+
+} //namespace

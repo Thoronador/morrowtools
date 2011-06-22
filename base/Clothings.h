@@ -26,6 +26,9 @@
 #include "records/ClothingRecord.h"
 #include "ComparisonFunctor.h"
 
+namespace MWTP
+{
+
 //iterator type for clothing list
 typedef std::map<std::string, ClothingRecord>::const_iterator ClothingListIterator;
 
@@ -104,5 +107,7 @@ class Clothings
     /* internal data */
     std::map<std::string, ClothingRecord, ci_less> m_Clothings;
 };//class
+
+} //namespace MWTP
 
 #endif // CLOTHINGS_H

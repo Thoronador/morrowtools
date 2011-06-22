@@ -21,6 +21,9 @@
 #include "Books.h"
 #include <iostream>
 
+namespace MWTP
+{
+
 Books::Books()
 {
   //empty
@@ -124,3 +127,5 @@ int Books::readRecordBOOK(std::ifstream& in_File)
   addBook(temp);
   return 1;
 } //readRecordBOOK
+
+} //namespace

@@ -21,6 +21,9 @@
 #include "Apparatuses.h"
 #include <iostream>
 
+namespace MWTP
+{
+
 Apparatuses::Apparatuses()
 {
   //empty
@@ -123,3 +126,5 @@ int Apparatuses::readRecordAPPA(std::ifstream& in_File)
   addApparatus(temp);
   return 1;
 } //readRecordAPPA
+
+} //namespace

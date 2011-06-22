@@ -20,6 +20,9 @@
 
 #include "BasicRecord.h"
 
+namespace MWTP
+{
+
 const int32_t FlagPersists = 1024;
 const int32_t FlagBlocked = 8192;
 
@@ -54,3 +57,5 @@ bool BasicRecord::isPersistent() const
 {
   return ((HeaderFlags & FlagPersists)!=0);
 }
+
+} //namespace

@@ -22,6 +22,9 @@
 #include <iostream>
 #include <sstream>
 
+namespace MWTP
+{
+
 PathGridRef::PathGridRef(const PathGridRecord& rec)
 {
   X = rec.GridX;
@@ -152,3 +155,5 @@ int PathGrids::readRecordPGRD(std::ifstream& in_File)
   addPathGrid(temp);
   return 1;
 } //readRecordPGRD
+
+} //namespace

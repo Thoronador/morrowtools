@@ -25,6 +25,9 @@
 #include <fstream>
 #include "BasicRecord.h"
 
+namespace MWTP
+{
+
 struct LandscapeTextureRecord: public BasicRecord
 {
   std::string TextureID;
@@ -51,5 +54,7 @@ struct LandscapeTextureRecord: public BasicRecord
   */
   bool loadFromStream(std::ifstream& in_File);
 };//struct
+
+} //namespace
 
 #endif // LANDSCAPETEXTURERECORD_H

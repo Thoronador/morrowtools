@@ -21,6 +21,9 @@
 #include "Armours.h"
 #include <iostream>
 
+namespace MWTP
+{
+
 Armours::Armours()
 {
   //empty
@@ -124,3 +127,5 @@ int Armours::readRecordARMO(std::ifstream& in_File)
   addArmour(temp);
   return 1;
 } //readRecordARMO
+
+} //namespace

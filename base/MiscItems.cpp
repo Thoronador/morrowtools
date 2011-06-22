@@ -21,6 +21,9 @@
 #include "MiscItems.h"
 #include <iostream>
 
+namespace MWTP
+{
+
 MiscItems::MiscItems()
 {
   //empty
@@ -124,3 +127,5 @@ int MiscItems::readRecordMISC(std::ifstream& in_File)
   addMiscItem(temp);
   return 1;
 } //readRecordMISC
+
+} //namespace

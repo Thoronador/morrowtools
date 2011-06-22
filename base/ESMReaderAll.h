@@ -23,6 +23,9 @@
 
 #include "ESMReader.h"
 
+namespace MWTP
+{
+
 /* This descendant of the ESMReader class tries to read all records from the
    given .esm/.esp file and uses the appropriate singleton classes to store the
    read data records.
@@ -46,5 +49,7 @@ class ESMReaderAll: public ESMReader
     */
     virtual int processNextRecord(std::ifstream& in_File);
 };//class
+
+} //namespace
 
 #endif // ESMREADERALL_H

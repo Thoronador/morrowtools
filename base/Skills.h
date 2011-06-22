@@ -26,6 +26,9 @@
 #include <fstream>
 #include "records/SkillRecord.h"
 
+namespace MWTP
+{
+
 //iterator type
 typedef std::map<int32_t, SkillRecord>::const_iterator SkillListIterator;
 
@@ -114,5 +117,7 @@ class Skills
     /* internal data list */
     std::map<int32_t, SkillRecord> m_Skills;
 }; //class
+
+} //namespace
 
 #endif // SKILLS_H

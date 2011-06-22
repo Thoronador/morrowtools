@@ -23,6 +23,9 @@
 
 #include <stdint.h>
 
+namespace MWTP
+{
+
 /* structure to hold the AI data of an NPC */
 struct NPC_AIData
 {
@@ -44,5 +47,7 @@ struct NPC_AIData
   /* comparison operator */
   bool operator==(const NPC_AIData& other) const;
 };//struct
+
+} //namespace
 
 #endif // AIDATA_H

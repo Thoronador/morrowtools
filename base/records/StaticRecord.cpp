@@ -24,6 +24,9 @@
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 
+namespace MWTP
+{
+
 bool StaticRecord::equals(const StaticRecord& other) const
 {
   return ((StaticID==other.StaticID) and (Mesh==other.Mesh));
@@ -125,3 +128,5 @@ bool StaticRecord::loadFromStream(std::ifstream& in_File)
   Mesh = std::string(Buffer);
   return true;
 }
+
+} //namespace

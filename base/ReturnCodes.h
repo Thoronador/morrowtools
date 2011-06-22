@@ -21,6 +21,9 @@
 #ifndef RETURNCODES_H
 #define RETURNCODES_H
 
+namespace MWTP
+{
+
 //return codes
 const int rcInvalidParameter = 1;
 const int rcFileError = 2;
@@ -31,5 +34,7 @@ const int rcXMLError = 6; /* for cell translator */
 const int rcXMLEmpty = 7; /* for cell translator */
 const int rcScriptError = 8; /* for cell translator */
 const int rcNoChange = 9; /* for cell translator */
+
+} //namespace
 
 #endif // RETURNCODES_H

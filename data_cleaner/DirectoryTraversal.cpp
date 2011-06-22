@@ -33,6 +33,9 @@
 #endif
 #include "..\base\UtilityFunctions.h"
 
+namespace MWTP
+{
+
 /* structure for file list entries */
 struct FileEntry {
          std::string FileName;
@@ -200,3 +203,5 @@ void getDeletableIcons(const std::string& dir, const std::set<std::string, ci_le
     }
   }//for
 }//function getDeletableIcons
+
+} //namespace

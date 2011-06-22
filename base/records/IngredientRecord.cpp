@@ -23,6 +23,9 @@
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 
+namespace MWTP
+{
+
 IngredientRecord::IngredientRecord()
 {
   IngredientID = ModelName = IngredientName = "";
@@ -403,3 +406,5 @@ bool IngredientRecord::readSubRecordSCRI(std::ifstream& in_File, char* Buffer, u
   ScriptName = std::string(Buffer);
   return true;
 }
+
+} //namespace

@@ -25,6 +25,9 @@
 #include <fstream>
 #include "BasicRecord.h"
 
+namespace MWTP
+{
+
 struct BookRecord: public BasicRecord
 {
   public:
@@ -112,5 +115,7 @@ struct BookRecord: public BasicRecord
 
 //comparison operator for BookRecords
 bool operator<(const BookRecord& left, const BookRecord& right);
+
+} //namespace
 
 #endif // BOOKRECORD_H

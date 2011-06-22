@@ -23,6 +23,9 @@
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 
+namespace MWTP
+{
+
 AlchemyPotionRecord::AlchemyPotionRecord()
 {
   AlchemyID = ModelPath = Name = "";
@@ -434,3 +437,5 @@ bool AlchemyPotionRecord::readSubRecordTEXT(std::ifstream& in_File, char* Buffer
   InventoryIcon = std::string(Buffer);
   return true;
 }
+
+} //namespace

@@ -25,6 +25,9 @@
 #include <fstream>
 #include "BasicRecord.h"
 
+namespace MWTP
+{
+
 struct DoorRecord: public BasicRecord
 {
   public:
@@ -70,5 +73,7 @@ struct DoorRecord: public BasicRecord
     */
     bool readSubRecordString(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead, std::string& Destination);
 };//struct
+
+} //namespace
 
 #endif // DOORRECORD_H

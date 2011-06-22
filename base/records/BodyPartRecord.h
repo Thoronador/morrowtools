@@ -25,6 +25,9 @@
 #include <fstream>
 #include "BasicRecord.h"
 
+namespace MWTP
+{
+
 struct BodyPartRecord: public BasicRecord
 {
   std::string BodyPartID;
@@ -63,5 +66,7 @@ struct BodyPartRecord: public BasicRecord
 
 //comparison operator for BodyPartRecords
 bool operator<(const BodyPartRecord& left, const BodyPartRecord& right);
+
+} //namespace
 
 #endif // BODYPARTRECORD_H

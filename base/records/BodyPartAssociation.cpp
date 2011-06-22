@@ -20,8 +20,13 @@
 
 #include "BodyPartAssociation.h"
 
+namespace MWTP
+{
+
 bool BodyPartAssociation::operator==(const BodyPartAssociation& other) const
 {
   return ((Index==other.Index) and (MaleBodyPart==other.MaleBodyPart)
       and (FemaleBodyPart==other.FemaleBodyPart));
 }
+
+} //namespace

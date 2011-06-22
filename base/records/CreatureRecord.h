@@ -25,6 +25,9 @@
 #include <vector>
 #include "PreNPCRecord.h"
 
+namespace MWTP
+{
+
 struct CreatureRecord: public PreNPCRecord
 {
   std::string CreatureID;
@@ -90,5 +93,7 @@ struct CreatureRecord: public PreNPCRecord
   */
   bool loadFromStream(std::ifstream& in_File);
 };//struct
+
+} //namespace
 
 #endif // CREATURERECORD_H

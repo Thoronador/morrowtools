@@ -24,6 +24,9 @@
 #include <string>
 #include <stdint.h>
 
+namespace MWTP
+{
+
 struct ItemRecord
 {
   int32_t Count;
@@ -32,5 +35,7 @@ struct ItemRecord
   /* operator */
   bool operator==(const ItemRecord& other) const;
 };//struct
+
+} //namespace
 
 #endif // ITEMRECORD_H

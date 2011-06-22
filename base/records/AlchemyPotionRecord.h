@@ -27,6 +27,9 @@
 #include "BasicRecord.h"
 #include "../Enchantment.h"
 
+namespace MWTP
+{
+
 struct AlchemyPotionRecord: public BasicRecord
 {
   public:
@@ -113,5 +116,7 @@ struct AlchemyPotionRecord: public BasicRecord
     */
     bool readSubRecordTEXT(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead);
 }; //struct
+
+} //namespace
 
 #endif // ALCHEMYPOTIONRECORD_H

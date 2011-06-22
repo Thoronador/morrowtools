@@ -26,6 +26,9 @@
 #include "BasicRecord.h"
 #include "BodyPartAssociation.h"
 
+namespace MWTP
+{
+
 struct ArmourRecord: public BasicRecord
 {
   std::string ArmourID;
@@ -64,5 +67,7 @@ struct ArmourRecord: public BasicRecord
   */
   bool loadFromStream(std::ifstream& in_File);
 };//struct
+
+} //namespace
 
 #endif // ARMOURRECORD_H

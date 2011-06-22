@@ -24,6 +24,9 @@
 #include "MW_Constants.h"
 #include "HelperIO.h"
 
+namespace MWTP
+{
+
 ESMReader::ESMReader()
 {
   //empty
@@ -366,3 +369,5 @@ int ESMReader::processNextRecord(std::ifstream& in_File)
   }//swi
   return lastResult;
 }//processNextRecord of ESMReader class
+
+} //namespace

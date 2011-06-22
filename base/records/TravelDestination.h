@@ -23,6 +23,9 @@
 
 #include <string>
 
+namespace MWTP
+{
+
 struct TravelDestination
 {
   float XPos, YPos, ZPos;
@@ -32,5 +35,7 @@ struct TravelDestination
   /* comparison operator */
   bool operator==(const TravelDestination& other) const;
 };//struct
+
+} //namespace
 
 #endif // TRAVELDESTINATION_H

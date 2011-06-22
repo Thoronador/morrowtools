@@ -21,6 +21,9 @@
 #include "PreNPCRecord.h"
 #include "../MW_Constants.h"
 
+namespace MWTP
+{
+
 const int32_t pnfTraining = 16384;
 const int32_t pnfSpellmaking = 32768;
 const int32_t pnfEnchanting = 65536;
@@ -239,3 +242,5 @@ bool PreNPCRecord::writeItemsSpellsAIDataDestinations(std::ofstream& output) con
 
   return output.good();
 }
+
+} //namespace

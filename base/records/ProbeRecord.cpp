@@ -23,6 +23,9 @@
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 
+namespace MWTP
+{
+
 ProbeRecord::ProbeRecord()
 {
   ProbeID = ModelPath = Name = "";
@@ -352,3 +355,4 @@ bool operator<(const ProbeRecord& left, const ProbeRecord& right)
   return (left.ProbeID.compare(right.ProbeID)<0);
 }
 
+} //namespace

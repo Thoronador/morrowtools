@@ -24,6 +24,9 @@
 #include <string>
 #include "DepFiles.h"
 
+namespace MWTP
+{
+
 /* tries to add all game files listed in the Morrowind.ini to 'files ' and
    returns zero on success or the non-zero error code on failure.
 
@@ -33,5 +36,7 @@
        files   - the list that will hold the file names from the Morrowind.ini
 */
 int getFilesFromMorrowindIni(const std::string& baseDir, DepFileList& files);
+
+} //namespace
 
 #endif // INIFUNCTIONS_H

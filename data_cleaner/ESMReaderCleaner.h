@@ -26,6 +26,9 @@
 #include "../base/ESMReader.h"
 #include "../base/ComparisonFunctor.h"
 
+namespace MWTP
+{
+
 /* This descendant of the ESMReader class tries to read all records from the
    given .esm/.esp file which can contain paths to textures or meshes or
    icons.
@@ -59,5 +62,7 @@ class ESMReaderCleaner: public ESMReader
     std::string baseDirMesh;
     std::string baseDirIcon;
 };//class
+
+} //namespace
 
 #endif // ESMREADERCLEANER_H

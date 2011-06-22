@@ -25,6 +25,9 @@
 #include <fstream>
 #include "BasicRecord.h"
 
+namespace MWTP
+{
+
 /*Ingredients:
     NAME = Item ID, required
     MODL = Model Name, required
@@ -100,5 +103,7 @@ struct IngredientRecord: public BasicRecord
     */
     bool readSubRecordSCRI(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead);
 };//struct
+
+} //namespace
 
 #endif // INGREDIENTRECORD_H

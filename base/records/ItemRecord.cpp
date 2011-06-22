@@ -20,7 +20,12 @@
 
 #include "ItemRecord.h"
 
+namespace MWTP
+{
+
 bool ItemRecord::operator==(const ItemRecord& other) const
 {
   return ((Count==other.Count) and (Item==other.Item));
 }
+
+} //namespace

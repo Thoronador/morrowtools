@@ -21,6 +21,9 @@
 #include "DepFiles.h"
 #include <iostream>
 
+namespace MWTP
+{
+
 /* minimalistic version of a function that converts letters in strings into
    their lower case equivalent. Due to the fact that it's only used to check
    file extensions of master and plugin files, we can limit the treated letters
@@ -220,3 +223,5 @@ void DepFileList::clear()
 {
   m_List.clear();
 }
+
+} //namespace

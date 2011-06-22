@@ -25,6 +25,9 @@
 #include <fstream>
 #include "BasicRecord.h"
 
+namespace MWTP
+{
+
 struct StaticRecord: public BasicRecord
 {
   std::string StaticID;
@@ -47,5 +50,7 @@ struct StaticRecord: public BasicRecord
   */
   bool loadFromStream(std::ifstream& in_File);
 };//struct
+
+} //namespace
 
 #endif // STATICRECORD_H

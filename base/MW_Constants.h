@@ -23,6 +23,9 @@
 
 #include <stdint.h>
 
+namespace MWTP
+{
+
 const int32_t cAADT = 0x54444141; //"AADT" = 41 41 44 54
 const int32_t cACTI = 0x49544341; //"ACTI" = 41 43 54 49
 const int32_t cAIDT = 0x54444941; //"AIDT" = 41 49 44 54
@@ -163,5 +166,7 @@ const int32_t cXSCL = 0x4C435358; //"XSCL" = 58 53 43 4C
 const int32_t cXSOL = 0x4C4F5358; //"XSOL" = 58 53 4F 4C
 
 const char NULof32[32] = "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
+
+} //namespace
 
 #endif // MW_CONSTANTS_H

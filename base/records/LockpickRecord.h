@@ -25,6 +25,9 @@
 #include <fstream>
 #include "BasicRecord.h"
 
+namespace MWTP
+{
+
 struct LockpickRecord: public BasicRecord
 {
   std::string LockpickID;
@@ -59,5 +62,7 @@ struct LockpickRecord: public BasicRecord
   */
   bool loadFromStream(std::ifstream& in_File);
 };//struct
+
+} //namespace
 
 #endif // LOCKPICKRECORD_H

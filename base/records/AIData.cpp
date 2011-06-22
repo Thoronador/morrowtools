@@ -20,6 +20,9 @@
 
 #include "AIData.h"
 
+namespace MWTP
+{
+
 /* *** AIData's functions ****/
 
 void NPC_AIData::clear()
@@ -46,3 +49,5 @@ bool NPC_AIData::operator==(const NPC_AIData& other) const
       and (Unknown2==other.Unknown2) and (Unknown3==other.Unknown3)
       and (Unknown4==other.Unknown4) and (Flags==other.Flags));
 }
+
+} //namespace

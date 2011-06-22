@@ -25,6 +25,9 @@
 #include <stdint.h>
 #include <fstream>
 
+namespace MWTP
+{
+
 /* enumeration type for types of AI packages */
 enum PackageType {ptActivate, ptEscort, ptFollow, ptTravel, ptWander};
 
@@ -158,5 +161,7 @@ struct NPC_AIWander: public NPC_BasicAIPackage
   */
   virtual bool saveToStream(std::ofstream& output) const;
 };//struct
+
+} //namespace
 
 #endif // AIPACKAGES_H

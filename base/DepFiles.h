@@ -25,6 +25,9 @@
 #include <vector>
 #include <stdint.h>
 
+namespace MWTP
+{
+
 struct DepFile
 {
   /* standard constructor */
@@ -142,5 +145,7 @@ class DepFileList
   private:
     std::vector<DepFile> m_List;
 }; //class
+
+} //namespace
 
 #endif // DEPFILES_H

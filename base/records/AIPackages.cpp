@@ -22,6 +22,9 @@
 #include <cstring>
 #include "../MW_Constants.h"
 
+namespace MWTP
+{
+
 /* **** BasicAIPackage's functions ****/
 
 NPC_BasicAIPackage::~NPC_BasicAIPackage()
@@ -233,3 +236,5 @@ bool NPC_AIWander::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+
+} //namespace

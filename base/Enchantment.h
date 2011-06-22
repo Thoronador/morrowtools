@@ -23,6 +23,9 @@
 
 #include <stdint.h>
 
+namespace MWTP
+{
+
 //range types
 const int32_t rtSelf = 0;
 const int32_t rtTouch = 1;
@@ -43,5 +46,7 @@ struct EnchantmentData //24 bytes
   /* returns true, if the other enchantment is the same */
   bool equals(const EnchantmentData& other) const;
 }; //struct
+
+} //namespace
 
 #endif // ENCHANTMENT_H

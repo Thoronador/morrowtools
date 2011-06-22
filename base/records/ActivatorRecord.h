@@ -25,6 +25,9 @@
 #include <fstream>
 #include "BasicRecord.h"
 
+namespace MWTP
+{
+
 struct ActivatorRecord: public BasicRecord
 {
   std::string ActivatorID;
@@ -52,5 +55,7 @@ struct ActivatorRecord: public BasicRecord
   */
   bool loadFromStream(std::ifstream& in_File);
 };//struct
+
+} //namespace
 
 #endif // ACTIVATORRECORD_H

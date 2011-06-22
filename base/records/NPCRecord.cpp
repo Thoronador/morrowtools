@@ -24,6 +24,9 @@
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 
+namespace MWTP
+{
+
 /* **** functions for NPCRecord ****/
 
 const int32_t nfFemale = 1;
@@ -1414,3 +1417,5 @@ bool NPCRecord::hasGoldBloodTex() const
 {
   return ((nfMetalGoldBloodTex & NPC_Flag)!=0);
 }
+
+} //namespace

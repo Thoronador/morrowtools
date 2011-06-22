@@ -23,6 +23,9 @@
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 
+namespace MWTP
+{
+
 DoorRecord::DoorRecord()
 {
   DoorID = Name = ModelPath = Script = SoundOpen = SoundClose = "";
@@ -295,3 +298,4 @@ bool DoorRecord::readSubRecordString(std::ifstream& in_File, char* Buffer, uint3
   return true;
 }
 
+} //namespace

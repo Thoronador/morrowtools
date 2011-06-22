@@ -23,6 +23,9 @@
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 
+namespace MWTP
+{
+
 BodyPartRecord::BodyPartRecord()
 {
   BodyPartID = "";
@@ -280,3 +283,5 @@ bool operator<(const BodyPartRecord& left, const BodyPartRecord& right)
 {
   return (left.BodyPartID.compare(right.BodyPartID)<0);
 }
+
+} //namespace

@@ -25,6 +25,9 @@
 #include <fstream>
 #include "DepFiles.h"
 
+namespace MWTP
+{
+
 /* ESMReader class
 
    This is the basic class for reading master (.esm) and plugin (.esp) files of
@@ -79,5 +82,7 @@ class ESMReader
     */
     virtual int processNextRecord(std::ifstream& in_File);
 };//class
+
+} //namespace
 
 #endif // ESMREADER_H

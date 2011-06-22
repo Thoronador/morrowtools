@@ -88,7 +88,7 @@ int main(int argc, char **argv)
   bool specifiedMode = false;
 
   //list of .esp files to consider for scan
-  DepFileList files;
+  MWTP::DepFileList files;
   files.clear();
 
   if (argc>1 and argv!=NULL)
@@ -144,14 +144,14 @@ int main(int argc, char **argv)
             {
               std::cout << "Parameter \""<<std::string(argv[i+1])<<"\" is too"
                         << " short to be a proper directory path.\n";
-              return rcInvalidParameter;
+              return MWTP::rcInvalidParameter;
             }//else
           }
           else
           {
             std::cout << "Error: You have to specify a directory name after \""
                       << param<<"\".\n";
-            return rcInvalidParameter;
+            return MWTP::rcInvalidParameter;
           }
         }//data files directory
         //add plugin file to list
@@ -170,14 +170,14 @@ int main(int argc, char **argv)
             {
               std::cout << "Error: You have to specify a file name after \""
                         << param<<"\".\n";
-              return rcInvalidParameter;
+              return MWTP::rcInvalidParameter;
             }
           }
           else
           {
             std::cout << "Error: parameter \""<<param<<"\" can only be specified"
                       << " in explicit mode.\n";
-            return rcInvalidParameter;
+            return MWTP::rcInvalidParameter;
           }
         }//plugin file
         //try to read from Morrowind.ini?
@@ -193,14 +193,14 @@ int main(int argc, char **argv)
             {
               std::cout << "Error: parameter \""<<param<<"\" has been specified"
                         << " more than once.\n";
-              return rcInvalidParameter;
+              return MWTP::rcInvalidParameter;
             }
           }
           else
           {
             std::cout << "Error: parameter \""<<param<<"\" can only be specified"
                       << " in explicit mode.\n";
-            return rcInvalidParameter;
+            return MWTP::rcInvalidParameter;
           }
         }
         //try to get all plugin and master files from Data Files directory
@@ -215,7 +215,7 @@ int main(int argc, char **argv)
           {
             std::cout << "Error: parameter \""<<param<<"\" is not allowed here,"
                       << " because mode of operation has already been specified.\n";
-            return rcInvalidParameter;
+            return MWTP::rcInvalidParameter;
           }
         }
         //sets explicit mode
@@ -230,7 +230,7 @@ int main(int argc, char **argv)
           {
             std::cout << "Error: parameter \""<<param<<"\" is not allowed here,"
                       << " because mode of operation has already been specified.\n";
-            return rcInvalidParameter;
+            return MWTP::rcInvalidParameter;
           }
         }
         else
@@ -238,13 +238,13 @@ int main(int argc, char **argv)
           //unknown or wrong parameter
           std::cout << "Invalid parameter given: \""<<param<<"\".\n"
                     << "Use --help to get a list of valid parameters.\n";
-          return rcInvalidParameter;
+          return MWTP::rcInvalidParameter;
         }
       }//parameter exists
       else
       {
         std::cout << "Parameter at index "<<i<<" is NULL.\n";
-        return rcInvalidParameter;
+        return MWTP::rcInvalidParameter;
       }
       ++i;//on to next parameter
     }//while
@@ -252,7 +252,7 @@ int main(int argc, char **argv)
 
   if (doIni)
   {
-    const int iniReturnCode = getFilesFromMorrowindIni(baseDir, files);
+    const int iniReturnCode = MWTP::getFilesFromMorrowindIni(baseDir, files);
     if (iniReturnCode!=0)
     {
       return iniReturnCode;
@@ -260,7 +260,7 @@ int main(int argc, char **argv)
   }//if
   if (doAllPlugins)
   {
-    getAllDataFiles(baseDir, files);
+    MWTP::getAllDataFiles(baseDir, files);
   }//if
 
   //Let's add master files, if neccessary.
@@ -305,19 +305,19 @@ int main(int argc, char **argv)
   files.writeDeps();
 
   //read all files
-  ESMReaderCleaner reader(baseDir);
+  MWTP::ESMReaderCleaner reader(baseDir);
   std::cout << "Reading files, this may take a while.\n";
   i = 0;
   while (i<files.getSize())
   {
-    DepFileList DummyDeps;//It's not actually used after the read function, but
-                          // readESM() needs one as parameter.
+    MWTP::DepFileList DummyDeps;//It's not actually used after the read function,
+                                // but readESM() needs one as parameter.
     const int read_result = reader.readESM(baseDir+files.at(i).name, DummyDeps, verbose);
     if (read_result<0)
     {
       std::cout << "Error while reading file \""<<baseDir+files.at(i).name
                 <<"\".\nAborting.\n";
-      return rcFileError;
+      return MWTP::rcFileError;
     }//if
     //something was read and file was not removed from list, so increase counter
     ++i;
@@ -329,8 +329,8 @@ int main(int argc, char **argv)
   std::set<std::string> DeletableIcons;
 
   //get mesh files
-  getDeletableMeshes(baseDir+"Meshes\\", reader.MeshSet, DeletableMeshes);
-  getDeletableIcons(baseDir+"Icons\\", reader.IconSet, DeletableIcons);
+  MWTP::getDeletableMeshes(baseDir+"Meshes\\", reader.MeshSet, DeletableMeshes);
+  MWTP::getDeletableIcons(baseDir+"Icons\\", reader.IconSet, DeletableIcons);
 
   if ((DeletableIcons.size()>0) or (DeletableMeshes.size()>0))
   {

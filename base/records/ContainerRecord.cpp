@@ -24,6 +24,9 @@
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 
+namespace MWTP
+{
+
 const int32_t ContainerFlag_Organic = 1;
 const int32_t ContainerFlag_Respawns = 2;
 
@@ -418,3 +421,5 @@ bool ContainerRecord::doesRespawn() const
 {
   return ((ContainerFlags & ContainerFlag_Respawns)!=0);
 }
+
+} //namespace

@@ -23,6 +23,9 @@
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 
+namespace MWTP
+{
+
 LockpickRecord::LockpickRecord()
 {
   LockpickID = Name = ModelPath = "";
@@ -355,3 +358,5 @@ bool LockpickRecord::loadFromStream(std::ifstream& in_File)
 
   return in_File.good();
 }
+
+} //namespace

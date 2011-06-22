@@ -25,6 +25,9 @@
 #include <string>
 #include "BasicRecord.h"
 
+namespace MWTP
+{
+
 struct WeaponRecord: public BasicRecord
 {
   std::string WeaponID;
@@ -70,5 +73,7 @@ struct WeaponRecord: public BasicRecord
   */
   bool loadFromStream(std::ifstream& in_File);
 };//struct
+
+} //namespace
 
 #endif // WEAPONRECORD_H

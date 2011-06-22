@@ -23,6 +23,9 @@
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 
+namespace MWTP
+{
+
 LightRecord::LightRecord()
 {
   LightID = ModelPath = Name = InventoryIcon = "";
@@ -431,3 +434,5 @@ bool LightRecord::loadFromStream(std::ifstream& in_File)
   }
   return in_File.good();
 }
+
+} //namespace

@@ -20,6 +20,9 @@
 
 #include "TravelDestination.h"
 
+namespace MWTP
+{
+
 /* **** TravelDestination's functions ****/
 
 bool TravelDestination::operator==(const TravelDestination& other) const
@@ -28,3 +31,5 @@ bool TravelDestination::operator==(const TravelDestination& other) const
       and (XRot==other.XRot) and (YRot==other.YRot) and (ZRot==other.ZRot)
       and (CellName==other.CellName));
 }
+
+} //namespace

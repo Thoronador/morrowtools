@@ -27,6 +27,9 @@
 #include "BasicRecord.h"
 #include "ItemRecord.h"
 
+namespace MWTP
+{
+
 struct ContainerRecord: public BasicRecord
 {
   std::string ContainerID;
@@ -64,5 +67,7 @@ struct ContainerRecord: public BasicRecord
   /* returns true, if the container content will respawn (organic containers only) */
   bool doesRespawn() const;
 };//struct
+
+} //namespace
 
 #endif // CONTAINERRECORD_H

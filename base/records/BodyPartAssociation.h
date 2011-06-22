@@ -24,6 +24,9 @@
 #include <string>
 #include <stdint.h>
 
+namespace MWTP
+{
+
 struct BodyPartAssociation
 {
   uint8_t Index;
@@ -32,5 +35,7 @@ struct BodyPartAssociation
 
   bool operator==(const BodyPartAssociation& other) const;
 };
+
+} //namespace
 
 #endif // BODYPARTASSOCIATION_H

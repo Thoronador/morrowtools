@@ -24,6 +24,9 @@
 #include "FileFunctions.h"
 #include "ReturnCodes.h"
 
+namespace MWTP
+{
+
 int getFilesFromMorrowindIni(const std::string& baseDir, DepFileList& files)
 {
   //check for Morrowind.ini
@@ -81,4 +84,6 @@ int getFilesFromMorrowindIni(const std::string& baseDir, DepFileList& files)
   }//while
   iniFile.close();
   return 0;
-}
+}//function getFilesFromMorrowindIni
+
+} //namespace

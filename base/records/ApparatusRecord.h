@@ -24,6 +24,9 @@
 #include <string>
 #include "BasicRecord.h"
 
+namespace MWTP
+{
+
 struct ApparatusRecord: public BasicRecord
 {
   std::string ApparatusID;
@@ -56,5 +59,7 @@ struct ApparatusRecord: public BasicRecord
   */
   bool loadFromStream(std::ifstream& in_File);
 };//struct
+
+} //namespace
 
 #endif // APPARATUSRECORD_H

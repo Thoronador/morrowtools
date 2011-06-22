@@ -43,6 +43,9 @@
 #include "../base/records/StaticRecord.h"
 #include "../base/records/WeaponRecord.h"
 
+namespace MWTP
+{
+
 ESMReaderCleaner::ESMReaderCleaner(const std::string& base)
 {
   MeshSet.clear();
@@ -317,3 +320,5 @@ int ESMReaderCleaner::processNextRecord(std::ifstream& in_File)
          break;
   }//swi
 }//processNextRecord of ESMReaderCleaner class
+
+} //namespace

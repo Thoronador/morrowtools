@@ -25,6 +25,9 @@
 #include <fstream>
 #include "BasicRecord.h"
 
+namespace MWTP
+{
+
 struct LightRecord: public BasicRecord
 {
   std::string LightID;
@@ -65,5 +68,7 @@ struct LightRecord: public BasicRecord
   */
   bool loadFromStream(std::ifstream& in_File);
 };//struct
+
+} //namespace
 
 #endif // LIGHTRECORD_H

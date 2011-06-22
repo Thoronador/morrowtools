@@ -26,6 +26,9 @@
 #include <vector>
 #include "PreNPCRecord.h"
 
+namespace MWTP
+{
+
 /* enumeration type for the NPDT subrecord: there are two versions. One is
     12 bytes and the other one is 52 bytes. This enumeration type will be used
     to indicate which type of NPC data was read from the stream.
@@ -115,5 +118,7 @@ struct NPCRecord: public PreNPCRecord
   /* returns true, if the gold blood texture (metal) flag is set */
   bool hasGoldBloodTex() const;
 };//struct
+
+} //namespace
 
 #endif // NPCRECORD_H

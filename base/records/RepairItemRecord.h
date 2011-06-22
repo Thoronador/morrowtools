@@ -24,6 +24,9 @@
 #include <string>
 #include "BasicRecord.h"
 
+namespace MWTP
+{
+
 struct RepairItemRecord: public BasicRecord
 {
   std::string RepairItemID;
@@ -67,5 +70,7 @@ struct RepairItemRecord: public BasicRecord
 
 //comparison operator for ordered set
 bool operator<(const RepairItemRecord& left, const RepairItemRecord& right);
+
+} //namespace
 
 #endif // REPAIRITEMRECORD_H

@@ -23,6 +23,9 @@
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 
+namespace MWTP
+{
+
 BookRecord::BookRecord()
 {
   BookID = MeshPath = Name = "";
@@ -489,3 +492,5 @@ bool BookRecord::readSubRecordTEXT(std::ifstream& in_File, char** Buffer, uint32
   Text = std::string(*Buffer);
   return true;
 }
+
+} //namespace

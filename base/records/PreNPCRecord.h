@@ -28,6 +28,9 @@
 #include "AIPackages.h"
 #include "TravelDestination.h"
 
+namespace MWTP
+{
+
 /* the pre-NPC record - holds all (AI) data that is common to both NPCs and
    creatures
 */
@@ -76,5 +79,7 @@ struct PreNPCRecord: public BasicRecord
 
     bool writeItemsSpellsAIDataDestinations(std::ofstream& output) const;
 };//struct
+
+} //namespace
 
 #endif // PRENPCRECORD_H

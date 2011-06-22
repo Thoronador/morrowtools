@@ -26,6 +26,9 @@
 #include "../base/DepFiles.h"
 #include "../base/ComparisonFunctor.h"
 
+namespace MWTP
+{
+
 /* tries to get all master and plugin files in the specified directory and adds
    them to the file list 'files'
 
@@ -38,5 +41,7 @@ void getAllDataFiles(const std::string& dir, DepFileList& files);
 void getDeletableMeshes(const std::string& dir, const std::set<std::string, ci_less>& positives, std::set<std::string>& deletables);
 
 void getDeletableIcons(const std::string& dir, const std::set<std::string, ci_less>& positives, std::set<std::string>& deletables);
+
+} //namespace
 
 #endif // DIRECTORYTRAVERSAL_H

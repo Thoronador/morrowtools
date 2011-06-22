@@ -20,6 +20,9 @@
 
 #include "Enchantment.h"
 
+namespace MWTP
+{
+
 bool EnchantmentData::equals(const EnchantmentData& other) const
 {
   return ((EffectID==other.EffectID) and (SkillID==other.SkillID)
@@ -27,3 +30,5 @@ bool EnchantmentData::equals(const EnchantmentData& other) const
       and (Area==other.Area) and (Duration==other.Duration)
       and (MagnitudeMin==other.MagnitudeMin) and (MagnitudeMax==other.MagnitudeMax));
 }
+
+} //namespace

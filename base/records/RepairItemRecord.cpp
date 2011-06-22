@@ -23,6 +23,9 @@
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 
+namespace MWTP
+{
+
 RepairItemRecord::RepairItemRecord()
 {
   RepairItemID = ModelPath = Name = "";
@@ -351,3 +354,5 @@ bool operator<(const RepairItemRecord& left, const RepairItemRecord& right)
 {
   return (left.RepairItemID.compare(right.RepairItemID)<0);
 }
+
+} //namespace

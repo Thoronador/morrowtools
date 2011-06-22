@@ -24,6 +24,9 @@
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 
+namespace MWTP
+{
+
 CreatureRecord::CreatureRecord()
 {
   CreatureID = Model = Name = SoundGenCreature = "";
@@ -1122,4 +1125,6 @@ bool CreatureRecord::loadFromStream(std::ifstream& in_File)
   }
 
   return in_File.good();
-}
+}//function CreatureRecord::loadFromStream
+
+} //namespace

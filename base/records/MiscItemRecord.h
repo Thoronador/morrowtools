@@ -25,6 +25,9 @@
 #include <fstream>
 #include "BasicRecord.h"
 
+namespace MWTP
+{
+
 struct MiscItemRecord: public BasicRecord
 {
   public:
@@ -62,5 +65,7 @@ struct MiscItemRecord: public BasicRecord
     */
     bool loadFromStream(std::ifstream& in_File);
 };//struct
+
+} //namespace
 
 #endif // MISCITEMRECORD_H

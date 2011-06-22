@@ -27,6 +27,9 @@
 #include "../Enchantment.h"
 #include "BasicRecord.h"
 
+namespace MWTP
+{
+
 const int32_t stSpell = 0;
 const int32_t stAbility = 1;
 const int32_t stBlight = 2;
@@ -76,5 +79,7 @@ struct SpellRecord: public BasicRecord
   /* returns true, if the "always succeed" flag is set */
   bool alwaysSucceeds() const;
 };//struct
+
+} //namespace
 
 #endif // SPELLRECORD_H

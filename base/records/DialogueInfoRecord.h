@@ -26,6 +26,9 @@
 #include <vector>
 #include "BasicRecord.h"
 
+namespace MWTP
+{
+
 struct FuncVarRecord
 {
   uint8_t Index;
@@ -88,5 +91,7 @@ struct DialogueInfoRecord: public BasicRecord
   */
   bool loadFromStream(std::ifstream& in_File);
 };//struct
+
+} //namespace
 
 #endif // DIALOGUEINFORECORD_H

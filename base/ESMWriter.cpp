@@ -24,6 +24,9 @@
 #include "MW_Constants.h"
 #include "Spells.h"
 
+namespace MWTP
+{
+
 const int32_t cMasterFileFlag = 1;
 const int32_t cPluginFileFlag = 0;
 
@@ -137,3 +140,5 @@ bool ESMWriter::writeESM(const std::string& FileName, const bool IsMasterFile, c
   output.close();
   return true;
 }//writeESM
+
+} //namespace

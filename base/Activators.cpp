@@ -21,6 +21,9 @@
 #include "Activators.h"
 #include <iostream>
 
+namespace MWTP
+{
+
 Activators::Activators()
 {
   //empty
@@ -124,3 +127,5 @@ int Activators::readRecordACTI(std::ifstream& in_File)
   addActivator(temp);
   return 1;
 } //readRecordACTI
+
+} //namespace

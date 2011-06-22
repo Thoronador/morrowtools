@@ -33,6 +33,9 @@
 #include "../Activators.h"
 #include "../Scripts.h"
 
+namespace MWTP
+{
+
 namespace ScriptCompiler
 {
 
@@ -7664,4 +7667,6 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
   return true;
 }
 
-} //namespace
+} //namespace ScriptCompiler
+
+} //namespace MWTP

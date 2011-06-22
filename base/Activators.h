@@ -26,6 +26,9 @@
 #include "records/ActivatorRecord.h"
 #include "ComparisonFunctor.h"
 
+namespace MWTP
+{
+
 //iterator type for activator list
 typedef std::map<std::string, ActivatorRecord, ci_less>::const_iterator ActivatorListIterator;
 
@@ -104,5 +107,7 @@ class Activators
     /* internal data */
     std::map<std::string, ActivatorRecord, ci_less> m_Activators;
 };//class
+
+} //namespace
 
 #endif // ACTIVATORS_H

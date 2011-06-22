@@ -25,6 +25,9 @@
 #include "ESMReader.h"
 #include "records/BasicRecord.h"
 
+namespace MWTP
+{
+
 /* This descendant of the ESMReader class tries to read all records from the
    given .esm/.esp file and uses the supplied std::vector of GenericRecord
    structures (hence the name) to store the read data records.
@@ -65,5 +68,7 @@ class ESMReaderGeneric: public ESMReader
     /* pointer to the vector where the read data will be stored*/
     VectorType* m_VectorPointer;
 };//class
+
+} //namespace
 
 #endif // ESMREADERGENERIC_H

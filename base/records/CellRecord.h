@@ -25,6 +25,9 @@
 #include <vector>
 #include "BasicRecord.h"
 
+namespace MWTP
+{
+
 struct RefDoorData
 {
   float PosX, PosY, PosZ;
@@ -150,5 +153,7 @@ struct CellRecord: public BasicRecord
   /* returns true, if the water flag is set */
   bool hasWater() const;
 };//struct
+
+} //namespace
 
 #endif // CELLRECORD_H

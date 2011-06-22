@@ -24,6 +24,9 @@
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 
+namespace MWTP
+{
+
 bool GridPointData::operator==(const GridPointData& other) const
 {
   return ((X==other.X) and (Y==other.Y) and (Z==other.Z)
@@ -341,3 +344,5 @@ bool PathGridRecord::loadFromStream(std::ifstream& in_File)
   }//while BytesRead<Size
   return in_File.good();
 }
+
+} //namespace

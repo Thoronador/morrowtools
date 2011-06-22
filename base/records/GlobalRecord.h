@@ -25,6 +25,9 @@
 #include <fstream>
 #include "BasicRecord.h"
 
+namespace MWTP
+{
+
 enum GlobalType {globShort, globLong, globFloat};
 
 struct GlobalRecord: public BasicRecord
@@ -61,5 +64,7 @@ struct GlobalRecord: public BasicRecord
 
 //comparison operator for GlobalRecords
 bool operator<(const GlobalRecord& left, const GlobalRecord& right);
+
+} //namespace
 
 #endif // GLOBALRECORD_H

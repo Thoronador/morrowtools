@@ -29,6 +29,9 @@
 #include <map>
 #include "../base/ComparisonFunctor.h"
 
+namespace MWTP
+{
+
 typedef std::map<std::string, std::string, ci_less> CellListType;
 
 /* Enumeration type for the direction of translation. */
@@ -45,5 +48,7 @@ enum TransDir {td_en_de, td_de_en};
                    which order the cell names are stored in the list 'cells'.
 */
 bool readCellListFromXML(const std::string& fileName, CellListType& cells, const TransDir direction = td_en_de);
+
+} //namespace
 
 #endif // TRANSLATORXML_H

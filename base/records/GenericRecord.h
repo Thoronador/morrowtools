@@ -23,6 +23,9 @@
 
 #include "BasicRecord.h"
 
+namespace MWTP
+{
+
 struct GenericRecord: public BasicRecord
 {
   public:
@@ -62,5 +65,7 @@ struct GenericRecord: public BasicRecord
      uint32_t m_DataSize;
      char* m_Data;
 }; //struct
+
+} //namespace
 
 #endif // GENERICRECORD_H

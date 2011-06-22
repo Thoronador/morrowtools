@@ -25,6 +25,9 @@
 #include <map>
 #include "records/ScriptRecord.h"
 
+namespace MWTP
+{
+
 //iterator type for script list
 typedef std::map<std::string, ScriptRecord>::const_iterator ScriptListIterator;
 
@@ -103,5 +106,7 @@ class Scripts
     /* internal data */
     std::map<std::string, ScriptRecord> m_Scripts;
 };//class
+
+} //namespace
 
 #endif // SCRIPTS_H

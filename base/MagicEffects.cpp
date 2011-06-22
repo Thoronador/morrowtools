@@ -21,6 +21,9 @@
 #include "MagicEffects.h"
 #include <iostream>
 
+namespace MWTP
+{
+
 MagicEffects::MagicEffects()
 {
   //empty
@@ -561,3 +564,5 @@ void MagicEffects::clearAll()
 {
   m_Effects.clear();
 }
+
+} //namespace

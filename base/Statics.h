@@ -27,6 +27,9 @@
 #include "records/StaticRecord.h"
 #include "ComparisonFunctor.h"
 
+namespace MWTP
+{
+
 //iterator type for static list
 typedef std::map<std::string, StaticRecord, ci_less>::const_iterator StaticListIterator;
 
@@ -103,5 +106,7 @@ class Statics
     /* internal data */
     std::map<std::string, StaticRecord, ci_less> m_Statics;
 };//class
+
+} //namespace
 
 #endif // STATICS_H

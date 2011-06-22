@@ -22,6 +22,9 @@
 #include <iostream>
 #include "../UtilityFunctions.h"
 
+namespace MWTP
+{
+
 namespace ScriptCompiler
 {
 
@@ -181,4 +184,6 @@ SC_VarRef CompiledChunk::getVariableTypeWithIndex(const std::string& varName) co
   return SC_VarRef(vtGlobal, 0);
 }
 
-} //namespace
+} //namespace ScriptCompiler
+
+} //namespace MWTP

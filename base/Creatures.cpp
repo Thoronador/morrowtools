@@ -21,6 +21,9 @@
 #include "Creatures.h"
 #include <iostream>
 
+namespace MWTP
+{
+
 Creatures::Creatures()
 {
   //empty
@@ -124,3 +127,5 @@ int Creatures::readRecordCREA(std::ifstream& in_File)
   addCreature(temp);
   return 1;
 } //readRecordCREA
+
+} //namespace

@@ -24,6 +24,9 @@
 #include "ESMWriter.h"
 #include "records/BasicRecord.h"
 
+namespace MWTP
+{
+
 /* This descendant of the ESMWriter class tries to write all records in the
    supplied std::vector of BasicRecord structures to a file.
 */
@@ -58,5 +61,7 @@ class ESMWriterGeneric: public ESMWriter
     /* pointer to the vector where the read data will be stored*/
     VectorType* m_VectorPointer;
 }; //class
+
+} //namespace
 
 #endif // ESMWRITERGENERIC_H

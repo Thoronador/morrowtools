@@ -27,6 +27,9 @@
 #include "../base/records/PreNPCRecord.h"
 #include "../base/records/ScriptRecord.h"
 
+namespace MWTP
+{
+
 /* tries to translate the cell names in the given NPC/creature record and
    returns true on success, false on failure
 
@@ -83,5 +86,7 @@ bool translateScriptRecord(ScriptRecord* script_rec, const CellListType& cells, 
        cells      - the list of cell names and their translations
 */
 bool replaceCellsInScriptText(std::string& scriptText, const CellListType& cells);
+
+} //namespace
 
 #endif // TRANSLATERECORDS_H

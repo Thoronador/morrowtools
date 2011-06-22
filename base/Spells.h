@@ -26,6 +26,9 @@
 #include <fstream>
 #include "records/SpellRecord.h"
 
+namespace MWTP
+{
+
 //iterator type for Spells class
 typedef std::map<std::string, SpellRecord>::const_iterator SpellListIterator;
 
@@ -115,5 +118,7 @@ class Spells
     /* internal spell data list */
     std::map<std::string, SpellRecord> m_Spells;
 }; //class
+
+} //namespace
 
 #endif // SPELLS_H

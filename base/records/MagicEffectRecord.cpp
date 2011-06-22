@@ -24,6 +24,9 @@
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 
+namespace MWTP
+{
+
 MGEF_Data::MGEF_Data()
 {
   Index = -1;
@@ -742,3 +745,5 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
 
   return in_File.good();
 }
+
+} //namespace

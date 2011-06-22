@@ -31,6 +31,9 @@
 #include "../base/MW_Constants.h"
 #include "../base/HelperIO.h"
 
+namespace MWTP
+{
+
 ESMReaderScriptCompiler::ESMReaderScriptCompiler()
 {
   //empty
@@ -131,3 +134,5 @@ int ESMReaderScriptCompiler::processNextRecord(std::ifstream& in_File)
   }//swi
   return lastResult;
 }//processNextRecord of ESMReaderScriptCompiler
+
+} //namespace

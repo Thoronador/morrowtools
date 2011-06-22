@@ -21,6 +21,9 @@
 #include "Containers.h"
 #include <iostream>
 
+namespace MWTP
+{
+
 Containers::Containers()
 {
   //empty
@@ -124,3 +127,5 @@ int Containers::readRecordCONT(std::ifstream& in_File)
   addContainer(temp);
   return 1;
 } //readRecordCONT
+
+} //namespace

@@ -27,6 +27,9 @@
 #include "records/ContainerRecord.h"
 #include "ComparisonFunctor.h"
 
+namespace MWTP
+{
+
 //iterator type for container list
 typedef std::map<std::string, ContainerRecord, ci_less>::const_iterator ContainerListIterator;
 
@@ -105,5 +108,7 @@ class Containers
     /* internal data */
     std::map<std::string, ContainerRecord, ci_less> m_Containers;
 };//class
+
+} //namespace
 
 #endif // CONTAINERS_H

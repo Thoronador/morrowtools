@@ -24,6 +24,9 @@
 #include "MW_Constants.h"
 #include "records/GenericRecord.h"
 
+namespace MWTP
+{
+
 ESMReaderGeneric::ESMReaderGeneric(VectorType* vec)
 {
   if (NULL==vec)
@@ -37,6 +40,7 @@ ESMReaderGeneric::ESMReaderGeneric(VectorType* vec)
 ESMReaderGeneric::~ESMReaderGeneric()
 {
   //empty
+  //NOTE: We should possibly call deallocateRecordsInVector() here!
 }
 
 int ESMReaderGeneric::processNextRecord(std::ifstream& in_File)
@@ -126,3 +130,5 @@ void ESMReaderGeneric::deallocateRecordsInVector()
     m_VectorPointer->pop_back();
   }//while
 }
+
+} //namespace

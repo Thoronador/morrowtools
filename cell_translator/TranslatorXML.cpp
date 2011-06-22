@@ -23,6 +23,9 @@
 #include <iostream>
 #include "XMLParser.h"
 
+namespace MWTP
+{
+
 bool readCellListFromXML(const std::string& fileName, CellListType& cells, const TransDir direction)
 {
   std::ifstream input;
@@ -219,3 +222,5 @@ bool readCellListFromXML(const std::string& fileName, CellListType& cells, const
   //  last level should be plNone
   return ((result==ptNone) or (level==plNone));
 }
+
+} //namespace

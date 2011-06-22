@@ -23,6 +23,9 @@
 
 #include "../base/ESMReaderGeneric.h"
 
+namespace MWTP
+{
+
 class ESMReaderTranslator: public ESMReaderGeneric
 {
   public:
@@ -47,5 +50,7 @@ class ESMReaderTranslator: public ESMReaderGeneric
     */
     virtual int processNextRecord(std::ifstream& in_File);
 };//class
+
+} //namespace
 
 #endif // ESMREADERTRANSLATOR_H

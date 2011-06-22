@@ -25,6 +25,9 @@
 #include <vector>
 #include "CompiledChunk.h"
 
+namespace MWTP
+{
+
 namespace ScriptCompiler
 {
 
@@ -91,6 +94,8 @@ struct ParserNode
     ParserNode* right;
 };//struct
 
-} //namespace
+} //namespace ScriptCompiler
+
+} //namespace MWTP
 
 #endif // PARSERNODE_H

@@ -25,6 +25,9 @@
 #include <vector>
 #include "BasicRecord.h"
 
+namespace MWTP
+{
+
 struct ScriptRecord: public BasicRecord
 {
   //script header
@@ -68,5 +71,7 @@ struct ScriptRecord: public BasicRecord
   */
   bool loadFromStream(std::ifstream& in_File);
 };//struct
+
+} //namespace
 
 #endif // SCRIPTRECORD_H

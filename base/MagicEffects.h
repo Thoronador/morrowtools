@@ -26,6 +26,9 @@
 #include <fstream>
 #include "records/MagicEffectRecord.h"
 
+namespace MWTP
+{
+
 //iterator type for list
 typedef std::map<int32_t, MGEF_Data>::const_iterator EffectListIterator;
 
@@ -120,5 +123,7 @@ class MagicEffects
     /* internal list of effects */
     std::map<int32_t, MGEF_Data> m_Effects;
 }; //class
+
+} //namespace
 
 #endif // MAGICEFFECTS_H

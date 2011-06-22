@@ -21,6 +21,9 @@
 #include "ESMWriterGeneric.h"
 #include <iostream>
 
+namespace MWTP
+{
+
 ESMWriterGeneric::ESMWriterGeneric(VectorType* vec)
 {
   if (NULL==vec)
@@ -56,3 +59,5 @@ bool ESMWriterGeneric::writeRecords(std::ofstream& output) const
   }//while
   return true;
 }
+
+} //namespace

@@ -25,6 +25,9 @@
 #include <vector>
 #include "BasicRecord.h"
 
+namespace MWTP
+{
+
 struct GridPointData
 {
   int32_t X;
@@ -77,5 +80,7 @@ struct PathGridRecord: public BasicRecord
   */
   bool loadFromStream(std::ifstream& in_File);
 };//struct
+
+} //namespace
 
 #endif // PATHGRIDRECORD_H

@@ -24,6 +24,9 @@
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 
+namespace MWTP
+{
+
 bool SpellRecord::saveToStream(std::ofstream& output) const
 {
   output.write((char*) &cSPEL, 4);
@@ -324,3 +327,5 @@ bool SpellRecord::alwaysSucceeds() const
 {
   return ((Flags & sfAlwaysSucceeds)>0);
 }
+
+} //namespace

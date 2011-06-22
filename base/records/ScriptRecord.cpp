@@ -24,6 +24,9 @@
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 
+namespace MWTP
+{
+
 ScriptRecord::ScriptRecord()
 {
   //script header
@@ -443,3 +446,5 @@ bool ScriptRecord::loadFromStream(std::ifstream& in_File)
   delete[] Buffer;
   return in_File.good();
 }
+
+} //namespace

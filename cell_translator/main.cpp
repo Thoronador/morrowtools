@@ -93,7 +93,7 @@ int main(int argc, char **argv)
   std::string outputFileName = "";
   bool process_scripts = true;
   bool translationDirectionSpecified = false;
-  TransDir translationDirection = td_en_de;
+  MWTP::TransDir translationDirection = MWTP::td_en_de;
 
   if ((argc>1) and (argv!=NULL))
   {
@@ -122,7 +122,7 @@ int main(int argc, char **argv)
             if (!pluginFile.empty())
             {
               std::cout << "Parameter -f must not occur more than once!\n";
-              return rcInvalidParameter;
+              return MWTP::rcInvalidParameter;
             }
             pluginFile = std::string(argv[i+1]);
             ++i; //skip next parameter, because it's used as file name already
@@ -132,7 +132,7 @@ int main(int argc, char **argv)
           {
             std::cout << "Error: You have to specify a file name after \""
                       << param <<"\".\n";
-            return rcInvalidParameter;
+            return MWTP::rcInvalidParameter;
           }
         }
         else if ((param=="-o") or (param=="--output"))
@@ -142,7 +142,7 @@ int main(int argc, char **argv)
             if (!outputFileName.empty())
             {
               std::cout << "Parameter -o must not occur more than once!\n";
-              return rcInvalidParameter;
+              return MWTP::rcInvalidParameter;
             }
             outputFileName = std::string(argv[i+1]);
             ++i; //skip next parameter, because it's used as file name already
@@ -152,7 +152,7 @@ int main(int argc, char **argv)
           {
             std::cout << "Error: You have to specify a file name after \""
                       << param <<"\".\n";
-            return rcInvalidParameter;
+            return MWTP::rcInvalidParameter;
           }
         }
         else if (param=="-xml")
@@ -162,7 +162,7 @@ int main(int argc, char **argv)
             if (!pathToCellsXML.empty())
             {
               std::cout << "Parameter -xml must not occur more than once!\n";
-              return rcInvalidParameter;
+              return MWTP::rcInvalidParameter;
             }
             pathToCellsXML = std::string(argv[i+1]);
             ++i; //skip next parameter, because it's used as file name already
@@ -172,7 +172,7 @@ int main(int argc, char **argv)
           {
             std::cout << "Error: You have to specify a file name after \""
                       << param <<"\".\n";
-            return rcInvalidParameter;
+            return MWTP::rcInvalidParameter;
           }
         }
         else if (param=="--no-scripts")
@@ -181,7 +181,7 @@ int main(int argc, char **argv)
           {
             std::cout << "Error: parameter --no-script was given more than "
                       << "once.\n";
-            return rcInvalidParameter;
+            return MWTP::rcInvalidParameter;
           }
           process_scripts = false;
           std::cout << "Scripts will not be processed, as requested via --no-scripts.\n";
@@ -191,9 +191,9 @@ int main(int argc, char **argv)
           if (translationDirectionSpecified)
           {
             std::cout << "Error: more than one translation mode was specified.\n";
-            return rcInvalidParameter;
+            return MWTP::rcInvalidParameter;
           }
-          translationDirection = td_en_de;
+          translationDirection = MWTP::td_en_de;
           translationDirectionSpecified = true;
           std::cout << "Translation mode was set: English to German.\n";
         }//if de
@@ -202,9 +202,9 @@ int main(int argc, char **argv)
           if (translationDirectionSpecified)
           {
             std::cout << "Error: more than one translation mode was specified.\n";
-            return rcInvalidParameter;
+            return MWTP::rcInvalidParameter;
           }
-          translationDirection = td_de_en;
+          translationDirection = MWTP::td_de_en;
           translationDirectionSpecified = true;
           std::cout << "Translation mode was set: German to English.\n";
         }//if de
@@ -213,13 +213,13 @@ int main(int argc, char **argv)
           //unknown or wrong parameter
           std::cout << "Invalid parameter given: \""<<param<<"\".\n"
                     << "Use --help to get a list of valid parameters.\n";
-          return rcInvalidParameter;
+          return MWTP::rcInvalidParameter;
         }
       }//parameter exists
       else
       {
         std::cout << "Parameter at index "<<i<<" is NULL.\n";
-        return rcInvalidParameter;
+        return MWTP::rcInvalidParameter;
       }
       ++i;//on to next parameter
     }//while
@@ -228,7 +228,7 @@ int main(int argc, char **argv)
   {
     std::cout << "You have to specify certain parameters for this programme to run properly.\n"
               << "Use --help to get a list of valid parameters.\n";
-    return rcInvalidParameter;
+    return MWTP::rcInvalidParameter;
   }
 
   //check for plugin file
@@ -237,7 +237,7 @@ int main(int argc, char **argv)
     std::cout << "You have to specify certain parameters for this programme to run properly.\n"
               << "In particular, the parameter -f followed by a plugin file name is required.\n"
               << "Use the parameter --help to get a list of valid parameters.\n";
-    return rcInvalidParameter;
+    return MWTP::rcInvalidParameter;
   }
   //check XML file
   if (pathToCellsXML.empty())
@@ -256,7 +256,7 @@ int main(int argc, char **argv)
   //check translation direction
   if (!translationDirectionSpecified)
   {
-    translationDirection = td_en_de;
+    translationDirection = MWTP::td_en_de;
     std::cout << "No translation mode was specified, setting default: English "
               << "to German.\n";
   }
@@ -267,34 +267,34 @@ int main(int argc, char **argv)
               << "The plugin file will be overwritten.";
   }
 
-  CellListType cells;
+  MWTP::CellListType cells;
   if (readCellListFromXML(pathToCellsXML, cells, translationDirection))
   {
     if (cells.size()==0)
     {
       std::cout << "The XML file \""<<pathToCellsXML<<"\" did not contain any "
                 << "cell name pairs. Thus, nothing can be translated here.\n";
-      return rcXMLEmpty;
+      return MWTP::rcXMLEmpty;
     }//if (the inner one)
     std::cout << "Parsing XML was successful. There are "<<cells.size()<<" pairs in the list.\n";
   }
   else
   {
     std::cout << "Parsing of file \""<<pathToCellsXML<<"\" failed.\n";
-    return rcXMLError;
+    return MWTP::rcXMLError;
   }
 
   //now read the file
-  ESMReaderTranslator::VectorType recordVec;
-  DepFileList deps;
+  MWTP::ESMReaderTranslator::VectorType recordVec;
+  MWTP::DepFileList deps;
   deps.clear();
-  ESMReaderTranslator reader(&recordVec);
+  MWTP::ESMReaderTranslator reader(&recordVec);
   std::cout << "Reading plugin file and dependencies. This may take a while.\n";
   if (reader.readESM(pluginFile, deps, false)<0)
   {
     std::cout << "Error while reading file \""<<pluginFile<<"\".\nAborting.\n";
     reader.deallocateRecordsInVector();
-    return rcFileError;
+    return MWTP::rcFileError;
   }
 
   if (process_scripts)
@@ -320,16 +320,16 @@ int main(int argc, char **argv)
 
     //read the dependency files to get the neccessary data for the script compiler
     unsigned int i;
-    ESMReaderScriptCompiler sc_reader;
+    MWTP::ESMReaderScriptCompiler sc_reader;
     for (i=0; i<deps.getSize(); ++i)
     {
-      DepFileList dummy_deps;
+      MWTP::DepFileList dummy_deps;
       if (sc_reader.readESM(baseDir+deps.at(i).name, dummy_deps, false)<0)
       {
         std::cout << "Error while reading file \""<<baseDir+deps.at(i).name
                   << "\".\nAborting.\n";
         reader.deallocateRecordsInVector();
-        return rcFileError;
+        return MWTP::rcFileError;
       }//if
     }//for
 
@@ -338,56 +338,56 @@ int main(int argc, char **argv)
     {
       std::cout << "Error while reading file \""<<pluginFile<<"\".\nAborting.\n";
       reader.deallocateRecordsInVector();
-      return rcFileError;
+      return MWTP::rcFileError;
     }//if
   }//if process scripts
 
-  const std::string genericID = typeid(GenericRecord).name();
-  const std::string cellID = typeid(CellRecord).name();
-  const std::string creatureID = typeid(CreatureRecord).name();
-  const std::string infoID = typeid(DialogueInfoRecord).name();
-  const std::string npcID = typeid(NPCRecord).name();
-  const std::string pathgridID = typeid(PathGridRecord).name();
-  const std::string scriptID = typeid(ScriptRecord).name();
+  const std::string genericID = typeid(MWTP::GenericRecord).name();
+  const std::string cellID = typeid(MWTP::CellRecord).name();
+  const std::string creatureID = typeid(MWTP::CreatureRecord).name();
+  const std::string infoID = typeid(MWTP::DialogueInfoRecord).name();
+  const std::string npcID = typeid(MWTP::NPCRecord).name();
+  const std::string pathgridID = typeid(MWTP::PathGridRecord).name();
+  const std::string scriptID = typeid(MWTP::ScriptRecord).name();
 
-  CellListType::const_iterator cell_iter;
-  ESMReaderGeneric::VectorType::const_iterator v_iter = recordVec.begin();
+  MWTP::CellListType::const_iterator cell_iter;
+  MWTP::ESMReaderGeneric::VectorType::const_iterator v_iter = recordVec.begin();
   unsigned int changedRecords = 0;
   while (v_iter!=recordVec.end())
   {
     const std::string type_name = typeid(**v_iter).name();
     if (type_name==pathgridID)
     {
-      cell_iter = cells.find(dynamic_cast<PathGridRecord*>(*v_iter)->CellName);
+      cell_iter = cells.find(dynamic_cast<MWTP::PathGridRecord*>(*v_iter)->CellName);
       if (cell_iter!=cells.end())
       {
-        dynamic_cast<PathGridRecord*>(*v_iter)->CellName = cell_iter->second;
+        dynamic_cast<MWTP::PathGridRecord*>(*v_iter)->CellName = cell_iter->second;
         ++changedRecords;
       }
     }//if path grid
     else if (type_name==cellID)
     {
-      if (!translateCellRecord(dynamic_cast<CellRecord*>(*v_iter), cells, changedRecords))
+      if (!translateCellRecord(dynamic_cast<MWTP::CellRecord*>(*v_iter), cells, changedRecords))
       {
         std::cout << "Error: couldn't translate cell record.\n";
       }
     }
     else if ((type_name==creatureID) or (type_name==npcID))
     {
-      translatePreNPCRecord(dynamic_cast<PreNPCRecord*>(*v_iter), cells, changedRecords);
+      translatePreNPCRecord(dynamic_cast<MWTP::PreNPCRecord*>(*v_iter), cells, changedRecords);
     }//if creature or NPC
     else if (type_name==infoID)
     {
-      translateInfoRecord(dynamic_cast<DialogueInfoRecord*>(*v_iter), cells, changedRecords);
+      translateInfoRecord(dynamic_cast<MWTP::DialogueInfoRecord*>(*v_iter), cells, changedRecords);
     }
     else if ((type_name==scriptID) and (process_scripts))
     {
-      if (!translateScriptRecord(dynamic_cast<ScriptRecord*>(*v_iter), cells, changedRecords))
+      if (!translateScriptRecord(dynamic_cast<MWTP::ScriptRecord*>(*v_iter), cells, changedRecords))
       {
         std::cout << "Error: couldn't translate cells in script \""
-                  << dynamic_cast<ScriptRecord*>(*v_iter)->ScriptID<<"\"!\n";
+                  << dynamic_cast<MWTP::ScriptRecord*>(*v_iter)->ScriptID<<"\"!\n";
         reader.deallocateRecordsInVector();
-        return rcScriptError;
+        return MWTP::rcScriptError;
       }//if not translated
     }//if script record
     /// TODO: Maybe translate region names, too.
@@ -398,7 +398,7 @@ int main(int argc, char **argv)
   {
     std::cout << "No records of the file \""<<pluginFile<<"\" were changed.";
     reader.deallocateRecordsInVector();
-    return rcNoChange;
+    return MWTP::rcNoChange;
   }
   else if (changedRecords==1)
   {
@@ -412,13 +412,13 @@ int main(int argc, char **argv)
   }
 
   //try to write stuff to the output file
-  ESMWriterGeneric writer(&recordVec);
+  MWTP::ESMWriterGeneric writer(&recordVec);
   if (!writer.writeESM(outputFileName, false /* no master */, deps,
          "(TODO: put description here)"))
   {
     std::cout << "Error: Could not create or write to output file \""<<outputFileName<<"\".\n";
     reader.deallocateRecordsInVector();
-    return rcOutputFailed;
+    return MWTP::rcOutputFailed;
   }
   reader.deallocateRecordsInVector();
   std::cout << "Success!\n";

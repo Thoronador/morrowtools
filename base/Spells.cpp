@@ -21,6 +21,9 @@
 #include "Spells.h"
 #include <iostream>
 
+namespace MWTP
+{
+
 const size_t Spells::cMaximumSpellNameLength = 31;
 
 /* **** Spells functions **** */
@@ -144,3 +147,5 @@ void Spells::clearAll()
 {
   m_Spells.clear();
 }
+
+} //namespace

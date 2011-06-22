@@ -31,6 +31,9 @@
 #include "../base/records/PathGridRecord.h"
 #include "../base/records/ScriptRecord.h"
 
+namespace MWTP
+{
+
 ESMReaderTranslator::ESMReaderTranslator(VectorType* vec)
 : ESMReaderGeneric(vec)
 {
@@ -201,3 +204,5 @@ int ESMReaderTranslator::processNextRecord(std::ifstream& in_File)
   }//swi
   return lastResult;
 }//processNextRecord of ESMReaderTranslator class
+
+} //namespace

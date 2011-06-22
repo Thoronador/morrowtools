@@ -25,6 +25,9 @@
 #include "../HelperIO.h"
 #include "../UtilityFunctions.h"
 
+namespace MWTP
+{
+
 GlobalRecord::GlobalRecord()
 {
   GlobalID = "";
@@ -249,3 +252,5 @@ bool operator<(const GlobalRecord& left, const GlobalRecord& right)
 {
   return (lowerCaseCompare(left.GlobalID, right.GlobalID)<0);
 }
+
+} //namespace

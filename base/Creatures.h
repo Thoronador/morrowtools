@@ -26,6 +26,9 @@
 #include "records/CreatureRecord.h"
 #include "ComparisonFunctor.h"
 
+namespace MWTP
+{
+
 //iterator type for creature list
 typedef std::map<std::string, CreatureRecord, ci_less>::const_iterator CreatureListIterator;
 
@@ -104,5 +107,7 @@ class Creatures
     /* internal data */
     std::map<std::string, CreatureRecord, ci_less> m_Creatures;
 };//class
+
+} //namespace
 
 #endif // CREATURES_H

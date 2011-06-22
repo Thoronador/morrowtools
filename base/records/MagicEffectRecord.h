@@ -25,6 +25,9 @@
 #include <fstream>
 #include "BasicRecord.h"
 
+namespace MWTP
+{
+
 //spell schools
 const int32_t cAlteration = 0;
 const int32_t cConjuration = 1;
@@ -221,5 +224,7 @@ const int32_t EffectVampirism = 133;
 const int32_t EffectSummonCenturionSphere = 134;
 const int32_t EffectSunDamage = 135;
 const int32_t EffectStuntedMagicka = 136;
+
+} //namespace
 
 #endif // MAGICEFFECTRECORD_H

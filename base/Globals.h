@@ -25,6 +25,9 @@
 #include <set>
 #include "records/GlobalRecord.h"
 
+namespace MWTP
+{
+
 //iterator type for global list
 typedef std::set<GlobalRecord>::const_iterator GlobalListIterator;
 
@@ -103,5 +106,7 @@ class Globals
     /* internal data */
     std::set<GlobalRecord> m_Globals;
 };//class
+
+} //namespace
 
 #endif // GLOBALS_H

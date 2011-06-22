@@ -25,6 +25,9 @@
 #include <string>
 #include <stdint.h>
 
+namespace MWTP
+{
+
 namespace ScriptCompiler
 {
 
@@ -106,6 +109,8 @@ struct CompiledChunk
   SC_VarRef getVariableTypeWithIndex(const std::string& varName) const;
 }; //struct
 
-} //namespace
+} //namespace ScriptCompiler
+
+} //namespace MWTP
 
 #endif // COMPILEDCHUNK_H

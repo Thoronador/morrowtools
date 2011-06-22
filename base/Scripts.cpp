@@ -21,6 +21,9 @@
 #include "Scripts.h"
 #include <iostream>
 
+namespace MWTP
+{
+
 Scripts::Scripts()
 {
   //empty
@@ -124,3 +127,5 @@ int Scripts::readRecordSCPT(std::ifstream& in_File)
   addScript(temp);
   return 1;
 } //readRecordSCPT
+
+} //namespace

@@ -22,6 +22,9 @@
 #include <iostream>
 #include <cstring>
 
+namespace MWTP
+{
+
 GenericRecord::GenericRecord()
 {
   m_DataSize = 0;
@@ -89,3 +92,5 @@ uint32_t GenericRecord::getDataSize() const
 {
   return m_DataSize;
 }
+
+} //namespace

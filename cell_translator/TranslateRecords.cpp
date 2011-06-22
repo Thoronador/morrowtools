@@ -22,6 +22,9 @@
 #include "../base/UtilityFunctions.h"
 #include "../base/script_compiler/ScriptCompiler.h"
 
+namespace MWTP
+{
+
 bool translatePreNPCRecord(PreNPCRecord* c_rec, const CellListType& cells, unsigned int& changedRecords)
 {
   if (c_rec==NULL) return false;
@@ -359,3 +362,5 @@ bool translateScriptRecord(ScriptRecord* script_rec, const CellListType& cells, 
   }//if stuff was replaces
   return true;
 }
+
+} //namespace

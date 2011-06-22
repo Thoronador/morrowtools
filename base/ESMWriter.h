@@ -32,6 +32,8 @@
 
   --------------------------------------------------------------------------*/
 
+namespace MWTP
+{
 
 /* ESMWriter class
 
@@ -72,5 +74,7 @@ class ESMWriter
     */
     virtual bool writeRecords(std::ofstream& output) const = 0;
 };//class
+
+} //namespace
 
 #endif // ESMWRITER_H

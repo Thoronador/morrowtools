@@ -21,6 +21,9 @@
 #ifndef COMPILERCODES_H
 #define COMPILERCODES_H
 
+namespace MWTP
+{
+
 namespace ScriptCompiler
 {
   /* op-codes for scripts' compiled data */
@@ -481,6 +484,8 @@ namespace ScriptCompiler
   const uint16_t CodeWakeUpPC = 0x10E1; //"E110"
   const uint16_t CodeWhile = 0x010A; //"0A01"
   const uint16_t CodeXBox = 0x113A; //"3A11"
-} //namespace
+} //namespace ScriptCompiler
+
+} //namespace MWTP
 
 #endif // COMPILERCODES_H

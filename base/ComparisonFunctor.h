@@ -23,11 +23,16 @@
 
 #include "UtilityFunctions.h"
 
+namespace MWTP
+{
+
 struct ci_less : public std::binary_function<std::string, std::string, bool>
 {
   bool
   operator()(const std::string& __x, const std::string& __y) const
   { return (lowerCaseCompare(__x, __y)<0); }
 };
+
+} //namespace
 
 #endif // COMPARISONFUNCTOR_H

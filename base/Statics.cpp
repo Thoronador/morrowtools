@@ -21,6 +21,9 @@
 #include "Statics.h"
 #include <iostream>
 
+namespace MWTP
+{
+
 Statics::Statics()
 {
   //empty
@@ -124,3 +127,5 @@ int Statics::readRecordSTAT(std::ifstream& in_File)
   addStatic(temp);
   return 1;
 } //readRecordSTAT
+
+} //namespace

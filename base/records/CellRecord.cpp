@@ -24,6 +24,9 @@
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 
+namespace MWTP
+{
+
 /* RefDoorData's functions */
 
 bool RefDoorData::operator==(const RefDoorData& other) const
@@ -1606,3 +1609,5 @@ bool CellRecord::hasWater() const
 {
   return ((CellFlags & cfWater)!=0);
 }
+
+} //namespace

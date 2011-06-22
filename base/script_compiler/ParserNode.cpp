@@ -25,6 +25,9 @@
 #include "ScriptCompiler.h"
 #include "../Globals.h"
 
+namespace MWTP
+{
+
 namespace ScriptCompiler
 {
 
@@ -372,4 +375,6 @@ bool lowerOrEqualPrecedence(const char op1, const char op2)
   throw 42;
 }
 
-}//namespace
+}//namespace ScriptCompiler
+
+} //namespace MWTP

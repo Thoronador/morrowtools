@@ -21,6 +21,9 @@
 #include "NPCs.h"
 #include <iostream>
 
+namespace MWTP
+{
+
 NPCs::NPCs()
 {
   //empty
@@ -124,3 +127,5 @@ int NPCs::readRecordNPC_(std::ifstream& in_File)
   addNPC(temp);
   return 1;
 } //readRecordNPC_
+
+} //namespace

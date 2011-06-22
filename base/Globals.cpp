@@ -21,6 +21,9 @@
 #include "Globals.h"
 #include <iostream>
 
+namespace MWTP
+{
+
 Globals::Globals()
 {
   //empty
@@ -124,3 +127,5 @@ int Globals::readRecordGLOB(std::ifstream& in_File)
   addGlobal(temp);
   return 1;
 } //readRecordGLOB
+
+} //namespace

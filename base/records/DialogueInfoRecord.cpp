@@ -24,6 +24,9 @@
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 
+namespace MWTP
+{
+
 bool FuncVarRecord::operator==(const FuncVarRecord& other) const
 {
   if ((Index==other.Index) and (Type==other.Type)
@@ -1060,3 +1063,5 @@ bool DialogueInfoRecord::loadFromStream(std::ifstream& in_File)
 
   return in_File.good();
 }
+
+} //namespace

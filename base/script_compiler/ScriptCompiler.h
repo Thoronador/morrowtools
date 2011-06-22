@@ -24,6 +24,9 @@
 #include "../records/ScriptRecord.h"
 #include "CompiledChunk.h"
 
+namespace MWTP
+{
+
 namespace ScriptCompiler
 {
 
@@ -60,6 +63,8 @@ std::string::size_type getDotPosition(const std::string& line);
 /* aux. function */
 SC_VarRef getForeignVariableTypeWithIndex(const std::string& objectID, const std::string& varName);
 
-}//namespace
+}//namespace ScriptCompiler
+
+} //namespace MWTP
 
 #endif // SCRIPTCOMPILER_H

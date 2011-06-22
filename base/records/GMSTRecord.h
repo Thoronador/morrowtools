@@ -24,6 +24,9 @@
 #include <string>
 #include "BasicRecord.h"
 
+namespace MWTP
+{
+
 enum GMSTType {gtInteger, gtFloat, gtString};
 
 struct GMSTRecord: public BasicRecord
@@ -51,5 +54,7 @@ struct GMSTRecord: public BasicRecord
   */
   bool loadFromStream(std::ifstream& in_File);
 };
+
+} //namespace
 
 #endif // GMSTRECORD_H

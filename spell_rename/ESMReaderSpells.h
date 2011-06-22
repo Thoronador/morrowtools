@@ -23,6 +23,9 @@
 
 #include "../base/ESMReader.h"
 
+namespace MWTP
+{
+
 class ESMReaderSpells: public ESMReader
 {
   public:
@@ -42,5 +45,7 @@ class ESMReaderSpells: public ESMReader
     */
     virtual int processNextRecord(std::ifstream& in_File);
 };//class
+
+} //namespace
 
 #endif // ESMREADERSPELLS_H

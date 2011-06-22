@@ -24,6 +24,9 @@
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 
+namespace MWTP
+{
+
 bool GMSTRecord::equals(const GMSTRecord& other) const
 {
   if ((Type!=other.Type) or (SettingName!=other.SettingName))
@@ -240,3 +243,5 @@ bool GMSTRecord::loadFromStream(std::ifstream& in_File)
   }//switch
   return in_File.good();
 }
+
+} //namespace

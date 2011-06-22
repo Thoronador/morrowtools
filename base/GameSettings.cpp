@@ -21,6 +21,9 @@
 #include "GameSettings.h"
 #include <iostream>
 
+namespace MWTP
+{
+
 GameSettings::GameSettings()
 {
   //empty
@@ -120,3 +123,5 @@ void GameSettings::clearAll()
 {
   m_Settings.clear();
 }
+
+} //namespace

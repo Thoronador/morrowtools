@@ -45,6 +45,8 @@
 		<Unit filename="..\base\ReturnCodes.h" />
 		<Unit filename="..\base\Spells.cpp" />
 		<Unit filename="..\base\Spells.h" />
+		<Unit filename="..\base\UtilityFunctions.cpp" />
+		<Unit filename="..\base\UtilityFunctions.h" />
 		<Unit filename="..\base\records\BasicRecord.cpp" />
 		<Unit filename="..\base\records\BasicRecord.h" />
 		<Unit filename="..\base\records\GMSTRecord.cpp" />

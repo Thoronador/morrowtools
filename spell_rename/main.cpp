@@ -110,7 +110,7 @@ int main(int argc, char **argv)
   bool doIni = false;
   bool discardBeforeIni = false;
   //list of .esp files to scan for spells
-  DepFileList files;
+  MWTP::DepFileList files;
   files.clear();
 
   if (argc>1 and argv!=NULL)
@@ -164,7 +164,7 @@ int main(int argc, char **argv)
           {
             std::cout << "Error: You have to specify a file name after \""
                       << param<<"\".\n";
-            return rcInvalidParameter;
+            return MWTP::rcInvalidParameter;
           }
         }//output file
         else if ((param=="-d") or (param=="-dir") or (param=="--data-files"))
@@ -188,14 +188,14 @@ int main(int argc, char **argv)
             {
               std::cout << "Parameter \""<<std::string(argv[i+1])<<"\" is too"
                         << " short to be a proper directory path.\n";
-              return rcInvalidParameter;
+              return MWTP::rcInvalidParameter;
             }//else
           }
           else
           {
             std::cout << "Error: You have to specify a directory name after \""
                       << param<<"\".\n";
-            return rcInvalidParameter;
+            return MWTP::rcInvalidParameter;
           }
         }//data files directory
         //add plugin file to list
@@ -212,7 +212,7 @@ int main(int argc, char **argv)
           {
             std::cout << "Error: You have to specify a file name after \""
                       << param<<"\".\n";
-            return rcInvalidParameter;
+            return MWTP::rcInvalidParameter;
           }
         }//plugin file
         //try to read from Morrowind.ini?
@@ -231,14 +231,14 @@ int main(int argc, char **argv)
           //unknown or wrong parameter
           std::cout << "Invalid parameter given: \""<<param<<"\".\n"
                     << "Use --help to get a list of valid parameters.\n";
-          return rcInvalidParameter;
+          return MWTP::rcInvalidParameter;
         }
 
       }//parameter exists
       else
       {
         std::cout << "Parameter at index "<<i<<" is NULL.\n";
-        return rcInvalidParameter;
+        return MWTP::rcInvalidParameter;
       }
       ++i;//on to next parameter
     }//while
@@ -321,20 +321,20 @@ int main(int argc, char **argv)
   files.writeDeps();
 
   //read all files
-  ESMReaderSpells reader;
+  MWTP::ESMReaderSpells reader;
   std::cout << "Reading files, this may take a while.\n";
-  DepFileList removedFiles;
+  MWTP::DepFileList removedFiles;
   i = 0;
   while (i<files.getSize())
   {
-    DepFileList DummyDeps;//It's not actually used after the read function, but
+    MWTP::DepFileList DummyDeps;//It's not actually used after the read function, but
                           // readESM() needs one as parameter.
     const int read_result = reader.readESM(baseDir+files.at(i).name, DummyDeps, verbose);
     if (read_result<=-1)
     {
       std::cout << "Error while reading file \""<<baseDir+files.at(i).name
                 <<"\".\nAborting.\n";
-      return rcFileError;
+      return MWTP::rcFileError;
     }//if
     else if (read_result==0)
     {
@@ -372,149 +372,149 @@ int main(int argc, char **argv)
   }//if
 
   std::cout << "Info: "<<files.getSize()<<" Master/ Plugin file(s) containing "
-            << Spells::getSingleton().getNumberOfSpells()<<" spell(s) were read.\n";
+            << MWTP::Spells::getSingleton().getNumberOfSpells()<<" spell(s) were read.\n";
 
   std::vector<std::string> prefixes;
   prefixes.clear();
   //spell school settings present?
-  GameSettings& GMSTs = GameSettings::getSingleton();
-  GMSTRecord record;
+  MWTP::GameSettings& GMSTs = MWTP::GameSettings::getSingleton();
+  MWTP::GMSTRecord record;
 
   //alteration -> 0
   if (GMSTs.hasSetting("sSchoolAlteration"))
   {
     record = GMSTs.getSetting("sSchoolAlteration");
-    if (record.Type!=gtString)
+    if (record.Type!=MWTP::gtString)
     {
       std::cout << "Error: GMST \"sSchoolAlteration\" does not seem to be a string.\n";
-      return rcDataError;
+      return MWTP::rcDataError;
     }
     prefixes.push_back(record.sVal.substr(0,1));
   }
   else
   {
     std::cout << "Error: No GMST for alteration found.\n";
-    return rcDataError;
+    return MWTP::rcDataError;
   }
 
   //conjuration -> 1
   if (GMSTs.hasSetting("sSchoolConjuration"))
   {
     record = GMSTs.getSetting("sSchoolConjuration");
-    if (record.Type!=gtString)
+    if (record.Type!=MWTP::gtString)
     {
       std::cout << "Error: GMST \"sSchoolConjuration\" does not seem to be a string.\n";
-      return rcDataError;
+      return MWTP::rcDataError;
     }
     prefixes.push_back(record.sVal.substr(0,1));
   }
   else
   {
     std::cout << "Error: No GMST for conjuration found.\n";
-    return rcDataError;
+    return MWTP::rcDataError;
   }
 
   //destruction -> 2
   if (GMSTs.hasSetting("sSchoolDestruction"))
   {
     record = GMSTs.getSetting("sSchoolDestruction");
-    if (record.Type!=gtString)
+    if (record.Type!=MWTP::gtString)
     {
       std::cout << "Error: GMST \"sSchoolDestruction\" does not seem to be a string.\n";
-      return rcDataError;
+      return MWTP::rcDataError;
     }
     prefixes.push_back(record.sVal.substr(0,1));
   }
   else
   {
     std::cout << "Error: No GMST for destruction found.\n";
-    return rcDataError;
+    return MWTP::rcDataError;
   }
 
   //illusion -> 3
   if (GMSTs.hasSetting("sSchoolIllusion"))
   {
     record = GMSTs.getSetting("sSchoolIllusion");
-    if (record.Type!=gtString)
+    if (record.Type!=MWTP::gtString)
     {
       std::cout << "Error: GMST \"sSchoolIllusion\" does not seem to be a string.\n";
-      return rcDataError;
+      return MWTP::rcDataError;
     }
     prefixes.push_back(record.sVal.substr(0,1));
   }
   else
   {
     std::cout << "Error: No GMST for illusion found.\n";
-    return rcDataError;
+    return MWTP::rcDataError;
   }
 
   //mysticism -> 4
   if (GMSTs.hasSetting("sSchoolMysticism"))
   {
     record = GMSTs.getSetting("sSchoolMysticism");
-    if (record.Type!=gtString)
+    if (record.Type!=MWTP::gtString)
     {
       std::cout << "Error: GMST \"sSchoolMysticism\" does not seem to be a string.\n";
-      return rcDataError;
+      return MWTP::rcDataError;
     }
     prefixes.push_back(record.sVal.substr(0,1));
   }
   else
   {
     std::cout << "Error: No GMST for mysticism found.\n";
-    return rcDataError;
+    return MWTP::rcDataError;
   }
 
   //restoration -> 5
   if (GMSTs.hasSetting("sSchoolRestoration"))
   {
     record = GMSTs.getSetting("sSchoolRestoration");
-    if (record.Type!=gtString)
+    if (record.Type!=MWTP::gtString)
     {
       std::cout << "Error: GMST \"sSchoolRestoration\" does not seem to be a string.\n";
-      return rcDataError;
+      return MWTP::rcDataError;
     }
     prefixes.push_back(record.sVal.substr(0,1));
   }
   else
   {
     std::cout << "Error: No GMST for restoration found.\n";
-    return rcDataError;
+    return MWTP::rcDataError;
   }
 
   //delete all non-spells (abilities, powers,...) and update spells with naming scheme
-  SpellListIterator spell_end = Spells::getSingleton().getEnd();
-  SpellListIterator spell_cur = Spells::getSingleton().getBegin();
+  MWTP::SpellListIterator spell_end = MWTP::Spells::getSingleton().getEnd();
+  MWTP::SpellListIterator spell_cur = MWTP::Spells::getSingleton().getBegin();
   while (spell_cur!=spell_end)
   {
     //Is it a spell?
-    if (spell_cur->second.Type!=stSpell)
+    if (spell_cur->second.Type!=MWTP::stSpell)
     {
       const std::string temp = spell_cur->first;
       ++spell_cur;
       //delete spell so we don't save it into the final plugin
-      Spells::getSingleton().removeSpell(temp);
+      MWTP::Spells::getSingleton().removeSpell(temp);
     }//if not spell
     else
     {
       bool unchanged = false;
-      SpellRecord rec = spell_cur->second;
+      MWTP::SpellRecord rec = spell_cur->second;
       if (!rec.Enchs.empty())
       {
-        if (MagicEffects::getSingleton().hasEffect(rec.Enchs.at(0).EffectID))
+        if (MWTP::MagicEffects::getSingleton().hasEffect(rec.Enchs.at(0).EffectID))
         {
-          const int school = MagicEffects::getSingleton().getEffect(rec.Enchs.at(0).EffectID).SpellSchool;
+          const int school = MWTP::MagicEffects::getSingleton().getEffect(rec.Enchs.at(0).EffectID).SpellSchool;
           if ((school<0) or (school>=prefixes.size()))
           {
             std::cout << "Error: effect "<<rec.Enchs.at(0).EffectID<<" has an "
                       << "invalid spell school index of "<<school<<".\n";
-            return rcDataError;
+            return MWTP::rcDataError;
           }//if school invalid
           const std::string newName = prefixes[school]+" "+rec.Name;
-          if (allowTruncatedName or (newName.length()<=Spells::cMaximumSpellNameLength))
+          if (allowTruncatedName or (newName.length()<=MWTP::Spells::cMaximumSpellNameLength))
           {
             rec.Name = newName;
-            Spells::getSingleton().addSpell(rec);
+            MWTP::Spells::getSingleton().addSpell(rec);
           }//if
           else
           {
@@ -524,7 +524,7 @@ int main(int argc, char **argv)
             const std::string delete_ID = spell_cur->first;
             ++spell_cur;
             //delete spell so we don't save it into the final plugin
-            Spells::getSingleton().removeSpell(delete_ID);
+            MWTP::Spells::getSingleton().removeSpell(delete_ID);
             //set unchanged flag to avoid iterator increase at the end
             unchanged = true;
           }//else
@@ -533,14 +533,14 @@ int main(int argc, char **argv)
         {
           std::cout << "Error: effect with ID "<<rec.Enchs.at(0).EffectID
                     <<" does not exist.\n";
-          return rcDataError;
+          return MWTP::rcDataError;
         }
       }
       else
       {
         std::cout << "Error: spell \""<<spell_cur->first<<"\" does not have any"
                   << " enchantment data.\n";
-        return rcDataError;
+        return MWTP::rcDataError;
       }
       if (!unchanged)
       {
@@ -549,22 +549,22 @@ int main(int argc, char **argv)
     }
   }//while
 
-  std::cout << "Info: "<<Spells::getSingleton().getNumberOfSpells()<<" spell(s) processed.\n";
+  std::cout << "Info: "<<MWTP::Spells::getSingleton().getNumberOfSpells()<<" spell(s) processed.\n";
 
   //write spells to file
-  if (Spells::getSingleton().getNumberOfSpells()==0)
+  if (MWTP::Spells::getSingleton().getNumberOfSpells()==0)
   {
     std::cout << "No spells available. No new file will be created.\n";
-    return rcNoSpells;
+    return MWTP::rcNoSpells;
   }
 
-  ESMWriterSpells writer;
+  MWTP::ESMWriterSpells writer;
   if (writer.writeESM(baseDir+outputFileName, false, files,
       "Umbenannte/ umsortierte Zauber fuer Morrowind (generiert durch spell_rename.exe)"))
   {
     std::cout << "Output file \""<<baseDir+outputFileName<<"\" was created successfully.\n";
     //now check file time of created file
-    DepFile outDep = outputFileName;
+    MWTP::DepFile outDep = outputFileName;
     if (getFileSizeAndModificationTime(baseDir+outputFileName, outDep.size, outDep.modified))
     {
       //only change, if last file isn't master, because plugins will be loaded
@@ -592,5 +592,5 @@ int main(int argc, char **argv)
     return 0;
   }//if
   std::cout << "Error: Could not create or write to output file \""<<baseDir+outputFileName<<"\".\n";
-  return rcOutputFailed;
+  return MWTP::rcOutputFailed;
 }

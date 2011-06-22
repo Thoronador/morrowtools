@@ -26,6 +26,9 @@
 #include "../base/MagicEffects.h"
 #include "../base/Spells.h"
 
+namespace MWTP
+{
+
 ESMReaderSpells::ESMReaderSpells()
 {
   //empty
@@ -110,3 +113,5 @@ int ESMReaderSpells::processNextRecord(std::ifstream& in_File)
   }//swi
   return lastResult;
 }//processNextRecord of ESMReaderSpells
+
+} //namespace

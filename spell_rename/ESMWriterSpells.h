@@ -23,6 +23,9 @@
 
 #include "../base/ESMWriter.h"
 
+namespace MWTP
+{
+
 class ESMWriterSpells: public ESMWriter
 {
   public:
@@ -42,5 +45,7 @@ class ESMWriterSpells: public ESMWriter
     */
     virtual bool writeRecords(std::ofstream& output) const;
 }; //class
+
+} //namespace
 
 #endif // ESMWRITERSPELLS_H

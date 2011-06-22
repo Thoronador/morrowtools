@@ -26,6 +26,9 @@
 #include <fstream>
 #include "records/GMSTRecord.h"
 
+namespace MWTP
+{
+
 //iterator type for GMST list
 typedef std::map<std::string, GMSTRecord>::const_iterator GMSTListIterator;
 
@@ -108,5 +111,7 @@ class GameSettings
     /* internal data */
     std::map<std::string, GMSTRecord> m_Settings;
 }; //class
+
+} //namespace
 
 #endif // GAMESETTINGS_H

@@ -21,6 +21,9 @@
 #include "ESMWriterSpells.h"
 #include "../base/Spells.h"
 
+namespace MWTP
+{
+
 ESMWriterSpells::ESMWriterSpells()
 {
   //empty
@@ -41,3 +44,5 @@ bool ESMWriterSpells::writeRecords(std::ofstream& output) const
 {
   return Spells::getSingleton().saveAllToStream(output);
 }
+
+} //namespace

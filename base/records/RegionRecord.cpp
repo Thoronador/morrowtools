@@ -23,6 +23,9 @@
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 
+namespace MWTP
+{
+
 RegionRecord::RegionRecord()
 {
   RegionID = RegionName = "";
@@ -465,3 +468,5 @@ bool operator<(const RegionRecord& left, const RegionRecord& right)
 {
   return (left.RegionID.compare(right.RegionID)<0);
 }
+
+} //namespace

@@ -25,6 +25,9 @@
 #include <fstream>
 #include "BasicRecord.h"
 
+namespace MWTP
+{
+
 struct SoundGeneratorRecord: public BasicRecord
 {
   std::string Name;
@@ -52,5 +55,7 @@ struct SoundGeneratorRecord: public BasicRecord
   */
   bool loadFromStream(std::ifstream& in_File);
 }; //struct
+
+} //namespace
 
 #endif // SOUNDGENERATORRECORD_H

@@ -23,6 +23,9 @@
 #include <stdint.h>
 #include <string>
 
+namespace MWTP
+{
+
 const int32_t AttributeStrength = 0;
 const int32_t AttributeIntelligence = 1;
 const int32_t AttributeWillpower = 2;
@@ -35,6 +38,8 @@ const int32_t AttributeLuck = 7;
 namespace Attributes
 {
   std::string getSettingNameForAttribute(const int32_t AttributeIndex);
-}//namespace
+}//namespace Attributes
+
+} //namespace MWTP
 
 #endif // ATTRIBUTES_H

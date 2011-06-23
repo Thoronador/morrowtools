@@ -25,6 +25,9 @@
 #include <map>
 #include "records/SoundGeneratorRecord.h"
 
+namespace MWTP
+{
+
 //iterator type for sound generator list
 typedef std::map<std::string, SoundGeneratorRecord>::const_iterator SoundGeneratorListIterator;
 
@@ -103,5 +106,7 @@ class SoundGenerators
     /* internal data */
     std::map<std::string, SoundGeneratorRecord> m_SoundGenerators;
 };//class
+
+} //namespace
 
 #endif // SOUNDGENERATORS_H

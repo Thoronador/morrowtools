@@ -24,6 +24,9 @@
 #include <map>
 #include "records/SoundRecord.h"
 
+namespace MWTP
+{
+
 //iterator type for sound list
 typedef std::map<std::string, SoundRecord>::const_iterator SoundListIterator;
 
@@ -103,5 +106,6 @@ class Sounds
     std::map<std::string, SoundRecord> m_Sounds;
 };//class
 
+}//namespace
 
 #endif // SOUNDS_H

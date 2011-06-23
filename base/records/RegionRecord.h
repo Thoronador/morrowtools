@@ -25,6 +25,9 @@
 #include <vector>
 #include "BasicRecord.h"
 
+namespace MWTP
+{
+
 struct SoundChanceRecord
 {
   std::string Sound;
@@ -95,5 +98,7 @@ struct RegionRecord: public BasicRecord
 
 //comparison operator for ordered set
 bool operator<(const RegionRecord& left, const RegionRecord& right);
+
+} //namespace
 
 #endif // REGIONRECORD_H

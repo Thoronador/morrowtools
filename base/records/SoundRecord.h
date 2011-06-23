@@ -25,6 +25,9 @@
 #include <fstream>
 #include "BasicRecord.h"
 
+namespace MWTP
+{
+
 struct SoundRecord: public BasicRecord
 {
   std::string SoundID;
@@ -53,5 +56,7 @@ struct SoundRecord: public BasicRecord
   */
   bool loadFromStream(std::ifstream& in_File);
 }; //struct
+
+} //namespace
 
 #endif // SOUNDRECORD_H

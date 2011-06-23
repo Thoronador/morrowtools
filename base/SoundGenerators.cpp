@@ -21,6 +21,9 @@
 #include "SoundGenerators.h"
 #include <iostream>
 
+namespace MWTP
+{
+
 SoundGenerators::SoundGenerators()
 {
   //empty
@@ -124,3 +127,5 @@ int SoundGenerators::readRecordSNDG(std::ifstream& in_File)
   addSoundGenerator(temp);
   return 1;
 } //readRecordSNDG
+
+} //namespace

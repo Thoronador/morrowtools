@@ -23,6 +23,9 @@
 #include "MW_Constants.h"
 #include "HelperIO.h"
 
+namespace MWTP
+{
+
 ESMReaderCount::ESMReaderCount()
 {
   //empty
@@ -125,3 +128,5 @@ void ESMReaderCount::showStats(const bool withPercentage) const
   }//while
   std::cout << "There are "<<RecordCounter.size()<<" distinct record types.\n";
 }
+
+} //namespace

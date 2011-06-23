@@ -25,6 +25,9 @@
 #include <fstream>
 #include "BasicRecord.h"
 
+namespace MWTP
+{
+
 struct StartScriptRecord: public BasicRecord
 {
   std::string Data;
@@ -53,5 +56,7 @@ struct StartScriptRecord: public BasicRecord
   */
   bool loadFromStream(std::ifstream& in_File);
 };//struct
+
+} //namespace
 
 #endif // STARTSCRIPTRECORD_H

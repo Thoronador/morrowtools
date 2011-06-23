@@ -25,6 +25,9 @@
 #include <map>
 #include "records/WeaponRecord.h"
 
+namespace MWTP
+{
+
 //iterator type for weapon list
 typedef std::map<std::string, WeaponRecord>::const_iterator WeaponListIterator;
 
@@ -102,5 +105,7 @@ class Weapons
     /* internal data */
     std::map<std::string, WeaponRecord> m_Weapons;
 };//class
+
+} //namespace
 
 #endif // WEAPONS_H

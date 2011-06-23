@@ -21,6 +21,9 @@
 #include "Attributes.h"
 #include <iostream>
 
+namespace MWTP
+{
+
 namespace Attributes
 {
 
@@ -59,4 +62,6 @@ std::string getSettingNameForAttribute(const int32_t AttributeIndex)
   }//swi
 }
 
-} //namespace
+} //namespace Attributes
+
+} //namespace MWTP

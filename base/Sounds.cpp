@@ -21,6 +21,9 @@
 #include "Sounds.h"
 #include <iostream>
 
+namespace MWTP
+{
+
 Sounds::Sounds()
 {
   //empty
@@ -123,3 +126,5 @@ int Sounds::readRecordSOUN(std::ifstream& in_File)
   addSound(temp);
   return 1;
 } //readRecordSOUN
+
+} //namespace

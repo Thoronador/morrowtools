@@ -24,6 +24,9 @@
 #include "ESMReader.h"
 #include <map>
 
+namespace MWTP
+{
+
 /* This descendant of the ESMReader class tries to skip all records from the
    given .esm/.esp file and just counts how often each record type occured.
    Hence both processNextRecord() and readESM() will never return values larger
@@ -73,5 +76,7 @@ class ESMReaderCount: public ESMReader
     */
     virtual int processNextRecord(std::ifstream& in_File);
 };//class
+
+} //namespace
 
 #endif // ESMREADERCOUNT_H

@@ -23,6 +23,9 @@
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 
+namespace MWTP
+{
+
 SoundRecord::SoundRecord()
 {
   SoundID = "";
@@ -183,3 +186,5 @@ bool SoundRecord::loadFromStream(std::ifstream& in_File)
   }
   return in_File.good();
 }
+
+} //namespace

@@ -21,6 +21,9 @@
 #include "StartScripts.h"
 #include <iostream>
 
+namespace MWTP
+{
+
 StartScripts::StartScripts()
 {
   //empty
@@ -124,3 +127,5 @@ int StartScripts::readRecordSSCR(std::ifstream& in_File)
   addStartScript(temp);
   return 1;
 } //readRecordSSCR
+
+} //namespace

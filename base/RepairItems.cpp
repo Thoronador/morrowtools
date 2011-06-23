@@ -21,6 +21,9 @@
 #include "RepairItems.h"
 #include <iostream>
 
+namespace MWTP
+{
+
 RepairItems::RepairItems()
 {
   //empty
@@ -124,3 +127,5 @@ int RepairItems::readRecordREPA(std::ifstream& in_File)
   addRepairItem(temp);
   return 1;
 } //readRecordREPA
+
+} //namespace

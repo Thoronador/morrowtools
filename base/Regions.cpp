@@ -21,6 +21,9 @@
 #include "Regions.h"
 #include <iostream>
 
+namespace MWTP
+{
+
 Regions::Regions()
 {
   //empty
@@ -124,3 +127,5 @@ int Regions::readRecordREGN(std::ifstream& in_File)
   addRegion(temp);
   return 1;
 } //readRecordREGN
+
+} //namespace

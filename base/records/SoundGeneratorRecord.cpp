@@ -23,6 +23,9 @@
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 
+namespace MWTP
+{
+
 SoundGeneratorRecord::SoundGeneratorRecord()
 {
   Name = "";
@@ -224,3 +227,5 @@ bool SoundGeneratorRecord::loadFromStream(std::ifstream& in_File)
 
   return in_File.good();
 }
+
+} //namespace

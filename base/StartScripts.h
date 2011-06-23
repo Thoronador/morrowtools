@@ -25,6 +25,9 @@
 #include <map>
 #include "records/StartScriptRecord.h"
 
+namespace MWTP
+{
+
 //iterator type for StartScript list
 typedef std::map<std::string, StartScriptRecord>::const_iterator StartScriptListIterator;
 
@@ -103,5 +106,7 @@ class StartScripts
     /* internal data */
     std::map<std::string, StartScriptRecord> m_StartScripts;
 };//class
+
+} //namespace
 
 #endif // STARTSCRIPTS_H

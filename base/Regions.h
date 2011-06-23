@@ -25,6 +25,9 @@
 #include <set>
 #include "records/RegionRecord.h"
 
+namespace MWTP
+{
+
 //iterator type for region list
 typedef std::set<RegionRecord>::const_iterator RegionListIterator;
 
@@ -103,5 +106,7 @@ class Regions
     /* internal data */
     std::set<RegionRecord> m_Regions;
 };//class
+
+} //namespace
 
 #endif // REGIONS_H

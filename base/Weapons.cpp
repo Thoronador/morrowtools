@@ -21,6 +21,9 @@
 #include "Weapons.h"
 #include <iostream>
 
+namespace MWTP
+{
+
 Weapons::Weapons()
 {
   //empty
@@ -124,3 +127,5 @@ int Weapons::readRecordWEAP(std::ifstream& in_File)
   addWeapon(temp);
   return 1;
 } //readRecordWEAP
+
+} //namespace

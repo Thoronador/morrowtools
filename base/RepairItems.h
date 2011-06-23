@@ -25,6 +25,9 @@
 #include <set>
 #include "records/RepairItemRecord.h"
 
+namespace MWTP
+{
+
 //iterator type for repair item list
 typedef std::set<RepairItemRecord>::const_iterator RepairItemListIterator;
 
@@ -103,5 +106,7 @@ class RepairItems
     /* internal data */
     std::set<RepairItemRecord> m_RepairItems;
 };//class
+
+} //namespace
 
 #endif // REPAIRITEMS_H

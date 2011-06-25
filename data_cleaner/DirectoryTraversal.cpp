@@ -87,8 +87,8 @@ std::vector<FileEntry> getFilesInDirectory(const std::string& directory)
         && entry->d_type != DT_CHR)
     {
       result.push_back(one);
-      entry = readdir(direc);
     }
+    entry = readdir(direc);
   }//while
   closedir(direc);
   #else

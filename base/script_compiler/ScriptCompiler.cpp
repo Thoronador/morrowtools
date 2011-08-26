@@ -435,6 +435,31 @@ bool getAnimationGroupIndex(const std::string& groupName, int16_t& result)
 {
   /***** TODO: add more animation groups *****/
   const std::string lcGroup = lowerCase(groupName);
+  if (lcGroup == "attack1")
+  {
+    result = 0x83;
+    return true;
+  }
+  if (lcGroup == "attack2")
+  {
+    result = 0x84;
+    return true;
+  }
+  if (lcGroup == "attack3")
+  {
+    result = 0x85;
+    return true;
+  }
+  if (lcGroup == "bowandarrow")
+  {
+    result = 0x8B;
+    return true;
+  }
+  if (lcGroup == "crossbow")
+  {
+    result = 0x8A;
+    return true;
+  }
   if (lcGroup == "death1")
   {
     result = 27;
@@ -460,14 +485,69 @@ bool getAnimationGroupIndex(const std::string& groupName, int16_t& result)
     result = 31;
     return true;
   }
+  if (lcGroup == "deathknockdown")
+  {
+    result = 0x20;
+    return true;
+  }
+  if (lcGroup == "deathknockout")
+  {
+    result = 0x21;
+    return true;
+  }
+  if (lcGroup == "handtohand")
+  {
+    result = 0x89;
+    return true;
+  }
+  if (lcGroup == "hit1")
+  {
+    result = 0x13;
+    return true;
+  }
+  if (lcGroup == "hit2")
+  {
+    result = 0x14;
+    return true;
+  }
+  if (lcGroup == "hit3")
+  {
+    result = 0x15;
+    return true;
+  }
+  if (lcGroup == "hit4")
+  {
+    result = 0x16;
+    return true;
+  }
+  if (lcGroup == "hit5")
+  {
+    result = 0x17;
+    return true;
+  }
   if (lcGroup == "idle")
   {
     result = 0;
     return true;
   }
+  if (lcGroup == "idle1h")
+  {
+    result = 0x0A;
+    return true;
+  }
   if (lcGroup == "idle2")
   {
     result = 1;
+    return true;
+  }
+  if (lcGroup == "idle2c")
+  {
+    result = 0x0B;
+    return true;
+  }
+  if (lcGroup == "idle2w")
+  {
+    result = 0x0C;
     return true;
   }
   if (lcGroup == "idle3")
@@ -503,6 +583,91 @@ bool getAnimationGroupIndex(const std::string& groupName, int16_t& result)
   if (lcGroup == "idle9")
   {
     result = 8;
+    return true;
+  }
+  if (lcGroup == "idlecrossbow")
+  {
+    result = 0x0F;
+    return true;
+  }
+  if (lcGroup == "idlehh")
+  {
+    result = 0x09;
+    return true;
+  }
+  if (lcGroup == "idlesneak")
+  {
+    result = 0x10;
+    return true;
+  }
+  if (lcGroup == "idlespell")
+  {
+    result = 0x0E;
+    return true;
+  }
+  if (lcGroup == "idlestorm")
+  {
+    result = 0x11;
+    return true;
+  }
+  if (lcGroup == "idleswim")
+  {
+    result = 0x0D;
+    return true;
+  }
+  if (lcGroup == "inventoryhandtohand")
+  {
+    result = 0x92;
+    return true;
+  }
+  if (lcGroup == "inventoryweapononehand")
+  {
+    result = 0x93;
+    return true;
+  }
+  if (lcGroup == "inventoryweapontwohand")
+  {
+    result = 0x94;
+    return true;
+  }
+  if (lcGroup == "inventoryweapontwowide")
+  {
+    result = 0x95;
+    return true;
+  }
+  if (lcGroup == "jump")
+  {
+    result = 0x43;
+    return true;
+  }
+  if (lcGroup == "jump1h")
+  {
+    result = 0x61;
+    return true;
+  }
+  if (lcGroup == "jump2c")
+  {
+    result = 0x70;
+    return true;
+  }
+  if (lcGroup == "jump2w")
+  {
+    result = 0x7F;
+    return true;
+  }
+  if (lcGroup == "jumphh")
+  {
+    result = 0x52;
+    return true;
+  }
+  if (lcGroup == "knockdown")
+  {
+    result = 0x22;
+    return true;
+  }
+  if (lcGroup == "knockout")
+  {
+    result = 0x23;
     return true;
   }
   if (lcGroup == "walkback")

@@ -705,6 +705,256 @@ bool getAnimationGroupIndex(const std::string& groupName, int16_t& result)
     result = 0x3B;
     return true;
   }
+  if (lcGroup == "runforward1h")
+  {
+    result = 0x59;
+    return true;
+  }
+  if (lcGroup == "runforward2c")
+  {
+    result = 0x68;
+    return true;
+  }
+  if (lcGroup == "runforward2w")
+  {
+    result = 0x77;
+    return true;
+  }
+  if (lcGroup == "runforwardhh")
+  {
+    result = 0x4A;
+    return true;
+  }
+  if (lcGroup == "runleft")
+  {
+    result = 0x3D;
+    return true;
+  }
+  if (lcGroup == "runleft1h")
+  {
+    result = 0x5B;
+    return true;
+  }
+  if (lcGroup == "runleft2c")
+  {
+    result = 0x6A;
+    return true;
+  }
+  if (lcGroup == "runleft2w")
+  {
+    result = 0x79;
+    return true;
+  }
+  if (lcGroup == "runlefthh")
+  {
+    result = 0x4C;
+    return true;
+  }
+  if (lcGroup == "runright")
+  {
+    result = 0x3E;
+    return true;
+  }
+  if (lcGroup == "runright1h")
+  {
+    result = 0x5C;
+    return true;
+  }
+  if (lcGroup == "runright2c")
+  {
+    result = 0x6B;
+    return true;
+  }
+  if (lcGroup == "runright2w")
+  {
+    result = 0x7A;
+    return true;
+  }
+  if (lcGroup == "runrighthh")
+  {
+    result = 0x4D;
+    return true;
+  }
+  if (lcGroup == "shield")
+  {
+    result = 0x90;
+    return true;
+  }
+  if (lcGroup == "sneakback")
+  {
+    result = 0x40;
+    return true;
+  }
+  if (lcGroup == "sneakback1h")
+  {
+    result = 0x5E;
+    return true;
+  }
+  if (lcGroup == "sneakback2c")
+  {
+    result = 0x6D;
+    return true;
+  }
+  if (lcGroup == "sneakback2w")
+  {
+    result = 0x7C;
+    return true;
+  }
+  if (lcGroup == "sneakbackhh")
+  {
+    result = 0x4F;
+    return true;
+  }
+  if (lcGroup == "sneakforward")
+  {
+    result = 0x3F;
+    return true;
+  }
+  if (lcGroup == "sneakforward1h")
+  {
+    result = 0x5D;
+    return true;
+  }
+  if (lcGroup == "sneakforward2c")
+  {
+    result = 0x6C;
+    return true;
+  }
+  if (lcGroup == "sneakforward2w")
+  {
+    result = 0x7B;
+    return true;
+  }
+  if (lcGroup == "sneakforwardhh")
+  {
+    result = 0x4E;
+    return true;
+  }
+  if (lcGroup == "sneakleft")
+  {
+    result = 0x41;
+    return true;
+  }
+  if (lcGroup == "sneakleft1h")
+  {
+    result = 0x5F;
+    return true;
+  }
+  if (lcGroup == "sneakleft2c")
+  {
+    result = 0x6E;
+    return true;
+  }
+  if (lcGroup == "sneakleft2w")
+  {
+    result = 0x7D;
+    return true;
+  }
+  if (lcGroup == "sneaklefthh")
+  {
+    result = 0x50;
+    return true;
+  }
+  if (lcGroup == "sneakright")
+  {
+    result = 0x42;
+    return true;
+  }
+  if (lcGroup == "sneakright1h")
+  {
+    result = 0x60;
+    return true;
+  }
+  if (lcGroup == "sneakright2c")
+  {
+    result = 0x6F;
+    return true;
+  }
+  if (lcGroup == "sneakright2w")
+  {
+    result = 0x7E;
+    return true;
+  }
+  if (lcGroup == "sneakright2w")
+  {
+    result = 0x51;
+    return true;
+  }
+  if (lcGroup == "spellcast")
+  {
+    result = 0x80;
+    return true;
+  }
+  if (lcGroup == "spellturnleft")
+  {
+    result = 0x81;
+    return true;
+  }
+  if (lcGroup == "spellturnright")
+  {
+    result = 0x82;
+    return true;
+  }
+  if (lcGroup == "swimattack1")
+  {
+    result = 0x86;
+    return true;
+  }
+  if (lcGroup == "swimattack2")
+  {
+    result = 0x87;
+    return true;
+  }
+  if (lcGroup == "swimattack3")
+  {
+    result = 0x88;
+    return true;
+  }
+  if (lcGroup == "swimdeath")
+  {
+    result = 0x24;
+    return true;
+  }
+  if (lcGroup == "swimdeath2")
+  {
+    result = 0x25;
+    return true;
+  }
+  if (lcGroup == "swimdeath3")
+  {
+    result = 0x26;
+    return true;
+  }
+  if (lcGroup == "swimdeathknockdown")
+  {
+    result = 0x27;
+    return true;
+  }
+  if (lcGroup == "swimdeathknockout")
+  {
+    result = 0x28;
+    return true;
+  }
+  if (lcGroup == "swimhit1")
+  {
+    result = 0x18;
+    return true;
+  }
+  if (lcGroup == "swimhit2")
+  {
+    result = 0x19;
+    return true;
+  }
+  if (lcGroup == "swimhit3")
+  {
+    result = 0x1A;
+    return true;
+  }
+  if (lcGroup == "swimknockdown")
+  {
+    result = 0x2A;
+    return true;
+  }
   if (lcGroup == "walkback")
   {
     result = 54;

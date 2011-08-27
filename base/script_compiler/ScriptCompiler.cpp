@@ -670,6 +670,41 @@ bool getAnimationGroupIndex(const std::string& groupName, int16_t& result)
     result = 0x23;
     return true;
   }
+  if (lcGroup == "pickprobe")
+  {
+    result = 0x91;
+    return true;
+  }
+  if (lcGroup == "runback")
+  {
+    result = 0x3C;
+    return true;
+  }
+  if (lcGroup == "runback1h")
+  {
+    result = 0x5A;
+    return true;
+  }
+  if (lcGroup == "runback2c")
+  {
+    result = 0x69;
+    return true;
+  }
+  if (lcGroup == "runback2w")
+  {
+    result = 0x78;
+    return true;
+  }
+  if (lcGroup == "runbackhh")
+  {
+    result = 0x4B;
+    return true;
+  }
+  if (lcGroup == "runforward")
+  {
+    result = 0x3B;
+    return true;
+  }
   if (lcGroup == "walkback")
   {
     result = 54;

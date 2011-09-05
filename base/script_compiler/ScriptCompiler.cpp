@@ -955,24 +955,234 @@ bool getAnimationGroupIndex(const std::string& groupName, int16_t& result)
     result = 0x2A;
     return true;
   }
+  if (lcGroup == "swimknockout")
+  {
+    result = 0x29;
+    return true;
+  }
+  if (lcGroup == "swimrunback")
+  {
+    result = 0x30;
+    return true;
+  }
+  if (lcGroup == "swimrunforward")
+  {
+    result = 0x2F;
+    return true;
+  }
+  if (lcGroup == "swimrunleft")
+  {
+    result = 0x31;
+    return true;
+  }
+  if (lcGroup == "swimrunright")
+  {
+    result = 0x32;
+    return true;
+  }
+  if (lcGroup == "swimturnleft")
+  {
+    result = 0x33;
+    return true;
+  }
+  if (lcGroup == "swimturnright")
+  {
+    result = 0x34;
+    return true;
+  }
+  if (lcGroup == "swimwalkback")
+  {
+    result = 0x2C;
+    return true;
+  }
+  if (lcGroup == "swimwalkforward")
+  {
+    result = 0x2B;
+    return true;
+  }
+  if (lcGroup == "swimwalkleft")
+  {
+    result = 0x2D;
+    return true;
+  }
+  if (lcGroup == "swimwalkright")
+  {
+    result = 0x2E;
+    return true;
+  }
+  if (lcGroup == "throwweapon")
+  {
+    result = 0x8C;
+    return true;
+  }
+  if (lcGroup == "torch")
+  {
+    result = 0x12;
+    return true;
+  }
+  if (lcGroup == "turnleft")
+  {
+    result = 0x39;
+    return true;
+  }
+  if (lcGroup == "turnleft1h")
+  {
+    result = 0x57;
+    return true;
+  }
+  if (lcGroup == "turnleft2c")
+  {
+    result = 0x66;
+    return true;
+  }
+  if (lcGroup == "turnleft2w")
+  {
+    result = 0x75;
+    return true;
+  }
+  if (lcGroup == "turnlefthh")
+  {
+    result = 0x48;
+    return true;
+  }
+  if (lcGroup == "turnright")
+  {
+    result = 0x3A;
+    return true;
+  }
+  if (lcGroup == "turnright1h")
+  {
+    result = 0x58;
+    return true;
+  }
+  if (lcGroup == "turnright2c")
+  {
+    result = 0x67;
+    return true;
+  }
+  if (lcGroup == "turnright2w")
+  {
+    result = 0x76;
+    return true;
+  }
+  if (lcGroup == "turnrighthh")
+  {
+    result = 0x49;
+    return true;
+  }
   if (lcGroup == "walkback")
   {
-    result = 54;
+    result = 0x36;
+    return true;
+  }
+  if (lcGroup == "walkback1h")
+  {
+    result = 0x54;
+    return true;
+  }
+  if (lcGroup == "walkback2c")
+  {
+    result = 0x63;
+    return true;
+  }
+  if (lcGroup == "walkback2w")
+  {
+    result = 0x72;
+    return true;
+  }
+  if (lcGroup == "walkbackhh")
+  {
+    result = 0x45;
     return true;
   }
   if (lcGroup == "walkforward")
   {
-    result = 53;
+    result = 0x35;
+    return true;
+  }
+  if (lcGroup == "walkforward1h")
+  {
+    result = 0x53;
+    return true;
+  }
+  if (lcGroup == "walkforward2c")
+  {
+    result = 0x62;
+    return true;
+  }
+  if (lcGroup == "walkforward2w")
+  {
+    result = 0x71;
+    return true;
+  }
+  if (lcGroup == "walkforwardhh")
+  {
+    result = 0x44;
     return true;
   }
   if (lcGroup == "walkleft")
   {
-    result = 55;
+    result = 0x37;
+    return true;
+  }
+  if (lcGroup == "walkleft1h")
+  {
+    result = 0x55;
+    return true;
+  }
+  if (lcGroup == "walkleft2c")
+  {
+    result = 0x64;
+    return true;
+  }
+  if (lcGroup == "walkleft2w")
+  {
+    result = 0x73;
+    return true;
+  }
+  if (lcGroup == "walklefthh")
+  {
+    result = 0x46;
     return true;
   }
   if (lcGroup == "walkright")
   {
-    result = 56;
+    result = 0x38;
+    return true;
+  }
+  if (lcGroup == "walkright1h")
+  {
+    result = 0x56;
+    return true;
+  }
+  if (lcGroup == "walkright2c")
+  {
+    result = 0x65;
+    return true;
+  }
+  if (lcGroup == "walkright2w")
+  {
+    result = 0x74;
+    return true;
+  }
+  if (lcGroup == "walkrighthh")
+  {
+    result = 0x47;
+    return true;
+  }
+  if (lcGroup == "weapononehand")
+  {
+    result = 0x8D;
+    return true;
+  }
+  if (lcGroup == "weapontwohand")
+  {
+    result = 0x8E;
+    return true;
+  }
+  if (lcGroup == "weapontwowide")
+  {
+    result = 0x8F;
     return true;
   }
   return false;

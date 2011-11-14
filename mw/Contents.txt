@@ -1,17 +1,19 @@
 Contents of repository:
 =======================
 
-- base         - This directory contains the source code for stuff that could
-                 be used in other programmes of morrowtools, too. However,
-                 there are no other programmes besides spell_rename yet.
+- base         - This directory contains the source code for stuff that is used
+                 in more than one programme of morrowtools.
+
+- cell_translator - directory containing the files specific to the yet to be
+                    completed translation programme
+
+- data_cleaner - directory containing the files specific to the data cleaner
+                 programme
 
 - spell_rename - directory containing files specific to the spell renamer
                  programme
 
 - Contents.txt - this file, you're reading it right now
-
-- GPL.txt      - Full text of the GNU General Public License version 3 as
-                 published by the Free Software Foundation.
 
 Within some directories you may find files named TODO or ToDo.txt. These files
 list some of the work that still has to be done for that specific directory.

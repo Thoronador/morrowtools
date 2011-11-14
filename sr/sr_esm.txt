@@ -1,0 +1,47 @@
+
+Format of Skyrim's ESM PlugIn Files
+
+(All that follows below is still an assumption!)
+
+
+  Record
+  ======
+    4 bytes: char Name[4]
+        4-byte record name string (not null-terminated)
+    4 bytes: long Size
+        Size of the record not including the 20 bytes of header data.
+	16 bytes:
+		Unknown values, probably four groups of 4-byte integers/ flags
+
+
+
+  (Sub-)Record
+  ============
+    4 bytes: char Name[4]
+        4-byte sub-record name string (not null-terminated)
+    2 bytes: uint16 Size
+        Size of the sub-record not including the 6 bytes of header data.
+    ? bytes: Sub-Record data.
+        Format depends on the sub-record type).
+
+
+  Groups:
+  =======
+    GRUP
+      4 byte - uint32 - size of group, including the header
+      4 byte - char[4] - name of group to follow
+      12 byte - unknown data
+      ? bytes - group data
+
+
+Records and their sub-records:
+
+  TES4: Main header(?)
+      HEDR (12 bytes)
+        Unknown, possibly three 4-byte values?
+        4 bytes - unknown
+        4 bytes - unknown
+        4 bytes - unknown
+      CNAM - null-terminated string
+      INTV (4 bytes)
+        4 bytes - integer value

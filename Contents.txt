@@ -1,0 +1,15 @@
+Contents of repository:
+=======================
+
+- base         - This directory contains the source code for stuff that is used
+                 in more than one branch of morrowtools.
+
+- mw           - contains code for Morrowind-related programmes
+
+- sr           - contains code for Skyrim-related programmes
+
+- GPL.txt      - Full text of the GNU General Public License version 3 as
+                 published by the Free Software Foundation.
+
+Within some directories you may find files named TODO or ToDo.txt. These files
+list some of the work that still has to be done for that specific directory.

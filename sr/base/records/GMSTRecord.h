@@ -18,59 +18,58 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SR_BASICRECORD_H
-#define SR_BASICRECORD_H
+#ifndef SR_GMSTRECORD_H
+#define SR_GMSTRECORD_H
 
-#include <fstream>
-#include <stdint.h>
+#include "BasicRecord.h"
+#include <string>
 
 namespace SRTP
 {
 
-struct BasicRecord
+enum GMSTType {gtInteger, gtFloat, gtString};
+
+struct GMSTRecord: public BasicRecord
 {
   public:
     /* constructor */
-    BasicRecord();
+    GMSTRecord();
 
     /* destructor */
-    virtual ~BasicRecord();
+    virtual ~GMSTRecord();
 
     /* writes the record to the given output stream and returns true on success
 
       parameters:
           output   - the output file stream
     */
-    virtual bool saveToStream(std::ofstream& output) const = 0;
+    virtual bool saveToStream(std::ofstream& output) const;
 
     /* loads the record from the given input stream and returns true on success
 
       parameters:
           in_File - the input file stream
     */
-    virtual bool loadFromStream(std::ifstream& in_File) = 0;
-  //protected: //TODO: should be protected later on, as soon as they are known
-     int32_t Unknown[4];
+    virtual bool loadFromStream(std::ifstream& in_File);
+
+    /* returns the value read from the CNAM field */
+    const std::string& getSettingName() const;
+
+    /* returns the type of this setting */
+    GMSTType getSettingType() const;
+
+    /* get functions */
+    const std::string& getString() const;
+    float getFloat() const;
+    uint32_t getInteger() const;
   protected:
-    /* loads the first data of a record, the record size and yet unknown other
-       values, from the given input stream and returns true on success
-
-      parameters:
-          in_File     - the input file stream
-          sizeStorage - reference to the variable that will be used to store the size
-    */
-    bool loadSizeAndUnknownValues(std::ifstream& in_File, uint32_t& sizeStorage);
-
-    /* writes the first data of a record, the record size and yet unknown other
-       values, to the given output stream and returns true on success
-
-      parameters:
-          output  - the output file stream
-          theSize - size to be written
-    */
-    bool saveSizeAndUnknownValues(std::ofstream& output, const uint32_t theSize) const;
+     std::string m_SettingName;
+     uint32_t m_IntValue;
+     float m_FloatValue;
+     std::string m_StringValue;
+     GMSTType m_Type;
 }; //struct
 
 } //namespace
 
-#endif // SR_BASICRECORD_H
+#endif // SR_GMSTRECORD_H

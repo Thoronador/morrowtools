@@ -26,20 +26,7 @@ bool Tes4HeaderRecord::saveToStream(std::ofstream& output) const
         +4 /* CNAM */ +2 /* 2 bytes for length */
         +m_Name.length()+1 /* length of name +1 byte for NUL termination */
         +4 /* FNAM */ +2 /* 2 bytes for length */ +4 /* fixed length of 4 bytes */;
-  output.write((char*) &writeSize, 4);
-  //unknown values
-  unsigned int i;
-  for (i=0; i<4; ++i)
-  {
-    output.write((char*) &(Unknown[i]), 4);
-  }//for
-  if (!output.good())
-  {
-    std::cout << "Tes4HeaderRecord::saveToStream: Error while writing record"
-              << " size and unknown header data.\n";
-    return false;
-  }
-
+  if (!saveSizeAndUnknownValues(output, writeSize)) return false;
   //write HEDR
   output.write((char*) &cHEDR, 4);
   //HEDR's length
@@ -68,21 +55,8 @@ bool Tes4HeaderRecord::saveToStream(std::ofstream& output) const
 
 bool Tes4HeaderRecord::loadFromStream(std::ifstream& in_File)
 {
-  uint32_t readSize;
-  in_File.read((char*) &readSize, 4);
-  //unknown values
-  unsigned int i;
-  for (i=0; i<4; ++i)
-  {
-    in_File.read((char*) &(Unknown[i]), 4);
-  }//for
-  if (!in_File.good())
-  {
-    std::cout << "Tes4HeaderRecord::loadFromStream: Error while reading record"
-              << " size and unknown header data.\n";
-    return false;
-  }
-
+  uint32_t readSize = 0;
+  if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
   int32_t SubRecName;
   uint16_t SubLength;
   uint32_t BytesRead;

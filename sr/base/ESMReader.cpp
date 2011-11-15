@@ -141,6 +141,11 @@ int ESMReader::readNextGroup(std::ifstream& in_File)
     std::cout << "ESMReader::readNextGroup: Error: could not read group header!\n";
     return -1;
   }
+  if (recordHeader!=cGRUP)
+  {
+    UnexpectedRecord(cGRUP, recordHeader);
+    return -1;
+  }
   //now read the group data header
   GroupData gd;
   if (!gd.loadFromStream(in_File))

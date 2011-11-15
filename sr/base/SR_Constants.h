@@ -27,6 +27,9 @@ namespace SRTP
 {
 
 const int32_t cCNAM = 0x4D414E43; //"CNAM" = 43 4E 41 4D
+const int32_t cDATA = 0x41544144; //"DATA" = 44 41 54 41
+const int32_t cEDID = 0x44494445; //"EDID" = 45 44 49 44
+const int32_t cGMST = 0x54534D47; //"GMST" = 47 4D 53 54
 const int32_t cGRUP = 0x50555247; //"GRUP" = 47 52 55 50
 const int32_t cHEDR = 0x52444548; //"HEDR" = 48 45 44 52
 const int32_t cINTV = 0x56544E49; //"INTV" = 49 4E 54 56

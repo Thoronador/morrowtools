@@ -86,14 +86,8 @@ bool GenericRecord::saveToStream(std::ofstream& output) const
 {
   //record header
   output.write((char*) &Header, 4);
-  //record size
-  output.write((char*) &m_DataSize, 4);
-  //unknown values
-  unsigned int i;
-  for (i=0; i<4; ++i)
-  {
-    output.write((char*) &(Unknown[i]), 4);
-  }//for
+  //record size and unknown values
+  if (!saveSizeAndUnknownValues(output, m_DataSize)) return false;
   //write the real data
   output.write((char*) m_Data, m_DataSize);
   return output.good();
@@ -102,23 +96,11 @@ bool GenericRecord::saveToStream(std::ofstream& output) const
 bool GenericRecord::loadFromStream(std::ifstream& in_File)
 {
   uint32_t Size;
-  in_File.read((char*) &Size, 4);
+  if (!loadSizeAndUnknownValues(in_File, Size)) return false;
   //prevent excessive memory usage
   if (Size>256*1024)
   {
     std::cout << "GenericRecord::loadFromStream: Error: record size is larger than 256 KB, aborting.\n";
-    return false;
-  }
-  //unknown values
-  unsigned int i;
-  for (i=0; i<4; ++i)
-  {
-    in_File.read((char*) &(Unknown[i]), 4);
-  }//for
-  if (!in_File.good())
-  {
-    std::cout << "GenericRecord::loadFromStream: Error while reading record size"
-              << " and unknown header data.\n";
     return false;
   }
   //allocate new memory
@@ -132,7 +114,6 @@ bool GenericRecord::loadFromStream(std::ifstream& in_File)
     delete[] tempPtr;
     return false;
   }
-
   //set data pointer and size according to the read values
   delete[] m_Data;
   m_Data = tempPtr;

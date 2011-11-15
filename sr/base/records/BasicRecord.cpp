@@ -19,6 +19,7 @@
 */
 
 #include "BasicRecord.h"
+#include <iostream>
 
 namespace SRTP
 {
@@ -32,6 +33,43 @@ BasicRecord::~BasicRecord()
 {
   //empty
   //Purpose is to have a virtual destructor to get rid of compiler warnings.
+}
+
+bool BasicRecord::loadSizeAndUnknownValues(std::ifstream& in_File, uint32_t& sizeStorage)
+{
+  in_File.read((char*) &sizeStorage, 4);
+  //unknown values
+  unsigned int i;
+  for (i=0; i<4; ++i)
+  {
+    in_File.read((char*) &(Unknown[i]), 4);
+  }//for
+  if (!in_File.good())
+  {
+    std::cout << "BasicRecord::loadSizeAndUnknownValues: Error while reading "
+              << "record size and unknown header data.\n";
+    return false;
+  }
+  return true;
+}
+
+bool BasicRecord::saveSizeAndUnknownValues(std::ofstream& output, const uint32_t theSize) const
+{
+  //record size
+  output.write((char*) &theSize, 4);
+  //unknown values
+  unsigned int i;
+  for (i=0; i<4; ++i)
+  {
+    output.write((char*) &(Unknown[i]), 4);
+  }//for
+  if (!output.good())
+  {
+    std::cout << "BasicRecord::saveSizeAndUnknownValues: Error while reading "
+              << "record size and unknown header data.\n";
+    return false;
+  }
+  return true;
 }
 
 } //namespace

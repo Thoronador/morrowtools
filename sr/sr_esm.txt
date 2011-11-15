@@ -45,3 +45,13 @@ Records and their sub-records:
       CNAM - null-terminated string
       INTV (4 bytes)
         4 bytes - integer value
+        
+        
+  GMST: Game Settings
+      EDID: editor ID (string, 0-terminated)
+      DATA: the data (string/int/float)
+              format determined by first character of ID
+              s = string (length varies)
+              i = integer (4 bytes)
+              f = floating point value (4 bytes)
+

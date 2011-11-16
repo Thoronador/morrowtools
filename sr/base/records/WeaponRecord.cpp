@@ -171,6 +171,7 @@ bool WeaponRecord::equals(const WeaponRecord& other) const
 bool WeaponRecord::saveToStream(std::ofstream& output) const
 {
   #warning Not implemented yet!
+  std::cout << "Error: call to unimplemented function WeaponRecord::saveToStream!\n";
   return false;
 }
 

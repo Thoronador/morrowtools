@@ -44,6 +44,7 @@ const int32_t cHEDR = 0x52444548; //"HEDR" = 48 45 44 52
 const int32_t cINAM = 0x4D414E49; //"INAM" = 49 4E 41 4D
 const int32_t cINTV = 0x56544E49; //"INTV" = 49 4E 54 56
 const int32_t cKSIZ = 0x5A49534B; //"KSIZ" = 4B 53 49 5A
+const int32_t cKYWD = 0x4457594B; //"KYWD" = 4B 59 57 44
 const int32_t cKWDA = 0x4144574B; //"KWDA" = 4B 57 44 41
 const int32_t cMODL = 0x4C444F4D; //"MODL" = 4D 4F 44 4C
 const int32_t cMODT = 0x54444F4D; //"MODT" = 4D 4F 44 54

@@ -18,25 +18,25 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SR_ESMREADERWEAPONS_H
-#define SR_ESMREADERWEAPONS_H
+#ifndef SR_ESMREADERKEYWORDS_H
+#define SR_ESMREADERKEYWORDS_H
 
 #include "ESMReader.h"
 
 namespace SRTP
 {
 
-/* This descendant of the ESMReader class tries to read all weapon records from
+/* This descendant of the ESMReader class tries to read all keyword records from
    the given .esm/.esp file.
 */
-class ESMReaderWeapons: public ESMReader
+class ESMReaderKeywords: public ESMReader
 {
   public:
     /* constructor */
-    ESMReaderWeapons();
+    ESMReaderKeywords();
 
     /* destructor */
-    virtual ~ESMReaderWeapons();
+    virtual ~ESMReaderKeywords();
   protected:
     /* returns true, if the given group may contains some data that the reader
        wants to read. Returns false otherwise.
@@ -45,7 +45,7 @@ class ESMReaderWeapons: public ESMReader
            g_date - the group header data
 
        remarks:
-           Returns true for all weapon groups, false for any other group.
+           Returns true for all keyword groups, false for any other group.
     */
     virtual bool needGroup(const GroupData& g_data) const;
 
@@ -75,4 +75,4 @@ class ESMReaderWeapons: public ESMReader
 
 } //namespace
 
-#endif // SR_ESMREADERWEAPONS_H
+#endif // SR_ESMREADERKEYWORDS_H

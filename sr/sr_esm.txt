@@ -55,6 +55,14 @@ Records and their sub-records:
               i = integer (4 bytes)
               f = floating point value (4 bytes)
 
+
+  KYWD: Keyword (whatever that may be)
+      EDID (string, NUL-terminated)
+          editor ID
+      CNAM (4 bytes) - optional subrecord
+          unknown value
+
+
   WEAP: Weapon record
       EDID: editor ID (string, NUL-terminated)
       OBND (12 bytes)

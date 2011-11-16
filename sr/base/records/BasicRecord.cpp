@@ -20,6 +20,7 @@
 
 #include "BasicRecord.h"
 #include <iostream>
+#include "../../../mw/base/HelperIO.h"
 
 namespace SRTP
 {
@@ -67,6 +68,35 @@ bool BasicRecord::saveSizeAndUnknownValues(std::ofstream& output, const uint32_t
   {
     std::cout << "BasicRecord::saveSizeAndUnknownValues: Error while reading "
               << "record size and unknown header data.\n";
+    return false;
+  }
+  return true;
+}
+
+bool BasicRecord::loadUint32SubRecordFromStream(std::ifstream& in_File, const int32_t subHeader, uint32_t& target) const
+{
+  int32_t subRecName = 0;
+  //read header
+  in_File.read((char*) &subRecName, 4);
+  if (subRecName!=subHeader)
+  {
+    UnexpectedRecord(subHeader, subRecName);
+    return false;
+  }
+  //subrecord's length
+  uint16_t subLength = 0;
+  in_File.read((char*) &subLength, 2);
+  if (subLength!=4)
+  {
+    std::cout <<"Error: sub record "<<IntTo4Char(subHeader)<<" has invalid length ("<<subLength
+              <<" bytes). Should be 4 bytes.\n";
+    return false;
+  }
+  //read value
+  in_File.read((char*) &target, 4);
+  if (!in_File.good())
+  {
+    std::cout << "BasicRecord::loatUint32: Error while reading subrecord "<<IntTo4Char(subHeader)<<"!\n";
     return false;
   }
   return true;

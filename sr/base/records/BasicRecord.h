@@ -38,8 +38,8 @@ struct BasicRecord
 
     /* writes the record to the given output stream and returns true on success
 
-      parameters:
-          output   - the output file stream
+       parameters:
+           output   - the output file stream
     */
     virtual bool saveToStream(std::ofstream& output) const = 0;
 
@@ -55,20 +55,30 @@ struct BasicRecord
     /* loads the first data of a record, the record size and yet unknown other
        values, from the given input stream and returns true on success
 
-      parameters:
-          in_File     - the input file stream
-          sizeStorage - reference to the variable that will be used to store the size
+       parameters:
+           in_File     - the input file stream
+           sizeStorage - reference to the variable that will be used to store the size
     */
     bool loadSizeAndUnknownValues(std::ifstream& in_File, uint32_t& sizeStorage);
 
     /* writes the first data of a record, the record size and yet unknown other
        values, to the given output stream and returns true on success
 
-      parameters:
-          output  - the output file stream
-          theSize - size to be written
+       parameters:
+           output  - the output file stream
+           theSize - size to be written
     */
     bool saveSizeAndUnknownValues(std::ofstream& output, const uint32_t theSize) const;
+
+    /* tries to load a 4 byte long subrecord from the stream and returns true
+       in case of success
+
+       parameters:
+           in_File   - the input file stream
+           subHeader - the expected header of that subrecord
+           target    - the uint32_t that will be used to store the read data
+    */
+    bool loadUint32SubRecordFromStream(std::ifstream& in_File, const int32_t subHeader, uint32_t& target) const;
 }; //struct
 
 } //namespace

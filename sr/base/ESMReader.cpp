@@ -157,7 +157,7 @@ int ESMReader::readNextGroup(std::ifstream& in_File)
   return skipGroup(in_File, gd);
 }
 
-int ESMReader::processNextRecord(std::ifstream& in_File)
+int ESMReader::readNextRecord(std::ifstream& in_File)
 {
   #warning Not implemented yet!
 }

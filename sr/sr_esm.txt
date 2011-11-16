@@ -45,8 +45,8 @@ Records and their sub-records:
       CNAM - null-terminated string
       INTV (4 bytes)
         4 bytes - integer value
-        
-        
+
+
   GMST: Game Settings
       EDID: editor ID (string, 0-terminated)
       DATA: the data (string/int/float)
@@ -55,3 +55,47 @@ Records and their sub-records:
               i = integer (4 bytes)
               f = floating point value (4 bytes)
 
+  WEAP: Weapon record
+      EDID: editor ID (string, NUL-terminated)
+      OBND (12 bytes)
+          unknown data
+      FULL (4 bytes?)
+          unknown data
+      MODL (string)
+          model path (.NIF)
+      MODT (12 bytes or 24 bytes possible?)
+          unknown data
+      EITM (4 bytes)
+          unknown data
+      EAMT (2 bytes)
+          unknown data
+      ETYP (4 bytes)
+          unknown data
+      BIDS (4 bytes)
+          unknown data
+      BAMT (4 bytes)
+          unknown data
+      KSIZ (4 bytes)
+          unknown data
+      KWDA (12 bytes)
+          unknown data
+      DESC (4 bytes)
+          unknown data (description?)
+      INAM (4 bytes)
+          unknown data
+      WNAM (4 bytes)
+          unknown data
+      TNAM (4 bytes)
+          unknown data
+      NAM9 (4 bytes)
+          unknown data
+      NAM8 (4 bytes)
+          unknown data
+      DATA (10 bytes)
+          unknown data
+      DNAM (100 bytes)
+          unknown data
+      CRDT (16 bytes)
+          unknown data
+      VNAM (4 bytes)
+          unknown data

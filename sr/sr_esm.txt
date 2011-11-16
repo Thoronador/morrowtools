@@ -39,7 +39,7 @@ Records and their sub-records:
   TES4: Main header(?)
       HEDR (12 bytes)
         Unknown, possibly three 4-byte values?
-        4 bytes - unknown
+        4 bytes - float, version number
         4 bytes - unknown
         4 bytes - unknown
       CNAM - null-terminated string

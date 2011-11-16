@@ -33,9 +33,11 @@ bool Tes4HeaderRecord::saveToStream(std::ofstream& output) const
   uint16_t SubLength = 12;
   output.write((char*) &SubLength, 2);
   //write HEDR's stuff
-  output.write((char*) &(HeaderUnknownThree[0]), 4);
-  output.write((char*) &(HeaderUnknownThree[1]), 4);
-  output.write((char*) &(HeaderUnknownThree[2]), 4);
+  // ---- write version
+  output.write((char*) &version, 4);
+  // ---- write unknown stuff
+  output.write((char*) &(HeaderUnknownTwo[0]), 4);
+  output.write((char*) &(HeaderUnknownTwo[1]), 4);
   if (!output.good())
   {
     std::cout << "Error while writing subrecord HEDR of TES4!\n";
@@ -80,9 +82,11 @@ bool Tes4HeaderRecord::loadFromStream(std::ifstream& in_File)
     return false;
   }
   //read HEDR's stuff
-  in_File.read((char*) &(HeaderUnknownThree[0]), 4);
-  in_File.read((char*) &(HeaderUnknownThree[1]), 4);
-  in_File.read((char*) &(HeaderUnknownThree[2]), 4);
+  // ---- read version number
+  in_File.read((char*) &version, 4);
+  // ---- read unknown values
+  in_File.read((char*) &(HeaderUnknownTwo[0]), 4);
+  in_File.read((char*) &(HeaderUnknownTwo[1]), 4);
   BytesRead += 12;
   if (!in_File.good())
   {

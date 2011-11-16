@@ -56,7 +56,8 @@ struct Tes4HeaderRecord: public BasicRecord
     uint32_t getIntValue() const;
 
   //protected:
-     uint32_t HeaderUnknownThree[3];
+     float version;
+     uint32_t HeaderUnknownTwo[3];
   protected:
      std::string m_Name;
      uint32_t m_IntValue;

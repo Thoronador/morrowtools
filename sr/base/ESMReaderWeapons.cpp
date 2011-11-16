@@ -37,40 +37,23 @@ ESMReaderWeapons::~ESMReaderWeapons()
   //empty
 }
 
-int ESMReaderWeapons::readNextGroup(std::ifstream& in_File)
+int ESMReaderWeapons::readGroup(std::ifstream& in_File, const GroupData& g_data)
 {
-  int32_t recordHeader = 0;
-  //read "GRUP"
-  in_File.read((char*) &recordHeader, 4);
-  if (!in_File.good())
-  {
-    std::cout << "ESMReaderWeapons::readNextGroup: Error: could not read group header!\n";
-    return -1;
-  }
-  if (recordHeader!=cGRUP)
-  {
-    UnexpectedRecord(cGRUP, recordHeader);
-    return -1;
-  }
-  //now read the group data header
-  GroupData gd;
-  if (!gd.loadFromStream(in_File))
-  {
-    std::cout << "ESMReaderWeapons::readNextGroup: Error: could not read group data!\n";
-    return -1;
-  }
-  //is it the weapons group?
-  if (gd.getGroupName()!=cWEAP)
-  {
-    //we skip the group, it's not a WEAP group
-    return skipGroup(in_File, gd);
-  }
   //actually read the group
-  const std::ifstream::pos_type endPosition = in_File.tellg()+static_cast<std::ifstream::pos_type>(gd.getGroupSize()-24);
+  const std::ifstream::pos_type endPosition = in_File.tellg()+static_cast<std::ifstream::pos_type>(g_data.getGroupSize()-24);
   int recordsRead = 0;
   int lastResult = 0;
+  int32_t recName;
   while ((in_File.tellg()<endPosition) and (lastResult>=0))
   {
+    //read next header
+    recName = 0;
+    in_File.read((char*) &recName, 4);
+    if (recName!=cWEAP)
+    {
+      UnexpectedRecord(cWEAP, recName);
+      return -1;
+    }
     lastResult = Weapons::getSingleton().readRecordWEAP(in_File);
     if (lastResult>0)
     {
@@ -82,7 +65,14 @@ int ESMReaderWeapons::readNextGroup(std::ifstream& in_File)
     if (recordsRead>0) return 1;
     return 0;
   }
+  std::cout << "ESMReaderWeapons::readGroup: Error while reading weapon record!"
+            << "\nCurrent position is "<<in_File.tellg()<<" bytes.\n";
   return -1;
+}
+
+bool ESMReaderWeapons::needGroup(const GroupData& g_data) const
+{
+  return (g_data.getGroupName()==cWEAP);
 }
 
 int ESMReaderWeapons::readNextRecord(std::ifstream& in_File)

@@ -63,7 +63,7 @@ Records and their sub-records:
           unknown data
       MODL (string)
           model path (.NIF)
-      MODT (12 bytes or 24 bytes possible?)
+      MODT (12, 24 or 36 bytes possible?, maybe in general a multiple of 12 bytes)
           unknown data
       EITM (4 bytes)
           unknown data

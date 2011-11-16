@@ -109,17 +109,16 @@ int ESMReader::readESM(const std::string& FileName, Tes4HeaderRecord& head)
   while ((input.tellg()<FileSize) and (lastResult>=0))
   {
     std::cout << "DBG: Current position is "<<input.tellg()<<" bytes.\n";
-    //try to read a group - possibly that's won't always work
-    lastResult = readNextGroup(input);
-    ++processedGroups;
-    if (lastResult!=-1)
+    //try to read or skip a group - possibly that won't always work
+    lastResult = processGroup(input);
+    if (lastResult>=0)
     {
       processedGroups += lastResult;
       lastGoodPosition = input.tellg();
     }
   }//while
   //finished here
-  const bool good_result = (input.good() and (lastResult!=-1));
+  const bool good_result = (input.good() and (lastResult>=0));
   input.close();
   if (!good_result)
   {
@@ -131,7 +130,7 @@ int ESMReader::readESM(const std::string& FileName, Tes4HeaderRecord& head)
   return processedGroups;
 }
 
-int ESMReader::readNextGroup(std::ifstream& in_File)
+int ESMReader::processGroup(std::ifstream& in_File)
 {
   int32_t recordHeader = 0;
   //read "GRUP"
@@ -153,13 +152,30 @@ int ESMReader::readNextGroup(std::ifstream& in_File)
     std::cout << "ESMReader::readNextGroup: Error: could not read group data!\n";
     return -1;
   }
-  //now we skip the group, a real implementation should actually read this
+  if (needGroup(gd))
+  {
+    return readGroup(in_File, gd);
+  }
+  //gruop not needed, skip it
   return skipGroup(in_File, gd);
+}
+
+bool ESMReader::needGroup(const GroupData& g_data) const
+{
+  return false;
+}
+
+int ESMReader::readGroup(std::ifstream& in_File, const GroupData& g_data)
+{
+  //we just skip stuff here instead of reading it - create a derived class with
+  //  another implementation of that function to change that
+  return skipGroup(in_File, g_data);
 }
 
 int ESMReader::readNextRecord(std::ifstream& in_File)
 {
   #warning Not implemented yet!
+  return -1;
 }
 
 } //namespace

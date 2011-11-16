@@ -60,16 +60,44 @@ class ESMReader
 
        parameters:
            in_File  - the input file stream the group shall be read from
+    */
+    int processGroup(std::ifstream& in_File);
+
+    /* returns true, if the given group may contains some data that the reader
+       wants to read. Returns false otherwise.
+
+       parameters:
+           g_date - the group header data
 
        remarks:
            If you actually want to read some data, you have to derive a class
-           from ESMReader and set its readNextRecord() function up in a way
-           that does not just skip all groups and data records - because that
-           is what the implementation here in ESMReader basically does.
+           from ESMReader and set its needGroup() function up in a way that it
+           does not just always return false and causes processGroup() to skip
+           all groups and data records - because that is what the implementation
+           here in ESMReader basically does.
+    */
+    virtual bool needGroup(const GroupData& g_data) const;
+
+    /* tries to read the next group from a file and returns the number of
+       relevant groups that were read (usually one). If an error occured,
+       -1 is returned. If the group was skipped or contained no relevant data,
+       zero is returned.
+       This function is guaranteed to be only called for needed groups (see the
+       function needGroup() for details).
+
+       parameters:
+           in_File - the input file stream used to read the group
+           g_data  - group's data header
+
+       remarks:
+           If you actually want to read some data, you have to derive a class
+           from ESMReader and set its readGroup() function up in a way
+           that does not just skip all groups - because that is what the
+           implementation here in ESMReader does.
            So naturally, this function will never return values larger than
            zero.
     */
-    virtual int readNextGroup(std::ifstream& in_File);
+    virtual int readGroup(std::ifstream& in_File, const GroupData& g_data);
 
     /* tries to read the next record from a file and returns the number of
        relevant records that were read (usually one). If an error occured,

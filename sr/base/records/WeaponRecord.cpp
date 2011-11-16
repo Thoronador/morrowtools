@@ -266,10 +266,10 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
   }
   //MODT's length
   in_File.read((char*) &subLength, 2);
-  if ((subLength!=12) and (subLength!=24))
+  if ((subLength!=12) and (subLength!=24) and (subLength!=36))
   {
     std::cout <<"Error: sub record MODT of WEAP has invalid length ("<<subLength
-              <<" bytes). Should be 12 or 24 bytes.\n";
+              <<" bytes). Should be 12 or 24 or 36 bytes.\n";
     return false;
   }
   //read MODL path
@@ -361,7 +361,7 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
   if (!loadUint32SubRecordFromStream(in_File, cNAM9, unknownNAM9)) return false;
 
   //read NAM8
-  if (!loadUint32SubRecordFromStream(in_File, cNAM9, unknownNAM8)) return false;
+  if (!loadUint32SubRecordFromStream(in_File, cNAM8, unknownNAM8)) return false;
 
   //read DATA
   in_File.read((char*) &subRecName, 4);

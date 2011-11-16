@@ -37,7 +37,7 @@ const int32_t cEDID = 0x44494445; //"EDID" = 45 44 49 44
 const int32_t cEITM = 0x4D544945; //"EITM" = 45 49 54 4D
 const int32_t cEAMT = 0x544D4145; //"EAMT" = 45 41 4D 54
 const int32_t cETYP = 0x50595445; //"ETYP" = 45 54 59 50
-const int32_t cFULL = 0x46554C4C; //"FULL" = 46 55 4C 4C
+const int32_t cFULL = 0x4C4C5546; //"FULL" = 46 55 4C 4C
 const int32_t cGMST = 0x54534D47; //"GMST" = 47 4D 53 54
 const int32_t cGRUP = 0x50555247; //"GRUP" = 47 52 55 50
 const int32_t cHEDR = 0x52444548; //"HEDR" = 48 45 44 52

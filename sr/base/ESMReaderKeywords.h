@@ -21,7 +21,10 @@
 #ifndef SR_ESMREADERKEYWORDS_H
 #define SR_ESMREADERKEYWORDS_H
 
-#include "ESMReader.h"
+#include "ESMReaderSingleType.h"
+#include "records/KeywordRecord.h"
+#include "Keywords.h"
+#include "SR_Constants.h"
 
 namespace SRTP
 {
@@ -29,49 +32,7 @@ namespace SRTP
 /* This descendant of the ESMReader class tries to read all keyword records from
    the given .esm/.esp file.
 */
-class ESMReaderKeywords: public ESMReader
-{
-  public:
-    /* constructor */
-    ESMReaderKeywords();
-
-    /* destructor */
-    virtual ~ESMReaderKeywords();
-  protected:
-    /* returns true, if the given group may contains some data that the reader
-       wants to read. Returns false otherwise.
-
-       parameters:
-           g_date - the group header data
-
-       remarks:
-           Returns true for all keyword groups, false for any other group.
-    */
-    virtual bool needGroup(const GroupData& g_data) const;
-
-    /* tries to read the next group from a file and returns the number of
-       relevant groups that were read (usually one). If an error occured,
-       -1 is returned. If the group was skipped or contained no relevant data,
-       zero is returned.
-       This function is guaranteed to be only called for needed groups (see the
-       function needGroup() for details).
-
-       parameters:
-           in_File - the input file stream used to read the group
-           g_data  - group's data header
-    */
-    virtual int readGroup(std::ifstream& in_File, const GroupData& g_data);
-
-    /* tries to read the next record from a file and returns the number of
-       relevant records that were read (usually one). If an error occured,
-       -1 is returned. If the record was skipped or contained no relevant data,
-       zero is returned.
-
-       parameters:
-           in_File  - the input file stream the record shall be read from
-    */
-    virtual int readNextRecord(std::ifstream& in_File);
-};//class
+typedef ESMReaderSingleType<KeywordRecord, Keywords, cKYWD> ESMReaderKeywords;
 
 } //namespace
 

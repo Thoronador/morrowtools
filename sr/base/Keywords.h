@@ -78,6 +78,9 @@ class Keywords
     */
     int readRecordKYWD(std::ifstream& in_File);
 
+    /* "alias" for readRecordKYWD(), i.e. calls the above function */
+    int readNextRecord(std::ifstream& in_File);
+
     /* returns constant iterator to the beginning of the internal list */
     KeywordListIterator getBegin() const;
 

@@ -128,4 +128,9 @@ int Keywords::readRecordKYWD(std::ifstream& in_File)
   return 1;
 } //readRecordKYWD
 
+int Keywords::readNextRecord(std::ifstream& in_File)
+{
+  return readRecordKYWD(in_File);
+}
+
 } //namespace

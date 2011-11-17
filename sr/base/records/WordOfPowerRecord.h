@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SR_EYERECORD_H
-#define SR_EYERECORD_H
+#ifndef SR_WORDOFPOWERRECORD_H
+#define SR_WORDOFPOWERRECORD_H
 
 #include "BasicRecord.h"
 #include <string>
@@ -28,17 +28,17 @@
 namespace SRTP
 {
 
-struct EyeRecord: public BasicRecord
+struct WordOfPowerRecord: public BasicRecord
 {
   public:
     /* constructor */
-    EyeRecord();
+    WordOfPowerRecord();
 
     /* destructor */
-    virtual ~EyeRecord();
+    virtual ~WordOfPowerRecord();
 
     /* returns true, if the other record contains the same data */
-    bool equals(const EyeRecord& other) const;
+    bool equals(const WordOfPowerRecord& other) const;
 
     /* writes the record to the given output stream and returns true on success
 
@@ -56,10 +56,10 @@ struct EyeRecord: public BasicRecord
 
     std::string editorID;
     uint32_t unknownFULL;
-    std::string iconPath;
-    uint8_t unknownDATA;
+    bool hasFULL;
+    uint32_t unknownTNAM;
 }; //struct
 
 } //namespace
 
-#endif // SR_EYERECORD_H
+#endif // SR_WORDOFPOWERRECORD_H

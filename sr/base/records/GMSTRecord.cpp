@@ -41,6 +41,23 @@ GMSTRecord::~GMSTRecord()
   //empty
 }
 
+bool GMSTRecord::equals(const GMSTRecord& other) const
+{
+  if ((m_SettingName==other.getSettingName()) and (m_Type==other.getSettingType()))
+  {
+    switch (m_Type)
+    {
+      case gtInteger:
+           return (m_IntValue==other.getInteger());
+      case gtFloat:
+           return (m_FloatValue==other.getFloat());
+      case gtString:
+           return (m_StringValue==other.getString());
+    }//swi
+  }
+  return false;
+}
+
 bool GMSTRecord::saveToStream(std::ofstream& output) const
 {
   output.write((char*) &cGMST, 4);
@@ -155,7 +172,6 @@ bool GMSTRecord::loadFromStream(std::ifstream& in_File)
     case 'f':
          //read float
          //check length
-         in_File.read((char*) &subRecSize, 2);
          if (subRecSize != 4)
          {
            std::cout << "Error: sub record DATA of GMST has invalid length ("
@@ -169,7 +185,6 @@ bool GMSTRecord::loadFromStream(std::ifstream& in_File)
     case 'i':
          //read integer
          //interger's length
-         in_File.read((char*) &subRecSize, 2);
          if (subRecSize != 4)
          {
            std::cout << "Error: sub record DATA of GMST has invalid length ("
@@ -223,7 +238,7 @@ float GMSTRecord::getFloat() const
   return m_FloatValue;
 }
 
-uint32_t GMSTRecord::getInteger() const
+int32_t GMSTRecord::getInteger() const
 {
   return m_IntValue;
 }

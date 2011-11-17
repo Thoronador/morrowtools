@@ -61,6 +61,7 @@ const int32_t cTNAM = 0x4D414E54; //"TNAM" = 54 4E 41 4D
 const int32_t cVNAM = 0x4D414E56; //"VNAM" = 56 4E 41 4D
 const int32_t cWEAP = 0x50414557; //"WEAP" = 57 45 41 50
 const int32_t cWNAM = 0x4D414E57; //"WNAM" = 57 4E 41 4D
+const int32_t cWOOP = 0x504F4F57; //"WOOP" = 57 4F 4F 50
 
 } //namespace
 

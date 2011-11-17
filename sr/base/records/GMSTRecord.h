@@ -38,6 +38,9 @@ struct GMSTRecord: public BasicRecord
     /* destructor */
     virtual ~GMSTRecord();
 
+    /* returns true, if the other record contains the same data */
+    bool equals(const GMSTRecord& other) const;
+
     /* writes the record to the given output stream and returns true on success
 
       parameters:
@@ -61,10 +64,10 @@ struct GMSTRecord: public BasicRecord
     /* get functions */
     const std::string& getString() const;
     float getFloat() const;
-    uint32_t getInteger() const;
+    int32_t getInteger() const;
   protected:
      std::string m_SettingName;
-     uint32_t m_IntValue;
+     int32_t m_IntValue;
      float m_FloatValue;
      std::string m_StringValue;
      GMSTType m_Type;

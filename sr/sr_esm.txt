@@ -82,6 +82,15 @@ Records and their sub-records:
           unknown data (flags?)
 
 
+  WOOP: word of power
+      EDID (string, NUL-terminated)
+          editorID
+      FULL (4 byte) optional
+          unknown data
+      TNAM (4 byte)
+          unknown data          
+
+
   WEAP: Weapon record
       EDID: editor ID (string, NUL-terminated)
       OBND (12 bytes)

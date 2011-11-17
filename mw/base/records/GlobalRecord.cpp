@@ -48,7 +48,7 @@ GlobalRecord::GlobalRecord(const std::string& ID)
 
 bool GlobalRecord::equals(const GlobalRecord& other) const
 {
-  if (Type!=other.Type)
+  if ((Type!=other.Type) or (lowerCaseCompare(other.GlobalID, GlobalID)!=0))
   {
     return false;
   }

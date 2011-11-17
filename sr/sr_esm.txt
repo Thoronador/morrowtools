@@ -56,6 +56,14 @@ Records and their sub-records:
               f = floating point value (4 bytes)
 
 
+  GLOB: global variables
+      EDID: editor ID (string, NUL-terminated)
+      FNAM (1 byte)
+          type (s=short, l=long, f=float)
+      FLTV (4 bytes)
+          value (always stored as float?)
+
+
   KYWD: Keyword (whatever that may be)
       EDID (string, NUL-terminated)
           editor ID

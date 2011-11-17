@@ -71,6 +71,17 @@ Records and their sub-records:
           unknown value
 
 
+  EYES: eyes
+      EDID: (string, NUL-terminated)
+          editorID
+      FULL (4 byte)
+          unknown data
+      ICON  (string, NUL-terminated)
+          texture path
+      DATA (1 byte)
+          unknown data (flags?)
+
+
   WEAP: Weapon record
       EDID: editor ID (string, NUL-terminated)
       OBND (12 bytes)

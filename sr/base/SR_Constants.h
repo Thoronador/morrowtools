@@ -33,10 +33,11 @@ const int32_t cCRDT = 0x54445243; //"CRDT" = 43 52 44 54
 const int32_t cDATA = 0x41544144; //"DATA" = 44 41 54 41
 const int32_t cDESC = 0x43534544; //"DESC" = 44 45 53 43
 const int32_t cDNAM = 0x4D414E44; //"DNAM" = 44 4E 41 4D
+const int32_t cEAMT = 0x544D4145; //"EAMT" = 45 41 4D 54
 const int32_t cEDID = 0x44494445; //"EDID" = 45 44 49 44
 const int32_t cEITM = 0x4D544945; //"EITM" = 45 49 54 4D
-const int32_t cEAMT = 0x544D4145; //"EAMT" = 45 41 4D 54
 const int32_t cETYP = 0x50595445; //"ETYP" = 45 54 59 50
+const int32_t cEYES = 0x53455945; //"EYES" = 45 59 45 53
 const int32_t cFLTV = 0x56544C46; //"FLTV" = 46 4C 54 56
 const int32_t cFNAM = 0x4D414E46; //"FNAM" = 46 4E 41 4D
 const int32_t cFULL = 0x4C4C5546; //"FULL" = 46 55 4C 4C
@@ -44,6 +45,7 @@ const int32_t cGLOB = 0x424F4C47; //"GLOB" = 47 4C 4F 42
 const int32_t cGMST = 0x54534D47; //"GMST" = 47 4D 53 54
 const int32_t cGRUP = 0x50555247; //"GRUP" = 47 52 55 50
 const int32_t cHEDR = 0x52444548; //"HEDR" = 48 45 44 52
+const int32_t cICON = 0x4E4F4349; //"ICON" = 49 43 4F 4E
 const int32_t cINAM = 0x4D414E49; //"INAM" = 49 4E 41 4D
 const int32_t cINTV = 0x56544E49; //"INTV" = 49 4E 54 56
 const int32_t cKSIZ = 0x5A49534B; //"KSIZ" = 4B 53 49 5A

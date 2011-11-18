@@ -49,8 +49,12 @@ struct BasicRecord
           in_File - the input file stream
     */
     virtual bool loadFromStream(std::ifstream& in_File) = 0;
-  //protected: //TODO: should be protected later on, as soon as they are known
-     int32_t Unknown[4];
+
+    //partially unknown values - 16 bytes, i.e. 4 x uint32_t
+    uint32_t headerFlags;
+    uint32_t headerFormID;
+    uint32_t headerUnknown3;
+    uint32_t headerUnknown4;
   protected:
     /* loads the first data of a record, the record size and yet unknown other
        values, from the given input stream and returns true on success

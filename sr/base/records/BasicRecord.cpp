@@ -27,7 +27,7 @@ namespace SRTP
 
 BasicRecord::BasicRecord()
 {
-  Unknown[3] = Unknown[2] = Unknown[1] = Unknown[0] = 0;
+  headerFlags = headerFormID = headerUnknown3 = headerUnknown4 = 0;
 }
 
 BasicRecord::~BasicRecord()
@@ -40,11 +40,10 @@ bool BasicRecord::loadSizeAndUnknownValues(std::ifstream& in_File, uint32_t& siz
 {
   in_File.read((char*) &sizeStorage, 4);
   //unknown values
-  unsigned int i;
-  for (i=0; i<4; ++i)
-  {
-    in_File.read((char*) &(Unknown[i]), 4);
-  }//for
+  in_File.read((char*) &headerFlags, 4);
+  in_File.read((char*) &headerFormID, 4);
+  in_File.read((char*) &headerUnknown3, 4);
+  in_File.read((char*) &headerUnknown4, 4);
   if (!in_File.good())
   {
     std::cout << "BasicRecord::loadSizeAndUnknownValues: Error while reading "
@@ -59,11 +58,10 @@ bool BasicRecord::saveSizeAndUnknownValues(std::ofstream& output, const uint32_t
   //record size
   output.write((char*) &theSize, 4);
   //unknown values
-  unsigned int i;
-  for (i=0; i<4; ++i)
-  {
-    output.write((char*) &(Unknown[i]), 4);
-  }//for
+  output.write((char*) &headerFlags, 4);
+  output.write((char*) &headerFormID, 4);
+  output.write((char*) &headerUnknown3, 4);
+  output.write((char*) &headerUnknown4, 4);
   if (!output.good())
   {
     std::cout << "BasicRecord::saveSizeAndUnknownValues: Error while reading "

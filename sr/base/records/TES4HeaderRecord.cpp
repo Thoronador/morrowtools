@@ -10,7 +10,7 @@ namespace SRTP
 
 Tes4HeaderRecord::Tes4HeaderRecord()
 {
-  Unknown[3] = Unknown[2] = Unknown[1] = Unknown[0] = 0;
+  headerFlags = headerFormID = headerUnknown3 = headerUnknown4 = 0;
 }
 
 Tes4HeaderRecord::~Tes4HeaderRecord()

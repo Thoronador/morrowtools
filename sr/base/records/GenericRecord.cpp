@@ -30,7 +30,7 @@ GenericRecord::GenericRecord()
   m_DataSize = 0;
   m_Data = NULL;
   Header = 0;
-  Unknown[3] = Unknown[2] = Unknown[1] = Unknown[0] = 0;
+  headerFlags = headerFormID = headerUnknown3 = headerUnknown4 = 0;
 }
 
 GenericRecord::GenericRecord(const GenericRecord& other)
@@ -46,11 +46,10 @@ GenericRecord::GenericRecord(const GenericRecord& other)
   {
     m_Data = NULL;
   }
-  unsigned int i;
-  for (i=0; i<4; ++i)
-  {
-    Unknown[i] = other.Unknown[i];
-  }//for
+  headerFlags = other.headerFlags;
+  headerFormID = other.headerFormID;
+  headerUnknown3 = other.headerUnknown3;
+  headerUnknown4 = other.headerUnknown4;
 }
 
 GenericRecord& GenericRecord::operator=(const GenericRecord& other)
@@ -68,11 +67,10 @@ GenericRecord& GenericRecord::operator=(const GenericRecord& other)
   {
     m_Data = NULL;
   }
-  unsigned int i;
-  for (i=0; i<4; ++i)
-  {
-    Unknown[i] = other.Unknown[i];
-  }//for
+  headerFlags = other.headerFlags;
+  headerFormID = other.headerFormID;
+  headerUnknown3 = other.headerUnknown3;
+  headerUnknown4 = other.headerUnknown4;
   return *this;
 }
 

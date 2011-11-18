@@ -26,6 +26,7 @@
 namespace SRTP
 {
 
+const int32_t cAACT = 0x54434141; //"AACT" = 41 41 43 54
 const int32_t cBAMT = 0x544D4142; //"BAMT" = 42 41 4D 54
 const int32_t cBIDS = 0x53444942; //"BIDS" = 42 49 44 53
 const int32_t cCNAM = 0x4D414E43; //"CNAM" = 43 4E 41 4D

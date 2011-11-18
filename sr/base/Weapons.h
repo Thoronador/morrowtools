@@ -76,7 +76,7 @@ class Weapons
        parameters:
            in_File  - the input file stream that is used to read the record
     */
-    int readRecordWEAP(std::ifstream& in_File);
+    int readNextRecord(std::ifstream& in_File);
 
     /* returns constant iterator to the beginning of the internal list */
     WeaponListIterator getBegin() const;

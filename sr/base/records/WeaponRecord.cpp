@@ -28,6 +28,7 @@ namespace SRTP
 {
 
 WeaponRecord::WeaponRecord()
+: BasicRecord()
 {
   editorID = "";
   memset(unknownOBND, 0, 12);
@@ -56,6 +57,7 @@ WeaponRecord::WeaponRecord()
 
 WeaponRecord::WeaponRecord(const WeaponRecord& other)
 {
+  copyBasicMembers(other);
   editorID = other.editorID;
   memcpy(unknownOBND, other.unknownOBND, 12);
   unknownFULL = other.unknownFULL;
@@ -94,6 +96,7 @@ WeaponRecord& WeaponRecord::operator=(const WeaponRecord& other)
 {
   if (this == &other) return *this;
 
+  copyBasicMembers(other);
   editorID = other.editorID;
   memcpy(unknownOBND, other.unknownOBND, 12);
   unknownFULL = other.unknownFULL;
@@ -141,7 +144,7 @@ bool WeaponRecord::equals(const WeaponRecord& other) const
 {
   if ((editorID!=other.editorID) or (memcmp(unknownOBND, other.unknownOBND, 12)!=0)
       or (unknownFULL!=other.unknownFULL) or (modelPath!=other.modelPath)
-      or (m_sizeOfMODT!=other.m_sizeOfMODT))
+      or (m_sizeOfMODT!=other.m_sizeOfMODT) or (!equalsBasic(other)))
   {
     return false;
   }

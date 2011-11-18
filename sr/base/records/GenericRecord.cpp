@@ -26,15 +26,16 @@ namespace SRTP
 {
 
 GenericRecord::GenericRecord()
+: BasicRecord()
 {
   m_DataSize = 0;
   m_Data = NULL;
   Header = 0;
-  headerFlags = headerFormID = headerUnknown3 = headerUnknown4 = 0;
 }
 
 GenericRecord::GenericRecord(const GenericRecord& other)
 {
+  copyBasicMembers(other);
   Header = other.Header;
   m_DataSize = other.getDataSize();
   if (m_DataSize!=0)
@@ -55,6 +56,7 @@ GenericRecord::GenericRecord(const GenericRecord& other)
 GenericRecord& GenericRecord::operator=(const GenericRecord& other)
 {
   if (this==&other) return *this;
+  copyBasicMembers(other);
   delete[] m_Data;
   Header = other.Header;
   m_DataSize = other.getDataSize();

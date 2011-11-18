@@ -106,7 +106,7 @@ void Weapons::clearAll()
   m_Weapons.clear();
 }
 
-int Weapons::readRecordWEAP(std::ifstream& in_File)
+int Weapons::readNextRecord(std::ifstream& in_File)
 {
   WeaponRecord temp;
   if(!temp.loadFromStream(in_File))

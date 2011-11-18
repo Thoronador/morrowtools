@@ -27,6 +27,7 @@ namespace SRTP
 {
 
 WordOfPowerRecord::WordOfPowerRecord()
+: BasicRecord()
 {
   editorID = "";
   unknownFULL = 0;
@@ -42,7 +43,7 @@ WordOfPowerRecord::~WordOfPowerRecord()
 bool WordOfPowerRecord::equals(const WordOfPowerRecord& other) const
 {
   if ((editorID==other.editorID) and (hasFULL==other.hasFULL)
-    and (unknownTNAM==other.unknownTNAM))
+    and (unknownTNAM==other.unknownTNAM) and (equalsBasic(other)))
   {
     if (hasFULL) return (unknownFULL==other.unknownFULL);
     return true;

@@ -9,6 +9,7 @@ namespace SRTP
 {
 
 EyeRecord::EyeRecord()
+: BasicRecord()
 {
   editorID = "";
   unknownFULL = 0;
@@ -24,7 +25,8 @@ EyeRecord::~EyeRecord()
 bool EyeRecord::equals(const EyeRecord& other) const
 {
   return ((editorID==other.editorID) and (unknownFULL==other.unknownFULL)
-      and (iconPath==other.iconPath) and (unknownDATA==other.unknownDATA));
+      and (iconPath==other.iconPath) and (unknownDATA==other.unknownDATA)
+      and equalsBasic(other));
 }
 
 bool EyeRecord::saveToStream(std::ofstream& output) const

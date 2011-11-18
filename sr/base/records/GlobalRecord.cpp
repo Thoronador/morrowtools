@@ -27,6 +27,7 @@ namespace SRTP
 {
 
 GlobalRecord::GlobalRecord()
+: BasicRecord()
 {
   editorID = "";
   Type = globShort;
@@ -37,7 +38,7 @@ GlobalRecord::GlobalRecord()
 
 bool GlobalRecord::equals(const GlobalRecord& other) const
 {
-  if ((Type!=other.Type) or (editorID!=other.editorID))
+  if ((Type!=other.Type) or (editorID!=other.editorID) or (!equalsBasic(other)))
   {
     return false;
   }

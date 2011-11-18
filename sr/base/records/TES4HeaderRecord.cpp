@@ -9,8 +9,9 @@ namespace SRTP
 {
 
 Tes4HeaderRecord::Tes4HeaderRecord()
+: BasicRecord()
 {
-  headerFlags = headerFormID = headerUnknown3 = headerUnknown4 = 0;
+
 }
 
 Tes4HeaderRecord::~Tes4HeaderRecord()

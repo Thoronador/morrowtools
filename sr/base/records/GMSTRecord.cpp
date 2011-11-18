@@ -27,6 +27,7 @@ namespace SRTP
 {
 
 GMSTRecord::GMSTRecord()
+: BasicRecord()
 {
   m_SettingName = "";
   std::string m_SettingName;
@@ -43,7 +44,8 @@ GMSTRecord::~GMSTRecord()
 
 bool GMSTRecord::equals(const GMSTRecord& other) const
 {
-  if ((m_SettingName==other.getSettingName()) and (m_Type==other.getSettingType()))
+  if ((m_SettingName==other.getSettingName()) and (m_Type==other.getSettingType())
+    and (equalsBasic(other)))
   {
     switch (m_Type)
     {

@@ -36,6 +36,22 @@ BasicRecord::~BasicRecord()
   //Purpose is to have a virtual destructor to get rid of compiler warnings.
 }
 
+void BasicRecord::copyBasicMembers(const BasicRecord& other)
+{
+  headerFlags = other.headerFlags;
+  headerFormID = other.headerFormID;
+  headerUnknown3 = other.headerUnknown3;
+  headerUnknown4 = other.headerUnknown4;
+}
+
+bool BasicRecord::equalsBasic(const BasicRecord& other) const
+{
+  return ((headerFlags==other.headerFlags)
+    and (headerFormID==other.headerFormID)
+    and (headerUnknown3==other.headerUnknown3)
+    and (headerUnknown4==other.headerUnknown4));
+}
+
 bool BasicRecord::loadSizeAndUnknownValues(std::ifstream& in_File, uint32_t& sizeStorage)
 {
   in_File.read((char*) &sizeStorage, 4);

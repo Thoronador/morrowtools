@@ -54,7 +54,7 @@ int ESMReaderWeapons::readGroup(std::ifstream& in_File, const GroupData& g_data)
       UnexpectedRecord(cWEAP, recName);
       return -1;
     }
-    lastResult = Weapons::getSingleton().readRecordWEAP(in_File);
+    lastResult = Weapons::getSingleton().readNextRecord(in_File);
     if (lastResult>0)
     {
       recordsRead += lastResult;

@@ -27,6 +27,7 @@ namespace SRTP
 {
 
 KeywordRecord::KeywordRecord()
+: BasicRecord()
 {
   editorID = "";
   unknownCNAM = 0;
@@ -40,7 +41,8 @@ KeywordRecord::~KeywordRecord()
 
 bool KeywordRecord::equals(const KeywordRecord& other) const
 {
-  if ((editorID==other.editorID) and (hasCNAM==other.hasCNAM))
+  if ((editorID==other.editorID) and (hasCNAM==other.hasCNAM)
+    and (equalsBasic(other)))
   {
     if (hasCNAM) return (unknownCNAM==other.unknownCNAM);
     return true;

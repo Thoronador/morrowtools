@@ -56,6 +56,12 @@ struct BasicRecord
     uint32_t headerUnknown3;
     uint32_t headerUnknown4;
   protected:
+    //util. func.
+    void copyBasicMembers(const BasicRecord& other);
+
+    /* returns true, if the other basic record contains the same data */
+    bool equalsBasic(const BasicRecord& other) const;
+
     /* loads the first data of a record, the record size and yet unknown other
        values, from the given input stream and returns true on success
 

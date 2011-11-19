@@ -57,6 +57,9 @@ const int32_t cMODT = 0x54444F4D; //"MODT" = 4D 4F 44 54
 const int32_t cNAM8 = 0x384D414E; //"NAM9" = 4E 41 4D 38
 const int32_t cNAM9 = 0x394D414E; //"NAM9" = 4E 41 4D 39
 const int32_t cOBND = 0x444E424F; //"OBND" = 4F 42 4E 44
+const int32_t cSDSC = 0x43534453; //"SDSC" = 53 44 53 43
+const int32_t cSNDD = 0x44444E53; //"SNDD" = 53 4E 44 44
+const int32_t cSOUN = 0x4E554F53; //"SOUN" = 53 4F 55 4E
 const int32_t cTES4 = 0x34534554; //"TES4" = 54 45 53 34
 const int32_t cTNAM = 0x4D414E54; //"TNAM" = 54 4E 41 4D
 const int32_t cVNAM = 0x4D414E56; //"VNAM" = 56 4E 41 4D

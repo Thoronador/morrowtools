@@ -27,6 +27,7 @@ namespace SRTP
 {
 
 SoundRecord::SoundRecord()
+: BasicRecord()
 {
   editorID = "";
   unknownSDSC = 0;
@@ -262,7 +263,7 @@ bool SoundRecord::loadFromStream(std::ifstream& in_File)
            if (subLength!=4)
            {
              std::cout <<"Error: sub record SDSC of SOUN has invalid length ("
-                       <<subLength<<" bytes). Should be 36 bytes.\n";
+                       <<subLength<<" bytes). Should be 4 bytes.\n";
              return false;
            }
            //read SDSC's stuff

@@ -99,6 +99,24 @@ Records and their sub-records:
           unknown ("sound source"?)
 
 
+  COBJ: craftable object (recipes)
+      EDID (string, NUL-terminated)
+         editorID
+      COCT (4 bytes) (not present, if there are no CNTO subrecords)
+         component count (uint32_t)
+      CNTO (8 bytes, occurs 0+ times)
+         formID of required component (uint32_t)
+         count (uint32_t)
+      CTDA (32 bytes, can occur multiple times, optional)
+         unknown
+      CNAM (4 bytes)
+         some formID
+      BNAM (4 bytes)
+         another formID
+      NAM1 (2 bytes)
+          resulting quantity (uint16_t)
+
+
   WOOP: word of power
       EDID (string, NUL-terminated)
           editorID

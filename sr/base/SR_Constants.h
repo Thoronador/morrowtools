@@ -29,8 +29,13 @@ namespace SRTP
 const int32_t cAACT = 0x54434141; //"AACT" = 41 41 43 54
 const int32_t cBAMT = 0x544D4142; //"BAMT" = 42 41 4D 54
 const int32_t cBIDS = 0x53444942; //"BIDS" = 42 49 44 53
+const int32_t cBNAM = 0x4D414E42; //"BNAM" = 42 4E 41 4D
 const int32_t cCNAM = 0x4D414E43; //"CNAM" = 43 4E 41 4D
+const int32_t cCNTO = 0x4F544E43; //"CNTO" = 43 4E 54 4F
+const int32_t cCOBJ = 0x4A424F43; //"COBJ" = 43 4F 42 4A
+const int32_t cCOCT = 0x54434F43; //"COCT" = 43 4F 43 54
 const int32_t cCRDT = 0x54445243; //"CRDT" = 43 52 44 54
+const int32_t cCTDA = 0x41445443; //"CTDA" = 43 54 44 41
 const int32_t cDATA = 0x41544144; //"DATA" = 44 41 54 41
 const int32_t cDESC = 0x43534544; //"DESC" = 44 45 53 43
 const int32_t cDNAM = 0x4D414E44; //"DNAM" = 44 4E 41 4D
@@ -54,6 +59,7 @@ const int32_t cKYWD = 0x4457594B; //"KYWD" = 4B 59 57 44
 const int32_t cKWDA = 0x4144574B; //"KWDA" = 4B 57 44 41
 const int32_t cMODL = 0x4C444F4D; //"MODL" = 4D 4F 44 4C
 const int32_t cMODT = 0x54444F4D; //"MODT" = 4D 4F 44 54
+const int32_t cNAM1 = 0x314D414E; //"NAM1" = 4E 41 4D 31
 const int32_t cNAM8 = 0x384D414E; //"NAM9" = 4E 41 4D 38
 const int32_t cNAM9 = 0x394D414E; //"NAM9" = 4E 41 4D 39
 const int32_t cOBND = 0x444E424F; //"OBND" = 4F 42 4E 44

@@ -39,6 +39,11 @@ KeywordRecord::~KeywordRecord()
   //empty
 }
 
+int32_t KeywordRecord::getRecordType() const
+{
+  return cKYWD;
+}
+
 bool KeywordRecord::equals(const KeywordRecord& other) const
 {
   if ((editorID==other.editorID) and (hasCNAM==other.hasCNAM)

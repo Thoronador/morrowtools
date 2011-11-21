@@ -42,6 +42,11 @@ SoundRecord::~SoundRecord()
   //empty
 }
 
+int32_t SoundRecord::getRecordType() const
+{
+  return cSOUN;
+}
+
 bool SoundRecord::equals(const SoundRecord& other) const
 {
   if ((editorID==other.editorID) and (unknownSDSC==other.unknownSDSC)

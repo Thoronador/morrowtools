@@ -55,6 +55,12 @@ struct GenericRecord: public BasicRecord
     */
     virtual bool loadFromStream(std::ifstream& in_File);
 
+    /* returns true, if the record is a generic record (see GenericRecord.h) */
+    virtual bool isGenericRecord() const;
+
+    /* returns the record's type, usually its header */
+    virtual int32_t getRecordType() const;
+
     /* returns a pointer to the record data
 
        remarks:

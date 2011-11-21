@@ -82,6 +82,17 @@ GenericRecord::~GenericRecord()
   m_DataSize = 0;
 }
 
+bool GenericRecord::isGenericRecord() const
+{
+  return true;
+}
+
+int32_t GenericRecord::getRecordType() const
+{
+  //no record should have zero here, so we use this to avoid trouble
+  return 0;
+}
+
 bool GenericRecord::saveToStream(std::ofstream& output) const
 {
   //record header

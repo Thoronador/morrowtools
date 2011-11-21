@@ -42,6 +42,11 @@ GMSTRecord::~GMSTRecord()
   //empty
 }
 
+int32_t GMSTRecord::getRecordType() const
+{
+  return cGMST;
+}
+
 bool GMSTRecord::equals(const GMSTRecord& other) const
 {
   if ((m_SettingName==other.getSettingName()) and (m_Type==other.getSettingType())

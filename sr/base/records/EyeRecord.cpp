@@ -22,6 +22,11 @@ EyeRecord::~EyeRecord()
   //empty
 }
 
+int32_t EyeRecord::getRecordType() const
+{
+  return cEYES;
+}
+
 bool EyeRecord::equals(const EyeRecord& other) const
 {
   return ((editorID==other.editorID) and (unknownFULL==other.unknownFULL)

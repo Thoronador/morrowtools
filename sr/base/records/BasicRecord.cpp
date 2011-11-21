@@ -36,6 +36,11 @@ BasicRecord::~BasicRecord()
   //Purpose is to have a virtual destructor to get rid of compiler warnings.
 }
 
+bool BasicRecord::isGenericRecord() const
+{
+  return false;
+}
+
 void BasicRecord::copyBasicMembers(const BasicRecord& other)
 {
   headerFlags = other.headerFlags;

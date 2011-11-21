@@ -40,6 +40,11 @@ WordOfPowerRecord::~WordOfPowerRecord()
   //empty
 }
 
+int32_t WordOfPowerRecord::getRecordType() const
+{
+  return cWOOP;
+}
+
 bool WordOfPowerRecord::equals(const WordOfPowerRecord& other) const
 {
   if ((editorID==other.editorID) and (hasFULL==other.hasFULL)

@@ -55,6 +55,9 @@ struct GMSTRecord: public BasicRecord
     */
     virtual bool loadFromStream(std::ifstream& in_File);
 
+    /* returns the record's type, usually its header */
+    virtual int32_t getRecordType() const;
+
     /* returns the value read from the CNAM field */
     const std::string& getSettingName() const;
 

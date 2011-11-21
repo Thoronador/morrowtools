@@ -36,6 +36,11 @@ GlobalRecord::GlobalRecord()
   floatVal = 0.0f;
 }
 
+int32_t GlobalRecord::getRecordType() const
+{
+  return cGLOB;
+}
+
 bool GlobalRecord::equals(const GlobalRecord& other) const
 {
   if ((Type!=other.Type) or (editorID!=other.editorID) or (!equalsBasic(other)))

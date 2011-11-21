@@ -50,6 +50,12 @@ struct BasicRecord
     */
     virtual bool loadFromStream(std::ifstream& in_File) = 0;
 
+    /* returns true, if the record is a generic record (see GenericRecord.h) */
+    virtual bool isGenericRecord() const;
+
+    /* returns the record's type, usually its header */
+    virtual int32_t getRecordType() const = 0;
+
     //partially unknown values - 16 bytes, i.e. 4 x uint32_t
     uint32_t headerFlags;
     uint32_t headerFormID;

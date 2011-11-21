@@ -60,6 +60,9 @@ struct WeaponRecord: public BasicRecord
     */
     virtual bool loadFromStream(std::ifstream& in_File);
 
+    /* returns the record's type, usually its header */
+    virtual int32_t getRecordType() const;
+
     /* returns the size of the MODT subrecord */
     uint8_t getSizeOfMODT() const;
 

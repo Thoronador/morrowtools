@@ -32,31 +32,35 @@ enum GlobalType {globShort, globLong, globFloat};
 
 struct GlobalRecord: public BasicRecord
 {
-  /* constructor */
-  GlobalRecord();
+  public:
+    /* constructor */
+    GlobalRecord();
 
-  /* returns true, if the other record contains the same data */
-  bool equals(const GlobalRecord& other) const;
+    /* returns true, if the other record contains the same data */
+    bool equals(const GlobalRecord& other) const;
 
-  /* writes the record to the given output stream and returns true on success
+    /* writes the record to the given output stream and returns true on success
 
-    parameters:
-        output   - the output file stream
-  */
-  bool saveToStream(std::ofstream& output) const;
+      parameters:
+          output   - the output file stream
+    */
+    bool saveToStream(std::ofstream& output) const;
 
-  /* loads the record from the given input stream and returns true on success
+    /* loads the record from the given input stream and returns true on success
 
-    parameters:
-        in_File - the input file stream
-  */
-  bool loadFromStream(std::ifstream& in_File);
+      parameters:
+          in_File - the input file stream
+    */
+    bool loadFromStream(std::ifstream& in_File);
 
-  std::string editorID;
-  GlobalType Type;
-  int16_t shortVal;
-  int32_t longVal;
-  float floatVal;
+    /* returns the record's type, usually its header */
+    virtual int32_t getRecordType() const;
+
+    std::string editorID;
+    GlobalType Type;
+    int16_t shortVal;
+    int32_t longVal;
+    float floatVal;
 };//struct
 
 } //namespace

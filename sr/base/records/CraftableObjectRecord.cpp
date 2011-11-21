@@ -43,6 +43,11 @@ CraftableObjectRecord::~CraftableObjectRecord()
   //empty
 }
 
+int32_t CraftableObjectRecord::getRecordType() const
+{
+  return cCOBJ;
+}
+
 bool CraftableObjectRecord::equals(const CraftableObjectRecord& other) const
 {
   if ((equalsBasic(other)) and (editorID==other.editorID)

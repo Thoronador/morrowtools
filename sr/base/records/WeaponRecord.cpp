@@ -140,6 +140,11 @@ WeaponRecord::~WeaponRecord()
   m_sizeOfMODT = 0;
 }
 
+int32_t WeaponRecord::getRecordType() const
+{
+  return cWEAP;
+}
+
 bool WeaponRecord::equals(const WeaponRecord& other) const
 {
   if ((editorID!=other.editorID) or (memcmp(unknownOBND, other.unknownOBND, 12)!=0)

@@ -19,6 +19,11 @@ Tes4HeaderRecord::~Tes4HeaderRecord()
   //empty
 }
 
+int32_t Tes4HeaderRecord::getRecordType() const
+{
+  return cTES4;
+}
+
 bool Tes4HeaderRecord::saveToStream(std::ofstream& output) const
 {
   output.write((char*) &cTES4, 4);

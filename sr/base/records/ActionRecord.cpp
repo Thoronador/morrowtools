@@ -37,6 +37,11 @@ ActionRecord::~ActionRecord()
   //empty
 }
 
+int32_t ActionRecord::getRecordType() const
+{
+  return cAACT;
+}
+
 bool ActionRecord::equals(const ActionRecord& other) const
 {
   return (equalsBasic(other) and (editorID==other.editorID));

@@ -39,6 +39,7 @@ const int32_t cCTDA = 0x41445443; //"CTDA" = 43 54 44 41
 const int32_t cDATA = 0x41544144; //"DATA" = 44 41 54 41
 const int32_t cDESC = 0x43534544; //"DESC" = 44 45 53 43
 const int32_t cDNAM = 0x4D414E44; //"DNAM" = 44 4E 41 4D
+const int32_t cDODT = 0x54444F44; //"DODT" = 44 4F 44 54
 const int32_t cEAMT = 0x544D4145; //"EAMT" = 45 41 4D 54
 const int32_t cEDID = 0x44494445; //"EDID" = 45 44 49 44
 const int32_t cEITM = 0x4D544945; //"EITM" = 45 49 54 4D
@@ -68,6 +69,14 @@ const int32_t cSNDD = 0x44444E53; //"SNDD" = 53 4E 44 44
 const int32_t cSOUN = 0x4E554F53; //"SOUN" = 53 4F 55 4E
 const int32_t cTES4 = 0x34534554; //"TES4" = 54 45 53 34
 const int32_t cTNAM = 0x4D414E54; //"TNAM" = 54 4E 41 4D
+const int32_t cTX00 = 0x30305854; //"TX00" = 54 58 30 30
+const int32_t cTX01 = 0x31305854; //"TX01" = 54 58 30 31
+const int32_t cTX02 = 0x32305854; //"TX02" = 54 58 30 32
+const int32_t cTX03 = 0x33305854; //"TX03" = 54 58 30 33
+const int32_t cTX04 = 0x34305854; //"TX04" = 54 58 30 34
+const int32_t cTX05 = 0x35305854; //"TX05" = 54 58 30 35
+const int32_t cTX07 = 0x37305854; //"TX07" = 54 58 30 37
+const int32_t cTXST = 0x54535854; //"TXST" = 54 58 53 54
 const int32_t cVNAM = 0x4D414E56; //"VNAM" = 56 4E 41 4D
 const int32_t cWEAP = 0x50414557; //"WEAP" = 57 45 41 50
 const int32_t cWNAM = 0x4D414E57; //"WNAM" = 57 4E 41 4D

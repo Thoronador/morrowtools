@@ -117,6 +117,31 @@ Records and their sub-records:
           resulting quantity (uint16_t)
 
 
+  TXST: texture set
+      EDID (string, NUL-terminated)
+          editorID
+      OBND (12 bytes)
+          unknown data
+      TX00 (string, NUL-terminated)
+          first texture path
+      TX01 (string, NUL-terminated) optional
+          second texture path
+      TX02 (string, NUL-terminated) optional
+          third texture path
+      TX03 (string, NUL-terminated) optional
+          another texture path
+      TX04 (string, NUL-terminated) optional
+          another texture path
+      TX05 (string, NUL-terminated) optional
+          another texture path
+      TX07 (string, NUL-terminated) optional
+          another texture path
+      DODT (36 bytes) optional
+          unknown data
+      DNAM (2 bytes)
+          unknown data
+
+
   WOOP: word of power
       EDID (string, NUL-terminated)
           editorID

@@ -29,6 +29,7 @@
 #include "GameSettings.h"
 #include "Globals.h"
 #include "Keywords.h"
+#include "MiscObjects.h"
 #include "Sounds.h"
 #include "TextureSets.h"
 #include "Weapons.h"
@@ -81,6 +82,9 @@ int ESMReaderAll::readGroup(std::ifstream& in_File, const GroupData& g_data)
            break;
       case cKYWD:
            lastResult = Keywords::getSingleton().readNextRecord(in_File);
+           break;
+      case cMISC:
+           lastResult = MiscObjects::getSingleton().readNextRecord(in_File);
            break;
       case cSOUN:
            lastResult = Sounds::getSingleton().readNextRecord(in_File);

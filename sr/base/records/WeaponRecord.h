@@ -23,6 +23,7 @@
 
 #include "BasicRecord.h"
 #include <string>
+#include <vector>
 #include <stdint.h>
 
 namespace SRTP
@@ -82,8 +83,8 @@ struct WeaponRecord: public BasicRecord
     uint32_t unknownETYP;
     uint32_t unknownBIDS;
     uint32_t unknownBAMT;
-    uint32_t unknownKSIZ;
-    uint8_t  unknownKWDA[12];
+    uint32_t keywordSize;
+    std::vector<uint32_t> keywordArray;
     uint32_t unknownDESC;
     uint32_t unknownINAM;
     uint32_t unknownWNAM;

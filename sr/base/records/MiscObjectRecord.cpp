@@ -55,14 +55,14 @@ MiscObjectRecord::~MiscObjectRecord()
 
 bool MiscObjectRecord::equals(const MiscObjectRecord& other) const
 {
-  if ((editorID==other.editorID) and (unknownVMAD==other.unknownVMAD)
-    and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
+  if ((equalsBasic(other)) and (editorID==other.editorID)
+    and (unknownVMAD==other.unknownVMAD) and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
     and (hasFULL==other.hasFULL) and (modelPath==other.modelPath)
     and (unknownMODT==other.unknownMODT) and (unknownMODS==other.unknownMODS)
-    and (iconPath==other.iconPath)
-    and (keywordSize==other.keywordSize) and (keywordArray==other.keywordArray)
-    and (unknownDATA_int==other.unknownDATA_int) and (unknownDATA_float==other.unknownDATA_float)
-    and (hasYNAM==other.hasYNAM) and (hasZNAM==other.hasZNAM))
+    and (iconPath==other.iconPath) and (keywordSize==other.keywordSize)
+    and (keywordArray==other.keywordArray) and (unknownDATA_int==other.unknownDATA_int)
+    and (unknownDATA_float==other.unknownDATA_float) and (hasYNAM==other.hasYNAM)
+    and (hasZNAM==other.hasZNAM))
   {
     if (hasFULL)
       if (unknownFULL!=other.unknownFULL) return false;

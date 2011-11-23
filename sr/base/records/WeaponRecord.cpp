@@ -41,8 +41,8 @@ WeaponRecord::WeaponRecord()
   unknownETYP = 0;
   unknownBIDS = 0;
   unknownBAMT = 0;
-  unknownKSIZ = 0;
-  memset(unknownKWDA, 0, 12);
+  keywordSize = 0;
+  keywordArray.clear();
   unknownDESC = 0;
   unknownINAM = 0;
   unknownWNAM = 0;
@@ -78,8 +78,8 @@ WeaponRecord::WeaponRecord(const WeaponRecord& other)
   unknownETYP = other.unknownETYP;
   unknownBIDS = other.unknownBIDS;
   unknownBAMT = other.unknownBAMT;
-  unknownKSIZ = other.unknownKSIZ;
-  memcpy(unknownKWDA, other.unknownKWDA, 12);
+  keywordSize = other.keywordSize;
+  keywordArray = other.keywordArray;
   unknownDESC = other.unknownDESC;
   unknownINAM = other.unknownINAM;
   unknownWNAM = other.unknownWNAM;
@@ -118,8 +118,8 @@ WeaponRecord& WeaponRecord::operator=(const WeaponRecord& other)
   unknownETYP = other.unknownETYP;
   unknownBIDS = other.unknownBIDS;
   unknownBAMT = other.unknownBAMT;
-  unknownKSIZ = other.unknownKSIZ;
-  memcpy(unknownKWDA, other.unknownKWDA, 12);
+  keywordSize = other.keywordSize;
+  keywordArray = other.keywordArray;
   unknownDESC = other.unknownDESC;
   unknownINAM = other.unknownINAM;
   unknownWNAM = other.unknownWNAM;
@@ -159,11 +159,11 @@ bool WeaponRecord::equals(const WeaponRecord& other) const
   }
   if ((unknownEITM!=other.unknownEITM) or (unknownEAMT!=other.unknownEAMT)
     or (unknownETYP!=other.unknownETYP) or (unknownBIDS!=other.unknownBIDS)
-    or (unknownBAMT!=other.unknownBAMT) or (unknownKSIZ!=other.unknownKSIZ))
+    or (unknownBAMT!=other.unknownBAMT) or (keywordSize!=other.keywordSize))
   {
     return false;
   }
-  if ((memcmp(unknownKWDA, other.unknownKWDA, 12)!=0) or (unknownDESC!=other.unknownDESC)
+  if ((keywordArray!=other.keywordArray) or (unknownDESC!=other.unknownDESC)
     or (unknownINAM!=other.unknownINAM) or (unknownWNAM!=other.unknownWNAM)
     or (unknownTNAM!=other.unknownTNAM) or (unknownNAM9!=other.unknownNAM9)
     or (unknownNAM8!=other.unknownNAM8))
@@ -329,7 +329,7 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
   if (!loadUint32SubRecordFromStream(in_File, cBAMT, unknownBAMT)) return false;
 
   //read KSIZ
-  if (!loadUint32SubRecordFromStream(in_File, cKSIZ, unknownKSIZ)) return false;
+  if (!loadUint32SubRecordFromStream(in_File, cKSIZ, keywordSize)) return false;
 
   //read KWDA
   in_File.read((char*) &subRecName, 4);
@@ -340,14 +340,21 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
   }
   //KWDA's length
   in_File.read((char*) &subLength, 2);
-  if (subLength!=12)
+  if (subLength!=4*keywordSize)
   {
     std::cout <<"Error: sub record KWDA of WEAP has invalid length ("<<subLength
-              <<" bytes). Should be 12 bytes.\n";
+              <<" bytes). Should be "<<4*keywordSize<<" bytes.\n";
     return false;
   }
   //read KWDA
-  in_File.read((char*) unknownKWDA, 12);
+  uint32_t i, fid;
+  keywordArray.clear();
+  for (i=0; i<keywordSize; ++i)
+  {
+    fid = 0;
+    in_File.read((char*) &fid, 4);
+    keywordArray.push_back(subRecName);
+  }
   if (!in_File.good())
   {
     std::cout << "Error while reading subrecord KWDA of WEAP!\n";

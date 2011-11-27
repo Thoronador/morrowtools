@@ -23,6 +23,8 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="..\..\base\UtilityFunctions.cpp" />
+		<Unit filename="..\..\base\UtilityFunctions.h" />
 		<Unit filename="..\base\Activators.cpp" />
 		<Unit filename="..\base\Activators.h" />
 		<Unit filename="..\base\ComparisonFunctor.h" />
@@ -56,8 +58,6 @@
 		<Unit filename="..\base\Scripts.h" />
 		<Unit filename="..\base\Statics.cpp" />
 		<Unit filename="..\base\Statics.h" />
-		<Unit filename="..\base\UtilityFunctions.cpp" />
-		<Unit filename="..\base\UtilityFunctions.h" />
 		<Unit filename="..\base\records\AIData.cpp" />
 		<Unit filename="..\base\records\AIData.h" />
 		<Unit filename="..\base\records\AIPackages.cpp" />

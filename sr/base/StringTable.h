@@ -37,7 +37,7 @@ class StringTable
     /* destructor */
     ~StringTable();
 
-    enum DataType {/*sdUnknown,*/ sdNULterminated, sdPascalStyle};
+    enum DataType {sdUnknown, sdNULterminated, sdPascalStyle};
 
     //iterator type
     typedef std::map<uint32_t, std::string>::const_iterator TableIterator;
@@ -65,6 +65,15 @@ class StringTable
            stringType - expected type of string data in table
     */
     bool readTable(const std::string& FileName, DataType stringType);
+
+    /* merges the contents of the other table into this table. If there are
+       strings with the same string ID in both tables, the strings from the
+       other table take precedence.
+
+       parameters:
+           other - the other string table
+    */
+    void mergeTables(const StringTable& other);
 
     /* returns iterator to the start of the table */
     TableIterator getBegin() const;

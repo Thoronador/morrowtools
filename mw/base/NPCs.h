@@ -24,7 +24,7 @@
 #include <string>
 #include <map>
 #include "records/NPCRecord.h"
-#include "ComparisonFunctor.h"
+#include "../../base/ComparisonFunctor.h"
 
 namespace MWTP
 {

@@ -25,7 +25,7 @@
 #include <map>
 #include <fstream>
 #include "records/StaticRecord.h"
-#include "ComparisonFunctor.h"
+#include "../../base/ComparisonFunctor.h"
 
 namespace MWTP
 {

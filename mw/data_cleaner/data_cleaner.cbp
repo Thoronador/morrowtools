@@ -23,22 +23,22 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="..\..\base\FileFunctions.cpp" />
+		<Unit filename="..\..\base\FileFunctions.h" />
+		<Unit filename="..\..\base\UtilityFunctions.cpp" />
+		<Unit filename="..\..\base\UtilityFunctions.h" />
 		<Unit filename="..\base\DepFiles.cpp" />
 		<Unit filename="..\base\DepFiles.h" />
 		<Unit filename="..\base\ESMReader.cpp" />
 		<Unit filename="..\base\ESMReader.h" />
 		<Unit filename="..\base\Enchantment.cpp" />
 		<Unit filename="..\base\Enchantment.h" />
-		<Unit filename="..\base\FileFunctions.cpp" />
-		<Unit filename="..\base\FileFunctions.h" />
 		<Unit filename="..\base\HelperIO.cpp" />
 		<Unit filename="..\base\HelperIO.h" />
 		<Unit filename="..\base\IniFunctions.cpp" />
 		<Unit filename="..\base\IniFunctions.h" />
 		<Unit filename="..\base\MW_Constants.h" />
 		<Unit filename="..\base\ReturnCodes.h" />
-		<Unit filename="..\base\UtilityFunctions.cpp" />
-		<Unit filename="..\base\UtilityFunctions.h" />
 		<Unit filename="..\base\records\AIData.cpp" />
 		<Unit filename="..\base\records\AIData.h" />
 		<Unit filename="..\base\records\AIPackages.cpp" />

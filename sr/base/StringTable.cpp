@@ -23,6 +23,7 @@
 #include <fstream>
 #include <vector>
 #include <cstring>
+#include "../../base/UtilityFunctions.h"
 
 namespace SRTP
 {
@@ -75,6 +76,31 @@ uint32_t StringTable::getNumberOfTableEntries() const
 
 bool StringTable::readTable(const std::string& FileName, DataType stringType)
 {
+  //try to determine the data type via extension, if it is not given
+  if (stringType==sdUnknown)
+  {
+    const std::string::size_type dotPos = FileName.rfind('.');
+    if (dotPos==std::string::npos)
+    {
+      std::cout << "Error: Cannot determine string data type!\n";
+      return false;
+    }
+    std::string ext = lowerCase(FileName.substr(dotPos));
+    if (ext==".strings")
+    {
+      stringType = sdNULterminated;
+    }
+    else if ((ext==".dlstrings") or (ext==".ilstrings"))
+    {
+      stringType = sdPascalStyle;
+    }
+    else
+    {
+      std::cout << "Error: Cannot determine string data type, unknown extension \""<<ext<<"\"!\n";
+      return false;
+    }
+  }//if unknown type
+
   std::ifstream input;
   input.open(FileName.c_str(), std::ios::in | std::ios::binary);
   if (!input)
@@ -122,6 +148,14 @@ bool StringTable::readTable(const std::string& FileName, DataType stringType)
   uint8_t * ptrSpace = NULL;
   uint32_t allocatedSpace = 0;
   uint32_t length = 0;
+
+  if (stringType==sdNULterminated)
+  {
+    //pre-allocate memory
+    ptrSpace = new uint8_t[65537];
+    allocatedSpace = 65537;
+  }
+
   for (i=0; i<count; ++i)
   {
     input.seekg(offsetBase+static_cast<std::ifstream::pos_type>(theDirectory[i].offset), std::ios_base::beg);
@@ -131,34 +165,54 @@ bool StringTable::readTable(const std::string& FileName, DataType stringType)
       input.close();
       return false;
     }
-    #warning Function does not consider type yet!
-    //read strings, pascal style
-    // ---- read length
-    input.read((char*) &length, 4);
-    if (length>65536)
+    if (stringType==sdPascalStyle)
     {
-      std::cout << "Error: length ("<<length<<") is greater than 65536!\n";
-      delete[] ptrSpace;
-      input.close();
-      return false;
+      //read strings, pascal style
+      // ---- read length
+      input.read((char*) &length, 4);
+      if (length>65536)
+      {
+        std::cout << "Error: length ("<<length<<") is greater than 65536!\n";
+        delete[] ptrSpace;
+        input.close();
+        return false;
+      }
+      //do we need to allocate more space?
+      if (length>=allocatedSpace)
+      {
+        delete[] ptrSpace;
+        ptrSpace = new uint8_t[length+1];
+        allocatedSpace = length+1;
+      }
+      //read whole string into buffer
+      memset(ptrSpace, 0, length+1);
+      input.read((char*) ptrSpace, length);
+      if (!input.good())
+      {
+        std::cout << "StringTable::readTable: Error while reading string!\n";
+        input.close();
+        delete[] ptrSpace;
+        return false;
+      }
     }
-    //do we need to allocate more space?
-    if (length>=allocatedSpace)
+    else
     {
-      delete[] ptrSpace;
-      ptrSpace = new uint8_t[length+1];
-      allocatedSpace = length+1;
-    }
-    //read whole string into buffer
-    memset(ptrSpace, 0, length+1);
-    input.read((char*) ptrSpace, length);
-    if (!input.good())
-    {
-      std::cout << "StringTable::readTable: Error while reading string!\n";
-      input.close();
-      delete[] ptrSpace;
-      return false;
-    }
+      //read NUL-terminated string data
+      length = 0;
+      do
+      {
+        //read next character
+        input.read((char*) &(ptrSpace[length]), 1);
+        ++length;
+      } while ((ptrSpace[length-1]!='\0') and (length<allocatedSpace));
+      if (length+1==allocatedSpace)
+      {
+        ptrSpace[length] = '\0';
+        std::cout << "Error: string was cut off after reaching allocation limit!\n";
+        delete[] ptrSpace;
+        return false;
+      }
+    }//else
     //put it into the table
     m_Strings[theDirectory[i].stringID] = std::string((const char*) ptrSpace);
   }
@@ -167,6 +221,17 @@ bool StringTable::readTable(const std::string& FileName, DataType stringType)
   allocatedSpace = 0;
   input.close();
   return true;
+}
+
+void StringTable::mergeTables(const StringTable& other)
+{
+  TableIterator iter = other.getBegin();
+  const TableIterator endIter = other.getEnd();
+  while (iter!=endIter)
+  {
+    m_Strings[iter->first] = iter->second;
+    ++iter;
+  }//while
 }
 
 } //namespace

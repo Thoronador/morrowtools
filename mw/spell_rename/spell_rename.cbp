@@ -23,6 +23,10 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="..\..\base\FileFunctions.cpp" />
+		<Unit filename="..\..\base\FileFunctions.h" />
+		<Unit filename="..\..\base\UtilityFunctions.cpp" />
+		<Unit filename="..\..\base\UtilityFunctions.h" />
 		<Unit filename="..\base\DepFiles.cpp" />
 		<Unit filename="..\base\DepFiles.h" />
 		<Unit filename="..\base\ESMReader.cpp" />
@@ -31,8 +35,6 @@
 		<Unit filename="..\base\ESMWriter.h" />
 		<Unit filename="..\base\Enchantment.cpp" />
 		<Unit filename="..\base\Enchantment.h" />
-		<Unit filename="..\base\FileFunctions.cpp" />
-		<Unit filename="..\base\FileFunctions.h" />
 		<Unit filename="..\base\GameSettings.cpp" />
 		<Unit filename="..\base\GameSettings.h" />
 		<Unit filename="..\base\HelperIO.cpp" />
@@ -45,8 +47,6 @@
 		<Unit filename="..\base\ReturnCodes.h" />
 		<Unit filename="..\base\Spells.cpp" />
 		<Unit filename="..\base\Spells.h" />
-		<Unit filename="..\base\UtilityFunctions.cpp" />
-		<Unit filename="..\base\UtilityFunctions.h" />
 		<Unit filename="..\base\records\BasicRecord.cpp" />
 		<Unit filename="..\base\records\BasicRecord.h" />
 		<Unit filename="..\base\records\GMSTRecord.cpp" />

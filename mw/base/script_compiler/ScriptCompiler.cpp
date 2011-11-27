@@ -22,7 +22,7 @@
 #include <iostream>
 #include "CompilerCodes.h"
 #include "CompiledChunk.h"
-#include "../UtilityFunctions.h"
+#include "../../../base/UtilityFunctions.h"
 #include "ParserNode.h"
 #include "../Statics.h"
 #include "../NPCs.h"

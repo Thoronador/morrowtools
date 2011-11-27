@@ -25,7 +25,7 @@
 #include <string>
 #include <map>
 #include "records/ContainerRecord.h"
-#include "ComparisonFunctor.h"
+#include "../../base/ComparisonFunctor.h"
 
 namespace MWTP
 {

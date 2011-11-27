@@ -24,6 +24,7 @@
 #include "../../mw/base/HelperIO.h"
 #include "SR_Constants.h"
 #include "Actions.h"
+#include "Books.h"
 #include "CraftableObjects.h"
 #include "Eyes.h"
 #include "GameSettings.h"
@@ -67,6 +68,9 @@ int ESMReaderAll::readGroup(std::ifstream& in_File, const GroupData& g_data)
     {
       case cAACT:
            lastResult = Actions::getSingleton().readNextRecord(in_File);
+           break;
+      case cBOOK:
+           lastResult = Books::getSingleton().readNextRecord(in_File);
            break;
       case cCOBJ:
            lastResult = CraftableObjects::getSingleton().readNextRecord(in_File);

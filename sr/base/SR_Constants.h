@@ -30,6 +30,7 @@ const int32_t cAACT = 0x54434141; //"AACT" = 41 41 43 54
 const int32_t cBAMT = 0x544D4142; //"BAMT" = 42 41 4D 54
 const int32_t cBIDS = 0x53444942; //"BIDS" = 42 49 44 53
 const int32_t cBNAM = 0x4D414E42; //"BNAM" = 42 4E 41 4D
+const int32_t cBOOK = 0x4B4F4F42; //"BOOK" = 42 4F 4F 4B
 const int32_t cCNAM = 0x4D414E43; //"CNAM" = 43 4E 41 4D
 const int32_t cCNTO = 0x4F544E43; //"CNTO" = 43 4E 54 4F
 const int32_t cCOBJ = 0x4A424F43; //"COBJ" = 43 4F 42 4A

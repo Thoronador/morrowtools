@@ -171,12 +171,41 @@ Records and their sub-records:
           unknown data
 
 
+  BOOK: book
+      EDID (string, NUL-terminated)
+          editorID
+      VMAD (?? bytes, optional)
+          unknown data
+      OBND (12 bytes)
+          unknown
+      FULL (4 bytes, optional)
+          unknown
+      MODL (string, NUL-terminated)
+          model path
+      MODT (size varies)
+          unknown data
+      DESC (4 bytes)
+          unknown
+      YNAM (4 bytes, optional)
+          unknown
+      KSIZ (4 bytes, optional)
+          number of uint32_ts in KWDA
+      KWDA (multiple of 4 bytes), follows KSIZ, therefore optional
+          array of formIDs/uint32_t2, number of elements is specified in KSIZ
+      DATA (10 bytes)
+          unknown data
+      INAM (4 bytes, optional)
+          unknown
+      CNAM (4 bytes)
+          unknown
+
+
   WOOP: word of power
       EDID (string, NUL-terminated)
           editorID
-      FULL (4 byte) optional
+      FULL (4 bytes) optional
           unknown data
-      TNAM (4 byte)
+      TNAM (4 bytes)
           unknown data
 
 

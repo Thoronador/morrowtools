@@ -27,6 +27,7 @@ namespace SRTP
 {
 
 const int32_t cAACT = 0x54434141; //"AACT" = 41 41 43 54
+const int32_t cACTI = 0x49544341; //"ACTI" = 41 43 54 49
 const int32_t cBAMT = 0x544D4142; //"BAMT" = 42 41 4D 54
 const int32_t cBIDS = 0x53444942; //"BIDS" = 42 49 44 53
 const int32_t cBNAM = 0x4D414E42; //"BNAM" = 42 4E 41 4D
@@ -39,8 +40,14 @@ const int32_t cCRDT = 0x54445243; //"CRDT" = 43 52 44 54
 const int32_t cCTDA = 0x41445443; //"CTDA" = 43 54 44 41
 const int32_t cDATA = 0x41544144; //"DATA" = 44 41 54 41
 const int32_t cDESC = 0x43534544; //"DESC" = 44 45 53 43
+const int32_t cDEST = 0x54534544; //"DEST" = 44 45 53 54
+const int32_t cDMDL = 0x4C444D44; //"DMDL" = 44 4D 44 4C
+const int32_t cDMDS = 0x53444D44; //"DMDS" = 44 4D 44 53
+const int32_t cDMDT = 0x54444D44; //"DMDT" = 44 4D 44 54
 const int32_t cDNAM = 0x4D414E44; //"DNAM" = 44 4E 41 4D
 const int32_t cDODT = 0x54444F44; //"DODT" = 44 4F 44 54
+const int32_t cDSTD = 0x44545344; //"DSTD" = 44 53 54 44
+const int32_t cDSTF = 0x46545344; //"DSTF" = 44 53 54 46
 const int32_t cEAMT = 0x544D4145; //"EAMT" = 45 41 4D 54
 const int32_t cEDID = 0x44494445; //"EDID" = 45 44 49 44
 const int32_t cEITM = 0x4D544945; //"EITM" = 45 49 54 4D
@@ -56,6 +63,7 @@ const int32_t cHEDR = 0x52444548; //"HEDR" = 48 45 44 52
 const int32_t cICON = 0x4E4F4349; //"ICON" = 49 43 4F 4E
 const int32_t cINAM = 0x4D414E49; //"INAM" = 49 4E 41 4D
 const int32_t cINTV = 0x56544E49; //"INTV" = 49 4E 54 56
+const int32_t cKNAM = 0x4D414E4B; //"KNAM" = 4B 4E 41 4D
 const int32_t cKSIZ = 0x5A49534B; //"KSIZ" = 4B 53 49 5A
 const int32_t cKYWD = 0x4457594B; //"KYWD" = 4B 59 57 44
 const int32_t cKWDA = 0x4144574B; //"KWDA" = 4B 57 44 41
@@ -67,6 +75,8 @@ const int32_t cNAM1 = 0x314D414E; //"NAM1" = 4E 41 4D 31
 const int32_t cNAM8 = 0x384D414E; //"NAM9" = 4E 41 4D 38
 const int32_t cNAM9 = 0x394D414E; //"NAM9" = 4E 41 4D 39
 const int32_t cOBND = 0x444E424F; //"OBND" = 4F 42 4E 44
+const int32_t cPNAM = 0x4D414E50; //"PNAM" = 50 4E 41 4D
+const int32_t cRNAM = 0x4D414E52; //"RNAM" = 52 4E 41 4D
 const int32_t cSDSC = 0x43534453; //"SDSC" = 53 44 53 43
 const int32_t cSNDD = 0x44444E53; //"SNDD" = 53 4E 44 44
 const int32_t cSOUN = 0x4E554F53; //"SOUN" = 53 4F 55 4E

@@ -21,7 +21,6 @@
 #ifndef SR_MAPBASEDRECORDMANAGER_H
 #define SR_MAPBASEDRECORDMANAGER_H
 
-#include <string>
 #include <map>
 
 namespace SRTP
@@ -32,7 +31,7 @@ class MapBasedRecordManager
 {
   public:
     //iterator type for record list/map
-    typedef typename std::map<std::string, recT>::const_iterator ListIterator;
+    typedef typename std::map<uint32_t, recT>::const_iterator ListIterator;
 
     /* destructor */
     ~MapBasedRecordManager();
@@ -48,7 +47,7 @@ class MapBasedRecordManager
        parameters:
            ID - the ID of the record object
     */
-    bool hasRecord(const std::string& ID) const;
+    bool hasRecord(const uint32_t ID) const;
 
     /* returns the number of records in the list */
     unsigned int getNumberOfRecords() const;
@@ -63,7 +62,7 @@ class MapBasedRecordManager
            an exception. Use hasRecord() to determine, if a record with the
            desired ID is present.
     */
-    const recT& getRecord(const std::string& ID) const;
+    const recT& getRecord(const uint32_t ID) const;
 
     /* tries to read a record from the given input file stream.
 
@@ -103,7 +102,7 @@ class MapBasedRecordManager
     MapBasedRecordManager(const MapBasedRecordManager& op) {}
 
     /* internal data */
-    std::map<std::string, recT> m_Records;
+    std::map<uint32_t, recT> m_Records;
 };//class
 
 template<typename recT>
@@ -128,14 +127,14 @@ MapBasedRecordManager<recT>& MapBasedRecordManager<recT>::getSingleton()
 template<typename recT>
 void MapBasedRecordManager<recT>::addRecord(const recT& record)
 {
-  if (record.editorID!="")
+  if (record.headerFormID!=0)
   {
-    m_Records[record.editorID] = record;
+    m_Records[record.headerFormID] = record;
   }
 }
 
 template<typename recT>
-bool MapBasedRecordManager<recT>::hasRecord(const std::string& ID) const
+bool MapBasedRecordManager<recT>::hasRecord(const uint32_t ID) const
 {
   return (m_Records.find(ID)!=m_Records.end());
 }
@@ -147,7 +146,7 @@ unsigned int MapBasedRecordManager<recT>::getNumberOfRecords() const
 }
 
 template<typename recT>
-const recT& MapBasedRecordManager<recT>::getRecord(const std::string& ID) const
+const recT& MapBasedRecordManager<recT>::getRecord(const uint32_t ID) const
 {
   ListIterator iter = m_Records.find(ID);
   if (iter!=m_Records.end())
@@ -211,9 +210,9 @@ int MapBasedRecordManager<recT>::readNextRecord(std::ifstream& in_File)
   }
 
   //add it to the list, if not present with same data
-  if (hasRecord(temp.editorID))
+  if (hasRecord(temp.headerFormID))
   {
-    if (getRecord(temp.editorID).equals(temp))
+    if (getRecord(temp.headerFormID).equals(temp))
     {
       //same record with equal data is already present, return zero
       return 0;

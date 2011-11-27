@@ -470,7 +470,7 @@ bool BookRecord::loadFromStream(std::ifstream& in_File)
            break;
       default:
            std::cout << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
-                     << "\", but only MODL, KSIZ, DATA, INAM, CNAM or YNAM are alloed here!\n";
+                     << "\", but only MODL, KSIZ, DATA, INAM, CNAM or YNAM are allowed here!\n";
            return false;
     }//swi
   }//while

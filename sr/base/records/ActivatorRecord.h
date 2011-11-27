@@ -22,6 +22,7 @@
 #define SR_ACTIVATORRECORD_H
 
 #include <string>
+#include <vector>
 #include "BasicRecord.h"
 #include "BinarySubRecord.h"
 
@@ -65,7 +66,21 @@ struct ActivatorRecord: public BasicRecord
     std::string modelPath;
     BinarySubRecord unknownMODT;
     BinarySubRecord unknownMODS;
+    bool hasDEST;
+    uint8_t unknownDEST[8];
+    bool hasDSTD;
+    uint8_t unknownDSTD[20];
+    std::string destroyedModelPath;
+    BinarySubRecord unknownDMDT;
+    BinarySubRecord unknownDMDS;
+    BinarySubRecord unknownDSTF;
+    uint32_t keywordSize;
+    std::vector<uint32_t> keywordArray;
     uint32_t unknownPNAM;
+    bool hasVNAM;
+    uint32_t unknownVNAM;
+    bool hasWNAM;
+    uint32_t unknownWNAM;
     bool hasRNAM;
     uint32_t unknownRNAM;
     uint16_t unknownFNAM;

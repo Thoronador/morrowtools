@@ -227,7 +227,15 @@ Records and their sub-records:
           unknown
       DSTF (?? bytes, optional)
           unknown
+      KSIZ (4 bytes, optional)
+          number of uint32_ts in KWDA
+      KWDA (multiple of 4 bytes), follows KSIZ, therefore optional
+          array of formIDs/uint32_t2, number of elements is specified in KSIZ
       PNAM (4 bytes)
+          unknown
+      VNAM (4 bytes, optional)
+          unknown
+      WNAM (4 bytes, optional)
           unknown
       RNAM (4 bytes, optional)
           unknown

@@ -37,7 +37,21 @@ ActivatorRecord::ActivatorRecord()
   modelPath = "";
   unknownMODT.setPresence(false);
   unknownMODS.setPresence(false);
+  hasDEST = false;
+  memset(unknownDEST, 0, 8);
+  hasDSTD = false;
+  memset(unknownDSTD, 0, 20);
+  destroyedModelPath = "";
+  unknownDMDT.setPresence(false);
+  unknownDMDS.setPresence(false);
+  unknownDSTF.setPresence(false);
+  keywordSize = 0;
+  keywordArray.clear();
   unknownPNAM = 0;
+  hasVNAM = false;
+  unknownVNAM = 0;
+  hasWNAM = false;
+  unknownWNAM = 0;
   hasRNAM = false;
   unknownRNAM = 0;
   unknownFNAM = 0;
@@ -57,8 +71,16 @@ bool ActivatorRecord::equals(const ActivatorRecord& other) const
     and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
     and (hasFULL==other.hasFULL) and ((unknownFNAM==other.unknownFNAM) or (!hasFULL))
     and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
-    and (unknownMODS==other.unknownMODS)
+    and (unknownMODS==other.unknownMODS) and (hasDEST==other.hasDEST)
+    and (memcmp(unknownDEST, other.unknownDEST, 8)==0) and (hasDSTD==other.hasDSTD)
+    and (memcmp(unknownDSTD, other.unknownDSTD, 20)==0)
+    and (destroyedModelPath==other.destroyedModelPath)
+    and (unknownDMDT==other.unknownDMDT) and (unknownDMDS==other.unknownDMDS)
+    and (unknownDSTF==other.unknownDSTF)
+    and (keywordSize==other.keywordSize) and (keywordArray==other.keywordArray)
     and (unknownPNAM==other.unknownPNAM) and (unknownFNAM==other.unknownFNAM)
+    and (hasVNAM==other.hasVNAM) and ((unknownVNAM==other.unknownVNAM) or (!hasVNAM))
+    and (hasWNAM==other.hasWNAM) and ((unknownWNAM==other.unknownWNAM) or (!hasWNAM))
     and (hasRNAM==other.hasRNAM) and ((unknownRNAM==other.unknownRNAM) or (!hasRNAM))
     and (hasKNAM==other.hasKNAM) and ((unknownKNAM==other.unknownKNAM) or (!hasKNAM)));
 }
@@ -83,7 +105,7 @@ bool ActivatorRecord::saveToStream(std::ofstream& output) const
   if (!modelPath.empty())
   {
     writeSize = writeSize +4 /* MODL */ +2 /* 2 bytes for length */
-        +editorID.length()+1 /* length of strin +1 byte for NUL-termination */;
+        +modelPath.length()+1 /* length of string +1 byte for NUL-termination */;
   }
   if (unknownMODT.isPresent())
   {
@@ -92,6 +114,44 @@ bool ActivatorRecord::saveToStream(std::ofstream& output) const
   if (unknownMODS.isPresent())
   {
     writeSize = writeSize + 4 /* MODS */ +2 /* 2 bytes for length */ +unknownMODS.getSize();
+  }
+  if (hasDEST)
+  {
+    writeSize = writeSize +4 /* DEST */ +2 /* 2 bytes for length */ +8 /* fixed size */;
+  }
+  if (hasDSTD)
+  {
+    writeSize = writeSize +4 /* DSTD */ +2 /* 2 bytes for length */ +20 /* fixed size */;
+  }
+  if (!destroyedModelPath.empty())
+  {
+    writeSize = writeSize +4 /* MODL */ +2 /* 2 bytes for length */
+        +destroyedModelPath.length()+1 /* length of string +1 byte for NUL-termination */;
+  }
+  if (unknownDMDT.isPresent())
+  {
+    writeSize = writeSize + 4 /* DMDT */ +2 /* 2 bytes for length */ +unknownDMDT.getSize();
+  }
+  if (unknownDMDS.isPresent())
+  {
+    writeSize = writeSize + 4 /* DMDS */ +2 /* 2 bytes for length */ +unknownDMDS.getSize();
+  }
+  if (unknownDSTF.isPresent())
+  {
+    writeSize = writeSize + 4 /* DSTF */ +2 /* 2 bytes for length */ +unknownDSTF.getSize();
+  }
+  if (!keywordArray.empty())
+  {
+    writeSize = writeSize +4 /* KSIZE */ +2 /* 2 bytes for length */ +4 /* fixed length */
+        +4 /* KWDA */ +2 /* 2 bytes for length */ +4*keywordArray.size();
+  }
+  if (hasVNAM)
+  {
+    writeSize = writeSize +4 /* VNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+  }
+  if (hasWNAM)
+  {
+    writeSize = writeSize +4 /* WNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
   if (hasRNAM)
   {
@@ -158,7 +218,7 @@ bool ActivatorRecord::saveToStream(std::ofstream& output) const
       std::cout << "Error while writing subrecord MODT of ACTI!\n";
       return false;
     }
-  }
+  }//if MODT
 
   if (unknownMODS.isPresent())
   {
@@ -167,7 +227,90 @@ bool ActivatorRecord::saveToStream(std::ofstream& output) const
       std::cout << "Error while writing subrecord MODS of ACTI!\n";
       return false;
     }
-  }
+  }//if MODS
+
+  if (hasDEST)
+  {
+    //write DEST
+    output.write((char*) &cDEST, 4);
+    //DEST's length
+    subLength = 8; //fixed
+    output.write((char*) &subLength, 2);
+    //write DEST's data
+    output.write((const char*) &unknownDEST, 8);
+  }//if DEST
+
+  if (hasDSTD)
+  {
+    //write DSTD
+    output.write((char*) &cDSTD, 4);
+    //DSTD's length
+    subLength = 20; //fixed
+    output.write((char*) &subLength, 2);
+    //write DSTD's data
+    output.write((const char*) &unknownDSTD, 20);
+  }//if DSTD
+
+  if (!destroyedModelPath.empty())
+  {
+    //write DMDL
+    output.write((char*) &cDMDL, 4);
+    //DMDL's length
+    subLength = destroyedModelPath.length()+1;
+    output.write((char*) &subLength, 2);
+    //write destroyed model path
+    output.write(destroyedModelPath.c_str(), subLength);
+  }//if dest. model path
+
+  if (unknownDMDT.isPresent())
+  {
+    if (!unknownDMDT.saveToStream(output, cDMDT))
+    {
+      std::cout << "Error while writing subrecord DMDT of ACTI!\n";
+      return false;
+    }
+  }//if DMDT
+
+  if (unknownDMDS.isPresent())
+  {
+    if (!unknownDMDS.saveToStream(output, cDMDS))
+    {
+      std::cout << "Error while writing subrecord DMDS of ACTI!\n";
+      return false;
+    }
+  }//if DMDS
+
+  if (unknownDSTF.isPresent())
+  {
+    if (!unknownDSTF.saveToStream(output, cDSTF))
+    {
+      std::cout << "Error while writing subrecord DSTF of ACTI!\n";
+      return false;
+    }
+  }//if DSTF
+
+  if (!keywordArray.empty())
+  {
+    //write KSIZ
+    output.write((char*) &cKSIZ, 4);
+    //KSIZ's length
+    subLength = 4; //fixed size
+    output.write((char*) &subLength, 2);
+    //write keyword size
+    output.write((const char*) &keywordSize, 4);
+
+    //write KWDA
+    output.write((char*) &cKWDA, 4);
+    //KWDA's length
+    subLength = 4*keywordArray.size(); //fixed size
+    output.write((char*) &subLength, 2);
+    //write keywords
+    uint32_t i;
+    for (i=0; i<keywordArray.size(); ++i)
+    {
+      output.write((const char*) &(keywordArray[i]), 4);
+    }//for
+  }//if keyword array
 
   //write PNAM
   output.write((char*) &cPNAM, 4);
@@ -175,7 +318,29 @@ bool ActivatorRecord::saveToStream(std::ofstream& output) const
   subLength = 4; //fixed size
   output.write((char*) &subLength, 2);
   //write PNAM stuff
-  output.write((char*) &unknownPNAM, 4);
+  output.write((const char*) &unknownPNAM, 4);
+
+  if (hasVNAM)
+  {
+    //write VNAM
+    output.write((char*) &cVNAM, 4);
+    //VNAM's length
+    subLength = 4; //fixed size
+    output.write((char*) &subLength, 2);
+    //write VNAM stuff
+    output.write((const char*) &unknownVNAM, 4);
+  }//if VNAM
+
+  if (hasWNAM)
+  {
+    //write WNAM
+    output.write((char*) &cWNAM, 4);
+    //WNAM's length
+    subLength = 4; //fixed size
+    output.write((char*) &subLength, 2);
+    //write WNAM stuff
+    output.write((const char*) &unknownWNAM, 4);
+  }//if WNAM
 
   if (hasRNAM)
   {
@@ -185,7 +350,7 @@ bool ActivatorRecord::saveToStream(std::ofstream& output) const
     subLength = 4; //fixed size
     output.write((char*) &subLength, 2);
     //write RNAM stuff
-    output.write((char*) &unknownRNAM, 4);
+    output.write((const char*) &unknownRNAM, 4);
   }//if RNAM
 
   //write FNAM
@@ -194,7 +359,7 @@ bool ActivatorRecord::saveToStream(std::ofstream& output) const
   subLength = 2; //fixed size
   output.write((char*) &subLength, 2);
   //write FNAM stuff
-  output.write((char*) &unknownFNAM, 2);
+  output.write((const char*) &unknownFNAM, 2);
 
   if (hasKNAM)
   {
@@ -204,7 +369,7 @@ bool ActivatorRecord::saveToStream(std::ofstream& output) const
     subLength = 4; //fixed size
     output.write((char*) &subLength, 2);
     //write KNAM stuff
-    output.write((char*) &unknownKNAM, 4);
+    output.write((const char*) &unknownKNAM, 4);
   }//if KNAM
 
   return output.good();
@@ -252,11 +417,23 @@ bool ActivatorRecord::loadFromStream(std::ifstream& in_File)
   modelPath = "";
   unknownMODT.setPresence(false);
   unknownMODS.setPresence(false);
+  destroyedModelPath = "";
+  unknownDMDT.setPresence(false);
+  unknownDMDS.setPresence(false);
+  unknownDSTF.setPresence(false);
+  hasDEST = false;
+  hasDSTD = false;
+  keywordSize = 0;
+  keywordArray.clear();
   hasKNAM = false;
+  hasVNAM = false;
+  hasWNAM = false;
   hasRNAM = false;
   bool hasReadOBND = false;
   bool hasReadPNAM = false;
   bool hasReadFNAM = false;
+
+  uint32_t i, temp;
   while (bytesRead<readSize)
   {
     //read next record
@@ -347,6 +524,7 @@ bool ActivatorRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error while reading subrecord MODT of ACTI!\n";
              return false;
            }
+           bytesRead = bytesRead + 2 + unknownMODT.getSize();
            break;
       case cMODS:
            if (unknownMODS.isPresent())
@@ -359,6 +537,157 @@ bool ActivatorRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error while reading subrecord MODS of ACTI!\n";
              return false;
            }
+           bytesRead = bytesRead + 2 + unknownMODS.getSize();
+           break;
+      case cDEST:
+           if (hasDEST)
+           {
+             std::cout << "Error: ACTI seems to have more than one DEST subrecord.\n";
+             return false;
+           }
+           //DEST's length
+           in_File.read((char*) &subLength, 2);
+           bytesRead += 2;
+           if (subLength!=8)
+           {
+             std::cout <<"Error: sub record DEST of ACTI has invalid length ("<<subLength
+                       <<" bytes). Should be 8 bytes.\n";
+             return false;
+           }
+           //read DEST
+           in_File.read((char*) unknownDEST, 8);
+           bytesRead += 8;
+           if (!in_File.good())
+           {
+             std::cout << "Error while reading subrecord DEST of ACTI!\n";
+             return false;
+           }
+           hasDEST = true;
+           break;
+      case cDSTD:
+           if (hasDSTD)
+           {
+             std::cout << "Error: ACTI seems to have more than one DSTD subrecord.\n";
+             return false;
+           }
+           //DSTD's length
+           in_File.read((char*) &subLength, 2);
+           bytesRead += 2;
+           if (subLength!=20)
+           {
+             std::cout <<"Error: sub record DSTD of ACTI has invalid length ("<<subLength
+                       <<" bytes). Should be 20 bytes.\n";
+             return false;
+           }
+           //read DSTD
+           in_File.read((char*) unknownDSTD, 20);
+           bytesRead += 20;
+           if (!in_File.good())
+           {
+             std::cout << "Error while reading subrecord DSTD of ACTI!\n";
+             return false;
+           }
+           hasDSTD = true;
+           break;
+      case cDMDL:
+           if (!destroyedModelPath.empty())
+           {
+             std::cout << "Error: ACTI seems to have more than one DMDL subrecord.\n";
+             return false;
+           }
+           //DMDL's length
+           in_File.read((char*) &subLength, 2);
+           bytesRead += 2;
+           if (subLength>511)
+           {
+             std::cout <<"Error: sub record DMDL of ACTI is longer than 511 characters!\n";
+             return false;
+           }
+           //read dest. model path
+           memset(buffer, 0, 512);
+           in_File.read(buffer, subLength);
+           bytesRead += subLength;
+           if (!in_File.good())
+           {
+             std::cout << "Error while reading subrecord DMDL of ACTI!\n";
+             return false;
+           }
+           destroyedModelPath = std::string(buffer);
+           break;
+      case cDMDT:
+           if (unknownDMDT.isPresent())
+           {
+             std::cout << "Error: ACTI seems to have more than one DMDT subrecord.\n";
+             return false;
+           }
+           if (!unknownDMDT.loadFromStream(in_File, cDMDT, false))
+           {
+             std::cout << "Error while reading subrecord DMDT of ACTI!\n";
+             return false;
+           }
+           bytesRead = bytesRead + 2 + unknownDMDT.getSize();
+           break;
+      case cDMDS:
+           if (unknownDMDS.isPresent())
+           {
+             std::cout << "Error: ACTI seems to have more than one DMDS subrecord.\n";
+             return false;
+           }
+           if (!unknownDMDS.loadFromStream(in_File, cDMDS, false))
+           {
+             std::cout << "Error while reading subrecord DMDS of ACTI!\n";
+             return false;
+           }
+           bytesRead = bytesRead + 2 + unknownDMDS.getSize();
+           break;
+      case cDSTF:
+           if (unknownDSTF.isPresent())
+           {
+             std::cout << "Error: ACTI seems to have more than one DSTF subrecord.\n";
+             return false;
+           }
+           if (!unknownDSTF.loadFromStream(in_File, cDSTF, false))
+           {
+             std::cout << "Error while reading subrecord DSTF of ACTI!\n";
+             return false;
+           }
+           bytesRead = bytesRead + 2 + unknownDSTF.getSize();
+           break;
+      case cKSIZ:
+           if (!keywordArray.empty())
+           {
+             std::cout << "Error: ACTI seems to have more than one KSIZ subrecord.\n";
+             return false;
+           }
+           in_File.seekg(-4, std::ios_base::cur);
+           //read KSIZ
+           if (!loadUint32SubRecordFromStream(in_File, cKSIZ, keywordSize)) return false;
+           bytesRead += 6;
+
+           //read KWDA
+           in_File.read((char*) &subRecName, 4);
+           bytesRead += 4;
+           //KWDA's length
+           in_File.read((char*) &subLength, 2);
+           bytesRead += 2;
+           if (subLength!=4*keywordSize)
+           {
+             std::cout <<"Error: sub record KWDA of ACTI has invalid length ("
+                       <<subLength<<" bytes). Should be "<<4*keywordSize<<" bytes!\n";
+             return false;
+           }
+           //read keywords
+           for (i=0; i<keywordSize; ++i)
+           {
+             in_File.read((char*) &temp, 4);
+             bytesRead += 4;
+             if (!in_File.good())
+             {
+               std::cout << "Error while reading subrecord KWDA of ACTI!\n";
+               return false;
+             }
+             keywordArray.push_back(temp);
+           }//for
            break;
       case cPNAM:
            if (hasReadPNAM)
@@ -371,6 +700,30 @@ bool ActivatorRecord::loadFromStream(std::ifstream& in_File)
            if (!loadUint32SubRecordFromStream(in_File, cPNAM, unknownPNAM)) return false;
            bytesRead += 6;
            hasReadPNAM = true;
+           break;
+      case cVNAM:
+           if (hasVNAM)
+           {
+             std::cout << "Error: ACTI seems to have more than one VNAM subrecord.\n";
+             return false;
+           }
+           in_File.seekg(-4, std::ios_base::cur);
+           //read VNAM
+           if (!loadUint32SubRecordFromStream(in_File, cVNAM, unknownVNAM)) return false;
+           bytesRead += 6;
+           hasVNAM = true;
+           break;
+      case cWNAM:
+           if (hasWNAM)
+           {
+             std::cout << "Error: ACTI seems to have more than one WNAM subrecord.\n";
+             return false;
+           }
+           in_File.seekg(-4, std::ios_base::cur);
+           //read WNAM
+           if (!loadUint32SubRecordFromStream(in_File, cWNAM, unknownWNAM)) return false;
+           bytesRead += 6;
+           hasWNAM = true;
            break;
       case cRNAM:
            if (hasRNAM)

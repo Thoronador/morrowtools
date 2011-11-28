@@ -260,12 +260,22 @@ Records and their sub-records:
           filter of some sort
       NEXT (always zero bytes?)
           unknown/no data
+      
+        INDX (4 bytes)
+            quest stage index
+        QSDT (1 byte)
+            set to 1, if it finished the quest
+        CNAM (4 bytes)
+            string ID of entry name?
+      
+      
+      
       ANAM (4 bytes)
           unknown
       CTDA (32 bytes, optional, can occur multiple times)
           unknown
       ... and much more
-      
+
 
   WOOP: word of power
       EDID (string, NUL-terminated)

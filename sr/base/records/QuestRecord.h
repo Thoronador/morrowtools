@@ -58,11 +58,26 @@ struct QuestRecord: public BasicRecord
     /* returns the record's type, usually its header */
     virtual int32_t getRecordType() const;
 
+    /* type for holding quest stages / indices*/
+    struct IndexEntry
+    {
+      uint32_t index; //stage index
+      bool isFinisher; //true, if entry finishes the quest
+      uint32_t CNAM; //CNAM - string ID of journal text?
+
+      /* constructor */
+      IndexEntry();
+
+      /* equality operator */
+      bool operator==(const IndexEntry& other) const;
+    };//struct
+
     std::string editorID;
     BinarySubRecord unknownVMAD;
     uint32_t unknownFULL;
     uint8_t unknownDNAM[12];
     std::string filter;
+    std::vector<IndexEntry> indices;
 };//struct
 
 } //namespace

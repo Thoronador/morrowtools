@@ -27,6 +27,22 @@
 namespace SRTP
 {
 
+/* functions of index entry structure */
+
+QuestRecord::IndexEntry::IndexEntry()
+{
+  index = 0;
+  isFinisher = false;
+  CNAM = 0;
+}
+
+bool QuestRecord::IndexEntry::operator==(const QuestRecord::IndexEntry& other) const
+{
+  return ((index==other.index) and (isFinisher==other.isFinisher) and (CNAM==other.CNAM));
+}
+
+/* quest record's functions */
+
 QuestRecord::QuestRecord()
 {
   editorID = "";
@@ -34,6 +50,7 @@ QuestRecord::QuestRecord()
   unknownFULL = 0;
   memset(unknownDNAM, 0, 12);
   filter = "";
+  indices.clear();
 }
 
 QuestRecord::~QuestRecord()
@@ -45,7 +62,8 @@ bool QuestRecord::equals(const QuestRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
     and (unknownVMAD==other.unknownVMAD) and (unknownFULL==other.unknownFULL)
-    and (unknownDNAM==other.unknownDNAM) and (filter==other.filter));
+    and (unknownDNAM==other.unknownDNAM) and (filter==other.filter)
+    and (indices==other.indices));
 }
 
 bool QuestRecord::saveToStream(std::ofstream& output) const
@@ -122,7 +140,7 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
-  int32_t subRecName;
+  int32_t subRecName, lastReadRec;
   uint16_t subLength;
   subRecName = subLength = 0;
   uint32_t bytesRead;
@@ -161,6 +179,9 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
   bool hasReadDNAM = false;
   memset(unknownDNAM, 0, 12);
   filter.clear();
+  indices.clear();
+  IndexEntry i_entry;
+  lastReadRec = cEDID;
   while (bytesRead<readSize)
   {
     //read next subrecord
@@ -180,6 +201,7 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            bytesRead = bytesRead +2 +unknownVMAD.getSize();
+           lastReadRec = cVMAD;
            break;
       case cFULL:
            if (hasReadFULL)
@@ -192,6 +214,7 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
            if (!loadUint32SubRecordFromStream(in_File, cFULL, unknownFULL)) return false;
            bytesRead += 6;
            hasReadFULL = true;
+           lastReadRec = cFULL;
            break;
       case cDNAM:
            if (hasReadDNAM)
@@ -217,6 +240,7 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            hasReadDNAM = true;
+           lastReadRec = cDNAM;
            break;
       case cFLTR:
            if (!filter.empty())
@@ -242,6 +266,113 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            filter = std::string(buffer);
+           lastReadRec = cFLTR;
+           break;
+      case cNEXT:
+           //NEXT's length
+           in_File.read((char*) &subLength, 2);
+           bytesRead += 2;
+           if (subLength!=0)
+           {
+             std::cout <<"Error: sub record NEXT of QUST has invalid length ("<<subLength
+                       <<" bytes). Should be zero bytes.\n";
+             return false;
+           }
+           lastReadRec = cNEXT;
+           break;
+      case cINDX:
+           if ((lastReadRec==cINDX) or (lastReadRec==cQSDT))
+           {
+             /* Last entry seems to have a index only, or index and finishing
+                 bit only, so push it!*/
+             indices.push_back(i_entry);
+           }
+           else if ((lastReadRec!=cCNAM) and (lastReadRec!=cNEXT))
+           {
+             std::cout << "Error in subrecord sequence of QUST! INDX should "
+                       << "follow after INDX or CNAM, but previous record was \""
+                       << IntTo4Char(lastReadRec) <<"\".\n";
+             return false;
+           }
+           //INDX's length
+           in_File.read((char*) &subLength, 2);
+           bytesRead += 2;
+           if (subLength!=4)
+           {
+             std::cout <<"Error: sub record INDX of QUST has invalid length ("<<subLength
+                       <<" bytes). Should be four bytes.\n";
+             return false;
+           }
+           //read index
+           in_File.read((char*) &(i_entry.index), 4);
+           bytesRead += 4;
+           if (!in_File.good())
+           {
+             std::cout << "Error while reading subrecord INDX of QUST!\n";
+             return false;
+           }
+           //preset for other fields of index entry
+           i_entry.isFinisher = false;
+           i_entry.CNAM = 0;
+           lastReadRec = cINDX;
+           break;
+      case cQSDT:
+           if (lastReadRec!=cINDX)
+           {
+             std::cout << "Error in subrecord sequence of QUST! QSDT should "
+                       << "follow after INDX, but previous record was \""
+                       << IntTo4Char(lastReadRec) <<"\".\n";
+             return false;
+           }
+           //QSDT's length
+           in_File.read((char*) &subLength, 2);
+           bytesRead += 2;
+           if (subLength!=1)
+           {
+             std::cout <<"Error: sub record QSDT of QUST has invalid length ("<<subLength
+                       <<" bytes). Should be one byte.\n";
+             return false;
+           }
+           //read QSDT
+           memset(buffer, 0, 1);
+           in_File.read(buffer, 1);
+           bytesRead += 1;
+           if (!in_File.good())
+           {
+             std::cout << "Error while reading subrecord QSDT of QUST!\n";
+             return false;
+           }
+           i_entry.isFinisher = (buffer[0]!=0);
+           lastReadRec = cQSDT;
+           break;
+      case cCNAM:
+           if (lastReadRec!=cQSDT)
+           {
+             std::cout << "Error in subrecord sequence of QUST! CNAM should "
+                       << "follow after QSDT, but previous record was \""
+                       << IntTo4Char(lastReadRec) <<"\".\n";
+             return false;
+           }
+           //CNAM's length
+           in_File.read((char*) &subLength, 2);
+           bytesRead += 2;
+           if (subLength!=4)
+           {
+             std::cout <<"Error: sub record CNAM of QUST has invalid length ("<<subLength
+                       <<" bytes). Should be four bytes.\n";
+             return false;
+           }
+           //read CNAM
+           in_File.read((char*) &(i_entry.CNAM), 4);
+           bytesRead += 4;
+           if (!in_File.good())
+           {
+             std::cout << "Error while reading subrecord CNAM of QUST!\n";
+             return false;
+           }
+           //we have all three fields, push entry!
+           indices.push_back(i_entry);
+           lastReadRec = cCNAM;
            break;
       default:
           /* To implement the rest now would be A LOT of work, so I'll do this

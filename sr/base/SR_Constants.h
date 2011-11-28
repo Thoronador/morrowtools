@@ -63,6 +63,7 @@ const int32_t cGRUP = 0x50555247; //"GRUP" = 47 52 55 50
 const int32_t cHEDR = 0x52444548; //"HEDR" = 48 45 44 52
 const int32_t cICON = 0x4E4F4349; //"ICON" = 49 43 4F 4E
 const int32_t cINAM = 0x4D414E49; //"INAM" = 49 4E 41 4D
+const int32_t cINDX = 0x58444E49; //"INDX" = 49 4E 44 58
 const int32_t cINTV = 0x56544E49; //"INTV" = 49 4E 54 56
 const int32_t cKNAM = 0x4D414E4B; //"KNAM" = 4B 4E 41 4D
 const int32_t cKSIZ = 0x5A49534B; //"KSIZ" = 4B 53 49 5A
@@ -75,8 +76,10 @@ const int32_t cMODT = 0x54444F4D; //"MODT" = 4D 4F 44 54
 const int32_t cNAM1 = 0x314D414E; //"NAM1" = 4E 41 4D 31
 const int32_t cNAM8 = 0x384D414E; //"NAM9" = 4E 41 4D 38
 const int32_t cNAM9 = 0x394D414E; //"NAM9" = 4E 41 4D 39
+const int32_t cNEXT = 0x5458454E; //"NEXT" = 4E 45 58 54
 const int32_t cOBND = 0x444E424F; //"OBND" = 4F 42 4E 44
 const int32_t cPNAM = 0x4D414E50; //"PNAM" = 50 4E 41 4D
+const int32_t cQSDT = 0x54445351; //"QSDT" = 51 53 44 54
 const int32_t cQUST = 0x54535551; //"QUST" = 51 55 53 54
 const int32_t cRNAM = 0x4D414E52; //"RNAM" = 52 4E 41 4D
 const int32_t cSDSC = 0x43534453; //"SDSC" = 53 44 53 43

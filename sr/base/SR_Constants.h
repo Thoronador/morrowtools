@@ -53,6 +53,7 @@ const int32_t cEDID = 0x44494445; //"EDID" = 45 44 49 44
 const int32_t cEITM = 0x4D544945; //"EITM" = 45 49 54 4D
 const int32_t cETYP = 0x50595445; //"ETYP" = 45 54 59 50
 const int32_t cEYES = 0x53455945; //"EYES" = 45 59 45 53
+const int32_t cFLTR = 0x52544C46; //"FLTR" = 46 4C 54 52
 const int32_t cFLTV = 0x56544C46; //"FLTV" = 46 4C 54 56
 const int32_t cFNAM = 0x4D414E46; //"FNAM" = 46 4E 41 4D
 const int32_t cFULL = 0x4C4C5546; //"FULL" = 46 55 4C 4C
@@ -76,6 +77,7 @@ const int32_t cNAM8 = 0x384D414E; //"NAM9" = 4E 41 4D 38
 const int32_t cNAM9 = 0x394D414E; //"NAM9" = 4E 41 4D 39
 const int32_t cOBND = 0x444E424F; //"OBND" = 4F 42 4E 44
 const int32_t cPNAM = 0x4D414E50; //"PNAM" = 50 4E 41 4D
+const int32_t cQUST = 0x54535551; //"QUST" = 51 55 53 54
 const int32_t cRNAM = 0x4D414E52; //"RNAM" = 52 4E 41 4D
 const int32_t cSDSC = 0x43534453; //"SDSC" = 53 44 53 43
 const int32_t cSNDD = 0x44444E53; //"SNDD" = 53 4E 44 44

@@ -87,7 +87,7 @@ bool ActivatorRecord::equals(const ActivatorRecord& other) const
 
 bool ActivatorRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cCOBJ, 4);
+  output.write((char*) &cACTI, 4);
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of strin +1 byte for NUL-termination */

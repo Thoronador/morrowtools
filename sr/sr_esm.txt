@@ -245,6 +245,28 @@ Records and their sub-records:
           unknown
 
 
+  QUST: quest
+      EDID (string, NUL-terminated)
+          editorID
+      VMAD (?? bytes, optional)
+          unknown data
+      FULL (4 bytes)
+          unknown
+      DNAM (12 bytes)
+          unknown
+      ENAM (4 bytes, optional)
+          unknown
+      FLTR (string, NUL-terminated, optional)
+          filter of some sort
+      NEXT (always zero bytes?)
+          unknown/no data
+      ANAM (4 bytes)
+          unknown
+      CTDA (32 bytes, optional, can occur multiple times)
+          unknown
+      ... and much more
+      
+
   WOOP: word of power
       EDID (string, NUL-terminated)
           editorID

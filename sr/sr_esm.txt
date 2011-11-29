@@ -260,16 +260,16 @@ Records and their sub-records:
           filter of some sort
       NEXT (always zero bytes?)
           unknown/no data
-      
+
         INDX (4 bytes)
             quest stage index
         QSDT (1 byte)
             set to 1, if it finished the quest
         CNAM (4 bytes)
             string ID of entry name?
-      
-      
-      
+
+
+
       ANAM (4 bytes)
           unknown
       CTDA (32 bytes, optional, can occur multiple times)
@@ -277,12 +277,25 @@ Records and their sub-records:
       ... and much more
 
 
-  WOOP: word of power
+  WOOP: Word of Power
       EDID (string, NUL-terminated)
           editorID
       FULL (4 bytes) optional
           unknown data
       TNAM (4 bytes)
+          unknown data
+
+
+  SHOU: Dragon Shout
+      EDID (string, NUL-terminated)
+          editorID
+      FULL (4 bytes) optional
+          string ID of shout's full name
+      MDOB (4 bytes) optional
+          unknown data
+      DESC (4 bytes)
+          string ID of shout's description
+      SNAM (12 bytes, occurs three times)
           unknown data
 
 

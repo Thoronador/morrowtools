@@ -62,7 +62,7 @@ struct MiscObjectRecord: public BasicRecord
     BinarySubRecord unknownVMAD;
     uint8_t unknownOBND[12];
     bool hasFULL;
-    uint32_t unknownFULL;
+    uint32_t fullNameStringID;
     std::string modelPath;
     BinarySubRecord unknownMODT;
     BinarySubRecord unknownMODS;
@@ -73,8 +73,9 @@ struct MiscObjectRecord: public BasicRecord
     uint32_t unknownYNAM;
     bool hasZNAM;
     uint32_t unknownZNAM;
-    uint32_t unknownDATA_int;
-    float unknownDATA_float;
+    //DATA subrecord
+    uint32_t value;
+    float weight;
 }; //struct
 
 } //namespace

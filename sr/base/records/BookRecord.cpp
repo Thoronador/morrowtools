@@ -35,7 +35,7 @@ BookRecord::BookRecord()
   unknownFULL = 0;
   modelPath = "";
   unknownMODT.setPresence(true);
-  unknownDESC = 0;
+  textStringID = 0;
   hasYNAM = false;
   unknownYNAM = 0;
   keywordSize = 0;
@@ -58,11 +58,11 @@ bool BookRecord::equals(const BookRecord& other) const
     and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
     and (hasFULL==other.hasFULL) and ((unknownFULL==other.unknownFULL) or (!hasFULL))
     and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
-    and (unknownDESC==other.unknownDESC) and (unknownCNAM==other.unknownCNAM)
+    and (textStringID==other.textStringID) and (unknownCNAM==other.unknownCNAM)
     and (hasYNAM==other.hasYNAM) and ((unknownYNAM==other.unknownYNAM) or (!hasYNAM))
     and (keywordSize==other.keywordSize) and (keywordArray==other.keywordArray)
     and (memcmp(unknownDATA, other.unknownDATA, 16)==0)
-    and (hasINAM==other.hasINAM) and ((unknownINAM==unknownINAM) or (!hasINAM)));
+    and (hasINAM==other.hasINAM) and ((unknownINAM==other.unknownINAM) or (!hasINAM)));
 }
 
 bool BookRecord::saveToStream(std::ofstream& output) const
@@ -260,7 +260,7 @@ bool BookRecord::loadFromStream(std::ifstream& in_File)
   {
     if (!unknownVMAD.loadFromStream(in_File, cVMAD, false))
     {
-      std::cout << "Error while reading subrecord VMAD if BOOK!\n";
+      std::cout << "Error while reading subrecord VMAD of BOOK!\n";
       return false;
     }
     bytesRead = bytesRead +2+unknownVMAD.getSize();
@@ -360,7 +360,7 @@ bool BookRecord::loadFromStream(std::ifstream& in_File)
            bytesRead += (4+2+unknownMODT.getSize());
 
            //read DESC
-           if (!loadUint32SubRecordFromStream(in_File, cDESC, unknownDESC)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cDESC, textStringID)) return false;
            bytesRead += 10;
            hasReadMODL = true;
            break;

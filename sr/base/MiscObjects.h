@@ -22,6 +22,7 @@
 #define SR_MISCOBJECTS_H
 
 #include "records/MiscObjectRecord.h"
+#include "MapBasedRecordManager.h"
 
 namespace SRTP
 {

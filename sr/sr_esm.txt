@@ -125,7 +125,7 @@ Records and their sub-records:
       OBND (12 bytes)
           unknown data
       FULL (4 bytes) optional
-          unknown, formID?
+          string ID of object's full name
       MODL (string, NUL-terminated)
           model path
       MODT (size varies)
@@ -143,7 +143,8 @@ Records and their sub-records:
       ZNAM (4 bytes) optional
           unknown, formID(?)
       DATA (8 bytes)
-          unknown data, but looks like an uint32_t and a float, in that order
+          uint32_t    value of object
+          float       weight of object
 
 
   TXST: texture set
@@ -185,7 +186,7 @@ Records and their sub-records:
       MODT (size varies)
           unknown data
       DESC (4 bytes)
-          unknown
+          string ID of the book's text
       YNAM (4 bytes, optional)
           unknown
       KSIZ (4 bytes, optional)

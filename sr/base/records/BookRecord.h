@@ -66,7 +66,7 @@ struct BookRecord: public BasicRecord
     uint32_t unknownFULL;
     std::string modelPath;
     BinarySubRecord unknownMODT;
-    uint32_t unknownDESC;
+    uint32_t textStringID; //DESC
     bool hasYNAM;
     uint32_t unknownYNAM;
     uint32_t keywordSize;

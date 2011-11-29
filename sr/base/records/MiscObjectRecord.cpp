@@ -33,7 +33,7 @@ MiscObjectRecord::MiscObjectRecord()
   unknownVMAD.setPresence(false);
   memset(unknownOBND, 0, 12);
   hasFULL = false;
-  unknownFULL = 0;
+  fullNameStringID = 0;
   modelPath = "";
   unknownMODT.setPresence(true);
   unknownMODS.setPresence(false);
@@ -44,8 +44,8 @@ MiscObjectRecord::MiscObjectRecord()
   unknownYNAM = 0;
   hasZNAM = false;
   unknownZNAM = 0;
-  unknownDATA_int = 0;
-  unknownDATA_float = 0.0f;
+  value = 0;
+  weight = 0.0f;
 }
 
 MiscObjectRecord::~MiscObjectRecord()
@@ -60,12 +60,12 @@ bool MiscObjectRecord::equals(const MiscObjectRecord& other) const
     and (hasFULL==other.hasFULL) and (modelPath==other.modelPath)
     and (unknownMODT==other.unknownMODT) and (unknownMODS==other.unknownMODS)
     and (iconPath==other.iconPath) and (keywordSize==other.keywordSize)
-    and (keywordArray==other.keywordArray) and (unknownDATA_int==other.unknownDATA_int)
-    and (unknownDATA_float==other.unknownDATA_float) and (hasYNAM==other.hasYNAM)
+    and (keywordArray==other.keywordArray) and (value==other.value)
+    and (weight==other.weight) and (hasYNAM==other.hasYNAM)
     and (hasZNAM==other.hasZNAM))
   {
     if (hasFULL)
-      if (unknownFULL!=other.unknownFULL) return false;
+      if (fullNameStringID!=other.fullNameStringID) return false;
     if (hasYNAM)
       if (unknownYNAM!=other.unknownYNAM) return false;
     if (hasZNAM)
@@ -150,7 +150,7 @@ bool MiscObjectRecord::saveToStream(std::ofstream& output) const
     subLength = 4; /* fixed length */
     output.write((char*) &subLength, 2);
     //write FULL's data
-    output.write((const char*) &unknownFULL, 4);
+    output.write((const char*) &fullNameStringID, 4);
   }//if hasFULL
 
   //write MODL
@@ -232,8 +232,8 @@ bool MiscObjectRecord::saveToStream(std::ofstream& output) const
   subLength = 8; /* fixed length */
   output.write((char*) &subLength, 2);
   //write DATA's data
-  output.write((const char*) &unknownDATA_int, 4);
-  output.write((const char*) &unknownDATA_float, 4);
+  output.write((const char*) &value, 4);
+  output.write((const char*) &weight, 4);
 
   return output.good();
 }
@@ -281,7 +281,7 @@ bool MiscObjectRecord::loadFromStream(std::ifstream& in_File)
   modelPath.clear();
   iconPath.clear();
   hasFULL = false;
-  unknownFULL = 0;
+  fullNameStringID = 0;
   hasYNAM = false;
   unknownYNAM = 0;
   hasZNAM = false;
@@ -290,7 +290,6 @@ bool MiscObjectRecord::loadFromStream(std::ifstream& in_File)
   keywordArray.clear();
   uint32_t i;
   bool hasReadOBND = false;
-  bool hasReadFULL = false;
   bool hasReadDATA = false;
   bool hasReadKSIZ = false;
   while (bytesRead<readSize)
@@ -310,7 +309,7 @@ bool MiscObjectRecord::loadFromStream(std::ifstream& in_File)
            bytesRead = bytesRead + 2 +unknownVMAD.getSize();
            break;
       case cFULL:
-           if (hasReadFULL)
+           if (hasFULL)
            {
              std::cout << "Error: record MISC seems to have more than one FULL subrecord.\n";
              return false;
@@ -325,14 +324,13 @@ bool MiscObjectRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read FULL's stuff
-           in_File.read((char*) &unknownFULL, 4);
+           in_File.read((char*) &fullNameStringID, 4);
            bytesRead += 4;
            if (!in_File.good())
            {
              std::cout << "Error while reading subrecord FULL of MISC!\n";
              return false;
            }
-           hasReadFULL = true;
            hasFULL = true;
            break;
       case cOBND:
@@ -479,6 +477,11 @@ bool MiscObjectRecord::loadFromStream(std::ifstream& in_File)
            hasZNAM = true;
            break;
       case cDATA:
+           if (hasReadDATA)
+           {
+             std::cout << "Error: record MISC seems to have more than one DATA subrecord.\n";
+             return false;
+           }
            //DATA's length
            in_File.read((char*) &subLength, 2);
            bytesRead += 2;
@@ -489,8 +492,8 @@ bool MiscObjectRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read DATA's stuff
-           in_File.read((char*) &unknownDATA_int, 4);
-           in_File.read((char*) &unknownDATA_float, 4);
+           in_File.read((char*) &value, 4);
+           in_File.read((char*) &weight, 4);
            bytesRead += 8;
            if (!in_File.good())
            {

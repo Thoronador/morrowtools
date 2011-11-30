@@ -30,9 +30,9 @@ WordOfPowerRecord::WordOfPowerRecord()
 : BasicRecord()
 {
   editorID = "";
-  unknownFULL = 0;
   hasFULL = false;
-  unknownTNAM = 0;
+  nameStringID = 0;
+  translatedStringID = 0;
 }
 
 WordOfPowerRecord::~WordOfPowerRecord()
@@ -48,9 +48,9 @@ int32_t WordOfPowerRecord::getRecordType() const
 bool WordOfPowerRecord::equals(const WordOfPowerRecord& other) const
 {
   if ((editorID==other.editorID) and (hasFULL==other.hasFULL)
-    and (unknownTNAM==other.unknownTNAM) and (equalsBasic(other)))
+    and (translatedStringID==other.translatedStringID) and (equalsBasic(other)))
   {
-    if (hasFULL) return (unknownFULL==other.unknownFULL);
+    if (hasFULL) return (nameStringID==other.nameStringID);
     return true;
   }
   return false;
@@ -85,7 +85,7 @@ bool WordOfPowerRecord::saveToStream(std::ofstream& output) const
     subLength = 4;
     output.write((char*) &subLength, 2);
     //write FULL's data
-    output.write((char*) &unknownFULL, 4);
+    output.write((char*) &nameStringID, 4);
   }
 
   //write TNAM
@@ -94,7 +94,7 @@ bool WordOfPowerRecord::saveToStream(std::ofstream& output) const
   subLength = 4; /* fixed size */
   output.write((char*) &subLength, 2);
   //write TNAM's data
-  output.write((char*) &unknownTNAM, 4);
+  output.write((char*) &translatedStringID, 4);
 
   return output.good();
 }
@@ -153,7 +153,7 @@ bool WordOfPowerRecord::loadFromStream(std::ifstream& in_File)
       return false;
     }
     //read FULL
-    in_File.read((char*) &unknownFULL, 4);
+    in_File.read((char*) &nameStringID, 4);
     bytesRead += 4;
     if (!in_File.good())
     {
@@ -189,7 +189,7 @@ bool WordOfPowerRecord::loadFromStream(std::ifstream& in_File)
     return false;
   }
   //read TNAM
-  in_File.read((char*) &unknownTNAM, 4);
+  in_File.read((char*) &translatedStringID, 4);
   bytesRead += 4;
   if (!in_File.good())
   {

@@ -60,7 +60,8 @@ struct ShoutRecord: public BasicRecord
     /* wrapper type for SNAM entries */
     struct SNAMentry
     {
-      uint8_t data[12];
+      uint32_t wordFormID; //form ID of one word for that shout
+      uint8_t  dataEightBytes[8];
 
       /* equality operator */
       bool operator==(const SNAMentry& other) const;

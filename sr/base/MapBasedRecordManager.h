@@ -22,6 +22,8 @@
 #define SR_MAPBASEDRECORDMANAGER_H
 
 #include <map>
+#include <iostream>
+#include <fstream>
 
 namespace SRTP
 {

@@ -283,9 +283,9 @@ Records and their sub-records:
       EDID (string, NUL-terminated)
           editorID
       FULL (4 bytes) optional
-          unknown data
+          string ID of the word's name (in dragon language)
       TNAM (4 bytes)
-          unknown data
+          string ID of the translated meaning
 
 
   SHOU: Dragon Shout
@@ -297,8 +297,9 @@ Records and their sub-records:
           unknown data
       DESC (4 bytes)
           string ID of shout's description
-      SNAM (12 bytes, occurs three times)
-          unknown data
+      SNAM (12 bytes, occurs three times, once for every word of power)
+          uint32_t    formID of a word of power for that shout
+          uint8_t[8]  unknown data
 
 
   MGEF: magic effect
@@ -322,7 +323,7 @@ Records and their sub-records:
           string ID of effect's description
       CTDA (32 bytes, optional, can occur multiple times)
           unknown data
-      
+
 
   WEAP: Weapon record
       EDID: editor ID (string, NUL-terminated)

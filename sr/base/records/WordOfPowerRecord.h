@@ -58,9 +58,9 @@ struct WordOfPowerRecord: public BasicRecord
     virtual int32_t getRecordType() const;
 
     std::string editorID;
-    uint32_t unknownFULL;
     bool hasFULL;
-    uint32_t unknownTNAM;
+    uint32_t nameStringID; //FULL
+    uint32_t translatedStringID; //TNAM
 }; //struct
 
 } //namespace

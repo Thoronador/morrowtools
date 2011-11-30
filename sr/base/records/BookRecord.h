@@ -63,7 +63,7 @@ struct BookRecord: public BasicRecord
     BinarySubRecord unknownVMAD;
     uint8_t unknownOBND[12];
     bool hasFULL;
-    uint32_t unknownFULL;
+    uint32_t titleStringID; //subrecord FULL
     std::string modelPath;
     BinarySubRecord unknownMODT;
     uint32_t textStringID; //DESC

@@ -42,9 +42,10 @@ Records and their sub-records:
         4 bytes - float, version number
         4 bytes - unknown
         4 bytes - unknown
-      CNAM - null-terminated string
+      CNAM (string, NUL-terminated)
+        author name
       INTV (4 bytes)
-        4 bytes - integer value
+        unknown integer value
 
 
   GMST: Game Settings
@@ -180,7 +181,7 @@ Records and their sub-records:
       OBND (12 bytes)
           unknown
       FULL (4 bytes, optional)
-          unknown
+          string ID of book's title
       MODL (string, NUL-terminated)
           model path
       MODT (size varies)
@@ -299,6 +300,29 @@ Records and their sub-records:
       SNAM (12 bytes, occurs three times)
           unknown data
 
+
+  MGEF: magic effect
+      EDID (string, NUL-terminated)
+          editorID
+      VMAD (?? bytes, optional)
+          unknown data
+      FULL (4 bytes, optional)
+          string ID of effect's full name
+      MDOB (4 bytes, optional)
+          unknown
+      KSIZ (4 bytes, optional)
+          number of form IDs in following KWDA
+      KWDA (n * 4 bytes, optional)
+          array of form IDs, number given by KSIZ field
+      DATA (152 bytes)
+          unknown data
+      SNDD (size varies, optional)
+          unknown data
+      DNAM (4 bytes)
+          string ID of effect's description
+      CTDA (32 bytes, optional, can occur multiple times)
+          unknown data
+      
 
   WEAP: Weapon record
       EDID: editor ID (string, NUL-terminated)

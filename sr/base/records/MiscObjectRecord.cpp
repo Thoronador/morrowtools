@@ -77,7 +77,7 @@ bool MiscObjectRecord::equals(const MiscObjectRecord& other) const
 
 bool MiscObjectRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cAACT, 4);
+  output.write((char*) &cMISC, 4);
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */

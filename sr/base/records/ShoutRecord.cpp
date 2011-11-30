@@ -33,6 +33,7 @@ bool ShoutRecord::SNAMentry::operator==(const ShoutRecord::SNAMentry& other) con
 }
 
 ShoutRecord::ShoutRecord()
+: BasicRecord()
 {
   editorID = "";
   hasFULL = false;

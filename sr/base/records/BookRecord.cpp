@@ -32,7 +32,7 @@ BookRecord::BookRecord()
   unknownVMAD.setPresence(false);
   memset(unknownOBND, 0, 12);
   hasFULL = false;
-  unknownFULL = 0;
+  titleStringID = 0;
   modelPath = "";
   unknownMODT.setPresence(true);
   textStringID = 0;
@@ -56,7 +56,7 @@ bool BookRecord::equals(const BookRecord& other) const
   return ((equalsBasic(other)) and (editorID==other.editorID)
     and (unknownVMAD==other.unknownVMAD)
     and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
-    and (hasFULL==other.hasFULL) and ((unknownFULL==other.unknownFULL) or (!hasFULL))
+    and (hasFULL==other.hasFULL) and ((titleStringID==other.titleStringID) or (!hasFULL))
     and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
     and (textStringID==other.textStringID) and (unknownCNAM==other.unknownCNAM)
     and (hasYNAM==other.hasYNAM) and ((unknownYNAM==other.unknownYNAM) or (!hasYNAM))
@@ -135,7 +135,7 @@ bool BookRecord::saveToStream(std::ofstream& output) const
     subLength = 4; //fixed size
     output.write((char*) &subLength, 2);
     //write FULL
-    output.write((const char*) &unknownFULL, 4);
+    output.write((const char*) &titleStringID, 4);
   }//if has FULL subrecord
 
   //write MODL
@@ -325,7 +325,7 @@ bool BookRecord::loadFromStream(std::ifstream& in_File)
            }
            in_File.seekg(-4, std::ios_base::cur);
            //read FULL
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, unknownFULL)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cFULL, titleStringID)) return false;
            bytesRead += 6;
            hasFULL = true;
            break;

@@ -121,4 +121,9 @@ bool BasicRecord::loadUint32SubRecordFromStream(std::ifstream& in_File, const in
   return true;
 }
 
+bool BasicRecord::isCompressed() const
+{
+  return ((headerFlags & cCompressionFlag)!=0);
+}
+
 } //namespace

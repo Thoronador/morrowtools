@@ -26,6 +26,15 @@
 namespace SRTP
 {
 
+/* ComponentData's functions */
+
+bool ComponentData::operator==(const ComponentData& other) const
+{
+  return ((formID==other.formID) and (count==other.count));
+}
+
+/* CraftableObjectRecord's functions */
+
 CraftableObjectRecord::CraftableObjectRecord()
 : BasicRecord()
 {
@@ -50,27 +59,11 @@ int32_t CraftableObjectRecord::getRecordType() const
 
 bool CraftableObjectRecord::equals(const CraftableObjectRecord& other) const
 {
-  if ((equalsBasic(other)) and (editorID==other.editorID)
+  return ((equalsBasic(other)) and (editorID==other.editorID)
     and (componentCount==other.componentCount) and (components.size()==other.components.size())
     and (unknownCTDAs.size()==other.unknownCTDAs.size()) and (unknownBNAM==other.unknownBNAM)
-    and (unknownCNAM==other.unknownCNAM) and (resultCount==other.resultCount))
-  {
-    unsigned int i;
-    for (i=0; i<components.size(); ++i)
-    {
-      if ((components[i].formID!=other.components[i].formID)
-        or (components[i].count!=other.components[i].count))
-      {
-        return false;
-      }
-    }//for
-    for (i=0; i<unknownCTDAs.size(); ++i)
-    {
-      if (memcmp(unknownCTDAs[i].content, other.unknownCTDAs[i].content, 32)!=0) return false;
-    }
-    return true;
-  }
-  return false;
+    and (unknownCNAM==other.unknownCNAM) and (resultCount==other.resultCount)
+    and (unknownCTDAs==other.unknownCTDAs) and (components==other.components));
 }
 
 bool CraftableObjectRecord::saveToStream(std::ofstream& output) const

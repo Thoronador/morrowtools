@@ -8,6 +8,11 @@
 namespace SRTP
 {
 
+bool Tes4HeaderRecord::MasterFile::operator==(const Tes4HeaderRecord::MasterFile& other) const
+{
+  return ((data==other.data) and (fileName==other.fileName));
+}
+
 Tes4HeaderRecord::Tes4HeaderRecord()
 : BasicRecord()
 {
@@ -17,6 +22,15 @@ Tes4HeaderRecord::Tes4HeaderRecord()
 Tes4HeaderRecord::~Tes4HeaderRecord()
 {
   //empty
+}
+
+bool Tes4HeaderRecord::equals(const Tes4HeaderRecord& other) const
+{
+  return ((equalsBasic(other)) and (version==other.version)
+    and (HeaderUnknownTwo[0]==other.HeaderUnknownTwo[0])
+    and (HeaderUnknownTwo[1]==other.HeaderUnknownTwo[1])
+    and (authorName==other.authorName) and (dependencies==other.dependencies)
+    and (unknownIntValue==other.unknownIntValue));
 }
 
 int32_t Tes4HeaderRecord::getRecordType() const
@@ -30,8 +44,15 @@ bool Tes4HeaderRecord::saveToStream(std::ofstream& output) const
   uint32_t writeSize;
   writeSize = 4 /* HEDR */ +2 /* 2 bytes for length */ +12 /* fixed length of 12 bytes */
         +4 /* CNAM */ +2 /* 2 bytes for length */
-        +m_Name.length()+1 /* length of name +1 byte for NUL termination */
-        +4 /* FNAM */ +2 /* 2 bytes for length */ +4 /* fixed length of 4 bytes */;
+        +authorName.length()+1 /* length of name +1 byte for NUL termination */
+        +4 /* INTV */ +2 /* 2 bytes for length */ +4 /* fixed length of 4 bytes */;
+  unsigned int i;
+  for (i=0; i<dependencies.size(); ++i)
+  {
+    writeSize =  writeSize +4 /* MAST */ +2 /* 2 bytes for length */
+        +dependencies[i].fileName.length()+1 /* length of name +1 byte for NUL termination */
+        +4 /* DATA */ +2 /* 2 bytes for length */ +8 /* fixed length of 8 bytes */;
+  }//for
   if (!saveSizeAndUnknownValues(output, writeSize)) return false;
   //write HEDR
   output.write((char*) &cHEDR, 4);
@@ -53,10 +74,37 @@ bool Tes4HeaderRecord::saveToStream(std::ofstream& output) const
   //write CNAM
   output.write((char*) &cCNAM, 4);
   //CNAM's length
-  SubLength = m_Name.length()+1;
+  SubLength = authorName.length()+1;
   output.write((char*) &SubLength, 2);
-  //write name
-  output.write(m_Name.c_str(), SubLength);
+  //write author's name
+  output.write(authorName.c_str(), SubLength);
+
+  for (i=0; i<dependencies.size(); ++i)
+  {
+    //write MAST
+    output.write((char*) &cMAST, 4);
+    //MAST's length
+    SubLength = dependencies[i].fileName.length()+1;
+    output.write((char*) &SubLength, 2);
+    //write file name
+    output.write(dependencies[i].fileName.c_str(), SubLength);
+
+    //write DATA
+    output.write((char*) &cDATA, 4);
+    //DATA's length
+    SubLength = 8; //fixed length
+    output.write((char*) &SubLength, 2);
+    //write data value
+    output.write((const char*) &(dependencies[i].data), 8);
+  }//for
+
+  //write INTV
+  output.write((char*) &cINTV, 4);
+  //INTV's length
+  SubLength = 4; //fixed size
+  output.write((char*) &SubLength, 2);
+  //write integer valie
+  output.write((const char*) &unknownIntValue, 4);
 
   return output.good();
 }
@@ -116,7 +164,7 @@ bool Tes4HeaderRecord::loadFromStream(std::ifstream& in_File)
     std::cout << "Error: subrecord CNAM of TES4 is longer than 511 characters.\n";
     return false;
   }
-  //read armour ID
+  //read author's name
   char Buffer[512];
   memset(Buffer, '\0', 512);
   in_File.read(Buffer, SubLength);
@@ -126,39 +174,108 @@ bool Tes4HeaderRecord::loadFromStream(std::ifstream& in_File)
     std::cout << "Error while reading subrecord CNAM of TES4!\n";
     return false;
   }
-  m_Name = std::string(Buffer);
+  authorName = std::string(Buffer);
 
-  //read INTV
-  in_File.read((char*) &SubRecName, 4);
-  BytesRead += 4;
-  if (SubRecName!=cINTV)
+  dependencies.clear();
+  MasterFile depEntry;
+  bool hasDoneINTV = false;
+  while (BytesRead<readSize)
   {
-    UnexpectedRecord(cINTV, SubRecName);
+    //read next subrecord
+    in_File.read((char*) &SubRecName, 4);
+    BytesRead += 4;
+    switch (SubRecName)
+    {
+      case cMAST:
+           //master file coming
+           //MAST's length
+           in_File.read((char*) &SubLength, 2);
+           BytesRead += 2;
+           if (SubLength>511)
+           {
+             std::cout << "Error: subrecord MAST of TES4 is longer than 511 characters.\n";
+             return false;
+           }
+           //read master file name
+           memset(Buffer, '\0', 512);
+           in_File.read(Buffer, SubLength);
+           BytesRead += SubLength;
+           if (!in_File.good())
+           {
+             std::cout << "Error while reading subrecord MAST of TES4!\n";
+             return false;
+           }
+           depEntry.fileName = std::string(Buffer);
+
+           //data coming next...
+           //read DATA
+           in_File.read((char*) &SubRecName, 4);
+           BytesRead += 4;
+           if (SubRecName!=cDATA)
+           {
+             UnexpectedRecord(cDATA, SubRecName);
+             return false;
+           }
+           //DATA's length
+           in_File.read((char*) &SubLength, 2);
+           BytesRead += 2;
+           if (SubLength!=8)
+           {
+             std::cout <<"Error: sub record DATA of TES4 has invalid length ("
+                       <<SubLength <<" bytes). Should be 8 bytes.\n";
+             return false;
+           }
+           //read DATA's stuff
+           in_File.read((char*) &(depEntry.data), 8);
+           BytesRead += 8;
+           if (!in_File.good())
+           {
+             std::cout << "Error while reading subrecord DATA of TES4!\n";
+             return false;
+           }
+           dependencies.push_back(depEntry);
+           break;
+      case cINTV:
+           if (hasDoneINTV)
+           {
+             std::cout << "Error: Record TES4 seems to have more than one INTV subrecord!\n";
+             return false;
+           }
+           //INTV's length
+           in_File.read((char*) &SubLength, 2);
+           BytesRead += 2;
+           if (SubLength!=4)
+           {
+             std::cout <<"Error: sub record INTV of TES4 has invalid length ("
+                       <<SubLength<<" bytes). Should be 4 bytes.\n";
+             return false;
+           }
+           //read value
+           in_File.read((char*) &unknownIntValue, 4);
+           BytesRead += 4;
+           hasDoneINTV = true;
+           break;
+    }//swi
+  }//while
+
+  //check for required field
+  if (!hasDoneINTV)
+  {
+    std::cout << "Error: Record TES4 does not have a INTV field!\n";
     return false;
   }
-  //INTV's length
-  in_File.read((char*) &SubLength, 2);
-  BytesRead += 2;
-  if (SubLength!=4)
-  {
-    std::cout <<"Error: sub record INTV of TES4 has invalid length ("<<SubLength
-              <<" bytes). Should be 4 bytes.\n";
-    return false;
-  }
-  //read value
-  in_File.read((char*) &m_IntValue, 4);
 
   return in_File.good();
 }
 
-const std::string& Tes4HeaderRecord::getName() const
+bool Tes4HeaderRecord::isMasterFile() const
 {
-  return m_Name;
+  return ((headerFlags & cMasterFlag) != 0);
 }
 
-uint32_t Tes4HeaderRecord::getIntValue() const
+bool Tes4HeaderRecord::isLocalized() const
 {
-  return m_IntValue;
+  return ((headerFlags & cLocalizedFlag) != 0);
 }
 
 } //namespace

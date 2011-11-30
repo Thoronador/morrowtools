@@ -56,6 +56,14 @@ struct BasicRecord
     /* returns the record's type, usually its header */
     virtual int32_t getRecordType() const = 0;
 
+    /* returns true, if the record's data is compressed, accodring to the set
+       flags
+    */
+    bool isCompressed() const;
+
+    //flag constants
+    static const uint32_t cCompressionFlag = 0x00040000;
+
     //partially unknown values - 16 bytes, i.e. 4 x uint32_t
     uint32_t headerFlags;
     uint32_t headerFormID;

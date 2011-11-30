@@ -24,6 +24,7 @@
 #include <string>
 #include <vector>
 #include "BasicRecord.h"
+#include "CTDAData.h"
 
 namespace SRTP
 {
@@ -32,11 +33,9 @@ struct ComponentData
 {
   uint32_t formID;
   uint32_t count;
-}; //struct
 
-struct CTDAData
-{
-  uint8_t content[32];
+  /* equality operator */
+  bool operator==(const ComponentData& other) const;
 }; //struct
 
 struct CraftableObjectRecord: public BasicRecord

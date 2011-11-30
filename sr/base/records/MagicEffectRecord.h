@@ -18,26 +18,29 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SR_TES4HEADERRECORD_H
-#define SR_TES4HEADERRECORD_H
+#ifndef SR_MAGICEFFECTRECORD_H
+#define SR_MAGICEFFECTRECORD_H
 
 #include "BasicRecord.h"
+#include <string>
 #include <vector>
+#include "BinarySubRecord.h"
+#include "CTDAData.h"
 
 namespace SRTP
 {
 
-struct Tes4HeaderRecord: public BasicRecord
+struct MagicEffectRecord: public BasicRecord
 {
   public:
     /* constructor */
-    Tes4HeaderRecord();
+    MagicEffectRecord();
 
     /* destructor */
-    virtual ~Tes4HeaderRecord();
+    virtual ~MagicEffectRecord();
 
     /* returns true, if the other record contains the same data */
-    bool equals(const Tes4HeaderRecord& other) const;
+    bool equals(const MagicEffectRecord& other) const;
 
     /* writes the record to the given output stream and returns true on success
 
@@ -56,33 +59,20 @@ struct Tes4HeaderRecord: public BasicRecord
     /* returns the record's type, usually its header */
     virtual int32_t getRecordType() const;
 
-    /* returns true, if the file is an ESM file, accodring to the set flags */
-    bool isMasterFile() const;
-
-    /* returns true, if the file is localized, accodring to the set flags */
-    bool isLocalized() const;
-
-    //flag constants
-    static const uint32_t cMasterFlag    = 0x00000001;
-    static const uint32_t cLocalizedFlag = 0x00000080;
-
-    //structure for file dependencies
-    struct MasterFile
-    {
-      std::string fileName;
-      int64_t data;
-
-      /* equality operator */
-      bool operator==(const MasterFile& other) const;
-    };//struct
-
-    float version;
-    uint32_t HeaderUnknownTwo[2];
-    std::string authorName;
-    std::vector<MasterFile> dependencies;
-    uint32_t unknownIntValue;
+    std::string editorID;
+    BinarySubRecord unknownVMAD;
+    bool hasFULL;
+    uint32_t fullNameStringID;
+    bool hasMDOB;
+    uint32_t unknownMDOB;
+    uint32_t keywordSize;
+    std::vector<uint32_t> keywordArray;
+    BinarySubRecord unknownDATA;
+    BinarySubRecord unknownSNDD;
+    uint32_t descriptionStringID; //DNAM
+    std::vector<CTDAData> unknownCTDAs;
 }; //struct
 
 } //namespace
 
-#endif // SR_TES4HEADERRECORD_H
+#endif // SR_MAGICEFFECTRECORD_H

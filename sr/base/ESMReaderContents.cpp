@@ -30,8 +30,10 @@
 #include "records/KeywordRecord.h"
 #include "records/MagicEffectRecord.h"
 #include "records/MiscObjectRecord.h"
+#include "records/OutfitRecord.h"
 #include "records/ShoutRecord.h"
 #include "records/SoundRecord.h"
+#include "records/StaticRecord.h"
 #include "records/TextureSetRecord.h"
 #include "records/WordOfPowerRecord.h"
 #include "records/GenericRecord.h"
@@ -96,11 +98,17 @@ int ESMReaderContents::readGroup(std::ifstream& in_File, const GroupData& g_data
       case cMISC:
            recPtr = new MiscObjectRecord;
            break;
+      case cOTFT:
+           recPtr = new OutfitRecord;
+           break;
       case cSHOU:
            recPtr = new ShoutRecord;
            break;
       case cSOUN:
            recPtr = new SoundRecord;
+           break;
+      case cSTAT:
+           recPtr = new StaticRecord;
            break;
       case cTXST:
            recPtr = new TextureSetRecord;

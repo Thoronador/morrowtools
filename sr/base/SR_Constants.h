@@ -82,6 +82,7 @@ const int32_t cNAM8 = 0x384D414E; //"NAM9" = 4E 41 4D 38
 const int32_t cNAM9 = 0x394D414E; //"NAM9" = 4E 41 4D 39
 const int32_t cNEXT = 0x5458454E; //"NEXT" = 4E 45 58 54
 const int32_t cOBND = 0x444E424F; //"OBND" = 4F 42 4E 44
+const int32_t cOTFT = 0x5446544F; //"OTFT" = 4F 54 46 54
 const int32_t cPNAM = 0x4D414E50; //"PNAM" = 50 4E 41 4D
 const int32_t cQSDT = 0x54445351; //"QSDT" = 51 53 44 54
 const int32_t cQUST = 0x54535551; //"QUST" = 51 55 53 54

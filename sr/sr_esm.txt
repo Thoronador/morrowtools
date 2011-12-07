@@ -343,6 +343,13 @@ Records and their sub-records:
           unknown data
 
 
+  OTFT: outfit record
+      EDID (string, NUL-terminated)
+          editor ID
+      INAM (integral multiple of 4 bytes)
+          array of formIDs that points to the items (clothing, armor) of that outfit
+
+
   WEAP: Weapon record
       EDID: editor ID (string, NUL-terminated)
       OBND (12 bytes)

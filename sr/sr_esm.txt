@@ -325,6 +325,24 @@ Records and their sub-records:
           unknown data
 
 
+  STAT: static record
+      EDID (string, NUL-terminated)
+          editor ID
+      OBND (12 bytes)
+          unknown data
+      MODL (string, NUL-terminated)
+           (optional - believe it or not, there's at least one STAT in Skyrim.esm without MODL)
+          model path
+      MODT (?? bytes, size varies, optional)
+          unknown data
+      MODS (size varies, optional)
+          unknown data
+      DNAM (8 bytes)
+          unknown data
+      MNAM (size varies, optional)
+          unknown data
+
+
   WEAP: Weapon record
       EDID: editor ID (string, NUL-terminated)
       OBND (12 bytes)

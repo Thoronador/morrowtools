@@ -34,6 +34,7 @@
 #include "MiscObjects.h"
 #include "Shouts.h"
 #include "Sounds.h"
+#include "Statics.h"
 #include "TextureSets.h"
 #include "Weapons.h"
 #include "WordsOfPower.h"
@@ -100,6 +101,9 @@ int ESMReaderAll::readGroup(std::ifstream& in_File, const GroupData& g_data)
            break;
       case cSOUN:
            lastResult = Sounds::getSingleton().readNextRecord(in_File);
+           break;
+      case cSTAT:
+           lastResult = Statics::getSingleton().readNextRecord(in_File);
            break;
       case cTXST:
            lastResult = TextureSets::getSingleton().readNextRecord(in_File);

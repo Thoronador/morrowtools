@@ -26,6 +26,7 @@
 #include "records/BookRecord.h"
 #include "records/CraftableObjectRecord.h"
 #include "records/EyeRecord.h"
+#include "records/FormListRecord.h"
 #include "records/GMSTRecord.h"
 #include "records/GlobalRecord.h"
 #include "records/KeywordRecord.h"
@@ -87,6 +88,9 @@ int ESMReaderContents::readGroup(std::ifstream& in_File, const GroupData& g_data
            break;
       case cEYES:
            recPtr = new EyeRecord;
+           break;
+      case cFLST:
+           recPtr = new FormListRecord;
            break;
       case cGMST:
            recPtr = new GMSTRecord;

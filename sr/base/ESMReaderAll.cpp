@@ -29,6 +29,7 @@
 #include "Books.h"
 #include "CraftableObjects.h"
 #include "Eyes.h"
+#include "FormLists.h"
 #include "GameSettings.h"
 #include "Globals.h"
 #include "Keywords.h"
@@ -89,6 +90,9 @@ int ESMReaderAll::readGroup(std::ifstream& in_File, const GroupData& g_data)
            break;
       case cEYES:
            lastResult = Eyes::getSingleton().readNextRecord(in_File);
+           break;
+      case cFLST:
+           lastResult = FormLists::getSingleton().readNextRecord(in_File);
            break;
       case cGMST:
            lastResult = GameSettings::getSingleton().readNextRecord(in_File);

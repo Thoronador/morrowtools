@@ -55,6 +55,7 @@ const int32_t cEITM = 0x4D544945; //"EITM" = 45 49 54 4D
 const int32_t cETYP = 0x50595445; //"ETYP" = 45 54 59 50
 const int32_t cEYES = 0x53455945; //"EYES" = 45 59 45 53
 const int32_t cFCHT = 0x54484346; //"FCHT" = 46 43 48 54
+const int32_t cFLST = 0x54534C46; //"FLST" = 46 4C 53 54
 const int32_t cFLTR = 0x52544C46; //"FLTR" = 46 4C 54 52
 const int32_t cFLTV = 0x56544C46; //"FLTV" = 46 4C 54 56
 const int32_t cFNAM = 0x4D414E46; //"FNAM" = 46 4E 41 4D
@@ -72,6 +73,7 @@ const int32_t cKNAM = 0x4D414E4B; //"KNAM" = 4B 4E 41 4D
 const int32_t cKSIZ = 0x5A49534B; //"KSIZ" = 4B 53 49 5A
 const int32_t cKYWD = 0x4457594B; //"KYWD" = 4B 59 57 44
 const int32_t cKWDA = 0x4144574B; //"KWDA" = 4B 57 44 41
+const int32_t cLNAM = 0x4D414E4C; //"LNAM" = 4C 4E 41 4D
 const int32_t cMAST = 0x5453414D; //"MAST" = 4D 41 53 54
 const int32_t cMCHT = 0x5448434D; //"MCHT" = 4D 43 48 54
 const int32_t cMDOB = 0x424F444D; //"MDOB" = 4D 44 4F 42

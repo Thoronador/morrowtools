@@ -24,6 +24,16 @@
 #include <unistd.h>
 #include <cmath>
 #include "UtilityFunctions.h"
+#include <iostream>
+#if defined(_WIN32)
+  //Windows includes go here
+  #include <io.h>
+#elif defined(__linux__) || defined(linux)
+  //Linux directory entries
+  #include <dirent.h>
+#else
+  #error "Unknown operating system!"
+#endif
 
 int64_t getFileSize64(const std::string& fileName)
 {
@@ -121,4 +131,96 @@ bool FileExists(const std::string& FileName)
 bool deleteFile(const std::string& fileName)
 {
   return (remove(fileName.c_str())==0);
+}
+
+std::vector<FileEntry> getDirectoryFileList(const std::string& Directory)
+{
+  std::vector<FileEntry> result;
+  FileEntry one;
+  #if defined(_WIN32)
+  //Windows part
+  intptr_t handle;
+  struct _finddata_t sr;
+  sr.attrib = _A_NORMAL | _A_RDONLY | _A_HIDDEN | _A_SYSTEM | _A_VOLID |
+              _A_SUBDIR | _A_ARCH;
+  handle = _findfirst(std::string(Directory+"*").c_str(),&sr);
+  if (handle == -1)
+  {
+    std::cout << "getDirectoryFileList: ERROR: unable to open directory "
+              <<"\""<<Directory<<"\". Returning empty list.\n";
+    return result;
+  }
+  //search it
+  while( _findnext(handle, &sr)==0)
+  {
+    one.fileName = std::string(sr.name);
+    one.isDirectory = ((sr.attrib & _A_SUBDIR)==_A_SUBDIR);
+    result.push_back(one);
+  }//while
+  _findclose(handle);
+  #elif defined(__linux__) || defined(linux)
+  //Linux part
+  DIR * direc = opendir(Directory.c_str());
+  if (direc == NULL)
+  {
+    std::cout << "Dusk::getDirectoryFileList: ERROR: unable to open directory "
+              <<"\""<<Directory<<"\". Returning empty list.\n";
+    return result;
+  }//if
+
+  struct dirent* entry = readdir(direc);
+  while (entry != NULL)
+  {
+    one.fileName = std::string(entry->d_name);
+    one.isDirectory = entry->d_type==DT_DIR;
+    //check for socket, pipes, block device and char device, which we don't want
+    if (entry->d_type != DT_SOCK && entry->d_type != DT_FIFO && entry->d_type != DT_BLK
+        && entry->d_type != DT_CHR)
+    {
+      result.push_back(one);
+    }
+    entry = readdir(direc);
+  }//while
+  closedir(direc);
+  #else
+    #error "Unknown operating system!"
+  #endif
+  return result;
+}//function
+
+void splitPathFileExtension(const std::string fileName, const char pathSeperator, std::string& path, std::string& name, std::string& extension)
+{
+  const std::string::size_type len = fileName.length();
+  if (len==0)
+  {
+    path = "";
+    name = "";
+    extension = "";
+    return;
+  }
+
+  //split path from file and ext.
+  const std::string::size_type sepPos = fileName.rfind(pathSeperator);
+  if (sepPos==std::string::npos)
+  {
+    path = "";
+    name = fileName;
+  }
+  else
+  {
+    path = fileName.substr(0, sepPos+1);
+    name = fileName.substr(sepPos+1);
+  }
+  // => now path has the path (including seperator), and name has the file including extension
+
+  //split extension from name
+  const std::string::size_type dotPos = fileName.rfind('.');
+  if (dotPos==std::string::npos)
+  {
+    extension = "";
+    return;
+  }
+  extension = name.substr(dotPos+1);
+  name = name.substr(0, dotPos);
+  return;
 }

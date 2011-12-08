@@ -1,0 +1,30 @@
+(This is just a note/ to do list.)
+
+
+Record types the application should be able to search:
+------------------------------------------------------
+
+[*] ALCH - alchemy stuff(?)
+[*] AMMO - ammunition
+[*] APPA - apparatus
+[*] ARMO - armour
+BOOK - book
+[*] INGR - ingredient
+[*] KEYM - key
+MISC - mic. object
+[*] PERK - perk
+[*] SCRL - scroll
+SHOU - shout
+[*] SPEL - spell
+[i] WEAP - weapon
+WOOP - word of power
+
+
+Bonus record types:
+-------------------
+
+[i] QUST - quests
+
+
+Records marked with [*] are not implemented yet.
+Records marked with [i] are implemented, but incomplete.

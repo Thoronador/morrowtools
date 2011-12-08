@@ -125,8 +125,6 @@ bool StringTable::readTable(const std::string& FileName, DataType stringType)
   }
 
   //read directory entries
-  std::cout << "Info: Expecting "<<count<<" entries in file.\n";
-
   std::vector<DirectoryEntry> theDirectory;
   DirectoryEntry temp;
   uint32_t i;

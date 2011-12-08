@@ -137,7 +137,7 @@ int ESMReader::processGroup(std::ifstream& in_File)
   in_File.read((char*) &recordHeader, 4);
   if (!in_File.good())
   {
-    std::cout << "ESMReader::readNextGroup: Error: could not read group header!\n";
+    std::cout << "ESMReader::processGroup: Error: could not read group header!\n";
     return -1;
   }
   if (recordHeader!=cGRUP)
@@ -149,14 +149,14 @@ int ESMReader::processGroup(std::ifstream& in_File)
   GroupData gd;
   if (!gd.loadFromStream(in_File))
   {
-    std::cout << "ESMReader::readNextGroup: Error: could not read group data!\n";
+    std::cout << "ESMReader::processGroup: Error: could not read group data!\n";
     return -1;
   }
   if (needGroup(gd))
   {
     return readGroup(in_File, gd);
   }
-  //gruop not needed, skip it
+  //group not needed, skip it
   return skipGroup(in_File, gd);
 }
 
@@ -174,8 +174,8 @@ int ESMReader::readGroup(std::ifstream& in_File, const GroupData& g_data)
 
 int ESMReader::readNextRecord(std::ifstream& in_File)
 {
-  #warning Not implemented yet!
-  return -1;
+  //just skip it here
+  return skipRecord(in_File);
 }
 
 } //namespace

@@ -23,6 +23,7 @@
 
 #include <string>
 #include <stdint.h>
+#include <vector>
 
 /* returns the file size of file fileName. If the file does not exist or if an
    error occured, -1 will be returned.
@@ -73,5 +74,32 @@ bool FileExists(const std::string& FileName);
       fileName - the file that shall be deleted
 */
 bool deleteFile(const std::string& fileName);
+
+/* structure for file list entries */
+struct FileEntry {
+         std::string fileName;
+         bool isDirectory;
+};//struct
+
+/* returns a list of all files in the given directory as a vector */
+std::vector<FileEntry> getDirectoryFileList(const std::string& Directory);
+
+/* splits the file name in fileName into path, file and extension
+
+   parameters:
+       fileName      - the full file name
+       pathSeperator - the path seperator, i.e. '/' or '\\'
+       path          - string that will be used to store the path component
+       name          - string that will be used to store the name component
+       extension     - string that will be used to store the extension
+
+   remarks:
+       Calling the function like splitPathFileExtension("/home/user/path/readme.txt", '/', ...)
+       will give the following results:
+           path: "/home/user/path/" (i.e. includes path seperator at the end)
+           name: "readme"
+           ext.: "txt" (i.e. without dot)
+*/
+void splitPathFileExtension(const std::string fileName, const char pathSeperator, std::string& path, std::string& name, std::string& extension);
 
 #endif // FILEFUNCTIONS_H

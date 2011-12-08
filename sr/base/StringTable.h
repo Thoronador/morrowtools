@@ -88,7 +88,7 @@ class StringTable
     {
       uint32_t stringID;
       uint32_t offset;
-    };
+    }; //struct
 
     //internal list to hold the strings
     std::map<uint32_t, std::string> m_Strings;

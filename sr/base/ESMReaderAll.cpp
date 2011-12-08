@@ -34,6 +34,7 @@
 #include "Keywords.h"
 #include "MiscObjects.h"
 #include "Outfits.h"
+#include "Relationships.h"
 #include "Shouts.h"
 #include "Sounds.h"
 #include "Statics.h"
@@ -103,6 +104,9 @@ int ESMReaderAll::readGroup(std::ifstream& in_File, const GroupData& g_data)
            break;
       case cOTFT:
            lastResult = Outfits::getSingleton().readNextRecord(in_File);
+           break;
+      case cRELA:
+           lastResult = Relationships::getSingleton().readNextRecord(in_File);
            break;
       case cSHOU:
            lastResult = Shouts::getSingleton().readNextRecord(in_File);

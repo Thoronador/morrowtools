@@ -32,6 +32,7 @@
 #include "records/MagicEffectRecord.h"
 #include "records/MiscObjectRecord.h"
 #include "records/OutfitRecord.h"
+#include "records/RelationshipRecord.h"
 #include "records/ShoutRecord.h"
 #include "records/SoundRecord.h"
 #include "records/StaticRecord.h"
@@ -104,6 +105,9 @@ int ESMReaderContents::readGroup(std::ifstream& in_File, const GroupData& g_data
            break;
       case cOTFT:
            recPtr = new OutfitRecord;
+           break;
+      case cRELA:
+           recPtr = new RelationshipRecord;
            break;
       case cSHOU:
            recPtr = new ShoutRecord;

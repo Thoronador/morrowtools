@@ -91,6 +91,7 @@ const int32_t cOTFT = 0x5446544F; //"OTFT" = 4F 54 46 54
 const int32_t cPNAM = 0x4D414E50; //"PNAM" = 50 4E 41 4D
 const int32_t cQSDT = 0x54445351; //"QSDT" = 51 53 44 54
 const int32_t cQUST = 0x54535551; //"QUST" = 51 55 53 54
+const int32_t cRELA = 0x414C4552; //"RELA" = 52 45 4C 41
 const int32_t cRNAM = 0x4D414E52; //"RNAM" = 52 4E 41 4D
 const int32_t cSDSC = 0x43534453; //"SDSC" = 53 44 53 43
 const int32_t cSHOU = 0x554F4853; //"SHOU" = 53 48 4F 55

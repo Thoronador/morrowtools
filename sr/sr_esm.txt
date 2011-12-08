@@ -365,6 +365,16 @@ Records and their sub-records:
           unknown data, looks like some kind of flag
 
 
+  RELA: relationship
+      EDID (string, NUL-terminated)
+          editor ID
+      DATA (16 bytes)
+          unknown data - however, it looks like four uint32_t.
+                 The first one seems to be a form ID, the second one seems to
+                 be a form ID on some occasions, the other ones seem to be some
+                 flags or counters.
+
+
   WEAP: Weapon record
       EDID: editor ID (string, NUL-terminated)
       OBND (12 bytes)

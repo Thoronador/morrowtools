@@ -18,26 +18,28 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SR_RELATIONSHIPRECORD_H
-#define SR_RELATIONSHIPRECORD_H
+#ifndef SR_AMMUNITIONRECORD_H
+#define SR_AMMUNITIONRECORD_H
 
 #include <string>
+#include <vector>
 #include "BasicRecord.h"
+#include "BinarySubRecord.h"
 
 namespace SRTP
 {
 
-struct RelationshipRecord: public BasicRecord
+struct AmmunitionRecord: public BasicRecord
 {
   public:
     /* constructor */
-    RelationshipRecord();
+    AmmunitionRecord();
 
     /* destructor */
-    virtual ~RelationshipRecord();
+    virtual ~AmmunitionRecord();
 
     /* returns true, if the other record contains the same data */
-    bool equals(const RelationshipRecord& other) const;
+    bool equals(const AmmunitionRecord& other) const;
 
     /* writes the record to the given output stream and returns true on success
 
@@ -57,9 +59,19 @@ struct RelationshipRecord: public BasicRecord
     virtual int32_t getRecordType() const;
 
     std::string editorID;
+    uint8_t unknownOBND[12];
+    bool hasFULL;
+    uint32_t unknownFULL;
+    std::string modelPath;
+    BinarySubRecord unknownMODT;
+    uint32_t unknownYNAM;
+    uint32_t unknownZNAM;
+    uint32_t unknownDESC;
+    uint32_t keywordSize;
+    std::vector<uint32_t> keywordArray;
     uint32_t unknownDATA[4];//subrecord DATA
 }; //struct
 
 } //namespace
 
-#endif // SR_RELATIONSHIPRECORD_H
+#endif // SR_AMMUNITIONRECORD_H

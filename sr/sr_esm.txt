@@ -87,6 +87,31 @@ Records and their sub-records:
           editorID
 
 
+  AMMO: ammunition
+      EDID (string, NUL-terminated)
+          editorID
+      OBND (12 bytes)
+          unknown
+      FULL (4 bytes, optional)
+          string ID of object's full name
+      MODL (string, NUL-terminated, optional)
+          model path
+      MODT (?? bytes, optional)
+          unknown data
+      YNAM (4 bytes)
+          unknown, possibly form ID
+      ZNAM (4 bytes)
+          unknown, possibly form ID
+      DESC (4 bytes)
+          possibly string index
+      KSIZ (4 bytes, optional)
+          number of keywords in following KWDA
+      KWDA (n * 4 bytes, optional)
+          array of form IDs of keywords
+      DATA (16 bytes)
+          unknown data
+
+
   SOUN: sound
       EDID (string, NUL-terminated)
           editorID

@@ -22,6 +22,7 @@
 #include <iostream>
 #include "SR_Constants.h"
 //#include "records/ActivatorRecord.h"
+#include "records/AssociationTypeRecord.h"
 #include "records/BookRecord.h"
 #include "records/CraftableObjectRecord.h"
 #include "records/EyeRecord.h"
@@ -74,6 +75,9 @@ int ESMReaderContents::readGroup(std::ifstream& in_File, const GroupData& g_data
       /*case cACTI:
            recPtr = new ActivatorRecord;
            break;*/
+      case cASTP:
+           recPtr = new AssociationTypeRecord;
+           break;
       case cBOOK:
            recPtr = new BookRecord;
            break;

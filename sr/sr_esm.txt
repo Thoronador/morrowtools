@@ -350,6 +350,21 @@ Records and their sub-records:
           array of formIDs that points to the items (clothing, armor) of that outfit
 
 
+  ASTP: association type
+      EDID (string, NUL-terminated)
+          editor ID
+      MPRT (string, NUL-terminated)
+          male parent
+      FPRT (string, NUL-terminated)
+          female parent
+      MCHT (string, NUL-terminated, optional)
+          male child
+      FCHT (string, NUL-terminated, optional)
+          female child
+      DATA (4 bytes)
+          unknown data, looks like some kind of flag
+
+
   WEAP: Weapon record
       EDID: editor ID (string, NUL-terminated)
       OBND (12 bytes)

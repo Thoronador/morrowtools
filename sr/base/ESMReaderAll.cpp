@@ -25,6 +25,7 @@
 #include "SR_Constants.h"
 #include "Actions.h"
 #include "Activators.h"
+#include "AssociationTypes.h"
 #include "Books.h"
 #include "CraftableObjects.h"
 #include "Eyes.h"
@@ -75,6 +76,9 @@ int ESMReaderAll::readGroup(std::ifstream& in_File, const GroupData& g_data)
            break;
       case cACTI:
            lastResult = Activators::getSingleton().readNextRecord(in_File);
+           break;
+      case cASTP:
+           lastResult = AssociationTypes::getSingleton().readNextRecord(in_File);
            break;
       case cBOOK:
            lastResult = Books::getSingleton().readNextRecord(in_File);

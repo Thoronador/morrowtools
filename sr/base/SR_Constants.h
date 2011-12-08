@@ -28,6 +28,7 @@ namespace SRTP
 
 const int32_t cAACT = 0x54434141; //"AACT" = 41 41 43 54
 const int32_t cACTI = 0x49544341; //"ACTI" = 41 43 54 49
+const int32_t cASTP = 0x50545341; //"ASTP" = 41 53 54 50
 const int32_t cBAMT = 0x544D4142; //"BAMT" = 42 41 4D 54
 const int32_t cBIDS = 0x53444942; //"BIDS" = 42 49 44 53
 const int32_t cBNAM = 0x4D414E42; //"BNAM" = 42 4E 41 4D
@@ -53,9 +54,11 @@ const int32_t cEDID = 0x44494445; //"EDID" = 45 44 49 44
 const int32_t cEITM = 0x4D544945; //"EITM" = 45 49 54 4D
 const int32_t cETYP = 0x50595445; //"ETYP" = 45 54 59 50
 const int32_t cEYES = 0x53455945; //"EYES" = 45 59 45 53
+const int32_t cFCHT = 0x54484346; //"FCHT" = 46 43 48 54
 const int32_t cFLTR = 0x52544C46; //"FLTR" = 46 4C 54 52
 const int32_t cFLTV = 0x56544C46; //"FLTV" = 46 4C 54 56
 const int32_t cFNAM = 0x4D414E46; //"FNAM" = 46 4E 41 4D
+const int32_t cFPRT = 0x54525046; //"FPRT" = 46 50 52 54
 const int32_t cFULL = 0x4C4C5546; //"FULL" = 46 55 4C 4C
 const int32_t cGLOB = 0x424F4C47; //"GLOB" = 47 4C 4F 42
 const int32_t cGMST = 0x54534D47; //"GMST" = 47 4D 53 54
@@ -70,6 +73,7 @@ const int32_t cKSIZ = 0x5A49534B; //"KSIZ" = 4B 53 49 5A
 const int32_t cKYWD = 0x4457594B; //"KYWD" = 4B 59 57 44
 const int32_t cKWDA = 0x4144574B; //"KWDA" = 4B 57 44 41
 const int32_t cMAST = 0x5453414D; //"MAST" = 4D 41 53 54
+const int32_t cMCHT = 0x5448434D; //"MCHT" = 4D 43 48 54
 const int32_t cMDOB = 0x424F444D; //"MDOB" = 4D 44 4F 42
 const int32_t cMGEF = 0x4645474D; //"MGEF" = 4D 47 45 46
 const int32_t cMISC = 0x4353494D; //"MISC" = 4D 49 53 43
@@ -77,6 +81,7 @@ const int32_t cMNAM = 0x4D414E4D; //"MNAM" = 4D 4E 41 4D
 const int32_t cMODL = 0x4C444F4D; //"MODL" = 4D 4F 44 4C
 const int32_t cMODS = 0x53444F4D; //"MODS" = 4D 4F 44 53
 const int32_t cMODT = 0x54444F4D; //"MODT" = 4D 4F 44 54
+const int32_t cMPRT = 0x5452504D; //"MPRT" = 4D 50 52 54
 const int32_t cNAM1 = 0x314D414E; //"NAM1" = 4E 41 4D 31
 const int32_t cNAM8 = 0x384D414E; //"NAM9" = 4E 41 4D 38
 const int32_t cNAM9 = 0x394D414E; //"NAM9" = 4E 41 4D 39

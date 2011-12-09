@@ -60,63 +60,17 @@ class ESMReaderSingleType: public ESMReader
     */
     virtual bool needGroup(const GroupData& g_data) const;
 
-    /* tries to read the next group from a file and returns the number of
-       relevant groups that were read (usually one). If an error occured,
-       -1 is returned. If the group was skipped or contained no relevant data,
-       zero is returned.
-       This function is guaranteed to be only called for needed groups (see the
-       function needGroup() for details).
-
-       parameters:
-           in_File - the input file stream used to read the group
-           g_data  - group's data header
-    */
-    virtual int readGroup(std::ifstream& in_File, const GroupData& g_data);
-
     /* tries to read the next record from a file and returns the number of
        relevant records that were read (usually one). If an error occured,
        -1 is returned. If the record was skipped or contained no relevant data,
        zero is returned.
 
        parameters:
-           in_File  - the input file stream the record shall be read from
+           in_File - the input file stream the record shall be read from
+           recName - name (header) of the next record
     */
-    virtual int readNextRecord(std::ifstream& in_File);
+    virtual int readNextRecord(std::ifstream& in_File, const int32_t recName);
 };//class
-
-template<typename recT, typename singleT, int32_t headerT>
-int ESMReaderSingleType<recT, singleT, headerT>::readGroup(std::ifstream& in_File, const GroupData& g_data)
-{
-  //actually read the group
-  const std::ifstream::pos_type endPosition = in_File.tellg()+static_cast<std::ifstream::pos_type>(g_data.getGroupSize()-24);
-  int recordsRead = 0;
-  int lastResult = 0;
-  int32_t recName;
-  while ((in_File.tellg()<endPosition) and (lastResult>=0))
-  {
-    //read next header
-    recName = 0;
-    in_File.read((char*) &recName, 4);
-    if (recName!=headerT)
-    {
-      UnexpectedRecord(headerT, recName);
-      return -1;
-    }
-    lastResult = singleT::getSingleton().readNextRecord(in_File);
-    if (lastResult>0)
-    {
-      recordsRead += lastResult;
-    }
-  }//while
-  if (lastResult>=0)
-  {
-    if (recordsRead>0) return 1;
-    return 0;
-  }
-  std::cout << "ESMReaderSingleType::readGroup: Error while reading next record!"
-            << "\nCurrent position is "<<in_File.tellg()<<" bytes.\n";
-  return -1;
-}
 
 template<typename recT, typename singleT, int32_t headerT>
 bool ESMReaderSingleType<recT, singleT, headerT>::needGroup(const GroupData& g_data) const
@@ -125,11 +79,14 @@ bool ESMReaderSingleType<recT, singleT, headerT>::needGroup(const GroupData& g_d
 }
 
 template<typename recT, typename singleT, int32_t headerT>
-int ESMReaderSingleType<recT, singleT, headerT>::readNextRecord(std::ifstream& in_File)
+int ESMReaderSingleType<recT, singleT, headerT>::readNextRecord(std::ifstream& in_File, const int32_t recName)
 {
-  #warning Not implemented yet!
-  std::cout << "Error: call to unimplemented function ESMReaderKeywords::readNextRecord!\n";
-  return -1;
+  if (recName!=headerT)
+  {
+    UnexpectedRecord(headerT, recName);
+    return -1;
+  }
+  return singleT::getSingleton().readNextRecord(in_File);
 }
 
 } //namespace

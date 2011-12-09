@@ -57,127 +57,100 @@ ESMReaderAll::~ESMReaderAll()
   //empty
 }
 
-int ESMReaderAll::readGroup(std::ifstream& in_File, const GroupData& g_data)
-{
-  //actually read the group
-  const std::ifstream::pos_type endPosition = in_File.tellg()+static_cast<std::ifstream::pos_type>(g_data.getGroupSize()-24);
-  int recordsRead = 0;
-  int lastResult = 0;
-  int32_t recName;
-  GenericRecord * genRec = NULL;
-  while ((in_File.tellg()<endPosition) and (lastResult>=0))
-  {
-    //read next header
-    recName = 0;
-    in_File.read((char*) &recName, 4);
-    //read record based on header
-    switch (recName)
-    {
-      case cAACT:
-           lastResult = Actions::getSingleton().readNextRecord(in_File);
-           break;
-      case cACTI:
-           lastResult = Activators::getSingleton().readNextRecord(in_File);
-           break;
-      case cASTP:
-           lastResult = AssociationTypes::getSingleton().readNextRecord(in_File);
-           break;
-      case cBOOK:
-           lastResult = Books::getSingleton().readNextRecord(in_File);
-           break;
-      case cCOBJ:
-           lastResult = CraftableObjects::getSingleton().readNextRecord(in_File);
-           break;
-      case cEYES:
-           lastResult = Eyes::getSingleton().readNextRecord(in_File);
-           break;
-      case cFLST:
-           lastResult = FormLists::getSingleton().readNextRecord(in_File);
-           break;
-      case cGMST:
-           lastResult = GameSettings::getSingleton().readNextRecord(in_File);
-           break;
-      case cGLOB:
-           lastResult = Globals::getSingleton().readNextRecord(in_File);
-           break;
-      case cKYWD:
-           lastResult = Keywords::getSingleton().readNextRecord(in_File);
-           break;
-      case cMISC:
-           lastResult = MiscObjects::getSingleton().readNextRecord(in_File);
-           break;
-      case cOTFT:
-           lastResult = Outfits::getSingleton().readNextRecord(in_File);
-           break;
-      case cRELA:
-           lastResult = Relationships::getSingleton().readNextRecord(in_File);
-           break;
-      case cSHOU:
-           lastResult = Shouts::getSingleton().readNextRecord(in_File);
-           break;
-      case cSOUN:
-           lastResult = Sounds::getSingleton().readNextRecord(in_File);
-           break;
-      case cSTAT:
-           lastResult = Statics::getSingleton().readNextRecord(in_File);
-           break;
-      case cTXST:
-           lastResult = TextureSets::getSingleton().readNextRecord(in_File);
-           break;
-      case cWEAP:
-           lastResult = Weapons::getSingleton().readNextRecord(in_File);
-           break;
-      case cWOOP:
-           lastResult = WordsOfPower::getSingleton().readNextRecord(in_File);
-           break;
-      default:
-           //this branch should not be neccessary once the reader class is finished
-           if (encounters.find(recName)==encounters.end())
-           {
-             std::cout << "Warning: unknown record type \""<< IntTo4Char(recName)<<"\" encountered!\n"
-                       << "    File position is "<<(unsigned int) in_File.tellg()<<".\n";
-             encounters.insert(recName);
-           }
-           genRec = new GenericRecord;
-           genRec->Header = recName;
-           if (genRec->loadFromStream(in_File))
-           {
-             lastResult = 0;
-           }
-           else
-           {
-             lastResult = -1;
-           }
-           delete genRec;
-           genRec = NULL;
-           break;
-    }//swi
-
-    if (lastResult>0)
-    {
-      recordsRead += lastResult;
-    }
-  }//while
-  if (lastResult>=0)
-  {
-    if (recordsRead>0) return 1;
-    return 0;
-  }
-  std::cout << "ESMReaderAll::readGroup: Error while reading record!"
-            << "\nCurrent position is "<<in_File.tellg()<<" bytes.\n";
-  return -1;
-}
-
 bool ESMReaderAll::needGroup(const GroupData& g_data) const
 {
   return true;
 }
 
-int ESMReaderAll::readNextRecord(std::ifstream& in_File)
+int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
 {
-  #warning Not implemented yet!
-  std::cout << "Error: call to unimplemented function ESMReaderAll::readNextRecord!\n";
-  return -1;
+  int result;
+  GenericRecord * genRec = NULL;
+  switch (recName)
+  {
+    case cAACT:
+         return Actions::getSingleton().readNextRecord(in_File);
+         break;
+    case cACTI:
+         return Activators::getSingleton().readNextRecord(in_File);
+         break;
+    case cASTP:
+         return AssociationTypes::getSingleton().readNextRecord(in_File);
+         break;
+    case cBOOK:
+         return Books::getSingleton().readNextRecord(in_File);
+         break;
+    case cCOBJ:
+         return CraftableObjects::getSingleton().readNextRecord(in_File);
+         break;
+    case cEYES:
+         return Eyes::getSingleton().readNextRecord(in_File);
+         break;
+    case cFLST:
+         return FormLists::getSingleton().readNextRecord(in_File);
+         break;
+    case cGMST:
+         return GameSettings::getSingleton().readNextRecord(in_File);
+         break;
+    case cGLOB:
+         return Globals::getSingleton().readNextRecord(in_File);
+         break;
+    case cKYWD:
+         return Keywords::getSingleton().readNextRecord(in_File);
+         break;
+    case cMISC:
+         return MiscObjects::getSingleton().readNextRecord(in_File);
+         break;
+    case cOTFT:
+         return Outfits::getSingleton().readNextRecord(in_File);
+         break;
+    case cRELA:
+         return Relationships::getSingleton().readNextRecord(in_File);
+         break;
+    case cSHOU:
+         return Shouts::getSingleton().readNextRecord(in_File);
+         break;
+    case cSOUN:
+         return Sounds::getSingleton().readNextRecord(in_File);
+         break;
+    case cSTAT:
+         return Statics::getSingleton().readNextRecord(in_File);
+         break;
+    case cTXST:
+         return TextureSets::getSingleton().readNextRecord(in_File);
+         break;
+    case cWEAP:
+         return Weapons::getSingleton().readNextRecord(in_File);
+         break;
+    case cWOOP:
+         return WordsOfPower::getSingleton().readNextRecord(in_File);
+         break;
+    default:
+         //this branch should not be neccessary once the reader class is finished
+         if (encounters.find(recName)==encounters.end())
+         {
+           std::cout << "Warning: unknown record type \""<< IntTo4Char(recName)
+                     <<"\" encountered!\n    File position is "
+                     <<(unsigned int) in_File.tellg()<<".\n";
+           encounters.insert(recName);
+         }
+         genRec = new GenericRecord;
+         genRec->Header = recName;
+         if (genRec->loadFromStream(in_File))
+         {
+           result = 0;
+         }
+         else
+         {
+           result = -1;
+         }
+         delete genRec;
+         genRec = NULL;
+         return result;
+         break;
+  }//swi
+  //we should never get to this point
+  throw 42;
 }
 
 } //namespace

@@ -167,15 +167,32 @@ bool ESMReader::needGroup(const GroupData& g_data) const
 
 int ESMReader::readGroup(std::ifstream& in_File, const GroupData& g_data)
 {
-  //we just skip stuff here instead of reading it - create a derived class with
-  //  another implementation of that function to change that
-  return skipGroup(in_File, g_data);
-}
-
-int ESMReader::readNextRecord(std::ifstream& in_File)
-{
-  //just skip it here
-  return skipRecord(in_File);
+  //actually read the group
+  const std::ifstream::pos_type endPosition = in_File.tellg()+static_cast<std::ifstream::pos_type>(g_data.getGroupSize()-24);
+  int recordsRead = 0;
+  int lastResult = 0;
+  int32_t recName;
+  while ((in_File.tellg()<endPosition) and (lastResult>=0))
+  {
+    //read next header
+    recName = 0;
+    in_File.read((char*) &recName, 4);
+    //read next record
+    lastResult = readNextRecord(in_File, recName);
+    if (lastResult>0)
+    {
+      recordsRead += lastResult;
+    }
+  }//while
+  if (lastResult>=0)
+  {
+    if (recordsRead>0) return 1;
+    return 0;
+  }
+  std::cout << "ESMReader::readGroup: Error while reading record of type "
+            <<IntTo4Char(recName)<<"!\nCurrent position is "<<in_File.tellg()
+            <<" bytes.\n";
+  return -1;
 }
 
 } //namespace

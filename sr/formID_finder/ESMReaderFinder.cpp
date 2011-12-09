@@ -20,6 +20,11 @@
 
 #include "ESMReaderFinder.h"
 #include "../base/SR_Constants.h"
+#include "../base/Ammunitions.h"
+#include "../base/Books.h"
+#include "../base/MiscObjects.h"
+#include "../base/Shouts.h"
+#include "../base/WordsOfPower.h"
 
 namespace SRTP
 {
@@ -39,7 +44,7 @@ bool ESMReaderFinder::needGroup(const GroupData& g_data) const
   switch (g_data.getGroupName())
   {
     //case cALCH:
-    //case cAMMO:
+    case cAMMO:
     //case cAPPA:
     //case cARMO:
     case cBOOK:
@@ -58,15 +63,27 @@ bool ESMReaderFinder::needGroup(const GroupData& g_data) const
   return false;
 }
 
-int ESMReaderFinder::readGroup(std::ifstream& in_File, const GroupData& g_data)
+int ESMReaderFinder::readNextRecord(std::ifstream& in_File, const int32_t recName)
 {
-  #warning Not implemented yet!
-  return -1;
-}
-
-int ESMReaderFinder::readNextRecord(std::ifstream& in_File)
-{
-  #warning Not implemented yet!
+  #warning Not completely implemented yet!
+  switch (recName)
+  {
+    case cAMMO:
+         return Ammunitions::getSingleton().readNextRecord(in_File);
+         break;
+    case cBOOK:
+         return Books::getSingleton().readNextRecord(in_File);
+         break;
+    case cMISC:
+         return MiscObjects::getSingleton().readNextRecord(in_File);
+         break;
+    case cSHOU:
+         return Shouts::getSingleton().readNextRecord(in_File);
+         break;
+    case cWOOP:
+         return WordsOfPower::getSingleton().readNextRecord(in_File);
+         break;
+  }//swi
   return -1;
 }
 

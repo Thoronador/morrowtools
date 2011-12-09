@@ -49,28 +49,16 @@ class ESMReaderWeapons: public ESMReader
     */
     virtual bool needGroup(const GroupData& g_data) const;
 
-    /* tries to read the next group from a file and returns the number of
-       relevant groups that were read (usually one). If an error occured,
-       -1 is returned. If the group was skipped or contained no relevant data,
-       zero is returned.
-       This function is guaranteed to be only called for needed groups (see the
-       function needGroup() for details).
-
-       parameters:
-           in_File - the input file stream used to read the group
-           g_data  - group's data header
-    */
-    virtual int readGroup(std::ifstream& in_File, const GroupData& g_data);
-
     /* tries to read the next record from a file and returns the number of
        relevant records that were read (usually one). If an error occured,
        -1 is returned. If the record was skipped or contained no relevant data,
        zero is returned.
 
        parameters:
-           in_File  - the input file stream the record shall be read from
+           in_File - the input file stream the record shall be read from
+           recName - name (header) of the next record
     */
-    virtual int readNextRecord(std::ifstream& in_File);
+    virtual int readNextRecord(std::ifstream& in_File, const int32_t recName);
 };//class
 
 } //namespace

@@ -101,6 +101,10 @@ class ESMReaderCount: public ESMReader
        parameters:
            in_File - the input file stream used to read the group
            g_data  - group's data header
+
+       remarks:
+           ESMReaderCount still has its own implementation of readGroup(),
+           because it's needed to count the groups.
     */
     virtual int readGroup(std::ifstream& in_File, const GroupData& g_data);
 
@@ -110,9 +114,10 @@ class ESMReaderCount: public ESMReader
        zero is returned.
 
        parameters:
-           in_File  - the input file stream the record shall be read from
+           in_File - the input file stream the record shall be read from
+           recName - name (header) of the next record
     */
-    virtual int readNextRecord(std::ifstream& in_File);
+    virtual int readNextRecord(std::ifstream& in_File, const int32_t recName);
 };//class
 
 } //namespace

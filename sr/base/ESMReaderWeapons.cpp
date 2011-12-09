@@ -37,49 +37,19 @@ ESMReaderWeapons::~ESMReaderWeapons()
   //empty
 }
 
-int ESMReaderWeapons::readGroup(std::ifstream& in_File, const GroupData& g_data)
-{
-  //actually read the group
-  const std::ifstream::pos_type endPosition = in_File.tellg()+static_cast<std::ifstream::pos_type>(g_data.getGroupSize()-24);
-  int recordsRead = 0;
-  int lastResult = 0;
-  int32_t recName;
-  while ((in_File.tellg()<endPosition) and (lastResult>=0))
-  {
-    //read next header
-    recName = 0;
-    in_File.read((char*) &recName, 4);
-    if (recName!=cWEAP)
-    {
-      UnexpectedRecord(cWEAP, recName);
-      return -1;
-    }
-    lastResult = Weapons::getSingleton().readNextRecord(in_File);
-    if (lastResult>0)
-    {
-      recordsRead += lastResult;
-    }
-  }//while
-  if (lastResult>=0)
-  {
-    if (recordsRead>0) return 1;
-    return 0;
-  }
-  std::cout << "ESMReaderWeapons::readGroup: Error while reading weapon record!"
-            << "\nCurrent position is "<<in_File.tellg()<<" bytes.\n";
-  return -1;
-}
-
 bool ESMReaderWeapons::needGroup(const GroupData& g_data) const
 {
   return (g_data.getGroupName()==cWEAP);
 }
 
-int ESMReaderWeapons::readNextRecord(std::ifstream& in_File)
+int ESMReaderWeapons::readNextRecord(std::ifstream& in_File, const int32_t recName)
 {
-  #warning Not implemented yet!
-  std::cout << "Error: call to unimplemented function ESMReaderWeapons::readNextRecord!\n";
-  return -1;
+  if (recName!=cWEAP)
+  {
+    UnexpectedRecord(cWEAP, recName);
+    return -1;
+  }
+  return Weapons::getSingleton().readNextRecord(in_File);
 }
 
 } //namespace

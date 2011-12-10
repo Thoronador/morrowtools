@@ -42,6 +42,9 @@ struct BinarySubRecord
     /* comparison operator */
     bool operator==(const BinarySubRecord& other) const;
 
+    /* comparison operator */
+    bool operator!=(const BinarySubRecord& other) const;
+
     /* destructor */
     ~BinarySubRecord();
 

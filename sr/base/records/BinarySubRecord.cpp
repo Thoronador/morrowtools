@@ -75,6 +75,11 @@ bool BinarySubRecord::operator==(const BinarySubRecord& other) const
   return (memcmp(m_Pointer, other.getPointer(), m_Size)==0);
 }
 
+bool BinarySubRecord::operator!=(const BinarySubRecord& other) const
+{
+  return (!(*this==other));
+}
+
 BinarySubRecord::~BinarySubRecord()
 {
   delete[] m_Pointer;

@@ -21,90 +21,14 @@
 #ifndef SR_EYES_H
 #define SR_EYES_H
 
-#include <map>
-#include <string>
 #include "records/EyeRecord.h"
+#include "MapBasedRecordManager.h"
 
 namespace SRTP
 {
 
-//iterator type for eye list
-typedef std::map<std::string, EyeRecord>::const_iterator EyeListIterator;
-
-class Eyes
-{
-  public:
-    /* destructor */
-    ~Eyes();
-
-    /* singleton access method */
-    static Eyes& getSingleton();
-
-    /* adds a eye to the list */
-    void addEye(const EyeRecord& record);
-
-    /* returns true, if a eye with the given ID is present
-
-       parameters:
-           ID - the ID of the eye object
-    */
-    bool hasEye(const std::string& ID) const;
-
-    /* returns the number of eyes in the list */
-    unsigned int getNumberOfEyes() const;
-
-    /* returns a reference to the eye record of the eye with the given ID
-
-       parameters:
-           ID - the ID of the eye
-
-       remarks:
-           If no eye with the given ID is present, the function will throw
-           an exception. Use hasEye() to determine, if a eye with the
-           desired ID is present.
-    */
-    const EyeRecord& getEye(const std::string& ID) const;
-
-    /* tries to read a eye record from the given input file stream.
-
-       return value:
-           If an error occured, the function returns -1. Otherwise it returns
-           the number of updated records. (Usually that is one. If, however, the
-           record that was read is equal to the one already in the list, zero is
-           returned.)
-
-       parameters:
-           in_File  - the input file stream that is used to read the record
-    */
-    int readNextRecord(std::ifstream& in_File);
-
-    /* returns constant iterator to the beginning of the internal list */
-    EyeListIterator getBegin() const;
-
-    /* returns constant iterator to the end of the internal list */
-    EyeListIterator getEnd() const;
-
-    /* tries to save all available eyes to the given stream and returns
-       true on success, false on failure
-
-       parameters:
-           output - the output file stream that shall be used to save the
-                    eyes
-    */
-    bool saveAllToStream(std::ofstream& output) const;
-
-    /* removes all eyes from the list */
-    void clearAll();
-  private:
-    /* constructor */
-    Eyes();
-
-    /* empty copy constructor */
-    Eyes(const Eyes& op) {}
-
-    /* internal data */
-    std::map<std::string, EyeRecord> m_Eyes;
-};//class
+//singleton for eye records
+typedef MapBasedRecordManager<EyeRecord> Eyes;
 
 } //namespace
 

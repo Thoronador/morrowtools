@@ -34,8 +34,7 @@ WeaponRecord::WeaponRecord()
   memset(unknownOBND, 0, 12);
   unknownFULL = 0;
   modelPath = "";
-  m_sizeOfMODT = 0;
-  m_pointerToMODT = NULL;
+  unknownMODT.setPresence(false);
   unknownEITM = 0;
   unknownEAMT = 0;
   unknownETYP = 0;
@@ -44,6 +43,7 @@ WeaponRecord::WeaponRecord()
   keywordSize = 0;
   keywordArray.clear();
   unknownDESC = 0;
+  hasINAM = false;
   unknownINAM = 0;
   unknownWNAM = 0;
   unknownTNAM = 0;
@@ -62,17 +62,7 @@ WeaponRecord::WeaponRecord(const WeaponRecord& other)
   memcpy(unknownOBND, other.unknownOBND, 12);
   unknownFULL = other.unknownFULL;
   modelPath = other.modelPath;
-  if (other.m_pointerToMODT != NULL)
-  {
-    m_sizeOfMODT = other.m_sizeOfMODT;
-    m_pointerToMODT = new uint8_t[m_sizeOfMODT];
-    memcpy(m_pointerToMODT, other.m_pointerToMODT, m_sizeOfMODT);
-  }
-  else
-  {
-    m_sizeOfMODT = 0;
-    m_pointerToMODT = NULL;
-  }
+  unknownMODT = other.unknownMODT;
   unknownEITM = other.unknownEITM;
   unknownEAMT = other.unknownEAMT;
   unknownETYP = other.unknownETYP;
@@ -81,6 +71,7 @@ WeaponRecord::WeaponRecord(const WeaponRecord& other)
   keywordSize = other.keywordSize;
   keywordArray = other.keywordArray;
   unknownDESC = other.unknownDESC;
+  hasINAM = other.hasINAM;
   unknownINAM = other.unknownINAM;
   unknownWNAM = other.unknownWNAM;
   unknownTNAM = other.unknownTNAM;
@@ -101,18 +92,7 @@ WeaponRecord& WeaponRecord::operator=(const WeaponRecord& other)
   memcpy(unknownOBND, other.unknownOBND, 12);
   unknownFULL = other.unknownFULL;
   modelPath = other.modelPath;
-  delete m_pointerToMODT;
-  if (other.m_pointerToMODT != NULL)
-  {
-    m_sizeOfMODT = other.m_sizeOfMODT;
-    m_pointerToMODT = new uint8_t[m_sizeOfMODT];
-    memcpy(m_pointerToMODT, other.m_pointerToMODT, m_sizeOfMODT);
-  }
-  else
-  {
-    m_sizeOfMODT = 0;
-    m_pointerToMODT = NULL;
-  }
+  unknownMODT = other.unknownMODT;
   unknownEITM = other.unknownEITM;
   unknownEAMT = other.unknownEAMT;
   unknownETYP = other.unknownETYP;
@@ -121,6 +101,7 @@ WeaponRecord& WeaponRecord::operator=(const WeaponRecord& other)
   keywordSize = other.keywordSize;
   keywordArray = other.keywordArray;
   unknownDESC = other.unknownDESC;
+  hasINAM = other.hasINAM;
   unknownINAM = other.unknownINAM;
   unknownWNAM = other.unknownWNAM;
   unknownTNAM = other.unknownTNAM;
@@ -135,9 +116,7 @@ WeaponRecord& WeaponRecord::operator=(const WeaponRecord& other)
 
 WeaponRecord::~WeaponRecord()
 {
-  delete[] m_pointerToMODT;
-  m_pointerToMODT = NULL;
-  m_sizeOfMODT = 0;
+  //empty
 }
 
 int32_t WeaponRecord::getRecordType() const
@@ -149,11 +128,7 @@ bool WeaponRecord::equals(const WeaponRecord& other) const
 {
   if ((editorID!=other.editorID) or (memcmp(unknownOBND, other.unknownOBND, 12)!=0)
       or (unknownFULL!=other.unknownFULL) or (modelPath!=other.modelPath)
-      or (m_sizeOfMODT!=other.m_sizeOfMODT) or (!equalsBasic(other)))
-  {
-    return false;
-  }
-  if (memcmp(m_pointerToMODT, other.getMODTPointer(), m_sizeOfMODT)!=0)
+      or (unknownMODT!=other.unknownMODT) or (!equalsBasic(other)))
   {
     return false;
   }
@@ -164,9 +139,9 @@ bool WeaponRecord::equals(const WeaponRecord& other) const
     return false;
   }
   if ((keywordArray!=other.keywordArray) or (unknownDESC!=other.unknownDESC)
-    or (unknownINAM!=other.unknownINAM) or (unknownWNAM!=other.unknownWNAM)
-    or (unknownTNAM!=other.unknownTNAM) or (unknownNAM9!=other.unknownNAM9)
-    or (unknownNAM8!=other.unknownNAM8))
+    or (hasINAM!=other.hasINAM) or ((unknownINAM!=other.unknownINAM) and hasINAM)
+    or (unknownWNAM!=other.unknownWNAM) or (unknownTNAM!=other.unknownTNAM)
+    or (unknownNAM9!=other.unknownNAM9) or (unknownNAM8!=other.unknownNAM8))
   {
     return false;
   }
@@ -267,29 +242,16 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
   modelPath = std::string(buffer);
 
   //read MODT
-  in_File.read((char*) &subRecName, 4);
-  if (subRecName!=cMODT)
+  if (!unknownMODT.loadFromStream(in_File, cMODT, true))
   {
-    UnexpectedRecord(cMODT, subRecName);
+    std::cout << "Error while reading subrecord MODT of WEAP!\n";
     return false;
   }
-  //MODT's length
-  in_File.read((char*) &subLength, 2);
-  if ((subLength!=12) and (subLength!=24) and (subLength!=36))
+  //check MODT's length
+  if ((unknownMODT.getSize()!=12) and (unknownMODT.getSize()!=24) and (unknownMODT.getSize()!=36))
   {
     std::cout <<"Error: sub record MODT of WEAP has invalid length ("<<subLength
               <<" bytes). Should be 12 or 24 or 36 bytes.\n";
-    return false;
-  }
-  //read MODL path
-  delete [] m_pointerToMODT;
-  m_pointerToMODT = new uint8_t[subLength];
-  m_sizeOfMODT = subLength;
-  memset(m_pointerToMODT, 0, subLength);
-  in_File.read((char*) m_pointerToMODT, subLength);
-  if (!in_File.good())
-  {
-    std::cout << "Error while reading subrecord MODT of WEAP!\n";
     return false;
   }
 
@@ -366,6 +328,7 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
 
   //read INAM
   if (!loadUint32SubRecordFromStream(in_File, cINAM, unknownINAM)) return false;
+  hasINAM = true;
 
   //read WNAM
   if (!loadUint32SubRecordFromStream(in_File, cWNAM, unknownWNAM)) return false;
@@ -452,16 +415,6 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
   if (!loadUint32SubRecordFromStream(in_File, cVNAM, unknownVNAM)) return false;
 
   return in_File.good();
-}
-
-uint8_t WeaponRecord::getSizeOfMODT() const
-{
-  return m_sizeOfMODT;
-}
-
-const uint8_t * WeaponRecord::getMODTPointer() const
-{
-  return m_pointerToMODT;
 }
 
 } //namespace

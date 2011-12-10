@@ -22,6 +22,7 @@
 #define SR_WEAPONRECORD_H
 
 #include "BasicRecord.h"
+#include "BinarySubRecord.h"
 #include <string>
 #include <vector>
 #include <stdint.h>
@@ -64,20 +65,12 @@ struct WeaponRecord: public BasicRecord
     /* returns the record's type, usually its header */
     virtual int32_t getRecordType() const;
 
-    /* returns the size of the MODT subrecord */
-    uint8_t getSizeOfMODT() const;
-
-    /* returns the pointer to MODT's data */
-    const uint8_t * getMODTPointer() const;
 
     std::string editorID;
     uint8_t unknownOBND[12];
     uint32_t unknownFULL;
     std::string modelPath;
-  protected:
-    uint8_t m_sizeOfMODT;
-    uint8_t * m_pointerToMODT;
-  public:
+    BinarySubRecord unknownMODT;
     uint32_t unknownEITM;
     uint16_t unknownEAMT;
     uint32_t unknownETYP;
@@ -86,6 +79,7 @@ struct WeaponRecord: public BasicRecord
     uint32_t keywordSize;
     std::vector<uint32_t> keywordArray;
     uint32_t unknownDESC;
+    bool hasINAM;
     uint32_t unknownINAM;
     uint32_t unknownWNAM;
     uint32_t unknownTNAM;

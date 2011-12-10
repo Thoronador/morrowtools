@@ -64,8 +64,10 @@ const int32_t cFPRT = 0x54525046; //"FPRT" = 46 50 52 54
 const int32_t cFULL = 0x4C4C5546; //"FULL" = 46 55 4C 4C
 const int32_t cGLOB = 0x424F4C47; //"GLOB" = 47 4C 4F 42
 const int32_t cGMST = 0x54534D47; //"GMST" = 47 4D 53 54
+const int32_t cGNAM = 0x4D414E47; //"GNAM" = 47 4E 41 4D
 const int32_t cGRUP = 0x50555247; //"GRUP" = 47 52 55 50
 const int32_t cHEDR = 0x52444548; //"HEDR" = 48 45 44 52
+const int32_t cHNAM = 0x4D414E48; //"HNAM" = 48 4E 41 4D
 const int32_t cICON = 0x4E4F4349; //"ICON" = 49 43 4F 4E
 const int32_t cINAM = 0x4D414E49; //"INAM" = 49 4E 41 4D
 const int32_t cINDX = 0x58444E49; //"INDX" = 49 4E 44 58
@@ -75,6 +77,7 @@ const int32_t cKSIZ = 0x5A49534B; //"KSIZ" = 4B 53 49 5A
 const int32_t cKYWD = 0x4457594B; //"KYWD" = 4B 59 57 44
 const int32_t cKWDA = 0x4144574B; //"KWDA" = 4B 57 44 41
 const int32_t cLNAM = 0x4D414E4C; //"LNAM" = 4C 4E 41 4D
+const int32_t cLTEX = 0x5845544C; //"LTEX" = 4C 54 45 58
 const int32_t cMAST = 0x5453414D; //"MAST" = 4D 41 53 54
 const int32_t cMCHT = 0x5448434D; //"MCHT" = 4D 43 48 54
 const int32_t cMDOB = 0x424F444D; //"MDOB" = 4D 44 4F 42

@@ -30,6 +30,7 @@
 #include "records/GMSTRecord.h"
 #include "records/GlobalRecord.h"
 #include "records/KeywordRecord.h"
+#include "records/LandscapeTextureRecord.h"
 #include "records/MagicEffectRecord.h"
 #include "records/MiscObjectRecord.h"
 #include "records/OutfitRecord.h"
@@ -90,6 +91,9 @@ int ESMReaderContents::readNextRecord(std::ifstream& in_File, const int32_t recN
          break;
     case cKYWD:
          recPtr = new KeywordRecord;
+         break;
+    case cLTEX:
+         recPtr = new LandscapeTextureRecord;
          break;
     case cMGEF:
          recPtr = new MagicEffectRecord;

@@ -82,6 +82,22 @@ Records and their sub-records:
       DATA (1 byte)
           unknown data (flags?)
 
+
+  LTEX: landscape texture
+      EDID: (string, NUL-terminated)
+          editorID
+      TNAM (4 bytes, optional)
+          unknown data
+      MNAM (4 bytes)
+          unknown data
+      HNAM (2 bytes)
+          unknown data
+      SNAM (1 byte)
+          unknown data
+      GNAM (4 bytes, optional, occurs 0+ times)
+          unknown data
+
+
   AACT: action(?)
       EDID (string, NUL-terminated)
           editorID

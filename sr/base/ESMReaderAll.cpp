@@ -33,6 +33,7 @@
 #include "GameSettings.h"
 #include "Globals.h"
 #include "Keywords.h"
+#include "LandscapeTextures.h"
 #include "MiscObjects.h"
 #include "Outfits.h"
 #include "Relationships.h"
@@ -97,6 +98,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;
     case cKYWD:
          return Keywords::getSingleton().readNextRecord(in_File);
+         break;
+    case cLTEX:
+         return LandscapeTextures::getSingleton().readNextRecord(in_File);
          break;
     case cMISC:
          return MiscObjects::getSingleton().readNextRecord(in_File);

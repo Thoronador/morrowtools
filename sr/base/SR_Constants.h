@@ -92,6 +92,7 @@ const int32_t cNAM1 = 0x314D414E; //"NAM1" = 4E 41 4D 31
 const int32_t cNAM8 = 0x384D414E; //"NAM9" = 4E 41 4D 38
 const int32_t cNAM9 = 0x394D414E; //"NAM9" = 4E 41 4D 39
 const int32_t cNEXT = 0x5458454E; //"NEXT" = 4E 45 58 54
+const int32_t cNNAM = 0x4D414E4E; //"NNAM" = 4E 4E 41 4D
 const int32_t cOBND = 0x444E424F; //"OBND" = 4F 42 4E 44
 const int32_t cOTFT = 0x5446544F; //"OTFT" = 4F 54 46 54
 const int32_t cPNAM = 0x4D414E50; //"PNAM" = 50 4E 41 4D
@@ -115,6 +116,7 @@ const int32_t cTX04 = 0x34305854; //"TX04" = 54 58 30 34
 const int32_t cTX05 = 0x35305854; //"TX05" = 54 58 30 35
 const int32_t cTX07 = 0x37305854; //"TX07" = 54 58 30 37
 const int32_t cTXST = 0x54535854; //"TXST" = 54 58 53 54
+const int32_t cUNAM = 0x4D414E55; //"UNAM" = 55 4E 41 4D
 const int32_t cVMAD = 0x44414D56; //"VMAD" = 56 4D 41 44
 const int32_t cVNAM = 0x4D414E56; //"VNAM" = 56 4E 41 4D
 const int32_t cWEAP = 0x50414557; //"WEAP" = 57 45 41 50

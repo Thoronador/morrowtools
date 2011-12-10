@@ -33,13 +33,16 @@ WeaponRecord::WeaponRecord()
   editorID = "";
   unknownVMAD.setPresence(false);
   memset(unknownOBND, 0, 12);
+  hasFULL = false;
   unknownFULL = 0;
   modelPath = "";
   unknownMODT.setPresence(false);
+  unknownMODS.setPresence(false);
   hasEITM = false;
   unknownEITM = 0;
   hasEAMT = false;
   unknownEAMT = 0;
+  hasETYP = false;
   unknownETYP = 0;
   hasBIDS = false;
   unknownBIDS = 0;
@@ -48,12 +51,21 @@ WeaponRecord::WeaponRecord()
   keywordSize = 0;
   keywordArray.clear();
   unknownDESC = 0;
+  unknownNNAM = "";
   hasINAM = false;
   unknownINAM = 0;
+  hasWNAM = false;
   unknownWNAM = 0;
+  hasTNAM = false;
   unknownTNAM = 0;
+  hasUNAM = false;
+  unknownUNAM = 0;
+  hasNAM9 = false;
   unknownNAM9 = 0;
+  hasNAM8 = false;
   unknownNAM8 = 0;
+  hasSNAM = false;
+  unknownSNAM = 0;
   memset(unknownDATA, 0, 10);
   memset(unknownDNAM, 0, 100);
   memset(unknownCRDT, 0, 16);
@@ -68,13 +80,16 @@ WeaponRecord::WeaponRecord(const WeaponRecord& other)
   editorID = other.editorID;
   unknownVMAD = other.unknownVMAD;
   memcpy(unknownOBND, other.unknownOBND, 12);
+  hasFULL = other.hasFULL;
   unknownFULL = other.unknownFULL;
   modelPath = other.modelPath;
   unknownMODT = other.unknownMODT;
+  unknownMODS = other.unknownMODS;
   hasEITM = other.hasEITM;
   unknownEITM = other.unknownEITM;
   hasEAMT = other.hasEAMT;
   unknownEAMT = other.unknownEAMT;
+  hasETYP = other.hasETYP;
   unknownETYP = other.unknownETYP;
   hasBIDS = other.hasBIDS;
   unknownBIDS = other.unknownBIDS;
@@ -83,12 +98,21 @@ WeaponRecord::WeaponRecord(const WeaponRecord& other)
   keywordSize = other.keywordSize;
   keywordArray = other.keywordArray;
   unknownDESC = other.unknownDESC;
+  unknownNNAM = other.unknownNNAM;
   hasINAM = other.hasINAM;
   unknownINAM = other.unknownINAM;
+  hasWNAM = other.hasWNAM;
   unknownWNAM = other.unknownWNAM;
+  hasTNAM = other.hasTNAM;
   unknownTNAM = other.unknownTNAM;
+  hasUNAM = other.hasUNAM;
+  unknownUNAM = other.unknownUNAM;
+  hasNAM9 = other.hasNAM9;
   unknownNAM9 = other.unknownNAM9;
+  hasNAM8 = other.hasNAM8;
   unknownNAM8 = other.unknownNAM8;
+  hasSNAM = other.hasSNAM;
+  unknownSNAM = other.unknownSNAM;
   memcpy(unknownDATA, other.unknownDATA, 10);
   memcpy(unknownDNAM, other.unknownDNAM, 100);
   memcpy(unknownCRDT, other.unknownCRDT, 16);
@@ -105,13 +129,16 @@ WeaponRecord& WeaponRecord::operator=(const WeaponRecord& other)
   editorID = other.editorID;
   unknownVMAD = other.unknownVMAD;
   memcpy(unknownOBND, other.unknownOBND, 12);
+  hasFULL = other.hasFULL;
   unknownFULL = other.unknownFULL;
   modelPath = other.modelPath;
   unknownMODT = other.unknownMODT;
+  unknownMODS = other.unknownMODS;
   hasEITM = other.hasEITM;
   unknownEITM = other.unknownEITM;
   hasEAMT = other.hasEAMT;
   unknownEAMT = other.unknownEAMT;
+  hasETYP = other.hasETYP;
   unknownETYP = other.unknownETYP;
   hasBIDS = other.hasBIDS;
   unknownBIDS = other.unknownBIDS;
@@ -120,12 +147,21 @@ WeaponRecord& WeaponRecord::operator=(const WeaponRecord& other)
   keywordSize = other.keywordSize;
   keywordArray = other.keywordArray;
   unknownDESC = other.unknownDESC;
+  unknownNNAM = other.unknownNNAM;
   hasINAM = other.hasINAM;
   unknownINAM = other.unknownINAM;
+  hasWNAM = other.hasWNAM;
   unknownWNAM = other.unknownWNAM;
+  hasTNAM = other.hasTNAM;
   unknownTNAM = other.unknownTNAM;
+  hasUNAM = other.hasUNAM;
+  unknownUNAM = other.unknownUNAM;
+  hasNAM9 = other.hasNAM9;
   unknownNAM9 = other.unknownNAM9;
+  hasNAM8 = other.hasNAM8;
   unknownNAM8 = other.unknownNAM8;
+  hasSNAM = other.hasSNAM;
+  unknownSNAM = other.unknownSNAM;
   memcpy(unknownDATA, other.unknownDATA, 10);
   memcpy(unknownDNAM, other.unknownDNAM, 100);
   memcpy(unknownCRDT, other.unknownCRDT, 16);
@@ -149,25 +185,31 @@ bool WeaponRecord::equals(const WeaponRecord& other) const
 {
   if ((editorID!=other.editorID) or (unknownVMAD!=other.unknownVMAD)
       or (memcmp(unknownOBND, other.unknownOBND, 12)!=0)
-      or (unknownFULL!=other.unknownFULL) or (modelPath!=other.modelPath)
-      or (unknownMODT!=other.unknownMODT) or (!equalsBasic(other)))
+      or (hasFULL!=other.hasFULL) or ((unknownFULL!=other.unknownFULL) and hasFULL)
+      or (modelPath!=other.modelPath) or (unknownMODT!=other.unknownMODT)
+      or (unknownMODS!=other.unknownMODS)or (!equalsBasic(other)))
   {
     return false;
   }
-  if (((unknownEITM!=other.unknownEITM) and hasEITM)
-    or ((unknownEAMT!=other.unknownEAMT) and hasEAMT)
-    or (unknownETYP!=other.unknownETYP) or (hasBIDS!=other.hasBIDS)
-    or ((unknownBIDS!=other.unknownBIDS) and hasBIDS)
+  if ((hasEITM!=other.hasEITM) or ((unknownEITM!=other.unknownEITM) and hasEITM)
+    or (hasEAMT!=other.hasEAMT) or ((unknownEAMT!=other.unknownEAMT) and hasEAMT)
+    or (hasETYP!=other.hasETYP) or ((unknownETYP!=other.unknownETYP) and hasETYP)
+    or (hasBIDS!=other.hasBIDS) or ((unknownBIDS!=other.unknownBIDS) and hasBIDS)
     or ((hasBAMT!=other.hasBAMT) and hasBAMT) or (unknownBAMT!=other.unknownBAMT)
     or (keywordSize!=other.keywordSize))
   {
     return false;
   }
   if ((keywordArray!=other.keywordArray) or (unknownDESC!=other.unknownDESC)
+    or (unknownNNAM!=other.unknownNNAM)
     or (hasINAM!=other.hasINAM) or ((unknownINAM!=other.unknownINAM) and hasINAM)
-    or (unknownWNAM!=other.unknownWNAM) or (unknownTNAM!=other.unknownTNAM)
-    or (unknownNAM9!=other.unknownNAM9) or (unknownNAM8!=other.unknownNAM8)
-    or (hasCNAM!=other.hasCNAM) or ((unknownCNAM!=other.unknownCNAM) and hasCNAM))
+    or (hasWNAM!=other.hasWNAM) or ((unknownWNAM!=other.unknownWNAM) and hasWNAM)
+    or (hasTNAM!=other.hasTNAM) or ((unknownTNAM!=other.unknownTNAM) and hasTNAM)
+    or (hasUNAM!=other.hasUNAM) or ((unknownUNAM!=other.unknownUNAM) and hasUNAM)
+    or (hasNAM9!=other.hasNAM9) or ((unknownNAM9!=other.unknownNAM9) and hasNAM9)
+    or (hasNAM8!=other.hasNAM8) or ((unknownNAM8!=other.unknownNAM8) and hasNAM8)
+    or (hasCNAM!=other.hasCNAM) or ((unknownCNAM!=other.unknownCNAM) and hasCNAM)
+    or (hasSNAM!=other.hasSNAM) or ((unknownSNAM!=other.unknownSNAM) and hasSNAM))
   {
     return false;
   }
@@ -223,16 +265,26 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
 
   unknownVMAD.setPresence(false);
   bool hasReadOBND = false;
+  hasFULL = false;
+  unknownFULL = 0;
   modelPath.clear();
-  bool hasReadETYP = false;
+  unknownMODS.setPresence(false);
+  hasETYP = false;
   hasBIDS = false;
   hasBAMT = false;
   keywordSize = 0;
   keywordArray.clear();
   uint32_t i, fid;
   bool hasReadDESC = false;
+  unknownNNAM.clear();
+  hasSNAM = false;
+  bool hasReadDATA = false;
   hasINAM = false;
-  bool hasReadWNAM = false;
+  hasWNAM = false;
+  hasTNAM = false;
+  hasUNAM = false;
+  hasNAM9 = false;
+  hasNAM8 = false;
   hasCNAM = false;
   while (bytesRead<readSize)
   {
@@ -279,10 +331,18 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            hasReadOBND = true;
-
+           break;
+      case cFULL:
+           if (hasFULL)
+           {
+             std::cout << "Error: WEAP seems to have more than one FULL subrecord!\n";
+             return false;
+           }
+           //skip back
+           in_File.seekg(-4, std::ios_base::cur);
            //read FULL
            if (!loadUint32SubRecordFromStream(in_File, cFULL, unknownFULL)) return false;
-           bytesRead += 10;
+           bytesRead += 6;
            break;
       case cMODL:
            if (!modelPath.empty())
@@ -325,6 +385,20 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }*/
            break;
+      case cMODS:
+           if (unknownMODS.isPresent())
+           {
+             std::cout << "Error: WEAP seems to have more than one MODS subrecord!\n";
+             return false;
+           }
+           //read MODS
+           if (!unknownMODS.loadFromStream(in_File, cMODS, false))
+           {
+             std::cout << "Error while reading subrecord MODS of WEAP!\n";
+             return false;
+           }
+           bytesRead = bytesRead +2 +unknownMODS.getSize();
+           break;
       case cEITM:
            if (hasEITM)
            {
@@ -364,7 +438,7 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
            hasEAMT = true;
            break;
       case cETYP:
-           if (hasReadETYP)
+           if (hasETYP)
            {
              std::cout << "Error: WEAP seems to have more than one ETYP subrecord!\n";
              return false;
@@ -374,7 +448,7 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
            //read ETYP
            if (!loadUint32SubRecordFromStream(in_File, cETYP, unknownETYP)) return false;
            bytesRead += 6;
-           hasReadETYP = true;
+           hasETYP = true;
            break;
       case cBIDS:
            if (hasBIDS)
@@ -459,6 +533,31 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
            bytesRead += 6;
            hasReadDESC = true;
            break;
+      case cNNAM:
+           if (!unknownNNAM.empty())
+           {
+             std::cout << "Error: WEAP seems to have more than one NNAM subrecord!\n";
+             return false;
+           }
+           //NNAM's length
+           in_File.read((char*) &subLength, 2);
+           bytesRead += 2;
+           if (subLength>511)
+           {
+             std::cout <<"Error: sub record NNAM of WEAP is longer than 511 characters!\n";
+             return false;
+           }
+           //read NNAM (node name?)
+           memset(buffer, 0, 512);
+           in_File.read(buffer, subLength);
+           bytesRead += subLength;
+           if (!in_File.good())
+           {
+             std::cout << "Error while reading subrecord NNAM of WEAP!\n";
+             return false;
+           }
+           unknownNNAM = std::string(buffer);
+           break;
       case cINAM:
            if (hasINAM)
            {
@@ -473,7 +572,7 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
            bytesRead += 6;
            break;
       case cWNAM:
-           if (hasReadWNAM)
+           if (hasWNAM)
            {
              std::cout << "Error: WEAP seems to have more than one WNAM subrecord!\n";
              return false;
@@ -482,27 +581,78 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
            in_File.seekg(-4, std::ios_base::cur);
            //read WNAM
            if (!loadUint32SubRecordFromStream(in_File, cWNAM, unknownWNAM)) return false;
-           hasReadWNAM = true;
+           hasWNAM = true;
            bytesRead += 6;
-
+           break;
+      case cTNAM:
+           if (hasTNAM)
+           {
+             std::cout << "Error: WEAP seems to have more than one TNAM subrecord!\n";
+             return false;
+           }
+           //skip back
+           in_File.seekg(-4, std::ios_base::cur);
            //read TNAM
            if (!loadUint32SubRecordFromStream(in_File, cTNAM, unknownTNAM)) return false;
-           bytesRead += 10;
-
+           bytesRead += 6;
+           hasTNAM = true;
+           break;
+      case cUNAM:
+           if (hasUNAM)
+           {
+             std::cout << "Error: WEAP seems to have more than one UNAM subrecord!\n";
+             return false;
+           }
+           //skip back
+           in_File.seekg(-4, std::ios_base::cur);
+           //read UNAM
+           if (!loadUint32SubRecordFromStream(in_File, cUNAM, unknownUNAM)) return false;
+           bytesRead += 6;
+           hasUNAM = true;
+           break;
+      case cNAM9:
+           if (hasNAM9)
+           {
+             std::cout << "Error: WEAP seems to have more than one NAM9 subrecord!\n";
+             return false;
+           }
+           //skip back
+           in_File.seekg(-4, std::ios_base::cur);
            //read NAM9
            if (!loadUint32SubRecordFromStream(in_File, cNAM9, unknownNAM9)) return false;
-           bytesRead += 10;
-
+           bytesRead += 6;
+           hasNAM9 = true;
+           break;
+      case cNAM8:
+           if (hasNAM8)
+           {
+             std::cout << "Error: WEAP seems to have more than one NAM8 subrecord!\n";
+             return false;
+           }
+           //skip back
+           in_File.seekg(-4, std::ios_base::cur);
            //read NAM8
            if (!loadUint32SubRecordFromStream(in_File, cNAM8, unknownNAM8)) return false;
-           bytesRead += 10;
-
-           //read DATA
-           in_File.read((char*) &subRecName, 4);
-           bytesRead += 4;
-           if (subRecName!=cDATA)
+           bytesRead += 6;
+           hasNAM8 = true;
+           break;
+      case cSNAM:
+           if (hasSNAM)
            {
-             UnexpectedRecord(cDATA, subRecName);
+             std::cout << "Error: WEAP seems to have more than one SNAM subrecord!\n";
+             return false;
+           }
+           //skip back
+           in_File.seekg(-4, std::ios_base::cur);
+           //read SNAM
+           if (!loadUint32SubRecordFromStream(in_File, cSNAM, unknownSNAM)) return false;
+           hasSNAM = true;
+           bytesRead += 6;
+           break;
+      case cDATA:
+           if (hasReadDATA)
+           {
+             std::cout << "Error: WEAP seems to have more than one DATA subrecord!\n";
              return false;
            }
            //DATA's length
@@ -522,6 +672,7 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error while reading subrecord DATA of WEAP!\n";
              return false;
            }
+           hasReadDATA = true;
 
            //read DNAM
            in_File.read((char*) &subRecName, 4);
@@ -578,7 +729,6 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
            //read VNAM
            if (!loadUint32SubRecordFromStream(in_File, cVNAM, unknownVNAM)) return false;
            bytesRead += 10;
-
            break;
       case cCNAM:
            if (hasCNAM)
@@ -601,9 +751,9 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
     }//swi
   }//while
 
-  if (!(hasReadOBND and hasReadWNAM and hasReadETYP and hasReadDESC))
+  if (!(hasReadOBND and hasReadDESC and hasReadDATA))
   {
-    std::cout << "Error: WEAP's OBND or WNAM or ETYP or DESC subrecord is missing!\n";
+    std::cout << "Error: WEAP's OBND or DESC or DATA subrecord is missing!\n";
     return false;
   }
 

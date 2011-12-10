@@ -43,6 +43,8 @@
 		<Unit filename="..\base\Books.h" />
 		<Unit filename="..\base\ESMReader.cpp" />
 		<Unit filename="..\base\ESMReader.h" />
+		<Unit filename="..\base\FormIDFunctions.cpp" />
+		<Unit filename="..\base\FormIDFunctions.h" />
 		<Unit filename="..\base\MapBasedRecordManager.h" />
 		<Unit filename="..\base\MiscObjects.h" />
 		<Unit filename="..\base\SR_Constants.h" />

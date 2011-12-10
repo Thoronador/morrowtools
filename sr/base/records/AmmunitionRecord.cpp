@@ -33,7 +33,7 @@ AmmunitionRecord::AmmunitionRecord()
   editorID = "";
   memset(unknownOBND, 0, 12);
   hasFULL = false;
-  unknownFULL = 0;
+  nameStringID = 0;
   modelPath = "";
   unknownMODT.setPresence(false);
   unknownYNAM = 0;
@@ -53,7 +53,7 @@ bool AmmunitionRecord::equals(const AmmunitionRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
       and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
-      and (hasFULL==other.hasFULL) and ((unknownFULL==other.unknownFULL) or (!hasFULL))
+      and (hasFULL==other.hasFULL) and ((nameStringID==other.nameStringID) or (!hasFULL))
       and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
       and (unknownYNAM==other.unknownYNAM) and (unknownZNAM==other.unknownZNAM)
       and (unknownDESC==other.unknownDESC) and (keywordSize==other.keywordSize)
@@ -119,7 +119,7 @@ bool AmmunitionRecord::saveToStream(std::ofstream& output) const
     subLength = 4; //fixed size
     output.write((char*) &subLength, 2);
     //write FULL's stuff
-    output.write((const char*) &unknownFULL, 4);
+    output.write((const char*) &nameStringID, 4);
   }//if hasFULL
 
   if (!modelPath.empty())
@@ -299,7 +299,7 @@ bool AmmunitionRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read FULL's stuff
-           in_File.read((char*) &unknownFULL, 4);
+           in_File.read((char*) &nameStringID, 4);
            bytesRead += 4;
            if (!in_File.good())
            {

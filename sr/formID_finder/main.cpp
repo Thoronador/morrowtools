@@ -4,8 +4,14 @@
 #include "../../base/FileFunctions.h"
 #include "../../base/UtilityFunctions.h"
 #include "../../mw/base/ReturnCodes.h"
-#include "../base/records/Tes4HeaderRecord.h"
+#include "../base/Ammunitions.h"
+#include "../base/Books.h"
+#include "../base/FormIDFunctions.h"
+#include "../base/MiscObjects.h"
+#include "../base/Shouts.h"
 #include "../base/StringTable.h"
+#include "../base/WordsOfPower.h"
+#include "../base/records/Tes4HeaderRecord.h"
 #include "ESMReaderFinder.h"
 
 void showGPLNotice()
@@ -31,7 +37,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Form ID Finder for Skyrim, version 0.01.rev314, 2011-12-08\n";
+  std::cout << "Form ID Finder for Skyrim, version 0.02.rev317, 2011-12-09\n";
+}
+
+int showVersionExitcode()
+{
+  showVersion();
+  return 317;
 }
 
 void showHelp()
@@ -53,6 +65,16 @@ void showHelp()
             << "                     default.\n";
 }
 
+//auxillary function
+bool matchesKeyword(const std::string& haystack, const std::string& keyword, const bool caseMatters)
+{
+  if (caseMatters)
+  {
+    return (haystack.find(keyword)!=std::string::npos);
+  }
+  return (lowerCase(haystack).find(keyword)!=std::string::npos);
+}
+
 int main(int argc, char **argv)
 {
   showGPLNotice();
@@ -72,7 +94,7 @@ int main(int argc, char **argv)
       {
         const std::string param = std::string(argv[i]);
         //help parameter
-        if ((param=="--help") or (param=="-?"))
+        if ((param=="--help") or (param=="-?") or (param=="/?"))
         {
           showHelp();
           return 0;
@@ -82,6 +104,10 @@ int main(int argc, char **argv)
         {
           showVersion();
           return 0;
+        }
+        else if (param=="--version-with-exitcode")
+        {
+          return showVersionExitcode();
         }
         else if ((param=="-d") or (param=="-dir") or (param=="--data-files"))
         {
@@ -274,9 +300,176 @@ int main(int argc, char **argv)
   }
 
   SRTP::ESMReaderFinder reader;
+  SRTP::Tes4HeaderRecord tes4rec;
 
+  if (!reader.readESM(dataDir+"Skyrim.esm", tes4rec))
+  {
+    std::cout << "Error while reading "<<dataDir+"Skyrim.esm!\n";
+    return MWTP::rcFileError;
+  }
+
+  unsigned int totalMatches = 0;
+
+  //check ammunitions for matches
+  unsigned int ammoMatches = 0;
+  SRTP::Ammunitions::ListIterator ammo_iter = SRTP::Ammunitions::getSingleton().getBegin();
+  while (ammo_iter!=SRTP::Ammunitions::getSingleton().getEnd())
+  {
+    if (ammo_iter->second.hasFULL)
+    {
+      if (table.hasString(ammo_iter->second.nameStringID))
+      {
+        if (matchesKeyword(table.getString(ammo_iter->second.nameStringID), searchKeyword, caseSensitive))
+        {
+          //found matching ammo record
+          if (ammoMatches==0)
+          {
+            std::cout << "\n\nMatching ammunition:\n";
+          }
+          std::cout << "    \""<<table.getString(ammo_iter->second.nameStringID)<<"\", form ID "<<SRTP::getFormIDAsString(ammo_iter->second.headerFormID)<<"\n";
+          ++ammoMatches;
+          ++totalMatches;
+        }//if match found
+      }//if table has string
+    }//if hasFULL
+    ++ammo_iter;
+  }//while
+  if (ammoMatches>0)
+  {
+    std::cout << "Total matching ammunition: "<<ammoMatches<<"\n";
+  }
+
+  //check books for matches
+  {
+    unsigned int bookMatches = 0;
+    SRTP::Books::ListIterator book_iter = SRTP::Books::getSingleton().getBegin();
+    while (book_iter!=SRTP::Books::getSingleton().getEnd())
+    {
+      if (book_iter->second.hasFULL or (book_iter->second.titleStringID!=0))
+      {
+        if (table.hasString(book_iter->second.titleStringID))
+        {
+          if (matchesKeyword(table.getString(book_iter->second.titleStringID), searchKeyword, caseSensitive))
+          {
+            //found matching book record
+            if (bookMatches==0)
+            {
+              std::cout << "\n\nMatching books:\n";
+            }
+            std::cout << "    \""<<table.getString(book_iter->second.titleStringID)<<"\", form ID "<<SRTP::getFormIDAsString(book_iter->second.headerFormID)<<"\n";
+            ++bookMatches;
+            ++totalMatches;
+          }//if match found
+        }//if table has string
+      }//if hasFULL
+      ++book_iter;
+    }//while
+    if (bookMatches>0)
+    {
+      std::cout << "Total matching books: "<<bookMatches<<"\n";
+    }
+  }//scope for book stuff
+
+  //check misc. objects for matches
+  {
+    unsigned int miscMatches = 0;
+    SRTP::MiscObjects::ListIterator misc_iter = SRTP::MiscObjects::getSingleton().getBegin();
+    while (misc_iter!=SRTP::MiscObjects::getSingleton().getEnd())
+    {
+      if (misc_iter->second.hasFULL)
+      {
+        if (table.hasString(misc_iter->second.fullNameStringID))
+        {
+          if (matchesKeyword(table.getString(misc_iter->second.fullNameStringID), searchKeyword, caseSensitive))
+          {
+            //found matching misc object record
+            if (miscMatches==0)
+            {
+              std::cout << "\n\nMatching misc. objects:\n";
+            }
+            std::cout << "    \""<<table.getString(misc_iter->second.fullNameStringID)<<"\", form ID "<<SRTP::getFormIDAsString(misc_iter->second.headerFormID)<<"\n";
+            ++miscMatches;
+            ++totalMatches;
+          }//if match found
+        }//if table has string
+      }//if hasFULL
+      ++misc_iter;
+    }//while
+    if (miscMatches>0)
+    {
+      std::cout << "Total matching misc. objects: "<<miscMatches<<"\n";
+    }
+  }//scope for misc. object stuff
+
+  //check shouts for matches
+  {
+    unsigned int shoutMatches = 0;
+    SRTP::Shouts::ListIterator shout_iter = SRTP::Shouts::getSingleton().getBegin();
+    while (shout_iter!=SRTP::Shouts::getSingleton().getEnd())
+    {
+      if (shout_iter->second.hasFULL or (shout_iter->second.fullNameStringID!=0))
+      {
+        if (table.hasString(shout_iter->second.fullNameStringID))
+        {
+          if (matchesKeyword(table.getString(shout_iter->second.fullNameStringID), searchKeyword, caseSensitive))
+          {
+            //found matching shout record
+            if (shoutMatches==0)
+            {
+              std::cout << "\n\nMatching dragon shouts:\n";
+            }
+            std::cout << "    \""<<table.getString(shout_iter->second.fullNameStringID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(shout_iter->second.headerFormID)
+                      <<"\n        editor ID \""<<shout_iter->second.editorID<<"\"\n";
+            ++shoutMatches;
+            ++totalMatches;
+          }//if match found
+        }//if table has string
+      }//if hasFULL
+      ++shout_iter;
+    }//while
+    if (shoutMatches>0)
+    {
+      std::cout << "Total matching dragon shouts: "<<shoutMatches<<"\n";
+    }
+  }//scope for shout stuff
+
+  //check words of power for matches
+  {
+    unsigned int wordMatches = 0;
+    SRTP::WordsOfPower::ListIterator word_iter = SRTP::WordsOfPower::getSingleton().getBegin();
+    while (word_iter!=SRTP::WordsOfPower::getSingleton().getEnd())
+    {
+      if (word_iter->second.hasFULL)
+      {
+        if (table.hasString(word_iter->second.nameStringID))
+        {
+          if (matchesKeyword(table.getString(word_iter->second.nameStringID), searchKeyword, caseSensitive)
+            or matchesKeyword(word_iter->second.editorID, searchKeyword, caseSensitive))
+          {
+            //found matching word of power record
+            if (wordMatches==0)
+            {
+              std::cout << "\n\nMatching words of power:\n";
+            }
+            std::cout << "    \""<<table.getString(word_iter->second.nameStringID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(word_iter->second.headerFormID)
+                      <<"\n        editor ID \""<<word_iter->second.editorID<<"\"\n";
+            ++wordMatches;
+            ++totalMatches;
+          }//if match found
+        }//if table has string
+      }//if hasFULL
+      ++word_iter;
+    }//while
+    if (wordMatches>0)
+    {
+      std::cout << "Total matching words of power: "<<wordMatches<<"\n";
+    }
+  }//scope for word of power stuff
 
   //to do...
 
+  std::cout << "\nTotal matching objects found: "<<totalMatches<<"\n";
   return 0;
 }

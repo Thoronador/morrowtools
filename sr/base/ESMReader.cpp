@@ -108,7 +108,7 @@ int ESMReader::readESM(const std::string& FileName, Tes4HeaderRecord& head)
   uint32_t lastGoodPosition = input.tellg();
   while ((input.tellg()<FileSize) and (lastResult>=0))
   {
-    std::cout << "DBG: Current position is "<<input.tellg()<<" bytes.\n";
+    //std::cout << "DBG: Current position is "<<input.tellg()<<" bytes.\n";
     //try to read or skip a group - possibly that won't always work
     lastResult = processGroup(input);
     if (lastResult>=0)

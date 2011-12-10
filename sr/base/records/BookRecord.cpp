@@ -328,6 +328,7 @@ bool BookRecord::loadFromStream(std::ifstream& in_File)
            if (!loadUint32SubRecordFromStream(in_File, cFULL, titleStringID)) return false;
            bytesRead += 6;
            hasFULL = true;
+           //std::cout << "DBG: Read book title for \""<<editorID<<"\" and set hasFULL to true!\n";
            break;
       case cMODL:
            if (hasReadMODL)

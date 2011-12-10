@@ -67,14 +67,19 @@ struct WeaponRecord: public BasicRecord
 
 
     std::string editorID;
+    BinarySubRecord unknownVMAD;
     uint8_t unknownOBND[12];
     uint32_t unknownFULL;
     std::string modelPath;
     BinarySubRecord unknownMODT;
+    bool hasEITM;
     uint32_t unknownEITM;
+    bool hasEAMT;
     uint16_t unknownEAMT;
     uint32_t unknownETYP;
+    bool hasBIDS;
     uint32_t unknownBIDS;
+    bool hasBAMT;
     uint32_t unknownBAMT;
     uint32_t keywordSize;
     std::vector<uint32_t> keywordArray;
@@ -89,6 +94,8 @@ struct WeaponRecord: public BasicRecord
     uint8_t  unknownDNAM[100];
     uint8_t  unknownCRDT[16];
     uint32_t unknownVNAM;
+    bool hasCNAM;
+    uint32_t unknownCNAM;
 }; //struct
 
 } //namespace

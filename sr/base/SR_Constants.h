@@ -53,6 +53,7 @@ const int32_t cDSTF = 0x46545344; //"DSTF" = 44 53 54 46
 const int32_t cEAMT = 0x544D4145; //"EAMT" = 45 41 4D 54
 const int32_t cEDID = 0x44494445; //"EDID" = 45 44 49 44
 const int32_t cEITM = 0x4D544945; //"EITM" = 45 49 54 4D
+const int32_t cEQUP = 0x50555145; //"EQUP" = 45 51 55 50
 const int32_t cETYP = 0x50595445; //"ETYP" = 45 54 59 50
 const int32_t cEYES = 0x53455945; //"EYES" = 45 59 45 53
 const int32_t cFCHT = 0x54484346; //"FCHT" = 46 43 48 54

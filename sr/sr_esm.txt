@@ -73,14 +73,23 @@ Records and their sub-records:
 
 
   EYES: eyes
-      EDID: (string, NUL-terminated)
+      EDID (string, NUL-terminated)
           editorID
-      FULL (4 byte)
+      FULL (4 bytes)
           unknown data
       ICON  (string, NUL-terminated)
           texture path
       DATA (1 byte)
           unknown data (flags?)
+
+
+  EQUP: equipment slot
+      EDID: (string, NUL-terminated)
+          editorID
+      PNAM (n*4 bytes, optional)
+          unknown data
+      DATA (4 bytes)
+          unknown data
 
 
   LTEX: landscape texture

@@ -28,6 +28,7 @@
 #include "AssociationTypes.h"
 #include "Books.h"
 #include "CraftableObjects.h"
+#include "EquipmentSlots.h"
 #include "Eyes.h"
 #include "FormLists.h"
 #include "GameSettings.h"
@@ -83,6 +84,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;
     case cCOBJ:
          return CraftableObjects::getSingleton().readNextRecord(in_File);
+         break;
+    case cEQUP:
+         return EquipmentSlots::getSingleton().readNextRecord(in_File);
          break;
     case cEYES:
          return Eyes::getSingleton().readNextRecord(in_File);

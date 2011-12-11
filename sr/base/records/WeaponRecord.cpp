@@ -34,7 +34,7 @@ WeaponRecord::WeaponRecord()
   unknownVMAD.setPresence(false);
   memset(unknownOBND, 0, 12);
   hasFULL = false;
-  unknownFULL = 0;
+  nameStringID = 0;
   modelPath = "";
   unknownMODT.setPresence(false);
   unknownMODS.setPresence(false);
@@ -50,7 +50,7 @@ WeaponRecord::WeaponRecord()
   unknownBAMT = 0;
   keywordSize = 0;
   keywordArray.clear();
-  unknownDESC = 0;
+  descriptionStringID = 0;
   unknownNNAM = "";
   hasINAM = false;
   unknownINAM = 0;
@@ -81,7 +81,7 @@ WeaponRecord::WeaponRecord(const WeaponRecord& other)
   unknownVMAD = other.unknownVMAD;
   memcpy(unknownOBND, other.unknownOBND, 12);
   hasFULL = other.hasFULL;
-  unknownFULL = other.unknownFULL;
+  nameStringID = other.nameStringID;
   modelPath = other.modelPath;
   unknownMODT = other.unknownMODT;
   unknownMODS = other.unknownMODS;
@@ -97,7 +97,7 @@ WeaponRecord::WeaponRecord(const WeaponRecord& other)
   unknownBAMT = other.unknownBAMT;
   keywordSize = other.keywordSize;
   keywordArray = other.keywordArray;
-  unknownDESC = other.unknownDESC;
+  descriptionStringID = other.descriptionStringID;
   unknownNNAM = other.unknownNNAM;
   hasINAM = other.hasINAM;
   unknownINAM = other.unknownINAM;
@@ -130,7 +130,7 @@ WeaponRecord& WeaponRecord::operator=(const WeaponRecord& other)
   unknownVMAD = other.unknownVMAD;
   memcpy(unknownOBND, other.unknownOBND, 12);
   hasFULL = other.hasFULL;
-  unknownFULL = other.unknownFULL;
+  nameStringID = other.nameStringID;
   modelPath = other.modelPath;
   unknownMODT = other.unknownMODT;
   unknownMODS = other.unknownMODS;
@@ -146,7 +146,7 @@ WeaponRecord& WeaponRecord::operator=(const WeaponRecord& other)
   unknownBAMT = other.unknownBAMT;
   keywordSize = other.keywordSize;
   keywordArray = other.keywordArray;
-  unknownDESC = other.unknownDESC;
+  descriptionStringID = other.descriptionStringID;
   unknownNNAM = other.unknownNNAM;
   hasINAM = other.hasINAM;
   unknownINAM = other.unknownINAM;
@@ -185,7 +185,7 @@ bool WeaponRecord::equals(const WeaponRecord& other) const
 {
   if ((editorID!=other.editorID) or (unknownVMAD!=other.unknownVMAD)
       or (memcmp(unknownOBND, other.unknownOBND, 12)!=0)
-      or (hasFULL!=other.hasFULL) or ((unknownFULL!=other.unknownFULL) and hasFULL)
+      or (hasFULL!=other.hasFULL) or ((nameStringID!=other.nameStringID) and hasFULL)
       or (modelPath!=other.modelPath) or (unknownMODT!=other.unknownMODT)
       or (unknownMODS!=other.unknownMODS)or (!equalsBasic(other)))
   {
@@ -200,7 +200,7 @@ bool WeaponRecord::equals(const WeaponRecord& other) const
   {
     return false;
   }
-  if ((keywordArray!=other.keywordArray) or (unknownDESC!=other.unknownDESC)
+  if ((keywordArray!=other.keywordArray) or (descriptionStringID!=other.descriptionStringID)
     or (unknownNNAM!=other.unknownNNAM)
     or (hasINAM!=other.hasINAM) or ((unknownINAM!=other.unknownINAM) and hasINAM)
     or (hasWNAM!=other.hasWNAM) or ((unknownWNAM!=other.unknownWNAM) and hasWNAM)
@@ -266,7 +266,7 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
   unknownVMAD.setPresence(false);
   bool hasReadOBND = false;
   hasFULL = false;
-  unknownFULL = 0;
+  nameStringID = 0;
   modelPath.clear();
   unknownMODS.setPresence(false);
   hasETYP = false;
@@ -341,7 +341,7 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
            //skip back
            in_File.seekg(-4, std::ios_base::cur);
            //read FULL
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, unknownFULL)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID)) return false;
            bytesRead += 6;
            break;
       case cMODL:
@@ -376,14 +376,6 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            bytesRead = bytesRead + 4+2 +unknownMODT.getSize();
-           /*
-           //check MODT's length
-           if ((unknownMODT.getSize()!=12) and (unknownMODT.getSize()!=24) and (unknownMODT.getSize()!=36))
-           {
-             std::cout <<"Error: sub record MODT of WEAP has invalid length ("<<unknownMODT.getSize()
-                       <<" bytes). Should be 12 or 24 or 36 bytes.\n";
-             return false;
-           }*/
            break;
       case cMODS:
            if (unknownMODS.isPresent())
@@ -529,7 +521,7 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
            //skip back
            in_File.seekg(-4, std::ios_base::cur);
            //read DESC
-           if (!loadUint32SubRecordFromStream(in_File, cDESC, unknownDESC)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cDESC, descriptionStringID)) return false;
            bytesRead += 6;
            hasReadDESC = true;
            break;

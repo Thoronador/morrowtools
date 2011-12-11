@@ -10,6 +10,7 @@
 #include "../base/MiscObjects.h"
 #include "../base/Shouts.h"
 #include "../base/StringTable.h"
+#include "../base/Weapons.h"
 #include "../base/WordsOfPower.h"
 #include "../base/records/Tes4HeaderRecord.h"
 #include "ESMReaderFinder.h"
@@ -37,13 +38,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Form ID Finder for Skyrim, version 0.02.rev317, 2011-12-09\n";
+  std::cout << "Form ID Finder for Skyrim, version 0.03.rev321, 2011-12-11\n";
 }
 
 int showVersionExitcode()
 {
   showVersion();
-  return 317;
+  return 321;
 }
 
 void showHelp()
@@ -467,6 +468,39 @@ int main(int argc, char **argv)
       std::cout << "Total matching words of power: "<<wordMatches<<"\n";
     }
   }//scope for word of power stuff
+
+  //check weapons for matches
+  {
+    unsigned int weaponMatches = 0;
+    SRTP::Weapons::ListIterator weapon_iter = SRTP::Weapons::getSingleton().getBegin();
+    while (weapon_iter!=SRTP::Weapons::getSingleton().getEnd())
+    {
+      if (weapon_iter->second.hasFULL or (weapon_iter->second.nameStringID!=0))
+      {
+        if (table.hasString(weapon_iter->second.nameStringID))
+        {
+          if (matchesKeyword(table.getString(weapon_iter->second.nameStringID), searchKeyword, caseSensitive))
+          {
+            //found matching weapon record
+            if (weaponMatches==0)
+            {
+              std::cout << "\n\nMatching weapons:\n";
+            }
+            std::cout << "    \""<<table.getString(weapon_iter->second.nameStringID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(weapon_iter->second.headerFormID)
+                      <<"\n        editor ID \""<<weapon_iter->second.editorID<<"\"\n";
+            ++weaponMatches;
+            ++totalMatches;
+          }//if match found
+        }//if table has string
+      }//if hasFULL
+      ++weapon_iter;
+    }//while
+    if (weaponMatches>0)
+    {
+      std::cout << "Total matching weapons: "<<weaponMatches<<"\n";
+    }
+  }//scope for weapon stuff
 
   //to do...
 

@@ -70,7 +70,7 @@ struct WeaponRecord: public BasicRecord
     BinarySubRecord unknownVMAD;
     uint8_t unknownOBND[12];
     bool hasFULL;
-    uint32_t unknownFULL;
+    uint32_t nameStringID; //subrecord FULL
     std::string modelPath;
     BinarySubRecord unknownMODT;
     BinarySubRecord unknownMODS;
@@ -86,7 +86,7 @@ struct WeaponRecord: public BasicRecord
     uint32_t unknownBAMT;
     uint32_t keywordSize;
     std::vector<uint32_t> keywordArray;
-    uint32_t unknownDESC;
+    uint32_t descriptionStringID; //subrecord DESC
     std::string unknownNNAM;
     bool hasINAM;
     uint32_t unknownINAM;

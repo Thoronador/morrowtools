@@ -39,6 +39,7 @@
 #include "records/SoundRecord.h"
 #include "records/StaticRecord.h"
 #include "records/TextureSetRecord.h"
+#include "records/WeaponRecord.h"
 #include "records/WordOfPowerRecord.h"
 #include "records/GenericRecord.h"
 
@@ -118,6 +119,9 @@ int ESMReaderContents::readNextRecord(std::ifstream& in_File, const int32_t recN
          break;
     case cTXST:
          recPtr = new TextureSetRecord;
+         break;
+    case cWEAP:
+         recPtr = new WeaponRecord;
          break;
     case cWOOP:
          recPtr = new WordOfPowerRecord;

@@ -51,6 +51,7 @@
 		<Unit filename="..\base\Shouts.h" />
 		<Unit filename="..\base\StringTable.cpp" />
 		<Unit filename="..\base\StringTable.h" />
+		<Unit filename="..\base\Weapons.h" />
 		<Unit filename="..\base\WordsOfPower.h" />
 		<Unit filename="..\base\records\AmmunitionRecord.cpp" />
 		<Unit filename="..\base\records\AmmunitionRecord.h" />
@@ -68,6 +69,8 @@
 		<Unit filename="..\base\records\ShoutRecord.h" />
 		<Unit filename="..\base\records\TES4HeaderRecord.cpp" />
 		<Unit filename="..\base\records\TES4HeaderRecord.h" />
+		<Unit filename="..\base\records\WeaponRecord.cpp" />
+		<Unit filename="..\base\records\WeaponRecord.h" />
 		<Unit filename="..\base\records\WordOfPowerRecord.cpp" />
 		<Unit filename="..\base\records\WordOfPowerRecord.h" />
 		<Unit filename="ESMReaderFinder.cpp" />

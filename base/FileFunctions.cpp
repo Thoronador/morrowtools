@@ -25,6 +25,7 @@
 #include <cmath>
 #include "UtilityFunctions.h"
 #include <iostream>
+#include <cstdio>
 #if defined(_WIN32)
   //Windows includes go here
   #include <io.h>

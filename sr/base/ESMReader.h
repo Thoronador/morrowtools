@@ -22,7 +22,7 @@
 #define SR_ESMREADER_H
 
 #include <fstream>
-#include "records/Tes4HeaderRecord.h"
+#include "records/TES4HeaderRecord.h"
 #include "records/GroupData.h"
 
 namespace SRTP

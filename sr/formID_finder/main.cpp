@@ -13,7 +13,7 @@
 #include "../base/StringTable.h"
 #include "../base/Weapons.h"
 #include "../base/WordsOfPower.h"
-#include "../base/records/Tes4HeaderRecord.h"
+#include "../base/records/TES4HeaderRecord.h"
 #include "ESMReaderFinder.h"
 
 void showGPLNotice()
@@ -39,13 +39,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Form ID Finder for Skyrim, version 0.04.rev324, 2011-12-12\n";
+  std::cout << "Form ID Finder for Skyrim, version 0.04.rev325, 2011-12-12\n";
 }
 
 int showVersionExitcode()
 {
   showVersion();
-  return 324;
+  return 325;
 }
 
 void showHelp()

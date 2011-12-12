@@ -1,7 +1,8 @@
 
 
-#include "Tes4HeaderRecord.h"
+#include "TES4HeaderRecord.h"
 #include <iostream>
+#include <cstring>
 #include "../SR_Constants.h"
 #include "../../../mw/base/HelperIO.h"
 
@@ -16,7 +17,12 @@ bool Tes4HeaderRecord::MasterFile::operator==(const Tes4HeaderRecord::MasterFile
 Tes4HeaderRecord::Tes4HeaderRecord()
 : BasicRecord()
 {
-
+  version = 0.0f;
+  HeaderUnknownTwo[0] = 0;
+  HeaderUnknownTwo[1] = 0;
+  authorName = "";
+  dependencies.clear();
+  unknownIntValue = 0;
 }
 
 Tes4HeaderRecord::~Tes4HeaderRecord()

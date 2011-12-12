@@ -9,6 +9,7 @@
 #include "../base/FormIDFunctions.h"
 #include "../base/MiscObjects.h"
 #include "../base/Shouts.h"
+#include "../base/Spells.h"
 #include "../base/StringTable.h"
 #include "../base/Weapons.h"
 #include "../base/WordsOfPower.h"
@@ -18,11 +19,11 @@
 void showGPLNotice()
 {
   std::cout << "Form ID finder for Skyrim\n"
-            << "  This programme is part of the Skyrim Tools Project.\n"
+            //<< "  This programme is part of the Skyrim Tools Project.\n"
             << "  Copyright (C) 2011 Thoronador\n"
             << "\n"
-            << "  The Skyrim Tools are free software: you can redistribute them and/or\n"
-            << "  modify them under the terms of the GNU General Public License as published\n"
+            << "  This programme is free software: you can redistribute it and/or\n"
+            << "  modify it under the terms of the GNU General Public License as published\n"
             << "  by the Free Software Foundation, either version 3 of the License, or\n"
             << "  (at your option) any later version.\n"
             << "\n"
@@ -38,13 +39,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Form ID Finder for Skyrim, version 0.03.rev321, 2011-12-11\n";
+  std::cout << "Form ID Finder for Skyrim, version 0.04.rev324, 2011-12-12\n";
 }
 
 int showVersionExitcode()
 {
   showVersion();
-  return 321;
+  return 324;
 }
 
 void showHelp()
@@ -401,6 +402,39 @@ int main(int argc, char **argv)
       std::cout << "Total matching misc. objects: "<<miscMatches<<"\n";
     }
   }//scope for misc. object stuff
+
+  //check spells for matches
+  {
+    unsigned int spellMatches = 0;
+    SRTP::Spells::ListIterator spell_iter = SRTP::Spells::getSingleton().getBegin();
+    while (spell_iter!=SRTP::Spells::getSingleton().getEnd())
+    {
+      if (spell_iter->second.hasFULL)
+      {
+        if (table.hasString(spell_iter->second.nameStringID))
+        {
+          if (matchesKeyword(table.getString(spell_iter->second.nameStringID), searchKeyword, caseSensitive))
+          {
+            //found matching spell record
+            if (spellMatches==0)
+            {
+              std::cout << "\n\nMatching spells:\n";
+            }
+            std::cout << "    \""<<table.getString(spell_iter->second.nameStringID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(spell_iter->second.headerFormID)
+                      <<"\n        editor ID \""<<spell_iter->second.editorID<<"\"\n";
+            ++spellMatches;
+            ++totalMatches;
+          }//if match found
+        }//if table has string
+      }//if hasFULL
+      ++spell_iter;
+    }//while
+    if (spellMatches>0)
+    {
+      std::cout << "Total matching spells: "<<spellMatches<<"\n";
+    }
+  }//scope for spell stuff
 
   //check shouts for matches
   {

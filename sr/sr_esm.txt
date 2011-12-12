@@ -107,6 +107,32 @@ Records and their sub-records:
           unknown data
 
 
+  SPEL: spells
+      EDID (string, NUL-terminated)
+          editorID
+      OBND (12 bytes)
+          unknown data
+      FULL (4 bytes, optional)
+          string ID of spell's name
+      MDOB (4 bytes, optional)
+          unknown data
+      ETYP (4 bytes)
+          unknown data
+      DESC (4 bytes)
+          string ID of spell's description (ID can be zero)
+      SPIT (36 bytes)
+          unknown data
+
+        EFID (4 bytes)
+            unknown data
+        EFIT (12 bytes)
+            unknown data
+        CTDA (32 bytes, optional, can occur more than once)
+            unknown data
+
+      --> EFID (once), EFIT (once) and CTDA (0+ times) seem to form blocks, that can occur multiple times
+
+
   AACT: action(?)
       EDID (string, NUL-terminated)
           editorID

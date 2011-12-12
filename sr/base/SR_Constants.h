@@ -34,6 +34,7 @@ const int32_t cBAMT = 0x544D4142; //"BAMT" = 42 41 4D 54
 const int32_t cBIDS = 0x53444942; //"BIDS" = 42 49 44 53
 const int32_t cBNAM = 0x4D414E42; //"BNAM" = 42 4E 41 4D
 const int32_t cBOOK = 0x4B4F4F42; //"BOOK" = 42 4F 4F 4B
+const int32_t cCIS2 = 0x32534943; //"CIS2" = 43 49 53 32
 const int32_t cCNAM = 0x4D414E43; //"CNAM" = 43 4E 41 4D
 const int32_t cCNTO = 0x4F544E43; //"CNTO" = 43 4E 54 4F
 const int32_t cCOBJ = 0x4A424F43; //"COBJ" = 43 4F 42 4A
@@ -52,6 +53,8 @@ const int32_t cDSTD = 0x44545344; //"DSTD" = 44 53 54 44
 const int32_t cDSTF = 0x46545344; //"DSTF" = 44 53 54 46
 const int32_t cEAMT = 0x544D4145; //"EAMT" = 45 41 4D 54
 const int32_t cEDID = 0x44494445; //"EDID" = 45 44 49 44
+const int32_t cEFID = 0x44494645; //"EFID" = 45 46 49 44
+const int32_t cEFIT = 0x54494645; //"EFIT" = 45 46 49 54
 const int32_t cEITM = 0x4D544945; //"EITM" = 45 49 54 4D
 const int32_t cEQUP = 0x50555145; //"EQUP" = 45 51 55 50
 const int32_t cETYP = 0x50595445; //"ETYP" = 45 54 59 50
@@ -106,6 +109,8 @@ const int32_t cSHOU = 0x554F4853; //"SHOU" = 53 48 4F 55
 const int32_t cSNAM = 0x4D414E53; //"SNAM" = 53 4E 41 4D
 const int32_t cSNDD = 0x44444E53; //"SNDD" = 53 4E 44 44
 const int32_t cSOUN = 0x4E554F53; //"SOUN" = 53 4F 55 4E
+const int32_t cSPEL = 0x4C455053; //"SPEL" = 53 50 45 4C
+const int32_t cSPIT = 0x54495053; //"SPIT" = 53 50 49 54
 const int32_t cSTAT = 0x54415453; //"STAT" = 53 54 41 54
 const int32_t cTES4 = 0x34534554; //"TES4" = 54 45 53 34
 const int32_t cTNAM = 0x4D414E54; //"TNAM" = 54 4E 41 4D

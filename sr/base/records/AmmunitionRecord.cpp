@@ -526,15 +526,4 @@ int32_t AmmunitionRecord::getRecordType() const
   return cAMMO;
 }
 
-    std::string editorID;
-    uint8_t unknownOBND[12];
-    uint32_t unknownFULL;
-    std::string modelPath;
-    BinarySubRecord unknownMODT;
-    uint32_t unknownYNAM;
-    uint32_t unknownZNAM;
-    uint32_t unknownDESC;
-    uint32_t keywordSize;
-    std::vector<uint32_t> keywordArray;
-    uint32_t unknownDATA[4];//subrecord DATA
 } //namespace

@@ -38,6 +38,7 @@
 #include "records/RelationshipRecord.h"
 #include "records/ShoutRecord.h"
 #include "records/SoundRecord.h"
+#include "records/SpellRecord.h"
 #include "records/StaticRecord.h"
 #include "records/TextureSetRecord.h"
 #include "records/WeaponRecord.h"
@@ -117,6 +118,9 @@ int ESMReaderContents::readNextRecord(std::ifstream& in_File, const int32_t recN
          break;
     case cSOUN:
          recPtr = new SoundRecord;
+         break;
+    case cSPEL:
+         recPtr = new SpellRecord;
          break;
     case cSTAT:
          recPtr = new StaticRecord;

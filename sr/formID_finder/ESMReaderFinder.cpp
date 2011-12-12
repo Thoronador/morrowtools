@@ -24,6 +24,7 @@
 #include "../base/Books.h"
 #include "../base/MiscObjects.h"
 #include "../base/Shouts.h"
+#include "../base/Spells.h"
 #include "../base/Weapons.h"
 #include "../base/WordsOfPower.h"
 
@@ -55,7 +56,7 @@ bool ESMReaderFinder::needGroup(const GroupData& g_data) const
     //case cPERK;
     //case cSCRL:
     case cSHOU:
-    //case cSPEL:
+    case cSPEL:
     case cWEAP:
     case cWOOP:
          return true;
@@ -80,6 +81,9 @@ int ESMReaderFinder::readNextRecord(std::ifstream& in_File, const int32_t recNam
          break;
     case cSHOU:
          return Shouts::getSingleton().readNextRecord(in_File);
+         break;
+    case cSPEL:
+         return Spells::getSingleton().readNextRecord(in_File);
          break;
     case cWEAP:
          return Weapons::getSingleton().readNextRecord(in_File);

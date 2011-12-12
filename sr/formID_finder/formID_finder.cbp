@@ -49,6 +49,7 @@
 		<Unit filename="..\base\MiscObjects.h" />
 		<Unit filename="..\base\SR_Constants.h" />
 		<Unit filename="..\base\Shouts.h" />
+		<Unit filename="..\base\Spells.h" />
 		<Unit filename="..\base\StringTable.cpp" />
 		<Unit filename="..\base\StringTable.h" />
 		<Unit filename="..\base\Weapons.h" />
@@ -61,12 +62,16 @@
 		<Unit filename="..\base\records\BinarySubRecord.h" />
 		<Unit filename="..\base\records\BookRecord.cpp" />
 		<Unit filename="..\base\records\BookRecord.h" />
+		<Unit filename="..\base\records\CTDAData.cpp" />
+		<Unit filename="..\base\records\CTDAData.h" />
 		<Unit filename="..\base\records\GroupData.cpp" />
 		<Unit filename="..\base\records\GroupData.h" />
 		<Unit filename="..\base\records\MiscObjectRecord.cpp" />
 		<Unit filename="..\base\records\MiscObjectRecord.h" />
 		<Unit filename="..\base\records\ShoutRecord.cpp" />
 		<Unit filename="..\base\records\ShoutRecord.h" />
+		<Unit filename="..\base\records\SpellRecord.cpp" />
+		<Unit filename="..\base\records\SpellRecord.h" />
 		<Unit filename="..\base\records\TES4HeaderRecord.cpp" />
 		<Unit filename="..\base\records\TES4HeaderRecord.h" />
 		<Unit filename="..\base\records\WeaponRecord.cpp" />

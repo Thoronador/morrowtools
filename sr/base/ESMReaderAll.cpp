@@ -40,6 +40,7 @@
 #include "Relationships.h"
 #include "Shouts.h"
 #include "Sounds.h"
+#include "Spells.h"
 #include "Statics.h"
 #include "TextureSets.h"
 #include "Weapons.h"
@@ -120,6 +121,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;
     case cSOUN:
          return Sounds::getSingleton().readNextRecord(in_File);
+         break;
+    case cSPEL:
+         return Spells::getSingleton().readNextRecord(in_File);
          break;
     case cSTAT:
          return Statics::getSingleton().readNextRecord(in_File);

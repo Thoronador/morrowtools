@@ -93,7 +93,7 @@ Records and their sub-records:
 
 
   LTEX: landscape texture
-      EDID: (string, NUL-terminated)
+      EDID (string, NUL-terminated)
           editorID
       TNAM (4 bytes, optional)
           unknown data
@@ -105,6 +105,35 @@ Records and their sub-records:
           unknown data
       GNAM (4 bytes, optional, occurs 0+ times)
           unknown data
+
+
+  PERK: perks
+      EDID (string, NUL-terminated)
+          editorID
+      VMAD (size varies, optional)
+          unknown data
+      FULL (4 bytes, optional)
+          string ID of perk's name
+      DESC (4 bytes)
+          string ID of perk's description (can be zero)
+      DATA (5 bytes)
+          unknown data
+      PRKE (3 bytes, optional)
+          unknown data
+      DATA (3 or 4 bytes, optional)
+          unknown data
+      PRKC (1 byte, optional)
+          unknown data
+      CTDA (32 bytes, optional)
+          unknown data
+      EPFT (1 byte, optional)
+          unknown data
+      EPFD (4 bytes, optional)
+          unknown data
+      PRKF (0 bytes, optional)
+          unknown data
+
+      -> subrecords after DATA (5) can be repeated in more or less regular sequence
 
 
   SPEL: spells

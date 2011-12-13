@@ -37,6 +37,7 @@
 #include "LandscapeTextures.h"
 #include "MiscObjects.h"
 #include "Outfits.h"
+#include "Perks.h"
 #include "Relationships.h"
 #include "Shouts.h"
 #include "Sounds.h"
@@ -112,6 +113,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;
     case cOTFT:
          return Outfits::getSingleton().readNextRecord(in_File);
+         break;
+    case cPERK:
+         return Perks::getSingleton().readNextRecord(in_File);
          break;
     case cRELA:
          return Relationships::getSingleton().readNextRecord(in_File);

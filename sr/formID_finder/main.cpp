@@ -8,6 +8,7 @@
 #include "../base/Books.h"
 #include "../base/FormIDFunctions.h"
 #include "../base/MiscObjects.h"
+#include "../base/Perks.h"
 #include "../base/RegistryFunctions.h"
 #include "../base/Shouts.h"
 #include "../base/Spells.h"
@@ -40,13 +41,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Form ID Finder for Skyrim, version 0.05.rev326, 2011-12-13\n";
+  std::cout << "Form ID Finder for Skyrim, version 0.06.rev327, 2011-12-13\n";
 }
 
 int showVersionExitcode()
 {
   showVersion();
-  return 326;
+  return 327;
 }
 
 void showHelp()
@@ -368,7 +369,9 @@ int main(int argc, char **argv)
           {
             std::cout << "\n\nMatching ammunition:\n";
           }
-          std::cout << "    \""<<table.getString(ammo_iter->second.nameStringID)<<"\", form ID "<<SRTP::getFormIDAsString(ammo_iter->second.headerFormID)<<"\n";
+          std::cout << "    \""<<table.getString(ammo_iter->second.nameStringID)
+                    <<"\"\n        form ID "<<SRTP::getFormIDAsString(ammo_iter->second.headerFormID)
+                    <<"\n        editor ID \""<<ammo_iter->second.editorID<<"\"\n";
           ++ammoMatches;
           ++totalMatches;
         }//if match found
@@ -398,7 +401,9 @@ int main(int argc, char **argv)
             {
               std::cout << "\n\nMatching books:\n";
             }
-            std::cout << "    \""<<table.getString(book_iter->second.titleStringID)<<"\", form ID "<<SRTP::getFormIDAsString(book_iter->second.headerFormID)<<"\n";
+            std::cout << "    \""<<table.getString(book_iter->second.titleStringID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(book_iter->second.headerFormID)
+                      <<"\n        editor ID \""<<book_iter->second.editorID<<"\"\n";
             ++bookMatches;
             ++totalMatches;
           }//if match found
@@ -429,7 +434,9 @@ int main(int argc, char **argv)
             {
               std::cout << "\n\nMatching misc. objects:\n";
             }
-            std::cout << "    \""<<table.getString(misc_iter->second.fullNameStringID)<<"\", form ID "<<SRTP::getFormIDAsString(misc_iter->second.headerFormID)<<"\n";
+            std::cout << "    \""<<table.getString(misc_iter->second.fullNameStringID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(misc_iter->second.headerFormID)
+                      <<"\n        editor ID \""<<misc_iter->second.editorID<<"\"\n";
             ++miscMatches;
             ++totalMatches;
           }//if match found
@@ -442,6 +449,39 @@ int main(int argc, char **argv)
       std::cout << "Total matching misc. objects: "<<miscMatches<<"\n";
     }
   }//scope for misc. object stuff
+
+  //check perks for matches
+  {
+    unsigned int perkMatches = 0;
+    SRTP::Perks::ListIterator perk_iter = SRTP::Perks::getSingleton().getBegin();
+    while (perk_iter!=SRTP::Perks::getSingleton().getEnd())
+    {
+      if (perk_iter->second.hasFULL)
+      {
+        if (table.hasString(perk_iter->second.nameStringID))
+        {
+          if (matchesKeyword(table.getString(perk_iter->second.nameStringID), searchKeyword, caseSensitive))
+          {
+            //found matching perk record
+            if (perkMatches==0)
+            {
+              std::cout << "\n\nMatching perks:\n";
+            }
+            std::cout << "    \""<<table.getString(perk_iter->second.nameStringID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(perk_iter->second.headerFormID)
+                      <<"\n        editor ID \""<<perk_iter->second.editorID<<"\"\n";
+            ++perkMatches;
+            ++totalMatches;
+          }//if match found
+        }//if table has string
+      }//if hasFULL
+      ++perk_iter;
+    }//while
+    if (perkMatches>0)
+    {
+      std::cout << "Total matching perks: "<<perkMatches<<"\n";
+    }
+  }//scope for perk stuff
 
   //check spells for matches
   {

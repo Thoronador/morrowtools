@@ -56,6 +56,8 @@ const int32_t cEDID = 0x44494445; //"EDID" = 45 44 49 44
 const int32_t cEFID = 0x44494645; //"EFID" = 45 46 49 44
 const int32_t cEFIT = 0x54494645; //"EFIT" = 45 46 49 54
 const int32_t cEITM = 0x4D544945; //"EITM" = 45 49 54 4D
+const int32_t cEPFD = 0x44465045; //"EPFD" = 45 50 46 44
+const int32_t cEPFT = 0x54465045; //"EPFT" = 45 50 46 54
 const int32_t cEQUP = 0x50555145; //"EQUP" = 45 51 55 50
 const int32_t cETYP = 0x50595445; //"ETYP" = 45 54 59 50
 const int32_t cEYES = 0x53455945; //"EYES" = 45 59 45 53
@@ -99,7 +101,11 @@ const int32_t cNEXT = 0x5458454E; //"NEXT" = 4E 45 58 54
 const int32_t cNNAM = 0x4D414E4E; //"NNAM" = 4E 4E 41 4D
 const int32_t cOBND = 0x444E424F; //"OBND" = 4F 42 4E 44
 const int32_t cOTFT = 0x5446544F; //"OTFT" = 4F 54 46 54
+const int32_t cPERK = 0x4B524550; //"PERK" = 50 45 52 4B
 const int32_t cPNAM = 0x4D414E50; //"PNAM" = 50 4E 41 4D
+const int32_t cPRKC = 0x434B5250; //"PRKC" = 50 52 4B 43
+const int32_t cPRKE = 0x454B5250; //"PRKE" = 50 52 4B 45
+const int32_t cPRKF = 0x464B5250; //"PRKF" = 50 52 4B 46
 const int32_t cQSDT = 0x54445351; //"QSDT" = 51 53 44 54
 const int32_t cQUST = 0x54535551; //"QUST" = 51 55 53 54
 const int32_t cRELA = 0x414C4552; //"RELA" = 52 45 4C 41

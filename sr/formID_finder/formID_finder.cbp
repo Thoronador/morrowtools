@@ -47,6 +47,8 @@
 		<Unit filename="..\base\FormIDFunctions.h" />
 		<Unit filename="..\base\MapBasedRecordManager.h" />
 		<Unit filename="..\base\MiscObjects.h" />
+		<Unit filename="..\base\RegistryFunctions.cpp" />
+		<Unit filename="..\base\RegistryFunctions.h" />
 		<Unit filename="..\base\SR_Constants.h" />
 		<Unit filename="..\base\Shouts.h" />
 		<Unit filename="..\base\Spells.h" />

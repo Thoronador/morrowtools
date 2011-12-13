@@ -8,6 +8,7 @@
 #include "../base/Books.h"
 #include "../base/FormIDFunctions.h"
 #include "../base/MiscObjects.h"
+#include "../base/RegistryFunctions.h"
 #include "../base/Shouts.h"
 #include "../base/Spells.h"
 #include "../base/StringTable.h"
@@ -39,13 +40,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Form ID Finder for Skyrim, version 0.04.rev325, 2011-12-12\n";
+  std::cout << "Form ID Finder for Skyrim, version 0.05.rev326, 2011-12-13\n";
 }
 
 int showVersionExitcode()
 {
   showVersion();
-  return 325;
+  return 326;
 }
 
 void showHelp()
@@ -57,8 +58,8 @@ void showHelp()
             << "  --help           - displays this help message and quits\n"
             << "  -?               - same as --help\n"
             << "  --version        - displays the version of the programme and quits\n"
-            << "  -d DIRECTORY     - path to the Data Files directory of Skyrim, including\n"
-            << "                     trailing backslash\n"
+            << "  -d DIRECTORY     - set path to the Data Files directory of Skyrim to\n"
+            << "                     DIRECTORY\n"
             << "  -dir DIRECTORY   - same as -d\n"
             << "  -p TEXT          - set the search pattern to be TEXT.\n"
             << "  --keyword TEXT   - same as -p\n"
@@ -182,6 +183,12 @@ int main(int argc, char **argv)
           caseSensitive = true;
           std::cout << "Case-sensitive search modus enabled.\n";
         }//case sensitive
+        else if (searchKeyword.empty())
+        {
+          //assume search keyword was given without prior --keyword option
+          searchKeyword = std::string(argv[i]);
+          std::cout << "Assuming sloppy command line parameters, search keyword was set to \""<<searchKeyword<<"\".\n";
+        }
         else
         {
           //unknown or wrong parameter
@@ -208,17 +215,50 @@ int main(int argc, char **argv)
   //Has the user specified a data directory?
   if (dataDir.empty())
   {
-    //No, so let's try a default value.
-    dataDir = "C:\\Program Files\\Steam\\SteamApps\\common\\skyrim\\Data\\";
+    //No, so let's search the registry first...
     std::cout << "Warning: Data files directory of Skyrim was not specified, "
-              << "will use default path \""<<dataDir<<"\". This might not work"
-              << " properly on your machine, use the parameter -d to specify "
-              << "the proper path.\n";
-  }
+              << "will will try to read it from the registry.\n";
+    if (!SRTP::getSkryrimPathFromRegistry(dataDir))
+    {
+      std::cout << "Error: Could not find Skyrim's installation path in registry!\n";
+      dataDir.clear();
+    }
+    else
+    {
+      if (!dataDir.empty())
+      {
+        //Does it have a trailing (back)slash?
+        if (dataDir.at(dataDir.length()-1)!='\\')
+        {
+          dataDir = dataDir + "\\";
+        }//if not backslash
+        /*add data dir to path, because installed path points only to Skyrim's
+          main direkctory */
+        dataDir = dataDir +"Data\\";
+        std::cout << "Data files directory was set to \""<<dataDir<<"\" via registry.\n";
+      }
+      else
+      {
+        std::cout << "Error: Installation path in registry is empty!\n";
+      }
+    }
+
+    //check again, in case registry failed
+    if (dataDir.empty())
+    {
+      //empty, so let's try a default value.
+      dataDir = "C:\\Program Files\\Steam\\SteamApps\\common\\skyrim\\Data\\";
+      std::cout << "Warning: Data files directory of Skyrim was not specified, "
+                << "will use default path \""<<dataDir<<"\". This might not work"
+                << " properly on your machine, use the parameter -d to specify "
+                << "the proper path.\n";
+    }
+  }//if no data dir is given
+
   //keyword given?
   if (searchKeyword.empty())
   {
-    std::cout << "Error: No search keyword was specified. Use the parameter -p"
+    std::cout << "Error: No search keyword was specified. Use the parameter --keyword"
               << " to specify the stuff you want that programme to search for.\n";
     return MWTP::rcInvalidParameter;
   }//if no keyword given

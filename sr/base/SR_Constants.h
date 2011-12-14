@@ -56,6 +56,7 @@ const int32_t cEDID = 0x44494445; //"EDID" = 45 44 49 44
 const int32_t cEFID = 0x44494645; //"EFID" = 45 46 49 44
 const int32_t cEFIT = 0x54494645; //"EFIT" = 45 46 49 54
 const int32_t cEITM = 0x4D544945; //"EITM" = 45 49 54 4D
+const int32_t cENIT = 0x54494E45; //"ENIT" = 45 4E 49 54
 const int32_t cEPFD = 0x44465045; //"EPFD" = 45 50 46 44
 const int32_t cEPFT = 0x54465045; //"EPFT" = 45 50 46 54
 const int32_t cEQUP = 0x50555145; //"EQUP" = 45 51 55 50
@@ -77,6 +78,7 @@ const int32_t cHNAM = 0x4D414E48; //"HNAM" = 48 4E 41 4D
 const int32_t cICON = 0x4E4F4349; //"ICON" = 49 43 4F 4E
 const int32_t cINAM = 0x4D414E49; //"INAM" = 49 4E 41 4D
 const int32_t cINDX = 0x58444E49; //"INDX" = 49 4E 44 58
+const int32_t cINGR = 0x52474E49; //"INGR" = 49 4E 47 52
 const int32_t cINTV = 0x56544E49; //"INTV" = 49 4E 54 56
 const int32_t cKNAM = 0x4D414E4B; //"KNAM" = 4B 4E 41 4D
 const int32_t cKSIZ = 0x5A49534B; //"KSIZ" = 4B 53 49 5A

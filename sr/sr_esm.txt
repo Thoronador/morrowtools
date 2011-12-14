@@ -136,6 +136,40 @@ Records and their sub-records:
       -> subrecords after DATA (5) can be repeated in more or less regular sequence
 
 
+  INGR: ingredients
+      EDID (string, NUL-terminated)
+          editorID
+      VMAD (size varies, optional)
+          unknown data
+      OBND (12 bytes)
+          unknown data
+      FULL (4 bytes)
+          string ID of ingredient's name(?)
+      KSIZ (4 bytes)
+          number of keywords/formIDs in KWDA
+      KWDA (n*4 bytes, always follows KSIZ)
+          array of keyword formIDs
+      MODL (string, NUL-terminated)
+          path to the scroll's mesh
+      MODT (30 bytes)
+          unknown data
+      YNAM (4 bytes, optional)
+          unknown data
+      ZNAM (4 bytes, optional)
+          unknown data
+      DATA (8 bytes)
+          unknown data
+      ENIT (8 bytes)
+          unknown data
+
+        EFID (4 bytes)
+            unknown data
+        EFIT (12 bytes)
+            unknown data
+
+       --> EFID and EFIT (and no CTDAs) seem to form blocks, that occur exactly four times
+
+
   SCRL: scrolls
       EDID (string, NUL-terminated)
           editorID
@@ -169,7 +203,7 @@ Records and their sub-records:
         CTDA (32 bytes, optional)
             unknown data
 
-       --> EFID (once) and EFIT (once) seem to form blocks, that can occur multiple times
+       --> EFID (once), EFIT (once) and CTDAs seem to form blocks, that can occur multiple times
 
 
   SPEL: spells

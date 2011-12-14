@@ -33,6 +33,7 @@
 #include "FormLists.h"
 #include "GameSettings.h"
 #include "Globals.h"
+#include "Ingredients.h"
 #include "Keywords.h"
 #include "LandscapeTextures.h"
 #include "MiscObjects.h"
@@ -102,6 +103,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;
     case cGLOB:
          return Globals::getSingleton().readNextRecord(in_File);
+         break;
+    case cINGR:
+         return Ingredients::getSingleton().readNextRecord(in_File);
          break;
     case cKYWD:
          return Keywords::getSingleton().readNextRecord(in_File);

@@ -45,6 +45,7 @@
 		<Unit filename="..\base\ESMReader.h" />
 		<Unit filename="..\base\FormIDFunctions.cpp" />
 		<Unit filename="..\base\FormIDFunctions.h" />
+		<Unit filename="..\base\Ingredients.h" />
 		<Unit filename="..\base\MapBasedRecordManager.h" />
 		<Unit filename="..\base\MiscObjects.h" />
 		<Unit filename="..\base\Perks.h" />
@@ -72,6 +73,8 @@
 		<Unit filename="..\base\records\EffectBlock.h" />
 		<Unit filename="..\base\records\GroupData.cpp" />
 		<Unit filename="..\base\records\GroupData.h" />
+		<Unit filename="..\base\records\IngredientRecord.cpp" />
+		<Unit filename="..\base\records\IngredientRecord.h" />
 		<Unit filename="..\base\records\MiscObjectRecord.cpp" />
 		<Unit filename="..\base\records\MiscObjectRecord.h" />
 		<Unit filename="..\base\records\PerkRecord.cpp" />

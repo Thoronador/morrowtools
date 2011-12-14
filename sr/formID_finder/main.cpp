@@ -7,6 +7,7 @@
 #include "../base/Ammunitions.h"
 #include "../base/Books.h"
 #include "../base/FormIDFunctions.h"
+#include "../base/Ingredients.h"
 #include "../base/MiscObjects.h"
 #include "../base/Perks.h"
 #include "../base/RegistryFunctions.h"
@@ -42,13 +43,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Form ID Finder for Skyrim, version 0.07.rev328, 2011-12-14\n";
+  std::cout << "Form ID Finder for Skyrim, version 0.08.rev329, 2011-12-14\n";
 }
 
 int showVersionExitcode()
 {
   showVersion();
-  return 328;
+  return 329;
 }
 
 void showHelp()
@@ -60,6 +61,7 @@ void showHelp()
             << "  --help           - displays this help message and quits\n"
             << "  -?               - same as --help\n"
             << "  --version        - displays the version of the programme and quits\n"
+            << "  -v               - same as --version\n"
             << "  -d DIRECTORY     - set path to the Data Files directory of Skyrim to\n"
             << "                     DIRECTORY\n"
             << "  -dir DIRECTORY   - same as -d\n"
@@ -105,7 +107,7 @@ int main(int argc, char **argv)
           return 0;
         }//if help wanted
         //version information requested?
-        else if (param=="--version")
+        else if ((param=="--version") or (param=="-v"))
         {
           showVersion();
           return 0;
@@ -219,7 +221,7 @@ int main(int argc, char **argv)
   {
     //No, so let's search the registry first...
     std::cout << "Warning: Data files directory of Skyrim was not specified, "
-              << "will will try to read it from the registry.\n";
+              << "will try to read it from the registry.\n";
     if (!SRTP::getSkryrimPathFromRegistry(dataDir))
     {
       std::cout << "Error: Could not find Skyrim's installation path in registry!\n";
@@ -417,6 +419,39 @@ int main(int argc, char **argv)
       std::cout << "Total matching books: "<<bookMatches<<"\n";
     }
   }//scope for book stuff
+
+  //check ingredients for matches
+  {
+    unsigned int ingredMatches = 0;
+    SRTP::Ingredients::ListIterator ingred_iter = SRTP::Ingredients::getSingleton().getBegin();
+    while (ingred_iter!=SRTP::Ingredients::getSingleton().getEnd())
+    {
+      //if (ingred_iter->second.hasFULL)
+      //{
+        if (table.hasString(ingred_iter->second.nameStringID))
+        {
+          if (matchesKeyword(table.getString(ingred_iter->second.nameStringID), searchKeyword, caseSensitive))
+          {
+            //found matching book record
+            if (ingredMatches==0)
+            {
+              std::cout << "\n\nMatching ingredients:\n";
+            }
+            std::cout << "    \""<<table.getString(ingred_iter->second.nameStringID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(ingred_iter->second.headerFormID)
+                      <<"\n        editor ID \""<<ingred_iter->second.editorID<<"\"\n";
+            ++ingredMatches;
+            ++totalMatches;
+          }//if match found
+        }//if table has string
+      //}//if hasFULL
+      ++ingred_iter;
+    }//while
+    if (ingredMatches>0)
+    {
+      std::cout << "Total matching ingredients: "<<ingredMatches<<"\n";
+    }
+  }//scope for ingredient stuff
 
   //check misc. objects for matches
   {

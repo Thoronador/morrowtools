@@ -30,6 +30,7 @@
 #include "records/FormListRecord.h"
 #include "records/GMSTRecord.h"
 #include "records/GlobalRecord.h"
+#include "records/IngredientRecord.h"
 #include "records/KeywordRecord.h"
 #include "records/LandscapeTextureRecord.h"
 #include "records/MagicEffectRecord.h"
@@ -96,6 +97,9 @@ int ESMReaderContents::readNextRecord(std::ifstream& in_File, const int32_t recN
          break;
     case cGLOB:
          recPtr = new GlobalRecord;
+         break;
+    case cINGR:
+         recPtr = new IngredientRecord;
          break;
     case cKYWD:
          recPtr = new KeywordRecord;

@@ -39,6 +39,7 @@
 #include "Outfits.h"
 #include "Perks.h"
 #include "Relationships.h"
+#include "Scrolls.h"
 #include "Shouts.h"
 #include "Sounds.h"
 #include "Spells.h"
@@ -119,6 +120,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;
     case cRELA:
          return Relationships::getSingleton().readNextRecord(in_File);
+         break;
+    case cSCRL:
+         return Scrolls::getSingleton().readNextRecord(in_File);
          break;
     case cSHOU:
          return Shouts::getSingleton().readNextRecord(in_File);

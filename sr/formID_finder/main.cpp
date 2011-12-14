@@ -10,6 +10,7 @@
 #include "../base/MiscObjects.h"
 #include "../base/Perks.h"
 #include "../base/RegistryFunctions.h"
+#include "../base/Scrolls.h"
 #include "../base/Shouts.h"
 #include "../base/Spells.h"
 #include "../base/StringTable.h"
@@ -41,13 +42,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Form ID Finder for Skyrim, version 0.06.rev327, 2011-12-13\n";
+  std::cout << "Form ID Finder for Skyrim, version 0.07.rev328, 2011-12-14\n";
 }
 
 int showVersionExitcode()
 {
   showVersion();
-  return 327;
+  return 328;
 }
 
 void showHelp()
@@ -482,6 +483,39 @@ int main(int argc, char **argv)
       std::cout << "Total matching perks: "<<perkMatches<<"\n";
     }
   }//scope for perk stuff
+
+  //check scrolls for matches
+  {
+    unsigned int scrollMatches = 0;
+    SRTP::Scrolls::ListIterator scroll_iter = SRTP::Scrolls::getSingleton().getBegin();
+    while (scroll_iter!=SRTP::Scrolls::getSingleton().getEnd())
+    {
+      //if (scroll_iter->second.hasFULL)
+      //{
+        if (table.hasString(scroll_iter->second.nameStringID))
+        {
+          if (matchesKeyword(table.getString(scroll_iter->second.nameStringID), searchKeyword, caseSensitive))
+          {
+            //found matching spell record
+            if (scrollMatches==0)
+            {
+              std::cout << "\n\nMatching scrolls:\n";
+            }
+            std::cout << "    \""<<table.getString(scroll_iter->second.nameStringID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(scroll_iter->second.headerFormID)
+                      <<"\n        editor ID \""<<scroll_iter->second.editorID<<"\"\n";
+            ++scrollMatches;
+            ++totalMatches;
+          }//if match found
+        }//if table has string
+      //}//if hasFULL
+      ++scroll_iter;
+    }//while
+    if (scrollMatches>0)
+    {
+      std::cout << "Total matching scrolls: "<<scrollMatches<<"\n";
+    }
+  }//scope for scrolls
 
   //check spells for matches
   {

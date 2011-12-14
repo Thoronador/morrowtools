@@ -136,6 +136,42 @@ Records and their sub-records:
       -> subrecords after DATA (5) can be repeated in more or less regular sequence
 
 
+  SCRL: scrolls
+      EDID (string, NUL-terminated)
+          editorID
+      OBND (12 bytes)
+          unknown data
+      FULL (4 bytes)
+          string ID of scroll's name
+      KSIZ (4 bytes, optional)
+          number of keywords/formIDs in KWDA
+      KWDA (n*4 bytes, optional, always follows KSIZ)
+          array of keyword formIDs
+      MDOB (4 bytes)
+          unknown data
+      ETYP (4 bytes)
+          unknown data
+      DESC (4 bytes)
+          string ID of scroll's description (can be zero)
+      MODL (string, NUL-terminated)
+          path to the scroll's mesh
+      MODT (36 bytes)
+          unknown data
+      DATA (8 bytes)
+          unknown data
+      SPIT (36 bytes)
+          unknown data
+
+        EFID (4 bytes)
+            unknown data
+        EFIT (12 bytes)
+            unknown data
+        CTDA (32 bytes, optional)
+            unknown data
+
+       --> EFID (once) and EFIT (once) seem to form blocks, that can occur multiple times
+
+
   SPEL: spells
       EDID (string, NUL-terminated)
           editorID

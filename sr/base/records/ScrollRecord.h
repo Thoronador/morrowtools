@@ -18,28 +18,29 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SR_SPELLRECORD_H
-#define SR_SPELLRECORD_H
+#ifndef SR_SCROLLRECORD_H
+#define SR_SCROLLRECORD_H
 
 #include "BasicRecord.h"
 #include "EffectBlock.h"
+#include "BinarySubRecord.h"
 #include <string>
 #include <stdint.h>
 
 namespace SRTP
 {
 
-struct SpellRecord: public BasicRecord
+struct ScrollRecord: public BasicRecord
 {
   public:
     /* constructor */
-    SpellRecord();
+    ScrollRecord();
 
     /* destructor */
-    virtual ~SpellRecord();
+    virtual ~ScrollRecord();
 
     /* returns true, if the other record contains the same data */
-    bool equals(const SpellRecord& other) const;
+    bool equals(const ScrollRecord& other) const;
 
     /* writes the record to the given output stream and returns true on success
 
@@ -60,17 +61,18 @@ struct SpellRecord: public BasicRecord
 
     std::string editorID;
     uint8_t unknownOBND[12];
-    bool hasFULL;
     uint32_t nameStringID; //subrecord FULL
-    bool hasMDOB;
+    std::vector<uint32_t> keywordArray;
     uint32_t unknownMDOB;
     uint32_t unknownETYP;
     uint32_t descriptionStringID; //subrecord DESC
+    std::string modelPath;
+    BinarySubRecord unknownMODT;
+    uint8_t unknownDATA[8];
     uint8_t unknownSPIT[36];
     std::vector<EffectBlock> effects;
-    std::string unknownCIS2;
 }; //struct
 
 } //namespace
 
-#endif // SR_SPELLRECORD_H
+#endif // SR_SCROLLRECORD_H

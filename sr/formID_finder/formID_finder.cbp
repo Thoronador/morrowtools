@@ -51,6 +51,7 @@
 		<Unit filename="..\base\RegistryFunctions.cpp" />
 		<Unit filename="..\base\RegistryFunctions.h" />
 		<Unit filename="..\base\SR_Constants.h" />
+		<Unit filename="..\base\Scrolls.h" />
 		<Unit filename="..\base\Shouts.h" />
 		<Unit filename="..\base\Spells.h" />
 		<Unit filename="..\base\StringTable.cpp" />
@@ -67,12 +68,16 @@
 		<Unit filename="..\base\records\BookRecord.h" />
 		<Unit filename="..\base\records\CTDAData.cpp" />
 		<Unit filename="..\base\records\CTDAData.h" />
+		<Unit filename="..\base\records\EffectBlock.cpp" />
+		<Unit filename="..\base\records\EffectBlock.h" />
 		<Unit filename="..\base\records\GroupData.cpp" />
 		<Unit filename="..\base\records\GroupData.h" />
 		<Unit filename="..\base\records\MiscObjectRecord.cpp" />
 		<Unit filename="..\base\records\MiscObjectRecord.h" />
 		<Unit filename="..\base\records\PerkRecord.cpp" />
 		<Unit filename="..\base\records\PerkRecord.h" />
+		<Unit filename="..\base\records\ScrollRecord.cpp" />
+		<Unit filename="..\base\records\ScrollRecord.h" />
 		<Unit filename="..\base\records\ShoutRecord.cpp" />
 		<Unit filename="..\base\records\ShoutRecord.h" />
 		<Unit filename="..\base\records\SpellRecord.cpp" />

@@ -5,17 +5,17 @@ Record types the application should be able to search:
 ------------------------------------------------------
 
 [*] ALCH - alchemy stuff(?)
-[*] AMMO - ammunition
+AMMO - ammunition
 [*] APPA - apparatus
 [*] ARMO - armour
 BOOK - book
 [*] INGR - ingredient
 [*] KEYM - key
 MISC - mic. object
-[*] PERK - perk
-[*] SCRL - scroll
+PERK - perk
+SCRL - scroll
 SHOU - shout
-[*] SPEL - spell
+SPEL - spell
 [i] WEAP - weapon
 WOOP - word of power
 

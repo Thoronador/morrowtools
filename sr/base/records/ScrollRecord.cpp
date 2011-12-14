@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include "SpellRecord.h"
+#include "ScrollRecord.h"
 #include <cstring>
 #include <iostream>
 #include "../SR_Constants.h"
@@ -27,55 +27,65 @@
 namespace SRTP
 {
 
-SpellRecord::SpellRecord()
+ScrollRecord::ScrollRecord()
 : BasicRecord()
 {
   editorID = "";
   memset(unknownOBND, 0, 12);
-  hasFULL = false;
   nameStringID = 0;
-  hasMDOB = false;
+  keywordArray.clear();
   unknownMDOB = 0;
   unknownETYP = 0;
   descriptionStringID = 0;
+  modelPath = "";
+  unknownMODT.setPresence(false);
+  memset(unknownDATA, 0, 8);
   memset(unknownSPIT, 0, 36);
   effects.clear();
-  unknownCIS2 = "";
 }
 
-SpellRecord::~SpellRecord()
+ScrollRecord::~ScrollRecord()
 {
   //empty
 }
 
-bool SpellRecord::equals(const SpellRecord& other) const
+bool ScrollRecord::equals(const ScrollRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
-      and (memcmp(unknownOBND, other.unknownOBND, 12)==0) and (hasFULL==other.hasFULL)
-      and ((nameStringID==other.nameStringID) or (!hasFULL)) and (hasMDOB==other.hasMDOB)
-      and ((unknownMDOB==other.unknownMDOB) or (!hasMDOB))
+      and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
+      and (nameStringID==other.nameStringID) and (unknownMDOB==other.unknownMDOB)
+      and (keywordArray==other.keywordArray)
       and (unknownETYP==other.unknownETYP) and (descriptionStringID==other.descriptionStringID)
-      and (memcmp(unknownSPIT, other.unknownSPIT, 36)==0) and (effects==other.effects)
-      and (unknownCIS2==other.unknownCIS2));
+      and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
+      and (memcmp(unknownDATA, other.unknownDATA, 8)==0)
+      and (memcmp(unknownSPIT, other.unknownSPIT, 36)==0)
+      and (effects==other.effects));
 }
 
-bool SpellRecord::saveToStream(std::ofstream& output) const
+bool ScrollRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cSPEL, 4);
+  output.write((char*) &cSCRL, 4);
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
         +4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed length of 12 bytes */
+        +4 /* FULL */ +2 /* 2 bytes for length */ +4 /* fixed length of four bytes */
+        +4 /* MDOB */ +2 /* 2 bytes for length */ +4 /* fixed length of four bytes */
         +4 /* ETYP */ +2 /* 2 bytes for length */ +4 /* fixed length of 4 bytes */
         +4 /* DESC */ +2 /* 2 bytes for length */ +4 /* fixed length of 4 bytes */
+        +4 /* MODL */ +2 /* 2 bytes for length */
+        +modelPath.length()+1 /* length of name +1 byte for NUL termination */
+        +4 /* DATA */ +2 /* 2 bytes for length */ +8 /* fixed length of 8 bytes */
         +4 /* SPIT */ +2 /* 2 bytes for length */ +36 /* fixed length of 36 bytes */;
-  if (hasFULL)
+  if (!keywordArray.empty())
   {
-    writeSize = writeSize +4 /*FULL*/ +2 /* 2 bytes for length */ +4 /* fixed length of four bytes */;
+    writeSize = writeSize +4 /* KSIZ */ +2 /* 2 bytes for length */ +4 /* fixed length of 4 bytes */
+               +4 /* KWDA */ +2 /* 2 bytes for length */ +4*keywordArray.size(); /* fixed length of 4 bytes per elem.*/
   }
-  if (hasMDOB)
+  if (unknownMODT.isPresent())
   {
-    writeSize = writeSize +4 /*MDOB*/ +2 /* 2 bytes for length */ +4 /* fixed length of four bytes */;
+    writeSize = writeSize +4 /*MODT*/ +2 /* 2 bytes for length */
+               +unknownMODT.getSize() /* size */;
   }
   unsigned int i;
   if (!effects.empty())
@@ -88,12 +98,6 @@ bool SpellRecord::saveToStream(std::ofstream& output) const
                     (4 /*CTDA*/ +2 /* 2 bytes for length */ +32 /* fixed length of 32 bytes */);
     }//for
   }//if effects
-  if (!unknownCIS2.empty())
-  {
-    writeSize = writeSize +4 /* CIS2 */ +2 /* 2 bytes for length */
-               +unknownCIS2.length()+1 /* length of string +1 byte for NUL termination */;
-  }
-
   if (!saveSizeAndUnknownValues(output, writeSize)) return false;
 
   //write EDID
@@ -112,27 +116,45 @@ bool SpellRecord::saveToStream(std::ofstream& output) const
   //write OBND's stuff
   output.write((const char*) unknownOBND, 12);
 
-  if (hasFULL)
-  {
-    //write FULL
-    output.write((const char*) &cFULL, 4);
-    //FULL's length
-    subLength = 4; //fixed
-    output.write((const char*) &subLength, 2);
-    //write FULL's stuff
-    output.write((const char*) &nameStringID, 4);
-  }//if has FULL
+  //write FULL
+  output.write((const char*) &cFULL, 4);
+  //FULL's length
+  subLength = 4; //fixed
+  output.write((const char*) &subLength, 2);
+  //write FULL's stuff
+  output.write((const char*) &nameStringID, 4);
 
-  if (hasMDOB)
+  if (!keywordArray.empty())
   {
-    //write MDOB
-    output.write((const char*) &cMDOB, 4);
-    //MDOB's length
+    //write KSIZ
+    output.write((const char*) &cKSIZ, 4);
+    //KSIZ's length
     subLength = 4; //fixed
     output.write((const char*) &subLength, 2);
-    //write MDOB's stuff
-    output.write((const char*) &unknownMDOB, 4);
-  }//if has MDOB
+    //write KSIZ's stuff
+    uint32_t len = keywordArray.size();
+    output.write((const char*) &len, 4);
+
+    //write KWDA
+    output.write((const char*) &cKWDA, 4);
+    //KWDA's length
+    subLength = 4*len; //fixed
+    output.write((const char*) &subLength, 2);
+    //write keywords' form IDs
+    unsigned int i;
+    for (i=0; i<len; ++i)
+    {
+      output.write((const char*) &(keywordArray[i]), 4);
+    }//for
+  }//if keyword array
+
+  //write MDOB
+  output.write((const char*) &cMDOB, 4);
+  //MDOB's length
+  subLength = 4; //fixed
+  output.write((const char*) &subLength, 2);
+  //write MDOB's stuff
+  output.write((const char*) &unknownMDOB, 4);
 
   //write ETYP
   output.write((const char*) &cETYP, 4);
@@ -149,6 +171,31 @@ bool SpellRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &subLength, 2);
   //write DESC's stuff
   output.write((const char*) &descriptionStringID, 4);
+
+  //write MODL
+  output.write((const char*) &cMODL, 4);
+  //MODL's length
+  subLength = modelPath.length()+1;
+  output.write((const char*) &subLength, 2);
+  //write model path
+  output.write(modelPath.c_str(), subLength);
+
+  if (unknownMODT.isPresent())
+  {
+    if (!unknownMODT.saveToStream(output, cMODT))
+    {
+      std::cout << "Error while writing subrecord MODT of SCRL!\n";
+      return false;
+    }
+  }//if MODT
+
+  //write DATA
+  output.write((const char*) &cDATA, 4);
+  //DATA's length
+  subLength = 8; //fixed
+  output.write((const char*) &subLength, 2);
+  //write DATA's stuff
+  output.write((const char*) unknownDATA, 8);
 
   //write SPIT
   output.write((const char*) &cSPIT, 4);
@@ -194,21 +241,10 @@ bool SpellRecord::saveToStream(std::ofstream& output) const
     }//for i
   }//if effects
 
-  if (!unknownCIS2.empty())
-  {
-    //write CIS2
-    output.write((const char*) &cCIS2, 4);
-    //CIS2's length
-    subLength = unknownCIS2.length()+1;
-    output.write((const char*) &subLength, 2);
-    //write CIS2
-    output.write(unknownCIS2.c_str(), subLength);
-  }//if CIS2
-
   return output.good();
 }
 
-bool SpellRecord::loadFromStream(std::ifstream& in_File)
+bool ScrollRecord::loadFromStream(std::ifstream& in_File)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
@@ -230,7 +266,7 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of SPEL is longer than 511 characters!\n";
+    std::cout <<"Error: sub record EDID of SCRL is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -240,7 +276,7 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of SPEL!\n";
+    std::cout << "Error while reading subrecord EDID of SCRL!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -258,7 +294,7 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
   bytesRead += 2;
   if (subLength!=12)
   {
-    std::cout <<"Error: subrecord OBND of SPEL has invalid length ("<<subLength
+    std::cout <<"Error: subrecord OBND of SCRL has invalid length ("<<subLength
               <<" bytes). Should be 12 bytes!\n";
     return false;
   }
@@ -267,20 +303,24 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
   bytesRead += 12;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord OBND of SPEL!\n";
+    std::cout << "Error while reading subrecord OBND of SCRL!\n";
     return false;
   }
 
-  hasFULL = false;
-  hasMDOB = false;
+  bool hasReadFULL = false;
+  keywordArray.clear();
+  uint32_t tempKeyword, kwdaLength, i;
+  bool hasReadMDOB = false;
   bool hasReadETYP = false;
   bool hasReadDESC = false;
+  modelPath.clear();
+  unknownMODT.setPresence(false);
+  bool hasReadDATA = false;
   bool hasReadSPIT = false;
   effects.clear();
   EffectBlock tempEffect;
   CTDAData tempCTDA;
   bool hasNonPushedEffect = false;
-  unknownCIS2.clear();
   while (bytesRead<readSize)
   {
     //read next subrecord's name
@@ -289,9 +329,9 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
     switch(subRecName)
     {
       case cFULL:
-           if (hasFULL)
+           if (hasReadFULL)
            {
-             std::cout << "Error: SPEL seems to have more than one FULL subrecord!\n";
+             std::cout << "Error: SCRL seems to have more than one FULL subrecord!\n";
              return false;
            }
            //skip back
@@ -299,12 +339,55 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
            //read FULL
            if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID)) return false;
            bytesRead += 6;
-           hasFULL = true;
+           hasReadFULL = true;
+           break;
+      case cKSIZ:
+           if (!keywordArray.empty())
+           {
+             std::cout << "Error: SCRL seems to have more than one KSIZ subrecord!\n";
+             return false;
+           }
+           //skip back
+           in_File.seekg(-4, std::ios_base::cur);
+           //read KSIZ
+           kwdaLength = 0;
+           if (!loadUint32SubRecordFromStream(in_File, cKSIZ, kwdaLength)) return false;
+           bytesRead += 6;
+
+           //read KWDA
+           in_File.read((char*) &subRecName, 4);
+           bytesRead += 4;
+           if (subRecName!=cKWDA)
+           {
+             UnexpectedRecord(cOBND, subRecName);
+             return false;
+           }
+           //KWDA's length
+           in_File.read((char*) &subLength, 2);
+           bytesRead += 2;
+           if (subLength!=kwdaLength*4)
+           {
+             std::cout <<"Error: subrecord KWDA of SCRL has invalid length ("<<subLength
+                       <<" bytes). Should be "<<kwdaLength*4<<" bytes!\n";
+             return false;
+           }
+           //read KWDA's stuff
+           for (i=0; i<kwdaLength; ++i)
+           {
+             in_File.read((char*) &tempKeyword, 4);
+             bytesRead += 4;
+             if (!in_File.good())
+             {
+               std::cout << "Error while reading subrecord KWDA of SCRL!\n";
+               return false;
+             }
+             keywordArray.push_back(tempKeyword);
+           }//for
            break;
       case cMDOB:
-           if (hasMDOB)
+           if (hasReadMDOB)
            {
-             std::cout << "Error: SPEL seems to have more than one MDOB subrecord!\n";
+             std::cout << "Error: SCRL seems to have more than one MDOB subrecord!\n";
              return false;
            }
            //skip back
@@ -312,12 +395,12 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
            //read MDOB
            if (!loadUint32SubRecordFromStream(in_File, cMDOB, unknownMDOB)) return false;
            bytesRead += 6;
-           hasMDOB = true;
+           hasReadMDOB = true;
            break;
       case cETYP:
            if (hasReadETYP)
            {
-             std::cout << "Error: SPEL seems to have more than one ETYP subrecord!\n";
+             std::cout << "Error: SCRL seems to have more than one ETYP subrecord!\n";
              return false;
            }
            //skip back
@@ -330,7 +413,7 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
       case cDESC:
            if (hasReadDESC)
            {
-             std::cout << "Error: SPEL seems to have more than one DESC subrecord!\n";
+             std::cout << "Error: SCRL seems to have more than one DESC subrecord!\n";
              return false;
            }
            //skip back
@@ -340,10 +423,74 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
            bytesRead += 6;
            hasReadDESC = true;
            break;
+      case cMODL:
+           if (!modelPath.empty())
+           {
+             std::cout << "Error: SCRL seems to have more than one MODL subrecord!\n";
+             return false;
+           }
+           //MODL's length
+           in_File.read((char*) &subLength, 2);
+           bytesRead += 2;
+           if (subLength>511)
+           {
+             std::cout <<"Error: sub record MODL of SCRL is longer than 511 characters!\n";
+             return false;
+           }
+           //read MODL's stuff
+           memset(buffer, 0, 512);
+           in_File.read(buffer, subLength);
+           bytesRead += subLength;
+           if (!in_File.good())
+           {
+             std::cout << "Error while reading subrecord MODL of SCRL!\n";
+             return false;
+           }
+           modelPath = std::string(buffer);
+           break;
+      case cMODT:
+           if (unknownMODT.isPresent())
+           {
+             std::cout << "Error: SCRL seems to have more than one MODT subrecord!\n";
+             return false;
+           }
+           //read MODT
+           if (!unknownMODT.loadFromStream(in_File, cMODT, false))
+           {
+             std::cout << "Error while reading subrecord MODT of SCRL!\n";
+             return false;
+           }
+           bytesRead = bytesRead +2 +unknownMODT.getSize();
+           break;
+      case cDATA:
+           if (hasReadDATA)
+           {
+             std::cout << "Error: SCRL seems to have more than one DATA subrecord!\n";
+             return false;
+           }
+           //DATA's length
+           in_File.read((char*) &subLength, 2);
+           bytesRead += 2;
+           if (subLength!=8)
+           {
+             std::cout <<"Error: subrecord DATA of SCRL has invalid length ("
+                       <<subLength<<" bytes). Should be 8 bytes!\n";
+             return false;
+           }
+           //read DATA's stuff
+           in_File.read((char*) unknownDATA, 8);
+           bytesRead += 8;
+           if (!in_File.good())
+           {
+             std::cout << "Error while reading subrecord DATA of SCRL!\n";
+             return false;
+           }
+           hasReadDATA = true;
+           break;
       case cSPIT:
            if (hasReadSPIT)
            {
-             std::cout << "Error: SPEL seems to have more than one SPIT subrecord!\n";
+             std::cout << "Error: SCRL seems to have more than one SPIT subrecord!\n";
              return false;
            }
            //SPIT's length
@@ -351,7 +498,7 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
            bytesRead += 2;
            if (subLength!=36)
            {
-             std::cout <<"Error: subrecord SPIT of SPEL has invalid length ("
+             std::cout <<"Error: subrecord SPIT of SCRL has invalid length ("
                        <<subLength<<" bytes). Should be 36 bytes!\n";
              return false;
            }
@@ -360,7 +507,7 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
            bytesRead += 36;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord SPIT of SPEL!\n";
+             std::cout << "Error while reading subrecord SPIT of SCRL!\n";
              return false;
            }
            hasReadSPIT = true;
@@ -380,7 +527,7 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
            bytesRead += 2;
            if (subLength!=4)
            {
-             std::cout <<"Error: subrecord EFID of SPEL has invalid length ("
+             std::cout <<"Error: subrecord EFID of SCRL has invalid length ("
                        <<subLength<<" bytes). Should be four bytes!\n";
              return false;
            }
@@ -389,7 +536,7 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
            bytesRead += 4;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord EFID of SPEL!\n";
+             std::cout << "Error while reading subrecord EFID of SCRL!\n";
              return false;
            }
 
@@ -406,7 +553,7 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
            bytesRead += 2;
            if (subLength!=12)
            {
-             std::cout <<"Error: subrecord EFIT of SPEL has invalid length ("
+             std::cout <<"Error: subrecord EFIT of SCRL has invalid length ("
                        <<subLength<<" bytes). Should be 12 bytes!\n";
              return false;
            }
@@ -417,7 +564,7 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
            bytesRead += 12;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord EFIT of SPEL!\n";
+             std::cout << "Error while reading subrecord EFIT of SCRL!\n";
              return false;
            }
            hasNonPushedEffect = true;
@@ -425,7 +572,7 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
       case cCTDA:
            if (!hasNonPushedEffect)
            {
-             std::cout << "Error while reading SPEL: CTDA found, but there was no EFID/EFIT block.\n";
+             std::cout << "Error while reading SCRL: CTDA found, but there was no EFID/EFIT block.\n";
              return false;
            }
            //CTDA's length
@@ -433,7 +580,7 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
            bytesRead += 2;
            if (subLength!=32)
            {
-             std::cout <<"Error: subrecord CTDA of SPEL has invalid length ("
+             std::cout <<"Error: subrecord CTDA of SCRL has invalid length ("
                        <<subLength<<" bytes). Should be 32 bytes!\n";
              return false;
            }
@@ -442,40 +589,15 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
            bytesRead += 32;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord CTDA of SPEL!\n";
+             std::cout << "Error while reading subrecord CTDA of SCRL!\n";
              return false;
            }
            tempEffect.unknownCTDAs.push_back(tempCTDA);
            break;
-      case cCIS2:
-           if (!unknownCIS2.empty())
-           {
-             std::cout << "Error: SPEL seems to have more than one CIS2 subrecord!\n";
-             return false;
-           }
-           //CIS2's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength>511)
-           {
-             std::cout <<"Error: subrecord CIS2 of SPEL is longer than 511 characters!\n";
-             return false;
-           }
-           //read CIS2's stuff
-           memset(buffer, 0, 512);
-           in_File.read(buffer, subLength);
-           bytesRead += subLength;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord CIS2 of SPEL!\n";
-             return false;
-           }
-           unknownCIS2 = std::string(buffer);
-           break;
       default:
            std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only FULL, MDOB, ETYP, DESC, SPIT, EFID,"
-                     << " CTDA or CIS2 are allowed here!\n";
+                     << " or CTDA are allowed here!\n";
            return false;
            break;
     }//swi
@@ -488,19 +610,19 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
   }
 
   //check presence
-  if (!(hasReadETYP and hasReadDESC and hasReadSPIT))
+  if (!(hasReadFULL and hasReadMDOB and hasReadETYP and hasReadDESC and (!modelPath.empty()) and hasReadDATA and hasReadSPIT))
   {
-    std::cout << "Error while reading record SPEL: at least one of the "
-              << "subrecords ETYP, DESC or SPIT is missing!\n";
+    std::cout << "Error while reading record SCRL: at least one of the "
+              << "subrecords FULL, MDOB, ETYP, DESC, MODL, DATA or SPIT is missing!\n";
     return false;
   }
 
   return in_File.good();
 }
 
-int32_t SpellRecord::getRecordType() const
+int32_t ScrollRecord::getRecordType() const
 {
-  return cSPEL;
+  return cSCRL;
 }
 
 } //namespace

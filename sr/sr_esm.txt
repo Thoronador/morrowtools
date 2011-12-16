@@ -143,6 +143,21 @@ Records and their sub-records:
           unknown data
 
 
+  IMGS: image space
+      EDID (string, NUL-terminated)
+          editorID
+      ENAM (56 bytes, optional)
+          unknown data, but some (all?) of them look like floats
+      HNAM (36 bytes, optional)
+          unknown data, but some (all?) of them look like floats
+      CNAM (12 bytes, optional)
+          unknown data, most likely all floats
+      TNAM (16 bytes, optional)
+          unknown data, most likely all floats
+      DNAM (12 or 16 bytes, optional)
+          unknown data, possibly all floats
+
+
   PERK: perks
       EDID (string, NUL-terminated)
           editorID

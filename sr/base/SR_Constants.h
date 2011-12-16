@@ -29,6 +29,7 @@ namespace SRTP
 const int32_t cAACT = 0x54434141; //"AACT" = 41 41 43 54
 const int32_t cACTI = 0x49544341; //"ACTI" = 41 43 54 49
 const int32_t cAMMO = 0x4F4D4D41; //"AMMO" = 41 4D 4D 4F
+const int32_t cANAM = 0x4D414E41; //"ANAM" = 41 4E 41 4D
 const int32_t cASTP = 0x50545341; //"ASTP" = 41 53 54 50
 const int32_t cBAMT = 0x544D4142; //"BAMT" = 42 41 4D 54
 const int32_t cBIDS = 0x53444942; //"BIDS" = 42 49 44 53
@@ -49,6 +50,7 @@ const int32_t cDMDS = 0x53444D44; //"DMDS" = 44 4D 44 53
 const int32_t cDMDT = 0x54444D44; //"DMDT" = 44 4D 44 54
 const int32_t cDNAM = 0x4D414E44; //"DNAM" = 44 4E 41 4D
 const int32_t cDODT = 0x54444F44; //"DODT" = 44 4F 44 54
+const int32_t cDOOR = 0x524F4F44; //"DOOR" = 44 4F 4F 52
 const int32_t cDSTD = 0x44545344; //"DSTD" = 44 53 54 44
 const int32_t cDSTF = 0x46545344; //"DSTF" = 44 53 54 46
 const int32_t cEAMT = 0x544D4145; //"EAMT" = 45 41 4D 54

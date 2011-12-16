@@ -130,6 +130,19 @@ Records and their sub-records:
           unknown data
 
 
+  GRAS: grass data
+      EDID (string, NUL-terminated)
+          editorID
+      OBND (12 bytes)
+          unknown data
+      MODL (string, NUL-terminated)
+          model path
+      MODT (?? bytes)
+          unknown data
+      DATA (32 bytes)
+          unknown data
+
+
   PERK: perks
       EDID (string, NUL-terminated)
           editorID

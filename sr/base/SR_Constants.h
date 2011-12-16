@@ -74,6 +74,7 @@ const int32_t cFULL = 0x4C4C5546; //"FULL" = 46 55 4C 4C
 const int32_t cGLOB = 0x424F4C47; //"GLOB" = 47 4C 4F 42
 const int32_t cGMST = 0x54534D47; //"GMST" = 47 4D 53 54
 const int32_t cGNAM = 0x4D414E47; //"GNAM" = 47 4E 41 4D
+const int32_t cGRAS = 0x53415247; //"GRAS" = 47 52 41 53
 const int32_t cGRUP = 0x50555247; //"GRUP" = 47 52 55 50
 const int32_t cHEDR = 0x52444548; //"HEDR" = 48 45 44 52
 const int32_t cHNAM = 0x4D414E48; //"HNAM" = 48 4E 41 4D

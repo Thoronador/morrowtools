@@ -54,6 +54,32 @@ struct BSA
     /* function to access the folder records - read-only */
     const std::vector<BSAFolderRecord>& getFolders() const;
 
+    /* function to access the folder blocks - read-only */
+    const std::vector<BSAFolderBlock>& getFolderBlocks() const;
+
+    /* returns true, if all structural data was read and the BSA is ready for
+       file extractions
+    */
+    bool hasAllStructureData() const;
+
+    /* returns true, if the given folder is in the archive
+
+       parameters:
+           folderName - name of the folder (should be all lower case)
+    */
+    bool hasFolder(const std::string& folderName) const;
+
+    // constant representing the index for "not found"
+    static const uint32_t cIndexNotFound;
+
+    /* returns the index of the folder, if the given folder is in the archive.
+       Returns cIndexNotFound otherwise.
+
+       parameters:
+           folderName - name of the folder (should be all lower case)
+    */
+    uint32_t getIndexOfFolder(std::string folderName) const;
+
     /* tries to read the folder records and returns true in case of success */
     bool grabFolderData();
 
@@ -65,7 +91,8 @@ struct BSA
 
     void listFileNames();
   protected:
-    enum Status {bsFresh, bsOpen, bsClosed, bsFailed};
+    enum Status {bsFresh, bsOpen, bsOpenFolderData, bsOpenFolderBlocks,
+                 bsOpenFileNames, bsClosed, bsFailed};
     Status m_Status;
     std::ifstream m_Stream;
     BSAHeader m_Header;

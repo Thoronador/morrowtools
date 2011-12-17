@@ -20,14 +20,18 @@
 
 #include "BSA.h"
 #include <iostream>
+#include "../../../base/UtilityFunctions.h"
 
 namespace SRTP
 {
+
+const uint32_t BSA::cIndexNotFound = 0xFFFFFFFF;
 
 BSA::BSA()
 {
   m_Status = bsFresh;
   m_Folders.clear();
+  m_FolderBlocks.clear();
 }
 
 BSA::~BSA()
@@ -37,7 +41,7 @@ BSA::~BSA()
 
 bool BSA::open(const std::string& FileName)
 {
-  if (m_Status==bsOpen)
+  if ((m_Status!=bsFresh) and (m_Status!=bsClosed))
   {
     std::cout << "BSA::open: Error: BSA was already opened!\n";
     return false;
@@ -65,9 +69,14 @@ bool BSA::open(const std::string& FileName)
 
 bool BSA::grabFolderData()
 {
-  if (m_Status!=bsOpen)
+  if ((m_Status==bsFresh) or (m_Status==bsClosed))
   {
     std::cout << "BSA::grabFolderData: Error: BSA was not opened!\n";
+    return false;
+  }
+  if (m_Status!=bsOpen)
+  {
+    std::cout << "BSA::grabFolderData: Error: BSA has wrong status!\n";
     return false;
   }
 
@@ -85,14 +94,20 @@ bool BSA::grabFolderData()
     m_Folders.push_back(tempFolder);
   }//for
 
+  m_Status = bsOpenFolderData;
   return m_Stream.good();
 }
 
 bool BSA::grabFolderBlocks()
 {
-  if (m_Status!=bsOpen)
+  if ((m_Status==bsFresh) or (m_Status==bsClosed))
   {
     std::cout << "BSA::grabFolderBlocks: Error: BSA was not opened!\n";
+    return false;
+  }
+  if (m_Status!=bsOpenFolderData)
+  {
+    std::cout << "BSA::grabFolderBlocks: Error: BSA has wrong status!\n";
     return false;
   }
 
@@ -112,14 +127,20 @@ bool BSA::grabFolderBlocks()
   }//for
 
   std::cout << "Info: Current stream offset is "<<(unsigned int) m_Stream.tellg()<<" bytes.\n";
+  m_Status = bsOpenFolderBlocks;
   return m_Stream.good();
 }
 
 bool BSA::grabFileNames()
 {
-  if (m_Status!=bsOpen)
+  if ((m_Status==bsFresh) or (m_Status==bsClosed))
   {
     std::cout << "BSA::grabFileNames: Error: BSA was not opened!\n";
+    return false;
+  }
+  if (m_Status!=bsOpenFolderBlocks)
+  {
+    std::cout << "BSA::grabFileNames: Error: BSA has wrong status!\n";
     return false;
   }
 
@@ -156,6 +177,7 @@ bool BSA::grabFileNames()
     std::cout << "BSA::grabFileNames: Error while reading name list!\n";
     delete[] namesPointer;
     namesPointer = NULL;
+    m_Status = bsFailed;
     return false;
   }
 
@@ -177,6 +199,7 @@ bool BSA::grabFileNames()
                 << "dir idx: "<<dirIndex<<", #blocks: "<<m_FolderBlocks.size()<<"\n";
       delete[] namesPointer;
       namesPointer = NULL;
+      m_Status = bsFailed;
       return false;
     }
     //enough files?
@@ -194,6 +217,7 @@ bool BSA::grabFileNames()
                   << "names done: "<<namesRead<<"\n";
         delete[] namesPointer;
         namesPointer = NULL;
+        m_Status = bsFailed;
         return false;
       }//if
     }//if next folder
@@ -211,14 +235,21 @@ bool BSA::grabFileNames()
     std::cout << "BSA::grabFileNames: Error: number of read file names does not "
               << "match the number given in the header. "<<m_Header.fileCount
               << " files shoud be there, but "<<namesRead<<" were found!\n";
+    m_Status = bsFailed;
     return false;
   }
 
+  m_Status = bsOpenFileNames;
   return true;
 }
 
 void BSA::listFileNames()
 {
+  if (m_Status!=bsOpenFileNames)
+  {
+    std::cout << "BSA::listFileNames: Error: BSA has wrong status for that operation!\n";
+    return;
+  }
   uint32_t i, j;
   for (i=0; i<m_FolderBlocks.size(); ++i)
   {
@@ -249,6 +280,41 @@ const BSAHeader& BSA::getHeader() const
 const std::vector<BSAFolderRecord>& BSA::getFolders() const
 {
   return m_Folders;
+}
+
+const std::vector<BSAFolderBlock>& BSA::getFolderBlocks() const
+{
+  return m_FolderBlocks;
+}
+
+bool BSA::hasAllStructureData() const
+{
+  return (m_Status==bsOpenFileNames);
+}
+
+bool BSA::hasFolder(const std::string& folderName) const
+{
+  return (getIndexOfFolder(folderName)!=cIndexNotFound);
+}
+
+uint32_t BSA::getIndexOfFolder(std::string folderName) const
+{
+  if (!hasAllStructureData())
+  {
+    std::cout << "BSA::getIndexOfFolder: Error: not all structure data is "
+              << "present to properly fulfill the requested operation!\n";
+    return cIndexNotFound;
+  }
+
+  if (folderName.empty()) return cIndexNotFound;
+  //transform to lower case
+  folderName = lowerCase(folderName);
+  uint32_t i;
+  for (i=0; i<m_FolderBlocks.size(); ++i)
+  {
+    if (m_FolderBlocks.at(i).folderName==folderName) return i;
+  }//for
+  return cIndexNotFound;
 }
 
 } //namespace

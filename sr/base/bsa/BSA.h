@@ -62,6 +62,15 @@ struct BSA
     */
     bool hasAllStructureData() const;
 
+    /* tries to read all structural data and returns true in case of success
+
+       remarks:
+           That function basically calls grabFolderData(), grabFolderBlocks()
+           and grabFileNames() in sequence and returns once they are all done
+           or when an error occurs - whichever comes first.
+    */
+    bool grabAllStructureData();
+
     /* returns true, if the given folder is in the archive
 
        parameters:
@@ -80,6 +89,51 @@ struct BSA
     */
     uint32_t getIndexOfFolder(std::string folderName) const;
 
+    /* returns the index of the file within the given folder block, if the
+       given folder and file are in the archive. Returns cIndexNotFound
+       otherwise.
+
+       parameters:
+           folderIndex - the index of the folder block
+           fileName    - name of the file without directory path (should be all
+                         lower case)
+    */
+    uint32_t getIndexOfFile(const uint32_t folderIndex, std::string fileName) const;
+
+    /* will set folderIndex and fileIndex to the given folder and file indices
+       for the specified file and return true in case of success. Returns false
+       in case of error, e.g. if the archive has not been opened yet.
+
+       parameters:
+           fileName    - name of the file in the archive, including full path
+           folderIndex - uint32 that will hold the folder's index
+           fileIndex   - uint32 that will hold the file's index within that folder
+
+       remarks:
+           The boolean return value does NOT indicate, whether the specified
+           file is in the archive or not; it just indicates, whether or not the
+           function could be executed successfully.
+           If the given file exists in the archive, both folderIndex and
+           fileIndex will not be cIndexNotFound.
+    */
+    bool getIndexPairForFile(const std::string& fileName, uint32_t& folderIndex, uint32_t& fileIndex) const;
+
+    /* returns true, if the given file is in the archive
+
+       parameters:
+           fileName - name of the file, including directory path (should be all lower case)
+    */
+    bool hasFile(const std::string& fileName) const;
+
+    /* returns true, if the file at the given indices is compressed, returns
+       false otherwise
+
+       parameters:
+           folderIndex - index of the folder
+           fileIndex   - index of the file within the folder
+    */
+    bool isFileCompressed(const uint32_t folderIndex, const uint32_t fileIndex) const;
+
     /* tries to read the folder records and returns true in case of success */
     bool grabFolderData();
 
@@ -89,12 +143,42 @@ struct BSA
     /* tries to read the file names and returns true in case of success */
     bool grabFileNames();
 
-    void listFileNames();
+    /* lists all files within the archive
+
+       parameters:
+           withCompression status - if set to true, it will also be listed, if
+                                    a file is compressed or not
+    */
+    void listFileNames(bool withCompressionStatus);
+
+    /* tries to extract the file with the given file name and writes it to the
+       specified destination. Returns true in case of success, false on failure.
+
+       parameters:
+           inArchiveFileName - name of the file in the archive, including full path
+           outputFileName    - name of the destination file on HDD
+    */
+    bool extractFile(const std::string& inArchiveFileName, const std::string& outputFileName);
   protected:
+    /* returns true, if the given indices identify a valid index pair
+
+       parameters:
+           folderIndex - index of the folder
+           fileIndex   - index of the file within the folder
+    */
+    bool isValidIndexPair(const uint32_t folderIndex, const uint32_t fileIndex) const;
+
+    //enum for internal status
     enum Status {bsFresh, bsOpen, bsOpenFolderData, bsOpenFolderBlocks,
                  bsOpenFileNames, bsClosed, bsFailed};
+
+    //the internal status
     Status m_Status;
+
+    //the file stream associated with the file after open() was called
     std::ifstream m_Stream;
+
+    //data read from the stream...
     BSAHeader m_Header;
     std::vector<BSAFolderRecord> m_Folders;
     std::vector<BSAFolderBlock> m_FolderBlocks;

@@ -64,4 +64,14 @@ bool BSAFileRecord::loadFromStream(std::ifstream& in_File)
   return true;
 }
 
+bool BSAFileRecord::isCompressionToggled() const
+{
+  return ((fileSize & (1<<30))!=0);
+}
+
+uint32_t BSAFileRecord::getRealFileSize() const
+{
+  return (fileSize & (~(1<<30)));
+}
+
 } //namespace

@@ -51,6 +51,12 @@ struct BSAFileRecord
           in_File - the input file stream
     */
     bool loadFromStream(std::ifstream& in_File);
+
+    /* returns true, if the file's compression deviates from the archive's default */
+    bool isCompressionToggled() const;
+
+    /* returns the file's size, i.e. fileSize without the flag bit */
+    uint32_t getRealFileSize() const;
 }; //struct
 
 } //namespace

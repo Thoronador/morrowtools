@@ -21,6 +21,7 @@
 #include "BSA.h"
 #include <iostream>
 #include "../../../base/UtilityFunctions.h"
+#include "../../../base/DirectoryFunctions.h"
 
 namespace SRTP
 {
@@ -481,7 +482,7 @@ bool BSA::isFileCompressed(const uint32_t folderIndex, const uint32_t fileIndex)
   return (m_Header.filesCompressedByDefault() xor m_FolderBlocks.at(folderIndex).files.at(fileIndex).isCompressionToggled());
 }
 
-bool BSA::extractFile(const std::string& inArchiveFileName, const std::string& outputFileName)
+bool BSA::extractFile(const uint32_t folderIndex, const uint32_t fileIndex, const std::string& outputFileName)
 {
   if (!hasAllStructureData())
   {
@@ -490,21 +491,17 @@ bool BSA::extractFile(const std::string& inArchiveFileName, const std::string& o
     return false;
   }
 
-  uint32_t folderIndex, fileIndex;
-  getIndexPairForFile(inArchiveFileName, folderIndex, fileIndex);
   if (!isValidIndexPair(folderIndex, fileIndex))
   {
-    std::cout << "BSA::extractFile: Hint: file \""<<inArchiveFileName
-              << "\" is not in the archive!\n";
+    std::cout << "BSA::extractFile: Hint: file is not in the archive!\n";
     return false;
   }
 
   if (isFileCompressed(folderIndex, fileIndex))
   {
-    std::cout << "BSA::extractFile: Error: file \""<<inArchiveFileName
-              << "\" is a compressed file, but decompression is not "
-              << "implemented yet! At the moment, only uncompressed files can "
-              << "be extracted.\n";
+    std::cout << "BSA::extractFile: Error: file is a compressed file, but "
+              << "decompression is not implemented yet! At the moment, only "
+              << "uncompressed files can be extracted.\n";
     return false;
   }
 
@@ -513,7 +510,7 @@ bool BSA::extractFile(const std::string& inArchiveFileName, const std::string& o
   m_Stream.seekg(m_FolderBlocks[folderIndex].files[fileIndex].offset, std::ios_base::beg);
   if (!m_Stream.good())
   {
-    std::cout << "BSA::extractFile: Error: bad internal stream, could not jump to offset!\n";
+    std::cout << "BSA::extractFile: Error: bad internal stream, could not jump to file's offset!\n";
     return false;
   }
 
@@ -551,6 +548,140 @@ bool BSA::extractFile(const std::string& inArchiveFileName, const std::string& o
   //free buffer
   delete[] buffer;
   buffer = NULL;
+  return true;
+}
+
+bool BSA::extractFile(const std::string& inArchiveFileName, const std::string& outputFileName)
+{
+  if (!hasAllStructureData())
+  {
+    std::cout << "BSA::extractFile: Error: not all structure data is present "
+              << "to properly fulfill the requested operation!\n";
+    return false;
+  }
+
+  uint32_t folderIndex, fileIndex;
+  getIndexPairForFile(inArchiveFileName, folderIndex, fileIndex);
+
+  //use the above function for the rest
+  return extractFile(folderIndex, fileIndex, outputFileName);
+}
+
+bool BSA::extractFolder(const uint32_t folderIndex, const std::string& outputDirName, uint32_t& extractedFileCount)
+{
+  extractedFileCount = 0;
+  if (!hasAllStructureData())
+  {
+    std::cout << "BSA::extractFolder: Error: not all structure data is present "
+              << "to properly fulfill the requested operation!\n";
+    return false;
+  }
+
+  if ((folderIndex==cIndexNotFound) or (folderIndex>=m_FolderBlocks.size()))
+  {
+    std::cout << "BSA::extractFolder: Error: invalid folder index!\n";
+    return false;
+  }
+
+  //check for output directory
+  if (!directoryExists(outputDirName))
+  {
+    if (!createDirectoryRecursive(outputDirName))
+    {
+      std::cout << "BSA::extractFolder: Error: Could not create destination directory \""
+                << outputDirName << "\".\n";
+      return false;
+    }
+  }
+
+  uint32_t file_index;
+  //now extract each file in that directory
+  for (file_index=0; file_index<m_FolderBlocks[folderIndex].files.size(); ++file_index)
+  {
+    if (!extractFile(folderIndex, file_index, outputDirName+MWTP::pathDelimiter
+         +m_FolderBlocks[folderIndex].files[file_index].fileName))
+    {
+      std::cout << "BSA::extractFolder: Error: Could not extract file \""
+                << m_FolderBlocks[folderIndex].folderName+MWTP::pathDelimiter
+                  +m_FolderBlocks[folderIndex].files[file_index].fileName<< "\".\n";
+      return false;
+    }//if
+    ++extractedFileCount;
+  }//for file_index
+
+  return true;
+}
+
+bool BSA::extractFolder(const std::string& folderName, const std::string& outputDirName, uint32_t& extractedFileCount)
+{
+  extractedFileCount = 0;
+  if (!hasAllStructureData())
+  {
+    std::cout << "BSA::extractFolder: Error: not all structure data is present "
+              << "to properly fulfill the requested operation!\n";
+    return false;
+  }
+
+  const uint32_t fIdx = getIndexOfFolder(folderName);
+  if (fIdx==cIndexNotFound)
+  {
+    std::cout << "BSA::extractFolder: Error: archive has no folder named \""
+              << folderName <<"\", thus it cannot be extracted!\n";
+    return false;
+  }
+
+  return extractFolder(fIdx, outputDirName, extractedFileCount);
+}
+
+bool BSA::extractAll(const std::string& outputDirName, uint32_t& extractedFileCount)
+{
+  extractedFileCount = 0;
+  if (!hasAllStructureData())
+  {
+    std::cout << "BSA::extractAll: Error: not all structure data is present "
+              << "to properly fulfill the requested operation!\n";
+    return false;
+  }
+
+  //check for output directory
+  if (!directoryExists(outputDirName))
+  {
+    if (!createDirectoryRecursive(outputDirName))
+    {
+      std::cout << "BSA::extractAll: Error: Could not create destination directory \""
+                << outputDirName << "\".\n";
+      return false;
+    }
+  }
+
+  uint32_t i, j;
+  for (i=0; i<m_FolderBlocks.size(); ++i)
+  {
+    //create output directory, if necessary
+    if (!directoryExists(outputDirName+MWTP::pathDelimiter+m_FolderBlocks[i].folderName))
+    {
+      if (!createDirectoryRecursive(outputDirName+MWTP::pathDelimiter+m_FolderBlocks[i].folderName))
+      {
+        std::cout << "BSA::extractAll: Error: Could not create destination subdirectory \""
+                  << outputDirName+MWTP::pathDelimiter+m_FolderBlocks[i].folderName << "\".\n";
+        return false;
+      }
+    }
+    //now extract each file in that directory
+    for (j=0; j<m_FolderBlocks[i].files.size(); ++j)
+    {
+      if (!extractFile(i, j, outputDirName+MWTP::pathDelimiter+m_FolderBlocks[i].folderName
+           +MWTP::pathDelimiter+m_FolderBlocks[i].files[j].fileName))
+      {
+        std::cout << "BSA::extractAll: Error: Could not extract file \""
+                  <<m_FolderBlocks[i].folderName+MWTP::pathDelimiter
+                    +m_FolderBlocks[i].files[j].fileName<< "\".\n";
+        return false;
+      }//if
+      ++extractedFileCount;
+    }//for j
+  }//for i
+
   return true;
 }
 

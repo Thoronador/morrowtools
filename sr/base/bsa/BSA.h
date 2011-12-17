@@ -151,6 +151,16 @@ struct BSA
     */
     void listFileNames(bool withCompressionStatus);
 
+    /* tries to extract the file with the given indices and writes it to the
+       specified destination. Returns true in case of success, false on failure.
+
+       parameters:
+           folderIndex    - folder index of the wanted file
+           fileIndex      - file index of the wanted file
+           outputFileName - name of the destination file on HDD
+    */
+    bool extractFile(const uint32_t folderIndex, const uint32_t fileIndex, const std::string& outputFileName);
+
     /* tries to extract the file with the given file name and writes it to the
        specified destination. Returns true in case of success, false on failure.
 
@@ -159,6 +169,43 @@ struct BSA
            outputFileName    - name of the destination file on HDD
     */
     bool extractFile(const std::string& inArchiveFileName, const std::string& outputFileName);
+
+    /* tries to extract all files from the given archive folder and places them
+       in the given output directory. Returns true in case of success, false if
+       an error occured.
+
+       parameters:
+           folderIndex        - index of the folder
+           outputDirName      - path of the output directory, without
+                                (back)slash at the end
+           extractedFileCount - variable that will contain the number of
+                                extracted files
+    */
+    bool extractFolder(const uint32_t folderIndex, const std::string& outputDirName, uint32_t& extractedFileCount);
+
+    /* tries to extract all files from the given archive folder and places them
+       in the given output directory. Returns true in case of success, false if
+       an error occured.
+
+       parameters:
+           folderName         - name of the folder in the archive
+           outputDirName      - path of the output directory, without
+                                (back)slash at the end
+           extractedFileCount - variable that will contain the number of
+                                extracted files
+    */
+    bool extractFolder(const std::string& folderName, const std::string& outputDirName, uint32_t& extractedFileCount);
+
+    /* tries to extract all files from the archive and places them in the given
+       output directory. Returns true in case of success, false if an error occured.
+
+       parameters:
+           outputDirName      - path of the output directory, without
+                                (back)slash at the end
+           extractedFileCount - variable that will contain the number of
+                                extracted files
+    */
+    bool extractAll(const std::string& outputDirName, uint32_t& extractedFileCount);
   protected:
     /* returns true, if the given indices identify a valid index pair
 

@@ -20,13 +20,74 @@
 
 #include "CompressionFunctions.h"
 #include <iostream>
+#include <zlib.h>
 
 namespace MWTP
 {
 
-bool zlibDecompress(const uint8_t * compressedData, const uint32_t compressedSize, uint8_t * decompBuffer, const uint32_t decompSize)
+bool zlibDecompress(uint8_t * compressedData, const uint32_t compressedSize, uint8_t * decompBuffer, const uint32_t decompSize)
 {
-  std::cout << "Error: zlibDecompress() function is not implemented yet!\n";
+  if ((compressedData==NULL) or (compressedSize==0) or (decompBuffer==NULL) or (decompSize==0))
+  {
+    std::cout << "zlibDecompress: Error: invalid buffer values given!\n";
+    return false;
+  }
+
+  z_stream streamZlib;
+
+  /* allocate inflate state */
+  streamZlib.zalloc = Z_NULL;
+  streamZlib.zfree = Z_NULL;
+  streamZlib.opaque = Z_NULL;
+  streamZlib.avail_in = 0;
+  streamZlib.next_in = Z_NULL;
+  int z_return = inflateInit(&streamZlib);
+  if (z_return != Z_OK)
+  {
+    switch (z_return)
+    {
+      case Z_MEM_ERROR:
+           std::cout << "zlibDecompress: Error: not enough memory to initialize z_stream!\n";
+           break;
+      case Z_VERSION_ERROR:
+           std::cout << "zlibDecompress: Error: incompatible library version!\n";
+           break;
+      case Z_STREAM_ERROR:
+           std::cout << "zlibDecompress: Error: invalid parameters in z_stream!\n";
+           break;
+      default:
+           std::cout << "zlibDecompress: Error: could not initialize z_stream!\n";
+           break;
+    }//swi
+    return false;
+  }//if error occured
+
+
+  streamZlib.avail_in = compressedSize;
+  streamZlib.next_in = compressedData;
+
+  streamZlib.avail_out = decompSize;
+  streamZlib.next_out = decompBuffer;
+
+  /* decompress */
+  z_return = inflate(&streamZlib, Z_NO_FLUSH);
+  switch (z_return)
+  {
+    case Z_NEED_DICT:
+         z_return = Z_DATA_ERROR;     /* and fall through */
+    case Z_DATA_ERROR:
+    case Z_STREAM_ERROR: //stream state
+    case Z_MEM_ERROR:
+         (void)inflateEnd(&streamZlib);
+         std::cout << "zlibDecompress: Error while calling inflate()!\n";
+         return false;
+  }//swi
+  int have = decompSize - streamZlib.avail_out;
+  std::cout << "zlibDecompress: Info: Having "<<have<<" bytes in output buffer (size: "<<decompSize<<" bytes).\n";
+
+  /* clean up and return */
+  (void)inflateEnd(&streamZlib);
+  if (z_return==Z_STREAM_END) return true;
   return false;
 }
 

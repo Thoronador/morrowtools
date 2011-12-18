@@ -36,7 +36,7 @@ namespace MWTP
        decompBuffer   - pre-allocated buffer that will hold the decompressed data
        decompSize     - size of decompBuffer
 */
-bool zlibDecompress(const uint8_t * compressedData, const uint32_t compressedSize, uint8_t * decompBuffer, const uint32_t decompSize);
+bool zlibDecompress(uint8_t * compressedData, const uint32_t compressedSize, uint8_t * decompBuffer, const uint32_t decompSize);
 
 } //namespace
 

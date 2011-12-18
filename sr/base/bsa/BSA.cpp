@@ -20,6 +20,7 @@
 
 #include "BSA.h"
 #include <iostream>
+#include <cstring>
 #include "../../../base/UtilityFunctions.h"
 #include "../../../base/DirectoryFunctions.h"
 

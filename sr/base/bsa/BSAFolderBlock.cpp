@@ -20,6 +20,7 @@
 
 #include "BSAFolderBlock.h"
 #include <iostream>
+#include <cstring>
 
 namespace SRTP
 {

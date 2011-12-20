@@ -143,7 +143,4 @@ int32_t VoiceTypeRecord::getRecordType() const
   return cVTYP;
 }
 
-    std::string editorID;
-    uint8_t unknownDNAM;
-
 } //namespace

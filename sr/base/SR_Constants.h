@@ -102,6 +102,7 @@ const int32_t cMODL = 0x4C444F4D; //"MODL" = 4D 4F 44 4C
 const int32_t cMODS = 0x53444F4D; //"MODS" = 4D 4F 44 53
 const int32_t cMODT = 0x54444F4D; //"MODT" = 4D 4F 44 54
 const int32_t cMPRT = 0x5452504D; //"MPRT" = 4D 50 52 54
+const int32_t cNAM0 = 0x304D414E; //"NAM0" = 4E 41 4D 30
 const int32_t cNAM1 = 0x314D414E; //"NAM1" = 4E 41 4D 31
 const int32_t cNAM8 = 0x384D414E; //"NAM9" = 4E 41 4D 38
 const int32_t cNAM9 = 0x394D414E; //"NAM9" = 4E 41 4D 39
@@ -141,6 +142,7 @@ const int32_t cUNAM = 0x4D414E55; //"UNAM" = 55 4E 41 4D
 const int32_t cVMAD = 0x44414D56; //"VMAD" = 56 4D 41 44
 const int32_t cVNAM = 0x4D414E56; //"VNAM" = 56 4E 41 4D
 const int32_t cVTYP = 0x50595456; //"VTYP" = 56 54 59 50
+const int32_t cWATR = 0x52544157; //"WATR" = 57 41 54 52
 const int32_t cWEAP = 0x50414557; //"WEAP" = 57 45 41 50
 const int32_t cWNAM = 0x4D414E57; //"WNAM" = 57 4E 41 4D
 const int32_t cWOOP = 0x504F4F57; //"WOOP" = 57 4F 4F 50

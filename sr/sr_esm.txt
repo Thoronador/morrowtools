@@ -173,6 +173,35 @@ Records and their sub-records:
           unknown data
 
 
+  WATR: voice type
+      EDID (string, NUL-terminated)
+          editorID
+      FULL (4 bytes, optional)
+          unknown data
+      NNAM (string, NUL-terminated, seems to appear three times in a row)
+          texture path
+      ANAM (1 byte)
+          unknown data
+      FNAM (1 byte)
+          unknown data
+      MNAM (1 byte, optional)
+          unknown data
+      SNAM (4 bytes, optional)
+          unknown data
+      TNAM (4 bytes, optional)
+          unknown data
+      DATA (2 bytes)
+          unknown data
+      DNAM (228 bytes)
+          unknown data
+      GNAM (12 bytes)
+          unknown data
+      NAM0 (12 bytes, optional)
+          unknown data
+      NAM1 (12 bytes. optional)
+          unknown data
+
+
   PERK: perks
       EDID (string, NUL-terminated)
           editorID

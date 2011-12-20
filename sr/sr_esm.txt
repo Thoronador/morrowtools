@@ -58,7 +58,8 @@ Records and their sub-records:
 
 
   GLOB: global variables
-      EDID: editor ID (string, NUL-terminated)
+      EDID (string, NUL-terminated)
+          editor ID
       FNAM (1 byte)
           type (s=short, l=long, f=float)
       FLTV (4 bytes)
@@ -163,6 +164,13 @@ Records and their sub-records:
           editorID
       PNAM (8 bytes, occurs multiple times)
           unknown data, but looks like two uint32/form IDs
+
+
+  VTYP: voice type
+      EDID (string, NUL-terminated)
+          editorID
+      DNAM (1 byte)
+          unknown data
 
 
   PERK: perks

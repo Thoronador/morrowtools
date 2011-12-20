@@ -50,6 +50,7 @@
 #include "Spells.h"
 #include "Statics.h"
 #include "TextureSets.h"
+#include "VoiceTypes.h"
 #include "Weapons.h"
 #include "WordsOfPower.h"
 #include "records/GenericRecord.h"
@@ -158,6 +159,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;
     case cTXST:
          return TextureSets::getSingleton().readNextRecord(in_File);
+         break;
+    case cVTYP:
+         return VoiceTypes::getSingleton().readNextRecord(in_File);
          break;
     case cWEAP:
          return Weapons::getSingleton().readNextRecord(in_File);

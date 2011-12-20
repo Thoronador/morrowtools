@@ -27,6 +27,7 @@
 #include "Activators.h"
 #include "AssociationTypes.h"
 #include "Books.h"
+#include "Classes.h"
 #include "CraftableObjects.h"
 #include "Doors.h"
 #include "EquipmentSlots.h"
@@ -91,6 +92,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;
     case cBOOK:
          return Books::getSingleton().readNextRecord(in_File);
+         break;
+    case cCLAS:
+         return Classes::getSingleton().readNextRecord(in_File);
          break;
     case cCOBJ:
          return CraftableObjects::getSingleton().readNextRecord(in_File);

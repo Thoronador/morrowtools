@@ -202,6 +202,17 @@ Records and their sub-records:
           unknown data
 
 
+  CLAS: classes
+      EDID (string, NUL-terminated)
+          editorID
+      FULL (4 bytes)
+          string ID of class name
+      DESC (4 bytes)
+          unknown data
+      DATA (36 bytes)
+          unknown data
+
+
   PERK: perks
       EDID (string, NUL-terminated)
           editorID

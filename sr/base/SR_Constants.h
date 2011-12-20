@@ -36,6 +36,7 @@ const int32_t cBIDS = 0x53444942; //"BIDS" = 42 49 44 53
 const int32_t cBNAM = 0x4D414E42; //"BNAM" = 42 4E 41 4D
 const int32_t cBOOK = 0x4B4F4F42; //"BOOK" = 42 4F 4F 4B
 const int32_t cCIS2 = 0x32534943; //"CIS2" = 43 49 53 32
+const int32_t cCLAS = 0x53414C43; //"CLAS" = 43 4C 41 53
 const int32_t cCNAM = 0x4D414E43; //"CNAM" = 43 4E 41 4D
 const int32_t cCNTO = 0x4F544E43; //"CNTO" = 43 4E 54 4F
 const int32_t cCOBJ = 0x4A424F43; //"COBJ" = 43 4F 42 4A

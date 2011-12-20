@@ -9,14 +9,14 @@ AMMO - ammunition
 [*] APPA - apparatus
 [*] ARMO - armour
 BOOK - book
-[*] INGR - ingredient
+INGR - ingredient
 [*] KEYM - key
 MISC - mic. object
 PERK - perk
 SCRL - scroll
 SHOU - shout
 SPEL - spell
-[i] WEAP - weapon
+WEAP - weapon
 WOOP - word of power
 
 

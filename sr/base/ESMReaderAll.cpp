@@ -36,6 +36,7 @@
 #include "Globals.h"
 #include "Grasses.h"
 #include "ImageSpaces.h"
+#include "ImpactDataSets.h"
 #include "Ingredients.h"
 #include "Keywords.h"
 #include "LandscapeTextures.h"
@@ -115,6 +116,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;
     case cIMGS:
          return ImageSpaces::getSingleton().readNextRecord(in_File);
+         break;
+    case cIPDS:
+         return ImpactDataSets::getSingleton().readNextRecord(in_File);
          break;
     case cINGR:
          return Ingredients::getSingleton().readNextRecord(in_File);

@@ -41,6 +41,7 @@
 #include "Ingredients.h"
 #include "Keywords.h"
 #include "LandscapeTextures.h"
+#include "LocationReferenceTypes.h"
 #include "MiscObjects.h"
 #include "Outfits.h"
 #include "Perks.h"
@@ -131,6 +132,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;
     case cKYWD:
          return Keywords::getSingleton().readNextRecord(in_File);
+         break;
+    case cLCRT:
+         return LocationReferenceTypes::getSingleton().readNextRecord(in_File);
          break;
     case cLTEX:
          return LandscapeTextures::getSingleton().readNextRecord(in_File);

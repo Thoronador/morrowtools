@@ -91,6 +91,7 @@ const int32_t cKNAM = 0x4D414E4B; //"KNAM" = 4B 4E 41 4D
 const int32_t cKSIZ = 0x5A49534B; //"KSIZ" = 4B 53 49 5A
 const int32_t cKYWD = 0x4457594B; //"KYWD" = 4B 59 57 44
 const int32_t cKWDA = 0x4144574B; //"KWDA" = 4B 57 44 41
+const int32_t cLCRT = 0x5452434C; //"LCRT" = 4C 43 52 54
 const int32_t cLNAM = 0x4D414E4C; //"LNAM" = 4C 4E 41 4D
 const int32_t cLTEX = 0x5845544C; //"LTEX" = 4C 54 45 58
 const int32_t cMAST = 0x5453414D; //"MAST" = 4D 41 53 54

@@ -116,6 +116,13 @@ Records and their sub-records:
           unknown data
 
 
+  LCRT: location reference type
+      EDID (string, NUL-terminated)
+          editor ID
+      CNAM (4 bytes, optional)
+          unknown value
+
+
   LTEX: landscape texture
       EDID (string, NUL-terminated)
           editorID

@@ -36,6 +36,7 @@
 #include "records/ImageSpaceRecord.h"
 #include "records/ImpactDataSetRecord.h"
 #include "records/IngredientRecord.h"
+#include "records/KeyRecord.h"
 #include "records/KeywordRecord.h"
 #include "records/LandscapeTextureRecord.h"
 #include "records/LocationReferenceTypeRecord.h"
@@ -123,6 +124,9 @@ int ESMReaderContents::readNextRecord(std::ifstream& in_File, const int32_t recN
          break;
     case cINGR:
          recPtr = new IngredientRecord;
+         break;
+    case cKEYM:
+         recPtr = new KeyRecord;
          break;
     case cKYWD:
          recPtr = new KeywordRecord;

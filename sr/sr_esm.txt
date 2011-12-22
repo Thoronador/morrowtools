@@ -65,6 +65,30 @@ Records and their sub-records:
       FLTV (4 bytes)
           value (always stored as float?)
 
+  KEYM: key
+      EDID (string, NUL-terminated)
+          editor ID
+      VMAD (size varies, optional)
+          unknown data
+      OBND (12 bytes)
+          unknown data
+      FULL (4 bytes)
+          unknown data
+      MODL (string, NUL-terminated)
+          model path
+      MODT (36 bytes)
+          unknown data
+      YNAM (4 bytes, optional)
+          unknown data
+      ZNAM (4 bytes, optional)
+          unknown data
+      KSIZ (4 bytes, optional)
+          number of keywords in following KWDA
+      KWDA (n*4 bytes, optional)
+          array of form IDs
+      DATA (8 bytes)
+          unknown data
+
 
   KYWD: Keyword (whatever that may be)
       EDID (string, NUL-terminated)

@@ -87,6 +87,7 @@ const int32_t cINDX = 0x58444E49; //"INDX" = 49 4E 44 58
 const int32_t cINGR = 0x52474E49; //"INGR" = 49 4E 47 52
 const int32_t cINTV = 0x56544E49; //"INTV" = 49 4E 54 56
 const int32_t cIPDS = 0x53445049; //"IPDS" = 49 50 44 53
+const int32_t cKEYM = 0x4D59454B; //"KEYM" = 4B 45 59 4D
 const int32_t cKNAM = 0x4D414E4B; //"KNAM" = 4B 4E 41 4D
 const int32_t cKSIZ = 0x5A49534B; //"KSIZ" = 4B 53 49 5A
 const int32_t cKYWD = 0x4457594B; //"KYWD" = 4B 59 57 44

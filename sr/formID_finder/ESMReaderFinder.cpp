@@ -23,6 +23,7 @@
 #include "../base/Ammunitions.h"
 #include "../base/Books.h"
 #include "../base/Ingredients.h"
+#include "../base/Keys.h"
 #include "../base/MiscObjects.h"
 #include "../base/Perks.h"
 #include "../base/Scrolls.h"
@@ -54,7 +55,7 @@ bool ESMReaderFinder::needGroup(const GroupData& g_data) const
     //case cARMO:
     case cBOOK:
     case cINGR:
-    //case cKEYM:
+    case cKEYM:
     case cMISC:
     case cPERK:
     case cSCRL:
@@ -81,6 +82,9 @@ int ESMReaderFinder::readNextRecord(std::ifstream& in_File, const int32_t recNam
          break;
     case cINGR:
          return Ingredients::getSingleton().readNextRecord(in_File);
+         break;
+    case cKEYM:
+         return Keys::getSingleton().readNextRecord(in_File);
          break;
     case cMISC:
          return MiscObjects::getSingleton().readNextRecord(in_File);

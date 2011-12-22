@@ -8,6 +8,7 @@
 #include "../base/Books.h"
 #include "../base/FormIDFunctions.h"
 #include "../base/Ingredients.h"
+#include "../base/Keys.h"
 #include "../base/MiscObjects.h"
 #include "../base/Perks.h"
 #include "../base/RegistryFunctions.h"
@@ -43,13 +44,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Form ID Finder for Skyrim, version 0.08.rev329, 2011-12-14\n";
+  std::cout << "Form ID Finder for Skyrim, version 0.09.rev345, 2011-12-22\n";
 }
 
 int showVersionExitcode()
 {
   showVersion();
-  return 329;
+  return 345;
 }
 
 void showHelp()
@@ -452,6 +453,36 @@ int main(int argc, char **argv)
       std::cout << "Total matching ingredients: "<<ingredMatches<<"\n";
     }
   }//scope for ingredient stuff
+
+  //check keys for matches
+  {
+    unsigned int keyMatches = 0;
+    SRTP::Keys::ListIterator key_iter = SRTP::Keys::getSingleton().getBegin();
+    while (key_iter!=SRTP::Keys::getSingleton().getEnd())
+    {
+        if (table.hasString(key_iter->second.nameStringID))
+        {
+          if (matchesKeyword(table.getString(key_iter->second.nameStringID), searchKeyword, caseSensitive))
+          {
+            //found matching key record
+            if (keyMatches==0)
+            {
+              std::cout << "\n\nMatching keys:\n";
+            }
+            std::cout << "    \""<<table.getString(key_iter->second.nameStringID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(key_iter->second.headerFormID)
+                      <<"\n        editor ID \""<<key_iter->second.editorID<<"\"\n";
+            ++keyMatches;
+            ++totalMatches;
+          }//if match found
+        }//if table has string
+      ++key_iter;
+    }//while
+    if (keyMatches>0)
+    {
+      std::cout << "Total matching keys: "<<keyMatches<<"\n";
+    }
+  }//scope for key stuff
 
   //check misc. objects for matches
   {

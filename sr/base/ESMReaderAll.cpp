@@ -39,6 +39,7 @@
 #include "ImageSpaces.h"
 #include "ImpactDataSets.h"
 #include "Ingredients.h"
+#include "Keys.h"
 #include "Keywords.h"
 #include "LandscapeTextures.h"
 #include "LocationReferenceTypes.h"
@@ -129,6 +130,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;
     case cINGR:
          return Ingredients::getSingleton().readNextRecord(in_File);
+         break;
+    case cKEYM:
+         return Keys::getSingleton().readNextRecord(in_File);
          break;
     case cKYWD:
          return Keywords::getSingleton().readNextRecord(in_File);

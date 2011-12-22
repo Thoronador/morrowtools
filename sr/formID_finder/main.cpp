@@ -5,6 +5,7 @@
 #include "../../base/UtilityFunctions.h"
 #include "../../mw/base/ReturnCodes.h"
 #include "../base/Ammunitions.h"
+#include "../base/Apparatuses.h"
 #include "../base/Books.h"
 #include "../base/FormIDFunctions.h"
 #include "../base/Ingredients.h"
@@ -44,13 +45,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Form ID Finder for Skyrim, version 0.09.rev345, 2011-12-22\n";
+  std::cout << "Form ID Finder for Skyrim, version 0.10.rev346, 2011-12-22\n";
 }
 
 int showVersionExitcode()
 {
   showVersion();
-  return 345;
+  return 346;
 }
 
 void showHelp()
@@ -387,6 +388,38 @@ int main(int argc, char **argv)
   {
     std::cout << "Total matching ammunition: "<<ammoMatches<<"\n";
   }
+
+  //check apparatuses for matches
+  {
+    unsigned int appaMatches = 0;
+    SRTP::Apparatuses::ListIterator appa_iter = SRTP::Apparatuses::getSingleton().getBegin();
+    while (appa_iter!=SRTP::Apparatuses::getSingleton().getEnd())
+    {
+
+        if (table.hasString(appa_iter->second.nameStringID))
+        {
+          if (matchesKeyword(table.getString(appa_iter->second.nameStringID), searchKeyword, caseSensitive))
+          {
+            //found matching apparatus record
+            if (appaMatches==0)
+            {
+              std::cout << "\n\nMatching apparatuses:\n";
+            }
+            std::cout << "    \""<<table.getString(appa_iter->second.nameStringID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(appa_iter->second.headerFormID)
+                      <<"\n        editor ID \""<<appa_iter->second.editorID<<"\"\n";
+            ++appaMatches;
+            ++totalMatches;
+          }//if match found
+        }//if table has string
+
+      ++appa_iter;
+    }//while
+    if (appaMatches>0)
+    {
+      std::cout << "Total matching apparatuses: "<<appaMatches<<"\n";
+    }
+  }//scope for apparatus stuff
 
   //check books for matches
   {

@@ -22,6 +22,7 @@
 #include <iostream>
 #include "SR_Constants.h"
 //#include "records/ActivatorRecord.h"
+#include "records/ApparatusRecord.h"
 #include "records/AssociationTypeRecord.h"
 #include "records/BookRecord.h"
 #include "records/ClassRecord.h"
@@ -83,6 +84,9 @@ int ESMReaderContents::readNextRecord(std::ifstream& in_File, const int32_t recN
     /*case cACTI:
          recPtr = new ActivatorRecord;
          break;*/
+    case cAPPA:
+         recPtr = new ApparatusRecord;
+         break;
     case cASTP:
          recPtr = new AssociationTypeRecord;
          break;

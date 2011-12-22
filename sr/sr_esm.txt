@@ -97,6 +97,21 @@ Records and their sub-records:
           unknown value
 
 
+  APPA: apparatus
+      EDID (string, NUL-terminated)
+          editorID
+      OBND (12 bytes)
+          unknown data
+      FULL (4 bytes)
+          unknown data
+      QUAL (4 bytes)
+          unknown data
+      DESC (4 bytes)
+          unknown data
+      DATA (8 bytes)
+          unknown data
+
+
   DOOR: door
       EDID (string, NUL-terminated)
           editorID

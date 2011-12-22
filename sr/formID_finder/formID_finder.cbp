@@ -40,6 +40,7 @@
 		<Unit filename="..\..\mw\base\HelperIO.h" />
 		<Unit filename="..\..\mw\base\ReturnCodes.h" />
 		<Unit filename="..\base\Ammunitions.h" />
+		<Unit filename="..\base\Apparatuses.h" />
 		<Unit filename="..\base\Books.h" />
 		<Unit filename="..\base\ESMReader.cpp" />
 		<Unit filename="..\base\ESMReader.h" />
@@ -62,6 +63,8 @@
 		<Unit filename="..\base\WordsOfPower.h" />
 		<Unit filename="..\base\records\AmmunitionRecord.cpp" />
 		<Unit filename="..\base\records\AmmunitionRecord.h" />
+		<Unit filename="..\base\records\ApparatusRecord.cpp" />
+		<Unit filename="..\base\records\ApparatusRecord.h" />
 		<Unit filename="..\base\records\BasicRecord.cpp" />
 		<Unit filename="..\base\records\BasicRecord.h" />
 		<Unit filename="..\base\records\BinarySubRecord.cpp" />

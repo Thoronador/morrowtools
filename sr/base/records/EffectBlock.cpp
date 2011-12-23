@@ -19,6 +19,7 @@
 */
 
 #include "EffectBlock.h"
+#include "../SR_Constants.h"
 
 namespace SRTP
 {
@@ -28,6 +29,41 @@ bool EffectBlock::operator==(const EffectBlock& other) const
   return ((unknownEFID==other.unknownEFID) and (unknownEFITs[0]==other.unknownEFITs[0])
       and (unknownEFITs[1]==other.unknownEFITs[1]) and (unknownEFITs[2]==other.unknownEFITs[2])
       and (unknownCTDAs==other.unknownCTDAs));
+}
+
+bool EffectBlock::saveToStream(std::ofstream& output) const
+{
+  //write EFID
+  output.write((const char*) &cEFID, 4);
+  //EFID's length
+  uint16_t subLength = 4; //fixed
+  output.write((const char*) &subLength, 2);
+  //write EFID's stuff
+  output.write((const char*) &(unknownEFID), 4);
+
+  //write EFIT
+  output.write((const char*) &cEFIT, 4);
+  //EFIT's length
+  subLength = 12; //fixed
+  output.write((const char*) &subLength, 2);
+  //write EFIT's stuff
+  output.write((const char*) &(unknownEFITs[0]), 4);
+  output.write((const char*) &(unknownEFITs[1]), 4);
+  output.write((const char*) &(unknownEFITs[2]), 4);
+
+  unsigned int jay;
+  for (jay=0; jay<unknownCTDAs.size(); ++jay)
+  {
+    //write CTDA
+    output.write((const char*) &cCTDA, 4);
+    //CTDA's length
+    subLength = 32; //fixed
+    output.write((const char*) &subLength, 2);
+    //write CTDA's stuff
+    output.write((const char*) &(unknownCTDAs[jay].content), 32);
+  }//for jay
+
+  return output.good();
 }
 
 } //namespace

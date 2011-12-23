@@ -25,6 +25,7 @@
 #include "SR_Constants.h"
 #include "Actions.h"
 #include "Activators.h"
+#include "AlchemyPotions.h"
 #include "Apparatuses.h"
 #include "AssociationTypes.h"
 #include "Books.h"
@@ -89,6 +90,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;
     case cACTI:
          return Activators::getSingleton().readNextRecord(in_File);
+         break;
+    case cALCH:
+         return AlchemyPotions::getSingleton().readNextRecord(in_File);
          break;
     case cAPPA:
          return Apparatuses::getSingleton().readNextRecord(in_File);

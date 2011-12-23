@@ -22,6 +22,7 @@
 #include <iostream>
 #include "SR_Constants.h"
 //#include "records/ActivatorRecord.h"
+#include "records/AlchemyPotionRecord.h"
 #include "records/ApparatusRecord.h"
 #include "records/AssociationTypeRecord.h"
 #include "records/BookRecord.h"
@@ -84,6 +85,9 @@ int ESMReaderContents::readNextRecord(std::ifstream& in_File, const int32_t recN
     /*case cACTI:
          recPtr = new ActivatorRecord;
          break;*/
+    case cALCH:
+         recPtr = new AlchemyPotionRecord;
+         break;
     case cAPPA:
          recPtr = new ApparatusRecord;
          break;

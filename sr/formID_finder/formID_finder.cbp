@@ -39,6 +39,7 @@
 		<Unit filename="..\..\mw\base\HelperIO.cpp" />
 		<Unit filename="..\..\mw\base\HelperIO.h" />
 		<Unit filename="..\..\mw\base\ReturnCodes.h" />
+		<Unit filename="..\base\AlchemyPotions.h" />
 		<Unit filename="..\base\Ammunitions.h" />
 		<Unit filename="..\base\Apparatuses.h" />
 		<Unit filename="..\base\Books.h" />
@@ -61,6 +62,8 @@
 		<Unit filename="..\base\StringTable.h" />
 		<Unit filename="..\base\Weapons.h" />
 		<Unit filename="..\base\WordsOfPower.h" />
+		<Unit filename="..\base\records\AlchemyPotionRecord.cpp" />
+		<Unit filename="..\base\records\AlchemyPotionRecord.h" />
 		<Unit filename="..\base\records\AmmunitionRecord.cpp" />
 		<Unit filename="..\base\records\AmmunitionRecord.h" />
 		<Unit filename="..\base\records\ApparatusRecord.cpp" />

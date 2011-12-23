@@ -18,36 +18,18 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SR_EFFECTBLOCK_H
-#define SR_EFFECTBLOCK_H
+#ifndef SR_ALCHEMYPOTIONS_H
+#define SR_ALCHEMYPOTIONS_H
 
-#include <fstream>
-#include <vector>
-#include <stdint.h>
-#include "CTDAData.h"
+#include "records/AlchemyPotionRecord.h"
+#include "MapBasedRecordManager.h"
 
 namespace SRTP
 {
 
-//type for effect blocks
-struct EffectBlock
-{
-  uint32_t unknownEFID;
-  uint32_t unknownEFITs[3];
-  std::vector<CTDAData> unknownCTDAs;
-
-  /* comparison operator */
-  bool operator==(const EffectBlock& other) const;
-
-  /* tries to save the effect block to the given stream and returns true in case
-     of success, false on failure
-
-     parameters:
-          output   - the output file stream
-  */
-  bool saveToStream(std::ofstream& output) const;
-}; //struct
+//singleton for alchemy potion records
+typedef MapBasedRecordManager<AlchemyPotionRecord> AlchemyPotions;
 
 } //namespace
 
-#endif // SR_EFFECTBLOCK_H
+#endif // SR_ALCHEMYPOTIONS_H

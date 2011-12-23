@@ -20,6 +20,7 @@
 
 #include "ESMReaderFinder.h"
 #include "../base/SR_Constants.h"
+#include "../base/AlchemyPotions.h"
 #include "../base/Ammunitions.h"
 #include "../base/Apparatuses.h"
 #include "../base/Books.h"
@@ -50,7 +51,7 @@ bool ESMReaderFinder::needGroup(const GroupData& g_data) const
 {
   switch (g_data.getGroupName())
   {
-    //case cALCH:
+    case cALCH:
     case cAMMO:
     case cAPPA:
     //case cARMO:
@@ -75,6 +76,9 @@ int ESMReaderFinder::readNextRecord(std::ifstream& in_File, const int32_t recNam
   #warning Not completely implemented yet!
   switch (recName)
   {
+    case cALCH:
+         return AlchemyPotions::getSingleton().readNextRecord(in_File);
+         break;
     case cAMMO:
          return Ammunitions::getSingleton().readNextRecord(in_File);
          break;

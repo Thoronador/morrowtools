@@ -28,6 +28,7 @@ namespace SRTP
 
 const int32_t cAACT = 0x54434141; //"AACT" = 41 41 43 54
 const int32_t cACTI = 0x49544341; //"ACTI" = 41 43 54 49
+const int32_t cALCH = 0x48434C41; //"ALCH" = 41 4C 43 48
 const int32_t cAMMO = 0x4F4D4D41; //"AMMO" = 41 4D 4D 4F
 const int32_t cANAM = 0x4D414E41; //"ANAM" = 41 4E 41 4D
 const int32_t cAPPA = 0x41505041; //"APPA" = 41 50 50 41

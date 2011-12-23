@@ -97,6 +97,37 @@ Records and their sub-records:
           unknown value
 
 
+  ALCH: alchemy stuff (potions?)
+      EDID (string, NUL-terminated)
+          editorID
+      OBND (12 bytes)
+          unknown data
+      FULL (4 bytes, optional)
+          unknown data
+      KSIZ (4 bytes, optional)
+          number of items in KWDA
+      KWDA (n * 4 bytes, optional)
+          array of form IDs/uint32_ts
+      MODL (string, NUL-terminated)
+          model path
+      MODT (?? bytes)
+          unknown data
+      MODT (?? bytes, optional)
+          unknown data
+      YNAM (4 bytes, optional)
+          unknown data
+      ZNAM (4 bytes, optional)
+          unknown data
+      DATA (4 bytes)
+          unknown data
+      ENIT (20 bytes)
+          unknown data
+      EFID (4 bytes)
+          unknown data
+      EFIT (12 bytes)
+          unknown data, but first 4 bytes seem to be a float
+
+
   APPA: apparatus
       EDID (string, NUL-terminated)
           editorID

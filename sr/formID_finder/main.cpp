@@ -4,6 +4,7 @@
 #include "../../base/FileFunctions.h"
 #include "../../base/UtilityFunctions.h"
 #include "../../mw/base/ReturnCodes.h"
+#include "../base/AlchemyPotions.h"
 #include "../base/Ammunitions.h"
 #include "../base/Apparatuses.h"
 #include "../base/Books.h"
@@ -45,13 +46,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Form ID Finder for Skyrim, version 0.10.rev346, 2011-12-22\n";
+  std::cout << "Form ID Finder for Skyrim, version 0.11.rev347, 2011-12-23\n";
 }
 
 int showVersionExitcode()
 {
   showVersion();
-  return 346;
+  return 347;
 }
 
 void showHelp()
@@ -358,36 +359,72 @@ int main(int argc, char **argv)
 
   unsigned int totalMatches = 0;
 
-  //check ammunitions for matches
-  unsigned int ammoMatches = 0;
-  SRTP::Ammunitions::ListIterator ammo_iter = SRTP::Ammunitions::getSingleton().getBegin();
-  while (ammo_iter!=SRTP::Ammunitions::getSingleton().getEnd())
+
+  //check alchemy for matches
   {
-    if (ammo_iter->second.hasFULL)
+    unsigned int alchemyMatches = 0;
+    SRTP::AlchemyPotions::ListIterator alchemy_iter = SRTP::AlchemyPotions::getSingleton().getBegin();
+    while (alchemy_iter!=SRTP::AlchemyPotions::getSingleton().getEnd())
     {
-      if (table.hasString(ammo_iter->second.nameStringID))
+      if (alchemy_iter->second.hasFULL)
       {
-        if (matchesKeyword(table.getString(ammo_iter->second.nameStringID), searchKeyword, caseSensitive))
+        if (table.hasString(alchemy_iter->second.nameStringID))
         {
-          //found matching ammo record
-          if (ammoMatches==0)
+          if (matchesKeyword(table.getString(alchemy_iter->second.nameStringID), searchKeyword, caseSensitive))
           {
-            std::cout << "\n\nMatching ammunition:\n";
-          }
-          std::cout << "    \""<<table.getString(ammo_iter->second.nameStringID)
-                    <<"\"\n        form ID "<<SRTP::getFormIDAsString(ammo_iter->second.headerFormID)
-                    <<"\n        editor ID \""<<ammo_iter->second.editorID<<"\"\n";
-          ++ammoMatches;
-          ++totalMatches;
-        }//if match found
-      }//if table has string
-    }//if hasFULL
-    ++ammo_iter;
-  }//while
-  if (ammoMatches>0)
+            //found matching alchemy record
+            if (alchemyMatches==0)
+            {
+              std::cout << "\n\nMatching alchemy potions:\n";
+            }
+            std::cout << "    \""<<table.getString(alchemy_iter->second.nameStringID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(alchemy_iter->second.headerFormID)
+                      <<"\n        editor ID \""<<alchemy_iter->second.editorID<<"\"\n";
+            ++alchemyMatches;
+            ++totalMatches;
+          }//if match found
+        }//if table has string
+      }//if hasFULL
+      ++alchemy_iter;
+    }//while
+    if (alchemyMatches>0)
+    {
+      std::cout << "Total matching alchemy potions: "<<alchemyMatches<<"\n";
+    }
+  }//scope for alchemy stuff
+
+  //check ammunitions for matches
   {
-    std::cout << "Total matching ammunition: "<<ammoMatches<<"\n";
-  }
+    unsigned int ammoMatches = 0;
+    SRTP::Ammunitions::ListIterator ammo_iter = SRTP::Ammunitions::getSingleton().getBegin();
+    while (ammo_iter!=SRTP::Ammunitions::getSingleton().getEnd())
+    {
+      if (ammo_iter->second.hasFULL)
+      {
+        if (table.hasString(ammo_iter->second.nameStringID))
+        {
+          if (matchesKeyword(table.getString(ammo_iter->second.nameStringID), searchKeyword, caseSensitive))
+          {
+            //found matching ammo record
+            if (ammoMatches==0)
+            {
+              std::cout << "\n\nMatching ammunition:\n";
+            }
+            std::cout << "    \""<<table.getString(ammo_iter->second.nameStringID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(ammo_iter->second.headerFormID)
+                      <<"\n        editor ID \""<<ammo_iter->second.editorID<<"\"\n";
+            ++ammoMatches;
+            ++totalMatches;
+          }//if match found
+        }//if table has string
+      }//if hasFULL
+      ++ammo_iter;
+    }//while
+    if (ammoMatches>0)
+    {
+      std::cout << "Total matching ammunition: "<<ammoMatches<<"\n";
+    }
+  }//scope for ammo stuff
 
   //check apparatuses for matches
   {

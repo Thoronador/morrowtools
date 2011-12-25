@@ -32,10 +32,12 @@ const int32_t cALCH = 0x48434C41; //"ALCH" = 41 4C 43 48
 const int32_t cAMMO = 0x4F4D4D41; //"AMMO" = 41 4D 4D 4F
 const int32_t cANAM = 0x4D414E41; //"ANAM" = 41 4E 41 4D
 const int32_t cAPPA = 0x41505041; //"APPA" = 41 50 50 41
+const int32_t cARMO = 0x4F4D5241; //"ARMO" = 41 52 4D 4F
 const int32_t cASTP = 0x50545341; //"ASTP" = 41 53 54 50
 const int32_t cBAMT = 0x544D4142; //"BAMT" = 42 41 4D 54
 const int32_t cBIDS = 0x53444942; //"BIDS" = 42 49 44 53
 const int32_t cBNAM = 0x4D414E42; //"BNAM" = 42 4E 41 4D
+const int32_t cBODT = 0x54444F42; //"BODT" = 42 4F 44 54
 const int32_t cBOOK = 0x4B4F4F42; //"BOOK" = 42 4F 4F 4B
 const int32_t cCIS2 = 0x32534943; //"CIS2" = 43 49 53 32
 const int32_t cCLAS = 0x53414C43; //"CLAS" = 43 4C 41 53
@@ -103,6 +105,12 @@ const int32_t cMDOB = 0x424F444D; //"MDOB" = 4D 44 4F 42
 const int32_t cMGEF = 0x4645474D; //"MGEF" = 4D 47 45 46
 const int32_t cMISC = 0x4353494D; //"MISC" = 4D 49 53 43
 const int32_t cMNAM = 0x4D414E4D; //"MNAM" = 4D 4E 41 4D
+const int32_t cMO2S = 0x53324F4D; //"MO2S" = 4D 4F 32 53
+const int32_t cMO2T = 0x54324F4D; //"MO2T" = 4D 4F 32 54
+const int32_t cMO4S = 0x53344F4D; //"MO4S" = 4D 4F 34 53
+const int32_t cMO4T = 0x54344F4D; //"MO4T" = 4D 4F 34 54
+const int32_t cMOD2 = 0x32444F4D; //"MOD2" = 4D 4F 44 32
+const int32_t cMOD4 = 0x34444F4D; //"MOD4" = 4D 4F 44 34
 const int32_t cMODL = 0x4C444F4D; //"MODL" = 4D 4F 44 4C
 const int32_t cMODS = 0x53444F4D; //"MODS" = 4D 4F 44 53
 const int32_t cMODT = 0x54444F4D; //"MODT" = 4D 4F 44 54

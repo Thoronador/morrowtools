@@ -27,6 +27,7 @@
 #include "Activators.h"
 #include "AlchemyPotions.h"
 #include "Apparatuses.h"
+#include "Armours.h"
 #include "AssociationTypes.h"
 #include "Books.h"
 #include "Classes.h"
@@ -96,6 +97,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;
     case cAPPA:
          return Apparatuses::getSingleton().readNextRecord(in_File);
+         break;
+    case cARMO:
+         return Armours::getSingleton().readNextRecord(in_File);
          break;
     case cASTP:
          return AssociationTypes::getSingleton().readNextRecord(in_File);

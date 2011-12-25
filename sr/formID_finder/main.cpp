@@ -7,6 +7,7 @@
 #include "../base/AlchemyPotions.h"
 #include "../base/Ammunitions.h"
 #include "../base/Apparatuses.h"
+#include "../base/Armours.h"
 #include "../base/Books.h"
 #include "../base/FormIDFunctions.h"
 #include "../base/Ingredients.h"
@@ -46,13 +47,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Form ID Finder for Skyrim, version 0.11.rev347, 2011-12-23\n";
+  std::cout << "Form ID Finder for Skyrim, version 0.12.rev348, 2011-12-25\n";
 }
 
 int showVersionExitcode()
 {
   showVersion();
-  return 347;
+  return 348;
 }
 
 void showHelp()
@@ -457,6 +458,39 @@ int main(int argc, char **argv)
       std::cout << "Total matching apparatuses: "<<appaMatches<<"\n";
     }
   }//scope for apparatus stuff
+
+  //check armour for matches
+  {
+    unsigned int armourMatches = 0;
+    SRTP::Armours::ListIterator armour_iter = SRTP::Armours::getSingleton().getBegin();
+    while (armour_iter!=SRTP::Armours::getSingleton().getEnd())
+    {
+      if (armour_iter->second.hasFULL)
+      {
+        if (table.hasString(armour_iter->second.nameStringID))
+        {
+          if (matchesKeyword(table.getString(armour_iter->second.nameStringID), searchKeyword, caseSensitive))
+          {
+            //found matching armour record
+            if (armourMatches==0)
+            {
+              std::cout << "\n\nMatching armours:\n";
+            }
+            std::cout << "    \""<<table.getString(armour_iter->second.nameStringID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(armour_iter->second.headerFormID)
+                      <<"\n        editor ID \""<<armour_iter->second.editorID<<"\"\n";
+            ++armourMatches;
+            ++totalMatches;
+          }//if match found
+        }//if table has string
+      }//if hasFULL
+      ++armour_iter;
+    }//while
+    if (armourMatches>0)
+    {
+      std::cout << "Total matching armours: "<<armourMatches<<"\n";
+    }
+  }//scope for armour stuff
 
   //check books for matches
   {

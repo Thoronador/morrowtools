@@ -42,6 +42,7 @@
 		<Unit filename="..\base\AlchemyPotions.h" />
 		<Unit filename="..\base\Ammunitions.h" />
 		<Unit filename="..\base\Apparatuses.h" />
+		<Unit filename="..\base\Armours.h" />
 		<Unit filename="..\base\Books.h" />
 		<Unit filename="..\base\ESMReader.cpp" />
 		<Unit filename="..\base\ESMReader.h" />
@@ -68,6 +69,8 @@
 		<Unit filename="..\base\records\AmmunitionRecord.h" />
 		<Unit filename="..\base\records\ApparatusRecord.cpp" />
 		<Unit filename="..\base\records\ApparatusRecord.h" />
+		<Unit filename="..\base\records\ArmourRecord.cpp" />
+		<Unit filename="..\base\records\ArmourRecord.h" />
 		<Unit filename="..\base\records\BasicRecord.cpp" />
 		<Unit filename="..\base\records\BasicRecord.h" />
 		<Unit filename="..\base\records\BinarySubRecord.cpp" />

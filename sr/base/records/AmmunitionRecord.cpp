@@ -39,7 +39,6 @@ AmmunitionRecord::AmmunitionRecord()
   unknownYNAM = 0;
   unknownZNAM = 0;
   unknownDESC = 0;
-  keywordSize = 0;
   keywordArray.clear();
   unknownDATA[0] = unknownDATA[1] = unknownDATA[2] = unknownDATA[3] = 0;
 }
@@ -56,7 +55,7 @@ bool AmmunitionRecord::equals(const AmmunitionRecord& other) const
       and (hasFULL==other.hasFULL) and ((nameStringID==other.nameStringID) or (!hasFULL))
       and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
       and (unknownYNAM==other.unknownYNAM) and (unknownZNAM==other.unknownZNAM)
-      and (unknownDESC==other.unknownDESC) and (keywordSize==other.keywordSize)
+      and (unknownDESC==other.unknownDESC)
       and (keywordArray==other.keywordArray) and (unknownDATA[0]==other.unknownDATA[0])
       and (unknownDATA[1]==other.unknownDATA[1]) and (unknownDATA[2]==other.unknownDATA[2])
       and (unknownDATA[3]==other.unknownDATA[3]));
@@ -174,15 +173,16 @@ bool AmmunitionRecord::saveToStream(std::ofstream& output) const
     subLength = 4; //fixed size
     output.write((char*) &subLength, 2);
     //write KSIZ's stuff
-    output.write((const char*) &keywordSize, 4);
+    const uint32_t k_Size = keywordArray.size();
+    output.write((const char*) &k_Size, 4);
 
     //write KWDA
     output.write((char*) &cKWDA, 4);
     //KWDA's length
-    subLength = 4*keywordArray.size();
+    subLength = 4*k_Size;
     output.write((char*) &subLength, 2);
     unsigned int i;
-    for (i=0; i<keywordArray.size(); ++i)
+    for (i=0; i<k_Size; ++i)
     {
       output.write((char*) &(keywordArray[i]), 4);
     }//for
@@ -271,9 +271,8 @@ bool AmmunitionRecord::loadFromStream(std::ifstream& in_File)
   bool hasReadYNAM = false;
   bool hasReadZNAM = false;
   bool hasReadDESC = false;
-  keywordSize = 0;
   keywordArray.clear();
-  uint32_t i, temp;
+  uint32_t k_Size, i, temp;
   bool hasReadDATA = false;
 
   while (bytesRead<readSize)
@@ -438,7 +437,8 @@ bool AmmunitionRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read KSIZ's stuff
-           in_File.read((char*) &keywordSize, 4);
+           k_Size = 0;
+           in_File.read((char*) &k_Size, 4);
            bytesRead += 4;
            if (!in_File.good())
            {
@@ -457,13 +457,13 @@ bool AmmunitionRecord::loadFromStream(std::ifstream& in_File)
            //KWDA's length
            in_File.read((char*) &subLength, 2);
            bytesRead += 2;
-           if (subLength!=4*keywordSize)
+           if (subLength!=4*k_Size)
            {
              std::cout <<"Error: sub record KWDA of AMMO has invalid length("<<subLength
-                       <<" bytes). Should be "<<4*keywordSize<<" bytes!\n";
+                       <<" bytes). Should be "<<4*k_Size<<" bytes!\n";
              return false;
            }
-           for (i=0; i<keywordSize; ++i)
+           for (i=0; i<k_Size; ++i)
            {
              in_File.read((char*) &temp, 4);
              bytesRead += 4;

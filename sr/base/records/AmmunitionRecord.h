@@ -67,7 +67,6 @@ struct AmmunitionRecord: public BasicRecord
     uint32_t unknownYNAM;
     uint32_t unknownZNAM;
     uint32_t unknownDESC;
-    uint32_t keywordSize;
     std::vector<uint32_t> keywordArray;
     uint32_t unknownDATA[4];//subrecord DATA
 }; //struct

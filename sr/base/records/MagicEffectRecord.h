@@ -65,7 +65,6 @@ struct MagicEffectRecord: public BasicRecord
     uint32_t fullNameStringID;
     bool hasMDOB;
     uint32_t unknownMDOB;
-    uint32_t keywordSize;
     std::vector<uint32_t> keywordArray;
     BinarySubRecord unknownDATA;
     BinarySubRecord unknownSNDD;

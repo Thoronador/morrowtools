@@ -39,7 +39,6 @@ MiscObjectRecord::MiscObjectRecord()
   unknownMODT.setPresence(true);
   unknownMODS.setPresence(false);
   iconPath = "";
-  keywordSize = 0;
   keywordArray.clear();
   hasYNAM = false;
   unknownYNAM = 0;
@@ -60,7 +59,7 @@ bool MiscObjectRecord::equals(const MiscObjectRecord& other) const
     and (unknownVMAD==other.unknownVMAD) and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
     and (hasFULL==other.hasFULL) and (modelPath==other.modelPath)
     and (unknownMODT==other.unknownMODT) and (unknownMODS==other.unknownMODS)
-    and (iconPath==other.iconPath) and (keywordSize==other.keywordSize)
+    and (iconPath==other.iconPath)
     and (keywordArray==other.keywordArray) and (value==other.value)
     and (weight==other.weight) and (hasYNAM==other.hasYNAM)
     and (hasZNAM==other.hasZNAM))
@@ -190,16 +189,17 @@ bool MiscObjectRecord::saveToStream(std::ofstream& output) const
     subLength = 4; /* fixed length */
     output.write((char*) &subLength, 2);
     //write KSIZ's data
-    output.write((const char*) &keywordSize, 4);
+    const uint32_t k_Size = keywordArray.size();
+    output.write((const char*) &k_Size, 4);
 
     //write KWDA
     output.write((char*) &cKWDA, 4);
     //KWDA's length
-    subLength = 4*keywordArray.size();
+    subLength = 4*k_Size;
     output.write((char*) &subLength, 2);
     //write KWDA's data
     uint32_t i;
-    for (i=0; i<keywordArray.size(); ++i)
+    for (i=0; i<k_Size; ++i)
     {
       output.write((const char*) &(keywordArray[i]), 4);
     }//for
@@ -287,9 +287,8 @@ bool MiscObjectRecord::loadFromStream(std::ifstream& in_File)
   unknownYNAM = 0;
   hasZNAM = false;
   unknownZNAM = 0;
-  keywordSize = 0;
   keywordArray.clear();
-  uint32_t i;
+  uint32_t k_Size, i, temp;
   bool hasReadOBND = false;
   bool hasReadDATA = false;
   bool hasReadKSIZ = false;
@@ -519,7 +518,8 @@ bool MiscObjectRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read KSIZ's stuff
-           in_File.read((char*) &keywordSize, 4);
+           k_Size = 0;
+           in_File.read((char*) &k_Size, 4);
            bytesRead += 4;
            if (!in_File.good())
            {
@@ -540,18 +540,19 @@ bool MiscObjectRecord::loadFromStream(std::ifstream& in_File)
            //KWDA's length
            in_File.read((char*) &subLength, 2);
            bytesRead += 2;
-           if (subLength!=keywordSize*4)
+           if (subLength!=k_Size*4)
            {
              std::cout <<"Error: sub record KWDA of MISC is has invalid length ("
-                       <<subLength<<" bytes)! Should be "<<keywordSize*4<<" bytes.\n";
+                       <<subLength<<" bytes)! Should be "<<k_Size*4<<" bytes.\n";
              return false;
            }
            //read keywords
-           for (i=0; i<keywordSize; ++i)
+           for (i=0; i<k_Size; ++i)
            {
-             in_File.read((char*) &subRecName, 4);
+             temp = 0;
+             in_File.read((char*) &temp, 4);
              bytesRead += 4;
-             keywordArray.push_back(subRecName);
+             keywordArray.push_back(temp);
            }//for
            if (!in_File.good())
            {

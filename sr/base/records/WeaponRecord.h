@@ -84,7 +84,6 @@ struct WeaponRecord: public BasicRecord
     uint32_t unknownBIDS;
     bool hasBAMT;
     uint32_t unknownBAMT;
-    uint32_t keywordSize;
     std::vector<uint32_t> keywordArray;
     uint32_t descriptionStringID; //subrecord DESC
     std::string unknownNNAM;

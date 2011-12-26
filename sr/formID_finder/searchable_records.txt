@@ -4,10 +4,10 @@
 Record types the application should be able to search:
 ------------------------------------------------------
 
-[*] ALCH - alchemy stuff(?)
+ALCH - alchemy stuff/ potions
 AMMO - ammunition
 APPA - apparatus
-[*] ARMO - armour
+ARMO - armour
 BOOK - book
 INGR - ingredient
 KEYM - key
@@ -15,6 +15,7 @@ MISC - mic. object
 PERK - perk
 SCRL - scroll
 SHOU - shout
+[*] SLGM - soul gem
 SPEL - spell
 WEAP - weapon
 WOOP - word of power

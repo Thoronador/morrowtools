@@ -74,7 +74,6 @@ struct ActivatorRecord: public BasicRecord
     BinarySubRecord unknownDMDT;
     BinarySubRecord unknownDMDS;
     BinarySubRecord unknownDSTF;
-    uint32_t keywordSize;
     std::vector<uint32_t> keywordArray;
     uint32_t unknownPNAM;
     bool hasVNAM;

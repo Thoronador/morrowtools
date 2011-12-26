@@ -45,7 +45,6 @@ ActivatorRecord::ActivatorRecord()
   unknownDMDT.setPresence(false);
   unknownDMDS.setPresence(false);
   unknownDSTF.setPresence(false);
-  keywordSize = 0;
   keywordArray.clear();
   unknownPNAM = 0;
   hasVNAM = false;
@@ -77,7 +76,7 @@ bool ActivatorRecord::equals(const ActivatorRecord& other) const
     and (destroyedModelPath==other.destroyedModelPath)
     and (unknownDMDT==other.unknownDMDT) and (unknownDMDS==other.unknownDMDS)
     and (unknownDSTF==other.unknownDSTF)
-    and (keywordSize==other.keywordSize) and (keywordArray==other.keywordArray)
+    and (keywordArray==other.keywordArray)
     and (unknownPNAM==other.unknownPNAM) and (unknownFNAM==other.unknownFNAM)
     and (hasVNAM==other.hasVNAM) and ((unknownVNAM==other.unknownVNAM) or (!hasVNAM))
     and (hasWNAM==other.hasWNAM) and ((unknownWNAM==other.unknownWNAM) or (!hasWNAM))
@@ -297,7 +296,8 @@ bool ActivatorRecord::saveToStream(std::ofstream& output) const
     subLength = 4; //fixed size
     output.write((char*) &subLength, 2);
     //write keyword size
-    output.write((const char*) &keywordSize, 4);
+    const uint32_t k_Size = keywordArray.size();
+    output.write((const char*) &k_Size, 4);
 
     //write KWDA
     output.write((char*) &cKWDA, 4);
@@ -306,7 +306,7 @@ bool ActivatorRecord::saveToStream(std::ofstream& output) const
     output.write((char*) &subLength, 2);
     //write keywords
     uint32_t i;
-    for (i=0; i<keywordArray.size(); ++i)
+    for (i=0; i<k_Size; ++i)
     {
       output.write((const char*) &(keywordArray[i]), 4);
     }//for
@@ -423,7 +423,6 @@ bool ActivatorRecord::loadFromStream(std::ifstream& in_File)
   unknownDSTF.setPresence(false);
   hasDEST = false;
   hasDSTD = false;
-  keywordSize = 0;
   keywordArray.clear();
   hasKNAM = false;
   hasVNAM = false;
@@ -433,7 +432,7 @@ bool ActivatorRecord::loadFromStream(std::ifstream& in_File)
   bool hasReadPNAM = false;
   bool hasReadFNAM = false;
 
-  uint32_t i, temp;
+  uint32_t k_Size, i, temp;
   while (bytesRead<readSize)
   {
     //read next record
@@ -661,7 +660,8 @@ bool ActivatorRecord::loadFromStream(std::ifstream& in_File)
            }
            in_File.seekg(-4, std::ios_base::cur);
            //read KSIZ
-           if (!loadUint32SubRecordFromStream(in_File, cKSIZ, keywordSize)) return false;
+           k_Size = 0;
+           if (!loadUint32SubRecordFromStream(in_File, cKSIZ, k_Size)) return false;
            bytesRead += 6;
 
            //read KWDA
@@ -670,14 +670,14 @@ bool ActivatorRecord::loadFromStream(std::ifstream& in_File)
            //KWDA's length
            in_File.read((char*) &subLength, 2);
            bytesRead += 2;
-           if (subLength!=4*keywordSize)
+           if (subLength!=4*k_Size)
            {
              std::cout <<"Error: sub record KWDA of ACTI has invalid length ("
-                       <<subLength<<" bytes). Should be "<<4*keywordSize<<" bytes!\n";
+                       <<subLength<<" bytes). Should be "<<4*k_Size<<" bytes!\n";
              return false;
            }
            //read keywords
-           for (i=0; i<keywordSize; ++i)
+           for (i=0; i<k_Size; ++i)
            {
              in_File.read((char*) &temp, 4);
              bytesRead += 4;

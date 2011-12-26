@@ -69,12 +69,27 @@ struct BookRecord: public BasicRecord
     uint32_t textStringID; //DESC
     bool hasYNAM;
     uint32_t unknownYNAM;
-    uint32_t keywordSize;
     std::vector<uint32_t> keywordArray;
-    uint8_t  unknownDATA[16];
+    //subrecord DATA
+    uint32_t bookFlags;
+    uint32_t spellOrSkillID;
+    uint32_t bookValue;
+    float weight;
+    //end of subrecord DATA
     bool hasINAM;
     uint32_t unknownINAM;
     uint32_t unknownCNAM;
+
+    //flag constants
+    static const uint32_t cSkillBookFlag;
+    static const uint32_t cSpellTomeFlag;
+    static const uint32_t cNoteOrScrollTypeFlag;
+
+    /* returns true, if the book is a skill book, according to its flags */
+    bool isSkillBook() const;
+
+    /* returns true, if the book is a spell tome, according to its flags */
+    bool isSpellTome() const;
 }; //struct
 
 } //namespace

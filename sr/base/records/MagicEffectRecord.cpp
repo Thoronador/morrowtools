@@ -35,7 +35,6 @@ MagicEffectRecord::MagicEffectRecord()
   fullNameStringID = 0;
   hasMDOB = false;
   unknownMDOB = 0;
-  keywordSize = 0;
   keywordArray.clear();
   unknownDATA.setPresence(false);
   unknownSNDD.setPresence(false);
@@ -54,7 +53,7 @@ bool MagicEffectRecord::equals(const MagicEffectRecord& other) const
       and (unknownVMAD==other.unknownVMAD) and (hasFULL==other.hasFULL)
       and ((fullNameStringID==other.fullNameStringID) or (!hasFULL))
       and (hasMDOB==other.hasMDOB) and ((unknownMDOB==other.unknownMDOB) or (!hasMDOB))
-      and (keywordSize==other.keywordSize) and (keywordArray==other.keywordArray)
+      and (keywordArray==other.keywordArray)
       and (unknownDATA==other.unknownDATA) and (unknownSNDD==other.unknownSNDD)
       and (descriptionStringID==other.descriptionStringID) and (unknownCTDAs==other.unknownCTDAs));
 }
@@ -140,15 +139,16 @@ bool MagicEffectRecord::saveToStream(std::ofstream& output) const
     subLength = 4; //fixed size
     output.write((char*) &subLength, 2);
     //write keyword size
-    output.write((const char*) &keywordSize, 4);
+    const uint32_t k_Size = keywordArray.size();
+    output.write((const char*) &k_Size, 4);
 
     //write KWDA
     output.write((char*) &cKWDA, 4);
     //KWDA's length
-    subLength = 4*keywordArray.size(); //fixed size
+    subLength = 4*k_Size; //fixed size
     output.write((char*) &subLength, 2);
     //write actual data
-    for (writeSize=0; writeSize<keywordArray.size(); ++writeSize)
+    for (writeSize=0; writeSize<k_Size; ++writeSize)
     {
       output.write((const char*) &(keywordArray[writeSize]), 4);
     }//for
@@ -240,9 +240,8 @@ bool MagicEffectRecord::loadFromStream(std::ifstream& in_File)
   hasFULL = false;
   hasMDOB = false;
   unknownDATA.setPresence(false);
-  keywordSize = 0;
   keywordArray.clear();
-  uint32_t i, helper;
+  uint32_t k_Size, i, helper;
   unknownSNDD.setPresence(false);
   bool hasReadDNAM = false;
   unknownCTDAs.clear();
@@ -311,7 +310,8 @@ bool MagicEffectRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read KSIZ's stuff
-           in_File.read((char*) &keywordSize, 4);
+           k_Size = 0;
+           in_File.read((char*) &k_Size, 4);
            bytesRead += 4;
            if (!in_File.good())
            {
@@ -330,14 +330,14 @@ bool MagicEffectRecord::loadFromStream(std::ifstream& in_File)
            //KWDA's length
            in_File.read((char*) &subLength, 2);
            bytesRead += 2;
-           if (subLength!=4*keywordSize)
+           if (subLength!=4*k_Size)
            {
              std::cout <<"Error: sub record KWDA of MGEF has invalid length("
-                       <<subLength<<" bytes). Should be "<<4*keywordSize<<" bytes!\n";
+                       <<subLength<<" bytes). Should be "<<4*k_Size<<" bytes!\n";
              return false;
            }
            //read KWDA's stuff
-           for (i=0; i<keywordSize; ++i)
+           for (i=0; i<k_Size; ++i)
            {
              in_File.read((char*) &helper, 4);
              bytesRead += 4;

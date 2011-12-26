@@ -67,7 +67,6 @@ struct MiscObjectRecord: public BasicRecord
     BinarySubRecord unknownMODT;
     BinarySubRecord unknownMODS;
     std::string iconPath;
-    uint32_t keywordSize;
     std::vector<uint32_t> keywordArray;
     bool hasYNAM;
     uint32_t unknownYNAM;

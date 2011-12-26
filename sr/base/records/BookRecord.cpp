@@ -27,6 +27,10 @@
 namespace SRTP
 {
 
+const uint32_t BookRecord::cSkillBookFlag = 0x00000001;
+const uint32_t BookRecord::cSpellTomeFlag = 0x00000004;
+const uint32_t BookRecord::cNoteOrScrollTypeFlag = 0x0000FF00;
+
 BookRecord::BookRecord()
 {
   editorID = "";
@@ -39,9 +43,13 @@ BookRecord::BookRecord()
   textStringID = 0;
   hasYNAM = false;
   unknownYNAM = 0;
-  keywordSize = 0;
   keywordArray.clear();
-  memset(unknownDATA, 0, 16);
+  //DATA
+  bookFlags = 0;
+  spellOrSkillID = 0;
+  bookValue = 0;
+  weight = 0.0f;
+  //end of DATA
   hasINAM = false;
   unknownINAM = 0;
   unknownCNAM = 0;
@@ -61,8 +69,9 @@ bool BookRecord::equals(const BookRecord& other) const
     and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
     and (textStringID==other.textStringID) and (unknownCNAM==other.unknownCNAM)
     and (hasYNAM==other.hasYNAM) and ((unknownYNAM==other.unknownYNAM) or (!hasYNAM))
-    and (keywordSize==other.keywordSize) and (keywordArray==other.keywordArray)
-    and (memcmp(unknownDATA, other.unknownDATA, 16)==0)
+    and (keywordArray==other.keywordArray)
+    and (bookFlags==other.bookFlags) and (spellOrSkillID==other.spellOrSkillID)
+    and (bookValue==other.bookValue) and (weight==other.weight)
     and (hasINAM==other.hasINAM) and ((unknownINAM==other.unknownINAM) or (!hasINAM)));
 }
 
@@ -173,35 +182,39 @@ bool BookRecord::saveToStream(std::ofstream& output) const
     subLength = 4; //fixed size
     output.write((char*) &subLength, 2);
     //write keyword size
-    output.write((const char*) &keywordSize, 4);
+    const uint32_t k_Size = keywordArray.size();
+    output.write((const char*) &k_Size, 4);
 
     //write KWDA
     output.write((char*) &cKWDA, 4);
     //KWDA's length
-    subLength = 4*keywordArray.size(); //fixed size
+    subLength = 4*k_Size; //fixed size
     output.write((char*) &subLength, 2);
     //write actual data
-    for (writeSize=0; writeSize<keywordArray.size(); ++writeSize)
+    for (writeSize=0; writeSize<k_Size; ++writeSize)
     {
       output.write((const char*) &(keywordArray[writeSize]), 4);
     }//for
   }//if keyword array not empty
 
   //write DATA
-  output.write((char*) &cDATA, 4);
+  output.write((const char*) &cDATA, 4);
   //DATA's length
   subLength = 10;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write DATA
-  output.write((const char*) unknownDATA, 16);
+  output.write((const char*) &bookFlags, 4);
+  output.write((const char*) &spellOrSkillID, 4);
+  output.write((const char*) &bookValue, 4);
+  output.write((const char*) &weight, 4);
 
   if (hasINAM)
   {
     //write INAM
-    output.write((char*) &cINAM, 4);
+    output.write((const char*) &cINAM, 4);
     //INAM's length
     subLength = 4; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write INAM
     output.write((const char*) &unknownINAM, 4);
   }//if has INAM
@@ -301,16 +314,14 @@ bool BookRecord::loadFromStream(std::ifstream& in_File)
   hasFULL = false;
   hasYNAM = false;
   hasINAM = false;
-  keywordSize = 0;
   keywordArray.clear();
 
   bool hasReadMODL = false;
   bool hasReadKSIZ = false;
-  bool hasReadYNAM = false;
   bool hasReadDATA = false;
   bool hasReadCNAM = false;
 
-  uint32_t i, temp;
+  uint32_t k_Size, i, temp;
   while (bytesRead<readSize)
   {
     //read next header
@@ -374,7 +385,8 @@ bool BookRecord::loadFromStream(std::ifstream& in_File)
            }
            in_File.seekg(-4, std::ios_base::cur);
            //read KSIZ
-           if (!loadUint32SubRecordFromStream(in_File, cKSIZ, keywordSize)) return false;
+           k_Size = 0;
+           if (!loadUint32SubRecordFromStream(in_File, cKSIZ, k_Size)) return false;
            bytesRead += 6;
            //keyword array follows, always
            //read KWDA
@@ -388,15 +400,15 @@ bool BookRecord::loadFromStream(std::ifstream& in_File)
            //KWDA's length
            in_File.read((char*) &subLength, 2);
            bytesRead += 2;
-           if (subLength!=4*keywordSize)
+           if (subLength!=4*k_Size)
            {
              std::cout <<"Error: sub record KWDA of BOOK has invalid length ("<<subLength
-                       <<" bytes). Should be "<<4*keywordSize<<" bytes.\n";
+                       <<" bytes). Should be "<<4*k_Size<<" bytes.\n";
              return false;
            }
            //read KWDA
            keywordArray.clear();
-           for (i=0; i<keywordSize; ++i)
+           for (i=0; i<k_Size; ++i)
            {
              in_File.read((char*) &temp, 4);
              bytesRead += 4;
@@ -425,7 +437,10 @@ bool BookRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read DATA
-           in_File.read((char*) unknownOBND, 16);
+           in_File.read((char*) &bookFlags, 4);
+           in_File.read((char*) &spellOrSkillID, 4);
+           in_File.read((char*) &bookValue, 4);
+           in_File.read((char*) &weight, 4);
            bytesRead += 16;
            if (!in_File.good())
            {
@@ -459,7 +474,7 @@ bool BookRecord::loadFromStream(std::ifstream& in_File)
            hasReadCNAM = true;
            break;
       case cYNAM:
-           if (hasReadYNAM)
+           if (hasYNAM)
            {
              std::cout << "Error: BOOK seems to have more than one YNAM subrecord.\n";
              return false;
@@ -468,7 +483,7 @@ bool BookRecord::loadFromStream(std::ifstream& in_File)
            //read YNAM
            if (!loadUint32SubRecordFromStream(in_File, cYNAM, unknownYNAM)) return false;
            bytesRead += 6;
-           hasReadYNAM = true;
+           hasYNAM = true;
            break;
       default:
            std::cout << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
@@ -489,6 +504,16 @@ bool BookRecord::loadFromStream(std::ifstream& in_File)
 int32_t BookRecord::getRecordType() const
 {
   return cBOOK;
+}
+
+bool BookRecord::isSkillBook() const
+{
+  return ((bookFlags bitand cSkillBookFlag)==cSkillBookFlag);
+}
+
+bool BookRecord::isSpellTome() const
+{
+  return ((bookFlags bitand cSpellTomeFlag)==cSpellTomeFlag);
 }
 
 } //namespace

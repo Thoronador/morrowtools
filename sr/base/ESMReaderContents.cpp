@@ -21,6 +21,8 @@
 #include "ESMReaderContents.h"
 #include <iostream>
 #include "SR_Constants.h"
+#include "records/AcousticSpaceRecord.h"
+#include "records/ActionRecord.h"
 //#include "records/ActivatorRecord.h"
 #include "records/AlchemyPotionRecord.h"
 #include "records/ApparatusRecord.h"
@@ -83,6 +85,9 @@ int ESMReaderContents::readNextRecord(std::ifstream& in_File, const int32_t recN
   BasicRecord * recPtr = NULL;
   switch (recName)
   {
+    case cAACT:
+         recPtr = new ActionRecord;
+         break;
     /*case cACTI:
          recPtr = new ActivatorRecord;
          break;*/
@@ -94,6 +99,9 @@ int ESMReaderContents::readNextRecord(std::ifstream& in_File, const int32_t recN
          break;
     case cARMO:
          recPtr = new ArmourRecord;
+         break;
+    case cASPC:
+         recPtr = new AcousticSpaceRecord;
          break;
     case cASTP:
          recPtr = new AssociationTypeRecord;

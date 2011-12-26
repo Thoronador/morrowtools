@@ -23,6 +23,7 @@
 #include <iostream>
 #include "../../mw/base/HelperIO.h"
 #include "SR_Constants.h"
+#include "AcousticSpaces.h"
 #include "Actions.h"
 #include "Activators.h"
 #include "AlchemyPotions.h"
@@ -46,6 +47,7 @@
 #include "Keywords.h"
 #include "LandscapeTextures.h"
 #include "LocationReferenceTypes.h"
+#include "MagicEffects.h"
 #include "MiscObjects.h"
 #include "Outfits.h"
 #include "Perks.h"
@@ -89,9 +91,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
     case cAACT:
          return Actions::getSingleton().readNextRecord(in_File);
          break;
-    case cACTI:
+    /*case cACTI:
          return Activators::getSingleton().readNextRecord(in_File);
-         break;
+         break;*/
     case cALCH:
          return AlchemyPotions::getSingleton().readNextRecord(in_File);
          break;
@@ -100,6 +102,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;
     case cARMO:
          return Armours::getSingleton().readNextRecord(in_File);
+         break;
+    case cASPC:
+         return AcousticSpaces::getSingleton().readNextRecord(in_File);
          break;
     case cASTP:
          return AssociationTypes::getSingleton().readNextRecord(in_File);
@@ -154,6 +159,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;
     case cLTEX:
          return LandscapeTextures::getSingleton().readNextRecord(in_File);
+         break;
+    case cMGEF:
+         return MagicEffects::getSingleton().readNextRecord(in_File);
          break;
     case cMISC:
          return MiscObjects::getSingleton().readNextRecord(in_File);

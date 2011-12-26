@@ -33,6 +33,7 @@ const int32_t cAMMO = 0x4F4D4D41; //"AMMO" = 41 4D 4D 4F
 const int32_t cANAM = 0x4D414E41; //"ANAM" = 41 4E 41 4D
 const int32_t cAPPA = 0x41505041; //"APPA" = 41 50 50 41
 const int32_t cARMO = 0x4F4D5241; //"ARMO" = 41 52 4D 4F
+const int32_t cASPC = 0x43505341; //"ASPC" = 41 53 50 43
 const int32_t cASTP = 0x50545341; //"ASTP" = 41 53 54 50
 const int32_t cBAMT = 0x544D4142; //"BAMT" = 42 41 4D 54
 const int32_t cBIDS = 0x53444942; //"BIDS" = 42 49 44 53
@@ -133,6 +134,7 @@ const int32_t cPRKF = 0x464B5250; //"PRKF" = 50 52 4B 46
 const int32_t cQSDT = 0x54445351; //"QSDT" = 51 53 44 54
 const int32_t cQUAL = 0x4C415551; //"QUAL" = 51 55 41 4C
 const int32_t cQUST = 0x54535551; //"QUST" = 51 55 53 54
+const int32_t cRDAT = 0x54414452; //"RDAT" = 52 44 41 54
 const int32_t cREFR = 0x52464552; //"REFR" = 52 45 46 52
 const int32_t cRELA = 0x414C4552; //"RELA" = 52 45 4C 41
 const int32_t cRNAM = 0x4D414E52; //"RNAM" = 52 4E 41 4D

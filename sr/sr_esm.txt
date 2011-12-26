@@ -110,6 +110,35 @@ Records and their sub-records:
           unknown data
 
 
+REFR: object reference
+      EDID (string, NUL-terminated, optional)
+          editor ID
+      VMAD (size varies, optional)
+          unknown data
+      NAME (4 bytes)
+          unknown data, possibly form ID of referenced object?
+      XLKR (8 bytes, optional)
+          unknown data
+      XESP (8 bytes, optional)
+          unknown data
+      XEMI (4 bytes, optional)
+          unknown data
+      XLOC (20 bytes, optional)
+          unknown data
+      XSCL (4 bytes, optional)
+          unknown data, possibly scaling factor
+      XPRD (4 bytes, optional)
+          unknown data, looks like a float value
+      XPPA (0 bytes)
+          unknown stuff, maybe some sort of delimiter/end marker, follows after XPRD
+      INAM (4 bytes, optional)
+          unknown data
+      PDTO (8 bytes, optional)
+          unknown data
+      DATA (24 bytes)
+          unknown data
+
+
   GLOB: global variables
       EDID (string, NUL-terminated)
           editor ID

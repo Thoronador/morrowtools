@@ -18,29 +18,28 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SR_BOOKRECORD_H
-#define SR_BOOKRECORD_H
+#ifndef SR_REFERENCERECORD_H
+#define SR_REFERENCERECORD_H
 
 #include "BasicRecord.h"
 #include "BinarySubRecord.h"
 #include <string>
-#include <vector>
 #include <stdint.h>
 
 namespace SRTP
 {
 
-struct BookRecord: public BasicRecord
+struct ReferenceRecord: public BasicRecord
 {
   public:
     /* constructor */
-    BookRecord();
+    ReferenceRecord();
 
     /* destructor */
-    virtual ~BookRecord();
+    virtual ~ReferenceRecord();
 
     /* returns true, if the other record contains the same data */
-    bool equals(const BookRecord& other) const;
+    bool equals(const ReferenceRecord& other) const;
 
     /* writes the record to the given output stream and returns true on success
 
@@ -61,37 +60,24 @@ struct BookRecord: public BasicRecord
 
     std::string editorID;
     BinarySubRecord unknownVMAD;
-    uint8_t unknownOBND[12];
-    bool hasFULL;
-    uint32_t titleStringID; //subrecord FULL
-    std::string modelPath;
-    BinarySubRecord unknownMODT;
-    uint32_t textStringID; //DESC
-    bool hasYNAM;
-    uint32_t unknownYNAM;
-    std::vector<uint32_t> keywordArray;
-    //subrecord DATA
-    uint32_t bookFlags;
-    uint32_t spellOrSkillID;
-    uint32_t bookValue;
-    float weight;
-    //end of subrecord DATA
+    uint32_t unknownNAME;
+    bool hasXLKR;
+    uint64_t unknownXLKR;
+    bool hasXESP;
+    uint64_t unknownXESP;
+    bool hasXEMI;
+    uint32_t unknownXEMI;
+    BinarySubRecord unknownXLOC;
+    float unknownXSCL;
+    bool hasXPRD;
+    uint32_t unknownXPRD;
     bool hasINAM;
     uint32_t unknownINAM;
-    uint32_t unknownCNAM;
-
-    //flag constants
-    static const uint32_t cSkillBookFlag;
-    static const uint32_t cSpellTomeFlag;
-    static const uint32_t cNoteOrScrollTypeFlag;
-
-    /* returns true, if the book is a skill book, according to its flags */
-    bool isSkillBook() const;
-
-    /* returns true, if the book is a spell tome, according to its flags */
-    bool isSpellTome() const;
+    bool hasPDTO;
+    uint64_t unknownPDTO;
+    uint8_t unknownDATA[24];
 }; //struct
 
 } //namespace
 
-#endif // SR_BOOKRECORD_H
+#endif // SR_REFERENCERECORD_H

@@ -27,6 +27,7 @@
 namespace SRTP
 {
 
+//flag constants
 const uint32_t BookRecord::cSkillBookFlag = 0x00000001;
 const uint32_t BookRecord::cSpellTomeFlag = 0x00000004;
 const uint32_t BookRecord::cNoteOrScrollTypeFlag = 0x0000FF00;

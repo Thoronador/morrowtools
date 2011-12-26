@@ -27,6 +27,7 @@
 #include "Actions.h"
 #include "Activators.h"
 #include "AlchemyPotions.h"
+#include "Ammunitions.h"
 #include "Apparatuses.h"
 #include "Armours.h"
 #include "AssociationTypes.h"
@@ -49,6 +50,7 @@
 #include "LocationReferenceTypes.h"
 #include "MagicEffects.h"
 #include "MiscObjects.h"
+#include "NAVIRecords.h"
 #include "Outfits.h"
 #include "Perks.h"
 #include "Relationships.h"
@@ -96,6 +98,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;*/
     case cALCH:
          return AlchemyPotions::getSingleton().readNextRecord(in_File);
+         break;
+    case cAMMO:
+         return Ammunitions::getSingleton().readNextRecord(in_File);
          break;
     case cAPPA:
          return Apparatuses::getSingleton().readNextRecord(in_File);
@@ -165,6 +170,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;
     case cMISC:
          return MiscObjects::getSingleton().readNextRecord(in_File);
+         break;
+    case cNAVI:
+         return NAVIRecords::getSingleton().readNextRecord(in_File);
          break;
     case cOTFT:
          return Outfits::getSingleton().readNextRecord(in_File);

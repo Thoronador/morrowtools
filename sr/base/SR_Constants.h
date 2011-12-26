@@ -121,8 +121,12 @@ const int32_t cNAM1 = 0x314D414E; //"NAM1" = 4E 41 4D 31
 const int32_t cNAM8 = 0x384D414E; //"NAM9" = 4E 41 4D 38
 const int32_t cNAM9 = 0x394D414E; //"NAM9" = 4E 41 4D 39
 const int32_t cNAME = 0x454D414E; //"NAME" = 4E 41 4D 45
+const int32_t cNAVI = 0x4956414E; //"NAVI" = 4E 41 56 49
 const int32_t cNEXT = 0x5458454E; //"NEXT" = 4E 45 58 54
 const int32_t cNNAM = 0x4D414E4E; //"NNAM" = 4E 4E 41 4D
+const int32_t cNVER = 0x5245564E; //"NVER" = 4E 56 45 52
+const int32_t cNVMI = 0x494D564E; //"NVMI" = 4E 56 4D 49
+const int32_t cNVPP = 0x5050564E; //"NVPP" = 4E 56 50 50
 const int32_t cOBND = 0x444E424F; //"OBND" = 4F 42 4E 44
 const int32_t cOTFT = 0x5446544F; //"OTFT" = 4F 54 46 54
 const int32_t cPDTO = 0x4F544450; //"PDTO" = 50 44 54 4F

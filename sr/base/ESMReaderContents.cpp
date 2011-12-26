@@ -25,6 +25,7 @@
 #include "records/ActionRecord.h"
 //#include "records/ActivatorRecord.h"
 #include "records/AlchemyPotionRecord.h"
+#include "records/AmmunitionRecord.h"
 #include "records/ApparatusRecord.h"
 #include "records/ArmourRecord.h"
 #include "records/AssociationTypeRecord.h"
@@ -47,6 +48,7 @@
 #include "records/LocationReferenceTypeRecord.h"
 #include "records/MagicEffectRecord.h"
 #include "records/MiscObjectRecord.h"
+#include "records/NAVIRecord.h"
 #include "records/OutfitRecord.h"
 #include "records/PerkRecord.h"
 #include "records/RelationshipRecord.h"
@@ -93,6 +95,9 @@ int ESMReaderContents::readNextRecord(std::ifstream& in_File, const int32_t recN
          break;*/
     case cALCH:
          recPtr = new AlchemyPotionRecord;
+         break;
+    case cAMMO:
+         recPtr = new AmmunitionRecord;
          break;
     case cAPPA:
          recPtr = new ApparatusRecord;
@@ -162,6 +167,9 @@ int ESMReaderContents::readNextRecord(std::ifstream& in_File, const int32_t recN
          break;
     case cMISC:
          recPtr = new MiscObjectRecord;
+         break;
+    case cNAVI:
+         recPtr = new NAVIRecord;
          break;
     case cOTFT:
          recPtr = new OutfitRecord;

@@ -217,9 +217,383 @@ bool WeaponRecord::equals(const WeaponRecord& other) const
 
 bool WeaponRecord::saveToStream(std::ofstream& output) const
 {
-  #warning Not implemented yet!
-  std::cout << "Error: call to unimplemented function WeaponRecord::saveToStream!\n";
-  return false;
+  output.write((const char*) &cWEAP, 4);
+  uint32_t writeSize;
+  writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
+        +editorID.length()+1 /* length of name +1 byte for NUL termination */
+        +4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed size */
+        +4 /* MODL */ +2 /* 2 bytes for length */
+        +modelPath.length()+1 /* length of name +1 byte for NUL termination */
+        +4 /* DESC */ +2 /* 2 bytes for length */ +4 /* fixed size */
+        +4 /* DATA */ +2 /* 2 bytes for length */ +10 /* fixed size */
+        +4 /* DNAM */ +2 /* 2 bytes for length */ +100 /* fixed size */
+        +4 /* CRDT */ +2 /* 2 bytes for length */ +16 /* fixed size */
+        +4 /* VNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+  if (unknownVMAD.isPresent())
+  {
+    writeSize = writeSize +4 /* VMAD */ +2 /* 2 bytes for length */
+               +unknownVMAD.getSize() /* subrecord size */;
+  }
+  if (hasFULL)
+  {
+    writeSize = writeSize +4 /* FULL */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+  }
+  if (unknownMODT.isPresent())
+  {
+    writeSize = writeSize +4 /* MODT */ +2 /* 2 bytes for length */
+               +unknownMODT.getSize() /* subrecord size */;
+  }
+  if (unknownMODS.isPresent())
+  {
+    writeSize = writeSize +4 /* MODS */ +2 /* 2 bytes for length */
+               +unknownMODS.getSize() /* subrecord size */;
+  }
+  if (hasEITM)
+  {
+    writeSize = writeSize +4 /* EITM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+  }
+  if (hasEAMT)
+  {
+    writeSize = writeSize +4 /* EAMT */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+  }
+  if (hasETYP)
+  {
+    writeSize = writeSize +4 /* ETYP */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+  }
+  if (hasBIDS)
+  {
+    writeSize = writeSize +4 /* BIDS */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+  }
+  if (hasBAMT)
+  {
+    writeSize = writeSize +4 /* BAMT */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+  }
+  if (!keywordArray.empty())
+  {
+    writeSize = writeSize +4 /* KSIZ */ +2 /* 2 bytes for length */ +4 /* fixed size */
+               +4 /* KWDA */ +2 /* 2 bytes for length */ +keywordArray.size()*4 /* n*fixed size */;
+  }
+  if (!unknownNNAM.empty())
+  {
+    writeSize = writeSize +4 /* NNAM */ +2 /* 2 bytes for length */
+               +unknownNNAM.length()+1 /* length of string +1 byte for NUL-terminaton */;
+  }
+  if (hasINAM)
+  {
+    writeSize = writeSize +4 /* INAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+  }
+  if (hasWNAM)
+  {
+    writeSize = writeSize +4 /* WNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+  }
+  if (hasTNAM)
+  {
+    writeSize = writeSize +4 /* TNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+  }
+  if (hasUNAM)
+  {
+    writeSize = writeSize +4 /* UNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+  }
+  if (hasNAM9)
+  {
+    writeSize = writeSize +4 /* NAM9 */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+  }
+  if (hasNAM8)
+  {
+    writeSize = writeSize +4 /* NAM8 */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+  }
+  if (hasSNAM)
+  {
+    writeSize = writeSize +4 /* SNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+  }
+  if (hasCNAM)
+  {
+    writeSize = writeSize +4 /* CNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+  }//if CNAM is present
+  if (!saveSizeAndUnknownValues(output, writeSize)) return false;
+
+  //write EDID
+  output.write((const char*) &cEDID, 4);
+  //EDID's length
+  uint16_t subLength = editorID.length()+1;
+  output.write((char*) &subLength, 2);
+  //write editor ID
+  output.write(editorID.c_str(), subLength);
+
+  if (unknownVMAD.isPresent())
+  {
+    if (!unknownVMAD.saveToStream(output, cVMAD))
+    {
+      std::cout << "Error while writing subrecord VMAD of WEAP!\n";
+      return false;
+    }
+  }//if VMAD
+
+  //write OBND
+  output.write((const char*) &cOBND, 4);
+  //OBND's length
+  subLength = 12;
+  output.write((char*) &subLength, 2);
+  //write OBND
+  output.write((const char*) unknownOBND, 12);
+
+  if (hasFULL)
+  {
+    //write FULL
+    output.write((const char*) &cFULL, 4);
+    //FULL's length
+    subLength = 4; //fixed size
+    output.write((char*) &subLength, 2);
+    //write FULL
+    output.write((const char*) &nameStringID, 4);
+  }//if has FULL subrecord
+
+  //write MODL
+  output.write((const char*) &cMODL, 4);
+  //MODL's length
+  subLength = modelPath.length()+1;
+  output.write((char*) &subLength, 2);
+  //write model path
+  output.write(modelPath.c_str(), subLength);
+
+  if (unknownMODT.isPresent())
+  {
+    //write MODT
+    if (!unknownMODT.saveToStream(output, cMODT))
+    {
+      std::cout << "Error while writing subrecord MODT of WEAP!\n";
+      return false;
+    }
+  }
+
+  if (unknownMODS.isPresent())
+  {
+    //write MODS
+    if (!unknownMODS.saveToStream(output, cMODS))
+    {
+      std::cout << "Error while writing subrecord MODS of WEAP!\n";
+      return false;
+    }
+  }
+
+  if (hasEITM)
+  {
+    //write EITM
+    output.write((const char*) &cEITM, 4);
+    //EITM's length
+    subLength = 4; //fixed size
+    output.write((char*) &subLength, 2);
+    //write EITM
+    output.write((const char*) &unknownEITM, 4);
+  }//if has EITM subrecord
+
+  if (hasEAMT)
+  {
+    //write EAMT
+    output.write((const char*) &cEAMT, 4);
+    //EAMT's length
+    subLength = 4; //fixed size
+    output.write((char*) &subLength, 2);
+    //write EAMT
+    output.write((const char*) &unknownEAMT, 4);
+  }//if has EAMT subrecord
+
+  if (hasETYP)
+  {
+    //write ETYP
+    output.write((const char*) &cETYP, 4);
+    //ETYP's length
+    subLength = 4; //fixed size
+    output.write((char*) &subLength, 2);
+    //write ETYP
+    output.write((const char*) &unknownETYP, 4);
+  }//if has ETYP subrecord
+
+  if (hasBIDS)
+  {
+    //write BIDS
+    output.write((const char*) &cBIDS, 4);
+    //BIDS's length
+    subLength = 4; //fixed size
+    output.write((char*) &subLength, 2);
+    //write BIDS
+    output.write((const char*) &unknownBIDS, 4);
+  }//if has BIDS subrecord
+
+  if (hasBAMT)
+  {
+    //write BAMT
+    output.write((const char*) &cBAMT, 4);
+    //BAMT's length
+    subLength = 4; //fixed size
+    output.write((char*) &subLength, 2);
+    //write BAMT
+    output.write((const char*) &unknownBAMT, 4);
+  }//if has BAMT subrecord
+
+  if (!keywordArray.empty())
+  {
+    //write KSIZ
+    output.write((const char*) &cKSIZ, 4);
+    //KSIZ's length
+    subLength = 4; //fixed size
+    output.write((const char*) &subLength, 2);
+    //write keyword size
+    const uint32_t k_Size = keywordArray.size();
+    output.write((const char*) &k_Size, 4);
+
+    //write KWDA
+    output.write((const char*) &cKWDA, 4);
+    //KWDA's length
+    subLength = 4*k_Size; //fixed size
+    output.write((char*) &subLength, 2);
+    //write actual data
+    for (writeSize=0; writeSize<k_Size; ++writeSize)
+    {
+      output.write((const char*) &(keywordArray[writeSize]), 4);
+    }//for
+  }//if keyword array not empty
+
+  //write DESC
+  output.write((const char*) &cDESC, 4);
+  //DESC's length
+  subLength = 4; //fixed size
+  output.write((char*) &subLength, 2);
+  //write DESC
+  output.write((const char*) &descriptionStringID, 4);
+
+  if(!unknownNNAM.empty())
+  {
+    //write NNAM
+    output.write((const char*) &cNNAM, 4);
+    //KWDA's length
+    subLength = unknownNNAM.length()+1; //fixed size
+    output.write((char*) &subLength, 2);
+    //write actual data
+    output.write((const char*) unknownNNAM.c_str(), subLength);
+  }//if NNAM
+
+  if (hasINAM)
+  {
+    //write INAM
+    output.write((const char*) &cINAM, 4);
+    //INAM's length
+    subLength = 4; //fixed size
+    output.write((char*) &subLength, 2);
+    //write INAM
+    output.write((const char*) &unknownINAM, 4);
+  }//if has INAM subrecord
+
+  if (hasWNAM)
+  {
+    //write WNAM
+    output.write((const char*) &cWNAM, 4);
+    //WNAM's length
+    subLength = 4; //fixed size
+    output.write((char*) &subLength, 2);
+    //write WNAM
+    output.write((const char*) &unknownWNAM, 4);
+  }//if has WNAM subrecord
+
+  if (hasTNAM)
+  {
+    //write TNAM
+    output.write((const char*) &cTNAM, 4);
+    //TNAM's length
+    subLength = 4; //fixed size
+    output.write((char*) &subLength, 2);
+    //write TNAM
+    output.write((const char*) &unknownTNAM, 4);
+  }//if has TNAM subrecord
+
+  if (hasUNAM)
+  {
+    //write UNAM
+    output.write((const char*) &cUNAM, 4);
+    //UNAM's length
+    subLength = 4; //fixed size
+    output.write((char*) &subLength, 2);
+    //write UNAM
+    output.write((const char*) &unknownUNAM, 4);
+  }//if has UNAM subrecord
+
+  if (hasNAM9)
+  {
+    //write NAM9
+    output.write((const char*) &cNAM9, 4);
+    //NAM9's length
+    subLength = 4; //fixed size
+    output.write((char*) &subLength, 2);
+    //write NAM9
+    output.write((const char*) &unknownNAM9, 4);
+  }//if has NAM9 subrecord
+
+  if (hasNAM8)
+  {
+    //write NAM8
+    output.write((const char*) &cNAM8, 4);
+    //NAM8's length
+    subLength = 4; //fixed size
+    output.write((char*) &subLength, 2);
+    //write NAM8
+    output.write((const char*) &unknownNAM8, 4);
+  }//if has NAM8 subrecord
+
+  if (hasSNAM)
+  {
+    //write SNAM
+    output.write((const char*) &cSNAM, 4);
+    //SNAM's length
+    subLength = 4; //fixed size
+    output.write((char*) &subLength, 2);
+    //write SNAM
+    output.write((const char*) &unknownSNAM, 4);
+  }//if has SNAM subrecord
+
+  //write DATA
+  output.write((const char*) &cDATA, 4);
+  //DATA's length
+  subLength = 10;
+  output.write((char*) &subLength, 2);
+  //write DATA
+  output.write((const char*) unknownDATA, 10);
+
+  //write DNAM
+  output.write((const char*) &cDNAM, 4);
+  //DNAM's length
+  subLength = 100;
+  output.write((char*) &subLength, 2);
+  //write DNAM
+  output.write((const char*) unknownDNAM, 100);
+
+  //write CRDT
+  output.write((const char*) &cCRDT, 4);
+  //CRDT's length
+  subLength = 16;
+  output.write((char*) &subLength, 2);
+  //write CRDT
+  output.write((const char*) unknownCRDT, 16);
+
+  //write VNAM
+  output.write((const char*) &cVNAM, 4);
+  //VNAM's length
+  subLength = 4; //fixed size
+  output.write((char*) &subLength, 2);
+  //write VNAM
+  output.write((const char*) &unknownVNAM, 4);
+
+  if (hasCNAM)
+  {
+    //write CNAM
+    output.write((const char*) &cCNAM, 4);
+    //CNAM's length
+    subLength = 4; //fixed size
+    output.write((char*) &subLength, 2);
+    //write CNAM
+    output.write((const char*) &unknownCNAM, 4);
+  }//if has CNAM subrecord
+
+  return output.good();
 }
 
 bool WeaponRecord::loadFromStream(std::ifstream& in_File)

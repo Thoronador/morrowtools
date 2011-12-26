@@ -132,6 +132,120 @@ Records and their sub-records:
           unknownDATA
 
 
+  RACE: race
+      EDID (string, NUL-terminated)
+          editor ID
+      FULL (4 bytes, optional)
+          string ID of race's full name
+      DESC (4 bytes)
+          string ID of description; zero if no description is given
+      SPCT (4 bytes, optional)
+          number of following SPLO records
+      SPLO (4 bytes, optional, occurs 0+ times)
+          form ID
+      WNAM (4 bytes)
+          unknown data
+      BODT (12 bytes)
+          unknown data
+      KSIZ (4 bytes)
+          number of unit32_ts in following KWDA
+      KWDA (n * 4 bytes)
+          array of keyword form IDs, count is given be KSIZ field
+      DATA (128 bytes)
+          unknown data
+
+        MNAM (0 bytes)
+            no data
+        ANAM (string, NUL-terminated)
+            no data
+        MODT (12 bytes)
+            unknown data
+
+        FNAM (0 bytes)
+            no data
+        ANAM (string, NUL-terminated)
+            no data
+        MODT (12 bytes)
+            unknown data
+
+      MTNM (4 bytes, string, NOT NUL-terminated, occurs 5 times in a row)
+          unknown data
+      VTCK (8 bytes)
+          unknown data
+      DNAM (8 bytes, optional)
+          unknown data
+      TINL (2 bytes, optional)
+          unknown data
+      PNAM (4 bytes)
+          unknown data
+      UNAM (4 bytes)
+          unknown data
+
+        ATKD (44 bytes)
+            unknown data
+        ATKE (string, NUL-terminated)
+            unknown data
+
+        --> ATKD and ATKE seem to form a sort of structure, one never comes without the other.
+            ATKD/ATKE structs occur multiple times.
+
+      NAM1 (0 bytes)
+          no data, perhaps end marker for ATKD/ATKE stuff
+      MNAM (0 bytes)
+          no data
+      INDX (4 bytes)
+          unknown data
+      MODL (string, NUL-terminated)
+          path
+      MODT (12 bytes)
+          unknown data
+      FNAM (0 bytes)
+          no data
+      INDX (4 bytes)
+          unknown data
+      MODL (string, NUL-terminated)
+          path
+      MODT (12 bytes)
+          unknown data
+      GNAM (4 bytes)
+          unknown data
+      NAM3 (0 bytes)
+          no data
+      MNAM (0 bytes)
+          no data
+      MODL (string, NUL-terminated)
+          path
+      MODT (12 bytes)
+          unknown data
+      FNAM (0 bytes)
+          no data
+      MODL (string, NUL-terminated)
+          path
+      MODT (12 bytes)
+          unknown data
+      NAM4 (4 bytes)
+          unknown data
+      NAM5 (4 bytes)
+          unknown data
+      NAM7 (4 bytes, optional)
+          unknown data
+      ONAM (4 bytes)
+          unknown data
+      LNAM (4 bytes)
+          unknown data
+      NAME (string, NUL-terminated, occurs multiple times)
+          unknown data
+      VNAM (4 bytes)
+          unknown data
+      QNAM (4 bytes, can occur 1+ times)
+          unknown data
+      UNES (4 bytes)
+          unknown data
+      PHWT (64 bytes, optional, can occur multiple times)
+          unknown data
+      ... (to be continued)
+
+
   REFR: object reference
       EDID (string, NUL-terminated, optional)
           editor ID

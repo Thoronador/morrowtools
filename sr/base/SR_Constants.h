@@ -138,6 +138,7 @@ const int32_t cPRKF = 0x464B5250; //"PRKF" = 50 52 4B 46
 const int32_t cQSDT = 0x54445351; //"QSDT" = 51 53 44 54
 const int32_t cQUAL = 0x4C415551; //"QUAL" = 51 55 41 4C
 const int32_t cQUST = 0x54535551; //"QUST" = 51 55 53 54
+const int32_t cRACE = 0x45434152; //"RACE" = 52 41 43 45
 const int32_t cRDAT = 0x54414452; //"RDAT" = 52 44 41 54
 const int32_t cREFR = 0x52464552; //"REFR" = 52 45 46 52
 const int32_t cRELA = 0x414C4552; //"RELA" = 52 45 4C 41
@@ -148,8 +149,10 @@ const int32_t cSHOU = 0x554F4853; //"SHOU" = 53 48 4F 55
 const int32_t cSNAM = 0x4D414E53; //"SNAM" = 53 4E 41 4D
 const int32_t cSNDD = 0x44444E53; //"SNDD" = 53 4E 44 44
 const int32_t cSOUN = 0x4E554F53; //"SOUN" = 53 4F 55 4E
+const int32_t cSPCT = 0x54435053; //"SPCT" = 53 50 43 54
 const int32_t cSPEL = 0x4C455053; //"SPEL" = 53 50 45 4C
 const int32_t cSPIT = 0x54495053; //"SPIT" = 53 50 49 54
+const int32_t cSPLO = 0x4F4C5053; //"SPLO" = 53 50 4C 4F
 const int32_t cSTAT = 0x54415453; //"STAT" = 53 54 41 54
 const int32_t cTES4 = 0x34534554; //"TES4" = 54 45 53 34
 const int32_t cTNAM = 0x4D414E54; //"TNAM" = 54 4E 41 4D

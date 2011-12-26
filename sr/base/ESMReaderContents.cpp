@@ -51,6 +51,7 @@
 #include "records/NAVIRecord.h"
 #include "records/OutfitRecord.h"
 #include "records/PerkRecord.h"
+#include "records/RaceRecord.h"
 #include "records/RelationshipRecord.h"
 #include "records/ScrollRecord.h"
 #include "records/ShoutRecord.h"
@@ -176,6 +177,9 @@ int ESMReaderContents::readNextRecord(std::ifstream& in_File, const int32_t recN
          break;
     case cPERK:
          recPtr = new PerkRecord;
+         break;
+    case cRACE:
+         recPtr = new RaceRecord;
          break;
     case cRELA:
          recPtr = new RelationshipRecord;

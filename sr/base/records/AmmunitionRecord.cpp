@@ -61,9 +61,8 @@ bool AmmunitionRecord::equals(const AmmunitionRecord& other) const
       and (unknownDATA[3]==other.unknownDATA[3]));
 }
 
-bool AmmunitionRecord::saveToStream(std::ofstream& output) const
+uint32_t AmmunitionRecord::getWriteSize() const
 {
-  output.write((char*) &cAMMO, 4);
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of string +1 byte for NUL-termination */
@@ -92,7 +91,13 @@ bool AmmunitionRecord::saveToStream(std::ofstream& output) const
     writeSize = writeSize +4 /* KSIZ */ +2 /* 2 bytes for length */ +4 /* fixed size */
                +keywordArray.size()*(4 /* KSIZ */ +2 /* 2 bytes for length */ +4 /* fixed size */);
   }
-  if (!saveSizeAndUnknownValues(output, writeSize)) return false;
+  return writeSize;
+}
+
+bool AmmunitionRecord::saveToStream(std::ofstream& output) const
+{
+  output.write((char*) &cAMMO, 4);
+  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
   output.write((char*) &cEDID, 4);

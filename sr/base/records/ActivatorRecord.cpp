@@ -84,9 +84,8 @@ bool ActivatorRecord::equals(const ActivatorRecord& other) const
     and (hasKNAM==other.hasKNAM) and ((unknownKNAM==other.unknownKNAM) or (!hasKNAM)));
 }
 
-bool ActivatorRecord::saveToStream(std::ofstream& output) const
+uint32_t ActivatorRecord::getWriteSize() const
 {
-  output.write((char*) &cACTI, 4);
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of strin +1 byte for NUL-termination */
@@ -160,7 +159,13 @@ bool ActivatorRecord::saveToStream(std::ofstream& output) const
   {
     writeSize = writeSize +4 /* KNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
-  if (!saveSizeAndUnknownValues(output, writeSize)) return false;
+  return writeSize;
+}
+
+bool ActivatorRecord::saveToStream(std::ofstream& output) const
+{
+  output.write((char*) &cACTI, 4);
+  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
   output.write((char*) &cEDID, 4);

@@ -48,9 +48,8 @@ bool AssociationTypeRecord::equals(const AssociationTypeRecord& other) const
       and (unknownDATA==other.unknownDATA));
 }
 
-bool AssociationTypeRecord::saveToStream(std::ofstream& output) const
+uint32_t AssociationTypeRecord::getWriteSize() const
 {
-  output.write((const char*) &cASTP, 4);
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
@@ -69,8 +68,13 @@ bool AssociationTypeRecord::saveToStream(std::ofstream& output) const
     writeSize = writeSize +4 /* FCHT */ +2 /* 2 bytes for length */
         +femaleChildType.length()+1 /* length of name +1 byte for NUL termination */;
   }
+  return writeSize;
+}
 
-  if (!saveSizeAndUnknownValues(output, writeSize)) return false;
+bool AssociationTypeRecord::saveToStream(std::ofstream& output) const
+{
+  output.write((const char*) &cASTP, 4);
+  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
   output.write((char*) &cEDID, 4);

@@ -65,9 +65,8 @@ bool GMSTRecord::equals(const GMSTRecord& other) const
   return false;
 }
 
-bool GMSTRecord::saveToStream(std::ofstream& output) const
+uint32_t GMSTRecord::getWriteSize() const
 {
-  output.write((char*) &cGMST, 4);
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +m_SettingName.length()+1 /* length of name +1 byte for NUL termination */
@@ -82,7 +81,13 @@ bool GMSTRecord::saveToStream(std::ofstream& output) const
          writeSize = writeSize + m_StringValue.length()+1 /* length of content +1 byte for NUL termination */;
          break;
   }//swi
-  if (!saveSizeAndUnknownValues(output, writeSize)) return false;
+  return writeSize;
+}
+
+bool GMSTRecord::saveToStream(std::ofstream& output) const
+{
+  output.write((char*) &cGMST, 4);
+  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
   //write EDID
   output.write((char*) &cEDID, 4);
   //EDID's length

@@ -45,9 +45,8 @@ bool NAVIRecord::equals(const NAVIRecord& other) const
       and (unknownNVMIs==other.unknownNVMIs) and (unknownNVPP==other.unknownNVPP));
 }
 
-bool NAVIRecord::saveToStream(std::ofstream& output) const
+uint32_t NAVIRecord::getWriteSize() const
 {
-  output.write((const char*) &cNAVI, 4);
   uint32_t writeSize;
   writeSize = 4 /* NVER */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   uint32_t i;
@@ -59,7 +58,13 @@ bool NAVIRecord::saveToStream(std::ofstream& output) const
   {
     writeSize = writeSize +4 /* NVPP */ +2 /* 2 bytes for length */ +unknownNVPP.getSize() /* size */;
   }
-  if (!saveSizeAndUnknownValues(output, writeSize)) return false;
+  return writeSize;
+}
+
+bool NAVIRecord::saveToStream(std::ofstream& output) const
+{
+  output.write((const char*) &cNAVI, 4);
+  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write NVER
   output.write((const char*) &cNVER, 4);
@@ -69,6 +74,7 @@ bool NAVIRecord::saveToStream(std::ofstream& output) const
   //write NVER
   output.write((const char*) &unknownNVER, 4);
 
+  unsigned int i;
   for (i=0; i<unknownNVMIs.size(); ++i)
   {
     //write NVMI

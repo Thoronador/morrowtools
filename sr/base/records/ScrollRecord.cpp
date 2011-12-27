@@ -62,9 +62,8 @@ bool ScrollRecord::equals(const ScrollRecord& other) const
       and (effects==other.effects));
 }
 
-bool ScrollRecord::saveToStream(std::ofstream& output) const
+uint32_t ScrollRecord::getWriteSize() const
 {
-  output.write((char*) &cSCRL, 4);
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
@@ -98,7 +97,13 @@ bool ScrollRecord::saveToStream(std::ofstream& output) const
                     (4 /*CTDA*/ +2 /* 2 bytes for length */ +32 /* fixed length of 32 bytes */);
     }//for
   }//if effects
-  if (!saveSizeAndUnknownValues(output, writeSize)) return false;
+  return writeSize;
+}
+
+bool ScrollRecord::saveToStream(std::ofstream& output) const
+{
+  output.write((char*) &cSCRL, 4);
+  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
   output.write((const char*) &cEDID, 4);
@@ -207,7 +212,7 @@ bool ScrollRecord::saveToStream(std::ofstream& output) const
 
   if (!effects.empty())
   {
-    unsigned int jay;
+    unsigned int i, jay;
     for (i=0; i<effects.size(); ++i)
     {
       //write EFID

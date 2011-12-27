@@ -43,14 +43,17 @@ bool OutfitRecord::equals(const OutfitRecord& other) const
   return ((equalsBasic(other)) and (editorID==other.editorID) and (itemFormIDs==other.itemFormIDs));
 }
 
+uint32_t OutfitRecord::getWriteSize() const
+{
+  return (4 /* EDID */ +2 /* 2 bytes for length */
+        +editorID.length()+1 /* length of name +1 byte for NUL termination */
+        +4 /* INAM */ +2 /* 2 bytes for length */ +4*itemFormIDs.size());
+}
+
 bool OutfitRecord::saveToStream(std::ofstream& output) const
 {
   output.write((const char*) &cOTFT, 4);
-  uint32_t writeSize;
-  writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
-        +editorID.length()+1 /* length of name +1 byte for NUL termination */
-        +4 /* INAM */ +2 /* 2 bytes for length */ +4*itemFormIDs.size();
-  if (!saveSizeAndUnknownValues(output, writeSize)) return false;
+  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
   output.write((char*) &cEDID, 4);

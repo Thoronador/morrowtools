@@ -42,6 +42,12 @@ int32_t ActionRecord::getRecordType() const
   return cAACT;
 }
 
+uint32_t ActionRecord::getWriteSize() const
+{
+  return (4 /* EDID */ +2 /* 2 bytes for length */
+        +editorID.length()+1 /* length of name +1 byte for NUL termination */);
+}
+
 bool ActionRecord::equals(const ActionRecord& other) const
 {
   return (equalsBasic(other) and (editorID==other.editorID));
@@ -50,10 +56,7 @@ bool ActionRecord::equals(const ActionRecord& other) const
 bool ActionRecord::saveToStream(std::ofstream& output) const
 {
   output.write((char*) &cAACT, 4);
-  uint32_t writeSize;
-  writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
-        +editorID.length()+1 /* length of name +1 byte for NUL termination */;
-  if (!saveSizeAndUnknownValues(output, writeSize)) return false;
+  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
   output.write((char*) &cEDID, 4);

@@ -63,15 +63,18 @@ bool GlobalRecord::equals(const GlobalRecord& other) const
   throw 42;
 }
 
+uint32_t GlobalRecord::getWriteSize() const
+{
+  return (4 /* EDID */ +2 /* 2 bytes for length */
+        +editorID.length()+1 /* length of name +1 byte for NUL termination */
+        +4 /* FNAM */ +2 /* 2 bytes for length */ +1 /* fixed length of 1 byte */
+        +4 /* FLTV */ +2 /* 2 bytes for length */ +4 /* fixed length of 4 byte2 */);
+}
+
 bool GlobalRecord::saveToStream(std::ofstream& output) const
 {
   output.write((char*) &cGLOB, 4);
-  uint32_t writeSize;
-  writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
-        +editorID.length()+1 /* length of name +1 byte for NUL termination */
-        +4 /* FNAM */ +2 /* 2 bytes for length */ +1 /* fixed length of 1 byte */
-        +4 /* FLTV */ +2 /* 2 bytes for length */ +4 /* fixed length of 4 byte2 */;
-  if (!saveSizeAndUnknownValues(output, writeSize)) return false;
+  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
   //write EDID
   output.write((char*) &cEDID, 4);
   //EDID's length

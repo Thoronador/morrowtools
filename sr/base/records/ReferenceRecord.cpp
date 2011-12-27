@@ -70,6 +70,12 @@ bool ReferenceRecord::equals(const ReferenceRecord& other) const
       and (memcmp(unknownDATA, other.unknownDATA, 24)==0));
 }
 
+uint32_t ReferenceRecord::getWriteSize() const
+{
+  #warning Not implemented yet!
+  return 0;
+}
+
 bool ReferenceRecord::saveToStream(std::ofstream& output) const
 {
   #warning Not implemented yet!

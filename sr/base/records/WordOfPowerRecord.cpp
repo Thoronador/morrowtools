@@ -57,9 +57,8 @@ bool WordOfPowerRecord::equals(const WordOfPowerRecord& other) const
   return false;
 }
 
-bool WordOfPowerRecord::saveToStream(std::ofstream& output) const
+uint32_t WordOfPowerRecord::getWriteSize() const
 {
-  output.write((char*) &cWOOP, 4);
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
@@ -69,7 +68,13 @@ bool WordOfPowerRecord::saveToStream(std::ofstream& output) const
     writeSize = writeSize +4 /* FULL */ +2 /* 2 bytes for length */
                +4 /* fixed length of four bytes */;
   }
-  if (!saveSizeAndUnknownValues(output, writeSize)) return false;
+  return writeSize;
+}
+
+bool WordOfPowerRecord::saveToStream(std::ofstream& output) const
+{
+  output.write((char*) &cWOOP, 4);
+  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
   //write EDID
   output.write((char*) &cEDID, 4);
   //EDID's length

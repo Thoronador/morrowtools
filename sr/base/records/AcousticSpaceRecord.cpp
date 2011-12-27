@@ -54,9 +54,8 @@ bool AcousticSpaceRecord::equals(const AcousticSpaceRecord& other) const
       and (hasBNAM==other.hasBNAM) and ((unknownBNAM==other.unknownBNAM) or (!hasBNAM)));
 }
 
-bool AcousticSpaceRecord::saveToStream(std::ofstream& output) const
+uint32_t AcousticSpaceRecord::getWriteSize() const
 {
-  output.write((const char*) &cASPC, 4);
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
@@ -73,7 +72,13 @@ bool AcousticSpaceRecord::saveToStream(std::ofstream& output) const
   {
     writeSize = writeSize +4 /* BNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
-  if (!saveSizeAndUnknownValues(output, writeSize)) return false;
+  return writeSize;
+}
+
+bool AcousticSpaceRecord::saveToStream(std::ofstream& output) const
+{
+  output.write((const char*) &cASPC, 4);
+  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
   output.write((char*) &cEDID, 4);

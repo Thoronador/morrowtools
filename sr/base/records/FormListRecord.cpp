@@ -44,9 +44,8 @@ bool FormListRecord::equals(const FormListRecord& other) const
       and (listFormIDs==other.listFormIDs));
 }
 
-bool FormListRecord::saveToStream(std::ofstream& output) const
+uint32_t FormListRecord::getWriteSize() const
 {
-  output.write((char*) &cFLST, 4);
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
              +editorID.length()+1 /* length of strin +1 byte for NUL-termination */;
@@ -55,7 +54,13 @@ bool FormListRecord::saveToStream(std::ofstream& output) const
     writeSize = writeSize + listFormIDs.size()*
                 (4 /* DATA */ +2 /* 2 bytes for length */ +4 /* fixed size */);
   }
-  if (!saveSizeAndUnknownValues(output, writeSize)) return false;
+  return writeSize;
+}
+
+bool FormListRecord::saveToStream(std::ofstream& output) const
+{
+  output.write((char*) &cFLST, 4);
+  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
   output.write((char*) &cEDID, 4);

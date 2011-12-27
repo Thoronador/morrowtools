@@ -76,9 +76,8 @@ bool BookRecord::equals(const BookRecord& other) const
     and (hasINAM==other.hasINAM) and ((unknownINAM==other.unknownINAM) or (!hasINAM)));
 }
 
-bool BookRecord::saveToStream(std::ofstream& output) const
+uint32_t BookRecord::getWriteSize() const
 {
-  output.write((const char*) &cBOOK, 4);
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
@@ -110,8 +109,13 @@ bool BookRecord::saveToStream(std::ofstream& output) const
     writeSize = writeSize +4 /* VMAD */ +2 /* 2 bytes for length */
                +unknownVMAD.getSize() /* subrecord size */;
   }
+  return writeSize;
+}
 
-  if (!saveSizeAndUnknownValues(output, writeSize)) return false;
+bool BookRecord::saveToStream(std::ofstream& output) const
+{
+  output.write((const char*) &cBOOK, 4);
+  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
   output.write((char*) &cEDID, 4);
@@ -192,9 +196,10 @@ bool BookRecord::saveToStream(std::ofstream& output) const
     subLength = 4*k_Size; //fixed size
     output.write((char*) &subLength, 2);
     //write actual data
-    for (writeSize=0; writeSize<k_Size; ++writeSize)
+    uint32_t i;
+    for (i=0; i<k_Size; ++i)
     {
-      output.write((const char*) &(keywordArray[writeSize]), 4);
+      output.write((const char*) &(keywordArray[i]), 4);
     }//for
   }//if keyword array not empty
 

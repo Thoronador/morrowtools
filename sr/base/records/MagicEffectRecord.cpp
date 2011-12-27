@@ -58,9 +58,8 @@ bool MagicEffectRecord::equals(const MagicEffectRecord& other) const
       and (descriptionStringID==other.descriptionStringID) and (unknownCTDAs==other.unknownCTDAs));
 }
 
-bool MagicEffectRecord::saveToStream(std::ofstream& output) const
+uint32_t MagicEffectRecord::getWriteSize() const
 {
-  output.write((const char*) &cMGEF, 4);
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
@@ -89,7 +88,13 @@ bool MagicEffectRecord::saveToStream(std::ofstream& output) const
   {
     writeSize = writeSize +4 /* SNDD */ +2 /* 2 bytes for length */ +unknownSNDD.getSize() /* size */;
   }
-  if (!saveSizeAndUnknownValues(output, writeSize)) return false;
+  return writeSize;
+}
+
+bool MagicEffectRecord::saveToStream(std::ofstream& output) const
+{
+  output.write((const char*) &cMGEF, 4);
+  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
   output.write((char*) &cEDID, 4);
@@ -131,6 +136,7 @@ bool MagicEffectRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &unknownMDOB, 4);
   }//if MDOB present
 
+  uint32_t i;
   if (!keywordArray.empty())
   {
     //write KSIZ
@@ -148,9 +154,9 @@ bool MagicEffectRecord::saveToStream(std::ofstream& output) const
     subLength = 4*k_Size; //fixed size
     output.write((char*) &subLength, 2);
     //write actual data
-    for (writeSize=0; writeSize<k_Size; ++writeSize)
+    for (i=0; i<k_Size; ++i)
     {
-      output.write((const char*) &(keywordArray[writeSize]), 4);
+      output.write((const char*) &(keywordArray[i]), 4);
     }//for
   }//if keywords
 
@@ -185,7 +191,7 @@ bool MagicEffectRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &descriptionStringID, 4);
 
   //write CTDAs
-  for (writeSize=0; writeSize<unknownCTDAs.size(); ++writeSize)
+  for (i=0; i<unknownCTDAs.size(); ++i)
   {
     //write CTDA
     output.write((char*) &cCTDA, 4);
@@ -193,7 +199,7 @@ bool MagicEffectRecord::saveToStream(std::ofstream& output) const
     subLength = 32;
     output.write((char*) &subLength, 2);
     //write CTDA
-    output.write((const char*) (unknownCTDAs[writeSize].content), 32);
+    output.write((const char*) (unknownCTDAs[i].content), 32);
   }//for
 
   return output.good();

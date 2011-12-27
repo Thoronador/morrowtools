@@ -57,9 +57,8 @@ bool ShoutRecord::equals(const ShoutRecord& other) const
       and (descriptionStringID==other.descriptionStringID) and (unknownSNAMs==other.unknownSNAMs));
 }
 
-bool ShoutRecord::saveToStream(std::ofstream& output) const
+uint32_t ShoutRecord::getWriteSize() const
 {
-  output.write((char*) &cSHOU, 4);
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of strin +1 byte for NUL-termination */
@@ -74,7 +73,13 @@ bool ShoutRecord::saveToStream(std::ofstream& output) const
   {
     writeSize = writeSize +4 /* MDOB */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
-  if (!saveSizeAndUnknownValues(output, writeSize)) return false;
+  return writeSize;
+}
+
+bool ShoutRecord::saveToStream(std::ofstream& output) const
+{
+  output.write((char*) &cSHOU, 4);
+  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
   output.write((char*) &cEDID, 4);

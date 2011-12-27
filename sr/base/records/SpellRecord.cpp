@@ -59,9 +59,8 @@ bool SpellRecord::equals(const SpellRecord& other) const
       and (unknownCIS2==other.unknownCIS2));
 }
 
-bool SpellRecord::saveToStream(std::ofstream& output) const
+uint32_t SpellRecord::getWriteSize() const
 {
-  output.write((char*) &cSPEL, 4);
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
@@ -93,8 +92,13 @@ bool SpellRecord::saveToStream(std::ofstream& output) const
     writeSize = writeSize +4 /* CIS2 */ +2 /* 2 bytes for length */
                +unknownCIS2.length()+1 /* length of string +1 byte for NUL termination */;
   }
+  return writeSize;
+}
 
-  if (!saveSizeAndUnknownValues(output, writeSize)) return false;
+bool SpellRecord::saveToStream(std::ofstream& output) const
+{
+  output.write((char*) &cSPEL, 4);
+  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
   output.write((const char*) &cEDID, 4);
@@ -160,7 +164,7 @@ bool SpellRecord::saveToStream(std::ofstream& output) const
 
   if (!effects.empty())
   {
-    unsigned int jay;
+    unsigned int i, jay;
     for (i=0; i<effects.size(); ++i)
     {
       //write EFID

@@ -143,7 +143,7 @@ Records and their sub-records:
           number of following SPLO records
       SPLO (4 bytes, optional, occurs 0+ times)
           form ID
-      WNAM (4 bytes)
+      WNAM (4 bytes, optional)
           unknown data
       BODT (12 bytes)
           unknown data
@@ -157,14 +157,14 @@ Records and their sub-records:
         MNAM (0 bytes)
             no data
         ANAM (string, NUL-terminated)
-            no data
+            unknown data
         MODT (12 bytes)
             unknown data
 
         FNAM (0 bytes)
             no data
         ANAM (string, NUL-terminated)
-            no data
+            unknown data
         MODT (12 bytes)
             unknown data
 

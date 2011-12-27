@@ -58,6 +58,11 @@ struct ImageSpaceRecord: public BasicRecord
     /* returns the record's type, usually its header */
     virtual int32_t getRecordType() const;
 
+    /* returns the size in bytes that the record's data would occupy in a file
+       stream, NOT including the header data
+    */
+    virtual uint32_t getWriteSize() const;
+
     std::string editorID;
     bool hasENAM;
     float unknownENAM[14];

@@ -52,18 +52,21 @@ bool ApparatusRecord::equals(const ApparatusRecord& other) const
       and (memcmp(unknownDATA, other.unknownDATA, 8)==0));
 }
 
-bool ApparatusRecord::saveToStream(std::ofstream& output) const
+uint32_t ApparatusRecord::getWriteSize() const
 {
-  output.write((char*) &cAPPA, 4);
-  uint32_t writeSize;
-  writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
+  return (4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
         +4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed length */
         +4 /* FULL */ +2 /* 2 bytes for length */ +4 /* fixed length */
         +4 /* QUAL */ +2 /* 2 bytes for length */ +4 /* fixed length */
         +4 /* DESC */ +2 /* 2 bytes for length */ +4 /* fixed length */
-        +4 /* DATA */ +2 /* 2 bytes for length */ +8 /* fixed length */;
-  if (!saveSizeAndUnknownValues(output, writeSize)) return false;
+        +4 /* DATA */ +2 /* 2 bytes for length */ +8 /* fixed length */);
+}
+
+bool ApparatusRecord::saveToStream(std::ofstream& output) const
+{
+  output.write((char*) &cAPPA, 4);
+  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
   output.write((const char*) &cEDID, 4);

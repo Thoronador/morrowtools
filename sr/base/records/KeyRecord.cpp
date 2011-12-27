@@ -60,9 +60,8 @@ bool KeyRecord::equals(const KeyRecord& other) const
       and (memcmp(unknownDATA, other.unknownDATA, 8)==0));
 }
 
-bool KeyRecord::saveToStream(std::ofstream& output) const
+uint32_t KeyRecord::getWriteSize() const
 {
-  output.write((char*) &cKEYM, 4);
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
@@ -92,7 +91,13 @@ bool KeyRecord::saveToStream(std::ofstream& output) const
   {
     writeSize = writeSize +4 /* ZNAM */ +2 /* 2 bytes for length */ +4 /* fixed length */;
   }//if has ZNAM
-  if (!saveSizeAndUnknownValues(output, writeSize)) return false;
+  return writeSize;
+}
+
+bool KeyRecord::saveToStream(std::ofstream& output) const
+{
+  output.write((char*) &cKEYM, 4);
+  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
   output.write((const char*) &cEDID, 4);

@@ -58,6 +58,11 @@ struct ImpactDataSetRecord: public BasicRecord
     /* returns the record's type, usually its header */
     virtual int32_t getRecordType() const;
 
+    /* returns the size in bytes that the record's data would occupy in a file
+       stream, NOT including the header data
+    */
+    virtual uint32_t getWriteSize() const;
+
     struct PNAMSubrecord
     {
       uint32_t unknownOne;

@@ -59,9 +59,8 @@ bool SoundRecord::equals(const SoundRecord& other) const
   return false;
 }
 
-bool SoundRecord::saveToStream(std::ofstream& output) const
+uint32_t SoundRecord::getWriteSize() const
 {
-  output.write((char*) &cSOUN, 4);
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
@@ -76,7 +75,13 @@ bool SoundRecord::saveToStream(std::ofstream& output) const
     writeSize = writeSize + 4 /* FNAM */ +2 /* 2 bytes for length */
                +soundFileName.length()+1 /* length of name +1 byte for NUL termination */;
   }
-  if (!saveSizeAndUnknownValues(output, writeSize)) return false;
+  return writeSize;
+}
+
+bool SoundRecord::saveToStream(std::ofstream& output) const
+{
+  output.write((char*) &cSOUN, 4);
+  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
   output.write((char*) &cEDID, 4);

@@ -50,9 +50,8 @@ bool GrassRecord::equals(const GrassRecord& other) const
       and (memcmp(unknownDATA, other.unknownDATA, 32)==0));
 }
 
-bool GrassRecord::saveToStream(std::ofstream& output) const
+uint32_t GrassRecord::getWriteSize() const
 {
-  output.write((char*) &cGRAS, 4);
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
@@ -64,7 +63,13 @@ bool GrassRecord::saveToStream(std::ofstream& output) const
   {
     writeSize = writeSize +4 /*MODT*/ +2 /* 2 bytes for length */ +unknownMODT.getSize() /* size */;
   }
-  if (!saveSizeAndUnknownValues(output, writeSize)) return false;
+  return writeSize;
+}
+
+bool GrassRecord::saveToStream(std::ofstream& output) const
+{
+  output.write((char*) &cGRAS, 4);
+  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
   output.write((const char*) &cEDID, 4);

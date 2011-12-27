@@ -27,7 +27,7 @@ namespace SRTP
 
 BasicRecord::BasicRecord()
 {
-  headerFlags = headerFormID = headerUnknown3 = headerUnknown4 = 0;
+  headerFlags = headerFormID = headerRevision = headerVersion = headerUnknown5 = 0;
 }
 
 BasicRecord::~BasicRecord()
@@ -45,16 +45,18 @@ void BasicRecord::copyBasicMembers(const BasicRecord& other)
 {
   headerFlags = other.headerFlags;
   headerFormID = other.headerFormID;
-  headerUnknown3 = other.headerUnknown3;
-  headerUnknown4 = other.headerUnknown4;
+  headerRevision = other.headerRevision;
+  headerVersion = other.headerVersion;
+  headerUnknown5 = other.headerUnknown5;
 }
 
 bool BasicRecord::equalsBasic(const BasicRecord& other) const
 {
   return ((headerFlags==other.headerFlags)
     and (headerFormID==other.headerFormID)
-    and (headerUnknown3==other.headerUnknown3)
-    and (headerUnknown4==other.headerUnknown4));
+    and (headerRevision==other.headerRevision)
+    and (headerVersion==other.headerVersion)
+    and (headerUnknown5==other.headerUnknown5));
 }
 
 bool BasicRecord::loadSizeAndUnknownValues(std::ifstream& in_File, uint32_t& sizeStorage)
@@ -63,8 +65,9 @@ bool BasicRecord::loadSizeAndUnknownValues(std::ifstream& in_File, uint32_t& siz
   //unknown values
   in_File.read((char*) &headerFlags, 4);
   in_File.read((char*) &headerFormID, 4);
-  in_File.read((char*) &headerUnknown3, 4);
-  in_File.read((char*) &headerUnknown4, 4);
+  in_File.read((char*) &headerRevision, 4);
+  in_File.read((char*) &headerVersion, 2);
+  in_File.read((char*) &headerUnknown5, 2);
   if (!in_File.good())
   {
     std::cout << "BasicRecord::loadSizeAndUnknownValues: Error while reading "
@@ -77,12 +80,13 @@ bool BasicRecord::loadSizeAndUnknownValues(std::ifstream& in_File, uint32_t& siz
 bool BasicRecord::saveSizeAndUnknownValues(std::ofstream& output, const uint32_t theSize) const
 {
   //record size
-  output.write((char*) &theSize, 4);
+  output.write((const char*) &theSize, 4);
   //unknown values
-  output.write((char*) &headerFlags, 4);
-  output.write((char*) &headerFormID, 4);
-  output.write((char*) &headerUnknown3, 4);
-  output.write((char*) &headerUnknown4, 4);
+  output.write((const char*) &headerFlags, 4);
+  output.write((const char*) &headerFormID, 4);
+  output.write((const char*) &headerRevision, 4);
+  output.write((const char*) &headerVersion, 2);
+  output.write((const char*) &headerUnknown5, 2);
   if (!output.good())
   {
     std::cout << "BasicRecord::saveSizeAndUnknownValues: Error while reading "
@@ -119,6 +123,12 @@ bool BasicRecord::loadUint32SubRecordFromStream(std::ifstream& in_File, const in
     return false;
   }
   return true;
+}
+
+uint32_t BasicRecord::getTotalWrittenSize() const
+{
+  /* 24 bytes are the "header" of each record, containing type, size and so on */
+  return (24 + getWriteSize());
 }
 
 bool BasicRecord::isCompressed() const

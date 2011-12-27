@@ -56,6 +56,11 @@ struct BasicRecord
     /* returns the record's type, usually its header */
     virtual int32_t getRecordType() const = 0;
 
+    /* returns the size in bytes that the record's data would occupy in a file
+       stream, including the size of the header data
+    */
+    uint32_t getTotalWrittenSize() const;
+
     /* returns true, if the record's data is compressed, accodring to the set
        flags
     */
@@ -67,8 +72,9 @@ struct BasicRecord
     //partially unknown values - 16 bytes, i.e. 4 x uint32_t
     uint32_t headerFlags;
     uint32_t headerFormID;
-    uint32_t headerUnknown3;
-    uint32_t headerUnknown4;
+    uint32_t headerRevision;
+    uint16_t headerVersion;
+    uint16_t headerUnknown5;
   protected:
     //util. func.
     void copyBasicMembers(const BasicRecord& other);
@@ -103,6 +109,17 @@ struct BasicRecord
            target    - the uint32_t that will be used to store the read data
     */
     bool loadUint32SubRecordFromStream(std::ifstream& in_File, const int32_t subHeader, uint32_t& target) const;
+
+    /* returns the size in bytes that the record's data would occupy in a file
+       stream, NOT including the header data
+
+       parameters:
+           none
+
+       remarks:
+           This function has to be reimplemented for every new record type
+    */
+    virtual uint32_t getWriteSize() const = 0;
 }; //struct
 
 } //namespace

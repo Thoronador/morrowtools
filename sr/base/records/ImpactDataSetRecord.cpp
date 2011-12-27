@@ -49,14 +49,17 @@ bool ImpactDataSetRecord::equals(const ImpactDataSetRecord& other) const
       and (unknownPNAMs==other.unknownPNAMs));
 }
 
+uint32_t ImpactDataSetRecord::getWriteSize() const
+{
+  return (4 /* EDID */ +2 /* 2 bytes for length */
+        +editorID.length()+1 /* length of name +1 byte for NUL termination */
+        +unknownPNAMs.size()* (4 /* PNAM */ +2 /* 2 bytes for length */ +8 /* fixed length */));
+}
+
 bool ImpactDataSetRecord::saveToStream(std::ofstream& output) const
 {
   output.write((char*) &cIPDS, 4);
-  uint32_t writeSize;
-  writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
-        +editorID.length()+1 /* length of name +1 byte for NUL termination */
-        +unknownPNAMs.size()* (4 /* PNAM */ +2 /* 2 bytes for length */ +8 /* fixed length */);
-  if (!saveSizeAndUnknownValues(output, writeSize)) return false;
+  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
   output.write((const char*) &cEDID, 4);

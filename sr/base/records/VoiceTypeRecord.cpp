@@ -44,14 +44,17 @@ bool VoiceTypeRecord::equals(const VoiceTypeRecord& other) const
       and (unknownDNAM==other.unknownDNAM));
 }
 
+uint32_t VoiceTypeRecord::getWriteSize() const
+{
+  return (4 /* EDID */ +2 /* 2 bytes for length */
+        +editorID.length()+1 /* length of name +1 byte for NUL termination */
+        +4 /* DNAM */ +2 /* 2 bytes for length */ +1 /* fixed length */);
+}
+
 bool VoiceTypeRecord::saveToStream(std::ofstream& output) const
 {
   output.write((char*) &cVTYP, 4);
-  uint32_t writeSize;
-  writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
-        +editorID.length()+1 /* length of name +1 byte for NUL termination */
-        +4 /* DNAM */ +2 /* 2 bytes for length */ +1 /* fixed length */;
-  if (!saveSizeAndUnknownValues(output, writeSize)) return false;
+  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
   output.write((const char*) &cEDID, 4);

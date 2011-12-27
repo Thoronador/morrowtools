@@ -51,9 +51,8 @@ bool LandscapeTextureRecord::equals(const LandscapeTextureRecord& other) const
       and (unknownSNAM==other.unknownSNAM) and (unknownGNAMs==other.unknownGNAMs));
 }
 
-bool LandscapeTextureRecord::saveToStream(std::ofstream& output) const
+uint32_t LandscapeTextureRecord::getWriteSize() const
 {
-  output.write((char*) &cLTEX, 4);
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
@@ -69,7 +68,13 @@ bool LandscapeTextureRecord::saveToStream(std::ofstream& output) const
     writeSize = writeSize + unknownGNAMs.size() *
     (4 /* GNAM */ +2 /* 2 bytes for length */ +4 /* fixed length of four bytes */);
   }
-  if (!saveSizeAndUnknownValues(output, writeSize)) return false;
+  return writeSize;
+}
+
+bool LandscapeTextureRecord::saveToStream(std::ofstream& output) const
+{
+  output.write((char*) &cLTEX, 4);
+  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
   output.write((const char*) &cEDID, 4);

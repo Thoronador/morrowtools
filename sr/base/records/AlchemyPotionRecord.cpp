@@ -66,9 +66,8 @@ bool AlchemyPotionRecord::equals(const AlchemyPotionRecord& other) const
       and (effects==other.effects));
 }
 
-bool AlchemyPotionRecord::saveToStream(std::ofstream& output) const
+uint32_t AlchemyPotionRecord::getWriteSize() const
 {
-  output.write((char*) &cALCH, 4);
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
@@ -110,7 +109,13 @@ bool AlchemyPotionRecord::saveToStream(std::ofstream& output) const
                           +effects.at(i).unknownCTDAs.size()*
                           (4 /* CTDA */ +2 /* 2 bytes for length */ +32 /* fixed length */);
   }//for
-  if (!saveSizeAndUnknownValues(output, writeSize)) return false;
+  return writeSize;
+}
+
+bool AlchemyPotionRecord::saveToStream(std::ofstream& output) const
+{
+  output.write((char*) &cALCH, 4);
+  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
   output.write((const char*) &cEDID, 4);
@@ -139,6 +144,7 @@ bool AlchemyPotionRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &nameStringID, 4);
   }//if has FULL
 
+  uint32_t i;
   if (!keywordArray.empty())
   {
     //write KSIZ

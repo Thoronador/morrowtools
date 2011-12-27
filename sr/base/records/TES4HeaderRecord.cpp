@@ -44,9 +44,8 @@ int32_t Tes4HeaderRecord::getRecordType() const
   return cTES4;
 }
 
-bool Tes4HeaderRecord::saveToStream(std::ofstream& output) const
+uint32_t Tes4HeaderRecord::getWriteSize() const
 {
-  output.write((char*) &cTES4, 4);
   uint32_t writeSize;
   writeSize = 4 /* HEDR */ +2 /* 2 bytes for length */ +12 /* fixed length of 12 bytes */
         +4 /* CNAM */ +2 /* 2 bytes for length */
@@ -59,7 +58,14 @@ bool Tes4HeaderRecord::saveToStream(std::ofstream& output) const
         +dependencies[i].fileName.length()+1 /* length of name +1 byte for NUL termination */
         +4 /* DATA */ +2 /* 2 bytes for length */ +8 /* fixed length of 8 bytes */;
   }//for
-  if (!saveSizeAndUnknownValues(output, writeSize)) return false;
+  return writeSize;
+}
+
+bool Tes4HeaderRecord::saveToStream(std::ofstream& output) const
+{
+  output.write((char*) &cTES4, 4);
+  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
+
   //write HEDR
   output.write((char*) &cHEDR, 4);
   //HEDR's length
@@ -85,6 +91,7 @@ bool Tes4HeaderRecord::saveToStream(std::ofstream& output) const
   //write author's name
   output.write(authorName.c_str(), SubLength);
 
+  unsigned int i;
   for (i=0; i<dependencies.size(); ++i)
   {
     //write MAST

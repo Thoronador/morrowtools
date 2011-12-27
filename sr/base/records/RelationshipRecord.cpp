@@ -45,14 +45,17 @@ bool RelationshipRecord::equals(const RelationshipRecord& other) const
       and (unknownDATA[2]==other.unknownDATA[2]) and (unknownDATA[3]==other.unknownDATA[3]));
 }
 
+uint32_t RelationshipRecord::getWriteSize() const
+{
+  return (4 /* EDID */ +2 /* 2 bytes for length */
+        +editorID.length()+1 /* length of string +1 byte for NUL-termination */
+        +4 /* DATA */ +2 /* 2 bytes for length */ +16 /* fixed size */);
+}
+
 bool RelationshipRecord::saveToStream(std::ofstream& output) const
 {
   output.write((char*) &cRELA, 4);
-  uint32_t writeSize;
-  writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
-        +editorID.length()+1 /* length of string +1 byte for NUL-termination */
-        +4 /* DATA */ +2 /* 2 bytes for length */ +16 /* fixed size */;
-  if (!saveSizeAndUnknownValues(output, writeSize)) return false;
+  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
   output.write((char*) &cEDID, 4);

@@ -215,9 +215,8 @@ bool WeaponRecord::equals(const WeaponRecord& other) const
       and (unknownVNAM==other.unknownVNAM));
 }
 
-bool WeaponRecord::saveToStream(std::ofstream& output) const
+uint32_t WeaponRecord::getWriteSize() const
 {
-  output.write((const char*) &cWEAP, 4);
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
@@ -310,7 +309,13 @@ bool WeaponRecord::saveToStream(std::ofstream& output) const
   {
     writeSize = writeSize +4 /* CNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }//if CNAM is present
-  if (!saveSizeAndUnknownValues(output, writeSize)) return false;
+  return writeSize;
+}
+
+bool WeaponRecord::saveToStream(std::ofstream& output) const
+{
+  output.write((const char*) &cWEAP, 4);
+  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
   output.write((const char*) &cEDID, 4);
@@ -448,9 +453,10 @@ bool WeaponRecord::saveToStream(std::ofstream& output) const
     subLength = 4*k_Size; //fixed size
     output.write((char*) &subLength, 2);
     //write actual data
-    for (writeSize=0; writeSize<k_Size; ++writeSize)
+    uint32_t i;
+    for (i=0; i<k_Size; ++i)
     {
-      output.write((const char*) &(keywordArray[writeSize]), 4);
+      output.write((const char*) &(keywordArray[i]), 4);
     }//for
   }//if keyword array not empty
 

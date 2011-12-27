@@ -47,10 +47,6 @@ GenericRecord::GenericRecord(const GenericRecord& other)
   {
     m_Data = NULL;
   }
-  headerFlags = other.headerFlags;
-  headerFormID = other.headerFormID;
-  headerUnknown3 = other.headerUnknown3;
-  headerUnknown4 = other.headerUnknown4;
 }
 
 GenericRecord& GenericRecord::operator=(const GenericRecord& other)
@@ -69,10 +65,6 @@ GenericRecord& GenericRecord::operator=(const GenericRecord& other)
   {
     m_Data = NULL;
   }
-  headerFlags = other.headerFlags;
-  headerFormID = other.headerFormID;
-  headerUnknown3 = other.headerUnknown3;
-  headerUnknown4 = other.headerUnknown4;
   return *this;
 }
 
@@ -91,6 +83,11 @@ int32_t GenericRecord::getRecordType() const
 {
   //no record should have zero here, so we use this to avoid trouble
   return 0;
+}
+
+uint32_t GenericRecord::getWriteSize() const
+{
+  return m_DataSize;
 }
 
 bool GenericRecord::saveToStream(std::ofstream& output) const

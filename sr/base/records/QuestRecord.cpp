@@ -66,10 +66,8 @@ bool QuestRecord::equals(const QuestRecord& other) const
     and (indices==other.indices));
 }
 
-bool QuestRecord::saveToStream(std::ofstream& output) const
+uint32_t QuestRecord::getWriteSize() const
 {
-  #warning Not completely implemented yet!
-  output.write((char*) &cQUST, 4);
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of strin +1 byte for NUL-termination */
@@ -85,7 +83,14 @@ bool QuestRecord::saveToStream(std::ofstream& output) const
         +filter.length()+1 /* length of string +1 byte for NUL-termination */;
   }
   /// ... more to come
-  if (!saveSizeAndUnknownValues(output, writeSize)) return false;
+  return writeSize;
+}
+
+bool QuestRecord::saveToStream(std::ofstream& output) const
+{
+  #warning Not completely implemented yet!
+  output.write((char*) &cQUST, 4);
+  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
   output.write((char*) &cEDID, 4);

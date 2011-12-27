@@ -55,9 +55,8 @@ bool PerkRecord::equals(const PerkRecord& other) const
       and (descriptionStringID==other.descriptionStringID) and (subBlocks==other.subBlocks));
 }
 
-bool PerkRecord::saveToStream(std::ofstream& output) const
+uint32_t PerkRecord::getWriteSize() const
 {
-  output.write((char*) &cPERK, 4);
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
@@ -79,7 +78,13 @@ bool PerkRecord::saveToStream(std::ofstream& output) const
                  +subBlocks[i].subData.getSize() /* length */;
     }//for
   }//if subBlocks
-  if (!saveSizeAndUnknownValues(output, writeSize)) return false;
+  return writeSize;
+}
+
+bool PerkRecord::saveToStream(std::ofstream& output) const
+{
+  output.write((char*) &cPERK, 4);
+  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
   output.write((const char*) &cEDID, 4);
@@ -120,6 +125,7 @@ bool PerkRecord::saveToStream(std::ofstream& output) const
 
   if (!subBlocks.empty())
   {
+    unsigned int i;
     for (i=0; i<subBlocks.size(); ++i)
     {
       if (!subBlocks[i].subData.saveToStream(output, subBlocks[i].subType))

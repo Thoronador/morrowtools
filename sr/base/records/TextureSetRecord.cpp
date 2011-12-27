@@ -56,9 +56,8 @@ bool TextureSetRecord::equals(const TextureSetRecord& other) const
   return false;
 }
 
-bool TextureSetRecord::saveToStream(std::ofstream& output) const
+uint32_t TextureSetRecord::getWriteSize() const
 {
-  output.write((const char*) &cTXST, 4);
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
@@ -99,7 +98,13 @@ bool TextureSetRecord::saveToStream(std::ofstream& output) const
   {
     writeSize = writeSize +4 /* DODT */ +2 /* 2 bytes for length */ +36 /* fixed size */;
   }
-  if (!saveSizeAndUnknownValues(output, writeSize)) return false;
+  return writeSize;
+}
+
+bool TextureSetRecord::saveToStream(std::ofstream& output) const
+{
+  output.write((const char*) &cTXST, 4);
+  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
   output.write((const char*) &cEDID, 4);

@@ -78,6 +78,7 @@ const int32_t cFLTR = 0x52544C46; //"FLTR" = 46 4C 54 52
 const int32_t cFLTV = 0x56544C46; //"FLTV" = 46 4C 54 56
 const int32_t cFNAM = 0x4D414E46; //"FNAM" = 46 4E 41 4D
 const int32_t cFPRT = 0x54525046; //"FPRT" = 46 50 52 54
+const int32_t cFSTP = 0x50545346; //"FSTP" = 46 53 54 50
 const int32_t cFULL = 0x4C4C5546; //"FULL" = 46 55 4C 4C
 const int32_t cGLOB = 0x424F4C47; //"GLOB" = 47 4C 4F 42
 const int32_t cGMST = 0x54534D47; //"GMST" = 47 4D 53 54

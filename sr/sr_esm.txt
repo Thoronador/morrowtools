@@ -123,6 +123,15 @@ Records and their sub-records:
           unknown data, possibly form ID
 
 
+  FSTP: footstep
+      EDID (string, NUL-terminated)
+          editor ID
+      DATA (4 bytes)
+          unknown data
+      ANAM (string, NUL-terminated)
+          editor ID
+
+
   LGTM: lighting template
       EDID (string, NUL-terminated)
           editor ID

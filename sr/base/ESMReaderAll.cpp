@@ -47,6 +47,7 @@
 #include "Keys.h"
 #include "Keywords.h"
 #include "LandscapeTextures.h"
+#include "LightingTemplates.h"
 #include "LocationReferenceTypes.h"
 #include "MagicEffects.h"
 #include "MiscObjects.h"
@@ -167,6 +168,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;
     case cLCRT:
          return LocationReferenceTypes::getSingleton().readNextRecord(in_File);
+         break;
+    case cLGTM:
+         return LightingTemplates::getSingleton().readNextRecord(in_File);
          break;
     case cLTEX:
          return LandscapeTextures::getSingleton().readNextRecord(in_File);

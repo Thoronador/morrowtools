@@ -362,23 +362,4 @@ int32_t ReferenceRecord::getRecordType() const
   return cREFR;
 }
 
-    std::string editorID;
-    BinarySubRecord unknownVMAD;
-    uint32_t unknownNAME;
-    bool hasXLKR;
-    uint64_t unknownXLKR;
-    bool hasXESP;
-    uint64_t unknownXESP;
-    bool hasXEMI;
-    uint32_t unknownXEMI;
-    BinarySubRecord unknownXLOC;
-    float unknownXSCL;
-    bool hasXPRD;
-    uint32_t unknownXPRD;
-    bool hasINAM;
-    uint32_t unknownINAM;
-    bool hasPDTO;
-    uint64_t unknownPDTO;
-    uint8_t unknownDATA[24];
-
 } //namespace

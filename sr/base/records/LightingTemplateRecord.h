@@ -18,57 +18,55 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SR_GROUPDATA_H
-#define SR_GROUPDATA_H
+#ifndef SR_LIGHTINGTEMPLATERECORD_H
+#define SR_LIGHTINGTEMPLATERECORD_H
 
-#include <fstream>
-#include <stdint.h>
+#include <string>
+#include "BasicRecord.h"
+#include "BinarySubRecord.h"
 
 namespace SRTP
 {
 
-struct GroupData
+struct LightingTemplateRecord: public BasicRecord
 {
   public:
     /* constructor */
-    GroupData();
+    LightingTemplateRecord();
 
     /* destructor */
-    virtual ~GroupData();
+    virtual ~LightingTemplateRecord();
 
-    /* writes the group data to the given output stream and returns true on success
+    /* returns true, if the other record contains the same data */
+    bool equals(const LightingTemplateRecord& other) const;
+
+    /* writes the record to the given output stream and returns true on success
 
       parameters:
           output   - the output file stream
     */
     virtual bool saveToStream(std::ofstream& output) const;
 
-    /* loads the group data from the given input stream and returns true on success
+    /* loads the record from the given input stream and returns true on success
 
       parameters:
           in_File - the input file stream
     */
     virtual bool loadFromStream(std::ifstream& in_File);
 
-    /* returns the group "name" */
-    int32_t getGroupName() const;
+    /* returns the record's type, usually its header */
+    virtual int32_t getRecordType() const;
 
-    /* returns the size of the group read from the stream */
-    uint32_t getGroupSize() const;
-
-    /* sets a new group size value
-
-       parameters:
-           newSize - the new size value that shall be set
+    /* returns the size in bytes that the record's data would occupy in a file
+       stream, NOT including the header data
     */
-    void setGroupSize(const uint32_t newSize);
-  //protected: //TODO: should be protected later on, as soon as they are known
-     int32_t UnknownGroupData[3];
-  protected:
-    uint32_t m_GroupSize;
-    int32_t m_GroupName;
+    virtual uint32_t getWriteSize() const;
+
+    std::string editorID;
+    BinarySubRecord unknownDATA;
+    BinarySubRecord unknownDALC;
 }; //struct
 
 } //namespace
 
-#endif // SR_GROUPDATA_H
+#endif // SR_LIGHTINGTEMPLATERECORD_H

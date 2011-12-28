@@ -83,4 +83,9 @@ uint32_t GroupData::getGroupSize() const
   return m_GroupSize;
 }
 
+void GroupData::setGroupSize(const uint32_t newSize)
+{
+  m_GroupSize = newSize;
+}
+
 } //namespace

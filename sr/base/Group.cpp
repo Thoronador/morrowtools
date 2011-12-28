@@ -54,4 +54,10 @@ bool Group::saveToStream(std::ofstream& output) const
   return true;
 }
 
+void Group::updateGroupSize()
+{
+  //basic size for every group is 24 bytes, rest is records
+  headerData.setGroupSize(24 + contents.getContentSize());
+}
+
 } //namespace

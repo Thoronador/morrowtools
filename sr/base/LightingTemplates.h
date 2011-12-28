@@ -18,40 +18,18 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SR_GROUP_H
-#define SR_GROUP_H
+#ifndef SR_LIGHTINGTEMPLATES_H
+#define SR_LIGHTINGTEMPLATES_H
 
-#include "records/GroupData.h"
-#include "GroupContents.h"
+#include "records/LightingTemplateRecord.h"
+#include "MapBasedRecordManager.h"
 
 namespace SRTP
 {
 
-class Group
-{
-  public:
-    /* constructor */
-    Group();
-
-    /* destructor */
-    ~Group();
-
-    //the group's data
-    GroupData headerData;
-    GroupContents contents;
-
-    /* writes the group to the given output stream and returns true on success
-
-      parameters:
-          output - the output file stream
-    */
-    bool saveToStream(std::ofstream& output) const;
-
-    /* sets the group's size value in the group header to match the actual size
-       of the group and its records */
-    void updateGroupSize();
-}; //class
+//singleton for door records
+typedef MapBasedRecordManager<LightingTemplateRecord> LightingTemplates;
 
 } //namespace
 
-#endif // SR_GROUP_H
+#endif // SR_LIGHTINGTEMPLATES_H

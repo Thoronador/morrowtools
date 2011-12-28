@@ -48,6 +48,7 @@ const int32_t cCOBJ = 0x4A424F43; //"COBJ" = 43 4F 42 4A
 const int32_t cCOCT = 0x54434F43; //"COCT" = 43 4F 43 54
 const int32_t cCRDT = 0x54445243; //"CRDT" = 43 52 44 54
 const int32_t cCTDA = 0x41445443; //"CTDA" = 43 54 44 41
+const int32_t cDALC = 0x434C4144; //"DALC" = 44 41 4C 43
 const int32_t cDATA = 0x41544144; //"DATA" = 44 41 54 41
 const int32_t cDESC = 0x43534544; //"DESC" = 44 45 53 43
 const int32_t cDEST = 0x54534544; //"DEST" = 44 45 53 54
@@ -98,6 +99,7 @@ const int32_t cKSIZ = 0x5A49534B; //"KSIZ" = 4B 53 49 5A
 const int32_t cKYWD = 0x4457594B; //"KYWD" = 4B 59 57 44
 const int32_t cKWDA = 0x4144574B; //"KWDA" = 4B 57 44 41
 const int32_t cLCRT = 0x5452434C; //"LCRT" = 4C 43 52 54
+const int32_t cLGTM = 0x4D54474C; //"LGTM" = 4C 47 54 4D
 const int32_t cLNAM = 0x4D414E4C; //"LNAM" = 4C 4E 41 4D
 const int32_t cLTEX = 0x5845544C; //"LTEX" = 4C 54 45 58
 const int32_t cMAST = 0x5453414D; //"MAST" = 4D 41 53 54

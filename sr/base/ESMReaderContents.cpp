@@ -36,6 +36,7 @@
 #include "records/EquipmentSlotRecord.h"
 #include "records/EyeRecord.h"
 #include "records/FootstepRecord.h"
+#include "records/FootstepSetRecord.h"
 #include "records/FormListRecord.h"
 #include "records/GMSTRecord.h"
 #include "records/GlobalRecord.h"
@@ -145,6 +146,9 @@ int ESMReaderContents::readNextRecord(std::ifstream& in_File, const int32_t recN
          break;
     case cFSTP:
          recPtr = new FootstepRecord;
+         break;
+    case cFSTS:
+         recPtr = new FootstepSetRecord;
          break;
     case cGMST:
          recPtr = new GMSTRecord;

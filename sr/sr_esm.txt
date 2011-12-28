@@ -132,6 +132,19 @@ Records and their sub-records:
           editor ID
 
 
+  FSTS: footstep set
+      EDID (string, NUL-terminated)
+          editor ID
+      XCNT (20 bytes)
+          uint32_t count1
+          uint32_t count2
+          uint32_t count3
+          uint32_t count4
+          uint32_t count5
+      DATA (n * 4 bytes)
+          array of form IDs, where n = count1+count2+count3+count4+count5
+
+
   LGTM: lighting template
       EDID (string, NUL-terminated)
           editor ID

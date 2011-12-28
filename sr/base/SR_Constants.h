@@ -79,6 +79,7 @@ const int32_t cFLTV = 0x56544C46; //"FLTV" = 46 4C 54 56
 const int32_t cFNAM = 0x4D414E46; //"FNAM" = 46 4E 41 4D
 const int32_t cFPRT = 0x54525046; //"FPRT" = 46 50 52 54
 const int32_t cFSTP = 0x50545346; //"FSTP" = 46 53 54 50
+const int32_t cFSTS = 0x53545346; //"FSTS" = 46 53 54 53
 const int32_t cFULL = 0x4C4C5546; //"FULL" = 46 55 4C 4C
 const int32_t cGLOB = 0x424F4C47; //"GLOB" = 47 4C 4F 42
 const int32_t cGMST = 0x54534D47; //"GMST" = 47 4D 53 54
@@ -175,6 +176,7 @@ const int32_t cWATR = 0x52544157; //"WATR" = 57 41 54 52
 const int32_t cWEAP = 0x50414557; //"WEAP" = 57 45 41 50
 const int32_t cWNAM = 0x4D414E57; //"WNAM" = 57 4E 41 4D
 const int32_t cWOOP = 0x504F4F57; //"WOOP" = 57 4F 4F 50
+const int32_t cXCNT = 0x544E4358; //"XCNT" = 58 43 4E 54
 const int32_t cXEMI = 0x494D4558; //"XEMI" = 58 45 4D 49
 const int32_t cXESP = 0x50534558; //"XESP" = 58 45 53 50
 const int32_t cXLKR = 0x524B4C58; //"XLKR" = 58 4C 4B 52

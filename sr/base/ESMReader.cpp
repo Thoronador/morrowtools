@@ -154,6 +154,7 @@ int ESMReader::processGroup(std::ifstream& in_File)
   }
   if (needGroup(gd))
   {
+    nextGroupStarted(gd);
     return readGroup(in_File, gd);
   }
   //group not needed, skip it

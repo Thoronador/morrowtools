@@ -18,41 +18,49 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SR_ESMFILECONTENTS_H
-#define SR_ESMFILECONTENTS_H
-
-#include "Group.h"
-#include <map>
-#include <vector>
-#include <stdint.h>
+#include "ESMWriterContents.h"
 
 namespace SRTP
 {
 
-class ESMFileContents
+ESMWriterContents::ESMWriterContents()
 {
-  public:
-    /* constructor */
-    ESMFileContents();
+  contents.removeContents();
+}
 
-    /* destructor */
-    ~ESMFileContents();
+ESMWriterContents::~ESMWriterContents()
+{
+  contents.removeContents();
+}
 
-    /* adds a new group to the internal list and returns a reference to that
-       group
-    */
-    Group& addNewGroup();
+uint32_t ESMWriterContents::getTotalNumberOfRecords() const
+{
+  uint32_t result = 0;
+  unsigned int i;
+  for (i=0; i<contents.m_Groups.size(); ++i)
+  {
+    result += contents.m_Groups[i].contents.getNumberOfRecords();
+  }//for
+  return result;
+}
 
-    /* returns the number of records in the internal list */
-    unsigned int getNumberOfGroups() const;
+uint32_t ESMWriterContents::getTotalNumberOfGroups() const
+{
+  return contents.getNumberOfGroups();
+}
 
-    /* removes all contents */
-    void removeContents();
-  //private:
-    //internal group list
-    std::vector<Group> m_Groups;
-}; //class
+bool ESMWriterContents::writeGroups(std::ofstream& output) const
+{
+  const unsigned int groupCount = contents.getNumberOfGroups();
+  unsigned int i;
+  for (i=0; i<groupCount; ++i)
+  {
+    if (!contents.m_Groups[i].saveToStream(output))
+    {
+      return false;
+    }
+  }//for
+  return true;
+}
 
 } //namespace
-
-#endif // SR_ESMFILECONTENTS_H

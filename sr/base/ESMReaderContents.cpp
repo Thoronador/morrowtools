@@ -83,6 +83,14 @@ bool ESMReaderContents::needGroup(const GroupData& g_data) const
   return true;
 }
 
+void ESMReaderContents::nextGroupStarted(const GroupData& g_data)
+{
+  /*add a new group to the file content representation and set its GroupData
+    (i.e. header) to the stuff that was read from the file stream */
+  Group& newGroup = contents.addNewGroup();
+  newGroup.headerData = g_data;
+}
+
 int ESMReaderContents::readNextRecord(std::ifstream& in_File, const int32_t recName)
 {
   BasicRecord * recPtr = NULL;
@@ -221,7 +229,7 @@ int ESMReaderContents::readNextRecord(std::ifstream& in_File, const int32_t recN
   }//swi
   if (recPtr->loadFromStream(in_File))
   {
-    contents.addRecord(recPtr);
+    contents.m_Groups.back().contents.addRecord(recPtr);
     return 1; //success
   }
   else

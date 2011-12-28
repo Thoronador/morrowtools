@@ -85,6 +85,11 @@ bool ESMReaderAll::needGroup(const GroupData& g_data) const
   return true;
 }
 
+void ESMReaderAll::nextGroupStarted(const GroupData& g_data)
+{
+  //empty
+}
+
 int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
 {
   int result;

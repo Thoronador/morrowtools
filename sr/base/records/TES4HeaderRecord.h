@@ -82,7 +82,8 @@ struct Tes4HeaderRecord: public BasicRecord
     };//struct
 
     float version;
-    uint32_t HeaderUnknownTwo[2];
+    uint32_t numRecordsAndGroups;
+    uint32_t nextObjectID;
     std::string authorName;
     std::vector<MasterFile> dependencies;
     uint32_t unknownIntValue;

@@ -18,22 +18,40 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SR_ESMREADERKEYWORDS_H
-#define SR_ESMREADERKEYWORDS_H
-
-#include "ESMReaderSingleType.h"
-#include "records/KeywordRecord.h"
-#include "Keywords.h"
-#include "SR_Constants.h"
+#include "Group.h"
+#include <iostream>
 
 namespace SRTP
 {
 
-/* This descendant of the ESMReader class tries to read all keyword records from
-   the given .esm/.esp file.
-*/
-typedef ESMReaderSingleType<KeywordRecord, Keywords, cKYWD> ESMReaderKeywords;
+Group::Group()
+{
+  //empty
+}
+
+Group::~Group()
+{
+  //empty
+}
+
+bool Group::saveToStream(std::ofstream& output) const
+{
+  if (!output.good())
+  {
+    std::cout << "Group::saveToStream: Error: bad stream!\n";
+    return false;
+  }
+  if (!headerData.saveToStream(output))
+  {
+    std::cout << "Group::saveToStream: Error: could not write group header!\n";
+    return false;
+  }
+  if (!contents.saveToStream(output))
+  {
+    std::cout << "Group::saveToStream: Error: could not write group content to stream!\n";
+    return false;
+  }
+  return true;
+}
 
 } //namespace
-
-#endif // SR_ESMREADERKEYWORDS_H

@@ -77,6 +77,11 @@ bool ESMReaderCount::needGroup(const GroupData& g_data) const
   return true;
 }
 
+void ESMReaderCount::nextGroupStarted(const GroupData& g_data)
+{
+  //nothing to do here yet...
+}
+
 int ESMReaderCount::readNextRecord(std::ifstream& in_File, const int32_t recName)
 {
   //we skip it

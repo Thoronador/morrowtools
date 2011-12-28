@@ -18,41 +18,36 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SR_ESMFILECONTENTS_H
-#define SR_ESMFILECONTENTS_H
+#ifndef SR_GROUP_H
+#define SR_GROUP_H
 
-#include "Group.h"
-#include <map>
-#include <vector>
-#include <stdint.h>
+#include "records/GroupData.h"
+#include "GroupContents.h"
 
 namespace SRTP
 {
 
-class ESMFileContents
+class Group
 {
   public:
     /* constructor */
-    ESMFileContents();
+    Group();
 
     /* destructor */
-    ~ESMFileContents();
+    ~Group();
 
-    /* adds a new group to the internal list and returns a reference to that
-       group
+    //the group's data
+    GroupData headerData;
+    GroupContents contents;
+
+    /* writes the group to the given output stream and returns true on success
+
+      parameters:
+          output - the output file stream
     */
-    Group& addNewGroup();
-
-    /* returns the number of records in the internal list */
-    unsigned int getNumberOfGroups() const;
-
-    /* removes all contents */
-    void removeContents();
-  //private:
-    //internal group list
-    std::vector<Group> m_Groups;
+    bool saveToStream(std::ofstream& output) const;
 }; //class
 
 } //namespace
 
-#endif // SR_ESMFILECONTENTS_H
+#endif // SR_GROUP_H

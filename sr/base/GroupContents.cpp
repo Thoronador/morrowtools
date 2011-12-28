@@ -18,30 +18,23 @@
  -------------------------------------------------------------------------------
 */
 
-#include "ESMFileContents.h"
+#include "GroupContents.h"
 
 namespace SRTP
 {
 
-ESMFileContents::ESMFileContents()
+GroupContents::GroupContents()
 {
-  m_Groups.clear();
+  m_Records.clear();
+  m_Index.clear();
 }
 
-ESMFileContents::~ESMFileContents()
+GroupContents::~GroupContents()
 {
-  //empty
-  //removeContents();
+  removeContents();
 }
 
-Group& ESMFileContents::addNewGroup()
-{
-  Group temp;
-  m_Groups.push_back(temp);
-  return m_Groups.back();
-}
-
-/*void ESMFileContents::addRecord(BasicRecord* rec)
+void GroupContents::addRecord(BasicRecord* rec)
 {
   if (rec!=NULL)
   {
@@ -50,7 +43,7 @@ Group& ESMFileContents::addNewGroup()
   }//if
 }
 
-bool ESMFileContents::hasRecord(const uint32_t formID, const bool useIndex) const
+bool GroupContents::hasRecord(const uint32_t formID, const bool useIndex) const
 {
   if (useIndex) return (m_Index.find(formID)!=m_Index.end());
   unsigned int i;
@@ -61,7 +54,7 @@ bool ESMFileContents::hasRecord(const uint32_t formID, const bool useIndex) cons
   return false;
 }
 
-const BasicRecord& ESMFileContents::getRecord(const uint32_t formID, const bool useIndex) const
+const BasicRecord& GroupContents::getRecord(const uint32_t formID, const bool useIndex) const
 {
   if (useIndex)
   {
@@ -81,14 +74,14 @@ const BasicRecord& ESMFileContents::getRecord(const uint32_t formID, const bool 
   }//else
   //record was not found
   throw "Record with requested form ID not found!\n";
-}*/
-
-unsigned int ESMFileContents::getNumberOfGroups() const
-{
-  return m_Groups.size();
 }
 
-/*void ESMFileContents::rebuildIndex()
+unsigned int GroupContents::getNumberOfRecords() const
+{
+  return m_Records.size();
+}
+
+void GroupContents::rebuildIndex()
 {
   m_Index.clear();
   uint32_t i;
@@ -96,11 +89,44 @@ unsigned int ESMFileContents::getNumberOfGroups() const
   {
     m_Index[m_Records[i]->headerFormID] = i;
   }//for
-}*/
+}
 
-void ESMFileContents::removeContents()
+void GroupContents::removeContents()
 {
-  m_Groups.clear();
+  m_Index.clear();
+  BasicRecord * recPtr;
+  while (!m_Records.empty())
+  {
+    recPtr = m_Records.back();
+    m_Records.pop_back();
+    delete recPtr;
+  }//while
+}
+
+bool GroupContents::saveToStream(std::ofstream& output) const
+{
+  const unsigned int count = m_Records.size();
+  unsigned int i;
+  for (i=0; i<count; ++i)
+  {
+    if (!(m_Records[i]->saveToStream(output)))
+    {
+      return false;
+    }//if
+  }//for
+  return true;
+}
+
+uint32_t GroupContents::getContentSize() const
+{
+  const unsigned int count = m_Records.size();
+  uint32_t total = 0;
+  unsigned int i;
+  for (i=0; i<count; ++i)
+  {
+    total += m_Records[i]->getTotalWrittenSize();
+  }//for
+  return total;
 }
 
 } //namespace

@@ -18,8 +18,8 @@ Tes4HeaderRecord::Tes4HeaderRecord()
 : BasicRecord()
 {
   version = 0.0f;
-  HeaderUnknownTwo[0] = 0;
-  HeaderUnknownTwo[1] = 0;
+  numRecordsAndGroups = 0;
+  nextObjectID = 0;
   authorName = "";
   dependencies.clear();
   unknownIntValue = 0;
@@ -33,8 +33,8 @@ Tes4HeaderRecord::~Tes4HeaderRecord()
 bool Tes4HeaderRecord::equals(const Tes4HeaderRecord& other) const
 {
   return ((equalsBasic(other)) and (version==other.version)
-    and (HeaderUnknownTwo[0]==other.HeaderUnknownTwo[0])
-    and (HeaderUnknownTwo[1]==other.HeaderUnknownTwo[1])
+    and (numRecordsAndGroups==other.numRecordsAndGroups)
+    and (nextObjectID==other.nextObjectID)
     and (authorName==other.authorName) and (dependencies==other.dependencies)
     and (unknownIntValue==other.unknownIntValue));
 }
@@ -75,8 +75,8 @@ bool Tes4HeaderRecord::saveToStream(std::ofstream& output) const
   // ---- write version
   output.write((char*) &version, 4);
   // ---- write unknown stuff
-  output.write((char*) &(HeaderUnknownTwo[0]), 4);
-  output.write((char*) &(HeaderUnknownTwo[1]), 4);
+  output.write((char*) &numRecordsAndGroups, 4);
+  output.write((char*) &nextObjectID, 4);
   if (!output.good())
   {
     std::cout << "Error while writing subrecord HEDR of TES4!\n";
@@ -152,8 +152,8 @@ bool Tes4HeaderRecord::loadFromStream(std::ifstream& in_File)
   // ---- read version number
   in_File.read((char*) &version, 4);
   // ---- read unknown values
-  in_File.read((char*) &(HeaderUnknownTwo[0]), 4);
-  in_File.read((char*) &(HeaderUnknownTwo[1]), 4);
+  in_File.read((char*) &numRecordsAndGroups, 4);
+  in_File.read((char*) &nextObjectID, 4);
   BytesRead += 12;
   if (!in_File.good())
   {

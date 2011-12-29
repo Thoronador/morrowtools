@@ -58,6 +58,7 @@
 #include "Perks.h"
 #include "Races.h"
 #include "Relationships.h"
+#include "Reverbs.h"
 #include "Scrolls.h"
 #include "Shouts.h"
 #include "Sounds.h"
@@ -203,6 +204,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;
     case cRELA:
          return Relationships::getSingleton().readNextRecord(in_File);
+         break;
+    case cREVB:
+         return Reverbs::getSingleton().readNextRecord(in_File);
          break;
     case cSCRL:
          return Scrolls::getSingleton().readNextRecord(in_File);

@@ -306,6 +306,13 @@ Records and their sub-records:
           unknown data
 
 
+  REVB: reverb information
+      EDID (string, NUL-terminated)
+          editor ID
+      DATA (14 bytes)
+          unknown data
+
+
   GLOB: global variables
       EDID (string, NUL-terminated)
           editor ID

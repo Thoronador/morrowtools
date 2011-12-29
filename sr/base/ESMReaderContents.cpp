@@ -56,6 +56,7 @@
 #include "records/PerkRecord.h"
 #include "records/RaceRecord.h"
 #include "records/RelationshipRecord.h"
+#include "records/ReverbRecord.h"
 #include "records/ScrollRecord.h"
 #include "records/ShoutRecord.h"
 #include "records/SoundRecord.h"
@@ -203,6 +204,9 @@ int ESMReaderContents::readNextRecord(std::ifstream& in_File, const int32_t recN
          break;
     case cRELA:
          recPtr = new RelationshipRecord;
+         break;
+    case cREVB:
+         recPtr = new ReverbRecord;
          break;
     case cSCRL:
          recPtr = new ScrollRecord;

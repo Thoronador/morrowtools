@@ -27,10 +27,34 @@
 namespace SRTP
 {
 
+/* RaceData's functions */
+
+bool RaceRecord::RaceData::operator==(const RaceRecord::RaceData& other) const
+{
+  return ((memcmp(unknown16, other.unknown16, 16)==0) and (heightMale==other.heightMale)
+      and (heightFemale==other.heightFemale) and (weightMale==other.weightMale)
+      and (weightFemale==other.weightFemale)
+      and (memcmp(unknown96, other.unknown96, 96)==0));
+}
+
+void RaceRecord::RaceData::clear()
+{
+  memset(unknown16, 0, 16);
+  heightMale = 0.0f;
+  heightFemale = 0.0f;
+  weightMale = 0.0f;
+  weightFemale = 0.0f;
+  memset(unknown96, 0, 96);
+}
+
+/* SubBlock's functions */
+
 bool RaceRecord::SubBlock::operator==(const RaceRecord::SubBlock& other) const
 {
   return ((subType==other.subType) and (subData==other.subData));
 }
+
+/* RaceRecord's functions */
 
 RaceRecord::RaceRecord()
 : BasicRecord()
@@ -44,7 +68,7 @@ RaceRecord::RaceRecord()
   unknownWNAM = 0;
   memset(unknownBODT, 0, 12);
   keywordArray.clear();
-  memset(unknownDATA, 0, 128);
+  data.clear();
   subBlocks.clear();
 }
 
@@ -60,8 +84,7 @@ bool RaceRecord::equals(const RaceRecord& other) const
       and (descriptionStringID==other.descriptionStringID) and (spellFormIDs==other.spellFormIDs)
       and (hasWNAM==other.hasWNAM) and ((unknownWNAM==other.unknownWNAM) or (!hasWNAM))
       and (memcmp(unknownBODT, other.unknownBODT, 12)==0)
-      and (keywordArray==other.keywordArray)
-      and (memcmp(unknownDATA, other.unknownDATA, 128)==0)
+      and (keywordArray==other.keywordArray) and (data==other.data)
       and (subBlocks==other.subBlocks));
 }
 
@@ -207,7 +230,12 @@ bool RaceRecord::saveToStream(std::ofstream& output) const
   subLength = 128; //fixed
   output.write((const char*) &subLength, 2);
   //write DATA's stuff
-  output.write((const char*) unknownDATA, 128);
+  output.write((const char*) (data.unknown16), 16);
+  output.write((const char*) &(data.heightMale), 4);
+  output.write((const char*) &(data.heightFemale), 4);
+  output.write((const char*) &(data.weightMale), 4);
+  output.write((const char*) &(data.weightFemale), 4);
+  output.write((const char*) (data.unknown96), 96);
 
   if (!subBlocks.empty())
   {
@@ -489,8 +517,12 @@ bool RaceRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read DATA
-           spell_count = 0;
-           in_File.read((char*) unknownDATA, 128);
+           in_File.read((char*) (data.unknown16), 16);
+           in_File.read((char*) &(data.heightMale), 4);
+           in_File.read((char*) &(data.heightFemale), 4);
+           in_File.read((char*) &(data.weightMale), 4);
+           in_File.read((char*) &(data.weightFemale), 4);
+           in_File.read((char*) (data.unknown96), 96);
            bytesRead += 128;
            if (!in_File.good())
            {

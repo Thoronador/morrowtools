@@ -64,6 +64,23 @@ struct RaceRecord: public BasicRecord
     */
     virtual uint32_t getWriteSize() const;
 
+    //type for data subrecord
+    struct RaceData
+    {
+      uint8_t unknown16[16];
+      float heightMale;
+      float heightFemale;
+      float weightMale;
+      float weightFemale;
+      uint8_t unknown96[96];
+
+      /* comparison operator */
+      bool operator==(const RaceData& other) const;
+
+      /* initialisation/ reset data */
+      void clear();
+    };//struct
+
     //type for undefinded subrecord blocks
     struct SubBlock
     {
@@ -83,7 +100,7 @@ struct RaceRecord: public BasicRecord
     uint32_t unknownWNAM;
     uint8_t unknownBODT[12];
     std::vector<uint32_t> keywordArray;
-    uint8_t unknownDATA[128];
+    RaceData data;
     std::vector<SubBlock> subBlocks;
 }; //struct
 

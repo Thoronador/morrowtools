@@ -79,6 +79,14 @@ class MapBasedRecordManager
     */
     int readNextRecord(std::ifstream& in_File);
 
+    /* removes the record with the given ID from the internal list and returns
+       true, if such a record existed. Returns false otherwise.
+
+       parameters:
+           ID - the ID of the record to be removed
+    */
+    bool removeRecord(const uint32_t ID);
+
     /* returns constant iterator to the beginning of the internal list */
     ListIterator getBegin() const;
 
@@ -157,6 +165,12 @@ const recT& MapBasedRecordManager<recT>::getRecord(const uint32_t ID) const
   }
   std::cout << "MapBasedRecordManager: Error! No record with the ID \""<<ID<<"\" is present.\n";
   throw 42;
+}
+
+template<typename recT>
+bool MapBasedRecordManager<recT>::removeRecord(const uint32_t ID)
+{
+  return (m_Records.erase(ID)!=0);
 }
 
 template<typename recT>

@@ -83,6 +83,11 @@ uint32_t GroupData::getGroupSize() const
   return m_GroupSize;
 }
 
+void GroupData::setGroupName(const int32_t newName)
+{
+  m_GroupName = newName;
+}
+
 void GroupData::setGroupSize(const uint32_t newSize)
 {
   m_GroupSize = newSize;

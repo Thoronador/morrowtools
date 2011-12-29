@@ -56,6 +56,13 @@ struct GroupData
     /* returns the size of the group read from the stream */
     uint32_t getGroupSize() const;
 
+    /* sets a new group name
+
+       parameters:
+           newName - the new name value that shall be set
+    */
+    void setGroupName(const int32_t newName);
+
     /* sets a new group size value
 
        parameters:

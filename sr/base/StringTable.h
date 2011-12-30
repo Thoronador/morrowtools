@@ -42,6 +42,16 @@ class StringTable
     //iterator type
     typedef std::map<uint32_t, std::string>::const_iterator TableIterator;
 
+    /* adds a string with the given ID and content to the string table. If a
+       string with the same ID is already present, that string will be replaced.
+       If the string ID is zero, no string will be added or changed.
+
+       parameters:
+           stringID - the ID of the string
+           content  - the (new) content of the string
+    */
+    void addString(const uint32_t stringID, const std::string& content);
+
     /* returns true, if the table contains a string with the given ID */
     bool hasString(const uint32_t stringID) const;
 
@@ -54,6 +64,14 @@ class StringTable
     */
     const std::string& getString(const uint32_t stringID) const;
 
+    /* tries to remove the string with the given ID from the string table and
+       returns true, if such a string was removed. Returns false otherwise.
+
+       parameters:
+           stringID - the ID of the string
+    */
+    bool deleteString(const uint32_t stringID);
+
     /* removes all entries from the string table */
     void tabulaRasa();
 
@@ -65,6 +83,15 @@ class StringTable
            stringType - expected type of string data in table
     */
     bool readTable(const std::string& FileName, DataType stringType);
+
+    /* tries to write a string table to the given file and returns true in case
+       of success, false on failure
+
+       parameters:
+           FileName   - name of the output file for the string table
+           stringType - desired type of string data in table
+    */
+    bool writeTable(const std::string& FileName, DataType stringType) const;
 
     /* merges the contents of the other table into this table. If there are
        strings with the same string ID in both tables, the strings from the

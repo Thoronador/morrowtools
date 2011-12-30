@@ -38,6 +38,14 @@ StringTable::~StringTable()
   //empty
 }
 
+void StringTable::addString(const uint32_t stringID, const std::string& content)
+{
+  if (stringID!=0)
+  {
+    m_Strings[stringID] = content;
+  }
+}
+
 bool StringTable::hasString(const uint32_t stringID) const
 {
   return (m_Strings.find(stringID)!=m_Strings.end());
@@ -52,6 +60,11 @@ const std::string& StringTable::getString(const uint32_t stringID) const
   }
   std::cout << "StringTable: Error there is no string for ID "<<stringID<<"!\n";
   throw 42;
+}
+
+bool StringTable::deleteString(const uint32_t stringID)
+{
+  return (m_Strings.erase(stringID)!=0);
 }
 
 void StringTable::tabulaRasa()
@@ -218,6 +231,128 @@ bool StringTable::readTable(const std::string& FileName, DataType stringType)
   delete[] ptrSpace;
   allocatedSpace = 0;
   input.close();
+  return true;
+}
+
+bool StringTable::writeTable(const std::string& FileName, DataType stringType) const
+{
+  //try to determine the data type via extension, if it is not given
+  if (stringType==sdUnknown)
+  {
+    const std::string::size_type dotPos = FileName.rfind('.');
+    if (dotPos==std::string::npos)
+    {
+      std::cout << "Error: Cannot determine string data type!\n";
+      return false;
+    }
+    std::string ext = lowerCase(FileName.substr(dotPos));
+    if (ext==".strings")
+    {
+      stringType = sdNULterminated;
+    }
+    else if ((ext==".dlstrings") or (ext==".ilstrings"))
+    {
+      stringType = sdPascalStyle;
+    }
+    else
+    {
+      std::cout << "Error: Cannot determine string data type, unknown extension \""<<ext<<"\"!\n";
+      return false;
+    }
+  }//if unknown type
+
+  //prepare directory entries
+  std::vector<DirectoryEntry> theDirectory;
+  DirectoryEntry temp;
+  uint32_t nextAvailableOffset = 0;
+
+  std::map<uint32_t, std::string>::const_iterator cIter = m_Strings.begin();
+  while (cIter!=m_Strings.end())
+  {
+    temp.stringID = cIter->first;
+    temp.offset = nextAvailableOffset;
+    //strings are NUL-terminated, even in "Pascal" style, so we add +1 at the end
+    nextAvailableOffset = nextAvailableOffset + cIter->second.length()+1;
+    //add extra four bytes for length in "Pascal" style
+    if (sdPascalStyle==stringType)
+    {
+      nextAvailableOffset += 4;
+    }
+    theDirectory.push_back(temp);
+    ++cIter;
+  }//while
+
+  //prepare values for count and data size
+  const uint32_t count = theDirectory.size();
+  uint32_t dataSize = 0;
+
+  // ---- data size is offset of last string plus length for that entry
+  if (!theDirectory.empty())
+  {
+    dataSize = theDirectory.back().offset + m_Strings.find(theDirectory.back().stringID)->second.length()+1;
+    if (sdPascalStyle==stringType)
+    {
+      dataSize += 4;
+    }
+  }//if
+
+  //now write the file
+  std::ofstream output;
+  output.open(FileName.c_str(), std::ios::out | std::ios::binary | std::ios::trunc);
+  if (!output)
+  {
+    std::cout << "StringTable::writeTable: Error: could not open file \""<<FileName<<"\".\n";
+    return false;
+  }
+
+  //write number of entries
+  output.write((char*) &count, 4);
+  //write data size
+  output.write((char*)&dataSize, 4);
+  if (!output.good())
+  {
+    std::cout << "StringTable::writeTable: Error while writing header!\n";
+    output.close();
+    return false;
+  }
+
+  //write directory entries
+  uint32_t i;
+  for (i=0; i<count; ++i)
+  {
+    output.write((char*) &(theDirectory[i].stringID), 4);
+    output.write((char*) &(theDirectory[i].offset), 4);
+    if (!output.good())
+    {
+      std::cout << "StringTable::writeTable: Error while writing directory entries!\n";
+      output.close();
+      return false;
+    }
+  }//for
+
+  //write the data entries
+  cIter = m_Strings.begin();
+  while (cIter!=m_Strings.end())
+  {
+    //store length in i
+    i = cIter->second.length()+1;
+    if (sdPascalStyle==stringType)
+    {
+      //write length
+      output.write((char*) &i, 4);
+    }
+    //write string
+    output.write(cIter->second.c_str(), i);
+    if (!output.good())
+    {
+      std::cout << "StringTable::writeTable: Error while writing string data!\n";
+      output.close();
+      return false;
+    }
+    ++cIter;
+  }//while
+
+  output.close();
   return true;
 }
 

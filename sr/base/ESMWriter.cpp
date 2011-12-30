@@ -36,7 +36,7 @@ ESMWriter::~ESMWriter()
 
 bool ESMWriter::writeESM(const std::string& FileName, Tes4HeaderRecord& theHeader)
 {
-  theHeader.numRecordsAndGroups = getTotalNumberOfGroups() + getTotalNumberOfRecords();
+  theHeader.numRecordsAndGroups = 1+ getTotalNumberOfGroups() + getTotalNumberOfRecords();
   std::ofstream output;
   output.open(FileName.c_str(), std::ios::out | std::ios::binary | std::ios::trunc);
   if (!output)

@@ -103,6 +103,7 @@ const int32_t cKWDA = 0x4144574B; //"KWDA" = 4B 57 44 41
 const int32_t cLCRT = 0x5452434C; //"LCRT" = 4C 43 52 54
 const int32_t cLGTM = 0x4D54474C; //"LGTM" = 4C 47 54 4D
 const int32_t cLNAM = 0x4D414E4C; //"LNAM" = 4C 4E 41 4D
+const int32_t cLSCR = 0x5243534C; //"LSCR" = 4C 53 43 52
 const int32_t cLTEX = 0x5845544C; //"LTEX" = 4C 54 45 58
 const int32_t cMAST = 0x5453414D; //"MAST" = 4D 41 53 54
 const int32_t cMCHT = 0x5448434D; //"MCHT" = 4D 43 48 54
@@ -132,6 +133,7 @@ const int32_t cNVER = 0x5245564E; //"NVER" = 4E 56 45 52
 const int32_t cNVMI = 0x494D564E; //"NVMI" = 4E 56 4D 49
 const int32_t cNVPP = 0x5050564E; //"NVPP" = 4E 56 50 50
 const int32_t cOBND = 0x444E424F; //"OBND" = 4F 42 4E 44
+const int32_t cONAM = 0x4D414E4F; //"ONAM" = 4F 4E 41 4D
 const int32_t cOTFT = 0x5446544F; //"OTFT" = 4F 54 46 54
 const int32_t cPDTO = 0x4F544450; //"PDTO" = 50 44 54 4F
 const int32_t cPERK = 0x4B524550; //"PERK" = 50 45 52 4B
@@ -182,6 +184,7 @@ const int32_t cXEMI = 0x494D4558; //"XEMI" = 58 45 4D 49
 const int32_t cXESP = 0x50534558; //"XESP" = 58 45 53 50
 const int32_t cXLKR = 0x524B4C58; //"XLKR" = 58 4C 4B 52
 const int32_t cXLOC = 0x434F4C58; //"XLOC" = 58 4C 4F 43
+const int32_t cXNAM = 0x4D414E58; //"XNAM" = 58 4E 41 4D
 const int32_t cXPPA = 0x41505058; //"XPPA" = 58 50 50 41
 const int32_t cXPRD = 0x44525058; //"XPRD" = 58 50 52 44
 const int32_t cXPRM = 0x4D525058; //"XPRM" = 58 50 52 4D

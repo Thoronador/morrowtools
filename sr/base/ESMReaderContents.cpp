@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -41,6 +41,7 @@
 #include "records/GMSTRecord.h"
 #include "records/GlobalRecord.h"
 #include "records/GrassRecord.h"
+#include "records/HeadPartRecord.h"
 #include "records/ImageSpaceRecord.h"
 #include "records/ImpactDataSetRecord.h"
 #include "records/IngredientRecord.h"
@@ -160,6 +161,9 @@ int ESMReaderContents::readNextRecord(std::ifstream& in_File, const int32_t recN
          break;
     case cGRAS:
          recPtr = new GrassRecord;
+         break;
+    case cHDPT:
+         recPtr = new HeadPartRecord;
          break;
     case cIMGS:
          recPtr = new ImageSpaceRecord;

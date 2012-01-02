@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -18,27 +18,28 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SR_SHOUTRECORD_H
-#define SR_SHOUTRECORD_H
+#ifndef SR_HEADPARTRECORD_H
+#define SR_HEADPARTRECORD_H
 
 #include <string>
 #include <vector>
 #include "BasicRecord.h"
+#include "BinarySubRecord.h"
 
 namespace SRTP
 {
 
-struct ShoutRecord: public BasicRecord
+struct HeadPartRecord: public BasicRecord
 {
   public:
     /* constructor */
-    ShoutRecord();
+    HeadPartRecord();
 
     /* destructor */
-    virtual ~ShoutRecord();
+    virtual ~HeadPartRecord();
 
     /* returns true, if the other record contains the same data */
-    bool equals(const ShoutRecord& other) const;
+    bool equals(const HeadPartRecord& other) const;
 
     /* writes the record to the given output stream and returns true on success
 
@@ -62,26 +63,31 @@ struct ShoutRecord: public BasicRecord
     */
     virtual uint32_t getWriteSize() const;
 
-    /* wrapper type for SNAM entries */
-    struct SNAMentry
+    //structure for NAM0/NAM1 compounds
+    struct NAM0_NAM1_compound
     {
-      uint32_t wordFormID; //form ID of one word for that shout
-      uint32_t spellFormID; //form ID of the spell effect for that shout
-      float recharge; //recharge time in seconds
+      uint32_t unknownNAM0;
+      std::string unknownNAM1;
 
-      /* equality operator */
-      bool operator==(const SNAMentry& other) const;
-    }; //struct
+      //comparison operator
+      bool operator==(const NAM0_NAM1_compound& other) const;
+    };//struct
 
     std::string editorID;
     bool hasFULL;
     uint32_t fullNameStringID;
-    bool hasMDOB;
-    uint32_t unknownMDOB;
-    uint32_t descriptionStringID;
-    std::vector<SNAMentry> unknownSNAMs;
+    std::string modelPath;
+    BinarySubRecord unknownMODT;
+    uint8_t unknownDATA;
+    uint32_t unknownPNAM;
+    std::vector<uint32_t> unknownHNAMs;
+    std::vector<NAM0_NAM1_compound> unknownNAM0_NAM1s;
+    bool hasTNAM;
+    uint32_t unknownTNAM;
+    bool hasRNAM;
+    uint32_t unknownRNAM;
 }; //struct
 
 } //namespace
 
-#endif // SR_SHOUTRECORD_H
+#endif // SR_HEADPARTRECORD_H

@@ -145,6 +145,35 @@ Records and their sub-records:
           array of form IDs, where n = count1+count2+count3+count4+count5
 
 
+  HDPT: head part
+      EDID (string, NUL-terminated)
+          editor ID
+      FULL (4 bytes)
+          unknown data
+      MODL (string, NUL-terminated, optional)
+          model path
+      MODT (size varies, optional)
+          unknown data
+      DATA (1 byte)
+          unknown data
+      PNAM (4 bytes)
+          unknown data
+      HNAM (4 bytes, optional, can occur multiple times)
+          unknown data
+
+        NAM0 (4 bytes, optional)
+            unknown data, looks like some sort of index/counter
+        NAM1 (string, NUL-terminated, optional)
+            model path/path to some .tri (whatever that is)
+
+      --> NAM0/NAM1 compounds can occur multiple times.
+
+      TNAM (4 bytes, optional)
+          unknown data
+      RNAM (4 bytes, optional)
+          unknown data
+
+
   LGTM: lighting template
       EDID (string, NUL-terminated)
           editor ID

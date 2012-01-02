@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -86,6 +86,7 @@ const int32_t cGMST = 0x54534D47; //"GMST" = 47 4D 53 54
 const int32_t cGNAM = 0x4D414E47; //"GNAM" = 47 4E 41 4D
 const int32_t cGRAS = 0x53415247; //"GRAS" = 47 52 41 53
 const int32_t cGRUP = 0x50555247; //"GRUP" = 47 52 55 50
+const int32_t cHDPT = 0x54504448; //"HDPT" = 48 44 50 54
 const int32_t cHEDR = 0x52444548; //"HEDR" = 48 45 44 52
 const int32_t cHNAM = 0x4D414E48; //"HNAM" = 48 4E 41 4D
 const int32_t cICON = 0x4E4F4349; //"ICON" = 49 43 4F 4E

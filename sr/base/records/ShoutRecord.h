@@ -66,7 +66,8 @@ struct ShoutRecord: public BasicRecord
     struct SNAMentry
     {
       uint32_t wordFormID; //form ID of one word for that shout
-      uint8_t  dataEightBytes[8];
+      uint32_t spellFormID; //form ID of the spell effect for that shout
+      float recharge; //recharge time in seconds
 
       /* equality operator */
       bool operator==(const SNAMentry& other) const;

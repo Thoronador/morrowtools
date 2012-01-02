@@ -29,7 +29,8 @@ namespace SRTP
 
 bool ShoutRecord::SNAMentry::operator==(const ShoutRecord::SNAMentry& other) const
 {
-  return ((wordFormID==other.wordFormID) and (memcmp(dataEightBytes, other.dataEightBytes, 8)==0));
+  return ((wordFormID==other.wordFormID) and (spellFormID==other.spellFormID)
+      and (recharge==other.recharge));
 }
 
 ShoutRecord::ShoutRecord()
@@ -129,7 +130,8 @@ bool ShoutRecord::saveToStream(std::ofstream& output) const
     output.write((char*) &subLength, 2);
     //write SNAM's data
     output.write((const char*) &(unknownSNAMs[i].wordFormID), 4);
-    output.write((const char*) (unknownSNAMs[i].dataEightBytes), 8);
+    output.write((const char*) &(unknownSNAMs[i].spellFormID), 4);
+    output.write((const char*) &(unknownSNAMs[i].recharge), 4);
   }//for
 
   return output.good();
@@ -233,9 +235,11 @@ bool ShoutRecord::loadFromStream(std::ifstream& in_File)
            }
            //read SNAM's stuff
            temp.wordFormID = 0;
-           memset(temp.dataEightBytes, 0, 8);
+           temp.spellFormID = 0;
+           temp.recharge = 0.0f;
            in_File.read((char*) &(temp.wordFormID), 4);
-           in_File.read((char*) (temp.dataEightBytes), 8);
+           in_File.read((char*) &(temp.spellFormID), 4);
+           in_File.read((char*) &(temp.recharge), 4);
            bytesRead += 12;
            if (!in_File.good())
            {

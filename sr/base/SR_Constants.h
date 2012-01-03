@@ -138,6 +138,8 @@ const int32_t cONAM = 0x4D414E4F; //"ONAM" = 4F 4E 41 4D
 const int32_t cOTFT = 0x5446544F; //"OTFT" = 4F 54 46 54
 const int32_t cPDTO = 0x4F544450; //"PDTO" = 50 44 54 4F
 const int32_t cPERK = 0x4B524550; //"PERK" = 50 45 52 4B
+const int32_t cPFIG = 0x47494650; //"PFIG" = 50 46 49 47
+const int32_t cPFPC = 0x43504650; //"PFPC" = 50 46 50 43
 const int32_t cPNAM = 0x4D414E50; //"PNAM" = 50 4E 41 4D
 const int32_t cPRKC = 0x434B5250; //"PRKC" = 50 52 4B 43
 const int32_t cPRKE = 0x454B5250; //"PRKE" = 50 52 4B 45
@@ -164,6 +166,7 @@ const int32_t cSPLO = 0x4F4C5053; //"SPLO" = 53 50 4C 4F
 const int32_t cSTAT = 0x54415453; //"STAT" = 53 54 41 54
 const int32_t cTES4 = 0x34534554; //"TES4" = 54 45 53 34
 const int32_t cTNAM = 0x4D414E54; //"TNAM" = 54 4E 41 4D
+const int32_t cTREE = 0x45455254; //"TREE" = 54 52 45 45
 const int32_t cTX00 = 0x30305854; //"TX00" = 54 58 30 30
 const int32_t cTX01 = 0x31305854; //"TX01" = 54 58 30 31
 const int32_t cTX02 = 0x32305854; //"TX02" = 54 58 30 32

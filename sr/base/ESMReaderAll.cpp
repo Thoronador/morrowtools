@@ -67,6 +67,7 @@
 #include "Spells.h"
 #include "Statics.h"
 #include "TextureSets.h"
+#include "Trees.h"
 #include "VoiceTypes.h"
 #include "WaterTypes.h"
 #include "Weapons.h"
@@ -230,6 +231,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;
     case cSTAT:
          return Statics::getSingleton().readNextRecord(in_File);
+         break;
+    case cTREE:
+         return Trees::getSingleton().readNextRecord(in_File);
          break;
     case cTXST:
          return TextureSets::getSingleton().readNextRecord(in_File);

@@ -123,6 +123,17 @@ Records and their sub-records:
           unknown data, possibly form ID
 
 
+  CLFM: colour ... (something)
+      EDID (string, NUL-terminated)
+          editor ID
+      FULL (4 bytes, optional)
+          string ID of name (matches editor ID in most cases)
+      CNAM (4 bytes)
+          unknown data
+      FNAM (4 bytes)
+          unknown data
+
+
   FSTP: footstep
       EDID (string, NUL-terminated)
           editor ID

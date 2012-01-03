@@ -31,6 +31,7 @@
 #include "records/AssociationTypeRecord.h"
 #include "records/BookRecord.h"
 #include "records/ClassRecord.h"
+#include "records/ColourFormRecord.h"
 #include "records/CraftableObjectRecord.h"
 #include "records/DoorRecord.h"
 #include "records/EquipmentSlotRecord.h"
@@ -132,6 +133,9 @@ int ESMReaderContents::readNextRecord(std::ifstream& in_File, const int32_t recN
          break;
     case cCLAS:
          recPtr = new ClassRecord;
+         break;
+    case cCLFM:
+         recPtr = new ColourFormRecord;
          break;
     case cCOBJ:
          recPtr = new CraftableObjectRecord;

@@ -122,6 +122,7 @@ const int32_t cMOD4 = 0x34444F4D; //"MOD4" = 4D 4F 44 34
 const int32_t cMODL = 0x4C444F4D; //"MODL" = 4D 4F 44 4C
 const int32_t cMODS = 0x53444F4D; //"MODS" = 4D 4F 44 53
 const int32_t cMODT = 0x54444F4D; //"MODT" = 4D 4F 44 54
+const int32_t cMOVT = 0x54564F4D; //"MOVT" = 4D 4F 56 54
 const int32_t cMPRT = 0x5452504D; //"MPRT" = 4D 50 52 54
 const int32_t cNAM0 = 0x304D414E; //"NAM0" = 4E 41 4D 30
 const int32_t cNAM1 = 0x314D414E; //"NAM1" = 4E 41 4D 31
@@ -161,6 +162,7 @@ const int32_t cSNAM = 0x4D414E53; //"SNAM" = 53 4E 41 4D
 const int32_t cSNDD = 0x44444E53; //"SNDD" = 53 4E 44 44
 const int32_t cSOUN = 0x4E554F53; //"SOUN" = 53 4F 55 4E
 const int32_t cSPCT = 0x54435053; //"SPCT" = 53 50 43 54
+const int32_t cSPED = 0x44455053; //"SPED" = 53 50 45 44
 const int32_t cSPEL = 0x4C455053; //"SPEL" = 53 50 45 4C
 const int32_t cSPIT = 0x54495053; //"SPIT" = 53 50 49 54
 const int32_t cSPLO = 0x4F4C5053; //"SPLO" = 53 50 4C 4F

@@ -54,6 +54,7 @@
 #include "records/LocationReferenceTypeRecord.h"
 #include "records/MagicEffectRecord.h"
 #include "records/MiscObjectRecord.h"
+#include "records/MovementTypeRecord.h"
 #include "records/NAVIRecord.h"
 #include "records/OutfitRecord.h"
 #include "records/PerkRecord.h"
@@ -202,6 +203,9 @@ int ESMReaderContents::readNextRecord(std::ifstream& in_File, const int32_t recN
          break;
     case cMISC:
          recPtr = new MiscObjectRecord;
+         break;
+    case cMOVT:
+         recPtr = new MovementTypeRecord;
          break;
     case cNAVI:
          recPtr = new NAVIRecord;

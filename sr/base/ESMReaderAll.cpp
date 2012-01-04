@@ -56,6 +56,7 @@
 #include "LocationReferenceTypes.h"
 #include "MagicEffects.h"
 #include "MiscObjects.h"
+#include "MovementTypes.h"
 #include "NAVIRecords.h"
 #include "Outfits.h"
 #include "Perks.h"
@@ -202,6 +203,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;
     case cMISC:
          return MiscObjects::getSingleton().readNextRecord(in_File);
+         break;
+    case cMOVT:
+         return MovementTypes::getSingleton().readNextRecord(in_File);
          break;
     case cNAVI:
          return NAVIRecords::getSingleton().readNextRecord(in_File);

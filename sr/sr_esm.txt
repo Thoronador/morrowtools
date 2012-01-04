@@ -217,6 +217,17 @@ Records and their sub-records:
           some NIF path
 
 
+  MOVT: movement type
+      EDID (string, NUL-terminated)
+          editor ID
+      MNAM (string, NUL-terminated)
+          name string (similar to editor ID in most (all?) cases)
+      SPED (44 bytes or 40 bytes)
+          unknown data, looks like floats
+      INAM (12 bytes, optional)
+          unknown data
+      
+
   NAVI: navigation?
       NVER (4 bytes)
           unknown data

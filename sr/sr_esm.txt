@@ -185,6 +185,46 @@ Records and their sub-records:
           unknown data
 
 
+  LCTN: location
+      EDID (string, NUL-terminated)
+          editor ID
+      LCSR (16 bytes or 32 bytes or 48 bytes or 80 bytes or 96 bytes, optional)
+          unknown data
+      LCPR (72 bytes, optional)
+          unknown data
+      LCEC (8 , 12 or 16 bytes, optional, can occur more than once)
+          unknown data
+      LCEP (24 bytes, optional)
+          unknown data
+      LCUN (12 bytes, optional)
+          unknown data
+      LCID (4 or 8 bytes, optional)
+          unknown data
+      
+      --> Size values for LCxx subrecords might not list all possible sizes.
+      
+      FULL (4 bytes, optional)
+          string ID(?)
+      KSIZ (4 bytes, optional)
+          number of keywords in following KWDA
+      KWDA (n * 4 bytes, optional)
+          array of form IDs
+      PNAM (4 bytes, optional)
+          unknown data
+      FNAM (4 bytes, optional)
+          unknown data
+      MNAM (4 bytes, optional)
+          unknown data
+      RNAM (4 bytes, optional)
+          unknown data
+      NAM0 (4 bytes, optional)
+          unknown data
+      CNAM (4 bytes, optional)
+          unknown data
+      NAM1 (4 bytes, optional)
+          unknown data
+
+
   LGTM: lighting template
       EDID (string, NUL-terminated)
           editor ID
@@ -226,7 +266,7 @@ Records and their sub-records:
           unknown data, looks like floats
       INAM (12 bytes, optional)
           unknown data
-      
+
 
   NAVI: navigation?
       NVER (4 bytes)
@@ -398,9 +438,9 @@ Records and their sub-records:
           model path
       MODT (size varies, optional)
           unknown data
-      KSIZ (4 bytes)
+      KSIZ (4 bytes, optional)
           number of keywords in following KWDA
-      KWDA (n * 4 bytes)
+      KWDA (n * 4 bytes, optional)
           array of form IDs
       DATA (8 bytes)
           unknown data

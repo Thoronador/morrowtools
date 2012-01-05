@@ -51,6 +51,7 @@
 #include "records/LandscapeTextureRecord.h"
 #include "records/LightingTemplateRecord.h"
 #include "records/LoadScreenRecord.h"
+#include "records/LocationRecord.h"
 #include "records/LocationReferenceTypeRecord.h"
 #include "records/MagicEffectRecord.h"
 #include "records/MiscObjectRecord.h"
@@ -189,6 +190,9 @@ int ESMReaderContents::readNextRecord(std::ifstream& in_File, const int32_t recN
          break;
     case cLCRT:
          recPtr = new LocationReferenceTypeRecord;
+         break;
+    case cLCTN:
+         recPtr = new LocationRecord;
          break;
     case cLGTM:
          recPtr = new LightingTemplateRecord;

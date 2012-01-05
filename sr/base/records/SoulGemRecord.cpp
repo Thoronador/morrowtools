@@ -500,20 +500,4 @@ int32_t SoulGemRecord::getRecordType() const
   return cSLGM;
 }
 
-    std::string editorID;
-    uint8_t unknownOBND[12];
-    bool hasFULL;
-    uint32_t nameStringID; //subrecord FULL
-    std::string modelPath;
-    BinarySubRecord unknownMODT;
-    std::vector<uint32_t> keywordArray;
-    //subrecord DATA
-    uint32_t value;
-    float weight;
-    //end of DATA
-    uint8_t soulInside; //subrecord SOUL
-    uint8_t capacity; //subrecord SLCP
-    bool hasNAM0;
-    uint32_t unknownNAM0;
-
 } //namespace

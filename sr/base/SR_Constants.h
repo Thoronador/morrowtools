@@ -102,7 +102,14 @@ const int32_t cKNAM = 0x4D414E4B; //"KNAM" = 4B 4E 41 4D
 const int32_t cKSIZ = 0x5A49534B; //"KSIZ" = 4B 53 49 5A
 const int32_t cKYWD = 0x4457594B; //"KYWD" = 4B 59 57 44
 const int32_t cKWDA = 0x4144574B; //"KWDA" = 4B 57 44 41
+const int32_t cLCEC = 0x4345434C; //"LCEC" = 4C 43 45 43
+const int32_t cLCEP = 0x5045434C; //"LCEP" = 4C 43 45 50
+const int32_t cLCID = 0x4449434C; //"LCID" = 4C 43 49 44
+const int32_t cLCPR = 0x5250434C; //"LCPR" = 4C 43 50 52
 const int32_t cLCRT = 0x5452434C; //"LCRT" = 4C 43 52 54
+const int32_t cLCSR = 0x5253434C; //"LCSR" = 4C 43 53 52
+const int32_t cLCTN = 0x4E54434C; //"LCTN" = 4C 43 54 4E
+const int32_t cLCUN = 0x4E55434C; //"LCUN" = 4C 43 55 4E
 const int32_t cLGTM = 0x4D54474C; //"LGTM" = 4C 47 54 4D
 const int32_t cLNAM = 0x4D414E4C; //"LNAM" = 4C 4E 41 4D
 const int32_t cLSCR = 0x5243534C; //"LSCR" = 4C 53 43 52

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -31,6 +31,7 @@
 #include "../base/Perks.h"
 #include "../base/Scrolls.h"
 #include "../base/Shouts.h"
+#include "../base/SoulGems.h"
 #include "../base/Spells.h"
 #include "../base/Weapons.h"
 #include "../base/WordsOfPower.h"
@@ -63,6 +64,7 @@ bool ESMReaderFinder::needGroup(const GroupData& g_data) const
     case cPERK:
     case cSCRL:
     case cSHOU:
+    case cSLGM:
     case cSPEL:
     case cWEAP:
     case cWOOP:
@@ -70,6 +72,11 @@ bool ESMReaderFinder::needGroup(const GroupData& g_data) const
          break;
   }//swi
   return false;
+}
+
+void ESMReaderFinder::nextGroupStarted(const GroupData& g_data)
+{
+  //empty
 }
 
 int ESMReaderFinder::readNextRecord(std::ifstream& in_File, const int32_t recName)
@@ -109,6 +116,9 @@ int ESMReaderFinder::readNextRecord(std::ifstream& in_File, const int32_t recNam
          break;
     case cSHOU:
          return Shouts::getSingleton().readNextRecord(in_File);
+         break;
+    case cSLGM:
+         return SoulGems::getSingleton().readNextRecord(in_File);
          break;
     case cSPEL:
          return Spells::getSingleton().readNextRecord(in_File);

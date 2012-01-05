@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -50,6 +50,17 @@ class ESMReaderFinder: public ESMReader
            Returns true for all weapon groups, false for any other group.
     */
     virtual bool needGroup(const GroupData& g_data) const;
+
+    /* this functions sole purpose is to "notify" the reader that a new group
+       was encountered and give the classes derived from ESMReader the
+       possibility to update their internal state accordingly. Note that this
+       function will only be called for groups where needGroup() returns true.
+       Skipped groups will not trigger that function.
+
+       parameters:
+           g_date - the group header data
+    */
+    virtual void nextGroupStarted(const GroupData& g_data);
 
     /* tries to read the next record from a file and returns the number of
        relevant records that were read (usually one). If an error occured,

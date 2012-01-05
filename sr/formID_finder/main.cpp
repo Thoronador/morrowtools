@@ -1,3 +1,23 @@
+/*
+ -------------------------------------------------------------------------------
+    This file is part of the Skyrim Tools Project.
+    Copyright (C) 2011, 2012 Thoronador
+
+    The Skyrim Tools are free software: you can redistribute them and/or
+    modify them under the terms of the GNU General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    The Skyrim Tools are distributed in the hope that they will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with the Skyrim Tools.  If not, see <http://www.gnu.org/licenses/>.
+ -------------------------------------------------------------------------------
+*/
+
 #include <iostream>
 #include <string>
 #include <set>
@@ -17,6 +37,7 @@
 #include "../base/RegistryFunctions.h"
 #include "../base/Scrolls.h"
 #include "../base/Shouts.h"
+#include "../base/SoulGems.h"
 #include "../base/Spells.h"
 #include "../base/StringTable.h"
 #include "../base/Weapons.h"
@@ -28,7 +49,7 @@ void showGPLNotice()
 {
   std::cout << "Form ID finder for Skyrim\n"
             //<< "  This programme is part of the Skyrim Tools Project.\n"
-            << "  Copyright (C) 2011 Thoronador\n"
+            << "  Copyright (C) 2011, 2012 Thoronador\n"
             << "\n"
             << "  This programme is free software: you can redistribute it and/or\n"
             << "  modify it under the terms of the GNU General Public License as published\n"
@@ -47,20 +68,19 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Form ID Finder for Skyrim, version 0.12.rev348, 2011-12-25\n";
+  std::cout << "Form ID Finder for Skyrim, version 0.13.rev371, 2012-01-05\n";
 }
 
 int showVersionExitcode()
 {
   showVersion();
-  return 348;
+  return 371;
 }
 
 void showHelp()
 {
   std::cout << "\nformID_finder -d DIRECTORY -p PATTERN\n"
             << "\n"
-            << "(Note: This help is still incomplete.)\n"
             << "options:\n"
             << "  --help           - displays this help message and quits\n"
             << "  -?               - same as --help\n"
@@ -686,6 +706,39 @@ int main(int argc, char **argv)
       std::cout << "Total matching scrolls: "<<scrollMatches<<"\n";
     }
   }//scope for scrolls
+
+  //check soul gems for matches
+  {
+    unsigned int soulgemMatches = 0;
+    SRTP::SoulGems::ListIterator soulgem_iter = SRTP::SoulGems::getSingleton().getBegin();
+    while (soulgem_iter!=SRTP::SoulGems::getSingleton().getEnd())
+    {
+      if (soulgem_iter->second.hasFULL)
+      {
+        if (table.hasString(soulgem_iter->second.nameStringID))
+        {
+          if (matchesKeyword(table.getString(soulgem_iter->second.nameStringID), searchKeyword, caseSensitive))
+          {
+            //found matching SoulGem record
+            if (soulgemMatches==0)
+            {
+              std::cout << "\n\nMatching soul gems:\n";
+            }
+            std::cout << "    \""<<table.getString(soulgem_iter->second.nameStringID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(soulgem_iter->second.headerFormID)
+                      <<"\n        editor ID \""<<soulgem_iter->second.editorID<<"\"\n";
+            ++soulgemMatches;
+            ++totalMatches;
+          }//if match found
+        }//if table has string
+      }//if hasFULL
+      ++soulgem_iter;
+    }//while
+    if (soulgemMatches>0)
+    {
+      std::cout << "Total matching soul gems: "<<soulgemMatches<<"\n";
+    }
+  }//scope for soul gem stuff
 
   //check spells for matches
   {

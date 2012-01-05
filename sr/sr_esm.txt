@@ -387,6 +387,31 @@ Records and their sub-records:
           unknown data
 
 
+  SLGM: soul gem
+      EDID (string, NUL-terminated)
+          editor ID
+      OBND (12 bytes)
+          unknown data
+      FULL (4 bytes, optional)
+          unknown data
+      MODL (string, NUL-terminated)
+          model path
+      MODT (size varies, optional)
+          unknown data
+      KSIZ (4 bytes)
+          number of keywords in following KWDA
+      KWDA (n * 4 bytes)
+          array of form IDs
+      DATA (8 bytes)
+          unknown data
+      SOUL (1 byte)
+          unknown data
+      SLCP (1 byte)
+          soul capacity
+      NAM0 (4 bytes, optional)
+          unknown data
+
+
   TREE: tree
       EDID (string, NUL-terminated)
           editor ID

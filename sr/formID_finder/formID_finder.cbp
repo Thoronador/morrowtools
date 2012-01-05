@@ -58,6 +58,7 @@
 		<Unit filename="..\base\SR_Constants.h" />
 		<Unit filename="..\base\Scrolls.h" />
 		<Unit filename="..\base\Shouts.h" />
+		<Unit filename="..\base\SoulGems.h" />
 		<Unit filename="..\base\Spells.h" />
 		<Unit filename="..\base\StringTable.cpp" />
 		<Unit filename="..\base\StringTable.h" />
@@ -95,6 +96,8 @@
 		<Unit filename="..\base\records\ScrollRecord.h" />
 		<Unit filename="..\base\records\ShoutRecord.cpp" />
 		<Unit filename="..\base\records\ShoutRecord.h" />
+		<Unit filename="..\base\records\SoulGemRecord.cpp" />
+		<Unit filename="..\base\records\SoulGemRecord.h" />
 		<Unit filename="..\base\records\SpellRecord.cpp" />
 		<Unit filename="..\base\records\SpellRecord.h" />
 		<Unit filename="..\base\records\TES4HeaderRecord.cpp" />

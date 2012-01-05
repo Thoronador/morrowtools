@@ -158,8 +158,11 @@ const int32_t cRNAM = 0x4D414E52; //"RNAM" = 52 4E 41 4D
 const int32_t cSCRL = 0x4C524353; //"SCRL" = 53 43 52 4C
 const int32_t cSDSC = 0x43534453; //"SDSC" = 53 44 53 43
 const int32_t cSHOU = 0x554F4853; //"SHOU" = 53 48 4F 55
+const int32_t cSLCP = 0x50434C53; //"SLCP" = 53 4C 43 50
+const int32_t cSLGM = 0x4D474C53; //"SLGM" = 53 4C 47 4D
 const int32_t cSNAM = 0x4D414E53; //"SNAM" = 53 4E 41 4D
 const int32_t cSNDD = 0x44444E53; //"SNDD" = 53 4E 44 44
+const int32_t cSOUL = 0x4C554F53; //"SOUL" = 53 4F 55 4C
 const int32_t cSOUN = 0x4E554F53; //"SOUN" = 53 4F 55 4E
 const int32_t cSPCT = 0x54435053; //"SPCT" = 53 50 43 54
 const int32_t cSPED = 0x44455053; //"SPED" = 53 50 45 44

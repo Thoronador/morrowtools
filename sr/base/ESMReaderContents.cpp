@@ -63,6 +63,7 @@
 #include "records/ReverbRecord.h"
 #include "records/ScrollRecord.h"
 #include "records/ShoutRecord.h"
+#include "records/SoulGemRecord.h"
 #include "records/SoundRecord.h"
 #include "records/SpellRecord.h"
 #include "records/StaticRecord.h"
@@ -230,6 +231,9 @@ int ESMReaderContents::readNextRecord(std::ifstream& in_File, const int32_t recN
          break;
     case cSHOU:
          recPtr = new ShoutRecord;
+         break;
+    case cSLGM:
+         recPtr = new SoulGemRecord;
          break;
     case cSOUN:
          recPtr = new SoundRecord;

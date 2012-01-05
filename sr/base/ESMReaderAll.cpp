@@ -65,6 +65,7 @@
 #include "Reverbs.h"
 #include "Scrolls.h"
 #include "Shouts.h"
+#include "SoulGems.h"
 #include "Sounds.h"
 #include "Spells.h"
 #include "Statics.h"
@@ -230,6 +231,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;
     case cSHOU:
          return Shouts::getSingleton().readNextRecord(in_File);
+         break;
+    case cSLGM:
+         return SoulGems::getSingleton().readNextRecord(in_File);
          break;
     case cSOUN:
          return Sounds::getSingleton().readNextRecord(in_File);

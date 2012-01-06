@@ -76,6 +76,7 @@
 #include "WaterTypes.h"
 #include "Weapons.h"
 #include "WordsOfPower.h"
+#include "WorldSpaces.h"
 #include "records/GenericRecord.h"
 
 namespace SRTP
@@ -265,6 +266,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;
     case cWOOP:
          return WordsOfPower::getSingleton().readNextRecord(in_File);
+         break;
+    case cWRLD:
+         return WorldSpaces::getSingleton().readNextRecord(in_File);
          break;
     default:
          //this branch should not be neccessary once the reader class is finished

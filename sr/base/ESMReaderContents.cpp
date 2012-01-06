@@ -74,6 +74,7 @@
 #include "records/WaterTypeRecord.h"
 #include "records/WeaponRecord.h"
 #include "records/WordOfPowerRecord.h"
+#include "records/WorldSpaceRecord.h"
 #include "records/GenericRecord.h"
 
 namespace SRTP
@@ -265,6 +266,9 @@ int ESMReaderContents::readNextRecord(std::ifstream& in_File, const int32_t recN
          break;
     case cWOOP:
          recPtr = new WordOfPowerRecord;
+         break;
+    case cWRLD:
+         recPtr = new WorldSpaceRecord;
          break;
     default:
          //use generic record type for all other / unimplemented types

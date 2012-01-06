@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -24,14 +24,17 @@
 namespace SRTP
 {
 
+const uint32_t GroupData::cTopLevelGroup = 0;
+
 GroupData::GroupData()
 {
   m_GroupSize = 0;
   m_GroupName = 0;
+  m_GroupType = 0;
   unsigned int i;
-  for (i=0; i<3; ++i)
+  for (i=0; i<2; ++i)
   {
-    UnknownGroupData[i]=0;
+    UnknownGroupDataTwo[i]=0;
   }//for
 }
 
@@ -47,11 +50,13 @@ bool GroupData::saveToStream(std::ofstream& output) const
   output.write((char*) &m_GroupSize, 4);
   //write name
   output.write((char*) &m_GroupName, 4);
+  //write type
+  output.write((char*) &m_GroupType, 4);
   //write unknown data
   unsigned int i;
-  for (i=0; i<3; ++i)
+  for (i=0; i<2; ++i)
   {
-    output.write((char*) &(UnknownGroupData[i]), 4);
+    output.write((char*) &(UnknownGroupDataTwo[i]), 4);
   }//for
 
   return output.good();
@@ -63,11 +68,13 @@ bool GroupData::loadFromStream(std::ifstream& in_File)
   in_File.read((char*) &m_GroupSize, 4);
   //read name
   in_File.read((char*) &m_GroupName, 4);
+  //read type
+  in_File.read((char*) &m_GroupType, 4);
   //read unknown data
   unsigned int i;
-  for (i=0; i<3; ++i)
+  for (i=0; i<2; ++i)
   {
-    in_File.read((char*) &(UnknownGroupData[i]), 4);
+    in_File.read((char*) &(UnknownGroupDataTwo[i]), 4);
   }//for
 
   return in_File.good();
@@ -81,6 +88,11 @@ int32_t GroupData::getGroupName() const
 uint32_t GroupData::getGroupSize() const
 {
   return m_GroupSize;
+}
+
+uint32_t GroupData::getGroupType() const
+{
+  return m_GroupType;
 }
 
 void GroupData::setGroupName(const int32_t newName)

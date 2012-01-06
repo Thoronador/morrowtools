@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -86,7 +86,7 @@ class ESMReaderSingleType: public ESMReader
 template<typename recT, typename singleT, int32_t headerT>
 bool ESMReaderSingleType<recT, singleT, headerT>::needGroup(const GroupData& g_data) const
 {
-  return (g_data.getGroupName()==headerT);
+  return ((g_data.getGroupName()==headerT) and (g_data.getGroupType()==GroupData::cTopLevelGroup));
 }
 
 template<typename recT, typename singleT, int32_t headerT>

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -56,6 +56,11 @@ struct GroupData
     /* returns the size of the group read from the stream */
     uint32_t getGroupSize() const;
 
+    /* returns the type of the group read from the stream */
+    uint32_t getGroupType() const;
+
+    static const uint32_t cTopLevelGroup;
+
     /* sets a new group name
 
        parameters:
@@ -69,11 +74,11 @@ struct GroupData
            newSize - the new size value that shall be set
     */
     void setGroupSize(const uint32_t newSize);
-  //protected: //TODO: should be protected later on, as soon as they are known
-     int32_t UnknownGroupData[3];
   protected:
     uint32_t m_GroupSize;
     int32_t m_GroupName;
+    uint32_t m_GroupType;
+    int32_t UnknownGroupDataTwo[2];
 }; //struct
 
 } //namespace

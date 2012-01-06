@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -110,7 +110,7 @@ int ESMReader::readESM(const std::string& FileName, Tes4HeaderRecord& head)
   {
     //std::cout << "DBG: Current position is "<<input.tellg()<<" bytes.\n";
     //try to read or skip a group - possibly that won't always work
-    lastResult = processGroup(input);
+    lastResult = processGroup(input, true);
     if (lastResult>=0)
     {
       processedGroups += lastResult;
@@ -130,21 +130,24 @@ int ESMReader::readESM(const std::string& FileName, Tes4HeaderRecord& head)
   return processedGroups;
 }
 
-int ESMReader::processGroup(std::ifstream& in_File)
+int ESMReader::processGroup(std::ifstream& in_File, const bool withHeader)
 {
-  int32_t recordHeader = 0;
-  //read "GRUP"
-  in_File.read((char*) &recordHeader, 4);
-  if (!in_File.good())
+  if (withHeader)
   {
-    std::cout << "ESMReader::processGroup: Error: could not read group header!\n";
-    return -1;
-  }
-  if (recordHeader!=cGRUP)
-  {
-    UnexpectedRecord(cGRUP, recordHeader);
-    return -1;
-  }
+    int32_t recordHeader = 0;
+    //read "GRUP"
+    in_File.read((char*) &recordHeader, 4);
+    if (!in_File.good())
+    {
+      std::cout << "ESMReader::processGroup: Error: could not read group header!\n";
+      return -1;
+    }
+    if (recordHeader!=cGRUP)
+    {
+      UnexpectedRecord(cGRUP, recordHeader);
+      return -1;
+    }
+  }//if with header
   //now read the group data header
   GroupData gd;
   if (!gd.loadFromStream(in_File))
@@ -178,11 +181,26 @@ int ESMReader::readGroup(std::ifstream& in_File, const GroupData& g_data)
     //read next header
     recName = 0;
     in_File.read((char*) &recName, 4);
-    //read next record
-    lastResult = readNextRecord(in_File, recName);
-    if (lastResult>0)
+    if (!in_File.good())
     {
-      recordsRead += lastResult;
+      std::cout << "ESMReader::readGroup: Error while reading next record "
+                << "header!\nCurrent position is "<<in_File.tellg() <<" bytes.\n";
+      return -1;
+    }
+    //is it a record or a group?
+    if (recName!=cGRUP)
+    {
+      //read next record
+      lastResult = readNextRecord(in_File, recName);
+      if (lastResult>0)
+      {
+        recordsRead += lastResult;
+      }
+    }
+    else
+    {
+      //next group
+      lastResult = processGroup(in_File, false);
     }
   }//while
   if (lastResult>=0)

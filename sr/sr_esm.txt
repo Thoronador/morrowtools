@@ -200,9 +200,9 @@ Records and their sub-records:
           unknown data
       LCID (4 or 8 bytes, optional)
           unknown data
-      
+
       --> Size values for LCxx subrecords might not list all possible sizes.
-      
+
       FULL (4 bytes, optional)
           string ID(?)
       KSIZ (4 bytes, optional)
@@ -470,6 +470,61 @@ Records and their sub-records:
       FULL (4 bytes, optional)
           unknown data
       CNAM (48 bytes)
+          unknown data
+
+
+  WRLD: world space
+      EDID (string, NUL-terminated)
+          editor ID
+      RNAM (size varies, occurs multiple times)
+          unknown data
+      MHDT (size varies, optional)
+          unknown data
+      FULL (4 bytes, optional)
+          name's string ID
+      WCTR (4 bytes, optional)
+          unknown data
+      LTMP (4 bytes, optional)
+          unknown data
+      XEZN (4 bytes, optional)
+          unknown data
+      CNAM (4 bytes, optional)
+          unknown data
+      NAM2 (4 bytes, optional)
+          unknown data
+      NAM3 (4 bytes, optional)
+          unknown data
+      NAM4 (4 bytes, optional)
+          unknown data
+      DNAM (8 bytes, optional)
+          unknown data
+      MNAM (16 bytes, optional)
+          unknown data
+      XLCN (4 bytes, optional)
+          unknown data
+      WNAM (4 bytes, optional)
+          unknown data
+      PNAM (2 bytes, optional)
+          unknown data
+      ONAM (16 bytes, optional)
+          unknown data
+      NAMA (4 bytes)
+          unknown data
+      DATA (1 byte, optional)
+          unknown data
+      NAM0 (8 bytes, optional)
+          unknown data
+      NAM9 (8 bytes, optional)
+          unknown data
+      ZNAM (4 bytes)
+          unknown data
+      TNAM (string, NUL-terminated, optional)
+          path to some texture
+      UNAM (string, NUL-terminated, optional)
+          path to another texture
+      XXXX (4 bytes, optional)
+          unknown data
+      OFST (4524 bytes)
           unknown data
 
 

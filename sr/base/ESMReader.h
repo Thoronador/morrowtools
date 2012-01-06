@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -59,9 +59,12 @@ class ESMReader
        zero is returned.
 
        parameters:
-           in_File  - the input file stream the group shall be read from
+           in_File    - the input file stream the group shall be read from
+           withHeader - if set to true, the starting four bytes (GRUP) will be
+                        read, too. If set to false, the functions expects the
+                        data directly.
     */
-    int processGroup(std::ifstream& in_File);
+    int processGroup(std::ifstream& in_File, const bool withHeader);
 
     /* returns true, if the given group may contains some data that the reader
        wants to read. Returns false otherwise.

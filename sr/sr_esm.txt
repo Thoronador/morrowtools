@@ -277,6 +277,18 @@ Records and their sub-records:
           unknownDATA
 
 
+  PGRE: placed grenade
+      NAME (4 bytes)
+          probably form ID
+      XESP (8 bytes, optional)
+          unknown data
+      XOWN (4 bytes, optional)
+          owner form ID
+      XSCL (4 bytes, optional)
+          scaling factor
+      DATA (24 bytes)
+          unknown data
+
   RACE: race
       EDID (string, NUL-terminated)
           editor ID

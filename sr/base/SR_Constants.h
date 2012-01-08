@@ -156,6 +156,7 @@ const int32_t cPDTO = 0x4F544450; //"PDTO" = 50 44 54 4F
 const int32_t cPERK = 0x4B524550; //"PERK" = 50 45 52 4B
 const int32_t cPFIG = 0x47494650; //"PFIG" = 50 46 49 47
 const int32_t cPFPC = 0x43504650; //"PFPC" = 50 46 50 43
+const int32_t cPGRE = 0x45524750; //"PGRE" = 50 47 52 45
 const int32_t cPNAM = 0x4D414E50; //"PNAM" = 50 4E 41 4D
 const int32_t cPRKC = 0x434B5250; //"PRKC" = 50 52 4B 43
 const int32_t cPRKE = 0x454B5250; //"PRKE" = 50 52 4B 45
@@ -213,6 +214,7 @@ const int32_t cXLCN = 0x4E434C58; //"XLCN" = 58 4C 43 4E
 const int32_t cXLKR = 0x524B4C58; //"XLKR" = 58 4C 4B 52
 const int32_t cXLOC = 0x434F4C58; //"XLOC" = 58 4C 4F 43
 const int32_t cXNAM = 0x4D414E58; //"XNAM" = 58 4E 41 4D
+const int32_t cXOWN = 0x4E574F58; //"XOWN" = 58 4F 57 4E
 const int32_t cXPPA = 0x41505058; //"XPPA" = 58 50 50 41
 const int32_t cXPRD = 0x44525058; //"XPRD" = 58 50 52 44
 const int32_t cXPRM = 0x4D525058; //"XPRM" = 58 50 52 4D

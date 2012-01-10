@@ -62,6 +62,7 @@ const int32_t cDOOR = 0x524F4F44; //"DOOR" = 44 4F 4F 52
 const int32_t cDSTD = 0x44545344; //"DSTD" = 44 53 54 44
 const int32_t cDSTF = 0x46545344; //"DSTF" = 44 53 54 46
 const int32_t cEAMT = 0x544D4145; //"EAMT" = 45 41 4D 54
+const int32_t cECZN = 0x4E5A4345; //"ECZN" = 45 43 5A 4E
 const int32_t cEDID = 0x44494445; //"EDID" = 45 44 49 44
 const int32_t cEFID = 0x44494645; //"EFID" = 45 46 49 44
 const int32_t cEFIT = 0x54494645; //"EFIT" = 45 46 49 54

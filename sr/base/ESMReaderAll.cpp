@@ -36,6 +36,7 @@
 #include "ColourForms.h"
 #include "CraftableObjects.h"
 #include "Doors.h"
+#include "EncounterZones.h"
 #include "EquipmentSlots.h"
 #include "Eyes.h"
 #include "Footsteps.h"
@@ -148,6 +149,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;
     case cDOOR:
          return Doors::getSingleton().readNextRecord(in_File);
+         break;
+    case cECZN:
+         return EncounterZones::getSingleton().readNextRecord(in_File);
          break;
     case cEQUP:
          return EquipmentSlots::getSingleton().readNextRecord(in_File);

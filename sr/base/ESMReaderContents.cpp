@@ -42,6 +42,7 @@
 #include "records/GMSTRecord.h"
 #include "records/GlobalRecord.h"
 #include "records/GrassRecord.h"
+#include "records/HazardRecord.h"
 #include "records/HeadPartRecord.h"
 #include "records/ImageSpaceRecord.h"
 #include "records/ImpactDataSetRecord.h"
@@ -171,6 +172,9 @@ int ESMReaderContents::readNextRecord(std::ifstream& in_File, const int32_t recN
          break;
     case cGRAS:
          recPtr = new GrassRecord;
+         break;
+    case cHAZD:
+         recPtr = new HazardRecord;
          break;
     case cHDPT:
          recPtr = new HeadPartRecord;

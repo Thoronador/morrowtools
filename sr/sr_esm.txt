@@ -156,6 +156,23 @@ Records and their sub-records:
           array of form IDs, where n = count1+count2+count3+count4+count5
 
 
+  HAZD: hazard
+      EDID (string, NUL-terminated)
+          editor ID
+      OBND (12 bytes)
+          unknown data
+      FULL (4 bytes, optional)
+          name string ID(?)
+      MODL (string, NUL-terminated)
+          model path
+      MODT (size varies, optional)
+          unknown data
+      MNAM (4 bytes, optional)
+          unknown data, possibly form ID
+      DATA (40 bytes)
+          unknown data
+
+
   HDPT: head part
       EDID (string, NUL-terminated)
           editor ID

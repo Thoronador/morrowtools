@@ -44,6 +44,7 @@
 #include "GameSettings.h"
 #include "Globals.h"
 #include "Grasses.h"
+#include "Hazards.h"
 #include "HeadParts.h"
 #include "ImageSpaces.h"
 #include "ImpactDataSets.h"
@@ -171,6 +172,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;
     case cGRAS:
          return Grasses::getSingleton().readNextRecord(in_File);
+         break;
+    case cHAZD:
+         return Hazards::getSingleton().readNextRecord(in_File);
          break;
     case cHDPT:
          return HeadParts::getSingleton().readNextRecord(in_File);

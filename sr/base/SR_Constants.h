@@ -159,6 +159,7 @@ const int32_t cPERK = 0x4B524550; //"PERK" = 50 45 52 4B
 const int32_t cPFIG = 0x47494650; //"PFIG" = 50 46 49 47
 const int32_t cPFPC = 0x43504650; //"PFPC" = 50 46 50 43
 const int32_t cPGRE = 0x45524750; //"PGRE" = 50 47 52 45
+const int32_t cPHZD = 0x445A4850; //"PHZD" = 50 48 5A 44
 const int32_t cPNAM = 0x4D414E50; //"PNAM" = 50 4E 41 4D
 const int32_t cPRKC = 0x434B5250; //"PRKC" = 50 52 4B 43
 const int32_t cPRKE = 0x454B5250; //"PRKE" = 50 52 4B 45

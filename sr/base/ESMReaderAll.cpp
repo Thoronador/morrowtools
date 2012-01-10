@@ -64,6 +64,7 @@
 #include "Outfits.h"
 #include "Perks.h"
 #include "PlacedGrenades.h"
+#include "PlacedHazards.h"
 #include "Races.h"
 #include "Relationships.h"
 #include "Reverbs.h"
@@ -233,6 +234,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;
     case cPGRE:
          return PlacedGrenades::getSingleton().readNextRecord(in_File);
+         break;
+    case cPHZD:
+         return PlacedHazards::getSingleton().readNextRecord(in_File);
          break;
     case cRACE:
          return Races::getSingleton().readNextRecord(in_File);

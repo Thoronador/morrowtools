@@ -28,6 +28,7 @@
 #include "records/AmmunitionRecord.h"
 #include "records/ApparatusRecord.h"
 #include "records/ArmourRecord.h"
+#include "records/ArtObjectRecord.h"
 #include "records/AssociationTypeRecord.h"
 #include "records/BookRecord.h"
 #include "records/ClassRecord.h"
@@ -129,6 +130,9 @@ int ESMReaderContents::readNextRecord(std::ifstream& in_File, const int32_t recN
          break;
     case cARMO:
          recPtr = new ArmourRecord;
+         break;
+    case cARTO:
+         recPtr = new ArtObjectRecord;
          break;
     case cASPC:
          recPtr = new AcousticSpaceRecord;

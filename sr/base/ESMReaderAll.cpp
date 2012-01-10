@@ -25,11 +25,12 @@
 #include "SR_Constants.h"
 #include "AcousticSpaces.h"
 #include "Actions.h"
-#include "Activators.h"
+//#include "Activators.h"
 #include "AlchemyPotions.h"
 #include "Ammunitions.h"
 #include "Apparatuses.h"
 #include "Armours.h"
+#include "ArtObjects.h"
 #include "AssociationTypes.h"
 #include "Books.h"
 #include "Classes.h"
@@ -129,6 +130,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;
     case cARMO:
          return Armours::getSingleton().readNextRecord(in_File);
+         break;
+    case cARTO:
+         return ArtObjects::getSingleton().readNextRecord(in_File);
          break;
     case cASPC:
          return AcousticSpaces::getSingleton().readNextRecord(in_File);

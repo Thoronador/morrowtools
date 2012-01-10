@@ -33,6 +33,7 @@ const int32_t cAMMO = 0x4F4D4D41; //"AMMO" = 41 4D 4D 4F
 const int32_t cANAM = 0x4D414E41; //"ANAM" = 41 4E 41 4D
 const int32_t cAPPA = 0x41505041; //"APPA" = 41 50 50 41
 const int32_t cARMO = 0x4F4D5241; //"ARMO" = 41 52 4D 4F
+const int32_t cARTO = 0x4F545241; //"ARTO" = 41 52 54 4F
 const int32_t cASPC = 0x43505341; //"ASPC" = 41 53 50 43
 const int32_t cASTP = 0x50545341; //"ASTP" = 41 53 54 50
 const int32_t cBAMT = 0x544D4142; //"BAMT" = 42 41 4D 54

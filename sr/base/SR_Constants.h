@@ -41,6 +41,7 @@ const int32_t cBIDS = 0x53444942; //"BIDS" = 42 49 44 53
 const int32_t cBNAM = 0x4D414E42; //"BNAM" = 42 4E 41 4D
 const int32_t cBODT = 0x54444F42; //"BODT" = 42 4F 44 54
 const int32_t cBOOK = 0x4B4F4F42; //"BOOK" = 42 4F 4F 4B
+const int32_t cCELL = 0x4C4C4543; //"CELL" = 43 45 4C 4C
 const int32_t cCIS2 = 0x32534943; //"CIS2" = 43 49 53 32
 const int32_t cCLAS = 0x53414C43; //"CLAS" = 43 4C 41 53
 const int32_t cCLFM = 0x4D464C43; //"CLFM" = 43 4C 46 4D
@@ -192,6 +193,7 @@ const int32_t cSTAT = 0x54415453; //"STAT" = 53 54 41 54
 const int32_t cTES4 = 0x34534554; //"TES4" = 54 45 53 34
 const int32_t cTNAM = 0x4D414E54; //"TNAM" = 54 4E 41 4D
 const int32_t cTREE = 0x45455254; //"TREE" = 54 52 45 45
+const int32_t cTVDT = 0x54445654; //"TVDT" = 54 56 44 54
 const int32_t cTX00 = 0x30305854; //"TX00" = 54 58 30 30
 const int32_t cTX01 = 0x31305854; //"TX01" = 54 58 30 31
 const int32_t cTX02 = 0x32305854; //"TX02" = 54 58 30 32
@@ -210,10 +212,20 @@ const int32_t cWEAP = 0x50414557; //"WEAP" = 57 45 41 50
 const int32_t cWNAM = 0x4D414E57; //"WNAM" = 57 4E 41 4D
 const int32_t cWOOP = 0x504F4F57; //"WOOP" = 57 4F 4F 50
 const int32_t cWRLD = 0x444C5257; //"WRLD" = 57 52 4C 44
+const int32_t cXCAS = 0x53414358; //"XCAS" = 58 43 41 53
+const int32_t cXCCM = 0x4D434358; //"XCCM" = 58 43 43 4D
+const int32_t cXCIM = 0x4D494358; //"XCIM" = 58 43 49 4D
+const int32_t cXCLC = 0x434C4358; //"XCLC" = 58 43 4C 43
+const int32_t cXCLL = 0x4C4C4358; //"XCLL" = 58 43 4C 4C
+const int32_t cXCLR = 0x524C4358; //"XCLR" = 58 43 4C 52
+const int32_t cXCLW = 0x574C4358; //"XCLW" = 58 43 4C 57
+const int32_t cXCMO = 0x4F4D4358; //"XCMO" = 58 43 4D 4F
 const int32_t cXCNT = 0x544E4358; //"XCNT" = 58 43 4E 54
+const int32_t cXCWT = 0x54574358; //"XCWT" = 58 43 57 54
 const int32_t cXEMI = 0x494D4558; //"XEMI" = 58 45 4D 49
 const int32_t cXESP = 0x50534558; //"XESP" = 58 45 53 50
 const int32_t cXEZN = 0x4E5A4558; //"XEZN" = 58 45 5A 4E
+const int32_t cXILL = 0x4C4C4958; //"XILL" = 58 49 4C 4C
 const int32_t cXLCN = 0x4E434C58; //"XLCN" = 58 4C 43 4E
 const int32_t cXLKR = 0x524B4C58; //"XLKR" = 58 4C 4B 52
 const int32_t cXLOC = 0x434F4C58; //"XLOC" = 58 4C 4F 43
@@ -223,6 +235,10 @@ const int32_t cXPPA = 0x41505058; //"XPPA" = 58 50 50 41
 const int32_t cXPRD = 0x44525058; //"XPRD" = 58 50 52 44
 const int32_t cXPRM = 0x4D525058; //"XPRM" = 58 50 52 4D
 const int32_t cXSCL = 0x4C435358; //"XSCL" = 58 53 43 4C
+const int32_t cXWCN = 0x4E435758; //"XWCN" = 58 57 43 4E
+const int32_t cXWCS = 0x53435758; //"XWCS" = 58 57 43 53
+const int32_t cXWCU = 0x55435758; //"XWCU" = 58 57 43 55
+const int32_t cXWEM = 0x4D455758; //"XWEM" = 58 57 45 4D
 const int32_t cXXXX = 0x58585858; //"XXXX" = 58 58 58 58
 const int32_t cYNAM = 0x4D414E59; //"YNAM" = 59 4E 41 4D
 const int32_t cZNAM = 0x4D414E5A; //"ZNAM" = 5A 4E 41 4D

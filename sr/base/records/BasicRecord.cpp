@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -96,7 +96,7 @@ bool BasicRecord::saveSizeAndUnknownValues(std::ofstream& output, const uint32_t
   return true;
 }
 
-bool BasicRecord::loadUint32SubRecordFromStream(std::ifstream& in_File, const int32_t subHeader, uint32_t& target) const
+bool BasicRecord::loadUint32SubRecordFromStream(std::istream& in_File, const int32_t subHeader, uint32_t& target) const
 {
   int32_t subRecName = 0;
   //read header

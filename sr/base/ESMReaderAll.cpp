@@ -33,6 +33,7 @@
 #include "ArtObjects.h"
 #include "AssociationTypes.h"
 #include "Books.h"
+#include "Cells.h"
 #include "Classes.h"
 #include "ColourForms.h"
 #include "CraftableObjects.h"
@@ -142,6 +143,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;
     case cBOOK:
          return Books::getSingleton().readNextRecord(in_File);
+         break;
+    case cCELL:
+         return Cells::getSingleton().readNextRecord(in_File);
          break;
     case cCLAS:
          return Classes::getSingleton().readNextRecord(in_File);

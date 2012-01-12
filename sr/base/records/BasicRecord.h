@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -104,11 +104,11 @@ struct BasicRecord
        in case of success
 
        parameters:
-           in_File   - the input file stream
+           in_File   - the input stream
            subHeader - the expected header of that subrecord
            target    - the uint32_t that will be used to store the read data
     */
-    bool loadUint32SubRecordFromStream(std::ifstream& in_File, const int32_t subHeader, uint32_t& target) const;
+    bool loadUint32SubRecordFromStream(std::istream& in_File, const int32_t subHeader, uint32_t& target) const;
 
     /* returns the size in bytes that the record's data would occupy in a file
        stream, NOT including the header data

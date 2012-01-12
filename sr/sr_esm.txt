@@ -136,6 +136,61 @@ Records and their sub-records:
           unknown data, possibly form ID
 
 
+  CELL: cell
+      EDID (string, NUL-terminated)
+          editor ID
+      FULL (4 bytes, optional)
+          name string ID
+      DATA (2 bytes, sometimes 1 byte)
+          unknown data
+      XCLC (12 bytes, optional)
+          int32_t grid location X
+          int32_t grid location Y
+          uint32  unknown
+      TVDT (684 bytes, optional)
+          unknown data
+      MHDT (1028 bytes, optional)
+          unknown data
+      XCLL (92 bytes)
+          unknown data
+      LTMP (4 bytes)
+          unknown data
+      LNAM (4 bytes, optional)
+          unknown data
+      XCLW (4 bytes)
+          unknown float(?)
+      XCLR (size varies, optional)
+          unknown data, but looks like array of form IDs
+      XNAM (1 byte, optional)
+          unknown data
+      XLCN (4 bytes, optional)
+          unknown data
+      XWCN (4 bytes, optional)
+          unknown data
+      XWCS (4 bytes, optional)
+          unknown data
+      XWCU (64 bytes, optional)
+          unknown data
+      XCIM (4 bytes, optional)
+          unknown data
+      XEZN (4 bytes, optional)
+          form ID of encounter zone
+      XCWT (4 bytes, optional)
+          unknown data
+      XCMO (4 bytes, optional)
+          unknown data
+      XWEM (string, NUL-terminated, optionaö)
+          unknown texture path
+      XOWN (4 bytes, optional)
+          unknown data
+      XILL (4 bytes, optional)
+          unknown data
+      XCCM (4 bytes, optional)
+          unknown data
+      XCAS (4 bytes, optional)
+          unknown data
+
+
   CLFM: colour ... (something)
       EDID (string, NUL-terminated)
           editor ID

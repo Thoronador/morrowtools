@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -71,12 +71,12 @@ struct BinarySubRecord
     /* loads the sub record from the given input stream and returns true on success
 
       parameters:
-          in_File    - the input file stream
+          in_File    - the input stream
           subHeader  - the sub record's header
           withHeader - if set to true, it will read the header, too. If set to
                        false, it will begin with the length bytes.
     */
-    bool loadFromStream(std::ifstream& in_File, const int32_t subHeader, const bool withHeader);
+    bool loadFromStream(std::istream& in_File, const int32_t subHeader, const bool withHeader);
   protected:
     uint8_t* m_Pointer;
     uint16_t m_Size;

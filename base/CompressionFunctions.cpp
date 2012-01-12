@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -83,10 +83,16 @@ bool zlibDecompress(uint8_t * compressedData, const uint32_t compressedSize, uin
          return false;
   }//swi
   int have = decompSize - streamZlib.avail_out;
-  std::cout << "zlibDecompress: Info: Having "<<have<<" bytes in output buffer (size: "<<decompSize<<" bytes).\n";
-
-  /* clean up and return */
+  /* clean up zlib */
   (void)inflateEnd(&streamZlib);
+  //check, if size matches expected number of bytes
+  if (have!=decompSize)
+  {
+    std::cout << "zlibDecompress: Error: Having only "<<have<<" bytes in output"
+              << "buffer, but expected size is "<<decompSize<<" bytes.\n";
+    return false;
+  }
+  //return value Z_STREAM_END should be the right one, if all was successful
   if (z_return==Z_STREAM_END) return true;
   return false;
 }

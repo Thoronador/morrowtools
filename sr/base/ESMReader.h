@@ -70,7 +70,7 @@ class ESMReader
        wants to read. Returns false otherwise.
 
        parameters:
-           g_date - the group header data
+           g_data - the group header data
 
        remarks:
            If you actually want to read some data, you have to derive a class
@@ -87,7 +87,7 @@ class ESMReader
        Skipped groups will not trigger that function.
 
        parameters:
-           g_date - the group header data
+           g_data - the group header data
            sub    - if set to true, the new group is a sub-group of another
                     group
     */
@@ -103,7 +103,7 @@ class ESMReader
        readNextRecord() and readGroup().
 
        parameters:
-           g_date - the group header data
+           g_data - the group header data
     */
     virtual void groupFinished(const GroupData& g_data) = 0;
 

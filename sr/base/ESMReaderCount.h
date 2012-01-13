@@ -84,7 +84,7 @@ class ESMReaderCount: public ESMReader
        wants to read. Returns false otherwise.
 
        parameters:
-           g_date - the group header data
+           g_data - the group header data
 
        remarks:
            Returns true for all groups.
@@ -98,7 +98,7 @@ class ESMReaderCount: public ESMReader
        Skipped groups will not trigger that function.
 
        parameters:
-           g_date - the group header data
+           g_data - the group header data
            sub    - if set to true, the new group is a sub-group of another
                     group
     */
@@ -114,7 +114,7 @@ class ESMReaderCount: public ESMReader
        readNextRecord() and readGroup().
 
        parameters:
-           g_date - the group header data
+           g_data - the group header data
     */
     virtual void groupFinished(const GroupData& g_data);
 

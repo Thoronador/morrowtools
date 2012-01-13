@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -19,6 +19,7 @@
 */
 
 #include "GroupContents.h"
+#include "Group.h"
 
 namespace SRTP
 {
@@ -27,6 +28,7 @@ GroupContents::GroupContents()
 {
   m_Records.clear();
   m_Index.clear();
+  m_SubGroups.clear();
 }
 
 GroupContents::~GroupContents()
@@ -81,6 +83,20 @@ unsigned int GroupContents::getNumberOfRecords() const
   return m_Records.size();
 }
 
+void GroupContents::removeRecords()
+{
+  //clear record index
+  m_Index.clear();
+  //delete all records properly
+  BasicRecord * recPtr;
+  while (!m_Records.empty())
+  {
+    recPtr = m_Records.back();
+    m_Records.pop_back();
+    delete recPtr;
+  }//while
+}
+
 void GroupContents::rebuildIndex()
 {
   m_Index.clear();
@@ -91,23 +107,87 @@ void GroupContents::rebuildIndex()
   }//for
 }
 
+Group& GroupContents::addSubGroup(const GroupData& g_data)
+{
+  Group temp;
+  temp.headerData = g_data;
+  m_SubGroups.push_back(temp);
+  return m_SubGroups.back();
+}
+
+bool GroupContents::hasSubGroup(const GroupData& g_data) const
+{
+  std::vector<Group>::const_iterator iter = m_SubGroups.begin();
+  while (iter!=m_SubGroups.end())
+  {
+    if (iter->headerData == g_data) return true;
+    ++iter;
+  }//while
+  return false;
+}
+
+const Group& GroupContents::getSubGroup(const GroupData& g_data) const
+{
+  std::vector<Group>::const_iterator iter = m_SubGroups.begin();
+  while (iter!=m_SubGroups.end())
+  {
+    if (iter->headerData == g_data) return *iter;
+    ++iter;
+  }//while
+  throw "GroupContents::getSubGroup: Error: Group not found!\n";
+}
+
+const Group& GroupContents::getSubGroupAtIndex(const unsigned int idx) const
+{
+  if (idx<m_SubGroups.size())
+  {
+    return m_SubGroups[idx];
+  }
+  throw "GroupContents::getSubGroupAtIndex: Error: invalid index!\n";
+}
+
+Group* GroupContents::getSubGroupAtIndexNC(const unsigned int idx)
+{
+  if (idx<m_SubGroups.size())
+  {
+    return &(m_SubGroups[idx]);
+  }
+  throw "GroupContents::getSubGroupAtIndexNC: Error: invalid index!\n";
+}
+
+unsigned int GroupContents::getNumberOfSubGroups() const
+{
+  return m_SubGroups.size();
+}
+
+void GroupContents::removeSubGroups()
+{
+  m_SubGroups.clear();
+}
+
 void GroupContents::removeContents()
 {
-  m_Index.clear();
-  BasicRecord * recPtr;
-  while (!m_Records.empty())
-  {
-    recPtr = m_Records.back();
-    m_Records.pop_back();
-    delete recPtr;
-  }//while
+  //delete all records
+  removeRecords();
+  //delete sub groups
+  removeSubGroups();
 }
 
 bool GroupContents::saveToStream(std::ofstream& output) const
 {
-  const unsigned int count = m_Records.size();
   unsigned int i;
-  for (i=0; i<count; ++i)
+  //write sub groups
+  const unsigned int sub_count = m_SubGroups.size();
+  for (i=0; i<sub_count; ++i)
+  {
+    if (!m_SubGroups.at(i).saveToStream(output))
+    {
+      return false;
+    }
+  }//for
+  //write records
+  const unsigned int rec_count = m_Records.size();
+  for (i=0; i<rec_count; ++i)
   {
     if (!(m_Records[i]->saveToStream(output)))
     {
@@ -119,12 +199,19 @@ bool GroupContents::saveToStream(std::ofstream& output) const
 
 uint32_t GroupContents::getContentSize() const
 {
-  const unsigned int count = m_Records.size();
   uint32_t total = 0;
   unsigned int i;
-  for (i=0; i<count; ++i)
+  //add record sizes
+  const unsigned int rec_count = m_Records.size();
+  for (i=0; i<rec_count; ++i)
   {
     total += m_Records[i]->getTotalWrittenSize();
+  }//for
+  //add sub group sizes
+  const unsigned int sub_count = m_SubGroups.size();
+  for (i=0; i<sub_count; ++i)
+  {
+    total = total +24 /* size of group header */ + m_SubGroups.at(i).contents.getContentSize();
   }//for
   return total;
 }

@@ -40,7 +40,7 @@ class ESMReaderContentsAll: public ESMReaderContentsBase
        wants to read. Returns false otherwise.
 
        parameters:
-           g_date - the group header data
+           g_data - the group header data
 
        remarks:
            Returns true for all groups.

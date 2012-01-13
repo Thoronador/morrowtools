@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include "ESMReaderContents.h"
+#include "ESMReaderContentsAll.h"
 #include <iostream>
 #include "SR_Constants.h"
 #include "records/AcousticSpaceRecord.h"

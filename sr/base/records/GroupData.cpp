@@ -105,4 +105,11 @@ void GroupData::setGroupSize(const uint32_t newSize)
   m_GroupSize = newSize;
 }
 
+bool GroupData::operator==(const GroupData& other) const
+{
+  return ((m_GroupSize==other.getGroupSize()) and (m_GroupName==other.getGroupName())
+      and (m_GroupType==other.getGroupType()) and (UnknownGroupDataTwo[0]==other.UnknownGroupDataTwo[0])
+      and (UnknownGroupDataTwo[1]==other.UnknownGroupDataTwo[1]));
+}
+
 } //namespace

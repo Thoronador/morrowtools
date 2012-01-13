@@ -74,6 +74,9 @@ struct GroupData
            newSize - the new size value that shall be set
     */
     void setGroupSize(const uint32_t newSize);
+
+    /* equality operator */
+    bool operator==(const GroupData& other) const;
   protected:
     uint32_t m_GroupSize;
     int32_t m_GroupName;

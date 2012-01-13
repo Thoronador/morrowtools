@@ -43,35 +43,6 @@ void ESMReaderCount::resetStats()
   totalGroups = 0;
 }
 
-int ESMReaderCount::readGroup(std::ifstream& in_File, const GroupData& g_data)
-{
-  //update group stats
-  ++GroupCounter[g_data.getGroupName()];
-  ++totalGroups;
-  //actually read the group
-  const std::ifstream::pos_type endPosition = in_File.tellg()+static_cast<std::ifstream::pos_type>(g_data.getGroupSize()-24);
-  int lastResult = 0;
-  int32_t recName;
-  while ((in_File.tellg()<endPosition) and (lastResult>=0))
-  {
-    //read next header
-    recName = 0;
-    in_File.read((char*) &recName, 4);
-    //update record stats
-    ++RecordCounter[recName];
-    ++totalRecords;
-    //...and skip it!
-    lastResult = skipRecord(in_File);
-  }//while
-  if (lastResult>=0)
-  {
-    return 0;
-  }
-  std::cout << "ESMReaderCount::readGroup: Error while skipping record!"
-            << "\nCurrent position is "<<in_File.tellg()<<" bytes.\n";
-  return -1;
-}
-
 bool ESMReaderCount::needGroup(const GroupData& g_data) const
 {
   return true;
@@ -79,11 +50,29 @@ bool ESMReaderCount::needGroup(const GroupData& g_data) const
 
 void ESMReaderCount::nextGroupStarted(const GroupData& g_data, const bool sub)
 {
-  //nothing to do here yet...
+  //update group stats
+  if (g_data.getGroupType()==GroupData::cTopLevelGroup)
+  {
+    //for top level groups, the label contains the name
+    ++GroupCounter[g_data.getGroupName()];
+  }
+  else
+  {
+    //for sub groups we'll track the type
+    ++GroupCounter[g_data.getGroupType()];
+  }
+  ++totalGroups;
+}
+
+void ESMReaderCount::groupFinished(const GroupData& g_data)
+{
+  //nothing to do here
 }
 
 int ESMReaderCount::readNextRecord(std::ifstream& in_File, const int32_t recName)
 {
+  ++RecordCounter[recName];
+  ++totalRecords;
   //we skip it
   return skipRecord(in_File);
 }
@@ -133,7 +122,9 @@ void ESMReaderCount::showStats(const bool withPercentage) const
   iter = GroupCounter.begin();
   while (iter!=GroupCounter.end())
   {
-    std::cout << IntTo4Char(iter->first) << ": "<<iter->second;
+    std::cout << IntTo4Char(iter->first);
+    if (iter->first<256)  std::cout << " (int: "<<iter->first<<")";
+    std::cout << ": "<<iter->second;
     if (withPercentage)
     {
       std::cout << " ("<<(iter->second*100.0f/static_cast<float>(sum))<<"%)";

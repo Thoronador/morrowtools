@@ -87,35 +87,22 @@
 namespace SRTP
 {
 
-ESMReaderContents::ESMReaderContents()
+ESMReaderContentsAll::ESMReaderContentsAll()
 {
   contents.removeContents();
 }
 
-ESMReaderContents::~ESMReaderContents()
+ESMReaderContentsAll::~ESMReaderContentsAll()
 {
   contents.removeContents();
 }
 
-bool ESMReaderContents::needGroup(const GroupData& g_data) const
+bool ESMReaderContentsAll::needGroup(const GroupData& g_data) const
 {
   return true;
 }
 
-void ESMReaderContents::nextGroupStarted(const GroupData& g_data, const bool sub)
-{
-  /*add a new group to the file content representation and set its GroupData
-    (i.e. header) to the stuff that was read from the file stream */
-  Group& newGroup = contents.addNewGroup();
-  newGroup.headerData = g_data;
-}
-
-void ESMReaderContents::groupFinished(const GroupData& g_data)
-{
-  //still empty
-}
-
-int ESMReaderContents::readNextRecord(std::ifstream& in_File, const int32_t recName)
+int ESMReaderContentsAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
 {
   BasicRecord * recPtr = NULL;
   switch (recName)

@@ -168,11 +168,6 @@ int ESMReader::processGroup(std::ifstream& in_File, const bool withHeader)
   return skipGroup(in_File, gd);
 }
 
-bool ESMReader::needGroup(const GroupData& g_data) const
-{
-  return false;
-}
-
 int ESMReader::readGroup(std::ifstream& in_File, const GroupData& g_data)
 {
   //actually read the group

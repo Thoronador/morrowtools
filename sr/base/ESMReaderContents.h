@@ -18,26 +18,23 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SR_ESMREADERCONTENTS_H
-#define SR_ESMREADERCONTENTS_H
+#ifndef SR_ESMREADERCONTENTSALL_H
+#define SR_ESMREADERCONTENTSALL_H
 
-#include "ESMReader.h"
+#include "ESMReaderContentsBase.h"
 #include "ESMFileContents.h"
 
 namespace SRTP
 {
 
-class ESMReaderContents: public ESMReader
+class ESMReaderContentsAll: public ESMReaderContentsBase
 {
   public:
     /* constructor */
-    ESMReaderContents();
+    ESMReaderContentsAll();
 
     /* destructor */
-    virtual ~ESMReaderContents();
-
-    //the structure that is used to store the read data
-    ESMFileContents contents;
+    virtual ~ESMReaderContentsAll();
   protected:
     /* returns true, if the given group may contains some data that the reader
        wants to read. Returns false otherwise.
@@ -46,36 +43,9 @@ class ESMReaderContents: public ESMReader
            g_date - the group header data
 
        remarks:
-           Returns true for all weapon groups, false for any other group.
+           Returns true for all groups.
     */
     virtual bool needGroup(const GroupData& g_data) const;
-
-    /* This function's sole purpose is to "notify" the reader that a new group
-       was encountered and give the classes derived from ESMReader the
-       possibility to update their internal state accordingly. Note that this
-       function will only be called for groups where needGroup() returns true.
-       Skipped groups will not trigger that function.
-
-       parameters:
-           g_date - the group header data
-           sub    - if set to true, the new group is a sub-group of another
-                    group
-    */
-    virtual void nextGroupStarted(const GroupData& g_data, const bool sub);
-
-    /* This function's sole purpose is to "notify" the reader that a started
-       group has been read (or skipped) completely and give the classes derived
-       from ESMReader the possibility to update their internal state
-       accordingly. Note that this function will only be called for groups
-       where needGroup() returns true. Skipped groups will not trigger that
-       function, but it might be possible that all records and subgroups in such
-       a group have been skipped, depending on the implementation of
-       readNextRecord() and readGroup().
-
-       parameters:
-           g_date - the group header data
-    */
-    virtual void groupFinished(const GroupData& g_data);
 
     /* tries to read the next record from a file and returns the number of
        relevant records that were read (usually one). If an error occured,
@@ -91,4 +61,4 @@ class ESMReaderContents: public ESMReader
 
 }//namespace
 
-#endif // SR_ESMREADERCONTENTS_H
+#endif // SR_ESMREADERCONTENTSALL_H

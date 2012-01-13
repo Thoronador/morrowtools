@@ -76,10 +76,9 @@ class ESMReader
            If you actually want to read some data, you have to derive a class
            from ESMReader and set its needGroup() function up in a way that it
            does not just always return false and causes processGroup() to skip
-           all groups and data records - because that is what the implementation
-           here in ESMReader basically does.
+           all groups and data records.
     */
-    virtual bool needGroup(const GroupData& g_data) const;
+    virtual bool needGroup(const GroupData& g_data) const = 0;
 
     /* This function's sole purpose is to "notify" the reader that a new group
        was encountered and give the classes derived from ESMReader the

@@ -18,67 +18,26 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SR_ESMREADERCOUNT_H
-#define SR_ESMREADERCOUNT_H
+#ifndef SR_ESMREADERCONTENTSBASE_H
+#define SR_ESMREADERCONTENTSBASE_H
 
 #include "ESMReader.h"
-#include <map>
+#include "ESMFileContents.h"
 
 namespace SRTP
 {
 
-/* This descendant of the ESMReader class tries to count all groups and records
-   in the given .esm/.esp file.
-*/
-class ESMReaderCount: public ESMReader
+class ESMReaderContentsBase: public ESMReader
 {
   public:
     /* constructor */
-    ESMReaderCount();
+    ESMReaderContentsBase();
 
     /* destructor */
-    virtual ~ESMReaderCount();
+    virtual ~ESMReaderContentsBase();
 
-    /* the map that counts the records. Key is the record name, value is the
-       number that indicates how often that record was seen
-
-       remarks:
-           If you plan on reading several files with ESMReaderCount and display
-           the numbers for each file individually, you have to clear this map
-           after each file. Otherwise the numbers will accumulate and represent
-           the numbers for all files that were read.
-    */
-    std::map<int32_t, unsigned int> RecordCounter;
-
-    /* integer that holds the overall number of records */
-    uint32_t totalRecords;
-
-    /* the map that counts the groups. Key is the group name, value is the
-       number that indicates how often that group was seen
-
-       remarks:
-           If you plan on reading several files with ESMReaderCount and display
-           the numbers for each file individually, you have to clear this map
-           after each file. Otherwise the numbers will accumulate and represent
-           the numbers for all files that were read.
-    */
-    std::map<int32_t, unsigned int> GroupCounter;
-
-    /* integer that holds the overall number of groups */
-    uint32_t totalGroups;
-
-    /* resets the current statistics to zero */
-    void resetStats();
-
-    /* puts the current statistics to standard output
-
-       parameters:
-           withPercentage - if set to true, the output will also show the
-                            percentage of each record type, measured on the
-                            total number of records
-    */
-    void showStats(const bool withPercentage=false) const;
-
+    //the structure that is used to store the read data
+    ESMFileContents contents;
   protected:
     /* returns true, if the given group may contains some data that the reader
        wants to read. Returns false otherwise.
@@ -87,9 +46,9 @@ class ESMReaderCount: public ESMReader
            g_date - the group header data
 
        remarks:
-           Returns true for all groups.
+           Pure virtual.
     */
-    virtual bool needGroup(const GroupData& g_data) const;
+    virtual bool needGroup(const GroupData& g_data) const = 0;
 
     /* This function's sole purpose is to "notify" the reader that a new group
        was encountered and give the classes derived from ESMReader the
@@ -126,10 +85,13 @@ class ESMReaderCount: public ESMReader
        parameters:
            in_File - the input file stream the record shall be read from
            recName - name (header) of the next record
+
+       remarks:
+           Pure virtual.
     */
-    virtual int readNextRecord(std::ifstream& in_File, const int32_t recName);
-};//class
+    virtual int readNextRecord(std::ifstream& in_File, const int32_t recName) = 0;
+}; //class
 
-} //namespace
+}//namespace
 
-#endif // SR_ESMREADERCOUNT_H
+#endif // SR_ESMREADERCONTENTSBASE_H

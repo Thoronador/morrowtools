@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -21,10 +21,12 @@
 #ifndef SR_REFERENCERECORD_H
 #define SR_REFERENCERECORD_H
 
+#include <string>
+#include <vector>
+#include <stdint.h>
 #include "BasicRecord.h"
 #include "BinarySubRecord.h"
-#include <string>
-#include <stdint.h>
+#include "SubBlock.h"
 
 namespace SRTP
 {
@@ -66,12 +68,15 @@ struct ReferenceRecord: public BasicRecord
     std::string editorID;
     BinarySubRecord unknownVMAD;
     uint32_t unknownNAME;
-    bool hasXLKR;
-    uint64_t unknownXLKR;
+    BinarySubRecord unknownXTEL;
+    bool hasXNDP;
+    uint64_t unknownXNDP;
+    std::vector<std::vector<uint32_t> > unknownXLKRs;
     bool hasXESP;
     uint64_t unknownXESP;
     bool hasXEMI;
     uint32_t unknownXEMI;
+    BinarySubRecord unknownXPRM;
     BinarySubRecord unknownXLOC;
     float unknownXSCL;
     bool hasXPRD;
@@ -80,6 +85,7 @@ struct ReferenceRecord: public BasicRecord
     uint32_t unknownINAM;
     bool hasPDTO;
     uint64_t unknownPDTO;
+    std::vector<SubBlock> subBlocks;
     uint8_t unknownDATA[24];
 }; //struct
 

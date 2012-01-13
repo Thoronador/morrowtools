@@ -68,6 +68,7 @@
 #include "PlacedGrenades.h"
 #include "PlacedHazards.h"
 #include "Races.h"
+#include "References.h"
 #include "Relationships.h"
 #include "Reverbs.h"
 #include "Scrolls.h"
@@ -103,9 +104,14 @@ bool ESMReaderAll::needGroup(const GroupData& g_data) const
   return true;
 }
 
-void ESMReaderAll::nextGroupStarted(const GroupData& g_data)
+void ESMReaderAll::nextGroupStarted(const GroupData& g_data, const bool sub)
 {
   //empty
+}
+
+void ESMReaderAll::groupFinished(const GroupData& g_data)
+{
+  //empty, ESMReaderAll does not care about group structure
 }
 
 int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
@@ -248,6 +254,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;
     case cRACE:
          return Races::getSingleton().readNextRecord(in_File);
+         break;
+    case cREFR:
+         return References::getSingleton().readNextRecord(in_File);
          break;
     case cRELA:
          return Relationships::getSingleton().readNextRecord(in_File);

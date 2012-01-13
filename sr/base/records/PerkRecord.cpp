@@ -27,11 +27,6 @@
 namespace SRTP
 {
 
-bool PerkRecord::SubBlock::operator==(const PerkRecord::SubBlock& other) const
-{
-  return ((subType==other.subType) and (subData==other.subData));
-}
-
 PerkRecord::PerkRecord()
 : BasicRecord()
 {

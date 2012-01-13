@@ -60,7 +60,7 @@ class ESMReaderSingleType: public ESMReader
     */
     virtual bool needGroup(const GroupData& g_data) const;
 
-    /* this functions sole purpose is to "notify" the reader that a new group
+    /* This function's sole purpose is to "notify" the reader that a new group
        was encountered and give the classes derived from ESMReader the
        possibility to update their internal state accordingly. Note that this
        function will only be called for groups where needGroup() returns true.
@@ -68,8 +68,24 @@ class ESMReaderSingleType: public ESMReader
 
        parameters:
            g_date - the group header data
+           sub    - if set to true, the new group is a sub-group of another
+                    group
     */
-    virtual void nextGroupStarted(const GroupData& g_data);
+    virtual void nextGroupStarted(const GroupData& g_data, const bool sub);
+
+    /* This function's sole purpose is to "notify" the reader that a started
+       group has been read (or skipped) completely and give the classes derived
+       from ESMReader the possibility to update their internal state
+       accordingly. Note that this function will only be called for groups
+       where needGroup() returns true. Skipped groups will not trigger that
+       function, but it might be possible that all records and subgroups in such
+       a group have been skipped, depending on the implementation of
+       readNextRecord() and readGroup().
+
+       parameters:
+           g_date - the group header data
+    */
+    virtual void groupFinished(const GroupData& g_data);
 
     /* tries to read the next record from a file and returns the number of
        relevant records that were read (usually one). If an error occured,
@@ -90,7 +106,13 @@ bool ESMReaderSingleType<recT, singleT, headerT>::needGroup(const GroupData& g_d
 }
 
 template<typename recT, typename singleT, int32_t headerT>
-void ESMReaderSingleType<recT, singleT, headerT>::nextGroupStarted(const GroupData& g_data)
+void ESMReaderSingleType<recT, singleT, headerT>::nextGroupStarted(const GroupData& g_data, const bool sub)
+{
+  //empty, because we don't need to care about new groups anyway
+}
+
+template<typename recT, typename singleT, int32_t headerT>
+void ESMReaderSingleType<recT, singleT, headerT>::groupFinished(const GroupData& g_data)
 {
   //empty, because we don't need to care about new groups anyway
 }

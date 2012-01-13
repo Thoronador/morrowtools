@@ -66,6 +66,7 @@
 #include "records/PlacedGrenadeRecord.h"
 #include "records/PlacedHazardRecord.h"
 #include "records/RaceRecord.h"
+#include "records/ReferenceRecord.h"
 #include "records/RelationshipRecord.h"
 #include "records/ReverbRecord.h"
 #include "records/ScrollRecord.h"
@@ -101,12 +102,17 @@ bool ESMReaderContents::needGroup(const GroupData& g_data) const
   return true;
 }
 
-void ESMReaderContents::nextGroupStarted(const GroupData& g_data)
+void ESMReaderContents::nextGroupStarted(const GroupData& g_data, const bool sub)
 {
   /*add a new group to the file content representation and set its GroupData
     (i.e. header) to the stuff that was read from the file stream */
   Group& newGroup = contents.addNewGroup();
   newGroup.headerData = g_data;
+}
+
+void ESMReaderContents::groupFinished(const GroupData& g_data)
+{
+  //still empty
 }
 
 int ESMReaderContents::readNextRecord(std::ifstream& in_File, const int32_t recName)
@@ -248,6 +254,9 @@ int ESMReaderContents::readNextRecord(std::ifstream& in_File, const int32_t recN
          break;
     case cRACE:
          recPtr = new RaceRecord;
+         break;
+    case cREFR:
+         recPtr = new ReferenceRecord;
          break;
     case cRELA:
          recPtr = new RelationshipRecord;

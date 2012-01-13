@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -33,12 +33,15 @@ ReferenceRecord::ReferenceRecord()
   editorID = "";
   unknownVMAD.setPresence(false);
   unknownNAME = 0;
-  hasXLKR = false;
-  unknownXLKR = 0;
+  unknownXTEL.setPresence(false);
+  hasXNDP = false;
+  unknownXNDP = 0;
+  unknownXLKRs.clear();
   hasXESP = false;
   unknownXESP = 0;
   hasXEMI = false;
   unknownXEMI = 0;
+  unknownXPRM.setPresence(false);
   unknownXLOC.setPresence(false);
   unknownXSCL = 1.0f;
   hasXPRD = false;
@@ -47,6 +50,7 @@ ReferenceRecord::ReferenceRecord()
   unknownINAM = 0;
   hasPDTO = false;
   unknownPDTO = 0;
+  subBlocks.clear();
   memset(unknownDATA, 0, 24);
 }
 
@@ -59,26 +63,278 @@ bool ReferenceRecord::equals(const ReferenceRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
       and (unknownVMAD==other.unknownVMAD)
-      and (unknownNAME==other.unknownNAME) and (hasXEMI==other.hasXEMI)
-      and (hasXLKR==other.hasXLKR) and ((unknownXLKR==other.unknownXLKR) or (!hasXLKR))
+      and (unknownNAME==other.unknownNAME) and (unknownXTEL==other.unknownXTEL)
+      and (hasXNDP==other.hasXNDP) and ((unknownXNDP==other.unknownXNDP) or (!hasXNDP))
+      and (unknownXLKRs==other.unknownXLKRs)
       and (hasXESP==other.hasXESP) and ((unknownXESP==other.unknownXESP) or (!hasXESP))
-      and ((unknownXEMI==other.unknownXEMI) or (!hasXEMI))
-      and (unknownXLOC==other.unknownXLOC) and (unknownXSCL==other.unknownXSCL)
+      and (hasXEMI==other.hasXEMI) and ((unknownXEMI==other.unknownXEMI) or (!hasXEMI))
+      and (unknownXLOC==other.unknownXLOC) and (unknownXPRM==other.unknownXPRM)
+      and (unknownXSCL==other.unknownXSCL)
       and (hasXPRD==other.hasXPRD) and ((unknownXPRD==other.unknownXPRD) or (!hasXPRD))
       and (hasINAM==other.hasINAM) and ((unknownINAM==other.unknownINAM) or (!hasINAM))
       and (hasPDTO==other.hasPDTO) and ((unknownPDTO==other.unknownPDTO) or (!hasPDTO))
+      and (subBlocks==other.subBlocks)
       and (memcmp(unknownDATA, other.unknownDATA, 24)==0));
 }
 
 uint32_t ReferenceRecord::getWriteSize() const
 {
-  #warning Not implemented yet!
+  #warning Not completely implemented yet!
+  uint32_t writeSize;
+  writeSize = 4 /* NAME */ +2 /* 2 bytes for length */ +4 /* fixed size */
+             +4 /* DATA */ +2 /* 2 bytes for length */ +24 /* fixed size */;
+  if (!editorID.empty())
+  {
+    writeSize = writeSize + 4 /* EDID */ +2 /* 2 bytes for length */
+        +editorID.length()+1 /* length of name +1 byte for NUL termination */;
+  }
+  if (unknownVMAD.isPresent())
+  {
+    writeSize = writeSize + 4 /* VMAD */ +2 /* 2 bytes for length */ +unknownVMAD.getSize() /* size of record data */;
+  }
+  if (unknownXTEL.isPresent())
+  {
+    writeSize = writeSize + 4 /* XTEL */ +2 /* 2 bytes for length */ +unknownXTEL.getSize() /* size of record data */;
+  }
+  if (hasXNDP)
+  {
+    writeSize = writeSize +4 /* XNDP */ +2 /* 2 bytes for length */ +8 /* fixed size */;
+  }
+  if (!unknownXLKRs.empty())
+  {
+    const unsigned int count = unknownXLKRs.size();
+    unsigned int i;
+    for (i=0; i<count; ++i)
+    {
+      writeSize = writeSize +4 /* XLKR */ +2 /* 2 bytes for length */ +4*unknownXLKRs[i].size() /* fixed size */;
+    }
+  }
+  if (hasXESP)
+  {
+    writeSize = writeSize +4 /* XESP */ +2 /* 2 bytes for length */ +8 /* fixed size */;
+  }
+  if (hasXEMI)
+  {
+    writeSize = writeSize +4 /* XEMI */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+  }
+  if (unknownXPRM.isPresent())
+  {
+    writeSize = writeSize + 4 /* XPRM */ +2 /* 2 bytes for length */ +unknownXPRM.getSize() /* size of record data */;
+  }
+  if (unknownXLOC.isPresent())
+  {
+    writeSize = writeSize + 4 /* XLOC */ +2 /* 2 bytes for length */ +unknownXLOC.getSize() /* size of record data */;
+  }
+  if (unknownXSCL!=1.0f)
+  {
+    writeSize = writeSize +4 /* XSCL */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+  }
+  if (hasXPRD)
+  {
+    writeSize = writeSize +4 /* XPRD */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+  }
+  if (hasINAM)
+  {
+    writeSize = writeSize +4 /* INAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+  }
+  if (hasPDTO)
+  {
+    writeSize = writeSize +4 /* PDTO */ +2 /* 2 bytes for length */ +8 /* fixed size */;
+  }
+  const unsigned int count = subBlocks.size();
+  unsigned int i;
+  for (i=0; i<count; ++i)
+  {
+    if (subBlocks[i].subData.isPresent())
+    {
+      writeSize = writeSize + 4 /* label */ +2 /* 2 bytes for length */ +subBlocks[i].subData.getSize() /* size of data*/;
+    }
+  }//for
   return 0;
 }
 
 bool ReferenceRecord::saveToStream(std::ofstream& output) const
 {
-  #warning Not implemented yet!
+  #warning Not completely implemented yet!
+  output.write((const char*) &cREFR, 4);
+  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
+
+  uint16_t subLength;
+  if (!editorID.empty())
+  {
+    //write EDID
+    output.write((const char*) &cEDID, 4);
+    //EDID's length
+    subLength = editorID.length()+1;
+    output.write((const char*) &subLength, 2);
+    //write editor ID
+    output.write(editorID.c_str(), subLength);
+  }//if editorID
+
+  if (unknownVMAD.isPresent())
+  {
+    if (!unknownVMAD.saveToStream(output, cVMAD))
+    {
+      std::cout << "Error while writing subrecord VMAD of REFR!\n";
+      return false;
+    }
+  }//if VMAD
+
+  //write NAME
+  output.write((const char*) &cNAME, 4);
+  //NAME's length
+  subLength = 4; //fixed size
+  output.write((const char*) &subLength, 2);
+  //write NAME
+  output.write((const char*) &unknownNAME, 4);
+
+  if (unknownXTEL.isPresent())
+  {
+    if (!unknownXTEL.saveToStream(output, cXTEL))
+    {
+      std::cout << "Error while writing subrecord XTEL of REFR!\n";
+      return false;
+    }
+  }//if XTEL
+
+  if (hasXNDP)
+  {
+    //write XNDP
+    output.write((const char*) &cXNDP, 4);
+    //XNDP's length
+    subLength = 8; //fixed size
+    output.write((const char*) &subLength, 2);
+    //write XNDP
+    output.write((const char*) &unknownXNDP, 8);
+  }//if XNDP
+
+  if (!unknownXLKRs.empty())
+  {
+    unsigned int i, j;
+    const unsigned int count = unknownXLKRs.size();
+    for (i=0; i<count; ++i)
+    {
+      //write XLKR
+      output.write((const char*) &cXLKR, 4);
+      //XLKR's length
+      subLength = 4*unknownXLKRs[i].size(); //fixed size
+      output.write((const char*) &subLength, 2);
+      //write XLKR
+      for (j=0; j<unknownXLKRs[i].size(); ++j)
+      {
+        output.write((const char*) &(unknownXLKRs[i][j]), 4);
+      }//for j
+    }//for i
+  }//if XLKR
+
+  if (hasXESP)
+  {
+    //write XESP
+    output.write((const char*) &cXESP, 4);
+    //XESP's length
+    subLength = 8; //fixed size
+    output.write((const char*) &subLength, 2);
+    //write XESP
+    output.write((const char*) &unknownXESP, 8);
+  }//if XESP
+
+  if (hasXEMI)
+  {
+    //write XEMI
+    output.write((const char*) &cXEMI, 4);
+    //XEMI's length
+    subLength = 4; //fixed size
+    output.write((const char*) &subLength, 2);
+    //write XEMI
+    output.write((const char*) &unknownXEMI, 4);
+  }//if XEMI
+
+  if (unknownXPRM.isPresent())
+  {
+    //write XPRM
+    if (!unknownXPRM.saveToStream(output, cXPRM))
+    {
+      std::cout << "Error while writing subrecord XPRM of REFR!\n";
+      return false;
+    }
+  }//if XPRM
+
+  if (unknownXLOC.isPresent())
+  {
+    //write XLOC
+    if (!unknownXLOC.saveToStream(output, cXLOC))
+    {
+      std::cout << "Error while writing subrecord XLOC of REFR!\n";
+      return false;
+    }
+  }//if XLOC
+
+  if (unknownXSCL!=1.0f)
+  {
+    //write XSCL
+    output.write((const char*) &cXSCL, 4);
+    //XSCL's length
+    subLength = 4; //fixed size
+    output.write((const char*) &subLength, 2);
+    //write XSCL
+    output.write((const char*) &unknownXSCL, 4);
+  }//if XSCL
+
+  if (hasXPRD)
+  {
+    //write XPRD
+    output.write((const char*) &cXPRD, 4);
+    //XPRD's length
+    subLength = 4; //fixed size
+    output.write((const char*) &subLength, 2);
+    //write XPRD
+    output.write((const char*) &unknownXPRD, 4);
+  }//if XPRD
+
+  if (hasINAM)
+  {
+    //write INAM
+    output.write((const char*) &cINAM, 4);
+    //INAM's length
+    subLength = 4; //fixed size
+    output.write((const char*) &subLength, 2);
+    //write INAM
+    output.write((const char*) &unknownINAM, 4);
+  }//if INAM
+
+  if (hasPDTO)
+  {
+    //write PDTO
+    output.write((const char*) &cPDTO, 4);
+    //PDTO's length
+    subLength = 8; //fixed size
+    output.write((const char*) &subLength, 2);
+    //write PDTO
+    output.write((const char*) &unknownPDTO, 8);
+  }//if PDTO
+
+  const unsigned int count = subBlocks.size();
+  unsigned int i;
+  for (i=0; i<count; ++i)
+  {
+    if (subBlocks[i].subData.isPresent())
+    {
+      if (!subBlocks[i].subData.saveToStream(output, subBlocks[i].subType))
+      {
+        std::cout << "Error while writing subrecord "<<IntTo4Char(subBlocks[i].subType)<<" of REFR!\n";
+        return false;
+      }
+    }
+  }//for
+
+  //write DATA
+  output.write((const char*) &cDATA, 4);
+  //DATA's length
+  subLength = 24; //fixed size
+  output.write((const char*) &subLength, 2);
+  //write DATA
+  output.write((const char*) unknownDATA, 24);
+
   return false;
 }
 
@@ -96,15 +352,22 @@ bool ReferenceRecord::loadFromStream(std::ifstream& in_File)
 
   editorID.clear();
   unknownVMAD.setPresence(false);
-  bool hasReadNAME = false;
-  hasXLKR = false;
-  hasXESP = false;
-  hasXEMI = false;
+  bool hasReadNAME = false; unknownNAME = 0;
+  unknownXTEL.setPresence(false);
+  hasXNDP = false; unknownXNDP = 0;
+  unknownXLKRs.clear();
+  std::vector<uint32_t> tempVec32;
+  uint32_t i, tempUint32;
+  hasXESP = false; unknownXESP = 0;
+  hasXEMI = false; unknownXEMI = 0;
+  unknownXPRM.setPresence(false);
   unknownXLOC.setPresence(false);
   unknownXSCL = 1.0f;
-  hasXPRD = false;
-  hasINAM = false;
-  hasPDTO = false;
+  hasXPRD = false; unknownXPRD = 0;
+  hasINAM = false; unknownINAM = 0;
+  hasPDTO = false; unknownPDTO = 0;
+  subBlocks.clear();
+  SubBlock tempSubBlock;
   bool hasReadDATA = false;
   while (bytesRead<readSize)
   {
@@ -164,10 +427,30 @@ bool ReferenceRecord::loadFromStream(std::ifstream& in_File)
            bytesRead += 6;
            hasReadNAME = true;
            break;
-      case cXLKR:
-           if (hasXLKR)
+      case cXTEL:
+           if (unknownXTEL.isPresent())
            {
-             std::cout << "Error: REFR seems to have more than one XLKR subrecord!\n";
+             std::cout << "Error: REFR seems to have more than one XTEL subrecord!\n";
+             return false;
+           }
+           //read XTEL
+           if (!unknownXTEL.loadFromStream(in_File, cXTEL, false))
+           {
+             std::cout << "Error while reading subrecord XTEL of REFR!\n!";
+             return false;
+           }
+           bytesRead = bytesRead +2 +unknownXTEL.getSize();
+           if (unknownXTEL.getSize()!=32)
+           {
+             std::cout <<"Error: sub record XTEL of REFR has invalid length ("
+                       <<unknownXTEL.getSize()<<" bytes). Should be 32 bytes.\n";
+             return false;
+           }
+           break;
+      case cXNDP:
+           if (hasXNDP)
+           {
+             std::cout << "Error: REFR seems to have more than one XNDP subrecord!\n";
              return false;
            }
            //XLKR's length
@@ -175,19 +458,44 @@ bool ReferenceRecord::loadFromStream(std::ifstream& in_File)
            bytesRead += 2;
            if (subLength!=8)
            {
-             std::cout <<"Error: sub record XLKR of REFR has invalid length ("<<subLength
+             std::cout <<"Error: sub record XNDP of REFR has invalid length ("<<subLength
                        <<" bytes). Should be 8 bytes.\n";
              return false;
            }
-           //read XLKR
-           in_File.read((char*) &unknownXLKR, 8);
+           //read XNDP
+           in_File.read((char*) &unknownXNDP, 8);
            bytesRead += 8;
+           if (!in_File.good())
+           {
+             std::cout << "Error while reading subrecord XNDP of REFR!\n";
+             return false;
+           }
+           hasXNDP = true;
+           break;
+      case cXLKR:
+           //XLKR's length
+           in_File.read((char*) &subLength, 2);
+           bytesRead += 2;
+           if ((subLength!=8) and (subLength!=4))
+           {
+             std::cout <<"Error: sub record XLKR of REFR has invalid length ("<<subLength
+                       <<" bytes). Should be 8 or 4 bytes.\n";
+             return false;
+           }
+           //read XLKR
+           tempVec32.clear();
+           for (i=0; i<subLength; i=i+4)
+           {
+             in_File.read((char*) &tempUint32, 4);
+             tempVec32.push_back(tempUint32);
+           }//for
+           bytesRead += subLength;
            if (!in_File.good())
            {
              std::cout << "Error while reading subrecord XLKR of REFR!\n";
              return false;
            }
-           hasXLKR = true;
+           unknownXLKRs.push_back(tempVec32);
            break;
       case cXESP:
            if (hasXESP)
@@ -225,6 +533,26 @@ bool ReferenceRecord::loadFromStream(std::ifstream& in_File)
            if (!loadUint32SubRecordFromStream(in_File, cXEMI, unknownXEMI)) return false;
            bytesRead += 6;
            hasXEMI = true;
+           break;
+      case cXPRM:
+           if (unknownXPRM.isPresent())
+           {
+             std::cout << "Error: REFR seems to have more than one XPRM subrecord!\n";
+             return false;
+           }
+           //read XPRM
+           if (!unknownXPRM.loadFromStream(in_File, cXPRM, false))
+           {
+             std::cout << "Error while reading subrecord XPRM of REFR!\n!";
+             return false;
+           }
+           bytesRead = bytesRead +2 +unknownXPRM.getSize();
+           if (unknownXPRM.getSize()!=32)
+           {
+             std::cout <<"Error: sub record XPRM of REFR has invalid length ("
+                       <<unknownXPRM.getSize()<<" bytes). Should be 32 bytes.\n";
+             return false;
+           }
            break;
       case cXLOC:
            if (unknownXLOC.isPresent())
@@ -339,10 +667,19 @@ bool ReferenceRecord::loadFromStream(std::ifstream& in_File)
            hasReadDATA = true;
            break;
       default:
-           std::cout << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
-                     << "\", but only EDID, VMAD, NAME, XLKR, XESP, XEMI, XLOC,"
-                     << " XSCL, XPRD, INAM, PDTO or DATA are allowed here!\n";
-           return false;
+           tempSubBlock.subType = subRecName;
+           if (!tempSubBlock.subData.loadFromStream(in_File, subRecName, false))
+           {
+             std::cout << "Error while loading subrecord "<<IntTo4Char(subRecName)<<" of REFR into sub-blocks!\n";
+             return false;
+           }
+           bytesRead = bytesRead +2 + tempSubBlock.subData.getSize();
+           subBlocks.push_back(tempSubBlock);
+           /* std::cout << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
+                     << "\", but only EDID, VMAD, NAME, XTEL, XNDP, XLKR, XESP,"
+                     << " XEMI, XPRM, XLOC, XSCL, XPRD, INAM, PDTO or DATA are allowed here!\n";
+           return false; */
+           break;
     }//swi
   }//while
 

@@ -230,11 +230,13 @@ const int32_t cXLCN = 0x4E434C58; //"XLCN" = 58 4C 43 4E
 const int32_t cXLKR = 0x524B4C58; //"XLKR" = 58 4C 4B 52
 const int32_t cXLOC = 0x434F4C58; //"XLOC" = 58 4C 4F 43
 const int32_t cXNAM = 0x4D414E58; //"XNAM" = 58 4E 41 4D
+const int32_t cXNDP = 0x50444E58; //"XNDP" = 58 4E 44 50
 const int32_t cXOWN = 0x4E574F58; //"XOWN" = 58 4F 57 4E
 const int32_t cXPPA = 0x41505058; //"XPPA" = 58 50 50 41
 const int32_t cXPRD = 0x44525058; //"XPRD" = 58 50 52 44
 const int32_t cXPRM = 0x4D525058; //"XPRM" = 58 50 52 4D
 const int32_t cXSCL = 0x4C435358; //"XSCL" = 58 53 43 4C
+const int32_t cXTEL = 0x4C455458; //"XTEL" = 58 54 45 4C
 const int32_t cXWCN = 0x4E435758; //"XWCN" = 58 57 43 4E
 const int32_t cXWCS = 0x53435758; //"XWCS" = 58 57 43 53
 const int32_t cXWCU = 0x55435758; //"XWCU" = 58 57 43 55

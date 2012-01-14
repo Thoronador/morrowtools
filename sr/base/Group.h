@@ -50,6 +50,12 @@ class Group
     /* sets the group's size value in the group header to match the actual size
        of the group and its records */
     void updateGroupSize();
+
+    /* determines the latest group according to the given group nesting level
+       and returns a pointer to it. If NULL is returned, the level was invalid
+       or no group exists.
+     */
+    Group * determineLatestGroup(const unsigned int level);
 }; //class
 
 } //namespace

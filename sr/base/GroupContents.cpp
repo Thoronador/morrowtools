@@ -41,8 +41,9 @@ void GroupContents::addRecord(BasicRecord* rec)
   if (rec!=NULL)
   {
     m_Index[rec->headerFormID] = m_Records.size();
-    m_Records.push_back(rec);
-  }//if
+    boost::shared_ptr<BasicRecord> s_ptr(rec);
+    m_Records.push_back(s_ptr);
+  }
 }
 
 bool GroupContents::hasRecord(const uint32_t formID, const bool useIndex) const
@@ -88,13 +89,15 @@ void GroupContents::removeRecords()
   //clear record index
   m_Index.clear();
   //delete all records properly
-  BasicRecord * recPtr;
+  // -- boost's shared pointer class should handle proper deallocation, when needed
+  m_Records.clear();
+  /*BasicRecord * recPtr;
   while (!m_Records.empty())
   {
     recPtr = m_Records.back();
     m_Records.pop_back();
     delete recPtr;
-  }//while
+  }//while*/
 }
 
 void GroupContents::rebuildIndex()

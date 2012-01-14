@@ -103,4 +103,16 @@ void ESMFileContents::removeContents()
   m_Groups.clear();
 }
 
+Group * ESMFileContents::determineLatestGroup(const unsigned int level)
+{
+  //level zero means no group
+  if (level==0) return NULL;
+  //level one is the first valid level, meaning the current one
+  //If there are no groups, we can't return anything useful.
+  if (m_Groups.empty()) return NULL;
+  if (level==1) return &(m_Groups.back());
+  //level is larger than one, so we have to go into sub groups
+  return m_Groups.back().determineLatestGroup(level-1);
+}
+
 } //namespace

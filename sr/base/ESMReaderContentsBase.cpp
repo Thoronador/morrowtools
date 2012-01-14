@@ -28,24 +28,71 @@ namespace SRTP
 ESMReaderContentsBase::ESMReaderContentsBase()
 {
   contents.removeContents();
+  m_InternalGroupLevel = 0;
+  m_InternalGroup = NULL;
 }
 
 ESMReaderContentsBase::~ESMReaderContentsBase()
 {
   contents.removeContents();
+  m_InternalGroupLevel = 0;
+  m_InternalGroup = NULL;
 }
 
 void ESMReaderContentsBase::nextGroupStarted(const GroupData& g_data, const bool sub)
 {
   /*add a new group to the file content representation and set its GroupData
     (i.e. header) to the stuff that was read from the file stream */
-  Group& newGroup = contents.addNewGroup();
-  newGroup.headerData = g_data;
+  if (0==m_InternalGroupLevel)
+  {
+    Group& newGroup = contents.addNewGroup();
+    newGroup.headerData = g_data;
+    ++m_InternalGroupLevel;
+    m_InternalGroup = contents.determineLatestGroup(m_InternalGroupLevel);
+  }
+  else
+  {
+    if (m_InternalGroup==NULL)
+    {
+      std::cout << "ESMReaderContentsBase::nextGroupStarted: Error: got NULL pointer for internal group!\n";
+      throw 42; //we've screwed up somehow, nice job!
+      return;
+    }
+    //subgroup or next group on that level
+    if (sub)
+    {
+      //create a subgroup of the current group
+      m_InternalGroup->contents.addSubGroup(g_data);
+      ++m_InternalGroupLevel;
+      m_InternalGroup = contents.determineLatestGroup(m_InternalGroupLevel);
+    }//if sub group
+    else
+    {
+      Group * parent = contents.determineLatestGroup(m_InternalGroupLevel-1);
+      if (parent==NULL)
+      {
+        std::cout << "ESMReaderContentsBase::nextGroupStarted: Error: got NULL pointer for parent group!\n";
+        throw 42;
+        return;
+      }
+      parent->contents.addSubGroup(g_data);
+      m_InternalGroup = contents.determineLatestGroup(m_InternalGroupLevel);
+    }//else - next group on same level
+  }
 }
 
 void ESMReaderContentsBase::groupFinished(const GroupData& g_data)
 {
-  //still empty
+  if (m_InternalGroupLevel>0)
+  {
+    --m_InternalGroupLevel;
+    m_InternalGroup = contents.determineLatestGroup(m_InternalGroupLevel);
+  }
+  else
+  {
+    std::cout << "ESMReaderContentsBase::groupFinished: Error: level is already at zero!\n";
+    throw 42;
+  }
 }
 
 } //namespace

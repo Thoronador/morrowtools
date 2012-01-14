@@ -60,4 +60,16 @@ void Group::updateGroupSize()
   headerData.setGroupSize(24 + contents.getContentSize());
 }
 
+Group * Group::determineLatestGroup(const unsigned int level)
+{
+  //level zero means no group
+  if (level==0) return NULL;
+  //level one is the first valid level, meaning the current group
+  if (level==1) return this;
+  //level is larger than one, so we have to go into sub groups
+  //If there are no groups, we can't return anything useful.
+  if (contents.getNumberOfSubGroups()==0) return NULL;
+  return contents.getSubGroupAtIndexNC(contents.getNumberOfSubGroups()-1)->determineLatestGroup(level-1);
+}
+
 } //namespace

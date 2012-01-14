@@ -51,6 +51,12 @@ class ESMFileContents
   //private:
     //internal group list
     std::vector<Group> m_Groups;
+
+    /* determines the latest group according to the given group nesting level
+       and returns a pointer to it. If NULL is returned, the level was invalid
+       or no group exists.
+     */
+    Group * determineLatestGroup(const unsigned int level);
 }; //class
 
 } //namespace

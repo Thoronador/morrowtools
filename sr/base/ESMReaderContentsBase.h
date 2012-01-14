@@ -77,6 +77,11 @@ class ESMReaderContentsBase: public ESMReader
     */
     virtual void groupFinished(const GroupData& g_data);
 
+    /* internal group nesting level counter and pointer to latest group - should
+       be made private later on */
+    unsigned int m_InternalGroupLevel;
+    Group * m_InternalGroup;
+
     /* tries to read the next record from a file and returns the number of
        relevant records that were read (usually one). If an error occured,
        -1 is returned. If the record was skipped or contained no relevant data,

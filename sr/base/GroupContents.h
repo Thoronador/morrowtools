@@ -26,6 +26,7 @@
 #include <stdint.h>
 #include "records/BasicRecord.h"
 #include "records/GroupData.h"
+#include <boost/smart_ptr/shared_ptr.hpp>
 
 namespace SRTP
 {
@@ -145,7 +146,7 @@ class GroupContents
     std::vector<Group> m_SubGroups;
 
     //internal record list
-    std::vector<BasicRecord*> m_Records;
+    std::vector<boost::shared_ptr<BasicRecord> > m_Records;
 
     //index - key is form ID, value is index of entry in m_Records
     std::map<uint32_t, uint32_t> m_Index;

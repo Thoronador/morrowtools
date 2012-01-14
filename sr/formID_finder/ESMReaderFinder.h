@@ -51,16 +51,32 @@ class ESMReaderFinder: public ESMReader
     */
     virtual bool needGroup(const GroupData& g_data) const;
 
-    /* this functions sole purpose is to "notify" the reader that a new group
+    /* This function's sole purpose is to "notify" the reader that a new group
        was encountered and give the classes derived from ESMReader the
        possibility to update their internal state accordingly. Note that this
        function will only be called for groups where needGroup() returns true.
        Skipped groups will not trigger that function.
 
        parameters:
-           g_date - the group header data
+           g_data - the group header data
+           sub    - if set to true, the new group is a sub-group of another
+                    group
     */
-    virtual void nextGroupStarted(const GroupData& g_data);
+    virtual void nextGroupStarted(const GroupData& g_data, const bool sub);
+
+    /* This function's sole purpose is to "notify" the reader that a started
+       group has been read (or skipped) completely and give the classes derived
+       from ESMReader the possibility to update their internal state
+       accordingly. Note that this function will only be called for groups
+       where needGroup() returns true. Skipped groups will not trigger that
+       function, but it might be possible that all records and subgroups in such
+       a group have been skipped, depending on the implementation of
+       readNextRecord() and readGroup().
+
+       parameters:
+           g_data - the group header data
+    */
+    virtual void groupFinished(const GroupData& g_data);
 
     /* tries to read the next record from a file and returns the number of
        relevant records that were read (usually one). If an error occured,

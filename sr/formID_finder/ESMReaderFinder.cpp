@@ -74,7 +74,12 @@ bool ESMReaderFinder::needGroup(const GroupData& g_data) const
   return false;
 }
 
-void ESMReaderFinder::nextGroupStarted(const GroupData& g_data)
+void ESMReaderFinder::nextGroupStarted(const GroupData& g_data, const bool sub)
+{
+  //empty
+}
+
+void ESMReaderFinder::groupFinished(const GroupData& g_data)
 {
   //empty
 }

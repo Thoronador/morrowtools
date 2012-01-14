@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -150,6 +150,44 @@ struct BSA
                                     a file is compressed or not
     */
     void listFileNames(bool withCompressionStatus);
+
+    //structure to contain both index and name of directory
+    struct DirectoryStruct
+    {
+      std::string name;
+      uint32_t index;
+    }; //struct
+
+    /* returns a list of all directories within the archive.
+
+       remarks:
+           Only works properly, if grabAllStructureData() has been called with
+           success.
+    */
+    std::vector<DirectoryStruct> getDirectories() const;
+
+    //structure to contain both indices for a file and its name
+    struct FileStruct
+    {
+      std::string name;
+      uint32_t folderIndex;
+      uint32_t fileIndex;
+      bool compressed;
+    }; //struct
+
+    /* returns a list of all file names within a certain directory.
+
+       parameters:
+           folderIndex - the index of the folder whose files are requested
+           fullName    - if set to true, the returned names will contain the
+                         full directory path. Otherwise they will be the plain
+                         file name only.
+
+       remarks:
+           Only works properly, if grabAllStructureData() has been called with
+           success.
+    */
+    std::vector<FileStruct> getFilesOfDirectory(const uint32_t folderIndex, const bool fullName) const;
 
     /* tries to extract the file with the given indices and writes it to the
        specified destination. Returns true in case of success, false on failure.

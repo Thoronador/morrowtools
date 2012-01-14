@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -23,6 +23,7 @@
 #include <cstring>
 #include "../../../base/UtilityFunctions.h"
 #include "../../../base/DirectoryFunctions.h"
+#include "../../../base/CompressionFunctions.h"
 
 namespace SRTP
 {
@@ -311,7 +312,59 @@ void BSA::listFileNames(bool withCompressionStatus)
     std::cout << "Compressed files in archive: "<<compressedFiles
               << "\nUncompressed files in archive: "<<rawFiles<<"\n";
   }
+}
 
+std::vector<BSA::DirectoryStruct> BSA::getDirectories() const
+{
+  std::vector<DirectoryStruct> result;
+  if (!hasAllStructureData())
+  {
+    std::cout << "BSA::getDirectories: Error: not all structure data is "
+              << "present to properly fulfill the requested operation!\n";
+    return result;
+  }
+  DirectoryStruct tempStruct;
+  unsigned int i;
+  const unsigned int count = m_FolderBlocks.size();
+  for (i=0; i<count; ++i)
+  {
+    tempStruct.index = i;
+    tempStruct.name = m_FolderBlocks[i].folderName;
+    result.push_back(tempStruct);
+  }//for
+  return result;
+}
+
+std::vector<BSA::FileStruct> BSA::getFilesOfDirectory(const uint32_t folderIndex, const bool fullName) const
+{
+  std::vector<FileStruct> result;
+  if (!hasAllStructureData())
+  {
+    std::cout << "BSA::getFilesOfDirectory: Error: not all structure data is "
+              << "present to properly fulfill the requested operation!\n";
+    return result;
+  }
+  if (folderIndex>=m_FolderBlocks.size())
+  {
+    std::cout << "BSA::getFilesOfDirectory: Error: invalid folder index!\n";
+    return result;
+  }
+  FileStruct tempStruct;
+  const unsigned int count = m_FolderBlocks[folderIndex].files.size();
+  unsigned int i;
+  for (i=0; i<count; ++i)
+  {
+    tempStruct.folderIndex = folderIndex;
+    tempStruct.fileIndex = i;
+    tempStruct.name = m_FolderBlocks[folderIndex].files[i].fileName;
+    if (fullName)
+    {
+      tempStruct.name = m_FolderBlocks[folderIndex].folderName+'\\'+tempStruct.name;
+    }
+    tempStruct.compressed = isFileCompressed(folderIndex, i);
+    result.push_back(tempStruct);
+  }//for
+  return result;
 }
 
 void BSA::close()
@@ -498,16 +551,7 @@ bool BSA::extractFile(const uint32_t folderIndex, const uint32_t fileIndex, cons
     return false;
   }
 
-  if (isFileCompressed(folderIndex, fileIndex))
-  {
-    std::cout << "BSA::extractFile: Error: file is a compressed file, but "
-              << "decompression is not implemented yet! At the moment, only "
-              << "uncompressed files can be extracted.\n";
-    return false;
-  }
-
   const uint32_t extractedFileSize = m_FolderBlocks[folderIndex].files[fileIndex].getRealFileSize();
-
   m_Stream.seekg(m_FolderBlocks[folderIndex].files[fileIndex].offset, std::ios_base::beg);
   if (!m_Stream.good())
   {
@@ -515,14 +559,56 @@ bool BSA::extractFile(const uint32_t folderIndex, const uint32_t fileIndex, cons
     return false;
   }
 
-  uint8_t * buffer = new uint8_t[extractedFileSize];
-  m_Stream.read((char*) buffer, extractedFileSize);
-  if (!m_Stream.good())
+  uint8_t * buffer = NULL; //buffer for output data
+  if (isFileCompressed(folderIndex, fileIndex))
   {
-    std::cout << "BSA::extractFile: Error: bad internal stream, could read file data from archive!\n";
-    delete[] buffer;
-    buffer = NULL;
-    return false;
+    if (extractedFileSize<4)
+    {
+      std::cout << "BSA::extractFile: Error: size is too small to contain any compressed data!\n";
+      return false;
+    }
+    uint32_t decompSize = 0;
+    //read size of decompressed file
+    m_Stream.read((char*) &decompSize, 4);
+    if (!m_Stream.good())
+    {
+      std::cout << "BSA::extractFile: Error: could not read file's uncompressed size!\n";
+      return false;
+    }
+    //read compressed stuff
+    uint8_t * compressedBuffer = new uint8_t[extractedFileSize-4];
+    m_Stream.read((char*) compressedBuffer, extractedFileSize-4);
+    if (!m_Stream.good())
+    {
+      std::cout << "BSA::extractFile: Error: could not read compressed file data from archive!\n";
+      delete [] compressedBuffer;
+      return false;
+    }
+    //allocate buffer for decompressed data
+    buffer = new uint8_t[decompSize];
+    if (!MWTP::zlibDecompress(compressedBuffer, extractedFileSize-4, buffer, decompSize))
+    {
+      std::cout << "BSA::extractFile: Error: decompression failed!\n";
+      delete [] compressedBuffer;
+      delete [] buffer;
+      return false;
+    }
+    //success, delete compressed data buffer
+    delete [] compressedBuffer;
+    compressedBuffer = NULL;
+  }
+  else
+  {
+    //handle uncompressed data
+    buffer = new uint8_t[extractedFileSize];
+    m_Stream.read((char*) buffer, extractedFileSize);
+    if (!m_Stream.good())
+    {
+      std::cout << "BSA::extractFile: Error: bad internal stream, could read file data from archive!\n";
+      delete[] buffer;
+      buffer = NULL;
+      return false;
+    }
   }
 
   std::ofstream outputStream;

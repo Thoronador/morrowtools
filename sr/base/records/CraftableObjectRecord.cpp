@@ -26,13 +26,6 @@
 namespace SRTP
 {
 
-/* ComponentData's functions */
-
-bool ComponentData::operator==(const ComponentData& other) const
-{
-  return ((formID==other.formID) and (count==other.count));
-}
-
 /* CraftableObjectRecord's functions */
 
 CraftableObjectRecord::CraftableObjectRecord()

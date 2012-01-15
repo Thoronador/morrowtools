@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -18,29 +18,30 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SR_CRAFTABLEOBJECTRECORD_H
-#define SR_CRAFTABLEOBJECTRECORD_H
+#ifndef SR_NPCRECORD_H
+#define SR_NPCRECORD_H
 
+#include "BasicRecord.h"
+#include "BinarySubRecord.h"
+#include "ComponentData.h"
 #include <string>
 #include <vector>
-#include "BasicRecord.h"
-#include "CTDAData.h"
-#include "ComponentData.h"
+#include <stdint.h>
 
 namespace SRTP
 {
 
-struct CraftableObjectRecord: public BasicRecord
+struct NPCRecord: public BasicRecord
 {
   public:
     /* constructor */
-    CraftableObjectRecord();
+    NPCRecord();
 
     /* destructor */
-    virtual ~CraftableObjectRecord();
+    virtual ~NPCRecord();
 
     /* returns true, if the other record contains the same data */
-    bool equals(const CraftableObjectRecord& other) const;
+    bool equals(const NPCRecord& other) const;
 
     /* writes the record to the given output stream and returns true on success
 
@@ -64,15 +65,52 @@ struct CraftableObjectRecord: public BasicRecord
     */
     virtual uint32_t getWriteSize() const;
 
+    //struct for perks
+    struct PerkElem
+    {
+      uint32_t formID;
+      uint32_t valueTwo; //unknown
+
+      /* equality operator */
+      bool operator==(const PerkElem& other) const;
+    };//struct
+
     std::string editorID;
-    uint32_t componentCount;
-    std::vector<ComponentData> components;
-    std::vector<CTDAData> unknownCTDAs;
+    BinarySubRecord unknownVMAD;
+    uint8_t unknownOBND[12];
+    uint8_t unknownACBS[24];
+    std::vector<uint64_t> unknownSNAMs;
+    bool hasINAM;
+    uint32_t unknownINAM;
+    bool hasVTCK;
+    uint32_t unknownVTCK;
+    uint32_t unknownTPLT;
+    uint32_t unknownRNAM;
+    bool hasWNAM;
+    uint32_t unknownWNAM;
+    bool hasATKR;
+    uint32_t unknownATKR;
+    std::vector<uint32_t> spellFormIDs;
+    std::vector<PerkElem> perkList;
+    std::vector<ComponentData> items;
+    uint8_t unknownAIDT[20];
+    std::vector<uint32_t> unknownPKIDs;
+    std::vector<uint32_t> keywordArray;
     uint32_t unknownCNAM;
-    uint32_t unknownBNAM;
-    uint16_t resultCount;
+    uint8_t unknownDNAM[52];
+    bool hasZNAM;
+    uint32_t unknownZNAM;
+    uint16_t unknownNAM5;
+    uint32_t unknownNAM6;
+    uint32_t unknownNAM7;
+    uint32_t unknownNAM8;
+    bool hasCSCR;
+    uint32_t unknownCSCR;
+    bool hasDPLT;
+    uint32_t unknownDPLT;
+    uint8_t unknownQNAM[12];
 }; //struct
 
 } //namespace
 
-#endif // SR_CRAFTABLEOBJECTRECORD_H
+#endif // SR_NPCRECORD_H

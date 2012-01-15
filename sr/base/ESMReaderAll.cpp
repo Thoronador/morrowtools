@@ -63,6 +63,7 @@
 #include "MiscObjects.h"
 #include "MovementTypes.h"
 #include "NAVIRecords.h"
+#include "NPCs.h"
 #include "Outfits.h"
 #include "Perks.h"
 #include "PlacedGrenades.h"
@@ -239,6 +240,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;
     case cNAVI:
          return NAVIRecords::getSingleton().readNextRecord(in_File);
+         break;
+    case cNPC_:
+         return NPCs::getSingleton().readNextRecord(in_File);
          break;
     case cOTFT:
          return Outfits::getSingleton().readNextRecord(in_File);

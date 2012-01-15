@@ -27,7 +27,9 @@ namespace SRTP
 {
 
 const int32_t cAACT = 0x54434141; //"AACT" = 41 41 43 54
+const int32_t cACBS = 0x53424341; //"ACBS" = 41 43 42 53
 const int32_t cACTI = 0x49544341; //"ACTI" = 41 43 54 49
+const int32_t cAIDT = 0x54444941; //"AIDT" = 41 49 44 54
 const int32_t cALCH = 0x48434C41; //"ALCH" = 41 4C 43 48
 const int32_t cAMMO = 0x4F4D4D41; //"AMMO" = 41 4D 4D 4F
 const int32_t cANAM = 0x4D414E41; //"ANAM" = 41 4E 41 4D
@@ -36,6 +38,7 @@ const int32_t cARMO = 0x4F4D5241; //"ARMO" = 41 52 4D 4F
 const int32_t cARTO = 0x4F545241; //"ARTO" = 41 52 54 4F
 const int32_t cASPC = 0x43505341; //"ASPC" = 41 53 50 43
 const int32_t cASTP = 0x50545341; //"ASTP" = 41 53 54 50
+const int32_t cATKR = 0x524B5441; //"ATKR" = 41 54 4B 52
 const int32_t cBAMT = 0x544D4142; //"BAMT" = 42 41 4D 54
 const int32_t cBIDS = 0x53444942; //"BIDS" = 42 49 44 53
 const int32_t cBNAM = 0x4D414E42; //"BNAM" = 42 4E 41 4D
@@ -50,6 +53,7 @@ const int32_t cCNTO = 0x4F544E43; //"CNTO" = 43 4E 54 4F
 const int32_t cCOBJ = 0x4A424F43; //"COBJ" = 43 4F 42 4A
 const int32_t cCOCT = 0x54434F43; //"COCT" = 43 4F 43 54
 const int32_t cCRDT = 0x54445243; //"CRDT" = 43 52 44 54
+const int32_t cCSCR = 0x52435343; //"CSCR" = 43 53 43 52
 const int32_t cCTDA = 0x41445443; //"CTDA" = 43 54 44 41
 const int32_t cDALC = 0x434C4144; //"DALC" = 44 41 4C 43
 const int32_t cDATA = 0x41544144; //"DATA" = 44 41 54 41
@@ -61,6 +65,7 @@ const int32_t cDMDT = 0x54444D44; //"DMDT" = 44 4D 44 54
 const int32_t cDNAM = 0x4D414E44; //"DNAM" = 44 4E 41 4D
 const int32_t cDODT = 0x54444F44; //"DODT" = 44 4F 44 54
 const int32_t cDOOR = 0x524F4F44; //"DOOR" = 44 4F 4F 52
+const int32_t cDPLT = 0x544C5044; //"DPLT" = 44 50 4C 54
 const int32_t cDSTD = 0x44545344; //"DSTD" = 44 53 54 44
 const int32_t cDSTF = 0x46545344; //"DSTF" = 44 53 54 46
 const int32_t cEAMT = 0x544D4145; //"EAMT" = 45 41 4D 54
@@ -142,6 +147,9 @@ const int32_t cNAM1 = 0x314D414E; //"NAM1" = 4E 41 4D 31
 const int32_t cNAM2 = 0x324D414E; //"NAM2" = 4E 41 4D 32
 const int32_t cNAM3 = 0x334D414E; //"NAM3" = 4E 41 4D 33
 const int32_t cNAM4 = 0x344D414E; //"NAM4" = 4E 41 4D 34
+const int32_t cNAM5 = 0x354D414E; //"NAM5" = 4E 41 4D 35
+const int32_t cNAM6 = 0x364D414E; //"NAM6" = 4E 41 4D 36
+const int32_t cNAM7 = 0x374D414E; //"NAM7" = 4E 41 4D 37
 const int32_t cNAM8 = 0x384D414E; //"NAM9" = 4E 41 4D 38
 const int32_t cNAM9 = 0x394D414E; //"NAM9" = 4E 41 4D 39
 const int32_t cNAMA = 0x414D414E; //"NAMA" = 4E 41 4D 41
@@ -149,6 +157,7 @@ const int32_t cNAME = 0x454D414E; //"NAME" = 4E 41 4D 45
 const int32_t cNAVI = 0x4956414E; //"NAVI" = 4E 41 56 49
 const int32_t cNEXT = 0x5458454E; //"NEXT" = 4E 45 58 54
 const int32_t cNNAM = 0x4D414E4E; //"NNAM" = 4E 4E 41 4D
+const int32_t cNPC_ = 0x5F43504E; //"NPC_" = 4E 50 43 5F
 const int32_t cNVER = 0x5245564E; //"NVER" = 4E 56 45 52
 const int32_t cNVMI = 0x494D564E; //"NVMI" = 4E 56 4D 49
 const int32_t cNVPP = 0x5050564E; //"NVPP" = 4E 56 50 50
@@ -162,10 +171,14 @@ const int32_t cPFIG = 0x47494650; //"PFIG" = 50 46 49 47
 const int32_t cPFPC = 0x43504650; //"PFPC" = 50 46 50 43
 const int32_t cPGRE = 0x45524750; //"PGRE" = 50 47 52 45
 const int32_t cPHZD = 0x445A4850; //"PHZD" = 50 48 5A 44
+const int32_t cPKID = 0x44494B50; //"PKID" = 50 4B 49 44
 const int32_t cPNAM = 0x4D414E50; //"PNAM" = 50 4E 41 4D
 const int32_t cPRKC = 0x434B5250; //"PRKC" = 50 52 4B 43
 const int32_t cPRKE = 0x454B5250; //"PRKE" = 50 52 4B 45
 const int32_t cPRKF = 0x464B5250; //"PRKF" = 50 52 4B 46
+const int32_t cPRKR = 0x524B5250; //"PRKR" = 50 52 4B 52
+const int32_t cPRKZ = 0x5A4B5250; //"PRKZ" = 50 52 4B 5A
+const int32_t cQNAM = 0x4D414E51; //"QNAM" = 51 4E 41 4D
 const int32_t cQSDT = 0x54445351; //"QSDT" = 51 53 44 54
 const int32_t cQUAL = 0x4C415551; //"QUAL" = 51 55 41 4C
 const int32_t cQUST = 0x54535551; //"QUST" = 51 55 53 54
@@ -192,6 +205,7 @@ const int32_t cSPLO = 0x4F4C5053; //"SPLO" = 53 50 4C 4F
 const int32_t cSTAT = 0x54415453; //"STAT" = 53 54 41 54
 const int32_t cTES4 = 0x34534554; //"TES4" = 54 45 53 34
 const int32_t cTNAM = 0x4D414E54; //"TNAM" = 54 4E 41 4D
+const int32_t cTPLT = 0x544C5054; //"TPLT" = 54 50 4C 54
 const int32_t cTREE = 0x45455254; //"TREE" = 54 52 45 45
 const int32_t cTVDT = 0x54445654; //"TVDT" = 54 56 44 54
 const int32_t cTX00 = 0x30305854; //"TX00" = 54 58 30 30
@@ -205,6 +219,7 @@ const int32_t cTXST = 0x54535854; //"TXST" = 54 58 53 54
 const int32_t cUNAM = 0x4D414E55; //"UNAM" = 55 4E 41 4D
 const int32_t cVMAD = 0x44414D56; //"VMAD" = 56 4D 41 44
 const int32_t cVNAM = 0x4D414E56; //"VNAM" = 56 4E 41 4D
+const int32_t cVTCK = 0x4B435456; //"VTCK" = 56 54 43 4B
 const int32_t cVTYP = 0x50595456; //"VTYP" = 56 54 59 50
 const int32_t cWATR = 0x52544157; //"WATR" = 57 41 54 52
 const int32_t cWCTR = 0x52544357; //"WCTR" = 57 43 54 52

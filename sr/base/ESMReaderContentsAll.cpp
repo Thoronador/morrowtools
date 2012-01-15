@@ -61,6 +61,7 @@
 #include "records/MiscObjectRecord.h"
 #include "records/MovementTypeRecord.h"
 #include "records/NAVIRecord.h"
+#include "records/NPCRecord.h"
 #include "records/OutfitRecord.h"
 #include "records/PerkRecord.h"
 #include "records/PlacedGrenadeRecord.h"
@@ -226,6 +227,9 @@ int ESMReaderContentsAll::readNextRecord(std::ifstream& in_File, const int32_t r
          break;
     case cNAVI:
          recPtr = new NAVIRecord;
+         break;
+    case cNPC_:
+         recPtr = new NPCRecord;
          break;
     case cOTFT:
          recPtr = new OutfitRecord;

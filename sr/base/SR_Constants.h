@@ -38,6 +38,8 @@ const int32_t cARMO = 0x4F4D5241; //"ARMO" = 41 52 4D 4F
 const int32_t cARTO = 0x4F545241; //"ARTO" = 41 52 54 4F
 const int32_t cASPC = 0x43505341; //"ASPC" = 41 53 50 43
 const int32_t cASTP = 0x50545341; //"ASTP" = 41 53 54 50
+const int32_t cATKD = 0x444B5441; //"ATKD" = 41 54 4B 44
+const int32_t cATKE = 0x454B5441; //"ATKE" = 41 54 4B 45
 const int32_t cATKR = 0x524B5441; //"ATKR" = 41 54 4B 52
 const int32_t cBAMT = 0x544D4142; //"BAMT" = 42 41 4D 54
 const int32_t cBIDS = 0x53444942; //"BIDS" = 42 49 44 53
@@ -53,7 +55,11 @@ const int32_t cCNTO = 0x4F544E43; //"CNTO" = 43 4E 54 4F
 const int32_t cCOBJ = 0x4A424F43; //"COBJ" = 43 4F 42 4A
 const int32_t cCOCT = 0x54434F43; //"COCT" = 43 4F 43 54
 const int32_t cCRDT = 0x54445243; //"CRDT" = 43 52 44 54
+const int32_t cCRIF = 0x46495243; //"CRIF" = 43 52 49 46
 const int32_t cCSCR = 0x52435343; //"CSCR" = 43 53 43 52
+const int32_t cCSDC = 0x43445343; //"CSDC" = 43 53 44 43
+const int32_t cCSDI = 0x49445343; //"CSDI" = 43 53 44 49
+const int32_t cCSDT = 0x54445343; //"CSDT" = 43 53 44 54
 const int32_t cCTDA = 0x41445443; //"CTDA" = 43 54 44 41
 const int32_t cDALC = 0x434C4144; //"DALC" = 44 41 4C 43
 const int32_t cDATA = 0x41544144; //"DATA" = 44 41 54 41
@@ -64,11 +70,13 @@ const int32_t cDMDS = 0x53444D44; //"DMDS" = 44 4D 44 53
 const int32_t cDMDT = 0x54444D44; //"DMDT" = 44 4D 44 54
 const int32_t cDNAM = 0x4D414E44; //"DNAM" = 44 4E 41 4D
 const int32_t cDODT = 0x54444F44; //"DODT" = 44 4F 44 54
+const int32_t cDOFT = 0x54464F44; //"DOFT" = 44 4F 46 54
 const int32_t cDOOR = 0x524F4F44; //"DOOR" = 44 4F 4F 52
 const int32_t cDPLT = 0x544C5044; //"DPLT" = 44 50 4C 54
 const int32_t cDSTD = 0x44545344; //"DSTD" = 44 53 54 44
 const int32_t cDSTF = 0x46545344; //"DSTF" = 44 53 54 46
 const int32_t cEAMT = 0x544D4145; //"EAMT" = 45 41 4D 54
+const int32_t cECOR = 0x524F4345; //"ECOR" = 45 43 4F 52
 const int32_t cECZN = 0x4E5A4345; //"ECZN" = 45 43 5A 4E
 const int32_t cEDID = 0x44494445; //"EDID" = 45 44 49 44
 const int32_t cEFID = 0x44494645; //"EFID" = 45 46 49 44
@@ -89,6 +97,7 @@ const int32_t cFNAM = 0x4D414E46; //"FNAM" = 46 4E 41 4D
 const int32_t cFPRT = 0x54525046; //"FPRT" = 46 50 52 54
 const int32_t cFSTP = 0x50545346; //"FSTP" = 46 53 54 50
 const int32_t cFSTS = 0x53545346; //"FSTS" = 46 53 54 53
+const int32_t cFTST = 0x54535446; //"FTST" = 46 54 53 54
 const int32_t cFULL = 0x4C4C5546; //"FULL" = 46 55 4C 4C
 const int32_t cGLOB = 0x424F4C47; //"GLOB" = 47 4C 4F 42
 const int32_t cGMST = 0x54534D47; //"GMST" = 47 4D 53 54
@@ -96,6 +105,7 @@ const int32_t cGNAM = 0x4D414E47; //"GNAM" = 47 4E 41 4D
 const int32_t cGRAS = 0x53415247; //"GRAS" = 47 52 41 53
 const int32_t cGRUP = 0x50555247; //"GRUP" = 47 52 55 50
 const int32_t cHAZD = 0x445A4148; //"HAZD" = 48 41 5A 44
+const int32_t cHCLF = 0x464C4348; //"HCLF" = 48 43 4C 46
 const int32_t cHDPT = 0x54504448; //"HDPT" = 48 44 50 54
 const int32_t cHEDR = 0x52444548; //"HEDR" = 48 45 44 52
 const int32_t cHNAM = 0x4D414E48; //"HNAM" = 48 4E 41 4D
@@ -191,10 +201,12 @@ const int32_t cRNAM = 0x4D414E52; //"RNAM" = 52 4E 41 4D
 const int32_t cSCRL = 0x4C524353; //"SCRL" = 53 43 52 4C
 const int32_t cSDSC = 0x43534453; //"SDSC" = 53 44 53 43
 const int32_t cSHOU = 0x554F4853; //"SHOU" = 53 48 4F 55
+const int32_t cSHRT = 0x54524853; //"SHRT" = 53 48 52 54
 const int32_t cSLCP = 0x50434C53; //"SLCP" = 53 4C 43 50
 const int32_t cSLGM = 0x4D474C53; //"SLGM" = 53 4C 47 4D
 const int32_t cSNAM = 0x4D414E53; //"SNAM" = 53 4E 41 4D
 const int32_t cSNDD = 0x44444E53; //"SNDD" = 53 4E 44 44
+const int32_t cSOFT = 0x54464F53; //"SOFT" = 53 4F 46 54
 const int32_t cSOUL = 0x4C554F53; //"SOUL" = 53 4F 55 4C
 const int32_t cSOUN = 0x4E554F53; //"SOUN" = 53 4F 55 4E
 const int32_t cSPCT = 0x54435053; //"SPCT" = 53 50 43 54
@@ -202,8 +214,13 @@ const int32_t cSPED = 0x44455053; //"SPED" = 53 50 45 44
 const int32_t cSPEL = 0x4C455053; //"SPEL" = 53 50 45 4C
 const int32_t cSPIT = 0x54495053; //"SPIT" = 53 50 49 54
 const int32_t cSPLO = 0x4F4C5053; //"SPLO" = 53 50 4C 4F
+const int32_t cSPOR = 0x524F5053; //"SPOR" = 53 50 4F 52
 const int32_t cSTAT = 0x54415453; //"STAT" = 53 54 41 54
 const int32_t cTES4 = 0x34534554; //"TES4" = 54 45 53 34
+const int32_t cTIAS = 0x53414954; //"TIAS" = 54 49 41 53
+const int32_t cTINC = 0x434E4954; //"TINC" = 54 49 4E 43
+const int32_t cTINI = 0x494E4954; //"TINI" = 54 49 4E 49
+const int32_t cTINV = 0x564E4954; //"TINV" = 54 49 4E 56
 const int32_t cTNAM = 0x4D414E54; //"TNAM" = 54 4E 41 4D
 const int32_t cTPLT = 0x544C5054; //"TPLT" = 54 50 4C 54
 const int32_t cTREE = 0x45455254; //"TREE" = 54 52 45 45

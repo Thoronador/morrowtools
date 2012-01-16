@@ -384,13 +384,21 @@ Records and their sub-records:
           unknown data
       VTCK (4 bytes, optional)
           unknown data
-      TPLT (4 bytes)
+      TPLT (4 bytes, optional)
           unknown data
       RNAM (4 bytes)
           unknown form ID
+      DEST (8 bytes, optional)
+          unknown data
       WNAM (4 bytes, optional)
           unknown data
+      ANAM (4 bytes, optional)
+          unknown data
       ATKR (4 bytes, optional)
+          unknown data
+      ATKD (44 bytes, optional)
+          unknown data
+      ATKE (string, NUL-terminated, optional)
           unknown data
       SPCT (4 bytes, optional)
           number of SPLO records
@@ -404,6 +412,10 @@ Records and their sub-records:
           number of CNTO records
       CNTO (8 bytes, optional, can occur multiple times)
           form ID of an item an count thereof (both uint32_t)
+      SPOR (4 bytes, optional)
+          unknown data
+      ECOR (4 bytes, optional)
+          unknown data
       AIDT (20 bytes)
           AI data
       PKID (4 bytes, optional, can occur multiple times)
@@ -414,9 +426,19 @@ Records and their sub-records:
           array of uint32_ts/form IDs
       CNAM (4 bytes)
           unknown data
+      FULL (4 bytes, optional)
+          unknown data
+      SHRT (4 bytes, optional)
+          unknown data
       DATA (0 bytes)
           no content, but always seems to be followed by DNAM
       DNAM (52 bytes)
+          unknown data
+      PNAM (4 bytes, optional, can occur multiple times)
+          unknown data
+      HCLF (4 bytes, optional)
+          unknown data
+      GNAM (4 bytes, optional)
           unknown data
       ZNAM (4 bytes, optional)
           unknown data
@@ -428,13 +450,46 @@ Records and their sub-records:
           unknown data
       NAM8 (4 bytes)
           unknown data
+      DOFT (4 bytes, optional)
+          unknown data
+      SOFT (4 bytes, optional)
+          unknown data
+      CRIF (4 bytes, optional)
+          unknown data
       CSCR (4 bytes, optional)
           unknown data
+          
+      CSDT (4 bytes, optional, can occur multiple times)
+          unknown data
+      CSDI (4 bytes, optional, can occur multiple times)
+          unknown data
+      CSDC (1 byte, optional, can occur multiple times)
+          unknown data
+          
+          ----> CSDT, CSDI and CSDC always appear in that order, forming a struct
+          
       DPLT (4 bytes, optional)
+          unknown data
+      FTST (4 bytes, optional)
           unknown data
       QNAM (12 bytes)
           unknown data
+      NAM9 (76 bytes, optional)
+          unknown data
+      NAMA (16 bytes, optional)
+          unknown data
 
+      TINI (2 bytes, optional, can occur multiple times)
+          unknown data
+      TINC (4 bytes, optional, can occur multiple times)
+          unknown data
+      TINV (4 bytes, optional, can occur multiple times)
+          unknown data
+      TIAS (2 bytes, optional, can occur multiple times)
+          unknown data
+
+          ---> TINI, TINC, TINV and TIAS subrecord form a structure and always
+               appear in that order. Those structs can occur more than once.
 
   PGRE: placed grenade
       NAME (4 bytes)

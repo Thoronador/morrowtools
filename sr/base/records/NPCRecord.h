@@ -75,6 +75,29 @@ struct NPCRecord: public BasicRecord
       bool operator==(const PerkElem& other) const;
     };//struct
 
+    //struct fot TINI-TINC-TINV-TIAS sequences
+    struct TINXstructure
+    {
+      uint16_t unknownTINI;
+      uint32_t unknownTINC;
+      uint32_t unknownTINV;
+      uint16_t unknownTIAS;
+
+      /* equality operator */
+      bool operator==(const TINXstructure& other) const;
+    }; //struct
+
+    //struct for CSDT and following two subrecords
+    struct CSDXstruct
+    {
+      uint32_t unknownCSDT;
+      uint32_t unknownCSDI;
+      uint8_t unknownCSDC;
+
+      /* equality operator */
+      bool operator==(const CSDXstruct& other) const;
+    }; //struct
+
     std::string editorID;
     BinarySubRecord unknownVMAD;
     uint8_t unknownOBND[12];
@@ -84,31 +107,63 @@ struct NPCRecord: public BasicRecord
     uint32_t unknownINAM;
     bool hasVTCK;
     uint32_t unknownVTCK;
+    bool hasTPLT;
     uint32_t unknownTPLT;
     uint32_t unknownRNAM;
+    bool hasDEST;
+    uint64_t unknownDEST;
     bool hasWNAM;
     uint32_t unknownWNAM;
+    bool hasANAM;
+    uint32_t unknownANAM;
     bool hasATKR;
     uint32_t unknownATKR;
+    BinarySubRecord unknownATKD;
+    std::string unknownATKE;
     std::vector<uint32_t> spellFormIDs;
     std::vector<PerkElem> perkList;
     std::vector<ComponentData> items;
+    bool hasSPOR;
+    uint32_t unknownSPOR;
+    bool hasECOR;
+    uint32_t unknownECOR;
     uint8_t unknownAIDT[20];
     std::vector<uint32_t> unknownPKIDs;
     std::vector<uint32_t> keywordArray;
     uint32_t unknownCNAM;
+    bool hasFULL;
+    uint32_t nameStringID; //subrecord FULL
+    bool hasSHRT;
+    uint32_t unknownSHRT;
     uint8_t unknownDNAM[52];
+    std::vector<uint32_t> unknownPNAMs;
+    bool hasHCLF;
+    uint32_t unknownHCLF;
+    bool hasGNAM;
+    uint32_t unknownGNAM;
     bool hasZNAM;
     uint32_t unknownZNAM;
     uint16_t unknownNAM5;
     uint32_t unknownNAM6;
     uint32_t unknownNAM7;
     uint32_t unknownNAM8;
+    bool hasDOFT;
+    uint32_t unknownDOFT;
+    bool hasSOFT;
+    uint32_t unknownSOFT;
+    bool hasCRIF;
+    uint32_t unknownCRIF;
     bool hasCSCR;
     uint32_t unknownCSCR;
+    std::vector<CSDXstruct> unknownCSDXs;
     bool hasDPLT;
     uint32_t unknownDPLT;
+    bool hasFTST;
+    uint32_t unknownFTST;
     uint8_t unknownQNAM[12];
+    BinarySubRecord unknownNAM9;
+    BinarySubRecord unknownNAMA;
+    std::vector<TINXstructure> unknownTINXs;
 }; //struct
 
 } //namespace

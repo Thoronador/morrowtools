@@ -123,6 +123,23 @@ class GroupContents
     /* returns the number of sub groups in the internal list */
     unsigned int getNumberOfSubGroups() const;
 
+    //type for sub group iterator
+    typedef std::vector<Group>::const_iterator SubIterator;
+
+    /* returns an iterator to the start of the list of sub groups */
+    SubIterator getSubBegin() const;
+
+    /* returns an iterator to the end of the list of sub groups */
+    SubIterator getSubEnd() const;
+
+    /* deletes the requested sub group and returns true, if such a group was
+       deleted
+
+       parameters:
+           g_data - the header data of the sub group
+    */
+    bool deleteSubGroup(const GroupData& g_data);
+
     /* removes all sub groups from the internal list*/
     void removeSubGroups();
 

@@ -163,6 +163,31 @@ unsigned int GroupContents::getNumberOfSubGroups() const
   return m_SubGroups.size();
 }
 
+GroupContents::SubIterator GroupContents::getSubBegin() const
+{
+  return m_SubGroups.begin();
+}
+
+GroupContents::SubIterator GroupContents::getSubEnd() const
+{
+  return m_SubGroups.end();
+}
+
+bool GroupContents::deleteSubGroup(const GroupData& g_data)
+{
+  std::vector<Group>::iterator iter = m_SubGroups.begin();
+  while (iter!=m_SubGroups.end())
+  {
+    if (iter->headerData == g_data)
+    {
+      m_SubGroups.erase(iter);
+      return true;
+    }
+    ++iter;
+  }//while
+  return false;
+}
+
 void GroupContents::removeSubGroups()
 {
   m_SubGroups.clear();

@@ -33,6 +33,7 @@
 #include "../base/Ingredients.h"
 #include "../base/Keys.h"
 #include "../base/MiscObjects.h"
+#include "../base/NPCs.h"
 #include "../base/Perks.h"
 #include "../base/RegistryFunctions.h"
 #include "../base/Scrolls.h"
@@ -68,13 +69,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Form ID Finder for Skyrim, version 0.13.rev371, 2012-01-05\n";
+  std::cout << "Form ID Finder for Skyrim, version 0.14.rev393, 2012-01-16\n";
 }
 
 int showVersionExitcode()
 {
   showVersion();
-  return 371;
+  return 393;
 }
 
 void showHelp()
@@ -640,6 +641,39 @@ int main(int argc, char **argv)
       std::cout << "Total matching misc. objects: "<<miscMatches<<"\n";
     }
   }//scope for misc. object stuff
+
+  //check NPCs for matches
+  {
+    unsigned int NPCMatches = 0;
+    SRTP::NPCs::ListIterator npc_iter = SRTP::NPCs::getSingleton().getBegin();
+    while (npc_iter!=SRTP::NPCs::getSingleton().getEnd())
+    {
+      if (npc_iter->second.hasFULL)
+      {
+        if (table.hasString(npc_iter->second.nameStringID))
+        {
+          if (matchesKeyword(table.getString(npc_iter->second.nameStringID), searchKeyword, caseSensitive))
+          {
+            //found matching alchemy record
+            if (NPCMatches==0)
+            {
+              std::cout << "\n\nMatching NPCs:\n";
+            }
+            std::cout << "    \""<<table.getString(npc_iter->second.nameStringID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(npc_iter->second.headerFormID)
+                      <<"\n        editor ID \""<<npc_iter->second.editorID<<"\"\n";
+            ++NPCMatches;
+            ++totalMatches;
+          }//if match found
+        }//if table has string
+      }//if hasFULL
+      ++npc_iter;
+    }//while
+    if (NPCMatches>0)
+    {
+      std::cout << "Total matching NPCs: "<<NPCMatches<<"\n";
+    }
+  }//scope for NPC stuff
 
   //check perks for matches
   {

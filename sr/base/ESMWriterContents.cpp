@@ -39,7 +39,7 @@ uint32_t ESMWriterContents::getTotalNumberOfRecords() const
   unsigned int i;
   for (i=0; i<contents.m_Groups.size(); ++i)
   {
-    result += contents.m_Groups[i].contents.getNumberOfRecords();
+    result += contents.m_Groups[i].getNumberOfRecords();
   }//for
   return result;
 }

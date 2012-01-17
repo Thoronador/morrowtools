@@ -62,7 +62,7 @@ void ESMReaderContentsBase::nextGroupStarted(const GroupData& g_data, const bool
     if (sub)
     {
       //create a subgroup of the current group
-      m_InternalGroup->contents.addSubGroup(g_data);
+      m_InternalGroup->addSubGroup(g_data);
       ++m_InternalGroupLevel;
       m_InternalGroup = contents.determineLatestGroup(m_InternalGroupLevel);
     }//if sub group
@@ -75,7 +75,7 @@ void ESMReaderContentsBase::nextGroupStarted(const GroupData& g_data, const bool
         throw 42;
         return;
       }
-      parent->contents.addSubGroup(g_data);
+      parent->addSubGroup(g_data);
       m_InternalGroup = contents.determineLatestGroup(m_InternalGroupLevel);
     }//else - next group on same level
   }

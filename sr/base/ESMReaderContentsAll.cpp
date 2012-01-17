@@ -301,7 +301,7 @@ int ESMReaderContentsAll::readNextRecord(std::ifstream& in_File, const int32_t r
   }//swi
   if (recPtr->loadFromStream(in_File))
   {
-    contents.m_Groups.back().contents.addRecord(recPtr);
+    contents.m_Groups.back().addRecord(recPtr);
     return 1; //success
   }
   else

@@ -40,6 +40,7 @@
 #include "records/EncounterZoneRecord.h"
 #include "records/EquipmentSlotRecord.h"
 #include "records/EyeRecord.h"
+#include "records/FloraRecord.h"
 #include "records/FootstepRecord.h"
 #include "records/FootstepSetRecord.h"
 #include "records/FormListRecord.h"
@@ -165,6 +166,9 @@ int ESMReaderContentsAll::readNextRecord(std::ifstream& in_File, const int32_t r
          break;
     case cEYES:
          recPtr = new EyeRecord;
+         break;
+    case cFLOR:
+         recPtr = new FloraRecord;
          break;
     case cFLST:
          recPtr = new FormListRecord;
@@ -308,14 +312,9 @@ int ESMReaderContentsAll::readNextRecord(std::ifstream& in_File, const int32_t r
     contents.m_Groups.back().addRecord(recPtr);
     return 1; //success
   }
-  else
-  {
-    delete recPtr;
-    recPtr = NULL;
-    return -1; //error
-  }
-  //we should never get to this point
-  throw 42;
+  delete recPtr;
+  recPtr = NULL;
+  return -1; //error
 }
 
 } //namespace

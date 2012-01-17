@@ -91,6 +91,7 @@ const int32_t cEQUP = 0x50555145; //"EQUP" = 45 51 55 50
 const int32_t cETYP = 0x50595445; //"ETYP" = 45 54 59 50
 const int32_t cEYES = 0x53455945; //"EYES" = 45 59 45 53
 const int32_t cFCHT = 0x54484346; //"FCHT" = 46 43 48 54
+const int32_t cFLOR = 0x524F4C46; //"FLOR" = 46 4C 4F 52
 const int32_t cFLST = 0x54534C46; //"FLST" = 46 4C 53 54
 const int32_t cFLTR = 0x52544C46; //"FLTR" = 46 4C 54 52
 const int32_t cFLTV = 0x56544C46; //"FLTV" = 46 4C 54 56

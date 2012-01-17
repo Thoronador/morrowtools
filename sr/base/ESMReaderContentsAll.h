@@ -22,7 +22,6 @@
 #define SR_ESMREADERCONTENTSALL_H
 
 #include "ESMReaderContentsBase.h"
-#include "ESMFileContents.h"
 
 namespace SRTP
 {

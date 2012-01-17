@@ -4,19 +4,23 @@
 Record types the application should be able to search:
 ------------------------------------------------------
 
+ACTI - activators
 ALCH - alchemy stuff/ potions
 AMMO - ammunition
 APPA - apparatus
 ARMO - armour
 BOOK - book
+FLOR - flora
 INGR - ingredient
-KEYM - key
+KEYM - keys
 MISC - mic. object
-PERK - perk
-SCRL - scroll
-SHOU - shout
-[*] SLGM - soul gem
+NPC_ - NPCs
+PERK - perks
+SCRL - scrolls
+SHOU - shouts
+SLGM - soul gem
 SPEL - spell
+TREE - trees
 WEAP - weapon
 WOOP - word of power
 

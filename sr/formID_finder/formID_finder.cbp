@@ -71,6 +71,8 @@
 		<Unit filename="..\base\StringTable.h" />
 		<Unit filename="..\base\Weapons.h" />
 		<Unit filename="..\base\WordsOfPower.h" />
+		<Unit filename="..\base\records\ActivatorRecord.cpp" />
+		<Unit filename="..\base\records\ActivatorRecord.h" />
 		<Unit filename="..\base\records\AlchemyPotionRecord.cpp" />
 		<Unit filename="..\base\records\AlchemyPotionRecord.h" />
 		<Unit filename="..\base\records\AmmunitionRecord.cpp" />
@@ -91,6 +93,8 @@
 		<Unit filename="..\base\records\ComponentData.h" />
 		<Unit filename="..\base\records\EffectBlock.cpp" />
 		<Unit filename="..\base\records\EffectBlock.h" />
+		<Unit filename="..\base\records\FloraRecord.cpp" />
+		<Unit filename="..\base\records\FloraRecord.h" />
 		<Unit filename="..\base\records\GroupData.cpp" />
 		<Unit filename="..\base\records\GroupData.h" />
 		<Unit filename="..\base\records\IngredientRecord.cpp" />
@@ -115,6 +119,8 @@
 		<Unit filename="..\base\records\SubBlock.h" />
 		<Unit filename="..\base\records\TES4HeaderRecord.cpp" />
 		<Unit filename="..\base\records\TES4HeaderRecord.h" />
+		<Unit filename="..\base\records\TreeRecord.cpp" />
+		<Unit filename="..\base\records\TreeRecord.h" />
 		<Unit filename="..\base\records\WeaponRecord.cpp" />
 		<Unit filename="..\base\records\WeaponRecord.h" />
 		<Unit filename="..\base\records\WordOfPowerRecord.cpp" />

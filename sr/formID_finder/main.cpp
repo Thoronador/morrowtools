@@ -24,11 +24,13 @@
 #include "../../base/FileFunctions.h"
 #include "../../base/UtilityFunctions.h"
 #include "../../mw/base/ReturnCodes.h"
+#include "../base/Activators.h"
 #include "../base/AlchemyPotions.h"
 #include "../base/Ammunitions.h"
 #include "../base/Apparatuses.h"
 #include "../base/Armours.h"
 #include "../base/Books.h"
+#include "../base/Floras.h"
 #include "../base/FormIDFunctions.h"
 #include "../base/Ingredients.h"
 #include "../base/Keys.h"
@@ -41,6 +43,7 @@
 #include "../base/SoulGems.h"
 #include "../base/Spells.h"
 #include "../base/StringTable.h"
+#include "../base/Trees.h"
 #include "../base/Weapons.h"
 #include "../base/WordsOfPower.h"
 #include "../base/records/TES4HeaderRecord.h"
@@ -69,13 +72,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Form ID Finder for Skyrim, version 0.14.rev393, 2012-01-16\n";
+  std::cout << "Form ID Finder for Skyrim, version 0.15.rev400, 2012-01-17\n";
 }
 
 int showVersionExitcode()
 {
   showVersion();
-  return 393;
+  return 400;
 }
 
 void showHelp()
@@ -382,6 +385,39 @@ int main(int argc, char **argv)
   unsigned int totalMatches = 0;
 
 
+  //check activator for matches
+  {
+    unsigned int activatorMatches = 0;
+    SRTP::Activators::ListIterator activator_iter = SRTP::Activators::getSingleton().getBegin();
+    while (activator_iter!=SRTP::Activators::getSingleton().getEnd())
+    {
+      if (activator_iter->second.hasFULL)
+      {
+        if (table.hasString(activator_iter->second.nameStringID))
+        {
+          if (matchesKeyword(table.getString(activator_iter->second.nameStringID), searchKeyword, caseSensitive))
+          {
+            //found matching alchemy record
+            if (activatorMatches==0)
+            {
+              std::cout << "\n\nMatching activators:\n";
+            }
+            std::cout << "    \""<<table.getString(activator_iter->second.nameStringID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(activator_iter->second.headerFormID)
+                      <<"\n        editor ID \""<<activator_iter->second.editorID<<"\"\n";
+            ++activatorMatches;
+            ++totalMatches;
+          }//if match found
+        }//if table has string
+      }//if hasFULL
+      ++activator_iter;
+    }//while
+    if (activatorMatches>0)
+    {
+      std::cout << "Total matching activators: "<<activatorMatches<<"\n";
+    }
+  }//scope for activator stuff
+
   //check alchemy for matches
   {
     unsigned int alchemyMatches = 0;
@@ -545,6 +581,36 @@ int main(int argc, char **argv)
       std::cout << "Total matching books: "<<bookMatches<<"\n";
     }
   }//scope for book stuff
+
+  //check flora for matches
+  {
+    unsigned int floraMatches = 0;
+    SRTP::Floras::ListIterator flora_iter = SRTP::Floras::getSingleton().getBegin();
+    while (flora_iter!=SRTP::Floras::getSingleton().getEnd())
+    {
+        if (table.hasString(flora_iter->second.nameStringID))
+        {
+          if (matchesKeyword(table.getString(flora_iter->second.nameStringID), searchKeyword, caseSensitive))
+          {
+            //found matching flora record
+            if (floraMatches==0)
+            {
+              std::cout << "\n\nMatching alchemy potions:\n";
+            }
+            std::cout << "    \""<<table.getString(flora_iter->second.nameStringID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(flora_iter->second.headerFormID)
+                      <<"\n        editor ID \""<<flora_iter->second.editorID<<"\"\n";
+            ++floraMatches;
+            ++totalMatches;
+          }//if match found
+        }//if table has string
+      ++flora_iter;
+    }//while
+    if (floraMatches>0)
+    {
+      std::cout << "Total matching florae: "<<floraMatches<<"\n";
+    }
+  }//scope for flora stuff
 
   //check ingredients for matches
   {
@@ -873,6 +939,39 @@ int main(int argc, char **argv)
       std::cout << "Total matching words of power: "<<wordMatches<<"\n";
     }
   }//scope for word of power stuff
+
+  //check trees for matches
+  {
+    unsigned int treeMatches = 0;
+    SRTP::Trees::ListIterator tree_iter = SRTP::Trees::getSingleton().getBegin();
+    while (tree_iter!=SRTP::Trees::getSingleton().getEnd())
+    {
+      if (tree_iter->second.hasFULL)
+      {
+        if (table.hasString(tree_iter->second.nameStringID))
+        {
+          if (matchesKeyword(table.getString(tree_iter->second.nameStringID), searchKeyword, caseSensitive))
+          {
+            //found matching alchemy record
+            if (treeMatches==0)
+            {
+              std::cout << "\n\nMatching trees:\n";
+            }
+            std::cout << "    \""<<table.getString(tree_iter->second.nameStringID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(tree_iter->second.headerFormID)
+                      <<"\n        editor ID \""<<tree_iter->second.editorID<<"\"\n";
+            ++treeMatches;
+            ++totalMatches;
+          }//if match found
+        }//if table has string
+      }//if hasFULL
+      ++tree_iter;
+    }//while
+    if (treeMatches>0)
+    {
+      std::cout << "Total matching trees: "<<treeMatches<<"\n";
+    }
+  }//scope for tree stuff
 
   //check weapons for matches
   {

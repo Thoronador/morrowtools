@@ -20,11 +20,13 @@
 
 #include "ESMReaderFinder.h"
 #include "../base/SR_Constants.h"
+#include "../base/Activators.h"
 #include "../base/AlchemyPotions.h"
 #include "../base/Ammunitions.h"
 #include "../base/Apparatuses.h"
 #include "../base/Armours.h"
 #include "../base/Books.h"
+#include "../base/Floras.h"
 #include "../base/Ingredients.h"
 #include "../base/Keys.h"
 #include "../base/MiscObjects.h"
@@ -34,6 +36,7 @@
 #include "../base/Shouts.h"
 #include "../base/SoulGems.h"
 #include "../base/Spells.h"
+#include "../base/Trees.h"
 #include "../base/Weapons.h"
 #include "../base/WordsOfPower.h"
 
@@ -54,11 +57,13 @@ bool ESMReaderFinder::needGroup(const GroupData& g_data) const
 {
   switch (g_data.getGroupName())
   {
+    case cACTI:
     case cALCH:
     case cAMMO:
     case cAPPA:
     case cARMO:
     case cBOOK:
+    case cFLOR:
     case cINGR:
     case cKEYM:
     case cMISC:
@@ -68,6 +73,7 @@ bool ESMReaderFinder::needGroup(const GroupData& g_data) const
     case cSHOU:
     case cSLGM:
     case cSPEL:
+    case cTREE:
     case cWEAP:
     case cWOOP:
          return true;
@@ -91,6 +97,9 @@ int ESMReaderFinder::readNextRecord(std::ifstream& in_File, const int32_t recNam
   #warning Not completely implemented yet!
   switch (recName)
   {
+    case cACTI:
+         return Activators::getSingleton().readNextRecord(in_File);
+         break;
     case cALCH:
          return AlchemyPotions::getSingleton().readNextRecord(in_File);
          break;
@@ -105,6 +114,9 @@ int ESMReaderFinder::readNextRecord(std::ifstream& in_File, const int32_t recNam
          break;
     case cBOOK:
          return Books::getSingleton().readNextRecord(in_File);
+         break;
+    case cFLOR:
+         return Floras::getSingleton().readNextRecord(in_File);
          break;
     case cINGR:
          return Ingredients::getSingleton().readNextRecord(in_File);
@@ -132,6 +144,9 @@ int ESMReaderFinder::readNextRecord(std::ifstream& in_File, const int32_t recNam
          break;
     case cSPEL:
          return Spells::getSingleton().readNextRecord(in_File);
+         break;
+    case cTREE:
+         return Trees::getSingleton().readNextRecord(in_File);
          break;
     case cWEAP:
          return Weapons::getSingleton().readNextRecord(in_File);

@@ -503,19 +503,4 @@ int32_t FloraRecord::getRecordType() const
   return cFLOR;
 }
 
-    std::string editorID;
-    BinarySubRecord unknownVMAD;
-    uint8_t unknownOBND[12];
-    uint32_t nameStringID;
-    std::string modelPath;
-    BinarySubRecord unknownMODT;
-    uint32_t unknownPNAM;
-    uint32_t unknownRNAM;
-    uint16_t unknownFNAM;
-    bool hasPFIG;
-    uint32_t unknownPFIG;
-    bool hasSNAM;
-    uint32_t unknownSNAM;
-    uint32_t unknownPFPC;
-
 } //namespace

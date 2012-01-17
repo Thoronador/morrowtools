@@ -23,7 +23,7 @@
 #include "SR_Constants.h"
 #include "records/AcousticSpaceRecord.h"
 #include "records/ActionRecord.h"
-//#include "records/ActivatorRecord.h"
+#include "records/ActivatorRecord.h"
 #include "records/AlchemyPotionRecord.h"
 #include "records/AmmunitionRecord.h"
 #include "records/ApparatusRecord.h"
@@ -113,9 +113,9 @@ int ESMReaderContentsAll::readNextRecord(std::ifstream& in_File, const int32_t r
     case cAACT:
          recPtr = new ActionRecord;
          break;
-    /*case cACTI:
+    case cACTI:
          recPtr = new ActivatorRecord;
-         break;*/
+         break;
     case cALCH:
          recPtr = new AlchemyPotionRecord;
          break;

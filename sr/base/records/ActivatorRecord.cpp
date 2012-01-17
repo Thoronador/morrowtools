@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -27,32 +27,49 @@
 namespace SRTP
 {
 
+bool ActivatorRecord::destStruct::operator==(const ActivatorRecord::destStruct& other) const
+{
+  return ((hasDSTD==other.hasDSTD) and ((memcmp(unknownDSTD, other.unknownDSTD, 20)==0) or (!hasDSTD))
+      and (destroyedModelPath==other.destroyedModelPath) and (unknownDMDT==other.unknownDMDT)
+      and (unknownDMDS==other.unknownDMDS));
+}
+
+void ActivatorRecord::destStruct::reset()
+{
+  hasDSTD = false;
+  memset(unknownDSTD, 0, 20);
+  destroyedModelPath = "";
+  unknownDMDT.setPresence(false);
+  unknownDMDS.setPresence(false);
+}
+
+/* ActivatorRecord's functions */
+
 ActivatorRecord::ActivatorRecord()
 {
   editorID = "";
   unknownVMAD.setPresence(false),
   memset(unknownOBND, 0, 12);
   hasFULL = false;
-  unknownFULL = 0;
+  nameStringID = 0;
   modelPath = "";
   unknownMODT.setPresence(false);
   unknownMODS.setPresence(false);
   hasDEST = false;
   memset(unknownDEST, 0, 8);
-  hasDSTD = false;
-  memset(unknownDSTD, 0, 20);
-  destroyedModelPath = "";
-  unknownDMDT.setPresence(false);
-  unknownDMDS.setPresence(false);
-  unknownDSTF.setPresence(false);
+  destructionStructures.clear();
   keywordArray.clear();
+  hasPNAM = false;
   unknownPNAM = 0;
+  hasSNAM = false;
+  unknownSNAM = 0;
   hasVNAM = false;
   unknownVNAM = 0;
   hasWNAM = false;
   unknownWNAM = 0;
   hasRNAM = false;
   unknownRNAM = 0;
+  hasFNAM = false;
   unknownFNAM = 0;
   hasKNAM = false;
   unknownKNAM = 0;
@@ -71,13 +88,12 @@ bool ActivatorRecord::equals(const ActivatorRecord& other) const
     and (hasFULL==other.hasFULL) and ((unknownFNAM==other.unknownFNAM) or (!hasFULL))
     and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
     and (unknownMODS==other.unknownMODS) and (hasDEST==other.hasDEST)
-    and (memcmp(unknownDEST, other.unknownDEST, 8)==0) and (hasDSTD==other.hasDSTD)
-    and (memcmp(unknownDSTD, other.unknownDSTD, 20)==0)
-    and (destroyedModelPath==other.destroyedModelPath)
-    and (unknownDMDT==other.unknownDMDT) and (unknownDMDS==other.unknownDMDS)
-    and (unknownDSTF==other.unknownDSTF)
+    and (memcmp(unknownDEST, other.unknownDEST, 8)==0)
+    and (destructionStructures==other.destructionStructures)
     and (keywordArray==other.keywordArray)
-    and (unknownPNAM==other.unknownPNAM) and (unknownFNAM==other.unknownFNAM)
+    and (hasPNAM==other.hasPNAM) and ((unknownPNAM==other.unknownPNAM) or (!hasPNAM))
+    and (hasFNAM==other.hasFNAM) and ((unknownFNAM==other.unknownFNAM) or (!hasFNAM))
+    and (hasSNAM==other.hasSNAM) and ((unknownSNAM==other.unknownSNAM) or (!hasSNAM))
     and (hasVNAM==other.hasVNAM) and ((unknownVNAM==other.unknownVNAM) or (!hasVNAM))
     and (hasWNAM==other.hasWNAM) and ((unknownWNAM==other.unknownWNAM) or (!hasWNAM))
     and (hasRNAM==other.hasRNAM) and ((unknownRNAM==other.unknownRNAM) or (!hasRNAM))
@@ -89,9 +105,7 @@ uint32_t ActivatorRecord::getWriteSize() const
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of strin +1 byte for NUL-termination */
-        +4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed size */
-        +4 /* PNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */
-        +4 /* FNAM */ +2 /* 2 bytes for length */ +2 /* fixed size */;
+        +4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed size */;
   if (unknownVMAD.isPresent())
   {
     writeSize = writeSize +4 /* VMAD */ +2 /* 2 bytes for length */ +unknownVMAD.getSize();
@@ -117,31 +131,43 @@ uint32_t ActivatorRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* DEST */ +2 /* 2 bytes for length */ +8 /* fixed size */;
   }
-  if (hasDSTD)
+  if (!destructionStructures.empty())
   {
-    writeSize = writeSize +4 /* DSTD */ +2 /* 2 bytes for length */ +20 /* fixed size */;
-  }
-  if (!destroyedModelPath.empty())
-  {
-    writeSize = writeSize +4 /* MODL */ +2 /* 2 bytes for length */
-        +destroyedModelPath.length()+1 /* length of string +1 byte for NUL-termination */;
-  }
-  if (unknownDMDT.isPresent())
-  {
-    writeSize = writeSize + 4 /* DMDT */ +2 /* 2 bytes for length */ +unknownDMDT.getSize();
-  }
-  if (unknownDMDS.isPresent())
-  {
-    writeSize = writeSize + 4 /* DMDS */ +2 /* 2 bytes for length */ +unknownDMDS.getSize();
-  }
-  if (unknownDSTF.isPresent())
-  {
-    writeSize = writeSize + 4 /* DSTF */ +2 /* 2 bytes for length */ +unknownDSTF.getSize();
-  }
+    unsigned int i;
+    for (i=0; i<destructionStructures.size(); ++i)
+    {
+      if (destructionStructures[i].hasDSTD)
+      {
+        writeSize = writeSize +4 /* DSTD */ +2 /* 2 bytes for length */ +20 /* fixed size */;
+      }
+      if (!destructionStructures[i].destroyedModelPath.empty())
+      {
+        writeSize = writeSize +4 /* DMDL */ +2 /* 2 bytes for length */
+            +destructionStructures[i].destroyedModelPath.length()+1 /* length of string +1 byte for NUL-termination */;
+      }
+      if (destructionStructures[i].unknownDMDT.isPresent())
+      {
+        writeSize = writeSize + 4 /* DMDT */ +2 /* 2 bytes for length */ +destructionStructures[i].unknownDMDT.getSize();
+      }
+      if (destructionStructures[i].unknownDMDS.isPresent())
+      {
+        writeSize = writeSize + 4 /* DMDS */ +2 /* 2 bytes for length */ +destructionStructures[i].unknownDMDS.getSize();
+      }
+      writeSize = writeSize + 4 /* DSTF */ +2 /* 2 bytes for length */ +0 /* zero size */;
+    }//for
+  }//if not empty
   if (!keywordArray.empty())
   {
-    writeSize = writeSize +4 /* KSIZE */ +2 /* 2 bytes for length */ +4 /* fixed length */
+    writeSize = writeSize +4 /* KSIZ */ +2 /* 2 bytes for length */ +4 /* fixed length */
         +4 /* KWDA */ +2 /* 2 bytes for length */ +4*keywordArray.size();
+  }
+  if (hasPNAM)
+  {
+    writeSize = writeSize +4 /* PNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+  }
+  if (hasSNAM)
+  {
+    writeSize = writeSize +4 /* SNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
   if (hasVNAM)
   {
@@ -155,6 +181,10 @@ uint32_t ActivatorRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* RNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
+  if (hasFNAM)
+  {
+    writeSize = writeSize +4 /* FNAM */ +2 /* 2 bytes for length */ +2 /* fixed size */;
+  }
   if (hasKNAM)
   {
     writeSize = writeSize +4 /* KNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
@@ -164,14 +194,14 @@ uint32_t ActivatorRecord::getWriteSize() const
 
 bool ActivatorRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cACTI, 4);
+  output.write((const char*) &cACTI, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
-  output.write((char*) &cEDID, 4);
+  output.write((const char*) &cEDID, 4);
   //EDID's length
   uint16_t subLength = editorID.length()+1;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write editor ID
   output.write(editorID.c_str(), subLength);
 
@@ -186,31 +216,31 @@ bool ActivatorRecord::saveToStream(std::ofstream& output) const
   }//if VMAD
 
   //write OBND
-  output.write((char*) &cOBND, 4);
+  output.write((const char*) &cOBND, 4);
   //OBND's length
   subLength = 12; //fixed size
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write OBND stuff
-  output.write((char*) unknownOBND, 12);
+  output.write((const char*) unknownOBND, 12);
 
   if (hasFULL)
   {
     //write FULL
-    output.write((char*) &cFULL, 4);
+    output.write((const char*) &cFULL, 4);
     //FULL's length
     subLength = 4; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write FULL stuff
-    output.write((char*) &unknownFULL, 4);
+    output.write((const char*) &nameStringID, 4);
   }//if FULL
 
   if (!modelPath.empty())
   {
     //write MODL
-    output.write((char*) &cMODL, 4);
+    output.write((const char*) &cMODL, 4);
     //MODL's length
     subLength = modelPath.length()+1;
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write model path
     output.write(modelPath.c_str(), subLength);
   }//if model path
@@ -236,79 +266,84 @@ bool ActivatorRecord::saveToStream(std::ofstream& output) const
   if (hasDEST)
   {
     //write DEST
-    output.write((char*) &cDEST, 4);
+    output.write((const char*) &cDEST, 4);
     //DEST's length
     subLength = 8; //fixed
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write DEST's data
     output.write((const char*) &unknownDEST, 8);
   }//if DEST
 
-  if (hasDSTD)
+  if (!destructionStructures.empty())
   {
-    //write DSTD
-    output.write((char*) &cDSTD, 4);
-    //DSTD's length
-    subLength = 20; //fixed
-    output.write((char*) &subLength, 2);
-    //write DSTD's data
-    output.write((const char*) &unknownDSTD, 20);
-  }//if DSTD
-
-  if (!destroyedModelPath.empty())
-  {
-    //write DMDL
-    output.write((char*) &cDMDL, 4);
-    //DMDL's length
-    subLength = destroyedModelPath.length()+1;
-    output.write((char*) &subLength, 2);
-    //write destroyed model path
-    output.write(destroyedModelPath.c_str(), subLength);
-  }//if dest. model path
-
-  if (unknownDMDT.isPresent())
-  {
-    if (!unknownDMDT.saveToStream(output, cDMDT))
+    unsigned int i;
+    unsigned int count = destructionStructures.size();
+    for (i=0; i<count; ++i)
     {
-      std::cout << "Error while writing subrecord DMDT of ACTI!\n";
-      return false;
-    }
-  }//if DMDT
+      if (destructionStructures[i].hasDSTD)
+      {
+        //write DSTD
+        output.write((const char*) &cDSTD, 4);
+        //DSTD's length
+        subLength = 20; //fixed
+        output.write((const char*) &subLength, 2);
+        //write DSTD's data
+        output.write((const char*) &destructionStructures[i].unknownDSTD, 20);
+      }//if DSTD
 
-  if (unknownDMDS.isPresent())
-  {
-    if (!unknownDMDS.saveToStream(output, cDMDS))
-    {
-      std::cout << "Error while writing subrecord DMDS of ACTI!\n";
-      return false;
-    }
-  }//if DMDS
+      if (!destructionStructures[i].destroyedModelPath.empty())
+      {
+        //write DMDL
+        output.write((const char*) &cDMDL, 4);
+        //DMDL's length
+        subLength = destructionStructures[i].destroyedModelPath.length()+1;
+        output.write((const char*) &subLength, 2);
+        //write destroyed model path
+        output.write(destructionStructures[i].destroyedModelPath.c_str(), subLength);
+      }//if dest. model path
 
-  if (unknownDSTF.isPresent())
-  {
-    if (!unknownDSTF.saveToStream(output, cDSTF))
-    {
-      std::cout << "Error while writing subrecord DSTF of ACTI!\n";
-      return false;
-    }
-  }//if DSTF
+      if (destructionStructures[i].unknownDMDT.isPresent())
+      {
+        if (!destructionStructures[i].unknownDMDT.saveToStream(output, cDMDT))
+        {
+          std::cout << "Error while writing subrecord DMDT of ACTI!\n";
+          return false;
+        }
+      }//if DMDT
+
+      if (destructionStructures[i].unknownDMDS.isPresent())
+      {
+        if (!destructionStructures[i].unknownDMDS.saveToStream(output, cDMDS))
+        {
+          std::cout << "Error while writing subrecord DMDS of ACTI!\n";
+          return false;
+        }
+      }//if DMDS
+
+      //write DSTF
+      output.write((const char*) &cDSTF, 4);
+      //DSTF's length
+      subLength = 0; //fixed size
+      output.write((const char*) &subLength, 2);
+    }//for
+  }//if not empty
 
   if (!keywordArray.empty())
   {
     //write KSIZ
-    output.write((char*) &cKSIZ, 4);
+    output.write((const char*) &cKSIZ, 4);
     //KSIZ's length
     subLength = 4; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write keyword size
     const uint32_t k_Size = keywordArray.size();
     output.write((const char*) &k_Size, 4);
 
     //write KWDA
-    output.write((char*) &cKWDA, 4);
+    output.write((const char*) &cKWDA, 4);
     //KWDA's length
     subLength = 4*keywordArray.size(); //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write keywords
     uint32_t i;
     for (i=0; i<k_Size; ++i)
@@ -317,21 +352,35 @@ bool ActivatorRecord::saveToStream(std::ofstream& output) const
     }//for
   }//if keyword array
 
-  //write PNAM
-  output.write((char*) &cPNAM, 4);
-  //PNAM's length
-  subLength = 4; //fixed size
-  output.write((char*) &subLength, 2);
-  //write PNAM stuff
-  output.write((const char*) &unknownPNAM, 4);
+  if (hasPNAM)
+  {
+    //write PNAM
+    output.write((const char*) &cPNAM, 4);
+    //PNAM's length
+    subLength = 4; //fixed size
+    output.write((const char*) &subLength, 2);
+    //write PNAM stuff
+    output.write((const char*) &unknownPNAM, 4);
+  }//if PNAM
+
+  if (hasSNAM)
+  {
+    //write SNAM
+    output.write((const char*) &cSNAM, 4);
+    //SNAM's length
+    subLength = 4; //fixed size
+    output.write((const char*) &subLength, 2);
+    //write SNAM stuff
+    output.write((const char*) &unknownSNAM, 4);
+  }//if SNAM
 
   if (hasVNAM)
   {
     //write VNAM
-    output.write((char*) &cVNAM, 4);
+    output.write((const char*) &cVNAM, 4);
     //VNAM's length
     subLength = 4; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write VNAM stuff
     output.write((const char*) &unknownVNAM, 4);
   }//if VNAM
@@ -339,10 +388,10 @@ bool ActivatorRecord::saveToStream(std::ofstream& output) const
   if (hasWNAM)
   {
     //write WNAM
-    output.write((char*) &cWNAM, 4);
+    output.write((const char*) &cWNAM, 4);
     //WNAM's length
     subLength = 4; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write WNAM stuff
     output.write((const char*) &unknownWNAM, 4);
   }//if WNAM
@@ -350,29 +399,32 @@ bool ActivatorRecord::saveToStream(std::ofstream& output) const
   if (hasRNAM)
   {
     //write RNAM
-    output.write((char*) &cRNAM, 4);
+    output.write((const char*) &cRNAM, 4);
     //RNAM's length
     subLength = 4; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write RNAM stuff
     output.write((const char*) &unknownRNAM, 4);
   }//if RNAM
 
-  //write FNAM
-  output.write((char*) &cFNAM, 4);
-  //FNAM's length
-  subLength = 2; //fixed size
-  output.write((char*) &subLength, 2);
-  //write FNAM stuff
-  output.write((const char*) &unknownFNAM, 2);
+  if (hasFNAM)
+  {
+    //write FNAM
+    output.write((const char*) &cFNAM, 4);
+    //FNAM's length
+    subLength = 2; //fixed size
+    output.write((const char*) &subLength, 2);
+    //write FNAM stuff
+    output.write((const char*) &unknownFNAM, 2);
+  }//if FNAM
 
   if (hasKNAM)
   {
     //write KNAM
-    output.write((char*) &cKNAM, 4);
+    output.write((const char*) &cKNAM, 4);
     //KNAM's length
     subLength = 4; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write KNAM stuff
     output.write((const char*) &unknownKNAM, 4);
   }//if KNAM
@@ -418,24 +470,23 @@ bool ActivatorRecord::loadFromStream(std::ifstream& in_File)
   editorID = std::string(buffer);
 
   unknownVMAD.setPresence(false);
-  hasFULL = false;
+  hasFULL = false; nameStringID = 0;
   modelPath = "";
   unknownMODT.setPresence(false);
   unknownMODS.setPresence(false);
-  destroyedModelPath = "";
-  unknownDMDT.setPresence(false);
-  unknownDMDS.setPresence(false);
-  unknownDSTF.setPresence(false);
+  destStruct tempDestStruct;
+  bool hasBegunDestStruct = false;
+  destructionStructures.clear();
   hasDEST = false;
-  hasDSTD = false;
   keywordArray.clear();
-  hasKNAM = false;
-  hasVNAM = false;
-  hasWNAM = false;
-  hasRNAM = false;
+  hasKNAM = false; unknownKNAM = 0;
+  hasSNAM = false; unknownSNAM = 0;
+  hasVNAM = false; unknownVNAM = 0;
+  hasWNAM = false; unknownWNAM = 0;
+  hasRNAM = false; unknownRNAM = 0;
   bool hasReadOBND = false;
-  bool hasReadPNAM = false;
-  bool hasReadFNAM = false;
+  hasPNAM = false; unknownPNAM = 0;
+  hasFNAM = false; unknownFNAM = 0;
 
   uint32_t k_Size, i, temp;
   while (bytesRead<readSize)
@@ -488,7 +539,7 @@ bool ActivatorRecord::loadFromStream(std::ifstream& in_File)
            }
            in_File.seekg(-4, std::ios_base::cur);
            //read FULL
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, unknownFULL)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID)) return false;
            bytesRead += 6;
            hasFULL = true;
            break;
@@ -569,7 +620,11 @@ bool ActivatorRecord::loadFromStream(std::ifstream& in_File)
            hasDEST = true;
            break;
       case cDSTD:
-           if (hasDSTD)
+           if (!hasBegunDestStruct)
+           {
+             tempDestStruct.reset();
+           }
+           if (tempDestStruct.hasDSTD)
            {
              std::cout << "Error: ACTI seems to have more than one DSTD subrecord.\n";
              return false;
@@ -579,22 +634,27 @@ bool ActivatorRecord::loadFromStream(std::ifstream& in_File)
            bytesRead += 2;
            if (subLength!=20)
            {
-             std::cout <<"Error: sub record DSTD of ACTI has invalid length ("<<subLength
-                       <<" bytes). Should be 20 bytes.\n";
+             std::cout <<"Error: sub record DSTD of ACTI has invalid length ("
+                       <<subLength<<" bytes). Should be 20 bytes.\n";
              return false;
            }
            //read DSTD
-           in_File.read((char*) unknownDSTD, 20);
+           in_File.read((char*) (tempDestStruct.unknownDSTD), 20);
            bytesRead += 20;
            if (!in_File.good())
            {
              std::cout << "Error while reading subrecord DSTD of ACTI!\n";
              return false;
            }
-           hasDSTD = true;
+           tempDestStruct.hasDSTD = true;
+           hasBegunDestStruct = true;
            break;
       case cDMDL:
-           if (!destroyedModelPath.empty())
+           if (!hasBegunDestStruct)
+           {
+             tempDestStruct.reset();
+           }
+           if (!tempDestStruct.destroyedModelPath.empty())
            {
              std::cout << "Error: ACTI seems to have more than one DMDL subrecord.\n";
              return false;
@@ -616,46 +676,62 @@ bool ActivatorRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error while reading subrecord DMDL of ACTI!\n";
              return false;
            }
-           destroyedModelPath = std::string(buffer);
+           tempDestStruct.destroyedModelPath = std::string(buffer);
+           hasBegunDestStruct = true;
            break;
       case cDMDT:
-           if (unknownDMDT.isPresent())
+           if (!hasBegunDestStruct)
+           {
+             tempDestStruct.reset();
+           }
+           if (tempDestStruct.unknownDMDT.isPresent())
            {
              std::cout << "Error: ACTI seems to have more than one DMDT subrecord.\n";
              return false;
            }
-           if (!unknownDMDT.loadFromStream(in_File, cDMDT, false))
+           if (!tempDestStruct.unknownDMDT.loadFromStream(in_File, cDMDT, false))
            {
              std::cout << "Error while reading subrecord DMDT of ACTI!\n";
              return false;
            }
-           bytesRead = bytesRead + 2 + unknownDMDT.getSize();
+           bytesRead = bytesRead + 2 + tempDestStruct.unknownDMDT.getSize();
+           hasBegunDestStruct = true;
            break;
       case cDMDS:
-           if (unknownDMDS.isPresent())
+           if (!hasBegunDestStruct)
+           {
+             tempDestStruct.reset();
+           }
+           if (tempDestStruct.unknownDMDS.isPresent())
            {
              std::cout << "Error: ACTI seems to have more than one DMDS subrecord.\n";
              return false;
            }
-           if (!unknownDMDS.loadFromStream(in_File, cDMDS, false))
+           if (!tempDestStruct.unknownDMDS.loadFromStream(in_File, cDMDS, false))
            {
              std::cout << "Error while reading subrecord DMDS of ACTI!\n";
              return false;
            }
-           bytesRead = bytesRead + 2 + unknownDMDS.getSize();
+           bytesRead = bytesRead + 2 + tempDestStruct.unknownDMDS.getSize();
+           hasBegunDestStruct = true;
            break;
       case cDSTF:
-           if (unknownDSTF.isPresent())
+           if (!hasBegunDestStruct)
            {
-             std::cout << "Error: ACTI seems to have more than one DSTF subrecord.\n";
+             std::cout << "Error while reading record of type ACTI: no data prior to DSTF.\n";
              return false;
            }
-           if (!unknownDSTF.loadFromStream(in_File, cDSTF, false))
+           //DSTF's length
+           in_File.read((char*) &subLength, 2);
+           bytesRead += 2;
+           if (subLength!=0)
            {
-             std::cout << "Error while reading subrecord DSTF of ACTI!\n";
+             std::cout <<"Error: sub record DSTF of ACTI has invalid length ("
+                       <<subLength<<" bytes). Should be zero bytes!\n";
              return false;
            }
-           bytesRead = bytesRead + 2 + unknownDSTF.getSize();
+           destructionStructures.push_back(tempDestStruct);
+           hasBegunDestStruct = false;
            break;
       case cKSIZ:
            if (!keywordArray.empty())
@@ -695,7 +771,7 @@ bool ActivatorRecord::loadFromStream(std::ifstream& in_File)
            }//for
            break;
       case cPNAM:
-           if (hasReadPNAM)
+           if (hasPNAM)
            {
              std::cout << "Error: ACTI seems to have more than one PNAM subrecord.\n";
              return false;
@@ -704,7 +780,19 @@ bool ActivatorRecord::loadFromStream(std::ifstream& in_File)
            //read PNAM
            if (!loadUint32SubRecordFromStream(in_File, cPNAM, unknownPNAM)) return false;
            bytesRead += 6;
-           hasReadPNAM = true;
+           hasPNAM = true;
+           break;
+      case cSNAM:
+           if (hasSNAM)
+           {
+             std::cout << "Error: ACTI seems to have more than one SNAM subrecord.\n";
+             return false;
+           }
+           in_File.seekg(-4, std::ios_base::cur);
+           //read SNAM
+           if (!loadUint32SubRecordFromStream(in_File, cSNAM, unknownSNAM)) return false;
+           bytesRead += 6;
+           hasSNAM = true;
            break;
       case cVNAM:
            if (hasVNAM)
@@ -743,7 +831,7 @@ bool ActivatorRecord::loadFromStream(std::ifstream& in_File)
            hasRNAM = true;
            break;
       case cFNAM:
-           if (hasReadFNAM)
+           if (hasFNAM)
            {
              std::cout << "Error: ACTI seems to have more than one FNAM subrecord.\n";
              return false;
@@ -765,7 +853,7 @@ bool ActivatorRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error while reading subrecord FNAM of ACTI!\n";
              return false;
            }
-           hasReadFNAM = true;
+           hasFNAM = true;
            break;
       case cKNAM:
            if (hasKNAM)
@@ -781,15 +869,20 @@ bool ActivatorRecord::loadFromStream(std::ifstream& in_File)
            break;
       default:
            std::cout << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
-                     << "\", but only VMAD, OBND, FULL, PNAM, FNAM or KNAM are allowed here!\n";
+                     << "\", but only VMAD, OBND, FULL, PNAM, FNAM, SNAM or KNAM are allowed here!\n";
            return false;
     }//swi
   }//while
 
   //check presence of all required subrecords
-  if (!(hasReadOBND and hasReadPNAM and hasReadFNAM))
+  if (!hasReadOBND)
   {
     std::cout << "Error: At least one required subrecord of ACTI was not found!\n";
+    return false;
+  }
+  if (hasBegunDestStruct)
+  {
+    std::cout << "Error: Unfinished DSTF stuff in ACTI!\n";
     return false;
   }
   return in_File.good();

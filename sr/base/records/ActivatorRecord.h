@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -63,30 +63,44 @@ struct ActivatorRecord: public BasicRecord
     */
     virtual uint32_t getWriteSize() const;
 
+    struct destStruct
+    {
+      bool hasDSTD;
+      uint8_t unknownDSTD[20];
+      std::string destroyedModelPath;
+      BinarySubRecord unknownDMDT;
+      BinarySubRecord unknownDMDS;
+
+      /* equality operator */
+      bool operator==(const destStruct& other) const;
+
+      /* resets/clears the internal values */
+      void reset();
+    }; //struct
+
     std::string editorID;
     BinarySubRecord unknownVMAD;
     uint8_t unknownOBND[12];
     bool hasFULL;
-    uint32_t unknownFULL;
+    uint32_t nameStringID;
     std::string modelPath;
     BinarySubRecord unknownMODT;
     BinarySubRecord unknownMODS;
     bool hasDEST;
     uint8_t unknownDEST[8];
-    bool hasDSTD;
-    uint8_t unknownDSTD[20];
-    std::string destroyedModelPath;
-    BinarySubRecord unknownDMDT;
-    BinarySubRecord unknownDMDS;
-    BinarySubRecord unknownDSTF;
+    std::vector<destStruct> destructionStructures;
     std::vector<uint32_t> keywordArray;
+    bool hasPNAM;
     uint32_t unknownPNAM;
+    bool hasSNAM;
+    uint32_t unknownSNAM;
     bool hasVNAM;
     uint32_t unknownVNAM;
     bool hasWNAM;
     uint32_t unknownWNAM;
     bool hasRNAM;
     uint32_t unknownRNAM;
+    bool hasFNAM;
     uint16_t unknownFNAM;
     bool hasKNAM;
     uint32_t unknownKNAM;

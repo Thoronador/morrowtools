@@ -35,6 +35,7 @@
 #include "Books.h"
 #include "Cells.h"
 #include "Classes.h"
+#include "Collisions.h"
 #include "ColourForms.h"
 #include "CraftableObjects.h"
 #include "Doors.h"
@@ -162,6 +163,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;
     case cCOBJ:
          return CraftableObjects::getSingleton().readNextRecord(in_File);
+         break;
+    case cCOLL:
+         return Collisions::getSingleton().readNextRecord(in_File);
          break;
     case cDOOR:
          return Doors::getSingleton().readNextRecord(in_File);

@@ -202,6 +202,25 @@ Records and their sub-records:
           unknown data
 
 
+  COLL: collision stuff
+      EDID (string, NUL-terminated)
+          editor ID
+      DESC (4 bytes)
+          description string ID(?)
+      BNAM (4 bytes)
+          unknown data
+      FNAM (4 bytes)
+          unknown data
+      GNAM (4 bytes)
+          unknown data
+      MNAM (string, NUL-terminated)
+          equal to editor ID in most (all?) cases
+      INTV (4 bytes)
+          number of form IDs in following CNAM record
+      CNAM (n * 4 bytes, optional)
+          array of form IDs; only present, if INTV > zero
+
+
   ECZN: encounter zone
       EDID (string, NUL-terminated)
           editor ID
@@ -458,16 +477,16 @@ Records and their sub-records:
           unknown data
       CSCR (4 bytes, optional)
           unknown data
-          
+
       CSDT (4 bytes, optional, can occur multiple times)
           unknown data
       CSDI (4 bytes, optional, can occur multiple times)
           unknown data
       CSDC (1 byte, optional, can occur multiple times)
           unknown data
-          
+
           ----> CSDT, CSDI and CSDC always appear in that order, forming a struct
-          
+
       DPLT (4 bytes, optional)
           unknown data
       FTST (4 bytes, optional)

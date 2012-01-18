@@ -28,6 +28,7 @@
 #include "Activators.h"
 #include "AlchemyPotions.h"
 #include "Ammunitions.h"
+#include "AnimatedObjects.h"
 #include "Apparatuses.h"
 #include "Armours.h"
 #include "ArtObjects.h"
@@ -134,6 +135,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;
     case cAMMO:
          return Ammunitions::getSingleton().readNextRecord(in_File);
+         break;
+    case cANIO:
+         return AnimatedObjects::getSingleton().readNextRecord(in_File);
          break;
     case cAPPA:
          return Apparatuses::getSingleton().readNextRecord(in_File);

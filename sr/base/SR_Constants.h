@@ -33,6 +33,7 @@ const int32_t cAIDT = 0x54444941; //"AIDT" = 41 49 44 54
 const int32_t cALCH = 0x48434C41; //"ALCH" = 41 4C 43 48
 const int32_t cAMMO = 0x4F4D4D41; //"AMMO" = 41 4D 4D 4F
 const int32_t cANAM = 0x4D414E41; //"ANAM" = 41 4E 41 4D
+const int32_t cANIO = 0x4F494E41; //"ANIO" = 41 4E 49 4F
 const int32_t cAPPA = 0x41505041; //"APPA" = 41 50 50 41
 const int32_t cARMO = 0x4F4D5241; //"ARMO" = 41 52 4D 4F
 const int32_t cARTO = 0x4F545241; //"ARTO" = 41 52 54 4F

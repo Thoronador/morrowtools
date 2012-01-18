@@ -26,6 +26,7 @@
 #include "records/ActivatorRecord.h"
 #include "records/AlchemyPotionRecord.h"
 #include "records/AmmunitionRecord.h"
+#include "records/AnimatedObjectRecord.h"
 #include "records/ApparatusRecord.h"
 #include "records/ArmourRecord.h"
 #include "records/ArtObjectRecord.h"
@@ -121,6 +122,9 @@ int ESMReaderContentsAll::readNextRecord(std::ifstream& in_File, const int32_t r
          break;
     case cAMMO:
          recPtr = new AmmunitionRecord;
+         break;
+    case cANIO:
+         recPtr = new AnimatedObjectRecord;
          break;
     case cAPPA:
          recPtr = new ApparatusRecord;

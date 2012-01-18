@@ -57,6 +57,17 @@ Records and their sub-records:
               f = floating point value (4 bytes)
 
 
+  ANIO: animated object
+      EDID (string, NUL-terminated)
+          editor ID
+      MODL (string, NUL-terminated)
+          model path
+      MODT (size varies, optional)
+          unknown data
+      BNAM (string, NUL-terminated, optional)
+          unknown data
+
+
   ARMO: armour
       EDID (string, NUL-terminated)
           editor ID
@@ -1348,7 +1359,7 @@ Records and their sub-records:
         DSTF (zero bytes, optional)
             unknown
 
-        --> DSTD up to DSTF form a structure, DSTF finishes it. 
+        --> DSTD up to DSTF form a structure, DSTF finishes it.
 
       KSIZ (4 bytes, optional)
           number of uint32_ts in KWDA

@@ -199,6 +199,23 @@ struct QuestRecord: public BasicRecord
       bool operator==(const QOBJEntry& other) const;
     };//struct
 
+
+    /* returns true, if an QOBJ record with the given index is present
+
+       parameters:
+           idx - the requested index
+    */
+    bool hasQOBJForIndex(const uint16_t idx) const;
+
+    /* returns the QOBJ record with the given index, if it is present.
+       If no such QOBJ is present, the function will throw an exception. Use
+       hasQOBJForIndex() to check for presence first.
+
+       parameters:
+           idx - the requested index
+    */
+    const QOBJEntry& getQOBJForIndex(const uint16_t idx) const;
+
     std::string editorID;
     BinarySubRecord unknownVMAD;
     bool hasFULL;

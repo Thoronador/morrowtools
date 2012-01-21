@@ -903,8 +903,13 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
       case cINDX:
            if (hasUnpushedIndexEntry)
            {
-             /* Last entry seems to have a index only, or index and finishing
-                 bit only, so push it!*/
+             /* Last entry has not been pushed yet, so push it!*/
+             if (hasUnpushedQSDTRecord)
+             {
+               /* Last QSDT entry has not been pushed yet, so push it first!*/
+               i_entry.theQSDTs.push_back(tempQSDT);
+               hasUnpushedQSDTRecord = false;
+             }
              indices.push_back(i_entry);
            }
            indexPartStarted = true;
@@ -1859,6 +1864,29 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
 int32_t QuestRecord::getRecordType() const
 {
   return cQUST;
+}
+
+bool QuestRecord::hasQOBJForIndex(const uint16_t idx) const
+{
+  //Note to self: We should use an ordered structure for that
+  unsigned int i;
+  for (i=0; i<theQOBJs.size(); ++i)
+  {
+    if (theQOBJs[i].unknownQOBJ==idx) return true;
+  }
+  return false;
+}
+
+const QuestRecord::QOBJEntry& QuestRecord::getQOBJForIndex(const uint16_t idx) const
+{
+  unsigned int i;
+  for (i=0; i<theQOBJs.size(); ++i)
+  {
+    if (theQOBJs[i].unknownQOBJ==idx) return theQOBJs[i];
+  }
+  std::cout << "QuestRecord::getQOBJForIndex(): Error: There is no QOBJ for that index!\n";
+  std::cout.flush();
+  throw 42;
 }
 
 } //namespace

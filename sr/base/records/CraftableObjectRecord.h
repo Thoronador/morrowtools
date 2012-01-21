@@ -44,15 +44,15 @@ struct CraftableObjectRecord: public BasicRecord
 
     /* writes the record to the given output stream and returns true on success
 
-      parameters:
-          output   - the output file stream
+       parameters:
+           output   - the output file stream
     */
     virtual bool saveToStream(std::ofstream& output) const;
 
     /* loads the record from the given input stream and returns true on success
 
-      parameters:
-          in_File - the input file stream
+       parameters:
+           in_File - the input file stream
     */
     virtual bool loadFromStream(std::ifstream& in_File);
 

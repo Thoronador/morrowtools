@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -25,6 +25,8 @@
 #include <vector>
 #include "BasicRecord.h"
 #include "BinarySubRecord.h"
+#include "ComponentData.h"
+#include "CTDAData.h"
 
 namespace SRTP
 {
@@ -66,9 +68,29 @@ struct QuestRecord: public BasicRecord
     /* type for holding quest stages / indices*/
     struct IndexEntry
     {
-      uint32_t index; //stage index
-      bool isFinisher; //true, if entry finishes the quest
-      uint32_t CNAM; //CNAM - string ID of journal text?
+
+      struct QSDTRecord
+      {
+        bool isFinisher; //true, if entry finishes the quest
+        bool hasNAM0;
+        uint32_t unknownNAM0;
+        BinarySubRecord unknownSCHR;
+        std::string unknownSCTX;
+        bool hasQNAM;
+        uint32_t unknownQNAM;
+        std::vector<CTDA_CIS2_compound> unknownCTDA_CIS2s;
+        bool hasCNAM;
+        uint32_t unknownCNAM; //CNAM - string ID of journal text?
+
+        /* constructor */
+        QSDTRecord();
+
+        /* equality operator */
+        bool operator==(const QSDTRecord& other) const;
+      }; //struct
+      uint16_t index; //stage index
+      uint16_t indexUnknownPart; //flags or something?
+      std::vector<QSDTRecord> theQSDTs;
 
       /* constructor */
       IndexEntry();
@@ -77,12 +99,120 @@ struct QuestRecord: public BasicRecord
       bool operator==(const IndexEntry& other) const;
     };//struct
 
+    //struct for alias-related data
+    struct AliasEntry
+    {
+      bool hasALST;
+      uint32_t unknownALST;
+      bool hasALLS;
+      uint32_t unknownALLS;
+      std::string aliasID; //subrecord ALID
+      uint32_t unknownFNAM;
+      bool hasALFA;
+      uint32_t unknownALFA;
+      bool hasALRT;
+      uint32_t unknownALRT;
+      bool hasALCO;
+      uint32_t unknownALCO;
+      bool hasALCA;
+      uint32_t unknownALCA;
+      bool hasALCL;
+      uint32_t unknownALCL;
+      bool hasALDN;
+      uint32_t unknownALDN;
+      std::vector<ComponentData> components;
+      std::vector<uint32_t> keywordArray;
+      bool hasALFE;
+      uint32_t unknownALFE;
+      bool hasALFD;
+      uint32_t unknownALFD;
+      bool hasALFI;
+      uint32_t unknownALFI;
+      bool hasALFL;
+      uint32_t unknownALFL;
+      bool hasALFR;
+      uint32_t unknownALFR;
+      bool hasALNA;
+      uint32_t unknownALNA;
+      bool hasALNT;
+      uint32_t unknownALNT;
+      bool hasALUA;
+      uint32_t unknownALUA;
+      bool hasALEQ;
+      uint32_t unknownALEQ;
+      bool hasALEA;
+      uint32_t unknownALEA;
+      bool hasKNAM;
+      uint32_t unknownKNAM;
+      std::vector<CTDA_CIS2_compound> unknownCTDA_CIS2s;
+      bool hasSPOR;
+      uint32_t unknownSPOR;
+      bool hasECOR;
+      uint32_t unknownECOR;
+      std::vector<uint32_t> unknownALSPs;
+      std::vector<uint32_t> unknownALFCs;
+      std::vector<uint32_t> unknownALPCs;
+      bool hasVTCK;
+      uint32_t unknownVTCK;
+
+      /* constructor */
+      AliasEntry();
+
+      /* clears all data members */
+      void clear();
+
+      /* equality operator */
+      bool operator==(const AliasEntry& other) const;
+    };//struct
+
+    //struct for QOBJ
+    struct QOBJEntry
+    {
+      //struct for QSTA stuff
+      struct QSTAEntry
+      {
+        uint64_t unknownQSTA;
+        std::vector<CTDA_CIS2_compound> unknownCTDA_CIS2s;
+
+        /* constructor */
+        QSTAEntry();
+
+        /* clears all data members */
+        void clear();
+
+        /* equality operator */
+        bool operator==(const QSTAEntry& other) const;
+      };//struct
+
+      uint16_t unknownQOBJ;
+      uint32_t unknownFNAM;
+      uint32_t unknownNNAM;
+      std::vector<QSTAEntry> theQSTAs;
+
+      /* constructor */
+      QOBJEntry();
+
+      /* clears all data members */
+      void clear();
+
+      /* equality operator */
+      bool operator==(const QOBJEntry& other) const;
+    };//struct
+
     std::string editorID;
     BinarySubRecord unknownVMAD;
+    bool hasFULL;
     uint32_t unknownFULL;
     uint8_t unknownDNAM[12];
+    bool hasENAM;
+    uint32_t unknownENAM;
+    std::vector<uint32_t> unknownQTGLs;
+    std::vector<CTDA_CIS2_compound> unknownCTDA_CIS2s;
     std::string filter;
     std::vector<IndexEntry> indices;
+    std::vector<QOBJEntry> theQOBJs;
+    uint32_t unknownANAM;
+    std::vector<AliasEntry> aliases;
 };//struct
 
 } //namespace

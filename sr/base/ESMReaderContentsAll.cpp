@@ -69,6 +69,7 @@
 #include "records/PerkRecord.h"
 #include "records/PlacedGrenadeRecord.h"
 #include "records/PlacedHazardRecord.h"
+#include "records/QuestRecord.h"
 #include "records/RaceRecord.h"
 #include "records/ReferenceRecord.h"
 #include "records/RelationshipRecord.h"
@@ -254,6 +255,9 @@ int ESMReaderContentsAll::readNextRecord(std::ifstream& in_File, const int32_t r
          break;
     case cPHZD:
          recPtr = new PlacedHazardRecord;
+         break;
+    case cQUST:
+         recPtr = new QuestRecord;
          break;
     case cRACE:
          recPtr = new RaceRecord;

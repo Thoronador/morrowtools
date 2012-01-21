@@ -1389,9 +1389,13 @@ Records and their sub-records:
       FULL (4 bytes)
           unknown
       DNAM (12 bytes)
-          unknown
+          unknown data
+      CTDA (32 bytes, can occur multiple times)
+          unknown data
       ENAM (4 bytes, optional)
-          unknown
+          unknown data
+      QTGL (4 bytes, optional, can occur multiple times)
+          unknown data, looks like form ID
       FLTR (string, NUL-terminated, optional)
           filter of some sort
       NEXT (always zero bytes?)
@@ -1399,18 +1403,112 @@ Records and their sub-records:
 
         INDX (4 bytes)
             quest stage index
-        QSDT (1 byte)
-            set to 1, if it finished the quest
-        CNAM (4 bytes)
-            string ID of entry name?
 
+          QSDT (1 byte)
+              set to 1, if it finished the quest
+          NAM0 (4 bytes, optional)
+              unknown data
+          SCHR (20 bytes, optional)
+              unknown data
+          SCTX (string, not NUL-terminated, optional)
+              unknown, but might be text of result script
+          QNAM (4 bytes, optional)
+              unknown data
+          CNAM (4 bytes, optional)
+              string ID of entry name?
+
+              --> those form a sort of repeating structure
+
+
+        QOBJ (2 bytes)
+            unknown data
+        FNAM (4 bytes)
+            unknown data
+        NNAM (4 bytes)
+            unknown data
+
+          --> QOBJ/FNAM/NNAM form a repeating structure
+
+          QSTA (8 bytes)
+              unknown data
+          CTDA (32 bytes, can occur multiple times)
+              unknown data
+          CIS2 (string, NUL-terminated, optional)
+              script variable(?)
+          
+           --> forms a repeating structure within QOBJ/FNAM/NNAM
 
 
       ANAM (4 bytes)
-          unknown
-      CTDA (32 bytes, optional, can occur multiple times)
-          unknown
-      ... and much more
+          unknown data
+      ALLS (4 bytes, optional)
+          unknown data
+
+        ALST (4 bytes)
+            unknown data - seems to mark start of alias(?) subrecords
+        ALID (string, NUL-terminated)
+            alias name(?)
+        FNAM (4 bytes)
+            unknown data
+        ALFA (4 bytes, optional)
+            unknown data
+        ALRT (4 bytes, optional)
+            unknown form ID
+        ALCO (4 bytes, optional)
+            unknown data
+        ALCA (4 bytes, optional)
+            unknown data
+        ALCL (4 bytes, optional)
+            unknown data
+        ALDN (4 bytes, optional)
+            unknown data
+        COCT (4 bytes, optional)
+            number of CNTO records that follow
+        CNTO (8 bytes, optional, can occur multiple times)
+            uint32_t form ID of the object
+            uint32_t quantity of the object
+        KSIZ (4 bytes, optional)
+            number of form IDs in the following KWDA record
+        KWDA (n * 4 bytes, optional)
+            array of form IDs of keywords, number of entries is given by KSIZ
+        ALFE (4 bytes, string, not terminated, optional)
+            unknown data
+        ALFD (4 bytes, optional)
+            unknown data
+        ALFI (4 bytes, optional)
+            unknown data
+        ALFL (4 bytes, optional)
+            unknown data
+        ALFR (4 bytes, optional)
+            unknown data
+        ALNA (4 bytes, optional)
+            unknown data
+        ALNT (4 bytes, optional)
+            unknown data
+        ALUA (4 bytes, optional)
+            unknown data
+        ALEQ (4 bytes, optional)
+            unknown data
+        ALEA (4 bytes, optional)
+            unknown data
+        KNAM (4 bytes, optional)
+            unknown data
+        CTDA (32 bytes, can occur multiple times)
+            unknown data
+        SPOR (4 bytes, optional)
+            unknown data
+        ECOR (4 bytes, optional)
+            unknown data
+        ALSP (4 bytes, optional, can occur multiple times)
+            unknown data
+        ALFC (4 bytes, optional, can occur multiple times)
+            unknown data
+        ALPC (4 bytes, optional, can occur multiple times)
+            unknown data
+        VTCK (4 bytes, optional)
+            unknown data
+        ALED (0 bytes)
+            marks end of AL?? subrecords
 
 
   WOOP: Word of Power

@@ -32,6 +32,7 @@
 #include "../base/MiscObjects.h"
 #include "../base/NPCs.h"
 #include "../base/Perks.h"
+#include "../base/Quests.h"
 #include "../base/Scrolls.h"
 #include "../base/Shouts.h"
 #include "../base/SoulGems.h"
@@ -69,6 +70,7 @@ bool ESMReaderFinder::needGroup(const GroupData& g_data) const
     case cMISC:
     case cNPC_:
     case cPERK:
+    case cQUST:
     case cSCRL:
     case cSHOU:
     case cSLGM:
@@ -132,6 +134,9 @@ int ESMReaderFinder::readNextRecord(std::ifstream& in_File, const int32_t recNam
          break;
     case cPERK:
          return Perks::getSingleton().readNextRecord(in_File);
+         break;
+    case cQUST:
+         return Quests::getSingleton().readNextRecord(in_File);
          break;
     case cSCRL:
          return Scrolls::getSingleton().readNextRecord(in_File);

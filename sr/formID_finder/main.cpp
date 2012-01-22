@@ -37,6 +37,7 @@
 #include "../base/MiscObjects.h"
 #include "../base/NPCs.h"
 #include "../base/Perks.h"
+#include "../base/Quests.h"
 #include "../base/RegistryFunctions.h"
 #include "../base/Scrolls.h"
 #include "../base/Shouts.h"
@@ -72,13 +73,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Form ID Finder for Skyrim, version 0.15.rev400, 2012-01-17\n";
+  std::cout << "Form ID Finder for Skyrim, version 0.16.rev404, 2012-01-22\n";
 }
 
 int showVersionExitcode()
 {
   showVersion();
-  return 400;
+  return 404;
 }
 
 void showHelp()
@@ -97,7 +98,9 @@ void showHelp()
             << "  --keyword TEXT   - same as -p\n"
             << "  --case-sensitive - use case-sensitive search, i.e. upper and lower case\n"
             << "                     version of the same letter won't match. Deactivated by\n"
-            << "                     default.\n";
+            << "                     default.\n"
+            << "  --all-quest-info - shows complete quest info, including texts for journal\n"
+            << "                     entries and objectives.\n";
 }
 
 //auxillary function
@@ -119,6 +122,7 @@ int main(int argc, char **argv)
   //word to be searched for - empty at start, user has to(!) set it
   std::string searchKeyword = "";
   bool caseSensitive = false;
+  bool allQuestInfo = false;
 
   if ((argc>1) and (argv!=NULL))
   {
@@ -215,6 +219,17 @@ int main(int argc, char **argv)
           caseSensitive = true;
           std::cout << "Case-sensitive search modus enabled.\n";
         }//case sensitive
+        else if (param=="--all-quest-info")
+        {
+          //set more than once?
+          if (allQuestInfo)
+          {
+            std::cout << "Error: parameter \""<<param<<"\" was specified twice!\n";
+            return MWTP::rcInvalidParameter;
+          }
+          allQuestInfo = true;
+          std::cout << "Complete quest texts enabled.\n";
+        }//all quest info
         else if (searchKeyword.empty())
         {
           //assume search keyword was given without prior --keyword option
@@ -397,7 +412,7 @@ int main(int argc, char **argv)
         {
           if (matchesKeyword(table.getString(activator_iter->second.nameStringID), searchKeyword, caseSensitive))
           {
-            //found matching alchemy record
+            //found matching quest record
             if (activatorMatches==0)
             {
               std::cout << "\n\nMatching activators:\n";
@@ -720,7 +735,7 @@ int main(int argc, char **argv)
         {
           if (matchesKeyword(table.getString(npc_iter->second.nameStringID), searchKeyword, caseSensitive))
           {
-            //found matching alchemy record
+            //found matching NPC record
             if (NPCMatches==0)
             {
               std::cout << "\n\nMatching NPCs:\n";
@@ -773,6 +788,94 @@ int main(int argc, char **argv)
       std::cout << "Total matching perks: "<<perkMatches<<"\n";
     }
   }//scope for perk stuff
+
+  //check quests for matches
+  {
+    unsigned int questMatches = 0;
+    unsigned int i, j;
+    bool prefix;
+    SRTP::Quests::ListIterator quest_iter = SRTP::Quests::getSingleton().getBegin();
+    while (quest_iter!=SRTP::Quests::getSingleton().getEnd())
+    {
+      if (quest_iter->second.hasFULL)
+      {
+        if (table.hasString(quest_iter->second.unknownFULL))
+        {
+          if (matchesKeyword(table.getString(quest_iter->second.unknownFULL), searchKeyword, caseSensitive))
+          {
+            //found matching quest record
+            if (questMatches==0)
+            {
+              std::cout << "\n\nMatching quests:\n";
+            }
+            std::cout << "    \""<<table.getString(quest_iter->second.unknownFULL)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(quest_iter->second.headerFormID)
+                      <<"\n        editor ID \""<<quest_iter->second.editorID<<"\"\n";
+            //indices
+            const unsigned int idx_count = quest_iter->second.indices.size();
+            if (!allQuestInfo)
+            {
+              std::cout << "        indices: ";
+              for (i=0; i<idx_count; ++i)
+              {
+                if (i!=0) std::cout<<", ";
+                std::cout << quest_iter->second.indices[i].index;
+                if (quest_iter->second.indices[i].hasFinishingQSDT()) std::cout<< " (finishes)";
+              }
+              if (idx_count==0) std::cout <<"(none)";
+              std::cout << "\n";
+            }
+            else
+            {
+              //full quest info requested
+              std::cout << "        indices:\n";
+              for (i=0; i<idx_count; ++i)
+              {
+                std::cout << "          index "<<quest_iter->second.indices[i].index<<"\n";
+                //run through QSDTs
+                const unsigned int qsdt_count = quest_iter->second.indices[i].theQSDTs.size();
+                for (j=0; j<qsdt_count; ++j)
+                {
+                  prefix = false;
+                  if (quest_iter->second.indices[i].theQSDTs[j].isFinisher)
+                  {
+                    std::cout << "            (finishes quest)";
+                    prefix = true;
+                  }
+                  if (table.hasString(quest_iter->second.indices[i].theQSDTs[j].unknownCNAM))
+                  {
+                    if (!prefix)
+                    {
+                      prefix = true;
+                      std::cout << "            ";
+                    }
+                    std::cout << "\""<<table.getString(quest_iter->second.indices[i].theQSDTs[j].unknownCNAM)<<"\"";
+                  }
+                  if (prefix) std::cout << "\n";
+                }//for j
+                //check for objective
+                if (quest_iter->second.hasQOBJForIndex(quest_iter->second.indices[i].index))
+                {
+                  const SRTP::QuestRecord::QOBJEntry& ziel = quest_iter->second.getQOBJForIndex(quest_iter->second.indices[i].index);
+                  if (table.hasString(ziel.unknownNNAM))
+                  {
+                    std::cout <<"            [new objective] \""<<table.getString(ziel.unknownNNAM)<<"\"\n";
+                  }
+                }
+              }//for i
+            }//else
+            ++questMatches;
+            ++totalMatches;
+          }//if match found
+        }//if table has string
+      }//if hasFULL
+      ++quest_iter;
+    }//while
+    if (questMatches>0)
+    {
+      std::cout << "Total matching quests: "<<questMatches<<"\n";
+    }
+  }//scope for quest stuff
 
   //check scrolls for matches
   {

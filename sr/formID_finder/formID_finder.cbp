@@ -60,6 +60,7 @@
 		<Unit filename="..\base\MiscObjects.h" />
 		<Unit filename="..\base\NPCs.h" />
 		<Unit filename="..\base\Perks.h" />
+		<Unit filename="..\base\Quests.h" />
 		<Unit filename="..\base\RegistryFunctions.cpp" />
 		<Unit filename="..\base\RegistryFunctions.h" />
 		<Unit filename="..\base\SR_Constants.h" />
@@ -107,6 +108,8 @@
 		<Unit filename="..\base\records\NPCRecord.h" />
 		<Unit filename="..\base\records\PerkRecord.cpp" />
 		<Unit filename="..\base\records\PerkRecord.h" />
+		<Unit filename="..\base\records\QuestRecord.cpp" />
+		<Unit filename="..\base\records\QuestRecord.h" />
 		<Unit filename="..\base\records\ScrollRecord.cpp" />
 		<Unit filename="..\base\records\ScrollRecord.h" />
 		<Unit filename="..\base\records\ShoutRecord.cpp" />

@@ -97,6 +97,9 @@ struct QuestRecord: public BasicRecord
 
       /* equality operator */
       bool operator==(const IndexEntry& other) const;
+
+      /* returns true, if the finishing flag is set for one of the index' QSDTs */
+      bool hasFinishingQSDT() const;
     };//struct
 
     //struct for alias-related data

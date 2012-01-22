@@ -54,13 +54,7 @@ bool EffectBlock::saveToStream(std::ofstream& output) const
   unsigned int jay;
   for (jay=0; jay<unknownCTDAs.size(); ++jay)
   {
-    //write CTDA
-    output.write((const char*) &cCTDA, 4);
-    //CTDA's length
-    subLength = 32; //fixed
-    output.write((const char*) &subLength, 2);
-    //write CTDA's stuff
-    output.write((const char*) &(unknownCTDAs[jay].content), 32);
+    if (!unknownCTDAs[jay].saveToStream(output)) return false;
   }//for jay
 
   return output.good();

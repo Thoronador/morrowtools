@@ -41,6 +41,16 @@ bool QuestRecord::IndexEntry::operator==(const QuestRecord::IndexEntry& other) c
       and (theQSDTs==other.theQSDTs));
 }
 
+bool QuestRecord::IndexEntry::hasFinishingQSDT() const
+{
+  unsigned int i;
+  for (i=0; i<theQSDTs.size(); ++i)
+  {
+    if (theQSDTs[i].isFinisher) return true;
+  }//for
+  return false;
+}
+
 /* QSDTRecord functions */
 QuestRecord::IndexEntry::QSDTRecord::QSDTRecord()
 {

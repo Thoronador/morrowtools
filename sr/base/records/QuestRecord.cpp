@@ -401,6 +401,7 @@ bool QuestRecord::equals(const QuestRecord& other) const
     and (unknownANAM==other.unknownANAM) and (aliases==other.aliases));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t QuestRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -696,6 +697,7 @@ bool QuestRecord::saveToStream(std::ofstream& output) const
   #warning Code more! (QOBJ and aliases are still missing.)
   return false;
 }
+#endif
 
 bool QuestRecord::loadFromStream(std::ifstream& in_File)
 {

@@ -59,6 +59,7 @@ bool CraftableObjectRecord::equals(const CraftableObjectRecord& other) const
     and (unknownCTDAs==other.unknownCTDAs) and (components==other.components));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t CraftableObjectRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -155,6 +156,7 @@ bool CraftableObjectRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool CraftableObjectRecord::loadFromStream(std::ifstream& in_File)
 {

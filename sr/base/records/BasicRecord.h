@@ -36,12 +36,14 @@ struct BasicRecord
     /* destructor */
     virtual ~BasicRecord();
 
+    #ifndef SR_UNSAVEABLE_RECORDS
     /* writes the record to the given output stream and returns true on success
 
        parameters:
            output   - the output file stream
     */
     virtual bool saveToStream(std::ofstream& output) const = 0;
+    #endif
 
     /* loads the record from the given input stream and returns true on success
 
@@ -56,10 +58,12 @@ struct BasicRecord
     /* returns the record's type, usually its header */
     virtual int32_t getRecordType() const = 0;
 
+    #ifndef SR_UNSAVEABLE_RECORDS
     /* returns the size in bytes that the record's data would occupy in a file
        stream, including the size of the header data
     */
     uint32_t getTotalWrittenSize() const;
+    #endif
 
     /* returns true, if the record's data is compressed, accodring to the set
        flags
@@ -91,6 +95,7 @@ struct BasicRecord
     */
     bool loadSizeAndUnknownValues(std::ifstream& in_File, uint32_t& sizeStorage);
 
+    #ifndef SR_UNSAVEABLE_RECORDS
     /* writes the first data of a record, the record size and yet unknown other
        values, to the given output stream and returns true on success
 
@@ -99,6 +104,7 @@ struct BasicRecord
            theSize - size to be written
     */
     bool saveSizeAndUnknownValues(std::ofstream& output, const uint32_t theSize) const;
+    #endif
 
     /* tries to load a 4 byte long subrecord from the stream and returns true
        in case of success
@@ -110,6 +116,7 @@ struct BasicRecord
     */
     bool loadUint32SubRecordFromStream(std::istream& in_File, const int32_t subHeader, uint32_t& target) const;
 
+    #ifndef SR_UNSAVEABLE_RECORDS
     /* returns the size in bytes that the record's data would occupy in a file
        stream, NOT including the header data
 
@@ -120,6 +127,7 @@ struct BasicRecord
            This function has to be reimplemented for every new record type
     */
     virtual uint32_t getWriteSize() const = 0;
+    #endif
 }; //struct
 
 } //namespace

@@ -49,6 +49,7 @@ bool ImpactDataSetRecord::equals(const ImpactDataSetRecord& other) const
       and (unknownPNAMs==other.unknownPNAMs));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t ImpactDataSetRecord::getWriteSize() const
 {
   return (4 /* EDID */ +2 /* 2 bytes for length */
@@ -84,6 +85,7 @@ bool ImpactDataSetRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool ImpactDataSetRecord::loadFromStream(std::ifstream& in_File)
 {

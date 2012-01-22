@@ -51,6 +51,7 @@ bool LandscapeTextureRecord::equals(const LandscapeTextureRecord& other) const
       and (unknownSNAM==other.unknownSNAM) and (unknownGNAMs==other.unknownGNAMs));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t LandscapeTextureRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -136,6 +137,7 @@ bool LandscapeTextureRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool LandscapeTextureRecord::loadFromStream(std::ifstream& in_File)
 {

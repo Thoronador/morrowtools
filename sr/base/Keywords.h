@@ -87,6 +87,7 @@ class Keywords
     /* returns constant iterator to the end of the internal list */
     KeywordListIterator getEnd() const;
 
+    #ifndef SR_UNSAVEABLE_RECORDS
     /* tries to save all available keywords to the given stream and returns
        true on success, false on failure
 
@@ -95,6 +96,7 @@ class Keywords
                     keywords
     */
     bool saveAllToStream(std::ofstream& output) const;
+    #endif
 
     /* removes all keywords from the list */
     void clearAll();

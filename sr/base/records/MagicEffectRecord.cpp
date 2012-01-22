@@ -58,6 +58,7 @@ bool MagicEffectRecord::equals(const MagicEffectRecord& other) const
       and (descriptionStringID==other.descriptionStringID) and (unknownCTDAs==other.unknownCTDAs));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t MagicEffectRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -204,6 +205,7 @@ bool MagicEffectRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool MagicEffectRecord::loadFromStream(std::ifstream& in_File)
 {

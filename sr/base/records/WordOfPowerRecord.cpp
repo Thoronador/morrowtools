@@ -57,6 +57,7 @@ bool WordOfPowerRecord::equals(const WordOfPowerRecord& other) const
   return false;
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t WordOfPowerRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -104,6 +105,7 @@ bool WordOfPowerRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool WordOfPowerRecord::loadFromStream(std::ifstream& in_File)
 {

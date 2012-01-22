@@ -59,6 +59,7 @@ bool LoadScreenRecord::equals(const LoadScreenRecord& other) const
       and (unknownMOD2==other.unknownMOD2));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t LoadScreenRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -175,6 +176,7 @@ bool LoadScreenRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool LoadScreenRecord::loadFromStream(std::ifstream& in_File)
 {

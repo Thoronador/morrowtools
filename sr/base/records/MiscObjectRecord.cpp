@@ -75,6 +75,7 @@ bool MiscObjectRecord::equals(const MiscObjectRecord& other) const
   return false;
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t MiscObjectRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -243,6 +244,7 @@ bool MiscObjectRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool MiscObjectRecord::loadFromStream(std::ifstream& in_File)
 {

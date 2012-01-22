@@ -60,6 +60,7 @@ bool KeyRecord::equals(const KeyRecord& other) const
       and (memcmp(unknownDATA, other.unknownDATA, 8)==0));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t KeyRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -183,6 +184,7 @@ bool KeyRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool KeyRecord::loadFromStream(std::ifstream& in_File)
 {

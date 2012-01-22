@@ -52,6 +52,7 @@ bool ApparatusRecord::equals(const ApparatusRecord& other) const
       and (memcmp(unknownDATA, other.unknownDATA, 8)==0));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t ApparatusRecord::getWriteSize() const
 {
   return (4 /* EDID */ +2 /* 2 bytes for length */
@@ -118,6 +119,7 @@ bool ApparatusRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool ApparatusRecord::loadFromStream(std::ifstream& in_File)
 {

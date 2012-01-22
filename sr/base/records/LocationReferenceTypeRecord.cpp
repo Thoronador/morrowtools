@@ -45,6 +45,7 @@ bool LocationReferenceTypeRecord::equals(const LocationReferenceTypeRecord& othe
       and (hasCNAM==other.hasCNAM) and ((unknownCNAM==other.unknownCNAM) or (!hasCNAM)));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t LocationReferenceTypeRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -83,6 +84,7 @@ bool LocationReferenceTypeRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool LocationReferenceTypeRecord::loadFromStream(std::ifstream& in_File)
 {

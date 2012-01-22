@@ -43,6 +43,7 @@ bool OutfitRecord::equals(const OutfitRecord& other) const
   return ((equalsBasic(other)) and (editorID==other.editorID) and (itemFormIDs==other.itemFormIDs));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t OutfitRecord::getWriteSize() const
 {
   return (4 /* EDID */ +2 /* 2 bytes for length */
@@ -77,6 +78,7 @@ bool OutfitRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool OutfitRecord::loadFromStream(std::ifstream& in_File)
 {

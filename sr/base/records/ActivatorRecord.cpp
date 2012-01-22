@@ -100,6 +100,7 @@ bool ActivatorRecord::equals(const ActivatorRecord& other) const
     and (hasKNAM==other.hasKNAM) and ((unknownKNAM==other.unknownKNAM) or (!hasKNAM)));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t ActivatorRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -431,6 +432,7 @@ bool ActivatorRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool ActivatorRecord::loadFromStream(std::ifstream& in_File)
 {

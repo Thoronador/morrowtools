@@ -51,6 +51,7 @@ bool PerkRecord::equals(const PerkRecord& other) const
       and (descriptionStringID==other.descriptionStringID) and (subBlocks==other.subBlocks));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t PerkRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -135,6 +136,7 @@ bool PerkRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool PerkRecord::loadFromStream(std::ifstream& in_File)
 {

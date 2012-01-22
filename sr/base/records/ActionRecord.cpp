@@ -42,15 +42,16 @@ int32_t ActionRecord::getRecordType() const
   return cAACT;
 }
 
+bool ActionRecord::equals(const ActionRecord& other) const
+{
+  return (equalsBasic(other) and (editorID==other.editorID));
+}
+
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t ActionRecord::getWriteSize() const
 {
   return (4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */);
-}
-
-bool ActionRecord::equals(const ActionRecord& other) const
-{
-  return (equalsBasic(other) and (editorID==other.editorID));
 }
 
 bool ActionRecord::saveToStream(std::ofstream& output) const
@@ -68,6 +69,7 @@ bool ActionRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool ActionRecord::loadFromStream(std::ifstream& in_File)
 {

@@ -20,6 +20,7 @@
 
 #include "ESMWriterContents.h"
 
+#ifndef SR_UNSAVEABLE_RECORDS
 namespace SRTP
 {
 
@@ -64,3 +65,4 @@ bool ESMWriterContents::writeGroups(std::ofstream& output) const
 }
 
 } //namespace
+#endif //SR_UNSAVEABLE_RECORDS

@@ -21,6 +21,7 @@
 #include "ESMWriter.h"
 #include <iostream>
 
+#ifndef SR_UNSAVEABLE_RECORDS
 namespace SRTP
 {
 
@@ -66,3 +67,4 @@ bool ESMWriter::writeESM(const std::string& FileName, Tes4HeaderRecord& theHeade
 }
 
 } //namespace
+#endif // SR_UNSAVEABLE_RECORDS

@@ -39,6 +39,7 @@ struct EffectBlock
   /* comparison operator */
   bool operator==(const EffectBlock& other) const;
 
+  #ifndef SR_UNSAVEABLE_RECORDS
   /* tries to save the effect block to the given stream and returns true in case
      of success, false on failure
 
@@ -46,6 +47,7 @@ struct EffectBlock
           output   - the output file stream
   */
   bool saveToStream(std::ofstream& output) const;
+  #endif
 }; //struct
 
 } //namespace

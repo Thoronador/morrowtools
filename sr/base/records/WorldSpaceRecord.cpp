@@ -107,6 +107,7 @@ bool WorldSpaceRecord::equals(const WorldSpaceRecord& other) const
       and (unknownOFST==other.unknownOFST));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t WorldSpaceRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -504,6 +505,7 @@ bool WorldSpaceRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool WorldSpaceRecord::loadFromStream(std::ifstream& in_File)
 {

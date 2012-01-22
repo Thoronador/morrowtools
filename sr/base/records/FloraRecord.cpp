@@ -68,6 +68,7 @@ bool FloraRecord::equals(const FloraRecord& other) const
       and (unknownPFPC==other.unknownPFPC));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t FloraRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -233,6 +234,7 @@ bool FloraRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool FloraRecord::loadFromStream(std::ifstream& in_File)
 {

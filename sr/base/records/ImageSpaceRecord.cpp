@@ -66,6 +66,7 @@ bool ImageSpaceRecord::equals(const ImageSpaceRecord& other) const
   return false;
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t ImageSpaceRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -165,6 +166,7 @@ bool ImageSpaceRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool ImageSpaceRecord::loadFromStream(std::ifstream& in_File)
 {

@@ -31,6 +31,7 @@ bool EffectBlock::operator==(const EffectBlock& other) const
       and (unknownCTDAs==other.unknownCTDAs));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 bool EffectBlock::saveToStream(std::ofstream& output) const
 {
   //write EFID
@@ -59,5 +60,6 @@ bool EffectBlock::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 } //namespace

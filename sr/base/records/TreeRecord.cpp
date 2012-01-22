@@ -61,6 +61,7 @@ bool TreeRecord::equals(const TreeRecord& other) const
       and (memcmp(unknownCNAM, other.unknownCNAM, 48)==0));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t TreeRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -185,6 +186,7 @@ bool TreeRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool TreeRecord::loadFromStream(std::ifstream& in_File)
 {

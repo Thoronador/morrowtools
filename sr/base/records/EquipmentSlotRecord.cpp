@@ -46,6 +46,7 @@ bool EquipmentSlotRecord::equals(const EquipmentSlotRecord& other) const
       and (unknownDATA==other.unknownDATA));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t EquipmentSlotRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -97,6 +98,7 @@ bool EquipmentSlotRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool EquipmentSlotRecord::loadFromStream(std::ifstream& in_File)
 {

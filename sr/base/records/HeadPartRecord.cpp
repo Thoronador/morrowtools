@@ -65,6 +65,7 @@ bool HeadPartRecord::equals(const HeadPartRecord& other) const
       and (hasRNAM==other.hasRNAM) and ((unknownRNAM==other.unknownRNAM) or (!hasRNAM)));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t HeadPartRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -220,6 +221,7 @@ bool HeadPartRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool HeadPartRecord::loadFromStream(std::ifstream& in_File)
 {

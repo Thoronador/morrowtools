@@ -44,6 +44,7 @@ bool VoiceTypeRecord::equals(const VoiceTypeRecord& other) const
       and (unknownDNAM==other.unknownDNAM));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t VoiceTypeRecord::getWriteSize() const
 {
   return (4 /* EDID */ +2 /* 2 bytes for length */
@@ -74,6 +75,7 @@ bool VoiceTypeRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool VoiceTypeRecord::loadFromStream(std::ifstream& in_File)
 {

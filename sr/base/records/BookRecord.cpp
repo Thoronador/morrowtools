@@ -76,6 +76,7 @@ bool BookRecord::equals(const BookRecord& other) const
     and (hasINAM==other.hasINAM) and ((unknownINAM==other.unknownINAM) or (!hasINAM)));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t BookRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -235,6 +236,7 @@ bool BookRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool BookRecord::loadFromStream(std::ifstream& in_File)
 {

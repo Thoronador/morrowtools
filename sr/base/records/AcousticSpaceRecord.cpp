@@ -54,6 +54,7 @@ bool AcousticSpaceRecord::equals(const AcousticSpaceRecord& other) const
       and (hasBNAM==other.hasBNAM) and ((unknownBNAM==other.unknownBNAM) or (!hasBNAM)));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t AcousticSpaceRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -131,6 +132,7 @@ bool AcousticSpaceRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool AcousticSpaceRecord::loadFromStream(std::ifstream& in_File)
 {

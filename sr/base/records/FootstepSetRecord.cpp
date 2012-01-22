@@ -47,6 +47,7 @@ bool FootstepSetRecord::equals(const FootstepSetRecord& other) const
       and (xCounts[4]==other.xCounts[4]) and (footstepFormIDs==other.footstepFormIDs));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t FootstepSetRecord::getWriteSize() const
 {
   return (4 /* EDID */ +2 /* 2 bytes for length */
@@ -108,6 +109,7 @@ bool FootstepSetRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool FootstepSetRecord::loadFromStream(std::ifstream& in_File)
 {

@@ -52,6 +52,7 @@ bool PlacedHazardRecord::equals(const PlacedHazardRecord& other) const
       and (memcmp(unknownDATA, other.unknownDATA, 24)==0));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t PlacedHazardRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -127,6 +128,7 @@ bool PlacedHazardRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool PlacedHazardRecord::loadFromStream(std::ifstream& in_File)
 {

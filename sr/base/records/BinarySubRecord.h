@@ -60,6 +60,7 @@ struct BinarySubRecord
     /* sets the subrecord's presence flag */
     void setPresence(const bool presence_flag);
 
+    #ifndef SR_UNSAVEABLE_RECORDS
     /* writes the sub record to the given output stream and returns true on success
 
       parameters:
@@ -67,6 +68,7 @@ struct BinarySubRecord
           subHeader - the sub record's header
     */
     bool saveToStream(std::ofstream& output, const int32_t subHeader) const;
+    #endif
 
     /* loads the sub record from the given input stream and returns true on success
 

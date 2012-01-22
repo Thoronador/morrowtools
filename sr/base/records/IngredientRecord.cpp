@@ -65,6 +65,7 @@ bool IngredientRecord::equals(const IngredientRecord& other) const
       and (effects==other.effects));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t IngredientRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -270,6 +271,7 @@ bool IngredientRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool IngredientRecord::loadFromStream(std::ifstream& in_File)
 {

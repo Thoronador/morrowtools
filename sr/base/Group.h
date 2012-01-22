@@ -146,6 +146,7 @@ class Group
     /* removes all contents, i.e. records and sub groups  */
     void removeContents();
 
+    #ifndef SR_UNSAVEABLE_RECORDS
     /* writes the group to the given output stream and returns true on success
 
       parameters:
@@ -161,6 +162,7 @@ class Group
        occupy, if written to a file stream
     */
     uint32_t getContentSize() const;
+    #endif
 
     /* determines the latest group according to the given group nesting level
        and returns a pointer to it. If NULL is returned, the level was invalid

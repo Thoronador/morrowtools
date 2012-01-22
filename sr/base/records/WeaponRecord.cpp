@@ -215,6 +215,7 @@ bool WeaponRecord::equals(const WeaponRecord& other) const
       and (unknownVNAM==other.unknownVNAM));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t WeaponRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -601,6 +602,7 @@ bool WeaponRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool WeaponRecord::loadFromStream(std::ifstream& in_File)
 {

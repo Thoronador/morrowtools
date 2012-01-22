@@ -113,6 +113,7 @@ bool CellRecord::equals(const CellRecord& other) const
       and (hasXCAS==other.hasXCAS) and ((unknownXCAS==other.unknownXCAS) or (!hasXCAS)));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t CellRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -500,6 +501,7 @@ bool CellRecord::saveToStream(std::ofstream& output) const
 
   return output;
 }
+#endif
 
 bool CellRecord::loadFromStream(std::ifstream& in_File)
 {

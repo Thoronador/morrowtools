@@ -62,6 +62,7 @@ bool DoorRecord::equals(const DoorRecord& other) const
       and (unknownFNAM==other.unknownFNAM));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t DoorRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -211,6 +212,7 @@ bool DoorRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool DoorRecord::loadFromStream(std::ifstream& in_File)
 {

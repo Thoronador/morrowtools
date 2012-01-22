@@ -52,6 +52,7 @@ bool StaticRecord::equals(const StaticRecord& other) const
       and (unknownMNAM==other.unknownMNAM));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t StaticRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -154,6 +155,7 @@ bool StaticRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool StaticRecord::loadFromStream(std::ifstream& in_File)
 {

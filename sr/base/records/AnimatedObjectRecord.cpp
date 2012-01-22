@@ -47,6 +47,7 @@ bool AnimatedObjectRecord::equals(const AnimatedObjectRecord& other) const
       and (unknownBNAM==other.unknownBNAM));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t AnimatedObjectRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -110,6 +111,7 @@ bool AnimatedObjectRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool AnimatedObjectRecord::loadFromStream(std::ifstream& in_File)
 {

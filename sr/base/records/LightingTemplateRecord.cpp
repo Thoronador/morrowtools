@@ -45,6 +45,7 @@ bool LightingTemplateRecord::equals(const LightingTemplateRecord& other) const
       and (unknownDATA==other.unknownDATA) and (unknownDALC==other.unknownDALC));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t LightingTemplateRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -96,6 +97,7 @@ bool LightingTemplateRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool LightingTemplateRecord::loadFromStream(std::ifstream& in_File)
 {

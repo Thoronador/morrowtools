@@ -44,6 +44,7 @@ bool EncounterZoneRecord::equals(const EncounterZoneRecord& other) const
       and (unknownDATA==other.unknownDATA));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t EncounterZoneRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -80,6 +81,7 @@ bool EncounterZoneRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool EncounterZoneRecord::loadFromStream(std::ifstream& in_File)
 {

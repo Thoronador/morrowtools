@@ -53,6 +53,7 @@ bool PlacedGrenadeRecord::equals(const PlacedGrenadeRecord& other) const
       and (memcmp(unknownDATA, other.unknownDATA, 24)==0));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t PlacedGrenadeRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -129,6 +130,7 @@ bool PlacedGrenadeRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool PlacedGrenadeRecord::loadFromStream(std::ifstream& in_File)
 {

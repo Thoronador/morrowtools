@@ -51,6 +51,7 @@ bool CollisionRecord::equals(const CollisionRecord& other) const
       and (unknownMNAM==other.unknownMNAM) and (unknownCNAMs==other.unknownCNAMs));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t CollisionRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -149,6 +150,7 @@ bool CollisionRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool CollisionRecord::loadFromStream(std::ifstream& in_File)
 {

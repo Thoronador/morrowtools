@@ -79,6 +79,7 @@ ActionListIterator Actions::getEnd() const
   return m_Actions.end();
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 bool Actions::saveAllToStream(std::ofstream& output) const
 {
   if (!output.good())
@@ -100,6 +101,7 @@ bool Actions::saveAllToStream(std::ofstream& output) const
   }//while
   return output.good();
 }
+#endif
 
 void Actions::clearAll()
 {

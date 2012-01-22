@@ -63,6 +63,7 @@ bool GlobalRecord::equals(const GlobalRecord& other) const
   throw 42;
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t GlobalRecord::getWriteSize() const
 {
   return (4 /* EDID */ +2 /* 2 bytes for length */
@@ -118,6 +119,7 @@ bool GlobalRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool GlobalRecord::loadFromStream(std::ifstream& in_File)
 {

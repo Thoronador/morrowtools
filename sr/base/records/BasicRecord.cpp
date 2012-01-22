@@ -77,6 +77,7 @@ bool BasicRecord::loadSizeAndUnknownValues(std::ifstream& in_File, uint32_t& siz
   return true;
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 bool BasicRecord::saveSizeAndUnknownValues(std::ofstream& output, const uint32_t theSize) const
 {
   //record size
@@ -95,6 +96,7 @@ bool BasicRecord::saveSizeAndUnknownValues(std::ofstream& output, const uint32_t
   }
   return true;
 }
+#endif
 
 bool BasicRecord::loadUint32SubRecordFromStream(std::istream& in_File, const int32_t subHeader, uint32_t& target) const
 {
@@ -125,11 +127,13 @@ bool BasicRecord::loadUint32SubRecordFromStream(std::istream& in_File, const int
   return true;
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t BasicRecord::getTotalWrittenSize() const
 {
   /* 24 bytes are the "header" of each record, containing type, size and so on */
   return (24 + getWriteSize());
 }
+#endif
 
 bool BasicRecord::isCompressed() const
 {

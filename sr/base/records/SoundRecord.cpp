@@ -59,6 +59,7 @@ bool SoundRecord::equals(const SoundRecord& other) const
   return false;
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t SoundRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -131,6 +132,7 @@ bool SoundRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool SoundRecord::loadFromStream(std::ifstream& in_File)
 {

@@ -55,6 +55,7 @@ bool KeywordRecord::equals(const KeywordRecord& other) const
   return false;
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t KeywordRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -98,6 +99,7 @@ bool KeywordRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool KeywordRecord::loadFromStream(std::ifstream& in_File)
 {

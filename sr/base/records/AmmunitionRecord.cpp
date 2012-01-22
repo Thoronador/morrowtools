@@ -61,6 +61,7 @@ bool AmmunitionRecord::equals(const AmmunitionRecord& other) const
       and (unknownDATA[3]==other.unknownDATA[3]));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t AmmunitionRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -206,6 +207,7 @@ bool AmmunitionRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool AmmunitionRecord::loadFromStream(std::ifstream& in_File)
 {

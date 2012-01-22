@@ -44,6 +44,7 @@ bool FormListRecord::equals(const FormListRecord& other) const
       and (listFormIDs==other.listFormIDs));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t FormListRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -87,6 +88,7 @@ bool FormListRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool FormListRecord::loadFromStream(std::ifstream& in_File)
 {

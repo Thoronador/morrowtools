@@ -94,6 +94,7 @@ bool ArmourRecord::equals(const ArmourRecord& other) const
       and (hasTNAM==other.hasTNAM) and ((unknownTNAM==other.unknownTNAM) or (!hasTNAM)));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t ArmourRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -445,6 +446,7 @@ bool ArmourRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool ArmourRecord::loadFromStream(std::ifstream& in_File)
 {

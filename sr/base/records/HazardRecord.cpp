@@ -56,6 +56,7 @@ bool HazardRecord::equals(const HazardRecord& other) const
       and (memcmp(unknownDATA, other.unknownDATA, 40)==0));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t HazardRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -156,6 +157,7 @@ bool HazardRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool HazardRecord::loadFromStream(std::ifstream& in_File)
 {

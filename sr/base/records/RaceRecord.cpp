@@ -88,6 +88,7 @@ bool RaceRecord::equals(const RaceRecord& other) const
       and (subBlocks==other.subBlocks));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t RaceRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -252,6 +253,7 @@ bool RaceRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool RaceRecord::loadFromStream(std::ifstream& in_File)
 {

@@ -45,6 +45,7 @@ bool RelationshipRecord::equals(const RelationshipRecord& other) const
       and (unknownDATA[2]==other.unknownDATA[2]) and (unknownDATA[3]==other.unknownDATA[3]));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t RelationshipRecord::getWriteSize() const
 {
   return (4 /* EDID */ +2 /* 2 bytes for length */
@@ -78,6 +79,7 @@ bool RelationshipRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool RelationshipRecord::loadFromStream(std::ifstream& in_File)
 {

@@ -45,6 +45,7 @@ bool ReverbRecord::equals(const ReverbRecord& other) const
       and (memcmp(unknownDATA, other.unknownDATA, 14)==0));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t ReverbRecord::getWriteSize() const
 {
   return (4 /* EDID */ +2 /* 2 bytes for length */
@@ -75,6 +76,7 @@ bool ReverbRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool ReverbRecord::loadFromStream(std::ifstream& in_File)
 {

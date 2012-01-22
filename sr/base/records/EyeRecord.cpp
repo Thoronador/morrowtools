@@ -34,6 +34,7 @@ bool EyeRecord::equals(const EyeRecord& other) const
       and equalsBasic(other));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t EyeRecord::getWriteSize() const
 {
   return (4 /* EDID */ +2 /* 2 bytes for length */
@@ -83,6 +84,7 @@ bool EyeRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool EyeRecord::loadFromStream(std::ifstream& in_File)
 {

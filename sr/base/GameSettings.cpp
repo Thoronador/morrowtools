@@ -79,6 +79,7 @@ GameSettingListIterator GameSettings::getEnd() const
   return m_GameSettings.end();
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 bool GameSettings::saveAllToStream(std::ofstream& output) const
 {
   if (!output.good())
@@ -100,6 +101,7 @@ bool GameSettings::saveAllToStream(std::ofstream& output) const
   }//while
   return output.good();
 }
+#endif
 
 void GameSettings::clearAll()
 {

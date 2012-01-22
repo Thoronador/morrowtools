@@ -47,6 +47,7 @@ bool MovementTypeRecord::equals(const MovementTypeRecord& other) const
       and (unknownINAM==other.unknownINAM));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t MovementTypeRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -102,6 +103,7 @@ bool MovementTypeRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool MovementTypeRecord::loadFromStream(std::ifstream& in_File)
 {

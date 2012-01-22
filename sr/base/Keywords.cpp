@@ -79,6 +79,7 @@ KeywordListIterator Keywords::getEnd() const
   return m_Keywords.end();
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 bool Keywords::saveAllToStream(std::ofstream& output) const
 {
   if (!output.good())
@@ -100,6 +101,7 @@ bool Keywords::saveAllToStream(std::ofstream& output) const
   }//while
   return output.good();
 }
+#endif
 
 void Keywords::clearAll()
 {

@@ -62,6 +62,7 @@ bool ScrollRecord::equals(const ScrollRecord& other) const
       and (effects==other.effects));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t ScrollRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -248,6 +249,7 @@ bool ScrollRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool ScrollRecord::loadFromStream(std::ifstream& in_File)
 {

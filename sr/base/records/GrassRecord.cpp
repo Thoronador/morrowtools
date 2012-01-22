@@ -50,6 +50,7 @@ bool GrassRecord::equals(const GrassRecord& other) const
       and (memcmp(unknownDATA, other.unknownDATA, 32)==0));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t GrassRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -115,6 +116,7 @@ bool GrassRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool GrassRecord::loadFromStream(std::ifstream& in_File)
 {

@@ -85,6 +85,7 @@ class GameSettings
     /* returns constant iterator to the end of the internal list */
     GameSettingListIterator getEnd() const;
 
+    #ifndef SR_UNSAVEABLE_RECORDS
     /* tries to save all available game settings to the given stream and returns
        true on success, false on failure
 
@@ -93,6 +94,7 @@ class GameSettings
                     game settings
     */
     bool saveAllToStream(std::ofstream& output) const;
+    #endif
 
     /* removes all game settings from the list */
     void clearAll();

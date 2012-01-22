@@ -48,6 +48,7 @@ bool ClassRecord::equals(const ClassRecord& other) const
     and (memcmp(unknownDATA, other.unknownDATA, 36)==0));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t ClassRecord::getWriteSize() const
 {
   return ( 4 /* EDID */ +2 /* 2 bytes for length */
@@ -96,6 +97,7 @@ bool ClassRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool ClassRecord::loadFromStream(std::ifstream& in_File)
 {

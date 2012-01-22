@@ -24,6 +24,7 @@
 #include "ESMWriter.h"
 #include "ESMFileContents.h"
 
+#ifndef SR_UNSAVEABLE_RECORDS
 namespace SRTP
 {
 
@@ -67,5 +68,6 @@ class ESMWriterContents: public ESMWriter
 };//class
 
 } //namespace
+#endif // SR_UNSAVEABLE_RECORDS
 
 #endif // SR_ESMWRITERCONTENTS_H

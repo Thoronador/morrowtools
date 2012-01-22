@@ -77,6 +77,7 @@ bool LocationRecord::equals(const LocationRecord& other) const
       and (hasNAM1==other.hasNAM1) and ((unknownNAM1==other.unknownNAM1) or (!hasNAM1)));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t LocationRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -335,6 +336,7 @@ bool LocationRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool LocationRecord::loadFromStream(std::ifstream& in_File)
 {

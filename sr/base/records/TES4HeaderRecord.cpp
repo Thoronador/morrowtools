@@ -44,6 +44,7 @@ int32_t Tes4HeaderRecord::getRecordType() const
   return cTES4;
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t Tes4HeaderRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -121,6 +122,7 @@ bool Tes4HeaderRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool Tes4HeaderRecord::loadFromStream(std::ifstream& in_File)
 {

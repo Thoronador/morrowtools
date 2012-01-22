@@ -50,6 +50,7 @@ bool ArtObjectRecord::equals(const ArtObjectRecord& other) const
       and (unknownDNAM==other.unknownDNAM));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t ArtObjectRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -115,6 +116,7 @@ bool ArtObjectRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool ArtObjectRecord::loadFromStream(std::ifstream& in_File)
 {

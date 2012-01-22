@@ -58,6 +58,7 @@ bool ShoutRecord::equals(const ShoutRecord& other) const
       and (descriptionStringID==other.descriptionStringID) and (unknownSNAMs==other.unknownSNAMs));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t ShoutRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -136,6 +137,7 @@ bool ShoutRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool ShoutRecord::loadFromStream(std::ifstream& in_File)
 {

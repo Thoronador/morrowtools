@@ -41,12 +41,19 @@ struct EquipmentSlotRecord: public BasicRecord
     /* returns true, if the other record contains the same data */
     bool equals(const EquipmentSlotRecord& other) const;
 
+    #ifndef SR_UNSAVEABLE_RECORDS
+    /* returns the size in bytes that the record's data would occupy in a file
+       stream, NOT including the header data
+    */
+    virtual uint32_t getWriteSize() const;
+
     /* writes the record to the given output stream and returns true on success
 
       parameters:
           output   - the output file stream
     */
     virtual bool saveToStream(std::ofstream& output) const;
+    #endif
 
     /* loads the record from the given input stream and returns true on success
 
@@ -57,12 +64,6 @@ struct EquipmentSlotRecord: public BasicRecord
 
     /* returns the record's type, usually its header */
     virtual int32_t getRecordType() const;
-
-    /* returns the size in bytes that the record's data would occupy in a file
-       stream, NOT including the header data
-    */
-    virtual uint32_t getWriteSize() const;
-
 
     std::string editorID;
     std::vector<uint32_t> unknownPNAMs;

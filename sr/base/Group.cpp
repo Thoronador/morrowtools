@@ -201,6 +201,7 @@ void Group::removeContents()
   removeSubGroups();
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t Group::getContentSize() const
 {
   uint32_t total = 0;
@@ -260,6 +261,7 @@ void Group::updateGroupSize()
   //basic size for every group is 24 bytes, rest is records
   headerData.setGroupSize(24 + getContentSize());
 }
+#endif
 
 Group * Group::determineLatestGroup(const unsigned int level)
 {

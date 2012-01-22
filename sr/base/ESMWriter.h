@@ -25,6 +25,7 @@
 #include <stdint.h>
 #include "records/TES4HeaderRecord.h"
 
+#ifndef SR_UNSAVEABLE_RECORDS
 namespace SRTP
 {
 
@@ -81,5 +82,6 @@ class ESMWriter
 };//class
 
 } //namespace
+#endif // SR_UNSAVEABLE_RECORDS
 
 #endif // SR_ESMWRITER_H

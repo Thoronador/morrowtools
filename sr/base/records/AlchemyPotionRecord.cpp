@@ -66,6 +66,7 @@ bool AlchemyPotionRecord::equals(const AlchemyPotionRecord& other) const
       and (effects==other.effects));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t AlchemyPotionRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -237,6 +238,7 @@ bool AlchemyPotionRecord::saveToStream(std::ofstream& output) const
 
   return  output.good();
 }
+#endif
 
 bool AlchemyPotionRecord::loadFromStream(std::ifstream& in_File)
 {

@@ -48,6 +48,7 @@ bool AssociationTypeRecord::equals(const AssociationTypeRecord& other) const
       and (unknownDATA==other.unknownDATA));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t AssociationTypeRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -132,6 +133,7 @@ bool AssociationTypeRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool AssociationTypeRecord::loadFromStream(std::ifstream& in_File)
 {

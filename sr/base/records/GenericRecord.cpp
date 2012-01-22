@@ -85,6 +85,7 @@ int32_t GenericRecord::getRecordType() const
   return 0;
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t GenericRecord::getWriteSize() const
 {
   return m_DataSize;
@@ -100,6 +101,7 @@ bool GenericRecord::saveToStream(std::ofstream& output) const
   output.write((char*) m_Data, m_DataSize);
   return output.good();
 }
+#endif
 
 bool GenericRecord::loadFromStream(std::ifstream& in_File)
 {

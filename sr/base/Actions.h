@@ -84,6 +84,7 @@ class Actions
     /* returns constant iterator to the end of the internal list */
     ActionListIterator getEnd() const;
 
+    #ifndef SR_UNSAVEABLE_RECORDS
     /* tries to save all available actions to the given stream and returns
        true on success, false on failure
 
@@ -92,6 +93,7 @@ class Actions
                     actions
     */
     bool saveAllToStream(std::ofstream& output) const;
+    #endif
 
     /* removes all actions from the list */
     void clearAll();

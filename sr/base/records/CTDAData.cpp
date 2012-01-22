@@ -49,6 +49,7 @@ bool CTDAData::loadFromStream(std::istream& in_Stream, uint32_t& bytesRead)
   return true;
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 bool CTDAData::saveToStream(std::ostream& output) const
 {
   //write CTDA
@@ -60,6 +61,7 @@ bool CTDAData::saveToStream(std::ostream& output) const
   output.write((const char*) content, 32);
   return output.good();
 }
+#endif
 
 bool CTDAData::operator==(const CTDAData& other) const
 {

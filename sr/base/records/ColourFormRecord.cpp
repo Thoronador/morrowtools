@@ -48,6 +48,7 @@ bool ColourFormRecord::equals(const ColourFormRecord& other) const
       and (unknownCNAM==other.unknownCNAM) and (unknownFNAM==other.unknownFNAM));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t ColourFormRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -104,6 +105,7 @@ bool ColourFormRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool ColourFormRecord::loadFromStream(std::ifstream& in_File)
 {

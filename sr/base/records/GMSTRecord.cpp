@@ -65,6 +65,7 @@ bool GMSTRecord::equals(const GMSTRecord& other) const
   return false;
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t GMSTRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -124,6 +125,7 @@ bool GMSTRecord::saveToStream(std::ofstream& output) const
   }//swi
   return output.good();
 }
+#endif
 
 bool GMSTRecord::loadFromStream(std::ifstream& in_File)
 {

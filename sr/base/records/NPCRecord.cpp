@@ -174,6 +174,7 @@ bool NPCRecord::equals(const NPCRecord& other) const
       and (unknownTINXs==other.unknownTINXs));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t NPCRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -929,6 +930,7 @@ bool NPCRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool NPCRecord::loadFromStream(std::ifstream& in_File)
 {

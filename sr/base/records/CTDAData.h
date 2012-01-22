@@ -40,12 +40,14 @@ struct CTDAData
   */
   bool loadFromStream(std::istream& in_Stream, uint32_t& bytesRead);
 
+  #ifndef SR_UNSAVEABLE_RECORDS
   /* writes the CTDA data to the given output stream and returns true on success
 
      parameters:
          output - the output stream
   */
   bool saveToStream(std::ostream& output) const;
+  #endif
 
   /* equality operator */
   bool operator==(const CTDAData& other) const;

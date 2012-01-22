@@ -72,6 +72,7 @@ bool WaterTypeRecord::equals(const WaterTypeRecord& other) const
       or (!hasNAM1)));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t WaterTypeRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -237,6 +238,7 @@ bool WaterTypeRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool WaterTypeRecord::loadFromStream(std::ifstream& in_File)
 {

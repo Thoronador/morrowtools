@@ -77,6 +77,7 @@ bool ReferenceRecord::equals(const ReferenceRecord& other) const
       and (memcmp(unknownDATA, other.unknownDATA, 24)==0));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t ReferenceRecord::getWriteSize() const
 {
   #warning Not completely implemented yet!
@@ -337,6 +338,7 @@ bool ReferenceRecord::saveToStream(std::ofstream& output) const
 
   return false;
 }
+#endif
 
 bool ReferenceRecord::loadFromStream(std::ifstream& in_File)
 {

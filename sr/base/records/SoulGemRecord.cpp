@@ -71,6 +71,7 @@ bool SoulGemRecord::equals(const SoulGemRecord& other) const
       and ((unknownNAM0==other.unknownNAM0) or (!hasNAM0)));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t SoulGemRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -210,6 +211,7 @@ bool SoulGemRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool SoulGemRecord::loadFromStream(std::ifstream& in_File)
 {

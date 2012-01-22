@@ -45,6 +45,7 @@ bool NAVIRecord::equals(const NAVIRecord& other) const
       and (unknownNVMIs==other.unknownNVMIs) and (unknownNVPP==other.unknownNVPP));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t NAVIRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -97,6 +98,7 @@ bool NAVIRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool NAVIRecord::loadFromStream(std::ifstream& in_File)
 {

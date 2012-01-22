@@ -59,6 +59,7 @@ bool SpellRecord::equals(const SpellRecord& other) const
       and (unknownCIS2==other.unknownCIS2));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t SpellRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -211,6 +212,7 @@ bool SpellRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool SpellRecord::loadFromStream(std::ifstream& in_File)
 {

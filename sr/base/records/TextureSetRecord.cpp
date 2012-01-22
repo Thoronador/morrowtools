@@ -56,6 +56,7 @@ bool TextureSetRecord::equals(const TextureSetRecord& other) const
   return false;
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 uint32_t TextureSetRecord::getWriteSize() const
 {
   uint32_t writeSize;
@@ -217,6 +218,7 @@ bool TextureSetRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool TextureSetRecord::loadFromStream(std::ifstream& in_File)
 {

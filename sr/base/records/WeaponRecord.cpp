@@ -27,6 +27,13 @@
 namespace SRTP
 {
 
+//type constants
+const unsigned int WeaponRecord::cTypeSwordOneHand = 1;
+const unsigned int WeaponRecord::cTypeDagger = 2;
+const unsigned int WeaponRecord::cTypeAxeOneHand = 3;
+const unsigned int WeaponRecord::cTypeMaceOneHand = 4;
+const unsigned int WeaponRecord::cTypeBow = 7;
+
 WeaponRecord::WeaponRecord()
 : BasicRecord()
 {

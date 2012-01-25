@@ -72,6 +72,12 @@ struct WeaponRecord: public BasicRecord
     /* returns the record's type, usually its header */
     virtual int32_t getRecordType() const;
 
+    static const unsigned int cTypeSwordOneHand;
+    static const unsigned int cTypeDagger;
+    static const unsigned int cTypeAxeOneHand;
+    static const unsigned int cTypeMaceOneHand;
+    static const unsigned int cTypeBow;
+
     std::string editorID;
     BinarySubRecord unknownVMAD;
     uint8_t unknownOBND[12];

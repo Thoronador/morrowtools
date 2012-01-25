@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -65,7 +65,11 @@ WeaponRecord::WeaponRecord()
   unknownNAM8 = 0;
   hasSNAM = false;
   unknownSNAM = 0;
-  memset(unknownDATA, 0, 10);
+  //DATA
+  value = 0;
+  weight = 0.0f;
+  baseDamage = 0;
+  //end of DATA
   memset(unknownDNAM, 0, 100);
   memset(unknownCRDT, 0, 16);
   unknownVNAM = 0;
@@ -111,7 +115,9 @@ WeaponRecord::WeaponRecord(const WeaponRecord& other)
   unknownNAM8 = other.unknownNAM8;
   hasSNAM = other.hasSNAM;
   unknownSNAM = other.unknownSNAM;
-  memcpy(unknownDATA, other.unknownDATA, 10);
+  value = other.value;
+  weight = other.weight;
+  baseDamage = other.baseDamage;
   memcpy(unknownDNAM, other.unknownDNAM, 100);
   memcpy(unknownCRDT, other.unknownCRDT, 16);
   unknownVNAM = other.unknownVNAM;
@@ -159,7 +165,9 @@ WeaponRecord& WeaponRecord::operator=(const WeaponRecord& other)
   unknownNAM8 = other.unknownNAM8;
   hasSNAM = other.hasSNAM;
   unknownSNAM = other.unknownSNAM;
-  memcpy(unknownDATA, other.unknownDATA, 10);
+  value = other.value;
+  weight = other.weight;
+  baseDamage = other.baseDamage;
   memcpy(unknownDNAM, other.unknownDNAM, 100);
   memcpy(unknownCRDT, other.unknownCRDT, 16);
   unknownVNAM = other.unknownVNAM;
@@ -209,8 +217,9 @@ bool WeaponRecord::equals(const WeaponRecord& other) const
   {
     return false;
   }
-  return ((memcmp(unknownDATA, other.unknownDATA, 10)==0)
-      and (memcmp(unknownDNAM, other.unknownDATA, 100)==0)
+  return ((value==other.value) and (weight==other.weight)
+      and (baseDamage==other.baseDamage)
+      and (memcmp(unknownDNAM, other.unknownDNAM, 100)==0)
       and (memcmp(unknownCRDT, other.unknownCRDT, 16)==0)
       and (unknownVNAM==other.unknownVNAM));
 }
@@ -563,7 +572,9 @@ bool WeaponRecord::saveToStream(std::ofstream& output) const
   subLength = 10;
   output.write((char*) &subLength, 2);
   //write DATA
-  output.write((const char*) unknownDATA, 10);
+  output.write((const char*) &value, 4);
+  output.write((const char*) &weight, 4);
+  output.write((const char*) &baseDamage, 2);
 
   //write DNAM
   output.write((const char*) &cDNAM, 4);
@@ -720,6 +731,7 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
            //read FULL
            if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID)) return false;
            bytesRead += 6;
+           hasFULL = true;
            break;
       case cMODL:
            if (!modelPath.empty())
@@ -1035,7 +1047,9 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read DATA's content
-           in_File.read((char*) unknownDATA, 10);
+           in_File.read((char*) &value, 4);
+           in_File.read((char*) &weight, 4);
+           in_File.read((char*) &baseDamage, 2);
            bytesRead += 10;
            if (!in_File.good())
            {

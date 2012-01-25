@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -107,7 +107,11 @@ struct WeaponRecord: public BasicRecord
     uint32_t unknownNAM8;
     bool hasSNAM;
     uint32_t unknownSNAM;
-    uint8_t  unknownDATA[10];
+    //DATA
+    uint32_t value;
+    float weight;
+    uint16_t baseDamage;
+    //end of data
     uint8_t  unknownDNAM[100];
     uint8_t  unknownCRDT[16];
     uint32_t unknownVNAM;

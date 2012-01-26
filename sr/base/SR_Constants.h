@@ -214,6 +214,7 @@ const int32_t cPRKE = 0x454B5250; //"PRKE" = 50 52 4B 45
 const int32_t cPRKF = 0x464B5250; //"PRKF" = 50 52 4B 46
 const int32_t cPRKR = 0x524B5250; //"PRKR" = 50 52 4B 52
 const int32_t cPRKZ = 0x5A4B5250; //"PRKZ" = 50 52 4B 5A
+const int32_t cPROJ = 0x4A4F5250; //"PROJ" = 50 52 4F 4A
 const int32_t cQNAM = 0x4D414E51; //"QNAM" = 51 4E 41 4D
 const int32_t cQOBJ = 0x4A424F51; //"QOBJ" = 51 4F 42 4A
 const int32_t cQSDT = 0x54445351; //"QSDT" = 51 53 44 54

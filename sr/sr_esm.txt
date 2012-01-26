@@ -57,6 +57,39 @@ Records and their sub-records:
               f = floating point value (4 bytes)
 
 
+  AACT: action(?)
+      EDID (string, NUL-terminated)
+          editorID
+
+
+  AMMO: ammunition
+      EDID (string, NUL-terminated)
+          editorID
+      OBND (12 bytes)
+          unknown
+      FULL (4 bytes, optional)
+          string ID of object's full name
+      MODL (string, NUL-terminated, optional)
+          model path
+      MODT (?? bytes, optional)
+          unknown data
+      YNAM (4 bytes)
+          unknown, possibly form ID
+      ZNAM (4 bytes)
+          unknown, possibly form ID
+      DESC (4 bytes)
+          possibly string index
+      KSIZ (4 bytes, optional)
+          number of keywords in following KWDA
+      KWDA (n * 4 bytes, optional)
+          array of form IDs of keywords
+      DATA (16 bytes)
+          uint32_t  form ID of PROJ record
+          uint32_t  flags(?)
+          float     base damage
+          uint32_t  value
+
+
   ANIO: animated object
       EDID (string, NUL-terminated)
           editor ID
@@ -574,6 +607,38 @@ Records and their sub-records:
           scaling factor
       DATA (24 bytes)
           unknown data
+
+
+  PROJ: projectile
+      EDID (string, NUL-terminated)
+          editor ID
+      OBND (12 bytes)
+          unknown data
+      FULL (4 bytes, optional)
+          string ID of name
+      MODL (string, NUL-terminated, optional)
+          model path
+      MODT (size varies, optional)
+          unknown data
+      DEST (8 bytes, optional)
+          unknown data
+          
+          DSTD (20 bytes)
+              unknown data
+          DSTF (0 bytes)
+              end marker
+          
+          --> DSTD/DSTF pairs can occur multiple times after DEST
+          
+      DATA (92 bytes or 88 bytes or 84 bytes)
+          unknown data
+      NAM1 (string, NUL-terminated)
+          effect model (?), even present, if empty (1 byte length, NUL byte)
+      NAM2 (16 bytes, optional)
+          unknown data, but seems to be present for non-empty NAM1 only
+      VNAM (4 bytes)
+          unknown, flag-like data
+      
 
 
   RACE: race
@@ -1185,35 +1250,6 @@ Records and their sub-records:
       --> EFID (once), EFIT (once) and CTDA (0+ times) seem to form blocks, that can occur multiple times
 
 
-  AACT: action(?)
-      EDID (string, NUL-terminated)
-          editorID
-
-
-  AMMO: ammunition
-      EDID (string, NUL-terminated)
-          editorID
-      OBND (12 bytes)
-          unknown
-      FULL (4 bytes, optional)
-          string ID of object's full name
-      MODL (string, NUL-terminated, optional)
-          model path
-      MODT (?? bytes, optional)
-          unknown data
-      YNAM (4 bytes)
-          unknown, possibly form ID
-      ZNAM (4 bytes)
-          unknown, possibly form ID
-      DESC (4 bytes)
-          possibly string index
-      KSIZ (4 bytes, optional)
-          number of keywords in following KWDA
-      KWDA (n * 4 bytes, optional)
-          array of form IDs of keywords
-      DATA (16 bytes)
-          unknown data
-
 
   SOUN: sound
       EDID (string, NUL-terminated)
@@ -1435,7 +1471,7 @@ Records and their sub-records:
               unknown data
           CIS2 (string, NUL-terminated, optional)
               script variable(?)
-          
+
            --> forms a repeating structure within QOBJ/FNAM/NNAM
 
 

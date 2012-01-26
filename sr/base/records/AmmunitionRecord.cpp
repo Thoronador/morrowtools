@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -40,7 +40,12 @@ AmmunitionRecord::AmmunitionRecord()
   unknownZNAM = 0;
   unknownDESC = 0;
   keywordArray.clear();
-  unknownDATA[0] = unknownDATA[1] = unknownDATA[2] = unknownDATA[3] = 0;
+  //DATA
+  projectileFormID = 0;
+  DATAflags = 0;
+  baseDamage = 0.0f;
+  value = 0;
+  //end of DATA
 }
 
 AmmunitionRecord::~AmmunitionRecord()
@@ -56,9 +61,9 @@ bool AmmunitionRecord::equals(const AmmunitionRecord& other) const
       and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
       and (unknownYNAM==other.unknownYNAM) and (unknownZNAM==other.unknownZNAM)
       and (unknownDESC==other.unknownDESC)
-      and (keywordArray==other.keywordArray) and (unknownDATA[0]==other.unknownDATA[0])
-      and (unknownDATA[1]==other.unknownDATA[1]) and (unknownDATA[2]==other.unknownDATA[2])
-      and (unknownDATA[3]==other.unknownDATA[3]));
+      and (keywordArray==other.keywordArray) and (projectileFormID==other.projectileFormID)
+      and (DATAflags==other.DATAflags) and (baseDamage==other.baseDamage)
+      and (value==other.value));
 }
 
 #ifndef SR_UNSAVEABLE_RECORDS
@@ -68,7 +73,6 @@ uint32_t AmmunitionRecord::getWriteSize() const
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of string +1 byte for NUL-termination */
         +4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed size */
-
         +4 /* YNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */
         +4 /* ZNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */
         +4 /* DESC */ +2 /* 2 bytes for length */ +4 /* fixed size */
@@ -97,32 +101,32 @@ uint32_t AmmunitionRecord::getWriteSize() const
 
 bool AmmunitionRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cAMMO, 4);
+  output.write((const char*) &cAMMO, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
-  output.write((char*) &cEDID, 4);
+  output.write((const char*) &cEDID, 4);
   //EDID's length
   uint16_t subLength = editorID.length()+1;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write editor ID
   output.write(editorID.c_str(), subLength);
 
   //write OBND
-  output.write((char*) &cOBND, 4);
+  output.write((const char*) &cOBND, 4);
   //OBND's length
   subLength = 12; //fixed size
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write OBND's stuff
   output.write((const char*) unknownOBND, 12);
 
   if (hasFULL)
   {
     //write FULL
-    output.write((char*) &cFULL, 4);
+    output.write((const char*) &cFULL, 4);
     //FULL's length
     subLength = 4; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write FULL's stuff
     output.write((const char*) &nameStringID, 4);
   }//if hasFULL
@@ -130,10 +134,10 @@ bool AmmunitionRecord::saveToStream(std::ofstream& output) const
   if (!modelPath.empty())
   {
     //write MODL
-    output.write((char*) &cMODL, 4);
+    output.write((const char*) &cMODL, 4);
     //MODL's length
     subLength = modelPath.length()+1;
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write model path
     output.write(modelPath.c_str(), subLength);
   }//if modelPath
@@ -148,62 +152,62 @@ bool AmmunitionRecord::saveToStream(std::ofstream& output) const
   }//if MODT
 
   //write YNAM
-  output.write((char*) &cYNAM, 4);
+  output.write((const char*) &cYNAM, 4);
   //YNAM's length
   subLength = 4; //fixed size
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write YNAM's stuff
   output.write((const char*) &unknownYNAM, 4);
 
   //write ZNAM
-  output.write((char*) &cZNAM, 4);
+  output.write((const char*) &cZNAM, 4);
   //ZNAM's length
   subLength = 4; //fixed size
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write ZNAM's stuff
   output.write((const char*) &unknownZNAM, 4);
 
   //write DESC
-  output.write((char*) &cDESC, 4);
+  output.write((const char*) &cDESC, 4);
   //DESC's length
   subLength = 4; //fixed size
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write DESC's stuff
   output.write((const char*) &unknownDESC, 4);
 
   if (!keywordArray.empty())
   {
     //write KSIZ
-    output.write((char*) &cKSIZ, 4);
+    output.write((const char*) &cKSIZ, 4);
     //KSIZ's length
     subLength = 4; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write KSIZ's stuff
     const uint32_t k_Size = keywordArray.size();
     output.write((const char*) &k_Size, 4);
 
     //write KWDA
-    output.write((char*) &cKWDA, 4);
+    output.write((const char*) &cKWDA, 4);
     //KWDA's length
     subLength = 4*k_Size;
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     unsigned int i;
     for (i=0; i<k_Size; ++i)
     {
-      output.write((char*) &(keywordArray[i]), 4);
+      output.write((const char*) &(keywordArray[i]), 4);
     }//for
   }//if keywords
 
   //write DATA
-  output.write((char*) &cDATA, 4);
+  output.write((const char*) &cDATA, 4);
   //DATA's length
   subLength = 16; //fixed size
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write DATA's stuff
-  output.write((const char*) &unknownDATA[0], 4);
-  output.write((const char*) &unknownDATA[1], 4);
-  output.write((const char*) &unknownDATA[2], 4);
-  output.write((const char*) &unknownDATA[3], 4);
+  output.write((const char*) &projectileFormID, 4);
+  output.write((const char*) &DATAflags, 4);
+  output.write((const char*) &baseDamage, 4);
+  output.write((const char*) &value, 4);
 
   return output.good();
 }
@@ -498,10 +502,10 @@ bool AmmunitionRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read DATA's stuff
-           in_File.read((char*) &unknownDATA[0], 4);
-           in_File.read((char*) &unknownDATA[1], 4);
-           in_File.read((char*) &unknownDATA[2], 4);
-           in_File.read((char*) &unknownDATA[3], 4);
+           in_File.read((char*) &projectileFormID, 4);
+           in_File.read((char*) &DATAflags, 4);
+           in_File.read((char*) &baseDamage, 4);
+           in_File.read((char*) &value, 4);
            bytesRead += 16;
            if (!in_File.good())
            {

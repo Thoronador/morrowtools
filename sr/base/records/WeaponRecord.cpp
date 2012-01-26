@@ -32,7 +32,10 @@ const unsigned int WeaponRecord::cTypeSwordOneHand = 1;
 const unsigned int WeaponRecord::cTypeDagger = 2;
 const unsigned int WeaponRecord::cTypeAxeOneHand = 3;
 const unsigned int WeaponRecord::cTypeMaceOneHand = 4;
+const unsigned int WeaponRecord::cTypeSwordTwoHand = 5;
+const unsigned int WeaponRecord::cTypeBluntTwoHand = 6; //axes, warhammers
 const unsigned int WeaponRecord::cTypeBow = 7;
+const unsigned int WeaponRecord::cTypeStaves = 8;
 
 WeaponRecord::WeaponRecord()
 : BasicRecord()

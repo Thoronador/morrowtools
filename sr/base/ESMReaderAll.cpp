@@ -71,6 +71,7 @@
 #include "Perks.h"
 #include "PlacedGrenades.h"
 #include "PlacedHazards.h"
+#include "Projectiles.h"
 #include "Quests.h"
 #include "Races.h"
 #include "References.h"
@@ -268,6 +269,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;
     case cPHZD:
          return PlacedHazards::getSingleton().readNextRecord(in_File);
+         break;
+    case cPROJ:
+         return Projectiles::getSingleton().readNextRecord(in_File);
          break;
     case cQUST:
          return Quests::getSingleton().readNextRecord(in_File);

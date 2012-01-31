@@ -265,6 +265,19 @@ Records and their sub-records:
           array of form IDs; only present, if INTV > zero
 
 
+  DLBR: dialog branch(?)
+      EDID (string, NUL-terminated)
+          editorID
+      QNAM (4 bytes)
+          unknown data
+      TNAM (4 bytes)
+          unknown data
+      DNAM (4 bytes)
+          unknown data
+      SNAM (4 bytes)
+          unknown data
+
+
   ECZN: encounter zone
       EDID (string, NUL-terminated)
           editor ID

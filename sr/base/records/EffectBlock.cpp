@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -28,7 +28,7 @@ bool EffectBlock::operator==(const EffectBlock& other) const
 {
   return ((unknownEFID==other.unknownEFID) and (unknownEFITs[0]==other.unknownEFITs[0])
       and (unknownEFITs[1]==other.unknownEFITs[1]) and (unknownEFITs[2]==other.unknownEFITs[2])
-      and (unknownCTDAs==other.unknownCTDAs));
+      and (unknownCTDA_CIS2s==other.unknownCTDA_CIS2s));
 }
 
 #ifndef SR_UNSAVEABLE_RECORDS
@@ -53,12 +53,40 @@ bool EffectBlock::saveToStream(std::ofstream& output) const
   output.write((const char*) &(unknownEFITs[2]), 4);
 
   unsigned int jay;
-  for (jay=0; jay<unknownCTDAs.size(); ++jay)
+  for (jay=0; jay<unknownCTDA_CIS2s.size(); ++jay)
   {
-    if (!unknownCTDAs[jay].saveToStream(output)) return false;
+    if (!unknownCTDA_CIS2s[jay].unknownCTDA.saveToStream(output)) return false;
+
+    if (!unknownCTDA_CIS2s[jay].unknownCIS2.empty())
+    {
+      //write CIS2
+      output.write((const char*) &cCIS2, 4);
+      //CIS2's length
+      subLength = unknownCTDA_CIS2s[jay].unknownCIS2.length()+1;
+      output.write((const char*) &subLength, 2);
+      //write CIS2's stuff
+      output.write(unknownCTDA_CIS2s[jay].unknownCIS2.c_str(), subLength);
+    }//if CIS2
   }//for jay
 
   return output.good();
+}
+
+uint32_t EffectBlock::getWriteSize() const
+{
+  uint32_t writeSize = 4 /* EFID */ +2 /* 2 bytes for length */ +4 /* fixed length */
+                      +4 /* EFIT */ +2 /* 2 bytes for length */ +12 /* fixed length */;
+  unsigned int i;
+  for (i=0; i<unknownCTDA_CIS2s.size(); ++i)
+  {
+    writeSize = writeSize +4 /* CTDA */ +2 /* 2 bytes for length */ +32 /* fixed length */;
+    if (!unknownCTDA_CIS2s[i].unknownCIS2.empty())
+    {
+      writeSize = writeSize +4 /* CIS2 */ +2 /* 2 bytes for length */
+                 +unknownCTDA_CIS2s[i].unknownCIS2.length()+1;
+    }//if CIS2
+  }//for
+  return writeSize;
 }
 #endif
 

@@ -272,6 +272,27 @@ Records and their sub-records:
           unknown data; 8 bytes occur twice, 12 bytes occur 278 times
 
 
+  ENCH: enchantments
+      EDID (string, NUL-terminated)
+          editorID
+      OBND (12 bytes)
+          unknown data
+      FULL (4 bytes, optional)
+          string ID of enchantment's name
+      ENIT (36 bytes or 32 bytes in earlier versions)
+          unknown data
+      EFID (4 bytes, can occur multiple times)
+          unknown data
+      EFIT (12 bytes, can occur multiple times)
+          unknown data
+      CTDA (32 bytes, optional)
+          unknown data
+      CIS (string, NUL-terminated, optional)
+          variable name - requires CTDA
+
+          --> EFID and EFIT and CTDA/CIS2 seem to form blocks
+
+
   FLOR: flora
       EDID (string, NUL-terminated)
           editor ID
@@ -622,14 +643,14 @@ Records and their sub-records:
           unknown data
       DEST (8 bytes, optional)
           unknown data
-          
+
           DSTD (20 bytes)
               unknown data
           DSTF (0 bytes)
               end marker
-          
+
           --> DSTD/DSTF pairs can occur multiple times after DEST
-          
+
       DATA (92 bytes or 88 bytes or 84 bytes)
           unknown data
       NAM1 (string, NUL-terminated)
@@ -638,7 +659,7 @@ Records and their sub-records:
           unknown data, but seems to be present for non-empty NAM1 only
       VNAM (4 bytes)
           unknown, flag-like data
-      
+
 
 
   RACE: race

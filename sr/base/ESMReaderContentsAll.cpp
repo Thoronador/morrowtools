@@ -38,6 +38,7 @@
 #include "records/ColourFormRecord.h"
 #include "records/CraftableObjectRecord.h"
 #include "records/DoorRecord.h"
+#include "records/EnchantmentRecord.h"
 #include "records/EncounterZoneRecord.h"
 #include "records/EquipmentSlotRecord.h"
 #include "records/EyeRecord.h"
@@ -166,6 +167,9 @@ int ESMReaderContentsAll::readNextRecord(std::ifstream& in_File, const int32_t r
          break;
     case cECZN:
          recPtr = new EncounterZoneRecord;
+         break;
+    case cENCH:
+         recPtr = new EnchantmentRecord;
          break;
     case cEQUP:
          recPtr = new EquipmentSlotRecord;

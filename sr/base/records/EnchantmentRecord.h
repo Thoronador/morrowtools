@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -18,28 +18,29 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SR_SPELLRECORD_H
-#define SR_SPELLRECORD_H
+#ifndef SR_ENCHANTMENTRECORD_H
+#define SR_ENCHANTMENTRECORD_H
 
-#include "BasicRecord.h"
-#include "EffectBlock.h"
 #include <string>
-#include <stdint.h>
+#include <vector>
+#include "BasicRecord.h"
+#include "BinarySubRecord.h"
+#include "EffectBlock.h"
 
 namespace SRTP
 {
 
-struct SpellRecord: public BasicRecord
+struct EnchantmentRecord: public BasicRecord
 {
   public:
     /* constructor */
-    SpellRecord();
+    EnchantmentRecord();
 
     /* destructor */
-    virtual ~SpellRecord();
+    virtual ~EnchantmentRecord();
 
     /* returns true, if the other record contains the same data */
-    bool equals(const SpellRecord& other) const;
+    bool equals(const EnchantmentRecord& other) const;
 
     #ifndef SR_UNSAVEABLE_RECORDS
     /* returns the size in bytes that the record's data would occupy in a file
@@ -68,15 +69,11 @@ struct SpellRecord: public BasicRecord
     std::string editorID;
     uint8_t unknownOBND[12];
     bool hasFULL;
-    uint32_t nameStringID; //subrecord FULL
-    bool hasMDOB;
-    uint32_t unknownMDOB;
-    uint32_t unknownETYP;
-    uint32_t descriptionStringID; //subrecord DESC
-    uint8_t unknownSPIT[36];
+    uint32_t nameStringID;
+    BinarySubRecord unknownENIT;//can be 32 or 36 bytes, depending on version
     std::vector<EffectBlock> effects;
 }; //struct
 
 } //namespace
 
-#endif // SR_SPELLRECORD_H
+#endif // SR_ENCHANTMENTRECORD_H

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -18,43 +18,18 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SR_EFFECTBLOCK_H
-#define SR_EFFECTBLOCK_H
+#ifndef SR_ENCHANTMENTS_H
+#define SR_ENCHANTMENTS_H
 
-#include <fstream>
-#include <vector>
-#include <stdint.h>
-#include "CTDAData.h"
+#include "records/EnchantmentRecord.h"
+#include "MapBasedRecordManager.h"
 
 namespace SRTP
 {
 
-//type for effect blocks
-struct EffectBlock
-{
-  uint32_t unknownEFID;
-  uint32_t unknownEFITs[3];
-  std::vector<CTDA_CIS2_compound> unknownCTDA_CIS2s;
-
-  /* comparison operator */
-  bool operator==(const EffectBlock& other) const;
-
-  #ifndef SR_UNSAVEABLE_RECORDS
-  /* tries to save the effect block to the given stream and returns true in case
-     of success, false on failure
-
-     parameters:
-          output   - the output file stream
-  */
-  bool saveToStream(std::ofstream& output) const;
-
-  /* returns the size in bytes that the EffectBlocks's data would occupy in a
-     file stream
-  */
-  uint32_t getWriteSize() const;
-  #endif
-}; //struct
+//singleton for enchantment records
+typedef MapBasedRecordManager<EnchantmentRecord> Enchantments;
 
 } //namespace
 
-#endif // SR_EFFECTBLOCK_H
+#endif // SR_ENCHANTMENTS_H

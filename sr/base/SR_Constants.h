@@ -108,6 +108,7 @@ const int32_t cEFID = 0x44494645; //"EFID" = 45 46 49 44
 const int32_t cEFIT = 0x54494645; //"EFIT" = 45 46 49 54
 const int32_t cEITM = 0x4D544945; //"EITM" = 45 49 54 4D
 const int32_t cENAM = 0x4D414E45; //"ENAM" = 45 4E 41 4D
+const int32_t cENCH = 0x48434E45; //"ENCH" = 45 4E 43 48
 const int32_t cENIT = 0x54494E45; //"ENIT" = 45 4E 49 54
 const int32_t cEPFD = 0x44465045; //"EPFD" = 45 50 46 44
 const int32_t cEPFT = 0x54465045; //"EPFT" = 45 50 46 54

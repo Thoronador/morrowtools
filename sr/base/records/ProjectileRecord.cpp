@@ -575,16 +575,4 @@ int32_t ProjectileRecord::getRecordType() const
   return cPROJ;
 }
 
-    std::string editorID;
-    uint8_t unknownOBND[12];
-    std::string modelPath;
-    BinarySubRecord unknownMODT;
-    bool hasDEST;
-    uint64_t unknownDEST;
-    std::vector<ProjectileRecord::DSTD_DSTF_record> unknownDSTD_DSTFs;
-    uint32_t unknownDATA[92];//subrecord DATA
-    std::string unknownNAM1;
-    BinarySubRecord unknownNAM2;
-    uint32_t unknownVNAM;
-
 } //namespace

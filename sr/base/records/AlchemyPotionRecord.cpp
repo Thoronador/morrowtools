@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -105,10 +105,7 @@ uint32_t AlchemyPotionRecord::getWriteSize() const
   uint32_t i;
   for (i=0; i<effects.size(); ++i)
   {
-    writeSize = writeSize +4 /* EFID */ +2 /* 2 bytes for length */ +4 /* fixed length */
-                          +4 /* EFIT */ +2 /* 2 bytes for length */ +12 /* fixed length */
-                          +effects.at(i).unknownCTDAs.size()*
-                          (4 /* CTDA */ +2 /* 2 bytes for length */ +32 /* fixed length */);
+    writeSize = writeSize +effects.at(i).getWriteSize();
   }//for
   return writeSize;
 }
@@ -567,7 +564,7 @@ bool AlchemyPotionRecord::loadFromStream(std::ifstream& in_File)
              hasNonPushedEffect = false;
            }
            //new effect block
-           tempEffect.unknownCTDAs.clear();
+           tempEffect.unknownCTDA_CIS2s.clear();
            //EFID's length
            in_File.read((char*) &subLength, 2);
            bytesRead += 2;
@@ -639,7 +636,7 @@ bool AlchemyPotionRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error while reading subrecord CTDA of ALCH!\n";
              return false;
            }
-           tempEffect.unknownCTDAs.push_back(tempCTDA);
+           tempEffect.unknownCTDA_CIS2s.push_back(CTDA_CIS2_compound(tempCTDA, ""));
            break;
       default:
            std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)

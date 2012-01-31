@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -105,10 +105,7 @@ uint32_t IngredientRecord::getWriteSize() const
   {
     for (i=0; i<effects.size(); ++i)
     {
-      writeSize = writeSize +4 /*EFID*/ +2 /* 2 bytes for length */ +4 /* fixed length of four bytes */
-                 +4 /*EFIT*/ +2 /* 2 bytes for length */ +12 /* fixed length of 12 bytes */
-                 + effects[i].unknownCTDAs.size()*
-                    (4 /*CTDA*/ +2 /* 2 bytes for length */ +32 /* fixed length of 32 bytes */);
+      writeSize = writeSize +effects[i].getWriteSize();
     }//for
   }//if effects
   return writeSize;
@@ -235,37 +232,14 @@ bool IngredientRecord::saveToStream(std::ofstream& output) const
 
   if (!effects.empty())
   {
-    unsigned int i, jay;
+    unsigned int i;
     for (i=0; i<effects.size(); ++i)
     {
-      //write EFID
-      output.write((const char*) &cEFID, 4);
-      //EFID's length
-      subLength = 4; //fixed
-      output.write((const char*) &subLength, 2);
-      //write EFID's stuff
-      output.write((const char*) &(effects[i].unknownEFID), 4);
-
-      //write EFIT
-      output.write((const char*) &cEFIT, 4);
-      //EFIT's length
-      subLength = 12; //fixed
-      output.write((const char*) &subLength, 2);
-      //write EFIT's stuff
-      output.write((const char*) &(effects[i].unknownEFITs[0]), 4);
-      output.write((const char*) &(effects[i].unknownEFITs[1]), 4);
-      output.write((const char*) &(effects[i].unknownEFITs[2]), 4);
-
-      for (jay=0; jay<effects[i].unknownCTDAs.size(); ++jay)
+      if (!effects[i].saveToStream(output))
       {
-        //write CTDA
-        output.write((const char*) &cCTDA, 4);
-        //CTDA's length
-        subLength = 32; //fixed
-        output.write((const char*) &subLength, 2);
-        //write CTDA's stuff
-        output.write((const char*) &(effects[i].unknownCTDAs[jay].content), 32);
-      }//for jay
+        std::cout << "Error while writing effect block of INGR!\n";
+        return false;
+      }
     }//for i
   }//if effects
 
@@ -556,7 +530,7 @@ bool IngredientRecord::loadFromStream(std::ifstream& in_File)
              hasNonPushedEffect = false;
            }
            //new effect block
-           tempEffect.unknownCTDAs.clear();
+           tempEffect.unknownCTDA_CIS2s.clear();
            //EFID's length
            in_File.read((char*) &subLength, 2);
            bytesRead += 2;
@@ -627,7 +601,7 @@ bool IngredientRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error while reading subrecord CTDA of INGR!\n";
              return false;
            }
-           tempEffect.unknownCTDAs.push_back(tempCTDA);
+           tempEffect.unknownCTDA_CIS2s.push_back(CTDA_CIS2_compound(tempCTDA, ""));
            break;
       default:
            std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)

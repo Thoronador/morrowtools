@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include "SpellRecord.h"
+#include "EnchantmentRecord.h"
 #include <cstring>
 #include <iostream>
 #include "../SR_Constants.h"
@@ -27,53 +27,41 @@
 namespace SRTP
 {
 
-SpellRecord::SpellRecord()
+EnchantmentRecord::EnchantmentRecord()
 : BasicRecord()
 {
   editorID = "";
   memset(unknownOBND, 0, 12);
   hasFULL = false;
   nameStringID = 0;
-  hasMDOB = false;
-  unknownMDOB = 0;
-  unknownETYP = 0;
-  descriptionStringID = 0;
-  memset(unknownSPIT, 0, 36);
+  unknownENIT.setPresence(false);
   effects.clear();
 }
 
-SpellRecord::~SpellRecord()
+EnchantmentRecord::~EnchantmentRecord()
 {
   //empty
 }
 
-bool SpellRecord::equals(const SpellRecord& other) const
+bool EnchantmentRecord::equals(const EnchantmentRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
-      and (memcmp(unknownOBND, other.unknownOBND, 12)==0) and (hasFULL==other.hasFULL)
-      and ((nameStringID==other.nameStringID) or (!hasFULL)) and (hasMDOB==other.hasMDOB)
-      and ((unknownMDOB==other.unknownMDOB) or (!hasMDOB))
-      and (unknownETYP==other.unknownETYP) and (descriptionStringID==other.descriptionStringID)
-      and (memcmp(unknownSPIT, other.unknownSPIT, 36)==0) and (effects==other.effects));
+      and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
+      and (hasFULL==other.hasFULL) and ((nameStringID==other.nameStringID) or (!hasFULL))
+      and (unknownENIT==other.unknownENIT) and (effects==other.effects));
 }
 
 #ifndef SR_UNSAVEABLE_RECORDS
-uint32_t SpellRecord::getWriteSize() const
+uint32_t EnchantmentRecord::getWriteSize() const
 {
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
         +4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed length of 12 bytes */
-        +4 /* ETYP */ +2 /* 2 bytes for length */ +4 /* fixed length of 4 bytes */
-        +4 /* DESC */ +2 /* 2 bytes for length */ +4 /* fixed length of 4 bytes */
-        +4 /* SPIT */ +2 /* 2 bytes for length */ +36 /* fixed length of 36 bytes */;
+        +4 /* ENIT */ +2 /* 2 bytes for length */ +unknownENIT.getSize() /* fixed length of 36 or 32 bytes */;
   if (hasFULL)
   {
     writeSize = writeSize +4 /*FULL*/ +2 /* 2 bytes for length */ +4 /* fixed length of four bytes */;
-  }
-  if (hasMDOB)
-  {
-    writeSize = writeSize +4 /*MDOB*/ +2 /* 2 bytes for length */ +4 /* fixed length of four bytes */;
   }
   unsigned int i;
   if (!effects.empty())
@@ -86,9 +74,9 @@ uint32_t SpellRecord::getWriteSize() const
   return writeSize;
 }
 
-bool SpellRecord::saveToStream(std::ofstream& output) const
+bool EnchantmentRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cSPEL, 4);
+  output.write((char*) &cENCH, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
@@ -118,40 +106,21 @@ bool SpellRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &nameStringID, 4);
   }//if has FULL
 
-  if (hasMDOB)
+  if (unknownENIT.isPresent())
   {
-    //write MDOB
-    output.write((const char*) &cMDOB, 4);
-    //MDOB's length
-    subLength = 4; //fixed
-    output.write((const char*) &subLength, 2);
-    //write MDOB's stuff
-    output.write((const char*) &unknownMDOB, 4);
-  }//if has MDOB
-
-  //write ETYP
-  output.write((const char*) &cETYP, 4);
-  //ETYP's length
-  subLength = 4; //fixed
-  output.write((const char*) &subLength, 2);
-  //write ETYP's stuff
-  output.write((const char*) &unknownETYP, 4);
-
-  //write DESC
-  output.write((const char*) &cDESC, 4);
-  //DESC's length
-  subLength = 4; //fixed
-  output.write((const char*) &subLength, 2);
-  //write DESC's stuff
-  output.write((const char*) &descriptionStringID, 4);
-
-  //write SPIT
-  output.write((const char*) &cSPIT, 4);
-  //SPIT's length
-  subLength = 36; //fixed
-  output.write((const char*) &subLength, 2);
-  //write SPIT's stuff
-  output.write((const char*) unknownSPIT, 36);
+    //write ENIT
+    if (!unknownENIT.saveToStream(output, cENIT))
+    {
+      std::cout << "Error while writing subrecord ENIT of ENCH!\n";
+      return false;
+    }
+  }
+  else
+  {
+    //no ENIT
+    std::cout << "Error while writing ENCH: no ENIT subrecord found!\n";
+    return false;
+  }
 
   if (!effects.empty())
   {
@@ -160,7 +129,7 @@ bool SpellRecord::saveToStream(std::ofstream& output) const
     {
       if (!effects[i].saveToStream(output))
       {
-        std::cout << "Error while writing effect block of SPEL!\n";
+        std::cout << "Error while writing effects of ENCH record.\n";
         return false;
       }
     }//for i
@@ -170,7 +139,7 @@ bool SpellRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool SpellRecord::loadFromStream(std::ifstream& in_File)
+bool EnchantmentRecord::loadFromStream(std::ifstream& in_File)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
@@ -192,7 +161,7 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of SPEL is longer than 511 characters!\n";
+    std::cout <<"Error: sub record EDID of ENCH is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -202,7 +171,7 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of SPEL!\n";
+    std::cout << "Error while reading subrecord EDID of ENCH!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -220,7 +189,7 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
   bytesRead += 2;
   if (subLength!=12)
   {
-    std::cout <<"Error: subrecord OBND of SPEL has invalid length ("<<subLength
+    std::cout <<"Error: subrecord OBND of ENCH has invalid length ("<<subLength
               <<" bytes). Should be 12 bytes!\n";
     return false;
   }
@@ -229,15 +198,12 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
   bytesRead += 12;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord OBND of SPEL!\n";
+    std::cout << "Error while reading subrecord OBND of ENCH!\n";
     return false;
   }
 
   hasFULL = false;
-  hasMDOB = false;
-  bool hasReadETYP = false;
-  bool hasReadDESC = false;
-  bool hasReadSPIT = false;
+  unknownENIT.setPresence(false);
   effects.clear();
   EffectBlock tempEffect;
   CTDAData tempCTDA;
@@ -252,7 +218,7 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
       case cFULL:
            if (hasFULL)
            {
-             std::cout << "Error: SPEL seems to have more than one FULL subrecord!\n";
+             std::cout << "Error: ENCH seems to have more than one FULL subrecord!\n";
              return false;
            }
            //skip back
@@ -262,69 +228,27 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
            bytesRead += 6;
            hasFULL = true;
            break;
-      case cMDOB:
-           if (hasMDOB)
+      case cENIT:
+           if (unknownENIT.isPresent())
            {
-             std::cout << "Error: SPEL seems to have more than one MDOB subrecord!\n";
+             std::cout << "Error: ENCH seems to have more than one ENIT subrecord!\n";
              return false;
            }
-           //skip back
-           in_File.seekg(-4, std::ios_base::cur);
-           //read MDOB
-           if (!loadUint32SubRecordFromStream(in_File, cMDOB, unknownMDOB)) return false;
-           bytesRead += 6;
-           hasMDOB = true;
-           break;
-      case cETYP:
-           if (hasReadETYP)
+           if (!unknownENIT.loadFromStream(in_File, cENIT, false))
            {
-             std::cout << "Error: SPEL seems to have more than one ETYP subrecord!\n";
+             std::cout << "Error while reading subrecord ENIT of SPEL!\n";
              return false;
            }
-           //skip back
-           in_File.seekg(-4, std::ios_base::cur);
-           //read ETYP
-           if (!loadUint32SubRecordFromStream(in_File, cETYP, unknownETYP)) return false;
-           bytesRead += 6;
-           hasReadETYP = true;
-           break;
-      case cDESC:
-           if (hasReadDESC)
-           {
-             std::cout << "Error: SPEL seems to have more than one DESC subrecord!\n";
-             return false;
-           }
-           //skip back
-           in_File.seekg(-4, std::ios_base::cur);
-           //read DESC
-           if (!loadUint32SubRecordFromStream(in_File, cDESC, descriptionStringID)) return false;
-           bytesRead += 6;
-           hasReadDESC = true;
-           break;
-      case cSPIT:
-           if (hasReadSPIT)
-           {
-             std::cout << "Error: SPEL seems to have more than one SPIT subrecord!\n";
-             return false;
-           }
-           //SPIT's length
-           in_File.read((char*) &subLength, 2);
+           //check ENIT's length
+           subLength = unknownENIT.getSize();
            bytesRead += 2;
-           if (subLength!=36)
+           if ((subLength!=36) and (subLength!=32))
            {
-             std::cout <<"Error: subrecord SPIT of SPEL has invalid length ("
-                       <<subLength<<" bytes). Should be 36 bytes!\n";
+             std::cout <<"Error: subrecord ENIT of ENCH has invalid length ("
+                       <<subLength<<" bytes). Should be 36 bytes or 32 bytes!\n";
              return false;
            }
-           //read SPIT's stuff
-           in_File.read((char*) unknownSPIT, 36);
-           bytesRead += 36;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord SPIT of SPEL!\n";
-             return false;
-           }
-           hasReadSPIT = true;
+           bytesRead += (2 + subLength);
            break;
       case cEFID:
            //check for old effect block
@@ -341,7 +265,7 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
            bytesRead += 2;
            if (subLength!=4)
            {
-             std::cout <<"Error: subrecord EFID of SPEL has invalid length ("
+             std::cout <<"Error: subrecord EFID of ENCH has invalid length ("
                        <<subLength<<" bytes). Should be four bytes!\n";
              return false;
            }
@@ -350,7 +274,7 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
            bytesRead += 4;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord EFID of SPEL!\n";
+             std::cout << "Error while reading subrecord EFID of ENCH!\n";
              return false;
            }
 
@@ -367,7 +291,7 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
            bytesRead += 2;
            if (subLength!=12)
            {
-             std::cout <<"Error: subrecord EFIT of SPEL has invalid length ("
+             std::cout <<"Error: subrecord EFIT of ENCH has invalid length ("
                        <<subLength<<" bytes). Should be 12 bytes!\n";
              return false;
            }
@@ -378,7 +302,7 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
            bytesRead += 12;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord EFIT of SPEL!\n";
+             std::cout << "Error while reading subrecord EFIT of ENCH!\n";
              return false;
            }
            hasNonPushedEffect = true;
@@ -386,7 +310,7 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
       case cCTDA:
            if (!hasNonPushedEffect)
            {
-             std::cout << "Error while reading SPEL: CTDA found, but there was no EFID/EFIT block.\n";
+             std::cout << "Error while reading ENCH: CTDA found, but there was no EFID/EFIT block.\n";
              return false;
            }
            //CTDA's length
@@ -394,7 +318,7 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
            bytesRead += 2;
            if (subLength!=32)
            {
-             std::cout <<"Error: subrecord CTDA of SPEL has invalid length ("
+             std::cout <<"Error: subrecord CTDA of ENCH has invalid length ("
                        <<subLength<<" bytes). Should be 32 bytes!\n";
              return false;
            }
@@ -403,7 +327,7 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
            bytesRead += 32;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord CTDA of SPEL!\n";
+             std::cout << "Error while reading subrecord CTDA of ENCH!\n";
              return false;
            }
            tempEffect.unknownCTDA_CIS2s.push_back(CTDA_CIS2_compound(tempCTDA, ""));
@@ -411,17 +335,17 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
       case cCIS2:
            if (!hasNonPushedEffect)
            {
-             std::cout << "Error while reading SPEL: CIS2 found, but there was no EFID/EFIT block!\n";
+             std::cout << "Error while reading ENCH: CIS2 found, but there was no EFID/EFIT block!\n";
              return false;
            }
            if (tempEffect.unknownCTDA_CIS2s.empty())
            {
-             std::cout << "Error while reading SPEL: CIS2 found, but there was no CTDA before it!\n";
+             std::cout << "Error while reading ENCH: CIS2 found, but there was no CTDA before it!\n";
              return false;
            }
            if (!tempEffect.unknownCTDA_CIS2s.back().unknownCIS2.empty())
            {
-             std::cout << "Error: SPEL seems to have more than one CIS2 subrecord per CTDA!\n";
+             std::cout << "Error: ENCH seems to have more than one CIS2 subrecord per CTDA!\n";
              return false;
            }
            //CIS2's length
@@ -429,7 +353,7 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
            bytesRead += 2;
            if (subLength>511)
            {
-             std::cout <<"Error: subrecord CIS2 of SPEL is longer than 511 characters!\n";
+             std::cout <<"Error: subrecord CIS2 of ENCH is longer than 511 characters!\n";
              return false;
            }
            //read CIS2's stuff
@@ -438,15 +362,14 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
            bytesRead += subLength;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord CIS2 of SPEL!\n";
+             std::cout << "Error while reading subrecord CIS2 of ENCH!\n";
              return false;
            }
            tempEffect.unknownCTDA_CIS2s.back().unknownCIS2 = std::string(buffer);
            break;
       default:
            std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
-                     << "\" found, but only FULL, MDOB, ETYP, DESC, SPIT, EFID,"
-                     << " CTDA or CIS2 are allowed here!\n";
+                     << "\" found, but only FULL, ENIT, EFID or CTDA are allowed here!\n";
            return false;
            break;
     }//swi
@@ -459,19 +382,19 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
   }
 
   //check presence
-  if (!(hasReadETYP and hasReadDESC and hasReadSPIT))
+  if ((!unknownENIT.isPresent()) or (effects.empty()))
   {
-    std::cout << "Error while reading record SPEL: at least one of the "
-              << "subrecords ETYP, DESC or SPIT is missing!\n";
+    std::cout << "Error while reading record ENCH: required "
+              << "subrecords ENIT or EFID/EFIT are missing!\n";
     return false;
   }
 
   return in_File.good();
 }
 
-int32_t SpellRecord::getRecordType() const
+int32_t EnchantmentRecord::getRecordType() const
 {
-  return cSPEL;
+  return cENCH;
 }
 
 } //namespace

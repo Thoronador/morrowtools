@@ -38,6 +38,7 @@
 #include "records/ColourFormRecord.h"
 #include "records/CraftableObjectRecord.h"
 #include "records/DialogBranchRecord.h"
+#include "records/DialogViewRecord.h"
 #include "records/DoorRecord.h"
 #include "records/EnchantmentRecord.h"
 #include "records/EncounterZoneRecord.h"
@@ -165,6 +166,9 @@ int ESMReaderContentsAll::readNextRecord(std::ifstream& in_File, const int32_t r
          break;
     case cDLBR:
          recPtr = new DialogBranchRecord;
+         break;
+    case cDLVW:
+         recPtr = new DialogViewRecord;
          break;
     case cDOOR:
          recPtr = new DoorRecord;

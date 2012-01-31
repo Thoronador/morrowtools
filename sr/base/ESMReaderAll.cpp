@@ -40,6 +40,7 @@
 #include "ColourForms.h"
 #include "CraftableObjects.h"
 #include "DialogBranches.h"
+#include "DialogViews.h"
 #include "Doors.h"
 #include "Enchantments.h"
 #include "EncounterZones.h"
@@ -178,6 +179,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;
     case cDLBR:
          return DialogBranches::getSingleton().readNextRecord(in_File);
+         break;
+    case cDLVW:
+         return DialogViews::getSingleton().readNextRecord(in_File);
          break;
     case cDOOR:
          return Doors::getSingleton().readNextRecord(in_File);

@@ -91,6 +91,7 @@ const int32_t cDATA = 0x41544144; //"DATA" = 44 41 54 41
 const int32_t cDESC = 0x43534544; //"DESC" = 44 45 53 43
 const int32_t cDEST = 0x54534544; //"DEST" = 44 45 53 54
 const int32_t cDLBR = 0x52424C44; //"DLBR" = 44 4C 42 52
+const int32_t cDLVW = 0x57564C44; //"DLVW" = 44 4C 56 57
 const int32_t cDMDL = 0x4C444D44; //"DMDL" = 44 4D 44 4C
 const int32_t cDMDS = 0x53444D44; //"DMDS" = 44 4D 44 53
 const int32_t cDMDT = 0x54444D44; //"DMDT" = 44 4D 44 54

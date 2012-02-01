@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -41,66 +41,69 @@ Group& ESMFileContents::addNewGroup()
   return m_Groups.back();
 }
 
-/*void ESMFileContents::addRecord(BasicRecord* rec)
-{
-  if (rec!=NULL)
-  {
-    m_Index[rec->headerFormID] = m_Records.size();
-    m_Records.push_back(rec);
-  }//if
-}
-
-bool ESMFileContents::hasRecord(const uint32_t formID, const bool useIndex) const
-{
-  if (useIndex) return (m_Index.find(formID)!=m_Index.end());
-  unsigned int i;
-  for (i=0; i<m_Records.size(); ++i)
-  {
-    if (m_Records[i]->headerFormID==formID) return true;
-  }//for
-  return false;
-}
-
-const BasicRecord& ESMFileContents::getRecord(const uint32_t formID, const bool useIndex) const
-{
-  if (useIndex)
-  {
-    const std::map<uint32_t, uint32_t>::const_iterator iter = m_Index.find(formID);
-    if (iter!=m_Index.end())
-    {
-      if (iter->second<m_Records.size()) return *m_Records[iter->second];
-    }
-  }//if index
-  else
-  {
-    unsigned int i;
-    for (i=0; i<m_Records.size(); ++i)
-    {
-      if (m_Records[i]->headerFormID==formID) return *m_Records[i];
-    }//for
-  }//else
-  //record was not found
-  throw "Record with requested form ID not found!\n";
-}*/
-
 unsigned int ESMFileContents::getNumberOfGroups() const
 {
   return m_Groups.size();
 }
 
-/*void ESMFileContents::rebuildIndex()
-{
-  m_Index.clear();
-  uint32_t i;
-  for (i=0; i<m_Records.size(); ++i)
-  {
-    m_Index[m_Records[i]->headerFormID] = i;
-  }//for
-}*/
-
 void ESMFileContents::removeContents()
 {
   m_Groups.clear();
+}
+
+unsigned int ESMFileContents::purgeEmptyGroups()
+{
+  unsigned int purged = 0;
+  std::vector<Group>::iterator iter = m_Groups.begin();
+  while (iter!=m_Groups.end())
+  {
+    purged += iter->purgeEmptySubGroups();
+    //top group
+    if (iter->isEmpty())
+    {
+      iter = m_Groups.erase(iter);
+      ++purged;
+    }
+    else
+    {
+      ++iter;
+    }
+  }//while
+  return purged;
+}
+
+void ESMFileContents::traverseGroups(traverseFunction func) const
+{
+  if (func==NULL)
+  {
+    std::cout << "ESMFileContents::traverseGroups: ERROR: pointer to function"
+              << " is NULL!\n";
+    return;
+  }
+
+  const unsigned int grp_count = m_Groups.size();
+  unsigned int i;
+  for (i=0; i<grp_count; ++i)
+  {
+    //top group
+    if (!(*func)(m_Groups[i], NULL)) return;
+    //now go into sub groups
+    if (!traverseSubGroups(m_Groups[i], func)) return;
+  }//for
+  return;
+}
+
+bool ESMFileContents::traverseSubGroups(const Group& grp, traverseFunction func) const
+{
+  SRTP::Group::SubIterator groupIter = grp.getSubBegin();
+  while (groupIter!= grp.getSubEnd())
+  {
+    if (!(*func)(*groupIter, &grp)) return false;
+    //subs
+    if (!traverseSubGroups(*groupIter, func)) return false;
+    ++groupIter;
+  }//while
+  return true;
 }
 
 Group * ESMFileContents::determineLatestGroup(const unsigned int level)

@@ -201,6 +201,38 @@ void Group::removeContents()
   removeSubGroups();
 }
 
+bool Group::isEmpty() const
+{
+  if (!m_Records.empty()) return false;
+  SubIterator iter = getSubBegin();
+  while (iter!=getSubEnd())
+  {
+    if (!iter->isEmpty()) return false;
+    ++iter;
+  }//while
+  return true;
+}
+
+unsigned int Group::purgeEmptySubGroups()
+{
+  unsigned int purged = 0;
+  std::vector<Group>::iterator iter = m_SubGroups.begin();
+  while (iter!=m_SubGroups.end())
+  {
+    purged += iter->purgeEmptySubGroups();
+    if (iter->isEmpty())
+    {
+      iter = m_SubGroups.erase(iter);
+      ++purged;
+    }
+    else
+    {
+      ++iter;
+    }
+  }//while
+  return purged;
+}
+
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t Group::getContentSize() const
 {

@@ -146,6 +146,16 @@ class Group
     /* removes all contents, i.e. records and sub groups  */
     void removeContents();
 
+    /* returns true, if the group is empty, i.e. has no records and all sub
+       groups are empty, too
+    */
+    bool isEmpty() const;
+
+    /* recursively removes all empty sub groups and returns the number of groups
+       that were removed in that process
+    */
+    unsigned int purgeEmptySubGroups();
+
     #ifndef SR_UNSAVEABLE_RECORDS
     /* writes the group to the given output stream and returns true on success
 

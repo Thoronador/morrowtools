@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -48,6 +48,24 @@ class ESMFileContents
 
     /* removes all contents */
     void removeContents();
+
+    /* removes all empty groups and returns the number of groups that were
+       removed during the process
+    */
+    unsigned int purgeEmptyGroups();
+
+    //function type for following traverseGroups() function
+    typedef bool (*traverseFunction) (const Group& current, const Group* parent);
+
+    /* traverses through all groups and subgroups within the file contents and
+       calls func for each group, passing the current group in the first
+       parameter and its parent group in the second parameter of func. Note
+       that the later one will be NULL, if the current group is at top level.
+
+       parameters:
+           func - the function that will be called for each group
+    */
+    void traverseGroups(traverseFunction func) const;
   //private:
     //internal group list
     std::vector<Group> m_Groups;
@@ -57,6 +75,8 @@ class ESMFileContents
        or no group exists.
      */
     Group * determineLatestGroup(const unsigned int level);
+  private:
+    bool traverseSubGroups(const Group& grp, traverseFunction func) const;
 }; //class
 
 } //namespace

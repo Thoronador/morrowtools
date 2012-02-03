@@ -39,21 +39,12 @@
         <UnitName Value="formID_gui"/>
         <CursorPos X="1" Y="20"/>
         <TopLine Value="1"/>
-        <EditorIndex Value="1"/>
+        <EditorIndex Value="0"/>
         <UsageCount Value="33"/>
         <Loaded Value="True"/>
       </Unit0>
     </Units>
-    <JumpHistory Count="30" HistoryIndex="1">
-      <Position1>
-        <Filename Value="formid_finder.pas"/>
-        <Caret Line="328" Column="22" TopLine="300"/>
-      </Position1>
-      <Position2>
-        <Filename Value="formid_finder.pas"/>
-        <Caret Line="26" Column="63" TopLine="11"/>
-      </Position2>
-    </JumpHistory>
+    <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="8"/>
@@ -67,12 +58,17 @@
       </SyntaxOptions>
     </Parsing>
     <CodeGeneration>
+      <SmartLinkUnit Value="True"/>
       <Optimizations>
         <VariablesInRegisters Value="True"/>
         <OptimizationLevel Value="2"/>
       </Optimizations>
     </CodeGeneration>
     <Linking>
+      <Debugging>
+        <UseLineInfoUnit Value="False"/>
+      </Debugging>
+      <LinkSmart Value="True"/>
       <Options>
         <Win32>
           <GraphicApplication Value="True"/>

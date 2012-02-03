@@ -64,6 +64,7 @@
 		<Unit filename="..\base\Quests.h" />
 		<Unit filename="..\base\RegistryFunctions.cpp" />
 		<Unit filename="..\base\RegistryFunctions.h" />
+		<Unit filename="..\base\ReturnCodes.h" />
 		<Unit filename="..\base\SR_Constants.h" />
 		<Unit filename="..\base\Scrolls.h" />
 		<Unit filename="..\base\Shouts.h" />

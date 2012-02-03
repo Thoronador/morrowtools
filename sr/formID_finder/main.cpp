@@ -19,11 +19,15 @@
 */
 
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <set>
+#if defined(_WIN32)
+#include <Windows.h>
+#endif
 #include "../../base/FileFunctions.h"
 #include "../../base/UtilityFunctions.h"
-#include "../../mw/base/ReturnCodes.h"
+#include "../base/ReturnCodes.h"
 #include "../base/Activators.h"
 #include "../base/AlchemyPotions.h"
 #include "../base/Ammunitions.h"
@@ -73,13 +77,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Form ID Finder for Skyrim, version 0.16.rev405, 2012-01-22\n";
+  std::cout << "Form ID Finder for Skyrim, version 0.17.rev413, 2012-02-03\n";
 }
 
 int showVersionExitcode()
 {
   showVersion();
-  return 405;
+  return 413;
 }
 
 void showHelp()
@@ -123,6 +127,8 @@ int main(int argc, char **argv)
   std::string searchKeyword = "";
   bool caseSensitive = false;
   bool allQuestInfo = false;
+  bool sendData = false;
+  std::string sendParam1st ="", sendParam2nd ="";
 
   if ((argc>1) and (argv!=NULL))
   {
@@ -154,7 +160,7 @@ int main(int argc, char **argv)
           if (!dataDir.empty())
           {
             std::cout << "Error: Data directory was already set!\n";
-            return MWTP::rcInvalidParameter;
+            return SRTP::rcInvalidParameter;
           }
           //enough parameters?
           if ((i+1<argc) and (argv[i+1]!=NULL))
@@ -176,14 +182,14 @@ int main(int argc, char **argv)
             {
               std::cout << "Parameter \""<<std::string(argv[i+1])<<"\" is too"
                         << " short to be a proper directory path.\n";
-              return MWTP::rcInvalidParameter;
+              return SRTP::rcInvalidParameter;
             }//else
           }
           else
           {
             std::cout << "Error: You have to specify a directory name after \""
                       << param<<"\".\n";
-            return MWTP::rcInvalidParameter;
+            return SRTP::rcInvalidParameter;
           }
         }//data files directory
         else if ((param=="-p") or (param=="--keyword"))
@@ -192,7 +198,7 @@ int main(int argc, char **argv)
           if (!searchKeyword.empty())
           {
             std::cout << "Error: search keyword was already set!\n";
-            return MWTP::rcInvalidParameter;
+            return SRTP::rcInvalidParameter;
           }
           //enough parameters?
           if ((i+1<argc) and (argv[i+1]!=NULL))
@@ -205,7 +211,7 @@ int main(int argc, char **argv)
           {
             std::cout << "Error: You have to enter some text after \""
                       << param<<"\".\n";
-            return MWTP::rcInvalidParameter;
+            return SRTP::rcInvalidParameter;
           }
         }//keyword
         else if (param=="--case-sensitive")
@@ -214,7 +220,7 @@ int main(int argc, char **argv)
           if (caseSensitive)
           {
             std::cout << "Error: parameter \""<<param<<"\" was specified twice!\n";
-            return MWTP::rcInvalidParameter;
+            return SRTP::rcInvalidParameter;
           }
           caseSensitive = true;
           std::cout << "Case-sensitive search modus enabled.\n";
@@ -225,11 +231,35 @@ int main(int argc, char **argv)
           if (allQuestInfo)
           {
             std::cout << "Error: parameter \""<<param<<"\" was specified twice!\n";
-            return MWTP::rcInvalidParameter;
+            return SRTP::rcInvalidParameter;
           }
           allQuestInfo = true;
           std::cout << "Complete quest texts enabled.\n";
         }//all quest info
+        else if (param=="--send-data")
+        {
+          //set more than once?
+          if (sendData)
+          {
+            std::cout << "Error: parameter "<<param<<" was already specified!\n";
+            return SRTP::rcInvalidParameter;
+          }
+          //enough parameters?
+          if ((i+2<argc) and (argv[i+1]!=NULL) and (argv[i+2]!=NULL))
+          {
+            sendData = true;
+            sendParam1st = std::string(argv[i+1]);
+            sendParam2nd = std::string(argv[i+2]);
+            i=i+2; //skip next two parameters, because they are used as send params already
+            std::cout << "Data sending mode was started (\""<<sendParam1st<<"\", \""<<sendParam2nd<<"\").\n";
+          }
+          else
+          {
+            std::cout << "Error: You have to enter two string parameters after \""
+                      << param<<"\".\n";
+            return SRTP::rcInvalidParameter;
+          }
+        }//send data
         else if (searchKeyword.empty())
         {
           //assume search keyword was given without prior --keyword option
@@ -241,13 +271,13 @@ int main(int argc, char **argv)
           //unknown or wrong parameter
           std::cout << "Invalid parameter given: \""<<param<<"\".\n"
                     << "Use --help to get a list of valid parameters.\n";
-          return MWTP::rcInvalidParameter;
+          return SRTP::rcInvalidParameter;
         }
       }//parameter exists
       else
       {
         std::cout << "Parameter at index "<<i<<" is NULL.\n";
-        return MWTP::rcInvalidParameter;
+        return SRTP::rcInvalidParameter;
       }
       ++i;//on to next parameter
     }//while
@@ -256,7 +286,7 @@ int main(int argc, char **argv)
   {
     std::cout << "You have to specify certain parameters for this programme to run properly.\n"
               << "Use --help to get a list of valid parameters.\n";
-    return MWTP::rcInvalidParameter;
+    return SRTP::rcInvalidParameter;
   }
 
   //Has the user specified a data directory?
@@ -307,7 +337,7 @@ int main(int argc, char **argv)
   {
     std::cout << "Error: No search keyword was specified. Use the parameter --keyword"
               << " to specify the stuff you want that programme to search for.\n";
-    return MWTP::rcInvalidParameter;
+    return SRTP::rcInvalidParameter;
   }//if no keyword given
 
   std::cout << "\n\nSearching for \""<<searchKeyword<<"\" using case-";
@@ -325,7 +355,7 @@ int main(int argc, char **argv)
   if (files.size()<3)
   {
     std::cout << "Error: could not find string table files for Skyrim.esm!\n";
-    return MWTP::rcFileError;
+    return SRTP::rcFileError;
   }
 
   std::set<std::string> presentStuff;
@@ -359,7 +389,7 @@ int main(int argc, char **argv)
   if (presentStuff.size()<3)
   {
     std::cout << "Error: Could not find string table files!\n";
-    return MWTP::rcFileError;
+    return SRTP::rcFileError;
   }
 
   if ((!FileExists(dataDir+"Strings\\Skyrim_"+languageComponent+".dlstrings"))
@@ -367,7 +397,7 @@ int main(int argc, char **argv)
      or (!FileExists(dataDir+"Strings\\Skyrim_"+languageComponent+".strings")))
   {
     std::cout << "Error: At least one string table file ist missing!\n";
-    return MWTP::rcFileError;
+    return SRTP::rcFileError;
   }
 
   //read string tables
@@ -375,17 +405,17 @@ int main(int argc, char **argv)
   if (!table.readTable(dataDir+"Strings\\Skyrim_"+languageComponent+".dlstrings", SRTP::StringTable::sdUnknown))
   {
     std::cout << "Error while reading string tables!\n";
-    return MWTP::rcDataError;
+    return SRTP::rcDataError;
   }
   if (!table.readTable(dataDir+"Strings\\Skyrim_"+languageComponent+".ilstrings", SRTP::StringTable::sdUnknown))
   {
     std::cout << "Error while reading string tables!\n";
-    return MWTP::rcDataError;
+    return SRTP::rcDataError;
   }
   if (!table.readTable(dataDir+"Strings\\Skyrim_"+languageComponent+".strings", SRTP::StringTable::sdUnknown))
   {
     std::cout << "Error while reading string tables!\n";
-    return MWTP::rcDataError;
+    return SRTP::rcDataError;
   }
 
   SRTP::ESMReaderFinder reader;
@@ -394,11 +424,13 @@ int main(int argc, char **argv)
   if (!reader.readESM(dataDir+"Skyrim.esm", tes4rec))
   {
     std::cout << "Error while reading "<<dataDir+"Skyrim.esm!\n";
-    return MWTP::rcFileError;
+    return SRTP::rcFileError;
   }
 
-  unsigned int totalMatches = 0;
+  std::ostringstream string_out;
+  std::basic_ostream<char>& basic_out = sendData ? string_out : std::cout;
 
+  unsigned int totalMatches = 0;
 
   //check activator for matches
   {
@@ -415,9 +447,9 @@ int main(int argc, char **argv)
             //found matching quest record
             if (activatorMatches==0)
             {
-              std::cout << "\n\nMatching activators:\n";
+              basic_out << "\n\nMatching activators:\n";
             }
-            std::cout << "    \""<<table.getString(activator_iter->second.nameStringID)
+            basic_out << "    \""<<table.getString(activator_iter->second.nameStringID)
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(activator_iter->second.headerFormID)
                       <<"\n        editor ID \""<<activator_iter->second.editorID<<"\"\n";
             ++activatorMatches;
@@ -429,7 +461,7 @@ int main(int argc, char **argv)
     }//while
     if (activatorMatches>0)
     {
-      std::cout << "Total matching activators: "<<activatorMatches<<"\n";
+      basic_out << "Total matching activators: "<<activatorMatches<<"\n";
     }
   }//scope for activator stuff
 
@@ -448,9 +480,9 @@ int main(int argc, char **argv)
             //found matching alchemy record
             if (alchemyMatches==0)
             {
-              std::cout << "\n\nMatching alchemy potions:\n";
+              basic_out << "\n\nMatching alchemy potions:\n";
             }
-            std::cout << "    \""<<table.getString(alchemy_iter->second.nameStringID)
+            basic_out << "    \""<<table.getString(alchemy_iter->second.nameStringID)
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(alchemy_iter->second.headerFormID)
                       <<"\n        editor ID \""<<alchemy_iter->second.editorID<<"\"\n";
             ++alchemyMatches;
@@ -462,7 +494,7 @@ int main(int argc, char **argv)
     }//while
     if (alchemyMatches>0)
     {
-      std::cout << "Total matching alchemy potions: "<<alchemyMatches<<"\n";
+      basic_out << "Total matching alchemy potions: "<<alchemyMatches<<"\n";
     }
   }//scope for alchemy stuff
 
@@ -481,9 +513,9 @@ int main(int argc, char **argv)
             //found matching ammo record
             if (ammoMatches==0)
             {
-              std::cout << "\n\nMatching ammunition:\n";
+              basic_out << "\n\nMatching ammunition:\n";
             }
-            std::cout << "    \""<<table.getString(ammo_iter->second.nameStringID)
+            basic_out << "    \""<<table.getString(ammo_iter->second.nameStringID)
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(ammo_iter->second.headerFormID)
                       <<"\n        editor ID \""<<ammo_iter->second.editorID<<"\"\n";
             ++ammoMatches;
@@ -495,7 +527,7 @@ int main(int argc, char **argv)
     }//while
     if (ammoMatches>0)
     {
-      std::cout << "Total matching ammunition: "<<ammoMatches<<"\n";
+      basic_out << "Total matching ammunition: "<<ammoMatches<<"\n";
     }
   }//scope for ammo stuff
 
@@ -513,9 +545,9 @@ int main(int argc, char **argv)
             //found matching apparatus record
             if (appaMatches==0)
             {
-              std::cout << "\n\nMatching apparatuses:\n";
+              basic_out << "\n\nMatching apparatuses:\n";
             }
-            std::cout << "    \""<<table.getString(appa_iter->second.nameStringID)
+            basic_out << "    \""<<table.getString(appa_iter->second.nameStringID)
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(appa_iter->second.headerFormID)
                       <<"\n        editor ID \""<<appa_iter->second.editorID<<"\"\n";
             ++appaMatches;
@@ -527,7 +559,7 @@ int main(int argc, char **argv)
     }//while
     if (appaMatches>0)
     {
-      std::cout << "Total matching apparatuses: "<<appaMatches<<"\n";
+      basic_out << "Total matching apparatuses: "<<appaMatches<<"\n";
     }
   }//scope for apparatus stuff
 
@@ -546,9 +578,9 @@ int main(int argc, char **argv)
             //found matching armour record
             if (armourMatches==0)
             {
-              std::cout << "\n\nMatching armours:\n";
+              basic_out << "\n\nMatching armours:\n";
             }
-            std::cout << "    \""<<table.getString(armour_iter->second.nameStringID)
+            basic_out << "    \""<<table.getString(armour_iter->second.nameStringID)
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(armour_iter->second.headerFormID)
                       <<"\n        editor ID \""<<armour_iter->second.editorID<<"\"\n";
             ++armourMatches;
@@ -560,7 +592,7 @@ int main(int argc, char **argv)
     }//while
     if (armourMatches>0)
     {
-      std::cout << "Total matching armours: "<<armourMatches<<"\n";
+      basic_out << "Total matching armours: "<<armourMatches<<"\n";
     }
   }//scope for armour stuff
 
@@ -579,9 +611,9 @@ int main(int argc, char **argv)
             //found matching book record
             if (bookMatches==0)
             {
-              std::cout << "\n\nMatching books:\n";
+              basic_out << "\n\nMatching books:\n";
             }
-            std::cout << "    \""<<table.getString(book_iter->second.titleStringID)
+            basic_out << "    \""<<table.getString(book_iter->second.titleStringID)
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(book_iter->second.headerFormID)
                       <<"\n        editor ID \""<<book_iter->second.editorID<<"\"\n";
             ++bookMatches;
@@ -593,7 +625,7 @@ int main(int argc, char **argv)
     }//while
     if (bookMatches>0)
     {
-      std::cout << "Total matching books: "<<bookMatches<<"\n";
+      basic_out << "Total matching books: "<<bookMatches<<"\n";
     }
   }//scope for book stuff
 
@@ -610,9 +642,9 @@ int main(int argc, char **argv)
             //found matching flora record
             if (floraMatches==0)
             {
-              std::cout << "\n\nMatching alchemy potions:\n";
+              basic_out << "\n\nMatching alchemy potions:\n";
             }
-            std::cout << "    \""<<table.getString(flora_iter->second.nameStringID)
+            basic_out << "    \""<<table.getString(flora_iter->second.nameStringID)
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(flora_iter->second.headerFormID)
                       <<"\n        editor ID \""<<flora_iter->second.editorID<<"\"\n";
             ++floraMatches;
@@ -623,7 +655,7 @@ int main(int argc, char **argv)
     }//while
     if (floraMatches>0)
     {
-      std::cout << "Total matching florae: "<<floraMatches<<"\n";
+      basic_out << "Total matching florae: "<<floraMatches<<"\n";
     }
   }//scope for flora stuff
 
@@ -642,9 +674,9 @@ int main(int argc, char **argv)
             //found matching book record
             if (ingredMatches==0)
             {
-              std::cout << "\n\nMatching ingredients:\n";
+              basic_out << "\n\nMatching ingredients:\n";
             }
-            std::cout << "    \""<<table.getString(ingred_iter->second.nameStringID)
+            basic_out << "    \""<<table.getString(ingred_iter->second.nameStringID)
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(ingred_iter->second.headerFormID)
                       <<"\n        editor ID \""<<ingred_iter->second.editorID<<"\"\n";
             ++ingredMatches;
@@ -656,7 +688,7 @@ int main(int argc, char **argv)
     }//while
     if (ingredMatches>0)
     {
-      std::cout << "Total matching ingredients: "<<ingredMatches<<"\n";
+      basic_out << "Total matching ingredients: "<<ingredMatches<<"\n";
     }
   }//scope for ingredient stuff
 
@@ -673,9 +705,9 @@ int main(int argc, char **argv)
             //found matching key record
             if (keyMatches==0)
             {
-              std::cout << "\n\nMatching keys:\n";
+              basic_out << "\n\nMatching keys:\n";
             }
-            std::cout << "    \""<<table.getString(key_iter->second.nameStringID)
+            basic_out << "    \""<<table.getString(key_iter->second.nameStringID)
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(key_iter->second.headerFormID)
                       <<"\n        editor ID \""<<key_iter->second.editorID<<"\"\n";
             ++keyMatches;
@@ -686,7 +718,7 @@ int main(int argc, char **argv)
     }//while
     if (keyMatches>0)
     {
-      std::cout << "Total matching keys: "<<keyMatches<<"\n";
+      basic_out << "Total matching keys: "<<keyMatches<<"\n";
     }
   }//scope for key stuff
 
@@ -705,9 +737,9 @@ int main(int argc, char **argv)
             //found matching misc object record
             if (miscMatches==0)
             {
-              std::cout << "\n\nMatching misc. objects:\n";
+              basic_out << "\n\nMatching misc. objects:\n";
             }
-            std::cout << "    \""<<table.getString(misc_iter->second.fullNameStringID)
+            basic_out << "    \""<<table.getString(misc_iter->second.fullNameStringID)
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(misc_iter->second.headerFormID)
                       <<"\n        editor ID \""<<misc_iter->second.editorID<<"\"\n";
             ++miscMatches;
@@ -719,7 +751,7 @@ int main(int argc, char **argv)
     }//while
     if (miscMatches>0)
     {
-      std::cout << "Total matching misc. objects: "<<miscMatches<<"\n";
+      basic_out << "Total matching misc. objects: "<<miscMatches<<"\n";
     }
   }//scope for misc. object stuff
 
@@ -738,9 +770,9 @@ int main(int argc, char **argv)
             //found matching NPC record
             if (NPCMatches==0)
             {
-              std::cout << "\n\nMatching NPCs:\n";
+              basic_out << "\n\nMatching NPCs:\n";
             }
-            std::cout << "    \""<<table.getString(npc_iter->second.nameStringID)
+            basic_out << "    \""<<table.getString(npc_iter->second.nameStringID)
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(npc_iter->second.headerFormID)
                       <<"\n        editor ID \""<<npc_iter->second.editorID<<"\"\n";
             ++NPCMatches;
@@ -752,7 +784,7 @@ int main(int argc, char **argv)
     }//while
     if (NPCMatches>0)
     {
-      std::cout << "Total matching NPCs: "<<NPCMatches<<"\n";
+      basic_out << "Total matching NPCs: "<<NPCMatches<<"\n";
     }
   }//scope for NPC stuff
 
@@ -771,9 +803,9 @@ int main(int argc, char **argv)
             //found matching perk record
             if (perkMatches==0)
             {
-              std::cout << "\n\nMatching perks:\n";
+              basic_out << "\n\nMatching perks:\n";
             }
-            std::cout << "    \""<<table.getString(perk_iter->second.nameStringID)
+            basic_out << "    \""<<table.getString(perk_iter->second.nameStringID)
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(perk_iter->second.headerFormID)
                       <<"\n        editor ID \""<<perk_iter->second.editorID<<"\"\n";
             ++perkMatches;
@@ -785,7 +817,7 @@ int main(int argc, char **argv)
     }//while
     if (perkMatches>0)
     {
-      std::cout << "Total matching perks: "<<perkMatches<<"\n";
+      basic_out << "Total matching perks: "<<perkMatches<<"\n";
     }
   }//scope for perk stuff
 
@@ -806,32 +838,32 @@ int main(int argc, char **argv)
             //found matching quest record
             if (questMatches==0)
             {
-              std::cout << "\n\nMatching quests:\n";
+              basic_out << "\n\nMatching quests:\n";
             }
-            std::cout << "    \""<<table.getString(quest_iter->second.unknownFULL)
+            basic_out << "    \""<<table.getString(quest_iter->second.unknownFULL)
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(quest_iter->second.headerFormID)
                       <<"\n        editor ID \""<<quest_iter->second.editorID<<"\"\n";
             //indices
             const unsigned int idx_count = quest_iter->second.indices.size();
             if (!allQuestInfo)
             {
-              std::cout << "        indices: ";
+              basic_out << "        indices: ";
               for (i=0; i<idx_count; ++i)
               {
-                if (i!=0) std::cout<<", ";
-                std::cout << quest_iter->second.indices[i].index;
-                if (quest_iter->second.indices[i].hasFinishingQSDT()) std::cout<< " (finishes)";
+                if (i!=0) basic_out<<", ";
+                basic_out << quest_iter->second.indices[i].index;
+                if (quest_iter->second.indices[i].hasFinishingQSDT()) basic_out<< " (finishes)";
               }
-              if (idx_count==0) std::cout <<"(none)";
-              std::cout << "\n";
+              if (idx_count==0) basic_out <<"(none)";
+              basic_out << "\n";
             }
             else
             {
               //full quest info requested
-              std::cout << "        indices:\n";
+              basic_out << "        indices:\n";
               for (i=0; i<idx_count; ++i)
               {
-                std::cout << "          index "<<quest_iter->second.indices[i].index<<"\n";
+                basic_out << "          index "<<quest_iter->second.indices[i].index<<"\n";
                 //run through QSDTs
                 const unsigned int qsdt_count = quest_iter->second.indices[i].theQSDTs.size();
                 for (j=0; j<qsdt_count; ++j)
@@ -839,7 +871,7 @@ int main(int argc, char **argv)
                   prefix = false;
                   if (quest_iter->second.indices[i].theQSDTs[j].isFinisher)
                   {
-                    std::cout << "            (finishes quest)";
+                    basic_out << "            (finishes quest)";
                     prefix = true;
                   }
                   if (table.hasString(quest_iter->second.indices[i].theQSDTs[j].unknownCNAM))
@@ -847,11 +879,11 @@ int main(int argc, char **argv)
                     if (!prefix)
                     {
                       prefix = true;
-                      std::cout << "            ";
+                      basic_out << "            ";
                     }
-                    std::cout << "\""<<table.getString(quest_iter->second.indices[i].theQSDTs[j].unknownCNAM)<<"\"";
+                    basic_out << "\""<<table.getString(quest_iter->second.indices[i].theQSDTs[j].unknownCNAM)<<"\"";
                   }
-                  if (prefix) std::cout << "\n";
+                  if (prefix) basic_out << "\n";
                 }//for j
                 //check for objective
                 if (quest_iter->second.hasQOBJForIndex(quest_iter->second.indices[i].index))
@@ -859,7 +891,7 @@ int main(int argc, char **argv)
                   const SRTP::QuestRecord::QOBJEntry& ziel = quest_iter->second.getQOBJForIndex(quest_iter->second.indices[i].index);
                   if (table.hasString(ziel.unknownNNAM))
                   {
-                    std::cout <<"            [new objective] \""<<table.getString(ziel.unknownNNAM)<<"\"\n";
+                    basic_out <<"            [new objective] \""<<table.getString(ziel.unknownNNAM)<<"\"\n";
                   }
                 }
               }//for i
@@ -873,7 +905,7 @@ int main(int argc, char **argv)
     }//while
     if (questMatches>0)
     {
-      std::cout << "Total matching quests: "<<questMatches<<"\n";
+      basic_out << "Total matching quests: "<<questMatches<<"\n";
     }
   }//scope for quest stuff
 
@@ -892,9 +924,9 @@ int main(int argc, char **argv)
             //found matching spell record
             if (scrollMatches==0)
             {
-              std::cout << "\n\nMatching scrolls:\n";
+              basic_out << "\n\nMatching scrolls:\n";
             }
-            std::cout << "    \""<<table.getString(scroll_iter->second.nameStringID)
+            basic_out << "    \""<<table.getString(scroll_iter->second.nameStringID)
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(scroll_iter->second.headerFormID)
                       <<"\n        editor ID \""<<scroll_iter->second.editorID<<"\"\n";
             ++scrollMatches;
@@ -906,7 +938,7 @@ int main(int argc, char **argv)
     }//while
     if (scrollMatches>0)
     {
-      std::cout << "Total matching scrolls: "<<scrollMatches<<"\n";
+      basic_out << "Total matching scrolls: "<<scrollMatches<<"\n";
     }
   }//scope for scrolls
 
@@ -925,9 +957,9 @@ int main(int argc, char **argv)
             //found matching SoulGem record
             if (soulgemMatches==0)
             {
-              std::cout << "\n\nMatching soul gems:\n";
+              basic_out << "\n\nMatching soul gems:\n";
             }
-            std::cout << "    \""<<table.getString(soulgem_iter->second.nameStringID)
+            basic_out << "    \""<<table.getString(soulgem_iter->second.nameStringID)
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(soulgem_iter->second.headerFormID)
                       <<"\n        editor ID \""<<soulgem_iter->second.editorID<<"\"\n";
             ++soulgemMatches;
@@ -939,7 +971,7 @@ int main(int argc, char **argv)
     }//while
     if (soulgemMatches>0)
     {
-      std::cout << "Total matching soul gems: "<<soulgemMatches<<"\n";
+      basic_out << "Total matching soul gems: "<<soulgemMatches<<"\n";
     }
   }//scope for soul gem stuff
 
@@ -958,9 +990,9 @@ int main(int argc, char **argv)
             //found matching spell record
             if (spellMatches==0)
             {
-              std::cout << "\n\nMatching spells:\n";
+              basic_out << "\n\nMatching spells:\n";
             }
-            std::cout << "    \""<<table.getString(spell_iter->second.nameStringID)
+            basic_out << "    \""<<table.getString(spell_iter->second.nameStringID)
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(spell_iter->second.headerFormID)
                       <<"\n        editor ID \""<<spell_iter->second.editorID<<"\"\n";
             ++spellMatches;
@@ -972,7 +1004,7 @@ int main(int argc, char **argv)
     }//while
     if (spellMatches>0)
     {
-      std::cout << "Total matching spells: "<<spellMatches<<"\n";
+      basic_out << "Total matching spells: "<<spellMatches<<"\n";
     }
   }//scope for spell stuff
 
@@ -991,9 +1023,9 @@ int main(int argc, char **argv)
             //found matching shout record
             if (shoutMatches==0)
             {
-              std::cout << "\n\nMatching dragon shouts:\n";
+              basic_out << "\n\nMatching dragon shouts:\n";
             }
-            std::cout << "    \""<<table.getString(shout_iter->second.fullNameStringID)
+            basic_out << "    \""<<table.getString(shout_iter->second.fullNameStringID)
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(shout_iter->second.headerFormID)
                       <<"\n        editor ID \""<<shout_iter->second.editorID<<"\"\n";
             ++shoutMatches;
@@ -1005,7 +1037,7 @@ int main(int argc, char **argv)
     }//while
     if (shoutMatches>0)
     {
-      std::cout << "Total matching dragon shouts: "<<shoutMatches<<"\n";
+      basic_out << "Total matching dragon shouts: "<<shoutMatches<<"\n";
     }
   }//scope for shout stuff
 
@@ -1025,9 +1057,9 @@ int main(int argc, char **argv)
             //found matching word of power record
             if (wordMatches==0)
             {
-              std::cout << "\n\nMatching words of power:\n";
+              basic_out << "\n\nMatching words of power:\n";
             }
-            std::cout << "    \""<<table.getString(word_iter->second.nameStringID)
+            basic_out << "    \""<<table.getString(word_iter->second.nameStringID)
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(word_iter->second.headerFormID)
                       <<"\n        editor ID \""<<word_iter->second.editorID<<"\"\n";
             ++wordMatches;
@@ -1039,7 +1071,7 @@ int main(int argc, char **argv)
     }//while
     if (wordMatches>0)
     {
-      std::cout << "Total matching words of power: "<<wordMatches<<"\n";
+      basic_out << "Total matching words of power: "<<wordMatches<<"\n";
     }
   }//scope for word of power stuff
 
@@ -1058,9 +1090,9 @@ int main(int argc, char **argv)
             //found matching alchemy record
             if (treeMatches==0)
             {
-              std::cout << "\n\nMatching trees:\n";
+              basic_out << "\n\nMatching trees:\n";
             }
-            std::cout << "    \""<<table.getString(tree_iter->second.nameStringID)
+            basic_out << "    \""<<table.getString(tree_iter->second.nameStringID)
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(tree_iter->second.headerFormID)
                       <<"\n        editor ID \""<<tree_iter->second.editorID<<"\"\n";
             ++treeMatches;
@@ -1072,7 +1104,7 @@ int main(int argc, char **argv)
     }//while
     if (treeMatches>0)
     {
-      std::cout << "Total matching trees: "<<treeMatches<<"\n";
+      basic_out << "Total matching trees: "<<treeMatches<<"\n";
     }
   }//scope for tree stuff
 
@@ -1091,9 +1123,9 @@ int main(int argc, char **argv)
             //found matching weapon record
             if (weaponMatches==0)
             {
-              std::cout << "\n\nMatching weapons:\n";
+              basic_out << "\n\nMatching weapons:\n";
             }
-            std::cout << "    \""<<table.getString(weapon_iter->second.nameStringID)
+            basic_out << "    \""<<table.getString(weapon_iter->second.nameStringID)
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(weapon_iter->second.headerFormID)
                       <<"\n        editor ID \""<<weapon_iter->second.editorID<<"\"\n";
             ++weaponMatches;
@@ -1105,12 +1137,35 @@ int main(int argc, char **argv)
     }//while
     if (weaponMatches>0)
     {
-      std::cout << "Total matching weapons: "<<weaponMatches<<"\n";
+      basic_out << "Total matching weapons: "<<weaponMatches<<"\n";
     }
   }//scope for weapon stuff
 
-  //to do...
+  basic_out << "\nTotal matching objects found: "<<totalMatches<<"\n";
 
-  std::cout << "\nTotal matching objects found: "<<totalMatches<<"\n";
+  if (sendData)
+  {
+    #if defined(_WIN32)
+    COPYDATASTRUCT cds;
+    cds.dwData = 0;
+    cds.cbData = string_out.str().length()+1;
+    cds.lpData = (void*) string_out.str().c_str();
+    const char * ptrSend1 = (sendParam1st=="NULL") ? NULL : sendParam1st.c_str();
+    const char * ptrSend2 = (sendParam2nd=="NULL") ? NULL : sendParam2nd.c_str();
+    HWND receiver = FindWindow(ptrSend1, ptrSend2);
+    if (receiver==NULL)
+    {
+      std::cout << "Error in send data mode: cannot find receiving window!\n";
+      return SRTP::rcWindowNotFound;
+    }
+    int msgResult = SendMessage(receiver, WM_COPYDATA, 0, (long int) &cds);
+    #else
+    //send data not supported (yet?) -> put string to standard output
+    std::cout << string_out.str();
+    //...plus the error message
+    std::cout << "Error: parameter --send-data is not supported on this OS!\n";
+    return SRTP::rcSendDataNotSupported;
+    #endif
+  }//if sendData
   return 0;
 }

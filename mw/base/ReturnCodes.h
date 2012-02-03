@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef RETURNCODES_H
-#define RETURNCODES_H
+#ifndef MW_RETURNCODES_H
+#define MW_RETURNCODES_H
 
 namespace MWTP
 {
@@ -37,4 +37,4 @@ const int rcNoChange = 9; /* for cell translator */
 
 } //namespace
 
-#endif // RETURNCODES_H
+#endif // MW_RETURNCODES_H

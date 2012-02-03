@@ -31,6 +31,7 @@ type
   private
     { private declarations }
     procedure WMCopyData(var Msg: TWMCopyData); message WM_COPYDATA;
+    procedure DataToStringGrid(var total: Integer);
     m_ExpectsData: Boolean;
     m_HasData: Boolean;
     m_StringData: AnsiString;
@@ -65,7 +66,6 @@ begin
     temp.CopyDataStruct:= Pointer(lParam);
     Form1.WMCopyData(temp);
     result:= temp.Result;
-    ShowMessage('Hit WndCallback');
     exit;
   end
   else result:=CallWindowProc(m_PrevWndProc, Ahwnd, uMsg, WParam, LParam);
@@ -210,6 +210,50 @@ begin
   end;
 end;//func
 
+function isTrimableChar(const c: char): Boolean;
+begin
+  Result:= ((c=' ') or (c=#13) or (c=#10) or (c=#9));
+end;//func
+
+procedure trim4(var str1: string);
+var position: Integer;
+    look: Integer;
+    size: Integer;
+begin
+  position := -1;
+  look := 1;
+  size := length(str1);
+  while (look<=size) do
+  begin
+    if (isTrimableChar(str1[look])) then
+      position := look
+    else
+      break;
+    look:= look+1;
+  end;//while
+  if (position > -1) then
+  begin
+    if (position<size) then str1:= Copy(str1, position+1, size)
+    else str1:= '';
+  end;//if
+
+  position := - 1;
+  look := length(str1);
+  while (look>=1) do
+  begin
+    if (isTrimableChar(str1[look])) then
+      position := look
+    else
+      break;
+    look:= look-1;
+  end;//while
+  if (position > -1) then
+  begin
+      if (position>1) then str1:= Copy(str1, 1, position-1)
+      else str1:= '';
+  end;//if
+end;//proc
+
 { TForm1 }
 
 procedure TForm1.SearchButtonClick(Sender: TObject);
@@ -217,6 +261,7 @@ var rev, return: Cardinal;
     success: Boolean;
     errString: string;
     lastError: DWORD;
+    total: Integer;
 begin
   KeywordEdit.Text:= trim(KeywordEdit.Text);
   if (length(KeywordEdit.Text)=0) then
@@ -248,11 +293,11 @@ begin
   return:= RunFormIDFinder(KeywordEdit.Text, success, 'NULL', self.Caption);
   ResultStringGrid.Cells[0,1] := 'run function finished.';
   Application.ProcessMessages;
+  m_ExpectsData:= false;
   //did the programme execution fail?
   if (not success) then
   begin
     ResultStringGrid.Cells[0,1] := 'Could not start formID_finder.';
-    //FreePipes;
     Application.ProcessMessages;
     ShowMessage('Error while starting formID_finder!');
     Exit;
@@ -274,7 +319,6 @@ begin
     end;//case
     ResultStringGrid.Cells[0,1] := errString;
     Application.ProcessMessages;
-    //FreePipes;
     Exit;
   end;//if return code<>0
   //now get the data
@@ -285,8 +329,9 @@ begin
   end;//if
   ResultStringGrid.Cells[0,1] := 'data recieved!';
   Application.ProcessMessages;
-  ShowMessage('Recieved Content was:'+#13#10+'"'
-              +m_StringData+'"');
+  trim4(m_StringData);
+  ShowMessage('Trimmed recieved Content is:'+#13#10+'"'+m_StringData+'"');
+  DataToStringGrid(total);
 end;//proc
 
 procedure TForm1.FormCreate(Sender: TObject);
@@ -299,7 +344,6 @@ end;
 
 procedure TForm1.WMCopyData(var Msg: TWMCopyData);
 begin
-  ResultStringGrid.Cells[0,2] := 'Hit WMCopyData!';
   if (not m_ExpectsData) then Msg.Result:= 1
   else begin
     m_StringData:= PChar(Msg.CopyDataStruct^.lpData);
@@ -307,6 +351,147 @@ begin
     m_ExpectsData:= false;
     m_HasData:= true;
   end;//else
+end;//proc
+
+procedure TForm1.DataToStringGrid(var total: Integer);
+const nameCol = 0;
+      editorIDCol = 1;
+      formIDCol = 2;
+      typeCol = 3;
+var typeString: string;
+    workData: AnsiString;
+    extracted: string;
+    currentRow, pos_i, delimPos: Integer;
+begin
+  typeString:= '';
+  workData:= m_StringData;
+  trim4(workData);
+  total:= -1;
+  currentRow:= 0;
+  while (length(workData)>0) do
+  begin
+    //check for start of new type
+    if (copy(workData, 1, 9)='Matching ') then
+    begin
+      pos_i:= pos(':', workData);
+      delimPos:= pos(#10, workData);
+      if ((pos_i=0) or ((delimPos<>0) and (pos_i>delimPos))) then
+      begin
+        //error
+        ShowMessage('Error: got unexpected string data in type line!');
+        Exit;
+      end;//if
+      typeString:= copy(workData, 10, pos_i-11);
+      workData:= copy(workData, pos_i+1, length(WorkData));
+      trim4(workData);
+    end//if "Matching ..."
+    //check for full in-game name
+    else if (workData[1]='"') then
+    begin
+      currentRow:= currentRow+1; //start of new row
+      if (ResultStringGrid.RowCount<=currentRow) then
+        ResultStringGrid.RowCount:= currentRow+1;
+      pos_i:= pos(#10, workData); //search end of line
+      if (pos_i=0) then
+      begin
+        //error
+        ShowMessage('Error: got unexpected string data in name line!');
+        Exit;
+      end;//if
+      extracted:= copy(WorkData, 2, pos_i-3);
+      trim4(extracted);
+      ResultStringGrid.Cells[nameCol, currentRow]:= extracted;
+      ResultStringGrid.Cells[typeCol, currentRow]:= typeString;
+      WorkData:= copy(WorkData, pos_i, length(WorkData));
+      trim4(WorkData);
+    end//if full name
+    //check for formID
+    else if (copy(workData, 1, 8)='form ID ') then
+    begin
+      if ((currentRow=0) or (typeString='')) then
+      begin
+        //error
+        ShowMessage('Error: got unexpected form ID in string data!');
+        Exit;
+      end;//if
+      pos_i:= pos(#10, workData); //search end of line
+      if (pos_i=0) then
+      begin
+        //error
+        ShowMessage('Error: got unexpected string data in formID line!');
+        Exit;
+      end;//if
+      extracted:= copy(WorkData, 9, pos_i-9);
+      trim4(extracted);
+      ResultStringGrid.Cells[formIDCol, currentRow]:= extracted;
+      WorkData:= copy(WorkData, pos_i, length(WorkData));
+      trim4(WorkData);
+    end//if form ID
+    //check for editor ID
+    else if (copy(workData, 1, 11)='editor ID "') then
+    begin
+      if ((currentRow=0) or (typeString='')) then
+      begin
+        //error
+        ShowMessage('Error: got unexpected editor ID in string data!');
+        Exit;
+      end;//if
+      pos_i:= pos(#10, workData); //search end of line
+      if (pos_i=0) then
+      begin
+        //error
+        ShowMessage('Error: got unexpected string data in editor ID line!');
+        Exit;
+      end;//if
+      extracted:= copy(WorkData, 12, pos_i-12);
+      trim4(extracted);
+      if (length(extracted)>0) then
+        if (extracted[length(extracted)]='"') then
+          extracted:= copy(extracted, 1, length(extracted)-1);
+      ResultStringGrid.Cells[editorIDCol, currentRow]:= extracted;
+      WorkData:= copy(WorkData, pos_i, length(WorkData));
+      trim4(WorkData);
+    end//if editorID
+    //check for very last line
+    else if (copy(workData, 1, 30)='Total matching objects found: ') then
+    begin
+      workData:= copy(workData, 30, length(WorkData));
+      trim4(WorkData);
+      total:= currentRow;
+      if ((currentRow>0) and (ResultStringGrid.RowCount>currentRow+1)) then
+        ResultStringGrid.RowCount:= currentRow+1;
+      if (currentRow=0) then
+      begin
+        ResultStringGrid.RowCount:= 2;
+        ResultStringGrid.Cells[0, 1]:= 'No matching objects!';
+      end;//zero rows
+      ShowMessage('Last line in string data found, total count is '+workData+'.');
+      Exit;
+    end//if last line
+    //check for last line of an object type
+    else if (copy(workData, 1, 15)='Total matching ') then
+    begin
+      pos_i:= pos(#10, workData); //search end of line
+      if (pos_i=0) then
+      begin
+        //error
+        ShowMessage('Error: got unexpected string data in summary line!');
+        Exit;
+      end;//if
+      workData:= copy(workData, pos_i, length(workData));
+      trim4(workData);
+    end//if last line of a type
+    //unknown line found
+    else begin
+      extracted:= 'Error: got unknown string data line! Work data length is'
+                  +IntToStr(length(WorkData))+';';
+      if (length(WorkData)>0) then
+      extracted:= extracted+#13#10+'First characters are: "'
+                  +copy(WorkData, 1, 20)+'..."';
+      ShowMessage(extracted);
+      Exit;
+    end;//else unknown line
+  end;//while
 end;//proc
 
 initialization

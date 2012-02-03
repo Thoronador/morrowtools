@@ -5,14 +5,14 @@ LazarusResources.Add('TForm1','FORMDATA',[
   +'h'#3#144#1#7'Caption'#6#20'Form ID Finder - GUI'#12'ClientHeight'#3','#1#11
   +'ClientWidth'#3#144#1#8'OnCreate'#7#10'FormCreate'#10'LCLVersion'#6#8'0.9.28'
   +'.2'#0#5'TEdit'#11'KeywordEdit'#4'Left'#2#8#6'Height'#2#21#3'Top'#2#8#5'Widt'
-  +'h'#3#152#0#8'TabOrder'#2#0#4'Text'#6#11'KeywordEdit'#0#0#7'TButton'#12'Sear'
-  +'chButton'#4'Left'#3#168#0#6'Height'#2#25#3'Top'#2#6#5'Width'#2'K'#7'Caption'
-  +#6#6'Search'#7'OnClick'#7#17'SearchButtonClick'#8'TabOrder'#2#1#0#0#11'TStri'
-  +'ngGrid'#16'ResultStringGrid'#4'Left'#2#8#6'Height'#3#0#1#3'Top'#2'('#5'Widt'
-  +'h'#3#128#1#8'ColCount'#2#4#7'Columns'#14#1#13'Title.Caption'#6#4'Name'#0#1
-  +#13'Title.Caption'#6#9'Editor ID'#0#1#13'Title.Caption'#6#7'Form ID'#0#1#13
-  +'Title.Caption'#6#4'Type'#0#0#9'FixedCols'#2#0#7'Options'#11#15'goFixedVertL'
-  +'ine'#15'goFixedHorzLine'#10'goVertLine'#10'goHorzLine'#13'goRangeSelect'#11
-  +'goRowSizing'#11'goColSizing'#14'goSmoothScroll'#0#8'RowCount'#2#9#8'TabOrde'
-  +'r'#2#2#0#0#0
+  +'h'#3#152#0#8'TabOrder'#2#0#4'Text'#6#7'keyword'#0#0#7'TButton'#12'SearchBut'
+  +'ton'#4'Left'#3#168#0#6'Height'#2#25#3'Top'#2#6#5'Width'#2'K'#7'Caption'#6#6
+  +'Search'#7'OnClick'#7#17'SearchButtonClick'#8'TabOrder'#2#1#0#0#11'TStringGr'
+  +'id'#16'ResultStringGrid'#4'Left'#2#8#6'Height'#3#0#1#3'Top'#2'('#5'Width'#3
+  +#128#1#8'ColCount'#2#4#7'Columns'#14#1#13'Title.Caption'#6#4'Name'#0#1#13'Ti'
+  +'tle.Caption'#6#9'Editor ID'#0#1#13'Title.Caption'#6#7'Form ID'#0#1#13'Title'
+  +'.Caption'#6#4'Type'#0#0#9'FixedCols'#2#0#7'Options'#11#15'goFixedVertLine'
+  +#15'goFixedHorzLine'#10'goVertLine'#10'goHorzLine'#13'goRangeSelect'#11'goRo'
+  +'wSizing'#11'goColSizing'#14'goSmoothScroll'#0#8'RowCount'#2#9#8'TabOrder'#2
+  +#2#0#0#0
 ]);

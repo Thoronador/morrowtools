@@ -32,6 +32,7 @@ type
     { private declarations }
     procedure WMCopyData(var Msg: TWMCopyData); message WM_COPYDATA;
     procedure DataToStringGrid(var total: Integer);
+    procedure CleanUpGrid(const info: string);
     m_ExpectsData: Boolean;
     m_HasData: Boolean;
     m_StringData: AnsiString;
@@ -162,7 +163,6 @@ function RunFormIDFinder(const keyword: string; var success: Boolean; const s1, 
 var si: TStartupInfo;
     pi: TProcessInformation;
     exitCode: DWORD;
-    i: Integer;
 begin
   success:= false;
   FillChar(si, SizeOf(si), 0);
@@ -186,7 +186,6 @@ begin
       pi) //pointer to PROCESS_INFORMATION structure
     <>false) then
   begin
-    i:= 0;
     //process started successfully
     exitCode := STILL_ACTIVE;
     repeat
@@ -256,11 +255,17 @@ end;//proc
 
 { TForm1 }
 
+procedure TForm1.CleanUpGrid(const info: string);
+begin
+  ResultStringGrid.RowCount:= 2;
+  ResultStringGrid.Clean(0, 1, 5, 1, []);
+  ResultStringGrid.Cells[0,1]:= info;
+end;//proc
+
 procedure TForm1.SearchButtonClick(Sender: TObject);
 var rev, return: Cardinal;
     success: Boolean;
     errString: string;
-    lastError: DWORD;
     total: Integer;
 begin
   KeywordEdit.Text:= trim(KeywordEdit.Text);
@@ -284,25 +289,24 @@ begin
     Exit;
   end;//if
   //remove old results
-  ResultStringGrid.Clean(0, 1, 5, 1024*1024*1024, []);
-  ResultStringGrid.Cells[0,1] := 'Searching...';
+  CleanUpGrid('Searching...');
   //run the programme
-  ResultStringGrid.Cells[0,1] := 'Starting formID_finder...';
+  CleanUpGrid('Starting formID_finder...');
   m_HasData:= false;
   m_ExpectsData:= true;
   return:= RunFormIDFinder(KeywordEdit.Text, success, 'NULL', self.Caption);
-  ResultStringGrid.Cells[0,1] := 'run function finished.';
+  CleanUpGrid('formID_finder finished.');
   Application.ProcessMessages;
   m_ExpectsData:= false;
   //did the programme execution fail?
   if (not success) then
   begin
-    ResultStringGrid.Cells[0,1] := 'Could not start formID_finder.';
+    CleanUpGrid('Could not start formID_finder.');
     Application.ProcessMessages;
     ShowMessage('Error while starting formID_finder!');
     Exit;
   end;//if
-  ResultStringGrid.Cells[0,1] := 'formID_finder executed successfully.';
+  CleanUpGrid('formID_finder executed successfully.');
   Application.ProcessMessages;
   //check return code
   if (return<>0) then
@@ -317,20 +321,22 @@ begin
     else
       errString:= errString+'Unknown error!';
     end;//case
-    ResultStringGrid.Cells[0,1] := errString;
+    CleanUpGrid(errString);
     Application.ProcessMessages;
+    ShowMessage(errString);
     Exit;
   end;//if return code<>0
   //now get the data
   if (not m_HasData) then
   begin
-    ShowMessage('No data recieved!');
+    CleanUpGrid('No data.');
+    ShowMessage('No data recieved from formID_finder!');
     Exit;
   end;//if
-  ResultStringGrid.Cells[0,1] := 'data recieved!';
-  Application.ProcessMessages;
   trim4(m_StringData);
-  ShowMessage('Trimmed recieved Content is:'+#13#10+'"'+m_StringData+'"');
+  //ShowMessage('Trimmed recieved Content is:'+#13#10+'"'+m_StringData+'"');
+  CleanUpGrid('Preparing data for display...');
+  Application.ProcessMessages;
   DataToStringGrid(total);
 end;//proc
 
@@ -340,6 +346,7 @@ begin
   m_HasData:= false;
   m_StringData:= '';
   m_PrevWndProc:= Windows.WNDPROC(SetWindowLong(Self.Handle,GWL_WNDPROC,PtrInt(@WndCallback)));
+  Application.Title:= self.Caption;
 end;
 
 procedure TForm1.WMCopyData(var Msg: TWMCopyData);
@@ -378,10 +385,11 @@ begin
       if ((pos_i=0) or ((delimPos<>0) and (pos_i>delimPos))) then
       begin
         //error
+        CleanUpGrid('Error: got unexpected string data in type line!');
         ShowMessage('Error: got unexpected string data in type line!');
         Exit;
       end;//if
-      typeString:= copy(workData, 10, pos_i-11);
+      typeString:= copy(workData, 10, pos_i-10);
       workData:= copy(workData, pos_i+1, length(WorkData));
       trim4(workData);
     end//if "Matching ..."
@@ -395,6 +403,7 @@ begin
       if (pos_i=0) then
       begin
         //error
+        CleanUpGrid('Error: got unexpected string data in name line!');
         ShowMessage('Error: got unexpected string data in name line!');
         Exit;
       end;//if
@@ -411,6 +420,7 @@ begin
       if ((currentRow=0) or (typeString='')) then
       begin
         //error
+        CleanUpGrid('Error: got unexpected form ID in string data!');
         ShowMessage('Error: got unexpected form ID in string data!');
         Exit;
       end;//if
@@ -418,6 +428,7 @@ begin
       if (pos_i=0) then
       begin
         //error
+        CleanUpGrid('Error: got unexpected string data in formID line!');
         ShowMessage('Error: got unexpected string data in formID line!');
         Exit;
       end;//if
@@ -433,6 +444,7 @@ begin
       if ((currentRow=0) or (typeString='')) then
       begin
         //error
+        CleanUpGrid('Error: got unexpected editor ID in string data!');
         ShowMessage('Error: got unexpected editor ID in string data!');
         Exit;
       end;//if
@@ -440,6 +452,7 @@ begin
       if (pos_i=0) then
       begin
         //error
+        CleanUpGrid('Error: got unexpected string data in editor ID line!');
         ShowMessage('Error: got unexpected string data in editor ID line!');
         Exit;
       end;//if
@@ -462,10 +475,9 @@ begin
         ResultStringGrid.RowCount:= currentRow+1;
       if (currentRow=0) then
       begin
-        ResultStringGrid.RowCount:= 2;
-        ResultStringGrid.Cells[0, 1]:= 'No matching objects!';
+        CleanUpGrid('No matching objects!');
       end;//zero rows
-      ShowMessage('Last line in string data found, total count is '+workData+'.');
+      ShowMessage('Search finished. Number of matching objects is '+IntToStr(total)+'.');
       Exit;
     end//if last line
     //check for last line of an object type
@@ -475,6 +487,7 @@ begin
       if (pos_i=0) then
       begin
         //error
+        CleanUpGrid('Error: got unexpected string data in summary line!');
         ShowMessage('Error: got unexpected string data in summary line!');
         Exit;
       end;//if
@@ -488,6 +501,7 @@ begin
       if (length(WorkData)>0) then
       extracted:= extracted+#13#10+'First characters are: "'
                   +copy(WorkData, 1, 20)+'..."';
+      CleanUpGrid(extracted);
       ShowMessage(extracted);
       Exit;
     end;//else unknown line

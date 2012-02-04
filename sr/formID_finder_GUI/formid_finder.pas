@@ -30,7 +30,9 @@ type
     procedure SearchButtonClick(Sender: TObject);
   private
     { private declarations }
+    {$IFDEF WINDOWS }
     procedure WMCopyData(var Msg: TWMCopyData); message WM_COPYDATA;
+    {$ENDIF}
     procedure DataToStringGrid(var total: Integer);
     procedure CleanUpGrid(const info: string);
     m_ExpectsData: Boolean;
@@ -39,6 +41,8 @@ type
   public
     { public declarations }
   end; 
+
+  function escapeKeyword(const str1: string): string;
 
 const
 {$IFDEF WINDOWS }
@@ -50,11 +54,14 @@ const
 
 var
   Form1: TForm1;
+  {$IFDEF WINDOWS }
   //window proc
-    m_PrevWndProc: WNDPROC;
+  m_PrevWndProc: WNDPROC;
+  {$ENDIF}
 
 implementation
 
+{$IFDEF WINDOWS }
 function WndCallback(Ahwnd: HWND; uMsg: UINT; wParam: WParam; lParam: LParam):LRESULT; stdcall;
 var temp: TWMCopyData;
 
@@ -71,29 +78,27 @@ begin
   end
   else result:=CallWindowProc(m_PrevWndProc, Ahwnd, uMsg, WParam, LParam);
 end;
-
+{$ENDIF}
 
 function GetFormIDFinderRevision: Cardinal;
 var si: TStartupInfo;
     pi: TProcessInformation;
     exitCode: DWORD;
-    hi: BOOL;
 begin
   FillChar(si, SizeOf(si), 0);
   with si do
   begin
-    cb := sizeof(si);
-    dwFlags := STARTF_USESHOWWINDOW;
-    wShowWindow := SW_HIDE;
+    cb:= sizeof(si);
+    dwFlags:= STARTF_USESHOWWINDOW;
+    wShowWindow:= SW_HIDE;
   end;
   FillChar(pi, sizeof(pi), 0);
-  hi:= FALSE;
   // start the child process
   if(CreateProcess(nil, //no module name (use command line)
       PChar(cProgrammeName+' --version-with-exitcode'), //command line
       nil, //process handle not inheritable
       nil, //thread handle not inheritable
-      hi, //set handle inheritance to false
+      FALSE, //set handle inheritance to false
       0, //creation flags
       nil, //use parent's environment block
       nil, //use parent's starting directory
@@ -102,7 +107,7 @@ begin
     <>false) then
   begin
     //process started successfully
-    exitCode := STILL_ACTIVE;
+    exitCode:= STILL_ACTIVE;
     repeat
       //wait half a second
       WaitForSingleObject(pi.hProcess, 500);
@@ -114,7 +119,7 @@ begin
     //close process and thread handles.
     CloseHandle(pi.hProcess);
     CloseHandle(pi.hThread);
-    Result := exitCode;
+    Result:= exitCode;
   end
   else begin
     //create process failed
@@ -168,14 +173,14 @@ begin
   FillChar(si, SizeOf(si), 0);
   with si do
   begin
-    cb := sizeof(si);
-    dwFlags := STARTF_USESHOWWINDOW;
-    wShowWindow := SW_HIDE;
+    cb:= sizeof(si);
+    dwFlags:= STARTF_USESHOWWINDOW;
+    wShowWindow:= SW_HIDE;
   end;
   FillChar(pi, sizeof(pi), 0);
   // start the child process
   if(CreateProcess(nil, //no module name (use command line)
-      PChar(cProgrammeName+' --keyword "'+keyword+'" --send-data "'+s1+'" "'+s2+'"'), //command line
+      PChar(cProgrammeName+' --keyword "'+escapeKeyword(keyword)+'" --send-data "'+s1+'" "'+s2+'"'), //command line
       nil, //process handle not inheritable
       nil, //thread handle not inheritable
       false, //set handle inheritance to false
@@ -187,7 +192,7 @@ begin
     <>false) then
   begin
     //process started successfully
-    exitCode := STILL_ACTIVE;
+    exitCode:= STILL_ACTIVE;
     repeat
       //wait quarter of a second
       WaitForSingleObject(pi.hProcess, 250);
@@ -199,8 +204,8 @@ begin
     //close process and thread handles.
     CloseHandle(pi.hProcess);
     CloseHandle(pi.hThread);
-    Result := exitCode;
-    success := true;
+    Result:= exitCode;
+    success:= true;
   end
   else begin
     //create process failed
@@ -208,6 +213,30 @@ begin
     Result:= 0;
   end;
 end;//func
+
+function escapeKeyword(const str1: string): string;
+var i, len: Integer;
+begin
+  Result:= str1;
+  len:= length(str1);
+  if (len>0) then
+  begin
+    i:= 1;
+    while (i<=len) do
+    begin
+       if (Result[i]='"') then
+       begin
+         //add escaping backslash
+         Result:= copy(Result, 1, i-1)+'\'+copy(Result, i, len-i+1);
+         //length increased by one, so change len to reflect that
+         len:= len+1;
+         //increase i by one, so we don't run into that double quote sign again
+         i:= i+1;
+       end;//if double quote
+    i:= i+1;
+    end;//while
+  end;//if
+end;//function
 
 function isTrimableChar(const c: char): Boolean;
 begin
@@ -219,13 +248,13 @@ var position: Integer;
     look: Integer;
     size: Integer;
 begin
-  position := -1;
-  look := 1;
-  size := length(str1);
+  position:= -1;
+  look:= 1;
+  size:= length(str1);
   while (look<=size) do
   begin
     if (isTrimableChar(str1[look])) then
-      position := look
+      position:= look
     else
       break;
     look:= look+1;
@@ -236,12 +265,12 @@ begin
     else str1:= '';
   end;//if
 
-  position := - 1;
-  look := length(str1);
+  position:= - 1;
+  look:= length(str1);
   while (look>=1) do
   begin
     if (isTrimableChar(str1[look])) then
-      position := look
+      position:= look
     else
       break;
     look:= look-1;
@@ -288,6 +317,7 @@ begin
                +' version 0.17.rev413 or later.');
     Exit;
   end;//if
+  SearchButton.Enabled:= false;
   //remove old results
   CleanUpGrid('Searching...');
   //run the programme
@@ -304,6 +334,7 @@ begin
     CleanUpGrid('Could not start formID_finder.');
     Application.ProcessMessages;
     ShowMessage('Error while starting formID_finder!');
+    SearchButton.Enabled:= true;
     Exit;
   end;//if
   CleanUpGrid('formID_finder executed successfully.');
@@ -313,7 +344,11 @@ begin
   begin
     errString:= 'Error while executing formID_finder! ';
     case return of
-      1: errString:= errString+'Invalid parameters!';
+      1: errString:= errString+'Invalid parameters! If you get this error, '
+                     +'this could be an indication, that you don''t have Skyrim'
+                     +' installed on your machine. However, in that case you '
+                     +'might not be able to make any use of that programme '
+                     +'anyway!';
       2: errString:= errString+'File error!';
       3: errString:= errString+'Data error!';
       10: errString:= errString+'formID_finder could not find GUI window!';
@@ -324,6 +359,7 @@ begin
     CleanUpGrid(errString);
     Application.ProcessMessages;
     ShowMessage(errString);
+    SearchButton.Enabled:= true;
     Exit;
   end;//if return code<>0
   //now get the data
@@ -331,6 +367,7 @@ begin
   begin
     CleanUpGrid('No data.');
     ShowMessage('No data recieved from formID_finder!');
+    SearchButton.Enabled:= true;
     Exit;
   end;//if
   trim4(m_StringData);
@@ -338,6 +375,7 @@ begin
   CleanUpGrid('Preparing data for display...');
   Application.ProcessMessages;
   DataToStringGrid(total);
+  SearchButton.Enabled:= true;
 end;//proc
 
 procedure TForm1.FormCreate(Sender: TObject);
@@ -345,10 +383,13 @@ begin
   m_ExpectsData:= false;
   m_HasData:= false;
   m_StringData:= '';
+  {$IFDEF WINDOWS }
   m_PrevWndProc:= Windows.WNDPROC(SetWindowLong(Self.Handle,GWL_WNDPROC,PtrInt(@WndCallback)));
+  {$ENDIF}
   Application.Title:= self.Caption;
 end;
 
+{$IFDEF WINDOWS }
 procedure TForm1.WMCopyData(var Msg: TWMCopyData);
 begin
   if (not m_ExpectsData) then Msg.Result:= 1
@@ -359,6 +400,7 @@ begin
     m_HasData:= true;
   end;//else
 end;//proc
+{$ENDIF}
 
 procedure TForm1.DataToStringGrid(var total: Integer);
 const nameCol = 0;
@@ -494,10 +536,24 @@ begin
       workData:= copy(workData, pos_i, length(workData));
       trim4(workData);
     end//if last line of a type
+    else if (copy(workData,1, 8)='indices:') then
+    begin
+      //quest indices, but we cannot process them (yet), so skip the line
+      pos_i:= pos(#10, workData); //search end of line
+      if (pos_i=0) then
+      begin
+        //error
+        CleanUpGrid('Error: got unexpected string data in indices line!');
+        ShowMessage('Error: got unexpected string data in indices line!');
+        Exit;
+      end;//if
+      WorkData:= copy(WorkData, pos_i, length(WorkData));
+      trim4(WorkData);
+    end//if quest indices
     //unknown line found
     else begin
-      extracted:= 'Error: got unknown string data line! Work data length is'
-                  +IntToStr(length(WorkData))+';';
+      extracted:= 'Error: got unknown string data line! Work data length is '
+                  +IntToStr(length(WorkData))+'.';
       if (length(WorkData)>0) then
       extracted:= extracted+#13#10+'First characters are: "'
                   +copy(WorkData, 1, 20)+'..."';

@@ -9,7 +9,7 @@ uses
 {$IFDEF Windows }
   Windows, Messages,
 {$ENDIF}
-  StdCtrls, Grids;
+  StdCtrls, Grids, Menus;
 
 type
 
@@ -23,10 +23,17 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
+    MainMenu1: TMainMenu;
+    MenuItemVersion: TMenuItem;
+    MenuItemClose: TMenuItem;
+    MenuItemGUI: TMenuItem;
+    MenuItemHelp: TMenuItem;
     SearchButton: TButton;
     KeywordEdit: TEdit;
     ResultStringGrid: TStringGrid;
     procedure FormCreate(Sender: TObject);
+    procedure MenuItemCloseClick(Sender: TObject);
+    procedure MenuItemVersionClick(Sender: TObject);
     procedure SearchButtonClick(Sender: TObject);
   private
     { private declarations }
@@ -387,6 +394,34 @@ begin
   m_PrevWndProc:= Windows.WNDPROC(SetWindowLong(Self.Handle,GWL_WNDPROC,PtrInt(@WndCallback)));
   {$ENDIF}
   Application.Title:= self.Caption;
+end;
+
+procedure TForm1.MenuItemCloseClick(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TForm1.MenuItemVersionClick(Sender: TObject);
+var str1: string;
+    foundRev: Cardinal;
+begin
+  str1:= 'GUI version: rev418'+#13#10+cProgrammeName+' version: ';
+  if (not FileExists(cProgrammeName)) then
+  begin
+    str1:= str1 + 'not found';
+    foundRev:= 0;
+  end
+  else begin
+    foundRev:= GetFormIDFinderRevision;
+    str1:= str1 + RevisionToVersion(foundRev);
+  end;//else
+  str1:= str1+#13#10#13#10+'Your version of '+cProgrammeName;
+  if (not CheckRevision(foundRev)) then
+    str1:= str1+' is outdated, the minimum required version is '
+          +RevisionToVersion(cMinRevision)+'.'
+  else
+    str1:= str1+' meets the minimum requirements for the GUI. All is fine. :)';
+  ShowMessage(str1);
 end;
 
 {$IFDEF WINDOWS }

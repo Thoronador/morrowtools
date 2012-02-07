@@ -9,7 +9,7 @@ uses
 {$IFDEF Windows }
   Windows, Messages,
 {$ENDIF}
-  StdCtrls, Grids, Menus;
+  StdCtrls, Grids, Menus, LConvEncoding;
 
 type
 
@@ -32,6 +32,8 @@ type
     KeywordEdit: TEdit;
     ResultStringGrid: TStringGrid;
     procedure FormCreate(Sender: TObject);
+    procedure KeywordEditKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
     procedure MenuItemCloseClick(Sender: TObject);
     procedure MenuItemVersionClick(Sender: TObject);
     procedure SearchButtonClick(Sender: TObject);
@@ -187,7 +189,7 @@ begin
   FillChar(pi, sizeof(pi), 0);
   // start the child process
   if(CreateProcess(nil, //no module name (use command line)
-      PChar(cProgrammeName+' --keyword "'+escapeKeyword(keyword)+'" --send-data "'+s1+'" "'+s2+'"'), //command line
+      PChar(cProgrammeName+' --keyword "'+UTF8ToCP1252(escapeKeyword(keyword))+'" --send-data "'+s1+'" "'+s2+'"'), //command line
       nil, //process handle not inheritable
       nil, //thread handle not inheritable
       false, //set handle inheritance to false
@@ -356,12 +358,16 @@ begin
                      +' installed on your machine. However, in that case you '
                      +'might not be able to make any use of that programme '
                      +'anyway!';
-      2: errString:= errString+'File error!';
+      2: errString:= errString+'File error! If you get this error, '
+                     +'this could be an indication, that you don''t have Skyrim'
+                     +' installed on your machine. However, in that case you '
+                     +'might not be able to make much use of that programme '
+                     +'anyway!';
       3: errString:= errString+'Data error!';
       10: errString:= errString+'formID_finder could not find GUI window!';
       11: errString:= errString+'formID_finder does not support sending data!';
     else
-      errString:= errString+'Unknown error!';
+      errString:= errString+'Unknown error! Error code is '+IntToStr(return)+'.';
     end;//case
     CleanUpGrid(errString);
     Application.ProcessMessages;
@@ -396,6 +402,12 @@ begin
   Application.Title:= self.Caption;
 end;
 
+procedure TForm1.KeywordEditKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if ((Key=13) and (SearchButton.Enabled)) then SearchButtonClick(Sender);
+end;
+
 procedure TForm1.MenuItemCloseClick(Sender: TObject);
 begin
   Close;
@@ -405,7 +417,7 @@ procedure TForm1.MenuItemVersionClick(Sender: TObject);
 var str1: string;
     foundRev: Cardinal;
 begin
-  str1:= 'GUI version: rev418'+#13#10+cProgrammeName+' version: ';
+  str1:= 'GUI version: rev419'+#13#10+cProgrammeName+' version: ';
   if (not FileExists(cProgrammeName)) then
   begin
     str1:= str1 + 'not found';
@@ -448,7 +460,7 @@ var typeString: string;
     currentRow, pos_i, delimPos: Integer;
 begin
   typeString:= '';
-  workData:= m_StringData;
+  workData:= CP1252ToUTF8(m_StringData);
   trim4(workData);
   total:= -1;
   currentRow:= 0;

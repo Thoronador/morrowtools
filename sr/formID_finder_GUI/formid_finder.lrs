@@ -5,21 +5,22 @@ LazarusResources.Add('TForm1','FORMDATA',[
   +'h'#3#144#1#7'Caption'#6#20'Form ID Finder - GUI'#12'ClientHeight'#3#25#1#11
   +'ClientWidth'#3#144#1#4'Menu'#7#9'MainMenu1'#8'OnCreate'#7#10'FormCreate'#10
   +'LCLVersion'#6#8'0.9.28.2'#0#5'TEdit'#11'KeywordEdit'#4'Left'#2#8#6'Height'#2
-  +#21#3'Top'#2#8#5'Width'#3#152#0#8'TabOrder'#2#0#4'Text'#6#7'keyword'#0#0#7'T'
-  +'Button'#12'SearchButton'#4'Left'#3#168#0#6'Height'#2#25#3'Top'#2#6#5'Width'
-  +#2'K'#7'Caption'#6#6'Search'#7'OnClick'#7#17'SearchButtonClick'#8'TabOrder'#2
-  +#1#0#0#11'TStringGrid'#16'ResultStringGrid'#4'Left'#2#8#6'Height'#3#237#0#3
-  +'Top'#2'('#5'Width'#3#128#1#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#8'ak'
-  +'Bottom'#0#8'ColCount'#2#4#7'Columns'#14#1#13'Title.Caption'#6#4'Name'#5'Wid'
-  +'th'#3#128#0#0#1#13'Title.Caption'#6#9'Editor ID'#5'Width'#2'd'#0#1#13'Title'
-  +'.Caption'#6#7'Form ID'#0#1#13'Title.Caption'#6#4'Type'#0#0#9'FixedCols'#2#0
-  +#7'Options'#11#15'goFixedVertLine'#15'goFixedHorzLine'#10'goVertLine'#10'goH'
-  +'orzLine'#13'goRangeSelect'#11'goRowSizing'#11'goColSizing'#14'goSmoothScrol'
-  +'l'#0#8'RowCount'#2#6#8'TabOrder'#2#2#5'Cells'#1#2#5#2#0#2#1#6#5'Enter'#2#0#2
-  +#2#6#9'a keyword'#2#0#2#3#6#9'and click'#2#0#2#4#6#6'Search'#2#0#2#5#6#9'to '
-  +'start.'#0#0#0#9'TMainMenu'#9'MainMenu1'#4'left'#3#0#1#0#9'TMenuItem'#11'Men'
-  +'uItemGUI'#7'Caption'#6#3'GUI'#0#9'TMenuItem'#13'MenuItemClose'#7'Caption'#6
-  +#4'Quit'#7'OnClick'#7#18'MenuItemCloseClick'#0#0#0#9'TMenuItem'#12'MenuItemH'
-  +'elp'#7'Caption'#6#1'?'#0#9'TMenuItem'#15'MenuItemVersion'#7'Caption'#6#7'Ve'
-  +'rsion'#7'OnClick'#7#20'MenuItemVersionClick'#0#0#0#0#0
+  +#21#3'Top'#2#8#5'Width'#3#152#0#9'OnKeyDown'#7#18'KeywordEditKeyDown'#8'TabO'
+  +'rder'#2#0#4'Text'#6#7'keyword'#0#0#7'TButton'#12'SearchButton'#4'Left'#3#168
+  +#0#6'Height'#2#25#3'Top'#2#6#5'Width'#2'K'#7'Caption'#6#6'Search'#7'OnClick'
+  +#7#17'SearchButtonClick'#8'TabOrder'#2#1#0#0#11'TStringGrid'#16'ResultString'
+  +'Grid'#4'Left'#2#8#6'Height'#3#237#0#3'Top'#2'('#5'Width'#3#128#1#7'Anchors'
+  +#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#8'ColCount'#2#4#7'Columns'#14
+  +#1#13'Title.Caption'#6#4'Name'#5'Width'#3#128#0#0#1#13'Title.Caption'#6#9'Ed'
+  +'itor ID'#5'Width'#2'd'#0#1#13'Title.Caption'#6#7'Form ID'#0#1#13'Title.Capt'
+  +'ion'#6#4'Type'#0#0#9'FixedCols'#2#0#7'Options'#11#15'goFixedVertLine'#15'go'
+  +'FixedHorzLine'#10'goVertLine'#10'goHorzLine'#13'goRangeSelect'#11'goRowSizi'
+  +'ng'#11'goColSizing'#14'goSmoothScroll'#0#8'RowCount'#2#6#8'TabOrder'#2#2#5
+  +'Cells'#1#2#5#2#0#2#1#6#5'Enter'#2#0#2#2#6#9'a keyword'#2#0#2#3#6#9'and clic'
+  +'k'#2#0#2#4#6#6'Search'#2#0#2#5#6#9'to start.'#0#0#0#9'TMainMenu'#9'MainMenu'
+  +'1'#4'left'#3#0#1#0#9'TMenuItem'#11'MenuItemGUI'#7'Caption'#6#3'GUI'#0#9'TMe'
+  +'nuItem'#13'MenuItemClose'#7'Caption'#6#4'Quit'#7'OnClick'#7#18'MenuItemClos'
+  +'eClick'#0#0#0#9'TMenuItem'#12'MenuItemHelp'#7'Caption'#6#1'?'#0#9'TMenuItem'
+  +#15'MenuItemVersion'#7'Caption'#6#7'Version'#7'OnClick'#7#20'MenuItemVersion'
+  +'Click'#0#0#0#0#0
 ]);

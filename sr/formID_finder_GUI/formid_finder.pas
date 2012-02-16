@@ -8,17 +8,21 @@ uses
   Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
 {$IFDEF Windows }
   Windows, Messages,
+{$ELSE}
+  BaseUnix, UnixType,
 {$ENDIF}
   StdCtrls, Grids, Menus, LConvEncoding;
 
 type
 
+{$IFDEF Windows }
   TWMCopyData = packed record
     Msg: Cardinal;
     From: HWND;
     CopyDataStruct: PCopyDataStruct;
     Result: Longint;
   end;
+{$ENDIF}
 
   { TForm1 }
 
@@ -39,14 +43,14 @@ type
     procedure SearchButtonClick(Sender: TObject);
   private
     { private declarations }
+    m_ExpectsData: Boolean;
+    m_HasData: Boolean;
+    m_StringData: AnsiString;
     {$IFDEF WINDOWS }
     procedure WMCopyData(var Msg: TWMCopyData); message WM_COPYDATA;
     {$ENDIF}
     procedure DataToStringGrid(var total: Integer);
     procedure CleanUpGrid(const info: string);
-    m_ExpectsData: Boolean;
-    m_HasData: Boolean;
-    m_StringData: AnsiString;
   public
     { public declarations }
   end; 
@@ -87,13 +91,46 @@ begin
   end
   else result:=CallWindowProc(m_PrevWndProc, Ahwnd, uMsg, WParam, LParam);
 end;
+{$ELSE}
+
+//tries to spawn a child process and returns true on success, or false on
+// failure. The child's process ID is stored in pid in case of success.
+function spawnProcess(progName: AnsiString; args: PPChar; var pid: TPid): Boolean;
+begin
+  pid:= FpFork;
+  //-1 means fork failed
+  if (pid=-1) then
+  begin
+    Result:= false;
+  end
+  //non-zero means success, return value of fork() is child's pid
+  else if (pid<>0) then Result:= true
+  //zero means we are in the child process
+  else begin
+    FpExecv(progName, args);
+    //if we get to this point, an error occured, because execv() does not return
+    // in case of success
+    Result:= false;
+    Halt;
+    Abort;
+  end;//else
+end;//func
+
 {$ENDIF}
 
 function GetFormIDFinderRevision: Cardinal;
+{$IFDEF WINDOWS }
 var si: TStartupInfo;
     pi: TProcessInformation;
     exitCode: DWORD;
+{$ELSE}
+const ArgOne: PChar = '--version-with-exitcode';
+var   ArgArray: PPChar;
+      pid, wait_pid_result: TPid;
+      status: cint;
+{$ENDIF}
 begin
+  {$IFDEF WINDOWS }
   FillChar(si, SizeOf(si), 0);
   with si do
   begin
@@ -134,6 +171,35 @@ begin
     //create process failed
     Result:= 0;
   end;
+  {$ELSE} //end of windows-specific code section, starting Linux code
+  GetMem(ArgArray, 3*sizeof(PChar));
+  ArgArray[0]:= PChar(cProgrammeName);
+  ArgArray[1]:= ArgOne;
+  ArgArray[2]:= nil;
+  if (spawnProcess(cProgrammeName, ArgArray, pid)) then
+  begin
+    repeat
+      wait_pid_result:= FpWaitPid(pid, status, WNOHANG);
+      //.. process messages to avoid application freeze
+      Application.ProcessMessages;
+    until (wait_pid_result<>0);
+    //-1 means error
+    if (wait_pid_result=-1) then Result:= 0
+    else begin
+      if (wifexited(status)) then
+      Result:= wexitstatus(status)
+      else Result:= 0;
+      //dirty hack to get the "real" exit code (Unix truncates to least 8 bits?)
+      // -- will only work as expected for future revision numbers up to 511
+      if ((Result>20) and (Result<256)) then Result:= Result+256;
+    end;//else
+  end//if
+  else begin
+    //could not create process
+    Result:= 0;
+  end;//else
+  FreeMem(ArgArray);
+  {$ENDIF}
 end;//func
 
 function CheckRevision: Boolean;
@@ -168,17 +234,26 @@ begin
     404..412: Result:= 'v0.16.rev'+IntToStr(rev)+', 2012-01-22';
     413: Result:= 'v0.17.rev413, 2012-02-03';
   else
-    Result:= 'v0.17 or later';
+    Result:= 'v0.17 or later, maybe rev'+IntToStr(rev);
   end;//case
 end;//func
 
 
 function RunFormIDFinder(const keyword: string; var success: Boolean; const s1, s2: string): Cardinal;
+{$IFDEF WINDOWS }
 var si: TStartupInfo;
     pi: TProcessInformation;
     exitCode: DWORD;
+{$ELSE}
+const ArgOne: PChar = '--keyword';
+      ArgThree: PChar = '--send-data';
+var   ArgArray: PPChar;
+      pid, wait_pid_result: TPid;
+      status: cint;
+{$ENDIF}
 begin
   success:= false;
+  {$IFDEF WINDOWS }
   FillChar(si, SizeOf(si), 0);
   with si do
   begin
@@ -221,6 +296,40 @@ begin
     success:= false;
     Result:= 0;
   end;
+  {$ELSE}
+  //TODO: not implemented on Linux yet
+  GetMem(ArgArray, 7*sizeof(PChar));
+  ArgArray[0]:= PChar(cProgrammeName);
+  ArgArray[1]:= ArgOne;
+  ArgArray[2]:= PChar(UTF8ToCP1252(escapeKeyword(keyword)));
+  ArgArray[3]:= ArgThree;
+  ArgArray[4]:= 's1';
+  ArgArray[5]:= 's2';
+  ArgArray[6]:= nil;
+  if (spawnProcess(cProgrammeName, ArgArray, pid)) then
+  begin
+    repeat
+      wait_pid_result:= FpWaitPid(pid, status, WNOHANG);
+      //.. process messages to avoid application freeze
+      Application.ProcessMessages;
+    until (wait_pid_result<>0);
+    //-1 means error
+    if (wait_pid_result=-1) then Result:= 0
+    else begin
+      if (wifexited(status)) then
+      begin
+        Result:= wexitstatus(status);
+        success:= true;
+      end
+      else Result:= 0;
+    end;//else
+  end//if
+  else begin
+    //could not create process
+    Result:= 0;
+  end;//else
+  FreeMem(ArgArray);
+  {$ENDIF}
 end;//func
 
 function escapeKeyword(const str1: string): string;
@@ -417,7 +526,7 @@ procedure TForm1.MenuItemVersionClick(Sender: TObject);
 var str1: string;
     foundRev: Cardinal;
 begin
-  str1:= 'GUI version: rev419'+#13#10+cProgrammeName+' version: ';
+  str1:= 'GUI version: rev420'+#13#10+cProgrammeName+' version: ';
   if (not FileExists(cProgrammeName)) then
   begin
     str1:= str1 + 'not found';

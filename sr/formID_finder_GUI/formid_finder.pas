@@ -475,6 +475,8 @@ begin
       3: errString:= errString+'Data error!';
       10: errString:= errString+'formID_finder could not find GUI window!';
       11: errString:= errString+'formID_finder does not support sending data!';
+      12: errString:= errString+'formID_finder could not send data via Unix '
+                      +'domain socket!';
     else
       errString:= errString+'Unknown error! Error code is '+IntToStr(return)+'.';
     end;//case
@@ -526,7 +528,7 @@ procedure TForm1.MenuItemVersionClick(Sender: TObject);
 var str1: string;
     foundRev: Cardinal;
 begin
-  str1:= 'GUI version: rev420'+#13#10+cProgrammeName+' version: ';
+  str1:= 'GUI version: rev421'+#13#10+cProgrammeName+' version: ';
   if (not FileExists(cProgrammeName)) then
   begin
     str1:= str1 + 'not found';

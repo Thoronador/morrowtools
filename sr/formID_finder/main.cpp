@@ -24,6 +24,9 @@
 #include <set>
 #if defined(_WIN32)
 #include <Windows.h>
+#else
+#include <sys/socket.h>
+#include <sys/un.h>
 #endif
 #include "../../base/FileFunctions.h"
 #include "../../base/UtilityFunctions.h"
@@ -77,13 +80,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Form ID Finder for Skyrim, version 0.17.rev413, 2012-02-03\n";
+  std::cout << "Form ID Finder for Skyrim, version 0.17.rev421, 2012-02-19\n";
 }
 
 int showVersionExitcode()
 {
   showVersion();
-  return 413;
+  return 421;
 }
 
 void showHelp()
@@ -251,7 +254,7 @@ int main(int argc, char **argv)
             sendParam1st = std::string(argv[i+1]);
             sendParam2nd = std::string(argv[i+2]);
             i=i+2; //skip next two parameters, because they are used as send params already
-            std::cout << "Data sending mode was started (\""<<sendParam1st<<"\", \""<<sendParam2nd<<"\").\n";
+            std::cout << "Data sending mode was requested (\""<<sendParam1st<<"\", \""<<sendParam2nd<<"\").\n";
           }
           else
           {
@@ -1160,11 +1163,35 @@ int main(int argc, char **argv)
     }
     int msgResult = SendMessage(receiver, WM_COPYDATA, 0, (long int) &cds);
     #else
-    //send data not supported (yet?) -> put string to standard output
-    std::cout << string_out.str();
-    //...plus the error message
-    std::cout << "Error: parameter --send-data is not supported on this OS!\n";
-    return SRTP::rcSendDataNotSupported;
+    //check for socket
+    if (sendParam1st!="socket")
+    {
+      std::cout << "Error: parameter --send-data expects socket as first part!\n";
+      return SRTP::rcInvalidParameter;
+    }
+    //create unix domain socket
+    int socket_fd = socket(AF_UNIX, SOCK_STREAM, 0);
+    if (socket_fd < 0)
+    {
+      std::cout << "Error: could not open Unix domain socket!\n";
+      return SRTP::rcSocketError;
+    }
+    //prepare socket address structure
+    struct sockaddr_un serv_addr;
+    memset(&serv_addr, 0, sizeof(struct sockaddr_un));
+    serv_addr.sun_family = AF_UNIX;
+    snprintf(serv_addr.sun_path, sendParam2nd.length()+1, sendParam2nd.c_str());
+    //now connect
+    if (connect(socket_fd, (struct sockaddr *) &serv_addr, sizeof(struct sockaddr_un))!=0)
+    {
+      std::cout << "Error: could not connect via Unix domain socket!\n";
+      return SRTP::rcSocketError;
+    }
+    //write to socket
+    const std::string socketBuffer = string_out.str();
+    write(socket_fd, socketBuffer.c_str(), socketBuffer.length()+1);
+    //...and close socket
+    close(socket_fd);
     #endif
   }//if sendData
   return 0;

@@ -35,6 +35,7 @@ const int rcOutputFailed = MWTP::rcOutputFailed; //4
 /* special return codes for formID_finder */
 const int rcWindowNotFound = 10;
 const int rcSendDataNotSupported = 11;
+const int rcSocketError = 12;
 
 } //namespace
 

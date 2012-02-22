@@ -287,9 +287,9 @@ Records and their sub-records:
           unknown data
       BNAM (4 bytes, can occur multiple times, optional)
           unknown data
-          
+
           ---> only TNAM or BNAM can be present in a DLVW record, not both at the same time
-          
+
       ENAM (4 bytes, optional)
           unknown data
       DNAM (1 byte, optional)
@@ -865,6 +865,21 @@ Records and their sub-records:
       SLCP (1 byte)
           soul capacity
       NAM0 (4 bytes, optional)
+          unknown data
+
+
+  SNCT: sound category
+      EDID (string, NUL-terminated)
+          editorID
+      FULL (4 bytes)
+          name string ID
+      FNAM (4 bytes)
+          unknown data
+      PNAM (4 bytes, optional)
+          form ID of parent category
+      VNAM (2 bytes)
+          unknown data
+      UNAM (2 bytes, optional)
           unknown data
 
 

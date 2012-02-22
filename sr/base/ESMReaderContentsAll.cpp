@@ -81,6 +81,7 @@
 #include "records/ScrollRecord.h"
 #include "records/ShoutRecord.h"
 #include "records/SoulGemRecord.h"
+#include "records/SoundCategoryRecord.h"
 #include "records/SoundRecord.h"
 #include "records/SpellRecord.h"
 #include "records/StaticRecord.h"
@@ -295,6 +296,9 @@ int ESMReaderContentsAll::readNextRecord(std::ifstream& in_File, const int32_t r
          break;
     case cSLGM:
          recPtr = new SoulGemRecord;
+         break;
+    case cSNCT:
+         recPtr = new SoundCategoryRecord;
          break;
     case cSOUN:
          recPtr = new SoundRecord;

@@ -250,7 +250,7 @@ bool DialogViewRecord::loadFromStream(std::ifstream& in_File)
            bytesRead += 2;
            if (subLength!=1)
            {
-             std::cout <<"Error: sub record DNAM of DLBR has invalid length ("
+             std::cout <<"Error: sub record DNAM of DLVW has invalid length ("
                        <<subLength<<" bytes). Should be one byte!\n";
              return false;
            }

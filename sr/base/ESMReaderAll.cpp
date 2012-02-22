@@ -83,6 +83,7 @@
 #include "Scrolls.h"
 #include "Shouts.h"
 #include "SoulGems.h"
+#include "SoundCategories.h"
 #include "Sounds.h"
 #include "Spells.h"
 #include "Statics.h"
@@ -308,6 +309,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;
     case cSLGM:
          return SoulGems::getSingleton().readNextRecord(in_File);
+         break;
+    case cSNCT:
+         return SoundCategories::getSingleton().readNextRecord(in_File);
          break;
     case cSOUN:
          return Sounds::getSingleton().readNextRecord(in_File);

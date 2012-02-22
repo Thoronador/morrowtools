@@ -88,6 +88,7 @@ const int32_t cCSDT = 0x54445343; //"CSDT" = 43 53 44 54
 const int32_t cCTDA = 0x41445443; //"CTDA" = 43 54 44 41
 const int32_t cDALC = 0x434C4144; //"DALC" = 44 41 4C 43
 const int32_t cDATA = 0x41544144; //"DATA" = 44 41 54 41
+const int32_t cDEBR = 0x52424544; //"DEBR" = 44 45 42 52
 const int32_t cDESC = 0x43534544; //"DESC" = 44 45 53 43
 const int32_t cDEST = 0x54534544; //"DEST" = 44 45 53 54
 const int32_t cDLBR = 0x52424C44; //"DLBR" = 44 4C 42 52

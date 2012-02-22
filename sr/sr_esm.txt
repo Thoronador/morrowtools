@@ -265,6 +265,21 @@ Records and their sub-records:
           array of form IDs; only present, if INTV > zero
 
 
+  DEBR: Debris
+      EDID (string, NUL-terminated)
+          editor ID
+      DATA (size varies, can occur multiple times)
+          uint8_t Percentage
+          string  ModelFilename (NUL-terminated)
+          uint8_t Flags
+                    0x01 - Has Collision Data
+      MODT (size varies, optional, can occur multiple times)
+          unknown data
+
+        --> DATA and MODT form pairs that can occur more than once. However,
+            MODT is an optional component in those pairs.
+
+
   DLBR: dialog branch(?)
       EDID (string, NUL-terminated)
           editorID

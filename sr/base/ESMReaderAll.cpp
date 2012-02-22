@@ -39,6 +39,7 @@
 #include "Collisions.h"
 #include "ColourForms.h"
 #include "CraftableObjects.h"
+#include "Debris.h"
 #include "DialogBranches.h"
 #include "DialogViews.h"
 #include "Doors.h"
@@ -177,6 +178,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;
     case cCOLL:
          return Collisions::getSingleton().readNextRecord(in_File);
+         break;
+    case cDEBR:
+         return Debris::getSingleton().readNextRecord(in_File);
          break;
     case cDLBR:
          return DialogBranches::getSingleton().readNextRecord(in_File);

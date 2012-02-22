@@ -18,18 +18,18 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SR_SOUNDCATEGORIES_H
-#define SR_SOUNDCATEGORIES_H
+#ifndef SR_DEBRIS_H
+#define SR_DEBRIS_H
 
-#include "records/SoundCategoryRecord.h"
+#include "records/DebrisRecord.h"
 #include "MapBasedRecordManager.h"
 
 namespace SRTP
 {
 
-//singleton for sound category records
-typedef MapBasedRecordManager<SoundCategoryRecord> SoundCategories;
+//singleton for debris records
+typedef MapBasedRecordManager<DebrisRecord> Debris;
 
 } //namespace
 
-#endif // SR_SOUNDCATEGORIES_H
+#endif // SR_DEBRIS_H

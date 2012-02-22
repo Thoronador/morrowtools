@@ -878,9 +878,9 @@ Records and their sub-records:
       PNAM (4 bytes, optional)
           form ID of parent category
       VNAM (2 bytes)
-          unknown data
+          static volume multiplier; represents a float, where zero maps to 0.0 and 65535 maps to 1.0
       UNAM (2 bytes, optional)
-          unknown data
+          default menu value; represents a float, where zero maps to 0.0 and 65535 maps to 1.0
 
 
   TREE: tree

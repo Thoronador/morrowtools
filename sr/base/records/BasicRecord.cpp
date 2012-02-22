@@ -127,6 +127,42 @@ bool BasicRecord::loadUint32SubRecordFromStream(std::istream& in_File, const int
   return true;
 }
 
+bool BasicRecord::loadString512FromStream(std::istream& in_File, std::string& target, char * buffer, const int32_t subHeader, const bool withHeader, uint32_t& bytesRead) const
+{
+  if (withHeader)
+  {
+    int32_t subRecName = 0;
+    //read header
+    in_File.read((char*) &subRecName, 4);
+    bytesRead += 4;
+    if (subRecName!=subHeader)
+    {
+      UnexpectedRecord(subHeader, subRecName);
+      return false;
+    }
+  }//if with header
+  //subrecord's length
+  uint16_t subLength = 0;
+  in_File.read((char*) &subLength, 2);
+  bytesRead += 2;
+  if (subLength>511)
+  {
+    std::cout <<"Error: sub record "<<IntTo4Char(subHeader)<<" of "<<IntTo4Char(getRecordType())<<" is longer than 511 characters!\n";
+    return false;
+  }
+  //read string
+  memset(buffer, 0, 512);
+  in_File.read(buffer, subLength);
+  bytesRead += subLength;
+  if (!in_File.good())
+  {
+    std::cout << "Error while reading subrecord "<<IntTo4Char(subHeader)<<" of "<<IntTo4Char(getRecordType())<<"!\n";
+    return false;
+  }
+  target = std::string(buffer);
+  return true;
+}
+
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t BasicRecord::getTotalWrittenSize() const
 {

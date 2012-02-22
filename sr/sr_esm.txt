@@ -318,6 +318,23 @@ Records and their sub-records:
           unknown data; 8 bytes occur twice, 12 bytes occur 278 times
 
 
+  EFSH: Effect Shader
+      EDID (string, NUL-terminated)
+          editor ID
+      ICON (string, NUL-terminated)
+          texture path
+      ICO2 (string, NUL-terminated)
+          texture path
+      NAM7 (string, NUL-terminated)
+          texture path
+      NAM8 (string, NUL-terminated, optional)
+          texture path
+      NAM9 (string, NUL-terminated, optional)
+          texture path
+      DATA (size varies, 308-400 bytes, always an integral multiple of four bytes)
+          shader data
+
+
   ENCH: enchantments
       EDID (string, NUL-terminated)
           editorID

@@ -109,6 +109,7 @@ const int32_t cECZN = 0x4E5A4345; //"ECZN" = 45 43 5A 4E
 const int32_t cEDID = 0x44494445; //"EDID" = 45 44 49 44
 const int32_t cEFID = 0x44494645; //"EFID" = 45 46 49 44
 const int32_t cEFIT = 0x54494645; //"EFIT" = 45 46 49 54
+const int32_t cEFSH = 0x48534645; //"EFSH" = 45 46 53 48
 const int32_t cEITM = 0x4D544945; //"EITM" = 45 49 54 4D
 const int32_t cENAM = 0x4D414E45; //"ENAM" = 45 4E 41 4D
 const int32_t cENCH = 0x48434E45; //"ENCH" = 45 4E 43 48
@@ -139,6 +140,7 @@ const int32_t cHCLF = 0x464C4348; //"HCLF" = 48 43 4C 46
 const int32_t cHDPT = 0x54504448; //"HDPT" = 48 44 50 54
 const int32_t cHEDR = 0x52444548; //"HEDR" = 48 45 44 52
 const int32_t cHNAM = 0x4D414E48; //"HNAM" = 48 4E 41 4D
+const int32_t cICO2 = 0x324F4349; //"ICO2" = 49 43 4F 32
 const int32_t cICON = 0x4E4F4349; //"ICON" = 49 43 4F 4E
 const int32_t cIMGS = 0x53474D49; //"IMGS" = 49 4D 47 53
 const int32_t cINAM = 0x4D414E49; //"INAM" = 49 4E 41 4D

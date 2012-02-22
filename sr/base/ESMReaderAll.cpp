@@ -43,6 +43,7 @@
 #include "DialogBranches.h"
 #include "DialogViews.h"
 #include "Doors.h"
+#include "EffectShaders.h"
 #include "Enchantments.h"
 #include "EncounterZones.h"
 #include "EquipmentSlots.h"
@@ -193,6 +194,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;
     case cECZN:
          return EncounterZones::getSingleton().readNextRecord(in_File);
+         break;
+    case cEFSH:
+         return EffectShaders::getSingleton().readNextRecord(in_File);
          break;
     case cENCH:
          return Enchantments::getSingleton().readNextRecord(in_File);

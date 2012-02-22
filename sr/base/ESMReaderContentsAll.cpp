@@ -41,6 +41,7 @@
 #include "records/DialogBranchRecord.h"
 #include "records/DialogViewRecord.h"
 #include "records/DoorRecord.h"
+#include "records/EffectShaderRecord.h"
 #include "records/EnchantmentRecord.h"
 #include "records/EncounterZoneRecord.h"
 #include "records/EquipmentSlotRecord.h"
@@ -180,6 +181,9 @@ int ESMReaderContentsAll::readNextRecord(std::ifstream& in_File, const int32_t r
          break;
     case cECZN:
          recPtr = new EncounterZoneRecord;
+         break;
+    case cEFSH:
+         recPtr = new EffectShaderRecord;
          break;
     case cENCH:
          recPtr = new EnchantmentRecord;

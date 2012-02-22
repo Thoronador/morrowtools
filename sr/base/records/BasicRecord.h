@@ -37,6 +37,11 @@ struct BasicRecord
     virtual ~BasicRecord();
 
     #ifndef SR_UNSAVEABLE_RECORDS
+    /* returns the size in bytes that the record's data would occupy in a file
+       stream, including the size of the header data
+    */
+    uint32_t getTotalWrittenSize() const;
+
     /* writes the record to the given output stream and returns true on success
 
        parameters:
@@ -57,13 +62,6 @@ struct BasicRecord
 
     /* returns the record's type, usually its header */
     virtual int32_t getRecordType() const = 0;
-
-    #ifndef SR_UNSAVEABLE_RECORDS
-    /* returns the size in bytes that the record's data would occupy in a file
-       stream, including the size of the header data
-    */
-    uint32_t getTotalWrittenSize() const;
-    #endif
 
     /* returns true, if the record's data is compressed, accodring to the set
        flags
@@ -104,6 +102,17 @@ struct BasicRecord
            theSize - size to be written
     */
     bool saveSizeAndUnknownValues(std::ofstream& output, const uint32_t theSize) const;
+
+    /* returns the size in bytes that the record's data would occupy in a file
+       stream, NOT including the header data
+
+       parameters:
+           none
+
+       remarks:
+           This function has to be reimplemented for every new record type
+    */
+    virtual uint32_t getWriteSize() const = 0;
     #endif
 
     /* tries to load a 4 byte long subrecord from the stream and returns true
@@ -116,18 +125,19 @@ struct BasicRecord
     */
     bool loadUint32SubRecordFromStream(std::istream& in_File, const int32_t subHeader, uint32_t& target) const;
 
-    #ifndef SR_UNSAVEABLE_RECORDS
-    /* returns the size in bytes that the record's data would occupy in a file
-       stream, NOT including the header data
+    /* tries to load a NUL-terminated string from the stream and returns true
+       in case of success
 
        parameters:
-           none
-
-       remarks:
-           This function has to be reimplemented for every new record type
+           in_File    - the input stream
+           target     - the uint32_t that will be used to store the read data
+           buffer     - a pre-allocated array of char that can hold at least 512 bytes
+           subHeader  - the expected header of that subrecord
+           withHeader - if set to true, the header is read, too. Otherwise just
+                        the subrecord's content is read
+           bytesRead  - the variable that holds the number of bytes read so far
     */
-    virtual uint32_t getWriteSize() const = 0;
-    #endif
+    bool loadString512FromStream(std::istream& in_File, std::string& target, char * buffer, const int32_t subHeader, const bool withHeader, uint32_t& bytesRead) const;
 }; //struct
 
 } //namespace

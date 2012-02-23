@@ -234,6 +234,7 @@ const int32_t cRDAT = 0x54414452; //"RDAT" = 52 44 41 54
 const int32_t cREFR = 0x52464552; //"REFR" = 52 45 46 52
 const int32_t cRELA = 0x414C4552; //"RELA" = 52 45 4C 41
 const int32_t cREVB = 0x42564552; //"REVB" = 52 45 56 42
+const int32_t cRFCT = 0x54434652; //"RFCT" = 52 46 43 54
 const int32_t cRNAM = 0x4D414E52; //"RNAM" = 52 4E 41 4D
 const int32_t cSCHR = 0x52484353; //"SCHR" = 53 43 48 52
 const int32_t cSCRL = 0x4C524353; //"SCRL" = 53 43 52 4C

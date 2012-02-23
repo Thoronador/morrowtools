@@ -18,26 +18,26 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SR_DUALCASTDATARECORD_H
-#define SR_DUALCASTDATARECORD_H
+#ifndef SR_VISUALEFFECTRECORD_H
+#define SR_VISUALEFFECTRECORD_H
 
-#include "BasicRecord.h"
 #include <string>
+#include "BasicRecord.h"
 
 namespace SRTP
 {
 
-struct DualCastDataRecord: public BasicRecord
+struct VisualEffectRecord: public BasicRecord
 {
   public:
     /* constructor */
-    DualCastDataRecord();
+    VisualEffectRecord();
 
     /* destructor */
-    virtual ~DualCastDataRecord();
+    virtual ~VisualEffectRecord();
 
     /* returns true, if the other record contains the same data */
-    bool equals(const DualCastDataRecord& other) const;
+    bool equals(const VisualEffectRecord& other) const;
 
     #ifndef SR_UNSAVEABLE_RECORDS
     /* returns the size in bytes that the record's data would occupy in a file
@@ -63,32 +63,31 @@ struct DualCastDataRecord: public BasicRecord
     /* returns the record's type, usually its header */
     virtual int32_t getRecordType() const;
 
-    /* returns true, if the hit effect art inherits the scale (according to flags) */
-    bool hitEffectArtInheritsScale() const;
+    /* returns true, if the "rotate to face target" flag is set */
+    bool rotateToFaceTarget() const;
 
-    /* returns true, if the projectile inherits the scale (according to flags) */
-    bool projectileInheritsScale() const;
+    /* returns true, if the "attach to camera" flag is set */
+    bool isAttachedToCamera() const;
 
-    /* returns true, if the explosion inherits the scale (according to flags) */
-    bool explosionInheritsScale() const;
+    /* returns true, if the "inherit rotation" flag is set */
+    bool inheritsRotation() const;
 
     /* constants for flag values */
-    static const uint32_t cFlagHitEffectArtInherits;
-    static const uint32_t cFlagProjectileInherits;
-    static const uint32_t cFlagExplosionInherits;
+    static const uint32_t cFlagRotateToFaceTarget;
+    static const uint32_t cFlagAttachToCamera;
+    static const uint32_t cFlagInheritRotation;
 
     std::string editorID;
-    uint8_t unknownOBND[12];
     //subrecord DATA
-    uint32_t projectileFormID;
-    uint32_t explosionFormID;
-    uint32_t effectShaderFormID;
-    uint32_t hitEffectArtFormID;
-    uint32_t impactDataSetFormID;
-    uint32_t inheritFlags;
+    uint32_t effectArtFormID;
+    uint32_t shaderFormID;
+    uint32_t flagsVFX;
     //end of DATA
 }; //struct
 
+//type alias
+typedef VisualEffectRecord RefractionRecord;
+
 } //namespace
 
-#endif // SR_DUALCASTDATARECORD_H
+#endif // SR_VISUALEFFECTRECORD_H

@@ -184,12 +184,11 @@ bool DualCastDataRecord::loadFromStream(std::ifstream& in_File)
   bytesRead += 2;
   if (subLength!=24)
   {
-    std::cout <<"Error: sub record OBND of DUAL has invalid length ("<<subLength
+    std::cout <<"Error: sub record DATA of DUAL has invalid length ("<<subLength
               <<" bytes). Should be 24 bytes!\n";
     return false;
   }
-  //read DATA
-  //write DATA's stuff
+  //read DATA's stuff
   in_File.read((char*) &projectileFormID, 4);
   in_File.read((char*) &explosionFormID, 4);
   in_File.read((char*) &effectShaderFormID, 4);

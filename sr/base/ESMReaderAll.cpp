@@ -92,6 +92,7 @@
 #include "Statics.h"
 #include "TextureSets.h"
 #include "Trees.h"
+#include "VisualEffects.h"
 #include "VoiceTypes.h"
 #include "WaterTypes.h"
 #include "Weapons.h"
@@ -312,6 +313,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;
     case cREVB:
          return Reverbs::getSingleton().readNextRecord(in_File);
+         break;
+    case cRFCT:
+         return VisualEffects::getSingleton().readNextRecord(in_File);
          break;
     case cSCRL:
          return Scrolls::getSingleton().readNextRecord(in_File);

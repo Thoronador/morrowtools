@@ -893,6 +893,19 @@ Records and their sub-records:
           unknown data
 
 
+  RFCT: visual effect (refraction)
+      EDID (string, NUL-terminated)
+          editorID
+      DATA (12 bytes)
+          unknown data
+            uint32_t  effect art form ID (art object)
+            uint32_t  shader form ID (effect shader)
+            uint32_t  flags
+                        0x01 - rotate to face target
+                        0x02 - attach to camera
+                        0x04 - inherit rotation
+
+
   SLGM: soul gem
       EDID (string, NUL-terminated)
           editor ID

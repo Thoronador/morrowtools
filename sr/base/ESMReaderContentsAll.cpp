@@ -90,6 +90,7 @@
 #include "records/StaticRecord.h"
 #include "records/TextureSetRecord.h"
 #include "records/TreeRecord.h"
+#include "records/VisualEffectRecord.h"
 #include "records/VoiceTypeRecord.h"
 #include "records/WaterTypeRecord.h"
 #include "records/WeaponRecord.h"
@@ -299,6 +300,9 @@ int ESMReaderContentsAll::readNextRecord(std::ifstream& in_File, const int32_t r
          break;
     case cREVB:
          recPtr = new ReverbRecord;
+         break;
+    case cRFCT:
+         recPtr = new VisualEffectRecord;
          break;
     case cSCRL:
          recPtr = new ScrollRecord;

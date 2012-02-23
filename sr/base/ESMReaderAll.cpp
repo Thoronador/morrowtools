@@ -43,6 +43,7 @@
 #include "DialogBranches.h"
 #include "DialogViews.h"
 #include "Doors.h"
+#include "DualCastData.h"
 #include "EffectShaders.h"
 #include "Enchantments.h"
 #include "EncounterZones.h"
@@ -191,6 +192,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;
     case cDOOR:
          return Doors::getSingleton().readNextRecord(in_File);
+         break;
+    case cDUAL:
+         return DualCastData::getSingleton().readNextRecord(in_File);
          break;
     case cECZN:
          return EncounterZones::getSingleton().readNextRecord(in_File);

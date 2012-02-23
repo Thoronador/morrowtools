@@ -62,7 +62,7 @@ bool BasicRecord::equalsBasic(const BasicRecord& other) const
 bool BasicRecord::loadSizeAndUnknownValues(std::ifstream& in_File, uint32_t& sizeStorage)
 {
   in_File.read((char*) &sizeStorage, 4);
-  //unknown values
+  //partially unknown values
   in_File.read((char*) &headerFlags, 4);
   in_File.read((char*) &headerFormID, 4);
   in_File.read((char*) &headerRevision, 4);
@@ -82,7 +82,7 @@ bool BasicRecord::saveSizeAndUnknownValues(std::ofstream& output, const uint32_t
 {
   //record size
   output.write((const char*) &theSize, 4);
-  //unknown values
+  //partially unknown values
   output.write((const char*) &headerFlags, 4);
   output.write((const char*) &headerFormID, 4);
   output.write((const char*) &headerRevision, 4);
@@ -174,6 +174,11 @@ uint32_t BasicRecord::getTotalWrittenSize() const
 bool BasicRecord::isCompressed() const
 {
   return ((headerFlags & cCompressionFlag)!=0);
+}
+
+bool BasicRecord::isDeleted() const
+{
+  return ((headerFlags & cDeletedFlag)!=0);
 }
 
 } //namespace

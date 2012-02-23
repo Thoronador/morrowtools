@@ -41,6 +41,7 @@
 #include "records/DialogBranchRecord.h"
 #include "records/DialogViewRecord.h"
 #include "records/DoorRecord.h"
+#include "records/DualCastDataRecord.h"
 #include "records/EffectShaderRecord.h"
 #include "records/EnchantmentRecord.h"
 #include "records/EncounterZoneRecord.h"
@@ -178,6 +179,9 @@ int ESMReaderContentsAll::readNextRecord(std::ifstream& in_File, const int32_t r
          break;
     case cDOOR:
          recPtr = new DoorRecord;
+         break;
+    case cDUAL:
+         recPtr = new DualCastDataRecord;
          break;
     case cECZN:
          recPtr = new EncounterZoneRecord;

@@ -311,6 +311,24 @@ Records and their sub-records:
           unknown data
 
 
+  DUAL: dual cast data
+      EDID (string, NUL-terminated)
+          editorID
+      OBND (12 bytes)
+          unknown data
+      DATA (24 bytes)
+          the dual cast data
+            uint32_t  projectile form ID
+            uint32_t  explosion form ID
+            uint32_t  effect shader form ID
+            uint32_t  hit effect art form ID (art object)
+            uint32_t  impact data set form ID
+            uint32_t  flags
+                        0x01 - hit effect art inherits scale
+                        0x02 - projectile inherits scale
+                        0x04 - explosion inherits scale
+
+
   ECZN: encounter zone
       EDID (string, NUL-terminated)
           editor ID

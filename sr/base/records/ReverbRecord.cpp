@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -19,7 +19,6 @@
 */
 
 #include "ReverbRecord.h"
-#include <cstring>
 #include <iostream>
 #include "../SR_Constants.h"
 #include "../../../mw/base/HelperIO.h"
@@ -27,11 +26,26 @@
 namespace SRTP
 {
 
+const float ReverbRecord::cReflectDelayScale = 0.83;
+
 ReverbRecord::ReverbRecord()
 : BasicRecord()
 {
   editorID = "";
-  memset(unknownDATA, 0, 14);
+  //start of data subrecord
+  decayTime = 0; //in ms
+  HF_reference = 0; //in Hz
+  roomFilter = 0;
+  roomHF_filter = 0;
+  reflections = 0;
+  reverbAmp = 0;
+  decayHF_ratio100 = 0; // x100, real value is one hundreth of that
+  reflectDelayScaled = 0; //scaled by approx. 0.83 - value 0x00 maps to 0, 0xF9 maps to 300
+  reverbDelay = 0; //in ms
+  diffusionPercentage = 0; //in %
+  densitiyPercentage = 0; //in %
+  unknownDATA_unused = 0;
+  //end of DATA
 }
 
 ReverbRecord::~ReverbRecord()
@@ -42,7 +56,12 @@ ReverbRecord::~ReverbRecord()
 bool ReverbRecord::equals(const ReverbRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
-      and (memcmp(unknownDATA, other.unknownDATA, 14)==0));
+      and (decayTime==other.decayTime) and (HF_reference==other.HF_reference)
+      and (roomFilter==other.roomFilter) and (roomHF_filter==other.roomHF_filter)
+      and (reflections==other.reflections) and (reverbAmp==other.reverbAmp)
+      and (decayHF_ratio100==other.decayHF_ratio100) and (reflectDelayScaled==other.reflectDelayScaled)
+      and (reverbDelay==other.reverbDelay) and (diffusionPercentage==other.diffusionPercentage)
+      and (densitiyPercentage==other.densitiyPercentage) and (unknownDATA_unused==other.unknownDATA_unused));
 }
 
 #ifndef SR_UNSAVEABLE_RECORDS
@@ -71,8 +90,19 @@ bool ReverbRecord::saveToStream(std::ofstream& output) const
   //DATA's length
   subLength = 12; //fixed
   output.write((const char*) &subLength, 2);
-  //write XCNT's stuff
-  output.write((const char*) unknownDATA, 14);
+  //write DATA's stuff
+  output.write((const char*) &decayTime, 2);
+  output.write((const char*) &HF_reference, 2);
+  output.write((const char*) &roomFilter, 1);
+  output.write((const char*) &roomHF_filter, 1);
+  output.write((const char*) &reflections, 1);
+  output.write((const char*) &reverbAmp, 1);
+  output.write((const char*) &decayHF_ratio100, 1);
+  output.write((const char*) &reflectDelayScaled, 1);
+  output.write((const char*) &reverbDelay, 1);
+  output.write((const char*) &diffusionPercentage, 1);
+  output.write((const char*) &densitiyPercentage, 1);
+  output.write((const char*) &unknownDATA_unused, 1);
 
   return output.good();
 }
@@ -127,7 +157,19 @@ bool ReverbRecord::loadFromStream(std::ifstream& in_File)
     return false;
   }
   //read DATA's stuff
-  in_File.read((char*) unknownDATA, 14);
+  in_File.read((char*) &decayTime, 2);
+  in_File.read((char*) &HF_reference, 2);
+  in_File.read((char*) &roomFilter, 1);
+  in_File.read((char*) &roomHF_filter, 1);
+  in_File.read((char*) &reflections, 1);
+  in_File.read((char*) &reverbAmp, 1);
+  in_File.read((char*) &decayHF_ratio100, 1);
+  in_File.read((char*) &reflectDelayScaled, 1);
+  in_File.read((char*) &reverbDelay, 1);
+  in_File.read((char*) &diffusionPercentage, 1);
+  in_File.read((char*) &densitiyPercentage, 1);
+  in_File.read((char*) &unknownDATA_unused, 1);
+
   if (!in_File.good())
   {
     std::cout << "Error while reading subrecord DATA of REVB!\n";
@@ -140,6 +182,16 @@ bool ReverbRecord::loadFromStream(std::ifstream& in_File)
 int32_t ReverbRecord::getRecordType() const
 {
   return cREVB;
+}
+
+float ReverbRecord::getDecayHFRatio() const
+{
+  return (static_cast<float>(decayHF_ratio100)/100.0f);
+}
+
+uint16_t ReverbRecord::getReflectDelay() const
+{
+  return static_cast<uint16_t>(reflectDelayScaled/cReflectDelayScale);
 }
 
 } //namespace

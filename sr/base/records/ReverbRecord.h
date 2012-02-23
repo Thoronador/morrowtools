@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -63,8 +63,29 @@ struct ReverbRecord: public BasicRecord
     /* returns the record's type, usually its header */
     virtual int32_t getRecordType() const;
 
+    /* returns the floating point value for decay HF ratio */
+    float getDecayHFRatio() const;
+
+    /* returns the real, unscaled reflect delay value */
+    uint16_t getReflectDelay() const;
+
+    static const float cReflectDelayScale;
+
     std::string editorID;
-    uint8_t unknownDATA[14];
+    //start of data subrecord
+    uint16_t decayTime; //in ms
+    uint16_t HF_reference; //in Hz
+    int8_t   roomFilter;
+    int8_t   roomHF_filter;
+    int8_t   reflections;
+    int8_t   reverbAmp;
+    uint8_t  decayHF_ratio100; // x100, real value is one hundreth of that
+    uint8_t  reflectDelayScaled; //scaled by approx. 0.83 - value 0x00 maps to 0, 0xF9 maps to 300
+    uint8_t  reverbDelay; //in ms
+    uint8_t  diffusionPercentage; //in %
+    uint8_t  densitiyPercentage; //in %
+    uint8_t  unknownDATA_unused; //probably unused?
+    //end of DATA
 }; //struct
 
 } //namespace

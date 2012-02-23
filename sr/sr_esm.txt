@@ -890,7 +890,19 @@ Records and their sub-records:
       EDID (string, NUL-terminated)
           editor ID
       DATA (14 bytes)
-          unknown data
+          reverb data (partially unknown)
+            uint16_t  decay time (ms)
+            uint16_t  HF reference (Hz)
+            int8_t    room filter
+            int8_t    room HF filter
+            int8_t    reflections
+            int8_t    reverb amp
+            uint8_t   decay HF ratio (x100, real value is one hundreth of that)
+            uint8_t   reflect delay, scaled by approx. 0.83 - value 0x00 maps to 0, 0xF9 maps to 300
+            uint8_t   reverb delay (ms)
+            uint8_t   diffusion %
+            uint8_t   densitiy %
+            uint8_t   unknown, probably unused(???)
 
 
   RFCT: visual effect (refraction)

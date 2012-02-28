@@ -126,8 +126,10 @@ struct BasicRecord
            in_File   - the input stream
            subHeader - the expected header of that subrecord
            target    - the uint32_t that will be used to store the read data
+           withHeader - if set to true, the header is read, too. Otherwise just
+                        the subrecord's content is read
     */
-    bool loadUint32SubRecordFromStream(std::istream& in_File, const int32_t subHeader, uint32_t& target) const;
+    bool loadUint32SubRecordFromStream(std::istream& in_File, const int32_t subHeader, uint32_t& target, const bool withHeader=true) const;
 
     /* tries to load a NUL-terminated string from the stream and returns true
        in case of success

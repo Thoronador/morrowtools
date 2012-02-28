@@ -69,6 +69,7 @@
 #include "Locations.h"
 #include "LocationReferenceTypes.h"
 #include "MagicEffects.h"
+#include "Messages.h"
 #include "MiscObjects.h"
 #include "MovementTypes.h"
 #include "NAVIRecords.h"
@@ -268,6 +269,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;
     case cLTEX:
          return LandscapeTextures::getSingleton().readNextRecord(in_File);
+         break;
+    case cMESG:
+         return Messages::getSingleton().readNextRecord(in_File);
          break;
     case cMGEF:
          return MagicEffects::getSingleton().readNextRecord(in_File);

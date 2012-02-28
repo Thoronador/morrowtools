@@ -67,6 +67,7 @@
 #include "records/LocationRecord.h"
 #include "records/LocationReferenceTypeRecord.h"
 #include "records/MagicEffectRecord.h"
+#include "records/MessageRecord.h"
 #include "records/MiscObjectRecord.h"
 #include "records/MovementTypeRecord.h"
 #include "records/NAVIRecord.h"
@@ -255,6 +256,9 @@ int ESMReaderContentsAll::readNextRecord(std::ifstream& in_File, const int32_t r
          break;
     case cLTEX:
          recPtr = new LandscapeTextureRecord;
+         break;
+    case cMESG:
+         recPtr = new MessageRecord;
          break;
     case cMGEF:
          recPtr = new MagicEffectRecord;

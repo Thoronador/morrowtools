@@ -543,6 +543,30 @@ Records and their sub-records:
           some NIF path
 
 
+  MESG: message
+      EDID (string, NUL-terminated)
+          editor ID
+      DESC (4 bytes)
+          message text string ID
+      FULL (4 bytes, optional)
+          title string ID
+      INAM (4 bytes)
+          unknown value
+      QNAM (4 bytes, optional)
+          owner quest form ID
+      DNAM (4 bytes)
+          unknown value
+      ITXT (4 bytes, optional, can occur multiple times)
+          unknown value
+      CTDA (32 bytes, optional, can occur multiple times)
+          unknown data
+
+          ---> ITXT/CTDA form pairs, but CTDA is optional within such a pair.
+
+      TNAM (4 bytes, optional)
+          display time
+
+
   MOVT: movement type
       EDID (string, NUL-terminated)
           editor ID

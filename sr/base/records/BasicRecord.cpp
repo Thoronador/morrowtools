@@ -98,30 +98,35 @@ bool BasicRecord::saveSizeAndUnknownValues(std::ofstream& output, const uint32_t
 }
 #endif
 
-bool BasicRecord::loadUint32SubRecordFromStream(std::istream& in_File, const int32_t subHeader, uint32_t& target) const
+bool BasicRecord::loadUint32SubRecordFromStream(std::istream& in_File, const int32_t subHeader, uint32_t& target, const bool withHeader) const
 {
-  int32_t subRecName = 0;
-  //read header
-  in_File.read((char*) &subRecName, 4);
-  if (subRecName!=subHeader)
+  if (withHeader)
   {
-    UnexpectedRecord(subHeader, subRecName);
-    return false;
-  }
+    int32_t subRecName = 0;
+    //read header
+    in_File.read((char*) &subRecName, 4);
+    if (subRecName!=subHeader)
+    {
+      UnexpectedRecord(subHeader, subRecName);
+      return false;
+    }
+  }//if header
   //subrecord's length
   uint16_t subLength = 0;
   in_File.read((char*) &subLength, 2);
   if (subLength!=4)
   {
-    std::cout <<"Error: sub record "<<IntTo4Char(subHeader)<<" has invalid length ("<<subLength
-              <<" bytes). Should be 4 bytes.\n";
+    std::cout <<"Error: sub record "<<IntTo4Char(subHeader)<<" of "
+              <<IntTo4Char(getRecordType())<<" has invalid length ("<<subLength
+              <<" bytes). Should be four bytes.\n";
     return false;
   }
   //read value
   in_File.read((char*) &target, 4);
   if (!in_File.good())
   {
-    std::cout << "BasicRecord::loatUint32: Error while reading subrecord "<<IntTo4Char(subHeader)<<"!\n";
+    std::cout << "BasicRecord::loatUint32: Error while reading subrecord "
+              <<IntTo4Char(subHeader)<<" of "<<IntTo4Char(getRecordType())<<"!\n";
     return false;
   }
   return true;

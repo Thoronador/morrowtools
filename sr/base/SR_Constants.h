@@ -149,6 +149,7 @@ const int32_t cINDX = 0x58444E49; //"INDX" = 49 4E 44 58
 const int32_t cINGR = 0x52474E49; //"INGR" = 49 4E 47 52
 const int32_t cINTV = 0x56544E49; //"INTV" = 49 4E 54 56
 const int32_t cIPDS = 0x53445049; //"IPDS" = 49 50 44 53
+const int32_t cITXT = 0x54585449; //"ITXT" = 49 54 58 54
 const int32_t cKEYM = 0x4D59454B; //"KEYM" = 4B 45 59 4D
 const int32_t cKNAM = 0x4D414E4B; //"KNAM" = 4B 4E 41 4D
 const int32_t cKSIZ = 0x5A49534B; //"KSIZ" = 4B 53 49 5A
@@ -170,6 +171,7 @@ const int32_t cLTMP = 0x504D544C; //"LTMP" = 4C 54 4D 50
 const int32_t cMAST = 0x5453414D; //"MAST" = 4D 41 53 54
 const int32_t cMCHT = 0x5448434D; //"MCHT" = 4D 43 48 54
 const int32_t cMDOB = 0x424F444D; //"MDOB" = 4D 44 4F 42
+const int32_t cMESG = 0x4753454D; //"MESG" = 4D 45 53 47
 const int32_t cMGEF = 0x4645474D; //"MGEF" = 4D 47 45 46
 const int32_t cMHDT = 0x5444484D; //"MHDT" = 4D 48 44 54
 const int32_t cMISC = 0x4353494D; //"MISC" = 4D 49 53 43

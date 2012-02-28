@@ -78,7 +78,9 @@ const int32_t cCNAM = 0x4D414E43; //"CNAM" = 43 4E 41 4D
 const int32_t cCNTO = 0x4F544E43; //"CNTO" = 43 4E 54 4F
 const int32_t cCOBJ = 0x4A424F43; //"COBJ" = 43 4F 42 4A
 const int32_t cCOCT = 0x54434F43; //"COCT" = 43 4F 43 54
+const int32_t cCOED = 0x44454F43; //"COED" = 43 4F 45 44
 const int32_t cCOLL = 0x4C4C4F43; //"COLL" = 43 4F 4C 4C
+const int32_t cCONT = 0x544E4F43; //"CONT" = 43 4F 4E 54
 const int32_t cCRDT = 0x54445243; //"CRDT" = 43 52 44 54
 const int32_t cCRIF = 0x46495243; //"CRIF" = 43 52 49 46
 const int32_t cCSCR = 0x52435343; //"CSCR" = 43 53 43 52

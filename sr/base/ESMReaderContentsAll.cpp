@@ -36,6 +36,7 @@
 #include "records/ClassRecord.h"
 #include "records/CollisionRecord.h"
 #include "records/ColourFormRecord.h"
+#include "records/ContainerRecord.h"
 #include "records/CraftableObjectRecord.h"
 #include "records/DebrisRecord.h"
 #include "records/DialogBranchRecord.h"
@@ -169,6 +170,9 @@ int ESMReaderContentsAll::readNextRecord(std::ifstream& in_File, const int32_t r
          break;
     case cCOLL:
          recPtr = new CollisionRecord;
+         break;
+    case cCONT:
+         recPtr = new ContainerRecord;
          break;
     case cDEBR:
          recPtr = new DebrisRecord;

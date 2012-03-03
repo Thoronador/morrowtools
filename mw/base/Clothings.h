@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -18,19 +18,19 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef CLOTHINGS_H
-#define CLOTHINGS_H
+#ifndef MW_CLOTHINGS_H
+#define MW_CLOTHINGS_H
 
 #include <string>
 #include <map>
 #include "records/ClothingRecord.h"
-#include "ComparisonFunctor.h"
+#include "../../base/ComparisonFunctor.h"
 
 namespace MWTP
 {
 
 //iterator type for clothing list
-typedef std::map<std::string, ClothingRecord>::const_iterator ClothingListIterator;
+typedef std::map<std::string, ClothingRecord, ci_less>::const_iterator ClothingListIterator;
 
 class Clothings
 {
@@ -110,4 +110,4 @@ class Clothings
 
 } //namespace MWTP
 
-#endif // CLOTHINGS_H
+#endif // MW_CLOTHINGS_H

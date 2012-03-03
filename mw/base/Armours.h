@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -18,19 +18,19 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef ARMOURS_H
-#define ARMOURS_H
+#ifndef MW_ARMOURS_H
+#define MW_ARMOURS_H
 
 #include <string>
 #include <map>
 #include "records/ArmourRecord.h"
-#include "ComparisonFunctor.h"
+#include "../../base/ComparisonFunctor.h"
 
 namespace MWTP
 {
 
 //iterator type for armour list
-typedef std::map<std::string, ArmourRecord>::const_iterator ArmourListIterator;
+typedef std::map<std::string, ArmourRecord, ci_less>::const_iterator ArmourListIterator;
 
 class Armours
 {
@@ -110,4 +110,4 @@ class Armours
 
 } //namespace
 
-#endif // ARMOURS_H
+#endif // MW_ARMOURS_H

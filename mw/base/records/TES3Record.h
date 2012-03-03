@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2012 Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -18,54 +18,49 @@
  -------------------------------------------------------------------------------
 */
 
+#ifndef MW_TES3RECORD_H
+#define MW_TES3RECORD_H
+
 #include "BasicRecord.h"
+#include <string>
+#include "../DepFiles.h"
 
 namespace MWTP
 {
 
-const int32_t FlagPersists = 1024;
-const int32_t FlagBlocked = 8192;
-
-BasicRecord::BasicRecord()
+struct TES3Record: public BasicRecord
 {
-  HeaderOne = 0;
-  HeaderFlags = 0;
-}
+  //subrecord HEDR
+  float Version;
+  uint32_t FileFlag;
+  std::string companyName;
+  std::string description;
+  uint32_t NumRecords;
+  //end of subrecord HEDR
+  DepFileList dependencies;
 
-BasicRecord::~BasicRecord()
-{
-  //empty
-  //Purpose is to have a virtual destructor to get rid of compiler warnings.
-}
 
-int32_t BasicRecord::getHeaderOne() const
-{
-  return HeaderOne;
-}
+  /* constructor */
+  TES3Record();
 
-int32_t BasicRecord::getHeaderFlags() const
-{
-  return HeaderFlags;
-}
+  /* returns true, if the other record contains the same data */
+  bool equals(const TES3Record& other) const;
 
-void BasicRecord::setHeaderOne(const int32_t newValue)
-{
-  HeaderOne = newValue;
-}
+  /* writes the record to the given output stream and returns true on success
 
-void BasicRecord::setHeaderFlags(const int32_t newValue)
-{
-  HeaderFlags = newValue;
-}
+    parameters:
+        output   - the output file stream
+  */
+  bool saveToStream(std::ofstream& output) const;
 
-bool BasicRecord::isBlocked() const
-{
-  return ((HeaderFlags & FlagBlocked)!=0);
-}
+  /* loads the record from the given input stream and returns true on success
 
-bool BasicRecord::isPersistent() const
-{
-  return ((HeaderFlags & FlagPersists)!=0);
-}
+    parameters:
+        in_File - the input file stream
+  */
+  bool loadFromStream(std::ifstream& in_File);
+};//struct
 
 } //namespace
+
+#endif // MW_TES3RECORD_H

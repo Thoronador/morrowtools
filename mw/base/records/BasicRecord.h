@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef BASICRECORD_H
-#define BASICRECORD_H
+#ifndef MW_BASICRECORD_H
+#define MW_BASICRECORD_H
 
 #include <fstream>
 #include <stdint.h>
@@ -56,6 +56,20 @@ struct BasicRecord
     //returns the header flags of this record
     int32_t getHeaderFlags() const;
 
+    /* sets the first header part of this record
+
+       parameters:
+           newValue - the new value for this header part
+    */
+    void setHeaderOne(const int32_t newValue);
+
+    /* sets the header flags of this record
+
+       parameters:
+           newValue - the new flag value
+    */
+    void setHeaderFlags(const int32_t newValue);
+
     //returns true, if the blocked flag for this record is set
     bool isBlocked() const;
 
@@ -68,4 +82,4 @@ struct BasicRecord
 
 } //namespace
 
-#endif // BASICRECORD_H
+#endif // MW_BASICRECORD_H

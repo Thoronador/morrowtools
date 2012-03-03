@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -84,6 +84,11 @@ bool DepFile::isMasterFile() const
   }
   //too short for .esm extension
   return false;
+}
+
+bool DepFile::operator==(const DepFile& other) const
+{
+  return ((name==other.name) and (size==other.size) and (modified==other.modified));
 }
 
 bool operator<(const DepFile& a, const DepFile& b)
@@ -222,6 +227,11 @@ bool DepFileList::removeEntry(const size_t index)
 void DepFileList::clear()
 {
   m_List.clear();
+}
+
+bool DepFileList::operator==(const DepFileList& other) const
+{
+  return (m_List==other.m_List);
 }
 
 } //namespace

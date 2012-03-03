@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef DEPFILES_H
-#define DEPFILES_H
+#ifndef MW_DEPFILES_H
+#define MW_DEPFILES_H
 
 #include <string>
 #include <vector>
@@ -51,13 +51,15 @@ struct DepFile
   /* returns true, if the specified file name has the .esm extension */
   bool isMasterFile() const;
 
+  /* equality operator */
+  bool operator==(const DepFile& other) const;
+
   /* data members */
   std::string name;
   int64_t size;
   time_t modified;
 };//struct
 
-//typedef std::vector<DepFile> DepFileList;
 
 class DepFileList
 {
@@ -142,10 +144,13 @@ class DepFileList
 
     /* removes all files from the list */
     void clear();
+
+    /* equality operator */
+    bool operator==(const DepFileList& other) const;
   private:
     std::vector<DepFile> m_List;
 }; //class
 
 } //namespace
 
-#endif // DEPFILES_H
+#endif // MW_DEPFILES_H

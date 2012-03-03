@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -18,11 +18,12 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef ESMWRITER_H
-#define ESMWRITER_H
+#ifndef MW_ESMWRITER_H
+#define MW_ESMWRITER_H
 
 #include <string>
 #include "DepFiles.h"
+#include "records/TES3Record.h"
 
 /*---------------------------------------------------------------------------
 
@@ -57,12 +58,25 @@ class ESMWriter
        parameters:
            FileName     - name of the .esm/.esp file
            IsMasterFile - if true, the file will be treated as master file
+           headerData   - the TES3Record containing the list of dependency files
+                          and the description of the file. Note that this record
+                          might get changed slightly during the writing process.
+    */
+    bool writeESM(const std::string& FileName, const bool IsMasterFile, TES3Record& headerData);
+
+    /* presets the data members of the given TES3Record to match the default
+       data that was used in previous versions of ESMWriter's writeESM()
+       function. Use of that function should be considered deprecated.
+
+       parameters:
+           headerData   - the TES3Record whose data shall be set
+           IsMasterFile - if true, the file will be treated as master file
            deps         - the list of dependency files
            Description  - the description of the file that will be placed in the
                           file header
-    */
-    bool writeESM(const std::string& FileName, const bool IsMasterFile, const DepFileList& deps, const std::string& Description);
 
+    */
+    static void setOldStyleHeaderData(TES3Record& headerData, const bool IsMasterFile, const DepFileList& deps, const std::string& Description);
   protected:
     /* returns the number of records that will be written to the stream */
     virtual int32_t getTotalRecords() const = 0;
@@ -77,4 +91,4 @@ class ESMWriter
 
 } //namespace
 
-#endif // ESMWRITER_H
+#endif // MW_ESMWRITER_H

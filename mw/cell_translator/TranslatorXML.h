@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef TRANSLATORXML_H
-#define TRANSLATORXML_H
+#ifndef MW_TRANSLATORXML_H
+#define MW_TRANSLATORXML_H
 
 /* This header has all the XML-related functions of the cell translator.
    At the moment, this is only one, but it might become more.
@@ -27,7 +27,7 @@
 
 #include <string>
 #include <map>
-#include "../base/ComparisonFunctor.h"
+#include "../../base/ComparisonFunctor.h"
 
 namespace MWTP
 {
@@ -51,4 +51,4 @@ bool readCellListFromXML(const std::string& fileName, CellListType& cells, const
 
 } //namespace
 
-#endif // TRANSLATORXML_H
+#endif // MW_TRANSLATORXML_H

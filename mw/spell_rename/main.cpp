@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -31,7 +31,7 @@
 #include <vector>
 #include "ESMReaderSpells.h"
 #include "ESMWriterSpells.h"
-#include "../base/FileFunctions.h"
+#include "../../base/FileFunctions.h"
 #include "../base/GameSettings.h"
 #include "../base/IniFunctions.h"
 #include "../base/MagicEffects.h"
@@ -327,9 +327,9 @@ int main(int argc, char **argv)
   i = 0;
   while (i<files.getSize())
   {
-    MWTP::DepFileList DummyDeps;//It's not actually used after the read function, but
+    MWTP::TES3Record DummyHead;//It's not actually used after the read function, but
                           // readESM() needs one as parameter.
-    const int read_result = reader.readESM(baseDir+files.at(i).name, DummyDeps, verbose);
+    const int read_result = reader.readESM(baseDir+files.at(i).name, DummyHead, verbose);
     if (read_result<=-1)
     {
       std::cout << "Error while reading file \""<<baseDir+files.at(i).name
@@ -559,8 +559,10 @@ int main(int argc, char **argv)
   }
 
   MWTP::ESMWriterSpells writer;
-  if (writer.writeESM(baseDir+outputFileName, false, files,
-      "Umbenannte/ umsortierte Zauber fuer Morrowind (generiert durch spell_rename.exe)"))
+  MWTP::TES3Record headerData;
+  MWTP::ESMWriter::setOldStyleHeaderData(headerData, false, files,
+      "Umbenannte/ umsortierte Zauber fuer Morrowind (generiert durch spell_rename.exe)");
+  if (writer.writeESM(baseDir+outputFileName, false, headerData))
   {
     std::cout << "Output file \""<<baseDir+outputFileName<<"\" was created successfully.\n";
     //now check file time of created file

@@ -87,6 +87,8 @@
 		<Unit filename="..\base\records\RepairItemRecord.h" />
 		<Unit filename="..\base\records\StaticRecord.cpp" />
 		<Unit filename="..\base\records\StaticRecord.h" />
+		<Unit filename="..\base\records\TES3Record.cpp" />
+		<Unit filename="..\base\records\TES3Record.h" />
 		<Unit filename="..\base\records\TravelDestination.cpp" />
 		<Unit filename="..\base\records\TravelDestination.h" />
 		<Unit filename="..\base\records\WeaponRecord.cpp" />

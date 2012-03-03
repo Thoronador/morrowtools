@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -18,13 +18,13 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef DIRECTORYTRAVERSAL_H
-#define DIRECTORYTRAVERSAL_H
+#ifndef MW_DIRECTORYTRAVERSAL_H
+#define MW_DIRECTORYTRAVERSAL_H
 
 #include <set>
 #include <string>
 #include "../base/DepFiles.h"
-#include "../base/ComparisonFunctor.h"
+#include "../../base/ComparisonFunctor.h"
 
 namespace MWTP
 {
@@ -44,4 +44,4 @@ void getDeletableIcons(const std::string& dir, const std::set<std::string, ci_le
 
 } //namespace
 
-#endif // DIRECTORYTRAVERSAL_H
+#endif // MW_DIRECTORYTRAVERSAL_H

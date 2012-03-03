@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -21,7 +21,7 @@
 #include "IniFunctions.h"
 #include <iostream>
 #include <fstream>
-#include "FileFunctions.h"
+#include "../../base/FileFunctions.h"
 #include "ReturnCodes.h"
 
 namespace MWTP

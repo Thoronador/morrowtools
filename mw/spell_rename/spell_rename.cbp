@@ -55,6 +55,8 @@
 		<Unit filename="..\base\records\MagicEffectRecord.h" />
 		<Unit filename="..\base\records\SpellRecord.cpp" />
 		<Unit filename="..\base\records\SpellRecord.h" />
+		<Unit filename="..\base\records\TES3Record.cpp" />
+		<Unit filename="..\base\records\TES3Record.h" />
 		<Unit filename="ESMReaderSpells.cpp" />
 		<Unit filename="ESMReaderSpells.h" />
 		<Unit filename="ESMWriterSpells.cpp" />

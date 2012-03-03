@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011 Thoronador
+    Copyright (C) 2010, 2011, 2012 Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -18,13 +18,13 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef ESMREADERCLEANER_H
-#define ESMREADERCLEANER_H
+#ifndef MW_ESMREADERCLEANER_H
+#define MW_ESMREADERCLEANER_H
 
 #include <set>
 #include <string>
 #include "../base/ESMReader.h"
-#include "../base/ComparisonFunctor.h"
+#include "../../base/ComparisonFunctor.h"
 
 namespace MWTP
 {
@@ -65,4 +65,4 @@ class ESMReaderCleaner: public ESMReader
 
 } //namespace
 
-#endif // ESMREADERCLEANER_H
+#endif // MW_ESMREADERCLEANER_H

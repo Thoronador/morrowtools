@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011 Thoronador
+    Copyright (C) 2010, 2011, 2012 Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -18,12 +18,13 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef ESMREADER_H
-#define ESMREADER_H
+#ifndef MW_ESMREADER_H
+#define MW_ESMREADER_H
 
 #include <string>
 #include <fstream>
 #include "DepFiles.h"
+#include "records/TES3Record.h"
 
 namespace MWTP
 {
@@ -53,7 +54,8 @@ class ESMReader
     static int skipRecord(std::ifstream& in_File);
 
     /* tries to read an .esm/.esp file and returns the number of relevant
-       records that were read. If an error occured, -1 is returned.
+       records that were read. If an error occured, -1 is returned. Note that
+       this function is deprecated, readESM() should be used instead.
 
        parameters:
            FileName - name of the .esm/.esp file
@@ -61,7 +63,18 @@ class ESMReader
            verbose  - if true, some additional information will be written to
                       standard output
     */
-    int readESM(const std::string& FileName, DepFileList& deps, const bool verbose);
+    int oldStyleReadESM(const std::string& FileName, DepFileList& deps, const bool verbose);
+
+    /* tries to read an .esm/.esp file and returns the number of relevant
+       records that were read. If an error occured, -1 is returned.
+
+       parameters:
+           FileName - name of the .esm/.esp file
+           theHead  - the TES3Record that will be used to store the header data
+           verbose  - if true, some additional information will be written to
+                      standard output
+    */
+    int readESM(const std::string& FileName, TES3Record& theHead, const bool verbose);
 
   protected:
     /* tries to read the next record from a file and returns the number of
@@ -85,4 +98,4 @@ class ESMReader
 
 } //namespace
 
-#endif // ESMREADER_H
+#endif // MW_ESMREADER_H

@@ -286,11 +286,12 @@ int main(int argc, char **argv)
 
   //now read the file
   MWTP::ESMReaderTranslator::VectorType recordVec;
-  MWTP::DepFileList deps;
-  deps.clear();
+  //MWTP::DepFileList deps;
+  //deps.clear();
   MWTP::ESMReaderTranslator reader(&recordVec);
+  MWTP::TES3Record tes3Header;
   std::cout << "Reading plugin file and dependencies. This may take a while.\n";
-  if (reader.readESM(pluginFile, deps, false)<0)
+  if (reader.readESM(pluginFile, tes3Header, false)<0)
   {
     std::cout << "Error while reading file \""<<pluginFile<<"\".\nAborting.\n";
     reader.deallocateRecordsInVector();
@@ -310,6 +311,10 @@ int main(int argc, char **argv)
       baseDir = ".\\";
     }
 
+    MWTP::DepFileList deps;
+    deps.clear();
+    deps = tes3Header.dependencies;
+
     std::cout <<"Debug: deps before sort:\n";
     deps.writeDeps();
     deps.sort();
@@ -323,8 +328,8 @@ int main(int argc, char **argv)
     MWTP::ESMReaderScriptCompiler sc_reader;
     for (i=0; i<deps.getSize(); ++i)
     {
-      MWTP::DepFileList dummy_deps;
-      if (sc_reader.readESM(baseDir+deps.at(i).name, dummy_deps, false)<0)
+      MWTP::TES3Record dummy_head;
+      if (sc_reader.readESM(baseDir+deps.at(i).name, dummy_head, false)<0)
       {
         std::cout << "Error while reading file \""<<baseDir+deps.at(i).name
                   << "\".\nAborting.\n";
@@ -334,7 +339,7 @@ int main(int argc, char **argv)
     }//for
 
     //feeding plugin file to script compiler
-    if (sc_reader.readESM(pluginFile, deps, false)<0)
+    if (sc_reader.readESM(pluginFile, tes3Header, false)<0)
     {
       std::cout << "Error while reading file \""<<pluginFile<<"\".\nAborting.\n";
       reader.deallocateRecordsInVector();
@@ -413,8 +418,9 @@ int main(int argc, char **argv)
 
   //try to write stuff to the output file
   MWTP::ESMWriterGeneric writer(&recordVec);
-  if (!writer.writeESM(outputFileName, false /* no master */, deps,
-         "(TODO: put description here)"))
+  //TODO: adjust description before writing
+  tes3Header.description = "(TODO: put description here)";
+  if (!writer.writeESM(outputFileName, false /* no master */, tes3Header))
   {
     std::cout << "Error: Could not create or write to output file \""<<outputFileName<<"\".\n";
     reader.deallocateRecordsInVector();

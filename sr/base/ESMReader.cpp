@@ -129,6 +129,40 @@ int ESMReader::readESM(const std::string& FileName, Tes4HeaderRecord& head)
   return processedGroups;
 }
 
+bool ESMReader::peekESMHeader(const std::string& FileName, Tes4HeaderRecord& head)
+{
+  std::ifstream input;
+  input.open(FileName.c_str(), std::ios::in | std::ios::binary);
+  if (!input)
+  {
+    std::cout << "ESMReader::peekESMHeader: Error: could not open file \""<<FileName<<"\".\n";
+    return false;
+  }
+
+  //read the header name
+  //TES4
+  int32_t recordName = 0;
+  input.read((char*) &recordName, 4);
+  if (recordName!=cTES4)
+  {
+    std::cout << "ESMReader::peekESMHeader: Error: File \""<<FileName
+              <<"\" is not a valid .esp/.esm file. Expected "<<IntTo4Char(cTES4)
+              <<", but \""<<IntTo4Char(recordName)<< "\" was found instead.\n";
+    input.close();
+    return false;
+  }
+  //now read the actual header
+  if (!head.loadFromStream(input))
+  {
+    std::cout << "ESMReader::peekESMHeader: Error: Could not read header from \""<<FileName<<"\".\n";
+    input.close();
+    return false;
+  }
+
+  input.close();
+  return true;
+}
+
 int ESMReader::processGroup(std::ifstream& in_File, const bool withHeader)
 {
   if (withHeader)

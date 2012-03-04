@@ -76,6 +76,15 @@ class ESMReader
     */
     int readESM(const std::string& FileName, TES3Record& theHead, const bool verbose);
 
+    /* tries to read the TES3 record of an .esm/.esp file and returns true in
+       case of success, false on failure.
+
+       parameters:
+           FileName - name of the .esm/.esp file
+           theHead  - the TES3Record that will be used to store the header data
+    */
+    static bool peekESMHeader(const std::string& FileName, TES3Record& theHead);
+
   protected:
     /* tries to read the next record from a file and returns the number of
        relevant records that were read (usually one). If an error occured,

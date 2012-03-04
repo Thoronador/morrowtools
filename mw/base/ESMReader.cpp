@@ -171,6 +171,41 @@ int ESMReader::readESM(const std::string& FileName, TES3Record& theHead, const b
   return relevantRecords;
 }//readESM of ESMReader class
 
+bool ESMReader::peekESMHeader(const std::string& FileName, TES3Record& theHead)
+{
+  std::ifstream input;
+  char Buffer[4];
+
+  input.open(FileName.c_str(), std::ios::in | std::ios::binary);
+  if (!input)
+  {
+    std::cout << "ESMReader::peekESMHeader: Error: could not open file \""<<FileName<<"\".\n";
+    return false;
+  }
+
+  //read the header
+  //TES3
+  Buffer[0] = Buffer[1] = Buffer[2] = Buffer[3] = '\0';
+  input.read(Buffer, 4);
+  if (Buffer[0]!='T' || Buffer[1]!='E' || Buffer[2]!='S' || Buffer[3]!='3')
+  {
+    std::cout << "ESMReader::peekESMHeader: Error: File \""<<FileName<<"\" is not a valid .esp/.esm file.\n";
+    input.close();
+    return false;
+  }
+
+  //read TES3 header record
+  if (!theHead.loadFromStream(input))
+  {
+    std::cout << "ESMReader::peekESMHeader: Error while reading TES3 header from \""<<FileName<<"\".\n";
+    input.close();
+    return false;
+  }
+
+  input.close();
+  return input.good();
+}
+
 int ESMReader::processNextRecord(std::ifstream& in_File)
 {
   int32_t RecordName = 0; //normally should be 4 char, but char is not eligible for switch

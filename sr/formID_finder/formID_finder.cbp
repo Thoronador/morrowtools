@@ -41,6 +41,8 @@
 		<Unit filename="..\..\base\CompressionFunctions.h" />
 		<Unit filename="..\..\base\FileFunctions.cpp" />
 		<Unit filename="..\..\base\FileFunctions.h" />
+		<Unit filename="..\..\base\RegistryFunctions.cpp" />
+		<Unit filename="..\..\base\RegistryFunctions.h" />
 		<Unit filename="..\..\base\UtilityFunctions.cpp" />
 		<Unit filename="..\..\base\UtilityFunctions.h" />
 		<Unit filename="..\..\mw\base\HelperIO.cpp" />
@@ -62,7 +64,6 @@
 		<Unit filename="..\base\NPCs.h" />
 		<Unit filename="..\base\Perks.h" />
 		<Unit filename="..\base\Quests.h" />
-		<Unit filename="..\base\RegistryFunctions.cpp" />
 		<Unit filename="..\base\RegistryFunctions.h" />
 		<Unit filename="..\base\ReturnCodes.h" />
 		<Unit filename="..\base\SR_Constants.h" />

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -22,6 +22,7 @@
 #define SR_REGISTRYFUNCTIONS_H
 
 #include <string>
+#include "../../base/RegistryFunctions.h"
 
 namespace SRTP
 {
@@ -37,7 +38,10 @@ namespace SRTP
    remarks:
        This function will always return false on non-Win32-OSes.
 */
-bool getSkryrimPathFromRegistry(std::string& pathData);
+inline bool getSkryrimPathFromRegistry(std::string& pathData)
+{
+  return MWTP::getRegistryStringValueHKLM(pathData, "SOFTWARE\\Bethesda Softworks\\Skyrim", "Installed Path");
+}
 
 } //namespace
 

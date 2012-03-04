@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2012 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -18,31 +18,30 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef MW_REGISTRYFUNCTIONS_H
-#define MW_REGISTRYFUNCTIONS_H
+#ifndef MWTP_BASE_REGISTRYFUNCTIONS_H
+#define MWTP_BASE_REGISTRYFUNCTIONS_H
 
 #include <string>
-#include "../../base/RegistryFunctions.h"
 
 namespace MWTP
 {
 
-/* tries to read Morrowind's install path from the Windows registry. In case of
-   success, the funtion will return true and the retrieved path will be stored
-   in the string referenced by pathData. In case of failure, the function will
-   return false and the string referenced by pathData will not be changed.
+/* tries to read a string value from the HKEY_LOCAL_MACHINE branch of the
+   Windows registry. In case of success, the funtion will return true and the
+   retrieved path will be stored in the string referenced by theString. In case
+   of failure, the function will return false and the string referenced by
+   theString will not be changed.
 
    parameters:
-       pathData - reference to a string that shall hold the read path
+       theString - reference to a string that shall hold the read string value
+       subKey    - name of the registry key in HKEY_LOCAL_MACHINE
+       valueName - name of the registry value
 
    remarks:
        This function will always return false on non-Win32-OSes.
 */
-inline bool getMorrowindPathFromRegistry(std::string& pathData)
-{
-  return getRegistryStringValueHKLM(pathData, "SOFTWARE\\Bethesda Softworks\\Morrowind", "Installed Path");
-}
+bool getRegistryStringValueHKLM(std::string& theString, const std::string& subKey, const std::string& valueName);
 
 } //namespace
 
-#endif // MW_REGISTRYFUNCTIONS_H
+#endif // MWTP_BASE_REGISTRYFUNCTIONS_H

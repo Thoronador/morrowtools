@@ -34,6 +34,8 @@
 		</Compiler>
 		<Unit filename="..\..\base\FileFunctions.cpp" />
 		<Unit filename="..\..\base\FileFunctions.h" />
+		<Unit filename="..\..\base\RegistryFunctions.cpp" />
+		<Unit filename="..\..\base\RegistryFunctions.h" />
 		<Unit filename="..\..\base\UtilityFunctions.cpp" />
 		<Unit filename="..\..\base\UtilityFunctions.h" />
 		<Unit filename="..\base\DepFiles.cpp" />
@@ -46,7 +48,6 @@
 		<Unit filename="..\base\GameSettings.h" />
 		<Unit filename="..\base\HelperIO.cpp" />
 		<Unit filename="..\base\HelperIO.h" />
-		<Unit filename="..\base\RegistryFunctions.cpp" />
 		<Unit filename="..\base\RegistryFunctions.h" />
 		<Unit filename="..\base\ReturnCodes.h" />
 		<Unit filename="..\base\Skills.cpp" />

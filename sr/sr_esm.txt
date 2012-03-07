@@ -1428,18 +1428,22 @@ Records and their sub-records:
       FULL (4 bytes, optional)
           string ID of spell's name
       MDOB (4 bytes, optional)
-          unknown data
+          menu display object's form ID
       ETYP (4 bytes)
-          unknown data
+          equip type form ID (EQUP)
       DESC (4 bytes)
           string ID of spell's description (ID can be zero)
       SPIT (36 bytes)
           unknown data
+            (but last 4 bytes are form ID of casting perk)
 
         EFID (4 bytes)
-            unknown data
+            magic effect form ID (MGEF)
         EFIT (12 bytes)
-            unknown data
+            effect data
+            float     magnitude
+            uint32_t  area of effect
+            uint32_t  duration
         CTDA (32 bytes, optional, can occur more than once)
             unknown data
 

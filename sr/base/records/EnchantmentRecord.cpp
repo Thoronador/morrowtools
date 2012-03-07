@@ -270,7 +270,7 @@ bool EnchantmentRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read EFID's stuff
-           in_File.read((char*) &(tempEffect.unknownEFID), 4);
+           in_File.read((char*) &(tempEffect.effectFormID), 4);
            bytesRead += 4;
            if (!in_File.good())
            {
@@ -296,9 +296,9 @@ bool EnchantmentRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read EFIT's stuff
-           in_File.read((char*) &(tempEffect.unknownEFITs[0]), 4);
-           in_File.read((char*) &(tempEffect.unknownEFITs[1]), 4);
-           in_File.read((char*) &(tempEffect.unknownEFITs[2]), 4);
+           in_File.read((char*) &(tempEffect.magnitude), 4);
+           in_File.read((char*) &(tempEffect.areaOfEffect), 4);
+           in_File.read((char*) &(tempEffect.duration), 4);
            bytesRead += 12;
            if (!in_File.good())
            {

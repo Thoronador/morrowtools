@@ -35,8 +35,8 @@ SpellRecord::SpellRecord()
   hasFULL = false;
   nameStringID = 0;
   hasMDOB = false;
-  unknownMDOB = 0;
-  unknownETYP = 0;
+  menuDisplayObjectFormID = 0;
+  equipTypeFormID = 0;
   descriptionStringID = 0;
   memset(unknownSPIT, 0, 36);
   effects.clear();
@@ -52,8 +52,8 @@ bool SpellRecord::equals(const SpellRecord& other) const
   return ((equalsBasic(other)) and (editorID==other.editorID)
       and (memcmp(unknownOBND, other.unknownOBND, 12)==0) and (hasFULL==other.hasFULL)
       and ((nameStringID==other.nameStringID) or (!hasFULL)) and (hasMDOB==other.hasMDOB)
-      and ((unknownMDOB==other.unknownMDOB) or (!hasMDOB))
-      and (unknownETYP==other.unknownETYP) and (descriptionStringID==other.descriptionStringID)
+      and ((menuDisplayObjectFormID==other.menuDisplayObjectFormID) or (!hasMDOB))
+      and (equipTypeFormID==other.equipTypeFormID) and (descriptionStringID==other.descriptionStringID)
       and (memcmp(unknownSPIT, other.unknownSPIT, 36)==0) and (effects==other.effects));
 }
 
@@ -125,8 +125,8 @@ bool SpellRecord::saveToStream(std::ofstream& output) const
     //MDOB's length
     subLength = 4; //fixed
     output.write((const char*) &subLength, 2);
-    //write MDOB's stuff
-    output.write((const char*) &unknownMDOB, 4);
+    //write menu display object's form ID
+    output.write((const char*) &menuDisplayObjectFormID, 4);
   }//if has MDOB
 
   //write ETYP
@@ -134,8 +134,8 @@ bool SpellRecord::saveToStream(std::ofstream& output) const
   //ETYP's length
   subLength = 4; //fixed
   output.write((const char*) &subLength, 2);
-  //write ETYP's stuff
-  output.write((const char*) &unknownETYP, 4);
+  //write equip type's form ID
+  output.write((const char*) &equipTypeFormID, 4);
 
   //write DESC
   output.write((const char*) &cDESC, 4);
@@ -233,8 +233,8 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
     return false;
   }
 
-  hasFULL = false;
-  hasMDOB = false;
+  hasFULL = false; nameStringID = 0;
+  hasMDOB = false; menuDisplayObjectFormID = 0;
   bool hasReadETYP = false;
   bool hasReadDESC = false;
   bool hasReadSPIT = false;
@@ -271,7 +271,7 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
            //skip back
            in_File.seekg(-4, std::ios_base::cur);
            //read MDOB
-           if (!loadUint32SubRecordFromStream(in_File, cMDOB, unknownMDOB)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cMDOB, menuDisplayObjectFormID)) return false;
            bytesRead += 6;
            hasMDOB = true;
            break;
@@ -284,7 +284,7 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
            //skip back
            in_File.seekg(-4, std::ios_base::cur);
            //read ETYP
-           if (!loadUint32SubRecordFromStream(in_File, cETYP, unknownETYP)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cETYP, equipTypeFormID)) return false;
            bytesRead += 6;
            hasReadETYP = true;
            break;
@@ -346,7 +346,7 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read EFID's stuff
-           in_File.read((char*) &(tempEffect.unknownEFID), 4);
+           in_File.read((char*) &(tempEffect.effectFormID), 4);
            bytesRead += 4;
            if (!in_File.good())
            {
@@ -372,9 +372,9 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read EFIT's stuff
-           in_File.read((char*) &(tempEffect.unknownEFITs[0]), 4);
-           in_File.read((char*) &(tempEffect.unknownEFITs[1]), 4);
-           in_File.read((char*) &(tempEffect.unknownEFITs[2]), 4);
+           in_File.read((char*) &(tempEffect.magnitude), 4);
+           in_File.read((char*) &(tempEffect.areaOfEffect), 4);
+           in_File.read((char*) &(tempEffect.duration), 4);
            bytesRead += 12;
            if (!in_File.good())
            {

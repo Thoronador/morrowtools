@@ -26,8 +26,8 @@ namespace SRTP
 
 bool EffectBlock::operator==(const EffectBlock& other) const
 {
-  return ((unknownEFID==other.unknownEFID) and (unknownEFITs[0]==other.unknownEFITs[0])
-      and (unknownEFITs[1]==other.unknownEFITs[1]) and (unknownEFITs[2]==other.unknownEFITs[2])
+  return ((effectFormID==other.effectFormID) and (magnitude==other.magnitude)
+      and (areaOfEffect==other.areaOfEffect) and (duration==other.duration)
       and (unknownCTDA_CIS2s==other.unknownCTDA_CIS2s));
 }
 
@@ -40,7 +40,7 @@ bool EffectBlock::saveToStream(std::ofstream& output) const
   uint16_t subLength = 4; //fixed
   output.write((const char*) &subLength, 2);
   //write EFID's stuff
-  output.write((const char*) &(unknownEFID), 4);
+  output.write((const char*) &effectFormID, 4);
 
   //write EFIT
   output.write((const char*) &cEFIT, 4);
@@ -48,9 +48,9 @@ bool EffectBlock::saveToStream(std::ofstream& output) const
   subLength = 12; //fixed
   output.write((const char*) &subLength, 2);
   //write EFIT's stuff
-  output.write((const char*) &(unknownEFITs[0]), 4);
-  output.write((const char*) &(unknownEFITs[1]), 4);
-  output.write((const char*) &(unknownEFITs[2]), 4);
+  output.write((const char*) &magnitude, 4);
+  output.write((const char*) &areaOfEffect, 4);
+  output.write((const char*) &duration, 4);
 
   unsigned int jay;
   for (jay=0; jay<unknownCTDA_CIS2s.size(); ++jay)

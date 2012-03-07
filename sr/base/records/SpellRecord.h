@@ -70,8 +70,8 @@ struct SpellRecord: public BasicRecord
     bool hasFULL;
     uint32_t nameStringID; //subrecord FULL
     bool hasMDOB;
-    uint32_t unknownMDOB;
-    uint32_t unknownETYP;
+    uint32_t menuDisplayObjectFormID; //subrecord MDOB
+    uint32_t equipTypeFormID; //subrecord ETYP
     uint32_t descriptionStringID; //subrecord DESC
     uint8_t unknownSPIT[36];
     std::vector<EffectBlock> effects;

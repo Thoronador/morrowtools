@@ -32,8 +32,12 @@ namespace SRTP
 //type for effect blocks
 struct EffectBlock
 {
-  uint32_t unknownEFID;
-  uint32_t unknownEFITs[3];
+  uint32_t effectFormID; //subrecord EFID, form ID of MGEF
+  //subrecord EFIT
+  float magnitude;
+  uint32_t areaOfEffect;
+  uint32_t duration;
+  //end of subrecord EFIT
   std::vector<CTDA_CIS2_compound> unknownCTDA_CIS2s;
 
   /* comparison operator */

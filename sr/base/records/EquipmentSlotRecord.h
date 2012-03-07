@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -65,9 +65,15 @@ struct EquipmentSlotRecord: public BasicRecord
     /* returns the record's type, usually its header */
     virtual int32_t getRecordType() const;
 
+    /* returns true, if the "Use All Parents" flag is set */
+    bool usesAllParents() const;
+
+    //flag constant
+    static const uint32_t FlagUseAllParents;
+
     std::string editorID;
-    std::vector<uint32_t> unknownPNAMs;
-    uint32_t unknownDATA;
+    std::vector<uint32_t> parentSlots; //subrecord PNAM
+    uint32_t flags; //subrecord DATA
 }; //struct
 
 } //namespace

@@ -1212,9 +1212,10 @@ Records and their sub-records:
       EDID: (string, NUL-terminated)
           editorID
       PNAM (n*4 bytes, optional)
-          unknown data
+          parent slots' form IDs
       DATA (4 bytes)
-          unknown data
+          uint32_t flags
+            0x01 - Use All Parents
 
 
   LCRT: location reference type
@@ -1396,9 +1397,9 @@ Records and their sub-records:
       KWDA (n*4 bytes, optional, always follows KSIZ)
           array of keyword formIDs
       MDOB (4 bytes)
-          unknown data
+          menu display object's form ID
       ETYP (4 bytes)
-          unknown data
+          equip type form ID (EQUP)
       DESC (4 bytes)
           string ID of scroll's description (can be zero)
       MODL (string, NUL-terminated)
@@ -1406,14 +1407,18 @@ Records and their sub-records:
       MODT (36 bytes)
           unknown data
       DATA (8 bytes)
-          unknown data
+          uint32_t value
+          float    weight
       SPIT (36 bytes)
           unknown data
 
         EFID (4 bytes)
-            unknown data
+            magic effect form ID (MGEF)
         EFIT (12 bytes)
-            unknown data
+            effect data
+            float     magnitude
+            uint32_t  area of effect
+            uint32_t  duration
         CTDA (32 bytes, optional)
             unknown data
 

@@ -34,12 +34,13 @@ ScrollRecord::ScrollRecord()
   memset(unknownOBND, 0, 12);
   nameStringID = 0;
   keywordArray.clear();
-  unknownMDOB = 0;
-  unknownETYP = 0;
+  menuDisplayObjectFormID = 0;
+  equipTypeFormID = 0;
   descriptionStringID = 0;
   modelPath = "";
   unknownMODT.setPresence(false);
-  memset(unknownDATA, 0, 8);
+  value = 0;
+  weight = 0.0f;
   memset(unknownSPIT, 0, 36);
   effects.clear();
 }
@@ -53,11 +54,11 @@ bool ScrollRecord::equals(const ScrollRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
       and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
-      and (nameStringID==other.nameStringID) and (unknownMDOB==other.unknownMDOB)
+      and (nameStringID==other.nameStringID) and (menuDisplayObjectFormID==other.menuDisplayObjectFormID)
       and (keywordArray==other.keywordArray)
-      and (unknownETYP==other.unknownETYP) and (descriptionStringID==other.descriptionStringID)
+      and (equipTypeFormID==other.equipTypeFormID) and (descriptionStringID==other.descriptionStringID)
       and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
-      and (memcmp(unknownDATA, other.unknownDATA, 8)==0)
+      and (value==other.value) and (weight==other.weight)
       and (memcmp(unknownSPIT, other.unknownSPIT, 36)==0)
       and (effects==other.effects));
 }
@@ -156,16 +157,16 @@ bool ScrollRecord::saveToStream(std::ofstream& output) const
   //MDOB's length
   subLength = 4; //fixed
   output.write((const char*) &subLength, 2);
-  //write MDOB's stuff
-  output.write((const char*) &unknownMDOB, 4);
+  //write menu display object's form ID
+  output.write((const char*) &menuDisplayObjectFormID, 4);
 
   //write ETYP
   output.write((const char*) &cETYP, 4);
   //ETYP's length
   subLength = 4; //fixed
   output.write((const char*) &subLength, 2);
-  //write ETYP's stuff
-  output.write((const char*) &unknownETYP, 4);
+  //write equip type's form ID
+  output.write((const char*) &equipTypeFormID, 4);
 
   //write DESC
   output.write((const char*) &cDESC, 4);
@@ -198,7 +199,8 @@ bool ScrollRecord::saveToStream(std::ofstream& output) const
   subLength = 8; //fixed
   output.write((const char*) &subLength, 2);
   //write DATA's stuff
-  output.write((const char*) unknownDATA, 8);
+  output.write((const char*) &value, 4);
+  output.write((const char*) &weight, 4);
 
   //write SPIT
   output.write((const char*) &cSPIT, 4);
@@ -210,7 +212,7 @@ bool ScrollRecord::saveToStream(std::ofstream& output) const
 
   if (!effects.empty())
   {
-    unsigned int i, jay;
+    unsigned int i;
     for (i=0; i<effects.size(); ++i)
     {
       if (!effects[i].saveToStream(output))
@@ -374,7 +376,7 @@ bool ScrollRecord::loadFromStream(std::ifstream& in_File)
            //skip back
            in_File.seekg(-4, std::ios_base::cur);
            //read MDOB
-           if (!loadUint32SubRecordFromStream(in_File, cMDOB, unknownMDOB)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cMDOB, menuDisplayObjectFormID)) return false;
            bytesRead += 6;
            hasReadMDOB = true;
            break;
@@ -387,7 +389,7 @@ bool ScrollRecord::loadFromStream(std::ifstream& in_File)
            //skip back
            in_File.seekg(-4, std::ios_base::cur);
            //read ETYP
-           if (!loadUint32SubRecordFromStream(in_File, cETYP, unknownETYP)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cETYP, equipTypeFormID)) return false;
            bytesRead += 6;
            hasReadETYP = true;
            break;
@@ -459,7 +461,8 @@ bool ScrollRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read DATA's stuff
-           in_File.read((char*) unknownDATA, 8);
+           in_File.read((char*) &value, 4);
+           in_File.read((char*) &weight, 4);
            bytesRead += 8;
            if (!in_File.good())
            {

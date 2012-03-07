@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -26,12 +26,14 @@
 namespace SRTP
 {
 
+const uint32_t EquipmentSlotRecord::FlagUseAllParents = 0x00000001;
+
 EquipmentSlotRecord::EquipmentSlotRecord()
 : BasicRecord()
 {
   editorID = "";
-  unknownPNAMs.clear();
-  unknownDATA = 0;
+  parentSlots.clear();
+  flags = 0;
 }
 
 EquipmentSlotRecord::~EquipmentSlotRecord()
@@ -42,8 +44,7 @@ EquipmentSlotRecord::~EquipmentSlotRecord()
 bool EquipmentSlotRecord::equals(const EquipmentSlotRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
-      and (unknownPNAMs==other.unknownPNAMs)
-      and (unknownDATA==other.unknownDATA));
+      and (parentSlots==other.parentSlots) and (flags==other.flags));
 }
 
 #ifndef SR_UNSAVEABLE_RECORDS
@@ -53,9 +54,9 @@ uint32_t EquipmentSlotRecord::getWriteSize() const
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
         +4 /* DATA */ +2 /* 2 bytes for length */ +4 /* fixed length of four bytes */;
-  if (!unknownPNAMs.empty())
+  if (!parentSlots.empty())
   {
-    writeSize = writeSize +4 /* PNAM */ +2 /* 2 bytes for length */ +unknownPNAMs.size()*4 /* fixed length of four bytes */;
+    writeSize = writeSize +4 /* PNAM */ +2 /* 2 bytes for length */ +parentSlots.size()*4 /* fixed length of four bytes */;
   }
   return writeSize;
 }
@@ -73,18 +74,18 @@ bool EquipmentSlotRecord::saveToStream(std::ofstream& output) const
   //write editor ID
   output.write(editorID.c_str(), subLength);
 
-  if (!unknownPNAMs.empty())
+  if (!parentSlots.empty())
   {
     //write PNAM
     output.write((const char*) &cPNAM, 4);
     //PNAM's length
-    subLength = 4*unknownPNAMs.size();
+    subLength = 4*parentSlots.size();
     output.write((const char*) &subLength, 2);
     unsigned int i;
-    for (i=0; i<unknownPNAMs.size(); ++i)
+    for (i=0; i<parentSlots.size(); ++i)
     {
       //write PNAM's data
-      output.write((const char*) &(unknownPNAMs[i]), 4);
+      output.write((const char*) &(parentSlots[i]), 4);
     }//for
   }//if has PNAM
 
@@ -94,7 +95,7 @@ bool EquipmentSlotRecord::saveToStream(std::ofstream& output) const
   subLength = 4;
   output.write((const char*) &subLength, 2);
   //write DATA's data
-  output.write((const char*) &unknownDATA, 4);
+  output.write((const char*) &flags, 4);
 
   return output.good();
 }
@@ -137,7 +138,7 @@ bool EquipmentSlotRecord::loadFromStream(std::ifstream& in_File)
   }
   editorID = std::string(buffer);
 
-  unknownPNAMs.clear();
+  parentSlots.clear();
   unsigned int i, count;
   uint32_t temp;
   bool hasReadDATA = false;
@@ -157,12 +158,12 @@ bool EquipmentSlotRecord::loadFromStream(std::ifstream& in_File)
            //skip back
            in_File.seekg(-4, std::ios_base::cur);
            //read DATA
-           if (!loadUint32SubRecordFromStream(in_File, cDATA, unknownDATA)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cDATA, flags)) return false;
            bytesRead += 6;
            hasReadDATA = true;
            break;
       case cPNAM:
-           if (!unknownPNAMs.empty())
+           if (!parentSlots.empty())
            {
              std::cout << "Error: EQUP seems to have more than one PNAM subrecord!\n";
              return false;
@@ -187,7 +188,7 @@ bool EquipmentSlotRecord::loadFromStream(std::ifstream& in_File)
                std::cout << "Error while reading subrecord PNAM of EQUP!\n";
                return false;
              }
-             unknownPNAMs.push_back(temp);
+             parentSlots.push_back(temp);
            }//for
            break;
       default:
@@ -211,6 +212,11 @@ bool EquipmentSlotRecord::loadFromStream(std::ifstream& in_File)
 int32_t EquipmentSlotRecord::getRecordType() const
 {
   return cEQUP;
+}
+
+bool EquipmentSlotRecord::usesAllParents() const
+{
+  return ((flags& FlagUseAllParents)!=0);
 }
 
 } //namespace

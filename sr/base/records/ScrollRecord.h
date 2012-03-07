@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -70,12 +70,15 @@ struct ScrollRecord: public BasicRecord
     uint8_t unknownOBND[12];
     uint32_t nameStringID; //subrecord FULL
     std::vector<uint32_t> keywordArray;
-    uint32_t unknownMDOB;
-    uint32_t unknownETYP;
+    uint32_t menuDisplayObjectFormID; //subrecord MDOB
+    uint32_t equipTypeFormID; //subrecord ETYP
     uint32_t descriptionStringID; //subrecord DESC
     std::string modelPath;
     BinarySubRecord unknownMODT;
-    uint8_t unknownDATA[8];
+    //subrecord DATA
+    uint32_t value;
+    float weight;
+    //end of subrecord DATA
     uint8_t unknownSPIT[36];
     std::vector<EffectBlock> effects;
 }; //struct

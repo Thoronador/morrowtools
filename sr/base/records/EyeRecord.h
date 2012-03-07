@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -64,10 +64,24 @@ struct EyeRecord: public BasicRecord
     /* returns the record's type, usually its header */
     virtual int32_t getRecordType() const;
 
+    /* flag constants */
+    static const uint8_t FlagPlayable;
+    static const uint8_t FlagFemale;
+    static const uint8_t FlagMale;
+
+    /* returns true, if the playable flag is set */
+    bool isPlayable() const;
+
+    /* returns true, if the "Can Be Male" flag is set */
+    bool canBeMale() const;
+
+    /* returns true, if the "Can Be Female" flag is set */
+    bool canBeFemale() const;
+
     std::string editorID;
-    uint32_t unknownFULL;
+    uint32_t nameStringID; //subrecord FULL
     std::string iconPath;
-    uint8_t unknownDATA;
+    uint8_t flags; //subrecord DATA
 }; //struct
 
 } //namespace

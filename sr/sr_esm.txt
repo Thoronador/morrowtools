@@ -1201,11 +1201,18 @@ Records and their sub-records:
       EDID (string, NUL-terminated)
           editorID
       FULL (4 bytes)
-          unknown data
+          name string ID
       ICON  (string, NUL-terminated)
           texture path
       DATA (1 byte)
-          unknown data (flags?)
+          flag data
+          0x00 - male + female flag set
+          0x01 - all three flags set
+          0x02 - female flag set
+          0x03 - playable + female
+          0x04 - male flag set
+          0x05 - playable + male
+          0x07 - playable flag set
 
 
   EQUP: equipment slot

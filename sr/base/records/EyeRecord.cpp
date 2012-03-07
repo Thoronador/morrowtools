@@ -1,4 +1,22 @@
+/*
+ -------------------------------------------------------------------------------
+    This file is part of the Skyrim Tools Project.
+    Copyright (C) 2011, 2012 Thoronador
 
+    The Skyrim Tools are free software: you can redistribute them and/or
+    modify them under the terms of the GNU General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    The Skyrim Tools are distributed in the hope that they will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with the Skyrim Tools.  If not, see <http://www.gnu.org/licenses/>.
+ -------------------------------------------------------------------------------
+*/
 
 #include "EyeRecord.h"
 #include <iostream>
@@ -8,13 +26,17 @@
 namespace SRTP
 {
 
+const uint8_t EyeRecord::FlagPlayable = 0x01;
+const uint8_t EyeRecord::FlagFemale = 0x02;
+const uint8_t EyeRecord::FlagMale = 0x04;
+
 EyeRecord::EyeRecord()
 : BasicRecord()
 {
   editorID = "";
-  unknownFULL = 0;
+  nameStringID = 0;
   iconPath = "";
-  unknownDATA = 0;
+  flags = 0;
 }
 
 EyeRecord::~EyeRecord()
@@ -29,8 +51,8 @@ int32_t EyeRecord::getRecordType() const
 
 bool EyeRecord::equals(const EyeRecord& other) const
 {
-  return ((editorID==other.editorID) and (unknownFULL==other.unknownFULL)
-      and (iconPath==other.iconPath) and (unknownDATA==other.unknownDATA)
+  return ((editorID==other.editorID) and (nameStringID==other.nameStringID)
+      and (iconPath==other.iconPath) and (flags==other.flags)
       and equalsBasic(other));
 }
 
@@ -64,7 +86,7 @@ bool EyeRecord::saveToStream(std::ofstream& output) const
   subLength = 4;
   output.write((char*) &subLength, 2);
   //write FULL's data
-  output.write((char*) &unknownFULL, 4);
+  output.write((char*) &nameStringID, 4);
 
   //write ICON
   output.write((char*) &cICON, 4);
@@ -80,7 +102,7 @@ bool EyeRecord::saveToStream(std::ofstream& output) const
   subLength = 1;
   output.write((char*) &subLength, 2);
   //write DATA's content
-  output.write((char*) &unknownDATA, 1);
+  output.write((char*) &flags, 1);
 
   return output.good();
 }
@@ -135,7 +157,7 @@ bool EyeRecord::loadFromStream(std::ifstream& in_File)
     return false;
   }
   //read FULL
-  in_File.read((char*) &unknownFULL, 4);
+  in_File.read((char*) &nameStringID, 4);
   if (!in_File.good())
   {
     std::cout << "Error while reading subrecord FULL of EYES!\n";
@@ -182,7 +204,7 @@ bool EyeRecord::loadFromStream(std::ifstream& in_File)
     return false;
   }
   //read DATA
-  in_File.read((char*) &unknownDATA, 1);
+  in_File.read((char*) &flags, 1);
   if (!in_File.good())
   {
     std::cout << "Error while reading subrecord FULL of EYES!\n";
@@ -190,6 +212,32 @@ bool EyeRecord::loadFromStream(std::ifstream& in_File)
   }
 
   return true;
+}
+
+/* flag data - rather confusing and not straightforward
+   0x00 (b000) - male + female flag set
+   0x01 (b001) - all three flags set
+   0x02 (b010) - only female flag set
+   0x03 (b011) - playable + female
+   0x04 (b100) - only male flag set
+   0x05 (b101) - playable + male
+   0x07 (b111) - only playable flag set
+*/
+
+bool EyeRecord::isPlayable() const
+{
+  //still quite straightforward
+  return ((flags & FlagPlayable) != 0);
+}
+
+bool EyeRecord::canBeMale() const
+{
+  return ((((flags & FlagMale) != 0) and (flags!=0x07)) or (flags<0x01));
+}
+
+bool EyeRecord::canBeFemale() const
+{
+  return (flags <= 0x03);
 }
 
 } //namespace

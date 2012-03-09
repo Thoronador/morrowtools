@@ -455,6 +455,15 @@ Records and their sub-records:
           array of form IDs, where n = count1+count2+count3+count4+count5
 
 
+  GLOB: global variables
+      EDID (string, NUL-terminated)
+          editor ID
+      FNAM (1 byte)
+          type (s=short, l=long, f=float)
+      FLTV (4 bytes)
+          value (always stored as float?)
+
+
   HAZD: hazard
       EDID (string, NUL-terminated)
           editor ID
@@ -607,6 +616,25 @@ Records and their sub-records:
       INAM (12 bytes, optional)
           unknown data
 
+
+  MUSC: music type
+      EDID (string, NUL-terminated)
+          editorID
+      FNAM (4 bytes)
+          uint32_t flags
+              0x01 - Plays One Selection
+              0x02 - Abrupt Transition
+              0x04 - Cycle Tracks
+              0x08 - Maintain Track Order (only allowed, if "Cycle Tracks" is set)
+              0x20 - Ducks Current Track
+      PNAM (4 bytes)
+          uint16_t priority
+          uint16_t Ducking dB (x100, i.e. 126 means 1.26)
+      WNAM (4 bytes)
+          float Fade Duration
+      TNAM (n*4 bytes)
+          Music track form IDs (record type MUST)
+          
 
   NAVI: navigation?
       NVER (4 bytes)
@@ -1087,14 +1115,6 @@ Records and their sub-records:
       OFST (4524 bytes)
           unknown data
 
-
-  GLOB: global variables
-      EDID (string, NUL-terminated)
-          editor ID
-      FNAM (1 byte)
-          type (s=short, l=long, f=float)
-      FLTV (4 bytes)
-          value (always stored as float?)
 
   KEYM: key
       EDID (string, NUL-terminated)

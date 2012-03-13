@@ -73,6 +73,7 @@
 #include "Messages.h"
 #include "MiscObjects.h"
 #include "MovementTypes.h"
+#include "MusicTypes.h"
 #include "NAVIRecords.h"
 #include "NPCs.h"
 #include "Outfits.h"
@@ -285,6 +286,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;
     case cMOVT:
          return MovementTypes::getSingleton().readNextRecord(in_File);
+         break;
+    case cMUSC:
+         return MusicTypes::getSingleton().readNextRecord(in_File);
          break;
     case cNAVI:
          return NAVIRecords::getSingleton().readNextRecord(in_File);

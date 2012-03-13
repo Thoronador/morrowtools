@@ -630,11 +630,12 @@ Records and their sub-records:
       PNAM (4 bytes)
           uint16_t priority
           uint16_t Ducking dB (x100, i.e. 126 means 1.26)
+                   allowed max.: 100.00 i.e. 10000; allowed min.: 0
       WNAM (4 bytes)
           float Fade Duration
       TNAM (n*4 bytes)
           Music track form IDs (record type MUST)
-          
+
 
   NAVI: navigation?
       NVER (4 bytes)

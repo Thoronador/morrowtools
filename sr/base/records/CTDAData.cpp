@@ -68,6 +68,11 @@ bool CTDAData::operator==(const CTDAData& other) const
   return (memcmp(content, other.content, 32)==0);
 }
 
+void CTDAData::clear()
+{
+  memset(content, 0, 32);
+}
+
 /* CTDA_CIS2_compound's functions */
 
 CTDA_CIS2_compound::CTDA_CIS2_compound()

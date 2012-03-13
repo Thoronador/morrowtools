@@ -71,6 +71,7 @@
 #include "records/MessageRecord.h"
 #include "records/MiscObjectRecord.h"
 #include "records/MovementTypeRecord.h"
+#include "records/MusicTrackRecord.h"
 #include "records/MusicTypeRecord.h"
 #include "records/NAVIRecord.h"
 #include "records/NPCRecord.h"
@@ -276,6 +277,9 @@ int ESMReaderContentsAll::readNextRecord(std::ifstream& in_File, const int32_t r
          break;
     case cMUSC:
          recPtr = new MusicTypeRecord;
+         break;
+    case cMUST:
+         recPtr = new MusicTrackRecord;
          break;
     case cNAVI:
          recPtr = new NAVIRecord;

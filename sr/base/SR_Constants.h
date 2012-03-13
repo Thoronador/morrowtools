@@ -72,6 +72,7 @@ const int32_t cBODT = 0x54444F42; //"BODT" = 42 4F 44 54
 const int32_t cBOOK = 0x4B4F4F42; //"BOOK" = 42 4F 4F 4B
 const int32_t cCELL = 0x4C4C4543; //"CELL" = 43 45 4C 4C
 const int32_t cCIS2 = 0x32534943; //"CIS2" = 43 49 53 32
+const int32_t cCITC = 0x43544943; //"CITC" = 43 49 54 43
 const int32_t cCLAS = 0x53414C43; //"CLAS" = 43 4C 41 53
 const int32_t cCLFM = 0x4D464C43; //"CLFM" = 43 4C 46 4D
 const int32_t cCNAM = 0x4D414E43; //"CNAM" = 43 4E 41 4D
@@ -190,6 +191,7 @@ const int32_t cMODT = 0x54444F4D; //"MODT" = 4D 4F 44 54
 const int32_t cMOVT = 0x54564F4D; //"MOVT" = 4D 4F 56 54
 const int32_t cMPRT = 0x5452504D; //"MPRT" = 4D 50 52 54
 const int32_t cMUSC = 0x4353554D; //"MUSC" = 4D 55 53 43
+const int32_t cMUST = 0x5453554D; //"MUST" = 4D 55 53 54
 const int32_t cNAM0 = 0x304D414E; //"NAM0" = 4E 41 4D 30
 const int32_t cNAM1 = 0x314D414E; //"NAM1" = 4E 41 4D 31
 const int32_t cNAM2 = 0x324D414E; //"NAM2" = 4E 41 4D 32

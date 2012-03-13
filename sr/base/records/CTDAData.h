@@ -51,6 +51,9 @@ struct CTDAData
 
   /* equality operator */
   bool operator==(const CTDAData& other) const;
+
+  /* clears content */
+  void clear();
 }; //struct
 
 struct CTDA_CIS2_compound

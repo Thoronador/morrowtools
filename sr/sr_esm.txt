@@ -637,6 +637,38 @@ Records and their sub-records:
           Music track form IDs (record type MUST)
 
 
+  MUST: music track
+      EDID (string, NUL-terminated)
+          editorID
+      CNAM (4 bytes)
+          type identifier
+            0x6ED7E048 - single track (48 E0 D7 6E)
+            0xA1A9C4D5 - silent track (D5 C4 A9 A1)
+            0x23F678C3 - palette track (C3 78 F6 23)
+      FLTV (4 bytes, optional)
+          duration in seconds (only for silent tracks or palette tracks)
+      DNAM (4 bytes, optional)
+          float   Fade-Out (seconds) (allowed min.: 0; max.: 20s)
+      SNAM (n* 4 bytes, optional)
+          std::vector<uint32_t> form IDs of tracks (only in pallette typed tracks)
+           ---> uint32_ts of value zero are used as layer seperator
+      ANAM (string, NUL-terminated, optional)
+          unknown music file path, usually .wav (does not occur for silent tracks)
+      BNAM (string, NUL-terminated, optional)
+          finale file path, usually .wav (does not occur for silent tracks)
+      FNAM (n * 4 bytes, optional)
+          std::vector<float>   Cue Points (in seconds)
+      LNAM (12 bytes, optional)
+          loop data
+          float     Loop Begins (seconds)
+          float     Loop Ends (seconds)
+          uint32_t  Loop Count
+      CITC (4 bytes, optional)
+          condition count
+      CTDA (32 bytes, can occur multiple times, optional)
+          condition data
+
+
   NAVI: navigation?
       NVER (4 bytes)
           unknown data

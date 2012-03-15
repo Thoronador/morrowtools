@@ -19,6 +19,7 @@
 */
 
 #include "FactionRecord.h"
+#include <cstring>
 #include <iostream>
 #include "../SR_Constants.h"
 #include "../../../mw/base/HelperIO.h"

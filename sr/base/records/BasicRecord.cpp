@@ -19,6 +19,7 @@
 */
 
 #include "BasicRecord.h"
+#include <cstring>
 #include <iostream>
 #include "../../../mw/base/HelperIO.h"
 

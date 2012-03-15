@@ -50,6 +50,7 @@
 #include "EncounterZones.h"
 #include "EquipmentSlots.h"
 #include "Eyes.h"
+#include "Factions.h"
 #include "Floras.h"
 #include "Footsteps.h"
 #include "FootstepSets.h"
@@ -218,6 +219,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;
     case cEYES:
          return Eyes::getSingleton().readNextRecord(in_File);
+         break;
+    case cFACT:
+         return Factions::getSingleton().readNextRecord(in_File);
          break;
     case cFLOR:
          return Floras::getSingleton().readNextRecord(in_File);

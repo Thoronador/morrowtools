@@ -48,6 +48,7 @@
 #include "records/EncounterZoneRecord.h"
 #include "records/EquipmentSlotRecord.h"
 #include "records/EyeRecord.h"
+#include "records/FactionRecord.h"
 #include "records/FloraRecord.h"
 #include "records/FootstepRecord.h"
 #include "records/FootstepSetRecord.h"
@@ -205,6 +206,9 @@ int ESMReaderContentsAll::readNextRecord(std::ifstream& in_File, const int32_t r
          break;
     case cEYES:
          recPtr = new EyeRecord;
+         break;
+    case cFACT:
+         recPtr = new FactionRecord;
          break;
     case cFLOR:
          recPtr = new FloraRecord;

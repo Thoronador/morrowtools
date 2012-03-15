@@ -41,12 +41,14 @@ DialogBranchRecord::~DialogBranchRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool DialogBranchRecord::equals(const DialogBranchRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
       and (unknownQNAM==other.unknownQNAM) and (unknownTNAM==other.unknownTNAM)
       and (unknownDNAM==other.unknownDNAM) and (unknownSNAM==other.unknownSNAM));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t DialogBranchRecord::getWriteSize() const

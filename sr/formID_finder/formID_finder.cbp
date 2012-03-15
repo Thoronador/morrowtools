@@ -23,6 +23,8 @@
 				<Compiler>
 					<Add option="-O3" />
 					<Add option="-DSR_UNSAVEABLE_RECORDS" />
+					<Add option="-DSR_NO_SINGLETON_EQUALITY_CHECK" />
+					<Add option="-DSR_NO_RECORD_EQUALITY" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />

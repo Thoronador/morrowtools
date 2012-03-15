@@ -47,6 +47,7 @@ SoundCategoryRecord::~SoundCategoryRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool SoundCategoryRecord::equals(const SoundCategoryRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
@@ -55,6 +56,7 @@ bool SoundCategoryRecord::equals(const SoundCategoryRecord& other) const
       and (staticVolumeMultUint16==other.staticVolumeMultUint16)
       and (hasUNAM==other.hasUNAM) and ((defaultMenuValueUint16==other.defaultMenuValueUint16) or (!hasUNAM)));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t SoundCategoryRecord::getWriteSize() const

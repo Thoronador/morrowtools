@@ -42,6 +42,7 @@ ArtObjectRecord::~ArtObjectRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool ArtObjectRecord::equals(const ArtObjectRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
@@ -49,6 +50,7 @@ bool ArtObjectRecord::equals(const ArtObjectRecord& other) const
       and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
       and (unknownDNAM==other.unknownDNAM));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t ArtObjectRecord::getWriteSize() const

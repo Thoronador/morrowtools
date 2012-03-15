@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -56,6 +56,7 @@ WaterTypeRecord::~WaterTypeRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool WaterTypeRecord::equals(const WaterTypeRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
@@ -71,6 +72,7 @@ bool WaterTypeRecord::equals(const WaterTypeRecord& other) const
       and (hasNAM1==other.hasNAM1) and ((memcmp(unknownNAM1, other.unknownNAM1, 12)==0)
       or (!hasNAM1)));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t WaterTypeRecord::getWriteSize() const

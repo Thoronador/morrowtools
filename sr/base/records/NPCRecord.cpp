@@ -130,6 +130,7 @@ NPCRecord::~NPCRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool NPCRecord::equals(const NPCRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
@@ -173,6 +174,7 @@ bool NPCRecord::equals(const NPCRecord& other) const
       and (unknownNAM9==other.unknownNAM9) and (unknownNAMA==other.unknownNAMA)
       and (unknownTINXs==other.unknownTINXs));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t NPCRecord::getWriteSize() const

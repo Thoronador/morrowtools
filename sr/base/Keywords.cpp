@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -117,6 +117,7 @@ int Keywords::readRecordKYWD(std::ifstream& in_File)
     return -1;
   }
 
+  #if !defined(SR_NO_SINGLETON_EQUALITY_CHECK) && !defined(SR_NO_RECORD_EQUALITY)
   //add it to the list, if not present with same data
   if (hasKeyword(temp.editorID))
   {
@@ -126,6 +127,7 @@ int Keywords::readRecordKYWD(std::ifstream& in_File)
       return 0;
     }
   }//if keyword present
+  #endif
   addKeyword(temp);
   return 1;
 } //readRecordKYWD

@@ -52,6 +52,7 @@ ContainerRecord::~ContainerRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool ContainerRecord::equals(const ContainerRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
@@ -64,6 +65,7 @@ bool ContainerRecord::equals(const ContainerRecord& other) const
       and (hasSNAM==other.hasSNAM) and ((unknownSNAM==other.unknownSNAM) or (!hasSNAM))
       and (hasQNAM==other.hasQNAM) and ((unknownQNAM==other.unknownQNAM) or (!hasQNAM)));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t ContainerRecord::getWriteSize() const

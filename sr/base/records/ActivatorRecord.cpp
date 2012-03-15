@@ -80,6 +80,7 @@ ActivatorRecord::~ActivatorRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool ActivatorRecord::equals(const ActivatorRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
@@ -99,6 +100,7 @@ bool ActivatorRecord::equals(const ActivatorRecord& other) const
     and (hasRNAM==other.hasRNAM) and ((unknownRNAM==other.unknownRNAM) or (!hasRNAM))
     and (hasKNAM==other.hasKNAM) and ((unknownKNAM==other.unknownKNAM) or (!hasKNAM)));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t ActivatorRecord::getWriteSize() const

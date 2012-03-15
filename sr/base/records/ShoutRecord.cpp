@@ -50,6 +50,7 @@ ShoutRecord::~ShoutRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool ShoutRecord::equals(const ShoutRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
@@ -57,6 +58,7 @@ bool ShoutRecord::equals(const ShoutRecord& other) const
       and (hasMDOB==other.hasMDOB) and ((unknownMDOB==other.unknownMDOB) or (!hasMDOB))
       and (descriptionStringID==other.descriptionStringID) and (unknownSNAMs==other.unknownSNAMs));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t ShoutRecord::getWriteSize() const

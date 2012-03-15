@@ -59,6 +59,7 @@ SoulGemRecord::~SoulGemRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool SoulGemRecord::equals(const SoulGemRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
@@ -70,6 +71,7 @@ bool SoulGemRecord::equals(const SoulGemRecord& other) const
       and (capacity==other.capacity) and (hasNAM0==other.hasNAM0)
       and ((unknownNAM0==other.unknownNAM0) or (!hasNAM0)));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t SoulGemRecord::getWriteSize() const

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -40,8 +40,10 @@ struct AlchemyPotionRecord: public BasicRecord
     /* destructor */
     virtual ~AlchemyPotionRecord();
 
+    #ifndef SR_NO_RECORD_EQUALITY
     /* returns true, if the other record contains the same data */
     bool equals(const AlchemyPotionRecord& other) const;
+    #endif
 
     #ifndef SR_UNSAVEABLE_RECORDS
     /* writes the record to the given output stream and returns true on success

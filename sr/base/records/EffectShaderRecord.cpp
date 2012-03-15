@@ -45,6 +45,7 @@ EffectShaderRecord::~EffectShaderRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool EffectShaderRecord::equals(const EffectShaderRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
@@ -54,6 +55,7 @@ bool EffectShaderRecord::equals(const EffectShaderRecord& other) const
       and (hasNAM9==other.hasNAM9) and ((unknownNAM9==other.unknownNAM9) or (!hasNAM9))
       and (unknownDATA==other.unknownDATA));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t EffectShaderRecord::getWriteSize() const

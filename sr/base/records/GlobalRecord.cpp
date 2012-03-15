@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -41,6 +41,7 @@ int32_t GlobalRecord::getRecordType() const
   return cGLOB;
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool GlobalRecord::equals(const GlobalRecord& other) const
 {
   if ((Type!=other.Type) or (editorID!=other.editorID) or (!equalsBasic(other)))
@@ -62,6 +63,7 @@ bool GlobalRecord::equals(const GlobalRecord& other) const
   std::cout << "Unhandled case in GlobalRecord::equals!\n";
   throw 42;
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t GlobalRecord::getWriteSize() const

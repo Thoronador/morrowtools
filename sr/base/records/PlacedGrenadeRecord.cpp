@@ -44,6 +44,7 @@ PlacedGrenadeRecord::~PlacedGrenadeRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool PlacedGrenadeRecord::equals(const PlacedGrenadeRecord& other) const
 {
   return ((equalsBasic(other)) and (nameFormID==other.nameFormID)
@@ -52,6 +53,7 @@ bool PlacedGrenadeRecord::equals(const PlacedGrenadeRecord& other) const
       and (scale==other.scale)
       and (memcmp(unknownDATA, other.unknownDATA, 24)==0));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t PlacedGrenadeRecord::getWriteSize() const

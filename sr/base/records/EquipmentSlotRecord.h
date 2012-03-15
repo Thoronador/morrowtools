@@ -24,7 +24,6 @@
 #include "BasicRecord.h"
 #include <string>
 #include <vector>
-#include <stdint.h>
 
 namespace SRTP
 {
@@ -38,8 +37,10 @@ struct EquipmentSlotRecord: public BasicRecord
     /* destructor */
     virtual ~EquipmentSlotRecord();
 
+    #ifndef SR_NO_RECORD_EQUALITY
     /* returns true, if the other record contains the same data */
     bool equals(const EquipmentSlotRecord& other) const;
+    #endif
 
     #ifndef SR_UNSAVEABLE_RECORDS
     /* returns the size in bytes that the record's data would occupy in a file

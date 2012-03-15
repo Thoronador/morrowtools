@@ -40,12 +40,14 @@ AnimatedObjectRecord::~AnimatedObjectRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool AnimatedObjectRecord::equals(const AnimatedObjectRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
       and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
       and (unknownBNAM==other.unknownBNAM));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t AnimatedObjectRecord::getWriteSize() const

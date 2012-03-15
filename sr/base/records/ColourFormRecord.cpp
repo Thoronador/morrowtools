@@ -41,12 +41,14 @@ ColourFormRecord::~ColourFormRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool ColourFormRecord::equals(const ColourFormRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
       and (hasFULL==other.hasFULL) and ((nameStringID==other.nameStringID) or (!hasFULL))
       and (unknownCNAM==other.unknownCNAM) and (unknownFNAM==other.unknownFNAM));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t ColourFormRecord::getWriteSize() const

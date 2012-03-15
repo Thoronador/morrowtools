@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -70,6 +70,7 @@ ArmourRecord::~ArmourRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool ArmourRecord::equals(const ArmourRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
@@ -93,6 +94,7 @@ bool ArmourRecord::equals(const ArmourRecord& other) const
       and (unknownDNAM==other.unknownDNAM)
       and (hasTNAM==other.hasTNAM) and ((unknownTNAM==other.unknownTNAM) or (!hasTNAM)));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t ArmourRecord::getWriteSize() const

@@ -43,6 +43,7 @@ CollisionRecord::~CollisionRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool CollisionRecord::equals(const CollisionRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
@@ -50,6 +51,7 @@ bool CollisionRecord::equals(const CollisionRecord& other) const
       and (unknownFNAM==other.unknownFNAM) and (unknownGNAM==other.unknownGNAM)
       and (unknownMNAM==other.unknownMNAM) and (unknownCNAMs==other.unknownCNAMs));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t CollisionRecord::getWriteSize() const

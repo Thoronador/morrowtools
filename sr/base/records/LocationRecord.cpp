@@ -60,6 +60,7 @@ LocationRecord::~LocationRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool LocationRecord::equals(const LocationRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
@@ -76,6 +77,7 @@ bool LocationRecord::equals(const LocationRecord& other) const
       and (hasCNAM==other.hasCNAM) and ((unknownCNAM==other.unknownCNAM) or (!hasCNAM))
       and (hasNAM1==other.hasNAM1) and ((unknownNAM1==other.unknownNAM1) or (!hasNAM1)));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t LocationRecord::getWriteSize() const

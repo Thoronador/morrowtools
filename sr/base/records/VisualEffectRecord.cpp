@@ -47,12 +47,14 @@ VisualEffectRecord::~VisualEffectRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool VisualEffectRecord::equals(const VisualEffectRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
       and (effectArtFormID==other.effectArtFormID) and (shaderFormID==other.shaderFormID)
       and (flagsVFX==other.flagsVFX));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t VisualEffectRecord::getWriteSize() const

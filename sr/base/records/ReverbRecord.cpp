@@ -53,6 +53,7 @@ ReverbRecord::~ReverbRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool ReverbRecord::equals(const ReverbRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
@@ -63,6 +64,7 @@ bool ReverbRecord::equals(const ReverbRecord& other) const
       and (reverbDelay==other.reverbDelay) and (diffusionPercentage==other.diffusionPercentage)
       and (densitiyPercentage==other.densitiyPercentage) and (unknownDATA_unused==other.unknownDATA_unused));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t ReverbRecord::getWriteSize() const

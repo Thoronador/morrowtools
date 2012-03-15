@@ -1,0 +1,92 @@
+object Form1: TForm1
+  Left = 568
+  Height = 300
+  Top = 264
+  Width = 400
+  Caption = 'Form ID Finder - GUI'
+  ClientHeight = 281
+  ClientWidth = 400
+  Menu = MainMenu1
+  OnCreate = FormCreate
+  LCLVersion = '0.9.28.2'
+  object KeywordEdit: TEdit
+    Left = 8
+    Height = 21
+    Top = 8
+    Width = 152
+    OnKeyDown = KeywordEditKeyDown
+    TabOrder = 0
+    Text = 'keyword'
+  end
+  object SearchButton: TButton
+    Left = 168
+    Height = 25
+    Top = 6
+    Width = 75
+    Caption = 'Search'
+    OnClick = SearchButtonClick
+    TabOrder = 1
+  end
+  object ResultStringGrid: TStringGrid
+    Left = 8
+    Height = 237
+    Top = 40
+    Width = 384
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    ColCount = 4
+    Columns = <    
+      item
+        Title.Caption = 'Name'
+        Width = 128
+      end    
+      item
+        Title.Caption = 'Editor ID'
+        Width = 100
+      end    
+      item
+        Title.Caption = 'Form ID'
+      end    
+      item
+        Title.Caption = 'Type'
+      end>
+    FixedCols = 0
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goRowSizing, goColSizing, goSmoothScroll]
+    RowCount = 6
+    TabOrder = 2
+    Cells = (
+      5
+      0
+      1
+      'Enter'
+      0
+      2
+      'a keyword'
+      0
+      3
+      'and click'
+      0
+      4
+      'Search'
+      0
+      5
+      'to start.'
+    )
+  end
+  object MainMenu1: TMainMenu
+    left = 256
+    object MenuItemGUI: TMenuItem
+      Caption = 'GUI'
+      object MenuItemClose: TMenuItem
+        Caption = 'Quit'
+        OnClick = MenuItemCloseClick
+      end
+    end
+    object MenuItemHelp: TMenuItem
+      Caption = '?'
+      object MenuItemVersion: TMenuItem
+        Caption = 'Version'
+        OnClick = MenuItemVersionClick
+      end
+    end
+  end
+end

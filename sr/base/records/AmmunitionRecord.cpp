@@ -53,6 +53,7 @@ AmmunitionRecord::~AmmunitionRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool AmmunitionRecord::equals(const AmmunitionRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
@@ -65,6 +66,7 @@ bool AmmunitionRecord::equals(const AmmunitionRecord& other) const
       and (DATAflags==other.DATAflags) and (baseDamage==other.baseDamage)
       and (value==other.value));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t AmmunitionRecord::getWriteSize() const

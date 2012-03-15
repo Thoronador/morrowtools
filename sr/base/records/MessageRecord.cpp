@@ -63,6 +63,7 @@ MessageRecord::~MessageRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool MessageRecord::equals(const MessageRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
@@ -73,6 +74,7 @@ bool MessageRecord::equals(const MessageRecord& other) const
       and (unknownDNAM==other.unknownDNAM) and (unknownITXT_CTDAs==other.unknownITXT_CTDAs)
       and (hasTNAM==other.hasTNAM) and ((displayTime==other.displayTime) or (!hasTNAM)));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t MessageRecord::getWriteSize() const

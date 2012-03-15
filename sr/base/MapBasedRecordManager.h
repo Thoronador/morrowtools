@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -93,7 +93,8 @@ class MapBasedRecordManager
     /* returns constant iterator to the end of the internal list */
     ListIterator getEnd() const;
 
-    /* tries to save all available weapons to the given stream and returns
+    #ifndef SR_UNSAVEABLE_RECORDS
+    /* tries to save all available records to the given stream and returns
        true on success, false on failure
 
        parameters:
@@ -101,6 +102,7 @@ class MapBasedRecordManager
                     weapons
     */
     bool saveAllToStream(std::ofstream& output) const;
+    #endif
 
     /* removes all weapons from the list */
     void clearAll();
@@ -186,6 +188,7 @@ typename MapBasedRecordManager<recT>::ListIterator MapBasedRecordManager<recT>::
   return m_Records.end();
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
 template<typename recT>
 bool MapBasedRecordManager<recT>::saveAllToStream(std::ofstream& output) const
 {
@@ -208,6 +211,7 @@ bool MapBasedRecordManager<recT>::saveAllToStream(std::ofstream& output) const
   }//while
   return output.good();
 }
+#endif
 
 template<typename recT>
 void MapBasedRecordManager<recT>::clearAll()
@@ -225,6 +229,7 @@ int MapBasedRecordManager<recT>::readNextRecord(std::ifstream& in_File)
     return -1;
   }
 
+  #if !defined(SR_NO_SINGLETON_EQUALITY_CHECK) && !defined(SR_NO_RECORD_EQUALITY)
   //add it to the list, if not present with same data
   if (hasRecord(temp.headerFormID))
   {
@@ -234,6 +239,7 @@ int MapBasedRecordManager<recT>::readNextRecord(std::ifstream& in_File)
       return 0;
     }
   }//if record present
+  #endif //SR_NO_SINGLETON_EQUALITY_CHECK
   addRecord(temp);
   return 1;
 } //readOneRecord

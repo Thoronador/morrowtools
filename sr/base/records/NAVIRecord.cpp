@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -39,11 +39,13 @@ NAVIRecord::~NAVIRecord()
   unknownNVMIs.clear();
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool NAVIRecord::equals(const NAVIRecord& other) const
 {
   return ((equalsBasic(other)) and (unknownNVER==other.unknownNVER)
       and (unknownNVMIs==other.unknownNVMIs) and (unknownNVPP==other.unknownNVPP));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t NAVIRecord::getWriteSize() const

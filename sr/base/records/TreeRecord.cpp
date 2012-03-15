@@ -49,6 +49,7 @@ TreeRecord::~TreeRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool TreeRecord::equals(const TreeRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
@@ -60,6 +61,7 @@ bool TreeRecord::equals(const TreeRecord& other) const
       and ((nameStringID==other.nameStringID) or (!hasFULL))
       and (memcmp(unknownCNAM, other.unknownCNAM, 48)==0));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t TreeRecord::getWriteSize() const

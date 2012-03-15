@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -46,6 +46,7 @@ int32_t WordOfPowerRecord::getRecordType() const
   return cWOOP;
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool WordOfPowerRecord::equals(const WordOfPowerRecord& other) const
 {
   if ((editorID==other.editorID) and (hasFULL==other.hasFULL)
@@ -56,6 +57,7 @@ bool WordOfPowerRecord::equals(const WordOfPowerRecord& other) const
   }
   return false;
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t WordOfPowerRecord::getWriteSize() const

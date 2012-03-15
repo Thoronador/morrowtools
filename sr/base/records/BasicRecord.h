@@ -85,8 +85,10 @@ struct BasicRecord
     //util. func.
     void copyBasicMembers(const BasicRecord& other);
 
+    #ifndef SR_NO_RECORD_EQUALITY
     /* returns true, if the other basic record contains the same data */
     bool equalsBasic(const BasicRecord& other) const;
+    #endif
 
     /* loads the first data of a record, the record size and yet unknown other
        values, from the given input stream and returns true on success

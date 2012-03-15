@@ -389,6 +389,7 @@ QuestRecord::~QuestRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool QuestRecord::equals(const QuestRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
@@ -400,6 +401,7 @@ bool QuestRecord::equals(const QuestRecord& other) const
     and (filter==other.filter) and (indices==other.indices) and (theQOBJs==other.theQOBJs)
     and (unknownANAM==other.unknownANAM) and (aliases==other.aliases));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t QuestRecord::getWriteSize() const

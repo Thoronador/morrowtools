@@ -52,6 +52,7 @@ AlchemyPotionRecord::~AlchemyPotionRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool AlchemyPotionRecord::equals(const AlchemyPotionRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
@@ -65,6 +66,7 @@ bool AlchemyPotionRecord::equals(const AlchemyPotionRecord& other) const
       and (memcmp(unknownENIT, other.unknownENIT, 20)==0)
       and (effects==other.effects));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t AlchemyPotionRecord::getWriteSize() const

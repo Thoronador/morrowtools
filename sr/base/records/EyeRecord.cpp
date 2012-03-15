@@ -49,12 +49,14 @@ int32_t EyeRecord::getRecordType() const
   return cEYES;
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool EyeRecord::equals(const EyeRecord& other) const
 {
   return ((editorID==other.editorID) and (nameStringID==other.nameStringID)
       and (iconPath==other.iconPath) and (flags==other.flags)
       and equalsBasic(other));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t EyeRecord::getWriteSize() const

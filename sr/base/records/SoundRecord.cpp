@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -47,6 +47,7 @@ int32_t SoundRecord::getRecordType() const
   return cSOUN;
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool SoundRecord::equals(const SoundRecord& other) const
 {
   if ((editorID==other.editorID) and (unknownSDSC==other.unknownSDSC)
@@ -58,6 +59,7 @@ bool SoundRecord::equals(const SoundRecord& other) const
   }
   return false;
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t SoundRecord::getWriteSize() const

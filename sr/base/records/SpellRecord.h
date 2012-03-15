@@ -38,8 +38,10 @@ struct SpellRecord: public BasicRecord
     /* destructor */
     virtual ~SpellRecord();
 
+    #ifndef SR_NO_RECORD_EQUALITY
     /* returns true, if the other record contains the same data */
     bool equals(const SpellRecord& other) const;
+    #endif
 
     #ifndef SR_UNSAVEABLE_RECORDS
     /* returns the size in bytes that the record's data would occupy in a file

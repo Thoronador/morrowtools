@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -36,10 +36,17 @@ struct ActionRecord: public BasicRecord
     /* destructor */
     virtual ~ActionRecord();
 
+    #ifndef SR_NO_RECORD_EQUALITY
     /* returns true, if the other record contains the same data */
     bool equals(const ActionRecord& other) const;
+    #endif
 
     #ifndef SR_UNSAVEABLE_RECORDS
+    /* returns the size in bytes that the record's data would occupy in a file
+       stream, NOT including the header data
+    */
+    virtual uint32_t getWriteSize() const;
+
     /* writes the record to the given output stream and returns true on success
 
       parameters:
@@ -57,13 +64,6 @@ struct ActionRecord: public BasicRecord
 
     /* returns the record's type, usually its header */
     virtual int32_t getRecordType() const;
-
-    #ifndef SR_UNSAVEABLE_RECORDS
-    /* returns the size in bytes that the record's data would occupy in a file
-       stream, NOT including the header data
-    */
-    virtual uint32_t getWriteSize() const;
-    #endif
 
     std::string editorID;
 }; //struct

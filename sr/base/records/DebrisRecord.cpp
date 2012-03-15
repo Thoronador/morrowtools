@@ -67,11 +67,13 @@ DebrisRecord::~DebrisRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool DebrisRecord::equals(const DebrisRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
       and (unknownDATA_MODTs==other.unknownDATA_MODTs));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t DebrisRecord::getWriteSize() const

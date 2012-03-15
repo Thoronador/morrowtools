@@ -39,8 +39,10 @@ struct ContainerRecord: public BasicRecord
     /* destructor */
     virtual ~ContainerRecord();
 
+    #ifndef SR_NO_RECORD_EQUALITY
     /* returns true, if the other record contains the same data */
     bool equals(const ContainerRecord& other) const;
+    #endif
 
     #ifndef SR_UNSAVEABLE_RECORDS
     /* returns the size in bytes that the record's data would occupy in a file

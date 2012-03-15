@@ -40,12 +40,14 @@ MovementTypeRecord::~MovementTypeRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool MovementTypeRecord::equals(const MovementTypeRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
       and (nameString==other.nameString) and (unknownSPED==other.unknownSPED)
       and (unknownINAM==other.unknownINAM));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t MovementTypeRecord::getWriteSize() const

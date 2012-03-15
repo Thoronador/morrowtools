@@ -43,6 +43,7 @@ PlacedHazardRecord::~PlacedHazardRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool PlacedHazardRecord::equals(const PlacedHazardRecord& other) const
 {
   return ((equalsBasic(other)) and (unknownVMAD==other.unknownVMAD)
@@ -51,6 +52,7 @@ bool PlacedHazardRecord::equals(const PlacedHazardRecord& other) const
       and (scale==other.scale)
       and (memcmp(unknownDATA, other.unknownDATA, 24)==0));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t PlacedHazardRecord::getWriteSize() const

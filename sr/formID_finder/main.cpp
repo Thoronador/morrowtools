@@ -82,13 +82,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Form ID Finder for Skyrim, version 0.18.rev443, 2012-03-15\n";
+  std::cout << "Form ID Finder for Skyrim, version 0.18.rev444, 2012-03-15\n";
 }
 
 int showVersionExitcode()
 {
   showVersion();
-  return 443;
+  return 444;
 }
 
 void showHelp()
@@ -976,7 +976,7 @@ int main(int argc, char **argv)
                 basic_out << quest_iter->second.indices[i].index;
                 if (quest_iter->second.indices[i].hasFinishingQSDT()) basic_out<< " (finishes)";
               }
-              if (idx_count==0) basic_out <<"(none)";
+              if (idx_count==0) basic_out <<"none";
               basic_out << "\n";
             }
             else
@@ -1017,6 +1017,7 @@ int main(int argc, char **argv)
                   }
                 }
               }//for i
+              if (idx_count==0) basic_out <<"          none\n";
             }//else
             ++questMatches;
             ++totalMatches;

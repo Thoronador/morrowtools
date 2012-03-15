@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -39,6 +39,7 @@ FootstepSetRecord::~FootstepSetRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool FootstepSetRecord::equals(const FootstepSetRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
@@ -46,6 +47,7 @@ bool FootstepSetRecord::equals(const FootstepSetRecord& other) const
       and (xCounts[2]==other.xCounts[2]) and (xCounts[3]==other.xCounts[3])
       and (xCounts[4]==other.xCounts[4]) and (footstepFormIDs==other.footstepFormIDs));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t FootstepSetRecord::getWriteSize() const

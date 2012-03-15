@@ -1,4 +1,22 @@
+/*
+ -------------------------------------------------------------------------------
+    This file is part of the Skyrim Tools Project.
+    Copyright (C) 2011, 2012 Thoronador
 
+    The Skyrim Tools are free software: you can redistribute them and/or
+    modify them under the terms of the GNU General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    The Skyrim Tools are distributed in the hope that they will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with the Skyrim Tools.  If not, see <http://www.gnu.org/licenses/>.
+ -------------------------------------------------------------------------------
+*/
 
 #include "TES4HeaderRecord.h"
 #include <iostream>
@@ -30,6 +48,7 @@ Tes4HeaderRecord::~Tes4HeaderRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool Tes4HeaderRecord::equals(const Tes4HeaderRecord& other) const
 {
   return ((equalsBasic(other)) and (version==other.version)
@@ -38,6 +57,7 @@ bool Tes4HeaderRecord::equals(const Tes4HeaderRecord& other) const
     and (authorName==other.authorName) and (dependencies==other.dependencies)
     and (unknownIntValue==other.unknownIntValue));
 }
+#endif
 
 int32_t Tes4HeaderRecord::getRecordType() const
 {

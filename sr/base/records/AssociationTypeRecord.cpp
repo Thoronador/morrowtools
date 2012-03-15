@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -40,6 +40,7 @@ AssociationTypeRecord::~AssociationTypeRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool AssociationTypeRecord::equals(const AssociationTypeRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
@@ -47,6 +48,7 @@ bool AssociationTypeRecord::equals(const AssociationTypeRecord& other) const
       and (maleChildType==other.maleChildType) and (femaleChildType==other.femaleChildType)
       and (unknownDATA==other.unknownDATA));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t AssociationTypeRecord::getWriteSize() const

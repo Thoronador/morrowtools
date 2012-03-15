@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -45,6 +45,7 @@ AcousticSpaceRecord::~AcousticSpaceRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool AcousticSpaceRecord::equals(const AcousticSpaceRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
@@ -53,6 +54,7 @@ bool AcousticSpaceRecord::equals(const AcousticSpaceRecord& other) const
       and (hasRDAT==other.hasRDAT) and ((unknownRDAT==other.unknownRDAT) or (!hasRDAT))
       and (hasBNAM==other.hasBNAM) and ((unknownBNAM==other.unknownBNAM) or (!hasBNAM)));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t AcousticSpaceRecord::getWriteSize() const

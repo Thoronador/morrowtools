@@ -41,11 +41,13 @@ EquipmentSlotRecord::~EquipmentSlotRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool EquipmentSlotRecord::equals(const EquipmentSlotRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
       and (parentSlots==other.parentSlots) and (flags==other.flags));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t EquipmentSlotRecord::getWriteSize() const

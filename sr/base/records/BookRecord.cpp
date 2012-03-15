@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -61,6 +61,7 @@ BookRecord::~BookRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool BookRecord::equals(const BookRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
@@ -75,6 +76,7 @@ bool BookRecord::equals(const BookRecord& other) const
     and (bookValue==other.bookValue) and (weight==other.weight)
     and (hasINAM==other.hasINAM) and ((unknownINAM==other.unknownINAM) or (!hasINAM)));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t BookRecord::getWriteSize() const

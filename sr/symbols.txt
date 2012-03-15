@@ -1,0 +1,25 @@
+List of preprocessor symbols used in SRTP:
+==========================================
+
+SR_NO_SINGLETON_EQUALITY_CHECK - if defined, the record manager singletons
+                                 (currently only MapBasedRecordManager) will not
+                                 check for equal records when reading a new
+                                 record via readNextRecord() functions.
+                                 This can be used when only reading a single ESM
+                                 file or files with contents that do not
+                                 "overlap".
+
+SR_NO_RECORD_EQUALITY          - This symbol removes the equalsBasic() function
+                                 from BasicRecord and removes the equals()
+                                 functions from all derived record types.
+                                 Additionally, it has the same effect as
+                                 SR_NO_SINGLETON_EQUALITY_CHECK on record
+                                 manager singletons.
+
+SR_UNSAVEABLE_RECORDS         - This symbol removes the saveToStream() and
+                                getWriteSize() functions from BasicRecord and
+                                all its derived classes. As a consequence it
+                                strips the ability to save records from all
+                                record manager singletons.
+                                Usefull if a programme just wants to read ESMs
+                                but never save any ESM data.

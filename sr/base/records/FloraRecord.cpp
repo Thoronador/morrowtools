@@ -53,6 +53,7 @@ FloraRecord::~FloraRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool FloraRecord::equals(const FloraRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
@@ -67,6 +68,7 @@ bool FloraRecord::equals(const FloraRecord& other) const
       and (hasSNAM==other.hasSNAM) and ((unknownSNAM==other.unknownSNAM) or (!hasSNAM))
       and (unknownPFPC==other.unknownPFPC));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t FloraRecord::getWriteSize() const

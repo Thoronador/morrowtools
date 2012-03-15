@@ -88,6 +88,7 @@ CellRecord::~CellRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool CellRecord::equals(const CellRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
@@ -112,6 +113,7 @@ bool CellRecord::equals(const CellRecord& other) const
       and (hasXCCM==other.hasXCCM) and ((unknownXCCM==other.unknownXCCM) or (!hasXCCM))
       and (hasXCAS==other.hasXCAS) and ((unknownXCAS==other.unknownXCAS) or (!hasXCAS)));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t CellRecord::getWriteSize() const

@@ -59,6 +59,7 @@ ReferenceRecord::~ReferenceRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool ReferenceRecord::equals(const ReferenceRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
@@ -76,6 +77,7 @@ bool ReferenceRecord::equals(const ReferenceRecord& other) const
       and (subBlocks==other.subBlocks)
       and (memcmp(unknownDATA, other.unknownDATA, 24)==0));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t ReferenceRecord::getWriteSize() const

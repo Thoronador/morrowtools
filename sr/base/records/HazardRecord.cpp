@@ -46,6 +46,7 @@ HazardRecord::~HazardRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool HazardRecord::equals(const HazardRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
@@ -55,6 +56,7 @@ bool HazardRecord::equals(const HazardRecord& other) const
       and (hasMNAM==other.hasMNAM) and ((unknownMNAM==other.unknownMNAM) or (!hasMNAM))
       and (memcmp(unknownDATA, other.unknownDATA, 40)==0));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t HazardRecord::getWriteSize() const

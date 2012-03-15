@@ -43,6 +43,7 @@ PerkRecord::~PerkRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool PerkRecord::equals(const PerkRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
@@ -50,6 +51,7 @@ bool PerkRecord::equals(const PerkRecord& other) const
       and (hasFULL==other.hasFULL) and ((nameStringID==other.nameStringID) or !hasFULL)
       and (descriptionStringID==other.descriptionStringID) and (subBlocks==other.subBlocks));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t PerkRecord::getWriteSize() const

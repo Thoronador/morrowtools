@@ -43,6 +43,7 @@ EnchantmentRecord::~EnchantmentRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool EnchantmentRecord::equals(const EnchantmentRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
@@ -50,6 +51,7 @@ bool EnchantmentRecord::equals(const EnchantmentRecord& other) const
       and (hasFULL==other.hasFULL) and ((nameStringID==other.nameStringID) or (!hasFULL))
       and (unknownENIT==other.unknownENIT) and (effects==other.effects));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t EnchantmentRecord::getWriteSize() const

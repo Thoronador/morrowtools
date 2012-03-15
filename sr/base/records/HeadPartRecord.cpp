@@ -54,6 +54,7 @@ HeadPartRecord::~HeadPartRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool HeadPartRecord::equals(const HeadPartRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
@@ -64,6 +65,7 @@ bool HeadPartRecord::equals(const HeadPartRecord& other) const
       and (hasTNAM==other.hasTNAM) and ((unknownTNAM==other.unknownTNAM) or (!hasTNAM))
       and (hasRNAM==other.hasRNAM) and ((unknownRNAM==other.unknownRNAM) or (!hasRNAM)));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t HeadPartRecord::getWriteSize() const

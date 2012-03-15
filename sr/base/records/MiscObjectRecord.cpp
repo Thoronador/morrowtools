@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -53,6 +53,7 @@ MiscObjectRecord::~MiscObjectRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool MiscObjectRecord::equals(const MiscObjectRecord& other) const
 {
   if ((equalsBasic(other)) and (editorID==other.editorID)
@@ -74,6 +75,7 @@ bool MiscObjectRecord::equals(const MiscObjectRecord& other) const
   }
   return false;
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t MiscObjectRecord::getWriteSize() const

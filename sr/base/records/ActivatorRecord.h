@@ -38,10 +38,17 @@ struct ActivatorRecord: public BasicRecord
     /* destructor */
     virtual ~ActivatorRecord();
 
+    #ifndef SR_NO_RECORD_EQUALITY
     /* returns true, if the other record contains the same data */
     bool equals(const ActivatorRecord& other) const;
+    #endif
 
     #ifndef SR_UNSAVEABLE_RECORDS
+    /* returns the size in bytes that the record's data would occupy in a file
+       stream, NOT including the header data
+    */
+    virtual uint32_t getWriteSize() const;
+
     /* writes the record to the given output stream and returns true on success
 
       parameters:
@@ -59,13 +66,6 @@ struct ActivatorRecord: public BasicRecord
 
     /* returns the record's type, usually its header */
     virtual int32_t getRecordType() const;
-
-    #ifndef SR_UNSAVEABLE_RECORDS
-    /* returns the size in bytes that the record's data would occupy in a file
-       stream, NOT including the header data
-    */
-    virtual uint32_t getWriteSize() const;
-    #endif
 
     struct destStruct
     {

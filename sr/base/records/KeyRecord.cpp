@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -49,6 +49,7 @@ KeyRecord::~KeyRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool KeyRecord::equals(const KeyRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID) and (unknownVMAD==other.unknownVMAD)
@@ -59,6 +60,7 @@ bool KeyRecord::equals(const KeyRecord& other) const
       and ((unknownZNAM==other.unknownZNAM) or (!hasZNAM)) and (keywordArray==other.keywordArray)
       and (memcmp(unknownDATA, other.unknownDATA, 8)==0));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t KeyRecord::getWriteSize() const

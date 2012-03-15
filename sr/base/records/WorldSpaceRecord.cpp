@@ -80,6 +80,7 @@ WorldSpaceRecord::~WorldSpaceRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool WorldSpaceRecord::equals(const WorldSpaceRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
@@ -106,6 +107,7 @@ bool WorldSpaceRecord::equals(const WorldSpaceRecord& other) const
       and (hasXXXX==other.hasXXXX) and ((unknownXXXX==other.unknownXXXX) or (!hasXXXX))
       and (unknownOFST==other.unknownOFST));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t WorldSpaceRecord::getWriteSize() const

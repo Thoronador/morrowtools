@@ -51,6 +51,7 @@ IngredientRecord::~IngredientRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool IngredientRecord::equals(const IngredientRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
@@ -64,6 +65,7 @@ bool IngredientRecord::equals(const IngredientRecord& other) const
       and (memcmp(unknownENIT, other.unknownENIT, 8)==0)
       and (effects==other.effects));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t IngredientRecord::getWriteSize() const

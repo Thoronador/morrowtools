@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -24,7 +24,6 @@
 #include "BasicRecord.h"
 #include "BinarySubRecord.h"
 #include <string>
-#include <stdint.h>
 
 namespace SRTP
 {
@@ -38,8 +37,10 @@ struct DoorRecord: public BasicRecord
     /* destructor */
     virtual ~DoorRecord();
 
+    #ifndef SR_NO_RECORD_EQUALITY
     /* returns true, if the other record contains the same data */
     bool equals(const DoorRecord& other) const;
+    #endif
 
     #ifndef SR_UNSAVEABLE_RECORDS
     /* returns the size in bytes that the record's data would occupy in a file

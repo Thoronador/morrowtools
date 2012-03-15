@@ -52,6 +52,7 @@ DualCastDataRecord::~DualCastDataRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool DualCastDataRecord::equals(const DualCastDataRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
@@ -60,6 +61,7 @@ bool DualCastDataRecord::equals(const DualCastDataRecord& other) const
       and (effectShaderFormID==other.effectShaderFormID) and (hitEffectArtFormID==other.hitEffectArtFormID)
       and (impactDataSetFormID==other.impactDataSetFormID) and (inheritFlags==other.inheritFlags));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t DualCastDataRecord::getWriteSize() const

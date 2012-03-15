@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -38,12 +38,14 @@ RelationshipRecord::~RelationshipRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool RelationshipRecord::equals(const RelationshipRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
       and (unknownDATA[0]==other.unknownDATA[0]) and (unknownDATA[1]==other.unknownDATA[1])
       and (unknownDATA[2]==other.unknownDATA[2]) and (unknownDATA[3]==other.unknownDATA[3]));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t RelationshipRecord::getWriteSize() const

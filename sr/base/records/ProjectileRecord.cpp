@@ -58,6 +58,7 @@ ProjectileRecord::~ProjectileRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool ProjectileRecord::equals(const ProjectileRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
@@ -69,6 +70,7 @@ bool ProjectileRecord::equals(const ProjectileRecord& other) const
       and (unknownNAM1==other.unknownNAM1) and (unknownNAM2==other.unknownNAM2)
       and (unknownVNAM==other.unknownVNAM));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t ProjectileRecord::getWriteSize() const

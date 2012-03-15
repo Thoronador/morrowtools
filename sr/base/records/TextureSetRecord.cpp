@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -40,6 +40,7 @@ TextureSetRecord::~TextureSetRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool TextureSetRecord::equals(const TextureSetRecord& other) const
 {
   if ((equalsBasic(other)) and (editorID==other.editorID)
@@ -55,6 +56,7 @@ bool TextureSetRecord::equals(const TextureSetRecord& other) const
   }
   return false;
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t TextureSetRecord::getWriteSize() const

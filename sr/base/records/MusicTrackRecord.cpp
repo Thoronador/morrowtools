@@ -73,6 +73,7 @@ MusicTrackRecord::~MusicTrackRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool MusicTrackRecord::equals(const MusicTrackRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
@@ -84,6 +85,7 @@ bool MusicTrackRecord::equals(const MusicTrackRecord& other) const
       and (cuePoints==other.cuePoints) and (loop==other.loop)
       and (conditions==other.conditions));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t MusicTrackRecord::getWriteSize() const

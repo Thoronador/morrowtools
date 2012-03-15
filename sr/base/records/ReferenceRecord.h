@@ -23,7 +23,6 @@
 
 #include <string>
 #include <vector>
-#include <stdint.h>
 #include "BasicRecord.h"
 #include "BinarySubRecord.h"
 #include "SubBlock.h"
@@ -40,8 +39,10 @@ struct ReferenceRecord: public BasicRecord
     /* destructor */
     virtual ~ReferenceRecord();
 
+    #ifndef SR_NO_RECORD_EQUALITY
     /* returns true, if the other record contains the same data */
     bool equals(const ReferenceRecord& other) const;
+    #endif
 
     #ifndef SR_UNSAVEABLE_RECORDS
     /* returns the size in bytes that the record's data would occupy in a file

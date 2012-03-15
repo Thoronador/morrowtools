@@ -50,6 +50,7 @@ void BasicRecord::copyBasicMembers(const BasicRecord& other)
   headerUnknown5 = other.headerUnknown5;
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool BasicRecord::equalsBasic(const BasicRecord& other) const
 {
   return ((headerFlags==other.headerFlags)
@@ -58,6 +59,7 @@ bool BasicRecord::equalsBasic(const BasicRecord& other) const
     and (headerVersion==other.headerVersion)
     and (headerUnknown5==other.headerUnknown5));
 }
+#endif
 
 bool BasicRecord::loadSizeAndUnknownValues(std::ifstream& in_File, uint32_t& sizeStorage)
 {

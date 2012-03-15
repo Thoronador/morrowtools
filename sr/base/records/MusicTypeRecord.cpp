@@ -50,6 +50,7 @@ MusicTypeRecord::~MusicTypeRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool MusicTypeRecord::equals(const MusicTypeRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
@@ -57,6 +58,7 @@ bool MusicTypeRecord::equals(const MusicTypeRecord& other) const
       and (ducking_dB_uint16==other.ducking_dB_uint16) and (fadeDuration==other.fadeDuration)
       and (musicTrackFormIDs==other.musicTrackFormIDs));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t MusicTypeRecord::getWriteSize() const

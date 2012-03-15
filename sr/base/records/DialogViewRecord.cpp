@@ -44,6 +44,7 @@ DialogViewRecord::~DialogViewRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool DialogViewRecord::equals(const DialogViewRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
@@ -52,6 +53,7 @@ bool DialogViewRecord::equals(const DialogViewRecord& other) const
       and (hasENAM==other.hasENAM) and ((unknownENAM==other.unknownENAM) or (!hasENAM))
       and (hasDNAM==other.hasDNAM) and ((unknownDNAM==other.unknownDNAM) or (!hasDNAM)));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t DialogViewRecord::getWriteSize() const

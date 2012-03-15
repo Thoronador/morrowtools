@@ -47,6 +47,7 @@ SpellRecord::~SpellRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool SpellRecord::equals(const SpellRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
@@ -56,6 +57,7 @@ bool SpellRecord::equals(const SpellRecord& other) const
       and (equipTypeFormID==other.equipTypeFormID) and (descriptionStringID==other.descriptionStringID)
       and (memcmp(unknownSPIT, other.unknownSPIT, 36)==0) and (effects==other.effects));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t SpellRecord::getWriteSize() const

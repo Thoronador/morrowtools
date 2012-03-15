@@ -47,6 +47,7 @@ LoadScreenRecord::~LoadScreenRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool LoadScreenRecord::equals(const LoadScreenRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
@@ -58,6 +59,7 @@ bool LoadScreenRecord::equals(const LoadScreenRecord& other) const
       and (memcmp(unknownXNAM, other.unknownXNAM, 12)==0)
       and (unknownMOD2==other.unknownMOD2));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t LoadScreenRecord::getWriteSize() const

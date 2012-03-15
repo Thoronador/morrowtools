@@ -196,6 +196,7 @@ int32_t WeaponRecord::getRecordType() const
   return cWEAP;
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool WeaponRecord::equals(const WeaponRecord& other) const
 {
   if ((editorID!=other.editorID) or (unknownVMAD!=other.unknownVMAD)
@@ -233,6 +234,7 @@ bool WeaponRecord::equals(const WeaponRecord& other) const
       and (memcmp(unknownCRDT, other.unknownCRDT, 16)==0)
       and (unknownVNAM==other.unknownVNAM));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t WeaponRecord::getWriteSize() const

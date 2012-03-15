@@ -38,11 +38,13 @@ EncounterZoneRecord::~EncounterZoneRecord()
   //empty
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool EncounterZoneRecord::equals(const EncounterZoneRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
       and (unknownDATA==other.unknownDATA));
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t EncounterZoneRecord::getWriteSize() const

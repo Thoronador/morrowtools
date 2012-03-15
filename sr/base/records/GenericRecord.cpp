@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -73,6 +73,21 @@ GenericRecord::~GenericRecord()
   delete[] m_Data;
   m_DataSize = 0;
 }
+
+#ifndef SR_NO_RECORD_EQUALITY
+bool GenericRecord::equals(const GenericRecord& other) const
+{
+  if ((m_DataSize==other.m_DataSize) and (m_Header==other.m_Header))
+  {
+    if (m_DataSize!=0)
+    {
+      return (memcmp(m_Data, other.m_Data, m_DataSize)==0);
+    }
+    return true;
+  }//if
+  return false;
+}
+#endif
 
 bool GenericRecord::isGenericRecord() const
 {

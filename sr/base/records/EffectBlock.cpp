@@ -79,12 +79,7 @@ uint32_t EffectBlock::getWriteSize() const
   unsigned int i;
   for (i=0; i<unknownCTDA_CIS2s.size(); ++i)
   {
-    writeSize = writeSize +4 /* CTDA */ +2 /* 2 bytes for length */ +32 /* fixed length */;
-    if (!unknownCTDA_CIS2s[i].unknownCIS2.empty())
-    {
-      writeSize = writeSize +4 /* CIS2 */ +2 /* 2 bytes for length */
-                 +unknownCTDA_CIS2s[i].unknownCIS2.length()+1;
-    }//if CIS2
+    writeSize += unknownCTDA_CIS2s[i].getWriteSize();
   }//for
   return writeSize;
 }

@@ -26,6 +26,8 @@
 #include "../base/Apparatuses.h"
 #include "../base/Armours.h"
 #include "../base/Books.h"
+#include "../base/Containers.h"
+#include "../base/Factions.h"
 #include "../base/Floras.h"
 #include "../base/Ingredients.h"
 #include "../base/Keys.h"
@@ -64,6 +66,8 @@ bool ESMReaderFinder::needGroup(const GroupData& g_data) const
     case cAPPA:
     case cARMO:
     case cBOOK:
+    case cCONT:
+    case cFACT:
     case cFLOR:
     case cINGR:
     case cKEYM:
@@ -116,6 +120,12 @@ int ESMReaderFinder::readNextRecord(std::ifstream& in_File, const int32_t recNam
          break;
     case cBOOK:
          return Books::getSingleton().readNextRecord(in_File);
+         break;
+    case cCONT:
+         return Containers::getSingleton().readNextRecord(in_File);
+         break;
+    case cFACT:
+         return Factions::getSingleton().readNextRecord(in_File);
          break;
     case cFLOR:
          return Floras::getSingleton().readNextRecord(in_File);

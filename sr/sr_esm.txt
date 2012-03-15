@@ -404,6 +404,63 @@ Records and their sub-records:
           --> EFID and EFIT and CTDA/CIS2 seem to form blocks
 
 
+  FACT: faction
+      EDID (string, NUL-terminated)
+          editor ID
+      XNAM (12 bytes, optional, can occur multiple times)
+          interfaction relations
+            uint32_t  faction form ID
+            uint32_t  mod(?)
+            uint32_t  group combat reaction
+                0x00  - Neutral
+                0x01  - Enemy
+                0x02  - Ally
+                0x03  - Friend
+      FULL (4 bytes, optional)
+          faction name string ID
+      DATA (4 bytes)
+          unknown data
+      JAIL (4 bytes, optional)
+          exterior jail marker form ID (reference ID)
+      WAIT (4 bytes, optional)
+          follower wait marker form ID (reference ID)
+      STOL (4 bytes, optional)
+          stolen goods container form ID (reference ID)
+      PLCN (4 bytes, optional)
+          player inventory container form ID (reference ID)
+      CRGR (4 bytes, optional)
+          Shared Crime Faction List form ID (points to FLST)
+      JOUT (4 bytes, optional)
+          Jail Outfit form ID (points to record type OTFT)
+      CRVA (20 bytes or 16 bytes or 12 bytes, optional)
+          unknown data (I guess the size is version-dependent)
+
+      RNAM (4 bytes, optional, can occur multiple times)
+          rank index
+      MNAM (4 bytes, optional, can occur multiple times)
+          string ID of male rank name
+      FNAM (4 bytes, optional, can occur multiple times)
+          string ID of female rank name
+
+          ----> RNAM/MNAM/FNAM always seem to form triplets (or pairs in absence of FNAM).
+
+      VEND (4 bytes, optional)
+          unknown data, possibly form ID
+      VENC (4 bytes, optional)
+          unknown data, possibly form ID
+      VENV (12 bytes, optional)
+          unknown data
+          (looks like form ID, uint32_t, uint32_t (count/rank/flags?))
+      PLVD (12 bytes, optional)
+          unknown data
+      CITC (4 bytes, optional)
+          condition count
+      CTDA (32 bytes, optional, can occur multiple times)
+          condition data
+      CIS2 (string, NUL-terminated, optional)
+          script variable name
+
+
   FLOR: flora
       EDID (string, NUL-terminated)
           editor ID

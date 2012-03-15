@@ -69,6 +69,21 @@ struct CTDA_CIS2_compound
 
   /* equality operator */
   bool operator==(const CTDA_CIS2_compound& other) const;
+
+  #ifndef SR_UNSAVEABLE_RECORDS
+  /* tries to save the CTDA_CIS2 compound to the given stream and returns true
+     in case of success, false on failure
+
+     parameters:
+          output   - the output file stream
+  */
+  bool saveToStream(std::ofstream& output) const;
+
+  /* returns the size in bytes that the CTDA_CIS2 compound's data would occupy
+     in a file stream
+  */
+  uint32_t getWriteSize() const;
+  #endif
 }; //struct
 
 } //namespace

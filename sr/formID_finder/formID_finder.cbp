@@ -53,8 +53,10 @@
 		<Unit filename="..\base\Apparatuses.h" />
 		<Unit filename="..\base\Armours.h" />
 		<Unit filename="..\base\Books.h" />
+		<Unit filename="..\base\Containers.h" />
 		<Unit filename="..\base\ESMReader.cpp" />
 		<Unit filename="..\base\ESMReader.h" />
+		<Unit filename="..\base\Factions.h" />
 		<Unit filename="..\base\FormIDFunctions.cpp" />
 		<Unit filename="..\base\FormIDFunctions.h" />
 		<Unit filename="..\base\Ingredients.h" />
@@ -95,8 +97,12 @@
 		<Unit filename="..\base\records\CTDAData.h" />
 		<Unit filename="..\base\records\ComponentData.cpp" />
 		<Unit filename="..\base\records\ComponentData.h" />
+		<Unit filename="..\base\records\ContainerRecord.cpp" />
+		<Unit filename="..\base\records\ContainerRecord.h" />
 		<Unit filename="..\base\records\EffectBlock.cpp" />
 		<Unit filename="..\base\records\EffectBlock.h" />
+		<Unit filename="..\base\records\FactionRecord.cpp" />
+		<Unit filename="..\base\records\FactionRecord.h" />
 		<Unit filename="..\base\records\FloraRecord.cpp" />
 		<Unit filename="..\base\records\FloraRecord.h" />
 		<Unit filename="..\base\records\GroupData.cpp" />

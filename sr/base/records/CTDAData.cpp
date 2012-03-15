@@ -92,4 +92,36 @@ bool CTDA_CIS2_compound::operator==(const CTDA_CIS2_compound& other) const
   return ((unknownCTDA==other.unknownCTDA) and (unknownCIS2==other.unknownCIS2));
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
+bool CTDA_CIS2_compound::saveToStream(std::ofstream& output) const
+{
+  if (!unknownCTDA.saveToStream(output)) return false;
+
+  if (!unknownCIS2.empty())
+  {
+    //write CIS2
+    output.write((const char*) &cCIS2, 4);
+    //CIS2's length
+    const uint16_t subLength = unknownCIS2.length()+1;
+    output.write((const char*) &subLength, 2);
+    //write CIS2's stuff
+    output.write(unknownCIS2.c_str(), subLength);
+  }//if CIS2
+
+  return output.good();
+}
+
+uint32_t CTDA_CIS2_compound::getWriteSize() const
+{
+  uint32_t writeSize = 4 /* CTDA */ +2 /* 2 bytes for length */ +32 /* fixed length */;
+  if (!unknownCIS2.empty())
+  {
+    writeSize = writeSize +4 /* CIS2 */ +2 /* 2 bytes for length */
+               +unknownCIS2.length()+1 /* length of string +1 byte for NUL termination */;
+  }//if CIS2
+
+  return writeSize;
+}
+#endif
+
 } //namespace

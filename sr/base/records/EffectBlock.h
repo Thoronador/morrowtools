@@ -21,7 +21,9 @@
 #ifndef SR_EFFECTBLOCK_H
 #define SR_EFFECTBLOCK_H
 
+#ifndef SR_UNSAVEABLE_RECORDS
 #include <fstream>
+#endif
 #include <vector>
 #include <stdint.h>
 #include "CTDAData.h"

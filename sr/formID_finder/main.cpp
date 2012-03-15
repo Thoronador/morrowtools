@@ -37,6 +37,8 @@
 #include "../base/Apparatuses.h"
 #include "../base/Armours.h"
 #include "../base/Books.h"
+#include "../base/Containers.h"
+#include "../base/Factions.h"
 #include "../base/Floras.h"
 #include "../base/FormIDFunctions.h"
 #include "../base/Ingredients.h"
@@ -80,13 +82,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Form ID Finder for Skyrim, version 0.17.rev421, 2012-02-19\n";
+  std::cout << "Form ID Finder for Skyrim, version 0.18.rev443, 2012-03-15\n";
 }
 
 int showVersionExitcode()
 {
   showVersion();
-  return 421;
+  return 443;
 }
 
 void showHelp()
@@ -107,7 +109,9 @@ void showHelp()
             << "                     version of the same letter won't match. Deactivated by\n"
             << "                     default.\n"
             << "  --all-quest-info - shows complete quest info, including texts for journal\n"
-            << "                     entries and objectives.\n";
+            << "                     entries and objectives.\n"
+            << "  --faction-ranks  - shows the ranks of matching factions, too.\n"
+            << "  --ranks          - same as --faction-ranks\n";
 }
 
 //auxillary function
@@ -130,6 +134,7 @@ int main(int argc, char **argv)
   std::string searchKeyword = "";
   bool caseSensitive = false;
   bool allQuestInfo = false;
+  bool listFactionRanks = false;
   bool sendData = false;
   std::string sendParam1st ="", sendParam2nd ="";
 
@@ -239,6 +244,17 @@ int main(int argc, char **argv)
           allQuestInfo = true;
           std::cout << "Complete quest texts enabled.\n";
         }//all quest info
+        else if ((param=="--faction-ranks") or (param=="--ranks"))
+        {
+          //set more than once?
+          if (listFactionRanks)
+          {
+            std::cout << "Error: parameter \""<<param<<"\" was specified twice!\n";
+            return SRTP::rcInvalidParameter;
+          }
+          listFactionRanks = true;
+          std::cout << "Listing faction ranks was enabled.\n";
+        }//faction rank info
         else if (param=="--send-data")
         {
           //set more than once?
@@ -631,6 +647,109 @@ int main(int argc, char **argv)
       basic_out << "Total matching books: "<<bookMatches<<"\n";
     }
   }//scope for book stuff
+
+  //check containers for matches
+  {
+    unsigned int containerMatches = 0;
+    SRTP::Containers::ListIterator container_iter = SRTP::Containers::getSingleton().getBegin();
+    while (container_iter!=SRTP::Containers::getSingleton().getEnd())
+    {
+      if (container_iter->second.hasFULL)
+      {
+        if (table.hasString(container_iter->second.nameStringID))
+        {
+          if (matchesKeyword(table.getString(container_iter->second.nameStringID), searchKeyword, caseSensitive))
+          {
+            //found matching container record
+            if (containerMatches==0)
+            {
+              basic_out << "\n\nMatching containers:\n";
+            }
+            basic_out << "    \""<<table.getString(container_iter->second.nameStringID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(container_iter->second.headerFormID)
+                      <<"\n        editor ID \""<<container_iter->second.editorID<<"\"\n";
+            ++containerMatches;
+            ++totalMatches;
+          }//if match found
+        }//if table has string
+      }//if hasFULL
+      ++container_iter;
+    }//while
+    if (containerMatches>0)
+    {
+      basic_out << "Total matching containers: "<<containerMatches<<"\n";
+    }
+  }//scope for container stuff
+
+  //check factions for matches
+  {
+    unsigned int factionMatches = 0;
+    SRTP::Factions::ListIterator faction_iter = SRTP::Factions::getSingleton().getBegin();
+    while (faction_iter!=SRTP::Factions::getSingleton().getEnd())
+    {
+      if (faction_iter->second.hasFULL)
+      {
+        if (table.hasString(faction_iter->second.nameStringID))
+        {
+          if (matchesKeyword(table.getString(faction_iter->second.nameStringID), searchKeyword, caseSensitive))
+          {
+            //found matching faction record
+            if (factionMatches==0)
+            {
+              basic_out << "\n\nMatching factions:\n";
+            }
+            basic_out << "    \""<<table.getString(faction_iter->second.nameStringID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(faction_iter->second.headerFormID)
+                      <<"\n        editor ID \""<<faction_iter->second.editorID<<"\"\n";
+            if (listFactionRanks)
+            {
+              basic_out << "        ranks: ";
+              const unsigned int rankCount = faction_iter->second.ranks.size();
+              if (rankCount==0)
+              {
+                basic_out << "none\n";
+              }//no ranks found
+              else
+              {
+                basic_out << rankCount <<"\n";
+                for (i=0; i<rankCount; ++i)
+                {
+                  basic_out << "          ("<<faction_iter->second.ranks[i].index
+                            << ") male: ";
+                  if ((faction_iter->second.ranks[i].maleNameStringID==0)
+                     or (!table.hasString(faction_iter->second.ranks[i].maleNameStringID)))
+                  {
+                    basic_out << "(none)";
+                  }
+                  else
+                  {
+                    basic_out << "\""<<table.getString(faction_iter->second.ranks[i].maleNameStringID)<<"\"";
+                  }
+                  basic_out << ", female: ";
+                  if ((faction_iter->second.ranks[i].femaleNameStringID==0)
+                     or (!table.hasString(faction_iter->second.ranks[i].femaleNameStringID)))
+                  {
+                    basic_out << "(none)\n";
+                  }
+                  else
+                  {
+                    basic_out << "\""<<table.getString(faction_iter->second.ranks[i].femaleNameStringID)<<"\"\n";
+                  }
+                }//for
+              }//else (at least one rank)
+            }//if faction ranks requested
+            ++factionMatches;
+            ++totalMatches;
+          }//if match found
+        }//if table has string
+      }//if hasFULL
+      ++faction_iter;
+    }//while
+    if (factionMatches>0)
+    {
+      basic_out << "Total matching factions: "<<factionMatches<<"\n";
+    }
+  }//scope for faction stuff
 
   //check flora for matches
   {

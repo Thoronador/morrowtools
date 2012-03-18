@@ -1168,9 +1168,8 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: NPC_ seems to have more than one INAM subrecord.\n";
              return false;
            }
-           actual_in->seekg(-4, std::ios_base::cur);
            //read INAM
-           if (!loadUint32SubRecordFromStream(*actual_in, cINAM, unknownINAM)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cINAM, unknownINAM, false)) return false;
            bytesRead += 6;
            hasINAM = true;
            break;
@@ -1180,9 +1179,8 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: NPC_ seems to have more than one VTCK subrecord.\n";
              return false;
            }
-           actual_in->seekg(-4, std::ios_base::cur);
            //read VTCK
-           if (!loadUint32SubRecordFromStream(*actual_in, cVTCK, unknownVTCK)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cVTCK, unknownVTCK, false)) return false;
            bytesRead += 6;
            hasVTCK = true;
            break;
@@ -1192,9 +1190,8 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: NPC_ seems to have more than one TPLT subrecord.\n";
              return false;
            }
-           actual_in->seekg(-4, std::ios_base::cur);
            //read TPLT
-           if (!loadUint32SubRecordFromStream(*actual_in, cTPLT, unknownTPLT)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cTPLT, unknownTPLT, false)) return false;
            bytesRead += 6;
            hasTPLT = true;
            break;
@@ -1204,9 +1201,8 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: NPC_ seems to have more than one RNAM subrecord.\n";
              return false;
            }
-           actual_in->seekg(-4, std::ios_base::cur);
            //read RNAM
-           if (!loadUint32SubRecordFromStream(*actual_in, cRNAM, unknownRNAM)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cRNAM, unknownRNAM, false)) return false;
            bytesRead += 6;
            hasReadRNAM = true;
            break;
@@ -1241,9 +1237,8 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: NPC_ seems to have more than one WNAM subrecord.\n";
              return false;
            }
-           actual_in->seekg(-4, std::ios_base::cur);
            //read WNAM
-           if (!loadUint32SubRecordFromStream(*actual_in, cWNAM, unknownWNAM)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cWNAM, unknownWNAM, false)) return false;
            bytesRead += 6;
            hasWNAM = true;
            break;
@@ -1253,9 +1248,8 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: NPC_ seems to have more than one ANAM subrecord.\n";
              return false;
            }
-           actual_in->seekg(-4, std::ios_base::cur);
            //read ANAM
-           if (!loadUint32SubRecordFromStream(*actual_in, cANAM, unknownANAM)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cANAM, unknownANAM, false)) return false;
            bytesRead += 6;
            hasANAM = true;
            break;
@@ -1265,9 +1259,8 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: NPC_ seems to have more than one ATKR subrecord.\n";
              return false;
            }
-           actual_in->seekg(-4, std::ios_base::cur);
            //read ATKR
-           if (!loadUint32SubRecordFromStream(*actual_in, cATKR, unknownATKR)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cATKR, unknownATKR, false)) return false;
            bytesRead += 6;
            hasATKR = true;
            break;
@@ -1327,9 +1320,8 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: NPC_ seems to have more than one SPCT subrecord.\n";
              return false;
            }
-           actual_in->seekg(-4, std::ios_base::cur);
            //read SPCT
-           if (!loadUint32SubRecordFromStream(*actual_in, cSPCT, size_int)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cSPCT, size_int, false)) return false;
            bytesRead += 6;
            if (size_int==0)
            {
@@ -1373,9 +1365,8 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: NPC_ seems to have more than one PRKZ subrecord.\n";
              return false;
            }
-           actual_in->seekg(-4, std::ios_base::cur);
            //read PRKZ
-           if (!loadUint32SubRecordFromStream(*actual_in, cPRKZ, size_int)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cPRKZ, size_int, false)) return false;
            bytesRead += 6;
            if (size_int==0)
            {
@@ -1420,9 +1411,8 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: NPC_ seems to have more than one COCT subrecord.\n";
              return false;
            }
-           actual_in->seekg(-4, std::ios_base::cur);
            //read COCT
-           if (!loadUint32SubRecordFromStream(*actual_in, cCOCT, tempUint32)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cCOCT, tempUint32, false)) return false;
            bytesRead += 6;
            if (tempUint32==0)
            {
@@ -1467,9 +1457,8 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: NPC_ seems to have more than one SPOR subrecord.\n";
              return false;
            }
-           actual_in->seekg(-4, std::ios_base::cur);
            //read SPOR
-           if (!loadUint32SubRecordFromStream(*actual_in, cSPOR, unknownSPOR)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cSPOR, unknownSPOR, false)) return false;
            bytesRead += 6;
            hasSPOR = true;
            break;
@@ -1479,9 +1468,8 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: NPC_ seems to have more than one ECOR subrecord.\n";
              return false;
            }
-           actual_in->seekg(-4, std::ios_base::cur);
            //read ECOR
-           if (!loadUint32SubRecordFromStream(*actual_in, cECOR, unknownECOR)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cECOR, unknownECOR, false)) return false;
            bytesRead += 6;
            hasECOR = true;
            break;
@@ -1537,9 +1525,8 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: NPC_ seems to have more than one KSIZ subrecord.\n";
              return false;
            }
-           actual_in->seekg(-4, std::ios_base::cur);
            //read KSIZ
-           if (!loadUint32SubRecordFromStream(*actual_in, cKSIZ, size_int)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cKSIZ, size_int, false)) return false;
            bytesRead += 6;
            if (size_int==0)
            {
@@ -1583,9 +1570,8 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: NPC_ seems to have more than one CNAM subrecord.\n";
              return false;
            }
-           actual_in->seekg(-4, std::ios_base::cur);
            //read CNAM
-           if (!loadUint32SubRecordFromStream(*actual_in, cCNAM, unknownCNAM)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cCNAM, unknownCNAM, false)) return false;
            bytesRead += 6;
            hasReadCNAM = true;
            break;
@@ -1595,9 +1581,8 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: NPC_ seems to have more than one FULL subrecord.\n";
              return false;
            }
-           actual_in->seekg(-4, std::ios_base::cur);
            //read FULL
-           if (!loadUint32SubRecordFromStream(*actual_in, cFULL, nameStringID)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cFULL, nameStringID, false)) return false;
            bytesRead += 6;
            hasFULL = true;
            break;
@@ -1607,9 +1592,8 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: NPC_ seems to have more than one SHRT subrecord.\n";
              return false;
            }
-           actual_in->seekg(-4, std::ios_base::cur);
            //read SHRT
-           if (!loadUint32SubRecordFromStream(*actual_in, cSHRT, unknownSHRT)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cSHRT, unknownSHRT, false)) return false;
            bytesRead += 6;
            hasSHRT = true;
            break;
@@ -1684,9 +1668,8 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: NPC_ seems to have more than one HCLF subrecord.\n";
              return false;
            }
-           actual_in->seekg(-4, std::ios_base::cur);
            //read HCLF
-           if (!loadUint32SubRecordFromStream(*actual_in, cHCLF, unknownHCLF)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cHCLF, unknownHCLF, false)) return false;
            bytesRead += 6;
            hasHCLF = true;
            break;
@@ -1696,9 +1679,8 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: NPC_ seems to have more than one GNAM subrecord.\n";
              return false;
            }
-           actual_in->seekg(-4, std::ios_base::cur);
            //read GNAM
-           if (!loadUint32SubRecordFromStream(*actual_in, cGNAM, unknownGNAM)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cGNAM, unknownGNAM, false)) return false;
            bytesRead += 6;
            hasGNAM = true;
            break;
@@ -1708,9 +1690,8 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: NPC_ seems to have more than one ZNAM subrecord.\n";
              return false;
            }
-           actual_in->seekg(-4, std::ios_base::cur);
            //read ZNAM
-           if (!loadUint32SubRecordFromStream(*actual_in, cZNAM, unknownZNAM)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cZNAM, unknownZNAM, false)) return false;
            bytesRead += 6;
            hasZNAM = true;
            break;
@@ -1745,9 +1726,8 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: NPC_ seems to have more than one NAM6 subrecord.\n";
              return false;
            }
-           actual_in->seekg(-4, std::ios_base::cur);
            //read NAM6
-           if (!loadUint32SubRecordFromStream(*actual_in, cNAM6, unknownNAM6)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cNAM6, unknownNAM6, false)) return false;
            bytesRead += 6;
            hasReadNAM6 = true;
            break;
@@ -1757,9 +1737,8 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: NPC_ seems to have more than one NAM7 subrecord.\n";
              return false;
            }
-           actual_in->seekg(-4, std::ios_base::cur);
            //read NAM7
-           if (!loadUint32SubRecordFromStream(*actual_in, cNAM7, unknownNAM7)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cNAM7, unknownNAM7, false)) return false;
            bytesRead += 6;
            hasReadNAM7 = true;
            break;
@@ -1769,9 +1748,8 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: NPC_ seems to have more than one NAM8 subrecord.\n";
              return false;
            }
-           actual_in->seekg(-4, std::ios_base::cur);
            //read NAM8
-           if (!loadUint32SubRecordFromStream(*actual_in, cNAM8, unknownNAM8)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cNAM8, unknownNAM8, false)) return false;
            bytesRead += 6;
            hasReadNAM8 = true;
            break;
@@ -1781,9 +1759,8 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: NPC_ seems to have more than one DOFT subrecord.\n";
              return false;
            }
-           actual_in->seekg(-4, std::ios_base::cur);
            //read DOFT
-           if (!loadUint32SubRecordFromStream(*actual_in, cDOFT, unknownDOFT)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cDOFT, unknownDOFT, false)) return false;
            bytesRead += 6;
            hasDOFT = true;
            break;
@@ -1793,9 +1770,8 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: NPC_ seems to have more than one SOFT subrecord.\n";
              return false;
            }
-           actual_in->seekg(-4, std::ios_base::cur);
            //read SOFT
-           if (!loadUint32SubRecordFromStream(*actual_in, cSOFT, unknownSOFT)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cSOFT, unknownSOFT, false)) return false;
            bytesRead += 6;
            hasSOFT = true;
            break;
@@ -1805,9 +1781,8 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: NPC_ seems to have more than one CRIF subrecord.\n";
              return false;
            }
-           actual_in->seekg(-4, std::ios_base::cur);
            //read CRIF
-           if (!loadUint32SubRecordFromStream(*actual_in, cCRIF, unknownCRIF)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cCRIF, unknownCRIF, false)) return false;
            bytesRead += 6;
            hasCRIF = true;
            break;
@@ -1817,21 +1792,18 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: NPC_ seems to have more than one CSCR subrecord.\n";
              return false;
            }
-           actual_in->seekg(-4, std::ios_base::cur);
            //read CSCR
-           if (!loadUint32SubRecordFromStream(*actual_in, cCSCR, unknownCSCR)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cCSCR, unknownCSCR, false)) return false;
            bytesRead += 6;
            hasCSCR = true;
            break;
       case cCSDT:
            //read CSDT
-           actual_in->seekg(-4, std::ios_base::cur);
-           //read CSDT
-           if (!loadUint32SubRecordFromStream(*actual_in, cCSDT, tempCSDX.unknownCSDT)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cCSDT, tempCSDX.unknownCSDT, false)) return false;
            bytesRead += 6;
 
            //read TINC
-           if (!loadUint32SubRecordFromStream(*actual_in, cCSDI, tempCSDX.unknownCSDI)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cCSDI, tempCSDX.unknownCSDI, true)) return false;
            bytesRead += 10;
 
            //read CSDC
@@ -1867,9 +1839,8 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: NPC_ seems to have more than one DPLT subrecord.\n";
              return false;
            }
-           actual_in->seekg(-4, std::ios_base::cur);
            //read DPLT
-           if (!loadUint32SubRecordFromStream(*actual_in, cDPLT, unknownDPLT)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cDPLT, unknownDPLT, false)) return false;
            bytesRead += 6;
            hasDPLT = true;
            break;
@@ -1879,9 +1850,8 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: NPC_ seems to have more than one FTST subrecord.\n";
              return false;
            }
-           actual_in->seekg(-4, std::ios_base::cur);
            //read FTST
-           if (!loadUint32SubRecordFromStream(*actual_in, cFTST, unknownFTST)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cFTST, unknownFTST, false)) return false;
            bytesRead += 6;
            hasFTST = true;
            break;
@@ -1971,11 +1941,11 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
            }
 
            //read TINC
-           if (!loadUint32SubRecordFromStream(*actual_in, cTINC, tempTINX.unknownTINC)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cTINC, tempTINX.unknownTINC, true)) return false;
            bytesRead += 10;
 
            //read TINV
-           if (!loadUint32SubRecordFromStream(*actual_in, cTINV, tempTINX.unknownTINV)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cTINV, tempTINX.unknownTINV, true)) return false;
            bytesRead += 10;
 
            //read TIAS

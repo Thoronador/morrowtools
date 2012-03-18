@@ -197,10 +197,8 @@ bool LandscapeTextureRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: LTEX seems to have more than one TNAM subrecord!\n";
              return false;
            }
-           //skip back 4 bytes
-           in_File.seekg(-4, std::ios_base::cur);
            //readTNAM
-           if (!loadUint32SubRecordFromStream(in_File, cTNAM, unknownTNAM))
+           if (!loadUint32SubRecordFromStream(in_File, cTNAM, unknownTNAM, false))
            {
              std::cout << "Error while reading subrecord TNAM of LTEX!\n";
              return false;
@@ -214,10 +212,8 @@ bool LandscapeTextureRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: LTEX seems to have more than one MNAM subrecord!\n";
              return false;
            }
-           //skip back 4 bytes
-           in_File.seekg(-4, std::ios_base::cur);
            //readMNAM
-           if (!loadUint32SubRecordFromStream(in_File, cMNAM, unknownMNAM))
+           if (!loadUint32SubRecordFromStream(in_File, cMNAM, unknownMNAM, false))
            {
              std::cout << "Error while reading subrecord MNAM of LTEX!\n";
              return false;
@@ -277,10 +273,8 @@ bool LandscapeTextureRecord::loadFromStream(std::ifstream& in_File)
            break;
       case cGNAM:
            temp = 0;
-           //skip back 4 bytes
-           in_File.seekg(-4, std::ios_base::cur);
            //read GNAM
-           if (!loadUint32SubRecordFromStream(in_File, cGNAM, temp))
+           if (!loadUint32SubRecordFromStream(in_File, cGNAM, temp, false))
            {
              std::cout << "Error while reading subrecord GNAM of LTEX!\n";
              return false;

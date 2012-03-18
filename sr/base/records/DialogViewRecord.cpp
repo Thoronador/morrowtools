@@ -185,7 +185,7 @@ bool DialogViewRecord::loadFromStream(std::ifstream& in_File)
   editorID = std::string(buffer);
 
   //read QNAM
-  if (!loadUint32SubRecordFromStream(in_File, cQNAM, unknownQNAM))
+  if (!loadUint32SubRecordFromStream(in_File, cQNAM, unknownQNAM, true))
   {
     std::cout << "Error while reading subrecord QNAM of DLVW!\n";
     return false;
@@ -205,9 +205,8 @@ bool DialogViewRecord::loadFromStream(std::ifstream& in_File)
     switch (subRecName)
     {
       case cBNAM:
-           //BNAM's length
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cBNAM, tempUint32))
+           //read BNAM
+           if (!loadUint32SubRecordFromStream(in_File, cBNAM, tempUint32, false))
            {
              std::cout << "Error while reading subrecord BNAM of DLVW!\n";
              return false;
@@ -216,9 +215,8 @@ bool DialogViewRecord::loadFromStream(std::ifstream& in_File)
            unknownBNAMs.push_back(tempUint32);
            break;
       case cTNAM:
-           //TNAM's length
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cTNAM, tempUint32))
+           //read TNAM
+           if (!loadUint32SubRecordFromStream(in_File, cTNAM, tempUint32, false))
            {
              std::cout << "Error while reading subrecord TNAM of DLVW!\n";
              return false;
@@ -232,8 +230,8 @@ bool DialogViewRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: record DLVW seems to have more than one ENAM subrecord!\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cENAM, unknownENAM))
+           //load ENAM
+           if (!loadUint32SubRecordFromStream(in_File, cENAM, unknownENAM, false))
            {
              std::cout << "Error while reading subrecord ENAM of DLVW!\n";
              return false;

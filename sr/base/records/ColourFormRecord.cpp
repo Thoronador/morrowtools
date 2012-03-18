@@ -164,8 +164,7 @@ bool ColourFormRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read FULL
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID, false)) return false;
            bytesRead += 6;
            hasFULL = true;
            break;
@@ -176,8 +175,7 @@ bool ColourFormRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read CNAM
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cCNAM, unknownCNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cCNAM, unknownCNAM, false)) return false;
            bytesRead += 6;
            hasReadCNAM = true;
            break;
@@ -188,8 +186,7 @@ bool ColourFormRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read FNAM
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cFNAM, unknownFNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cFNAM, unknownFNAM, false)) return false;
            bytesRead += 6;
            hasReadFNAM = true;
            break;

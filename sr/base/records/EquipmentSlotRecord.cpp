@@ -157,10 +157,8 @@ bool EquipmentSlotRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: EQUP seems to have more than one DATA subrecord!\n";
              return false;
            }
-           //skip back
-           in_File.seekg(-4, std::ios_base::cur);
            //read DATA
-           if (!loadUint32SubRecordFromStream(in_File, cDATA, flags)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cDATA, flags, false)) return false;
            bytesRead += 6;
            hasReadDATA = true;
            break;

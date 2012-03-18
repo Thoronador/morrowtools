@@ -489,8 +489,7 @@ bool LocationRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read FULL
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID, false)) return false;
            bytesRead += 6;
            hasFULL = true;
            break;
@@ -502,8 +501,7 @@ bool LocationRecord::loadFromStream(std::ifstream& in_File)
            }
            //read KSIZ
            k_Size = 0;
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cKSIZ, k_Size)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cKSIZ, k_Size, false)) return false;
            bytesRead += 6;
            if (k_Size==0)
            {
@@ -548,8 +546,7 @@ bool LocationRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read PNAM
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cPNAM, unknownPNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cPNAM, unknownPNAM, false)) return false;
            bytesRead += 6;
            hasPNAM = true;
            break;
@@ -560,8 +557,7 @@ bool LocationRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read FNAM
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cFNAM, unknownFNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cFNAM, unknownFNAM, false)) return false;
            bytesRead += 6;
            hasFNAM = true;
            break;
@@ -572,8 +568,7 @@ bool LocationRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read MNAM
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cMNAM, unknownMNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cMNAM, unknownMNAM, false)) return false;
            bytesRead += 6;
            hasMNAM = true;
            break;
@@ -584,8 +579,7 @@ bool LocationRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read RNAM
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cRNAM, unknownRNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cRNAM, unknownRNAM, false)) return false;
            bytesRead += 6;
            hasRNAM = true;
            break;
@@ -596,8 +590,7 @@ bool LocationRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read NAM0
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cNAM0, unknownNAM0)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cNAM0, unknownNAM0, false)) return false;
            bytesRead += 6;
            hasNAM0 = true;
            break;
@@ -608,8 +601,7 @@ bool LocationRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read CNAM
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cCNAM, unknownCNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cCNAM, unknownCNAM, false)) return false;
            bytesRead += 6;
            hasCNAM = true;
            break;
@@ -620,8 +612,7 @@ bool LocationRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read NAM1
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cNAM1, unknownNAM1)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cNAM1, unknownNAM1, false)) return false;
            bytesRead += 6;
            hasNAM1 = true;
            break;

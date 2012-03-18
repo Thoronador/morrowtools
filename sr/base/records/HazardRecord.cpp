@@ -243,8 +243,7 @@ bool HazardRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read FULL
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID, false)) return false;
            bytesRead += 6;
            hasFULL = true;
            break;
@@ -294,8 +293,7 @@ bool HazardRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read MNAM
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cMNAM, unknownMNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cMNAM, unknownMNAM, false)) return false;
            bytesRead += 6;
            hasMNAM = true;
            break;

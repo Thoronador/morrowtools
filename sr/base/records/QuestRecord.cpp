@@ -792,9 +792,8 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: QUST seems to have more than one FULL subrecord.\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
            //read FULL
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, unknownFULL)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cFULL, unknownFULL, false)) return false;
            bytesRead += 6;
            hasFULL = true;
            lastReadRec = cFULL;
@@ -831,17 +830,15 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: QUST seems to have more than one ENAM subrecord.\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
            //read ENAM
-           if (!loadUint32SubRecordFromStream(in_File, cENAM, unknownENAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cENAM, unknownENAM, false)) return false;
            bytesRead += 6;
            hasENAM = true;
            lastReadRec = cENAM;
            break;
       case cQTGL:
-           in_File.seekg(-4, std::ios_base::cur);
            //read QTGL
-           if (!loadUint32SubRecordFromStream(in_File, cQTGL, tempUint32)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cQTGL, tempUint32, false)) return false;
            bytesRead += 6;
            unknownQTGLs.push_back(tempUint32);
            lastReadRec = cQTGL;
@@ -1006,9 +1003,8 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: QUST seems to have more than one NAM0 subrecord per QSDT.\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
            //read NAM0
-           if (!loadUint32SubRecordFromStream(in_File, cNAM0, tempQSDT.unknownNAM0)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cNAM0, tempQSDT.unknownNAM0, false)) return false;
            bytesRead += 6;
            tempQSDT.hasNAM0 = true;
            lastReadRec = cNAM0;
@@ -1025,9 +1021,8 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: QUST seems to have more than one QNAM subrecord per QSDT.\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
            //read QNAM
-           if (!loadUint32SubRecordFromStream(in_File, cQNAM, tempQSDT.unknownQNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cQNAM, tempQSDT.unknownQNAM, false)) return false;
            bytesRead += 6;
            tempQSDT.hasQNAM = true;
            lastReadRec = cQNAM;
@@ -1166,11 +1161,11 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
            }
 
            //read FNAM
-           if (!loadUint32SubRecordFromStream(in_File, cFNAM, tempQOBJ.unknownFNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cFNAM, tempQOBJ.unknownFNAM, true)) return false;
            bytesRead += 10;
 
            //read NNAM
-           if (!loadUint32SubRecordFromStream(in_File, cNNAM, tempQOBJ.unknownNNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cNNAM, tempQOBJ.unknownNNAM, true)) return false;
            bytesRead += 10;
 
            hasUnpushedQOBJEntry = true;
@@ -1311,9 +1306,8 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: QUST seems to have more than one ANAM subrecord.\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
            //read ANAM
-           if (!loadUint32SubRecordFromStream(in_File, cANAM, unknownANAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cANAM, unknownANAM, false)) return false;
            bytesRead += 6;
            hasReadANAM = true;
            lastReadRec = cANAM;
@@ -1323,9 +1317,8 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
            //alias started
            al_entry.clear();
            //ALST is always first
-           in_File.seekg(-4, std::ios_base::cur);
            //read ALST/ALLS
-           if (!loadUint32SubRecordFromStream(in_File, subRecName, al_entry.unknownALST)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, subRecName, al_entry.unknownALST, false)) return false;
            bytesRead += 6;
 
            if (subRecName==cALST)
@@ -1382,9 +1375,8 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
                       std::cout << "Error: QUST seems to have more than one FNAM subrecord per alias structure.\n";
                       return false;
                     }
-                    in_File.seekg(-4, std::ios_base::cur);
                     //read FNAM
-                    if (!loadUint32SubRecordFromStream(in_File, cFNAM, al_entry.unknownFNAM)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cFNAM, al_entry.unknownFNAM, false)) return false;
                     bytesRead += 6;
                     hasReadFNAM = true;
                     break;
@@ -1394,9 +1386,8 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
                       std::cout << "Error: QUST seems to have more than one ALFA subrecord per alias structure.\n";
                       return false;
                     }
-                    in_File.seekg(-4, std::ios_base::cur);
                     //read ALFA
-                    if (!loadUint32SubRecordFromStream(in_File, cALFA, al_entry.unknownALFA)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cALFA, al_entry.unknownALFA, false)) return false;
                     bytesRead += 6;
                     al_entry.hasALFA = true;
                     break;
@@ -1406,9 +1397,8 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
                       std::cout << "Error: QUST seems to have more than one ALRT subrecord per alias structure.\n";
                       return false;
                     }
-                    in_File.seekg(-4, std::ios_base::cur);
                     //read ALRT
-                    if (!loadUint32SubRecordFromStream(in_File, cALRT, al_entry.unknownALRT)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cALRT, al_entry.unknownALRT, false)) return false;
                     bytesRead += 6;
                     al_entry.hasALRT = true;
                     break;
@@ -1418,9 +1408,8 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
                       std::cout << "Error: QUST seems to have more than one ALCO subrecord per alias structure.\n";
                       return false;
                     }
-                    in_File.seekg(-4, std::ios_base::cur);
                     //read ALCO
-                    if (!loadUint32SubRecordFromStream(in_File, cALCO, al_entry.unknownALCO)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cALCO, al_entry.unknownALCO, false)) return false;
                     bytesRead += 6;
                     al_entry.hasALCO = true;
                     break;
@@ -1430,9 +1419,8 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
                       std::cout << "Error: QUST seems to have more than one ALCA subrecord per alias structure.\n";
                       return false;
                     }
-                    in_File.seekg(-4, std::ios_base::cur);
                     //read ALCA
-                    if (!loadUint32SubRecordFromStream(in_File, cALCA, al_entry.unknownALCA)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cALCA, al_entry.unknownALCA, false)) return false;
                     bytesRead += 6;
                     al_entry.hasALCA = true;
                     break;
@@ -1442,9 +1430,8 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
                       std::cout << "Error: QUST seems to have more than one ALCL subrecord per alias structure.\n";
                       return false;
                     }
-                    in_File.seekg(-4, std::ios_base::cur);
                     //read ALCL
-                    if (!loadUint32SubRecordFromStream(in_File, cALCL, al_entry.unknownALCL)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cALCL, al_entry.unknownALCL, false)) return false;
                     bytesRead += 6;
                     al_entry.hasALCL = true;
                     break;
@@ -1454,9 +1441,8 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
                       std::cout << "Error: QUST seems to have more than one ALDN subrecord per alias structure.\n";
                       return false;
                     }
-                    in_File.seekg(-4, std::ios_base::cur);
                     //read ALDN
-                    if (!loadUint32SubRecordFromStream(in_File, cALDN, al_entry.unknownALDN)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cALDN, al_entry.unknownALDN, false)) return false;
                     bytesRead += 6;
                     al_entry.hasALDN = true;
                     break;
@@ -1466,10 +1452,9 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
                       std::cout << "Error: QUST seems to have more than one COCT subrecord per alias structure.\n";
                       return false;
                     }
-                    in_File.seekg(-4, std::ios_base::cur);
                     //read COCT
                     size_int = 0;
-                    if (!loadUint32SubRecordFromStream(in_File, cCOCT, size_int)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cCOCT, size_int, false)) return false;
                     bytesRead += 6;
                     if (size_int==0)
                     {
@@ -1538,10 +1523,9 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
                       std::cout << "Error: QUST seems to have more than one KSIZ subrecord per alias structure.\n";
                       return false;
                     }
-                    in_File.seekg(-4, std::ios_base::cur);
                     //read KSIZ
                     size_int = 0;
-                    if (!loadUint32SubRecordFromStream(in_File, cKSIZ, size_int)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cKSIZ, size_int, false)) return false;
                     bytesRead += 6;
                     if (size_int==0)
                     {
@@ -1585,9 +1569,8 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
                       std::cout << "Error: QUST seems to have more than one ALFE subrecord per alias structure.\n";
                       return false;
                     }
-                    in_File.seekg(-4, std::ios_base::cur);
                     //read ALFE
-                    if (!loadUint32SubRecordFromStream(in_File, cALFE, al_entry.unknownALFE)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cALFE, al_entry.unknownALFE, false)) return false;
                     bytesRead += 6;
                     al_entry.hasALFE = true;
                     break;
@@ -1597,9 +1580,8 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
                       std::cout << "Error: QUST seems to have more than one ALFD subrecord per alias structure.\n";
                       return false;
                     }
-                    in_File.seekg(-4, std::ios_base::cur);
                     //read ALFD
-                    if (!loadUint32SubRecordFromStream(in_File, cALFD, al_entry.unknownALFD)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cALFD, al_entry.unknownALFD, false)) return false;
                     bytesRead += 6;
                     al_entry.hasALFD = true;
                     break;
@@ -1609,9 +1591,8 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
                       std::cout << "Error: QUST seems to have more than one ALFI subrecord per alias structure.\n";
                       return false;
                     }
-                    in_File.seekg(-4, std::ios_base::cur);
                     //read ALFI
-                    if (!loadUint32SubRecordFromStream(in_File, cALFI, al_entry.unknownALFI)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cALFI, al_entry.unknownALFI, false)) return false;
                     bytesRead += 6;
                     al_entry.hasALFI = true;
                     break;
@@ -1621,9 +1602,8 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
                       std::cout << "Error: QUST seems to have more than one ALFL subrecord per alias structure.\n";
                       return false;
                     }
-                    in_File.seekg(-4, std::ios_base::cur);
                     //read ALFL
-                    if (!loadUint32SubRecordFromStream(in_File, cALFL, al_entry.unknownALFL)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cALFL, al_entry.unknownALFL, false)) return false;
                     bytesRead += 6;
                     al_entry.hasALFL = true;
                     break;
@@ -1633,9 +1613,8 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
                       std::cout << "Error: QUST seems to have more than one ALFR subrecord per alias structure.\n";
                       return false;
                     }
-                    in_File.seekg(-4, std::ios_base::cur);
                     //read ALFR
-                    if (!loadUint32SubRecordFromStream(in_File, cALFR, al_entry.unknownALFR)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cALFR, al_entry.unknownALFR, false)) return false;
                     bytesRead += 6;
                     al_entry.hasALFR = true;
                     break;
@@ -1645,9 +1624,8 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
                       std::cout << "Error: QUST seems to have more than one ALNA subrecord per alias structure.\n";
                       return false;
                     }
-                    in_File.seekg(-4, std::ios_base::cur);
                     //read ALNA
-                    if (!loadUint32SubRecordFromStream(in_File, cALNA, al_entry.unknownALNA)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cALNA, al_entry.unknownALNA, false)) return false;
                     bytesRead += 6;
                     al_entry.hasALNA = true;
                     break;
@@ -1657,9 +1635,8 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
                       std::cout << "Error: QUST seems to have more than one ALNT subrecord per alias structure.\n";
                       return false;
                     }
-                    in_File.seekg(-4, std::ios_base::cur);
                     //read ALNT
-                    if (!loadUint32SubRecordFromStream(in_File, cALNT, al_entry.unknownALNT)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cALNT, al_entry.unknownALNT, false)) return false;
                     bytesRead += 6;
                     al_entry.hasALNT = true;
                     break;
@@ -1669,9 +1646,8 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
                       std::cout << "Error: QUST seems to have more than one ALUA subrecord per alias structure.\n";
                       return false;
                     }
-                    in_File.seekg(-4, std::ios_base::cur);
                     //read ALUA
-                    if (!loadUint32SubRecordFromStream(in_File, cALUA, al_entry.unknownALUA)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cALUA, al_entry.unknownALUA, false)) return false;
                     bytesRead += 6;
                     al_entry.hasALUA = true;
                     break;
@@ -1681,9 +1657,8 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
                       std::cout << "Error: QUST seems to have more than one ALEQ subrecord per alias structure.\n";
                       return false;
                     }
-                    in_File.seekg(-4, std::ios_base::cur);
                     //read ALEQ
-                    if (!loadUint32SubRecordFromStream(in_File, cALEQ, al_entry.unknownALEQ)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cALEQ, al_entry.unknownALEQ, false)) return false;
                     bytesRead += 6;
                     al_entry.hasALEQ = true;
                     break;
@@ -1693,16 +1668,14 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
                       std::cout << "Error: QUST seems to have more than one ALEA subrecord per alias structure.\n";
                       return false;
                     }
-                    in_File.seekg(-4, std::ios_base::cur);
                     //read ALEA
-                    if (!loadUint32SubRecordFromStream(in_File, cALEA, al_entry.unknownALEA)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cALEA, al_entry.unknownALEA, false)) return false;
                     bytesRead += 6;
                     al_entry.hasALEA = true;
                     break;
                case cALSP:
-                    in_File.seekg(-4, std::ios_base::cur);
                     //read ALSP
-                    if (!loadUint32SubRecordFromStream(in_File, cALSP, tempUint32)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cALSP, tempUint32, false)) return false;
                     bytesRead += 6;
                     al_entry.unknownALSPs.push_back(tempUint32);
                     break;
@@ -1712,9 +1685,8 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
                       std::cout << "Error: QUST seems to have more than one KNAM subrecord per alias structure.\n";
                       return false;
                     }
-                    in_File.seekg(-4, std::ios_base::cur);
                     //read KNAM
-                    if (!loadUint32SubRecordFromStream(in_File, cKNAM, al_entry.unknownKNAM)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cKNAM, al_entry.unknownKNAM, false)) return false;
                     bytesRead += 6;
                     al_entry.hasKNAM = true;
                     break;
@@ -1762,9 +1734,8 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
                       std::cout << "Error: QUST seems to have more than one SPOR subrecord per alias structure.\n";
                       return false;
                     }
-                    in_File.seekg(-4, std::ios_base::cur);
                     //read SPOR
-                    if (!loadUint32SubRecordFromStream(in_File, cSPOR, al_entry.unknownSPOR)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cSPOR, al_entry.unknownSPOR, false)) return false;
                     bytesRead += 6;
                     al_entry.hasSPOR = true;
                     break;
@@ -1774,23 +1745,20 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
                       std::cout << "Error: QUST seems to have more than one ECOR subrecord per alias structure.\n";
                       return false;
                     }
-                    in_File.seekg(-4, std::ios_base::cur);
                     //read ECOR
-                    if (!loadUint32SubRecordFromStream(in_File, cECOR, al_entry.unknownECOR)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cECOR, al_entry.unknownECOR, false)) return false;
                     bytesRead += 6;
                     al_entry.hasECOR = true;
                     break;
                case cALFC:
-                    in_File.seekg(-4, std::ios_base::cur);
                     //read ALFC
-                    if (!loadUint32SubRecordFromStream(in_File, cALFC, tempUint32)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cALFC, tempUint32, false)) return false;
                     bytesRead += 6;
                     al_entry.unknownALFCs.push_back(tempUint32);
                     break;
                case cALPC:
-                    in_File.seekg(-4, std::ios_base::cur);
                     //read ALPC
-                    if (!loadUint32SubRecordFromStream(in_File, cALPC, tempUint32)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cALPC, tempUint32, false)) return false;
                     bytesRead += 6;
                     al_entry.unknownALPCs.push_back(tempUint32);
                     break;
@@ -1800,9 +1768,8 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
                       std::cout << "Error: QUST seems to have more than one VTCK subrecord per alias structure.\n";
                       return false;
                     }
-                    in_File.seekg(-4, std::ios_base::cur);
                     //read VTCK
-                    if (!loadUint32SubRecordFromStream(in_File, cVTCK, al_entry.unknownVTCK)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cVTCK, al_entry.unknownVTCK, false)) return false;
                     bytesRead += 6;
                     al_entry.hasVTCK = true;
                     break;

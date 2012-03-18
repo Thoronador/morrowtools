@@ -339,9 +339,8 @@ bool FloraRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: FLOR seems to have more than one FULL subrecord.\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
            //read FULL
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID, false)) return false;
            bytesRead += 6;
            hasReadFULL = true;
            break;
@@ -404,9 +403,8 @@ bool FloraRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: FLOR seems to have more than one PNAM subrecord.\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
            //read PNAM
-           if (!loadUint32SubRecordFromStream(in_File, cPNAM, unknownPNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cPNAM, unknownPNAM, false)) return false;
            bytesRead += 6;
            hasReadPNAM = true;
            break;
@@ -416,9 +414,8 @@ bool FloraRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: FLOR seems to have more than one RNAM subrecord.\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
            //read RNAM
-           if (!loadUint32SubRecordFromStream(in_File, cRNAM, unknownRNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cRNAM, unknownRNAM, false)) return false;
            bytesRead += 6;
            hasRNAM = true;
            break;
@@ -453,9 +450,8 @@ bool FloraRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: FLOR seems to have more than one PFIG subrecord.\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
            //read PFIG
-           if (!loadUint32SubRecordFromStream(in_File, cPFIG, unknownPFIG)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cPFIG, unknownPFIG, false)) return false;
            bytesRead += 6;
            hasPFIG = true;
            break;
@@ -465,9 +461,8 @@ bool FloraRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: FLOR seems to have more than one SNAM subrecord.\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
            //read SNAM
-           if (!loadUint32SubRecordFromStream(in_File, cSNAM, unknownSNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cSNAM, unknownSNAM, false)) return false;
            bytesRead += 6;
            hasSNAM = true;
            break;
@@ -477,9 +472,8 @@ bool FloraRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: FLOR seems to have more than one PFPC subrecord.\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
            //read PFPC
-           if (!loadUint32SubRecordFromStream(in_File, cPFPC, unknownPFPC)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cPFPC, unknownPFPC, false)) return false;
            bytesRead += 6;
            hasReadPFPC = true;
            break;

@@ -215,9 +215,8 @@ bool AcousticSpaceRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: ASPC seems to have more than one SNAM subrecord.\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
            //read SNAM
-           if (!loadUint32SubRecordFromStream(in_File, cSNAM, unknownSNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cSNAM, unknownSNAM, false)) return false;
            bytesRead += 6;
            hasSNAM = true;
            break;
@@ -227,9 +226,8 @@ bool AcousticSpaceRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: ASPC seems to have more than one RDAT subrecord.\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
            //read RDAT
-           if (!loadUint32SubRecordFromStream(in_File, cRDAT, unknownRDAT)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cRDAT, unknownRDAT, false)) return false;
            bytesRead += 6;
            hasRDAT = true;
            break;
@@ -239,9 +237,8 @@ bool AcousticSpaceRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: ASPC seems to have more than one BNAM subrecord.\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
            //read BNAM
-           if (!loadUint32SubRecordFromStream(in_File, cBNAM, unknownBNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cBNAM, unknownBNAM, false)) return false;
            bytesRead += 6;
            hasBNAM = true;
            break;

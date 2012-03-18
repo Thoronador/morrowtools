@@ -358,10 +358,8 @@ bool IngredientRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: INGR seems to have more than one FULL subrecord!\n";
              return false;
            }
-           //skip back
-           in_File.seekg(-4, std::ios_base::cur);
            //read FULL
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID, false)) return false;
            bytesRead += 6;
            hasReadFULL = true;
            break;
@@ -371,11 +369,9 @@ bool IngredientRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: INGR seems to have more than one KSIZ subrecord!\n";
              return false;
            }
-           //skip back
-           in_File.seekg(-4, std::ios_base::cur);
            //read KSIZ
            kwdaLength = 0;
-           if (!loadUint32SubRecordFromStream(in_File, cKSIZ, kwdaLength)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cKSIZ, kwdaLength, false)) return false;
            bytesRead += 6;
 
            //read KWDA
@@ -453,10 +449,8 @@ bool IngredientRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: INGR seems to have more than one YNAM subrecord!\n";
              return false;
            }
-           //skip back
-           in_File.seekg(-4, std::ios_base::cur);
            //read YNAM
-           if (!loadUint32SubRecordFromStream(in_File, cYNAM, unknownYNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cYNAM, unknownYNAM, false)) return false;
            bytesRead += 6;
            hasYNAM = true;
            break;
@@ -466,10 +460,8 @@ bool IngredientRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: INGR seems to have more than one ZNAM subrecord!\n";
              return false;
            }
-           //skip back
-           in_File.seekg(-4, std::ios_base::cur);
            //read ZNAM
-           if (!loadUint32SubRecordFromStream(in_File, cZNAM, unknownZNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cZNAM, unknownZNAM, false)) return false;
            bytesRead += 6;
            hasZNAM = true;
            break;

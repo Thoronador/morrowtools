@@ -212,9 +212,8 @@ bool CollisionRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: COLL seems to have more than one DESC subrecord.\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
            //read DESC
-           if (!loadUint32SubRecordFromStream(in_File, cDESC, descriptionStringID)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cDESC, descriptionStringID, false)) return false;
            bytesRead += 6;
            hasReadDESC = true;
            break;
@@ -224,9 +223,8 @@ bool CollisionRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: COLL seems to have more than one BNAM subrecord.\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
            //read BNAM
-           if (!loadUint32SubRecordFromStream(in_File, cBNAM, unknownBNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cBNAM, unknownBNAM, false)) return false;
            bytesRead += 6;
            hasReadBNAM = true;
            break;
@@ -236,9 +234,8 @@ bool CollisionRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: COLL seems to have more than one FNAM subrecord.\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
            //read FNAM
-           if (!loadUint32SubRecordFromStream(in_File, cFNAM, unknownFNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cFNAM, unknownFNAM, false)) return false;
            bytesRead += 6;
            hasReadFNAM = true;
            break;
@@ -248,9 +245,8 @@ bool CollisionRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: COLL seems to have more than one GNAM subrecord.\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
            //read GNAM
-           if (!loadUint32SubRecordFromStream(in_File, cGNAM, unknownGNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cGNAM, unknownGNAM, false)) return false;
            bytesRead += 6;
            hasReadGNAM = true;
            break;
@@ -285,9 +281,8 @@ bool CollisionRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: COLL seems to have more than one INTV subrecord.\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
            //read INTV
-           if (!loadUint32SubRecordFromStream(in_File, cINTV, size_int)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cINTV, size_int, false)) return false;
            bytesRead += 6;
            hasReadINTV = true;
            if (size_int>0)

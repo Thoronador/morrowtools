@@ -541,9 +541,8 @@ bool ActivatorRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: ACTI seems to have more than one FULL subrecord.\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
            //read FULL
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID, false)) return false;
            bytesRead += 6;
            hasFULL = true;
            break;
@@ -743,10 +742,9 @@ bool ActivatorRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: ACTI seems to have more than one KSIZ subrecord.\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
            //read KSIZ
            k_Size = 0;
-           if (!loadUint32SubRecordFromStream(in_File, cKSIZ, k_Size)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cKSIZ, k_Size, false)) return false;
            bytesRead += 6;
 
            //read KWDA
@@ -780,9 +778,8 @@ bool ActivatorRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: ACTI seems to have more than one PNAM subrecord.\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
            //read PNAM
-           if (!loadUint32SubRecordFromStream(in_File, cPNAM, unknownPNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cPNAM, unknownPNAM, false)) return false;
            bytesRead += 6;
            hasPNAM = true;
            break;
@@ -792,9 +789,8 @@ bool ActivatorRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: ACTI seems to have more than one SNAM subrecord.\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
            //read SNAM
-           if (!loadUint32SubRecordFromStream(in_File, cSNAM, unknownSNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cSNAM, unknownSNAM, false)) return false;
            bytesRead += 6;
            hasSNAM = true;
            break;
@@ -804,9 +800,8 @@ bool ActivatorRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: ACTI seems to have more than one VNAM subrecord.\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
            //read VNAM
-           if (!loadUint32SubRecordFromStream(in_File, cVNAM, unknownVNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cVNAM, unknownVNAM, false)) return false;
            bytesRead += 6;
            hasVNAM = true;
            break;
@@ -816,9 +811,8 @@ bool ActivatorRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: ACTI seems to have more than one WNAM subrecord.\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
            //read WNAM
-           if (!loadUint32SubRecordFromStream(in_File, cWNAM, unknownWNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cWNAM, unknownWNAM, false)) return false;
            bytesRead += 6;
            hasWNAM = true;
            break;
@@ -828,9 +822,8 @@ bool ActivatorRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: ACTI seems to have more than one RNAM subrecord.\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
            //read RNAM
-           if (!loadUint32SubRecordFromStream(in_File, cRNAM, unknownRNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cRNAM, unknownRNAM, false)) return false;
            bytesRead += 6;
            hasRNAM = true;
            break;
@@ -865,9 +858,8 @@ bool ActivatorRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: ACTI seems to have more than one KNAM subrecord.\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
            //read KNAM
-           if (!loadUint32SubRecordFromStream(in_File, cKNAM, unknownKNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cKNAM, unknownKNAM, false)) return false;
            bytesRead += 6;
            hasKNAM = true;
            break;

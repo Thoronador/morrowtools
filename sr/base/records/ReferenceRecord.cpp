@@ -425,9 +425,8 @@ bool ReferenceRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: REFR seems to have more than one NAME subrecord!\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
            //read NAME
-           if (!loadUint32SubRecordFromStream(in_File, cNAME, unknownNAME)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cNAME, unknownNAME, false)) return false;
            bytesRead += 6;
            hasReadNAME = true;
            break;
@@ -532,9 +531,8 @@ bool ReferenceRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: REFR seems to have more than one XEMI subrecord!\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
            //read XEMI
-           if (!loadUint32SubRecordFromStream(in_File, cXEMI, unknownXEMI)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cXEMI, unknownXEMI, false)) return false;
            bytesRead += 6;
            hasXEMI = true;
            break;
@@ -602,9 +600,8 @@ bool ReferenceRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: REFR seems to have more than one XPRD subrecord!\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
            //read XPRD
-           if (!loadUint32SubRecordFromStream(in_File, cXPRD, unknownXPRD)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cXPRD, unknownXPRD, false)) return false;
            bytesRead += 6;
            hasXPRD = true;
            break;
@@ -614,9 +611,8 @@ bool ReferenceRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: REFR seems to have more than one INAM subrecord!\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
            //read INAM
-           if (!loadUint32SubRecordFromStream(in_File, cINAM, unknownINAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cINAM, unknownINAM, false)) return false;
            bytesRead += 6;
            hasINAM = true;
            break;

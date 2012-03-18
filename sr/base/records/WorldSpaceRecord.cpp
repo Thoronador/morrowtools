@@ -610,8 +610,7 @@ bool WorldSpaceRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read FULL
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID, false)) return false;
            bytesRead += 6;
            hasFULL = true;
            break;
@@ -622,8 +621,7 @@ bool WorldSpaceRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read WCTR
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cWCTR, unknownWCTR)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cWCTR, unknownWCTR, false)) return false;
            bytesRead += 6;
            hasWCTR = true;
            break;
@@ -634,8 +632,7 @@ bool WorldSpaceRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read LTMP
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cLTMP, unknownLTMP)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cLTMP, unknownLTMP, false)) return false;
            bytesRead += 6;
            hasLTMP = true;
            break;
@@ -646,8 +643,7 @@ bool WorldSpaceRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read XEZN
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cXEZN, unknownXEZN)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cXEZN, unknownXEZN, false)) return false;
            bytesRead += 6;
            hasXEZN = true;
            break;
@@ -658,8 +654,7 @@ bool WorldSpaceRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read CNAM
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cCNAM, unknownCNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cCNAM, unknownCNAM, false)) return false;
            bytesRead += 6;
            hasCNAM = true;
            break;
@@ -670,8 +665,7 @@ bool WorldSpaceRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read NAM2
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cNAM2, unknownNAM2)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cNAM2, unknownNAM2, false)) return false;
            bytesRead += 6;
            hasNAM2 = true;
            break;
@@ -682,8 +676,7 @@ bool WorldSpaceRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read NAM3
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cNAM3, unknownNAM3)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cNAM3, unknownNAM3, false)) return false;
            bytesRead += 6;
            hasNAM3 = true;
            break;
@@ -694,8 +687,7 @@ bool WorldSpaceRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read NAM4
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cNAM4, unknownNAM4)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cNAM4, unknownNAM4, false)) return false;
            bytesRead += 6;
            hasNAM4 = true;
            break;
@@ -745,8 +737,7 @@ bool WorldSpaceRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read XLCN
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cXLCN, unknownXLCN)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cXLCN, unknownXLCN, false)) return false;
            bytesRead += 6;
            hasXLCN = true;
            break;
@@ -757,8 +748,7 @@ bool WorldSpaceRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read WNAM
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cWNAM, unknownWNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cWNAM, unknownWNAM, false)) return false;
            bytesRead += 6;
            hasWNAM = true;
            break;
@@ -815,8 +805,7 @@ bool WorldSpaceRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read NAMA
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cNAMA, unknownNAMA)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cNAMA, unknownNAMA, false)) return false;
            bytesRead += 6;
            hasReadNAMA = true;
            break;
@@ -902,8 +891,7 @@ bool WorldSpaceRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read ZNAM
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cZNAM, unknownZNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cZNAM, unknownZNAM, false)) return false;
            bytesRead += 6;
            hasZNAM = true;
            break;
@@ -964,8 +952,7 @@ bool WorldSpaceRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read XXXX
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cXXXX, unknownXXXX)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cXXXX, unknownXXXX, false)) return false;
            bytesRead += 6;
            hasXXXX = true;
            break;

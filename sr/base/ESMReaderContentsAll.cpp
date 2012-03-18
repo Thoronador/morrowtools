@@ -33,6 +33,7 @@
 #include "records/AssociationTypeRecord.h"
 #include "records/BookRecord.h"
 #include "records/CellRecord.h"
+#include "records/CharacterReferenceRecord.h"
 #include "records/ClassRecord.h"
 #include "records/CollisionRecord.h"
 #include "records/ColourFormRecord.h"
@@ -129,6 +130,9 @@ int ESMReaderContentsAll::readNextRecord(std::ifstream& in_File, const int32_t r
   {
     case cAACT:
          recPtr = new ActionRecord;
+         break;
+    case cACHR:
+         recPtr = new CharacterReferenceRecord;
          break;
     case cACTI:
          recPtr = new ActivatorRecord;

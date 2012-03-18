@@ -313,8 +313,7 @@ bool TreeRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read PFIG
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cPFIG, unknownPFIG)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cPFIG, unknownPFIG, false)) return false;
            bytesRead += 6;
            hasPFIG = true;
            break;
@@ -325,8 +324,7 @@ bool TreeRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read SNAM
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cSNAM, unknownSNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cSNAM, unknownSNAM, false)) return false;
            bytesRead += 6;
            hasSNAM = true;
            break;
@@ -337,8 +335,7 @@ bool TreeRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read PFCP
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cPFPC, unknownPFPC)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cPFPC, unknownPFPC, false)) return false;
            bytesRead += 6;
            hasReadPFPC = true;
            break;
@@ -349,8 +346,7 @@ bool TreeRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read FULL
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID, false)) return false;
            bytesRead += 6;
            hasFULL = true;
            break;

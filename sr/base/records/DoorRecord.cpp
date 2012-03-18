@@ -320,10 +320,8 @@ bool DoorRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: DOOR seems to have more than one FULL subrecord!\n";
              return false;
            }
-           //skip back
-           in_File.seekg(-4, std::ios_base::cur);
            //read FULL
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID, false)) return false;
            bytesRead += 6;
            hasFULL = true;
            break;
@@ -386,10 +384,8 @@ bool DoorRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: DOOR seems to have more than one SNAM subrecord!\n";
              return false;
            }
-           //skip back
-           in_File.seekg(-4, std::ios_base::cur);
            //read SNAM
-           if (!loadUint32SubRecordFromStream(in_File, cSNAM, unknownSNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cSNAM, unknownSNAM, false)) return false;
            bytesRead += 6;
            hasSNAM = true;
            break;
@@ -399,10 +395,8 @@ bool DoorRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: DOOR seems to have more than one ANAM subrecord!\n";
              return false;
            }
-           //skip back
-           in_File.seekg(-4, std::ios_base::cur);
            //read ANAM
-           if (!loadUint32SubRecordFromStream(in_File, cANAM, unknownANAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cANAM, unknownANAM, false)) return false;
            bytesRead += 6;
            hasANAM = true;
            break;

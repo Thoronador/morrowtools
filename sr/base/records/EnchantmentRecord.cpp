@@ -223,10 +223,8 @@ bool EnchantmentRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: ENCH seems to have more than one FULL subrecord!\n";
              return false;
            }
-           //skip back
-           in_File.seekg(-4, std::ios_base::cur);
            //read FULL
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID, false)) return false;
            bytesRead += 6;
            hasFULL = true;
            break;

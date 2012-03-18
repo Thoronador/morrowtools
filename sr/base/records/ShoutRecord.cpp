@@ -198,8 +198,7 @@ bool ShoutRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read FULL
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, fullNameStringID)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cFULL, fullNameStringID, false)) return false;
            bytesRead += 6;
            hasFULL = true;
            break;
@@ -210,8 +209,7 @@ bool ShoutRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read MDOB
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cMDOB, unknownMDOB)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cMDOB, unknownMDOB, false)) return false;
            bytesRead += 6;
            hasMDOB = true;
            break;
@@ -222,8 +220,7 @@ bool ShoutRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read DESC
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cDESC, descriptionStringID)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cDESC, descriptionStringID, false)) return false;
            bytesRead += 6;
            hasReadDESC = true;
            break;

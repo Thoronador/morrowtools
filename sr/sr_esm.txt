@@ -62,6 +62,57 @@ Records and their sub-records:
           editorID
 
 
+  ACHR: character reference
+      EDID (string, NUL-terminated, optional)
+          editor ID
+      VMAD (sizes varies, optional)
+          unknown data
+      NAME (4 bytes)
+          base object form ID
+      XRGD (size varies (somewhere near 500 bytes), optional)
+          unknown data
+      XRGB (12 bytes, optional)
+          unknown data
+      XLCM (4 bytes, optional)
+          unknown data
+      XLKR (8 bytes or 4 bytes, can occur multiple times, optional)
+          linked reference
+            uint32_t keyword form ID (zero if none) (skipped in four byte version, I assume)
+            uint32_t reference form ID
+      INAM (4 bytes, optional)
+          unknown data
+      PDTO (8 bytes, optional)
+          unknown data
+      XAPD (1 bytes, optional, can occur multiple times)
+          unknown data
+      XAPR (8 bytes, optional, can occur multiple times)
+          unknown data
+      
+          ----> XAPD/XAPR records seem to form pairs (most of the time).
+      
+      XLCN (4 bytes, optional)
+          persistence location form ID (points to record type LCTN)
+      XLRT (4 bytes, optional)
+          location reference type form ID (points to record type LCRT)
+      XEZN (4 bytes, optional)
+          encounter zone form ID (points to record type ECZN) 
+      XOWN (4 bytes, optional)
+          owner form ID (points to FACT or sometimes NPC_)
+      XESP (8 bytes, optional)
+          unknown data, looks like two uint32_ts
+            uint32_t  Enable Parent Reference Form ID
+            uint32_t  flags
+                        0x01 - Set Enable State to opposite of parent
+                        0x02 - Pop In
+      XSCL (4 bytes, optional)
+          object scale
+      .... (varies)
+          some more unknown subrecords
+      DATA (24 bytes)
+          reference data 
+      
+      
+
   AMMO: ammunition
       EDID (string, NUL-terminated)
           editorID
@@ -421,7 +472,7 @@ Records and their sub-records:
           image space modifier form ID (record type IMAD)
       DATA (52 bytes or 48 bytes or 44 bytes or 40 bytes)
           unknown data
-      
+
 
   EYES: eyes
       EDID (string, NUL-terminated)

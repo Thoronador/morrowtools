@@ -144,28 +144,28 @@ bool DialogBranchRecord::loadFromStream(std::ifstream& in_File)
   editorID = std::string(buffer);
 
   //read QNAM
-  if (!loadUint32SubRecordFromStream(in_File, cQNAM, unknownQNAM))
+  if (!loadUint32SubRecordFromStream(in_File, cQNAM, unknownQNAM, true))
   {
     std::cout << "Error while reading subrecord QNAM of DLRB!\n";
     return false;
   }
 
   //read TNAM
-  if (!loadUint32SubRecordFromStream(in_File, cTNAM, unknownTNAM))
+  if (!loadUint32SubRecordFromStream(in_File, cTNAM, unknownTNAM, true))
   {
     std::cout << "Error while reading subrecord TNAM of DLRB!\n";
     return false;
   }
 
   //read DNAM
-  if (!loadUint32SubRecordFromStream(in_File, cDNAM, unknownDNAM))
+  if (!loadUint32SubRecordFromStream(in_File, cDNAM, unknownDNAM, true))
   {
     std::cout << "Error while reading subrecord DNAM of DLRB!\n";
     return false;
   }
 
   //read SNAM
-  if (!loadUint32SubRecordFromStream(in_File, cSNAM, unknownSNAM))
+  if (!loadUint32SubRecordFromStream(in_File, cSNAM, unknownSNAM, true))
   {
     std::cout << "Error while reading subrecord SNAM of DLRB!\n";
     return false;

@@ -144,7 +144,7 @@ bool KeywordRecord::loadFromStream(std::ifstream& in_File)
   {
     hasCNAM = true;
     //read CNAM
-    if (!loadUint32SubRecordFromStream(in_File, cCNAM, unknownCNAM)) return false;
+    if (!loadUint32SubRecordFromStream(in_File, cCNAM, unknownCNAM, true)) return false;
   }
   else
   {

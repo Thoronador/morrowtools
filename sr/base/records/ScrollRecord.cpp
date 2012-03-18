@@ -319,10 +319,8 @@ bool ScrollRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: SCRL seems to have more than one FULL subrecord!\n";
              return false;
            }
-           //skip back
-           in_File.seekg(-4, std::ios_base::cur);
            //read FULL
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID, false)) return false;
            bytesRead += 6;
            hasReadFULL = true;
            break;
@@ -332,11 +330,9 @@ bool ScrollRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: SCRL seems to have more than one KSIZ subrecord!\n";
              return false;
            }
-           //skip back
-           in_File.seekg(-4, std::ios_base::cur);
            //read KSIZ
            kwdaLength = 0;
-           if (!loadUint32SubRecordFromStream(in_File, cKSIZ, kwdaLength)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cKSIZ, kwdaLength, false)) return false;
            bytesRead += 6;
 
            //read KWDA
@@ -375,10 +371,8 @@ bool ScrollRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: SCRL seems to have more than one MDOB subrecord!\n";
              return false;
            }
-           //skip back
-           in_File.seekg(-4, std::ios_base::cur);
            //read MDOB
-           if (!loadUint32SubRecordFromStream(in_File, cMDOB, menuDisplayObjectFormID)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cMDOB, menuDisplayObjectFormID, false)) return false;
            bytesRead += 6;
            hasReadMDOB = true;
            break;
@@ -388,10 +382,8 @@ bool ScrollRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: SCRL seems to have more than one ETYP subrecord!\n";
              return false;
            }
-           //skip back
-           in_File.seekg(-4, std::ios_base::cur);
            //read ETYP
-           if (!loadUint32SubRecordFromStream(in_File, cETYP, equipTypeFormID)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cETYP, equipTypeFormID, false)) return false;
            bytesRead += 6;
            hasReadETYP = true;
            break;
@@ -401,10 +393,8 @@ bool ScrollRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: SCRL seems to have more than one DESC subrecord!\n";
              return false;
            }
-           //skip back
-           in_File.seekg(-4, std::ios_base::cur);
            //read DESC
-           if (!loadUint32SubRecordFromStream(in_File, cDESC, descriptionStringID)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cDESC, descriptionStringID, false)) return false;
            bytesRead += 6;
            hasReadDESC = true;
            break;

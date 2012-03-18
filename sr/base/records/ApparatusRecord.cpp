@@ -213,14 +213,14 @@ bool ApparatusRecord::loadFromStream(std::ifstream& in_File)
   }
 
   //read QUAL
-  if (!loadUint32SubRecordFromStream(in_File, cQUAL, quality))
+  if (!loadUint32SubRecordFromStream(in_File, cQUAL, quality, true))
   {
     std::cout << "Error while reading subrecord QUAL of APPA!\n";
     return false;
   }
 
   //read DESC
-  if (!loadUint32SubRecordFromStream(in_File, cDESC, unknownDESC))
+  if (!loadUint32SubRecordFromStream(in_File, cDESC, unknownDESC, true))
   {
     std::cout << "Error while reading subrecord DESC of APPA!\n";
     return false;

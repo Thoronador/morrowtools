@@ -35,6 +35,7 @@
 #include "AssociationTypes.h"
 #include "Books.h"
 #include "Cells.h"
+#include "CharacterReferences.h"
 #include "Classes.h"
 #include "Collisions.h"
 #include "ColourForms.h"
@@ -139,6 +140,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
   {
     case cAACT:
          return Actions::getSingleton().readNextRecord(in_File);
+         break;
+    case cACHR:
+         return CharacterReferences::getSingleton().readNextRecord(in_File);
          break;
     case cACTI:
          return Activators::getSingleton().readNextRecord(in_File);

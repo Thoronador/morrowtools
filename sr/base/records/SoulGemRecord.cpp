@@ -301,8 +301,7 @@ bool SoulGemRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read FULL
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID, false)) return false;
            bytesRead += 6;
            hasFULL = true;
            break;
@@ -353,8 +352,7 @@ bool SoulGemRecord::loadFromStream(std::ifstream& in_File)
            }
            //read KSIZ
            k_Size = 0;
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cKSIZ, k_Size)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cKSIZ, k_Size, false)) return false;
            bytesRead += 6;
            if (k_Size==0)
            {
@@ -475,8 +473,7 @@ bool SoulGemRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read NAM0
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cNAM0, unknownNAM0)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cNAM0, unknownNAM0, false)) return false;
            bytesRead += 6;
            hasNAM0 = true;
            break;

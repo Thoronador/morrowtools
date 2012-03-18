@@ -28,6 +28,7 @@ namespace SRTP
 
 const int32_t cAACT = 0x54434141; //"AACT" = 41 41 43 54
 const int32_t cACBS = 0x53424341; //"ACBS" = 41 43 42 53
+const int32_t cACHR = 0x52484341; //"ACHR" = 41 43 48 52
 const int32_t cACTI = 0x49544341; //"ACTI" = 41 43 54 49
 const int32_t cAIDT = 0x54444941; //"AIDT" = 41 49 44 54
 const int32_t cALCH = 0x48434C41; //"ALCH" = 41 4C 43 48
@@ -305,6 +306,8 @@ const int32_t cWEAP = 0x50414557; //"WEAP" = 57 45 41 50
 const int32_t cWNAM = 0x4D414E57; //"WNAM" = 57 4E 41 4D
 const int32_t cWOOP = 0x504F4F57; //"WOOP" = 57 4F 4F 50
 const int32_t cWRLD = 0x444C5257; //"WRLD" = 57 52 4C 44
+const int32_t cXAPD = 0x44504158; //"XAPD" = 58 41 50 44
+const int32_t cXAPR = 0x52504158; //"XAPR" = 58 41 50 52
 const int32_t cXCAS = 0x53414358; //"XCAS" = 58 43 41 53
 const int32_t cXCCM = 0x4D434358; //"XCCM" = 58 43 43 4D
 const int32_t cXCIM = 0x4D494358; //"XCIM" = 58 43 49 4D
@@ -319,15 +322,19 @@ const int32_t cXEMI = 0x494D4558; //"XEMI" = 58 45 4D 49
 const int32_t cXESP = 0x50534558; //"XESP" = 58 45 53 50
 const int32_t cXEZN = 0x4E5A4558; //"XEZN" = 58 45 5A 4E
 const int32_t cXILL = 0x4C4C4958; //"XILL" = 58 49 4C 4C
+const int32_t cXLCM = 0x4D434C58; //"XLCM" = 58 4C 43 4D
 const int32_t cXLCN = 0x4E434C58; //"XLCN" = 58 4C 43 4E
 const int32_t cXLKR = 0x524B4C58; //"XLKR" = 58 4C 4B 52
 const int32_t cXLOC = 0x434F4C58; //"XLOC" = 58 4C 4F 43
+const int32_t cXLRT = 0x54524C58; //"XLRT" = 58 4C 52 54
 const int32_t cXNAM = 0x4D414E58; //"XNAM" = 58 4E 41 4D
 const int32_t cXNDP = 0x50444E58; //"XNDP" = 58 4E 44 50
 const int32_t cXOWN = 0x4E574F58; //"XOWN" = 58 4F 57 4E
 const int32_t cXPPA = 0x41505058; //"XPPA" = 58 50 50 41
 const int32_t cXPRD = 0x44525058; //"XPRD" = 58 50 52 44
 const int32_t cXPRM = 0x4D525058; //"XPRM" = 58 50 52 4D
+const int32_t cXRGB = 0x42475258; //"XRGB" = 58 52 47 42
+const int32_t cXRGD = 0x44475258; //"XRGD" = 58 52 47 44
 const int32_t cXSCL = 0x4C435358; //"XSCL" = 58 53 43 4C
 const int32_t cXTEL = 0x4C455458; //"XTEL" = 58 54 45 4C
 const int32_t cXWCN = 0x4E435758; //"XWCN" = 58 57 43 4E

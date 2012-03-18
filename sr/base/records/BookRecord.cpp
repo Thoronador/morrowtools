@@ -345,9 +345,8 @@ bool BookRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: BOOK seems to have more than one FULL subrecord.\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
            //read FULL
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, titleStringID)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cFULL, titleStringID, false)) return false;
            bytesRead += 6;
            hasFULL = true;
            break;
@@ -382,7 +381,7 @@ bool BookRecord::loadFromStream(std::ifstream& in_File)
            bytesRead += (4+2+unknownMODT.getSize());
 
            //read DESC
-           if (!loadUint32SubRecordFromStream(in_File, cDESC, textStringID)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cDESC, textStringID, true)) return false;
            bytesRead += 10;
            hasReadMODL = true;
            break;
@@ -392,10 +391,9 @@ bool BookRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: BOOK seems to have more than one KSIZ subrecord.\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
            //read KSIZ
            k_Size = 0;
-           if (!loadUint32SubRecordFromStream(in_File, cKSIZ, k_Size)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cKSIZ, k_Size, false)) return false;
            bytesRead += 6;
            //keyword array follows, always
            //read KWDA
@@ -464,9 +462,8 @@ bool BookRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: BOOK seems to have more than one INAM subrecord.\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
            //read INAM
-           if (!loadUint32SubRecordFromStream(in_File, cINAM, unknownINAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cINAM, unknownINAM, false)) return false;
            bytesRead += 6;
            hasINAM = true;
            break;
@@ -476,9 +473,8 @@ bool BookRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: BOOK seems to have more than one CNAM subrecord.\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
            //read CNAM
-           if (!loadUint32SubRecordFromStream(in_File, cCNAM, unknownCNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cCNAM, unknownCNAM, false)) return false;
            bytesRead += 6;
            hasReadCNAM = true;
            break;
@@ -488,9 +484,8 @@ bool BookRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: BOOK seems to have more than one YNAM subrecord.\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
            //read YNAM
-           if (!loadUint32SubRecordFromStream(in_File, cYNAM, unknownYNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cYNAM, unknownYNAM, false)) return false;
            bytesRead += 6;
            hasYNAM = true;
            break;

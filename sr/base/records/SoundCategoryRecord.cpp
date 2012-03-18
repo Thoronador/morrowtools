@@ -197,8 +197,7 @@ bool SoundCategoryRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: record SNCT seems to have more than one FULL subrecord!\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, unknownFULL))
+           if (!loadUint32SubRecordFromStream(in_File, cFULL, unknownFULL, false))
            {
              std::cout << "Error while reading subrecord FULL of SNCT!\n";
              return false;
@@ -212,8 +211,7 @@ bool SoundCategoryRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: record SNCT seems to have more than one FNAM subrecord!\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cFNAM, unknownFNAM))
+           if (!loadUint32SubRecordFromStream(in_File, cFNAM, unknownFNAM, false))
            {
              std::cout << "Error while reading subrecord FNAM of SNCT!\n";
              return false;
@@ -227,8 +225,7 @@ bool SoundCategoryRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: record SNCT seems to have more than one PNAM subrecord!\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cPNAM, parentFormID))
+           if (!loadUint32SubRecordFromStream(in_File, cPNAM, parentFormID, false))
            {
              std::cout << "Error while reading subrecord PNAM of SNCT!\n";
              return false;

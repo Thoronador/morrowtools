@@ -128,7 +128,7 @@ bool LocationReferenceTypeRecord::loadFromStream(std::ifstream& in_File)
   if (bytesRead<readSize)
   {
     //read CNAM
-    if (!loadUint32SubRecordFromStream(in_File, cCNAM, unknownCNAM))
+    if (!loadUint32SubRecordFromStream(in_File, cCNAM, unknownCNAM, true))
     {
       std::cout << "Error while reading subrecord CNAM of LCRT!\n";
       return false;

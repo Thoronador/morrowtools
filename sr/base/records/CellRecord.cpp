@@ -627,9 +627,8 @@ bool CellRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: CELL seems to have more than one FULL subrecord.\n";
              return false;
            }
-           actual_in->seekg(-4, std::ios_base::cur);
            //read FULL
-           if (!loadUint32SubRecordFromStream(*actual_in, cFULL, nameStringID)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cFULL, nameStringID, false)) return false;
            bytesRead += 6;
            hasFULL = true;
            break;
@@ -741,9 +740,8 @@ bool CellRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: CELL seems to have more than one LTMP subrecord.\n";
              return false;
            }
-           actual_in->seekg(-4, std::ios_base::cur);
            //read LTMP
-           if (!loadUint32SubRecordFromStream(*actual_in, cLTMP, unknownLTMP)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cLTMP, unknownLTMP, false)) return false;
            bytesRead += 6;
            hasReadLTMP = true;
            break;
@@ -753,9 +751,8 @@ bool CellRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: CELL seems to have more than one LNAM subrecord.\n";
              return false;
            }
-           actual_in->seekg(-4, std::ios_base::cur);
            //read LNAM
-           if (!loadUint32SubRecordFromStream(*actual_in, cLNAM, unknownLNAM)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cLNAM, unknownLNAM, false)) return false;
            bytesRead += 6;
            hasLNAM = true;
            break;
@@ -844,9 +841,8 @@ bool CellRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: CELL seems to have more than one XLCN subrecord.\n";
              return false;
            }
-           actual_in->seekg(-4, std::ios_base::cur);
            //read XLCN
-           if (!loadUint32SubRecordFromStream(*actual_in, cXLCN, unknownXLCN)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cXLCN, unknownXLCN, false)) return false;
            bytesRead += 6;
            hasXLCN = true;
            break;
@@ -856,9 +852,8 @@ bool CellRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: CELL seems to have more than one XWCN subrecord.\n";
              return false;
            }
-           actual_in->seekg(-4, std::ios_base::cur);
            //read XWCN
-           if (!loadUint32SubRecordFromStream(*actual_in, cXWCN, unknownXWCN)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cXWCN, unknownXWCN, false)) return false;
            bytesRead += 6;
            hasXWCN = true;
            break;
@@ -868,9 +863,8 @@ bool CellRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: CELL seems to have more than one XWCS subrecord.\n";
              return false;
            }
-           actual_in->seekg(-4, std::ios_base::cur);
            //read XWCS
-           if (!loadUint32SubRecordFromStream(*actual_in, cXWCS, unknownXWCS)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cXWCS, unknownXWCS, false)) return false;
            bytesRead += 6;
            hasXWCS = true;
            break;
@@ -901,9 +895,8 @@ bool CellRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: CELL seems to have more than one XCIM subrecord.\n";
              return false;
            }
-           actual_in->seekg(-4, std::ios_base::cur);
            //read XCIM
-           if (!loadUint32SubRecordFromStream(*actual_in, cXCIM, unknownXCIM)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cXCIM, unknownXCIM, false)) return false;
            bytesRead += 6;
            hasXCIM = true;
            break;
@@ -913,9 +906,8 @@ bool CellRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: CELL seems to have more than one XEZN subrecord.\n";
              return false;
            }
-           actual_in->seekg(-4, std::ios_base::cur);
            //read XEZN
-           if (!loadUint32SubRecordFromStream(*actual_in, cXEZN, encounterZoneFormID)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cXEZN, encounterZoneFormID, false)) return false;
            bytesRead += 6;
            hasXEZN = true;
            break;
@@ -925,9 +917,8 @@ bool CellRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: CELL seems to have more than one XCWT subrecord.\n";
              return false;
            }
-           actual_in->seekg(-4, std::ios_base::cur);
            //read XCWT
-           if (!loadUint32SubRecordFromStream(*actual_in, cXCWT, unknownXCWT)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cXCWT, unknownXCWT, false)) return false;
            bytesRead += 6;
            hasXCWT = true;
            break;
@@ -937,9 +928,8 @@ bool CellRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: CELL seems to have more than one XCMO subrecord.\n";
              return false;
            }
-           actual_in->seekg(-4, std::ios_base::cur);
            //read XCMO
-           if (!loadUint32SubRecordFromStream(*actual_in, cXCMO, unknownXCMO)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cXCMO, unknownXCMO, false)) return false;
            bytesRead += 6;
            hasXCMO = true;
            break;
@@ -974,9 +964,8 @@ bool CellRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: CELL seems to have more than one XOWN subrecord.\n";
              return false;
            }
-           actual_in->seekg(-4, std::ios_base::cur);
            //read XOWN
-           if (!loadUint32SubRecordFromStream(*actual_in, cXOWN, unknownXOWN)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cXOWN, unknownXOWN, false)) return false;
            bytesRead += 6;
            hasXOWN = true;
            break;
@@ -986,9 +975,8 @@ bool CellRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: CELL seems to have more than one XILL subrecord.\n";
              return false;
            }
-           actual_in->seekg(-4, std::ios_base::cur);
            //read XILL
-           if (!loadUint32SubRecordFromStream(*actual_in, cXILL, unknownXILL)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cXILL, unknownXILL, false)) return false;
            bytesRead += 6;
            hasXILL = true;
            break;
@@ -998,9 +986,8 @@ bool CellRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: CELL seems to have more than one XCCM subrecord.\n";
              return false;
            }
-           actual_in->seekg(-4, std::ios_base::cur);
            //read XCCM
-           if (!loadUint32SubRecordFromStream(*actual_in, cXCCM, unknownXCCM)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cXCCM, unknownXCCM, false)) return false;
            bytesRead += 6;
            hasXCCM = true;
            break;
@@ -1010,9 +997,8 @@ bool CellRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: CELL seems to have more than one XCAS subrecord.\n";
              return false;
            }
-           actual_in->seekg(-4, std::ios_base::cur);
            //read XCAS
-           if (!loadUint32SubRecordFromStream(*actual_in, cXCAS, unknownXCAS)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cXCAS, unknownXCAS, false)) return false;
            bytesRead += 6;
            hasXCAS = true;
            break;

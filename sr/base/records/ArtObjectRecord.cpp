@@ -244,9 +244,8 @@ bool ArtObjectRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: ARTO seems to have more than one DNAM subrecord.\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
            //read DNAM
-           if (!loadUint32SubRecordFromStream(in_File, cDNAM, unknownDNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cDNAM, unknownDNAM, false)) return false;
            bytesRead += 6;
            hasReadDNAM = true;
            break;

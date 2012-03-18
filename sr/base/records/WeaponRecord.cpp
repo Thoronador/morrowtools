@@ -738,10 +738,8 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: WEAP seems to have more than one FULL subrecord!\n";
              return false;
            }
-           //skip back
-           in_File.seekg(-4, std::ios_base::cur);
            //read FULL
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID, false)) return false;
            bytesRead += 6;
            hasFULL = true;
            break;
@@ -798,10 +796,8 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: WEAP seems to have more than one EITM subrecord!\n";
              return false;
            }
-           //skip back
-           in_File.seekg(-4, std::ios_base::cur);
            //read EITM
-           if (!loadUint32SubRecordFromStream(in_File, cEITM, unknownEITM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cEITM, unknownEITM, false)) return false;
            bytesRead += 6;
            hasEITM = true;
            break;
@@ -836,10 +832,8 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: WEAP seems to have more than one ETYP subrecord!\n";
              return false;
            }
-           //skip back
-           in_File.seekg(-4, std::ios_base::cur);
            //read ETYP
-           if (!loadUint32SubRecordFromStream(in_File, cETYP, unknownETYP)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cETYP, unknownETYP, false)) return false;
            bytesRead += 6;
            hasETYP = true;
            break;
@@ -849,10 +843,8 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: WEAP seems to have more than one BIDS subrecord!\n";
              return false;
            }
-           //skip back
-           in_File.seekg(-4, std::ios_base::cur);
            //read BIDS
-           if (!loadUint32SubRecordFromStream(in_File, cBIDS, unknownBIDS)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cBIDS, unknownBIDS, false)) return false;
            bytesRead += 6;
            hasBIDS = true;
            break;
@@ -862,10 +854,8 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: WEAP seems to have more than one BAMT subrecord!\n";
              return false;
            }
-           //skip back
-           in_File.seekg(-4, std::ios_base::cur);
            //read BAMT
-           if (!loadUint32SubRecordFromStream(in_File, cBAMT, unknownBAMT)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cBAMT, unknownBAMT, false)) return false;
            bytesRead += 6;
            hasBAMT = true;
            break;
@@ -875,11 +865,9 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: WEAP seems to have more than one KSIZ subrecord!\n";
              return false;
            }
-           //skip back
-           in_File.seekg(-4, std::ios_base::cur);
            //read KSIZ
            k_Size = 0;
-           if (!loadUint32SubRecordFromStream(in_File, cKSIZ, k_Size)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cKSIZ, k_Size, false)) return false;
            bytesRead += 6;
 
            //read KWDA
@@ -920,10 +908,8 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: WEAP seems to have more than one DESC subrecord!\n";
              return false;
            }
-           //skip back
-           in_File.seekg(-4, std::ios_base::cur);
            //read DESC
-           if (!loadUint32SubRecordFromStream(in_File, cDESC, descriptionStringID)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cDESC, descriptionStringID, false)) return false;
            bytesRead += 6;
            hasReadDESC = true;
            break;
@@ -958,10 +944,8 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: WEAP seems to have more than one INAM subrecord!\n";
              return false;
            }
-           //skip back
-           in_File.seekg(-4, std::ios_base::cur);
            //read INAM
-           if (!loadUint32SubRecordFromStream(in_File, cINAM, unknownINAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cINAM, unknownINAM, false)) return false;
            hasINAM = true;
            bytesRead += 6;
            break;
@@ -971,10 +955,8 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: WEAP seems to have more than one WNAM subrecord!\n";
              return false;
            }
-           //skip back
-           in_File.seekg(-4, std::ios_base::cur);
            //read WNAM
-           if (!loadUint32SubRecordFromStream(in_File, cWNAM, unknownWNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cWNAM, unknownWNAM, false)) return false;
            hasWNAM = true;
            bytesRead += 6;
            break;
@@ -984,10 +966,8 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: WEAP seems to have more than one TNAM subrecord!\n";
              return false;
            }
-           //skip back
-           in_File.seekg(-4, std::ios_base::cur);
            //read TNAM
-           if (!loadUint32SubRecordFromStream(in_File, cTNAM, unknownTNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cTNAM, unknownTNAM, false)) return false;
            bytesRead += 6;
            hasTNAM = true;
            break;
@@ -997,10 +977,8 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: WEAP seems to have more than one UNAM subrecord!\n";
              return false;
            }
-           //skip back
-           in_File.seekg(-4, std::ios_base::cur);
            //read UNAM
-           if (!loadUint32SubRecordFromStream(in_File, cUNAM, unknownUNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cUNAM, unknownUNAM, false)) return false;
            bytesRead += 6;
            hasUNAM = true;
            break;
@@ -1010,10 +988,8 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: WEAP seems to have more than one NAM9 subrecord!\n";
              return false;
            }
-           //skip back
-           in_File.seekg(-4, std::ios_base::cur);
            //read NAM9
-           if (!loadUint32SubRecordFromStream(in_File, cNAM9, unknownNAM9)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cNAM9, unknownNAM9, false)) return false;
            bytesRead += 6;
            hasNAM9 = true;
            break;
@@ -1023,10 +999,8 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: WEAP seems to have more than one NAM8 subrecord!\n";
              return false;
            }
-           //skip back
-           in_File.seekg(-4, std::ios_base::cur);
            //read NAM8
-           if (!loadUint32SubRecordFromStream(in_File, cNAM8, unknownNAM8)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cNAM8, unknownNAM8, false)) return false;
            bytesRead += 6;
            hasNAM8 = true;
            break;
@@ -1036,10 +1010,8 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: WEAP seems to have more than one SNAM subrecord!\n";
              return false;
            }
-           //skip back
-           in_File.seekg(-4, std::ios_base::cur);
            //read SNAM
-           if (!loadUint32SubRecordFromStream(in_File, cSNAM, unknownSNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cSNAM, unknownSNAM, false)) return false;
            hasSNAM = true;
            bytesRead += 6;
            break;
@@ -1123,7 +1095,7 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
            }
 
            //read VNAM
-           if (!loadUint32SubRecordFromStream(in_File, cVNAM, unknownVNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cVNAM, unknownVNAM, true)) return false;
            bytesRead += 10;
            break;
       case cCNAM:
@@ -1132,10 +1104,8 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: WEAP seems to have more than one CNAM subrecord!\n";
              return false;
            }
-           //skip back
-           in_File.seekg(-4, std::ios_base::cur);
            //read CNAM
-           if (!loadUint32SubRecordFromStream(in_File, cCNAM, unknownCNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cCNAM, unknownCNAM, false)) return false;
            hasCNAM = true;
            bytesRead += 6;
            break;

@@ -287,8 +287,7 @@ bool HeadPartRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read FULL
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, fullNameStringID)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cFULL, fullNameStringID, false)) return false;
            bytesRead += 6;
            hasFULL = true;
            break;
@@ -363,16 +362,14 @@ bool HeadPartRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read PNAM
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cPNAM, unknownPNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cPNAM, unknownPNAM, false)) return false;
            bytesRead += 6;
            hasReadPNAM = true;
            break;
       case cHNAM:
            //read HNAM
            tempUint32 = 0;
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cHNAM, tempUint32)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cHNAM, tempUint32, false)) return false;
            bytesRead += 6;
            unknownHNAMs.push_back(tempUint32);
            break;
@@ -430,8 +427,7 @@ bool HeadPartRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read TNAM
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cTNAM, unknownTNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cTNAM, unknownTNAM, false)) return false;
            bytesRead += 6;
            hasTNAM = true;
            break;
@@ -442,8 +438,7 @@ bool HeadPartRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read RNAM
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cRNAM, unknownRNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cRNAM, unknownRNAM, false)) return false;
            bytesRead += 6;
            hasRNAM = true;
            break;

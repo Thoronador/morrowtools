@@ -240,9 +240,8 @@ bool LoadScreenRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: LSCR seems to have more than one DESC subrecord.\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
            //read DESC
-           if (!loadUint32SubRecordFromStream(in_File, cDESC, textStringID)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cDESC, textStringID, false)) return false;
            bytesRead += 6;
            hasReadDESC = true;
            break;
@@ -297,9 +296,8 @@ bool LoadScreenRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: LSCR seems to have more than one NNAM subrecord.\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
            //read NNAM
-           if (!loadUint32SubRecordFromStream(in_File, cNNAM, unknownNNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cNNAM, unknownNNAM, false)) return false;
            bytesRead += 6;
            hasReadNNAM = true;
            break;
@@ -309,9 +307,8 @@ bool LoadScreenRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: LSCR seems to have more than one SNAM subrecord.\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
            //read SNAM
-           if (!loadUint32SubRecordFromStream(in_File, cSNAM, unknownSNAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cSNAM, unknownSNAM, false)) return false;
            bytesRead += 6;
            hasReadSNAM = true;
            break;
@@ -346,9 +343,8 @@ bool LoadScreenRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: LSCR seems to have more than one ONAM subrecord.\n";
              return false;
            }
-           in_File.seekg(-4, std::ios_base::cur);
            //read ONAM
-           if (!loadUint32SubRecordFromStream(in_File, cONAM, unknownONAM)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cONAM, unknownONAM, false)) return false;
            bytesRead += 6;
            hasReadONAM = true;
            break;

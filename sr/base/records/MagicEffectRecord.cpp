@@ -284,10 +284,8 @@ bool MagicEffectRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: MGEF seems to have more than one FULL subrecord!\n";
              return false;
            }
-           //skip back
-           in_File.seekg(-4, std::ios_base::cur);
            //read FULL
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, fullNameStringID)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cFULL, fullNameStringID, false)) return false;
            bytesRead += 6;
            hasFULL = true;
            break;
@@ -297,10 +295,8 @@ bool MagicEffectRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: MGEF seems to have more than one MDOB subrecord!\n";
              return false;
            }
-           //skip back
-           in_File.seekg(-4, std::ios_base::cur);
            //read MDOB
-           if (!loadUint32SubRecordFromStream(in_File, cMDOB, unknownMDOB)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cMDOB, unknownMDOB, false)) return false;
            bytesRead += 6;
            hasMDOB = true;
            break;

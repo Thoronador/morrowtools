@@ -316,9 +316,7 @@ bool RaceRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: RACE seems to have more than one FULL subrecord!\n";
              return false;
            }
-           //skip back
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID))
+           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID, false))
            {
              std::cout << "Error while reading subrecord FULL of RACE!\n";
              return false;
@@ -332,9 +330,7 @@ bool RaceRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: RACE seems to have more than one DESC subrecord!\n";
              return false;
            }
-           //skip back
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cDESC, descriptionStringID))
+           if (!loadUint32SubRecordFromStream(in_File, cDESC, descriptionStringID, false))
            {
              std::cout << "Error while reading subrecord DESC of RACE!\n";
              return false;
@@ -408,9 +404,7 @@ bool RaceRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: RACE seems to have more than one WNAM subrecord!\n";
              return false;
            }
-           //skip back
-           in_File.seekg(-4, std::ios_base::cur);
-           if (!loadUint32SubRecordFromStream(in_File, cWNAM, unknownWNAM))
+           if (!loadUint32SubRecordFromStream(in_File, cWNAM, unknownWNAM, false))
            {
              std::cout << "Error while reading subrecord WNAM of RACE!\n";
              return false;

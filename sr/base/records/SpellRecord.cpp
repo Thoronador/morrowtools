@@ -257,10 +257,8 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: SPEL seems to have more than one FULL subrecord!\n";
              return false;
            }
-           //skip back
-           in_File.seekg(-4, std::ios_base::cur);
            //read FULL
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID, false)) return false;
            bytesRead += 6;
            hasFULL = true;
            break;
@@ -270,10 +268,8 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: SPEL seems to have more than one MDOB subrecord!\n";
              return false;
            }
-           //skip back
-           in_File.seekg(-4, std::ios_base::cur);
            //read MDOB
-           if (!loadUint32SubRecordFromStream(in_File, cMDOB, menuDisplayObjectFormID)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cMDOB, menuDisplayObjectFormID, false)) return false;
            bytesRead += 6;
            hasMDOB = true;
            break;
@@ -283,10 +279,8 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: SPEL seems to have more than one ETYP subrecord!\n";
              return false;
            }
-           //skip back
-           in_File.seekg(-4, std::ios_base::cur);
            //read ETYP
-           if (!loadUint32SubRecordFromStream(in_File, cETYP, equipTypeFormID)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cETYP, equipTypeFormID, false)) return false;
            bytesRead += 6;
            hasReadETYP = true;
            break;
@@ -296,10 +290,8 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: SPEL seems to have more than one DESC subrecord!\n";
              return false;
            }
-           //skip back
-           in_File.seekg(-4, std::ios_base::cur);
            //read DESC
-           if (!loadUint32SubRecordFromStream(in_File, cDESC, descriptionStringID)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cDESC, descriptionStringID, false)) return false;
            bytesRead += 6;
            hasReadDESC = true;
            break;

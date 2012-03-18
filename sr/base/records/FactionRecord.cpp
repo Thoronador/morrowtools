@@ -436,7 +436,7 @@ bool FactionRecord::loadFromStream(std::ifstream& in_File)
   }
   //EDID's length
   in_File.read((char*) &subLength, 2);
-  bytesRead += 4;
+  bytesRead += 2;
   if (subLength>511)
   {
     std::cout <<"Error: sub record EDID of FACT is longer than 511 characters!\n";
@@ -858,7 +858,7 @@ bool FactionRecord::loadFromStream(std::ifstream& in_File)
            }
            //CIS2's length
            in_File.read((char*) &subLength, 2);
-           bytesRead += 4;
+           bytesRead += 2;
            if (subLength>511)
            {
              std::cout <<"Error: sub record CIS2 of FACT is longer than 511 characters!\n";
@@ -933,26 +933,5 @@ int32_t FactionRecord::getRecordType() const
 {
   return cFACT;
 }
-
-    std::string editorID;
-    std::vector<FactionRecord::InterfactionRelation> relations; //subrecords XNAM
-    bool hasFULL;
-    uint32_t nameStringID; //subrecord FULL
-    uint32_t unknownDATA;
-    bool hasWAIT;
-    uint32_t unknownWAIT;
-    bool hasSTOL;
-    uint32_t unknownSTOL;
-    bool hasPLCN;
-    uint32_t unknownPLCN;
-    uint32_t crimeFactionListFormID; //subrecord CRGR, opt.
-    uint32_t jailOutfitFormID; //subrecord JOUT, opt.
-    uint8_t unknownCRVA[20]; //subrecord CRVA
-    bool hasVEND;
-    uint32_t unknownVEND;
-    bool hasVENC;
-    uint32_t unknownVENC;
-    uint8_t unknownVENV[12];
-    BinarySubRecord unknownPLVD;
 
 } //namespace

@@ -77,7 +77,7 @@ GenericRecord::~GenericRecord()
 #ifndef SR_NO_RECORD_EQUALITY
 bool GenericRecord::equals(const GenericRecord& other) const
 {
-  if ((m_DataSize==other.m_DataSize) and (m_Header==other.m_Header))
+  if ((m_DataSize==other.m_DataSize) and (Header==other.Header))
   {
     if (m_DataSize!=0)
     {

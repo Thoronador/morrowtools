@@ -124,6 +124,7 @@ const int32_t cEPFD = 0x44465045; //"EPFD" = 45 50 46 44
 const int32_t cEPFT = 0x54465045; //"EPFT" = 45 50 46 54
 const int32_t cEQUP = 0x50555145; //"EQUP" = 45 51 55 50
 const int32_t cETYP = 0x50595445; //"ETYP" = 45 54 59 50
+const int32_t cEXPL = 0x4C505845; //"EXPL" = 45 58 50 4C
 const int32_t cEYES = 0x53455945; //"EYES" = 45 59 45 53
 const int32_t cFACT = 0x54434146; //"FACT" = 46 41 43 54
 const int32_t cFCHT = 0x54484346; //"FCHT" = 46 43 48 54

@@ -47,6 +47,7 @@
 #include "records/EnchantmentRecord.h"
 #include "records/EncounterZoneRecord.h"
 #include "records/EquipmentSlotRecord.h"
+#include "records/ExplosionRecord.h"
 #include "records/EyeRecord.h"
 #include "records/FactionRecord.h"
 #include "records/FloraRecord.h"
@@ -203,6 +204,9 @@ int ESMReaderContentsAll::readNextRecord(std::ifstream& in_File, const int32_t r
          break;
     case cEQUP:
          recPtr = new EquipmentSlotRecord;
+         break;
+    case cEXPL:
+         recPtr = new ExplosionRecord;
          break;
     case cEYES:
          recPtr = new EyeRecord;

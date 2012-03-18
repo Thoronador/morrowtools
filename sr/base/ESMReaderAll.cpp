@@ -49,6 +49,7 @@
 #include "Enchantments.h"
 #include "EncounterZones.h"
 #include "EquipmentSlots.h"
+#include "Explosions.h"
 #include "Eyes.h"
 #include "Factions.h"
 #include "Floras.h"
@@ -103,7 +104,6 @@
 #include "Weapons.h"
 #include "WordsOfPower.h"
 #include "WorldSpaces.h"
-#include "records/GenericRecord.h"
 
 namespace SRTP
 {
@@ -135,8 +135,6 @@ void ESMReaderAll::groupFinished(const GroupData& g_data)
 
 int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
 {
-  int result;
-  GenericRecord * genRec = NULL;
   switch (recName)
   {
     case cAACT:
@@ -216,6 +214,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;
     case cEQUP:
          return EquipmentSlots::getSingleton().readNextRecord(in_File);
+         break;
+    case cEXPL:
+         return Explosions::getSingleton().readNextRecord(in_File);
          break;
     case cEYES:
          return Eyes::getSingleton().readNextRecord(in_File);
@@ -388,19 +389,7 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
                      <<(unsigned int) in_File.tellg()<<".\n";
            encounters.insert(recName);
          }
-         genRec = new GenericRecord;
-         genRec->Header = recName;
-         if (genRec->loadFromStream(in_File))
-         {
-           result = 0;
-         }
-         else
-         {
-           result = -1;
-         }
-         delete genRec;
-         genRec = NULL;
-         return result;
+         return skipRecord(in_File);
          break;
   }//swi
   //we should never get to this point

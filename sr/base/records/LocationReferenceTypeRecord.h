@@ -68,8 +68,13 @@ struct LocationReferenceTypeRecord: public BasicRecord
     virtual int32_t getRecordType() const;
 
     std::string editorID;
+    //subrecord CNAM
     bool hasCNAM;
-    uint32_t unknownCNAM;
+    uint8_t colourRed;
+    uint8_t colourGreen;
+    uint8_t colourBlue;
+    uint8_t unused;
+    //end of CNAM
 }; //struct
 
 } //namespace

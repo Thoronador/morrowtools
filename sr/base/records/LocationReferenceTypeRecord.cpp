@@ -31,7 +31,10 @@ LocationReferenceTypeRecord::LocationReferenceTypeRecord()
 {
   editorID = "";
   hasCNAM = false;
-  unknownCNAM = 0;
+  colourRed = 0;
+  colourGreen = 0;
+  colourBlue = 0;
+  unused = 0;
 }
 
 LocationReferenceTypeRecord::~LocationReferenceTypeRecord()
@@ -43,7 +46,9 @@ LocationReferenceTypeRecord::~LocationReferenceTypeRecord()
 bool LocationReferenceTypeRecord::equals(const LocationReferenceTypeRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
-      and (hasCNAM==other.hasCNAM) and ((unknownCNAM==other.unknownCNAM) or (!hasCNAM)));
+      and (hasCNAM==other.hasCNAM) and (((colourRed==other.colourRed)
+        and (colourGreen==other.colourGreen) and (colourBlue==other.colourBlue)
+        and (unused==other.unused)) or (!hasCNAM)));
 }
 #endif
 
@@ -81,7 +86,10 @@ bool LocationReferenceTypeRecord::saveToStream(std::ofstream& output) const
     subLength = 4;
     output.write((const char*) &subLength, 2);
     //write CNAM's stuff
-    output.write((const char*) &unknownCNAM, 4);
+    output.write((const char*) &colourRed, 1);
+    output.write((const char*) &colourGreen, 1);
+    output.write((const char*) &colourBlue, 1);
+    output.write((const char*) &unused, 1);
   }//if has CNAM
 
   return output.good();
@@ -128,7 +136,26 @@ bool LocationReferenceTypeRecord::loadFromStream(std::ifstream& in_File)
   if (bytesRead<readSize)
   {
     //read CNAM
-    if (!loadUint32SubRecordFromStream(in_File, cCNAM, unknownCNAM, true))
+    in_File.read((char*) &subRecName, 4);
+    bytesRead += 4;
+    if (subRecName!=cCNAM)
+    {
+      UnexpectedRecord(cCNAM, subRecName);
+      return false;
+    }
+    //CNAM's length
+    in_File.read((char*) &subLength, 2);
+    bytesRead += 2;
+    if (subLength!=4)
+    {
+      std::cout <<"Error: sub record CNAM of LCRT has invalid length ("
+                <<subLength<<" bytes). Should be four bytes!\n";
+      return false;
+    }
+    //read EDID's stuff
+    in_File.read(buffer, subLength);
+    bytesRead += subLength;
+    if (!in_File.good())
     {
       std::cout << "Error while reading subrecord CNAM of LCRT!\n";
       return false;
@@ -138,7 +165,10 @@ bool LocationReferenceTypeRecord::loadFromStream(std::ifstream& in_File)
   else
   {
     hasCNAM = false;
-    unknownCNAM = 0;
+    colourRed = 0;
+    colourGreen = 0;
+    colourBlue = 0;
+    unused = 0;
   }
 
   return in_File.good();

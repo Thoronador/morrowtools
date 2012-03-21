@@ -231,6 +231,52 @@ Records and their sub-records:
           unknown data, possibly form ID
 
 
+  CAMS: Camera shot(?)
+      EDID (string, NUL-terminated)
+          editorID
+      MODL (string, NUL-terminated, optional)
+          model path
+      MODT (12 bytes, optional)
+          unknown data
+      DATA (40 bytes or 44 bytes (later one since Skyrim 1.5.24))
+          cam shot data (arrangement for 44 byte version)
+            uint32_t    Camera Action
+                          0x00 - Shoot
+                          0x01 - Fly
+                          0x02 - Hit
+                          0x03 - Zoom
+            uint32_t    Camera Location
+                          0x00 - Attacker
+                          0x01 - Projectile
+                          0x02 - Target
+                          0x03 - Lead Actor
+            uint32_t    Camera Target
+                          0x00 - Attacker
+                          0x01 - Projectile
+                          0x02 - Target
+                          0x03 - Lead Actor
+            uint32_t    Flags
+                          0x01 - Position Follows Location
+                          0x02 - Rotation Follows Target
+                          0x04 - Don't Follow Bone
+                          0x08 - First Person Camera
+                          0x10 - No Tracer
+                          0x20 - Start At Time Zero
+            float       time multiplier: player (min.: 0.0f, max.: 20.0f)
+            float       time multiplier: target (min.: 0.0f, max.: 20.0f)
+            float       time multiplier: global (min.: 0.0f, max.: 1.0f)
+            float       Max Time (min.: 0.0f, max.: 120.0f)
+            float       Min Time (min.: 0.0f, max.: 120.0f)
+            float       Target % Between Actors (min.: 0.0f, max.: 100.0f)
+            float       Near Target Distance (min.: 0.0f, max.: 2000.0f)
+            
+              ----> The last float value (Near Target Distance) is presumably
+                    the one missing in the 40 byte versions. In that case it
+                    defaults to zero.
+      MNAM (4 bytes)
+          Imagespace Mod form ID (points to IMAD)
+
+
   CELL: cell
       EDID (string, NUL-terminated)
           editor ID

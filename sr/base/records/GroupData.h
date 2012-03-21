@@ -75,6 +75,13 @@ struct GroupData
     */
     void setGroupSize(const uint32_t newSize);
 
+    /* sets a new group type value
+
+       parameters:
+           newType - the new type value that shall be set
+    */
+    void setGroupType(const uint32_t newType);
+
     /* equality operator */
     bool operator==(const GroupData& other) const;
   protected:

@@ -93,7 +93,7 @@ bool BasicRecord::saveSizeAndUnknownValues(std::ofstream& output, const uint32_t
   output.write((const char*) &headerUnknown5, 2);
   if (!output.good())
   {
-    std::cout << "BasicRecord::saveSizeAndUnknownValues: Error while reading "
+    std::cout << "BasicRecord::saveSizeAndUnknownValues: Error while writing "
               << "record size and unknown header data.\n";
     return false;
   }

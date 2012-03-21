@@ -71,6 +71,7 @@ const int32_t cBIDS = 0x53444942; //"BIDS" = 42 49 44 53
 const int32_t cBNAM = 0x4D414E42; //"BNAM" = 42 4E 41 4D
 const int32_t cBODT = 0x54444F42; //"BODT" = 42 4F 44 54
 const int32_t cBOOK = 0x4B4F4F42; //"BOOK" = 42 4F 4F 4B
+const int32_t cCAMS = 0x534D4143; //"CAMS" = 43 41 4D 53
 const int32_t cCELL = 0x4C4C4543; //"CELL" = 43 45 4C 4C
 const int32_t cCIS2 = 0x32534943; //"CIS2" = 43 49 53 32
 const int32_t cCITC = 0x43544943; //"CITC" = 43 49 54 43

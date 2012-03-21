@@ -56,7 +56,8 @@ class ESMReaderSingleType: public ESMReader
            g_data - the group header data
 
        remarks:
-           Returns true for all keyword groups, false for any other group.
+           Returns true for all top level groups of given type, false for any
+           other group.
     */
     virtual bool needGroup(const GroupData& g_data) const;
 

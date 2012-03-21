@@ -105,6 +105,11 @@ void GroupData::setGroupSize(const uint32_t newSize)
   m_GroupSize = newSize;
 }
 
+void GroupData::setGroupType(const uint32_t newType)
+{
+  m_GroupType = newType;
+}
+
 bool GroupData::operator==(const GroupData& other) const
 {
   return ((m_GroupSize==other.getGroupSize()) and (m_GroupName==other.getGroupName())

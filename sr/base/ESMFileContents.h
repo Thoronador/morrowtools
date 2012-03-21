@@ -43,7 +43,7 @@ class ESMFileContents
     */
     Group& addNewGroup();
 
-    /* returns the number of records in the internal list */
+    /* returns the number of (top level) groups in the internal list */
     unsigned int getNumberOfGroups() const;
 
     /* removes all contents */

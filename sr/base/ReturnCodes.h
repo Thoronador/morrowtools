@@ -32,6 +32,9 @@ const int rcFileError = MWTP::rcFileError; //2
 const int rcDataError = MWTP::rcDataError; //3
 const int rcOutputFailed = MWTP::rcOutputFailed; //4
 
+/* return code currently only used by conv_cams */
+const int rcNoChange = MWTP::rcNoChange; //9
+
 /* special return codes for formID_finder */
 const int rcWindowNotFound = 10;
 const int rcSendDataNotSupported = 11;

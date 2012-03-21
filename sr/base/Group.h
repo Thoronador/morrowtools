@@ -77,11 +77,34 @@ class Group
     /* returns the number of records in the internal list */
     unsigned int getNumberOfRecords() const;
 
+    /* returns the number of records in the group, including the number of
+       records in sub groups
+    */
+    unsigned int getNumberOfRecordsIncludingSubGroups() const;
+
     /* removes all records from the internal list*/
     void removeRecords();
 
     /* recreates the internal index from scratch */
     void rebuildIndex();
+
+    //type for constant record iterator
+    typedef std::vector<boost::shared_ptr<BasicRecord> >::const_iterator ConstRecIterator;
+
+    //type for non-const record iterator
+    typedef std::vector<boost::shared_ptr<BasicRecord> >::iterator RecIterator;
+
+    /* returns a constant iterator to the start of the list of records */
+    ConstRecIterator getRecBegin() const;
+
+    /* returns a constant iterator to the end of the list of records */
+    ConstRecIterator getRecEnd() const;
+
+    /* returns an iterator to the start of the list of records */
+    RecIterator getRecBegin();
+
+    /* returns an iterator to the end of the list of records */
+    RecIterator getRecEnd();
 
     /* adds another sub group to the end of the sub group list and returns a
        reference to that group.
@@ -122,6 +145,11 @@ class Group
 
     /* returns the number of sub groups in the internal list */
     unsigned int getNumberOfSubGroups() const;
+
+    /* returns the number of groups in the internal list, including sub groups
+       and sub group's sub groups
+    */
+    unsigned int getNumberOfGroupsIncludingSubGroups() const;
 
     //type for sub group iterator
     typedef std::vector<Group>::const_iterator SubIterator;

@@ -84,6 +84,18 @@ unsigned int Group::getNumberOfRecords() const
   return m_Records.size();
 }
 
+unsigned int Group::getNumberOfRecordsIncludingSubGroups() const
+{
+  unsigned int result = m_Records.size();
+  SubIterator iterSub = m_SubGroups.begin();
+  while (iterSub!=m_SubGroups.end())
+  {
+    result += iterSub->getNumberOfRecordsIncludingSubGroups();
+    ++iterSub;
+  }//while
+  return result;
+}
+
 void Group::removeRecords()
 {
   //clear record index
@@ -108,6 +120,26 @@ void Group::rebuildIndex()
   {
     m_Index[m_Records[i]->headerFormID] = i;
   }//for
+}
+
+Group::ConstRecIterator Group::getRecBegin() const
+{
+  return m_Records.begin();
+}
+
+Group::ConstRecIterator Group::getRecEnd() const
+{
+  return m_Records.end();
+}
+
+Group::RecIterator Group::getRecBegin()
+{
+  return m_Records.begin();
+}
+
+Group::RecIterator Group::getRecEnd()
+{
+  return m_Records.end();
 }
 
 Group& Group::addSubGroup(const GroupData& g_data)
@@ -161,6 +193,18 @@ Group* Group::getSubGroupAtIndexNC(const unsigned int idx)
 unsigned int Group::getNumberOfSubGroups() const
 {
   return m_SubGroups.size();
+}
+
+unsigned int Group::getNumberOfGroupsIncludingSubGroups() const
+{
+  unsigned int result = m_SubGroups.size();
+  SubIterator iter = m_SubGroups.begin();
+  while (iter!=m_SubGroups.end())
+  {
+    result += iter->getNumberOfGroupsIncludingSubGroups();
+    ++iter;
+  }//while
+  return result;
 }
 
 Group::SubIterator Group::getSubBegin() const

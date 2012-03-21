@@ -34,6 +34,7 @@
 #include "ArtObjects.h"
 #include "AssociationTypes.h"
 #include "Books.h"
+#include "CameraShots.h"
 #include "Cells.h"
 #include "CharacterReferences.h"
 #include "Classes.h"
@@ -173,6 +174,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;
     case cBOOK:
          return Books::getSingleton().readNextRecord(in_File);
+         break;
+    case cCAMS:
+         return CameraShots::getSingleton().readNextRecord(in_File);
          break;
     case cCELL:
          return Cells::getSingleton().readNextRecord(in_File);

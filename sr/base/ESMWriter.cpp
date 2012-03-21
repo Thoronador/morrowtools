@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -37,7 +37,7 @@ ESMWriter::~ESMWriter()
 
 bool ESMWriter::writeESM(const std::string& FileName, Tes4HeaderRecord& theHeader)
 {
-  theHeader.numRecordsAndGroups = 1+ getTotalNumberOfGroups() + getTotalNumberOfRecords();
+  theHeader.numRecordsAndGroups = getTotalNumberOfGroups() + getTotalNumberOfRecords();
   std::ofstream output;
   output.open(FileName.c_str(), std::ios::out | std::ios::binary | std::ios::trunc);
   if (!output)

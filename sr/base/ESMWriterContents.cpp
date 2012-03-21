@@ -40,14 +40,20 @@ uint32_t ESMWriterContents::getTotalNumberOfRecords() const
   unsigned int i;
   for (i=0; i<contents.m_Groups.size(); ++i)
   {
-    result += contents.m_Groups[i].getNumberOfRecords();
+    result += contents.m_Groups[i].getNumberOfRecordsIncludingSubGroups();
   }//for
   return result;
 }
 
 uint32_t ESMWriterContents::getTotalNumberOfGroups() const
 {
-  return contents.getNumberOfGroups();
+  uint32_t result = contents.getNumberOfGroups();
+  unsigned int i;
+  for (i=0; i<contents.m_Groups.size(); ++i)
+  {
+    result += contents.m_Groups[i].getNumberOfGroupsIncludingSubGroups();
+  }//for
+  return result;
 }
 
 bool ESMWriterContents::writeGroups(std::ofstream& output) const

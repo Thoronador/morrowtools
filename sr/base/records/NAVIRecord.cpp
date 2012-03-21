@@ -50,6 +50,7 @@ bool NAVIRecord::equals(const NAVIRecord& other) const
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t NAVIRecord::getWriteSize() const
 {
+  if (isDeleted()) return 0;
   uint32_t writeSize;
   writeSize = 4 /* NVER */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   uint32_t i;
@@ -68,6 +69,7 @@ bool NAVIRecord::saveToStream(std::ofstream& output) const
 {
   output.write((const char*) &cNAVI, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
+  if (isDeleted()) return true;
 
   //write NVER
   output.write((const char*) &cNVER, 4);
@@ -106,6 +108,7 @@ bool NAVIRecord::loadFromStream(std::ifstream& in_File)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
+  if (isDeleted()) return true;
   int32_t subRecName;
   uint16_t subLength;
   subRecName = subLength = 0;

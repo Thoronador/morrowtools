@@ -26,6 +26,8 @@
 namespace SRTP
 {
 
+const int32_t cx00IAD = 0x44414900; //"\0IAD" = 00 49 41 44
+const int32_t cx40IAD = 0x44414940; //"@IAD" = 40 49 41 44
 const int32_t cAACT = 0x54434141; //"AACT" = 41 41 43 54
 const int32_t cACBS = 0x53424341; //"ACBS" = 41 43 42 53
 const int32_t cACHR = 0x52484341; //"ACHR" = 41 43 48 52
@@ -152,6 +154,7 @@ const int32_t cHEDR = 0x52444548; //"HEDR" = 48 45 44 52
 const int32_t cHNAM = 0x4D414E48; //"HNAM" = 48 4E 41 4D
 const int32_t cICO2 = 0x324F4349; //"ICO2" = 49 43 4F 32
 const int32_t cICON = 0x4E4F4349; //"ICON" = 49 43 4F 4E
+const int32_t cIMAD = 0x44414D49; //"IMAD" = 49 4D 41 44
 const int32_t cIMGS = 0x53474D49; //"IMGS" = 49 4D 47 53
 const int32_t cINAM = 0x4D414E49; //"INAM" = 49 4E 41 4D
 const int32_t cINDX = 0x58444E49; //"INDX" = 49 4E 44 58

@@ -47,13 +47,6 @@ void RaceRecord::RaceData::clear()
   memset(unknown96, 0, 96);
 }
 
-/* SubBlock's functions */
-
-bool RaceRecord::SubBlock::operator==(const RaceRecord::SubBlock& other) const
-{
-  return ((subType==other.subType) and (subData==other.subData));
-}
-
 /* RaceRecord's functions */
 
 RaceRecord::RaceRecord()

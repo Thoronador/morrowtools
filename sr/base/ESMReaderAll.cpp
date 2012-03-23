@@ -63,6 +63,7 @@
 #include "Grasses.h"
 #include "Hazards.h"
 #include "HeadParts.h"
+#include "ImageSpaceModifiers.h"
 #include "ImageSpaces.h"
 #include "ImpactDataSets.h"
 #include "Ingredients.h"
@@ -258,6 +259,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
          break;
     case cHDPT:
          return HeadParts::getSingleton().readNextRecord(in_File);
+         break;
+    case cIMAD:
+         return ImageSpaceModifiers::getSingleton().readNextRecord(in_File);
          break;
     case cIMGS:
          return ImageSpaces::getSingleton().readNextRecord(in_File);

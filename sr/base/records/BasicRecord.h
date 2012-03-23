@@ -71,8 +71,12 @@ struct BasicRecord
     /* returns true, if the record is deleted, according to the set flags */
     bool isDeleted() const;
 
+    /* returns true, if the record should be ignored, according to the set flags */
+    bool isIgnored() const;
+
     //flag constants
     static const uint32_t cDeletedFlag     = 0x00000020;
+    static const uint32_t cIgnoredFlag     = 0x00001000;
     static const uint32_t cCompressionFlag = 0x00040000;
 
     //partially unknown values - 16 bytes, i.e. 4 x uint32_t
@@ -138,7 +142,7 @@ struct BasicRecord
 
        parameters:
            in_File    - the input stream
-           target     - the uint32_t that will be used to store the read data
+           target     - the string that will be used to store the read data
            buffer     - a pre-allocated array of char that can hold at least 512 bytes
            subHeader  - the expected header of that subrecord
            withHeader - if set to true, the header is read, too. Otherwise just
@@ -146,6 +150,21 @@ struct BasicRecord
            bytesRead  - the variable that holds the number of bytes read so far
     */
     bool loadString512FromStream(std::istream& in_File, std::string& target, char * buffer, const int32_t subHeader, const bool withHeader, uint32_t& bytesRead) const;
+
+    /* tries to load a fixed length buffer from the stream and returns true in
+       case of success
+
+       parameters:
+           in_File    - the input stream
+           len        - expected length of the buffer in bytes
+           target     - the pre-allocated buffer that will be used to store the
+                        read data, has to have a length of at least len bytes
+           subHeader  - the expected header of that subrecord
+           withHeader - if set to true, the header is read, too. Otherwise just
+                        the subrecord's content is read
+           bytesRead  - the variable that holds the number of bytes read so far
+    */
+    bool loadBufferFromStream(std::istream& in_File, const uint16_t len, uint8_t * target, const int32_t subHeader, const bool withHeader, uint32_t& bytesRead) const;
 }; //struct
 
 } //namespace

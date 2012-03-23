@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -18,31 +18,29 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SR_RACERECORD_H
-#define SR_RACERECORD_H
+#ifndef SR_IMAGESPACEMODIFIERRECORD_H
+#define SR_IMAGESPACEMODIFIERRECORD_H
 
 #include "BasicRecord.h"
-#include "BinarySubRecord.h"
-#include "SubBlock.h"
 #include <string>
 #include <vector>
-#include <stdint.h>
+#include "SubBlock.h"
 
 namespace SRTP
 {
 
-struct RaceRecord: public BasicRecord
+struct ImageSpaceModifierRecord: public BasicRecord
 {
   public:
     /* constructor */
-    RaceRecord();
+    ImageSpaceModifierRecord();
 
     /* destructor */
-    virtual ~RaceRecord();
+    virtual ~ImageSpaceModifierRecord();
 
     #ifndef SR_NO_RECORD_EQUALITY
     /* returns true, if the other record contains the same data */
-    bool equals(const RaceRecord& other) const;
+    bool equals(const ImageSpaceModifierRecord& other) const;
     #endif
 
     #ifndef SR_UNSAVEABLE_RECORDS
@@ -69,36 +67,26 @@ struct RaceRecord: public BasicRecord
     /* returns the record's type, usually its header */
     virtual int32_t getRecordType() const;
 
-    //type for data subrecord
-    struct RaceData
-    {
-      uint8_t unknown16[16];
-      float heightMale;
-      float heightFemale;
-      float weightMale;
-      float weightFemale;
-      uint8_t unknown96[96];
-
-      /* comparison operator */
-      bool operator==(const RaceData& other) const;
-
-      /* initialisation/ reset data */
-      void clear();
-    };//struct
-
     std::string editorID;
-    bool hasFULL;
-    uint32_t nameStringID; //subrecord FULL
-    uint32_t descriptionStringID; //subrecord DESC
-    std::vector<uint32_t> spellFormIDs;
-    bool hasWNAM;
-    uint32_t unknownWNAM;
-    uint8_t unknownBODT[12];
-    std::vector<uint32_t> keywordArray;
-    RaceData data;
-    std::vector<SubBlock> subBlocks;
+    uint8_t unknownDNAM[244];
+    BinarySubRecord unknownBNAM;
+    BinarySubRecord unknownVNAM;
+    BinarySubRecord unknownTNAM;
+    BinarySubRecord unknownNAM3;
+    BinarySubRecord unknownRNAM;
+    BinarySubRecord unknownSNAM;
+    BinarySubRecord unknownUNAM;
+    BinarySubRecord unknownNAM1;
+    BinarySubRecord unknownNAM2;
+    BinarySubRecord unknownWNAM;
+    BinarySubRecord unknownXNAM;
+    BinarySubRecord unknownYNAM;
+    BinarySubRecord unknownNAM4;
+    BinarySubRecord unknownx00IAD;
+    BinarySubRecord unknownx40IAD;
+    std::vector<SubBlock> otherIADs;
 }; //struct
 
 } //namespace
 
-#endif // SR_RACERECORD_H
+#endif // SR_IMAGESPACEMODIFIERRECORD_H

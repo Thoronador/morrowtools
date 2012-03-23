@@ -61,6 +61,7 @@
 #include "records/GrassRecord.h"
 #include "records/HazardRecord.h"
 #include "records/HeadPartRecord.h"
+#include "records/ImageSpaceModifierRecord.h"
 #include "records/ImageSpaceRecord.h"
 #include "records/ImpactDataSetRecord.h"
 #include "records/IngredientRecord.h"
@@ -248,6 +249,9 @@ int ESMReaderContentsAll::readNextRecord(std::ifstream& in_File, const int32_t r
          break;
     case cHDPT:
          recPtr = new HeadPartRecord;
+         break;
+    case cIMAD:
+         recPtr = new ImageSpaceModifierRecord;
          break;
     case cIMGS:
          recPtr = new ImageSpaceRecord;

@@ -269,7 +269,7 @@ Records and their sub-records:
             float       Min Time (min.: 0.0f, max.: 120.0f)
             float       Target % Between Actors (min.: 0.0f, max.: 100.0f)
             float       Near Target Distance (min.: 0.0f, max.: 2000.0f)
-            
+
               ----> The last float value (Near Target Distance) is presumably
                     the one missing in the 40 byte versions. In that case it
                     defaults to zero.
@@ -699,6 +699,58 @@ Records and their sub-records:
           unknown data
       RNAM (4 bytes, optional)
           unknown data
+
+
+  IMAD: image space modifier
+      EDID (string, NUL-terminated)
+          editor ID
+      DNAM (244 bytes)
+          unknown data
+      BNAM (16 bytes or 24 bytes or 32 bytes or 40 bytes or 48 bytes or 56 bytes or 64 bytes or 80 bytes or 88 bytes or 344 bytes)
+          unknown data
+      VNAM (16 bytes or 24 bytes or 32 bytes or 40 bytes or 56 bytes or 64 bytes or 72 bytes or 80 bytes or 344 bytes)
+          unknown data
+      TNAM (40 bytes or 60 bytes or 80 bytes or 100 bytes or 280 bytes)
+          unknown data
+      NAM3 (40 bytes or 60 bytes or 80 bytes or 100 bytes or 120 bytes or 140 bytes or 160 bytes)
+          unknown data
+      RNAM (16 bytes or 24 bytes or 32 bytes or 40 bytes or 48 bytes or 56 bytes or 72 bytes)
+          unknown data
+      SNAM (16 bytes or 24 bytes or 32 bytes or 40 bytes or 48 bytes or 64 bytes)
+          unknown data
+      UNAM (16 bytes or 24 bytes or 32 bytes or 40 bytes or 88 bytes)
+          unknown data
+      NAM1 (16 bytes or 24 bytes or 32 bytes or 40 bytes)
+          unknown data
+      NAM2 (16 bytes or 24 bytes or 32 bytes or 40 bytes)
+          unknown data
+      WNAM (16 bytes or 24 bytes or 32 bytes or 48 bytes)
+          unknown data
+      XNAM (24 bytes or 32 bytes)
+          unknown data
+      YNAM (16 bytes or 24 bytes 32 bytes)
+          unknown data
+      NAM4 (16 bytes or 24 bytes)
+          unknown data
+          
+      \x00IAD (16 bytes or 24 bytes)
+          unknown data
+      @IAD (16 bytes or 24 bytes)
+          unknown data
+          
+      x01IAD (16 bytes)
+          unknown data
+      AIAD (16 bytes or 24 bytes or 32 bytes or 40 bytes or 48 bytes or 56 bytes or 80 bytes)
+          unknown DATA
+      x01IAD (16 bytes)
+          unknown data
+      BIAD (16 bytes or 24 bytes or 32 bytes or 40 bytes or 48 bytes or 56 bytes or 80 bytes)
+          unknown DATA
+      ...
+      x14IAD (16 bytes)
+          unknown data
+      TIAD (16 bytes or 24 bytes or 32 bytes or 40 bytes or 48 bytes or 56 bytes or 80 bytes or 104 bytes or 120 bytes or 136 bytes or 144 bytes or 152 bytes or 376 bytes)
+          unknown DATA
 
 
   LCTN: location

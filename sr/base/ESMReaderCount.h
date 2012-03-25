@@ -48,7 +48,7 @@ class ESMReaderCount: public ESMReader
            after each file. Otherwise the numbers will accumulate and represent
            the numbers for all files that were read.
     */
-    std::map<int32_t, unsigned int> RecordCounter;
+    std::map<uint32_t, unsigned int> RecordCounter;
 
     /* integer that holds the overall number of records */
     uint32_t totalRecords;
@@ -62,7 +62,7 @@ class ESMReaderCount: public ESMReader
            after each file. Otherwise the numbers will accumulate and represent
            the numbers for all files that were read.
     */
-    std::map<int32_t, unsigned int> GroupCounter;
+    std::map<uint32_t, unsigned int> GroupCounter;
 
     /* integer that holds the overall number of groups */
     uint32_t totalGroups;

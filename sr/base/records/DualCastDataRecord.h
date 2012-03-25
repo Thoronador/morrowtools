@@ -63,7 +63,7 @@ struct DualCastDataRecord: public BasicRecord
     virtual bool loadFromStream(std::ifstream& in_File);
 
     /* returns the record's type, usually its header */
-    virtual int32_t getRecordType() const;
+    virtual uint32_t getRecordType() const;
 
     /* returns true, if the hit effect art inherits the scale (according to flags) */
     bool hitEffectArtInheritsScale() const;

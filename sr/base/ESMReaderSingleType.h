@@ -103,7 +103,7 @@ class ESMReaderSingleType: public ESMReader
 template<typename recT, typename singleT, int32_t headerT>
 bool ESMReaderSingleType<recT, singleT, headerT>::needGroup(const GroupData& g_data) const
 {
-  return ((g_data.getGroupName()==headerT) and (g_data.getGroupType()==GroupData::cTopLevelGroup));
+  return ((g_data.getGroupLabel()==headerT) and (g_data.getGroupType()==GroupData::cTopLevelGroup));
 }
 
 template<typename recT, typename singleT, int32_t headerT>

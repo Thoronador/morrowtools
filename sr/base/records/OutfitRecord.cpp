@@ -86,7 +86,7 @@ bool OutfitRecord::loadFromStream(std::ifstream& in_File)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
-  int32_t subRecName;
+  uint32_t subRecName;
   uint16_t subLength;
   subRecName = subLength = 0;
 
@@ -148,7 +148,7 @@ bool OutfitRecord::loadFromStream(std::ifstream& in_File)
   return in_File.good();
 }
 
-int32_t OutfitRecord::getRecordType() const
+uint32_t OutfitRecord::getRecordType() const
 {
   return cOTFT;
 }

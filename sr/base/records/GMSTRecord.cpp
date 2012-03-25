@@ -42,7 +42,7 @@ GMSTRecord::~GMSTRecord()
   //empty
 }
 
-int32_t GMSTRecord::getRecordType() const
+uint32_t GMSTRecord::getRecordType() const
 {
   return cGMST;
 }
@@ -135,7 +135,7 @@ bool GMSTRecord::loadFromStream(std::ifstream& in_File)
   if (!loadSizeAndUnknownValues(in_File, Size)) return false;
 
   uint16_t subRecSize;
-  int32_t subRecName;
+  uint32_t subRecName;
   //read EDID
   in_File.read((char*) &subRecName, 4);
   if (subRecName!=cEDID)

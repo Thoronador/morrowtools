@@ -61,7 +61,7 @@ struct BasicRecord
     virtual bool isGenericRecord() const;
 
     /* returns the record's type, usually its header */
-    virtual int32_t getRecordType() const = 0;
+    virtual uint32_t getRecordType() const = 0;
 
     /* returns true, if the record's data is compressed, according to the set
        flags

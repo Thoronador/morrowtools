@@ -42,7 +42,7 @@ SoundRecord::~SoundRecord()
   //empty
 }
 
-int32_t SoundRecord::getRecordType() const
+uint32_t SoundRecord::getRecordType() const
 {
   return cSOUN;
 }
@@ -140,7 +140,7 @@ bool SoundRecord::loadFromStream(std::ifstream& in_File)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
-  int32_t subRecName;
+  uint32_t subRecName;
   uint16_t subLength;
   uint32_t bytesRead;
   subRecName = subLength = 0;

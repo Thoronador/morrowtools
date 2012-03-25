@@ -71,7 +71,7 @@ struct GenericRecord: public BasicRecord
     virtual bool isGenericRecord() const;
 
     /* returns the record's type, usually its header */
-    virtual int32_t getRecordType() const;
+    virtual uint32_t getRecordType() const;
 
     /* returns a pointer to the record data
 

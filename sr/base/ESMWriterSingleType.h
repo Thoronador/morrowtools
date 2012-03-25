@@ -100,7 +100,7 @@ bool ESMWriterSingleType<recT, singleT>::writeGroups(std::ofstream& output) cons
   //prepare group header
   GroupData headerData;
   recT dummyRec;
-  headerData.setGroupName(dummyRec.getRecordType());
+  headerData.setGroupLabel(dummyRec.getRecordType());
   headerData.setGroupType(GroupData::cTopLevelGroup);
   // -- calculate size
   uint32_t total = 0;

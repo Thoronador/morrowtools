@@ -59,7 +59,7 @@ bool Tes4HeaderRecord::equals(const Tes4HeaderRecord& other) const
 }
 #endif
 
-int32_t Tes4HeaderRecord::getRecordType() const
+uint32_t Tes4HeaderRecord::getRecordType() const
 {
   return cTES4;
 }

@@ -25,11 +25,13 @@ namespace SRTP
 {
 
 const uint32_t GroupData::cTopLevelGroup = 0;
+const uint32_t GroupData::cCellChildren = 6;
+const uint32_t GroupData::cCellPersistentChildren = 8;
 
 GroupData::GroupData()
 {
   m_GroupSize = 0;
-  m_GroupName = 0;
+  m_GroupLabel = 0;
   m_GroupType = 0;
   unsigned int i;
   for (i=0; i<2; ++i)
@@ -48,8 +50,8 @@ bool GroupData::saveToStream(std::ofstream& output) const
   output.write((char*) &cGRUP, 4);
   //write size
   output.write((char*) &m_GroupSize, 4);
-  //write name
-  output.write((char*) &m_GroupName, 4);
+  //write label
+  output.write((char*) &m_GroupLabel, 4);
   //write type
   output.write((char*) &m_GroupType, 4);
   //write unknown data
@@ -66,8 +68,8 @@ bool GroupData::loadFromStream(std::ifstream& in_File)
 {
   //read size
   in_File.read((char*) &m_GroupSize, 4);
-  //read name
-  in_File.read((char*) &m_GroupName, 4);
+  //read label
+  in_File.read((char*) &m_GroupLabel, 4);
   //read type
   in_File.read((char*) &m_GroupType, 4);
   //read unknown data
@@ -80,9 +82,9 @@ bool GroupData::loadFromStream(std::ifstream& in_File)
   return in_File.good();
 }
 
-int32_t GroupData::getGroupName() const
+uint32_t GroupData::getGroupLabel() const
 {
-  return m_GroupName;
+  return m_GroupLabel;
 }
 
 uint32_t GroupData::getGroupSize() const
@@ -95,9 +97,9 @@ uint32_t GroupData::getGroupType() const
   return m_GroupType;
 }
 
-void GroupData::setGroupName(const int32_t newName)
+void GroupData::setGroupLabel(const uint32_t newLabel)
 {
-  m_GroupName = newName;
+  m_GroupLabel = newLabel;
 }
 
 void GroupData::setGroupSize(const uint32_t newSize)
@@ -112,7 +114,7 @@ void GroupData::setGroupType(const uint32_t newType)
 
 bool GroupData::operator==(const GroupData& other) const
 {
-  return ((m_GroupSize==other.getGroupSize()) and (m_GroupName==other.getGroupName())
+  return ((m_GroupSize==other.getGroupSize()) and (m_GroupLabel==other.getGroupLabel())
       and (m_GroupType==other.getGroupType()) and (UnknownGroupDataTwo[0]==other.UnknownGroupDataTwo[0])
       and (UnknownGroupDataTwo[1]==other.UnknownGroupDataTwo[1]));
 }

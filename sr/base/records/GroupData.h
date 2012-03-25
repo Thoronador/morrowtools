@@ -51,7 +51,7 @@ struct GroupData
     virtual bool loadFromStream(std::ifstream& in_File);
 
     /* returns the group "name" */
-    int32_t getGroupName() const;
+    uint32_t getGroupLabel() const;
 
     /* returns the size of the group read from the stream */
     uint32_t getGroupSize() const;
@@ -59,14 +59,17 @@ struct GroupData
     /* returns the type of the group read from the stream */
     uint32_t getGroupType() const;
 
+    //type constants
     static const uint32_t cTopLevelGroup;
+    static const uint32_t cCellChildren;
+    static const uint32_t cCellPersistentChildren;
 
-    /* sets a new group name
+    /* sets a new group label
 
        parameters:
-           newName - the new name value that shall be set
+           newLabel - the new name value that shall be set
     */
-    void setGroupName(const int32_t newName);
+    void setGroupLabel(const uint32_t newLabel);
 
     /* sets a new group size value
 
@@ -86,7 +89,7 @@ struct GroupData
     bool operator==(const GroupData& other) const;
   protected:
     uint32_t m_GroupSize;
-    int32_t m_GroupName;
+    uint32_t m_GroupLabel;
     uint32_t m_GroupType;
     int32_t UnknownGroupDataTwo[2];
 }; //struct

@@ -54,7 +54,7 @@ void ESMReaderCount::nextGroupStarted(const GroupData& g_data, const bool sub)
   if (g_data.getGroupType()==GroupData::cTopLevelGroup)
   {
     //for top level groups, the label contains the name
-    ++GroupCounter[g_data.getGroupName()];
+    ++GroupCounter[g_data.getGroupLabel()];
   }
   else
   {
@@ -79,7 +79,7 @@ int ESMReaderCount::readNextRecord(std::ifstream& in_File, const int32_t recName
 
 void ESMReaderCount::showStats(const bool withPercentage) const
 {
-  std::map<int32_t, unsigned int>::const_iterator iter;
+  std::map<uint32_t, unsigned int>::const_iterator iter;
   unsigned int sum = 1;
   if (withPercentage)
   {

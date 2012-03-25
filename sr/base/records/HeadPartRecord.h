@@ -65,7 +65,7 @@ struct HeadPartRecord: public BasicRecord
     virtual bool loadFromStream(std::ifstream& in_File);
 
     /* returns the record's type, usually its header */
-    virtual int32_t getRecordType() const;
+    virtual uint32_t getRecordType() const;
 
     //structure for NAM0/NAM1 compounds
     struct NAM0_NAM1_compound

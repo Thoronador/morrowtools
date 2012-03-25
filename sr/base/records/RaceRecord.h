@@ -67,7 +67,7 @@ struct RaceRecord: public BasicRecord
     virtual bool loadFromStream(std::ifstream& in_File);
 
     /* returns the record's type, usually its header */
-    virtual int32_t getRecordType() const;
+    virtual uint32_t getRecordType() const;
 
     //type for data subrecord
     struct RaceData

@@ -66,7 +66,7 @@ struct BookRecord: public BasicRecord
     virtual bool loadFromStream(std::ifstream& in_File);
 
     /* returns the record's type, usually its header */
-    virtual int32_t getRecordType() const;
+    virtual uint32_t getRecordType() const;
 
     std::string editorID;
     BinarySubRecord unknownVMAD;

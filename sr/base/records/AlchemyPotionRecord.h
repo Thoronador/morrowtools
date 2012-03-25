@@ -62,7 +62,7 @@ struct AlchemyPotionRecord: public BasicRecord
     virtual bool loadFromStream(std::ifstream& in_File);
 
     /* returns the record's type, usually its header */
-    virtual int32_t getRecordType() const;
+    virtual uint32_t getRecordType() const;
 
     #ifndef SR_UNSAVEABLE_RECORDS
     /* returns the size in bytes that the record's data would occupy in a file

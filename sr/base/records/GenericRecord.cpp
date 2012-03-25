@@ -94,7 +94,7 @@ bool GenericRecord::isGenericRecord() const
   return true;
 }
 
-int32_t GenericRecord::getRecordType() const
+uint32_t GenericRecord::getRecordType() const
 {
   //no record should have zero here, so we use this to avoid trouble
   return 0;

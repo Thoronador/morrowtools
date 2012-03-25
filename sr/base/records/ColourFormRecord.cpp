@@ -113,7 +113,7 @@ bool ColourFormRecord::loadFromStream(std::ifstream& in_File)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
-  int32_t subRecName;
+  uint32_t subRecName;
   uint16_t subLength;
   subRecName = subLength = 0;
   uint32_t bytesRead = 0;
@@ -208,7 +208,7 @@ bool ColourFormRecord::loadFromStream(std::ifstream& in_File)
   return in_File.good();
 }
 
-int32_t ColourFormRecord::getRecordType() const
+uint32_t ColourFormRecord::getRecordType() const
 {
   return cCLFM;
 }

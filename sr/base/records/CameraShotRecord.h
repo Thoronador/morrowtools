@@ -64,7 +64,7 @@ struct CameraShotRecord: public BasicRecord
     virtual bool loadFromStream(std::ifstream& in_File);
 
     /* returns the record's type, usually its header */
-    virtual int32_t getRecordType() const;
+    virtual uint32_t getRecordType() const;
 
     //enumeration type for DATA's length
     enum DataLengthType {dlt40Byte=40, dlt44Byte=44};

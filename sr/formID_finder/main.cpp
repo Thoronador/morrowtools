@@ -37,6 +37,7 @@
 #include "../base/Apparatuses.h"
 #include "../base/Armours.h"
 #include "../base/Books.h"
+#include "../base/Cells.h"
 #include "../base/Containers.h"
 #include "../base/Factions.h"
 #include "../base/Floras.h"
@@ -83,13 +84,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Form ID Finder for Skyrim, version 0.19_pre.rev454, 2012-03-25\n";
+  std::cout << "Form ID Finder for Skyrim, version 0.19.rev455, 2012-03-25\n";
 }
 
 int showVersionExitcode()
 {
   showVersion();
-  return 454;
+  return 455;
 }
 
 void showHelp()
@@ -128,10 +129,10 @@ bool matchesKeyword(const std::string& haystack, const std::string& keyword, con
 }
 
 //...and another auxillary function
-void showRefIDs(const uint32_t baseID, const std::map<uint32_t, std::vector<uint32_t> >& refMap, std::basic_ostream<char>& basic_out)
+void showRefIDs(const uint32_t baseID, const std::map<uint32_t, std::vector<SRTP::ESMReaderFinderReferences::CellRefIDPair> >& refMap, const SRTP::StringTable& table, std::basic_ostream<char>& basic_out)
 {
   basic_out << "        references: ";
-  std::map<uint32_t, std::vector<uint32_t> >::const_iterator iter = refMap.find(baseID);
+  std::map<uint32_t, std::vector<SRTP::ESMReaderFinderReferences::CellRefIDPair> >::const_iterator iter = refMap.find(baseID);
   if (iter!=refMap.end())
   {
     basic_out << iter->second.size()<<"\n";
@@ -141,6 +142,30 @@ void showRefIDs(const uint32_t baseID, const std::map<uint32_t, std::vector<uint
     basic_out << "none\n";
     return;
   }
+  bool hasName = false;
+  std::vector<SRTP::ESMReaderFinderReferences::CellRefIDPair>::const_iterator vecIter = iter->second.begin();
+  while (vecIter!=iter->second.end())
+  {
+    hasName = false;
+    basic_out << "          ref ID "<<SRTP::getFormIDAsString(vecIter->refID);
+    if (SRTP::Cells::getSingleton().hasRecord(vecIter->cellID))
+    {
+      const SRTP::CellRecord& theCell = SRTP::Cells::getSingleton().getRecord(vecIter->cellID);
+      if (theCell.hasFULL)
+      {
+        if (table.hasString(theCell.nameStringID))
+        {
+          basic_out << " in cell \""<<table.getString(theCell.nameStringID)<<"\"\n";
+          hasName = true;
+        }
+      }//if FULL
+    }
+    if (!hasName)
+    {
+      basic_out << " in unnamend cell\n";
+    }
+    ++vecIter;
+  }//while
 }
 
 int main(int argc, char **argv)
@@ -520,7 +545,7 @@ int main(int argc, char **argv)
                       <<"\n        editor ID \""<<activator_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
-              showRefIDs(activator_iter->second.headerFormID, readerReferences.refMap, basic_out);
+              showRefIDs(activator_iter->second.headerFormID, readerReferences.refMap, table, basic_out);
             }
             ++activatorMatches;
             ++totalMatches;
@@ -557,7 +582,7 @@ int main(int argc, char **argv)
                       <<"\n        editor ID \""<<alchemy_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
-              showRefIDs(alchemy_iter->second.headerFormID, readerReferences.refMap, basic_out);
+              showRefIDs(alchemy_iter->second.headerFormID, readerReferences.refMap, table, basic_out);
             }
             ++alchemyMatches;
             ++totalMatches;
@@ -594,7 +619,7 @@ int main(int argc, char **argv)
                       <<"\n        editor ID \""<<ammo_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
-              showRefIDs(ammo_iter->second.headerFormID, readerReferences.refMap, basic_out);
+              showRefIDs(ammo_iter->second.headerFormID, readerReferences.refMap, table, basic_out);
             }
             ++ammoMatches;
             ++totalMatches;
@@ -630,7 +655,7 @@ int main(int argc, char **argv)
                       <<"\n        editor ID \""<<appa_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
-              showRefIDs(appa_iter->second.headerFormID, readerReferences.refMap, basic_out);
+              showRefIDs(appa_iter->second.headerFormID, readerReferences.refMap, table, basic_out);
             }
             ++appaMatches;
             ++totalMatches;
@@ -667,7 +692,7 @@ int main(int argc, char **argv)
                       <<"\n        editor ID \""<<armour_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
-              showRefIDs(armour_iter->second.headerFormID, readerReferences.refMap, basic_out);
+              showRefIDs(armour_iter->second.headerFormID, readerReferences.refMap, table, basic_out);
             }
             ++armourMatches;
             ++totalMatches;
@@ -704,7 +729,7 @@ int main(int argc, char **argv)
                       <<"\n        editor ID \""<<book_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
-              showRefIDs(book_iter->second.headerFormID, readerReferences.refMap, basic_out);
+              showRefIDs(book_iter->second.headerFormID, readerReferences.refMap, table, basic_out);
             }
             ++bookMatches;
             ++totalMatches;
@@ -741,7 +766,7 @@ int main(int argc, char **argv)
                       <<"\n        editor ID \""<<container_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
-              showRefIDs(container_iter->second.headerFormID, readerReferences.refMap, basic_out);
+              showRefIDs(container_iter->second.headerFormID, readerReferences.refMap, table, basic_out);
             }
             ++containerMatches;
             ++totalMatches;
@@ -878,7 +903,7 @@ int main(int argc, char **argv)
                       <<"\n        editor ID \""<<ingred_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
-              showRefIDs(ingred_iter->second.headerFormID, readerReferences.refMap, basic_out);
+              showRefIDs(ingred_iter->second.headerFormID, readerReferences.refMap, table, basic_out);
             }
             ++ingredMatches;
             ++totalMatches;
@@ -913,7 +938,7 @@ int main(int argc, char **argv)
                       <<"\n        editor ID \""<<key_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
-              showRefIDs(key_iter->second.headerFormID, readerReferences.refMap, basic_out);
+              showRefIDs(key_iter->second.headerFormID, readerReferences.refMap, table, basic_out);
             }
             ++keyMatches;
             ++totalMatches;
@@ -949,7 +974,7 @@ int main(int argc, char **argv)
                       <<"\n        editor ID \""<<misc_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
-              showRefIDs(misc_iter->second.headerFormID, readerReferences.refMap, basic_out);
+              showRefIDs(misc_iter->second.headerFormID, readerReferences.refMap, table, basic_out);
             }
             ++miscMatches;
             ++totalMatches;
@@ -986,7 +1011,7 @@ int main(int argc, char **argv)
                       <<"\n        editor ID \""<<npc_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
-              showRefIDs(npc_iter->second.headerFormID, readerReferences.refMap, basic_out);
+              showRefIDs(npc_iter->second.headerFormID, readerReferences.refMap, table, basic_out);
             }
             ++NPCMatches;
             ++totalMatches;
@@ -1145,7 +1170,7 @@ int main(int argc, char **argv)
                       <<"\n        editor ID \""<<scroll_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
-              showRefIDs(scroll_iter->second.headerFormID, readerReferences.refMap, basic_out);
+              showRefIDs(scroll_iter->second.headerFormID, readerReferences.refMap, table, basic_out);
             }
             ++scrollMatches;
             ++totalMatches;
@@ -1182,7 +1207,7 @@ int main(int argc, char **argv)
                       <<"\n        editor ID \""<<soulgem_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
-              showRefIDs(soulgem_iter->second.headerFormID, readerReferences.refMap, basic_out);
+              showRefIDs(soulgem_iter->second.headerFormID, readerReferences.refMap, table, basic_out);
             }
             ++soulgemMatches;
             ++totalMatches;
@@ -1219,7 +1244,7 @@ int main(int argc, char **argv)
                       <<"\n        editor ID \""<<spell_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
-              showRefIDs(spell_iter->second.headerFormID, readerReferences.refMap, basic_out);
+              showRefIDs(spell_iter->second.headerFormID, readerReferences.refMap, table, basic_out);
             }
             ++spellMatches;
             ++totalMatches;
@@ -1356,7 +1381,7 @@ int main(int argc, char **argv)
                       <<"\n        editor ID \""<<weapon_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
-              showRefIDs(weapon_iter->second.headerFormID, readerReferences.refMap, basic_out);
+              showRefIDs(weapon_iter->second.headerFormID, readerReferences.refMap, table, basic_out);
             }
             ++weaponMatches;
             ++totalMatches;

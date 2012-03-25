@@ -65,8 +65,18 @@ struct VoiceTypeRecord: public BasicRecord
     /* returns the record's type, usually its header */
     virtual uint32_t getRecordType() const;
 
+    //flag constants
+    static const uint8_t cFemale;
+    static const uint8_t cAllowDefaultDialogue;
+
+    /* return true, if the female flag is set */
+    bool isFemale() const;
+
+    /* returns true, if the Allow Default Dialogue flag is set */
+    bool allowsDefaultDialogue() const;
+
     std::string editorID;
-    uint8_t unknownDNAM;
+    uint8_t flags; //subrecord DNAM
 }; //struct
 
 } //namespace

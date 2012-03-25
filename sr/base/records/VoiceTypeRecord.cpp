@@ -26,11 +26,15 @@
 namespace SRTP
 {
 
+
+const uint8_t VoiceTypeRecord::cAllowDefaultDialogue = 0x01;
+const uint8_t VoiceTypeRecord::cFemale = 0x02;
+
 VoiceTypeRecord::VoiceTypeRecord()
 : BasicRecord()
 {
   editorID = "";
-  unknownDNAM = 0;
+  flags = 0;
 }
 
 VoiceTypeRecord::~VoiceTypeRecord()
@@ -42,7 +46,7 @@ VoiceTypeRecord::~VoiceTypeRecord()
 bool VoiceTypeRecord::equals(const VoiceTypeRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
-      and (unknownDNAM==other.unknownDNAM));
+      and (flags==other.flags));
 }
 #endif
 
@@ -73,7 +77,7 @@ bool VoiceTypeRecord::saveToStream(std::ofstream& output) const
   subLength = 1;
   output.write((const char*) &subLength, 2);
   //write DNAM's stuff
-  output.write((const char*) &unknownDNAM, 1);
+  output.write((const char*) &flags, 1);
 
   return output.good();
 }
@@ -86,11 +90,11 @@ bool VoiceTypeRecord::loadFromStream(std::ifstream& in_File)
   uint32_t subRecName;
   uint16_t subLength;
   subRecName = subLength = 0;
-  uint32_t bytesRead;
+  //uint32_t bytesRead;
 
   //read EDID
   in_File.read((char*) &subRecName, 4);
-  bytesRead = 4;
+  //bytesRead = 4;
   if (subRecName!=cEDID)
   {
     UnexpectedRecord(cEDID, subRecName);
@@ -98,7 +102,7 @@ bool VoiceTypeRecord::loadFromStream(std::ifstream& in_File)
   }
   //EDID's length
   in_File.read((char*) &subLength, 2);
-  bytesRead += 2;
+  //bytesRead += 2;
   if (subLength>511)
   {
     std::cout <<"Error: sub record EDID of VTYP is longer than 511 characters!\n";
@@ -108,7 +112,7 @@ bool VoiceTypeRecord::loadFromStream(std::ifstream& in_File)
   char buffer[512];
   memset(buffer, 0, 512);
   in_File.read(buffer, subLength);
-  bytesRead += subLength;
+  //bytesRead += subLength;
   if (!in_File.good())
   {
     std::cout << "Error while reading subrecord EDID of VTYP!\n";
@@ -118,7 +122,7 @@ bool VoiceTypeRecord::loadFromStream(std::ifstream& in_File)
 
   //read DNAM
   in_File.read((char*) &subRecName, 4);
-  bytesRead = 4;
+  //bytesRead += 4;
   if (subRecName!=cDNAM)
   {
     UnexpectedRecord(cDNAM, subRecName);
@@ -126,7 +130,7 @@ bool VoiceTypeRecord::loadFromStream(std::ifstream& in_File)
   }
   //DNAM's length
   in_File.read((char*) &subLength, 2);
-  bytesRead += 2;
+  //bytesRead += 2;
   if (subLength!=1)
   {
     std::cout <<"Error: subrecord DNAM of VTYP has invalid length ("<<subLength
@@ -134,8 +138,8 @@ bool VoiceTypeRecord::loadFromStream(std::ifstream& in_File)
     return false;
   }
   //read DNAM's stuff
-  in_File.read((char*) &unknownDNAM, 1);
-  bytesRead += 1;
+  in_File.read((char*) &flags, 1);
+  //bytesRead += 1;
   if (!in_File.good())
   {
     std::cout << "Error while reading subrecord DNAM of VTYP!\n";
@@ -148,6 +152,16 @@ bool VoiceTypeRecord::loadFromStream(std::ifstream& in_File)
 uint32_t VoiceTypeRecord::getRecordType() const
 {
   return cVTYP;
+}
+
+bool VoiceTypeRecord::isFemale() const
+{
+  return ((flags & cFemale)!=0);
+}
+
+bool VoiceTypeRecord::allowsDefaultDialogue() const
+{
+  return ((flags & cAllowDefaultDialogue)!=0);
 }
 
 } //namespace

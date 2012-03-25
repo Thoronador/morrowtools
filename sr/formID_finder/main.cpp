@@ -58,6 +58,7 @@
 #include "../base/WordsOfPower.h"
 #include "../base/records/TES4HeaderRecord.h"
 #include "ESMReaderFinder.h"
+#include "ESMReaderFinderReferences.h"
 
 void showGPLNotice()
 {
@@ -82,13 +83,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Form ID Finder for Skyrim, version 0.18.rev444, 2012-03-15\n";
+  std::cout << "Form ID Finder for Skyrim, version 0.19_pre.rev454, 2012-03-25\n";
 }
 
 int showVersionExitcode()
 {
   showVersion();
-  return 444;
+  return 454;
 }
 
 void showHelp()
@@ -111,7 +112,9 @@ void showHelp()
             << "  --all-quest-info - shows complete quest info, including texts for journal\n"
             << "                     entries and objectives.\n"
             << "  --faction-ranks  - shows the ranks of matching factions, too.\n"
-            << "  --ranks          - same as --faction-ranks\n";
+            << "  --ranks          - same as --faction-ranks\n"
+            << "  --ref-id         - try to find reference IDs, too. With this parameter the\n"
+            << "                     programme will need a significantly longer amout of time.\n";
 }
 
 //auxillary function
@@ -122,6 +125,22 @@ bool matchesKeyword(const std::string& haystack, const std::string& keyword, con
     return (haystack.find(keyword)!=std::string::npos);
   }
   return (lowerCase(haystack).find(keyword)!=std::string::npos);
+}
+
+//...and another auxillary function
+void showRefIDs(const uint32_t baseID, const std::map<uint32_t, std::vector<uint32_t> >& refMap, std::basic_ostream<char>& basic_out)
+{
+  basic_out << "        references: ";
+  std::map<uint32_t, std::vector<uint32_t> >::const_iterator iter = refMap.find(baseID);
+  if (iter!=refMap.end())
+  {
+    basic_out << iter->second.size()<<"\n";
+  }
+  else
+  {
+    basic_out << "none\n";
+    return;
+  }
 }
 
 int main(int argc, char **argv)
@@ -137,6 +156,7 @@ int main(int argc, char **argv)
   bool listFactionRanks = false;
   bool sendData = false;
   std::string sendParam1st ="", sendParam2nd ="";
+  bool withReferences = false;
 
   if ((argc>1) and (argv!=NULL))
   {
@@ -279,6 +299,18 @@ int main(int argc, char **argv)
             return SRTP::rcInvalidParameter;
           }
         }//send data
+        else if ((param=="--ref-id") or (param=="--ref-ids") or (param=="--ref")
+                  or (param=="--refs")or (param=="--references"))
+        {
+          //set more than once?
+          if (withReferences)
+          {
+            std::cout << "Error: parameter \""<<param<<"\" was specified twice!\n";
+            return SRTP::rcInvalidParameter;
+          }
+          withReferences = true;
+          std::cout << "Search for reference IDs activated.\n";
+        }//references
         else if (searchKeyword.empty())
         {
           //assume search keyword was given without prior --keyword option
@@ -359,10 +391,6 @@ int main(int argc, char **argv)
     return SRTP::rcInvalidParameter;
   }//if no keyword given
 
-  std::cout << "\n\nSearching for \""<<searchKeyword<<"\" using case-";
-  if (!caseSensitive) std::cout <<"in";
-  std::cout << "sensitive search. This may take a while...\n";
-
   //adjust keyword to selected case-sensitivity
   if (!caseSensitive) searchKeyword = lowerCase(searchKeyword);
 
@@ -437,14 +465,33 @@ int main(int argc, char **argv)
     return SRTP::rcDataError;
   }
 
+  std::cout << "\n\nSearching for \""<<searchKeyword<<"\" using case-";
+  if (!caseSensitive) std::cout <<"in";
+  std::cout << "sensitive search. This may take a while...\n";
+  if (withReferences)
+  {
+    std::cout << "Since you want to search for reference IDs, too, this may take even longer...\n";
+  }
+
   SRTP::ESMReaderFinder reader;
   SRTP::Tes4HeaderRecord tes4rec;
 
+  //read the usual stuff (for base IDs)
   if (!reader.readESM(dataDir+"Skyrim.esm", tes4rec))
   {
     std::cout << "Error while reading "<<dataDir+"Skyrim.esm!\n";
     return SRTP::rcFileError;
   }
+
+  SRTP::ESMReaderFinderReferences readerReferences;
+  if (withReferences)
+  {
+    if (!readerReferences.readESM(dataDir+"Skyrim.esm", tes4rec))
+    {
+      std::cout << "Error while reading references from "<<dataDir+"Skyrim.esm!\n";
+      return SRTP::rcFileError;
+    }
+  }//if references requested
 
   std::ostringstream string_out;
   std::basic_ostream<char>& basic_out = sendData ? string_out : std::cout;
@@ -471,6 +518,10 @@ int main(int argc, char **argv)
             basic_out << "    \""<<table.getString(activator_iter->second.nameStringID)
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(activator_iter->second.headerFormID)
                       <<"\n        editor ID \""<<activator_iter->second.editorID<<"\"\n";
+            if (withReferences)
+            {
+              showRefIDs(activator_iter->second.headerFormID, readerReferences.refMap, basic_out);
+            }
             ++activatorMatches;
             ++totalMatches;
           }//if match found
@@ -504,6 +555,10 @@ int main(int argc, char **argv)
             basic_out << "    \""<<table.getString(alchemy_iter->second.nameStringID)
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(alchemy_iter->second.headerFormID)
                       <<"\n        editor ID \""<<alchemy_iter->second.editorID<<"\"\n";
+            if (withReferences)
+            {
+              showRefIDs(alchemy_iter->second.headerFormID, readerReferences.refMap, basic_out);
+            }
             ++alchemyMatches;
             ++totalMatches;
           }//if match found
@@ -537,6 +592,10 @@ int main(int argc, char **argv)
             basic_out << "    \""<<table.getString(ammo_iter->second.nameStringID)
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(ammo_iter->second.headerFormID)
                       <<"\n        editor ID \""<<ammo_iter->second.editorID<<"\"\n";
+            if (withReferences)
+            {
+              showRefIDs(ammo_iter->second.headerFormID, readerReferences.refMap, basic_out);
+            }
             ++ammoMatches;
             ++totalMatches;
           }//if match found
@@ -569,6 +628,10 @@ int main(int argc, char **argv)
             basic_out << "    \""<<table.getString(appa_iter->second.nameStringID)
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(appa_iter->second.headerFormID)
                       <<"\n        editor ID \""<<appa_iter->second.editorID<<"\"\n";
+            if (withReferences)
+            {
+              showRefIDs(appa_iter->second.headerFormID, readerReferences.refMap, basic_out);
+            }
             ++appaMatches;
             ++totalMatches;
           }//if match found
@@ -602,6 +665,10 @@ int main(int argc, char **argv)
             basic_out << "    \""<<table.getString(armour_iter->second.nameStringID)
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(armour_iter->second.headerFormID)
                       <<"\n        editor ID \""<<armour_iter->second.editorID<<"\"\n";
+            if (withReferences)
+            {
+              showRefIDs(armour_iter->second.headerFormID, readerReferences.refMap, basic_out);
+            }
             ++armourMatches;
             ++totalMatches;
           }//if match found
@@ -635,6 +702,10 @@ int main(int argc, char **argv)
             basic_out << "    \""<<table.getString(book_iter->second.titleStringID)
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(book_iter->second.headerFormID)
                       <<"\n        editor ID \""<<book_iter->second.editorID<<"\"\n";
+            if (withReferences)
+            {
+              showRefIDs(book_iter->second.headerFormID, readerReferences.refMap, basic_out);
+            }
             ++bookMatches;
             ++totalMatches;
           }//if match found
@@ -668,6 +739,10 @@ int main(int argc, char **argv)
             basic_out << "    \""<<table.getString(container_iter->second.nameStringID)
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(container_iter->second.headerFormID)
                       <<"\n        editor ID \""<<container_iter->second.editorID<<"\"\n";
+            if (withReferences)
+            {
+              showRefIDs(container_iter->second.headerFormID, readerReferences.refMap, basic_out);
+            }
             ++containerMatches;
             ++totalMatches;
           }//if match found
@@ -801,6 +876,10 @@ int main(int argc, char **argv)
             basic_out << "    \""<<table.getString(ingred_iter->second.nameStringID)
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(ingred_iter->second.headerFormID)
                       <<"\n        editor ID \""<<ingred_iter->second.editorID<<"\"\n";
+            if (withReferences)
+            {
+              showRefIDs(ingred_iter->second.headerFormID, readerReferences.refMap, basic_out);
+            }
             ++ingredMatches;
             ++totalMatches;
           }//if match found
@@ -832,6 +911,10 @@ int main(int argc, char **argv)
             basic_out << "    \""<<table.getString(key_iter->second.nameStringID)
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(key_iter->second.headerFormID)
                       <<"\n        editor ID \""<<key_iter->second.editorID<<"\"\n";
+            if (withReferences)
+            {
+              showRefIDs(key_iter->second.headerFormID, readerReferences.refMap, basic_out);
+            }
             ++keyMatches;
             ++totalMatches;
           }//if match found
@@ -864,6 +947,10 @@ int main(int argc, char **argv)
             basic_out << "    \""<<table.getString(misc_iter->second.fullNameStringID)
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(misc_iter->second.headerFormID)
                       <<"\n        editor ID \""<<misc_iter->second.editorID<<"\"\n";
+            if (withReferences)
+            {
+              showRefIDs(misc_iter->second.headerFormID, readerReferences.refMap, basic_out);
+            }
             ++miscMatches;
             ++totalMatches;
           }//if match found
@@ -897,6 +984,10 @@ int main(int argc, char **argv)
             basic_out << "    \""<<table.getString(npc_iter->second.nameStringID)
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(npc_iter->second.headerFormID)
                       <<"\n        editor ID \""<<npc_iter->second.editorID<<"\"\n";
+            if (withReferences)
+            {
+              showRefIDs(npc_iter->second.headerFormID, readerReferences.refMap, basic_out);
+            }
             ++NPCMatches;
             ++totalMatches;
           }//if match found
@@ -1052,6 +1143,10 @@ int main(int argc, char **argv)
             basic_out << "    \""<<table.getString(scroll_iter->second.nameStringID)
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(scroll_iter->second.headerFormID)
                       <<"\n        editor ID \""<<scroll_iter->second.editorID<<"\"\n";
+            if (withReferences)
+            {
+              showRefIDs(scroll_iter->second.headerFormID, readerReferences.refMap, basic_out);
+            }
             ++scrollMatches;
             ++totalMatches;
           }//if match found
@@ -1085,6 +1180,10 @@ int main(int argc, char **argv)
             basic_out << "    \""<<table.getString(soulgem_iter->second.nameStringID)
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(soulgem_iter->second.headerFormID)
                       <<"\n        editor ID \""<<soulgem_iter->second.editorID<<"\"\n";
+            if (withReferences)
+            {
+              showRefIDs(soulgem_iter->second.headerFormID, readerReferences.refMap, basic_out);
+            }
             ++soulgemMatches;
             ++totalMatches;
           }//if match found
@@ -1118,6 +1217,10 @@ int main(int argc, char **argv)
             basic_out << "    \""<<table.getString(spell_iter->second.nameStringID)
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(spell_iter->second.headerFormID)
                       <<"\n        editor ID \""<<spell_iter->second.editorID<<"\"\n";
+            if (withReferences)
+            {
+              showRefIDs(spell_iter->second.headerFormID, readerReferences.refMap, basic_out);
+            }
             ++spellMatches;
             ++totalMatches;
           }//if match found
@@ -1251,6 +1354,10 @@ int main(int argc, char **argv)
             basic_out << "    \""<<table.getString(weapon_iter->second.nameStringID)
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(weapon_iter->second.headerFormID)
                       <<"\n        editor ID \""<<weapon_iter->second.editorID<<"\"\n";
+            if (withReferences)
+            {
+              showRefIDs(weapon_iter->second.headerFormID, readerReferences.refMap, basic_out);
+            }
             ++weaponMatches;
             ++totalMatches;
           }//if match found

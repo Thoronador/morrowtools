@@ -69,7 +69,7 @@ void ESMReaderCount::groupFinished(const GroupData& g_data)
   //nothing to do here
 }
 
-int ESMReaderCount::readNextRecord(std::ifstream& in_File, const int32_t recName)
+int ESMReaderCount::readNextRecord(std::ifstream& in_File, const uint32_t recName)
 {
   ++RecordCounter[recName];
   ++totalRecords;

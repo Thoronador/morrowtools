@@ -55,6 +55,7 @@
 		<Unit filename="..\base\Apparatuses.h" />
 		<Unit filename="..\base\Armours.h" />
 		<Unit filename="..\base\Books.h" />
+		<Unit filename="..\base\Cells.h" />
 		<Unit filename="..\base\Containers.h" />
 		<Unit filename="..\base\ESMReader.cpp" />
 		<Unit filename="..\base\ESMReader.h" />
@@ -79,6 +80,7 @@
 		<Unit filename="..\base\StringTable.h" />
 		<Unit filename="..\base\Weapons.h" />
 		<Unit filename="..\base\WordsOfPower.h" />
+		<Unit filename="..\base\WorldSpaces.h" />
 		<Unit filename="..\base\records\ActivatorRecord.cpp" />
 		<Unit filename="..\base\records\ActivatorRecord.h" />
 		<Unit filename="..\base\records\AlchemyPotionRecord.cpp" />
@@ -97,6 +99,10 @@
 		<Unit filename="..\base\records\BookRecord.h" />
 		<Unit filename="..\base\records\CTDAData.cpp" />
 		<Unit filename="..\base\records\CTDAData.h" />
+		<Unit filename="..\base\records\CellRecord.cpp" />
+		<Unit filename="..\base\records\CellRecord.h" />
+		<Unit filename="..\base\records\CharacterReferenceRecord.cpp" />
+		<Unit filename="..\base\records\CharacterReferenceRecord.h" />
 		<Unit filename="..\base\records\ComponentData.cpp" />
 		<Unit filename="..\base\records\ComponentData.h" />
 		<Unit filename="..\base\records\ContainerRecord.cpp" />
@@ -121,6 +127,8 @@
 		<Unit filename="..\base\records\PerkRecord.h" />
 		<Unit filename="..\base\records\QuestRecord.cpp" />
 		<Unit filename="..\base\records\QuestRecord.h" />
+		<Unit filename="..\base\records\ReferenceRecord.cpp" />
+		<Unit filename="..\base\records\ReferenceRecord.h" />
 		<Unit filename="..\base\records\ScrollRecord.cpp" />
 		<Unit filename="..\base\records\ScrollRecord.h" />
 		<Unit filename="..\base\records\ShoutRecord.cpp" />
@@ -139,8 +147,12 @@
 		<Unit filename="..\base\records\WeaponRecord.h" />
 		<Unit filename="..\base\records\WordOfPowerRecord.cpp" />
 		<Unit filename="..\base\records\WordOfPowerRecord.h" />
+		<Unit filename="..\base\records\WorldSpaceRecord.cpp" />
+		<Unit filename="..\base\records\WorldSpaceRecord.h" />
 		<Unit filename="ESMReaderFinder.cpp" />
 		<Unit filename="ESMReaderFinder.h" />
+		<Unit filename="ESMReaderFinderReferences.cpp" />
+		<Unit filename="ESMReaderFinderReferences.h" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />

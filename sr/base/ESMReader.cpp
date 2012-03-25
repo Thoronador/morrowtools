@@ -84,7 +84,7 @@ int ESMReader::readESM(const std::string& FileName, Tes4HeaderRecord& head)
 
   //read the header name
   //TES4
-  int32_t recordName = 0;
+  uint32_t recordName = 0;
   input.read((char*) &recordName, 4);
   if (recordName!=cTES4)
   {
@@ -141,7 +141,7 @@ bool ESMReader::peekESMHeader(const std::string& FileName, Tes4HeaderRecord& hea
 
   //read the header name
   //TES4
-  int32_t recordName = 0;
+  uint32_t recordName = 0;
   input.read((char*) &recordName, 4);
   if (recordName!=cTES4)
   {
@@ -167,7 +167,7 @@ int ESMReader::processGroup(std::ifstream& in_File, const bool withHeader)
 {
   if (withHeader)
   {
-    int32_t recordHeader = 0;
+    uint32_t recordHeader = 0;
     //read "GRUP"
     in_File.read((char*) &recordHeader, 4);
     if (!in_File.good())
@@ -208,7 +208,7 @@ int ESMReader::readGroup(std::ifstream& in_File, const GroupData& g_data)
   const std::ifstream::pos_type endPosition = in_File.tellg()+static_cast<std::ifstream::pos_type>(g_data.getGroupSize()-24);
   int recordsRead = 0;
   int lastResult = 0;
-  int32_t recName;
+  uint32_t recName;
   while ((in_File.tellg()<endPosition) and (lastResult>=0))
   {
     //read next header

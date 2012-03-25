@@ -151,7 +151,7 @@ class ESMReader
            from ESMReader and set its readNextRecord() function up in a way
            that does read the data records you want to have.
     */
-    virtual int readNextRecord(std::ifstream& in_File, const int32_t recName) = 0;
+    virtual int readNextRecord(std::ifstream& in_File, const uint32_t recName) = 0;
 };//class
 
 } //namespace

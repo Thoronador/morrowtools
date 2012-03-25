@@ -33,7 +33,7 @@ namespace SRTP
    type from the given .esm/.esp file.
 */
 
-template<typename recT, typename singleT, int32_t headerT>
+template<typename recT, typename singleT, uint32_t headerT>
 class ESMReaderSingleType: public ESMReader
 {
   public:
@@ -97,29 +97,29 @@ class ESMReaderSingleType: public ESMReader
            in_File - the input file stream the record shall be read from
            recName - name (header) of the next record
     */
-    virtual int readNextRecord(std::ifstream& in_File, const int32_t recName);
+    virtual int readNextRecord(std::ifstream& in_File, const uint32_t recName);
 };//class
 
-template<typename recT, typename singleT, int32_t headerT>
+template<typename recT, typename singleT, uint32_t headerT>
 bool ESMReaderSingleType<recT, singleT, headerT>::needGroup(const GroupData& g_data) const
 {
   return ((g_data.getGroupLabel()==headerT) and (g_data.getGroupType()==GroupData::cTopLevelGroup));
 }
 
-template<typename recT, typename singleT, int32_t headerT>
+template<typename recT, typename singleT, uint32_t headerT>
 void ESMReaderSingleType<recT, singleT, headerT>::nextGroupStarted(const GroupData& g_data, const bool sub)
 {
   //empty, because we don't need to care about new groups anyway
 }
 
-template<typename recT, typename singleT, int32_t headerT>
+template<typename recT, typename singleT, uint32_t headerT>
 void ESMReaderSingleType<recT, singleT, headerT>::groupFinished(const GroupData& g_data)
 {
   //empty, because we don't need to care about new groups anyway
 }
 
-template<typename recT, typename singleT, int32_t headerT>
-int ESMReaderSingleType<recT, singleT, headerT>::readNextRecord(std::ifstream& in_File, const int32_t recName)
+template<typename recT, typename singleT, uint32_t headerT>
+int ESMReaderSingleType<recT, singleT, headerT>::readNextRecord(std::ifstream& in_File, const uint32_t recName)
 {
   if (recName!=headerT)
   {

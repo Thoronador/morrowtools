@@ -94,7 +94,7 @@ class ESMReaderContentsBase: public ESMReader
        remarks:
            Pure virtual.
     */
-    virtual int readNextRecord(std::ifstream& in_File, const int32_t recName) = 0;
+    virtual int readNextRecord(std::ifstream& in_File, const uint32_t recName) = 0;
 }; //class
 
 }//namespace

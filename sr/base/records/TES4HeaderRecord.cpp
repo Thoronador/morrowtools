@@ -148,7 +148,7 @@ bool Tes4HeaderRecord::loadFromStream(std::ifstream& in_File)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
-  int32_t SubRecName;
+  uint32_t SubRecName;
   uint16_t SubLength;
   uint32_t BytesRead;
   SubRecName = SubLength = 0;

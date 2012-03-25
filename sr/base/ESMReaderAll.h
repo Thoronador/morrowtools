@@ -88,7 +88,7 @@ class ESMReaderAll: public ESMReader
            in_File - the input file stream the record shall be read from
            recName - name (header) of the next record
     */
-    virtual int readNextRecord(std::ifstream& in_File, const int32_t recName);
+    virtual int readNextRecord(std::ifstream& in_File, const uint32_t recName);
 
     std::set<int32_t> encounters;
 };//class

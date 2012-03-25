@@ -58,7 +58,7 @@ ESMReaderFinder::~ESMReaderFinder()
 
 bool ESMReaderFinder::needGroup(const GroupData& g_data) const
 {
-  switch (g_data.getGroupName())
+  switch (g_data.getGroupLabel())
   {
     case cACTI:
     case cALCH:
@@ -98,7 +98,7 @@ void ESMReaderFinder::groupFinished(const GroupData& g_data)
   //empty
 }
 
-int ESMReaderFinder::readNextRecord(std::ifstream& in_File, const int32_t recName)
+int ESMReaderFinder::readNextRecord(std::ifstream& in_File, const uint32_t recName)
 {
   #warning Not completely implemented yet!
   switch (recName)

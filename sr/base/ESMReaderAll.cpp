@@ -136,7 +136,7 @@ void ESMReaderAll::groupFinished(const GroupData& g_data)
   //empty, ESMReaderAll does not care about group structure
 }
 
-int ESMReaderAll::readNextRecord(std::ifstream& in_File, const int32_t recName)
+int ESMReaderAll::readNextRecord(std::ifstream& in_File, const uint32_t recName)
 {
   switch (recName)
   {

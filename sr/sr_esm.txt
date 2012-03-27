@@ -1388,11 +1388,13 @@ Records and their sub-records:
       FULL (4 bytes, optional)
           name's string ID
       WCTR (4 bytes, optional)
-          unknown data
+          center data
+            int16_t cell X
+            int16_t cell Y
       LTMP (4 bytes, optional)
-          unknown data
+          interior lighting form ID (points to LGTM)
       XEZN (4 bytes, optional)
-          unknown data
+          encounter zone form ID (points to ECZN)
       CNAM (4 bytes, optional)
           unknown data
       NAM2 (4 bytes, optional)
@@ -1406,13 +1408,17 @@ Records and their sub-records:
       MNAM (16 bytes, optional)
           unknown data
       XLCN (4 bytes, optional)
-          unknown data
+          location form ID (points to LCTN)
       WNAM (4 bytes, optional)
-          unknown data
+          parent world space form ID (points to WRLD)
       PNAM (2 bytes, optional)
           unknown data
       ONAM (16 bytes, optional)
           unknown data
+            float World Map Scale
+            float
+            float
+            float
       NAMA (4 bytes)
           unknown data
       DATA (1 byte, optional)
@@ -1422,13 +1428,15 @@ Records and their sub-records:
       NAM9 (8 bytes, optional)
           unknown data
       ZNAM (4 bytes)
-          unknown data
+          music form ID (points to MUSC)
       TNAM (string, NUL-terminated, optional)
           path to some texture
       UNAM (string, NUL-terminated, optional)
           path to another texture
       XXXX (4 bytes, optional)
-          unknown data
+          subrecord that indicates, that the next subrecord is larger than
+          65535 bytes. Content is an uint32_t containing the actual size of the
+          next subrecord.
       OFST (4524 bytes)
           unknown data
 

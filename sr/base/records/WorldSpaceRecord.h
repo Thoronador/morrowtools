@@ -25,6 +25,7 @@
 #include <vector>
 #include "BasicRecord.h"
 #include "BinarySubRecord.h"
+#include "BinarySubRecordExtended.h"
 
 namespace SRTP
 {
@@ -72,12 +73,13 @@ struct WorldSpaceRecord: public BasicRecord
     BinarySubRecord unknownMHDT;
     bool hasFULL;
     uint32_t nameStringID; //subrecord FULL
+    //subrecord WCTR
     bool hasWCTR;
-    uint32_t unknownWCTR;
-    bool hasLTMP;
-    uint32_t unknownLTMP;
-    bool hasXEZN;
-    uint32_t unknownXEZN;
+    int16_t centerCellX;
+    int16_t centerCellY;
+    //end of subrecord WCTR
+    uint32_t interiorLightingFormID; //subrecord LTMP
+    uint32_t encounterZoneFormID; //subrecord XEZN
     bool hasCNAM;
     uint32_t unknownCNAM;
     bool hasNAM2;
@@ -89,10 +91,8 @@ struct WorldSpaceRecord: public BasicRecord
     bool hasDNAM;
     uint64_t unknownDNAM;
     BinarySubRecord unknownMNAM;
-    bool hasXLCN;
-    uint32_t unknownXLCN;
-    bool hasWNAM;
-    uint32_t unknownWNAM;
+    uint32_t locationFormID; //subrecord XLCN
+    uint32_t parentWorldSpaceFormID; //subrecord WNAM
     bool hasPNAM;
     uint16_t unknownPNAM;
     BinarySubRecord unknownONAM;
@@ -103,13 +103,10 @@ struct WorldSpaceRecord: public BasicRecord
     uint64_t unknownNAM0;
     bool hasNAM9;
     uint64_t unknownNAM9;
-    bool hasZNAM;
-    uint32_t unknownZNAM;
+    uint32_t musicFormID; //subrecord ZNAM
     std::string pathTNAM;
     std::string pathUNAM;
-    bool hasXXXX;
-    uint32_t unknownXXXX;
-    BinarySubRecord unknownOFST;
+    BinarySubRecordExtended unknownOFST;
 }; //struct
 
 } //namespace

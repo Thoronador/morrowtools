@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SR_BINARYSUBRECORD_H
-#define SR_BINARYSUBRECORD_H
+#ifndef SR_BINARYSUBRECORDEXTENDED_H
+#define SR_BINARYSUBRECORDEXTENDED_H
 
 #include <stdint.h>
 #include <fstream>
@@ -27,29 +27,29 @@
 namespace SRTP
 {
 
-struct BinarySubRecord
+struct BinarySubRecordExtended
 {
   public:
     /* constructor */
-    BinarySubRecord();
+    BinarySubRecordExtended();
 
     /* copy constructor */
-    BinarySubRecord(const BinarySubRecord& op);
+    BinarySubRecordExtended(const BinarySubRecordExtended& op);
 
     /* assignment operator */
-    BinarySubRecord& operator=(const BinarySubRecord& other);
+    BinarySubRecordExtended& operator=(const BinarySubRecordExtended& other);
 
     /* comparison operator */
-    bool operator==(const BinarySubRecord& other) const;
+    bool operator==(const BinarySubRecordExtended& other) const;
 
     /* comparison operator */
-    bool operator!=(const BinarySubRecord& other) const;
+    bool operator!=(const BinarySubRecordExtended& other) const;
 
     /* destructor */
-    ~BinarySubRecord();
+    ~BinarySubRecordExtended();
 
     /* returns size of the internal data in bytes */
-    uint16_t getSize() const;
+    uint32_t getSize() const;
 
     /* returns pointer to the internal data */
     const uint8_t* getPointer() const;
@@ -79,12 +79,23 @@ struct BinarySubRecord
                        false, it will begin with the length bytes.
     */
     bool loadFromStream(std::istream& in_File, const uint32_t subHeader, const bool withHeader);
+
+    /* loads the sub record from the given input stream and returns true on success
+
+      parameters:
+          in_File    - the input stream
+          subHeader  - the sub record's header
+          withHeader - if set to true, it will read the header, too. If set to
+                       false, it will begin with the length bytes.
+          realSize   - the subrecord's real size, as read from the previous XXXX subrecord
+    */
+    bool loadFromStreamExtended(std::istream& in_File, const uint32_t subHeader, const bool withHeader, const uint32_t realSize);
   protected:
     uint8_t* m_Pointer;
-    uint16_t m_Size;
+    uint32_t m_Size;
     bool m_Present;
 }; //struct
 
 } //namespace
 
-#endif // SR_BINARYSUBRECORD_H
+#endif // SR_BINARYSUBRECORDEXTENDED_H

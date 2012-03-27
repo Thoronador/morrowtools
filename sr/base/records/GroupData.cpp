@@ -25,6 +25,7 @@ namespace SRTP
 {
 
 const uint32_t GroupData::cTopLevelGroup = 0;
+const uint32_t GroupData::cWorldspaceChildren = 1;
 const uint32_t GroupData::cCellChildren = 6;
 const uint32_t GroupData::cTopicChildren = 7;
 const uint32_t GroupData::cCellPersistentChildren = 8;

@@ -61,6 +61,7 @@ struct GroupData
 
     //type constants
     static const uint32_t cTopLevelGroup;
+    static const uint32_t cWorldspaceChildren;
     static const uint32_t cCellChildren;
     static const uint32_t cTopicChildren;
     static const uint32_t cCellPersistentChildren;

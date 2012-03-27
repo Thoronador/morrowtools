@@ -36,11 +36,10 @@ WorldSpaceRecord::WorldSpaceRecord()
   hasFULL = false;
   nameStringID = 0;
   hasWCTR = false;
-  unknownWCTR = 0;
-  hasLTMP = false;
-  unknownLTMP = 0;
-  hasXEZN = false;
-  unknownXEZN = 0;
+  centerCellX = 0;
+  centerCellY = 0;
+  interiorLightingFormID = 0;
+  encounterZoneFormID = 0;
   hasCNAM = false;
   unknownCNAM = 0;
   hasNAM2 = false;
@@ -52,10 +51,8 @@ WorldSpaceRecord::WorldSpaceRecord()
   hasDNAM = false;
   unknownDNAM = 0;
   unknownMNAM.setPresence(false);
-  hasXLCN = false;
-  unknownXLCN = 0;
-  hasWNAM = false;
-  unknownWNAM = 0;
+  locationFormID = 0;
+  parentWorldSpaceFormID = 0;
   hasPNAM = false;
   unknownPNAM = 0;
   unknownONAM.setPresence(false);
@@ -66,12 +63,9 @@ WorldSpaceRecord::WorldSpaceRecord()
   unknownNAM0 = 0;
   hasNAM9 = false;
   unknownNAM9 = 0;
-  hasZNAM = false;
-  unknownZNAM = 0;
+  musicFormID = 0;
   pathTNAM = "";
   pathUNAM = "";
-  hasXXXX = false;
-  unknownXXXX = 0;
   unknownOFST.setPresence(false);
 }
 
@@ -86,25 +80,24 @@ bool WorldSpaceRecord::equals(const WorldSpaceRecord& other) const
   return ((equalsBasic(other)) and (editorID==other.editorID)
       and (unknownRNAMs==other.unknownRNAMs) and (unknownMHDT==other.unknownMHDT)
       and (hasFULL==other.hasFULL) and ((nameStringID==other.nameStringID) or (!hasFULL))
-      and (hasWCTR==other.hasWCTR) and ((unknownWCTR==other.unknownWCTR) or (!hasWCTR))
-      and (hasLTMP==other.hasLTMP) and ((unknownLTMP==other.unknownLTMP) or (!hasLTMP))
-      and (hasXEZN==other.hasXEZN) and ((unknownXEZN==other.unknownXEZN) or (!hasXEZN))
+      and (hasWCTR==other.hasWCTR) and (((centerCellX==other.centerCellX) and (centerCellY==other.centerCellY)) or (!hasWCTR))
+      and (interiorLightingFormID==other.interiorLightingFormID)
+      and (encounterZoneFormID==other.encounterZoneFormID)
       and (hasCNAM==other.hasCNAM) and ((unknownCNAM==other.unknownCNAM) or (!hasCNAM))
       and (hasNAM2==other.hasNAM2) and ((unknownNAM2==other.unknownNAM2) or (!hasNAM2))
       and (hasNAM3==other.hasNAM3) and ((unknownNAM3==other.unknownNAM3) or (!hasNAM3))
       and (hasNAM4==other.hasNAM4) and ((unknownNAM4==other.unknownNAM4) or (!hasNAM4))
       and (hasDNAM==other.hasDNAM) and ((unknownDNAM==other.unknownDNAM) or (!hasDNAM))
       and (unknownMNAM==other.unknownMNAM)
-      and (hasXLCN==other.hasXLCN) and ((unknownXLCN==other.unknownXLCN) or (!hasXLCN))
-      and (hasWNAM==other.hasWNAM) and ((unknownWNAM==other.unknownWNAM) or (!hasWNAM))
+      and (locationFormID==other.locationFormID)
+      and (parentWorldSpaceFormID==other.parentWorldSpaceFormID)
       and (hasPNAM==other.hasPNAM) and ((unknownPNAM==other.unknownPNAM) or (!hasPNAM))
       and (unknownONAM==other.unknownONAM) and (unknownNAMA==other.unknownNAMA)
       and (hasDATA==other.hasDATA) and ((unknownDATA==other.unknownDATA) or (!hasDATA))
       and (hasNAM0==other.hasNAM0) and ((unknownNAM0==other.unknownNAM0) or (!hasNAM0))
       and (hasNAM9==other.hasNAM9) and ((unknownNAM9==other.unknownNAM9) or (!hasNAM9))
-      and (hasZNAM==other.hasZNAM) and ((unknownZNAM==other.unknownZNAM) or (!hasZNAM))
+      and (musicFormID==other.musicFormID)
       and (pathTNAM==other.pathTNAM) and (pathUNAM==other.pathUNAM)
-      and (hasXXXX==other.hasXXXX) and ((unknownXXXX==other.unknownXXXX) or (!hasXXXX))
       and (unknownOFST==other.unknownOFST));
 }
 #endif
@@ -112,6 +105,7 @@ bool WorldSpaceRecord::equals(const WorldSpaceRecord& other) const
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t WorldSpaceRecord::getWriteSize() const
 {
+  if (isDeleted()) return 0;
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
@@ -136,11 +130,11 @@ uint32_t WorldSpaceRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* WCTR */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
-  if (hasLTMP)
+  if (interiorLightingFormID!=0)
   {
     writeSize = writeSize +4 /* LTMP */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
-  if (hasXEZN)
+  if (encounterZoneFormID!=0)
   {
     writeSize = writeSize +4 /* XEZN */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
@@ -168,11 +162,11 @@ uint32_t WorldSpaceRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* MNAM */ +2 /* 2 bytes for length */ +unknownMNAM.getSize() /* size */;
   }//if MNAM
-  if (hasXLCN)
+  if (locationFormID!=0)
   {
     writeSize = writeSize +4 /* XLCN */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
-  if (hasWNAM)
+  if (parentWorldSpaceFormID!=0)
   {
     writeSize = writeSize +4 /* WNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
@@ -196,7 +190,7 @@ uint32_t WorldSpaceRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* NAM9 */ +2 /* 2 bytes for length */ +8 /* fixed size */;
   }
-  if (hasZNAM)
+  if (musicFormID!=0)
   {
     writeSize = writeSize +4 /* ZNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
@@ -210,13 +204,17 @@ uint32_t WorldSpaceRecord::getWriteSize() const
     writeSize = writeSize + 4 /* UNAM */ +2 /* 2 bytes for length */
                +pathUNAM.length()+1 /* length of name +1 byte for NUL termination */;
   }
-  if (hasXXXX)
-  {
-    writeSize = writeSize +4 /* XXXX */ +2 /* 2 bytes for length */ +8 /* fixed size */;
-  }
   if (unknownOFST.isPresent())
   {
-    writeSize = writeSize +4 /* OFST */ +2 /* 2 bytes for length */ +unknownOFST.getSize() /* size */;
+    if (unknownOFST.getSize()<65536)
+    {
+      writeSize = writeSize +4 /* OFST */ +2 /* 2 bytes for length */ +unknownOFST.getSize() /* size */;
+    }
+    else
+    {
+      writeSize = writeSize +4 /* XXXX */ +2 /* 2 bytes for length */ +4 /* fixed size */
+                 +4 /* OFST */ +2 /* 2 bytes for length */ +unknownOFST.getSize() /* size */;
+    }
   }//if OFST
   return writeSize;
 }
@@ -225,6 +223,7 @@ bool WorldSpaceRecord::saveToStream(std::ofstream& output) const
 {
   output.write((char*) &cWRLD, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
+  if (isDeleted()) return true;
 
   //write EDID
   output.write((const char*) &cEDID, 4);
@@ -277,10 +276,11 @@ bool WorldSpaceRecord::saveToStream(std::ofstream& output) const
     subLength = 4; // fixed
     output.write((char*) &subLength, 2);
     //write WCTR
-    output.write((const char*) &unknownWCTR, 4);
+    output.write((const char*) &centerCellX, 2);
+    output.write((const char*) &centerCellY, 2);
   }//if WCTR
 
-  if (hasLTMP)
+  if (interiorLightingFormID!=0)
   {
     //write LTMP
     output.write((const char*) &cLTMP, 4);
@@ -288,10 +288,10 @@ bool WorldSpaceRecord::saveToStream(std::ofstream& output) const
     subLength = 4; // fixed
     output.write((char*) &subLength, 2);
     //write LTMP
-    output.write((const char*) &unknownLTMP, 4);
+    output.write((const char*) &interiorLightingFormID, 4);
   }//if LTMP
 
-  if (hasXEZN)
+  if (encounterZoneFormID!=0)
   {
     //write XEZN
     output.write((const char*) &cXEZN, 4);
@@ -299,7 +299,7 @@ bool WorldSpaceRecord::saveToStream(std::ofstream& output) const
     subLength = 4; // fixed
     output.write((char*) &subLength, 2);
     //write XEZN
-    output.write((const char*) &unknownXEZN, 4);
+    output.write((const char*) &encounterZoneFormID, 4);
   }//if XEZN
 
   if (hasCNAM)
@@ -367,7 +367,7 @@ bool WorldSpaceRecord::saveToStream(std::ofstream& output) const
     }
   }//if MNAM
 
-  if (hasXLCN)
+  if (locationFormID!=0)
   {
     //write XLCN
     output.write((const char*) &cXLCN, 4);
@@ -375,10 +375,10 @@ bool WorldSpaceRecord::saveToStream(std::ofstream& output) const
     subLength = 4; // fixed
     output.write((char*) &subLength, 2);
     //write XLCN
-    output.write((const char*) &unknownXLCN, 4);
+    output.write((const char*) &locationFormID, 4);
   }
 
-  if (hasWNAM)
+  if (parentWorldSpaceFormID!=0)
   {
     //write WNAM
     output.write((const char*) &cWNAM, 4);
@@ -386,7 +386,7 @@ bool WorldSpaceRecord::saveToStream(std::ofstream& output) const
     subLength = 4; // fixed
     output.write((char*) &subLength, 2);
     //write WNAM
-    output.write((const char*) &unknownWNAM, 4);
+    output.write((const char*) &parentWorldSpaceFormID, 4);
   }
 
   if (hasPNAM)
@@ -451,7 +451,7 @@ bool WorldSpaceRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &unknownNAM9, 8);
   }
 
-  if (hasZNAM)
+  if (musicFormID!=0)
   {
     //write ZNAM
     output.write((const char*) &cZNAM, 4);
@@ -459,7 +459,7 @@ bool WorldSpaceRecord::saveToStream(std::ofstream& output) const
     subLength = 4; // fixed
     output.write((char*) &subLength, 2);
     //write ZNAM
-    output.write((const char*) &unknownZNAM, 1);
+    output.write((const char*) &musicFormID, 1);
   }
 
   if (!pathTNAM.empty())
@@ -484,17 +484,6 @@ bool WorldSpaceRecord::saveToStream(std::ofstream& output) const
     output.write(pathUNAM.c_str(), subLength);
   }
 
-  if (hasXXXX)
-  {
-    //write XXXX
-    output.write((const char*) &cXXXX, 4);
-    //XXXX's length
-    subLength = 4; // fixed
-    output.write((char*) &subLength, 2);
-    //write XXXX
-    output.write((const char*) &unknownXXXX, 4);
-  }//if XXXX
-
   if (unknownOFST.isPresent())
   {
     //write OFST
@@ -513,6 +502,7 @@ bool WorldSpaceRecord::loadFromStream(std::ifstream& in_File)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
+  if (isDeleted()) return true;
   uint32_t subRecName;
   uint16_t subLength;
   subRecName = subLength = 0;
@@ -550,27 +540,27 @@ bool WorldSpaceRecord::loadFromStream(std::ifstream& in_File)
   BinarySubRecord tempBin;
   unknownMHDT.setPresence(false);
   hasFULL = false; nameStringID = 0;
-  hasWCTR = false;
-  hasLTMP = false;
-  hasXEZN = false;
-  hasCNAM = false;
+  hasWCTR = false; centerCellX = 0; centerCellY = 0;
+  interiorLightingFormID = 0;
+  encounterZoneFormID = 0;
+  hasCNAM = false; unknownCNAM = 0;
   hasNAM2 = false;
   hasNAM3 = false;
   hasNAM4 = false;
   hasDNAM = false;
   unknownMNAM.setPresence(false);
-  hasXLCN = false;
-  hasWNAM = false;
+  locationFormID = 0;
+  parentWorldSpaceFormID = 0;
   hasPNAM = false;
   unknownONAM.setPresence(false);
   bool hasReadNAMA = false;
   hasDATA = false;
   hasNAM0 = false;
   hasNAM9 = false;
-  hasZNAM = false;
+  musicFormID = 0;
   pathTNAM.clear();
   pathUNAM.clear();
-  hasXXXX = false;
+  uint32_t sizeXXXX = 0;
   unknownOFST.setPresence(false);
   while (bytesRead<readSize)
   {
@@ -620,32 +610,55 @@ bool WorldSpaceRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: WRLD seems to have more than one WCTR subrecord.\n";
              return false;
            }
+           //WCTR's length
+           in_File.read((char*) &subLength, 2);
+           bytesRead += 2;
+           if (subLength!=4)
+           {
+             std::cout <<"Error: sub record WCTR of WRLD has invalid length ("
+                       <<subLength<<" bytes). Should be four bytes.\n";
+             return false;
+           }
            //read WCTR
-           if (!loadUint32SubRecordFromStream(in_File, cWCTR, unknownWCTR, false)) return false;
-           bytesRead += 6;
+           in_File.read((char*) &centerCellX, 2);
+           in_File.read((char*) &centerCellY, 2);
+           if (!in_File.good())
+           {
+             std::cout << "Error while reading subrecord WCTR of WRLD!\n";
+             return false;
+           }
+           bytesRead += 4;
            hasWCTR = true;
            break;
       case cLTMP:
-           if (hasLTMP)
+           if (interiorLightingFormID!=0)
            {
              std::cout << "Error: WRLD seems to have more than one LTMP subrecord.\n";
              return false;
            }
            //read LTMP
-           if (!loadUint32SubRecordFromStream(in_File, cLTMP, unknownLTMP, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cLTMP, interiorLightingFormID, false)) return false;
            bytesRead += 6;
-           hasLTMP = true;
+           if (interiorLightingFormID==0)
+           {
+             std::cout << "Error: subrecord LTMP of WRLD has value zero!\n";
+             return false;
+           }
            break;
       case cXEZN:
-           if (hasXEZN)
+           if (encounterZoneFormID!=0)
            {
              std::cout << "Error: WRLD seems to have more than one XEZN subrecord.\n";
              return false;
            }
            //read XEZN
-           if (!loadUint32SubRecordFromStream(in_File, cXEZN, unknownXEZN, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cXEZN, encounterZoneFormID, false)) return false;
            bytesRead += 6;
-           hasXEZN = true;
+           if (encounterZoneFormID==0)
+           {
+             std::cout << "Error: subrecord XEZN of WRLD has value zero!\n";
+             return false;
+           }
            break;
       case cCNAM:
            if (hasCNAM)
@@ -731,26 +744,34 @@ bool WorldSpaceRecord::loadFromStream(std::ifstream& in_File)
            bytesRead = bytesRead +2 /*length value*/ +unknownMNAM.getSize() /*data size*/;
            break;
       case cXLCN:
-           if (hasXLCN)
+           if (locationFormID!=0)
            {
              std::cout << "Error: WRLD seems to have more than one XLCN subrecord.\n";
              return false;
            }
            //read XLCN
-           if (!loadUint32SubRecordFromStream(in_File, cXLCN, unknownXLCN, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cXLCN, locationFormID, false)) return false;
            bytesRead += 6;
-           hasXLCN = true;
+           if (locationFormID==0)
+           {
+             std::cout << "Error: subrecord XLCN of WRLD has value zero!\n";
+             return false;
+           }
            break;
       case cWNAM:
-           if (hasWNAM)
+           if (parentWorldSpaceFormID!=0)
            {
              std::cout << "Error: WRLD seems to have more than one WNAM subrecord.\n";
              return false;
            }
            //read WNAM
-           if (!loadUint32SubRecordFromStream(in_File, cWNAM, unknownWNAM, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cWNAM, parentWorldSpaceFormID, false)) return false;
            bytesRead += 6;
-           hasWNAM = true;
+           if (parentWorldSpaceFormID==0)
+           {
+             std::cout << "Error: subrecord WNAM of WRLD has value zero!\n";
+             return false;
+           }
            break;
       case cPNAM:
            if (hasPNAM)
@@ -885,15 +906,19 @@ bool WorldSpaceRecord::loadFromStream(std::ifstream& in_File)
            hasNAM9 = false;
            break;
       case cZNAM:
-           if (hasZNAM)
+           if (musicFormID!=0)
            {
              std::cout << "Error: WRLD seems to have more than one ZNAM subrecord.\n";
              return false;
            }
            //read ZNAM
-           if (!loadUint32SubRecordFromStream(in_File, cZNAM, unknownZNAM, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cZNAM, musicFormID, false)) return false;
            bytesRead += 6;
-           hasZNAM = true;
+           if (musicFormID==0)
+           {
+             std::cout << "Error: subrecord ZNAM of WRLD has value zero!\n";
+             return false;
+           }
            break;
       case cTNAM:
            if (!pathTNAM.empty())
@@ -946,15 +971,19 @@ bool WorldSpaceRecord::loadFromStream(std::ifstream& in_File)
            pathUNAM = std::string(buffer);
            break;
       case cXXXX:
-           if (hasXXXX)
+           if (sizeXXXX!=0)
            {
-             std::cout << "Error: WRLD seems to have more than one XXXX subrecord.\n";
+             std::cout << "Error: WRLD seems to have more than one XXXX subrecord in a row.\n";
              return false;
            }
            //read XXXX
-           if (!loadUint32SubRecordFromStream(in_File, cXXXX, unknownXXXX, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cXXXX, sizeXXXX, false)) return false;
            bytesRead += 6;
-           hasXXXX = true;
+           if (0==sizeXXXX)
+           {
+             std::cout << "Error: subrecord XXXX of WRLD has value zero!\n";
+             return false;
+           }
            break;
       case cOFST:
            if (unknownOFST.isPresent())
@@ -963,24 +992,25 @@ bool WorldSpaceRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read OFST
-           if (!unknownOFST.loadFromStream(in_File, cOFST, false))
+           if (0==sizeXXXX)
            {
-             std::cout << "Error while reading subrecord OFST of WRLD!\n";
-             return false;
+             if (!unknownOFST.loadFromStream(in_File, cOFST, false))
+             {
+               std::cout << "Error while reading subrecord OFST of WRLD!\n";
+               return false;
+             }
            }
+           else
+           {
+             if (!unknownOFST.loadFromStreamExtended(in_File, cOFST, false, sizeXXXX))
+             {
+               std::cout << "Error while reading subrecord OFST of WRLD!\n";
+               return false;
+             }
+             sizeXXXX = 0;
+           }//else - load extended version of subrecord
+
            bytesRead = bytesRead +2 /*length value*/ +unknownOFST.getSize() /*data size*/;
-           /*TODO: remove the following temporary hack (it's there because one
-                   OFST subrecord has a size of zero, but actually it's larger
-                   than 65535 bytes and thus cannot be read properly. We just
-                   skip the rest of the world record here. */
-           if (unknownOFST.getSize()==0)
-           {
-             //skip rest
-             std::cout << "Warning: Skipping part of WRLD record due to incorrect size value!\n";
-             uint32_t skip_size = readSize-bytesRead;
-             in_File.seekg(skip_size, std::ios_base::cur);
-             bytesRead += skip_size;
-           }
            break;
       default:
            std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)

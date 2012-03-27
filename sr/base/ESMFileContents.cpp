@@ -19,6 +19,7 @@
 */
 
 #include "ESMFileContents.h"
+#include <iostream>
 
 namespace SRTP
 {

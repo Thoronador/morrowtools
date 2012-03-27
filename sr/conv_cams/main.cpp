@@ -51,13 +51,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "CAMS record converter for Skyrim, version 0.01.rev450, 2012-03-21\n";
+  std::cout << "CAMS record converter for Skyrim, version 0.01.rev457, 2012-03-27\n";
 }
 
 int showVersionExitcode()
 {
   showVersion();
-  return 450;
+  return 457;
 }
 
 void showHelp()
@@ -283,7 +283,7 @@ int main(int argc, char **argv)
   std::vector<SRTP::Group>::iterator groupIter = reader.contents.m_Groups.begin();
   while (groupIter!=reader.contents.m_Groups.end())
   {
-    if ((groupIter->headerData.getGroupName()==SRTP::cCAMS)
+    if ((groupIter->headerData.getGroupLabel()==SRTP::cCAMS)
         and (groupIter->headerData.getGroupType()==SRTP::GroupData::cTopLevelGroup))
     {
       //found CAMS top level group

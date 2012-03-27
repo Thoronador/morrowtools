@@ -43,7 +43,7 @@ bool ESMReaderConvCAMS::needGroup(const GroupData& g_data) const
   return true;
 }
 
-int ESMReaderConvCAMS::readNextRecord(std::ifstream& in_File, const int32_t recName)
+int ESMReaderConvCAMS::readNextRecord(std::ifstream& in_File, const uint32_t recName)
 {
   BasicRecord * recPtr = NULL;
   switch (recName)

@@ -295,7 +295,7 @@ Records and their sub-records:
       XCLL (92 bytes)
           unknown data
       LTMP (4 bytes)
-          unknown data
+          lighting template form ID (points to LGTM)
       LNAM (4 bytes, optional)
           unknown data
       XCLW (4 bytes)
@@ -305,7 +305,7 @@ Records and their sub-records:
       XNAM (1 byte, optional)
           unknown data
       XLCN (4 bytes, optional)
-          unknown data
+          location form ID (points to LCTN)
       XWCN (4 bytes, optional)
           unknown data
       XWCS (4 bytes, optional)
@@ -313,23 +313,23 @@ Records and their sub-records:
       XWCU (64 bytes, optional)
           unknown data
       XCIM (4 bytes, optional)
-          unknown data
+          image space form ID (points to IMGS)
       XEZN (4 bytes, optional)
-          form ID of encounter zone
+          form ID of encounter zone (points to ECZN)
       XCWT (4 bytes, optional)
           unknown data
       XCMO (4 bytes, optional)
-          unknown data
-      XWEM (string, NUL-terminated, optionaö)
+          music type form ID (points to MUSC)
+      XWEM (string, NUL-terminated, optional)
           unknown texture path
       XOWN (4 bytes, optional)
-          unknown data
+          owner faction form ID (points to FACT)
       XILL (4 bytes, optional)
-          unknown data
+          lock list form ID (points to FLST)
       XCCM (4 bytes, optional)
-          unknown data
+          region form ID
       XCAS (4 bytes, optional)
-          unknown data
+          default acoustic space form ID (points to ASPC)
 
 
   CLFM: colour ... (something)

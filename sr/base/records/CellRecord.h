@@ -87,37 +87,29 @@ struct CellRecord: public BasicRecord
     BinarySubRecord unknownMHDT;
     SubrecordXCLC gridLocation;
     BinarySubRecord unknownXCLL;
-    uint32_t unknownLTMP;
+    uint32_t lightingTemplateFormID; //subrecord LTMP
     bool hasLNAM;
     uint32_t unknownLNAM;
     float    unknownXCLW;
     std::vector<uint32_t> unknownXCLR;
     bool hasXNAM;
     uint8_t unknownXNAM;
-    bool hasXLCN;
-    uint32_t unknownXLCN;
+    uint32_t locationFormID; //subrecord XLCN
     bool hasXWCN;
     uint32_t unknownXWCN;
     bool hasXWCS;
     uint32_t unknownXWCS;
     BinarySubRecord unknownXWCU;
-    bool hasXCIM;
-    uint32_t unknownXCIM;
-    bool hasXEZN;
+    uint32_t imageSpaceFormID; //subrecord XCIM
     uint32_t encounterZoneFormID; //subrecord XEZN
     bool hasXCWT;
     uint32_t unknownXCWT;
-    bool hasXCMO;
-    uint32_t unknownXCMO;
+    uint32_t musicTypeFormID; //subrecord XCMO
     std::string unknownXWEM;
-    bool hasXOWN;
-    uint32_t unknownXOWN;
-    bool hasXILL;
-    uint32_t unknownXILL;
-    bool hasXCCM;
-    uint32_t unknownXCCM;
-    bool hasXCAS;
-    uint32_t unknownXCAS;
+    uint32_t ownerFactionFormID; //subrecord XOWN
+    uint32_t lockListFormID; //subrecord XILL
+    uint32_t regionFormID; //subrecord XCCM
+    uint32_t defaultAcousticSpaceFormID; //subrecord CAS
 }; //struct
 
 } //namespace

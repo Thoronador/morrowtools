@@ -95,6 +95,8 @@
 		<Unit filename="..\base\records\BasicRecord.h" />
 		<Unit filename="..\base\records\BinarySubRecord.cpp" />
 		<Unit filename="..\base\records\BinarySubRecord.h" />
+		<Unit filename="..\base\records\BinarySubRecordExtended.cpp" />
+		<Unit filename="..\base\records\BinarySubRecordExtended.h" />
 		<Unit filename="..\base\records\BookRecord.cpp" />
 		<Unit filename="..\base\records\BookRecord.h" />
 		<Unit filename="..\base\records\CTDAData.cpp" />

@@ -84,18 +84,18 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Form ID Finder for Skyrim, version 0.19.rev455, 2012-03-25\n";
+  std::cout << "Form ID Finder for Skyrim, version 0.19.rev460, 2012-03-31\n";
 }
 
 int showVersionExitcode()
 {
   showVersion();
-  return 455;
+  return 460;
 }
 
 void showHelp()
 {
-  std::cout << "\nformID_finder -d DIRECTORY -p PATTERN\n"
+  std::cout << "\nformID_finder [-d DIRECTORY] -p PATTERN\n"
             << "\n"
             << "options:\n"
             << "  --help           - displays this help message and quits\n"
@@ -115,7 +115,8 @@ void showHelp()
             << "  --faction-ranks  - shows the ranks of matching factions, too.\n"
             << "  --ranks          - same as --faction-ranks\n"
             << "  --ref-id         - try to find reference IDs, too. With this parameter the\n"
-            << "                     programme will need a significantly longer amout of time.\n";
+            << "                     programme will need a significantly longer amount of time\n"
+            << "                     to complete a search.\n";
 }
 
 //auxillary function
@@ -159,6 +160,15 @@ void showRefIDs(const uint32_t baseID, const std::map<uint32_t, std::vector<SRTP
           hasName = true;
         }
       }//if FULL
+      else
+      {
+        //check for coordinates
+        if (theCell.gridLocation.presence)
+        {
+          basic_out << " in exterior cell ["<<theCell.gridLocation.locationX<<";"<<theCell.gridLocation.locationY<<"]\n";
+          hasName = true;
+        }
+      }
     }
     if (!hasName)
     {

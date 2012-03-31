@@ -29,7 +29,7 @@ uses
 {$IFDEF Windows }
   Windows, Messages,
 {$ELSE}
-  BaseUnix, UnixType,
+  BaseUnix, UnixType, FinderGUIUDSServer,
 {$ENDIF}
   StdCtrls, Grids, Menus, LConvEncoding;
 
@@ -275,6 +275,7 @@ const ArgOne: PChar = '--keyword';
 var   ArgArray: PPChar;
       pid, wait_pid_result: TPid;
       status: cint;
+      server: TFinderGUIUDSServer;
 {$ENDIF}
 begin
   success:= false;
@@ -323,19 +324,35 @@ begin
   end;
   {$ELSE}
   //TODO: not implemented on Linux yet
+  if (not server.activate('./fid_uds_server')) then
+  begin
+    Result:= 0;
+    success:= false;
+    Exit;
+  end;
+  if (not server.makeNonBlocking) then
+  begin
+    Result:= 0;
+    success:= false;
+    Exit;
+  end;
+  server.startListening(1); //start listening for one ms to get server ready
+
   GetMem(ArgArray, 7*sizeof(PChar));
   ArgArray[0]:= PChar(cProgrammeName);
   ArgArray[1]:= ArgOne;
   ArgArray[2]:= PChar(UTF8ToCP1252(escapeKeyword(keyword)));
   ArgArray[3]:= ArgThree;
-  ArgArray[4]:= 's1';
-  ArgArray[5]:= 's2';
+  ArgArray[4]:= 'socket';
+  ArgArray[5]:= './fid_uds_server';
   ArgArray[6]:= nil;
   if (spawnProcess(cProgrammeName, ArgArray, pid)) then
   begin
     repeat
       wait_pid_result:= FpWaitPid(pid, status, WNOHANG);
       //.. process messages to avoid application freeze
+      Application.ProcessMessages;
+      server.startListening(125); //listen for 125 ms
       Application.ProcessMessages;
     until (wait_pid_result<>0);
     //-1 means error

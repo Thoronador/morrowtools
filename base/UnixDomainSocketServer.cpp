@@ -30,7 +30,7 @@
 namespace MWTP
 {
 
-std::string bindErrorCodeToString(int error_code)
+std::string bindErrorCodeToString(const int error_code)
 {
   switch (error_code)
   {

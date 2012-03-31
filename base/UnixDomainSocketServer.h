@@ -49,11 +49,29 @@ class UnixDomainSocketServer
     /* returns true, if the server is active */
     bool isActive() const;
 
+    /* tries to make the socket a non-blocking socket and returns true in case
+       of success
+    */
+    bool makeNonBlocking();
+
+    /* returns true, if the socket is a non-blocking socket */
+    bool isNonBlocking() const;
+
     /* returns true, if the shutdown flag was set */
     bool shutdownRequested() const;
 
-    /* starts listening for incoming connections until a shutdown is requested */
-    bool startListening();
+    /* clears the shutdown flag */
+    void clearShutdownFlag();
+
+    /* starts listening for incoming connections until a shutdown is requested,
+       the specified time has elapsed or a connection was accepted - whatever
+       comes first. For blocking sockets, the time value has basically no mean-
+       ing, the function just waits for the first connection.
+
+       parameters:
+           milliseconds - the amount of milliseconds the function waits for connections
+    */
+    bool startListening(const unsigned int milliseconds);
   protected:
     /* virtual function that handles the client/server transactions. Has to be
        implemented in a derived class.

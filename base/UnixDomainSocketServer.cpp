@@ -24,6 +24,8 @@
 #include <cerrno>
 #include <sys/socket.h>
 #include <sys/un.h>
+#include <sys/time.h>
+#include <fcntl.h>
 
 namespace MWTP
 {
@@ -91,7 +93,7 @@ UnixDomainSocketServer::UnixDomainSocketServer()
 {
   m_Active = false;
   m_shutdown = false;
-  m_sockfd = 0;
+  m_sockfd = -1;
   m_File = "";
 }
 
@@ -132,12 +134,39 @@ bool UnixDomainSocketServer::isActive() const
   return m_Active;
 }
 
-bool UnixDomainSocketServer::deactivate()
+void UnixDomainSocketServer::deactivate()
 {
   if (!m_Active) return;
   close(m_sockfd);
+  m_sockfd = -1;
   unlink(m_File.c_str());
+  m_File.clear();
   m_Active = false;
+}
+
+bool UnixDomainSocketServer::makeNonBlocking()
+{
+  if (!m_Active) return false;
+  int flags = fcntl(m_sockfd, F_GETFL, 0); //get the existing flags
+  if (flags<0)
+  {
+    //failed
+    return false;
+  }
+  flags = fcntl(m_sockfd, F_SETFL, flags | O_NONBLOCK); //add non-blocking flag
+  return (flags!=-1);
+}
+
+bool UnixDomainSocketServer::isNonBlocking() const
+{
+  if (!m_Active) return false;
+  const int flags = fcntl(m_sockfd, F_GETFL, 0); //get the existing flags
+  if (flags<0)
+  {
+    //failed
+    return false;
+  }
+  return ((flags & O_NONBLOCK)!=0);
 }
 
 bool UnixDomainSocketServer::shutdownRequested() const
@@ -145,28 +174,70 @@ bool UnixDomainSocketServer::shutdownRequested() const
   return m_shutdown;
 }
 
-bool UnixDomainSocketServer::startListening()
+void UnixDomainSocketServer::clearShutdownFlag()
+{
+  m_shutdown = false;
+}
+
+bool UnixDomainSocketServer::startListening(const unsigned int milliseconds)
 {
   if (!m_Active) return false;
-  while (!shutdownRequested())
+
+  fd_set read_flags;
+  struct timeval curr_time;
+  struct timeval end_time;
+  struct timeval wait_intervall;
+  wait_intervall.tv_sec = milliseconds / 1000; //seconds
+  wait_intervall.tv_usec = (milliseconds%1000)*1000; //microseconds
+
+  gettimeofday(&curr_time, NULL);
+  timeradd(&curr_time, &wait_intervall, &end_time);
+
+  bool done = false;
+  const bool nonBlocking = isNonBlocking();
+
+  while ((!shutdownRequested()) and (!done))
   {
     if (listen(m_sockfd,5) != 0)
     {
       std::cout << "SocketServ: Error on listen!\n";
       return false;
     }
-    struct sockaddr_un cli_addr;
-    socklen_t clilen = sizeof(cli_addr);
-    int newsockfd = accept(m_sockfd, (struct sockaddr *) &cli_addr, &clilen);
-    if (newsockfd < 0)
+
+    if (nonBlocking)
     {
-      std::cout << "SocketServ: Error on accept!\n";
-      return false;
+      FD_ZERO(&read_flags);
+      FD_SET(m_sockfd, &read_flags);
+      if (select(m_sockfd+1, &read_flags, NULL, NULL, &wait_intervall)<0)
+      {
+        std::cout << "SocketServ: Error on select!\n";
+        return false;
+      }
+
     }
-    bool closeFDWhenDone = true;
-    serveClient(newsockfd, closeFDWhenDone);
-    if (closeFDWhenDone)
-      close(newsockfd);
+
+    if ((!nonBlocking) or (FD_ISSET(m_sockfd, &read_flags)))
+    {
+      struct sockaddr_un cli_addr;
+      socklen_t clilen = sizeof(cli_addr);
+      int newsockfd = accept(m_sockfd, (struct sockaddr *) &cli_addr, &clilen);
+      if (newsockfd < 0)
+      {
+        std::cout << "SocketServ: Error on accept!\n";
+        return false;
+      }
+      bool closeFDWhenDone = true;
+      serveClient(newsockfd, closeFDWhenDone);
+      if (closeFDWhenDone)
+        close(newsockfd);
+      done = true;
+    }//if ready
+    if (not done)
+    {
+      gettimeofday(&curr_time, NULL);
+      done = ((curr_time.tv_sec>end_time.tv_sec)
+                or ((curr_time.tv_sec==end_time.tv_sec) and (curr_time.tv_usec>=end_time.tv_usec)));
+    }//if not done
   }//while
   return true;
 }

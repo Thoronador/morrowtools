@@ -48,15 +48,6 @@ Records and their sub-records:
         unknown integer value
 
 
-  GMST: Game Settings
-      EDID: editor ID (string, 0-terminated)
-      DATA: the data (string/int/float)
-              format determined by first character of ID
-              s = string (length varies)
-              i = integer (4 bytes)
-              f = floating point value (4 bytes)
-
-
   AACT: action(?)
       EDID (string, NUL-terminated)
           editorID
@@ -112,6 +103,87 @@ Records and their sub-records:
           reference data
 
 
+   ACTI: activator
+      EDID (string, NUL-terminated)
+          editorID
+      VMAD (?? bytes, optional)
+          unknown data
+      OBND (12 bytes)
+          unknown
+      FULL (4 bytes, optional)
+          unknown
+      MODL (string, NUL-terminated, optional)
+          model path
+      MODT (?? bytes, optional)
+          unknown
+      MODS (?? bytes, optional)
+          unknown
+      DEST (8 bytes, optional)
+          unknown
+
+        DSTD (20 bytes, optional)
+            unknown
+        DMDL (string, NUL-terminated, optional)
+            another model path
+        DMDT (?? bytes, optional)
+            unknown
+        DMDS (?? bytes, optional)
+            unknown
+        DSTF (zero bytes, optional)
+            unknown
+
+        --> DSTD up to DSTF form a structure, DSTF finishes it.
+
+      KSIZ (4 bytes, optional)
+          number of uint32_ts in KWDA
+      KWDA (multiple of 4 bytes), follows KSIZ, therefore optional
+          array of formIDs/uint32_t2, number of elements is specified in KSIZ
+      PNAM (4 bytes, optional)
+          unknown
+      SNAM (4 bytes, optional)
+          unknown
+      VNAM (4 bytes, optional)
+          unknown
+      WNAM (4 bytes, optional)
+          unknown
+      RNAM (4 bytes, optional)
+          unknown
+      FNAM (2 bytes, optional)
+          unknown
+      KNAM (4 bytes, optional)
+          unknown
+
+
+  ALCH: alchemy stuff (potions?)
+      EDID (string, NUL-terminated)
+          editorID
+      OBND (12 bytes)
+          unknown data
+      FULL (4 bytes, optional)
+          unknown data
+      KSIZ (4 bytes, optional)
+          number of items in KWDA
+      KWDA (n * 4 bytes, optional)
+          array of form IDs/uint32_ts
+      MODL (string, NUL-terminated)
+          model path
+      MODT (?? bytes)
+          unknown data
+      MODT (?? bytes, optional)
+          unknown data
+      YNAM (4 bytes, optional)
+          unknown data
+      ZNAM (4 bytes, optional)
+          unknown data
+      DATA (4 bytes)
+          unknown data
+      ENIT (20 bytes)
+          unknown data
+      EFID (4 bytes)
+          unknown data
+      EFIT (12 bytes)
+          unknown data, but first 4 bytes seem to be a float
+
 
   AMMO: ammunition
       EDID (string, NUL-terminated)
@@ -149,6 +221,21 @@ Records and their sub-records:
       MODT (size varies, optional)
           unknown data
       BNAM (string, NUL-terminated, optional)
+          unknown data
+
+
+  APPA: apparatus
+      EDID (string, NUL-terminated)
+          editorID
+      OBND (12 bytes)
+          unknown data
+      FULL (4 bytes)
+          unknown data
+      QUAL (4 bytes)
+          unknown data
+      DESC (4 bytes)
+          unknown data
+      DATA (8 bytes)
           unknown data
 
 
@@ -229,6 +316,50 @@ Records and their sub-records:
           unknown data, possibly form ID
       BNAM (4 bytes, opional)
           unknown data, possibly form ID
+
+
+  ASTP: association type
+      EDID (string, NUL-terminated)
+          editor ID
+      MPRT (string, NUL-terminated)
+          male parent
+      FPRT (string, NUL-terminated)
+          female parent
+      MCHT (string, NUL-terminated, optional)
+          male child
+      FCHT (string, NUL-terminated, optional)
+          female child
+      DATA (4 bytes)
+          unknown data, looks like some kind of flag
+
+
+  BOOK: book
+      EDID (string, NUL-terminated)
+          editorID
+      VMAD (?? bytes, optional)
+          unknown data
+      OBND (12 bytes)
+          unknown
+      FULL (4 bytes, optional)
+          string ID of book's title
+      MODL (string, NUL-terminated)
+          model path
+      MODT (size varies)
+          unknown data
+      DESC (4 bytes)
+          string ID of the book's text
+      YNAM (4 bytes, optional)
+          unknown
+      KSIZ (4 bytes, optional)
+          number of uint32_ts in KWDA
+      KWDA (multiple of 4 bytes), follows KSIZ, therefore optional
+          array of formIDs/uint32_t2, number of elements is specified in KSIZ
+      DATA (10 bytes)
+          unknown data
+      INAM (4 bytes, optional)
+          unknown
+      CNAM (4 bytes)
+          unknown
 
 
   CAMS: Camera shot(?)
@@ -332,6 +463,17 @@ Records and their sub-records:
           default acoustic space form ID (points to ASPC)
 
 
+  CLAS: classes
+      EDID (string, NUL-terminated)
+          editorID
+      FULL (4 bytes)
+          string ID of class name
+      DESC (4 bytes)
+          unknown data
+      DATA (36 bytes)
+          unknown data
+
+
   CLFM: colour ... (something)
       EDID (string, NUL-terminated)
           editor ID
@@ -341,6 +483,24 @@ Records and their sub-records:
           unknown data
       FNAM (4 bytes)
           unknown data
+
+
+  COBJ: craftable object (recipes)
+      EDID (string, NUL-terminated)
+          editorID
+      COCT (4 bytes) (not present, if there are no CNTO subrecords)
+          component count (uint32_t)
+      CNTO (8 bytes, occurs 0+ times)
+          formID of required component (uint32_t)
+          count (uint32_t)
+      CTDA (32 bytes, can occur multiple times, optional)
+          unknown
+      CNAM (4 bytes)
+          some formID
+      BNAM (4 bytes)
+          another formID
+      NAM1 (2 bytes)
+          resulting quantity (uint16_t)
 
 
   COLL: collision stuff
@@ -438,6 +598,29 @@ Records and their sub-records:
           unknown data
 
 
+  DOOR: door
+      EDID (string, NUL-terminated)
+          editorID
+      VMAD (size varies, optional)
+          unknown data
+      OBND (12 bytes)
+          unknown data
+      FULL (4 bytes, optional)
+          unknown data
+      MODL (string, NUL-terminated, optional)
+          model path
+      MODT (36 bytes, optional)
+          unknown data
+      MODS (size varies, optional)
+          unknown data
+      SNAM (4 bytes, optional)
+          unknown data
+      ANAM (4 bytes, optional)
+          unknown data
+      FNAM (1 byte)
+          unknown data
+
+
   DUAL: dual cast data
       EDID (string, NUL-terminated)
           editorID
@@ -499,6 +682,16 @@ Records and their sub-records:
           variable name - requires CTDA
 
           --> EFID and EFIT and CTDA/CIS2 seem to form blocks
+
+
+  EQUP: equipment slot
+      EDID: (string, NUL-terminated)
+          editorID
+      PNAM (n*4 bytes, optional)
+          parent slots' form IDs
+      DATA (4 bytes)
+          uint32_t flags
+            0x01 - Use All Parents
 
 
   EXPL: explosions
@@ -624,6 +817,13 @@ Records and their sub-records:
           unknown data
 
 
+  FLST: form list
+      EDID (string, NUL-terminated)
+          editor ID
+      LNAM (4 bytes, occurs 0+ times)
+          form ID
+
+
   FSTP: footstep
       EDID (string, NUL-terminated)
           editor ID
@@ -653,6 +853,28 @@ Records and their sub-records:
           type (s=short, l=long, f=float)
       FLTV (4 bytes)
           value (always stored as float?)
+
+
+  GMST: Game Settings
+      EDID: editor ID (string, 0-terminated)
+      DATA: the data (string/int/float)
+              format determined by first character of ID
+              s = string (length varies)
+              i = integer (4 bytes)
+              f = floating point value (4 bytes)
+
+
+  GRAS: grass data
+      EDID (string, NUL-terminated)
+          editorID
+      OBND (12 bytes)
+          unknown data
+      MODL (string, NUL-terminated)
+          model path
+      MODT (?? bytes)
+          unknown data
+      DATA (32 bytes)
+          unknown data
 
 
   HAZD: hazard
@@ -753,6 +975,62 @@ Records and their sub-records:
           unknown DATA
 
 
+  IMGS: image space
+      EDID (string, NUL-terminated)
+          editorID
+      ENAM (56 bytes, optional)
+          unknown data, but some (all?) of them look like floats
+      HNAM (36 bytes, optional)
+          unknown data, but some (all?) of them look like floats
+      CNAM (12 bytes, optional)
+          unknown data, most likely all floats
+      TNAM (16 bytes, optional)
+          unknown data, most likely all floats
+      DNAM (12 or 16 bytes, optional)
+          unknown data, possibly all floats
+
+
+  INGR: ingredients
+      EDID (string, NUL-terminated)
+          editorID
+      VMAD (size varies, optional)
+          unknown data
+      OBND (12 bytes)
+          unknown data
+      FULL (4 bytes)
+          string ID of ingredient's name(?)
+      KSIZ (4 bytes)
+          number of keywords/formIDs in KWDA
+      KWDA (n*4 bytes, always follows KSIZ)
+          array of keyword formIDs
+      MODL (string, NUL-terminated)
+          path to the scroll's mesh
+      MODT (30 bytes)
+          unknown data
+      YNAM (4 bytes, optional)
+          unknown data
+      ZNAM (4 bytes, optional)
+          unknown data
+      DATA (8 bytes)
+          unknown data
+      ENIT (8 bytes)
+          unknown data
+
+        EFID (4 bytes)
+            unknown data
+        EFIT (12 bytes)
+            unknown data
+
+       --> EFID and EFIT (and no CTDAs) seem to form blocks, that occur exactly four times
+
+
+  IPDS: impact data set
+      EDID (string, NUL-terminated)
+          editorID
+      PNAM (8 bytes, occurs multiple times)
+          unknown data, but looks like two uint32/form IDs
+
+
   KEYM: key
       EDID (string, NUL-terminated)
           editor ID
@@ -783,6 +1061,17 @@ Records and their sub-records:
           editor ID
       CNAM (4 bytes) - optional subrecord
           unknown value
+
+
+  LCRT: location reference type
+      EDID (string, NUL-terminated)
+          editor ID
+      CNAM (4 bytes, optional)
+          colour values
+          uint8_t red
+          uint8_t green
+          uint8_t blue
+          uint8_t unused
 
 
   LCTN: location
@@ -857,6 +1146,21 @@ Records and their sub-records:
           some NIF path
 
 
+  LTEX: landscape texture
+      EDID (string, NUL-terminated)
+          editorID
+      TNAM (4 bytes, optional)
+          unknown data
+      MNAM (4 bytes)
+          unknown data
+      HNAM (2 bytes)
+          unknown data
+      SNAM (1 byte)
+          unknown data
+      GNAM (4 bytes, optional, occurs 0+ times)
+          unknown data
+
+
   MESG: message
       EDID (string, NUL-terminated)
           editor ID
@@ -879,6 +1183,59 @@ Records and their sub-records:
 
       TNAM (4 bytes, optional)
           display time
+
+
+  MGEF: magic effect
+      EDID (string, NUL-terminated)
+          editorID
+      VMAD (?? bytes, optional)
+          unknown data
+      FULL (4 bytes, optional)
+          string ID of effect's full name
+      MDOB (4 bytes, optional)
+          unknown
+      KSIZ (4 bytes, optional)
+          number of form IDs in following KWDA
+      KWDA (n * 4 bytes, optional)
+          array of form IDs, number given by KSIZ field
+      DATA (152 bytes)
+          unknown data
+      SNDD (size varies, optional)
+          unknown data
+      DNAM (4 bytes)
+          string ID of effect's description
+      CTDA (32 bytes, optional, can occur multiple times)
+          unknown data
+
+
+  MISC: misc. object
+      EDID (string, NUL-terminated)
+         editorID
+      VMAD (size varies) optional
+          unknown data
+      OBND (12 bytes)
+          unknown data
+      FULL (4 bytes) optional
+          string ID of object's full name
+      MODL (string, NUL-terminated)
+          model path
+      MODT (size varies)
+          unknown data
+      MODS (size varies?) optional
+          unknown data
+      ICON (string, NUL-terminated) optional
+          icon path
+      KSIZ (4 bytes) optional
+          number of uint32_ts in KWDA
+      KWDA (KSIZ * 4 bytes) optional, follows KSIZ
+          keyword formIDs (?)
+      YNAM (4 bytes) optional
+          unknown, formID(?)
+      ZNAM (4 bytes) optional
+          unknown, formID(?)
+      DATA (8 bytes)
+          uint32_t    value of object
+          float       weight of object
 
 
   MOVT: movement type
@@ -1075,6 +1432,43 @@ Records and their sub-records:
           ---> TINI, TINC, TINV and TIAS subrecord form a structure and always
                appear in that order. Those structs can occur more than once.
 
+
+  OTFT: outfit record
+      EDID (string, NUL-terminated)
+          editor ID
+      INAM (integral multiple of 4 bytes)
+          array of formIDs that points to the items (clothing, armor) of that outfit
+
+
+  PERK: perks
+      EDID (string, NUL-terminated)
+          editorID
+      VMAD (size varies, optional)
+          unknown data
+      FULL (4 bytes, optional)
+          string ID of perk's name
+      DESC (4 bytes)
+          string ID of perk's description (can be zero)
+      DATA (5 bytes)
+          unknown data
+      PRKE (3 bytes, optional)
+          unknown data
+      DATA (3 or 4 bytes, optional)
+          unknown data
+      PRKC (1 byte, optional)
+          unknown data
+      CTDA (32 bytes, optional)
+          unknown data
+      EPFT (1 byte, optional)
+          unknown data
+      EPFD (4 bytes, optional)
+          unknown data
+      PRKF (0 bytes, optional)
+          unknown data
+
+      -> subrecords after DATA (5) can be repeated in more or less regular sequence
+
+
   PGRE: placed grenade
       NAME (4 bytes)
           probably form ID
@@ -1131,6 +1525,135 @@ Records and their sub-records:
       VNAM (4 bytes)
           unknown, flag-like data
 
+
+  QUST: quest
+      EDID (string, NUL-terminated)
+          editorID
+      VMAD (?? bytes, optional)
+          unknown data
+      FULL (4 bytes)
+          unknown
+      DNAM (12 bytes)
+          unknown data
+      CTDA (32 bytes, can occur multiple times)
+          unknown data
+      ENAM (4 bytes, optional)
+          unknown data
+      QTGL (4 bytes, optional, can occur multiple times)
+          unknown data, looks like form ID
+      FLTR (string, NUL-terminated, optional)
+          filter of some sort
+      NEXT (always zero bytes?)
+          unknown/no data
+
+        INDX (4 bytes)
+            quest stage index
+
+          QSDT (1 byte)
+              set to 1, if it finished the quest
+          NAM0 (4 bytes, optional)
+              unknown data
+          SCHR (20 bytes, optional)
+              unknown data
+          SCTX (string, not NUL-terminated, optional)
+              unknown, but might be text of result script
+          QNAM (4 bytes, optional)
+              unknown data
+          CNAM (4 bytes, optional)
+              string ID of entry name?
+
+              --> those form a sort of repeating structure
+
+
+        QOBJ (2 bytes)
+            unknown data
+        FNAM (4 bytes)
+            unknown data
+        NNAM (4 bytes)
+            unknown data
+
+          --> QOBJ/FNAM/NNAM form a repeating structure
+
+          QSTA (8 bytes)
+              unknown data
+          CTDA (32 bytes, can occur multiple times)
+              unknown data
+          CIS2 (string, NUL-terminated, optional)
+              script variable(?)
+
+           --> forms a repeating structure within QOBJ/FNAM/NNAM
+
+
+      ANAM (4 bytes)
+          unknown data
+      ALLS (4 bytes, optional)
+          unknown data
+
+        ALST (4 bytes)
+            unknown data - seems to mark start of alias(?) subrecords
+        ALID (string, NUL-terminated)
+            alias name(?)
+        FNAM (4 bytes)
+            unknown data
+        ALFA (4 bytes, optional)
+            unknown data
+        ALRT (4 bytes, optional)
+            unknown form ID
+        ALCO (4 bytes, optional)
+            unknown data
+        ALCA (4 bytes, optional)
+            unknown data
+        ALCL (4 bytes, optional)
+            unknown data
+        ALDN (4 bytes, optional)
+            unknown data
+        COCT (4 bytes, optional)
+            number of CNTO records that follow
+        CNTO (8 bytes, optional, can occur multiple times)
+            uint32_t form ID of the object
+            uint32_t quantity of the object
+        KSIZ (4 bytes, optional)
+            number of form IDs in the following KWDA record
+        KWDA (n * 4 bytes, optional)
+            array of form IDs of keywords, number of entries is given by KSIZ
+        ALFE (4 bytes, string, not terminated, optional)
+            unknown data
+        ALFD (4 bytes, optional)
+            unknown data
+        ALFI (4 bytes, optional)
+            unknown data
+        ALFL (4 bytes, optional)
+            unknown data
+        ALFR (4 bytes, optional)
+            unknown data
+        ALNA (4 bytes, optional)
+            unknown data
+        ALNT (4 bytes, optional)
+            unknown data
+        ALUA (4 bytes, optional)
+            unknown data
+        ALEQ (4 bytes, optional)
+            unknown data
+        ALEA (4 bytes, optional)
+            unknown data
+        KNAM (4 bytes, optional)
+            unknown data
+        CTDA (32 bytes, can occur multiple times)
+            unknown data
+        SPOR (4 bytes, optional)
+            unknown data
+        ECOR (4 bytes, optional)
+            unknown data
+        ALSP (4 bytes, optional, can occur multiple times)
+            unknown data
+        ALFC (4 bytes, optional, can occur multiple times)
+            unknown data
+        ALPC (4 bytes, optional, can occur multiple times)
+            unknown data
+        VTCK (4 bytes, optional)
+            unknown data
+        ALED (0 bytes)
+            marks end of AL?? subrecords
 
 
   RACE: race
@@ -1276,6 +1799,16 @@ Records and their sub-records:
           unknown data
 
 
+  RELA: relationship
+      EDID (string, NUL-terminated)
+          editor ID
+      DATA (16 bytes)
+          unknown data - however, it looks like four uint32_t.
+                 The first one seems to be a form ID, the second one seems to
+                 be a form ID on some occasions, the other ones seem to be some
+                 flags or counters.
+
+
   REVB: reverb information
       EDID (string, NUL-terminated)
           editor ID
@@ -1306,6 +1839,61 @@ Records and their sub-records:
                         0x01 - rotate to face target
                         0x02 - attach to camera
                         0x04 - inherit rotation
+
+
+  SCRL: scrolls
+      EDID (string, NUL-terminated)
+          editorID
+      OBND (12 bytes)
+          unknown data
+      FULL (4 bytes)
+          string ID of scroll's name
+      KSIZ (4 bytes, optional)
+          number of keywords/formIDs in KWDA
+      KWDA (n*4 bytes, optional, always follows KSIZ)
+          array of keyword formIDs
+      MDOB (4 bytes)
+          menu display object's form ID
+      ETYP (4 bytes)
+          equip type form ID (EQUP)
+      DESC (4 bytes)
+          string ID of scroll's description (can be zero)
+      MODL (string, NUL-terminated)
+          path to the scroll's mesh
+      MODT (36 bytes)
+          unknown data
+      DATA (8 bytes)
+          uint32_t value
+          float    weight
+      SPIT (36 bytes)
+          unknown data
+
+        EFID (4 bytes)
+            magic effect form ID (MGEF)
+        EFIT (12 bytes)
+            effect data
+            float     magnitude
+            uint32_t  area of effect
+            uint32_t  duration
+        CTDA (32 bytes, optional)
+            unknown data
+
+       --> EFID (once), EFIT (once) and CTDAs seem to form blocks, that can occur multiple times
+
+
+  SHOU: Dragon Shout
+      EDID (string, NUL-terminated)
+          editorID
+      FULL (4 bytes) optional
+          string ID of shout's full name
+      MDOB (4 bytes) optional
+          unknown data
+      DESC (4 bytes)
+          string ID of shout's description
+      SNAM (12 bytes, occurs three times, once for every word of power)
+          uint32_t    form ID of a word of power for that shout
+          uint32_t    form ID of the actual spell for the shout effect
+          float       recharge time in seconds
 
 
   SLGM: soul gem
@@ -1348,6 +1936,67 @@ Records and their sub-records:
           default menu value; represents a float, where zero maps to 0.0 and 65535 maps to 1.0
 
 
+  SOUN: sound
+      EDID (string, NUL-terminated)
+          editorID
+      OBND (12 bytes)
+          unknown
+      FNAM (string, NUL-terminated) optional
+          file name
+      SNDD (36 bytes) optional
+          unknown
+      SDSC (4 bytes)
+          unknown ("sound source"?)
+
+
+  SPEL: spells
+      EDID (string, NUL-terminated)
+          editorID
+      OBND (12 bytes)
+          unknown data
+      FULL (4 bytes, optional)
+          string ID of spell's name
+      MDOB (4 bytes, optional)
+          menu display object's form ID
+      ETYP (4 bytes)
+          equip type form ID (EQUP)
+      DESC (4 bytes)
+          string ID of spell's description (ID can be zero)
+      SPIT (36 bytes)
+          unknown data
+            (but last 4 bytes are form ID of casting perk)
+
+        EFID (4 bytes)
+            magic effect form ID (MGEF)
+        EFIT (12 bytes)
+            effect data
+            float     magnitude
+            uint32_t  area of effect
+            uint32_t  duration
+        CTDA (32 bytes, optional, can occur more than once)
+            unknown data
+
+      --> EFID (once), EFIT (once) and CTDA (0+ times) seem to form blocks, that can occur multiple times
+
+
+  STAT: static record
+      EDID (string, NUL-terminated)
+          editor ID
+      OBND (12 bytes)
+          unknown data
+      MODL (string, NUL-terminated)
+           (optional - believe it or not, there's at least one STAT in Skyrim.esm without MODL)
+          model path
+      MODT (?? bytes, size varies, optional)
+          unknown data
+      MODS (size varies, optional)
+          unknown data
+      DNAM (8 bytes)
+          unknown data
+      MNAM (size varies, optional)
+          unknown data
+
+
   TREE: tree
       EDID (string, NUL-terminated)
           editor ID
@@ -1369,6 +2018,31 @@ Records and their sub-records:
           unknown data
 
 
+  TXST: texture set
+      EDID (string, NUL-terminated)
+          editorID
+      OBND (12 bytes)
+          unknown data
+      TX00 (string, NUL-terminated)
+          first texture path
+      TX01 (string, NUL-terminated) optional
+          second texture path
+      TX02 (string, NUL-terminated) optional
+          third texture path
+      TX03 (string, NUL-terminated) optional
+          another texture path
+      TX04 (string, NUL-terminated) optional
+          another texture path
+      TX05 (string, NUL-terminated) optional
+          another texture path
+      TX07 (string, NUL-terminated) optional
+          another texture path
+      DODT (36 bytes) optional
+          unknown data
+      DNAM (2 bytes)
+          unknown data
+
+
   VTYP: voice type
       EDID (string, NUL-terminated)
           editorID
@@ -1376,6 +2050,90 @@ Records and their sub-records:
           flags
             0x01 - Allow Default Dialogue
             0x02 - Female
+
+
+  WATR: voice type
+      EDID (string, NUL-terminated)
+          editorID
+      FULL (4 bytes, optional)
+          unknown data
+      NNAM (string, NUL-terminated, seems to appear three times in a row)
+          texture path
+      ANAM (1 byte)
+          unknown data
+      FNAM (1 byte)
+          unknown data
+      MNAM (1 byte, optional)
+          unknown data
+      SNAM (4 bytes, optional)
+          unknown data
+      TNAM (4 bytes, optional)
+          unknown data
+      DATA (2 bytes)
+          unknown data
+      DNAM (228 bytes)
+          unknown data
+      GNAM (12 bytes)
+          unknown data
+      NAM0 (12 bytes, optional)
+          unknown data
+      NAM1 (12 bytes. optional)
+          unknown data
+
+
+  WEAP: Weapon record
+      EDID: editor ID (string, NUL-terminated)
+      OBND (12 bytes)
+          unknown data
+      FULL (4 bytes?)
+          unknown data
+      MODL (string)
+          model path (.NIF)
+      MODT (12, 24 or 36 bytes possible?, maybe in general a multiple of 12 bytes)
+          unknown data
+      EITM (4 bytes)
+          unknown data
+      EAMT (2 bytes)
+          unknown data
+      ETYP (4 bytes)
+          unknown data
+      BIDS (4 bytes)
+          unknown data
+      BAMT (4 bytes)
+          unknown data
+      KSIZ (4 bytes)
+          number of uint32_ts in KWDA
+      KWDA (multiple of 4 bytes), follows KSIZ
+          array of formIDs/uint32_t2, number of elements is specified in KSIZ
+      DESC (4 bytes)
+          unknown data (description?)
+      INAM (4 bytes)
+          unknown data
+      WNAM (4 bytes)
+          unknown data
+      TNAM (4 bytes)
+          unknown data
+      NAM9 (4 bytes)
+          unknown data
+      NAM8 (4 bytes)
+          unknown data
+      DATA (10 bytes)
+          unknown data
+      DNAM (100 bytes)
+          unknown data
+      CRDT (16 bytes)
+          unknown data
+      VNAM (4 bytes)
+          unknown data
+
+
+  WOOP: Word of Power
+      EDID (string, NUL-terminated)
+          editorID
+      FULL (4 bytes) optional
+          string ID of the word's name (in dragon language)
+      TNAM (4 bytes)
+          string ID of the translated meaning
 
 
   WRLD: world space
@@ -1438,764 +2196,4 @@ Records and their sub-records:
           65535 bytes. Content is an uint32_t containing the actual size of the
           next subrecord.
       OFST (4524 bytes)
-          unknown data
-
-
-  ALCH: alchemy stuff (potions?)
-      EDID (string, NUL-terminated)
-          editorID
-      OBND (12 bytes)
-          unknown data
-      FULL (4 bytes, optional)
-          unknown data
-      KSIZ (4 bytes, optional)
-          number of items in KWDA
-      KWDA (n * 4 bytes, optional)
-          array of form IDs/uint32_ts
-      MODL (string, NUL-terminated)
-          model path
-      MODT (?? bytes)
-          unknown data
-      MODT (?? bytes, optional)
-          unknown data
-      YNAM (4 bytes, optional)
-          unknown data
-      ZNAM (4 bytes, optional)
-          unknown data
-      DATA (4 bytes)
-          unknown data
-      ENIT (20 bytes)
-          unknown data
-      EFID (4 bytes)
-          unknown data
-      EFIT (12 bytes)
-          unknown data, but first 4 bytes seem to be a float
-
-
-  APPA: apparatus
-      EDID (string, NUL-terminated)
-          editorID
-      OBND (12 bytes)
-          unknown data
-      FULL (4 bytes)
-          unknown data
-      QUAL (4 bytes)
-          unknown data
-      DESC (4 bytes)
-          unknown data
-      DATA (8 bytes)
-          unknown data
-
-
-  DOOR: door
-      EDID (string, NUL-terminated)
-          editorID
-      VMAD (size varies, optional)
-          unknown data
-      OBND (12 bytes)
-          unknown data
-      FULL (4 bytes, optional)
-          unknown data
-      MODL (string, NUL-terminated, optional)
-          model path
-      MODT (36 bytes, optional)
-          unknown data
-      MODS (size varies, optional)
-          unknown data
-      SNAM (4 bytes, optional)
-          unknown data
-      ANAM (4 bytes, optional)
-          unknown data
-      FNAM (1 byte)
-          unknown data
-
-
-  EQUP: equipment slot
-      EDID: (string, NUL-terminated)
-          editorID
-      PNAM (n*4 bytes, optional)
-          parent slots' form IDs
-      DATA (4 bytes)
-          uint32_t flags
-            0x01 - Use All Parents
-
-
-  LCRT: location reference type
-      EDID (string, NUL-terminated)
-          editor ID
-      CNAM (4 bytes, optional)
-          colour values
-          uint8_t red
-          uint8_t green
-          uint8_t blue
-          uint8_t unused
-
-
-  LTEX: landscape texture
-      EDID (string, NUL-terminated)
-          editorID
-      TNAM (4 bytes, optional)
-          unknown data
-      MNAM (4 bytes)
-          unknown data
-      HNAM (2 bytes)
-          unknown data
-      SNAM (1 byte)
-          unknown data
-      GNAM (4 bytes, optional, occurs 0+ times)
-          unknown data
-
-
-  GRAS: grass data
-      EDID (string, NUL-terminated)
-          editorID
-      OBND (12 bytes)
-          unknown data
-      MODL (string, NUL-terminated)
-          model path
-      MODT (?? bytes)
-          unknown data
-      DATA (32 bytes)
-          unknown data
-
-
-  IMGS: image space
-      EDID (string, NUL-terminated)
-          editorID
-      ENAM (56 bytes, optional)
-          unknown data, but some (all?) of them look like floats
-      HNAM (36 bytes, optional)
-          unknown data, but some (all?) of them look like floats
-      CNAM (12 bytes, optional)
-          unknown data, most likely all floats
-      TNAM (16 bytes, optional)
-          unknown data, most likely all floats
-      DNAM (12 or 16 bytes, optional)
-          unknown data, possibly all floats
-
-
-  IPDS: impact data set
-      EDID (string, NUL-terminated)
-          editorID
-      PNAM (8 bytes, occurs multiple times)
-          unknown data, but looks like two uint32/form IDs
-
-
-  WATR: voice type
-      EDID (string, NUL-terminated)
-          editorID
-      FULL (4 bytes, optional)
-          unknown data
-      NNAM (string, NUL-terminated, seems to appear three times in a row)
-          texture path
-      ANAM (1 byte)
-          unknown data
-      FNAM (1 byte)
-          unknown data
-      MNAM (1 byte, optional)
-          unknown data
-      SNAM (4 bytes, optional)
-          unknown data
-      TNAM (4 bytes, optional)
-          unknown data
-      DATA (2 bytes)
-          unknown data
-      DNAM (228 bytes)
-          unknown data
-      GNAM (12 bytes)
-          unknown data
-      NAM0 (12 bytes, optional)
-          unknown data
-      NAM1 (12 bytes. optional)
-          unknown data
-
-
-  CLAS: classes
-      EDID (string, NUL-terminated)
-          editorID
-      FULL (4 bytes)
-          string ID of class name
-      DESC (4 bytes)
-          unknown data
-      DATA (36 bytes)
-          unknown data
-
-
-  PERK: perks
-      EDID (string, NUL-terminated)
-          editorID
-      VMAD (size varies, optional)
-          unknown data
-      FULL (4 bytes, optional)
-          string ID of perk's name
-      DESC (4 bytes)
-          string ID of perk's description (can be zero)
-      DATA (5 bytes)
-          unknown data
-      PRKE (3 bytes, optional)
-          unknown data
-      DATA (3 or 4 bytes, optional)
-          unknown data
-      PRKC (1 byte, optional)
-          unknown data
-      CTDA (32 bytes, optional)
-          unknown data
-      EPFT (1 byte, optional)
-          unknown data
-      EPFD (4 bytes, optional)
-          unknown data
-      PRKF (0 bytes, optional)
-          unknown data
-
-      -> subrecords after DATA (5) can be repeated in more or less regular sequence
-
-
-  INGR: ingredients
-      EDID (string, NUL-terminated)
-          editorID
-      VMAD (size varies, optional)
-          unknown data
-      OBND (12 bytes)
-          unknown data
-      FULL (4 bytes)
-          string ID of ingredient's name(?)
-      KSIZ (4 bytes)
-          number of keywords/formIDs in KWDA
-      KWDA (n*4 bytes, always follows KSIZ)
-          array of keyword formIDs
-      MODL (string, NUL-terminated)
-          path to the scroll's mesh
-      MODT (30 bytes)
-          unknown data
-      YNAM (4 bytes, optional)
-          unknown data
-      ZNAM (4 bytes, optional)
-          unknown data
-      DATA (8 bytes)
-          unknown data
-      ENIT (8 bytes)
-          unknown data
-
-        EFID (4 bytes)
-            unknown data
-        EFIT (12 bytes)
-            unknown data
-
-       --> EFID and EFIT (and no CTDAs) seem to form blocks, that occur exactly four times
-
-
-  SCRL: scrolls
-      EDID (string, NUL-terminated)
-          editorID
-      OBND (12 bytes)
-          unknown data
-      FULL (4 bytes)
-          string ID of scroll's name
-      KSIZ (4 bytes, optional)
-          number of keywords/formIDs in KWDA
-      KWDA (n*4 bytes, optional, always follows KSIZ)
-          array of keyword formIDs
-      MDOB (4 bytes)
-          menu display object's form ID
-      ETYP (4 bytes)
-          equip type form ID (EQUP)
-      DESC (4 bytes)
-          string ID of scroll's description (can be zero)
-      MODL (string, NUL-terminated)
-          path to the scroll's mesh
-      MODT (36 bytes)
-          unknown data
-      DATA (8 bytes)
-          uint32_t value
-          float    weight
-      SPIT (36 bytes)
-          unknown data
-
-        EFID (4 bytes)
-            magic effect form ID (MGEF)
-        EFIT (12 bytes)
-            effect data
-            float     magnitude
-            uint32_t  area of effect
-            uint32_t  duration
-        CTDA (32 bytes, optional)
-            unknown data
-
-       --> EFID (once), EFIT (once) and CTDAs seem to form blocks, that can occur multiple times
-
-
-  SPEL: spells
-      EDID (string, NUL-terminated)
-          editorID
-      OBND (12 bytes)
-          unknown data
-      FULL (4 bytes, optional)
-          string ID of spell's name
-      MDOB (4 bytes, optional)
-          menu display object's form ID
-      ETYP (4 bytes)
-          equip type form ID (EQUP)
-      DESC (4 bytes)
-          string ID of spell's description (ID can be zero)
-      SPIT (36 bytes)
-          unknown data
-            (but last 4 bytes are form ID of casting perk)
-
-        EFID (4 bytes)
-            magic effect form ID (MGEF)
-        EFIT (12 bytes)
-            effect data
-            float     magnitude
-            uint32_t  area of effect
-            uint32_t  duration
-        CTDA (32 bytes, optional, can occur more than once)
-            unknown data
-
-      --> EFID (once), EFIT (once) and CTDA (0+ times) seem to form blocks, that can occur multiple times
-
-
-
-  SOUN: sound
-      EDID (string, NUL-terminated)
-          editorID
-      OBND (12 bytes)
-          unknown
-      FNAM (string, NUL-terminated) optional
-          file name
-      SNDD (36 bytes) optional
-          unknown
-      SDSC (4 bytes)
-          unknown ("sound source"?)
-
-
-  COBJ: craftable object (recipes)
-      EDID (string, NUL-terminated)
-          editorID
-      COCT (4 bytes) (not present, if there are no CNTO subrecords)
-          component count (uint32_t)
-      CNTO (8 bytes, occurs 0+ times)
-          formID of required component (uint32_t)
-          count (uint32_t)
-      CTDA (32 bytes, can occur multiple times, optional)
-          unknown
-      CNAM (4 bytes)
-          some formID
-      BNAM (4 bytes)
-          another formID
-      NAM1 (2 bytes)
-          resulting quantity (uint16_t)
-
-
-  MISC: misc. object
-      EDID (string, NUL-terminated)
-         editorID
-      VMAD (size varies) optional
-          unknown data
-      OBND (12 bytes)
-          unknown data
-      FULL (4 bytes) optional
-          string ID of object's full name
-      MODL (string, NUL-terminated)
-          model path
-      MODT (size varies)
-          unknown data
-      MODS (size varies?) optional
-          unknown data
-      ICON (string, NUL-terminated) optional
-          icon path
-      KSIZ (4 bytes) optional
-          number of uint32_ts in KWDA
-      KWDA (KSIZ * 4 bytes) optional, follows KSIZ
-          keyword formIDs (?)
-      YNAM (4 bytes) optional
-          unknown, formID(?)
-      ZNAM (4 bytes) optional
-          unknown, formID(?)
-      DATA (8 bytes)
-          uint32_t    value of object
-          float       weight of object
-
-
-  TXST: texture set
-      EDID (string, NUL-terminated)
-          editorID
-      OBND (12 bytes)
-          unknown data
-      TX00 (string, NUL-terminated)
-          first texture path
-      TX01 (string, NUL-terminated) optional
-          second texture path
-      TX02 (string, NUL-terminated) optional
-          third texture path
-      TX03 (string, NUL-terminated) optional
-          another texture path
-      TX04 (string, NUL-terminated) optional
-          another texture path
-      TX05 (string, NUL-terminated) optional
-          another texture path
-      TX07 (string, NUL-terminated) optional
-          another texture path
-      DODT (36 bytes) optional
-          unknown data
-      DNAM (2 bytes)
-          unknown data
-
-
-  BOOK: book
-      EDID (string, NUL-terminated)
-          editorID
-      VMAD (?? bytes, optional)
-          unknown data
-      OBND (12 bytes)
-          unknown
-      FULL (4 bytes, optional)
-          string ID of book's title
-      MODL (string, NUL-terminated)
-          model path
-      MODT (size varies)
-          unknown data
-      DESC (4 bytes)
-          string ID of the book's text
-      YNAM (4 bytes, optional)
-          unknown
-      KSIZ (4 bytes, optional)
-          number of uint32_ts in KWDA
-      KWDA (multiple of 4 bytes), follows KSIZ, therefore optional
-          array of formIDs/uint32_t2, number of elements is specified in KSIZ
-      DATA (10 bytes)
-          unknown data
-      INAM (4 bytes, optional)
-          unknown
-      CNAM (4 bytes)
-          unknown
-
-
-   ACTI: activator
-      EDID (string, NUL-terminated)
-          editorID
-      VMAD (?? bytes, optional)
-          unknown data
-      OBND (12 bytes)
-          unknown
-      FULL (4 bytes, optional)
-          unknown
-      MODL (string, NUL-terminated, optional)
-          model path
-      MODT (?? bytes, optional)
-          unknown
-      MODS (?? bytes, optional)
-          unknown
-      DEST (8 bytes, optional)
-          unknown
-
-        DSTD (20 bytes, optional)
-            unknown
-        DMDL (string, NUL-terminated, optional)
-            another model path
-        DMDT (?? bytes, optional)
-            unknown
-        DMDS (?? bytes, optional)
-            unknown
-        DSTF (zero bytes, optional)
-            unknown
-
-        --> DSTD up to DSTF form a structure, DSTF finishes it.
-
-      KSIZ (4 bytes, optional)
-          number of uint32_ts in KWDA
-      KWDA (multiple of 4 bytes), follows KSIZ, therefore optional
-          array of formIDs/uint32_t2, number of elements is specified in KSIZ
-      PNAM (4 bytes, optional)
-          unknown
-      SNAM (4 bytes, optional)
-          unknown
-      VNAM (4 bytes, optional)
-          unknown
-      WNAM (4 bytes, optional)
-          unknown
-      RNAM (4 bytes, optional)
-          unknown
-      FNAM (2 bytes, optional)
-          unknown
-      KNAM (4 bytes, optional)
-          unknown
-
-
-  QUST: quest
-      EDID (string, NUL-terminated)
-          editorID
-      VMAD (?? bytes, optional)
-          unknown data
-      FULL (4 bytes)
-          unknown
-      DNAM (12 bytes)
-          unknown data
-      CTDA (32 bytes, can occur multiple times)
-          unknown data
-      ENAM (4 bytes, optional)
-          unknown data
-      QTGL (4 bytes, optional, can occur multiple times)
-          unknown data, looks like form ID
-      FLTR (string, NUL-terminated, optional)
-          filter of some sort
-      NEXT (always zero bytes?)
-          unknown/no data
-
-        INDX (4 bytes)
-            quest stage index
-
-          QSDT (1 byte)
-              set to 1, if it finished the quest
-          NAM0 (4 bytes, optional)
-              unknown data
-          SCHR (20 bytes, optional)
-              unknown data
-          SCTX (string, not NUL-terminated, optional)
-              unknown, but might be text of result script
-          QNAM (4 bytes, optional)
-              unknown data
-          CNAM (4 bytes, optional)
-              string ID of entry name?
-
-              --> those form a sort of repeating structure
-
-
-        QOBJ (2 bytes)
-            unknown data
-        FNAM (4 bytes)
-            unknown data
-        NNAM (4 bytes)
-            unknown data
-
-          --> QOBJ/FNAM/NNAM form a repeating structure
-
-          QSTA (8 bytes)
-              unknown data
-          CTDA (32 bytes, can occur multiple times)
-              unknown data
-          CIS2 (string, NUL-terminated, optional)
-              script variable(?)
-
-           --> forms a repeating structure within QOBJ/FNAM/NNAM
-
-
-      ANAM (4 bytes)
-          unknown data
-      ALLS (4 bytes, optional)
-          unknown data
-
-        ALST (4 bytes)
-            unknown data - seems to mark start of alias(?) subrecords
-        ALID (string, NUL-terminated)
-            alias name(?)
-        FNAM (4 bytes)
-            unknown data
-        ALFA (4 bytes, optional)
-            unknown data
-        ALRT (4 bytes, optional)
-            unknown form ID
-        ALCO (4 bytes, optional)
-            unknown data
-        ALCA (4 bytes, optional)
-            unknown data
-        ALCL (4 bytes, optional)
-            unknown data
-        ALDN (4 bytes, optional)
-            unknown data
-        COCT (4 bytes, optional)
-            number of CNTO records that follow
-        CNTO (8 bytes, optional, can occur multiple times)
-            uint32_t form ID of the object
-            uint32_t quantity of the object
-        KSIZ (4 bytes, optional)
-            number of form IDs in the following KWDA record
-        KWDA (n * 4 bytes, optional)
-            array of form IDs of keywords, number of entries is given by KSIZ
-        ALFE (4 bytes, string, not terminated, optional)
-            unknown data
-        ALFD (4 bytes, optional)
-            unknown data
-        ALFI (4 bytes, optional)
-            unknown data
-        ALFL (4 bytes, optional)
-            unknown data
-        ALFR (4 bytes, optional)
-            unknown data
-        ALNA (4 bytes, optional)
-            unknown data
-        ALNT (4 bytes, optional)
-            unknown data
-        ALUA (4 bytes, optional)
-            unknown data
-        ALEQ (4 bytes, optional)
-            unknown data
-        ALEA (4 bytes, optional)
-            unknown data
-        KNAM (4 bytes, optional)
-            unknown data
-        CTDA (32 bytes, can occur multiple times)
-            unknown data
-        SPOR (4 bytes, optional)
-            unknown data
-        ECOR (4 bytes, optional)
-            unknown data
-        ALSP (4 bytes, optional, can occur multiple times)
-            unknown data
-        ALFC (4 bytes, optional, can occur multiple times)
-            unknown data
-        ALPC (4 bytes, optional, can occur multiple times)
-            unknown data
-        VTCK (4 bytes, optional)
-            unknown data
-        ALED (0 bytes)
-            marks end of AL?? subrecords
-
-
-  WOOP: Word of Power
-      EDID (string, NUL-terminated)
-          editorID
-      FULL (4 bytes) optional
-          string ID of the word's name (in dragon language)
-      TNAM (4 bytes)
-          string ID of the translated meaning
-
-
-  SHOU: Dragon Shout
-      EDID (string, NUL-terminated)
-          editorID
-      FULL (4 bytes) optional
-          string ID of shout's full name
-      MDOB (4 bytes) optional
-          unknown data
-      DESC (4 bytes)
-          string ID of shout's description
-      SNAM (12 bytes, occurs three times, once for every word of power)
-          uint32_t    form ID of a word of power for that shout
-          uint32_t    form ID of the actual spell for the shout effect
-          float       recharge time in seconds
-
-
-  MGEF: magic effect
-      EDID (string, NUL-terminated)
-          editorID
-      VMAD (?? bytes, optional)
-          unknown data
-      FULL (4 bytes, optional)
-          string ID of effect's full name
-      MDOB (4 bytes, optional)
-          unknown
-      KSIZ (4 bytes, optional)
-          number of form IDs in following KWDA
-      KWDA (n * 4 bytes, optional)
-          array of form IDs, number given by KSIZ field
-      DATA (152 bytes)
-          unknown data
-      SNDD (size varies, optional)
-          unknown data
-      DNAM (4 bytes)
-          string ID of effect's description
-      CTDA (32 bytes, optional, can occur multiple times)
-          unknown data
-
-
-  STAT: static record
-      EDID (string, NUL-terminated)
-          editor ID
-      OBND (12 bytes)
-          unknown data
-      MODL (string, NUL-terminated)
-           (optional - believe it or not, there's at least one STAT in Skyrim.esm without MODL)
-          model path
-      MODT (?? bytes, size varies, optional)
-          unknown data
-      MODS (size varies, optional)
-          unknown data
-      DNAM (8 bytes)
-          unknown data
-      MNAM (size varies, optional)
-          unknown data
-
-
-  OTFT: outfit record
-      EDID (string, NUL-terminated)
-          editor ID
-      INAM (integral multiple of 4 bytes)
-          array of formIDs that points to the items (clothing, armor) of that outfit
-
-
-  ASTP: association type
-      EDID (string, NUL-terminated)
-          editor ID
-      MPRT (string, NUL-terminated)
-          male parent
-      FPRT (string, NUL-terminated)
-          female parent
-      MCHT (string, NUL-terminated, optional)
-          male child
-      FCHT (string, NUL-terminated, optional)
-          female child
-      DATA (4 bytes)
-          unknown data, looks like some kind of flag
-
-
-  RELA: relationship
-      EDID (string, NUL-terminated)
-          editor ID
-      DATA (16 bytes)
-          unknown data - however, it looks like four uint32_t.
-                 The first one seems to be a form ID, the second one seems to
-                 be a form ID on some occasions, the other ones seem to be some
-                 flags or counters.
-
-
-  FLST: form list
-      EDID (string, NUL-terminated)
-          editor ID
-      LNAM (4 bytes, occurs 0+ times)
-          form ID
-
-
-  WEAP: Weapon record
-      EDID: editor ID (string, NUL-terminated)
-      OBND (12 bytes)
-          unknown data
-      FULL (4 bytes?)
-          unknown data
-      MODL (string)
-          model path (.NIF)
-      MODT (12, 24 or 36 bytes possible?, maybe in general a multiple of 12 bytes)
-          unknown data
-      EITM (4 bytes)
-          unknown data
-      EAMT (2 bytes)
-          unknown data
-      ETYP (4 bytes)
-          unknown data
-      BIDS (4 bytes)
-          unknown data
-      BAMT (4 bytes)
-          unknown data
-      KSIZ (4 bytes)
-          number of uint32_ts in KWDA
-      KWDA (multiple of 4 bytes), follows KSIZ
-          array of formIDs/uint32_t2, number of elements is specified in KSIZ
-      DESC (4 bytes)
-          unknown data (description?)
-      INAM (4 bytes)
-          unknown data
-      WNAM (4 bytes)
-          unknown data
-      TNAM (4 bytes)
-          unknown data
-      NAM9 (4 bytes)
-          unknown data
-      NAM8 (4 bytes)
-          unknown data
-      DATA (10 bytes)
-          unknown data
-      DNAM (100 bytes)
-          unknown data
-      CRDT (16 bytes)
-          unknown data
-      VNAM (4 bytes)
           unknown data

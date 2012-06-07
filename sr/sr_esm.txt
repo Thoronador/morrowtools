@@ -2052,7 +2052,7 @@ Records and their sub-records:
             0x02 - Female
 
 
-  WATR: voice type
+  WATR: water type
       EDID (string, NUL-terminated)
           editorID
       FULL (4 bytes, optional)

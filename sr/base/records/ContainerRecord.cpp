@@ -280,7 +280,7 @@ bool ContainerRecord::loadFromStream(std::ifstream& in_File)
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord CONT of MESG!\n";
+    std::cout << "Error while reading subrecord EDID of CONT!\n";
     return false;
   }
   editorID = std::string(buffer);

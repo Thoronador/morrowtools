@@ -79,6 +79,7 @@ const uint32_t cCIS2 = 0x32534943; //"CIS2" = 43 49 53 32
 const uint32_t cCITC = 0x43544943; //"CITC" = 43 49 54 43
 const uint32_t cCLAS = 0x53414C43; //"CLAS" = 43 4C 41 53
 const uint32_t cCLFM = 0x4D464C43; //"CLFM" = 43 4C 46 4D
+const uint32_t cCLMT = 0x544D4C43; //"CLMT" = 43 4C 4D 54
 const uint32_t cCNAM = 0x4D414E43; //"CNAM" = 43 4E 41 4D
 const uint32_t cCNTO = 0x4F544E43; //"CNTO" = 43 4E 54 4F
 const uint32_t cCOBJ = 0x4A424F43; //"COBJ" = 43 4F 42 4A
@@ -307,6 +308,7 @@ const uint32_t cWAIT = 0x54494157; //"WAIT" = 57 41 49 54
 const uint32_t cWATR = 0x52544157; //"WATR" = 57 41 54 52
 const uint32_t cWCTR = 0x52544357; //"WCTR" = 57 43 54 52
 const uint32_t cWEAP = 0x50414557; //"WEAP" = 57 45 41 50
+const uint32_t cWLST = 0x54534C57; //"WLST" = 57 4C 53 54
 const uint32_t cWNAM = 0x4D414E57; //"WNAM" = 57 4E 41 4D
 const uint32_t cWOOP = 0x504F4F57; //"WOOP" = 57 4F 4F 50
 const uint32_t cWRLD = 0x444C5257; //"WRLD" = 57 52 4C 44

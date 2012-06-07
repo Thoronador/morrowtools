@@ -485,6 +485,25 @@ Records and their sub-records:
           unknown data
 
 
+  CLMT: climate
+      EDID (string, NUL-terminated)
+          editor ID
+      WLST (12 bytes)
+          uint32_t form ID (?)
+          uint32_t unknown (flags?)
+          uint32_t unknown
+      FNAM (string, NUL-terminated)
+          path to .dds
+      GNAM (string, NUL-terminated)
+          path to .dds
+      MODL (string, NUL-terminated)
+          model path
+      MODT (12 bytes, optional)
+          unknown data
+      TNAM (6 bytes)
+          unknown data
+      
+
   COBJ: craftable object (recipes)
       EDID (string, NUL-terminated)
           editorID

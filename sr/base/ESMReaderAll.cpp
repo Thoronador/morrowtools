@@ -26,6 +26,7 @@
 #include "AcousticSpaces.h"
 #include "Actions.h"
 #include "Activators.h"
+#include "AddOnNodes.h"
 #include "AlchemyPotions.h"
 #include "Ammunitions.h"
 #include "AnimatedObjects.h"
@@ -38,6 +39,7 @@
 #include "Cells.h"
 #include "CharacterReferences.h"
 #include "Classes.h"
+#include "Climates.h"
 #include "Collisions.h"
 #include "ColourForms.h"
 #include "Containers.h"
@@ -149,6 +151,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const uint32_t recName)
     case cACTI:
          return Activators::getSingleton().readNextRecord(in_File);
          break;
+    case cADDN:
+         return AddOnNodes::getSingleton().readNextRecord(in_File);
+         break;
     case cALCH:
          return AlchemyPotions::getSingleton().readNextRecord(in_File);
          break;
@@ -187,6 +192,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const uint32_t recName)
          break;
     case cCLFM:
          return ColourForms::getSingleton().readNextRecord(in_File);
+         break;
+    case cCLMT:
+         return Climates::getSingleton().readNextRecord(in_File);
          break;
     case cCOBJ:
          return CraftableObjects::getSingleton().readNextRecord(in_File);

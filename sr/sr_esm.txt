@@ -154,6 +154,26 @@ Records and their sub-records:
           unknown
 
 
+  ADDN: AddOnNode
+      EDID (string, NUL-terminated)
+          editorID
+      OBND (12 bytes)
+          unknown data
+      MODL (string, NUL-terminated)
+          model path
+      MODT (size varies)
+          unknown data
+      DATA (4 bytes)
+          unknown data - contains addon node index as uint16(?)
+      SNAM (4 bytes, optional)
+          sound descriptor form ID (points to SNDR)
+      DNAM (4 bytes)
+          uint16_t Master Particle System Cap
+          uint16_t flags
+             0x01 - unknown (always set?)
+             0x02 - "always loaded" flag
+
+
   ALCH: alchemy stuff (potions?)
       EDID (string, NUL-terminated)
           editorID
@@ -502,7 +522,7 @@ Records and their sub-records:
           unknown data
       TNAM (6 bytes)
           unknown data
-      
+
 
   COBJ: craftable object (recipes)
       EDID (string, NUL-terminated)

@@ -24,6 +24,7 @@
 #include "records/AcousticSpaceRecord.h"
 #include "records/ActionRecord.h"
 #include "records/ActivatorRecord.h"
+#include "records/AddOnNodeRecord.h"
 #include "records/AlchemyPotionRecord.h"
 #include "records/AmmunitionRecord.h"
 #include "records/AnimatedObjectRecord.h"
@@ -36,6 +37,7 @@
 #include "records/CellRecord.h"
 #include "records/CharacterReferenceRecord.h"
 #include "records/ClassRecord.h"
+#include "records/ClimateRecord.h"
 #include "records/CollisionRecord.h"
 #include "records/ColourFormRecord.h"
 #include "records/ContainerRecord.h"
@@ -139,6 +141,9 @@ int ESMReaderContentsAll::readNextRecord(std::ifstream& in_File, const uint32_t 
     case cACTI:
          recPtr = new ActivatorRecord;
          break;
+    case cADDN:
+         recPtr = new AddOnNodeRecord;
+         break;
     case cALCH:
          recPtr = new AlchemyPotionRecord;
          break;
@@ -177,6 +182,9 @@ int ESMReaderContentsAll::readNextRecord(std::ifstream& in_File, const uint32_t 
          break;
     case cCLFM:
          recPtr = new ColourFormRecord;
+         break;
+    case cCLMT:
+         recPtr = new ClimateRecord;
          break;
     case cCOBJ:
          recPtr = new CraftableObjectRecord;

@@ -32,6 +32,7 @@ const uint32_t cAACT = 0x54434141; //"AACT" = 41 41 43 54
 const uint32_t cACBS = 0x53424341; //"ACBS" = 41 43 42 53
 const uint32_t cACHR = 0x52484341; //"ACHR" = 41 43 48 52
 const uint32_t cACTI = 0x49544341; //"ACTI" = 41 43 54 49
+const uint32_t cADDN = 0x4E444441; //"ADDN" = 41 44 44 4E
 const uint32_t cAIDT = 0x54444941; //"AIDT" = 41 49 44 54
 const uint32_t cALCH = 0x48434C41; //"ALCH" = 41 4C 43 48
 const uint32_t cALCA = 0x41434C41; //"ALCA" = 41 4C 43 41

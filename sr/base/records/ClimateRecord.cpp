@@ -321,15 +321,4 @@ uint32_t ClimateRecord::getRecordType() const
   return cCLMT;
 }
 
-    std::string editorID;
-    //subrecord WLST
-    uint32_t unknownFormID;
-    uint32_t unknownWLSTTwo;
-    uint32_t unknownWLSTThree;
-    //end of subrecord WLST
-    std::string unknownFNAM;
-    std::string unknownGNAM;
-    std::string modelPath;
-    BinarySubRecord unknownTNAM;
-
 } //namespace

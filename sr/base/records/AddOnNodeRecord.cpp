@@ -26,6 +26,10 @@
 namespace SRTP
 {
 
+//flag constants
+const uint16_t AddOnNodeRecord::cFlagUnknown      = 0x01;
+const uint16_t AddOnNodeRecord::cFlagAlwaysLoaded = 0x02;
+
 AddOnNodeRecord::AddOnNodeRecord()
 : BasicRecord()
 {
@@ -311,6 +315,11 @@ bool AddOnNodeRecord::loadFromStream(std::ifstream& in_File)
 uint32_t AddOnNodeRecord::getRecordType() const
 {
   return cADDN;
+}
+
+bool AddOnNodeRecord::alwaysLoaded() const
+{
+  return ((flags & cFlagAlwaysLoaded)!=0);
 }
 
 } //namespace

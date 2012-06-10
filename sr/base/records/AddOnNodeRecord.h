@@ -66,6 +66,9 @@ struct AddOnNodeRecord: public BasicRecord
     /* returns the record's type, usually its header */
     virtual uint32_t getRecordType() const;
 
+    /* returns true, if the always loaded flag is set */
+    bool alwaysLoaded() const;
+
     std::string editorID;
     uint8_t unknownOBND[12];
     std::string modelPath;
@@ -76,6 +79,10 @@ struct AddOnNodeRecord: public BasicRecord
     uint16_t MasterParticleSystemCap;
     uint16_t flags;
     //end of subrecord DNAM
+
+    //flag constants
+    static const uint16_t cFlagUnknown;
+    static const uint16_t cFlagAlwaysLoaded;
 }; //struct
 
 } //namespace

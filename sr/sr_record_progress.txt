@@ -1,0 +1,127 @@
+Record types:
+=============
+
+AACT - done
+ACHR - done
+ACTI - done
+ADDN - done
+ALCH - done
+AMMO - done
+ANIO - done
+APPA - done
+ARMA - to do!
+ARMO - done
+ARTO - done
+ASPC - done
+ASTP - done
+AVIF - to do!
+BOOK - done
+BPTD - to do!
+CAMS - done
+CELL - done
+CLAS - done
+CLFM - done
+CLMT - done
+COBJ - done
+COLL - done
+CONT - done
+CPTH - to do!
+CSTY - to do!
+DEBR - done
+DIAL - to do!
+DLBR - done
+DLVW - done
+DOBJ - to do!
+DOOR - done
+DUAL - done
+ECZN - done
+EFSH - done
+ENCH - done
+EQUP - done
+EXPL - done
+EYES - done
+FACT - done
+FLOR - done
+FLST - done
+FSTP - done
+FSTS - done
+FURN - to do!
+GLOB - done
+GMST - done
+GRAS - done
+GRUP - to do!
+HAZD - done
+HDPT - done
+IDLE - to do!
+IDLM - to do!
+IMAD - done
+IMGS - done
+INFO - to do!
+INGR - done
+IPCT - to do!
+IPDS - done
+KEYM - done
+KYWD - done
+LAND - to do!
+LCRT - done
+LCTN - done
+LGTM - done
+LIGH - to do!
+LSCR - done
+LTEX - done
+LVLI - to do!
+LVLN - to do!
+LVSP - to do!
+MATO - to do!
+MATT - to do!
+MESG - done
+MGEF - done
+MISC - done
+MOVT - done
+MSTT - to do!
+MUSC - done
+MUST - done
+NAVI - done
+NAVM - to do!
+NPC_ - done
+OTFT - done
+PERK - done
+PGRE - done
+PHZD - done
+PROJ - done
+QUST - done
+RACE - done
+REFR - done
+REGN - to do!
+RELA - done
+REVB - done
+RFCT - done
+SCEN - to do!
+SCRL - done
+SHOU - done
+SLGM - done
+SMBN - to do!
+SMEN - to do!
+SMQN - to do!
+SNCT - done
+SNDR - to do!
+SOPM - to do!
+SOUN - done
+SPEL - done
+SPGD - to do!
+STAT - done
+TACT - to do!
+TES4 - done
+TREE - done
+TXST - done
+VTYP - done
+WATR - done
+WEAP - done
+WOOP - done
+WRLD - done
+WTHR - to do!
+
+=============
+Total: 119
+To do: 032 (ca. 27%)
+Done : 087 (ca. 73%)

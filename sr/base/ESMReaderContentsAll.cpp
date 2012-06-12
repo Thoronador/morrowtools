@@ -100,6 +100,7 @@
 #include "records/SoundRecord.h"
 #include "records/SpellRecord.h"
 #include "records/StaticRecord.h"
+#include "records/TalkingActivatorRecord.h"
 #include "records/TextureSetRecord.h"
 #include "records/TreeRecord.h"
 #include "records/VisualEffectRecord.h"
@@ -372,6 +373,9 @@ int ESMReaderContentsAll::readNextRecord(std::ifstream& in_File, const uint32_t 
          break;
     case cSTAT:
          recPtr = new StaticRecord;
+         break;
+    case cTACT:
+         recPtr = new TalkingActivatorRecord;
          break;
     case cTREE:
          recPtr = new TreeRecord;

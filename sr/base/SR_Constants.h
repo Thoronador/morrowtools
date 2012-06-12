@@ -281,6 +281,7 @@ const uint32_t cSPLO = 0x4F4C5053; //"SPLO" = 53 50 4C 4F
 const uint32_t cSPOR = 0x524F5053; //"SPOR" = 53 50 4F 52
 const uint32_t cSTAT = 0x54415453; //"STAT" = 53 54 41 54
 const uint32_t cSTOL = 0x4C4F5453; //"STOL" = 53 54 4F 4C
+const uint32_t cTACT = 0x54434154; //"TACT" = 54 41 43 54
 const uint32_t cTES4 = 0x34534554; //"TES4" = 54 45 53 34
 const uint32_t cTIAS = 0x53414954; //"TIAS" = 54 49 41 53
 const uint32_t cTINC = 0x434E4954; //"TINC" = 54 49 4E 43

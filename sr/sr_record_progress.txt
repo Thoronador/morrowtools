@@ -110,7 +110,7 @@ SOUN - done
 SPEL - done
 SPGD - done
 STAT - done
-TACT - to do!
+TACT - done
 TES4 - done
 TREE - done
 TXST - done
@@ -123,5 +123,5 @@ WTHR - to do!
 
 =============
 Total: 119
-To do: 031 (ca. 26%)
-Done : 088 (ca. 74%)
+To do: 030 (ca. 25%)
+Done : 089 (ca. 75%)

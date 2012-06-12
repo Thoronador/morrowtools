@@ -135,7 +135,7 @@ struct BasicRecord
            withHeader - if set to true, the header is read, too. Otherwise just
                         the subrecord's content is read
     */
-    bool loadUint32SubRecordFromStream(std::istream& in_File, const int32_t subHeader, uint32_t& target, const bool withHeader) const;
+    bool loadUint32SubRecordFromStream(std::istream& in_File, const uint32_t subHeader, uint32_t& target, const bool withHeader) const;
 
     /* tries to load a NUL-terminated string from the stream and returns true
        in case of success

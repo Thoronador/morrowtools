@@ -2062,6 +2062,27 @@ Records and their sub-records:
           unknown data
 
 
+  TACT: talking activator
+      EDID (string, NUL-terminated)
+          editor ID
+      OBND (12 bytes)
+          unknown data
+      FULL (4 bytes, optional)
+          string index of the name of the activator
+      MODL (string, NUL-terminated)
+          model path
+      MODT (size varies, optional)
+          unknown data
+      PNAM (4 bytes)
+          unknown data
+      SNAM (4 bytes, optional)
+          looping sound form ID (points to SNDR)
+      FNAM (2 bytes)
+          unknown data (maybe flags, but seems to be unused)
+      VNAM (4 bytes, optional)
+          uint32_t voice type form ID (points to VTYP)
+
+
   TREE: tree
       EDID (string, NUL-terminated)
           editor ID

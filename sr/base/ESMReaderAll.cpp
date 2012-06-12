@@ -102,6 +102,7 @@
 #include "Sounds.h"
 #include "Spells.h"
 #include "Statics.h"
+#include "TalkingActivators.h"
 #include "TextureSets.h"
 #include "Trees.h"
 #include "VisualEffects.h"
@@ -382,6 +383,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const uint32_t recName)
          break;
     case cSTAT:
          return Statics::getSingleton().readNextRecord(in_File);
+         break;
+    case cTACT:
+         return TalkingActivators::getSingleton().readNextRecord(in_File);
          break;
     case cTREE:
          return Trees::getSingleton().readNextRecord(in_File);

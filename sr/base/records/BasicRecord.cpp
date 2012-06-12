@@ -101,11 +101,11 @@ bool BasicRecord::saveSizeAndUnknownValues(std::ofstream& output, const uint32_t
 }
 #endif
 
-bool BasicRecord::loadUint32SubRecordFromStream(std::istream& in_File, const int32_t subHeader, uint32_t& target, const bool withHeader) const
+bool BasicRecord::loadUint32SubRecordFromStream(std::istream& in_File, const uint32_t subHeader, uint32_t& target, const bool withHeader) const
 {
   if (withHeader)
   {
-    int32_t subRecName = 0;
+    uint32_t subRecName = 0;
     //read header
     in_File.read((char*) &subRecName, 4);
     if (subRecName!=subHeader)

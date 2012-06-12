@@ -39,6 +39,7 @@
 #include "../base/Shouts.h"
 #include "../base/SoulGems.h"
 #include "../base/Spells.h"
+#include "../base/TalkingActivators.h"
 #include "../base/Trees.h"
 #include "../base/Weapons.h"
 #include "../base/WordsOfPower.h"
@@ -79,6 +80,7 @@ bool ESMReaderFinder::needGroup(const GroupData& g_data) const
     case cSHOU:
     case cSLGM:
     case cSPEL:
+    case cTACT:
     case cTREE:
     case cWEAP:
     case cWOOP:
@@ -159,6 +161,9 @@ int ESMReaderFinder::readNextRecord(std::ifstream& in_File, const uint32_t recNa
          break;
     case cSPEL:
          return Spells::getSingleton().readNextRecord(in_File);
+         break;
+    case cTACT:
+         return TalkingActivators::getSingleton().readNextRecord(in_File);
          break;
     case cTREE:
          return Trees::getSingleton().readNextRecord(in_File);

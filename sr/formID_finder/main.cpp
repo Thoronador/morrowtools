@@ -54,6 +54,7 @@
 #include "../base/SoulGems.h"
 #include "../base/Spells.h"
 #include "../base/StringTable.h"
+#include "../base/TalkingActivators.h"
 #include "../base/Trees.h"
 #include "../base/Weapons.h"
 #include "../base/WordsOfPower.h"
@@ -84,13 +85,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Form ID Finder for Skyrim, version 0.19.rev460, 2012-03-31\n";
+  std::cout << "Form ID Finder for Skyrim, version 0.20.rev472, 2012-06-12\n";
 }
 
 int showVersionExitcode()
 {
   showVersion();
-  return 460;
+  return 472;
 }
 
 void showHelp()
@@ -545,7 +546,7 @@ int main(int argc, char **argv)
         {
           if (matchesKeyword(table.getString(activator_iter->second.nameStringID), searchKeyword, caseSensitive))
           {
-            //found matching quest record
+            //found matching activator record
             if (activatorMatches==0)
             {
               basic_out << "\n\nMatching activators:\n";
@@ -903,7 +904,7 @@ int main(int argc, char **argv)
         {
           if (matchesKeyword(table.getString(ingred_iter->second.nameStringID), searchKeyword, caseSensitive))
           {
-            //found matching book record
+            //found matching ingredient record
             if (ingredMatches==0)
             {
               basic_out << "\n\nMatching ingredients:\n";
@@ -1335,6 +1336,43 @@ int main(int argc, char **argv)
       basic_out << "Total matching words of power: "<<wordMatches<<"\n";
     }
   }//scope for word of power stuff
+
+  //check talking activators for matches
+  {
+    unsigned int talkingActivatorMatches = 0;
+    SRTP::TalkingActivators::ListIterator talkingActivator_iter = SRTP::TalkingActivators::getSingleton().getBegin();
+    while (talkingActivator_iter!=SRTP::TalkingActivators::getSingleton().getEnd())
+    {
+      if (talkingActivator_iter->second.nameStringID!=0)
+      {
+        if (table.hasString(talkingActivator_iter->second.nameStringID))
+        {
+          if (matchesKeyword(table.getString(talkingActivator_iter->second.nameStringID), searchKeyword, caseSensitive))
+          {
+            //found matching talking activator record
+            if (talkingActivatorMatches==0)
+            {
+              basic_out << "\n\nMatching talking activators:\n";
+            }
+            basic_out << "    \""<<table.getString(talkingActivator_iter->second.nameStringID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(talkingActivator_iter->second.headerFormID)
+                      <<"\n        editor ID \""<<talkingActivator_iter->second.editorID<<"\"\n";
+            if (withReferences)
+            {
+              showRefIDs(talkingActivator_iter->second.headerFormID, readerReferences.refMap, table, basic_out);
+            }
+            ++talkingActivatorMatches;
+            ++totalMatches;
+          }//if match found
+        }//if table has string
+      }//if hasFULL
+      ++talkingActivator_iter;
+    }//while
+    if (talkingActivatorMatches>0)
+    {
+      basic_out << "Total matching talking activators: "<<talkingActivatorMatches<<"\n";
+    }
+  }//scope for talking activator stuff
 
   //check trees for matches
   {

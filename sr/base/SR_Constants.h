@@ -269,6 +269,7 @@ const uint32_t cSLGM = 0x4D474C53; //"SLGM" = 53 4C 47 4D
 const uint32_t cSNAM = 0x4D414E53; //"SNAM" = 53 4E 41 4D
 const uint32_t cSNCT = 0x54434E53; //"SNCT" = 53 4E 43 54
 const uint32_t cSNDD = 0x44444E53; //"SNDD" = 53 4E 44 44
+const uint32_t cSNDR = 0x52444E53; //"SNDR" = 53 4E 44 52
 const uint32_t cSOFT = 0x54464F53; //"SOFT" = 53 4F 46 54
 const uint32_t cSOUL = 0x4C554F53; //"SOUL" = 53 4F 55 4C
 const uint32_t cSOUN = 0x4E554F53; //"SOUN" = 53 4F 55 4E

@@ -1975,6 +1975,33 @@ Records and their sub-records:
           default menu value; represents a float, where zero maps to 0.0 and 65535 maps to 1.0
 
 
+  SNDR: sound descriptor
+      EDID (string, NUL-terminated)
+          editorID
+      CNAM (4 bytes)
+          unknown data
+      GNAM (4 bytes, optional)
+          uint32_t category form ID (points to SNCT)
+      SNAM (4 bytes, optional)
+          uint32_t alternate form ID (points to SNDR)
+      ANAM (string, NUL-terminated, can occur multiple times)
+          path to .wav
+      ONAM (4 bytes)
+          output model form ID (points to SOPM)
+      FNAM (4 bytes, optional)
+          unknown data, seems to be mutually exclusive with LNAM
+      CTDA (32 bytes, optional, can occur multiple times)
+          condition data
+      LNAM (4 bytes, optional)
+          unknown data, seems to be mutually exclusive with FNAM
+      BNAM (6 bytes)
+          uint8_t  frequency shift %
+          uint8_t  frequency variance % (max.: 100)
+          uint8_t  priority
+          uint8_t  dB Variance (allowed max.: 100)
+          uint16_t static attenuation (db), multiplied by 100 (i.e. real value is that divided by 100)
+
+
   SOUN: sound
       EDID (string, NUL-terminated)
           editorID

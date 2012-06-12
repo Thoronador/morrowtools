@@ -99,6 +99,7 @@
 #include "ShaderParticleGeometries.h"
 #include "SoulGems.h"
 #include "SoundCategories.h"
+#include "SoundDescriptors.h"
 #include "Sounds.h"
 #include "Spells.h"
 #include "Statics.h"
@@ -371,6 +372,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const uint32_t recName)
          break;
     case cSNCT:
          return SoundCategories::getSingleton().readNextRecord(in_File);
+         break;
+    case cSNDR:
+         return SoundDescriptors::getSingleton().readNextRecord(in_File);
          break;
     case cSOUN:
          return Sounds::getSingleton().readNextRecord(in_File);

@@ -104,7 +104,7 @@ SMBN - to do!
 SMEN - to do!
 SMQN - to do!
 SNCT - done
-SNDR - to do!
+SNDR - done
 SOPM - to do!
 SOUN - done
 SPEL - done
@@ -123,5 +123,5 @@ WTHR - to do!
 
 =============
 Total: 119
-To do: 030 (ca. 25%)
-Done : 089 (ca. 75%)
+To do:  29 (ca. 24%)
+Done :  90 (ca. 76%)

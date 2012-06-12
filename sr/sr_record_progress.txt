@@ -108,7 +108,7 @@ SNDR - to do!
 SOPM - to do!
 SOUN - done
 SPEL - done
-SPGD - to do!
+SPGD - done
 STAT - done
 TACT - to do!
 TES4 - done
@@ -123,5 +123,5 @@ WTHR - to do!
 
 =============
 Total: 119
-To do: 032 (ca. 27%)
-Done : 087 (ca. 73%)
+To do: 031 (ca. 26%)
+Done : 088 (ca. 74%)

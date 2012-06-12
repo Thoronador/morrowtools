@@ -135,11 +135,11 @@ bool BasicRecord::loadUint32SubRecordFromStream(std::istream& in_File, const int
   return true;
 }
 
-bool BasicRecord::loadString512FromStream(std::istream& in_File, std::string& target, char * buffer, const int32_t subHeader, const bool withHeader, uint32_t& bytesRead) const
+bool BasicRecord::loadString512FromStream(std::istream& in_File, std::string& target, char * buffer, const uint32_t subHeader, const bool withHeader, uint32_t& bytesRead) const
 {
   if (withHeader)
   {
-    int32_t subRecName = 0;
+    uint32_t subRecName = 0;
     //read header
     in_File.read((char*) &subRecName, 4);
     bytesRead += 4;

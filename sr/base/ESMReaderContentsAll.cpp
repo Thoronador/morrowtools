@@ -93,6 +93,7 @@
 #include "records/RelationshipRecord.h"
 #include "records/ReverbRecord.h"
 #include "records/ScrollRecord.h"
+#include "records/ShaderParticleGeometryRecord.h"
 #include "records/ShoutRecord.h"
 #include "records/SoulGemRecord.h"
 #include "records/SoundCategoryRecord.h"
@@ -365,6 +366,9 @@ int ESMReaderContentsAll::readNextRecord(std::ifstream& in_File, const uint32_t 
          break;
     case cSPEL:
          recPtr = new SpellRecord;
+         break;
+    case cSPGD:
+         recPtr = new ShaderParticleGeometryRecord;
          break;
     case cSTAT:
          recPtr = new StaticRecord;

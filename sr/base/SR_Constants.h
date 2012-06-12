@@ -275,6 +275,7 @@ const uint32_t cSOUN = 0x4E554F53; //"SOUN" = 53 4F 55 4E
 const uint32_t cSPCT = 0x54435053; //"SPCT" = 53 50 43 54
 const uint32_t cSPED = 0x44455053; //"SPED" = 53 50 45 44
 const uint32_t cSPEL = 0x4C455053; //"SPEL" = 53 50 45 4C
+const uint32_t cSPGD = 0x44475053; //"SPGD" = 53 50 47 44
 const uint32_t cSPIT = 0x54495053; //"SPIT" = 53 50 49 54
 const uint32_t cSPLO = 0x4F4C5053; //"SPLO" = 53 50 4C 4F
 const uint32_t cSPOR = 0x524F5053; //"SPOR" = 53 50 4F 52

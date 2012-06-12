@@ -2018,6 +2018,32 @@ Records and their sub-records:
       --> EFID (once), EFIT (once) and CTDA (0+ times) seem to form blocks, that can occur multiple times
 
 
+  SPGD: shader particle geometry record
+      EDID (string, NUL-terminated)
+          editorID
+      DATA (48 bytes or 40 bytes)
+          float    gravity velocity
+          float    rotation velocity
+          float    particle size X
+          float    particle size Y
+          float    center offset min
+          float    center offset max
+          float    initial rotation (in degrees)
+          uint32_t number of subtextures X
+          uint32_t number of subtextures Y
+          uint32_t shader type
+              0x00 Rain
+              0x01 Snow
+          uint32_t Box Size
+          float    Particle Density
+
+          -->Last two values are not present in 40-byte variant of the subrecord,
+             Box Size defaults to 4096 there, particle densitiy is 1.0f.
+
+      ICON (string, NUL-terminated, optional)
+          particle texture path
+
+
   STAT: static record
       EDID (string, NUL-terminated)
           editor ID

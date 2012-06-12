@@ -149,7 +149,7 @@ struct BasicRecord
                         the subrecord's content is read
            bytesRead  - the variable that holds the number of bytes read so far
     */
-    bool loadString512FromStream(std::istream& in_File, std::string& target, char * buffer, const int32_t subHeader, const bool withHeader, uint32_t& bytesRead) const;
+    bool loadString512FromStream(std::istream& in_File, std::string& target, char * buffer, const uint32_t subHeader, const bool withHeader, uint32_t& bytesRead) const;
 
     /* tries to load a fixed length buffer from the stream and returns true in
        case of success

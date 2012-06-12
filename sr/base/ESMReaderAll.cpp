@@ -96,6 +96,7 @@
 #include "Reverbs.h"
 #include "Scrolls.h"
 #include "Shouts.h"
+#include "ShaderParticleGeometries.h"
 #include "SoulGems.h"
 #include "SoundCategories.h"
 #include "Sounds.h"
@@ -375,6 +376,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const uint32_t recName)
          break;
     case cSPEL:
          return Spells::getSingleton().readNextRecord(in_File);
+         break;
+    case cSPGD:
+         return ShaderParticleGeometries::getSingleton().readNextRecord(in_File);
          break;
     case cSTAT:
          return Statics::getSingleton().readNextRecord(in_File);

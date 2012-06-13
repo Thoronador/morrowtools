@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef BODYPARTRECORD_H
-#define BODYPARTRECORD_H
+#ifndef MW_BODYPARTRECORD_H
+#define MW_BODYPARTRECORD_H
 
 #include <string>
 #include <fstream>
@@ -69,4 +69,4 @@ bool operator<(const BodyPartRecord& left, const BodyPartRecord& right);
 
 } //namespace
 
-#endif // BODYPARTRECORD_H
+#endif // MW_BODYPARTRECORD_H

@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef LANDSCAPETEXTURES_H
-#define LANDSCAPETEXTURES_H
+#ifndef MW_LANDSCAPETEXTURES_H
+#define MW_LANDSCAPETEXTURES_H
 
 #include <string>
 #include <map>
@@ -109,4 +109,4 @@ class LandscapeTextures
 
 } //namespace
 
-#endif // LANDSCAPETEXTURES_H
+#endif // MW_LANDSCAPETEXTURES_H

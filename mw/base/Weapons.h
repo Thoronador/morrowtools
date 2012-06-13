@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef WEAPONS_H
-#define WEAPONS_H
+#ifndef MW_WEAPONS_H
+#define MW_WEAPONS_H
 
 #include <string>
 #include <map>
@@ -108,4 +108,4 @@ class Weapons
 
 } //namespace
 
-#endif // WEAPONS_H
+#endif // MW_WEAPONS_H

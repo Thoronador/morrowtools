@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef REGIONS_H
-#define REGIONS_H
+#ifndef MW_REGIONS_H
+#define MW_REGIONS_H
 
 #include <string>
 #include <set>
@@ -109,4 +109,4 @@ class Regions
 
 } //namespace
 
-#endif // REGIONS_H
+#endif // MW_REGIONS_H

@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef ENCHANTINGRECORD_H
-#define ENCHANTINGRECORD_H
+#ifndef MW_ENCHANTINGRECORD_H
+#define MW_ENCHANTINGRECORD_H
 
 #include <string>
 #include <vector>
@@ -66,4 +66,4 @@ struct EnchantingRecord: public BasicRecord
 
 } //namespace
 
-#endif // ENCHANTINGRECORD_H
+#endif // MW_ENCHANTINGRECORD_H

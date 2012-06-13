@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SCRIPTRECORD_H
-#define SCRIPTRECORD_H
+#ifndef MW_SCRIPTRECORD_H
+#define MW_SCRIPTRECORD_H
 
 #include <string>
 #include <vector>
@@ -74,4 +74,4 @@ struct ScriptRecord: public BasicRecord
 
 } //namespace
 
-#endif // SCRIPTRECORD_H
+#endif // MW_SCRIPTRECORD_H

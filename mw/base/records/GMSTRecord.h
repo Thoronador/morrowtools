@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef GMSTRECORD_H
-#define GMSTRECORD_H
+#ifndef MW_GMSTRECORD_H
+#define MW_GMSTRECORD_H
 
 #include <string>
 #include "BasicRecord.h"
@@ -57,4 +57,4 @@ struct GMSTRecord: public BasicRecord
 
 } //namespace
 
-#endif // GMSTRECORD_H
+#endif // MW_GMSTRECORD_H

@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef NPCRECORD_H
-#define NPCRECORD_H
+#ifndef MW_NPCRECORD_H
+#define MW_NPCRECORD_H
 
 #include <string>
 #include <fstream>
@@ -78,7 +78,7 @@ struct NPCRecord: public PreNPCRecord
   NPCRecord();
 
   /* destructor */
-  ~NPCRecord();
+  virtual ~NPCRecord();
 
   /* assignment operator */
   NPCRecord& operator=(const NPCRecord& source);
@@ -121,4 +121,4 @@ struct NPCRecord: public PreNPCRecord
 
 } //namespace
 
-#endif // NPCRECORD_H
+#endif // MW_NPCRECORD_H

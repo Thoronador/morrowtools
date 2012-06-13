@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef INGREDIENTS_H
-#define INGREDIENTS_H
+#ifndef MW_INGREDIENTS_H
+#define MW_INGREDIENTS_H
 
 #include <string>
 #include <map>
@@ -108,4 +108,4 @@ class Ingredients
 
 } //namespace
 
-#endif // INGREDIENTS_H
+#endif // MW_INGREDIENTS_H

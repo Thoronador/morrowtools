@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef GLOBALS_H
-#define GLOBALS_H
+#ifndef MW_GLOBALS_H
+#define MW_GLOBALS_H
 
 #include <string>
 #include <set>
@@ -109,4 +109,4 @@ class Globals
 
 } //namespace
 
-#endif // GLOBALS_H
+#endif // MW_GLOBALS_H

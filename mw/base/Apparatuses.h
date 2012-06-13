@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef APPARATUSES_H
-#define APPARATUSES_H
+#ifndef MW_APPARATUSES_H
+#define MW_APPARATUSES_H
 
 #include <string>
 #include <map>
@@ -110,4 +110,4 @@ class Apparatuses
 
 } //namespace
 
-#endif // APPARATUSES_H
+#endif // MW_APPARATUSES_H

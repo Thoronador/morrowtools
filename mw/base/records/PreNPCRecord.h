@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef PRENPCRECORD_H
-#define PRENPCRECORD_H
+#ifndef MW_PRENPCRECORD_H
+#define MW_PRENPCRECORD_H
 
 #include <vector>
 #include "BasicRecord.h"
@@ -48,7 +48,7 @@ struct PreNPCRecord: public BasicRecord
   std::vector<TravelDestination> Destinations;
 
   /* destructor */
-  ~PreNPCRecord();
+  virtual ~PreNPCRecord();
 
   /* returns true, if the other PreNPCRecord has the same AI packages*/
   bool hasEqualAIPackages(const PreNPCRecord& other) const;
@@ -82,4 +82,4 @@ struct PreNPCRecord: public BasicRecord
 
 } //namespace
 
-#endif // PRENPCRECORD_H
+#endif // MW_PRENPCRECORD_H

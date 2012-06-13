@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef GENERICRECORD_H
-#define GENERICRECORD_H
+#ifndef MW_GENERICRECORD_H
+#define MW_GENERICRECORD_H
 
 #include "BasicRecord.h"
 
@@ -68,4 +68,4 @@ struct GenericRecord: public BasicRecord
 
 } //namespace
 
-#endif // GENERICRECORD_H
+#endif // MW_GENERICRECORD_H

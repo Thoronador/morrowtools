@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef CLASSES_H
-#define CLASSES_H
+#ifndef MW_CLASSES_H
+#define MW_CLASSES_H
 
 #include <string>
 #include <map>
@@ -108,4 +108,4 @@ class Classes
 
 } //namespace
 
-#endif // CLASSES_H
+#endif // MW_CLASSES_H

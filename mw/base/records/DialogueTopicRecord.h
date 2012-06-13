@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef DIALOGUETOPICRECORD_H
-#define DIALOGUETOPICRECORD_H
+#ifndef MW_DIALOGUETOPICRECORD_H
+#define MW_DIALOGUETOPICRECORD_H
 
 #include <string>
 #include <fstream>
@@ -73,4 +73,4 @@ struct DialogueTopicRecord: public BasicRecord
 
 } //namespace
 
-#endif // DIALOGUETOPICRECORD_H
+#endif // MW_DIALOGUETOPICRECORD_H

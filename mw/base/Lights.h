@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef LIGHTS_H
-#define LIGHTS_H
+#ifndef MW_LIGHTS_H
+#define MW_LIGHTS_H
 
 #include <string>
 #include <map>
@@ -108,4 +108,4 @@ class Lights
 
 } //namespace
 
-#endif // LIGHTS_H
+#endif // MW_LIGHTS_H

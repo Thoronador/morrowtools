@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef WEAPONRECORD_H
-#define WEAPONRECORD_H
+#ifndef MW_WEAPONRECORD_H
+#define MW_WEAPONRECORD_H
 
 #include <fstream>
 #include <string>
@@ -76,4 +76,4 @@ struct WeaponRecord: public BasicRecord
 
 } //namespace
 
-#endif // WEAPONRECORD_H
+#endif // MW_WEAPONRECORD_H

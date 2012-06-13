@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef HELPERIO_H
-#define HELPERIO_H
+#ifndef MW_HELPERIO_H
+#define MW_HELPERIO_H
 
 #include <string>
 #include <fstream>
@@ -30,4 +30,4 @@ std::string IntTo4Char(const int32_t value);
 //helper function for message on wrong records
 void UnexpectedRecord(const int32_t expected, const int32_t unexpected);
 
-#endif // HELPERIO_H
+#endif // MW_HELPERIO_H

@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef AIPACKAGES_H
-#define AIPACKAGES_H
+#ifndef MW_AIPACKAGES_H
+#define MW_AIPACKAGES_H
 
 #include <string>
 #include <stdint.h>
@@ -164,4 +164,4 @@ struct NPC_AIWander: public NPC_BasicAIPackage
 
 } //namespace
 
-#endif // AIPACKAGES_H
+#endif // MW_AIPACKAGES_H

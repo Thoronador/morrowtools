@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef ENCHANTINGS_H
-#define ENCHANTINGS_H
+#ifndef MW_ENCHANTINGS_H
+#define MW_ENCHANTINGS_H
 
 #include <string>
 #include <map>
@@ -109,4 +109,4 @@ class Enchantings
 
 } //namespace
 
-#endif // ENCHANTINGS_H
+#endif // MW_ENCHANTINGS_H

@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef ITEMRECORD_H
-#define ITEMRECORD_H
+#ifndef MW_ITEMRECORD_H
+#define MW_ITEMRECORD_H
 
 #include <string>
 #include <stdint.h>
@@ -38,4 +38,4 @@ struct ItemRecord
 
 } //namespace
 
-#endif // ITEMRECORD_H
+#endif // MW_ITEMRECORD_H

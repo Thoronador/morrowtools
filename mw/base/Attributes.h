@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef ATTRIBUTES_H
-#define ATTRIBUTES_H
+#ifndef MW_ATTRIBUTES_H
+#define MW_ATTRIBUTES_H
 #include <stdint.h>
 #include <string>
 
@@ -42,4 +42,4 @@ namespace Attributes
 
 } //namespace MWTP
 
-#endif // ATTRIBUTES_H
+#endif // MW_ATTRIBUTES_H

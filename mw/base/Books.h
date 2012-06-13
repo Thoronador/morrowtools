@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef BOOKS_H
-#define BOOKS_H
+#ifndef MW_BOOKS_H
+#define MW_BOOKS_H
 
 #include <string>
 #include <map>
@@ -109,4 +109,4 @@ class Books
 
 } //namespace
 
-#endif // BOOKS_H
+#endif // MW_BOOKS_H

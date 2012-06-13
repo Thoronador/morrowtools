@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef ALCHEMYPOTIONS_H
-#define ALCHEMYPOTIONS_H
+#ifndef MW_ALCHEMYPOTIONS_H
+#define MW_ALCHEMYPOTIONS_H
 
 #include <string>
 #include <map>
@@ -109,4 +109,4 @@ class AlchemyPotions
 
 } //namespace
 
-#endif // ALCHEMYPOTIONS_H
+#endif // MW_ALCHEMYPOTIONS_H

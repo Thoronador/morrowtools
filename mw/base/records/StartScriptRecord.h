@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef STARTSCRIPTRECORD_H
-#define STARTSCRIPTRECORD_H
+#ifndef MW_STARTSCRIPTRECORD_H
+#define MW_STARTSCRIPTRECORD_H
 
 #include <string>
 #include <fstream>
@@ -59,4 +59,4 @@ struct StartScriptRecord: public BasicRecord
 
 } //namespace
 
-#endif // STARTSCRIPTRECORD_H
+#endif // MW_STARTSCRIPTRECORD_H

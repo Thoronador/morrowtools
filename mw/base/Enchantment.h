@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef ENCHANTMENT_H
-#define ENCHANTMENT_H
+#ifndef MW_ENCHANTMENT_H
+#define MW_ENCHANTMENT_H
 
 #include <stdint.h>
 
@@ -49,4 +49,4 @@ struct EnchantmentData //24 bytes
 
 } //namespace
 
-#endif // ENCHANTMENT_H
+#endif // MW_ENCHANTMENT_H

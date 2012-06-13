@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef MISCITEMS_H
-#define MISCITEMS_H
+#ifndef MW_MISCITEMS_H
+#define MW_MISCITEMS_H
 
 #include <string>
 #include <map>
@@ -109,4 +109,4 @@ class MiscItems
 
 } //namespace
 
-#endif // MISCITEMS_H
+#endif // MW_MISCITEMS_H

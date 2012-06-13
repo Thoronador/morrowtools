@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef MAGICEFFECTS_H
-#define MAGICEFFECTS_H
+#ifndef MW_MAGICEFFECTS_H
+#define MW_MAGICEFFECTS_H
 
 #include <string>
 #include <map>
@@ -126,4 +126,4 @@ class MagicEffects
 
 } //namespace
 
-#endif // MAGICEFFECTS_H
+#endif // MW_MAGICEFFECTS_H

@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SOUNDGENERATORS_H
-#define SOUNDGENERATORS_H
+#ifndef MW_SOUNDGENERATORS_H
+#define MW_SOUNDGENERATORS_H
 
 #include <string>
 #include <map>
@@ -109,4 +109,4 @@ class SoundGenerators
 
 } //namespace
 
-#endif // SOUNDGENERATORS_H
+#endif // MW_SOUNDGENERATORS_H

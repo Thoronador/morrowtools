@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef LIGHTRECORD_H
-#define LIGHTRECORD_H
+#ifndef MW_LIGHTRECORD_H
+#define MW_LIGHTRECORD_H
 
 #include <string>
 #include <fstream>
@@ -71,4 +71,4 @@ struct LightRecord: public BasicRecord
 
 } //namespace
 
-#endif // LIGHTRECORD_H
+#endif // MW_LIGHTRECORD_H

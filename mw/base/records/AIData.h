@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef AIDATA_H
-#define AIDATA_H
+#ifndef MW_AIDATA_H
+#define MW_AIDATA_H
 
 #include <stdint.h>
 
@@ -50,4 +50,4 @@ struct NPC_AIData
 
 } //namespace
 
-#endif // AIDATA_H
+#endif // MW_AIDATA_H

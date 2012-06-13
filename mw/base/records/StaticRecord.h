@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef STATICRECORD_H
-#define STATICRECORD_H
+#ifndef MW_STATICRECORD_H
+#define MW_STATICRECORD_H
 
 #include <string>
 #include <fstream>
@@ -53,4 +53,4 @@ struct StaticRecord: public BasicRecord
 
 } //namespace
 
-#endif // STATICRECORD_H
+#endif // MW_STATICRECORD_H

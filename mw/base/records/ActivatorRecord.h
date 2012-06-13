@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef ACTIVATORRECORD_H
-#define ACTIVATORRECORD_H
+#ifndef MW_ACTIVATORRECORD_H
+#define MW_ACTIVATORRECORD_H
 
 #include <string>
 #include <fstream>
@@ -58,4 +58,4 @@ struct ActivatorRecord: public BasicRecord
 
 } //namespace
 
-#endif // ACTIVATORRECORD_H
+#endif // MW_ACTIVATORRECORD_H

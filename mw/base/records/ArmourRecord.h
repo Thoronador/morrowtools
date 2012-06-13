@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef ARMOURRECORD_H
-#define ARMOURRECORD_H
+#ifndef MW_ARMOURRECORD_H
+#define MW_ARMOURRECORD_H
 
 #include <string>
 #include <vector>
@@ -70,4 +70,4 @@ struct ArmourRecord: public BasicRecord
 
 } //namespace
 
-#endif // ARMOURRECORD_H
+#endif // MW_ARMOURRECORD_H

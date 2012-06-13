@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef FACTIONRECORD_H
-#define FACTIONRECORD_H
+#ifndef MW_FACTIONRECORD_H
+#define MW_FACTIONRECORD_H
 
 #include <string>
 #include <vector>
@@ -87,4 +87,4 @@ struct FactionRecord: public BasicRecord
 
 } //namespace
 
-#endif // FACTIONRECORD_H
+#endif // MW_FACTIONRECORD_H

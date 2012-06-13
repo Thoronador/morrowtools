@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SPELLRECORD_H
-#define SPELLRECORD_H
+#ifndef MW_SPELLRECORD_H
+#define MW_SPELLRECORD_H
 
 #include <fstream>
 #include <string>
@@ -82,4 +82,4 @@ struct SpellRecord: public BasicRecord
 
 } //namespace
 
-#endif // SPELLRECORD_H
+#endif // MW_SPELLRECORD_H

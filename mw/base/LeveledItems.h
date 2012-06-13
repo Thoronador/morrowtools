@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef LEVELEDITEMS_H
-#define LEVELEDITEMS_H
+#ifndef MW_LEVELEDITEMS_H
+#define MW_LEVELEDITEMS_H
 
 #include <string>
 #include <map>
@@ -109,4 +109,4 @@ class LeveledItems
 
 } //namespace
 
-#endif // LEVELEDITEMS_H
+#endif // MW_LEVELEDITEMS_H

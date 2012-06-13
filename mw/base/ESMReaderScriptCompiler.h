@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef ESMREADERSCRIPTCOMPILER_H
-#define ESMREADERSCRIPTCOMPILER_H
+#ifndef MW_ESMREADERSCRIPTCOMPILER_H
+#define MW_ESMREADERSCRIPTCOMPILER_H
 
 #include "ESMReader.h"
 
@@ -52,4 +52,4 @@ class ESMReaderScriptCompiler: public ESMReader
 
 } //namespace
 
-#endif // ESMREADERSCRIPTCOMPILER_H
+#endif // MW_ESMREADERSCRIPTCOMPILER_H

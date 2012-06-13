@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef BIRTHSIGNRECORD_H
-#define BIRTHSIGNRECORD_H
+#ifndef MW_BIRTHSIGNRECORD_H
+#define MW_BIRTHSIGNRECORD_H
 
 #include <string>
 #include <fstream>
@@ -66,4 +66,4 @@ bool operator<(const BirthSignRecord& left, const BirthSignRecord& right);
 
 } //namespace
 
-#endif // BIRTHSIGNRECORD_H
+#endif // MW_BIRTHSIGNRECORD_H

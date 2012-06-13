@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef LEVELEDCREATURES_H
-#define LEVELEDCREATURES_H
+#ifndef MW_LEVELEDCREATURES_H
+#define MW_LEVELEDCREATURES_H
 
 #include <string>
 #include <map>
@@ -109,4 +109,4 @@ class LeveledCreatures
 
 } //namespace
 
-#endif // LEVELEDCREATURES_H
+#endif // MW_LEVELEDCREATURES_H

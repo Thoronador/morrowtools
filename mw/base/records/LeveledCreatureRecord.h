@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef LEVELEDCREATURERECORD_H
-#define LEVELEDCREATURERECORD_H
+#ifndef MW_LEVELEDCREATURERECORD_H
+#define MW_LEVELEDCREATURERECORD_H
 
 #include <string>
 #include <fstream>
@@ -66,4 +66,4 @@ struct LeveledCreatureRecord: public BasicRecord
 
 } //namespace
 
-#endif // LEVELEDCREATURERECORD_H
+#endif // MW_LEVELEDCREATURERECORD_H

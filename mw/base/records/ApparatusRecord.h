@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef APPARATUSRECORD_H
-#define APPARATUSRECORD_H
+#ifndef MW_APPARATUSRECORD_H
+#define MW_APPARATUSRECORD_H
 
 #include <string>
 #include "BasicRecord.h"
@@ -62,4 +62,4 @@ struct ApparatusRecord: public BasicRecord
 
 } //namespace
 
-#endif // APPARATUSRECORD_H
+#endif // MW_APPARATUSRECORD_H

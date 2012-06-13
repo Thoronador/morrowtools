@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef LEVELEDITEMRECORD_H
-#define LEVELEDITEMRECORD_H
+#ifndef MW_LEVELEDITEMRECORD_H
+#define MW_LEVELEDITEMRECORD_H
 
 #include <string>
 #include <fstream>
@@ -66,4 +66,4 @@ struct LeveledItemRecord: public BasicRecord
 
 } //namespace
 
-#endif // LEVELEDITEMRECORD_H
+#endif // MW_LEVELEDITEMRECORD_H

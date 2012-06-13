@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef INGREDIENTRECORD_H
-#define INGREDIENTRECORD_H
+#ifndef MW_INGREDIENTRECORD_H
+#define MW_INGREDIENTRECORD_H
 
 #include <string>
 #include <fstream>
@@ -106,4 +106,4 @@ struct IngredientRecord: public BasicRecord
 
 } //namespace
 
-#endif // INGREDIENTRECORD_H
+#endif // MW_INGREDIENTRECORD_H

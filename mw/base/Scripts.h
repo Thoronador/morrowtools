@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SCRIPTS_H
-#define SCRIPTS_H
+#ifndef MW_SCRIPTS_H
+#define MW_SCRIPTS_H
 
 #include <string>
 #include <map>
@@ -109,4 +109,4 @@ class Scripts
 
 } //namespace
 
-#endif // SCRIPTS_H
+#endif // MW_SCRIPTS_H

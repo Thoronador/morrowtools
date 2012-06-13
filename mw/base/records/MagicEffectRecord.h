@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef MAGICEFFECTRECORD_H
-#define MAGICEFFECTRECORD_H
+#ifndef MW_MAGICEFFECTRECORD_H
+#define MW_MAGICEFFECTRECORD_H
 
 #include <string>
 #include <fstream>
@@ -227,4 +227,4 @@ const int32_t EffectStuntedMagicka = 136;
 
 } //namespace
 
-#endif // MAGICEFFECTRECORD_H
+#endif // MW_MAGICEFFECTRECORD_H

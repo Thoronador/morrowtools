@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef DIALOGUEINFOS_H
-#define DIALOGUEINFOS_H
+#ifndef MW_DIALOGUEINFOS_H
+#define MW_DIALOGUEINFOS_H
 
 #include <map>
 #include "records/DialogueInfoRecord.h"
@@ -108,4 +108,4 @@ class DialogueInfos
 
 } //namespace
 
-#endif // DIALOGUEINFOS_H
+#endif // MW_DIALOGUEINFOS_H

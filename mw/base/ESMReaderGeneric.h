@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef ESMREADERGENERIC_H
-#define ESMREADERGENERIC_H
+#ifndef MW_ESMREADERGENERIC_H
+#define MW_ESMREADERGENERIC_H
 
 #include <vector>
 #include "ESMReader.h"
@@ -71,4 +71,4 @@ class ESMReaderGeneric: public ESMReader
 
 } //namespace
 
-#endif // ESMREADERGENERIC_H
+#endif // MW_ESMREADERGENERIC_H

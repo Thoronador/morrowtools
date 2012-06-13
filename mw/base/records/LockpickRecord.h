@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef LOCKPICKRECORD_H
-#define LOCKPICKRECORD_H
+#ifndef MW_LOCKPICKRECORD_H
+#define MW_LOCKPICKRECORD_H
 
 #include <string>
 #include <fstream>
@@ -65,4 +65,4 @@ struct LockpickRecord: public BasicRecord
 
 } //namespace
 
-#endif // LOCKPICKRECORD_H
+#endif // MW_LOCKPICKRECORD_H

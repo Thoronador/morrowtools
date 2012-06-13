@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SOUNDRECORD_H
-#define SOUNDRECORD_H
+#ifndef MW_SOUNDRECORD_H
+#define MW_SOUNDRECORD_H
 
 #include <string>
 #include <fstream>
@@ -59,4 +59,4 @@ struct SoundRecord: public BasicRecord
 
 } //namespace
 
-#endif // SOUNDRECORD_H
+#endif // MW_SOUNDRECORD_H

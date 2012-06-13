@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef PROBES_H
-#define PROBES_H
+#ifndef MW_PROBES_H
+#define MW_PROBES_H
 
 #include <string>
 #include <set>
@@ -109,4 +109,4 @@ class Probes
 
 } //namespace
 
-#endif // PROBES_H
+#endif // MW_PROBES_H

@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef GLOBALRECORD_H
-#define GLOBALRECORD_H
+#ifndef MW_GLOBALRECORD_H
+#define MW_GLOBALRECORD_H
 
 #include <string>
 #include <fstream>
@@ -67,4 +67,4 @@ bool operator<(const GlobalRecord& left, const GlobalRecord& right);
 
 } //namespace
 
-#endif // GLOBALRECORD_H
+#endif // MW_GLOBALRECORD_H

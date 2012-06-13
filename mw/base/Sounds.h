@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SOUNDS_H
-#define SOUNDS_H
+#ifndef MW_SOUNDS_H
+#define MW_SOUNDS_H
 
 #include <map>
 #include "records/SoundRecord.h"
@@ -108,4 +108,4 @@ class Sounds
 
 }//namespace
 
-#endif // SOUNDS_H
+#endif // MW_SOUNDS_H

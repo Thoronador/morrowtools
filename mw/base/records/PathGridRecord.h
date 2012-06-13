@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef PATHGRIDRECORD_H
-#define PATHGRIDRECORD_H
+#ifndef MW_PATHGRIDRECORD_H
+#define MW_PATHGRIDRECORD_H
 
 #include <string>
 #include <vector>
@@ -83,4 +83,4 @@ struct PathGridRecord: public BasicRecord
 
 } //namespace
 
-#endif // PATHGRIDRECORD_H
+#endif // MW_PATHGRIDRECORD_H

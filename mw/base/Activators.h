@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef ACTIVATORS_H
-#define ACTIVATORS_H
+#ifndef MW_ACTIVATORS_H
+#define MW_ACTIVATORS_H
 
 #include <string>
 #include <map>
@@ -110,4 +110,4 @@ class Activators
 
 } //namespace
 
-#endif // ACTIVATORS_H
+#endif // MW_ACTIVATORS_H

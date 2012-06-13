@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef DIALOGUEINFORECORD_H
-#define DIALOGUEINFORECORD_H
+#ifndef MW_DIALOGUEINFORECORD_H
+#define MW_DIALOGUEINFORECORD_H
 
 #include <string>
 #include <fstream>
@@ -94,4 +94,4 @@ struct DialogueInfoRecord: public BasicRecord
 
 } //namespace
 
-#endif // DIALOGUEINFORECORD_H
+#endif // MW_DIALOGUEINFORECORD_H

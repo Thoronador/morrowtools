@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef NPCS_H
-#define NPCS_H
+#ifndef MW_NPCS_H
+#define MW_NPCS_H
 
 #include <string>
 #include <map>
@@ -110,4 +110,4 @@ class NPCs
 
 } //namespace
 
-#endif // NPCS_H
+#endif // MW_NPCS_H

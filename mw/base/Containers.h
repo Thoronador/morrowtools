@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef CONTAINERS_H
-#define CONTAINERS_H
+#ifndef MW_CONTAINERS_H
+#define MW_CONTAINERS_H
 
 
 #include <string>
@@ -111,4 +111,4 @@ class Containers
 
 } //namespace
 
-#endif // CONTAINERS_H
+#endif // MW_CONTAINERS_H

@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef STATICS_H
-#define STATICS_H
+#ifndef MW_STATICS_H
+#define MW_STATICS_H
 
 #include <string>
 #include <map>
@@ -109,4 +109,4 @@ class Statics
 
 } //namespace
 
-#endif // STATICS_H
+#endif // MW_STATICS_H

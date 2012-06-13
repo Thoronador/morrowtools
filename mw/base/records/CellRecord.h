@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef CELLRECORD_H
-#define CELLRECORD_H
+#ifndef MW_CELLRECORD_H
+#define MW_CELLRECORD_H
 
 #include <string>
 #include <vector>
@@ -156,4 +156,4 @@ struct CellRecord: public BasicRecord
 
 } //namespace
 
-#endif // CELLRECORD_H
+#endif // MW_CELLRECORD_H

@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef LANDSCAPETEXTURERECORD_H
-#define LANDSCAPETEXTURERECORD_H
+#ifndef MW_LANDSCAPETEXTURERECORD_H
+#define MW_LANDSCAPETEXTURERECORD_H
 
 #include <string>
 #include <fstream>
@@ -57,4 +57,4 @@ struct LandscapeTextureRecord: public BasicRecord
 
 } //namespace
 
-#endif // LANDSCAPETEXTURERECORD_H
+#endif // MW_LANDSCAPETEXTURERECORD_H

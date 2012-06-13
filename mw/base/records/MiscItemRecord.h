@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef MISCITEMRECORD_H
-#define MISCITEMRECORD_H
+#ifndef MW_MISCITEMRECORD_H
+#define MW_MISCITEMRECORD_H
 
 #include <string>
 #include <fstream>
@@ -68,4 +68,4 @@ struct MiscItemRecord: public BasicRecord
 
 } //namespace
 
-#endif // MISCITEMRECORD_H
+#endif // MW_MISCITEMRECORD_H

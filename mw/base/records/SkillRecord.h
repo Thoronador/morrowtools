@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SKILLRECORD_H
-#define SKILLRECORD_H
+#ifndef MW_SKILLRECORD_H
+#define MW_SKILLRECORD_H
 
 #include <string>
 #include <fstream>
@@ -92,4 +92,4 @@ struct SkillRecord: public BasicRecord
 
 } //namespace
 
-#endif // SKILLRECORD_H
+#endif // MW_SKILLRECORD_H

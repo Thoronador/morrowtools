@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef ESMREADERALL_H
-#define ESMREADERALL_H
+#ifndef MW_ESMREADERALL_H
+#define MW_ESMREADERALL_H
 
 #include "ESMReader.h"
 
@@ -52,4 +52,4 @@ class ESMReaderAll: public ESMReader
 
 } //namespace
 
-#endif // ESMREADERALL_H
+#endif // MW_ESMREADERALL_H

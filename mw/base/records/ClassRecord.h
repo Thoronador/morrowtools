@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef CLASSRECORD_H
-#define CLASSRECORD_H
+#ifndef MW_CLASSRECORD_H
+#define MW_CLASSRECORD_H
 
 #include <string>
 #include <fstream>
@@ -77,4 +77,4 @@ struct ClassRecord: public BasicRecord
 
 } //namespace
 
-#endif // CLASSRECORD_H
+#endif // MW_CLASSRECORD_H

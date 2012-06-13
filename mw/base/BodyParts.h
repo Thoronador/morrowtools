@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef BODYPARTS_H
-#define BODYPARTS_H
+#ifndef MW_BODYPARTS_H
+#define MW_BODYPARTS_H
 
 #include <string>
 #include <set>
@@ -109,4 +109,4 @@ class BodyParts
 
 } //namespace
 
-#endif // BODYPARTS_H
+#endif // MW_BODYPARTS_H

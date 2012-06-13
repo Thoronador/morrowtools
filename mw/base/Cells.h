@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef CELLS_H
-#define CELLS_H
+#ifndef MW_CELLS_H
+#define MW_CELLS_H
 
 #include <string>
 #include <map>
@@ -128,4 +128,4 @@ class Cells
 
 } //namespace
 
-#endif // CELLS_H
+#endif // MW_CELLS_H

@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef PATHGRIDS_H
-#define PATHGRIDS_H
+#ifndef MW_PATHGRIDS_H
+#define MW_PATHGRIDS_H
 
 #include <string>
 #include <map>
@@ -128,4 +128,4 @@ class PathGrids
 
 } //namespace
 
-#endif // PATHGRIDS_H
+#endif // MW_PATHGRIDS_H

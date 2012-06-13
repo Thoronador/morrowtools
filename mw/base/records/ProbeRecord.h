@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef PROBERECORD_H
-#define PROBERECORD_H
+#ifndef MW_PROBERECORD_H
+#define MW_PROBERECORD_H
 
 #include <string>
 #include "BasicRecord.h"
@@ -73,4 +73,4 @@ bool operator<(const ProbeRecord& left, const ProbeRecord& right);
 
 } //namespace
 
-#endif // PROBERECORD_H
+#endif // MW_PROBERECORD_H

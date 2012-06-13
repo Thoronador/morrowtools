@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef CREATURES_H
-#define CREATURES_H
+#ifndef MW_CREATURES_H
+#define MW_CREATURES_H
 
 #include <string>
 #include <map>
@@ -110,4 +110,4 @@ class Creatures
 
 } //namespace
 
-#endif // CREATURES_H
+#endif // MW_CREATURES_H

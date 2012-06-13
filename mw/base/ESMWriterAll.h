@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef ESMWRITERALL_H
-#define ESMWRITERALL_H
+#ifndef MW_ESMWRITERALL_H
+#define MW_ESMWRITERALL_H
 
 #include "ESMWriter.h"
 
@@ -48,4 +48,4 @@ class ESMWriterAll: public ESMWriter
 
 } //namespace
 
-#endif // ESMWRITERALL_H
+#endif // MW_ESMWRITERALL_H

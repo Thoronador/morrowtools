@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef RACES_H
-#define RACES_H
+#ifndef MW_RACES_H
+#define MW_RACES_H
 
 #include <string>
 #include <set>
@@ -109,4 +109,4 @@ class Races
 
 } //namespace
 
-#endif // RACES_H
+#endif // MW_RACES_H

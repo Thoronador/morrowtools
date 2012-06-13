@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef CLOTHINGRECORD_H
-#define CLOTHINGRECORD_H
+#ifndef MW_CLOTHINGRECORD_H
+#define MW_CLOTHINGRECORD_H
 
 #include <string>
 #include <vector>
@@ -68,4 +68,4 @@ struct ClothingRecord: public BasicRecord
 
 } //namespace
 
-#endif // CLOTHINGRECORD_H
+#endif // MW_CLOTHINGRECORD_H

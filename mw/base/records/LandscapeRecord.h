@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef LANDSCAPERECORD_H
-#define LANDSCAPERECORD_H
+#ifndef MW_LANDSCAPERECORD_H
+#define MW_LANDSCAPERECORD_H
 
 #include <fstream>
 #include "BasicRecord.h"
@@ -70,4 +70,4 @@ struct LandscapeRecord: public BasicRecord
 
 } //namespace
 
-#endif // LANDSCAPERECORD_H
+#endif // MW_LANDSCAPERECORD_H

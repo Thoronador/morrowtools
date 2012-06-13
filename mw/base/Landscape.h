@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef LANDSCAPE_H
-#define LANDSCAPE_H
+#ifndef MW_LANDSCAPE_H
+#define MW_LANDSCAPE_H
 
 #include <map>
 #include "records/LandscapeRecord.h"
@@ -135,4 +135,4 @@ class Landscape
 
 } //namespace
 
-#endif // LANDSCAPE_H
+#endif // MW_LANDSCAPE_H

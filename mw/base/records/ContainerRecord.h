@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef CONTAINERRECORD_H
-#define CONTAINERRECORD_H
+#ifndef MW_CONTAINERRECORD_H
+#define MW_CONTAINERRECORD_H
 
 #include <string>
 #include <fstream>
@@ -70,4 +70,4 @@ struct ContainerRecord: public BasicRecord
 
 } //namespace
 
-#endif // CONTAINERRECORD_H
+#endif // MW_CONTAINERRECORD_H

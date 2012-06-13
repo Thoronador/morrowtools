@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef LOCKPICKS_H
-#define LOCKPICKS_H
+#ifndef MW_LOCKPICKS_H
+#define MW_LOCKPICKS_H
 
 #include <string>
 #include <map>
@@ -108,4 +108,4 @@ class Lockpicks
 
 } //namespace
 
-#endif // LOCKPICKS_H
+#endif // MW_LOCKPICKS_H

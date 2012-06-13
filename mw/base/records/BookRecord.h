@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef BOOKRECORD_H
-#define BOOKRECORD_H
+#ifndef MW_BOOKRECORD_H
+#define MW_BOOKRECORD_H
 
 #include <string>
 #include <fstream>
@@ -118,4 +118,4 @@ bool operator<(const BookRecord& left, const BookRecord& right);
 
 } //namespace
 
-#endif // BOOKRECORD_H
+#endif // MW_BOOKRECORD_H

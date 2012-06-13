@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef DOORS_H
-#define DOORS_H
+#ifndef MW_DOORS_H
+#define MW_DOORS_H
 
 #include <string>
 #include <map>
@@ -109,4 +109,4 @@ class Doors
 
 } //namespace
 
-#endif // DOORS_H
+#endif // MW_DOORS_H

@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SPELLS_H
-#define SPELLS_H
+#ifndef MW_SPELLS_H
+#define MW_SPELLS_H
 
 #include <string>
 #include <map>
@@ -121,4 +121,4 @@ class Spells
 
 } //namespace
 
-#endif // SPELLS_H
+#endif // MW_SPELLS_H

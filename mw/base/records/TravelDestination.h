@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef TRAVELDESTINATION_H
-#define TRAVELDESTINATION_H
+#ifndef MW_TRAVELDESTINATION_H
+#define MW_TRAVELDESTINATION_H
 
 #include <string>
 
@@ -38,4 +38,4 @@ struct TravelDestination
 
 } //namespace
 
-#endif // TRAVELDESTINATION_H
+#endif // MW_TRAVELDESTINATION_H

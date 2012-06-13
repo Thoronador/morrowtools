@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef INIFUNCTIONS_H
-#define INIFUNCTIONS_H
+#ifndef MW_INIFUNCTIONS_H
+#define MW_INIFUNCTIONS_H
 
 #include <string>
 #include "DepFiles.h"
@@ -39,4 +39,4 @@ int getFilesFromMorrowindIni(const std::string& baseDir, DepFileList& files);
 
 } //namespace
 
-#endif // INIFUNCTIONS_H
+#endif // MW_INIFUNCTIONS_H

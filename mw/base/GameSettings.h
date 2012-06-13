@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef GAMESETTINGS_H
-#define GAMESETTINGS_H
+#ifndef MW_GAMESETTINGS_H
+#define MW_GAMESETTINGS_H
 
 #include <string>
 #include <map>
@@ -114,4 +114,4 @@ class GameSettings
 
 } //namespace
 
-#endif // GAMESETTINGS_H
+#endif // MW_GAMESETTINGS_H

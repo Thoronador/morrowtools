@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef REPAIRITEMRECORD_H
-#define REPAIRITEMRECORD_H
+#ifndef MW_REPAIRITEMRECORD_H
+#define MW_REPAIRITEMRECORD_H
 
 #include <string>
 #include "BasicRecord.h"
@@ -73,4 +73,4 @@ bool operator<(const RepairItemRecord& left, const RepairItemRecord& right);
 
 } //namespace
 
-#endif // REPAIRITEMRECORD_H
+#endif // MW_REPAIRITEMRECORD_H

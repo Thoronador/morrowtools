@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SKILLS_H
-#define SKILLS_H
+#ifndef MW_SKILLS_H
+#define MW_SKILLS_H
 
 #include <map>
 #include <string>
@@ -120,4 +120,4 @@ class Skills
 
 } //namespace
 
-#endif // SKILLS_H
+#endif // MW_SKILLS_H

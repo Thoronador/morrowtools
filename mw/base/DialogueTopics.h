@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef DIALOGUETOPICS_H
-#define DIALOGUETOPICS_H
+#ifndef MW_DIALOGUETOPICS_H
+#define MW_DIALOGUETOPICS_H
 
 #include <map>
 #include "records/DialogueTopicRecord.h"
@@ -108,4 +108,4 @@ class DialogueTopics
 
 } //namespace
 
-#endif // DIALOGUETOPICS_H
+#endif // MW_DIALOGUETOPICS_H

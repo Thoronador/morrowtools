@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef RACERECORD_H
-#define RACERECORD_H
+#ifndef MW_RACERECORD_H
+#define MW_RACERECORD_H
 
 #include <string>
 #include <vector>
@@ -93,4 +93,4 @@ bool operator<(const RaceRecord& left, const RaceRecord& right);
 
 } //namespace
 
-#endif // RACERECORD_H
+#endif // MW_RACERECORD_H

@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef STARTSCRIPTS_H
-#define STARTSCRIPTS_H
+#ifndef MW_STARTSCRIPTS_H
+#define MW_STARTSCRIPTS_H
 
 #include <string>
 #include <map>
@@ -109,4 +109,4 @@ class StartScripts
 
 } //namespace
 
-#endif // STARTSCRIPTS_H
+#endif // MW_STARTSCRIPTS_H

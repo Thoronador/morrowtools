@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef ALCHEMYPOTIONRECORD_H
-#define ALCHEMYPOTIONRECORD_H
+#ifndef MW_ALCHEMYPOTIONRECORD_H
+#define MW_ALCHEMYPOTIONRECORD_H
 
 #include <string>
 #include <fstream>
@@ -119,4 +119,4 @@ struct AlchemyPotionRecord: public BasicRecord
 
 } //namespace
 
-#endif // ALCHEMYPOTIONRECORD_H
+#endif // MW_ALCHEMYPOTIONRECORD_H

@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef BIRTHSIGNS_H
-#define BIRTHSIGNS_H
+#ifndef MW_BIRTHSIGNS_H
+#define MW_BIRTHSIGNS_H
 
 #include <string>
 #include <set>
@@ -109,4 +109,4 @@ class BirthSigns
 
 } //namespace
 
-#endif // BIRTHSIGNS_H
+#endif // MW_BIRTHSIGNS_H

@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef DOORRECORD_H
-#define DOORRECORD_H
+#ifndef MW_DOORRECORD_H
+#define MW_DOORRECORD_H
 
 #include <string>
 #include <fstream>
@@ -76,4 +76,4 @@ struct DoorRecord: public BasicRecord
 
 } //namespace
 
-#endif // DOORRECORD_H
+#endif // MW_DOORRECORD_H

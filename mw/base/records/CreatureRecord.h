@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef CREATURERECORD_H
-#define CREATURERECORD_H
+#ifndef MW_CREATURERECORD_H
+#define MW_CREATURERECORD_H
 
 #include <string>
 #include <vector>
@@ -96,4 +96,4 @@ struct CreatureRecord: public PreNPCRecord
 
 } //namespace
 
-#endif // CREATURERECORD_H
+#endif // MW_CREATURERECORD_H

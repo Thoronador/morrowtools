@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef ESMREADERCOUNT_H
-#define ESMREADERCOUNT_H
+#ifndef MW_ESMREADERCOUNT_H
+#define MW_ESMREADERCOUNT_H
 
 #include "ESMReader.h"
 #include <map>
@@ -79,4 +79,4 @@ class ESMReaderCount: public ESMReader
 
 } //namespace
 
-#endif // ESMREADERCOUNT_H
+#endif // MW_ESMREADERCOUNT_H

@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef FACTIONS_H
-#define FACTIONS_H
+#ifndef MW_FACTIONS_H
+#define MW_FACTIONS_H
 
 #include <string>
 #include <map>
@@ -109,4 +109,4 @@ class Factions
 
 } //namespace
 
-#endif // FACTIONS_H
+#endif // MW_FACTIONS_H

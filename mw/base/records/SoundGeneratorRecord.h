@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SOUNDGENERATORRECORD_H
-#define SOUNDGENERATORRECORD_H
+#ifndef MW_SOUNDGENERATORRECORD_H
+#define MW_SOUNDGENERATORRECORD_H
 
 #include <string>
 #include <fstream>
@@ -58,4 +58,4 @@ struct SoundGeneratorRecord: public BasicRecord
 
 } //namespace
 
-#endif // SOUNDGENERATORRECORD_H
+#endif // MW_SOUNDGENERATORRECORD_H

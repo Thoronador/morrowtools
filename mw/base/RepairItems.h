@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef REPAIRITEMS_H
-#define REPAIRITEMS_H
+#ifndef MW_REPAIRITEMS_H
+#define MW_REPAIRITEMS_H
 
 #include <string>
 #include <set>
@@ -109,4 +109,4 @@ class RepairItems
 
 } //namespace
 
-#endif // REPAIRITEMS_H
+#endif // MW_REPAIRITEMS_H

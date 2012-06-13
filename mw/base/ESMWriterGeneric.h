@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef ESMWRITERGENERIC_H
-#define ESMWRITERGENERIC_H
+#ifndef MW_ESMWRITERGENERIC_H
+#define MW_ESMWRITERGENERIC_H
 
 #include "ESMWriter.h"
 #include "records/BasicRecord.h"
@@ -64,4 +64,4 @@ class ESMWriterGeneric: public ESMWriter
 
 } //namespace
 
-#endif // ESMWRITERGENERIC_H
+#endif // MW_ESMWRITERGENERIC_H

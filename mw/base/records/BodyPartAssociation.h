@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef BODYPARTASSOCIATION_H
-#define BODYPARTASSOCIATION_H
+#ifndef MW_BODYPARTASSOCIATION_H
+#define MW_BODYPARTASSOCIATION_H
 
 #include <string>
 #include <stdint.h>
@@ -38,4 +38,4 @@ struct BodyPartAssociation
 
 } //namespace
 
-#endif // BODYPARTASSOCIATION_H
+#endif // MW_BODYPARTASSOCIATION_H

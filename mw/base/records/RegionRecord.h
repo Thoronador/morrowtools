@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef REGIONRECORD_H
-#define REGIONRECORD_H
+#ifndef MW_REGIONRECORD_H
+#define MW_REGIONRECORD_H
 
 #include <string>
 #include <vector>
@@ -101,4 +101,4 @@ bool operator<(const RegionRecord& left, const RegionRecord& right);
 
 } //namespace
 
-#endif // REGIONRECORD_H
+#endif // MW_REGIONRECORD_H

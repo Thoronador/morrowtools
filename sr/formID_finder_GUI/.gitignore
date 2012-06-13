@@ -1,0 +1,15 @@
+# object files
+*.o
+
+# Free Pascal files
+*.compiled
+*.ppu
+fpc-res.*
+link.res
+ppas.bat
+
+# binaries
+*.exe
+
+# 7zipped archives
+*.7z

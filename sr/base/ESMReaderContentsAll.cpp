@@ -40,6 +40,7 @@
 #include "records/ClimateRecord.h"
 #include "records/CollisionRecord.h"
 #include "records/ColourFormRecord.h"
+#include "records/CombatStyleRecord.h"
 #include "records/ContainerRecord.h"
 #include "records/CraftableObjectRecord.h"
 #include "records/DebrisRecord.h"
@@ -197,6 +198,9 @@ int ESMReaderContentsAll::readNextRecord(std::ifstream& in_File, const uint32_t 
          break;
     case cCONT:
          recPtr = new ContainerRecord;
+         break;
+    case cCSTY:
+         recPtr = new CombatStyleRecord;
          break;
     case cDEBR:
          recPtr = new DebrisRecord;

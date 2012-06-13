@@ -26,7 +26,7 @@ COBJ - done
 COLL - done
 CONT - done
 CPTH - to do!
-CSTY - to do!
+CSTY - done
 DEBR - done
 DIAL - to do!
 DLBR - done
@@ -123,5 +123,5 @@ WTHR - to do!
 
 =============
 Total: 119
-To do:  29 (ca. 24%)
-Done :  90 (ca. 76%)
+To do:  28 (ca. 23.5%)
+Done :  91 (ca. 76.5%)

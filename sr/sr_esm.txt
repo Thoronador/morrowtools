@@ -591,6 +591,51 @@ Records and their sub-records:
           unknown data
 
 
+  CSTY: combat style
+      EDID (string, NUL-terminated)
+          editor ID
+      CSGD (40 bytes or 32 bytes or 8 bytes)
+          float Offensive Mult
+          float Defensive Mult
+          float Group Offensive Mult
+          float Melee (Equipment Score Mult)
+          float Magic (Equipment Score Mult)
+          float Ranged (Equipment Score Mult)
+          float Shout (Equipment Score Mult)
+          float Unarmed (Equipment Score Mult)
+          float Staff (Equipment Score Mult)
+          float Avoid Threat Chance
+
+          --> Staff and Avoid Threat Chance are missing in 32-byte version,
+              Staff is set to 1.0f there, ATC to 0.2f.
+
+          --> Additionally, Group Offensive Mult, Melee, Magic, Ranged, Shout
+              and Unarmed are missing in the 8-byte version, these values
+              default to 1.0f there.
+
+      CSMD (8 bytes, optional)
+          unknown data, but these are two floats
+      CSME (28 bytes or 32 bytes, optional)
+          unknown data, looks like series of floats
+      CSCR (16 bytes or 8 bytes, optional)
+          float Circle Mult (Close Range, Dueling)
+          float Fallback Mult (Close Range, Dueling)
+          float Flank Distance (Close Range, Flanking)
+          float Stalk Time (Close Range, Flanking)
+          
+          --> Last two seem to be missing in 8-byte version, they default
+              to 0.2f in that case.
+      CSLR (4 bytes, optional)
+          float Long Range Strafe Mult
+
+          --> Defaults to 0.2f, if not present.
+
+      CSFL (20 bytes or 32 bytes, optional)
+          unknown data, could be series of floats
+      DATA (4 bytes, optional)
+          unknown data, possibly flags
+
+
   DEBR: Debris
       EDID (string, NUL-terminated)
           editor ID

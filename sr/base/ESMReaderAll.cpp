@@ -42,6 +42,7 @@
 #include "Climates.h"
 #include "Collisions.h"
 #include "ColourForms.h"
+#include "CombatStyles.h"
 #include "Containers.h"
 #include "CraftableObjects.h"
 #include "Debris.h"
@@ -207,6 +208,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const uint32_t recName)
          break;
     case cCONT:
          return Containers::getSingleton().readNextRecord(in_File);
+         break;
+    case cCSTY:
+         return CombatStyles::getSingleton().readNextRecord(in_File);
          break;
     case cDEBR:
          return Debris::getSingleton().readNextRecord(in_File);

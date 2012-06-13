@@ -96,6 +96,12 @@ const uint32_t cCSCR = 0x52435343; //"CSCR" = 43 53 43 52
 const uint32_t cCSDC = 0x43445343; //"CSDC" = 43 53 44 43
 const uint32_t cCSDI = 0x49445343; //"CSDI" = 43 53 44 49
 const uint32_t cCSDT = 0x54445343; //"CSDT" = 43 53 44 54
+const uint32_t cCSFL = 0x4C465343; //"CSFL" = 43 53 46 4C
+const uint32_t cCSGD = 0x44475343; //"CSGD" = 43 53 47 44
+const uint32_t cCSLR = 0x524C5343; //"CSLR" = 43 53 4C 52
+const uint32_t cCSMD = 0x444D5343; //"CSMD" = 43 53 4D 44
+const uint32_t cCSME = 0x454D5343; //"CSME" = 43 53 4D 45
+const uint32_t cCSTY = 0x59545343; //"CSTY" = 43 53 54 59
 const uint32_t cCTDA = 0x41445443; //"CTDA" = 43 54 44 41
 const uint32_t cDALC = 0x434C4144; //"DALC" = 44 41 4C 43
 const uint32_t cDATA = 0x41544144; //"DATA" = 44 41 54 41

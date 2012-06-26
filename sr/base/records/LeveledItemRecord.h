@@ -76,10 +76,28 @@ struct LeveledItemRecord: public BasicRecord
       bool operator==(const LeveledListEntry& other) const;
     };//struct
 
+    //flag constants
+    static const uint8_t cFlagCalcFromAllLevels;
+    static const uint8_t cFlagCalcForEach;
+    static const uint8_t cFlagUseAll;
+    static const uint8_t cFlagSpecialLoot;
+
+    /* returns true, if the "calculate from all levels <= PC" flag is set */
+    bool calculateFromAllLevels() const;
+
+    /* returns true, if the "calculate for each item in count" flag is set */
+    bool calculateForEachItem() const;
+
+    /* returns true, if the "Use all" flag is set */
+    bool useAll() const;
+
+    /* returns true, if the "special loot" flag is set */
+    bool specialLoot() const;
+
     std::string editorID;
     uint8_t unknownOBND[12];
     uint8_t chanceNone; //subrecord LVLD
-    uint8_t unknownLVLF;
+    uint8_t flags; //subrecord LVLF
     uint32_t globalFormID; //subrecord LVLG
     //uint8_t entryCount; //subrecord LLCT
     std::vector<LeveledListEntry> entries; //subrecords LVLO

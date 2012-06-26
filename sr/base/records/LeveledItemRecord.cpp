@@ -27,6 +27,12 @@
 namespace SRTP
 {
 
+//flag constants
+const uint8_t LeveledItemRecord::cFlagCalcFromAllLevels = 0x01;
+const uint8_t LeveledItemRecord::cFlagCalcForEach       = 0x02;
+const uint8_t LeveledItemRecord::cFlagUseAll            = 0x04;
+const uint8_t LeveledItemRecord::cFlagSpecialLoot       = 0x08;
+
 bool LeveledItemRecord::LeveledListEntry::operator==(const LeveledItemRecord::LeveledListEntry& other) const
 {
   return ((level==other.level) and (formID==other.formID) and (count==other.count));
@@ -38,7 +44,7 @@ LeveledItemRecord::LeveledItemRecord()
   editorID = "";
   memset(unknownOBND, 0, 12);
   chanceNone = 0; //subrecord LVLD
-  unknownLVLF = 0;
+  flags = 0;
   globalFormID = 0;
   //entryCount = 0; //subrecord LLCT
   entries.clear(); //subrecords LVLO
@@ -54,7 +60,7 @@ bool LeveledItemRecord::equals(const LeveledItemRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
       and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
-      and (chanceNone==other.chanceNone) and (unknownLVLF==other.unknownLVLF)
+      and (chanceNone==other.chanceNone) and (flags==other.flags)
       and (globalFormID==other.globalFormID) and (entries==other.entries));
 }
 #endif
@@ -112,7 +118,7 @@ bool LeveledItemRecord::saveToStream(std::ofstream& output) const
   subLength = 1; //fixed
   output.write((const char*) &subLength, 2);
   //write LVLF's stuff
-  output.write((const char*) &unknownLVLF, 1);
+  output.write((const char*) &flags, 1);
 
   if (globalFormID!=0)
   {
@@ -260,7 +266,7 @@ bool LeveledItemRecord::loadFromStream(std::ifstream& in_File)
     return false;
   }
   //read LVLF's stuff
-  in_File.read((char*) &unknownLVLF, 1);
+  in_File.read((char*) &flags, 1);
   bytesRead += 1;
   if (!in_File.good())
   {
@@ -370,6 +376,26 @@ bool LeveledItemRecord::loadFromStream(std::ifstream& in_File)
 uint32_t LeveledItemRecord::getRecordType() const
 {
   return cLVLI;
+}
+
+bool LeveledItemRecord::calculateFromAllLevels() const
+{
+  return ((flags & cFlagCalcFromAllLevels) !=0);
+}
+
+bool LeveledItemRecord::calculateForEachItem() const
+{
+  return ((flags & cFlagCalcForEach) !=0);
+}
+
+bool LeveledItemRecord::useAll() const
+{
+  return ((flags & cFlagUseAll) !=0);
+}
+
+bool LeveledItemRecord::specialLoot() const
+{
+  return ((flags & cFlagSpecialLoot) !=0);
 }
 
 } //namespace

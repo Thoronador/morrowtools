@@ -152,7 +152,7 @@ bool GlobalRecord::loadFromStream(std::ifstream& in_File)
         'l' = long
         'f' = float
     FLTV = Float data (4 bytes) */
-  int32_t SubRecName;
+  uint32_t SubRecName;
   uint32_t SubLength;
   SubRecName = SubLength = 0;
   char TypeChar = '\0';

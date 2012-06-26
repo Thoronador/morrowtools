@@ -135,7 +135,7 @@ bool RaceRecord::loadFromStream(std::ifstream& in_File)
     NPCS = Special power/ability name string (32 bytes), occurs 0+ times
     DESC = Race description (optional) */
 
-  int32_t SubRecName;
+  uint32_t SubRecName;
   uint32_t SubLength, BytesRead;
   SubRecName = SubLength = 0;
 

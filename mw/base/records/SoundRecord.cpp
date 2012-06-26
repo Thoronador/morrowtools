@@ -108,7 +108,7 @@ bool SoundRecord::loadFromStream(std::ifstream& in_File)
         byte MinRange
         byte MaxRange*/
 
-  int32_t SubRecName;
+  uint32_t SubRecName;
   uint32_t SubLength;
   SubRecName = SubLength = 0;
 

@@ -179,7 +179,7 @@ bool BodyPartRecord::loadFromStream(std::ifstream& in_File)
 			1 = Clothing
 			2 = Armor
   */
-  int32_t SubRecName;
+  uint32_t SubRecName;
   uint32_t SubLength;
   SubRecName = SubLength = 0;
 

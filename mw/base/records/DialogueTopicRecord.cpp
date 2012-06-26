@@ -104,7 +104,7 @@ bool DialogueTopicRecord::loadFromStream(std::ifstream& in_File)
 	DIAL record (one of the few cases where order is important).
   */
 
-  int32_t SubRecName;
+  uint32_t SubRecName;
   uint32_t SubLength;
   SubRecName = SubLength = 0;
 

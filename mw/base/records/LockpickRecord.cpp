@@ -161,7 +161,7 @@ bool LockpickRecord::loadFromStream(std::ifstream& in_File)
     Note: Sequence of ITEX and SCRI could also be changed.
   */
 
-  int32_t SubRecName;
+  uint32_t SubRecName;
   uint32_t SubLength, BytesRead;
   SubRecName = SubLength = 0;
 

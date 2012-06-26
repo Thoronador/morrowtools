@@ -155,7 +155,7 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
         long Flags (0x0001 = AutoCalc,0x0002 = PC Start,0x0004 = Always Succeeds)
     ENAM = Enchantment data (24 bytes, 0 to 8) */
 
-  int32_t SubRecName;
+  uint32_t SubRecName;
   uint32_t SubLength, BytesRead;
   SubRecName = SubLength = BytesRead = 0;
 

@@ -131,7 +131,7 @@ bool GMSTRecord::loadFromStream(std::ifstream& in_File)
     NAME = Setting ID string
     STRV = String value/ INTV = Integer value (4 btes)/FLTV = Float value (4 bytes)
   */
-  int32_t SubRecName;
+  uint32_t SubRecName;
   uint32_t SubLength, BytesRead;
   SubRecName = SubLength = 0;
 

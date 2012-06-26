@@ -167,7 +167,7 @@ bool LeveledCreatureRecord::loadFromStream(std::ifstream& in_File)
 		The CNAM/INTV can occur many times in pairs
   */
 
-  int32_t SubRecName;
+  uint32_t SubRecName;
   uint32_t SubLength, BytesRead;
   SubRecName = SubLength = 0;
 

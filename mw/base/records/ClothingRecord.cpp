@@ -254,7 +254,7 @@ bool ClothingRecord::loadFromStream(std::ifstream& in_File)
         Up to 7 pairs allowed.
     ENAM = Enchantment Name (optional) */
 
-  int32_t SubRecName;
+  uint32_t SubRecName;
   uint32_t SubLength, BytesRead;
   SubRecName = SubLength = 0;
 

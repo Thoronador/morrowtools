@@ -506,7 +506,7 @@ bool DialogueInfoRecord::loadFromStream(std::ifstream& in_File)
 	FLTV = The function/variable result for the previous SCVR
 	BNAM = Result text (not compiled)
   */
-  int32_t SubRecName;
+  uint32_t SubRecName;
   uint32_t SubLength, BytesRead;
   SubRecName = SubLength = 0;
 

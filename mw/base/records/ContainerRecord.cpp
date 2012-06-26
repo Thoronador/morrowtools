@@ -196,7 +196,7 @@ bool ContainerRecord::loadFromStream(std::ifstream& in_File)
         long	Count	  Number of the item
         char	Name[32]  The ID of the item */
 
-  int32_t SubRecName;
+  uint32_t SubRecName;
   uint32_t SubLength, BytesRead;
   SubRecName = SubLength = 0;
 

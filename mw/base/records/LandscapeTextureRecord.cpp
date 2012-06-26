@@ -95,7 +95,7 @@ bool LandscapeTextureRecord::loadFromStream(std::ifstream& in_File)
     INTV = Index (unique?), required
     DATA = Texture path, required */
 
-  int32_t SubRecName;
+  uint32_t SubRecName;
   uint32_t SubLength;
   SubRecName = SubLength = 0;
 

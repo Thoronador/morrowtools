@@ -153,7 +153,7 @@ bool ApparatusRecord::loadFromStream(std::ifstream& in_File)
     ITEX = Inventory Icon
     SCRI = Script Name (optional) */
 
-  int32_t SubRecName;
+  uint32_t SubRecName;
   uint32_t SubLength, BytesRead;
   SubRecName = SubLength = 0;
 

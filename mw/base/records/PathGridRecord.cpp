@@ -191,7 +191,7 @@ bool PathGridRecord::loadFromStream(std::ifstream& in_File)
              and second value is index of the end point.
   */
 
-  int32_t SubRecName;
+  uint32_t SubRecName;
   uint32_t SubLength, BytesRead;
   SubRecName = SubLength = 0;
 

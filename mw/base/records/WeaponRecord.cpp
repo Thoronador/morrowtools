@@ -236,7 +236,7 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
     ENAM = Enchantment ID string (optional)
     SCRI = script ID string (optional) */
 
-  int32_t SubRecName;
+  uint32_t SubRecName;
   uint32_t SubLength, BytesRead;
   SubRecName = SubLength = 0;
 

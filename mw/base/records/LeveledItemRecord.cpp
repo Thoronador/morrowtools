@@ -163,7 +163,7 @@ bool LeveledItemRecord::loadFromStream(std::ifstream& in_File)
 		The INAM/INTV can occur many times in pairs
   */
 
-  int32_t SubRecName;
+  uint32_t SubRecName;
   uint32_t SubLength, BytesRead;
   SubRecName = SubLength = 0;
 

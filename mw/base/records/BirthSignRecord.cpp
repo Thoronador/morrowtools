@@ -152,7 +152,7 @@ bool BirthSignRecord::loadFromStream(std::ifstream& in_File)
     NPCS = Spell/ability (32 bytes), multiple
   */
 
-  int32_t SubRecName;
+  uint32_t SubRecName;
   uint32_t SubLength, BytesRead;
   SubRecName = SubLength = 0;
 

@@ -217,7 +217,7 @@ bool BookRecord::loadFromStream(std::ifstream& in_File)
     TEXT = Book text (not always present, believe it or not!)
     ENAM = name of enchantment (optional) */
 
-  int32_t SubRecName;
+  uint32_t SubRecName;
   uint32_t SubLength, BytesRead;
   SubRecName = SubLength = BytesRead = 0;
 

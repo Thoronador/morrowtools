@@ -256,7 +256,7 @@ bool ScriptRecord::loadFromStream(std::ifstream& in_File)
       Note (thoronador): SCVR may not be present at all, if there are no local
           vars. Moreover, SCVR, SCDT and SCTX can occur in any order.*/
 
-  int32_t SubRecName;
+  uint32_t SubRecName;
   uint32_t SubLength, BytesRead;
   SubRecName = SubLength = 0;
 

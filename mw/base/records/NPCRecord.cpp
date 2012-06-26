@@ -615,7 +615,7 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
     XSCL = Scale (4 bytes, float, optional)
         Only present if the scale is not 1.0 */
 
-  int32_t SubRecName;
+  uint32_t SubRecName;
   uint32_t SubLength, BytesRead;
   SubRecName = SubLength = 0;
 

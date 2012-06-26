@@ -223,7 +223,7 @@ bool ClassRecord::loadFromStream(std::ifstream& in_File)
 			0x10000 = Enchanting
 			0x20000 = Repair Item
 	DESC = Description string (optional for non-playable classes) */
-  int32_t SubRecName;
+  uint32_t SubRecName;
   uint32_t SubLength, BytesRead;
   SubRecName = SubLength = 0;
 

@@ -100,7 +100,7 @@ bool SkillRecord::loadFromStream(std::ifstream& in_File)
         float UseValue[4] (The use types for each skill are hard-coded.)
     DESC = Skill description string */
 
-  int32_t SubRecName;
+  uint32_t SubRecName;
   uint32_t SubLength;
   SubRecName = SubLength = 0;
 

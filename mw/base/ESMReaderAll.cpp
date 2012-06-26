@@ -80,7 +80,7 @@ ESMReaderAll::~ESMReaderAll()
 
 int ESMReaderAll::processNextRecord(std::ifstream& in_File)
 {
-  int32_t RecordName = 0; //normally should be 4 char, but char is not eligible for switch
+  uint32_t RecordName = 0; //normally should be 4 char, but char is not eligible for switch
   int lastResult = 0;
 
   //read record name

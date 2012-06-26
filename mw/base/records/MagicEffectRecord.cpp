@@ -338,7 +338,7 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
       Note (Thoronador):
         sequence of the (at least) last four optional sub records can vary.*/
 
-  int32_t SubRecName;
+  uint32_t SubRecName;
   uint32_t SubLength, BytesRead;
   SubRecName = SubLength = 0;
 

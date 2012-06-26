@@ -174,7 +174,7 @@ bool TES3Record::loadFromStream(std::ifstream& in_File)
         The MAST and DATA records are always found together, the DATA following the MAST record
         that it refers to. */
 
-  int32_t SubRecName;
+  uint32_t SubRecName;
   uint32_t SubLength, BytesRead;
   SubRecName = SubLength = 0;
 

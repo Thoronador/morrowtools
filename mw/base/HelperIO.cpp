@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011 Thoronador
+    Copyright (C) 2010, 2011, 2012 Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -21,7 +21,7 @@
 #include "HelperIO.h"
 #include <iostream>
 
-std::string IntTo4Char(const int32_t value)
+std::string IntTo4Char(const uint32_t value)
 {
   std::string result = "1234";
   result[0] = char(value&255);
@@ -31,7 +31,7 @@ std::string IntTo4Char(const int32_t value)
   return result;
 }
 
-void UnexpectedRecord(const int32_t expected, const int32_t unexpected)
+void UnexpectedRecord(const uint32_t expected, const uint32_t unexpected)
 {
   std::cout << "Error: expected record name \""<<IntTo4Char(expected)
             <<"\" was not found. Instead, \""<<IntTo4Char(unexpected)

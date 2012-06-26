@@ -227,7 +227,7 @@ bool FactionRecord::loadFromStream(std::ifstream& in_File)
         The ANAM/INTV occur in pairs for each faction with
         a reaction adjustment (usually -4 to +4) */
 
-  int32_t SubRecName;
+  uint32_t SubRecName;
   uint32_t SubLength, BytesRead;
   SubRecName = SubLength = 0;
 

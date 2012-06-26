@@ -121,7 +121,7 @@ bool SoundGeneratorRecord::loadFromStream(std::ifstream& in_File)
     CNAM = Creature name (optional)
     SNAM = Sound ID string */
 
-  int32_t SubRecName;
+  uint32_t SubRecName;
   uint32_t SubLength;
   SubRecName = SubLength = 0;
 

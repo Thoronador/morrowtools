@@ -159,7 +159,7 @@ bool EnchantingRecord::loadFromStream(std::ifstream& in_File)
         long  MagMin
         long  MagMax */
 
-  int32_t SubRecName;
+  uint32_t SubRecName;
   uint32_t SubLength, BytesRead;
   SubRecName = SubLength = 0;
 

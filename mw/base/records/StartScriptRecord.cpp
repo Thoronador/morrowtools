@@ -87,7 +87,7 @@ bool StartScriptRecord::loadFromStream(std::ifstream& in_File)
   /*Start Script(?): (no documentation known)
     DATA = ? (a sequence of digits)
     NAME = ID string */
-  int32_t SubRecName;
+  uint32_t SubRecName;
   uint32_t SubLength;
   SubRecName = SubLength = 0;
 

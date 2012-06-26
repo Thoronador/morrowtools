@@ -256,7 +256,7 @@ bool RegionRecord::loadFromStream(std::ifstream& in_File)
         byte Chance
         Multiple records with the order determining the sound priority */
 
-  int32_t SubRecName;
+  uint32_t SubRecName;
   uint32_t SubLength, BytesRead;
   SubRecName = SubLength = 0;
 

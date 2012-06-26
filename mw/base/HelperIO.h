@@ -26,8 +26,8 @@
 #include <stdint.h>
 
 //converting "integer strings" to real C++ string
-std::string IntTo4Char(const int32_t value);
+std::string IntTo4Char(const uint32_t value);
 //helper function for message on wrong records
-void UnexpectedRecord(const int32_t expected, const int32_t unexpected);
+void UnexpectedRecord(const uint32_t expected, const uint32_t unexpected);
 
 #endif // MW_HELPERIO_H

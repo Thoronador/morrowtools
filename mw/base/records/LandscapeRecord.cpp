@@ -282,7 +282,7 @@ bool LandscapeRecord::loadFromStream(std::ifstream& in_File)
     VTEX (512 bytes) optional
         A 16x16 array of short texture indices (from a LTEX record I think). */
 
-  int32_t SubRecName;
+  uint32_t SubRecName;
   uint32_t SubLength, BytesRead;
   SubRecName = SubLength = 0;
 

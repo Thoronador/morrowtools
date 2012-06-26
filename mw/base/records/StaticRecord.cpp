@@ -76,7 +76,7 @@ bool StaticRecord::loadFromStream(std::ifstream& in_File)
     NAME = ID string
     MODL = NIF model*/
 
-  int32_t SubRecName;
+  uint32_t SubRecName;
   uint32_t SubLength;
   SubRecName = SubLength = 0;
   //read NAME

@@ -60,7 +60,7 @@ struct GenericRecord: public BasicRecord
     uint32_t getDataSize() const;
 
     /* holds the header for the record */
-    int32_t Header;
+    uint32_t Header;
   protected:
      uint32_t m_DataSize;
      char* m_Data;

@@ -66,7 +66,7 @@ LAND - to do!
 LCRT - done
 LCTN - done
 LGTM - done
-LIGH - to do!
+LIGH - done
 LSCR - done
 LTEX - done
 LVLI - to do!
@@ -123,5 +123,5 @@ WTHR - to do!
 
 =============
 Total: 119
-To do:  28 (ca. 23.5%)
-Done :  91 (ca. 76.5%)
+To do:  27 (ca. 22.7%)
+Done :  92 (ca. 77.3%)

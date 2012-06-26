@@ -186,6 +186,7 @@ const uint32_t cLCSR = 0x5253434C; //"LCSR" = 4C 43 53 52
 const uint32_t cLCTN = 0x4E54434C; //"LCTN" = 4C 43 54 4E
 const uint32_t cLCUN = 0x4E55434C; //"LCUN" = 4C 43 55 4E
 const uint32_t cLGTM = 0x4D54474C; //"LGTM" = 4C 47 54 4D
+const uint32_t cLIGH = 0x4847494C; //"LIGH" = 4C 49 47 48
 const uint32_t cLNAM = 0x4D414E4C; //"LNAM" = 4C 4E 41 4D
 const uint32_t cLSCR = 0x5243534C; //"LSCR" = 4C 53 43 52
 const uint32_t cLTEX = 0x5845544C; //"LTEX" = 4C 54 45 58

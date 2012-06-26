@@ -622,7 +622,7 @@ Records and their sub-records:
           float Fallback Mult (Close Range, Dueling)
           float Flank Distance (Close Range, Flanking)
           float Stalk Time (Close Range, Flanking)
-          
+
           --> Last two seem to be missing in 8-byte version, they default
               to 0.2f in that case.
       CSLR (4 bytes, optional)
@@ -1205,6 +1205,48 @@ Records and their sub-records:
           unknown data
       DALC (32 bytes or 24 bytes)
           unknown data
+
+
+  LIGH: light
+      EDID (string, NUL-terminated)
+          editor ID
+      OBND (12 bytes)
+          unknown data
+      MODL (string, NUL-terminated, optional)
+          model path
+      MODT (size varies, optional)
+          unknown data
+      FULL (4 bytes, optional)
+          uint32_t string index of light's name
+      DATA (48 bytes)
+          int32_t  time
+          uint32_t radius
+          uint32_t colour (R, G, B one byte each, last byte is zero)
+          uint32_t flags ???
+               type flags:
+                   0x00000000 - omnidirectional (default?)
+                   0x00000400 - shadow spot
+                   0x00000800 - shadow hemisphere
+                   0x00001000 - shadow omnidirectional
+               flicker effect flags:
+                   0x00000000 - none
+                   0x00000008 - flicker
+                   0x00000080 - pulse
+               other flags:
+                   0x00000002 - can be carried
+                   0x00000020 - off by default
+          float    falloff exponent
+          float    FOV
+          float    Near Clip
+          uint32_t ???
+          float    intensity amplitude
+          float    movement amplitude
+          uint32_t value
+          float    weight
+      FNAM (4 bytes)
+          float Fade (time in seconds?)
+      SNAM (4 bytes, optional)
+          uint32_t sound form ID (points to SNDR record)
 
 
   LSCR: load screen

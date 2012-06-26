@@ -589,28 +589,4 @@ uint32_t CombatStyleRecord::getRecordType() const
   return cCSTY;
 }
 
-    std::string editorID;
-    //subrecord CSGD
-    float offensiveMult;
-    float defensiveMult;
-    float groupOffensiveMult;
-    float melee; //Equipment Score Mult
-    float magic; //Equipment Score Mult
-    float ranged; //Equipment Score Mult
-    float shout; //Equipment Score Mult
-    float unarmed; //Equipment Score Mult
-    float staff; //Equipment Score Mult
-    float avoidThreatChance;
-    //end of subrecord CSGD
-    std::vector<float> unknownCSME;
-    //subrecord CSCR
-    float circleMult; //Close Range, Dueling
-    float fallbackMult; //Close Range, Dueling
-    float flankDistance; //Close Range, Flanking
-    float stalkTime; //Close Range, Flanking
-    //end of subrecord CSCR
-    float longRangeStrafeMult; //subrecord CSLR
-    std::vector<float> unknownCSFL;
-    uint32_t unknownDATA;
-
 } //namespace

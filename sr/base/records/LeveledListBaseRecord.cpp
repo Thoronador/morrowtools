@@ -23,6 +23,9 @@
 namespace SRTP
 {
 
+const uint8_t LeveledListBaseRecord::cFlagCalcFromAllLevels = 0x01;
+const uint8_t LeveledListBaseRecord::cFlagCalcForEach       = 0x02;
+
 bool LeveledListBaseRecord::LeveledListEntry::operator==(const LeveledListBaseRecord::LeveledListEntry& other) const
 {
   return ((level==other.level) and (formID==other.formID) and (count==other.count));
@@ -60,6 +63,16 @@ LeveledListBaseRecord::LeveledListBaseRecord()
 LeveledListBaseRecord::~LeveledListBaseRecord()
 {
   //empty
+}
+
+bool LeveledListBaseRecord::calculateFromAllLevels() const
+{
+  return ((flags & cFlagCalcFromAllLevels) !=0);
+}
+
+bool LeveledListBaseRecord::calculateForEachItem() const
+{
+  return ((flags & cFlagCalcForEach) !=0);
 }
 
 } //namespace

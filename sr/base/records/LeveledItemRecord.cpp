@@ -28,8 +28,6 @@ namespace SRTP
 {
 
 //flag constants
-const uint8_t LeveledItemRecord::cFlagCalcFromAllLevels = 0x01;
-const uint8_t LeveledItemRecord::cFlagCalcForEach       = 0x02;
 const uint8_t LeveledItemRecord::cFlagUseAll            = 0x04;
 const uint8_t LeveledItemRecord::cFlagSpecialLoot       = 0x08;
 
@@ -39,7 +37,7 @@ bool LeveledItemRecord::LeveledListEntry::operator==(const LeveledItemRecord::Le
 }
 
 LeveledItemRecord::LeveledItemRecord()
-: BasicRecord()
+: LeveledListBaseRecord()
 {
   editorID = "";
   memset(unknownOBND, 0, 12);
@@ -76,6 +74,14 @@ uint32_t LeveledItemRecord::getWriteSize() const
         +4 /* LVLF */ +2 /* 2 bytes for length */ +1 /* fixed size of one byte */
         +4 /* LLCT */ +2 /* 2 bytes for length */ +1 /* fixed size of one byte */
         +entries.size()*(4 /* LVLO */ +2 /* 2 bytes for length */ +12 /* fixed size of 12 bytes */);
+  unsigned int i;
+  for (i=0; i<entries.size(); ++i)
+  {
+    if (!entries[i].coed.isInit())
+    {
+      writeSize = writeSize +4 /* COED */ +2 /* 2 bytes for length */ +12 /* fixed size of 12 bytes */;
+    }//if
+  }//for
   if (globalFormID!=0)
   {
     writeSize = writeSize +4 /* LVLG */ +2 /* 2 bytes for length */ +4 /* fixed size of four bytes */   ;
@@ -149,9 +155,22 @@ bool LeveledItemRecord::saveToStream(std::ofstream& output) const
     subLength = 12; //fixed
     output.write((const char*) &subLength, 2);
     //write LVLO's stuff
-    output.write((const char*) &entries[i].level, 4);
-    output.write((const char*) &entries[i].formID, 4);
-    output.write((const char*) &entries[i].count, 4);
+    output.write((const char*) &entries[i].entry.level, 4);
+    output.write((const char*) &entries[i].entry.formID, 4);
+    output.write((const char*) &entries[i].entry.count, 4);
+
+    if (!entries[i].coed.isInit())
+    {
+      //write COED
+      output.write((const char*) &cCOED, 4);
+      //COED's length
+      subLength = 12; //fixed
+      output.write((const char*) &subLength, 2);
+      //write COED's stuff
+      output.write((const char*) &entries[i].coed.factionFormID, 4);
+      output.write((const char*) &entries[i].coed.requiredRank, 4);
+      output.write((const char*) &entries[i].coed.unknownFloat, 4);
+    }//if COED
   }//for
 
   return output.good();
@@ -278,8 +297,7 @@ bool LeveledItemRecord::loadFromStream(std::ifstream& in_File)
   bool hasReadLLCT = false;
   uint8_t entryCount = 0;
   entries.clear();
-  LeveledListEntry temp;
-  unsigned int i;
+  EntryWithCOED temp;
   while (bytesRead<readSize)
   {
     //read next subrecord
@@ -311,39 +329,79 @@ bool LeveledItemRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            hasReadLLCT = true;
-
-           //read LVLO records here
-           for (i=0; i<entryCount; ++i)
+           break;
+      case cLVLO:
+           if (entries.size()>=entryCount)
            {
-             //read LVLO
-             in_File.read((char*) &subRecName, 4);
-             bytesRead += 4;
-             if (subRecName!=cLVLO)
-             {
-               UnexpectedRecord(cLVLO, subRecName);
-               return false;
-             }
-             //LVLO's length
-             in_File.read((char*) &subLength, 2);
-             bytesRead += 2;
-             if (subLength!=12)
-             {
-               std::cout <<"Error: sub record LVLO of LVLI has invalid length ("<<subLength
-                         <<" bytes). Should be 12 bytes!\n";
-               return false;
-             }
-             //read LVLO's stuff
-             in_File.read((char*) &temp.level, 4);
-             in_File.read((char*) &temp.formID, 4);
-             in_File.read((char*) &temp.count, 4);
-             bytesRead += 12;
-             if (!in_File.good())
-             {
-               std::cout << "Error while reading subrecord LVLO of LVLI!\n";
-               return false;
-             }
-             entries.push_back(temp);
-           }//for
+             std::cout << "Error: record LVLI seems to have more LVLO subrecords than the LLCT value indicates!\n";
+             return false;
+           }
+           //read LVLO
+           in_File.read((char*) &subRecName, 4);
+           bytesRead += 4;
+           if (subRecName!=cLVLO)
+           {
+             UnexpectedRecord(cLVLO, subRecName);
+             return false;
+           }
+           //LVLO's length
+           in_File.read((char*) &subLength, 2);
+           bytesRead += 2;
+           if (subLength!=12)
+           {
+             std::cout <<"Error: sub record LVLO of LVLI has invalid length ("<<subLength
+                       <<" bytes). Should be 12 bytes!\n";
+             return false;
+           }
+           //read LVLO's stuff
+           in_File.read((char*) &temp.entry.level, 4);
+           in_File.read((char*) &temp.entry.formID, 4);
+           in_File.read((char*) &temp.entry.count, 4);
+           bytesRead += 12;
+           if (!in_File.good())
+           {
+             std::cout << "Error while reading subrecord LVLO of LVLI!\n";
+             return false;
+           }
+           temp.coed.init(); //sets default values for COED part
+           entries.push_back(temp);
+           break;
+      case cCOED:
+           if (entries.empty())
+           {
+             std::cout << "Error: COED subrecord not allowed without previous LVLO subrecord!\n";
+             return false;
+           }
+           if (!entries.back().coed.isInit())
+           {
+             std::cout << "Error: record LVLI seems to have more than one COED subrecord per LVLO!\n";
+             return false;
+           }
+           //COED's length
+           in_File.read((char*) &subLength, 2);
+           bytesRead += 2;
+           if (subLength!=12)
+           {
+             std::cout <<"Error: sub record COED of LVLI has invalid length ("
+                       <<subLength<<" bytes). Should be 12 bytes!\n";
+             return false;
+           }
+           //read LVLO's stuff
+           in_File.read((char*) &entries.back().coed.factionFormID, 4);
+           in_File.read((char*) &entries.back().coed.requiredRank, 4);
+           in_File.read((char*) &entries.back().coed.unknownFloat, 4);
+           bytesRead += 12;
+           if (!in_File.good())
+           {
+             std::cout << "Error while reading subrecord COED of LVLI!\n";
+             return false;
+           }
+           //status check
+           if (entries.back().coed.isInit())
+           {
+             std::cout << "Error: subrecord COED of LVLI contains invalid value!\n";
+             return false;
+           }
            break;
       case cLVLG:
            if (globalFormID!=0)
@@ -364,11 +422,18 @@ bool LeveledItemRecord::loadFromStream(std::ifstream& in_File)
            break;
       default:
            std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
-                     << "\" found, but only LVLG or LLCT are allowed here!\n";
+                     << "\" found, but only LVLG, LLCT, COED or LVLO are allowed here!\n";
            return false;
            break;
     }//swi
   }//while
+
+  //count check
+  if (entryCount!=entries.size())
+  {
+    std::cout << "Error: entry count does not match number of actual entries!\n";
+    return false;
+  }
 
   return in_File.good();
 }
@@ -376,16 +441,6 @@ bool LeveledItemRecord::loadFromStream(std::ifstream& in_File)
 uint32_t LeveledItemRecord::getRecordType() const
 {
   return cLVLI;
-}
-
-bool LeveledItemRecord::calculateFromAllLevels() const
-{
-  return ((flags & cFlagCalcFromAllLevels) !=0);
-}
-
-bool LeveledItemRecord::calculateForEachItem() const
-{
-  return ((flags & cFlagCalcForEach) !=0);
 }
 
 bool LeveledItemRecord::useAll() const

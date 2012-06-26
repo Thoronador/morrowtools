@@ -23,12 +23,12 @@
 
 #include <string>
 #include <vector>
-#include "BasicRecord.h"
+#include "LeveledListBaseRecord.h"
 
 namespace SRTP
 {
 
-struct LeveledItemRecord: public BasicRecord
+struct LeveledItemRecord: public LeveledListBaseRecord
 {
   public:
     /* constructor */
@@ -77,16 +77,10 @@ struct LeveledItemRecord: public BasicRecord
     };//struct
 
     //flag constants
-    static const uint8_t cFlagCalcFromAllLevels;
-    static const uint8_t cFlagCalcForEach;
+    //static const uint8_t cFlagCalcFromAllLevels;
+    //static const uint8_t cFlagCalcForEach; --> both flags in base class
     static const uint8_t cFlagUseAll;
     static const uint8_t cFlagSpecialLoot;
-
-    /* returns true, if the "calculate from all levels <= PC" flag is set */
-    bool calculateFromAllLevels() const;
-
-    /* returns true, if the "calculate for each item in count" flag is set */
-    bool calculateForEachItem() const;
 
     /* returns true, if the "Use all" flag is set */
     bool useAll() const;
@@ -97,10 +91,10 @@ struct LeveledItemRecord: public BasicRecord
     std::string editorID;
     uint8_t unknownOBND[12];
     uint8_t chanceNone; //subrecord LVLD
-    uint8_t flags; //subrecord LVLF
+    //uint8_t flags; //subrecord LVLF --> already in base
     uint32_t globalFormID; //subrecord LVLG
     //uint8_t entryCount; //subrecord LLCT
-    std::vector<LeveledListEntry> entries; //subrecords LVLO
+    //std::vector<LeveledListEntry> entries; //subrecords LVLO --> already in base
 }; //struct
 
 } //namespace

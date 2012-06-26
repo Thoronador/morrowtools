@@ -449,6 +449,12 @@ bool LeveledCharacterRecord::loadFromStream(std::ifstream& in_File)
     std::cout << "Error: at least one required subrecord of LVLN is missing!\n";
     return false;
   }
+  //count check
+  if (entryCount!=entries.size())
+  {
+    std::cout << "Error: entry count does not match number of actual entries!\n";
+    return false;
+  }
 
   return in_File.good();
 }
@@ -457,14 +463,5 @@ uint32_t LeveledCharacterRecord::getRecordType() const
 {
   return cLVLN;
 }
-
-    std::string editorID;
-    uint8_t unknownOBND[12];
-    uint8_t chanceNone; //subrecord LVLD
-    uint8_t flags; //subrecord LVLF
-    //uint8_t entryCount; //subrecord LLCT
-    //std::vector<LeveledListEntry> entries; //subrecords LVLO
-    std::string modelPath;
-    BinarySubRecord unknownMODT;
 
 } //namespace

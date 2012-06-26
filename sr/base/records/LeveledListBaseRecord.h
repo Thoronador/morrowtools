@@ -73,6 +73,17 @@ struct LeveledListBaseRecord: public BasicRecord
       bool operator==(const EntryWithCOED& other) const;
     }; //struct
 
+    //flag constants
+    static const uint8_t cFlagCalcFromAllLevels;
+    static const uint8_t cFlagCalcForEach;
+
+    /* returns true, if the "calculate from all levels <= PC" flag is set */
+    bool calculateFromAllLevels() const;
+
+    /* returns true, if the "calculate for each item in count" flag is set */
+    bool calculateForEachItem() const;
+
+    uint8_t flags; //subrecord LVLF
     //uint8_t entryCount; //subrecord LLCT
     std::vector<EntryWithCOED> entries; //subrecords LVLO (+ optional COED)
 }; //struct

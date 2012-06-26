@@ -70,7 +70,7 @@ struct LeveledCharacterRecord: public LeveledListBaseRecord
     std::string editorID;
     uint8_t unknownOBND[12];
     uint8_t chanceNone; //subrecord LVLD
-    uint8_t flags; //subrecord LVLF
+    //uint8_t flags; //subrecord LVLF --> already in base
     //uint8_t entryCount; //subrecord LLCT
     //std::vector<LeveledListEntry> entries; //subrecords LVLO -> already declared in base class
     std::string modelPath;

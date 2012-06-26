@@ -187,10 +187,16 @@ const uint32_t cLCTN = 0x4E54434C; //"LCTN" = 4C 43 54 4E
 const uint32_t cLCUN = 0x4E55434C; //"LCUN" = 4C 43 55 4E
 const uint32_t cLGTM = 0x4D54474C; //"LGTM" = 4C 47 54 4D
 const uint32_t cLIGH = 0x4847494C; //"LIGH" = 4C 49 47 48
+const uint32_t cLLCT = 0x54434C4C; //"LLCT" = 4C 4C 43 54
 const uint32_t cLNAM = 0x4D414E4C; //"LNAM" = 4C 4E 41 4D
 const uint32_t cLSCR = 0x5243534C; //"LSCR" = 4C 53 43 52
 const uint32_t cLTEX = 0x5845544C; //"LTEX" = 4C 54 45 58
 const uint32_t cLTMP = 0x504D544C; //"LTMP" = 4C 54 4D 50
+const uint32_t cLVLD = 0x444C564C; //"LVLD" = 4C 56 4C 44
+const uint32_t cLVLF = 0x464C564C; //"LVLF" = 4C 56 4C 46
+const uint32_t cLVLG = 0x474C564C; //"LVLG" = 4C 56 4C 47
+const uint32_t cLVLI = 0x494C564C; //"LVLI" = 4C 56 4C 49
+const uint32_t cLVLO = 0x4F4C564C; //"LVLO" = 4C 56 4C 4F
 const uint32_t cMAST = 0x5453414D; //"MAST" = 4D 41 53 54
 const uint32_t cMCHT = 0x5448434D; //"MCHT" = 4D 43 48 54
 const uint32_t cMDOB = 0x424F444D; //"MDOB" = 4D 44 4F 42

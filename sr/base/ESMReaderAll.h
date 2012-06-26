@@ -90,7 +90,7 @@ class ESMReaderAll: public ESMReader
     */
     virtual int readNextRecord(std::ifstream& in_File, const uint32_t recName);
 
-    std::set<int32_t> encounters;
+    std::set<uint32_t> encounters;
 };//class
 
 } //namespace

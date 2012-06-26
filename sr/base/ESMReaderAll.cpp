@@ -73,6 +73,7 @@
 #include "Keys.h"
 #include "Keywords.h"
 #include "LandscapeTextures.h"
+#include "LeveledItems.h"
 #include "LightingTemplates.h"
 #include "Lights.h"
 #include "LoadScreens.h"
@@ -311,6 +312,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const uint32_t recName)
          break;
     case cLTEX:
          return LandscapeTextures::getSingleton().readNextRecord(in_File);
+         break;
+    case cLVLI:
+         return LeveledItems::getSingleton().readNextRecord(in_File);
          break;
     case cMESG:
          return Messages::getSingleton().readNextRecord(in_File);

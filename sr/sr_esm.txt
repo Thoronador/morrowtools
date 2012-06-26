@@ -1310,6 +1310,31 @@ Records and their sub-records:
           uint32_t Count
 
 
+  LVLN: leveled character
+      EDID (string, NUL-terminated)
+          editorID
+      OBND (12 bytes)
+          unknown data
+      LVLD (1 byte)
+          uint8_t Chance None (%) ????
+      LVLF (1 byte)
+          uint8_t flags ???
+      LLCT (1 byte)
+          uint8_t number of entries in list
+      LVLO (12 bytes, can occur multiple times)
+          uint32_t Level
+          uint32_t form ID of item (or another leveled list)
+          uint32_t Count
+      COED (12 bytes, can occur multiple times, belongs to previous LVLO)
+          uint32_t faction form ID (points to FACT)
+          uint32_t required rank (zero-based index; -1 for NONE)
+          float    unknown
+      MODL (string, NUL-terminated, optional)
+          model path
+      MODT (size varies?, optional)
+          unknown data
+
+
   MESG: message
       EDID (string, NUL-terminated)
           editor ID

@@ -69,8 +69,8 @@ LGTM - done
 LIGH - done
 LSCR - done
 LTEX - done
-LVLI - to do!
-LVLN - to do!
+LVLI - done
+LVLN - done
 LVSP - to do!
 MATO - to do!
 MATT - to do!
@@ -123,5 +123,5 @@ WTHR - to do!
 
 =============
 Total: 119
-To do:  27 (ca. 22.7%)
-Done :  92 (ca. 77.3%)
+To do:  25 (ca. 21.0%)
+Done :  94 (ca. 79.0%)

@@ -74,6 +74,7 @@
 #include "Keywords.h"
 #include "LandscapeTextures.h"
 #include "LightingTemplates.h"
+#include "Lights.h"
 #include "LoadScreens.h"
 #include "Locations.h"
 #include "LocationReferenceTypes.h"
@@ -301,6 +302,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const uint32_t recName)
          break;
     case cLGTM:
          return LightingTemplates::getSingleton().readNextRecord(in_File);
+         break;
+    case cLIGH:
+         return Lights::getSingleton().readNextRecord(in_File);
          break;
     case cLSCR:
          return LoadScreens::getSingleton().readNextRecord(in_File);

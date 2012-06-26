@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include "LeveledCharacterRecord.h"
+#include "LeveledSpellRecord.h"
 #include <cstring>
 #include <iostream>
 #include "../SR_Constants.h"
@@ -27,37 +27,36 @@
 namespace SRTP
 {
 
-LeveledCharacterRecord::LeveledCharacterRecord()
+//flag constant
+const uint8_t LeveledSpellRecord::cFlagUseAllSpells = 0x04;
+
+LeveledSpellRecord::LeveledSpellRecord()
 : LeveledListBaseRecord()
 {
   editorID = "";
   memset(unknownOBND, 0, 12);
   chanceNone = 0; //subrecord LVLD
   flags = 0;
-  //entryCount = 0; //subrecord LLCT
-  entries.clear(); //subrecords LVLO
-  modelPath = "";
-  unknownMODT.setPresence(false);
+  entries.clear();
 }
 
-LeveledCharacterRecord::~LeveledCharacterRecord()
+LeveledSpellRecord::~LeveledSpellRecord()
 {
   //empty
 }
 
 #ifndef SR_NO_RECORD_EQUALITY
-bool LeveledCharacterRecord::equals(const LeveledCharacterRecord& other) const
+bool LeveledSpellRecord::equals(const LeveledSpellRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
       and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
       and (chanceNone==other.chanceNone) and (flags==other.flags)
-      and (entries==other.entries) and (modelPath==other.modelPath)
-      and (unknownMODT==other.unknownMODT));
+      and (entries==other.entries));
 }
 #endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
-uint32_t LeveledCharacterRecord::getWriteSize() const
+uint32_t LeveledSpellRecord::getWriteSize() const
 {
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
@@ -67,30 +66,12 @@ uint32_t LeveledCharacterRecord::getWriteSize() const
         +4 /* LVLF */ +2 /* 2 bytes for length */ +1 /* fixed size of one byte */
         +4 /* LLCT */ +2 /* 2 bytes for length */ +1 /* fixed size of one byte */
         +entries.size()*(4 /* LVLO */ +2 /* 2 bytes for length */ +12 /* fixed size of 12 bytes */);
-  unsigned int i;
-  for (i=0; i<entries.size(); ++i)
-  {
-    if (!entries[i].coed.isInit())
-    {
-      writeSize = writeSize +4 /* COED */ +2 /* 2 bytes for length */ +12 /* fixed size of 12 bytes */;
-    }//if
-  }//for
-  if (!modelPath.empty())
-  {
-    writeSize = writeSize +4 /* MODL */ +2 /* 2 bytes for length */
-        +modelPath.length()+1 /* length of path +1 byte for NUL termination */;
-  }
-  if (unknownMODT.isPresent())
-  {
-    writeSize = writeSize +4 /* MODT */ +2 /* 2 bytes for length */
-        +unknownMODT.getSize() /* length of data */;
-  }
   return writeSize;
 }
 
-bool LeveledCharacterRecord::saveToStream(std::ofstream& output) const
+bool LeveledSpellRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cLVLN, 4);
+  output.write((char*) &cLVSP, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
@@ -146,46 +127,13 @@ bool LeveledCharacterRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &entries[i].entry.level, 4);
     output.write((const char*) &entries[i].entry.formID, 4);
     output.write((const char*) &entries[i].entry.count, 4);
-
-    if (!entries[i].coed.isInit())
-    {
-      //write COED
-      output.write((const char*) &cCOED, 4);
-      //COED's length
-      subLength = 12; //fixed
-      output.write((const char*) &subLength, 2);
-      //write COED's stuff
-      output.write((const char*) &entries[i].coed.factionFormID, 4);
-      output.write((const char*) &entries[i].coed.requiredRank, 4);
-      output.write((const char*) &entries[i].coed.unknownFloat, 4);
-    }//if COED
   }//for
-
-  if (!modelPath.empty())
-  {
-    //write MODL
-    output.write((const char*) &cMODL, 4);
-    //MODL's length
-    subLength = modelPath.length()+1;
-    output.write((const char*) &subLength, 2);
-    //write model path
-    output.write(modelPath.c_str(), subLength);
-  }//if MODL
-
-  if (unknownMODT.isPresent())
-  {
-    if (!unknownMODT.saveToStream(output, cMODT))
-    {
-      std::cout << "Error while writing subrecord MODT of LVLN!\n";
-      return false;
-    }
-  }//if MODT
 
   return output.good();
 }
 #endif
 
-bool LeveledCharacterRecord::loadFromStream(std::ifstream& in_File)
+bool LeveledSpellRecord::loadFromStream(std::ifstream& in_File)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
@@ -207,7 +155,7 @@ bool LeveledCharacterRecord::loadFromStream(std::ifstream& in_File)
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of LVLN is longer than 511 characters!\n";
+    std::cout <<"Error: sub record EDID of LVSP is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -217,7 +165,7 @@ bool LeveledCharacterRecord::loadFromStream(std::ifstream& in_File)
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of LVLN!\n";
+    std::cout << "Error while reading subrecord EDID of LVSP!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -235,7 +183,7 @@ bool LeveledCharacterRecord::loadFromStream(std::ifstream& in_File)
   bytesRead += 2;
   if (subLength!=12)
   {
-    std::cout <<"Error: sub record OBND of LVLN has invalid length ("<<subLength
+    std::cout <<"Error: sub record OBND of LVSP has invalid length ("<<subLength
               <<" bytes). Should be 12 bytes!\n";
     return false;
   }
@@ -245,7 +193,7 @@ bool LeveledCharacterRecord::loadFromStream(std::ifstream& in_File)
   bytesRead += 12;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord OBND of LVLN!\n";
+    std::cout << "Error while reading subrecord OBND of LVSP!\n";
     return false;
   }
 
@@ -262,7 +210,7 @@ bool LeveledCharacterRecord::loadFromStream(std::ifstream& in_File)
   bytesRead += 2;
   if (subLength!=1)
   {
-    std::cout <<"Error: sub record LVLD of LVLN has invalid length ("<<subLength
+    std::cout <<"Error: sub record LVLD of LVSP has invalid length ("<<subLength
               <<" bytes). Should be one byte!\n";
     return false;
   }
@@ -271,7 +219,7 @@ bool LeveledCharacterRecord::loadFromStream(std::ifstream& in_File)
   bytesRead += 1;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord LVLD of LVLN!\n";
+    std::cout << "Error while reading subrecord LVLD of LVSP!\n";
     return false;
   }
 
@@ -288,7 +236,7 @@ bool LeveledCharacterRecord::loadFromStream(std::ifstream& in_File)
   bytesRead += 2;
   if (subLength!=1)
   {
-    std::cout <<"Error: sub record LVLF of LVLN has invalid length ("<<subLength
+    std::cout <<"Error: sub record LVLF of LVSP has invalid length ("<<subLength
               <<" bytes). Should be one byte!\n";
     return false;
   }
@@ -297,7 +245,7 @@ bool LeveledCharacterRecord::loadFromStream(std::ifstream& in_File)
   bytesRead += 1;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord LVLF of LVLN!\n";
+    std::cout << "Error while reading subrecord LVLF of LVSP!\n";
     return false;
   }
 
@@ -305,8 +253,6 @@ bool LeveledCharacterRecord::loadFromStream(std::ifstream& in_File)
   uint8_t entryCount = 0;
   entries.clear();
   EntryWithCOED temp;
-  modelPath.clear();
-  unknownMODT.setPresence(false);
   while (bytesRead<readSize)
   {
     //read next subrecord
@@ -317,7 +263,7 @@ bool LeveledCharacterRecord::loadFromStream(std::ifstream& in_File)
       case cLLCT:
            if (hasReadLLCT)
            {
-             std::cout << "Error: record LVLN seems to have more than one LLCT subrecord!\n";
+             std::cout << "Error: record LVSP seems to have more than one LLCT subrecord!\n";
              return false;
            }
            //LLCT's length
@@ -325,7 +271,7 @@ bool LeveledCharacterRecord::loadFromStream(std::ifstream& in_File)
            bytesRead += 2;
            if (subLength!=1)
            {
-             std::cout <<"Error: sub record LLCT of LVLN has invalid length ("
+             std::cout <<"Error: sub record LLCT of LVSP has invalid length ("
                        <<subLength<<" bytes). Should be one byte!\n";
              return false;
            }
@@ -334,7 +280,7 @@ bool LeveledCharacterRecord::loadFromStream(std::ifstream& in_File)
            bytesRead += 1;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord LLCT of LVLN!\n";
+             std::cout << "Error while reading subrecord LLCT of LVSP!\n";
              return false;
            }
            hasReadLLCT = true;
@@ -342,7 +288,7 @@ bool LeveledCharacterRecord::loadFromStream(std::ifstream& in_File)
       case cLVLO:
            if (entries.size()>=entryCount)
            {
-             std::cout << "Error: record LVLN seems to have more LVLO subrecords than the LLCT value indicates!\n";
+             std::cout << "Error: record LVSP seems to have more LVLO subrecords than the LLCT value indicates!\n";
              return false;
            }
            //LVLO's length
@@ -350,7 +296,7 @@ bool LeveledCharacterRecord::loadFromStream(std::ifstream& in_File)
            bytesRead += 2;
            if (subLength!=12)
            {
-             std::cout <<"Error: sub record LVLO of LVLN has invalid length ("
+             std::cout <<"Error: sub record LVLO of LVSP has invalid length ("
                        <<subLength<<" bytes). Should be 12 bytes!\n";
              return false;
            }
@@ -361,84 +307,15 @@ bool LeveledCharacterRecord::loadFromStream(std::ifstream& in_File)
            bytesRead += 12;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord LVLO of LVLN!\n";
+             std::cout << "Error while reading subrecord LVLO of LVSP!\n";
              return false;
            }
            temp.coed.init(); //sets default values for COED part
            entries.push_back(temp);
            break;
-      case cCOED:
-           if (entries.empty())
-           {
-             std::cout << "Error: COED subrecord not allowed without previous LVLO subrecord!\n";
-             return false;
-           }
-           if ((entries.back().coed.factionFormID!=0)
-               or (entries.back().coed.requiredRank!=0xFFFFFFFF)
-               or (entries.back().coed.unknownFloat!=1.0f))
-           {
-             std::cout << "Error: record LVLN seems to have more than one COED subrecord per LVLO!\n";
-             return false;
-           }
-           //COED's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength!=12)
-           {
-             std::cout <<"Error: sub record COED of LVLN has invalid length ("
-                       <<subLength<<" bytes). Should be 12 bytes!\n";
-             return false;
-           }
-           //read LVLO's stuff
-           in_File.read((char*) &entries.back().coed.factionFormID, 4);
-           in_File.read((char*) &entries.back().coed.requiredRank, 4);
-           in_File.read((char*) &entries.back().coed.unknownFloat, 4);
-           bytesRead += 12;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord COED of LVLN!\n";
-             return false;
-           }
-           //status check
-           if (entries.back().coed.isInit())
-           {
-             std::cout << "Error: subrecord COED of LVLN contains invalid value!\n";
-             return false;
-           }
-           break;
-      case cMODL:
-           if (!modelPath.empty())
-           {
-             std::cout << "Error: record LVLN seems to have more than one MODL subrecord!\n";
-             return false;
-           }
-           //read MODL
-           if (!loadString512FromStream(in_File, modelPath, buffer, cMODL, false, bytesRead))
-             return false;
-           //content check
-           if (modelPath.empty())
-           {
-             std::cout << "Error: subrecord MODL of LVLN is empty!\n";
-             return false;
-           }
-           break;
-      case cMODT:
-           if (unknownMODT.isPresent())
-           {
-             std::cout << "Error: record LVLN seems to have more than one MODT subrecord!\n";
-             return false;
-           }
-           //read MODT
-           if (!unknownMODT.loadFromStream(in_File, cMODT, false))
-           {
-             std::cout << "Error while reading subrecord MODT of LVLN!\n";
-             return false;
-           }
-           bytesRead += (2+unknownMODT.getSize());
-           break;
       default:
            std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
-                     << "\" found, but only LLCT, MODL or MODT are allowed here!\n";
+                     << "\" found, but only LLCT, or LVLO are allowed here!\n";
            return false;
            break;
     }//swi
@@ -447,7 +324,7 @@ bool LeveledCharacterRecord::loadFromStream(std::ifstream& in_File)
   //presence check
   if (!hasReadLLCT)
   {
-    std::cout << "Error: at least one required subrecord of LVLN is missing!\n";
+    std::cout << "Error: at least one required subrecord of LVSP is missing!\n";
     return false;
   }
   //count check
@@ -460,9 +337,14 @@ bool LeveledCharacterRecord::loadFromStream(std::ifstream& in_File)
   return in_File.good();
 }
 
-uint32_t LeveledCharacterRecord::getRecordType() const
+uint32_t LeveledSpellRecord::getRecordType() const
 {
-  return cLVLN;
+  return cLVSP;
+}
+
+bool LeveledSpellRecord::useAllSpells() const
+{
+  return ((flags & cFlagUseAllSpells) != 0);
 }
 
 } //namespace

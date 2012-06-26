@@ -18,28 +18,27 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SR_LEVELEDCHARACTERRECORD_H
-#define SR_LEVELEDCHARACTERRECORD_H
+#ifndef SR_LEVELEDSPELLRECORD_H
+#define SR_LEVELEDSPELLRECORD_H
 
 #include <string>
 #include "LeveledListBaseRecord.h"
-#include "BinarySubRecord.h"
 
 namespace SRTP
 {
 
-struct LeveledCharacterRecord: public LeveledListBaseRecord
+struct LeveledSpellRecord: public LeveledListBaseRecord
 {
   public:
     /* constructor */
-    LeveledCharacterRecord();
+    LeveledSpellRecord();
 
     /* destructor */
-    virtual ~LeveledCharacterRecord();
+    virtual ~LeveledSpellRecord();
 
     #ifndef SR_NO_RECORD_EQUALITY
     /* returns true, if the other record contains the same data */
-    bool equals(const LeveledCharacterRecord& other) const;
+    bool equals(const LeveledSpellRecord& other) const;
     #endif
 
     #ifndef SR_UNSAVEABLE_RECORDS
@@ -66,16 +65,20 @@ struct LeveledCharacterRecord: public LeveledListBaseRecord
     /* returns the record's type, usually its header */
     virtual uint32_t getRecordType() const;
 
+    //additional flag constants
+    static const uint8_t cFlagUseAllSpells;
+
+    /* returns true, if the "use all spells" flag is set */
+    bool useAllSpells() const;
+
     std::string editorID;
     uint8_t unknownOBND[12];
     uint8_t chanceNone; //subrecord LVLD
     //uint8_t flags; //subrecord LVLF --> already in base
     //uint8_t entryCount; //subrecord LLCT
     //std::vector<LeveledListEntry> entries; //subrecords LVLO -> already declared in base class
-    std::string modelPath;
-    BinarySubRecord unknownMODT;
 }; //struct
 
 } //namespace
 
-#endif // SR_LEVELEDCHARACTERRECORD_H
+#endif // SR_LEVELEDSPELLRECORD_H

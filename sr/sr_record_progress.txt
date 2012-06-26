@@ -71,7 +71,7 @@ LSCR - done
 LTEX - done
 LVLI - done
 LVLN - done
-LVSP - to do!
+LVSP - done
 MATO - to do!
 MATT - to do!
 MESG - done
@@ -123,5 +123,5 @@ WTHR - to do!
 
 =============
 Total: 119
-To do:  25 (ca. 21.0%)
-Done :  94 (ca. 79.0%)
+To do:  24 (ca. 20.2%)
+Done :  95 (ca. 79.8%)

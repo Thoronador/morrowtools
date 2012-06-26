@@ -1341,6 +1341,26 @@ Records and their sub-records:
           unknown data
 
 
+  LVSP: leveled spell
+      EDID (string, NUL-terminated)
+          editorID
+      OBND (12 bytes)
+          unknown data
+      LVLD (1 byte)
+          uint8_t Chance None (%) ????
+      LVLF (1 byte)
+          uint8_t flags
+            0x01 - Calculate from all levels <= PC level
+            0x02 - Calculate for each item in count
+            0x04 - Use all spells
+      LLCT (1 byte)
+          uint8_t number of entries in list
+      LVLO (12 bytes, can occur multiple times)
+          uint32_t Level
+          uint32_t form ID of item (or another leveled list)
+          uint32_t Count
+
+
   MESG: message
       EDID (string, NUL-terminated)
           editor ID

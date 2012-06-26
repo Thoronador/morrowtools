@@ -73,6 +73,7 @@
 #include "records/LandscapeTextureRecord.h"
 #include "records/LeveledCharacterRecord.h"
 #include "records/LeveledItemRecord.h"
+#include "records/LeveledSpellRecord.h"
 #include "records/LightingTemplateRecord.h"
 #include "records/LightRecord.h"
 #include "records/LoadScreenRecord.h"
@@ -309,6 +310,9 @@ int ESMReaderContentsAll::readNextRecord(std::ifstream& in_File, const uint32_t 
          break;
     case cLVLN:
          recPtr = new LeveledCharacterRecord;
+         break;
+    case cLVSP:
+         recPtr = new LeveledSpellRecord;
          break;
     case cMESG:
          recPtr = new MessageRecord;

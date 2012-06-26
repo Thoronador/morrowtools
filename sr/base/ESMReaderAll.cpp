@@ -75,6 +75,7 @@
 #include "LandscapeTextures.h"
 #include "LeveledCharacters.h"
 #include "LeveledItems.h"
+#include "LeveledSpells.h"
 #include "LightingTemplates.h"
 #include "Lights.h"
 #include "LoadScreens.h"
@@ -319,6 +320,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const uint32_t recName)
          break;
     case cLVLN:
          return LeveledCharacters::getSingleton().readNextRecord(in_File);
+         break;
+    case cLVSP:
+         return LeveledSpells::getSingleton().readNextRecord(in_File);
          break;
     case cMESG:
          return Messages::getSingleton().readNextRecord(in_File);

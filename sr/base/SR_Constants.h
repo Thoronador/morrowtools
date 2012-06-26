@@ -198,6 +198,7 @@ const uint32_t cLVLG = 0x474C564C; //"LVLG" = 4C 56 4C 47
 const uint32_t cLVLI = 0x494C564C; //"LVLI" = 4C 56 4C 49
 const uint32_t cLVLN = 0x4E4C564C; //"LVLN" = 4C 56 4C 4E
 const uint32_t cLVLO = 0x4F4C564C; //"LVLO" = 4C 56 4C 4F
+const uint32_t cLVSP = 0x5053564C; //"LVSP" = 4C 56 53 50
 const uint32_t cMAST = 0x5453414D; //"MAST" = 4D 41 53 54
 const uint32_t cMCHT = 0x5448434D; //"MCHT" = 4D 43 48 54
 const uint32_t cMDOB = 0x424F444D; //"MDOB" = 4D 44 4F 42

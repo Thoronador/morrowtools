@@ -1030,7 +1030,7 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
   NPC_AIEscortFollow* escortFollowPointer = NULL;
   NPC_AITravel* travelPointer = NULL;
   NPC_AIWander* wanderPointer = NULL;
-  int32_t previousSubRecord = 0;
+  uint32_t previousSubRecord = 0;
 
   while (BytesRead<Size)
   {

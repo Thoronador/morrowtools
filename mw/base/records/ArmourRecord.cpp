@@ -428,7 +428,7 @@ bool ArmourRecord::loadFromStream(std::ifstream& in_File)
   BodyPartAssociation tempAssoc;
   bool hasENAM = false;
   bool hasITEX = false;
-  int32_t prevSubrecord = 0;
+  uint32_t prevSubrecord = 0;
   while (BytesRead<Size)
   {
     //read next subrecord's name

@@ -382,7 +382,7 @@ bool ClothingRecord::loadFromStream(std::ifstream& in_File)
   bool hasENAM = false;
   bool hasITEX = false;
   bool hasSCRI = false;
-  int32_t prevSubrecord = 0;
+  uint32_t prevSubrecord = 0;
   while (BytesRead<Size)
   {
     //read next subrecord's name

@@ -748,7 +748,7 @@ bool CreatureRecord::loadFromStream(std::ifstream& in_File)
   bool hasAIDT = false;
   bool hasXSCL = false;
   bool hasReadDestination = false;
-  int32_t previousSubRecord = 0;
+  uint32_t previousSubRecord = 0;
 
   while (BytesRead<Size)
   {

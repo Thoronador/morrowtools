@@ -23,11 +23,11 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="..\..\base\ComparisonFunctor.h" />
 		<Unit filename="..\..\base\UtilityFunctions.cpp" />
 		<Unit filename="..\..\base\UtilityFunctions.h" />
 		<Unit filename="..\base\Activators.cpp" />
 		<Unit filename="..\base\Activators.h" />
-		<Unit filename="..\base\ComparisonFunctor.h" />
 		<Unit filename="..\base\Containers.cpp" />
 		<Unit filename="..\base\Containers.h" />
 		<Unit filename="..\base\Creatures.cpp" />

@@ -99,12 +99,12 @@ class MapBasedRecordManager
 
        parameters:
            output - the output file stream that shall be used to save the
-                    weapons
+                    records
     */
     bool saveAllToStream(std::ofstream& output) const;
     #endif
 
-    /* removes all weapons from the list */
+    /* removes all records from the list */
     void clearAll();
   private:
     /* constructor */
@@ -160,7 +160,7 @@ unsigned int MapBasedRecordManager<recT>::getNumberOfRecords() const
 template<typename recT>
 const recT& MapBasedRecordManager<recT>::getRecord(const uint32_t ID) const
 {
-  ListIterator iter = m_Records.find(ID);
+  const ListIterator iter = m_Records.find(ID);
   if (iter!=m_Records.end())
   {
     return iter->second;
@@ -242,7 +242,7 @@ int MapBasedRecordManager<recT>::readNextRecord(std::ifstream& in_File)
   #endif //SR_NO_SINGLETON_EQUALITY_CHECK
   addRecord(temp);
   return 1;
-} //readOneRecord
+} //readNextRecord
 
 } //namespace
 

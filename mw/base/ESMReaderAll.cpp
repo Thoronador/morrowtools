@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011 Thoronador
+    Copyright (C) 2010, 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -88,25 +88,25 @@ int ESMReaderAll::processNextRecord(std::ifstream& in_File)
   switch(RecordName)
   {
     case cACTI:
-         lastResult = Activators::getSingleton().readRecordACTI(in_File);
+         lastResult = Activators::getSingleton().readNextRecord(in_File);
          break;
     case cALCH:
-         lastResult = AlchemyPotions::getSingleton().readRecordALCH(in_File);
+         lastResult = AlchemyPotions::getSingleton().readNextRecord(in_File);
          break;
     case cAPPA:
-         lastResult = Apparatuses::getSingleton().readRecordAPPA(in_File);
+         lastResult = Apparatuses::getSingleton().readNextRecord(in_File);
          break;
     case cARMO:
-         lastResult = Armours::getSingleton().readRecordARMO(in_File);
+         lastResult = Armours::getSingleton().readNextRecord(in_File);
          break;
     case cBODY:
-         lastResult = BodyParts::getSingleton().readRecordBODY(in_File);
+         lastResult = BodyParts::getSingleton().readNextRecord(in_File);
          break;
     case cBOOK:
          lastResult = Books::getSingleton().readRecordBOOK(in_File);
          break;
     case cBSGN:
-         lastResult = BirthSigns::getSingleton().readRecordBSGN(in_File);
+         lastResult = BirthSigns::getSingleton().readNextRecord(in_File);
          break;
     case cCELL:
          lastResult = Cells::getSingleton().readRecordCELL(in_File);
@@ -136,7 +136,7 @@ int ESMReaderAll::processNextRecord(std::ifstream& in_File)
          lastResult = Factions::getSingleton().readRecordFACT(in_File);
          break;
     case cGLOB:
-         lastResult = Globals::getSingleton().readRecordGLOB(in_File);
+         lastResult = Globals::getSingleton().readNextRecord(in_File);
          break;
     case cGMST:
          lastResult = GameSettings::getSingleton().readRecordGMST(in_File);
@@ -178,16 +178,16 @@ int ESMReaderAll::processNextRecord(std::ifstream& in_File)
          lastResult = PathGrids::getSingleton().readRecordPGRD(in_File);
          break;
     case cPROB:
-         lastResult = Probes::getSingleton().readRecordPROB(in_File);
+         lastResult = Probes::getSingleton().readNextRecord(in_File);
          break;
     case cRACE:
-         lastResult = Races::getSingleton().readRecordRACE(in_File);
+         lastResult = Races::getSingleton().readNextRecord(in_File);
          break;
     case cREGN:
-         lastResult = Regions::getSingleton().readRecordREGN(in_File);
+         lastResult = Regions::getSingleton().readNextRecord(in_File);
          break;
     case cREPA:
-         lastResult = RepairItems::getSingleton().readRecordREPA(in_File);
+         lastResult = RepairItems::getSingleton().readNextRecord(in_File);
          break;
     case cSCPT:
          lastResult = Scripts::getSingleton().readRecordSCPT(in_File);

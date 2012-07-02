@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011 Thoronador
+    Copyright (C) 2009, 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -22,6 +22,7 @@
 #include <iostream>
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
+#include "../../../base/UtilityFunctions.h"
 
 namespace MWTP
 {
@@ -31,7 +32,7 @@ const int32_t rfBeastRace = 2;
 
 RaceRecord::RaceRecord()
 {
-  RaceID = RaceName = "";
+  recordID = RaceName = "";
   //race data
   Boni.clear();
   Strength[0] = Strength[1] = 0;
@@ -52,7 +53,7 @@ RaceRecord::RaceRecord()
 
 RaceRecord::RaceRecord(const std::string& ID)
 {
-  RaceID = ID;
+  recordID = ID;
   RaceName = "";
   //race data
   Boni.clear();
@@ -79,7 +80,7 @@ RaceRecord::~RaceRecord()
 
 bool RaceRecord::equals(const RaceRecord& other) const
 {
-  if ((RaceID==other.RaceID) and (RaceName==other.RaceName)
+  if ((recordID==other.recordID) and (RaceName==other.RaceName)
     and (Boni.size()==other.Boni.size()) and (Description==other.Description)
     and (Strength[0]==other.Strength[0]) and (Strength[1]==other.Strength[1])
     and (Intelligence[0]==other.Intelligence[0]) and (Intelligence[1]==other.Intelligence[1])
@@ -165,7 +166,7 @@ bool RaceRecord::loadFromStream(std::ifstream& in_File)
     std::cout << "Error while reading subrecord NAME of RACE.\n";
     return false;
   }
-  RaceID = std::string(Buffer);
+  recordID = std::string(Buffer);
 
   //read FNAM
   in_File.read((char*) &SubRecName, 4);
@@ -323,25 +324,26 @@ bool RaceRecord::loadFromStream(std::ifstream& in_File)
   return in_File.good();
 }
 
+#ifndef MW_UNSAVEABLE_RECORDS
 bool RaceRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cRACE, 4);
+  output.write((const char*) &cRACE, 4);
   uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +RaceID.length()+1 /* length of ID +1 byte for NUL termination */
+        +recordID.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* FNAM */ +4 /* 4 bytes for length */
         +RaceName.length()+1 /* length of name +1 byte for NUL termination */
         +4 /* RADT */ +4 /* RADT's length */ +140 /*size of RADT (always 140 bytes)*/
         +Powers.size()*(4 /* NPCS */ +4 /* NPCS's length */
               +32 /*size of NPCS (always 32 bytes, rest is filled with null bytes)*/);
-  if (Description!="")
+  if (!Description.empty())
   {
     Size = Size +4 /* DESC */ +4 /* 4 bytes for length */
           +Description.length() /* length of decription (no NUL termination) */;
   }
-  output.write((char*) &Size, 4);
-  output.write((char*) &HeaderOne, 4);
-  output.write((char*) &HeaderFlags, 4);
+  output.write((const char*) &Size, 4);
+  output.write((const char*) &HeaderOne, 4);
+  output.write((const char*) &HeaderFlags, 4);
 
   /*Race Definition:
     NAME = Race ID string
@@ -365,34 +367,34 @@ bool RaceRecord::saveToStream(std::ofstream& output) const
     DESC = Race description (optional) */
 
   //write NAME
-  output.write((char*) &cNAME, 4);
+  output.write((const char*) &cNAME, 4);
   //NAME's length
   uint32_t SubLength;
-  SubLength = RaceID.length()+1;//length of string plus one for NUL-termination
-  output.write((char*) &SubLength, 4);
+  SubLength = recordID.length()+1;//length of string plus one for NUL-termination
+  output.write((const char*) &SubLength, 4);
   //write ID
-  output.write(RaceID.c_str(), SubLength);
+  output.write(recordID.c_str(), SubLength);
 
   //write FNAM
-  output.write((char*) &cFNAM, 4);
+  output.write((const char*) &cFNAM, 4);
   //FNAM's length
   SubLength = RaceName.length()+1;//length of string plus one for NUL-termination
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write race's name
   output.write(RaceName.c_str(), SubLength);
 
   //write RADT
-  output.write((char*) &cRADT, 4);
+  output.write((const char*) &cRADT, 4);
   //RADT's length
   SubLength = 140;//length is always 140 bytes
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write race data
   // ---- skill boni
   unsigned int i;
   for (i=0; (i<Boni.size()) and (i<7); ++i)
   {
-    output.write((char*) &Boni[i].SkillID, 4);
-    output.write((char*) &Boni[i].SkillBonus, 4);
+    output.write((const char*) &Boni[i].SkillID, 4);
+    output.write((const char*) &Boni[i].SkillBonus, 4);
   }//for
   //If there are less than seven bonus entries, add some more to reach the
   // required total size.
@@ -400,32 +402,32 @@ bool RaceRecord::saveToStream(std::ofstream& output) const
   const int32_t SkillBonus_None = 0;
   for (i=Boni.size(); i<7; ++i)
   {
-    output.write((char*) &SkillID_None, 4);
-    output.write((char*) &SkillBonus_None, 4);
+    output.write((const char*) &SkillID_None, 4);
+    output.write((const char*) &SkillBonus_None, 4);
   }//for
   // ---- attributes
-  output.write((char*) &(Strength[0]), 4);
-  output.write((char*) &(Strength[1]), 4);
-  output.write((char*) &(Intelligence[0]), 4);
-  output.write((char*) &(Intelligence[1]), 4);
-  output.write((char*) &(Willpower[0]), 4);
-  output.write((char*) &(Willpower[1]), 4);
-  output.write((char*) &(Agility[0]), 4);
-  output.write((char*) &(Agility[1]), 4);
-  output.write((char*) &(Speed[0]), 4);
-  output.write((char*) &(Speed[1]), 4);
-  output.write((char*) &(Endurance[0]), 4);
-  output.write((char*) &(Endurance[1]), 4);
-  output.write((char*) &(Personality[0]), 4);
-  output.write((char*) &(Personality[1]), 4);
-  output.write((char*) &(Luck[0]), 4);
-  output.write((char*) &(Luck[1]), 4);
+  output.write((const char*) &(Strength[0]), 4);
+  output.write((const char*) &(Strength[1]), 4);
+  output.write((const char*) &(Intelligence[0]), 4);
+  output.write((const char*) &(Intelligence[1]), 4);
+  output.write((const char*) &(Willpower[0]), 4);
+  output.write((const char*) &(Willpower[1]), 4);
+  output.write((const char*) &(Agility[0]), 4);
+  output.write((const char*) &(Agility[1]), 4);
+  output.write((const char*) &(Speed[0]), 4);
+  output.write((const char*) &(Speed[1]), 4);
+  output.write((const char*) &(Endurance[0]), 4);
+  output.write((const char*) &(Endurance[1]), 4);
+  output.write((const char*) &(Personality[0]), 4);
+  output.write((const char*) &(Personality[1]), 4);
+  output.write((const char*) &(Luck[0]), 4);
+  output.write((const char*) &(Luck[1]), 4);
   // ---- height
-  output.write((char*) &(Height[0]), 4);
-  output.write((char*) &(Height[1]), 4);
+  output.write((const char*) &(Height[0]), 4);
+  output.write((const char*) &(Height[1]), 4);
   // ---- weight
-  output.write((char*) &(Weight[0]), 4);
-  output.write((char*) &(Weight[1]), 4);
+  output.write((const char*) &(Weight[0]), 4);
+  output.write((const char*) &(Weight[1]), 4);
   // ---- flags
   output.write((char*) &RaceFlags, 4);
 
@@ -433,10 +435,10 @@ bool RaceRecord::saveToStream(std::ofstream& output) const
   for (i=0; i<Powers.size(); ++i)
   {
     //write NPCS
-    output.write((char*) &cNPCS, 4);
+    output.write((const char*) &cNPCS, 4);
     //NPCS's length
     SubLength = 32;//length of string is always 32, rest is filled with zeroes
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write spell ID
     unsigned int len = Powers.at(i).length();
     if (len>31)
@@ -452,19 +454,20 @@ bool RaceRecord::saveToStream(std::ofstream& output) const
     output.write(NULof32, 32-SubLength);
   }//for
 
-  if (Description!="")
+  if (!Description.empty())
   {
     //write DESC
-    output.write((char*) &cDESC, 4);
+    output.write((const char*) &cDESC, 4);
     //DESC's length
     SubLength = Description.length();//length of string (no NUL-termination)
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write description
     output.write(Description.c_str(), SubLength);
   }
 
   return output.good();
 }
+#endif
 
 bool RaceRecord::isPlayable() const
 {
@@ -478,7 +481,7 @@ bool RaceRecord::isBeastRace() const
 
 bool operator<(const RaceRecord& left, const RaceRecord& right)
 {
-  return (left.RaceID.compare(right.RaceID)<0);
+  return (lowerCaseCompare(left.recordID, right.recordID)<0);
 }
 
 } //namespace

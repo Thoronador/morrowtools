@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011 Thoronador
+    Copyright (C) 2009, 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -30,7 +30,7 @@ namespace MWTP
 
 GlobalRecord::GlobalRecord()
 {
-  GlobalID = "";
+  recordID = "";
   Type = globShort;
   shortVal = 0;
   longVal = 0;
@@ -39,7 +39,7 @@ GlobalRecord::GlobalRecord()
 
 GlobalRecord::GlobalRecord(const std::string& ID)
 {
-  GlobalID = ID;
+  recordID = ID;
   Type = globShort;
   shortVal = 0;
   longVal = 0;
@@ -48,7 +48,7 @@ GlobalRecord::GlobalRecord(const std::string& ID)
 
 bool GlobalRecord::equals(const GlobalRecord& other) const
 {
-  if ((Type!=other.Type) or (lowerCaseCompare(other.GlobalID, GlobalID)!=0))
+  if ((Type!=other.Type) or (lowerCaseCompare(other.recordID, recordID)!=0))
   {
     return false;
   }
@@ -68,17 +68,18 @@ bool GlobalRecord::equals(const GlobalRecord& other) const
   throw 42;
 }
 
+#ifndef MW_UNSAVEABLE_RECORDS
 bool GlobalRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cGLOB, 4);
+  output.write((const char*) &cGLOB, 4);
   uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +GlobalID.length()+1 /* length of ID +1 byte for NUL termination */
+        +recordID.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* FNAM */ +4 /* 4 bytes for length */ +1 /* length of FNAM */
         +4 /* FLTV */ +4 /* 4 bytes for length */ +4 /* length of FLTV */;
-  output.write((char*) &Size, 4);
-  output.write((char*) &HeaderOne, 4);
-  output.write((char*) &HeaderFlags, 4);
+  output.write((const char*) &Size, 4);
+  output.write((const char*) &HeaderOne, 4);
+  output.write((const char*) &HeaderFlags, 4);
 
   /*Global variable:
     NAME = Global ID
@@ -89,17 +90,17 @@ bool GlobalRecord::saveToStream(std::ofstream& output) const
     FLTV = Float data (4 bytes) */
 
   //write NAME
-  output.write((char*) &cNAME, 4);
-  uint32_t SubLength = GlobalID.length()+1;
+  output.write((const char*) &cNAME, 4);
+  uint32_t SubLength = recordID.length()+1;
   //write NAME's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write ID
-  output.write(GlobalID.c_str(), SubLength);
+  output.write(recordID.c_str(), SubLength);
   //write FNAM
-  output.write((char*) &cFNAM, 4);
+  output.write((const char*) &cFNAM, 4);
   SubLength = 1;
   //write FNAM's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write FNAM (type of global)
   char var_type = '\0';
   switch (Type)
@@ -116,26 +117,27 @@ bool GlobalRecord::saveToStream(std::ofstream& output) const
   }//swi
   output.write(&var_type, 1);
   //write FLTV
-  output.write((char*) &cFLTV, 4);
+  output.write((const char*) &cFLTV, 4);
   SubLength = 4;
   //write FLTV's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write FLTV (value of global var)
   switch(Type)
   {
     case globFloat:
-         output.write((char*) &floatVal, 4);
+         output.write((const char*) &floatVal, 4);
          break;
     case globLong:
-         output.write((char*) &longVal, 4);
+         output.write((const char*) &longVal, 4);
          break;
     case globShort:
          SubLength = shortVal;
-         output.write((char*) &SubLength, 4);
+         output.write((const char*) &SubLength, 4);
          break;
   }//swi
   return output.good();
 }
+#endif
 
 
 bool GlobalRecord::loadFromStream(std::ifstream& in_File)
@@ -182,7 +184,7 @@ bool GlobalRecord::loadFromStream(std::ifstream& in_File)
     std::cout << "File position: "<<in_File.tellg()<<" bytes\n";
     return false;
   }
-  GlobalID = std::string(Buffer);
+  recordID = std::string(Buffer);
 
   //read FNAM
   in_File.read((char*) &SubRecName, 4);
@@ -250,7 +252,7 @@ bool GlobalRecord::loadFromStream(std::ifstream& in_File)
 
 bool operator<(const GlobalRecord& left, const GlobalRecord& right)
 {
-  return (lowerCaseCompare(left.GlobalID, right.GlobalID)<0);
+  return (lowerCaseCompare(left.recordID, right.recordID)<0);
 }
 
 } //namespace

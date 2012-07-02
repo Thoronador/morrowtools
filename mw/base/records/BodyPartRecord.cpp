@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011 Thoronador
+    Copyright (C) 2009, 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -28,7 +28,7 @@ namespace MWTP
 
 BodyPartRecord::BodyPartRecord()
 {
-  BodyPartID = "";
+  recordID = "";
   MeshPath = "";
   RaceID = "";
   //body data
@@ -40,7 +40,7 @@ BodyPartRecord::BodyPartRecord()
 
 BodyPartRecord::BodyPartRecord(const std::string& ID)
 {
-  BodyPartID = ID;
+  recordID = ID;
   MeshPath = "";
   RaceID = "";
   //body data
@@ -52,26 +52,27 @@ BodyPartRecord::BodyPartRecord(const std::string& ID)
 
 bool BodyPartRecord::equals(const BodyPartRecord& other) const
 {
-  return ((BodyPartID==other.BodyPartID) and (MeshPath==other.MeshPath)
+  return ((recordID==other.recordID) and (MeshPath==other.MeshPath)
       and (RaceID==other.RaceID) and (Part==other.Part)
       and (Vampire==other.Vampire) and (Flags==other.Flags)
       and (PartType==other.PartType));
 }
 
+#ifndef MW_UNSAVEABLE_RECORDS
 bool BodyPartRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cBODY, 4);
+  output.write((const char*) &cBODY, 4);
   uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +BodyPartID.length()+1 /* length of ID +1 byte for NUL termination */
+        +recordID.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* MODL */ +4 /* 4 bytes for length */
         +MeshPath.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* FNAM */ +4 /* 4 bytes for length */
         +RaceID.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* BYDT */ +4 /* 4 bytes for BYDT's length */ +4 /* size of BYDT */;
-  output.write((char*) &Size, 4);
-  output.write((char*) &HeaderOne, 4);
-  output.write((char*) &HeaderFlags, 4);
+  output.write((const char*) &Size, 4);
+  output.write((const char*) &HeaderOne, 4);
+  output.write((const char*) &HeaderFlags, 4);
 
   /*BodyParts:
     NAME = Body Part ID
@@ -105,42 +106,43 @@ bool BodyPartRecord::saveToStream(std::ofstream& output) const
   */
 
   //write NAME
-  output.write((char*) &cNAME, 4);
-  uint32_t SubLength = BodyPartID.length()+1;
+  output.write((const char*) &cNAME, 4);
+  uint32_t SubLength = recordID.length()+1;
   //write NAME's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write NAME/ID
-  output.write(BodyPartID.c_str(), SubLength);
+  output.write(recordID.c_str(), SubLength);
 
   //write MODL
-  output.write((char*) &cMODL, 4);
+  output.write((const char*) &cMODL, 4);
   SubLength = MeshPath.length()+1;
   //write MODL's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write mesh path
   output.write(MeshPath.c_str(), SubLength);
 
   //write FNAM
-  output.write((char*) &cFNAM, 4);
+  output.write((const char*) &cFNAM, 4);
   SubLength = RaceID.length()+1;
   //write FNAM's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write race ID
   output.write(RaceID.c_str(), SubLength);
 
   //write BYDT
-  output.write((char*) &cBYDT, 4);
+  output.write((const char*) &cBYDT, 4);
   SubLength = 4; /* fixed length is four bytes */
   //write BYDT's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write BYDT
-  output.write((char*) &Part, 1);
-  output.write((char*) &Vampire, 1);
-  output.write((char*) &Flags, 1);
-  output.write((char*) &PartType, 1);
+  output.write((const char*) &Part, 1);
+  output.write((const char*) &Vampire, 1);
+  output.write((const char*) &Flags, 1);
+  output.write((const char*) &PartType, 1);
 
   return output.good();
 }
+#endif
 
 bool BodyPartRecord::loadFromStream(std::ifstream& in_File)
 {
@@ -206,7 +208,7 @@ bool BodyPartRecord::loadFromStream(std::ifstream& in_File)
     std::cout << "Error while reading subrecord NAME of BODY!\n";
     return false;
   }
-  BodyPartID = std::string(Buffer);
+  recordID = std::string(Buffer);
 
   //read MODL
   in_File.read((char*) &SubRecName, 4);
@@ -281,7 +283,7 @@ bool BodyPartRecord::loadFromStream(std::ifstream& in_File)
 
 bool operator<(const BodyPartRecord& left, const BodyPartRecord& right)
 {
-  return (left.BodyPartID.compare(right.BodyPartID)<0);
+  return (left.recordID.compare(right.recordID)<0);
 }
 
 } //namespace

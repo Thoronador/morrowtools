@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011 Thoronador
+    Copyright (C) 2010, 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -45,6 +45,12 @@ struct EnchantmentData //24 bytes
 
   /* returns true, if the other enchantment is the same */
   bool equals(const EnchantmentData& other) const;
+
+  /* comparison operator */
+  inline bool operator==(const EnchantmentData& other) const
+  {
+    return equals(other);
+  }
 }; //struct
 
 } //namespace

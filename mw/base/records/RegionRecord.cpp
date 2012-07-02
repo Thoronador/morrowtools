@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011 Thoronador
+    Copyright (C) 2009, 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -22,13 +22,14 @@
 #include <iostream>
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
+#include "../../../base/UtilityFunctions.h"
 
 namespace MWTP
 {
 
 RegionRecord::RegionRecord()
 {
-  RegionID = RegionName = "";
+  recordID = RegionName = "";
   Clear = Cloudy = Foggy = Overcast = Rain = Thunder = Ash = Blight =
   Snow = Blizzard = 0;
   SleepCreature = "";
@@ -38,7 +39,7 @@ RegionRecord::RegionRecord()
 
 RegionRecord::RegionRecord(const std::string& ID)
 {
-  RegionID = ID;
+  recordID = ID;
   RegionName = "";
   Clear = Cloudy = Foggy = Overcast = Rain = Thunder = Ash = Blight =
   Snow = Blizzard = 0;
@@ -54,7 +55,7 @@ RegionRecord::~RegionRecord()
 
 bool RegionRecord::equals(const RegionRecord& other) const
 {
-  if ((RegionID!=other.RegionID) or (RegionName!=other.RegionName)
+  if ((recordID!=other.recordID) or (RegionName!=other.RegionName)
     or (Clear!=other.Clear) or (Cloudy!=other.Cloudy) or (Foggy!=other.Foggy)
     or (Overcast!=other.Overcast) or (Rain!=other.Rain)
     or (Thunder!=other.Thunder) or (Ash!=other.Ash) or (Blight!=other.Blight)
@@ -74,6 +75,7 @@ bool RegionRecord::equals(const RegionRecord& other) const
  return true;
 }
 
+#ifndef MW_UNSAVEABLE_RECORDS
 bool RegionRecord::saveToStream(std::ofstream& output) const
 {
   return saveToStream(output, false);
@@ -81,10 +83,10 @@ bool RegionRecord::saveToStream(std::ofstream& output) const
 
 bool RegionRecord::saveToStream(std::ofstream& output, const bool forceBloodmoonStyle) const
 {
-  output.write((char*) &cREGN, 4);
+  output.write((const char*) &cREGN, 4);
   uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +RegionID.length()+1 /* length of ID +1 byte for NUL termination */
+        +recordID.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* FNAM */ +4 /* 4 bytes for length */
         +RegionName.length()+1 /* length of name +1 byte for NUL termination */
         +4 /* WEAT */ +4 /* WEAT's length */ +8 /*size of WEAT*/;
@@ -92,7 +94,7 @@ bool RegionRecord::saveToStream(std::ofstream& output, const bool forceBloodmoon
   {
     Size +=2; //We need two additional bytes for Bloodmoon-sytled Weather data.
   }
-  if (SleepCreature!="")
+  if (!SleepCreature.empty())
   {
     Size = Size +4 /* BNAM */ +4 /* 4 bytes for length */
           +SleepCreature.length()+1; /* length of script creature ID +1 byte for NUL termination */;
@@ -101,9 +103,9 @@ bool RegionRecord::saveToStream(std::ofstream& output, const bool forceBloodmoon
          //add length of sounds
          +SoundChances.size()*(4 /* SNAM */ +4 /* 4 bytes for length */
                                +33 /* length of SNAM record */);
-  output.write((char*) &Size, 4);
-  output.write((char*) &HeaderOne, 4);
-  output.write((char*) &HeaderFlags, 4);
+  output.write((const char*) &Size, 4);
+  output.write((const char*) &HeaderOne, 4);
+  output.write((const char*) &HeaderFlags, 4);
 
   /*Regions:
     NAME = Region ID string
@@ -129,24 +131,24 @@ bool RegionRecord::saveToStream(std::ofstream& output, const bool forceBloodmoon
         Multiple records with the order determining the sound priority */
 
   //write NAME
-  output.write((char*) &cNAME, 4);
+  output.write((const char*) &cNAME, 4);
   //NAME's length
   uint32_t SubLength;
-  SubLength = RegionID.length()+1;//length of string plus one for NUL-termination
+  SubLength = recordID.length()+1;//length of string plus one for NUL-termination
   output.write((char*) &SubLength, 4);
   //write ID
-  output.write(RegionID.c_str(), SubLength);
+  output.write(recordID.c_str(), SubLength);
 
   //write FNAM
-  output.write((char*) &cFNAM, 4);
+  output.write((const char*) &cFNAM, 4);
   //FNAM's length
   SubLength = RegionName.length()+1;//length of string plus one for NUL-termination
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write region name
   output.write(RegionName.c_str(), SubLength);
 
   //write WEAT
-  output.write((char*) &cWEAT, 4);
+  output.write((const char*) &cWEAT, 4);
   //WEAT's length
   if (forceBloodmoonStyle or (Snow!=0) or (Blizzard!=0))
   {
@@ -156,54 +158,53 @@ bool RegionRecord::saveToStream(std::ofstream& output, const bool forceBloodmoon
   {
     SubLength = 8; //fixed size is 8 bytes for Morrowind/Tribunal-styled weather
   }
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write region weather
-  output.write((char*) &Clear, 1);
-  output.write((char*) &Cloudy, 1);
-  output.write((char*) &Foggy, 1);
-  output.write((char*) &Overcast, 1);
-  output.write((char*) &Rain, 1);
-  output.write((char*) &Thunder, 1);
-  output.write((char*) &Ash, 1);
-  output.write((char*) &Blight, 1);
+  output.write((const char*) &Clear, 1);
+  output.write((const char*) &Cloudy, 1);
+  output.write((const char*) &Foggy, 1);
+  output.write((const char*) &Overcast, 1);
+  output.write((const char*) &Rain, 1);
+  output.write((const char*) &Thunder, 1);
+  output.write((const char*) &Ash, 1);
+  output.write((const char*) &Blight, 1);
   if (forceBloodmoonStyle or (Snow!=0) or (Blizzard!=0))
   {
-    output.write((char*) &Snow, 1);
-    output.write((char*) &Blizzard, 1);
+    output.write((const char*) &Snow, 1);
+    output.write((const char*) &Blizzard, 1);
   }
 
-  if (SleepCreature!="")
+  if (!SleepCreature.empty())
   {
     //write BNAM
-    output.write((char*) &cBNAM, 4);
+    output.write((const char*) &cBNAM, 4);
     //BNAM's length
     SubLength = SleepCreature.length()+1;//length of string plus one for NUL-termination
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write sleep creature
     output.write(SleepCreature.c_str(), SubLength);
   }
 
-
   //write CNAM
-  output.write((char*) &cCNAM, 4);
+  output.write((const char*) &cCNAM, 4);
   //CNAM's length
   SubLength = 4;//fixed size is four bytes
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write region map colour
-  output.write((char*) &Red, 1);
-  output.write((char*) &Green, 1);
-  output.write((char*) &Blue, 1);
-  output.write((char*) &Zero, 1);
+  output.write((const char*) &Red, 1);
+  output.write((const char*) &Green, 1);
+  output.write((const char*) &Blue, 1);
+  output.write((const char*) &Zero, 1);
 
   //write sound chances
   unsigned int i, len;
   for (i=0; i<SoundChances.size(); ++i)
   {
     //write SNAM
-    output.write((char*) &cSNAM, 4);
+    output.write((const char*) &cSNAM, 4);
     //SNAM's length
     SubLength = 33;//fixed size is 33 bytes - 32 for name and one for chance
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write sound's name/ID
     /* The sound name get's truncated here, if it's longer than 31 characters. */
     len = SoundChances.at(i).Sound.length()+1;
@@ -211,7 +212,7 @@ bool RegionRecord::saveToStream(std::ofstream& output, const bool forceBloodmoon
     {
       len=32;
       std::cout << "RegionRecord::saveToStream: Warning: sound name of region \""
-                << RegionID<< "\" got truncated for index "<<i<<".\n";
+                << recordID<< "\" got truncated for index "<<i<<".\n";
     }
     output.write(SoundChances.at(i).Sound.c_str(), len);
     if (len<32)
@@ -220,11 +221,12 @@ bool RegionRecord::saveToStream(std::ofstream& output, const bool forceBloodmoon
       output.write(NULof32, 32-len);
     }
     //write chance
-    output.write((char*) &(SoundChances.at(i).Chance), 1);
+    output.write((const char*) &(SoundChances.at(i).Chance), 1);
   }//for
 
   return output.good();
 }
+#endif
 
 bool RegionRecord::loadFromStream(std::ifstream& in_File)
 {
@@ -286,7 +288,7 @@ bool RegionRecord::loadFromStream(std::ifstream& in_File)
     std::cout << "Error while reading subrecord NAME of REGN.\n";
     return false;
   }
-  RegionID = std::string(Buffer);
+  recordID = std::string(Buffer);
 
   //read FNAM
   in_File.read((char*) &SubRecName, 4);
@@ -466,7 +468,7 @@ bool RegionRecord::loadFromStream(std::ifstream& in_File)
 
 bool operator<(const RegionRecord& left, const RegionRecord& right)
 {
-  return (left.RegionID.compare(right.RegionID)<0);
+  return (lowerCaseCompare(left.recordID, right.recordID)<0);
 }
 
 } //namespace

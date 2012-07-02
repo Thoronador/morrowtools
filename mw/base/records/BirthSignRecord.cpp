@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -28,42 +28,31 @@ namespace MWTP
 
 BirthSignRecord::BirthSignRecord()
 {
-  BirthSignID = Name = Texture = Description = "";
+  recordID = Name = Texture = Description = "";
   SignSpells.clear();
 }
 
 BirthSignRecord::BirthSignRecord(const std::string& ID)
 {
-  BirthSignID = ID;
+  recordID = ID;
   Name = Texture = Description = "";
   SignSpells.clear();
 }
 
 bool BirthSignRecord::equals(const BirthSignRecord& other) const
 {
-  if ((BirthSignID!=other.BirthSignID) or (Name!=other.Name)
-   or (Texture!=other.Texture) or (Description!=other.Description)
-   or (SignSpells.size()!=other.SignSpells.size()))
-  {
-    return false;
-  }
-  unsigned int i;
-  for (i=0; i<SignSpells.size(); ++i)
-  {
-    if (SignSpells[i]!=other.SignSpells[i])
-    {
-      return false;
-    }
-  }//for
-  return true;
+  return ((recordID==other.recordID) and (Name==other.Name)
+      and (Texture==other.Texture) and (Description==other.Description)
+      and (SignSpells==other.SignSpells));
 }
 
+#ifndef MW_UNSAVEABLE_RECORDS
 bool BirthSignRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cBSGN, 4);
+  output.write((const char*) &cBSGN, 4);
   uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +BirthSignID.length()+1 /* length of ID +1 byte for NUL termination */
+        +recordID.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* FNAM */ +4 /* 4 bytes for length */
         +Name.length()+1 /* length of name +1 byte for NUL termination */
         +4 /* TNAM */ +4 /* 4 bytes for length */
@@ -71,9 +60,9 @@ bool BirthSignRecord::saveToStream(std::ofstream& output) const
         +4 /* DESC */ +4 /* 4 bytes for length */
         +Description.length()+1 /* length of name +1 byte for NUL termination */
         +SignSpells.size()*(4 /* NPCS */ +4 /* 4 bytes for length */ +32 /* fixed length of 32 bytes - rest is filled with NUL */);
-  output.write((char*) &Size, 4);
-  output.write((char*) &HeaderOne, 4);
-  output.write((char*) &HeaderFlags, 4);
+  output.write((const char*) &Size, 4);
+  output.write((const char*) &HeaderOne, 4);
+  output.write((const char*) &HeaderFlags, 4);
 
   /*Birth Sign
 	NAME = Sign ID string
@@ -84,34 +73,34 @@ bool BirthSignRecord::saveToStream(std::ofstream& output) const
   */
 
   //write NAME
-  output.write((char*) &cNAME, 4);
-  uint32_t SubLength = BirthSignID.length()+1;
+  output.write((const char*) &cNAME, 4);
+  uint32_t SubLength = recordID.length()+1;
   //write NAME's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write ID
-  output.write(BirthSignID.c_str(), SubLength);
+  output.write(recordID.c_str(), SubLength);
 
   //write FNAM
-  output.write((char*) &cFNAM, 4);
+  output.write((const char*) &cFNAM, 4);
   SubLength = Name.length()+1;
   //write FNAM's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write sign's name
   output.write(Name.c_str(), SubLength);
 
   //write TNAM
-  output.write((char*) &cTNAM, 4);
+  output.write((const char*) &cTNAM, 4);
   SubLength = Texture.length()+1;
   //write TNAM's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write texture name
   output.write(Texture.c_str(), SubLength);
 
   //write DESC
-  output.write((char*) &cDESC, 4);
+  output.write((const char*) &cDESC, 4);
   SubLength = Description.length()+1;
   //write DESC's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write description text
   output.write(Description.c_str(), SubLength);
 
@@ -120,10 +109,10 @@ bool BirthSignRecord::saveToStream(std::ofstream& output) const
   for (i=0; i<SignSpells.size(); ++i)
   {
     //write NPCS
-    output.write((char*) &cNPCS, 4);
+    output.write((const char*) &cNPCS, 4);
     SubLength = 32; //length is fixed at 32 bytes, rest is NULs
     //write NPCS's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write spell ID
     const unsigned int len = SignSpells[i].length()+1;
     output.write(SignSpells[i].c_str(), len);
@@ -136,6 +125,7 @@ bool BirthSignRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool BirthSignRecord::loadFromStream(std::ifstream& in_File)
 {
@@ -182,7 +172,7 @@ bool BirthSignRecord::loadFromStream(std::ifstream& in_File)
     std::cout << "Error while reading subrecord NAME of BSGN!\n";
     return false;
   }
-  BirthSignID = std::string(Buffer);
+  recordID = std::string(Buffer);
 
   //read FNAM
   in_File.read((char*) &SubRecName, 4);
@@ -303,7 +293,7 @@ bool BirthSignRecord::loadFromStream(std::ifstream& in_File)
 
 bool operator<(const BirthSignRecord& left, const BirthSignRecord& right)
 {
-  return (left.BirthSignID.compare(right.BirthSignID)<0);
+  return (left.recordID.compare(right.recordID)<0);
 }
 
 } //namespace

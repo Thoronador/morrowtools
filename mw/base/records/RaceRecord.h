@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -36,7 +36,7 @@ struct SkillBonus
 
 struct RaceRecord: public BasicRecord
 {
-  std::string RaceID;
+  std::string recordID; //formerly RaceID
   std::string RaceName;
   //race data
   std::vector<SkillBonus> Boni;
@@ -67,12 +67,14 @@ struct RaceRecord: public BasicRecord
   /* returns true, if the other record contains the same data */
   bool equals(const RaceRecord& other) const;
 
+  #ifndef MW_UNSAVEABLE_RECORDS
   /* writes the record to the given output stream and returns true on success
 
     parameters:
         output - the output file stream
   */
   bool saveToStream(std::ofstream& output) const;
+  #endif
 
   /* loads the record from the given input stream and returns true on success
 

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011 Thoronador
+    Copyright (C) 2009, 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -28,7 +28,7 @@ namespace MWTP
 
 ApparatusRecord::ApparatusRecord()
 {
-  ApparatusID = "";
+  recordID = "";
   Model = "";
   ItemName = "";
   Type = -1;
@@ -41,19 +41,20 @@ ApparatusRecord::ApparatusRecord()
 
 bool ApparatusRecord::equals(const ApparatusRecord& other) const
 {
-  return ((ApparatusID==other.ApparatusID)
+  return ((recordID==other.recordID)
       and (Model==other.Model) and (ItemName==other.ItemName)
       and (Type==other.Type) and (Quality==other.Quality)
       and (Weight==other.Weight) and (Value==other.Value)
       and (InventoryIcon==other.InventoryIcon) and (ScriptName==other.ScriptName));
 }
 
+#ifndef MW_UNSAVEABLE_RECORDS
 bool ApparatusRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cAPPA, 4);
+  output.write((const char*) &cAPPA, 4);
   uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +ApparatusID.length()+1 /* length of ID +1 byte for NUL termination */
+        +recordID.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* MODL */ +4 /* 4 bytes for MODL's length */
         +Model.length()+1 /*length of mesh plus one for NUL-termination */
         +4 /* FNAM */ +4 /* 4 bytes for length */
@@ -61,14 +62,14 @@ bool ApparatusRecord::saveToStream(std::ofstream& output) const
         +4 /* AADT */ +4 /* 4 bytes for length */ +16 /* length of AADT */
         +4 /* ITEX */ +4 /* 4 bytes for length */
         +InventoryIcon.length() +1 /* length of icon path +1 byte for NUL termination */;
-  if (ScriptName!="")
+  if (!ScriptName.empty())
   {
     Size = Size + 4 /* SCRI */ +4 /* 4 bytes for length */
           +ScriptName.length()+1 /*length of script ID + one byte for NUL-termination */;
   }
-  output.write((char*) &Size, 4);
-  output.write((char*) &HeaderOne, 4);
-  output.write((char*) &HeaderFlags, 4);
+  output.write((const char*) &Size, 4);
+  output.write((const char*) &HeaderOne, 4);
+  output.write((const char*) &HeaderFlags, 4);
 
   /*Alchemy Apparatus:
     NAME = Item ID, required
@@ -83,56 +84,57 @@ bool ApparatusRecord::saveToStream(std::ofstream& output) const
     SCRI = Script Name (optional) */
 
   //write NAME
-  output.write((char*) &cNAME, 4);
-  uint32_t SubLength = ApparatusID.length()+1;
+  output.write((const char*) &cNAME, 4);
+  uint32_t SubLength = recordID.length()+1;
   //write NAME's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write NAME/ID
-  output.write(ApparatusID.c_str(), SubLength);
+  output.write(recordID.c_str(), SubLength);
   //write MODL
-  output.write((char*) &cMODL, 4);
+  output.write((const char*) &cMODL, 4);
   SubLength = Model.length()+1;
   //write MODL's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write MODL/ mesh path
   output.write(Model.c_str(), SubLength);
   //write FNAM
-  output.write((char*) &cFNAM, 4);
+  output.write((const char*) &cFNAM, 4);
   SubLength = ItemName.length()+1;
   //write FNAM's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write FNAM/ item name
   output.write(ItemName.c_str(), SubLength);
   //write AADT
-  output.write((char*) &cAADT, 4);
+  output.write((const char*) &cAADT, 4);
   SubLength = 16;
   //write AADT's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write AADT/ alchemy apparatus data
-  output.write((char*) &Type, 4);
-  output.write((char*) &Quality, 4);
-  output.write((char*) &Weight, 4);
-  output.write((char*) &Value, 4);
+  output.write((const char*) &Type, 4);
+  output.write((const char*) &Quality, 4);
+  output.write((const char*) &Weight, 4);
+  output.write((const char*) &Value, 4);
 
   //write ITEX
-  output.write((char*) &cITEX, 4);
+  output.write((const char*) &cITEX, 4);
   SubLength = InventoryIcon.length()+1;
   //write ITEX's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write ITEX/ inventory icon
   output.write(InventoryIcon.c_str(), SubLength);
-  if (ScriptName!="")
+  if (!ScriptName.empty())
   {
     //write SCRI
-    output.write((char*) &cSCRI, 4);
+    output.write((const char*) &cSCRI, 4);
     SubLength = ScriptName.length()+1;
     //write SCRI's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write Script ID
     output.write(ScriptName.c_str(), SubLength);
   }//if script ID present
   return output.good();
 }
+#endif
 
 bool ApparatusRecord::loadFromStream(std::ifstream& in_File)
 {
@@ -183,7 +185,7 @@ bool ApparatusRecord::loadFromStream(std::ifstream& in_File)
     std::cout << "Error while reading subrecord NAME of APPA!\n";
     return false;
   }
-  ApparatusID = std::string(Buffer);
+  recordID = std::string(Buffer);
 
   //read MODL
   in_File.read((char*) &SubRecName, 4);

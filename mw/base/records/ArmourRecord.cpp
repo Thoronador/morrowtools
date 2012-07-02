@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011 Thoronador
+    Copyright (C) 2009, 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -28,7 +28,7 @@ namespace MWTP
 
 ArmourRecord::ArmourRecord()
 {
-  ArmourID = "";
+  recordID = "";
   Model = "";
   Name = "";
   //armour data
@@ -46,7 +46,7 @@ ArmourRecord::ArmourRecord()
 
 bool ArmourRecord::equals(const ArmourRecord& other) const
 {
-  return ((ArmourID==other.ArmourID) and (Model==other.Model)
+  return ((recordID==other.recordID) and (Model==other.Model)
       and (Name==other.Name) and (ArmourType==other.ArmourType)
       and (Weight==other.Weight) and (Value==other.Value)
       and (Health==other.Health) and (EnchantmentPoints==other.EnchantmentPoints)
@@ -55,12 +55,13 @@ bool ArmourRecord::equals(const ArmourRecord& other) const
       and (EnchantmentID==other.EnchantmentID));
 }
 
+#ifndef MW_UNSAVEABLE_RECORDS
 bool ArmourRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cARMO, 4);
+  output.write((const char*) &cARMO, 4);
   uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +ArmourID.length()+1 /* length of ID +1 byte for NUL termination */
+        +recordID.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* MODL */ +4 /* 4 bytes for length */
         +Model.length()+1 /* length of model path +1 byte for NUL termination */
         +4 /* FNAM */ +4 /* 4 bytes for length */
@@ -71,36 +72,37 @@ bool ArmourRecord::saveToStream(std::ofstream& output) const
   for (i=0; i<ArmourBodyParts.size(); ++i)
   {
     Size = Size + 4 /* INDX */ +4 /* 4 bytes for length */ +1 /* fixed length of 1 byte */;
-    if (ArmourBodyParts[i].MaleBodyPart!="")
+    if (!ArmourBodyParts[i].MaleBodyPart.empty())
     {
       Size = Size + 4 /* BNAM */ +4 /* 4 bytes for length */
             +ArmourBodyParts[i].MaleBodyPart.length()+1 /* length of ID +1 byte for NUL termination */;
     }
-    if (ArmourBodyParts[i].FemaleBodyPart!="")
+    if (!ArmourBodyParts[i].FemaleBodyPart.empty())
     {
       Size = Size + 4 /* CNAM */ +4 /* 4 bytes for length */
             +ArmourBodyParts[i].FemaleBodyPart.length()+1 /* length of ID +1 byte for NUL termination */;
     }
   }//for
 
-  if (ScriptID!="")
+  if (!ScriptID.empty())
   {
     Size = Size + 4 /* SCRI */ +4 /* 4 bytes for length */
           +ScriptID.length()+1 /* length of ID +1 byte for NUL termination */;
   }
-  if (EnchantmentID!="")
+  if (!EnchantmentID.empty())
   {
     Size = Size + 4 /* ENAM */ +4 /* 4 bytes for length */
           +EnchantmentID.length()+1 /* length of ID +1 byte for NUL termination */;
   }
-  if (InventoryIcon!="")
+  if (!InventoryIcon.empty())
   {
     Size = Size +4 /* ITEX */ +4 /* 4 bytes for length */
         +InventoryIcon.length()+1 /* length of icon +1 byte for NUL termination */;
   }
-  output.write((char*) &Size, 4);
-  output.write((char*) &HeaderOne, 4);
-  output.write((char*) &HeaderFlags, 4);
+
+  output.write((const char*) &Size, 4);
+  output.write((const char*) &HeaderOne, 4);
+  output.write((const char*) &HeaderFlags, 4);
 
   /*Armor pieces:
     NAME = Item ID, required
@@ -132,60 +134,60 @@ bool ArmourRecord::saveToStream(std::ofstream& output) const
     ENAM = Enchantment Name (optional) */
 
   //write NAME
-  output.write((char*) &cNAME, 4);
-  uint32_t SubLength = ArmourID.length()+1;
+  output.write((const char*) &cNAME, 4);
+  uint32_t SubLength = recordID.length()+1;
   //write NAME's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write ID
-  output.write(ArmourID.c_str(), SubLength);
+  output.write(recordID.c_str(), SubLength);
 
   //write MODL
-  output.write((char*) &cMODL, 4);
+  output.write((const char*) &cMODL, 4);
   SubLength = Model.length()+1;
   //write MODL's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write armour's model path
   output.write(Model.c_str(), SubLength);
 
   //write FNAM
-  output.write((char*) &cFNAM, 4);
+  output.write((const char*) &cFNAM, 4);
   SubLength = Name.length()+1;
   //write FNAM's length
   output.write((char*) &SubLength, 4);
   //write armour's "real" name
   output.write(Name.c_str(), SubLength);
 
-  if (ScriptID!="")
+  if (!ScriptID.empty())
   {
     //write SCRI
-    output.write((char*) &cSCRI, 4);
+    output.write((const char*) &cSCRI, 4);
     SubLength = ScriptID.length()+1;
     //write SCRI's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write script ID
     output.write(ScriptID.c_str(), SubLength);
   }
 
   //write AODT
-  output.write((char*) &cAODT, 4);
+  output.write((const char*) &cAODT, 4);
   SubLength = 24; //fixed length of 24 bytes
   //write AODT's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write armour data
-  output.write((char*) &ArmourType, 4);
-  output.write((char*) &Weight, 4);
-  output.write((char*) &Value, 4);
-  output.write((char*) &Health, 4);
-  output.write((char*) &EnchantmentPoints, 4);
-  output.write((char*) &ArmourRating, 4);
+  output.write((const char*) &ArmourType, 4);
+  output.write((const char*) &Weight, 4);
+  output.write((const char*) &Value, 4);
+  output.write((const char*) &Health, 4);
+  output.write((const char*) &EnchantmentPoints, 4);
+  output.write((const char*) &ArmourRating, 4);
 
-  if (InventoryIcon!="")
+  if (!InventoryIcon.empty())
   {
     //write ITEX
-    output.write((char*) &cITEX, 4);
+    output.write((const char*) &cITEX, 4);
     SubLength = InventoryIcon.length()+1;
     //write ITEX's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write armour's inventory icon
     output.write(InventoryIcon.c_str(), SubLength);
   }
@@ -194,48 +196,49 @@ bool ArmourRecord::saveToStream(std::ofstream& output) const
   for (i=0; i<ArmourBodyParts.size(); ++i)
   {
     //write INDX
-    output.write((char*) &cINDX, 4);
+    output.write((const char*) &cINDX, 4);
     SubLength = 1; //fixed length of one byte
     //write INDX's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write body part index
-    output.write((char*) &(ArmourBodyParts[i].Index), 1);
+    output.write((const char*) &(ArmourBodyParts[i].Index), 1);
 
-    if (ArmourBodyParts[i].MaleBodyPart!="")
+    if (!ArmourBodyParts[i].MaleBodyPart.empty())
     {
       //write BNAM
-      output.write((char*) &cBNAM, 4);
+      output.write((const char*) &cBNAM, 4);
       SubLength = ArmourBodyParts[i].MaleBodyPart.length()+1 /* length of ID +1 byte for NUL termination */;
       //write BNAM's length
-      output.write((char*) &SubLength, 4);
+      output.write((const char*) &SubLength, 4);
       //write male body part name
       output.write(ArmourBodyParts[i].MaleBodyPart.c_str(), SubLength);
     }
-    if (ArmourBodyParts[i].FemaleBodyPart!="")
+    if (!ArmourBodyParts[i].FemaleBodyPart.empty())
     {
       //write CNAM
-      output.write((char*) &cCNAM, 4);
+      output.write((const char*) &cCNAM, 4);
       SubLength = ArmourBodyParts[i].FemaleBodyPart.length()+1 /* length of ID +1 byte for NUL termination */;
       //write BNAM's length
-      output.write((char*) &SubLength, 4);
+      output.write((const char*) &SubLength, 4);
       //write male body part name
       output.write(ArmourBodyParts[i].FemaleBodyPart.c_str(), SubLength);
     }
   }//for
 
-  if (EnchantmentID!="")
+  if (!EnchantmentID.empty())
   {
     //write ENAM
-    output.write((char*) &cENAM, 4);
+    output.write((const char*) &cENAM, 4);
     SubLength = EnchantmentID.length()+1;
     //write ENAM's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write enchantment ID
     output.write(EnchantmentID.c_str(), SubLength);
   }
 
   return output.good();
 }
+#endif
 
 bool ArmourRecord::loadFromStream(std::ifstream& in_File)
 {
@@ -303,7 +306,7 @@ bool ArmourRecord::loadFromStream(std::ifstream& in_File)
     std::cout << "Error while reading subrecord NAME of ARMO!\n";
     return false;
   }
-  ArmourID = std::string(Buffer);
+  recordID = std::string(Buffer);
 
   //read MODL
   in_File.read((char*) &SubRecName, 4);

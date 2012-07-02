@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -85,12 +85,12 @@ int32_t ESMWriterAll::getTotalRecords() const
   //    regions, repair items, scripts, skills, spells, statics, start scripts,
   //    sounds, sound generators, weapons and game settings at the moment
   return GameSettings::getSingleton().getNumberOfSettings()
-        +Activators::getSingleton().getNumberOfActivators()
-        +AlchemyPotions::getSingleton().getNumberOfAlchemyPotions()
-        +Apparatuses::getSingleton().getNumberOfApparatuses()
-        +Armours::getSingleton().getNumberOfArmours()
-        +BirthSigns::getSingleton().getNumberOfBirthSigns()
-        +BodyParts::getSingleton().getNumberOfBodyParts()
+        +Activators::getSingleton().getNumberOfRecords()
+        +AlchemyPotions::getSingleton().getNumberOfRecords()
+        +Apparatuses::getSingleton().getNumberOfRecords()
+        +Armours::getSingleton().getNumberOfRecords()
+        +BirthSigns::getSingleton().getNumberOfRecords()
+        +BodyParts::getSingleton().getNumberOfRecords()
         +Books::getSingleton().getNumberOfBooks()
         +Cells::getSingleton().getNumberOfCells()
         +Classes::getSingleton().getNumberOfClasses()
@@ -102,7 +102,7 @@ int32_t ESMWriterAll::getTotalRecords() const
         +Doors::getSingleton().getNumberOfDoors()
         +Enchantings::getSingleton().getNumberOfEnchantings()
         +Factions::getSingleton().getNumberOfFactions()
-        +Globals::getSingleton().getNumberOfGlobals()
+        +Globals::getSingleton().getNumberOfRecords()
         +Ingredients::getSingleton().getNumberOfIngredients()
         +Landscape::getSingleton().getNumberOfLandscapeRecords()
         +LandscapeTextures::getSingleton().getNumberOfLandscapeTextures()
@@ -114,10 +114,10 @@ int32_t ESMWriterAll::getTotalRecords() const
         +MiscItems::getSingleton().getNumberOfMiscItems()
         +NPCs::getSingleton().getNumberOfNPCs()
         +PathGrids::getSingleton().getNumberOfPathGrids()
-        +Probes::getSingleton().getNumberOfProbes()
-        +Races::getSingleton().getNumberOfRaces()
-        +Regions::getSingleton().getNumberOfRegions()
-        +RepairItems::getSingleton().getNumberOfRepairItems()
+        +Probes::getSingleton().getNumberOfRecords()
+        +Races::getSingleton().getNumberOfRecords()
+        +Regions::getSingleton().getNumberOfRecords()
+        +RepairItems::getSingleton().getNumberOfRecords()
         +Scripts::getSingleton().getNumberOfScripts()
         +Skills::getSingleton().getNumberOfSkills()
         +Spells::getSingleton().getNumberOfSpells()

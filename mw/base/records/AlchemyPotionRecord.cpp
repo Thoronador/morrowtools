@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011 Thoronador
+    Copyright (C) 2009, 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -28,7 +28,7 @@ namespace MWTP
 
 AlchemyPotionRecord::AlchemyPotionRecord()
 {
-  AlchemyID = ModelPath = Name = "";
+  recordID = ModelPath = Name = "";
   //alchemy data
   Weight = 0.0f;
   Value = -1;
@@ -40,22 +40,13 @@ AlchemyPotionRecord::AlchemyPotionRecord()
 
 bool AlchemyPotionRecord::equals(const AlchemyPotionRecord& other) const
 {
-  if ((AlchemyID!=other.AlchemyID) or (ModelPath!=other.ModelPath)
+  if ((recordID!=other.recordID) or (ModelPath!=other.ModelPath)
    or (Name!=other.Name) or (Weight!=other.Weight) or (Value!=other.Value)
-   or (AutoCalc!=other.AutoCalc) or (Enchs.size()!=other.Enchs.size())
+   or (AutoCalc!=other.AutoCalc) or (Enchs!=other.Enchs)
    or (InventoryIcon!=other.InventoryIcon) or (ScriptName!=other.ScriptName))
   {
     return false;
   }
-  //check enchantments
-  unsigned int i;
-  for (i=0; i<Enchs.size(); ++i)
-  {
-    if (!Enchs[i].equals(other.Enchs[i]))
-    {
-      return false;
-    }
-  }//for
   return true;
 }
 
@@ -116,7 +107,7 @@ bool AlchemyPotionRecord::loadFromStream(std::ifstream& in_File)
     std::cout << "Error while reading subrecord NAME of ALCH.\n";
     return false;
   }
-  AlchemyID = std::string(Buffer);
+  recordID = std::string(Buffer);
 
   //read MODL
   in_File.read((char*) &SubRecName, 4);
@@ -190,12 +181,13 @@ bool AlchemyPotionRecord::loadFromStream(std::ifstream& in_File)
   return in_File.good();
 }
 
+#ifndef MW_UNSAVEABLE_RECORDS
 bool AlchemyPotionRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cALCH, 4);
+  output.write((const char*) &cALCH, 4);
   uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +AlchemyID.length()+1 /* length of ID +1 byte for NUL termination */
+        +recordID.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* MODL */ +4 /* 4 bytes for length */
         +ModelPath.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* FNAM */ +4 /* 4 bytes for length */
@@ -205,14 +197,14 @@ bool AlchemyPotionRecord::saveToStream(std::ofstream& output) const
         +Enchs.size()*(4 /* ENAM */ +4 /* ENAM's length */ +24 /*size of enchantment*/)
         +4 /* TEXT */ +4 /* 4 bytes for length */
         +InventoryIcon.length()+1 /* length of ID +1 byte for NUL termination */;
-  if (ScriptName!="")
+  if (!ScriptName.empty())
   {
     Size = Size +4 /* SCRI */ +4 /* 4 bytes for length */
           +ScriptName.length()+1; /* length of script ID +1 byte for NUL termination */
   }
-  output.write((char*) &Size, 4);
-  output.write((char*) &HeaderOne, 4);
-  output.write((char*) &HeaderFlags, 4);
+  output.write((const char*) &Size, 4);
+  output.write((const char*) &HeaderOne, 4);
+  output.write((const char*) &HeaderFlags, 4);
 
   /*Alchemy Potions:
     NAME = Item ID, required
@@ -235,79 +227,80 @@ bool AlchemyPotionRecord::saveToStream(std::ofstream& output) const
     SCRI = Script Name (optional) */
 
   //write NAME
-  output.write((char*) &cNAME, 4);
+  output.write((const char*) &cNAME, 4);
   //NAME's length
   uint32_t SubLength;
-  SubLength = AlchemyID.length()+1;//length of string plus one for NUL-termination
-  output.write((char*) &SubLength, 4);
+  SubLength = recordID.length()+1;//length of string plus one for NUL-termination
+  output.write((const char*) &SubLength, 4);
   //write ID
-  output.write(AlchemyID.c_str(), SubLength);
+  output.write(recordID.c_str(), SubLength);
 
   //write MODL
-  output.write((char*) &cMODL, 4);
+  output.write((const char*) &cMODL, 4);
   //MODL's length
   SubLength = ModelPath.length()+1;//length of string plus one for NUL-termination
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write model path
   output.write(ModelPath.c_str(), SubLength);
 
   //write FNAM
-  output.write((char*) &cFNAM, 4);
+  output.write((const char*) &cFNAM, 4);
   //FNAM's length
   SubLength = Name.length()+1;//length of string plus one for NUL-termination
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write potion name
   output.write(Name.c_str(), SubLength);
 
   //write ALDT
-  output.write((char*) &cALDT, 4);
+  output.write((const char*) &cALDT, 4);
   //ALDT's length
   SubLength = 12; //length of ALDT (alchemy data) is always 12 bytes
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   // write alchemy data
-  output.write((char*) &Weight, 4);
-  output.write((char*) &Value, 4);
-  output.write((char*) &AutoCalc, 4);
+  output.write((const char*) &Weight, 4);
+  output.write((const char*) &Value, 4);
+  output.write((const char*) &AutoCalc, 4);
 
   //write enchantments
   unsigned int i;
   for(i=0; i<Enchs.size(); ++i)
   {
     //write ENAM
-    output.write((char*) &cENAM, 4);
+    output.write((const char*) &cENAM, 4);
     //ENAM's length
     SubLength = 24;//length of enchantment data ist always 24 bytes
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write enchantment data
-    output.write((char*) &(Enchs[i].EffectID), 2);
-    output.write((char*) &(Enchs[i].SkillID), 1);
-    output.write((char*) &(Enchs[i].AttributeID), 1);
-    output.write((char*) &(Enchs[i].RangeType), 4);
-    output.write((char*) &(Enchs[i].Area), 4);
-    output.write((char*) &(Enchs[i].Duration), 4);
-    output.write((char*) &(Enchs[i].MagnitudeMin), 4);
-    output.write((char*) &(Enchs[i].MagnitudeMax), 4);
+    output.write((const char*) &(Enchs[i].EffectID), 2);
+    output.write((const char*) &(Enchs[i].SkillID), 1);
+    output.write((const char*) &(Enchs[i].AttributeID), 1);
+    output.write((const char*) &(Enchs[i].RangeType), 4);
+    output.write((const char*) &(Enchs[i].Area), 4);
+    output.write((const char*) &(Enchs[i].Duration), 4);
+    output.write((const char*) &(Enchs[i].MagnitudeMin), 4);
+    output.write((const char*) &(Enchs[i].MagnitudeMax), 4);
   }//for
   //write TEXT
-  output.write((char*) &cTEXT, 4);
+  output.write((const char*) &cTEXT, 4);
   //TEXT's length
   SubLength = InventoryIcon.length()+1;//length of string plus one for NUL-termination
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write inventory icon
   output.write(InventoryIcon.c_str(), SubLength);
 
-  if (ScriptName!="")
+  if (!ScriptName.empty())
   {
     //write SCRI
-    output.write((char*) &cSCRI, 4);
+    output.write((const char*) &cSCRI, 4);
     //SCRI's length
     SubLength = ScriptName.length()+1;//length of string plus one for NUL-termination
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write script name
     output.write(ScriptName.c_str(), SubLength);
   }
   return output.good();
 }
+#endif
 
 bool AlchemyPotionRecord::readSubRecordALDT(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead)
 {

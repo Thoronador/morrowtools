@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -33,7 +33,7 @@ namespace MWTP
 struct AlchemyPotionRecord: public BasicRecord
 {
   public:
-    std::string AlchemyID;
+    std::string recordID; //formerly known as AlchemyID
     std::string ModelPath;
     std::string Name;
     //alchemy data
@@ -51,12 +51,14 @@ struct AlchemyPotionRecord: public BasicRecord
     /* returns true, of content of other record is equal to this one */
     bool equals(const AlchemyPotionRecord& other) const;
 
+    #ifndef MW_UNSAVEABLE_RECORDS
     /* writes the record to the given output stream and returns true on success
 
       parameters:
           output - the output file stream
     */
     bool saveToStream(std::ofstream& output) const;
+    #endif
 
     /* loads the record from the given input stream and returns true on success
 

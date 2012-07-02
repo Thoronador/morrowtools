@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011 Thoronador
+    Copyright (C) 2009, 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -22,13 +22,14 @@
 #include <iostream>
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
+#include "../../../base/UtilityFunctions.h"
 
 namespace MWTP
 {
 
 ProbeRecord::ProbeRecord()
 {
-  ProbeID = ModelPath = Name = "";
+  recordID = ModelPath = Name = "";
   //probe data
   Weight = 0.0f;
   Value = 0;
@@ -40,7 +41,7 @@ ProbeRecord::ProbeRecord()
 
 ProbeRecord::ProbeRecord(const std::string& ID)
 {
-  ProbeID = ID;
+  recordID = ID;
   ModelPath = Name = "";
   //probe data
   Weight = 0.0f;
@@ -58,18 +59,19 @@ ProbeRecord::~ProbeRecord()
 
 bool ProbeRecord::equals(const ProbeRecord& other) const
 {
-  return ((ProbeID==other.ProbeID) and (ModelPath==other.ModelPath)
+  return ((recordID==other.recordID) and (ModelPath==other.ModelPath)
       and (Name==other.Name) and (Weight==other.Weight) and (Value==other.Value)
       and (Quality==other.Quality) and (Uses==other.Uses)
       and (InventoryIcon==other.InventoryIcon) and (ScriptName==other.ScriptName));
 }
 
+#ifndef MW_UNSAVEABLE_RECORDS
 bool ProbeRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cPROB, 4);
+  output.write((const char*) &cPROB, 4);
   uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +ProbeID.length()+1 /* length of ID +1 byte for NUL termination */
+        +recordID.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* MODL */ +4 /* 4 bytes for length */
         +ModelPath.length()+1 /* length of path +1 byte for NUL termination */
         +4 /* FNAM */ +4 /* 4 bytes for length */
@@ -77,14 +79,14 @@ bool ProbeRecord::saveToStream(std::ofstream& output) const
         +4 /* PBDT */ +4 /* PBDT's length */ +16 /*size of PBDT (always 16 bytes)*/
         +4 /* ITEX */ +4 /* 4 bytes for length */
         +InventoryIcon.length()+1 /* length of icon path +1 byte for NUL termination */;
-  if (ScriptName!="")
+  if (!ScriptName.empty())
   {
     Size = Size +4 /* SCRI */ +4 /* 4 bytes for length */
           +ScriptName.length()+1; /* length of script ID +1 byte for NUL termination */;
   }
-  output.write((char*) &Size, 4);
-  output.write((char*) &HeaderOne, 4);
-  output.write((char*) &HeaderFlags, 4);
+  output.write((const char*) &Size, 4);
+  output.write((const char*) &HeaderOne, 4);
+  output.write((const char*) &HeaderFlags, 4);
 
   /*Probe Item:
     NAME = Item ID, required
@@ -99,62 +101,63 @@ bool ProbeRecord::saveToStream(std::ofstream& output) const
     SCRI = Script Name (optional) */
 
   //write NAME
-  output.write((char*) &cNAME, 4);
+  output.write((const char*) &cNAME, 4);
   //NAME's length
   uint32_t SubLength;
-  SubLength = ProbeID.length()+1;//length of string plus one for NUL-termination
-  output.write((char*) &SubLength, 4);
+  SubLength = recordID.length()+1;//length of string plus one for NUL-termination
+  output.write((const char*) &SubLength, 4);
   //write ID
-  output.write(ProbeID.c_str(), SubLength);
+  output.write(recordID.c_str(), SubLength);
 
   //write MODL
-  output.write((char*) &cMODL, 4);
+  output.write((const char*) &cMODL, 4);
   //MODL's length
   SubLength = ModelPath.length()+1;//length of string plus one for NUL-termination
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write model path
   output.write(ModelPath.c_str(), SubLength);
 
   //write FNAM
-  output.write((char*) &cFNAM, 4);
+  output.write((const char*) &cFNAM, 4);
   //FNAM's length
   SubLength = Name.length()+1;//length of string plus one for NUL-termination
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write probe name
   output.write(Name.c_str(), SubLength);
 
   //write PBDT
-  output.write((char*) &cPBDT, 4);
+  output.write((const char*) &cPBDT, 4);
   //PBDT's length
   SubLength = 16;//length of PBDT is always 16 bytes
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write repair item data
-  output.write((char*) &Weight, 4);
-  output.write((char*) &Value, 4);
-  output.write((char*) &Quality, 4);
-  output.write((char*) &Uses, 4);
+  output.write((const char*) &Weight, 4);
+  output.write((const char*) &Value, 4);
+  output.write((const char*) &Quality, 4);
+  output.write((const char*) &Uses, 4);
 
   //write ITEX
-  output.write((char*) &cITEX, 4);
+  output.write((const char*) &cITEX, 4);
   //ITEX's length
   SubLength = InventoryIcon.length()+1;//length of string plus one for NUL-termination
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write inventory icon path
   output.write(InventoryIcon.c_str(), SubLength);
 
-  if (ScriptName!="")
+  if (!ScriptName.empty())
   {
     //write SCRI
-    output.write((char*) &cSCRI, 4);
+    output.write((const char*) &cSCRI, 4);
     //SCRI's length
     SubLength = ScriptName.length()+1;//length of string plus one for NUL-termination
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write script name/ID
     output.write(ScriptName.c_str(), SubLength);
   }//if
 
   return output.good();
 }
+#endif
 
 bool ProbeRecord::loadFromStream(std::ifstream& in_File)
 {
@@ -205,7 +208,7 @@ bool ProbeRecord::loadFromStream(std::ifstream& in_File)
     std::cout << "Error while reading subrecord NAME of PROB.\n";
     return false;
   }
-  ProbeID = std::string(Buffer);
+  recordID = std::string(Buffer);
 
   //read MODL
   in_File.read((char*) &SubRecName, 4);
@@ -352,7 +355,7 @@ bool ProbeRecord::loadFromStream(std::ifstream& in_File)
 
 bool operator<(const ProbeRecord& left, const ProbeRecord& right)
 {
-  return (left.ProbeID.compare(right.ProbeID)<0);
+  return (lowerCaseCompare(left.recordID, right.recordID)<0);
 }
 
 } //namespace

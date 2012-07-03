@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011 Thoronador
+    Copyright (C) 2009, 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -28,29 +28,30 @@ namespace MWTP
 
 LandscapeTextureRecord::LandscapeTextureRecord()
 {
-  TextureID = "";
+  recordID = "";
   Index = -1;
   Path = "";
 }
 
 bool LandscapeTextureRecord::equals(const LandscapeTextureRecord& other) const
 {
-  return ((TextureID==other.TextureID) and (Index==other.Index)
+  return ((recordID==other.recordID) and (Index==other.Index)
          and (Path==other.Path));
 }
 
+#ifndef MW_UNSAVEABLE_RECORDS
 bool LandscapeTextureRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cLTEX, 4);
+  output.write((const char*) &cLTEX, 4);
   uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +TextureID.length()+1 /* length of ID +1 byte for NUL termination */
+        +recordID.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* INTV */ +4 /* 4 bytes for INTV's length */ +4 /* size of INTV */
         +4 /* DATA */ +4 /* 4 bytes for length */
         +Path.length()+1 /* length of path plus one for NUL-termination */;
-  output.write((char*) &Size, 4);
-  output.write((char*) &HeaderOne, 4);
-  output.write((char*) &HeaderFlags, 4);
+  output.write((const char*) &Size, 4);
+  output.write((const char*) &HeaderOne, 4);
+  output.write((const char*) &HeaderFlags, 4);
 
   /*LandscapeTextures:
     NAME = Item ID, required
@@ -58,30 +59,31 @@ bool LandscapeTextureRecord::saveToStream(std::ofstream& output) const
     DATA = Texture path, required */
 
   //write NAME
-  output.write((char*) &cNAME, 4);
-  uint32_t SubLength = TextureID.length()+1;
+  output.write((const char*) &cNAME, 4);
+  uint32_t SubLength = recordID.length()+1;
   //write NAME's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write NAME/ID
-  output.write(TextureID.c_str(), SubLength);
+  output.write(recordID.c_str(), SubLength);
 
   //write INTV
-  output.write((char*) &cINTV, 4);
+  output.write((const char*) &cINTV, 4);
   SubLength = 4;
   //write INTV's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write Index
-  output.write((char*) &Index, SubLength);
+  output.write((const char*) &Index, SubLength);
 
   //write DATA
-  output.write((char*) &cDATA, 4);
+  output.write((const char*) &cDATA, 4);
   SubLength = Path.length()+1;
   //write DATA's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write DATA
   output.write(Path.c_str(), SubLength);
   return output.good();
 }
+#endif
 
 bool LandscapeTextureRecord::loadFromStream(std::ifstream& in_File)
 {
@@ -122,7 +124,7 @@ bool LandscapeTextureRecord::loadFromStream(std::ifstream& in_File)
     std::cout << "Error while reading subrecord NAME of LTEX!\n";
     return false;
   }
-  TextureID = std::string(Buffer);
+  recordID = std::string(Buffer);
 
   //read INTV
   in_File.read((char*) &SubRecName, 4);

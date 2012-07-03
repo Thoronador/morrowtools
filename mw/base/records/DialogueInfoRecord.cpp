@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -41,7 +41,7 @@ bool FuncVarRecord::operator==(const FuncVarRecord& other) const
 
 DialogueInfoRecord::DialogueInfoRecord()
 {
-  InfoID = PreviousInfoID = NextInfoID = "";
+  recordID = PreviousInfoID = NextInfoID = "";
   //info data
   UnknownLong = 0;
   Disposition = 0;
@@ -60,7 +60,7 @@ DialogueInfoRecord::DialogueInfoRecord()
 
 bool DialogueInfoRecord::equals(const DialogueInfoRecord& other) const
 {
-  return ((InfoID==other.InfoID) and (PreviousInfoID==other.PreviousInfoID)
+  return ((recordID==other.recordID) and (PreviousInfoID==other.PreviousInfoID)
       and (NextInfoID==other.NextInfoID) and (UnknownLong==other.UnknownLong)
       and (Disposition==other.Disposition) and (Rank==other.Rank)
       and (Gender==other.Gender) and (PCRank==other.PCRank)
@@ -73,12 +73,13 @@ bool DialogueInfoRecord::equals(const DialogueInfoRecord& other) const
       and (isQuestRestart==other.isQuestRestart) and (ResultString==other.ResultString));
 }
 
+#ifndef MW_UNSAVEABLE_RECORDS
 bool DialogueInfoRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cINFO, 4);
+  output.write((const char*) &cINFO, 4);
   uint32_t Size;
   Size = 4 /* INAM */ +4 /* 4 bytes for length */
-        +InfoID.length()+1 /* length of ID +1 byte for NUL termination */
+        +recordID.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* PNAM */ +4 /* 4 bytes for length */
         +PreviousInfoID.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* NNAM */ +4 /* 4 bytes for length */
@@ -87,37 +88,37 @@ bool DialogueInfoRecord::saveToStream(std::ofstream& output) const
         +4 /* NAME */ +4 /* 4 bytes for length */
         +Response.length() /* length of response (no NUL termination) */;
 
-  if (ActorID!="")
+  if (!ActorID.empty())
   {
     Size = Size +4 /* ONAM */ +4 /* 4 bytes for length */
           +ActorID.length()+1 /* length of ID +1 byte for NUL termination */;
   }
-  if (RaceID!="")
+  if (!RaceID.empty())
   {
     Size = Size +4 /* RNAM */ +4 /* 4 bytes for length */
           +RaceID.length()+1 /* length of ID +1 byte for NUL termination */;
   }
-  if (ClassID!="")
+  if (!ClassID.empty())
   {
     Size = Size +4 /* CNAM */ +4 /* 4 bytes for length */
           +ClassID.length()+1 /* length of ID +1 byte for NUL termination */;
   }
-  if (FactionID!="")
+  if (!FactionID.empty())
   {
     Size = Size +4 /* FNAM */ +4 /* 4 bytes for length */
           +FactionID.length()+1 /* length of ID +1 byte for NUL termination */;
   }
-  if (CellID!="")
+  if (!CellID.empty())
   {
     Size = Size +4 /* ANAM */ +4 /* 4 bytes for length */
           +CellID.length()+1 /* length of ID +1 byte for NUL termination */;
   }
-  if (PCFactionID!="")
+  if (!PCFactionID.empty())
   {
     Size = Size +4 /* DNAM */ +4 /* 4 bytes for length */
           +PCFactionID.length()+1 /* length of ID +1 byte for NUL termination */;
   }
-  if (SoundFile!="")
+  if (!SoundFile.empty())
   {
     Size = Size +4 /* SNAM */ +4 /* 4 bytes for length */
           +SoundFile.length()+1 /* length of file path +1 byte for NUL termination */;
@@ -144,14 +145,14 @@ bool DialogueInfoRecord::saveToStream(std::ofstream& output) const
           +4 /* FLTV/INTV */ +4 /* 4 bytes for length */ +4 /* fixed length of four bytes */;
   }//for
 
-  if (ResultString!="")
+  if (!ResultString.empty())
   {
     Size = Size +4 /* BNAM */ +4 /* 4 bytes for length */
           +ResultString.length()+1 /* length of result +1 byte for NUL termination */;
   }
-  output.write((char*) &Size, 4);
-  output.write((char*) &HeaderOne, 4);
-  output.write((char*) &HeaderFlags, 4);
+  output.write((const char*) &Size, 4);
+  output.write((const char*) &HeaderOne, 4);
+  output.write((const char*) &HeaderFlags, 4);
 
   /* Dialogue info record:
     Dialogue response record that belongs to previous DIAL record.
@@ -225,123 +226,123 @@ bool DialogueInfoRecord::saveToStream(std::ofstream& output) const
   */
 
   //write INAM
-  output.write((char*) &cINAM, 4);
-  uint32_t SubLength = InfoID.length()+1;
+  output.write((const char*) &cINAM, 4);
+  uint32_t SubLength = recordID.length()+1;
   //write INAM's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write ID
-  output.write(InfoID.c_str(), SubLength);
+  output.write(recordID.c_str(), SubLength);
 
   //write PNAM
-  output.write((char*) &cPNAM, 4);
+  output.write((const char*) &cPNAM, 4);
   SubLength = PreviousInfoID.length()+1;
   //write PNAM's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write prevoius ID
   output.write(PreviousInfoID.c_str(), SubLength);
 
   //write NNAM
-  output.write((char*) &cNNAM, 4);
+  output.write((const char*) &cNNAM, 4);
   SubLength = NextInfoID.length()+1;
   //write NNAM's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write next ID
   output.write(NextInfoID.c_str(), SubLength);
 
   //write DATA
-  output.write((char*) &cDATA, 4);
+  output.write((const char*) &cDATA, 4);
   SubLength = 12; //fixed length of 12 bytes
   //write DATA's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write data
-  output.write((char*) &UnknownLong, 4);
-  output.write((char*) &Disposition, 4);
-  output.write((char*) &Rank, 1);
-  output.write((char*) &Gender, 1);
-  output.write((char*) &PCRank, 1);
-  output.write((char*) &UnknownByte, 1);
+  output.write((const char*) &UnknownLong, 4);
+  output.write((const char*) &Disposition, 4);
+  output.write((const char*) &Rank, 1);
+  output.write((const char*) &Gender, 1);
+  output.write((const char*) &PCRank, 1);
+  output.write((const char*) &UnknownByte, 1);
 
-  if (ActorID!="")
+  if (!ActorID.empty())
   {
     //write ONAM
-    output.write((char*) &cONAM, 4);
+    output.write((const char*) &cONAM, 4);
     SubLength = ActorID.length()+1;
     //write ONAM's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write actor ID
     output.write(ActorID.c_str(), SubLength);
   }
 
-  if (RaceID!="")
+  if (!RaceID.empty())
   {
     //write RNAM
-    output.write((char*) &cRNAM, 4);
+    output.write((const char*) &cRNAM, 4);
     SubLength = RaceID.length()+1;
     //write RNAM's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write race ID
     output.write(RaceID.c_str(), SubLength);
   }
 
-  if (ClassID!="")
+  if (!ClassID.empty())
   {
     //write CNAM
-    output.write((char*) &cCNAM, 4);
+    output.write((const char*) &cCNAM, 4);
     SubLength = ClassID.length()+1;
     //write CNAM's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write class ID
     output.write(ClassID.c_str(), SubLength);
   }
 
-  if (FactionID!="")
+  if (!FactionID.empty())
   {
     //write FNAM
-    output.write((char*) &cFNAM, 4);
+    output.write((const char*) &cFNAM, 4);
     SubLength = FactionID.length()+1;
     //write FNAM's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write faction ID
     output.write(FactionID.c_str(), SubLength);
   }
 
-  if (CellID!="")
+  if (!CellID.empty())
   {
     //write ANAM
-    output.write((char*) &cANAM, 4);
+    output.write((const char*) &cANAM, 4);
     SubLength = CellID.length()+1;
     //write ANAM's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write cell name
     output.write(CellID.c_str(), SubLength);
   }
 
-  if (PCFactionID!="")
+  if (!PCFactionID.empty())
   {
     //write DNAM
-    output.write((char*) &cDNAM, 4);
+    output.write((const char*) &cDNAM, 4);
     SubLength = PCFactionID.length()+1;
     //write DNAM's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write PC faction ID
     output.write(PCFactionID.c_str(), SubLength);
   }
 
   //write NAME
-  output.write((char*) &cNAME, 4);
+  output.write((const char*) &cNAME, 4);
   SubLength = Response.length();
   //write NAME's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write response
   output.write(Response.c_str(), SubLength);
 
-  if (SoundFile!="")
+  if (!SoundFile.empty())
   {
     //write SNAM
-    output.write((char*) &cSNAM, 4);
+    output.write((const char*) &cSNAM, 4);
     SubLength = SoundFile.length()+1;
     //write SNAM's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write sound file path
     output.write(SoundFile.c_str(), SubLength);
   }
@@ -349,86 +350,87 @@ bool DialogueInfoRecord::saveToStream(std::ofstream& output) const
   if (isQuestName)
   {
     //write QSTN
-    output.write((char*) &cQSTN, 4);
+    output.write((const char*) &cQSTN, 4);
     SubLength = 1; //fixed length
     //write QSTN's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write quest name flag
-    output.write((char*) &SubLength, 1);
+    output.write((const char*) &SubLength, 1);
   }
 
   if (isQuestFinished)
   {
     //write QSTF
-    output.write((char*) &cQSTF, 4);
+    output.write((const char*) &cQSTF, 4);
     SubLength = 1; //fixed length
     //write QSTF's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write quest finished flag
-    output.write((char*) &SubLength, 1);
+    output.write((const char*) &SubLength, 1);
   }
 
   if (isQuestRestart)
   {
     //write QSTN
-    output.write((char*) &cQSTR, 4);
+    output.write((const char*) &cQSTR, 4);
     SubLength = 1; //fixed length of one byte
     //write QSTR's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write quest restart flag
-    output.write((char*) &SubLength, 1);
+    output.write((const char*) &SubLength, 1);
   }
 
   for (i=0; i<Functions.size(); ++i)
   {
     //write SCVR
-    output.write((char*) &cSCVR, 4);
+    output.write((const char*) &cSCVR, 4);
     SubLength = 5 + Functions[i].Name.length();
     //write SCVR's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write function related stuff
-    output.write((char*) &Functions[i].Index, 1);
-    output.write((char*) &Functions[i].Type, 1);
-    output.write((char*) &Functions[i].Function, 2);
-    output.write((char*) &Functions[i].CompareOp, 1);
+    output.write((const char*) &Functions[i].Index, 1);
+    output.write((const char*) &Functions[i].Type, 1);
+    output.write((const char*) &Functions[i].Function, 2);
+    output.write((const char*) &Functions[i].CompareOp, 1);
     // --- write var name, if present
     output.write(Functions[i].Name.c_str(), SubLength-5);
     //write float/ int value
     if (Functions[i].isFloat)
     {
       //write FLTV
-      output.write((char*) &cFLTV, 4);
+      output.write((const char*) &cFLTV, 4);
       SubLength = 4; //fixed size of 4 bytes
       //write FLTV's length
-      output.write((char*) &SubLength, 4);
+      output.write((const char*) &SubLength, 4);
       //write float itself
-      output.write((char*) &(Functions[i].fVal), 4);
+      output.write((const char*) &(Functions[i].fVal), 4);
     }
     else
     {
       //write INTV
-      output.write((char*) &cINTV, 4);
+      output.write((const char*) &cINTV, 4);
       SubLength = 4; //fixed size of 4 bytes
       //write INTV's length
-      output.write((char*) &SubLength, 4);
+      output.write((const char*) &SubLength, 4);
       //write integer itself
-      output.write((char*) &(Functions[i].iVal), 4);
+      output.write((const char*) &(Functions[i].iVal), 4);
     }
   }//for
 
-  if (ResultString!="")
+  if (!ResultString.empty())
   {
     //write BNAM
-    output.write((char*) &cBNAM, 4);
+    output.write((const char*) &cBNAM, 4);
     SubLength = ResultString.length()+1;
     //write BNAM's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write result string/script
     output.write(ResultString.c_str(), SubLength);
   }
 
   return output.good();
 }
+#endif
 
 bool DialogueInfoRecord::loadFromStream(std::ifstream& in_File)
 {
@@ -536,7 +538,7 @@ bool DialogueInfoRecord::loadFromStream(std::ifstream& in_File)
     std::cout << "Error while reading subrecord INAM of DIAL!\n";
     return false;
   }
-  InfoID = std::string(Buffer);
+  recordID = std::string(Buffer);
 
   //read PNAM
   in_File.read((char*) &SubRecName, 4);
@@ -624,15 +626,15 @@ bool DialogueInfoRecord::loadFromStream(std::ifstream& in_File)
   }
 
 
-  ActorID = "";
-  RaceID = "";
-  ClassID = "";
-  FactionID = "";
-  CellID = "";
-  PCFactionID = "";
-  SoundFile = "";
-  Response = "";
-  ResultString = "";
+  ActorID.clear();
+  RaceID.clear();
+  ClassID.clear();
+  FactionID.clear();
+  CellID.clear();
+  PCFactionID.clear();
+  SoundFile.clear();
+  Response.clear();
+  ResultString.clear();
   Functions.clear();
   isQuestName = false;
   isQuestFinished = false;

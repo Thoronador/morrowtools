@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011 Thoronador
+    Copyright (C) 2009, 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -28,7 +28,7 @@ namespace MWTP
 
 ClothingRecord::ClothingRecord()
 {
-  ClothingID = Model = Name = "";
+  recordID = Model = Name = "";
   //clothing data
   ClothingType = 0;
   Weight = 0.0f;
@@ -42,7 +42,7 @@ ClothingRecord::ClothingRecord()
 
 bool ClothingRecord::equals(const ClothingRecord& other) const
 {
-  return ((ClothingID==other.ClothingID) and (Model==other.Model)
+  return ((recordID==other.recordID) and (Model==other.Model)
       and (Name==other.Name) and (ClothingType==other.ClothingType)
       and (Weight==other.Weight) and (Value==other.Value)
       and (EnchantmentPoints==other.EnchantmentPoints) and (InventoryIcon==other.InventoryIcon)
@@ -50,21 +50,22 @@ bool ClothingRecord::equals(const ClothingRecord& other) const
       and (EnchantmentID==other.EnchantmentID));
 }
 
+#ifndef MW_UNSAVEABLE_RECORDS
 bool ClothingRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cCLOT, 4);
+  output.write((const char*) &cCLOT, 4);
   uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +ClothingID.length()+1 /* length of ID +1 byte for NUL termination */
+        +recordID.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* MODL */ +4 /* 4 bytes for length */
         +Model.length()+1 /* length of model path +1 byte for NUL termination */
         +4 /* CTDT */ +4 /* 4 bytes for length */ +12 /* fixed length of 12 bytes */;
-  if (Name!="")
+  if (!Name.empty())
   {
     Size = Size +4 /* FNAM */ +4 /* 4 bytes for length */
           +Name.length()+1 /* length of name +1 byte for NUL termination */;
   }
-  if (InventoryIcon!="")
+  if (!InventoryIcon.empty())
   {
     Size = Size +4 /* ITEX */ +4 /* 4 bytes for length */
           +InventoryIcon.length()+1 /* length of icon +1 byte for NUL termination */;
@@ -74,31 +75,31 @@ bool ClothingRecord::saveToStream(std::ofstream& output) const
   for (i=0; i<ClothingBodyParts.size(); ++i)
   {
     Size = Size + 4 /* INDX */ +4 /* 4 bytes for length */ +1 /* fixed length of 1 byte */;
-    if (ClothingBodyParts[i].MaleBodyPart!="")
+    if (!ClothingBodyParts[i].MaleBodyPart.empty())
     {
       Size = Size + 4 /* BNAM */ +4 /* 4 bytes for length */
             +ClothingBodyParts[i].MaleBodyPart.length()+1 /* length of ID +1 byte for NUL termination */;
     }
-    if (ClothingBodyParts[i].FemaleBodyPart!="")
+    if (!ClothingBodyParts[i].FemaleBodyPart.empty())
     {
       Size = Size + 4 /* CNAM */ +4 /* 4 bytes for length */
             +ClothingBodyParts[i].FemaleBodyPart.length()+1 /* length of ID +1 byte for NUL termination */;
     }
   }//for
 
-  if (ScriptID!="")
+  if (!ScriptID.empty())
   {
     Size = Size + 4 /* SCRI */ +4 /* 4 bytes for length */
           +ScriptID.length()+1 /* length of ID +1 byte for NUL termination */;
   }
-  if (EnchantmentID!="")
+  if (!EnchantmentID.empty())
   {
     Size = Size + 4 /* ENAM */ +4 /* 4 bytes for length */
           +EnchantmentID.length()+1 /* length of ID +1 byte for NUL termination */;
   }
-  output.write((char*) &Size, 4);
-  output.write((char*) &HeaderOne, 4);
-  output.write((char*) &HeaderFlags, 4);
+  output.write((const char*) &Size, 4);
+  output.write((const char*) &HeaderOne, 4);
+  output.write((const char*) &HeaderFlags, 4);
 
   /*Clothing:
     NAME = Item ID, required
@@ -121,61 +122,61 @@ bool ClothingRecord::saveToStream(std::ofstream& output) const
     ENAM = Enchantment Name (optional) */
 
   //write NAME
-  output.write((char*) &cNAME, 4);
-  uint32_t SubLength = ClothingID.length()+1;
+  output.write((const char*) &cNAME, 4);
+  uint32_t SubLength = recordID.length()+1;
   //write NAME's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write ID
-  output.write(ClothingID.c_str(), SubLength);
+  output.write(recordID.c_str(), SubLength);
 
   //write MODL
-  output.write((char*) &cMODL, 4);
+  output.write((const char*) &cMODL, 4);
   SubLength = Model.length()+1;
   //write MODL's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write clothing's model path
   output.write(Model.c_str(), SubLength);
 
-  if (Name!="")
+  if (!Name.empty())
   {
     //write FNAM
-    output.write((char*) &cFNAM, 4);
+    output.write((const char*) &cFNAM, 4);
     SubLength = Name.length()+1;
     //write FNAM's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write clothing's "real" name
     output.write(Name.c_str(), SubLength);
   }
 
   //write CTDT
-  output.write((char*) &cCTDT, 4);
+  output.write((const char*) &cCTDT, 4);
   SubLength = 12; //fixed length of 12 bytes
   //write CTDT's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write clothing data
-  output.write((char*) &ClothingType, 4);
-  output.write((char*) &Weight, 4);
-  output.write((char*) &Value, 2);
-  output.write((char*) &EnchantmentPoints, 2);
+  output.write((const char*) &ClothingType, 4);
+  output.write((const char*) &Weight, 4);
+  output.write((const char*) &Value, 2);
+  output.write((const char*) &EnchantmentPoints, 2);
 
-  if (ScriptID!="")
+  if (!ScriptID.empty())
   {
     //write SCRI
-    output.write((char*) &cSCRI, 4);
+    output.write((const char*) &cSCRI, 4);
     SubLength = ScriptID.length()+1;
     //write SCRI's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write clothings's script ID
     output.write(ScriptID.c_str(), SubLength);
   }
 
-  if (InventoryIcon!="")
+  if (!InventoryIcon.empty())
   {
     //write ITEX
-    output.write((char*) &cITEX, 4);
+    output.write((const char*) &cITEX, 4);
     SubLength = InventoryIcon.length()+1;
     //write ITEX's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write clothing's inventory icon
     output.write(InventoryIcon.c_str(), SubLength);
   }
@@ -184,48 +185,49 @@ bool ClothingRecord::saveToStream(std::ofstream& output) const
   for (i=0; i<ClothingBodyParts.size(); ++i)
   {
     //write INDX
-    output.write((char*) &cINDX, 4);
+    output.write((const char*) &cINDX, 4);
     SubLength = 1; //fixed length of one byte
     //write INDX's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write body part index
-    output.write((char*) &(ClothingBodyParts[i].Index), 1);
+    output.write((const char*) &(ClothingBodyParts[i].Index), 1);
 
-    if (ClothingBodyParts[i].MaleBodyPart!="")
+    if (!ClothingBodyParts[i].MaleBodyPart.empty())
     {
       //write BNAM
-      output.write((char*) &cBNAM, 4);
+      output.write((const char*) &cBNAM, 4);
       SubLength = ClothingBodyParts[i].MaleBodyPart.length()+1 /* length of ID +1 byte for NUL termination */;
       //write BNAM's length
-      output.write((char*) &SubLength, 4);
+      output.write((const char*) &SubLength, 4);
       //write male body part name
       output.write(ClothingBodyParts[i].MaleBodyPart.c_str(), SubLength);
     }
-    if (ClothingBodyParts[i].FemaleBodyPart!="")
+    if (!ClothingBodyParts[i].FemaleBodyPart.empty())
     {
       //write CNAM
-      output.write((char*) &cCNAM, 4);
+      output.write((const char*) &cCNAM, 4);
       SubLength = ClothingBodyParts[i].FemaleBodyPart.length()+1 /* length of ID +1 byte for NUL termination */;
       //write BNAM's length
-      output.write((char*) &SubLength, 4);
+      output.write((const char*) &SubLength, 4);
       //write male body part name
       output.write(ClothingBodyParts[i].FemaleBodyPart.c_str(), SubLength);
     }
   }//for
 
-  if (EnchantmentID!="")
+  if (!EnchantmentID.empty())
   {
     //write ENAM
-    output.write((char*) &cENAM, 4);
+    output.write((const char*) &cENAM, 4);
     SubLength = EnchantmentID.length()+1;
     //write ENAM's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write enchantment ID
     output.write(EnchantmentID.c_str(), SubLength);
   }
 
   return output.good();
 }
+#endif
 
 bool ClothingRecord::loadFromStream(std::ifstream& in_File)
 {
@@ -284,7 +286,7 @@ bool ClothingRecord::loadFromStream(std::ifstream& in_File)
     std::cout << "Error while reading subrecord NAME of CLOT!\n";
     return false;
   }
-  ClothingID = std::string(Buffer);
+  recordID = std::string(Buffer);
 
   //read MODL
   in_File.read((char*) &SubRecName, 4);
@@ -343,7 +345,7 @@ bool ClothingRecord::loadFromStream(std::ifstream& in_File)
   }
   else
   {
-    Name = "";
+    Name.clear();
   }
 
   //read CTDT
@@ -374,14 +376,11 @@ bool ClothingRecord::loadFromStream(std::ifstream& in_File)
     return false;
   }
 
-  EnchantmentID = "";
-  ScriptID = "";
-  InventoryIcon = "";
+  EnchantmentID.clear();
+  ScriptID .clear();
+  InventoryIcon.clear();
   ClothingBodyParts.clear();
   BodyPartAssociation tempAssoc;
-  bool hasENAM = false;
-  bool hasITEX = false;
-  bool hasSCRI = false;
   uint32_t prevSubrecord = 0;
   while (BytesRead<Size)
   {
@@ -408,8 +407,8 @@ bool ClothingRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error while reading subrecord INDX of CLOT!\n";
              return false;
            }
-           tempAssoc.MaleBodyPart = "";
-           tempAssoc.FemaleBodyPart = "";
+           tempAssoc.MaleBodyPart.clear();
+           tempAssoc.FemaleBodyPart.clear();
            ClothingBodyParts.push_back(tempAssoc);
            prevSubrecord = cINDX;
            break;
@@ -469,7 +468,7 @@ bool ClothingRecord::loadFromStream(std::ifstream& in_File)
            prevSubrecord = cCNAM;
            break;
       case cITEX:
-           if (hasITEX)
+           if (!InventoryIcon.empty())
            {
              std::cout << "Error: record CLOT seems to have two ITEX subrecords.\n";
              return false;
@@ -492,11 +491,16 @@ bool ClothingRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            InventoryIcon = std::string(Buffer);
-           hasITEX = true;
+           //content check
+           if (InventoryIcon.empty())
+           {
+             std::cout << "Error: subrecord ITEX of CLOT is empty!\n";
+             return false;
+           }
            prevSubrecord = cITEX;
            break;
       case cENAM:
-           if (hasENAM)
+           if (!EnchantmentID.empty())
            {
              std::cout << "Error: record CLOT seems to have two ENAM subrecords.\n";
              return false;
@@ -519,11 +523,16 @@ bool ClothingRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            EnchantmentID = std::string(Buffer);
-           hasENAM = true;
+           //content check
+           if (EnchantmentID.empty())
+           {
+             std::cout << "Error: subrecord ENAM of CLOT is empty!\n";
+             return false;
+           }
            prevSubrecord = cENAM;
            break;
       case cSCRI:
-           if (hasSCRI)
+           if (!ScriptID.empty())
            {
              std::cout << "Error: record CLOT seems to have two SCRI subrecords.\n";
              return false;
@@ -546,7 +555,12 @@ bool ClothingRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            ScriptID = std::string(Buffer);
-           hasSCRI = true;
+           //content check
+           if (ScriptID.empty())
+           {
+             std::cout << "Error: subrecord SCRI of CLOT is empty!\n";
+             return false;
+           }
            prevSubrecord = cSCRI;
            break;
       default:

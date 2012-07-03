@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -29,7 +29,7 @@ namespace MWTP
 
 CreatureRecord::CreatureRecord()
 {
-  CreatureID = Model = Name = SoundGenCreature = "";
+  recordID = Model = Name = SoundGenCreature = "";
   //creature data
   CreatureType = 0;
   Level = 0;
@@ -59,7 +59,7 @@ CreatureRecord::~CreatureRecord()
 CreatureRecord& CreatureRecord::operator=(const CreatureRecord& source)
 {
   if (this==&source) return *this;
-  CreatureID = source.CreatureID;
+  recordID = source.recordID;
   Model = source.Model;
   Name = source.Name;
   SoundGenCreature = source.SoundGenCreature;
@@ -104,7 +104,7 @@ CreatureRecord& CreatureRecord::operator=(const CreatureRecord& source)
 
 bool CreatureRecord::equals(const CreatureRecord& other) const
 {
-  return ((CreatureID==other.CreatureID) and (Model==other.Model)
+  return ((recordID==other.recordID) and (Model==other.Model)
       and (Name==other.Name) and (SoundGenCreature==other.SoundGenCreature)
       and (CreatureType==other.CreatureType) and (Level==other.Level)
       and (Strength==other.Strength) and (Intelligence==other.Intelligence)
@@ -124,12 +124,13 @@ bool CreatureRecord::equals(const CreatureRecord& other) const
       and (ScriptID==other.ScriptID) and (Scale==other.Scale));
 }
 
+#ifndef MW_UNSAVEABLE_RECORDS
 bool CreatureRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cCREA, 4);
+  output.write((const char*) &cCREA, 4);
   uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +CreatureID.length()+1 /* length of ID +1 byte for NUL termination */
+        +recordID.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* MODL */ +4 /* 4 bytes for length */
         +Model.length()+1 /* length of model path +1 byte for NUL termination */
         +4 /* FNAM */ +4 /* 4 bytes for length */
@@ -138,7 +139,7 @@ bool CreatureRecord::saveToStream(std::ofstream& output) const
         +4 /* FLAG */ +4 /* 4 bytes for length */ +4 /* fixed length of 96 bytes */
         +Items.size()*(4 /* NPCO */ +4 /* 4 bytes for length */ +36 /* fixed length of 36 bytes */)
         +NPC_Spells.size()*(4 /* NPCS */ +4 /* 4 bytes for length */ +32 /* fixed length of 32 bytes */);
-  if (SoundGenCreature!="")
+  if (!SoundGenCreature.empty())
   {
     Size = Size + 4 /* CNAM */ +4 /* 4 bytes for length */
           +SoundGenCreature.length()+1 /* length of ID +1 byte for NUL termination */;
@@ -147,7 +148,7 @@ bool CreatureRecord::saveToStream(std::ofstream& output) const
   {
     Size = Size +4 /* AIDT */ +4 /* 4 bytes for length */ +12 /* fixed length of 12 bytes */;
   }
-  if (ScriptID!="")
+  if (!ScriptID.empty())
   {
     Size = Size + 4 /* SCRI */ +4 /* 4 bytes for length */
           +ScriptID.length()+1 /* length of ID +1 byte for NUL termination */;
@@ -184,7 +185,7 @@ bool CreatureRecord::saveToStream(std::ofstream& output) const
   for (i=0; i<Destinations.size(); ++i)
   {
     Size = Size +4 /* DODT */ +4 /* 4 bytes for length */ +24 /*fixed length of 24 bytes */;
-    if (Destinations[i].CellName!="")
+    if (!Destinations[i].CellName.empty())
     {
       Size = Size +4 /* DNAM */ +4 /* 4 bytes for length */
             +Destinations[i].CellName.length()+1 /*length of cell name +1 byte for NUL termination */;
@@ -196,9 +197,9 @@ bool CreatureRecord::saveToStream(std::ofstream& output) const
     Size = Size +4 /* XSCL */ +4 /* 4 bytes for length */ +4 /*fixed length of 4 bytes */;
   }
 
-  output.write((char*) &Size, 4);
-  output.write((char*) &HeaderOne, 4);
-  output.write((char*) &HeaderFlags, 4);
+  output.write((const char*) &Size, 4);
+  output.write((const char*) &HeaderOne, 4);
+  output.write((const char*) &HeaderFlags, 4);
 
   /*Creature:
     NAME = ID
@@ -301,89 +302,89 @@ bool CreatureRecord::saveToStream(std::ofstream& output) const
   */
 
   //write NAME
-  output.write((char*) &cNAME, 4);
-  uint32_t SubLength = CreatureID.length()+1;
+  output.write((const char*) &cNAME, 4);
+  uint32_t SubLength = recordID.length()+1;
   //write NAME's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write ID
-  output.write(CreatureID.c_str(), SubLength);
+  output.write(recordID.c_str(), SubLength);
 
   //write MODL
-  output.write((char*) &cMODL, 4);
+  output.write((const char*) &cMODL, 4);
   SubLength = Model.length()+1;
   //write MODL's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write creature's model path
   output.write(Model.c_str(), SubLength);
 
-  if (SoundGenCreature!="")
+  if (!SoundGenCreature.empty())
   {
     //write CNAM
-    output.write((char*) &cCNAM, 4);
+    output.write((const char*) &cCNAM, 4);
     SubLength = SoundGenCreature.length()+1;
     //write CNAM's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write sound gen creature's ID
     output.write(SoundGenCreature.c_str(), SubLength);
   }
 
   //write FNAM
-  output.write((char*) &cFNAM, 4);
+  output.write((const char*) &cFNAM, 4);
   SubLength = Name.length()+1;
   //write FNAM's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write creature's name
   output.write(Name.c_str(), SubLength);
 
-  if (ScriptID!="")
+  if (!ScriptID.empty())
   {
     //write SCRI
-    output.write((char*) &cSCRI, 4);
+    output.write((const char*) &cSCRI, 4);
     SubLength = ScriptID.length()+1;
     //write SCRI's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write creature's script ID
     output.write(ScriptID.c_str(), SubLength);
   }
 
   //write NPDT
-  output.write((char*) &cNPDT, 4);
+  output.write((const char*) &cNPDT, 4);
   SubLength = 96; //fixed length of 96 bytes
   //write NPDT's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write creature data
-  output.write((char*) &CreatureType, 4);
-  output.write((char*) &Level, 4);
-  output.write((char*) &Strength, 4);
-  output.write((char*) &Intelligence, 4);
-  output.write((char*) &Willpower, 4);
-  output.write((char*) &Agility, 4);
-  output.write((char*) &Speed, 4);
-  output.write((char*) &Endurance, 4);
-  output.write((char*) &Personality, 4);
-  output.write((char*) &Luck, 4);
-  output.write((char*) &Health, 4);
-  output.write((char*) &SpellPoints, 4);
-  output.write((char*) &Fatigue, 4);
-  output.write((char*) &Soul, 4);
-  output.write((char*) &Combat, 4);
-  output.write((char*) &Magic, 4);
-  output.write((char*) &Stealth, 4);
-  output.write((char*) &AttackMin1, 4);
-  output.write((char*) &AttackMax1, 4);
-  output.write((char*) &AttackMin2, 4);
-  output.write((char*) &AttackMax2, 4);
-  output.write((char*) &AttackMin3, 4);
-  output.write((char*) &AttackMax3, 4);
-  output.write((char*) &Gold, 4);
+  output.write((const char*) &CreatureType, 4);
+  output.write((const char*) &Level, 4);
+  output.write((const char*) &Strength, 4);
+  output.write((const char*) &Intelligence, 4);
+  output.write((const char*) &Willpower, 4);
+  output.write((const char*) &Agility, 4);
+  output.write((const char*) &Speed, 4);
+  output.write((const char*) &Endurance, 4);
+  output.write((const char*) &Personality, 4);
+  output.write((const char*) &Luck, 4);
+  output.write((const char*) &Health, 4);
+  output.write((const char*) &SpellPoints, 4);
+  output.write((const char*) &Fatigue, 4);
+  output.write((const char*) &Soul, 4);
+  output.write((const char*) &Combat, 4);
+  output.write((const char*) &Magic, 4);
+  output.write((const char*) &Stealth, 4);
+  output.write((const char*) &AttackMin1, 4);
+  output.write((const char*) &AttackMax1, 4);
+  output.write((const char*) &AttackMin2, 4);
+  output.write((const char*) &AttackMax2, 4);
+  output.write((const char*) &AttackMin3, 4);
+  output.write((const char*) &AttackMax3, 4);
+  output.write((const char*) &Gold, 4);
 
   //write FLAG
-  output.write((char*) &cFLAG, 4);
+  output.write((const char*) &cFLAG, 4);
   SubLength = 4; //fixed length of four bytes
   //write FLAG's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write creature flag
-  output.write((char*) &CreatureFlag, SubLength);
+  output.write((const char*) &CreatureFlag, SubLength);
 
   //items and spells, AI data, AI packages, travel service destinations
   writeItemsSpellsAIDataDestinations(output);
@@ -391,16 +392,17 @@ bool CreatureRecord::saveToStream(std::ofstream& output) const
   if (Scale!=1.0f)
   {
     //write XSCL
-    output.write((char*) &cXSCL, 4);
+    output.write((const char*) &cXSCL, 4);
     SubLength = 4; //fixed length of four bytes
     //write XSCL's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write creature's scale
-    output.write((char*) &Scale, SubLength);
+    output.write((const char*) &Scale, SubLength);
   }
 
   return output.good();
 }
+#endif
 
 bool CreatureRecord::loadFromStream(std::ifstream& in_File)
 {
@@ -539,7 +541,7 @@ bool CreatureRecord::loadFromStream(std::ifstream& in_File)
     std::cout << "Error while reading subrecord NAME of CREA!\n";
     return false;
   }
-  CreatureID = std::string(Buffer);
+  recordID = std::string(Buffer);
 
   //read MODL
   in_File.read((char*) &SubRecName, 4);
@@ -598,7 +600,7 @@ bool CreatureRecord::loadFromStream(std::ifstream& in_File)
   }//if SoundGenCreature subrecord
   else
   {
-    SoundGenCreature = "";
+    SoundGenCreature.clear();
   }
 
   //read FNAM
@@ -657,7 +659,7 @@ bool CreatureRecord::loadFromStream(std::ifstream& in_File)
   }//if Script subrecord
   else
   {
-    ScriptID = "";
+    ScriptID.clear();
   }
 
   //read NPDT
@@ -849,7 +851,7 @@ bool CreatureRecord::loadFromStream(std::ifstream& in_File)
              delete escortFollowPointer;
              return false;
            }
-           escortFollowPointer->CellName = "";
+           escortFollowPointer->CellName.clear();
            AIPackages.push_back(escortFollowPointer);
            previousSubRecord = cAI_E;
            escortFollowPointer = NULL; //just to be safe
@@ -882,7 +884,7 @@ bool CreatureRecord::loadFromStream(std::ifstream& in_File)
              delete escortFollowPointer;
              return false;
            }
-           escortFollowPointer->CellName = "";
+           escortFollowPointer->CellName.clear();
            AIPackages.push_back(escortFollowPointer);
            previousSubRecord = cAI_F;
            escortFollowPointer = NULL; //just to be safe
@@ -1050,7 +1052,7 @@ bool CreatureRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error while reading subrecord DODT of CREA!\n";
              return false;
            }
-           tempDest.CellName = "";
+           tempDest.CellName.clear();
            hasReadDestination = true;
            previousSubRecord = cDODT;
            break;

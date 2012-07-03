@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -26,9 +26,14 @@
 namespace MWTP
 {
 
+bool LevItemListEntry::operator==(const LevItemListEntry& other) const
+{
+  return ((Level==other.Level) and (ItemID==other.ItemID));
+}
+
 LeveledItemRecord::LeveledItemRecord()
 {
-  LevItemID = "";
+  recordID = "";
   ListData = 0;
   ChanceNone = 0;
   NumberOfItems = 0;
@@ -37,31 +42,18 @@ LeveledItemRecord::LeveledItemRecord()
 
 bool LeveledItemRecord::equals(const LeveledItemRecord& other) const
 {
-  if ((LevItemID!=other.LevItemID) or (ListData!=other.ListData)
-    or (ChanceNone!=other.ChanceNone) or (NumberOfItems!=other.NumberOfItems)
-    or (Entries.size()!=other.Entries.size()))
-  {
-    return false;
-  }
-  //compare entries
-  unsigned int i;
-  for (i=0; i<Entries.size(); ++i)
-  {
-    if ((Entries[i].Level!=other.Entries[i].Level)
-        or (Entries[i].ItemID!=other.Entries[i].ItemID))
-    {
-      return false;
-    }
-  }//for
-  return true;
+  return ((recordID==other.recordID) and (ListData==other.ListData)
+     and (ChanceNone==other.ChanceNone) and (NumberOfItems==other.NumberOfItems)
+     and (Entries==other.Entries));
 }
 
+#ifndef MW_UNSAVEABLE_RECORDS
 bool LeveledItemRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cLEVI, 4);
+  output.write((const char*) &cLEVI, 4);
   uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +LevItemID.length()+1 /* length of ID +1 byte for NUL termination */
+        +recordID.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* DATA */ +4 /* 4 bytes for length */ +4 /* size of list data */
         +4 /* NNAM */ +4 /* 4 bytes for length */ +1 /* size of chance byte */
         +4 /* INDX */ +4 /* INDX's length */ +4 /*size of index (always 4 bytes)*/;
@@ -72,9 +64,9 @@ bool LeveledItemRecord::saveToStream(std::ofstream& output) const
           +Entries[i].ItemID.length()+1 /* length of item ID +1 byte for NUL termination */
           + 4 /* INTV */ +4 /* 4 bytes for length */ +2 /* size of INTV */;
   }//for
-  output.write((char*) &Size, 4);
-  output.write((char*) &HeaderOne, 4);
-  output.write((char*) &HeaderFlags, 4);
+  output.write((const char*) &Size, 4);
+  output.write((const char*) &HeaderOne, 4);
+  output.write((const char*) &HeaderFlags, 4);
 
   /*Levelled Items:
 	NAME = ID of levelled list
@@ -89,60 +81,61 @@ bool LeveledItemRecord::saveToStream(std::ofstream& output) const
   */
 
   //write NAME
-  output.write((char*) &cNAME, 4);
+  output.write((const char*) &cNAME, 4);
   //NAME's length
   uint32_t SubLength;
-  SubLength = LevItemID.length()+1;//length of string plus one for NUL-termination
-  output.write((char*) &SubLength, 4);
+  SubLength = recordID.length()+1;//length of string plus one for NUL-termination
+  output.write((const char*) &SubLength, 4);
   //write leveled list's ID
-  output.write(LevItemID.c_str(), SubLength);
+  output.write(recordID.c_str(), SubLength);
 
   //write DATA
-  output.write((char*) &cDATA, 4);
+  output.write((const char*) &cDATA, 4);
   //DATA's length
   SubLength = 4; //length is always four bytes
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write leveled list data
-  output.write((char*) &ListData, 4);
+  output.write((const char*) &ListData, 4);
 
   //write NNAM
-  output.write((char*) &cNNAM, 4);
+  output.write((const char*) &cNNAM, 4);
   //NNAM's length
   SubLength = 1; //length is always one byte
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write chance
-  output.write((char*) &ChanceNone, 1);
+  output.write((const char*) &ChanceNone, 1);
 
   //write INDX
-  output.write((char*) &cINDX, 4);
+  output.write((const char*) &cINDX, 4);
   //INDX's length
   SubLength = 4; //length is always four bytes
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write number of items in list
-  output.write((char*) &NumberOfItems, 4);
+  output.write((const char*) &NumberOfItems, 4);
 
   //write list's entries
   for (i=0; i<Entries.size(); ++i)
   {
     //write INAM
-    output.write((char*) &cINAM, 4);
+    output.write((const char*) &cINAM, 4);
     //INAM's length
     SubLength = Entries[i].ItemID.length()+1;//length of string plus one for NUL-termination
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write item's ID
     output.write(Entries[i].ItemID.c_str(), SubLength);
 
     //write INTV
-    output.write((char*) &cINTV, 4);
+    output.write((const char*) &cINTV, 4);
     //INTV's length
     SubLength = 2;//length is always 2 bytes
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write item's level
     output.write((char*) &(Entries[i].Level), 2);
   }//for
 
   return output.good();
 }
+#endif
 
 bool LeveledItemRecord::loadFromStream(std::ifstream& in_File)
 {
@@ -193,7 +186,7 @@ bool LeveledItemRecord::loadFromStream(std::ifstream& in_File)
     std::cout << "Error while reading subrecord NAME of LEVI.\n";
     return false;
   }
-  LevItemID = std::string(Buffer);
+  recordID = std::string(Buffer);
 
   //read DATA
   in_File.read((char*) &SubRecName, 4);

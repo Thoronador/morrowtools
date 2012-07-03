@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -40,7 +40,7 @@ bool FactionReactionData::operator==(const FactionReactionData& other) const
 
 FactionRecord::FactionRecord()
 {
-  FactionID = Name = "";
+  recordID = Name = "";
   RankNames.clear();
   //faction data
   AttrID1 = -1;
@@ -55,7 +55,7 @@ FactionRecord::FactionRecord()
 
 bool FactionRecord::equals(const FactionRecord& other) const
 {
-  return ((FactionID==other.FactionID) and (Name==other.Name)
+  return ((recordID==other.recordID) and (Name==other.Name)
       and (RankNames==other.RankNames) and (AttrID1==other.AttrID1)
       and (AttrID2==other.AttrID2) and (RankData==other.RankData)
       and (SkillIDs[0]==other.SkillIDs[0]) and (SkillIDs[1]==other.SkillIDs[1])
@@ -65,12 +65,13 @@ bool FactionRecord::equals(const FactionRecord& other) const
       and (Reactions==other.Reactions));
 }
 
+#ifndef MW_UNSAVEABLE_RECORDS
 bool FactionRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cFACT, 4);
+  output.write((const char*) &cFACT, 4);
   uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +FactionID.length()+1 /*length of string +1 byte for NUL-termination */
+        +recordID.length()+1 /*length of string +1 byte for NUL-termination */
         +4 /* FNAM */ +4 /* 4 bytes for length */
         +Name.length()+1 /*length of string +1 byte for NUL-termination */
         +RankNames.size() * (4 /* RNAM */ +4 /* 4 bytes for length */ +32 /*fixed length */)
@@ -82,9 +83,9 @@ bool FactionRecord::saveToStream(std::ofstream& output) const
            + Reactions[i].OtherFaction.length() /* length of string (no NUL termination) */
            + 4 /* INTV */ +4 /* 4 bytes for length */ +4 /* size of INTV (fixed) */;
   }//for
-  output.write((char*) &Size, 4);
-  output.write((char*) &HeaderOne, 4);
-  output.write((char*) &HeaderFlags, 4);
+  output.write((const char*) &Size, 4);
+  output.write((const char*) &HeaderOne, 4);
+  output.write((const char*) &HeaderFlags, 4);
 
   /*Faction:
     NAME = Faction ID string
@@ -109,29 +110,29 @@ bool FactionRecord::saveToStream(std::ofstream& output) const
         a reaction adjustment (usually -4 to +4) */
 
   //write NAME
-  output.write((char*) &cNAME, 4);
+  output.write((const char*) &cNAME, 4);
   //NAME's length
   uint32_t SubLength;
-  SubLength = FactionID.length()+1;//length of string plus one for NUL-termination
-  output.write((char*) &SubLength, 4);
+  SubLength = recordID.length()+1;//length of string plus one for NUL-termination
+  output.write((const char*) &SubLength, 4);
   //write faction ID
-  output.write(FactionID.c_str(), SubLength);
+  output.write(recordID.c_str(), SubLength);
 
   //write FNAM
-  output.write((char*) &cFNAM, 4);
+  output.write((const char*) &cFNAM, 4);
   //FNAM's length
   SubLength = Name.length()+1;//length of string plus one for NUL-termination
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write faction name
   output.write(Name.c_str(), SubLength);
 
   for (i=0; i<RankNames.size(); ++i)
   {
     //write RNAM
-    output.write((char*) &cRNAM, 4);
+    output.write((const char*) &cRNAM, 4);
     //RNAM's length
     SubLength = 32;//length fixed at 32 bytes
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write rank name
     unsigned int len = RankNames[i].length();
     if (len>32) len = 32;
@@ -141,24 +142,24 @@ bool FactionRecord::saveToStream(std::ofstream& output) const
   }//for
 
   //write FADT
-  output.write((char*) &cFADT, 4);
+  output.write((const char*) &cFADT, 4);
   //FADT's length
   SubLength = 240;//length is fixed
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write faction data
   // ---- attributes
-  output.write((char*) &AttrID1, 4);
-  output.write((char*) &AttrID2, 4);
+  output.write((const char*) &AttrID1, 4);
+  output.write((const char*) &AttrID2, 4);
   unsigned int from_rank_data = RankData.size();
   if (from_rank_data>10) from_rank_data = 10;
   // ---- write present ranks
   for (i=0; i<from_rank_data; ++i)
   {
-    output.write((char*) &(RankData[i].Attr1), 4);
-    output.write((char*) &(RankData[i].Attr2), 4);
-    output.write((char*) &(RankData[i].FirstSkill), 4);
-    output.write((char*) &(RankData[i].SecondSkill), 4);
-    output.write((char*) &(RankData[i].Faction), 4);
+    output.write((const char*) &(RankData[i].Attr1), 4);
+    output.write((const char*) &(RankData[i].Attr2), 4);
+    output.write((const char*) &(RankData[i].FirstSkill), 4);
+    output.write((const char*) &(RankData[i].SecondSkill), 4);
+    output.write((const char*) &(RankData[i].Faction), 4);
   }//for
   //write more "ranks" (fill with zero) to get to a total of ten
   for (i=from_rank_data; i<10; ++i)
@@ -168,35 +169,36 @@ bool FactionRecord::saveToStream(std::ofstream& output) const
   // ---- skills
   for (i=0; i<6; ++i)
   {
-    output.write((char*) &(SkillIDs[i]), 4);
+    output.write((const char*) &(SkillIDs[i]), 4);
   }
   // ---- unknown
-  output.write((char*) &Unknown, 4);
+  output.write((const char*) &Unknown, 4);
   // ---- flags
-  output.write((char*) &FactionFlags, 4);
+  output.write((const char*) &FactionFlags, 4);
 
   //write faction reactions
   for (i=0; i<Reactions.size(); ++i)
   {
     //write ANAM
-    output.write((char*) &cANAM, 4);
+    output.write((const char*) &cANAM, 4);
     //ANAM's length
     SubLength = Reactions[i].OtherFaction.length();//length of string (no NUL-termination)
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write other faction name
     output.write(Reactions[i].OtherFaction.c_str(), SubLength);
 
     //write INTV
-    output.write((char*) &cINTV, 4);
+    output.write((const char*) &cINTV, 4);
     //INTV's length
     SubLength = 4;//always four bytes
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write disp.
-    output.write((char*) &(Reactions[i].Disposition), 4);
+    output.write((const char*) &(Reactions[i].Disposition), 4);
   }//for
 
   return output.good();
 }
+#endif
 
 bool FactionRecord::loadFromStream(std::ifstream& in_File)
 {
@@ -257,7 +259,7 @@ bool FactionRecord::loadFromStream(std::ifstream& in_File)
     std::cout << "Error while reading subrecord NAME of FACT!\n";
     return false;
   }
-  FactionID = std::string(Buffer);
+  recordID = std::string(Buffer);
 
   //read FNAM
   in_File.read((char*) &SubRecName, 4);

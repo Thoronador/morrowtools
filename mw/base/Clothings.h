@@ -21,92 +21,14 @@
 #ifndef MW_CLOTHINGS_H
 #define MW_CLOTHINGS_H
 
-#include <string>
-#include <map>
+#include "MapBasedRecordManager.h"
 #include "records/ClothingRecord.h"
-#include "../../base/ComparisonFunctor.h"
 
 namespace MWTP
 {
 
-//iterator type for clothing list
-typedef std::map<std::string, ClothingRecord, ci_less>::const_iterator ClothingListIterator;
-
-class Clothings
-{
-  public:
-    /* destructor */
-    ~Clothings();
-
-    /* singleton access method */
-    static Clothings& getSingleton();
-
-    /* adds a clothing record to the list */
-    void addClothing(const ClothingRecord& record);
-
-    /* returns true, if a clothing with the given ID is present
-
-       parameters:
-           ID - the ID of the clothing object
-    */
-    bool hasClothing(const std::string& ID) const;
-
-    /* returns the number of clothings in the list */
-    unsigned int getNumberOfClothings() const;
-
-    /* returns a reference to the clothing record of the clothing with the
-       given ID
-
-       parameters:
-           ID - the ID of the clothing
-
-       remarks:
-           If no clothing with the given ID is present, the function will throw
-           an exception. Use hasClothing() to determine, if a clothing with the
-           desired ID is present.
-    */
-    const ClothingRecord& getClothing(const std::string& ID) const;
-
-    /* tries to read a clothing record from the given input file stream.
-
-       return value:
-           If an error occured, the function returns -1. Otherwise it returns
-           the number of updated records. (Usually that is one. If, however, the
-           record that was read is equal to the one already in the list, zero is
-           returned.)
-
-       parameters:
-           in_File  - the input file stream that is used to read the record
-    */
-    int readRecordCLOT(std::ifstream& in_File);
-
-    /* returns constant iterator to the beginning of the internal list */
-    ClothingListIterator getBegin() const;
-
-    /* returns constant iterator to the end of the internal list */
-    ClothingListIterator getEnd() const;
-
-    /* tries to save all available clothings to the given stream and returns
-       true on success, false on failure
-
-       parameters:
-           output - the output file stream that shall be used to save the
-                    clothings
-    */
-    bool saveAllToStream(std::ofstream& output) const;
-
-    /* removes all clothings from the list */
-    void clearAll();
-  private:
-    /* constructor */
-    Clothings();
-
-    /* empty copy constructor */
-    Clothings(const Clothings& op) {}
-
-    /* internal data */
-    std::map<std::string, ClothingRecord, ci_less> m_Clothings;
-};//class
+//singleton type for clothing records
+typedef MapBasedRecordManager<ClothingRecord> Clothings;
 
 } //namespace MWTP
 

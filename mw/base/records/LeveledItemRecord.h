@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -33,11 +33,14 @@ struct LevItemListEntry
 {
   std::string ItemID;
   int16_t Level;
+
+  /* equality operator */
+  bool operator==(const LevItemListEntry& other) const;
 };//struct
 
 struct LeveledItemRecord: public BasicRecord
 {
-  std::string LevItemID;
+  std::string recordID; //formerly LevItemID
   int32_t ListData;
   uint8_t ChanceNone;
   uint32_t NumberOfItems;
@@ -49,12 +52,14 @@ struct LeveledItemRecord: public BasicRecord
   /* returns true, if the other record contains the same data */
   bool equals(const LeveledItemRecord& other) const;
 
+  #ifndef MW_UNSAVEABLE_RECORDS
   /* writes the record to the given output stream and returns true on success
 
     parameters:
         output   - the output file stream
   */
   bool saveToStream(std::ofstream& output) const;
+  #endif
 
   /* loads the record from the given input stream and returns true on success
 

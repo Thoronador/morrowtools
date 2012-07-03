@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011 Thoronador
+    Copyright (C) 2009, 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -32,7 +32,7 @@ const int32_t ContainerFlag_Respawns = 2;
 
 ContainerRecord::ContainerRecord()
 {
-  ContainerID = ModelPath = ContainerName = "";
+  recordID = ModelPath = ContainerName = "";
   Weight = 0.0f;
   ContainerFlags = 8;
   ScriptName = "";
@@ -41,30 +41,19 @@ ContainerRecord::ContainerRecord()
 
 bool ContainerRecord::equals(const ContainerRecord& other) const
 {
-  if ((ContainerID==other.ContainerID) and (ModelPath==other.ModelPath)
-    and (ContainerName==other.ContainerName) and (Weight==other.Weight)
-    and (ContainerFlags==other.ContainerFlags) and (ScriptName==other.ScriptName)
-    and (Items.size()==other.Items.size()))
-  {
-    unsigned int i;
-    for (i=0; i<Items.size(); ++i)
-    {
-      if ((Items[i].Count!=other.Items[i].Count) or  (Items[i].Item!=other.Items[i].Item))
-      {
-        return false;
-      }
-    }//for
-    return true;
-  }//if
-  return false;
+  return ((recordID==other.recordID) and (ModelPath==other.ModelPath)
+      and (ContainerName==other.ContainerName) and (Weight==other.Weight)
+      and (ContainerFlags==other.ContainerFlags) and (ScriptName==other.ScriptName)
+      and (Items==other.Items));
 }
 
+#ifndef MW_UNSAVEABLE_RECORDS
 bool ContainerRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cCONT, 4);
+  output.write((const char*) &cCONT, 4);
   uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +ContainerID.length()+1 /* length of ID +1 byte for NUL termination */
+        +recordID.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* MODL */ +4 /* 4 bytes for length */
         +ModelPath.length()+1 /* length of name +1 byte for NUL termination */
         +4 /* FNAM */ +4 /* 4 bytes for length */
@@ -72,14 +61,14 @@ bool ContainerRecord::saveToStream(std::ofstream& output) const
         +4 /* CNDT */ +4 /* 4 bytes for length */ + 4 /* size of container data */
         +4 /* FLAG */ +4 /* 4 bytes for length */ + 4 /* size of flags */
         +Items.size()*(4 /* NPCO */ +4 /* 4 bytes for length */ +36 /* fixed length of 36 bytes */);
-  if (ScriptName!="")
+  if (!ScriptName.empty())
   {
     Size = Size+ 4 /* SCRI */ +4 /* 4 bytes for length */
           +ScriptName.length()+1 /* length of script ID +1 byte for NUL termination */ ;
   }
-  output.write((char*) &Size, 4);
-  output.write((char*) &HeaderOne, 4);
-  output.write((char*) &HeaderFlags, 4);
+  output.write((const char*) &Size, 4);
+  output.write((const char*) &HeaderOne, 4);
+  output.write((const char*) &HeaderFlags, 4);
 
   /*Container:
     NAME = ID
@@ -95,53 +84,53 @@ bool ContainerRecord::saveToStream(std::ofstream& output) const
         char	Name[32]  The ID of the item */
 
   //write NAME
-  output.write((char*) &cNAME, 4);
-  uint32_t SubLength = ContainerID.length()+1;
+  output.write((const char*) &cNAME, 4);
+  uint32_t SubLength = recordID.length()+1;
   //write NAME's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write ID
-  output.write(ContainerID.c_str(), SubLength);
+  output.write(recordID.c_str(), SubLength);
 
   //write MODL
-  output.write((char*) &cMODL, 4);
+  output.write((const char*) &cMODL, 4);
   SubLength = ModelPath.length()+1;
   //write MODL's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write model path
   output.write(ModelPath.c_str(), SubLength);
 
   //write FNAM
-  output.write((char*) &cFNAM, 4);
+  output.write((const char*) &cFNAM, 4);
   SubLength = ContainerName.length()+1;
   //write FNAM's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write container's name
   output.write(ContainerName.c_str(), SubLength);
 
   //write CNDT
-  output.write((char*) &cCNDT, 4);
+  output.write((const char*) &cCNDT, 4);
   SubLength = 4; //fixed at four bytes
   //write CNDT's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write container data
-  output.write((char*) &Weight, 4);
+  output.write((const char*) &Weight, 4);
 
   //write FLAG
-  output.write((char*) &cFLAG, 4);
+  output.write((const char*) &cFLAG, 4);
   SubLength = 4; //fixed at four bytes
   //write FLAG's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write container flags
-  output.write((char*) &ContainerFlags, 4);
+  output.write((const char*) &ContainerFlags, 4);
 
   //script name - optional, not always present
-  if (ScriptName!="")
+  if (!ScriptName.empty())
   {
     //write SCRI
-    output.write((char*) &cSCRI, 4);
+    output.write((const char*) &cSCRI, 4);
     SubLength = ScriptName.length()+1; /* length of script ID +1 byte for NUL termination */
     //write SCRI's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write container's script ID
     output.write(ScriptName.c_str(), SubLength);
   }
@@ -151,12 +140,12 @@ bool ContainerRecord::saveToStream(std::ofstream& output) const
   for (i=0; i<Items.size(); ++i)
   {
     //write NPCO
-    output.write((char*) &cNPCO, 4);
+    output.write((const char*) &cNPCO, 4);
     SubLength = 36; //fixed size: 36 bytes
     //write NPCO's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write item count
-    output.write((char*) &(Items[i].Count), 4);
+    output.write((const char*) &(Items[i].Count), 4);
     //write item ID
     /* The item ID gets truncated here, if it's longer than 31 characters. */
     len = Items.at(i).Item.length()+1;
@@ -164,7 +153,7 @@ bool ContainerRecord::saveToStream(std::ofstream& output) const
     {
       len=32;
       std::cout << "ContainerRecord::saveToStream: Warning: item name of container \""
-                << ContainerID<< "\" got truncated for index "<<i<<".\n";
+                << recordID << "\" got truncated for index "<<i<<".\n";
     }
     output.write(Items.at(i).Item.c_str(), len);
     if (len<32)
@@ -175,6 +164,7 @@ bool ContainerRecord::saveToStream(std::ofstream& output) const
   }//for
   return output.good();
 }
+#endif
 
 bool ContainerRecord::loadFromStream(std::ifstream& in_File)
 {
@@ -226,7 +216,7 @@ bool ContainerRecord::loadFromStream(std::ifstream& in_File)
     std::cout << "Error while reading subrecord NAME of CONT!\n";
     return false;
   }
-  ContainerID = std::string(Buffer);
+  recordID = std::string(Buffer);
 
   //read MODL
   in_File.read((char*) &SubRecName, 4);
@@ -335,7 +325,7 @@ bool ContainerRecord::loadFromStream(std::ifstream& in_File)
   }
 
   //read script name (optional)
-  ScriptName = "";
+  ScriptName.clear();
   if (BytesRead<Size)
   {
     //read SCRI

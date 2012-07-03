@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -26,9 +26,14 @@
 namespace MWTP
 {
 
+bool LevCreatureListEntry::operator==(const LevCreatureListEntry& other) const
+{
+  return ((Level==other.Level) and (CreatureID==other.CreatureID));
+}
+
 LeveledCreatureRecord::LeveledCreatureRecord()
 {
-  LevCreatureID = "";
+  recordID = "";
   ListData = 0;
   ChanceNone = 0;
   NumberOfCreatures = 0;
@@ -37,31 +42,18 @@ LeveledCreatureRecord::LeveledCreatureRecord()
 
 bool LeveledCreatureRecord::equals(const LeveledCreatureRecord& other) const
 {
-  if ((LevCreatureID!=other.LevCreatureID) or (ListData!=other.ListData)
-    or (ChanceNone!=other.ChanceNone) or (NumberOfCreatures!=other.NumberOfCreatures)
-    or (Entries.size()!=other.Entries.size()))
-  {
-    return false;
-  }
-  //compare entries
-  unsigned int i;
-  for (i=0; i<Entries.size(); ++i)
-  {
-    if ((Entries[i].Level!=other.Entries[i].Level)
-        or (Entries[i].CreatureID!=other.Entries[i].CreatureID))
-    {
-      return false;
-    }
-  }//for
-  return true;
+  return ((recordID==other.recordID) and (ListData==other.ListData)
+      and (ChanceNone==other.ChanceNone) and (NumberOfCreatures==other.NumberOfCreatures)
+      and (Entries==other.Entries));
 }
 
+#ifndef MW_UNSAVEABLE_RECORDS
 bool LeveledCreatureRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cLEVC, 4);
+  output.write((const char*) &cLEVC, 4);
   uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +LevCreatureID.length()+1 /* length of ID +1 byte for NUL termination */
+        +recordID.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* DATA */ +4 /* 4 bytes for length */ +4 /* size of list data */
         +4 /* NNAM */ +4 /* 4 bytes for length */ +1 /* size of chance byte */;
   if ((NumberOfCreatures>0) or (Entries.size()>0))
@@ -75,9 +67,9 @@ bool LeveledCreatureRecord::saveToStream(std::ofstream& output) const
           +Entries[i].CreatureID.length()+1 /* length of creature ID +1 byte for NUL termination */
           + 4 /* INTV */ +4 /* 4 bytes for length */ +2 /* size of INTV */;
   }//for
-  output.write((char*) &Size, 4);
-  output.write((char*) &HeaderOne, 4);
-  output.write((char*) &HeaderFlags, 4);
+  output.write((const char*) &Size, 4);
+  output.write((const char*) &HeaderOne, 4);
+  output.write((const char*) &HeaderFlags, 4);
 
   /*Levelled Creatures:
 	NAME = ID of levelled list
@@ -91,63 +83,64 @@ bool LeveledCreatureRecord::saveToStream(std::ofstream& output) const
   */
 
   //write NAME
-  output.write((char*) &cNAME, 4);
+  output.write((const char*) &cNAME, 4);
   //NAME's length
   uint32_t SubLength;
-  SubLength = LevCreatureID.length()+1;//length of string plus one for NUL-termination
-  output.write((char*) &SubLength, 4);
+  SubLength = recordID.length()+1;//length of string plus one for NUL-termination
+  output.write((const char*) &SubLength, 4);
   //write leveled list's ID
-  output.write(LevCreatureID.c_str(), SubLength);
+  output.write(recordID.c_str(), SubLength);
 
   //write DATA
-  output.write((char*) &cDATA, 4);
+  output.write((const char*) &cDATA, 4);
   //DATA's length
   SubLength = 4; //length is always four bytes
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write leveled list data
-  output.write((char*) &ListData, 4);
+  output.write((const char*) &ListData, 4);
 
   //write NNAM
-  output.write((char*) &cNNAM, 4);
+  output.write((const char*) &cNNAM, 4);
   //NNAM's length
   SubLength = 1; //length is always one byte
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write chance
-  output.write((char*) &ChanceNone, 1);
+  output.write((const char*) &ChanceNone, 1);
 
   if ((NumberOfCreatures>0) or (Entries.size()>0))
   {
     //write INDX
-    output.write((char*) &cINDX, 4);
+    output.write((const char*) &cINDX, 4);
     //INDX's length
     SubLength = 4; //length is always four bytes
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write number of items in list
-    output.write((char*) &NumberOfCreatures, 4);
+    output.write((const char*) &NumberOfCreatures, 4);
   }
 
   //write list's entries
   for (i=0; i<Entries.size(); ++i)
   {
     //write CNAM
-    output.write((char*) &cCNAM, 4);
+    output.write((const char*) &cCNAM, 4);
     //CNAM's length
     SubLength = Entries[i].CreatureID.length()+1;//length of string plus one for NUL-termination
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write creature's ID
     output.write(Entries[i].CreatureID.c_str(), SubLength);
 
     //write INTV
-    output.write((char*) &cINTV, 4);
+    output.write((const char*) &cINTV, 4);
     //INTV's length
     SubLength = 2;//length is always 2 bytes
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write creature's level
-    output.write((char*) &(Entries[i].Level), 2);
+    output.write((const char*) &(Entries[i].Level), 2);
   }//for
 
   return output.good();
 }
+#endif
 
 bool LeveledCreatureRecord::loadFromStream(std::ifstream& in_File)
 {
@@ -197,7 +190,7 @@ bool LeveledCreatureRecord::loadFromStream(std::ifstream& in_File)
     std::cout << "Error while reading subrecord NAME of LEVC.\n";
     return false;
   }
-  LevCreatureID = std::string(Buffer);
+  recordID = std::string(Buffer);
 
   //read DATA
   in_File.read((char*) &SubRecName, 4);

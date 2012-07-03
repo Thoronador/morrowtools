@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011 Thoronador
+    Copyright (C) 2009, 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -28,18 +28,7 @@ namespace MWTP
 
 ClassRecord::ClassRecord()
 {
-  ClassID = "";
-  Name = "";
-  AttrID1 = AttrID2 = Specialization = 0;
-  MinorID1 = MajorID1 = MinorID2 = MajorID2 = MinorID3 = MajorID3 =
-  MinorID4 = MajorID4 = MinorID5 = MajorID5 = 0;
-  ClassFlags = AutoCalcFlags = 0;
-  Description = "";
-}
-
-ClassRecord::ClassRecord(const std::string& ID)
-{
-  ClassID = ID;
+  recordID = "";
   Name = "";
   AttrID1 = AttrID2 = Specialization = 0;
   MinorID1 = MajorID1 = MinorID2 = MajorID2 = MinorID3 = MajorID3 =
@@ -50,7 +39,7 @@ ClassRecord::ClassRecord(const std::string& ID)
 
 bool ClassRecord::equals(const ClassRecord& other) const
 {
-  return ((ClassID==other.ClassID) and (Name==other.Name)
+  return ((recordID==other.recordID) and (Name==other.Name)
       and (AttrID1==other.AttrID1) and (AttrID2==other.AttrID2)
       and (Specialization==other.Specialization) and (MinorID1==other.MinorID1)
       and (MajorID1==other.MajorID1) and (MinorID2==other.MinorID2)
@@ -61,23 +50,24 @@ bool ClassRecord::equals(const ClassRecord& other) const
       and (AutoCalcFlags==other.AutoCalcFlags) and (Description==other.Description));
 }
 
+#ifndef MW_UNSAVEABLE_RECORDS
 bool ClassRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cCLAS, 4);
+  output.write((const char*) &cCLAS, 4);
   uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +ClassID.length()+1 /* length of ID +1 byte for NUL termination */
+        +recordID.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* FNAM */ +4 /* 4 bytes for length */
         +Name.length()+1 /* length of name +1 byte for NUL termination */
         +4 /* CLDT */ +4 /* 4 bytes for length */ +60 /* length of CLDT */;
-  if (Description!="")
+  if (!Description.empty())
   {
     Size = Size +4 /* DESC */ +4 /* 4 bytes for length */;
         +Description.length() /* length of description (no NUL termination here) */;
   }
-  output.write((char*) &Size, 4);
-  output.write((char*) &HeaderOne, 4);
-  output.write((char*) &HeaderFlags, 4);
+  output.write((const char*) &Size, 4);
+  output.write((const char*) &HeaderOne, 4);
+  output.write((const char*) &HeaderFlags, 4);
 
   /*Class Definition
 	NAME = Class ID string
@@ -124,55 +114,56 @@ bool ClassRecord::saveToStream(std::ofstream& output) const
   */
 
   //write NAME
-  output.write((char*) &cNAME, 4);
-  uint32_t SubLength = ClassID.length()+1;
+  output.write((const char*) &cNAME, 4);
+  uint32_t SubLength = recordID.length()+1;
   //write NAME's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write ID
-  output.write(ClassID.c_str(), SubLength);
+  output.write(recordID.c_str(), SubLength);
 
   //write FNAM
-  output.write((char*) &cFNAM, 4);
+  output.write((const char*) &cFNAM, 4);
   SubLength = Name.length()+1;
   //write FNAM's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write class name
   output.write(Name.c_str(), SubLength);
 
   //write CLDT
-  output.write((char*) &cCLDT, 4);
+  output.write((const char*) &cCLDT, 4);
   SubLength = 60; /* CLDT has fixed length of 60 bytes */
   //write CLDT's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write class data
-  output.write((char*) &AttrID1, 4);
-  output.write((char*) &AttrID2, 4);
-  output.write((char*) &Specialization, 4);
-  output.write((char*) &MinorID1, 4);
-  output.write((char*) &MajorID1, 4);
-  output.write((char*) &MinorID2, 4);
-  output.write((char*) &MajorID2, 4);
-  output.write((char*) &MinorID3, 4);
-  output.write((char*) &MajorID3, 4);
-  output.write((char*) &MinorID4, 4);
-  output.write((char*) &MajorID4, 4);
-  output.write((char*) &MinorID5, 4);
-  output.write((char*) &MajorID5, 4);
-  output.write((char*) &ClassFlags, 4);
-  output.write((char*) &AutoCalcFlags, 4);
+  output.write((const char*) &AttrID1, 4);
+  output.write((const char*) &AttrID2, 4);
+  output.write((const char*) &Specialization, 4);
+  output.write((const char*) &MinorID1, 4);
+  output.write((const char*) &MajorID1, 4);
+  output.write((const char*) &MinorID2, 4);
+  output.write((const char*) &MajorID2, 4);
+  output.write((const char*) &MinorID3, 4);
+  output.write((const char*) &MajorID3, 4);
+  output.write((const char*) &MinorID4, 4);
+  output.write((const char*) &MajorID4, 4);
+  output.write((const char*) &MinorID5, 4);
+  output.write((const char*) &MajorID5, 4);
+  output.write((const char*) &ClassFlags, 4);
+  output.write((const char*) &AutoCalcFlags, 4);
 
-  if (Description!="")
+  if (!Description.empty())
   {
     //write DESC
-    output.write((char*) &cDESC, 4);
+    output.write((const char*) &cDESC, 4);
     SubLength = Description.length();
     //write DESC's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write class description
     output.write(Description.c_str(), SubLength);
   }
   return output.good();
 }
+#endif
 
 bool ClassRecord::loadFromStream(std::ifstream& in_File)
 {
@@ -245,8 +236,7 @@ bool ClassRecord::loadFromStream(std::ifstream& in_File)
     return false;
   }
   //read class ID
-  char* Buffer = NULL;
-  Buffer = new char[256];
+  char Buffer[256];
   memset(Buffer, '\0', 256);
   in_File.read(Buffer, SubLength);
   BytesRead += SubLength;
@@ -254,10 +244,9 @@ bool ClassRecord::loadFromStream(std::ifstream& in_File)
   {
     std::cout << "ClassRecord::loadFromStream: Error while reading ID from stream.\n";
     std::cout << "File position: "<<in_File.tellg()<<" bytes\n";
-    delete[] Buffer;
     return false;
   }
-  ClassID = std::string(Buffer);
+  recordID = std::string(Buffer);
 
   //read FNAM
   in_File.read((char*) &SubRecName, 4);
@@ -265,7 +254,6 @@ bool ClassRecord::loadFromStream(std::ifstream& in_File)
   if (SubRecName!=cFNAM)
   {
     UnexpectedRecord(cFNAM, SubRecName);
-    delete[] Buffer;
     return false;
   }
   //FNAM's length
@@ -275,7 +263,6 @@ bool ClassRecord::loadFromStream(std::ifstream& in_File)
   {
     std::cout << "ClassRecord::loadFromStream: Error: name is longer than 255 characters.\n";
     std::cout << "File position: "<<in_File.tellg()<<" bytes.\n";
-    delete[] Buffer;
     return false;
   }
   //read name
@@ -286,7 +273,6 @@ bool ClassRecord::loadFromStream(std::ifstream& in_File)
   {
     std::cout << "ClassRecord::loadFromStream: Error while reading name from stream.\n";
     std::cout << "File position: "<<in_File.tellg()<<" bytes\n";
-    delete[] Buffer;
     return false;
   }
   Name = std::string(Buffer);
@@ -297,7 +283,6 @@ bool ClassRecord::loadFromStream(std::ifstream& in_File)
   if (SubRecName!=cCLDT)
   {
     UnexpectedRecord(cCLDT, SubRecName);
-    delete[] Buffer;
     return false;
   }
   //CLDT's length
@@ -308,7 +293,6 @@ bool ClassRecord::loadFromStream(std::ifstream& in_File)
     std::cout << "Error: Subrecord CLDT of CLAS has invalid length ("<<SubLength
               << "bytes), should be 60 bytes.\n";
     std::cout << "File position: "<<in_File.tellg()<<" bytes.\n";
-    delete[] Buffer;
     return false;
   }
   //read CLDT
@@ -332,7 +316,6 @@ bool ClassRecord::loadFromStream(std::ifstream& in_File)
   {
     std::cout << "Error while reading subrecord CLDT of CLAS.\nFile position: "
               << in_File.tellg()<<" bytes\n";
-    delete[] Buffer;
     return false;
   }
 
@@ -343,42 +326,43 @@ bool ClassRecord::loadFromStream(std::ifstream& in_File)
     if (SubRecName!=cDESC)
     {
       UnexpectedRecord(cDESC, SubRecName);
-      delete[] Buffer;
       return false;
     }
     //DESC's length
     in_File.read((char*) &SubLength, 4);
+    //length check to avoid allocation of large memory block
     if (SubLength>65535)
     {
       std::cout << "ClassRecord::loadFromStream: Error: Description is longer than 64K characters.\n";
       std::cout << "File position: "<<in_File.tellg()<<" bytes.\n";
-      delete[] Buffer;
       return false;
     }
-    //check for size
-    if (SubLength>255)
-    {
-      //allocate larger chunk
-      delete[] Buffer;
-      Buffer = new char[SubLength+1];
-    }
+    //allocate larger chunk
+    char* DescBuffer = new char[SubLength+1];
     //read DESC
-    memset(Buffer, '\0', SubLength+1);
-    in_File.read(Buffer, SubLength);
+    memset(DescBuffer, '\0', SubLength+1);
+    in_File.read(DescBuffer, SubLength);
     if (!in_File.good())
     {
       std::cout << "ClassRecord::loadFromStream: Error while reading description from stream.\n";
       std::cout << "File position: "<<in_File.tellg()<<" bytes\n";
-      delete[] Buffer;
+      delete[] DescBuffer;
       return false;
     }
-    Description = std::string(Buffer);
+    Description = std::string(DescBuffer);
+    delete[] DescBuffer;
+    DescBuffer = NULL;
+    if (Description.empty())
+    {
+      std::cout << "Error: subrecord DESC of CLAS is empty!\n";
+      return false;
+    }
   }//if not enough read yet
   else
   {
-    Description = "";
+    Description.clear();
   }
-  delete[] Buffer;
+
   return in_File.good();
 }
 

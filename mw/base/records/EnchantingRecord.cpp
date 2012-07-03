@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011 Thoronador
+    Copyright (C) 2009, 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -28,7 +28,7 @@ namespace MWTP
 
 EnchantingRecord::EnchantingRecord()
 {
-  EnchantingID = "";
+  recordID = "";
   //enchanting data
   Type = -1;
   EnchantCost = -1;
@@ -46,36 +46,24 @@ EnchantingRecord::~EnchantingRecord()
 
 bool EnchantingRecord::equals(const EnchantingRecord& other) const
 {
-  if ((EnchantingID==other.EnchantingID) and (Type==other.Type)
+  return ((recordID==other.recordID) and (Type==other.Type)
     and (EnchantCost==other.EnchantCost) and (Charge==other.Charge)
-    and (AutoCalc==other.AutoCalc) and (Enchs.size()==other.Enchs.size()))
-  {
-    //compare enchantments
-    unsigned int i;
-    for (i=0; i<Enchs.size(); ++i)
-    {
-      if (!Enchs.at(i).equals(other.Enchs.at(i)))
-      {
-        return false;
-      }
-    }//for
-    return true;
-  }//if
-  return false;
+    and (AutoCalc==other.AutoCalc) and (Enchs==other.Enchs));
 }
 
+#ifndef MW_UNSAVEABLE_RECORDS
 bool EnchantingRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cENCH, 4);
+  output.write((const char*) &cENCH, 4);
   uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +EnchantingID.length()+1 /* length of ID +1 byte for NUL termination */
+        +recordID.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* ENDT */ +4 /* ENDT's length */ +16 /*size of ENDT (always 16 bytes)*/
         + Enchs.size()*( 4 /* ENAM */ +4 /* 4 bytes for length */
         +24 /* length of ENAM is always 24 bytes */);
-  output.write((char*) &Size, 4);
-  output.write((char*) &HeaderOne, 4);
-  output.write((char*) &HeaderFlags, 4);
+  output.write((const char*) &Size, 4);
+  output.write((const char*) &HeaderOne, 4);
+  output.write((const char*) &HeaderFlags, 4);
 
   /*Enchantment:
     NAME = ID string
@@ -95,45 +83,46 @@ bool EnchantingRecord::saveToStream(std::ofstream& output) const
         long  MagMax */
 
   //write NAME
-  output.write((char*) &cNAME, 4);
+  output.write((const char*) &cNAME, 4);
   //NAME's length
   uint32_t SubLength;
-  SubLength = EnchantingID.length()+1;//length of string plus one for NUL-termination
-  output.write((char*) &SubLength, 4);
+  SubLength = recordID.length()+1;//length of string plus one for NUL-termination
+  output.write((const char*) &SubLength, 4);
   //write ID
-  output.write(EnchantingID.c_str(), SubLength);
+  output.write(recordID.c_str(), SubLength);
 
   //write ENDT
-  output.write((char*) &cENDT, 4);
+  output.write((const char*) &cENDT, 4);
   //ENDT's length
   SubLength = 16;//fixed size, always 16 bytes
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write enchanting data
-  output.write((char*) &Type, 4);
-  output.write((char*) &EnchantCost, 4);
-  output.write((char*) &Charge, 4);
-  output.write((char*) &AutoCalc, 4);
+  output.write((const char*) &Type, 4);
+  output.write((const char*) &EnchantCost, 4);
+  output.write((const char*) &Charge, 4);
+  output.write((const char*) &AutoCalc, 4);
 
   unsigned int i;
   for (i=0; i<Enchs.size(); ++i)
   {
     //write ENAM
-    output.write((char*) &cENAM, 4);
+    output.write((const char*) &cENAM, 4);
     //ENAM's length
     SubLength = 24;//fixed size, always 24 bytes
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write effect data
-    output.write((char*) &(Enchs[i].EffectID), 2);
-    output.write((char*) &(Enchs[i].SkillID), 1);
-    output.write((char*) &(Enchs[i].AttributeID), 1);
-    output.write((char*) &(Enchs[i].RangeType), 4);
-    output.write((char*) &(Enchs[i].Area), 4);
-    output.write((char*) &(Enchs[i].Duration), 4);
-    output.write((char*) &(Enchs[i].MagnitudeMin), 4);
-    output.write((char*) &(Enchs[i].MagnitudeMax), 4);
+    output.write((const char*) &(Enchs[i].EffectID), 2);
+    output.write((const char*) &(Enchs[i].SkillID), 1);
+    output.write((const char*) &(Enchs[i].AttributeID), 1);
+    output.write((const char*) &(Enchs[i].RangeType), 4);
+    output.write((const char*) &(Enchs[i].Area), 4);
+    output.write((const char*) &(Enchs[i].Duration), 4);
+    output.write((const char*) &(Enchs[i].MagnitudeMin), 4);
+    output.write((const char*) &(Enchs[i].MagnitudeMax), 4);
   }//for
   return output.good();
 }
+#endif
 
 bool EnchantingRecord::loadFromStream(std::ifstream& in_File)
 {
@@ -189,7 +178,7 @@ bool EnchantingRecord::loadFromStream(std::ifstream& in_File)
     std::cout << "Error while reading subrecord NAME of ENCH.\n";
     return false;
   }
-  EnchantingID = std::string(Buffer);
+  recordID = std::string(Buffer);
 
   //read ENDT
   in_File.read((char*) &SubRecName, 4);

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -31,7 +31,7 @@ namespace MWTP
 struct BookRecord: public BasicRecord
 {
   public:
-    std::string BookID;
+    std::string recordID; //formerly BookID
     std::string MeshPath;
     std::string Name;
     //book data
@@ -49,18 +49,17 @@ struct BookRecord: public BasicRecord
     /* constructor */
     BookRecord();
 
-    /* alternative constructor */
-    BookRecord(const std::string& ID);
-
     /* returns true, if the other record contains the same data */
     bool equals(const BookRecord& other) const;
 
+    #ifndef MW_UNSAVEABLE_RECORDS
     /* writes the record to the given output stream and returns true on success
 
       parameters:
           output   - the output file stream
     */
     bool saveToStream(std::ofstream& output) const;
+    #endif
 
     /* loads the record from the given input stream and returns true on success
 
@@ -68,53 +67,7 @@ struct BookRecord: public BasicRecord
           in_File - the input file stream
     */
     bool loadFromStream(std::ifstream& in_File);
-
-  protected:
-    /*tries to read the subrecord for the inventory icon and returns true on
-      success, false on failure
-
-      parameters:
-          in_File   - the input file stream
-          Buffer    - pointer to a buffer of at least 256 bytes length
-          BytesRead - reference to a variable that counts the number of bytes
-                      that were read from the stream
-    */
-    bool readSubRecordITEX(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead);
-
-    /*tries to read the subrecord for the script ID and returns true on success
-
-      parameters:
-          in_File   - the input file stream
-          Buffer    - pointer to a buffer of at least 256 bytes length
-          BytesRead - reference to a variable that counts the number of bytes
-                      that were read from the stream
-    */
-    bool readSubRecordSCRI(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead);
-
-    /*tries to read a subrecord for the enchantment ID and returns true on
-      success
-
-      parameters:
-          in_File   - the input file stream
-          Buffer    - pointer to a buffer of at least 256 bytes length
-          BytesRead - reference to a variable that counts the number of bytes
-                      that were read from the stream
-    */
-    bool readSubRecordENAM(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead);
-
-    /*tries to read the subrecord for the book's text
-
-      parameters:
-          in_File   - the input file stream
-          Buffer    - pointer to the pointer a buffer
-          BytesRead - reference to a variable that counts the number of bytes
-                      that were read from the stream
-    */
-    bool readSubRecordTEXT(std::ifstream& in_File, char** Buffer, uint32_t& BytesRead);
 };//struct
-
-//comparison operator for BookRecords
-bool operator<(const BookRecord& left, const BookRecord& right);
 
 } //namespace
 

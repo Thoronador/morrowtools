@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -30,7 +30,7 @@ namespace MWTP
 
 struct CreatureRecord: public PreNPCRecord
 {
-  std::string CreatureID;
+  std::string recordID; //formerly CreatureID
   std::string Model;
   std::string Name;
   std::string SoundGenCreature;
@@ -79,12 +79,14 @@ struct CreatureRecord: public PreNPCRecord
   /* returns true, if the other record contains the same data */
   bool equals(const CreatureRecord& other) const;
 
+  #ifndef MW_UNSAVEABLE_RECORDS
   /* writes the record to the given output stream and returns true on success
 
     parameters:
         output      - the output file stream
   */
   bool saveToStream(std::ofstream& output) const;
+  #endif
 
   /* loads the record from the given input stream and returns true on success
 

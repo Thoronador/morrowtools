@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011 Thoronador
+    Copyright (C) 2010, 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute it and/or
     modify it under the terms of the GNU General Public License as published
@@ -28,7 +28,7 @@ namespace MWTP
 
 IngredientRecord::IngredientRecord()
 {
-  IngredientID = ModelName = IngredientName = "";
+  recordID = ModelName = IngredientName = "";
   //IngredientData
   Weight = 0.0f;
   Value = 0;
@@ -44,7 +44,7 @@ bool IngredientRecord::equals(const IngredientRecord& other) const
   if ((ModelName==other.ModelName) and (IngredientName==other.IngredientName)
       and (Weight==other.Weight) and (Value==other.Value)
       and (InventoryIcon==other.InventoryIcon) and (ScriptName==other.ScriptName)
-      and (IngredientID==other.IngredientID))
+      and (recordID==other.recordID))
   {
     //compare effects
     unsigned int i;
@@ -72,12 +72,13 @@ void IngredientRecord::show()
             <<"Script: \""<<ScriptName<<"\"\n";
 }
 
+#ifndef MW_UNSAVEABLE_RECORDS
 bool IngredientRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cINGR, 4);
+  output.write((const char*) &cINGR, 4);
   uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +IngredientID.length()+1 /* length of ID +1 byte for NUL-termination */
+        +recordID.length()+1 /* length of ID +1 byte for NUL-termination */
         +4 /* MODL */ +4 /* 4 bytes for MODL's lenght */
         +ModelName.length()+1 /*length of name plus one for NUL-termination */
         +4 /* FNAM */ +4 /* 4 bytes for FNAM's lenght */
@@ -85,14 +86,14 @@ bool IngredientRecord::saveToStream(std::ofstream& output) const
         +4 /* IRDT */ +4 /* IRDT's length */ +56 /*size of ingredient data (IRDT)*/
         +4 /* ITEX */ +4 /* ITEX's length */
         +InventoryIcon.length() +1 /* length of path +1 byte for NUL-termination */;
-  if (ScriptName!="")
+  if (!ScriptName.empty())
   {
     Size = Size +4 /* SCRI */ +4 /* 4 bytes for SCRI's lenght */
           +ScriptName.length()+1 /* length of script ID +1 byte for NUL-termination */;
   }
-  output.write((char*) &Size, 4);
-  output.write((char*) &HeaderOne, 4);
-  output.write((char*) &HeaderFlags, 4);
+  output.write((const char*) &Size, 4);
+  output.write((const char*) &HeaderOne, 4);
+  output.write((const char*) &HeaderFlags, 4);
 
   /*Ingredients:
     NAME = Item ID, required
@@ -108,71 +109,72 @@ bool IngredientRecord::saveToStream(std::ofstream& output) const
     SCRI = Script Name (optional) */
 
   //write NAME
-  output.write((char*) &cNAME, 4);
+  output.write((const char*) &cNAME, 4);
   //NAME's length
   uint32_t SubLength;
-  SubLength = IngredientID.length()+1; //length of string plus one for NUL-termination
-  output.write((char*) &SubLength, 4);
+  SubLength = recordID.length()+1; //length of string plus one for NUL-termination
+  output.write((const char*) &SubLength, 4);
   //write ID
-  output.write(IngredientID.c_str(), SubLength);
+  output.write(recordID.c_str(), SubLength);
 
   //write MODL
-  output.write((char*) &cMODL, 4);
+  output.write((const char*) &cMODL, 4);
   //MODL's length
   SubLength = ModelName.length()+1; //length of string plus one for NUL-termination
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write model path
   output.write(ModelName.c_str(), SubLength);
 
   //write FNAM
-  output.write((char*) &cFNAM, 4);
+  output.write((const char*) &cFNAM, 4);
   //FNAM's length
   SubLength = IngredientName.length()+1; //length of string plus one for NUL-termination
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write ingredient name
   output.write(IngredientName.c_str(), SubLength);
 
   //write IRDT
-  output.write((char*) &cIRDT, 4);
+  output.write((const char*) &cIRDT, 4);
   //IRDT's length
   SubLength = 56; //Fixed size for IRDT is 56 bytes.
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write ingredient data
-  output.write((char*) &Weight, 4);
-  output.write((char*) &Value, 4);
-  output.write((char*) &(EffectID[0]), 4);
-  output.write((char*) &(EffectID[1]), 4);
-  output.write((char*) &(EffectID[2]), 4);
-  output.write((char*) &(EffectID[3]), 4);
-  output.write((char*) &(SkillID[0]), 4);
-  output.write((char*) &(SkillID[1]), 4);
-  output.write((char*) &(SkillID[2]), 4);
-  output.write((char*) &(SkillID[3]), 4);
-  output.write((char*) &(AttributeID[0]), 4);
-  output.write((char*) &(AttributeID[1]), 4);
-  output.write((char*) &(AttributeID[2]), 4);
-  output.write((char*) &(AttributeID[3]), 4);
+  output.write((const char*) &Weight, 4);
+  output.write((const char*) &Value, 4);
+  output.write((const char*) &(EffectID[0]), 4);
+  output.write((const char*) &(EffectID[1]), 4);
+  output.write((const char*) &(EffectID[2]), 4);
+  output.write((const char*) &(EffectID[3]), 4);
+  output.write((const char*) &(SkillID[0]), 4);
+  output.write((const char*) &(SkillID[1]), 4);
+  output.write((const char*) &(SkillID[2]), 4);
+  output.write((const char*) &(SkillID[3]), 4);
+  output.write((const char*) &(AttributeID[0]), 4);
+  output.write((const char*) &(AttributeID[1]), 4);
+  output.write((const char*) &(AttributeID[2]), 4);
+  output.write((const char*) &(AttributeID[3]), 4);
 
   //write ITEX
-  output.write((char*) &cITEX, 4);
+  output.write((const char*) &cITEX, 4);
   //MODL's length
   SubLength = InventoryIcon.length()+1; //length of string plus one for NUL-termination
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write inventory icon
   output.write(InventoryIcon.c_str(), SubLength);
 
-  if (ScriptName!="")
+  if (!ScriptName.empty())
   {
     //write SCRI
-    output.write((char*) &cSCRI, 4);
+    output.write((const char*) &cSCRI, 4);
     SubLength = ScriptName.length()+1; //length of string plus one for NUL-termination
     //write SCRI's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write Script ID
     output.write(ScriptName.c_str(), SubLength);
   }//if script ID present
   return output.good();
 }
+#endif
 
 bool IngredientRecord::loadFromStream(std::ifstream& in_File)
 {
@@ -224,7 +226,7 @@ bool IngredientRecord::loadFromStream(std::ifstream& in_File)
     std::cout << "Error while reading subrecord NAME of INGR.\n";
     return false;
   }
-  IngredientID = std::string(Buffer);
+  recordID = std::string(Buffer);
 
   //read MODL
   in_File.read((char*) &SubRecName, 4);
@@ -320,9 +322,8 @@ bool IngredientRecord::loadFromStream(std::ifstream& in_File)
   }
 
   //read SCRI (optional) and ITEX (mandatory)
-  ScriptName = "";
-  InventoryIcon = "";
-  bool Success = false;
+  ScriptName.clear();
+  InventoryIcon.clear();
   while (BytesRead<Size)
   {
     //read next record name
@@ -331,80 +332,84 @@ bool IngredientRecord::loadFromStream(std::ifstream& in_File)
     switch(SubRecName)
     {
       case cITEX:
-           Success = readSubRecordITEX(in_File, Buffer, BytesRead);
+           if (!InventoryIcon.empty())
+           {
+             std::cout << "Error: INGR seems to have more than one ITEX subrecord!\n";
+             return false;
+           }
+           //ITEX's length
+           in_File.read((char*) &SubLength, 4);
+           BytesRead += 4;
+           if (SubLength>255)
+           {
+             std::cout <<"Error: sub record ITEX of INGR is longer than 255 characters.\n";
+             return false;
+           }
+           //read icon path
+           memset(Buffer, '\0', 256);
+           in_File.read(Buffer, SubLength);
+           BytesRead += SubLength;
+           if (!in_File.good())
+           {
+             std::cout << "Error while reading icon path of INGR.\n";
+             return false;
+           }
+           InventoryIcon = std::string(Buffer);
+           //content check
+           if (InventoryIcon.empty())
+           {
+             std::cout << "Error: subrecord ITEX of INGR is empty!\n";
+             return false;
+           }
            break;
       case cSCRI:
-           Success = readSubRecordSCRI(in_File, Buffer, BytesRead);
+           if (!ScriptName.empty())
+           {
+             std::cout << "Error: INGR seems to have more than one SCRI subrecord!\n";
+             return false;
+           }
+           //SCRI's length
+           in_File.read((char*) &SubLength, 4);
+           BytesRead += 4;
+           if (SubLength>255)
+           {
+             std::cout <<"Error: sub record SCRI of INGR is longer than 255 characters.\n";
+             return false;
+           }
+           memset(Buffer, '\0', 256);
+           //read ingredient's script name
+           in_File.read(Buffer, SubLength);
+           BytesRead += SubLength;
+           if (!in_File.good())
+           {
+             std::cout << "Error while reading subrecord SCRI of INGR.\n";
+             return false;
+           }
+           ScriptName = std::string(Buffer);
+           //content check
+           if (ScriptName.empty())
+           {
+             std::cout << "Error: subrecord SCRI of INGR is empty!\n";
+             return false;
+           }
            break;
       default:
            //other subrecord means error, so quit here
-           std::cout << "IngredRec: Error: expected record name ITEX or SCRI. "
+           std::cout << "IngredientRecord: Error: expected record name ITEX or SCRI. "
                      << "Instead, \""<<IntTo4Char(SubRecName)<<"\" was found.\n"
                      << "Position is "<<in_File.tellg()<<".\n";
            return false;
     }//swi
-    if (!Success)
-    {
-      //An error occured, quit here.
-      return false;
-    }//if
   }//while
-  if (InventoryIcon=="")
+  if (InventoryIcon.empty())
   {
-    std::cout << "IngredRec::loadFromStream: Warning: Empty or no inventory "
+    std::cout << "IngredientRecord::loadFromStream: Warning: Empty or no inventory "
               << "icon path read.\n";
-    /* Maybe we should return false here and nit just put a warning. This way
+    /* Maybe we should return false here and not just put a warning. This way
        the application knows that something was not quite right. */
+    return false;
   }
   return in_File.good();
-}
-
-bool IngredientRecord::readSubRecordITEX(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead)
-{
-  //ITEX's length
-  uint32_t SubLength = 0;
-  in_File.read((char*) &SubLength, 4);
-  BytesRead += 4;
-  if (SubLength>255)
-  {
-    std::cout <<"Error: sub record ITEX of INGR is longer than 255 characters.\n";
-    return false;
-  }
-  //read icon path
-  memset(Buffer, '\0', 256);
-  in_File.read(Buffer, SubLength);
-  BytesRead += SubLength;
-  if (!in_File.good())
-  {
-    std::cout << "Error while reading icon path of INGR.\n";
-    return false;
-  }
-  InventoryIcon = std::string(Buffer);
-  return true;
-}
-
-bool IngredientRecord::readSubRecordSCRI(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead)
-{
-  //SCRI's length
-  uint32_t SubLength = 0;
-  in_File.read((char*) &SubLength, 4);
-  BytesRead += 4;
-  if (SubLength>255)
-  {
-    std::cout <<"Error: sub record SCRI of INGR is longer than 255 characters.\n";
-    return false;
-  }
-  memset(Buffer, '\0', 256);
-  //read ingredient's script name
-  in_File.read(Buffer, SubLength);
-  BytesRead += SubLength;
-  if (!in_File.good())
-  {
-    std::cout << "Error while reading subrecord SCRI of INGR.\n";
-    return false;
-  }
-  ScriptName = std::string(Buffer);
-  return true;
 }
 
 } //namespace

@@ -103,7 +103,7 @@ int ESMReaderAll::processNextRecord(std::ifstream& in_File)
          lastResult = BodyParts::getSingleton().readNextRecord(in_File);
          break;
     case cBOOK:
-         lastResult = Books::getSingleton().readRecordBOOK(in_File);
+         lastResult = Books::getSingleton().readNextRecord(in_File);
          break;
     case cBSGN:
          lastResult = BirthSigns::getSingleton().readNextRecord(in_File);
@@ -112,28 +112,28 @@ int ESMReaderAll::processNextRecord(std::ifstream& in_File)
          lastResult = Cells::getSingleton().readRecordCELL(in_File);
          break;
     case cCLAS:
-         lastResult = Classes::getSingleton().readRecordCLAS(in_File);
+         lastResult = Classes::getSingleton().readNextRecord(in_File);
          break;
     case cCLOT:
-         lastResult = Clothings::getSingleton().readRecordCLOT(in_File);
+         lastResult = Clothings::getSingleton().readNextRecord(in_File);
          break;
     case cCONT:
-         lastResult = Containers::getSingleton().readRecordCONT(in_File);
+         lastResult = Containers::getSingleton().readNextRecord(in_File);
          break;
     case cCREA:
-         lastResult = Creatures::getSingleton().readRecordCREA(in_File);
+         lastResult = Creatures::getSingleton().readNextRecord(in_File);
          break;
     case cDIAL:
          lastResult = DialogueTopics::getSingleton().readRecordDIAL(in_File);
          break;
     case cDOOR:
-         lastResult = Doors::getSingleton().readRecordDOOR(in_File);
+         lastResult = Doors::getSingleton().readNextRecord(in_File);
          break;
     case cENCH:
-         lastResult = Enchantings::getSingleton().readRecordENCH(in_File);
+         lastResult = Enchantings::getSingleton().readNextRecord(in_File);
          break;
     case cFACT:
-         lastResult = Factions::getSingleton().readRecordFACT(in_File);
+         lastResult = Factions::getSingleton().readNextRecord(in_File);
          break;
     case cGLOB:
          lastResult = Globals::getSingleton().readNextRecord(in_File);
@@ -142,19 +142,19 @@ int ESMReaderAll::processNextRecord(std::ifstream& in_File)
          lastResult = GameSettings::getSingleton().readRecordGMST(in_File);
          break;
     case cINFO:
-         lastResult = DialogueInfos::getSingleton().readRecordINFO(in_File);
+         lastResult = DialogueInfos::getSingleton().readNextRecord(in_File);
          break;
     case cINGR:
-         lastResult = Ingredients::getSingleton().readRecordINGR(in_File);
+         lastResult = Ingredients::getSingleton().readNextRecord(in_File);
          break;
     case cLAND:
          lastResult = Landscape::getSingleton().readRecordLAND(in_File);
          break;
     case cLEVC:
-         lastResult = LeveledCreatures::getSingleton().readRecordLEVC(in_File);
+         lastResult = LeveledCreatures::getSingleton().readNextRecord(in_File);
          break;
     case cLEVI:
-         lastResult = LeveledItems::getSingleton().readRecordLEVI(in_File);
+         lastResult = LeveledItems::getSingleton().readNextRecord(in_File);
          break;
     case cLIGH:
          lastResult = Lights::getSingleton().readRecordLIGH(in_File);
@@ -163,7 +163,7 @@ int ESMReaderAll::processNextRecord(std::ifstream& in_File)
          lastResult = Lockpicks::getSingleton().readRecordLOCK(in_File);
          break;
     case cLTEX:
-         lastResult = LandscapeTextures::getSingleton().readRecordLTEX(in_File);
+         lastResult = LandscapeTextures::getSingleton().readNextRecord(in_File);
          break;
     case cMGEF:
          lastResult = MagicEffects::getSingleton().readRecordMGEF(in_File);

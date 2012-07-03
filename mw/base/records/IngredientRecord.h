@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011 Thoronador
+    Copyright (C) 2010, 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute it and/or
     modify it under the terms of the GNU General Public License as published
@@ -48,7 +48,7 @@ struct IngredientRecord: public BasicRecord
     IngredientRecord();
 
     //data
-    std::string IngredientID;
+    std::string recordID; //formerly IngredientID
     std::string ModelName;
     std::string IngredientName;
     //IngredientData
@@ -67,6 +67,7 @@ struct IngredientRecord: public BasicRecord
     /* returns true, if the other record contains the same data */
     bool equals(const IngredientRecord& other) const;
 
+    #ifndef MW_UNSAVEABLE_RECORDS
     /* tries to save the ingredient record to an output file stream and returns
        true on success, false on failure.
 
@@ -74,6 +75,7 @@ struct IngredientRecord: public BasicRecord
            output   - the output file stream that is used to save the record
     */
     bool saveToStream(std::ofstream& output) const;
+    #endif
 
     /* loads the record from the given input stream and returns true on success
 
@@ -81,27 +83,6 @@ struct IngredientRecord: public BasicRecord
           in_File - the input file stream
     */
     bool loadFromStream(std::ifstream& in_File);
-  private:
-    /*tries to read the subrecord for the inventory icon and returns true on
-      success, false on failure
-
-      parameters:
-          in_File   - the input file stream
-          Buffer    - pointer to a buffer of at least 256 bytes length
-          BytesRead - reference to a variable that counts the number of bytes
-                      that were read from the stream
-    */
-    bool readSubRecordITEX(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead);
-
-    /*tries to read the subrecord for the script ID and returns true on success
-
-      parameters:
-          in_File   - the input file stream
-          Buffer    - pointer to a buffer of at least 256 bytes length
-          BytesRead - reference to a variable that counts the number of bytes
-                      that were read from the stream
-    */
-    bool readSubRecordSCRI(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead);
 };//struct
 
 } //namespace

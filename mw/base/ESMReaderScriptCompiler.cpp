@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -54,7 +54,7 @@ int ESMReaderScriptCompiler::processNextRecord(std::ifstream& in_File)
   switch(RecordName)
   {
     case cACTI:
-         lastResult = Activators::getSingleton().readRecordACTI(in_File);
+         lastResult = Activators::getSingleton().readNextRecord(in_File);
          break;
     case cALCH:
     case cAPPA:
@@ -68,10 +68,10 @@ int ESMReaderScriptCompiler::processNextRecord(std::ifstream& in_File)
          lastResult = ESMReader::skipRecord(in_File);
          break;
     case cCONT:
-         lastResult = Containers::getSingleton().readRecordCONT(in_File);
+         lastResult = Containers::getSingleton().readNextRecord(in_File);
          break;
     case cCREA:
-         lastResult = Creatures::getSingleton().readRecordCREA(in_File);
+         lastResult = Creatures::getSingleton().readNextRecord(in_File);
          break;
     case cDIAL:
     case cDOOR:
@@ -80,7 +80,7 @@ int ESMReaderScriptCompiler::processNextRecord(std::ifstream& in_File)
          lastResult = ESMReader::skipRecord(in_File);
          break;
     case cGLOB:
-         lastResult = Globals::getSingleton().readRecordGLOB(in_File);
+         lastResult = Globals::getSingleton().readNextRecord(in_File);
          break;
     case cGMST:
     case cINFO:
@@ -100,7 +100,7 @@ int ESMReaderScriptCompiler::processNextRecord(std::ifstream& in_File)
          lastResult = ESMReader::skipRecord(in_File);
          break;
     case cNPC_:
-         lastResult = NPCs::getSingleton().readRecordNPC_(in_File);
+         lastResult = NPCs::getSingleton().readNextRecord(in_File);
          break;
     case cPGRD:
     case cPROB:
@@ -110,7 +110,7 @@ int ESMReaderScriptCompiler::processNextRecord(std::ifstream& in_File)
          lastResult = ESMReader::skipRecord(in_File);
          break;
     case cSCPT:
-         lastResult = Scripts::getSingleton().readRecordSCPT(in_File);
+         lastResult = Scripts::getSingleton().readNextRecord(in_File);
          break;
     case cSKIL:
     case cSNDG:
@@ -120,7 +120,7 @@ int ESMReaderScriptCompiler::processNextRecord(std::ifstream& in_File)
          lastResult = ESMReader::skipRecord(in_File);
          break;
     case cSTAT:
-         lastResult = Statics::getSingleton().readRecordSTAT(in_File);
+         lastResult = Statics::getSingleton().readNextRecord(in_File);
          break;
     case cWEAP:
          lastResult = ESMReader::skipRecord(in_File);

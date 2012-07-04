@@ -80,6 +80,11 @@ struct SpellRecord: public BasicRecord
 
   /* returns true, if the "always succeed" flag is set */
   bool alwaysSucceeds() const;
+
+  /* constant that holds the maximum length of spell name, that Morrowind can
+     still handle properly (excluding terminating NUL character)
+  */
+  static const size_t cMaximumSpellNameLength;
 };//struct
 
 } //namespace

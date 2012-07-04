@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -78,7 +78,7 @@ void showGPLNotice()
 {
   std::cout << "Spell Renamer for Morrowind\n"
             << "  This programme is part of the Morrowind Tools Project.\n"
-            << "  Copyright (C) 2011 Thoronador\n"
+            << "  Copyright (C) 2011, 2012  Thoronador\n"
             << "\n"
             << "  The Morrowind Tools are free software: you can redistribute them and/or\n"
             << "  modify them under the terms of the GNU General Public License as published\n"
@@ -97,7 +97,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Spell Renamer for Morrowind, version 0.1_rev250, 2011-05-24\n";
+  std::cout << "Spell Renamer for Morrowind, version 0.1.1_rev487, 2012-07-04\n";
+}
+
+int showVersionExitcode()
+{
+  showVersion();
+  return 487;
 }
 
 int main(int argc, char **argv)
@@ -132,6 +138,10 @@ int main(int argc, char **argv)
         {
           showVersion();
           return 0;
+        }
+        else if (param=="--version-with-exitcode")
+        {
+          return showVersionExitcode();
         }
         //allow truncated names parameter
         else if (param=="--allow-truncate")
@@ -372,7 +382,7 @@ int main(int argc, char **argv)
   }//if
 
   std::cout << "Info: "<<files.getSize()<<" Master/ Plugin file(s) containing "
-            << MWTP::Spells::getSingleton().getNumberOfSpells()<<" spell(s) were read.\n";
+            << MWTP::Spells::getSingleton().getNumberOfRecords()<<" spell(s) were read.\n";
 
   std::vector<std::string> prefixes;
   prefixes.clear();
@@ -483,8 +493,8 @@ int main(int argc, char **argv)
   }
 
   //delete all non-spells (abilities, powers,...) and update spells with naming scheme
-  MWTP::SpellListIterator spell_end = MWTP::Spells::getSingleton().getEnd();
-  MWTP::SpellListIterator spell_cur = MWTP::Spells::getSingleton().getBegin();
+  MWTP::Spells::ListIterator spell_end = MWTP::Spells::getSingleton().getEnd();
+  MWTP::Spells::ListIterator spell_cur = MWTP::Spells::getSingleton().getBegin();
   while (spell_cur!=spell_end)
   {
     //Is it a spell?
@@ -493,7 +503,7 @@ int main(int argc, char **argv)
       const std::string temp = spell_cur->first;
       ++spell_cur;
       //delete spell so we don't save it into the final plugin
-      MWTP::Spells::getSingleton().removeSpell(temp);
+      MWTP::Spells::getSingleton().removeRecord(temp);
     }//if not spell
     else
     {
@@ -511,10 +521,10 @@ int main(int argc, char **argv)
             return MWTP::rcDataError;
           }//if school invalid
           const std::string newName = prefixes[school]+" "+rec.Name;
-          if (allowTruncatedName or (newName.length()<=MWTP::Spells::cMaximumSpellNameLength))
+          if (allowTruncatedName or (newName.length()<=MWTP::SpellRecord::cMaximumSpellNameLength))
           {
             rec.Name = newName;
-            MWTP::Spells::getSingleton().addSpell(rec);
+            MWTP::Spells::getSingleton().addRecord(rec);
           }//if
           else
           {
@@ -524,7 +534,7 @@ int main(int argc, char **argv)
             const std::string delete_ID = spell_cur->first;
             ++spell_cur;
             //delete spell so we don't save it into the final plugin
-            MWTP::Spells::getSingleton().removeSpell(delete_ID);
+            MWTP::Spells::getSingleton().removeRecord(delete_ID);
             //set unchanged flag to avoid iterator increase at the end
             unchanged = true;
           }//else
@@ -549,10 +559,10 @@ int main(int argc, char **argv)
     }
   }//while
 
-  std::cout << "Info: "<<MWTP::Spells::getSingleton().getNumberOfSpells()<<" spell(s) processed.\n";
+  std::cout << "Info: "<<MWTP::Spells::getSingleton().getNumberOfRecords()<<" spell(s) processed.\n";
 
   //write spells to file
-  if (MWTP::Spells::getSingleton().getNumberOfSpells()==0)
+  if (MWTP::Spells::getSingleton().getNumberOfRecords()==0)
   {
     std::cout << "No spells available. No new file will be created.\n";
     return MWTP::rcNoSpells;

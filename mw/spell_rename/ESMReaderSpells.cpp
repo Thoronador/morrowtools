@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -97,7 +97,7 @@ int ESMReaderSpells::processNextRecord(std::ifstream& in_File)
          lastResult = ESMReader::skipRecord(in_File);
          break;
     case cSPEL:
-         lastResult = Spells::getSingleton().readRecordSPEL(in_File);
+         lastResult = Spells::getSingleton().readNextRecord(in_File);
          break;
     case cSSCR:
     case cSTAT:

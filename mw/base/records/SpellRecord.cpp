@@ -27,6 +27,8 @@
 namespace MWTP
 {
 
+const size_t SpellRecord::cMaximumSpellNameLength = 31;
+
 #ifndef MW_UNSAVEABLE_RECORDS
 bool SpellRecord::saveToStream(std::ofstream& output) const
 {

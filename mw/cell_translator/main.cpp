@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -62,7 +62,7 @@ void showGPLNotice()
 {
   std::cout << "Cell Translator for Morrowind\n"
             << "  This programme is part of the Morrowind Tools Project.\n"
-            << "  Copyright (C) 2011 Thoronador\n"
+            << "  Copyright (C) 2011, 2012  Thoronador\n"
             << "\n"
             << "  The Morrowind Tools are free software: you can redistribute them and/or\n"
             << "  modify them under the terms of the GNU General Public License as published\n"
@@ -81,7 +81,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Cell Translator for Morrowind, version 0.3_rev250, 2011-05-24\n";
+  std::cout << "Cell Translator for Morrowind, version 0.3.1_rev487, 2012-07-04\n";
+}
+
+int showVersionExitcode()
+{
+  showVersion();
+  return 487;
 }
 
 int main(int argc, char **argv)
@@ -114,6 +120,10 @@ int main(int argc, char **argv)
         {
           showVersion();
           return 0;
+        }
+        else if (param=="--version-with-exitcode")
+        {
+          return showVersionExitcode();
         }
         else if (param=="-f")
         {
@@ -390,7 +400,7 @@ int main(int argc, char **argv)
       if (!translateScriptRecord(dynamic_cast<MWTP::ScriptRecord*>(*v_iter), cells, changedRecords))
       {
         std::cout << "Error: couldn't translate cells in script \""
-                  << dynamic_cast<MWTP::ScriptRecord*>(*v_iter)->ScriptID<<"\"!\n";
+                  << dynamic_cast<MWTP::ScriptRecord*>(*v_iter)->recordID<<"\"!\n";
         reader.deallocateRecordsInVector();
         return MWTP::rcScriptError;
       }//if not translated

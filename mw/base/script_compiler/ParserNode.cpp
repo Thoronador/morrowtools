@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -124,11 +124,11 @@ bool ParserNode::splitToTree(std::string expression, const CompiledChunk& chunkV
         binary_content.push_back(locRef.Index>>8);
       }
       //check for global
-      else if (Globals::getSingleton().hasGlobal(expression))
+      else if (Globals::getSingleton().hasRecord(expression))
       {
         //found a global var
         type = ctGlobalVar;
-        content = Globals::getSingleton().getGlobal(expression).GlobalID;
+        content = Globals::getSingleton().getRecord(expression).recordID;
         //push G for global
         binary_content.push_back('G');
         //push length of name

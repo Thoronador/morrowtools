@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011 Thoronador
+    Copyright (C) 2010, 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -27,14 +27,15 @@
 namespace MWTP
 {
 
+#ifndef MW_UNSAVEABLE_RECORDS
 bool SpellRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cSPEL, 4);
+  output.write((const char*) &cSPEL, 4);
   uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +SpellID.length()+1 /* length of ID +1 byte for NUL termination */
+        +recordID.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* SPDT */ +4 /* SPDT's length */ +12 /*size of spell data (SPDT)*/;
-  if (Name!="")
+  if (!Name.empty())
   {
     Size = Size +4 /* FNAM */ +4 /* 4 bytes for FNAM's length */
           +Name.length()+1 /*length of name plus one for NUL-termination */;
@@ -42,9 +43,9 @@ bool SpellRecord::saveToStream(std::ofstream& output) const
   //now calculate additional size of enchantment data
   Size = Size + Enchs.size()
          *(4 /*ENAM*/ +4 /*ENAM's length*/ +24 /*size of enchantment data*/);
-  output.write((char*) &Size, 4);
-  output.write((char*) &HeaderOne, 4);
-  output.write((char*) &HeaderFlags, 4);
+  output.write((const char*) &Size, 4);
+  output.write((const char*) &HeaderOne, 4);
+  output.write((const char*) &HeaderFlags, 4);
 
   /*Spell:
     NAME = Spell ID
@@ -57,37 +58,36 @@ bool SpellRecord::saveToStream(std::ofstream& output) const
 
 
   //write NAME
-  output.write((char*) &cNAME, 4);
+  output.write((const char*) &cNAME, 4);
   //NAME's length
-  uint32_t SubLength;
-  SubLength = SpellID.length()+1; //length of string plus one for NUL-termination
-  output.write((char*) &SubLength, 4);
+  uint32_t SubLength = recordID.length()+1; //length of string plus one for NUL-termination
+  output.write((const char*) &SubLength, 4);
   //write ID
-  output.write(SpellID.c_str(), SubLength);
+  output.write(recordID.c_str(), SubLength);
 
-  if (Name!="")
+  if (!Name.empty())
   {
     //write FNAM
-    output.write((char*) &cFNAM, 4);
+    output.write((const char*) &cFNAM, 4);
     //FNAM's length
     SubLength = Name.length()+1; //length of string plus one for NUL-termination
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write spell name
     output.write(Name.c_str(), SubLength);
   }
 
   //write SPDT
-  output.write((char*) &cSPDT, 4);
+  output.write((const char*) &cSPDT, 4);
   //SPDT's length
   SubLength = 12; //length of SPDT (spell data) is always 12 bytes
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   // ---- write spell data
   //type
-  output.write((char*) &(this->Type), 4);
+  output.write((const char*) &(this->Type), 4);
   //cost
-  output.write((char*) &(this->Cost), 4);
+  output.write((const char*) &(this->Cost), 4);
   //flags
-  output.write((char*) &(this->Flags), 4);
+  output.write((const char*) &(this->Flags), 4);
   if (!output.good())
   {
     std::cout << "Error while writing sub record SPDT of SPEL.\n";
@@ -98,19 +98,19 @@ bool SpellRecord::saveToStream(std::ofstream& output) const
   unsigned int i;
   for (i=0; i<Enchs.size(); ++i)
   {
-    output.write((char*) &cENAM, 4);
+    output.write((const char*) &cENAM, 4);
     //ENAM's length
     SubLength = 24; //ENAM's length is fixed at 24 bytes
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write enchantment data
-    output.write((char*) &(Enchs[i].EffectID), 2);
-    output.write((char*) &(Enchs[i].SkillID), 1);
-    output.write((char*) &(Enchs[i].AttributeID), 1);
-    output.write((char*) &(Enchs[i].RangeType), 4);
-    output.write((char*) &(Enchs[i].Area), 4);
-    output.write((char*) &(Enchs[i].Duration), 4);
-    output.write((char*) &(Enchs[i].MagnitudeMin), 4);
-    output.write((char*) &(Enchs[i].MagnitudeMax), 4);
+    output.write((const char*) &(Enchs[i].EffectID), 2);
+    output.write((const char*) &(Enchs[i].SkillID), 1);
+    output.write((const char*) &(Enchs[i].AttributeID), 1);
+    output.write((const char*) &(Enchs[i].RangeType), 4);
+    output.write((const char*) &(Enchs[i].Area), 4);
+    output.write((const char*) &(Enchs[i].Duration), 4);
+    output.write((const char*) &(Enchs[i].MagnitudeMin), 4);
+    output.write((const char*) &(Enchs[i].MagnitudeMax), 4);
     if (!output.good())
     {
       std::cout << "Error while writing sub record ENAM of SPEL.\n";
@@ -119,24 +119,13 @@ bool SpellRecord::saveToStream(std::ofstream& output) const
   }//for
   return output.good();
 }
+#endif
 
 bool SpellRecord::equals(const SpellRecord& other) const
 {
-  if ((SpellID!=other.SpellID) or(Name!=other.Name) or (Type!=other.Type)
-     or (Cost!=other.Cost) or (Flags!=other.Flags)
-     or (Enchs.size()!=other.Enchs.size()))
-  {
-    return false;
-  }
-  size_t i;
-  for (i=0; i<Enchs.size(); ++i)
-  {
-    if (!Enchs.at(i).equals(other.Enchs.at(i)))
-    {
-      return false;
-    }
-  }//for
-  return true;
+  return ((recordID!=other.recordID) and (Name==other.Name) and (Type==other.Type)
+      and (Cost==other.Cost) and (Flags==other.Flags)
+      and (Enchs==other.Enchs));
 }
 
 bool SpellRecord::loadFromStream(std::ifstream& in_File)
@@ -187,7 +176,7 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
     std::cout << "File position: "<<in_File.tellg()<<"\n";
     return false;
   }
-  SpellID = std::string(Buffer);
+  recordID = std::string(Buffer);
   BytesRead += SubLength;
 
   //read FNAM (or SPDT in some rare cases)
@@ -221,7 +210,7 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
   else
   {
     //no name is present here
-    Name = "";
+    Name.clear();
   }
   //read SPDT
   //  -> was already read above

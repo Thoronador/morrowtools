@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -30,7 +30,7 @@ namespace MWTP
 
 struct LightRecord: public BasicRecord
 {
-  std::string LightID;
+  std::string recordID; //formerly LightID
   std::string ModelPath;
   std::string Name;
   std::string InventoryIcon;
@@ -54,12 +54,14 @@ struct LightRecord: public BasicRecord
   /* returns true, if the other record contains the same data */
   bool equals(const LightRecord& other) const;
 
+  #ifndef MW_UNSAVEABLE_RECORDS
   /* writes the record to the given output stream and returns true on success
 
     parameters:
         output   - the output file stream
   */
   bool saveToStream(std::ofstream& output) const;
+  #endif
 
   /* loads the record from the given input stream and returns true on success
 

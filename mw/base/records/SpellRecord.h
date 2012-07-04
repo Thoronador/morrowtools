@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011 Thoronador
+    Copyright (C) 2010, 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -43,7 +43,7 @@ const int32_t sfAlwaysSucceeds = 4;
 
 struct SpellRecord: public BasicRecord
 {
-  std::string SpellID;
+  std::string recordID; //formerly SpellID
   std::string Name;
   //spell data
   int32_t Type;
@@ -52,6 +52,7 @@ struct SpellRecord: public BasicRecord
   //end of spell data
   std::vector<EnchantmentData> Enchs;
 
+  #ifndef MW_UNSAVEABLE_RECORDS
   /* tries to save the spell record to an output file stream and returns true
      on success, false on failure.
 
@@ -59,6 +60,7 @@ struct SpellRecord: public BasicRecord
          output  - the output file stream that is used to save the spell data
   */
   bool saveToStream(std::ofstream& output) const;
+  #endif
 
   /* loads the record from the given input stream and returns true on success
 

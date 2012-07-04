@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011 Thoronador
+    Copyright (C) 2009, 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -29,53 +29,57 @@ namespace MWTP
 StartScriptRecord::StartScriptRecord()
 {
   Data = "";
-  Name = "";
+  recordID = "";
 }
 
+/*
 StartScriptRecord::StartScriptRecord(const std::string& ID)
 {
   Data = "";
-  Name = ID;
+  recordID = ID;
 }
+*/
 
 bool StartScriptRecord::equals(const StartScriptRecord& other) const
 {
-  return ((Data==other.Data) and (Name==other.Name));
+  return ((Data==other.Data) and (recordID==other.recordID));
 }
 
+#ifndef MW_UNSAVEABLE_RECORDS
 bool StartScriptRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cSSCR, 4);
+  output.write((const char*) &cSSCR, 4);
   uint32_t Size;
   Size = 4 /* DATA */ +4 /* 4 bytes for length */
         +Data.length()+1 /* length of sequence (no NUL termination) */
         +4 /* NAME */ +4 /* 4 bytes for length */
-        +Name.length() /* length of name (no NUL termination) */;
-  output.write((char*) &Size, 4);
-  output.write((char*) &HeaderOne, 4);
-  output.write((char*) &HeaderFlags, 4);
+        +recordID.length() /* length of name (no NUL termination) */;
+  output.write((const char*) &Size, 4);
+  output.write((const char*) &HeaderOne, 4);
+  output.write((const char*) &HeaderFlags, 4);
 
   /*Start Script(?): (no documentation known)
     DATA = ? (a sequence of digits)
     NAME = ID string*/
 
   //write DATA
-  output.write((char*) &cDATA, 4);
+  output.write((const char*) &cDATA, 4);
   uint32_t SubLength = Data.length();
   //write DATA's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write data
   output.write(Data.c_str(), SubLength);
 
   //write NAME
-  output.write((char*) &cNAME, 4);
-  SubLength = Name.length();
+  output.write((const char*) &cNAME, 4);
+  SubLength = recordID.length();
   //write NAME's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write Name
-  output.write(Name.c_str(), SubLength);
+  output.write(recordID.c_str(), SubLength);
   return output.good();
 }
+#endif
 
 bool StartScriptRecord::loadFromStream(std::ifstream& in_File)
 {
@@ -143,7 +147,7 @@ bool StartScriptRecord::loadFromStream(std::ifstream& in_File)
     std::cout << "File position: "<<in_File.tellg()<<" bytes\n";
     return false;
   }
-  Name = std::string(Buffer);
+  recordID = std::string(Buffer);
 
   return in_File.good();
 }

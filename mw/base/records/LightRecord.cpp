@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011 Thoronador
+    Copyright (C) 2009, 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -28,7 +28,7 @@ namespace MWTP
 
 LightRecord::LightRecord()
 {
-  LightID = ModelPath = Name = InventoryIcon = "";
+  recordID = ModelPath = Name = InventoryIcon = "";
   //light data
   Weight = 0.0f;
   Value = 0;
@@ -45,7 +45,7 @@ LightRecord::LightRecord()
 
 bool LightRecord::equals(const LightRecord& other) const
 {
-  return ((LightID==other.LightID) and (ModelPath==other.ModelPath)
+  return ((recordID==other.recordID) and (ModelPath==other.ModelPath)
       and (Name==other.Name) and (InventoryIcon==other.InventoryIcon)
       and (Weight==other.Weight) and (Value==other.Value) and (Time==other.Time)
       and (Radius==other.Radius) and (Red==other.Red) and (Green==other.Green)
@@ -54,38 +54,39 @@ bool LightRecord::equals(const LightRecord& other) const
       and (SoundID==other.SoundID));
 }
 
+#ifndef MW_UNSAVEABLE_RECORDS
 bool LightRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cLIGH, 4);
+  output.write((const char*) &cLIGH, 4);
   uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +LightID.length()+1 /* length of ID +1 byte for NUL termination */
+        +recordID.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* MODL */ +4 /* 4 bytes for length */
         +ModelPath.length()+1 /* length of path +1 byte for NUL termination */
         +4 /* LHDT */ +4 /* 4 bytes for length */ +24 /* size of light data */;
-  if (Name!="")
+  if (!Name.empty())
   {
     Size = Size +4 /* FNAM */ +4 /* 4 bytes for length */
           +Name.length()+1 /* length of path +1 byte for NUL termination */;
   }
-  if (InventoryIcon!="")
+  if (!InventoryIcon.empty())
   {
     Size = Size +4 /* ITEX */ +4 /* 4 bytes for length */
           +InventoryIcon.length()+1 /* length of icon +1 byte for NUL termination */;
   }
-  if (ScriptID!="")
+  if (!ScriptID.empty())
   {
     Size = Size +4 /* SCRI */ +4 /* 4 bytes for length */
           +ScriptID.length()+1 /* length of script ID +1 byte for NUL termination */;
   }
-  if (SoundID!="")
+  if (!SoundID.empty())
   {
     Size = Size +4 /* SNAM */ +4 /* 4 bytes for length */
           +SoundID.length()+1 /* length of sound ID +1 byte for NUL termination */;
   }
-  output.write((char*) &Size, 4);
-  output.write((char*) &HeaderOne, 4);
-  output.write((char*) &HeaderFlags, 4);
+  output.write((const char*) &Size, 4);
+  output.write((const char*) &HeaderOne, 4);
+  output.write((const char*) &HeaderFlags, 4);
 
   /*Lights:
     NAME = ID string
@@ -108,81 +109,81 @@ bool LightRecord::saveToStream(std::ofstream& output) const
     SNAM = Sound name (optional?) */
 
   //write NAME
-  output.write((char*) &cNAME, 4);
+  output.write((const char*) &cNAME, 4);
   //NAME's length
-  uint32_t SubLength;
-  SubLength = LightID.length()+1;//length of ID plus one for NUL-termination
-  output.write((char*) &SubLength, 4);
+  uint32_t SubLength = recordID.length()+1;//length of ID plus one for NUL-termination
+  output.write((const char*) &SubLength, 4);
   //write light's ID
-  output.write(LightID.c_str(), SubLength);
+  output.write(recordID.c_str(), SubLength);
 
   //write MODL
-  output.write((char*) &cMODL, 4);
+  output.write((const char*) &cMODL, 4);
   //MODL's length
   SubLength = ModelPath.length()+1;//length of path plus one for NUL-termination
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write light's model path
   output.write(ModelPath.c_str(), SubLength);
 
-  if (Name!="")
+  if (!Name.empty())
   {
     //write FNAM
-    output.write((char*) &cFNAM, 4);
+    output.write((const char*) &cFNAM, 4);
     //FNAM's length
     SubLength = Name.length()+1;//length of name plus one for NUL-termination
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write light's "real" name
     output.write(Name.c_str(), SubLength);
   }
-  if (InventoryIcon!="")
+  if (!InventoryIcon.empty())
   {
     //write ITEX
-    output.write((char*) &cITEX, 4);
+    output.write((const char*) &cITEX, 4);
     //ITEX's length
     SubLength = InventoryIcon.length()+1;//length of icon path plus one for NUL-termination
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write inventory icon
     output.write(InventoryIcon.c_str(), SubLength);
   }
 
   //write LHDT
-  output.write((char*) &cLHDT, 4);
+  output.write((const char*) &cLHDT, 4);
   //LHDT's length
   SubLength = 24;//fixed length of 24 bytes, always
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write light data
-  output.write((char*) &Weight, 4);
-  output.write((char*) &Value, 4);
-  output.write((char*) &Time, 4);
-  output.write((char*) &Radius, 4);
-  output.write((char*) &Red, 1);
-  output.write((char*) &Green, 1);
-  output.write((char*) &Blue, 1);
-  output.write((char*) &Zero, 1);
-  output.write((char*) &LightFlags, 4);
+  output.write((const char*) &Weight, 4);
+  output.write((const char*) &Value, 4);
+  output.write((const char*) &Time, 4);
+  output.write((const char*) &Radius, 4);
+  output.write((const char*) &Red, 1);
+  output.write((const char*) &Green, 1);
+  output.write((const char*) &Blue, 1);
+  output.write((const char*) &Zero, 1);
+  output.write((const char*) &LightFlags, 4);
 
-  if (ScriptID!="")
+  if (!ScriptID.empty())
   {
     //write SCRI
-    output.write((char*) &cSCRI, 4);
+    output.write((const char*) &cSCRI, 4);
     //SCRI's length
     SubLength = ScriptID.length()+1;//length of script ID + one for NUL-termination
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write script ID
     output.write(ScriptID.c_str(), SubLength);
   }
-  if (SoundID!="")
+  if (!SoundID.empty())
   {
     //write SNAM
-    output.write((char*) &cSNAM, 4);
+    output.write((const char*) &cSNAM, 4);
     //SNAM's length
     SubLength = SoundID.length()+1;//length of sound ID + one for NUL-termination
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write sound ID
     output.write(SoundID.c_str(), SubLength);
   }
   return output.good();
 }
+#endif
 
 bool LightRecord::loadFromStream(std::ifstream& in_File)
 {
@@ -241,7 +242,7 @@ bool LightRecord::loadFromStream(std::ifstream& in_File)
     std::cout << "Error while reading subrecord NAME of LIGH.\n";
     return false;
   }
-  LightID = std::string(Buffer);
+  recordID = std::string(Buffer);
 
   //read MODL
   in_File.read((char*) &SubRecName, 4);
@@ -300,7 +301,7 @@ bool LightRecord::loadFromStream(std::ifstream& in_File)
   }
   else
   {
-    Name = "";
+    Name.clear();
   }
 
   //read ITEX
@@ -331,7 +332,7 @@ bool LightRecord::loadFromStream(std::ifstream& in_File)
   }
   else
   {
-    InventoryIcon = "";
+    InventoryIcon.clear();
   }
 
   //read LHDT (already read before)
@@ -366,8 +367,8 @@ bool LightRecord::loadFromStream(std::ifstream& in_File)
     return false;
   }
 
-  ScriptID = "";
-  SoundID = "";
+  ScriptID.clear();
+  SoundID.clear();
   if (BytesRead<Size)
   {
     //read optional SCRI

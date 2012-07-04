@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -31,7 +31,7 @@ namespace MWTP
 struct ScriptRecord: public BasicRecord
 {
   //script header
-  std::string ScriptID;
+  std::string recordID; //formerly ScriptID
   uint32_t NumShorts;
   uint32_t NumLongs;
   uint32_t NumFloats;
@@ -52,17 +52,19 @@ struct ScriptRecord: public BasicRecord
   ScriptRecord& operator=(const ScriptRecord& rhs);
 
   /* destructor */
-  ~ScriptRecord();
+  virtual ~ScriptRecord();
 
   /* returns true, if the other record contains the same data */
   bool equals(const ScriptRecord& other) const;
 
+  #ifndef MW_UNSAVEABLE_RECORDS
   /* writes the record to the given output stream and returns true on success
 
     parameters:
         output - the output file stream
   */
   bool saveToStream(std::ofstream& output) const;
+  #endif
 
   /* loads the record from the given input stream and returns true on success
 

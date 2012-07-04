@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011 Thoronador
+    Copyright (C) 2009, 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -28,7 +28,7 @@ namespace MWTP
 
 SoundGeneratorRecord::SoundGeneratorRecord()
 {
-  Name = "";
+  recordID = "";
   SoundID = "";
   Type = -1;
   CreatureID = "";
@@ -36,27 +36,28 @@ SoundGeneratorRecord::SoundGeneratorRecord()
 
 bool SoundGeneratorRecord::equals(const SoundGeneratorRecord& other) const
 {
-  return ((Name==other.Name) and (SoundID==other.SoundID) and (Type==other.Type)
+  return ((recordID==other.recordID) and (SoundID==other.SoundID) and (Type==other.Type)
       and (CreatureID==other.CreatureID));
 }
 
+#ifndef MW_UNSAVEABLE_RECORDS
 bool SoundGeneratorRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cSNDG, 4);
+  output.write((const char*) &cSNDG, 4);
   uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +Name.length()+1 /* length of ID +1 byte for NUL termination */
+        +recordID.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* DATA */ +4 /* DATA's length */ +4 /*size of sound gen data (DATA)*/
         +4 /* SNAM */ +4 /* 4 bytes for SNAM's length */
         +SoundID.length()+1 /*length of name plus one for NUL-termination */;
-  if (CreatureID!="")
+  if (!CreatureID.empty())
   {
     Size = Size +4 /* CNAM */ +4 /* 4 bytes for length */
           +CreatureID.length()+1; /* length of ID +1 byte for NUL termination */
   }
-  output.write((char*) &Size, 4);
-  output.write((char*) &HeaderOne, 4);
-  output.write((char*) &HeaderFlags, 4);
+  output.write((const char*) &Size, 4);
+  output.write((const char*) &HeaderOne, 4);
+  output.write((const char*) &HeaderFlags, 4);
 
   /*Sound Generator:
     NAME = Name? (DEFAULT0001, ALIT0001, etc...)
@@ -68,43 +69,44 @@ bool SoundGeneratorRecord::saveToStream(std::ofstream& output) const
 
 
   //write NAME
-  output.write((char*) &cNAME, 4);
+  output.write((const char*) &cNAME, 4);
   //NAME's length
   uint32_t SubLength;
-  SubLength = Name.length()+1;//length of string plus one for NUL-termination
-  output.write((char*) &SubLength, 4);
+  SubLength = recordID.length()+1;//length of string plus one for NUL-termination
+  output.write((const char*) &SubLength, 4);
   //write name/ID
-  output.write(Name.c_str(), SubLength);
+  output.write(recordID.c_str(), SubLength);
 
   //write DATA
-  output.write((char*) &cDATA, 4);
+  output.write((const char*) &cDATA, 4);
   //DATA's length
   SubLength = 4; //length of DATA (sound generator data) is always four bytes
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   // write sound data
-  output.write((char*) &Type, 4);
+  output.write((const char*) &Type, 4);
 
-  if (CreatureID!="")
+  if (!CreatureID.empty())
   {
     //write CNAM
-    output.write((char*) &cCNAM, 4);
+    output.write((const char*) &cCNAM, 4);
     //CNAM's length
     SubLength = CreatureID.length()+1;//length of string plus one for NUL-termination
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write creature name/ID
     output.write(CreatureID.c_str(), SubLength);
   }
 
   //write SNAM
-  output.write((char*) &cSNAM, 4);
+  output.write((const char*) &cSNAM, 4);
   //SNAM's length
   SubLength = SoundID.length()+1;//length of string plus one for NUL-termination
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write sound ID
   output.write(SoundID.c_str(), SubLength);
 
   return output.good();
 }
+#endif
 
 bool SoundGeneratorRecord::loadFromStream(std::ifstream& in_File)
 {
@@ -148,7 +150,7 @@ bool SoundGeneratorRecord::loadFromStream(std::ifstream& in_File)
     std::cout << "Error while reading subrecord NAME of SNDG.\n";
     return false;
   }
-  Name = std::string(Buffer);
+  recordID = std::string(Buffer);
 
   //read DATA
   in_File.read((char*) &SubRecName, 4);
@@ -199,7 +201,7 @@ bool SoundGeneratorRecord::loadFromStream(std::ifstream& in_File)
   else
   {
     //no CNAM found, so set creature name to empty string
-    CreatureID = "";
+    CreatureID.clear();
   }
 
   //read SNAM (record name already read above

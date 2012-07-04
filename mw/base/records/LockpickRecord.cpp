@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011 Thoronador
+    Copyright (C) 2009, 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -28,7 +28,7 @@ namespace MWTP
 
 LockpickRecord::LockpickRecord()
 {
-  LockpickID = Name = ModelPath = "";
+  recordID = Name = ModelPath = "";
   //lockpick data
   Weight = 0.0f;
   Value = 0;
@@ -40,19 +40,20 @@ LockpickRecord::LockpickRecord()
 
 bool LockpickRecord::equals(const LockpickRecord& other) const
 {
-  return ((LockpickID==other.LockpickID) and (Name==other.Name)
+  return ((recordID==other.recordID) and (Name==other.Name)
       and (ModelPath==other.ModelPath) and (Weight==other.Weight)
       and (Value==other.Value) and (Quality==other.Quality)
       and (Uses==other.Uses) and (InventoryIcon==other.InventoryIcon)
       and (ScriptID==other.ScriptID));
 }
 
+#ifndef MW_UNSAVEABLE_RECORDS
 bool LockpickRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cLOCK, 4);
+  output.write((const char*) &cLOCK, 4);
   uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +LockpickID.length()+1 /* length of mesh path +1 byte for NUL termination */
+        +recordID.length()+1 /* length of mesh path +1 byte for NUL termination */
         +4 /* MODL */ +4 /* 4 bytes for length */
         +ModelPath.length()+1 /* length of mesh path +1 byte for NUL termination */
         +4 /* FNAM */ +4 /* 4 bytes for length */
@@ -61,14 +62,14 @@ bool LockpickRecord::saveToStream(std::ofstream& output) const
         +4 /* ITEX */ +4 /* 4 bytes for length */
         +InventoryIcon.length()+1 /* length of mesh path +1 byte for NUL termination */;
 
-  if (ScriptID!="")
+  if (!ScriptID.empty())
   {
     Size = Size + 4 /* SCRI */ +4 /* 4 bytes for length */
           +ScriptID.length()+1 /* length of script ID +1 byte for NUL termination */;
   }
-  output.write((char*) &Size, 4);
-  output.write((char*) &HeaderOne, 4);
-  output.write((char*) &HeaderFlags, 4);
+  output.write((const char*) &Size, 4);
+  output.write((const char*) &HeaderOne, 4);
+  output.write((const char*) &HeaderFlags, 4);
 
   /*Lockpicks:
     NAME = Item ID, required
@@ -83,61 +84,62 @@ bool LockpickRecord::saveToStream(std::ofstream& output) const
     SCRI = Script Name (optional) */
 
   //write NAME
-  output.write((char*) &cNAME, 4);
-  uint32_t SubLength = LockpickID.length()+1;
+  output.write((const char*) &cNAME, 4);
+  uint32_t SubLength = recordID.length()+1;
   //write NAME's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write ID
-  output.write(LockpickID.c_str(), SubLength);
+  output.write(recordID.c_str(), SubLength);
 
   //write MODL
-  output.write((char*) &cMODL, 4);
+  output.write((const char*) &cMODL, 4);
   SubLength = ModelPath.length()+1;
   //write MODL's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write model path
   output.write(ModelPath.c_str(), SubLength);
 
   //write FNAM
-  output.write((char*) &cFNAM, 4);
+  output.write((const char*) &cFNAM, 4);
   SubLength = Name.length()+1;
   //write FNAM's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write lockpick's name
   output.write(Name.c_str(), SubLength);
 
   //write LKDT
-  output.write((char*) &cLKDT, 4);
+  output.write((const char*) &cLKDT, 4);
   SubLength = 16; /* length is always 16 bytes */
   //write LKDT's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write lockpick data
-  output.write((char*) &Weight, 4);
-  output.write((char*) &Value, 4);
-  output.write((char*) &Quality, 4);
-  output.write((char*) &Uses, 4);
+  output.write((const char*) &Weight, 4);
+  output.write((const char*) &Value, 4);
+  output.write((const char*) &Quality, 4);
+  output.write((const char*) &Uses, 4);
 
   //write ITEX
-  output.write((char*) &cITEX, 4);
+  output.write((const char*) &cITEX, 4);
   SubLength = InventoryIcon.length()+1;
   //write ITEX's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write inventory icon
   output.write(InventoryIcon.c_str(), SubLength);
 
-  if (ScriptID!="")
+  if (!ScriptID.empty())
   {
     //write SCRI
-    output.write((char*) &cSCRI, 4);
+    output.write((const char*) &cSCRI, 4);
     SubLength = ScriptID.length()+1;
     //write SCRI's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write script ID
     output.write(ScriptID.c_str(), SubLength);
   }
 
   return output.good();
 }
+#endif
 
 bool LockpickRecord::loadFromStream(std::ifstream& in_File)
 {
@@ -191,7 +193,7 @@ bool LockpickRecord::loadFromStream(std::ifstream& in_File)
     std::cout << "Error while reading subrecord NAME of LOCK.\n";
     return false;
   }
-  LockpickID = std::string(Buffer);
+  recordID = std::string(Buffer);
 
   //read MODL
   in_File.read((char*) &SubRecName, 4);

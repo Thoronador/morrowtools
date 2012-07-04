@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -42,7 +42,7 @@ const int32_t nfMetalGoldBloodTex = 2048;
 
 NPCRecord::NPCRecord()
 {
-  NPCID = Name = ModelPath = RaceID = FactionID = HeadModel = ClassID =
+  recordID = Name = ModelPath = RaceID = FactionID = HeadModel = ClassID =
     HairModel = ScriptID = "";
   //NPC data
   Level = 0;
@@ -74,7 +74,7 @@ NPCRecord& NPCRecord::operator=(const NPCRecord& source)
 {
   if (this==&source) return *this;
 
-  NPCID = source.NPCID;
+  recordID = source.recordID;
   Name = source.Name;
   ModelPath = source.ModelPath;
   RaceID = source.RaceID;
@@ -117,7 +117,7 @@ NPCRecord& NPCRecord::operator=(const NPCRecord& source)
 
 bool NPCRecord::equals(const NPCRecord& other) const
 {
-  return ((NPCID==other.NPCID) and (Name==other.Name)
+  return ((recordID==other.recordID) and (Name==other.Name)
       and (ModelPath==other.ModelPath) and (RaceID==other.RaceID)
       and (FactionID==other.FactionID) and (HeadModel==other.HeadModel)
       and (ClassID==other.ClassID) and (HairModel==other.HairModel)
@@ -138,12 +138,13 @@ bool NPCRecord::equals(const NPCRecord& other) const
       and (Destinations==other.Destinations));
 }
 
+#ifndef MW_UNSAVEABLE_RECORDS
 bool NPCRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cNPC_, 4);
+  output.write((const char*) &cNPC_, 4);
   uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +NPCID.length()+1 /* length of ID +1 byte for NUL termination */
+        +recordID.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* RNAM */ +4 /* 4 bytes for length */
         +RaceID.length()+1 /* length of race ID +1 byte for NUL termination */
         +4 /* ANAM */ +4 /* 4 bytes for length */
@@ -172,22 +173,22 @@ bool NPCRecord::saveToStream(std::ofstream& output) const
 
 
   //add size of the optional stuff
-  if (Name!="")
+  if (!Name.empty())
   {
     Size = Size +4 /* FNAM */ +4 /* 4 bytes for length */
           +Name.length()+1 /* length of name +1 byte for NUL termination */;
   }
-  if (ModelPath!="")
+  if (!ModelPath.empty())
   {
     Size = Size +4 /* MODL */ +4 /* 4 bytes for length */
           +ModelPath.length()+1 /* length of path +1 byte for NUL termination */;
   }
-  if (ClassID!="")
+  if (!ClassID.empty())
   {
     Size = Size +4 /* CNAM */ +4 /* 4 bytes for length */
           +ClassID.length()+1 /* length of class ID +1 byte for NUL termination */;
   }
-  if (ScriptID!="")
+  if (!ScriptID.empty())
   {
     Size = Size +4 /* SCRI */ +4 /* 4 bytes for length */
           +ScriptID.length()+1 /* length of script+1 byte for NUL termination */;
@@ -228,15 +229,15 @@ bool NPCRecord::saveToStream(std::ofstream& output) const
   for (i=0; i<Destinations.size(); ++i)
   {
     Size = Size +4 /* DODT */ +4 /* 4 bytes for length */ +24 /*fixed length of 24 bytes */;
-    if (Destinations[i].CellName!="")
+    if (!Destinations[i].CellName.empty())
     {
       Size = Size +4 /* DNAM */ +4 /* 4 bytes for length */
             +Destinations[i].CellName.length()+1 /*length of cell name +1 byte for NUL termination */;
     }//if
   }//for
-  output.write((char*) &Size, 4);
-  output.write((char*) &HeaderOne, 4);
-  output.write((char*) &HeaderFlags, 4);
+  output.write((const char*) &Size, 4);
+  output.write((const char*) &HeaderOne, 4);
+  output.write((const char*) &HeaderFlags, 4);
   /*NPCs:
     NAME = NPC ID string
     FNAM = NPC name (optional, e.g. todwendy in DV)
@@ -342,91 +343,91 @@ bool NPCRecord::saveToStream(std::ofstream& output) const
 		Only present if the scale is not 1.0 */
 
   //write NAME
-  output.write((char*) &cNAME, 4);
-  uint32_t SubLength = NPCID.length()+1;
+  output.write((const char*) &cNAME, 4);
+  uint32_t SubLength = recordID.length()+1;
   //write NAME's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write ID
-  output.write(NPCID.c_str(), SubLength);
+  output.write(recordID.c_str(), SubLength);
 
-  if (Name!="")
+  if (!Name.empty())
   {
     //write FNAM
-    output.write((char*) &cFNAM, 4);
+    output.write((const char*) &cFNAM, 4);
     SubLength = Name.length()+1;
     //write FNAM's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write NPC's name
     output.write(Name.c_str(), SubLength);
   }
 
-  if (ModelPath!="")
+  if (!ModelPath.empty())
   {
     //write MODL
-    output.write((char*) &cMODL, 4);
+    output.write((const char*) &cMODL, 4);
     SubLength = ModelPath.length()+1;
     //write MODL's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write NPC's model path
     output.write(ModelPath.c_str(), SubLength);
   }
 
   //write RNAM
-  output.write((char*) &cRNAM, 4);
+  output.write((const char*) &cRNAM, 4);
   SubLength = RaceID.length()+1;
   //write RNAM's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write race ID
   output.write(RaceID.c_str(), SubLength);
 
   //write ANAM
-  output.write((char*) &cANAM, 4);
+  output.write((const char*) &cANAM, 4);
   SubLength = FactionID.length()+1;
   //write ANAM's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write faction ID
   output.write(FactionID.c_str(), SubLength);
 
   //write BNAM
-  output.write((char*) &cBNAM, 4);
+  output.write((const char*) &cBNAM, 4);
   SubLength = HeadModel.length()+1;
   //write BNAM's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write head model
   output.write(HeadModel.c_str(), SubLength);
 
-  if (ClassID!="")
+  if (!ClassID.empty())
   {
     //write CNAM
-    output.write((char*) &cCNAM, 4);
+    output.write((const char*) &cCNAM, 4);
     SubLength = ClassID.length()+1;
     //write CNAM's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write class ID
     output.write(ClassID.c_str(), SubLength);
   }
 
   //write KNAM
-  output.write((char*) &cKNAM, 4);
+  output.write((const char*) &cKNAM, 4);
   SubLength = HairModel.length()+1;
   //write KNAM's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write hair model
   output.write(HairModel.c_str(), SubLength);
 
-  if (ScriptID!="")
+  if (!ScriptID.empty())
   {
     //write SCRI
-    output.write((char*) &cSCRI, 4);
+    output.write((const char*) &cSCRI, 4);
     SubLength = ScriptID.length()+1;
     //write SCRI's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write script ID
     output.write(ScriptID.c_str(), SubLength);
   }
 
   //write NPDT
-  output.write((char*) &cNPDT, 4);
+  output.write((const char*) &cNPDT, 4);
   switch ( NPCDataType)
   {
     case ndt12Bytes:
@@ -441,72 +442,74 @@ bool NPCRecord::saveToStream(std::ofstream& output) const
          break;
   }//swi
   //write NPDT's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write NPC data
   if (SubLength==52)
   {
     // ---- level
-    output.write((char*) &Level, 2);
+    output.write((const char*) &Level, 2);
     // ---- attributes
-    output.write((char*) &Strength, 1);
-    output.write((char*) &Intelligence, 1);
-    output.write((char*) &Willpower, 1);
-    output.write((char*) &Agility, 1);
-    output.write((char*) &Speed, 1);
-    output.write((char*) &Endurance, 1);
-    output.write((char*) &Personality, 1);
-    output.write((char*) &Luck, 1);
+    output.write((const char*) &Strength, 1);
+    output.write((const char*) &Intelligence, 1);
+    output.write((const char*) &Willpower, 1);
+    output.write((const char*) &Agility, 1);
+    output.write((const char*) &Speed, 1);
+    output.write((const char*) &Endurance, 1);
+    output.write((const char*) &Personality, 1);
+    output.write((const char*) &Luck, 1);
     // ---- skills
-    output.write((char*) Skills, 27);
+    output.write((const char*) Skills, 27);
     // ---- reputations
-    output.write((char*) &Reputation, 1);
+    output.write((const char*) &Reputation, 1);
     // ---- secondary attribs
-    output.write((char*) &Health, 2);
-    output.write((char*) &SpellPoints, 2);
-    output.write((char*) &Fatigue, 2);
+    output.write((const char*) &Health, 2);
+    output.write((const char*) &SpellPoints, 2);
+    output.write((const char*) &Fatigue, 2);
     // ---- disposition
-    output.write((char*) &Disposition, 1);
+    output.write((const char*) &Disposition, 1);
     // ---- faction stuff
-    output.write((char*) &Data_FactionID, 1);
-    output.write((char*) &Rank, 1);
+    output.write((const char*) &Data_FactionID, 1);
+    output.write((const char*) &Rank, 1);
     // ---- others
-    output.write((char*) &Unknown1, 1);
-    output.write((char*) &Gold, 4);
+    output.write((const char*) &Unknown1, 1);
+    output.write((const char*) &Gold, 4);
   }
   else
   {
     //12 byte version
     // ---- level
-    output.write((char*) &Level, 2);
+    output.write((const char*) &Level, 2);
     // ---- disposition
-    output.write((char*) &Disposition, 1);
+    output.write((const char*) &Disposition, 1);
     // ---- faction stuff
-    output.write((char*) &Data_FactionID, 1);
-    output.write((char*) &Rank, 1);
+    output.write((const char*) &Data_FactionID, 1);
+    output.write((const char*) &Rank, 1);
     // ---- others
-    output.write((char*) &Unknown1, 1);
+    output.write((const char*) &Unknown1, 1);
     output.write(NULof32, 2);//skip the two unknown bytes
-    output.write((char*) &Gold, 4);
+    output.write((const char*) &Gold, 4);
   }
 
   //write FLAG
-  output.write((char*) &cFLAG, 4);
+  output.write((const char*) &cFLAG, 4);
   SubLength = 4; //fixed length of four bytes
   //write FLAG's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write NPC flag
-  output.write((char*) &NPC_Flag, 4);
+  output.write((const char*) &NPC_Flag, 4);
 
   //items and spells, AI data, AI packages, travel service destinations
   writeItemsSpellsAIDataDestinations(output);
 
   return output.good();
 }
+#endif
 
 bool NPCRecord::loadFromStream(std::ifstream& in_File)
 {
   #warning Not completely implemented yet!\
            The XSCL subrecord is still missing.
+  #warning This function is a bit messy and could need a partial rewrite.
   uint32_t Size;
   in_File.read((char*) &Size, 4);
   in_File.read((char*) &HeaderOne, 4);
@@ -645,7 +648,7 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
     std::cout << "Error while reading subrecord NAME of NPC_!\n";
     return false;
   }
-  NPCID = std::string(Buffer);
+  recordID = std::string(Buffer);
 
   bool hasANAM = false;
   bool hasBNAM = false;
@@ -657,11 +660,11 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
   bool hasRNAM = false;
   bool hasSCRI = false;
 
-  ScriptID = "";
-  ClassID = "";
-  RaceID = "";
-  Name = "";
-  ModelPath = "";
+  ScriptID.clear();
+  ClassID.clear();
+  RaceID.clear();
+  Name.clear();
+  ModelPath.clear();
 
   while (!(hasANAM and hasBNAM and hasKNAM and hasNPDT and hasRNAM))
   {

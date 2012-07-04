@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011 Thoronador
+    Copyright (C) 2009, 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -28,7 +28,7 @@ namespace MWTP
 
 WeaponRecord::WeaponRecord()
 {
-  WeaponID = ModelPath = Name = "";
+  recordID = ModelPath = Name = "";
   //weapon data
   Weight = 0.0f;
   Value = 0;
@@ -50,7 +50,7 @@ WeaponRecord::WeaponRecord()
 
 bool WeaponRecord::equals(const WeaponRecord& other) const
 {
-  return ((WeaponID==other.WeaponID) and (ModelPath==other.ModelPath)
+  return ((recordID==other.recordID) and (ModelPath==other.ModelPath)
       and (Name==other.Name) and (Weight==other.Weight) and (Value==other.Value)
       and (Type==other.Type) and (Health==other.Health) and (Speed==other.Speed)
       and (Reach==other.Reach) and (EnchantPts==other.EnchantPts)
@@ -61,38 +61,39 @@ bool WeaponRecord::equals(const WeaponRecord& other) const
       and (EnchantmentID==other.EnchantmentID) and (ScriptID==other.ScriptID));
 }
 
+#ifndef MW_UNSAVEABLE_RECORDS
 bool WeaponRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cWEAP, 4);
+  output.write((const char*) &cWEAP, 4);
   uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +WeaponID.length()+1 /* length of mesh path +1 byte for NUL termination */
+        +recordID.length()+1 /* length of mesh path +1 byte for NUL termination */
         +4 /* MODL */ +4 /* 4 bytes for length */
         +ModelPath.length()+1 /* length of mesh path +1 byte for NUL termination */
         +4 /* WPDT */ +4 /* 4 bytes for length */ + 32 /* size of weapon data */;
-  if (Name!="")
+  if (!Name.empty())
   {
     Size = Size +4 /* FNAM */ +4 /* 4 bytes for length */
         +Name.length()+1 /* length of mesh path +1 byte for NUL termination */;
   }
-  if (InventoryIcon!="")
+  if (!InventoryIcon.empty())
   {
     Size = Size +4 /* ITEX */ +4 /* 4 bytes for length */
         +InventoryIcon.length()+1 /* length of mesh path +1 byte for NUL termination */;
   }
-  if (EnchantmentID!="")
+  if (!EnchantmentID.empty())
   {
     Size = Size + 4 /* ENAM */ +4 /* 4 bytes for length */
           +EnchantmentID.length()+1 /* length of enchantment ID +1 byte for NUL termination */;
   }
-  if (ScriptID!="")
+  if (!ScriptID.empty())
   {
     Size = Size + 4 /* SCRI */ +4 /* 4 bytes for length */
           +ScriptID.length()+1 /* length of script ID +1 byte for NUL termination */;
   }
-  output.write((char*) &Size, 4);
-  output.write((char*) &HeaderOne, 4);
-  output.write((char*) &HeaderFlags, 4);
+  output.write((const char*) &Size, 4);
+  output.write((const char*) &HeaderOne, 4);
+  output.write((const char*) &HeaderFlags, 4);
   /*Weapons:
     NAME = item ID, required
     MODL = model filename, required
@@ -120,88 +121,89 @@ bool WeaponRecord::saveToStream(std::ofstream& output) const
     SCRI = script ID string (optional) */
 
   //write NAME
-  output.write((char*) &cNAME, 4);
-  uint32_t SubLength = WeaponID.length()+1;
+  output.write((const char*) &cNAME, 4);
+  uint32_t SubLength = recordID.length()+1;
   //write NAME's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write ID
-  output.write(WeaponID.c_str(), SubLength);
+  output.write(recordID.c_str(), SubLength);
 
   //write MODL
-  output.write((char*) &cMODL, 4);
+  output.write((const char*) &cMODL, 4);
   SubLength = ModelPath.length()+1;
   //write MODL's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write model path
   output.write(ModelPath.c_str(), SubLength);
 
-  if (Name!="")
+  if (!Name.empty())
   {
     //write FNAM
-    output.write((char*) &cFNAM, 4);
+    output.write((const char*) &cFNAM, 4);
     SubLength = Name.length()+1;
     //write FNAM's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write weapon's real name
     output.write(Name.c_str(), SubLength);
   }
 
   //write WPDT
-  output.write((char*) &cWPDT, 4);
+  output.write((const char*) &cWPDT, 4);
   SubLength = 32; //fixed size of 32 bytes
   //write WPDT's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write weapon data
-  output.write((char*) &Weight, 4);
-  output.write((char*) &Value, 4);
-  output.write((char*) &Type, 2);
-  output.write((char*) &Health, 2);
-  output.write((char*) &Speed, 4);
-  output.write((char*) &Reach, 4);
-  output.write((char*) &EnchantPts, 2);
-  output.write((char*) &ChopMin, 1);
-  output.write((char*) &ChopMax, 1);
-  output.write((char*) &SlashMin, 1);
-  output.write((char*) &SlashMax, 1);
-  output.write((char*) &ThrustMin, 1);
-  output.write((char*) &ThrustMax, 1);
-  output.write((char*) &WeaponFlags, 4);
+  output.write((const char*) &Weight, 4);
+  output.write((const char*) &Value, 4);
+  output.write((const char*) &Type, 2);
+  output.write((const char*) &Health, 2);
+  output.write((const char*) &Speed, 4);
+  output.write((const char*) &Reach, 4);
+  output.write((const char*) &EnchantPts, 2);
+  output.write((const char*) &ChopMin, 1);
+  output.write((const char*) &ChopMax, 1);
+  output.write((const char*) &SlashMin, 1);
+  output.write((const char*) &SlashMax, 1);
+  output.write((const char*) &ThrustMin, 1);
+  output.write((const char*) &ThrustMax, 1);
+  output.write((const char*) &WeaponFlags, 4);
 
-  if (InventoryIcon!="")
+  if (!InventoryIcon.empty())
   {
     //write ITEX
-    output.write((char*) &cITEX, 4);
+    output.write((const char*) &cITEX, 4);
     SubLength = InventoryIcon.length()+1;
     //write ITEX's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write inventory icon
     output.write(InventoryIcon.c_str(), SubLength);
   }
 
-  if (EnchantmentID!="")
+  if (!EnchantmentID.empty())
   {
     //write ENAM
-    output.write((char*) &cENAM, 4);
+    output.write((const char*) &cENAM, 4);
     SubLength = EnchantmentID.length()+1;
     //write ENAM's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write enchantment ID
     output.write(EnchantmentID.c_str(), SubLength);
   }
 
-  if (ScriptID!="")
+  if (!ScriptID.empty())
   {
     //write SCRI
-    output.write((char*) &cSCRI, 4);
+    output.write((const char*) &cSCRI, 4);
     SubLength = ScriptID.length()+1;
     //write SCRI's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write script ID
     output.write(ScriptID.c_str(), SubLength);
   }
 
   return output.good();
 }
+#endif
 
 bool WeaponRecord::loadFromStream(std::ifstream& in_File)
 {
@@ -266,7 +268,7 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
     std::cout << "Error while reading subrecord NAME of WEAP.\n";
     return false;
   }
-  WeaponID = std::string(Buffer);
+  recordID = std::string(Buffer);
 
   //read MODL
   in_File.read((char*) &SubRecName, 4);
@@ -325,7 +327,7 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
   }
   else
   {
-    Name = "";
+    Name.clear();
   }
 
   //read WPDT
@@ -366,9 +368,9 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
   }
 
   //optional data
-  InventoryIcon = "";
-  EnchantmentID = "";
-  ScriptID = "";
+  InventoryIcon.clear();
+  EnchantmentID.clear();
+  ScriptID.clear();
   while (BytesRead<Size)
   {
     //read next (optional) record name

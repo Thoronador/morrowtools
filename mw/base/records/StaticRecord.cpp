@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011 Thoronador
+    Copyright (C) 2009, 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -29,41 +29,43 @@ namespace MWTP
 
 bool StaticRecord::equals(const StaticRecord& other) const
 {
-  return ((StaticID==other.StaticID) and (Mesh==other.Mesh));
+  return ((recordID==other.recordID) and (Mesh==other.Mesh));
 }
 
+#ifndef MW_UNSAVEABLE_RECORDS
 bool StaticRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cSTAT, 4);
+  output.write((const char*) &cSTAT, 4);
   uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +StaticID.length()+1 /* length of ID +1 byte for NUL termination */
+        +recordID.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* MODL */ +4 /* 4 bytes for MODL's length */
         +Mesh.length()+1 /*length of mesh plus one for NUL-termination */;
-  output.write((char*) &Size, 4);
-  output.write((char*) &HeaderOne, 4);
-  output.write((char*) &HeaderFlags, 4);
+  output.write((const char*) &Size, 4);
+  output.write((const char*) &HeaderOne, 4);
+  output.write((const char*) &HeaderFlags, 4);
 
   /*Static:
     NAME = ID string
     MODL = NIF model*/
 
   //write NAME
-  output.write((char*) &cNAME, 4);
-  uint32_t SubLength = StaticID.length()+1;
+  output.write((const char*) &cNAME, 4);
+  uint32_t SubLength = recordID.length()+1;
   //write NAME's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write NAME/ID
-  output.write(StaticID.c_str() ,SubLength);
+  output.write(recordID.c_str() ,SubLength);
   //write MODL
-  output.write((char*) &cMODL, 4);
+  output.write((const char*) &cMODL, 4);
   SubLength = Mesh.length()+1;
   //write MODL's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write MODL/ mesh path
   output.write(Mesh.c_str() ,SubLength);
   return output.good();
 }
+#endif
 
 bool StaticRecord::loadFromStream(std::ifstream& in_File)
 {
@@ -102,7 +104,8 @@ bool StaticRecord::loadFromStream(std::ifstream& in_File)
     std::cout << "Error while reading subrecord NAME of STAT.\n";
     return false;
   }
-  StaticID = std::string(Buffer);
+  recordID = std::string(Buffer);
+
   //read MODL
   in_File.read((char*) &SubRecName, 4);
   if (SubRecName!=cMODL)

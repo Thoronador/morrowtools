@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011 Thoronador
+    Copyright (C) 2010, 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -53,73 +53,74 @@ bool MGEF_Data::equals(const MGEF_Data& other) const
       and (HitSound==other.HitSound) and (AreaSound==other.AreaSound));
 }
 
+#ifndef MW_UNSAVEABLE_RECORDS
 bool MGEF_Data::saveToStream(std::ofstream& output) const
 {
   //write MGEF
-  output.write((char*) &cMGEF, 4);
+  output.write((const char*) &cMGEF, 4);
   uint32_t Size;
   Size = 4 /* INDX */ +4 /* four bytes for length */ +4 /* length of index */
         +4 /* MEDT */ +4 /* four bytes for length */ +36 /* length of effect data */;
 
-  if ( EffectIcon!="")
+  if (!EffectIcon.empty())
   {
     Size += 4 /* ITEX */ +4 /* four bytes for length */
            +EffectIcon.length()+1 /* length of effect icon +1 byte for NUL-termination */;
   }
-  if (ParticleTexture!="")
+  if (!ParticleTexture.empty())
   {
     Size += 4 /* PTEX */ +4 /* four bytes for length */
            +ParticleTexture.length()+1 /* length of particle texture +1 byte for NUL-termination */;
   }
-  if (CastingVisual!="")
+  if (!CastingVisual.empty())
   {
     Size += 4 /* CVFX */ +4 /* four bytes for length */
            +CastingVisual.length()+1 /* length of casting visual +1 byte for NUL-termination */;
   }
-  if (BoltVisual!="")
+  if (!BoltVisual.empty())
   {
     Size += 4 /* BVFX */ +4 /* four bytes for length */
            +BoltVisual.length()+1 /* length of bolt visual +1 byte for NUL-termination */;
   }
-  if (HitVisual!="")
+  if (!HitVisual.empty())
   {
     Size += 4 /* HVFX */ +4 /* four bytes for length */
            +HitVisual.length()+1 /* length of hit visual +1 byte for NUL-termination */;
   }
-  if (AreaVisual!="")
+  if (!AreaVisual.empty())
   {
     Size += 4 /* AVFX */ +4 /* four bytes for length */
            +AreaVisual.length()+1 /* length of area visual +1 byte for NUL-termination */;
   }
-  if (Description!="")
+  if (!Description.empty())
   {
     Size += 4 /* DESC */ +4 /* four bytes for length */
            +Description.length() /* length of description (no NUL-termination) */;
   }
-  if (CastSound!="")
+  if (!CastSound.empty())
   {
     Size += 4 /* CSND */ +4 /* four bytes for length */
            +CastSound.length()+1 /* length of casting sound +1 byte for NUL-termination */;
   }
-  if (BoltSound!="")
+  if (!BoltSound.empty())
   {
     Size += 4 /* BSND */ +4 /* four bytes for length */
            +BoltSound.length()+1 /* length of bolt sound +1 byte for NUL-termination */;
   }
-  if (HitSound!="")
+  if (!HitSound.empty())
   {
     Size += 4 /* HSND */ +4 /* four bytes for length */
            +HitSound.length()+1 /* length of hit sound +1 byte for NUL-termination */;
   }
-  if (AreaSound!="")
+  if (!AreaSound.empty())
   {
     Size += 4 /* ASND */ +4 /* four bytes for length */
            +AreaSound.length()+1 /* length of area sound +1 byte for NUL-termination */;
   }
 
-  output.write((char*) &Size, 4);
-  output.write((char*) &HeaderOne, 4);
-  output.write((char*) &HeaderFlags, 4);
+  output.write((const char*) &Size, 4);
+  output.write((const char*) &HeaderOne, 4);
+  output.write((const char*) &HeaderFlags, 4);
 
   /*Magic effects:
     INDX = The Effect ID (4 bytes, long)
@@ -149,160 +150,161 @@ bool MGEF_Data::saveToStream(std::ofstream& output) const
         sequence of the (at least) last four optional sub records can vary.*/
 
   //write INDX
-  output.write((char*) &cINDX, 4);
+  output.write((const char*) &cINDX, 4);
   //INDX's length
   uint32_t SubLength;
   SubLength = 4; //fixed length of four bytes
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write INDX
-  output.write((char*) &Index, 4);
+  output.write((const char*) &Index, 4);
 
   //write MEDT
-  output.write((char*) &cMEDT, 4);
+  output.write((const char*) &cMEDT, 4);
   //MEDT's length
   SubLength = 36; //fixed length of 36 bytes
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write MEDT
   // ---- SpellSchool
-  output.write((char*) &SpellSchool, 4);
+  output.write((const char*) &SpellSchool, 4);
   // ---- Cost
-  output.write((char*) &BaseCost, 4);
+  output.write((const char*) &BaseCost, 4);
   // ---- Flags
-  output.write((char*) &Flags, 4);
+  output.write((const char*) &Flags, 4);
   // ---- Colour
-  output.write((char*) &Red, 4);
-  output.write((char*) &Blue, 4);
-  output.write((char*) &Green, 4);
+  output.write((const char*) &Red, 4);
+  output.write((const char*) &Blue, 4);
+  output.write((const char*) &Green, 4);
   // ---- speed
-  output.write((char*) &SpeedX, 4);
+  output.write((const char*) &SpeedX, 4);
   // ---- size
-  output.write((char*) &SizeX, 4);
+  output.write((const char*) &SizeX, 4);
   // ---- size cap
-  output.write((char*) &SizeCap, 4);
+  output.write((const char*) &SizeCap, 4);
 
-  if (EffectIcon!="")
+  if (!EffectIcon.empty())
   {
     //write ITEX
-    output.write((char*) &cITEX, 4);
+    output.write((const char*) &cITEX, 4);
     //ITEX's length
     SubLength = EffectIcon.length()+1; /* length of effect icon +1 byte for NUL-termination */
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write ITEX
     output.write(EffectIcon.c_str(), SubLength);
   }
 
-  if (ParticleTexture!="")
+  if (!ParticleTexture.empty())
   {
     //write PTEX
-    output.write((char*) &cPTEX, 4);
+    output.write((const char*) &cPTEX, 4);
     //PTEX's length
     SubLength = ParticleTexture.length()+1; /* length of particle +1 byte for NUL-termination */
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write PTEX
     output.write(ParticleTexture.c_str(), SubLength);
   }
 
-  if (CastingVisual!="")
+  if (!CastingVisual.empty())
   {
     //write CVFX
-    output.write((char*) &cCVFX, 4);
+    output.write((const char*) &cCVFX, 4);
     //CVFX's length
     SubLength = CastingVisual.length()+1; /* length of cast visual +1 byte for NUL-termination */
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write CVFX
     output.write(CastingVisual.c_str(), SubLength);
   }
 
-  if (BoltVisual!="")
+  if (!BoltVisual.empty())
   {
     //write BVFX
-    output.write((char*) &cBVFX, 4);
+    output.write((const char*) &cBVFX, 4);
     //BVFX's length
     SubLength = BoltVisual.length()+1; /* length of bolt visual +1 byte for NUL-termination */
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write BVFX
     output.write(BoltVisual.c_str(), SubLength);
   }
 
-  if (HitVisual!="")
+  if (!HitVisual.empty())
   {
     //write HVFX
-    output.write((char*) &cHVFX, 4);
+    output.write((const char*) &cHVFX, 4);
     //HVFX's length
     SubLength = HitVisual.length()+1; /* length of hit visual +1 byte for NUL-termination */
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write HVFX
     output.write(HitVisual.c_str(), SubLength);
   }
 
-  if (AreaVisual!="")
+  if (!AreaVisual.empty())
   {
     //write AVFX
-    output.write((char*) &cAVFX, 4);
+    output.write((const char*) &cAVFX, 4);
     //AVFX's length
     SubLength = AreaVisual.length()+1; /* length of area visual +1 byte for NUL-termination */
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write AVFX
     output.write(AreaVisual.c_str(), SubLength);
   }
 
-  if (Description!="")
+  if (!Description.empty())
   {
     //write DESC
-    output.write((char*) &cDESC, 4);
+    output.write((const char*) &cDESC, 4);
     //DESC's length
     SubLength = Description.length(); /* length of description (no NUL-termination) */
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write DESC
     output.write(Description.c_str(), SubLength);
   }
 
-  if (CastSound!="")
+  if (!CastSound.empty())
   {
     //write CSND
-    output.write((char*) &cCSND, 4);
+    output.write((const char*) &cCSND, 4);
     //CSND's length
     SubLength = CastSound.length()+1; /* length of cast sound +1 byte for NUL-termination */
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write CSND
     output.write(CastSound.c_str(), SubLength);
   }
 
-  if (BoltSound!="")
+  if (!BoltSound.empty())
   {
     //write BSND
-    output.write((char*) &cBSND, 4);
+    output.write((const char*) &cBSND, 4);
     //BSND's length
     SubLength = BoltSound.length()+1; /* length of bolt sound +1 byte for NUL-termination */
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write BSND
     output.write(BoltSound.c_str(), SubLength);
   }
 
-  if (HitSound!="")
+  if (!HitSound.empty())
   {
     //write HSND
-    output.write((char*) &cHSND, 4);
+    output.write((const char*) &cHSND, 4);
     //HSND's length
     SubLength = HitSound.length()+1; /* length of hit sound +1 byte for NUL-termination */
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write HSND
     output.write(HitSound.c_str(), SubLength);
   }
 
-  if (AreaSound!="")
+  if (!AreaSound.empty())
   {
     //write ASND
-    output.write((char*) &cASND, 4);
+    output.write((const char*) &cASND, 4);
     //ASND's length
     SubLength = AreaSound.length()+1; /* length of area sound +1 byte for NUL-termination */
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write ASND
     output.write(AreaSound.c_str(), SubLength);
   }
 
   return output.good();
 }
+#endif
 
 bool MGEF_Data::loadFromStream(std::ifstream& in_File)
 {
@@ -416,27 +418,27 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
   memset(Buffer, '\0', BufferSize);
 
   //effect icon tex and particle texture, both rarely optional
-  EffectIcon = "";
-  ParticleTexture = "";
+  EffectIcon.clear();
+  ParticleTexture.clear();
   bool hasITEX = false;
   bool hasPTEX = false;
   //visual strings, partially optional
-  CastingVisual = "";
-  BoltVisual = "";
-  HitVisual = "";
-  AreaVisual = "";
+  CastingVisual.clear();
+  BoltVisual.clear();
+  HitVisual.clear();
+  AreaVisual.clear();
   bool hasCVFX = false;
   bool hasBVFX = false;
   bool hasHVFX = false;
   bool hasAVFX = false;
   //description, optional
-  Description = "";
+  Description.clear();
   bool hasDESC = false;
   //effect sounds, all optional
-  CastSound = "";
-  BoltSound = "";
-  HitSound = "";
-  AreaSound = "";
+  CastSound.clear();
+  BoltSound.clear();
+  HitSound.clear();
+  AreaSound.clear();
   bool hasCSND = false;
   bool hasBSND = false;
   bool hasHSND = false;

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -38,7 +38,7 @@ enum NPDT_Type {ndtNone, ndt12Bytes, ndt52Bytes};
 /* the NPC record - holds all data about an NPC */
 struct NPCRecord: public PreNPCRecord
 {
-  std::string NPCID;
+  std::string recordID; //formerly NPCID
   std::string Name;
   std::string ModelPath;
   std::string RaceID;
@@ -86,12 +86,14 @@ struct NPCRecord: public PreNPCRecord
   /* returns true, if the other record contains the same data */
   bool equals(const NPCRecord& other) const;
 
+  #ifndef MW_UNSAVEABLE_RECORDS
   /* writes the record to the given output stream and returns true on success
 
     parameters:
         output   - the output file stream
   */
   bool saveToStream(std::ofstream& output) const;
+  #endif
 
   /* loads the record from the given input stream and returns true on success
 

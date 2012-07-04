@@ -157,10 +157,10 @@ int ESMReaderAll::processNextRecord(std::ifstream& in_File)
          lastResult = LeveledItems::getSingleton().readNextRecord(in_File);
          break;
     case cLIGH:
-         lastResult = Lights::getSingleton().readRecordLIGH(in_File);
+         lastResult = Lights::getSingleton().readNextRecord(in_File);
          break;
     case cLOCK:
-         lastResult = Lockpicks::getSingleton().readRecordLOCK(in_File);
+         lastResult = Lockpicks::getSingleton().readNextRecord(in_File);
          break;
     case cLTEX:
          lastResult = LandscapeTextures::getSingleton().readNextRecord(in_File);
@@ -169,10 +169,10 @@ int ESMReaderAll::processNextRecord(std::ifstream& in_File)
          lastResult = MagicEffects::getSingleton().readRecordMGEF(in_File);
          break;
     case cMISC:
-         lastResult = MiscItems::getSingleton().readRecordMISC(in_File);
+         lastResult = MiscItems::getSingleton().readNextRecord(in_File);
          break;
     case cNPC_:
-         lastResult = NPCs::getSingleton().readRecordNPC_(in_File);
+         lastResult = NPCs::getSingleton().readNextRecord(in_File);
          break;
     case cPGRD:
          lastResult = PathGrids::getSingleton().readRecordPGRD(in_File);
@@ -190,28 +190,28 @@ int ESMReaderAll::processNextRecord(std::ifstream& in_File)
          lastResult = RepairItems::getSingleton().readNextRecord(in_File);
          break;
     case cSCPT:
-         lastResult = Scripts::getSingleton().readRecordSCPT(in_File);
+         lastResult = Scripts::getSingleton().readNextRecord(in_File);
          break;
     case cSKIL:
          lastResult = Skills::getSingleton().readRecordSKIL(in_File);
          break;
     case cSNDG:
-         lastResult = SoundGenerators::getSingleton().readRecordSNDG(in_File);
+         lastResult = SoundGenerators::getSingleton().readNextRecord(in_File);
          break;
     case cSOUN:
-         lastResult = Sounds::getSingleton().readRecordSOUN(in_File);
+         lastResult = Sounds::getSingleton().readNextRecord(in_File);
          break;
     case cSPEL:
-         lastResult = Spells::getSingleton().readRecordSPEL(in_File);
+         lastResult = Spells::getSingleton().readNextRecord(in_File);
          break;
     case cSSCR:
-         lastResult = StartScripts::getSingleton().readRecordSSCR(in_File);
+         lastResult = StartScripts::getSingleton().readNextRecord(in_File);
          break;
     case cSTAT:
-         lastResult = Statics::getSingleton().readRecordSTAT(in_File);
+         lastResult = Statics::getSingleton().readNextRecord(in_File);
          break;
     case cWEAP:
-         lastResult = Weapons::getSingleton().readRecordWEAP(in_File);
+         lastResult = Weapons::getSingleton().readNextRecord(in_File);
          break;
     default:
          std::cout << "processNextRecord: ERROR: unknown record type found: \""

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011 Thoronador
+    Copyright (C) 2009, 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -28,7 +28,7 @@ namespace MWTP
 
 SoundRecord::SoundRecord()
 {
-  SoundID = "";
+  recordID = "";
   Filename = "";
   Volume = 0;
   MinRange = 0;
@@ -37,23 +37,24 @@ SoundRecord::SoundRecord()
 
 bool SoundRecord::equals(const SoundRecord& other) const
 {
-  return ((SoundID==other.SoundID) and (Filename==other.Filename)
+  return ((recordID==other.recordID) and (Filename==other.Filename)
       and (Volume==other.Volume) and (MinRange==other.MinRange)
       and (MaxRange==other.MaxRange));
 }
 
+#ifndef MW_UNSAVEABLE_RECORDS
 bool SoundRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cSOUN, 4);
+  output.write((const char*) &cSOUN, 4);
   uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +SoundID.length()+1 /* length of ID +1 byte for NUL termination */
+        +recordID.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* FNAM */ +4 /* 4 bytes for FNAM's length */
         +Filename.length()+1 /*length of name plus one for NUL-termination */
         +4 /* DATA */ +4 /* DATA's length */ +3 /*size of sound data (DATA)*/;
-  output.write((char*) &Size, 4);
-  output.write((char*) &HeaderOne, 4);
-  output.write((char*) &HeaderFlags, 4);
+  output.write((const char*) &Size, 4);
+  output.write((const char*) &HeaderOne, 4);
+  output.write((const char*) &HeaderFlags, 4);
 
   /*Sound:
     NAME = Sound ID
@@ -64,34 +65,34 @@ bool SoundRecord::saveToStream(std::ofstream& output) const
         byte MaxRange*/
 
   //write NAME
-  output.write((char*) &cNAME, 4);
+  output.write((const char*) &cNAME, 4);
   //NAME's length
-  uint32_t SubLength;
-  SubLength = SoundID.length()+1;//length of string plus one for NUL-termination
-  output.write((char*) &SubLength, 4);
+  uint32_t SubLength = recordID.length()+1;//length of string plus one for NUL-termination
+  output.write((const char*) &SubLength, 4);
   //write name/ID
-  output.write(SoundID.c_str(), SubLength);
+  output.write(recordID.c_str(), SubLength);
 
   //write FNAM
-  output.write((char*) &cFNAM, 4);
+  output.write((const char*) &cFNAM, 4);
   //FNAM's length
   SubLength = Filename.length()+1; //length of string plus one for NUL-termination
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write file name
   output.write(Filename.c_str(), SubLength);
 
   //write DATA
-  output.write((char*) &cDATA, 4);
+  output.write((const char*) &cDATA, 4);
   //DATA's length
   SubLength = 3; //length of DATA (sound data) is always three bytes
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   // write sound data
-  output.write((char*) &Volume, 1);
-  output.write((char*) &MinRange, 1);
-  output.write((char*) &MaxRange, 1);
+  output.write((const char*) &Volume, 1);
+  output.write((const char*) &MinRange, 1);
+  output.write((const char*) &MaxRange, 1);
 
   return output.good();
 }
+#endif
 
 bool SoundRecord::loadFromStream(std::ifstream& in_File)
 {
@@ -135,7 +136,7 @@ bool SoundRecord::loadFromStream(std::ifstream& in_File)
     std::cout << "Error while reading subrecord NAME of SOUN.\n";
     return false;
   }
-  SoundID = std::string(Buffer);
+  recordID = std::string(Buffer);
 
   //read FNAM
   in_File.read((char*) &SubRecName, 4);

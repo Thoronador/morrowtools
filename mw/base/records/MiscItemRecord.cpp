@@ -28,7 +28,7 @@ namespace MWTP
 
 MiscItemRecord::MiscItemRecord()
 {
-  MiscItemID = ModelPath = MiscItemName = "";
+  recordID = ModelPath = MiscItemName = "";
   //miscellaneous item data
   Weight = 0.0f;
   Value = -1;
@@ -44,36 +44,37 @@ MiscItemRecord::~MiscItemRecord()
 
 bool MiscItemRecord::equals(const MiscItemRecord& other) const
 {
-  return ((MiscItemID==other.MiscItemID) and (ModelPath==other.ModelPath)
+  return ((recordID==other.recordID) and (ModelPath==other.ModelPath)
       and (MiscItemName==other.MiscItemName) and (Weight==other.Weight)
       and (Value==other.Value) and (OtherStuff==other.OtherStuff)
       and (InventoryIcon==other.InventoryIcon) and (ScriptID==other.ScriptID));
 }
 
+#ifndef MW_UNSAVEABLE_RECORDS
 bool MiscItemRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cMISC, 4);
+  output.write((const char*) &cMISC, 4);
   uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +MiscItemID.length()+1 /* length of ID +1 byte for NUL termination */
+        +recordID.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* MODL */ +4 /* 4 bytes for length */
         +ModelPath.length()+1 /* length of name +1 byte for NUL termination */
         +4 /* MCDT */ +4 /* 4 bytes for length */ + 12 /* size of misc. data */
         +4 /* ITEX */ +4 /* 4 bytes for length */
         +InventoryIcon.length()+1 /* length of icon path +1 byte for NUL termination */;
-  if (MiscItemName!="")
+  if (!MiscItemName.empty())
   {
     Size = Size +4 /* FNAM */ +4 /* 4 bytes for length */
           +MiscItemName.length()+1 /* length of name +1 byte for NUL termination */;
   }
-  if (ScriptID!="")
+  if (!ScriptID.empty())
   {
     Size = Size+ 4 /* SCRI */ +4 /* 4 bytes for length */
           +ScriptID.length()+1 /* length of script ID +1 byte for NUL termination */ ;
   }
-  output.write((char*) &Size, 4);
-  output.write((char*) &HeaderOne, 4);
-  output.write((char*) &HeaderFlags, 4);
+  output.write((const char*) &Size, 4);
+  output.write((const char*) &HeaderOne, 4);
+  output.write((const char*) &HeaderFlags, 4);
 
   /*Misc. Items:
     NAME = item ID, required
@@ -88,63 +89,64 @@ bool MiscItemRecord::saveToStream(std::ofstream& output) const
   */
 
   //write NAME
-  output.write((char*) &cNAME, 4);
-  uint32_t SubLength = MiscItemID.length()+1;
+  output.write((const char*) &cNAME, 4);
+  uint32_t SubLength = recordID.length()+1;
   //write NAME's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write ID
-  output.write(MiscItemID.c_str(), SubLength);
+  output.write(recordID.c_str(), SubLength);
 
   //write MODL
-  output.write((char*) &cMODL, 4);
+  output.write((const char*) &cMODL, 4);
   SubLength = ModelPath.length()+1;
   //write MODL's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write model path
   output.write(ModelPath.c_str(), SubLength);
 
-  if (MiscItemName!="")
+  if (!MiscItemName.empty())
   {
     //write FNAM
-    output.write((char*) &cFNAM, 4);
+    output.write((const char*) &cFNAM, 4);
     SubLength = MiscItemName.length()+1;
     //write FNAM's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write misc. items's name
     output.write(MiscItemName.c_str(), SubLength);
   }
 
   //write MCDT
-  output.write((char*) &cMCDT, 4);
+  output.write((const char*) &cMCDT, 4);
   SubLength = 12; /* fixed length of 12 bytes */
   //write MCDT's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write misc. data
-  output.write((char*) &Weight, 4);
-  output.write((char*) &Value, 4);
-  output.write((char*) &OtherStuff, 4);
+  output.write((const char*) &Weight, 4);
+  output.write((const char*) &Value, 4);
+  output.write((const char*) &OtherStuff, 4);
 
   //write ITEX
-  output.write((char*) &cITEX, 4);
+  output.write((const char*) &cITEX, 4);
   SubLength = InventoryIcon.length()+1;
   //write ITEX's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write inventory icon
   output.write(InventoryIcon.c_str(), SubLength);
 
-  if (ScriptID!="")
+  if (!ScriptID.empty())
   {
     //write SCRI
-    output.write((char*) &cSCRI, 4);
+    output.write((const char*) &cSCRI, 4);
     SubLength = ScriptID.length()+1;
     //write SCRI's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write script ID
     output.write(ScriptID.c_str(), SubLength);
   }
 
   return output.good();
 }
+#endif
 
 bool MiscItemRecord::loadFromStream(std::ifstream& in_File)
 {
@@ -194,7 +196,7 @@ bool MiscItemRecord::loadFromStream(std::ifstream& in_File)
     std::cout << "Error while reading subrecord NAME of MISC!\n";
     return false;
   }
-  MiscItemID = std::string(Buffer);
+  recordID = std::string(Buffer);
 
   //read MODL
   in_File.read((char*) &SubRecName, 4);
@@ -253,7 +255,7 @@ bool MiscItemRecord::loadFromStream(std::ifstream& in_File)
   }
   else
   {
-    MiscItemName = "";
+    MiscItemName.clear();
   }
 
   //read MCDT
@@ -283,8 +285,8 @@ bool MiscItemRecord::loadFromStream(std::ifstream& in_File)
     return false;
   }
 
-  InventoryIcon = "";
-  ScriptID = "";
+  InventoryIcon.clear();
+  ScriptID.clear();
   bool hasITEX = false;
   bool hasSCRI = false;
   while (BytesRead<Size)

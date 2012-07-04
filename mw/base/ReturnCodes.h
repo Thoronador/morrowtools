@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -34,6 +34,8 @@ const int rcXMLError = 6; /* for cell translator */
 const int rcXMLEmpty = 7; /* for cell translator */
 const int rcScriptError = 8; /* for cell translator */
 const int rcNoChange = 9; /* for cell translator */
+const int rcFileNameConflict = 10; /* for cell translator */
+const int rcCouldNotDo = 11; /* for cell translator */
 
 } //namespace
 

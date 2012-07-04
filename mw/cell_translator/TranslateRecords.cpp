@@ -351,6 +351,7 @@ bool translateInfoRecord(DialogueInfoRecord* di_rec, const CellListType& cells, 
   return true;
 }
 
+/*
 bool translateScriptRecord(ScriptRecord* script_rec, const CellListType& cells, unsigned int& changedRecords)
 {
   if (script_rec==NULL) return false;
@@ -361,6 +362,14 @@ bool translateScriptRecord(ScriptRecord* script_rec, const CellListType& cells, 
     return ScriptCompiler::CompileScript(script_rec->ScriptText, *script_rec);
   }//if stuff was replaces
   return true;
+}
+*/
+
+bool canCompileScriptProperly(const ScriptRecord& original)
+{
+  ScriptRecord temp;
+  if (!ScriptCompiler::CompileScript(original.ScriptText, temp)) return false;
+  return (original.equals(temp));
 }
 
 } //namespace

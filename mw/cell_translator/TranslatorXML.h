@@ -38,16 +38,20 @@ typedef std::map<std::string, std::string, ci_less> CellListType;
 enum TransDir {td_en_de, td_de_en};
 
 /* tries to read the list of cells from the XML file located at fileName and
-   stores them in the list pointed to by cells. Returns true on success.
+   stores them in the list pointed to by cells. Any previously stored content
+   in the cells list will be erased during the function.
+   Returns true on success.
 
    parameters:
-       fileName  - the file name of the XML file that shall be read
-       cells     - the structure that will hold the cell names and their
-                   translation
-       direction - the direction of translation. This parameter decides, in
-                   which order the cell names are stored in the list 'cells'.
+       fileName   - the file name of the XML file that shall be read
+       cells      - the structure that will hold the cell names and their
+                    translation.
+       direction  - the direction of translation. This parameter decides, in
+                    which order the cell names are stored in the list 'cells'.
+       noIdentity - if set to true, the list won't contain cells whose names
+                    are identical in both languages.
 */
-bool readCellListFromXML(const std::string& fileName, CellListType& cells, const TransDir direction = td_en_de);
+bool readCellListFromXML(const std::string& fileName, CellListType& cells, const TransDir direction = td_en_de, const bool noIdentity=true);
 
 } //namespace
 

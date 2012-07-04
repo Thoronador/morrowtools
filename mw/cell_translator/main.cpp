@@ -32,6 +32,7 @@
 #include "../base/records/NPCRecord.h"
 #include "../base/records/PathGridRecord.h"
 #include "../base/ReturnCodes.h"
+#include "../base/script_compiler/ScriptCompiler.h"
 
 void showHelp()
 {
@@ -81,13 +82,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Cell Translator for Morrowind, version 0.3.1_rev487, 2012-07-04\n";
+  std::cout << "Cell Translator for Morrowind, version 0.4.0_rev488, 2012-07-05\n";
 }
 
 int showVersionExitcode()
 {
   showVersion();
-  return 487;
+  return 488;
 }
 
 int main(int argc, char **argv)
@@ -110,7 +111,7 @@ int main(int argc, char **argv)
       {
         const std::string param = std::string(argv[i]);
         //help parameter
-        if ((param=="--help") or (param=="-?"))
+        if ((param=="--help") or (param=="-?") or (param=="/?"))
         {
           showHelp();
           return 0;
@@ -271,10 +272,22 @@ int main(int argc, char **argv)
               << "to German.\n";
   }
 
+  //check for possible file conflicts
   if (pluginFile==outputFileName)
   {
     std::cout << "Warning: plugin file name and output file name are identical!\n"
-              << "The plugin file will be overwritten.";
+              << "The plugin file would be overwritten, so we abort the programme.\n";
+    return MWTP::rcFileNameConflict;
+  }
+  //avoid overwriting main ESM files (better be safe than sorry)
+  const std::string lcOutput = lowerCase(outputFileName);
+  if ((lcOutput=="morrowind.esm") or (lcOutput=="tribunal.esm") or (lcOutput=="bloodmoon.esm"))
+  {
+    std::cout << "Error: You have given Morrowind.esm, Tribunal.esm or "
+              << "Bloodmoon.esm as desired output file name!\nAre you nuts? "
+              << "The plugin file would overwrite the original master file, so"
+              << " we abort the programme for your one safety. Think (again)!\n";
+    return MWTP::rcFileNameConflict;
   }
 
   MWTP::CellListType cells;
@@ -296,8 +309,6 @@ int main(int argc, char **argv)
 
   //now read the file
   MWTP::ESMReaderTranslator::VectorType recordVec;
-  //MWTP::DepFileList deps;
-  //deps.clear();
   MWTP::ESMReaderTranslator reader(&recordVec);
   MWTP::TES3Record tes3Header;
   std::cout << "Reading plugin file and dependencies. This may take a while.\n";
@@ -397,13 +408,30 @@ int main(int argc, char **argv)
     }
     else if ((type_name==scriptID) and (process_scripts))
     {
-      if (!translateScriptRecord(dynamic_cast<MWTP::ScriptRecord*>(*v_iter), cells, changedRecords))
+      //get original script text
+      std::string changedText = dynamic_cast<MWTP::ScriptRecord*>(*v_iter)->ScriptText;
+      //Do we need to change anything?
+      if (replaceCellsInScriptText(changedText, cells))
       {
-        std::cout << "Error: couldn't translate cells in script \""
-                  << dynamic_cast<MWTP::ScriptRecord*>(*v_iter)->recordID<<"\"!\n";
-        reader.deallocateRecordsInVector();
-        return MWTP::rcScriptError;
-      }//if not translated
+        //yes, change needed
+        if (!canCompileScriptProperly(*dynamic_cast<MWTP::ScriptRecord*>(*v_iter)))
+        {
+          std::cout << "Error: cannot properly compile script \""
+                    << dynamic_cast<MWTP::ScriptRecord*>(*v_iter)->recordID
+                    << "\". Aborting!\n";
+          reader.deallocateRecordsInVector();
+          return MWTP::rcCouldNotDo;
+        }
+        dynamic_cast<MWTP::ScriptRecord*>(*v_iter)->ScriptText = changedText;
+        if (!MWTP::ScriptCompiler::CompileScript(changedText, *dynamic_cast<MWTP::ScriptRecord*>(*v_iter)))
+        {
+          std::cout << "Error: script \"" << dynamic_cast<MWTP::ScriptRecord*>(*v_iter)->recordID
+                    << "\" did not recompile without errors!\n";
+          reader.deallocateRecordsInVector();
+          return MWTP::rcScriptError;
+        }
+        ++changedRecords;
+      }//if change needed
     }//if script record
     /// TODO: Maybe translate region names, too.
     ++v_iter;

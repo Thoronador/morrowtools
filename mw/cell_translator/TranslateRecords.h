@@ -76,7 +76,7 @@ bool translateInfoRecord(DialogueInfoRecord* di_rec, const CellListType& cells, 
                         will be increased by one, if any changes were made to
                         the ScriptRecord.
 */
-bool translateScriptRecord(ScriptRecord* script_rec, const CellListType& cells, unsigned int& changedRecords);
+//bool translateScriptRecord(ScriptRecord* script_rec, const CellListType& cells, unsigned int& changedRecords);
 
 /* tries to translate the script text given in scriptText, and returns true, if
    something had to be (and was) changed, or false if nothing was changed
@@ -86,6 +86,16 @@ bool translateScriptRecord(ScriptRecord* script_rec, const CellListType& cells, 
        cells      - the list of cell names and their translations
 */
 bool replaceCellsInScriptText(std::string& scriptText, const CellListType& cells);
+
+/* checks, if the script compiler can compile the given script and produce the
+   exact script data that is in the original script record. If so, the function
+   returns true. Otherwise it returns false.
+
+   remarks:
+       That function relies on the fact that the record contains valid and
+       unchanged script data, to compare the result to the given data.
+*/
+bool canCompileScriptProperly(const ScriptRecord& original);
 
 } //namespace
 

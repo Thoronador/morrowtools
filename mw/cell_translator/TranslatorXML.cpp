@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -26,7 +26,7 @@
 namespace MWTP
 {
 
-bool readCellListFromXML(const std::string& fileName, CellListType& cells, const TransDir direction)
+bool readCellListFromXML(const std::string& fileName, CellListType& cells, const TransDir direction, const bool noIdentity)
 {
   std::ifstream input;
   input.open(fileName.c_str(), std::ios_base::in | std::ios_base::binary);
@@ -42,7 +42,7 @@ bool readCellListFromXML(const std::string& fileName, CellListType& cells, const
   if (!input.good())
   {
     input.close();
-    std::cout << "Error while reading.\n";
+    std::cout << "Error while reading XML file.\n";
     delete Buffer;
     return false;
   }
@@ -51,7 +51,7 @@ bool readCellListFromXML(const std::string& fileName, CellListType& cells, const
   XMLParser parser;
   {
     std::string contents = std::string(Buffer);
-    delete Buffer;
+    delete[] Buffer;
     Buffer = NULL;
     const std::string::size_type pos = contents.find("<cellnames>");
     if (pos==std::string::npos)
@@ -144,7 +144,8 @@ bool readCellListFromXML(const std::string& fileName, CellListType& cells, const
                     return false;
                   }
                   //now push the stuff into the list/map
-                  if (!de_cell.empty() and !en_cell.empty())
+                  if ((!de_cell.empty() and !en_cell.empty())
+                     and (!noIdentity or (lowerCase(de_cell)!=lowerCase(en_cell))))
                   {
                     switch (direction)
                     {
@@ -220,7 +221,7 @@ bool readCellListFromXML(const std::string& fileName, CellListType& cells, const
   } while (result!=ptNone);
   //if everything went well, the last result should have been ptNone and the
   //  last level should be plNone
-  return ((result==ptNone) or (level==plNone));
+  return ((result==ptNone) and (level==plNone));
 }
 
 } //namespace

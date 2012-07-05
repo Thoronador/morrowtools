@@ -44,7 +44,7 @@ enum SC_CompareType{compNone, compLess, compLessEqual, compEqual,
 
 void StripEnclosingQuotes(std::string& str1)
 {
-  if ((str1=="") or (str1.length()<2)) return;
+  if ((str1.empty()) or (str1.length()<2)) return;
   if ((str1.at(0)=='"') and (str1.at(str1.length()-1)=='"'))
   {
     str1 = str1.substr(1, str1.length()-2);
@@ -1242,7 +1242,7 @@ SC_VarRef getForeignVariableTypeWithIndex(const std::string& objectID, const std
     ScriptID = Containers::getSingleton().getRecord(objectID).ScriptName;
   }
   ///TODO: add more stuff (e.g. weapons) later
-  if (ScriptID!="")
+  if (!ScriptID.empty())
   {
     if (Scripts::getSingleton().hasRecord(ScriptID))
     {
@@ -7397,7 +7397,7 @@ bool ScriptFunctions_TwelveParameters(const std::vector<std::string>& params, Co
 
 bool ScriptFunctions(const std::string& line, CompiledChunk& chunk, const bool isCompare)
 {
-  if (line=="") return false;
+  if (line.empty()) return false;
   //split line into seperate parameters
   std::vector<std::string> parameters = explodeParams(line);
   /* Now the first entry in vector params should be the function name, the rest
@@ -7654,7 +7654,7 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
     }
     //cut off spaces and tabulators
     trim(new_line);
-    if (new_line!="")
+    if (!new_line.empty())
     {
       lines.push_back(new_line);
     }
@@ -7683,7 +7683,7 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
     ScriptName = lines.at(0).substr(6);
     trimLeft(ScriptName);//We only trim left side, because right side was
                          //already trimmed for original string.
-    if (ScriptName=="")
+    if (ScriptName.empty())
     {
       std::cout << "ScriptCompiler: Error: begin clause found with no script name!\n";
       return false;
@@ -7706,7 +7706,7 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
     {
       WorkString = lines.at(i).substr(6);
       trim(WorkString);
-      if (WorkString=="")
+      if (WorkString.empty())
       {
         std::cout << "ScriptCompiler: Error: incomplete declaration of short found!\n";
         return false;
@@ -7718,7 +7718,7 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
     {
       WorkString = lines.at(i).substr(5);
       trim(WorkString);
-      if (WorkString=="")
+      if (WorkString.empty())
       {
         std::cout << "ScriptCompiler: Error: incomplete declaration of long found!\n";
         return false;
@@ -7730,7 +7730,7 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
     {
       WorkString = lines.at(i).substr(6);
       trim(WorkString);
-      if (WorkString=="")
+      if (WorkString.empty())
       {
         std::cout << "ScriptCompiler: Error: incomplete declaration of float found!\n";
         return false;
@@ -7849,8 +7849,10 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
         {
           std::cout << "ScriptCompiler: Error: couldn't find foreign reference in \""
                     << varName<<"\" for SET statement.\n";
+          #ifdef MW_SC_DEBUG
           std::cout << "Debug: object name was \""<<objectName<<"\", var name was \""
                     << varName.substr(dot_pos+1)<<"\".\n";
+          #endif
           return false;
         }//if
         //push r for reference
@@ -8231,7 +8233,7 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       //part before qualifier should be object name
       WorkString = lines.at(i).substr(0, qualStart);
       StripEnclosingQuotes(WorkString);
-      if ((WorkString=="") or (qualStart+2>=lines.at(i).length()))
+      if ((WorkString.empty()) or (qualStart+2>=lines.at(i).length()))
       {
         std::cout << "ScriptCompiler: Error: invalid position of -> encountered.\n"
                   << "String is \""<<WorkString<<"\", pos. of qual. is "
@@ -8321,9 +8323,11 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
   {
     result.ScriptData[i] = CompiledData.data.at(i);
   }//for
+  #ifdef MW_SC_DEBUG
   std::cout << "ScriptCompiler: Warning: compiler is still far from complete! "
             << "The resulting script might not run at all or not as intended "
             << "within the game!\n";
+  #endif
   return true;
 }
 

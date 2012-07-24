@@ -114,7 +114,7 @@ uint32_t AlchemyPotionRecord::getWriteSize() const
 
 bool AlchemyPotionRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cALCH, 4);
+  output.write((const char*) &cALCH, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID

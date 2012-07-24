@@ -116,7 +116,7 @@ bool HeadPartRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &cEDID, 4);
   //EDID's length
   uint16_t subLength = editorID.length()+1;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write editor ID
   output.write(editorID.c_str(), subLength);
 
@@ -126,7 +126,7 @@ bool HeadPartRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cFULL, 4);
     //FULL's length
     subLength = 4; // fixed
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write FULL
     output.write((const char*) &fullNameStringID, 4);
   }
@@ -137,7 +137,7 @@ bool HeadPartRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cMODL, 4);
     //MODL's length
     subLength = modelPath.length()+1;
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write model path
     output.write(modelPath.c_str(), subLength);
   }//if MODL
@@ -155,7 +155,7 @@ bool HeadPartRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &cDATA, 4);
   //DATA's length
   subLength = 1; // fixed
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write DATA
   output.write((const char*) &unknownDATA, 1);
 
@@ -163,7 +163,7 @@ bool HeadPartRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &cPNAM, 4);
   //PNAM's length
   subLength = 4; // fixed
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write PNAM
   output.write((const char*) &unknownPNAM, 4);
 
@@ -174,7 +174,7 @@ bool HeadPartRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cHNAM, 4);
     //HNAM's length
     subLength = 4; // fixed
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write HNAM
     output.write((const char*) &(unknownHNAMs[i]), 4);
   }//for HNAM
@@ -186,7 +186,7 @@ bool HeadPartRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cNAM0, 4);
     //NAM0's length
     subLength = 4; // fixed
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write NAM0
     output.write((const char*) &(unknownNAM0_NAM1s[i].unknownNAM0), 4);
 
@@ -194,7 +194,7 @@ bool HeadPartRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cNAM1, 4);
     //NAM1's length
     subLength = unknownNAM0_NAM1s[i].unknownNAM1.length()+1;
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write NAM1
     output.write(unknownNAM0_NAM1s[i].unknownNAM1.c_str(), 4);
   }//for
@@ -205,7 +205,7 @@ bool HeadPartRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cTNAM, 4);
     //TNAM's length
     subLength = 4; // fixed
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write TNAM
     output.write((const char*) &unknownTNAM, 4);
   }//if TNAM
@@ -216,7 +216,7 @@ bool HeadPartRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cRNAM, 4);
     //RNAM's length
     subLength = 4; // fixed
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write RNAM
     output.write((const char*) &unknownRNAM, 4);
   }//if RNAM

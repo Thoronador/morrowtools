@@ -84,20 +84,20 @@ uint32_t Tes4HeaderRecord::getWriteSize() const
 
 bool Tes4HeaderRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cTES4, 4);
+  output.write((const char*) &cTES4, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write HEDR
-  output.write((char*) &cHEDR, 4);
+  output.write((const char*) &cHEDR, 4);
   //HEDR's length
   uint16_t SubLength = 12;
-  output.write((char*) &SubLength, 2);
+  output.write((const char*) &SubLength, 2);
   //write HEDR's stuff
   // ---- write version
-  output.write((char*) &version, 4);
+  output.write((const char*) &version, 4);
   // ---- write unknown stuff
-  output.write((char*) &numRecordsAndGroups, 4);
-  output.write((char*) &nextObjectID, 4);
+  output.write((const char*) &numRecordsAndGroups, 4);
+  output.write((const char*) &nextObjectID, 4);
   if (!output.good())
   {
     std::cout << "Error while writing subrecord HEDR of TES4!\n";
@@ -105,10 +105,10 @@ bool Tes4HeaderRecord::saveToStream(std::ofstream& output) const
   }
 
   //write CNAM
-  output.write((char*) &cCNAM, 4);
+  output.write((const char*) &cCNAM, 4);
   //CNAM's length
   SubLength = authorName.length()+1;
-  output.write((char*) &SubLength, 2);
+  output.write((const char*) &SubLength, 2);
   //write author's name
   output.write(authorName.c_str(), SubLength);
 
@@ -116,27 +116,27 @@ bool Tes4HeaderRecord::saveToStream(std::ofstream& output) const
   for (i=0; i<dependencies.size(); ++i)
   {
     //write MAST
-    output.write((char*) &cMAST, 4);
+    output.write((const char*) &cMAST, 4);
     //MAST's length
     SubLength = dependencies[i].fileName.length()+1;
-    output.write((char*) &SubLength, 2);
+    output.write((const char*) &SubLength, 2);
     //write file name
     output.write(dependencies[i].fileName.c_str(), SubLength);
 
     //write DATA
-    output.write((char*) &cDATA, 4);
+    output.write((const char*) &cDATA, 4);
     //DATA's length
     SubLength = 8; //fixed length
-    output.write((char*) &SubLength, 2);
+    output.write((const char*) &SubLength, 2);
     //write data value
     output.write((const char*) &(dependencies[i].data), 8);
   }//for
 
   //write INTV
-  output.write((char*) &cINTV, 4);
+  output.write((const char*) &cINTV, 4);
   //INTV's length
   SubLength = 4; //fixed size
-  output.write((char*) &SubLength, 2);
+  output.write((const char*) &SubLength, 2);
   //write integer valie
   output.write((const char*) &unknownIntValue, 4);
 

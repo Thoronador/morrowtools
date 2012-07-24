@@ -115,7 +115,7 @@ uint32_t IngredientRecord::getWriteSize() const
 
 bool IngredientRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cINGR, 4);
+  output.write((const char*) &cINGR, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID

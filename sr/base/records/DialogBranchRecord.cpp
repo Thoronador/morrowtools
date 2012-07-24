@@ -63,7 +63,7 @@ uint32_t DialogBranchRecord::getWriteSize() const
 
 bool DialogBranchRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cDLBR, 4);
+  output.write((const char*) &cDLBR, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID

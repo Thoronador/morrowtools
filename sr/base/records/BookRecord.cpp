@@ -121,10 +121,10 @@ bool BookRecord::saveToStream(std::ofstream& output) const
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
-  output.write((char*) &cEDID, 4);
+  output.write((const char*) &cEDID, 4);
   //EDID's length
   uint16_t subLength = editorID.length()+1;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write editor ID
   output.write(editorID.c_str(), subLength);
 
@@ -138,29 +138,29 @@ bool BookRecord::saveToStream(std::ofstream& output) const
   }//if VMAD
 
   //write OBND
-  output.write((char*) &cOBND, 4);
+  output.write((const char*) &cOBND, 4);
   //OBND's length
   subLength = 12;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write OBND
   output.write((const char*) unknownOBND, 12);
 
   if (hasFULL)
   {
     //write FULL
-    output.write((char*) &cFULL, 4);
+    output.write((const char*) &cFULL, 4);
     //FULL's length
     subLength = 4; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write FULL
     output.write((const char*) &titleStringID, 4);
   }//if has FULL subrecord
 
   //write MODL
-  output.write((char*) &cMODL, 4);
+  output.write((const char*) &cMODL, 4);
   //MODL's length
   subLength = modelPath.length()+1;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write model path
   output.write(modelPath.c_str(), subLength);
 
@@ -174,10 +174,10 @@ bool BookRecord::saveToStream(std::ofstream& output) const
   if (hasYNAM)
   {
     //write YNAM
-    output.write((char*) &cYNAM, 4);
+    output.write((const char*) &cYNAM, 4);
     //YNAM's length
     subLength = 4; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write YNAM
     output.write((const char*) &unknownYNAM, 4);
   }
@@ -185,19 +185,19 @@ bool BookRecord::saveToStream(std::ofstream& output) const
   if (!keywordArray.empty())
   {
     //write KSIZ
-    output.write((char*) &cKSIZ, 4);
+    output.write((const char*) &cKSIZ, 4);
     //KSIZ's length
     subLength = 4; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write keyword size
     const uint32_t k_Size = keywordArray.size();
     output.write((const char*) &k_Size, 4);
 
     //write KWDA
-    output.write((char*) &cKWDA, 4);
+    output.write((const char*) &cKWDA, 4);
     //KWDA's length
     subLength = 4*k_Size; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write actual data
     uint32_t i;
     for (i=0; i<k_Size; ++i)
@@ -229,10 +229,10 @@ bool BookRecord::saveToStream(std::ofstream& output) const
   }//if has INAM
 
   //write CNAM
-  output.write((char*) &cCNAM, 4);
+  output.write((const char*) &cCNAM, 4);
   //CNAM's length
   subLength = 4; //fixed size
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write CNAM
   output.write((const char*) &unknownCNAM, 4);
 

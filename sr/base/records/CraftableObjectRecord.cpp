@@ -83,26 +83,26 @@ uint32_t CraftableObjectRecord::getWriteSize() const
 
 bool CraftableObjectRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cCOBJ, 4);
+  output.write((const char*) &cCOBJ, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
-  output.write((char*) &cEDID, 4);
+  output.write((const char*) &cEDID, 4);
   //EDID's length
   uint16_t subLength = editorID.length()+1;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write editor ID
   output.write(editorID.c_str(), subLength);
 
   if (componentCount>0)
   {
     //write COCT
-    output.write((char*) &cCOCT, 4);
+    output.write((const char*) &cCOCT, 4);
     //COCT's length
     subLength = 4; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write component count
-    output.write((char*) &componentCount, 4);
+    output.write((const char*) &componentCount, 4);
   }
 
   //write components
@@ -110,51 +110,51 @@ bool CraftableObjectRecord::saveToStream(std::ofstream& output) const
   for (i=0; i<components.size(); ++i)
   {
     //write CNTO
-    output.write((char*) &cCNTO, 4);
+    output.write((const char*) &cCNTO, 4);
     //CNTO's length
     subLength = 8; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write formID
-    output.write((char*) &(components[i].formID), 4);
+    output.write((const char*) &(components[i].formID), 4);
     //write count
-    output.write((char*) &(components[i].count), 4);
+    output.write((const char*) &(components[i].count), 4);
   }//for
 
   //write CTDAs
   for (i=0; i<unknownCTDAs.size(); ++i)
   {
     //write CTDA
-    output.write((char*) &cCTDA, 4);
+    output.write((const char*) &cCTDA, 4);
     //CTDA's length
     subLength = 32; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write content
     output.write((const char*) (unknownCTDAs[i].content), 32);
   }//for
 
   //write CNAM
-  output.write((char*) &cCNAM, 4);
+  output.write((const char*) &cCNAM, 4);
   //CNAM's length
   subLength = 4; //fixed size
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write CNAM stuff
-  output.write((char*) &unknownCNAM, 4);
+  output.write((const char*) &unknownCNAM, 4);
 
   //write BNAM
-  output.write((char*) &cBNAM, 4);
+  output.write((const char*) &cBNAM, 4);
   //BNAM's length
   subLength = 4; //fixed size
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write BNAM stuff
-  output.write((char*) &unknownBNAM, 4);
+  output.write((const char*) &unknownBNAM, 4);
 
   //write NAM1
-  output.write((char*) &cNAM1, 4);
+  output.write((const char*) &cNAM1, 4);
   //NAM1's length
   subLength = 2; //fixed size
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write resulting quantity
-  output.write((char*) &resultCount, 2);
+  output.write((const char*) &resultCount, 2);
 
   return output.good();
 }

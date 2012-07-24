@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -150,13 +150,13 @@ bool PreNPCRecord::writeItemsSpellsAIDataDestinations(std::ofstream& output) con
   {
     //Items
     //write NPCO
-    output.write((char*) &cNPCO, 4);
+    output.write((const char*) &cNPCO, 4);
     SubLength = 36; //fixed length of 36 bytes
     //write NPCO's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write item stuff
     // ---- count
-    output.write((char*) &(Items[i].Count), 4);
+    output.write((const char*) &(Items[i].Count), 4);
     // ---- item ID
     len = Items[i].Item.length();
     if (len>31)
@@ -172,10 +172,10 @@ bool PreNPCRecord::writeItemsSpellsAIDataDestinations(std::ofstream& output) con
   {
     //Spells
     //write NPCS
-    output.write((char*) &cNPCS, 4);
+    output.write((const char*) &cNPCS, 4);
     SubLength = 32; //fixed length of 32 bytes
     //write NPCS's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write spell ID
     len = NPC_Spells[i].length();
     if (len>31)
@@ -190,20 +190,20 @@ bool PreNPCRecord::writeItemsSpellsAIDataDestinations(std::ofstream& output) con
   if (AIData.isPresent)
   {
     //write AIDT
-    output.write((char*) &cAIDT, 4);
+    output.write((const char*) &cAIDT, 4);
     SubLength = 12; //fixed length of 12 bytes
     //write AIDT's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write AI data
-    output.write((char*) &(AIData.Hello), 1);
-    output.write((char*) &(AIData.Unknown1), 1);
-    output.write((char*) &(AIData.Fight), 1);
-    output.write((char*) &(AIData.Flee), 1);
-    output.write((char*) &(AIData.Alarm), 1);
-    output.write((char*) &(AIData.Unknown2), 1);
-    output.write((char*) &(AIData.Unknown3), 1);
-    output.write((char*) &(AIData.Unknown4), 1);
-    output.write((char*) &(AIData.Flags), 4);
+    output.write((const char*) &(AIData.Hello), 1);
+    output.write((const char*) &(AIData.Unknown1), 1);
+    output.write((const char*) &(AIData.Fight), 1);
+    output.write((const char*) &(AIData.Flee), 1);
+    output.write((const char*) &(AIData.Alarm), 1);
+    output.write((const char*) &(AIData.Unknown2), 1);
+    output.write((const char*) &(AIData.Unknown3), 1);
+    output.write((const char*) &(AIData.Unknown4), 1);
+    output.write((const char*) &(AIData.Flags), 4);
   }//if AIData is present
 
   //AI packages
@@ -216,25 +216,25 @@ bool PreNPCRecord::writeItemsSpellsAIDataDestinations(std::ofstream& output) con
   for (i=0; i<Destinations.size(); ++i)
   {
     //write DODT
-    output.write((char*) &cDODT, 4);
+    output.write((const char*) &cDODT, 4);
     SubLength = 24; //fixed length of 24 bytes
     //write DODT's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write destination data
-    output.write((char*) &(Destinations[i].XPos), 4);
-    output.write((char*) &(Destinations[i].YPos), 4);
-    output.write((char*) &(Destinations[i].ZPos), 4);
-    output.write((char*) &(Destinations[i].XRot), 4);
-    output.write((char*) &(Destinations[i].YRot), 4);
-    output.write((char*) &(Destinations[i].ZRot), 4);
+    output.write((const char*) &(Destinations[i].XPos), 4);
+    output.write((const char*) &(Destinations[i].YPos), 4);
+    output.write((const char*) &(Destinations[i].ZPos), 4);
+    output.write((const char*) &(Destinations[i].XRot), 4);
+    output.write((const char*) &(Destinations[i].YRot), 4);
+    output.write((const char*) &(Destinations[i].ZRot), 4);
     //see if there's a cell name, too
-    if (Destinations[i].CellName!="")
+    if (!Destinations[i].CellName.empty())
     {
       //write DNAM
-      output.write((char*) &cDNAM, 4);
+      output.write((const char*) &cDNAM, 4);
       SubLength = Destinations[i].CellName.length()+1; //length of cell name +1 byte for NUL
       //write DNAM's length
-      output.write((char*) &SubLength, 4);
+      output.write((const char*) &SubLength, 4);
       //write destination cell name
       output.write(Destinations[i].CellName.c_str(), SubLength);
     }//if

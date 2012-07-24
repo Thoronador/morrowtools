@@ -78,7 +78,7 @@ uint32_t EnchantmentRecord::getWriteSize() const
 
 bool EnchantmentRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cENCH, 4);
+  output.write((const char*) &cENCH, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID

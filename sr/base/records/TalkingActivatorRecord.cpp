@@ -90,7 +90,7 @@ uint32_t TalkingActivatorRecord::getWriteSize() const
 
 bool TalkingActivatorRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cTACT, 4);
+  output.write((const char*) &cTACT, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID

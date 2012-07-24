@@ -71,7 +71,7 @@ uint32_t LeveledSpellRecord::getWriteSize() const
 
 bool LeveledSpellRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cLVSP, 4);
+  output.write((const char*) &cLVSP, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID

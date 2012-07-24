@@ -76,7 +76,7 @@ uint32_t ReverbRecord::getWriteSize() const
 
 bool ReverbRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cREVB, 4);
+  output.write((const char*) &cREVB, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID

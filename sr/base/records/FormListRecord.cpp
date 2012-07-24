@@ -62,25 +62,25 @@ uint32_t FormListRecord::getWriteSize() const
 
 bool FormListRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cFLST, 4);
+  output.write((const char*) &cFLST, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
-  output.write((char*) &cEDID, 4);
+  output.write((const char*) &cEDID, 4);
   //EDID's length
   uint16_t subLength = editorID.length()+1;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write editor ID
   output.write(editorID.c_str(), subLength);
 
   if (!listFormIDs.empty())
   {
     unsigned int i;
-    const uint32_t count = listFormIDs.size();
+    const unsigned int count = listFormIDs.size();
     for (i=0; i<count; ++i)
     {
       //write LNAM
-      output.write((char*) &cLNAM, 4);
+      output.write((const char*) &cLNAM, 4);
       //LNAM's length
       subLength = 4; //fixed
       //write form ID

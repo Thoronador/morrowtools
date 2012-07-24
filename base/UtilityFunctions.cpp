@@ -156,7 +156,7 @@ std::string floatToString(const float f)
 
 void trimLeft(std::string& str1)
 {
-  if (str1=="") return;
+  if (str1.empty()) return;
   //trim stuff at begin
   int32_t len = str1.length();
   int32_t pos = 0;
@@ -188,7 +188,7 @@ void trimLeft(std::string& str1)
 
 void trimRight(std::string& str1)
 {
-  if (str1=="") return;
+  if (str1.empty()) return;
   //trim stuff at end
   int32_t len = str1.length();
   int32_t pos = len-1;
@@ -284,7 +284,7 @@ bool removeEnclosingBrackets(std::string& expr)
 
 bool stripEnclosingQuotes(std::string& str1)
 {
-  if ((str1=="") or (str1.length()<2)) return false;
+  if (str1.length()<2) return false;
   if ((str1.at(0)=='"') and (str1.at(str1.length()-1)=='"'))
   {
     str1 = str1.substr(1, str1.length()-2);

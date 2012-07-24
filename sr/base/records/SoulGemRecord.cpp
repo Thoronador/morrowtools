@@ -110,14 +110,14 @@ uint32_t SoulGemRecord::getWriteSize() const
 
 bool SoulGemRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cSLGM, 4);
+  output.write((const char*) &cSLGM, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
   output.write((const char*) &cEDID, 4);
   //EDID's length
   uint16_t subLength = editorID.length()+1;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write editor ID
   output.write(editorID.c_str(), subLength);
 
@@ -125,7 +125,7 @@ bool SoulGemRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &cOBND, 4);
   //OBND's length
   subLength = 12; //fixed
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write OBND's stuff
   output.write((const char*) unknownOBND, 12);
 
@@ -135,7 +135,7 @@ bool SoulGemRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cFULL, 4);
     //FULL's length
     subLength = 4; // fixed
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write FULL
     output.write((const char*) &nameStringID, 4);
   }//if FULL
@@ -146,7 +146,7 @@ bool SoulGemRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cMODL, 4);
     //EDID's length
     subLength = modelPath.length()+1;
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write model path
     output.write(modelPath.c_str(), subLength);
   }//if MODL
@@ -166,7 +166,7 @@ bool SoulGemRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cKSIZ, 4);
     //KSIZ's length
     subLength = 4; // fixed
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write keyword count
     const uint32_t k_Size = keywordArray.size();
     output.write((const char*) &k_Size, 4);
@@ -175,7 +175,7 @@ bool SoulGemRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cKWDA, 4);
     //KWDA's length
     subLength = 4*k_Size;
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write keywords
     uint32_t i;
     for (i=0; i<k_Size; ++i)
@@ -188,7 +188,7 @@ bool SoulGemRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &cSOUL, 4);
   //SOUL's length
   subLength = 1; //fixed
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write SOUL's stuff
   output.write((const char*) &soulInside, 1);
 
@@ -196,7 +196,7 @@ bool SoulGemRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &cSLCP, 4);
   //SLCP's length
   subLength = 1; //fixed
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write SLCP's stuff
   output.write((const char*) &capacity, 1);
 
@@ -206,7 +206,7 @@ bool SoulGemRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cNAM0, 4);
     //NAM0's length
     subLength = 4; // fixed
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write NAM0
     output.write((const char*) &unknownNAM0, 4);
   }//if NAM0

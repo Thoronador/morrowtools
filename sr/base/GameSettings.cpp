@@ -42,7 +42,7 @@ GameSettings& GameSettings::getSingleton()
 
 void GameSettings::addGameSetting(const GMSTRecord& record)
 {
-  if (record.getSettingName()!="")
+  if (!record.getSettingName().empty())
   {
     m_GameSettings[record.getSettingName()] = record;
   }

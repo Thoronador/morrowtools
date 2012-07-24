@@ -55,7 +55,7 @@ bool GMSTRecord::equals(const GMSTRecord& other) const
 bool GMSTRecord::saveToStream(std::ofstream& output) const
 {
   //write GMST
-  output.write((char*) &cGMST, 4);
+  output.write((const char*) &cGMST, 4);
   uint32_t Size;
   Size = 4 /* NAME */ +4 /* four bytes for length */
         +SettingName.length() /* length of ID */
@@ -70,20 +70,20 @@ bool GMSTRecord::saveToStream(std::ofstream& output) const
          Size = Size + sVal.length();
          break;
   }//swi
-  output.write((char*) &Size, 4);
-  output.write((char*) &HeaderOne, 4);
-  output.write((char*) &HeaderFlags, 4);
+  output.write((const char*) &Size, 4);
+  output.write((const char*) &HeaderOne, 4);
+  output.write((const char*) &HeaderFlags, 4);
 
   /*GMST: Game Setting
     NAME = Setting ID string
     STRV = String value/ INTV = Integer value (4 btes)/FLTV = Float value (4 bytes)
   */
   //write NAME
-  output.write((char*) &cNAME, 4);
+  output.write((const char*) &cNAME, 4);
   //NAME's length
   uint32_t SubLength;
   SubLength = SettingName.length(); //length of string
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write ID
   output.write(SettingName.c_str(), SubLength);
   //write STRV/ FLTV/ INTV
@@ -91,28 +91,28 @@ bool GMSTRecord::saveToStream(std::ofstream& output) const
   {
     case gtInteger:
          //write INTV
-         output.write((char*) &cINTV, 4);
+         output.write((const char*) &cINTV, 4);
          //write length
          SubLength = 4;
-         output.write((char*) &SubLength, 4);
+         output.write((const char*) &SubLength, 4);
          //write integer
-         output.write((char*) &iVal, 4);
+         output.write((const char*) &iVal, 4);
          break;
     case gtFloat:
          //write FLTV
-         output.write((char*) &cFLTV, 4);
+         output.write((const char*) &cFLTV, 4);
          //write length
          SubLength = 4;
-         output.write((char*) &SubLength, 4);
+         output.write((const char*) &SubLength, 4);
          //write float
-         output.write((char*) &fVal, 4);
+         output.write((const char*) &fVal, 4);
          break;
     case gtString:
          //write STRV
-         output.write((char*) &cSTRV, 4);
+         output.write((const char*) &cSTRV, 4);
          //write length
          SubLength = sVal.length();
-         output.write((char*) &SubLength, 4);
+         output.write((const char*) &SubLength, 4);
          //write string
          output.write(sVal.c_str(), SubLength);
          break;

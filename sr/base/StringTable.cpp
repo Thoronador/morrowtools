@@ -306,9 +306,9 @@ bool StringTable::writeTable(const std::string& FileName, DataType stringType) c
   }
 
   //write number of entries
-  output.write((char*) &count, 4);
+  output.write((const char*) &count, 4);
   //write data size
-  output.write((char*)&dataSize, 4);
+  output.write((const char*)&dataSize, 4);
   if (!output.good())
   {
     std::cout << "StringTable::writeTable: Error while writing header!\n";
@@ -320,8 +320,8 @@ bool StringTable::writeTable(const std::string& FileName, DataType stringType) c
   uint32_t i;
   for (i=0; i<count; ++i)
   {
-    output.write((char*) &(theDirectory[i].stringID), 4);
-    output.write((char*) &(theDirectory[i].offset), 4);
+    output.write((const char*) &(theDirectory[i].stringID), 4);
+    output.write((const char*) &(theDirectory[i].offset), 4);
     if (!output.good())
     {
       std::cout << "StringTable::writeTable: Error while writing directory entries!\n";
@@ -339,7 +339,7 @@ bool StringTable::writeTable(const std::string& FileName, DataType stringType) c
     if (sdPascalStyle==stringType)
     {
       //write length
-      output.write((char*) &i, 4);
+      output.write((const char*) &i, 4);
     }
     //write string
     output.write(cIter->second.c_str(), i);

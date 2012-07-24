@@ -111,7 +111,7 @@ uint32_t DoorRecord::getWriteSize() const
 
 bool DoorRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cDOOR, 4);
+  output.write((const char*) &cDOOR, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID

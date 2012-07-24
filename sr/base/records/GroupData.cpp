@@ -50,18 +50,18 @@ GroupData::~GroupData()
 
 bool GroupData::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cGRUP, 4);
+  output.write((const char*) &cGRUP, 4);
   //write size
-  output.write((char*) &m_GroupSize, 4);
+  output.write((const char*) &m_GroupSize, 4);
   //write label
-  output.write((char*) &m_GroupLabel, 4);
+  output.write((const char*) &m_GroupLabel, 4);
   //write type
-  output.write((char*) &m_GroupType, 4);
+  output.write((const char*) &m_GroupType, 4);
   //write unknown data
   unsigned int i;
   for (i=0; i<2; ++i)
   {
-    output.write((char*) &(UnknownGroupDataTwo[i]), 4);
+    output.write((const char*) &(UnknownGroupDataTwo[i]), 4);
   }//for
 
   return output.good();

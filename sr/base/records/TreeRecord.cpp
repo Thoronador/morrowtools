@@ -98,14 +98,14 @@ uint32_t TreeRecord::getWriteSize() const
 
 bool TreeRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cTREE, 4);
+  output.write((const char*) &cTREE, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
   output.write((const char*) &cEDID, 4);
   //EDID's length
   uint16_t subLength = editorID.length()+1;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write editor ID
   output.write(editorID.c_str(), subLength);
 
@@ -113,7 +113,7 @@ bool TreeRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &cOBND, 4);
   //OBND's length
   subLength = 12; //fixed
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write OBND's stuff
   output.write((const char*) unknownOBND, 12);
 
@@ -123,7 +123,7 @@ bool TreeRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cMODL, 4);
     //EDID's length
     subLength = modelPath.length()+1;
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write model path
     output.write(modelPath.c_str(), subLength);
   }//if MODL
@@ -143,7 +143,7 @@ bool TreeRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cPFIG, 4);
     //PFIG's length
     subLength = 4; // fixed
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write PFIG
     output.write((const char*) &unknownPFIG, 4);
   }//if PFIG
@@ -154,7 +154,7 @@ bool TreeRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cSNAM, 4);
     //SNAM's length
     subLength = 4; // fixed
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write SNAM
     output.write((const char*) &unknownSNAM, 4);
   }
@@ -163,7 +163,7 @@ bool TreeRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &cPFPC, 4);
   //PFPC's length
   subLength = 4; // fixed
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write PFPC
   output.write((const char*) &unknownPFPC, 4);
 
@@ -173,7 +173,7 @@ bool TreeRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cFULL, 4);
     //FULL's length
     subLength = 4; // fixed
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write FULL
     output.write((const char*) &nameStringID, 4);
   }//if FULL
@@ -182,7 +182,7 @@ bool TreeRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &cCNAM, 4);
   //CNAM's length
   subLength = 48; //fixed
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write CNAM's stuff
   output.write((const char*) unknownCNAM, 48);
 

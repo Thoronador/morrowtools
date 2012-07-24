@@ -76,7 +76,7 @@ uint32_t LandscapeTextureRecord::getWriteSize() const
 
 bool LandscapeTextureRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cLTEX, 4);
+  output.write((const char*) &cLTEX, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID

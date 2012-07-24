@@ -130,7 +130,7 @@ bool LeveledItemRecord::saveToStream(std::ofstream& output) const
     SubLength = 2;//length is always 2 bytes
     output.write((const char*) &SubLength, 4);
     //write item's level
-    output.write((char*) &(Entries[i].Level), 2);
+    output.write((const char*) &(Entries[i].Level), 2);
   }//for
 
   return output.good();

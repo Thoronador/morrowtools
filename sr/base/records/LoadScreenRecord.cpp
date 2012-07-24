@@ -93,7 +93,7 @@ bool LoadScreenRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &cEDID, 4);
   //EDID's length
   uint16_t subLength = editorID.length()+1;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write editor ID
   output.write(editorID.c_str(), subLength);
 
@@ -101,7 +101,7 @@ bool LoadScreenRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &cDESC, 4);
   //DESC's length
   subLength = 4; //fixed size
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write DESC
   output.write((const char*) &textStringID, 4);
 
@@ -112,7 +112,7 @@ bool LoadScreenRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cCTDA, 4);
     //CTDA's length
     subLength = 32; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write CTDA's stuff
     output.write((const char*) (unknownCTDAs[i].content), 4);
   }//for
@@ -123,7 +123,7 @@ bool LoadScreenRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cCIS2, 4);
     //CIS2's length
     subLength = unknownCIS2.length()+1;
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write CIS2
     output.write(unknownCIS2.c_str(), subLength);
   }//if CIS2
@@ -132,7 +132,7 @@ bool LoadScreenRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &cNNAM, 4);
   //NNAM's length
   subLength = 4; //fixed size
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write NNAM
   output.write((const char*) &unknownNNAM, 4);
 
@@ -140,7 +140,7 @@ bool LoadScreenRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &cSNAM, 4);
   //SNAM's length
   subLength = 4; //fixed size
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write SNAM
   output.write((const char*) &unknownSNAM, 4);
 
@@ -148,7 +148,7 @@ bool LoadScreenRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &cRNAM, 4);
   //RNAM's length
   subLength = 6;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write RNAM's stuff
   output.write((const char*) unknownRNAM, 6);
 
@@ -156,7 +156,7 @@ bool LoadScreenRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &cONAM, 4);
   //ONAM's length
   subLength = 4; //fixed size
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write ONAM
   output.write((const char*) &unknownONAM, 4);
 
@@ -164,7 +164,7 @@ bool LoadScreenRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &cXNAM, 4);
   //XNAM's length
   subLength = 12;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write XNAM's stuff
   output.write((const char*) unknownXNAM, 12);
 
@@ -172,7 +172,7 @@ bool LoadScreenRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &cMOD2, 4);
   //MOD2's length
   subLength = unknownMOD2.length()+1;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write model path
   output.write(unknownMOD2.c_str(), subLength);
 

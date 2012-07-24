@@ -152,14 +152,14 @@ uint32_t LocationRecord::getWriteSize() const
 
 bool LocationRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cLCTN, 4);
+  output.write((const char*) &cLCTN, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
   output.write((const char*) &cEDID, 4);
   //EDID's length
   uint16_t subLength = editorID.length()+1;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write editor ID
   output.write(editorID.c_str(), subLength);
 
@@ -230,7 +230,7 @@ bool LocationRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cFULL, 4);
     //FULL's length
     subLength = 4; // fixed
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write FULL
     output.write((const char*) &nameStringID, 4);
   }//if FULL
@@ -241,7 +241,7 @@ bool LocationRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cKSIZ, 4);
     //KSIZ's length
     subLength = 4; // fixed
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write keyword count
     const uint32_t k_Size = keywordArray.size();
     output.write((const char*) &k_Size, 4);
@@ -250,7 +250,7 @@ bool LocationRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cKWDA, 4);
     //KWDA's length
     subLength = 4*k_Size;
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write keywords
     uint32_t i;
     for (i=0; i<k_Size; ++i)
@@ -265,7 +265,7 @@ bool LocationRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cPNAM, 4);
     //PNAM's length
     subLength = 4; // fixed
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write PNAM
     output.write((const char*) &unknownPNAM, 4);
   }//if PNAM
@@ -276,7 +276,7 @@ bool LocationRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cFNAM, 4);
     //FNAM's length
     subLength = 4; // fixed
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write FNAM
     output.write((const char*) &unknownFNAM, 4);
   }//if FNAM
@@ -287,7 +287,7 @@ bool LocationRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cMNAM, 4);
     //MNAM's length
     subLength = 4; // fixed
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write MNAM
     output.write((const char*) &unknownMNAM, 4);
   }//if MNAM
@@ -298,7 +298,7 @@ bool LocationRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cRNAM, 4);
     //RNAM's length
     subLength = 4; // fixed
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write RNAM
     output.write((const char*) &unknownRNAM, 4);
   }//if RNAM
@@ -309,7 +309,7 @@ bool LocationRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cNAM0, 4);
     //NAM0's length
     subLength = 4; // fixed
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write NAM0
     output.write((const char*) &unknownNAM0, 4);
   }//if NAM0
@@ -320,7 +320,7 @@ bool LocationRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cCNAM, 4);
     //CNAM's length
     subLength = 4; // fixed
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write CNAM
     output.write((const char*) &unknownCNAM, 4);
   }//if CNAM
@@ -331,7 +331,7 @@ bool LocationRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cNAM1, 4);
     //NAM1's length
     subLength = 4; // fixed
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write NAM1
     output.write((const char*) &unknownNAM1, 4);
   }//if NAM1

@@ -78,14 +78,14 @@ uint32_t PlacedGrenadeRecord::getWriteSize() const
 
 bool PlacedGrenadeRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cPGRE, 4);
+  output.write((const char*) &cPGRE, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write NAME
   output.write((const char*) &cNAME, 4);
   //NAME's length
   uint16_t subLength = 4; //fixed
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write NAME
   output.write((const char*) &nameFormID, 4);
 
@@ -95,7 +95,7 @@ bool PlacedGrenadeRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cXESP, 4);
     //XESP's length
     subLength = 8; // fixed
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write XESP
     output.write((const char*) &unknownXESP, 8);
   }
@@ -106,7 +106,7 @@ bool PlacedGrenadeRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cXOWN, 4);
     //XOWN's length
     subLength = 4; // fixed
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write XOWN
     output.write((const char*) &ownerFormID, 4);
   }
@@ -117,7 +117,7 @@ bool PlacedGrenadeRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cXSCL, 4);
     //XSCL's length
     subLength = 4; // fixed
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write XSCL
     output.write((const char*) &scale, 4);
   }
@@ -126,7 +126,7 @@ bool PlacedGrenadeRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &cDATA, 4);
   //DATA's length
   subLength = 24; //fixed
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write DATA's stuff
   output.write((const char*) unknownDATA, 24);
 

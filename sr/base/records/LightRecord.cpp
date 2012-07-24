@@ -119,7 +119,7 @@ uint32_t LightRecord::getWriteSize() const
 
 bool LightRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cLIGH, 4);
+  output.write((const char*) &cLIGH, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID

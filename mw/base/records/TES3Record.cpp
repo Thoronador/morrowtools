@@ -47,7 +47,7 @@ bool TES3Record::equals(const TES3Record& other) const
 
 bool TES3Record::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cTES3, 4);
+  output.write((const char*) &cTES3, 4);
   uint32_t Size;
   Size = 4 /* HEDR */ +4 /* 4 bytes for length */ +300 /* fixed length is 300 bytes */;
   unsigned int i;
@@ -57,9 +57,9 @@ bool TES3Record::saveToStream(std::ofstream& output) const
            + dependencies.at(i).name.length()+1 /*length of string +1 byte for NUL-termination */
            + 4 /* MAST */ +4 /* 4 bytes for length */ +8 /* size of DATA (fixed at 8 bytes) */;
   }//for
-  output.write((char*) &Size, 4);
-  output.write((char*) &HeaderOne, 4);
-  output.write((char*) &HeaderFlags, 4);
+  output.write((const char*) &Size, 4);
+  output.write((const char*) &HeaderOne, 4);
+  output.write((const char*) &HeaderFlags, 4);
 
   /*TES3:
     HEDR (300 bytes)
@@ -78,16 +78,16 @@ bool TES3Record::saveToStream(std::ofstream& output) const
         that it refers to. */
 
   //write HEDR
-  output.write((char*) &cHEDR, 4);
+  output.write((const char*) &cHEDR, 4);
   //HEDR's length
   uint32_t SubLength;
   SubLength = 300;//fixed length of 300 bytes
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write Header data
   // ---- write version (usually 1.3 for Tribunal/Bloodmoon, 1.2 for Morrowind)
-  output.write((char*) &Version, 4);
+  output.write((const char*) &Version, 4);
   // ---- write file flag
-  output.write((char*) &FileFlag, 4);
+  output.write((const char*) &FileFlag, 4);
   // ---- write company name/ creator of the master file/ plugin file
   const std::string::size_type comp_len = companyName.length();
   if (comp_len>31)
@@ -114,7 +114,7 @@ bool TES3Record::saveToStream(std::ofstream& output) const
   }
   output.write(real_description.c_str(), 256);
   // ---- write number of records
-  output.write((char*) &NumRecords, 4);
+  output.write((const char*) &NumRecords, 4);
   if (!output.good())
   {
     std::cout << "Error while writing subrecord HEDR of TES3!\n";
@@ -125,20 +125,20 @@ bool TES3Record::saveToStream(std::ofstream& output) const
   {
     // write MAST subrecord
     // -- MAST header
-    output.write((char*) &cMAST, 4);
+    output.write((const char*) &cMAST, 4);
     // -- size of file name
     Size = dependencies.at(i).name.length()+1; //length of string + one byte for NUL-character
-    output.write((char*) &Size, 4);
+    output.write((const char*) &Size, 4);
     // -- file name itself
     output.write(dependencies.at(i).name.c_str(), Size);
     // write DATA subrecord
     // -- DATA header
-    output.write((char*) &cDATA, 4);
+    output.write((const char*) &cDATA, 4);
     // -- size (is always 8 bytes for an int64)
     Size = 8;
-    output.write((char*) &Size, 4);
+    output.write((const char*) &Size, 4);
     // -- write file size
-    output.write((char*) &(dependencies.at(i).size), 8);
+    output.write((const char*) &(dependencies.at(i).size), 8);
   }//for
 
   return output.good();

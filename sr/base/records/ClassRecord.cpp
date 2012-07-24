@@ -62,7 +62,7 @@ uint32_t ClassRecord::getWriteSize() const
 
 bool ClassRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cCLAS, 4);
+  output.write((const char*) &cCLAS, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID

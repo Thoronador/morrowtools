@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -58,7 +58,7 @@ bool PathGridRecord::equals(const PathGridRecord& other) const
 
 bool PathGridRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cPGRD, 4);
+  output.write((const char*) &cPGRD, 4);
   uint32_t Size;
   Size = 4 /* DATA */ +4 /* 4 bytes for length */ + 12 /* size of data */
         +4 /* NAME */ +4 /* 4 bytes for length */
@@ -73,9 +73,9 @@ bool PathGridRecord::saveToStream(std::ofstream& output) const
     Size = Size + 4 /* PGRC */ +4 /* 4 bytes for length */
            +8 * Connections.size();
   }
-  output.write((char*) &Size, 4);
-  output.write((char*) &HeaderOne, 4);
-  output.write((char*) &HeaderFlags, 4);
+  output.write((const char*) &Size, 4);
+  output.write((const char*) &HeaderOne, 4);
+  output.write((const char*) &HeaderFlags, 4);
 
   /*Path Grid:
     DATA = (path grid data, 12 bytes)
@@ -102,58 +102,58 @@ bool PathGridRecord::saveToStream(std::ofstream& output) const
   */
 
   //write DATA
-  output.write((char*) &cDATA, 4);
+  output.write((const char*) &cDATA, 4);
   //DATA's length
   uint32_t SubLength;
   SubLength = 12; //length is always twelve bytes
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write path grid data
-  output.write((char*) &GridX, 4);
-  output.write((char*) &GridY, 4);
-  output.write((char*) &Granularity, 2);
-  output.write((char*) &NumQuads, 2);
+  output.write((const char*) &GridX, 4);
+  output.write((const char*) &GridY, 4);
+  output.write((const char*) &Granularity, 2);
+  output.write((const char*) &NumQuads, 2);
 
   //write NAME
-  output.write((char*) &cNAME, 4);
+  output.write((const char*) &cNAME, 4);
   //NAME's length
   SubLength = CellName.length()+1;//length of string plus one for NUL-termination
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write cell name
   output.write(CellName.c_str(), SubLength);
 
   if (!Points.empty())
   {
     //write PGRP
-    output.write((char*) &cPGRP, 4);
+    output.write((const char*) &cPGRP, 4);
     //PGRP's length
     SubLength = Points.size()*16;//length is 16 bytes per point
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write points
     unsigned int i;
     for (i=0; i<Points.size(); ++i)
     {
       //write next point
-      output.write((char*) &(Points[i].X), 4);
-      output.write((char*) &(Points[i].Y), 4);
-      output.write((char*) &(Points[i].Z), 4);
-      output.write((char*) &(Points[i].Unknown), 4);
+      output.write((const char*) &(Points[i].X), 4);
+      output.write((const char*) &(Points[i].Y), 4);
+      output.write((const char*) &(Points[i].Z), 4);
+      output.write((const char*) &(Points[i].Unknown), 4);
     }//for
   }//Points
 
   if (!Connections.empty())
   {
     //write PGRC
-    output.write((char*) &cPGRC, 4);
+    output.write((const char*) &cPGRC, 4);
     //PGRC's length
     SubLength = Connections.size()*8;//length is 8 bytes per connection
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write connections
     unsigned int i;
     for (i=0; i<Connections.size(); ++i)
     {
       //write next point
-      output.write((char*) &(Connections[i].Start), 4);
-      output.write((char*) &(Connections[i].End), 4);
+      output.write((const char*) &(Connections[i].Start), 4);
+      output.write((const char*) &(Connections[i].End), 4);
     }//for
   }//connections
 

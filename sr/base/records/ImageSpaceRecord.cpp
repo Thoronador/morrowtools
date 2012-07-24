@@ -99,7 +99,7 @@ uint32_t ImageSpaceRecord::getWriteSize() const
 
 bool ImageSpaceRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cIMGS, 4);
+  output.write((const char*) &cIMGS, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID

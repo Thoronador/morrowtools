@@ -82,24 +82,24 @@ uint32_t ShoutRecord::getWriteSize() const
 
 bool ShoutRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cSHOU, 4);
+  output.write((const char*) &cSHOU, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
-  output.write((char*) &cEDID, 4);
+  output.write((const char*) &cEDID, 4);
   //EDID's length
   uint16_t subLength = editorID.length()+1;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write editor ID
   output.write(editorID.c_str(), subLength);
 
   if (hasFULL)
   {
     //write FULL
-    output.write((char*) &cFULL, 4);
+    output.write((const char*) &cFULL, 4);
     //FULL's length
     subLength = 4; // fixed
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write FULL
     output.write((const char*) &fullNameStringID, 4);
   }
@@ -107,19 +107,19 @@ bool ShoutRecord::saveToStream(std::ofstream& output) const
   if (hasMDOB)
   {
     //write MDOB
-    output.write((char*) &cMDOB, 4);
+    output.write((const char*) &cMDOB, 4);
     //MDOB's length
     subLength = 4; // fixed
-     output.write((char*) &subLength, 2);
+     output.write((const char*) &subLength, 2);
     //write MDOB's data
     output.write((const char*) &unknownMDOB, 4);
   }//if has MDOB
 
   //write DESC
-  output.write((char*) &cDESC, 4);
+  output.write((const char*) &cDESC, 4);
   //DESC's length
   subLength = 4; // fixed
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write DESC
   output.write((const char*) &descriptionStringID, 4);
 
@@ -127,10 +127,10 @@ bool ShoutRecord::saveToStream(std::ofstream& output) const
   for (i=0; i<unknownSNAMs.size(); ++i)
   {
     //write SNAM
-    output.write((char*) &cSNAM, 4);
+    output.write((const char*) &cSNAM, 4);
     //SNAM's length
     subLength = 12; //fixed size of 12 bytes
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write SNAM's data
     output.write((const char*) &(unknownSNAMs[i].wordFormID), 4);
     output.write((const char*) &(unknownSNAMs[i].spellFormID), 4);

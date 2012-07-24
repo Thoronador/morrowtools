@@ -61,7 +61,7 @@ uint32_t ImpactDataSetRecord::getWriteSize() const
 
 bool ImpactDataSetRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cIPDS, 4);
+  output.write((const char*) &cIPDS, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID

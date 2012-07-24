@@ -70,14 +70,14 @@ uint32_t MovementTypeRecord::getWriteSize() const
 
 bool MovementTypeRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cMOVT, 4);
+  output.write((const char*) &cMOVT, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
   output.write((const char*) &cEDID, 4);
   //EDID's length
   uint16_t subLength = editorID.length()+1;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write editor ID
   output.write(editorID.c_str(), subLength);
 
@@ -85,7 +85,7 @@ bool MovementTypeRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &cNNAM, 4);
   //NNAM's length
   subLength = nameString.length()+1;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write name string
   output.write(nameString.c_str(), subLength);
 

@@ -73,7 +73,7 @@ uint32_t SoundRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* SNDD */ +2 /* 2 bytes for length */ +36 /* fixed size */;
   }
-  if (soundFileName!="")
+  if (!soundFileName.empty())
   {
     writeSize = writeSize + 4 /* FNAM */ +2 /* 2 bytes for length */
                +soundFileName.length()+1 /* length of name +1 byte for NUL termination */;
@@ -83,32 +83,32 @@ uint32_t SoundRecord::getWriteSize() const
 
 bool SoundRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cSOUN, 4);
+  output.write((const char*) &cSOUN, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
-  output.write((char*) &cEDID, 4);
+  output.write((const char*) &cEDID, 4);
   //EDID's length
   uint16_t subLength = editorID.length()+1;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write editor ID
   output.write(editorID.c_str(), subLength);
 
   //write OBND
-  output.write((char*) &cOBND, 4);
+  output.write((const char*) &cOBND, 4);
   //OBND's length
   subLength = 12; //fixed size
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write OBND data
-  output.write((char*) unknownOBND, 12);
+  output.write((const char*) unknownOBND, 12);
 
-  if (soundFileName!="")
+  if (!soundFileName.empty())
   {
     //write FNAM
-    output.write((char*) &cFNAM, 4);
+    output.write((const char*) &cFNAM, 4);
     //FNAM's length
     subLength = soundFileName.length()+1;
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write file name
     output.write(soundFileName.c_str(), subLength);
   }
@@ -116,21 +116,21 @@ bool SoundRecord::saveToStream(std::ofstream& output) const
   if (hasSNDD)
   {
     //write SNDD
-    output.write((char*) &cSNDD, 4);
+    output.write((const char*) &cSNDD, 4);
     //SNDD's length
     subLength = 36; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write SNDD data
-    output.write((char*) unknownSNDD, 36);
+    output.write((const char*) unknownSNDD, 36);
   }//if
 
   //write SDSC
-  output.write((char*) &cSDSC, 4);
+  output.write((const char*) &cSDSC, 4);
   //SDSC's length
   subLength = 4; //fixed size
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write SDSC data
-  output.write((char*) &unknownSDSC, 4);
+  output.write((const char*) &unknownSDSC, 4);
 
   return output.good();
 }

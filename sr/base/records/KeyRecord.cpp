@@ -99,7 +99,7 @@ uint32_t KeyRecord::getWriteSize() const
 
 bool KeyRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cKEYM, 4);
+  output.write((const char*) &cKEYM, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID

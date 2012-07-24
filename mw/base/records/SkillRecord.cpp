@@ -36,15 +36,15 @@ bool SkillRecord::equals(const SkillRecord& other) const
 
 bool SkillRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cSKIL, 4);
+  output.write((const char*) &cSKIL, 4);
   uint32_t Size;
   Size = 4 /* INDX */ +4 /* 4 bytes for length */ +4 /* 4 bytes for index */
         +4 /* SKDT */ +4 /* 4 bytes for length */ +24 /* 24 bytes for Skill data */
         +4 /* DESC */ +4 /* 4 bytes for length */
         +Description.length()+1 /* length of description +1 for NUL-termination */;
-  output.write((char*) &Size, 4);
-  output.write((char*) &HeaderOne, 4);
-  output.write((char*) &HeaderFlags, 4);
+  output.write((const char*) &Size, 4);
+  output.write((const char*) &HeaderOne, 4);
+  output.write((const char*) &HeaderFlags, 4);
 
   /*Skills:
     INDX = Skill ID (4 bytes, long)
@@ -56,29 +56,29 @@ bool SkillRecord::saveToStream(std::ofstream& output) const
     DESC = Skill description string */
 
   //write INDX
-  output.write((char*) &cINDX, 4);
+  output.write((const char*) &cINDX, 4);
   //write length
   uint32_t SubLength = 4;
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write index
-  output.write((char*) &SkillIndex, 4);
+  output.write((const char*) &SkillIndex, 4);
   //write SKDT
-  output.write((char*) &cSKDT, 4);
+  output.write((const char*) &cSKDT, 4);
   //write length
   SubLength = 24;
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write skill data
-  output.write((char*) &Attribute, 4);
-  output.write((char*) &Specialization, 4);
-  output.write((char*) &(UseValue[0]), 4);
-  output.write((char*) &(UseValue[1]), 4);
-  output.write((char*) &(UseValue[2]), 4);
-  output.write((char*) &(UseValue[3]), 4);
+  output.write((const char*) &Attribute, 4);
+  output.write((const char*) &Specialization, 4);
+  output.write((const char*) &(UseValue[0]), 4);
+  output.write((const char*) &(UseValue[1]), 4);
+  output.write((const char*) &(UseValue[2]), 4);
+  output.write((const char*) &(UseValue[3]), 4);
   //write DESC
-  output.write((char*) &cDESC, 4);
+  output.write((const char*) &cDESC, 4);
   //write length
   SubLength = Description.length()+1;
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write description text
   output.write(Description.c_str(), SubLength);
   return output.good();

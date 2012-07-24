@@ -65,14 +65,14 @@ uint32_t EquipmentSlotRecord::getWriteSize() const
 
 bool EquipmentSlotRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cEQUP, 4);
+  output.write((const char*) &cEQUP, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
   output.write((const char*) &cEDID, 4);
   //EDID's length
   uint16_t subLength = editorID.length()+1;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write editor ID
   output.write(editorID.c_str(), subLength);
 

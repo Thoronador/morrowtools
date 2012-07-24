@@ -91,7 +91,7 @@ uint32_t LeveledItemRecord::getWriteSize() const
 
 bool LeveledItemRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cLVLI, 4);
+  output.write((const char*) &cLVLI, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID

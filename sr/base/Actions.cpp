@@ -42,7 +42,7 @@ Actions& Actions::getSingleton()
 
 void Actions::addAction(const ActionRecord& record)
 {
-  if (record.editorID!="")
+  if (!record.editorID.empty())
   {
     m_Actions[record.editorID] = record;
   }

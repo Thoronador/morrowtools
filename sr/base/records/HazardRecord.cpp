@@ -88,14 +88,14 @@ uint32_t HazardRecord::getWriteSize() const
 
 bool HazardRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cHAZD, 4);
+  output.write((const char*) &cHAZD, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
   output.write((const char*) &cEDID, 4);
   //EDID's length
   uint16_t subLength = editorID.length()+1;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write editor ID
   output.write(editorID.c_str(), subLength);
 
@@ -103,7 +103,7 @@ bool HazardRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &cOBND, 4);
   //OBND's length
   subLength = 12; //fixed
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write OBND's stuff
   output.write((const char*) unknownOBND, 12);
 
@@ -113,7 +113,7 @@ bool HazardRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cFULL, 4);
     //FULL's length
     subLength = 4; // fixed
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write FULL
     output.write((const char*) &nameStringID, 4);
   }
@@ -124,7 +124,7 @@ bool HazardRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cMODL, 4);
     //EDID's length
     subLength = modelPath.length()+1;
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write model path
     output.write(modelPath.c_str(), subLength);
   }//if MODL
@@ -144,7 +144,7 @@ bool HazardRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cMNAM, 4);
     //MNAM's length
     subLength = 4; // fixed
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write MNAM
     output.write((const char*) &unknownMNAM, 4);
   }
@@ -153,7 +153,7 @@ bool HazardRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &cDATA, 4);
   //DATA's length
   subLength = 40; //fixed
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write DATA's stuff
   output.write((const char*) unknownDATA, 40);
 

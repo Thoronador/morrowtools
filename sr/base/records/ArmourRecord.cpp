@@ -187,7 +187,7 @@ uint32_t ArmourRecord::getWriteSize() const
 
 bool ArmourRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cARMO, 4);
+  output.write((const char*) &cARMO, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID

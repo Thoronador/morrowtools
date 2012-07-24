@@ -97,7 +97,7 @@ bool LandscapeRecord::equals(const LandscapeRecord& other) const
 
 bool LandscapeRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cLAND, 4);
+  output.write((const char*) &cLAND, 4);
   uint32_t Size;
   Size = 4 /* INTV */ +4 /* 4 bytes for length */ +8 /* size of INTV */
         +4 /* DATA */ +4 /* 4 bytes for length */ +4 /* size of DATA */;
@@ -122,9 +122,9 @@ bool LandscapeRecord::saveToStream(std::ofstream& output) const
   {
     Size = Size + 4 /* VTEX */ +4 /* 4 bytes for length */ +512 /* size of VTEX */;
   }
-  output.write((char*) &Size, 4);
-  output.write((char*) &HeaderOne, 4);
-  output.write((char*) &HeaderFlags, 4);
+  output.write((const char*) &Size, 4);
+  output.write((const char*) &HeaderOne, 4);
+  output.write((const char*) &HeaderFlags, 4);
   /*Landscape:
     INTV (8 bytes)
         long CellX }
@@ -160,58 +160,58 @@ bool LandscapeRecord::saveToStream(std::ofstream& output) const
         A 16x16 array of short texture indices (from a LTEX record I think). */
 
   //write INTV
-  output.write((char*) &cINTV, 4);
+  output.write((const char*) &cINTV, 4);
   uint32_t SubLength = 8; /* fixed size is eight bytes*/
   //write INTV's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write cell offsets
-  output.write((char*) &CellX, 4);
-  output.write((char*) &CellY, 4);
+  output.write((const char*) &CellX, 4);
+  output.write((const char*) &CellY, 4);
 
   //write DATA
-  output.write((char*) &cDATA, 4);
+  output.write((const char*) &cDATA, 4);
   SubLength = 4; //always four bytes
   //write DATA's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write unknown data
-  output.write((char*) &UnknownData, 4);
+  output.write((const char*) &UnknownData, 4);
 
   if (hasNormals)
   {
     //write VNML
-    output.write((char*) &cVNML, 4);
+    output.write((const char*) &cVNML, 4);
     SubLength = 12675; //always 12675 bytes
     //write VNML's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write normals
-    output.write((char*) &(Normals[0][0][0]), 65*65*3);
+    output.write((const char*) &(Normals[0][0][0]), 65*65*3);
   }
 
   if (hasHeightSubrecord)
   {
     //write VHGT
-    output.write((char*) &cVHGT, 4);
+    output.write((const char*) &cVHGT, 4);
     SubLength = 4232; //always 4232 bytes
     //write VHGT's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write height data
     // --- offset
-    output.write((char*) &HeightOffset, 4);
+    output.write((const char*) &HeightOffset, 4);
     // --- unknown byte
-    output.write((char*) &UnknownByte, 1);
+    output.write((const char*) &UnknownByte, 1);
     // --- the actual height data
-    output.write((char*) &(HeightData[0][0]), 65*65);
+    output.write((const char*) &(HeightData[0][0]), 65*65);
     // --- unknown short
-    output.write((char*) &UnknownShort, 2);
+    output.write((const char*) &UnknownShort, 2);
   }
 
   if (hasWNAMSubrecord)
   {
     //write WNAM
-    output.write((char*) &cWNAM, 4);
+    output.write((const char*) &cWNAM, 4);
     SubLength = 81; //always 81 bytes
     //write WNAM's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write WNAM
     output.write(Data, 81);
   }
@@ -219,23 +219,23 @@ bool LandscapeRecord::saveToStream(std::ofstream& output) const
   if (hasVertexColour)
   {
     //write VCLR
-    output.write((char*) &cVCLR, 4);
+    output.write((const char*) &cVCLR, 4);
     SubLength = 12675; //always 12675 bytes
     //write VNML's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write vertex colour
-    output.write((char*) &(VertexColour[0][0][0]), 65*65*3);
+    output.write((const char*) &(VertexColour[0][0][0]), 65*65*3);
   }
 
   if (hasVertexTextures)
   {
     //write VTEX
-    output.write((char*) &cVTEX, 4);
+    output.write((const char*) &cVTEX, 4);
     SubLength = 512; //always 512 bytes
     //write VTEX's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write vertex textures
-    output.write((char*) &(VertexTextures[0][0]), 16*16*2);
+    output.write((const char*) &(VertexTextures[0][0]), 16*16*2);
   }
 
   return output.good();

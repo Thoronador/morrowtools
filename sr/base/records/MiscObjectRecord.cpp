@@ -125,14 +125,14 @@ uint32_t MiscObjectRecord::getWriteSize() const
 
 bool MiscObjectRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cMISC, 4);
+  output.write((const char*) &cMISC, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
-  output.write((char*) &cEDID, 4);
+  output.write((const char*) &cEDID, 4);
   //EDID's length
   uint16_t subLength = editorID.length()+1;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write editor ID
   output.write(editorID.c_str(), subLength);
 
@@ -143,29 +143,29 @@ bool MiscObjectRecord::saveToStream(std::ofstream& output) const
   }
 
   //write OBND
-  output.write((char*) &cOBND, 4);
+  output.write((const char*) &cOBND, 4);
   //OBND's length
   subLength = 12; /* fixed length */
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write OBND's data
   output.write((const char*) unknownOBND, 12);
 
   if (hasFULL)
   {
     //write FULL
-    output.write((char*) &cFULL, 4);
+    output.write((const char*) &cFULL, 4);
     //FULL's length
     subLength = 4; /* fixed length */
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write FULL's data
     output.write((const char*) &fullNameStringID, 4);
   }//if hasFULL
 
   //write MODL
-  output.write((char*) &cMODL, 4);
+  output.write((const char*) &cMODL, 4);
   //MODL's length
   subLength = modelPath.length()+1;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write model path
   output.write(modelPath.c_str(), subLength);
 
@@ -181,10 +181,10 @@ bool MiscObjectRecord::saveToStream(std::ofstream& output) const
   if (!iconPath.empty())
   {
     //write ICON
-    output.write((char*) &cICON, 4);
+    output.write((const char*) &cICON, 4);
     //ICON's length
     subLength = iconPath.length()+1;
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write icon path
     output.write(iconPath.c_str(), subLength);
   }//if icon path present
@@ -192,19 +192,19 @@ bool MiscObjectRecord::saveToStream(std::ofstream& output) const
   if (!keywordArray.empty())
   {
     //write KSIZ
-    output.write((char*) &cKSIZ, 4);
+    output.write((const char*) &cKSIZ, 4);
     //KSIZ's length
     subLength = 4; /* fixed length */
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write KSIZ's data
     const uint32_t k_Size = keywordArray.size();
     output.write((const char*) &k_Size, 4);
 
     //write KWDA
-    output.write((char*) &cKWDA, 4);
+    output.write((const char*) &cKWDA, 4);
     //KWDA's length
     subLength = 4*k_Size;
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write KWDA's data
     uint32_t i;
     for (i=0; i<k_Size; ++i)
@@ -216,10 +216,10 @@ bool MiscObjectRecord::saveToStream(std::ofstream& output) const
   if (hasYNAM)
   {
     //write YNAM
-    output.write((char*) &cYNAM, 4);
+    output.write((const char*) &cYNAM, 4);
     //YNAM's length
     subLength = 4; /* fixed length */
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write YNAM's data
     output.write((const char*) &unknownYNAM, 4);
   }//if hasYNAM
@@ -227,19 +227,19 @@ bool MiscObjectRecord::saveToStream(std::ofstream& output) const
   if (hasZNAM)
   {
     //write ZNAM
-    output.write((char*) &cZNAM, 4);
+    output.write((const char*) &cZNAM, 4);
     //ZNAM's length
     subLength = 4; /* fixed length */
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write ZNAM's data
     output.write((const char*) &unknownZNAM, 4);
   }//if hasZNAM
 
   //write DATA
-  output.write((char*) &cDATA, 4);
+  output.write((const char*) &cDATA, 4);
   //DATA's length
   subLength = 8; /* fixed length */
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write DATA's data
   output.write((const char*) &value, 4);
   output.write((const char*) &weight, 4);

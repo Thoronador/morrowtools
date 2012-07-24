@@ -222,10 +222,10 @@ bool CellRecord::saveToStream(std::ofstream& output) const
   if (!editorID.empty())
   {
     //write EDID
-    output.write((char*) &cEDID, 4);
+    output.write((const char*) &cEDID, 4);
     //EDID's length
     subLength = editorID.length()+1;
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write editor ID
     output.write(editorID.c_str(), subLength);
   }
@@ -233,10 +233,10 @@ bool CellRecord::saveToStream(std::ofstream& output) const
   if (hasFULL)
   {
     //write FULL
-    output.write((char*) &cFULL, 4);
+    output.write((const char*) &cFULL, 4);
     //FULL's length
     subLength = 4; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write FULL
     output.write((const char*) &nameStringID, 4);
   }
@@ -280,10 +280,10 @@ bool CellRecord::saveToStream(std::ofstream& output) const
   if (gridLocation.presence)
   {
     //write XCLC
-    output.write((char*) &cXCLC, 4);
+    output.write((const char*) &cXCLC, 4);
     //XCLC's length
     subLength = 12; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write XCLC
     output.write((const char*) &(gridLocation.locationX), 4);
     output.write((const char*) &(gridLocation.locationY), 4);
@@ -301,40 +301,40 @@ bool CellRecord::saveToStream(std::ofstream& output) const
   }
 
   //write LTMP
-  output.write((char*) &cLTMP, 4);
+  output.write((const char*) &cLTMP, 4);
   //LTMP's length
   subLength = 4; //fixed size
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write LTMP
   output.write((const char*) &lightingTemplateFormID, 4);
 
   if (hasLNAM)
   {
     //write LNAM
-    output.write((char*) &cLNAM, 4);
+    output.write((const char*) &cLNAM, 4);
     //LNAM's length
     subLength = 4; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write LNAM
     output.write((const char*) &unknownLNAM, 4);
   }
 
   //write XCLW
-  output.write((char*) &cXCLW, 4);
+  output.write((const char*) &cXCLW, 4);
   //XCLW's length
   subLength = 4; //fixed size
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write XCLW
   output.write((const char*) &unknownXCLW, 4);
 
   if (!unknownXCLR.empty())
   {
     //write XCLR
-    output.write((char*) &cXCLR, 4);
+    output.write((const char*) &cXCLR, 4);
     //XCLR's length
     const unsigned int count = unknownXCLR.size();
     subLength = 4*count;
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write XCLR
     unsigned int i;
     for (i=0; i<count; ++i)
@@ -346,10 +346,10 @@ bool CellRecord::saveToStream(std::ofstream& output) const
   if (hasXNAM)
   {
     //write XNAM
-    output.write((char*) &cXNAM, 4);
+    output.write((const char*) &cXNAM, 4);
     //XNAM's length
     subLength = 1; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write XNAM
     output.write((const char*) &unknownXNAM, 1);
   }
@@ -357,10 +357,10 @@ bool CellRecord::saveToStream(std::ofstream& output) const
   if (locationFormID!=0)
   {
     //write XLCN
-    output.write((char*) &cXLCN, 4);
+    output.write((const char*) &cXLCN, 4);
     //XLCN's length
     subLength = 4; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write XLCN
     output.write((const char*) &locationFormID, 4);
   }
@@ -368,10 +368,10 @@ bool CellRecord::saveToStream(std::ofstream& output) const
   if (hasXWCN)
   {
     //write XWCN
-    output.write((char*) &cXWCN, 4);
+    output.write((const char*) &cXWCN, 4);
     //XWCN's length
     subLength = 4; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write XWCN
     output.write((const char*) &unknownXWCN, 4);
   }
@@ -379,10 +379,10 @@ bool CellRecord::saveToStream(std::ofstream& output) const
   if (hasXWCS)
   {
     //write XWCS
-    output.write((char*) &cXWCS, 4);
+    output.write((const char*) &cXWCS, 4);
     //XWCS's length
     subLength = 4; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write XWCS
     output.write((const char*) &unknownXWCS, 4);
   }
@@ -400,10 +400,10 @@ bool CellRecord::saveToStream(std::ofstream& output) const
   if (imageSpaceFormID!=0)
   {
     //write XCIM
-    output.write((char*) &cXCIM, 4);
+    output.write((const char*) &cXCIM, 4);
     //XCIM's length
     subLength = 4; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write XCIM
     output.write((const char*) &imageSpaceFormID, 4);
   }
@@ -411,10 +411,10 @@ bool CellRecord::saveToStream(std::ofstream& output) const
   if (encounterZoneFormID!=0)
   {
     //write XEZN
-    output.write((char*) &cXEZN, 4);
+    output.write((const char*) &cXEZN, 4);
     //XEZN's length
     subLength = 4; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write XEZN
     output.write((const char*) &encounterZoneFormID, 4);
   }
@@ -422,10 +422,10 @@ bool CellRecord::saveToStream(std::ofstream& output) const
   if (hasXCWT)
   {
     //write XCWT
-    output.write((char*) &cXCWT, 4);
+    output.write((const char*) &cXCWT, 4);
     //XCWT's length
     subLength = 4; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write XCWT
     output.write((const char*) &unknownXCWT, 4);
   }
@@ -433,10 +433,10 @@ bool CellRecord::saveToStream(std::ofstream& output) const
   if (musicTypeFormID!=0)
   {
     //write XCMO
-    output.write((char*) &cXCMO, 4);
+    output.write((const char*) &cXCMO, 4);
     //XCMO's length
     subLength = 4; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write XCMO
     output.write((const char*) &musicTypeFormID, 4);
   }
@@ -444,10 +444,10 @@ bool CellRecord::saveToStream(std::ofstream& output) const
   if (!unknownXWEM.empty())
   {
     //write XWEM
-    output.write((char*) &cXWEM, 4);
+    output.write((const char*) &cXWEM, 4);
     //XWEM's length
     subLength = unknownXWEM.length()+1;
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write XWEM path
     output.write(unknownXWEM.c_str(), subLength);
   }
@@ -455,10 +455,10 @@ bool CellRecord::saveToStream(std::ofstream& output) const
   if (ownerFactionFormID!=0)
   {
     //write XOWN
-    output.write((char*) &cXOWN, 4);
+    output.write((const char*) &cXOWN, 4);
     //XOWN's length
     subLength = 4; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write XOWN
     output.write((const char*) &ownerFactionFormID, 4);
   }
@@ -466,10 +466,10 @@ bool CellRecord::saveToStream(std::ofstream& output) const
   if (lockListFormID!=0)
   {
     //write XILL
-    output.write((char*) &cXILL, 4);
+    output.write((const char*) &cXILL, 4);
     //XILL's length
     subLength = 4; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write XILL
     output.write((const char*) &lockListFormID, 4);
   }
@@ -477,10 +477,10 @@ bool CellRecord::saveToStream(std::ofstream& output) const
   if (regionFormID!=0)
   {
     //write XCCM
-    output.write((char*) &cXCCM, 4);
+    output.write((const char*) &cXCCM, 4);
     //XCCM's length
     subLength = 4; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write XCCM
     output.write((const char*) &regionFormID, 4);
   }
@@ -488,10 +488,10 @@ bool CellRecord::saveToStream(std::ofstream& output) const
   if (defaultAcousticSpaceFormID!=0)
   {
     //write XCAS
-    output.write((char*) &cXCAS, 4);
+    output.write((const char*) &cXCAS, 4);
     //XCAS's length
     subLength = 4; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write XCAS
     output.write((const char*) &defaultAcousticSpaceFormID, 4);
   }

@@ -135,7 +135,7 @@ bool RegionRecord::saveToStream(std::ofstream& output, const bool forceBloodmoon
   //NAME's length
   uint32_t SubLength;
   SubLength = recordID.length()+1;//length of string plus one for NUL-termination
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write ID
   output.write(recordID.c_str(), SubLength);
 

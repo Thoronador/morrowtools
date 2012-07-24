@@ -42,7 +42,7 @@ Keywords& Keywords::getSingleton()
 
 void Keywords::addKeyword(const KeywordRecord& record)
 {
-  if (record.editorID!="")
+  if (!record.editorID.empty())
   {
     m_Keywords[record.editorID] = record;
   }

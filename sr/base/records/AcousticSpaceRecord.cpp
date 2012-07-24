@@ -84,28 +84,28 @@ bool AcousticSpaceRecord::saveToStream(std::ofstream& output) const
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
-  output.write((char*) &cEDID, 4);
+  output.write((const char*) &cEDID, 4);
   //EDID's length
   uint16_t subLength = editorID.length()+1;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write editor ID
   output.write(editorID.c_str(), subLength);
 
   //write OBND
-  output.write((char*) &cOBND, 4);
+  output.write((const char*) &cOBND, 4);
   //OBND's length
   subLength = 12;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write OBND
   output.write((const char*) unknownOBND, 12);
 
   if (hasSNAM)
   {
     //write SNAM
-    output.write((char*) &cSNAM, 4);
+    output.write((const char*) &cSNAM, 4);
     //SNAM's length
     subLength = 4; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write SNAM
     output.write((const char*) &unknownSNAM, 4);
   }//if has SNAM subrecord
@@ -113,10 +113,10 @@ bool AcousticSpaceRecord::saveToStream(std::ofstream& output) const
   if (hasRDAT)
   {
     //write RDAT
-    output.write((char*) &cRDAT, 4);
+    output.write((const char*) &cRDAT, 4);
     //RDAT's length
     subLength = 4; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write RDAT
     output.write((const char*) &unknownRDAT, 4);
   }//if has RDAT subrecord
@@ -124,10 +124,10 @@ bool AcousticSpaceRecord::saveToStream(std::ofstream& output) const
   if (hasBNAM)
   {
     //write BNAM
-    output.write((char*) &cBNAM, 4);
+    output.write((const char*) &cBNAM, 4);
     //BNAM's length
     subLength = 4; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write BNAM
     output.write((const char*) &unknownBNAM, 4);
   }//if has BNAM subrecord

@@ -166,7 +166,7 @@ bool CreatureRecord::saveToStream(std::ofstream& output) const
       case ptEscort:
       case ptFollow:
            Size = Size + 4 /* AI_E / AI_F */ + 4 /* 4 bytes for length */ +48 /* fixed length of 48 bytes */;
-           if (static_cast<NPC_AIEscortFollow*>(AIPackages[i])->CellName!="")
+           if (!static_cast<NPC_AIEscortFollow*>(AIPackages[i])->CellName.empty())
            {
              Size = Size +4 /* CNDT */ +4 /* 4 bytes for length */
                     +static_cast<NPC_AIEscortFollow*>(AIPackages[i])->CellName.length()+1 /* length of cell name +1 byte for NUL */;

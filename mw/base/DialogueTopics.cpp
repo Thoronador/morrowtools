@@ -42,7 +42,7 @@ DialogueTopics& DialogueTopics::getSingleton()
 
 void DialogueTopics::addDialogueTopic(const DialogueTopicRecord& record)
 {
-  if (record.DialogueID!="")
+  if (!record.DialogueID.empty())
   {
     m_DialogueTopics[record.DialogueID] = record;
   }

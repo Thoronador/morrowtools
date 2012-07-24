@@ -66,7 +66,7 @@ uint32_t LightingTemplateRecord::getWriteSize() const
 
 bool LightingTemplateRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cLGTM, 4);
+  output.write((const char*) &cLGTM, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID

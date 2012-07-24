@@ -76,34 +76,34 @@ uint32_t WordOfPowerRecord::getWriteSize() const
 
 bool WordOfPowerRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cWOOP, 4);
+  output.write((const char*) &cWOOP, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
   //write EDID
-  output.write((char*) &cEDID, 4);
+  output.write((const char*) &cEDID, 4);
   //EDID's length
   uint16_t subLength = editorID.length()+1;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write editor ID
   output.write(editorID.c_str(), subLength);
 
   if (hasFULL)
   {
     //write FULL
-    output.write((char*) &cFULL, 4);
+    output.write((const char*) &cFULL, 4);
     //FULL's length
     subLength = 4;
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write FULL's data
-    output.write((char*) &nameStringID, 4);
+    output.write((const char*) &nameStringID, 4);
   }
 
   //write TNAM
-  output.write((char*) &cTNAM, 4);
+  output.write((const char*) &cTNAM, 4);
   //TNAM's length
   subLength = 4; /* fixed size */
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write TNAM's data
-  output.write((char*) &translatedStringID, 4);
+  output.write((const char*) &translatedStringID, 4);
 
   return output.good();
 }

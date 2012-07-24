@@ -77,7 +77,7 @@ uint32_t DialogViewRecord::getWriteSize() const
 
 bool DialogViewRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cDLVW, 4);
+  output.write((const char*) &cDLVW, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID

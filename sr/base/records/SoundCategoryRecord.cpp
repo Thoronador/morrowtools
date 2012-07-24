@@ -80,7 +80,7 @@ uint32_t SoundCategoryRecord::getWriteSize() const
 
 bool SoundCategoryRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cSNCT, 4);
+  output.write((const char*) &cSNCT, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID

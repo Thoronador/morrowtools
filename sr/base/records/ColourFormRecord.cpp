@@ -74,7 +74,7 @@ bool ColourFormRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &cEDID, 4);
   //EDID's length
   uint16_t subLength = editorID.length()+1;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write editor ID
   output.write(editorID.c_str(), subLength);
 
@@ -84,7 +84,7 @@ bool ColourFormRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cFULL, 4);
     //FULL's length
     subLength = 4;
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write FULL's data
     output.write((const char*) &nameStringID, 4);
   }//if has FULL
@@ -93,7 +93,7 @@ bool ColourFormRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &cCNAM, 4);
   //CNAM's length
   subLength = 4;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write CNAM's data
   output.write((const char*) &unknownCNAM, 4);
 
@@ -101,7 +101,7 @@ bool ColourFormRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &cFNAM, 4);
   //FNAM's length
   subLength = 4;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write FNAM's data
   output.write((const char*) &unknownFNAM, 4);
 

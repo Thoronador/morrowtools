@@ -71,40 +71,40 @@ uint32_t EyeRecord::getWriteSize() const
 
 bool EyeRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cEYES, 4);
+  output.write((const char*) &cEYES, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
-  output.write((char*) &cEDID, 4);
+  output.write((const char*) &cEDID, 4);
   //EDID's length
   uint16_t subLength = editorID.length()+1;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write editor ID
   output.write(editorID.c_str(), subLength);
 
   //write FULL
-  output.write((char*) &cFULL, 4);
+  output.write((const char*) &cFULL, 4);
   //FULL's length
   subLength = 4;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write FULL's data
-  output.write((char*) &nameStringID, 4);
+  output.write((const char*) &nameStringID, 4);
 
   //write ICON
-  output.write((char*) &cICON, 4);
+  output.write((const char*) &cICON, 4);
   //ICON's length
   subLength = iconPath.length()+1;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write icon path
   output.write(iconPath.c_str(), subLength);
 
   //write DATA
-  output.write((char*) &cDATA, 4);
+  output.write((const char*) &cDATA, 4);
   //DATA's length
   subLength = 1;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write DATA's content
-  output.write((char*) &flags, 1);
+  output.write((const char*) &flags, 1);
 
   return output.good();
 }

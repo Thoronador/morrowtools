@@ -45,14 +45,14 @@ bool DialogueTopicRecord::equals(const DialogueTopicRecord& other) const
 
 bool DialogueTopicRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cDIAL, 4);
+  output.write((const char*) &cDIAL, 4);
   uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
         +DialogueID.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* DATA */ +4 /* 4 bytes for length */ +1 /* fixed length of one byte */;
-  output.write((char*) &Size, 4);
-  output.write((char*) &HeaderOne, 4);
-  output.write((char*) &HeaderFlags, 4);
+  output.write((const char*) &Size, 4);
+  output.write((const char*) &HeaderOne, 4);
+  output.write((const char*) &HeaderFlags, 4);
 
   /*Dialogue topic (including journals)
 	NAME = Dialogue ID string
@@ -67,20 +67,20 @@ bool DialogueTopicRecord::saveToStream(std::ofstream& output) const
   */
 
   //write NAME
-  output.write((char*) &cNAME, 4);
+  output.write((const char*) &cNAME, 4);
   uint32_t SubLength = DialogueID.length()+1;
   //write NAME's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write ID
   output.write(DialogueID.c_str(), SubLength);
 
   //write DATA
-  output.write((char*) &cDATA, 4);
+  output.write((const char*) &cDATA, 4);
   SubLength = 1;
   //write DATA's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write data
-  output.write((char*) &Type, 1);
+  output.write((const char*) &Type, 1);
 
   return output.good();
 }

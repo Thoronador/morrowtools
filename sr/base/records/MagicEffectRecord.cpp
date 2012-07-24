@@ -100,10 +100,10 @@ bool MagicEffectRecord::saveToStream(std::ofstream& output) const
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
-  output.write((char*) &cEDID, 4);
+  output.write((const char*) &cEDID, 4);
   //EDID's length
   uint16_t subLength = editorID.length()+1;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write editor ID
   output.write(editorID.c_str(), subLength);
 
@@ -120,10 +120,10 @@ bool MagicEffectRecord::saveToStream(std::ofstream& output) const
   if (hasFULL)
   {
     //write FULL
-    output.write((char*) &cFULL, 4);
+    output.write((const char*) &cFULL, 4);
     //FULL's length
     subLength = 4;
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write FULL
     output.write((const char*) &fullNameStringID, 4);
   }//if has FULL subrecord
@@ -131,10 +131,10 @@ bool MagicEffectRecord::saveToStream(std::ofstream& output) const
   if (hasMDOB)
   {
     //write MDOB
-    output.write((char*) &cMDOB, 4);
+    output.write((const char*) &cMDOB, 4);
     //MDOB's length
     subLength = 4;
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write MDOB
     output.write((const char*) &unknownMDOB, 4);
   }//if MDOB present
@@ -143,19 +143,19 @@ bool MagicEffectRecord::saveToStream(std::ofstream& output) const
   if (!keywordArray.empty())
   {
     //write KSIZ
-    output.write((char*) &cKSIZ, 4);
+    output.write((const char*) &cKSIZ, 4);
     //KSIZ's length
     subLength = 4; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write keyword size
     const uint32_t k_Size = keywordArray.size();
     output.write((const char*) &k_Size, 4);
 
     //write KWDA
-    output.write((char*) &cKWDA, 4);
+    output.write((const char*) &cKWDA, 4);
     //KWDA's length
     subLength = 4*k_Size; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write actual data
     for (i=0; i<k_Size; ++i)
     {
@@ -186,10 +186,10 @@ bool MagicEffectRecord::saveToStream(std::ofstream& output) const
   }
 
   //write DNAM
-  output.write((char*) &cDNAM, 4);
+  output.write((const char*) &cDNAM, 4);
   //DNAM's length
   subLength = 4;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write DNAM
   output.write((const char*) &descriptionStringID, 4);
 
@@ -197,10 +197,10 @@ bool MagicEffectRecord::saveToStream(std::ofstream& output) const
   for (i=0; i<unknownCTDAs.size(); ++i)
   {
     //write CTDA
-    output.write((char*) &cCTDA, 4);
+    output.write((const char*) &cCTDA, 4);
     //CTDA's length
     subLength = 32;
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write CTDA
     output.write((const char*) (unknownCTDAs[i].content), 32);
   }//for

@@ -119,7 +119,7 @@ uint32_t WaterTypeRecord::getWriteSize() const
 
 bool WaterTypeRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cWATR, 4);
+  output.write((const char*) &cWATR, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID

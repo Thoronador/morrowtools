@@ -68,7 +68,7 @@ uint32_t ApparatusRecord::getWriteSize() const
 
 bool ApparatusRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cAPPA, 4);
+  output.write((const char*) &cAPPA, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID

@@ -80,36 +80,36 @@ bool AssociationTypeRecord::saveToStream(std::ofstream& output) const
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
-  output.write((char*) &cEDID, 4);
+  output.write((const char*) &cEDID, 4);
   //EDID's length
   uint16_t subLength = editorID.length()+1;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write editor ID
   output.write(editorID.c_str(), subLength);
 
   //write MPRT
-  output.write((char*) &cMPRT, 4);
+  output.write((const char*) &cMPRT, 4);
   //MPRT's length
   subLength = maleParentType.length()+1;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write m. parent
   output.write(maleParentType.c_str(), subLength);
 
   //write FPRT
-  output.write((char*) &cFPRT, 4);
+  output.write((const char*) &cFPRT, 4);
   //FPRT's length
   subLength = femaleParentType.length()+1;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write f. parent
   output.write(femaleParentType.c_str(), subLength);
 
   if (!maleChildType.empty())
   {
     //write MCHT
-    output.write((char*) &cMCHT, 4);
+    output.write((const char*) &cMCHT, 4);
     //MCHT's length
     subLength = maleChildType.length()+1;
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write m. child
     output.write(maleChildType.c_str(), subLength);
   }//if male child
@@ -117,19 +117,19 @@ bool AssociationTypeRecord::saveToStream(std::ofstream& output) const
   if (!femaleChildType.empty())
   {
     //write FCHT
-    output.write((char*) &cFCHT, 4);
+    output.write((const char*) &cFCHT, 4);
     //FCHT's length
     subLength = femaleChildType.length()+1;
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write f. child
     output.write(femaleChildType.c_str(), subLength);
   }//if female child
 
   //write DATA
-  output.write((char*) &cDATA, 4);
+  output.write((const char*) &cDATA, 4);
   //DATA's length
   subLength = 4; //fixed size
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write DATA's stuff
   output.write((const char*) &unknownDATA, 4);
 

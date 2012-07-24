@@ -76,21 +76,21 @@ uint32_t GlobalRecord::getWriteSize() const
 
 bool GlobalRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cGLOB, 4);
+  output.write((const char*) &cGLOB, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
   //write EDID
-  output.write((char*) &cEDID, 4);
+  output.write((const char*) &cEDID, 4);
   //EDID's length
   uint16_t subLength = editorID.length()+1;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write EDID's stuff
   output.write(editorID.c_str(), subLength);
 
   //write FNAM
-  output.write((char*) &cFNAM, 4);
+  output.write((const char*) &cFNAM, 4);
   //FNAM's length
   subLength = 1; /* fixed size */
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write FNAM's stuff
   char outChar = '\0';
   float outFloat = 0.0f;
@@ -112,12 +112,12 @@ bool GlobalRecord::saveToStream(std::ofstream& output) const
   output.write(&outChar, 1);
 
   //write FLTV
-  output.write((char*) &cFLTV, 4);
+  output.write((const char*) &cFLTV, 4);
   //FLTV's length
   subLength = 4; /* fixed size */
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write FLTV's value
-  output.write((char*) &outFloat, 4);
+  output.write((const char*) &outFloat, 4);
 
   return output.good();
 }

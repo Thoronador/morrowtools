@@ -82,7 +82,7 @@ uint32_t PerkRecord::getWriteSize() const
 
 bool PerkRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cPERK, 4);
+  output.write((const char*) &cPERK, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID

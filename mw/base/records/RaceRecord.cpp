@@ -429,7 +429,7 @@ bool RaceRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &(Weight[0]), 4);
   output.write((const char*) &(Weight[1]), 4);
   // ---- flags
-  output.write((char*) &RaceFlags, 4);
+  output.write((const char*) &RaceFlags, 4);
 
   //write powers
   for (i=0; i<Powers.size(); ++i)

@@ -110,7 +110,7 @@ uint32_t SoundDescriptorRecord::getWriteSize() const
 
 bool SoundDescriptorRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cSNDR, 4);
+  output.write((const char*) &cSNDR, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID

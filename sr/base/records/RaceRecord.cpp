@@ -124,7 +124,7 @@ uint32_t RaceRecord::getWriteSize() const
 
 bool RaceRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cRACE, 4);
+  output.write((const char*) &cRACE, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID

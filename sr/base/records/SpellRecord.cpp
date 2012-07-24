@@ -90,7 +90,7 @@ uint32_t SpellRecord::getWriteSize() const
 
 bool SpellRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cSPEL, 4);
+  output.write((const char*) &cSPEL, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID

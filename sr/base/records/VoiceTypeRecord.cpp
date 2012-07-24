@@ -60,7 +60,7 @@ uint32_t VoiceTypeRecord::getWriteSize() const
 
 bool VoiceTypeRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cVTYP, 4);
+  output.write((const char*) &cVTYP, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID

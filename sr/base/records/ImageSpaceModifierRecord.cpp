@@ -108,7 +108,7 @@ uint32_t ImageSpaceModifierRecord::getWriteSize() const
 
 bool ImageSpaceModifierRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cIMAD, 4);
+  output.write((const char*) &cIMAD, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
   if (isDeleted()) return true;
 

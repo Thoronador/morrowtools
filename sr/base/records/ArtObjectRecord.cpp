@@ -75,26 +75,26 @@ bool ArtObjectRecord::saveToStream(std::ofstream& output) const
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
-  output.write((char*) &cEDID, 4);
+  output.write((const char*) &cEDID, 4);
   //EDID's length
   uint16_t subLength = editorID.length()+1;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write editor ID
   output.write(editorID.c_str(), subLength);
 
   //write OBND
-  output.write((char*) &cOBND, 4);
+  output.write((const char*) &cOBND, 4);
   //OBND's length
   subLength = 12;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write OBND
   output.write((const char*) unknownOBND, 12);
 
   //write MODL
-  output.write((char*) &cMODL, 4);
+  output.write((const char*) &cMODL, 4);
   //MODL's length
   subLength = modelPath.length()+1;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write model path
   output.write(modelPath.c_str(), subLength);
 
@@ -109,10 +109,10 @@ bool ArtObjectRecord::saveToStream(std::ofstream& output) const
   }//if MODT
 
   //write DNAM
-  output.write((char*) &cDNAM, 4);
+  output.write((const char*) &cDNAM, 4);
   //DNAM's length
   subLength = 4; //fixed size
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write DNAM
   output.write((const char*) &unknownDNAM, 4);
 

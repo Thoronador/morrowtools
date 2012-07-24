@@ -84,7 +84,7 @@ uint32_t AddOnNodeRecord::getWriteSize() const
 
 bool AddOnNodeRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cADDN, 4);
+  output.write((const char*) &cADDN, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID

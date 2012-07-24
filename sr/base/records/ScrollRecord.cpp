@@ -103,7 +103,7 @@ uint32_t ScrollRecord::getWriteSize() const
 
 bool ScrollRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cSCRL, 4);
+  output.write((const char*) &cSCRL, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID

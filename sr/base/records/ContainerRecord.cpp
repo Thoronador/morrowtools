@@ -110,7 +110,7 @@ uint32_t ContainerRecord::getWriteSize() const
 
 bool ContainerRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cCONT, 4);
+  output.write((const char*) &cCONT, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID

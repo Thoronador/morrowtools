@@ -109,11 +109,11 @@ uint32_t GenericRecord::getWriteSize() const
 bool GenericRecord::saveToStream(std::ofstream& output) const
 {
   //record header
-  output.write((char*) &Header, 4);
+  output.write((const char*) &Header, 4);
   //record size and unknown values
   if (!saveSizeAndUnknownValues(output, m_DataSize)) return false;
   //write the real data
-  output.write((char*) m_Data, m_DataSize);
+  output.write((const char*) m_Data, m_DataSize);
   return output.good();
 }
 #endif

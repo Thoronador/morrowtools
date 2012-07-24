@@ -343,7 +343,7 @@ bool WeaponRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &cEDID, 4);
   //EDID's length
   uint16_t subLength = editorID.length()+1;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write editor ID
   output.write(editorID.c_str(), subLength);
 
@@ -360,7 +360,7 @@ bool WeaponRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &cOBND, 4);
   //OBND's length
   subLength = 12;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write OBND
   output.write((const char*) unknownOBND, 12);
 
@@ -370,7 +370,7 @@ bool WeaponRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cFULL, 4);
     //FULL's length
     subLength = 4; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write FULL
     output.write((const char*) &nameStringID, 4);
   }//if has FULL subrecord
@@ -379,7 +379,7 @@ bool WeaponRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &cMODL, 4);
   //MODL's length
   subLength = modelPath.length()+1;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write model path
   output.write(modelPath.c_str(), subLength);
 
@@ -409,7 +409,7 @@ bool WeaponRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cEITM, 4);
     //EITM's length
     subLength = 4; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write EITM
     output.write((const char*) &unknownEITM, 4);
   }//if has EITM subrecord
@@ -420,7 +420,7 @@ bool WeaponRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cEAMT, 4);
     //EAMT's length
     subLength = 4; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write EAMT
     output.write((const char*) &unknownEAMT, 4);
   }//if has EAMT subrecord
@@ -431,7 +431,7 @@ bool WeaponRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cETYP, 4);
     //ETYP's length
     subLength = 4; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write ETYP
     output.write((const char*) &unknownETYP, 4);
   }//if has ETYP subrecord
@@ -442,7 +442,7 @@ bool WeaponRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cBIDS, 4);
     //BIDS's length
     subLength = 4; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write BIDS
     output.write((const char*) &unknownBIDS, 4);
   }//if has BIDS subrecord
@@ -453,7 +453,7 @@ bool WeaponRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cBAMT, 4);
     //BAMT's length
     subLength = 4; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write BAMT
     output.write((const char*) &unknownBAMT, 4);
   }//if has BAMT subrecord
@@ -473,7 +473,7 @@ bool WeaponRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cKWDA, 4);
     //KWDA's length
     subLength = 4*k_Size; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write actual data
     uint32_t i;
     for (i=0; i<k_Size; ++i)
@@ -486,7 +486,7 @@ bool WeaponRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &cDESC, 4);
   //DESC's length
   subLength = 4; //fixed size
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write DESC
   output.write((const char*) &descriptionStringID, 4);
 
@@ -496,7 +496,7 @@ bool WeaponRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cNNAM, 4);
     //KWDA's length
     subLength = unknownNNAM.length()+1; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write actual data
     output.write((const char*) unknownNNAM.c_str(), subLength);
   }//if NNAM
@@ -507,7 +507,7 @@ bool WeaponRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cINAM, 4);
     //INAM's length
     subLength = 4; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write INAM
     output.write((const char*) &unknownINAM, 4);
   }//if has INAM subrecord
@@ -518,7 +518,7 @@ bool WeaponRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cWNAM, 4);
     //WNAM's length
     subLength = 4; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write WNAM
     output.write((const char*) &unknownWNAM, 4);
   }//if has WNAM subrecord
@@ -529,7 +529,7 @@ bool WeaponRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cTNAM, 4);
     //TNAM's length
     subLength = 4; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write TNAM
     output.write((const char*) &unknownTNAM, 4);
   }//if has TNAM subrecord
@@ -540,7 +540,7 @@ bool WeaponRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cUNAM, 4);
     //UNAM's length
     subLength = 4; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write UNAM
     output.write((const char*) &unknownUNAM, 4);
   }//if has UNAM subrecord
@@ -551,7 +551,7 @@ bool WeaponRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cNAM9, 4);
     //NAM9's length
     subLength = 4; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write NAM9
     output.write((const char*) &unknownNAM9, 4);
   }//if has NAM9 subrecord
@@ -562,7 +562,7 @@ bool WeaponRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cNAM8, 4);
     //NAM8's length
     subLength = 4; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write NAM8
     output.write((const char*) &unknownNAM8, 4);
   }//if has NAM8 subrecord
@@ -573,7 +573,7 @@ bool WeaponRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cSNAM, 4);
     //SNAM's length
     subLength = 4; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write SNAM
     output.write((const char*) &unknownSNAM, 4);
   }//if has SNAM subrecord
@@ -582,7 +582,7 @@ bool WeaponRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &cDATA, 4);
   //DATA's length
   subLength = 10;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write DATA
   output.write((const char*) &value, 4);
   output.write((const char*) &weight, 4);
@@ -592,7 +592,7 @@ bool WeaponRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &cDNAM, 4);
   //DNAM's length
   subLength = 100;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write DNAM
   output.write((const char*) unknownDNAM, 100);
 
@@ -600,7 +600,7 @@ bool WeaponRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &cCRDT, 4);
   //CRDT's length
   subLength = 16;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write CRDT
   output.write((const char*) unknownCRDT, 16);
 
@@ -608,7 +608,7 @@ bool WeaponRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &cVNAM, 4);
   //VNAM's length
   subLength = 4; //fixed size
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write VNAM
   output.write((const char*) &unknownVNAM, 4);
 
@@ -618,7 +618,7 @@ bool WeaponRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cCNAM, 4);
     //CNAM's length
     subLength = 4; //fixed size
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write CNAM
     output.write((const char*) &unknownCNAM, 4);
   }//if has CNAM subrecord

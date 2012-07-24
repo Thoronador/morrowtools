@@ -89,38 +89,38 @@ uint32_t GMSTRecord::getWriteSize() const
 
 bool GMSTRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cGMST, 4);
+  output.write((const char*) &cGMST, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
   //write EDID
-  output.write((char*) &cEDID, 4);
+  output.write((const char*) &cEDID, 4);
   //EDID's length
   uint16_t SubLength = m_SettingName.length()+1;
-  output.write((char*) &SubLength, 2);
+  output.write((const char*) &SubLength, 2);
   //write EDID's stuff
   output.write(m_SettingName.c_str(), SubLength);
   //write DATA
-  output.write((char*) &cEDID, 4);
+  output.write((const char*) &cEDID, 4);
 
   switch (m_Type)
   {
     case gtInteger:
          //DATA's length
          SubLength = 4; /* fixed length */
-         output.write((char*) &SubLength, 2);
+         output.write((const char*) &SubLength, 2);
          //write DATA's stuff
-         output.write((char*)&m_IntValue, 4);
+         output.write((const char*)&m_IntValue, 4);
          break;
     case gtFloat:
          //DATA's length
          SubLength = 4; /* fixed length */
-         output.write((char*) &SubLength, 2);
+         output.write((const char*) &SubLength, 2);
          //write DATA's stuff
-         output.write((char*)&m_FloatValue, 4);
+         output.write((const char*)&m_FloatValue, 4);
          break;
     case gtString:
          //DATA's length
          SubLength = m_StringValue.length()+1;
-         output.write((char*) &SubLength, 2);
+         output.write((const char*) &SubLength, 2);
          //write DATA's stuff
          output.write(m_SettingName.c_str(), SubLength);
          break;

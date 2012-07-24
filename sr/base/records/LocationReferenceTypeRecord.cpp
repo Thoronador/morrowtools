@@ -67,7 +67,7 @@ uint32_t LocationReferenceTypeRecord::getWriteSize() const
 
 bool LocationReferenceTypeRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cLCRT, 4);
+  output.write((const char*) &cLCRT, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID

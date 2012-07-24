@@ -142,7 +142,7 @@ uint32_t CombatStyleRecord::getWriteSize() const
 
 bool CombatStyleRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cCSTY, 4);
+  output.write((const char*) &cCSTY, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID

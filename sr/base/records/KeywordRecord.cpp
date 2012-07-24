@@ -73,13 +73,13 @@ uint32_t KeywordRecord::getWriteSize() const
 
 bool KeywordRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cKYWD, 4);
+  output.write((const char*) &cKYWD, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
   //write EDID
-  output.write((char*) &cEDID, 4);
+  output.write((const char*) &cEDID, 4);
   //HEDR's length
   uint16_t subLength = editorID.length()+1;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write editor ID
   output.write(editorID.c_str(), subLength);
   if (!output.good())
@@ -91,12 +91,12 @@ bool KeywordRecord::saveToStream(std::ofstream& output) const
   if (hasCNAM)
   {
     //write CNAM
-    output.write((char*) &cCNAM, 4);
+    output.write((const char*) &cCNAM, 4);
     //CNAM's length
     subLength = 4; /* fixed length of four bytes */
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write CNAM stuff
-    output.write((char*) &unknownCNAM, 4);
+    output.write((const char*) &unknownCNAM, 4);
   }
 
   return output.good();

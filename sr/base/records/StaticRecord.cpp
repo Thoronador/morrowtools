@@ -87,32 +87,32 @@ uint32_t StaticRecord::getWriteSize() const
 
 bool StaticRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cSTAT, 4);
+  output.write((const char*) &cSTAT, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
-  output.write((char*) &cEDID, 4);
+  output.write((const char*) &cEDID, 4);
   //EDID's length
   uint16_t subLength = editorID.length()+1;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write editor ID
   output.write(editorID.c_str(), subLength);
 
   //write OBND
-  output.write((char*) &cOBND, 4);
+  output.write((const char*) &cOBND, 4);
   //OBND's length
   subLength = 12; //fixed
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write OBND's data
   output.write((const char*) unknownOBND, 12);
 
   if (!modelPath.empty())
   {
     //write MODL
-    output.write((char*) &cMODL, 4);
+    output.write((const char*) &cMODL, 4);
     //path's length
     subLength = modelPath.length()+1;
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write model path
     output.write(modelPath.c_str(), subLength);
   }//if MODL
@@ -138,10 +138,10 @@ bool StaticRecord::saveToStream(std::ofstream& output) const
   }//if MODS
 
   //write DNAM
-  output.write((char*) &cDNAM, 4);
+  output.write((const char*) &cDNAM, 4);
   //DNAM's length
   subLength = 8; //fixed
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write DNAM's data
   output.write((const char*) unknownDNAM, 8);
 

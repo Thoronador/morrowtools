@@ -57,22 +57,22 @@ uint32_t RelationshipRecord::getWriteSize() const
 
 bool RelationshipRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cRELA, 4);
+  output.write((const char*) &cRELA, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
-  output.write((char*) &cEDID, 4);
+  output.write((const char*) &cEDID, 4);
   //EDID's length
   uint16_t subLength = editorID.length()+1;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write editor ID
   output.write(editorID.c_str(), subLength);
 
   //write DATA
-  output.write((char*) &cDATA, 4);
+  output.write((const char*) &cDATA, 4);
   //DATA's length
   subLength = 16; //fixed size
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write DATA's stuff
   output.write((const char*) &unknownDATA[0], 4);
   output.write((const char*) &unknownDATA[1], 4);

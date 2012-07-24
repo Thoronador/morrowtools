@@ -221,7 +221,7 @@ uint32_t WorldSpaceRecord::getWriteSize() const
 
 bool WorldSpaceRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cWRLD, 4);
+  output.write((const char*) &cWRLD, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
   if (isDeleted()) return true;
 
@@ -229,7 +229,7 @@ bool WorldSpaceRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &cEDID, 4);
   //EDID's length
   uint16_t subLength = editorID.length()+1;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write editor ID
   output.write(editorID.c_str(), subLength);
 
@@ -263,7 +263,7 @@ bool WorldSpaceRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cFULL, 4);
     //FULL's length
     subLength = 4; // fixed
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write FULL
     output.write((const char*) &nameStringID, 4);
   }
@@ -274,7 +274,7 @@ bool WorldSpaceRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cWCTR, 4);
     //WCTR's length
     subLength = 4; // fixed
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write WCTR
     output.write((const char*) &centerCellX, 2);
     output.write((const char*) &centerCellY, 2);
@@ -286,7 +286,7 @@ bool WorldSpaceRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cLTMP, 4);
     //LTMP's length
     subLength = 4; // fixed
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write LTMP
     output.write((const char*) &interiorLightingFormID, 4);
   }//if LTMP
@@ -297,7 +297,7 @@ bool WorldSpaceRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cXEZN, 4);
     //XEZN's length
     subLength = 4; // fixed
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write XEZN
     output.write((const char*) &encounterZoneFormID, 4);
   }//if XEZN
@@ -308,7 +308,7 @@ bool WorldSpaceRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cCNAM, 4);
     //CNAM's length
     subLength = 4; // fixed
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write CNAM
     output.write((const char*) &unknownCNAM, 4);
   }//if CNAM
@@ -319,7 +319,7 @@ bool WorldSpaceRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cNAM2, 4);
     //NAM2's length
     subLength = 4; // fixed
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write NAM2
     output.write((const char*) &unknownNAM2, 4);
   }//if NAM2
@@ -330,7 +330,7 @@ bool WorldSpaceRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cNAM3, 4);
     //NAM3's length
     subLength = 4; // fixed
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write NAM3
     output.write((const char*) &unknownNAM3, 4);
   }//if NAM3
@@ -341,7 +341,7 @@ bool WorldSpaceRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cNAM4, 4);
     //NAM4's length
     subLength = 4; // fixed
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write NAM4
     output.write((const char*) &unknownNAM4, 4);
   }//if NAM4
@@ -352,7 +352,7 @@ bool WorldSpaceRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cDNAM, 4);
     //DNAM's length
     subLength = 8; // fixed
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write DNAM
     output.write((const char*) &unknownDNAM, 8);
   }//if DNAM
@@ -373,7 +373,7 @@ bool WorldSpaceRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cXLCN, 4);
     //XLCN's length
     subLength = 4; // fixed
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write XLCN
     output.write((const char*) &locationFormID, 4);
   }
@@ -384,7 +384,7 @@ bool WorldSpaceRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cWNAM, 4);
     //WNAM's length
     subLength = 4; // fixed
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write WNAM
     output.write((const char*) &parentWorldSpaceFormID, 4);
   }
@@ -395,7 +395,7 @@ bool WorldSpaceRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cPNAM, 4);
     //PNAM's length
     subLength = 2; // fixed
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write PNAM
     output.write((const char*) &unknownPNAM, 2);
   }
@@ -414,7 +414,7 @@ bool WorldSpaceRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &cNAMA, 4);
   //NAMA's length
   subLength = 4; // fixed
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write NAMA
   output.write((const char*) &unknownNAMA, 4);
 
@@ -424,7 +424,7 @@ bool WorldSpaceRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cDATA, 4);
     //DATA's length
     subLength = 1; // fixed
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write DATA
     output.write((const char*) &unknownDATA, 1);
   }
@@ -435,7 +435,7 @@ bool WorldSpaceRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cNAM0, 4);
     //NAM0's length
     subLength = 8; // fixed
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write NAM0
     output.write((const char*) &unknownNAM0, 8);
   }
@@ -446,7 +446,7 @@ bool WorldSpaceRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cNAM9, 4);
     //NAM9's length
     subLength = 8; // fixed
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write NAM9
     output.write((const char*) &unknownNAM9, 8);
   }
@@ -457,7 +457,7 @@ bool WorldSpaceRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cZNAM, 4);
     //ZNAM's length
     subLength = 4; // fixed
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write ZNAM
     output.write((const char*) &musicFormID, 1);
   }
@@ -468,7 +468,7 @@ bool WorldSpaceRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cTNAM, 4);
     //TNAM's length
     subLength = pathTNAM.length()+1;
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write TNAM path
     output.write(pathTNAM.c_str(), subLength);
   }
@@ -479,7 +479,7 @@ bool WorldSpaceRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &cUNAM, 4);
     //UNAM's length
     subLength = pathUNAM.length()+1;
-    output.write((char*) &subLength, 2);
+    output.write((const char*) &subLength, 2);
     //write UNAM path
     output.write(pathUNAM.c_str(), subLength);
   }

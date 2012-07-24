@@ -115,7 +115,7 @@ uint32_t MessageRecord::getWriteSize() const
 
 bool MessageRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cMESG, 4);
+  output.write((const char*) &cMESG, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID

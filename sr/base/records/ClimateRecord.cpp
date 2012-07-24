@@ -84,7 +84,7 @@ uint32_t ClimateRecord::getWriteSize() const
 
 bool ClimateRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cCLMT, 4);
+  output.write((const char*) &cCLMT, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID

@@ -58,14 +58,14 @@ uint32_t ActionRecord::getWriteSize() const
 
 bool ActionRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cAACT, 4);
+  output.write((const char*) &cAACT, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
-  output.write((char*) &cEDID, 4);
+  output.write((const char*) &cEDID, 4);
   //EDID's length
   uint16_t subLength = editorID.length()+1;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write editor ID
   output.write(editorID.c_str(), subLength);
 

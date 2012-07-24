@@ -59,7 +59,7 @@ uint32_t FootstepRecord::getWriteSize() const
 
 bool FootstepRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cFSTP, 4);
+  output.write((const char*) &cFSTP, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID

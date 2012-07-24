@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2012  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -333,7 +333,7 @@ bool ReferencedObject::loadFromStream(std::ifstream& in_File, uint32_t& BytesRea
                        << "without a previous DODT subrecord.\n";
              return false;
            }
-           if (DoorData.ExitName!="")
+           if (!DoorData.ExitName.empty())
            {
              std::cout << "Error: reference of record CELL seems to have two DNAM subrecords.\n";
              return false;
@@ -413,7 +413,7 @@ bool ReferencedObject::loadFromStream(std::ifstream& in_File, uint32_t& BytesRea
                        << "without a previous FLTV subrecord.\n";
              return false;
            }
-           if (KeyID!="")
+           if (!KeyID.empty())
            {
              std::cout << "Error: reference of record CELL seems to have two KNAM subrecords.\n";
              return false;
@@ -438,7 +438,7 @@ bool ReferencedObject::loadFromStream(std::ifstream& in_File, uint32_t& BytesRea
            KeyID = std::string(Buffer);
            break;
       case cTNAM:
-           if (TrapID!="")
+           if (!TrapID.empty())
            {
              std::cout << "Error: reference of record CELL seems to have two TNAM subrecords.\n";
              return false;
@@ -463,12 +463,12 @@ bool ReferencedObject::loadFromStream(std::ifstream& in_File, uint32_t& BytesRea
            TrapID = std::string(Buffer);
            break;
       case cANAM:
-           if (OwnerID!="")
+           if (!OwnerID.empty())
            {
              std::cout << "Error: reference of record CELL seems to have two ANAM subrecords.\n";
              return false;
            }
-           if (OwnerFactionID!="")
+           if (!OwnerFactionID.empty())
            {
              std::cout << "Error: reference of record CELL seems to have both "
                        << "ANAM and CNAM subrecords, but it should have only "
@@ -495,12 +495,12 @@ bool ReferencedObject::loadFromStream(std::ifstream& in_File, uint32_t& BytesRea
            OwnerID = std::string(Buffer);
            break;
       case cCNAM:
-           if (OwnerFactionID!="")
+           if (!OwnerFactionID.empty())
            {
              std::cout << "Error: reference of record CELL seems to have two CNAM subrecords.\n";
              return false;
            }
-           if (OwnerID!="")
+           if (!OwnerID.empty())
            {
              std::cout << "Error: reference of record CELL seems to have both "
                        << "ANAM and CNAM subrecords, but it should have only "
@@ -554,7 +554,7 @@ bool ReferencedObject::loadFromStream(std::ifstream& in_File, uint32_t& BytesRea
            }
            break;
       case cBNAM:
-           if (GlobalVarID!="")
+           if (!GlobalVarID.empty())
            {
              std::cout << "Error: reference of record CELL seems to have two BNAM subrecords.\n";
              return false;
@@ -579,7 +579,7 @@ bool ReferencedObject::loadFromStream(std::ifstream& in_File, uint32_t& BytesRea
            GlobalVarID = std::string(Buffer);
            break;
       case cXSOL:
-           if (SoulCreatureID!="")
+           if (!SoulCreatureID.empty())
            {
              std::cout << "Error: reference of record CELL seems to have two XSOL subrecords.\n";
              return false;
@@ -752,30 +752,30 @@ bool ReferencedObject::saveToStream(std::ofstream& output) const
   */
 
   //write FRMR
-  output.write((char*) &cFRMR, 4);
+  output.write((const char*) &cFRMR, 4);
   uint32_t SubLength = 4; //fixed length of four bytes
   //write FRMR's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write object index
-  output.write((char*) &ObjectIndex, 4);
+  output.write((const char*) &ObjectIndex, 4);
 
   //write NAME
-  output.write((char*) &cNAME, 4);
+  output.write((const char*) &cNAME, 4);
   SubLength = ObjectID.length()+1;
   //write NAME's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write object ID
   output.write(ObjectID.c_str(), SubLength);
 
   if (isDeleted)
   {
     //write DELE
-    output.write((char*) &cDELE, 4);
+    output.write((const char*) &cDELE, 4);
     SubLength = 4; //fixed length of four bytes
     //write DELE's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write content of DELE (kind of useless, I guess)
-    output.write((char*) &DeletionLong, 4);
+    output.write((const char*) &DeletionLong, 4);
 
     //return here, because we are done after that
     return output.good();
@@ -784,36 +784,36 @@ bool ReferencedObject::saveToStream(std::ofstream& output) const
   if (Scale!=1.0f)
   {
     //write XSCL
-    output.write((char*) &cXSCL, 4);
+    output.write((const char*) &cXSCL, 4);
     SubLength = 4; //fixed length of four bytes
     //write XSCL's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write object scale
-    output.write((char*) &Scale, 4);
+    output.write((const char*) &Scale, 4);
   }
 
   if (hasDoorData)
   {
     //write DODT
-    output.write((char*) &cDODT, 4);
+    output.write((const char*) &cDODT, 4);
     SubLength = 24; //fixed length of 24 bytes
     //write DODT's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write door position data
-    output.write((char*) &(DoorData.PosX), 4);
-    output.write((char*) &(DoorData.PosY), 4);
-    output.write((char*) &(DoorData.PosZ), 4);
-    output.write((char*) &(DoorData.RotX), 4);
-    output.write((char*) &(DoorData.RotY), 4);
-    output.write((char*) &(DoorData.RotZ), 4);
+    output.write((const char*) &(DoorData.PosX), 4);
+    output.write((const char*) &(DoorData.PosY), 4);
+    output.write((const char*) &(DoorData.PosZ), 4);
+    output.write((const char*) &(DoorData.RotX), 4);
+    output.write((const char*) &(DoorData.RotY), 4);
+    output.write((const char*) &(DoorData.RotZ), 4);
 
-    if (DoorData.ExitName!="")
+    if (!DoorData.ExitName.empty())
     {
       //write DNAM
-      output.write((char*) &cDNAM, 4);
+      output.write((const char*) &cDNAM, 4);
       SubLength = DoorData.ExitName.length()+1; //length of string +1 for NUL
       //write DNAM's length
-      output.write((char*) &SubLength, 4);
+      output.write((const char*) &SubLength, 4);
       //write door's exit name
       output.write(DoorData.ExitName.c_str(), SubLength);
     }
@@ -822,83 +822,83 @@ bool ReferencedObject::saveToStream(std::ofstream& output) const
   if (hasFLTV)
   {
     //write FLTV
-    output.write((char*) &cFLTV, 4);
+    output.write((const char*) &cFLTV, 4);
     SubLength = 4; //fixed length of four bytes
     //write FLTV's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write lock level
-    output.write((char*) &LockLevel, 4);
+    output.write((const char*) &LockLevel, 4);
 
-    if (KeyID!="")
+    if (!KeyID.empty())
     {
       //write KNAM
-      output.write((char*) &cKNAM, 4);
+      output.write((const char*) &cKNAM, 4);
       SubLength = KeyID.length()+1; //length of string +1 for NUL
       //write KNAM's length
-      output.write((char*) &SubLength, 4);
+      output.write((const char*) &SubLength, 4);
       //write key ID
       output.write(KeyID.c_str(), SubLength);
     }
   }
 
-  if (TrapID!="")
+  if (!TrapID.empty())
   {
     //write TNAM
-    output.write((char*) &cTNAM, 4);
+    output.write((const char*) &cTNAM, 4);
     SubLength = TrapID.length()+1; //length of string +1 for NUL
     //write TNAM's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write trap ID
     output.write(TrapID.c_str(), SubLength);
   }
 
-  if (OwnerID!="")
+  if (!OwnerID.empty())
   {
     //write ANAM
-    output.write((char*) &cANAM, 4);
+    output.write((const char*) &cANAM, 4);
     SubLength = OwnerID.length()+1; //length of string +1 for NUL
     //write ANAM's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write owner ID
     output.write(OwnerID.c_str(), SubLength);
   }
-  else if (OwnerFactionID!="")
+  else if (!OwnerFactionID.empty())
   {
     //write CNAM
-    output.write((char*) &cCNAM, 4);
+    output.write((const char*) &cCNAM, 4);
     SubLength = OwnerFactionID.length()+1; //length of string +1 for NUL
     //write CNAM's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write owner faction ID
     output.write(OwnerFactionID.c_str(), SubLength);
 
     //write INDX
-    output.write((char*) &cINDX, 4);
+    output.write((const char*) &cINDX, 4);
     SubLength = 4; //fixed length of four bytes
     //write INDX's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write owner faction rank
-    output.write((char*) &FactionRank, 4);
+    output.write((const char*) &FactionRank, 4);
   }
 
-  if (GlobalVarID!="")
+  if (!GlobalVarID.empty())
   {
     //write BNAM
-    output.write((char*) &cBNAM, 4);
+    output.write((const char*) &cBNAM, 4);
     SubLength = GlobalVarID.length()+1; //length of string +1 for NUL
     //write BNAM's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write global var ID
     output.write(GlobalVarID.c_str(), SubLength);
   }
 
-  if (SoulCreatureID!="")
+  if (!SoulCreatureID.empty())
   {
     //write XSOL
-    output.write((char*) &cXSOL, 4);
+    output.write((const char*) &cXSOL, 4);
     SubLength = SoulCreatureID.length()+1; //length of string +1 for NUL
     //write XSOL's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write ID of creature of captured soul
     output.write(SoulCreatureID.c_str(), SubLength);
   }
@@ -906,48 +906,48 @@ bool ReferencedObject::saveToStream(std::ofstream& output) const
   if (hasXCHG)
   {
     //write XCHG
-    output.write((char*) &cXCHG, 4);
+    output.write((const char*) &cXCHG, 4);
     SubLength = 4; //fixed length of four bytes
     //write XCHG's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write charges
-    output.write((char*) &EnchantCharge, 4);
+    output.write((const char*) &EnchantCharge, 4);
   }
 
   if (hasNAM9)
   {
     //write NAM9
-    output.write((char*) &cNAM9, 4);
+    output.write((const char*) &cNAM9, 4);
     SubLength = 4; //fixed length of four bytes
     //write NAM9's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write NAM9
-    output.write((char*) &UnknownNAM9, 4);
+    output.write((const char*) &UnknownNAM9, 4);
   }
 
   if (hasUNAM)
   {
     //write UNAM
-    output.write((char*) &cUNAM, 4);
+    output.write((const char*) &cUNAM, 4);
     SubLength = 1; //fixed length of one byte
     //write UNAM's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write UNAM
-    output.write((char*) &ReferenceBlockedByte, 1);
+    output.write((const char*) &ReferenceBlockedByte, 1);
   }
 
   //write DATA
-  output.write((char*) &cDATA, 4);
+  output.write((const char*) &cDATA, 4);
   SubLength = 24; //fixed length of 24 bytes
   //write DATA's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write object position data
-  output.write((char*) &PosX, 4);
-  output.write((char*) &PosY, 4);
-  output.write((char*) &PosZ, 4);
-  output.write((char*) &RotX, 4);
-  output.write((char*) &RotY, 4);
-  output.write((char*) &RotZ, 4);
+  output.write((const char*) &PosX, 4);
+  output.write((const char*) &PosY, 4);
+  output.write((const char*) &PosZ, 4);
+  output.write((const char*) &RotX, 4);
+  output.write((const char*) &RotY, 4);
+  output.write((const char*) &RotZ, 4);
 
   return output.good();
 }
@@ -973,7 +973,7 @@ uint32_t ReferencedObject::getWrittenSize() const
   if (hasDoorData)
   {
     Result = Result +4 /* DODT */ +4 /* 4 bytes for length */ +24 /* fixed length of 24 bytes */;
-    if (DoorData.ExitName!="")
+    if (!DoorData.ExitName.empty())
     {
       Result = Result +4 /* DNAM */ +4 /* 4 bytes for length */
               +DoorData.ExitName.length()+1 /* length of string +1 byte for NUL */;
@@ -983,38 +983,38 @@ uint32_t ReferencedObject::getWrittenSize() const
   if (hasFLTV)
   {
     Result = Result +4 /* FLTV */ +4 /* 4 bytes for length */ +4 /* fixed size of 4 bytes */;
-    if (KeyID!="")
+    if (!KeyID.empty())
     {
       Result = Result +4 /* KNAM */ +4 /* 4 bytes for length */
               +KeyID.length()+1 /* length of string +1 byte for NUL */;
     }
   }
 
-  if (TrapID!="")
+  if (!TrapID.empty())
   {
     Result = Result +4 /* TNAM */ +4 /* 4 bytes for length */
             +TrapID.length()+1 /* length of string +1 byte for NUL */;
   }
 
-  if (OwnerID!="")
+  if (!OwnerID.empty())
   {
     Result = Result +4 /* ANAM */ +4 /* 4 bytes for length */
             +OwnerID.length()+1 /* length of string +1 byte for NUL */;
   }
-  else if (OwnerFactionID!="")
+  else if (!OwnerFactionID.empty())
   {
     Result = Result +4 /* CNAM */ +4 /* 4 bytes for length */
             +OwnerFactionID.length()+1 /* length of string +1 byte for NUL */
             +4 /* INDX */ +4 /* 4 bytes for length */ +4 /* fixed length of four bytes*/;
   }
 
-  if (GlobalVarID!="")
+  if (!GlobalVarID.empty())
   {
     Result = Result +4 /* BNAM */ +4 /* 4 bytes for length */
             +GlobalVarID.length()+1 /* length of string +1 byte for NUL */;
   }
 
-  if (SoulCreatureID!="")
+  if (!SoulCreatureID.empty())
   {
     Result = Result +4 /* XSOL */ +4 /* 4 bytes for length */
             +SoulCreatureID.length()+1 /* length of string +1 byte for NUL */;
@@ -1072,12 +1072,12 @@ bool CellRecord::equals(const CellRecord& other) const
 
 bool CellRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cCELL, 4);
+  output.write((const char*) &cCELL, 4);
   uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
         +CellID.length()+1 /* length of ID +1 byte for NUL termination */
         +4 /* DATA */ +4 /* 4 bytes for length */ +12 /* fixed length of 12 bytes */;
-  if (RegionID!="")
+  if (!RegionID.empty())
   {
     Size = Size +4 /* RGNN */ +4 /* 4 bytes for length */
           +RegionID.length()+1 /* length of model path +1 byte for NUL termination */;
@@ -1113,9 +1113,9 @@ bool CellRecord::saveToStream(std::ofstream& output) const
     Size = Size + References[i].getWrittenSize();
   }//for
 
-  output.write((char*) &Size, 4);
-  output.write((char*) &HeaderOne, 4);
-  output.write((char*) &HeaderFlags, 4);
+  output.write((const char*) &Size, 4);
+  output.write((const char*) &HeaderOne, 4);
+  output.write((const char*) &HeaderFlags, 4);
 
   /*Cells:
     NAME = Cell ID string. Can be an empty string for exterior cells in which case
@@ -1180,30 +1180,30 @@ bool CellRecord::saveToStream(std::ofstream& output) const
   */
 
   //write NAME
-  output.write((char*) &cNAME, 4);
+  output.write((const char*) &cNAME, 4);
   uint32_t SubLength = CellID.length()+1;
   //write NAME's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write cell name
   output.write(CellID.c_str(), SubLength);
 
   //write DATA
-  output.write((char*) &cDATA, 4);
+  output.write((const char*) &cDATA, 4);
   SubLength = 12; //fixed length of 12 bytes
   //write DATA's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write cell data
-  output.write((char*) &CellFlags, 4);
-  output.write((char*) &GridX, 4);
-  output.write((char*) &GridY, 4);
+  output.write((const char*) &CellFlags, 4);
+  output.write((const char*) &GridX, 4);
+  output.write((const char*) &GridY, 4);
 
-  if (RegionID!="")
+  if (!RegionID.empty())
   {
     //write RGNN
-    output.write((char*) &cRGNN, 4);
+    output.write((const char*) &cRGNN, 4);
     SubLength = RegionID.length()+1;
     //write RGNN's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write region ID
     output.write(RegionID.c_str(), SubLength);
   }
@@ -1211,49 +1211,49 @@ bool CellRecord::saveToStream(std::ofstream& output) const
   if (!isInterior())
   {
     //write NAM5
-    output.write((char*) &cNAM5, 4);
+    output.write((const char*) &cNAM5, 4);
     SubLength = 4; //fixed length of four bytes
     //write NAM5's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write colour ref
-    output.write((char*) &ColourRef, 4);
+    output.write((const char*) &ColourRef, 4);
   }
   else
   {
     if (hasWHGT)
     {
       //write WHGT
-      output.write((char*) &cWHGT, 4);
+      output.write((const char*) &cWHGT, 4);
       SubLength = 4; //fixed length of four bytes
       //write WHGT's length
-      output.write((char*) &SubLength, 4);
+      output.write((const char*) &SubLength, 4);
       //write water level
-      output.write((char*) &WaterHeight, 4);
+      output.write((const char*) &WaterHeight, 4);
     }
     if (Ambience.isPresent)
     {
       //write AMBI
-      output.write((char*) &cAMBI, 4);
+      output.write((const char*) &cAMBI, 4);
       SubLength = 16; //fixed length of 16 bytes
       //write AMBI's length
-      output.write((char*) &SubLength, 4);
+      output.write((const char*) &SubLength, 4);
       //write ambience data
-      output.write((char*) &Ambience.AmbientColour, 4);
-      output.write((char*) &Ambience.SunlightColour, 4);
-      output.write((char*) &Ambience.FogColour, 4);
-      output.write((char*) &Ambience.FogDensity, 4);
+      output.write((const char*) &Ambience.AmbientColour, 4);
+      output.write((const char*) &Ambience.SunlightColour, 4);
+      output.write((const char*) &Ambience.FogColour, 4);
+      output.write((const char*) &Ambience.FogDensity, 4);
     }
   }
 
   if (NumReferences!=0)
   {
     //write NAM0
-    output.write((char*) &cNAM0, 4);
+    output.write((const char*) &cNAM0, 4);
     SubLength = 4; //fixed length of four bytes
     //write NAM0's length
-    output.write((char*) &SubLength, 4);
+    output.write((const char*) &SubLength, 4);
     //write number of references
-    output.write((char*) &NumReferences, 4);
+    output.write((const char*) &NumReferences, 4);
   }
 
   for (i=0; i<References.size(); ++i)

@@ -71,7 +71,7 @@ uint32_t GrassRecord::getWriteSize() const
 
 bool GrassRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cGRAS, 4);
+  output.write((const char*) &cGRAS, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID

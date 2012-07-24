@@ -41,11 +41,11 @@ GenericRecord::~GenericRecord()
 bool GenericRecord::saveToStream(std::ofstream& output) const
 {
   //record header
-  output.write((char*) &Header, 4);
+  output.write((const char*) &Header, 4);
   //header flags
-  output.write((char*) &m_DataSize, 4);
-  output.write((char*) &HeaderOne, 4);
-  output.write((char*) &HeaderFlags, 4);
+  output.write((const char*) &m_DataSize, 4);
+  output.write((const char*) &HeaderOne, 4);
+  output.write((const char*) &HeaderFlags, 4);
   //write the real data
   output.write(m_Data, m_DataSize);
 

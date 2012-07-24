@@ -59,18 +59,18 @@ bool OutfitRecord::saveToStream(std::ofstream& output) const
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID
-  output.write((char*) &cEDID, 4);
+  output.write((const char*) &cEDID, 4);
   //EDID's length
   uint16_t subLength = editorID.length()+1;
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write editor ID
   output.write(editorID.c_str(), subLength);
 
   //write INAM
-  output.write((char*) &cINAM, 4);
+  output.write((const char*) &cINAM, 4);
   //INAM's length
   subLength = 4*itemFormIDs.size();
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write form IDs
   unsigned int i;
   for (i=0; i<itemFormIDs.size(); ++i)

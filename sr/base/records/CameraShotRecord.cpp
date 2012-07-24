@@ -118,7 +118,7 @@ uint32_t CameraShotRecord::getWriteSize() const
 
 bool CameraShotRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cCAMS, 4);
+  output.write((const char*) &cCAMS, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
   if (isDeleted()) return true;
 

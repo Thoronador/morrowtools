@@ -75,7 +75,7 @@ bool NAVIRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &cNVER, 4);
   //NVER's length
   uint16_t subLength = 4; //fixed size
-  output.write((char*) &subLength, 2);
+  output.write((const char*) &subLength, 2);
   //write NVER
   output.write((const char*) &unknownNVER, 4);
 

@@ -153,7 +153,7 @@ bool ArmourRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &cFNAM, 4);
   SubLength = Name.length()+1;
   //write FNAM's length
-  output.write((char*) &SubLength, 4);
+  output.write((const char*) &SubLength, 4);
   //write armour's "real" name
   output.write(Name.c_str(), SubLength);
 

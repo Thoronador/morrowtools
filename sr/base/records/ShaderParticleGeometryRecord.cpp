@@ -96,7 +96,7 @@ uint32_t ShaderParticleGeometryRecord::getWriteSize() const
 
 bool ShaderParticleGeometryRecord::saveToStream(std::ofstream& output) const
 {
-  output.write((char*) &cSPGD, 4);
+  output.write((const char*) &cSPGD, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
   //write EDID

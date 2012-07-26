@@ -24,6 +24,10 @@
 			<Add option="-fexceptions" />
 		</Compiler>
 		<Unit filename="..\..\base\ComparisonFunctor.h" />
+		<Unit filename="..\..\base\FileFunctions.cpp" />
+		<Unit filename="..\..\base\FileFunctions.h" />
+		<Unit filename="..\..\base\RegistryFunctions.cpp" />
+		<Unit filename="..\..\base\RegistryFunctions.h" />
 		<Unit filename="..\..\base\UtilityFunctions.cpp" />
 		<Unit filename="..\..\base\UtilityFunctions.h" />
 		<Unit filename="..\base\Activators.h" />
@@ -49,6 +53,7 @@
 		<Unit filename="..\base\MagicEffects.h" />
 		<Unit filename="..\base\MapBasedRecordManager.h" />
 		<Unit filename="..\base\NPCs.h" />
+		<Unit filename="..\base\RegistryFunctions.h" />
 		<Unit filename="..\base\ReturnCodes.h" />
 		<Unit filename="..\base\Scripts.h" />
 		<Unit filename="..\base\SetBasedRecordManager.h" />

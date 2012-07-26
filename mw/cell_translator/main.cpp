@@ -31,23 +31,32 @@
 #include "../base/records/CreatureRecord.h"
 #include "../base/records/NPCRecord.h"
 #include "../base/records/PathGridRecord.h"
+#include "../base/RegistryFunctions.h"
 #include "../base/ReturnCodes.h"
 #include "../base/script_compiler/ScriptCompiler.h"
+#include "../../base/FileFunctions.h"
 
 void showHelp()
 {
   std::cout << "\ncell_translator -f PLUGINFILE [-o FILENAME1] [-xml FILENAME2]\n"
             << "\n"
-            << "(Note: This help is still incomplete.)\n"
             << "options:\n"
             << "  --help             - displays this help message and quits\n"
             << "  -?                 - same as --help\n"
             << "  --version          - displays the version of the programme and quits\n"
+            << "  -d DIRECTORY       - set path to the Data Files directory of Morrowind to\n"
+            << "                       DIRECTORY. If ommited, the path will be read from the\n"
+            << "                       registry or a default value will be used.\n"
+            << "  -dir DIRECTORY     - same as -d\n"
             << "  -f PLUGINFILE      - sets the plugin PLUGINFILE as the files that will be\n"
             << "                       translated by this programme. This option is required.\n"
             << "  --output FILENAME1 - sets the name of the created output file to FILENAME1.\n"
             << "                       If omitted, the default output file is \"out.esp\".\n"
             << "  -o FILENAME1       - short for --output\n"
+            << "  --force            - Usually the programme would not overwrite existing\n"
+            << "                       plugin files, so that giving an existing file as output\n"
+            << "                       file would abort the programme. If you want to avoid it\n"
+            << "                       and overwrite the file anyway, use --force.\n"
             << "  -xml FILENAME2     - sets the name of the XML file that contains the cell\n"
             << "                       names to FILENAME2. If omitted, the default XML file\n"
             << "                       name is \"cells.xml\".\n"
@@ -56,7 +65,11 @@ void showHelp()
             << "  -en                - sets translation mode to translate from German to\n"
             << "                       English. Mutually exclusive with -de.\n"
             << "  --no-scripts       - Script records will not be processed, if this parameter\n"
-            << "                       is specified.\n";
+            << "                       is specified.\n"
+            << "  --dare             - Try harder to re-compile changed scripts, even if they\n"
+            << "                       might not compile properly. Be warned that this might\n"
+            << "                       result in more Morrowind crashes, as long as you use\n"
+            << "                       the generated plugin file with Morrowind.\n";
 }
 
 void showGPLNotice()
@@ -82,13 +95,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Cell Translator for Morrowind, version 0.4.0_rev488, 2012-07-05\n";
+  std::cout << "Cell Translator for Morrowind, version 0.4.1_rev490, 2012-07-26\n";
 }
 
 int showVersionExitcode()
 {
   showVersion();
-  return 488;
+  return 490;
 }
 
 int main(int argc, char **argv)
@@ -96,9 +109,12 @@ int main(int argc, char **argv)
   showGPLNotice();
 
   std::string pathToCellsXML = "";
+  std::string dataDir = ""; //Data Files directory - empty at start
   std::string pluginFile = "";
   std::string outputFileName = "";
   bool process_scripts = true;
+  bool tryHarder = false;
+  bool forceOutput = false;
   bool translationDirectionSpecified = false;
   MWTP::TransDir translationDirection = MWTP::td_en_de;
 
@@ -121,11 +137,49 @@ int main(int argc, char **argv)
         {
           showVersion();
           return 0;
-        }
+        }//version
         else if (param=="--version-with-exitcode")
         {
           return showVersionExitcode();
-        }
+        }//version + exitcode
+        else if ((param=="-d") or (param=="-dir") or (param=="--data-files"))
+        {
+          //set more than once?
+          if (!dataDir.empty())
+          {
+            std::cout << "Error: Data Files directory was already set!\n";
+            return MWTP::rcInvalidParameter;
+          }
+          //enough parameters?
+          if ((i+1<argc) and (argv[i+1]!=NULL))
+          {
+            //Is it long enough to be a directoy? (Minimum should be "./".)
+            if (std::string(argv[i+1]).size()>1)
+            {
+              dataDir = std::string(argv[i+1]);
+              ++i; //skip next parameter, because it's used as directory name already
+              std::cout << "Data Files directory was set to \""<<dataDir<<"\".\n";
+              //Does it have a trailing (back)slash?
+              if (dataDir.at(dataDir.length()-1)!='\\')
+              {
+                dataDir = dataDir + "\\";
+                std::cout << "Missing trailing backslash was added.\n";
+              }//if slash
+            }
+            else
+            {
+              std::cout << "Parameter \""<<param<<"\" is too"
+                        << " short to be a proper directory path.\n";
+              return MWTP::rcInvalidParameter;
+            }//else
+          }
+          else
+          {
+            std::cout << "Error: You have to specify a directory name after \""
+                      << param <<"\".\n";
+            return MWTP::rcInvalidParameter;
+          }
+        }//data files directory
         else if (param=="-f")
         {
           if ((i+1<argc) and (argv[i+1]!=NULL))
@@ -145,7 +199,7 @@ int main(int argc, char **argv)
                       << param <<"\".\n";
             return MWTP::rcInvalidParameter;
           }
-        }
+        }//plugin file name
         else if ((param=="-o") or (param=="--output"))
         {
           if ((i+1<argc) and (argv[i+1]!=NULL))
@@ -165,7 +219,16 @@ int main(int argc, char **argv)
                       << param <<"\".\n";
             return MWTP::rcInvalidParameter;
           }
-        }
+        }//output file name
+        else if (param=="--force")
+        {
+          if (forceOutput)
+          {
+            std::cout << "Error: parameter --force was given more than once.\n";
+            return MWTP::rcInvalidParameter;
+          }
+          forceOutput = true;
+        }// force
         else if (param=="-xml")
         {
           if ((i+1<argc) and (argv[i+1]!=NULL))
@@ -185,7 +248,7 @@ int main(int argc, char **argv)
                       << param <<"\".\n";
             return MWTP::rcInvalidParameter;
           }
-        }
+        }//XML file
         else if (param=="--no-scripts")
         {
           if (!process_scripts)
@@ -196,7 +259,19 @@ int main(int argc, char **argv)
           }
           process_scripts = false;
           std::cout << "Scripts will not be processed, as requested via --no-scripts.\n";
-        }
+        }// no scripts
+        else if ((param=="--dare") or (param=="--try-harder"))
+        {
+          if (tryHarder)
+          {
+            std::cout << "Error: parameter "<<param<<" was given more than once.\n";
+            return MWTP::rcInvalidParameter;
+          }
+          tryHarder = true;
+          std::cout << "Will try harder to compile scripts, as requested via "
+                    << param <<". However, be aware that this might increase "
+                    << "instability of Morrowind, as long as you use the generated file!\n";
+        }//daring script compiler
         else if ((param=="-de") or (param=="--deutsch"))
         {
           if (translationDirectionSpecified)
@@ -286,7 +361,60 @@ int main(int argc, char **argv)
     std::cout << "Error: You have given Morrowind.esm, Tribunal.esm or "
               << "Bloodmoon.esm as desired output file name!\nAre you nuts? "
               << "The plugin file would overwrite the original master file, so"
-              << " we abort the programme for your one safety. Think (again)!\n";
+              << " we abort the programme for your own safety. Think (again)!\n";
+    return MWTP::rcFileNameConflict;
+  }
+
+  //Has the user specified a data directory?
+  if (dataDir.empty())
+  {
+    //No, so let's search the registry first...
+    std::cout << "Warning: Data files directory of Morrowind was not specified, "
+              << "will try to read it from the registry.\n";
+    if (!MWTP::getMorrowindPathFromRegistry(dataDir))
+    {
+      std::cout << "Error: Could not find Morrowind's installation path in registry!\n";
+      dataDir.clear();
+    }
+    else
+    {
+      if (!dataDir.empty())
+      {
+        //Does it have a trailing (back)slash?
+        if (dataDir.at(dataDir.length()-1)!='\\')
+        {
+          dataDir = dataDir + "\\";
+        }//if not backslash
+        /*add Data Files dir to path, because installed path points only to
+          Morrowinds's main direkctory */
+        dataDir = dataDir +"Data Files\\";
+        std::cout << "Data Files directory was set to \""<<dataDir<<"\" via registry.\n";
+      }
+      else
+      {
+        std::cout << "Error: Installation path in registry is empty!\n";
+      }
+    }
+
+    //check again, in case registry failed
+    if (dataDir.empty())
+    {
+      //empty, so let's try a default value.
+      dataDir = "C:\\Program Files\\Bethesda Softworks\\Morrowind\\Data Files\\";
+      std::cout << "Warning: Data files directory of Morrowind was not specified, "
+                << "will use default path \""<<dataDir<<"\". This might not work"
+                << " properly on your machine, use the parameter -d to specify "
+                << "the proper path.\n";
+    }
+  }//if no data dir is given
+
+  //avoid overwriting any existing plugin files
+  if (FileExists(dataDir+outputFileName) and !forceOutput)
+  {
+    std::cout << "Error: You have given the name of a file that already exists"
+              << " as desired output file name! Aborting to avoid potential "
+              << "data loss by overwriting the existing plugin file.\n"
+              << "If you are sure you want to overwrite it, use the --force parameter.\n";
     return MWTP::rcFileNameConflict;
   }
 
@@ -312,30 +440,20 @@ int main(int argc, char **argv)
   MWTP::ESMReaderTranslator reader(&recordVec);
   MWTP::TES3Record tes3Header;
   std::cout << "Reading plugin file and dependencies. This may take a while.\n";
-  if (reader.readESM(pluginFile, tes3Header, false)<0)
+  if (reader.readESM(dataDir+pluginFile, tes3Header, false)<0)
   {
-    std::cout << "Error while reading file \""<<pluginFile<<"\".\nAborting.\n";
+    std::cout << "Error while reading file \""<<dataDir+pluginFile<<"\".\nAborting.\n";
     reader.deallocateRecordsInVector();
     return MWTP::rcFileError;
   }
 
   if (process_scripts)
   {
-    const std::string::size_type pos = pluginFile.rfind('\\');
-    std::string baseDir;
-    if (pos!=std::string::npos)
-    {
-      baseDir = pluginFile.substr(0,pos+1);
-    }
-    else
-    {
-      baseDir = ".\\";
-    }
-
     MWTP::DepFileList deps;
     deps.clear();
     deps = tes3Header.dependencies;
 
+    #ifdef DEBUG
     std::cout <<"Debug: deps before sort:\n";
     deps.writeDeps();
     deps.sort();
@@ -343,6 +461,7 @@ int main(int argc, char **argv)
     std::cout <<"Debug: deps after sort:\n";
     deps.writeDeps();
     std::cout << "---End of info---\n";
+    #endif
 
     //read the dependency files to get the neccessary data for the script compiler
     unsigned int i;
@@ -350,9 +469,9 @@ int main(int argc, char **argv)
     for (i=0; i<deps.getSize(); ++i)
     {
       MWTP::TES3Record dummy_head;
-      if (sc_reader.readESM(baseDir+deps.at(i).name, dummy_head, false)<0)
+      if (sc_reader.readESM(dataDir+deps.at(i).name, dummy_head, false)<0)
       {
-        std::cout << "Error while reading file \""<<baseDir+deps.at(i).name
+        std::cout << "Error while reading file \""<<dataDir+deps.at(i).name
                   << "\".\nAborting.\n";
         reader.deallocateRecordsInVector();
         return MWTP::rcFileError;
@@ -360,9 +479,9 @@ int main(int argc, char **argv)
     }//for
 
     //feeding plugin file to script compiler
-    if (sc_reader.readESM(pluginFile, tes3Header, false)<0)
+    if (sc_reader.readESM(dataDir+pluginFile, tes3Header, false)<0)
     {
-      std::cout << "Error while reading file \""<<pluginFile<<"\".\nAborting.\n";
+      std::cout << "Error while reading file \""<<dataDir+pluginFile<<"\".\nAborting.\n";
       reader.deallocateRecordsInVector();
       return MWTP::rcFileError;
     }//if
@@ -414,7 +533,7 @@ int main(int argc, char **argv)
       if (replaceCellsInScriptText(changedText, cells))
       {
         //yes, change needed
-        if (!canCompileScriptProperly(*dynamic_cast<MWTP::ScriptRecord*>(*v_iter)))
+        if (!canCompileScriptProperly(*dynamic_cast<MWTP::ScriptRecord*>(*v_iter)) and !tryHarder)
         {
           std::cout << "Error: cannot properly compile script \""
                     << dynamic_cast<MWTP::ScriptRecord*>(*v_iter)->recordID
@@ -458,13 +577,13 @@ int main(int argc, char **argv)
   MWTP::ESMWriterGeneric writer(&recordVec);
   //TODO: adjust description before writing
   tes3Header.description = "(TODO: put description here)";
-  if (!writer.writeESM(outputFileName, false /* no master */, tes3Header))
+  if (!writer.writeESM(dataDir+outputFileName, false /* no master */, tes3Header))
   {
-    std::cout << "Error: Could not create or write to output file \""<<outputFileName<<"\".\n";
+    std::cout << "Error: Could not create or write to output file \""<<dataDir+outputFileName<<"\".\n";
     reader.deallocateRecordsInVector();
     return MWTP::rcOutputFailed;
   }
   reader.deallocateRecordsInVector();
-  std::cout << "Success!\n";
+  std::cout << "Success!\nFile was saved as \""<<dataDir+outputFileName<<"\".\n";
   return 0;
 }

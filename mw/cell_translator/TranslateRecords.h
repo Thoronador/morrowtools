@@ -36,7 +36,7 @@ namespace MWTP
    parameters:
        c_rec          - pointer to the record that has to be translated
        cells          - the list of cell names and their translations
-       changedRecords - variable that counts the number of changed record. It
+       changedRecords - variable that counts the number of changed records. It
                         will be increased by one, if any changes were made to
                         the PreNPCRecord.
 */
@@ -48,7 +48,7 @@ bool translatePreNPCRecord(PreNPCRecord* c_rec, const CellListType& cells, unsig
    parameters:
        c_rec          - pointer to the record that has to be translated
        cells          - the list of cell names and their translations
-       changedRecords - variable that counts the number of changed record. It
+       changedRecords - variable that counts the number of changed records. It
                         will be increased by one, if any changes were made to
                         the CellRecord.
 */
@@ -60,7 +60,7 @@ bool translateCellRecord(CellRecord* c_rec, const CellListType& cells, unsigned 
    parameters:
        di_rec         - pointer to the dialogue info record that has to be translated
        cells          - the list of cell names and their translations
-       changedRecords - variable that counts the number of changed record. It
+       changedRecords - variable that counts the number of changed records. It
                         will be increased by one, if any changes were made to
                         the DialogueInfoRecord.
 */
@@ -72,7 +72,7 @@ bool translateInfoRecord(DialogueInfoRecord* di_rec, const CellListType& cells, 
    parameters:
        script_rec     - pointer to the ScriptRecord that has to be translated
        cells          - the list of cell names and their translations
-       changedRecords - variable that counts the number of changed record. It
+       changedRecords - variable that counts the number of changed records. It
                         will be increased by one, if any changes were made to
                         the ScriptRecord.
 */

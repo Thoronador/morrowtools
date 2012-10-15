@@ -25,6 +25,7 @@
 #include <set>
 #include "RegistryFunctions.h"
 #include "../../base/FileFunctions.h"
+#include "../../base/UtilityFunctions.h"
 #include "ReturnCodes.h"
 
 namespace SRTP

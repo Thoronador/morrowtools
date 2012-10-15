@@ -67,6 +67,7 @@
 		<Unit filename="..\base\MapBasedRecordManager.h" />
 		<Unit filename="..\base\MiscObjects.h" />
 		<Unit filename="..\base\NPCs.h" />
+		<Unit filename="..\base\PathFunctions.h" />
 		<Unit filename="..\base\Perks.h" />
 		<Unit filename="..\base\Quests.h" />
 		<Unit filename="..\base\RegistryFunctions.h" />

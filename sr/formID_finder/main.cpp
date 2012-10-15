@@ -28,9 +28,8 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 #endif
-#include "../../base/FileFunctions.h"
 #include "../../base/UtilityFunctions.h"
-#include "../base/ReturnCodes.h"
+//#include "../base/ReturnCodes.h"
 #include "../base/Activators.h"
 #include "../base/AlchemyPotions.h"
 #include "../base/Ammunitions.h"
@@ -46,9 +45,9 @@
 #include "../base/Keys.h"
 #include "../base/MiscObjects.h"
 #include "../base/NPCs.h"
+#include "../base/PathFunctions.h"
 #include "../base/Perks.h"
 #include "../base/Quests.h"
-#include "../base/RegistryFunctions.h"
 #include "../base/Scrolls.h"
 #include "../base/Shouts.h"
 #include "../base/SoulGems.h"
@@ -85,13 +84,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Form ID Finder for Skyrim, version 0.20.rev472, 2012-06-12\n";
+  std::cout << "Form ID Finder for Skyrim, version 0.20b.rev492, 2012-10-15\n";
 }
 
 int showVersionExitcode()
 {
   showVersion();
-  return 472;
+  return 492;
 }
 
 void showHelp()
@@ -377,47 +376,7 @@ int main(int argc, char **argv)
   }
 
   //Has the user specified a data directory?
-  if (dataDir.empty())
-  {
-    //No, so let's search the registry first...
-    std::cout << "Warning: Data files directory of Skyrim was not specified, "
-              << "will try to read it from the registry.\n";
-    if (!SRTP::getSkryrimPathFromRegistry(dataDir))
-    {
-      std::cout << "Error: Could not find Skyrim's installation path in registry!\n";
-      dataDir.clear();
-    }
-    else
-    {
-      if (!dataDir.empty())
-      {
-        //Does it have a trailing (back)slash?
-        if (dataDir.at(dataDir.length()-1)!='\\')
-        {
-          dataDir = dataDir + "\\";
-        }//if not backslash
-        /*add data dir to path, because installed path points only to Skyrim's
-          main direkctory */
-        dataDir = dataDir +"Data\\";
-        std::cout << "Data files directory was set to \""<<dataDir<<"\" via registry.\n";
-      }
-      else
-      {
-        std::cout << "Error: Installation path in registry is empty!\n";
-      }
-    }
-
-    //check again, in case registry failed
-    if (dataDir.empty())
-    {
-      //empty, so let's try a default value.
-      dataDir = "C:\\Program Files\\Steam\\SteamApps\\common\\skyrim\\Data\\";
-      std::cout << "Warning: Data files directory of Skyrim was not specified, "
-                << "will use default path \""<<dataDir<<"\". This might not work"
-                << " properly on your machine, use the parameter -d to specify "
-                << "the proper path.\n";
-    }
-  }//if no data dir is given
+  SRTP::getDataDir(dataDir);
 
   //keyword given?
   if (searchKeyword.empty())
@@ -432,56 +391,10 @@ int main(int argc, char **argv)
 
   //try to find the language component of the string table's file name
   std::string languageComponent = "";
-  std::string part_path, part_name, part_ext;
-
-  std::vector<FileEntry> files = getDirectoryFileList(dataDir+"Strings\\");
-  if (files.size()<3)
-  {
-    std::cout << "Error: could not find string table files for Skyrim.esm!\n";
-    return SRTP::rcFileError;
-  }
-
-  std::set<std::string> presentStuff;
-
-  unsigned int i;
-  for (i=0; i<files.size(); ++i)
-  {
-    if ((!files[i].isDirectory) and (lowerCase(files[i].fileName.substr(0, 7))=="skyrim_"))
-    {
-      splitPathFileExtension(files[i].fileName, '\\', part_path, part_name, part_ext);
-      if ((lowerCaseCompare(part_ext, "dlstrings")==0) or (lowerCaseCompare(part_ext, "strings")==0)
-        or (lowerCaseCompare(part_ext, "ilstrings")==0))
-      {
-        //Do we have a language component yet?
-        if (languageComponent.empty())
-        {
-          languageComponent = part_name.substr(7);
-          presentStuff.insert(lowerCase(part_ext));
-        }
-        else
-        {
-          if (part_name.substr(7)==languageComponent)
-          {
-            presentStuff.insert(lowerCase(part_ext));
-          }
-        }//else
-      }//if string file extension
-    }//if name starts with skyrim
-  }//for
-
-  if (presentStuff.size()<3)
-  {
-    std::cout << "Error: Could not find string table files!\n";
-    return SRTP::rcFileError;
-  }
-
-  if ((!FileExists(dataDir+"Strings\\Skyrim_"+languageComponent+".dlstrings"))
-     or (!FileExists(dataDir+"Strings\\Skyrim_"+languageComponent+".ilstrings"))
-     or (!FileExists(dataDir+"Strings\\Skyrim_"+languageComponent+".strings")))
-  {
-    std::cout << "Error: At least one string table file ist missing!\n";
-    return SRTP::rcFileError;
-  }
+  const int lc_return = SRTP::getLanguageComponent(dataDir, "Skyrim", languageComponent);
+  //If return code is not zero, an error occured! We should return in that case.
+  if (lc_return!=0)
+    return lc_return;
 
   //read string tables
   SRTP::StringTable table;
@@ -823,6 +736,7 @@ int main(int argc, char **argv)
               else
               {
                 basic_out << rankCount <<"\n";
+                unsigned int i;
                 for (i=0; i<rankCount; ++i)
                 {
                   basic_out << "          ("<<faction_iter->second.ranks[i].index

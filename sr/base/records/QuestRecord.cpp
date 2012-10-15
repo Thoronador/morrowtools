@@ -1805,7 +1805,7 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
            lastReadRec = cALED;
            break;
       default:
-          std::cout << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
+           std::cout << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
                      << "\", but only VMAD, FULL, DNAM, FLTR, NEXT, INDX, QSDT, NAM0, CNAM or ANAM are allowed here!\n";
            return false;
     }//swi

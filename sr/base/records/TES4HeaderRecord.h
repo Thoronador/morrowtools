@@ -85,12 +85,16 @@ struct Tes4HeaderRecord: public BasicRecord
       bool operator==(const MasterFile& other) const;
     };//struct
 
+    //subrecord HEDR
     float version;
     uint32_t numRecordsAndGroups;
     uint32_t nextObjectID;
-    std::string authorName;
-    std::vector<MasterFile> dependencies;
-    uint32_t unknownIntValue;
+    //end of HEDR
+    std::string authorName; //subrecord CNAM
+    std::string summary; //subrecord SNAM
+    std::vector<MasterFile> dependencies; //subrecords MAST+DATA
+    std::vector<uint32_t> unknownONAM; //subrecord ONAM
+    uint32_t unknownIntValue; //subrecord INTV
 }; //struct
 
 } //namespace

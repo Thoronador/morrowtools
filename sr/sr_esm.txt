@@ -40,10 +40,20 @@ Records and their sub-records:
       HEDR (12 bytes)
         Unknown, possibly three 4-byte values?
         4 bytes - float, version number
-        4 bytes - unknown
-        4 bytes - unknown
+        4 bytes - uint32_t, number of records and groups
+        4 bytes - uint32_t, next object ID available
       CNAM (string, NUL-terminated)
         author name
+      SNAM (string, NUL-terminated, optional)
+        summary / description
+      MAST (string, NUL-terminated, optional, can occur multiple times)
+        master file name (dependency)
+      DATA (8 bytes, optional, can occur multiple times)
+        unknown data
+        -> Always occurs after MAST. MAST and DATA form pairs that can occur
+           multiple times.
+      ONAM (size varies, but is an integral multiple of 4 bytes; optional)
+        unknown list of form IDs
       INTV (4 bytes)
         unknown integer value
 

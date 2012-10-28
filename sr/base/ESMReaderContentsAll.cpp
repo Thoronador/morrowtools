@@ -80,6 +80,7 @@
 #include "records/LocationRecord.h"
 #include "records/LocationReferenceTypeRecord.h"
 #include "records/MagicEffectRecord.h"
+#include "records/MaterialObjectRecord.h"
 #include "records/MessageRecord.h"
 #include "records/MiscObjectRecord.h"
 #include "records/MovementTypeRecord.h"
@@ -313,6 +314,9 @@ int ESMReaderContentsAll::readNextRecord(std::ifstream& in_File, const uint32_t 
          break;
     case cLVSP:
          recPtr = new LeveledSpellRecord;
+         break;
+    case cMATO:
+         recPtr = new MaterialObjectRecord;
          break;
     case cMESG:
          recPtr = new MessageRecord;

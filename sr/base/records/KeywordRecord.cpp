@@ -20,6 +20,7 @@
 
 #include "KeywordRecord.h"
 #include <iostream>
+#include <cstring>
 #include "../SR_Constants.h"
 #include "../../../mw/base/HelperIO.h"
 

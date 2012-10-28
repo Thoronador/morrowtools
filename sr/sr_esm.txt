@@ -1371,6 +1371,36 @@ Records and their sub-records:
           uint32_t Count
 
 
+  MATO: material object
+      EDID (string, NUL-terminated)
+          editor ID
+      MODL (string, NUL-terminated, optional)
+          model path
+      DNAM (size varies, optional, can occur multiple times)
+          property data, unknown format
+      DATA (48 bytes or 32 bytes or 28 bytes)
+          float Falloff Scale
+          float Falloff Bias
+          float Noise UV Scale
+          float Material UV Scale
+          float Directional Projection Vector X
+          float Directional Projection Vector Y
+          float Directional Projection Vector Z
+          float Normal Dampener
+          float Single Pass Color R (*1/255, i.e. real value is 255 times that)
+          float Single Pass Color G (*1/255, i.e. real value is 255 times that)
+          float Single Pass Color B (*1/255, i.e. real value is 255 times that)
+          uint32_t SinglePass (0=false, 1=true)
+
+          --> Single Pass values are set to zero/false in 32 byte version.
+          --> Normal Dampener is 1.0f in 28 byte version.
+
+          Version numbers in header map to DATA length as follows:
+            version 18       -> 28 bytes
+            version 19       -> 32 bytes
+            version 25 to 39 -> 48 bytes
+
+
   MESG: message
       EDID (string, NUL-terminated)
           editor ID

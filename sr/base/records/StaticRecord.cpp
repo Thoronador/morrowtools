@@ -22,6 +22,7 @@
 #include "../SR_Constants.h"
 #include "../../../mw/base/HelperIO.h"
 #include <iostream>
+#include <cstring>
 
 namespace SRTP
 {

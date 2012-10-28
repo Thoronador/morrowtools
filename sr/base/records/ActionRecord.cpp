@@ -21,6 +21,7 @@
 #include "ActionRecord.h"
 #include "../SR_Constants.h"
 #include "../../../mw/base/HelperIO.h"
+#include <cstring>
 #include <iostream>
 
 namespace SRTP

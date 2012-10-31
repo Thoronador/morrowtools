@@ -72,7 +72,7 @@ bool CameraShotRecord::equals(const CameraShotRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
       and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
-      //subrecor DATA
+      //subrecord DATA
       and (dataLen==other.dataLen) and (cameraAction==other.cameraAction)
       and (cameraLocation==other.cameraLocation) and (cameraTarget==other.cameraTarget)
       and (cameraFlags==other.cameraFlags) and (timeMultPlayer==other.timeMultPlayer)

@@ -201,6 +201,7 @@ const uint32_t cLVLO = 0x4F4C564C; //"LVLO" = 4C 56 4C 4F
 const uint32_t cLVSP = 0x5053564C; //"LVSP" = 4C 56 53 50
 const uint32_t cMAST = 0x5453414D; //"MAST" = 4D 41 53 54
 const uint32_t cMATO = 0x4F54414D; //"MATO" = 4D 41 54 4F
+const uint32_t cMATT = 0x5454414D; //"MATT" = 4D 41 54 54
 const uint32_t cMCHT = 0x5448434D; //"MCHT" = 4D 43 48 54
 const uint32_t cMDOB = 0x424F444D; //"MDOB" = 4D 44 4F 42
 const uint32_t cMESG = 0x4753454D; //"MESG" = 4D 45 53 47

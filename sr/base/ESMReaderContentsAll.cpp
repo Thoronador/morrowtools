@@ -81,6 +81,7 @@
 #include "records/LocationReferenceTypeRecord.h"
 #include "records/MagicEffectRecord.h"
 #include "records/MaterialObjectRecord.h"
+#include "records/MaterialTypeRecord.h"
 #include "records/MessageRecord.h"
 #include "records/MiscObjectRecord.h"
 #include "records/MovementTypeRecord.h"
@@ -317,6 +318,9 @@ int ESMReaderContentsAll::readNextRecord(std::ifstream& in_File, const uint32_t 
          break;
     case cMATO:
          recPtr = new MaterialObjectRecord;
+         break;
+    case cMATT:
+         recPtr = new MaterialTypeRecord;
          break;
     case cMESG:
          recPtr = new MessageRecord;

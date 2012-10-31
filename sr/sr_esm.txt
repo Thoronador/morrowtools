@@ -1401,6 +1401,27 @@ Records and their sub-records:
             version 25 to 39 -> 48 bytes
 
 
+  MATT: material type
+      EDID (string, NUL-terminated)
+          editor ID
+      PNAM (4 bytes, optional)
+          uint32_t parent material form ID (points to MATT)
+      MNAM (string, NUL-terminated)
+          material name
+      CNAM (12 bytes)
+          float Havok Display Color R
+          float Havok Display Color G
+          float Havok Display Color B
+      BNAM (4 bytes)
+          float Bouyancy
+      FNAM (4 bytes)
+          uint32_t flags
+             0x00000001 - Stair Material
+             0x00000002 - Arrows Stick
+      HNAM (4 bytes, optional)
+          uint32_t form ID of Havok Impact Data Set (points to IPDS)
+
+
   MESG: message
       EDID (string, NUL-terminated)
           editor ID

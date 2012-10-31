@@ -83,6 +83,7 @@
 #include "LocationReferenceTypes.h"
 #include "MagicEffects.h"
 #include "MaterialObjects.h"
+#include "MaterialTypes.h"
 #include "Messages.h"
 #include "MiscObjects.h"
 #include "MovementTypes.h"
@@ -327,6 +328,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const uint32_t recName)
          break;
     case cMATO:
          return MaterialObjects::getSingleton().readNextRecord(in_File);
+         break;
+    case cMATT:
+         return MaterialTypes::getSingleton().readNextRecord(in_File);
          break;
     case cMESG:
          return Messages::getSingleton().readNextRecord(in_File);

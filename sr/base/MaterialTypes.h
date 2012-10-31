@@ -18,18 +18,18 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SR_MATERIALOBJECTS_H
-#define SR_MATERIALOBJECTS_H
+#ifndef SR_MATERIALTYPES_H
+#define SR_MATERIALTYPES_H
 
-#include "records/MaterialObjectRecord.h"
+#include "records/MaterialTypeRecord.h"
 #include "MapBasedRecordManager.h"
 
 namespace SRTP
 {
 
-//singleton for material object records
-typedef MapBasedRecordManager<MaterialObjectRecord> MaterialObjects;
+//singleton for material type records
+typedef MapBasedRecordManager<MaterialTypeRecord> MaterialTypes;
 
 } //namespace
 
-#endif // SR_MATERIALOBJECTS_H
+#endif // SR_MATERIALTYPES_H

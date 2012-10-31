@@ -53,6 +53,7 @@ bool ClassRecord::equals(const ClassRecord& other) const
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t ClassRecord::getWriteSize() const
 {
+  if (isDeleted()) return 0;
   return ( 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
         +4 /* FULL */ +2 /* 2 bytes for length */ +4 /* fixed length */
@@ -64,6 +65,7 @@ bool ClassRecord::saveToStream(std::ofstream& output) const
 {
   output.write((const char*) &cCLAS, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
+  if (isDeleted()) return true;
 
   //write EDID
   output.write((const char*) &cEDID, 4);

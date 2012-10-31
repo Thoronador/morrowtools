@@ -32,12 +32,9 @@ AcousticSpaceRecord::AcousticSpaceRecord()
 {
   editorID = "";
   memset(unknownOBND, 0, 12);
-  hasSNAM = false;
-  unknownSNAM = 0;
-  hasRDAT = false;
-  unknownRDAT = 0;
-  hasBNAM = false;
-  unknownBNAM = false;
+  loopingSoundFormID = 0;
+  regionFormID = 0;
+  environmentTypeFormID = 0;
 }
 
 AcousticSpaceRecord::~AcousticSpaceRecord()
@@ -50,28 +47,29 @@ bool AcousticSpaceRecord::equals(const AcousticSpaceRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
       and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
-      and (hasSNAM==other.hasSNAM) and ((unknownSNAM==other.unknownSNAM) or (!hasSNAM))
-      and (hasRDAT==other.hasRDAT) and ((unknownRDAT==other.unknownRDAT) or (!hasRDAT))
-      and (hasBNAM==other.hasBNAM) and ((unknownBNAM==other.unknownBNAM) or (!hasBNAM)));
+      and (loopingSoundFormID==other.loopingSoundFormID)
+      and (regionFormID==other.regionFormID)
+      and (environmentTypeFormID==other.environmentTypeFormID));
 }
 #endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t AcousticSpaceRecord::getWriteSize() const
 {
+  if (isDeleted()) return 0;
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
         +4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed size */;
-  if (hasSNAM)
+  if (loopingSoundFormID!=0)
   {
     writeSize = writeSize +4 /* SNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
-  if (hasRDAT)
+  if (regionFormID!=0)
   {
     writeSize = writeSize +4 /* RDAT */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
-  if (hasBNAM)
+  if (environmentTypeFormID!=0)
   {
     writeSize = writeSize +4 /* BNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
@@ -82,6 +80,7 @@ bool AcousticSpaceRecord::saveToStream(std::ofstream& output) const
 {
   output.write((const char*) &cASPC, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
+  if (isDeleted()) return true;
 
   //write EDID
   output.write((const char*) &cEDID, 4);
@@ -99,37 +98,37 @@ bool AcousticSpaceRecord::saveToStream(std::ofstream& output) const
   //write OBND
   output.write((const char*) unknownOBND, 12);
 
-  if (hasSNAM)
+  if (loopingSoundFormID!=0)
   {
     //write SNAM
     output.write((const char*) &cSNAM, 4);
     //SNAM's length
     subLength = 4; //fixed size
     output.write((const char*) &subLength, 2);
-    //write SNAM
-    output.write((const char*) &unknownSNAM, 4);
+    //write form ID of looping sound
+    output.write((const char*) &loopingSoundFormID, 4);
   }//if has SNAM subrecord
 
-  if (hasRDAT)
+  if (regionFormID!=0)
   {
     //write RDAT
     output.write((const char*) &cRDAT, 4);
     //RDAT's length
     subLength = 4; //fixed size
     output.write((const char*) &subLength, 2);
-    //write RDAT
-    output.write((const char*) &unknownRDAT, 4);
+    //write region form ID
+    output.write((const char*) &regionFormID, 4);
   }//if has RDAT subrecord
 
-  if (hasBNAM)
+  if (environmentTypeFormID!=0)
   {
     //write BNAM
     output.write((const char*) &cBNAM, 4);
     //BNAM's length
     subLength = 4; //fixed size
     output.write((const char*) &subLength, 2);
-    //write BNAM
-    output.write((const char*) &unknownBNAM, 4);
+    //write environment type
+    output.write((const char*) &environmentTypeFormID, 4);
   }//if has BNAM subrecord
 
   return output.good();
@@ -199,9 +198,9 @@ bool AcousticSpaceRecord::loadFromStream(std::ifstream& in_File)
     return false;
   }
 
-  hasSNAM = false;
-  hasRDAT = false;
-  hasBNAM = false;
+  loopingSoundFormID = 0;
+  regionFormID = 0;
+  environmentTypeFormID = 0;
   while (bytesRead<readSize)
   {
     //read next header
@@ -210,37 +209,52 @@ bool AcousticSpaceRecord::loadFromStream(std::ifstream& in_File)
     switch (subRecName)
     {
       case cSNAM:
-           if (hasSNAM)
+           if (loopingSoundFormID!=0)
            {
              std::cout << "Error: ASPC seems to have more than one SNAM subrecord.\n";
              return false;
            }
            //read SNAM
-           if (!loadUint32SubRecordFromStream(in_File, cSNAM, unknownSNAM, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cSNAM, loopingSoundFormID, false)) return false;
            bytesRead += 6;
-           hasSNAM = true;
+           //check value
+           if (loopingSoundFormID==0)
+           {
+             std::cout << "Error: subrecord SNAM of ASPC has value zero!\n";
+             return false;
+           }
            break;
       case cRDAT:
-           if (hasRDAT)
+           if (regionFormID!=0)
            {
              std::cout << "Error: ASPC seems to have more than one RDAT subrecord.\n";
              return false;
            }
            //read RDAT
-           if (!loadUint32SubRecordFromStream(in_File, cRDAT, unknownRDAT, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cRDAT, regionFormID, false)) return false;
            bytesRead += 6;
-           hasRDAT = true;
+           //check value
+           if (regionFormID==0)
+           {
+             std::cout << "Error: subrecord RDAT of ASPC has value zero!\n";
+             return false;
+           }
            break;
       case cBNAM:
-           if (hasBNAM)
+           if (environmentTypeFormID!=0)
            {
              std::cout << "Error: ASPC seems to have more than one BNAM subrecord.\n";
              return false;
            }
            //read BNAM
-           if (!loadUint32SubRecordFromStream(in_File, cBNAM, unknownBNAM, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cBNAM, environmentTypeFormID, false)) return false;
            bytesRead += 6;
-           hasBNAM = true;
+           //check value
+           if (environmentTypeFormID==0)
+           {
+             std::cout << "Error: subrecord BNAM of ASPC has value zero!\n";
+             return false;
+           }
            break;
       default:
            std::cout << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)

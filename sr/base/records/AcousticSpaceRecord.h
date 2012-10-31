@@ -68,12 +68,9 @@ struct AcousticSpaceRecord: public BasicRecord
 
     std::string editorID;
     uint8_t unknownOBND[12];
-    bool hasSNAM;
-    uint32_t unknownSNAM;
-    bool hasRDAT;
-    uint32_t unknownRDAT;
-    bool hasBNAM;
-    uint32_t unknownBNAM;
+    uint32_t loopingSoundFormID; //subrecord SNAM
+    uint32_t regionFormID; //subrecord RDAR
+    uint32_t environmentTypeFormID; //subrecord BNAM
 }; //struct
 
 } //namespace

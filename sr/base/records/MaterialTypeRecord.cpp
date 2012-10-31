@@ -28,8 +28,8 @@ namespace SRTP
 {
 
 //constants for flags
-const uint32_t MaterialTypeRecord::cStairMaterial = 0x00000001;
-const uint32_t MaterialTypeRecord::cArrowsStick   = 0x00000002;
+const uint32_t MaterialTypeRecord::cFlagStairMaterial = 0x00000001;
+const uint32_t MaterialTypeRecord::cFlagArrowsStick   = 0x00000002;
 
 MaterialTypeRecord::MaterialTypeRecord()
 : BasicRecord()
@@ -375,6 +375,16 @@ bool MaterialTypeRecord::loadFromStream(std::ifstream& in_File)
 uint32_t MaterialTypeRecord::getRecordType() const
 {
   return cMATT;
+}
+
+bool MaterialTypeRecord::arrowsStick() const
+{
+  return ((cFlagArrowsStick & flags) != 0);
+}
+
+bool MaterialTypeRecord::isStairMaterial() const
+{
+  return ((cFlagStairMaterial & flags) != 0);
 }
 
 }//namespace

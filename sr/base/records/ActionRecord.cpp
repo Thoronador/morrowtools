@@ -53,6 +53,7 @@ bool ActionRecord::equals(const ActionRecord& other) const
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t ActionRecord::getWriteSize() const
 {
+  if (isDeleted()) return 0;
   return (4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */);
 }
@@ -61,6 +62,7 @@ bool ActionRecord::saveToStream(std::ofstream& output) const
 {
   output.write((const char*) &cAACT, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
+  if (isDeleted()) return true;
 
   //write EDID
   output.write((const char*) &cEDID, 4);

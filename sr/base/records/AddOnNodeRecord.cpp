@@ -64,6 +64,7 @@ bool AddOnNodeRecord::equals(const AddOnNodeRecord& other) const
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t AddOnNodeRecord::getWriteSize() const
 {
+  if (isDeleted()) return 0;
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
@@ -87,6 +88,7 @@ bool AddOnNodeRecord::saveToStream(std::ofstream& output) const
 {
   output.write((const char*) &cADDN, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
+  if (isDeleted()) return true;
 
   //write EDID
   output.write((const char*) &cEDID, 4);

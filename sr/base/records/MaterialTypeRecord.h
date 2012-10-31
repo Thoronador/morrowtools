@@ -65,9 +65,15 @@ struct MaterialTypeRecord: public BasicRecord
     /* returns the record's type, usually its header */
     virtual uint32_t getRecordType() const;
 
+    /* returns true, if arrows stick to this material (according to flags) */
+    bool arrowsStick() const;
+
+    /* returns true, if this material is stair material (according to flags) */
+    bool isStairMaterial() const;
+
     //constants for flags
-    static const uint32_t cStairMaterial;
-    static const uint32_t cArrowsStick;
+    static const uint32_t cFlagStairMaterial;
+    static const uint32_t cFlagArrowsStick;
 
     std::string editorID;
     std::string materialName; //subrecord MNAM

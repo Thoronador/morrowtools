@@ -71,6 +71,7 @@ bool AmmunitionRecord::equals(const AmmunitionRecord& other) const
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t AmmunitionRecord::getWriteSize() const
 {
+  if (isDeleted()) return 0;
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of string +1 byte for NUL-termination */
@@ -105,6 +106,7 @@ bool AmmunitionRecord::saveToStream(std::ofstream& output) const
 {
   output.write((const char*) &cAMMO, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
+  if (isDeleted()) return true;
 
   //write EDID
   output.write((const char*) &cEDID, 4);

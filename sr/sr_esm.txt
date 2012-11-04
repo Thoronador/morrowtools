@@ -2255,8 +2255,37 @@ Records and their sub-records:
       DESC (4 bytes)
           string ID of spell's description (ID can be zero)
       SPIT (36 bytes)
-          unknown data
-            (but last 4 bytes are form ID of casting perk)
+          uint32_t Casting Cost
+          uint32_t flags
+              0x00000001 - NO auto calc
+              0x00020000 - PC Start Spell
+              0x00080000 - Area Effect Ignores LOS
+              0x00100000 - Ignore Resistance
+              0x00200000 - Disallow Absorb/Reflect
+              0x00800000 - No Dual Cast Modifications
+          uint32_t Type
+              0x00000000 - Spell
+              0x00000001 - Disease
+              0x00000002 - Power
+              0x00000003 - Lesser Power
+              0x00000004 - Ability
+              0x00000005 - Poison
+              0x0000000A - Addiction
+              0x0000000B - Voice Power
+          float    Charge Time
+          uint32_t Casting Type
+              0x00000000 - Constant Effect
+              0x00000001 - Fire and Forget
+              0x00000002 - Concentration
+          uint32_t Delivery
+              0x00000000 - Self
+              0x00000001 - Contact
+              0x00000002 - Aimed
+              0x00000003 - Target Actor
+              0x00000004 - Target Location
+          float    Cast Duration
+          float    Range (in ft)
+          uint32_t Casting Perk Form ID (points to PERK)
 
         EFID (4 bytes)
             magic effect form ID (MGEF)

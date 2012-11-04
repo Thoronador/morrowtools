@@ -27,6 +27,37 @@
 namespace SRTP
 {
 
+//flag constants
+const uint32_t SpellRecord::cFlagNoAutoCalc              = 0x00000001;
+const uint32_t SpellRecord::cFlagPCStartSpell            = 0x00020000;
+const uint32_t SpellRecord::cFlagAreaEffectIgnoresLOS    = 0x00080000;
+const uint32_t SpellRecord::cFlagIgnoreResistance        = 0x00100000;
+const uint32_t SpellRecord::cFlagDisallowAbsorbReflect   = 0x00200000;
+const uint32_t SpellRecord::cFlagNoDualCastModifications = 0x00800000;
+
+//type constants
+const uint32_t SpellRecord::cSpell       = 0x00000000;
+const uint32_t SpellRecord::cDisease     = 0x00000001;
+const uint32_t SpellRecord::cPower       = 0x00000002;
+const uint32_t SpellRecord::cLesserPower = 0x00000003;
+const uint32_t SpellRecord::cAbility     = 0x00000004;
+const uint32_t SpellRecord::cPoison      = 0x00000005;
+const uint32_t SpellRecord::cAddiction   = 0x0000000A;
+const uint32_t SpellRecord::cVoicePower  = 0x0000000B;
+
+//casting type constants
+const uint32_t SpellRecord::cConstantEffect = 0x00000000;
+const uint32_t SpellRecord::cFireAndForget  = 0x00000001;
+const uint32_t SpellRecord::cConcentration  = 0x00000002;
+
+// delivery constants
+const uint32_t SpellRecord::cSelf           = 0x00000000;
+const uint32_t SpellRecord::cContact        = 0x00000001;
+const uint32_t SpellRecord::cAimed          = 0x00000002;
+const uint32_t SpellRecord::cTargetActor    = 0x00000003;
+const uint32_t SpellRecord::cTargetLocation = 0x00000004;
+
+
 SpellRecord::SpellRecord()
 : BasicRecord()
 {
@@ -34,11 +65,20 @@ SpellRecord::SpellRecord()
   memset(unknownOBND, 0, 12);
   hasFULL = false;
   nameStringID = 0;
-  hasMDOB = false;
   menuDisplayObjectFormID = 0;
   equipTypeFormID = 0;
   descriptionStringID = 0;
-  memset(unknownSPIT, 0, 36);
+  //subrecord SPIT
+  castingCost = 0;
+  flags = 0;
+  type = 0;
+  chargeTime = 0.0f;
+  castingType = 0;
+  delivery = 0;
+  castDuration = 0.0f;
+  range = 0.0f;
+  castingPerkFormID = 0;
+  //end of SPIT
   effects.clear();
 }
 
@@ -52,10 +92,15 @@ bool SpellRecord::equals(const SpellRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
       and (memcmp(unknownOBND, other.unknownOBND, 12)==0) and (hasFULL==other.hasFULL)
-      and ((nameStringID==other.nameStringID) or (!hasFULL)) and (hasMDOB==other.hasMDOB)
-      and ((menuDisplayObjectFormID==other.menuDisplayObjectFormID) or (!hasMDOB))
+      and ((nameStringID==other.nameStringID) or (!hasFULL))
+      and (menuDisplayObjectFormID==other.menuDisplayObjectFormID)
       and (equipTypeFormID==other.equipTypeFormID) and (descriptionStringID==other.descriptionStringID)
-      and (memcmp(unknownSPIT, other.unknownSPIT, 36)==0) and (effects==other.effects));
+      and (castingCost==other.castingCost) and (flags==other.flags)
+      and (type==other.type) and (chargeTime==other.chargeTime)
+      and (castingType==other.castingType) and (delivery==other.delivery)
+      and (castDuration==other.castDuration) and (range==other.range)
+      and (castingPerkFormID==other.castingPerkFormID)
+      and (effects==other.effects));
 }
 #endif
 
@@ -73,7 +118,7 @@ uint32_t SpellRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /*FULL*/ +2 /* 2 bytes for length */ +4 /* fixed length of four bytes */;
   }
-  if (hasMDOB)
+  if (menuDisplayObjectFormID!=0)
   {
     writeSize = writeSize +4 /*MDOB*/ +2 /* 2 bytes for length */ +4 /* fixed length of four bytes */;
   }
@@ -120,7 +165,7 @@ bool SpellRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &nameStringID, 4);
   }//if has FULL
 
-  if (hasMDOB)
+  if (menuDisplayObjectFormID!=0)
   {
     //write MDOB
     output.write((const char*) &cMDOB, 4);
@@ -153,7 +198,15 @@ bool SpellRecord::saveToStream(std::ofstream& output) const
   subLength = 36; //fixed
   output.write((const char*) &subLength, 2);
   //write SPIT's stuff
-  output.write((const char*) unknownSPIT, 36);
+  output.write((const char*) &castingCost, 4);
+  output.write((const char*) &flags, 4);
+  output.write((const char*) &type, 4);
+  output.write((const char*) &chargeTime, 4);
+  output.write((const char*) &castingType, 4);
+  output.write((const char*) &delivery, 4);
+  output.write((const char*) &castDuration, 4);
+  output.write((const char*) &range, 4);
+  output.write((const char*) &castingPerkFormID, 4);
 
   if (!effects.empty())
   {
@@ -236,7 +289,7 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
   }
 
   hasFULL = false; nameStringID = 0;
-  hasMDOB = false; menuDisplayObjectFormID = 0;
+  menuDisplayObjectFormID = 0;
   bool hasReadETYP = false;
   bool hasReadDESC = false;
   bool hasReadSPIT = false;
@@ -263,7 +316,7 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
            hasFULL = true;
            break;
       case cMDOB:
-           if (hasMDOB)
+           if (menuDisplayObjectFormID!=0)
            {
              std::cout << "Error: SPEL seems to have more than one MDOB subrecord!\n";
              return false;
@@ -271,7 +324,11 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
            //read MDOB
            if (!loadUint32SubRecordFromStream(in_File, cMDOB, menuDisplayObjectFormID, false)) return false;
            bytesRead += 6;
-           hasMDOB = true;
+           if (menuDisplayObjectFormID==0)
+           {
+             std::cout << "Error: subrecord MDOB of SPEL has value zero!\n";
+             return false;
+           }
            break;
       case cETYP:
            if (hasReadETYP)
@@ -311,7 +368,15 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read SPIT's stuff
-           in_File.read((char*) unknownSPIT, 36);
+           in_File.read((char*) &castingCost, 4);
+           in_File.read((char*) &flags, 4);
+           in_File.read((char*) &type, 4);
+           in_File.read((char*) &chargeTime, 4);
+           in_File.read((char*) &castingType, 4);
+           in_File.read((char*) &delivery, 4);
+           in_File.read((char*) &castDuration, 4);
+           in_File.read((char*) &range, 4);
+           in_File.read((char*) &castingPerkFormID, 4);
            bytesRead += 36;
            if (!in_File.good())
            {
@@ -466,6 +531,37 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
 uint32_t SpellRecord::getRecordType() const
 {
   return cSPEL;
+}
+
+//flag evaluation functions
+bool SpellRecord::doesAutoCalc() const
+{
+  return ((flags & cFlagNoAutoCalc)==0);
+}
+
+bool SpellRecord::isPCStartSpell() const
+{
+  return ((flags & cFlagPCStartSpell)!=0);
+}
+
+bool SpellRecord::areaEffectIgnoresLOS() const
+{
+  return ((flags & cFlagAreaEffectIgnoresLOS)!=0);
+}
+
+bool SpellRecord::ignoresResistance() const
+{
+  return ((flags & cFlagIgnoreResistance)!=0);
+}
+
+bool SpellRecord::disallowsAbsorbAndReflect() const
+{
+  return ((flags & cFlagDisallowAbsorbReflect)!=0);
+}
+
+bool SpellRecord::noDualCastModifications() const
+{
+  return ((flags & cFlagNoDualCastModifications)!=0);
 }
 
 } //namespace

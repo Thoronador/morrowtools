@@ -60,19 +60,17 @@ ActivatorRecord::ActivatorRecord()
   destructionStructures.clear();
   keywordArray.clear();
   hasPNAM = false;
-  unknownPNAM = 0;
-  hasSNAM = false;
-  unknownSNAM = 0;
-  hasVNAM = false;
-  unknownVNAM = 0;
-  hasWNAM = false;
-  unknownWNAM = 0;
+  defaultPrimitiveColourRed = 0;
+  defaultPrimitiveColourGreen = 0;
+  defaultPrimitiveColourBlue = 0;
+  loopingSoundFormID = 0;
+  activateSoundFormID = 0;
+  waterTypeFormID = 0;
   hasRNAM = false;
   unknownRNAM = 0;
   hasFNAM = false;
   unknownFNAM = 0;
-  hasKNAM = false;
-  unknownKNAM = 0;
+  interactionKeywordFormID = 0;
 }
 
 ActivatorRecord::~ActivatorRecord()
@@ -92,13 +90,17 @@ bool ActivatorRecord::equals(const ActivatorRecord& other) const
     and (memcmp(unknownDEST, other.unknownDEST, 8)==0)
     and (destructionStructures==other.destructionStructures)
     and (keywordArray==other.keywordArray)
-    and (hasPNAM==other.hasPNAM) and ((unknownPNAM==other.unknownPNAM) or (!hasPNAM))
+    and (hasPNAM==other.hasPNAM)
+    and (((defaultPrimitiveColourRed==other.defaultPrimitiveColourRed)
+         and (defaultPrimitiveColourGreen==other.defaultPrimitiveColourGreen)
+         and (defaultPrimitiveColourBlue==other.defaultPrimitiveColourBlue))
+         or (!hasPNAM))
     and (hasFNAM==other.hasFNAM) and ((unknownFNAM==other.unknownFNAM) or (!hasFNAM))
-    and (hasSNAM==other.hasSNAM) and ((unknownSNAM==other.unknownSNAM) or (!hasSNAM))
-    and (hasVNAM==other.hasVNAM) and ((unknownVNAM==other.unknownVNAM) or (!hasVNAM))
-    and (hasWNAM==other.hasWNAM) and ((unknownWNAM==other.unknownWNAM) or (!hasWNAM))
+    and (loopingSoundFormID==other.loopingSoundFormID)
+    and (activateSoundFormID==other.activateSoundFormID)
+    and (waterTypeFormID==other.waterTypeFormID)
     and (hasRNAM==other.hasRNAM) and ((unknownRNAM==other.unknownRNAM) or (!hasRNAM))
-    and (hasKNAM==other.hasKNAM) and ((unknownKNAM==other.unknownKNAM) or (!hasKNAM)));
+    and (interactionKeywordFormID==other.interactionKeywordFormID));
 }
 #endif
 
@@ -169,15 +171,15 @@ uint32_t ActivatorRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* PNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
-  if (hasSNAM)
+  if (loopingSoundFormID!=0)
   {
     writeSize = writeSize +4 /* SNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
-  if (hasVNAM)
+  if (activateSoundFormID!=0)
   {
     writeSize = writeSize +4 /* VNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
-  if (hasWNAM)
+  if (waterTypeFormID!=0)
   {
     writeSize = writeSize +4 /* WNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
@@ -189,7 +191,7 @@ uint32_t ActivatorRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* FNAM */ +2 /* 2 bytes for length */ +2 /* fixed size */;
   }
-  if (hasKNAM)
+  if (interactionKeywordFormID!=0)
   {
     writeSize = writeSize +4 /* KNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
@@ -365,40 +367,44 @@ bool ActivatorRecord::saveToStream(std::ofstream& output) const
     subLength = 4; //fixed size
     output.write((const char*) &subLength, 2);
     //write PNAM stuff
-    output.write((const char*) &unknownPNAM, 4);
+    output.write((const char*) &defaultPrimitiveColourRed, 1);
+    output.write((const char*) &defaultPrimitiveColourGreen, 1);
+    output.write((const char*) &defaultPrimitiveColourBlue, 1);
+    const uint8_t zero = 0;
+    output.write((const char*) &zero, 1);
   }//if PNAM
 
-  if (hasSNAM)
+  if (loopingSoundFormID!=0)
   {
     //write SNAM
     output.write((const char*) &cSNAM, 4);
     //SNAM's length
     subLength = 4; //fixed size
     output.write((const char*) &subLength, 2);
-    //write SNAM stuff
-    output.write((const char*) &unknownSNAM, 4);
+    //write looping sound form ID
+    output.write((const char*) &loopingSoundFormID, 4);
   }//if SNAM
 
-  if (hasVNAM)
+  if (activateSoundFormID!=0)
   {
     //write VNAM
     output.write((const char*) &cVNAM, 4);
     //VNAM's length
     subLength = 4; //fixed size
     output.write((const char*) &subLength, 2);
-    //write VNAM stuff
-    output.write((const char*) &unknownVNAM, 4);
+    //write activate sound form ID
+    output.write((const char*) &activateSoundFormID, 4);
   }//if VNAM
 
-  if (hasWNAM)
+  if (waterTypeFormID!=0)
   {
     //write WNAM
     output.write((const char*) &cWNAM, 4);
     //WNAM's length
     subLength = 4; //fixed size
     output.write((const char*) &subLength, 2);
-    //write WNAM stuff
-    output.write((const char*) &unknownWNAM, 4);
+    //write water type's form ID
+    output.write((const char*) &waterTypeFormID, 4);
   }//if WNAM
 
   if (hasRNAM)
@@ -423,15 +429,15 @@ bool ActivatorRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &unknownFNAM, 2);
   }//if FNAM
 
-  if (hasKNAM)
+  if (interactionKeywordFormID!=0)
   {
     //write KNAM
     output.write((const char*) &cKNAM, 4);
     //KNAM's length
     subLength = 4; //fixed size
     output.write((const char*) &subLength, 2);
-    //write KNAM stuff
-    output.write((const char*) &unknownKNAM, 4);
+    //write interaction keyword's form ID
+    output.write((const char*) &interactionKeywordFormID, 4);
   }//if KNAM
 
   return output.good();
@@ -485,13 +491,14 @@ bool ActivatorRecord::loadFromStream(std::ifstream& in_File)
   destructionStructures.clear();
   hasDEST = false;
   keywordArray.clear();
-  hasKNAM = false; unknownKNAM = 0;
-  hasSNAM = false; unknownSNAM = 0;
-  hasVNAM = false; unknownVNAM = 0;
-  hasWNAM = false; unknownWNAM = 0;
+  interactionKeywordFormID = 0;
+  loopingSoundFormID = 0;
+  activateSoundFormID = 0;
+  waterTypeFormID = 0;
   hasRNAM = false; unknownRNAM = 0;
   bool hasReadOBND = false;
-  hasPNAM = false; unknownPNAM = 0;
+  hasPNAM = false; defaultPrimitiveColourRed = 0;
+    defaultPrimitiveColourGreen = 0; defaultPrimitiveColourBlue = 0;
   hasFNAM = false; unknownFNAM = 0;
 
   uint32_t k_Size, i, temp;
@@ -780,43 +787,73 @@ bool ActivatorRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: ACTI seems to have more than one PNAM subrecord.\n";
              return false;
            }
+           //PNAM's length
+           in_File.read((char*) &subLength, 2);
+           bytesRead += 2;
+           if (subLength!=4)
+           {
+             std::cout <<"Error: sub record PNAM of ACTI has invalid length ("
+                       <<subLength<<" bytes). Should be four bytes!\n";
+             return false;
+           }
            //read PNAM
-           if (!loadUint32SubRecordFromStream(in_File, cPNAM, unknownPNAM, false)) return false;
-           bytesRead += 6;
+           in_File.read((char*) &defaultPrimitiveColourRed, 1);
+           in_File.read((char*) &defaultPrimitiveColourGreen, 1);
+           in_File.read((char*) &defaultPrimitiveColourBlue, 1);
+           in_File.seekg(1, std::ios_base::cur); //skip fourth byte, it is zero anyways
+           //read PNAM
+           if (!in_File.good())
+           {
+             std::cout << "Error while reading subrecord PNAM of ACTI!\n";
+             return false;
+           }
+           bytesRead += 4;
            hasPNAM = true;
            break;
       case cSNAM:
-           if (hasSNAM)
+           if (loopingSoundFormID!=0)
            {
              std::cout << "Error: ACTI seems to have more than one SNAM subrecord.\n";
              return false;
            }
            //read SNAM
-           if (!loadUint32SubRecordFromStream(in_File, cSNAM, unknownSNAM, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cSNAM, loopingSoundFormID, false)) return false;
            bytesRead += 6;
-           hasSNAM = true;
+           if (loopingSoundFormID==0)
+           {
+             std::cout << "Error: subrecord SNAM of ACTI has value zero!\n";
+             return false;
+           }
            break;
       case cVNAM:
-           if (hasVNAM)
+           if (activateSoundFormID!=0)
            {
              std::cout << "Error: ACTI seems to have more than one VNAM subrecord.\n";
              return false;
            }
            //read VNAM
-           if (!loadUint32SubRecordFromStream(in_File, cVNAM, unknownVNAM, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cVNAM, activateSoundFormID, false)) return false;
            bytesRead += 6;
-           hasVNAM = true;
+           if (activateSoundFormID==0)
+           {
+             std::cout << "Error: subrecord VNAM of ACTI has value zero!\n";
+             return false;
+           }
            break;
       case cWNAM:
-           if (hasWNAM)
+           if (waterTypeFormID!=0)
            {
              std::cout << "Error: ACTI seems to have more than one WNAM subrecord.\n";
              return false;
            }
            //read WNAM
-           if (!loadUint32SubRecordFromStream(in_File, cWNAM, unknownWNAM, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cWNAM, waterTypeFormID, false)) return false;
            bytesRead += 6;
-           hasWNAM = true;
+           if (waterTypeFormID==0)
+           {
+             std::cout << "Error: subrecord WNAM of ACTI has value zero!\n";
+             return false;
+           }
            break;
       case cRNAM:
            if (hasRNAM)
@@ -855,15 +892,19 @@ bool ActivatorRecord::loadFromStream(std::ifstream& in_File)
            hasFNAM = true;
            break;
       case cKNAM:
-           if (hasKNAM)
+           if (interactionKeywordFormID!=0)
            {
              std::cout << "Error: ACTI seems to have more than one KNAM subrecord.\n";
              return false;
            }
            //read KNAM
-           if (!loadUint32SubRecordFromStream(in_File, cKNAM, unknownKNAM, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cKNAM, interactionKeywordFormID, false)) return false;
            bytesRead += 6;
-           hasKNAM = true;
+           if (interactionKeywordFormID==0)
+           {
+             std::cout << "Error: subrecord KNAM of ACTI has value zero!\n";
+             return false;
+           }
            break;
       default:
            std::cout << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)

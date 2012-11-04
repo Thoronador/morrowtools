@@ -94,20 +94,20 @@ struct ActivatorRecord: public BasicRecord
     uint8_t unknownDEST[8];
     std::vector<destStruct> destructionStructures;
     std::vector<uint32_t> keywordArray;
+    //subrecord PNAM
     bool hasPNAM;
-    uint32_t unknownPNAM;
-    bool hasSNAM;
-    uint32_t unknownSNAM;
-    bool hasVNAM;
-    uint32_t unknownVNAM;
-    bool hasWNAM;
-    uint32_t unknownWNAM;
+    uint8_t defaultPrimitiveColourRed;
+    uint8_t defaultPrimitiveColourGreen;
+    uint8_t defaultPrimitiveColourBlue;
+    //end of subrecord PNAM
+    uint32_t loopingSoundFormID; //subrecord SNAM
+    uint32_t activateSoundFormID; //subrecord VNAM
+    uint32_t waterTypeFormID; //subrecord WNAM
     bool hasRNAM;
     uint32_t unknownRNAM;
     bool hasFNAM;
     uint16_t unknownFNAM;
-    bool hasKNAM;
-    uint32_t unknownKNAM;
+    uint32_t interactionKeywordFormID; //subrecord KNAM
 }; //struct
 
 } //namespace

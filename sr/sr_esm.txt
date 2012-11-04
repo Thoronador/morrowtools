@@ -149,19 +149,23 @@ Records and their sub-records:
       KWDA (multiple of 4 bytes), follows KSIZ, therefore optional
           array of formIDs/uint32_t2, number of elements is specified in KSIZ
       PNAM (4 bytes, optional)
-          unknown
+          Default Primitive Colour
+          uint8_t Red
+          uint8_t Green
+          uint8_t Blue
+          uint8_t zero (seems to be always zero)
       SNAM (4 bytes, optional)
-          unknown
+          uint32_t Looping Sound Form ID (points to SNDR)
       VNAM (4 bytes, optional)
-          unknown
+          uint32_t Activate Sound Form ID (points to SNDR)
       WNAM (4 bytes, optional)
-          unknown
+          uint32_t Water Type Form ID (points to WATR)
       RNAM (4 bytes, optional)
           unknown
       FNAM (2 bytes, optional)
           unknown
       KNAM (4 bytes, optional)
-          unknown
+          uint32_t Interaction Keyword Form ID (points to KYWD)
 
 
   ADDN: AddOnNode

@@ -65,10 +65,19 @@ struct AssociationTypeRecord: public BasicRecord
     /* returns the record's type, usually its header */
     virtual uint32_t getRecordType() const;
 
+    /* flag constant */
+    static const uint32_t cFlagFamilyAssociation;
+
     std::string editorID;
     std::string maleParentType, femaleParentType;
     std::string maleChildType, femaleChildType;
-    uint32_t unknownDATA;
+    uint32_t flags; //subrecord DATA
+
+    /* returns true, if the family association flag is set */
+    inline bool isFamilyAssociation() const
+    {
+      return ((flags & cFlagFamilyAssociation)!=0);
+    }
 }; //struct
 
 } //namespace

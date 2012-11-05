@@ -27,13 +27,16 @@
 namespace SRTP
 {
 
+/* flag constants */
+const uint32_t AssociationTypeRecord::cFlagFamilyAssociation = 0x00000001;
+
 AssociationTypeRecord::AssociationTypeRecord()
 : BasicRecord()
 {
   editorID = "";
   femaleParentType = maleParentType = "";
   femaleChildType = maleChildType = "";
-  unknownDATA = 0;
+  flags = 0;
 }
 
 AssociationTypeRecord::~AssociationTypeRecord()
@@ -47,13 +50,14 @@ bool AssociationTypeRecord::equals(const AssociationTypeRecord& other) const
   return ((equalsBasic(other)) and (editorID==other.editorID)
       and (maleParentType==other.maleParentType) and (femaleParentType==other.femaleParentType)
       and (maleChildType==other.maleChildType) and (femaleChildType==other.femaleChildType)
-      and (unknownDATA==other.unknownDATA));
+      and (flags==other.flags));
 }
 #endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t AssociationTypeRecord::getWriteSize() const
 {
+  if (isDeleted()) return 0;
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
@@ -79,6 +83,7 @@ bool AssociationTypeRecord::saveToStream(std::ofstream& output) const
 {
   output.write((const char*) &cASTP, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
+  if (isDeleted()) return true;
 
   //write EDID
   output.write((const char*) &cEDID, 4);
@@ -131,8 +136,8 @@ bool AssociationTypeRecord::saveToStream(std::ofstream& output) const
   //DATA's length
   subLength = 4; //fixed size
   output.write((const char*) &subLength, 2);
-  //write DATA's stuff
-  output.write((const char*) &unknownDATA, 4);
+  //write flags
+  output.write((const char*) &flags, 4);
 
   return output.good();
 }
@@ -296,23 +301,9 @@ bool AssociationTypeRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: ASTP seems to have more than one DATA subrecord!\n";
              return false;
            }
-           //DATA's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength!=4)
-           {
-             std::cout <<"Error: sub record DATA of ASTP has invalid length("
-                       <<subLength<<" bytes). Should be four bytes!\n";
-             return false;
-           }
-           //read FCHT's stuff
-           in_File.read((char*) &unknownDATA, 4);
-           bytesRead += 4;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord DATA of ASTP!\n";
-             return false;
-           }
+           //read DATA
+           if (!loadUint32SubRecordFromStream(in_File, cDATA, flags, false)) return false;
+           bytesRead += 6;
            hasReadDATA = true;
            break;
       default:

@@ -65,8 +65,34 @@ struct RelationshipRecord: public BasicRecord
     /* returns the record's type, usually its header */
     virtual uint32_t getRecordType() const;
 
+    /* relationship level constants */
+    static const uint16_t cLover;
+    static const uint16_t cAlly;
+    static const uint16_t cConfidant;
+    static const uint16_t cFriend;
+    static const uint16_t cAcquaintance;
+    static const uint16_t cRival;
+    static const uint16_t cFoe;
+    static const uint16_t cEnemy;
+    static const uint16_t cArchnemesis;
+
+    /* flag constant */
+    static const uint16_t cFlagSecret;
+
     std::string editorID;
-    uint32_t unknownDATA[4];//subrecord DATA
+    //subrecord DATA
+    uint32_t parentNPCFormID;
+    uint32_t childNPCFormID;
+    uint16_t relationshipLevel;
+    uint16_t flags;
+    uint32_t associationTypeFormID;
+    //end of subrecord DATA
+
+    /* returns true, if the secret flag is set */
+    inline bool isSecret() const
+    {
+      return ((flags & cFlagSecret)!=0);
+    }
 }; //struct
 
 } //namespace

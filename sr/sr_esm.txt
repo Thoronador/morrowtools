@@ -364,7 +364,8 @@ Records and their sub-records:
       FCHT (string, NUL-terminated, optional)
           female child
       DATA (4 bytes)
-          unknown data, looks like some kind of flag
+          uint32_t flags
+              0x00000001 - Familiy Association
 
 
   BOOK: book
@@ -2068,10 +2069,21 @@ Records and their sub-records:
       EDID (string, NUL-terminated)
           editor ID
       DATA (16 bytes)
-          unknown data - however, it looks like four uint32_t.
-                 The first one seems to be a form ID, the second one seems to
-                 be a form ID on some occasions, the other ones seem to be some
-                 flags or counters.
+          uint32_t Parent NPC Form ID (points to NPC_)
+          uint32_t Child NPC Form ID (points to NPC_)
+          uint16_t Relationship Level
+              0x0000 - Lover
+              0x0001 - Ally
+              0x0002 - Confidant
+              0x0003 - Friend
+              0x0004 - Acquaintance
+              0x0005 - Rival
+              0x0006 - Foe
+              0x0007 - Enemy
+              0x0008 - Archnemesis
+          uint16_t Flags
+              0x8000 - Secret
+          uint32_t Association Type Form ID (points to ASTP)
 
 
   REVB: reverb information

@@ -27,11 +27,29 @@
 namespace SRTP
 {
 
+/* relationship level constants */
+const uint16_t RelationshipRecord::cLover        = 0x0000;
+const uint16_t RelationshipRecord::cAlly         = 0x0001;
+const uint16_t RelationshipRecord::cConfidant    = 0x0002;
+const uint16_t RelationshipRecord::cFriend       = 0x0003;
+const uint16_t RelationshipRecord::cAcquaintance = 0x0004;
+const uint16_t RelationshipRecord::cRival        = 0x0005;
+const uint16_t RelationshipRecord::cFoe          = 0x0006;
+const uint16_t RelationshipRecord::cEnemy        = 0x0007;
+const uint16_t RelationshipRecord::cArchnemesis  = 0x0008;
+
+/* flag constant */
+const uint16_t RelationshipRecord::cFlagSecret = 0x8000;
+
 RelationshipRecord::RelationshipRecord()
 : BasicRecord()
 {
   editorID = "";
-  unknownDATA[0] = unknownDATA[1] = unknownDATA[2] = unknownDATA[3] = 0;
+  parentNPCFormID = 0;
+  childNPCFormID = 0;
+  relationshipLevel = 0;
+  flags = 0;
+  associationTypeFormID = 0;
 }
 
 RelationshipRecord::~RelationshipRecord()
@@ -43,14 +61,16 @@ RelationshipRecord::~RelationshipRecord()
 bool RelationshipRecord::equals(const RelationshipRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
-      and (unknownDATA[0]==other.unknownDATA[0]) and (unknownDATA[1]==other.unknownDATA[1])
-      and (unknownDATA[2]==other.unknownDATA[2]) and (unknownDATA[3]==other.unknownDATA[3]));
+      and (parentNPCFormID==other.parentNPCFormID) and (childNPCFormID==other.childNPCFormID)
+      and (relationshipLevel==other.relationshipLevel) and (flags==other.flags)
+      and (associationTypeFormID==other.associationTypeFormID));
 }
 #endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t RelationshipRecord::getWriteSize() const
 {
+  if (isDeleted()) return 0;
   return (4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of string +1 byte for NUL-termination */
         +4 /* DATA */ +2 /* 2 bytes for length */ +16 /* fixed size */);
@@ -60,6 +80,7 @@ bool RelationshipRecord::saveToStream(std::ofstream& output) const
 {
   output.write((const char*) &cRELA, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
+  if (isDeleted()) return true;
 
   //write EDID
   output.write((const char*) &cEDID, 4);
@@ -75,10 +96,11 @@ bool RelationshipRecord::saveToStream(std::ofstream& output) const
   subLength = 16; //fixed size
   output.write((const char*) &subLength, 2);
   //write DATA's stuff
-  output.write((const char*) &unknownDATA[0], 4);
-  output.write((const char*) &unknownDATA[1], 4);
-  output.write((const char*) &unknownDATA[2], 4);
-  output.write((const char*) &unknownDATA[3], 4);
+  output.write((const char*) &parentNPCFormID, 4);
+  output.write((const char*) &childNPCFormID, 4);
+  output.write((const char*) &relationshipLevel, 2);
+  output.write((const char*) &flags, 2);
+  output.write((const char*) &associationTypeFormID, 4);
 
   return output.good();
 }
@@ -133,10 +155,11 @@ bool RelationshipRecord::loadFromStream(std::ifstream& in_File)
     return false;
   }
   //read DATA's stuff
-  in_File.read((char*) &unknownDATA[0], 4);
-  in_File.read((char*) &unknownDATA[1], 4);
-  in_File.read((char*) &unknownDATA[2], 4);
-  in_File.read((char*) &unknownDATA[3], 4);
+  in_File.read((char*) &parentNPCFormID, 4);
+  in_File.read((char*) &childNPCFormID, 4);
+  in_File.read((char*) &relationshipLevel, 2);
+  in_File.read((char*) &flags, 2);
+  in_File.read((char*) &associationTypeFormID, 4);
   if (!in_File.good())
   {
     std::cout << "Error while reading subrecord DATA of RELA!\n";

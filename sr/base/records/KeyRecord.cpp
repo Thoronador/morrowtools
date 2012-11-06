@@ -36,12 +36,11 @@ KeyRecord::KeyRecord()
   nameStringID = 0;
   modelPath = "";
   unknownMODT.setPresence(false);
-  hasYNAM = false;
-  unknownYNAM = 0;
-  hasZNAM = false;
-  unknownZNAM = 0;
+  pickupSoundFormID = 0;
+  putdownSoundFormID = 0;
   keywordArray.clear();
-  memset(unknownDATA, 0, 8);
+  value = 0;
+  weight = 0.0f;
 }
 
 KeyRecord::~KeyRecord()
@@ -55,16 +54,16 @@ bool KeyRecord::equals(const KeyRecord& other) const
   return ((equalsBasic(other)) and (editorID==other.editorID) and (unknownVMAD==other.unknownVMAD)
       and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
       and (nameStringID==other.nameStringID) and (modelPath==other.modelPath)
-      and (unknownMODT==other.unknownMODT) and (hasYNAM==other.hasYNAM)
-      and ((unknownYNAM==other.unknownYNAM) or (!hasYNAM)) and (hasZNAM==other.hasZNAM)
-      and ((unknownZNAM==other.unknownZNAM) or (!hasZNAM)) and (keywordArray==other.keywordArray)
-      and (memcmp(unknownDATA, other.unknownDATA, 8)==0));
+      and (unknownMODT==other.unknownMODT) and (pickupSoundFormID==other.pickupSoundFormID)
+      and (putdownSoundFormID==other.putdownSoundFormID) and (keywordArray==other.keywordArray)
+      and (value==other.value) and (weight==other.weight));
 }
 #endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t KeyRecord::getWriteSize() const
 {
+  if (isDeleted()) return 0;
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
@@ -86,11 +85,11 @@ uint32_t KeyRecord::getWriteSize() const
     writeSize = writeSize +4 /* KSIZ */ +2 /* 2 bytes for length */ +4 /* fixed length */
                           +4 /* KWDA */ +2 /* 2 bytes for length */ +4*keywordArray.size() /*data length*/ ;
   }//if keywords
-  if (hasYNAM)
+  if (pickupSoundFormID!=0)
   {
     writeSize = writeSize +4 /* YNAM */ +2 /* 2 bytes for length */ +4 /* fixed length */;
   }//if has YNAM
-  if (hasZNAM)
+  if (putdownSoundFormID!=0)
   {
     writeSize = writeSize +4 /* ZNAM */ +2 /* 2 bytes for length */ +4 /* fixed length */;
   }//if has ZNAM
@@ -101,6 +100,7 @@ bool KeyRecord::saveToStream(std::ofstream& output) const
 {
   output.write((const char*) &cKEYM, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
+  if (isDeleted()) return true;
 
   //write EDID
   output.write((const char*) &cEDID, 4);
@@ -154,35 +154,60 @@ bool KeyRecord::saveToStream(std::ofstream& output) const
     }
   }//if MODT
 
-  if (hasYNAM)
+  if (pickupSoundFormID!=0)
   {
     //write YNAM
     output.write((const char*) &cYNAM, 4);
     //YNAM's length
     subLength = 4; //fixed
     output.write((const char*) &subLength, 2);
-    //write YNAM's data
-    output.write((const char*) &unknownYNAM, 4);
+    //write pickup sound form ID
+    output.write((const char*) &pickupSoundFormID, 4);
   }//if has YNAM
 
-  if (hasZNAM)
+  if (putdownSoundFormID!=0)
   {
     //write ZNAM
     output.write((const char*) &cZNAM, 4);
     //ZNAM's length
     subLength = 4; //fixed
     output.write((const char*) &subLength, 2);
-    //write ZNAM's data
-    output.write((const char*) &unknownZNAM, 4);
+    //write putdown sound form ID
+    output.write((const char*) &putdownSoundFormID, 4);
   }//if has ZNAM
+
+  if (!keywordArray.empty())
+  {
+    //write KSIZ
+    output.write((const char*) &cKSIZ, 4);
+    //KSIZ's length
+    subLength = 4; //fixed
+    output.write((const char*) &subLength, 2);
+    //write KSIZ
+    const uint32_t k_Size = keywordArray.size();
+    output.write((const char*) &k_Size, 4);
+
+    //write KWDA
+    output.write((const char*) &cKWDA, 4);
+    //KWDA's length
+    subLength = 4*k_Size;
+    output.write((const char*) &subLength, 2);
+    //write KSIZ
+    unsigned int i;
+    for (i=0; i<k_Size; ++i)
+    {
+      output.write((const char*) &keywordArray[i], 4);
+    }//for
+  }//if keywords present
 
   //write DATA
   output.write((const char*) &cDATA, 4);
   //DATA's length
-  subLength = 12; //fixed
+  subLength = 8; //fixed
   output.write((const char*) &subLength, 2);
   //write DATA
-  output.write((const char*) unknownDATA, 8);
+  output.write((const char*) &value, 4);
+  output.write((const char*) &weight, 4);
 
   return output.good();
 }
@@ -326,8 +351,8 @@ bool KeyRecord::loadFromStream(std::ifstream& in_File)
   modelPath = std::string(buffer);
 
   unknownMODT.setPresence(false);
-  hasYNAM = false;
-  hasZNAM = false;
+  pickupSoundFormID = 0;
+  putdownSoundFormID = 0;
   keywordArray.clear();
   uint32_t i, temp, k_Size;
   bool hasReadDATA = false;
@@ -353,54 +378,36 @@ bool KeyRecord::loadFromStream(std::ifstream& in_File)
            bytesRead = bytesRead +2 +unknownMODT.getSize();
            break;
       case cYNAM:
-           if (hasYNAM)
+           if (pickupSoundFormID!=0)
            {
              std::cout << "Error: KEYM seems to have more than one YNAM subrecord!\n";
              return false;
            }
-           //YNAM's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength!=4)
+           //read YNAM
+           if (!loadUint32SubRecordFromStream(in_File, cYNAM, pickupSoundFormID, false)) return false;
+           bytesRead += 6;
+           //check value
+           if (pickupSoundFormID==0)
            {
-             std::cout <<"Error: subrecord YNAM of KEYM has invalid length ("
-                       <<subLength<<" bytes). Should be four bytes!\n";
+             std::cout <<"Error: subrecord YNAM of KEYM has value zero!\n";
              return false;
            }
-           //read YNAM's stuff
-           in_File.read((char*) &unknownYNAM, 4);
-           bytesRead += 4;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord YNAM of KEYM!\n";
-             return false;
-           }//if
-           hasYNAM = true;
            break;
       case cZNAM:
-           if (hasZNAM)
+           if (putdownSoundFormID!=0)
            {
              std::cout << "Error: KEYM seems to have more than one ZNAM subrecord!\n";
              return false;
            }
-           //ZNAM's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength!=4)
+           //read ZNAM
+           if (!loadUint32SubRecordFromStream(in_File, cZNAM, putdownSoundFormID, false)) return false;
+           bytesRead += 6;
+           //check value
+           if (putdownSoundFormID==0)
            {
-             std::cout <<"Error: subrecord ZNAM of KEYM has invalid length ("
-                       <<subLength<<" bytes). Should be four bytes!\n";
+             std::cout <<"Error: subrecord ZNAM of KEYM has value zero!\n";
              return false;
            }
-           //read ZNAM's stuff
-           in_File.read((char*) &unknownZNAM, 4);
-           bytesRead += 4;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord ZNAM of KEYM!\n";
-             return false;
-           }//if
-           hasZNAM = true;
            break;
       case cKSIZ:
            if (!keywordArray.empty())
@@ -474,7 +481,8 @@ bool KeyRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read DATA's stuff
-           in_File.read((char*) unknownDATA, 8);
+           in_File.read((char*) &value, 4);
+           in_File.read((char*) &weight, 4);
            bytesRead += 8;
            if (!in_File.good())
            {

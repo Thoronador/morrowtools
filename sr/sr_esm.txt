@@ -1138,21 +1138,22 @@ Records and their sub-records:
       OBND (12 bytes)
           unknown data
       FULL (4 bytes)
-          unknown data
+          uint32_t name string ID
       MODL (string, NUL-terminated)
           model path
       MODT (36 bytes)
           unknown data
       YNAM (4 bytes, optional)
-          unknown data
+          uint32_t Pickup Sound Form ID (points to SNDR)
       ZNAM (4 bytes, optional)
-          unknown data
+          uint32_t Putdown Sound Form ID (points to SNDR)
       KSIZ (4 bytes, optional)
           number of keywords in following KWDA
       KWDA (n*4 bytes, optional)
           array of form IDs
       DATA (8 bytes)
-          unknown data
+          uint32_t Value
+          float    Weight
 
 
   KYWD: Keyword (whatever that may be)

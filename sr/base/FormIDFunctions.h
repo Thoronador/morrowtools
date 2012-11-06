@@ -27,13 +27,13 @@
 namespace SRTP
 {
 
-// extracts the mod index from a form ID
+/* extracts the mod index from a form ID */
 uint8_t extractModIndex(const uint32_t fID);
 
-//extracts the object indef from a form ID
+/* extracts the object index from a form ID */
 uint32_t extractObjectIndex(const uint32_t fID);
 
-// returns a string representation of the form ID
+/* returns a string representation of the form ID */
 std::string getFormIDAsString(uint32_t fID);
 
 }//namespace

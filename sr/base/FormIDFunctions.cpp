@@ -45,7 +45,7 @@ std::string getFormIDAsString(uint32_t fID)
     result.insert(result.begin(), hexDigits[fID%16]);
     fID /= 16;
   }//while
-  //chek, if there are all digits
+  //check, if there are all digits
   const std::string::size_type len = result.length();
   if (len<8)
   {

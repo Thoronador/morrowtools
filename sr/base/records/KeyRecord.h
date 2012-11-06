@@ -73,12 +73,13 @@ struct KeyRecord: public BasicRecord
     uint32_t nameStringID; //subrecord FULL
     std::string modelPath;
     BinarySubRecord unknownMODT;
-    bool hasYNAM;
-    uint32_t unknownYNAM;
-    bool hasZNAM;
-    uint32_t unknownZNAM;
+    uint32_t pickupSoundFormID; //subrecord YNAM
+    uint32_t putdownSoundFormID; //subrecord ZNAM
     std::vector<uint32_t> keywordArray;
-    uint8_t unknownDATA[8];
+    //subrecord DATA
+    uint32_t value;
+    float weight;
+    //end of DATA
 }; //struct
 
 } //namespace

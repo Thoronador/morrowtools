@@ -62,17 +62,13 @@ NPCRecord::NPCRecord()
   memset(unknownOBND, 0, 12);
   memset(unknownACBS, 0, 24);
   unknownSNAMs.clear();
-  hasINAM = false;
-  unknownINAM = 0;
-  hasVTCK = false;
-  unknownVTCK = 0;
-  hasTPLT = false;
-  unknownTPLT = 0;
-  unknownRNAM = 0;
+  deathItemFormID = 0;
+  voiceTypeFormID = 0;
+  templateActorBaseFormID = 0;
+  raceFormID = 0;
   hasDEST = false;
   unknownDEST = 0;
-  hasWNAM = false;
-  unknownWNAM = 0;
+  skinFormID = 0;
   hasANAM = false;
   unknownANAM = 0;
   hasATKR = false;
@@ -89,7 +85,7 @@ NPCRecord::NPCRecord()
   memset(unknownAIDT, 0, 20);
   unknownPKIDs.clear();
   keywordArray.clear();
-  unknownCNAM = 0;
+  classFormID = 0;
   hasFULL = false;
   nameStringID = 0; //subrecord FULL
   hasSHRT = false;
@@ -98,25 +94,19 @@ NPCRecord::NPCRecord()
   unknownPNAMs.clear();
   hasHCLF = false;
   unknownHCLF = 0;
-  hasGNAM = false;
-  unknownGNAM = 0;
-  hasZNAM = false;
-  unknownZNAM = 0;
+  giftFilterFormID = 0;
+  combatStyleFormID = 0;
   unknownNAM5 = 0;
   unknownNAM6 = 0;
   unknownNAM7 = 0;
   unknownNAM8 = 0;
-  hasDOFT = false;
-  unknownDOFT = 0;
-  hasSOFT = false;
-  unknownSOFT = 0;
-  hasCRIF = false;
-  unknownCRIF = 0;
+  defaultOutfitFormID = 0;
+  sleepOutfitFormID = 0;
+  crimeFactionFormID = 0;
   hasCSCR = false;
   unknownCSCR = 0;
   unknownCSDXs.clear();
-  hasDPLT = false;
-  unknownDPLT = 0;
+  defaultPackageListFormID = 0;
   hasFTST = false;
   unknownFTST = 0;
   memset(unknownQNAM, 0, 12);
@@ -138,12 +128,12 @@ bool NPCRecord::equals(const NPCRecord& other) const
       and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
       and (memcmp(unknownACBS, other.unknownACBS, 24)==0)
       and (unknownSNAMs==other.unknownSNAMs)
-      and (hasINAM==other.hasINAM) and ((unknownINAM==other.unknownINAM) or (!hasINAM))
-      and (hasVTCK==other.hasVTCK) and ((unknownVTCK==other.unknownVTCK) or (!hasVTCK))
-      and (hasTPLT==other.hasTPLT) and ((unknownTPLT==other.unknownTPLT) or (!hasTPLT))
-      and (unknownRNAM==other.unknownRNAM)
+      and (deathItemFormID==other.deathItemFormID)
+      and (voiceTypeFormID==other.voiceTypeFormID)
+      and (templateActorBaseFormID==other.templateActorBaseFormID)
+      and (raceFormID==other.raceFormID)
       and (hasDEST==other.hasDEST) and ((unknownDEST==other.unknownDEST) or (!hasDEST))
-      and (hasWNAM==other.hasWNAM) and ((unknownWNAM==other.unknownWNAM) or (!hasWNAM))
+      and (skinFormID==other.skinFormID)
       and (hasANAM==other.hasANAM) and ((unknownANAM==other.unknownANAM) or (!hasANAM))
       and (hasATKR==other.hasATKR) and ((unknownATKR==other.unknownATKR) or (!hasATKR))
       and (unknownATKD==other.unknownATKD) and (unknownATKE==other.unknownATKE)
@@ -153,22 +143,22 @@ bool NPCRecord::equals(const NPCRecord& other) const
       and (hasECOR==other.hasECOR) and ((unknownECOR==other.unknownECOR) or (!hasECOR))
       and (memcmp(unknownAIDT, other.unknownAIDT, 20)==0)
       and (unknownPKIDs==other.unknownPKIDs) and (keywordArray==other.keywordArray)
-      and (unknownCNAM==other.unknownCNAM)
+      and (classFormID==other.classFormID)
       and (hasFULL==other.hasFULL) and ((nameStringID==other.nameStringID) or (!hasFULL))
       and (hasSHRT==other.hasSHRT) and ((unknownSHRT==other.unknownSHRT) or (!hasSHRT))
       and (memcmp(unknownDNAM, other.unknownDNAM, 52)==0)
       and (unknownPNAMs==other.unknownPNAMs)
       and (hasHCLF==other.hasHCLF) and ((unknownHCLF==other.unknownHCLF) or (!hasHCLF))
-      and (hasGNAM==other.hasGNAM) and ((unknownGNAM==other.unknownGNAM) or (!hasGNAM))
-      and (hasZNAM==other.hasZNAM) and ((unknownZNAM==other.unknownZNAM) or (!hasZNAM))
+      and (giftFilterFormID==other.giftFilterFormID)
+      and (combatStyleFormID==other.combatStyleFormID)
       and (unknownNAM5==other.unknownNAM5) and (unknownNAM6==other.unknownNAM6)
       and (unknownNAM7==other.unknownNAM7) and (unknownNAM8==other.unknownNAM8)
-      and (hasDOFT==other.hasDOFT) and ((unknownDOFT==other.unknownDOFT) or (!hasDOFT))
-      and (hasSOFT==other.hasSOFT) and ((unknownSOFT==other.unknownSOFT) or (!hasSOFT))
-      and (hasCRIF==other.hasCRIF) and ((unknownCRIF==other.unknownCRIF) or (!hasCRIF))
+      and (defaultOutfitFormID==other.defaultOutfitFormID)
+      and (sleepOutfitFormID==other.sleepOutfitFormID)
+      and (crimeFactionFormID==other.crimeFactionFormID)
       and (hasCSCR==other.hasCSCR) and ((unknownCSCR==other.unknownCSCR) or (!hasCSCR))
       and (unknownCSDXs==unknownCSDXs)
-      and (hasDPLT==other.hasDPLT) and ((unknownDPLT==other.unknownDPLT) or (!hasDPLT))
+      and (defaultPackageListFormID==other.defaultPackageListFormID)
       and (hasFTST==other.hasFTST) and ((unknownFTST==other.unknownFTST) or (!hasFTST))
       and (memcmp(unknownQNAM, other.unknownQNAM, 12)==0)
       and (unknownNAM9==other.unknownNAM9) and (unknownNAMA==other.unknownNAMA)
@@ -200,15 +190,15 @@ uint32_t NPCRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* VMAD */ +2 /* 2 bytes for length */ +unknownVMAD.getSize() /* size of subrecord */;
   }
-  if (hasINAM)
+  if (deathItemFormID!=0)
   {
     writeSize = writeSize +4 /* INAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
-  if (hasVTCK)
+  if (voiceTypeFormID!=0)
   {
     writeSize = writeSize +4 /* VTCK */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
-  if (hasTPLT)
+  if (templateActorBaseFormID!=0)
   {
     writeSize = writeSize +4 /* TPLT */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
@@ -216,7 +206,7 @@ uint32_t NPCRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* DEST */ +2 /* 2 bytes for length */ +8 /* fixed size */;
   }
-  if (hasWNAM)
+  if (skinFormID!=0)
   {
     writeSize = writeSize +4 /* WNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
@@ -280,23 +270,23 @@ uint32_t NPCRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* HCLF */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
-  if (hasGNAM)
+  if (giftFilterFormID!=0)
   {
     writeSize = writeSize +4 /* GNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
-  if (hasZNAM)
+  if (combatStyleFormID!=0)
   {
     writeSize = writeSize +4 /* ZNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
-  if (hasDOFT)
+  if (defaultOutfitFormID!=0)
   {
     writeSize = writeSize +4 /* DOFT */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
-  if (hasSOFT)
+  if (sleepOutfitFormID!=0)
   {
     writeSize = writeSize +4 /* SOFT */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
-  if (hasCRIF)
+  if (crimeFactionFormID!=0)
   {
     writeSize = writeSize +4 /* CRIF */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
@@ -310,7 +300,7 @@ uint32_t NPCRecord::getWriteSize() const
                +4 /* CSDI */ +2 /* 2 bytes for length */ +4 /* fixed size */
                +4 /* CSDC */ +2 /* 2 bytes for length */ +1 /* fixed size */);
   }
-  if (hasDPLT)
+  if (defaultPackageListFormID!=0)
   {
     writeSize = writeSize +4 /* DPLT */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
@@ -390,37 +380,37 @@ bool NPCRecord::saveToStream(std::ofstream& output) const
     }//for
   }
 
-  if (hasINAM)
+  if (deathItemFormID!=0)
   {
     //write INAM
     output.write((const char*) &cINAM, 4);
     //INAM's length
     subLength = 4; //fixed size
     output.write((const char*) &subLength, 2);
-    //write INAM
-    output.write((const char*) &unknownINAM, 4);
+    //write death item form ID
+    output.write((const char*) &deathItemFormID, 4);
   }//if INAM
 
-  if (hasVTCK)
+  if (voiceTypeFormID!=0)
   {
     //write VTCK
     output.write((const char*) &cVTCK, 4);
     //VTCK's length
     subLength = 4; //fixed size
     output.write((const char*) &subLength, 2);
-    //write VTCK
-    output.write((const char*) &unknownVTCK, 4);
+    //write voice type form ID
+    output.write((const char*) &voiceTypeFormID, 4);
   }//if VTCK
 
-  if (hasTPLT)
+  if (templateActorBaseFormID!=0)
   {
     //write TPLT
     output.write((const char*) &cTPLT, 4);
     //TPLT's length
     subLength = 4; //fixed size
     output.write((const char*) &subLength, 2);
-    //write TPLT
-    output.write((const char*) &unknownTPLT, 4);
+    //write template data's actor base form ID
+    output.write((const char*) &templateActorBaseFormID, 4);
   } //if TPLT
 
   //write RNAM
@@ -428,8 +418,8 @@ bool NPCRecord::saveToStream(std::ofstream& output) const
   //RNAM's length
   subLength = 4; //fixed size
   output.write((const char*) &subLength, 2);
-  //write RNAM
-  output.write((const char*) &unknownRNAM, 4);
+  //write race form ID
+  output.write((const char*) &raceFormID, 4);
 
   if (hasDEST)
   {
@@ -442,15 +432,15 @@ bool NPCRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &unknownDEST, 8);
   }//if DEST
 
-  if (hasWNAM)
+  if (skinFormID!=0)
   {
     //write WNAM
     output.write((const char*) &cWNAM, 4);
     //WNAM's length
     subLength = 4; //fixed size
     output.write((const char*) &subLength, 2);
-    //write WNAM
-    output.write((const char*) &unknownWNAM, 4);
+    //write skin form ID
+    output.write((const char*) &skinFormID, 4);
   }//if WNAM
 
   if (hasANAM)
@@ -645,8 +635,8 @@ bool NPCRecord::saveToStream(std::ofstream& output) const
   //CNAM's length
   subLength = 4; //fixed size
   output.write((const char*) &subLength, 2);
-  //write CNAM
-  output.write((const char*) &unknownCNAM, 4);
+  //write class form ID
+  output.write((const char*) &classFormID, 4);
 
   if (hasFULL)
   {
@@ -711,26 +701,26 @@ bool NPCRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &unknownHCLF, 4);
   }//if HCLF
 
-  if (hasGNAM)
+  if (giftFilterFormID!=0)
   {
     //write GNAM
     output.write((const char*) &cGNAM, 4);
     //GNAM's length
     subLength = 4; //fixed size
     output.write((const char*) &subLength, 2);
-    //write GNAM
-    output.write((const char*) &unknownGNAM, 4);
+    //write gift filter form ID
+    output.write((const char*) &giftFilterFormID, 4);
   }//if GNAM
 
-  if (hasZNAM)
+  if (combatStyleFormID!=0)
   {
     //write ZNAM
     output.write((const char*) &cZNAM, 4);
     //ZNAM's length
     subLength = 4; //fixed size
     output.write((const char*) &subLength, 2);
-    //write ZNAM
-    output.write((const char*) &unknownZNAM, 4);
+    //write combat style form ID
+    output.write((const char*) &combatStyleFormID, 4);
   }//if ZNAM
 
   //write NAM5
@@ -765,37 +755,37 @@ bool NPCRecord::saveToStream(std::ofstream& output) const
   //write NAM8
   output.write((const char*) &unknownNAM8, 4);
 
-  if (hasDOFT)
+  if (defaultOutfitFormID!=0)
   {
     //write DOFT
     output.write((const char*) &cDOFT, 4);
     //DOFT's length
     subLength = 4; //fixed size
     output.write((const char*) &subLength, 2);
-    //write DOFT
-    output.write((const char*) &unknownDOFT, 4);
+    //write default outfit form ID
+    output.write((const char*) &defaultOutfitFormID, 4);
   }//if DOFT
 
-  if (hasSOFT)
+  if (sleepOutfitFormID!=0)
   {
     //write SOFT
     output.write((const char*) &cSOFT, 4);
     //SOFT's length
     subLength = 4; //fixed size
     output.write((const char*) &subLength, 2);
-    //write SOFT
-    output.write((const char*) &unknownSOFT, 4);
+    //write sleep outfit form ID
+    output.write((const char*) &sleepOutfitFormID, 4);
   }//if SOFT
 
-  if (hasCRIF)
+  if (crimeFactionFormID!=0)
   {
     //write CRIF
     output.write((const char*) &cCRIF, 4);
     //CRIF's length
     subLength = 4; //fixed size
     output.write((const char*) &subLength, 2);
-    //write CRIF
-    output.write((const char*) &unknownCRIF, 4);
+    //write crime faction form ID
+    output.write((const char*) &crimeFactionFormID, 4);
   }//if CRIF
 
   if (hasCSCR)
@@ -840,15 +830,15 @@ bool NPCRecord::saveToStream(std::ofstream& output) const
     }//for
   }//if CSD? stuff
 
-  if (hasDPLT)
+  if (defaultPackageListFormID!=0)
   {
     //write DPLT
     output.write((const char*) &cDPLT, 4);
     //DPLT's length
     subLength = 4; //fixed size
     output.write((const char*) &subLength, 2);
-    //write DPLT
-    output.write((const char*) &unknownDPLT, 4);
+    //write default package list form ID
+    output.write((const char*) &defaultPackageListFormID, 4);
   }//if DPLT
 
   if (hasFTST)
@@ -1023,12 +1013,12 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
   bool hasReadACBS = false;
   unknownSNAMs.clear();
   uint64_t tempUint64;
-  hasINAM = false; unknownINAM = 0;
-  hasVTCK = false; unknownVTCK = 0;
-  hasTPLT = false; unknownTPLT = 0;
-  bool hasReadRNAM = false; unknownRNAM = 0;
+  deathItemFormID = 0;
+  voiceTypeFormID = 0;
+  templateActorBaseFormID = 0;
+  raceFormID = 0;
   hasDEST = false; unknownDEST = 0;
-  hasWNAM = false; unknownWNAM = 0;
+  skinFormID = 0;
   hasANAM = false; unknownANAM = 0;
   hasATKR = false; unknownATKR = 0;
   unknownATKD.setPresence(false);
@@ -1045,25 +1035,25 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
   bool hasReadAIDT = false;
   unknownPKIDs.clear();
   keywordArray.clear();
-  bool hasReadCNAM = false; unknownCNAM = 0;
+  classFormID = 0;
   hasFULL = false; nameStringID = 0;
   hasSHRT = false; unknownSHRT = 0;
   bool hasReadDNAM = false;
   unknownPNAMs.clear();
   hasHCLF = false; unknownHCLF = 0;
-  hasGNAM = false; unknownGNAM = 0;
-  hasZNAM = false; unknownZNAM = 0;
+  giftFilterFormID = 0;
+  combatStyleFormID = 0;
   bool hasReadNAM5 = false; unknownNAM5 = 0;
   bool hasReadNAM6 = false; unknownNAM6 = 0;
   bool hasReadNAM7 = false; unknownNAM7 = 0;
   bool hasReadNAM8 = false; unknownNAM8 = 0;
-  hasDOFT = false; unknownDOFT = 0;
-  hasSOFT = false; unknownSOFT = 0;
+  defaultOutfitFormID = 0;
+  sleepOutfitFormID = 0;
   hasCSCR = false; unknownCSCR = 0;
-  hasCRIF = false; unknownCRIF = 0;
+  crimeFactionFormID = 0;
   unknownCSDXs.clear();
   CSDXstruct tempCSDX;
-  hasDPLT = false; unknownDPLT = 0;
+  defaultPackageListFormID = 0;
   hasFTST = false; unknownFTST = 0;
   bool hasReadQNAM = false;
   unknownNAM9.setPresence(false);
@@ -1163,48 +1153,64 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
            unknownSNAMs.push_back(tempUint64);
            break;
       case cINAM:
-           if (hasINAM)
+           if (deathItemFormID!=0)
            {
              std::cout << "Error: NPC_ seems to have more than one INAM subrecord.\n";
              return false;
            }
            //read INAM
-           if (!loadUint32SubRecordFromStream(*actual_in, cINAM, unknownINAM, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cINAM, deathItemFormID, false)) return false;
            bytesRead += 6;
-           hasINAM = true;
+           if (deathItemFormID==0)
+           {
+             std::cout << "Error: subrecord INAM of NPC_ has value zero!\n";
+             return false;
+           }
            break;
       case cVTCK:
-           if (hasVTCK)
+           if (voiceTypeFormID!=0)
            {
              std::cout << "Error: NPC_ seems to have more than one VTCK subrecord.\n";
              return false;
            }
            //read VTCK
-           if (!loadUint32SubRecordFromStream(*actual_in, cVTCK, unknownVTCK, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cVTCK, voiceTypeFormID, false)) return false;
            bytesRead += 6;
-           hasVTCK = true;
+           if (voiceTypeFormID==0)
+           {
+             std::cout << "Error: subrecord VTCK of NPC_ has value zero!\n";
+             return false;
+           }
            break;
       case cTPLT:
-           if (hasTPLT)
+           if (templateActorBaseFormID)
            {
              std::cout << "Error: NPC_ seems to have more than one TPLT subrecord.\n";
              return false;
            }
            //read TPLT
-           if (!loadUint32SubRecordFromStream(*actual_in, cTPLT, unknownTPLT, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cTPLT, templateActorBaseFormID, false)) return false;
            bytesRead += 6;
-           hasTPLT = true;
+           if (templateActorBaseFormID==0)
+           {
+             std::cout << "Error: subrecord TPLT of NPC_ has value zero!\n";
+             return false;
+           }
            break;
       case cRNAM:
-           if (hasReadRNAM)
+           if (raceFormID!=0)
            {
              std::cout << "Error: NPC_ seems to have more than one RNAM subrecord.\n";
              return false;
            }
            //read RNAM
-           if (!loadUint32SubRecordFromStream(*actual_in, cRNAM, unknownRNAM, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cRNAM, raceFormID, false)) return false;
            bytesRead += 6;
-           hasReadRNAM = true;
+           if (raceFormID==0)
+           {
+             std::cout << "Error: subrecord RNAM of NPC_ has value zero!\n";
+             return false;
+           }
            break;
       case cDEST:
            if (hasDEST)
@@ -1232,15 +1238,19 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
            hasDEST = true;
            break;
       case cWNAM:
-           if (hasWNAM)
+           if (skinFormID)
            {
              std::cout << "Error: NPC_ seems to have more than one WNAM subrecord.\n";
              return false;
            }
            //read WNAM
-           if (!loadUint32SubRecordFromStream(*actual_in, cWNAM, unknownWNAM, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cWNAM, skinFormID, false)) return false;
            bytesRead += 6;
-           hasWNAM = true;
+           if (skinFormID==0)
+           {
+             std::cout << "Error: subrecord WNAM of NPC_ is zero!\n";
+             return false;
+           }
            break;
       case cANAM:
            if (hasANAM)
@@ -1565,15 +1575,19 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
            }//for
            break;
       case cCNAM:
-           if (hasReadCNAM)
+           if (classFormID!=0)
            {
              std::cout << "Error: NPC_ seems to have more than one CNAM subrecord.\n";
              return false;
            }
            //read CNAM
-           if (!loadUint32SubRecordFromStream(*actual_in, cCNAM, unknownCNAM, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cCNAM, classFormID, false)) return false;
            bytesRead += 6;
-           hasReadCNAM = true;
+           if (classFormID==0)
+           {
+             std::cout << "Error: subrecord CNAM of NPC_ is zero!\n";
+             return false;
+           }
            break;
       case cFULL:
            if (hasFULL)
@@ -1674,26 +1688,34 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
            hasHCLF = true;
            break;
       case cGNAM:
-           if (hasGNAM)
+           if (giftFilterFormID!=0)
            {
              std::cout << "Error: NPC_ seems to have more than one GNAM subrecord.\n";
              return false;
            }
            //read GNAM
-           if (!loadUint32SubRecordFromStream(*actual_in, cGNAM, unknownGNAM, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cGNAM, giftFilterFormID, false)) return false;
            bytesRead += 6;
-           hasGNAM = true;
+           if (giftFilterFormID==0)
+           {
+             std::cout << "Error: subrecord GNAM of NPC_ is zero!\n";
+             return false;
+           }
            break;
       case cZNAM:
-           if (hasZNAM)
+           if (combatStyleFormID!=0)
            {
              std::cout << "Error: NPC_ seems to have more than one ZNAM subrecord.\n";
              return false;
            }
            //read ZNAM
-           if (!loadUint32SubRecordFromStream(*actual_in, cZNAM, unknownZNAM, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cZNAM, combatStyleFormID, false)) return false;
            bytesRead += 6;
-           hasZNAM = true;
+           if (combatStyleFormID==0)
+           {
+             std::cout << "Error: subrecord ZNAM of NPC_ is zero!\n";
+             return false;
+           }
            break;
       case cNAM5:
            if (hasReadNAM5)
@@ -1754,37 +1776,49 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
            hasReadNAM8 = true;
            break;
       case cDOFT:
-           if (hasDOFT)
+           if (defaultOutfitFormID!=0)
            {
              std::cout << "Error: NPC_ seems to have more than one DOFT subrecord.\n";
              return false;
            }
            //read DOFT
-           if (!loadUint32SubRecordFromStream(*actual_in, cDOFT, unknownDOFT, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cDOFT, defaultOutfitFormID, false)) return false;
            bytesRead += 6;
-           hasDOFT = true;
+           if (defaultOutfitFormID==0)
+           {
+             std::cout << "Error: subrecord DOFT of NPC_ is zero!\n";
+             return false;
+           }
            break;
       case cSOFT:
-           if (hasSOFT)
+           if (sleepOutfitFormID!=0)
            {
              std::cout << "Error: NPC_ seems to have more than one SOFT subrecord.\n";
              return false;
            }
            //read SOFT
-           if (!loadUint32SubRecordFromStream(*actual_in, cSOFT, unknownSOFT, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cSOFT, sleepOutfitFormID, false)) return false;
            bytesRead += 6;
-           hasSOFT = true;
+           if (sleepOutfitFormID==0)
+           {
+             std::cout << "Error: subrecord SOFT of NPC_ is zero!\n";
+             return false;
+           }
            break;
       case cCRIF:
-           if (hasCRIF)
+           if (crimeFactionFormID!=0)
            {
              std::cout << "Error: NPC_ seems to have more than one CRIF subrecord.\n";
              return false;
            }
            //read CRIF
-           if (!loadUint32SubRecordFromStream(*actual_in, cCRIF, unknownCRIF, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cCRIF, crimeFactionFormID, false)) return false;
            bytesRead += 6;
-           hasCRIF = true;
+           if (crimeFactionFormID==0)
+           {
+             std::cout << "Error: subrecord CRIF of NPC_ has value zero!\n";
+             return false;
+           }
            break;
       case cCSCR:
            if (hasCSCR)
@@ -1834,15 +1868,19 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
            unknownCSDXs.push_back(tempCSDX);
            break;
       case cDPLT:
-           if (hasDPLT)
+           if (defaultPackageListFormID!=0)
            {
              std::cout << "Error: NPC_ seems to have more than one DPLT subrecord.\n";
              return false;
            }
            //read DPLT
-           if (!loadUint32SubRecordFromStream(*actual_in, cDPLT, unknownDPLT, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cDPLT, defaultPackageListFormID, false)) return false;
            bytesRead += 6;
-           hasDPLT = true;
+           if (defaultPackageListFormID==0)
+           {
+             std::cout << "Error: subrecord DPLT of NPC_ is zero!\n";
+             return false;
+           }
            break;
       case cFTST:
            if (hasFTST)
@@ -2021,8 +2059,8 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
   }//while
 
   //check presence of all required subrecords
-  if (!(hasReadOBND and hasReadACBS and hasReadRNAM and hasReadAIDT
-        and hasReadCNAM and hasReadDNAM and hasReadNAM5 and hasReadNAM6
+  if (!(hasReadOBND and hasReadACBS and (raceFormID!=0) and hasReadAIDT
+        and (classFormID!=0) and hasReadDNAM and hasReadNAM5 and hasReadNAM6
         and hasReadNAM7 and hasReadNAM8 and hasReadQNAM))
   {
     std::cout << "Error: At least one required subrecord of NPC_ was not found!\n";

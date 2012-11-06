@@ -107,17 +107,13 @@ struct NPCRecord: public BasicRecord
     uint8_t unknownOBND[12];
     uint8_t unknownACBS[24];
     std::vector<uint64_t> unknownSNAMs;
-    bool hasINAM;
-    uint32_t unknownINAM;
-    bool hasVTCK;
-    uint32_t unknownVTCK;
-    bool hasTPLT;
-    uint32_t unknownTPLT;
-    uint32_t unknownRNAM;
+    uint32_t deathItemFormID; //subrecord INAM
+    uint32_t voiceTypeFormID; //subrecord VTCK
+    uint32_t templateActorBaseFormID; //subrecord TPLT
+    uint32_t raceFormID; //subrecord RNAM
     bool hasDEST;
     uint64_t unknownDEST;
-    bool hasWNAM;
-    uint32_t unknownWNAM;
+    uint32_t skinFormID; //subrecord WNAM
     bool hasANAM;
     uint32_t unknownANAM;
     bool hasATKR;
@@ -134,7 +130,7 @@ struct NPCRecord: public BasicRecord
     uint8_t unknownAIDT[20];
     std::vector<uint32_t> unknownPKIDs;
     std::vector<uint32_t> keywordArray;
-    uint32_t unknownCNAM;
+    uint32_t classFormID; //subrecord CNAM
     bool hasFULL;
     uint32_t nameStringID; //subrecord FULL
     bool hasSHRT;
@@ -143,25 +139,19 @@ struct NPCRecord: public BasicRecord
     std::vector<uint32_t> unknownPNAMs;
     bool hasHCLF;
     uint32_t unknownHCLF;
-    bool hasGNAM;
-    uint32_t unknownGNAM;
-    bool hasZNAM;
-    uint32_t unknownZNAM;
+    uint32_t giftFilterFormID; //subrecord GNAM
+    uint32_t combatStyleFormID; //subrecord ZNAM
     uint16_t unknownNAM5;
     uint32_t unknownNAM6;
     uint32_t unknownNAM7;
     uint32_t unknownNAM8;
-    bool hasDOFT;
-    uint32_t unknownDOFT;
-    bool hasSOFT;
-    uint32_t unknownSOFT;
-    bool hasCRIF;
-    uint32_t unknownCRIF;
+    uint32_t defaultOutfitFormID; //subrecord DOFT
+    uint32_t sleepOutfitFormID; //subrecord SOFT
+    uint32_t crimeFactionFormID; //subrecord CRIF
     bool hasCSCR;
     uint32_t unknownCSCR;
     std::vector<CSDXstruct> unknownCSDXs;
-    bool hasDPLT;
-    uint32_t unknownDPLT;
+    uint32_t defaultPackageListFormID; //subrecord DPLT
     bool hasFTST;
     uint32_t unknownFTST;
     uint8_t unknownQNAM[12];

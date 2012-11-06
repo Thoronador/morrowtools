@@ -1589,17 +1589,17 @@ Records and their sub-records:
       SNAM (8 bytes, optional, can occur multiple times)
           unknown data
       INAM (4 bytes, optional)
-          unknown data
+          uint32_t Death Item Form ID (points to LVLI)
       VTCK (4 bytes, optional)
-          unknown data
+          uint32_t Voice Type Form ID (points to VTYP)
       TPLT (4 bytes, optional)
-          unknown data
+          uint32_t Template Data Actor Base Form ID (points to NPC_)
       RNAM (4 bytes)
-          unknown form ID
+          uint32_t Race Form ID (points to RACE)
       DEST (8 bytes, optional)
           unknown data
       WNAM (4 bytes, optional)
-          unknown data
+          uint32_t Skin Form ID (points to ARMO)
       ANAM (4 bytes, optional)
           unknown data
       ATKR (4 bytes, optional)
@@ -1633,7 +1633,7 @@ Records and their sub-records:
       KWDA (n * 4 bytes, optional)
           array of uint32_ts/form IDs
       CNAM (4 bytes)
-          unknown data
+          uint32_t Class Form ID (points to CLAS)
       FULL (4 bytes, optional)
           unknown data
       SHRT (4 bytes, optional)
@@ -1647,9 +1647,9 @@ Records and their sub-records:
       HCLF (4 bytes, optional)
           unknown data
       GNAM (4 bytes, optional)
-          unknown data
+          uint32_t Gift Filter Form ID (points to FLST)
       ZNAM (4 bytes, optional)
-          unknown data
+          uint32_t Combat Style Form ID (points to CSTY)
       NAM5 (2 bytes)
           unknown data
       NAM6 (4 bytes)
@@ -1659,11 +1659,11 @@ Records and their sub-records:
       NAM8 (4 bytes)
           unknown data
       DOFT (4 bytes, optional)
-          unknown data
+          uint32_t Default Outfit Form ID (points to OTFT)
       SOFT (4 bytes, optional)
-          unknown data
+          uint32_t Sleep Outfit Form ID (points to OTFT)
       CRIF (4 bytes, optional)
-          unknown data
+          uint32_t Crime Faction Form ID (points to FACT)
       CSCR (4 bytes, optional)
           unknown data
 
@@ -1677,7 +1677,7 @@ Records and their sub-records:
           ----> CSDT, CSDI and CSDC always appear in that order, forming a struct
 
       DPLT (4 bytes, optional)
-          unknown data
+          uint32_t Default Package List Form ID (points to FLST)
       FTST (4 bytes, optional)
           unknown data
       QNAM (12 bytes)

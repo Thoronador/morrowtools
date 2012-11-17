@@ -71,6 +71,12 @@ struct AlchemyPotionRecord: public BasicRecord
     virtual uint32_t getWriteSize() const;
     #endif
 
+    /* flag constants */
+    static const uint32_t cFlagNoAutoCalc;
+    static const uint32_t cFlagFoodItem;
+    static const uint32_t cFlagMedicine;
+    static const uint32_t cFlagPoison;
+
     std::string editorID;
     uint8_t unknownOBND[12];
     bool hasFULL;
@@ -79,13 +85,39 @@ struct AlchemyPotionRecord: public BasicRecord
     std::string modelPath;
     BinarySubRecord unknownMODT;
     BinarySubRecord unknownMODS;
-    bool hasYNAM;
-    uint32_t unknownYNAM;
-    bool hasZNAM;
-    uint32_t unknownZNAM;
-    uint32_t unknownDATA;
-    uint8_t unknownENIT[20];
+    uint32_t pickupSoundFormID; //subrecord YNAM
+    uint32_t putdownSoundFormID; //subrecord ZNAM
+    uint32_t equipTypeFormID; //subrecord ETYP
+    float weight; //subrecord DATA
+    //subrecord ENIT
+    uint32_t value;
+    uint32_t flags;
+    uint32_t unknownThirdENIT;
+    float    addictionChance;
+    uint32_t useSoundFormID;
+    //end of subrecord ENIT
     std::vector<EffectBlock> effects;
+
+    /* returns true, if the cost etc. are calculated automatically */
+    bool doesAutoCalc() const;
+
+    /* returns true, if the potion is a food item, according to flags */
+    inline bool isFoodItem() const
+    {
+      return ((flags & cFlagFoodItem)!=0);
+    }
+
+    /* returns true, if the potion is a medicine, according to flags */
+    inline bool isMedicine() const
+    {
+      return ((flags & cFlagMedicine)!=0);
+    }
+
+    /* returns true, if the potion is a poison, according to flags */
+    inline bool isPoison() const
+    {
+      return ((flags & cFlagPoison)!=0);
+    }
 }; //struct
 
 } //namespace

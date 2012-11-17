@@ -206,13 +206,23 @@ Records and their sub-records:
       MODT (?? bytes, optional)
           unknown data
       YNAM (4 bytes, optional)
-          unknown data
+          uint32_t Pickup Sound Form ID (points to SNDR)
       ZNAM (4 bytes, optional)
-          unknown data
+          uint32_t Putdown Sound Form ID (points to SNDR)
+      ETYP (4 bytes, optional)
+          uint32_t Equip Type Form ID (points to EQUP)
       DATA (4 bytes)
-          unknown data
+          float Weight
       ENIT (20 bytes)
-          unknown data
+          uint32_t Potion Value
+          uint32_t Flags
+              0x00000001 - Do NOT autocalculate
+              0x00000002 - Food Item
+              0x00010000 - Medicine
+              0x00020000 - Poison
+          uint32_t ??? (maybe Addiction form ID?)
+          float    Addiction Chance (ranges from 0.0 to 1.0?)
+          uint32_t Use Sound Form ID (points to SNDR)
       EFID (4 bytes)
           unknown data
       EFIT (12 bytes)

@@ -27,6 +27,12 @@
 namespace SRTP
 {
 
+/* flag constants */
+const uint32_t AlchemyPotionRecord::cFlagNoAutoCalc = 0x00000001;
+const uint32_t AlchemyPotionRecord::cFlagFoodItem   = 0x00000002;
+const uint32_t AlchemyPotionRecord::cFlagMedicine   = 0x00010000;
+const uint32_t AlchemyPotionRecord::cFlagPoison     = 0x00020000;
+
 AlchemyPotionRecord::AlchemyPotionRecord()
 : BasicRecord()
 {
@@ -38,12 +44,17 @@ AlchemyPotionRecord::AlchemyPotionRecord()
   modelPath = "";
   unknownMODT.setPresence(false);
   unknownMODS.setPresence(false);
-  hasYNAM = false;
-  unknownYNAM = 0;
-  hasZNAM = false;
-  unknownZNAM = 0;
-  unknownDATA = 0;
-  memset(unknownENIT, 0, 20);
+  pickupSoundFormID = 0;
+  putdownSoundFormID = 0;
+  equipTypeFormID = 0;
+  weight = 0.0f;
+  //subrecord ENIT
+  value = 0;
+  flags = 0;
+  unknownThirdENIT = 0;
+  addictionChance = 0.0f;
+  useSoundFormID = 0;
+  //end of ENIT
   effects.clear();
 }
 
@@ -60,10 +71,12 @@ bool AlchemyPotionRecord::equals(const AlchemyPotionRecord& other) const
       and ((nameStringID==other.nameStringID) or (!hasFULL)) and (keywordArray==other.keywordArray)
       and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
       and (unknownMODS==other.unknownMODS)
-      and (hasYNAM==other.hasYNAM) and ((unknownYNAM==other.unknownYNAM) or (!hasYNAM))
-      and (hasZNAM==other.hasZNAM) and ((unknownZNAM==other.unknownZNAM) or (!hasZNAM))
-      and (unknownDATA==other.unknownDATA)
-      and (memcmp(unknownENIT, other.unknownENIT, 20)==0)
+      and (pickupSoundFormID==other.pickupSoundFormID)
+      and (putdownSoundFormID==other.putdownSoundFormID)
+      and (equipTypeFormID==other.equipTypeFormID) and (weight==other.weight)
+      and (value==other.value) and (flags==other.flags)
+      and (unknownThirdENIT==other.unknownThirdENIT) and (addictionChance==other.addictionChance)
+      and (useSoundFormID==other.useSoundFormID)
       and (effects==other.effects));
 }
 #endif
@@ -97,14 +110,18 @@ uint32_t AlchemyPotionRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* MODS */ +2 /* 2 bytes for length */ +unknownMODS.getSize() /* length */;
   }//if MODS
-  if (hasYNAM)
+  if (pickupSoundFormID!=0)
   {
     writeSize = writeSize +4 /* YNAM */ +2 /* 2 bytes for length */ +4 /* fixed length */;
   }//if has YNAM
-  if (hasZNAM)
+  if (putdownSoundFormID!=0)
   {
     writeSize = writeSize +4 /* ZNAM */ +2 /* 2 bytes for length */ +4 /* fixed length */;
   }//if has ZNAM
+  if (equipTypeFormID!=0)
+  {
+    writeSize = writeSize +4 /* ETYP */ +2 /* 2 bytes for length */ +4 /* fixed length */;
+  }//if has ETYP
   uint32_t i;
   for (i=0; i<effects.size(); ++i)
   {
@@ -198,27 +215,46 @@ bool AlchemyPotionRecord::saveToStream(std::ofstream& output) const
     }
   }//if MODS
 
-  if (hasYNAM)
+  if (pickupSoundFormID!=0)
   {
     //write YNAM
     output.write((const char*) &cYNAM, 4);
     //YNAM's length
     subLength = 4; //fixed
     output.write((const char*) &subLength, 2);
-    //write YNAM's data
-    output.write((const char*) &unknownYNAM, 4);
+    //write pickup sound form ID
+    output.write((const char*) &pickupSoundFormID, 4);
   }//if has YNAM
 
-  if (hasZNAM)
+  if (putdownSoundFormID!=0)
   {
     //write ZNAM
     output.write((const char*) &cZNAM, 4);
     //ZNAM's length
     subLength = 4; //fixed
     output.write((const char*) &subLength, 2);
-    //write ZNAM's data
-    output.write((const char*) &unknownZNAM, 4);
+    //write putdown sound form ID
+    output.write((const char*) &putdownSoundFormID, 4);
   }//if has ZNAM
+
+  if (equipTypeFormID!=0)
+  {
+    //write ETYP
+    output.write((const char*) &cETYP, 4);
+    //ETYP's length
+    subLength = 4; //fixed
+    output.write((const char*) &subLength, 2);
+    //write equip type form ID
+    output.write((const char*) &equipTypeFormID, 4);
+  }//if has ETYP
+
+  //write DATA
+  output.write((const char*) &cDATA, 4);
+  //DATA's length
+  subLength = 4; //fixed
+  output.write((const char*) &subLength, 2);
+  //write DATA
+  output.write((const char*) &weight, 4);
 
   //write ENIT
   output.write((const char*) &cENIT, 4);
@@ -226,7 +262,11 @@ bool AlchemyPotionRecord::saveToStream(std::ofstream& output) const
   subLength = 20; //fixed
   output.write((const char*) &subLength, 2);
   //write ENIT
-  output.write((const char*) unknownENIT, 20);
+  output.write((const char*) &value, 4);
+  output.write((const char*) &flags, 4);
+  output.write((const char*) &unknownThirdENIT, 4);
+  output.write((const char*) &addictionChance, 4);
+  output.write((const char*) &useSoundFormID, 4);
 
   for (i=0; i<effects.size(); ++i)
   {
@@ -311,8 +351,9 @@ bool AlchemyPotionRecord::loadFromStream(std::ifstream& in_File)
   modelPath.clear();
   unknownMODT.setPresence(false);
   unknownMODS.setPresence(false);
-  hasYNAM = false;
-  hasZNAM = false;
+  pickupSoundFormID = 0;
+  putdownSoundFormID = 0;
+  equipTypeFormID = 0;
   bool hasReadDATA = false;
   bool hasReadENIT = false;
   effects.clear();
@@ -460,54 +501,52 @@ bool AlchemyPotionRecord::loadFromStream(std::ifstream& in_File)
            bytesRead = bytesRead +2 +unknownMODS.getSize();
            break;
       case cYNAM:
-           if (hasYNAM)
+           if (pickupSoundFormID!=0)
            {
              std::cout << "Error: ALCH seems to have more than one YNAM subrecord!\n";
              return false;
            }
-           //YNAM's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength!=4)
+           //read YNAM
+           if (!loadUint32SubRecordFromStream(in_File, cYNAM, pickupSoundFormID, false)) return false;
+           bytesRead += 6;
+           //check value
+           if (pickupSoundFormID==0)
            {
-             std::cout <<"Error: subrecord YNAM of ALCH has invalid length ("
-                       <<subLength<<" bytes). Should be four bytes!\n";
-             return false;
-           }
-           //read YNAM's stuff
-           in_File.read((char*) &unknownYNAM, 4);
-           bytesRead += 4;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord YNAM of ALCH!\n";
+             std::cout << "Error: Subrecord YNAM of ALCH has value zero!\n";
              return false;
            }//if
-           hasYNAM = true;
            break;
       case cZNAM:
-           if (hasZNAM)
+           if (putdownSoundFormID!=0)
            {
              std::cout << "Error: ALCH seems to have more than one ZNAM subrecord!\n";
              return false;
            }
-           //ZNAM's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength!=4)
+           //read ZNAM
+           if (!loadUint32SubRecordFromStream(in_File, cZNAM, putdownSoundFormID, false)) return false;
+           bytesRead += 6;
+           //check value
+           if (putdownSoundFormID==0)
            {
-             std::cout <<"Error: subrecord ZNAM of ALCH has invalid length ("
-                       <<subLength<<" bytes). Should be four bytes!\n";
-             return false;
-           }
-           //read ZNAM's stuff
-           in_File.read((char*) &unknownZNAM, 4);
-           bytesRead += 4;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord ZNAM of ALCH!\n";
+             std::cout << "Error: Subrecord ZNAM of ALCH has value zero!\n";
              return false;
            }//if
-           hasZNAM = true;
+           break;
+      case cETYP:
+           if (equipTypeFormID!=0)
+           {
+             std::cout << "Error: ALCH seems to have more than one ETYP subrecord!\n";
+             return false;
+           }
+           //read ETYP
+           if (!loadUint32SubRecordFromStream(in_File, cETYP, equipTypeFormID, false)) return false;
+           bytesRead += 6;
+           //check value
+           if (equipTypeFormID==0)
+           {
+             std::cout << "Error: Subrecord ETYP of ALCH has value zero!\n";
+             return false;
+           }//if
            break;
       case cDATA:
            if (hasReadDATA)
@@ -525,7 +564,7 @@ bool AlchemyPotionRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read DATA's stuff
-           in_File.read((char*) &unknownDATA, 4);
+           in_File.read((char*) &weight, 4);
            bytesRead += 4;
            if (!in_File.good())
            {
@@ -550,7 +589,11 @@ bool AlchemyPotionRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read ENIT's stuff
-           in_File.read((char*) unknownENIT, 20);
+           in_File.read((char*) &value, 4);
+           in_File.read((char*) &flags, 4);
+           in_File.read((char*) &unknownThirdENIT, 4);
+           in_File.read((char*) &addictionChance, 4);
+           in_File.read((char*) &useSoundFormID, 4);
            bytesRead += 20;
            if (!in_File.good())
            {
@@ -645,7 +688,7 @@ bool AlchemyPotionRecord::loadFromStream(std::ifstream& in_File)
       default:
            std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only KSIZ, MODL, MODT, MODS, YNAM, ZNAM,"
-                     << " DATA, ENIT, EFID or CTDA are allowed here!\n";
+                     << " ETYP, DATA, ENIT, EFID or CTDA are allowed here!\n";
            return false;
            break;
     }//swi
@@ -675,6 +718,11 @@ bool AlchemyPotionRecord::loadFromStream(std::ifstream& in_File)
 uint32_t AlchemyPotionRecord::getRecordType() const
 {
   return cALCH;
+}
+
+bool AlchemyPotionRecord::doesAutoCalc() const
+{
+  return ((flags & cFlagNoAutoCalc)==0);
 }
 
 } //namespace

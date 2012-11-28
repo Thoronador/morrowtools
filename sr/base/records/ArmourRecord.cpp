@@ -35,8 +35,7 @@ ArmourRecord::ArmourRecord()
   memset(unknownOBND, 0, 12);
   hasFULL = false;
   nameStringID = 0;
-  hasEITM = false;
-  unknownEITM = 0;
+  enchantingFormID = 0;
   modelPath = "";
   unknownMO2T.setPresence(false);
   unknownMO2S.setPresence(false);
@@ -44,25 +43,20 @@ ArmourRecord::ArmourRecord()
   unknownMO4T.setPresence(false);
   unknownMO4S.setPresence(false);
   unknownBODT.setPresence(false);
-  hasETYP = false;
-  unknownETYP = 0;
-  hasBIDS = false;
-  unknownBIDS = 0;
-  hasBAMT = false;
-  unknownBAMT = 0;
-  hasYNAM = false;
-  unknownYNAM = 0;
-  hasZNAM = false;
-  unknownZNAM = 0;
+  equipTypeFormID = 0;
+  blockBashImpactDataSetFormID = 0;
+  alternateBlockMaterialFormID = 0;
+  pickupSoundFormID = 0;
+  putdownSoundFormID = 0;
   unknownRNAM = 0;
   keywordArray.clear();
   hasDESC = false;
   descriptionStringID = 0;
-  unknownMODLs.clear();
-  memset(unknownDATA, 0, 8);
+  models.clear();
+  value = 0;
+  weight = 0.0f;
   unknownDNAM = 0;
-  hasTNAM = false;
-  unknownTNAM = 0;
+  templateArmorFormID = 0;
 }
 
 ArmourRecord::~ArmourRecord()
@@ -77,22 +71,22 @@ bool ArmourRecord::equals(const ArmourRecord& other) const
       and (unknownVMAD==other.unknownVMAD)
       and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
       and (hasFULL==other.hasFULL) and ((nameStringID==other.nameStringID) or (!hasFULL))
-      and (hasEITM==other.hasEITM) and ((unknownEITM==other.unknownEITM) or (!hasEITM))
+      and (enchantingFormID==other.enchantingFormID)
       and (modelPath==other.modelPath) and (unknownMO2T==other.unknownMO2T)
       and (unknownMO2S==other.unknownMO2S)
       and (mod4Path==other.mod4Path) and (unknownMO4T==other.unknownMO4T)
       and (unknownMO4S==other.unknownMO4S) and (unknownBODT==other.unknownBODT)
-      and (hasETYP==other.hasETYP) and ((unknownETYP==other.unknownETYP) or (!hasETYP))
-      and (hasBIDS==other.hasBIDS) and ((unknownBIDS==other.unknownBIDS) or (!hasBIDS))
-      and (hasBAMT==other.hasBAMT) and ((unknownBAMT==other.unknownBAMT) or (!hasBAMT))
-      and (hasYNAM==other.hasYNAM) and ((unknownYNAM==other.unknownYNAM) or (!hasYNAM))
-      and (hasZNAM==other.hasZNAM) and ((unknownZNAM==other.unknownZNAM) or (!hasZNAM))
+      and (equipTypeFormID==other.equipTypeFormID)
+      and (blockBashImpactDataSetFormID==other.blockBashImpactDataSetFormID)
+      and (alternateBlockMaterialFormID==other.alternateBlockMaterialFormID)
+      and (pickupSoundFormID==other.pickupSoundFormID)
+      and (putdownSoundFormID==other.putdownSoundFormID)
       and (unknownRNAM==other.unknownRNAM) and (keywordArray==other.keywordArray)
       and (hasDESC==other.hasDESC) and ((descriptionStringID==other.descriptionStringID) or (!hasDESC))
-      and (unknownMODLs==other.unknownMODLs)
-      and (memcmp(unknownDATA, other.unknownDATA, 8)==0)
+      and (models==other.models)
+      and (value==other.value) and (weight==other.weight)
       and (unknownDNAM==other.unknownDNAM)
-      and (hasTNAM==other.hasTNAM) and ((unknownTNAM==other.unknownTNAM) or (!hasTNAM)));
+      and (templateArmorFormID==other.templateArmorFormID));
 }
 #endif
 
@@ -103,7 +97,6 @@ uint32_t ArmourRecord::getWriteSize() const
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
         +4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed length */
-        +4 /* FULL */ +2 /* 2 bytes for length */ +4 /* fixed length */
         +4 /* RNAM */ +2 /* 2 bytes for length */ +4 /* fixed length */
         +4 /* DATA */ +2 /* 2 bytes for length */ +8 /* fixed length */
         +4 /* DNAM */ +2 /* 2 bytes for length */ +4 /* fixed length */;
@@ -111,7 +104,12 @@ uint32_t ArmourRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* VMAD */ +2 /* 2 bytes for length */ +unknownVMAD.getSize() /* length */;
   }//if VMAD
-  if (hasEITM)
+  if (hasFULL)
+  {
+    writeSize = writeSize +4 /* FULL */ +2 /* 2 bytes for length */ +4 /* fixed length */;
+  }
+
+  if (enchantingFormID!=0)
   {
     writeSize = writeSize +4 /* EITM */ +2 /* 2 bytes for length */ +4 /* fixed length */;
   }//if has EITM
@@ -145,23 +143,23 @@ uint32_t ArmourRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* BODT */ +2 /* 2 bytes for length */ +unknownBODT.getSize() /* length */;
   }//if BODT
-  if (hasETYP)
+  if (equipTypeFormID!=0)
   {
     writeSize = writeSize +4 /* ETYP */ +2 /* 2 bytes for length */ +4 /* fixed length */;
   }//if has ETYP
-  if (hasBIDS)
+  if (blockBashImpactDataSetFormID!=0)
   {
     writeSize = writeSize +4 /* BIDS */ +2 /* 2 bytes for length */ +4 /* fixed length */;
   }//if has BIDS
-  if (hasBAMT)
+  if (alternateBlockMaterialFormID!=0)
   {
     writeSize = writeSize +4 /* BAMT */ +2 /* 2 bytes for length */ +4 /* fixed length */;
   }//if has BAMT
-  if (hasYNAM)
+  if (pickupSoundFormID!=0)
   {
     writeSize = writeSize +4 /* YNAM */ +2 /* 2 bytes for length */ +4 /* fixed length */;
   }//if has YNAM
-  if (hasZNAM)
+  if (putdownSoundFormID!=0)
   {
     writeSize = writeSize +4 /* ZNAM */ +2 /* 2 bytes for length */ +4 /* fixed length */;
   }//if has ZNAM
@@ -174,11 +172,11 @@ uint32_t ArmourRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* DESC */ +2 /* 2 bytes for length */ +4 /* fixed length */;
   }//if has DESC
-  if (!unknownMODLs.empty())
+  if (!models.empty())
   {
-    writeSize = writeSize +unknownMODLs.size()*(4 /* MODL */ +2 /* 2 bytes for length */ +4 /* fixed length */);
+    writeSize = writeSize +models.size()*(4 /* MODL */ +2 /* 2 bytes for length */ +4 /* fixed length */);
   }//if keywords
-  if (hasTNAM)
+  if (templateArmorFormID!=0)
   {
     writeSize = writeSize +4 /* TNAM */ +2 /* 2 bytes for length */ +4 /* fixed length */;
   }//if has TNAM
@@ -227,15 +225,15 @@ bool ArmourRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &nameStringID, 4);
   }//if has FULL
 
-  if (hasEITM)
+  if (enchantingFormID!=0)
   {
     //write EITM
     output.write((const char*) &cEITM, 4);
     //EITM's length
     subLength = 4; //fixed
     output.write((const char*) &subLength, 2);
-    //write EITM's data
-    output.write((const char*) &unknownEITM, 4);
+    //write Enchanting form ID
+    output.write((const char*) &enchantingFormID, 4);
   }//if has EITM
 
   if (!modelPath.empty())
@@ -310,59 +308,59 @@ bool ArmourRecord::saveToStream(std::ofstream& output) const
     }
   }//if BODT
 
-  if (hasETYP)
+  if (equipTypeFormID!=0)
   {
     //write ETYP
     output.write((const char*) &cETYP, 4);
     //ETYP's length
     subLength = 4; //fixed
     output.write((const char*) &subLength, 2);
-    //write ETYP's data
-    output.write((const char*) &unknownETYP, 4);
+    //write Equip Type's form ID
+    output.write((const char*) &equipTypeFormID, 4);
   }//if has ETYP
 
-  if (hasBIDS)
+  if (blockBashImpactDataSetFormID!=0)
   {
     //write BIDS
     output.write((const char*) &cBIDS, 4);
     //BIDS's length
     subLength = 4; //fixed
     output.write((const char*) &subLength, 2);
-    //write BIDS's data
-    output.write((const char*) &unknownBIDS, 4);
+    //write Block Bash Impact Data Set's form ID
+    output.write((const char*) &blockBashImpactDataSetFormID, 4);
   }//if has BIDS
 
-  if (hasBAMT)
+  if (alternateBlockMaterialFormID!=0)
   {
     //write BAMT
     output.write((const char*) &cBAMT, 4);
     //BAMT's length
     subLength = 4; //fixed
     output.write((const char*) &subLength, 2);
-    //write BAMT's data
-    output.write((const char*) &unknownBAMT, 4);
+    //write Alternate Block Material's form ID
+    output.write((const char*) &alternateBlockMaterialFormID, 4);
   }//if has BAMT
 
-  if (hasYNAM)
+  if (pickupSoundFormID!=0)
   {
     //write YNAM
     output.write((const char*) &cYNAM, 4);
     //YNAM's length
     subLength = 4; //fixed
     output.write((const char*) &subLength, 2);
-    //write YNAM's data
-    output.write((const char*) &unknownYNAM, 4);
+    //write Pickup Sound form ID
+    output.write((const char*) &pickupSoundFormID, 4);
   }//if has YNAM
 
-  if (hasZNAM)
+  if (putdownSoundFormID!=0)
   {
     //write ZNAM
     output.write((const char*) &cZNAM, 4);
     //ZNAM's length
     subLength = 4; //fixed
     output.write((const char*) &subLength, 2);
-    //write ZNAM's data
-    output.write((const char*) &unknownZNAM, 4);
+    //write Putdown Sound Form ID
+    output.write((const char*) &putdownSoundFormID, 4);
   }//if has ZNAM
 
   //write RNAM
@@ -408,7 +406,7 @@ bool ArmourRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &descriptionStringID, 4);
   }//if has DESC
 
-  for (i=0; i<unknownMODLs.size(); ++i)
+  for (i=0; i<models.size(); ++i)
   {
     //write MODL
     output.write((const char*) &cMODL, 4);
@@ -416,7 +414,7 @@ bool ArmourRecord::saveToStream(std::ofstream& output) const
     subLength = 4; //fixed
     output.write((const char*) &subLength, 2);
     //write MODL's data
-    output.write((const char*) &(unknownMODLs[i]), 4);
+    output.write((const char*) &(models[i]), 4);
   }//for MODL
 
   //write DATA
@@ -425,7 +423,8 @@ bool ArmourRecord::saveToStream(std::ofstream& output) const
   subLength = 8; //fixed
   output.write((const char*) &subLength, 2);
   //write DATA
-  output.write((const char*) unknownDATA, 8);
+  output.write((const char*) &value, 4);
+  output.write((const char*) &weight, 4);
 
   //write DNAM
   output.write((const char*) &cDNAM, 4);
@@ -435,15 +434,15 @@ bool ArmourRecord::saveToStream(std::ofstream& output) const
   //write DNAM's data
   output.write((const char*) &unknownDNAM, 4);
 
-  if (hasTNAM)
+  if (templateArmorFormID!=0)
   {
     //write TNAM
     output.write((const char*) &cTNAM, 4);
     //TNAM's length
     subLength = 4; //fixed
     output.write((const char*) &subLength, 2);
-    //write TNAM's data
-    output.write((const char*) &unknownTNAM, 4);
+    //write Template Armor's form ID
+    output.write((const char*) &templateArmorFormID, 4);
   }//if has TNAM
 
   return output.good();
@@ -490,26 +489,26 @@ bool ArmourRecord::loadFromStream(std::ifstream& in_File)
   unknownVMAD.setPresence(false);
   bool hasReadOBND = false;
   hasFULL = false;
-  hasEITM = false;
+  enchantingFormID = 0;
   modelPath.clear();
   unknownMO2T.setPresence(false);
   unknownMO2S.setPresence(false);
   mod4Path.clear();
   unknownMO4T.setPresence(false);
   unknownBODT.setPresence(false);
-  hasETYP = false;
-  hasBIDS = false;
-  hasBAMT = false;
-  hasYNAM = false;
-  hasZNAM = false;
+  equipTypeFormID = 0;
+  blockBashImpactDataSetFormID = 0;
+  alternateBlockMaterialFormID = 0;
+  pickupSoundFormID = 0;
+  putdownSoundFormID = 0;
   bool hasReadRNAM = false;
   keywordArray.clear();
   uint32_t k_Size, i, temp;
   hasDESC = false;
-  unknownMODLs.clear();
+  models.clear();
   bool hasReadDATA = false;
   bool hasReadDNAM = false;
-  hasTNAM = false;
+  templateArmorFormID = 0;
   while (bytesRead<readSize)
   {
     //read next subrecord
@@ -582,29 +581,19 @@ bool ArmourRecord::loadFromStream(std::ifstream& in_File)
            hasFULL = true;
            break;
       case cEITM:
-           if (hasEITM)
+           if (enchantingFormID!=0)
            {
              std::cout << "Error: record ARMO seems to have more than one EITM subrecord!\n";
              return false;
            }
-           //EITM's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength!=4)
+           //read EITM
+           if (!loadUint32SubRecordFromStream(in_File, cEITM, enchantingFormID, false)) return false;
+           bytesRead += 6;
+           if (enchantingFormID==0)
            {
-             std::cout <<"Error: sub record EITM of ARMO has invalid length ("
-                       <<subLength<<" bytes). Should be four bytes!\n";
+             std::cout <<"Error: sub record EITM of ARMO is zero!\n";
              return false;
            }
-           //read EITM's stuff
-           in_File.read((char*) &unknownEITM, 4);
-           bytesRead += 4;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord EITM of ARMO!\n";
-             return false;
-           }
-           hasEITM = true;
            break;
       case cMOD2:
            if (!modelPath.empty())
@@ -734,129 +723,79 @@ bool ArmourRecord::loadFromStream(std::ifstream& in_File)
            }
            break;
       case cETYP:
-           if (hasETYP)
+           if (equipTypeFormID!=0)
            {
              std::cout << "Error: record ARMO seems to have more than one ETYP subrecord!\n";
              return false;
            }
-           //ETYP's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength!=4)
+           //read ETYP
+           if (!loadUint32SubRecordFromStream(in_File, cETYP, equipTypeFormID, false)) return false;
+           bytesRead += 6;
+           if (equipTypeFormID==0)
            {
-             std::cout <<"Error: sub record ETYP of ARMO has invalid length ("
-                       <<subLength<<" bytes). Should be four bytes!\n";
+             std::cout <<"Error: sub record ETYP of ARMO is zero!\n";
              return false;
            }
-           //read ETYP's stuff
-           in_File.read((char*) &unknownETYP, 4);
-           bytesRead += 4;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord ETYP of ARMO!\n";
-             return false;
-           }
-           hasETYP = true;
            break;
       case cBIDS:
-           if (hasBIDS)
+           if (blockBashImpactDataSetFormID!=0)
            {
              std::cout << "Error: record ARMO seems to have more than one BIDS subrecord!\n";
              return false;
            }
-           //BIDS's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength!=4)
+           //read BIDS
+           if (!loadUint32SubRecordFromStream(in_File, cBIDS, blockBashImpactDataSetFormID, false)) return false;
+           bytesRead += 6;
+           if (blockBashImpactDataSetFormID==0)
            {
-             std::cout <<"Error: sub record BIDS of ARMO has invalid length ("
-                       <<subLength<<" bytes). Should be four bytes!\n";
+             std::cout <<"Error: sub record BIDS of ARMO is zero!\n";
              return false;
            }
-           //read BIDS's stuff
-           in_File.read((char*) &unknownBIDS, 4);
-           bytesRead += 4;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord BIDS of ARMO!\n";
-             return false;
-           }
-           hasBIDS = true;
            break;
       case cBAMT:
-           if (hasBAMT)
+           if (alternateBlockMaterialFormID!=0)
            {
              std::cout << "Error: record ARMO seems to have more than one BAMT subrecord!\n";
              return false;
            }
-           //BAMT's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength!=4)
+           //read BAMT
+           if (!loadUint32SubRecordFromStream(in_File, cBAMT, alternateBlockMaterialFormID, false)) return false;
+           bytesRead += 6;
+           if (alternateBlockMaterialFormID==0)
            {
-             std::cout <<"Error: sub record BAMT of ARMO has invalid length ("
-                       <<subLength<<" bytes). Should be four bytes!\n";
+             std::cout <<"Error: sub record BAMT of ARMO is zero!\n";
              return false;
            }
-           //read BAMT's stuff
-           in_File.read((char*) &unknownBAMT, 4);
-           bytesRead += 4;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord BAMT of ARMO!\n";
-             return false;
-           }
-           hasBAMT = true;
            break;
       case cYNAM:
-           if (hasYNAM)
+           if (pickupSoundFormID!=0)
            {
              std::cout << "Error: ARMO seems to have more than one YNAM subrecord!\n";
              return false;
            }
-           //YNAM's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength!=4)
+           //read YNAM
+           if (!loadUint32SubRecordFromStream(in_File, cYNAM, pickupSoundFormID, false)) return false;
+           bytesRead += 6;
+           if (pickupSoundFormID==0)
            {
-             std::cout <<"Error: subrecord YNAM of ARMO has invalid length ("
-                       <<subLength<<" bytes). Should be four bytes!\n";
+             std::cout <<"Error: subrecord YNAM of ARMO is zero!\n";
              return false;
            }
-           //read YNAM's stuff
-           in_File.read((char*) &unknownYNAM, 4);
-           bytesRead += 4;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord YNAM of ARMO!\n";
-             return false;
-           }//if
-           hasYNAM = true;
            break;
       case cZNAM:
-           if (hasZNAM)
+           if (putdownSoundFormID!=0)
            {
              std::cout << "Error: ARMO seems to have more than one ZNAM subrecord!\n";
              return false;
            }
-           //ZNAM's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength!=4)
+           //read ZNAM
+           if (!loadUint32SubRecordFromStream(in_File, cZNAM, putdownSoundFormID, false)) return false;
+           bytesRead += 6;
+           if (putdownSoundFormID==0)
            {
-             std::cout <<"Error: subrecord ZNAM of ARMO has invalid length ("
-                       <<subLength<<" bytes). Should be four bytes!\n";
+             std::cout << "Error: subrecord ZNAM of ARMO is zero!\n";
              return false;
            }
-           //read ZNAM's stuff
-           in_File.read((char*) &unknownZNAM, 4);
-           bytesRead += 4;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord ZNAM of ARMO!\n";
-             return false;
-           }//if
-           hasZNAM = true;
            break;
       case cRNAM:
            if (hasReadRNAM)
@@ -982,7 +921,7 @@ bool ArmourRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error while reading subrecord MODL of ARMO!\n";
              return false;
            }//if
-           unknownMODLs.push_back(temp);
+           models.push_back(temp);
            break;
       case cDATA:
            if (hasReadDATA)
@@ -1000,7 +939,8 @@ bool ArmourRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read DATA's stuff
-           in_File.read((char*) unknownDATA, 8);
+           in_File.read((char*) &value, 4);
+           in_File.read((char*) &weight, 4);
            bytesRead += 8;
            if (!in_File.good())
            {
@@ -1035,29 +975,19 @@ bool ArmourRecord::loadFromStream(std::ifstream& in_File)
            hasReadDNAM = true;
            break;
       case cTNAM:
-           if (hasTNAM)
+           if (templateArmorFormID!=0)
            {
              std::cout << "Error: ARMO seems to have more than one TNAM subrecord!\n";
              return false;
            }
-           //TNAM's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength!=4)
+           //read TNAM
+           if (!loadUint32SubRecordFromStream(in_File, cTNAM, templateArmorFormID, false)) return false;
+           bytesRead += 6;
+           if (templateArmorFormID==4)
            {
-             std::cout <<"Error: subrecord TNAM of ARMO has invalid length ("
-                       <<subLength<<" bytes). Should be four bytes!\n";
+             std::cout <<"Error: subrecord TNAM of ARMO is zero!\n";
              return false;
            }
-           //read TNAM's stuff
-           in_File.read((char*) &unknownTNAM, 4);
-           bytesRead += 4;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord TNAM of ARMO!\n";
-             return false;
-           }//if
-           hasTNAM = true;
            break;
       default:
            std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)

@@ -73,8 +73,7 @@ struct ArmourRecord: public BasicRecord
     uint8_t unknownOBND[12];
     bool hasFULL;
     uint32_t nameStringID; //subrecord FULL
-    bool hasEITM;
-    uint32_t unknownEITM;
+    uint32_t enchantingFormID; //subrecord EITM
     std::string modelPath;
     BinarySubRecord unknownMO2T;
     BinarySubRecord unknownMO2S;
@@ -82,25 +81,22 @@ struct ArmourRecord: public BasicRecord
     BinarySubRecord unknownMO4T;
     BinarySubRecord unknownMO4S;
     BinarySubRecord unknownBODT;
-    bool hasETYP;
-    uint32_t unknownETYP;
-    bool hasBIDS;
-    uint32_t unknownBIDS;
-    bool hasBAMT;
-    uint32_t unknownBAMT;
-    bool hasYNAM;
-    uint32_t unknownYNAM;
-    bool hasZNAM;
-    uint32_t unknownZNAM;
+    uint32_t equipTypeFormID; //subrecord ETYP
+    uint32_t blockBashImpactDataSetFormID; //subrecord BIDS
+    uint32_t alternateBlockMaterialFormID; //subrecord BAMT
+    uint32_t pickupSoundFormID; //subrecord YNAM
+    uint32_t putdownSoundFormID; //subrecord ZNAM
     uint32_t unknownRNAM;
     std::vector<uint32_t> keywordArray;
     bool hasDESC;
     uint32_t descriptionStringID; //subrecord DESC
-    std::vector<uint32_t> unknownMODLs;
-    uint8_t unknownDATA[8];
+    std::vector<uint32_t> models; //subrecords MODL
+    //subrecor DATA
+    uint32_t value;
+    float weight;
+    //end of DATA
     uint32_t unknownDNAM;
-    bool hasTNAM;
-    uint32_t unknownTNAM;
+    uint32_t templateArmorFormID; //subrecord TNAM
 }; //struct
 
 } //namespace

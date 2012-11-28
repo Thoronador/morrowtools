@@ -293,7 +293,7 @@ Records and their sub-records:
       FULL (4 bytes, optional)
           string ID of name
       EITM (4 bytes, optional)
-          unknown data
+          uint32_t Enchanting form ID (points to ENCH)
       MOD2 (string, NUL-terminated, optional)
           model path
       MO2T (size varies, optional)
@@ -309,15 +309,15 @@ Records and their sub-records:
       BODT (12 bytes or 8 bytes)
           unknown data
       ETYP (4 bytes, optional)
-          unknown data
+          uint32_t Equip Type Form ID (points to EQUP)
       BIDS (4 bytes, optional)
-          unknown data
+          uint32_t Block Bash Impact Data Set Form ID (points to IPDS)
       BAMT (4 bytes, optional)
-          unknown data
+          uint32_t Alternate Block Material Form ID (points to MATT)
       YNAM (4 bytes, optional)
-          unknown data
+          uint32_t Pickup Sound Form ID (points to SNDR)
       ZNAM (4 bytes, optional)
-          unknown data
+          uint32_t Putdown Sound Form ID (points to SNDR)
       RNAM (4 bytes)
           unknown data
       KSIZ (4 bytes, optional)
@@ -327,13 +327,14 @@ Records and their sub-records:
       DESC (4 bytes, optional)
           string ID of description (mostly zero, i.e. unused)
       MODL (4 bytes, can occur 1+ times)
-          unknown data
+          uint32_t Model Form ID (points to ARMA)
       DATA (8 bytes)
-          unknown data
+          uint32_t value
+          float    weight
       DNAM (4 bytes)
           unknown data
       TNAM (4 bytes, optional)
-          unknown data
+          uint32_t Template Armor form ID (points to ARMO)
 
 
   ARTO: art object

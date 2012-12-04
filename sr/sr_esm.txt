@@ -1471,15 +1471,96 @@ Records and their sub-records:
       FULL (4 bytes, optional)
           string ID of effect's full name
       MDOB (4 bytes, optional)
-          unknown
+          uint32_t Menu Display Object Form ID (points to STAT)
       KSIZ (4 bytes, optional)
           number of form IDs in following KWDA
       KWDA (n * 4 bytes, optional)
           array of form IDs, number given by KSIZ field
       DATA (152 bytes)
-          unknown data
-      SNDD (size varies, optional)
-          unknown data
+          uint32_t flags
+            0x00000001 - Hostile
+            0x00000002 - Recover
+            0x00000004 - Detrimetral
+            0x00000010 - No Hit Event
+            0x00000100 - Dispel Effects
+            0x00000200 - No Duration
+            0x00000400 - No Magnitude
+            0x00000800 - No Area
+            0x00001000 - FX Persist
+            0x00004000 - Gory Visuals
+            0x00008000 - Hide in UI
+            0x00020000 - No Recast
+            0x00200000 - Power Affects Magnitude
+            0x00400000 - Power Affects Duration
+            0x04000000 - Painless
+            0x08000000 - No Hit Effect
+            0x10000000 - No Death Dispel
+            0x???????? - Snap to NavMesh
+          float BaseCost
+          uint32_t unknown03
+          uint32_t Magic Skill
+            0x00000012 - Alteration
+            0x00000013 - Conjuration
+            0x00000014 - Destruction
+            0x00000015 - Illusion
+            0x00000016 - Restoration
+            0xFFFFFFFF - None
+          uint32_t unknown05
+          uint32_t unknown06
+          uint32_t unknown07
+          float    Taper Weight
+          uint32_t Hit Shader Form ID (points to EFSH)
+          uint32_t Enchant Shader Form ID (points to EFSH)
+          uint32_t Skill Level
+          uint32_t Area
+          float    Casting Time
+          float    Taper Curve
+          float    Taper Duration
+          uint32_t unknown16
+          uint32_t unknown17
+          uint32_t Assoc. Item 1
+          uint32_t Projectile Form ID (points to PROJ)
+          uint32_t Explosion Form ID (points to EXPL)
+          uint32_t Casting Type
+            0x00000000 - Constant Effect
+            0x00000001 - Fire and Forget
+            0x00000002 - Concentration
+          uint32_t Delivery Type
+            0x00000000 - Self
+            0x00000001 - Contact
+            0x00000002 - Aimed
+            0x00000003 - Target Actor
+            0x00000004 - Target Location
+          uint32_t unknown23
+          uint32_t Casting Art Form ID (points to ARTO)
+          uint32_t Hit Effect Art Form ID (points to ARTO)
+          uint32_t Impact Data Set Form ID (points to IPDS)
+          float    Skill Usage Mult
+          uint32_t Dual Casting Art (points to DUAL)
+          float    Dual Casting Scale
+          uint32_t Enchant Art Form ID (points to ARTO)
+          uint32_t unknown31
+          uint32_t unknown32
+          uint32_t Equip Ability Form ID (points to SPEL)
+          uint32_t Image Space Mod Form ID (points to IMAD)
+          uint32_t Perk Form ID (points to PERK)
+          uint32_t Casting Sound Level
+            0x00000000 - Loud
+            0x00000001 - Normal
+            0x00000002 - Silent
+            0x00000003 - Very Loud
+          float Script Effect AI Data - Score
+          float Script Effect AI Data - Delay Time
+      SNDD (size varies, integral multiple of 8 bytes, optional)
+          array of sound type and sound form IDs
+            uint32_t Sound Type
+              0x00000000 - Draw/Sheathe
+              0x00000001 - Charge
+              0x00000002 - Ready
+              0x00000003 - Release
+              0x00000004 - Cast Loop (Conc.)
+              0x00000005 - OnHit
+            uint32_t Sound Form ID (points to SNDR)
       DNAM (4 bytes)
           string ID of effect's description
       CTDA (32 bytes, optional, can occur multiple times)

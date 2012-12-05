@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2012 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -18,35 +18,35 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SR_REFERENCERECORD_H
-#define SR_REFERENCERECORD_H
+#ifndef SR_SIMPLIFIEDREFERENCERECORD_H
+#define SR_SIMPLIFIEDREFERENCERECORD_H
 
-#include <string>
-#include <vector>
 #include "BasicRecord.h"
-#include "BinarySubRecord.h"
-#include "SubBlock.h"
 
 namespace SRTP
 {
 
-struct ReferenceRecord: public BasicRecord
+struct SimplifiedReferenceRecord: public BasicRecord
 {
   public:
     /* constructor */
-    ReferenceRecord();
+    SimplifiedReferenceRecord();
 
     /* destructor */
-    virtual ~ReferenceRecord();
+    virtual ~SimplifiedReferenceRecord();
 
     #ifndef SR_NO_RECORD_EQUALITY
     /* returns true, if the other record contains the same data */
-    bool equals(const ReferenceRecord& other) const;
+    bool equals(const SimplifiedReferenceRecord& other) const;
     #endif
 
     #ifndef SR_UNSAVEABLE_RECORDS
     /* returns the size in bytes that the record's data would occupy in a file
        stream, NOT including the header data
+
+       remarks:
+           This function will always return zero.
+           See the remarks on saveToStream() for a further explanation.
     */
     virtual uint32_t getWriteSize() const;
 
@@ -54,6 +54,13 @@ struct ReferenceRecord: public BasicRecord
 
       parameters:
           output   - the output file stream
+
+      remarks:
+          This function will always return false, because the
+           SimplifiedReferenceRecord class cannot be saved to stream. Saving the
+           incomplete data that is available in this record would result in an
+           unreadable or invalid record, at least for the original Skyrim
+           engine. Therefore, saveToStream() does nothing and returns false.
     */
     virtual bool saveToStream(std::ofstream& output) const;
     #endif
@@ -68,30 +75,9 @@ struct ReferenceRecord: public BasicRecord
     /* returns the record's type, usually its header */
     virtual uint32_t getRecordType() const;
 
-    std::string editorID;
-    BinarySubRecord unknownVMAD;
     uint32_t baseObjectFormID;
-    BinarySubRecord unknownXTEL;
-    bool hasXNDP;
-    uint64_t unknownXNDP;
-    std::vector<std::vector<uint32_t> > unknownXLKRs;
-    bool hasXESP;
-    uint64_t unknownXESP;
-    bool hasXEMI;
-    uint32_t unknownXEMI;
-    BinarySubRecord unknownXPRM;
-    BinarySubRecord unknownXLOC;
-    float unknownXSCL;
-    bool hasXPRD;
-    uint32_t unknownXPRD;
-    bool hasINAM;
-    uint32_t unknownINAM;
-    bool hasPDTO;
-    uint64_t unknownPDTO;
-    std::vector<SubBlock> subBlocks;
-    uint8_t unknownDATA[24];
 }; //struct
 
 } //namespace
 
-#endif // SR_REFERENCERECORD_H
+#endif // SR_SIMPLIFIEDREFERENCERECORD_H

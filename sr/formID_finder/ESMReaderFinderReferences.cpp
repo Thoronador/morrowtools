@@ -23,7 +23,7 @@
 #include "../base/WorldSpaces.h"
 #include "../base/SR_Constants.h"
 #include "../base/records/CharacterReferenceRecord.h"
-#include "../base/records/ReferenceRecord.h"
+#include "../base/records/SimplifiedReferenceRecord.h"
 
 namespace SRTP
 {
@@ -81,7 +81,7 @@ void ESMReaderFinderReferences::groupFinished(const GroupData& g_data)
 int ESMReaderFinderReferences::readNextRecord(std::ifstream& in_File, const uint32_t recName)
 {
   #warning Not completely implemented yet!
-  BasicRecord * recPtr;
+  SimplifiedReferenceRecord * recPtr;
   switch (recName)
   {
     case cCELL:
@@ -91,10 +91,8 @@ int ESMReaderFinderReferences::readNextRecord(std::ifstream& in_File, const uint
          return WorldSpaces::getSingleton().readNextRecord(in_File);
          break;
     case cREFR:
-         recPtr = new ReferenceRecord;
-         break;
     case cACHR:
-         recPtr = new CharacterReferenceRecord;
+         recPtr = new SimplifiedReferenceRecord;
          break;
     default:
          return skipRecord(in_File);
@@ -106,15 +104,8 @@ int ESMReaderFinderReferences::readNextRecord(std::ifstream& in_File, const uint
     std::cout << "ESMReaderFinderReferences::readNextRecord: Error while reading reference record!\n";
     return -1;
   }
-  switch (recName)
-  {
-    case cREFR:
-         refMap[static_cast<ReferenceRecord*>(recPtr)->unknownNAME].push_back(CellRefIDPair(m_CellStack.back(), recPtr->headerFormID));
-         break;
-    case cACHR:
-         refMap[static_cast<CharacterReferenceRecord*>(recPtr)->baseObjectFormID].push_back(CellRefIDPair(m_CellStack.back(), recPtr->headerFormID));
-         break;
-  }
+  //save form IDs in refMap
+  refMap[recPtr->baseObjectFormID].push_back(CellRefIDPair(m_CellStack.back(), recPtr->headerFormID));
   delete recPtr;
   return 1;
 }

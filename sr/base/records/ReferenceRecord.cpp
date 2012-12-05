@@ -32,7 +32,7 @@ ReferenceRecord::ReferenceRecord()
 {
   editorID = "";
   unknownVMAD.setPresence(false);
-  unknownNAME = 0;
+  baseObjectFormID = 0;
   unknownXTEL.setPresence(false);
   hasXNDP = false;
   unknownXNDP = 0;
@@ -153,7 +153,7 @@ uint32_t ReferenceRecord::getWriteSize() const
       writeSize = writeSize + 4 /* label */ +2 /* 2 bytes for length */ +subBlocks[i].subData.getSize() /* size of data*/;
     }
   }//for
-  return 0;
+  return writeSize;
 }
 
 bool ReferenceRecord::saveToStream(std::ofstream& output) const
@@ -356,7 +356,7 @@ bool ReferenceRecord::loadFromStream(std::ifstream& in_File)
 
   editorID.clear();
   unknownVMAD.setPresence(false);
-  bool hasReadNAME = false; unknownNAME = 0;
+  bool hasReadNAME = false; baseObjectFormID = 0;
   unknownXTEL.setPresence(false);
   hasXNDP = false; unknownXNDP = 0;
   unknownXLKRs.clear();
@@ -426,7 +426,7 @@ bool ReferenceRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read NAME
-           if (!loadUint32SubRecordFromStream(in_File, cNAME, unknownNAME, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cNAME, baseObjectFormID, false)) return false;
            bytesRead += 6;
            hasReadNAME = true;
            break;

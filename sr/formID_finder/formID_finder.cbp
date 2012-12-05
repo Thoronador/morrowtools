@@ -105,8 +105,6 @@
 		<Unit filename="..\base\records\CTDAData.h" />
 		<Unit filename="..\base\records\CellRecord.cpp" />
 		<Unit filename="..\base\records\CellRecord.h" />
-		<Unit filename="..\base\records\CharacterReferenceRecord.cpp" />
-		<Unit filename="..\base\records\CharacterReferenceRecord.h" />
 		<Unit filename="..\base\records\ComponentData.cpp" />
 		<Unit filename="..\base\records\ComponentData.h" />
 		<Unit filename="..\base\records\ContainerRecord.cpp" />
@@ -131,12 +129,12 @@
 		<Unit filename="..\base\records\PerkRecord.h" />
 		<Unit filename="..\base\records\QuestRecord.cpp" />
 		<Unit filename="..\base\records\QuestRecord.h" />
-		<Unit filename="..\base\records\ReferenceRecord.cpp" />
-		<Unit filename="..\base\records\ReferenceRecord.h" />
 		<Unit filename="..\base\records\ScrollRecord.cpp" />
 		<Unit filename="..\base\records\ScrollRecord.h" />
 		<Unit filename="..\base\records\ShoutRecord.cpp" />
 		<Unit filename="..\base\records\ShoutRecord.h" />
+		<Unit filename="..\base\records\SimplifiedReferenceRecord.cpp" />
+		<Unit filename="..\base\records\SimplifiedReferenceRecord.h" />
 		<Unit filename="..\base\records\SoulGemRecord.cpp" />
 		<Unit filename="..\base\records\SoulGemRecord.h" />
 		<Unit filename="..\base\records\SpellRecord.cpp" />

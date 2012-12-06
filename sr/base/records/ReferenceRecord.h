@@ -70,7 +70,7 @@ struct ReferenceRecord: public BasicRecord
 
     std::string editorID;
     BinarySubRecord unknownVMAD;
-    uint32_t baseObjectFormID;
+    uint32_t baseObjectFormID; //subrecord NAME
     BinarySubRecord unknownXTEL;
     bool hasXNDP;
     uint64_t unknownXNDP;

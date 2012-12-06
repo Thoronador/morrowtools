@@ -68,6 +68,20 @@ struct FactionRecord: public BasicRecord
     /* returns the record's type, usually its header */
     virtual uint32_t getRecordType() const;
 
+    /* flag constants */
+    static const uint32_t cFlagHiddenFromPC;
+    static const uint32_t cFlagSpecialCombat;
+    static const uint32_t cFlagTrackCrime;
+    static const uint32_t cFlagIgnoresMurder;
+    static const uint32_t cFlagIgnoresAssault;
+    static const uint32_t cFlagIgnoresStealing;
+    static const uint32_t cFlagIgnoresTrespass;
+    static const uint32_t cFlagDoNotReportCrimesAgainstMembers;
+    static const uint32_t cFlagIgnoresPickpocket;
+    static const uint32_t cFlagVendor;
+    static const uint32_t cFlagCanBeOwner;
+    static const uint32_t cFlagIgnoresWerewolf;
+
     /* group combat reaction constants */
     static const uint32_t ReactionNeutral;
     static const uint32_t ReactionEnemy;
@@ -96,11 +110,28 @@ struct FactionRecord: public BasicRecord
       bool operator==(const RankData& other) const;
     };//struct
 
+    //structure for vendor stuff
+    struct VendorData
+    {
+      /* flag constants */
+      static const uint32_t cFlagOnlyBuysStolenItems;
+      static const uint32_t cFlagNotBuySell;
+
+      uint16_t startHour;
+      uint16_t endHour;
+      uint32_t radius;
+      uint32_t flagsVendor;
+
+      bool isPresent;
+      /* equality operator */
+      bool operator==(const VendorData& other) const;
+    };//struct
+
     std::string editorID;
     std::vector<InterfactionRelation> relations; //subrecords XNAM
     bool hasFULL;
     uint32_t nameStringID; //subrecord FULL
-    uint32_t unknownDATA;
+    uint32_t flags; //subrecord DATA
     uint32_t exteriorJailMarkerRefID; //subrecord JAIL
     uint32_t followerWaitMarkerRefID; //subrecord WAIT
     uint32_t stolenGoodsContainerRefID; //subrecord STOL
@@ -109,13 +140,17 @@ struct FactionRecord: public BasicRecord
     uint32_t jailOutfitFormID; //subrecord JOUT, opt.
     BinarySubRecord unknownCRVA; //subrecord CRVA
     std::vector<RankData> ranks; //subrecord RNAM/MNAM/FNAM
-    bool hasVEND;
-    uint32_t unknownVEND;
-    bool hasVENC;
-    uint32_t unknownVENC;
-    BinarySubRecord unknownVENV;
+    uint32_t vendorListFormID; //subrecord VEND
+    uint32_t vendorContainterFormID; //subrecord VENC
+    VendorData vendorStuff; //subrecord VENV
     BinarySubRecord unknownPLVD;
     std::vector<CTDA_CIS2_compound> conditions; //subrecords CITC and CTDA(s)+CIS2(s)
+
+    /* returns true, if the NPC is a vendor according to the set flags */
+    inline bool isVendor() const
+    {
+      return ((cFlagVendor&flags)!=0);
+    }
 }; //struct
 
 } //namespace

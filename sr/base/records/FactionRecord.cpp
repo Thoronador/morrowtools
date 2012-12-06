@@ -27,17 +27,44 @@
 namespace SRTP
 {
 
+/* flag constants */
+const uint32_t FactionRecord::cFlagHiddenFromPC                    = 0x00000001;
+const uint32_t FactionRecord::cFlagSpecialCombat                   = 0x00000002;
+const uint32_t FactionRecord::cFlagTrackCrime                      = 0x00000040;
+const uint32_t FactionRecord::cFlagIgnoresMurder                   = 0x00000080;
+const uint32_t FactionRecord::cFlagIgnoresAssault                  = 0x00000100;
+const uint32_t FactionRecord::cFlagIgnoresStealing                 = 0x00000200;
+const uint32_t FactionRecord::cFlagIgnoresTrespass                 = 0x00000400;
+const uint32_t FactionRecord::cFlagDoNotReportCrimesAgainstMembers = 0x00000800;
+const uint32_t FactionRecord::cFlagIgnoresPickpocket               = 0x00002000;
+const uint32_t FactionRecord::cFlagVendor                          = 0x00004000;
+const uint32_t FactionRecord::cFlagCanBeOwner                      = 0x00008000;
+const uint32_t FactionRecord::cFlagIgnoresWerewolf                 = 0x00010000;
+
 /* group combat reaction constants */
 const uint32_t FactionRecord::ReactionNeutral = 0x00000000;
 const uint32_t FactionRecord::ReactionEnemy   = 0x00000001;
 const uint32_t FactionRecord::ReactionAlly    = 0x00000002;
 const uint32_t FactionRecord::ReactionFriend  = 0x00000003;
 
+/* vendor flag constants */
+const uint32_t FactionRecord::VendorData::cFlagOnlyBuysStolenItems = 0x00000001;
+const uint32_t FactionRecord::VendorData::cFlagNotBuySell          = 0x00000100;
+
 /* InterfactionRelation's functions */
 bool FactionRecord::InterfactionRelation::operator==(const FactionRecord::InterfactionRelation& other) const
 {
   return ((factionFormID==other.factionFormID) and (mod==other.mod)
       and (groupCombatReaction==other.groupCombatReaction));
+}
+
+/* VendorData's functions */
+bool FactionRecord::VendorData::operator==(const VendorData& other) const
+{
+  if (isPresent!=other.isPresent) return false;
+  if (!isPresent) return true;
+  return ((startHour==other.startHour) and (endHour==other.endHour)
+      and (radius==other.radius) and (flagsVendor==other.flagsVendor));
 }
 
 /* RankData's functions */
@@ -56,7 +83,7 @@ FactionRecord::FactionRecord()
   relations.clear(); //subrecords XNAM
   hasFULL = false;
   nameStringID = 0; //subrecord FULL
-  unknownDATA = 0;
+  flags = 0;
   exteriorJailMarkerRefID = 0; //subrecord JAIL opt.
   followerWaitMarkerRefID = 0; //subrecord WAIT, opt.
   stolenGoodsContainerRefID = 0; //subrecord STOL, opt.
@@ -65,11 +92,14 @@ FactionRecord::FactionRecord()
   jailOutfitFormID = 0; //subrecord JOUT, opt.
   unknownCRVA.setPresence(false); //subrecord CRVA, opt.
   ranks.clear();
-  hasVEND = false;
-  unknownVEND = 0;
-  hasVENC = false;
-  unknownVENC = 0;
-  unknownVENV.setPresence(false);
+  vendorListFormID = 0;
+  vendorContainterFormID = 0;
+  //VENV
+  vendorStuff.startHour = 0;
+  vendorStuff.endHour = 0;
+  vendorStuff.radius = 0;
+  vendorStuff.flagsVendor = 0;
+  //end of VENV
   unknownPLVD.setPresence(false);
   conditions.clear();
 }
@@ -85,7 +115,7 @@ bool FactionRecord::equals(const FactionRecord& other) const
   return ((equalsBasic(other)) and (editorID==other.editorID)
       and (relations==other.relations)
       and (hasFULL==other.hasFULL) and ((nameStringID==other.nameStringID) or (!hasFULL))
-      and (unknownDATA==other.unknownDATA)
+      and (flags==other.flags)
       and (exteriorJailMarkerRefID==other.exteriorJailMarkerRefID)
       and (followerWaitMarkerRefID==other.followerWaitMarkerRefID)
       and (stolenGoodsContainerRefID==other.stolenGoodsContainerRefID)
@@ -93,9 +123,9 @@ bool FactionRecord::equals(const FactionRecord& other) const
       and (crimeFactionListFormID==other.crimeFactionListFormID)
       and (jailOutfitFormID==other.jailOutfitFormID)
       and (unknownCRVA==other.unknownCRVA) and (ranks==other.ranks)
-      and (hasVEND==other.hasVEND) and ((unknownVEND==other.unknownVEND) or (!hasVEND))
-      and (hasVENC==other.hasVENC) and ((unknownVENC==other.unknownVENC) or (!hasVENC))
-      and (unknownVENV==other.unknownVENV) and (unknownPLVD==other.unknownPLVD)
+      and (vendorListFormID==other.vendorListFormID)
+      and (vendorContainterFormID==other.vendorContainterFormID)
+      and (vendorStuff==other.vendorStuff) and (unknownPLVD==other.unknownPLVD)
       and (conditions==other.conditions));
 }
 #endif
@@ -157,17 +187,17 @@ uint32_t FactionRecord::getWriteSize() const
       }
     }//for
   }//if ranks
-  if (hasVEND)
+  if (vendorListFormID!=0)
   {
     writeSize = writeSize +4 /* VEND */ +2 /* 2 bytes for length */ +4 /* fixed length of four bytes */;
   }//if VEND
-  if (hasVENC)
+  if (vendorContainterFormID!=0)
   {
     writeSize = writeSize +4 /* VENC */ +2 /* 2 bytes for length */ +4 /* fixed length of four bytes */;
   }//if VENC
-  if (unknownVENV.isPresent())
+  if (vendorStuff.isPresent)
   {
-    writeSize = writeSize +4 /* VENV */ +2 /* 2 bytes for length */ +unknownVENV.getSize() /* length */;
+    writeSize = writeSize +4 /* VENV */ +2 /* 2 bytes for length */ +12 /* fixed length of 12 bytes */;
   }//if VENV
   if (unknownPLVD.isPresent())
   {
@@ -232,8 +262,8 @@ bool FactionRecord::saveToStream(std::ofstream& output) const
   //DATA's length
   subLength = 4; //fixed
   output.write((const char*) &subLength, 2);
-  //write DATA's data :P
-  output.write((const char*) &unknownDATA, 4);
+  //write DATA's data :P (or flags, for short)
+  output.write((const char*) &flags, 4);
 
   if (exteriorJailMarkerRefID!=0)
   {
@@ -347,37 +377,41 @@ bool FactionRecord::saveToStream(std::ofstream& output) const
     }//for
   }//if ranks
 
-  if (hasVEND)
+  if (vendorListFormID!=0)
   {
     //write VEND
     output.write((const char*) &cVEND, 4);
     //VEND's length
     subLength = 4; //fixed
     output.write((const char*) &subLength, 2);
-    //write VEND's data
-    output.write((const char*) &unknownVEND, 4);
+    //write vendor list's form ID
+    output.write((const char*) &vendorListFormID, 4);
   }//if has VEND
 
-  if (hasVENC)
+  if (vendorContainterFormID!=0)
   {
     //write VENC
     output.write((const char*) &cVENC, 4);
     //VENC's length
     subLength = 4; //fixed
     output.write((const char*) &subLength, 2);
-    //write VENC's data
-    output.write((const char*) &unknownVENC, 4);
+    //write Vendor Containter's form ID
+    output.write((const char*) &vendorContainterFormID, 4);
   }//if has VENC
 
 
-  if (unknownVENV.isPresent())
+  if (vendorStuff.isPresent)
   {
     //write VENV
-    if (!unknownVENV.saveToStream(output, cVENV))
-    {
-      std::cout << "Error while writing subrecord VENV of FACT!\n";
-      return false;
-    }//if
+    output.write((const char*) &cVENV, 4);
+    //VENV's length
+    subLength = 12; //fixed
+    output.write((const char*) &subLength, 2);
+    //write vendor stuff
+    output.write((const char*) &vendorStuff.startHour, 2);
+    output.write((const char*) &vendorStuff.endHour, 2);
+    output.write((const char*) &vendorStuff.radius, 4);
+    output.write((const char*) &vendorStuff.flagsVendor, 4);
   }//if VENV
 
   if (unknownPLVD.isPresent())
@@ -458,7 +492,7 @@ bool FactionRecord::loadFromStream(std::ifstream& in_File)
   InterfactionRelation tempInterfacRel;
   hasFULL = false; nameStringID = 0;
   bool hasReadDATA = false;
-  unknownDATA = 0;
+  flags = 0;
   exteriorJailMarkerRefID = 0; //subrecord JAIL
   followerWaitMarkerRefID = 0; //subrecord WAIT
   stolenGoodsContainerRefID = 0; //subrecord STOL
@@ -469,9 +503,15 @@ bool FactionRecord::loadFromStream(std::ifstream& in_File)
   ranks.clear();
   RankData tempRank;
   bool hasUnpushedRank = false;
-  hasVEND = false; unknownVEND = 0;
-  hasVENC = false; unknownVENC = 0;
-  unknownVENV.setPresence(false);
+  vendorListFormID = 0;
+  vendorContainterFormID = 0;
+  //VENV
+  vendorStuff.startHour = 0;
+  vendorStuff.endHour = 0;
+  vendorStuff.radius = 0;
+  vendorStuff.flagsVendor = 0;
+  vendorStuff.isPresent = false;
+  //end of VENV
   unknownPLVD.setPresence(false);
   conditions.clear();
   CTDA_CIS2_compound tempCTDA_CIS2;
@@ -525,7 +565,7 @@ bool FactionRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: FACT seems to have more than one DATA subrecord!\n";
              return false;
            }
-           if (!loadUint32SubRecordFromStream(in_File, cDATA, unknownDATA, false))
+           if (!loadUint32SubRecordFromStream(in_File, cDATA, flags, false))
            {
              return false;
            }
@@ -728,51 +768,66 @@ bool FactionRecord::loadFromStream(std::ifstream& in_File)
            }
            break;
       case cVEND:
-           if (hasVEND)
+           if (vendorListFormID!=0)
            {
              std::cout << "Error: FACT seems to have more than one VEND subrecord!\n";
              return false;
            }
-           if (!loadUint32SubRecordFromStream(in_File, cVEND, unknownVEND, false))
+           if (!loadUint32SubRecordFromStream(in_File, cVEND, vendorListFormID, false))
            {
              return false;
            }
            bytesRead += 6;
-           hasVEND = true;
+           if (vendorListFormID==0)
+           {
+             std::cout << "Error: subrecord VEND of FACT has value zero!\n";
+             return false;
+           }
            break;
       case cVENC:
-           if (hasVENC)
+           if (vendorContainterFormID!=0)
            {
              std::cout << "Error: FACT seems to have more than one VENC subrecord!\n";
              return false;
            }
-           if (!loadUint32SubRecordFromStream(in_File, cVENC, unknownVENC, false))
+           if (!loadUint32SubRecordFromStream(in_File, cVENC, vendorContainterFormID, false))
            {
              return false;
            }
            bytesRead += 6;
-           hasVENC = true;
+           if (vendorContainterFormID==0)
+           {
+             std::cout << "Error: subrecord VENC of FACT has value zero!\n";
+             return false;
+           }
            break;
       case cVENV:
-           if (unknownVENV.isPresent())
+           if (vendorStuff.isPresent)
            {
              std::cout << "Error: FACT seems to have more than one VENV subrecord!\n";
              return false;
            }
-           //read VENV
-           if (!unknownVENV.loadFromStream(in_File, cVENV, false))
+           //VENV's length
+           in_File.read((char*) &subLength, 2);
+           bytesRead += 2;
+           if (subLength!=12)
+           {
+             std::cout <<"Error: subrecord VENV of FACT has invalid length ("
+                       <<subLength <<" bytes). Should be 12 bytes!\n";
+             return false;
+           }
+           //read VENV's stuff
+           in_File.read((char*) &(vendorStuff.startHour), 2);
+           in_File.read((char*) &(vendorStuff.endHour), 2);
+           in_File.read((char*) &(vendorStuff.radius), 4);
+           in_File.read((char*) &(vendorStuff.flagsVendor), 4);
+           bytesRead += 12;
+           if (!in_File.good())
            {
              std::cout << "Error while reading subrecord VENV of FACT!\n";
              return false;
            }
-           //check VENV's length
-           if (unknownVENV.getSize()!=12)
-           {
-             std::cout <<"Error: subrecord VENV of FACT has invalid length ("
-                       <<unknownVENV.getSize() <<" bytes). Should be 12 bytes!\n";
-             return false;
-           }
-           bytesRead += (2+12);
+           vendorStuff.isPresent = true;
            break;
       case cPLVD:
            if (unknownPLVD.isPresent())

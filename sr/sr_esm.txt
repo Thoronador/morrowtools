@@ -856,7 +856,19 @@ Records and their sub-records:
       FULL (4 bytes, optional)
           faction name string ID
       DATA (4 bytes)
-          unknown data
+          uint32_t flags
+            0x00000001 - Hidden from PC
+            0x00000002 - Special Combat
+            0x00000040 - Track Crime
+            0x00000080 - Ignores crimes against non-members: Murder
+            0x00000100 - Ignores crimes against non-members: Assault
+            0x00000200 - Ignores crimes against non-members: Stealing
+            0x00000400 - Ignores crimes against non-members: Trespass
+            0x00000800 - Do not report crimes against members
+            0x00002000 - Ignores crimes against non-members: Pickpocket
+            0x00004000 - Vendor
+            0x00008000 - Can Be Owner
+            0x00010000 - Ignores crimes against non-members: Werewolf
       JAIL (4 bytes, optional)
           exterior jail marker form ID (reference ID)
       WAIT (4 bytes, optional)
@@ -882,12 +894,17 @@ Records and their sub-records:
           ----> RNAM/MNAM/FNAM always seem to form triplets (or pairs in absence of FNAM).
 
       VEND (4 bytes, optional)
-          unknown data, possibly form ID
+          uint32_t Vendor Buy/Sell List Form ID (points to FLST)
       VENC (4 bytes, optional)
-          unknown data, possibly form ID
+          uint32_t Merchant Containter Form ID (points to REFR)
       VENV (12 bytes, optional)
-          unknown data
-          (looks like form ID, uint32_t, uint32_t (count/rank/flags?))
+          Vendor Data
+          uint16_t Start Hour
+          uint16_t End Hour
+          uint32_t Radius
+          uint32_t vendor flags?
+            0x00000001 - Only Buys Stolen Items
+            0x00000100 - Not Buy/Sell
       PLVD (12 bytes, optional)
           unknown data
       CITC (4 bytes, optional)

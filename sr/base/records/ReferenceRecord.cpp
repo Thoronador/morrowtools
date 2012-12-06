@@ -64,7 +64,7 @@ bool ReferenceRecord::equals(const ReferenceRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
       and (unknownVMAD==other.unknownVMAD)
-      and (unknownNAME==other.unknownNAME) and (unknownXTEL==other.unknownXTEL)
+      and (baseObjectFormID==other.baseObjectFormID) and (unknownXTEL==other.unknownXTEL)
       and (hasXNDP==other.hasXNDP) and ((unknownXNDP==other.unknownXNDP) or (!hasXNDP))
       and (unknownXLKRs==other.unknownXLKRs)
       and (hasXESP==other.hasXESP) and ((unknownXESP==other.unknownXESP) or (!hasXESP))
@@ -188,8 +188,8 @@ bool ReferenceRecord::saveToStream(std::ofstream& output) const
   //NAME's length
   subLength = 4; //fixed size
   output.write((const char*) &subLength, 2);
-  //write NAME
-  output.write((const char*) &unknownNAME, 4);
+  //write base object's form ID
+  output.write((const char*) &baseObjectFormID, 4);
 
   if (unknownXTEL.isPresent())
   {

@@ -1696,7 +1696,8 @@ Records and their sub-records:
       ACBS (24 bytes)
           unknown data
       SNAM (8 bytes, optional, can occur multiple times)
-          unknown data
+          uint32_t Faction Form ID (points to FACT)
+          uint32_t Rank
       INAM (4 bytes, optional)
           uint32_t Death Item Form ID (points to LVLI)
       VTCK (4 bytes, optional)
@@ -1710,7 +1711,7 @@ Records and their sub-records:
       WNAM (4 bytes, optional)
           uint32_t Skin Form ID (points to ARMO)
       ANAM (4 bytes, optional)
-          unknown data
+          uint32_t Far Away Model Skin (points to ARMO)
       ATKR (4 bytes, optional)
           unknown data
       ATKD (44 bytes, optional)
@@ -1730,9 +1731,9 @@ Records and their sub-records:
       CNTO (8 bytes, optional, can occur multiple times)
           form ID of an item an count thereof (both uint32_t)
       SPOR (4 bytes, optional)
-          unknown data
+          uint32_t Spectator Override Package List Form ID (points to FLST)
       ECOR (4 bytes, optional)
-          unknown data
+          uint32_t Combat Override Package List Form ID (points to FLST)
       AIDT (20 bytes)
           AI data
       PKID (4 bytes, optional, can occur multiple times)
@@ -1754,7 +1755,7 @@ Records and their sub-records:
       PNAM (4 bytes, optional, can occur multiple times)
           unknown data
       HCLF (4 bytes, optional)
-          unknown data
+          uint32_t Hair Color Form ID (points to CLFM)
       GNAM (4 bytes, optional)
           uint32_t Gift Filter Form ID (points to FLST)
       ZNAM (4 bytes, optional)
@@ -1774,7 +1775,7 @@ Records and their sub-records:
       CRIF (4 bytes, optional)
           uint32_t Crime Faction Form ID (points to FACT)
       CSCR (4 bytes, optional)
-          unknown data
+          uint32_t Inherits Sounds From ... (points to NPC_), audio template
 
       CSDT (4 bytes, optional, can occur multiple times)
           unknown data
@@ -1788,7 +1789,7 @@ Records and their sub-records:
       DPLT (4 bytes, optional)
           uint32_t Default Package List Form ID (points to FLST)
       FTST (4 bytes, optional)
-          unknown data
+          uint32_t Face Complexion Form ID (points to TXST)
       QNAM (12 bytes)
           unknown data
       NAM9 (76 bytes, optional)

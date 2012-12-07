@@ -66,16 +66,6 @@ struct LeveledItemRecord: public LeveledListBaseRecord
     /* returns the record's type, usually its header */
     virtual uint32_t getRecordType() const;
 
-    struct LeveledListEntry
-    {
-      uint32_t level;
-      uint32_t formID;
-      uint32_t count;
-
-      /* comparison operator */
-      bool operator==(const LeveledListEntry& other) const;
-    };//struct
-
     //flag constants
     //static const uint8_t cFlagCalcFromAllLevels;
     //static const uint8_t cFlagCalcForEach; --> both flags in base class

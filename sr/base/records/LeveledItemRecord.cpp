@@ -31,11 +31,6 @@ namespace SRTP
 const uint8_t LeveledItemRecord::cFlagUseAll            = 0x04;
 const uint8_t LeveledItemRecord::cFlagSpecialLoot       = 0x08;
 
-bool LeveledItemRecord::LeveledListEntry::operator==(const LeveledItemRecord::LeveledListEntry& other) const
-{
-  return ((level==other.level) and (formID==other.formID) and (count==other.count));
-}
-
 LeveledItemRecord::LeveledItemRecord()
 : LeveledListBaseRecord()
 {

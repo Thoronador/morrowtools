@@ -336,14 +336,6 @@ bool LeveledItemRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: record LVLI seems to have more LVLO subrecords than the LLCT value indicates!\n";
              return false;
            }
-           //read LVLO
-           in_File.read((char*) &subRecName, 4);
-           bytesRead += 4;
-           if (subRecName!=cLVLO)
-           {
-             UnexpectedRecord(cLVLO, subRecName);
-             return false;
-           }
            //LVLO's length
            in_File.read((char*) &subLength, 2);
            bytesRead += 2;

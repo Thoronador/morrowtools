@@ -45,6 +45,7 @@
 #include "records/CraftableObjectRecord.h"
 #include "records/DebrisRecord.h"
 #include "records/DialogBranchRecord.h"
+#include "records/DialogueRecord.h"
 #include "records/DialogViewRecord.h"
 #include "records/DOBJRecord.h"
 #include "records/DoorRecord.h"
@@ -212,6 +213,9 @@ int ESMReaderContentsAll::readNextRecord(std::ifstream& in_File, const uint32_t 
          break;
     case cDEBR:
          recPtr = new DebrisRecord;
+         break;
+    case cDIAL:
+         recPtr = new DialogueRecord;
          break;
     case cDLBR:
          recPtr = new DialogBranchRecord;

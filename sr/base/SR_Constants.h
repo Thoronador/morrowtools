@@ -108,6 +108,7 @@ const uint32_t cDATA = 0x41544144; //"DATA" = 44 41 54 41
 const uint32_t cDEBR = 0x52424544; //"DEBR" = 44 45 42 52
 const uint32_t cDESC = 0x43534544; //"DESC" = 44 45 53 43
 const uint32_t cDEST = 0x54534544; //"DEST" = 44 45 53 54
+const uint32_t cDIAL = 0x4C414944; //"DIAL" = 44 49 41 4C
 const uint32_t cDLBR = 0x52424C44; //"DLBR" = 44 4C 42 52
 const uint32_t cDLVW = 0x57564C44; //"DLVW" = 44 4C 56 57
 const uint32_t cDMDL = 0x4C444D44; //"DMDL" = 44 4D 44 4C
@@ -304,6 +305,7 @@ const uint32_t cSTOL = 0x4C4F5453; //"STOL" = 53 54 4F 4C
 const uint32_t cTACT = 0x54434154; //"TACT" = 54 41 43 54
 const uint32_t cTES4 = 0x34534554; //"TES4" = 54 45 53 34
 const uint32_t cTIAS = 0x53414954; //"TIAS" = 54 49 41 53
+const uint32_t cTIFC = 0x43464954; //"TIFC" = 54 49 46 43
 const uint32_t cTINC = 0x434E4954; //"TINC" = 54 49 4E 43
 const uint32_t cTINI = 0x494E4954; //"TINI" = 54 49 4E 49
 const uint32_t cTINV = 0x564E4954; //"TINV" = 54 49 4E 56

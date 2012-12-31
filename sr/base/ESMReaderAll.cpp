@@ -47,6 +47,7 @@
 #include "CraftableObjects.h"
 #include "Debris.h"
 #include "DialogBranches.h"
+#include "Dialogues.h"
 #include "DialogViews.h"
 #include "DOBJRecords.h"
 #include "Doors.h"
@@ -222,6 +223,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const uint32_t recName)
          break;
     case cDEBR:
          return Debris::getSingleton().readNextRecord(in_File);
+         break;
+    case cDIAL:
+         return Dialogues::getSingleton().readNextRecord(in_File);
          break;
     case cDLBR:
          return DialogBranches::getSingleton().readNextRecord(in_File);

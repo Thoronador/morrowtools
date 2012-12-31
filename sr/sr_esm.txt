@@ -677,6 +677,25 @@ Records and their sub-records:
             MODT is an optional component in those pairs.
 
 
+  DIAL: dialogue record
+      EDID (string, NUL-terminated, optional)
+          editor ID
+      FULL (4 bytes, optional)
+          uint32_t string ID
+      PNAM (4 bytes)
+          unknown
+      BNAM (4 bytes, optional)
+          uint32_t dialogue branch form ID (points to DLBR)
+      QNAM (4 bytes)
+          unknown
+      DATA (4 bytes)
+          unknown
+      SNAM (4 bytes)
+          unknown, seems like char[4]
+      TIFC (4 bytes)
+          uint32_t counter
+
+
   DLBR: dialog branch(?)
       EDID (string, NUL-terminated)
           editorID

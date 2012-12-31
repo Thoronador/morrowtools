@@ -66,6 +66,7 @@
 #include "records/HeadPartRecord.h"
 #include "records/ImageSpaceModifierRecord.h"
 #include "records/ImageSpaceRecord.h"
+#include "records/ImpactDataRecord.h"
 #include "records/ImpactDataSetRecord.h"
 #include "records/IngredientRecord.h"
 #include "records/KeyRecord.h"
@@ -276,6 +277,9 @@ int ESMReaderContentsAll::readNextRecord(std::ifstream& in_File, const uint32_t 
          break;
     case cIMGS:
          recPtr = new ImageSpaceRecord;
+         break;
+    case cIPCT:
+         recPtr = new ImpactDataRecord;
          break;
     case cIPDS:
          recPtr = new ImpactDataSetRecord;

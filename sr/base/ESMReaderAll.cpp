@@ -68,6 +68,7 @@
 #include "HeadParts.h"
 #include "ImageSpaceModifiers.h"
 #include "ImageSpaces.h"
+#include "ImpactData.h"
 #include "ImpactDataSets.h"
 #include "Ingredients.h"
 #include "Keys.h"
@@ -286,6 +287,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const uint32_t recName)
          break;
     case cIMGS:
          return ImageSpaces::getSingleton().readNextRecord(in_File);
+         break;
+    case cIPCT:
+         return ImpactData::getSingleton().readNextRecord(in_File);
          break;
     case cIPDS:
          return ImpactDataSets::getSingleton().readNextRecord(in_File);

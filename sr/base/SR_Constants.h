@@ -168,6 +168,7 @@ const uint32_t cINAM = 0x4D414E49; //"INAM" = 49 4E 41 4D
 const uint32_t cINDX = 0x58444E49; //"INDX" = 49 4E 44 58
 const uint32_t cINGR = 0x52474E49; //"INGR" = 49 4E 47 52
 const uint32_t cINTV = 0x56544E49; //"INTV" = 49 4E 54 56
+const uint32_t cIPCT = 0x54435049; //"IPCT" = 49 50 43 54
 const uint32_t cIPDS = 0x53445049; //"IPDS" = 49 50 44 53
 const uint32_t cITXT = 0x54585449; //"ITXT" = 49 54 58 54
 const uint32_t cJAIL = 0x4C49414A; //"JAIL" = 4A 41 49 4C

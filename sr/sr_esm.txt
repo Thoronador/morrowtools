@@ -1151,6 +1151,52 @@ Records and their sub-records:
        --> EFID and EFIT (and no CTDAs) seem to form blocks, that occur exactly four times
 
 
+  IPCT: impact data
+      EDID (string, NUL-terminated)
+          editorID
+      MODL (string, NUL-terminated, optional)
+          model path
+      MODT (size varies, optional)
+          unknown data
+      DATA (24 bytes)
+          unknown data, but looks like:
+            float    Effect Duration
+            uint32_t flags?
+                0x00000002 - ???
+            float    Angle Treshold
+            float    Placement Radius
+            uint32_t Sound Level
+                0x00000000 - Loud
+                0x00000001 - Normal
+                0x00000002 - Silent
+                0x00000003 - Very Loud
+            uint32_t ??? (flags)
+      DODT (36 bytes)
+          decal data
+          float    Min Width
+          float    Max Width
+          float    Min Height
+          float    Max Height
+          float    Depth
+          float    Shininess
+          float    Parallax Scale
+          uint32_t Parallax Passes
+          uint8_t  Color Red
+          uint8_t  Color Green
+          uint8_t  Color Blue
+          uint8_t  Zeroes
+      DNAM (4 bytes, optional)
+          uint32_t Texture Set form ID (points to TXST)
+      ENAM (4 bytes, optional)
+          uint32_t Secondary Texture Set form ID (points to TXST)
+      SNAM (4 bytes, optional)
+          uint32_t Impact Sound 1 form ID (points to SNDR)
+      NAM1 (4 bytes, optional)
+          uint32_t Impact Sound 2 form ID (points to SNDR)
+      NAM2 (4 bytes, optional)
+          uint32_t Effect Hazard form ID (points to HAZD)
+
+
   IPDS: impact data set
       EDID (string, NUL-terminated)
           editorID

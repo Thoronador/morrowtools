@@ -48,6 +48,7 @@
 #include "Debris.h"
 #include "DialogBranches.h"
 #include "DialogViews.h"
+#include "DOBJRecords.h"
 #include "Doors.h"
 #include "DualCastData.h"
 #include "EffectShaders.h"
@@ -227,6 +228,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const uint32_t recName)
          break;
     case cDLVW:
          return DialogViews::getSingleton().readNextRecord(in_File);
+         break;
+    case cDOBJ:
+         return DOBJRecords::getSingleton().readNextRecord(in_File);
          break;
     case cDOOR:
          return Doors::getSingleton().readNextRecord(in_File);

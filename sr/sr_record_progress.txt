@@ -31,7 +31,7 @@ DEBR - done
 DIAL - to do!
 DLBR - done
 DLVW - done
-DOBJ - to do!
+DOBJ - done
 DOOR - done
 DUAL - done
 ECZN - done
@@ -123,5 +123,5 @@ WTHR - to do!
 
 =============
 Total: 119
-To do:  20 (ca. 16.8%)
-Done :  99 (ca. 83.2%)
+To do:  19 (ca. 16.0%)
+Done : 100 (ca. 84.0%)

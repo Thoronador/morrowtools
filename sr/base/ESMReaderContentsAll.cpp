@@ -46,6 +46,7 @@
 #include "records/DebrisRecord.h"
 #include "records/DialogBranchRecord.h"
 #include "records/DialogViewRecord.h"
+#include "records/DOBJRecord.h"
 #include "records/DoorRecord.h"
 #include "records/DualCastDataRecord.h"
 #include "records/EffectShaderRecord.h"
@@ -217,6 +218,9 @@ int ESMReaderContentsAll::readNextRecord(std::ifstream& in_File, const uint32_t 
          break;
     case cDLVW:
          recPtr = new DialogViewRecord;
+         break;
+    case cDOBJ:
+         recPtr = new DOBJRecord;
          break;
     case cDOOR:
          recPtr = new DoorRecord;

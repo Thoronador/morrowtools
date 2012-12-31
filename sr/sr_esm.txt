@@ -708,6 +708,13 @@ Records and their sub-records:
           unknown data
 
 
+  DOBJ: unknown record type
+      DNAM (2424 bytes)
+        array of 8-byte elements:
+          char[4]  label
+          uint32_t formID
+
+
   DOOR: door
       EDID (string, NUL-terminated)
           editorID

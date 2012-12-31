@@ -114,6 +114,7 @@ const uint32_t cDMDL = 0x4C444D44; //"DMDL" = 44 4D 44 4C
 const uint32_t cDMDS = 0x53444D44; //"DMDS" = 44 4D 44 53
 const uint32_t cDMDT = 0x54444D44; //"DMDT" = 44 4D 44 54
 const uint32_t cDNAM = 0x4D414E44; //"DNAM" = 44 4E 41 4D
+const uint32_t cDOBJ = 0x4A424F44; //"DOBJ" = 44 4F 42 4A
 const uint32_t cDODT = 0x54444F44; //"DODT" = 44 4F 44 54
 const uint32_t cDOFT = 0x54464F44; //"DOFT" = 44 4F 46 54
 const uint32_t cDOOR = 0x524F4F44; //"DOOR" = 44 4F 4F 52

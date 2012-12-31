@@ -1178,7 +1178,7 @@ Records and their sub-records:
                 0x00000002 - Silent
                 0x00000003 - Very Loud
             uint32_t ??? (flags)
-      DODT (36 bytes)
+      DODT (36 bytes, optional)
           decal data
           float    Min Width
           float    Max Width

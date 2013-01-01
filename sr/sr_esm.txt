@@ -610,11 +610,31 @@ Records and their sub-records:
       COED (12 bytes, optional)
           unknown data
       DATA (5 bytes)
-          unknown data
+          flags and camera zoom settings
+            0x00 - Camera Zoom: Default
+            0x01 - Camera Zoom: Disable
+            0x02 - Camera Zoom: Shot List
+            0x80 - inverse(!) "Must have Camera Shots" flag
       SNAM (4 bytes, optional)
           unknown data
       QNAM (4 bytes, optional)
           unknown data
+
+
+  CPTH: camera path
+      EDID (string, NUL-terminated)
+          editor ID
+      CTDA (20 bytes, can occur multiple times)
+          unknown data
+      CIS1 (string, NUL-terminated, optional)
+          var name(?)
+      ANAM (8 bytes)
+          uint32_t parent camera path form ID (points to CPTH)
+          uint32_t next camera path form ID (points to CPTH)
+      DATA (1 byte)
+          uint8_t unknown data
+      SNAM (4 bytes, can occur multiple times)
+          uint32_t camera shot form ID (points to CAMS)
 
 
   CSTY: combat style

@@ -86,6 +86,36 @@ struct CTDA_CIS2_compound
   #endif
 }; //struct
 
+struct CTDA_CIS1_compound
+{
+  CTDAData unknownCTDA;
+  std::string unknownCIS1;
+
+  /* constructor */
+  CTDA_CIS1_compound();
+
+  /* alternative constructor */
+  CTDA_CIS1_compound(const CTDAData& ctda, const std::string& cis1);
+
+  /* equality operator */
+  bool operator==(const CTDA_CIS1_compound& other) const;
+
+  #ifndef SR_UNSAVEABLE_RECORDS
+  /* tries to save the CTDA_CIS1 compound to the given stream and returns true
+     in case of success, false on failure
+
+     parameters:
+          output   - the output file stream
+  */
+  bool saveToStream(std::ofstream& output) const;
+
+  /* returns the size in bytes that the CTDA_CIS2 compound's data would occupy
+     in a file stream
+  */
+  uint32_t getWriteSize() const;
+  #endif
+}; //struct
+
 } //namespace
 
 #endif // SR_CTDADATA_H

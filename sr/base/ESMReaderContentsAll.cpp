@@ -33,6 +33,7 @@
 #include "records/ArtObjectRecord.h"
 #include "records/AssociationTypeRecord.h"
 #include "records/BookRecord.h"
+#include "records/CameraPathRecord.h"
 #include "records/CameraShotRecord.h"
 #include "records/CellRecord.h"
 #include "records/CharacterReferenceRecord.h"
@@ -207,6 +208,9 @@ int ESMReaderContentsAll::readNextRecord(std::ifstream& in_File, const uint32_t 
          break;
     case cCONT:
          recPtr = new ContainerRecord;
+         break;
+    case cCPTH:
+         recPtr = new CameraPathRecord;
          break;
     case cCSTY:
          recPtr = new CombatStyleRecord;

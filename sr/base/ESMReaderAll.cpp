@@ -35,6 +35,7 @@
 #include "ArtObjects.h"
 #include "AssociationTypes.h"
 #include "Books.h"
+#include "CameraPaths.h"
 #include "CameraShots.h"
 #include "Cells.h"
 #include "CharacterReferences.h"
@@ -217,6 +218,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const uint32_t recName)
          break;
     case cCONT:
          return Containers::getSingleton().readNextRecord(in_File);
+         break;
+    case cCPTH:
+         return CameraPaths::getSingleton().readNextRecord(in_File);
          break;
     case cCSTY:
          return CombatStyles::getSingleton().readNextRecord(in_File);

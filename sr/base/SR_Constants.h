@@ -76,6 +76,7 @@ const uint32_t cBODT = 0x54444F42; //"BODT" = 42 4F 44 54
 const uint32_t cBOOK = 0x4B4F4F42; //"BOOK" = 42 4F 4F 4B
 const uint32_t cCAMS = 0x534D4143; //"CAMS" = 43 41 4D 53
 const uint32_t cCELL = 0x4C4C4543; //"CELL" = 43 45 4C 4C
+const uint32_t cCIS1 = 0x31534943; //"CIS1" = 43 49 53 31
 const uint32_t cCIS2 = 0x32534943; //"CIS2" = 43 49 53 32
 const uint32_t cCITC = 0x43544943; //"CITC" = 43 49 54 43
 const uint32_t cCLAS = 0x53414C43; //"CLAS" = 43 4C 41 53
@@ -88,6 +89,7 @@ const uint32_t cCOCT = 0x54434F43; //"COCT" = 43 4F 43 54
 const uint32_t cCOED = 0x44454F43; //"COED" = 43 4F 45 44
 const uint32_t cCOLL = 0x4C4C4F43; //"COLL" = 43 4F 4C 4C
 const uint32_t cCONT = 0x544E4F43; //"CONT" = 43 4F 4E 54
+const uint32_t cCPTH = 0x48545043; //"CPTH" = 43 50 54 48
 const uint32_t cCRDT = 0x54445243; //"CRDT" = 43 52 44 54
 const uint32_t cCRGR = 0x52475243; //"CRGR" = 43 52 47 52
 const uint32_t cCRIF = 0x46495243; //"CRIF" = 43 52 49 46

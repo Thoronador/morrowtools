@@ -103,8 +103,7 @@ struct ActivatorRecord: public BasicRecord
     uint32_t loopingSoundFormID; //subrecord SNAM
     uint32_t activateSoundFormID; //subrecord VNAM
     uint32_t waterTypeFormID; //subrecord WNAM
-    bool hasRNAM;
-    uint32_t unknownRNAM;
+    uint32_t activateTextOverrideStringID; //subrecord RNAM
     bool hasFNAM;
     uint16_t unknownFNAM;
     uint32_t interactionKeywordFormID; //subrecord KNAM

@@ -161,7 +161,7 @@ Records and their sub-records:
       WNAM (4 bytes, optional)
           uint32_t Water Type Form ID (points to WATR)
       RNAM (4 bytes, optional)
-          unknown
+          uint32_t Activate Text Override string ID
       FNAM (2 bytes, optional)
           unknown
       KNAM (4 bytes, optional)
@@ -241,11 +241,11 @@ Records and their sub-records:
       MODT (?? bytes, optional)
           unknown data
       YNAM (4 bytes)
-          unknown, possibly form ID
+          uint32_t Pickup Sound form ID (points to SNDR)
       ZNAM (4 bytes)
-          unknown, possibly form ID
+          uint32_t Putdown Sound form ID (points to SNDR)
       DESC (4 bytes)
-          possibly string index
+          uint32_t string ID of object description
       KSIZ (4 bytes, optional)
           number of keywords in following KWDA
       KWDA (n * 4 bytes, optional)
@@ -280,7 +280,8 @@ Records and their sub-records:
       DESC (4 bytes)
           unknown data
       DATA (8 bytes)
-          unknown data
+          uint32_t value
+          float    weight
 
 
   ARMO: armour

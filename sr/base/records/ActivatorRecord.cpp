@@ -66,8 +66,7 @@ ActivatorRecord::ActivatorRecord()
   loopingSoundFormID = 0;
   activateSoundFormID = 0;
   waterTypeFormID = 0;
-  hasRNAM = false;
-  unknownRNAM = 0;
+  activateTextOverrideStringID = 0;
   hasFNAM = false;
   unknownFNAM = 0;
   interactionKeywordFormID = 0;
@@ -99,7 +98,7 @@ bool ActivatorRecord::equals(const ActivatorRecord& other) const
     and (loopingSoundFormID==other.loopingSoundFormID)
     and (activateSoundFormID==other.activateSoundFormID)
     and (waterTypeFormID==other.waterTypeFormID)
-    and (hasRNAM==other.hasRNAM) and ((unknownRNAM==other.unknownRNAM) or (!hasRNAM))
+    and (activateTextOverrideStringID==other.activateTextOverrideStringID)
     and (interactionKeywordFormID==other.interactionKeywordFormID));
 }
 #endif
@@ -183,7 +182,7 @@ uint32_t ActivatorRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* WNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
-  if (hasRNAM)
+  if (activateTextOverrideStringID!=0)
   {
     writeSize = writeSize +4 /* RNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
@@ -407,7 +406,7 @@ bool ActivatorRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &waterTypeFormID, 4);
   }//if WNAM
 
-  if (hasRNAM)
+  if (activateTextOverrideStringID!=0)
   {
     //write RNAM
     output.write((const char*) &cRNAM, 4);
@@ -415,7 +414,7 @@ bool ActivatorRecord::saveToStream(std::ofstream& output) const
     subLength = 4; //fixed size
     output.write((const char*) &subLength, 2);
     //write RNAM stuff
-    output.write((const char*) &unknownRNAM, 4);
+    output.write((const char*) &activateTextOverrideStringID, 4);
   }//if RNAM
 
   if (hasFNAM)
@@ -495,7 +494,7 @@ bool ActivatorRecord::loadFromStream(std::ifstream& in_File)
   loopingSoundFormID = 0;
   activateSoundFormID = 0;
   waterTypeFormID = 0;
-  hasRNAM = false; unknownRNAM = 0;
+  activateTextOverrideStringID = 0;
   bool hasReadOBND = false;
   hasPNAM = false; defaultPrimitiveColourRed = 0;
     defaultPrimitiveColourGreen = 0; defaultPrimitiveColourBlue = 0;
@@ -856,15 +855,19 @@ bool ActivatorRecord::loadFromStream(std::ifstream& in_File)
            }
            break;
       case cRNAM:
-           if (hasRNAM)
+           if (activateTextOverrideStringID!=0)
            {
              std::cout << "Error: ACTI seems to have more than one RNAM subrecord.\n";
              return false;
            }
            //read RNAM
-           if (!loadUint32SubRecordFromStream(in_File, cRNAM, unknownRNAM, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cRNAM, activateTextOverrideStringID, false)) return false;
            bytesRead += 6;
-           hasRNAM = true;
+           if (activateTextOverrideStringID==0)
+           {
+             std::cout << "Error: subrecord RNAM of ACTI has value zero!\n";
+             return false;
+           }
            break;
       case cFNAM:
            if (hasFNAM)

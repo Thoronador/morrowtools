@@ -73,9 +73,9 @@ struct AmmunitionRecord: public BasicRecord
     uint32_t nameStringID; //subrecord FULL
     std::string modelPath;
     BinarySubRecord unknownMODT;
-    uint32_t unknownYNAM;
-    uint32_t unknownZNAM;
-    uint32_t unknownDESC;
+    uint32_t pickupSoundFormID; //subrecord YNAM
+    uint32_t putdownSoundFormID; //subrecord ZNAM
+    uint32_t descriptionStringID; //subrecord DESC
     std::vector<uint32_t> keywordArray;
     //subrecord DATA
     uint32_t projectileFormID;

@@ -71,7 +71,10 @@ struct ApparatusRecord: public BasicRecord
     uint32_t nameStringID; //subrecord FULL
     uint32_t quality; //subrecord QUAL
     uint32_t unknownDESC;
-    uint8_t unknownDATA[8];
+    //subrecord DATA
+    uint32_t value;
+    float    weight;
+    //end of DATA subrecord
 }; //struct
 
 } //namespace

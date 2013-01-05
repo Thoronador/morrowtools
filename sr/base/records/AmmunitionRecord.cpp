@@ -36,9 +36,9 @@ AmmunitionRecord::AmmunitionRecord()
   nameStringID = 0;
   modelPath = "";
   unknownMODT.setPresence(false);
-  unknownYNAM = 0;
-  unknownZNAM = 0;
-  unknownDESC = 0;
+  pickupSoundFormID = 0;
+  putdownSoundFormID = 0;
+  descriptionStringID = 0;
   keywordArray.clear();
   //DATA
   projectileFormID = 0;
@@ -60,8 +60,8 @@ bool AmmunitionRecord::equals(const AmmunitionRecord& other) const
       and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
       and (hasFULL==other.hasFULL) and ((nameStringID==other.nameStringID) or (!hasFULL))
       and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
-      and (unknownYNAM==other.unknownYNAM) and (unknownZNAM==other.unknownZNAM)
-      and (unknownDESC==other.unknownDESC)
+      and (pickupSoundFormID==other.pickupSoundFormID) and (putdownSoundFormID==other.putdownSoundFormID)
+      and (descriptionStringID==other.descriptionStringID)
       and (keywordArray==other.keywordArray) and (projectileFormID==other.projectileFormID)
       and (DATAflags==other.DATAflags) and (baseDamage==other.baseDamage)
       and (value==other.value));
@@ -160,24 +160,24 @@ bool AmmunitionRecord::saveToStream(std::ofstream& output) const
   //YNAM's length
   subLength = 4; //fixed size
   output.write((const char*) &subLength, 2);
-  //write YNAM's stuff
-  output.write((const char*) &unknownYNAM, 4);
+  //write Pickup Sound form ID
+  output.write((const char*) &pickupSoundFormID, 4);
 
   //write ZNAM
   output.write((const char*) &cZNAM, 4);
   //ZNAM's length
   subLength = 4; //fixed size
   output.write((const char*) &subLength, 2);
-  //write ZNAM's stuff
-  output.write((const char*) &unknownZNAM, 4);
+  //write Putdown Sound form ID
+  output.write((const char*) &putdownSoundFormID, 4);
 
   //write DESC
   output.write((const char*) &cDESC, 4);
   //DESC's length
   subLength = 4; //fixed size
   output.write((const char*) &subLength, 2);
-  //write DESC's stuff
-  output.write((const char*) &unknownDESC, 4);
+  //write description string ID
+  output.write((const char*) &descriptionStringID, 4);
 
   if (!keywordArray.empty())
   {
@@ -308,8 +308,8 @@ bool AmmunitionRecord::loadFromStream(std::ifstream& in_File)
            bytesRead += 2;
            if (subLength!=4)
            {
-             std::cout <<"Error: sub record FULL of AMMO has invalid length("<<subLength
-                       <<" bytes). Should be four bytes!\n";
+             std::cout <<"Error: sub record FULL of AMMO has invalid length("
+                       <<subLength<<" bytes). Should be four bytes!\n";
              return false;
            }
            //read FULL's stuff
@@ -367,23 +367,10 @@ bool AmmunitionRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: Record AMMO seems to have more than one YNAM subrecord!\n";
              return false;
            }
-           //YNAM's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength!=4)
-           {
-             std::cout <<"Error: sub record YNAM of AMMO has invalid length("<<subLength
-                       <<" bytes). Should be four bytes!\n";
+           //read YNAM
+           if (!loadUint32SubRecordFromStream(in_File, cYNAM, pickupSoundFormID, false))
              return false;
-           }
-           //read YNAM's stuff
-           in_File.read((char*) &unknownYNAM, 4);
-           bytesRead += 4;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord YNAM of AMMO!\n";
-             return false;
-           }
+           bytesRead += 6;
            hasReadYNAM = true;
            break;
       case cZNAM:
@@ -392,23 +379,10 @@ bool AmmunitionRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: Record AMMO seems to have more than one ZNAM subrecord!\n";
              return false;
            }
-           //ZNAM's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength!=4)
-           {
-             std::cout <<"Error: sub record ZNAM of AMMO has invalid length("<<subLength
-                       <<" bytes). Should be four bytes!\n";
+           //read ZNAM
+           if (!loadUint32SubRecordFromStream(in_File, cZNAM, putdownSoundFormID, false))
              return false;
-           }
-           //read ZNAM's stuff
-           in_File.read((char*) &unknownZNAM, 4);
-           bytesRead += 4;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord ZNAM of AMMO!\n";
-             return false;
-           }
+           bytesRead += 6;
            hasReadZNAM = true;
            break;
       case cDESC:
@@ -417,23 +391,10 @@ bool AmmunitionRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: Record AMMO seems to have more than one DESC subrecord!\n";
              return false;
            }
-           //DESC's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength!=4)
-           {
-             std::cout <<"Error: sub record DESC of AMMO has invalid length("<<subLength
-                       <<" bytes). Should be four bytes!\n";
+           //read DESC
+           if (!loadUint32SubRecordFromStream(in_File, cDESC, descriptionStringID, false))
              return false;
-           }
-           //read DESC's stuff
-           in_File.read((char*) &unknownDESC, 4);
-           bytesRead += 4;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord DESC of AMMO!\n";
-             return false;
-           }
+           bytesRead += 6;
            hasReadDESC = true;
            break;
       case cKSIZ:
@@ -447,8 +408,8 @@ bool AmmunitionRecord::loadFromStream(std::ifstream& in_File)
            bytesRead += 2;
            if (subLength!=4)
            {
-             std::cout <<"Error: sub record KSIZ of AMMO has invalid length("<<subLength
-                       <<" bytes). Should be four bytes!\n";
+             std::cout <<"Error: sub record KSIZ of AMMO has invalid length("
+                       <<subLength<<" bytes). Should be four bytes!\n";
              return false;
            }
            //read KSIZ's stuff
@@ -474,8 +435,8 @@ bool AmmunitionRecord::loadFromStream(std::ifstream& in_File)
            bytesRead += 2;
            if (subLength!=4*k_Size)
            {
-             std::cout <<"Error: sub record KWDA of AMMO has invalid length("<<subLength
-                       <<" bytes). Should be "<<4*k_Size<<" bytes!\n";
+             std::cout <<"Error: sub record KWDA of AMMO has invalid length("
+                       <<subLength<<" bytes). Should be "<<4*k_Size<<" bytes!\n";
              return false;
            }
            for (i=0; i<k_Size; ++i)
@@ -501,8 +462,8 @@ bool AmmunitionRecord::loadFromStream(std::ifstream& in_File)
            bytesRead += 2;
            if (subLength!=16)
            {
-             std::cout <<"Error: sub record DATA of AMMO has invalid length("<<subLength
-                       <<" bytes). Should be 16 bytes!\n";
+             std::cout <<"Error: sub record DATA of AMMO has invalid length("
+                       <<subLength<<" bytes). Should be 16 bytes!\n";
              return false;
            }
            //read DATA's stuff

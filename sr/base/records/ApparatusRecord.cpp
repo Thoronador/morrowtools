@@ -35,7 +35,8 @@ ApparatusRecord::ApparatusRecord()
   nameStringID = 0;
   quality = 0;
   unknownDESC = 0;
-  memset(unknownDATA, 0, 8);
+  value = 0;
+  weight = 0.0f;
 }
 
 ApparatusRecord::~ApparatusRecord()
@@ -50,7 +51,7 @@ bool ApparatusRecord::equals(const ApparatusRecord& other) const
       and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
       and (nameStringID==other.nameStringID) and (quality==other.quality)
       and (unknownDESC==other.unknownDESC)
-      and (memcmp(unknownDATA, other.unknownDATA, 8)==0));
+      and (value==other.value) and (weight==other.weight));
 }
 #endif
 
@@ -117,7 +118,8 @@ bool ApparatusRecord::saveToStream(std::ofstream& output) const
   subLength = 8; //fixed
   output.write((const char*) &subLength, 2);
   //write DATA
-  output.write((const char*) unknownDATA, 8);
+  output.write((const char*) &value, 4);
+  output.write((const char*) &weight, 4);
 
   return output.good();
 }
@@ -244,7 +246,8 @@ bool ApparatusRecord::loadFromStream(std::ifstream& in_File)
     return false;
   }
   //read DATA's stuff
-  in_File.read((char*) unknownDATA, 8);
+  in_File.read((char*) &value, 4);
+  in_File.read((char*) &weight, 4);
   bytesRead += 8;
   if (!in_File.good())
   {

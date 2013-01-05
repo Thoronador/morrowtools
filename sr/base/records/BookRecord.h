@@ -76,8 +76,8 @@ struct BookRecord: public BasicRecord
     std::string modelPath;
     BinarySubRecord unknownMODT;
     uint32_t textStringID; //DESC
-    bool hasYNAM;
-    uint32_t unknownYNAM;
+    uint32_t pickupSoundFormID; //subrecord YNAM
+    uint32_t putdownSoundFormID; //subrecord ZNAM
     std::vector<uint32_t> keywordArray;
     //subrecord DATA
     uint32_t bookFlags;
@@ -85,8 +85,7 @@ struct BookRecord: public BasicRecord
     uint32_t bookValue;
     float weight;
     //end of subrecord DATA
-    bool hasINAM;
-    uint32_t unknownINAM;
+    uint32_t inventoryArtFormID; //subrecord INAM
     uint32_t unknownCNAM;
 
     //flag constants

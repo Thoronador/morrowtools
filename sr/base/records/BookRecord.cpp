@@ -42,8 +42,8 @@ BookRecord::BookRecord()
   modelPath = "";
   unknownMODT.setPresence(true);
   textStringID = 0;
-  hasYNAM = false;
-  unknownYNAM = 0;
+  pickupSoundFormID = 0;
+  putdownSoundFormID = 0;
   keywordArray.clear();
   //DATA
   bookFlags = 0;
@@ -51,8 +51,7 @@ BookRecord::BookRecord()
   bookValue = 0;
   weight = 0.0f;
   //end of DATA
-  hasINAM = false;
-  unknownINAM = 0;
+  inventoryArtFormID = 0;
   unknownCNAM = 0;
 }
 
@@ -70,11 +69,12 @@ bool BookRecord::equals(const BookRecord& other) const
     and (hasFULL==other.hasFULL) and ((titleStringID==other.titleStringID) or (!hasFULL))
     and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
     and (textStringID==other.textStringID) and (unknownCNAM==other.unknownCNAM)
-    and (hasYNAM==other.hasYNAM) and ((unknownYNAM==other.unknownYNAM) or (!hasYNAM))
+    and (pickupSoundFormID==other.pickupSoundFormID)
+    and (putdownSoundFormID==other.putdownSoundFormID)
     and (keywordArray==other.keywordArray)
     and (bookFlags==other.bookFlags) and (spellOrSkillID==other.spellOrSkillID)
     and (bookValue==other.bookValue) and (weight==other.weight)
-    and (hasINAM==other.hasINAM) and ((unknownINAM==other.unknownINAM) or (!hasINAM)));
+    and (inventoryArtFormID==other.inventoryArtFormID));
 }
 #endif
 
@@ -99,14 +99,18 @@ uint32_t BookRecord::getWriteSize() const
     writeSize = writeSize +4 /* KSIZ */ +2 /* 2 bytes for length */ +4 /* fixed size */
                +4 /* KWDA */ +2 /* 2 bytes for length */ +keywordArray.size()*4 /* n*fixed size */;
   }
-  if (hasINAM)
+  if (inventoryArtFormID!=0)
   {
     writeSize = writeSize +4 /* INAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
-  if (hasYNAM)
+  if (pickupSoundFormID!=0)
   {
     writeSize = writeSize +4 /* YNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }//if YNAM is present
+  if (putdownSoundFormID!=0)
+  {
+    writeSize = writeSize +4 /* ZNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+  }//if ZNAM
   if (unknownVMAD.isPresent())
   {
     writeSize = writeSize +4 /* VMAD */ +2 /* 2 bytes for length */
@@ -171,15 +175,26 @@ bool BookRecord::saveToStream(std::ofstream& output) const
     return false;
   }
 
-  if (hasYNAM)
+  if (pickupSoundFormID!=0)
   {
     //write YNAM
     output.write((const char*) &cYNAM, 4);
     //YNAM's length
     subLength = 4; //fixed size
     output.write((const char*) &subLength, 2);
-    //write YNAM
-    output.write((const char*) &unknownYNAM, 4);
+    //write Pickup Sound form ID
+    output.write((const char*) &pickupSoundFormID, 4);
+  }
+
+  if (putdownSoundFormID!=0)
+  {
+    //write ZNAM
+    output.write((const char*) &cZNAM, 4);
+    //ZNAM's length
+    subLength = 4; //fixed size
+    output.write((const char*) &subLength, 2);
+    //write Putdown Sound form ID
+    output.write((const char*) &putdownSoundFormID, 4);
   }
 
   if (!keywordArray.empty())
@@ -217,15 +232,15 @@ bool BookRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &bookValue, 4);
   output.write((const char*) &weight, 4);
 
-  if (hasINAM)
+  if (inventoryArtFormID!=0)
   {
     //write INAM
     output.write((const char*) &cINAM, 4);
     //INAM's length
     subLength = 4; //fixed size
     output.write((const char*) &subLength, 2);
-    //write INAM
-    output.write((const char*) &unknownINAM, 4);
+    //write Inventory Art form ID
+    output.write((const char*) &inventoryArtFormID, 4);
   }//if has INAM
 
   //write CNAM
@@ -322,8 +337,9 @@ bool BookRecord::loadFromStream(std::ifstream& in_File)
   }
 
   hasFULL = false;
-  hasYNAM = false;
-  hasINAM = false;
+  pickupSoundFormID = 0;
+  putdownSoundFormID = 0;
+  inventoryArtFormID = 0;
   keywordArray.clear();
 
   bool hasReadMODL = false;
@@ -457,15 +473,19 @@ bool BookRecord::loadFromStream(std::ifstream& in_File)
            hasReadDATA = true;
            break;
       case cINAM:
-           if (hasINAM)
+           if (inventoryArtFormID!=0)
            {
              std::cout << "Error: BOOK seems to have more than one INAM subrecord.\n";
              return false;
            }
            //read INAM
-           if (!loadUint32SubRecordFromStream(in_File, cINAM, unknownINAM, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cINAM, inventoryArtFormID, false)) return false;
            bytesRead += 6;
-           hasINAM = true;
+           if (inventoryArtFormID==0)
+           {
+             std::cout << "Error: subrecord INAM of BOOK is zero!\n";
+             return false;
+           }
            break;
       case cCNAM:
            if (hasReadCNAM)
@@ -479,19 +499,38 @@ bool BookRecord::loadFromStream(std::ifstream& in_File)
            hasReadCNAM = true;
            break;
       case cYNAM:
-           if (hasYNAM)
+           if (pickupSoundFormID!=0)
            {
              std::cout << "Error: BOOK seems to have more than one YNAM subrecord.\n";
              return false;
            }
            //read YNAM
-           if (!loadUint32SubRecordFromStream(in_File, cYNAM, unknownYNAM, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cYNAM, pickupSoundFormID, false)) return false;
            bytesRead += 6;
-           hasYNAM = true;
+           if (pickupSoundFormID==0)
+           {
+             std::cout << "Error: subrecord YNAM of BOOK is zero!\n";
+             return false;
+           }
+           break;
+      case cZNAM:
+           if (putdownSoundFormID!=0)
+           {
+             std::cout << "Error: BOOK seems to have more than one ZNAM subrecord.\n";
+             return false;
+           }
+           //read ZNAM
+           if (!loadUint32SubRecordFromStream(in_File, cZNAM, putdownSoundFormID, false)) return false;
+           bytesRead += 6;
+           if (putdownSoundFormID==0)
+           {
+             std::cout << "Error: subrecord ZNAM of BOOK is zero!\n";
+             return false;
+           }
            break;
       default:
            std::cout << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
-                     << "\", but only MODL, KSIZ, DATA, INAM, CNAM or YNAM are allowed here!\n";
+                     << "\", but only MODL, KSIZ, DATA, INAM, CNAM, YNAM or ZNAM are allowed here!\n";
            return false;
     }//swi
   }//while

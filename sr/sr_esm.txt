@@ -360,7 +360,7 @@ Records and their sub-records:
           uint32_t looping sound form ID (points to SNDR (sound descriptor))
       RDAT (4 bytes, optional)
           uint32_t region form ID (points to REGN), "use sounds from region"
-      BNAM (4 bytes, opional)
+      BNAM (4 bytes, optional)
           uint32_t form ID of environment type (points to REVB)
 
 
@@ -396,7 +396,9 @@ Records and their sub-records:
       DESC (4 bytes)
           string ID of the book's text
       YNAM (4 bytes, optional)
-          unknown
+          uint32_t Pickup Sound form ID (points to SNDR)
+      ZNAM (4 bytes, optional)
+          uint32_t Putdown Sound form ID (points to SNDR)
       KSIZ (4 bytes, optional)
           number of uint32_ts in KWDA
       KWDA (multiple of 4 bytes), follows KSIZ, therefore optional
@@ -404,7 +406,7 @@ Records and their sub-records:
       DATA (10 bytes)
           unknown data
       INAM (4 bytes, optional)
-          unknown
+          uint32_t Inventory Art form ID (points to STAT)
       CNAM (4 bytes)
           unknown
 
@@ -611,11 +613,18 @@ Records and their sub-records:
       COED (12 bytes, optional)
           unknown data
       DATA (5 bytes)
-          unknown data
+          uint8_t flags(?)
+            0x02 - Respawns
+            0x04 - Show Owner
+          float   weight
       SNAM (4 bytes, optional)
-          unknown data
+          uint32_t Open Sound form ID (points to SNDR)
       QNAM (4 bytes, optional)
-          unknown data
+          uint32_t Close Sound form ID (points to SNDR)
+
+      --> flags in record header:
+          0x00010000 - Random Anim Start
+          0x02000000 - Obstacle
 
 
   CPTH: camera path

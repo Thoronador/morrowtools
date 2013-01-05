@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012 Thoronador
+    Copyright (C) 2012, 2013 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -68,6 +68,13 @@ struct ContainerRecord: public BasicRecord
     /* returns the record's type, usually its header */
     virtual uint32_t getRecordType() const;
 
+    /* flag constants */
+    static const uint8_t cFlagRespawns;
+    static const uint8_t cFlagShowOwner;
+    // ---- header flags
+    static const uint32_t cFlagRandomAnimStart;
+    static const uint32_t cFlagObstacle;
+
     std::string editorID;
     BinarySubRecord unknownVMAD;
     uint8_t unknownOBND[12];
@@ -78,11 +85,36 @@ struct ContainerRecord: public BasicRecord
     BinarySubRecord unknownMODS;
     std::vector<ComponentData> contents;
     BinarySubRecord unknownCOED;
-    uint8_t unknownDATA[5];
-    bool hasSNAM;
-    uint32_t unknownSNAM;
-    bool hasQNAM;
-    uint32_t unknownQNAM;
+    //subrecord DATA
+    uint8_t flags;
+    float weight;
+    //end of subrecord DATA
+    uint32_t openSoundFormID; //subrecord SNAM
+    uint32_t closeSoundFormID; //subrecord QNAM
+
+    /* returns true, if the respawn flag is set */
+    inline bool respawns() const
+    {
+      return ((flags&cFlagRespawns)!=0);
+    }
+
+    /* returns true, if the show owner flag is set */
+    inline bool showsOwner() const
+    {
+      return ((flags&cFlagShowOwner)!=0);
+    }
+
+    /* returns true, if the "Random Anim Start" flag is set */
+    inline bool hasRandomAnimStart() const
+    {
+      return ((headerFlags&cFlagRandomAnimStart)!=0);
+    }
+
+    /* returns true, if the obstacle flag is set */
+    inline bool isObstacle() const
+    {
+      return ((headerFlags&cFlagObstacle)!=0);
+    }
 }; //struct
 
 } //namespace

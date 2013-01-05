@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012 Thoronador
+    Copyright (C) 2012, 2013 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -27,6 +27,15 @@
 namespace SRTP
 {
 
+/* flag constants */
+const uint8_t ContainerRecord::cFlagRespawns  = 0x02;
+const uint8_t ContainerRecord::cFlagShowOwner = 0x04;
+// ---- header flags
+const uint32_t ContainerRecord::cFlagRandomAnimStart = 0x00010000;
+const uint32_t ContainerRecord::cFlagObstacle        = 0x02000000;
+
+/* ContainerRecord's functions */
+
 ContainerRecord::ContainerRecord()
 : BasicRecord()
 {
@@ -40,11 +49,10 @@ ContainerRecord::ContainerRecord()
   unknownMODS.setPresence(false);
   contents.clear();
   unknownCOED.setPresence(false);
-  memset(unknownDATA, 0, 5);
-  hasSNAM = false;
-  unknownSNAM = 0;
-  hasQNAM = false;
-  unknownQNAM = 0;
+  flags = 0;
+  weight = 0;
+  openSoundFormID = 0;
+  closeSoundFormID = 0;
 }
 
 ContainerRecord::~ContainerRecord()
@@ -61,9 +69,8 @@ bool ContainerRecord::equals(const ContainerRecord& other) const
       and (hasFULL==other.hasFULL) and ((nameStringID==other.nameStringID) or (!hasFULL))
       and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
       and (unknownMODS==other.unknownMODS) and (contents==other.contents)
-      and (unknownCOED==other.unknownCOED) and (memcmp(unknownDATA, other.unknownDATA, 5)==0)
-      and (hasSNAM==other.hasSNAM) and ((unknownSNAM==other.unknownSNAM) or (!hasSNAM))
-      and (hasQNAM==other.hasQNAM) and ((unknownQNAM==other.unknownQNAM) or (!hasQNAM)));
+      and (unknownCOED==other.unknownCOED) and (flags==other.flags) and (weight==other.weight)
+      and (openSoundFormID==other.openSoundFormID) and (closeSoundFormID==other.closeSoundFormID));
 }
 #endif
 
@@ -97,11 +104,11 @@ uint32_t ContainerRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* COED */ +2 /* 2 bytes for length */ +unknownCOED.getSize() /* size */;
   }
-  if (hasSNAM)
+  if (openSoundFormID!=0)
   {
     writeSize = writeSize +4 /* SNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
-  if (hasQNAM)
+  if (closeSoundFormID!=0)
   {
     writeSize = writeSize +4 /* QNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
@@ -220,28 +227,29 @@ bool ContainerRecord::saveToStream(std::ofstream& output) const
   subLength = 5; //fixed
   output.write((const char*) &subLength, 2);
   //write DATA's stuff
-  output.write((const char*) unknownDATA, 5);
+  output.write((const char*) &flags, 1);
+  output.write((const char*) &weight, 4);
 
-  if (hasSNAM)
+  if (openSoundFormID!=0)
   {
     //write SNAM
     output.write((const char*) &cSNAM, 4);
     //SNAM's length
     subLength = 4; //fixed
     output.write((const char*) &subLength, 2);
-    //write SNAM's stuff
-    output.write((const char*) &unknownSNAM, 4);
+    //write Open Sound form ID
+    output.write((const char*) &openSoundFormID, 4);
   }//if SNAM
 
-  if (hasQNAM)
+  if (closeSoundFormID!=0)
   {
     //write QNAM
     output.write((const char*) &cQNAM, 4);
     //QNAM's length
     subLength = 4; //fixed
     output.write((const char*) &subLength, 2);
-    //write QNAM's stuff
-    output.write((const char*) &unknownQNAM, 4);
+    //write Close Sound form ID
+    output.write((const char*) &closeSoundFormID, 4);
   }//if QNAM
 
   return output.good();
@@ -297,8 +305,8 @@ bool ContainerRecord::loadFromStream(std::ifstream& in_File)
   uint32_t tempSize, i;
   unknownCOED.setPresence(false);
   bool hasReadDATA = false;
-  hasSNAM = false; unknownSNAM = 0;
-  hasQNAM = false; unknownQNAM = 0;
+  openSoundFormID = 0;
+  closeSoundFormID = 0;
   while (bytesRead<readSize)
   {
     //read next subrecord
@@ -450,7 +458,8 @@ bool ContainerRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read DATA
-           in_File.read((char*) unknownDATA, 5);
+           in_File.read((char*) &flags, 1);
+           in_File.read((char*) &weight, 4);
            bytesRead += 5;
            if (!in_File.good())
            {
@@ -460,26 +469,34 @@ bool ContainerRecord::loadFromStream(std::ifstream& in_File)
            hasReadDATA = true;
            break;
       case cSNAM:
-           if (hasSNAM)
+           if (openSoundFormID!=0)
            {
              std::cout << "Error: record CONT seems to have more than one SNAM subrecord!\n";
              return false;
            }
            //read SNAM
-           if (!loadUint32SubRecordFromStream(in_File, cSNAM, unknownSNAM, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cSNAM, openSoundFormID, false)) return false;
            bytesRead += 6;
-           hasSNAM = true;
+           if (openSoundFormID==0)
+           {
+             std::cout << "Error: subrecord SNAM of CONT is zero!\n";
+             return false;
+           }
            break;
       case cQNAM:
-           if (hasQNAM)
+           if (closeSoundFormID!=0)
            {
              std::cout << "Error: record CONT seems to have more than one QNAM subrecord!\n";
              return false;
            }
            //read QNAM
-           if (!loadUint32SubRecordFromStream(in_File, cQNAM, unknownQNAM, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cQNAM, closeSoundFormID, false)) return false;
            bytesRead += 6;
-           hasQNAM = true;
+           if (closeSoundFormID==0)
+           {
+             std::cout << "Error: subrecord QNAM of CONT is zero!\n";
+             return false;
+           }
            break;
       default:
            std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)

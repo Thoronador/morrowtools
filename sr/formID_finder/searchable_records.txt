@@ -33,3 +33,9 @@ Bonus record types:
 
 Records marked with [*] are not implemented yet.
 Records marked with [i] are implemented, but incomplete.
+
+
+
+Additional stuff:
+-----------------
+- show if containers respawn or not, if containers are found in the search

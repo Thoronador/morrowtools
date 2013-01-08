@@ -1191,13 +1191,17 @@ Records and their sub-records:
       MODT (30 bytes)
           unknown data
       YNAM (4 bytes, optional)
-          unknown data
+          uint32_t Pickup Sound form ID (points to SNDR)
       ZNAM (4 bytes, optional)
-          unknown data
+          uint32_t Putdown Sound form ID (points to SNDR)
       DATA (8 bytes)
-          unknown data
+          uint32_t value
+          float    Weight
       ENIT (8 bytes)
-          unknown data
+          uint32_t Base Cost
+          uint32_t flags
+            0x00000001 - NO auto calc
+            0x00000002 - Food Item
 
         EFID (4 bytes)
             unknown data
@@ -1708,9 +1712,9 @@ Records and their sub-records:
       KWDA (KSIZ * 4 bytes) optional, follows KSIZ
           keyword formIDs (?)
       YNAM (4 bytes) optional
-          unknown, formID(?)
+          uint32_t Pickup Sound form ID (points to SNDR)
       ZNAM (4 bytes) optional
-          unknown, formID(?)
+          uint32_t Putdown Sound form ID (points to SNDR)
       DATA (8 bytes)
           uint32_t    value of object
           float       weight of object
@@ -2377,7 +2381,7 @@ Records and their sub-records:
       FULL (4 bytes) optional
           string ID of shout's full name
       MDOB (4 bytes) optional
-          unknown data
+          uint32_t Menu Display Object form ID (points to STAT)
       DESC (4 bytes)
           string ID of shout's description
       SNAM (12 bytes, occurs three times, once for every word of power)
@@ -2408,7 +2412,7 @@ Records and their sub-records:
       SLCP (1 byte)
           soul capacity
       NAM0 (4 bytes, optional)
-          unknown data
+          uint32_t Linked To form ID (points to SLGM, ID of a filled soul gem)
 
 
   SNCT: sound category
@@ -2600,9 +2604,9 @@ Records and their sub-records:
       MODT (size varies)
           unknown data
       PFIG (4 bytes, optional)
-          unknown data
+          uint32_t Produced Ingredient form ID (points to INGR)
       SNAM (4 bytes, optional)
-          unknown data
+          uint32_t Harvest Sound form ID (points to SNDR)
       PFCP (4 bytes)
           unknown data
       FULL (4 bytes, optional)

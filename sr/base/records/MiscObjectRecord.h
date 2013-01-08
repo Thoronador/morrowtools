@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2011, 2012, 2013 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -77,10 +77,8 @@ struct MiscObjectRecord: public BasicRecord
     BinarySubRecord unknownMODS;
     std::string iconPath;
     std::vector<uint32_t> keywordArray;
-    bool hasYNAM;
-    uint32_t unknownYNAM;
-    bool hasZNAM;
-    uint32_t unknownZNAM;
+    uint32_t pickupSoundFormID; //subrecord YNAM
+    uint32_t putdownSoundFormID; //subrecord ZNAM
     //DATA subrecord
     uint32_t value;
     float weight;

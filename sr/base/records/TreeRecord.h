@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012 Thoronador
+    Copyright (C) 2012, 2013 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -70,10 +70,8 @@ struct TreeRecord: public BasicRecord
     uint8_t unknownOBND[12];
     std::string modelPath;
     BinarySubRecord unknownMODT;
-    bool hasPFIG;
-    uint32_t unknownPFIG;
-    bool hasSNAM;
-    uint32_t unknownSNAM;
+    uint32_t ingredientFormID; //subrecord PFIG
+    uint32_t harvestSoundFormID; //subrecord SNAM
     uint32_t unknownPFPC;
     bool hasFULL;
     uint32_t nameStringID; //subrecord FULL

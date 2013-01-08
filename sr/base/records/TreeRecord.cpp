@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012 Thoronador
+    Copyright (C) 2012, 2013 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -34,10 +34,8 @@ TreeRecord::TreeRecord()
   memset(unknownOBND, 0, 12);
   modelPath = "";
   unknownMODT.setPresence(false);
-  hasPFIG = false;
-  unknownPFIG = 0;
-  hasSNAM = false;
-  unknownSNAM = 0;
+  ingredientFormID = 0;
+  harvestSoundFormID = 0;
   unknownPFPC = 0;
   hasFULL = false;
   nameStringID = 0; //subrecord FULL
@@ -55,8 +53,8 @@ bool TreeRecord::equals(const TreeRecord& other) const
   return ((equalsBasic(other)) and (editorID==other.editorID)
       and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
       and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
-      and (hasPFIG==other.hasPFIG) and ((unknownPFIG==other.unknownPFIG) or (!hasPFIG))
-      and (hasSNAM==other.hasSNAM) and ((unknownSNAM==other.unknownSNAM) or (!hasSNAM))
+      and (ingredientFormID==other.ingredientFormID)
+      and (harvestSoundFormID==other.harvestSoundFormID)
       and (unknownPFPC==other.unknownPFPC) and (hasFULL==other.hasFULL)
       and ((nameStringID==other.nameStringID) or (!hasFULL))
       and (memcmp(unknownCNAM, other.unknownCNAM, 48)==0));
@@ -81,11 +79,11 @@ uint32_t TreeRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* MODT */ +2 /* 2 bytes for length */ +unknownMODT.getSize() /* size */;
   }
-  if (hasPFIG)
+  if (ingredientFormID!=0)
   {
     writeSize = writeSize +4 /* PFIG */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
-  if (hasSNAM)
+  if (harvestSoundFormID!=0)
   {
     writeSize = writeSize +4 /* SNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
@@ -137,26 +135,26 @@ bool TreeRecord::saveToStream(std::ofstream& output) const
     }
   }//if MODT
 
-  if (hasPFIG)
+  if (ingredientFormID!=0)
   {
     //write PFIG
     output.write((const char*) &cPFIG, 4);
     //PFIG's length
     subLength = 4; // fixed
     output.write((const char*) &subLength, 2);
-    //write PFIG
-    output.write((const char*) &unknownPFIG, 4);
+    //write Production Ingredient form ID
+    output.write((const char*) &ingredientFormID, 4);
   }//if PFIG
 
-  if (hasSNAM)
+  if (harvestSoundFormID!=0)
   {
     //write SNAM
     output.write((const char*) &cSNAM, 4);
     //SNAM's length
     subLength = 4; // fixed
     output.write((const char*) &subLength, 2);
-    //write SNAM
-    output.write((const char*) &unknownSNAM, 4);
+    //write Harvest Sound form ID
+    output.write((const char*) &harvestSoundFormID, 4);
   }
 
   //write PFPC
@@ -255,8 +253,8 @@ bool TreeRecord::loadFromStream(std::ifstream& in_File)
 
   modelPath.clear();
   unknownMODT.setPresence(false);
-  hasPFIG = false;
-  hasSNAM = false;
+  ingredientFormID = 0;
+  harvestSoundFormID = 0;
   bool hasReadPFPC = false;
   hasFULL = false;
   bool hasReadCNAM = false;
@@ -307,26 +305,36 @@ bool TreeRecord::loadFromStream(std::ifstream& in_File)
            bytesRead = bytesRead +2 /*length value*/ +unknownMODT.getSize() /*data size*/;
            break;
       case cPFIG:
-           if (hasPFIG)
+           if (ingredientFormID!=0)
            {
              std::cout << "Error: TREE seems to have more than one PFIG subrecord.\n";
              return false;
            }
            //read PFIG
-           if (!loadUint32SubRecordFromStream(in_File, cPFIG, unknownPFIG, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cPFIG, ingredientFormID, false)) return false;
            bytesRead += 6;
-           hasPFIG = true;
+           //check content
+           if (ingredientFormID==0)
+           {
+             std::cout << "Error: subrecord PFIG of TREE is zero!\n";
+             return false;
+           }
            break;
       case cSNAM:
-           if (hasSNAM)
+           if (harvestSoundFormID!=0)
            {
              std::cout << "Error: TREE seems to have more than one SNAM subrecord.\n";
              return false;
            }
            //read SNAM
-           if (!loadUint32SubRecordFromStream(in_File, cSNAM, unknownSNAM, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cSNAM, harvestSoundFormID, false)) return false;
            bytesRead += 6;
-           hasSNAM = true;
+           //check content
+           if (harvestSoundFormID==0)
+           {
+             std::cout << "Error: subrecord SNAM of TREE is zero!\n";
+             return false;
+           }
            break;
       case cPFPC:
            if (hasReadPFPC)
@@ -392,9 +400,9 @@ bool TreeRecord::loadFromStream(std::ifstream& in_File)
   }
 
   //check triplet consistency
-  if (hasPFIG or hasSNAM or hasFULL)
+  if ((ingredientFormID!=0) or (harvestSoundFormID!=0) or hasFULL)
   {
-    if (!(hasPFIG and hasSNAM and hasFULL))
+    if (!((ingredientFormID!=0) and (harvestSoundFormID!=0) and hasFULL))
     {
       std::cout << "Error: while reading TREE record: at least one of the "
                 << "subrecords PFIG, SNAM or FULL is missing!\n";

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2011, 2012, 2013 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -27,6 +27,12 @@
 namespace SRTP
 {
 
+/* flag constants */
+const uint32_t IngredientRecord::cFlagNoAutoCalc = 0x00000001;
+const uint32_t IngredientRecord::cFlagFoodItem   = 0x00000002;
+
+/* IngredientRecord's functions */
+
 IngredientRecord::IngredientRecord()
 : BasicRecord()
 {
@@ -37,12 +43,12 @@ IngredientRecord::IngredientRecord()
   keywordArray.clear();
   modelPath = "";
   unknownMODT.setPresence(false);
-  hasYNAM = false;
-  unknownYNAM = 0;
-  hasZNAM = false;
-  unknownZNAM = 0;
-  memset(unknownDATA, 0, 8);
-  memset(unknownENIT, 0, 8);
+  pickupSoundFormID = 0;
+  putdownSoundFormID = 0;
+  value = 0;
+  weight = 0.0f;
+  baseCost = 0;
+  flags = 0;
   effects.clear();
 }
 
@@ -59,10 +65,10 @@ bool IngredientRecord::equals(const IngredientRecord& other) const
       and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
       and (nameStringID==other.nameStringID) and (keywordArray==other.keywordArray)
       and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
-      and (hasYNAM==other.hasYNAM) and ((unknownYNAM==other.unknownYNAM) or (!hasYNAM))
-      and (hasZNAM==other.hasZNAM) and ((unknownZNAM==other.unknownZNAM) or (!hasZNAM))
-      and (memcmp(unknownDATA, other.unknownDATA, 8)==0)
-      and (memcmp(unknownENIT, other.unknownENIT, 8)==0)
+      and (pickupSoundFormID==other.pickupSoundFormID)
+      and (putdownSoundFormID==other.putdownSoundFormID)
+      and (value==other.value) and (weight==other.weight)
+      and (baseCost==other.baseCost) and (flags==other.flags)
       and (effects==other.effects));
 }
 #endif
@@ -94,14 +100,14 @@ uint32_t IngredientRecord::getWriteSize() const
     writeSize = writeSize +4 /*MODT*/ +2 /* 2 bytes for length */
                +unknownMODT.getSize() /* size */;
   }
-  if (hasYNAM)
+  if (pickupSoundFormID!=0)
   {
     writeSize = writeSize +4 /* YNAM */ +2 /* 2 bytes for length */ +4 /* fixed length of 4 bytes */;
   }//if has YNAM
-  if (hasZNAM)
+  if (putdownSoundFormID!=0)
   {
     writeSize = writeSize +4 /* ZNAM */ +2 /* 2 bytes for length */ +4 /* fixed length of 4 bytes */;
-  }//if has YNAM
+  }//if has ZNAM
   unsigned int i;
   if (!effects.empty())
   {
@@ -194,26 +200,26 @@ bool IngredientRecord::saveToStream(std::ofstream& output) const
     }
   }//if MODT
 
-  if (hasYNAM)
+  if (pickupSoundFormID!=0)
   {
     //write YNAM
     output.write((const char*) &cYNAM, 4);
     //YNAM's length
     subLength = 4; //fixed
     output.write((const char*) &subLength, 2);
-    //write YNAM's stuff
-    output.write((const char*) &unknownYNAM, 4);
+    //write Pickup Sound form ID
+    output.write((const char*) &pickupSoundFormID, 4);
   }//if has YNAM
 
-  if (hasZNAM)
+  if (putdownSoundFormID!=0)
   {
     //write ZNAM
     output.write((const char*) &cZNAM, 4);
     //ZNAM's length
     subLength = 4; //fixed
     output.write((const char*) &subLength, 2);
-    //write ZNAM's stuff
-    output.write((const char*) &unknownZNAM, 4);
+    //write Putdown Sound form ID
+    output.write((const char*) &putdownSoundFormID, 4);
   }//if ZNAM
 
   //write DATA
@@ -222,7 +228,8 @@ bool IngredientRecord::saveToStream(std::ofstream& output) const
   subLength = 8; //fixed
   output.write((const char*) &subLength, 2);
   //write DATA's stuff
-  output.write((const char*) unknownDATA, 8);
+  output.write((const char*) &value, 4);
+  output.write((const char*) &weight, 4);
 
   //write ENIT
   output.write((const char*) &cENIT, 4);
@@ -230,7 +237,8 @@ bool IngredientRecord::saveToStream(std::ofstream& output) const
   subLength = 8; //fixed
   output.write((const char*) &subLength, 2);
   //write ENIT's stuff
-  output.write((const char*) unknownENIT, 8);
+  output.write((const char*) &baseCost, 4);
+  output.write((const char*) &flags, 4);
 
   if (!effects.empty())
   {
@@ -337,8 +345,8 @@ bool IngredientRecord::loadFromStream(std::ifstream& in_File)
   uint32_t tempKeyword, kwdaLength, i;
   modelPath.clear();
   unknownMODT.setPresence(false);
-  hasYNAM = false;
-  hasZNAM = false;
+  pickupSoundFormID = 0;
+  putdownSoundFormID = 0;
   bool hasReadDATA = false;
   bool hasReadENIT = false;
   effects.clear();
@@ -444,26 +452,34 @@ bool IngredientRecord::loadFromStream(std::ifstream& in_File)
            bytesRead = bytesRead +2 +unknownMODT.getSize();
            break;
       case cYNAM:
-           if (hasYNAM)
+           if (pickupSoundFormID!=0)
            {
              std::cout << "Error: INGR seems to have more than one YNAM subrecord!\n";
              return false;
            }
            //read YNAM
-           if (!loadUint32SubRecordFromStream(in_File, cYNAM, unknownYNAM, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cYNAM, pickupSoundFormID, false)) return false;
            bytesRead += 6;
-           hasYNAM = true;
+           if (pickupSoundFormID==0)
+           {
+             std::cout << "Error: subrecord YNAM of INGR is zero!\n";
+             return false;
+           }
            break;
       case cZNAM:
-           if (hasZNAM)
+           if (putdownSoundFormID!=0)
            {
              std::cout << "Error: INGR seems to have more than one ZNAM subrecord!\n";
              return false;
            }
            //read ZNAM
-           if (!loadUint32SubRecordFromStream(in_File, cZNAM, unknownZNAM, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cZNAM, putdownSoundFormID, false)) return false;
            bytesRead += 6;
-           hasZNAM = true;
+           if (putdownSoundFormID==0)
+           {
+             std::cout << "Error: subrecord ZNAM of INGR is zero!\n";
+             return false;
+           }
            break;
       case cDATA:
            if (hasReadDATA)
@@ -481,7 +497,8 @@ bool IngredientRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read DATA's stuff
-           in_File.read((char*) unknownDATA, 8);
+           in_File.read((char*) &value, 4);
+           in_File.read((char*) &weight, 4);
            bytesRead += 8;
            if (!in_File.good())
            {
@@ -506,7 +523,8 @@ bool IngredientRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read DATA's stuff
-           in_File.read((char*) unknownENIT, 8);
+           in_File.read((char*) &baseCost, 4);
+           in_File.read((char*) &flags, 4);
            bytesRead += 8;
            if (!in_File.good())
            {

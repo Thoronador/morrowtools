@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2011, 2012, 2013 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -67,23 +67,22 @@ struct ShoutRecord: public BasicRecord
     virtual uint32_t getRecordType() const;
 
     /* wrapper type for SNAM entries */
-    struct SNAMentry
+    struct WordEntry
     {
       uint32_t wordFormID; //form ID of one word for that shout
       uint32_t spellFormID; //form ID of the spell effect for that shout
       float recharge; //recharge time in seconds
 
       /* equality operator */
-      bool operator==(const SNAMentry& other) const;
+      bool operator==(const WordEntry& other) const;
     }; //struct
 
     std::string editorID;
     bool hasFULL;
     uint32_t fullNameStringID;
-    bool hasMDOB;
-    uint32_t unknownMDOB;
+    uint32_t menuDisplayObjectFormID; //subrecord MDOB
     uint32_t descriptionStringID;
-    std::vector<SNAMentry> unknownSNAMs;
+    std::vector<WordEntry> words; //subrecords SNAM
 }; //struct
 
 } //namespace

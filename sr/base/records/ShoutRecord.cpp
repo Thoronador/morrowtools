@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2011, 2012, 2013  Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -27,11 +27,15 @@
 namespace SRTP
 {
 
-bool ShoutRecord::SNAMentry::operator==(const ShoutRecord::SNAMentry& other) const
+/* WordEntry's functions */
+
+bool ShoutRecord::WordEntry::operator==(const ShoutRecord::WordEntry& other) const
 {
   return ((wordFormID==other.wordFormID) and (spellFormID==other.spellFormID)
       and (recharge==other.recharge));
 }
+
+/* ShoutRecord's funtions */
 
 ShoutRecord::ShoutRecord()
 : BasicRecord()
@@ -39,10 +43,9 @@ ShoutRecord::ShoutRecord()
   editorID = "";
   hasFULL = false;
   fullNameStringID = 0;
-  hasMDOB = false;
-  unknownMDOB = 0;
+  menuDisplayObjectFormID = 0;
   descriptionStringID = 0;
-  unknownSNAMs.clear();
+  words.clear();
 }
 
 ShoutRecord::~ShoutRecord()
@@ -55,8 +58,8 @@ bool ShoutRecord::equals(const ShoutRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
       and (hasFULL==other.hasFULL) and ((fullNameStringID==other.fullNameStringID) or (!hasFULL))
-      and (hasMDOB==other.hasMDOB) and ((unknownMDOB==other.unknownMDOB) or (!hasMDOB))
-      and (descriptionStringID==other.descriptionStringID) and (unknownSNAMs==other.unknownSNAMs));
+      and (menuDisplayObjectFormID==other.menuDisplayObjectFormID)
+      and (descriptionStringID==other.descriptionStringID) and (words==other.words));
 }
 #endif
 
@@ -67,13 +70,13 @@ uint32_t ShoutRecord::getWriteSize() const
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of strin +1 byte for NUL-termination */
         +4 /* DESC */ +2 /* 2 bytes for length */ +4 /* fixed size */
-        +unknownSNAMs.size()
+        +words.size()
         *(4 /* SNAM */ +2 /* 2 bytes for length */ +12 /* fixed size */);
   if (hasFULL)
   {
     writeSize = writeSize +4 /* FULL */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
-  if (hasMDOB)
+  if (menuDisplayObjectFormID!=0)
   {
     writeSize = writeSize +4 /* MDOB */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
@@ -104,15 +107,15 @@ bool ShoutRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &fullNameStringID, 4);
   }
 
-  if (hasMDOB)
+  if (menuDisplayObjectFormID!=0)
   {
     //write MDOB
     output.write((const char*) &cMDOB, 4);
     //MDOB's length
     subLength = 4; // fixed
      output.write((const char*) &subLength, 2);
-    //write MDOB's data
-    output.write((const char*) &unknownMDOB, 4);
+    //write Menu Display Object's form ID
+    output.write((const char*) &menuDisplayObjectFormID, 4);
   }//if has MDOB
 
   //write DESC
@@ -124,7 +127,7 @@ bool ShoutRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &descriptionStringID, 4);
 
   unsigned int i;
-  for (i=0; i<unknownSNAMs.size(); ++i)
+  for (i=0; i<words.size(); ++i)
   {
     //write SNAM
     output.write((const char*) &cSNAM, 4);
@@ -132,9 +135,9 @@ bool ShoutRecord::saveToStream(std::ofstream& output) const
     subLength = 12; //fixed size of 12 bytes
     output.write((const char*) &subLength, 2);
     //write SNAM's data
-    output.write((const char*) &(unknownSNAMs[i].wordFormID), 4);
-    output.write((const char*) &(unknownSNAMs[i].spellFormID), 4);
-    output.write((const char*) &(unknownSNAMs[i].recharge), 4);
+    output.write((const char*) &(words[i].wordFormID), 4);
+    output.write((const char*) &(words[i].spellFormID), 4);
+    output.write((const char*) &(words[i].recharge), 4);
   }//for
 
   return output.good();
@@ -178,11 +181,11 @@ bool ShoutRecord::loadFromStream(std::ifstream& in_File)
   }
   editorID = std::string(buffer);
 
-  hasFULL = false;
-  hasMDOB = false;
+  hasFULL = false; fullNameStringID = 0;
+  menuDisplayObjectFormID = 0;
   bool hasReadDESC = false;
-  unknownSNAMs.clear();
-  SNAMentry temp;
+  words.clear();
+  WordEntry temp;
 
   while (bytesRead<readSize)
   {
@@ -203,15 +206,20 @@ bool ShoutRecord::loadFromStream(std::ifstream& in_File)
            hasFULL = true;
            break;
       case cMDOB:
-           if (hasMDOB)
+           if (menuDisplayObjectFormID!=0)
            {
              std::cout << "Error: SHOU seems to have more than one MDOB subrecord.\n";
              return false;
            }
            //read MDOB
-           if (!loadUint32SubRecordFromStream(in_File, cMDOB, unknownMDOB, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cMDOB, menuDisplayObjectFormID, false)) return false;
            bytesRead += 6;
-           hasMDOB = true;
+           //check content
+           if (menuDisplayObjectFormID==0)
+           {
+             std::cout << "Error: subrecord MDOB of SHOU is zero!\n";
+             return false;
+           }
            break;
       case cDESC:
            if (hasReadDESC)
@@ -247,7 +255,7 @@ bool ShoutRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error while reading subrecord SNAM of SHOU!\n";
              return false;
            }
-           unknownSNAMs.push_back(temp);
+           words.push_back(temp);
            break;
       default:
            std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
@@ -258,10 +266,10 @@ bool ShoutRecord::loadFromStream(std::ifstream& in_File)
   }//while
 
   //check for presence of required elements
-  if ((!hasReadDESC) or (unknownSNAMs.size()!=3))
+  if ((!hasReadDESC) or (words.size()!=3))
   {
     std::cout << "Error: at least one subrecord of SHOU is not present!\n"
-              << "hasDESC: "<<hasReadDESC<<", SNAM.size="<<unknownSNAMs.size()<<"\n";
+              << "hasDESC: "<<hasReadDESC<<", SNAM.size="<<words.size()<<"\n";
     return false;
   }
 

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012 Thoronador
+    Copyright (C) 2012, 2013  Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -27,6 +27,7 @@
 namespace SRTP
 {
 
+/* constants for capacity / filled stuff */
 const uint8_t SoulGemRecord::cCapacityEmpty = 0;
 const uint8_t SoulGemRecord::cCapacityPetty = 1;
 const uint8_t SoulGemRecord::cCapacityLesser = 2;
@@ -50,8 +51,7 @@ SoulGemRecord::SoulGemRecord()
   //end of DATA
   soulInside = 0; //subrecord SOUL
   capacity = 0; //subrecord SLCP
-  hasNAM0 = false;
-  unknownNAM0 = 0;
+  linkedToFormID = 0;
 }
 
 SoulGemRecord::~SoulGemRecord()
@@ -68,8 +68,8 @@ bool SoulGemRecord::equals(const SoulGemRecord& other) const
       and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
       and (keywordArray==other.keywordArray) and (value==other.value)
       and (weight==other.weight) and (soulInside==other.soulInside)
-      and (capacity==other.capacity) and (hasNAM0==other.hasNAM0)
-      and ((unknownNAM0==other.unknownNAM0) or (!hasNAM0)));
+      and (capacity==other.capacity)
+      and (linkedToFormID==other.linkedToFormID));
 }
 #endif
 
@@ -101,7 +101,7 @@ uint32_t SoulGemRecord::getWriteSize() const
     writeSize = writeSize +4 /* KSIZ */ +2 /* 2 bytes for length */ +4 /* fixed size */
                +4 /* KWDA */ +2 /* 2 bytes for length */ +4*keywordArray.size() /* 4 bytes per element */;
   }
-  if (hasNAM0)
+  if (linkedToFormID!=0)
   {
     writeSize = writeSize +4 /* NAM0 */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
@@ -200,15 +200,15 @@ bool SoulGemRecord::saveToStream(std::ofstream& output) const
   //write SLCP's stuff
   output.write((const char*) &capacity, 1);
 
-  if (hasNAM0)
+  if (linkedToFormID!=0)
   {
     //write NAM0
     output.write((const char*) &cNAM0, 4);
     //NAM0's length
     subLength = 4; // fixed
     output.write((const char*) &subLength, 2);
-    //write NAM0
-    output.write((const char*) &unknownNAM0, 4);
+    //write "Linked to" form ID
+    output.write((const char*) &linkedToFormID, 4);
   }//if NAM0
 
   return output.good();
@@ -286,7 +286,7 @@ bool SoulGemRecord::loadFromStream(std::ifstream& in_File)
   bool hasReadDATA = false;
   bool hasReadSOUL = false;
   bool hasReadSLCP = false;
-  hasNAM0 = false;
+  linkedToFormID = 0;
   while (bytesRead<readSize)
   {
     //read next subrecord
@@ -467,15 +467,20 @@ bool SoulGemRecord::loadFromStream(std::ifstream& in_File)
            hasReadSLCP = true;
            break;
       case cNAM0:
-           if (hasNAM0)
+           if (linkedToFormID!=0)
            {
              std::cout << "Error: SLGM seems to have more than one NAM0 subrecord.\n";
              return false;
            }
            //read NAM0
-           if (!loadUint32SubRecordFromStream(in_File, cNAM0, unknownNAM0, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cNAM0, linkedToFormID, false)) return false;
            bytesRead += 6;
-           hasNAM0 = true;
+           //check content
+           if (linkedToFormID==0)
+           {
+             std::cout << "Error: subrecord NAM0 of SLGM is zero!\n";
+             return false;
+           }
            break;
       default:
            std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)

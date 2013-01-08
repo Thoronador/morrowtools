@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2011, 2012, 2013 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -40,10 +40,8 @@ MiscObjectRecord::MiscObjectRecord()
   unknownMODS.setPresence(false);
   iconPath = "";
   keywordArray.clear();
-  hasYNAM = false;
-  unknownYNAM = 0;
-  hasZNAM = false;
-  unknownZNAM = 0;
+  pickupSoundFormID = 0;
+  putdownSoundFormID = 0;
   value = 0;
   weight = 0.0f;
 }
@@ -56,24 +54,15 @@ MiscObjectRecord::~MiscObjectRecord()
 #ifndef SR_NO_RECORD_EQUALITY
 bool MiscObjectRecord::equals(const MiscObjectRecord& other) const
 {
-  if ((equalsBasic(other)) and (editorID==other.editorID)
+  return ((equalsBasic(other)) and (editorID==other.editorID)
     and (unknownVMAD==other.unknownVMAD) and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
-    and (hasFULL==other.hasFULL) and (modelPath==other.modelPath)
-    and (unknownMODT==other.unknownMODT) and (unknownMODS==other.unknownMODS)
-    and (iconPath==other.iconPath)
-    and (keywordArray==other.keywordArray) and (value==other.value)
-    and (weight==other.weight) and (hasYNAM==other.hasYNAM)
-    and (hasZNAM==other.hasZNAM))
-  {
-    if (hasFULL)
-      if (fullNameStringID!=other.fullNameStringID) return false;
-    if (hasYNAM)
-      if (unknownYNAM!=other.unknownYNAM) return false;
-    if (hasZNAM)
-      if (unknownZNAM!=other.unknownZNAM) return false;
-    return true;
-  }
-  return false;
+    and (hasFULL==other.hasFULL) and ((fullNameStringID==other.fullNameStringID) or (!hasFULL))
+    and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
+    and (unknownMODS==other.unknownMODS) and (iconPath==other.iconPath)
+    and (keywordArray==other.keywordArray)
+    and (pickupSoundFormID==other.pickupSoundFormID)
+    and (putdownSoundFormID==other.putdownSoundFormID)
+    and (value==other.value) and (weight==other.weight));
 }
 #endif
 
@@ -112,11 +101,11 @@ uint32_t MiscObjectRecord::getWriteSize() const
     writeSize = writeSize +4 /* KSIZ */ +2 /* 2 bytes for length */ +4 /* fixed size of four bytes */
                +4 /* KWDA */ +2 /* 2 bytes for length */+ 4*keywordArray.size();
   }
-  if (hasYNAM)
+  if (pickupSoundFormID!=0)
   {
     writeSize = writeSize +4 /* YNAM */ +2 /* 2 bytes for length */ +4 /* fixed size of four bytes */;
   }
-  if (hasZNAM)
+  if (putdownSoundFormID!=0)
   {
     writeSize = writeSize +4 /* ZNAM */ +2 /* 2 bytes for length */ +4 /* fixed size of four bytes */;
   }
@@ -213,26 +202,26 @@ bool MiscObjectRecord::saveToStream(std::ofstream& output) const
     }//for
   }
 
-  if (hasYNAM)
+  if (pickupSoundFormID!=0)
   {
     //write YNAM
     output.write((const char*) &cYNAM, 4);
     //YNAM's length
     subLength = 4; /* fixed length */
     output.write((const char*) &subLength, 2);
-    //write YNAM's data
-    output.write((const char*) &unknownYNAM, 4);
+    //write Pickup Sound form ID
+    output.write((const char*) &pickupSoundFormID, 4);
   }//if hasYNAM
 
-  if (hasZNAM)
+  if (putdownSoundFormID!=0)
   {
     //write ZNAM
     output.write((const char*) &cZNAM, 4);
     //ZNAM's length
     subLength = 4; /* fixed length */
     output.write((const char*) &subLength, 2);
-    //write ZNAM's data
-    output.write((const char*) &unknownZNAM, 4);
+    //write Putdown Sound form ID
+    output.write((const char*) &putdownSoundFormID, 4);
   }//if hasZNAM
 
   //write DATA
@@ -292,10 +281,8 @@ bool MiscObjectRecord::loadFromStream(std::ifstream& in_File)
   iconPath.clear();
   hasFULL = false;
   fullNameStringID = 0;
-  hasYNAM = false;
-  unknownYNAM = 0;
-  hasZNAM = false;
-  unknownZNAM = 0;
+  pickupSoundFormID = 0;
+  putdownSoundFormID = 0;
   keywordArray.clear();
   uint32_t k_Size, i, temp;
   bool hasReadOBND = false;
@@ -436,54 +423,38 @@ bool MiscObjectRecord::loadFromStream(std::ifstream& in_File)
            iconPath = std::string(buffer);
            break;
       case cYNAM:
-           if (hasYNAM)
+           if (pickupSoundFormID!=0)
            {
              std::cout << "Error: record MISC seems to have more than one YNAM subrecord.\n";
              return false;
            }
-           //YNAM's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength!=4)
+           //read YNAM
+           if (!loadUint32SubRecordFromStream(in_File, cYNAM, pickupSoundFormID, false))
+             return false;
+           bytesRead += 6;
+           //check content
+           if (pickupSoundFormID==0)
            {
-             std::cout <<"Error: sub record YNAM of MISC has invalid length ("
-                       <<subLength<<" bytes)! Should be four bytes.\n";
+             std::cout << "Error: subrecord YNAM of MISC is zero!\n";
              return false;
            }
-           //read YNAM's stuff
-           in_File.read((char*) &unknownYNAM, 4);
-           bytesRead += 4;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord YNAM of MISC!\n";
-             return false;
-           }
-           hasYNAM = true;
            break;
       case cZNAM:
-           if (hasZNAM)
+           if (putdownSoundFormID!=0)
            {
              std::cout << "Error: record MISC seems to have more than one ZNAM subrecord.\n";
              return false;
            }
-           //ZNAM's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength!=4)
+           //read ZNAM
+           if (!loadUint32SubRecordFromStream(in_File, cZNAM, putdownSoundFormID, false))
+             return false;
+           bytesRead += 6;
+           //check content
+           if (putdownSoundFormID==0)
            {
-             std::cout <<"Error: sub record ZNAM of MISC has invalid length ("
-                       <<subLength<<" bytes)! Should be four bytes.\n";
+             std::cout << "Error: subrecord ZNAM of MISC is zero!\n";
              return false;
            }
-           //read ZNAM's stuff
-           in_File.read((char*) &unknownZNAM, 4);
-           bytesRead += 4;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord ZNAM of MISC!\n";
-             return false;
-           }
-           hasZNAM = true;
            break;
       case cDATA:
            if (hasReadDATA)

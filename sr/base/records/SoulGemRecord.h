@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012 Thoronador
+    Copyright (C) 2012, 2013  Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -67,6 +67,14 @@ struct SoulGemRecord: public BasicRecord
     /* returns the record's type, usually its header */
     virtual uint32_t getRecordType() const;
 
+    /* constants for capacity / filled stuff */
+    static const uint8_t cCapacityEmpty;
+    static const uint8_t cCapacityPetty;
+    static const uint8_t cCapacityLesser;
+    static const uint8_t cCapacityCommon;
+    static const uint8_t cCapacityGreater;
+    static const uint8_t cCapacityAzura;
+
     std::string editorID;
     uint8_t unknownOBND[12];
     bool hasFULL;
@@ -80,16 +88,7 @@ struct SoulGemRecord: public BasicRecord
     //end of DATA
     uint8_t soulInside; //subrecord SOUL
     uint8_t capacity; //subrecord SLCP
-    bool hasNAM0;
-    uint32_t unknownNAM0;
-
-    //constants for capacity / filled stuff
-    static const uint8_t cCapacityEmpty;
-    static const uint8_t cCapacityPetty;
-    static const uint8_t cCapacityLesser;
-    static const uint8_t cCapacityCommon;
-    static const uint8_t cCapacityGreater;
-    static const uint8_t cCapacityAzura;
+    uint32_t linkedToFormID; //subrecord NAM0
 }; //struct
 
 } //namespace

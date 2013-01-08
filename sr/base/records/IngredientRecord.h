@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2011, 2012, 2013 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -67,6 +67,10 @@ struct IngredientRecord: public BasicRecord
     /* returns the record's type, usually its header */
     virtual uint32_t getRecordType() const;
 
+    /* flag constants */
+    static const uint32_t cFlagNoAutoCalc;
+    static const uint32_t cFlagFoodItem;
+
     std::string editorID;
     BinarySubRecord unknownVMAD;
     uint8_t unknownOBND[12];
@@ -74,13 +78,29 @@ struct IngredientRecord: public BasicRecord
     std::vector<uint32_t> keywordArray;
     std::string modelPath;
     BinarySubRecord unknownMODT;
-    bool hasYNAM;
-    uint32_t unknownYNAM;
-    bool hasZNAM;
-    uint32_t unknownZNAM;
-    uint8_t unknownDATA[8];
-    uint8_t unknownENIT[8];
+    uint32_t pickupSoundFormID; //subrecord YNAM
+    uint32_t putdownSoundFormID; //subrecord ZNAM
+    //subreord DATA
+    uint32_t value;
+    float weight;
+    //end of DATA
+    //subrecord ENIT
+    uint32_t baseCost;
+    uint32_t flags;
+    //end of ENIT
     std::vector<EffectBlock> effects;
+
+    /* returns true, if the Food Item flag is set */
+    inline bool isFoodItem() const
+    {
+      return ((flags&cFlagFoodItem)!=0);
+    }
+
+    /* returns true, if the Auto Calc option is active */
+    inline bool doesAutoCalc() const
+    {
+      return ((flags&cFlagNoAutoCalc)==0);
+    }
 }; //struct
 
 } //namespace

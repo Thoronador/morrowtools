@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2011, 2012, 2013  Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -91,33 +91,22 @@ struct WeaponRecord: public BasicRecord
     std::string modelPath;
     BinarySubRecord unknownMODT;
     BinarySubRecord unknownMODS;
-    bool hasEITM;
-    uint32_t unknownEITM;
+    uint32_t enchantingFormID; //subrecord EITM
     bool hasEAMT;
-    uint16_t unknownEAMT;
-    bool hasETYP;
-    uint32_t unknownETYP;
-    bool hasBIDS;
-    uint32_t unknownBIDS;
-    bool hasBAMT;
-    uint32_t unknownBAMT;
+    uint16_t enchantmentAmount; //subrecord EAMT
+    uint32_t equipTypeFormID; //subrecord ETYP
+    uint32_t blockBashImpactDataSetFormID; //subrecord BIDS
+    uint32_t alternateBlockMaterialFormID; //subrecord BAMT
     std::vector<uint32_t> keywordArray;
     uint32_t descriptionStringID; //subrecord DESC
     std::string unknownNNAM;
-    bool hasINAM;
-    uint32_t unknownINAM;
-    bool hasWNAM;
-    uint32_t unknownWNAM;
-    bool hasTNAM;
-    uint32_t unknownTNAM;
-    bool hasUNAM;
-    uint32_t unknownUNAM;
-    bool hasNAM9;
-    uint32_t unknownNAM9;
-    bool hasNAM8;
-    uint32_t unknownNAM8;
-    bool hasSNAM;
-    uint32_t unknownSNAM;
+    uint32_t impactDataSetFormID; //subrecord INAM
+    uint32_t firstPersonModelObjectFormID; //subrecord WNAM
+    uint32_t attackFailSoundFormID; //subrecord TNAM
+    uint32_t idleSoundFormID; //subrecord UNAM
+    uint32_t equipSoundFormID; //subrecord NAM9
+    uint32_t unequipSoundFormID; //subrecord NAM8
+    uint32_t attackSoundFormID; //subrecord SNAM
     //DATA
     uint32_t value;
     float weight;

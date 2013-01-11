@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012 Thoronador
+    Copyright (C) 2012, 2013  Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -74,13 +74,10 @@ struct FloraRecord: public BasicRecord
     BinarySubRecord unknownMODT;
     BinarySubRecord unknownMODS;
     uint32_t unknownPNAM;
-    bool hasRNAM;
-    uint32_t unknownRNAM;
+    uint32_t activateTextOverrideStringID; //subrecord RNAM
     uint16_t unknownFNAM;
-    bool hasPFIG;
-    uint32_t unknownPFIG;
-    bool hasSNAM;
-    uint32_t unknownSNAM;
+    uint32_t ingredientFormID; //subrecord PFIG
+    uint32_t harvestSoundFormID; //subrecord SNAM
     uint32_t unknownPFPC;
 }; //struct
 

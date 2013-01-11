@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012 Thoronador
+    Copyright (C) 2012, 2013  Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -38,13 +38,10 @@ FloraRecord::FloraRecord()
   unknownMODT.setPresence(false);
   unknownMODS.setPresence(false);
   unknownPNAM = 0;
-  hasRNAM = false;
-  unknownRNAM = 0;
+  activateTextOverrideStringID = 0;
   unknownFNAM = 0;
-  hasPFIG = false;
-  unknownPFIG = 0;
-  hasSNAM = false;
-  unknownSNAM = 0;
+  ingredientFormID = 0;
+  harvestSoundFormID = 0;
   unknownPFPC = 0;
 }
 
@@ -62,10 +59,10 @@ bool FloraRecord::equals(const FloraRecord& other) const
       and (nameStringID==other.nameStringID) and (modelPath==other.modelPath)
       and (unknownMODT==other.unknownMODT) and (unknownMODS==other.unknownMODS)
       and (unknownPNAM==other.unknownPNAM)
-      and (hasRNAM==other.hasRNAM) and ((unknownRNAM==other.unknownRNAM) or (!hasRNAM))
+      and (activateTextOverrideStringID==other.activateTextOverrideStringID)
       and (unknownFNAM==other.unknownFNAM)
-      and (hasPFIG==other.hasPFIG) and ((unknownPFIG==other.unknownPFIG) or (!hasPFIG))
-      and (hasSNAM==other.hasSNAM) and ((unknownSNAM==other.unknownSNAM) or (!hasSNAM))
+      and (ingredientFormID==other.ingredientFormID)
+      and (harvestSoundFormID==other.harvestSoundFormID)
       and (unknownPFPC==other.unknownPFPC));
 }
 #endif
@@ -95,15 +92,15 @@ uint32_t FloraRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* MODS */ +2 /* 2 bytes for length */ +unknownMODS.getSize() /* size */;
   }
-  if (hasRNAM)
+  if (activateTextOverrideStringID!=0)
   {
     writeSize = writeSize +4 /* RNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
-  if (hasPFIG)
+  if (ingredientFormID!=0)
   {
     writeSize = writeSize +4 /* PFIG */ +2 /* 2 bytes for length */ +4 /* size */;
   }
-  if (hasSNAM)
+  if (harvestSoundFormID!=0)
   {
     writeSize = writeSize +4 /* SNAM */ +2 /* 2 bytes for length */ +4 /* size */;
   }
@@ -185,15 +182,15 @@ bool FloraRecord::saveToStream(std::ofstream& output) const
   //write PNAM
   output.write((const char*) &unknownPNAM, 4);
 
-  if (hasRNAM)
+  if (activateTextOverrideStringID!=0)
   {
     //write RNAM
     output.write((const char*) &cRNAM, 4);
     //RNAM's length
     subLength = 4; //fixed size
     output.write((const char*) &subLength, 2);
-    //write RNAM
-    output.write((const char*) &unknownRNAM, 4);
+    //write Activate Text Override's string ID
+    output.write((const char*) &activateTextOverrideStringID, 4);
   }//if has RNAM
 
   //write FNAM
@@ -204,26 +201,26 @@ bool FloraRecord::saveToStream(std::ofstream& output) const
   //write FNAM
   output.write((const char*) &unknownFNAM, 2);
 
-  if (hasPFIG)
+  if (ingredientFormID!=0)
   {
     //write PFIG
     output.write((const char*) &cPFIG, 4);
     //PFIG's length
     subLength = 4; //fixed size
     output.write((const char*) &subLength, 2);
-    //write PFIG
-    output.write((const char*) &unknownPFIG, 4);
+    //write Ingredient form ID
+    output.write((const char*) &ingredientFormID, 4);
   }//if has PFIG
 
-  if (hasSNAM)
+  if (harvestSoundFormID!=0)
   {
     //write SNAM
     output.write((const char*) &cSNAM, 4);
     //SNAM's length
     subLength = 4; //fixed size
     output.write((const char*) &subLength, 2);
-    //write SNAM
-    output.write((const char*) &unknownSNAM, 4);
+    //write Harvest Sound's form ID
+    output.write((const char*) &harvestSoundFormID, 4);
   }//if has SNAM
 
   //write PFPC
@@ -282,10 +279,10 @@ bool FloraRecord::loadFromStream(std::ifstream& in_File)
   unknownMODT.setPresence(false);
   unknownMODS.setPresence(false);
   bool hasReadPNAM = false; unknownPNAM = 0;
-  hasRNAM = false; unknownRNAM = 0;
+  activateTextOverrideStringID = 0;
   bool hasReadFNAM = false; unknownFNAM = 0;
-  hasPFIG = false; unknownPFIG = 0;
-  hasSNAM = false; unknownSNAM = 0;
+  ingredientFormID = 0;
+  harvestSoundFormID = 0;
   bool hasReadPFPC = false; unknownPFPC = 0;
   while (bytesRead<readSize)
   {
@@ -409,15 +406,20 @@ bool FloraRecord::loadFromStream(std::ifstream& in_File)
            hasReadPNAM = true;
            break;
       case cRNAM:
-           if (hasRNAM)
+           if (activateTextOverrideStringID!=0)
            {
              std::cout << "Error: FLOR seems to have more than one RNAM subrecord.\n";
              return false;
            }
            //read RNAM
-           if (!loadUint32SubRecordFromStream(in_File, cRNAM, unknownRNAM, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cRNAM, activateTextOverrideStringID, false)) return false;
            bytesRead += 6;
-           hasRNAM = true;
+           //check content
+           if (activateTextOverrideStringID==0)
+           {
+             std::cout << "Error: subrecord RNAM of FLOR is zero!\n";
+             return false;
+           }
            break;
       case cFNAM:
            if (hasReadFNAM)
@@ -445,26 +447,36 @@ bool FloraRecord::loadFromStream(std::ifstream& in_File)
            hasReadFNAM = true;
            break;
       case cPFIG:
-           if (hasPFIG)
+           if (ingredientFormID!=0)
            {
              std::cout << "Error: FLOR seems to have more than one PFIG subrecord.\n";
              return false;
            }
            //read PFIG
-           if (!loadUint32SubRecordFromStream(in_File, cPFIG, unknownPFIG, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cPFIG, ingredientFormID, false)) return false;
            bytesRead += 6;
-           hasPFIG = true;
+           //check content
+           if (ingredientFormID==0)
+           {
+             std::cout << "Error: subrecord PFIG of FLOR is zero!\n";
+             return false;
+           }
            break;
       case cSNAM:
-           if (hasSNAM)
+           if (harvestSoundFormID!=0)
            {
              std::cout << "Error: FLOR seems to have more than one SNAM subrecord.\n";
              return false;
            }
            //read SNAM
-           if (!loadUint32SubRecordFromStream(in_File, cSNAM, unknownSNAM, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cSNAM, harvestSoundFormID, false)) return false;
            bytesRead += 6;
-           hasSNAM = true;
+           //check content
+           if (harvestSoundFormID==0)
+           {
+             std::cout << "Error: subrecord SNAM of FLOR is zero!\n";
+             return false;
+           }
            break;
       case cPFPC:
            if (hasReadPFPC)

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2011, 2012, 2013  Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -48,33 +48,22 @@ WeaponRecord::WeaponRecord()
   modelPath = "";
   unknownMODT.setPresence(false);
   unknownMODS.setPresence(false);
-  hasEITM = false;
-  unknownEITM = 0;
+  enchantingFormID = 0;
   hasEAMT = false;
-  unknownEAMT = 0;
-  hasETYP = false;
-  unknownETYP = 0;
-  hasBIDS = false;
-  unknownBIDS = 0;
-  hasBAMT = false;
-  unknownBAMT = 0;
+  enchantmentAmount = 0;
+  equipTypeFormID = 0;
+  blockBashImpactDataSetFormID = 0;
+  alternateBlockMaterialFormID = 0;
   keywordArray.clear();
   descriptionStringID = 0;
   unknownNNAM = "";
-  hasINAM = false;
-  unknownINAM = 0;
-  hasWNAM = false;
-  unknownWNAM = 0;
-  hasTNAM = false;
-  unknownTNAM = 0;
-  hasUNAM = false;
-  unknownUNAM = 0;
-  hasNAM9 = false;
-  unknownNAM9 = 0;
-  hasNAM8 = false;
-  unknownNAM8 = 0;
-  hasSNAM = false;
-  unknownSNAM = 0;
+  impactDataSetFormID = 0;
+  firstPersonModelObjectFormID = 0;
+  attackFailSoundFormID = 0;
+  idleSoundFormID = 0;
+  equipSoundFormID = 0;
+  unequipSoundFormID = 0;
+  attackSoundFormID = 0;
   //DATA
   value = 0;
   weight = 0.0f;
@@ -98,33 +87,22 @@ WeaponRecord::WeaponRecord(const WeaponRecord& other)
   modelPath = other.modelPath;
   unknownMODT = other.unknownMODT;
   unknownMODS = other.unknownMODS;
-  hasEITM = other.hasEITM;
-  unknownEITM = other.unknownEITM;
+  enchantingFormID = other.enchantingFormID;
   hasEAMT = other.hasEAMT;
-  unknownEAMT = other.unknownEAMT;
-  hasETYP = other.hasETYP;
-  unknownETYP = other.unknownETYP;
-  hasBIDS = other.hasBIDS;
-  unknownBIDS = other.unknownBIDS;
-  hasBAMT = other.hasBAMT;
-  unknownBAMT = other.unknownBAMT;
+  enchantmentAmount = other.enchantmentAmount;
+  equipTypeFormID = other.equipTypeFormID;
+  blockBashImpactDataSetFormID = other.blockBashImpactDataSetFormID;
+  alternateBlockMaterialFormID = other.alternateBlockMaterialFormID;
   keywordArray = other.keywordArray;
   descriptionStringID = other.descriptionStringID;
   unknownNNAM = other.unknownNNAM;
-  hasINAM = other.hasINAM;
-  unknownINAM = other.unknownINAM;
-  hasWNAM = other.hasWNAM;
-  unknownWNAM = other.unknownWNAM;
-  hasTNAM = other.hasTNAM;
-  unknownTNAM = other.unknownTNAM;
-  hasUNAM = other.hasUNAM;
-  unknownUNAM = other.unknownUNAM;
-  hasNAM9 = other.hasNAM9;
-  unknownNAM9 = other.unknownNAM9;
-  hasNAM8 = other.hasNAM8;
-  unknownNAM8 = other.unknownNAM8;
-  hasSNAM = other.hasSNAM;
-  unknownSNAM = other.unknownSNAM;
+  impactDataSetFormID = other.impactDataSetFormID;
+  firstPersonModelObjectFormID = other.firstPersonModelObjectFormID;
+  attackFailSoundFormID = other.attackFailSoundFormID;
+  idleSoundFormID = other.idleSoundFormID;
+  equipSoundFormID = other.equipSoundFormID;
+  unequipSoundFormID = other.unequipSoundFormID;
+  attackSoundFormID = other.attackSoundFormID;
   value = other.value;
   weight = other.weight;
   baseDamage = other.baseDamage;
@@ -148,33 +126,22 @@ WeaponRecord& WeaponRecord::operator=(const WeaponRecord& other)
   modelPath = other.modelPath;
   unknownMODT = other.unknownMODT;
   unknownMODS = other.unknownMODS;
-  hasEITM = other.hasEITM;
-  unknownEITM = other.unknownEITM;
+  enchantingFormID = other.enchantingFormID;
   hasEAMT = other.hasEAMT;
-  unknownEAMT = other.unknownEAMT;
-  hasETYP = other.hasETYP;
-  unknownETYP = other.unknownETYP;
-  hasBIDS = other.hasBIDS;
-  unknownBIDS = other.unknownBIDS;
-  hasBAMT = other.hasBAMT;
-  unknownBAMT = other.unknownBAMT;
+  enchantmentAmount = other.enchantmentAmount;
+  equipTypeFormID = other.equipTypeFormID;
+  blockBashImpactDataSetFormID = other.blockBashImpactDataSetFormID;
+  alternateBlockMaterialFormID = other.alternateBlockMaterialFormID;
   keywordArray = other.keywordArray;
   descriptionStringID = other.descriptionStringID;
   unknownNNAM = other.unknownNNAM;
-  hasINAM = other.hasINAM;
-  unknownINAM = other.unknownINAM;
-  hasWNAM = other.hasWNAM;
-  unknownWNAM = other.unknownWNAM;
-  hasTNAM = other.hasTNAM;
-  unknownTNAM = other.unknownTNAM;
-  hasUNAM = other.hasUNAM;
-  unknownUNAM = other.unknownUNAM;
-  hasNAM9 = other.hasNAM9;
-  unknownNAM9 = other.unknownNAM9;
-  hasNAM8 = other.hasNAM8;
-  unknownNAM8 = other.unknownNAM8;
-  hasSNAM = other.hasSNAM;
-  unknownSNAM = other.unknownSNAM;
+  impactDataSetFormID = other.impactDataSetFormID;
+  firstPersonModelObjectFormID = other.firstPersonModelObjectFormID;
+  attackFailSoundFormID = other.attackFailSoundFormID;
+  idleSoundFormID = other.idleSoundFormID;
+  equipSoundFormID = other.equipSoundFormID;
+  unequipSoundFormID = other.unequipSoundFormID;
+  attackSoundFormID = other.attackSoundFormID;
   value = other.value;
   weight = other.weight;
   baseDamage = other.baseDamage;
@@ -207,24 +174,24 @@ bool WeaponRecord::equals(const WeaponRecord& other) const
   {
     return false;
   }
-  if ((hasEITM!=other.hasEITM) or ((unknownEITM!=other.unknownEITM) and hasEITM)
-    or (hasEAMT!=other.hasEAMT) or ((unknownEAMT!=other.unknownEAMT) and hasEAMT)
-    or (hasETYP!=other.hasETYP) or ((unknownETYP!=other.unknownETYP) and hasETYP)
-    or (hasBIDS!=other.hasBIDS) or ((unknownBIDS!=other.unknownBIDS) and hasBIDS)
-    or ((hasBAMT!=other.hasBAMT) and hasBAMT) or (unknownBAMT!=other.unknownBAMT))
+  if ((enchantingFormID!=other.enchantingFormID)
+    or (hasEAMT!=other.hasEAMT) or ((enchantmentAmount!=other.enchantmentAmount) and hasEAMT)
+    or (equipTypeFormID!=other.equipTypeFormID)
+    or (blockBashImpactDataSetFormID!=other.blockBashImpactDataSetFormID)
+    or (alternateBlockMaterialFormID!=other.alternateBlockMaterialFormID))
   {
     return false;
   }
   if ((keywordArray!=other.keywordArray) or (descriptionStringID!=other.descriptionStringID)
     or (unknownNNAM!=other.unknownNNAM)
-    or (hasINAM!=other.hasINAM) or ((unknownINAM!=other.unknownINAM) and hasINAM)
-    or (hasWNAM!=other.hasWNAM) or ((unknownWNAM!=other.unknownWNAM) and hasWNAM)
-    or (hasTNAM!=other.hasTNAM) or ((unknownTNAM!=other.unknownTNAM) and hasTNAM)
-    or (hasUNAM!=other.hasUNAM) or ((unknownUNAM!=other.unknownUNAM) and hasUNAM)
-    or (hasNAM9!=other.hasNAM9) or ((unknownNAM9!=other.unknownNAM9) and hasNAM9)
-    or (hasNAM8!=other.hasNAM8) or ((unknownNAM8!=other.unknownNAM8) and hasNAM8)
+    or (impactDataSetFormID!=other.impactDataSetFormID)
+    or (firstPersonModelObjectFormID!=other.firstPersonModelObjectFormID)
+    or (attackFailSoundFormID!=other.attackFailSoundFormID)
+    or (idleSoundFormID!=other.idleSoundFormID)
+    or (equipSoundFormID!=other.equipSoundFormID)
+    or (unequipSoundFormID!=other.unequipSoundFormID)
     or (hasCNAM!=other.hasCNAM) or ((unknownCNAM!=other.unknownCNAM) and hasCNAM)
-    or (hasSNAM!=other.hasSNAM) or ((unknownSNAM!=other.unknownSNAM) and hasSNAM))
+    or (attackSoundFormID!=other.attackSoundFormID))
   {
     return false;
   }
@@ -243,8 +210,6 @@ uint32_t WeaponRecord::getWriteSize() const
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
         +4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed size */
-        +4 /* MODL */ +2 /* 2 bytes for length */
-        +modelPath.length()+1 /* length of name +1 byte for NUL termination */
         +4 /* DESC */ +2 /* 2 bytes for length */ +4 /* fixed size */
         +4 /* DATA */ +2 /* 2 bytes for length */ +10 /* fixed size */
         +4 /* DNAM */ +2 /* 2 bytes for length */ +100 /* fixed size */
@@ -254,6 +219,11 @@ uint32_t WeaponRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* VMAD */ +2 /* 2 bytes for length */
                +unknownVMAD.getSize() /* subrecord size */;
+  }
+  if (!modelPath.empty())
+  {
+    writeSize = writeSize +4 /* MODL */ +2 /* 2 bytes for length */
+               +modelPath.length()+1 /* length of name +1 byte for NUL termination */;
   }
   if (hasFULL)
   {
@@ -269,23 +239,23 @@ uint32_t WeaponRecord::getWriteSize() const
     writeSize = writeSize +4 /* MODS */ +2 /* 2 bytes for length */
                +unknownMODS.getSize() /* subrecord size */;
   }
-  if (hasEITM)
+  if (enchantingFormID!=0)
   {
     writeSize = writeSize +4 /* EITM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
   if (hasEAMT)
   {
-    writeSize = writeSize +4 /* EAMT */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+    writeSize = writeSize +4 /* EAMT */ +2 /* 2 bytes for length */ +2 /* fixed size */;
   }
-  if (hasETYP)
+  if (equipTypeFormID!=0)
   {
     writeSize = writeSize +4 /* ETYP */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
-  if (hasBIDS)
+  if (blockBashImpactDataSetFormID!=0)
   {
     writeSize = writeSize +4 /* BIDS */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
-  if (hasBAMT)
+  if (alternateBlockMaterialFormID!=0)
   {
     writeSize = writeSize +4 /* BAMT */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
@@ -299,31 +269,31 @@ uint32_t WeaponRecord::getWriteSize() const
     writeSize = writeSize +4 /* NNAM */ +2 /* 2 bytes for length */
                +unknownNNAM.length()+1 /* length of string +1 byte for NUL-terminaton */;
   }
-  if (hasINAM)
+  if (impactDataSetFormID!=0)
   {
     writeSize = writeSize +4 /* INAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
-  if (hasWNAM)
+  if (firstPersonModelObjectFormID!=0)
   {
     writeSize = writeSize +4 /* WNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
-  if (hasTNAM)
+  if (attackFailSoundFormID!=0)
   {
     writeSize = writeSize +4 /* TNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
-  if (hasUNAM)
+  if (idleSoundFormID!=0)
   {
     writeSize = writeSize +4 /* UNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
-  if (hasNAM9)
+  if (equipSoundFormID!=0)
   {
     writeSize = writeSize +4 /* NAM9 */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
-  if (hasNAM8)
+  if (unequipSoundFormID!=0)
   {
     writeSize = writeSize +4 /* NAM8 */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
-  if (hasSNAM)
+  if (attackSoundFormID!=0)
   {
     writeSize = writeSize +4 /* SNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
@@ -375,13 +345,16 @@ bool WeaponRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &nameStringID, 4);
   }//if has FULL subrecord
 
-  //write MODL
-  output.write((const char*) &cMODL, 4);
-  //MODL's length
-  subLength = modelPath.length()+1;
-  output.write((const char*) &subLength, 2);
-  //write model path
-  output.write(modelPath.c_str(), subLength);
+  if (!modelPath.empty())
+  {
+    //write MODL
+    output.write((const char*) &cMODL, 4);
+    //MODL's length
+    subLength = modelPath.length()+1;
+    output.write((const char*) &subLength, 2);
+    //write model path
+    output.write(modelPath.c_str(), subLength);
+  }//if MODL
 
   if (unknownMODT.isPresent())
   {
@@ -403,15 +376,15 @@ bool WeaponRecord::saveToStream(std::ofstream& output) const
     }
   }
 
-  if (hasEITM)
+  if (enchantingFormID!=0)
   {
     //write EITM
     output.write((const char*) &cEITM, 4);
     //EITM's length
     subLength = 4; //fixed size
     output.write((const char*) &subLength, 2);
-    //write EITM
-    output.write((const char*) &unknownEITM, 4);
+    //write Enchanting form ID
+    output.write((const char*) &enchantingFormID, 4);
   }//if has EITM subrecord
 
   if (hasEAMT)
@@ -419,43 +392,43 @@ bool WeaponRecord::saveToStream(std::ofstream& output) const
     //write EAMT
     output.write((const char*) &cEAMT, 4);
     //EAMT's length
-    subLength = 4; //fixed size
+    subLength = 2; //fixed size
     output.write((const char*) &subLength, 2);
-    //write EAMT
-    output.write((const char*) &unknownEAMT, 4);
+    //write Enchantment Amount
+    output.write((const char*) &enchantmentAmount, 2);
   }//if has EAMT subrecord
 
-  if (hasETYP)
+  if (equipTypeFormID!=0)
   {
     //write ETYP
     output.write((const char*) &cETYP, 4);
     //ETYP's length
     subLength = 4; //fixed size
     output.write((const char*) &subLength, 2);
-    //write ETYP
-    output.write((const char*) &unknownETYP, 4);
+    //write Equip Type form ID
+    output.write((const char*) &equipTypeFormID, 4);
   }//if has ETYP subrecord
 
-  if (hasBIDS)
+  if (blockBashImpactDataSetFormID!=0)
   {
     //write BIDS
     output.write((const char*) &cBIDS, 4);
     //BIDS's length
     subLength = 4; //fixed size
     output.write((const char*) &subLength, 2);
-    //write BIDS
-    output.write((const char*) &unknownBIDS, 4);
+    //write Block Bash Impact Data Set's form ID
+    output.write((const char*) &blockBashImpactDataSetFormID, 4);
   }//if has BIDS subrecord
 
-  if (hasBAMT)
+  if (alternateBlockMaterialFormID!=0)
   {
     //write BAMT
     output.write((const char*) &cBAMT, 4);
     //BAMT's length
     subLength = 4; //fixed size
     output.write((const char*) &subLength, 2);
-    //write BAMT
-    output.write((const char*) &unknownBAMT, 4);
+    //write Alternate Block Material form ID
+    output.write((const char*) &alternateBlockMaterialFormID, 4);
   }//if has BAMT subrecord
 
   if (!keywordArray.empty())
@@ -501,81 +474,81 @@ bool WeaponRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) unknownNNAM.c_str(), subLength);
   }//if NNAM
 
-  if (hasINAM)
+  if (impactDataSetFormID!=0)
   {
     //write INAM
     output.write((const char*) &cINAM, 4);
     //INAM's length
     subLength = 4; //fixed size
     output.write((const char*) &subLength, 2);
-    //write INAM
-    output.write((const char*) &unknownINAM, 4);
+    //write Impact Data Set form ID
+    output.write((const char*) &impactDataSetFormID, 4);
   }//if has INAM subrecord
 
-  if (hasWNAM)
+  if (firstPersonModelObjectFormID!=0)
   {
     //write WNAM
     output.write((const char*) &cWNAM, 4);
     //WNAM's length
     subLength = 4; //fixed size
     output.write((const char*) &subLength, 2);
-    //write WNAM
-    output.write((const char*) &unknownWNAM, 4);
+    //write 1st Person Model Object form ID
+    output.write((const char*) &firstPersonModelObjectFormID, 4);
   }//if has WNAM subrecord
 
-  if (hasTNAM)
+  if (attackFailSoundFormID!=0)
   {
     //write TNAM
     output.write((const char*) &cTNAM, 4);
     //TNAM's length
     subLength = 4; //fixed size
     output.write((const char*) &subLength, 2);
-    //write TNAM
-    output.write((const char*) &unknownTNAM, 4);
+    //write Attack Fail sound form ID
+    output.write((const char*) &attackFailSoundFormID, 4);
   }//if has TNAM subrecord
 
-  if (hasUNAM)
+  if (idleSoundFormID!=0)
   {
     //write UNAM
     output.write((const char*) &cUNAM, 4);
     //UNAM's length
     subLength = 4; //fixed size
     output.write((const char*) &subLength, 2);
-    //write UNAM
-    output.write((const char*) &unknownUNAM, 4);
+    //write Idle Sound form ID
+    output.write((const char*) &idleSoundFormID, 4);
   }//if has UNAM subrecord
 
-  if (hasNAM9)
+  if (equipSoundFormID!=0)
   {
     //write NAM9
     output.write((const char*) &cNAM9, 4);
     //NAM9's length
     subLength = 4; //fixed size
     output.write((const char*) &subLength, 2);
-    //write NAM9
-    output.write((const char*) &unknownNAM9, 4);
+    //write Equip Sound form ID
+    output.write((const char*) &equipSoundFormID, 4);
   }//if has NAM9 subrecord
 
-  if (hasNAM8)
+  if (unequipSoundFormID!=0)
   {
     //write NAM8
     output.write((const char*) &cNAM8, 4);
     //NAM8's length
     subLength = 4; //fixed size
     output.write((const char*) &subLength, 2);
-    //write NAM8
-    output.write((const char*) &unknownNAM8, 4);
+    //write UnEquip Sound form ID
+    output.write((const char*) &unequipSoundFormID, 4);
   }//if has NAM8 subrecord
 
-  if (hasSNAM)
+  if (attackSoundFormID!=0)
   {
     //write SNAM
     output.write((const char*) &cSNAM, 4);
     //SNAM's length
     subLength = 4; //fixed size
     output.write((const char*) &subLength, 2);
-    //write SNAM
-    output.write((const char*) &unknownSNAM, 4);
+    //write Attack Sound form ID
+    output.write((const char*) &attackSoundFormID, 4);
   }//if has SNAM subrecord
 
   //write DATA
@@ -669,22 +642,24 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
   hasFULL = false;
   nameStringID = 0;
   modelPath.clear();
+  unknownMODT.setPresence(false);
   unknownMODS.setPresence(false);
-  hasETYP = false;
-  hasBIDS = false;
-  hasBAMT = false;
+  enchantingFormID = 0;
+  equipTypeFormID = 0;
+  blockBashImpactDataSetFormID = 0;
+  alternateBlockMaterialFormID = 0;
   keywordArray.clear();
   uint32_t k_Size, i, fid;
   bool hasReadDESC = false;
   unknownNNAM.clear();
-  hasSNAM = false;
+  attackSoundFormID = 0;
   bool hasReadDATA = false;
-  hasINAM = false;
-  hasWNAM = false;
-  hasTNAM = false;
-  hasUNAM = false;
-  hasNAM9 = false;
-  hasNAM8 = false;
+  impactDataSetFormID = 0;
+  firstPersonModelObjectFormID = 0;
+  attackFailSoundFormID = 0;
+  idleSoundFormID = 0;
+  equipSoundFormID = 0;
+  unequipSoundFormID = 0;
   hasCNAM = false;
   while (bytesRead<readSize)
   {
@@ -718,8 +693,8 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
            bytesRead += 2;
            if (subLength!=12)
            {
-             std::cout <<"Error: sub record OBND of WEAP has invalid length ("<<subLength
-                       <<" bytes). Should be 12 bytes.\n";
+             std::cout << "Error: sub record OBND of WEAP has invalid length ("
+                       << subLength << " bytes). Should be 12 bytes.\n";
              return false;
            }
            //read OBND
@@ -791,15 +766,20 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
            bytesRead = bytesRead +2 +unknownMODS.getSize();
            break;
       case cEITM:
-           if (hasEITM)
+           if (enchantingFormID!=0)
            {
              std::cout << "Error: WEAP seems to have more than one EITM subrecord!\n";
              return false;
            }
            //read EITM
-           if (!loadUint32SubRecordFromStream(in_File, cEITM, unknownEITM, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cEITM, enchantingFormID, false)) return false;
            bytesRead += 6;
-           hasEITM = true;
+           //check content
+           if (enchantingFormID==0)
+           {
+             std::cout << "Error: subrecord EITM of WEAP is zero!\n";
+             return false;
+           }
            break;
       case cEAMT:
            if (hasEAMT)
@@ -812,12 +792,12 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
            bytesRead += 2;
            if (subLength!=2)
            {
-             std::cout <<"Error: sub record EAMT of WEAP has invalid length ("<<subLength
-                       <<" bytes). Should be 2 bytes.\n";
+             std::cout <<"Error: sub record EAMT of WEAP has invalid length ("
+                       <<subLength <<" bytes). Should be two bytes.\n";
              return false;
            }
            //read EAMT
-           in_File.read((char*) &unknownEAMT, 2);
+           in_File.read((char*) &enchantmentAmount, 2);
            bytesRead += 2;
            if (!in_File.good())
            {
@@ -827,37 +807,52 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
            hasEAMT = true;
            break;
       case cETYP:
-           if (hasETYP)
+           if (equipTypeFormID!=0)
            {
              std::cout << "Error: WEAP seems to have more than one ETYP subrecord!\n";
              return false;
            }
            //read ETYP
-           if (!loadUint32SubRecordFromStream(in_File, cETYP, unknownETYP, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cETYP, equipTypeFormID, false)) return false;
            bytesRead += 6;
-           hasETYP = true;
+           //check content
+           if (equipTypeFormID==0)
+           {
+             std::cout << "Error: subrecord ETYP of WEAP is zero!\n";
+             return false;
+           }
            break;
       case cBIDS:
-           if (hasBIDS)
+           if (blockBashImpactDataSetFormID!=0)
            {
              std::cout << "Error: WEAP seems to have more than one BIDS subrecord!\n";
              return false;
            }
            //read BIDS
-           if (!loadUint32SubRecordFromStream(in_File, cBIDS, unknownBIDS, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cBIDS, blockBashImpactDataSetFormID, false)) return false;
            bytesRead += 6;
-           hasBIDS = true;
+           //check content
+           if (blockBashImpactDataSetFormID==0)
+           {
+             std::cout << "Error: subrecord BIDS of WEAP is zero!\n";
+             return false;
+           }
            break;
       case cBAMT:
-           if (hasBAMT)
+           if (alternateBlockMaterialFormID!=0)
            {
              std::cout << "Error: WEAP seems to have more than one BAMT subrecord!\n";
              return false;
            }
            //read BAMT
-           if (!loadUint32SubRecordFromStream(in_File, cBAMT, unknownBAMT, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cBAMT, alternateBlockMaterialFormID, false)) return false;
            bytesRead += 6;
-           hasBAMT = true;
+           //check content
+           if (alternateBlockMaterialFormID==0)
+           {
+             std::cout << "Error: subrecord BAMT of WEAP is zero!\n";
+             return false;
+           }
            break;
       case cKSIZ:
            if (!keywordArray.empty())
@@ -939,81 +934,116 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
            unknownNNAM = std::string(buffer);
            break;
       case cINAM:
-           if (hasINAM)
+           if (impactDataSetFormID!=0)
            {
              std::cout << "Error: WEAP seems to have more than one INAM subrecord!\n";
              return false;
            }
            //read INAM
-           if (!loadUint32SubRecordFromStream(in_File, cINAM, unknownINAM, false)) return false;
-           hasINAM = true;
+           if (!loadUint32SubRecordFromStream(in_File, cINAM, impactDataSetFormID, false)) return false;
            bytesRead += 6;
+           //check content
+           if (impactDataSetFormID==0)
+           {
+             std::cout << "Error: subrecord INAM of WEAP is zero!\n";
+             return false;
+           }
            break;
       case cWNAM:
-           if (hasWNAM)
+           if (firstPersonModelObjectFormID!=0)
            {
              std::cout << "Error: WEAP seems to have more than one WNAM subrecord!\n";
              return false;
            }
            //read WNAM
-           if (!loadUint32SubRecordFromStream(in_File, cWNAM, unknownWNAM, false)) return false;
-           hasWNAM = true;
+           if (!loadUint32SubRecordFromStream(in_File, cWNAM, firstPersonModelObjectFormID, false)) return false;
            bytesRead += 6;
+           //check content
+           if (firstPersonModelObjectFormID==0)
+           {
+             std::cout << "Error: subrecord WNAM of WEAP is zero!\n";
+             return false;
+           }
            break;
       case cTNAM:
-           if (hasTNAM)
+           if (attackFailSoundFormID!=0)
            {
              std::cout << "Error: WEAP seems to have more than one TNAM subrecord!\n";
              return false;
            }
            //read TNAM
-           if (!loadUint32SubRecordFromStream(in_File, cTNAM, unknownTNAM, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cTNAM, attackFailSoundFormID, false)) return false;
            bytesRead += 6;
-           hasTNAM = true;
+           //check content
+           if (attackFailSoundFormID==0)
+           {
+             std::cout << "Error: subrecord TNAM of WEAP is zero!\n";
+             return false;
+           }
            break;
       case cUNAM:
-           if (hasUNAM)
+           if (idleSoundFormID!=0)
            {
              std::cout << "Error: WEAP seems to have more than one UNAM subrecord!\n";
              return false;
            }
            //read UNAM
-           if (!loadUint32SubRecordFromStream(in_File, cUNAM, unknownUNAM, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cUNAM, idleSoundFormID, false)) return false;
            bytesRead += 6;
-           hasUNAM = true;
+           //check content
+           if (idleSoundFormID==0)
+           {
+             std::cout << "Error: subrecord UNAM of WEAP is zero!\n";
+             return false;
+           }
            break;
       case cNAM9:
-           if (hasNAM9)
+           if (equipSoundFormID!=0)
            {
              std::cout << "Error: WEAP seems to have more than one NAM9 subrecord!\n";
              return false;
            }
            //read NAM9
-           if (!loadUint32SubRecordFromStream(in_File, cNAM9, unknownNAM9, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cNAM9, equipSoundFormID, false)) return false;
            bytesRead += 6;
-           hasNAM9 = true;
+           //check content
+           if (equipSoundFormID==0)
+           {
+             std::cout << "Error: subrecord NAM9 of WEAP is zero!\n";
+             return false;
+           }
            break;
       case cNAM8:
-           if (hasNAM8)
+           if (unequipSoundFormID!=0)
            {
              std::cout << "Error: WEAP seems to have more than one NAM8 subrecord!\n";
              return false;
            }
            //read NAM8
-           if (!loadUint32SubRecordFromStream(in_File, cNAM8, unknownNAM8, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cNAM8, unequipSoundFormID, false)) return false;
            bytesRead += 6;
-           hasNAM8 = true;
+           //check content
+           if (unequipSoundFormID==0)
+           {
+             std::cout << "Error: subrecord NAM9 of WEAP is zero!\n";
+             return false;
+           }
            break;
       case cSNAM:
-           if (hasSNAM)
+           if (attackSoundFormID!=0)
            {
              std::cout << "Error: WEAP seems to have more than one SNAM subrecord!\n";
              return false;
            }
            //read SNAM
-           if (!loadUint32SubRecordFromStream(in_File, cSNAM, unknownSNAM, false)) return false;
-           hasSNAM = true;
+           if (!loadUint32SubRecordFromStream(in_File, cSNAM, attackSoundFormID, false)) return false;
            bytesRead += 6;
+           //check content
+           if (attackSoundFormID==0)
+           {
+             std::cout << "Error: subrecord SNAM of WEAP is zero!\n";
+             return false;
+           }
            break;
       case cDATA:
            if (hasReadDATA)

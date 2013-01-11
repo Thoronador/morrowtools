@@ -989,13 +989,13 @@ Records and their sub-records:
       PNAM (4 bytes)
           unknown data
       RNAM (4 bytes, optional)
-          unknown data
+          uint32_t string ID of Activate Text Override
       FNAM (2 bytes)
           unknown data
       PFIG (4 bytes, optional)
-          unknown data
+          uint32_t Ingredient form ID (points to INGR)
       SNAM (4 bytes, optional)
-          unknown data
+          uint32_t Harvest Sound form ID (points to SNDR)
       PFPC (4 bytes)
           unknown data
 
@@ -2679,41 +2679,46 @@ Records and their sub-records:
 
 
   WEAP: Weapon record
-      EDID: editor ID (string, NUL-terminated)
+      EDID (string, NUL-terminated)
+          editor ID
       OBND (12 bytes)
           unknown data
       FULL (4 bytes?)
           unknown data
-      MODL (string)
+      MODL (string, optional)
           model path (.NIF)
-      MODT (12, 24 or 36 bytes possible?, maybe in general a multiple of 12 bytes)
+      MODT (12, 24 or 36 bytes possible?, maybe in general a multiple of 12 bytes; optional)
           unknown data
-      EITM (4 bytes)
-          unknown data
-      EAMT (2 bytes)
-          unknown data
-      ETYP (4 bytes)
-          unknown data
-      BIDS (4 bytes)
-          unknown data
-      BAMT (4 bytes)
-          unknown data
+      EITM (4 bytes, optional)
+          uint32_t Enchanting form ID (points to ENCH)
+      EAMT (2 bytes, optional)
+          uint32_t Enchantment (Charge)
+      ETYP (4 bytes, optional)
+          uint32_t Equip Type form ID (points to EQUP)
+      BIDS (4 bytes, optional)
+          uint32_t Block Bash Impact Data Set form ID (points to IPDS)
+      BAMT (4 bytes, optional)
+          uint32_t Alternate Block Material form ID (points to MATT)
       KSIZ (4 bytes)
           number of uint32_ts in KWDA
       KWDA (multiple of 4 bytes), follows KSIZ
           array of formIDs/uint32_t2, number of elements is specified in KSIZ
       DESC (4 bytes)
           unknown data (description?)
-      INAM (4 bytes)
-          unknown data
-      WNAM (4 bytes)
-          unknown data
-      TNAM (4 bytes)
-          unknown data
-      NAM9 (4 bytes)
-          unknown data
-      NAM8 (4 bytes)
-          unknown data
+      INAM (4 bytes, optional)
+          uint32_t Impact Data Set form ID (points to IPDS)
+      WNAM (4 bytes, optional)
+          uint32_t 1st Person Model Object form ID (points to STAT)
+      TNAM (4 bytes, optional)
+          uint32_t Attack Fail sound form ID (points to SNDR)
+      UNAM (4 bytes, optional)
+          uint32_t Idle Sound form ID (points to SNDR)
+      NAM9 (4 bytes, optional)
+          uint32_t Equip Sound form ID (points to SNDR)
+      NAM8 (4 bytes, optional)
+          uint32_t UnEquip Sound form ID (points to SNDR)
+      SNAM (4 bytes, optional)
+          uint32_t Attack Sound form ID (points to SNDR)
       DATA (10 bytes)
           unknown data
       DNAM (100 bytes)

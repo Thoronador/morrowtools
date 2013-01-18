@@ -1,0 +1,13 @@
+How to use zlib with MinGW:
+===========================
+(Source: http://forums.codeblocks.org/index.php/topic,2458.msg19453.html#msg19453)
+
+An easy way to use zlib with MinGW that works (I know for sure because I've done it just 2 days ago) is this:
+1. Download and unpack the zlib-1.23 source zipfile
+2. Open a cmd prompt and cd to the top level folder
+3. type mingw32-make -f win32\Makefile.gcc
+4. Wait until it is done (about 6-8 seconds), then copy the libraries (most importantly the .a and .dll) to your lib folder
+(so much for setup, now for the fun stuff)
+5. Make a project, write your program etc.
+6. Be sure that your lib folder is in the linker's search path (normally that is the case)
+7. Add z to the "Link libraries" field in project options (or alternatively, specify the absolute path)

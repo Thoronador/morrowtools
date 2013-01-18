@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012 Thoronador
+    Copyright (C) 2012, 2013  Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -80,14 +80,11 @@ struct WorldSpaceRecord: public BasicRecord
     //end of subrecord WCTR
     uint32_t interiorLightingFormID; //subrecord LTMP
     uint32_t encounterZoneFormID; //subrecord XEZN
-    bool hasCNAM;
-    uint32_t unknownCNAM;
-    bool hasNAM2;
-    uint32_t unknownNAM2;
-    bool hasNAM3;
-    uint32_t unknownNAM3;
+    uint32_t climateFormID; //subrecord CNAM
+    uint32_t waterFormID; //subrecord NAM2
+    uint32_t LODWaterTypeFormID; //subrecord NAM3
     bool hasNAM4;
-    uint32_t unknownNAM4;
+    float LODWaterHeight; //subrecord NAM4
     bool hasDNAM;
     uint64_t unknownDNAM;
     BinarySubRecord unknownMNAM;
@@ -96,7 +93,7 @@ struct WorldSpaceRecord: public BasicRecord
     bool hasPNAM;
     uint16_t unknownPNAM;
     BinarySubRecord unknownONAM;
-    uint32_t unknownNAMA;
+    float distantLODMultiplier; //subrecord NAMA
     bool hasDATA;
     uint8_t unknownDATA;
     bool hasNAM0;
@@ -104,8 +101,8 @@ struct WorldSpaceRecord: public BasicRecord
     bool hasNAM9;
     uint64_t unknownNAM9;
     uint32_t musicFormID; //subrecord ZNAM
-    std::string pathTNAM;
-    std::string pathUNAM;
+    std::string HD_LOD_DiffuseTexture; //subrecord TNAN
+    std::string HD_LOD_NormalTexture; //subrecord UNAM
     BinarySubRecordExtended unknownOFST;
 }; //struct
 

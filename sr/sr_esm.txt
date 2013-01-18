@@ -2756,13 +2756,13 @@ Records and their sub-records:
       XEZN (4 bytes, optional)
           encounter zone form ID (points to ECZN)
       CNAM (4 bytes, optional)
-          unknown data
+          uint32_t Climate form ID (points to CLMT)
       NAM2 (4 bytes, optional)
-          unknown data
+          uint32_t Water form ID (points to WATR)
       NAM3 (4 bytes, optional)
-          unknown data
+          uint32_t LOD Water Type form ID (points to WATR)
       NAM4 (4 bytes, optional)
-          unknown data
+          float LOD Water Height
       DNAM (8 bytes, optional)
           unknown data
       MNAM (16 bytes, optional)
@@ -2780,7 +2780,7 @@ Records and their sub-records:
             float
             float
       NAMA (4 bytes)
-          unknown data
+          float Distant LOD Multiplier
       DATA (1 byte, optional)
           unknown data
       NAM0 (8 bytes, optional)
@@ -2790,9 +2790,9 @@ Records and their sub-records:
       ZNAM (4 bytes)
           music form ID (points to MUSC)
       TNAM (string, NUL-terminated, optional)
-          path to some texture
+          path to HD LOD Diffuse texture
       UNAM (string, NUL-terminated, optional)
-          path to another texture
+          path to HD LOD Normal texture
       XXXX (4 bytes, optional)
           subrecord that indicates, that the next subrecord is larger than
           65535 bytes. Content is an uint32_t containing the actual size of the

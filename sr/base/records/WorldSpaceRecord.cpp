@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012 Thoronador
+    Copyright (C) 2012, 2013  Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -40,14 +40,11 @@ WorldSpaceRecord::WorldSpaceRecord()
   centerCellY = 0;
   interiorLightingFormID = 0;
   encounterZoneFormID = 0;
-  hasCNAM = false;
-  unknownCNAM = 0;
-  hasNAM2 = false;
-  unknownNAM2 = 0;
-  hasNAM3 = false;
-  unknownNAM3 = 0;
+  climateFormID = 0;
+  waterFormID = 0;
+  LODWaterTypeFormID = 0;
   hasNAM4 = false;
-  unknownNAM4 = 0;
+  LODWaterHeight = 0.0f;
   hasDNAM = false;
   unknownDNAM = 0;
   unknownMNAM.setPresence(false);
@@ -56,7 +53,7 @@ WorldSpaceRecord::WorldSpaceRecord()
   hasPNAM = false;
   unknownPNAM = 0;
   unknownONAM.setPresence(false);
-  unknownNAMA = 0;
+  distantLODMultiplier = 0.0f;
   hasDATA = false;
   unknownDATA = 0;
   hasNAM0 = false;
@@ -64,8 +61,8 @@ WorldSpaceRecord::WorldSpaceRecord()
   hasNAM9 = false;
   unknownNAM9 = 0;
   musicFormID = 0;
-  pathTNAM = "";
-  pathUNAM = "";
+  HD_LOD_DiffuseTexture = "";
+  HD_LOD_NormalTexture = "";
   unknownOFST.setPresence(false);
 }
 
@@ -83,21 +80,22 @@ bool WorldSpaceRecord::equals(const WorldSpaceRecord& other) const
       and (hasWCTR==other.hasWCTR) and (((centerCellX==other.centerCellX) and (centerCellY==other.centerCellY)) or (!hasWCTR))
       and (interiorLightingFormID==other.interiorLightingFormID)
       and (encounterZoneFormID==other.encounterZoneFormID)
-      and (hasCNAM==other.hasCNAM) and ((unknownCNAM==other.unknownCNAM) or (!hasCNAM))
-      and (hasNAM2==other.hasNAM2) and ((unknownNAM2==other.unknownNAM2) or (!hasNAM2))
-      and (hasNAM3==other.hasNAM3) and ((unknownNAM3==other.unknownNAM3) or (!hasNAM3))
-      and (hasNAM4==other.hasNAM4) and ((unknownNAM4==other.unknownNAM4) or (!hasNAM4))
+      and (climateFormID==other.climateFormID)
+      and (waterFormID==other.waterFormID)
+      and (LODWaterTypeFormID==other.LODWaterTypeFormID)
+      and (hasNAM4==other.hasNAM4) and ((LODWaterHeight==other.LODWaterHeight) or (!hasNAM4))
       and (hasDNAM==other.hasDNAM) and ((unknownDNAM==other.unknownDNAM) or (!hasDNAM))
       and (unknownMNAM==other.unknownMNAM)
       and (locationFormID==other.locationFormID)
       and (parentWorldSpaceFormID==other.parentWorldSpaceFormID)
       and (hasPNAM==other.hasPNAM) and ((unknownPNAM==other.unknownPNAM) or (!hasPNAM))
-      and (unknownONAM==other.unknownONAM) and (unknownNAMA==other.unknownNAMA)
+      and (unknownONAM==other.unknownONAM) and (distantLODMultiplier==other.distantLODMultiplier)
       and (hasDATA==other.hasDATA) and ((unknownDATA==other.unknownDATA) or (!hasDATA))
       and (hasNAM0==other.hasNAM0) and ((unknownNAM0==other.unknownNAM0) or (!hasNAM0))
       and (hasNAM9==other.hasNAM9) and ((unknownNAM9==other.unknownNAM9) or (!hasNAM9))
       and (musicFormID==other.musicFormID)
-      and (pathTNAM==other.pathTNAM) and (pathUNAM==other.pathUNAM)
+      and (HD_LOD_DiffuseTexture==other.HD_LOD_DiffuseTexture)
+      and (HD_LOD_NormalTexture==other.HD_LOD_NormalTexture)
       and (unknownOFST==other.unknownOFST));
 }
 #endif
@@ -138,15 +136,15 @@ uint32_t WorldSpaceRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* XEZN */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
-  if (hasCNAM)
+  if (climateFormID!=0)
   {
     writeSize = writeSize +4 /* CNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
-  if (hasNAM2)
+  if (waterFormID!=0)
   {
     writeSize = writeSize +4 /* NAM2 */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
-  if (hasNAM3)
+  if (LODWaterTypeFormID!=0)
   {
     writeSize = writeSize +4 /* NAM3 */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
@@ -194,15 +192,15 @@ uint32_t WorldSpaceRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* ZNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
-  if (!pathTNAM.empty())
+  if (!HD_LOD_DiffuseTexture.empty())
   {
     writeSize = writeSize + 4 /* TNAM */ +2 /* 2 bytes for length */
-               +pathTNAM.length()+1 /* length of name +1 byte for NUL termination */;
+               +HD_LOD_DiffuseTexture.length()+1 /* length of path +1 byte for NUL termination */;
   }
-  if (!pathUNAM.empty())
+  if (!HD_LOD_NormalTexture.empty())
   {
     writeSize = writeSize + 4 /* UNAM */ +2 /* 2 bytes for length */
-               +pathUNAM.length()+1 /* length of name +1 byte for NUL termination */;
+               +HD_LOD_NormalTexture.length()+1 /* length of path +1 byte for NUL termination */;
   }
   if (unknownOFST.isPresent())
   {
@@ -302,37 +300,37 @@ bool WorldSpaceRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &encounterZoneFormID, 4);
   }//if XEZN
 
-  if (hasCNAM)
+  if (climateFormID!=0)
   {
     //write CNAM
     output.write((const char*) &cCNAM, 4);
     //CNAM's length
     subLength = 4; // fixed
     output.write((const char*) &subLength, 2);
-    //write CNAM
-    output.write((const char*) &unknownCNAM, 4);
+    //write Climate's form ID
+    output.write((const char*) &climateFormID, 4);
   }//if CNAM
 
-  if (hasNAM2)
+  if (waterFormID!=0)
   {
     //write NAM2
     output.write((const char*) &cNAM2, 4);
     //NAM2's length
     subLength = 4; // fixed
     output.write((const char*) &subLength, 2);
-    //write NAM2
-    output.write((const char*) &unknownNAM2, 4);
+    //write Water form ID
+    output.write((const char*) &waterFormID, 4);
   }//if NAM2
 
-  if (hasNAM3)
+  if (LODWaterTypeFormID!=0)
   {
     //write NAM3
     output.write((const char*) &cNAM3, 4);
     //NAM3's length
     subLength = 4; // fixed
     output.write((const char*) &subLength, 2);
-    //write NAM3
-    output.write((const char*) &unknownNAM3, 4);
+    //write LOD Water Type
+    output.write((const char*) &LODWaterTypeFormID, 4);
   }//if NAM3
 
   if (hasNAM4)
@@ -342,8 +340,8 @@ bool WorldSpaceRecord::saveToStream(std::ofstream& output) const
     //NAM4's length
     subLength = 4; // fixed
     output.write((const char*) &subLength, 2);
-    //write NAM4
-    output.write((const char*) &unknownNAM4, 4);
+    //write LOD Water Height
+    output.write((const char*) &LODWaterHeight, 4);
   }//if NAM4
 
   if (hasDNAM)
@@ -416,7 +414,7 @@ bool WorldSpaceRecord::saveToStream(std::ofstream& output) const
   subLength = 4; // fixed
   output.write((const char*) &subLength, 2);
   //write NAMA
-  output.write((const char*) &unknownNAMA, 4);
+  output.write((const char*) &distantLODMultiplier, 4);
 
   if (hasDATA)
   {
@@ -462,26 +460,26 @@ bool WorldSpaceRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &musicFormID, 1);
   }
 
-  if (!pathTNAM.empty())
+  if (!HD_LOD_DiffuseTexture.empty())
   {
     //write TNAM
     output.write((const char*) &cTNAM, 4);
     //TNAM's length
-    subLength = pathTNAM.length()+1;
+    subLength = HD_LOD_DiffuseTexture.length()+1;
     output.write((const char*) &subLength, 2);
-    //write TNAM path
-    output.write(pathTNAM.c_str(), subLength);
+    //write HD LOD Diffuse texture path
+    output.write(HD_LOD_DiffuseTexture.c_str(), subLength);
   }
 
-  if (!pathUNAM.empty())
+  if (!HD_LOD_NormalTexture.empty())
   {
     //write UNAM
     output.write((const char*) &cUNAM, 4);
     //UNAM's length
-    subLength = pathUNAM.length()+1;
+    subLength = HD_LOD_NormalTexture.length()+1;
     output.write((const char*) &subLength, 2);
-    //write UNAM path
-    output.write(pathUNAM.c_str(), subLength);
+    //write HD LOD Normal texture path
+    output.write(HD_LOD_NormalTexture.c_str(), subLength);
   }
 
   if (unknownOFST.isPresent())
@@ -543,9 +541,9 @@ bool WorldSpaceRecord::loadFromStream(std::ifstream& in_File)
   hasWCTR = false; centerCellX = 0; centerCellY = 0;
   interiorLightingFormID = 0;
   encounterZoneFormID = 0;
-  hasCNAM = false; unknownCNAM = 0;
-  hasNAM2 = false;
-  hasNAM3 = false;
+  climateFormID = 0;
+  waterFormID = 0;
+  LODWaterTypeFormID = 0;
   hasNAM4 = false;
   hasDNAM = false;
   unknownMNAM.setPresence(false);
@@ -558,8 +556,8 @@ bool WorldSpaceRecord::loadFromStream(std::ifstream& in_File)
   hasNAM0 = false;
   hasNAM9 = false;
   musicFormID = 0;
-  pathTNAM.clear();
-  pathUNAM.clear();
+  HD_LOD_DiffuseTexture.clear();
+  HD_LOD_NormalTexture.clear();
   uint32_t sizeXXXX = 0;
   unknownOFST.setPresence(false);
   while (bytesRead<readSize)
@@ -661,37 +659,52 @@ bool WorldSpaceRecord::loadFromStream(std::ifstream& in_File)
            }
            break;
       case cCNAM:
-           if (hasCNAM)
+           if (climateFormID!=0)
            {
              std::cout << "Error: WRLD seems to have more than one CNAM subrecord.\n";
              return false;
            }
            //read CNAM
-           if (!loadUint32SubRecordFromStream(in_File, cCNAM, unknownCNAM, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cCNAM, climateFormID, false)) return false;
            bytesRead += 6;
-           hasCNAM = true;
+           //check content
+           if (climateFormID==0)
+           {
+             std::cout << "Error: subrecord CNAM of WRLD has value zero!\n";
+             return false;
+           }
            break;
       case cNAM2:
-           if (hasNAM2)
+           if (waterFormID!=0)
            {
              std::cout << "Error: WRLD seems to have more than one NAM2 subrecord.\n";
              return false;
            }
            //read NAM2
-           if (!loadUint32SubRecordFromStream(in_File, cNAM2, unknownNAM2, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cNAM2, waterFormID, false)) return false;
            bytesRead += 6;
-           hasNAM2 = true;
+           //check content
+           if (waterFormID==0)
+           {
+             std::cout << "Error: subrecord NAM2 of WRLD has value zero!\n";
+             return false;
+           }
            break;
       case cNAM3:
-           if (hasNAM3)
+           if (LODWaterTypeFormID!=0)
            {
              std::cout << "Error: WRLD seems to have more than one NAM3 subrecord.\n";
              return false;
            }
            //read NAM3
-           if (!loadUint32SubRecordFromStream(in_File, cNAM3, unknownNAM3, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cNAM3, LODWaterTypeFormID, false)) return false;
            bytesRead += 6;
-           hasNAM3 = true;
+           //check content
+           if (LODWaterTypeFormID==0)
+           {
+             std::cout << "Error: subrecord NAM3 of WRLD has value zero!\n";
+             return false;
+           }
            break;
       case cNAM4:
            if (hasNAM4)
@@ -699,9 +712,23 @@ bool WorldSpaceRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: WRLD seems to have more than one NAM4 subrecord.\n";
              return false;
            }
-           //read NAM4
-           if (!loadUint32SubRecordFromStream(in_File, cNAM4, unknownNAM4, false)) return false;
-           bytesRead += 6;
+           //NAM4's length
+           in_File.read((char*) &subLength, 2);
+           bytesRead += 2;
+           if (subLength!=4)
+           {
+             std::cout <<"Error: sub record NAM4 of WRLD has invalid length ("
+                       <<subLength<<" bytes). Should be four bytes.\n";
+             return false;
+           }
+           //read NAM4's stuff
+           in_File.read((char*) &LODWaterHeight, 4);
+           if (!in_File.good())
+           {
+             std::cout << "Error while reading subrecord NAM4 of WRLD!\n";
+             return false;
+           }
+           bytesRead += 4;
            hasNAM4 = true;
            break;
       case cDNAM:
@@ -825,9 +852,23 @@ bool WorldSpaceRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: WRLD seems to have more than one NAMA subrecord.\n";
              return false;
            }
-           //read NAMA
-           if (!loadUint32SubRecordFromStream(in_File, cNAMA, unknownNAMA, false)) return false;
-           bytesRead += 6;
+           //NAMA's length
+           in_File.read((char*) &subLength, 2);
+           bytesRead += 2;
+           if (subLength!=4)
+           {
+             std::cout <<"Error: sub record NAMA of WRLD has invalid length ("
+                       <<subLength<<" bytes). Should be four bytes.\n";
+             return false;
+           }
+           //read NAMA's stuff
+           in_File.read((char*) &distantLODMultiplier, 4);
+           if (!in_File.good())
+           {
+             std::cout << "Error while reading subrecord NAMA of WRLD!\n";
+             return false;
+           }
+           bytesRead += 4;
            hasReadNAMA = true;
            break;
       case cDATA:
@@ -921,54 +962,36 @@ bool WorldSpaceRecord::loadFromStream(std::ifstream& in_File)
            }
            break;
       case cTNAM:
-           if (!pathTNAM.empty())
+           if (!HD_LOD_DiffuseTexture.empty())
            {
              std::cout << "Error: WRLD seems to have more than one TNAM subrecord.\n";
              return false;
            }
-           //TNAM's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength>511)
+           //read TNAM
+           if (!loadString512FromStream(in_File, HD_LOD_DiffuseTexture, buffer, cTNAM, false, bytesRead))
+             return false;
+           //check content
+           if (HD_LOD_DiffuseTexture.empty())
            {
-             std::cout <<"Error: sub record TNAM of WRLD is longer than 511 characters!\n";
+             std::cout << "Error: subrecord TNAM of WRLD is empty!\n";
              return false;
            }
-           //read TNAM's stuff
-           memset(buffer, 0, 512);
-           in_File.read(buffer, subLength);
-           bytesRead += subLength;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord TNAM of WRLD!\n";
-             return false;
-           }
-           pathTNAM = std::string(buffer);
            break;
       case cUNAM:
-           if (!pathUNAM.empty())
+           if (!HD_LOD_NormalTexture.empty())
            {
              std::cout << "Error: WRLD seems to have more than one UNAM subrecord.\n";
              return false;
            }
-           //UNAM's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength>511)
+           //read UNAM
+           if (!loadString512FromStream(in_File, HD_LOD_NormalTexture, buffer, cUNAM, false, bytesRead))
+             return false;
+           //check content
+           if (HD_LOD_NormalTexture.empty())
            {
-             std::cout <<"Error: sub record UNAM of WRLD is longer than 511 characters!\n";
+             std::cout << "Error: subrecord UNAM of WRLD is empty!\n";
              return false;
            }
-           //read UNAM's stuff
-           memset(buffer, 0, 512);
-           in_File.read(buffer, subLength);
-           bytesRead += subLength;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord UNAM of WRLD!\n";
-             return false;
-           }
-           pathUNAM = std::string(buffer);
            break;
       case cXXXX:
            if (sizeXXXX!=0)

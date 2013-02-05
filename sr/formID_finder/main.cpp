@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2011, 2012, 2013 Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -65,7 +65,7 @@ void showGPLNotice()
 {
   std::cout << "Form ID finder for Skyrim\n"
             //<< "  This programme is part of the Skyrim Tools Project.\n"
-            << "  Copyright (C) 2011, 2012 Thoronador\n"
+            << "  Copyright (C) 2011, 2012, 2013 Thoronador\n"
             << "\n"
             << "  This programme is free software: you can redistribute it and/or\n"
             << "  modify it under the terms of the GNU General Public License as published\n"
@@ -789,7 +789,7 @@ int main(int argc, char **argv)
             //found matching flora record
             if (floraMatches==0)
             {
-              basic_out << "\n\nMatching alchemy potions:\n";
+              basic_out << "\n\nMatching flora:\n";
             }
             basic_out << "    \""<<table.getString(flora_iter->second.nameStringID)
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(flora_iter->second.headerFormID)

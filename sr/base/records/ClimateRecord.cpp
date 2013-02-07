@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012 Thoronador
+    Copyright (C) 2012, 2013  Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -27,17 +27,24 @@
 namespace SRTP
 {
 
+/* WeatherEntry's functions */
+bool ClimateRecord::WeatherEntry::operator==(const ClimateRecord::WeatherEntry& other) const
+{
+  return ((weatherFormID==other.weatherFormID) and (chance==other.chance)
+      and (globalFormID==other.globalFormID));
+}
+
+/* ClimateRecord's functions */
+
 ClimateRecord::ClimateRecord()
 : BasicRecord()
 {
   editorID = "";
   //subrecord WLST
-  unknownFormID = 0;
-  unknownWLSTTwo = 0;
-  unknownWLSTThree = 0;
+  weatherList.clear();
   //end of subrecord WLST
-  unknownFNAM = "";
-  unknownGNAM = "";
+  sunTexture = "";
+  sunGlareTexture = "";
   modelPath = "";
   unknownMODT.setPresence(false);
   unknownTNAM.setPresence(false);
@@ -52,9 +59,8 @@ ClimateRecord::~ClimateRecord()
 bool ClimateRecord::equals(const ClimateRecord& other) const
 {
   return (equalsBasic(other) and (editorID==other.editorID)
-      and (unknownFormID==other.unknownFormID) and (unknownWLSTTwo==other.unknownWLSTTwo)
-      and (unknownWLSTThree==other.unknownWLSTThree) and (unknownFNAM==other.unknownFNAM)
-      and (unknownGNAM==other.unknownGNAM) and (modelPath==other.modelPath)
+      and (weatherList==other.weatherList) and (sunTexture==other.sunTexture)
+      and (sunGlareTexture==other.sunGlareTexture) and (modelPath==other.modelPath)
       and (unknownMODT==other.unknownMODT) and (unknownTNAM==other.unknownTNAM));
 }
 #endif
@@ -65,13 +71,16 @@ uint32_t ClimateRecord::getWriteSize() const
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
-        +4 /* WLST */ +2 /* 2 bytes for length */ +12 /* fixed size */
         +4 /* FNAM */ +2 /* 2 bytes for length */
-        +unknownFNAM.length()+1 /* length of path +1 byte for NUL termination */
+        +sunTexture.length()+1 /* length of path +1 byte for NUL termination */
         +4 /* GNAM */ +2 /* 2 bytes for length */
-        +unknownGNAM.length()+1 /* length of path +1 byte for NUL termination */
+        +sunGlareTexture.length()+1 /* length of path +1 byte for NUL termination */
         +4 /* MODL */ +2 /* 2 bytes for length */
         +modelPath.length()+1 /* length of path +1 byte for NUL termination */;
+  if (!weatherList.empty())
+  {
+    writeSize = writeSize +4 /* WLST */ +2 /* 2 bytes for length */ +12*weatherList.size() /* fixed size per entry*/;
+  }
   if (unknownMODT.isPresent())
   {
     writeSize = writeSize +4 /* MODT */ +2 /* 2 bytes for length */ +unknownMODT.getSize() /* size */;
@@ -96,31 +105,39 @@ bool ClimateRecord::saveToStream(std::ofstream& output) const
   //write editor ID
   output.write(editorID.c_str(), subLength);
 
-  //write WLST
-  output.write((const char*) &cWLST, 4);
-  //WLST's length
-  subLength = 12; //fixed
-  output.write((const char*) &subLength, 2);
-  //write WLST's stuff
-  output.write((const char*) &unknownFormID, 4);
-  output.write((const char*) &unknownWLSTTwo, 4);
-  output.write((const char*) &unknownWLSTThree, 4);
+  if (!weatherList.empty())
+  {
+    //write WLST
+    output.write((const char*) &cWLST, 4);
+    //WLST's length
+    const unsigned int wlst_size = weatherList.size();
+    subLength = 12*wlst_size; //fixed
+    output.write((const char*) &subLength, 2);
+    //write WLST's stuff
+    unsigned int i;
+    for (i=0; i<wlst_size; ++i)
+    {
+      output.write((const char*) &weatherList[i].weatherFormID, 4);
+      output.write((const char*) &weatherList[i].chance, 4);
+      output.write((const char*) &weatherList[i].globalFormID, 4);
+    }
+  }//if WLST
 
   //write FNAM
   output.write((const char*) &cFNAM, 4);
   //FNAM's length
-  subLength = unknownFNAM.length()+1;
+  subLength = sunTexture.length()+1;
   output.write((const char*) &subLength, 2);
-  //write FNAM
-  output.write(unknownFNAM.c_str(), subLength);
+  //write Sun texture
+  output.write(sunTexture.c_str(), subLength);
 
   //write GNAM
   output.write((const char*) &cGNAM, 4);
   //GNAM's length
-  subLength = unknownGNAM.length()+1;
+  subLength = sunGlareTexture.length()+1;
   output.write((const char*) &subLength, 2);
-  //write GNAM
-  output.write(unknownGNAM.c_str(), subLength);
+  //write Sun Glare texture
+  output.write(sunGlareTexture.c_str(), subLength);
 
   //write MODL
   output.write((const char*) &cMODL, 4);
@@ -191,9 +208,11 @@ bool ClimateRecord::loadFromStream(std::ifstream& in_File)
   }
   editorID = std::string(buffer);
 
-  bool hasReadWLST = false;
-  unknownFNAM.clear();
-  unknownGNAM.clear();
+  weatherList.clear();
+  WeatherEntry temp;
+  unsigned int i;
+  sunTexture.clear();
+  sunGlareTexture.clear();
   modelPath.clear();
   unknownMODT.setPresence(false);
   unknownTNAM.setPresence(false);
@@ -206,7 +225,7 @@ bool ClimateRecord::loadFromStream(std::ifstream& in_File)
     switch (subRecName)
     {
       case cWLST:
-           if (hasReadWLST)
+           if (!weatherList.empty())
            {
              std::cout << "Error: record CLMT seems to have more than one WLST subrecord!\n";
              return false;
@@ -214,49 +233,52 @@ bool ClimateRecord::loadFromStream(std::ifstream& in_File)
            //WLST's length
            in_File.read((char*) &subLength, 2);
            bytesRead += 2;
-           if (subLength!=12)
+           if (((subLength%12)!=0) or (subLength==0))
            {
-             std::cout <<"Error: sub record WLST of CONT has invalid length ("
-                       <<subLength<<" bytes). Should be 12 bytes.\n";
+             std::cout <<"Error: sub record WLST of CLMT has invalid length ("
+                       <<subLength<<" bytes). Should be an integral multiple of 12 bytes.\n";
              return false;
            }
            //read WLST
-           in_File.read((char*) &unknownFormID, 4);
-           in_File.read((char*) &unknownWLSTTwo, 4);
-           in_File.read((char*) &unknownWLSTThree, 4);
-           bytesRead += 12;
-           if (!in_File.good())
+           for (i=0; i<subLength/12; ++i)
            {
-             std::cout << "Error while reading subrecord WLST of CLMT!\n";
-             return false;
-           }
-           hasReadWLST = true;
+             in_File.read((char*) &temp.weatherFormID, 4);
+             in_File.read((char*) &temp.chance, 4);
+             in_File.read((char*) &temp.globalFormID, 4);
+             bytesRead += 12;
+             if (!in_File.good())
+             {
+               std::cout << "Error while reading subrecord WLST of CLMT!\n";
+               return false;
+             }
+             weatherList.push_back(temp);
+           }//for
            break;
       case cFNAM:
-           if (!unknownFNAM.empty())
+           if (!sunTexture.empty())
            {
              std::cout << "Error: CLMT seems to have more than one FNAM subrecord.\n";
              return false;
            }
            //read FNAM
-           if (!loadString512FromStream(in_File, unknownFNAM, buffer, cFNAM, false, bytesRead)) return false;
+           if (!loadString512FromStream(in_File, sunTexture, buffer, cFNAM, false, bytesRead)) return false;
            //length check
-           if (unknownFNAM.empty())
+           if (sunTexture.empty())
            {
              std::cout << "Error: subrecord FNAM of CLMT is empty.\n";
              return false;
            }
            break;
       case cGNAM:
-           if (!unknownGNAM.empty())
+           if (!sunGlareTexture.empty())
            {
              std::cout << "Error: CLMT seems to have more than one GNAM subrecord.\n";
              return false;
            }
            //read GNAM
-           if (!loadString512FromStream(in_File, unknownGNAM, buffer, cGNAM, false, bytesRead)) return false;
+           if (!loadString512FromStream(in_File, sunGlareTexture, buffer, cGNAM, false, bytesRead)) return false;
            //length check
-           if (unknownGNAM.empty())
+           if (sunGlareTexture.empty())
            {
              std::cout << "Error: subrecord GNAM of CLMT is empty.\n";
              return false;
@@ -307,7 +329,7 @@ bool ClimateRecord::loadFromStream(std::ifstream& in_File)
   }//while
 
   //presence checks
-  if (!(hasReadWLST and !unknownFNAM.empty() and !unknownGNAM.empty()
+  if (!(!sunTexture.empty() and !sunGlareTexture.empty()
       and !modelPath.empty() and unknownTNAM.isPresent()))
   {
     std::cout << "Error: at least one required subrecord of CLMT is missing!\n";

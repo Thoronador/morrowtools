@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012 Thoronador
+    Copyright (C) 2012, 2013  Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -22,6 +22,7 @@
 #define SR_CLIMATERECORD_H
 
 #include <string>
+#include <vector>
 #include "BasicRecord.h"
 #include "BinarySubRecord.h"
 
@@ -66,14 +67,21 @@ struct ClimateRecord: public BasicRecord
     /* returns the record's type, usually its header */
     virtual uint32_t getRecordType() const;
 
+    /* structure for subrecord WLST */
+    struct WeatherEntry
+    {
+      uint32_t weatherFormID;
+      uint32_t chance;
+      uint32_t globalFormID;
+
+      /* comparison operator */
+      bool operator==(const WeatherEntry& other) const;
+    };
+
     std::string editorID;
-    //subrecord WLST
-    uint32_t unknownFormID;
-    uint32_t unknownWLSTTwo;
-    uint32_t unknownWLSTThree;
-    //end of subrecord WLST
-    std::string unknownFNAM;
-    std::string unknownGNAM;
+    std::vector<WeatherEntry> weatherList; //subrecord WLST
+    std::string sunTexture; //subrecord FNAM
+    std::string sunGlareTexture; //subrecord GNAM
     std::string modelPath;
     BinarySubRecord unknownMODT;
     BinarySubRecord unknownTNAM;

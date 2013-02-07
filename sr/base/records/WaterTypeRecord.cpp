@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2011, 2012, 2013  Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -38,11 +38,9 @@ WaterTypeRecord::WaterTypeRecord()
   unknownFNAM = 0;
   hasMNAM = false;
   unknownMNAM = 0;
-  hasSNAM = false;
-  unknownSNAM = 0;
-  hasTNAM = false;
-  unknownTNAM = 0;
-  unknownDATA = 0;
+  openSoundFormID = 0;
+  materialFormID = 0;
+  damagePerSecond = 0; //subrecord DATA
   unknownDNAM.setPresence(false);
   memset(unknownGNAM, 0, 12);
   hasNAM0 = false;
@@ -63,10 +61,10 @@ bool WaterTypeRecord::equals(const WaterTypeRecord& other) const
       and (hasFULL==other.hasFULL) and ((unknownFULL==other.unknownFULL) or (!hasFULL))
       and (unknownNNAMs==other.unknownNNAMs) and (unknownANAM==other.unknownANAM)
       and (unknownFNAM==other.unknownFNAM) and (hasMNAM==other.hasMNAM)
-      and ((unknownMNAM==other.unknownMNAM) or (!hasMNAM)) and (hasSNAM==other.hasSNAM)
-      and ((unknownSNAM==other.unknownSNAM) or (!hasSNAM))
-      and (hasTNAM==other.hasTNAM) and ((unknownTNAM==other.unknownTNAM) or (!hasTNAM))
-      and (unknownDATA==other.unknownDATA) and (unknownDNAM==other.unknownDNAM)
+      and ((unknownMNAM==other.unknownMNAM) or (!hasMNAM))
+      and (openSoundFormID==other.openSoundFormID)
+      and (materialFormID==other.materialFormID)
+      and (damagePerSecond==other.damagePerSecond) and (unknownDNAM==other.unknownDNAM)
       and (memcmp(unknownGNAM, other.unknownGNAM, 12)==0) and (hasNAM0==other.hasNAM0)
       and ((memcmp(unknownNAM0, other.unknownNAM0, 12)==0) or (!hasNAM0))
       and (hasNAM1==other.hasNAM1) and ((memcmp(unknownNAM1, other.unknownNAM1, 12)==0)
@@ -83,9 +81,7 @@ uint32_t WaterTypeRecord::getWriteSize() const
         +4 /* ANAM */ +2 /* 2 bytes for length */ +1 /* fixed length */
         +4 /* FNAM */ +2 /* 2 bytes for length */ +1 /* fixed length */
         +4 /* DATA */ +2 /* 2 bytes for length */ +2 /* fixed length */
-        +4 /* GNAM */ +2 /* 2 bytes for length */ +12 /* fixed length */
-        +4 /* NAM0 */ +2 /* 2 bytes for length */ +12 /* fixed length */
-        +4 /* NAM1 */ +2 /* 2 bytes for length */ +12 /* fixed length */;
+        +4 /* GNAM */ +2 /* 2 bytes for length */ +12 /* fixed length */;
   if (hasFULL)
   {
     writeSize = writeSize +4 /* FULL */ +2 /* 2 bytes for length */ +4 /* fixed length */;
@@ -94,11 +90,11 @@ uint32_t WaterTypeRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* MNAM */ +2 /* 2 bytes for length */ +1 /* fixed length */;
   }//if MNAM
-  if (hasSNAM)
+  if (openSoundFormID!=0)
   {
     writeSize = writeSize +4 /* SNAM */ +2 /* 2 bytes for length */ +4 /* fixed length */;
   }//if SNAM
-  if (hasTNAM)
+  if (materialFormID!=0)
   {
     writeSize = writeSize +4 /* TNAM */ +2 /* 2 bytes for length */ +4 /* fixed length */;
   }//if TNAM
@@ -168,26 +164,26 @@ bool WaterTypeRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &unknownMNAM, 1);
   }//if MNAM
 
-  if (hasSNAM)
+  if (openSoundFormID!=0)
   {
     //write SNAM
     output.write((const char*) &cSNAM, 4);
     //SNAM's length
     subLength = 4;
     output.write((const char*) &subLength, 2);
-    //write SNAM's stuff
-    output.write((const char*) &unknownSNAM, 4);
+    //write Open Sound's form ID
+    output.write((const char*) &openSoundFormID, 4);
   }
 
-  if (hasTNAM)
+  if (materialFormID!=0)
   {
     //write TNAM
     output.write((const char*) &cTNAM, 4);
     //TNAM's length
     subLength = 4;
     output.write((const char*) &subLength, 2);
-    //write TNAM's stuff
-    output.write((const char*) &unknownTNAM, 4);
+    //write Material form ID
+    output.write((const char*) &materialFormID, 4);
   }
 
   //write DATA
@@ -195,8 +191,8 @@ bool WaterTypeRecord::saveToStream(std::ofstream& output) const
   //DATA's length
   subLength = 2; //fixed
   output.write((const char*) &subLength, 2);
-  //write DATA's stuff
-  output.write((const char*) &unknownDATA, 2);
+  //write damage per second
+  output.write((const char*) &damagePerSecond, 2);
 
   if (unknownDNAM.isPresent())
   {
@@ -284,8 +280,8 @@ bool WaterTypeRecord::loadFromStream(std::ifstream& in_File)
   bool hasReadANAM = false;
   bool hasReadFNAM = false;
   hasMNAM = false;
-  hasSNAM = false;
-  hasTNAM = false;
+  openSoundFormID = 0;
+  materialFormID = 0;
   bool hasReadDATA = false;
   unknownDNAM.setPresence(false);
   bool hasReadGNAM = false;
@@ -425,54 +421,36 @@ bool WaterTypeRecord::loadFromStream(std::ifstream& in_File)
            hasMNAM = true;
            break;
       case cSNAM:
-           if (hasSNAM)
+           if (openSoundFormID!=0)
            {
              std::cout << "Error: WATR seems to have more than one SNAM subrecord!\n";
              return false;
            }
-           //SNAM's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength!=4)
+           //read SNAM
+           if (!loadUint32SubRecordFromStream(in_File, cSNAM, openSoundFormID, false))
+             return false;
+           bytesRead += 6;
+           if (0==openSoundFormID)
            {
-             std::cout <<"Error: subrecord SNAM of WATR has invalid length ("<<subLength
-                       <<" bytes). Should be four bytes!\n";
+             std::cout << "Error: subrecord SNAM of WATR is zero!\n";
              return false;
            }
-           //read SNAM's stuff
-           in_File.read((char*) &unknownSNAM, 4);
-           bytesRead += 4;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord SNAM of WATR!\n";
-             return false;
-           }//if
-           hasSNAM = true;
            break;
       case cTNAM:
-           if (hasTNAM)
+           if (materialFormID!=0)
            {
              std::cout << "Error: WATR seems to have more than one TNAM subrecord!\n";
              return false;
            }
-           //TNAM's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength!=4)
+           //read TNAM
+           if (!loadUint32SubRecordFromStream(in_File, cTNAM, materialFormID, false))
+             return false;
+           bytesRead += 6;
+           if (0==materialFormID)
            {
-             std::cout <<"Error: subrecord TNAM of WATR has invalid length ("<<subLength
-                       <<" bytes). Should be four bytes!\n";
+             std::cout << "Error: subrecord TNAM of WATR is zero!\n";
              return false;
            }
-           //read TNAM's stuff
-           in_File.read((char*) &unknownTNAM, 4);
-           bytesRead += 4;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord TNAM of WATR!\n";
-             return false;
-           }//if
-           hasTNAM = true;
            break;
       case cDATA:
            if (hasReadDATA)
@@ -490,7 +468,7 @@ bool WaterTypeRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read DATA's stuff
-           in_File.read((char*) &unknownDATA, 2);
+           in_File.read((char*) &damagePerSecond, 2);
            bytesRead += 2;
            if (!in_File.good())
            {

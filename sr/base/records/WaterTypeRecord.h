@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2011, 2012, 2013  Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -75,11 +75,9 @@ struct WaterTypeRecord: public BasicRecord
     uint8_t unknownFNAM;
     bool hasMNAM;
     uint8_t unknownMNAM;
-    bool hasSNAM;
-    uint32_t unknownSNAM;
-    bool hasTNAM;
-    uint32_t unknownTNAM;
-    uint16_t unknownDATA;
+    uint32_t openSoundFormID; //subrecord SNAM
+    uint32_t materialFormID; //subrecord TNAM
+    uint16_t damagePerSecond; //subrecord DATA
     BinarySubRecord unknownDNAM;
     uint8_t unknownGNAM[12];
     bool hasNAM0;

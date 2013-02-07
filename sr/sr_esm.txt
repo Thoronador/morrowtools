@@ -537,14 +537,14 @@ Records and their sub-records:
   CLMT: climate
       EDID (string, NUL-terminated)
           editor ID
-      WLST (12 bytes)
-          uint32_t form ID (?)
-          uint32_t unknown (flags?)
-          uint32_t unknown
+      WLST (integral multiple of 12 bytes, optional)
+          uint32_t Weather Type form ID (points to WTHR)
+          uint32_t Chance
+          uint32_t Global form ID (points to GLOB)
       FNAM (string, NUL-terminated)
-          path to .dds
+          path to Sun texture (.dds)
       GNAM (string, NUL-terminated)
-          path to .dds
+          path to Sun Glare texture (.dds)
       MODL (string, NUL-terminated)
           model path
       MODT (12 bytes, optional)
@@ -2663,11 +2663,11 @@ Records and their sub-records:
       MNAM (1 byte, optional)
           unknown data
       SNAM (4 bytes, optional)
-          unknown data
+          uint32_t Open Sound form ID (points to SNDR)
       TNAM (4 bytes, optional)
-          unknown data
+          uint32_t Material form ID (points to MATT)
       DATA (2 bytes)
-          unknown data
+          uint16_t damage per second
       DNAM (228 bytes)
           unknown data
       GNAM (12 bytes)

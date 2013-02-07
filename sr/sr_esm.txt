@@ -1792,6 +1792,17 @@ Records and their sub-records:
           unknownDATA
 
 
+  NAVM: nav mesh(?)
+      NVNM (size varies)
+          unknown data
+      ONAM (size varies, optional)
+          unknown data
+      NNAM (size varies, optional)
+          unknown data
+      PNAM (size varies, optional)
+          unknown data
+
+
   NPC_: NPC
       EDID (string, NUL-terminated)
           editor ID

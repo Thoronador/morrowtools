@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2011, 2012, 2013  Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -240,11 +240,13 @@ const uint32_t cNAM9 = 0x394D414E; //"NAM9" = 4E 41 4D 39
 const uint32_t cNAMA = 0x414D414E; //"NAMA" = 4E 41 4D 41
 const uint32_t cNAME = 0x454D414E; //"NAME" = 4E 41 4D 45
 const uint32_t cNAVI = 0x4956414E; //"NAVI" = 4E 41 56 49
+const uint32_t cNAVM = 0x4D56414E; //"NAVM" = 4E 41 56 4D
 const uint32_t cNEXT = 0x5458454E; //"NEXT" = 4E 45 58 54
 const uint32_t cNNAM = 0x4D414E4E; //"NNAM" = 4E 4E 41 4D
 const uint32_t cNPC_ = 0x5F43504E; //"NPC_" = 4E 50 43 5F
 const uint32_t cNVER = 0x5245564E; //"NVER" = 4E 56 45 52
 const uint32_t cNVMI = 0x494D564E; //"NVMI" = 4E 56 4D 49
+const uint32_t cNVNM = 0x4D4E564E; //"NVNM" = 4E 56 4E 4D
 const uint32_t cNVPP = 0x5050564E; //"NVPP" = 4E 56 50 50
 const uint32_t cOBND = 0x444E424F; //"OBND" = 4F 42 4E 44
 const uint32_t cOFST = 0x5453464F; //"OFST" = 4F 46 53 54

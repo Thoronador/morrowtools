@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2011, 2012, 2013  Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -92,6 +92,7 @@
 #include "records/MusicTrackRecord.h"
 #include "records/MusicTypeRecord.h"
 #include "records/NAVIRecord.h"
+#include "records/NavMeshRecord.h"
 #include "records/NPCRecord.h"
 #include "records/OutfitRecord.h"
 #include "records/PerkRecord.h"
@@ -358,6 +359,9 @@ int ESMReaderContentsAll::readNextRecord(std::ifstream& in_File, const uint32_t 
          break;
     case cNAVI:
          recPtr = new NAVIRecord;
+         break;
+    case cNAVM:
+         recPtr = new NavMeshRecord;
          break;
     case cNPC_:
          recPtr = new NPCRecord;

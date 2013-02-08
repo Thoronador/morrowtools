@@ -7,8 +7,8 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin\Debug\race_resize" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj\Debug\" />
+				<Option output="bin/Debug/race_resize" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -16,8 +16,8 @@
 				</Compiler>
 			</Target>
 			<Target title="Release">
-				<Option output="bin\Release\race_resize" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj\Release\" />
+				<Option output="bin/Release/race_resize" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -32,42 +32,41 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
-		<Unit filename="..\..\base\RegistryFunctions.cpp" />
-		<Unit filename="..\..\base\RegistryFunctions.h" />
-		<Unit filename="..\..\base\UtilityFunctions.cpp" />
-		<Unit filename="..\..\base\UtilityFunctions.h" />
-		<Unit filename="..\..\mw\base\HelperIO.cpp" />
-		<Unit filename="..\..\mw\base\HelperIO.h" />
-		<Unit filename="..\base\ESMFileContents.cpp" />
-		<Unit filename="..\base\ESMFileContents.h" />
-		<Unit filename="..\base\ESMReader.cpp" />
-		<Unit filename="..\base\ESMReader.h" />
-		<Unit filename="..\base\ESMReaderSingleType.h" />
-		<Unit filename="..\base\ESMWriter.cpp" />
-		<Unit filename="..\base\ESMWriter.h" />
-		<Unit filename="..\base\ESMWriterContents.cpp" />
-		<Unit filename="..\base\ESMWriterContents.h" />
-		<Unit filename="..\base\Group.cpp" />
-		<Unit filename="..\base\Group.h" />
-		<Unit filename="..\base\Races.h" />
-		<Unit filename="..\base\RegistryFunctions.h" />
-		<Unit filename="..\base\SR_Constants.h" />
-		<Unit filename="..\base\StringTable.cpp" />
-		<Unit filename="..\base\StringTable.h" />
-		<Unit filename="..\base\StringTableCompound.cpp" />
-		<Unit filename="..\base\StringTableCompound.h" />
-		<Unit filename="..\base\records\BasicRecord.cpp" />
-		<Unit filename="..\base\records\BasicRecord.h" />
-		<Unit filename="..\base\records\BinarySubRecord.cpp" />
-		<Unit filename="..\base\records\BinarySubRecord.h" />
-		<Unit filename="..\base\records\GroupData.cpp" />
-		<Unit filename="..\base\records\GroupData.h" />
-		<Unit filename="..\base\records\RaceRecord.cpp" />
-		<Unit filename="..\base\records\RaceRecord.h" />
-		<Unit filename="..\base\records\SubBlock.cpp" />
-		<Unit filename="..\base\records\SubBlock.h" />
-		<Unit filename="..\base\records\TES4HeaderRecord.cpp" />
-		<Unit filename="..\base\records\TES4HeaderRecord.h" />
+		<Unit filename="../../base/RegistryFunctions.cpp" />
+		<Unit filename="../../base/RegistryFunctions.h" />
+		<Unit filename="../../base/UtilityFunctions.cpp" />
+		<Unit filename="../../base/UtilityFunctions.h" />
+		<Unit filename="../../mw/base/HelperIO.cpp" />
+		<Unit filename="../../mw/base/HelperIO.h" />
+		<Unit filename="../base/ESMFileContents.cpp" />
+		<Unit filename="../base/ESMFileContents.h" />
+		<Unit filename="../base/ESMReader.cpp" />
+		<Unit filename="../base/ESMReader.h" />
+		<Unit filename="../base/ESMReaderSingleType.h" />
+		<Unit filename="../base/ESMWriter.cpp" />
+		<Unit filename="../base/ESMWriter.h" />
+		<Unit filename="../base/ESMWriterContents.cpp" />
+		<Unit filename="../base/ESMWriterContents.h" />
+		<Unit filename="../base/Group.cpp" />
+		<Unit filename="../base/Group.h" />
+		<Unit filename="../base/Races.h" />
+		<Unit filename="../base/RegistryFunctions.h" />
+		<Unit filename="../base/SR_Constants.h" />
+		<Unit filename="../base/StringTable.cpp" />
+		<Unit filename="../base/StringTable.h" />
+		<Unit filename="../base/StringTableCompound.cpp" />
+		<Unit filename="../base/StringTableCompound.h" />
+		<Unit filename="../base/records/BasicRecord.cpp" />
+		<Unit filename="../base/records/BasicRecord.h" />
+		<Unit filename="../base/records/BinarySubRecord.cpp" />
+		<Unit filename="../base/records/BinarySubRecord.h" />
+		<Unit filename="../base/records/GroupData.cpp" />
+		<Unit filename="../base/records/GroupData.h" />
+		<Unit filename="../base/records/RaceRecord.cpp" />
+		<Unit filename="../base/records/RaceRecord.h" />
+		<Unit filename="../base/records/SubBlock.h" />
+		<Unit filename="../base/records/TES4HeaderRecord.cpp" />
+		<Unit filename="../base/records/TES4HeaderRecord.h" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />

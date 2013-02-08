@@ -78,11 +78,11 @@ MESG - done
 MGEF - done
 MISC - done
 MOVT - done
-MSTT - to do!
+MSTT - done
 MUSC - done
 MUST - done
 NAVI - done
-NAVM - to do!
+NAVM - done
 NPC_ - done
 OTFT - done
 PERK - done
@@ -123,5 +123,5 @@ WTHR - to do!
 
 =============
 Total: 119
-To do:  17 (ca. 14.3%)
-Done : 102 (ca. 85.7%)
+To do:  15 (ca. 12.6%)
+Done : 104 (ca. 87.4%)

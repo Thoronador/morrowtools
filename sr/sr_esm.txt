@@ -1731,6 +1731,42 @@ Records and their sub-records:
           unknown data
 
 
+  MSTT: movable static
+      EDID (string, NUL-terminated)
+          editorID
+      OBND (12 bytes)
+          unknown data
+      MODL (string, NUL-terminated)
+          model path
+      MODT (size varies)
+          unknown data
+      MODS (size varies, optional)
+          unknown data
+      DATA (1 byte)
+          unknown data
+      SNAM (4 bytes, optional)
+          uint32_t Looping Sound form ID (points to SNDR)
+
+      DEST (8 bytes, optional)
+          uint32_t Health
+          uint8_t  stage count
+          uint8_t  unknown
+          uint8_t  unknown
+          uint8_t  unknown
+
+        DSTD (20 bytes)
+            unknown data
+        DMDL (string, NUL-terminated)
+            replacement model
+        DMDT (size varies, optional)
+            unknown data (like MODT for MODL)
+        DSTF (0 bytes)
+            marks end of destruction stage
+
+        --> DSTD, DMDL, DMDT and DSTF form a repeatable sequence,
+            occurs as often as given in stage count.
+
+
   MUSC: music type
       EDID (string, NUL-terminated)
           editorID

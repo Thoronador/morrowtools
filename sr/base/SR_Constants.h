@@ -225,6 +225,7 @@ const uint32_t cMODS = 0x53444F4D; //"MODS" = 4D 4F 44 53
 const uint32_t cMODT = 0x54444F4D; //"MODT" = 4D 4F 44 54
 const uint32_t cMOVT = 0x54564F4D; //"MOVT" = 4D 4F 56 54
 const uint32_t cMPRT = 0x5452504D; //"MPRT" = 4D 50 52 54
+const uint32_t cMSTT = 0x5454534D; //"MSTT" = 4D 53 54 54
 const uint32_t cMUSC = 0x4353554D; //"MUSC" = 4D 55 53 43
 const uint32_t cMUST = 0x5453554D; //"MUST" = 4D 55 53 54
 const uint32_t cNAM0 = 0x304D414E; //"NAM0" = 4E 41 4D 30

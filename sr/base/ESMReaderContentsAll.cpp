@@ -88,6 +88,7 @@
 #include "records/MaterialTypeRecord.h"
 #include "records/MessageRecord.h"
 #include "records/MiscObjectRecord.h"
+#include "records/MovableStaticRecord.h"
 #include "records/MovementTypeRecord.h"
 #include "records/MusicTrackRecord.h"
 #include "records/MusicTypeRecord.h"
@@ -350,6 +351,9 @@ int ESMReaderContentsAll::readNextRecord(std::ifstream& in_File, const uint32_t 
          break;
     case cMOVT:
          recPtr = new MovementTypeRecord;
+         break;
+    case cMSTT:
+         recPtr = new MovableStaticRecord;
          break;
     case cMUSC:
          recPtr = new MusicTypeRecord;

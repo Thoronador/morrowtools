@@ -90,6 +90,7 @@
 #include "MaterialTypes.h"
 #include "Messages.h"
 #include "MiscObjects.h"
+#include "MovableStatics.h"
 #include "MovementTypes.h"
 #include "MusicTracks.h"
 #include "MusicTypes.h"
@@ -360,6 +361,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const uint32_t recName)
          break;
     case cMOVT:
          return MovementTypes::getSingleton().readNextRecord(in_File);
+         break;
+    case cMSTT:
+         return MovableStatics::getSingleton().readNextRecord(in_File);
          break;
     case cMUSC:
          return MusicTypes::getSingleton().readNextRecord(in_File);

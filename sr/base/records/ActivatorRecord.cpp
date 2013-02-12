@@ -1,20 +1,20 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2011, 2012, 2013  Thoronador
 
-    The Skyrim Tools are free software: you can redistribute them and/or
-    modify them under the terms of the GNU General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    The Skyrim Tools are distributed in the hope that they will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with the Skyrim Tools.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -------------------------------------------------------------------------------
 */
 
@@ -46,30 +46,27 @@ void ActivatorRecord::destStruct::reset()
 /* ActivatorRecord's functions */
 
 ActivatorRecord::ActivatorRecord()
+: BasicRecord(), editorID(""),
+  hasFULL(false), nameStringID(0),
+  modelPath(""),
+  hasDEST(false), unknownDEST(0),
+  hasPNAM(false),
+  defaultPrimitiveColourRed(0),
+  defaultPrimitiveColourGreen(0),
+  defaultPrimitiveColourBlue(0),
+  loopingSoundFormID(0),
+  activateSoundFormID(0),
+  waterTypeFormID(0),
+  activateTextOverrideStringID(0),
+  hasFNAM(false), unknownFNAM(0),
+  interactionKeywordFormID(0)
 {
-  editorID = "";
   unknownVMAD.setPresence(false),
   memset(unknownOBND, 0, 12);
-  hasFULL = false;
-  nameStringID = 0;
-  modelPath = "";
   unknownMODT.setPresence(false);
   unknownMODS.setPresence(false);
-  hasDEST = false;
-  memset(unknownDEST, 0, 8);
   destructionStructures.clear();
   keywordArray.clear();
-  hasPNAM = false;
-  defaultPrimitiveColourRed = 0;
-  defaultPrimitiveColourGreen = 0;
-  defaultPrimitiveColourBlue = 0;
-  loopingSoundFormID = 0;
-  activateSoundFormID = 0;
-  waterTypeFormID = 0;
-  activateTextOverrideStringID = 0;
-  hasFNAM = false;
-  unknownFNAM = 0;
-  interactionKeywordFormID = 0;
 }
 
 ActivatorRecord::~ActivatorRecord()
@@ -86,7 +83,7 @@ bool ActivatorRecord::equals(const ActivatorRecord& other) const
     and (hasFULL==other.hasFULL) and ((unknownFNAM==other.unknownFNAM) or (!hasFULL))
     and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
     and (unknownMODS==other.unknownMODS) and (hasDEST==other.hasDEST)
-    and (memcmp(unknownDEST, other.unknownDEST, 8)==0)
+    and (unknownDEST==other.unknownDEST)
     and (destructionStructures==other.destructionStructures)
     and (keywordArray==other.keywordArray)
     and (hasPNAM==other.hasPNAM)
@@ -483,7 +480,7 @@ bool ActivatorRecord::loadFromStream(std::ifstream& in_File)
 
   unknownVMAD.setPresence(false);
   hasFULL = false; nameStringID = 0;
-  modelPath = "";
+  modelPath.clear();
   unknownMODT.setPresence(false);
   unknownMODS.setPresence(false);
   destStruct tempDestStruct;
@@ -622,7 +619,7 @@ bool ActivatorRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            //read DEST
-           in_File.read((char*) unknownDEST, 8);
+           in_File.read((char*) &unknownDEST, 8);
            bytesRead += 8;
            if (!in_File.good())
            {

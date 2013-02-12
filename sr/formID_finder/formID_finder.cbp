@@ -62,6 +62,7 @@
 		<Unit filename="../base/Factions.h" />
 		<Unit filename="../base/FormIDFunctions.cpp" />
 		<Unit filename="../base/FormIDFunctions.h" />
+		<Unit filename="../base/Furniture.h" />
 		<Unit filename="../base/Ingredients.h" />
 		<Unit filename="../base/Keys.h" />
 		<Unit filename="../base/MapBasedRecordManager.h" />
@@ -109,12 +110,16 @@
 		<Unit filename="../base/records/ComponentData.h" />
 		<Unit filename="../base/records/ContainerRecord.cpp" />
 		<Unit filename="../base/records/ContainerRecord.h" />
+		<Unit filename="../base/records/DestructionData.cpp" />
+		<Unit filename="../base/records/DestructionData.h" />
 		<Unit filename="../base/records/EffectBlock.cpp" />
 		<Unit filename="../base/records/EffectBlock.h" />
 		<Unit filename="../base/records/FactionRecord.cpp" />
 		<Unit filename="../base/records/FactionRecord.h" />
 		<Unit filename="../base/records/FloraRecord.cpp" />
 		<Unit filename="../base/records/FloraRecord.h" />
+		<Unit filename="../base/records/FurnitureRecord.cpp" />
+		<Unit filename="../base/records/FurnitureRecord.h" />
 		<Unit filename="../base/records/GroupData.cpp" />
 		<Unit filename="../base/records/GroupData.h" />
 		<Unit filename="../base/records/IngredientRecord.cpp" />

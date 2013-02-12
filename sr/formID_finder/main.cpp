@@ -41,6 +41,7 @@
 #include "../base/Factions.h"
 #include "../base/Floras.h"
 #include "../base/FormIDFunctions.h"
+#include "../base/Furniture.h"
 #include "../base/Ingredients.h"
 #include "../base/Keys.h"
 #include "../base/MiscObjects.h"
@@ -84,13 +85,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Form ID Finder for Skyrim, version 0.20b.rev492, 2012-10-15\n";
+  std::cout << "Form ID Finder for Skyrim, version 0.21.rev509, 2013-02-12\n";
 }
 
 int showVersionExitcode()
 {
   showVersion();
-  return 492;
+  return 509;
 }
 
 void showHelp()
@@ -805,6 +806,43 @@ int main(int argc, char **argv)
       basic_out << "Total matching florae: "<<floraMatches<<"\n";
     }
   }//scope for flora stuff
+
+  //check furniture for matches
+  {
+    unsigned int furnitureMatches = 0;
+    SRTP::Furniture::ListIterator furniture_iter = SRTP::Furniture::getSingleton().getBegin();
+    while (furniture_iter!=SRTP::Furniture::getSingleton().getEnd())
+    {
+      if (furniture_iter->second.hasFULL)
+      {
+        if (table.hasString(furniture_iter->second.nameStringID))
+        {
+          if (matchesKeyword(table.getString(furniture_iter->second.nameStringID), searchKeyword, caseSensitive))
+          {
+            //found matching furniture record
+            if (furnitureMatches==0)
+            {
+              basic_out << "\n\nMatching furniture:\n";
+            }
+            basic_out << "    \""<<table.getString(furniture_iter->second.nameStringID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(furniture_iter->second.headerFormID)
+                      <<"\n        editor ID \""<<furniture_iter->second.editorID<<"\"\n";
+            if (withReferences)
+            {
+              showRefIDs(furniture_iter->second.headerFormID, readerReferences.refMap, table, basic_out);
+            }
+            ++furnitureMatches;
+            ++totalMatches;
+          }//if match found
+        }//if table has string
+      }//if hasFULL
+      ++furniture_iter;
+    }//while
+    if (furnitureMatches>0)
+    {
+      basic_out << "Total matching furniture: "<<furnitureMatches<<"\n";
+    }
+  }//scope for furniture stuff
 
   //check ingredients for matches
   {

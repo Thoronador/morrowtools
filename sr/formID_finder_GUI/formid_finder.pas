@@ -1,7 +1,7 @@
 {
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012 Thoronador
+    Copyright (C) 2012, 2013  Thoronador
 
     This programme is free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -257,9 +257,12 @@ begin
     443..453: Result:= 'v0.18.rev'+IntToStr(rev)+', 2012-03-15';
     454: Result:=  'v0.19_pre.rev454, 2012-03-25';
     455..459: Result:= 'v0.19.rev'+IntToStr(rev)+', 2012-03-25';
-    460: Result:= 'v0.19.rev460, 2012-03-31';
+    460..471: Result:= 'v0.19.rev'+IntToStr(rev)+', 2012-03-31';
+    472..491: Result:= 'v0.20.rev'+IntToStr(rev)+', 2012-06-12';
+    492..508: Result:= 'v0.20b.rev492, 2012-10-15';
+    509: Result:= 'v0.20b.rev509, 2013-02-12';
   else
-    Result:= 'v0.19 or later, maybe rev'+IntToStr(rev);
+    Result:= 'v0.21 or later, maybe rev'+IntToStr(rev);
   end;//case
 end;//func
 
@@ -570,7 +573,7 @@ procedure TForm1.MenuItemVersionClick(Sender: TObject);
 var str1: string;
     foundRev: Cardinal;
 begin
-  str1:= 'GUI version: rev460'+#13#10+cProgrammeName+' version: ';
+  str1:= 'GUI version: rev509'+#13#10+cProgrammeName+' version: ';
   if (not FileExists(cProgrammeName)) then
   begin
     str1:= str1 + 'not found';

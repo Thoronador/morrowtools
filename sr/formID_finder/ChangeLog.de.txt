@@ -1,5 +1,8 @@
 = Form ID Finder Versionsgeschichte =
 
+== Version 0.21 ==
+- Möbel werden nun auch durchsucht.
+
 == Version 0.20b (*) ==
 - Verbesserungen am Code, keine für Benutzer sichtbaren Änderungen
 

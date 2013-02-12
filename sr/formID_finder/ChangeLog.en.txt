@@ -1,5 +1,8 @@
 = Form ID Finder - version history =
 
+== Version 0.21 ==
+- furniture is now searchable, too
+
 == Version 0.20b (*) ==
 - code improvements, no user-visible changes
 

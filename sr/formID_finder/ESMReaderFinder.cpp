@@ -1,20 +1,20 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2011, 2012, 2013  Thoronador
 
-    The Skyrim Tools are free software: you can redistribute them and/or
-    modify them under the terms of the GNU General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    The Skyrim Tools are distributed in the hope that they will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with the Skyrim Tools.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -------------------------------------------------------------------------------
 */
 
@@ -29,6 +29,7 @@
 #include "../base/Containers.h"
 #include "../base/Factions.h"
 #include "../base/Floras.h"
+#include "../base/Furniture.h"
 #include "../base/Ingredients.h"
 #include "../base/Keys.h"
 #include "../base/MiscObjects.h"
@@ -70,6 +71,7 @@ bool ESMReaderFinder::needGroup(const GroupData& g_data) const
     case cCONT:
     case cFACT:
     case cFLOR:
+    case cFURN:
     case cINGR:
     case cKEYM:
     case cMISC:
@@ -131,6 +133,9 @@ int ESMReaderFinder::readNextRecord(std::ifstream& in_File, const uint32_t recNa
          break;
     case cFLOR:
          return Floras::getSingleton().readNextRecord(in_File);
+         break;
+    case cFURN:
+         return Furniture::getSingleton().readNextRecord(in_File);
          break;
     case cINGR:
          return Ingredients::getSingleton().readNextRecord(in_File);

@@ -62,6 +62,7 @@
 #include "records/FootstepRecord.h"
 #include "records/FootstepSetRecord.h"
 #include "records/FormListRecord.h"
+#include "records/FurnitureRecord.h"
 #include "records/GMSTRecord.h"
 #include "records/GlobalRecord.h"
 #include "records/GrassRecord.h"
@@ -271,6 +272,9 @@ int ESMReaderContentsAll::readNextRecord(std::ifstream& in_File, const uint32_t 
          break;
     case cFSTS:
          recPtr = new FootstepSetRecord;
+         break;
+    case cFURN:
+         recPtr = new FurnitureRecord;
          break;
     case cGMST:
          recPtr = new GMSTRecord;

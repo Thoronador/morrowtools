@@ -64,6 +64,7 @@
 #include "Footsteps.h"
 #include "FootstepSets.h"
 #include "FormLists.h"
+#include "Furniture.h"
 #include "GameSettings.h"
 #include "Globals.h"
 #include "Grasses.h"
@@ -281,6 +282,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const uint32_t recName)
          break;
     case cFSTS:
          return FootstepSets::getSingleton().readNextRecord(in_File);
+         break;
+    case cFURN:
+         return Furniture::getSingleton().readNextRecord(in_File);
          break;
     case cGMST:
          return GameSettings::getSingleton().readNextRecord(in_File);

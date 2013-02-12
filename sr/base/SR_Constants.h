@@ -166,6 +166,7 @@ const uint32_t cHEDR = 0x52444548; //"HEDR" = 48 45 44 52
 const uint32_t cHNAM = 0x4D414E48; //"HNAM" = 48 4E 41 4D
 const uint32_t cICO2 = 0x324F4349; //"ICO2" = 49 43 4F 32
 const uint32_t cICON = 0x4E4F4349; //"ICON" = 49 43 4F 4E
+const uint32_t cIDLE = 0x454C4449; //"IDLE" = 49 44 4C 45
 const uint32_t cIMAD = 0x44414D49; //"IMAD" = 49 4D 41 44
 const uint32_t cIMGS = 0x53474D49; //"IMGS" = 49 4D 47 53
 const uint32_t cINAM = 0x4D414E49; //"INAM" = 49 4E 41 4D

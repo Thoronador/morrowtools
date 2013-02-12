@@ -52,7 +52,7 @@ GRAS - done
 GRUP - to do!
 HAZD - done
 HDPT - done
-IDLE - to do!
+IDLE - done
 IDLM - to do!
 IMAD - done
 IMGS - done
@@ -123,5 +123,5 @@ WTHR - to do!
 
 =============
 Total: 119
-To do:  15 (ca. 12.6%)
-Done : 104 (ca. 87.4%)
+To do:  14 (ca. 11.8%)
+Done : 105 (ca. 88.2%)

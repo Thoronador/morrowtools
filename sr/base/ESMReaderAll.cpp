@@ -69,6 +69,7 @@
 #include "Grasses.h"
 #include "Hazards.h"
 #include "HeadParts.h"
+#include "IdleAnimations.h"
 #include "ImageSpaceModifiers.h"
 #include "ImageSpaces.h"
 #include "ImpactData.h"
@@ -295,6 +296,9 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const uint32_t recName)
          break;
     case cHDPT:
          return HeadParts::getSingleton().readNextRecord(in_File);
+         break;
+    case cIDLE:
+         return IdleAnimations::getSingleton().readNextRecord(in_File);
          break;
     case cIMAD:
          return ImageSpaceModifiers::getSingleton().readNextRecord(in_File);

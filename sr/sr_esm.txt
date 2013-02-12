@@ -1106,6 +1106,33 @@ Records and their sub-records:
           unknown data
 
 
+  IDLE: idle animation
+      EDID (string, NUL-terminated, optional)
+          editor ID
+      CTDA (32 bytes, can occur multiple times, optional)
+          condition record
+      CIS1 (string, NUL-terminated, optional)
+          unknown data
+      DNAM (string, NUL-terminated, optional)
+          path to .hkx
+      ENAM (string, NUL-terminated, optional)
+          AnimEvent name
+      ANAM (8 bytes)
+          uint32_t parent form ID (points to IDLE)
+          uint32_t previous idle anim form ID (points to IDLE)
+      DATA (6 bytes)
+          uint8_t Min Looping Seconds
+          uint8_t Max Looping Seconds
+             --> If both min and max looping seconds are set to 255, that means
+                 they loop forever.
+          uint8_t flags
+              0x02 - Sequence
+              0x04 - Not attacking
+              0x08 - Blocking
+          uint8_t unknown data
+          uint16_t Replay Delay
+
+
   IMAD: image space modifier
       EDID (string, NUL-terminated)
           editor ID

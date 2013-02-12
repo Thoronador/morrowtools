@@ -27,8 +27,10 @@ namespace SRTP
 {
 
 BasicRecord::BasicRecord()
+: headerFlags(0), headerFormID(0), headerRevision(0),
+  headerVersion(0), headerUnknown5(0)
 {
-  headerFlags = headerFormID = headerRevision = headerVersion = headerUnknown5 = 0;
+
 }
 
 BasicRecord::~BasicRecord()

@@ -65,7 +65,7 @@ uint32_t MovableStaticRecord::getWriteSize() const
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
         +4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed length */
-        +4 /* MODL */ +2 /* 2 bytes for length */ +4 /* fixed length */
+        +4 /* MODL */ +2 /* 2 bytes for length */
         +modelPath.length()+1 /* length of path +1 byte for NUL termination */
         +4 /* DATA */ +2 /* 2 bytes for length */ +1 /* fixed length */;
   if (unknownMODT.isPresent())

@@ -45,7 +45,7 @@ FLOR - done
 FLST - done
 FSTP - done
 FSTS - done
-FURN - to do!
+FURN - done
 GLOB - done
 GMST - done
 GRAS - done

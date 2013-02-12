@@ -322,96 +322,9 @@ bool MovableStaticRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: MSTT seems to have more than one DEST subrecord.\n";
              return false;
            }
-           //DEST's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength!=8)
-           {
-             std::cout << "Error: subrecord DEST of MSTT has invalid length ("
-                       << subLength << " bytes). Should be eight bytes.\n";
+           //read DEST and possible DSTD, DMDL, DMDT, DSTF subrecords
+           if (!destruction.loadFromStream(in_File, cMSTT, buffer, bytesRead))
              return false;
-           }
-           //read DEST
-           in_File.read((char*) &destruction.health, 4);
-           in_File.read((char*) &destruction.stageCount, 1);
-           in_File.read((char*) &destruction.unknownTwo, 1);
-           in_File.read((char*) &destruction.unknownThreeFour, 2);
-           bytesRead += 8;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord DEST of MSTT!\n";
-             return false;
-           }
-
-           while (destruction.stages.size()<destruction.stageCount)
-           {
-             //read next record
-             uint32_t innerRecordName = 0;
-             in_File.read((char*) &innerRecordName, 4);
-             bytesRead += 4;
-             switch (innerRecordName)
-             {
-               case cDSTD:
-                    if (tempStage.unknownDSTD.isPresent())
-                    {
-                      std::cout << "Error: MSTT seems to have more than one DSTD subrecord per stage!\n";
-                      return false;
-                    }//if
-                    //read DSTD
-                    if (!tempStage.unknownDSTD.loadFromStream(in_File, cDSTD, false)) return false;
-                    bytesRead += (2+tempStage.unknownDSTD.getSize());
-                    break;
-               case cDMDL:
-                    if (!tempStage.replacementModel.empty())
-                    {
-                      std::cout << "Error: MSTT seems to have more than one DMDL subrecord per stage!\n";
-                      return false;
-                    }//if
-                    //read DMDL
-                    if (!loadString512FromStream(in_File, tempStage.replacementModel, buffer, cDMDL, false, bytesRead))
-                      return false;
-                    //check content
-                    if (tempStage.replacementModel.empty())
-                    {
-                      std::cout << "Error: subrecord DMDL of MSTT is empty!\n";
-                      return false;
-                    }
-                    break;
-               case cDMDT:
-                    if (tempStage.unknownDMDT.isPresent())
-                    {
-                      std::cout << "Error: MSTT seems to have more than one DMDT subrecord per stage!\n";
-                      return false;
-                    }//if
-                    //read DMDT
-                    if (!tempStage.unknownDMDT.loadFromStream(in_File, cDMDT, false)) return false;
-                    bytesRead += (2+tempStage.unknownDMDT.getSize());
-                    break;
-               case cDSTF:
-                    //DSTF's length
-                    in_File.read((char*) &subLength, 2);
-                    bytesRead += 2;
-                    if (subLength!=0)
-                    {
-                      std::cout << "Error: subrecord DSTF of MSTT has invalid length ("
-                                << subLength << " bytes). Should be zero bytes.\n";
-                      return false;
-                    }
-                    //push it, if not empty
-                    if (tempStage.isReset())
-                    {
-                      std::cout << "Error: MSTT seems to have an empty destruction stage!\n";
-                      return false;
-                    }
-                    destruction.stages.push_back(tempStage);
-                    tempStage.reset();
-                    break;
-               default:
-                    std::cout << "Error: found unexpected subrecord \""<<IntTo4Char(innerRecordName)
-                              << "\", but only DSTD, DMDL, DMDT or DSTF are allowed here!\n";
-                    return false;
-             }//swi (inner)
-           }//while (inner)
            break;
       default:
            std::cout << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)

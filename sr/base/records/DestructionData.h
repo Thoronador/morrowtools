@@ -98,6 +98,17 @@ struct DestructionData
     bool saveToStream(std::ofstream& output) const;
     #endif
 
+    /* loads the DestructionData from the given input stream and returns true
+       on success
+
+       parameters:
+          in_File    - the input file stream
+          recordType - type of the record the destruction data belongs to
+          buffer     - a pre-allocated array of char that can hold at least 512 bytes
+          bytesRead  - the variable that holds the number of bytes read so far
+    */
+    bool loadFromStream(std::ifstream& in_File, const uint32_t recordType, char * buffer, uint32_t& bytesRead);
+
     /* clears all data members and sets the status to "not present" */
     void clear();
 

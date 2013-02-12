@@ -1029,6 +1029,67 @@ Records and their sub-records:
           array of form IDs, where n = count1+count2+count3+count4+count5
 
 
+  FURN: furniture
+      EDID (string, NUL-terminated)
+          editor ID
+      VMAD (size varies, optional)
+          unknown data
+      OBND (12 bytes)
+          unknown data
+      FULL (4 bytes)
+          name string ID
+      MODL (string, NUL-terminated)
+          model path
+      MODT (size varies)
+          unknown data
+      MODS (size varies, optional)
+          unknown data
+
+      DEST (8 bytes, optional)
+          uint32_t Health
+          uint8_t  stage count
+          uint8_t  unknown
+          uint8_t  unknown
+          uint8_t  unknown
+
+        DSTD (20 bytes)
+            unknown data
+        DMDL (string, NUL-terminated)
+            replacement model
+        DMDT (size varies, optional)
+            unknown data (like MODT for MODL)
+        DSTF (0 bytes)
+            marks end of destruction stage
+
+        --> DSTD, DMDL, DMDT and DSTF form a repeatable sequence,
+            occurs as often as given in stage count.
+
+      KSIZ (4 bytes, optional)
+          uint32_t keyword count
+      KWDA (integral multiple of four bytes, optional)
+          uint32_t[] array of keyword form IDs
+      PNAM (4 bytes)
+          unknown data
+      FNAM (2 bytes)
+          unknown data
+      KNAM (4 bytes, optional)
+          uint32_t Interaction keyword form ID (points to KYWD)
+      MNAM (4 bytes)
+          unknown data (not a form ID)
+      WBDT (2 bytes)
+          unknown data
+      ENAM (4 bytes, optional, can occur multiple times)
+          unknown data
+      NAM0 (4 bytes, optional, can occur multiple times)
+          unknown data
+      FNMK (4 bytes, optional, can occur multiple times)
+          uint32_t Marker Keyword (points to KWYD)
+      FNPR (4 bytes, optional, can occur multiple times)
+          unknown data
+      XMRK (string, NUL-terminated, optional)
+          Marker Model
+
+
   GLOB: global variables
       EDID (string, NUL-terminated)
           editor ID

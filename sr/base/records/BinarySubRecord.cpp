@@ -1,20 +1,20 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2011, 2012, 2013  Thoronador
 
-    The Skyrim Tools are free software: you can redistribute them and/or
-    modify them under the terms of the GNU General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    The Skyrim Tools are distributed in the hope that they will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with the Skyrim Tools.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -------------------------------------------------------------------------------
 */
 
@@ -27,15 +27,14 @@ namespace SRTP
 {
 
 BinarySubRecord::BinarySubRecord()
+: m_Pointer(NULL), m_Size(0), m_Present(false)
 {
-  m_Pointer = NULL;
-  m_Size = 0;
-  m_Present = false;
+
 }
 
 BinarySubRecord::BinarySubRecord(const BinarySubRecord& op)
+: m_Size(op.getSize()), m_Present(op.isPresent())
 {
-  m_Size = op.getSize();
   if (m_Size>0)
   {
     m_Pointer = new uint8_t[m_Size];
@@ -45,7 +44,6 @@ BinarySubRecord::BinarySubRecord(const BinarySubRecord& op)
   {
     m_Pointer = NULL;
   }
-  m_Present = op.isPresent();
 }
 
 BinarySubRecord& BinarySubRecord::operator=(const BinarySubRecord& other)

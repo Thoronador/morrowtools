@@ -149,11 +149,14 @@ const uint32_t cFLST = 0x54534C46; //"FLST" = 46 4C 53 54
 const uint32_t cFLTR = 0x52544C46; //"FLTR" = 46 4C 54 52
 const uint32_t cFLTV = 0x56544C46; //"FLTV" = 46 4C 54 56
 const uint32_t cFNAM = 0x4D414E46; //"FNAM" = 46 4E 41 4D
+const uint32_t cFNMK = 0x4B4D4E46; //"FNMK" = 46 4E 4D 4B
+const uint32_t cFNPR = 0x52504E46; //"FNPR" = 46 4E 50 52
 const uint32_t cFPRT = 0x54525046; //"FPRT" = 46 50 52 54
 const uint32_t cFSTP = 0x50545346; //"FSTP" = 46 53 54 50
 const uint32_t cFSTS = 0x53545346; //"FSTS" = 46 53 54 53
 const uint32_t cFTST = 0x54535446; //"FTST" = 46 54 53 54
 const uint32_t cFULL = 0x4C4C5546; //"FULL" = 46 55 4C 4C
+const uint32_t cFURN = 0x4E525546; //"FURN" = 46 55 52 4E
 const uint32_t cGLOB = 0x424F4C47; //"GLOB" = 47 4C 4F 42
 const uint32_t cGMST = 0x54534D47; //"GMST" = 47 4D 53 54
 const uint32_t cGNAM = 0x4D414E47; //"GNAM" = 47 4E 41 4D
@@ -337,6 +340,7 @@ const uint32_t cVTCK = 0x4B435456; //"VTCK" = 56 54 43 4B
 const uint32_t cVTYP = 0x50595456; //"VTYP" = 56 54 59 50
 const uint32_t cWAIT = 0x54494157; //"WAIT" = 57 41 49 54
 const uint32_t cWATR = 0x52544157; //"WATR" = 57 41 54 52
+const uint32_t cWBDT = 0x54444257; //"WBDT" = 57 42 44 54
 const uint32_t cWCTR = 0x52544357; //"WCTR" = 57 43 54 52
 const uint32_t cWEAP = 0x50414557; //"WEAP" = 57 45 41 50
 const uint32_t cWLST = 0x54534C57; //"WLST" = 57 4C 53 54
@@ -364,6 +368,7 @@ const uint32_t cXLCN = 0x4E434C58; //"XLCN" = 58 4C 43 4E
 const uint32_t cXLKR = 0x524B4C58; //"XLKR" = 58 4C 4B 52
 const uint32_t cXLOC = 0x434F4C58; //"XLOC" = 58 4C 4F 43
 const uint32_t cXLRT = 0x54524C58; //"XLRT" = 58 4C 52 54
+const uint32_t cXMRK = 0x4B524D58; //"XMRK" = 58 4D 52 4B
 const uint32_t cXNAM = 0x4D414E58; //"XNAM" = 58 4E 41 4D
 const uint32_t cXNDP = 0x50444E58; //"XNDP" = 58 4E 44 50
 const uint32_t cXOWN = 0x4E574F58; //"XOWN" = 58 4F 57 4E

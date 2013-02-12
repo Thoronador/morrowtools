@@ -19,7 +19,10 @@
 */
 
 #include "DestructionData.h"
+#include <cstring>
+#include <iostream>
 #include "../SR_Constants.h"
+#include "../../../mw/base/HelperIO.h"
 
 namespace SRTP
 {
@@ -155,6 +158,124 @@ bool DestructionData::saveToStream(std::ofstream& output) const
   return output.good();
 }
 #endif
+
+bool DestructionData::loadFromStream(std::ifstream& in_File, const uint32_t recordType, char * buffer, uint32_t& bytesRead)
+{
+  //DEST's length
+  uint16_t subLength = 0;
+  in_File.read((char*) &subLength, 2);
+  bytesRead += 2;
+  if (subLength!=8)
+  {
+    std::cout << "Error: subrecord DEST of "<<IntTo4Char(recordType)<<" has invalid length ("
+              << subLength << " bytes). Should be eight bytes.\n";
+    return false;
+  }
+  //read DEST
+  in_File.read((char*) &health, 4);
+  in_File.read((char*) &stageCount, 1);
+  in_File.read((char*) &unknownTwo, 1);
+  in_File.read((char*) &unknownThreeFour, 2);
+  bytesRead += 8;
+  if (!in_File.good())
+  {
+    std::cout << "Error while reading subrecord DEST of "<<IntTo4Char(recordType)<<"!\n";
+    return false;
+  }
+
+  isPresent = true;
+  stages.clear();
+  DestructionStage tempStage;
+
+  while (stages.size()<stageCount)
+  {
+    //read next record
+    uint32_t innerRecordName = 0;
+    in_File.read((char*) &innerRecordName, 4);
+    bytesRead += 4;
+    switch (innerRecordName)
+    {
+      case cDSTD:
+           if (tempStage.unknownDSTD.isPresent())
+           {
+             std::cout << "Error: "<<IntTo4Char(recordType)<<" seems to have more than one DSTD subrecord per stage!\n";
+             return false;
+           }//if
+           //read DSTD
+           if (!tempStage.unknownDSTD.loadFromStream(in_File, cDSTD, false)) return false;
+           bytesRead += (2+tempStage.unknownDSTD.getSize());
+           break;
+      case cDMDL:
+           if (!tempStage.replacementModel.empty())
+           {
+             std::cout << "Error: "<<IntTo4Char(recordType)<<" seems to have more than one DMDL subrecord per stage!\n";
+             return false;
+           }//if
+           //DMDL's length
+           in_File.read((char*) &subLength, 2);
+           bytesRead += 2;
+           if (subLength>511)
+           {
+             std::cout <<"Error: sub record DMDL of "<<IntTo4Char(recordType)<<" is longer than 511 characters!\n";
+             return false;
+           }
+           //read string
+           memset(buffer, 0, 512);
+           in_File.read(buffer, subLength);
+           bytesRead += subLength;
+           if (!in_File.good())
+           {
+             std::cout << "Error while reading subrecord DMDL of "<<IntTo4Char(recordType)<<"!\n";
+             return false;
+           }
+           tempStage.replacementModel = std::string(buffer);
+           //check content
+           if (tempStage.replacementModel.empty())
+           {
+             std::cout << "Error: subrecord DMDL of "<<IntTo4Char(recordType)<<" is empty!\n";
+             return false;
+           }
+           break;
+      case cDMDT:
+           if (tempStage.unknownDMDT.isPresent())
+           {
+             std::cout << "Error: "<<IntTo4Char(recordType)
+                       << " seems to have more than one DMDT subrecord per stage!\n";
+             return false;
+           }//if
+           //read DMDT
+           if (!tempStage.unknownDMDT.loadFromStream(in_File, cDMDT, false)) return false;
+           bytesRead += (2+tempStage.unknownDMDT.getSize());
+           break;
+      case cDSTF:
+           //DSTF's length
+           in_File.read((char*) &subLength, 2);
+           bytesRead += 2;
+           if (subLength!=0)
+           {
+             std::cout << "Error: subrecord DSTF of "<<IntTo4Char(recordType)
+                       << " has invalid length (" << subLength
+                       << " bytes). Should be zero bytes.\n";
+             return false;
+           }
+           //push it, if not empty
+           if (tempStage.isReset())
+           {
+             std::cout << "Error: "<<IntTo4Char(recordType)<<" seems to have an empty destruction stage!\n";
+             return false;
+           }
+           stages.push_back(tempStage);
+           tempStage.reset();
+           break;
+      default:
+           std::cout << "Error: found unexpected subrecord \""<<IntTo4Char(innerRecordName)
+                     << "\", but only DSTD, DMDL, DMDT or DSTF are allowed here!\n";
+           return false;
+    }//swi
+  }//while
+
+  return in_File.good();
+}
 
 void DestructionData::clear()
 {

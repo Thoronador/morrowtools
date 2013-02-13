@@ -1,20 +1,20 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012 Thoronador
+    Copyright (C) 2012, 2013  Thoronador
 
-    The Skyrim Tools are free software: you can redistribute them and/or
-    modify them under the terms of the GNU General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    The Skyrim Tools are distributed in the hope that they will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with the Skyrim Tools.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -------------------------------------------------------------------------------
 */
 
@@ -62,54 +62,50 @@ bool NPCRecord::CSDXstruct::operator==(const NPCRecord::CSDXstruct& other) const
 /* NPCRecord's functions */
 
 NPCRecord::NPCRecord()
-: BasicRecord()
+: BasicRecord(), editorID(""),
+  deathItemFormID(0),
+  voiceTypeFormID(0),
+  templateActorBaseFormID(0),
+  raceFormID(0),
+  hasDEST(false),
+  unknownDEST(0),
+  skinFormID(0),
+  farAwayModelSkinFormID(0),
+  hasATKR(false), unknownATKR(0),
+  unknownATKE(""),
+  spectatorOverridePackageListFormID(0),
+  combatOverridePackageListFormID(0),
+  classFormID(0),
+  hasFULL(false), nameStringID(0),
+  hasSHRT(false), unknownSHRT(0),
+  hairColorFormID(0),
+  giftFilterFormID(0),
+  combatStyleFormID(0),
+  unknownNAM5(0),
+  unknownNAM6(0),
+  unknownNAM7(0),
+  unknownNAM8(0),
+  defaultOutfitFormID(0),
+  sleepOutfitFormID(0),
+  crimeFactionFormID(0),
+  soundTemplateFormID(0),
+  defaultPackageListFormID(0),
+  faceComplexionFormID(0)
 {
-  editorID = "";
   unknownVMAD.setPresence(false);
   memset(unknownOBND, 0, 12);
   memset(unknownACBS, 0, 24);
   factions.clear();
-  deathItemFormID = 0;
-  voiceTypeFormID = 0;
-  templateActorBaseFormID = 0;
-  raceFormID = 0;
-  hasDEST = false;
-  unknownDEST = 0;
-  skinFormID = 0;
-  farAwayModelSkinFormID = 0;
-  hasATKR = false;
-  unknownATKR = 0;
   unknownATKD.setPresence(false);
-  unknownATKE = "";
   spellFormIDs.clear();
   perkList.clear();
   items.clear();
-  spectatorOverridePackageListFormID = 0;
-  combatOverridePackageListFormID = 0;
   memset(unknownAIDT, 0, 20);
   unknownPKIDs.clear();
   keywordArray.clear();
-  classFormID = 0;
-  hasFULL = false;
-  nameStringID = 0; //subrecord FULL
-  hasSHRT = false;
-  unknownSHRT = 0;
   memset(unknownDNAM, 0, 52);
   unknownPNAMs.clear();
-  hairColorFormID = 0;
-  giftFilterFormID = 0;
-  combatStyleFormID = 0;
-  unknownNAM5 = 0;
-  unknownNAM6 = 0;
-  unknownNAM7 = 0;
-  unknownNAM8 = 0;
-  defaultOutfitFormID = 0;
-  sleepOutfitFormID = 0;
-  crimeFactionFormID = 0;
-  soundTemplateFormID = 0;
   unknownCSDXs.clear();
-  defaultPackageListFormID = 0;
-  faceComplexionFormID = 0;
   memset(unknownQNAM, 0, 12);
   unknownNAM9.setPresence(false);
   unknownNAMA.setPresence(false);

@@ -3,18 +3,18 @@
     This file is part of the Skyrim Tools Project.
     Copyright (C) 2012, 2013  Thoronador
 
-    The Skyrim Tools are free software: you can redistribute them and/or
-    modify them under the terms of the GNU General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    The Skyrim Tools are distributed in the hope that they will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with the Skyrim Tools.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -------------------------------------------------------------------------------
 */
 
@@ -28,41 +28,34 @@ namespace SRTP
 {
 
 WorldSpaceRecord::WorldSpaceRecord()
-: BasicRecord()
+: BasicRecord(), editorID(""),
+  hasFULL(false), nameStringID(0),
+  hasWCTR(false),
+  centerCellX(0),
+  centerCellY(0),
+  interiorLightingFormID(0),
+  encounterZoneFormID(0),
+  climateFormID(0),
+  waterFormID(0),
+  LODWaterTypeFormID(0),
+  hasNAM4(false),
+  LODWaterHeight(0.0f),
+  hasDNAM(false), unknownDNAM(0),
+  locationFormID(0),
+  parentWorldSpaceFormID(0),
+  hasPNAM(false), unknownPNAM(0),
+  distantLODMultiplier(0.0f),
+  hasDATA(false), unknownDATA(0),
+  hasNAM0(false), unknownNAM0(0),
+  hasNAM9(false), unknownNAM9(0),
+  musicFormID(0),
+  HD_LOD_DiffuseTexture(""),
+  HD_LOD_NormalTexture("")
 {
-  editorID = "";
   unknownRNAMs.clear();
   unknownMHDT.setPresence(false);
-  hasFULL = false;
-  nameStringID = 0;
-  hasWCTR = false;
-  centerCellX = 0;
-  centerCellY = 0;
-  interiorLightingFormID = 0;
-  encounterZoneFormID = 0;
-  climateFormID = 0;
-  waterFormID = 0;
-  LODWaterTypeFormID = 0;
-  hasNAM4 = false;
-  LODWaterHeight = 0.0f;
-  hasDNAM = false;
-  unknownDNAM = 0;
   unknownMNAM.setPresence(false);
-  locationFormID = 0;
-  parentWorldSpaceFormID = 0;
-  hasPNAM = false;
-  unknownPNAM = 0;
   unknownONAM.setPresence(false);
-  distantLODMultiplier = 0.0f;
-  hasDATA = false;
-  unknownDATA = 0;
-  hasNAM0 = false;
-  unknownNAM0 = 0;
-  hasNAM9 = false;
-  unknownNAM9 = 0;
-  musicFormID = 0;
-  HD_LOD_DiffuseTexture = "";
-  HD_LOD_NormalTexture = "";
   unknownOFST.setPresence(false);
 }
 

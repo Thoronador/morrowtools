@@ -1,20 +1,20 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012 Thoronador
+    Copyright (C) 2012, 2013  Thoronador
 
-    The Skyrim Tools are free software: you can redistribute them and/or
-    modify them under the terms of the GNU General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    The Skyrim Tools are distributed in the hope that they will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with the Skyrim Tools.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -------------------------------------------------------------------------------
 */
 
@@ -40,26 +40,25 @@ const uint32_t CameraShotRecord::cLocationTarget     = 0x00000002;
 const uint32_t CameraShotRecord::cLocationLeadActor  = 0x00000003;
 
 CameraShotRecord::CameraShotRecord()
-: BasicRecord()
-{
-  editorID = "";
-  modelPath = "";
-  unknownMODT.setPresence(false);
+: BasicRecord(), editorID(""),
+  modelPath(""),
   //subrecord DATA
-  dataLen = dlt40Byte;
-  cameraAction = cActionShoot;
-  cameraLocation = cLocationAttacker;
-  cameraTarget = cLocationTarget;
-  cameraFlags = 0;
-  timeMultPlayer = 1.0f;
-  timeMultTarget = 1.0f;
-  timeMultGlobal = 1.0f;
-  maxTime = 20.0f;
-  minTime = 0.0f;
-  targetPercentBetweenActors = 0.0f;
-  nearTargetDistance = 0.0f;
+  dataLen(dlt40Byte),
+  cameraAction(cActionShoot),
+  cameraLocation(cLocationAttacker),
+  cameraTarget(cLocationTarget),
+  cameraFlags(0),
+  timeMultPlayer(1.0f),
+  timeMultTarget(1.0f),
+  timeMultGlobal(1.0f),
+  maxTime(20.0f),
+  minTime(0.0f),
+  targetPercentBetweenActors(0.0f),
+  nearTargetDistance(0.0f),
   //end of subrecord DATA
-  imageSpaceModFormID = 0;
+  imageSpaceModFormID(0)
+{
+  unknownMODT.setPresence(false);
 }
 
 CameraShotRecord::~CameraShotRecord()

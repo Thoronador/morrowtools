@@ -1,20 +1,20 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2011, 2012, 2013  Thoronador
 
-    The Skyrim Tools are free software: you can redistribute them and/or
-    modify them under the terms of the GNU General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    The Skyrim Tools are distributed in the hope that they will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with the Skyrim Tools.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -------------------------------------------------------------------------------
 */
 
@@ -76,15 +76,15 @@ void CTDAData::clear()
 /* CTDA_CIS2_compound's functions */
 
 CTDA_CIS2_compound::CTDA_CIS2_compound()
+: unknownCIS2("")
 {
   memset(unknownCTDA.content, 0, 32);
-  unknownCIS2 = "";
 }
 
 CTDA_CIS2_compound::CTDA_CIS2_compound(const CTDAData& ctda, const std::string& cis2)
+: unknownCTDA(ctda), unknownCIS2(cis2)
 {
-  unknownCTDA = ctda;
-  unknownCIS2 = cis2;
+
 }
 
 bool CTDA_CIS2_compound::operator==(const CTDA_CIS2_compound& other) const
@@ -127,15 +127,15 @@ uint32_t CTDA_CIS2_compound::getWriteSize() const
 /* CTDA_CIS1_compound's functions */
 
 CTDA_CIS1_compound::CTDA_CIS1_compound()
+: unknownCIS1("")
 {
   memset(unknownCTDA.content, 0, 32);
-  unknownCIS1 = "";
 }
 
 CTDA_CIS1_compound::CTDA_CIS1_compound(const CTDAData& ctda, const std::string& cis1)
+: unknownCTDA(ctda), unknownCIS1(cis1)
 {
-  unknownCTDA = ctda;
-  unknownCIS1 = cis1;
+
 }
 
 bool CTDA_CIS1_compound::operator==(const CTDA_CIS1_compound& other) const

@@ -1,20 +1,20 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012 Thoronador
+    Copyright (C) 2012, 2013  Thoronador
 
-    The Skyrim Tools are free software: you can redistribute them and/or
-    modify them under the terms of the GNU General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    The Skyrim Tools are distributed in the hope that they will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with the Skyrim Tools.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -------------------------------------------------------------------------------
 */
 
@@ -28,40 +28,38 @@ namespace SRTP
 {
 
 CombatStyleRecord::CombatStyleRecord()
-: BasicRecord()
-{
-  editorID = "";
+: BasicRecord(), editorID(""),
   //subrecord CSGD
-  csgdLen = gdl40Bytes;
-  offensiveMult = 0.0f;
-  defensiveMult = 0.0f;
-  groupOffensiveMult = 1.0f;
-  melee = 1.0f; //Equipment Score Mult
-  magic = 1.0f; //Equipment Score Mult
-  ranged = 1.0f; //Equipment Score Mult
-  shout = 1.0f; //Equipment Score Mult
-  unarmed = 1.0f; //Equipment Score Mult
-  staff = 1.0f; //Equipment Score Mult
-  avoidThreatChance = 0.2f;
+  csgdLen(gdl40Bytes),
+  offensiveMult(0.0f),
+  defensiveMult(0.0f),
+  groupOffensiveMult(1.0f),
+  melee(1.0f), //Equipment Score Mult
+  magic(1.0f), //Equipment Score Mult
+  ranged(1.0f), //Equipment Score Mult
+  shout(1.0f), //Equipment Score Mult
+  unarmed(1.0f), //Equipment Score Mult
+  staff(1.0f), //Equipment Score Mult
+  avoidThreatChance(0.2f),
   //end of subrecord CSGD
   //subrecord CSMD
-  hasCSMD = false;
-  unknownCSMDOne = 0.2f;
-  unknownCSMDTwo = 0.2f;
+  hasCSMD(false),
+  unknownCSMDOne(0.2f),
+  unknownCSMDTwo(0.2f),
   //end of subrecord CSMD
-  unknownCSME.clear();
   //subrecord CSCR
-  cscrLen = crl16Bytes;
-  circleMult = 0.2f; //Close Range, Dueling
-  fallbackMult = 0.2f; //Close Range, Dueling
-  flankDistance = 0.2f; //Close Range, Flanking
-  stalkTime = 0.2f; //Close Range, Flanking
+  cscrLen(crl16Bytes),
+  circleMult(0.2f), //Close Range, Dueling
+  fallbackMult(0.2f), //Close Range, Dueling
+  flankDistance(0.2f), //Close Range, Flanking
+  stalkTime(0.2f), //Close Range, Flanking
   //end of subrecord CSCR
-  hasCSLR = false;
-  longRangeStrafeMult = 0.2f; //subrecord CSLR
+  hasCSLR(false),
+  longRangeStrafeMult(0.2f), //subrecord CSLR
+  hasDATA(false), unknownDATA(0)
+{
+  unknownCSME.clear();
   unknownCSFL.clear();
-  hasDATA = false;
-  unknownDATA = 0;
 }
 
 CombatStyleRecord::~CombatStyleRecord()

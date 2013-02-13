@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012  Thoronador
+    Copyright (C) 2012, 2013  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -42,13 +42,12 @@ const uint8_t CameraPathRecord::cCameraZoomShotList             = 0x02;
 /* CameraPathRecord's functions */
 
 CameraPathRecord::CameraPathRecord()
-: BasicRecord()
+: BasicRecord(), editorID(""),
+  unknownDATA(0)
 {
-  editorID = "";
   conditions.clear();
   cameraPathLinks.parentFormID = 0;
   cameraPathLinks.nextFormID = 0;
-  unknownDATA = 0;
   camShotList.clear();
 }
 

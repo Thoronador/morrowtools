@@ -1,20 +1,20 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012 Thoronador
+    Copyright (C) 2012, 2013  Thoronador
 
-    The Skyrim Tools are free software: you can redistribute them and/or
-    modify them under the terms of the GNU General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    The Skyrim Tools are distributed in the hope that they will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with the Skyrim Tools.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -------------------------------------------------------------------------------
 */
 
@@ -41,39 +41,32 @@ bool CellRecord::SubrecordXCLC::operator==(const CellRecord::SubrecordXCLC& othe
 }
 
 CellRecord::CellRecord()
-: BasicRecord()
+: BasicRecord(), editorID(""),
+  hasFULL(false), nameStringID(0),
+  lightingTemplateFormID(0),
+  hasLNAM(false), unknownLNAM(0),
+  unknownXCLW(0.0f),
+  hasXNAM(false), unknownXNAM(0),
+  locationFormID(0),
+  hasXWCN(false), unknownXWCN(0),
+  hasXWCS(false), unknownXWCS(0),
+  imageSpaceFormID(0),
+  encounterZoneFormID(0),
+  hasXCWT(0), unknownXCWT(0),
+  musicTypeFormID(0),
+  unknownXWEM(""),
+  ownerFactionFormID(0),
+  lockListFormID(0),
+  regionFormID(0),
+  defaultAcousticSpaceFormID(0)
 {
-  editorID = "";
-  hasFULL = false;
-  nameStringID = 0;
   unknownDATA.setPresence(false);
   unknownTVDT.setPresence(false);
   unknownMHDT.setPresence(false);
   gridLocation.presence = false;
   unknownXCLL.setPresence(false);
-  lightingTemplateFormID = 0;
-  hasLNAM = false;
-  unknownLNAM = 0;
-  unknownXCLW = 0.0f;
   unknownXCLR.clear();
-  hasXNAM = false;
-  unknownXNAM = 0;
-  locationFormID = 0;
-  hasXWCN = false;
-  unknownXWCN = 0;
-  hasXWCS = false;
-  unknownXWCS = 0;
   unknownXWCU.setPresence(false);
-  imageSpaceFormID = 0;
-  encounterZoneFormID = 0; //subrecord XEZN
-  hasXCWT = false;
-  unknownXCWT = 0;
-  musicTypeFormID = 0;
-  unknownXWEM = "";
-  ownerFactionFormID = 0;
-  lockListFormID = 0;
-  regionFormID = 0;
-  defaultAcousticSpaceFormID = 0;
 }
 
 CellRecord::~CellRecord()

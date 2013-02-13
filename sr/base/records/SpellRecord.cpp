@@ -1,20 +1,20 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2011, 2012, 2013  Thoronador
 
-    The Skyrim Tools are free software: you can redistribute them and/or
-    modify them under the terms of the GNU General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    The Skyrim Tools are distributed in the hope that they will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with the Skyrim Tools.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -------------------------------------------------------------------------------
 */
 
@@ -59,26 +59,24 @@ const uint32_t SpellRecord::cTargetLocation = 0x00000004;
 
 
 SpellRecord::SpellRecord()
-: BasicRecord()
-{
-  editorID = "";
-  memset(unknownOBND, 0, 12);
-  hasFULL = false;
-  nameStringID = 0;
-  menuDisplayObjectFormID = 0;
-  equipTypeFormID = 0;
-  descriptionStringID = 0;
+: BasicRecord(), editorID(""),
+  hasFULL(false), nameStringID(0),
+  menuDisplayObjectFormID(0),
+  equipTypeFormID(0),
+  descriptionStringID(0),
   //subrecord SPIT
-  castingCost = 0;
-  flags = 0;
-  type = 0;
-  chargeTime = 0.0f;
-  castingType = 0;
-  delivery = 0;
-  castDuration = 0.0f;
-  range = 0.0f;
-  castingPerkFormID = 0;
+  castingCost(0),
+  flags(0),
+  type(0),
+  chargeTime(0.0f),
+  castingType(0),
+  delivery(0),
+  castDuration(0.0f),
+  range(0.0f),
+  castingPerkFormID(0)
   //end of SPIT
+{
+  memset(unknownOBND, 0, 12);
   effects.clear();
 }
 

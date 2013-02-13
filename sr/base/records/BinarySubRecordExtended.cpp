@@ -35,8 +35,8 @@ BinarySubRecordExtended::BinarySubRecordExtended()
 }
 
 BinarySubRecordExtended::BinarySubRecordExtended(const BinarySubRecordExtended& op)
+: m_Size(op.getSize()), m_Present(op.isPresent())
 {
-  m_Size = op.getSize();
   if (m_Size>0)
   {
     m_Pointer = new uint8_t[m_Size];
@@ -46,7 +46,6 @@ BinarySubRecordExtended::BinarySubRecordExtended(const BinarySubRecordExtended& 
   {
     m_Pointer = NULL;
   }
-  m_Present = op.isPresent();
 }
 
 BinarySubRecordExtended& BinarySubRecordExtended::operator=(const BinarySubRecordExtended& other)

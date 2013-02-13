@@ -3,18 +3,18 @@
     This file is part of the Skyrim Tools Project.
     Copyright (C) 2011, 2012, 2013  Thoronador
 
-    The Skyrim Tools are free software: you can redistribute them and/or
-    modify them under the terms of the GNU General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    The Skyrim Tools are distributed in the hope that they will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with the Skyrim Tools.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -------------------------------------------------------------------------------
 */
 
@@ -38,79 +38,73 @@ const unsigned int WeaponRecord::cTypeBow = 7;
 const unsigned int WeaponRecord::cTypeStaves = 8;
 
 WeaponRecord::WeaponRecord()
-: BasicRecord()
+: BasicRecord(), editorID(""),
+  hasFULL(false), nameStringID(0),
+  modelPath(""),
+  enchantingFormID(0),
+  hasEAMT(false),
+  enchantmentAmount(0),
+  equipTypeFormID(0),
+  blockBashImpactDataSetFormID(0),
+  alternateBlockMaterialFormID(0),
+  descriptionStringID(0),
+  unknownNNAM(""),
+  impactDataSetFormID(0),
+  firstPersonModelObjectFormID(0),
+  attackFailSoundFormID(0),
+  idleSoundFormID(0),
+  equipSoundFormID(0),
+  unequipSoundFormID(0),
+  attackSoundFormID(0),
+  //DATA
+  value(0),
+  weight(0.0f),
+  baseDamage(0),
+  //end of DATA
+  unknownVNAM(0),
+  hasCNAM(false), unknownCNAM(0)
 {
-  editorID = "";
   unknownVMAD.setPresence(false);
   memset(unknownOBND, 0, 12);
-  hasFULL = false;
-  nameStringID = 0;
-  modelPath = "";
   unknownMODT.setPresence(false);
   unknownMODS.setPresence(false);
-  enchantingFormID = 0;
-  hasEAMT = false;
-  enchantmentAmount = 0;
-  equipTypeFormID = 0;
-  blockBashImpactDataSetFormID = 0;
-  alternateBlockMaterialFormID = 0;
   keywordArray.clear();
-  descriptionStringID = 0;
-  unknownNNAM = "";
-  impactDataSetFormID = 0;
-  firstPersonModelObjectFormID = 0;
-  attackFailSoundFormID = 0;
-  idleSoundFormID = 0;
-  equipSoundFormID = 0;
-  unequipSoundFormID = 0;
-  attackSoundFormID = 0;
-  //DATA
-  value = 0;
-  weight = 0.0f;
-  baseDamage = 0;
-  //end of DATA
   memset(unknownDNAM, 0, 100);
   memset(unknownCRDT, 0, 16);
-  unknownVNAM = 0;
-  hasCNAM = false;
-  unknownCNAM = 0;
 }
 
 WeaponRecord::WeaponRecord(const WeaponRecord& other)
+: editorID(other.editorID),
+  unknownVMAD(other.unknownVMAD),
+  hasFULL(other.hasFULL), nameStringID(other.nameStringID),
+  modelPath(other.modelPath),
+  unknownMODT(other.unknownMODT),
+  unknownMODS(other.unknownMODS),
+  enchantingFormID(other.enchantingFormID),
+  hasEAMT(other.hasEAMT), enchantmentAmount(other.enchantmentAmount),
+  equipTypeFormID(other.equipTypeFormID),
+  blockBashImpactDataSetFormID(other.blockBashImpactDataSetFormID),
+  alternateBlockMaterialFormID(other.alternateBlockMaterialFormID),
+  keywordArray(other.keywordArray),
+  descriptionStringID(other.descriptionStringID),
+  unknownNNAM(other.unknownNNAM),
+  impactDataSetFormID(other.impactDataSetFormID),
+  firstPersonModelObjectFormID(other.firstPersonModelObjectFormID),
+  attackFailSoundFormID(other.attackFailSoundFormID),
+  idleSoundFormID(other.idleSoundFormID),
+  equipSoundFormID(other.equipSoundFormID),
+  unequipSoundFormID(other.unequipSoundFormID),
+  attackSoundFormID(other.attackSoundFormID),
+  value(other.value),
+  weight(other.weight),
+  baseDamage(other.baseDamage),
+  unknownVNAM(other.unknownVNAM),
+  hasCNAM(other.hasCNAM), unknownCNAM(other.unknownCNAM)
 {
   copyBasicMembers(other);
-  editorID = other.editorID;
-  unknownVMAD = other.unknownVMAD;
   memcpy(unknownOBND, other.unknownOBND, 12);
-  hasFULL = other.hasFULL;
-  nameStringID = other.nameStringID;
-  modelPath = other.modelPath;
-  unknownMODT = other.unknownMODT;
-  unknownMODS = other.unknownMODS;
-  enchantingFormID = other.enchantingFormID;
-  hasEAMT = other.hasEAMT;
-  enchantmentAmount = other.enchantmentAmount;
-  equipTypeFormID = other.equipTypeFormID;
-  blockBashImpactDataSetFormID = other.blockBashImpactDataSetFormID;
-  alternateBlockMaterialFormID = other.alternateBlockMaterialFormID;
-  keywordArray = other.keywordArray;
-  descriptionStringID = other.descriptionStringID;
-  unknownNNAM = other.unknownNNAM;
-  impactDataSetFormID = other.impactDataSetFormID;
-  firstPersonModelObjectFormID = other.firstPersonModelObjectFormID;
-  attackFailSoundFormID = other.attackFailSoundFormID;
-  idleSoundFormID = other.idleSoundFormID;
-  equipSoundFormID = other.equipSoundFormID;
-  unequipSoundFormID = other.unequipSoundFormID;
-  attackSoundFormID = other.attackSoundFormID;
-  value = other.value;
-  weight = other.weight;
-  baseDamage = other.baseDamage;
   memcpy(unknownDNAM, other.unknownDNAM, 100);
   memcpy(unknownCRDT, other.unknownCRDT, 16);
-  unknownVNAM = other.unknownVNAM;
-  hasCNAM = other.hasCNAM;
-  unknownCNAM = other.unknownCNAM;
 }
 
 WeaponRecord& WeaponRecord::operator=(const WeaponRecord& other)

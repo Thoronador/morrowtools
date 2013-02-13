@@ -1,20 +1,20 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2011, 2012, 2013  Thoronador
 
-    The Skyrim Tools are free software: you can redistribute them and/or
-    modify them under the terms of the GNU General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    The Skyrim Tools are distributed in the hope that they will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with the Skyrim Tools.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -------------------------------------------------------------------------------
 */
 
@@ -30,8 +30,8 @@ namespace SRTP
 /* functions of index entry structure */
 
 QuestRecord::IndexEntry::IndexEntry()
+: index(0), indexUnknownPart(0)
 {
-  index = 0;
   theQSDTs.clear();
 }
 
@@ -53,17 +53,14 @@ bool QuestRecord::IndexEntry::hasFinishingQSDT() const
 
 /* QSDTRecord functions */
 QuestRecord::IndexEntry::QSDTRecord::QSDTRecord()
+: isFinisher(false),
+  hasNAM0(false), unknownNAM0(0),
+  unknownSCTX(""),
+  hasQNAM(false), unknownQNAM(0),
+  hasCNAM(false), unknownCNAM(0)
 {
-  isFinisher = false;
-  hasNAM0 = false;
-  unknownNAM0 = 0;
   unknownSCHR.setPresence(false);
-  unknownSCTX = "";
-  hasQNAM = false;
-  unknownQNAM = 0;
   unknownCTDA_CIS2s.clear();
-  hasCNAM = false;
-  unknownCNAM = 0;
 }
 
 bool QuestRecord::IndexEntry::QSDTRecord::operator==(const QuestRecord::IndexEntry::QSDTRecord& other) const
@@ -325,10 +322,10 @@ void QuestRecord::AliasEntry::clear()
 /* QOBJEntry's functions */
 
 QuestRecord::QOBJEntry::QOBJEntry()
+: unknownQOBJ(0),
+  unknownFNAM(0),
+  unknownNNAM(0)
 {
-  unknownQOBJ = 0;
-  unknownFNAM = 0;
-  unknownNNAM = 0;
   theQSTAs.clear();
 }
 
@@ -349,8 +346,8 @@ bool QuestRecord::QOBJEntry::operator==(const QuestRecord::QOBJEntry& other) con
 /* QSTAEntry's functions */
 
 QuestRecord::QOBJEntry::QSTAEntry::QSTAEntry()
+: unknownQSTA(0)
 {
-  unknownQSTA = 0;
   unknownCTDA_CIS2s.clear();
 }
 
@@ -368,19 +365,18 @@ bool QuestRecord::QOBJEntry::QSTAEntry::operator==(const QuestRecord::QOBJEntry:
 /* quest record's functions */
 
 QuestRecord::QuestRecord()
+: BasicRecord(), editorID(""),
+  hasFULL(false), unknownFULL(0),
+  hasENAM(false), unknownENAM(0),
+  filter(""),
+  unknownANAM(0)
 {
-  editorID = "";
   unknownVMAD.setPresence(false);
-  unknownFULL = 0;
   memset(unknownDNAM, 0, 12);
-  hasENAM = false;
-  unknownENAM = 0;
   unknownQTGLs.clear();
   unknownCTDA_CIS2s.clear();
-  filter = "";
   indices.clear();
   theQOBJs.clear();
-  unknownANAM = 0;
   aliases.clear();
 }
 

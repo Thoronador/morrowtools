@@ -1,20 +1,20 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012 Thoronador
+    Copyright (C) 2012, 2013  Thoronador
 
-    The Skyrim Tools are free software: you can redistribute them and/or
-    modify them under the terms of the GNU General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    The Skyrim Tools are distributed in the hope that they will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with the Skyrim Tools.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -------------------------------------------------------------------------------
 */
 
@@ -77,23 +77,21 @@ bool FactionRecord::RankData::operator==(const FactionRecord::RankData& other) c
 /* FactionRecord's functions */
 
 FactionRecord::FactionRecord()
-: BasicRecord()
+: BasicRecord(), editorID(""),
+  hasFULL(false), nameStringID(0),
+  flags(0),
+  exteriorJailMarkerRefID(0), //subrecord JAIL opt.
+  followerWaitMarkerRefID(0), //subrecord WAIT, opt.
+  stolenGoodsContainerRefID(0), //subrecord STOL, opt.
+  playerInventoryContainerRefID(0), //subrecord PLCN, opt.
+  crimeFactionListFormID(0), //subrecord CRGR, opt.
+  jailOutfitFormID(0), //subrecord JOUT, opt.
+  vendorListFormID(0),
+  vendorContainterFormID(0)
 {
-  editorID = "";
   relations.clear(); //subrecords XNAM
-  hasFULL = false;
-  nameStringID = 0; //subrecord FULL
-  flags = 0;
-  exteriorJailMarkerRefID = 0; //subrecord JAIL opt.
-  followerWaitMarkerRefID = 0; //subrecord WAIT, opt.
-  stolenGoodsContainerRefID = 0; //subrecord STOL, opt.
-  playerInventoryContainerRefID = 0; //subrecord PLCN, opt.
-  crimeFactionListFormID = 0; //subrecord CRGR, opt.
-  jailOutfitFormID = 0; //subrecord JOUT, opt.
   unknownCRVA.setPresence(false); //subrecord CRVA, opt.
   ranks.clear();
-  vendorListFormID = 0;
-  vendorContainterFormID = 0;
   //VENV
   vendorStuff.startHour = 0;
   vendorStuff.endHour = 0;

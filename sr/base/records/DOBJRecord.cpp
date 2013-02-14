@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012  Thoronador
+    Copyright (C) 2012, 2013  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -35,9 +35,10 @@ bool DOBJRecord::EntryDNAM::operator==(const DOBJRecord::EntryDNAM& other) const
 /* DOBJRecord's functions */
 
 DOBJRecord::DOBJRecord()
-: BasicRecord()
+: BasicRecord(),
+  unknownDNAMs(std::vector<EntryDNAM>())
 {
-  unknownDNAMs.clear();
+
 }
 
 DOBJRecord::~DOBJRecord()

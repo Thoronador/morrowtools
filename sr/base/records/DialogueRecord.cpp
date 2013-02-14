@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012  Thoronador
+    Copyright (C) 2012, 2013  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,16 +27,16 @@ namespace SRTP
 {
 
 DialogueRecord::DialogueRecord()
-: BasicRecord()
+: BasicRecord(), editorID(""),
+  unknownFULL(0),
+  unknownPNAM(0),
+  dialogueBranchFormID(0),
+  unknownQNAM(0),
+  unknownDATA(0),
+  unknownSNAM(0),
+  unknownTIFC(0)
 {
-  editorID = "";
-  unknownFULL = 0;
-  unknownPNAM = 0;
-  dialogueBranchFormID = 0;
-  unknownQNAM = 0;
-  unknownDATA = 0;
-  unknownSNAM = 0;
-  unknownTIFC = 0;
+
 }
 
 DialogueRecord::~DialogueRecord()

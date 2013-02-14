@@ -1,20 +1,20 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012 Thoronador
+    Copyright (C) 2012, 2013  Thoronador
 
-    The Skyrim Tools are free software: you can redistribute them and/or
-    modify them under the terms of the GNU General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    The Skyrim Tools are distributed in the hope that they will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with the Skyrim Tools.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -------------------------------------------------------------------------------
 */
 
@@ -66,28 +66,24 @@ void CharacterReferenceRecord::EnableParent::clear()
 /* CharactereferenceRecord's functions */
 
 CharacterReferenceRecord::CharacterReferenceRecord()
-: BasicRecord()
+: BasicRecord(), editorID(""),
+  baseObjectFormID(0), //subrecord NAME
+  hasXLCM(false), unknownXLCM(0),
+  hasINAM(false), unknownINAM(0),
+  hasPDTO(false), unknownPDTO(0),
+  persistenceLocationFormID(0), //subrecord XLCN
+  locationRefTypeFormID(0), //subrecord XLRT
+  encounterZoneFormID(0), //subrecord XEZN
+  ownerFormID(0),
+  scale(1.0f) //subrecord XOWN
 {
-  editorID = "";
   unknownVMAD.setPresence(false);
-  baseObjectFormID = 0; //subrecord NAME
   unknownXRGD.setPresence(false);
   unknownXRGB.setPresence(false);
-  hasXLCM = false;
-  unknownXLCM = 0;
-  hasINAM = false;
-  unknownINAM = 0;
-  hasPDTO = false;
-  unknownPDTO = 0;
   linkedReferences.clear();
   XAPDs.clear();
   XAPRs.clear();
-  persistenceLocationFormID = 0; //subrecord XLCN
-  locationRefTypeFormID = 0; //subrecord XLRT
-  encounterZoneFormID = 0; //subrecord XEZN
   subXESP.clear();
-  ownerFormID = 0; //subrecord XOWN
-  scale = 1.0f;
   subBlocks.clear();
   memset(unknownDATA, 0, 24);
 }

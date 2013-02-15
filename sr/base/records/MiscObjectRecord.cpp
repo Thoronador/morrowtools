@@ -28,7 +28,7 @@ namespace SRTP
 {
 
 MiscObjectRecord::MiscObjectRecord()
-: BasicRecord(), editorID(0),
+: BasicRecord(), editorID(""),
   hasFULL(false), fullNameStringID(0),
   modelPath(""),
   iconPath(""),

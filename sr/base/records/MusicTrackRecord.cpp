@@ -1,20 +1,20 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012 Thoronador
+    Copyright (C) 2012, 2013  Thoronador
 
-    The Skyrim Tools are free software: you can redistribute them and/or
-    modify them under the terms of the GNU General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    The Skyrim Tools are distributed in the hope that they will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with the Skyrim Tools.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -------------------------------------------------------------------------------
 */
 
@@ -46,27 +46,22 @@ bool MusicTrackRecord::LoopData::operator==(const MusicTrackRecord::LoopData& ot
 /* MusicTrackRecord's functions */
 
 MusicTrackRecord::MusicTrackRecord()
-: BasicRecord()
+: BasicRecord(), editorID(""),
+  typeIdentifier(0),
+  hasFLTV(false), duration(0.0f),
+  hasDNAM(false), fadeOut(0.0f),
+  trackList(std::vector<uint32_t>()),  //subrecord SNAM
+  unknownANAM(""),
+  finalePath(""), //subrecord BNAM
+  cuePoints(std::vector<float>()), //subrecord FNAM
+  conditions(std::vector<CTDAData>())
 {
-  editorID = "";
-  typeIdentifier = 0;
-  hasFLTV = false;
-  duration = 0.0f;
-  //subrecord DNAM
-  hasDNAM = false;
-  fadeOut = 0.0f;
-  //end of DNAM
-  trackList.clear(); //subrecord SNAM
-  unknownANAM = "";
-  finalePath = ""; //subrecord BNAM
-  cuePoints.clear(); //subrecord FNAM
   //subrecord LNAM
   loop.hasLNAM = false;
   loop.loopBegins = 0.0f; //seconds
   loop.loopEnds = 0.0f; //seconds
   loop.loopCount = 0;
   //end of LNAM
-  conditions.clear(); //subrecord(s) CTDA
 }
 
 MusicTrackRecord::~MusicTrackRecord()

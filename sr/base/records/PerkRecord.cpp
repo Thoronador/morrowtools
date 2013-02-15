@@ -30,10 +30,10 @@ namespace SRTP
 PerkRecord::PerkRecord()
 : BasicRecord(), editorID(""),
   hasFULL(false), nameStringID(0),
-  descriptionStringID(0)
+  descriptionStringID(0),
+  subBlocks(std::vector<SubBlock>())
 {
   unknownVMAD.setPresence(false);
-  subBlocks.clear();
 }
 
 PerkRecord::~PerkRecord()

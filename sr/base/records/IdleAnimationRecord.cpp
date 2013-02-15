@@ -33,7 +33,9 @@ const uint8_t IdleAnimationRecord::cFlagBlocking     = 0x08;
 
 
 IdleAnimationRecord::IdleAnimationRecord()
-: BasicRecord(), editorID(""), unknownDNAM(""), animEventName(""),
+: BasicRecord(), editorID(""),
+  conditions(std::vector<CTDA_CIS1_compound>()),
+  unknownDNAM(""), animEventName(""),
   parentFormID(0), previousFormID(0), //subrecord ANAM
   //subrecord DATA
   minLoopingSeconds(0), maxLoopingSeconds(0),
@@ -41,7 +43,7 @@ IdleAnimationRecord::IdleAnimationRecord()
   replayDelay(0)
   //end of subrecord DATA
 {
-  conditions.clear();
+
 }
 
 IdleAnimationRecord::~IdleAnimationRecord()

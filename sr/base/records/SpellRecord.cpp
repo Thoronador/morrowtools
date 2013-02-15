@@ -73,11 +73,11 @@ SpellRecord::SpellRecord()
   delivery(0),
   castDuration(0.0f),
   range(0.0f),
-  castingPerkFormID(0)
+  castingPerkFormID(0),
   //end of SPIT
+  effects(std::vector<EffectBlock>())
 {
   memset(unknownOBND, 0, 12);
-  effects.clear();
 }
 
 SpellRecord::~SpellRecord()

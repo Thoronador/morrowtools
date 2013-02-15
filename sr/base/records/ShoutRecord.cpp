@@ -41,9 +41,10 @@ ShoutRecord::ShoutRecord()
 : BasicRecord(), editorID(""),
   hasFULL(false), fullNameStringID(0),
   menuDisplayObjectFormID(0),
-  descriptionStringID(0)
+  descriptionStringID(0),
+  words(std::vector<WordEntry>())
 {
-  words.clear();
+
 }
 
 ShoutRecord::~ShoutRecord()

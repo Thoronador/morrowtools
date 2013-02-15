@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012  Thoronador
+    Copyright (C) 2012, 2013  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -56,25 +56,24 @@ const uint32_t ImpactDataRecord::cSoundLevelVeryLoud = 0x00000003;
 /* ImpactDataRecord's functions */
 
 ImpactDataRecord::ImpactDataRecord()
-: BasicRecord()
-{
-  editorID = "";
-  modelPath = "";
-  unknownMODT.setPresence(false);
+: BasicRecord(), editorID(""),
+  modelPath(""),
   //subrecord DATA
-  effectDuration = 0.0f;
-  unknownDATA02 = 0;
-  angleTreshold = 0.0f;
-  placementRadius = 0.0f;
-  soundLevel = cSoundLevelNormal;
-  unknownDATA06 = 0;
+  effectDuration(0.0f),
+  unknownDATA02(0),
+  angleTreshold(0.0f),
+  placementRadius(0.0f),
+  soundLevel(cSoundLevelNormal),
+  unknownDATA06(0),
+  textureSetFormID(0),
+  secondaryTextureSetFormID(0),
+  impactSoundOneFormID(0),
+  impactSoundTwoFormID(0),
+  hazardFormID(0)
   //end of DATA
+{
+  unknownMODT.setPresence(false);
   decalData.setPresence(false);
-  textureSetFormID = 0;
-  secondaryTextureSetFormID = 0;
-  impactSoundOneFormID = 0;
-  impactSoundTwoFormID = 0;
-  hazardFormID = 0;
 }
 
 ImpactDataRecord::~ImpactDataRecord()

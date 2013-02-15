@@ -39,10 +39,11 @@ Tes4HeaderRecord::Tes4HeaderRecord()
   nextObjectID(0),
   authorName(""),
   summary(""),
+  dependencies(std::vector<MasterFile>()),
+  unknownONAM(std::vector<uint32_t>()),
   unknownIntValue(0)
 {
-  dependencies.clear();
-  unknownONAM.clear();
+
 }
 
 Tes4HeaderRecord::~Tes4HeaderRecord()

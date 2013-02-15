@@ -30,18 +30,18 @@ namespace SRTP
 ScrollRecord::ScrollRecord()
 : BasicRecord(), editorID(""),
   nameStringID(0),
+  keywordArray(std::vector<uint32_t>()),
   menuDisplayObjectFormID(0),
   equipTypeFormID(0),
   descriptionStringID(0),
   modelPath(""),
   value(0),
-  weight(0.0f)
+  weight(0.0f),
+  effects(std::vector<EffectBlock>())
 {
   memset(unknownOBND, 0, 12);
-  keywordArray.clear();
   unknownMODT.setPresence(false);
   memset(unknownSPIT, 0, 36);
-  effects.clear();
 }
 
 ScrollRecord::~ScrollRecord()

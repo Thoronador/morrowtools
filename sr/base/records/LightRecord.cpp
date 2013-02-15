@@ -1,20 +1,20 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012  Thoronador
+    Copyright (C) 2012, 2013  Thoronador
 
-    The Skyrim Tools are free software: you can redistribute them and/or
-    modify them under the terms of the GNU General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    The Skyrim Tools are distributed in the hope that they will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with the Skyrim Tools.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -------------------------------------------------------------------------------
 */
 
@@ -40,29 +40,28 @@ const uint32_t LightRecord::cFlagShadowOmnidirectional = 0x00001000;
 
 
 LightRecord::LightRecord()
-: BasicRecord()
-{
-  editorID = "";
-  memset(unknownOBND, 0, 12);
-  modelPath = "";
-  unknownMODT.setPresence(false);
-  nameStringID = 0;
+: BasicRecord(), editorID(""),
+  modelPath(""),
+  nameStringID(0),
   //subrecord DATA
-  time = 0;
-  radius = 0;
-  colour = 0;
-  flags = 0;
-  falloffExponent = 0.0f;
-  FOV = 0.0f;
-  nearClip = 0.0f;
-  unknownDATA_08 = 0;
-  intensityAmplitude = 0.0f;
-  movementAmplitude = 0;
-  value = 0;
-  weight = 0.0f;
+  time(0),
+  radius(0),
+  colour(0),
+  flags(0),
+  falloffExponent(0.0f),
+  FOV(0.0f),
+  nearClip(0.0f),
+  unknownDATA_08(0),
+  intensityAmplitude(0.0f),
+  movementAmplitude(0),
+  value(0),
+  weight(0.0f),
   //end of subrecord DATA
-  fadeTime = 0.0f;
-  soundFormID = 0;
+  fadeTime(0.0f),
+  soundFormID(0)
+{
+  memset(unknownOBND, 0, 12);
+  unknownMODT.setPresence(false);
 }
 
 LightRecord::~LightRecord()

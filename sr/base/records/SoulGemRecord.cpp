@@ -39,6 +39,7 @@ SoulGemRecord::SoulGemRecord()
 : BasicRecord(), editorID(""),
   hasFULL(false), nameStringID(0),
   modelPath(""),
+  keywordArray(std::vector<uint32_t>()),
   //subrecord DATA
   value(0),
   weight(0.0f),
@@ -49,7 +50,6 @@ SoulGemRecord::SoulGemRecord()
 {
   memset(unknownOBND, 0, 12);
   unknownMODT.setPresence(false);
-  keywordArray.clear();
 }
 
 SoulGemRecord::~SoulGemRecord()

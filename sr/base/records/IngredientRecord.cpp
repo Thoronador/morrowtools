@@ -36,19 +36,19 @@ const uint32_t IngredientRecord::cFlagFoodItem   = 0x00000002;
 IngredientRecord::IngredientRecord()
 : BasicRecord(), editorID(""),
   nameStringID(0),
+  keywordArray(std::vector<uint32_t>()),
   modelPath(""),
   pickupSoundFormID(0),
   putdownSoundFormID(0),
   value(0),
   weight(0.0f),
   baseCost(0),
-  flags(0)
+  flags(0),
+  effects(std::vector<EffectBlock>())
 {
   unknownVMAD.setPresence(false);
   memset(unknownOBND, 0, 12);
-  keywordArray.clear();
   unknownMODT.setPresence(false);
-  effects.clear();
 }
 
 IngredientRecord::~IngredientRecord()

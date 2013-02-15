@@ -33,13 +33,13 @@ KeyRecord::KeyRecord()
   modelPath(""),
   pickupSoundFormID(0),
   putdownSoundFormID(0),
+  keywordArray(std::vector<uint32_t>()),
   value(0),
   weight(0.0f)
 {
   unknownVMAD.setPresence(false);
   memset(unknownOBND, 0, 12);
   unknownMODT.setPresence(false);
-  keywordArray.clear();
 }
 
 KeyRecord::~KeyRecord()

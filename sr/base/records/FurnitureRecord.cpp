@@ -29,6 +29,7 @@ namespace SRTP
 FurnitureRecord::FurnitureRecord()
 : BasicRecord(), editorID(""),
   hasFULL(false), nameStringID(0), modelPath(""),
+  keywords(std::vector<uint32_t>()),
   unknownPNAM(0), unknownFNAM(0),
   interactionKeywordFormID(0),
   unknownMNAM(0), unknownWBDT(0),
@@ -42,7 +43,6 @@ FurnitureRecord::FurnitureRecord()
   unknownMODT.setPresence(false);
   unknownMODS.setPresence(false);
   destruction.clear();
-  keywords.clear();
 }
 
 FurnitureRecord::~FurnitureRecord()

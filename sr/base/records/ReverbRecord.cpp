@@ -1,20 +1,20 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2011, 2012, 2013  Thoronador
 
-    The Skyrim Tools are free software: you can redistribute them and/or
-    modify them under the terms of the GNU General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    The Skyrim Tools are distributed in the hope that they will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with the Skyrim Tools.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -------------------------------------------------------------------------------
 */
 
@@ -30,23 +30,23 @@ namespace SRTP
 const float ReverbRecord::cReflectDelayScale = 0.83;
 
 ReverbRecord::ReverbRecord()
-: BasicRecord()
-{
-  editorID = "";
+: BasicRecord(), editorID(""),
   //start of data subrecord
-  decayTime = 0; //in ms
-  HF_reference = 0; //in Hz
-  roomFilter = 0;
-  roomHF_filter = 0;
-  reflections = 0;
-  reverbAmp = 0;
-  decayHF_ratio100 = 0; // x100, real value is one hundreth of that
-  reflectDelayScaled = 0; //scaled by approx. 0.83 - value 0x00 maps to 0, 0xF9 maps to 300
-  reverbDelay = 0; //in ms
-  diffusionPercentage = 0; //in %
-  densitiyPercentage = 0; //in %
-  unknownDATA_unused = 0;
+  decayTime(0), //in ms
+  HF_reference(0), //in Hz
+  roomFilter(0),
+  roomHF_filter(0),
+  reflections(0),
+  reverbAmp(0),
+  decayHF_ratio100(0), // x100, real value is one hundreth of that
+  reflectDelayScaled(0), //scaled by approx. 0.83 - value 0x00 maps to 0, 0xF9 maps to 300
+  reverbDelay(0), //in ms
+  diffusionPercentage(0), //in %
+  densitiyPercentage(0), //in %
+  unknownDATA_unused(0)
   //end of DATA
+{
+
 }
 
 ReverbRecord::~ReverbRecord()

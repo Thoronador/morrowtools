@@ -47,6 +47,7 @@ WeaponRecord::WeaponRecord()
   equipTypeFormID(0),
   blockBashImpactDataSetFormID(0),
   alternateBlockMaterialFormID(0),
+  keywordArray(std::vector<uint32_t>()),
   descriptionStringID(0),
   unknownNNAM(""),
   impactDataSetFormID(0),
@@ -68,7 +69,6 @@ WeaponRecord::WeaponRecord()
   memset(unknownOBND, 0, 12);
   unknownMODT.setPresence(false);
   unknownMODS.setPresence(false);
-  keywordArray.clear();
   memset(unknownDNAM, 0, 100);
   memset(unknownCRDT, 0, 16);
 }

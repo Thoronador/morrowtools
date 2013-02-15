@@ -32,6 +32,7 @@ MiscObjectRecord::MiscObjectRecord()
   hasFULL(false), fullNameStringID(0),
   modelPath(""),
   iconPath(""),
+  keywordArray(std::vector<uint32_t>()),
   pickupSoundFormID(0),
   putdownSoundFormID(0),
   value(0),
@@ -41,7 +42,6 @@ MiscObjectRecord::MiscObjectRecord()
   memset(unknownOBND, 0, 12);
   unknownMODT.setPresence(true);
   unknownMODS.setPresence(false);
-  keywordArray.clear();
 }
 
 MiscObjectRecord::~MiscObjectRecord()

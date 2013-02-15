@@ -1,20 +1,20 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2011, 2012, 2013  Thoronador
 
-    The Skyrim Tools are free software: you can redistribute them and/or
-    modify them under the terms of the GNU General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    The Skyrim Tools are distributed in the hope that they will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with the Skyrim Tools.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -------------------------------------------------------------------------------
 */
 
@@ -82,57 +82,55 @@ const uint32_t MagicEffectRecord::cSoundTypeOnHit       = 0x00000005;
 
 
 MagicEffectRecord::MagicEffectRecord()
-: BasicRecord()
-{
-  editorID = "";
-  unknownVMAD.setPresence(false);
-  hasFULL = false;
-  fullNameStringID = 0;
-  menuDisplayObjectFormID = 0;
-  keywordArray.clear();
+: BasicRecord(), editorID(""),
+  hasFULL(false), fullNameStringID(0),
+  menuDisplayObjectFormID(0),
+  keywordArray(std::vector<uint32_t>()),
   //DATA
-  flags = 0;
-  baseCost = 0.0f;
-  unknownDATA03 = 0;
-  magicSkill = cSkillNone;
-  unknownDATA05 = 0;
-  unknownDATA06 = 0;
-  unknownDATA07 = 0;
-  taperWeight = 0.0f;
-  hitShaderFormID = 0;
-  enchantShaderFormID = 0;
-  skillLevel = 0;
-  area = 0;
-  castingTime = 0.0f;
-  taperCurve = 0.0f;
-  taperDuration = 0.0f;
-  unknownDATA16 = 0;
-  unknownDATA17 = 0;
-  assocItem1 = 0;
-  projectileFormID = 0;
-  explosionFormID = 0;
-  castingType = cFireAndForget;
-  delivery = cSelf;
-  unknownDATA23 = 0;
-  castingArtFormID = 0;
-  hitEffectArtFormID = 0;
-  impactDataSetFormID = 0;
-  skillUsageMult = 0.0f;
-  dualCastingArt = 0;
-  dualCastingScale = 0.0f;
-  enchantArtFormID = 0;
-  unknownDATA31 = 0;
-  unknownDATA32 = 0;
-  equipAbilityFormID = 0;
-  imageSpaceModFormID = 0;
-  perkFormID = 0;
-  castingSoundLevel = 0;
-  scriptEffectAIDataScore = 0.0f;
-  scriptEffectAIDataDelayTime = 0.0f;
+  flags(0),
+  baseCost(0.0f),
+  unknownDATA03(0),
+  magicSkill(cSkillNone),
+  unknownDATA05(0),
+  unknownDATA06(0),
+  unknownDATA07(0),
+  taperWeight(0.0f),
+  hitShaderFormID(0),
+  enchantShaderFormID(0),
+  skillLevel(0),
+  area(0),
+  castingTime(0.0f),
+  taperCurve(0.0f),
+  taperDuration(0.0f),
+  unknownDATA16(0),
+  unknownDATA17(0),
+  assocItem1(0),
+  projectileFormID(0),
+  explosionFormID(0),
+  castingType(cFireAndForget),
+  delivery(cSelf),
+  unknownDATA23(0),
+  castingArtFormID(0),
+  hitEffectArtFormID(0),
+  impactDataSetFormID(0),
+  skillUsageMult(0.0f),
+  dualCastingArt(0),
+  dualCastingScale(0.0f),
+  enchantArtFormID(0),
+  unknownDATA31(0),
+  unknownDATA32(0),
+  equipAbilityFormID(0),
+  imageSpaceModFormID(0),
+  perkFormID(0),
+  castingSoundLevel(0),
+  scriptEffectAIDataScore(0.0f),
+  scriptEffectAIDataDelayTime(0.0f),
   //end of DATA
-  sounds.clear();
-  descriptionStringID = 0;
-  unknownCTDAs.clear();
+  sounds(std::map<uint32_t, uint32_t>()),
+  descriptionStringID(0),
+  unknownCTDAs(std::vector<CTDAData>())
+{
+  unknownVMAD.setPresence(false);
 }
 
 MagicEffectRecord::~MagicEffectRecord()

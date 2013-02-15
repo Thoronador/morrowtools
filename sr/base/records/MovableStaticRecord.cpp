@@ -28,15 +28,14 @@ namespace SRTP
 {
 
 MovableStaticRecord::MovableStaticRecord()
-: BasicRecord()
+: BasicRecord(), editorID(""),
+  modelPath(""),
+  unknownDATA(0),
+  loopingSoundFormID(0)
 {
-  editorID = "";
   memset(unknownOBND, 0, 12);
-  modelPath = "";
   unknownMODT.setPresence(false);
   unknownMODS.setPresence(false);
-  unknownDATA = 0;
-  loopingSoundFormID = 0;
   destruction.clear();
 }
 

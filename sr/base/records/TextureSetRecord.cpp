@@ -1,20 +1,20 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2011, 2012, 2013  Thoronador
 
-    The Skyrim Tools are free software: you can redistribute them and/or
-    modify them under the terms of the GNU General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    The Skyrim Tools are distributed in the hope that they will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with the Skyrim Tools.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -------------------------------------------------------------------------------
 */
 
@@ -28,12 +28,17 @@ namespace SRTP
 {
 
 TextureSetRecord::TextureSetRecord()
-: BasicRecord()
+: BasicRecord(), editorID(""),
+  texture00(""),
+  texture01(""),
+  texture02(""),
+  texture03(""),
+  texture04(""),
+  texture05(""),
+  texture07(""),
+  unknownDNAM(0)
 {
-  editorID = "";
   memset(unknownOBND, 0, 12);
-  texture00 = texture01 = texture02 = texture03 = texture04 = texture05 = texture07 = "";
-  unknownDNAM = 0;
 }
 
 TextureSetRecord::~TextureSetRecord()
@@ -287,31 +292,8 @@ bool TextureSetRecord::loadFromStream(std::ifstream& in_File)
   }
 
   //read TX00
-  in_File.read((char*) &subRecName, 4);
-  bytesRead += 4;
-  if (subRecName!=cTX00)
-  {
-    UnexpectedRecord(cTX00, subRecName);
+  if (!loadString512FromStream(in_File, texture00, buffer, cTX00, true, bytesRead))
     return false;
-  }
-  //TX00's length
-  in_File.read((char*) &subLength, 2);
-  bytesRead += 2;
-  if (subLength>511)
-  {
-    std::cout <<"Error: sub record TX00 of TXST is longer than 511 characters!\n";
-    return false;
-  }
-  //read texture path
-  memset(buffer, 0, 512);
-  in_File.read(buffer, subLength);
-  bytesRead += subLength;
-  if (!in_File.good())
-  {
-    std::cout << "Error while reading subrecord TX00 of TXST!\n";
-    return false;
-  }
-  texture00 = std::string(buffer);
 
   //DODT or DNAM next
   bool hasReadDNAM = false;
@@ -387,24 +369,9 @@ bool TextureSetRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: record TXST seems to have more than one TX01 subrecord!\n";
              return false;
            }
-           //TX01's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength>511)
-           {
-             std::cout <<"Error: sub record TX01 of TXST is longer than 511 characters!\n";
+           //read TX01
+           if (!loadString512FromStream(in_File, texture01, buffer, cTX01, false, bytesRead))
              return false;
-           }
-           //read texture path
-           memset(buffer, 0, 512);
-           in_File.read(buffer, subLength);
-           bytesRead += subLength;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord TX01 of TXST!\n";
-             return false;
-           }
-           texture01 = std::string(buffer);
            break;
       case cTX02:
            if (!texture02.empty())
@@ -412,24 +379,9 @@ bool TextureSetRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: record TXST seems to have more than one TX02 subrecord!\n";
              return false;
            }
-           //TX02's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength>511)
-           {
-             std::cout <<"Error: sub record TX02 of TXST is longer than 511 characters!\n";
+           //read TX02
+           if (!loadString512FromStream(in_File, texture02, buffer, cTX02, false, bytesRead))
              return false;
-           }
-           //read texture path
-           memset(buffer, 0, 512);
-           in_File.read(buffer, subLength);
-           bytesRead += subLength;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord TX02 of TXST!\n";
-             return false;
-           }
-           texture02 = std::string(buffer);
            break;
       case cTX03:
            if (!texture03.empty())
@@ -437,24 +389,9 @@ bool TextureSetRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: record TXST seems to have more than one TX03 subrecord!\n";
              return false;
            }
-           //TX03's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength>511)
-           {
-             std::cout <<"Error: sub record TX03 of TXST is longer than 511 characters!\n";
+           //read TX03
+           if (!loadString512FromStream(in_File, texture03, buffer, cTX03, false, bytesRead))
              return false;
-           }
-           //read texture path
-           memset(buffer, 0, 512);
-           in_File.read(buffer, subLength);
-           bytesRead += subLength;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord TX03 of TXST!\n";
-             return false;
-           }
-           texture03 = std::string(buffer);
            break;
       case cTX04:
            if (!texture04.empty())
@@ -462,24 +399,9 @@ bool TextureSetRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: record TXST seems to have more than one TX04 subrecord!\n";
              return false;
            }
-           //TX04's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength>511)
-           {
-             std::cout <<"Error: sub record TX04 of TXST is longer than 511 characters!\n";
+           //read TX04
+           if (!loadString512FromStream(in_File, texture04, buffer, cTX04, false, bytesRead))
              return false;
-           }
-           //read texture path
-           memset(buffer, 0, 512);
-           in_File.read(buffer, subLength);
-           bytesRead += subLength;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord TX04 of TXST!\n";
-             return false;
-           }
-           texture04 = std::string(buffer);
            break;
       case cTX05:
            if (!texture05.empty())
@@ -487,24 +409,9 @@ bool TextureSetRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: record TXST seems to have more than one TX05 subrecord!\n";
              return false;
            }
-           //TX05's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength>511)
-           {
-             std::cout <<"Error: sub record TX05 of TXST is longer than 511 characters!\n";
+           //read TX05
+           if (!loadString512FromStream(in_File, texture05, buffer, cTX05, false, bytesRead))
              return false;
-           }
-           //read texture path
-           memset(buffer, 0, 512);
-           in_File.read(buffer, subLength);
-           bytesRead += subLength;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord TX05 of TXST!\n";
-             return false;
-           }
-           texture05 = std::string(buffer);
            break;
       case cTX07:
            if (!texture07.empty())
@@ -512,28 +419,14 @@ bool TextureSetRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: record TXST seems to have more than one TX07 subrecord!\n";
              return false;
            }
-           //TX07's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength>511)
-           {
-             std::cout <<"Error: sub record TX07 of TXST is longer than 511 characters!\n";
+           //read TX07
+           if (!loadString512FromStream(in_File, texture07, buffer, cTX07, false, bytesRead))
              return false;
-           }
-           //read texture path
-           memset(buffer, 0, 512);
-           in_File.read(buffer, subLength);
-           bytesRead += subLength;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord TX07 of TXST!\n";
-             return false;
-           }
-           texture07 = std::string(buffer);
            break;
       default:
-           std::cout << "Error: expected record name DNAM, DODT, TX03 or TX05 was not found. Instead, \""
-                     <<IntTo4Char(subRecName)<<"\" was found.\n";
+           std::cout << "Error: expected record name DNAM, DODT, TX01, TX02, "
+                     << "TX03, TX04, TX05 or TX07 was not found. Instead, \""
+                     << IntTo4Char(subRecName)<<"\" was found.\n";
            return false;
     }//swi
   }//while

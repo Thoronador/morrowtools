@@ -29,6 +29,7 @@ namespace SRTP
 
 WorldSpaceRecord::WorldSpaceRecord()
 : BasicRecord(), editorID(""),
+  unknownRNAMs(std::vector<BinarySubRecord>()),
   hasFULL(false), nameStringID(0),
   hasWCTR(false),
   centerCellX(0),
@@ -52,7 +53,6 @@ WorldSpaceRecord::WorldSpaceRecord()
   HD_LOD_DiffuseTexture(""),
   HD_LOD_NormalTexture("")
 {
-  unknownRNAMs.clear();
   unknownMHDT.setPresence(false);
   unknownMNAM.setPresence(false);
   unknownONAM.setPresence(false);

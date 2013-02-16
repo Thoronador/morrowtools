@@ -68,13 +68,16 @@ uint32_t KeyRecord::getWriteSize() const
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
         +4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed length */
         +4 /* FULL */ +2 /* 2 bytes for length */ +4 /* fixed length */
-        +4 /* MODL */ +2 /* 2 bytes for length */
-        +modelPath.length()+1 /* length of path +1 byte for NUL termination */
         +4 /* DATA */ +2 /* 2 bytes for length */ +8 /* fixed length */;
   if (unknownVMAD.isPresent())
   {
     writeSize = writeSize +4 /* VMAD */ +2 /* 2 bytes for length */ +unknownVMAD.getSize() /* length */;
   }//if VMAD
+  if (!modelPath.empty())
+  {
+    writeSize = writeSize +4 /* MODL */ +2 /* 2 bytes for length */
+        +modelPath.length()+1 /* length of path +1 byte for NUL termination */;
+  }//if MODL
   if (unknownMODT.isPresent())
   {
     writeSize = writeSize +4 /* MODT */ +2 /* 2 bytes for length */ +unknownMODT.getSize() /* length */;
@@ -135,13 +138,16 @@ bool KeyRecord::saveToStream(std::ofstream& output) const
   //write FULL's data
   output.write((const char*) &nameStringID, 4);
 
-  //write MODL
-  output.write((const char*) &cMODL, 4);
-  //MODL's length
-  subLength = modelPath.length()+1;
-  output.write((const char*) &subLength, 2);
-  //write model path
-  output.write(modelPath.c_str(), subLength);
+  if (!modelPath.empty())
+  {
+    //write MODL
+    output.write((const char*) &cMODL, 4);
+    //MODL's length
+    subLength = modelPath.length()+1;
+    output.write((const char*) &subLength, 2);
+    //write model path
+    output.write(modelPath.c_str(), subLength);
+  }//if MODL
 
   if (unknownMODT.isPresent())
   {
@@ -322,33 +328,7 @@ bool KeyRecord::loadFromStream(std::ifstream& in_File)
     return false;
   }
 
-  //read MODL
-  in_File.read((char*) &subRecName, 4);
-  bytesRead += 4;
-  if (subRecName!=cMODL)
-  {
-    UnexpectedRecord(cMODL, subRecName);
-    return false;
-  }
-  //MODL's length
-  in_File.read((char*) &subLength, 2);
-  bytesRead += 2;
-  if (subLength>511)
-  {
-    std::cout <<"Error: sub record MODL of KEYM is longer than 511 characters!\n";
-    return false;
-  }
-  //read MODL's stuff
-  memset(buffer, 0, 512);
-  in_File.read(buffer, subLength);
-  bytesRead += subLength;
-  if (!in_File.good())
-  {
-    std::cout << "Error while reading subrecord MODL of KEYM!\n";
-    return false;
-  }
-  modelPath = std::string(buffer);
-
+  modelPath.clear();
   unknownMODT.setPresence(false);
   pickupSoundFormID = 0;
   putdownSoundFormID = 0;
@@ -362,6 +342,22 @@ bool KeyRecord::loadFromStream(std::ifstream& in_File)
     bytesRead += 4;
     switch (subRecName)
     {
+      case cMODL:
+           if (!modelPath.empty())
+           {
+             std::cout << "Error: KEYM seems to have more than one MODL subrecord!\n";
+             return false;
+           }
+           //read MODL
+           if (!loadString512FromStream(in_File, modelPath, buffer, cMODL, false, bytesRead))
+             return false;
+           //check content
+           if (modelPath.empty())
+           {
+             std::cout << "Error: subrecord MODL of KEYM is empty!\n";
+             return false;
+           }
+           break;
       case cMODT:
            if (unknownMODT.isPresent())
            {
@@ -492,8 +488,8 @@ bool KeyRecord::loadFromStream(std::ifstream& in_File)
            break;
       default:
            std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
-                    << "\" found, but only MODT, YNAM, ZNAM, KSIZ or DATA "
-                    << "are allowed here!\n";
+                     << "\" found, but only MODL, MODT, YNAM, ZNAM, KSIZ or DATA "
+                     << "are allowed here!\n";
            return false;
            break;
     }//swi

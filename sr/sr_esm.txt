@@ -309,8 +309,13 @@ Records and their sub-records:
           unknown data
       MO4S (size varies, optional)
           unknown data
-      BODT (12 bytes or 8 bytes)
+      BODT (12 bytes or 8 bytes, optional)
           unknown data
+      BOD2 (8 bytes, optional)
+          unknown data
+
+        ---> Looks like either BODT or BOD2 has to be present.
+
       ETYP (4 bytes, optional)
           uint32_t Equip Type Form ID (points to EQUP)
       BIDS (4 bytes, optional)
@@ -1278,7 +1283,9 @@ Records and their sub-records:
           array of keyword formIDs
       MODL (string, NUL-terminated)
           path to the scroll's mesh
-      MODT (30 bytes)
+      MODT (size varies)
+          unknown data
+      MODS (size varies, optional)
           unknown data
       YNAM (4 bytes, optional)
           uint32_t Pickup Sound form ID (points to SNDR)
@@ -1363,9 +1370,9 @@ Records and their sub-records:
           unknown data
       FULL (4 bytes)
           uint32_t name string ID
-      MODL (string, NUL-terminated)
+      MODL (string, NUL-terminated, optional)
           model path
-      MODT (36 bytes)
+      MODT (36 bytes, optional)
           unknown data
       YNAM (4 bytes, optional)
           uint32_t Pickup Sound Form ID (points to SNDR)

@@ -39,7 +39,9 @@ ArmourRecord::ArmourRecord()
   pickupSoundFormID(0),
   putdownSoundFormID(0),
   unknownRNAM(0),
+  keywordArray(std::vector<uint32_t>()),
   hasDESC(false), descriptionStringID(0),
+  models(std::vector<uint32_t>()),
   value(0),
   weight(0.0f),
   unknownDNAM(0),
@@ -52,8 +54,7 @@ ArmourRecord::ArmourRecord()
   unknownMO4T.setPresence(false);
   unknownMO4S.setPresence(false);
   unknownBODT.setPresence(false);
-  keywordArray.clear();
-  models.clear();
+  unknownBOD2.setPresence(false);
 }
 
 ArmourRecord::~ArmourRecord()
@@ -73,6 +74,7 @@ bool ArmourRecord::equals(const ArmourRecord& other) const
       and (unknownMO2S==other.unknownMO2S)
       and (mod4Path==other.mod4Path) and (unknownMO4T==other.unknownMO4T)
       and (unknownMO4S==other.unknownMO4S) and (unknownBODT==other.unknownBODT)
+      and (unknownBOD2==other.unknownBOD2)
       and (equipTypeFormID==other.equipTypeFormID)
       and (blockBashImpactDataSetFormID==other.blockBashImpactDataSetFormID)
       and (alternateBlockMaterialFormID==other.alternateBlockMaterialFormID)
@@ -140,6 +142,10 @@ uint32_t ArmourRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* BODT */ +2 /* 2 bytes for length */ +unknownBODT.getSize() /* length */;
   }//if BODT
+  if (unknownBOD2.isPresent())
+  {
+    writeSize = writeSize +4 /* BOD2 */ +2 /* 2 bytes for length */ +unknownBOD2.getSize() /* length */;
+  }//if BOD2
   if (equipTypeFormID!=0)
   {
     writeSize = writeSize +4 /* ETYP */ +2 /* 2 bytes for length */ +4 /* fixed length */;
@@ -304,6 +310,16 @@ bool ArmourRecord::saveToStream(std::ofstream& output) const
       return false;
     }
   }//if BODT
+
+  if (unknownBOD2.isPresent())
+  {
+    //write BOD2
+    if (!unknownBOD2.saveToStream(output, cBOD2))
+    {
+      std::cout << "Error while writing BOD2 of ARMO!";
+      return false;
+    }
+  }//if BOD2
 
   if (equipTypeFormID!=0)
   {
@@ -485,7 +501,7 @@ bool ArmourRecord::loadFromStream(std::ifstream& in_File)
 
   unknownVMAD.setPresence(false);
   bool hasReadOBND = false;
-  hasFULL = false;
+  hasFULL = false; nameStringID = 0;
   enchantingFormID = 0;
   modelPath.clear();
   unknownMO2T.setPresence(false);
@@ -493,6 +509,7 @@ bool ArmourRecord::loadFromStream(std::ifstream& in_File)
   mod4Path.clear();
   unknownMO4T.setPresence(false);
   unknownBODT.setPresence(false);
+  unknownBOD2.setPresence(false);
   equipTypeFormID = 0;
   blockBashImpactDataSetFormID = 0;
   alternateBlockMaterialFormID = 0;
@@ -558,23 +575,10 @@ bool ArmourRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: record ARMO seems to have more than one FULL subrecord!\n";
              return false;
            }
-           //FULL's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength!=4)
-           {
-             std::cout <<"Error: sub record FULL of ARMO has invalid length ("
-                       <<subLength<<" bytes). Should be four bytes!\n";
+           //read FULL
+           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID, false))
              return false;
-           }
-           //read FULL's stuff
-           in_File.read((char*) &nameStringID, 4);
-           bytesRead += 4;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord FULL of ARMO!\n";
-             return false;
-           }
+           bytesRead += 6;
            hasFULL = true;
            break;
       case cEITM:
@@ -718,6 +722,17 @@ bool ArmourRecord::loadFromStream(std::ifstream& in_File)
                        <<unknownBODT.getSize()<<" bytes). Should be 8 or 12 bytes!\n";
              return false;
            }
+           break;
+      case cBOD2:
+           if (unknownBOD2.isPresent())
+           {
+             std::cout << "Error: ARMO seems to have more than one BOD2 subrecord!\n";
+             return false;
+           }
+           //read BOD2
+           if (!unknownBOD2.loadFromStream(in_File, cBOD2, false))
+             return false;
+           bytesRead += (2+unknownBOD2.getSize());
            break;
       case cETYP:
            if (equipTypeFormID!=0)
@@ -989,17 +1004,17 @@ bool ArmourRecord::loadFromStream(std::ifstream& in_File)
       default:
            std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only VMAD, OBND, FULL, EITM, MOD2, MO2T,"
-                     << " MOD4, MO4T, BODT, ETYP, BIDS, BAMT, YNAM, ZNAM, RNAM,"
-                     << " KSIZ, DESC, MODL, DATA, DNAM, or TNAM are allowed here!\n";
+                     << " MOD4, MO4T, BODT, BOD2, ETYP, BIDS, BAMT, YNAM, ZNAM,"
+                     << " RNAM, KSIZ, DESC, MODL, DATA, DNAM, or TNAM are allowed here!\n";
            return false;
            break;
     }//swi
   }//while
 
   //presence checks
-  if (!(hasReadOBND and unknownBODT.isPresent() and hasReadRNAM and hasReadDATA and hasReadDNAM))
+  if (!(hasReadOBND and (unknownBODT.isPresent() or unknownBOD2.isPresent()) and hasReadRNAM and hasReadDATA and hasReadDNAM))
   {
-    std::cout << "Error: subrecord OBND, BODT, DATA, DNAM or RNAM of ARMO is missing!\n";
+    std::cout << "Error: subrecord OBND, BODT/BOD2, DATA, DNAM or RNAM of ARMO is missing!\n";
     return false;
   }
 

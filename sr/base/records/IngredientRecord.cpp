@@ -49,6 +49,7 @@ IngredientRecord::IngredientRecord()
   unknownVMAD.setPresence(false);
   memset(unknownOBND, 0, 12);
   unknownMODT.setPresence(false);
+  unknownMODS.setPresence(false);
 }
 
 IngredientRecord::~IngredientRecord()
@@ -64,6 +65,7 @@ bool IngredientRecord::equals(const IngredientRecord& other) const
       and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
       and (nameStringID==other.nameStringID) and (keywordArray==other.keywordArray)
       and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
+      and (unknownMODS==other.unknownMODS)
       and (pickupSoundFormID==other.pickupSoundFormID)
       and (putdownSoundFormID==other.putdownSoundFormID)
       and (value==other.value) and (weight==other.weight)
@@ -98,6 +100,11 @@ uint32_t IngredientRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /*MODT*/ +2 /* 2 bytes for length */
                +unknownMODT.getSize() /* size */;
+  }
+  if (unknownMODS.isPresent())
+  {
+    writeSize = writeSize +4 /*MODS*/ +2 /* 2 bytes for length */
+               +unknownMODS.getSize() /* size */;
   }
   if (pickupSoundFormID!=0)
   {
@@ -198,6 +205,16 @@ bool IngredientRecord::saveToStream(std::ofstream& output) const
       return false;
     }
   }//if MODT
+
+  if (unknownMODS.isPresent())
+  {
+    //write MODS
+    if (!unknownMODS.saveToStream(output, cMODS))
+    {
+      std::cout << "Error while writing subrecord MODS of INGR!\n";
+      return false;
+    }
+  }//if MODS
 
   if (pickupSoundFormID!=0)
   {
@@ -344,6 +361,7 @@ bool IngredientRecord::loadFromStream(std::ifstream& in_File)
   uint32_t tempKeyword, kwdaLength, i;
   modelPath.clear();
   unknownMODT.setPresence(false);
+  unknownMODS.setPresence(false);
   pickupSoundFormID = 0;
   putdownSoundFormID = 0;
   bool hasReadDATA = false;
@@ -449,6 +467,20 @@ bool IngredientRecord::loadFromStream(std::ifstream& in_File)
              return false;
            }
            bytesRead = bytesRead +2 +unknownMODT.getSize();
+           break;
+      case cMODS:
+           if (unknownMODS.isPresent())
+           {
+             std::cout << "Error: INGR seems to have more than one MODS subrecord!\n";
+             return false;
+           }
+           //read MODS
+           if (!unknownMODS.loadFromStream(in_File, cMODS, false))
+           {
+             std::cout << "Error while reading subrecord MODS of INGR!\n";
+             return false;
+           }
+           bytesRead += (2+unknownMODS.getSize());
            break;
       case cYNAM:
            if (pickupSoundFormID!=0)
@@ -616,8 +648,8 @@ bool IngredientRecord::loadFromStream(std::ifstream& in_File)
            break;
       default:
            std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
-                     << "\" found, but only FULL, KSIZ, MODL, MODT, ENIT, EFID,"
-                     << " or CTDA are allowed here!\n";
+                     << "\" found, but only FULL, KSIZ, MODL, MODT, MODS, ENIT,"
+                     << " EFID or CTDA are allowed here!\n";
            return false;
            break;
     }//swi

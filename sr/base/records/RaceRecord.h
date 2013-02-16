@@ -1,20 +1,20 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2011, 2012, 2013  Thoronador
 
-    The Skyrim Tools are free software: you can redistribute them and/or
-    modify them under the terms of the GNU General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    The Skyrim Tools are distributed in the hope that they will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with the Skyrim Tools.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -------------------------------------------------------------------------------
 */
 
@@ -69,6 +69,9 @@ struct RaceRecord: public BasicRecord
     /* returns the record's type, usually its header */
     virtual uint32_t getRecordType() const;
 
+    /* returns the lenght of the DATA record in bytes */
+    uint32_t getDataLength() const;
+
     //type for data subrecord
     struct RaceData
     {
@@ -78,6 +81,8 @@ struct RaceRecord: public BasicRecord
       float weightMale;
       float weightFemale;
       uint8_t unknown96[96];
+      bool has36;
+      uint8_t unknown36[36];
 
       /* comparison operator */
       bool operator==(const RaceData& other) const;
@@ -93,7 +98,8 @@ struct RaceRecord: public BasicRecord
     std::vector<uint32_t> spellFormIDs;
     bool hasWNAM;
     uint32_t unknownWNAM;
-    uint8_t unknownBODT[12];
+    BinarySubRecord unknownBODT;
+    BinarySubRecord unknownBOD2;
     std::vector<uint32_t> keywordArray;
     RaceData data;
     std::vector<SubBlock> subBlocks;

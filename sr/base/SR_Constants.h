@@ -72,6 +72,7 @@ const uint32_t cATKR = 0x524B5441; //"ATKR" = 41 54 4B 52
 const uint32_t cBAMT = 0x544D4142; //"BAMT" = 42 41 4D 54
 const uint32_t cBIDS = 0x53444942; //"BIDS" = 42 49 44 53
 const uint32_t cBNAM = 0x4D414E42; //"BNAM" = 42 4E 41 4D
+const uint32_t cBOD2 = 0x32444F42; //"BOD2" = 42 4F 44 32
 const uint32_t cBODT = 0x54444F42; //"BODT" = 42 4F 44 54
 const uint32_t cBOOK = 0x4B4F4F42; //"BOOK" = 42 4F 4F 4B
 const uint32_t cCAMS = 0x534D4143; //"CAMS" = 43 41 4D 53
@@ -173,6 +174,7 @@ const uint32_t cIDLE = 0x454C4449; //"IDLE" = 49 44 4C 45
 const uint32_t cIMAD = 0x44414D49; //"IMAD" = 49 4D 41 44
 const uint32_t cIMGS = 0x53474D49; //"IMGS" = 49 4D 47 53
 const uint32_t cINAM = 0x4D414E49; //"INAM" = 49 4E 41 4D
+const uint32_t cINCC = 0x43434E49; //"INCC" = 49 4E 43 43
 const uint32_t cINDX = 0x58444E49; //"INDX" = 49 4E 44 58
 const uint32_t cINGR = 0x52474E49; //"INGR" = 49 4E 47 52
 const uint32_t cINTV = 0x56544E49; //"INTV" = 49 4E 54 56

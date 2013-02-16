@@ -34,7 +34,9 @@ bool RaceRecord::RaceData::operator==(const RaceRecord::RaceData& other) const
   return ((memcmp(unknown16, other.unknown16, 16)==0) and (heightMale==other.heightMale)
       and (heightFemale==other.heightFemale) and (weightMale==other.weightMale)
       and (weightFemale==other.weightFemale)
-      and (memcmp(unknown96, other.unknown96, 96)==0));
+      and (memcmp(unknown96, other.unknown96, 96)==0)
+      and (has36==other.has36) and ((memcmp(unknown36, other.unknown36, 36)==0) or (!has36))
+    );
 }
 
 void RaceRecord::RaceData::clear()
@@ -45,6 +47,8 @@ void RaceRecord::RaceData::clear()
   weightMale = 0.0f;
   weightFemale = 0.0f;
   memset(unknown96, 0, 96);
+  has36 = false;
+  memset(unknown36, 0, 36);
 }
 
 /* RaceRecord's functions */
@@ -58,7 +62,8 @@ RaceRecord::RaceRecord()
   keywordArray(std::vector<uint32_t>()),
   subBlocks(std::vector<SubBlock>())
 {
-  memset(unknownBODT, 0, 12);
+  unknownBODT.setPresence(false);
+  unknownBOD2.setPresence(false);
   data.clear();
 }
 
@@ -74,7 +79,7 @@ bool RaceRecord::equals(const RaceRecord& other) const
       and (hasFULL==other.hasFULL) and ((nameStringID==other.nameStringID) or (!hasFULL))
       and (descriptionStringID==other.descriptionStringID) and (spellFormIDs==other.spellFormIDs)
       and (hasWNAM==other.hasWNAM) and ((unknownWNAM==other.unknownWNAM) or (!hasWNAM))
-      and (memcmp(unknownBODT, other.unknownBODT, 12)==0)
+      and (unknownBODT==other.unknownBODT) and (unknownBOD2==other.unknownBOD2)
       and (keywordArray==other.keywordArray) and (data==other.data)
       and (subBlocks==other.subBlocks));
 }
@@ -87,8 +92,7 @@ uint32_t RaceRecord::getWriteSize() const
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
         +4 /* DESC */ +2 /* 2 bytes for length */ +4 /* fixed length of 4 bytes */
-        +4 /* BODT */ +2 /* 2 bytes for length */ +12 /* fixed length of 12 bytes */
-        +4 /* DATA */ +2 /* 2 bytes for length */ +128 /* fixed length of 128 bytes */;
+        +4 /* DATA */ +2 /* 2 bytes for length */ +getDataLength() /* fixed length of 128 or 164 bytes */;
   if (hasFULL)
   {
     writeSize = writeSize +4 /* FULL */ +2 /* 2 bytes for length */ +4 /* fixed length of 4 bytes */;
@@ -102,6 +106,14 @@ uint32_t RaceRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* WNAM */ +2 /* 2 bytes for length */ +4 /* fixed length of 4 bytes */;
   }//if has WNAM
+  if (unknownBODT.isPresent())
+  {
+    writeSize = writeSize +4 /* BODT */ +2 /* 2 bytes for length */ +unknownBODT.getSize() /* length */;
+  }
+  if (unknownBOD2.isPresent())
+  {
+    writeSize = writeSize +4 /* BOD2 */ +2 /* 2 bytes for length */ +unknownBOD2.getSize() /* length */;
+  }
   if (!keywordArray.empty())
   {
     writeSize = writeSize +4 /*KSIZ*/ +2 /* 2 bytes for length */ +4 /* fixed length of four bytes */
@@ -186,13 +198,25 @@ bool RaceRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &unknownWNAM, 4);
   }//if has WNAM
 
-  //write BODT
-  output.write((const char*) &cBODT, 4);
-  //BODT's length
-  subLength = 12; //fixed
-  output.write((const char*) &subLength, 2);
-  //write BODT's stuff
-  output.write((const char*) unknownBODT, 12);
+  if (unknownBODT.isPresent())
+  {
+    //write BODT
+    if (!unknownBODT.saveToStream(output, cBODT))
+    {
+      std::cout << "Error while writing subrecord BODT of RACE!\n";
+      return false;
+    }
+  }//if BODT
+
+  if (unknownBOD2.isPresent())
+  {
+    //write BOD2
+    if (!unknownBOD2.saveToStream(output, cBOD2))
+    {
+      std::cout << "Error while writing subrecord BOD2 of RACE!\n";
+      return false;
+    }
+  }//if BOD2
 
   if (!keywordArray.empty())
   {
@@ -220,7 +244,7 @@ bool RaceRecord::saveToStream(std::ofstream& output) const
   //write DATA
   output.write((const char*) &cDATA, 4);
   //DATA's length
-  subLength = 128; //fixed
+  subLength = getDataLength(); //fixed
   output.write((const char*) &subLength, 2);
   //write DATA's stuff
   output.write((const char*) (data.unknown16), 16);
@@ -229,6 +253,10 @@ bool RaceRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &(data.weightMale), 4);
   output.write((const char*) &(data.weightFemale), 4);
   output.write((const char*) (data.unknown96), 96);
+  if (getDataLength()>128)
+  {
+    output.write((const char*) (data.unknown36), 36);
+  }
 
   if (!subBlocks.empty())
   {
@@ -289,11 +317,12 @@ bool RaceRecord::loadFromStream(std::ifstream& in_File)
   spellFormIDs.clear();
   uint32_t spell_count, i, temp_uint32;
   hasWNAM = false;
-  bool hasReadBODT = false;
+  unknownBODT.setPresence(false);
+  unknownBOD2.setPresence(false);
   keywordArray.clear();
   bool hasReadDATA = false;
   subBlocks.clear();
-  while ((bytesRead<readSize) and (!(hasReadBODT and hasReadDATA and hasReadDESC)))
+  while ((bytesRead<readSize) and (!((unknownBODT.isPresent() or unknownBOD2.isPresent()) and hasReadDATA and hasReadDESC)))
   {
     //read next subrecord name
     in_File.read((char*) &subRecName, 4);
@@ -403,30 +432,33 @@ bool RaceRecord::loadFromStream(std::ifstream& in_File)
            hasWNAM = true;
            break;
       case cBODT:
-           if (hasReadBODT)
+           if (unknownBODT.isPresent())
            {
              std::cout << "Error: RACE seems to have more than one BODT subrecord!\n";
              return false;
            }
-           //BODT's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength!=12)
+           //read BODT
+           if (!unknownBODT.loadFromStream(in_File, cBODT, false))
+             return false;
+           bytesRead += (2+unknownBODT.getSize());
+           //check length
+           if (unknownBODT.getSize()!=12)
            {
              std::cout <<"Error: sub record BODT of RACE has invalid length("
-                       <<subLength<<" bytes). Should be 12 bytes!\n";
+                       <<unknownBODT.getSize()<<" bytes). Should be 12 bytes!\n";
              return false;
            }
-           //read BODT
-           spell_count = 0;
-           in_File.read((char*) unknownBODT, 12);
-           bytesRead += 12;
-           if (!in_File.good())
+           break;
+      case cBOD2:
+           if (unknownBOD2.isPresent())
            {
-             std::cout << "Error while reading subrecord BODT of RACE!\n";
+             std::cout << "Error: RACE seems to have more than one BOD2 subrecord!\n";
              return false;
            }
-           hasReadBODT = true;
+           //read BOD2
+           if (!unknownBOD2.loadFromStream(in_File, cBOD2, false))
+             return false;
+           bytesRead += (2+unknownBOD2.getSize());
            break;
       case cKSIZ:
            if (!keywordArray.empty())
@@ -498,10 +530,11 @@ bool RaceRecord::loadFromStream(std::ifstream& in_File)
            //DATA's length
            in_File.read((char*) &subLength, 2);
            bytesRead += 2;
-           if (subLength!=128)
+           if (subLength!=getDataLength())
            {
-             std::cout <<"Error: sub record DATA of RACE has invalid length("
-                       <<subLength<<" bytes). Should be 128 bytes!\n";
+             std::cout << "Error: sub record DATA of RACE has invalid length("
+                       << subLength << " bytes). Should be " << getDataLength()
+                       <<" bytes!\n";
              return false;
            }
            //read DATA
@@ -511,7 +544,16 @@ bool RaceRecord::loadFromStream(std::ifstream& in_File)
            in_File.read((char*) &(data.weightMale), 4);
            in_File.read((char*) &(data.weightFemale), 4);
            in_File.read((char*) (data.unknown96), 96);
-           bytesRead += 128;
+           if (getDataLength()>128)
+           {
+             in_File.read((char*) (data.unknown36), 36);
+             data.has36 = true;
+           }
+           else
+           {
+             data.has36 = false;
+           }
+           bytesRead += getDataLength();
            if (!in_File.good())
            {
              std::cout << "Error while reading subrecord DATA of RACE!\n";
@@ -521,15 +563,15 @@ bool RaceRecord::loadFromStream(std::ifstream& in_File)
            break;
       default:
            std::cout << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
-                     << "\", but only SPCT, WNAM, BODT, KSIZ or DATA are allowed here!\n";
+                     << "\", but only FULL, DESC, SPCT, WNAM, BODT, BOD2, KSIZ or DATA are allowed here!\n";
            return false;
     }//swi
   }//while
 
   //presence checks
-  if (!(hasReadBODT and hasReadDATA and hasReadDESC))
+  if (!((unknownBODT.isPresent() or unknownBOD2.isPresent()) and hasReadDATA and hasReadDESC))
   {
-    std::cout << "Error: subrecord BODT, DATA or DESC of RACE is missing!\n";
+    std::cout << "Error: subrecord BODT/BOD2, DATA or DESC of RACE is missing!\n";
     return false;
   }
 
@@ -560,6 +602,12 @@ bool RaceRecord::loadFromStream(std::ifstream& in_File)
 uint32_t RaceRecord::getRecordType() const
 {
   return cRACE;
+}
+
+uint32_t RaceRecord::getDataLength() const
+{
+  if (headerVersion<43) return 128;
+  return 164;
 }
 
 } //namespace

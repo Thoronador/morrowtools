@@ -56,6 +56,8 @@ Records and their sub-records:
         unknown list of form IDs
       INTV (4 bytes)
         unknown integer value
+      INCC (4 bytes, optional)
+        unknown value, seen e.g. in Dragonborn.esm but not in Skyrim.esm
 
 
   AACT: action(?)
@@ -844,7 +846,7 @@ Records and their sub-records:
           unknown data
       CTDA (32 bytes, optional)
           unknown data
-      CIS (string, NUL-terminated, optional)
+      CIS2 (string, NUL-terminated, optional)
           variable name - requires CTDA
 
           --> EFID and EFIT and CTDA/CIS2 seem to form blocks
@@ -2287,14 +2289,20 @@ Records and their sub-records:
           form ID
       WNAM (4 bytes, optional)
           unknown data
-      BODT (12 bytes)
+      BODT (12 bytes, optional)
           unknown data
+      BOD2 (8 bytes, optional)
+          unknown data
+
+        ---> Looks like either BODT or BOD2 has to be present.
+
       KSIZ (4 bytes)
           number of unit32_ts in following KWDA
       KWDA (n * 4 bytes)
           array of keyword form IDs, count is given be KSIZ field
-      DATA (128 bytes)
+      DATA (128 bytes or 164 bytes)
           unknown data
+          length is 164 bytes in version 43, 128 bytes before that
 
         MNAM (0 bytes)
             no data
@@ -2475,7 +2483,7 @@ Records and their sub-records:
           editorID
       OBND (12 bytes)
           unknown data
-      FULL (4 bytes)
+      FULL (4 bytes, optional)
           string ID of scroll's name
       KSIZ (4 bytes, optional)
           number of keywords/formIDs in KWDA
@@ -2506,8 +2514,10 @@ Records and their sub-records:
             uint32_t  duration
         CTDA (32 bytes, optional)
             unknown data
+        CIS2 (string, NUL-terminated, optional)
+            unknown data
 
-       --> EFID (once), EFIT (once) and CTDAs seem to form blocks, that can occur multiple times
+       --> EFID (once), EFIT (once) and CTDA/CIS2s seem to form blocks, that can occur multiple times
 
 
   SHOU: Dragon Shout

@@ -29,7 +29,7 @@ namespace SRTP
 
 ScrollRecord::ScrollRecord()
 : BasicRecord(), editorID(""),
-  nameStringID(0),
+  hasFULL(false), nameStringID(0),
   keywordArray(std::vector<uint32_t>()),
   menuDisplayObjectFormID(0),
   equipTypeFormID(0),
@@ -54,7 +54,8 @@ bool ScrollRecord::equals(const ScrollRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
       and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
-      and (nameStringID==other.nameStringID) and (menuDisplayObjectFormID==other.menuDisplayObjectFormID)
+      and (hasFULL==other.hasFULL) and ((nameStringID==other.nameStringID) or (!hasFULL))
+      and (menuDisplayObjectFormID==other.menuDisplayObjectFormID)
       and (keywordArray==other.keywordArray)
       and (equipTypeFormID==other.equipTypeFormID) and (descriptionStringID==other.descriptionStringID)
       and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
@@ -71,7 +72,6 @@ uint32_t ScrollRecord::getWriteSize() const
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
         +4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed length of 12 bytes */
-        +4 /* FULL */ +2 /* 2 bytes for length */ +4 /* fixed length of four bytes */
         +4 /* MDOB */ +2 /* 2 bytes for length */ +4 /* fixed length of four bytes */
         +4 /* ETYP */ +2 /* 2 bytes for length */ +4 /* fixed length of 4 bytes */
         +4 /* DESC */ +2 /* 2 bytes for length */ +4 /* fixed length of 4 bytes */
@@ -79,6 +79,10 @@ uint32_t ScrollRecord::getWriteSize() const
         +modelPath.length()+1 /* length of name +1 byte for NUL termination */
         +4 /* DATA */ +2 /* 2 bytes for length */ +8 /* fixed length of 8 bytes */
         +4 /* SPIT */ +2 /* 2 bytes for length */ +36 /* fixed length of 36 bytes */;
+  if (hasFULL)
+  {
+    writeSize = writeSize +4 /* FULL */ +2 /* 2 bytes for length */ +4 /* fixed length of four bytes */;
+  }
   if (!keywordArray.empty())
   {
     writeSize = writeSize +4 /* KSIZ */ +2 /* 2 bytes for length */ +4 /* fixed length of 4 bytes */
@@ -121,13 +125,16 @@ bool ScrollRecord::saveToStream(std::ofstream& output) const
   //write OBND's stuff
   output.write((const char*) unknownOBND, 12);
 
-  //write FULL
-  output.write((const char*) &cFULL, 4);
-  //FULL's length
-  subLength = 4; //fixed
-  output.write((const char*) &subLength, 2);
-  //write FULL's stuff
-  output.write((const char*) &nameStringID, 4);
+  if (hasFULL)
+  {
+    //write FULL
+    output.write((const char*) &cFULL, 4);
+    //FULL's length
+    subLength = 4; //fixed
+    output.write((const char*) &subLength, 2);
+    //write FULL's stuff
+    output.write((const char*) &nameStringID, 4);
+  }//if FULL
 
   if (!keywordArray.empty())
   {
@@ -218,7 +225,7 @@ bool ScrollRecord::saveToStream(std::ofstream& output) const
     {
       if (!effects[i].saveToStream(output))
       {
-        std::cout << "Error while writing effect block of  SCRL!\n";
+        std::cout << "Error while writing effect block of SCRL!\n";
         return false;
       }
     }//for i
@@ -291,7 +298,7 @@ bool ScrollRecord::loadFromStream(std::ifstream& in_File)
     return false;
   }
 
-  bool hasReadFULL = false;
+  hasFULL = false; nameStringID = 0;
   keywordArray.clear();
   uint32_t tempKeyword, kwdaLength, i;
   bool hasReadMDOB = false;
@@ -313,7 +320,7 @@ bool ScrollRecord::loadFromStream(std::ifstream& in_File)
     switch(subRecName)
     {
       case cFULL:
-           if (hasReadFULL)
+           if (hasFULL)
            {
              std::cout << "Error: SCRL seems to have more than one FULL subrecord!\n";
              return false;
@@ -321,7 +328,7 @@ bool ScrollRecord::loadFromStream(std::ifstream& in_File)
            //read FULL
            if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID, false)) return false;
            bytesRead += 6;
-           hasReadFULL = true;
+           hasFULL = true;
            break;
       case cKSIZ:
            if (!keywordArray.empty())
@@ -569,10 +576,30 @@ bool ScrollRecord::loadFromStream(std::ifstream& in_File)
            }
            tempEffect.unknownCTDA_CIS2s.push_back(CTDA_CIS2_compound(tempCTDA, ""));
            break;
+      case cCIS2:
+           if (!hasNonPushedEffect)
+           {
+             std::cout << "Error while reading SCRL: CIS2 found, but there was no EFID/EFIT block!\n";
+             return false;
+           }
+           if (tempEffect.unknownCTDA_CIS2s.empty())
+           {
+             std::cout << "Error while reading SCRL: CIS2 found, but there was no CTDA before it!\n";
+             return false;
+           }
+           if (!tempEffect.unknownCTDA_CIS2s.back().unknownCIS2.empty())
+           {
+             std::cout << "Error: SCRL seems to have more than one CIS2 subrecord per CTDA!\n";
+             return false;
+           }
+           //read CIS2
+           if (!loadString512FromStream(in_File, tempEffect.unknownCTDA_CIS2s.back().unknownCIS2, buffer, cCIS2, false, bytesRead))
+             return false;
+           break;
       default:
            std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only FULL, MDOB, ETYP, DESC, SPIT, EFID,"
-                     << " or CTDA are allowed here!\n";
+                     << " CTDA or CIS2 are allowed here!\n";
            return false;
            break;
     }//swi
@@ -585,10 +612,10 @@ bool ScrollRecord::loadFromStream(std::ifstream& in_File)
   }
 
   //check presence
-  if (!(hasReadFULL and hasReadMDOB and hasReadETYP and hasReadDESC and (!modelPath.empty()) and hasReadDATA and hasReadSPIT))
+  if (!(hasReadMDOB and hasReadETYP and hasReadDESC and (!modelPath.empty()) and hasReadDATA and hasReadSPIT))
   {
     std::cout << "Error while reading record SCRL: at least one of the "
-              << "subrecords FULL, MDOB, ETYP, DESC, MODL, DATA or SPIT is missing!\n";
+              << "subrecords MDOB, ETYP, DESC, MODL, DATA or SPIT is missing!\n";
     return false;
   }
 

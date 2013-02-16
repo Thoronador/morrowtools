@@ -41,7 +41,8 @@ Tes4HeaderRecord::Tes4HeaderRecord()
   summary(""),
   dependencies(std::vector<MasterFile>()),
   unknownONAM(std::vector<uint32_t>()),
-  unknownIntValue(0)
+  unknownIntValue(0),
+  hasINCC(false), unknownINCC(0)
 {
 
 }
@@ -59,7 +60,9 @@ bool Tes4HeaderRecord::equals(const Tes4HeaderRecord& other) const
     and (nextObjectID==other.nextObjectID)
     and (authorName==other.authorName) and (summary==other.summary)
     and (dependencies==other.dependencies) and (unknownONAM==other.unknownONAM)
-    and (unknownIntValue==other.unknownIntValue));
+    and (unknownIntValue==other.unknownIntValue)
+    and (hasINCC==other.hasINCC) and ((unknownINCC==other.unknownINCC) or (!hasINCC))
+  );
 }
 #endif
 
@@ -93,6 +96,10 @@ uint32_t Tes4HeaderRecord::getWriteSize() const
     writeSize = writeSize +4 /* ONAM */ +2 /* 2 bytes for length */
                 +4*unknownONAM.size(); /* four bytes per value */
   }//if ONAM
+  if (hasINCC)
+  {
+    writeSize = writeSize +4 /* INCC */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+  }
   return writeSize;
 }
 
@@ -180,6 +187,17 @@ bool Tes4HeaderRecord::saveToStream(std::ofstream& output) const
   //write integer value
   output.write((const char*) &unknownIntValue, 4);
 
+  if (hasINCC)
+  {
+    //write INCC
+    output.write((const char*) &cINCC, 4);
+    //INCC's length
+    SubLength = 4; //fixed size
+    output.write((const char*) &SubLength, 2);
+    //write integer value
+    output.write((const char*) &unknownINCC, 4);
+  }//if INCC
+
   return output.good();
 }
 #endif
@@ -258,6 +276,7 @@ bool Tes4HeaderRecord::loadFromStream(std::ifstream& in_File)
   uint32_t tempUint32;
   unsigned int count, i;
   bool hasDoneINTV = false;
+  hasINCC = false; unknownINCC = 0;
   while (BytesRead<readSize)
   {
     //read next subrecord
@@ -364,23 +383,27 @@ bool Tes4HeaderRecord::loadFromStream(std::ifstream& in_File)
              std::cout << "Error: Record TES4 seems to have more than one INTV subrecord!\n";
              return false;
            }
-           //INTV's length
-           in_File.read((char*) &SubLength, 2);
-           BytesRead += 2;
-           if (SubLength!=4)
+           //read INTV
+           if (!loadUint32SubRecordFromStream(in_File, cINTV, unknownIntValue, false))
+             return false;
+           BytesRead += 6;
+           hasDoneINTV = true;
+           break;
+      case cINCC:
+           if (hasINCC)
            {
-             std::cout <<"Error: sub record INTV of TES4 has invalid length ("
-                       <<SubLength<<" bytes). Should be 4 bytes.\n";
+             std::cout << "Error: Record TES4 seems to have more than one INCC subrecord!\n";
              return false;
            }
-           //read value
-           in_File.read((char*) &unknownIntValue, 4);
-           BytesRead += 4;
-           hasDoneINTV = true;
+           //read INCC
+           if (!loadUint32SubRecordFromStream(in_File, cINCC, unknownINCC, false))
+             return false;
+           BytesRead += 6;
+           hasINCC = true;
            break;
       default:
            std::cout << "Error: found unexpected subrecord \""<<IntTo4Char(SubRecName)
-                     << "\", but only SNAM, MAST, DATA, ONAM or INTV are allowed here!\n";
+                     << "\", but only SNAM, MAST, DATA, ONAM, INTC or INCC are allowed here!\n";
            return false;
            break;
     }//swi

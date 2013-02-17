@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012 Thoronador
+    Copyright (C) 2012, 2013  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -162,6 +162,30 @@ namespace SRTP
     }
     return 0;
   }//function getLanguageComponent
+
+  /* retrieves the paths of the associated string table files for a given
+     .esm/.esp file and returns zero in case of success or non-zero return code
+     in case of error
+
+     parameters:
+         fileName - name of the .esm/.esp file
+         files    - vector that will hold the string table files
+  */
+  int getAssociatedTableFiles(const std::string& fileName, std::vector<std::string>& files)
+  {
+    std::string part_path, part_name, part_ext;
+    splitPathFileExtension(fileName, '\\', part_path, part_name, part_ext);
+
+    int lc_return = getLanguageComponent(part_path, part_name, part_ext);
+    //If return code is not zero, an error occured! We should return in that case.
+    if (lc_return!=0)
+      return lc_return;
+    files.clear();
+    files_push_back(part_path+"Strings\\"+part_name+"_"+part_ext+".dlstrings");
+    files_push_back(part_path+"Strings\\"+part_name+"_"+part_ext+".ilstrings");
+    files_push_back(part_path+"Strings\\"+part_name+"_"+part_ext+".strings");
+    return 0;
+  }//function getAssociatedTableFiles
 
 } //namespace
 

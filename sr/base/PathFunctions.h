@@ -181,9 +181,9 @@ namespace SRTP
     if (lc_return!=0)
       return lc_return;
     files.clear();
-    files_push_back(part_path+"Strings\\"+part_name+"_"+part_ext+".dlstrings");
-    files_push_back(part_path+"Strings\\"+part_name+"_"+part_ext+".ilstrings");
-    files_push_back(part_path+"Strings\\"+part_name+"_"+part_ext+".strings");
+    files.push_back(part_path+"Strings\\"+part_name+"_"+part_ext+".dlstrings");
+    files.push_back(part_path+"Strings\\"+part_name+"_"+part_ext+".ilstrings");
+    files.push_back(part_path+"Strings\\"+part_name+"_"+part_ext+".strings");
     return 0;
   }//function getAssociatedTableFiles
 

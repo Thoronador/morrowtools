@@ -1,20 +1,20 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2011, 2012, 2013  Thoronador
 
-    The Skyrim Tools are free software: you can redistribute them and/or
-    modify them under the terms of the GNU General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    The Skyrim Tools are distributed in the hope that they will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with the Skyrim Tools.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -------------------------------------------------------------------------------
 */
 
@@ -117,10 +117,8 @@ struct QuestRecord: public BasicRecord
       uint32_t unknownFNAM;
       bool hasALFA;
       uint32_t unknownALFA;
-      bool hasALRT;
-      uint32_t unknownALRT;
-      bool hasALCO;
-      uint32_t unknownALCO;
+      uint32_t locationRefTypeFormID; //subrecord ALRT
+      uint32_t createReferenceToObjectFormID; //subrecord ALCO
       bool hasALCA;
       uint32_t unknownALCA;
       bool hasALCL;
@@ -137,28 +135,23 @@ struct QuestRecord: public BasicRecord
       uint32_t unknownALFI;
       bool hasALFL;
       uint32_t unknownALFL;
-      bool hasALFR;
-      uint32_t unknownALFR;
+      uint32_t specificReferenceID; //subrecord ALFR
       bool hasALNA;
       uint32_t unknownALNA;
       bool hasALNT;
       uint32_t unknownALNT;
-      bool hasALUA;
-      uint32_t unknownALUA;
+      uint32_t uniqueActorFormID; //subrecord ALUA
       bool hasALEQ;
       uint32_t unknownALEQ;
       bool hasALEA;
       uint32_t unknownALEA;
-      bool hasKNAM;
-      uint32_t unknownKNAM;
+      uint32_t keywordFormID; //subrecord KNAM
       std::vector<CTDA_CIS2_compound> unknownCTDA_CIS2s;
-      bool hasSPOR;
-      uint32_t unknownSPOR;
-      bool hasECOR;
-      uint32_t unknownECOR;
+      uint32_t spectatorOverridePackageListFormID; //subrecord SPOR
+      uint32_t combatOverridePackageListFormID; //subrecord ECOR
       std::vector<uint32_t> unknownALSPs;
       std::vector<uint32_t> unknownALFCs;
-      std::vector<uint32_t> unknownALPCs;
+      std::vector<uint32_t> packageDataFormIDs; //subrecords ALPC
       bool hasVTCK;
       uint32_t unknownVTCK;
 

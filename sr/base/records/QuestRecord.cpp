@@ -57,10 +57,10 @@ QuestRecord::IndexEntry::QSDTRecord::QSDTRecord()
   hasNAM0(false), unknownNAM0(0),
   unknownSCTX(""),
   hasQNAM(false), unknownQNAM(0),
+  unknownCTDA_CIS2s(std::vector<CTDA_CIS2_compound>()),
   hasCNAM(false), unknownCNAM(0)
 {
   unknownSCHR.setPresence(false);
-  unknownCTDA_CIS2s.clear();
 }
 
 bool QuestRecord::IndexEntry::QSDTRecord::operator==(const QuestRecord::IndexEntry::QSDTRecord& other) const
@@ -87,8 +87,8 @@ bool QuestRecord::AliasEntry::operator==(const QuestRecord::AliasEntry& other) c
       and (hasALST==other.hasALST) and ((unknownALST==other.unknownALST) or (!hasALST))
       and (aliasID==other.aliasID) and (unknownFNAM==other.unknownFNAM)
       and (hasALFA==other.hasALFA) and ((unknownALFA==other.unknownALFA) or (!hasALFA))
-      and (hasALRT==other.hasALRT) and ((unknownALRT==other.unknownALRT) or (!hasALRT))
-      and (hasALCO==other.hasALCO) and ((unknownALCO==other.unknownALCO) or (!hasALCO))
+      and (locationRefTypeFormID==other.locationRefTypeFormID)
+      and (createReferenceToObjectFormID==other.createReferenceToObjectFormID)
       and (hasALCA==other.hasALCA) and ((unknownALCA==other.unknownALCA) or (!hasALCA))
       and (hasALCL==other.hasALCL) and ((unknownALCL==other.unknownALCL) or (!hasALCL))
       and (hasALDN==other.hasALDN) and ((unknownALDN==other.unknownALDN) or (!hasALDN))
@@ -97,19 +97,19 @@ bool QuestRecord::AliasEntry::operator==(const QuestRecord::AliasEntry& other) c
       and (hasALFD==other.hasALFD) and ((unknownALFD==other.unknownALFD) or (!hasALFD))
       and (hasALFI==other.hasALFI) and ((unknownALFI==other.unknownALFI) or (!hasALFI))
       and (hasALFL==other.hasALFL) and ((unknownALFL==other.unknownALFL) or (!hasALFL))
-      and (hasALFR==other.hasALFR) and ((unknownALFR==other.unknownALFR) or (!hasALFR))
+      and (specificReferenceID==other.specificReferenceID)
       and (hasALNA==other.hasALNA) and ((unknownALNA==other.unknownALNA) or (!hasALNA))
       and (hasALNT==other.hasALNT) and ((unknownALNT==other.unknownALNT) or (!hasALNT))
-      and (hasALUA==other.hasALUA) and ((unknownALUA==other.unknownALUA) or (!hasALUA))
+      and (uniqueActorFormID==other.uniqueActorFormID)
       and (hasALEQ==other.hasALEQ) and ((unknownALEQ==other.unknownALEQ) or (!hasALEQ))
       and (hasALEA==other.hasALEA) and ((unknownALEA==other.unknownALEA) or (!hasALEA))
       and (unknownALSPs==other.unknownALSPs)
-      and (hasKNAM==other.hasKNAM) and ((unknownKNAM==other.unknownKNAM) or (!hasKNAM))
+      and (keywordFormID==other.keywordFormID)
       and (unknownCTDA_CIS2s==other.unknownCTDA_CIS2s)
-      and (hasSPOR==other.hasSPOR) and ((unknownSPOR==other.unknownSPOR) or (!hasSPOR))
-      and (hasECOR==other.hasECOR) and ((unknownECOR==other.unknownECOR) or (!hasECOR))
+      and (spectatorOverridePackageListFormID==other.spectatorOverridePackageListFormID)
+      and (combatOverridePackageListFormID==other.combatOverridePackageListFormID)
       and (unknownALFCs==other.unknownALFCs)
-      and (unknownALPCs==other.unknownALPCs)
+      and (packageDataFormIDs==other.packageDataFormIDs)
       and (hasVTCK==other.hasVTCK) and ((unknownVTCK==other.unknownVTCK) or (!hasVTCK)));
 }
 
@@ -123,10 +123,8 @@ void QuestRecord::AliasEntry::clear()
   unknownFNAM = 0;
   hasALFA = false;
   unknownALFA = 0;
-  hasALRT = false;
-  unknownALRT = 0;
-  hasALCO = false;
-  unknownALCO = 0;
+  locationRefTypeFormID = 0;
+  createReferenceToObjectFormID = 0;
   hasALCA = false;
   unknownALCA = 0;
   hasALCL = false;
@@ -143,28 +141,23 @@ void QuestRecord::AliasEntry::clear()
   unknownALFI = 0;
   hasALFL = false;
   unknownALFL = 0;
-  hasALFR = false;
-  unknownALFR = 0;
+  specificReferenceID = 0;
   hasALNA = false;
   unknownALNA = 0;
   hasALNT = false;
   unknownALNT = 0;
-  hasALUA = false;
-  unknownALUA = 0;
+  uniqueActorFormID = 0;
   hasALEQ = false;
   unknownALEQ = 0;
   hasALEA = false;
   unknownALEA = 0;
-  hasKNAM = false;
-  unknownKNAM = 0;
+  keywordFormID = 0;
   unknownCTDA_CIS2s.clear();
-  hasSPOR = false;
-  unknownSPOR = 0;
-  hasECOR = false;
-  unknownECOR = 0;
+  spectatorOverridePackageListFormID = 0;
+  combatOverridePackageListFormID = 0;
   unknownALSPs.clear();
   unknownALFCs.clear();
-  unknownALPCs.clear();
+  packageDataFormIDs.clear();
   hasVTCK = false;
   unknownVTCK = 0;
 }
@@ -1388,26 +1381,35 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
                     al_entry.hasALFA = true;
                     break;
                case cALRT:
-                    if (al_entry.hasALRT)
+                    if (al_entry.locationRefTypeFormID!=0)
                     {
                       std::cout << "Error: QUST seems to have more than one ALRT subrecord per alias structure.\n";
                       return false;
                     }
                     //read ALRT
-                    if (!loadUint32SubRecordFromStream(in_File, cALRT, al_entry.unknownALRT, false)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cALRT, al_entry.locationRefTypeFormID, false)) return false;
                     bytesRead += 6;
-                    al_entry.hasALRT = true;
+                    //check content
+                    if (al_entry.locationRefTypeFormID==0)
+                    {
+                      std::cout << "Error: subrecord ALRT of QUST is zero!\n";
+                      return false;
+                    }
                     break;
                case cALCO:
-                    if (al_entry.hasALCO)
+                    if (al_entry.createReferenceToObjectFormID!=0)
                     {
                       std::cout << "Error: QUST seems to have more than one ALCO subrecord per alias structure.\n";
                       return false;
                     }
                     //read ALCO
-                    if (!loadUint32SubRecordFromStream(in_File, cALCO, al_entry.unknownALCO, false)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cALCO, al_entry.createReferenceToObjectFormID, false)) return false;
                     bytesRead += 6;
-                    al_entry.hasALCO = true;
+                    if (al_entry.createReferenceToObjectFormID==0)
+                    {
+                      std::cout << "Error: subrecord ALCO of QUST is zero!\n";
+                      return false;
+                    }
                     break;
                case cALCA:
                     if (al_entry.hasALCA)
@@ -1604,15 +1606,19 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
                     al_entry.hasALFL = true;
                     break;
                case cALFR:
-                    if (al_entry.hasALFR)
+                    if (al_entry.specificReferenceID!=0)
                     {
                       std::cout << "Error: QUST seems to have more than one ALFR subrecord per alias structure.\n";
                       return false;
                     }
                     //read ALFR
-                    if (!loadUint32SubRecordFromStream(in_File, cALFR, al_entry.unknownALFR, false)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cALFR, al_entry.specificReferenceID, false)) return false;
                     bytesRead += 6;
-                    al_entry.hasALFR = true;
+                    if (al_entry.specificReferenceID==0)
+                    {
+                      std::cout << "Error: subrecord ALFR of QUST is zero!\n";
+                      return false;
+                    }
                     break;
                case cALNA:
                     if (al_entry.hasALNA)
@@ -1637,15 +1643,19 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
                     al_entry.hasALNT = true;
                     break;
                case cALUA:
-                    if (al_entry.hasALUA)
+                    if (al_entry.uniqueActorFormID!=0)
                     {
                       std::cout << "Error: QUST seems to have more than one ALUA subrecord per alias structure.\n";
                       return false;
                     }
                     //read ALUA
-                    if (!loadUint32SubRecordFromStream(in_File, cALUA, al_entry.unknownALUA, false)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cALUA, al_entry.uniqueActorFormID, false)) return false;
                     bytesRead += 6;
-                    al_entry.hasALUA = true;
+                    if (al_entry.uniqueActorFormID==0)
+                    {
+                      std::cout << "Error: subrecord ALUA of QUST is zero!\n";
+                      return false;
+                    }
                     break;
                case cALEQ:
                     if (al_entry.hasALEQ)
@@ -1676,15 +1686,19 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
                     al_entry.unknownALSPs.push_back(tempUint32);
                     break;
                case cKNAM:
-                    if (al_entry.hasKNAM)
+                    if (al_entry.keywordFormID!=0)
                     {
                       std::cout << "Error: QUST seems to have more than one KNAM subrecord per alias structure.\n";
                       return false;
                     }
                     //read KNAM
-                    if (!loadUint32SubRecordFromStream(in_File, cKNAM, al_entry.unknownKNAM, false)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cKNAM, al_entry.keywordFormID, false)) return false;
                     bytesRead += 6;
-                    al_entry.hasKNAM = true;
+                    if (al_entry.keywordFormID==0)
+                    {
+                      std::cout << "Error: subrecord KNAM of QUST is empty!\n";
+                      return false;
+                    }
                     break;
                case cCTDA:
                     if (!tempCTDA.loadFromStream(in_File, bytesRead))
@@ -1725,26 +1739,35 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
                     al_entry.unknownCTDA_CIS2s.back().unknownCIS2 = std::string(buffer);
                     break;
                case cSPOR:
-                    if (al_entry.hasSPOR)
+                    if (al_entry.spectatorOverridePackageListFormID!=0)
                     {
                       std::cout << "Error: QUST seems to have more than one SPOR subrecord per alias structure.\n";
                       return false;
                     }
                     //read SPOR
-                    if (!loadUint32SubRecordFromStream(in_File, cSPOR, al_entry.unknownSPOR, false)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cSPOR, al_entry.spectatorOverridePackageListFormID, false)) return false;
                     bytesRead += 6;
-                    al_entry.hasSPOR = true;
+                    //check content
+                    if (al_entry.spectatorOverridePackageListFormID==0)
+                    {
+                      std::cout << "Error: subrecord SPOR of QUST is zero!\n";
+                      return false;
+                    }
                     break;
                case cECOR:
-                    if (al_entry.hasECOR)
+                    if (al_entry.combatOverridePackageListFormID!=0)
                     {
                       std::cout << "Error: QUST seems to have more than one ECOR subrecord per alias structure.\n";
                       return false;
                     }
                     //read ECOR
-                    if (!loadUint32SubRecordFromStream(in_File, cECOR, al_entry.unknownECOR, false)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cECOR, al_entry.combatOverridePackageListFormID, false)) return false;
                     bytesRead += 6;
-                    al_entry.hasECOR = true;
+                    if (al_entry.combatOverridePackageListFormID==0)
+                    {
+                      std::cout << "Error: subrecord ECOR of QUST is zero!\n";
+                      return false;
+                    }
                     break;
                case cALFC:
                     //read ALFC
@@ -1756,7 +1779,7 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
                     //read ALPC
                     if (!loadUint32SubRecordFromStream(in_File, cALPC, tempUint32, false)) return false;
                     bytesRead += 6;
-                    al_entry.unknownALPCs.push_back(tempUint32);
+                    al_entry.packageDataFormIDs.push_back(tempUint32);
                     break;
                case cVTCK:
                     if (al_entry.hasVTCK)

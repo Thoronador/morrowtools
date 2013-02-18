@@ -2225,9 +2225,9 @@ Records and their sub-records:
         ALFA (4 bytes, optional)
             unknown data
         ALRT (4 bytes, optional)
-            unknown form ID
+            uint32_t Location Ref Type form ID (points to LCRT)
         ALCO (4 bytes, optional)
-            unknown data
+            uint32_t Create Reference to Object form ID (points to various)
         ALCA (4 bytes, optional)
             unknown data
         ALCL (4 bytes, optional)
@@ -2252,31 +2252,31 @@ Records and their sub-records:
         ALFL (4 bytes, optional)
             unknown data
         ALFR (4 bytes, optional)
-            unknown data
+            uint32_t Specific Reference ID (points to REFR)
         ALNA (4 bytes, optional)
             unknown data
         ALNT (4 bytes, optional)
             unknown data
         ALUA (4 bytes, optional)
-            unknown data
+            uint32_t Unique Actor form ID (points to NPC_)
         ALEQ (4 bytes, optional)
             unknown data
         ALEA (4 bytes, optional)
             unknown data
         KNAM (4 bytes, optional)
-            unknown data
+            uint32_t Keyword form ID (points to KYWD)
         CTDA (32 bytes, can occur multiple times)
             unknown data
         SPOR (4 bytes, optional)
-            unknown data
+            uint32_t Spectator Override Package List form ID (points to FLST)
         ECOR (4 bytes, optional)
-            unknown data
+            uint32_t Combat Override Package List form ID (points to FLST)
         ALSP (4 bytes, optional, can occur multiple times)
             unknown data
         ALFC (4 bytes, optional, can occur multiple times)
             unknown data
         ALPC (4 bytes, optional, can occur multiple times)
-            unknown data
+            uint32_t Alias Package Data form IDs (points to PACK)
         VTCK (4 bytes, optional)
             unknown data
         ALED (0 bytes)

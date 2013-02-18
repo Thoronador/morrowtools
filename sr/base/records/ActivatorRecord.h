@@ -25,6 +25,7 @@
 #include <vector>
 #include "BasicRecord.h"
 #include "BinarySubRecord.h"
+#include "LocalizedString.h"
 
 namespace SRTP
 {
@@ -60,9 +61,11 @@ struct ActivatorRecord: public BasicRecord
     /* loads the record from the given input stream and returns true on success
 
       parameters:
-          in_File - the input file stream
+          in_File   - the input file stream
+          localized - whether the file to read from is localized or not
+          table     - the associated string table for localized files
     */
-    virtual bool loadFromStream(std::ifstream& in_File);
+    virtual bool loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table);
 
     /* returns the record's type, usually its header */
     virtual uint32_t getRecordType() const;
@@ -85,8 +88,7 @@ struct ActivatorRecord: public BasicRecord
     std::string editorID;
     BinarySubRecord unknownVMAD;
     uint8_t unknownOBND[12];
-    bool hasFULL;
-    uint32_t nameStringID;
+    LocalizedString name; //subrecord FULL
     std::string modelPath;
     BinarySubRecord unknownMODT;
     BinarySubRecord unknownMODS;
@@ -103,7 +105,7 @@ struct ActivatorRecord: public BasicRecord
     uint32_t loopingSoundFormID; //subrecord SNAM
     uint32_t activateSoundFormID; //subrecord VNAM
     uint32_t waterTypeFormID; //subrecord WNAM
-    uint32_t activateTextOverrideStringID; //subrecord RNAM
+    LocalizedString activateTextOverride; //subrecord RNAM
     bool hasFNAM;
     uint16_t unknownFNAM;
     uint32_t interactionKeywordFormID; //subrecord KNAM

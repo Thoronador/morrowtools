@@ -47,7 +47,7 @@ void ActivatorRecord::destStruct::reset()
 
 ActivatorRecord::ActivatorRecord()
 : BasicRecord(), editorID(""),
-  hasFULL(false), nameStringID(0),
+  name(LocalizedString()),
   modelPath(""),
   hasDEST(false), unknownDEST(0),
   destructionStructures(std::vector<destStruct>()),
@@ -59,7 +59,7 @@ ActivatorRecord::ActivatorRecord()
   loopingSoundFormID(0),
   activateSoundFormID(0),
   waterTypeFormID(0),
-  activateTextOverrideStringID(0),
+  activateTextOverride(LocalizedString()),
   hasFNAM(false), unknownFNAM(0),
   interactionKeywordFormID(0)
 {
@@ -80,7 +80,7 @@ bool ActivatorRecord::equals(const ActivatorRecord& other) const
   return ((equalsBasic(other)) and (editorID==other.editorID)
     and (unknownVMAD==other.unknownVMAD)
     and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
-    and (hasFULL==other.hasFULL) and ((unknownFNAM==other.unknownFNAM) or (!hasFULL))
+    and (name==other.name)
     and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
     and (unknownMODS==other.unknownMODS) and (hasDEST==other.hasDEST)
     and (unknownDEST==other.unknownDEST)
@@ -95,7 +95,7 @@ bool ActivatorRecord::equals(const ActivatorRecord& other) const
     and (loopingSoundFormID==other.loopingSoundFormID)
     and (activateSoundFormID==other.activateSoundFormID)
     and (waterTypeFormID==other.waterTypeFormID)
-    and (activateTextOverrideStringID==other.activateTextOverrideStringID)
+    and (activateTextOverride==other.activateTextOverride)
     and (interactionKeywordFormID==other.interactionKeywordFormID));
 }
 #endif
@@ -112,9 +112,9 @@ uint32_t ActivatorRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* VMAD */ +2 /* 2 bytes for length */ +unknownVMAD.getSize();
   }
-  if (hasFULL)
+  if (name.isPresent())
   {
-    writeSize = writeSize +4 /* FULL */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+    writeSize += name.getWriteSize();
   }
   if (!modelPath.empty())
   {
@@ -179,9 +179,9 @@ uint32_t ActivatorRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* WNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
-  if (activateTextOverrideStringID!=0)
+  if (activateTextOverride.isPresent())
   {
-    writeSize = writeSize +4 /* RNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+    writeSize += activateTextOverride.getWriteSize();
   }
   if (hasFNAM)
   {
@@ -226,15 +226,11 @@ bool ActivatorRecord::saveToStream(std::ofstream& output) const
   //write OBND stuff
   output.write((const char*) unknownOBND, 12);
 
-  if (hasFULL)
+  if (name.isPresent())
   {
     //write FULL
-    output.write((const char*) &cFULL, 4);
-    //FULL's length
-    subLength = 4; //fixed size
-    output.write((const char*) &subLength, 2);
-    //write FULL stuff
-    output.write((const char*) &nameStringID, 4);
+    if (!name.saveToStream(output, cFULL))
+      return false;
   }//if FULL
 
   if (!modelPath.empty())
@@ -403,15 +399,11 @@ bool ActivatorRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &waterTypeFormID, 4);
   }//if WNAM
 
-  if (activateTextOverrideStringID!=0)
+  if (activateTextOverride.isPresent())
   {
     //write RNAM
-    output.write((const char*) &cRNAM, 4);
-    //RNAM's length
-    subLength = 4; //fixed size
-    output.write((const char*) &subLength, 2);
-    //write RNAM stuff
-    output.write((const char*) &activateTextOverrideStringID, 4);
+    if (!activateTextOverride.saveToStream(output, cRNAM))
+      return false;
   }//if RNAM
 
   if (hasFNAM)
@@ -440,7 +432,7 @@ bool ActivatorRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool ActivatorRecord::loadFromStream(std::ifstream& in_File)
+bool ActivatorRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
@@ -479,7 +471,7 @@ bool ActivatorRecord::loadFromStream(std::ifstream& in_File)
   editorID = std::string(buffer);
 
   unknownVMAD.setPresence(false);
-  hasFULL = false; nameStringID = 0;
+  name.reset();
   modelPath.clear();
   unknownMODT.setPresence(false);
   unknownMODS.setPresence(false);
@@ -492,7 +484,7 @@ bool ActivatorRecord::loadFromStream(std::ifstream& in_File)
   loopingSoundFormID = 0;
   activateSoundFormID = 0;
   waterTypeFormID = 0;
-  activateTextOverrideStringID = 0;
+  activateTextOverride.reset();
   bool hasReadOBND = false;
   hasPNAM = false; defaultPrimitiveColourRed = 0;
     defaultPrimitiveColourGreen = 0; defaultPrimitiveColourBlue = 0;
@@ -542,15 +534,14 @@ bool ActivatorRecord::loadFromStream(std::ifstream& in_File)
            hasReadOBND = true;
            break;
       case cFULL:
-           if (hasFULL)
+           if (name.isPresent())
            {
              std::cout << "Error: ACTI seems to have more than one FULL subrecord.\n";
              return false;
            }
            //read FULL
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID, false)) return false;
-           bytesRead += 6;
-           hasFULL = true;
+           if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
+             return false;
            break;
       case cMODL:
            if (!modelPath.empty())
@@ -853,15 +844,15 @@ bool ActivatorRecord::loadFromStream(std::ifstream& in_File)
            }
            break;
       case cRNAM:
-           if (activateTextOverrideStringID!=0)
+           if (activateTextOverride.isPresent())
            {
              std::cout << "Error: ACTI seems to have more than one RNAM subrecord.\n";
              return false;
            }
            //read RNAM
-           if (!loadUint32SubRecordFromStream(in_File, cRNAM, activateTextOverrideStringID, false)) return false;
-           bytesRead += 6;
-           if (activateTextOverrideStringID==0)
+           if (!activateTextOverride.loadFromStream(in_File, cRNAM, false, bytesRead, localized, table, buffer))
+             return false;
+           if (localized and (activateTextOverride.getIndex()==0))
            {
              std::cout << "Error: subrecord RNAM of ACTI has value zero!\n";
              return false;

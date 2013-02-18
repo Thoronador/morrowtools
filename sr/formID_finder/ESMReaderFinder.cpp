@@ -102,82 +102,82 @@ void ESMReaderFinder::groupFinished(const GroupData& g_data)
   //empty
 }
 
-int ESMReaderFinder::readNextRecord(std::ifstream& in_File, const uint32_t recName)
+int ESMReaderFinder::readNextRecord(std::ifstream& in_File, const uint32_t recName, const bool localized, const StringTable& table)
 {
   #warning Not completely implemented yet!
   switch (recName)
   {
     case cACTI:
-         return Activators::getSingleton().readNextRecord(in_File);
+         return Activators::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cALCH:
-         return AlchemyPotions::getSingleton().readNextRecord(in_File);
+         return AlchemyPotions::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cAMMO:
-         return Ammunitions::getSingleton().readNextRecord(in_File);
+         return Ammunitions::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cAPPA:
-         return Apparatuses::getSingleton().readNextRecord(in_File);
+         return Apparatuses::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cARMO:
-         return Armours::getSingleton().readNextRecord(in_File);
+         return Armours::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cBOOK:
-         return Books::getSingleton().readNextRecord(in_File);
+         return Books::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cCONT:
-         return Containers::getSingleton().readNextRecord(in_File);
+         return Containers::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cFACT:
-         return Factions::getSingleton().readNextRecord(in_File);
+         return Factions::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cFLOR:
-         return Floras::getSingleton().readNextRecord(in_File);
+         return Floras::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cFURN:
-         return Furniture::getSingleton().readNextRecord(in_File);
+         return Furniture::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cINGR:
-         return Ingredients::getSingleton().readNextRecord(in_File);
+         return Ingredients::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cKEYM:
-         return Keys::getSingleton().readNextRecord(in_File);
+         return Keys::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cMISC:
-         return MiscObjects::getSingleton().readNextRecord(in_File);
+         return MiscObjects::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cNPC_:
-         return NPCs::getSingleton().readNextRecord(in_File);
+         return NPCs::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cPERK:
-         return Perks::getSingleton().readNextRecord(in_File);
+         return Perks::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cQUST:
-         return Quests::getSingleton().readNextRecord(in_File);
+         return Quests::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cSCRL:
-         return Scrolls::getSingleton().readNextRecord(in_File);
+         return Scrolls::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cSHOU:
-         return Shouts::getSingleton().readNextRecord(in_File);
+         return Shouts::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cSLGM:
-         return SoulGems::getSingleton().readNextRecord(in_File);
+         return SoulGems::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cSPEL:
-         return Spells::getSingleton().readNextRecord(in_File);
+         return Spells::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cTACT:
-         return TalkingActivators::getSingleton().readNextRecord(in_File);
+         return TalkingActivators::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cTREE:
-         return Trees::getSingleton().readNextRecord(in_File);
+         return Trees::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cWEAP:
-         return Weapons::getSingleton().readNextRecord(in_File);
+         return Weapons::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cWOOP:
-         return WordsOfPower::getSingleton().readNextRecord(in_File);
+         return WordsOfPower::getSingleton().readNextRecord(in_File, localized, table);
          break;
   }//swi
   return -1;

@@ -35,7 +35,7 @@ const uint32_t AlchemyPotionRecord::cFlagPoison     = 0x00020000;
 
 AlchemyPotionRecord::AlchemyPotionRecord()
 : BasicRecord(), editorID(""),
-  hasFULL(false), nameStringID(0),
+  name(LocalizedString()),
   keywordArray(std::vector<uint32_t>()),
   modelPath(""),
   pickupSoundFormID(0),
@@ -65,8 +65,8 @@ AlchemyPotionRecord::~AlchemyPotionRecord()
 bool AlchemyPotionRecord::equals(const AlchemyPotionRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
-      and (memcmp(unknownOBND, other.unknownOBND, 12)==0) and (hasFULL==other.hasFULL)
-      and ((nameStringID==other.nameStringID) or (!hasFULL)) and (keywordArray==other.keywordArray)
+      and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
+      and (name==other.name) and (keywordArray==other.keywordArray)
       and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
       and (unknownMODS==other.unknownMODS)
       and (pickupSoundFormID==other.pickupSoundFormID)
@@ -91,9 +91,9 @@ uint32_t AlchemyPotionRecord::getWriteSize() const
         +modelPath.length()+1 /* length of path +1 byte for NUL termination */
         +4 /* DATA */ +2 /* 2 bytes for length */ +4 /* fixed length */
         +4 /* ENIT */ +2 /* 2 bytes for length */ +20 /* fixed length */;
-  if (hasFULL)
+  if (name.isPresent())
   {
-    writeSize = writeSize +4 /* FULL */ +2 /* 2 bytes for length */ +4 /* fixed length */;
+    writeSize += name.getWriteSize();
   }//if has FULL
   if (!keywordArray.empty())
   {
@@ -150,15 +150,11 @@ bool AlchemyPotionRecord::saveToStream(std::ofstream& output) const
   //write OBND
   output.write((const char*) unknownOBND, 12);
 
-  if (hasFULL)
+  if (name.isPresent())
   {
     //write FULL
-    output.write((const char*) &cFULL, 4);
-    //FULL's length
-    subLength = 4; //fixed
-    output.write((const char*) &subLength, 2);
-    //write FULL's data
-    output.write((const char*) &nameStringID, 4);
+    if (!name.saveToStream(output, cFULL))
+      return false;
   }//if has FULL
 
   uint32_t i;
@@ -279,7 +275,7 @@ bool AlchemyPotionRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool AlchemyPotionRecord::loadFromStream(std::ifstream& in_File)
+bool AlchemyPotionRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
@@ -342,8 +338,7 @@ bool AlchemyPotionRecord::loadFromStream(std::ifstream& in_File)
     return false;
   }
 
-  hasFULL = false;
-  nameStringID = 0;
+  name.reset();
   keywordArray.clear();
   uint32_t i, temp, k_Size;
   modelPath.clear();
@@ -366,29 +361,14 @@ bool AlchemyPotionRecord::loadFromStream(std::ifstream& in_File)
     switch (subRecName)
     {
       case cFULL:
-           if (hasFULL)
+           if (name.isPresent())
            {
              std::cout << "Error: recurd ALCH seems to have more than one FULL subrecord!\n";
              return false;
            }
            //FULL's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength!=4)
-           {
-             std::cout <<"Error: sub record FULL of ALCH has invalid length ("
-                       <<subLength<<" bytes. Should be four bytes!\n";
+           if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
              return false;
-           }
-           //read FULL's stuff
-           in_File.read((char*) &nameStringID, 4);
-           bytesRead += 4;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord FULL of ALCH!\n";
-             return false;
-           }
-           hasFULL = true;
            break;
       case cKSIZ:
            if (!keywordArray.empty())

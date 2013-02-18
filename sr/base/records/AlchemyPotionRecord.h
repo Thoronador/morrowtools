@@ -24,6 +24,7 @@
 #include "BasicRecord.h"
 #include "BinarySubRecord.h"
 #include "EffectBlock.h"
+#include "LocalizedString.h"
 #include <string>
 #include <vector>
 #include <stdint.h>
@@ -57,9 +58,11 @@ struct AlchemyPotionRecord: public BasicRecord
     /* loads the record from the given input stream and returns true on success
 
       parameters:
-          in_File - the input file stream
+          in_File   - the input file stream
+          localized - whether the data in the stream is localized or not
+          table     - the associated string table
     */
-    virtual bool loadFromStream(std::ifstream& in_File);
+    virtual bool loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table);
 
     /* returns the record's type, usually its header */
     virtual uint32_t getRecordType() const;
@@ -79,8 +82,7 @@ struct AlchemyPotionRecord: public BasicRecord
 
     std::string editorID;
     uint8_t unknownOBND[12];
-    bool hasFULL;
-    uint32_t nameStringID; //subrecord FULL
+    LocalizedString name; //subrecord FULL
     std::vector<uint32_t> keywordArray;
     std::string modelPath;
     BinarySubRecord unknownMODT;

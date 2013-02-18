@@ -1,26 +1,27 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2011, 2012, 2013  Thoronador
 
-    The Skyrim Tools are free software: you can redistribute them and/or
-    modify them under the terms of the GNU General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    The Skyrim Tools are distributed in the hope that they will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with the Skyrim Tools.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -------------------------------------------------------------------------------
 */
 
 #include "ESMReader.h"
 #include <iostream>
 #include "SR_Constants.h"
+#include "PathFunctions.h"
 #include "../../mw/base/HelperIO.h"
 
 namespace SRTP
@@ -102,6 +103,30 @@ int ESMReader::readESM(const std::string& FileName, Tes4HeaderRecord& head)
     return -1;
   }
 
+  const bool localized = head.isLocalized();
+  //TODO: read string tables
+  StringTable table;
+  if (localized)
+  {
+    std::vector<std::string> files;
+    const int rc = getAssociatedTableFiles(FileName, files);
+    if (rc!=0)
+    {
+      input.close();
+      return -1;
+    }
+    unsigned int i;
+    for (i=0; i<files.size(); ++i)
+    {
+      if (!table.readTable(files[i], StringTable::sdUnknown))
+      {
+        input.close();
+        std::cout << "Error while reading string tables for "<<FileName<<"!\n";
+        return -1;
+      }
+    }//for
+  }//if localized
+
   //read the groups/ records
   uint32_t processedGroups = 0;
   int lastResult = 0;
@@ -109,7 +134,7 @@ int ESMReader::readESM(const std::string& FileName, Tes4HeaderRecord& head)
   while ((input.tellg()<FileSize) and (lastResult>=0))
   {
     //try to read or skip a group - possibly that won't always work
-    lastResult = processGroup(input, true);
+    lastResult = processGroup(input, true, localized, table);
     if (lastResult>=0)
     {
       processedGroups += lastResult;
@@ -163,7 +188,7 @@ bool ESMReader::peekESMHeader(const std::string& FileName, Tes4HeaderRecord& hea
   return true;
 }
 
-int ESMReader::processGroup(std::ifstream& in_File, const bool withHeader)
+int ESMReader::processGroup(std::ifstream& in_File, const bool withHeader, const bool localized, const StringTable& table)
 {
   if (withHeader)
   {
@@ -191,7 +216,7 @@ int ESMReader::processGroup(std::ifstream& in_File, const bool withHeader)
   if (needGroup(gd))
   {
     nextGroupStarted(gd, !withHeader);
-    int result = readGroup(in_File, gd);
+    int result = readGroup(in_File, gd, localized, table);
     if (result>=0)
     {
       groupFinished(gd);
@@ -202,7 +227,7 @@ int ESMReader::processGroup(std::ifstream& in_File, const bool withHeader)
   return skipGroup(in_File, gd);
 }
 
-int ESMReader::readGroup(std::ifstream& in_File, const GroupData& g_data)
+int ESMReader::readGroup(std::ifstream& in_File, const GroupData& g_data, const bool localized, const StringTable& table)
 {
   //actually read the group
   const std::ifstream::pos_type endPosition = in_File.tellg()+static_cast<std::ifstream::pos_type>(g_data.getGroupSize()-24);
@@ -224,7 +249,7 @@ int ESMReader::readGroup(std::ifstream& in_File, const GroupData& g_data)
     if (recName!=cGRUP)
     {
       //read next record
-      lastResult = readNextRecord(in_File, recName);
+      lastResult = readNextRecord(in_File, recName, localized, table);
       if (lastResult>0)
       {
         recordsRead += lastResult;
@@ -233,7 +258,7 @@ int ESMReader::readGroup(std::ifstream& in_File, const GroupData& g_data)
     else
     {
       //next group
-      lastResult = processGroup(in_File, false);
+      lastResult = processGroup(in_File, false, localized, table);
     }
   }//while
   if (lastResult>=0)

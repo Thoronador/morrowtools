@@ -1,20 +1,20 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2011, 2012, 2013  Thoronador
 
-    The Skyrim Tools are free software: you can redistribute them and/or
-    modify them under the terms of the GNU General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    The Skyrim Tools are distributed in the hope that they will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with the Skyrim Tools.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -------------------------------------------------------------------------------
 */
 
@@ -22,6 +22,7 @@
 #define SR_ESMREADER_H
 
 #include <fstream>
+#include "StringTable.h"
 #include "records/TES4HeaderRecord.h"
 #include "records/GroupData.h"
 
@@ -72,8 +73,10 @@ class ESMReader
            withHeader - if set to true, the starting four bytes (GRUP) will be
                         read, too. If set to false, the functions expects the
                         data directly.
+           localized  - true, if the data in the stream is localized
+           table      - in case of localized data: the string table
     */
-    int processGroup(std::ifstream& in_File, const bool withHeader);
+    int processGroup(std::ifstream& in_File, const bool withHeader, const bool localized, const StringTable& table);
 
     /* returns true, if the given group may contains some data that the reader
        wants to read. Returns false otherwise.
@@ -124,8 +127,10 @@ class ESMReader
        function needGroup() for details).
 
        parameters:
-           in_File - the input file stream used to read the group
-           g_data  - group's data header
+           in_File   - the input file stream used to read the group
+           g_data    - group's data header
+           localized - true, if the data in the stream is localized
+           table     - in case of localized data: the string table
 
        remarks:
            If you actually want to read some data, you have to derive a class
@@ -135,7 +140,7 @@ class ESMReader
            So naturally, this function will never return values larger than
            zero.
     */
-    virtual int readGroup(std::ifstream& in_File, const GroupData& g_data);
+    virtual int readGroup(std::ifstream& in_File, const GroupData& g_data, const bool localized, const StringTable& table);
 
     /* tries to read the next record from a file and returns the number of
        relevant records that were read (usually one). If an error occured,
@@ -143,15 +148,17 @@ class ESMReader
        zero is returned.
 
        parameters:
-           in_File - the input file stream the record shall be read from
-           recName - name (header) of the next record
+           in_File   - the input file stream the record shall be read from
+           recName   - name (header) of the next record
+           localized - true, if the data in the stream is localized
+           table     - in case of localized data: the string table
 
        remarks:
            If you actually want to read some data, you have to derive a class
            from ESMReader and set its readNextRecord() function up in a way
            that does read the data records you want to have.
     */
-    virtual int readNextRecord(std::ifstream& in_File, const uint32_t recName) = 0;
+    virtual int readNextRecord(std::ifstream& in_File, const uint32_t recName, const bool localized, const StringTable& table) = 0;
 };//class
 
 } //namespace

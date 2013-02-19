@@ -76,8 +76,7 @@ struct QuestRecord: public BasicRecord
       struct QSDTRecord
       {
         bool isFinisher; //true, if entry finishes the quest
-        bool hasNAM0;
-        uint32_t unknownNAM0;
+        uint32_t nextQuestFormID; //subrecord NAM0
         BinarySubRecord unknownSCHR;
         std::string unknownSCTX;
         bool hasQNAM;
@@ -123,8 +122,7 @@ struct QuestRecord: public BasicRecord
       uint32_t unknownALCA;
       bool hasALCL;
       uint32_t unknownALCL;
-      bool hasALDN;
-      uint32_t unknownALDN;
+      uint32_t displayNameFormID; //subrecord ALDN
       std::vector<ComponentData> components;
       std::vector<uint32_t> keywordArray;
       bool hasALFE;
@@ -132,25 +130,23 @@ struct QuestRecord: public BasicRecord
       bool hasALFD;
       uint32_t unknownALFD;
       bool hasALFI;
-      uint32_t unknownALFI;
-      bool hasALFL;
-      uint32_t unknownALFL;
+      uint32_t forcedIntoAliasID; //subrecord ALFI
+      uint32_t specificLocationFormID; //subrecord ALFL
       uint32_t specificReferenceID; //subrecord ALFR
       bool hasALNA;
       uint32_t unknownALNA;
       bool hasALNT;
       uint32_t unknownALNT;
       uint32_t uniqueActorFormID; //subrecord ALUA
-      bool hasALEQ;
-      uint32_t unknownALEQ;
+      uint32_t externalAliasReferenceFormID; //subrecord ALEQ
       bool hasALEA;
       uint32_t unknownALEA;
       uint32_t keywordFormID; //subrecord KNAM
       std::vector<CTDA_CIS2_compound> unknownCTDA_CIS2s;
       uint32_t spectatorOverridePackageListFormID; //subrecord SPOR
       uint32_t combatOverridePackageListFormID; //subrecord ECOR
-      std::vector<uint32_t> unknownALSPs;
-      std::vector<uint32_t> unknownALFCs;
+      std::vector<uint32_t> spellFormIDs; //subrecords ALSP
+      std::vector<uint32_t> factionFormIDs; //subrecords ALFC
       std::vector<uint32_t> packageDataFormIDs; //subrecords ALPC
       bool hasVTCK;
       uint32_t unknownVTCK;

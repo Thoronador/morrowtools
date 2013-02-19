@@ -2179,7 +2179,7 @@ Records and their sub-records:
           QSDT (1 byte)
               set to 1, if it finished the quest
           NAM0 (4 bytes, optional)
-              unknown data
+              uint32_t Next Quest form ID (points to QUST)
           SCHR (20 bytes, optional)
               unknown data
           SCTX (string, not NUL-terminated, optional)
@@ -2233,7 +2233,7 @@ Records and their sub-records:
         ALCL (4 bytes, optional)
             unknown data
         ALDN (4 bytes, optional)
-            unknown data
+            uint32_t Display Name form ID (points to MESG)
         COCT (4 bytes, optional)
             number of CNTO records that follow
         CNTO (8 bytes, optional, can occur multiple times)
@@ -2248,9 +2248,9 @@ Records and their sub-records:
         ALFD (4 bytes, optional)
             unknown data
         ALFI (4 bytes, optional)
-            unknown data
+            uint32_t "Forced Into Alias When Filled" ID (contains ID of another alias, can be zero)
         ALFL (4 bytes, optional)
-            unknown data
+            uint32_t Specific Location form ID (points to LCTN)
         ALFR (4 bytes, optional)
             uint32_t Specific Reference ID (points to REFR)
         ALNA (4 bytes, optional)
@@ -2260,7 +2260,7 @@ Records and their sub-records:
         ALUA (4 bytes, optional)
             uint32_t Unique Actor form ID (points to NPC_)
         ALEQ (4 bytes, optional)
-            unknown data
+            uint32_t External Alias Reference form ID (points to QUST)
         ALEA (4 bytes, optional)
             unknown data
         KNAM (4 bytes, optional)
@@ -2272,9 +2272,9 @@ Records and their sub-records:
         ECOR (4 bytes, optional)
             uint32_t Combat Override Package List form ID (points to FLST)
         ALSP (4 bytes, optional, can occur multiple times)
-            unknown data
+            uint32_t Alias Spell form IDs (points to SPEL)
         ALFC (4 bytes, optional, can occur multiple times)
-            unknown data
+            uint32_t Alias Faction form IDs (points to FACT)
         ALPC (4 bytes, optional, can occur multiple times)
             uint32_t Alias Package Data form IDs (points to PACK)
         VTCK (4 bytes, optional)

@@ -29,8 +29,8 @@ namespace SRTP
 
 PerkRecord::PerkRecord()
 : BasicRecord(), editorID(""),
-  hasFULL(false), nameStringID(0),
-  descriptionStringID(0),
+  name(LocalizedString()),
+  description(LocalizedString()),
   subBlocks(std::vector<SubBlock>())
 {
   unknownVMAD.setPresence(false);
@@ -46,8 +46,8 @@ bool PerkRecord::equals(const PerkRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
       and (unknownVMAD==other.unknownVMAD)
-      and (hasFULL==other.hasFULL) and ((nameStringID==other.nameStringID) or !hasFULL)
-      and (descriptionStringID==other.descriptionStringID) and (subBlocks==other.subBlocks));
+      and (name==other.name)
+      and (description==other.description) and (subBlocks==other.subBlocks));
 }
 #endif
 
@@ -57,14 +57,14 @@ uint32_t PerkRecord::getWriteSize() const
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
-        +4 /* DESC */ +2 /* 2 bytes for length */ +4 /* fixed length of 4 bytes */;
+        +description.getWriteSize() /* DESC */;
   if (unknownVMAD.isPresent())
   {
     writeSize = writeSize +4 /*VMAD*/ +2 /* 2 bytes for length */ +unknownVMAD.getSize() /* size */;
   }
-  if (hasFULL)
+  if (name.isPresent())
   {
-    writeSize = writeSize +4 /*FULL*/ +2 /* 2 bytes for length */ +4 /* fixed length of four bytes */;
+    writeSize += name.getWriteSize();
   }
   unsigned int i;
   if (!subBlocks.empty())
@@ -101,24 +101,16 @@ bool PerkRecord::saveToStream(std::ofstream& output) const
     }
   }//if VMAD
 
-  if (hasFULL)
+  if (name.isPresent())
   {
     //write FULL
-    output.write((const char*) &cFULL, 4);
-    //FULL's length
-    subLength = 4; //fixed
-    output.write((const char*) &subLength, 2);
-    //write FULL's stuff
-    output.write((const char*) &nameStringID, 4);
+    if (!name.saveToStream(output, cFULL))
+      return false;
   }//if has FULL
 
   //write DESC
-  output.write((const char*) &cDESC, 4);
-  //DESC's length
-  subLength = 4; //fixed
-  output.write((const char*) &subLength, 2);
-  //write DESC's stuff
-  output.write((const char*) &descriptionStringID, 4);
+  if (!description.saveToStream(output, cDESC))
+    return false;
 
   if (!subBlocks.empty())
   {
@@ -138,7 +130,7 @@ bool PerkRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool PerkRecord::loadFromStream(std::ifstream& in_File)
+bool PerkRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
@@ -175,83 +167,10 @@ bool PerkRecord::loadFromStream(std::ifstream& in_File)
   }
   editorID = std::string(buffer);
 
-  //read (optional) VMAD or FULL
-  in_File.read((char*) &subRecName, 4);
-  bytesRead += 4;
-  if (subRecName==cVMAD)
-  {
-    //read VMAD
-    if (!unknownVMAD.loadFromStream(in_File, cVMAD, false))
-    {
-      std::cout << "Error while reading subrecord VMAD of PERK!\n";
-      return false;
-    }
-    bytesRead = bytesRead + 2 + unknownVMAD.getSize();
-    //read next subrecord
-    in_File.read((char*) &subRecName, 4);
-    bytesRead += 4;
-  }//if VMAD
-  else
-  {
-    unknownVMAD.setPresence(false);
-  }
-
-  if (subRecName==cFULL)
-  {
-    //FULL's length
-    in_File.read((char*) &subLength, 2);
-    bytesRead += 2;
-    if (subLength!=4)
-    {
-      std::cout <<"Error: subrecord FULL of PERK has invalid length ("<<subLength
-                <<" bytes). Should be four bytes!\n";
-      return false;
-    }
-    //read FULL's stuff
-    in_File.read((char*) &nameStringID, 4);
-    bytesRead += 4;
-    if (!in_File.good())
-    {
-      std::cout << "Error while reading subrecord FULL of PERK!\n";
-      return false;
-    }
-    hasFULL = true;
-
-    //read next subrecord
-    in_File.read((char*) &subRecName, 4);
-    bytesRead += 4;
-  }//if FULL
-  else
-  {
-    hasFULL = false;
-    nameStringID = 0;
-  }//else (no FULL)
-
-  //read DESC -> already read above
-  if (subRecName!=cDESC)
-  {
-    UnexpectedRecord(cDESC, subRecName);
-    return false;
-  }
-  //DESC's length
-  in_File.read((char*) &subLength, 2);
-  bytesRead += 2;
-  if (subLength!=4)
-  {
-    std::cout <<"Error: subrecord DESC of PERK has invalid length ("<<subLength
-              <<" bytes). Should be four bytes!\n";
-    return false;
-  }
-  //read DESC's stuff
-  in_File.read((char*) &descriptionStringID, 4);
-  bytesRead += 4;
-  if (!in_File.good())
-  {
-    std::cout << "Error while reading subrecord DESC of PERK!\n";
-    return false;
-  }
-
   //now read the rest
+  unknownVMAD.setPresence(false);
+  name.reset();
+  description.reset();
   subBlocks.clear();
   SubBlock temp;
   while (bytesRead<readSize)
@@ -259,16 +178,56 @@ bool PerkRecord::loadFromStream(std::ifstream& in_File)
     //read next subrecord's name
     in_File.read((char*) &subRecName, 4);
     bytesRead += 4;
-    temp.subType = subRecName;
-    if (!temp.subData.loadFromStream(in_File, subRecName, false))
+    switch (subRecName)
     {
-      std::cout << "Error while reading subrecord "<<IntTo4Char(subRecName)
-                << " of PERK!\n";
-      return false;
-    }
-    bytesRead = bytesRead +2 +temp.subData.getSize();
-    subBlocks.push_back(temp);
+      case cVMAD:
+           if (unknownVMAD.isPresent())
+           {
+             std::cout << "Error: record PERK seems to have more than one VMAD subrecord.\n";
+             return false;
+           }
+           if (!unknownVMAD.loadFromStream(in_File, cVMAD, false)) return false;
+           bytesRead += (2 +unknownVMAD.getSize());
+           break;
+      case cFULL:
+           if (name.isPresent())
+           {
+             std::cout << "Error: record PERK seems to have more than one FULL subrecord.\n";
+             return false;
+           }
+           //read FULL
+           if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
+             return false;
+           break;
+      case cDESC:
+           if (description.isPresent())
+           {
+             std::cout << "Error: record PERK seems to have more than one DESC subrecord.\n";
+             return false;
+           }
+           //read DESC
+           if (!description.loadFromStream(in_File, cDESC, false, bytesRead, localized, table, buffer))
+             return false;
+           break;
+      default:
+           temp.subType = subRecName;
+           if (!temp.subData.loadFromStream(in_File, subRecName, false))
+           {
+             std::cout << "Error while reading subrecord "<<IntTo4Char(subRecName)
+                       << " of PERK!\n";
+             return false;
+           }
+           bytesRead += (2 +temp.subData.getSize());
+           subBlocks.push_back(temp);
+           break;
+    }//swi
   }//while
+
+  if (!description.isPresent())
+  {
+    std::cout << "Error: subrecord DESC of PERK is missing!\n";
+    return false;
+  }
 
   return in_File.good();
 }

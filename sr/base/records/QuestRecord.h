@@ -27,6 +27,7 @@
 #include "BinarySubRecord.h"
 #include "ComponentData.h"
 #include "CTDAData.h"
+#include "LocalizedString.h"
 
 namespace SRTP
 {
@@ -62,9 +63,11 @@ struct QuestRecord: public BasicRecord
     /* loads the record from the given input stream and returns true on success
 
       parameters:
-          in_File - the input file stream
+          in_File   - the input file stream
+          localized - whether the file to read from is localized or not
+          table     - the associated string table for localized files
     */
-    virtual bool loadFromStream(std::ifstream& in_File);
+    virtual bool loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table);
 
     /* returns the record's type, usually its header */
     virtual uint32_t getRecordType() const;
@@ -214,8 +217,7 @@ struct QuestRecord: public BasicRecord
 
     std::string editorID;
     BinarySubRecord unknownVMAD;
-    bool hasFULL;
-    uint32_t unknownFULL;
+    LocalizedString name; //subrecord FULL
     uint8_t unknownDNAM[12];
     bool hasENAM;
     uint32_t unknownENAM;

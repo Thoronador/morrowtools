@@ -21,11 +21,12 @@
 #ifndef SR_SCROLLRECORD_H
 #define SR_SCROLLRECORD_H
 
+#include <string>
+#include <stdint.h>
 #include "BasicRecord.h"
 #include "EffectBlock.h"
 #include "BinarySubRecord.h"
-#include <string>
-#include <stdint.h>
+#include "LocalizedString.h"
 
 namespace SRTP
 {
@@ -61,21 +62,22 @@ struct ScrollRecord: public BasicRecord
     /* loads the record from the given input stream and returns true on success
 
       parameters:
-          in_File - the input file stream
+          in_File   - the input file stream
+          localized - whether the file to read from is localized or not
+          table     - the associated string table for localized files
     */
-    virtual bool loadFromStream(std::ifstream& in_File);
+    virtual bool loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table);
 
     /* returns the record's type, usually its header */
     virtual uint32_t getRecordType() const;
 
     std::string editorID;
     uint8_t unknownOBND[12];
-    bool hasFULL;
-    uint32_t nameStringID; //subrecord FULL
+    LocalizedString name; //subrecord FULL
     std::vector<uint32_t> keywordArray;
     uint32_t menuDisplayObjectFormID; //subrecord MDOB
     uint32_t equipTypeFormID; //subrecord ETYP
-    uint32_t descriptionStringID; //subrecord DESC
+    LocalizedString description; //subrecord DESC
     std::string modelPath;
     BinarySubRecord unknownMODT;
     //subrecord DATA

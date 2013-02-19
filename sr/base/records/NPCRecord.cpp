@@ -82,7 +82,7 @@ NPCRecord::NPCRecord()
   unknownPKIDs(std::vector<uint32_t>()),
   keywordArray(std::vector<uint32_t>()),
   classFormID(0),
-  hasFULL(false), nameStringID(0),
+  name(LocalizedString()),
   hasSHRT(false), unknownSHRT(0),
   unknownPNAMs(std::vector<uint32_t>()),
   hairColorFormID(0),
@@ -141,7 +141,7 @@ bool NPCRecord::equals(const NPCRecord& other) const
       and (memcmp(unknownAIDT, other.unknownAIDT, 20)==0)
       and (unknownPKIDs==other.unknownPKIDs) and (keywordArray==other.keywordArray)
       and (classFormID==other.classFormID)
-      and (hasFULL==other.hasFULL) and ((nameStringID==other.nameStringID) or (!hasFULL))
+      and (name==other.name)
       and (hasSHRT==other.hasSHRT) and ((unknownSHRT==other.unknownSHRT) or (!hasSHRT))
       and (memcmp(unknownDNAM, other.unknownDNAM, 52)==0)
       and (unknownPNAMs==other.unknownPNAMs)
@@ -255,9 +255,9 @@ uint32_t NPCRecord::getWriteSize() const
     writeSize = writeSize +4 /* KSIZ */ +2 /* 2 bytes for length */ +4 /* fixed size */
                +4 /* KWDA */ +2 /* 2 bytes for length */ +4*keywordArray.size() /* fixed size */;
   }
-  if (hasFULL)
+  if (name.isPresent())
   {
-    writeSize = writeSize +4 /* FULL */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+    writeSize += name.getWriteSize() /* FULL */;
   }
   if (hasSHRT)
   {
@@ -636,15 +636,11 @@ bool NPCRecord::saveToStream(std::ofstream& output) const
   //write class form ID
   output.write((const char*) &classFormID, 4);
 
-  if (hasFULL)
+  if (name.isPresent())
   {
     //write FULL
-    output.write((const char*) &cFULL, 4);
-    //FULL's length
-    subLength = 4; //fixed size
-    output.write((const char*) &subLength, 2);
-    //write FULL
-    output.write((const char*) &nameStringID, 4);
+    if (!name.saveToStream(output, cFULL))
+      return false;
   }//if FULL
 
   if (hasSHRT)
@@ -922,7 +918,7 @@ bool NPCRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool NPCRecord::loadFromStream(std::ifstream& in_File)
+bool NPCRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
@@ -1034,7 +1030,7 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
   unknownPKIDs.clear();
   keywordArray.clear();
   classFormID = 0;
-  hasFULL = false; nameStringID = 0;
+  name.reset();
   hasSHRT = false; unknownSHRT = 0;
   bool hasReadDNAM = false;
   unknownPNAMs.clear();
@@ -1605,15 +1601,14 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File)
            }
            break;
       case cFULL:
-           if (hasFULL)
+           if (name.isPresent())
            {
              std::cout << "Error: NPC_ seems to have more than one FULL subrecord.\n";
              return false;
            }
            //read FULL
-           if (!loadUint32SubRecordFromStream(*actual_in, cFULL, nameStringID, false)) return false;
-           bytesRead += 6;
-           hasFULL = true;
+           if (!name.loadFromStream(*actual_in, cFULL, false, bytesRead, localized, table, buffer))
+             return false;
            break;
       case cSHRT:
            if (hasSHRT)

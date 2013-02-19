@@ -29,7 +29,7 @@ namespace SRTP
 
 KeyRecord::KeyRecord()
 : BasicRecord(), editorID(""),
-  nameStringID(0),
+  name(LocalizedString()),
   modelPath(""),
   pickupSoundFormID(0),
   putdownSoundFormID(0),
@@ -52,7 +52,7 @@ bool KeyRecord::equals(const KeyRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID) and (unknownVMAD==other.unknownVMAD)
       and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
-      and (nameStringID==other.nameStringID) and (modelPath==other.modelPath)
+      and (name==other.name) and (modelPath==other.modelPath)
       and (unknownMODT==other.unknownMODT) and (pickupSoundFormID==other.pickupSoundFormID)
       and (putdownSoundFormID==other.putdownSoundFormID) and (keywordArray==other.keywordArray)
       and (value==other.value) and (weight==other.weight));
@@ -67,7 +67,7 @@ uint32_t KeyRecord::getWriteSize() const
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
         +4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed length */
-        +4 /* FULL */ +2 /* 2 bytes for length */ +4 /* fixed length */
+        +name.getWriteSize() /* FULL */
         +4 /* DATA */ +2 /* 2 bytes for length */ +8 /* fixed length */;
   if (unknownVMAD.isPresent())
   {
@@ -131,12 +131,8 @@ bool KeyRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) unknownOBND, 12);
 
   //write FULL
-  output.write((const char*) &cFULL, 4);
-  //FULL's length
-  subLength = 4; //fixed
-  output.write((const char*) &subLength, 2);
-  //write FULL's data
-  output.write((const char*) &nameStringID, 4);
+  if (!name.saveToStream(output, cFULL))
+    return false;
 
   if (!modelPath.empty())
   {
@@ -218,7 +214,7 @@ bool KeyRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool KeyRecord::loadFromStream(std::ifstream& in_File)
+bool KeyRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
@@ -303,26 +299,7 @@ bool KeyRecord::loadFromStream(std::ifstream& in_File)
   }
 
   //read FULL
-  in_File.read((char*) &subRecName, 4);
-  bytesRead += 4;
-  if (subRecName!=cFULL)
-  {
-    UnexpectedRecord(cFULL, subRecName);
-    return false;
-  }
-  //FULL's length
-  in_File.read((char*) &subLength, 2);
-  bytesRead += 2;
-  if (subLength!=4)
-  {
-    std::cout <<"Error: sub record FULL of KEYM has invalid length ("
-              <<subLength<<" bytes. Should be four bytes!\n";
-    return false;
-  }
-  //read FULL's stuff
-  in_File.read((char*) &nameStringID, 4);
-  bytesRead += 4;
-  if (!in_File.good())
+  if (!name.loadFromStream(in_File, cFULL, true, bytesRead, localized, table, buffer))
   {
     std::cout << "Error while reading subrecord FULL of KEYM!\n";
     return false;

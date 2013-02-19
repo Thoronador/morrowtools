@@ -359,7 +359,7 @@ bool QuestRecord::QOBJEntry::QSTAEntry::operator==(const QuestRecord::QOBJEntry:
 
 QuestRecord::QuestRecord()
 : BasicRecord(), editorID(""),
-  hasFULL(false), unknownFULL(0),
+  name(LocalizedString()),
   hasENAM(false), unknownENAM(0),
   unknownQTGLs(std::vector<uint32_t>()),
   unknownCTDA_CIS2s(std::vector<CTDA_CIS2_compound>()),
@@ -383,7 +383,7 @@ bool QuestRecord::equals(const QuestRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
     and (unknownVMAD==other.unknownVMAD)
-    and (hasFULL==other.hasFULL) and ((unknownFULL==other.unknownFULL) or (!hasFULL))
+    and (name==other.name)
     and (memcmp(unknownDNAM, other.unknownDNAM, 12)==0)
     and (hasENAM==other.hasENAM) and ((unknownENAM==other.unknownENAM) or (!hasENAM))
     and (unknownQTGLs==other.unknownQTGLs) and (unknownCTDA_CIS2s==other.unknownCTDA_CIS2s)
@@ -405,9 +405,9 @@ uint32_t QuestRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* VMAD */ +2 /* 2 bytes for length */ +unknownVMAD.getSize();
   }
-  if (hasFULL)
+  if (name.isPresent())
   {
-    writeSize = writeSize +4 /* FULL */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+    writeSize += name.getWriteSize() /* FULL */;
   }
   if (hasENAM)
   {
@@ -509,15 +509,11 @@ bool QuestRecord::saveToStream(std::ofstream& output) const
     }
   }//if VMAD
 
-  if (hasFULL)
+  if (name.isPresent())
   {
     //write FULL
-    output.write((const char*) &cFULL, 4);
-    //FULL's length
-    subLength = 4; // fixed
-    output.write((const char*) &subLength, 2);
-    //write FULL
-    output.write((const char*) &unknownFULL, 4);
+    if (!name.saveToStream(output, cFULL))
+      return false;
   }//if FULL
 
   //write DNAM
@@ -690,7 +686,7 @@ bool QuestRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool QuestRecord::loadFromStream(std::ifstream& in_File)
+bool QuestRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
@@ -728,7 +724,7 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
   editorID = std::string(buffer);
 
   unknownVMAD.setPresence(false);
-  hasFULL = false; unknownFULL = 0;
+  name.reset();
   bool hasReadDNAM = false;
   memset(unknownDNAM, 0, 12);
   hasENAM = false; unknownENAM = 0;
@@ -776,15 +772,14 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File)
            lastReadRec = cVMAD;
            break;
       case cFULL:
-           if (hasFULL)
+           if (name.isPresent())
            {
              std::cout << "Error: QUST seems to have more than one FULL subrecord.\n";
              return false;
            }
            //read FULL
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, unknownFULL, false)) return false;
-           bytesRead += 6;
-           hasFULL = true;
+           if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
+             return false;
            lastReadRec = cFULL;
            break;
       case cDNAM:

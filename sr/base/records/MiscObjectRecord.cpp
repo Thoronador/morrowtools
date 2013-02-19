@@ -29,7 +29,7 @@ namespace SRTP
 
 MiscObjectRecord::MiscObjectRecord()
 : BasicRecord(), editorID(""),
-  hasFULL(false), fullNameStringID(0),
+  fullName(LocalizedString()),
   modelPath(""),
   iconPath(""),
   keywordArray(std::vector<uint32_t>()),
@@ -54,7 +54,7 @@ bool MiscObjectRecord::equals(const MiscObjectRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
     and (unknownVMAD==other.unknownVMAD) and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
-    and (hasFULL==other.hasFULL) and ((fullNameStringID==other.fullNameStringID) or (!hasFULL))
+    and (fullName==other.fullName)
     and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
     and (unknownMODS==other.unknownMODS) and (iconPath==other.iconPath)
     and (keywordArray==other.keywordArray)
@@ -80,9 +80,9 @@ uint32_t MiscObjectRecord::getWriteSize() const
     writeSize = writeSize + 4 /* VMAD */ +2 /* 2 bytes for length */
                +unknownVMAD.getSize() /* length of subrecord */;
   }
-  if (hasFULL)
+  if (fullName.isPresent())
   {
-    writeSize = writeSize +4 /* FULL */ +2 /* 2 bytes for length */ +4 /* fixed size of four bytes */;
+    writeSize += fullName.getWriteSize() /* FULL */;
   }
   if (unknownMODS.isPresent())
   {
@@ -137,15 +137,11 @@ bool MiscObjectRecord::saveToStream(std::ofstream& output) const
   //write OBND's data
   output.write((const char*) unknownOBND, 12);
 
-  if (hasFULL)
+  if (fullName.isPresent())
   {
     //write FULL
-    output.write((const char*) &cFULL, 4);
-    //FULL's length
-    subLength = 4; /* fixed length */
-    output.write((const char*) &subLength, 2);
-    //write FULL's data
-    output.write((const char*) &fullNameStringID, 4);
+    if (!fullName.saveToStream(output, cFULL))
+      return false;
   }//if hasFULL
 
   //write MODL
@@ -235,7 +231,7 @@ bool MiscObjectRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool MiscObjectRecord::loadFromStream(std::ifstream& in_File)
+bool MiscObjectRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
@@ -277,8 +273,7 @@ bool MiscObjectRecord::loadFromStream(std::ifstream& in_File)
   unknownMODS.setPresence(false);
   modelPath.clear();
   iconPath.clear();
-  hasFULL = false;
-  fullNameStringID = 0;
+  fullName.reset();
   pickupSoundFormID = 0;
   putdownSoundFormID = 0;
   keywordArray.clear();
@@ -303,29 +298,17 @@ bool MiscObjectRecord::loadFromStream(std::ifstream& in_File)
            bytesRead = bytesRead + 2 +unknownVMAD.getSize();
            break;
       case cFULL:
-           if (hasFULL)
+           if (fullName.isPresent())
            {
              std::cout << "Error: record MISC seems to have more than one FULL subrecord.\n";
              return false;
            }
            //FULL's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength!=4)
-           {
-             std::cout <<"Error: sub record FULL of MISC has invalid length ("
-                       <<subLength<<" bytes)! Should be four bytes.\n";
-             return false;
-           }
-           //read FULL's stuff
-           in_File.read((char*) &fullNameStringID, 4);
-           bytesRead += 4;
-           if (!in_File.good())
+           if (!fullName.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
            {
              std::cout << "Error while reading subrecord FULL of MISC!\n";
              return false;
            }
-           hasFULL = true;
            break;
       case cOBND:
            if (hasReadOBND)

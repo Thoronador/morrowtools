@@ -35,7 +35,7 @@ const uint32_t IngredientRecord::cFlagFoodItem   = 0x00000002;
 
 IngredientRecord::IngredientRecord()
 : BasicRecord(), editorID(""),
-  nameStringID(0),
+  name(LocalizedString()),
   keywordArray(std::vector<uint32_t>()),
   modelPath(""),
   pickupSoundFormID(0),
@@ -63,7 +63,7 @@ bool IngredientRecord::equals(const IngredientRecord& other) const
   return ((equalsBasic(other)) and (editorID==other.editorID)
       and (unknownVMAD==other.unknownVMAD)
       and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
-      and (nameStringID==other.nameStringID) and (keywordArray==other.keywordArray)
+      and (name==other.name) and (keywordArray==other.keywordArray)
       and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
       and (unknownMODS==other.unknownMODS)
       and (pickupSoundFormID==other.pickupSoundFormID)
@@ -81,7 +81,7 @@ uint32_t IngredientRecord::getWriteSize() const
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
         +4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed length of 12 bytes */
-        +4 /* FULL */ +2 /* 2 bytes for length */ +4 /* fixed length of four bytes */
+        +name.getWriteSize() /* FULL */
         +4 /* MODL */ +2 /* 2 bytes for length */
         +modelPath.length()+1 /* length of name +1 byte for NUL termination */
         +4 /* DATA */ +2 /* 2 bytes for length */ +8 /* fixed length of 8 bytes */
@@ -157,12 +157,8 @@ bool IngredientRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) unknownOBND, 12);
 
   //write FULL
-  output.write((const char*) &cFULL, 4);
-  //FULL's length
-  subLength = 4; //fixed
-  output.write((const char*) &subLength, 2);
-  //write FULL's stuff
-  output.write((const char*) &nameStringID, 4);
+  if (!name.saveToStream(output, cFULL))
+    return false;
 
   if (!keywordArray.empty())
   {
@@ -273,7 +269,7 @@ bool IngredientRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool IngredientRecord::loadFromStream(std::ifstream& in_File)
+bool IngredientRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
@@ -356,7 +352,7 @@ bool IngredientRecord::loadFromStream(std::ifstream& in_File)
     return false;
   }
 
-  bool hasReadFULL = false;
+  name.reset();
   keywordArray.clear();
   uint32_t tempKeyword, kwdaLength, i;
   modelPath.clear();
@@ -378,15 +374,14 @@ bool IngredientRecord::loadFromStream(std::ifstream& in_File)
     switch(subRecName)
     {
       case cFULL:
-           if (hasReadFULL)
+           if (name.isPresent())
            {
              std::cout << "Error: INGR seems to have more than one FULL subrecord!\n";
              return false;
            }
            //read FULL
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID, false)) return false;
-           bytesRead += 6;
-           hasReadFULL = true;
+           if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
+             return false;
            break;
       case cKSIZ:
            if (!keywordArray.empty())
@@ -670,7 +665,7 @@ bool IngredientRecord::loadFromStream(std::ifstream& in_File)
     return false;
   }//if effects
   //more checks
-  if (!(hasReadFULL and hasReadDATA and hasReadENIT and (!modelPath.empty())  ))
+  if (!(name.isPresent() and hasReadDATA and hasReadENIT and (!modelPath.empty())  ))
   {
     std::cout << "Error while reading record INGR: At least one of the "
               << "subrecords FULL, DATA, ENIT or MODL is missing!\n";

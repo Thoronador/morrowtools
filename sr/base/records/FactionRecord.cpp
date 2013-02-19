@@ -79,7 +79,7 @@ bool FactionRecord::RankData::operator==(const FactionRecord::RankData& other) c
 FactionRecord::FactionRecord()
 : BasicRecord(), editorID(""),
   relations(std::vector<InterfactionRelation>()), //subrecords XNAM
-  hasFULL(false), nameStringID(0),
+  name(LocalizedString()),
   flags(0),
   exteriorJailMarkerRefID(0), //subrecord JAIL opt.
   followerWaitMarkerRefID(0), //subrecord WAIT, opt.
@@ -112,7 +112,7 @@ bool FactionRecord::equals(const FactionRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
       and (relations==other.relations)
-      and (hasFULL==other.hasFULL) and ((nameStringID==other.nameStringID) or (!hasFULL))
+      and (name==other.name)
       and (flags==other.flags)
       and (exteriorJailMarkerRefID==other.exteriorJailMarkerRefID)
       and (followerWaitMarkerRefID==other.followerWaitMarkerRefID)
@@ -136,9 +136,9 @@ uint32_t FactionRecord::getWriteSize() const
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
         +relations.size()*(4 /* XNAM */ +2 /* 2 bytes for length */ +12 /* fixed length of 12 bytes */)
         +4 /* DATA */ +2 /* 2 bytes for length */ +4 /* fixed length of four bytes */;
-  if (hasFULL)
+  if (name.isPresent())
   {
-    writeSize = writeSize +4 /* FULL */ +2 /* 2 bytes for length */ +4 /* fixed length of four bytes */;
+    writeSize += name.getWriteSize();
   }//if FULL
   if (exteriorJailMarkerRefID!=0)
   {
@@ -244,15 +244,11 @@ bool FactionRecord::saveToStream(std::ofstream& output) const
     }//for
   }//if relations
 
-  if (hasFULL)
+  if (name.isPresent())
   {
     //write FULL
-    output.write((const char*) &cFULL, 4);
-    //FULL's length
-    subLength = 4; //fixed
-    output.write((const char*) &subLength, 2);
-    //write FULL's data
-    output.write((const char*) &nameStringID, 4);
+    if (!name.saveToStream(output, cFULL))
+      return false;
   }//if has FULL
 
   //write DATA
@@ -449,7 +445,7 @@ bool FactionRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool FactionRecord::loadFromStream(std::ifstream& in_File)
+bool FactionRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
@@ -488,7 +484,7 @@ bool FactionRecord::loadFromStream(std::ifstream& in_File)
 
   relations.clear();
   InterfactionRelation tempInterfacRel;
-  hasFULL = false; nameStringID = 0;
+  name.reset();
   bool hasReadDATA = false;
   flags = 0;
   exteriorJailMarkerRefID = 0; //subrecord JAIL
@@ -545,17 +541,16 @@ bool FactionRecord::loadFromStream(std::ifstream& in_File)
            relations.push_back(tempInterfacRel);
            break;
       case cFULL:
-           if (hasFULL)
+           if (name.isPresent())
            {
              std::cout << "Error: FACT seems to have more than one FULL subrecord!\n";
              return false;
            }
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID, false))
+           //read FULL
+           if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
            {
              return false;
            }
-           bytesRead += 6;
-           hasFULL = true;
            break;
       case cDATA:
            if (hasReadDATA)

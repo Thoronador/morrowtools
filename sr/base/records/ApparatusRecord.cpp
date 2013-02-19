@@ -29,7 +29,7 @@ namespace SRTP
 
 ApparatusRecord::ApparatusRecord()
 : BasicRecord(), editorID(""),
-  nameStringID(0),
+  name(LocalizedString()),
   quality(0),
   unknownDESC(0),
   value(0),
@@ -48,7 +48,7 @@ bool ApparatusRecord::equals(const ApparatusRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
       and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
-      and (nameStringID==other.nameStringID) and (quality==other.quality)
+      and (name==other.name) and (quality==other.quality)
       and (unknownDESC==other.unknownDESC)
       and (value==other.value) and (weight==other.weight));
 }
@@ -60,7 +60,7 @@ uint32_t ApparatusRecord::getWriteSize() const
   return (4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
         +4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed length */
-        +4 /* FULL */ +2 /* 2 bytes for length */ +4 /* fixed length */
+        +name.getWriteSize() /* FULL */
         +4 /* QUAL */ +2 /* 2 bytes for length */ +4 /* fixed length */
         +4 /* DESC */ +2 /* 2 bytes for length */ +4 /* fixed length */
         +4 /* DATA */ +2 /* 2 bytes for length */ +8 /* fixed length */);
@@ -88,12 +88,11 @@ bool ApparatusRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) unknownOBND, 12);
 
   //write FULL
-  output.write((const char*) &cFULL, 4);
-  //FULL's length
-  subLength = 4; //fixed
-  output.write((const char*) &subLength, 2);
-  //write FULL's data
-  output.write((const char*) &nameStringID, 4);
+  if (!name.saveToStream(output, cFULL))
+  {
+    std::cout << "Error while writing subrecord FULL of APPA!\n";
+    return false;
+  }
 
   //write QUAL
   output.write((const char*) &cQUAL, 4);
@@ -124,7 +123,7 @@ bool ApparatusRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool ApparatusRecord::loadFromStream(std::ifstream& in_File)
+bool ApparatusRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
@@ -188,26 +187,7 @@ bool ApparatusRecord::loadFromStream(std::ifstream& in_File)
   }
 
   //read FULL
-  in_File.read((char*) &subRecName, 4);
-  bytesRead += 4;
-  if (subRecName!=cFULL)
-  {
-    UnexpectedRecord(cFULL, subRecName);
-    return false;
-  }
-  //FULL's length
-  in_File.read((char*) &subLength, 2);
-  bytesRead += 2;
-  if (subLength!=4)
-  {
-    std::cout <<"Error: sub record FULL of APPA has invalid length ("
-              <<subLength<<" bytes. Should be four bytes!\n";
-    return false;
-  }
-  //read FULL's stuff
-  in_File.read((char*) &nameStringID, 4);
-  bytesRead += 4;
-  if (!in_File.good())
+  if (!name.loadFromStream(in_File, cFULL, true, bytesRead, localized, table, buffer))
   {
     std::cout << "Error while reading subrecord FULL of APPA!\n";
     return false;
@@ -219,6 +199,7 @@ bool ApparatusRecord::loadFromStream(std::ifstream& in_File)
     std::cout << "Error while reading subrecord QUAL of APPA!\n";
     return false;
   }
+  bytesRead += 10;
 
   //read DESC
   if (!loadUint32SubRecordFromStream(in_File, cDESC, unknownDESC, true))
@@ -226,6 +207,7 @@ bool ApparatusRecord::loadFromStream(std::ifstream& in_File)
     std::cout << "Error while reading subrecord DESC of APPA!\n";
     return false;
   }
+  bytesRead += 10;
 
   //read DATA
   in_File.read((char*) &subRecName, 4);

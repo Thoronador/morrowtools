@@ -26,6 +26,7 @@
 #include "BasicRecord.h"
 #include "BinarySubRecord.h"
 #include "DestructionData.h"
+#include "LocalizedString.h"
 
 namespace SRTP
 {
@@ -61,9 +62,11 @@ struct FurnitureRecord: public BasicRecord
     /* loads the record from the given input stream and returns true on success
 
       parameters:
-          in_File - the input file stream
+          in_File   - the input file stream
+          localized - whether the file to read from is localized or not
+          table     - the associated string table for localized files
     */
-    virtual bool loadFromStream(std::ifstream& in_File);
+    virtual bool loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table);
 
     /* returns the record's type, usually its header */
     virtual uint32_t getRecordType() const;
@@ -71,8 +74,7 @@ struct FurnitureRecord: public BasicRecord
     std::string editorID;
     BinarySubRecord unknownVMAD;
     BinarySubRecord unknownOBND;
-    bool hasFULL;
-    uint32_t nameStringID; //subrecord FULL
+    LocalizedString name; //subrecord FULL
     std::string modelPath;
     BinarySubRecord unknownMODT;
     BinarySubRecord unknownMODS;

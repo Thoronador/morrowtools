@@ -29,7 +29,7 @@ namespace SRTP
 
 ArmourRecord::ArmourRecord()
 : BasicRecord(), editorID(""),
-  hasFULL(false), nameStringID(0),
+  name(LocalizedString()),
   enchantingFormID(0),
   modelPath(""),
   mod4Path(""),
@@ -40,7 +40,7 @@ ArmourRecord::ArmourRecord()
   putdownSoundFormID(0),
   unknownRNAM(0),
   keywordArray(std::vector<uint32_t>()),
-  hasDESC(false), descriptionStringID(0),
+  description(LocalizedString()),
   models(std::vector<uint32_t>()),
   value(0),
   weight(0.0f),
@@ -68,7 +68,7 @@ bool ArmourRecord::equals(const ArmourRecord& other) const
   return ((equalsBasic(other)) and (editorID==other.editorID)
       and (unknownVMAD==other.unknownVMAD)
       and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
-      and (hasFULL==other.hasFULL) and ((nameStringID==other.nameStringID) or (!hasFULL))
+      and (name==other.name)
       and (enchantingFormID==other.enchantingFormID)
       and (modelPath==other.modelPath) and (unknownMO2T==other.unknownMO2T)
       and (unknownMO2S==other.unknownMO2S)
@@ -81,7 +81,7 @@ bool ArmourRecord::equals(const ArmourRecord& other) const
       and (pickupSoundFormID==other.pickupSoundFormID)
       and (putdownSoundFormID==other.putdownSoundFormID)
       and (unknownRNAM==other.unknownRNAM) and (keywordArray==other.keywordArray)
-      and (hasDESC==other.hasDESC) and ((descriptionStringID==other.descriptionStringID) or (!hasDESC))
+      and (description==other.description)
       and (models==other.models)
       and (value==other.value) and (weight==other.weight)
       and (unknownDNAM==other.unknownDNAM)
@@ -103,9 +103,9 @@ uint32_t ArmourRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* VMAD */ +2 /* 2 bytes for length */ +unknownVMAD.getSize() /* length */;
   }//if VMAD
-  if (hasFULL)
+  if (name.isPresent())
   {
-    writeSize = writeSize +4 /* FULL */ +2 /* 2 bytes for length */ +4 /* fixed length */;
+    writeSize += name.getWriteSize();
   }
 
   if (enchantingFormID!=0)
@@ -171,9 +171,9 @@ uint32_t ArmourRecord::getWriteSize() const
     writeSize = writeSize +4 /* KSIZ */ +2 /* 2 bytes for length */ +4 /* fixed length */
                           +4 /* KWDA */ +2 /* 2 bytes for length */ +4*keywordArray.size() /*data length*/ ;
   }//if keywords
-  if (hasDESC)
+  if (description.isPresent())
   {
-    writeSize = writeSize +4 /* DESC */ +2 /* 2 bytes for length */ +4 /* fixed length */;
+    writeSize += description.getWriteSize();
   }//if has DESC
   if (!models.empty())
   {
@@ -217,15 +217,11 @@ bool ArmourRecord::saveToStream(std::ofstream& output) const
   //write OBND
   output.write((const char*) unknownOBND, 12);
 
-  if (hasFULL)
+  if (name.isPresent())
   {
     //write FULL
-    output.write((const char*) &cFULL, 4);
-    //FULL's length
-    subLength = 4; //fixed
-    output.write((const char*) &subLength, 2);
-    //write FULL
-    output.write((const char*) &nameStringID, 4);
+    if (!name.saveToStream(output, cFULL))
+      return false;
   }//if has FULL
 
   if (enchantingFormID!=0)
@@ -408,15 +404,11 @@ bool ArmourRecord::saveToStream(std::ofstream& output) const
     }//for
   }//if keyword array
 
-  if (hasDESC)
+  if (description.isPresent())
   {
     //write DESC
-    output.write((const char*) &cDESC, 4);
-    //DESC's length
-    subLength = 4; //fixed
-    output.write((const char*) &subLength, 2);
-    //write DESC's data
-    output.write((const char*) &descriptionStringID, 4);
+    if (!description.saveToStream(output, cDESC))
+      return false;
   }//if has DESC
 
   for (i=0; i<models.size(); ++i)
@@ -462,7 +454,7 @@ bool ArmourRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool ArmourRecord::loadFromStream(std::ifstream& in_File)
+bool ArmourRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
@@ -501,7 +493,7 @@ bool ArmourRecord::loadFromStream(std::ifstream& in_File)
 
   unknownVMAD.setPresence(false);
   bool hasReadOBND = false;
-  hasFULL = false; nameStringID = 0;
+  name.reset();
   enchantingFormID = 0;
   modelPath.clear();
   unknownMO2T.setPresence(false);
@@ -518,7 +510,7 @@ bool ArmourRecord::loadFromStream(std::ifstream& in_File)
   bool hasReadRNAM = false;
   keywordArray.clear();
   uint32_t k_Size, i, temp;
-  hasDESC = false;
+  description.reset();
   models.clear();
   bool hasReadDATA = false;
   bool hasReadDNAM = false;
@@ -570,16 +562,14 @@ bool ArmourRecord::loadFromStream(std::ifstream& in_File)
            hasReadOBND = true;
            break;
       case cFULL:
-           if (hasFULL)
+           if (name.isPresent())
            {
              std::cout << "Error: record ARMO seems to have more than one FULL subrecord!\n";
              return false;
            }
            //read FULL
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID, false))
+           if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
              return false;
-           bytesRead += 6;
-           hasFULL = true;
            break;
       case cEITM:
            if (enchantingFormID!=0)
@@ -890,29 +880,17 @@ bool ArmourRecord::loadFromStream(std::ifstream& in_File)
            }//for
            break;
       case cDESC:
-           if (hasDESC)
+           if (description.isPresent())
            {
              std::cout << "Error: ARMO seems to have more than one DESC subrecord!\n";
              return false;
            }
-           //DESC's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength!=4)
-           {
-             std::cout <<"Error: subrecord DESC of ARMO has invalid length ("
-                       <<subLength<<" bytes). Should be four bytes!\n";
-             return false;
-           }
-           //read DESC's stuff
-           in_File.read((char*) &descriptionStringID, 4);
-           bytesRead += 4;
-           if (!in_File.good())
+           //read DESC
+           if (!description.loadFromStream(in_File, cDESC, false, bytesRead, localized, table, buffer))
            {
              std::cout << "Error while reading subrecord DESC of ARMO!\n";
              return false;
            }//if
-           hasDESC = true;
            break;
       case cMODL:
            //MODL's length

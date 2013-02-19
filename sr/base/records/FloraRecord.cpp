@@ -29,10 +29,10 @@ namespace SRTP
 
 FloraRecord::FloraRecord()
 : BasicRecord(), editorID(""),
-  nameStringID(0),
+  name(LocalizedString()),
   modelPath(""),
   unknownPNAM(0),
-  activateTextOverrideStringID(0),
+  activateTextOverride(LocalizedString()),
   unknownFNAM(0),
   ingredientFormID(0),
   harvestSoundFormID(0),
@@ -55,10 +55,10 @@ bool FloraRecord::equals(const FloraRecord& other) const
   return ((equalsBasic(other)) and (editorID==other.editorID)
       and (unknownVMAD==other.unknownVMAD)
       and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
-      and (nameStringID==other.nameStringID) and (modelPath==other.modelPath)
+      and (name==other.name) and (modelPath==other.modelPath)
       and (unknownMODT==other.unknownMODT) and (unknownMODS==other.unknownMODS)
       and (unknownPNAM==other.unknownPNAM)
-      and (activateTextOverrideStringID==other.activateTextOverrideStringID)
+      and (activateTextOverride==other.activateTextOverride)
       and (unknownFNAM==other.unknownFNAM)
       and (ingredientFormID==other.ingredientFormID)
       and (harvestSoundFormID==other.harvestSoundFormID)
@@ -73,7 +73,7 @@ uint32_t FloraRecord::getWriteSize() const
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
         +4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed size */
-        +4 /* FULL */ +2 /* 2 bytes for length */ +4 /* fixed size */
+        +name.getWriteSize() /* FULL */
         +4 /* MODL */ +2 /* 2 bytes for length */
         +modelPath.length()+1 /* length of path +1 byte for NUL termination */
         +4 /* PNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */
@@ -91,9 +91,9 @@ uint32_t FloraRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* MODS */ +2 /* 2 bytes for length */ +unknownMODS.getSize() /* size */;
   }
-  if (activateTextOverrideStringID!=0)
+  if (activateTextOverride.isPresent())
   {
-    writeSize = writeSize +4 /* RNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+    writeSize += activateTextOverride.getWriteSize();
   }
   if (ingredientFormID!=0)
   {
@@ -138,12 +138,8 @@ bool FloraRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) unknownOBND, 12);
 
   //write FULL
-  output.write((const char*) &cFULL, 4);
-  //FULL's length
-  subLength = 4; //fixed size
-  output.write((const char*) &subLength, 2);
-  //write name string ID
-  output.write((const char*) &nameStringID, 4);
+  if (!name.saveToStream(output, cFULL))
+    return false;
 
   //write MODL
   output.write((const char*) &cMODL, 4);
@@ -181,15 +177,11 @@ bool FloraRecord::saveToStream(std::ofstream& output) const
   //write PNAM
   output.write((const char*) &unknownPNAM, 4);
 
-  if (activateTextOverrideStringID!=0)
+  if (activateTextOverride.isPresent())
   {
     //write RNAM
-    output.write((const char*) &cRNAM, 4);
-    //RNAM's length
-    subLength = 4; //fixed size
-    output.write((const char*) &subLength, 2);
-    //write Activate Text Override's string ID
-    output.write((const char*) &activateTextOverrideStringID, 4);
+    if (!activateTextOverride.saveToStream(output, cRNAM))
+      return false;
   }//if has RNAM
 
   //write FNAM
@@ -234,7 +226,7 @@ bool FloraRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool FloraRecord::loadFromStream(std::ifstream& in_File)
+bool FloraRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
@@ -273,12 +265,12 @@ bool FloraRecord::loadFromStream(std::ifstream& in_File)
 
   unknownVMAD.setPresence(false);
   bool hasReadOBND = false;
-  bool hasReadFULL = false; nameStringID = 0;
+  name.reset();
   modelPath.clear();
   unknownMODT.setPresence(false);
   unknownMODS.setPresence(false);
   bool hasReadPNAM = false; unknownPNAM = 0;
-  activateTextOverrideStringID = 0;
+  activateTextOverride.reset();
   bool hasReadFNAM = false; unknownFNAM = 0;
   ingredientFormID = 0;
   harvestSoundFormID = 0;
@@ -330,15 +322,14 @@ bool FloraRecord::loadFromStream(std::ifstream& in_File)
            hasReadOBND = true;
            break;
       case cFULL:
-           if (hasReadFULL)
+           if (name.isPresent())
            {
              std::cout << "Error: FLOR seems to have more than one FULL subrecord.\n";
              return false;
            }
            //read FULL
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID, false)) return false;
-           bytesRead += 6;
-           hasReadFULL = true;
+           if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
+             return false;
            break;
       case cMODL:
            if (!modelPath.empty())
@@ -405,20 +396,14 @@ bool FloraRecord::loadFromStream(std::ifstream& in_File)
            hasReadPNAM = true;
            break;
       case cRNAM:
-           if (activateTextOverrideStringID!=0)
+           if (activateTextOverride.isPresent())
            {
              std::cout << "Error: FLOR seems to have more than one RNAM subrecord.\n";
              return false;
            }
            //read RNAM
-           if (!loadUint32SubRecordFromStream(in_File, cRNAM, activateTextOverrideStringID, false)) return false;
-           bytesRead += 6;
-           //check content
-           if (activateTextOverrideStringID==0)
-           {
-             std::cout << "Error: subrecord RNAM of FLOR is zero!\n";
+           if (!activateTextOverride.loadFromStream(in_File, cRNAM, false, bytesRead, localized, table, buffer))
              return false;
-           }
            break;
       case cFNAM:
            if (hasReadFNAM)
@@ -497,7 +482,7 @@ bool FloraRecord::loadFromStream(std::ifstream& in_File)
   }//while
 
   //presence checks
-  if (!(hasReadOBND and hasReadFULL and (!modelPath.empty()) and unknownMODT.isPresent()
+  if (!(hasReadOBND and name.isPresent() and (!modelPath.empty()) and unknownMODT.isPresent()
       and hasReadPNAM and hasReadFNAM and hasReadPFPC))
   {
     std::cout << "Error: at least one required subrecord of FLOR is missing!\n";

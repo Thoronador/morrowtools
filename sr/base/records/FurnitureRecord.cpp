@@ -28,7 +28,7 @@ namespace SRTP
 
 FurnitureRecord::FurnitureRecord()
 : BasicRecord(), editorID(""),
-  hasFULL(false), nameStringID(0), modelPath(""),
+  name(LocalizedString()), modelPath(""),
   keywords(std::vector<uint32_t>()),
   unknownPNAM(0), unknownFNAM(0),
   interactionKeywordFormID(0),
@@ -55,7 +55,7 @@ bool FurnitureRecord::equals(const FurnitureRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
       and (unknownVMAD==other.unknownVMAD) and (unknownOBND==other.unknownOBND)
-      and (hasFULL==other.hasFULL) and ((nameStringID==other.nameStringID) or (!hasFULL))
+      and (name==other.name)
       and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
       and (unknownMODS==other.unknownMODS)
       and (destruction==other.destruction)
@@ -96,9 +96,9 @@ uint32_t FurnitureRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* OBND */ +2 /* 2 bytes for length */ + unknownOBND.getSize() /* size */;
   }
-  if (hasFULL)
+  if (name.isPresent())
   {
-    writeSize = writeSize +4 /* FULL */ +2 /* 2 bytes for length */ + 4 /* fixed size */;
+    writeSize += name.getWriteSize();
   }
   if (unknownMODT.isPresent())
   {
@@ -159,15 +159,11 @@ bool FurnitureRecord::saveToStream(std::ofstream& output) const
     }
   }//if OBND
 
-  if (hasFULL)
+  if (name.isPresent())
   {
     //write FULL
-    output.write((const char*) &cFULL, 4);
-    //FULL's length
-    subLength = 4;
-    output.write((const char*) &subLength, 2);
-    //write FULL's stuff
-    output.write((const char*) &nameStringID, 4);
+    if (!name.saveToStream(output, cFULL))
+      return false;
   }//if FULL
 
   //write MODL
@@ -331,7 +327,7 @@ bool FurnitureRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool FurnitureRecord::loadFromStream(std::ifstream& in_File)
+bool FurnitureRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
@@ -349,7 +345,7 @@ bool FurnitureRecord::loadFromStream(std::ifstream& in_File)
 
   unknownVMAD.setPresence(false);
   unknownOBND.setPresence(false);
-  hasFULL = false; nameStringID = 0;
+  name.reset();
   modelPath.clear();
   unknownMODT.setPresence(false);
   unknownMODS.setPresence(false);
@@ -397,16 +393,14 @@ bool FurnitureRecord::loadFromStream(std::ifstream& in_File)
            bytesRead += (2+unknownOBND.getSize());
            break;
       case cFULL:
-           if (hasFULL)
+           if (name.isPresent())
            {
              std::cout << "Error: FURN seems to have more than one FULL subrecord!\n";
              return false;
            }
            //read FULL
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID, false))
+           if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
              return false;
-           bytesRead += 6;
-           hasFULL = true;
            break;
       case cMODL:
            if (!modelPath.empty())

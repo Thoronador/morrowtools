@@ -424,7 +424,7 @@ bool CharacterReferenceRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool CharacterReferenceRecord::loadFromStream(std::ifstream& in_File)
+bool CharacterReferenceRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
 {
   #warning Not completely implemented yet!
   uint32_t readSize = 0;

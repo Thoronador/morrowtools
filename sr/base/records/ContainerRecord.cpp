@@ -38,7 +38,7 @@ const uint32_t ContainerRecord::cFlagObstacle        = 0x02000000;
 
 ContainerRecord::ContainerRecord()
 : BasicRecord(), editorID(""),
-  hasFULL(false), nameStringID(0),
+  name(LocalizedString()),
   modelPath(""),
   contents(std::vector<ComponentData>()),
   flags(0),
@@ -64,7 +64,7 @@ bool ContainerRecord::equals(const ContainerRecord& other) const
   return ((equalsBasic(other)) and (editorID==other.editorID)
       and (unknownVMAD==other.unknownVMAD)
       and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
-      and (hasFULL==other.hasFULL) and ((nameStringID==other.nameStringID) or (!hasFULL))
+      and (name==other.name)
       and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
       and (unknownMODS==other.unknownMODS) and (contents==other.contents)
       and (unknownCOED==other.unknownCOED) and (flags==other.flags) and (weight==other.weight)
@@ -86,9 +86,9 @@ uint32_t ContainerRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* VMAD */ +2 /* 2 bytes for length */ +unknownVMAD.getSize() /* size */;
   }
-  if (hasFULL)
+  if (name.isPresent())
   {
-    writeSize = writeSize +4 /* FULL */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+    writeSize += name.getWriteSize();
   }
   if (unknownMODT.isPresent())
   {
@@ -144,15 +144,11 @@ bool ContainerRecord::saveToStream(std::ofstream& output) const
   //write OBND's stuff
   output.write((const char*) unknownOBND, 12);
 
-  if (hasFULL)
+  if (name.isPresent())
   {
     //write FULL
-    output.write((const char*) &cFULL, 4);
-    //FULL's length
-    subLength = 4; //fixed
-    output.write((const char*) &subLength, 2);
-    //write FULL's stuff
-    output.write((const char*) &nameStringID, 4);
+    if (!name.saveToStream(output, cFULL))
+      return false;
   }//if has FULL
 
   //write MODL
@@ -254,7 +250,7 @@ bool ContainerRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool ContainerRecord::loadFromStream(std::ifstream& in_File)
+bool ContainerRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
@@ -293,7 +289,7 @@ bool ContainerRecord::loadFromStream(std::ifstream& in_File)
 
   unknownVMAD.setPresence(false);
   bool hasReadOBND = false;
-  hasFULL = false; nameStringID = 0;
+  name.reset();
   bool hasReadMODL = false;
   modelPath.clear();
   unknownMODT.setPresence(false);
@@ -348,15 +344,14 @@ bool ContainerRecord::loadFromStream(std::ifstream& in_File)
            hasReadOBND = true;
            break;
       case cFULL:
-           if (hasFULL)
+           if (name.isPresent())
            {
              std::cout << "Error: record CONT seems to have more than one FULL subrecord!\n";
              return false;
            }
            //read FULL
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID, false)) return false;
-           bytesRead += 6;
-           hasFULL = true;
+           if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
+             return false;
            break;
       case cMODL:
            if (hasReadMODL)

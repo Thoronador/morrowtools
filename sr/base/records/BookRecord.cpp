@@ -34,9 +34,9 @@ const uint32_t BookRecord::cNoteOrScrollTypeFlag = 0x0000FF00;
 
 BookRecord::BookRecord()
 : BasicRecord(), editorID(""),
-  hasFULL(false), titleStringID(0),
+  title(LocalizedString()),
   modelPath(""),
-  textStringID(0),
+  text(LocalizedString()),
   pickupSoundFormID(0),
   putdownSoundFormID(0),
   keywordArray(std::vector<uint32_t>()),
@@ -65,9 +65,9 @@ bool BookRecord::equals(const BookRecord& other) const
   return ((equalsBasic(other)) and (editorID==other.editorID)
     and (unknownVMAD==other.unknownVMAD)
     and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
-    and (hasFULL==other.hasFULL) and ((titleStringID==other.titleStringID) or (!hasFULL))
+    and (title==other.title)
     and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
-    and (textStringID==other.textStringID) and (unknownCNAM==other.unknownCNAM)
+    and (text==other.text) and (unknownCNAM==other.unknownCNAM)
     and (pickupSoundFormID==other.pickupSoundFormID)
     and (putdownSoundFormID==other.putdownSoundFormID)
     and (keywordArray==other.keywordArray)
@@ -87,11 +87,12 @@ uint32_t BookRecord::getWriteSize() const
         +4 /* MODL */ +2 /* 2 bytes for length */
         +modelPath.length()+1 /* length of name +1 byte for NUL termination */
         +4 /* MODT */ +2 /* 2 bytes for length */ +unknownMODT.getSize() /* size of subrecord */
+        +text.getWriteSize() /* DESC */
         +4 /* DATA */ +2 /* 2 bytes for length */ +16 /* fixed size */
         +4 /* CNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
-  if (hasFULL)
+  if (title.isPresent())
   {
-    writeSize = writeSize +4 /* FULL */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+    writeSize += title.getWriteSize();
   }
   if (!keywordArray.empty())
   {
@@ -148,15 +149,11 @@ bool BookRecord::saveToStream(std::ofstream& output) const
   //write OBND
   output.write((const char*) unknownOBND, 12);
 
-  if (hasFULL)
+  if (title.isPresent())
   {
     //write FULL
-    output.write((const char*) &cFULL, 4);
-    //FULL's length
-    subLength = 4; //fixed size
-    output.write((const char*) &subLength, 2);
-    //write FULL
-    output.write((const char*) &titleStringID, 4);
+    if (!title.saveToStream(output, cFULL))
+      return false;
   }//if has FULL subrecord
 
   //write MODL
@@ -173,6 +170,10 @@ bool BookRecord::saveToStream(std::ofstream& output) const
     std::cout << "Error while writing subrecord MODT of BOOK!\n";
     return false;
   }
+
+  //write DESC
+  if (!text.saveToStream(output, cDESC))
+    return false;
 
   if (pickupSoundFormID!=0)
   {
@@ -254,7 +255,7 @@ bool BookRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool BookRecord::loadFromStream(std::ifstream& in_File)
+bool BookRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
@@ -335,13 +336,14 @@ bool BookRecord::loadFromStream(std::ifstream& in_File)
     return false;
   }
 
-  hasFULL = false;
+  title.reset();
   pickupSoundFormID = 0;
   putdownSoundFormID = 0;
   inventoryArtFormID = 0;
   keywordArray.clear();
 
   bool hasReadMODL = false;
+  text.reset();
   bool hasReadKSIZ = false;
   bool hasReadDATA = false;
   bool hasReadCNAM = false;
@@ -355,15 +357,14 @@ bool BookRecord::loadFromStream(std::ifstream& in_File)
     switch (subRecName)
     {
       case cFULL:
-           if (hasFULL)
+           if (title.isPresent())
            {
              std::cout << "Error: BOOK seems to have more than one FULL subrecord.\n";
              return false;
            }
            //read FULL
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, titleStringID, false)) return false;
-           bytesRead += 6;
-           hasFULL = true;
+           if (!title.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
+             return false;
            break;
       case cMODL:
            if (hasReadMODL)
@@ -396,8 +397,8 @@ bool BookRecord::loadFromStream(std::ifstream& in_File)
            bytesRead += (4+2+unknownMODT.getSize());
 
            //read DESC
-           if (!loadUint32SubRecordFromStream(in_File, cDESC, textStringID, true)) return false;
-           bytesRead += 10;
+           if (!text.loadFromStream(in_File, cDESC, true, bytesRead, localized, table, buffer))
+             return false;
            hasReadMODL = true;
            break;
       case cKSIZ:

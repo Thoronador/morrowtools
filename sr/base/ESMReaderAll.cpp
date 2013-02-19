@@ -156,321 +156,321 @@ void ESMReaderAll::groupFinished(const GroupData& g_data)
   //empty, ESMReaderAll does not care about group structure
 }
 
-int ESMReaderAll::readNextRecord(std::ifstream& in_File, const uint32_t recName)
+int ESMReaderAll::readNextRecord(std::ifstream& in_File, const uint32_t recName, const bool localized, const StringTable& table)
 {
   switch (recName)
   {
     case cAACT:
-         return Actions::getSingleton().readNextRecord(in_File);
+         return Actions::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cACHR:
-         return CharacterReferences::getSingleton().readNextRecord(in_File);
+         return CharacterReferences::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cACTI:
-         return Activators::getSingleton().readNextRecord(in_File);
+         return Activators::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cADDN:
-         return AddOnNodes::getSingleton().readNextRecord(in_File);
+         return AddOnNodes::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cALCH:
-         return AlchemyPotions::getSingleton().readNextRecord(in_File);
+         return AlchemyPotions::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cAMMO:
-         return Ammunitions::getSingleton().readNextRecord(in_File);
+         return Ammunitions::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cANIO:
-         return AnimatedObjects::getSingleton().readNextRecord(in_File);
+         return AnimatedObjects::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cAPPA:
-         return Apparatuses::getSingleton().readNextRecord(in_File);
+         return Apparatuses::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cARMO:
-         return Armours::getSingleton().readNextRecord(in_File);
+         return Armours::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cARTO:
-         return ArtObjects::getSingleton().readNextRecord(in_File);
+         return ArtObjects::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cASPC:
-         return AcousticSpaces::getSingleton().readNextRecord(in_File);
+         return AcousticSpaces::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cASTP:
-         return AssociationTypes::getSingleton().readNextRecord(in_File);
+         return AssociationTypes::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cBOOK:
-         return Books::getSingleton().readNextRecord(in_File);
+         return Books::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cCAMS:
-         return CameraShots::getSingleton().readNextRecord(in_File);
+         return CameraShots::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cCELL:
-         return Cells::getSingleton().readNextRecord(in_File);
+         return Cells::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cCLAS:
-         return Classes::getSingleton().readNextRecord(in_File);
+         return Classes::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cCLFM:
-         return ColourForms::getSingleton().readNextRecord(in_File);
+         return ColourForms::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cCLMT:
-         return Climates::getSingleton().readNextRecord(in_File);
+         return Climates::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cCOBJ:
-         return CraftableObjects::getSingleton().readNextRecord(in_File);
+         return CraftableObjects::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cCOLL:
-         return Collisions::getSingleton().readNextRecord(in_File);
+         return Collisions::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cCONT:
-         return Containers::getSingleton().readNextRecord(in_File);
+         return Containers::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cCPTH:
-         return CameraPaths::getSingleton().readNextRecord(in_File);
+         return CameraPaths::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cCSTY:
-         return CombatStyles::getSingleton().readNextRecord(in_File);
+         return CombatStyles::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cDEBR:
-         return Debris::getSingleton().readNextRecord(in_File);
+         return Debris::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cDIAL:
-         return Dialogues::getSingleton().readNextRecord(in_File);
+         return Dialogues::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cDLBR:
-         return DialogBranches::getSingleton().readNextRecord(in_File);
+         return DialogBranches::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cDLVW:
-         return DialogViews::getSingleton().readNextRecord(in_File);
+         return DialogViews::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cDOBJ:
-         return DOBJRecords::getSingleton().readNextRecord(in_File);
+         return DOBJRecords::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cDOOR:
-         return Doors::getSingleton().readNextRecord(in_File);
+         return Doors::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cDUAL:
-         return DualCastData::getSingleton().readNextRecord(in_File);
+         return DualCastData::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cECZN:
-         return EncounterZones::getSingleton().readNextRecord(in_File);
+         return EncounterZones::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cEFSH:
-         return EffectShaders::getSingleton().readNextRecord(in_File);
+         return EffectShaders::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cENCH:
-         return Enchantments::getSingleton().readNextRecord(in_File);
+         return Enchantments::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cEQUP:
-         return EquipmentSlots::getSingleton().readNextRecord(in_File);
+         return EquipmentSlots::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cEXPL:
-         return Explosions::getSingleton().readNextRecord(in_File);
+         return Explosions::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cEYES:
-         return Eyes::getSingleton().readNextRecord(in_File);
+         return Eyes::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cFACT:
-         return Factions::getSingleton().readNextRecord(in_File);
+         return Factions::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cFLOR:
-         return Floras::getSingleton().readNextRecord(in_File);
+         return Floras::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cFLST:
-         return FormLists::getSingleton().readNextRecord(in_File);
+         return FormLists::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cFSTP:
-         return Footsteps::getSingleton().readNextRecord(in_File);
+         return Footsteps::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cFSTS:
-         return FootstepSets::getSingleton().readNextRecord(in_File);
+         return FootstepSets::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cFURN:
-         return Furniture::getSingleton().readNextRecord(in_File);
+         return Furniture::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cGMST:
-         return GameSettings::getSingleton().readNextRecord(in_File);
+         return GameSettings::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cGLOB:
-         return Globals::getSingleton().readNextRecord(in_File);
+         return Globals::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cGRAS:
-         return Grasses::getSingleton().readNextRecord(in_File);
+         return Grasses::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cHAZD:
-         return Hazards::getSingleton().readNextRecord(in_File);
+         return Hazards::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cHDPT:
-         return HeadParts::getSingleton().readNextRecord(in_File);
+         return HeadParts::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cIDLE:
-         return IdleAnimations::getSingleton().readNextRecord(in_File);
+         return IdleAnimations::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cIMAD:
-         return ImageSpaceModifiers::getSingleton().readNextRecord(in_File);
+         return ImageSpaceModifiers::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cIMGS:
-         return ImageSpaces::getSingleton().readNextRecord(in_File);
+         return ImageSpaces::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cIPCT:
-         return ImpactData::getSingleton().readNextRecord(in_File);
+         return ImpactData::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cIPDS:
-         return ImpactDataSets::getSingleton().readNextRecord(in_File);
+         return ImpactDataSets::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cINGR:
-         return Ingredients::getSingleton().readNextRecord(in_File);
+         return Ingredients::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cKEYM:
-         return Keys::getSingleton().readNextRecord(in_File);
+         return Keys::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cKYWD:
-         return Keywords::getSingleton().readNextRecord(in_File);
+         return Keywords::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cLCRT:
-         return LocationReferenceTypes::getSingleton().readNextRecord(in_File);
+         return LocationReferenceTypes::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cLCTN:
-         return Locations::getSingleton().readNextRecord(in_File);
+         return Locations::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cLGTM:
-         return LightingTemplates::getSingleton().readNextRecord(in_File);
+         return LightingTemplates::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cLIGH:
-         return Lights::getSingleton().readNextRecord(in_File);
+         return Lights::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cLSCR:
-         return LoadScreens::getSingleton().readNextRecord(in_File);
+         return LoadScreens::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cLTEX:
-         return LandscapeTextures::getSingleton().readNextRecord(in_File);
+         return LandscapeTextures::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cLVLI:
-         return LeveledItems::getSingleton().readNextRecord(in_File);
+         return LeveledItems::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cLVLN:
-         return LeveledCharacters::getSingleton().readNextRecord(in_File);
+         return LeveledCharacters::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cLVSP:
-         return LeveledSpells::getSingleton().readNextRecord(in_File);
+         return LeveledSpells::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cMATO:
-         return MaterialObjects::getSingleton().readNextRecord(in_File);
+         return MaterialObjects::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cMATT:
-         return MaterialTypes::getSingleton().readNextRecord(in_File);
+         return MaterialTypes::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cMESG:
-         return Messages::getSingleton().readNextRecord(in_File);
+         return Messages::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cMGEF:
-         return MagicEffects::getSingleton().readNextRecord(in_File);
+         return MagicEffects::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cMISC:
-         return MiscObjects::getSingleton().readNextRecord(in_File);
+         return MiscObjects::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cMOVT:
-         return MovementTypes::getSingleton().readNextRecord(in_File);
+         return MovementTypes::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cMSTT:
-         return MovableStatics::getSingleton().readNextRecord(in_File);
+         return MovableStatics::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cMUSC:
-         return MusicTypes::getSingleton().readNextRecord(in_File);
+         return MusicTypes::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cMUST:
-         return MusicTracks::getSingleton().readNextRecord(in_File);
+         return MusicTracks::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cNAVI:
-         return NAVIRecords::getSingleton().readNextRecord(in_File);
+         return NAVIRecords::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cNAVM:
-         return NavMeshes::getSingleton().readNextRecord(in_File);
+         return NavMeshes::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cNPC_:
-         return NPCs::getSingleton().readNextRecord(in_File);
+         return NPCs::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cOTFT:
-         return Outfits::getSingleton().readNextRecord(in_File);
+         return Outfits::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cPERK:
-         return Perks::getSingleton().readNextRecord(in_File);
+         return Perks::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cPGRE:
-         return PlacedGrenades::getSingleton().readNextRecord(in_File);
+         return PlacedGrenades::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cPHZD:
-         return PlacedHazards::getSingleton().readNextRecord(in_File);
+         return PlacedHazards::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cPROJ:
-         return Projectiles::getSingleton().readNextRecord(in_File);
+         return Projectiles::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cQUST:
-         return Quests::getSingleton().readNextRecord(in_File);
+         return Quests::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cRACE:
-         return Races::getSingleton().readNextRecord(in_File);
+         return Races::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cREFR:
-         return References::getSingleton().readNextRecord(in_File);
+         return References::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cRELA:
-         return Relationships::getSingleton().readNextRecord(in_File);
+         return Relationships::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cREVB:
-         return Reverbs::getSingleton().readNextRecord(in_File);
+         return Reverbs::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cRFCT:
-         return VisualEffects::getSingleton().readNextRecord(in_File);
+         return VisualEffects::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cSCRL:
-         return Scrolls::getSingleton().readNextRecord(in_File);
+         return Scrolls::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cSHOU:
-         return Shouts::getSingleton().readNextRecord(in_File);
+         return Shouts::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cSLGM:
-         return SoulGems::getSingleton().readNextRecord(in_File);
+         return SoulGems::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cSNCT:
-         return SoundCategories::getSingleton().readNextRecord(in_File);
+         return SoundCategories::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cSNDR:
-         return SoundDescriptors::getSingleton().readNextRecord(in_File);
+         return SoundDescriptors::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cSOUN:
-         return Sounds::getSingleton().readNextRecord(in_File);
+         return Sounds::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cSPEL:
-         return Spells::getSingleton().readNextRecord(in_File);
+         return Spells::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cSPGD:
-         return ShaderParticleGeometries::getSingleton().readNextRecord(in_File);
+         return ShaderParticleGeometries::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cSTAT:
-         return Statics::getSingleton().readNextRecord(in_File);
+         return Statics::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cTACT:
-         return TalkingActivators::getSingleton().readNextRecord(in_File);
+         return TalkingActivators::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cTREE:
-         return Trees::getSingleton().readNextRecord(in_File);
+         return Trees::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cTXST:
-         return TextureSets::getSingleton().readNextRecord(in_File);
+         return TextureSets::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cVTYP:
-         return VoiceTypes::getSingleton().readNextRecord(in_File);
+         return VoiceTypes::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cWATR:
-         return WaterTypes::getSingleton().readNextRecord(in_File);
+         return WaterTypes::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cWEAP:
-         return Weapons::getSingleton().readNextRecord(in_File);
+         return Weapons::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cWOOP:
-         return WordsOfPower::getSingleton().readNextRecord(in_File);
+         return WordsOfPower::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cWRLD:
-         return WorldSpaces::getSingleton().readNextRecord(in_File);
+         return WorldSpaces::getSingleton().readNextRecord(in_File, localized, table);
          break;
     default:
          //this branch should not be neccessary once the reader class is finished

@@ -63,6 +63,7 @@ bool NPCRecord::CSDXstruct::operator==(const NPCRecord::CSDXstruct& other) const
 
 NPCRecord::NPCRecord()
 : BasicRecord(), editorID(""),
+  factions(std::vector<FactionElem>()),
   deathItemFormID(0),
   voiceTypeFormID(0),
   templateActorBaseFormID(0),
@@ -73,11 +74,17 @@ NPCRecord::NPCRecord()
   farAwayModelSkinFormID(0),
   hasATKR(false), unknownATKR(0),
   unknownATKE(""),
+  spellFormIDs(std::vector<uint32_t>()),
+  perkList(std::vector<PerkElem>()),
+  items(std::vector<ComponentData>()),
   spectatorOverridePackageListFormID(0),
   combatOverridePackageListFormID(0),
+  unknownPKIDs(std::vector<uint32_t>()),
+  keywordArray(std::vector<uint32_t>()),
   classFormID(0),
   hasFULL(false), nameStringID(0),
   hasSHRT(false), unknownSHRT(0),
+  unknownPNAMs(std::vector<uint32_t>()),
   hairColorFormID(0),
   giftFilterFormID(0),
   combatStyleFormID(0),
@@ -89,27 +96,20 @@ NPCRecord::NPCRecord()
   sleepOutfitFormID(0),
   crimeFactionFormID(0),
   soundTemplateFormID(0),
+  unknownCSDXs(std::vector<CSDXstruct>()),
   defaultPackageListFormID(0),
-  faceComplexionFormID(0)
+  faceComplexionFormID(0),
+  unknownTINXs(std::vector<TINXstructure>())
 {
   unknownVMAD.setPresence(false);
   memset(unknownOBND, 0, 12);
   memset(unknownACBS, 0, 24);
-  factions.clear();
   unknownATKD.setPresence(false);
-  spellFormIDs.clear();
-  perkList.clear();
-  items.clear();
   memset(unknownAIDT, 0, 20);
-  unknownPKIDs.clear();
-  keywordArray.clear();
   memset(unknownDNAM, 0, 52);
-  unknownPNAMs.clear();
-  unknownCSDXs.clear();
   memset(unknownQNAM, 0, 12);
   unknownNAM9.setPresence(false);
   unknownNAMA.setPresence(false);
-  unknownTINXs.clear();
 }
 
 NPCRecord::~NPCRecord()

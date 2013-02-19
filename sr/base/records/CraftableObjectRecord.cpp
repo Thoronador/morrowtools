@@ -32,12 +32,13 @@ namespace SRTP
 CraftableObjectRecord::CraftableObjectRecord()
 : BasicRecord(), editorID(""),
   componentCount(0),
+  components(std::vector<ComponentData>()),
+  unknownCTDAs(std::vector<CTDAData>()),
   unknownCNAM(0),
   unknownBNAM(0),
   resultCount(0)
 {
-  components.clear();
-  unknownCTDAs.clear();
+
 }
 
 CraftableObjectRecord::~CraftableObjectRecord()

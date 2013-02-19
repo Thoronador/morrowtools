@@ -38,13 +38,11 @@ bool ClimateRecord::WeatherEntry::operator==(const ClimateRecord::WeatherEntry& 
 
 ClimateRecord::ClimateRecord()
 : BasicRecord(), editorID(""),
+  weatherList(std::vector<WeatherEntry>()),
   sunTexture(""),
   sunGlareTexture(""),
   modelPath("")
 {
-  //subrecord WLST
-  weatherList.clear();
-  //end of subrecord WLST
   unknownMODT.setPresence(false);
   unknownTNAM.setPresence(false);
 }

@@ -43,12 +43,12 @@ const uint8_t CameraPathRecord::cCameraZoomShotList             = 0x02;
 
 CameraPathRecord::CameraPathRecord()
 : BasicRecord(), editorID(""),
-  unknownDATA(0)
+  conditions(std::vector<CTDA_CIS1_compound>()),
+  unknownDATA(0),
+  camShotList(std::vector<uint32_t>())
 {
-  conditions.clear();
   cameraPathLinks.parentFormID = 0;
   cameraPathLinks.nextFormID = 0;
-  camShotList.clear();
 }
 
 CameraPathRecord::~CameraPathRecord()

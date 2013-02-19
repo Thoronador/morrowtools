@@ -78,6 +78,7 @@ bool FactionRecord::RankData::operator==(const FactionRecord::RankData& other) c
 
 FactionRecord::FactionRecord()
 : BasicRecord(), editorID(""),
+  relations(std::vector<InterfactionRelation>()), //subrecords XNAM
   hasFULL(false), nameStringID(0),
   flags(0),
   exteriorJailMarkerRefID(0), //subrecord JAIL opt.
@@ -86,12 +87,12 @@ FactionRecord::FactionRecord()
   playerInventoryContainerRefID(0), //subrecord PLCN, opt.
   crimeFactionListFormID(0), //subrecord CRGR, opt.
   jailOutfitFormID(0), //subrecord JOUT, opt.
+  ranks(std::vector<RankData>()),
   vendorListFormID(0),
-  vendorContainterFormID(0)
+  vendorContainterFormID(0),
+  conditions(std::vector<CTDA_CIS2_compound>())
 {
-  relations.clear(); //subrecords XNAM
   unknownCRVA.setPresence(false); //subrecord CRVA, opt.
-  ranks.clear();
   //VENV
   vendorStuff.startHour = 0;
   vendorStuff.endHour = 0;
@@ -99,7 +100,6 @@ FactionRecord::FactionRecord()
   vendorStuff.flagsVendor = 0;
   //end of VENV
   unknownPLVD.setPresence(false);
-  conditions.clear();
 }
 
 FactionRecord::~FactionRecord()

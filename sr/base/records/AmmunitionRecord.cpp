@@ -34,6 +34,7 @@ AmmunitionRecord::AmmunitionRecord()
   pickupSoundFormID(0),
   putdownSoundFormID(0),
   descriptionStringID(0),
+  keywordArray(std::vector<uint32_t>()),
   //DATA
   projectileFormID(0),
   DATAflags(0),
@@ -43,7 +44,6 @@ AmmunitionRecord::AmmunitionRecord()
 {
   memset(unknownOBND, 0, 12);
   unknownMODT.setPresence(false);
-  keywordArray.clear();
 }
 
 AmmunitionRecord::~AmmunitionRecord()

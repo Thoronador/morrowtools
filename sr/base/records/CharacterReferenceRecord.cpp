@@ -71,20 +71,20 @@ CharacterReferenceRecord::CharacterReferenceRecord()
   hasXLCM(false), unknownXLCM(0),
   hasINAM(false), unknownINAM(0),
   hasPDTO(false), unknownPDTO(0),
+  linkedReferences(std::vector<LinkedRef>()),
+  XAPDs(std::vector<uint8_t>()),
+  XAPRs(std::vector<uint64_t>()),
   persistenceLocationFormID(0), //subrecord XLCN
   locationRefTypeFormID(0), //subrecord XLRT
   encounterZoneFormID(0), //subrecord XEZN
   ownerFormID(0),
-  scale(1.0f) //subrecord XOWN
+  scale(1.0f), //subrecord XSCL
+  subBlocks(std::vector<SubBlock>())
 {
   unknownVMAD.setPresence(false);
   unknownXRGD.setPresence(false);
   unknownXRGB.setPresence(false);
-  linkedReferences.clear();
-  XAPDs.clear();
-  XAPRs.clear();
   subXESP.clear();
-  subBlocks.clear();
   memset(unknownDATA, 0, 24);
 }
 

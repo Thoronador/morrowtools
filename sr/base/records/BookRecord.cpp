@@ -39,6 +39,7 @@ BookRecord::BookRecord()
   textStringID(0),
   pickupSoundFormID(0),
   putdownSoundFormID(0),
+  keywordArray(std::vector<uint32_t>()),
   //DATA
   bookFlags(0),
   spellOrSkillID(0),
@@ -51,7 +52,6 @@ BookRecord::BookRecord()
   unknownVMAD.setPresence(false);
   memset(unknownOBND, 0, 12);
   unknownMODT.setPresence(true);
-  keywordArray.clear();
 }
 
 BookRecord::~BookRecord()

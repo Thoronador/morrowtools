@@ -36,6 +36,7 @@ const uint32_t AlchemyPotionRecord::cFlagPoison     = 0x00020000;
 AlchemyPotionRecord::AlchemyPotionRecord()
 : BasicRecord(), editorID(""),
   hasFULL(false), nameStringID(0),
+  keywordArray(std::vector<uint32_t>()),
   modelPath(""),
   pickupSoundFormID(0),
   putdownSoundFormID(0),
@@ -46,14 +47,13 @@ AlchemyPotionRecord::AlchemyPotionRecord()
   flags(0),
   unknownThirdENIT(0),
   addictionChance(0.0f),
-  useSoundFormID(0)
+  useSoundFormID(0),
   //end of ENIT
+  effects(std::vector<EffectBlock>())
 {
   memset(unknownOBND, 0, 12);
-  keywordArray.clear();
   unknownMODT.setPresence(false);
   unknownMODS.setPresence(false);
-  effects.clear();
 }
 
 AlchemyPotionRecord::~AlchemyPotionRecord()

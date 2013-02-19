@@ -33,9 +33,10 @@ CollisionRecord::CollisionRecord()
   unknownBNAM(0),
   unknownFNAM(0),
   unknownGNAM(0),
-  unknownMNAM("")
+  unknownMNAM(""),
+  unknownCNAMs(std::vector<uint32_t>())
 {
-  unknownCNAMs.clear();
+
 }
 
 CollisionRecord::~CollisionRecord()

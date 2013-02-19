@@ -50,6 +50,8 @@ ActivatorRecord::ActivatorRecord()
   hasFULL(false), nameStringID(0),
   modelPath(""),
   hasDEST(false), unknownDEST(0),
+  destructionStructures(std::vector<destStruct>()),
+  keywordArray(std::vector<uint32_t>()),
   hasPNAM(false),
   defaultPrimitiveColourRed(0),
   defaultPrimitiveColourGreen(0),
@@ -65,8 +67,6 @@ ActivatorRecord::ActivatorRecord()
   memset(unknownOBND, 0, 12);
   unknownMODT.setPresence(false);
   unknownMODS.setPresence(false);
-  destructionStructures.clear();
-  keywordArray.clear();
 }
 
 ActivatorRecord::~ActivatorRecord()

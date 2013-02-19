@@ -40,6 +40,7 @@ ContainerRecord::ContainerRecord()
 : BasicRecord(), editorID(""),
   hasFULL(false), nameStringID(0),
   modelPath(""),
+  contents(std::vector<ComponentData>()),
   flags(0),
   weight(0.0f),
   openSoundFormID(0),
@@ -49,7 +50,6 @@ ContainerRecord::ContainerRecord()
   memset(unknownOBND, 0, 12);
   unknownMODT.setPresence(false);
   unknownMODS.setPresence(false);
-  contents.clear();
   unknownCOED.setPresence(false);
 }
 

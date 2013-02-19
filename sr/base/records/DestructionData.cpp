@@ -107,9 +107,10 @@ void DestructionStage::reset()
 /* DestructionData's functions */
 
 DestructionData::DestructionData()
-: isPresent(false), health(0), stageCount(0), unknownTwo(0), unknownThreeFour(0)
+: isPresent(false), health(0), stageCount(0), unknownTwo(0), unknownThreeFour(0),
+  stages(std::vector<DestructionStage>())
 {
-  stages.clear();
+
 }
 
 #ifndef SR_NO_RECORD_EQUALITY

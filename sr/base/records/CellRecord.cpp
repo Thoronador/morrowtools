@@ -46,6 +46,7 @@ CellRecord::CellRecord()
   lightingTemplateFormID(0),
   hasLNAM(false), unknownLNAM(0),
   unknownXCLW(0.0f),
+  unknownXCLR(std::vector<uint32_t>()),
   hasXNAM(false), unknownXNAM(0),
   locationFormID(0),
   hasXWCN(false), unknownXWCN(0),
@@ -65,7 +66,6 @@ CellRecord::CellRecord()
   unknownMHDT.setPresence(false);
   gridLocation.presence = false;
   unknownXCLL.setPresence(false);
-  unknownXCLR.clear();
   unknownXWCU.setPresence(false);
 }
 

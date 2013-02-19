@@ -30,9 +30,10 @@ namespace SRTP
 /* functions of index entry structure */
 
 QuestRecord::IndexEntry::IndexEntry()
-: index(0), indexUnknownPart(0)
+: index(0), indexUnknownPart(0),
+  theQSDTs(std::vector<QSDTRecord>())
 {
-  theQSDTs.clear();
+
 }
 
 bool QuestRecord::IndexEntry::operator==(const QuestRecord::IndexEntry& other) const
@@ -75,9 +76,9 @@ bool QuestRecord::IndexEntry::QSDTRecord::operator==(const QuestRecord::IndexEnt
 /* AliasEntry's functions */
 
 QuestRecord::AliasEntry::AliasEntry()
+: unknownALST(0),
+  aliasID("") //subrecord ALID
 {
-  unknownALST = 0;
-  aliasID = ""; //subrecord ALID
   clear();
 }
 
@@ -314,9 +315,10 @@ void QuestRecord::AliasEntry::clear()
 QuestRecord::QOBJEntry::QOBJEntry()
 : unknownQOBJ(0),
   unknownFNAM(0),
-  unknownNNAM(0)
+  unknownNNAM(0),
+  theQSTAs(std::vector<QSTAEntry>())
 {
-  theQSTAs.clear();
+
 }
 
 void QuestRecord::QOBJEntry::clear()
@@ -336,9 +338,10 @@ bool QuestRecord::QOBJEntry::operator==(const QuestRecord::QOBJEntry& other) con
 /* QSTAEntry's functions */
 
 QuestRecord::QOBJEntry::QSTAEntry::QSTAEntry()
-: unknownQSTA(0)
+: unknownQSTA(0),
+  unknownCTDA_CIS2s(std::vector<CTDA_CIS2_compound>())
 {
-  unknownCTDA_CIS2s.clear();
+
 }
 
 void QuestRecord::QOBJEntry::QSTAEntry::clear()
@@ -358,16 +361,16 @@ QuestRecord::QuestRecord()
 : BasicRecord(), editorID(""),
   hasFULL(false), unknownFULL(0),
   hasENAM(false), unknownENAM(0),
+  unknownQTGLs(std::vector<uint32_t>()),
+  unknownCTDA_CIS2s(std::vector<CTDA_CIS2_compound>()),
   filter(""),
-  unknownANAM(0)
+  indices(std::vector<IndexEntry>()),
+  theQOBJs(std::vector<QOBJEntry>()),
+  unknownANAM(0),
+  aliases(std::vector<AliasEntry>())
 {
   unknownVMAD.setPresence(false);
   memset(unknownDNAM, 0, 12);
-  unknownQTGLs.clear();
-  unknownCTDA_CIS2s.clear();
-  indices.clear();
-  theQOBJs.clear();
-  aliases.clear();
 }
 
 QuestRecord::~QuestRecord()

@@ -47,6 +47,7 @@ CombatStyleRecord::CombatStyleRecord()
   unknownCSMDOne(0.2f),
   unknownCSMDTwo(0.2f),
   //end of subrecord CSMD
+  unknownCSME(std::vector<float>()),
   //subrecord CSCR
   cscrLen(crl16Bytes),
   circleMult(0.2f), //Close Range, Dueling
@@ -56,10 +57,10 @@ CombatStyleRecord::CombatStyleRecord()
   //end of subrecord CSCR
   hasCSLR(false),
   longRangeStrafeMult(0.2f), //subrecord CSLR
+  unknownCSFL(std::vector<float>()),
   hasDATA(false), unknownDATA(0)
 {
-  unknownCSME.clear();
-  unknownCSFL.clear();
+
 }
 
 CombatStyleRecord::~CombatStyleRecord()

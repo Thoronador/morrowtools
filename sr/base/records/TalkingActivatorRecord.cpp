@@ -29,7 +29,7 @@ namespace SRTP
 
 TalkingActivatorRecord::TalkingActivatorRecord()
 : BasicRecord(), editorID(""),
-  nameStringID(0),
+  name(LocalizedString()),
   modelPath(""),
   unknownPNAM(0),
   loopingSoundFormID(0),
@@ -50,7 +50,7 @@ bool TalkingActivatorRecord::equals(const TalkingActivatorRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
       and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
-      and (nameStringID==other.nameStringID) and (modelPath==other.modelPath)
+      and (name==other.name) and (modelPath==other.modelPath)
       and (unknownMODT==other.unknownMODT) and (unknownPNAM==other.unknownPNAM)
       and (loopingSoundFormID==other.loopingSoundFormID)
       and (unknownFNAM==other.unknownFNAM) and (voiceTypeFormID==other.voiceTypeFormID));
@@ -68,9 +68,9 @@ uint32_t TalkingActivatorRecord::getWriteSize() const
         +modelPath.length()+1 /* length of path +1 byte for NUL termination */
         +4 /* PNAM */ +2 /* 2 bytes for length */ +4 /* fixed size of 4 bytes */
         +4 /* FNAM */ +2 /* 2 bytes for length */ +2 /* fixed size of 2 bytes */;
-  if (nameStringID!=0)
+  if (name.isPresent())
   {
-    writeSize = writeSize +4 /* FULL */ +2 /* 2 bytes for length */ +4 /* fixed size of 4 bytes */;
+    writeSize += name.getWriteSize() /* FULL */;
   }
   if (unknownMODT.isPresent())
   {
@@ -108,15 +108,11 @@ bool TalkingActivatorRecord::saveToStream(std::ofstream& output) const
   //write OBND's stuff
   output.write((const char*) unknownOBND, 12);
 
-  if (nameStringID!=0)
+  if (name.isPresent())
   {
     //write FULL
-    output.write((const char*) &cFULL, 4);
-    //FULL's length
-    subLength = 4; //fixed
-    output.write((const char*) &subLength, 2);
-    //write name string ID
-    output.write((const char*) &nameStringID, 4);
+    if (!name.saveToStream(output, cFULL))
+      return false;
   }//if FULL
 
   //write MODL
@@ -179,7 +175,7 @@ bool TalkingActivatorRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool TalkingActivatorRecord::loadFromStream(std::ifstream& in_File)
+bool TalkingActivatorRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
@@ -243,7 +239,7 @@ bool TalkingActivatorRecord::loadFromStream(std::ifstream& in_File)
     return false;
   }
 
-  nameStringID = 0;
+  name.reset();
   modelPath.clear();
   unknownMODT.setPresence(false);
   bool hasReadPNAM = false;
@@ -259,16 +255,16 @@ bool TalkingActivatorRecord::loadFromStream(std::ifstream& in_File)
     switch (subRecName)
     {
       case cFULL:
-           if (nameStringID!=0)
+           if (name.isPresent())
            {
              std::cout << "Error: record TACT seems to have more than one FULL subrecord!\n";
              return false;
            }
            //read FULL
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID, false)) return false;
-           bytesRead += 6;
+           if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
+             return false;
            //sanity check
-           if (nameStringID==0)
+           if ((name.getType()==LocalizedString::lsIndex) and (name.getIndex()==0))
            {
              std::cout << "Error: subrecord FULL of TACT has invalid value zero!\n";
              return false;

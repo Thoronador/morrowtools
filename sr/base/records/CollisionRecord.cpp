@@ -29,7 +29,7 @@ namespace SRTP
 
 CollisionRecord::CollisionRecord()
 : BasicRecord(), editorID(""),
-  descriptionStringID(0),
+  description(LocalizedString()),
   unknownBNAM(0),
   unknownFNAM(0),
   unknownGNAM(0),
@@ -48,7 +48,7 @@ CollisionRecord::~CollisionRecord()
 bool CollisionRecord::equals(const CollisionRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
-      and (descriptionStringID==other.descriptionStringID) and (unknownBNAM==other.unknownBNAM)
+      and (description==other.description) and (unknownBNAM==other.unknownBNAM)
       and (unknownFNAM==other.unknownFNAM) and (unknownGNAM==other.unknownGNAM)
       and (unknownMNAM==other.unknownMNAM) and (unknownCNAMs==other.unknownCNAMs));
 }
@@ -60,7 +60,7 @@ uint32_t CollisionRecord::getWriteSize() const
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
-        +4 /* DESC */ +2 /* 2 bytes for length */ +4 /* fixed size */
+        +description.getWriteSize() /* DESC */
         +4 /* BNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */
         +4 /* FNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */
         +4 /* GNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */
@@ -88,12 +88,8 @@ bool CollisionRecord::saveToStream(std::ofstream& output) const
   output.write(editorID.c_str(), subLength);
 
   //write DESC
-  output.write((const char*) &cDESC, 4);
-  //DESC's length
-  subLength = 4; //fixed size
-  output.write((const char*) &subLength, 2);
-  //write description string ID
-  output.write((const char*) &descriptionStringID, 4);
+  if (!description.saveToStream(output, cDESC))
+    return false;
 
   //write BNAM
   output.write((const char*) &cBNAM, 4);
@@ -155,7 +151,7 @@ bool CollisionRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool CollisionRecord::loadFromStream(std::ifstream& in_File)
+bool CollisionRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
@@ -192,7 +188,7 @@ bool CollisionRecord::loadFromStream(std::ifstream& in_File)
   }
   editorID = std::string(buffer);
 
-  bool hasReadDESC = false;
+  description.reset();
   bool hasReadBNAM = false;
   bool hasReadFNAM = false;
   bool hasReadGNAM = false;
@@ -208,15 +204,14 @@ bool CollisionRecord::loadFromStream(std::ifstream& in_File)
     switch (subRecName)
     {
       case cDESC:
-           if (hasReadDESC)
+           if (description.isPresent())
            {
              std::cout << "Error: COLL seems to have more than one DESC subrecord.\n";
              return false;
            }
            //read DESC
-           if (!loadUint32SubRecordFromStream(in_File, cDESC, descriptionStringID, false)) return false;
-           bytesRead += 6;
-           hasReadDESC = true;
+           if (!description.loadFromStream(in_File, cDESC, false, bytesRead, localized, table, buffer))
+             return false;
            break;
       case cBNAM:
            if (hasReadBNAM)
@@ -328,7 +323,7 @@ bool CollisionRecord::loadFromStream(std::ifstream& in_File)
   }//while
 
   //presence checks
-  if (!(hasReadDESC and hasReadBNAM and hasReadFNAM and hasReadGNAM
+  if (!(description.isPresent() and hasReadBNAM and hasReadFNAM and hasReadGNAM
       and (!unknownMNAM.empty()) and hasReadINTV))
   {
     std::cout << "Error: at least one subrecord of COLL is missing!\n";

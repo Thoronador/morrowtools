@@ -60,10 +60,10 @@ const uint32_t SpellRecord::cTargetLocation = 0x00000004;
 
 SpellRecord::SpellRecord()
 : BasicRecord(), editorID(""),
-  hasFULL(false), nameStringID(0),
+  name(LocalizedString()),
   menuDisplayObjectFormID(0),
   equipTypeFormID(0),
-  descriptionStringID(0),
+  description(LocalizedString()),
   //subrecord SPIT
   castingCost(0),
   flags(0),
@@ -89,10 +89,10 @@ SpellRecord::~SpellRecord()
 bool SpellRecord::equals(const SpellRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
-      and (memcmp(unknownOBND, other.unknownOBND, 12)==0) and (hasFULL==other.hasFULL)
-      and ((nameStringID==other.nameStringID) or (!hasFULL))
+      and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
+      and (name==other.name)
       and (menuDisplayObjectFormID==other.menuDisplayObjectFormID)
-      and (equipTypeFormID==other.equipTypeFormID) and (descriptionStringID==other.descriptionStringID)
+      and (equipTypeFormID==other.equipTypeFormID) and (description==other.description)
       and (castingCost==other.castingCost) and (flags==other.flags)
       and (type==other.type) and (chargeTime==other.chargeTime)
       and (castingType==other.castingType) and (delivery==other.delivery)
@@ -110,11 +110,11 @@ uint32_t SpellRecord::getWriteSize() const
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
         +4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed length of 12 bytes */
         +4 /* ETYP */ +2 /* 2 bytes for length */ +4 /* fixed length of 4 bytes */
-        +4 /* DESC */ +2 /* 2 bytes for length */ +4 /* fixed length of 4 bytes */
+        +description.getWriteSize() /* DESC */
         +4 /* SPIT */ +2 /* 2 bytes for length */ +36 /* fixed length of 36 bytes */;
-  if (hasFULL)
+  if (name.isPresent())
   {
-    writeSize = writeSize +4 /*FULL*/ +2 /* 2 bytes for length */ +4 /* fixed length of four bytes */;
+    writeSize += name.getWriteSize() /*FULL*/;
   }
   if (menuDisplayObjectFormID!=0)
   {
@@ -152,15 +152,11 @@ bool SpellRecord::saveToStream(std::ofstream& output) const
   //write OBND's stuff
   output.write((const char*) unknownOBND, 12);
 
-  if (hasFULL)
+  if (name.isPresent())
   {
     //write FULL
-    output.write((const char*) &cFULL, 4);
-    //FULL's length
-    subLength = 4; //fixed
-    output.write((const char*) &subLength, 2);
-    //write FULL's stuff
-    output.write((const char*) &nameStringID, 4);
+    if (!name.saveToStream(output, cFULL))
+      return false;
   }//if has FULL
 
   if (menuDisplayObjectFormID!=0)
@@ -183,12 +179,8 @@ bool SpellRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &equipTypeFormID, 4);
 
   //write DESC
-  output.write((const char*) &cDESC, 4);
-  //DESC's length
-  subLength = 4; //fixed
-  output.write((const char*) &subLength, 2);
-  //write DESC's stuff
-  output.write((const char*) &descriptionStringID, 4);
+  if (!description.saveToStream(output,cDESC))
+    return false;
 
   //write SPIT
   output.write((const char*) &cSPIT, 4);
@@ -223,7 +215,7 @@ bool SpellRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool SpellRecord::loadFromStream(std::ifstream& in_File)
+bool SpellRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
@@ -286,10 +278,10 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
     return false;
   }
 
-  hasFULL = false; nameStringID = 0;
+  name.reset();
   menuDisplayObjectFormID = 0;
   bool hasReadETYP = false;
-  bool hasReadDESC = false;
+  description.reset();
   bool hasReadSPIT = false;
   effects.clear();
   EffectBlock tempEffect;
@@ -303,15 +295,14 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
     switch(subRecName)
     {
       case cFULL:
-           if (hasFULL)
+           if (name.isPresent())
            {
              std::cout << "Error: SPEL seems to have more than one FULL subrecord!\n";
              return false;
            }
            //read FULL
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID, false)) return false;
-           bytesRead += 6;
-           hasFULL = true;
+           if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
+             return false;
            break;
       case cMDOB:
            if (menuDisplayObjectFormID!=0)
@@ -340,15 +331,14 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
            hasReadETYP = true;
            break;
       case cDESC:
-           if (hasReadDESC)
+           if (description.isPresent())
            {
              std::cout << "Error: SPEL seems to have more than one DESC subrecord!\n";
              return false;
            }
            //read DESC
-           if (!loadUint32SubRecordFromStream(in_File, cDESC, descriptionStringID, false)) return false;
-           bytesRead += 6;
-           hasReadDESC = true;
+           if (!description.loadFromStream(in_File, cDESC, false, bytesRead, localized, table, buffer))
+             return false;
            break;
       case cSPIT:
            if (hasReadSPIT)
@@ -516,7 +506,7 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File)
   }
 
   //check presence
-  if (!(hasReadETYP and hasReadDESC and hasReadSPIT))
+  if (!(hasReadETYP and description.isPresent() and hasReadSPIT))
   {
     std::cout << "Error while reading record SPEL: at least one of the "
               << "subrecords ETYP, DESC or SPIT is missing!\n";

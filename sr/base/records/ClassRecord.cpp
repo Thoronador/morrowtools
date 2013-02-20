@@ -29,7 +29,7 @@ namespace SRTP
 
 ClassRecord::ClassRecord()
 : BasicRecord(), editorID(""),
-  nameStringID(0),
+  name(LocalizedString()),
   unknownDESC(0)
 {
   memset(unknownDATA, 0, 36);
@@ -44,7 +44,7 @@ ClassRecord::~ClassRecord()
 bool ClassRecord::equals(const ClassRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
-    and (nameStringID==other.nameStringID) and (unknownDESC==other.unknownDESC)
+    and (name==other.name) and (unknownDESC==other.unknownDESC)
     and (memcmp(unknownDATA, other.unknownDATA, 36)==0));
 }
 #endif
@@ -75,12 +75,8 @@ bool ClassRecord::saveToStream(std::ofstream& output) const
   output.write(editorID.c_str(), subLength);
 
   //write FULL
-  output.write((const char*) &cFULL, 4);
-  //FULL's length
-  subLength = 4;
-  output.write((const char*) &subLength, 2);
-  //write FULL's stuff
-  output.write((const char*) &nameStringID, 4);
+  if (!name.saveToStream(output, cFULL))
+    return false;
 
   //write DESC
   output.write((const char*) &cDESC, 4);
@@ -102,7 +98,7 @@ bool ClassRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool ClassRecord::loadFromStream(std::ifstream& in_File)
+bool ClassRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
@@ -140,26 +136,7 @@ bool ClassRecord::loadFromStream(std::ifstream& in_File)
   editorID = std::string(buffer);
 
   //read FULL
-  in_File.read((char*) &subRecName, 4);
-  bytesRead += 4;
-  if (subRecName!=cFULL)
-  {
-    UnexpectedRecord(cFULL, subRecName);
-    return false;
-  }
-  //FULL's length
-  in_File.read((char*) &subLength, 2);
-  bytesRead += 2;
-  if (subLength!=4)
-  {
-    std::cout <<"Error: subrecord FULL of CLAS has invalid length ("<<subLength
-              <<" bytes). Should be four bytes!\n";
-    return false;
-  }
-  //read FULL's stuff
-  in_File.read((char*) &nameStringID, 4);
-  bytesRead += 4;
-  if (!in_File.good())
+  if (!name.loadFromStream(in_File, cFULL, true, bytesRead, localized, table, buffer))
   {
     std::cout << "Error while reading subrecord FULL of CLAS!\n";
     return false;

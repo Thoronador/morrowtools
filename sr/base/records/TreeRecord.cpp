@@ -33,7 +33,7 @@ TreeRecord::TreeRecord()
   ingredientFormID(0),
   harvestSoundFormID(0),
   unknownPFPC(0),
-  hasFULL(false), nameStringID(0)
+  name(LocalizedString())
 {
   memset(unknownOBND, 0, 12);
   unknownMODT.setPresence(false);
@@ -53,8 +53,8 @@ bool TreeRecord::equals(const TreeRecord& other) const
       and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
       and (ingredientFormID==other.ingredientFormID)
       and (harvestSoundFormID==other.harvestSoundFormID)
-      and (unknownPFPC==other.unknownPFPC) and (hasFULL==other.hasFULL)
-      and ((nameStringID==other.nameStringID) or (!hasFULL))
+      and (unknownPFPC==other.unknownPFPC)
+      and (name==other.name)
       and (memcmp(unknownCNAM, other.unknownCNAM, 48)==0));
 }
 #endif
@@ -85,9 +85,9 @@ uint32_t TreeRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* SNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
-  if (hasFULL)
+  if (name.isPresent())
   {
-    writeSize = writeSize +4 /* FULL */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+    writeSize += name.getWriteSize() /* FULL */;
   }
   return writeSize;
 }
@@ -163,15 +163,11 @@ bool TreeRecord::saveToStream(std::ofstream& output) const
   //write PFPC
   output.write((const char*) &unknownPFPC, 4);
 
-  if (hasFULL)
+  if (name.isPresent())
   {
     //write FULL
-    output.write((const char*) &cFULL, 4);
-    //FULL's length
-    subLength = 4; // fixed
-    output.write((const char*) &subLength, 2);
-    //write FULL
-    output.write((const char*) &nameStringID, 4);
+    if (!name.saveToStream(output, cFULL))
+      return false;
   }//if FULL
 
   //write CNAM
@@ -186,7 +182,7 @@ bool TreeRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool TreeRecord::loadFromStream(std::ifstream& in_File)
+bool TreeRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
@@ -254,7 +250,7 @@ bool TreeRecord::loadFromStream(std::ifstream& in_File)
   ingredientFormID = 0;
   harvestSoundFormID = 0;
   bool hasReadPFPC = false;
-  hasFULL = false;
+  name.reset();
   bool hasReadCNAM = false;
   while (bytesRead<readSize)
   {
@@ -346,15 +342,14 @@ bool TreeRecord::loadFromStream(std::ifstream& in_File)
            hasReadPFPC = true;
            break;
       case cFULL:
-           if (hasFULL)
+           if (name.isPresent())
            {
              std::cout << "Error: TREE seems to have more than one FULL subrecord.\n";
              return false;
            }
            //read FULL
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID, false)) return false;
-           bytesRead += 6;
-           hasFULL = true;
+           if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
+             return false;
            break;
       case cCNAM:
            if (hasReadCNAM)
@@ -398,9 +393,9 @@ bool TreeRecord::loadFromStream(std::ifstream& in_File)
   }
 
   //check triplet consistency
-  if ((ingredientFormID!=0) or (harvestSoundFormID!=0) or hasFULL)
+  if ((ingredientFormID!=0) or (harvestSoundFormID!=0) or name.isPresent())
   {
-    if (!((ingredientFormID!=0) and (harvestSoundFormID!=0) and hasFULL))
+    if (!((ingredientFormID!=0) and (harvestSoundFormID!=0) and name.isPresent()))
     {
       std::cout << "Error: while reading TREE record: at least one of the "
                 << "subrecords PFIG, SNAM or FULL is missing!\n";

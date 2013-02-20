@@ -29,7 +29,7 @@ namespace SRTP
 
 DoorRecord::DoorRecord()
 : BasicRecord(), editorID(""),
-  hasFULL(false), nameStringID(0),
+  name(LocalizedString()),
   modelPath(""),
   hasSNAM(false), unknownSNAM(0),
   hasANAM(false), unknownANAM(0),
@@ -51,8 +51,8 @@ bool DoorRecord::equals(const DoorRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
       and (unknownVMAD==other.unknownVMAD)
-      and (memcmp(unknownOBND, other.unknownOBND, 12)==0) and (hasFULL==other.hasFULL)
-      and ((nameStringID==other.nameStringID) or (!hasFULL)) and (modelPath==other.modelPath)
+      and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
+      and (name==other.name) and (modelPath==other.modelPath)
       and (unknownMODT==other.unknownMODT) and (unknownMODS==other.unknownMODS)
       and (hasSNAM==other.hasSNAM) and ((unknownSNAM==other.unknownSNAM) or (!hasSNAM))
       and (hasANAM==other.hasANAM) and ((unknownANAM==other.unknownANAM) or (!hasANAM))
@@ -75,9 +75,9 @@ uint32_t DoorRecord::getWriteSize() const
     writeSize = writeSize +4 /*VMAD*/ +2 /* 2 bytes for length */
                +unknownVMAD.getSize() /* size */;
   }
-  if (hasFULL)
+  if (name.isPresent())
   {
-    writeSize = writeSize +4 /* FULL */ +2 /* 2 bytes for length */ +4 /* fixed length of four bytes */;
+    writeSize += name.getWriteSize() /* FULL */;
   }//if has SNAM
   if (!modelPath.empty())
   {
@@ -136,15 +136,11 @@ bool DoorRecord::saveToStream(std::ofstream& output) const
   //write OBND's stuff
   output.write((const char*) unknownOBND, 12);
 
-  if (hasFULL)
+  if (name.isPresent())
   {
     //write FULL
-    output.write((const char*) &cFULL, 4);
-    //FULL's length
-    subLength = 4; //fixed
-    output.write((const char*) &subLength, 2);
-    //write FULL's stuff
-    output.write((const char*) &nameStringID, 4);
+    if (!name.saveToStream(output, cFULL))
+      return false;
   }//if has FULL
 
   if (!modelPath.empty())
@@ -212,7 +208,7 @@ bool DoorRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool DoorRecord::loadFromStream(std::ifstream& in_File)
+bool DoorRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
@@ -295,8 +291,7 @@ bool DoorRecord::loadFromStream(std::ifstream& in_File)
     return false;
   }
 
-  hasFULL = false;
-  nameStringID = 0;
+  name.reset();
   modelPath.clear();
   unknownMODT.setPresence(false);
   unknownMODS.setPresence(false);
@@ -311,15 +306,14 @@ bool DoorRecord::loadFromStream(std::ifstream& in_File)
     switch(subRecName)
     {
       case cFULL:
-           if (hasFULL)
+           if (name.isPresent())
            {
              std::cout << "Error: DOOR seems to have more than one FULL subrecord!\n";
              return false;
            }
            //read FULL
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID, false)) return false;
-           bytesRead += 6;
-           hasFULL = true;
+           if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
+             return false;
            break;
       case cMODL:
            if (!modelPath.empty())

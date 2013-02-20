@@ -37,7 +37,7 @@ const uint8_t SoulGemRecord::cCapacityAzura = 5;
 
 SoulGemRecord::SoulGemRecord()
 : BasicRecord(), editorID(""),
-  hasFULL(false), nameStringID(0),
+  name(LocalizedString()),
   modelPath(""),
   keywordArray(std::vector<uint32_t>()),
   //subrecord DATA
@@ -62,7 +62,7 @@ bool SoulGemRecord::equals(const SoulGemRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
       and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
-      and (hasFULL==other.hasFULL) and ((nameStringID==other.nameStringID) or (!hasFULL))
+      and (name==other.name)
       and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
       and (keywordArray==other.keywordArray) and (value==other.value)
       and (weight==other.weight) and (soulInside==other.soulInside)
@@ -81,9 +81,9 @@ uint32_t SoulGemRecord::getWriteSize() const
         +4 /* DATA */ +2 /* 2 bytes for length */ +8 /* fixed size */
         +4 /* SOUL */ +2 /* 2 bytes for length */ +1 /* fixed size */
         +4 /* SLCP */ +2 /* 2 bytes for length */ +1 /* fixed size */;
-  if (hasFULL)
+  if (name.isPresent())
   {
-    writeSize = writeSize +4 /* FULL */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+    writeSize += name.getWriteSize() /* FULL */;
   }
   if (!modelPath.empty())
   {
@@ -127,15 +127,11 @@ bool SoulGemRecord::saveToStream(std::ofstream& output) const
   //write OBND's stuff
   output.write((const char*) unknownOBND, 12);
 
-  if (hasFULL)
+  if (name.isPresent())
   {
     //write FULL
-    output.write((const char*) &cFULL, 4);
-    //FULL's length
-    subLength = 4; // fixed
-    output.write((const char*) &subLength, 2);
-    //write FULL
-    output.write((const char*) &nameStringID, 4);
+    if (!name.saveToStream(output, cFULL))
+      return false;
   }//if FULL
 
   if (!modelPath.empty())
@@ -213,7 +209,7 @@ bool SoulGemRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool SoulGemRecord::loadFromStream(std::ifstream& in_File)
+bool SoulGemRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
@@ -276,7 +272,7 @@ bool SoulGemRecord::loadFromStream(std::ifstream& in_File)
     return false;
   }
 
-  hasFULL = false;
+  name.reset();
   modelPath.clear();
   unknownMODT.setPresence(false);
   keywordArray.clear();
@@ -293,15 +289,14 @@ bool SoulGemRecord::loadFromStream(std::ifstream& in_File)
     switch (subRecName)
     {
       case cFULL:
-           if (hasFULL)
+           if (name.isPresent())
            {
              std::cout << "Error: SLGM seems to have more than one FULL subrecord.\n";
              return false;
            }
            //read FULL
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID, false)) return false;
-           bytesRead += 6;
-           hasFULL = true;
+           if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
+             return false;
            break;
       case cMODL:
            if (!modelPath.empty())

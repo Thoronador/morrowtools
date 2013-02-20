@@ -42,7 +42,7 @@ bool CellRecord::SubrecordXCLC::operator==(const CellRecord::SubrecordXCLC& othe
 
 CellRecord::CellRecord()
 : BasicRecord(), editorID(""),
-  hasFULL(false), nameStringID(0),
+  name(LocalizedString()),
   lightingTemplateFormID(0),
   hasLNAM(false), unknownLNAM(0),
   unknownXCLW(0.0f),
@@ -78,7 +78,7 @@ CellRecord::~CellRecord()
 bool CellRecord::equals(const CellRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
-      and (hasFULL==other.hasFULL) and ((nameStringID==other.nameStringID) or (!hasFULL))
+      and (name==other.name)
       and (unknownDATA==other.unknownDATA) and (unknownTVDT==other.unknownTVDT)
       and (unknownMHDT==other.unknownMHDT) and (gridLocation==other.gridLocation)
       and (unknownXCLL==other.unknownXCLL) and (lightingTemplateFormID==other.lightingTemplateFormID)
@@ -117,9 +117,9 @@ uint32_t CellRecord::getWriteSize() const
     writeSize = writeSize + 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */;
   }
-  if (hasFULL)
+  if (name.isPresent())
   {
-    writeSize = writeSize +4 /* FULL */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+    writeSize += name.getWriteSize() /* FULL */;
   }
   if (unknownTVDT.isPresent())
   {
@@ -223,15 +223,11 @@ bool CellRecord::saveToStream(std::ofstream& output) const
     output.write(editorID.c_str(), subLength);
   }
 
-  if (hasFULL)
+  if (name.isPresent())
   {
     //write FULL
-    output.write((const char*) &cFULL, 4);
-    //FULL's length
-    subLength = 4; //fixed size
-    output.write((const char*) &subLength, 2);
-    //write FULL
-    output.write((const char*) &nameStringID, 4);
+    if (!name.saveToStream(output, cFULL))
+      return false;
   }
 
   if (unknownDATA.isPresent())
@@ -493,7 +489,7 @@ bool CellRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool CellRecord::loadFromStream(std::ifstream& in_File)
+bool CellRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
@@ -553,7 +549,7 @@ bool CellRecord::loadFromStream(std::ifstream& in_File)
 
   editorID.clear();
   char buffer[512];
-  hasFULL = false; nameStringID = 0;
+  name.reset();
   unknownDATA.setPresence(false);
   unknownTVDT.setPresence(false);
   unknownMHDT.setPresence(false);
@@ -611,15 +607,14 @@ bool CellRecord::loadFromStream(std::ifstream& in_File)
            editorID = std::string(buffer);
            break;
       case cFULL:
-           if (hasFULL)
+           if (name.isPresent())
            {
              std::cout << "Error: CELL seems to have more than one FULL subrecord.\n";
              return false;
            }
            //read FULL
-           if (!loadUint32SubRecordFromStream(*actual_in, cFULL, nameStringID, false)) return false;
-           bytesRead += 6;
-           hasFULL = true;
+           if (!name.loadFromStream(*actual_in, cFULL, false, bytesRead, localized, table, buffer))
+             return false;
            break;
       case cDATA:
            if (unknownDATA.isPresent())

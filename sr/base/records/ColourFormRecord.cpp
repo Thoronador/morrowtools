@@ -29,7 +29,7 @@ namespace SRTP
 
 ColourFormRecord::ColourFormRecord()
 : BasicRecord(), editorID(""),
-  hasFULL(false), nameStringID(0),
+  name(LocalizedString()),
   unknownCNAM(0),
   unknownFNAM(0)
 {
@@ -45,7 +45,7 @@ ColourFormRecord::~ColourFormRecord()
 bool ColourFormRecord::equals(const ColourFormRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
-      and (hasFULL==other.hasFULL) and ((nameStringID==other.nameStringID) or (!hasFULL))
+      and (name==other.name)
       and (unknownCNAM==other.unknownCNAM) and (unknownFNAM==other.unknownFNAM));
 }
 #endif
@@ -58,9 +58,9 @@ uint32_t ColourFormRecord::getWriteSize() const
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
         +4 /* CNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */
         +4 /* FNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
-  if (hasFULL)
+  if (name.isPresent())
   {
-    writeSize = writeSize +4 /* FULL */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+    writeSize += name.getWriteSize() /* FULL */;
   }
   return writeSize;
 }
@@ -78,15 +78,11 @@ bool ColourFormRecord::saveToStream(std::ofstream& output) const
   //write editor ID
   output.write(editorID.c_str(), subLength);
 
-  if (hasFULL)
+  if (name.isPresent())
   {
     //write FULL
-    output.write((const char*) &cFULL, 4);
-    //FULL's length
-    subLength = 4;
-    output.write((const char*) &subLength, 2);
-    //write FULL's data
-    output.write((const char*) &nameStringID, 4);
+    if (!name.saveToStream(output, cFULL))
+      return false;
   }//if has FULL
 
   //write CNAM
@@ -109,7 +105,7 @@ bool ColourFormRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool ColourFormRecord::loadFromStream(std::ifstream& in_File)
+bool ColourFormRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
@@ -146,8 +142,7 @@ bool ColourFormRecord::loadFromStream(std::ifstream& in_File)
   }
   editorID = std::string(buffer);
 
-  hasFULL = false;
-  nameStringID = 0;
+  name.reset();
   bool hasReadCNAM = false;
   bool hasReadFNAM = false;
   while (bytesRead<readSize)
@@ -158,15 +153,14 @@ bool ColourFormRecord::loadFromStream(std::ifstream& in_File)
     switch (subRecName)
     {
       case cFULL:
-           if (hasFULL)
+           if (name.isPresent())
            {
              std::cout << "Error: CLFM seems to have more than one FULL subrecord.\n";
              return false;
            }
            //read FULL
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID, false)) return false;
-           bytesRead += 6;
-           hasFULL = true;
+           if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
+             return false;
            break;
       case cCNAM:
            if (hasReadCNAM)

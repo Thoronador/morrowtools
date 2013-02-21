@@ -85,13 +85,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Form ID Finder for Skyrim, version 0.21.rev509, 2013-02-12\n";
+  std::cout << "Form ID Finder for Skyrim, version 0.22.rev512~experimental, 2013-02-21\n";
 }
 
 int showVersionExitcode()
 {
   showVersion();
-  return 509;
+  return 512;
 }
 
 void showHelp()
@@ -153,11 +153,11 @@ void showRefIDs(const uint32_t baseID, const std::map<uint32_t, std::vector<SRTP
     if (SRTP::Cells::getSingleton().hasRecord(vecIter->cellID))
     {
       const SRTP::CellRecord& theCell = SRTP::Cells::getSingleton().getRecord(vecIter->cellID);
-      if (theCell.hasFULL)
+      if (theCell.name.isPresent())
       {
-        if (table.hasString(theCell.nameStringID))
+        if (!theCell.name.getString().empty())
         {
-          basic_out << " in cell \""<<table.getString(theCell.nameStringID)<<"\"\n";
+          basic_out << " in cell \""<<theCell.name.getString()<<"\"\n";
           hasName = true;
         }
       }//if FULL
@@ -454,18 +454,18 @@ int main(int argc, char **argv)
     SRTP::Activators::ListIterator activator_iter = SRTP::Activators::getSingleton().getBegin();
     while (activator_iter!=SRTP::Activators::getSingleton().getEnd())
     {
-      if (activator_iter->second.hasFULL)
+      if (activator_iter->second.name.isPresent())
       {
-        if (table.hasString(activator_iter->second.nameStringID))
+        if (!activator_iter->second.name.getString().empty())
         {
-          if (matchesKeyword(table.getString(activator_iter->second.nameStringID), searchKeyword, caseSensitive))
+          if (matchesKeyword(activator_iter->second.name.getString(), searchKeyword, caseSensitive))
           {
             //found matching activator record
             if (activatorMatches==0)
             {
               basic_out << "\n\nMatching activators:\n";
             }
-            basic_out << "    \""<<table.getString(activator_iter->second.nameStringID)
+            basic_out << "    \""<<activator_iter->second.name.getString()
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(activator_iter->second.headerFormID)
                       <<"\n        editor ID \""<<activator_iter->second.editorID<<"\"\n";
             if (withReferences)
@@ -491,18 +491,18 @@ int main(int argc, char **argv)
     SRTP::AlchemyPotions::ListIterator alchemy_iter = SRTP::AlchemyPotions::getSingleton().getBegin();
     while (alchemy_iter!=SRTP::AlchemyPotions::getSingleton().getEnd())
     {
-      if (alchemy_iter->second.hasFULL)
+      if (alchemy_iter->second.name.isPresent())
       {
-        if (table.hasString(alchemy_iter->second.nameStringID))
+        if (!alchemy_iter->second.name.getString().empty())
         {
-          if (matchesKeyword(table.getString(alchemy_iter->second.nameStringID), searchKeyword, caseSensitive))
+          if (matchesKeyword(alchemy_iter->second.name.getString(), searchKeyword, caseSensitive))
           {
             //found matching alchemy record
             if (alchemyMatches==0)
             {
               basic_out << "\n\nMatching alchemy potions:\n";
             }
-            basic_out << "    \""<<table.getString(alchemy_iter->second.nameStringID)
+            basic_out << "    \""<<alchemy_iter->second.name.getString()
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(alchemy_iter->second.headerFormID)
                       <<"\n        editor ID \""<<alchemy_iter->second.editorID<<"\"\n";
             if (withReferences)
@@ -528,18 +528,18 @@ int main(int argc, char **argv)
     SRTP::Ammunitions::ListIterator ammo_iter = SRTP::Ammunitions::getSingleton().getBegin();
     while (ammo_iter!=SRTP::Ammunitions::getSingleton().getEnd())
     {
-      if (ammo_iter->second.hasFULL)
+      if (ammo_iter->second.name.isPresent())
       {
-        if (table.hasString(ammo_iter->second.nameStringID))
+        if (!ammo_iter->second.name.getString().empty())
         {
-          if (matchesKeyword(table.getString(ammo_iter->second.nameStringID), searchKeyword, caseSensitive))
+          if (matchesKeyword(ammo_iter->second.name.getString(), searchKeyword, caseSensitive))
           {
             //found matching ammo record
             if (ammoMatches==0)
             {
               basic_out << "\n\nMatching ammunition:\n";
             }
-            basic_out << "    \""<<table.getString(ammo_iter->second.nameStringID)
+            basic_out << "    \""<<ammo_iter->second.name.getString()
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(ammo_iter->second.headerFormID)
                       <<"\n        editor ID \""<<ammo_iter->second.editorID<<"\"\n";
             if (withReferences)
@@ -565,17 +565,18 @@ int main(int argc, char **argv)
     SRTP::Apparatuses::ListIterator appa_iter = SRTP::Apparatuses::getSingleton().getBegin();
     while (appa_iter!=SRTP::Apparatuses::getSingleton().getEnd())
     {
-
-        if (table.hasString(appa_iter->second.nameStringID))
+      if (appa_iter->second.name.isPresent())
+      {
+        if (!appa_iter->second.name.getString().empty())
         {
-          if (matchesKeyword(table.getString(appa_iter->second.nameStringID), searchKeyword, caseSensitive))
+          if (matchesKeyword(appa_iter->second.name.getString(), searchKeyword, caseSensitive))
           {
             //found matching apparatus record
             if (appaMatches==0)
             {
               basic_out << "\n\nMatching apparatuses:\n";
             }
-            basic_out << "    \""<<table.getString(appa_iter->second.nameStringID)
+            basic_out << "    \""<<appa_iter->second.name.getString()
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(appa_iter->second.headerFormID)
                       <<"\n        editor ID \""<<appa_iter->second.editorID<<"\"\n";
             if (withReferences)
@@ -586,7 +587,7 @@ int main(int argc, char **argv)
             ++totalMatches;
           }//if match found
         }//if table has string
-
+      }//if name is present
       ++appa_iter;
     }//while
     if (appaMatches>0)
@@ -601,18 +602,18 @@ int main(int argc, char **argv)
     SRTP::Armours::ListIterator armour_iter = SRTP::Armours::getSingleton().getBegin();
     while (armour_iter!=SRTP::Armours::getSingleton().getEnd())
     {
-      if (armour_iter->second.hasFULL)
+      if (armour_iter->second.name.isPresent())
       {
-        if (table.hasString(armour_iter->second.nameStringID))
+        if (!armour_iter->second.name.getString().empty())
         {
-          if (matchesKeyword(table.getString(armour_iter->second.nameStringID), searchKeyword, caseSensitive))
+          if (matchesKeyword(armour_iter->second.name.getString(), searchKeyword, caseSensitive))
           {
             //found matching armour record
             if (armourMatches==0)
             {
               basic_out << "\n\nMatching armours:\n";
             }
-            basic_out << "    \""<<table.getString(armour_iter->second.nameStringID)
+            basic_out << "    \""<<armour_iter->second.name.getString()
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(armour_iter->second.headerFormID)
                       <<"\n        editor ID \""<<armour_iter->second.editorID<<"\"\n";
             if (withReferences)
@@ -638,18 +639,18 @@ int main(int argc, char **argv)
     SRTP::Books::ListIterator book_iter = SRTP::Books::getSingleton().getBegin();
     while (book_iter!=SRTP::Books::getSingleton().getEnd())
     {
-      if (book_iter->second.hasFULL or (book_iter->second.titleStringID!=0))
+      if (book_iter->second.title.isPresent())
       {
-        if (table.hasString(book_iter->second.titleStringID))
+        if (!book_iter->second.title.getString().empty())
         {
-          if (matchesKeyword(table.getString(book_iter->second.titleStringID), searchKeyword, caseSensitive))
+          if (matchesKeyword(book_iter->second.title.getString(), searchKeyword, caseSensitive))
           {
             //found matching book record
             if (bookMatches==0)
             {
               basic_out << "\n\nMatching books:\n";
             }
-            basic_out << "    \""<<table.getString(book_iter->second.titleStringID)
+            basic_out << "    \""<<book_iter->second.title.getString()
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(book_iter->second.headerFormID)
                       <<"\n        editor ID \""<<book_iter->second.editorID<<"\"\n";
             if (withReferences)
@@ -675,18 +676,18 @@ int main(int argc, char **argv)
     SRTP::Containers::ListIterator container_iter = SRTP::Containers::getSingleton().getBegin();
     while (container_iter!=SRTP::Containers::getSingleton().getEnd())
     {
-      if (container_iter->second.hasFULL)
+      if (container_iter->second.name.isPresent())
       {
-        if (table.hasString(container_iter->second.nameStringID))
+        if (!container_iter->second.name.getString().empty())
         {
-          if (matchesKeyword(table.getString(container_iter->second.nameStringID), searchKeyword, caseSensitive))
+          if (matchesKeyword(container_iter->second.name.getString(), searchKeyword, caseSensitive))
           {
             //found matching container record
             if (containerMatches==0)
             {
               basic_out << "\n\nMatching containers:\n";
             }
-            basic_out << "    \""<<table.getString(container_iter->second.nameStringID)
+            basic_out << "    \""<<container_iter->second.name.getString()
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(container_iter->second.headerFormID)
                       <<"\n        editor ID \""<<container_iter->second.editorID<<"\"\n";
             if (withReferences)
@@ -712,18 +713,18 @@ int main(int argc, char **argv)
     SRTP::Factions::ListIterator faction_iter = SRTP::Factions::getSingleton().getBegin();
     while (faction_iter!=SRTP::Factions::getSingleton().getEnd())
     {
-      if (faction_iter->second.hasFULL)
+      if (faction_iter->second.name.isPresent())
       {
-        if (table.hasString(faction_iter->second.nameStringID))
+        if (!faction_iter->second.name.getString().empty())
         {
-          if (matchesKeyword(table.getString(faction_iter->second.nameStringID), searchKeyword, caseSensitive))
+          if (matchesKeyword(faction_iter->second.name.getString(), searchKeyword, caseSensitive))
           {
             //found matching faction record
             if (factionMatches==0)
             {
               basic_out << "\n\nMatching factions:\n";
             }
-            basic_out << "    \""<<table.getString(faction_iter->second.nameStringID)
+            basic_out << "    \""<<faction_iter->second.name.getString()
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(faction_iter->second.headerFormID)
                       <<"\n        editor ID \""<<faction_iter->second.editorID<<"\"\n";
             if (listFactionRanks)
@@ -783,22 +784,22 @@ int main(int argc, char **argv)
     SRTP::Floras::ListIterator flora_iter = SRTP::Floras::getSingleton().getBegin();
     while (flora_iter!=SRTP::Floras::getSingleton().getEnd())
     {
-        if (table.hasString(flora_iter->second.nameStringID))
+        if (flora_iter->second.name.isPresent())
         {
-          if (matchesKeyword(table.getString(flora_iter->second.nameStringID), searchKeyword, caseSensitive))
+          if (matchesKeyword(flora_iter->second.name.getString(), searchKeyword, caseSensitive))
           {
             //found matching flora record
             if (floraMatches==0)
             {
               basic_out << "\n\nMatching flora:\n";
             }
-            basic_out << "    \""<<table.getString(flora_iter->second.nameStringID)
+            basic_out << "    \""<<flora_iter->second.name.getString()
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(flora_iter->second.headerFormID)
                       <<"\n        editor ID \""<<flora_iter->second.editorID<<"\"\n";
             ++floraMatches;
             ++totalMatches;
           }//if match found
-        }//if table has string
+        }//if name present
       ++flora_iter;
     }//while
     if (floraMatches>0)
@@ -813,18 +814,18 @@ int main(int argc, char **argv)
     SRTP::Furniture::ListIterator furniture_iter = SRTP::Furniture::getSingleton().getBegin();
     while (furniture_iter!=SRTP::Furniture::getSingleton().getEnd())
     {
-      if (furniture_iter->second.hasFULL)
+      if (furniture_iter->second.name.isPresent())
       {
-        if (table.hasString(furniture_iter->second.nameStringID))
+        if (!furniture_iter->second.name.getString().empty())
         {
-          if (matchesKeyword(table.getString(furniture_iter->second.nameStringID), searchKeyword, caseSensitive))
+          if (matchesKeyword(furniture_iter->second.name.getString(), searchKeyword, caseSensitive))
           {
             //found matching furniture record
             if (furnitureMatches==0)
             {
               basic_out << "\n\nMatching furniture:\n";
             }
-            basic_out << "    \""<<table.getString(furniture_iter->second.nameStringID)
+            basic_out << "    \""<<furniture_iter->second.name.getString()
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(furniture_iter->second.headerFormID)
                       <<"\n        editor ID \""<<furniture_iter->second.editorID<<"\"\n";
             if (withReferences)
@@ -852,16 +853,16 @@ int main(int argc, char **argv)
     {
       //if (ingred_iter->second.hasFULL)
       //{
-        if (table.hasString(ingred_iter->second.nameStringID))
+        if (ingred_iter->second.name.isPresent())
         {
-          if (matchesKeyword(table.getString(ingred_iter->second.nameStringID), searchKeyword, caseSensitive))
+          if (matchesKeyword(ingred_iter->second.name.getString(), searchKeyword, caseSensitive))
           {
             //found matching ingredient record
             if (ingredMatches==0)
             {
               basic_out << "\n\nMatching ingredients:\n";
             }
-            basic_out << "    \""<<table.getString(ingred_iter->second.nameStringID)
+            basic_out << "    \""<<ingred_iter->second.name.getString()
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(ingred_iter->second.headerFormID)
                       <<"\n        editor ID \""<<ingred_iter->second.editorID<<"\"\n";
             if (withReferences)
@@ -887,16 +888,16 @@ int main(int argc, char **argv)
     SRTP::Keys::ListIterator key_iter = SRTP::Keys::getSingleton().getBegin();
     while (key_iter!=SRTP::Keys::getSingleton().getEnd())
     {
-        if (table.hasString(key_iter->second.nameStringID))
+        if (key_iter->second.name.isPresent())
         {
-          if (matchesKeyword(table.getString(key_iter->second.nameStringID), searchKeyword, caseSensitive))
+          if (matchesKeyword(key_iter->second.name.getString(), searchKeyword, caseSensitive))
           {
             //found matching key record
             if (keyMatches==0)
             {
               basic_out << "\n\nMatching keys:\n";
             }
-            basic_out << "    \""<<table.getString(key_iter->second.nameStringID)
+            basic_out << "    \""<<key_iter->second.name.getString()
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(key_iter->second.headerFormID)
                       <<"\n        editor ID \""<<key_iter->second.editorID<<"\"\n";
             if (withReferences)
@@ -906,7 +907,7 @@ int main(int argc, char **argv)
             ++keyMatches;
             ++totalMatches;
           }//if match found
-        }//if table has string
+        }//if name is present
       ++key_iter;
     }//while
     if (keyMatches>0)
@@ -921,18 +922,18 @@ int main(int argc, char **argv)
     SRTP::MiscObjects::ListIterator misc_iter = SRTP::MiscObjects::getSingleton().getBegin();
     while (misc_iter!=SRTP::MiscObjects::getSingleton().getEnd())
     {
-      if (misc_iter->second.hasFULL)
+      if (misc_iter->second.fullName.isPresent())
       {
-        if (table.hasString(misc_iter->second.fullNameStringID))
+        if (!misc_iter->second.fullName.getString().empty())
         {
-          if (matchesKeyword(table.getString(misc_iter->second.fullNameStringID), searchKeyword, caseSensitive))
+          if (matchesKeyword(misc_iter->second.fullName.getString(), searchKeyword, caseSensitive))
           {
             //found matching misc object record
             if (miscMatches==0)
             {
               basic_out << "\n\nMatching misc. objects:\n";
             }
-            basic_out << "    \""<<table.getString(misc_iter->second.fullNameStringID)
+            basic_out << "    \""<<misc_iter->second.fullName.getString()
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(misc_iter->second.headerFormID)
                       <<"\n        editor ID \""<<misc_iter->second.editorID<<"\"\n";
             if (withReferences)
@@ -958,18 +959,18 @@ int main(int argc, char **argv)
     SRTP::NPCs::ListIterator npc_iter = SRTP::NPCs::getSingleton().getBegin();
     while (npc_iter!=SRTP::NPCs::getSingleton().getEnd())
     {
-      if (npc_iter->second.hasFULL)
+      if (npc_iter->second.name.isPresent())
       {
-        if (table.hasString(npc_iter->second.nameStringID))
+        if (!npc_iter->second.name.getString().empty())
         {
-          if (matchesKeyword(table.getString(npc_iter->second.nameStringID), searchKeyword, caseSensitive))
+          if (matchesKeyword(npc_iter->second.name.getString(), searchKeyword, caseSensitive))
           {
             //found matching NPC record
             if (NPCMatches==0)
             {
               basic_out << "\n\nMatching NPCs:\n";
             }
-            basic_out << "    \""<<table.getString(npc_iter->second.nameStringID)
+            basic_out << "    \""<<npc_iter->second.name.getString()
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(npc_iter->second.headerFormID)
                       <<"\n        editor ID \""<<npc_iter->second.editorID<<"\"\n";
             if (withReferences)
@@ -995,18 +996,18 @@ int main(int argc, char **argv)
     SRTP::Perks::ListIterator perk_iter = SRTP::Perks::getSingleton().getBegin();
     while (perk_iter!=SRTP::Perks::getSingleton().getEnd())
     {
-      if (perk_iter->second.hasFULL)
+      if (perk_iter->second.name.isPresent())
       {
-        if (table.hasString(perk_iter->second.nameStringID))
+        if (!perk_iter->second.name.getString().empty())
         {
-          if (matchesKeyword(table.getString(perk_iter->second.nameStringID), searchKeyword, caseSensitive))
+          if (matchesKeyword(perk_iter->second.name.getString(), searchKeyword, caseSensitive))
           {
             //found matching perk record
             if (perkMatches==0)
             {
               basic_out << "\n\nMatching perks:\n";
             }
-            basic_out << "    \""<<table.getString(perk_iter->second.nameStringID)
+            basic_out << "    \""<<perk_iter->second.name.getString()
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(perk_iter->second.headerFormID)
                       <<"\n        editor ID \""<<perk_iter->second.editorID<<"\"\n";
             ++perkMatches;
@@ -1030,18 +1031,18 @@ int main(int argc, char **argv)
     SRTP::Quests::ListIterator quest_iter = SRTP::Quests::getSingleton().getBegin();
     while (quest_iter!=SRTP::Quests::getSingleton().getEnd())
     {
-      if (quest_iter->second.hasFULL)
+      if (quest_iter->second.name.isPresent())
       {
-        if (table.hasString(quest_iter->second.unknownFULL))
+        if (!quest_iter->second.name.getString().empty())
         {
-          if (matchesKeyword(table.getString(quest_iter->second.unknownFULL), searchKeyword, caseSensitive))
+          if (matchesKeyword(quest_iter->second.name.getString(), searchKeyword, caseSensitive))
           {
             //found matching quest record
             if (questMatches==0)
             {
               basic_out << "\n\nMatching quests:\n";
             }
-            basic_out << "    \""<<table.getString(quest_iter->second.unknownFULL)
+            basic_out << "    \""<<quest_iter->second.name.getString()
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(quest_iter->second.headerFormID)
                       <<"\n        editor ID \""<<quest_iter->second.editorID<<"\"\n";
             //indices
@@ -1119,16 +1120,16 @@ int main(int argc, char **argv)
     {
       //if (scroll_iter->second.hasFULL)
       //{
-        if (table.hasString(scroll_iter->second.nameStringID))
+        if (scroll_iter->second.name.isPresent())
         {
-          if (matchesKeyword(table.getString(scroll_iter->second.nameStringID), searchKeyword, caseSensitive))
+          if (matchesKeyword(scroll_iter->second.name.getString(), searchKeyword, caseSensitive))
           {
             //found matching spell record
             if (scrollMatches==0)
             {
               basic_out << "\n\nMatching scrolls:\n";
             }
-            basic_out << "    \""<<table.getString(scroll_iter->second.nameStringID)
+            basic_out << "    \""<<scroll_iter->second.name.getString()
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(scroll_iter->second.headerFormID)
                       <<"\n        editor ID \""<<scroll_iter->second.editorID<<"\"\n";
             if (withReferences)
@@ -1154,18 +1155,18 @@ int main(int argc, char **argv)
     SRTP::SoulGems::ListIterator soulgem_iter = SRTP::SoulGems::getSingleton().getBegin();
     while (soulgem_iter!=SRTP::SoulGems::getSingleton().getEnd())
     {
-      if (soulgem_iter->second.hasFULL)
+      if (soulgem_iter->second.name.isPresent())
       {
-        if (table.hasString(soulgem_iter->second.nameStringID))
+        if (!soulgem_iter->second.name.getString().empty())
         {
-          if (matchesKeyword(table.getString(soulgem_iter->second.nameStringID), searchKeyword, caseSensitive))
+          if (matchesKeyword(soulgem_iter->second.name.getString(), searchKeyword, caseSensitive))
           {
             //found matching SoulGem record
             if (soulgemMatches==0)
             {
               basic_out << "\n\nMatching soul gems:\n";
             }
-            basic_out << "    \""<<table.getString(soulgem_iter->second.nameStringID)
+            basic_out << "    \""<<soulgem_iter->second.name.getString()
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(soulgem_iter->second.headerFormID)
                       <<"\n        editor ID \""<<soulgem_iter->second.editorID<<"\"\n";
             if (withReferences)
@@ -1191,18 +1192,18 @@ int main(int argc, char **argv)
     SRTP::Spells::ListIterator spell_iter = SRTP::Spells::getSingleton().getBegin();
     while (spell_iter!=SRTP::Spells::getSingleton().getEnd())
     {
-      if (spell_iter->second.hasFULL)
+      if (spell_iter->second.name.isPresent())
       {
-        if (table.hasString(spell_iter->second.nameStringID))
+        if (!spell_iter->second.name.getString().empty())
         {
-          if (matchesKeyword(table.getString(spell_iter->second.nameStringID), searchKeyword, caseSensitive))
+          if (matchesKeyword(spell_iter->second.name.getString(), searchKeyword, caseSensitive))
           {
             //found matching spell record
             if (spellMatches==0)
             {
               basic_out << "\n\nMatching spells:\n";
             }
-            basic_out << "    \""<<table.getString(spell_iter->second.nameStringID)
+            basic_out << "    \""<<spell_iter->second.name.getString()
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(spell_iter->second.headerFormID)
                       <<"\n        editor ID \""<<spell_iter->second.editorID<<"\"\n";
             if (withReferences)
@@ -1228,18 +1229,18 @@ int main(int argc, char **argv)
     SRTP::Shouts::ListIterator shout_iter = SRTP::Shouts::getSingleton().getBegin();
     while (shout_iter!=SRTP::Shouts::getSingleton().getEnd())
     {
-      if (shout_iter->second.hasFULL or (shout_iter->second.fullNameStringID!=0))
+      if (shout_iter->second.fullName.isPresent())
       {
-        if (table.hasString(shout_iter->second.fullNameStringID))
+        if (!shout_iter->second.fullName.getString().empty())
         {
-          if (matchesKeyword(table.getString(shout_iter->second.fullNameStringID), searchKeyword, caseSensitive))
+          if (matchesKeyword(shout_iter->second.fullName.getString(), searchKeyword, caseSensitive))
           {
             //found matching shout record
             if (shoutMatches==0)
             {
               basic_out << "\n\nMatching dragon shouts:\n";
             }
-            basic_out << "    \""<<table.getString(shout_iter->second.fullNameStringID)
+            basic_out << "    \""<<shout_iter->second.fullName.getString()
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(shout_iter->second.headerFormID)
                       <<"\n        editor ID \""<<shout_iter->second.editorID<<"\"\n";
             ++shoutMatches;
@@ -1261,11 +1262,11 @@ int main(int argc, char **argv)
     SRTP::WordsOfPower::ListIterator word_iter = SRTP::WordsOfPower::getSingleton().getBegin();
     while (word_iter!=SRTP::WordsOfPower::getSingleton().getEnd())
     {
-      if (word_iter->second.hasFULL)
+      if (word_iter->second.name.isPresent())
       {
-        if (table.hasString(word_iter->second.nameStringID))
+        if (!word_iter->second.name.getString().empty())
         {
-          if (matchesKeyword(table.getString(word_iter->second.nameStringID), searchKeyword, caseSensitive)
+          if (matchesKeyword(word_iter->second.name.getString(), searchKeyword, caseSensitive)
             or matchesKeyword(word_iter->second.editorID, searchKeyword, caseSensitive))
           {
             //found matching word of power record
@@ -1273,7 +1274,7 @@ int main(int argc, char **argv)
             {
               basic_out << "\n\nMatching words of power:\n";
             }
-            basic_out << "    \""<<table.getString(word_iter->second.nameStringID)
+            basic_out << "    \""<<word_iter->second.name.getString()
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(word_iter->second.headerFormID)
                       <<"\n        editor ID \""<<word_iter->second.editorID<<"\"\n";
             ++wordMatches;
@@ -1295,18 +1296,18 @@ int main(int argc, char **argv)
     SRTP::TalkingActivators::ListIterator talkingActivator_iter = SRTP::TalkingActivators::getSingleton().getBegin();
     while (talkingActivator_iter!=SRTP::TalkingActivators::getSingleton().getEnd())
     {
-      if (talkingActivator_iter->second.nameStringID!=0)
+      if (talkingActivator_iter->second.name.isPresent())
       {
-        if (table.hasString(talkingActivator_iter->second.nameStringID))
+        if (!talkingActivator_iter->second.name.getString().empty())
         {
-          if (matchesKeyword(table.getString(talkingActivator_iter->second.nameStringID), searchKeyword, caseSensitive))
+          if (matchesKeyword(talkingActivator_iter->second.name.getString(), searchKeyword, caseSensitive))
           {
             //found matching talking activator record
             if (talkingActivatorMatches==0)
             {
               basic_out << "\n\nMatching talking activators:\n";
             }
-            basic_out << "    \""<<table.getString(talkingActivator_iter->second.nameStringID)
+            basic_out << "    \""<<talkingActivator_iter->second.name.getString()
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(talkingActivator_iter->second.headerFormID)
                       <<"\n        editor ID \""<<talkingActivator_iter->second.editorID<<"\"\n";
             if (withReferences)
@@ -1332,18 +1333,18 @@ int main(int argc, char **argv)
     SRTP::Trees::ListIterator tree_iter = SRTP::Trees::getSingleton().getBegin();
     while (tree_iter!=SRTP::Trees::getSingleton().getEnd())
     {
-      if (tree_iter->second.hasFULL)
+      if (tree_iter->second.name.isPresent())
       {
-        if (table.hasString(tree_iter->second.nameStringID))
+        if (!tree_iter->second.name.getString().empty())
         {
-          if (matchesKeyword(table.getString(tree_iter->second.nameStringID), searchKeyword, caseSensitive))
+          if (matchesKeyword(tree_iter->second.name.getString(), searchKeyword, caseSensitive))
           {
             //found matching alchemy record
             if (treeMatches==0)
             {
               basic_out << "\n\nMatching trees:\n";
             }
-            basic_out << "    \""<<table.getString(tree_iter->second.nameStringID)
+            basic_out << "    \""<<tree_iter->second.name.getString()
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(tree_iter->second.headerFormID)
                       <<"\n        editor ID \""<<tree_iter->second.editorID<<"\"\n";
             ++treeMatches;
@@ -1365,18 +1366,18 @@ int main(int argc, char **argv)
     SRTP::Weapons::ListIterator weapon_iter = SRTP::Weapons::getSingleton().getBegin();
     while (weapon_iter!=SRTP::Weapons::getSingleton().getEnd())
     {
-      if (weapon_iter->second.hasFULL or (weapon_iter->second.nameStringID!=0))
+      if (weapon_iter->second.name.isPresent())
       {
-        if (table.hasString(weapon_iter->second.nameStringID))
+        if (!weapon_iter->second.name.getString().empty())
         {
-          if (matchesKeyword(table.getString(weapon_iter->second.nameStringID), searchKeyword, caseSensitive))
+          if (matchesKeyword(weapon_iter->second.name.getString(), searchKeyword, caseSensitive))
           {
             //found matching weapon record
             if (weaponMatches==0)
             {
               basic_out << "\n\nMatching weapons:\n";
             }
-            basic_out << "    \""<<table.getString(weapon_iter->second.nameStringID)
+            basic_out << "    \""<<weapon_iter->second.name.getString()
                       <<"\"\n        form ID "<<SRTP::getFormIDAsString(weapon_iter->second.headerFormID)
                       <<"\n        editor ID \""<<weapon_iter->second.editorID<<"\"\n";
             if (withReferences)

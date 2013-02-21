@@ -126,6 +126,8 @@
 		<Unit filename="../base/records/IngredientRecord.h" />
 		<Unit filename="../base/records/KeyRecord.cpp" />
 		<Unit filename="../base/records/KeyRecord.h" />
+		<Unit filename="../base/records/LocalizedString.cpp" />
+		<Unit filename="../base/records/LocalizedString.h" />
 		<Unit filename="../base/records/MiscObjectRecord.cpp" />
 		<Unit filename="../base/records/MiscObjectRecord.h" />
 		<Unit filename="../base/records/NPCRecord.cpp" />

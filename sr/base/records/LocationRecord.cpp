@@ -30,7 +30,7 @@ namespace SRTP
 LocationRecord::LocationRecord()
 : BasicRecord(), editorID(""),
   unknownLCECs(std::vector<BinarySubRecord>()),
-  hasFULL(false), nameStringID(0),
+  name(LocalizedString()),
   keywordArray(std::vector<uint32_t>()),
   hasPNAM(false), unknownPNAM(0),
   hasFNAM(false), unknownFNAM(0),
@@ -59,7 +59,7 @@ bool LocationRecord::equals(const LocationRecord& other) const
       and (unknownLCSR==other.unknownLCSR) and (unknownLCPR==other.unknownLCPR)
       and (unknownLCECs==other.unknownLCECs) and (unknownLCEP==other.unknownLCEP)
       and (unknownLCUN==other.unknownLCUN) and (unknownLCID==other.unknownLCID)
-      and (hasFULL==other.hasFULL) and ((nameStringID==other.nameStringID) or (!hasFULL))
+      and (name==other.name)
       and (keywordArray==other.keywordArray)
       and (hasPNAM==other.hasPNAM) and ((unknownPNAM==other.unknownPNAM) or (!hasPNAM))
       and (hasFNAM==other.hasFNAM) and ((unknownFNAM==other.unknownFNAM) or (!hasFNAM))
@@ -102,9 +102,9 @@ uint32_t LocationRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* LCID */ +2 /* 2 bytes for length */ +unknownLCID.getSize() /* size */;
   }
-  if (hasFULL)
+  if (name.isPresent())
   {
-    writeSize = writeSize +4 /* FULL */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+    writeSize += name.getWriteSize() /* FULL */;
   }
   if (!keywordArray.empty())
   {
@@ -216,15 +216,11 @@ bool LocationRecord::saveToStream(std::ofstream& output) const
     }
   }//if LCID
 
-  if (hasFULL)
+  if (name.isPresent())
   {
     //write FULL
-    output.write((const char*) &cFULL, 4);
-    //FULL's length
-    subLength = 4; // fixed
-    output.write((const char*) &subLength, 2);
-    //write FULL
-    output.write((const char*) &nameStringID, 4);
+    if (!name.saveToStream(output, cFULL))
+      return false;
   }//if FULL
 
   if (!keywordArray.empty())
@@ -332,7 +328,7 @@ bool LocationRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool LocationRecord::loadFromStream(std::ifstream& in_File)
+bool LocationRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
@@ -376,7 +372,7 @@ bool LocationRecord::loadFromStream(std::ifstream& in_File)
   unknownLCEP.setPresence(false);
   unknownLCUN.setPresence(false);
   unknownLCID.setPresence(false);
-  hasFULL = false;
+  name.reset();
   keywordArray.clear();
   uint32_t i, k_Size, tempUint32;
   hasPNAM = false;
@@ -475,15 +471,14 @@ bool LocationRecord::loadFromStream(std::ifstream& in_File)
            bytesRead = bytesRead +2 /*length value*/ +unknownLCID.getSize() /*data size*/;
            break;
       case cFULL:
-           if (hasFULL)
+           if (name.isPresent())
            {
              std::cout << "Error: LCTN seems to have more than one FULL subrecord.\n";
              return false;
            }
            //read FULL
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID, false)) return false;
-           bytesRead += 6;
-           hasFULL = true;
+           if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
+             return false;
            break;
       case cKSIZ:
            if (!keywordArray.empty())

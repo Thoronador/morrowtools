@@ -96,7 +96,7 @@ int ESMReader::readESM(const std::string& FileName, Tes4HeaderRecord& head)
     return -1;
   }
   //now read the actual header
-  if (!head.loadFromStream(input))
+  if (!head.loadFromStream(input, true, StringTable()))
   {
     std::cout << "Error: Could not read header from \""<<FileName<<"\".\n";
     input.close();
@@ -177,7 +177,7 @@ bool ESMReader::peekESMHeader(const std::string& FileName, Tes4HeaderRecord& hea
     return false;
   }
   //now read the actual header
-  if (!head.loadFromStream(input))
+  if (!head.loadFromStream(input, true, StringTable()))
   {
     std::cout << "ESMReader::peekESMHeader: Error: Could not read header from \""<<FileName<<"\".\n";
     input.close();

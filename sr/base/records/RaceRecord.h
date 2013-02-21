@@ -21,12 +21,13 @@
 #ifndef SR_RACERECORD_H
 #define SR_RACERECORD_H
 
-#include "BasicRecord.h"
-#include "BinarySubRecord.h"
-#include "SubBlock.h"
 #include <string>
 #include <vector>
 #include <stdint.h>
+#include "BasicRecord.h"
+#include "BinarySubRecord.h"
+#include "LocalizedString.h"
+#include "SubBlock.h"
 
 namespace SRTP
 {
@@ -62,9 +63,11 @@ struct RaceRecord: public BasicRecord
     /* loads the record from the given input stream and returns true on success
 
       parameters:
-          in_File - the input file stream
+          in_File   - the input file stream
+          localized - whether the file to read from is localized or not
+          table     - the associated string table for localized files
     */
-    virtual bool loadFromStream(std::ifstream& in_File);
+    virtual bool loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table);
 
     /* returns the record's type, usually its header */
     virtual uint32_t getRecordType() const;
@@ -92,9 +95,8 @@ struct RaceRecord: public BasicRecord
     };//struct
 
     std::string editorID;
-    bool hasFULL;
-    uint32_t nameStringID; //subrecord FULL
-    uint32_t descriptionStringID; //subrecord DESC
+    LocalizedString name; //subrecord FULL
+    LocalizedString description; //subrecord DESC
     std::vector<uint32_t> spellFormIDs;
     bool hasWNAM;
     uint32_t unknownWNAM;

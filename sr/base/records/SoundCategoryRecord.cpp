@@ -32,7 +32,7 @@ const uint32_t SoundCategoryRecord::cShouldAppearOnMenu = 0x00000002;
 
 SoundCategoryRecord::SoundCategoryRecord()
 : BasicRecord(), editorID(""),
-  unknownFULL(0),
+  name(LocalizedString()),
   unknownFNAM(0),
   hasParent(false), parentFormID(0),
   staticVolumeMultUint16(65535),
@@ -51,7 +51,7 @@ SoundCategoryRecord::~SoundCategoryRecord()
 bool SoundCategoryRecord::equals(const SoundCategoryRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
-      and (unknownFULL==other.unknownFULL) and (unknownFNAM==other.unknownFNAM)
+      and (name==other.name) and (unknownFNAM==other.unknownFNAM)
       and (hasParent==other.hasParent) and ((parentFormID==other.parentFormID) or (!hasParent))
       and (staticVolumeMultUint16==other.staticVolumeMultUint16)
       and (hasUNAM==other.hasUNAM) and ((defaultMenuValueUint16==other.defaultMenuValueUint16) or (!hasUNAM)));
@@ -64,7 +64,7 @@ uint32_t SoundCategoryRecord::getWriteSize() const
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
-        +4 /* FULL */ +2 /* 2 bytes for length */ +4 /* fixed length of 4 bytes */
+        +name.getWriteSize() /* FULL */
         +4 /* FNAM */ +2 /* 2 bytes for length */ +4 /* fixed length of 4 bytes */
         +4 /* VNAM */ +2 /* 2 bytes for length */ +2 /* fixed length of 2 bytes */;
   if (hasParent)
@@ -92,12 +92,8 @@ bool SoundCategoryRecord::saveToStream(std::ofstream& output) const
   output.write(editorID.c_str(), subLength);
 
   //write FULL
-  output.write((const char*) &cFULL, 4);
-  //FULL's length
-  subLength = 4; //fixed
-  output.write((const char*) &subLength, 2);
-  //write FULL's stuff
-  output.write((const char*) &unknownFULL, 4);
+  if (!name.saveToStream(output, cFULL))
+    return false;
 
   //write FNAM
   output.write((const char*) &cFNAM, 4);
@@ -141,7 +137,7 @@ bool SoundCategoryRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool SoundCategoryRecord::loadFromStream(std::ifstream& in_File)
+bool SoundCategoryRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
@@ -178,7 +174,7 @@ bool SoundCategoryRecord::loadFromStream(std::ifstream& in_File)
   }
   editorID = std::string(buffer);
 
-  bool hasReadFULL = false;
+  name.reset();
   bool hasReadFNAM = false;
   hasParent = false; parentFormID = 0;
   bool hasReadVNAM = false;
@@ -192,18 +188,16 @@ bool SoundCategoryRecord::loadFromStream(std::ifstream& in_File)
     switch (subRecName)
     {
       case cFULL:
-           if (hasReadFULL)
+           if (name.isPresent())
            {
              std::cout << "Error: record SNCT seems to have more than one FULL subrecord!\n";
              return false;
            }
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, unknownFULL, false))
+           if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
            {
              std::cout << "Error while reading subrecord FULL of SNCT!\n";
              return false;
            }
-           bytesRead += 6;
-           hasReadFULL = true;
            break;
       case cFNAM:
            if (hasReadFNAM)
@@ -292,7 +286,7 @@ bool SoundCategoryRecord::loadFromStream(std::ifstream& in_File)
   }//while
 
   //presence checks
-  if (!(hasReadFULL and  hasReadFNAM and hasReadVNAM))
+  if (!(name.isPresent() and  hasReadFNAM and hasReadVNAM))
   {
     std::cout << "Error while reading SNCT: at least one required subrecord is missing!\n";
     return false;

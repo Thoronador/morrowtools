@@ -33,7 +33,7 @@ const uint8_t EyeRecord::FlagMale = 0x04;
 
 EyeRecord::EyeRecord()
 : BasicRecord(), editorID(""),
-  nameStringID(0),
+  name(LocalizedString()),
   iconPath(""),
   flags(0)
 {
@@ -53,7 +53,7 @@ uint32_t EyeRecord::getRecordType() const
 #ifndef SR_NO_RECORD_EQUALITY
 bool EyeRecord::equals(const EyeRecord& other) const
 {
-  return ((editorID==other.editorID) and (nameStringID==other.nameStringID)
+  return ((editorID==other.editorID) and (name==other.name)
       and (iconPath==other.iconPath) and (flags==other.flags)
       and equalsBasic(other));
 }
@@ -64,7 +64,7 @@ uint32_t EyeRecord::getWriteSize() const
 {
   return (4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
-        +4 /* FULL */ +2 /* 2 bytes for length */ +4 /* fixed length of four bytes */
+        +name.getWriteSize() /* FULL */
         +4 /* ICON */ +2 /* 2 bytes for length */
         +iconPath.length()+1 /* length of name +1 byte for NUL termination */
         +4 /* DATA */ +2 /* 2 bytes for length */ +1 /* fixed length of one byte */);
@@ -84,12 +84,8 @@ bool EyeRecord::saveToStream(std::ofstream& output) const
   output.write(editorID.c_str(), subLength);
 
   //write FULL
-  output.write((const char*) &cFULL, 4);
-  //FULL's length
-  subLength = 4;
-  output.write((const char*) &subLength, 2);
-  //write FULL's data
-  output.write((const char*) &nameStringID, 4);
+  if (!name.saveToStream(output, cFULL))
+    return false;
 
   //write ICON
   output.write((const char*) &cICON, 4);
@@ -111,7 +107,7 @@ bool EyeRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool EyeRecord::loadFromStream(std::ifstream& in_File)
+bool EyeRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
@@ -145,23 +141,7 @@ bool EyeRecord::loadFromStream(std::ifstream& in_File)
   editorID = std::string(buffer);
 
   //read FULL
-  in_File.read((char*) &subRecName, 4);
-  if (subRecName!=cFULL)
-  {
-    UnexpectedRecord(cFULL, subRecName);
-    return false;
-  }
-  //FULL's length
-  in_File.read((char*) &subLength, 2);
-  if (subLength!=4)
-  {
-    std::cout <<"Error: sub record FULL of EYES has invalid length ("<<subLength
-              <<" bytes). Should be four bytes.\n";
-    return false;
-  }
-  //read FULL
-  in_File.read((char*) &nameStringID, 4);
-  if (!in_File.good())
+  if (!name.loadFromStream(in_File, cFULL, true, subRecName, localized, table, buffer))
   {
     std::cout << "Error while reading subrecord FULL of EYES!\n";
     return false;

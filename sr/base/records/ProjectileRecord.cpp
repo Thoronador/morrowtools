@@ -37,7 +37,7 @@ bool ProjectileRecord::DSTD_DSTF_record::operator==(const ProjectileRecord::DSTD
 
 ProjectileRecord::ProjectileRecord()
 : BasicRecord(), editorID(""),
-  hasFULL(false), nameStringID(0),
+  name(LocalizedString()),
   modelPath(""),
   hasDEST(false), unknownDEST(0),
   unknownDSTD_DSTFs(std::vector<DSTD_DSTF_record>()),
@@ -60,7 +60,7 @@ bool ProjectileRecord::equals(const ProjectileRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
       and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
-      and (hasFULL==other.hasFULL) and ((nameStringID==other.nameStringID) or (!hasFULL))
+      and (name==other.name)
       and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
       and (hasDEST==other.hasDEST) and ((unknownDEST==other.unknownDEST) or (!hasDEST))
       and (unknownDSTD_DSTFs==other.unknownDSTD_DSTFs) and (unknownDATA==other.unknownDATA)
@@ -80,9 +80,9 @@ uint32_t ProjectileRecord::getWriteSize() const
         +4 /* NAM1 */ +2 /* 2 bytes for length */
         +unknownNAM1.length()+1 /* length of string +1 byte for NUL-termination */
         +4 /* VNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
-  if (hasFULL)
+  if (name.isPresent())
   {
-    writeSize = writeSize +4 /* FULL */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+    writeSize += name.getWriteSize() /* FULL */;
   }
   if (!modelPath.empty())
   {
@@ -132,15 +132,11 @@ bool ProjectileRecord::saveToStream(std::ofstream& output) const
   //write OBND's stuff
   output.write((const char*) unknownOBND, 12);
 
-  if (hasFULL)
+  if (name.isPresent())
   {
     //write FULL
-    output.write((const char*) &cFULL, 4);
-    //FULL's length
-    subLength = 4; //fixed size
-    output.write((const char*) &subLength, 2);
-    //write FULL's stuff
-    output.write((const char*) &nameStringID, 4);
+    if (!name.saveToStream(output, cFULL))
+      return false;
   }//if hasFULL
 
   if (!modelPath.empty())
@@ -241,7 +237,7 @@ bool ProjectileRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool ProjectileRecord::loadFromStream(std::ifstream& in_File)
+bool ProjectileRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
@@ -304,7 +300,7 @@ bool ProjectileRecord::loadFromStream(std::ifstream& in_File)
     return false;
   }
 
-  hasFULL = false; nameStringID = 0;
+  name.reset();
   modelPath.clear();
   unknownMODT.setPresence(false);
   hasDEST = false; unknownDEST = 0;
@@ -323,29 +319,17 @@ bool ProjectileRecord::loadFromStream(std::ifstream& in_File)
     switch (subRecName)
     {
       case cFULL:
-           if (hasFULL)
+           if (name.isPresent())
            {
              std::cout << "Error: Record PROJ seems to have more than one FULL subrecord!\n";
              return false;
            }
-           //FULL's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength!=4)
-           {
-             std::cout <<"Error: sub record FULL of PROJ has invalid length("
-                       <<subLength<<" bytes). Should be four bytes!\n";
-             return false;
-           }
-           //read FULL's stuff
-           in_File.read((char*) &nameStringID, 4);
-           bytesRead += 4;
-           if (!in_File.good())
+           //read FULL
+           if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
            {
              std::cout << "Error while reading subrecord FULL of PROJ!\n";
              return false;
            }
-           hasFULL = true;
            break;
       case cMODL:
            if (!modelPath.empty())

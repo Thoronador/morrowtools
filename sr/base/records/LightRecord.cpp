@@ -42,7 +42,7 @@ const uint32_t LightRecord::cFlagShadowOmnidirectional = 0x00001000;
 LightRecord::LightRecord()
 : BasicRecord(), editorID(""),
   modelPath(""),
-  nameStringID(0),
+  name(LocalizedString()),
   //subrecord DATA
   time(0),
   radius(0),
@@ -75,7 +75,7 @@ bool LightRecord::equals(const LightRecord& other) const
   return ((equalsBasic(other)) and (editorID==other.editorID)
       and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
       and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
-      and (nameStringID==other.nameStringID)
+      and (name==other.name)
       and (time==other.time) and (radius==other.radius)
       and (colour==other.colour) and (flags==other.flags)
       and (falloffExponent==other.falloffExponent) and (FOV==other.FOV)
@@ -105,9 +105,9 @@ uint32_t LightRecord::getWriteSize() const
     writeSize = writeSize +4 /* MODT */ +2 /* 2 bytes for length */
         +unknownMODT.getSize() /* length of MODT data */;
   }
-  if (nameStringID!=0)
+  if (name.isPresent())
   {
-    writeSize = writeSize +4 /* FULL */ +2 /* 2 bytes for length */ +4 /* fixed size of 4 bytes */;
+    writeSize += name.getWriteSize() /* FULL */;
   }
   if (soundFormID!=0)
   {
@@ -157,15 +157,11 @@ bool LightRecord::saveToStream(std::ofstream& output) const
     }
   }//if MODT
 
-  if (nameStringID!=0)
+  if (name.isPresent())
   {
     //write FULL
-    output.write((const char*) &cFULL, 4);
-    //FULL's length
-    subLength = 4; //fixed
-    output.write((const char*) &subLength, 2);
-    //write FULL's stuff
-    output.write((const char*) &nameStringID, 4);
+    if (!name.saveToStream(output, cFULL))
+      return cFULL;
   }//if FULL
 
   //write DATA
@@ -210,7 +206,7 @@ bool LightRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool LightRecord::loadFromStream(std::ifstream& in_File)
+bool LightRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
@@ -276,7 +272,7 @@ bool LightRecord::loadFromStream(std::ifstream& in_File)
 
   modelPath.clear();
   unknownMODT.setPresence(false);
-  nameStringID = 0;
+  name.reset();
   bool hasReadDATA = false;
   bool hasReadFNAM = false;
   soundFormID = 0;
@@ -316,21 +312,20 @@ bool LightRecord::loadFromStream(std::ifstream& in_File)
            bytesRead += (2 + unknownMODT.getSize());
            break;
       case cFULL:
-           if (nameStringID!=0)
+           if (name.isPresent())
            {
              std::cout << "Error: record LIGH seems to have more than one FULL subrecord!\n";
              return false;
            }
            //read FULL
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID, false))
+           if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
              return false;
            //check value
-           if (nameStringID==0)
+           if ((name.getType()==LocalizedString::lsIndex) and (name.getIndex()==0))
            {
              std::cout << "Error: subrecord FULL of LIGH has invalid value zero!\n";
              return false;
            }
-           bytesRead += 6;
            break;
       case cDATA:
            if (hasReadDATA)

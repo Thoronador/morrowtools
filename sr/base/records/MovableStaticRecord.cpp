@@ -161,7 +161,7 @@ bool MovableStaticRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool MovableStaticRecord::loadFromStream(std::ifstream& in_File)
+bool MovableStaticRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;

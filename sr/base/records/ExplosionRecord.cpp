@@ -29,7 +29,7 @@ namespace SRTP
 
 ExplosionRecord::ExplosionRecord()
 : BasicRecord(), editorID(""),
-  nameStringID(0),
+  name(LocalizedString()),
   modelPath(""),
   enchantmentFormID(0), //subrecord EITM
   imageSpaceModFormID(0) //subrecord MNAM
@@ -49,7 +49,7 @@ bool ExplosionRecord::equals(const ExplosionRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
       and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
-      and (nameStringID==other.nameStringID) and (modelPath==other.modelPath)
+      and (name==other.name) and (modelPath==other.modelPath)
       and (unknownMODT==other.unknownMODT) and (enchantmentFormID==other.enchantmentFormID)
       and (imageSpaceModFormID==other.imageSpaceModFormID) and (unknownDATA==other.unknownDATA));
 }
@@ -63,9 +63,9 @@ uint32_t ExplosionRecord::getWriteSize() const
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
         +4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed length of 12 bytes */
         +4 /* DATA */ +2 /* 2 bytes for length */ +unknownDATA.getSize() /* fixed length of 48 or 52 bytes */;
-  if (nameStringID!=0)
+  if (name.isPresent())
   {
-    writeSize = writeSize +4 /* FULL */ +2 /* 2 bytes for length */ +4 /* fixed length of four bytes */;
+    writeSize += name.getWriteSize() /* FULL */;
   }//if FULL
   if (!modelPath.empty())
   {
@@ -108,15 +108,11 @@ bool ExplosionRecord::saveToStream(std::ofstream& output) const
   //write OBND
   output.write((const char*) unknownOBND, 12);
 
-  if (nameStringID!=0)
+  if (name.isPresent())
   {
     //write FULL
-    output.write((const char*) &cFULL, 4);
-    //FULL's length
-    subLength = 4; //fixed
-    output.write((const char*) &subLength, 2);
-    //write name string's ID
-    output.write((const char*) &nameStringID, 4);
+    if (!name.saveToStream(output, cFULL))
+      return false;
   }//if has FULL
 
   if (!modelPath.empty())
@@ -179,7 +175,7 @@ bool ExplosionRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool ExplosionRecord::loadFromStream(std::ifstream& in_File)
+bool ExplosionRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
@@ -217,7 +213,7 @@ bool ExplosionRecord::loadFromStream(std::ifstream& in_File)
   editorID = std::string(buffer);
 
   bool hasReadOBND = false;
-  nameStringID = 0;
+  name.reset();
   modelPath.clear();
   unknownMODT.setPresence(false);
   enchantmentFormID = 0;
@@ -256,17 +252,14 @@ bool ExplosionRecord::loadFromStream(std::ifstream& in_File)
            hasReadOBND = true;
            break;
       case cFULL:
-           if (nameStringID!=0)
+           if (name.isPresent())
            {
              std::cout << "Error: EXPL seems to have more than one FULL subrecord!\n";
              return false;
            }
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID, false))
-           {
+           if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
              return false;
-           }
-           bytesRead += 6;
-           if (nameStringID==0)
+           if ((name.getType()==LocalizedString::lsIndex) and (name.getIndex()==0))
            {
              std::cout << "Error: subrecord FULL of EXPL has value zero!\n";
              return false;

@@ -130,7 +130,7 @@ bool GMSTRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool GMSTRecord::loadFromStream(std::ifstream& in_File)
+bool GMSTRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t Size;
   if (!loadSizeAndUnknownValues(in_File, Size)) return false;

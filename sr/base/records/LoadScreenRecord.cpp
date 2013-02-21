@@ -29,7 +29,7 @@ namespace SRTP
 
 LoadScreenRecord::LoadScreenRecord()
 : BasicRecord(), editorID(""),
-  textStringID(0),
+  text(LocalizedString()),
   unknownCTDAs(std::vector<CTDAData>()),
   unknownCIS2(""),
   unknownNNAM(0),
@@ -50,7 +50,7 @@ LoadScreenRecord::~LoadScreenRecord()
 bool LoadScreenRecord::equals(const LoadScreenRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
-      and (textStringID==other.textStringID) and (unknownCTDAs==other.unknownCTDAs)
+      and (text==other.text) and (unknownCTDAs==other.unknownCTDAs)
       and (unknownCIS2==other.unknownCIS2) and (unknownNNAM==other.unknownNNAM)
       and (unknownSNAM==other.unknownSNAM)
       and (memcmp(unknownRNAM, other.unknownRNAM, 6)==0)
@@ -97,12 +97,8 @@ bool LoadScreenRecord::saveToStream(std::ofstream& output) const
   output.write(editorID.c_str(), subLength);
 
   //write DESC
-  output.write((const char*) &cDESC, 4);
-  //DESC's length
-  subLength = 4; //fixed size
-  output.write((const char*) &subLength, 2);
-  //write DESC
-  output.write((const char*) &textStringID, 4);
+  if (!text.saveToStream(output, cDESC))
+    return false;
 
   unsigned int i;
   for (i=0; i<unknownCTDAs.size(); ++i)
@@ -179,7 +175,7 @@ bool LoadScreenRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool LoadScreenRecord::loadFromStream(std::ifstream& in_File)
+bool LoadScreenRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
@@ -216,7 +212,7 @@ bool LoadScreenRecord::loadFromStream(std::ifstream& in_File)
   }
   editorID = std::string(buffer);
 
-  bool hasReadDESC = false;
+  text.reset();
   unknownCTDAs.clear();
   CTDAData tempCTDA;
   unknownCIS2.clear();
@@ -234,15 +230,14 @@ bool LoadScreenRecord::loadFromStream(std::ifstream& in_File)
     switch (subRecName)
     {
       case cDESC:
-           if (hasReadDESC)
+           if (text.isPresent())
            {
              std::cout << "Error: LSCR seems to have more than one DESC subrecord.\n";
              return false;
            }
            //read DESC
-           if (!loadUint32SubRecordFromStream(in_File, cDESC, textStringID, false)) return false;
-           bytesRead += 6;
-           hasReadDESC = true;
+           if (!text.loadFromStream(in_File, cDESC, false, bytesRead, localized, table, buffer))
+             return false;
            break;
       case cCTDA:
            //CTDA's length
@@ -405,7 +400,7 @@ bool LoadScreenRecord::loadFromStream(std::ifstream& in_File)
   }//while
 
   //presence checks
-  if (!(hasReadDESC and hasReadNNAM and hasReadSNAM and hasReadRNAM
+  if (!(text.isPresent() and hasReadNNAM and hasReadSNAM and hasReadRNAM
       and hasReadONAM and hasReadXNAM and (!unknownMOD2.empty())))
   {
     std::cout << "Error while reading LSCR record: at least one required "

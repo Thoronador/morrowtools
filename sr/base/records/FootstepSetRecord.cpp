@@ -113,7 +113,7 @@ bool FootstepSetRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool FootstepSetRecord::loadFromStream(std::ifstream& in_File)
+bool FootstepSetRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;

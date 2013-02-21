@@ -21,8 +21,8 @@
 #ifndef SR_TES4HEADERRECORD_H
 #define SR_TES4HEADERRECORD_H
 
-#include "BasicRecord.h"
 #include <vector>
+#include "BasicRecord.h"
 
 namespace SRTP
 {
@@ -58,9 +58,11 @@ struct Tes4HeaderRecord: public BasicRecord
     /* loads the record from the given input stream and returns true on success
 
       parameters:
-          in_File - the input file stream
+          in_File   - the input file stream
+          localized - whether the file to read from is localized or not
+          table     - the associated string table for localized files
     */
-    virtual bool loadFromStream(std::ifstream& in_File);
+    virtual bool loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table);
 
     /* returns the record's type, usually its header */
     virtual uint32_t getRecordType() const;

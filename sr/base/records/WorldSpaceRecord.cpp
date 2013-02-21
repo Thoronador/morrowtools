@@ -30,7 +30,7 @@ namespace SRTP
 WorldSpaceRecord::WorldSpaceRecord()
 : BasicRecord(), editorID(""),
   unknownRNAMs(std::vector<BinarySubRecord>()),
-  hasFULL(false), nameStringID(0),
+  name(LocalizedString()),
   hasWCTR(false),
   centerCellX(0),
   centerCellY(0),
@@ -69,7 +69,7 @@ bool WorldSpaceRecord::equals(const WorldSpaceRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
       and (unknownRNAMs==other.unknownRNAMs) and (unknownMHDT==other.unknownMHDT)
-      and (hasFULL==other.hasFULL) and ((nameStringID==other.nameStringID) or (!hasFULL))
+      and (name==other.name)
       and (hasWCTR==other.hasWCTR) and (((centerCellX==other.centerCellX) and (centerCellY==other.centerCellY)) or (!hasWCTR))
       and (interiorLightingFormID==other.interiorLightingFormID)
       and (encounterZoneFormID==other.encounterZoneFormID)
@@ -113,9 +113,9 @@ uint32_t WorldSpaceRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* MHDT */ +2 /* 2 bytes for length */ +unknownMHDT.getSize() /* size */;
   }//if MHDT
-  if (hasFULL)
+  if (name.isPresent())
   {
-    writeSize = writeSize +4 /* FULL */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+    writeSize += name.getWriteSize() /* FULL */;
   }
   if (hasWCTR)
   {
@@ -248,15 +248,11 @@ bool WorldSpaceRecord::saveToStream(std::ofstream& output) const
     }
   }//if MHDT
 
-  if (hasFULL)
+  if (name.isPresent())
   {
     //write FULL
-    output.write((const char*) &cFULL, 4);
-    //FULL's length
-    subLength = 4; // fixed
-    output.write((const char*) &subLength, 2);
-    //write FULL
-    output.write((const char*) &nameStringID, 4);
+    if (!name.saveToStream(output, cFULL))
+      return false;
   }
 
   if (hasWCTR)
@@ -489,7 +485,7 @@ bool WorldSpaceRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool WorldSpaceRecord::loadFromStream(std::ifstream& in_File)
+bool WorldSpaceRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
@@ -530,7 +526,7 @@ bool WorldSpaceRecord::loadFromStream(std::ifstream& in_File)
   unknownRNAMs.clear();
   BinarySubRecord tempBin;
   unknownMHDT.setPresence(false);
-  hasFULL = false; nameStringID = 0;
+  name.reset();
   hasWCTR = false; centerCellX = 0; centerCellY = 0;
   interiorLightingFormID = 0;
   encounterZoneFormID = 0;
@@ -585,15 +581,14 @@ bool WorldSpaceRecord::loadFromStream(std::ifstream& in_File)
            bytesRead = bytesRead +2 /*length value*/ +unknownMHDT.getSize() /*data size*/;
            break;
       case cFULL:
-           if (hasFULL)
+           if (name.isPresent())
            {
              std::cout << "Error: WRLD seems to have more than one FULL subrecord.\n";
              return false;
            }
            //read FULL
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID, false)) return false;
-           bytesRead += 6;
-           hasFULL = true;
+           if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
+             return false;
            break;
       case cWCTR:
            if (hasWCTR)

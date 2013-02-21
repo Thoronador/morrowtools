@@ -34,7 +34,7 @@ bool HeadPartRecord::NAM0_NAM1_compound::operator==(const HeadPartRecord::NAM0_N
 
 HeadPartRecord::HeadPartRecord()
 : BasicRecord(), editorID(""),
-  hasFULL(false), fullNameStringID(0),
+  fullName(LocalizedString()),
   modelPath(""),
   unknownDATA(0),
   unknownPNAM(0),
@@ -55,7 +55,7 @@ HeadPartRecord::~HeadPartRecord()
 bool HeadPartRecord::equals(const HeadPartRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
-      and (hasFULL==other.hasFULL) and ((fullNameStringID==other.fullNameStringID) or (!hasFULL))
+      and (fullName==other.fullName)
       and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
       and (unknownDATA==other.unknownDATA) and (unknownPNAM==other.unknownPNAM)
       and (unknownHNAMs==other.unknownHNAMs) and (unknownNAM0_NAM1s==other.unknownNAM0_NAM1s)
@@ -73,9 +73,9 @@ uint32_t HeadPartRecord::getWriteSize() const
         +4 /* DATA */ +2 /* 2 bytes for length */ +1 /* fixed size */
         +4 /* PNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */
         +unknownHNAMs.size()*(4 /* HNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */);
-  if (hasFULL)
+  if (fullName.isPresent())
   {
-    writeSize = writeSize +4 /* FULL */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+    writeSize += fullName.getWriteSize() /* FULL */;
   }
   if (!modelPath.empty())
   {
@@ -117,15 +117,11 @@ bool HeadPartRecord::saveToStream(std::ofstream& output) const
   //write editor ID
   output.write(editorID.c_str(), subLength);
 
-  if (hasFULL)
+  if (fullName.isPresent())
   {
     //write FULL
-    output.write((const char*) &cFULL, 4);
-    //FULL's length
-    subLength = 4; // fixed
-    output.write((const char*) &subLength, 2);
-    //write FULL
-    output.write((const char*) &fullNameStringID, 4);
+    if (!fullName.saveToStream(output, cFULL))
+      return false;
   }
 
   if (!modelPath.empty())
@@ -222,7 +218,7 @@ bool HeadPartRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool HeadPartRecord::loadFromStream(std::ifstream& in_File)
+bool HeadPartRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
@@ -259,7 +255,7 @@ bool HeadPartRecord::loadFromStream(std::ifstream& in_File)
   }
   editorID = std::string(buffer);
 
-  hasFULL = false;
+  fullName.reset();
   modelPath.clear();
   unknownMODT.setPresence(false);
   bool hasReadDATA = false;
@@ -278,15 +274,14 @@ bool HeadPartRecord::loadFromStream(std::ifstream& in_File)
     switch (subRecName)
     {
       case cFULL:
-           if (hasFULL)
+           if (fullName.isPresent())
            {
              std::cout << "Error: HDPT seems to have more than one FULL subrecord.\n";
              return false;
            }
            //read FULL
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, fullNameStringID, false)) return false;
-           bytesRead += 6;
-           hasFULL = true;
+           if (!fullName.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
+             return false;
            break;
       case cMODL:
            if (!modelPath.empty())

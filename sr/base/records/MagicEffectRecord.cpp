@@ -83,7 +83,7 @@ const uint32_t MagicEffectRecord::cSoundTypeOnHit       = 0x00000005;
 
 MagicEffectRecord::MagicEffectRecord()
 : BasicRecord(), editorID(""),
-  hasFULL(false), fullNameStringID(0),
+  name(LocalizedString()),
   menuDisplayObjectFormID(0),
   keywordArray(std::vector<uint32_t>()),
   //DATA
@@ -127,7 +127,7 @@ MagicEffectRecord::MagicEffectRecord()
   scriptEffectAIDataDelayTime(0.0f),
   //end of DATA
   sounds(std::map<uint32_t, uint32_t>()),
-  descriptionStringID(0),
+  description(LocalizedString()),
   unknownCTDAs(std::vector<CTDAData>())
 {
   unknownVMAD.setPresence(false);
@@ -142,8 +142,8 @@ MagicEffectRecord::~MagicEffectRecord()
 bool MagicEffectRecord::equals(const MagicEffectRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
-      and (unknownVMAD==other.unknownVMAD) and (hasFULL==other.hasFULL)
-      and ((fullNameStringID==other.fullNameStringID) or (!hasFULL))
+      and (unknownVMAD==other.unknownVMAD)
+      and (name==other.name)
       and (menuDisplayObjectFormID==other.menuDisplayObjectFormID)
       and (keywordArray==other.keywordArray)
       //subrecord DATA
@@ -168,7 +168,7 @@ bool MagicEffectRecord::equals(const MagicEffectRecord& other) const
       and (scriptEffectAIDataScore==other.scriptEffectAIDataScore) and (scriptEffectAIDataDelayTime==other.scriptEffectAIDataDelayTime)
       //end of subrecord DATA
       and (sounds==other.sounds)
-      and (descriptionStringID==other.descriptionStringID) and (unknownCTDAs==other.unknownCTDAs));
+      and (description==other.description) and (unknownCTDAs==other.unknownCTDAs));
 }
 #endif
 
@@ -179,16 +179,16 @@ uint32_t MagicEffectRecord::getWriteSize() const
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
         +4 /* DATA */ +2 /* 2 bytes for length */ +152 /* fixed size */
-        +4 /* DNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */
+        +description.getWriteSize() /* DNAM */
         +unknownCTDAs.size()*
         (4 /* CTDA */ +2 /* 2 bytes for length */ +32 /* fixed size */);
   if (unknownVMAD.isPresent())
   {
     writeSize = writeSize +4 /* VMAD */ +2 /* 2 bytes for length */ +unknownVMAD.getSize() /* size */;
   }
-  if (hasFULL)
+  if (name.isPresent())
   {
-    writeSize = writeSize +4 /* FULL */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+    writeSize += name.getWriteSize() /* FULL */;
   }
   if (menuDisplayObjectFormID!=0)
   {
@@ -229,15 +229,11 @@ bool MagicEffectRecord::saveToStream(std::ofstream& output) const
     }
   }//if VMAD
 
-  if (hasFULL)
+  if (name.isPresent())
   {
     //write FULL
-    output.write((const char*) &cFULL, 4);
-    //FULL's length
-    subLength = 4;
-    output.write((const char*) &subLength, 2);
-    //write FULL
-    output.write((const char*) &fullNameStringID, 4);
+    if (!name.saveToStream(output, cFULL))
+      return false;
   }//if has FULL subrecord
 
   if (menuDisplayObjectFormID!=0)
@@ -338,12 +334,8 @@ bool MagicEffectRecord::saveToStream(std::ofstream& output) const
   }//if
 
   //write DNAM
-  output.write((const char*) &cDNAM, 4);
-  //DNAM's length
-  subLength = 4;
-  output.write((const char*) &subLength, 2);
-  //write DNAM
-  output.write((const char*) &descriptionStringID, 4);
+  if (!description.saveToStream(output, cDNAM))
+    return false;
 
   //write CTDAs
   for (i=0; i<unknownCTDAs.size(); ++i)
@@ -361,7 +353,7 @@ bool MagicEffectRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool MagicEffectRecord::loadFromStream(std::ifstream& in_File)
+bool MagicEffectRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
@@ -399,14 +391,14 @@ bool MagicEffectRecord::loadFromStream(std::ifstream& in_File)
   editorID = std::string(buffer);
 
   unknownVMAD.setPresence(false);
-  hasFULL = false;
+  name.reset();
   menuDisplayObjectFormID = 0;
   bool hasReadDATA = false;
   keywordArray.clear();
   uint32_t k_Size, i, helper;
   sounds.clear();
   uint32_t tempUint32;
-  bool hasReadDNAM = false;
+  description.reset();
   unknownCTDAs.clear();
   CTDAData tempCTDA;
 
@@ -432,15 +424,14 @@ bool MagicEffectRecord::loadFromStream(std::ifstream& in_File)
            bytesRead = bytesRead +2 +unknownVMAD.getSize();
            break;
       case cFULL:
-           if (hasFULL)
+           if (name.isPresent())
            {
              std::cout << "Error: MGEF seems to have more than one FULL subrecord!\n";
              return false;
            }
            //read FULL
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, fullNameStringID, false)) return false;
-           bytesRead += 6;
-           hasFULL = true;
+           if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
+             return false;
            break;
       case cMDOB:
            if (menuDisplayObjectFormID!=0)
@@ -617,29 +608,17 @@ bool MagicEffectRecord::loadFromStream(std::ifstream& in_File)
            }
            break;
       case cDNAM:
-           if (hasReadDNAM)
+           if (description.isPresent())
            {
              std::cout << "Error: MGEF seems to have more than one DNAM subrecord!\n";
              return false;
            }
-           //DNAM's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength!=4)
-           {
-             std::cout <<"Error: sub record DNAM of MGEF has invalid length("
-                       <<subLength<<" bytes). Should be four bytes!\n";
-             return false;
-           }
-           //read DNAM's stuff
-           in_File.read((char*) &descriptionStringID, 4);
-           bytesRead += 4;
-           if (!in_File.good())
+           //read DNAM
+           if (!description.loadFromStream(in_File, cDNAM, false, bytesRead, localized, table, buffer))
            {
              std::cout << "Error while reading subrecord DNAM of MGEF!\n";
              return false;
            }
-           hasReadDNAM = true;
            break;
       case cCTDA:
            //CTDA's length
@@ -671,7 +650,7 @@ bool MagicEffectRecord::loadFromStream(std::ifstream& in_File)
   }//while
 
   //check for required DNAM and DATA
-  if (!(hasReadDNAM and hasReadDATA))
+  if (!(description.isPresent() and hasReadDATA))
   {
     std::cout << "Error: DNAM or DATA subrecord of MGEF is missing!\n";
     return false;

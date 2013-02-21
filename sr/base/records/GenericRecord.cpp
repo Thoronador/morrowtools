@@ -119,7 +119,7 @@ bool GenericRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool GenericRecord::loadFromStream(std::ifstream& in_File)
+bool GenericRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t Size;
   if (!loadSizeAndUnknownValues(in_File, Size)) return false;

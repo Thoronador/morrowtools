@@ -39,7 +39,7 @@ const unsigned int WeaponRecord::cTypeStaves = 8;
 
 WeaponRecord::WeaponRecord()
 : BasicRecord(), editorID(""),
-  hasFULL(false), nameStringID(0),
+  name(LocalizedString()),
   modelPath(""),
   enchantingFormID(0),
   hasEAMT(false),
@@ -48,7 +48,7 @@ WeaponRecord::WeaponRecord()
   blockBashImpactDataSetFormID(0),
   alternateBlockMaterialFormID(0),
   keywordArray(std::vector<uint32_t>()),
-  descriptionStringID(0),
+  description(LocalizedString()),
   unknownNNAM(""),
   impactDataSetFormID(0),
   firstPersonModelObjectFormID(0),
@@ -76,7 +76,7 @@ WeaponRecord::WeaponRecord()
 WeaponRecord::WeaponRecord(const WeaponRecord& other)
 : editorID(other.editorID),
   unknownVMAD(other.unknownVMAD),
-  hasFULL(other.hasFULL), nameStringID(other.nameStringID),
+  name(other.name),
   modelPath(other.modelPath),
   unknownMODT(other.unknownMODT),
   unknownMODS(other.unknownMODS),
@@ -86,7 +86,7 @@ WeaponRecord::WeaponRecord(const WeaponRecord& other)
   blockBashImpactDataSetFormID(other.blockBashImpactDataSetFormID),
   alternateBlockMaterialFormID(other.alternateBlockMaterialFormID),
   keywordArray(other.keywordArray),
-  descriptionStringID(other.descriptionStringID),
+  description(other.description),
   unknownNNAM(other.unknownNNAM),
   impactDataSetFormID(other.impactDataSetFormID),
   firstPersonModelObjectFormID(other.firstPersonModelObjectFormID),
@@ -115,8 +115,7 @@ WeaponRecord& WeaponRecord::operator=(const WeaponRecord& other)
   editorID = other.editorID;
   unknownVMAD = other.unknownVMAD;
   memcpy(unknownOBND, other.unknownOBND, 12);
-  hasFULL = other.hasFULL;
-  nameStringID = other.nameStringID;
+  name = other.name;
   modelPath = other.modelPath;
   unknownMODT = other.unknownMODT;
   unknownMODS = other.unknownMODS;
@@ -127,7 +126,7 @@ WeaponRecord& WeaponRecord::operator=(const WeaponRecord& other)
   blockBashImpactDataSetFormID = other.blockBashImpactDataSetFormID;
   alternateBlockMaterialFormID = other.alternateBlockMaterialFormID;
   keywordArray = other.keywordArray;
-  descriptionStringID = other.descriptionStringID;
+  description = other.description;
   unknownNNAM = other.unknownNNAM;
   impactDataSetFormID = other.impactDataSetFormID;
   firstPersonModelObjectFormID = other.firstPersonModelObjectFormID;
@@ -162,7 +161,7 @@ bool WeaponRecord::equals(const WeaponRecord& other) const
 {
   if ((editorID!=other.editorID) or (unknownVMAD!=other.unknownVMAD)
       or (memcmp(unknownOBND, other.unknownOBND, 12)!=0)
-      or (hasFULL!=other.hasFULL) or ((nameStringID!=other.nameStringID) and hasFULL)
+      or (name!=other.name)
       or (modelPath!=other.modelPath) or (unknownMODT!=other.unknownMODT)
       or (unknownMODS!=other.unknownMODS)or (!equalsBasic(other)))
   {
@@ -176,7 +175,7 @@ bool WeaponRecord::equals(const WeaponRecord& other) const
   {
     return false;
   }
-  if ((keywordArray!=other.keywordArray) or (descriptionStringID!=other.descriptionStringID)
+  if ((keywordArray!=other.keywordArray) or (description!=other.description)
     or (unknownNNAM!=other.unknownNNAM)
     or (impactDataSetFormID!=other.impactDataSetFormID)
     or (firstPersonModelObjectFormID!=other.firstPersonModelObjectFormID)
@@ -204,7 +203,7 @@ uint32_t WeaponRecord::getWriteSize() const
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
         +4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed size */
-        +4 /* DESC */ +2 /* 2 bytes for length */ +4 /* fixed size */
+        +description.getWriteSize() /* DESC */
         +4 /* DATA */ +2 /* 2 bytes for length */ +10 /* fixed size */
         +4 /* DNAM */ +2 /* 2 bytes for length */ +100 /* fixed size */
         +4 /* CRDT */ +2 /* 2 bytes for length */ +16 /* fixed size */
@@ -219,9 +218,9 @@ uint32_t WeaponRecord::getWriteSize() const
     writeSize = writeSize +4 /* MODL */ +2 /* 2 bytes for length */
                +modelPath.length()+1 /* length of name +1 byte for NUL termination */;
   }
-  if (hasFULL)
+  if (name.isPresent())
   {
-    writeSize = writeSize +4 /* FULL */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+    writeSize += name.getWriteSize() /* FULL */;
   }
   if (unknownMODT.isPresent())
   {
@@ -328,15 +327,11 @@ bool WeaponRecord::saveToStream(std::ofstream& output) const
   //write OBND
   output.write((const char*) unknownOBND, 12);
 
-  if (hasFULL)
+  if (name.isPresent())
   {
     //write FULL
-    output.write((const char*) &cFULL, 4);
-    //FULL's length
-    subLength = 4; //fixed size
-    output.write((const char*) &subLength, 2);
-    //write FULL
-    output.write((const char*) &nameStringID, 4);
+    if (!name.saveToStream(output, cFULL))
+      return false;
   }//if has FULL subrecord
 
   if (!modelPath.empty())
@@ -450,12 +445,8 @@ bool WeaponRecord::saveToStream(std::ofstream& output) const
   }//if keyword array not empty
 
   //write DESC
-  output.write((const char*) &cDESC, 4);
-  //DESC's length
-  subLength = 4; //fixed size
-  output.write((const char*) &subLength, 2);
-  //write DESC
-  output.write((const char*) &descriptionStringID, 4);
+  if (!description.saveToStream(output, cDESC))
+    return false;
 
   if(!unknownNNAM.empty())
   {
@@ -594,7 +585,7 @@ bool WeaponRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool WeaponRecord::loadFromStream(std::ifstream& in_File)
+bool WeaponRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
@@ -633,8 +624,7 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
 
   unknownVMAD.setPresence(false);
   bool hasReadOBND = false;
-  hasFULL = false;
-  nameStringID = 0;
+  name.reset();
   modelPath.clear();
   unknownMODT.setPresence(false);
   unknownMODS.setPresence(false);
@@ -644,7 +634,7 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
   alternateBlockMaterialFormID = 0;
   keywordArray.clear();
   uint32_t k_Size, i, fid;
-  bool hasReadDESC = false;
+  description.reset();
   unknownNNAM.clear();
   attackSoundFormID = 0;
   bool hasReadDATA = false;
@@ -702,15 +692,14 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
            hasReadOBND = true;
            break;
       case cFULL:
-           if (hasFULL)
+           if (name.isPresent())
            {
              std::cout << "Error: WEAP seems to have more than one FULL subrecord!\n";
              return false;
            }
            //read FULL
-           if (!loadUint32SubRecordFromStream(in_File, cFULL, nameStringID, false)) return false;
-           bytesRead += 6;
-           hasFULL = true;
+           if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
+             return false;
            break;
       case cMODL:
            if (!modelPath.empty())
@@ -892,15 +881,14 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
            }
            break;
       case cDESC:
-           if (hasReadDESC)
+           if (description.isPresent())
            {
              std::cout << "Error: WEAP seems to have more than one DESC subrecord!\n";
              return false;
            }
            //read DESC
-           if (!loadUint32SubRecordFromStream(in_File, cDESC, descriptionStringID, false)) return false;
-           bytesRead += 6;
-           hasReadDESC = true;
+           if (!description.loadFromStream(in_File, cDESC, false, bytesRead, localized, table, buffer))
+             return false;
            break;
       case cNNAM:
            if (!unknownNNAM.empty())
@@ -1141,7 +1129,7 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
     }//swi
   }//while
 
-  if (!(hasReadOBND and hasReadDESC and hasReadDATA))
+  if (!(hasReadOBND and description.isPresent() and hasReadDATA))
   {
     std::cout << "Error: WEAP's OBND or DESC or DATA subrecord is missing!\n";
     return false;

@@ -109,6 +109,11 @@ struct LocalizedString
 
     /* comparison operator */
     bool operator==(const LocalizedString& other) const;
+
+    inline bool operator!=(const LocalizedString& other) const
+    {
+      return (!(*this==other));
+    }
   private:
     Type m_Type;
     uint32_t m_Index;

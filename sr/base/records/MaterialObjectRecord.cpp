@@ -40,9 +40,9 @@ MaterialObjectRecord::MaterialObjectRecord()
   directionalProjectionVectorY(0.0f),
   directionalProjectionVectorZ(0.0f),
   normalDampener(1.0f),
-  singlePassColorR(0.0f), //(*1/255, i.e. "real" value in CK is 255 times that)
-  singlePassColorG(0.0f), //(*1/255, i.e. "real" value in CK  is 255 times that)
-  singlePassColorB(0.0f), //(*1/255, i.e. "real" value in CK  is 255 times that)
+  singlePassColorR(0.0f), // (*1/255, i.e. "real" value in CK is 255 times that)
+  singlePassColorG(0.0f), // (*1/255, i.e. "real" value in CK  is 255 times that)
+  singlePassColorB(0.0f), // (*1/255, i.e. "real" value in CK  is 255 times that)
   singlePass(false) // 0=false, 1=true
   //end of DATA
 {
@@ -164,7 +164,7 @@ bool MaterialObjectRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool MaterialObjectRecord::loadFromStream(std::ifstream& in_File)
+bool MaterialObjectRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;

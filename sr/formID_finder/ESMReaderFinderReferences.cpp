@@ -78,17 +78,17 @@ void ESMReaderFinderReferences::groupFinished(const GroupData& g_data)
   }
 }
 
-int ESMReaderFinderReferences::readNextRecord(std::ifstream& in_File, const uint32_t recName)
+int ESMReaderFinderReferences::readNextRecord(std::ifstream& in_File, const uint32_t recName, const bool localized, const StringTable& table)
 {
   #warning Not completely implemented yet!
   SimplifiedReferenceRecord * recPtr;
   switch (recName)
   {
     case cCELL:
-         return Cells::getSingleton().readNextRecord(in_File);
+         return Cells::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cWRLD:
-         return WorldSpaces::getSingleton().readNextRecord(in_File);
+         return WorldSpaces::getSingleton().readNextRecord(in_File, localized, table);
          break;
     case cREFR:
     case cACHR:
@@ -98,7 +98,7 @@ int ESMReaderFinderReferences::readNextRecord(std::ifstream& in_File, const uint
          return skipRecord(in_File);
          break;
   }//swi
-  if (!recPtr->loadFromStream(in_File))
+  if (!recPtr->loadFromStream(in_File, localized, table))
   {
     delete recPtr;
     std::cout << "ESMReaderFinderReferences::readNextRecord: Error while reading reference record!\n";

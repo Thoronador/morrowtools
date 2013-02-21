@@ -104,7 +104,7 @@ namespace SRTP
          the an error occurs. However, the value is undefined in that case and
          does not represent a proper value.
   */
-  int getLanguageComponent(const std::string& dataDir, std::string pluginName, std::string& languageComponent)
+  inline int getLanguageComponent(const std::string& dataDir, std::string pluginName, std::string& languageComponent)
   {
     pluginName = lowerCase(pluginName);
     const std::string::size_type piNameLength = pluginName.length();
@@ -171,7 +171,7 @@ namespace SRTP
          fileName - name of the .esm/.esp file
          files    - vector that will hold the string table files
   */
-  int getAssociatedTableFiles(const std::string& fileName, std::vector<std::string>& files)
+  inline int getAssociatedTableFiles(const std::string& fileName, std::vector<std::string>& files)
   {
     std::string part_path, part_name, part_ext;
     splitPathFileExtension(fileName, '\\', part_path, part_name, part_ext);

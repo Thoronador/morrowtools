@@ -7,8 +7,8 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin\Debug\conv_cams" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj\Debug\" />
+				<Option output="bin/Debug/conv_cams" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -16,8 +16,8 @@
 				</Compiler>
 			</Target>
 			<Target title="Release">
-				<Option output="bin\Release\conv_cams" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj\Release\" />
+				<Option output="bin/Release/conv_cams" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -32,43 +32,45 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
-		<Unit filename="..\..\base\FileFunctions.cpp" />
-		<Unit filename="..\..\base\FileFunctions.h" />
-		<Unit filename="..\..\base\RegistryFunctions.cpp" />
-		<Unit filename="..\..\base\RegistryFunctions.h" />
-		<Unit filename="..\..\base\UtilityFunctions.cpp" />
-		<Unit filename="..\..\base\UtilityFunctions.h" />
-		<Unit filename="..\..\mw\base\HelperIO.cpp" />
-		<Unit filename="..\..\mw\base\HelperIO.h" />
-		<Unit filename="..\base\ESMFileContents.cpp" />
-		<Unit filename="..\base\ESMFileContents.h" />
-		<Unit filename="..\base\ESMReader.cpp" />
-		<Unit filename="..\base\ESMReader.h" />
-		<Unit filename="..\base\ESMReaderContentsBase.cpp" />
-		<Unit filename="..\base\ESMReaderContentsBase.h" />
-		<Unit filename="..\base\ESMWriter.cpp" />
-		<Unit filename="..\base\ESMWriter.h" />
-		<Unit filename="..\base\ESMWriterContents.cpp" />
-		<Unit filename="..\base\ESMWriterContents.h" />
-		<Unit filename="..\base\Group.cpp" />
-		<Unit filename="..\base\Group.h" />
-		<Unit filename="..\base\RegistryFunctions.h" />
-		<Unit filename="..\base\ReturnCodes.h" />
-		<Unit filename="..\base\SR_Constants.h" />
-		<Unit filename="..\base\records\BasicRecord.cpp" />
-		<Unit filename="..\base\records\BasicRecord.h" />
-		<Unit filename="..\base\records\BinarySubRecord.cpp" />
-		<Unit filename="..\base\records\BinarySubRecord.h" />
-		<Unit filename="..\base\records\CameraShotRecord.cpp" />
-		<Unit filename="..\base\records\CameraShotRecord.h" />
-		<Unit filename="..\base\records\GenericRecord.cpp" />
-		<Unit filename="..\base\records\GenericRecord.h" />
-		<Unit filename="..\base\records\GroupData.cpp" />
-		<Unit filename="..\base\records\GroupData.h" />
-		<Unit filename="..\base\records\NAVIRecord.cpp" />
-		<Unit filename="..\base\records\NAVIRecord.h" />
-		<Unit filename="..\base\records\TES4HeaderRecord.cpp" />
-		<Unit filename="..\base\records\TES4HeaderRecord.h" />
+		<Unit filename="../../base/FileFunctions.cpp" />
+		<Unit filename="../../base/FileFunctions.h" />
+		<Unit filename="../../base/RegistryFunctions.cpp" />
+		<Unit filename="../../base/RegistryFunctions.h" />
+		<Unit filename="../../base/UtilityFunctions.cpp" />
+		<Unit filename="../../base/UtilityFunctions.h" />
+		<Unit filename="../../mw/base/HelperIO.cpp" />
+		<Unit filename="../../mw/base/HelperIO.h" />
+		<Unit filename="../base/ESMFileContents.cpp" />
+		<Unit filename="../base/ESMFileContents.h" />
+		<Unit filename="../base/ESMReader.cpp" />
+		<Unit filename="../base/ESMReader.h" />
+		<Unit filename="../base/ESMReaderContentsBase.cpp" />
+		<Unit filename="../base/ESMReaderContentsBase.h" />
+		<Unit filename="../base/ESMWriter.cpp" />
+		<Unit filename="../base/ESMWriter.h" />
+		<Unit filename="../base/ESMWriterContents.cpp" />
+		<Unit filename="../base/ESMWriterContents.h" />
+		<Unit filename="../base/Group.cpp" />
+		<Unit filename="../base/Group.h" />
+		<Unit filename="../base/RegistryFunctions.h" />
+		<Unit filename="../base/ReturnCodes.h" />
+		<Unit filename="../base/SR_Constants.h" />
+		<Unit filename="../base/StringTable.cpp" />
+		<Unit filename="../base/StringTable.h" />
+		<Unit filename="../base/records/BasicRecord.cpp" />
+		<Unit filename="../base/records/BasicRecord.h" />
+		<Unit filename="../base/records/BinarySubRecord.cpp" />
+		<Unit filename="../base/records/BinarySubRecord.h" />
+		<Unit filename="../base/records/CameraShotRecord.cpp" />
+		<Unit filename="../base/records/CameraShotRecord.h" />
+		<Unit filename="../base/records/GenericRecord.cpp" />
+		<Unit filename="../base/records/GenericRecord.h" />
+		<Unit filename="../base/records/GroupData.cpp" />
+		<Unit filename="../base/records/GroupData.h" />
+		<Unit filename="../base/records/NAVIRecord.cpp" />
+		<Unit filename="../base/records/NAVIRecord.h" />
+		<Unit filename="../base/records/TES4HeaderRecord.cpp" />
+		<Unit filename="../base/records/TES4HeaderRecord.h" />
 		<Unit filename="ESMReaderConvCAMS.cpp" />
 		<Unit filename="ESMReaderConvCAMS.h" />
 		<Unit filename="main.cpp" />

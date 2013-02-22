@@ -1,20 +1,20 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2011, 2012, 2013  Thoronador
 
-    The Skyrim Tools are free software: you can redistribute them and/or
-    modify them under the terms of the GNU General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    The Skyrim Tools are distributed in the hope that they will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with the Skyrim Tools.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -------------------------------------------------------------------------------
 */
 
@@ -103,22 +103,16 @@ int main()
   {
     std::cout << "RACE \""<<iter->second.editorID<<"\":\n";
     //FULL
-    if (iter->second.hasFULL)
+    if (iter->second.name.isPresent())
     {
-      std::cout << "    FULL: "<<iter->second.nameStringID;
-      if (table_compound.hasString(iter->second.nameStringID))
-      {
-        std::cout << "    string: \""<< table_compound.getString(iter->second.nameStringID)<<"\"";
-      }
+      std::cout << "    FULL: "<<iter->second.name.getIndex();
+      std::cout << "    string: \""<<iter->second.name.getString()<<"\"";
       std::cout << std::endl;
     }//if
     //DESC
 
-      std::cout << "    DESC: "<<iter->second.descriptionStringID;
-      if (table_compound.hasString(iter->second.descriptionStringID))
-      {
-        std::cout << "    string: \""<< table_compound.getString(iter->second.descriptionStringID)<<"\"";
-      }
+      std::cout << "    DESC: "<<iter->second.description.getIndex();
+      std::cout << "    string: \""<< iter->second.description.getString()<<"\"";
       std::cout << std::endl;
 
     //DATA
@@ -192,15 +186,15 @@ int main()
   while (iter!=SRTP::Races::getSingleton().getEnd())
   {
     //FULL
-    if (iter->second.hasFULL)
+    if (iter->second.name.isPresent())
     {
-      tt = table_compound.locateString(iter->second.nameStringID);
-      writeCompound.addString(iter->second.nameStringID, table_compound.getString(iter->second.nameStringID), tt);
+      tt = table_compound.locateString(iter->second.name.getIndex());
+      writeCompound.addString(iter->second.name.getIndex(), table_compound.getString(iter->second.name.getIndex()), tt);
     }//if
     //DESC
 
-      tt = table_compound.locateString(iter->second.descriptionStringID);
-      writeCompound.addString(iter->second.descriptionStringID, table_compound.getString(iter->second.descriptionStringID), tt);
+      tt = table_compound.locateString(iter->second.description.getIndex());
+      writeCompound.addString(iter->second.description.getIndex(), table_compound.getString(iter->second.description.getIndex()), tt);
 
     ++iter;
   }//while

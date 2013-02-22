@@ -1,20 +1,20 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012 Thoronador
+    Copyright (C) 2012, 2013  Thoronador
 
-    The Skyrim Tools are free software: you can redistribute them and/or
-    modify them under the terms of the GNU General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    The Skyrim Tools are distributed in the hope that they will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with the Skyrim Tools.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -------------------------------------------------------------------------------
 */
 
@@ -32,7 +32,7 @@
 void showGPLNotice()
 {
   std::cout << "CAMS record converter for Skyrim\n"
-            << "  Copyright (C) 2012 Thoronador\n"
+            << "  Copyright (C) 2012, 2013  Thoronador\n"
             << "\n"
             << "  This programme is free software: you can redistribute it and/or\n"
             << "  modify it under the terms of the GNU General Public License as published\n"
@@ -51,13 +51,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "CAMS record converter for Skyrim, version 0.01.rev457, 2012-03-27\n";
+  std::cout << "CAMS record converter for Skyrim, version 0.01b.rev513~experimental, 2013-02-22\n";
 }
 
 int showVersionExitcode()
 {
   showVersion();
-  return 457;
+  return 513;
 }
 
 void showHelp()
@@ -345,7 +345,9 @@ int main(int argc, char **argv)
   std::cout << "Saving file...\n";
   SRTP::ESMWriterContents writer;
   // ---- copy contents from reader to writer (expensive in terms of memory,
-  //      I should implement a faster, more lightweight way to do that)
+  //      I should implement a faster, more lightweight way to do that.
+  //      Or wait for C++11's move semantics to be implemented by most compilers
+  //      and use that instead of copying that stuff.)
   writer.contents = reader.contents;
   //now write the actual .esm/.esp file
   if (!writer.writeESM(newName, tes4rec))

@@ -85,13 +85,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Form ID Finder for Skyrim, version 0.22.rev512~experimental, 2013-02-21\n";
+  std::cout << "Form ID Finder for Skyrim, version 0.22.rev513~experimental, 2013-02-22\n";
 }
 
 int showVersionExitcode()
 {
   showVersion();
-  return 512;
+  return 513;
 }
 
 void showHelp()
@@ -427,7 +427,7 @@ int main(int argc, char **argv)
   SRTP::Tes4HeaderRecord tes4rec;
 
   //read the usual stuff (for base IDs)
-  if (!reader.readESM(dataDir+"Skyrim.esm", tes4rec))
+  if (reader.readESM(dataDir+"Skyrim.esm", tes4rec)<0)
   {
     std::cout << "Error while reading "<<dataDir+"Skyrim.esm!\n";
     return SRTP::rcFileError;
@@ -436,7 +436,7 @@ int main(int argc, char **argv)
   SRTP::ESMReaderFinderReferences readerReferences;
   if (withReferences)
   {
-    if (!readerReferences.readESM(dataDir+"Skyrim.esm", tes4rec))
+    if (readerReferences.readESM(dataDir+"Skyrim.esm", tes4rec)<0)
     {
       std::cout << "Error while reading references from "<<dataDir+"Skyrim.esm!\n";
       return SRTP::rcFileError;

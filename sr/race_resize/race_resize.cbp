@@ -32,6 +32,8 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="../../base/FileFunctions.cpp" />
+		<Unit filename="../../base/FileFunctions.h" />
 		<Unit filename="../../base/RegistryFunctions.cpp" />
 		<Unit filename="../../base/RegistryFunctions.h" />
 		<Unit filename="../../base/UtilityFunctions.cpp" />
@@ -49,6 +51,7 @@
 		<Unit filename="../base/ESMWriterContents.h" />
 		<Unit filename="../base/Group.cpp" />
 		<Unit filename="../base/Group.h" />
+		<Unit filename="../base/PathFunctions.h" />
 		<Unit filename="../base/Races.h" />
 		<Unit filename="../base/RegistryFunctions.h" />
 		<Unit filename="../base/SR_Constants.h" />
@@ -62,6 +65,8 @@
 		<Unit filename="../base/records/BinarySubRecord.h" />
 		<Unit filename="../base/records/GroupData.cpp" />
 		<Unit filename="../base/records/GroupData.h" />
+		<Unit filename="../base/records/LocalizedString.cpp" />
+		<Unit filename="../base/records/LocalizedString.h" />
 		<Unit filename="../base/records/RaceRecord.cpp" />
 		<Unit filename="../base/records/RaceRecord.h" />
 		<Unit filename="../base/records/SubBlock.h" />

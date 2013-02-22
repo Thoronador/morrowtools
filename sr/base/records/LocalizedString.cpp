@@ -89,6 +89,13 @@ bool LocalizedString::loadFromStream(std::istream& in_Stream, const uint32_t sub
                 << IntTo4Char(subHeader)<<"!\n";
       return false;
     }
+    //treat index zero as empty string, some subrecords allow zero as index
+    if (m_Index==0)
+    {
+      m_String.clear();
+      m_Type = lsIndex;
+      return true;
+    }//if zero
     if (!table.hasString(m_Index))
     {
       std::cout << "LocalizedString::loadFromStream: table has no entry for index "<<m_Index<<"!\n";

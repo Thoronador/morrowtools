@@ -882,7 +882,7 @@ bool FactionRecord::loadFromStream(std::ifstream& in_File, const bool localized,
            }
            //clear stuff
            tempCTDA_CIS2.unknownCTDA.clear();
-           tempCTDA_CIS2.unknownCIS2.clear();
+           tempCTDA_CIS2.unknownCISx.clear();
            //read CTDA's data
            if (!tempCTDA_CIS2.unknownCTDA.loadFromStream(in_File, bytesRead))
            {
@@ -898,31 +898,16 @@ bool FactionRecord::loadFromStream(std::ifstream& in_File, const bool localized,
                        << "without previous CTDA subrecord encountered!\n";
              return false;
            }
-           if (!tempCTDA_CIS2.unknownCIS2.empty())
+           if (!tempCTDA_CIS2.unknownCISx.empty())
            {
              std::cout << "Error: FACT seems to have more than one CIS2 "
                        << "subrecord per CTDA subrecord!\n";
              return false;
            }
-           //CIS2's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength>511)
-           {
-             std::cout <<"Error: sub record CIS2 of FACT is longer than 511 characters!\n";
+           //read CIS2's length
+           if (!loadString512FromStream(in_File, tempCTDA_CIS2.unknownCISx, buffer, cCIS2, false, bytesRead))
              return false;
-           }
-           //read CIS2's stuff
-           memset(buffer, 0, 512);
-           in_File.read(buffer, subLength);
-           bytesRead += subLength;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord CIS2 of FACT!\n";
-             return false;
-           }
-           tempCTDA_CIS2.unknownCIS2 = std::string(buffer);
-           if (tempCTDA_CIS2.unknownCIS2.empty())
+           if (tempCTDA_CIS2.unknownCISx.empty())
            {
              std::cout << "Error: subrecord CIS2 of FACT is empty!\n";
              return false;

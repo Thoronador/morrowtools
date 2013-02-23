@@ -227,13 +227,13 @@ bool IdleAnimationRecord::loadFromStream(std::ifstream& in_File, const bool loca
              std::cout << "Error: subrecord CIS1 without prior CTDA subrecord!\n";
              return false;
            }
-           if (!conditions.back().unknownCIS1.empty())
+           if (!conditions.back().unknownCISx.empty())
            {
              std::cout << "Error: IDLE seems to have more than one CIS1 subrecord per CTDA subrecord!\n";
              return false;
            }
            //load CIS1
-           if (!loadString512FromStream(in_File, conditions.back().unknownCIS1, buffer, cCIS1, false, bytesRead))
+           if (!loadString512FromStream(in_File, conditions.back().unknownCISx, buffer, cCIS1, false, bytesRead))
            {
              return false;
            }

@@ -466,29 +466,14 @@ bool SpellRecord::loadFromStream(std::ifstream& in_File, const bool localized, c
              std::cout << "Error while reading SPEL: CIS2 found, but there was no CTDA before it!\n";
              return false;
            }
-           if (!tempEffect.unknownCTDA_CIS2s.back().unknownCIS2.empty())
+           if (!tempEffect.unknownCTDA_CIS2s.back().unknownCISx.empty())
            {
              std::cout << "Error: SPEL seems to have more than one CIS2 subrecord per CTDA!\n";
              return false;
            }
-           //CIS2's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength>511)
-           {
-             std::cout <<"Error: subrecord CIS2 of SPEL is longer than 511 characters!\n";
+           //read CIS2
+           if (!loadString512FromStream(in_File, tempEffect.unknownCTDA_CIS2s.back().unknownCISx, buffer, cCIS2, false, bytesRead))
              return false;
-           }
-           //read CIS2's stuff
-           memset(buffer, 0, 512);
-           in_File.read(buffer, subLength);
-           bytesRead += subLength;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord CIS2 of SPEL!\n";
-             return false;
-           }
-           tempEffect.unknownCTDA_CIS2s.back().unknownCIS2 = std::string(buffer);
            break;
       default:
            std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)

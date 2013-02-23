@@ -72,8 +72,7 @@ struct LoadScreenRecord: public BasicRecord
 
     std::string editorID;
     LocalizedString text; //subrecord DESC
-    std::vector<CTDAData> unknownCTDAs;
-    std::string unknownCIS2;
+    std::vector<CTDA_CIS2_compound> unknownCTDA_CIS2s;
     uint32_t unknownNNAM;
     uint32_t unknownSNAM;
     uint8_t unknownRNAM[6];

@@ -30,8 +30,7 @@ namespace SRTP
 LoadScreenRecord::LoadScreenRecord()
 : BasicRecord(), editorID(""),
   text(LocalizedString()),
-  unknownCTDAs(std::vector<CTDAData>()),
-  unknownCIS2(""),
+  unknownCTDA_CIS2s(std::vector<CTDA_CIS2_compound>()),
   unknownNNAM(0),
   unknownSNAM(0),
   unknownONAM(0),
@@ -50,8 +49,8 @@ LoadScreenRecord::~LoadScreenRecord()
 bool LoadScreenRecord::equals(const LoadScreenRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
-      and (text==other.text) and (unknownCTDAs==other.unknownCTDAs)
-      and (unknownCIS2==other.unknownCIS2) and (unknownNNAM==other.unknownNNAM)
+      and (text==other.text) and (unknownCTDA_CIS2s==other.unknownCTDA_CIS2s)
+      and (unknownNNAM==other.unknownNNAM)
       and (unknownSNAM==other.unknownSNAM)
       and (memcmp(unknownRNAM, other.unknownRNAM, 6)==0)
       and (unknownONAM==other.unknownONAM)
@@ -66,17 +65,19 @@ uint32_t LoadScreenRecord::getWriteSize() const
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
-        +4 /* DESC */ +2 /* 2 bytes for length */ +4 /* fixed size */
-        +unknownCTDAs.size()*(4 /* CTDA */ +2 /* 2 bytes for length */ +32 /* fixed size */)
+        +text.getWriteSize() /* DESC */
         +4 /* NNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */
         +4 /* SNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */
         +4 /* RNAM */ +2 /* 2 bytes for length */ +6 /* fixed size */
         +4 /* ONAM */ +2 /* 2 bytes for length */ +4 /* fixed size */
         +4 /* XNAM */ +2 /* 2 bytes for length */ +12 /* fixed size */;
-  if (!unknownCIS2.empty())
+  if (!unknownCTDA_CIS2s.empty())
   {
-    writeSize = writeSize +4 /* CIS2 */ +2 /* 2 bytes for length */
-        +unknownCIS2.length()+1 /* length of string +1 byte for NUL termination */;
+    std::vector<CTDA_CIS2_compound>::size_type i;
+    for (i=0; i<unknownCTDA_CIS2s.size(); ++i)
+    {
+      writeSize += unknownCTDA_CIS2s[i].getWriteSize();
+    }//for
   }
   if (!unknownMOD2.empty())
   {
@@ -103,28 +104,16 @@ bool LoadScreenRecord::saveToStream(std::ofstream& output) const
   if (!text.saveToStream(output, cDESC))
     return false;
 
-  unsigned int i;
-  for (i=0; i<unknownCTDAs.size(); ++i)
+  std::vector<CTDA_CIS2_compound>::size_type i;
+  for (i=0; i<unknownCTDA_CIS2s.size(); ++i)
   {
-    //write CTDA
-    output.write((const char*) &cCTDA, 4);
-    //CTDA's length
-    subLength = 32; //fixed size
-    output.write((const char*) &subLength, 2);
-    //write CTDA's stuff
-    output.write((const char*) (unknownCTDAs[i].content), 4);
+    //write CTDA and CIS2
+    if (!unknownCTDA_CIS2s[i].saveToStream(output))
+    {
+      std::cout << "Error while writing CTDA and CIS2 of LSCR!\n";
+      return false;
+    }
   }//for
-
-  if (!unknownCIS2.empty())
-  {
-    //write CIS2
-    output.write((const char*) &cCIS2, 4);
-    //CIS2's length
-    subLength = unknownCIS2.length()+1;
-    output.write((const char*) &subLength, 2);
-    //write CIS2
-    output.write(unknownCIS2.c_str(), subLength);
-  }//if CIS2
 
   //write NNAM
   output.write((const char*) &cNNAM, 4);
@@ -199,9 +188,8 @@ bool LoadScreenRecord::loadFromStream(std::ifstream& in_File, const bool localiz
   }
 
   text.reset();
-  unknownCTDAs.clear();
+  unknownCTDA_CIS2s.clear();
   CTDAData tempCTDA;
-  unknownCIS2.clear();
   bool hasReadNNAM = false;
   bool hasReadSNAM = false;
   bool hasReadRNAM = false;
@@ -226,49 +214,31 @@ bool LoadScreenRecord::loadFromStream(std::ifstream& in_File, const bool localiz
              return false;
            break;
       case cCTDA:
-           //CTDA's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength!=32)
-           {
-             std::cout <<"Error: sub record CTDA of LSCR has invalid length ("<<subLength
-                       <<" bytes). Should be 32 bytes.\n";
-             return false;
-           }
            //read CTDA
-           in_File.read((char*) (tempCTDA.content), 32);
-           bytesRead += 32;
-           if (!in_File.good())
+           if (!tempCTDA.loadFromStream(in_File, bytesRead))
            {
              std::cout << "Error while reading subrecord CTDA of LSCR!\n";
              return false;
            }
-           unknownCTDAs.push_back(tempCTDA);
+           unknownCTDA_CIS2s.push_back(CTDA_CIS2_compound(tempCTDA, ""));
            break;
       case cCIS2:
-           if (!unknownCIS2.empty())
+           if (unknownCTDA_CIS2s.empty())
            {
-             std::cout << "Error: LSCR seems to have more than one CIS2 subrecord.\n";
+             std::cout << "Error: found CIS2 without prior CTDA in LSCR!\n";
              return false;
            }
-           //CIS2's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength>511)
+           if (!unknownCTDA_CIS2s.back().unknownCISx.empty())
            {
-             std::cout <<"Error: sub record CIS2 of LSCR is longer than 511 characters!\n";
+             std::cout << "Error: LSCR seems to have more than one CIS2 subrecord per CTDA.\n";
              return false;
            }
-           //read CIS2's stuff
-           memset(buffer, 0, 512);
-           in_File.read(buffer, subLength);
-           bytesRead += subLength;
-           if (!in_File.good())
+           //read CIS2
+           if (!loadString512FromStream(in_File, unknownCTDA_CIS2s.back().unknownCISx, buffer, cCIS2, false, bytesRead))
            {
              std::cout << "Error while reading subrecord CIS2 of LSCR!\n";
              return false;
            }
-           unknownCIS2 = std::string(buffer);
            break;
       case cNNAM:
            if (hasReadNNAM)

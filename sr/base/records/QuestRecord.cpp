@@ -423,12 +423,7 @@ uint32_t QuestRecord::getWriteSize() const
     const unsigned int count = unknownCTDA_CIS2s.size();
     for (i=0; i<count; ++i)
     {
-      writeSize = writeSize +4 /* CTDA */ +2 /* 2 bytes for length */ +32 /* fixed size */;
-      if (!unknownCTDA_CIS2s[i].unknownCIS2.empty())
-      {
-        writeSize = writeSize +4 /* CIS2 */ +2 /* 2 bytes for length */
-            +unknownCTDA_CIS2s[i].unknownCIS2.length()+1 /* length of string +1 byte for NUL-termination */;
-      }
+      writeSize += unknownCTDA_CIS2s[i].getWriteSize();
     }//for
   }
   if (!filter.empty())
@@ -466,12 +461,7 @@ uint32_t QuestRecord::getWriteSize() const
         const unsigned int compound_count = indices[i].theQSDTs[j].unknownCTDA_CIS2s.size();
         for (k=0; k<compound_count; ++k)
         {
-          writeSize = writeSize +4 /* CTDA */ +2 /* 2 bytes for length */ +32 /* fixed size */;
-          if (!indices[i].theQSDTs[j].unknownCTDA_CIS2s[k].unknownCIS2.empty())
-          {
-            writeSize = writeSize +4 /* CIS2 */ +2 /* 2 bytes for length */
-                       +indices[i].theQSDTs[j].unknownCTDA_CIS2s[k].unknownCIS2.length()+1 /* length */;
-          }
+          writeSize += indices[i].theQSDTs[j].unknownCTDA_CIS2s[k].getWriteSize();
         }//for k
         if (indices[i].theQSDTs[j].hasCNAM)
         {
@@ -541,20 +531,10 @@ bool QuestRecord::saveToStream(std::ofstream& output) const
     const unsigned int count = unknownCTDA_CIS2s.size();
     for (i=0; i<count; ++i)
     {
-      if (!unknownCTDA_CIS2s[i].unknownCTDA.saveToStream(output))
+      if (!unknownCTDA_CIS2s[i].saveToStream(output))
       {
-        std::cout << "Error while writing subrecord CTDA of QUST!\n";
+        std::cout << "Error while writing subrecord CTDA or CIS2 of QUST!\n";
         return false;
-      }
-      if (!unknownCTDA_CIS2s[i].unknownCIS2.empty())
-      {
-        //write CIS2
-        output.write((const char*) &cCIS2, 4);
-        //CIS2's length
-        subLength = unknownCTDA_CIS2s[i].unknownCIS2.length()+1;
-        output.write((const char*) &subLength, 2);
-        //write CIS2
-        output.write(unknownCTDA_CIS2s[i].unknownCIS2.c_str(), subLength);
       }
     }//for
   }//if QTGL
@@ -643,20 +623,10 @@ bool QuestRecord::saveToStream(std::ofstream& output) const
         const unsigned int compound_count = indices[i].theQSDTs[j].unknownCTDA_CIS2s.size();
         for (k=0; k<compound_count; ++k)
         {
-          if (!indices[i].theQSDTs[j].unknownCTDA_CIS2s[k].unknownCTDA.saveToStream(output))
+          if (!indices[i].theQSDTs[j].unknownCTDA_CIS2s[k].saveToStream(output))
           {
-            std::cout << "Error while writing subrecord CTDA of QUST!\n";
+            std::cout << "Error while writing subrecord CTDA or CIS2 of QUST!\n";
             return false;
-          }
-          if (!indices[i].theQSDTs[j].unknownCTDA_CIS2s[k].unknownCIS2.empty())
-          {
-            //write CIS2
-            output.write((const char*) &cCIS2, 4);
-            //CIS2's length
-            subLength = indices[i].theQSDTs[j].unknownCTDA_CIS2s[k].unknownCIS2.length()+1; //length
-            output.write((const char*) &subLength, 2);
-            //write CIS2
-            output.write(indices[i].theQSDTs[j].unknownCTDA_CIS2s[k].unknownCIS2.c_str(), subLength);
           }
         }//for k
         if (indices[i].theQSDTs[j].hasCNAM)
@@ -1218,12 +1188,12 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File, const bool localized, c
                          << " CIS2 subrecord without previous CTDA subrecord.\n";
                return false;
              }
-             if (!tempQSTA.unknownCTDA_CIS2s.back().unknownCIS2.empty())
+             if (!tempQSTA.unknownCTDA_CIS2s.back().unknownCISx.empty())
              {
                std::cout << "Error: QUST seems to have more than one CIS2 subrecord.\n";
                return false;
              }
-             tempQSTA.unknownCTDA_CIS2s.back().unknownCIS2 = std::string(buffer);
+             tempQSTA.unknownCTDA_CIS2s.back().unknownCISx = std::string(buffer);
            }
            else if (hasUnpushedQSDTRecord)
            {
@@ -1233,12 +1203,12 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File, const bool localized, c
                          << " CIS2 subrecord without previous CTDA subrecord.\n";
                return false;
              }
-             if (!tempQSDT.unknownCTDA_CIS2s.back().unknownCIS2.empty())
+             if (!tempQSDT.unknownCTDA_CIS2s.back().unknownCISx.empty())
              {
                std::cout << "Error: QUST seems to have more than one CIS2 subrecord per CTDA!\n";
                return false;
              }
-             tempQSDT.unknownCTDA_CIS2s.back().unknownCIS2 = std::string(buffer);
+             tempQSDT.unknownCTDA_CIS2s.back().unknownCISx = std::string(buffer);
            }
            else
            {
@@ -1255,12 +1225,12 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File, const bool localized, c
                          << " CIS2 subrecord without previous CTDA subrecord.\n";
                return false;
              }
-             if (!unknownCTDA_CIS2s.back().unknownCIS2.empty())
+             if (!unknownCTDA_CIS2s.back().unknownCISx.empty())
              {
                std::cout << "Error: QUST seems to have more than one CIS2 subrecord per CTDA!\n";
                return false;
              }
-             unknownCTDA_CIS2s.back().unknownCIS2 = std::string(buffer);
+             unknownCTDA_CIS2s.back().unknownCISx = std::string(buffer);
            }
            lastReadRec = cCIS2;
            break;
@@ -1724,7 +1694,7 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File, const bool localized, c
                       std::cout << "Error in QUST: CIS2 subrecord without previous CTDA subrecord in alias structure.\n";
                       return false;
                     }
-                    if (!al_entry.unknownCTDA_CIS2s.back().unknownCIS2.empty())
+                    if (!al_entry.unknownCTDA_CIS2s.back().unknownCISx.empty())
                     {
                       std::cout << "Error: QUST seems to have more than one CIS2 subrecord per CTDA in alias structure.\n";
                       return false;
@@ -1746,7 +1716,7 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File, const bool localized, c
                       std::cout << "Error while reading subrecord CIS2 of QUST!\n";
                       return false;
                     }
-                    al_entry.unknownCTDA_CIS2s.back().unknownCIS2 = std::string(buffer);
+                    al_entry.unknownCTDA_CIS2s.back().unknownCISx = std::string(buffer);
                     break;
                case cSPOR:
                     if (al_entry.spectatorOverridePackageListFormID!=0)

@@ -19,9 +19,7 @@
 */
 
 #include "CTDAData.h"
-#include <cstring>
 #include <iostream>
-#include "../SR_Constants.h"
 
 namespace SRTP
 {
@@ -72,107 +70,5 @@ void CTDAData::clear()
 {
   memset(content, 0, 32);
 }
-
-/* CTDA_CIS2_compound's functions */
-
-CTDA_CIS2_compound::CTDA_CIS2_compound()
-: unknownCIS2("")
-{
-  memset(unknownCTDA.content, 0, 32);
-}
-
-CTDA_CIS2_compound::CTDA_CIS2_compound(const CTDAData& ctda, const std::string& cis2)
-: unknownCTDA(ctda), unknownCIS2(cis2)
-{
-
-}
-
-bool CTDA_CIS2_compound::operator==(const CTDA_CIS2_compound& other) const
-{
-  return ((unknownCTDA==other.unknownCTDA) and (unknownCIS2==other.unknownCIS2));
-}
-
-#ifndef SR_UNSAVEABLE_RECORDS
-bool CTDA_CIS2_compound::saveToStream(std::ofstream& output) const
-{
-  if (!unknownCTDA.saveToStream(output)) return false;
-
-  if (!unknownCIS2.empty())
-  {
-    //write CIS2
-    output.write((const char*) &cCIS2, 4);
-    //CIS2's length
-    const uint16_t subLength = unknownCIS2.length()+1;
-    output.write((const char*) &subLength, 2);
-    //write CIS2's stuff
-    output.write(unknownCIS2.c_str(), subLength);
-  }//if CIS2
-
-  return output.good();
-}
-
-uint32_t CTDA_CIS2_compound::getWriteSize() const
-{
-  uint32_t writeSize = 4 /* CTDA */ +2 /* 2 bytes for length */ +32 /* fixed length */;
-  if (!unknownCIS2.empty())
-  {
-    writeSize = writeSize +4 /* CIS2 */ +2 /* 2 bytes for length */
-               +unknownCIS2.length()+1 /* length of string +1 byte for NUL termination */;
-  }//if CIS2
-
-  return writeSize;
-}
-#endif
-
-/* CTDA_CIS1_compound's functions */
-
-CTDA_CIS1_compound::CTDA_CIS1_compound()
-: unknownCIS1("")
-{
-  memset(unknownCTDA.content, 0, 32);
-}
-
-CTDA_CIS1_compound::CTDA_CIS1_compound(const CTDAData& ctda, const std::string& cis1)
-: unknownCTDA(ctda), unknownCIS1(cis1)
-{
-
-}
-
-bool CTDA_CIS1_compound::operator==(const CTDA_CIS1_compound& other) const
-{
-  return ((unknownCTDA==other.unknownCTDA) and (unknownCIS1==other.unknownCIS1));
-}
-
-#ifndef SR_UNSAVEABLE_RECORDS
-bool CTDA_CIS1_compound::saveToStream(std::ofstream& output) const
-{
-  if (!unknownCTDA.saveToStream(output)) return false;
-
-  if (!unknownCIS1.empty())
-  {
-    //write CIS1
-    output.write((const char*) &cCIS1, 4);
-    //CIS1's length
-    const uint16_t subLength = unknownCIS1.length()+1;
-    output.write((const char*) &subLength, 2);
-    //write CIS1's stuff
-    output.write(unknownCIS1.c_str(), subLength);
-  }//if CIS1
-
-  return output.good();
-}
-
-uint32_t CTDA_CIS1_compound::getWriteSize() const
-{
-  uint32_t writeSize = 4 /* CTDA */ +2 /* 2 bytes for length */ +32 /* fixed length */;
-  if (!unknownCIS1.empty())
-  {
-    writeSize = writeSize +4 /* CIS1 */ +2 /* 2 bytes for length */
-               +unknownCIS1.length()+1 /* length of string +1 byte for NUL termination */;
-  }//if CIS1
-
-  return writeSize;
-}
-#endif
 
 } //namespace

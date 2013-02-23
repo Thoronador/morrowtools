@@ -177,7 +177,7 @@ bool CameraPathRecord::loadFromStream(std::ifstream& in_File, const bool localiz
            //load CTDA
            if (!tempCC.unknownCTDA.loadFromStream(in_File, bytesRead)) return false;
            hasCTDA = true;
-           tempCC.unknownCIS1.clear();
+           tempCC.unknownCISx.clear();
            break;
       case cCIS1:
            if (!hasCTDA)
@@ -185,16 +185,16 @@ bool CameraPathRecord::loadFromStream(std::ifstream& in_File, const bool localiz
              std::cout << "Error: CPTH has CIS1 subrecord without prior CTDA!\n";
              return false;
            }
-           if (!tempCC.unknownCIS1.empty())
+           if (!tempCC.unknownCISx.empty())
            {
              std::cout << "Error: CPTH seems to have more than one CIS1 per CTDA!\n";
              return false;
            }
            //load CIS1
-           if (!loadString512FromStream(in_File, tempCC.unknownCIS1, buffer, cCIS1, false, bytesRead))
+           if (!loadString512FromStream(in_File, tempCC.unknownCISx, buffer, cCIS1, false, bytesRead))
              return false;
            //check content
-           if (tempCC.unknownCIS1.empty())
+           if (tempCC.unknownCISx.empty())
            {
              std::cout << "Error: subrecord CIS1 of CPTH is empty!\n";
              return false;

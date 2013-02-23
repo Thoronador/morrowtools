@@ -577,13 +577,13 @@ bool ScrollRecord::loadFromStream(std::ifstream& in_File, const bool localized, 
              std::cout << "Error while reading SCRL: CIS2 found, but there was no CTDA before it!\n";
              return false;
            }
-           if (!tempEffect.unknownCTDA_CIS2s.back().unknownCIS2.empty())
+           if (!tempEffect.unknownCTDA_CIS2s.back().unknownCISx.empty())
            {
              std::cout << "Error: SCRL seems to have more than one CIS2 subrecord per CTDA!\n";
              return false;
            }
            //read CIS2
-           if (!loadString512FromStream(in_File, tempEffect.unknownCTDA_CIS2s.back().unknownCIS2, buffer, cCIS2, false, bytesRead))
+           if (!loadString512FromStream(in_File, tempEffect.unknownCTDA_CIS2s.back().unknownCISx, buffer, cCIS2, false, bytesRead))
              return false;
            break;
       default:

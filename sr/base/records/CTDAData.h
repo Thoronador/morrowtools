@@ -1,20 +1,20 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2011, 2012, 2013  Thoronador
 
-    The Skyrim Tools are free software: you can redistribute them and/or
-    modify them under the terms of the GNU General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    The Skyrim Tools are distributed in the hope that they will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with the Skyrim Tools.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -------------------------------------------------------------------------------
 */
 
@@ -22,8 +22,10 @@
 #define SR_CTDADATA_H
 
 #include <fstream>
+#include <cstring>
 #include <string>
 #include <stdint.h>
+#include "../SR_Constants.h"
 
 namespace SRTP
 {
@@ -56,19 +58,25 @@ struct CTDAData
   void clear();
 }; //struct
 
-struct CTDA_CIS2_compound
+
+
+template<uint32_t cisRecName>
+struct CTDA_CISx_compound
 {
   CTDAData unknownCTDA;
-  std::string unknownCIS2;
+  std::string unknownCISx;
+
+  /* constant to allow easy access to CISx 'type' */
+  static const uint32_t cCISx;
 
   /* constructor */
-  CTDA_CIS2_compound();
+  CTDA_CISx_compound();
 
   /* alternative constructor */
-  CTDA_CIS2_compound(const CTDAData& ctda, const std::string& cis2);
+  CTDA_CISx_compound(const CTDAData& ctda, const std::string& cisx);
 
   /* equality operator */
-  bool operator==(const CTDA_CIS2_compound& other) const;
+  bool operator==(const CTDA_CISx_compound& other) const;
 
   #ifndef SR_UNSAVEABLE_RECORDS
   /* tries to save the CTDA_CIS2 compound to the given stream and returns true
@@ -86,35 +94,66 @@ struct CTDA_CIS2_compound
   #endif
 }; //struct
 
-struct CTDA_CIS1_compound
+/* constant to allow easy access to CISx 'type' */
+template<uint32_t cisRecName>
+const uint32_t CTDA_CISx_compound<cisRecName>::cCISx = cisRecName;
+
+template<uint32_t cisRecName>
+CTDA_CISx_compound<cisRecName>::CTDA_CISx_compound()
+: unknownCISx("")
 {
-  CTDAData unknownCTDA;
-  std::string unknownCIS1;
+  memset(unknownCTDA.content, 0, 32);
+}
 
-  /* constructor */
-  CTDA_CIS1_compound();
+template<uint32_t cisRecName>
+CTDA_CISx_compound<cisRecName>::CTDA_CISx_compound(const CTDAData& ctda, const std::string& cisx)
+: unknownCTDA(ctda), unknownCISx(cisx)
+{
 
-  /* alternative constructor */
-  CTDA_CIS1_compound(const CTDAData& ctda, const std::string& cis1);
+}
 
-  /* equality operator */
-  bool operator==(const CTDA_CIS1_compound& other) const;
+template<uint32_t cisRecName>
+bool CTDA_CISx_compound<cisRecName>::operator==(const CTDA_CISx_compound& other) const
+{
+  return ((unknownCTDA==other.unknownCTDA) and (unknownCISx==other.unknownCISx));
+}
 
-  #ifndef SR_UNSAVEABLE_RECORDS
-  /* tries to save the CTDA_CIS1 compound to the given stream and returns true
-     in case of success, false on failure
+#ifndef SR_UNSAVEABLE_RECORDS
+template<uint32_t cisRecName>
+bool CTDA_CISx_compound<cisRecName>::saveToStream(std::ofstream& output) const
+{
+  if (!unknownCTDA.saveToStream(output)) return false;
 
-     parameters:
-          output   - the output file stream
-  */
-  bool saveToStream(std::ofstream& output) const;
+  if (!unknownCISx.empty())
+  {
+    //write CISx
+    output.write((const char*) &cCISx, 4);
+    //CIS1's/CIS2's length
+    const uint16_t subLength = unknownCISx.length()+1;
+    output.write((const char*) &subLength, 2);
+    //write CIS1's/CIS2's stuff
+    output.write(unknownCISx.c_str(), subLength);
+  }//if CIS1/CIS2
 
-  /* returns the size in bytes that the CTDA_CIS2 compound's data would occupy
-     in a file stream
-  */
-  uint32_t getWriteSize() const;
-  #endif
-}; //struct
+  return output.good();
+}
+
+template<uint32_t cisRecName>
+uint32_t CTDA_CISx_compound<cisRecName>::getWriteSize() const
+{
+  uint32_t writeSize = 4 /* CTDA */ +2 /* 2 bytes for length */ +32 /* fixed length */;
+  if (!unknownCISx.empty())
+  {
+    writeSize = writeSize +4 /* CIS1/CIS2 */ +2 /* 2 bytes for length */
+               +unknownCISx.length()+1 /* length of string +1 byte for NUL termination */;
+  }//if CIS2
+
+  return writeSize;
+}
+#endif
+
+typedef CTDA_CISx_compound<cCIS1> CTDA_CIS1_compound;
+typedef CTDA_CISx_compound<cCIS2> CTDA_CIS2_compound;
 
 } //namespace
 

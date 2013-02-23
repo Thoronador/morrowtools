@@ -72,6 +72,7 @@ struct NAVIRecord: public BasicRecord
     uint32_t unknownNVER;
     std::vector<BinarySubRecord> unknownNVMIs;
     BinarySubRecord unknownNVPP;
+    uint32_t unknownNVSI;
 }; //struct
 
 } //namespace

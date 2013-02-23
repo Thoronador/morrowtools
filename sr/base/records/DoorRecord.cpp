@@ -64,12 +64,13 @@ bool DoorRecord::equals(const DoorRecord& other) const
 uint32_t DoorRecord::getWriteSize() const
 {
   uint32_t writeSize;
-  writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
-        +editorID.length()+1 /* length of name +1 byte for NUL termination */
-        +4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed length of 12 bytes */
-        +4 /* MODL */ +2 /* 2 bytes for length */
-        +modelPath.length()+1 /* length of name +1 byte for NUL termination */
+  writeSize = 4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed length of 12 bytes */
         +4 /* FNAM */ +2 /* 2 bytes for length */ +1 /* fixed length of one byte */;
+  if (!editorID.empty())
+  {
+    writeSize = writeSize +4 /* EDID */ +2 /* 2 bytes for length */
+        +editorID.length()+1 /* length of name +1 byte for NUL termination */;
+  }
   if (unknownVMAD.isPresent())
   {
     writeSize = writeSize +4 /*VMAD*/ +2 /* 2 bytes for length */
@@ -78,7 +79,7 @@ uint32_t DoorRecord::getWriteSize() const
   if (name.isPresent())
   {
     writeSize += name.getWriteSize() /* FULL */;
-  }//if has SNAM
+  }//if has FULL
   if (!modelPath.empty())
   {
     writeSize = writeSize +4 /* MODL */ +2 /* 2 bytes for length */
@@ -110,13 +111,17 @@ bool DoorRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &cDOOR, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
 
-  //write EDID
-  output.write((const char*) &cEDID, 4);
-  //EDID's length
-  uint16_t subLength = editorID.length()+1;
-  output.write((const char*) &subLength, 2);
-  //write editor ID
-  output.write(editorID.c_str(), subLength);
+  uint16_t subLength;
+  if (!editorID.empty())
+  {
+    //write EDID
+    output.write((const char*) &cEDID, 4);
+    //EDID's length
+    subLength = editorID.length()+1;
+    output.write((const char*) &subLength, 2);
+    //write editor ID
+    output.write(editorID.c_str(), subLength);
+  }
 
   if (unknownVMAD.isPresent())
   {
@@ -215,88 +220,20 @@ bool DoorRecord::loadFromStream(std::ifstream& in_File, const bool localized, co
   uint32_t subRecName;
   uint16_t subLength;
   subRecName = subLength = 0;
-  uint32_t bytesRead;
+  uint32_t bytesRead = 0;
 
-  //read EDID
-  in_File.read((char*) &subRecName, 4);
-  bytesRead = 4;
-  if (subRecName!=cEDID)
-  {
-    UnexpectedRecord(cEDID, subRecName);
-    return false;
-  }
-  //EDID's length
-  in_File.read((char*) &subLength, 2);
-  bytesRead += 2;
-  if (subLength>511)
-  {
-    std::cout <<"Error: sub record EDID of DOOR is longer than 511 characters!\n";
-    return false;
-  }
-  //read EDID's stuff
+  //for EDID's stuff
   char buffer[512];
-  memset(buffer, 0, 512);
-  in_File.read(buffer, subLength);
-  bytesRead += subLength;
-  if (!in_File.good())
-  {
-    std::cout << "Error while reading subrecord EDID of DOOR!\n";
-    return false;
-  }
-  editorID = std::string(buffer);
 
-  //read (VMAD or) OBND
-  in_File.read((char*) &subRecName, 4);
-  bytesRead += 4;
-  if (subRecName==cVMAD)
-  {
-    //has VMAD
-    if (!unknownVMAD.loadFromStream(in_File, cVMAD, false))
-    {
-      std::cout << "Error while reading subrecord VMAD of DOOR!\n";
-      return false;
-    }
-    bytesRead = bytesRead +2 +unknownVMAD.getSize();
-
-    //read next subrecord (OBND)
-    in_File.read((char*) &subRecName, 4);
-    bytesRead += 4;
-  }
-  else
-  {
-    //no VMAD here!
-    unknownVMAD.setPresence(false);
-  }
-
-  if (subRecName!=cOBND)
-  {
-    UnexpectedRecord(cOBND, subRecName);
-    return false;
-  }
-  //OBND's length
-  in_File.read((char*) &subLength, 2);
-  bytesRead += 2;
-  if (subLength!=12)
-  {
-    std::cout <<"Error: subrecord OBND of DOOR has invalid length ("<<subLength
-              <<" bytes). Should be 12 bytes!\n";
-    return false;
-  }
-  //read OBND's stuff
-  in_File.read((char*) unknownOBND, 12);
-  bytesRead += 12;
-  if (!in_File.good())
-  {
-    std::cout << "Error while reading subrecord OBND of DOOR!\n";
-    return false;
-  }
-
+  editorID.clear();
+  unknownVMAD.setPresence(false);
+  bool hasReadOBND = false;
   name.reset();
   modelPath.clear();
   unknownMODT.setPresence(false);
   unknownMODS.setPresence(false);
-  hasSNAM = false;
-  hasANAM = false;
+  hasSNAM = false; unknownSNAM = 0;
+  hasANAM = false; unknownANAM = 0;
   bool hasReadFNAM = false;
   while (bytesRead<readSize)
   {
@@ -305,6 +242,63 @@ bool DoorRecord::loadFromStream(std::ifstream& in_File, const bool localized, co
     bytesRead += 4;
     switch(subRecName)
     {
+      case cEDID:
+           if (!editorID.empty())
+           {
+             std::cout << "Error: DOOR seems to have more than one EDID subrecord!\n";
+             return false;
+           }
+           //read EDID
+           if (!loadString512FromStream(in_File, editorID, buffer, cEDID, false, bytesRead))
+           {
+             std::cout << "Error while reading subrecord EDID of DOOR!\n";
+             return false;
+           }
+           if (editorID.empty())
+           {
+             std::cout << "Error: subrecord EDID of DOOR is empty!\n";
+             return false;
+           }
+           break;
+      case cVMAD:
+           if (unknownVMAD.isPresent())
+           {
+             std::cout << "Error: DOOR seems to have more than one VMAD subrecord!\n";
+             return false;
+           }
+           //read VMAD
+           if (!unknownVMAD.loadFromStream(in_File, cVMAD, false))
+           {
+             std::cout << "Error while reading subrecord VMAD of DOOR!\n";
+             return false;
+           }
+           bytesRead += (2 +unknownVMAD.getSize());
+           break;
+      case cOBND:
+           if (hasReadOBND)
+           {
+             std::cout << "Error: DOOR seems to have more than one OBND subrecord!\n";
+             return false;
+           }
+           //OBND's length
+           in_File.read((char*) &subLength, 2);
+           bytesRead += 2;
+           if (subLength!=12)
+           {
+             std::cout << "Error: subrecord OBND of DOOR has invalid length ("
+                       << subLength << " bytes). Should be 12 bytes!\n";
+             return false;
+           }
+           //read OBND's stuff
+           in_File.read((char*) unknownOBND, 12);
+           bytesRead += 12;
+           if (!in_File.good())
+           {
+             std::cout << "Error while reading subrecord OBND of DOOR!\n";
+             return false;
+           }
+           hasReadOBND = true;
+           break;
       case cFULL:
            if (name.isPresent())
            {
@@ -417,17 +411,17 @@ bool DoorRecord::loadFromStream(std::ifstream& in_File, const bool localized, co
            break;
       default:
            std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
-                     << "\" found, but only MODL, MODT, SNAM, ANAM"
-                     << " or FNAM are allowed here!\n";
+                     << "\" found, but only EDID, VMAD, OBND, FULL, MODL, MODT,"
+                     << " SNAM, ANAM or FNAM are allowed here!\n";
            return false;
            break;
     }//swi
   }//while
 
   //check for required records
-  if (!hasReadFNAM)
+  if (!(hasReadOBND and hasReadFNAM))
   {
-    std::cout << "Error while reading record DOOR: subrecord FNAM is missing!\n";
+    std::cout << "Error while reading record DOOR: subrecord OBND or FNAM is missing!\n";
     return false;
   }
 

@@ -255,6 +255,7 @@ const uint32_t cNVER = 0x5245564E; //"NVER" = 4E 56 45 52
 const uint32_t cNVMI = 0x494D564E; //"NVMI" = 4E 56 4D 49
 const uint32_t cNVNM = 0x4D4E564E; //"NVNM" = 4E 56 4E 4D
 const uint32_t cNVPP = 0x5050564E; //"NVPP" = 4E 56 50 50
+const uint32_t cNVSI = 0x4953564E; //"NVSI" = 4E 56 53 49
 const uint32_t cOBND = 0x444E424F; //"OBND" = 4F 42 4E 44
 const uint32_t cOFST = 0x5453464F; //"OFST" = 4F 46 53 54
 const uint32_t cONAM = 0x4D414E4F; //"ONAM" = 4F 4E 41 4D

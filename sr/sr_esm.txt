@@ -772,7 +772,7 @@ Records and their sub-records:
 
 
   DOOR: door
-      EDID (string, NUL-terminated)
+      EDID (string, NUL-terminated, optional)
           editorID
       VMAD (size varies, optional)
           unknown data
@@ -1457,6 +1457,8 @@ Records and their sub-records:
   LIGH: light
       EDID (string, NUL-terminated)
           editor ID
+      VMAD (size varies, optional)
+          unknown data
       OBND (12 bytes)
           unknown data
       MODL (string, NUL-terminated, optional)
@@ -1923,6 +1925,8 @@ Records and their sub-records:
           unknown data
       NVPP (25696 bytes)
           unknownDATA
+      NVSI (4 bytes, optional)
+          unknown data, maybe form ID, appears in Dragonborn.esm
 
 
   NAVM: nav mesh(?)

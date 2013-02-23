@@ -60,6 +60,7 @@ LightRecord::LightRecord()
   fadeTime(0.0f),
   soundFormID(0)
 {
+  unknownVMAD.setPresence(false);
   memset(unknownOBND, 0, 12);
   unknownMODT.setPresence(false);
 }
@@ -73,6 +74,7 @@ LightRecord::~LightRecord()
 bool LightRecord::equals(const LightRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
+      and (unknownVMAD==other.unknownVMAD)
       and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
       and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
       and (name==other.name)
@@ -95,6 +97,11 @@ uint32_t LightRecord::getWriteSize() const
         +4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed size of 12 bytes */
         +4 /* DATA */ +2 /* 2 bytes for length */ +48 /* fixed size of 48 bytes */
         +4 /* FNAM */ +2 /* 2 bytes for length */ +4 /* fixed size of 4 bytes */;
+  if (unknownVMAD.isPresent())
+  {
+    writeSize = writeSize +4 /* VMAD */ +2 /* 2 bytes for length */
+        +unknownVMAD.getSize() /* length of VMAD data */;
+  }
   if (!modelPath.empty())
   {
     writeSize = writeSize +4 /* MODL */ +2 /* 2 bytes for length */
@@ -128,6 +135,15 @@ bool LightRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &subLength, 2);
   //write editor ID
   output.write(editorID.c_str(), subLength);
+
+  if (unknownVMAD.isPresent())
+  {
+    if (!unknownVMAD.saveToStream(output, cVMAD))
+    {
+      std::cout << "Error while writing subrecord VMAD of LIGH!\n";
+      return false;
+    }
+  }//if VMAD
 
   //write OBND
   output.write((const char*) &cOBND, 4);
@@ -243,33 +259,8 @@ bool LightRecord::loadFromStream(std::ifstream& in_File, const bool localized, c
   }
   editorID = std::string(buffer);
 
-  //read OBND
-  in_File.read((char*) &subRecName, 4);
-  bytesRead += 4;
-  if (subRecName!=cOBND)
-  {
-    UnexpectedRecord(cOBND, subRecName);
-    return false;
-  }
-  //OBND's length
-  in_File.read((char*) &subLength, 2);
-  bytesRead += 2;
-  if (subLength!=12)
-  {
-    std::cout <<"Error: sub record OBND of LIGH has invalid length ("<<subLength
-              <<" bytes). Should be 12 bytes!\n";
-    return false;
-  }
-  //read OBND's stuff
-  memset(unknownOBND, 0, 12);
-  in_File.read((char*) unknownOBND, 12);
-  bytesRead += 12;
-  if (!in_File.good())
-  {
-    std::cout << "Error while reading subrecord OBND of LIGH!\n";
-    return false;
-  }
-
+  unknownVMAD.setPresence(false);
+  bool hasReadOBND = false;
   modelPath.clear();
   unknownMODT.setPresence(false);
   name.reset();
@@ -283,6 +274,45 @@ bool LightRecord::loadFromStream(std::ifstream& in_File, const bool localized, c
     bytesRead += 4;
     switch (subRecName)
     {
+      case cVMAD:
+           if (unknownVMAD.isPresent())
+           {
+             std::cout << "Error: record LIGH seems to have more than one VMAD subrecord!\n";
+             return false;
+           }
+           if (!unknownVMAD.loadFromStream(in_File, cVMAD, false))
+           {
+             std::cout << "Error while reading subrecord VMAD of LIGH!\n";
+             return false;
+           }
+           bytesRead += (2 + unknownVMAD.getSize());
+           break;
+      case cOBND:
+           if (hasReadOBND)
+           {
+             std::cout << "Error: record LIGH seems to have more than one OBND subrecord!\n";
+             return false;
+           }
+           //OBND's length
+           in_File.read((char*) &subLength, 2);
+           bytesRead += 2;
+           if (subLength!=12)
+           {
+             std::cout << "Error: sub record OBND of LIGH has invalid length ("
+                       << subLength <<" bytes). Should be 12 bytes!\n";
+             return false;
+           }
+           //read OBND's stuff
+           memset(unknownOBND, 0, 12);
+           in_File.read((char*) unknownOBND, 12);
+           bytesRead += 12;
+           if (!in_File.good())
+           {
+             std::cout << "Error while reading subrecord OBND of LIGH!\n";
+             return false;
+           }
+           hasReadOBND = true;
+           break;
       case cMODL:
            if (!modelPath.empty())
            {
@@ -407,14 +437,15 @@ bool LightRecord::loadFromStream(std::ifstream& in_File, const bool localized, c
            break;
       default:
            std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
-                     << "\" found, but only MODL, MODT, FULL, DATA, FNAM or SNAM are allowed here!\n";
+                     << "\" found, but only VMAD, OBND, MODL, MODT, FULL, DATA,"
+                     << " FNAM or SNAM are allowed here!\n";
            return false;
            break;
     }//swi
   }//while
 
   //presence checks
-  if (!(hasReadDATA and hasReadFNAM))
+  if (!(hasReadOBND and hasReadDATA and hasReadFNAM))
   {
     std::cout << "Error: At least one required subrecord of LIGH is missing!\n";
     return false;

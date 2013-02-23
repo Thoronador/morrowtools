@@ -29,7 +29,8 @@ namespace SRTP
 NAVIRecord::NAVIRecord()
 : BasicRecord(),
   unknownNVER(0),
-  unknownNVMIs(std::vector<BinarySubRecord>())
+  unknownNVMIs(std::vector<BinarySubRecord>()),
+  unknownNVSI(0)
 {
   unknownNVPP.setPresence(false);
 }
@@ -43,7 +44,8 @@ NAVIRecord::~NAVIRecord()
 bool NAVIRecord::equals(const NAVIRecord& other) const
 {
   return ((equalsBasic(other)) and (unknownNVER==other.unknownNVER)
-      and (unknownNVMIs==other.unknownNVMIs) and (unknownNVPP==other.unknownNVPP));
+      and (unknownNVMIs==other.unknownNVMIs) and (unknownNVPP==other.unknownNVPP)
+      and (unknownNVSI==other.unknownNVSI));
 }
 #endif
 
@@ -61,6 +63,10 @@ uint32_t NAVIRecord::getWriteSize() const
   if (unknownNVPP.isPresent())
   {
     writeSize = writeSize +4 /* NVPP */ +2 /* 2 bytes for length */ +unknownNVPP.getSize() /* size */;
+  }
+  if (unknownNVSI!=0)
+  {
+    writeSize = writeSize +4 /* NVSI */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
   return writeSize;
 }
@@ -99,6 +105,17 @@ bool NAVIRecord::saveToStream(std::ofstream& output) const
       return false;
     }//if
   }//if NVPP
+
+  if (unknownNVSI!=0)
+  {
+    //write NVSI
+    output.write((const char*) &cNVSI, 4);
+    //NVSI's length
+    subLength = 4; //fixed size
+    output.write((const char*) &subLength, 2);
+    //write NVSI
+    output.write((const char*) &unknownNVSI, 4);
+  }//if NVSI
 
   return output.good();
 }
@@ -143,6 +160,7 @@ bool NAVIRecord::loadFromStream(std::ifstream& in_File, const bool localized, co
   unknownNVMIs.clear();
   unknownNVPP.setPresence(false);
   BinarySubRecord tempBin;
+  unknownNVSI = 0;
   while (bytesRead<readSize)
   {
     //read next header
@@ -174,9 +192,25 @@ bool NAVIRecord::loadFromStream(std::ifstream& in_File, const bool localized, co
            }
            bytesRead = bytesRead +2 +unknownNVPP.getSize();
            break;
+      case cNVSI:
+           if (unknownNVSI!=0)
+           {
+             std::cout << "Error: NAVI seems to have more than one NVSI subrecord!\n";
+             return false;
+           }
+           //load NVSI
+           if (!loadUint32SubRecordFromStream(in_File, cNVSI, unknownNVSI, false))
+             return false;
+           bytesRead += 6;
+           if (unknownNVSI==0)
+           {
+             std::cout << "Error: subrecord NVSI of NAVI is zero!\n";
+             return false;
+           }
+           break;
       default:
            std::cout << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
-                     << "\", but only NVMI or NVPP are allowed here!\n";
+                     << "\", but only NVMI, NVPP or NVSI are allowed here!\n";
            return false;
     }//swi
   }//while

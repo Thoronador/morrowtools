@@ -101,6 +101,7 @@ struct LightRecord: public BasicRecord
     static const uint32_t cFlagPulse;
 
     std::string editorID;
+    BinarySubRecord unknownVMAD;
     uint8_t unknownOBND[12];
     std::string modelPath;
     BinarySubRecord unknownMODT;

@@ -72,13 +72,16 @@ uint32_t LoadScreenRecord::getWriteSize() const
         +4 /* SNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */
         +4 /* RNAM */ +2 /* 2 bytes for length */ +6 /* fixed size */
         +4 /* ONAM */ +2 /* 2 bytes for length */ +4 /* fixed size */
-        +4 /* XNAM */ +2 /* 2 bytes for length */ +12 /* fixed size */
-        +4 /* MOD2 */ +2 /* 2 bytes for length */
-        +unknownMOD2.length()+1 /* length of name +1 byte for NUL termination */;
+        +4 /* XNAM */ +2 /* 2 bytes for length */ +12 /* fixed size */;
   if (!unknownCIS2.empty())
   {
     writeSize = writeSize +4 /* CIS2 */ +2 /* 2 bytes for length */
         +unknownCIS2.length()+1 /* length of string +1 byte for NUL termination */;
+  }
+  if (!unknownMOD2.empty())
+  {
+    writeSize = writeSize +4 /* MOD2 */ +2 /* 2 bytes for length */
+        +unknownMOD2.length()+1 /* length of name +1 byte for NUL termination */;
   }
   return writeSize;
 }
@@ -163,13 +166,16 @@ bool LoadScreenRecord::saveToStream(std::ofstream& output) const
   //write XNAM's stuff
   output.write((const char*) unknownXNAM, 12);
 
-  //write MOD2
-  output.write((const char*) &cMOD2, 4);
-  //MOD2's length
-  subLength = unknownMOD2.length()+1;
-  output.write((const char*) &subLength, 2);
-  //write model path
-  output.write(unknownMOD2.c_str(), subLength);
+  if (!unknownMOD2.empty())
+  {
+    //write MOD2
+    output.write((const char*) &cMOD2, 4);
+    //MOD2's length
+    subLength = unknownMOD2.length()+1;
+    output.write((const char*) &subLength, 2);
+    //write model path
+    output.write(unknownMOD2.c_str(), subLength);
+  }
 
   return output.good();
 }
@@ -182,35 +188,15 @@ bool LoadScreenRecord::loadFromStream(std::ifstream& in_File, const bool localiz
   uint32_t subRecName;
   uint16_t subLength;
   subRecName = subLength = 0;
-  uint32_t bytesRead;
+  uint32_t bytesRead = 0;
 
   //read EDID
-  in_File.read((char*) &subRecName, 4);
-  bytesRead = 4;
-  if (subRecName!=cEDID)
-  {
-    UnexpectedRecord(cEDID, subRecName);
-    return false;
-  }
-  //EDID's length
-  in_File.read((char*) &subLength, 2);
-  bytesRead += 2;
-  if (subLength>511)
-  {
-    std::cout <<"Error: sub record EDID of LSCR is longer than 511 characters!\n";
-    return false;
-  }
-  //read EDID's stuff
   char buffer[512];
-  memset(buffer, 0, 512);
-  in_File.read(buffer, subLength);
-  bytesRead += subLength;
-  if (!in_File.good())
+  if (!loadString512FromStream(in_File, editorID, buffer, cEDID, true, bytesRead))
   {
     std::cout << "Error while reading subrecord EDID of LSCR!\n";
     return false;
   }
-  editorID = std::string(buffer);
 
   text.reset();
   unknownCTDAs.clear();
@@ -373,24 +359,12 @@ bool LoadScreenRecord::loadFromStream(std::ifstream& in_File, const bool localiz
              std::cout << "Error: LSCR seems to have more than one MOD2 subrecord.\n";
              return false;
            }
-           //MOD2's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength>511)
-           {
-             std::cout <<"Error: sub record MOD2 of LSCR is longer than 511 characters!\n";
-             return false;
-           }
-           //read MOD2's stuff
-           memset(buffer, 0, 512);
-           in_File.read(buffer, subLength);
-           bytesRead += subLength;
-           if (!in_File.good())
+           //read MOD2
+           if (!loadString512FromStream(in_File, unknownMOD2, buffer, cMOD2, false, bytesRead))
            {
              std::cout << "Error while reading subrecord MOD2 of LSCR!\n";
              return false;
            }
-           unknownMOD2 = std::string(buffer);
            break;
       default:
            std::cout << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
@@ -401,7 +375,7 @@ bool LoadScreenRecord::loadFromStream(std::ifstream& in_File, const bool localiz
 
   //presence checks
   if (!(text.isPresent() and hasReadNNAM and hasReadSNAM and hasReadRNAM
-      and hasReadONAM and hasReadXNAM and (!unknownMOD2.empty())))
+      and hasReadONAM and hasReadXNAM))
   {
     std::cout << "Error while reading LSCR record: at least one required "
               << "subrecord is missing!\n";

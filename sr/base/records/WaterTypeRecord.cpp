@@ -36,9 +36,11 @@ WaterTypeRecord::WaterTypeRecord()
   hasMNAM(false), unknownMNAM(0),
   openSoundFormID(0),
   materialFormID(0),
+  imageSpaceFormID(0),
   damagePerSecond(0), //subrecord DATA
   hasNAM0(false),
-  hasNAM1(false)
+  hasNAM1(false),
+  usesNAM2_3_4_as_NNAM(false)
 {
   unknownDNAM.setPresence(false);
   memset(unknownGNAM, 0, 12);
@@ -61,11 +63,13 @@ bool WaterTypeRecord::equals(const WaterTypeRecord& other) const
       and ((unknownMNAM==other.unknownMNAM) or (!hasMNAM))
       and (openSoundFormID==other.openSoundFormID)
       and (materialFormID==other.materialFormID)
+      and (imageSpaceFormID==other.imageSpaceFormID)
       and (damagePerSecond==other.damagePerSecond) and (unknownDNAM==other.unknownDNAM)
       and (memcmp(unknownGNAM, other.unknownGNAM, 12)==0) and (hasNAM0==other.hasNAM0)
       and ((memcmp(unknownNAM0, other.unknownNAM0, 12)==0) or (!hasNAM0))
       and (hasNAM1==other.hasNAM1) and ((memcmp(unknownNAM1, other.unknownNAM1, 12)==0)
-      or (!hasNAM1)));
+      or (!hasNAM1))
+      and (usesNAM2_3_4_as_NNAM==other.usesNAM2_3_4_as_NNAM));
 }
 #endif
 
@@ -95,6 +99,10 @@ uint32_t WaterTypeRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* TNAM */ +2 /* 2 bytes for length */ +4 /* fixed length */;
   }//if TNAM
+  if (imageSpaceFormID!=0)
+  {
+    writeSize = writeSize +4 /* INAM */ +2 /* 2 bytes for length */ +4 /* fixed length */;
+  }//if INAM
   if (unknownDNAM.isPresent())
   {
     writeSize = writeSize +4 /* DNAM */ +2 /* 2 bytes for length */ +unknownDNAM.getSize() /* length */;
@@ -107,6 +115,15 @@ uint32_t WaterTypeRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* NAM1 */ +2 /* 2 bytes for length */ +12 /* fixed length */;
   }//if NAM1
+  if (!unknownNNAMs.empty())
+  {
+    unsigned int i;
+    for (i=0; i<unknownNNAMs.size(); ++i)
+    {
+      writeSize = writeSize +4 /* NNAM */ +2 /* 2 bytes for length */
+                 +unknownNNAMs[i].length()+1 /* length of name +1 byte for NUL termination */;
+    }//for
+  }//if NNAMs
   return writeSize;
 }
 
@@ -129,6 +146,21 @@ bool WaterTypeRecord::saveToStream(std::ofstream& output) const
     if (!name.saveToStream(output, cFULL))
       return false;
   }
+
+  if (!usesNAM2_3_4_as_NNAM)
+  {
+    unsigned int i;
+    for (i=0; i<unknownNNAMs.size(); ++i)
+    {
+      //write NNAM
+      output.write((const char*) &cNNAM, 4);
+      //NNAM's length
+      subLength = unknownNNAMs[i].length()+1;
+      output.write((const char*) &subLength, 2);
+      //write NNAM's path
+      output.write(unknownNNAMs[i].c_str(), subLength);
+    }//for
+  }//if NNAM
 
   //write ANAM
   output.write((const char*) &cANAM, 4);
@@ -179,6 +211,17 @@ bool WaterTypeRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &materialFormID, 4);
   }
 
+  if (imageSpaceFormID!=0)
+  {
+    //write INAM
+    output.write((const char*) &cINAM, 4);
+    //INAM's length
+    subLength = 4;
+    output.write((const char*) &subLength, 2);
+    //write image space form ID
+    output.write((const char*) &imageSpaceFormID, 4);
+  }
+
   //write DATA
   output.write((const char*) &cDATA, 4);
   //DATA's length
@@ -227,6 +270,39 @@ bool WaterTypeRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) unknownNAM1, 12);
   }//if has NAM1
 
+  if (usesNAM2_3_4_as_NNAM)
+  {
+    if (unknownNNAMs.size()!=3)
+    {
+      std::cout << "Error: WATR should have three NAM2, NAM3, NAM4 records, but it has "
+                << unknownNNAMs.size() << " instead!\n";
+      return false;
+    }
+    //write NAM2
+    output.write((const char*) &cNAM2, 4);
+    //NAM2's length
+    subLength = unknownNNAMs[0].length()+1;
+    output.write((const char*) &subLength, 2);
+    //write NAM2's path
+    output.write(unknownNNAMs[0].c_str(), subLength);
+
+    //write NAM3
+    output.write((const char*) &cNAM3, 4);
+    //NAM3's length
+    subLength = unknownNNAMs[1].length()+1;
+    output.write((const char*) &subLength, 2);
+    //write NAM3's path
+    output.write(unknownNNAMs[1].c_str(), subLength);
+
+    //write NAM4
+    output.write((const char*) &cNAM4, 4);
+    //NAM4's length
+    subLength = unknownNNAMs[2].length()+1;
+    output.write((const char*) &subLength, 2);
+    //write NAM4's path
+    output.write(unknownNNAMs[2].c_str(), subLength);
+  }//if NAM2/NAM3/NAM4
+
   return output.good();
 }
 #endif
@@ -270,11 +346,13 @@ bool WaterTypeRecord::loadFromStream(std::ifstream& in_File, const bool localize
 
   name.reset();
   unknownNNAMs.clear();
+  usesNAM2_3_4_as_NNAM = false;
   bool hasReadANAM = false;
   bool hasReadFNAM = false;
   hasMNAM = false;
   openSoundFormID = 0;
   materialFormID = 0;
+  imageSpaceFormID = 0;
   bool hasReadDATA = false;
   unknownDNAM.setPresence(false);
   bool hasReadGNAM = false;
@@ -301,6 +379,11 @@ bool WaterTypeRecord::loadFromStream(std::ifstream& in_File, const bool localize
            }//if
            break;
       case cNNAM:
+           if (usesNAM2_3_4_as_NNAM)
+           {
+             std::cout << "Error: WATR has NNAM subrecord, but there are already NAM2/NAM3/NAM4 subrecords!\n";
+             return false;
+           }
            if (unknownNNAMs.size()>=3)
            {
              std::cout << "Error: WATR seems to have more than three NNAM subrecords!\n";
@@ -432,6 +515,22 @@ bool WaterTypeRecord::loadFromStream(std::ifstream& in_File, const bool localize
              return false;
            }
            break;
+      case cINAM:
+           if (imageSpaceFormID!=0)
+           {
+             std::cout << "Error: WATR seems to have more than one INAM subrecord!\n";
+             return false;
+           }
+           //read INAM
+           if (!loadUint32SubRecordFromStream(in_File, cINAM, imageSpaceFormID, false))
+             return false;
+           bytesRead += 6;
+           if (0==imageSpaceFormID)
+           {
+             std::cout << "Error: subrecord INAM of WATR is zero!\n";
+             return false;
+           }
+           break;
       case cDATA:
            if (hasReadDATA)
            {
@@ -553,10 +652,35 @@ bool WaterTypeRecord::loadFromStream(std::ifstream& in_File, const bool localize
            }//if
            hasNAM1 = true;
            break;
+      case cNAM2:
+      case cNAM3:
+      case cNAM4:
+           if (!unknownNNAMs.empty() and !usesNAM2_3_4_as_NNAM)
+           {
+             std::cout << "Error: WATR has NAM2/NAM3/NAM4 subrecord, but there are already NNAM subrecords!\n";
+             return false;
+           }
+           if (unknownNNAMs.size()>=3)
+           {
+             std::cout << "Error: WATR seems to have more than three NAM2/NAM3/NAM4 subrecords!\n";
+             return false;
+           }
+           usesNAM2_3_4_as_NNAM = true;
+           unknownNNAMs.push_back("");
+           if (!loadString512FromStream(in_File, unknownNNAMs.back(), buffer, subRecName, false, bytesRead))
+             return false;
+           if (((subRecName==cNAM2) and (unknownNNAMs.size()!=1))
+               or ((subRecName==cNAM3) and (unknownNNAMs.size()!=2))
+               or ((subRecName==cNAM4) and (unknownNNAMs.size()!=3)))
+           {
+             std::cout << "Error: subrecord "<<IntTo4Char(subRecName)<<" of WATR does not appear in expected sequence!\n";
+             return false;
+           }//if
+           break;
       default:
            std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
-                    << "\" found, but only NNAM, ANAM, FNAM, MNAM, SNAM, DATA,"
-                    << " DNAM, GNAM, NAM0 or NAM1 are allowed here!\n";
+                    << "\" found, but only NNAM, ANAM, FNAM, MNAM, SNAM, INAM,"
+                    << " DATA, DNAM, GNAM, NAM0, NAM1, NAM2, NAM3 or NAM4 are allowed here!\n";
            return false;
            break;
     }//swi

@@ -79,6 +79,7 @@ struct WaterTypeRecord: public BasicRecord
     uint8_t unknownMNAM;
     uint32_t openSoundFormID; //subrecord SNAM
     uint32_t materialFormID; //subrecord TNAM
+    uint32_t imageSpaceFormID; //subrecord INAM
     uint16_t damagePerSecond; //subrecord DATA
     BinarySubRecord unknownDNAM;
     uint8_t unknownGNAM[12];
@@ -86,6 +87,7 @@ struct WaterTypeRecord: public BasicRecord
     uint8_t unknownNAM0[12];
     bool hasNAM1;
     uint8_t unknownNAM1[12];
+    bool usesNAM2_3_4_as_NNAM;
 }; //struct
 
 } //namespace

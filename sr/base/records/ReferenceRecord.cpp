@@ -677,7 +677,9 @@ bool ReferenceRecord::loadFromStream(std::ifstream& in_File, const bool localize
   }//while
 
   //presence checks
-  if (!(hasReadNAME and hasReadDATA))
+  // - NAME required for all
+  // - DATA only required for non-deleted records
+  if (!(hasReadNAME and (hasReadDATA or isDeleted())))
   {
     std::cout << "Error: subrecord NAME or DATA of REFR is missing!\n";
     return false;

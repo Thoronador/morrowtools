@@ -1517,7 +1517,7 @@ Records and their sub-records:
           unknown data
       XNAM (12 bytes)
           unknown data
-      MOD2 (string, NUL-terminated)
+      MOD2 (string, NUL-terminated, optional)
           some NIF path
 
 
@@ -2822,6 +2822,8 @@ Records and their sub-records:
           uint32_t Open Sound form ID (points to SNDR)
       TNAM (4 bytes, optional)
           uint32_t Material form ID (points to MATT)
+      INAM (4 bytes, optional)
+          uint32_t Image Space form ID (points to IMGS)
       DATA (2 bytes)
           uint16_t damage per second
       DNAM (228 bytes)
@@ -2832,6 +2834,14 @@ Records and their sub-records:
           unknown data
       NAM1 (12 bytes. optional)
           unknown data
+      NAM2 (string, NUL-terminated, optional)
+          texture path
+      NAM3 (string, NUL-terminated, optional)
+          texture path
+      NAM4 (string, NUL-terminated, optional)
+          texture path
+
+          --> NNAMs and NAM2/NAM3/NAM4 sequence seem to be mutually exclusive.
 
 
   WEAP: Weapon record

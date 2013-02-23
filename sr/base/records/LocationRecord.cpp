@@ -158,7 +158,7 @@ bool LocationRecord::saveToStream(std::ofstream& output) const
   if (unknownLCSR.isPresent())
   {
     //write LCSR
-    if (!unknownLCSR.saveToStream(output, cLCSR))
+    if (!unknownLCSR.saveToStream(output, useACxx() ? cACSR : cLCSR))
     {
       std::cout << "Error while writing subrecord LCSR of LCTN!\n";
       return false;
@@ -168,7 +168,7 @@ bool LocationRecord::saveToStream(std::ofstream& output) const
   if (unknownLCPR.isPresent())
   {
     //write LCPR
-    if (!unknownLCPR.saveToStream(output, cLCPR))
+    if (!unknownLCPR.saveToStream(output, useACxx() ? cACPR : cLCPR))
     {
       std::cout << "Error while writing subrecord LCPR of LCTN!\n";
       return false;
@@ -179,7 +179,7 @@ bool LocationRecord::saveToStream(std::ofstream& output) const
   for (i=0; i<unknownLCECs.size(); ++i)
   {
     //write LCEC
-    if (!unknownLCECs[i].saveToStream(output, cLCEC))
+    if (!unknownLCECs[i].saveToStream(output, useACxx() ? cACEC : cLCEC))
     {
       std::cout << "Error while writing subrecord LCEC of LCTN!\n";
       return false;
@@ -199,7 +199,7 @@ bool LocationRecord::saveToStream(std::ofstream& output) const
   if (unknownLCUN.isPresent())
   {
     //write LCUN
-    if (!unknownLCUN.saveToStream(output, cLCUN))
+    if (!unknownLCUN.saveToStream(output, useACxx() ? cACUN : cLCUN))
     {
       std::cout << "Error while writing subrecord LCUN of LCTN!\n";
       return false;
@@ -209,7 +209,7 @@ bool LocationRecord::saveToStream(std::ofstream& output) const
   if (unknownLCID.isPresent())
   {
     //write LCID
-    if (!unknownLCID.saveToStream(output, cLCID))
+    if (!unknownLCID.saveToStream(output, useACxx() ? cACID : cLCID))
     {
       std::cout << "Error while writing subrecord LCID of LCTN!\n";
       return false;
@@ -390,82 +390,118 @@ bool LocationRecord::loadFromStream(std::ifstream& in_File, const bool localized
     switch (subRecName)
     {
       case cLCSR:
+      case cACSR:
            if (unknownLCSR.isPresent())
            {
-             std::cout << "Error: LCTN seems to have more than one LCSR subrecord.\n";
+             std::cout << "Error: LCTN seems to have more than one LCSR/ACSR subrecord.\n";
              return false;
            }
-           //read LCSR
-           if (!unknownLCSR.loadFromStream(in_File, cLCSR, false))
+           if (useACxx()!=(subRecName==cACSR))
            {
-             std::cout << "Error while reading subrecord LCSR of LCTN!\n";
+             std::cout << "Error: LCSR/ACSR mismatch in LCTN record!\n";
+             return false;
+           }
+           //read LCSR/ACSR
+           if (!unknownLCSR.loadFromStream(in_File, subRecName, false))
+           {
+             std::cout << "Error while reading subrecord "<<IntTo4Char(subRecName)<<" of LCTN!\n";
              return false;
            }
            bytesRead = bytesRead +2 /*length value*/ +unknownLCSR.getSize() /*data size*/;
            break;
       case cLCPR:
+      case cACPR:
            if (unknownLCPR.isPresent())
            {
-             std::cout << "Error: LCTN seems to have more than one LCPR subrecord.\n";
+             std::cout << "Error: LCTN seems to have more than one LCPR/ACPR subrecord.\n";
              return false;
            }
-           //read LCPR
-           if (!unknownLCPR.loadFromStream(in_File, cLCPR, false))
+           if (useACxx()!=(subRecName==cACPR))
            {
-             std::cout << "Error while reading subrecord LCPR of LCTN!\n";
+             std::cout << "Error: LCPR/ACPR mismatch in LCTN record!\n";
+             return false;
+           }
+           //read LCPR/ACPR
+           if (!unknownLCPR.loadFromStream(in_File, subRecName, false))
+           {
+             std::cout << "Error while reading subrecord "<<IntTo4Char(subRecName)<<" of LCTN!\n";
              return false;
            }
            bytesRead = bytesRead +2 /*length value*/ +unknownLCPR.getSize() /*data size*/;
            break;
       case cLCEC:
-           tempBin.setPresence(false);
-           //read LCEC
-           if (!tempBin.loadFromStream(in_File, cLCEC, false))
+      case cACEC:
+           if (useACxx()!=(subRecName==cACEC))
            {
-             std::cout << "Error while reading subrecord LCEC of LCTN!\n";
+             std::cout << "Error: LCEC/ACEC mismatch in LCTN record!\n";
+             return false;
+           }
+           tempBin.setPresence(false);
+           //read LCEC/ACEC
+           if (!tempBin.loadFromStream(in_File, subRecName, false))
+           {
+             std::cout << "Error while reading subrecord "<<IntTo4Char(subRecName)<<" of LCTN!\n";
              return false;
            }
            bytesRead = bytesRead +2 /*length value*/ +tempBin.getSize() /*data size*/;
            unknownLCECs.push_back(tempBin);
            break;
       case cLCEP:
+      case cACEP:
            if (unknownLCEP.isPresent())
            {
-             std::cout << "Error: LCTN seems to have more than one LCEP subrecord.\n";
+             std::cout << "Error: LCTN seems to have more than one LCEP/ACEP subrecord.\n";
+             return false;
+           }
+           if (useACxx()!=(subRecName==cACEP))
+           {
+             std::cout << "Error: LCEP/ACEP mismatch in LCTN record!\n";
              return false;
            }
            //read LCEP
-           if (!unknownLCEP.loadFromStream(in_File, cLCEP, false))
+           if (!unknownLCEP.loadFromStream(in_File, subRecName, false))
            {
-             std::cout << "Error while reading subrecord LCEP of LCTN!\n";
+             std::cout << "Error while reading subrecord "<<IntTo4Char(subRecName)<<" of LCTN!\n";
              return false;
            }
            bytesRead = bytesRead +2 /*length value*/ +unknownLCEP.getSize() /*data size*/;
            break;
       case cLCUN:
+      case cACUN:
            if (unknownLCUN.isPresent())
            {
-             std::cout << "Error: LCTN seems to have more than one LCUN subrecord.\n";
+             std::cout << "Error: LCTN seems to have more than one LCUN/ACUN subrecord.\n";
              return false;
            }
-           //read LCUN
-           if (!unknownLCUN.loadFromStream(in_File, cLCUN, false))
+           if (useACxx()!=(subRecName==cACUN))
            {
-             std::cout << "Error while reading subrecord LCUN of LCTN!\n";
+             std::cout << "Error: LCUN/ACUN mismatch in LCTN record!\n";
+             return false;
+           }
+           //read LCUN/ACUN
+           if (!unknownLCUN.loadFromStream(in_File, subRecName, false))
+           {
+             std::cout << "Error while reading subrecord "<<IntTo4Char(subRecName)<<" of LCTN!\n";
              return false;
            }
            bytesRead = bytesRead +2 /*length value*/ +unknownLCUN.getSize() /*data size*/;
            break;
       case cLCID:
+      case cACID:
            if (unknownLCID.isPresent())
            {
-             std::cout << "Error: LCTN seems to have more than one LCID subrecord.\n";
+             std::cout << "Error: LCTN seems to have more than one LCID/ACID subrecord.\n";
              return false;
            }
-           //read LCID
-           if (!unknownLCID.loadFromStream(in_File, cLCID, false))
+           if (useACxx()!=(subRecName==cACID))
            {
-             std::cout << "Error while reading subrecord LCID of LCTN!\n";
+             std::cout << "Error: LCID/ACID mismatch in LCTN record!\n";
+             return false;
+           }
+           //read LCID/ACID
+           if (!unknownLCID.loadFromStream(in_File, subRecName, false))
+           {
+             std::cout << "Error while reading subrecord "<<IntTo4Char(subRecName)<<" of LCTN!\n";
              return false;
            }
            bytesRead = bytesRead +2 /*length value*/ +unknownLCID.getSize() /*data size*/;
@@ -619,6 +655,11 @@ bool LocationRecord::loadFromStream(std::ifstream& in_File, const bool localized
 uint32_t LocationRecord::getRecordType() const
 {
   return cLCTN;
+}
+
+bool LocationRecord::useACxx() const
+{
+  return (headerVersion>=43);
 }
 
 } //namespace

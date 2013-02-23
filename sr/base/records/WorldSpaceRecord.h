@@ -89,6 +89,8 @@ struct WorldSpaceRecord: public BasicRecord
     float LODWaterHeight; //subrecord NAM4
     bool hasDNAM;
     uint64_t unknownDNAM;
+    std::string modelPath;
+    BinarySubRecord unknownMODT;
     BinarySubRecord unknownMNAM;
     uint32_t locationFormID; //subrecord XLCN
     uint32_t parentWorldSpaceFormID; //subrecord WNAM
@@ -105,6 +107,7 @@ struct WorldSpaceRecord: public BasicRecord
     uint32_t musicFormID; //subrecord ZNAM
     std::string HD_LOD_DiffuseTexture; //subrecord TNAN
     std::string HD_LOD_NormalTexture; //subrecord UNAM
+    std::string unknownXWEM; //subrecord XWEM
     BinarySubRecordExtended unknownOFST;
 }; //struct
 

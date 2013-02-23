@@ -30,8 +30,14 @@ const uint32_t cx00IAD = 0x44414900; //"\0IAD" = 00 49 41 44
 const uint32_t cx40IAD = 0x44414940; //"@IAD" = 40 49 41 44
 const uint32_t cAACT = 0x54434141; //"AACT" = 41 41 43 54
 const uint32_t cACBS = 0x53424341; //"ACBS" = 41 43 42 53
+const uint32_t cACEC = 0x43454341; //"ACEC" = 41 43 45 43
+const uint32_t cACEP = 0x50454341; //"ACEP" = 41 43 45 50
 const uint32_t cACHR = 0x52484341; //"ACHR" = 41 43 48 52
+const uint32_t cACID = 0x44494341; //"ACID" = 41 43 49 44
+const uint32_t cACPR = 0x52504341; //"ACPR" = 41 43 50 52
+const uint32_t cACSR = 0x52534341; //"ACSR" = 41 43 53 52
 const uint32_t cACTI = 0x49544341; //"ACTI" = 41 43 54 49
+const uint32_t cACUN = 0x4E554341; //"ACUN" = 41 43 55 4E
 const uint32_t cADDN = 0x4E444441; //"ADDN" = 41 44 44 4E
 const uint32_t cAIDT = 0x54444941; //"AIDT" = 41 49 44 54
 const uint32_t cALCH = 0x48434C41; //"ALCH" = 41 4C 43 48

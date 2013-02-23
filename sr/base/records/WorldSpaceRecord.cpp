@@ -42,6 +42,7 @@ WorldSpaceRecord::WorldSpaceRecord()
   hasNAM4(false),
   LODWaterHeight(0.0f),
   hasDNAM(false), unknownDNAM(0),
+  modelPath(""),
   locationFormID(0),
   parentWorldSpaceFormID(0),
   hasPNAM(false), unknownPNAM(0),
@@ -51,9 +52,11 @@ WorldSpaceRecord::WorldSpaceRecord()
   hasNAM9(false), unknownNAM9(0),
   musicFormID(0),
   HD_LOD_DiffuseTexture(""),
-  HD_LOD_NormalTexture("")
+  HD_LOD_NormalTexture(""),
+  unknownXWEM("")
 {
   unknownMHDT.setPresence(false);
+  unknownMODT.setPresence(false);
   unknownMNAM.setPresence(false);
   unknownONAM.setPresence(false);
   unknownOFST.setPresence(false);
@@ -78,6 +81,7 @@ bool WorldSpaceRecord::equals(const WorldSpaceRecord& other) const
       and (LODWaterTypeFormID==other.LODWaterTypeFormID)
       and (hasNAM4==other.hasNAM4) and ((LODWaterHeight==other.LODWaterHeight) or (!hasNAM4))
       and (hasDNAM==other.hasDNAM) and ((unknownDNAM==other.unknownDNAM) or (!hasDNAM))
+      and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
       and (unknownMNAM==other.unknownMNAM)
       and (locationFormID==other.locationFormID)
       and (parentWorldSpaceFormID==other.parentWorldSpaceFormID)
@@ -89,6 +93,7 @@ bool WorldSpaceRecord::equals(const WorldSpaceRecord& other) const
       and (musicFormID==other.musicFormID)
       and (HD_LOD_DiffuseTexture==other.HD_LOD_DiffuseTexture)
       and (HD_LOD_NormalTexture==other.HD_LOD_NormalTexture)
+      and (unknownXWEM==other.unknownXWEM)
       and (unknownOFST==other.unknownOFST));
 }
 #endif
@@ -149,6 +154,15 @@ uint32_t WorldSpaceRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* DNAM */ +2 /* 2 bytes for length */ +8 /* fixed size */;
   }
+  if (!modelPath.empty())
+  {
+    writeSize = writeSize +4 /* MODL */ +2 /* 2 bytes for length */
+               +modelPath.length()+1 /* length of path +1 byte for NUL termination */;
+  }
+  if (unknownMODT.isPresent())
+  {
+    writeSize = writeSize +4 /* MODT */ +2 /* 2 bytes for length */ +unknownMODT.getSize() /* size */;
+  }//if MODT
   if (unknownMNAM.isPresent())
   {
     writeSize = writeSize +4 /* MNAM */ +2 /* 2 bytes for length */ +unknownMNAM.getSize() /* size */;
@@ -194,6 +208,11 @@ uint32_t WorldSpaceRecord::getWriteSize() const
   {
     writeSize = writeSize + 4 /* UNAM */ +2 /* 2 bytes for length */
                +HD_LOD_NormalTexture.length()+1 /* length of path +1 byte for NUL termination */;
+  }
+  if (!unknownXWEM.empty())
+  {
+    writeSize = writeSize + 4 /* XWEM */ +2 /* 2 bytes for length */
+               +unknownXWEM.length()+1 /* length of path +1 byte for NUL termination */;
   }
   if (unknownOFST.isPresent())
   {
@@ -344,6 +363,27 @@ bool WorldSpaceRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &unknownDNAM, 8);
   }//if DNAM
 
+  if (!modelPath.empty())
+  {
+    //write MODL
+    output.write((const char*) &cMODL, 4);
+    //MODL's length
+    subLength = modelPath.length()+1;
+    output.write((const char*) &subLength, 2);
+    //write model path
+    output.write(modelPath.c_str(), subLength);
+  }
+
+  if (unknownMODT.isPresent())
+  {
+    //write MODT
+    if (!unknownMODT.saveToStream(output, cMODT))
+    {
+      std::cout << "Error while writing subrecord MODT of WRLD!\n";
+      return false;
+    }
+  }//if MODT
+
   if (unknownMNAM.isPresent())
   {
     //write MNAM
@@ -471,6 +511,17 @@ bool WorldSpaceRecord::saveToStream(std::ofstream& output) const
     output.write(HD_LOD_NormalTexture.c_str(), subLength);
   }
 
+  if (!unknownXWEM.empty())
+  {
+    //write XWEM
+    output.write((const char*) &cXWEM, 4);
+    //XWEM's length
+    subLength = unknownXWEM.length()+1;
+    output.write((const char*) &subLength, 2);
+    //write XWEM's path
+    output.write(unknownXWEM.c_str(), subLength);
+  }
+
   if (unknownOFST.isPresent())
   {
     //write OFST
@@ -534,7 +585,9 @@ bool WorldSpaceRecord::loadFromStream(std::ifstream& in_File, const bool localiz
   waterFormID = 0;
   LODWaterTypeFormID = 0;
   hasNAM4 = false;
-  hasDNAM = false;
+  hasDNAM = false; unknownDNAM = 0;
+  modelPath.clear();
+  unknownMODT.setPresence(false);
   unknownMNAM.setPresence(false);
   locationFormID = 0;
   parentWorldSpaceFormID = 0;
@@ -547,6 +600,7 @@ bool WorldSpaceRecord::loadFromStream(std::ifstream& in_File, const bool localiz
   musicFormID = 0;
   HD_LOD_DiffuseTexture.clear();
   HD_LOD_NormalTexture.clear();
+  unknownXWEM.clear();
   uint32_t sizeXXXX = 0;
   unknownOFST.setPresence(false);
   while (bytesRead<readSize)
@@ -743,6 +797,35 @@ bool WorldSpaceRecord::loadFromStream(std::ifstream& in_File, const bool localiz
            }
            bytesRead += 8;
            hasDNAM = false;
+           break;
+      case cMODL:
+           if (!modelPath.empty())
+           {
+             std::cout << "Error: WRLD seems to have more than one MODL subrecord.\n";
+             return false;
+           }
+           //load MODL
+           if (!loadString512FromStream(in_File, modelPath, buffer, cMODL, false, bytesRead))
+             return false;
+           if (modelPath.empty())
+           {
+             std::cout << "Error: subrecord MODL of WRLD is empty!\n";
+             return false;
+           }
+           break;
+      case cMODT:
+           if (unknownMODT.isPresent())
+           {
+             std::cout << "Error: WRLD seems to have more than one MODT subrecord.\n";
+             return false;
+           }
+           //read MODT
+           if (!unknownMODT.loadFromStream(in_File, cMODT, false))
+           {
+             std::cout << "Error while reading subrecord MODT of WRLD!\n";
+             return false;
+           }
+           bytesRead = bytesRead +2 /*length value*/ +unknownMODT.getSize() /*data size*/;
            break;
       case cMNAM:
            if (unknownMNAM.isPresent())
@@ -981,6 +1064,22 @@ bool WorldSpaceRecord::loadFromStream(std::ifstream& in_File, const bool localiz
              return false;
            }
            break;
+      case cXWEM:
+           if (!unknownXWEM.empty())
+           {
+             std::cout << "Error: WRLD seems to have more than one XWEM subrecord.\n";
+             return false;
+           }
+           //read XWEM
+           if (!loadString512FromStream(in_File, unknownXWEM, buffer, cXWEM, false, bytesRead))
+             return false;
+           //check content
+           if (unknownXWEM.empty())
+           {
+             std::cout << "Error: subrecord XWEM of WRLD is empty!\n";
+             return false;
+           }
+           break;
       case cXXXX:
            if (sizeXXXX!=0)
            {
@@ -1026,8 +1125,9 @@ bool WorldSpaceRecord::loadFromStream(std::ifstream& in_File, const bool localiz
       default:
            std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only RNAM, MHDT, FULL, WCTR, LTMP, XEZN,"
-                     << " CNAM, NAM2, NAM3, NAM4, DNAM, MNAM, XLCN, WNAM, PNAM,"
-                     << " ONAM, NAMA, DATA, NAM0, NAM9, ZNAM, TNAM, UNAM, XXXX or OFST are allowed here!\n";
+                     << " CNAM, NAM2, NAM3, NAM4, DNAM, MODL, MODT, MNAM, XLCN,"
+                     << " WNAM, PNAM, ONAM, NAMA, DATA, NAM0, NAM9, ZNAM, TNAM,"
+                     << " UNAM, XWEM, XXXX or OFST are allowed here!\n";
            return false;
            break;
     }//swi

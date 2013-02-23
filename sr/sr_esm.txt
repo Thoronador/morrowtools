@@ -1408,20 +1408,22 @@ Records and their sub-records:
   LCTN: location
       EDID (string, NUL-terminated)
           editor ID
-      LCSR (16 bytes or 32 bytes or 48 bytes or 80 bytes or 96 bytes, optional)
+      LCSR/ACSR (16 bytes or 32 bytes or 48 bytes or 80 bytes or 96 bytes or 208 bytes, optional)
+          unknown data, but size values indicate that it might be an array of
+          16 byte structs
+      LCPR/ACPR (72 bytes, optional)
           unknown data
-      LCPR (72 bytes, optional)
-          unknown data
-      LCEC (8 , 12 or 16 bytes, optional, can occur more than once)
+      LCEC/ACEC (8, 12 or 16 bytes, optional, can occur more than once)
           unknown data
       LCEP (24 bytes, optional)
           unknown data
-      LCUN (12 bytes, optional)
+      LCUN/ACUN (12 bytes or 60 bytes, optional)
           unknown data
-      LCID (4 or 8 bytes, optional)
+      LCID/ACID (4 or 8 bytes, optional)
           unknown data
 
-      --> Size values for LCxx subrecords might not list all possible sizes.
+      --> Size values for LCxx and ACxx subrecords might not list all possible sizes.
+          In general, ACxx seems to be Dragonborn.esm's variant of LCxx.
 
       FULL (4 bytes, optional)
           string ID(?)
@@ -2437,7 +2439,7 @@ Records and their sub-records:
 
 
   RELA: relationship
-      EDID (string, NUL-terminated)
+      EDID (string, NUL-terminated, optional)
           editor ID
       DATA (16 bytes)
           uint32_t Parent NPC Form ID (points to NPC_)
@@ -2931,6 +2933,10 @@ Records and their sub-records:
           float LOD Water Height
       DNAM (8 bytes, optional)
           unknown data
+      MODL (string, NUL-terminated, optional)
+          model path
+      MODT (sizes varies, optional)
+          unknown data
       MNAM (16 bytes, optional)
           unknown data
       XLCN (4 bytes, optional)
@@ -2959,6 +2965,8 @@ Records and their sub-records:
           path to HD LOD Diffuse texture
       UNAM (string, NUL-terminated, optional)
           path to HD LOD Normal texture
+      XWEM (string, NUL-terminated, optional)
+          texture path
       XXXX (4 bytes, optional)
           subrecord that indicates, that the next subrecord is larger than
           65535 bytes. Content is an uint32_t containing the actual size of the

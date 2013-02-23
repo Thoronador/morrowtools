@@ -70,6 +70,11 @@ struct LocationRecord: public BasicRecord
     /* returns the record's type, usually its header */
     virtual uint32_t getRecordType() const;
 
+    /* returns true, if the record version uses ACxx subrecords instead of
+       LCxx subrecords
+    */
+    bool useACxx() const;
+
     std::string editorID;
     BinarySubRecord unknownLCSR;
     BinarySubRecord unknownLCPR;

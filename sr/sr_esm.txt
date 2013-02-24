@@ -2193,7 +2193,7 @@ Records and their sub-records:
           QNAM (4 bytes, optional)
               unknown data
           CNAM (4 bytes, optional)
-              string ID of entry name?
+              string ID of log entry text
 
               --> those form a sort of repeating structure
 
@@ -2203,7 +2203,7 @@ Records and their sub-records:
         FNAM (4 bytes)
             unknown data
         NNAM (4 bytes)
-            unknown data
+            string ID of objective's display text
 
           --> QOBJ/FNAM/NNAM form a repeating structure
 

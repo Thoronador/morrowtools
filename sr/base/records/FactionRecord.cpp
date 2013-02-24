@@ -70,8 +70,8 @@ bool FactionRecord::VendorData::operator==(const VendorData& other) const
 /* RankData's functions */
 bool FactionRecord::RankData::operator==(const FactionRecord::RankData& other) const
 {
-  return ((index==other.index) and(maleNameStringID==other.maleNameStringID)
-      and (femaleNameStringID==other.femaleNameStringID));
+  return ((index==other.index) and(maleName==other.maleName)
+      and (femaleName==other.femaleName));
 }
 
 /* FactionRecord's functions */
@@ -171,18 +171,12 @@ uint32_t FactionRecord::getWriteSize() const
   }//if CRVA
   if (!ranks.empty())
   {
-    unsigned int i;
+    std::vector<RankData>::size_type i;
     for (i=0; i<ranks.size(); ++i)
     {
-      writeSize = writeSize +4 /* RNAM */ +2 /* 2 bytes for length */ +4 /* fixed length of four bytes */;
-      if (ranks[i].maleNameStringID!=0)
-      {
-        writeSize = writeSize +4 /* MNAM */ +2 /* 2 bytes for length */ +4 /* fixed length of four bytes */;
-      }
-      if (ranks[i].femaleNameStringID!=0)
-      {
-        writeSize = writeSize +4 /* FNAM */ +2 /* 2 bytes for length */ +4 /* fixed length of four bytes */;
-      }
+      writeSize = writeSize +4 /* RNAM */ +2 /* 2 bytes for length */ +4 /* fixed length of four bytes */
+                 +ranks[i].maleName.getWriteSize() /* MNAM */
+                 +ranks[i].femaleName.getWriteSize() /* FNAM */;
     }//for
   }//if ranks
   if (vendorListFormID!=0)
@@ -337,7 +331,7 @@ bool FactionRecord::saveToStream(std::ofstream& output) const
 
   if (!ranks.empty())
   {
-    unsigned int i;
+    std::vector<RankData>::size_type i;
     for (i=0; i<ranks.size(); ++i)
     {
       //write RNAM
@@ -348,25 +342,17 @@ bool FactionRecord::saveToStream(std::ofstream& output) const
       //write rank index
       output.write((const char*) &(ranks[i].index), 4);
 
-      if (ranks[i].maleNameStringID!=0)
+      if (ranks[i].maleName.isPresent())
       {
         //write MNAM
-        output.write((const char*) &cMNAM, 4);
-        //MNAM's length
-        subLength = 4; //fixed
-        output.write((const char*) &subLength, 2);
-        //write male rank name's string index
-        output.write((const char*) &(ranks[i].maleNameStringID), 4);
+        if (!ranks[i].maleName.saveToStream(output, cMNAM))
+          return false;
       }
-      if (ranks[i].femaleNameStringID!=0)
+      if (ranks[i].femaleName.isPresent())
       {
         //write FNAM
-        output.write((const char*) &cFNAM, 4);
-        //FNAM's length
-        subLength = 4; //fixed
-        output.write((const char*) &subLength, 2);
-        //write female rank name's string index
-        output.write((const char*) &(ranks[i].femaleNameStringID), 4);
+        if (!ranks[i].femaleName.saveToStream(output, cFNAM))
+          return false;
       }
     }//for
   }//if ranks
@@ -703,8 +689,8 @@ bool FactionRecord::loadFromStream(std::ifstream& in_File, const bool localized,
              ranks.push_back(tempRank);
            }
            tempRank.index = 0;
-           tempRank.maleNameStringID = 0;
-           tempRank.femaleNameStringID = 0;
+           tempRank.maleName.reset();
+           tempRank.femaleName.reset();
            if (!loadUint32SubRecordFromStream(in_File, cRNAM, tempRank.index, false))
            {
              return false;
@@ -719,22 +705,14 @@ bool FactionRecord::loadFromStream(std::ifstream& in_File, const bool localized,
                        << "without previous RNAM subrecord encountered!\n";
              return false;
            }
-           if (tempRank.maleNameStringID!=0)
+           if (tempRank.maleName.isPresent())
            {
              std::cout << "Error: FACT seems to have more than one MNAM "
                        << "subrecord per RNAM subrecord!\n";
              return false;
            }
-           if (!loadUint32SubRecordFromStream(in_File, cMNAM, tempRank.maleNameStringID, false))
-           {
+           if (!tempRank.maleName.loadFromStream(in_File, cMNAM, false, bytesRead, localized, table, buffer))
              return false;
-           }
-           bytesRead += 6;
-           if (tempRank.maleNameStringID==0)
-           {
-             std::cout << "Error: subrecord MNAM of FACT has zero value!\n";
-             return false;
-           }
            break;
       case cFNAM:
            if (!hasUnpushedRank)
@@ -743,22 +721,14 @@ bool FactionRecord::loadFromStream(std::ifstream& in_File, const bool localized,
                        << "without previous RNAM subrecord encountered!\n";
              return false;
            }
-           if (tempRank.femaleNameStringID!=0)
+           if (tempRank.femaleName.isPresent())
            {
              std::cout << "Error: FACT seems to have more than one FNAM "
                        << "subrecord per RNAM subrecord!\n";
              return false;
            }
-           if (!loadUint32SubRecordFromStream(in_File, cFNAM, tempRank.femaleNameStringID, false))
-           {
+           if (!tempRank.femaleName.loadFromStream(in_File, cFNAM, false, bytesRead, localized, table, buffer))
              return false;
-           }
-           bytesRead += 6;
-           if (tempRank.femaleNameStringID==0)
-           {
-             std::cout << "Error: subrecord FNAM of FACT has zero value!\n";
-             return false;
-           }
            break;
       case cVEND:
            if (vendorListFormID!=0)

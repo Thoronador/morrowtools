@@ -53,7 +53,6 @@
 #include "../base/Shouts.h"
 #include "../base/SoulGems.h"
 #include "../base/Spells.h"
-#include "../base/StringTable.h"
 #include "../base/TalkingActivators.h"
 #include "../base/Trees.h"
 #include "../base/Weapons.h"
@@ -85,13 +84,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Form ID Finder for Skyrim, version 0.22.rev513~experimental, 2013-02-22\n";
+  std::cout << "Form ID Finder for Skyrim, version 0.22.rev514~experimental-2, 2013-02-24\n";
 }
 
 int showVersionExitcode()
 {
   showVersion();
-  return 513;
+  return 514;
 }
 
 void showHelp()
@@ -120,7 +119,16 @@ void showHelp()
             << "                     to complete a search.\n";
 }
 
-//auxillary function
+/* auxillary function #1:
+   Returns true, if the keyword is found in haystack. Character case is taken
+   into account, if caseMatters is true.
+
+   parameters:
+       haystack    - the string to search in
+       keyword     - the string to search for
+       caseMatters - If true, case-sensitive search is performed. Otherwise the
+                     search is case-insensitive.
+*/
 bool matchesKeyword(const std::string& haystack, const std::string& keyword, const bool caseMatters)
 {
   if (caseMatters)
@@ -130,8 +138,15 @@ bool matchesKeyword(const std::string& haystack, const std::string& keyword, con
   return (lowerCase(haystack).find(keyword)!=std::string::npos);
 }
 
-//...and another auxillary function
-void showRefIDs(const uint32_t baseID, const std::map<uint32_t, std::vector<SRTP::ESMReaderFinderReferences::CellRefIDPair> >& refMap, const SRTP::StringTable& table, std::basic_ostream<char>& basic_out)
+/*...and another auxillary function (#2):
+  Writes all references of a base ID to the given ostream.
+
+  parameters:
+      baseID    - baseID of the object
+      refMap    - reference map as produced by ESMReaderFinderReferences
+      basic_out - the output stream to which the references are written
+*/
+void showRefIDs(const uint32_t baseID, const std::map<uint32_t, std::vector<SRTP::ESMReaderFinderReferences::CellRefIDPair> >& refMap, std::basic_ostream<char>& basic_out)
 {
   basic_out << "        references: ";
   std::map<uint32_t, std::vector<SRTP::ESMReaderFinderReferences::CellRefIDPair> >::const_iterator iter = refMap.find(baseID);
@@ -179,6 +194,7 @@ void showRefIDs(const uint32_t baseID, const std::map<uint32_t, std::vector<SRTP
   }//while
 }
 
+/* the main functions, obviously */
 int main(int argc, char **argv)
 {
   showGPLNotice();
@@ -390,30 +406,14 @@ int main(int argc, char **argv)
   //adjust keyword to selected case-sensitivity
   if (!caseSensitive) searchKeyword = lowerCase(searchKeyword);
 
+  /*
   //try to find the language component of the string table's file name
   std::string languageComponent = "";
   const int lc_return = SRTP::getLanguageComponent(dataDir, "Skyrim", languageComponent);
   //If return code is not zero, an error occured! We should return in that case.
   if (lc_return!=0)
     return lc_return;
-
-  //read string tables
-  SRTP::StringTable table;
-  if (!table.readTable(dataDir+"Strings\\Skyrim_"+languageComponent+".dlstrings", SRTP::StringTable::sdUnknown))
-  {
-    std::cout << "Error while reading string tables!\n";
-    return SRTP::rcDataError;
-  }
-  if (!table.readTable(dataDir+"Strings\\Skyrim_"+languageComponent+".ilstrings", SRTP::StringTable::sdUnknown))
-  {
-    std::cout << "Error while reading string tables!\n";
-    return SRTP::rcDataError;
-  }
-  if (!table.readTable(dataDir+"Strings\\Skyrim_"+languageComponent+".strings", SRTP::StringTable::sdUnknown))
-  {
-    std::cout << "Error while reading string tables!\n";
-    return SRTP::rcDataError;
-  }
+  */
 
   std::cout << "\n\nSearching for \""<<searchKeyword<<"\" using case-";
   if (!caseSensitive) std::cout <<"in";
@@ -470,7 +470,7 @@ int main(int argc, char **argv)
                       <<"\n        editor ID \""<<activator_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
-              showRefIDs(activator_iter->second.headerFormID, readerReferences.refMap, table, basic_out);
+              showRefIDs(activator_iter->second.headerFormID, readerReferences.refMap, basic_out);
             }
             ++activatorMatches;
             ++totalMatches;
@@ -507,7 +507,7 @@ int main(int argc, char **argv)
                       <<"\n        editor ID \""<<alchemy_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
-              showRefIDs(alchemy_iter->second.headerFormID, readerReferences.refMap, table, basic_out);
+              showRefIDs(alchemy_iter->second.headerFormID, readerReferences.refMap, basic_out);
             }
             ++alchemyMatches;
             ++totalMatches;
@@ -544,7 +544,7 @@ int main(int argc, char **argv)
                       <<"\n        editor ID \""<<ammo_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
-              showRefIDs(ammo_iter->second.headerFormID, readerReferences.refMap, table, basic_out);
+              showRefIDs(ammo_iter->second.headerFormID, readerReferences.refMap, basic_out);
             }
             ++ammoMatches;
             ++totalMatches;
@@ -581,7 +581,7 @@ int main(int argc, char **argv)
                       <<"\n        editor ID \""<<appa_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
-              showRefIDs(appa_iter->second.headerFormID, readerReferences.refMap, table, basic_out);
+              showRefIDs(appa_iter->second.headerFormID, readerReferences.refMap, basic_out);
             }
             ++appaMatches;
             ++totalMatches;
@@ -618,7 +618,7 @@ int main(int argc, char **argv)
                       <<"\n        editor ID \""<<armour_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
-              showRefIDs(armour_iter->second.headerFormID, readerReferences.refMap, table, basic_out);
+              showRefIDs(armour_iter->second.headerFormID, readerReferences.refMap, basic_out);
             }
             ++armourMatches;
             ++totalMatches;
@@ -655,7 +655,7 @@ int main(int argc, char **argv)
                       <<"\n        editor ID \""<<book_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
-              showRefIDs(book_iter->second.headerFormID, readerReferences.refMap, table, basic_out);
+              showRefIDs(book_iter->second.headerFormID, readerReferences.refMap, basic_out);
             }
             ++bookMatches;
             ++totalMatches;
@@ -692,7 +692,7 @@ int main(int argc, char **argv)
                       <<"\n        editor ID \""<<container_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
-              showRefIDs(container_iter->second.headerFormID, readerReferences.refMap, table, basic_out);
+              showRefIDs(container_iter->second.headerFormID, readerReferences.refMap, basic_out);
             }
             ++containerMatches;
             ++totalMatches;
@@ -743,24 +743,22 @@ int main(int argc, char **argv)
                 {
                   basic_out << "          ("<<faction_iter->second.ranks[i].index
                             << ") male: ";
-                  if ((faction_iter->second.ranks[i].maleNameStringID==0)
-                     or (!table.hasString(faction_iter->second.ranks[i].maleNameStringID)))
+                  if (!faction_iter->second.ranks[i].maleName.isPresent())
                   {
                     basic_out << "(none)";
                   }
                   else
                   {
-                    basic_out << "\""<<table.getString(faction_iter->second.ranks[i].maleNameStringID)<<"\"";
+                    basic_out << "\""<<faction_iter->second.ranks[i].maleName.getString()<<"\"";
                   }
                   basic_out << ", female: ";
-                  if ((faction_iter->second.ranks[i].femaleNameStringID==0)
-                     or (!table.hasString(faction_iter->second.ranks[i].femaleNameStringID)))
+                  if (!faction_iter->second.ranks[i].femaleName.isPresent())
                   {
                     basic_out << "(none)\n";
                   }
                   else
                   {
-                    basic_out << "\""<<table.getString(faction_iter->second.ranks[i].femaleNameStringID)<<"\"\n";
+                    basic_out << "\""<<faction_iter->second.ranks[i].femaleName.getString()<<"\"\n";
                   }
                 }//for
               }//else (at least one rank)
@@ -830,7 +828,7 @@ int main(int argc, char **argv)
                       <<"\n        editor ID \""<<furniture_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
-              showRefIDs(furniture_iter->second.headerFormID, readerReferences.refMap, table, basic_out);
+              showRefIDs(furniture_iter->second.headerFormID, readerReferences.refMap, basic_out);
             }
             ++furnitureMatches;
             ++totalMatches;
@@ -867,7 +865,7 @@ int main(int argc, char **argv)
                       <<"\n        editor ID \""<<ingred_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
-              showRefIDs(ingred_iter->second.headerFormID, readerReferences.refMap, table, basic_out);
+              showRefIDs(ingred_iter->second.headerFormID, readerReferences.refMap, basic_out);
             }
             ++ingredMatches;
             ++totalMatches;
@@ -902,7 +900,7 @@ int main(int argc, char **argv)
                       <<"\n        editor ID \""<<key_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
-              showRefIDs(key_iter->second.headerFormID, readerReferences.refMap, table, basic_out);
+              showRefIDs(key_iter->second.headerFormID, readerReferences.refMap, basic_out);
             }
             ++keyMatches;
             ++totalMatches;
@@ -938,7 +936,7 @@ int main(int argc, char **argv)
                       <<"\n        editor ID \""<<misc_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
-              showRefIDs(misc_iter->second.headerFormID, readerReferences.refMap, table, basic_out);
+              showRefIDs(misc_iter->second.headerFormID, readerReferences.refMap, basic_out);
             }
             ++miscMatches;
             ++totalMatches;
@@ -975,7 +973,7 @@ int main(int argc, char **argv)
                       <<"\n        editor ID \""<<npc_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
-              showRefIDs(npc_iter->second.headerFormID, readerReferences.refMap, table, basic_out);
+              showRefIDs(npc_iter->second.headerFormID, readerReferences.refMap, basic_out);
             }
             ++NPCMatches;
             ++totalMatches;
@@ -1076,14 +1074,14 @@ int main(int argc, char **argv)
                     basic_out << "            (finishes quest)";
                     prefix = true;
                   }
-                  if (table.hasString(quest_iter->second.indices[i].theQSDTs[j].unknownCNAM))
+                  if (quest_iter->second.indices[i].theQSDTs[j].logEntry.isPresent())
                   {
                     if (!prefix)
                     {
                       prefix = true;
                       basic_out << "            ";
                     }
-                    basic_out << "\""<<table.getString(quest_iter->second.indices[i].theQSDTs[j].unknownCNAM)<<"\"";
+                    basic_out << "\""<<quest_iter->second.indices[i].theQSDTs[j].logEntry.getString()<<"\"";
                   }
                   if (prefix) basic_out << "\n";
                 }//for j
@@ -1091,9 +1089,9 @@ int main(int argc, char **argv)
                 if (quest_iter->second.hasQOBJForIndex(quest_iter->second.indices[i].index))
                 {
                   const SRTP::QuestRecord::QOBJEntry& ziel = quest_iter->second.getQOBJForIndex(quest_iter->second.indices[i].index);
-                  if (table.hasString(ziel.unknownNNAM))
+                  if (ziel.displayText.isPresent())
                   {
-                    basic_out <<"            [new objective] \""<<table.getString(ziel.unknownNNAM)<<"\"\n";
+                    basic_out <<"            [new objective] \""<<ziel.displayText.getString()<<"\"\n";
                   }
                 }
               }//for i
@@ -1134,7 +1132,7 @@ int main(int argc, char **argv)
                       <<"\n        editor ID \""<<scroll_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
-              showRefIDs(scroll_iter->second.headerFormID, readerReferences.refMap, table, basic_out);
+              showRefIDs(scroll_iter->second.headerFormID, readerReferences.refMap, basic_out);
             }
             ++scrollMatches;
             ++totalMatches;
@@ -1171,7 +1169,7 @@ int main(int argc, char **argv)
                       <<"\n        editor ID \""<<soulgem_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
-              showRefIDs(soulgem_iter->second.headerFormID, readerReferences.refMap, table, basic_out);
+              showRefIDs(soulgem_iter->second.headerFormID, readerReferences.refMap, basic_out);
             }
             ++soulgemMatches;
             ++totalMatches;
@@ -1208,7 +1206,7 @@ int main(int argc, char **argv)
                       <<"\n        editor ID \""<<spell_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
-              showRefIDs(spell_iter->second.headerFormID, readerReferences.refMap, table, basic_out);
+              showRefIDs(spell_iter->second.headerFormID, readerReferences.refMap, basic_out);
             }
             ++spellMatches;
             ++totalMatches;
@@ -1312,7 +1310,7 @@ int main(int argc, char **argv)
                       <<"\n        editor ID \""<<talkingActivator_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
-              showRefIDs(talkingActivator_iter->second.headerFormID, readerReferences.refMap, table, basic_out);
+              showRefIDs(talkingActivator_iter->second.headerFormID, readerReferences.refMap, basic_out);
             }
             ++talkingActivatorMatches;
             ++totalMatches;
@@ -1382,7 +1380,7 @@ int main(int argc, char **argv)
                       <<"\n        editor ID \""<<weapon_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
-              showRefIDs(weapon_iter->second.headerFormID, readerReferences.refMap, table, basic_out);
+              showRefIDs(weapon_iter->second.headerFormID, readerReferences.refMap, basic_out);
             }
             ++weaponMatches;
             ++totalMatches;

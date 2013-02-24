@@ -106,8 +106,8 @@ struct FactionRecord: public BasicRecord
     struct RankData
     {
       uint32_t index;              //RNAM
-      uint32_t maleNameStringID;   //MNAM
-      uint32_t femaleNameStringID; //FNAM
+      LocalizedString maleName;   //MNAM
+      LocalizedString femaleName; //FNAM
 
       /* equality operator */
       bool operator==(const RankData& other) const;

@@ -59,7 +59,7 @@ QuestRecord::IndexEntry::QSDTRecord::QSDTRecord()
   unknownSCTX(""),
   hasQNAM(false), unknownQNAM(0),
   unknownCTDA_CIS2s(std::vector<CTDA_CIS2_compound>()),
-  hasCNAM(false), unknownCNAM(0)
+  logEntry(LocalizedString())
 {
   unknownSCHR.setPresence(false);
 }
@@ -69,7 +69,7 @@ bool QuestRecord::IndexEntry::QSDTRecord::operator==(const QuestRecord::IndexEnt
   return ((isFinisher==other.isFinisher) and (unknownCTDA_CIS2s==other.unknownCTDA_CIS2s)
       and (nextQuestFormID==other.nextQuestFormID)
       and (hasQNAM==other.hasQNAM) and ((unknownQNAM==other.unknownQNAM) or (!hasQNAM))
-      and (hasCNAM==other.hasCNAM) and ((unknownCNAM==other.unknownCNAM) or (!hasCNAM))
+      and (logEntry==other.logEntry)
       and (unknownSCHR==other.unknownSCHR) and (unknownSCTX==other.unknownSCTX));
 }
 
@@ -315,7 +315,7 @@ void QuestRecord::AliasEntry::clear()
 QuestRecord::QOBJEntry::QOBJEntry()
 : unknownQOBJ(0),
   unknownFNAM(0),
-  unknownNNAM(0),
+  displayText(LocalizedString()),
   theQSTAs(std::vector<QSTAEntry>())
 {
 
@@ -325,14 +325,14 @@ void QuestRecord::QOBJEntry::clear()
 {
   unknownQOBJ = 0;
   unknownFNAM = 0;
-  unknownNNAM = 0;
+  displayText.reset();
   theQSTAs.clear();
 }
 
 bool QuestRecord::QOBJEntry::operator==(const QuestRecord::QOBJEntry& other) const
 {
   return ((unknownQOBJ==other.unknownQOBJ) and (unknownFNAM==other.unknownFNAM)
-      and (unknownNNAM==other.unknownNNAM) and (theQSTAs==other.theQSTAs));
+      and (displayText==other.displayText) and (theQSTAs==other.theQSTAs));
 }
 
 /* QSTAEntry's functions */
@@ -463,10 +463,7 @@ uint32_t QuestRecord::getWriteSize() const
         {
           writeSize += indices[i].theQSDTs[j].unknownCTDA_CIS2s[k].getWriteSize();
         }//for k
-        if (indices[i].theQSDTs[j].hasCNAM)
-        {
-          writeSize = writeSize +4 /* CNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
-        }
+        writeSize += indices[i].theQSDTs[j].logEntry.getWriteSize() /* CNAM */;
       }//for j
     }//for i
   }//indices
@@ -629,16 +626,9 @@ bool QuestRecord::saveToStream(std::ofstream& output) const
             return false;
           }
         }//for k
-        if (indices[i].theQSDTs[j].hasCNAM)
-        {
-          //write CNAM
-          output.write((const char*) &cCNAM, 4);
-          //CNAM's length
-          subLength = 4;
-          output.write((const char*) &subLength, 2);
-          //write CNAM
-          output.write((const char*) &(indices[i].theQSDTs[j].unknownCNAM), 4);
-        }
+        //write CNAM
+        if (!indices[i].theQSDTs[j].logEntry.saveToStream(output, cCNAM))
+          return false;
       }//for j
     }//for i
   }//indices
@@ -920,8 +910,7 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File, const bool localized, c
            tempQSDT.unknownQNAM = 0;
            tempQSDT.unknownSCHR.setPresence(false);
            tempQSDT.unknownCTDA_CIS2s.clear();
-           tempQSDT.hasCNAM = false;
-           tempQSDT.unknownCNAM = 0;
+           tempQSDT.logEntry.reset();
            //QSDT's length
            in_File.read((char*) &subLength, 2);
            bytesRead += 2;
@@ -1060,29 +1049,17 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File, const bool localized, c
                        << "started yet.\n";
              return false;
            }
-           if (tempQSDT.hasCNAM)
+           if (tempQSDT.logEntry.isPresent())
            {
              std::cout << "Error: QUST seems to have more than one CNAM subrecord per QSDT.\n";
              return false;
            }
-           //CNAM's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength!=4)
-           {
-             std::cout <<"Error: sub record CNAM of QUST has invalid length ("<<subLength
-                       <<" bytes). Should be four bytes.\n";
-             return false;
-           }
            //read CNAM
-           in_File.read((char*) &(tempQSDT.unknownCNAM), 4);
-           bytesRead += 4;
-           if (!in_File.good())
+           if (!tempQSDT.logEntry.loadFromStream(in_File, cCNAM, false, bytesRead, localized, table, buffer))
            {
              std::cout << "Error while reading subrecord CNAM of QUST!\n";
              return false;
            }
-           tempQSDT.hasCNAM = true;
            lastReadRec = cCNAM;
            break;
       case cQOBJ:
@@ -1122,8 +1099,8 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File, const bool localized, c
            bytesRead += 10;
 
            //read NNAM
-           if (!loadUint32SubRecordFromStream(in_File, cNNAM, tempQOBJ.unknownNNAM, true)) return false;
-           bytesRead += 10;
+           if (!tempQOBJ.displayText.loadFromStream(in_File, cNNAM, true, bytesRead, localized, table, buffer))
+             return false;
 
            hasUnpushedQOBJEntry = true;
            lastReadRec = cNNAM;

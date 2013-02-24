@@ -85,8 +85,7 @@ struct QuestRecord: public BasicRecord
         bool hasQNAM;
         uint32_t unknownQNAM;
         std::vector<CTDA_CIS2_compound> unknownCTDA_CIS2s;
-        bool hasCNAM;
-        uint32_t unknownCNAM; //CNAM - string ID of journal text?
+        LocalizedString logEntry; //CNAM - string ID of log entry
 
         /* constructor */
         QSDTRecord();
@@ -185,7 +184,7 @@ struct QuestRecord: public BasicRecord
 
       uint16_t unknownQOBJ;
       uint32_t unknownFNAM;
-      uint32_t unknownNNAM;
+      LocalizedString displayText; //subrecord NNAM
       std::vector<QSTAEntry> theQSTAs;
 
       /* constructor */

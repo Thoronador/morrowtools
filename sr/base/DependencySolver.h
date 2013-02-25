@@ -50,6 +50,25 @@ struct DependencyElement
   bool operator<(const DependencyElement& other) const;
 };
 
+/* determines the load order for the given ESM files and stores them in result.
+   Returns true in case of success; returns false, if an error occured.
+
+   parameters:
+       esmNames - vector containing the basic .esm file names, i.e. not the
+                  full path but only "Skyrim.esm", "Cool PlugIn.esm", etc.
+       dataDir  - path to the Data directory of Skyrim, including trailing
+                  backslash
+       result   - the vector that is used to store the resulting load order
+*/
+bool getLoadOrder(const std::vector<std::string>& esmNames, const std::string& dataDir, std::vector<std::string>& result);
+
+/* determines the load order for the given files and stores them in result.
+   Returns true in case of success; returns false, if an error occured.
+
+   parameters:
+       files  - set of .esm file names, including their headers
+       result - the vector that is used to store the resulting load order
+*/
 bool getLoadOrder(const std::set<DependencyElement>& files, std::vector<std::string>& result);
 
 } //namespace

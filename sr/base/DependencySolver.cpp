@@ -22,6 +22,7 @@
 #include <iostream>
 #include "../../base/UtilityFunctions.h"
 #include "../../base/ComparisonFunctor.h"
+#include "ESMReader.h"
 
 namespace SRTP
 {
@@ -32,6 +33,7 @@ bool DependencyElement::operator<(const DependencyElement& other) const
   return (lowerCaseCompare(name, other.name)<0);
 }
 
+/* function for traversing the dependency "graph" */
 bool depPostOrderTraverse(const std::string& fileName, const std::set<DependencyElement>& files,
                           std::vector<std::string>& result, std::set<std::string, MWTP::ci_less>& presence)
 {
@@ -67,6 +69,25 @@ bool depPostOrderTraverse(const std::string& fileName, const std::set<Dependency
   }
   return true;
 }//function
+
+bool getLoadOrder(const std::vector<std::string>& esmNames, const std::string& dataDir, std::vector<std::string>& result)
+{
+  std::set<SRTP::DependencyElement> filesWithHeaders;
+
+  unsigned int i;
+  for (i=0; i<esmNames.size(); ++i)
+  {
+    DependencyElement depElem;
+    depElem.name = esmNames[i];
+    if (!ESMReader::peekESMHeader(dataDir+esmNames[i], depElem.header))
+    {
+      std::cout << "Error: could not read header of "<<dataDir+esmNames[i]<<"!\n";
+      return false;
+    }
+    filesWithHeaders.insert(depElem);
+  }//for
+  return getLoadOrder(filesWithHeaders, result);
+}
 
 bool getLoadOrder(const std::set<DependencyElement>& files, std::vector<std::string>& result)
 {

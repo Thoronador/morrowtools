@@ -29,7 +29,6 @@
 #include <sys/un.h>
 #endif
 #include "../../base/UtilityFunctions.h"
-//#include "../base/ReturnCodes.h"
 #include "../base/Activators.h"
 #include "../base/AlchemyPotions.h"
 #include "../base/Ammunitions.h"
@@ -38,6 +37,7 @@
 #include "../base/Books.h"
 #include "../base/Cells.h"
 #include "../base/Containers.h"
+#include "../base/DependencySolver.h"
 #include "../base/Factions.h"
 #include "../base/Floras.h"
 #include "../base/FormIDFunctions.h"
@@ -84,13 +84,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Form ID Finder for Skyrim, version 0.22.rev514~experimental-2, 2013-02-24\n";
+  std::cout << "Form ID Finder for Skyrim, version 0.22b.rev515~experimental, 2013-02-25\n";
 }
 
 int showVersionExitcode()
 {
   showVersion();
-  return 514;
+  return 515;
 }
 
 void showHelp()
@@ -423,23 +423,52 @@ int main(int argc, char **argv)
     std::cout << "Since you want to search for reference IDs, too, this may take even longer...\n";
   }
 
+  std::vector<std::string> loadOrder;
+  {
+    std::vector<std::string> esmNames;
+    esmNames.push_back("Skyrim.esm");
+    if (FileExists(dataDir+"Update.esm"))
+      esmNames.push_back("Update.esm");
+    if (FileExists(dataDir+"Dawnguard.esm"))
+      esmNames.push_back("Dawnguard.esm");
+    if (FileExists(dataDir+"HearthFires.esm"))
+      esmNames.push_back("HearthFires.esm");
+    if (FileExists(dataDir+"Dragonborn.esm"))
+      esmNames.push_back("Dragonborn.esm");
+
+    if (!SRTP::getLoadOrder(esmNames, dataDir, loadOrder))
+    {
+      std::cout << "Error: could not determine load order of ESM files!\n";
+      return SRTP::rcFileError;
+    }
+  }
+
   SRTP::ESMReaderFinder reader;
   SRTP::Tes4HeaderRecord tes4rec;
 
   //read the usual stuff (for base IDs)
-  if (reader.readESM(dataDir+"Skyrim.esm", tes4rec)<0)
+  unsigned int lo_idx;
+  for (lo_idx=0; lo_idx<loadOrder.size(); ++lo_idx)
   {
-    std::cout << "Error while reading "<<dataDir+"Skyrim.esm!\n";
-    return SRTP::rcFileError;
-  }
+    if (loadOrder[lo_idx]!="Update.esm")
+      if (reader.readESM(dataDir+loadOrder[lo_idx], tes4rec)<0)
+      {
+        std::cout << "Error while reading "<<dataDir+loadOrder[lo_idx]<<"!\n";
+        return SRTP::rcFileError;
+      }
+  }//for i
 
   SRTP::ESMReaderFinderReferences readerReferences;
   if (withReferences)
   {
-    if (readerReferences.readESM(dataDir+"Skyrim.esm", tes4rec)<0)
+    for (lo_idx=0; lo_idx<loadOrder.size(); ++lo_idx)
     {
-      std::cout << "Error while reading references from "<<dataDir+"Skyrim.esm!\n";
-      return SRTP::rcFileError;
+      if (loadOrder[lo_idx]!="Update.esm")
+        if (readerReferences.readESM(dataDir+loadOrder[lo_idx], tes4rec)<0)
+        {
+          std::cout << "Error while reading references from "<<dataDir+loadOrder[lo_idx]<<"!\n";
+          return SRTP::rcFileError;
+        }
     }
   }//if references requested
 

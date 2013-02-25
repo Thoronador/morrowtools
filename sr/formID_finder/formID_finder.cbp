@@ -57,6 +57,8 @@
 		<Unit filename="../base/Books.h" />
 		<Unit filename="../base/Cells.h" />
 		<Unit filename="../base/Containers.h" />
+		<Unit filename="../base/DependencySolver.cpp" />
+		<Unit filename="../base/DependencySolver.h" />
 		<Unit filename="../base/ESMReader.cpp" />
 		<Unit filename="../base/ESMReader.h" />
 		<Unit filename="../base/Factions.h" />

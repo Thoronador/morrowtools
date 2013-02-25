@@ -159,6 +159,15 @@ class ESMReader
            that does read the data records you want to have.
     */
     virtual int readNextRecord(std::ifstream& in_File, const uint32_t recName, const bool localized, const StringTable& table) = 0;
+
+    /* Member variable to hold the current/last TES4 header record that was
+       read by the reader.
+
+       Notes:
+           This is only valid, if readESM() has been called. Otherwise its
+           content is undefined.
+    */
+    Tes4HeaderRecord currentHead;
 };//class
 
 } //namespace

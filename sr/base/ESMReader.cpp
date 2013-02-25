@@ -28,6 +28,7 @@ namespace SRTP
 {
 
 ESMReader::ESMReader()
+: currentHead(Tes4HeaderRecord())
 {
   //empty
 }
@@ -126,6 +127,9 @@ int ESMReader::readESM(const std::string& FileName, Tes4HeaderRecord& head)
       }
     }//for
   }//if localized
+
+  //save header for subsequent functions that might need it
+  currentHead = head;
 
   //read the groups/ records
   uint32_t processedGroups = 0;

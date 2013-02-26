@@ -337,24 +337,9 @@ bool FloraRecord::loadFromStream(std::ifstream& in_File, const bool localized, c
              std::cout << "Error: FLOR seems to have more than one MODL subrecord.\n";
              return false;
            }
-           //MODL's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength>511)
-           {
-             std::cout <<"Error: sub record MODL of FLOR is longer than 511 characters!\n";
+           //read MODL
+           if (!loadString512FromStream(in_File, modelPath, buffer, cMODL, false, bytesRead))
              return false;
-           }
-           //read MODL's stuff
-           memset(buffer, 0, 512);
-           in_File.read(buffer, subLength);
-           bytesRead += subLength;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord MODL of FLOR!\n";
-             return false;
-           }
-           modelPath = std::string(buffer);
            break;
       case cMODT:
            if (unknownMODT.isPresent())
@@ -368,7 +353,7 @@ bool FloraRecord::loadFromStream(std::ifstream& in_File, const bool localized, c
              std::cout << "Error while reading subrecord MODT of FLOR!\n";
              return false;
            }
-           bytesRead = bytesRead +2 +unknownMODT.getSize();
+           bytesRead += (2 +unknownMODT.getSize());
            break;
       case cMODS:
            if (unknownMODS.isPresent())
@@ -382,7 +367,7 @@ bool FloraRecord::loadFromStream(std::ifstream& in_File, const bool localized, c
              std::cout << "Error while reading subrecord MODS of FLOR!\n";
              return false;
            }
-           bytesRead = bytesRead +2 +unknownMODS.getSize();
+           bytesRead += (2 +unknownMODS.getSize());
            break;
       case cPNAM:
            if (hasReadPNAM)
@@ -482,7 +467,7 @@ bool FloraRecord::loadFromStream(std::ifstream& in_File, const bool localized, c
   }//while
 
   //presence checks
-  if (!(hasReadOBND and name.isPresent() and (!modelPath.empty()) and unknownMODT.isPresent()
+  if (!(hasReadOBND and name.isPresent() and (!modelPath.empty())
       and hasReadPNAM and hasReadFNAM and hasReadPFPC))
   {
     std::cout << "Error: at least one required subrecord of FLOR is missing!\n";

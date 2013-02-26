@@ -46,7 +46,7 @@ MaterialObjectRecord::MaterialObjectRecord()
   singlePass(false) // 0=false, 1=true
   //end of DATA
 {
-
+  unknownMODT.setPresence(false);
 }
 
 MaterialObjectRecord::~MaterialObjectRecord()
@@ -58,7 +58,8 @@ MaterialObjectRecord::~MaterialObjectRecord()
 bool MaterialObjectRecord::equals(const MaterialObjectRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
-      and (modelPath==other.modelPath) and (unknownDNAMs==other.unknownDNAMs)
+      and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
+      and (unknownDNAMs==other.unknownDNAMs)
     //subrecord DATA
     and (falloffScale==other.falloffScale) and (falloffBias==other.falloffBias)
     and (noise_UV_Scale==other.noise_UV_Scale) and (material_UV_Scale==other.material_UV_Scale)
@@ -86,6 +87,11 @@ uint32_t MaterialObjectRecord::getWriteSize() const
     writeSize = writeSize +4 /* MODL */ +2 /* 2 bytes for length */
                +modelPath.length()+1 /* length of path +1 byte for NUL termination */;
   }//if MODL
+  if (unknownMODT.isPresent())
+  {
+    writeSize = writeSize +4 /* DNAM */ +2 /* 2 bytes for length */
+               +unknownMODT.getSize() /* size */;
+  }//if MODT
 
   unsigned int i;
   for (i=0; i<unknownDNAMs.size(); ++i)
@@ -123,6 +129,16 @@ bool MaterialObjectRecord::saveToStream(std::ofstream& output) const
     //write model path
     output.write(modelPath.c_str(), subLength);
   }//if MODL
+
+  if (unknownMODT.isPresent())
+  {
+    //write MODT
+    if (!unknownMODT.saveToStream(output, cMODT))
+    {
+      std::cout << "Error while writing subrecord MODT of MATO!\n";
+      return false;
+    }
+  }
 
   unsigned int i;
   for (i=0; i<unknownDNAMs.size(); ++i)
@@ -202,6 +218,7 @@ bool MaterialObjectRecord::loadFromStream(std::ifstream& in_File, const bool loc
   editorID = std::string(buffer);
 
   modelPath.clear();
+  unknownMODT.setPresence(false);
   bool hasReadDATA = false;
   uint32_t tempUint32;
   unknownDNAMs.clear();
@@ -225,12 +242,26 @@ bool MaterialObjectRecord::loadFromStream(std::ifstream& in_File, const bool loc
              std::cout << "Error while reading subrecord MODL of MATO!\n";
              return false;
            }
-
+           //check content
            if (modelPath.empty())
            {
              std::cout << "Error: model path of MATO is empty!\n";
              return false;
            }
+           break;
+      case cMODT:
+           if (unknownMODT.isPresent())
+           {
+             std::cout << "Error: MATO seems to have more than one MODT subrecord.\n";
+             return false;
+           }
+           //read MODT
+           if (!unknownMODT.loadFromStream(in_File, cMODT, false))
+           {
+             std::cout << "Error while reading subrecord MODT of MATO!\n";
+             return false;
+           }
+           bytesRead += (2+unknownMODT.getSize());
            break;
       case cDNAM:
            //read DNAM's stuff
@@ -299,7 +330,7 @@ bool MaterialObjectRecord::loadFromStream(std::ifstream& in_File, const bool loc
            break;
       default:
            std::cout << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
-                     << "\", but only DNAM or DATA are allowed here!\n";
+                     << "\", but only MODL, MODT, DNAM or DATA are allowed here!\n";
            return false;
     }//swi
   }//while

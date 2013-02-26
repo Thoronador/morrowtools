@@ -388,19 +388,8 @@ bool TreeRecord::loadFromStream(std::ifstream& in_File, const bool localized, co
   //presence checks
   if (!((!modelPath.empty()) and unknownMODT.isPresent() and hasReadPFPC and hasReadCNAM))
   {
-    std::cout << "Error: while reading TREE record: at least one required subrecord is missing!\n";
+    std::cout << "Error while reading TREE record: at least one required subrecord is missing!\n";
     return false;
-  }
-
-  //check triplet consistency
-  if ((ingredientFormID!=0) or (harvestSoundFormID!=0) or name.isPresent())
-  {
-    if (!((ingredientFormID!=0) and (harvestSoundFormID!=0) and name.isPresent()))
-    {
-      std::cout << "Error: while reading TREE record: at least one of the "
-                << "subrecords PFIG, SNAM or FULL is missing!\n";
-      return false;
-    }
   }
 
   return in_File.good();

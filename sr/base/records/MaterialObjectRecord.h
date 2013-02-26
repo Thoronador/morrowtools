@@ -71,6 +71,7 @@ struct MaterialObjectRecord: public BasicRecord
 
     std::string editorID;
     std::string modelPath;
+    BinarySubRecord unknownMODT;
     std::vector<BinarySubRecord> unknownDNAMs;
 
     //subrecord DATA

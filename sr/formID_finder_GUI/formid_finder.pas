@@ -264,9 +264,10 @@ begin
     512: Result:= 'v0.22.rev512~experimental, 2013-02-21';
     513: Result:= 'v0.22.rev513~experimental, 2013-02-22';
     514: Result:= 'v0.22.rev514~experimental-2, 2013-02-24';
-    514: Result:= 'v0.22b.rev515~experimental, 2013-02-25';
+    515: Result:= 'v0.22b.rev515~experimental, 2013-02-25';
+    516: Result:= 'v0.22c.rev516~experimental, 2013-02-26';
   else
-    Result:= 'v0.22b or later, maybe rev'+IntToStr(rev);
+    Result:= 'v0.22c or later, maybe rev'+IntToStr(rev);
   end;//case
 end;//func
 
@@ -577,7 +578,7 @@ procedure TForm1.MenuItemVersionClick(Sender: TObject);
 var str1: string;
     foundRev: Cardinal;
 begin
-  str1:= 'GUI version: rev515'+#13#10+cProgrammeName+' version: ';
+  str1:= 'GUI version: rev516'+#13#10+cProgrammeName+' version: ';
   if (not FileExists(cProgrammeName)) then
   begin
     str1:= str1 + 'not found';

@@ -49,6 +49,7 @@ namespace SRTP
 {
 
 ESMReaderFinder::ESMReaderFinder()
+: ESMReader()
 {
   //empty
 }

@@ -24,7 +24,7 @@
 #include <set>
 #include <string>
 #include <vector>
-#include "records/Tes4HeaderRecord.h"
+#include "records/TES4HeaderRecord.h"
 
 namespace SRTP
 {

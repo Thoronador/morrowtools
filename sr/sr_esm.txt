@@ -1800,9 +1800,9 @@ Records and their sub-records:
           unknown data
       FULL (4 bytes) optional
           string ID of object's full name
-      MODL (string, NUL-terminated)
+      MODL (string, NUL-terminated) optional
           model path
-      MODT (size varies)
+      MODT (size varies) optional
           unknown data
       MODS (size varies?) optional
           unknown data

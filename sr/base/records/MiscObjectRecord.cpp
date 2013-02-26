@@ -71,9 +71,6 @@ uint32_t MiscObjectRecord::getWriteSize() const
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
         +4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed size of 12 bytes */
-        +4 /* MODL */ +2 /* 2 bytes for length */
-        +modelPath.length()+1 /* length of name +1 byte for NUL termination */
-        +4 /* MODT */ +2 /* 2 bytes for length */ +unknownMODT.getSize() /* length of subrecord */
         +4 /* DATA */ +2 /* 2 bytes for length */ +8 /* fixed size of 8 bytes */;
   if (unknownVMAD.isPresent())
   {
@@ -83,6 +80,16 @@ uint32_t MiscObjectRecord::getWriteSize() const
   if (fullName.isPresent())
   {
     writeSize += fullName.getWriteSize() /* FULL */;
+  }
+  if (!modelPath.empty())
+  {
+    writeSize = writeSize +4 /* MODL */ +2 /* 2 bytes for length */
+        +modelPath.length()+1 /* length of name +1 byte for NUL termination */;
+  }
+  if (unknownMODT.isPresent())
+  {
+    writeSize = writeSize + 4 /* MODT */ +2 /* 2 bytes for length */
+               +unknownMODT.getSize() /* length of subrecord */;
   }
   if (unknownMODS.isPresent())
   {
@@ -144,13 +151,16 @@ bool MiscObjectRecord::saveToStream(std::ofstream& output) const
       return false;
   }//if hasFULL
 
-  //write MODL
-  output.write((const char*) &cMODL, 4);
-  //MODL's length
-  subLength = modelPath.length()+1;
-  output.write((const char*) &subLength, 2);
-  //write model path
-  output.write(modelPath.c_str(), subLength);
+  if (!modelPath.empty())
+  {
+    //write MODL
+    output.write((const char*) &cMODL, 4);
+    //MODL's length
+    subLength = modelPath.length()+1;
+    output.write((const char*) &subLength, 2);
+    //write model path
+    output.write(modelPath.c_str(), subLength);
+  }
 
   //write MODT
   if (!unknownMODT.saveToStream(output, cMODT)) return false;
@@ -341,24 +351,14 @@ bool MiscObjectRecord::loadFromStream(std::ifstream& in_File, const bool localiz
              std::cout << "Error: record MISC seems to have more than one MODL subrecord.\n";
              return false;
            }
-           //MODL's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength>511)
+           //read MODL
+           if (!loadString512FromStream(in_File, modelPath, buffer, cMODL, false, bytesRead))
+             return false;
+           if (modelPath.empty())
            {
-             std::cout <<"Error: sub record MODL of MISC is longer than 511 characters!\n";
+             std::cout << "Error: subrecord MODL of MISC is empty!\n";
              return false;
            }
-           //read model path
-           memset(buffer, 0, 512);
-           in_File.read(buffer, subLength);
-           bytesRead += subLength;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord MODL of MISC!\n";
-             return false;
-           }
-           modelPath = std::string(buffer);
            break;
       case cMODT:
            if (unknownMODT.isPresent())
@@ -384,24 +384,14 @@ bool MiscObjectRecord::loadFromStream(std::ifstream& in_File, const bool localiz
              std::cout << "Error: record MISC seems to have more than one ICON subrecord.\n";
              return false;
            }
-           //ICON's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength>511)
+           //read ICON
+           if (!loadString512FromStream(in_File, iconPath, buffer, cICON, false, bytesRead))
+             return false;
+           if (iconPath.empty())
            {
-             std::cout <<"Error: sub record ICON of MISC is longer than 511 characters!\n";
+             std::cout <<"Error: subrecord ICON of MISC is empty!\n";
              return false;
            }
-           //read icon path
-           memset(buffer, 0, 512);
-           in_File.read(buffer, subLength);
-           bytesRead += subLength;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord ICON of MISC!\n";
-             return false;
-           }
-           iconPath = std::string(buffer);
            break;
       case cYNAM:
            if (pickupSoundFormID!=0)
@@ -529,8 +519,7 @@ bool MiscObjectRecord::loadFromStream(std::ifstream& in_File, const bool localiz
   }//while
 
   //have we read all required subrecords?
-  if ((!unknownMODT.isPresent()) or (!hasReadDATA) or (!hasReadOBND)
-    or (modelPath.empty()))
+  if ((!hasReadDATA) or (!hasReadOBND))
   {
     std::cout << "Error: at least one required subrecord of MISC was not found!\n";
     return false;

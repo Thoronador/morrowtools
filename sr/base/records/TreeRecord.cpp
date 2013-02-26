@@ -379,14 +379,14 @@ bool TreeRecord::loadFromStream(std::ifstream& in_File, const bool localized, co
       default:
            std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only MODL, MODT, PFIG, SNAM, PFPC, "
-                     << " or FULL are allowed here!\n";
+                     << " FULL or CNAM are allowed here!\n";
            return false;
            break;
     }//swi
   }//while
 
   //presence checks
-  if (!((!modelPath.empty()) and unknownMODT.isPresent() and hasReadPFPC and hasReadCNAM))
+  if (!((!modelPath.empty()) and hasReadPFPC and hasReadCNAM))
   {
     std::cout << "Error while reading TREE record: at least one required subrecord is missing!\n";
     return false;

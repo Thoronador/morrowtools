@@ -67,10 +67,10 @@ struct Tes4HeaderRecord: public BasicRecord
     /* returns the record's type, usually its header */
     virtual uint32_t getRecordType() const;
 
-    /* returns true, if the file is an ESM file, accodring to the set flags */
+    /* returns true, if the file is an ESM file, according to the set flags */
     bool isMasterFile() const;
 
-    /* returns true, if the file is localized, accodring to the set flags */
+    /* returns true, if the file is localized, according to the set flags */
     bool isLocalized() const;
 
     //flag constants

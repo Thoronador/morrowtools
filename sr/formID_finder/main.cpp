@@ -406,15 +406,6 @@ int main(int argc, char **argv)
   //adjust keyword to selected case-sensitivity
   if (!caseSensitive) searchKeyword = lowerCase(searchKeyword);
 
-  /*
-  //try to find the language component of the string table's file name
-  std::string languageComponent = "";
-  const int lc_return = SRTP::getLanguageComponent(dataDir, "Skyrim", languageComponent);
-  //If return code is not zero, an error occured! We should return in that case.
-  if (lc_return!=0)
-    return lc_return;
-  */
-
   std::cout << "\n\nSearching for \""<<searchKeyword<<"\" using case-";
   if (!caseSensitive) std::cout <<"in";
   std::cout << "sensitive search. This may take a while...\n";

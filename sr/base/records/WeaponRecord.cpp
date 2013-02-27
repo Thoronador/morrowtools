@@ -1123,7 +1123,9 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File, const bool localized, 
            break;
       default:
            std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
-                     << "\" found, but only KSIZ, DESC, INAM, WNAM or CNAM are allowed!\n";
+                     << "\" found, but only VMAD, OBND, FULL, MODL, MODS, EITM,"
+                     << " EAMT, ETYP, BIDS, BAMT, KSIZ, DESC, NNAM, INAM, WNAM,"
+                     << " TNAM, UNAM, NAM9, NAM8, SNAM, DATA or CNAM are allowed!\n";
            return false;
            break;
     }//swi

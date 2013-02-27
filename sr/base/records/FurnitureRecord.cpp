@@ -77,8 +77,6 @@ uint32_t FurnitureRecord::getWriteSize() const
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
              +editorID.length()+1 /* length of name +1 byte for NUL termination */
-             +4 /* MODL */ +2 /* 2 bytes for length */
-             +modelPath.length()+1 /* length of path +1 byte for NUL termination */
              +destruction.getWriteSize()
              +4 /* PNAM */ +2 /* 2 bytes for length */ +4 /* fixed length */
              +4 /* FNAM */ +2 /* 2 bytes for length */ +2 /* fixed length */
@@ -99,6 +97,11 @@ uint32_t FurnitureRecord::getWriteSize() const
   if (name.isPresent())
   {
     writeSize += name.getWriteSize();
+  }
+  if (!modelPath.empty())
+  {
+    writeSize = writeSize +4 /* MODL */ +2 /* 2 bytes for length */
+             +modelPath.length()+1 /* length of path +1 byte for NUL termination */;
   }
   if (unknownMODT.isPresent())
   {
@@ -166,13 +169,16 @@ bool FurnitureRecord::saveToStream(std::ofstream& output) const
       return false;
   }//if FULL
 
-  //write MODL
-  output.write((const char*) &cMODL, 4);
-  //MODL's length
-  subLength = modelPath.length()+1;
-  output.write((const char*) &subLength, 2);
-  //write model path
-  output.write(modelPath.c_str(), subLength);
+  if (!modelPath.empty())
+  {
+    //write MODL
+    output.write((const char*) &cMODL, 4);
+    //MODL's length
+    subLength = modelPath.length()+1;
+    output.write((const char*) &subLength, 2);
+    //write model path
+    output.write(modelPath.c_str(), subLength);
+  }
 
   if (unknownMODT.isPresent())
   {
@@ -636,12 +642,11 @@ bool FurnitureRecord::loadFromStream(std::ifstream& in_File, const bool localize
   }//while
 
   //presence checks
-  if (!( !modelPath.empty() and hasReadPNAM and hasReadFNAM
+  if (!(hasReadPNAM and hasReadFNAM
         and hasReadMNAM and hasReadWBDT))
   {
     std::cout << "Error: At least one required subrecord of FURN is missing!\n";
-    std::cout << "MODL: "<<!modelPath.empty()<<", PNAM: "<<hasReadPNAM
-              << ", FNAM: "<<hasReadFNAM
+    std::cout << "PNAM: "<<hasReadPNAM << ", FNAM: "<<hasReadFNAM
               << ", MNAM: "<<hasReadMNAM<<", WBDT: "<<hasReadWBDT<<".\n";
     return false;
   }

@@ -22,6 +22,7 @@
 #define SR_TALKINGACTIVATORRECORD_H
 
 #include <string>
+#include <vector>
 #include "BasicRecord.h"
 #include "BinarySubRecord.h"
 #include "LocalizedString.h"
@@ -74,6 +75,7 @@ struct TalkingActivatorRecord: public BasicRecord
     LocalizedString name; //subrecord FULL
     std::string modelPath;
     BinarySubRecord unknownMODT;
+    std::vector<uint32_t> keywordArray;
     uint32_t unknownPNAM;
     uint32_t loopingSoundFormID; //subrecord SNAM
     uint16_t unknownFNAM;

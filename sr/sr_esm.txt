@@ -242,9 +242,9 @@ Records and their sub-records:
           model path
       MODT (?? bytes, optional)
           unknown data
-      YNAM (4 bytes)
+      YNAM (4 bytes, optional)
           uint32_t Pickup Sound form ID (points to SNDR)
-      ZNAM (4 bytes)
+      ZNAM (4 bytes, optional)
           uint32_t Putdown Sound form ID (points to SNDR)
       DESC (4 bytes)
           uint32_t string ID of object description
@@ -276,11 +276,11 @@ Records and their sub-records:
       OBND (12 bytes)
           unknown data
       FULL (4 bytes)
-          unknown data
+          uint32_t string ID of name
       QUAL (4 bytes)
-          unknown data
+          uint32_t quality
       DESC (4 bytes)
-          unknown data
+          uint32_t string ID of description
       DATA (8 bytes)
           uint32_t value
           float    weight
@@ -606,9 +606,9 @@ Records and their sub-records:
           unknown data
       FULL (4 bytes, optional)
           name string ID
-      MODL (string, NUL-terminated)
+      MODL (string, NUL-terminated, optional)
           model path
-      MODT (?? bytes)
+      MODT (?? bytes, optional)
           unknown data
       MODS (?? bytes, optional)
           unknown data
@@ -987,7 +987,7 @@ Records and their sub-records:
           unknown data
       FULL (4 bytes)
           name string ID
-      MODL (string, NUL-terminated)
+      MODL (string, NUL-terminated, optional)
           model path
       MODT (?? bytes, optional)
           unknown data
@@ -1045,9 +1045,9 @@ Records and their sub-records:
           unknown data
       FULL (4 bytes)
           name string ID
-      MODL (string, NUL-terminated)
+      MODL (string, NUL-terminated, optional)
           model path
-      MODT (size varies)
+      MODT (size varies, optional)
           unknown data
       MODS (size varies, optional)
           unknown data
@@ -1281,9 +1281,9 @@ Records and their sub-records:
           number of keywords/formIDs in KWDA
       KWDA (n*4 bytes, always follows KSIZ)
           array of keyword formIDs
-      MODL (string, NUL-terminated)
+      MODL (string, NUL-terminated, optional)
           path to the scroll's mesh
-      MODT (size varies)
+      MODT (size varies, optional)
           unknown data
       MODS (size varies, optional)
           unknown data
@@ -2742,6 +2742,10 @@ Records and their sub-records:
           model path
       MODT (size varies, optional)
           unknown data
+      KSIZ (4 bytes, optional)
+          keyword count for KWDA
+      KWDA (integral multiple of four bytes, optional)
+          array of keyword form IDs (points to KYWD)
       PNAM (4 bytes)
           unknown data
       SNAM (4 bytes, optional)

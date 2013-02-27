@@ -743,6 +743,11 @@ bool ActivatorRecord::loadFromStream(std::ifstream& in_File, const bool localize
            k_Size = 0;
            if (!loadUint32SubRecordFromStream(in_File, cKSIZ, k_Size, false)) return false;
            bytesRead += 6;
+           if (0==k_Size)
+           {
+             std::cout << "Error: subrecord KSIZ of ACTI is zero!\n";
+             return false;
+           }
 
            //read KWDA
            in_File.read((char*) &subRecName, 4);

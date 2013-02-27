@@ -77,7 +77,7 @@ struct AmmunitionRecord: public BasicRecord
     BinarySubRecord unknownMODT;
     uint32_t pickupSoundFormID; //subrecord YNAM
     uint32_t putdownSoundFormID; //subrecord ZNAM
-    uint32_t descriptionStringID; //subrecord DESC
+    LocalizedString description; //subrecord DESC
     std::vector<uint32_t> keywordArray;
     //subrecord DATA
     uint32_t projectileFormID;

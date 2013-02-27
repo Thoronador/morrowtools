@@ -33,7 +33,7 @@ AmmunitionRecord::AmmunitionRecord()
   modelPath(""),
   pickupSoundFormID(0),
   putdownSoundFormID(0),
-  descriptionStringID(0),
+  description(LocalizedString()),
   keywordArray(std::vector<uint32_t>()),
   //DATA
   projectileFormID(0),
@@ -59,7 +59,7 @@ bool AmmunitionRecord::equals(const AmmunitionRecord& other) const
       and (name==other.name)
       and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
       and (pickupSoundFormID==other.pickupSoundFormID) and (putdownSoundFormID==other.putdownSoundFormID)
-      and (descriptionStringID==other.descriptionStringID)
+      and (description==other.description)
       and (keywordArray==other.keywordArray) and (projectileFormID==other.projectileFormID)
       and (DATAflags==other.DATAflags) and (baseDamage==other.baseDamage)
       and (value==other.value));
@@ -76,7 +76,7 @@ uint32_t AmmunitionRecord::getWriteSize() const
         +4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed size */
         +4 /* YNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */
         +4 /* ZNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */
-        +4 /* DESC */ +2 /* 2 bytes for length */ +4 /* fixed size */
+        +description.getWriteSize() /* DESC */
         +4 /* DATA */ +2 /* 2 bytes for length */ +16 /* fixed size */;
   if (!modelPath.empty())
   {
@@ -166,12 +166,11 @@ bool AmmunitionRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &putdownSoundFormID, 4);
 
   //write DESC
-  output.write((const char*) &cDESC, 4);
-  //DESC's length
-  subLength = 4; //fixed size
-  output.write((const char*) &subLength, 2);
-  //write description string ID
-  output.write((const char*) &descriptionStringID, 4);
+  if (!description.saveToStream(output, cDESC))
+  {
+    std::cout << "Error while writing subrecord DESC of AMMO!\n";
+    return false;
+  }
 
   if (!keywordArray.empty())
   {
@@ -277,9 +276,9 @@ bool AmmunitionRecord::loadFromStream(std::ifstream& in_File, const bool localiz
   name.reset();
   modelPath.clear();
   unknownMODT.setPresence(false);
-  bool hasReadYNAM = false;
-  bool hasReadZNAM = false;
-  bool hasReadDESC = false;
+  pickupSoundFormID = 0;
+  putdownSoundFormID = 0;
+  description.reset();
   keywordArray.clear();
   uint32_t k_Size, i, temp;
   bool hasReadDATA = false;
@@ -341,7 +340,7 @@ bool AmmunitionRecord::loadFromStream(std::ifstream& in_File, const bool localiz
            bytesRead = bytesRead +2 +unknownMODT.getSize();
            break;
       case cYNAM:
-           if (hasReadYNAM)
+           if (pickupSoundFormID!=0)
            {
              std::cout << "Error: Record AMMO seems to have more than one YNAM subrecord!\n";
              return false;
@@ -350,10 +349,14 @@ bool AmmunitionRecord::loadFromStream(std::ifstream& in_File, const bool localiz
            if (!loadUint32SubRecordFromStream(in_File, cYNAM, pickupSoundFormID, false))
              return false;
            bytesRead += 6;
-           hasReadYNAM = true;
+           if (pickupSoundFormID==0)
+           {
+             std::cout << "Error: subrecord YNAM of AMMO is zero!\n";
+             return false;
+           }
            break;
       case cZNAM:
-           if (hasReadZNAM)
+           if (putdownSoundFormID!=0)
            {
              std::cout << "Error: Record AMMO seems to have more than one ZNAM subrecord!\n";
              return false;
@@ -362,19 +365,21 @@ bool AmmunitionRecord::loadFromStream(std::ifstream& in_File, const bool localiz
            if (!loadUint32SubRecordFromStream(in_File, cZNAM, putdownSoundFormID, false))
              return false;
            bytesRead += 6;
-           hasReadZNAM = true;
+           if (putdownSoundFormID==0)
+           {
+             std::cout << "Error: subrecord ZNAM of AMMO is zero!\n";
+             return false;
+           }
            break;
       case cDESC:
-           if (hasReadDESC)
+           if (description.isPresent())
            {
              std::cout << "Error: Record AMMO seems to have more than one DESC subrecord!\n";
              return false;
            }
            //read DESC
-           if (!loadUint32SubRecordFromStream(in_File, cDESC, descriptionStringID, false))
+           if (!description.loadFromStream(in_File, cDESC, false, bytesRead, localized, table, buffer))
              return false;
-           bytesRead += 6;
-           hasReadDESC = true;
            break;
       case cKSIZ:
            if (!keywordArray.empty())
@@ -467,7 +472,7 @@ bool AmmunitionRecord::loadFromStream(std::ifstream& in_File, const bool localiz
   }//while
 
   //check
-  if ((!hasReadDATA) or (!hasReadYNAM) or (!hasReadZNAM) or (!hasReadDESC))
+  if ((!hasReadDATA) or (!description.isPresent()))
   {
     std::cout << "Error: at least one required subrecord of AMMO is missing!\n";
     return false;

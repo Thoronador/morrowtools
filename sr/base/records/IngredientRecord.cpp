@@ -82,8 +82,6 @@ uint32_t IngredientRecord::getWriteSize() const
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
         +4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed length of 12 bytes */
         +name.getWriteSize() /* FULL */
-        +4 /* MODL */ +2 /* 2 bytes for length */
-        +modelPath.length()+1 /* length of name +1 byte for NUL termination */
         +4 /* DATA */ +2 /* 2 bytes for length */ +8 /* fixed length of 8 bytes */
         +4 /* ENIT */ +2 /* 2 bytes for length */ +8 /* fixed length of 8 bytes */;
   if (unknownVMAD.isPresent())
@@ -95,6 +93,11 @@ uint32_t IngredientRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* KSIZ */ +2 /* 2 bytes for length */ +4 /* fixed length of 4 bytes */
                +4 /* KWDA */ +2 /* 2 bytes for length */ +4*keywordArray.size(); /* fixed length of 4 bytes per elem.*/
+  }
+  if (!modelPath.empty())
+  {
+    writeSize = writeSize +4 /* MODL */ +2 /* 2 bytes for length */
+        +modelPath.length()+1 /* length of name +1 byte for NUL termination */;
   }
   if (unknownMODT.isPresent())
   {
@@ -184,13 +187,16 @@ bool IngredientRecord::saveToStream(std::ofstream& output) const
     }//for
   }//if keyword array
 
-  //write MODL
-  output.write((const char*) &cMODL, 4);
-  //MODL's length
-  subLength = modelPath.length()+1;
-  output.write((const char*) &subLength, 2);
-  //write model path
-  output.write(modelPath.c_str(), subLength);
+  if (!modelPath.empty())
+  {
+    //write MODL
+    output.write((const char*) &cMODL, 4);
+    //MODL's length
+    subLength = modelPath.length()+1;
+    output.write((const char*) &subLength, 2);
+    //write model path
+    output.write(modelPath.c_str(), subLength);
+  }
 
   if (unknownMODT.isPresent())
   {
@@ -430,24 +436,14 @@ bool IngredientRecord::loadFromStream(std::ifstream& in_File, const bool localiz
              std::cout << "Error: INGR seems to have more than one MODL subrecord!\n";
              return false;
            }
-           //MODL's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength>511)
+           //read MODL
+           if (!loadString512FromStream(in_File, modelPath, buffer, cMODL, false, bytesRead))
+             return false;
+           if (modelPath.empty())
            {
-             std::cout <<"Error: sub record MODL of INGR is longer than 511 characters!\n";
+             std::cout << "Error: subrecord MODL of INGR is empty!\n";
              return false;
            }
-           //read MODL's stuff
-           memset(buffer, 0, 512);
-           in_File.read(buffer, subLength);
-           bytesRead += subLength;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord MODL of INGR!\n";
-             return false;
-           }
-           modelPath = std::string(buffer);
            break;
       case cMODT:
            if (unknownMODT.isPresent())
@@ -461,7 +457,7 @@ bool IngredientRecord::loadFromStream(std::ifstream& in_File, const bool localiz
              std::cout << "Error while reading subrecord MODT of INGR!\n";
              return false;
            }
-           bytesRead = bytesRead +2 +unknownMODT.getSize();
+           bytesRead += (2 +unknownMODT.getSize());
            break;
       case cMODS:
            if (unknownMODS.isPresent())
@@ -665,10 +661,10 @@ bool IngredientRecord::loadFromStream(std::ifstream& in_File, const bool localiz
     return false;
   }//if effects
   //more checks
-  if (!(name.isPresent() and hasReadDATA and hasReadENIT and (!modelPath.empty())  ))
+  if (!(name.isPresent() and hasReadDATA and hasReadENIT))
   {
     std::cout << "Error while reading record INGR: At least one of the "
-              << "subrecords FULL, DATA, ENIT or MODL is missing!\n";
+              << "subrecords FULL, DATA or ENIT is missing!\n";
     return false;
   }
 

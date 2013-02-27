@@ -79,8 +79,6 @@ uint32_t ContainerRecord::getWriteSize() const
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
         +4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed size */
-        +4 /* MODL */ +2 /* 2 bytes for length */
-        +modelPath.length()+1 /* length of path +1 byte for NUL termination */
         +4 /* DATA */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   if (unknownVMAD.isPresent())
   {
@@ -89,6 +87,11 @@ uint32_t ContainerRecord::getWriteSize() const
   if (name.isPresent())
   {
     writeSize += name.getWriteSize();
+  }
+  if (!modelPath.empty())
+  {
+    writeSize = writeSize +4 /* MODL */ +2 /* 2 bytes for length */
+        +modelPath.length()+1 /* length of path +1 byte for NUL termination */;
   }
   if (unknownMODT.isPresent())
   {
@@ -151,13 +154,16 @@ bool ContainerRecord::saveToStream(std::ofstream& output) const
       return false;
   }//if has FULL
 
-  //write MODL
-  output.write((const char*) &cMODL, 4);
-  //MODL's length
-  subLength = modelPath.length()+1;
-  output.write((const char*) &subLength, 2);
-  //write model path
-  output.write(modelPath.c_str(), subLength);
+  if (!modelPath.empty())
+  {
+    //write MODL
+    output.write((const char*) &cMODL, 4);
+    //MODL's length
+    subLength = modelPath.length()+1;
+    output.write((const char*) &subLength, 2);
+    //write model path
+    output.write(modelPath.c_str(), subLength);
+  }
 
   if (unknownMODT.isPresent())
   {
@@ -290,7 +296,6 @@ bool ContainerRecord::loadFromStream(std::ifstream& in_File, const bool localize
   unknownVMAD.setPresence(false);
   bool hasReadOBND = false;
   name.reset();
-  bool hasReadMODL = false;
   modelPath.clear();
   unknownMODT.setPresence(false);
   unknownMODS.setPresence(false);
@@ -354,14 +359,18 @@ bool ContainerRecord::loadFromStream(std::ifstream& in_File, const bool localize
              return false;
            break;
       case cMODL:
-           if (hasReadMODL)
+           if (!modelPath.empty())
            {
              std::cout << "Error: CONT seems to have more than one MODL subrecord.\n";
              return false;
            }
            if (!loadString512FromStream(in_File, modelPath, buffer, cMODL, false, bytesRead))
              return false;
-           hasReadMODL = true;
+           if (modelPath.empty())
+           {
+             std::cout << "Error: subrecord MODL of CONT is empty!\n";
+             return false;
+           }
            break;
       case cMODT:
            if (unknownMODT.isPresent())
@@ -501,7 +510,7 @@ bool ContainerRecord::loadFromStream(std::ifstream& in_File, const bool localize
   }//while
 
   //presence checks
-  if (!(hasReadMODL and hasReadOBND and hasReadDATA))
+  if (!(hasReadOBND and hasReadDATA))
   {
     std::cout << "Error: at least one required subrecord of CONT is missing!\n";
     return false;

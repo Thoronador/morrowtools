@@ -31,7 +31,7 @@ ApparatusRecord::ApparatusRecord()
 : BasicRecord(), editorID(""),
   name(LocalizedString()),
   quality(0),
-  unknownDESC(0),
+  description(LocalizedString()),
   value(0),
   weight(0.0f)
 {
@@ -49,7 +49,7 @@ bool ApparatusRecord::equals(const ApparatusRecord& other) const
   return ((equalsBasic(other)) and (editorID==other.editorID)
       and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
       and (name==other.name) and (quality==other.quality)
-      and (unknownDESC==other.unknownDESC)
+      and (description==other.description)
       and (value==other.value) and (weight==other.weight));
 }
 #endif
@@ -62,7 +62,7 @@ uint32_t ApparatusRecord::getWriteSize() const
         +4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed length */
         +name.getWriteSize() /* FULL */
         +4 /* QUAL */ +2 /* 2 bytes for length */ +4 /* fixed length */
-        +4 /* DESC */ +2 /* 2 bytes for length */ +4 /* fixed length */
+        +description.getWriteSize() /* DESC */
         +4 /* DATA */ +2 /* 2 bytes for length */ +8 /* fixed length */);
 }
 
@@ -103,12 +103,11 @@ bool ApparatusRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &quality, 4);
 
   //write DESC
-  output.write((const char*) &cDESC, 4);
-  //DESC's length
-  subLength = 4; //fixed
-  output.write((const char*) &subLength, 2);
-  //write DESC's data
-  output.write((const char*) &unknownDESC, 4);
+  if (!description.saveToStream(output, cDESC))
+  {
+    std::cout << "Error while writing subrecord DESC of APPA!\n";
+    return false;
+  }
 
   //write DATA
   output.write((const char*) &cDATA, 4);
@@ -202,12 +201,11 @@ bool ApparatusRecord::loadFromStream(std::ifstream& in_File, const bool localize
   bytesRead += 10;
 
   //read DESC
-  if (!loadUint32SubRecordFromStream(in_File, cDESC, unknownDESC, true))
+  if (!description.loadFromStream(in_File, cDESC, true, bytesRead, localized, table, buffer))
   {
     std::cout << "Error while reading subrecord DESC of APPA!\n";
     return false;
   }
-  bytesRead += 10;
 
   //read DATA
   in_File.read((char*) &subRecName, 4);

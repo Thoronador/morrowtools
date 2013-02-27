@@ -31,6 +31,7 @@ TalkingActivatorRecord::TalkingActivatorRecord()
 : BasicRecord(), editorID(""),
   name(LocalizedString()),
   modelPath(""),
+  keywordArray(std::vector<uint32_t>()),
   unknownPNAM(0),
   loopingSoundFormID(0),
   unknownFNAM(0),
@@ -51,7 +52,8 @@ bool TalkingActivatorRecord::equals(const TalkingActivatorRecord& other) const
   return ((equalsBasic(other)) and (editorID==other.editorID)
       and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
       and (name==other.name) and (modelPath==other.modelPath)
-      and (unknownMODT==other.unknownMODT) and (unknownPNAM==other.unknownPNAM)
+      and (unknownMODT==other.unknownMODT) and (keywordArray==other.keywordArray)
+      and (unknownPNAM==other.unknownPNAM)
       and (loopingSoundFormID==other.loopingSoundFormID)
       and (unknownFNAM==other.unknownFNAM) and (voiceTypeFormID==other.voiceTypeFormID));
 }
@@ -75,6 +77,11 @@ uint32_t TalkingActivatorRecord::getWriteSize() const
   if (unknownMODT.isPresent())
   {
     writeSize = writeSize +4 /* MODT */ +2 /* 2 bytes for length */ +unknownMODT.getSize() /* size */;
+  }
+  if (!keywordArray.empty())
+  {
+    writeSize = writeSize +4 /* KSIZ */ +2 /* 2 bytes for length */ +4 /* fixed size */
+               +4 /* KWDA */ +2 /* 2 bytes for length */ +4*keywordArray.size();
   }
   if (loopingSoundFormID!=0)
   {
@@ -132,6 +139,30 @@ bool TalkingActivatorRecord::saveToStream(std::ofstream& output) const
       return false;
     }
   }
+
+  if (!keywordArray.empty())
+  {
+    //write KSIZ
+    output.write((const char*) &cKSIZ, 4);
+    //KSIZ's length
+    subLength = 4; //fixed size
+    output.write((const char*) &subLength, 2);
+    //write keyword size
+    const uint32_t k_Size = keywordArray.size();
+    output.write((const char*) &k_Size, 4);
+
+    //write KWDA
+    output.write((const char*) &cKWDA, 4);
+    //KWDA's length
+    subLength = 4*keywordArray.size(); //fixed size
+    output.write((const char*) &subLength, 2);
+    //write keywords
+    uint32_t i;
+    for (i=0; i<k_Size; ++i)
+    {
+      output.write((const char*) &(keywordArray[i]), 4);
+    }//for
+  }//if keywords
 
   //write PNAM
   output.write((const char*) &cPNAM, 4);
@@ -242,6 +273,8 @@ bool TalkingActivatorRecord::loadFromStream(std::ifstream& in_File, const bool l
   name.reset();
   modelPath.clear();
   unknownMODT.setPresence(false);
+  keywordArray.clear();
+  uint32_t k_Size, i, temp;
   bool hasReadPNAM = false;
   loopingSoundFormID = 0;
   bool hasReadFNAM = false;
@@ -298,6 +331,47 @@ bool TalkingActivatorRecord::loadFromStream(std::ifstream& in_File, const bool l
              return false;
            }
            bytesRead += (2+unknownMODT.getSize());
+           break;
+      case cKSIZ:
+           if (!keywordArray.empty())
+           {
+             std::cout << "Error: TACT seems to have more than one KSIZ subrecord.\n";
+             return false;
+           }
+           //read KSIZ
+           k_Size = 0;
+           if (!loadUint32SubRecordFromStream(in_File, cKSIZ, k_Size, false)) return false;
+           bytesRead += 6;
+           if (0==k_Size)
+           {
+             std::cout << "Error: subrecord KSIZ of TACT is zero!\n";
+             return false;
+           }
+
+           //read KWDA
+           in_File.read((char*) &subRecName, 4);
+           bytesRead += 4;
+           //KWDA's length
+           in_File.read((char*) &subLength, 2);
+           bytesRead += 2;
+           if (subLength!=4*k_Size)
+           {
+             std::cout <<"Error: sub record KWDA of TACT has invalid length ("
+                       <<subLength<<" bytes). Should be "<<4*k_Size<<" bytes!\n";
+             return false;
+           }
+           //read keywords
+           for (i=0; i<k_Size; ++i)
+           {
+             in_File.read((char*) &temp, 4);
+             bytesRead += 4;
+             if (!in_File.good())
+             {
+               std::cout << "Error while reading subrecord KWDA of TACT!\n";
+               return false;
+             }
+             keywordArray.push_back(temp);
+           }//for
            break;
       case cPNAM:
            if (hasReadPNAM)
@@ -369,7 +443,7 @@ bool TalkingActivatorRecord::loadFromStream(std::ifstream& in_File, const bool l
            break;
       default:
            std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
-                     << "\" found, but only FULL, MODL, MODT, PNAM, FNAM or VNAM are allowed here!\n";
+                     << "\" found, but only FULL, MODL, MODT, KSIZ, PNAM, FNAM or VNAM are allowed here!\n";
            return false;
            break;
     }//swi

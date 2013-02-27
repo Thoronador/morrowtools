@@ -73,7 +73,7 @@ struct ApparatusRecord: public BasicRecord
     uint8_t unknownOBND[12];
     LocalizedString name; //subrecord FULL
     uint32_t quality; //subrecord QUAL
-    uint32_t unknownDESC;
+    LocalizedString description; //subrecord DESC
     //subrecord DATA
     uint32_t value;
     float    weight;

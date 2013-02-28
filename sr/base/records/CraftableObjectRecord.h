@@ -73,7 +73,7 @@ struct CraftableObjectRecord: public BasicRecord
     std::string editorID;
     uint32_t componentCount;
     std::vector<ComponentData> components;
-    std::vector<CTDAData> unknownCTDAs;
+    std::vector<CTDA_CIS2_compound> unknownCTDA_CIS2s;
     uint32_t unknownCNAM;
     uint32_t unknownBNAM;
     uint16_t resultCount;

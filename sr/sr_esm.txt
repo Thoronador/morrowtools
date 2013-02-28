@@ -570,6 +570,8 @@ Records and their sub-records:
           count (uint32_t)
       CTDA (32 bytes, can occur multiple times, optional)
           unknown
+      CIS2 (string, NUL-terminated, optional)
+          variable name - requires CTDA
       CNAM (4 bytes)
           some formID
       BNAM (4 bytes)

@@ -33,7 +33,7 @@ CraftableObjectRecord::CraftableObjectRecord()
 : BasicRecord(), editorID(""),
   componentCount(0),
   components(std::vector<ComponentData>()),
-  unknownCTDAs(std::vector<CTDAData>()),
+  unknownCTDA_CIS2s(std::vector<CTDA_CIS2_compound>()),
   unknownCNAM(0),
   unknownBNAM(0),
   resultCount(0)
@@ -55,10 +55,10 @@ uint32_t CraftableObjectRecord::getRecordType() const
 bool CraftableObjectRecord::equals(const CraftableObjectRecord& other) const
 {
   return ((equalsBasic(other)) and (editorID==other.editorID)
-    and (componentCount==other.componentCount) and (components.size()==other.components.size())
-    and (unknownCTDAs.size()==other.unknownCTDAs.size()) and (unknownBNAM==other.unknownBNAM)
-    and (unknownCNAM==other.unknownCNAM) and (resultCount==other.resultCount)
-    and (unknownCTDAs==other.unknownCTDAs) and (components==other.components));
+    and (componentCount==other.componentCount) and (components==other.components)
+    and (unknownCTDA_CIS2s==other.unknownCTDA_CIS2s)
+    and (unknownBNAM==other.unknownBNAM)
+    and (unknownCNAM==other.unknownCNAM) and (resultCount==other.resultCount));
 }
 #endif
 
@@ -70,8 +70,6 @@ uint32_t CraftableObjectRecord::getWriteSize() const
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
         +components.size()*
           (4 /* CNTO */ +2 /* 2 bytes for length */ +8 /* fixed size */)
-        +unknownCTDAs.size()*
-          (4 /* CTDA */ +2 /* 2 bytes for length */ +32 /* fixed size */)
         +4 /* CNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */
         +4 /* BNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */
         +4 /* NAM1 */ +2 /* 2 bytes for length */ +2 /* fixed size */;
@@ -79,6 +77,11 @@ uint32_t CraftableObjectRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* COCT */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
+  unsigned int i;
+  for (i=0; i<unknownCTDA_CIS2s.size(); ++i)
+  {
+    writeSize = writeSize + unknownCTDA_CIS2s[i].getWriteSize();
+  }//for
   return writeSize;
 }
 
@@ -122,15 +125,14 @@ bool CraftableObjectRecord::saveToStream(std::ofstream& output) const
   }//for
 
   //write CTDAs
-  for (i=0; i<unknownCTDAs.size(); ++i)
+  for (i=0; i<unknownCTDA_CIS2s.size(); ++i)
   {
     //write CTDA
-    output.write((const char*) &cCTDA, 4);
-    //CTDA's length
-    subLength = 32; //fixed size
-    output.write((const char*) &subLength, 2);
-    //write content
-    output.write((const char*) (unknownCTDAs[i].content), 32);
+    if (!unknownCTDA_CIS2s[i].saveToStream(output))
+    {
+      std::cout << "Error while writing subrecord CTDA and CIS2 of COBJ!\n";
+      return false;
+    }
   }//for
 
   //write CNAM
@@ -270,7 +272,7 @@ bool CraftableObjectRecord::loadFromStream(std::ifstream& in_File, const bool lo
   bool hasReadNAM1 = false;
 
   CTDAData tempCTDA;
-  unknownCTDAs.clear();
+  unknownCTDA_CIS2s.clear();
   while (bytesRead<readSize)
   {
     //read next header
@@ -281,23 +283,30 @@ bool CraftableObjectRecord::loadFromStream(std::ifstream& in_File, const bool lo
     {
       case cCTDA:
            //CTDA's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength!=32)
-           {
-             std::cout <<"Error: sub record CTDA of COBJ has invalid length ("<<subLength
-                       <<" bytes). Should be 32 bytes.\n";
-             return false;
-           }
-           //read CTDA data
-           in_File.read((char*) &(tempCTDA.content), 32);
-           bytesRead += 32;
-           if (!in_File.good())
+           if (!tempCTDA.loadFromStream(in_File, bytesRead))
            {
              std::cout << "Error while reading subrecord CTDA of COBJ!\n";
              return false;
            }
-           unknownCTDAs.push_back(tempCTDA);
+           unknownCTDA_CIS2s.push_back(CTDA_CIS2_compound(tempCTDA, ""));
+           break;
+      case cCIS2:
+           if (unknownCTDA_CIS2s.empty())
+           {
+             std::cout << "Error: found CIS2 without prior CTDA in COBJ!\n";
+             return false;
+           }
+           if (!unknownCTDA_CIS2s.back().unknownCISx.empty())
+           {
+             std::cout << "Error: COBJ seems to have more than one CIS2 subrecord per CTDA.\n";
+             return false;
+           }
+           //read CIS2
+           if (!loadString512FromStream(in_File, unknownCTDA_CIS2s.back().unknownCISx, buffer, cCIS2, false, bytesRead))
+           {
+             std::cout << "Error while reading subrecord CIS2 of COBJ!\n";
+             return false;
+           }
            break;
       case cCNAM:
            if (hasReadCNAM)
@@ -377,7 +386,7 @@ bool CraftableObjectRecord::loadFromStream(std::ifstream& in_File, const bool lo
       default:
            std::cout << "Error while reading record COBJ: Found unexpected "
                      << "subrecord type \""<<IntTo4Char(subRecName)
-                     <<"\", but only BNAM, CNAM, NAM1 or CTDA are allowed!\n";
+                     <<"\", but only CTDA, CIS2, BNAM, CNAM or NAM1 are allowed!\n";
            return false;
     }//swi
   }//while

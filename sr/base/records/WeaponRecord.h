@@ -104,6 +104,8 @@ struct WeaponRecord: public BasicRecord
     std::string unknownNNAM;
     uint32_t impactDataSetFormID; //subrecord INAM
     uint32_t firstPersonModelObjectFormID; //subrecord WNAM
+    uint32_t attackSound2DFormID; //subrecord XNAM
+    uint32_t attackLoopSoundFormID; //subrecord NAM7
     uint32_t attackFailSoundFormID; //subrecord TNAM
     uint32_t idleSoundFormID; //subrecord UNAM
     uint32_t equipSoundFormID; //subrecord NAM9

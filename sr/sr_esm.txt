@@ -2040,7 +2040,8 @@ Records and their sub-records:
       CSDC (1 byte, optional, can occur multiple times)
           unknown data
 
-          ----> CSDT, CSDI and CSDC always appear in that order, forming a struct
+          ----> CSDT, CSDI and CSDC always appear in that order, forming a struct.
+                CSDT may be absent in that struct.
 
       DPLT (4 bytes, optional)
           uint32_t Default Package List Form ID (points to FLST)
@@ -2881,6 +2882,10 @@ Records and their sub-records:
           uint32_t Impact Data Set form ID (points to IPDS)
       WNAM (4 bytes, optional)
           uint32_t 1st Person Model Object form ID (points to STAT)
+      XNAM (4 bytes, optional)
+          uint32_t Attack Sound 2D form ID (points to SNDR)
+      NAM7 (4 bytes, optional)
+          uint32_t Attack Loop Sound form ID (points to SNDR)
       TNAM (4 bytes, optional)
           uint32_t Attack Fail sound form ID (points to SNDR)
       UNAM (4 bytes, optional)

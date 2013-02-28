@@ -1857,8 +1857,43 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File, const bool localized, con
            if (!loadUint32SubRecordFromStream(*actual_in, cCSDT, tempCSDX.unknownCSDT, false)) return false;
            bytesRead += 6;
 
-           //read TINC
+           //read CSDI
            if (!loadUint32SubRecordFromStream(*actual_in, cCSDI, tempCSDX.unknownCSDI, true)) return false;
+           bytesRead += 10;
+
+           //read CSDC
+           actual_in->read((char*) &subRecName, 4);
+           bytesRead += 4;
+           if (subRecName!=cCSDC)
+           {
+             UnexpectedRecord(cCSDC, subRecName);
+             return false;
+           }
+           //CSDC's length
+           actual_in->read((char*) &subLength, 2);
+           bytesRead += 2;
+           if (subLength!=1)
+           {
+             std::cout <<"Error: sub record CSDC of NPC_ has invalid length ("
+                       <<subLength<<" bytes). Should be one byte.\n";
+             return false;
+           }
+           //read CSDC
+           actual_in->read((char*) &(tempCSDX.unknownCSDC), 1);
+           bytesRead += 1;
+           if (!actual_in->good())
+           {
+             std::cout << "Error while reading subrecord CSDC of NPC_!\n";
+             return false;
+           }
+           unknownCSDXs.push_back(tempCSDX);
+           break;
+      case cCSDI:
+           //set CSDT to zero
+           tempCSDX.unknownCSDT = 0;
+
+           //read CSDI
+           if (!loadUint32SubRecordFromStream(*actual_in, cCSDI, tempCSDX.unknownCSDI, false)) return false;
            bytesRead += 10;
 
            //read CSDC
@@ -2080,7 +2115,7 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File, const bool localized, con
                      << " RNAM, DEST, WNAM, ANAM, ATKR, ATKD, ATKE, SPCT, PRKZ,"
                      << " CNTO, ECOR, AIDT, KSIZ, CNAM, FULL, SHRT, DATA, PNAM,"
                      << " HCLF, GNAM, ZNAM, NAM5, NAM6, NAM7, NAM8, DPLT, DOFT,"
-                     << " SOFT, CRIF, CSCR, CSDT, FTST, QNAM, NAM9, NAMA or TINI are allowed here!\n";
+                     << " SOFT, CRIF, CSCR, CSDT, CSDI, FTST, QNAM, NAM9, NAMA or TINI are allowed here!\n";
            return false;
     }//swi
   }//while

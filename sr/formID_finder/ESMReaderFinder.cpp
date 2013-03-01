@@ -48,8 +48,8 @@
 namespace SRTP
 {
 
-ESMReaderFinder::ESMReaderFinder()
-: ESMReader()
+ESMReaderFinder::ESMReaderFinder(const std::vector<std::string>& loadOrder)
+: ESMReaderReIndexMod(loadOrder)
 {
   //empty
 }
@@ -95,6 +95,10 @@ bool ESMReaderFinder::needGroup(const GroupData& g_data) const
 
 bool ESMReaderFinder::nextGroupStarted(const GroupData& g_data, const bool sub)
 {
+  if (indexMapsNeedsUpdate())
+  {
+    updateIndexMap(m_CurrentMod);
+  }
   return true;
 }
 
@@ -106,82 +110,178 @@ bool ESMReaderFinder::groupFinished(const GroupData& g_data)
 int ESMReaderFinder::readNextRecord(std::ifstream& in_File, const uint32_t recName, const bool localized, const StringTable& table)
 {
   #warning Not completely implemented yet!
+  BasicRecord * recPtr = NULL;
   switch (recName)
   {
     case cACTI:
-         return Activators::getSingleton().readNextRecord(in_File, localized, table);
+         recPtr = new ActivatorRecord;
          break;
     case cALCH:
-         return AlchemyPotions::getSingleton().readNextRecord(in_File, localized, table);
+         recPtr = new AlchemyPotionRecord;
          break;
     case cAMMO:
-         return Ammunitions::getSingleton().readNextRecord(in_File, localized, table);
+         recPtr = new AmmunitionRecord;
          break;
     case cAPPA:
-         return Apparatuses::getSingleton().readNextRecord(in_File, localized, table);
+         recPtr = new ApparatusRecord;
          break;
     case cARMO:
-         return Armours::getSingleton().readNextRecord(in_File, localized, table);
+         recPtr = new ArmourRecord;
          break;
     case cBOOK:
-         return Books::getSingleton().readNextRecord(in_File, localized, table);
+         recPtr = new BookRecord;
          break;
     case cCONT:
-         return Containers::getSingleton().readNextRecord(in_File, localized, table);
+         recPtr = new ContainerRecord;
          break;
     case cFACT:
-         return Factions::getSingleton().readNextRecord(in_File, localized, table);
+         recPtr = new FactionRecord;
          break;
     case cFLOR:
-         return Floras::getSingleton().readNextRecord(in_File, localized, table);
+         recPtr = new FloraRecord;
          break;
     case cFURN:
-         return Furniture::getSingleton().readNextRecord(in_File, localized, table);
+         recPtr = new FurnitureRecord;
          break;
     case cINGR:
-         return Ingredients::getSingleton().readNextRecord(in_File, localized, table);
+         recPtr = new IngredientRecord;
          break;
     case cKEYM:
-         return Keys::getSingleton().readNextRecord(in_File, localized, table);
+         recPtr = new KeyRecord;
          break;
     case cMISC:
-         return MiscObjects::getSingleton().readNextRecord(in_File, localized, table);
+         recPtr = new MiscObjectRecord;
          break;
     case cNPC_:
-         return NPCs::getSingleton().readNextRecord(in_File, localized, table);
+         recPtr = new NPCRecord;
          break;
     case cPERK:
-         return Perks::getSingleton().readNextRecord(in_File, localized, table);
+         recPtr = new PerkRecord;
          break;
     case cQUST:
-         return Quests::getSingleton().readNextRecord(in_File, localized, table);
+         recPtr = new QuestRecord;
          break;
     case cSCRL:
-         return Scrolls::getSingleton().readNextRecord(in_File, localized, table);
+         recPtr = new ScrollRecord;
          break;
     case cSHOU:
-         return Shouts::getSingleton().readNextRecord(in_File, localized, table);
+         recPtr = new ShoutRecord;
          break;
     case cSLGM:
-         return SoulGems::getSingleton().readNextRecord(in_File, localized, table);
+         recPtr = new SoulGemRecord;
          break;
     case cSPEL:
-         return Spells::getSingleton().readNextRecord(in_File, localized, table);
+         recPtr = new SpellRecord;
          break;
     case cTACT:
-         return TalkingActivators::getSingleton().readNextRecord(in_File, localized, table);
+         recPtr = new TalkingActivatorRecord;
          break;
     case cTREE:
-         return Trees::getSingleton().readNextRecord(in_File, localized, table);
+         recPtr = new TreeRecord;
          break;
     case cWEAP:
-         return Weapons::getSingleton().readNextRecord(in_File, localized, table);
+         recPtr = new WeaponRecord;
          break;
     case cWOOP:
-         return WordsOfPower::getSingleton().readNextRecord(in_File, localized, table);
+         recPtr = new WordOfPowerRecord;
          break;
+    default:
+         return -1;
   }//swi
-  return -1;
+  //load record
+  if (!recPtr->loadFromStream(in_File, localized, table))
+  {
+    delete recPtr;
+    return -1;
+  }
+  //re-index record's form ID
+  if (!reIndex(recPtr->headerFormID))
+  {
+    delete recPtr;
+    return -1;
+  }
+  //add record
+  switch (recName)
+  {
+    case cACTI:
+         Activators::getSingleton().addRecord(*static_cast<ActivatorRecord*>(recPtr));
+         break;
+    case cALCH:
+         AlchemyPotions::getSingleton().addRecord(*static_cast<AlchemyPotionRecord*>(recPtr));
+         break;
+    case cAMMO:
+         Ammunitions::getSingleton().addRecord(*static_cast<AmmunitionRecord*>(recPtr));
+         break;
+    case cAPPA:
+         Apparatuses::getSingleton().addRecord(*static_cast<ApparatusRecord*>(recPtr));
+         break;
+    case cARMO:
+         Armours::getSingleton().addRecord(*static_cast<ArmourRecord*>(recPtr));
+         break;
+    case cBOOK:
+         Books::getSingleton().addRecord(*static_cast<BookRecord*>(recPtr));
+         break;
+    case cCONT:
+         Containers::getSingleton().addRecord(*static_cast<ContainerRecord*>(recPtr));
+         break;
+    case cFACT:
+         Factions::getSingleton().addRecord(*static_cast<FactionRecord*>(recPtr));
+         break;
+    case cFLOR:
+         Floras::getSingleton().addRecord(*static_cast<FloraRecord*>(recPtr));
+         break;
+    case cFURN:
+         Furniture::getSingleton().addRecord(*static_cast<FurnitureRecord*>(recPtr));
+         break;
+    case cINGR:
+         Ingredients::getSingleton().addRecord(*static_cast<IngredientRecord*>(recPtr));
+         break;
+    case cKEYM:
+         Keys::getSingleton().addRecord(*static_cast<KeyRecord*>(recPtr));
+         break;
+    case cMISC:
+         MiscObjects::getSingleton().addRecord(*static_cast<MiscObjectRecord*>(recPtr));
+         break;
+    case cNPC_:
+         NPCs::getSingleton().addRecord(*static_cast<NPCRecord*>(recPtr));
+         break;
+    case cPERK:
+         Perks::getSingleton().addRecord(*static_cast<PerkRecord*>(recPtr));
+         break;
+    case cQUST:
+         Quests::getSingleton().addRecord(*static_cast<QuestRecord*>(recPtr));
+         break;
+    case cSCRL:
+         Scrolls::getSingleton().addRecord(*static_cast<ScrollRecord*>(recPtr));
+         break;
+    case cSHOU:
+         Shouts::getSingleton().addRecord(*static_cast<ShoutRecord*>(recPtr));
+         break;
+    case cSLGM:
+         SoulGems::getSingleton().addRecord(*static_cast<SoulGemRecord*>(recPtr));
+         break;
+    case cSPEL:
+         Spells::getSingleton().addRecord(*static_cast<SpellRecord*>(recPtr));
+         break;
+    case cTACT:
+          TalkingActivators::getSingleton().addRecord(*static_cast<TalkingActivatorRecord*>(recPtr));
+         break;
+    case cTREE:
+         Trees::getSingleton().addRecord(*static_cast<TreeRecord*>(recPtr));
+         break;
+    case cWEAP:
+         Weapons::getSingleton().addRecord(*static_cast<WeaponRecord*>(recPtr));
+         break;
+    case cWOOP:
+         WordsOfPower::getSingleton().addRecord(*static_cast<WordOfPowerRecord*>(recPtr));
+         break;
+    default:
+         std::cout << "ESMReaderFinder::readNextRecord: cannot add unknown record type!\n";
+         delete recPtr;
+         return -1;
+  }//swi
+  delete recPtr;
+  return 1;
 }
 
 } //namespace

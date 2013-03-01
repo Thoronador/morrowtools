@@ -21,7 +21,7 @@
 #ifndef SR_ESMREADERFINDERREFERENCES_H
 #define SR_ESMREADERFINDERREFERENCES_H
 
-#include "../base/ESMReader.h"
+#include "../base/ESMReaderReIndex.h"
 #include <map>
 #include <vector>
 
@@ -33,11 +33,11 @@ namespace SRTP
 
    Still not complete yet!
 */
-class ESMReaderFinderReferences: public ESMReader
+class ESMReaderFinderReferences: public ESMReaderReIndexMod
 {
   public:
     /* constructor */
-    ESMReaderFinderReferences();
+    ESMReaderFinderReferences(const std::vector<std::string>& loadOrder);
 
     /* destructor */
     virtual ~ESMReaderFinderReferences();

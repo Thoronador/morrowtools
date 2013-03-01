@@ -21,21 +21,19 @@
 #ifndef SR_ESMREADERFINDER_H
 #define SR_ESMREADERFINDER_H
 
-#include "../base/ESMReader.h"
+#include "../base/ESMReaderReIndex.h"
 
 namespace SRTP
 {
 
 /* This descendant of the ESMReader class tries to read all records from the
    given .esm/.esp file, that are relevant to the form ID finder.
-
-   Still not complete yet!
 */
-class ESMReaderFinder: public ESMReader
+class ESMReaderFinder: public ESMReaderReIndexMod
 {
   public:
     /* constructor */
-    ESMReaderFinder();
+    ESMReaderFinder(const std::vector<std::string>& loadOrder);
 
     /* destructor */
     virtual ~ESMReaderFinder();

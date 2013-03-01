@@ -434,7 +434,7 @@ int main(int argc, char **argv)
     }
   }
 
-  SRTP::ESMReaderFinder reader;
+  SRTP::ESMReaderFinder reader(loadOrder);
   SRTP::Tes4HeaderRecord tes4rec;
 
   //read the usual stuff (for base IDs)
@@ -442,24 +442,30 @@ int main(int argc, char **argv)
   for (lo_idx=0; lo_idx<loadOrder.size(); ++lo_idx)
   {
     if (loadOrder[lo_idx]!="Update.esm")
+    {
+      reader.requestIndexMapUpdate(loadOrder[lo_idx]);
       if (reader.readESM(dataDir+loadOrder[lo_idx], tes4rec)<0)
       {
         std::cout << "Error while reading "<<dataDir+loadOrder[lo_idx]<<"!\n";
         return SRTP::rcFileError;
       }
+    }
   }//for i
 
-  SRTP::ESMReaderFinderReferences readerReferences;
+  SRTP::ESMReaderFinderReferences readerReferences(loadOrder);
   if (withReferences)
   {
     for (lo_idx=0; lo_idx<loadOrder.size(); ++lo_idx)
     {
       if (loadOrder[lo_idx]!="Update.esm")
+      {
+        readerReferences.requestIndexMapUpdate(loadOrder[lo_idx]);
         if (readerReferences.readESM(dataDir+loadOrder[lo_idx], tes4rec)<0)
         {
           std::cout << "Error while reading references from "<<dataDir+loadOrder[lo_idx]<<"!\n";
           return SRTP::rcFileError;
         }
+      }
     }
   }//if references requested
 

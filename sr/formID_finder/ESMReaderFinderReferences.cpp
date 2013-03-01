@@ -34,7 +34,8 @@ ESMReaderFinderReferences::CellRefIDPair::CellRefIDPair(const uint32_t cell, con
   refID = ref;
 }
 
-ESMReaderFinderReferences::ESMReaderFinderReferences()
+ESMReaderFinderReferences::ESMReaderFinderReferences(const std::vector<std::string>& loadOrder)
+: ESMReaderReIndexMod(loadOrder)
 {
   refMap.clear();
   m_CellStack.clear();
@@ -58,10 +59,20 @@ bool ESMReaderFinderReferences::needGroup(const GroupData& g_data) const
 
 bool ESMReaderFinderReferences::nextGroupStarted(const GroupData& g_data, const bool sub)
 {
+  if (indexMapsNeedsUpdate())
+  {
+    updateIndexMap(m_CurrentMod);
+  }
+
   if ((g_data.getGroupType()!=GroupData::cTopLevelGroup) and (g_data.getGroupType()!=GroupData::cTopicChildren))
   {
     //label is cell form ID in that case
-    m_CellStack.push_back(g_data.getGroupLabel());
+    uint32_t cellFormID = g_data.getGroupLabel();
+    if (!reIndex(cellFormID))
+    {
+      std::cout << "ESMReaderFinderReferences::nextGroupStarted: Warning: could not adjust mod index for cell!\n";
+    }
+    m_CellStack.push_back(cellFormID);
   }
   return true;
 }
@@ -71,7 +82,12 @@ bool ESMReaderFinderReferences::groupFinished(const GroupData& g_data)
   if ((g_data.getGroupType()!=GroupData::cTopLevelGroup) and (g_data.getGroupType()!=GroupData::cTopicChildren))
   {
     //label is cell form ID in that case - remove it from "stack"
-    if (m_CellStack.back()!=g_data.getGroupLabel())
+    uint32_t cellFormID = g_data.getGroupLabel();
+    if (!reIndex(cellFormID))
+    {
+      std::cout << "ESMReaderFinderReferences::groupFinished: Warning: could not adjust mod index for cell!\n";
+    }
+    if (m_CellStack.back()!=cellFormID)
     {
       std::cout << "ESMReaderFinderReferences::groupFinished: Warning: label does not match stack content!\n";
       return false;
@@ -88,10 +104,26 @@ int ESMReaderFinderReferences::readNextRecord(std::ifstream& in_File, const uint
   switch (recName)
   {
     case cCELL:
-         return Cells::getSingleton().readNextRecord(in_File, localized, table);
+         {
+           CellRecord recC;
+           if (!recC.loadFromStream(in_File, localized, table))
+             return -1;
+           if (!reIndex(recC.headerFormID))
+             return -1;
+           Cells::getSingleton().addRecord(recC);
+           return 1;
+         }
          break;
     case cWRLD:
-         return WorldSpaces::getSingleton().readNextRecord(in_File, localized, table);
+         {
+           WorldSpaceRecord recW;
+           if (!recW.loadFromStream(in_File, localized, table))
+             return -1;
+           if (!reIndex(recW.headerFormID))
+             return -1;
+           WorldSpaces::getSingleton().addRecord(recW);
+           return 1;
+         }
          break;
     case cREFR:
     case cACHR:
@@ -105,6 +137,12 @@ int ESMReaderFinderReferences::readNextRecord(std::ifstream& in_File, const uint
   {
     delete recPtr;
     std::cout << "ESMReaderFinderReferences::readNextRecord: Error while reading reference record!\n";
+    return -1;
+  }
+  //re-index record's form ID and ID of object
+  if ((!reIndex(recPtr->headerFormID)) or (!reIndex(recPtr->baseObjectFormID)))
+  {
+    delete recPtr;
     return -1;
   }
   //save form IDs in refMap

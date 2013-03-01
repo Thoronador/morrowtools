@@ -56,16 +56,17 @@ bool ESMReaderFinderReferences::needGroup(const GroupData& g_data) const
         );
 }
 
-void ESMReaderFinderReferences::nextGroupStarted(const GroupData& g_data, const bool sub)
+bool ESMReaderFinderReferences::nextGroupStarted(const GroupData& g_data, const bool sub)
 {
   if ((g_data.getGroupType()!=GroupData::cTopLevelGroup) and (g_data.getGroupType()!=GroupData::cTopicChildren))
   {
     //label is cell form ID in that case
     m_CellStack.push_back(g_data.getGroupLabel());
   }
+  return true;
 }
 
-void ESMReaderFinderReferences::groupFinished(const GroupData& g_data)
+bool ESMReaderFinderReferences::groupFinished(const GroupData& g_data)
 {
   if ((g_data.getGroupType()!=GroupData::cTopLevelGroup) and (g_data.getGroupType()!=GroupData::cTopicChildren))
   {
@@ -73,9 +74,11 @@ void ESMReaderFinderReferences::groupFinished(const GroupData& g_data)
     if (m_CellStack.back()!=g_data.getGroupLabel())
     {
       std::cout << "ESMReaderFinderReferences::groupFinished: Warning: label does not match stack content!\n";
+      return false;
     }
     m_CellStack.pop_back();
   }
+  return true;
 }
 
 int ESMReaderFinderReferences::readNextRecord(std::ifstream& in_File, const uint32_t recName, const bool localized, const StringTable& table)

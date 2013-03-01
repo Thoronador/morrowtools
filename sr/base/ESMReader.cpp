@@ -219,11 +219,19 @@ int ESMReader::processGroup(std::ifstream& in_File, const bool withHeader, const
   }
   if (needGroup(gd))
   {
-    nextGroupStarted(gd, !withHeader);
+    if (!nextGroupStarted(gd, !withHeader))
+    {
+      std::cout << "ESMReader::processGroup: Error: nextGroupStarted returned false!\n";
+      return -1;
+    }
     int result = readGroup(in_File, gd, localized, table);
     if (result>=0)
     {
-      groupFinished(gd);
+      if (!groupFinished(gd))
+      {
+        std::cout << "ESMReader::processGroup: Error: groupFinished returned false!\n";
+        return -1;
+      }
     }
     return result;
   }

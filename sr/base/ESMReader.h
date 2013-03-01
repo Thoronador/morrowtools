@@ -97,13 +97,14 @@ class ESMReader
        possibility to update their internal state accordingly. Note that this
        function will only be called for groups where needGroup() returns true.
        Skipped groups will not trigger that function.
+       Shall return false only if the read process should be aborted.
 
        parameters:
            g_data - the group header data
            sub    - if set to true, the new group is a sub-group of another
                     group
     */
-    virtual void nextGroupStarted(const GroupData& g_data, const bool sub) = 0;
+    virtual bool nextGroupStarted(const GroupData& g_data, const bool sub) = 0;
 
     /* This function's sole purpose is to "notify" the reader that a started
        group has been read (or skipped) completely and give the classes derived
@@ -113,11 +114,12 @@ class ESMReader
        function, but it might be possible that all records and subgroups in such
        a group have been skipped, depending on the implementation of
        readNextRecord() and readGroup().
+       Shall return false only if the read process should be aborted.
 
        parameters:
            g_data - the group header data
     */
-    virtual void groupFinished(const GroupData& g_data) = 0;
+    virtual bool groupFinished(const GroupData& g_data) = 0;
 
     /* tries to read the next group from a file and returns the number of
        relevant groups that were read (usually one). If an error occured,

@@ -93,14 +93,14 @@ bool ESMReaderFinder::needGroup(const GroupData& g_data) const
   return false;
 }
 
-void ESMReaderFinder::nextGroupStarted(const GroupData& g_data, const bool sub)
+bool ESMReaderFinder::nextGroupStarted(const GroupData& g_data, const bool sub)
 {
-  //empty
+  return true;
 }
 
-void ESMReaderFinder::groupFinished(const GroupData& g_data)
+bool ESMReaderFinder::groupFinished(const GroupData& g_data)
 {
-  //empty
+  return true;
 }
 
 int ESMReaderFinder::readNextRecord(std::ifstream& in_File, const uint32_t recName, const bool localized, const StringTable& table)

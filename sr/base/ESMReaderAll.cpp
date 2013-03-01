@@ -146,14 +146,15 @@ bool ESMReaderAll::needGroup(const GroupData& g_data) const
   return true;
 }
 
-void ESMReaderAll::nextGroupStarted(const GroupData& g_data, const bool sub)
+bool ESMReaderAll::nextGroupStarted(const GroupData& g_data, const bool sub)
 {
-  //empty
+  return true;
 }
 
-void ESMReaderAll::groupFinished(const GroupData& g_data)
+bool ESMReaderAll::groupFinished(const GroupData& g_data)
 {
-  //empty, ESMReaderAll does not care about group structure
+  //ESMReaderAll does not care about group structure
+  return true;
 }
 
 int ESMReaderAll::readNextRecord(std::ifstream& in_File, const uint32_t recName, const bool localized, const StringTable& table)

@@ -48,8 +48,11 @@ class ESMReaderReIndexMod: public ESMReader
        implement any mechanism to process this request in a timely manner.
        It is up to the derived classes to do that. Or in other words:
        It's implementation-dependent if and when the request is fulfilled.
+
+       parameters:
+           currentModFile - name of the current .esm file without directory path
     */
-    void requestIndexMapUpdate();
+    void requestIndexMapUpdate(const std::string& currentModFile);
 
     /* returns true, if the index map is flagged for update but has not been
        updated yet
@@ -63,6 +66,15 @@ class ESMReaderReIndexMod: public ESMReader
            currentModFile - name of the current .esm file without directory path
     */
     bool updateIndexMap(const std::string& currentModFile);
+    std::string m_CurrentMod;
+
+    /* tries to remap the mod index of the given form ID and returns true in
+       case of success, false in case of error.
+
+       parameters:
+           formID - the form ID that needs to be changed
+    */
+    bool reIndex(uint32_t& formID) const;
   private:
     std::vector<std::string> m_LoadOrder;
     bool m_MapIsUpToDate;

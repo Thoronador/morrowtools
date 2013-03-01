@@ -21,12 +21,13 @@
 #include "ESMReaderReIndex.h"
 #include <algorithm>
 #include <iostream>
+#include "FormIDFunctions.h"
 
 namespace SRTP
 {
 
 ESMReaderReIndexMod::ESMReaderReIndexMod(const std::vector<std::string>& loadOrder)
-: ESMReader(), m_LoadOrder(loadOrder), m_MapIsUpToDate(false),
+: ESMReader(), m_CurrentMod(""), m_LoadOrder(loadOrder), m_MapIsUpToDate(false),
   m_IndexMap(std::map<uint8_t, uint8_t>())
 {
   //empty
@@ -37,9 +38,10 @@ ESMReaderReIndexMod::~ESMReaderReIndexMod()
   //empty
 }
 
-void ESMReaderReIndexMod::requestIndexMapUpdate()
+void ESMReaderReIndexMod::requestIndexMapUpdate(const std::string& currentModFile)
 {
   m_MapIsUpToDate = false;
+  m_CurrentMod = currentModFile;
 }
 
 bool ESMReaderReIndexMod::indexMapsNeedsUpdate() const
@@ -94,8 +96,21 @@ bool ESMReaderReIndexMod::updateIndexMap(const std::string& currentModFile)
     return false;
   }//if
   m_IndexMap[curIndex] = (lo_iter - m_LoadOrder.begin());
+  m_MapIsUpToDate = true;
   return true;
 }
 
+bool ESMReaderReIndexMod::reIndex(uint32_t& formID) const
+{
+  const std::map<uint8_t, uint8_t>::const_iterator mapIter = m_IndexMap.find(extractModIndex(formID));
+  if (mapIter==m_IndexMap.end())
+  {
+    std::cout << "ESMReaderReIndexMod::reIndex: Error: index "<<(unsigned int) extractModIndex(formID)
+              << " not found in map!\n";
+    return false;
+  }
+  changeModIndexInSitu(formID, mapIter->second);
+  return true;
+}
 
 } //namespace

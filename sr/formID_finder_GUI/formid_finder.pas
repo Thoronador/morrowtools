@@ -268,11 +268,20 @@ begin
     516: Result:= 'v0.22c.rev516~experimental, 2013-02-26';
     517: Result:= 'v0.22d.rev517~experimental, 2013-02-27';
     518: Result:= 'v0.22e.rev518~experimental, 2013-02-28';
+    519: Result:= 'v0.23.rev519~experimental, 2013-03-02';
   else
-    Result:= 'v0.22e or later, maybe rev'+IntToStr(rev);
+    Result:= 'v0.23 or later, maybe rev'+IntToStr(rev);
   end;//case
 end;//func
 
+function RevisionIsExperimental(const rev: Cardinal): Boolean;
+begin
+  case rev of
+    512..519: Result:= true;
+  else
+    Result:= false;
+  end;//case
+end;//func
 
 function RunFormIDFinder(const keyword: string; var success: Boolean; const s1, s2: string): Cardinal;
 {$IFDEF WINDOWS }
@@ -579,12 +588,15 @@ end;
 procedure TForm1.MenuItemVersionClick(Sender: TObject);
 var str1: string;
     foundRev: Cardinal;
+    allIsFine: Boolean;
 begin
-  str1:= 'GUI version: rev518'+#13#10+cProgrammeName+' version: ';
+  allIsFine:= true;
+  str1:= 'GUI version: rev519'+#13#10+cProgrammeName+' version: ';
   if (not FileExists(cProgrammeName)) then
   begin
     str1:= str1 + 'not found';
     foundRev:= 0;
+    allIsFine:= false;
   end
   else begin
     foundRev:= GetFormIDFinderRevision;
@@ -592,10 +604,22 @@ begin
   end;//else
   str1:= str1+#13#10#13#10+'Your version of '+cProgrammeName;
   if (not CheckRevision(foundRev)) then
+  begin
     str1:= str1+' is outdated, the minimum required version is '
-          +RevisionToVersion(cMinRevision)+'.'
-  else
-    str1:= str1+' meets the minimum requirements for the GUI. All is fine. :)';
+          +RevisionToVersion(cMinRevision)+'.';
+    allIsFine:= false;
+  end
+  else begin
+    str1:= str1+' meets the minimum requirements for the GUI.';
+  end;//else
+  if (RevisionIsExperimental(foundRev)) then
+  begin
+    str1:= str1 + #13#10#13#10 + 'You are using an experimental version of '
+          + cProgrammeName + '!'+#13#10+'That means this version has known shortcomings'
+          + ' or errors and should only be used for test purposes.';
+    allIsFine:= false;
+  end;//if
+  if (allIsFine) then str1:= str1 + ' All is fine. :)';
   ShowMessage(str1);
 end;
 

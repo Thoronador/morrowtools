@@ -64,13 +64,15 @@ bool ESMReaderFinderReferences::nextGroupStarted(const GroupData& g_data, const 
     updateIndexMap(m_CurrentMod);
   }
 
-  if ((g_data.getGroupType()!=GroupData::cTopLevelGroup) and (g_data.getGroupType()!=GroupData::cTopicChildren))
+  //if ((g_data.getGroupType()!=GroupData::cTopLevelGroup) and (g_data.getGroupType()!=GroupData::cTopicChildren))
+  if (g_data.labelIsCellID())
   {
     //label is cell form ID in that case
     uint32_t cellFormID = g_data.getGroupLabel();
     if (!reIndex(cellFormID))
     {
       std::cout << "ESMReaderFinderReferences::nextGroupStarted: Warning: could not adjust mod index for cell!\n";
+      return false;
     }
     m_CellStack.push_back(cellFormID);
   }
@@ -79,13 +81,15 @@ bool ESMReaderFinderReferences::nextGroupStarted(const GroupData& g_data, const 
 
 bool ESMReaderFinderReferences::groupFinished(const GroupData& g_data)
 {
-  if ((g_data.getGroupType()!=GroupData::cTopLevelGroup) and (g_data.getGroupType()!=GroupData::cTopicChildren))
+  //if ((g_data.getGroupType()!=GroupData::cTopLevelGroup) and (g_data.getGroupType()!=GroupData::cTopicChildren))
+  if (g_data.labelIsCellID())
   {
     //label is cell form ID in that case - remove it from "stack"
     uint32_t cellFormID = g_data.getGroupLabel();
     if (!reIndex(cellFormID))
     {
       std::cout << "ESMReaderFinderReferences::groupFinished: Warning: could not adjust mod index for cell!\n";
+      return false;
     }
     if (m_CellStack.back()!=cellFormID)
     {

@@ -68,6 +68,12 @@ struct GroupData
     static const uint32_t cTopicChildren;
     static const uint32_t cCellPersistentChildren;
     static const uint32_t cCellTemporaryChildren;
+    static const uint32_t cCellVisibleDistantChildren;
+
+    /* returns true, if the group label is a cell form ID according to the
+       group type
+    */
+    bool labelIsCellID() const;
 
     /* sets a new group label
 

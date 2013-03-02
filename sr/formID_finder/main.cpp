@@ -84,13 +84,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Form ID Finder for Skyrim, version 0.22e.rev518~experimental, 2013-02-28\n";
+  std::cout << "Form ID Finder for Skyrim, version 0.23.rev519~experimental, 2013-03-02\n";
 }
 
 int showVersionExitcode()
 {
   showVersion();
-  return 518;
+  return 519;
 }
 
 void showHelp()

@@ -61,6 +61,8 @@
 		<Unit filename="../base/DependencySolver.h" />
 		<Unit filename="../base/ESMReader.cpp" />
 		<Unit filename="../base/ESMReader.h" />
+		<Unit filename="../base/ESMReaderReIndex.cpp" />
+		<Unit filename="../base/ESMReaderReIndex.h" />
 		<Unit filename="../base/Factions.h" />
 		<Unit filename="../base/FormIDFunctions.cpp" />
 		<Unit filename="../base/FormIDFunctions.h" />

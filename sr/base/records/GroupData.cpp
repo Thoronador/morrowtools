@@ -30,6 +30,7 @@ const uint32_t GroupData::cCellChildren = 6;
 const uint32_t GroupData::cTopicChildren = 7;
 const uint32_t GroupData::cCellPersistentChildren = 8;
 const uint32_t GroupData::cCellTemporaryChildren = 9;
+const uint32_t GroupData::cCellVisibleDistantChildren = 10;
 
 GroupData::GroupData()
 : m_GroupSize(0), m_GroupLabel(0), m_GroupType(0)
@@ -98,6 +99,22 @@ uint32_t GroupData::getGroupSize() const
 uint32_t GroupData::getGroupType() const
 {
   return m_GroupType;
+}
+
+bool GroupData::labelIsCellID() const
+{
+  switch (m_GroupType)
+  {
+    case cTopLevelGroup:
+         return false;
+    case cCellChildren:
+    case cCellPersistentChildren:
+    case cCellTemporaryChildren:
+    case cCellVisibleDistantChildren:
+         return true;
+    default:
+         return false;
+  }//swi
 }
 
 void GroupData::setGroupLabel(const uint32_t newLabel)

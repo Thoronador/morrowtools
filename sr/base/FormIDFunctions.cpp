@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2013  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -50,6 +50,42 @@ std::string getFormIDAsString(uint32_t fID)
   if (len<8)
   {
     result.insert(result.begin(), 8-len, '0');
+  }
+  return result;
+}
+
+std::string getFormIDAsStringXX(const uint32_t fID)
+{
+  std::string result(getFormIDAsString(fID));
+  if (extractModIndex(fID)!=0)
+  {
+    result[0] = 'x';
+    result[1] = 'x';
+  }
+  return result;
+}
+
+std::string getFormIDAsStringWithFile(const uint32_t fID, const std::vector<std::string>& loadOrder, const bool withFiles)
+{
+  std::string result(getFormIDAsString(fID));
+  const uint8_t modIndex = extractModIndex(fID);
+  if (modIndex!=0)
+  {
+    result[0] = 'x';
+    result[1] = 'x';
+  }
+  if (withFiles)
+  {
+    result.append(" (file: ");
+    if (modIndex<loadOrder.size())
+    {
+      result.append(loadOrder[modIndex]);
+    }
+    else
+    {
+      result.append("unknown");
+    }
+    result.append(")");
   }
   return result;
 }

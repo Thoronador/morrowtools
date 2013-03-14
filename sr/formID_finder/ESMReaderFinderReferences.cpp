@@ -103,7 +103,6 @@ bool ESMReaderFinderReferences::groupFinished(const GroupData& g_data)
 
 int ESMReaderFinderReferences::readNextRecord(std::ifstream& in_File, const uint32_t recName, const bool localized, const StringTable& table)
 {
-  #warning Not completely implemented yet!
   SimplifiedReferenceRecord * recPtr;
   switch (recName)
   {

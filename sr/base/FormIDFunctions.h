@@ -23,6 +23,7 @@
 
 #include <stdint.h>
 #include <string>
+#include <vector>
 
 namespace SRTP
 {
@@ -41,6 +42,24 @@ inline void changeModIndexInSitu(uint32_t& fID, const uint8_t newModIndex)
 
 /* returns a string representation of the form ID */
 std::string getFormIDAsString(uint32_t fID);
+
+/* returns a string representation of the form ID. If the mod index of the form
+   ID is non-zero, it will show 'xx' instead of the mod index part.
+*/
+std::string getFormIDAsStringXX(const uint32_t fID);
+
+/* returns a string representation of the form ID. If the mod index of the form
+   ID is non-zero, it will show 'xx' instead of the mod index part.
+   Additionally, it shows the file that the form ID came from, based on the mod
+   index.
+
+   parameters:
+       fID       - the form ID
+       loadOrder - list of master and plugin files in the order they were loaded
+       withFiles - if set to true, the file name is included (default) in the
+                   result, otherwise just the form ID is shown.
+*/
+std::string getFormIDAsStringWithFile(const uint32_t fID, const std::vector<std::string>& loadOrder, const bool withFiles);
 
 }//namespace
 

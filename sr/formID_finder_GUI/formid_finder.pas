@@ -84,6 +84,8 @@ const
   cProgrammeName: string = 'formID_finder';
 {$ENDIF}
   cMinRevision = 413;
+  // All versions older than rev520 are considered as outdated.
+  cFirstRevisionNotOutdated = 520;
 
 var
   Form1: TForm1;
@@ -269,8 +271,9 @@ begin
     517: Result:= 'v0.22d.rev517~experimental, 2013-02-27';
     518: Result:= 'v0.22e.rev518~experimental, 2013-02-28';
     519: Result:= 'v0.23.rev519~experimental, 2013-03-02';
+    520: Result:= 'v0.24.rev520, 2013-03-14';
   else
-    Result:= 'v0.23 or later, maybe rev'+IntToStr(rev);
+    Result:= 'v0.24 or later';
   end;//case
 end;//func
 
@@ -283,11 +286,19 @@ begin
   end;//case
 end;//func
 
-function RunFormIDFinder(const keyword: string; var success: Boolean; const s1, s2: string): Cardinal;
+function RevisionIsOutdated(const rev: Cardinal): Boolean;
+begin
+  { All versions older than rev520 are outdated (except 0, because that means no
+    revision found. }
+  Result:= ((rev<cFirstRevisionNotOutdated) and (rev<>0));
+end;//func
+
+function RunFormIDFinder(const keyword: string; var success: Boolean; const s1, s2: string; const rev: Cardinal): Cardinal;
 {$IFDEF WINDOWS }
 var si: TStartupInfo;
     pi: TProcessInformation;
     exitCode: DWORD;
+    commandLine: AnsiString;
 {$ELSE}
 const ArgOne: PChar = '--keyword';
       ArgThree: PChar = '--send-data';
@@ -308,8 +319,14 @@ begin
   end;
   FillChar(pi, sizeof(pi), 0);
   // start the child process
+  commandLine:= cProgrammeName+' --keyword "'+UTF8ToCP1252(escapeKeyword(keyword))
+               +'" --send-data "'+s1+'" "'+s2+'"';
+  if (rev>=520) then
+  begin
+    commandLine:= commandLine + ' --show-files';
+  end;
   if(CreateProcess(nil, //no module name (use command line)
-      PChar(cProgrammeName+' --keyword "'+UTF8ToCP1252(escapeKeyword(keyword))+'" --send-data "'+s1+'" "'+s2+'"'), //command line
+      PChar(commandLine), //command line
       nil, //process handle not inheritable
       nil, //thread handle not inheritable
       false, //set handle inheritance to false
@@ -489,7 +506,7 @@ begin
   end;
   rev := GetFormIDFinderRevision;
   self.Caption := 'Form ID Finder - GUI (using '+RevisionToVersion(rev)+')';
-  if (not CheckRevision) then
+  if (not CheckRevision(rev)) then
   begin
     ShowMessage('Error: You have an older, unsupported version of '
                +cProgrammeName+'! To use this programme properly, you need '
@@ -503,7 +520,7 @@ begin
   CleanUpGrid('Starting formID_finder...');
   m_HasData:= false;
   m_ExpectsData:= true;
-  return:= RunFormIDFinder(KeywordEdit.Text, success, 'NULL', self.Caption);
+  return:= RunFormIDFinder(KeywordEdit.Text, success, 'NULL', self.Caption, rev);
   CleanUpGrid('formID_finder finished.');
   Application.ProcessMessages;
   m_ExpectsData:= false;
@@ -591,7 +608,7 @@ var str1: string;
     allIsFine: Boolean;
 begin
   allIsFine:= true;
-  str1:= 'GUI version: rev519'+#13#10+cProgrammeName+' version: ';
+  str1:= 'GUI version: rev520'+#13#10+cProgrammeName+' version: ';
   if (not FileExists(cProgrammeName)) then
   begin
     str1:= str1 + 'not found';
@@ -619,6 +636,13 @@ begin
           + ' or errors and should only be used for test purposes.';
     allIsFine:= false;
   end;//if
+  if (RevisionIsOutdated(foundRev)) then
+  begin
+    str1:= str1 + #13#10#13#10 + 'You are using an old version of '
+          + cProgrammeName + '.'+ #13#10 + 'It is recommended to update to '
+          + RevisionToVersion(cFirstRevisionNotOutdated) + ' or later!';
+    allIsFine:= false;
+  end;//if
   if (allIsFine) then str1:= str1 + ' All is fine. :)';
   ShowMessage(str1);
 end;
@@ -640,7 +664,8 @@ procedure TForm1.DataToStringGrid(var total: Integer);
 const nameCol = 0;
       editorIDCol = 1;
       formIDCol = 2;
-      typeCol = 3;
+      fileCol = 3;
+      typeCol = 4;
 var typeString: string;
     workData: AnsiString;
     extracted: string;
@@ -710,7 +735,12 @@ begin
       end;//if
       extracted:= copy(WorkData, 9, pos_i-9);
       trim4(extracted);
-      ResultStringGrid.Cells[formIDCol, currentRow]:= extracted;
+      ResultStringGrid.Cells[formIDCol, currentRow]:= copy(extracted, 1, 8);
+      delimPos:= length(extracted);
+      if (delimPos<=16) then
+        ResultStringGrid.Cells[fileCol, currentRow]:= 'Skyrim.esm(?)'
+      else
+        ResultStringGrid.Cells[fileCol, currentRow]:= copy(extracted, 17, delimPos-17);
       WorkData:= copy(WorkData, pos_i, length(WorkData));
       trim4(WorkData);
     end//if form ID

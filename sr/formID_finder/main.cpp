@@ -84,13 +84,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Form ID Finder for Skyrim, version 0.23.rev519~experimental, 2013-03-02\n";
+  std::cout << "Form ID Finder for Skyrim, version 0.24.rev520, 2013-03-14\n";
 }
 
 int showVersionExitcode()
 {
   showVersion();
-  return 519;
+  return 520;
 }
 
 void showHelp()
@@ -164,7 +164,7 @@ void showRefIDs(const uint32_t baseID, const std::map<uint32_t, std::vector<SRTP
   while (vecIter!=iter->second.end())
   {
     hasName = false;
-    basic_out << "          ref ID "<<SRTP::getFormIDAsString(vecIter->refID);
+    basic_out << "          ref ID "<<SRTP::getFormIDAsStringXX(vecIter->refID);
     if (SRTP::Cells::getSingleton().hasRecord(vecIter->cellID))
     {
       const SRTP::CellRecord& theCell = SRTP::Cells::getSingleton().getRecord(vecIter->cellID);
@@ -209,6 +209,7 @@ int main(int argc, char **argv)
   bool sendData = false;
   std::string sendParam1st ="", sendParam2nd ="";
   bool withReferences = false;
+  bool showFiles = false;
 
   if ((argc>1) and (argv!=NULL))
   {
@@ -363,6 +364,16 @@ int main(int argc, char **argv)
           withReferences = true;
           std::cout << "Search for reference IDs activated.\n";
         }//references
+        else if (param=="--show-files")
+        {
+          //set more than once?
+          if (showFiles)
+          {
+            std::cout << "Error: parameter "<<param<<" was already specified!\n";
+            return SRTP::rcInvalidParameter;
+          }
+          showFiles = true;
+        }//show files
         else if (searchKeyword.empty())
         {
           //assume search keyword was given without prior --keyword option
@@ -472,6 +483,13 @@ int main(int argc, char **argv)
   std::ostringstream string_out;
   std::basic_ostream<char>& basic_out = sendData ? string_out : std::cout;
 
+  /*Adjust show files value.
+
+    Files are shown by default. However, if sendData is true, then they are not
+    shown for compatibility reasons, unless the --show-files parameter was set.
+  */
+  showFiles = (showFiles or !sendData);
+
   unsigned int totalMatches = 0;
 
   //check activator for matches
@@ -492,7 +510,7 @@ int main(int argc, char **argv)
               basic_out << "\n\nMatching activators:\n";
             }
             basic_out << "    \""<<activator_iter->second.name.getString()
-                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(activator_iter->second.headerFormID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsStringWithFile(activator_iter->second.headerFormID, loadOrder, showFiles)
                       <<"\n        editor ID \""<<activator_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
@@ -529,7 +547,7 @@ int main(int argc, char **argv)
               basic_out << "\n\nMatching alchemy potions:\n";
             }
             basic_out << "    \""<<alchemy_iter->second.name.getString()
-                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(alchemy_iter->second.headerFormID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsStringWithFile(alchemy_iter->second.headerFormID, loadOrder, showFiles)
                       <<"\n        editor ID \""<<alchemy_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
@@ -566,7 +584,7 @@ int main(int argc, char **argv)
               basic_out << "\n\nMatching ammunition:\n";
             }
             basic_out << "    \""<<ammo_iter->second.name.getString()
-                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(ammo_iter->second.headerFormID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsStringWithFile(ammo_iter->second.headerFormID, loadOrder, showFiles)
                       <<"\n        editor ID \""<<ammo_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
@@ -603,7 +621,7 @@ int main(int argc, char **argv)
               basic_out << "\n\nMatching apparatuses:\n";
             }
             basic_out << "    \""<<appa_iter->second.name.getString()
-                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(appa_iter->second.headerFormID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsStringWithFile(appa_iter->second.headerFormID, loadOrder, showFiles)
                       <<"\n        editor ID \""<<appa_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
@@ -640,7 +658,7 @@ int main(int argc, char **argv)
               basic_out << "\n\nMatching armours:\n";
             }
             basic_out << "    \""<<armour_iter->second.name.getString()
-                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(armour_iter->second.headerFormID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsStringWithFile(armour_iter->second.headerFormID, loadOrder, showFiles)
                       <<"\n        editor ID \""<<armour_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
@@ -677,7 +695,7 @@ int main(int argc, char **argv)
               basic_out << "\n\nMatching books:\n";
             }
             basic_out << "    \""<<book_iter->second.title.getString()
-                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(book_iter->second.headerFormID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsStringWithFile(book_iter->second.headerFormID, loadOrder, showFiles)
                       <<"\n        editor ID \""<<book_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
@@ -714,7 +732,7 @@ int main(int argc, char **argv)
               basic_out << "\n\nMatching containers:\n";
             }
             basic_out << "    \""<<container_iter->second.name.getString()
-                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(container_iter->second.headerFormID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsStringWithFile(container_iter->second.headerFormID, loadOrder, showFiles)
                       <<"\n        editor ID \""<<container_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
@@ -751,7 +769,7 @@ int main(int argc, char **argv)
               basic_out << "\n\nMatching factions:\n";
             }
             basic_out << "    \""<<faction_iter->second.name.getString()
-                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(faction_iter->second.headerFormID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsStringWithFile(faction_iter->second.headerFormID, loadOrder, showFiles)
                       <<"\n        editor ID \""<<faction_iter->second.editorID<<"\"\n";
             if (listFactionRanks)
             {
@@ -818,7 +836,7 @@ int main(int argc, char **argv)
               basic_out << "\n\nMatching flora:\n";
             }
             basic_out << "    \""<<flora_iter->second.name.getString()
-                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(flora_iter->second.headerFormID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsStringWithFile(flora_iter->second.headerFormID, loadOrder, showFiles)
                       <<"\n        editor ID \""<<flora_iter->second.editorID<<"\"\n";
             ++floraMatches;
             ++totalMatches;
@@ -850,7 +868,7 @@ int main(int argc, char **argv)
               basic_out << "\n\nMatching furniture:\n";
             }
             basic_out << "    \""<<furniture_iter->second.name.getString()
-                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(furniture_iter->second.headerFormID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsStringWithFile(furniture_iter->second.headerFormID, loadOrder, showFiles)
                       <<"\n        editor ID \""<<furniture_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
@@ -887,7 +905,7 @@ int main(int argc, char **argv)
               basic_out << "\n\nMatching ingredients:\n";
             }
             basic_out << "    \""<<ingred_iter->second.name.getString()
-                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(ingred_iter->second.headerFormID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsStringWithFile(ingred_iter->second.headerFormID, loadOrder, showFiles)
                       <<"\n        editor ID \""<<ingred_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
@@ -922,7 +940,7 @@ int main(int argc, char **argv)
               basic_out << "\n\nMatching keys:\n";
             }
             basic_out << "    \""<<key_iter->second.name.getString()
-                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(key_iter->second.headerFormID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsStringWithFile(key_iter->second.headerFormID, loadOrder, showFiles)
                       <<"\n        editor ID \""<<key_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
@@ -958,7 +976,7 @@ int main(int argc, char **argv)
               basic_out << "\n\nMatching misc. objects:\n";
             }
             basic_out << "    \""<<misc_iter->second.fullName.getString()
-                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(misc_iter->second.headerFormID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsStringWithFile(misc_iter->second.headerFormID, loadOrder, showFiles)
                       <<"\n        editor ID \""<<misc_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
@@ -995,7 +1013,7 @@ int main(int argc, char **argv)
               basic_out << "\n\nMatching NPCs:\n";
             }
             basic_out << "    \""<<npc_iter->second.name.getString()
-                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(npc_iter->second.headerFormID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsStringWithFile(npc_iter->second.headerFormID, loadOrder, showFiles)
                       <<"\n        editor ID \""<<npc_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
@@ -1032,7 +1050,7 @@ int main(int argc, char **argv)
               basic_out << "\n\nMatching perks:\n";
             }
             basic_out << "    \""<<perk_iter->second.name.getString()
-                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(perk_iter->second.headerFormID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsStringWithFile(perk_iter->second.headerFormID, loadOrder, showFiles)
                       <<"\n        editor ID \""<<perk_iter->second.editorID<<"\"\n";
             ++perkMatches;
             ++totalMatches;
@@ -1067,7 +1085,7 @@ int main(int argc, char **argv)
               basic_out << "\n\nMatching quests:\n";
             }
             basic_out << "    \""<<quest_iter->second.name.getString()
-                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(quest_iter->second.headerFormID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsStringWithFile(quest_iter->second.headerFormID, loadOrder, showFiles)
                       <<"\n        editor ID \""<<quest_iter->second.editorID<<"\"\n";
             //indices
             const unsigned int idx_count = quest_iter->second.indices.size();
@@ -1154,7 +1172,7 @@ int main(int argc, char **argv)
               basic_out << "\n\nMatching scrolls:\n";
             }
             basic_out << "    \""<<scroll_iter->second.name.getString()
-                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(scroll_iter->second.headerFormID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsStringWithFile(scroll_iter->second.headerFormID, loadOrder, showFiles)
                       <<"\n        editor ID \""<<scroll_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
@@ -1191,7 +1209,7 @@ int main(int argc, char **argv)
               basic_out << "\n\nMatching soul gems:\n";
             }
             basic_out << "    \""<<soulgem_iter->second.name.getString()
-                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(soulgem_iter->second.headerFormID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsStringWithFile(soulgem_iter->second.headerFormID, loadOrder, showFiles)
                       <<"\n        editor ID \""<<soulgem_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
@@ -1228,7 +1246,7 @@ int main(int argc, char **argv)
               basic_out << "\n\nMatching spells:\n";
             }
             basic_out << "    \""<<spell_iter->second.name.getString()
-                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(spell_iter->second.headerFormID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsStringWithFile(spell_iter->second.headerFormID, loadOrder, showFiles)
                       <<"\n        editor ID \""<<spell_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
@@ -1265,7 +1283,7 @@ int main(int argc, char **argv)
               basic_out << "\n\nMatching dragon shouts:\n";
             }
             basic_out << "    \""<<shout_iter->second.fullName.getString()
-                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(shout_iter->second.headerFormID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsStringWithFile(shout_iter->second.headerFormID, loadOrder, showFiles)
                       <<"\n        editor ID \""<<shout_iter->second.editorID<<"\"\n";
             ++shoutMatches;
             ++totalMatches;
@@ -1299,7 +1317,7 @@ int main(int argc, char **argv)
               basic_out << "\n\nMatching words of power:\n";
             }
             basic_out << "    \""<<word_iter->second.name.getString()
-                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(word_iter->second.headerFormID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsStringWithFile(word_iter->second.headerFormID, loadOrder, showFiles)
                       <<"\n        editor ID \""<<word_iter->second.editorID<<"\"\n";
             ++wordMatches;
             ++totalMatches;
@@ -1332,7 +1350,7 @@ int main(int argc, char **argv)
               basic_out << "\n\nMatching talking activators:\n";
             }
             basic_out << "    \""<<talkingActivator_iter->second.name.getString()
-                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(talkingActivator_iter->second.headerFormID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsStringWithFile(talkingActivator_iter->second.headerFormID, loadOrder, showFiles)
                       <<"\n        editor ID \""<<talkingActivator_iter->second.editorID<<"\"\n";
             if (withReferences)
             {
@@ -1369,7 +1387,7 @@ int main(int argc, char **argv)
               basic_out << "\n\nMatching trees:\n";
             }
             basic_out << "    \""<<tree_iter->second.name.getString()
-                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(tree_iter->second.headerFormID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsStringWithFile(tree_iter->second.headerFormID, loadOrder, showFiles)
                       <<"\n        editor ID \""<<tree_iter->second.editorID<<"\"\n";
             ++treeMatches;
             ++totalMatches;
@@ -1402,7 +1420,7 @@ int main(int argc, char **argv)
               basic_out << "\n\nMatching weapons:\n";
             }
             basic_out << "    \""<<weapon_iter->second.name.getString()
-                      <<"\"\n        form ID "<<SRTP::getFormIDAsString(weapon_iter->second.headerFormID)
+                      <<"\"\n        form ID "<<SRTP::getFormIDAsStringWithFile(weapon_iter->second.headerFormID, loadOrder, showFiles)
                       <<"\n        editor ID \""<<weapon_iter->second.editorID<<"\"\n";
             if (withReferences)
             {

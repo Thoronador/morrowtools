@@ -2,10 +2,10 @@ object Form1: TForm1
   Left = 568
   Height = 300
   Top = 264
-  Width = 400
+  Width = 443
   Caption = 'Form ID Finder - GUI'
   ClientHeight = 281
-  ClientWidth = 400
+  ClientWidth = 443
   Menu = MainMenu1
   OnCreate = FormCreate
   LCLVersion = '0.9.28.2'
@@ -31,21 +31,24 @@ object Form1: TForm1
     Left = 8
     Height = 237
     Top = 40
-    Width = 384
+    Width = 427
     Anchors = [akTop, akLeft, akRight, akBottom]
-    ColCount = 4
-    Columns = <    
+    Columns = <
       item
         Title.Caption = 'Name'
         Width = 128
-      end    
+      end
       item
         Title.Caption = 'Editor ID'
         Width = 100
-      end    
+      end
       item
         Title.Caption = 'Form ID'
-      end    
+      end
+      item
+        Title.Caption = 'File'
+        Width = 72
+      end
       item
         Title.Caption = 'Type'
       end>
@@ -53,8 +56,15 @@ object Form1: TForm1
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goRowSizing, goColSizing, goSmoothScroll]
     RowCount = 6
     TabOrder = 2
+    ColWidths = (
+      128
+      100
+      64
+      72
+      64
+    )
     Cells = (
-      5
+      6
       0
       1
       'Enter'
@@ -70,6 +80,9 @@ object Form1: TForm1
       0
       5
       'to start.'
+      3
+      0
+      'File'
     )
   end
   object MainMenu1: TMainMenu

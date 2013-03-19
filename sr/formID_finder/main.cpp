@@ -84,13 +84,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Form ID Finder for Skyrim, version 0.24.rev520, 2013-03-14\n";
+  std::cout << "Form ID Finder for Skyrim, version 0.24b.rev521, 2013-03-19\n";
 }
 
 int showVersionExitcode()
 {
   showVersion();
-  return 520;
+  return 521;
 }
 
 void showHelp()
@@ -251,13 +251,9 @@ int main(int argc, char **argv)
             {
               dataDir = std::string(argv[i+1]);
               ++i; //skip next parameter, because it's used as directory name already
+              //Does it have a trailing (back)slash? If not, add it.
+              dataDir = slashify(dataDir);
               std::cout << "Data files directory was set to \""<<dataDir<<"\".\n";
-              //Does it have a trailing (back)slash?
-              if (dataDir.at(dataDir.length()-1)!='\\')
-              {
-                dataDir = dataDir + "\\";
-                std::cout << "Missing trailing backslash was added.\n";
-              }//if slash
             }
             else
             {

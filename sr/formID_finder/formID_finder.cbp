@@ -41,6 +41,8 @@
 		<Unit filename="../../base/BufferStream.h" />
 		<Unit filename="../../base/CompressionFunctions.cpp" />
 		<Unit filename="../../base/CompressionFunctions.h" />
+		<Unit filename="../../base/DirectoryFunctions.cpp" />
+		<Unit filename="../../base/DirectoryFunctions.h" />
 		<Unit filename="../../base/FileFunctions.cpp" />
 		<Unit filename="../../base/FileFunctions.h" />
 		<Unit filename="../../base/RegistryFunctions.cpp" />

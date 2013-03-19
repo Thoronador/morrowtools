@@ -24,6 +24,7 @@
 #include <iostream>
 #include <set>
 #include "RegistryFunctions.h"
+#include "../../base/DirectoryFunctions.h"
 #include "../../base/FileFunctions.h"
 #include "../../base/UtilityFunctions.h"
 #include "ReturnCodes.h"
@@ -59,14 +60,11 @@ namespace SRTP
       {
         if (!dataDir.empty())
         {
-          //Does it have a trailing (back)slash?
-          if (dataDir.at(dataDir.length()-1)!='\\')
-          {
-            dataDir = dataDir + "\\";
-          }//if not backslash
+          //Does it have a trailing (back)slash? Add one, if not.
+          dataDir = slashify(dataDir);
           /*add data dir to path, because installed path points only to Skyrim's
             main direkctory */
-          dataDir = dataDir +"Data\\";
+          dataDir = dataDir +"Data" +MWTP::pathDelimiter;
           std::cout << "Data files directory was set to \""<<dataDir<<"\" via registry.\n";
         }
         else
@@ -112,7 +110,7 @@ namespace SRTP
     languageComponent = "";
     std::string part_path, part_name, part_ext;
 
-    std::vector<FileEntry> files = getDirectoryFileList(dataDir+"Strings\\");
+    std::vector<FileEntry> files = getDirectoryFileList(dataDir+"Strings"+MWTP::pathDelimiter);
     if (files.size()<3)
     {
       std::cout << "Error: could not find string table files for "<<pluginName<<"!\n";
@@ -126,7 +124,7 @@ namespace SRTP
     {
       if ((!files[i].isDirectory) and (lowerCase(files[i].fileName.substr(0, piNameLength+1))==pluginName+"_"))
       {
-        splitPathFileExtension(files[i].fileName, '\\', part_path, part_name, part_ext);
+        splitPathFileExtension(files[i].fileName, MWTP::pathDelimiter, part_path, part_name, part_ext);
         if ((lowerCaseCompare(part_ext, "dlstrings")==0) or (lowerCaseCompare(part_ext, "strings")==0)
           or (lowerCaseCompare(part_ext, "ilstrings")==0))
         {
@@ -153,9 +151,9 @@ namespace SRTP
       return SRTP::rcFileError;
     }
 
-    if ((!FileExists(dataDir+"Strings\\"+pluginName+"_"+languageComponent+".dlstrings"))
-       or (!FileExists(dataDir+"Strings\\"+pluginName+"_"+languageComponent+".ilstrings"))
-       or (!FileExists(dataDir+"Strings\\"+pluginName+"_"+languageComponent+".strings")))
+    if ((!FileExists(dataDir+"Strings"+MWTP::pathDelimiter+pluginName+"_"+languageComponent+".dlstrings"))
+       or (!FileExists(dataDir+"Strings"+MWTP::pathDelimiter+pluginName+"_"+languageComponent+".ilstrings"))
+       or (!FileExists(dataDir+"Strings"+MWTP::pathDelimiter+pluginName+"_"+languageComponent+".strings")))
     {
       std::cout << "Error: At least one string table file is missing!\n";
       return SRTP::rcFileError;
@@ -174,16 +172,16 @@ namespace SRTP
   inline int getAssociatedTableFiles(const std::string& fileName, std::vector<std::string>& files)
   {
     std::string part_path, part_name, part_ext;
-    splitPathFileExtension(fileName, '\\', part_path, part_name, part_ext);
+    splitPathFileExtension(fileName, MWTP::pathDelimiter, part_path, part_name, part_ext);
 
     int lc_return = getLanguageComponent(part_path, part_name, part_ext);
     //If return code is not zero, an error occured! We should return in that case.
     if (lc_return!=0)
       return lc_return;
     files.clear();
-    files.push_back(part_path+"Strings\\"+part_name+"_"+part_ext+".dlstrings");
-    files.push_back(part_path+"Strings\\"+part_name+"_"+part_ext+".ilstrings");
-    files.push_back(part_path+"Strings\\"+part_name+"_"+part_ext+".strings");
+    files.push_back(part_path+"Strings"+MWTP::pathDelimiter+part_name+"_"+part_ext+".dlstrings");
+    files.push_back(part_path+"Strings"+MWTP::pathDelimiter+part_name+"_"+part_ext+".ilstrings");
+    files.push_back(part_path+"Strings"+MWTP::pathDelimiter+part_name+"_"+part_ext+".strings");
     return 0;
   }//function getAssociatedTableFiles
 

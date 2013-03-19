@@ -272,8 +272,9 @@ begin
     518: Result:= 'v0.22e.rev518~experimental, 2013-02-28';
     519: Result:= 'v0.23.rev519~experimental, 2013-03-02';
     520: Result:= 'v0.24.rev520, 2013-03-14';
+    521: Result:= 'v0.24b.rev521, 2013-03-19';
   else
-    Result:= 'v0.24 or later';
+    Result:= 'v0.24b or later';
   end;//case
 end;//func
 
@@ -321,6 +322,8 @@ begin
   // start the child process
   commandLine:= cProgrammeName+' --keyword "'+UTF8ToCP1252(escapeKeyword(keyword))
                +'" --send-data "'+s1+'" "'+s2+'"';
+  { formID_finder from v0.24.rev520 on needs the parameter --show-file to show
+    files, too, and recognize the calling programme as a newer GUI version. }
   if (rev>=520) then
   begin
     commandLine:= commandLine + ' --show-files';
@@ -608,7 +611,7 @@ var str1: string;
     allIsFine: Boolean;
 begin
   allIsFine:= true;
-  str1:= 'GUI version: rev520'+#13#10+cProgrammeName+' version: ';
+  str1:= 'GUI version: rev521'+#13#10+cProgrammeName+' version: ';
   if (not FileExists(cProgrammeName)) then
   begin
     str1:= str1 + 'not found';

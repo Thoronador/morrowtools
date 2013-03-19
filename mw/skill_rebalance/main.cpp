@@ -1,20 +1,20 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2012 Thoronador
+    Copyright (C) 2012, 2013  Thoronador
 
-    The Morrowind Tools are free software: you can redistribute them and/or
-    modify them under the terms of the GNU General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    The Morrowind Tools are distributed in the hope that they will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with the Morrowind Tools.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -------------------------------------------------------------------------------
 */
 
@@ -22,6 +22,7 @@
 #include <string>
 #include "../../base/UtilityFunctions.h"
 #include "../../base/FileFunctions.h"
+#include "../../base/DirectoryFunctions.h"
 #include "../base/ReturnCodes.h"
 #include "../base/records/GMSTRecord.h"
 #include "../base/records/SkillRecord.h"
@@ -147,13 +148,9 @@ int main(int argc, char **argv)
             {
               baseDir = std::string(argv[i+1]);
               ++i; //skip next parameter, because it's used as directory name already
+              //Does it have a trailing (back)slash? If not, add one.
+              baseDir = slashify(baseDir);
               std::cout << "Data files directory was set to \""<<baseDir<<"\".\n";
-              //Does it have a trailing (back)slash?
-              if (baseDir.at(baseDir.length()-1)!='\\')
-              {
-                baseDir = baseDir + "\\";
-                std::cout << "Missing trailing backslash was added.\n";
-              }//if slash
             }
             else
             {
@@ -256,14 +253,11 @@ int main(int argc, char **argv)
     {
       if (!baseDir.empty())
       {
-        //Does it have a trailing (back)slash?
-        if (baseDir.at(baseDir.length()-1)!='\\')
-        {
-          baseDir = baseDir + "\\";
-        }//if not backslash
+        //Does it have a trailing (back)slash? If not, add one.
+        baseDir = slashify(baseDir);
         /*add data dir to path, because installed path points only to Morrowind's
           main direkctory */
-        baseDir = baseDir +"Data Files\\";
+        baseDir = baseDir +"Data Files" +MWTP::pathDelimiter;
         std::cout << "Data files directory was set to \""<<baseDir<<"\" via registry.\n";
       }
       else
@@ -276,7 +270,7 @@ int main(int argc, char **argv)
     if (baseDir.empty())
     {
       //empty, so let's try a default value.
-      baseDir = "C:\\Program Files\\Bethesda Softworks\\Morrowind\\Data Files\\";;
+      baseDir = "C:\\Program Files\\Bethesda Softworks\\Morrowind\\Data Files\\";
       std::cout << "Warning: Data files directory of Morrowind was not specified, "
                 << "will use default path \""<<baseDir<<"\". This might not work"
                 << " properly on your machine, use the parameter -d to specify "

@@ -1,20 +1,20 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012  Thoronador
+    Copyright (C) 2011, 2012, 2013  Thoronador
 
-    The Morrowind Tools are free software: you can redistribute them and/or
-    modify them under the terms of the GNU General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    The Morrowind Tools are distributed in the hope that they will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with the Morrowind Tools.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -------------------------------------------------------------------------------
 */
 
@@ -34,6 +34,7 @@
 #include "../base/RegistryFunctions.h"
 #include "../base/ReturnCodes.h"
 #include "../base/script_compiler/ScriptCompiler.h"
+#include "../../base/DirectoryFunctions.h"
 #include "../../base/FileFunctions.h"
 
 void showHelp()
@@ -76,7 +77,7 @@ void showGPLNotice()
 {
   std::cout << "Cell Translator for Morrowind\n"
             << "  This programme is part of the Morrowind Tools Project.\n"
-            << "  Copyright (C) 2011, 2012  Thoronador\n"
+            << "  Copyright (C) 2011, 2012, 2013  Thoronador\n"
             << "\n"
             << "  The Morrowind Tools are free software: you can redistribute them and/or\n"
             << "  modify them under the terms of the GNU General Public License as published\n"
@@ -95,13 +96,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Cell Translator for Morrowind, version 0.4.1_rev490, 2012-07-26\n";
+  std::cout << "Cell Translator for Morrowind, version 0.4.1b_rev521, 2013-03-19\n";
 }
 
 int showVersionExitcode()
 {
   showVersion();
-  return 490;
+  return 521;
 }
 
 int main(int argc, char **argv)
@@ -158,13 +159,9 @@ int main(int argc, char **argv)
             {
               dataDir = std::string(argv[i+1]);
               ++i; //skip next parameter, because it's used as directory name already
+              //Does it have a trailing (back)slash? If not, add one.
+              dataDir = slashify(dataDir);
               std::cout << "Data Files directory was set to \""<<dataDir<<"\".\n";
-              //Does it have a trailing (back)slash?
-              if (dataDir.at(dataDir.length()-1)!='\\')
-              {
-                dataDir = dataDir + "\\";
-                std::cout << "Missing trailing backslash was added.\n";
-              }//if slash
             }
             else
             {
@@ -380,14 +377,11 @@ int main(int argc, char **argv)
     {
       if (!dataDir.empty())
       {
-        //Does it have a trailing (back)slash?
-        if (dataDir.at(dataDir.length()-1)!='\\')
-        {
-          dataDir = dataDir + "\\";
-        }//if not backslash
+        //Does it have a trailing (back)slash? If not, add one.
+        dataDir = slashify(dataDir);
         /*add Data Files dir to path, because installed path points only to
           Morrowinds's main direkctory */
-        dataDir = dataDir +"Data Files\\";
+        dataDir = dataDir +"Data Files" +MWTP::pathDelimiter;
         std::cout << "Data Files directory was set to \""<<dataDir<<"\" via registry.\n";
       }
       else

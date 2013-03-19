@@ -32,6 +32,8 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="../../base/DirectoryFunctions.cpp" />
+		<Unit filename="../../base/DirectoryFunctions.h" />
 		<Unit filename="../../base/FileFunctions.cpp" />
 		<Unit filename="../../base/FileFunctions.h" />
 		<Unit filename="../../base/RegistryFunctions.cpp" />
@@ -52,6 +54,7 @@
 		<Unit filename="../base/ESMWriterContents.h" />
 		<Unit filename="../base/Group.cpp" />
 		<Unit filename="../base/Group.h" />
+		<Unit filename="../base/PathFunctions.h" />
 		<Unit filename="../base/RegistryFunctions.h" />
 		<Unit filename="../base/ReturnCodes.h" />
 		<Unit filename="../base/SR_Constants.h" />

@@ -21,7 +21,7 @@
 #include <iostream>
 #include <sstream>
 #include "../base/ESMWriterContents.h"
-#include "../base/RegistryFunctions.h"
+#include "../base/PathFunctions.h"
 #include "../base/ReturnCodes.h"
 #include "../base/SR_Constants.h"
 #include "../base/records/CameraShotRecord.h"
@@ -51,13 +51,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "CAMS record converter for Skyrim, version 0.01b.rev513~experimental, 2013-02-22\n";
+  std::cout << "CAMS record converter for Skyrim, version 0.01c.rev521~experimental, 2013-03-19\n";
 }
 
 int showVersionExitcode()
 {
   showVersion();
-  return 513;
+  return 521;
 }
 
 void showHelp()
@@ -128,13 +128,9 @@ int main(int argc, char **argv)
             {
               dataDir = std::string(argv[i+1]);
               ++i; //skip next parameter, because it's used as directory name already
+              //Does it have a trailing (back)slash? If not, add one.
+              dataDir = slashify(dataDir);
               std::cout << "Data files directory was set to \""<<dataDir<<"\".\n";
-              //Does it have a trailing (back)slash?
-              if (dataDir.at(dataDir.length()-1)!='\\')
-              {
-                dataDir = dataDir + "\\";
-                std::cout << "Missing trailing backslash was added.\n";
-              }//if slash
             }
             else
             {
@@ -217,47 +213,7 @@ int main(int argc, char **argv)
   }
 
   //Has the user specified a data directory?
-  if (dataDir.empty())
-  {
-    //No, so let's search the registry first...
-    std::cout << "Warning: Data files directory of Skyrim was not specified, "
-              << "will try to read it from the registry.\n";
-    if (!SRTP::getSkryrimPathFromRegistry(dataDir))
-    {
-      std::cout << "Error: Could not find Skyrim's installation path in registry!\n";
-      dataDir.clear();
-    }
-    else
-    {
-      if (!dataDir.empty())
-      {
-        //Does it have a trailing (back)slash?
-        if (dataDir.at(dataDir.length()-1)!='\\')
-        {
-          dataDir = dataDir + "\\";
-        }//if not backslash
-        /*add data dir to path, because installed path points only to Skyrim's
-          main direkctory */
-        dataDir = dataDir +"Data\\";
-        std::cout << "Data files directory was set to \""<<dataDir<<"\" via registry.\n";
-      }
-      else
-      {
-        std::cout << "Error: Installation path in registry is empty!\n";
-      }
-    }
-
-    //check again, in case registry failed
-    if (dataDir.empty())
-    {
-      //empty, so let's try a default value.
-      dataDir = "C:\\Program Files\\Steam\\SteamApps\\common\\skyrim\\Data\\";
-      std::cout << "Warning: Data files directory of Skyrim was not specified, "
-                << "will use default path \""<<dataDir<<"\". This might not work"
-                << " properly on your machine, use the parameter -d to specify "
-                << "the proper path.\n";
-    }
-  }//if no data dir is given
+  SRTP::getDataDir(dataDir);
 
   //Does the plugin file even exist?
   if (!FileExists(dataDir+pluginFile))
@@ -327,7 +283,7 @@ int main(int argc, char **argv)
   //find a new name for the modified file to avoid overwriting an existing file
   std::string dummyPath;
   std::string piName, piExt;
-  splitPathFileExtension(pluginFile, '\\', dummyPath, piName, piExt);
+  splitPathFileExtension(pluginFile, MWTP::pathDelimiter, dummyPath, piName, piExt);
   std::string newName = "_conv_cams";
   unsigned int i = 0;
   while (FileExists(dataDir+piName+newName+"."+piExt))

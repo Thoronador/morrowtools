@@ -23,7 +23,7 @@
 #include "../base/ESMWriterContents.h"
 #include "../base/records/TES4HeaderRecord.h"
 #include "../base/Races.h"
-#include "../base/RegistryFunctions.h"
+#include "../base/PathFunctions.h"
 #include "../base/SR_Constants.h"
 #include "../base/StringTable.h"
 #include "../base/StringTableCompound.h"
@@ -35,27 +35,7 @@ int main()
   //SRTP::ESMReaderAll reader;
 
   std::string SkyrimDir;
-  if (!SRTP::getSkryrimPathFromRegistry(SkyrimDir))
-  {
-    std::cout << "Error: Could not find Skyrim's installation path in registry!\n";
-    return 1;
-  }
-  if (!SkyrimDir.empty())
-  {
-    //Does it have a trailing (back)slash?
-    if (SkyrimDir.at(SkyrimDir.length()-1)!='\\')
-    {
-      SkyrimDir = SkyrimDir + "\\";
-    }//if not backslash
-    /*add data dir to path, because installed path points only to Skyrim's
-      main direkctory */
-    SkyrimDir = SkyrimDir +"Data\\";
-  }
-  else
-  {
-    std::cout << "Error: Installation path in registry is empty!\n";
-    return 1;
-  }
+  SRTP::getDataDir(SkyrimDir);
 
   const int readResult = reader.readESM(SkyrimDir+"Skyrim.esm", header_rec);
   if (readResult>=0)
@@ -66,6 +46,7 @@ int main()
   else
   {
     std::cout << "Reading file failed!\n";
+    return SRTP::rcFileError;
   }
 
   //String tables
@@ -77,7 +58,7 @@ int main()
   else
   {
     std::cout << "Reading compound tables "<<SkyrimDir<<"Strings\\Skyrim_German.DLStrings etc. failed!\n";
-    return 1;
+    return SRTP::rcFileError;
   }
 
   // --- race stuff

@@ -28,7 +28,11 @@ namespace SRTP
 
 FurnitureRecord::FurnitureRecord()
 : BasicRecord(), editorID(""),
+  unknownVMAD(BinarySubRecord()),
+  unknownOBND(BinarySubRecord()),
   name(LocalizedString()), modelPath(""),
+  unknownMODT(BinarySubRecord()),
+  unknownMODS(BinarySubRecord()),
   keywords(std::vector<uint32_t>()),
   unknownPNAM(0), unknownFNAM(0),
   interactionKeywordFormID(0),
@@ -38,10 +42,6 @@ FurnitureRecord::FurnitureRecord()
   unknownFNMKs(std::vector<uint32_t>()),
   unknownFNPRs(std::vector<uint32_t>()), markerModelPath("")
 {
-  unknownVMAD.setPresence(false);
-  unknownOBND.setPresence(false);
-  unknownMODT.setPresence(false);
-  unknownMODS.setPresence(false);
   destruction.clear();
 }
 

@@ -30,13 +30,13 @@ namespace SRTP
 TreeRecord::TreeRecord()
 : BasicRecord(), editorID(""),
   modelPath(""),
+  unknownMODT(BinarySubRecord()),
   ingredientFormID(0),
   harvestSoundFormID(0),
   unknownPFPC(0),
   name(LocalizedString())
 {
   memset(unknownOBND, 0, 12);
-  unknownMODT.setPresence(false);
   memset(unknownCNAM, 0, 48);
 }
 

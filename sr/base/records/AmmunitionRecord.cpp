@@ -31,6 +31,7 @@ AmmunitionRecord::AmmunitionRecord()
 : BasicRecord(), editorID(""),
   name(LocalizedString()),
   modelPath(""),
+  unknownMODT(BinarySubRecord()),
   pickupSoundFormID(0),
   putdownSoundFormID(0),
   description(LocalizedString()),
@@ -43,7 +44,6 @@ AmmunitionRecord::AmmunitionRecord()
   //end of DATA
 {
   memset(unknownOBND, 0, 12);
-  unknownMODT.setPresence(false);
 }
 
 AmmunitionRecord::~AmmunitionRecord()

@@ -30,6 +30,7 @@ namespace SRTP
 WorldSpaceRecord::WorldSpaceRecord()
 : BasicRecord(), editorID(""),
   unknownRNAMs(std::vector<BinarySubRecord>()),
+  unknownMHDT(BinarySubRecord()),
   name(LocalizedString()),
   hasWCTR(false),
   centerCellX(0),
@@ -43,9 +44,12 @@ WorldSpaceRecord::WorldSpaceRecord()
   LODWaterHeight(0.0f),
   hasDNAM(false), unknownDNAM(0),
   modelPath(""),
+  unknownMODT(BinarySubRecord()),
+  unknownMNAM(BinarySubRecord()),
   locationFormID(0),
   parentWorldSpaceFormID(0),
   hasPNAM(false), unknownPNAM(0),
+  unknownONAM(BinarySubRecord()),
   distantLODMultiplier(0.0f),
   hasDATA(false), unknownDATA(0),
   hasNAM0(false), unknownNAM0(0),
@@ -53,13 +57,10 @@ WorldSpaceRecord::WorldSpaceRecord()
   musicFormID(0),
   HD_LOD_DiffuseTexture(""),
   HD_LOD_NormalTexture(""),
-  unknownXWEM("")
+  unknownXWEM(""),
+  unknownOFST(BinarySubRecordExtended())
 {
-  unknownMHDT.setPresence(false);
-  unknownMODT.setPresence(false);
-  unknownMNAM.setPresence(false);
-  unknownONAM.setPresence(false);
-  unknownOFST.setPresence(false);
+
 }
 
 WorldSpaceRecord::~WorldSpaceRecord()

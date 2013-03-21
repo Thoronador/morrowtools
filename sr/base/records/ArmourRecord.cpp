@@ -29,10 +29,17 @@ namespace SRTP
 
 ArmourRecord::ArmourRecord()
 : BasicRecord(), editorID(""),
+  unknownVMAD(BinarySubRecord()),
   name(LocalizedString()),
   enchantingFormID(0),
   modelPath(""),
+  unknownMO2T(BinarySubRecord()),
+  unknownMO2S(BinarySubRecord()),
   mod4Path(""),
+  unknownMO4T(BinarySubRecord()),
+  unknownMO4S(BinarySubRecord()),
+  unknownBODT(BinarySubRecord()),
+  unknownBOD2(BinarySubRecord()),
   equipTypeFormID(0),
   blockBashImpactDataSetFormID(0),
   alternateBlockMaterialFormID(0),
@@ -47,14 +54,7 @@ ArmourRecord::ArmourRecord()
   unknownDNAM(0),
   templateArmorFormID(0)
 {
-  unknownVMAD.setPresence(false);
   memset(unknownOBND, 0, 12);
-  unknownMO2T.setPresence(false);
-  unknownMO2S.setPresence(false);
-  unknownMO4T.setPresence(false);
-  unknownMO4S.setPresence(false);
-  unknownBODT.setPresence(false);
-  unknownBOD2.setPresence(false);
 }
 
 ArmourRecord::~ArmourRecord()

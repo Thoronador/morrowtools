@@ -56,12 +56,13 @@ bool QuestRecord::IndexEntry::hasFinishingQSDT() const
 QuestRecord::IndexEntry::QSDTRecord::QSDTRecord()
 : isFinisher(false),
   nextQuestFormID(0),
+  unknownSCHR(BinarySubRecord()),
   unknownSCTX(""),
   hasQNAM(false), unknownQNAM(0),
   unknownCTDA_CIS2s(std::vector<CTDA_CIS2_compound>()),
   logEntry(LocalizedString())
 {
-  unknownSCHR.setPresence(false);
+
 }
 
 bool QuestRecord::IndexEntry::QSDTRecord::operator==(const QuestRecord::IndexEntry::QSDTRecord& other) const
@@ -359,6 +360,7 @@ bool QuestRecord::QOBJEntry::QSTAEntry::operator==(const QuestRecord::QOBJEntry:
 
 QuestRecord::QuestRecord()
 : BasicRecord(), editorID(""),
+  unknownVMAD(BinarySubRecord()),
   name(LocalizedString()),
   hasENAM(false), unknownENAM(0),
   unknownQTGLs(std::vector<uint32_t>()),
@@ -369,7 +371,6 @@ QuestRecord::QuestRecord()
   unknownANAM(0),
   aliases(std::vector<AliasEntry>())
 {
-  unknownVMAD.setPresence(false);
   memset(unknownDNAM, 0, 12);
 }
 

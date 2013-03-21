@@ -121,6 +121,7 @@ class MapBasedRecordManager
 
 template<typename recT>
 MapBasedRecordManager<recT>::MapBasedRecordManager()
+: m_Records(std::map<uint32_t, recT>())
 {
   //empty
 }

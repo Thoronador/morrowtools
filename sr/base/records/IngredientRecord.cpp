@@ -35,9 +35,12 @@ const uint32_t IngredientRecord::cFlagFoodItem   = 0x00000002;
 
 IngredientRecord::IngredientRecord()
 : BasicRecord(), editorID(""),
+  unknownVMAD(BinarySubRecord()),
   name(LocalizedString()),
   keywordArray(std::vector<uint32_t>()),
   modelPath(""),
+  unknownMODT(BinarySubRecord()),
+  unknownMODS(BinarySubRecord()),
   pickupSoundFormID(0),
   putdownSoundFormID(0),
   value(0),
@@ -46,10 +49,7 @@ IngredientRecord::IngredientRecord()
   flags(0),
   effects(std::vector<EffectBlock>())
 {
-  unknownVMAD.setPresence(false);
   memset(unknownOBND, 0, 12);
-  unknownMODT.setPresence(false);
-  unknownMODS.setPresence(false);
 }
 
 IngredientRecord::~IngredientRecord()

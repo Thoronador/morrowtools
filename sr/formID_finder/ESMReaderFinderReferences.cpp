@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012 Thoronador
+    Copyright (C) 2012, 2013  Thoronador
 
     The Skyrim Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -29,16 +29,17 @@ namespace SRTP
 {
 
 ESMReaderFinderReferences::CellRefIDPair::CellRefIDPair(const uint32_t cell, const uint32_t ref)
+: cellID(cell), refID(ref)
 {
-  cellID = cell;
-  refID = ref;
+
 }
 
 ESMReaderFinderReferences::ESMReaderFinderReferences(const std::vector<std::string>& loadOrder)
-: ESMReaderReIndexMod(loadOrder)
+: ESMReaderReIndexMod(loadOrder),
+  refMap(std::map<uint32_t, std::vector<CellRefIDPair> >()),
+  m_CellStack(std::vector<uint32_t>())
 {
-  refMap.clear();
-  m_CellStack.clear();
+
 }
 
 ESMReaderFinderReferences::~ESMReaderFinderReferences()

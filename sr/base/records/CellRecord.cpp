@@ -43,6 +43,10 @@ bool CellRecord::SubrecordXCLC::operator==(const CellRecord::SubrecordXCLC& othe
 CellRecord::CellRecord()
 : BasicRecord(), editorID(""),
   name(LocalizedString()),
+  unknownDATA(BinarySubRecord()),
+  unknownTVDT(BinarySubRecord()),
+  unknownMHDT(BinarySubRecord()),
+  unknownXCLL(BinarySubRecord()),
   lightingTemplateFormID(0),
   hasLNAM(false), unknownLNAM(0),
   unknownXCLW(0.0f),
@@ -51,6 +55,7 @@ CellRecord::CellRecord()
   locationFormID(0),
   hasXWCN(false), unknownXWCN(0),
   hasXWCS(false), unknownXWCS(0),
+  unknownXWCU(BinarySubRecord()),
   imageSpaceFormID(0),
   encounterZoneFormID(0),
   hasXCWT(0), unknownXCWT(0),
@@ -61,12 +66,7 @@ CellRecord::CellRecord()
   regionFormID(0),
   defaultAcousticSpaceFormID(0)
 {
-  unknownDATA.setPresence(false);
-  unknownTVDT.setPresence(false);
-  unknownMHDT.setPresence(false);
   gridLocation.presence = false;
-  unknownXCLL.setPresence(false);
-  unknownXWCU.setPresence(false);
 }
 
 CellRecord::~CellRecord()

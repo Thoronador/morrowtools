@@ -34,8 +34,10 @@ const uint32_t BookRecord::cNoteOrScrollTypeFlag = 0x0000FF00;
 
 BookRecord::BookRecord()
 : BasicRecord(), editorID(""),
+  unknownVMAD(BinarySubRecord()),
   title(LocalizedString()),
   modelPath(""),
+  unknownMODT(BinarySubRecord()),
   text(LocalizedString()),
   pickupSoundFormID(0),
   putdownSoundFormID(0),
@@ -49,9 +51,7 @@ BookRecord::BookRecord()
   inventoryArtFormID(0),
   unknownCNAM(0)
 {
-  unknownVMAD.setPresence(false);
   memset(unknownOBND, 0, 12);
-  unknownMODT.setPresence(true);
 }
 
 BookRecord::~BookRecord()

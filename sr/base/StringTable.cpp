@@ -29,6 +29,7 @@ namespace SRTP
 {
 
 StringTable::StringTable()
+: m_Strings(std::map<uint32_t, std::string>())
 {
   //empty
 }

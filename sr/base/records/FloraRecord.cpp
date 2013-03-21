@@ -29,8 +29,11 @@ namespace SRTP
 
 FloraRecord::FloraRecord()
 : BasicRecord(), editorID(""),
+  unknownVMAD(BinarySubRecord()),
   name(LocalizedString()),
   modelPath(""),
+  unknownMODT(BinarySubRecord()),
+  unknownMODS(BinarySubRecord()),
   unknownPNAM(0),
   activateTextOverride(LocalizedString()),
   unknownFNAM(0),
@@ -38,10 +41,7 @@ FloraRecord::FloraRecord()
   harvestSoundFormID(0),
   unknownPFPC(0)
 {
-  unknownVMAD.setPresence(false);
   memset(unknownOBND, 0, 12);
-  unknownMODT.setPresence(false);
-  unknownMODS.setPresence(false);
 }
 
 FloraRecord::~FloraRecord()

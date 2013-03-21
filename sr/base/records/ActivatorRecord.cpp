@@ -47,8 +47,11 @@ void ActivatorRecord::destStruct::reset()
 
 ActivatorRecord::ActivatorRecord()
 : BasicRecord(), editorID(""),
+  unknownVMAD(BinarySubRecord()),
   name(LocalizedString()),
   modelPath(""),
+  unknownMODT(BinarySubRecord()),
+  unknownMODS(BinarySubRecord()),
   hasDEST(false), unknownDEST(0),
   destructionStructures(std::vector<destStruct>()),
   keywordArray(std::vector<uint32_t>()),
@@ -63,10 +66,7 @@ ActivatorRecord::ActivatorRecord()
   hasFNAM(false), unknownFNAM(0),
   interactionKeywordFormID(0)
 {
-  unknownVMAD.setPresence(false),
   memset(unknownOBND, 0, 12);
-  unknownMODT.setPresence(false);
-  unknownMODS.setPresence(false);
 }
 
 ActivatorRecord::~ActivatorRecord()

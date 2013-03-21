@@ -38,19 +38,19 @@ const uint32_t ContainerRecord::cFlagObstacle        = 0x02000000;
 
 ContainerRecord::ContainerRecord()
 : BasicRecord(), editorID(""),
+  unknownVMAD(BinarySubRecord()),
   name(LocalizedString()),
   modelPath(""),
+  unknownMODT(BinarySubRecord()),
+  unknownMODS(BinarySubRecord()),
   contents(std::vector<ComponentData>()),
+  unknownCOED(BinarySubRecord()),
   flags(0),
   weight(0.0f),
   openSoundFormID(0),
   closeSoundFormID(0)
 {
-  unknownVMAD.setPresence(false);
   memset(unknownOBND, 0, 12);
-  unknownMODT.setPresence(false);
-  unknownMODS.setPresence(false);
-  unknownCOED.setPresence(false);
 }
 
 ContainerRecord::~ContainerRecord()

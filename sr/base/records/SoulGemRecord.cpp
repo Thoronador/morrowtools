@@ -39,6 +39,7 @@ SoulGemRecord::SoulGemRecord()
 : BasicRecord(), editorID(""),
   name(LocalizedString()),
   modelPath(""),
+  unknownMODT(BinarySubRecord()),
   keywordArray(std::vector<uint32_t>()),
   //subrecord DATA
   value(0),
@@ -49,7 +50,6 @@ SoulGemRecord::SoulGemRecord()
   linkedToFormID(0)
 {
   memset(unknownOBND, 0, 12);
-  unknownMODT.setPresence(false);
 }
 
 SoulGemRecord::~SoulGemRecord()

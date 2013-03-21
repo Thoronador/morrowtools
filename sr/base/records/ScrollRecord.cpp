@@ -35,12 +35,12 @@ ScrollRecord::ScrollRecord()
   equipTypeFormID(0),
   description(LocalizedString()),
   modelPath(""),
+  unknownMODT(BinarySubRecord()),
   value(0),
   weight(0.0f),
   effects(std::vector<EffectBlock>())
 {
   memset(unknownOBND, 0, 12);
-  unknownMODT.setPresence(false);
   memset(unknownSPIT, 0, 36);
 }
 

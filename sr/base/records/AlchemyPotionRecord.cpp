@@ -38,6 +38,8 @@ AlchemyPotionRecord::AlchemyPotionRecord()
   name(LocalizedString()),
   keywordArray(std::vector<uint32_t>()),
   modelPath(""),
+  unknownMODT(BinarySubRecord()),
+  unknownMODS(BinarySubRecord()),
   pickupSoundFormID(0),
   putdownSoundFormID(0),
   equipTypeFormID(0),
@@ -52,8 +54,6 @@ AlchemyPotionRecord::AlchemyPotionRecord()
   effects(std::vector<EffectBlock>())
 {
   memset(unknownOBND, 0, 12);
-  unknownMODT.setPresence(false);
-  unknownMODS.setPresence(false);
 }
 
 AlchemyPotionRecord::~AlchemyPotionRecord()

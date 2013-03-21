@@ -31,6 +31,7 @@ TalkingActivatorRecord::TalkingActivatorRecord()
 : BasicRecord(), editorID(""),
   name(LocalizedString()),
   modelPath(""),
+  unknownMODT(BinarySubRecord()),
   keywordArray(std::vector<uint32_t>()),
   unknownPNAM(0),
   loopingSoundFormID(0),
@@ -38,7 +39,6 @@ TalkingActivatorRecord::TalkingActivatorRecord()
   voiceTypeFormID(0)
 {
   memset(unknownOBND, 0, 12);
-  unknownMODT.setPresence(false);
 }
 
 TalkingActivatorRecord::~TalkingActivatorRecord()

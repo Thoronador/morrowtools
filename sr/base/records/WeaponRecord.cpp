@@ -39,8 +39,11 @@ const unsigned int WeaponRecord::cTypeStaves = 8;
 
 WeaponRecord::WeaponRecord()
 : BasicRecord(), editorID(""),
+  unknownVMAD(BinarySubRecord()),
   name(LocalizedString()),
   modelPath(""),
+  unknownMODT(BinarySubRecord()),
+  unknownMODS(BinarySubRecord()),
   enchantingFormID(0),
   hasEAMT(false),
   enchantmentAmount(0),
@@ -67,10 +70,7 @@ WeaponRecord::WeaponRecord()
   unknownVNAM(0),
   hasCNAM(false), unknownCNAM(0)
 {
-  unknownVMAD.setPresence(false);
   memset(unknownOBND, 0, 12);
-  unknownMODT.setPresence(false);
-  unknownMODS.setPresence(false);
   memset(unknownDNAM, 0, 100);
   memset(unknownCRDT, 0, 16);
 }

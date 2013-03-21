@@ -63,6 +63,7 @@ bool NPCRecord::CSDXstruct::operator==(const NPCRecord::CSDXstruct& other) const
 
 NPCRecord::NPCRecord()
 : BasicRecord(), editorID(""),
+  unknownVMAD(BinarySubRecord()),
   factions(std::vector<FactionElem>()),
   deathItemFormID(0),
   voiceTypeFormID(0),
@@ -73,6 +74,7 @@ NPCRecord::NPCRecord()
   skinFormID(0),
   farAwayModelSkinFormID(0),
   hasATKR(false), unknownATKR(0),
+  unknownATKD(BinarySubRecord()),
   unknownATKE(""),
   spellFormIDs(std::vector<uint32_t>()),
   perkList(std::vector<PerkElem>()),
@@ -99,17 +101,15 @@ NPCRecord::NPCRecord()
   unknownCSDXs(std::vector<CSDXstruct>()),
   defaultPackageListFormID(0),
   faceComplexionFormID(0),
+  unknownNAM9(BinarySubRecord()),
+  unknownNAMA(BinarySubRecord()),
   unknownTINXs(std::vector<TINXstructure>())
 {
-  unknownVMAD.setPresence(false);
   memset(unknownOBND, 0, 12);
   memset(unknownACBS, 0, 24);
-  unknownATKD.setPresence(false);
   memset(unknownAIDT, 0, 20);
   memset(unknownDNAM, 0, 52);
   memset(unknownQNAM, 0, 12);
-  unknownNAM9.setPresence(false);
-  unknownNAMA.setPresence(false);
 }
 
 NPCRecord::~NPCRecord()

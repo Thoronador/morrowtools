@@ -30,10 +30,11 @@ namespace SRTP
 /* DestructionStage's functions */
 
 DestructionStage::DestructionStage()
-: replacementModel("")
+: unknownDSTD(BinarySubRecord()),
+  replacementModel(""),
+  unknownDMDT(BinarySubRecord())
 {
-  unknownDSTD.setPresence(false);
-  unknownDMDT.setPresence(false);
+
 }
 
 #ifndef SR_NO_RECORD_EQUALITY

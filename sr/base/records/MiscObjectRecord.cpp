@@ -29,8 +29,11 @@ namespace SRTP
 
 MiscObjectRecord::MiscObjectRecord()
 : BasicRecord(), editorID(""),
+  unknownVMAD(BinarySubRecord()),
   fullName(LocalizedString()),
   modelPath(""),
+  unknownMODT(BinarySubRecord()),
+  unknownMODS(BinarySubRecord()),
   iconPath(""),
   keywordArray(std::vector<uint32_t>()),
   pickupSoundFormID(0),
@@ -38,10 +41,7 @@ MiscObjectRecord::MiscObjectRecord()
   value(0),
   weight(0.0f)
 {
-  unknownVMAD.setPresence(false);
   memset(unknownOBND, 0, 12);
-  unknownMODT.setPresence(true);
-  unknownMODS.setPresence(false);
 }
 
 MiscObjectRecord::~MiscObjectRecord()

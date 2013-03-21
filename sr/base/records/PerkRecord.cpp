@@ -29,11 +29,12 @@ namespace SRTP
 
 PerkRecord::PerkRecord()
 : BasicRecord(), editorID(""),
+  unknownVMAD(BinarySubRecord()),
   name(LocalizedString()),
   description(LocalizedString()),
   subBlocks(std::vector<SubBlock>())
 {
-  unknownVMAD.setPresence(false);
+
 }
 
 PerkRecord::~PerkRecord()

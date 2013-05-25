@@ -27,6 +27,7 @@
 #else
 #include <sys/socket.h>
 #include <sys/un.h>
+#include <unistd.h>
 #endif
 #include "../../base/UtilityFunctions.h"
 #include "../base/Activators.h"

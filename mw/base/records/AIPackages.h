@@ -1,20 +1,20 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2013  Thoronador
 
-    The Morrowind Tools are free software: you can redistribute them and/or
-    modify them under the terms of the GNU General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    The Morrowind Tools are distributed in the hope that they will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with the Morrowind Tools.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -------------------------------------------------------------------------------
 */
 
@@ -44,6 +44,7 @@ struct NPC_BasicAIPackage
   */
   virtual PackageType getPackageType() const = 0;
 
+  #ifndef MW_UNSAVEABLE_RECORDS
   /* writes the package subrecord to the given output stream and returns true
      on success
 
@@ -51,6 +52,7 @@ struct NPC_BasicAIPackage
          output - the output file stream
   */
   virtual bool saveToStream(std::ofstream& output) const = 0;
+  #endif
 };//struct
 
 /* structure to hold tha AI activate data of an NPC */
@@ -59,12 +61,16 @@ struct NPC_AIActivate: public NPC_BasicAIPackage
   std::string TargetID;
   int8_t Reset;
 
+  /* constructor */
+  NPC_AIActivate();
+
   /* "comparison operator" */
   bool equals(const NPC_AIActivate& other) const;
 
   /* returns enum for type */
   virtual PackageType getPackageType() const;
 
+  #ifndef MW_UNSAVEABLE_RECORDS
   /* writes the package subrecord to the given output stream and returns true
      on success
 
@@ -72,6 +78,7 @@ struct NPC_AIActivate: public NPC_BasicAIPackage
          output - the output file stream
   */
   virtual bool saveToStream(std::ofstream& output) const;
+  #endif
 };//struct
 
 /* structure to hold the escort/follow data of an NPC (both escort and follow
@@ -84,12 +91,16 @@ struct NPC_AIEscortFollow: public NPC_BasicAIPackage
   int16_t Reset;
   std::string CellName;
 
+  /* constructor */
+  NPC_AIEscortFollow();
+
   /* sets all members to zero */
   void clear();
 
   /* "comparison operator" */
   bool equals(const NPC_AIEscortFollow& other) const;
 
+  #ifndef MW_UNSAVEABLE_RECORDS
   /* writes the package subrecord to the given output stream and returns true
      on success
 
@@ -97,6 +108,7 @@ struct NPC_AIEscortFollow: public NPC_BasicAIPackage
          output - the output file stream
   */
   virtual bool saveToStream(std::ofstream& output) const;
+  #endif
 };//struct
 
 struct NPC_AIEscort: public NPC_AIEscortFollow
@@ -117,6 +129,9 @@ struct NPC_AITravel: public NPC_BasicAIPackage
   float X, Y, Z;
   int32_t Reset;
 
+  /* constructor */
+  NPC_AITravel();
+
   /* sets all members to zero */
   void clear();
 
@@ -126,6 +141,7 @@ struct NPC_AITravel: public NPC_BasicAIPackage
   /* returns enum for type */
   virtual PackageType getPackageType() const;
 
+  #ifndef MW_UNSAVEABLE_RECORDS
   /* writes the package subrecord to the given output stream and returns true
      on success
 
@@ -133,6 +149,7 @@ struct NPC_AITravel: public NPC_BasicAIPackage
          output - the output file stream
   */
   virtual bool saveToStream(std::ofstream& output) const;
+  #endif
 };//struct
 
 /* structure to hold the wandering data of an NPC */
@@ -144,6 +161,9 @@ struct NPC_AIWander: public NPC_BasicAIPackage
   uint8_t Idle[8];
   uint8_t Reset;
 
+  /* constructor */
+  NPC_AIWander();
+
   /* sets all members to zero */
   void clear();
 
@@ -153,6 +173,7 @@ struct NPC_AIWander: public NPC_BasicAIPackage
   /* returns enum indicating the type */
   virtual PackageType getPackageType() const;
 
+  #ifndef MW_UNSAVEABLE_RECORDS
   /* writes the package subrecord to the given output stream and returns true
      on success
 
@@ -160,6 +181,7 @@ struct NPC_AIWander: public NPC_BasicAIPackage
          output - the output file stream
   */
   virtual bool saveToStream(std::ofstream& output) const;
+  #endif
 };//struct
 
 } //namespace

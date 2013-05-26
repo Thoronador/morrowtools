@@ -29,6 +29,12 @@ namespace MWTP
 
 /* RefDoorData's functions */
 
+RefDoorData::RefDoorData()
+: PosX(0.0f), PosY(0.0f), PosZ(0.0f),
+  RotX(0.0f), RotY(0.0f), RotZ(0.0f),
+  ExitName("")
+{ }
+
 bool RefDoorData::operator==(const RefDoorData& other) const
 {
   return ((PosX==other.PosX) and (PosY==other.PosY) and (PosZ==other.PosZ)
@@ -60,6 +66,7 @@ ReferencedObject::ReferencedObject()
   RotX(0.0f), RotY(0.0f), RotZ(0.0f),
   //end of data
   hasDoorData(false),
+  DoorData(RefDoorData()),
   hasFLTV(false),
   LockLevel(0),
   KeyID(""),
@@ -1054,10 +1061,11 @@ CellRecord::CellRecord()
   //end of cell data
   RegionID(""),
   NumReferences(0),
-  References(std::vector<ReferencedObject>()),
   ColourRef(0),
   hasWHGT(false),
-  WaterHeight(0.0f)
+  WaterHeight(0.0f),
+  Ambience(AmbientLight()),
+  References(std::vector<ReferencedObject>())
 {
   Ambience.isPresent = false;
 }

@@ -1,20 +1,20 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012  Thoronador
+    Copyright (C) 2011, 2012, 2013  Thoronador
 
-    The Morrowind Tools are free software: you can redistribute them and/or
-    modify them under the terms of the GNU General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    The Morrowind Tools are distributed in the hope that they will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with the Morrowind Tools.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -------------------------------------------------------------------------------
 */
 
@@ -34,6 +34,12 @@ NPC_BasicAIPackage::~NPC_BasicAIPackage()
 
 /* **** AIActivate's functions ****/
 
+NPC_AIActivate::NPC_AIActivate()
+: NPC_BasicAIPackage(),
+  TargetID(""),
+  Reset(0)
+{ }
+
 bool NPC_AIActivate::equals(const NPC_AIActivate& other) const
 {
   return ((TargetID==other.TargetID) and (Reset==other.Reset));
@@ -44,6 +50,7 @@ PackageType NPC_AIActivate::getPackageType() const
   return ptActivate;
 }
 
+#ifndef MW_UNSAVEABLE_RECORDS
 bool NPC_AIActivate::saveToStream(std::ofstream& output) const
 {
   //write AI_A
@@ -66,16 +73,27 @@ bool NPC_AIActivate::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 /* **** AIEscortFollow's functions ****/
+
+NPC_AIEscortFollow::NPC_AIEscortFollow()
+: NPC_BasicAIPackage(),
+  X(0.0f), Y(0.0f), Z(0.0f),
+  Duration(0),
+  TargetID(""),
+  Reset(0),
+  CellName("")
+{
+}
 
 void NPC_AIEscortFollow::clear()
 {
   X = Y = Z = 0.0f;
   Duration = 0;
-  TargetID = "";
+  TargetID.clear();
   Reset = 0;
-  CellName = "";
+  CellName.clear();
 }
 
 bool NPC_AIEscortFollow::equals(const NPC_AIEscortFollow& other) const
@@ -93,6 +111,7 @@ bool NPC_AIEscortFollow::equals(const NPC_AIEscortFollow& other) const
       and (Reset==other.Reset) and (CellName==other.CellName));
 }
 
+#ifndef MW_UNSAVEABLE_RECORDS
 bool NPC_AIEscortFollow::saveToStream(std::ofstream& output) const
 {
   if (getPackageType()==ptEscort)
@@ -139,6 +158,7 @@ bool NPC_AIEscortFollow::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 /* **** AIEscort functions ****/
 
@@ -155,6 +175,13 @@ PackageType NPC_AIFollow::getPackageType() const
 }
 
 /* **** AITravel's functions ****/
+
+NPC_AITravel::NPC_AITravel()
+: NPC_BasicAIPackage(),
+  X(0.0f), Y(0.0f), Z(0.0f),
+  Reset(0)
+{
+}
 
 void NPC_AITravel::clear()
 {
@@ -181,6 +208,7 @@ PackageType NPC_AITravel::getPackageType() const
   return ptTravel;
 }
 
+#ifndef MW_UNSAVEABLE_RECORDS
 bool NPC_AITravel::saveToStream(std::ofstream& output) const
 {
   //write AI_T
@@ -196,8 +224,20 @@ bool NPC_AITravel::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 /* **** AIWander's functions ****/
+
+NPC_AIWander::NPC_AIWander()
+: NPC_BasicAIPackage(),
+  Distance(0),
+  Duration(0),
+  Time(0),
+  Reset(0)
+{
+  Idle[0] = Idle[1] = Idle[2] = Idle[3] =
+  Idle[4] = Idle[5] = Idle[6] = Idle[7] = 0;
+}
 
 void NPC_AIWander::clear()
 {
@@ -220,6 +260,7 @@ PackageType NPC_AIWander::getPackageType() const
   return ptWander;
 }
 
+#ifndef MW_UNSAVEABLE_RECORDS
 bool NPC_AIWander::saveToStream(std::ofstream& output) const
 {
   //write AI_W
@@ -236,5 +277,6 @@ bool NPC_AIWander::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 } //namespace

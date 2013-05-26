@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011, 2012  Thoronador
+    Copyright (C) 2009, 2011, 2012, 2013  Thoronador
 
     The Morrowind Tools are free software: you can redistribute them and/or
     modify them under the terms of the GNU General Public License as published
@@ -31,13 +31,15 @@ const int32_t ContainerFlag_Organic = 1;
 const int32_t ContainerFlag_Respawns = 2;
 
 ContainerRecord::ContainerRecord()
-{
-  recordID = ModelPath = ContainerName = "";
-  Weight = 0.0f;
-  ContainerFlags = 8;
-  ScriptName = "";
-  Items.clear();
-}
+: BasicRecord(),
+  recordID(""),
+  ModelPath(""),
+  ContainerName(""),
+  Weight(0.0f),
+  ContainerFlags(8),
+  ScriptName(""),
+  Items(std::vector<ItemRecord>())
+{ }
 
 bool ContainerRecord::equals(const ContainerRecord& other) const
 {

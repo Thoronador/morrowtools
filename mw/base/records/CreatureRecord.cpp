@@ -1,20 +1,20 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012  Thoronador
+    Copyright (C) 2011, 2012, 2013  Thoronador
 
-    The Morrowind Tools are free software: you can redistribute them and/or
-    modify them under the terms of the GNU General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    The Morrowind Tools are distributed in the hope that they will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with the Morrowind Tools.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -------------------------------------------------------------------------------
 */
 
@@ -28,28 +28,23 @@ namespace MWTP
 {
 
 CreatureRecord::CreatureRecord()
-{
-  recordID = Model = Name = SoundGenCreature = "";
+: PreNPCRecord(),
+  recordID(""), Model(""), Name(""), SoundGenCreature(""),
   //creature data
-  CreatureType = 0;
-  Level = 0;
-  Strength = Intelligence = Willpower = Agility = 0;
-  Speed = Endurance = Personality = Luck = 0;
-  Health = SpellPoints = Fatigue = 0;
-  Soul = 0;
-  Combat = Magic = Stealth = 0;
-  AttackMin1 = AttackMax1 = AttackMin2 = AttackMax2 = AttackMin3 = AttackMax3 = 0;
-  Gold = 0;
+  CreatureType(0),
+  Level(0),
+  Strength(0), Intelligence(0), Willpower(0), Agility(0),
+  Speed(0), Endurance(0), Personality(0), Luck(0),
+  Health(0), SpellPoints(0), Fatigue(0),
+  Soul(0),
+  Combat(0), Magic(0), Stealth(0),
+  AttackMin1(0), AttackMax1(0), AttackMin2(0), AttackMax2(0), AttackMin3(0), AttackMax3(0),
+  Gold(0),
   //end of creature data
-  CreatureFlag = 0;
-  Items.clear();
-  NPC_Spells.clear();
-  AIData.clear();
-  AIPackages.clear();
-  Destinations.clear();
-  ScriptID = "";
-  Scale = 1.0f;
-}
+  CreatureFlag(0),
+  ScriptID(""),
+  Scale(1.0f)
+{ }
 
 CreatureRecord::~CreatureRecord()
 {

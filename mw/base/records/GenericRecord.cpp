@@ -1,20 +1,20 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2013  Thoronador
 
-    The Morrowind Tools are free software: you can redistribute them and/or
-    modify them under the terms of the GNU General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    The Morrowind Tools are distributed in the hope that they will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with the Morrowind Tools.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -------------------------------------------------------------------------------
 */
 
@@ -26,10 +26,46 @@ namespace MWTP
 {
 
 GenericRecord::GenericRecord()
+: BasicRecord(),
+  Header(0),
+  m_DataSize(0),
+  m_Data(NULL)
 {
-  m_DataSize = 0;
-  m_Data = NULL;
-  Header = 0;
+}
+
+GenericRecord::GenericRecord(const GenericRecord& op)
+: BasicRecord(op),
+  Header(op.Header),
+  m_DataSize(op.m_DataSize),
+  m_Data(NULL)
+{
+  if (m_DataSize>0)
+  {
+    m_Data = new uint8_t[m_DataSize];
+    memcpy(m_Data, op.getDataPointer(), m_DataSize);
+  }
+  else
+  {
+    m_Data = NULL;
+  }
+}
+
+GenericRecord& GenericRecord::operator=(const GenericRecord& other)
+{
+  if (this==&other) return *this;
+  m_DataSize = other.getDataSize();
+  delete[] m_Data;
+  if (m_DataSize>0)
+  {
+    m_Data = new uint8_t[m_DataSize];
+    memcpy(m_Data, other.getDataPointer(), m_DataSize);
+  }
+  else
+  {
+    m_Data = NULL;
+  }
+  Header = other.Header;
+  return *this;
 }
 
 GenericRecord::~GenericRecord()
@@ -38,6 +74,7 @@ GenericRecord::~GenericRecord()
   m_DataSize = 0;
 }
 
+#ifndef MW_UNSAVEABLE_RECORDS
 bool GenericRecord::saveToStream(std::ofstream& output) const
 {
   //record header
@@ -47,10 +84,11 @@ bool GenericRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &HeaderOne, 4);
   output.write((const char*) &HeaderFlags, 4);
   //write the real data
-  output.write(m_Data, m_DataSize);
+  output.write((const char*) m_Data, m_DataSize);
 
   return output.good();
 }
+#endif
 
 bool GenericRecord::loadFromStream(std::ifstream& in_File)
 {
@@ -66,10 +104,10 @@ bool GenericRecord::loadFromStream(std::ifstream& in_File)
   in_File.read((char*) &HeaderFlags, 4);
 
   //allocate new memory
-  char * tempPtr = NULL;
-  tempPtr = new char[Size];
+  uint8_t * tempPtr = NULL;
+  tempPtr = new uint8_t[Size];
   memset(tempPtr, '\0', Size);
-  in_File.read(tempPtr, Size);
+  in_File.read((char*) tempPtr, Size);
   if (!in_File.good())
   {
     std::cout << "GenericRecord::loadFromStream: Error while reading data!\n";
@@ -83,7 +121,7 @@ bool GenericRecord::loadFromStream(std::ifstream& in_File)
   return true;
 }
 
-const char* GenericRecord::getDataPointer() const
+const uint8_t* GenericRecord::getDataPointer() const
 {
   return m_Data;
 }

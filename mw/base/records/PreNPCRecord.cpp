@@ -1,20 +1,20 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012  Thoronador
+    Copyright (C) 2011, 2012, 2013  Thoronador
 
-    The Morrowind Tools are free software: you can redistribute them and/or
-    modify them under the terms of the GNU General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    The Morrowind Tools are distributed in the hope that they will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with the Morrowind Tools.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -------------------------------------------------------------------------------
 */
 
@@ -28,6 +28,18 @@ const int32_t pnfTraining = 16384;
 const int32_t pnfSpellmaking = 32768;
 const int32_t pnfEnchanting = 65536;
 const int32_t pnfRepair = 131072;
+
+PreNPCRecord::PreNPCRecord()
+: BasicRecord(),
+  Items(std::vector<ItemRecord>()),
+  NPC_Spells(std::vector<std::string>()),
+  //AI data
+  AIData(NPC_AIData()),
+  AIPackages(std::vector<NPC_BasicAIPackage*>()),
+  //travel destinations
+  Destinations(std::vector<TravelDestination>())
+{
+}
 
 PreNPCRecord::~PreNPCRecord()
 {
@@ -141,6 +153,7 @@ bool PreNPCRecord::doesRepair() const
   return (AIData.isPresent and ((AIData.Flags & pnfRepair)!=0));
 }
 
+#ifndef MW_UNSAVEABLE_RECORDS
 bool PreNPCRecord::writeItemsSpellsAIDataDestinations(std::ofstream& output) const
 {
   //items and spells
@@ -242,5 +255,6 @@ bool PreNPCRecord::writeItemsSpellsAIDataDestinations(std::ofstream& output) con
 
   return output.good();
 }
+#endif
 
 } //namespace

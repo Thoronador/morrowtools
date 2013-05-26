@@ -1,20 +1,20 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012  Thoronador
+    Copyright (C) 2011, 2012, 2013  Thoronador
 
-    The Morrowind Tools are free software: you can redistribute them and/or
-    modify them under the terms of the GNU General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    The Morrowind Tools are distributed in the hope that they will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with the Morrowind Tools.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -------------------------------------------------------------------------------
 */
 
@@ -26,6 +26,19 @@
 
 namespace MWTP
 {
+
+/* FuncVarRecord's functions */
+
+FuncVarRecord::FuncVarRecord()
+: Index(0),
+  Type(0),
+  Function(0),
+  CompareOp(0),
+  Name(""),
+  isFloat(false),
+  fVal(0.0f),
+  iVal(0)
+{ }
 
 bool FuncVarRecord::operator==(const FuncVarRecord& other) const
 {
@@ -39,24 +52,28 @@ bool FuncVarRecord::operator==(const FuncVarRecord& other) const
   return false;
 }
 
+/* DialogueInfoRecord's functions */
+
 DialogueInfoRecord::DialogueInfoRecord()
-{
-  recordID = PreviousInfoID = NextInfoID = "";
+: BasicRecord(),
+  recordID(""), PreviousInfoID(""), NextInfoID(""),
   //info data
-  UnknownLong = 0;
-  Disposition = 0;
-  Rank = 0;
-  Gender = 0;
-  PCRank = 0;
-  UnknownByte = 0;
+  UnknownLong(0),
+  Disposition(0),
+  Rank(0),
+  Gender(0),
+  PCRank(0),
+  UnknownByte(0),
   //end of info data
-  ActorID = RaceID = ClassID = FactionID = CellID = PCFactionID = SoundFile =
-    Response = ResultString = "";
-  Functions.clear();
-  isQuestName = false;
-  isQuestFinished = false;
-  isQuestRestart = false;
-}
+  ActorID(""), RaceID(""), ClassID(""), FactionID(""), CellID(""),
+  PCFactionID(""), SoundFile(""),
+  isQuestName(false),
+  isQuestFinished(false),
+  isQuestRestart(false),
+  Response(""),
+  Functions(std::vector<FuncVarRecord>()),
+  ResultString("")
+{ }
 
 bool DialogueInfoRecord::equals(const DialogueInfoRecord& other) const
 {

@@ -34,6 +34,9 @@ struct RefDoorData
   float RotX, RotY, RotZ;
   std::string ExitName;
 
+  /* constructor */
+  RefDoorData();
+
   /* comparison operator */
   bool operator==(const RefDoorData& other) const;
 };//struct;

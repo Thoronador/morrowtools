@@ -78,7 +78,6 @@ int main()
   }//while
   std::cout << "Race records now: "<<SRTP::Races::getSingleton().getNumberOfRecords()<<"\n";
 
-
   iter = SRTP::Races::getSingleton().getBegin();
   while (iter!=SRTP::Races::getSingleton().getEnd())
   {
@@ -92,9 +91,9 @@ int main()
     }//if
     //DESC
 
-      std::cout << "    DESC: "<<iter->second.description.getIndex();
-      std::cout << "    string: \""<< iter->second.description.getString()<<"\"";
-      std::cout << std::endl;
+    std::cout << "    DESC: "<<iter->second.description.getIndex();
+    std::cout << "    string: \""<< iter->second.description.getString()<<"\"";
+    std::cout << std::endl;
 
     //DATA
     std::cout << "    DATA: height(m/f): "<<iter->second.data.heightMale<<"/"<<iter->second.data.heightFemale<<"\n";
@@ -102,8 +101,8 @@ int main()
     ++iter;
   }//while
 
-  const float childSize = 0.8;
-  const float tinySize = 0.5;
+  /* const float childSize = 0.8;
+  const float tinySize = 0.5; */
 
   //prepare header record for writing
   write_header = header_rec;
@@ -173,9 +172,8 @@ int main()
       writeCompound.addString(iter->second.name.getIndex(), table_compound.getString(iter->second.name.getIndex()), tt);
     }//if
     //DESC
-
-      tt = table_compound.locateString(iter->second.description.getIndex());
-      writeCompound.addString(iter->second.description.getIndex(), table_compound.getString(iter->second.description.getIndex()), tt);
+    tt = table_compound.locateString(iter->second.description.getIndex());
+    writeCompound.addString(iter->second.description.getIndex(), table_compound.getString(iter->second.description.getIndex()), tt);
 
     ++iter;
   }//while

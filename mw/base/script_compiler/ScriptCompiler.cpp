@@ -2990,7 +2990,8 @@ bool ScriptFunctions_MessageBox(const std::vector<std::string>& params, Compiled
     //now check if params are local vars
     uint8_t arg_count = 0;
     uint8_t button_count = 0;
-    SC_VarRef refArray[params.size()-2];
+    const unsigned int refArr_size = params.size()-2; //needed as workaround for clang++ compiler
+    SC_VarRef refArray[refArr_size];
 
     uint16_t i;
     for (i=2; i<params.size(); ++i)

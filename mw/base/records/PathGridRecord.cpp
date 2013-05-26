@@ -264,11 +264,6 @@ bool PathGridRecord::loadFromStream(std::ifstream& in_File)
       //PGRP's length
       in_File.read((char*) &SubLength, 4);
       BytesRead += 4;
-      if (SubLength<0)
-      {
-        std::cout << "Error: subrecord PGRP of PGRD has invalid length.\n";
-        return false;
-      }
       if ((SubLength%16)!=0)
       {
         std::cout << "Error: subrecord PGRP of PGRD has invalid length ("<<SubLength
@@ -299,11 +294,6 @@ bool PathGridRecord::loadFromStream(std::ifstream& in_File)
       //PGRC's length
       in_File.read((char*) &SubLength, 4);
       BytesRead += 4;
-      if (SubLength<0)
-      {
-        std::cout << "Error: subrecord PGRC of PGRD has invalid length.\n";
-        return false;
-      }
       /*if ((SubLength%8)!=0)
       {
         std::cout << "Warning: subrecord PGRC of PGRD has invalid length ("<<SubLength

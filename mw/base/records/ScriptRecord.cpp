@@ -1,20 +1,20 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011, 2012  Thoronador
+    Copyright (C) 2009, 2011, 2012, 2013  Thoronador
 
-    The Morrowind Tools are free software: you can redistribute them and/or
-    modify them under the terms of the GNU General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    The Morrowind Tools are distributed in the hope that they will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with the Morrowind Tools.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -------------------------------------------------------------------------------
 */
 
@@ -28,27 +28,32 @@ namespace MWTP
 {
 
 ScriptRecord::ScriptRecord()
-{
+: BasicRecord(),
   //script header
-  recordID = "";
-  NumShorts = NumLongs = NumFloats = ScriptDataSize = LocalVarSize = 0;
+  recordID(""),
+  NumShorts(0),
+  NumLongs(0),
+  NumFloats(0),
+  ScriptDataSize(0),
+  LocalVarSize(0),
   //end of script header
-  LocalVars.clear();
-  ScriptData = NULL;
-  ScriptText = "";
-}
+  LocalVars(std::vector<std::string>()),
+  ScriptData(NULL),
+  ScriptText("")
+{}
 
 ScriptRecord::ScriptRecord(const ScriptRecord& source)
-{
-  //script header
-  recordID = source.recordID;
-  NumShorts = source.NumShorts;
-  NumLongs = source.NumLongs;
-  NumFloats = source.NumFloats;
-  ScriptDataSize = source.ScriptDataSize;
-  LocalVarSize = source.LocalVarSize;
+: //script header
+  recordID(source.recordID),
+  NumShorts(source.NumShorts),
+  NumLongs(source.NumLongs),
+  NumFloats(source.NumFloats),
+  ScriptDataSize(source.ScriptDataSize),
+  LocalVarSize(source.LocalVarSize),
   //end of script header
-  LocalVars = source.LocalVars;
+  LocalVars(source.LocalVars),
+  ScriptText(source.ScriptText)
+{
   //copy the script data
   if (source.ScriptData==NULL)
   {
@@ -67,7 +72,6 @@ ScriptRecord::ScriptRecord(const ScriptRecord& source)
     ScriptData = new char[ScriptDataSize];
     memcpy(ScriptData, source.ScriptData, ScriptDataSize);
   }
-  ScriptText = source.ScriptText;
 }
 
 ScriptRecord& ScriptRecord::operator=(const ScriptRecord& rhs)

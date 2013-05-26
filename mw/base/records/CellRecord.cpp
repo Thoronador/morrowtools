@@ -1,20 +1,20 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012  Thoronador
+    Copyright (C) 2011, 2012, 2013  Thoronador
 
-    The Morrowind Tools are free software: you can redistribute them and/or
-    modify them under the terms of the GNU General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    The Morrowind Tools are distributed in the hope that they will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with the Morrowind Tools.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -------------------------------------------------------------------------------
 */
 
@@ -52,34 +52,33 @@ bool AmbientLight::operator==(const AmbientLight& other) const
 /* ReferencedObject functions */
 
 ReferencedObject::ReferencedObject()
-{
-  ObjectIndex = 0;
-  ObjectID = "";
-  Scale = 1.0f;
+: ObjectIndex(0),
+  ObjectID(""),
+  Scale(1.0f),
   //data
-  PosX = PosY = PosZ = 0.0f;
-  RotX = RotY = RotZ = 0.0f;
+  PosX(0.0f), PosY(0.0f), PosZ(0.0f),
+  RotX(0.0f), RotY(0.0f), RotZ(0.0f),
   //end of data
-  hasDoorData = false;
-  hasFLTV = false;
-  LockLevel = 0;
-  KeyID = "";
-  TrapID = "";
-  OwnerID = "";
-  OwnerFactionID = "";
-  FactionRank = 0;
-  GlobalVarID = "";
-  SoulCreatureID = "";
-  hasXCHG = false;
-  EnchantCharge = 0.0f;
-  NumberOfUses = 0;
-  hasNAM9 = false;
-  UnknownNAM9 = 0;
-  hasUNAM = false;
-  ReferenceBlockedByte = 0;
-  isDeleted = false;
-  DeletionLong = 0;
-}
+  hasDoorData(false),
+  hasFLTV(false),
+  LockLevel(0),
+  KeyID(""),
+  TrapID(""),
+  OwnerID(""),
+  OwnerFactionID(""),
+  FactionRank(0),
+  GlobalVarID(""),
+  SoulCreatureID(""),
+  hasXCHG(false),
+  EnchantCharge(0.0f),
+  NumberOfUses(0),
+  hasNAM9(false),
+  UnknownNAM9(0),
+  hasUNAM(false),
+  ReferenceBlockedByte(0),
+  isDeleted(false),
+  DeletionLong(0)
+{}
 
 bool ReferencedObject::operator==(const ReferencedObject& other) const
 {
@@ -712,6 +711,7 @@ bool ReferencedObject::loadFromStream(std::ifstream& in_File, uint32_t& BytesRea
   return in_File.good();
 }
 
+#ifndef MW_UNSAVEABLE_RECORDS
 bool ReferencedObject::saveToStream(std::ofstream& output) const
 {
   /*Referenced Object Data Grouping
@@ -951,6 +951,7 @@ bool ReferencedObject::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 uint32_t ReferencedObject::getWrittenSize() const
 {
@@ -1044,20 +1045,21 @@ const uint32_t cfInterior = 1;
 const uint32_t cfWater = 2;
 
 CellRecord::CellRecord()
-{
-  CellID = "";
+: BasicRecord(),
+  CellID(""),
   //cell data
-  CellFlags = 0;
-  GridX = 0;
-  GridY = 0;
+  CellFlags(0),
+  GridX(0),
+  GridY(0),
   //end of cell data
-  RegionID = "";
-  NumReferences = 0;
-  References.clear();
-  ColourRef = 0;
+  RegionID(""),
+  NumReferences(0),
+  References(std::vector<ReferencedObject>()),
+  ColourRef(0),
+  hasWHGT(false),
+  WaterHeight(0.0f)
+{
   Ambience.isPresent = false;
-  hasWHGT = false;
-  WaterHeight = 0.0f;
 }
 
 bool CellRecord::equals(const CellRecord& other) const
@@ -1070,6 +1072,7 @@ bool CellRecord::equals(const CellRecord& other) const
       and ((WaterHeight==other.WaterHeight) or (not hasWHGT)));
 }
 
+#ifndef MW_UNSAVEABLE_RECORDS
 bool CellRecord::saveToStream(std::ofstream& output) const
 {
   output.write((const char*) &cCELL, 4);
@@ -1267,6 +1270,7 @@ bool CellRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool CellRecord::loadFromStream(std::ifstream& in_File)
 {

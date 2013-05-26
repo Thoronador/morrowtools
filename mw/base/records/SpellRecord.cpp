@@ -1,20 +1,20 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011, 2012  Thoronador
+    Copyright (C) 2010, 2011, 2012, 2013  Thoronador
 
-    The Morrowind Tools are free software: you can redistribute them and/or
-    modify them under the terms of the GNU General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    The Morrowind Tools are distributed in the hope that they will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with the Morrowind Tools.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -------------------------------------------------------------------------------
 */
 
@@ -28,6 +28,17 @@ namespace MWTP
 {
 
 const size_t SpellRecord::cMaximumSpellNameLength = 31;
+
+SpellRecord::SpellRecord()
+: BasicRecord(),
+  recordID(""),
+  Name(""),
+  Type(0),
+  Cost(0),
+  Flags(0),
+  Enchs(std::vector<EnchantmentData>())
+{
+}
 
 #ifndef MW_UNSAVEABLE_RECORDS
 bool SpellRecord::saveToStream(std::ofstream& output) const

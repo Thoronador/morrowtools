@@ -39,6 +39,42 @@ ParserNode::ParserNode()
   right(NULL)
 { }
 
+ParserNode::ParserNode(const ParserNode& op)
+: content(op.content),
+  type(op.type),
+  binary_content(op.binary_content),
+  left(NULL),
+  right(NULL)
+{
+  if (op.left!=NULL)
+  {
+    left = new ParserNode(*op.left);
+  }
+  if (op.right!=NULL)
+  {
+    right = new ParserNode(*op.right);
+  }
+}
+
+ParserNode& ParserNode::operator=(const ParserNode& op)
+{
+  if (&op == this) return *this;
+  content = op.content;
+  type = op.type;
+  binary_content = op.binary_content;
+  left = NULL;
+  right = NULL;
+  if (op.left!=NULL)
+  {
+    left = new ParserNode(*op.left);
+  }
+  if (op.right!=NULL)
+  {
+    right = new ParserNode(*op.right);
+  }
+  return *this;
+}
+
 ParserNode::~ParserNode()
 {
   //clean up left and right branches

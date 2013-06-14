@@ -40,7 +40,6 @@ ESMReaderGeneric::ESMReaderGeneric(VectorType* vec)
 
 ESMReaderGeneric::~ESMReaderGeneric()
 {
-  //empty
   //NOTE: We should possibly call deallocateRecordsInVector() here!
 }
 

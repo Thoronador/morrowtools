@@ -93,7 +93,7 @@ bool TES3Record::saveToStream(std::ofstream& output) const
   if (comp_len>31)
   {
     output.write(companyName.c_str(), 31);
-    output.write('\0', 1);
+    output.write("\0", 1);
     std::cout << "Info: Company/author name of TES3 was too long and was shortened to 31 characters.\n";
   }
   else

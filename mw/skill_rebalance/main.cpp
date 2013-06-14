@@ -60,7 +60,7 @@ void showGPLNotice()
 {
   std::cout << "Skill Rebalancer for Morrowind\n"
             << "  This programme is part of the Morrowind Tools Project.\n"
-            << "  Copyright (C) 2012 Thoronador\n"
+            << "  Copyright (C) 2012, 2013  Thoronador\n"
             << "\n"
             << "  The Morrowind Tools are free software: you can redistribute them and/or\n"
             << "  modify them under the terms of the GNU General Public License as published\n"
@@ -79,7 +79,7 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Skill Rebalancer for Morrowind, version 0.1_rev434, 2012-03-03\n";
+  std::cout << "Skill Rebalancer for Morrowind, version 0.1.1, 2013-06-14\n";
 }
 
 int main(int argc, char **argv)
@@ -340,13 +340,13 @@ int main(int argc, char **argv)
   //prepare header data for writing (yes, description is German)
   if (scalingFactor>1.0f)
   {
-    tes3Head.description = "Leveln in Morrowind benötigt mit diesem Plugin "
+    tes3Head.description = "Leveln in Morrowind benoetigt mit diesem Plugin "
                           +floatToString(scalingFactor)+" mal so lange wie normalerweise";
   }
   else
   {
-    tes3Head.description = "Stufenaufstiege in Morrowind benötigen mit diesem Plugin nur noch "
-                          +floatToString(scalingFactor*100.0f)+"% der üblichen Zeit";
+    tes3Head.description = "Stufenaufstiege in Morrowind benoetigen mit diesem Plugin nur noch "
+                          +floatToString(scalingFactor*100.0f)+"% der ueblichen Zeit";
   }
   tes3Head.companyName = "Thoronador";
   //get size of Morrowind.esm, because we need Morrowind.esm as dependency

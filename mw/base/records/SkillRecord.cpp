@@ -27,6 +27,16 @@
 namespace MWTP
 {
 
+SkillRecord::SkillRecord()
+: BasicRecord(),
+  SkillIndex(0),
+  Attribute(0),
+  Specialization(0),
+  Description("")
+{
+  UseValue[0] = UseValue[1] = UseValue[2] = UseValue[3] = 0.0f;
+}
+
 bool SkillRecord::equals(const SkillRecord& other) const
 {
   return ((Attribute==other.Attribute) and (Specialization==other.Specialization)

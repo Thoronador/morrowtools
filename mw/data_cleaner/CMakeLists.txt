@@ -23,6 +23,8 @@ if (CMAKE_COMPILER_IS_GNUCC)
     add_definitions (-Wall -O3 -fexceptions)
 endif (CMAKE_COMPILER_IS_GNUCC)
 
+add_definitions (-DMW_UNSAVEABLE_RECORDS)
+
 set( CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -s" )
 
 add_executable(data_cleaner ${data_cleaner_sources})

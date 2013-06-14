@@ -765,8 +765,8 @@ bool CreatureRecord::loadFromStream(std::ifstream& in_File)
            BytesRead += 4;
            if (SubLength!=12)
            {
-             std::cout << "Error: Subrecord AIDT of CREA has invalid length ("<<SubLength
-                       << " bytes). Should be 12 bytes.\n";
+             std::cout << "Error: Subrecord AIDT of CREA has invalid length ("
+                       << SubLength << " bytes). Should be 12 bytes.\n";
              return false;
            }
            //read AI data

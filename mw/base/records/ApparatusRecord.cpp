@@ -28,17 +28,17 @@ namespace MWTP
 {
 
 ApparatusRecord::ApparatusRecord()
-{
-  recordID = "";
-  Model = "";
-  ItemName = "";
-  Type = -1;
-  Quality = 0.0f;
-  Weight = -1.0f;
-  Value = -1 ;
-  InventoryIcon = "";
-  ScriptName = "";
-}
+: BasicRecord(),
+  recordID(""),
+  Model(""),
+  ItemName(""),
+  Type(-1),
+  Quality(0.0f),
+  Weight(-1.0f),
+  Value(-1),
+  InventoryIcon(""),
+  ScriptName("")
+{}
 
 bool ApparatusRecord::equals(const ApparatusRecord& other) const
 {
@@ -188,140 +188,177 @@ bool ApparatusRecord::loadFromStream(std::ifstream& in_File)
   }
   recordID = std::string(Buffer);
 
-  //read MODL
-  in_File.read((char*) &SubRecName, 4);
-  BytesRead += 4;
-  if (SubRecName!=cMODL)
-  {
-    UnexpectedRecord(cMODL, SubRecName);
-    return false;
-  }
-  //MODL's length
-  in_File.read((char*) &SubLength, 4);
-  BytesRead += 4;
-  if (SubLength>255)
-  {
-    std::cout << "Subrecord MODL of APPA is longer than 255 characters!\n";
-    return false;
-  }
-  //read model path
-  memset(Buffer, '\0', 256);
-  in_File.read(Buffer, SubLength);
-  BytesRead += SubLength;
-  if (!in_File.good())
-  {
-    std::cout << "Error while reading subrecord MODL of APPA!\n";
-    return false;
-  }
-  Model = std::string(Buffer);
+  Model.clear();
+  ItemName.clear();
+  bool hasReadAADT = false;
+  InventoryIcon.clear();
+  ScriptName.clear();
 
-  //read FNAM
-  in_File.read((char*) &SubRecName, 4);
-  BytesRead += 4;
-  if (SubRecName!=cFNAM)
+  while (BytesRead<Size)
   {
-    UnexpectedRecord(cFNAM, SubRecName);
-    return false;
-  }
-  //FNAM's length
-  in_File.read((char*) &SubLength, 4);
-  BytesRead += 4;
-  if (SubLength>255)
-  {
-    std::cout << "Subrecord FNAM of APPA is longer than 255 characters!\n";
-    return false;
-  }
-  //read apparatus name
-  memset(Buffer, '\0', 256);
-  in_File.read(Buffer, SubLength);
-  BytesRead += SubLength;
-  if (!in_File.good())
-  {
-    std::cout << "Error while reading subrecord FNAM of APPA!\n";
-    return false;
-  }
-  ItemName = std::string(Buffer);
-
-  //read AADT
-  in_File.read((char*) &SubRecName, 4);
-  BytesRead += 4;
-  if (SubRecName!=cAADT)
-  {
-    UnexpectedRecord(cAADT, SubRecName);
-    return false;
-  }
-  //AADT's length
-  in_File.read((char*) &SubLength, 4);
-  BytesRead += 4;
-  if (SubLength!=16)
-  {
-    std::cout <<"Error: sub record AADT of APPA has invalid length ("<<SubLength
-              <<" bytes). Should be 16 bytes.\n";
-    return false;
-  }
-  //read apparatus data
-  in_File.read((char*) &Type, 4);
-  in_File.read((char*) &Quality, 4);
-  in_File.read((char*) &Weight, 4);
-  in_File.read((char*) &Value, 4);
-  BytesRead += 16;
-  if (!in_File.good())
-  {
-    std::cout << "Error while reading subrecord AADT of APPA!\n";
-    return false;
-  }
-  //read ITEX
-  in_File.read((char*) &SubRecName, 4);
-  BytesRead += 4;
-  if (SubRecName!=cITEX)
-  {
-    UnexpectedRecord(cITEX, SubRecName);
-    return false;
-  }
-  //ITEX's length
-  in_File.read((char*) &SubLength, 4);
-  BytesRead += 4;
-  //read apparatus icon path
-  memset(Buffer, '\0', 256);
-  in_File.read(Buffer, SubLength);
-  BytesRead += SubLength;
-  if (!in_File.good())
-  {
-    std::cout << "Error while reading subrecord ITEX of APPA!\n";
-    return false;
-  }
-  InventoryIcon = std::string(Buffer);
-
-  if (BytesRead<Size)
-  { //there's no optional part, if whole size of record was already read
-    //read optional SCRI
+    //read sub record's name
     in_File.read((char*) &SubRecName, 4);
-    if (SubRecName!=cSCRI)
+    BytesRead += 4;
+    switch (SubRecName)
     {
-      UnexpectedRecord(cSCRI, SubRecName);
-      return false;
-    }
-    //SCRI's length
-    in_File.read((char*) &SubLength, 4);
-    if (SubLength>255)
-    {
-      std::cout << "Subrecord SCRI of APPA is longer than 255 characters!\n";
-      return false;
-    }
-    //read apparatus script ID
-    memset(Buffer, '\0', 256);
-    in_File.read(Buffer, SubLength);
-    if (!in_File.good())
-    {
-      std::cout << "Error while reading subrecord SCRI of APPA!\n";
-      return false;
-    }
-    ScriptName = std::string(Buffer);
-  }
-  else
+      case cMODL:
+           if (!Model.empty())
+           {
+             std::cout << "Error: APPA seems to have more than one MODL subrecord!\n";
+             return false;
+           }
+           //MODL's length
+           in_File.read((char*) &SubLength, 4);
+           BytesRead += 4;
+           if (SubLength>255)
+           {
+             std::cout << "Subrecord MODL of APPA is longer than 255 characters!\n";
+             return false;
+           }
+           //read model path
+           memset(Buffer, '\0', 256);
+           in_File.read(Buffer, SubLength);
+           BytesRead += SubLength;
+           if (!in_File.good())
+           {
+             std::cout << "Error while reading subrecord MODL of APPA!\n";
+             return false;
+           }
+           Model = std::string(Buffer);
+           if (Model.empty())
+           {
+             std::cout << "Error: subrecord MODL of APPA is empty!\n";
+             return false;
+           }
+           break;
+      case cFNAM:
+           if (!ItemName.empty())
+           {
+             std::cout << "Error: APPA seems to have more than one FNAM subrecord!\n";
+             return false;
+           }
+           //FNAM's length
+           in_File.read((char*) &SubLength, 4);
+           BytesRead += 4;
+           if (SubLength>255)
+           {
+             std::cout << "Subrecord FNAM of APPA is longer than 255 characters!\n";
+             return false;
+           }
+           //read apparatus name
+           memset(Buffer, '\0', 256);
+           in_File.read(Buffer, SubLength);
+           BytesRead += SubLength;
+           if (!in_File.good())
+           {
+             std::cout << "Error while reading subrecord FNAM of APPA!\n";
+             return false;
+           }
+           ItemName = std::string(Buffer);
+           if (ItemName.empty())
+           {
+             std::cout << "Error: subrecord FNAM of APPA is empty!\n";
+             return false;
+           }
+           break;
+      case cAADT:
+           if (hasReadAADT)
+           {
+             std::cout << "Error: APPA seems to have more than one AADT subrecord!\n";
+             return false;
+           }
+           //AADT's length
+           in_File.read((char*) &SubLength, 4);
+           BytesRead += 4;
+           if (SubLength!=16)
+           {
+             std::cout << "Error: sub record AADT of APPA has invalid length ("
+                       << SubLength << " bytes). Should be 16 bytes.\n";
+             return false;
+           }
+           //read apparatus data
+           in_File.read((char*) &Type, 4);
+           in_File.read((char*) &Quality, 4);
+           in_File.read((char*) &Weight, 4);
+           in_File.read((char*) &Value, 4);
+           BytesRead += 16;
+           if (!in_File.good())
+           {
+             std::cout << "Error while reading subrecord AADT of APPA!\n";
+             return false;
+           }
+           hasReadAADT = true;
+           break;
+      case cITEX:
+           if (!InventoryIcon.empty())
+           {
+             std::cout << "Error: APPA seems to have more than one ITEX subrecord!\n";
+             return false;
+           }
+           //ITEX's length
+           in_File.read((char*) &SubLength, 4);
+           BytesRead += 4;
+           //read apparatus icon path
+           memset(Buffer, '\0', 256);
+           in_File.read(Buffer, SubLength);
+           BytesRead += SubLength;
+           if (!in_File.good())
+           {
+             std::cout << "Error while reading subrecord ITEX of APPA!\n";
+             return false;
+           }
+           InventoryIcon = std::string(Buffer);
+           if (InventoryIcon.empty())
+           {
+             std::cout << "Error: subrecord ITEX of APPA is empty!\n";
+             return false;
+           }
+           break;
+      case cSCRI:
+           if (!ScriptName.empty())
+           {
+             std::cout << "Error: APPA seems to have more than one SCRI subrecord!\n";
+             return false;
+           }
+           //SCRI's length
+           in_File.read((char*) &SubLength, 4);
+           BytesRead += 4;
+           if (SubLength>255)
+           {
+             std::cout << "Subrecord SCRI of APPA is longer than 255 characters!\n";
+             return false;
+           }
+           //read apparatus script ID
+           memset(Buffer, '\0', 256);
+           in_File.read(Buffer, SubLength);
+           BytesRead += SubLength;
+           if (!in_File.good())
+           {
+             std::cout << "Error while reading subrecord SCRI of APPA!\n";
+             return false;
+           }
+           ScriptName = std::string(Buffer);
+           if (ScriptName.empty())
+           {
+             std::cout << "Error: subrecord SCRI of APPA is empty!\n";
+             return false;
+           }
+           break;
+      default:
+           std::cout << "Error: unexpected record type \""<<IntTo4Char(SubRecName)
+                     << "\" found, but only MODL, FNAM, AADT or ITEX are allowed here!\n";
+           return false;
+           break;
+    }//swi
+  }//while
+
+  //presence checks
+  if (Model.empty() or ItemName.empty() or !hasReadAADT or InventoryIcon.empty())
   {
-    ScriptName = "";
+    std::cout << "Error: At least one required subrecord of APPA is missing!\n";
+    return false;
   }
+
   return in_File.good();
 }
 

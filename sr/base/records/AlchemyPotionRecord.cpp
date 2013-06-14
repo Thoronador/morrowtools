@@ -554,7 +554,7 @@ bool AlchemyPotionRecord::loadFromStream(std::ifstream& in_File, const bool loca
       case cENIT:
            if (hasReadENIT)
            {
-             std::cout << "Error: recurd ALCH seems to have more than one ENIT subrecord!\n";
+             std::cout << "Error: ALCH seems to have more than one ENIT subrecord!\n";
              return false;
            }
            //ENIT's length

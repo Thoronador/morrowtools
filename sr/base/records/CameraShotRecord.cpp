@@ -42,6 +42,7 @@ const uint32_t CameraShotRecord::cLocationLeadActor  = 0x00000003;
 CameraShotRecord::CameraShotRecord()
 : BasicRecord(), editorID(""),
   modelPath(""),
+  unknownMODT(BinarySubRecord()),
   //subrecord DATA
   dataLen(dlt40Byte),
   cameraAction(cActionShoot),
@@ -58,7 +59,6 @@ CameraShotRecord::CameraShotRecord()
   //end of subrecord DATA
   imageSpaceModFormID(0)
 {
-  unknownMODT.setPresence(false);
 }
 
 CameraShotRecord::~CameraShotRecord()

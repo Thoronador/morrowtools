@@ -24,6 +24,15 @@
 namespace SRTP
 {
 
+EffectBlock::EffectBlock()
+: effectFormID(0),
+  magnitude(0.0f),
+  areaOfEffect(0),
+  duration(0),
+  unknownCTDA_CIS2s(std::vector<CTDA_CIS2_compound>())
+{
+}
+
 bool EffectBlock::operator==(const EffectBlock& other) const
 {
   return ((effectFormID==other.effectFormID) and (magnitude==other.magnitude)

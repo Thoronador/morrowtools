@@ -27,6 +27,11 @@
 namespace SRTP
 {
 
+Tes4HeaderRecord::MasterFile::MasterFile()
+: fileName(""),
+  data(0)
+{ }
+
 bool Tes4HeaderRecord::MasterFile::operator==(const Tes4HeaderRecord::MasterFile& other) const
 {
   return ((data==other.data) and (fileName==other.fileName));

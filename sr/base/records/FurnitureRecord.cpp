@@ -33,6 +33,7 @@ FurnitureRecord::FurnitureRecord()
   name(LocalizedString()), modelPath(""),
   unknownMODT(BinarySubRecord()),
   unknownMODS(BinarySubRecord()),
+  destruction(DestructionData()),
   keywords(std::vector<uint32_t>()),
   unknownPNAM(0), unknownFNAM(0),
   interactionKeywordFormID(0),
@@ -42,7 +43,6 @@ FurnitureRecord::FurnitureRecord()
   unknownFNMKs(std::vector<uint32_t>()),
   unknownFNPRs(std::vector<uint32_t>()), markerModelPath("")
 {
-  destruction.clear();
 }
 
 FurnitureRecord::~FurnitureRecord()

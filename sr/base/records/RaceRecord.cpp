@@ -29,6 +29,19 @@ namespace SRTP
 
 /* RaceData's functions */
 
+RaceRecord::RaceData::RaceData()
+: heightMale(0.0f),
+  heightFemale(0.0f),
+  weightMale(0.0f),
+  weightFemale(0.0f),
+  has36(false)
+
+{
+  memset(unknown16, 0, 16);
+  memset(unknown96, 0, 96);
+  memset(unknown36, 0, 36);
+}
+
 bool RaceRecord::RaceData::operator==(const RaceRecord::RaceData& other) const
 {
   return ((memcmp(unknown16, other.unknown16, 16)==0) and (heightMale==other.heightMale)
@@ -59,12 +72,12 @@ RaceRecord::RaceRecord()
   description(LocalizedString()),
   spellFormIDs(std::vector<uint32_t>()),
   hasWNAM(false), unknownWNAM(0),
+  unknownBODT(BinarySubRecord()),
+  unknownBOD2(BinarySubRecord()),
   keywordArray(std::vector<uint32_t>()),
+  data(RaceData()),
   subBlocks(std::vector<SubBlock>())
 {
-  unknownBODT.setPresence(false);
-  unknownBOD2.setPresence(false);
-  data.clear();
 }
 
 RaceRecord::~RaceRecord()

@@ -20,9 +20,15 @@
 
 #include "CTDAData.h"
 #include <iostream>
+#include <cstring>
 
 namespace SRTP
 {
+
+CTDAData::CTDAData()
+{
+  memset(content, 0, 32);
+}
 
 bool CTDAData::loadFromStream(std::istream& in_Stream, uint32_t& bytesRead)
 {

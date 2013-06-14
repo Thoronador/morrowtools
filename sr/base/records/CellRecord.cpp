@@ -29,6 +29,14 @@
 namespace SRTP
 {
 
+CellRecord::SubrecordXCLC::SubrecordXCLC()
+: presence(false),
+  locationX(0),
+  locationY(0),
+  unknownThird(0)
+{
+}
+
 bool CellRecord::SubrecordXCLC::operator==(const CellRecord::SubrecordXCLC& other) const
 {
   if (presence!=other.presence) return false;
@@ -46,6 +54,7 @@ CellRecord::CellRecord()
   unknownDATA(BinarySubRecord()),
   unknownTVDT(BinarySubRecord()),
   unknownMHDT(BinarySubRecord()),
+  gridLocation(SubrecordXCLC()),
   unknownXCLL(BinarySubRecord()),
   lightingTemplateFormID(0),
   hasLNAM(false), unknownLNAM(0),
@@ -66,7 +75,6 @@ CellRecord::CellRecord()
   regionFormID(0),
   defaultAcousticSpaceFormID(0)
 {
-  gridLocation.presence = false;
 }
 
 CellRecord::~CellRecord()

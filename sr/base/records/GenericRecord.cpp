@@ -36,17 +36,14 @@ GenericRecord::GenericRecord()
 
 GenericRecord::GenericRecord(const GenericRecord& other)
 : Header(other.Header),
-  m_DataSize(other.getDataSize())
+  m_DataSize(other.getDataSize()),
+  m_Data(NULL)
 {
   copyBasicMembers(other);
   if (m_DataSize!=0)
   {
     m_Data = new unsigned char[m_DataSize];
     memcpy(m_Data, other.getDataPointer(), m_DataSize);
-  }
-  else
-  {
-    m_Data = NULL;
   }
 }
 

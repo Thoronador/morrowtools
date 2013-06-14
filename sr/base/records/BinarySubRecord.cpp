@@ -33,16 +33,12 @@ BinarySubRecord::BinarySubRecord()
 }
 
 BinarySubRecord::BinarySubRecord(const BinarySubRecord& op)
-: m_Size(op.getSize()), m_Present(op.isPresent())
+: m_Pointer(NULL), m_Size(op.getSize()), m_Present(op.isPresent())
 {
   if (m_Size>0)
   {
     m_Pointer = new uint8_t[m_Size];
     memcpy(m_Pointer, op.getPointer(), m_Size);
-  }
-  else
-  {
-    m_Pointer = NULL;
   }
 }
 

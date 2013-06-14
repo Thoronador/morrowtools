@@ -49,21 +49,6 @@ int64_t getFileSize64(const std::string& fileName)
   return -1;
 }//function
 
-/*
-time_t getFileModificationTime(const std::string& FileName)
-{
-  struct stat buffer;
-  if (stat(FileName.c_str(), &buffer)==0)
-  {
-    //stat() was successful
-    return buffer.st_mtime;
-  }//if
-  //An error occured, so we don't have a proper value for time.
-  // Return -1 in this case to indicate an error.
-  return -1;
-}//function
-*/
-
 bool setFileModificationTime(const std::string& FileName, const time_t new_mtime)
 {
   struct stat buffer;
@@ -133,6 +118,10 @@ bool deleteFile(const std::string& fileName)
 {
   return (remove(fileName.c_str())==0);
 }
+
+FileEntry::FileEntry()
+: fileName(""), isDirectory(false)
+{ }
 
 std::vector<FileEntry> getDirectoryFileList(const std::string& Directory)
 {

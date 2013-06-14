@@ -27,6 +27,14 @@
 namespace SRTP
 {
 
+ActivatorRecord::destStruct::destStruct()
+: hasDSTD(false),
+  destroyedModelPath(""),
+  unknownDMDT(BinarySubRecord()),
+  unknownDMDS(BinarySubRecord())
+{
+}
+
 bool ActivatorRecord::destStruct::operator==(const ActivatorRecord::destStruct& other) const
 {
   return ((hasDSTD==other.hasDSTD) and ((memcmp(unknownDSTD, other.unknownDSTD, 20)==0) or (!hasDSTD))

@@ -83,6 +83,9 @@ struct Tes4HeaderRecord: public BasicRecord
       std::string fileName;
       int64_t data;
 
+      /* constructor */
+      MasterFile();
+
       /* equality operator */
       bool operator==(const MasterFile& other) const;
     };//struct

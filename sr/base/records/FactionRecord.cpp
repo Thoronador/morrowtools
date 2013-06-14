@@ -59,6 +59,15 @@ bool FactionRecord::InterfactionRelation::operator==(const FactionRecord::Interf
 }
 
 /* VendorData's functions */
+FactionRecord::VendorData::VendorData()
+: startHour(0),
+  endHour(0),
+  radius(0),
+  flagsVendor(0),
+  isPresent(false)
+{
+}
+
 bool FactionRecord::VendorData::operator==(const VendorData& other) const
 {
   if (isPresent!=other.isPresent) return false;
@@ -68,6 +77,13 @@ bool FactionRecord::VendorData::operator==(const VendorData& other) const
 }
 
 /* RankData's functions */
+FactionRecord::RankData::RankData()
+: index(0),
+  maleName(LocalizedString()),
+  femaleName(LocalizedString())
+{
+}
+
 bool FactionRecord::RankData::operator==(const FactionRecord::RankData& other) const
 {
   return ((index==other.index) and(maleName==other.maleName)
@@ -87,19 +103,14 @@ FactionRecord::FactionRecord()
   playerInventoryContainerRefID(0), //subrecord PLCN, opt.
   crimeFactionListFormID(0), //subrecord CRGR, opt.
   jailOutfitFormID(0), //subrecord JOUT, opt.
+  unknownCRVA(BinarySubRecord()), //subrecord CRVA, opt.
   ranks(std::vector<RankData>()),
   vendorListFormID(0),
   vendorContainterFormID(0),
+  vendorStuff(VendorData()),
+  unknownPLVD(BinarySubRecord()),
   conditions(std::vector<CTDA_CIS2_compound>())
 {
-  unknownCRVA.setPresence(false); //subrecord CRVA, opt.
-  //VENV
-  vendorStuff.startHour = 0;
-  vendorStuff.endHour = 0;
-  vendorStuff.radius = 0;
-  vendorStuff.flagsVendor = 0;
-  //end of VENV
-  unknownPLVD.setPresence(false);
 }
 
 FactionRecord::~FactionRecord()

@@ -30,9 +30,9 @@ NAVIRecord::NAVIRecord()
 : BasicRecord(),
   unknownNVER(0),
   unknownNVMIs(std::vector<BinarySubRecord>()),
+  unknownNVPP(BinarySubRecord()),
   unknownNVSI(0)
 {
-  unknownNVPP.setPresence(false);
 }
 
 NAVIRecord::~NAVIRecord()

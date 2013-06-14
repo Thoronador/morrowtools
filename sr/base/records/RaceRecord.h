@@ -87,6 +87,9 @@ struct RaceRecord: public BasicRecord
       bool has36;
       uint8_t unknown36[36];
 
+      /* constructor */
+      RaceData();
+
       /* comparison operator */
       bool operator==(const RaceData& other) const;
 

@@ -26,9 +26,9 @@ namespace SRTP
 {
 
 ESMReaderContentsBase::ESMReaderContentsBase()
-: m_InternalGroupLevel(0), m_InternalGroup(NULL)
+: contents(ESMFileContents()),
+  m_InternalGroupLevel(0), m_InternalGroup(NULL)
 {
-  contents.removeContents();
 }
 
 ESMReaderContentsBase::~ESMReaderContentsBase()

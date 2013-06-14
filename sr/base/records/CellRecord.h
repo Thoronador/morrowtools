@@ -78,6 +78,9 @@ struct CellRecord: public BasicRecord
       int32_t locationY;
       uint32_t unknownThird;
 
+      /* constructor */
+      SubrecordXCLC();
+
       /* equality operator */
       bool operator==(const SubrecordXCLC& other) const;
     };

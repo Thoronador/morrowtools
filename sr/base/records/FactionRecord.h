@@ -109,6 +109,9 @@ struct FactionRecord: public BasicRecord
       LocalizedString maleName;   //MNAM
       LocalizedString femaleName; //FNAM
 
+      /* constructor */
+      RankData();
+
       /* equality operator */
       bool operator==(const RankData& other) const;
     };//struct
@@ -126,6 +129,10 @@ struct FactionRecord: public BasicRecord
       uint32_t flagsVendor;
 
       bool isPresent;
+
+      /* constructor */
+      VendorData();
+
       /* equality operator */
       bool operator==(const VendorData& other) const;
     };//struct

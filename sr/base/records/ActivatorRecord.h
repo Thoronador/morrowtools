@@ -78,6 +78,9 @@ struct ActivatorRecord: public BasicRecord
       BinarySubRecord unknownDMDT;
       BinarySubRecord unknownDMDS;
 
+      /* constructor */
+      destStruct();
+
       /* equality operator */
       bool operator==(const destStruct& other) const;
 

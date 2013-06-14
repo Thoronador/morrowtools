@@ -22,7 +22,6 @@
 #define SR_CTDADATA_H
 
 #include <fstream>
-#include <cstring>
 #include <string>
 #include <stdint.h>
 #include "../SR_Constants.h"
@@ -32,6 +31,9 @@ namespace SRTP
 
 struct CTDAData
 {
+  /* constructor */
+  CTDAData();
+
   uint8_t content[32];
 
   /* loads the CTDA data from the given input stream and returns true on success
@@ -100,9 +102,9 @@ const uint32_t CTDA_CISx_compound<cisRecName>::cCISx = cisRecName;
 
 template<uint32_t cisRecName>
 CTDA_CISx_compound<cisRecName>::CTDA_CISx_compound()
-: unknownCISx("")
+: unknownCTDA(CTDAData()),
+  unknownCISx("")
 {
-  memset(unknownCTDA.content, 0, 32);
 }
 
 template<uint32_t cisRecName>

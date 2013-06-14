@@ -77,10 +77,49 @@ bool QuestRecord::IndexEntry::QSDTRecord::operator==(const QuestRecord::IndexEnt
 /* AliasEntry's functions */
 
 QuestRecord::AliasEntry::AliasEntry()
-: unknownALST(0),
-  aliasID("") //subrecord ALID
+: hasALST(false),
+  unknownALST(0),
+  hasALLS(false),
+  unknownALLS(0),
+  aliasID(""), //subrecord ALID
+  unknownFNAM(0),
+  hasALFA(false),
+  unknownALFA(0),
+  locationRefTypeFormID(0), //subrecord ALRT
+  createReferenceToObjectFormID(0), //subrecord ALCO
+  hasALCA(false),
+  unknownALCA(0),
+  hasALCL(false),
+  unknownALCL(0),
+  displayNameFormID(0), //subrecord ALDN
+  components(std::vector<ComponentData>()),
+  keywordArray(std::vector<uint32_t>()),
+  hasALFE(false),
+  unknownALFE(0),
+  hasALFD(false),
+  unknownALFD(0),
+  hasALFI(false),
+  forcedIntoAliasID(0), //subrecord ALFI
+  specificLocationFormID(0), //subrecord ALFL
+  specificReferenceID(0), //subrecord ALFR
+  hasALNA(false),
+  unknownALNA(0),
+  hasALNT(false),
+  unknownALNT(0),
+  uniqueActorFormID(0), //subrecord ALUA
+  externalAliasReferenceFormID(0), //subrecord ALEQ
+  hasALEA(false),
+  unknownALEA(0),
+  keywordFormID(0), //subrecord KNAM
+  unknownCTDA_CIS2s(std::vector<CTDA_CIS2_compound>()),
+  spectatorOverridePackageListFormID(0), //subrecord SPOR
+  combatOverridePackageListFormID(0), //subrecord ECOR
+  spellFormIDs(std::vector<uint32_t>()), //subrecords ALSP
+  factionFormIDs(std::vector<uint32_t>()), //subrecords ALFC
+  packageDataFormIDs(std::vector<uint32_t>()), //subrecords ALPC
+  hasVTCK(false),
+  unknownVTCK(0)
 {
-  clear();
 }
 
 bool QuestRecord::AliasEntry::operator==(const QuestRecord::AliasEntry& other) const

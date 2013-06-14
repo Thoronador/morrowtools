@@ -33,6 +33,11 @@ struct SubBlock
   uint32_t subType;
   BinarySubRecord subData;
 
+  /* constructor */
+  SubBlock()
+  : subType(0), subData(BinarySubRecord())
+  {  }
+
   /* comparison operator */
   inline bool operator==(const SubBlock& other) const
   {

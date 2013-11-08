@@ -33,7 +33,7 @@ BookRecord::BookRecord()
   MeshPath(""),
   Name(""),
   //book data
-  Weight(0.0f;),
+  Weight(0.0f),
   Value(0),
   Scroll(0),
   SkillID (-1),

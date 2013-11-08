@@ -38,7 +38,7 @@ MiscItemRecord::MiscItemRecord()
   OtherStuff(0),
   //end of miscellaneous item data
   InventoryIcon(""),
-  ScriptID"")
+  ScriptID("")
 {}
 
 MiscItemRecord::~MiscItemRecord()

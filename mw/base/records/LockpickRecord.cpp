@@ -28,16 +28,19 @@ namespace MWTP
 {
 
 LockpickRecord::LockpickRecord()
-{
-  recordID = Name = ModelPath = "";
+: BasicRecord(),
+  recordID(""),
+  Name(""),
+  ModelPath(""),
   //lockpick data
-  Weight = 0.0f;
-  Value = 0;
-  Quality = 0.0f;
-  Uses = 0;
+  Weight(0.0f),
+  Value(0),
+  Quality(0.0f),
+  Uses(0),
   //end of lockpick data
-  InventoryIcon = ScriptID = "";
-}
+  InventoryIcon(""),
+  ScriptID("")
+{}
 
 bool LockpickRecord::equals(const LockpickRecord& other) const
 {

@@ -3,18 +3,18 @@
     This file is part of the Morrowind Tools Project.
     Copyright (C) 2009, 2011, 2012  Thoronador
 
-    The Morrowind Tools are free software: you can redistribute them and/or
-    modify them under the terms of the GNU General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    The Morrowind Tools are distributed in the hope that they will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with the Morrowind Tools.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -------------------------------------------------------------------------------
 */
 
@@ -31,10 +31,15 @@ const int32_t rfPlayable = 1;
 const int32_t rfBeastRace = 2;
 
 RaceRecord::RaceRecord()
-{
-  recordID = RaceName = "";
+: BasicRecord(),
+  recordID(""), RaceName(""),
   //race data
-  Boni.clear();
+  Boni(std::vector<SkillBonus>()),
+  RaceFlags(0),
+  //end of race data
+  Powers(std::vector<std::string>()),
+  Description("")
+{
   Strength[0] = Strength[1] = 0;
   Intelligence[0] = Intelligence[1] = 0;
   Willpower[0] = Willpower[1] = 0;
@@ -45,18 +50,20 @@ RaceRecord::RaceRecord()
   Luck[0] = Luck[1] = 0;
   Weight[0] = Weight[1] = 0.0f;
   Height[0] = Height[1] = 1.0f;
-  RaceFlags = 0;
-  //end of race data
-  Powers.clear();
-  Description = "";
 }
 
 RaceRecord::RaceRecord(const std::string& ID)
-{
-  recordID = ID;
-  RaceName = "";
+: BasicRecord(),
+  recordID(ID),
+  RaceName(""),
   //race data
-  Boni.clear();
+  Boni(std::vector<SkillBonus>()),
+  // --> etc., see below
+  RaceFlags(0),
+  //end of race data
+  Powers(std::vector<std::string>()),
+  Description("")
+{
   Strength[0] = Strength[1] = 0;
   Intelligence[0] = Intelligence[1] = 0;
   Willpower[0] = Willpower[1] = 0;
@@ -67,10 +74,6 @@ RaceRecord::RaceRecord(const std::string& ID)
   Luck[0] = Luck[1] = 0;
   Weight[0] = Weight[1] = 0.0f;
   Height[0] = Height[1] = 1.0f;
-  RaceFlags = 0;
-  //end of race data
-  Powers.clear();
-  Description = "";
 }
 
 RaceRecord::~RaceRecord()

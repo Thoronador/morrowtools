@@ -28,15 +28,18 @@ namespace MWTP
 {
 
 MiscItemRecord::MiscItemRecord()
-{
-  recordID = ModelPath = MiscItemName = "";
+: BasicRecord(),
+  recordID(""),
+  ModelPath(""),
+  MiscItemName(""),
   //miscellaneous item data
-  Weight = 0.0f;
-  Value = -1;
-  OtherStuff = 0;
+  Weight(0.0f),
+  Value(-1),
+  OtherStuff(0),
   //end of miscellaneous item data
-  InventoryIcon = ScriptID = "";
-}
+  InventoryIcon(""),
+  ScriptID"")
+{}
 
 MiscItemRecord::~MiscItemRecord()
 {

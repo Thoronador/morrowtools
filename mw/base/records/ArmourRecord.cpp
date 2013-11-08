@@ -28,22 +28,23 @@ namespace MWTP
 {
 
 ArmourRecord::ArmourRecord()
-{
-  recordID = "";
-  Model = "";
-  Name = "";
+: BasicRecord(),
+  recordID(""),
+  Model(""),
+  Name(""),
   //armour data
-  ArmourType = 0;
-  Weight = 0.0f;
-  Value = 0;
-  Health = 0;
-  EnchantmentPoints = 0;
-  ArmourRating = 0;
+  ArmourType(0),
+  Weight(0.0f),
+  Value(0),
+  Health(0),
+  EnchantmentPoints(0),
+  ArmourRating(0),
   //end of armour data
-  InventoryIcon = "";
-  ArmourBodyParts.clear();
-  ScriptID = EnchantmentID = "";
-}
+  InventoryIcon(""),
+  ArmourBodyParts(std::vector<BodyPartAssociation>()),
+  ScriptID(""),
+  EnchantmentID("")
+{}
 
 bool ArmourRecord::equals(const ArmourRecord& other) const
 {

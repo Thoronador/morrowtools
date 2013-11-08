@@ -28,16 +28,21 @@ namespace MWTP
 {
 
 IngredientRecord::IngredientRecord()
-{
-  recordID = ModelName = IngredientName = "";
+: BasicRecord(),
+  recordID(""),
+  ModelName(""),
+  IngredientName(""),
   //IngredientData
-  Weight = 0.0f;
-  Value = 0;
+  Weight(0.0f),
+  Value(0),
+  // --> EffectID, SkillID, AttributeID -> see below
+  // end of Ingredient data
+  InventoryIcon(""),
+  ScriptName("")
+{
   EffectID[0]=EffectID[1]=EffectID[2]=EffectID[3]=0;
   SkillID[0]=SkillID[1]=SkillID[2]=SkillID[3]=0;
   AttributeID[0]=AttributeID[1]=AttributeID[2]=AttributeID[3]=0;
-  // end of Ingredient data
-  InventoryIcon = ScriptName = "";
 }
 
 bool IngredientRecord::equals(const IngredientRecord& other) const

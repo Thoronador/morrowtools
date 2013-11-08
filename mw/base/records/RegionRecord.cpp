@@ -3,18 +3,18 @@
     This file is part of the Morrowind Tools Project.
     Copyright (C) 2009, 2011, 2012  Thoronador
 
-    The Morrowind Tools are free software: you can redistribute them and/or
-    modify them under the terms of the GNU General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    The Morrowind Tools are distributed in the hope that they will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with the Morrowind Tools.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -------------------------------------------------------------------------------
 */
 
@@ -28,25 +28,25 @@ namespace MWTP
 {
 
 RegionRecord::RegionRecord()
-{
-  recordID = RegionName = "";
-  Clear = Cloudy = Foggy = Overcast = Rain = Thunder = Ash = Blight =
-  Snow = Blizzard = 0;
-  SleepCreature = "";
-  Red = Green = Blue = Zero = 0;
-  SoundChances.clear();
-}
+: BasicRecord(),
+  recordID(""), RegionName(""),
+  Clear(0), Cloudy(0), Foggy(0), Overcast(0), Rain(0), Thunder(0), Ash(0), Blight(0),
+  Snow(0), Blizzard(0),
+  SleepCreature(""),
+  Red(0), Green(0), Blue(0), Zero(0),
+  SoundChances(std::vector<SoundChanceRecord>())
+{}
 
 RegionRecord::RegionRecord(const std::string& ID)
-{
-  recordID = ID;
-  RegionName = "";
-  Clear = Cloudy = Foggy = Overcast = Rain = Thunder = Ash = Blight =
-  Snow = Blizzard = 0;
-  SleepCreature = "";
-  Red = Green = Blue = Zero = 0;
-  SoundChances.clear();
-}
+: BasicRecord()
+  recordID(ID),
+  RegionName(""),
+  Clear(0), Cloudy(0), Foggy(0), Overcast(0), Rain(0), Thunder(0), Ash(0), Blight(0),
+  Snow(0), Blizzard(0),
+  SleepCreature(""),
+  Red(0), Green(0), Blue(0), Zero(0),
+  SoundChances(std::vector<SoundChanceRecord>())
+{}
 
 RegionRecord::~RegionRecord()
 {

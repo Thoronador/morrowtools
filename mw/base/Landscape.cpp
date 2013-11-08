@@ -3,18 +3,18 @@
     This file is part of the Morrowind Tools Project.
     Copyright (C) 2011 Thoronador
 
-    The Morrowind Tools are free software: you can redistribute them and/or
-    modify them under the terms of the GNU General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    The Morrowind Tools are distributed in the hope that they will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with the Morrowind Tools.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -------------------------------------------------------------------------------
 */
 
@@ -25,15 +25,15 @@ namespace MWTP
 {
 
 LandscapeCoords::LandscapeCoords(const LandscapeRecord& rec)
+: X(rec.CellX),
+  Y(rec.CellY)
 {
-  X = rec.CellX;
-  Y = rec.CellY;
 }
 
 LandscapeCoords::LandscapeCoords(const int32_t cellX, const int32_t cellY)
+: X(cellX),
+  Y(cellY)
 {
-  X = cellX;
-  Y = cellY;
 }
 
 bool LandscapeCoords::operator<(const LandscapeCoords& rhs) const
@@ -44,6 +44,7 @@ bool LandscapeCoords::operator<(const LandscapeCoords& rhs) const
 }
 
 Landscape::Landscape()
+: m_Landscape(std::map<LandscapeCoords, LandscapeRecord*>())
 {
   //empty
 }

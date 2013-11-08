@@ -28,28 +28,28 @@ namespace MWTP
 {
 
 BodyPartRecord::BodyPartRecord()
-{
-  recordID = "";
-  MeshPath = "";
-  RaceID = "";
+: BasicRecord(),
+  recordID(""),
+  MeshPath(""),
+  RaceID(""),
   //body data
-  Part = 0;
-  Vampire = 0;
-  Flags = 0;
-  PartType = 0;
-}
+  Part(0),
+  Vampire(0),
+  Flags(0),
+  PartType(0)
+{}
 
 BodyPartRecord::BodyPartRecord(const std::string& ID)
-{
-  recordID = ID;
-  MeshPath = "";
-  RaceID = "";
+: BasicRecord(),
+  recordID(ID),
+  MeshPath(""),
+  RaceID(""),
   //body data
-  Part = 0;
-  Vampire = 0;
-  Flags = 0;
-  PartType = 0;
-}
+  Part(0),
+  Vampire(0),
+  Flags(0),
+  PartType(0)
+{}
 
 bool BodyPartRecord::equals(const BodyPartRecord& other) const
 {

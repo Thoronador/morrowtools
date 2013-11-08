@@ -29,16 +29,19 @@ namespace MWTP
 {
 
 ProbeRecord::ProbeRecord()
-{
-  recordID = ModelPath = Name = "";
+: BasicRecord(),
+  recordID(""),
+  ModelPath(""),
+  Name(""),
   //probe data
-  Weight = 0.0f;
-  Value = 0;
-  Quality = 0.0f;
-  Uses = 0;
+  Weight(0.0f),
+  Value(0),
+  Quality(0.0f),
+  Uses(0),
   //end of probe data
-  InventoryIcon = ScriptName = "";
-}
+  InventoryIcon(""),
+  ScriptName("")
+{ }
 
 ProbeRecord::ProbeRecord(const std::string& ID)
 {

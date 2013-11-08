@@ -28,21 +28,25 @@ namespace MWTP
 {
 
 LightRecord::LightRecord()
-{
-  recordID = ModelPath = Name = InventoryIcon = "";
+: BasicRecord(),
+  recordID(""),
+  ModelPath(""),
+  Name(""),
+  InventoryIcon(""),
   //light data
-  Weight = 0.0f;
-  Value = 0;
-  Time = 0;
-  Radius = 0;
-  Red = 0;
-  Green = 0;
-  Blue = 0;
-  Zero = 0;
-  LightFlags = 0;
+  Weight(0.0f),
+  Value(0),
+  Time(0),
+  Radius(0),
+  Red(0),
+  Green(0),
+  Blue(0),
+  Zero(0),
+  LightFlags(0),
   //end of light data
-  ScriptID = SoundID = "";
-}
+  ScriptID(""),
+  SoundID("")
+{}
 
 bool LightRecord::equals(const LightRecord& other) const
 {

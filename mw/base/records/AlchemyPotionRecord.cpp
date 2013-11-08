@@ -28,15 +28,19 @@ namespace MWTP
 {
 
 AlchemyPotionRecord::AlchemyPotionRecord()
-{
-  recordID = ModelPath = Name = "";
+:  BasicRecord(),
+  recordID(""),
+  ModelPath(""),
+  Name(""),
   //alchemy data
-  Weight = 0.0f;
-  Value = -1;
-  AutoCalc = 0;
+  Weight(0.0f),
+  Value(-1),
+  AutoCalc(0),
   //end alchemy data
-  Enchs.clear();
-  InventoryIcon = ScriptName = "";
+  Enchs(std::vector<EnchantmentData>()),
+  InventoryIcon(""),
+  ScriptName("")
+{
 }
 
 bool AlchemyPotionRecord::equals(const AlchemyPotionRecord& other) const

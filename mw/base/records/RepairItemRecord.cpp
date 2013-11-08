@@ -29,29 +29,29 @@ namespace MWTP
 {
 
 RepairItemRecord::RepairItemRecord()
-{
-  recordID = ModelPath = Name = "";
+: BasicRecord(),
+  recordID(""), ModelPath(""), Name(""),
   //repair data
-  Weight = 0.0f;
-  Value = 0;
-  Uses = 0;
-  Quality = 0.0f;
+  Weight(0.0f),
+  Value(0),
+  Uses(0),
+  Quality(0.0f),
   //end of repair data
-  InventoryIcon = ScriptName = "";
-}
+  InventoryIcon(""), ScriptName("")
+{}
 
 RepairItemRecord::RepairItemRecord(const std::string& ID)
-{
-  recordID = ID;
-  ModelPath = Name = "";
+: BasicRecord(),
+  recordID(ID),
+  ModelPath(""), Name(""),
   //repair data
-  Weight = 0.0f;
-  Value = 0;
-  Uses = 0;
-  Quality = 0.0f;
+  Weight(0.0f),
+  Value(0),
+  Uses(0),
+  Quality(0.0f),
   //end of repair data
-  InventoryIcon = ScriptName = "";
-}
+  InventoryIcon(""), ScriptName("")
+{}
 
 RepairItemRecord::~RepairItemRecord()
 {

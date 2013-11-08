@@ -3,18 +3,18 @@
     This file is part of the Morrowind Tools Project.
     Copyright (C) 2009, 2011 Thoronador
 
-    The Morrowind Tools are free software: you can redistribute them and/or
-    modify them under the terms of the GNU General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    The Morrowind Tools are distributed in the hope that they will be useful,
+    This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with the Morrowind Tools.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
  -------------------------------------------------------------------------------
 */
 
@@ -27,21 +27,22 @@ namespace MWTP
 {
 
 LandscapeRecord::LandscapeRecord()
+: BasicRecord(),
+  CellX(0), CellY(0),
+  UnknownData(0),
+  hasNormals(false),
+  hasHeightSubrecord(false),
+  HeightOffset(0.0f),
+  UnknownByte(0),
+  UnknownShort(0),
+  hasWNAMSubrecord(false),
+  hasVertexColour(false),
+  hasVertexTextures(false)
 {
-  CellX = CellY = 0;
-  UnknownData = 0;
-  hasNormals = false;
   memset(&(Normals[0][0][0]), '\0', 65*65*3);
-  hasHeightSubrecord = false;
-  HeightOffset = 0.0f;
-  UnknownByte = 0;
   memset(&(HeightData[0][0]), 0, 65*65);
-  UnknownShort = 0;
-  hasWNAMSubrecord = false;
   memset(Data, 0, 81);
-  hasVertexColour = false;
   memset(&(VertexColour[0][0][0]), '\0', 65*65*3);
-  hasVertexTextures = false;
   memset (&(VertexTextures[0][0]), 0, 16*16*2);
 }
 

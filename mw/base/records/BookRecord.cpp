@@ -28,17 +28,22 @@ namespace MWTP
 {
 
 BookRecord::BookRecord()
-{
-  recordID = MeshPath = Name = "";
+: BasicRecord(),
+  recordID(""),
+  MeshPath(""),
+  Name(""),
   //book data
-  Weight = 0.0f;;
-  Value = 0;
-  Scroll = 0;
-  SkillID = -1;
-  EnchantPoints = 0;
+  Weight(0.0f;),
+  Value(0),
+  Scroll(0),
+  SkillID (-1),
+  EnchantPoints(0),
   //end of book data
-  InventoryIcon = ScriptID = Text = "";
-}
+  InventoryIcon(""),
+  ScriptID(""),
+  Text(""),
+  EnchantmentID("")
+{}
 
 bool BookRecord::equals(const BookRecord& other) const
 {
@@ -46,7 +51,8 @@ bool BookRecord::equals(const BookRecord& other) const
       and (Name==other.Name) and (Weight==other.Weight) and (Value==other.Value)
       and (Scroll==other.Scroll) and (SkillID==other.SkillID)
       and (EnchantPoints==other.EnchantPoints) and (InventoryIcon==other.InventoryIcon)
-      and (ScriptID==other.ScriptID) and (Text==other.Text));
+      and (ScriptID==other.ScriptID) and (Text==other.Text)
+      and (EnchantmentID==other.EnchantmentID));
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS

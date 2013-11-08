@@ -28,9 +28,14 @@ namespace MWTP
 {
 
 DoorRecord::DoorRecord()
-{
-  recordID = Name = ModelPath = Script = SoundOpen = SoundClose = "";
-}
+: BasicRecord(),
+  recordID(""),
+  Name(""),
+  ModelPath(""),
+  Script(""),
+  SoundOpen(""),
+  SoundClose("")
+{}
 
 DoorRecord::~DoorRecord()
 {

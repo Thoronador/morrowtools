@@ -2,6 +2,9 @@ language: cpp
 compiler:
   - clang
   - gcc
+branches:
+  only:
+    - master
 before_install:
   - sudo apt-get install zlib1g zlib1g-dev libboost-dev -y
 script:

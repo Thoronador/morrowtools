@@ -28,18 +28,21 @@ namespace MWTP
 {
 
 ClothingRecord::ClothingRecord()
-{
-  recordID = Model = Name = "";
+: BasicRecord(),
+  recordID(""),
+  Model(""),
+  Name(""),
   //clothing data
-  ClothingType = 0;
-  Weight = 0.0f;
-  Value = 0;
-  EnchantmentPoints = 0;
+  ClothingType(0),
+  Weight(0.0f),
+  Value(0),
+  EnchantmentPoints(0),
   //end of clothing data
-  InventoryIcon = "";
-  ClothingBodyParts.clear();
-  ScriptID = EnchantmentID = "";
-}
+  InventoryIcon(""),
+  ClothingBodyParts(std::vector<BodyPartAssociation>()),
+  ScriptID(""),
+  EnchantmentID("")
+{}
 
 bool ClothingRecord::equals(const ClothingRecord& other) const
 {

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="ingred_list" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/ingred_list" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/ingred_list" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-fexceptions" />
+		</Compiler>
+		<Unit filename="../../base/ComparisonFunctor.h" />
+		<Unit filename="../../base/FileFunctions.cpp" />
+		<Unit filename="../../base/FileFunctions.h" />
+		<Unit filename="../../base/UtilityFunctions.cpp" />
+		<Unit filename="../../base/UtilityFunctions.h" />
+		<Unit filename="../../mw/base/HelperIO.cpp" />
+		<Unit filename="../../mw/base/HelperIO.h" />
+		<Unit filename="../base/ESMReader.cpp" />
+		<Unit filename="../base/ESMReader.h" />
+		<Unit filename="../base/ESMReaderSingleType.h" />
+		<Unit filename="../base/FormIDFunctions.cpp" />
+		<Unit filename="../base/FormIDFunctions.h" />
+		<Unit filename="../base/Ingredients.h" />
+		<Unit filename="../base/MagicEffects.h" />
+		<Unit filename="../base/MapBasedRecordManager.h" />
+		<Unit filename="../base/SR_Constants.h" />
+		<Unit filename="../base/StringTable.cpp" />
+		<Unit filename="../base/StringTable.h" />
+		<Unit filename="../base/records/BasicRecord.cpp" />
+		<Unit filename="../base/records/BasicRecord.h" />
+		<Unit filename="../base/records/BinarySubRecord.cpp" />
+		<Unit filename="../base/records/BinarySubRecord.h" />
+		<Unit filename="../base/records/CTDAData.cpp" />
+		<Unit filename="../base/records/CTDAData.h" />
+		<Unit filename="../base/records/EffectBlock.cpp" />
+		<Unit filename="../base/records/EffectBlock.h" />
+		<Unit filename="../base/records/GroupData.cpp" />
+		<Unit filename="../base/records/GroupData.h" />
+		<Unit filename="../base/records/IngredientRecord.cpp" />
+		<Unit filename="../base/records/IngredientRecord.h" />
+		<Unit filename="../base/records/LocalizedString.cpp" />
+		<Unit filename="../base/records/LocalizedString.h" />
+		<Unit filename="../base/records/MagicEffectRecord.cpp" />
+		<Unit filename="../base/records/MagicEffectRecord.h" />
+		<Unit filename="../base/records/TES4HeaderRecord.cpp" />
+		<Unit filename="../base/records/TES4HeaderRecord.h" />
+		<Unit filename="main.cpp" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

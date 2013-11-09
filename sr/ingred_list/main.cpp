@@ -1,13 +1,32 @@
+/*
+ -------------------------------------------------------------------------------
+    This file is part of the Skyrim Tools Project.
+    Copyright (C) 2011, 2012, 2013  Thoronador
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ -------------------------------------------------------------------------------
+*/
+
 #include <iostream>
 #include <set>
 #include <map>
 #include "../base/ESMReaderSingleType.h"
-#include "../base/records/Tes4HeaderRecord.h"
 #include "../base/FormIDFunctions.h"
 #include "../base/Ingredients.h"
 #include "../base/MagicEffects.h"
 #include "../base/SR_Constants.h"
-#include "../base/StringTable.h"
+#include "../base/records/TES4HeaderRecord.h"
 #include "../../base/UtilityFunctions.h"
 #include "../../base/ComparisonFunctor.h"
 
@@ -18,16 +37,14 @@ struct ingredListEffect
     std::set<std::string> ingreds;
 
     ingredListEffect()
-    {
-      effectName = "";
-      ingreds.clear();
-    }
+    : effectName(""),
+      ingreds(std::set<std::string>())
+    {}
 
     ingredListEffect(const std::string& effName)
-    {
-      effectName = effName;
-      ingreds.clear();
-    }
+    : effectName(effName),
+      ingreds(std::set<std::string>())
+    {}
 
     bool operator<(const ingredListEffect& other) const
     {
@@ -67,30 +84,6 @@ int main()
     return 0;
   }
 
-  //String tables
-  SRTP::StringTable table, table_2nd;
-  if (!table.readTable("C:\\Temp\\Skyrim_German.DLStrings", SRTP::StringTable::sdUnknown))
-  {
-    std::cout << "Reading table C:\\Temp\\Skyrim_German.DLStrings failed!\n";
-    return 0;
-  }
-
-  if (!table_2nd.readTable("C:\\Temp\\Skyrim_German.ILStrings", SRTP::StringTable::sdUnknown))
-  {
-    std::cout << "Reading table C:\\Temp\\Skyrim_German.ILStrings failed!\n";
-    return 0;
-  }
-  table.mergeTables(table_2nd);
-  table_2nd.tabulaRasa();
-
-  if (!table_2nd.readTable("C:\\Temp\\Skyrim_German.Strings", SRTP::StringTable::sdUnknown))
-  {
-    std::cout << "Reading table C:\\Temp\\Skyrim_German.Strings failed!\n";
-  }
-
-  table.mergeTables(table_2nd);
-  table_2nd.tabulaRasa();
-
 
   std::cout << "INGR records read so far: "<<SRTP::Ingredients::getSingleton().getNumberOfRecords()<<"\n";
   std::cout << "   Four times that: "<<SRTP::Ingredients::getSingleton().getNumberOfRecords()*4<<"\n";
@@ -104,18 +97,18 @@ int main()
   SRTP::Ingredients::ListIterator iter = SRTP::Ingredients::getSingleton().getBegin();
   while (iter!=SRTP::Ingredients::getSingleton().getEnd())
   {
-    if (table.hasString(iter->second.name.getIndex()))
+    if (iter->second.name.isPresent())
     {
-      const std::string& ingredName = table.getString(iter->second.name.getIndex());
+      const std::string& ingredName = iter->second.name.getString();
       for (i=0; i<iter->second.effects.size(); ++i)
       {
         if (SRTP::MagicEffects::getSingleton().hasRecord(iter->second.effects[i].effectFormID))
         {
           const SRTP::MagicEffectRecord& eff_rec = SRTP::MagicEffects::getSingleton().getRecord(iter->second.effects[i].effectFormID);
-          if (table.hasString(eff_rec.name.getIndex()))
+          if (eff_rec.name.isPresent())
           {
             //add it to the list
-            const std::string& theEffectName = table.getString(eff_rec.name.getIndex());
+            const std::string& theEffectName = eff_rec.name.getString();
 
             theList[theEffectName].ingreds.insert(ingredName);
             ++entries;
@@ -185,7 +178,7 @@ int main()
   iter = SRTP::Ingredients::getSingleton().getBegin();
   while (iter!=SRTP::Ingredients::getSingleton().getEnd())
   {
-    name_fid_map[table.getString(iter->second.name.getIndex())] = iter->second.headerFormID;
+    name_fid_map[iter->second.name.getString()] = iter->second.headerFormID;
     ++iter;
   }//while
 
@@ -208,11 +201,11 @@ int main()
       output << "<tr>\n";
     }
     const SRTP::IngredientRecord& rec = SRTP::Ingredients::getSingleton().getRecord(mapIter->second);
-    output << "<td valign=\"top\">\n<u>"<<table.getString(rec.name.getIndex())<<"</u>\n<ul>\n";
+    output << "<td valign=\"top\">\n<u>"<<rec.name.getString()<<"</u>\n<ul>\n";
     inner_iter = rec.effects.begin();
     while (inner_iter!=rec.effects.end())
     {
-      output << "  <li>"<< table.getString(SRTP::MagicEffects::getSingleton().getRecord(inner_iter->effectFormID).name.getIndex()) <<"</li>\n";
+      output << "  <li>"<< SRTP::MagicEffects::getSingleton().getRecord(inner_iter->effectFormID).name.getString() <<"</li>\n";
       ++inner_iter;
     }//while (inner)
     output << "</ul>\n</td>\n";

@@ -3,16 +3,25 @@ cmake_minimum_required (VERSION 2.8)
 
 project(skill_rebalance)
 
-set(skill_rebalance_sources ../../base/DirectoryFunctions.cpp ../../base/FileFunctions.cpp ../../base/RegistryFunctions.cpp
-                         ../../base/UtilityFunctions.cpp
-                         ../base/DepFiles.cpp ../base/ESMReader.cpp ../base/ESMWriter.cpp
-                         ../base/GameSettings.cpp ../base/HelperIO.cpp ../base/Skills.cpp
-                         ../base/records/BasicRecord.cpp ../base/records/GMSTRecord.cpp ../base/records/GenericRecord.cpp
-                         ../base/records/SkillRecord.cpp ../base/records/TES3Record.cpp
-                         ESMReaderSkillRebalance.cpp ESMWriterSkillRebalance.cpp
-                         main.cpp)
-
-message ( "Info: CMAKE_CXX_COMPILER is set to ${CMAKE_CXX_COMPILER}." )
+set(skill_rebalance_sources
+    ../../base/DirectoryFunctions.cpp
+    ../../base/FileFunctions.cpp
+    ../../base/RegistryFunctions.cpp
+    ../../base/UtilityFunctions.cpp
+    ../base/DepFiles.cpp
+    ../base/ESMReader.cpp
+    ../base/ESMWriter.cpp
+    ../base/GameSettings.cpp
+    ../base/HelperIO.cpp
+    ../base/Skills.cpp
+    ../base/records/BasicRecord.cpp
+    ../base/records/GMSTRecord.cpp
+    ../base/records/GenericRecord.cpp
+    ../base/records/SkillRecord.cpp
+    ../base/records/TES3Record.cpp
+    ESMReaderSkillRebalance.cpp
+    ESMWriterSkillRebalance.cpp
+    main.cpp)
 
 if (CMAKE_COMPILER_IS_GNUCC)
     add_definitions (-Wall -O3 -fexceptions)

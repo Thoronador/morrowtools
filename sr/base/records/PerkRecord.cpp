@@ -67,9 +67,9 @@ uint32_t PerkRecord::getWriteSize() const
   {
     writeSize += name.getWriteSize();
   }
-  unsigned int i;
   if (!subBlocks.empty())
   {
+    unsigned int i;
     for (i=0; i<subBlocks.size(); ++i)
     {
       writeSize = writeSize +4 /*header*/ +2 /* 2 bytes for length */

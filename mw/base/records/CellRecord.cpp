@@ -104,7 +104,7 @@ bool ReferencedObject::operator==(const ReferencedObject& other) const
       and (TrapID==other.TrapID) and (OwnerID==other.OwnerID)
       and (OwnerFactionID==other.OwnerFactionID) and (FactionRank==other.FactionRank)
       and (SoulCreatureID==other.SoulCreatureID) and (hasXCHG==other.hasXCHG)
-      and (NumberOfUses==NumberOfUses) and (hasNAM9==other.hasNAM9)
+      and (NumberOfUses==other.NumberOfUses) and (hasNAM9==other.hasNAM9)
       and (GlobalVarID==other.GlobalVarID) and (hasUNAM==other.hasUNAM))
     {
       if (hasDoorData!=other.hasDoorData) return false;

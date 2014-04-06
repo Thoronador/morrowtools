@@ -117,9 +117,9 @@ uint32_t IngredientRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* ZNAM */ +2 /* 2 bytes for length */ +4 /* fixed length of 4 bytes */;
   }//if has ZNAM
-  unsigned int i;
   if (!effects.empty())
   {
+    unsigned int i;
     for (i=0; i<effects.size(); ++i)
     {
       writeSize = writeSize +effects[i].getWriteSize();

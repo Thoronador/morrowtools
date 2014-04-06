@@ -120,9 +120,9 @@ uint32_t SpellRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /*MDOB*/ +2 /* 2 bytes for length */ +4 /* fixed length of four bytes */;
   }
-  unsigned int i;
   if (!effects.empty())
   {
+    unsigned int i;
     for (i=0; i<effects.size(); ++i)
     {
       writeSize = writeSize +effects[i].getWriteSize();

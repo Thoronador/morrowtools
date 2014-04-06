@@ -43,7 +43,7 @@ bool readCellListFromXML(const std::string& fileName, CellListType& cells, const
   {
     input.close();
     std::cout << "Error while reading XML file.\n";
-    delete Buffer;
+    delete[] Buffer;
     return false;
   }
   input.close();

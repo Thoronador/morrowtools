@@ -415,7 +415,7 @@ int main(int argc, char **argv)
   MWTP::CellListType cells;
   if (readCellListFromXML(pathToCellsXML, cells, translationDirection))
   {
-    if (cells.size()==0)
+    if (cells.empty())
     {
       std::cout << "The XML file \""<<pathToCellsXML<<"\" did not contain any "
                 << "cell name pairs. Thus, nothing can be translated here.\n";

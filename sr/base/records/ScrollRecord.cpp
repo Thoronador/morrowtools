@@ -93,9 +93,9 @@ uint32_t ScrollRecord::getWriteSize() const
     writeSize = writeSize +4 /*MODT*/ +2 /* 2 bytes for length */
                +unknownMODT.getSize() /* size */;
   }
-  unsigned int i;
   if (!effects.empty())
   {
+    unsigned int i;
     for (i=0; i<effects.size(); ++i)
     {
       writeSize = writeSize +effects[i].getWriteSize();

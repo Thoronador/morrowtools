@@ -3013,8 +3013,8 @@ bool ScriptFunctions_MessageBox(const std::vector<std::string>& params, Compiled
         ++button_count;
         //Since all of the other params are now strings, too, we can exit the
         // loop here.
-        break;
         i = params.size();//just to be sure
+        break;
       }
     }//for
     //adjust button count

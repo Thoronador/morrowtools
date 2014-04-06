@@ -132,9 +132,9 @@ uint32_t RaceRecord::getWriteSize() const
     writeSize = writeSize +4 /*KSIZ*/ +2 /* 2 bytes for length */ +4 /* fixed length of four bytes */
                           +4 /*KWDA*/ +2 /* 2 bytes for length */ +4*keywordArray.size() /* size */;
   }
-  unsigned int i;
   if (!subBlocks.empty())
   {
+    unsigned int i;
     for (i=0; i<subBlocks.size(); ++i)
     {
       writeSize = writeSize +4 /*header*/ +2 /* 2 bytes for length */

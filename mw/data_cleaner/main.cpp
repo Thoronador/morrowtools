@@ -329,7 +329,7 @@ int main(int argc, char **argv)
   MWTP::getDeletableMeshes(baseDir+"Meshes\\", reader.MeshSet, DeletableMeshes);
   MWTP::getDeletableIcons(baseDir+"Icons\\", reader.IconSet, DeletableIcons);
 
-  if ((DeletableIcons.size()>0) or (DeletableMeshes.size()>0))
+  if (!DeletableIcons.empty() or !DeletableMeshes.empty())
   {
     std::cout << "There are "<<DeletableMeshes.size()<<" meshes and "
               <<DeletableIcons.size()<<" icons that could be deleted.\n";

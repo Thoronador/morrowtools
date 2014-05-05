@@ -2016,7 +2016,7 @@ bool NPCRecord::loadFromStream(std::ifstream& in_File, const bool localized, con
            if (unknownNAMA.getSize()!=16)
            {
              std::cout <<"Error: sub record NAMA of NPC_ has invalid length ("
-                       <<unknownNAM9.getSize()<<" bytes). Should be 16 bytes.\n";
+                       <<unknownNAMA.getSize()<<" bytes). Should be 16 bytes.\n";
              return false;
            }
            break;

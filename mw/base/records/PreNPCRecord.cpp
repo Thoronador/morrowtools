@@ -65,20 +65,20 @@ bool PreNPCRecord::hasEqualAIPackages(const PreNPCRecord& other) const
       switch (AIPackages.at(i)->getPackageType())
       {
         case ptActivate:
-             if (!(dynamic_cast<NPC_AIActivate*>(AIPackages.at(i)))->equals(*dynamic_cast<NPC_AIActivate*>(other.AIPackages.at(i))))
+             if (!(static_cast<NPC_AIActivate*>(AIPackages.at(i)))->equals(*static_cast<NPC_AIActivate*>(other.AIPackages.at(i))))
                return false;
              break;
         case ptEscort:
         case ptFollow:
-             if (!(dynamic_cast<NPC_AIEscortFollow*>(AIPackages.at(i)))->equals(*dynamic_cast<NPC_AIEscortFollow*>(other.AIPackages.at(i))))
+             if (!(static_cast<NPC_AIEscortFollow*>(AIPackages.at(i)))->equals(*static_cast<NPC_AIEscortFollow*>(other.AIPackages.at(i))))
                return false;
              break;
         case ptTravel:
-             if (!(dynamic_cast<NPC_AITravel*>(AIPackages.at(i)))->equals(*dynamic_cast<NPC_AITravel*>(other.AIPackages.at(i))))
+             if (!(static_cast<NPC_AITravel*>(AIPackages.at(i)))->equals(*static_cast<NPC_AITravel*>(other.AIPackages.at(i))))
                return false;
              break;
         case ptWander:
-             if (!(dynamic_cast<NPC_AIWander*>(AIPackages.at(i)))->equals(*dynamic_cast<NPC_AIWander*>(other.AIPackages.at(i))))
+             if (!(static_cast<NPC_AIWander*>(AIPackages.at(i)))->equals(*static_cast<NPC_AIWander*>(other.AIPackages.at(i))))
                return false;
              break;
       }//swi

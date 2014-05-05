@@ -481,7 +481,6 @@ int main(int argc, char **argv)
     }//if
   }//if process scripts
 
-  const std::string genericID = typeid(MWTP::GenericRecord).name();
   const std::string cellID = typeid(MWTP::CellRecord).name();
   const std::string creatureID = typeid(MWTP::CreatureRecord).name();
   const std::string infoID = typeid(MWTP::DialogueInfoRecord).name();

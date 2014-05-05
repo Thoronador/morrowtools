@@ -170,7 +170,7 @@ int main(int argc, char **argv)
         {
           if ((i+1<argc) and (argv[i+1]!=NULL))
           {
-            //Is it long enough to be a directoy? (Minimum should be "./".)
+            //Does it contain a floating point value?
             if (stringToFloat(std::string(argv[i+1]), scalingFactor))
             {
               if (scalingFactor<0.01f)
@@ -196,7 +196,7 @@ int main(int argc, char **argv)
           else
           {
             std::cout << "Error: You have to specify a floating point value after \""
-                      << param<<"\".\n";
+                      << param <<"\".\n";
             return MWTP::rcInvalidParameter;
           }
         }//scaling factor

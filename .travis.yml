@@ -5,13 +5,26 @@ compiler:
 branches:
   only:
     - master
+    - coverity_scan
 before_install:
   - sudo apt-get install zlib1g zlib1g-dev libboost-dev -y
 script:
-  - ./ci/cpplint.sh
-  - mkdir ./Build
-  - cd ./Build
-  - cmake ../
-  - make -j2
+  - echo "coverity stuff should be done by now."
 notifications:
   email: false
+
+env:
+  global:
+   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: "bN7U3Dj8AKDevZ1ymSaNKo6RBufylO12QbudtixBHLJa15/pF3j3D+5tVqhr51e6C7WSms0vp6lQZ3uD2frMr7/llNIHCqHL9uVIXEmJUCboTjmx0wjfQuIULvLwN40IOShH4DsdmWc/JHYs5QCHT/xQudaRip/mPvOpxm5rg2g="
+
+addons:
+  coverity_scan:
+    project:
+      name: "Thoronador/morrowtools"
+      description: "Morrowind Tools Project"
+    notification_email: thoronador@users.sourceforge.net
+    build_command_prepend: "cmake ./"
+    build_command: "make -j4"
+    branch_pattern: coverity_scan

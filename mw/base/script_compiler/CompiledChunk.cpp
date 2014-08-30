@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2013  Thoronador
+    Copyright (C) 2011, 2013, 2014  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 
 #include "CompiledChunk.h"
 #include <iostream>
+#include <stdexcept>
 #include "../../../base/UtilityFunctions.h"
 
 namespace MWTP
@@ -95,7 +96,7 @@ void CompiledChunk::pushNonGlobalRefWithTwoZeroFillers(const SC_VarRef& ref)
   {
     std::cout << "ScriptCompiler: Error: Trying to push global ref, but that's"
               << " not allowed here.\n";
-    throw 42;
+    throw std::runtime_error("ScriptCompiler: Error: Trying to push global ref, but that's not allowed here.");
     return;
   }
 
@@ -116,7 +117,7 @@ void CompiledChunk::pushNonGlobalRefWithTwoZeroFillers(const SC_VarRef& ref)
     case vtGlobal:
          //This branch is only here to shut up the compiler warning, but it will
          // never be reached. (vtGlobal is checked above.)
-         throw 42;
+         throw std::logic_error("We should never get to this point. If you do, screw your compiler!");
          break;
   }//swi
   //push index
@@ -133,7 +134,8 @@ void CompiledChunk::pushNonGlobalRef(const SC_VarRef& ref)
   {
     std::cout << "ScriptCompiler: Error: Trying to push global ref, but that's"
               << " not allowed here.\n";
-    throw 42;
+    throw std::runtime_error("ScriptCompiler: Error: Trying to push global ref,"
+                            +std::string(" but that's not allowed here."));
     return;
   }
   switch (ref.Type)
@@ -153,7 +155,7 @@ void CompiledChunk::pushNonGlobalRef(const SC_VarRef& ref)
     case vtGlobal:
          //This branch is only here to shut up the compiler warning, but it will
          // never be reached. (vtGlobal is checked above.)
-         throw 42;
+         throw std::logic_error("We should never get to this point. If you do, screw your compiler!");
          break;
   }//swi
   //push index

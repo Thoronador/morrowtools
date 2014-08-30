@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2014  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 
 #include "ESMReaderContentsBase.h"
 #include <iostream>
+#include <stdexcept>
 #include "SR_Constants.h"
 
 namespace SRTP
@@ -54,7 +55,8 @@ bool ESMReaderContentsBase::nextGroupStarted(const GroupData& g_data, const bool
     if (m_InternalGroup==NULL)
     {
       std::cout << "ESMReaderContentsBase::nextGroupStarted: Error: got NULL pointer for internal group!\n";
-      throw 42; //we've screwed up somehow, nice job!
+       //we've screwed up somehow, nice job!
+      throw std::runtime_error("ESMReaderContentsBase::nextGroupStarted: Error: got NULL pointer for internal group!");
       return false;
     }
     //subgroup or next group on that level
@@ -71,7 +73,7 @@ bool ESMReaderContentsBase::nextGroupStarted(const GroupData& g_data, const bool
       if (parent==NULL)
       {
         std::cout << "ESMReaderContentsBase::nextGroupStarted: Error: got NULL pointer for parent group!\n";
-        throw 42;
+        throw std::runtime_error("ESMReaderContentsBase::nextGroupStarted: Error: got NULL pointer for parent group!");
         return false;
       }
       parent->addSubGroup(g_data);
@@ -91,7 +93,7 @@ bool ESMReaderContentsBase::groupFinished(const GroupData& g_data)
   else
   {
     std::cout << "ESMReaderContentsBase::groupFinished: Error: level is already at zero!\n";
-    throw 42;
+    throw std::logic_error("ESMReaderContentsBase::groupFinished: Error: level is already at zero!");
     return false;
   }
   return true;

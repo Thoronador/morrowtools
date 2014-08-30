@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2014 Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 
 #include "Landscape.h"
 #include <iostream>
+#include <stdexcept>
 
 namespace MWTP
 {
@@ -97,7 +98,7 @@ const LandscapeRecord& Landscape::getLandscapeRecord(const LandscapeCoords& coor
   }
   std::cout << "No landscape record with the coordinates ("<<coords.X<<";"
             << coords.Y<<") is present.\n";
-  throw 42;
+  throw std::runtime_error("No landscape record with the given coordinates is present.");
 }
 
 LandscapeListIterator Landscape::getBegin() const

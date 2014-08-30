@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2014  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 
 #include "ScriptCompiler.h"
 #include <iostream>
+#include <stdexcept>
 #include "CompilerCodes.h"
 #include "CompiledChunk.h"
 #include "../../../base/UtilityFunctions.h"
@@ -7814,7 +7815,8 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
                break;
           case vtGlobal:
                //This case is just here to silence compiler warnings.
-               throw 42; //We should never reach that line.
+               //We should never reach that line.
+               throw std::logic_error("CompileScript(): We should never reach that line.");
                break;
         }//switch
         //push index (one byte)
@@ -7851,7 +7853,7 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
                                          varName.substr(dot_pos+1));
         if (foreignRef.Type==vtGlobal)
         {
-          std::cout << "ScriptCompiler: Error: couldn't find foreign reference in \""
+          std::cout << "ScriptCompiler: Error: could not find foreign reference in \""
                     << varName<<"\" for SET statement.\n";
           #ifdef MW_SC_DEBUG
           std::cout << "Debug: object name was \""<<objectName<<"\", var name was \""

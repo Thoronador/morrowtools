@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011, 2013  Thoronador
+    Copyright (C) 2010, 2011, 2013, 2014  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 #include "GMSTRecord.h"
 #include <iostream>
 #include <cstring>
+#include <stdexcept>
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 
@@ -59,7 +60,7 @@ bool GMSTRecord::equals(const GMSTRecord& other) const
          break;
   }//swi
   //should never reach this point here
-  throw 42;
+  throw std::logic_error("MWTP::GMSTRecord::equals(): We should never reach this point!");
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS

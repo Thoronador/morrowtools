@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011 Thoronador
+    Copyright (C) 2010, 2011, 2014  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 
 #include "MagicEffects.h"
 #include <iostream>
+#include <stdexcept>
 
 namespace MWTP
 {
@@ -66,7 +67,7 @@ const MGEF_Data& MagicEffects::getEffect(const int32_t Index) const
   }
   //nothing found
   std::cout << "No magic effect with index "<<Index<<" found!\n";
-  throw 1;
+  throw std::runtime_error("MagicEffects::getEffect(): No magic effect for given index found!");
 }
 
 std::string MagicEffects::getSettingNameForEffect(const int32_t Index)
@@ -74,7 +75,7 @@ std::string MagicEffects::getSettingNameForEffect(const int32_t Index)
   if ((Index<0) or (Index>136))
   {
     std::cout << "Error: No setting defined for effect "<<Index<<"!\n";
-    throw 42;
+    throw std::runtime_error("Error: No setting defined for given effect ID!");
   }
 
   switch (Index)
@@ -492,7 +493,7 @@ std::string MagicEffects::getSettingNameForEffect(const int32_t Index)
          break;
   }//swi
   std::cout << "Error: No setting definded for effect "<<Index<<"!\n";
-  throw 42;
+  throw std::runtime_error("MagicEffects::getSettingNameForEffect(): Error: No setting definded for effect index!\n");
 }
 
 bool MagicEffects::isSkillRelatedEffect(const int32_t Index)

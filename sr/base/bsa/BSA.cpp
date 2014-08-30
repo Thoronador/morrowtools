@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2011, 2012, 2014  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 
 #include "BSA.h"
 #include <iostream>
+#include <stdexcept>
 #include <cstring>
 #include "../../../base/UtilityFunctions.h"
 #include "../../../base/DirectoryFunctions.h"
@@ -31,10 +32,10 @@ namespace SRTP
 const uint32_t BSA::cIndexNotFound = 0xFFFFFFFF;
 
 BSA::BSA()
+: m_Status(bsFresh),
+  m_Folders(std::vector<BSAFolderRecord>()),
+  m_FolderBlocks(std::vector<BSAFolderBlock>())
 {
-  m_Status = bsFresh;
-  m_Folders.clear();
-  m_FolderBlocks.clear();
 }
 
 BSA::~BSA()
@@ -522,14 +523,15 @@ bool BSA::isFileCompressed(const uint32_t folderIndex, const uint32_t fileIndex)
   {
     std::cout << "BSA::isFileCompressed: Error: not all structure data is "
               << "present to properly fulfill the requested operation!\n";
-    throw 42;
+    throw std::runtime_error(std::string("BSA::isFileCompressed: Error: not ")
+              +"all structure data is present to properly fulfill the requested operation!");
     return false;
   }
 
   if (!isValidIndexPair(folderIndex, fileIndex))
   {
     std::cout << "BSA::isFileCompressed: Error: invalid indices given!\n";
-    throw 42;
+    throw std::invalid_argument("BSA::isFileCompressed: Error: invalid indices given!");
     return false;
   }
 

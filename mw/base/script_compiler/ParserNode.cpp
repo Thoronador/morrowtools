@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2014  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 
 #include "ParserNode.h"
 #include <iostream>
+#include <stdexcept>
 #include "../../../base/UtilityFunctions.h"
 #include "CompiledChunk.h"
 #include "ScriptCompiler.h"
@@ -408,7 +409,7 @@ bool lowerOrEqualPrecedence(const char op1, const char op2)
   if (((op1=='*') or (op1=='/')) and ((op2=='+') or (op2=='-'))) return false;
   //if we are still here, something is wrong
   std::cout << "You shouldn't be here!\n";
-  throw 42;
+  throw std::logic_error("lowerOrEqualPrecedence(): You should not be here!");
 }
 
 }//namespace ScriptCompiler

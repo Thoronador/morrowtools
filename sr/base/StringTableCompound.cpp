@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2013  Thoronador
+    Copyright (C) 2011, 2013, 2014  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 
 #include "StringTableCompound.h"
 #include <iostream>
+#include <stdexcept>
 
 namespace SRTP
 {
@@ -87,7 +88,7 @@ const std::string& StringTableCompound::getString(const uint32_t stringID) const
     default: //location==ttNone
          std::cout << "StringTableCompound::getString: Error: string with ID "
                    << stringID<<" was not found!\n";
-         throw 42;
+         throw std::runtime_error("StringTableCompound::getString: Error: string with the given ID was not found!");
          break;
   }//swi
 }
@@ -108,7 +109,8 @@ const StringTable& StringTableCompound::getStringTable(const TableType tt) const
     default: //location==ttNone
          std::cout << "StringTableCompound::getStringTable: Error: ttNone is "
                    << "not allowed as parameter value!\n";
-         throw 42;
+         throw std::invalid_argument("StringTableCompound::getStringTable(): "
+              +std::string("Error: ttNone is not allowed as parameter value!"));
          break;
   }//swi
 }

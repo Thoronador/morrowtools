@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011, 2013  Thoronador
+    Copyright (C) 2010, 2011, 2013, 2014  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 
 #include "Skills.h"
 #include <iostream>
+#include <stdexcept>
 
 namespace MWTP
 {
@@ -57,7 +58,7 @@ const SkillRecord& Skills::getSkillData(const int Index) const
   {
     return iter->second;
   }
-  throw 42;
+  throw std::runtime_error("Skills::getSkillData(): No skill data for given index!");
 }
 
 std::string Skills::getSettingNameForSkill(const int32_t Index)
@@ -65,7 +66,7 @@ std::string Skills::getSettingNameForSkill(const int32_t Index)
   if ((Index<0) or (Index>26))
   {
     std::cout << "No setting defined for skill index "<<Index<<".\n";
-    throw 42;
+    throw std::runtime_error("Skills::getSettingNameForSkill(): No setting defined for given skill index.");
   }
   switch(Index)
   {
@@ -152,7 +153,7 @@ std::string Skills::getSettingNameForSkill(const int32_t Index)
          break;
   }//swi
   std::cout << "No setting defined for skill index "<<Index<<".\n";
-  throw 42;
+  throw std::runtime_error("Skills::getSettingNameForSkill(): No setting defined for given skill index. (2nd)");
 }
 
 unsigned int Skills::getNumberOfSkills() const

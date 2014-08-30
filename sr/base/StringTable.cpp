@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2013  Thoronador
+    Copyright (C) 2011, 2013, 2014  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 #include "StringTable.h"
 #include <iostream>
 #include <fstream>
+#include <stdexcept>
 #include <vector>
 #include <cstring>
 #include "../../base/UtilityFunctions.h"
@@ -60,7 +61,7 @@ const std::string& StringTable::getString(const uint32_t stringID) const
     return iter->second;
   }
   std::cout << "StringTable: Error there is no string for ID "<<stringID<<"!\n";
-  throw 42;
+  throw std::runtime_error("StringTable: Error there is no string for the given ID!");
 }
 
 bool StringTable::deleteString(const uint32_t stringID)

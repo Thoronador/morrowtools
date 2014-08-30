@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2014  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 #include "ESMReaderAll.h"
 
 #include <iostream>
+#include <stdexcept>
 #include "../../mw/base/HelperIO.h"
 #include "SR_Constants.h"
 #include "AcousticSpaces.h"
@@ -486,7 +487,7 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const uint32_t recName,
          break;
   }//swi
   //we should never get to this point
-  throw 42;
+  throw std::logic_error("ESMReaderAll::readNextRecord(): We should never get to this point!");
 }
 
 } //namespace

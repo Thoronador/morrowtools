@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2014  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 
 #include "GameSettings.h"
 #include <iostream>
+#include <stdexcept>
 
 namespace SRTP
 {
@@ -66,7 +67,7 @@ const GMSTRecord& GameSettings::getGameSetting(const std::string& ID) const
     return iter->second;
   }
   std::cout << "No eye with the ID \""<<ID<<"\" is present.\n";
-  throw 42;
+  throw std::runtime_error("No eye with the ID \""+ID+"\" is present.");
 }
 
 GameSettingListIterator GameSettings::getBegin() const

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2014  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 #include "ESMReaderTranslator.h"
 
 #include <iostream>
+#include <stdexcept>
 #include "../base/HelperIO.h"
 #include "../base/MW_Constants.h"
 #include "../base/records/GenericRecord.h"
@@ -40,7 +41,7 @@ ESMReaderTranslator::ESMReaderTranslator(VectorType* vec)
   if (NULL==vec)
   {
     std::cout << "ESMReaderTranslator: Error: supplied pointer is NULL!\n";
-    throw 42;
+    throw std::runtime_error("ESMReaderTranslator: Error: supplied pointer is NULL!");
   }
   m_VectorPointer = vec;
 }

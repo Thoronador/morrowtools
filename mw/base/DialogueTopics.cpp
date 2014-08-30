@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2014  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 
 #include "DialogueTopics.h"
 #include <iostream>
+#include <stdexcept>
 
 namespace MWTP
 {
@@ -66,7 +67,7 @@ const DialogueTopicRecord& DialogueTopics::getDialogueTopic(const std::string& I
     return iter->second;
   }
   std::cout << "No dialogue topic with the ID \""<<ID<<"\" is present.\n";
-  throw 42;
+  throw std::runtime_error("DialogueTopics::getDialogueTopic(): No dialogue topic with the ID \""+ID+"\" is present.");
 }
 
 DialogueTopicListIterator DialogueTopics::getBegin() const

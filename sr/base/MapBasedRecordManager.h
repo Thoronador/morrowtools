@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2014  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@
 #include <map>
 #include <iostream>
 #include <fstream>
+#include <stdexcept>
 
 namespace SRTP
 {
@@ -169,7 +170,7 @@ const recT& MapBasedRecordManager<recT>::getRecord(const uint32_t ID) const
     return iter->second;
   }
   std::cout << "MapBasedRecordManager: Error! No record with the ID \""<<ID<<"\" is present.\n";
-  throw 42;
+  throw std::runtime_error("MapBasedRecordManager: Error! No record with the requested ID is present.");
 }
 
 template<typename recT>

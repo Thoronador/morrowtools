@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011, 2012, 2013  Thoronador
+    Copyright (C) 2009, 2011, 2012, 2013, 2014  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 #include "GlobalRecord.h"
 #include <iostream>
 #include <cstring>
+#include <stdexcept>
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
 #include "../../../base/UtilityFunctions.h"
@@ -65,7 +66,7 @@ bool GlobalRecord::equals(const GlobalRecord& other) const
          break;
   }//swi
   std::cout << "Unhandled case in GlobalRecord::equals!\n";
-  throw 42;
+  throw std::logic_error("Unhandled case in GlobalRecord::equals!");
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS

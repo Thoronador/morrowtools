@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2014  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 #include "Cells.h"
 #include <iostream>
 #include <sstream>
+#include <stdexcept>
 
 namespace MWTP
 {
@@ -95,7 +96,7 @@ const CellRecord& Cells::getCell(const CellRef& ref) const
     return iter->second;
   }
   std::cout << "No cell with the ref "<<ref.toString()<<" is present.\n";
-  throw 42;
+  throw std::runtime_error("Cells::hasCell(): No cell with the ref "+ref.toString()+" is present.");
 }
 
 CellListIterator Cells::getBegin() const

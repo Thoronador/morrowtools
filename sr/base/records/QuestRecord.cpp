@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2014  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 #include "QuestRecord.h"
 #include <cstring>
 #include <iostream>
+#include <stdexcept>
 #include "../SR_Constants.h"
 #include "../../../mw/base/HelperIO.h"
 
@@ -1883,7 +1884,7 @@ const QuestRecord::QOBJEntry& QuestRecord::getQOBJForIndex(const uint16_t idx) c
   }
   std::cout << "QuestRecord::getQOBJForIndex(): Error: There is no QOBJ for that index!\n";
   std::cout.flush();
-  throw 42;
+  throw std::runtime_error("QuestRecord::getQOBJForIndex(): Error: There is no QOBJ for that index!");
 }
 
 } //namespace

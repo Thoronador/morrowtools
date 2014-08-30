@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2014  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 
 #include "Attributes.h"
 #include <iostream>
+#include <stdexcept>
 
 namespace MWTP
 {
@@ -57,7 +58,7 @@ std::string getSettingNameForAttribute(const int32_t AttributeIndex)
          break;
     default:
          std::cout << "No setting defined for attribute index "<<AttributeIndex<<".\n";
-         throw 42;
+         throw std::runtime_error("getSettingNameForAttribute(): No setting defined for attribute index "+AttributeIndex+".");
          break;
   }//swi
 }

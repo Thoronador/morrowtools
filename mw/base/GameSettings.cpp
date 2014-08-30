@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011, 2013  Thoronador
+    Copyright (C) 2010, 2011, 2013, 2014  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 
 #include "GameSettings.h"
 #include <iostream>
+#include <stdexcept>
 
 namespace MWTP
 {
@@ -60,7 +61,7 @@ const GMSTRecord& GameSettings::getSetting(const std::string& Name) const
     return iter->second;
   }
   std::cout << "Error: setting \""<<Name<<"\" not found.\n";
-  throw 42;
+  throw std::runtime_error("GameSettings::getSetting(): Error: setting \""+Name+"\" not found.");
 }
 
 unsigned int GameSettings::getNumberOfSettings() const

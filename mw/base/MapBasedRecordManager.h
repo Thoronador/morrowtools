@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2012, 2013  Thoronador
+    Copyright (C) 2012, 2013, 2014  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 
 #include <iostream>
 #include <map>
+#include <stdexcept>
 #include <string>
 #include "../../base/ComparisonFunctor.h"
 
@@ -168,7 +169,7 @@ const recT& MapBasedRecordManager<recT>::getRecord(const std::string& ID) const
     return iter->second;
   }
   std::cout << "MapBasedRecordManager: Error! No record with the ID \""<<ID<<"\" is present.\n";
-  throw 42;
+  throw std::runtime_error("MapBasedRecordManager: Error! No record with the ID \""+ID+"\" is present.");
 }
 
 template<typename recT>

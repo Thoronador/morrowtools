@@ -8,9 +8,10 @@ branches:
 before_install:
   - sudo apt-get install zlib1g zlib1g-dev libboost-dev -y
 script:
+  - ./ci/cpplint.sh
   - mkdir ./Build
   - cd ./Build
   - cmake ../
-  - make
+  - make -j2
 notifications:
   email: false

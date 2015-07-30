@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2012 Thoronador
+    Copyright (C) 2012, 2014  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include "UnixDomainSocketServer.h"
+#include "UnixDomainSocketServer.hpp"
 #include <iostream>
 #include <cstdio>
 #include <cerrno>
@@ -26,6 +26,7 @@
 #include <sys/un.h>
 #include <sys/time.h>
 #include <fcntl.h>
+#include <unistd.h>
 
 namespace MWTP
 {
@@ -90,11 +91,11 @@ std::string bindErrorCodeToString(const int error_code)
 
 
 UnixDomainSocketServer::UnixDomainSocketServer()
+: m_Active(false),
+  m_shutdown(false),
+  m_sockfd(-1),
+  m_File("")
 {
-  m_Active = false;
-  m_shutdown = false;
-  m_sockfd = -1;
-  m_File = "";
 }
 
 UnixDomainSocketServer::~UnixDomainSocketServer()
@@ -107,20 +108,21 @@ bool UnixDomainSocketServer::activate(const std::string& file)
 {
   if (m_Active) return true;
 
-  struct sockaddr_un serv_addr;
   int sockfd = socket(AF_UNIX, SOCK_STREAM, 0);
   if (sockfd < 0)
   {
     std::cout << "Error while opening socket!\n";
     return false;
   }
+  struct sockaddr_un serv_addr;
   bzero((char *) &serv_addr, sizeof(serv_addr));
   serv_addr.sun_family = AF_UNIX;
   snprintf(serv_addr.sun_path, file.length()+1, file.c_str());
   if (bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(struct sockaddr_un)) < 0)
   {
-    std::cout << "SocketServ: Error on binding! Error code is "<<errno
+    std::cout << "SocketServer: Error on binding! Error code is "<<errno
               <<".\nThat means: "<<bindErrorCodeToString(errno) <<"\n";
+    close(sockfd);
     return false;
   }
   m_Active = true;
@@ -184,6 +186,7 @@ bool UnixDomainSocketServer::startListening(const unsigned int milliseconds)
   if (!m_Active) return false;
 
   fd_set read_flags;
+  FD_ZERO(&read_flags);
   struct timeval curr_time;
   struct timeval end_time;
   struct timeval wait_intervall;
@@ -200,39 +203,39 @@ bool UnixDomainSocketServer::startListening(const unsigned int milliseconds)
   {
     if (listen(m_sockfd,5) != 0)
     {
-      std::cout << "SocketServ: Error on listen!\n";
+      std::cout << "SocketServer: Error on listen!\n";
       return false;
     }
 
+    FD_ZERO(&read_flags);
     if (nonBlocking)
     {
-      FD_ZERO(&read_flags);
       FD_SET(m_sockfd, &read_flags);
       if (select(m_sockfd+1, &read_flags, NULL, NULL, &wait_intervall)<0)
       {
-        std::cout << "SocketServ: Error on select!\n";
+        std::cout << "SocketServer: Error on select!\n";
         return false;
       }
-
     }
 
     if ((!nonBlocking) or (FD_ISSET(m_sockfd, &read_flags)))
     {
       struct sockaddr_un cli_addr;
       socklen_t clilen = sizeof(cli_addr);
-      int newsockfd = accept(m_sockfd, (struct sockaddr *) &cli_addr, &clilen);
+      const int newsockfd = accept(m_sockfd, (struct sockaddr *) &cli_addr, &clilen);
       if (newsockfd < 0)
       {
-        std::cout << "SocketServ: Error on accept!\n";
+        std::cout << "SocketServer: Error on accept!\n";
         return false;
       }
       bool closeFDWhenDone = true;
       serveClient(newsockfd, closeFDWhenDone);
-      if (closeFDWhenDone)
-        close(newsockfd);
+      /*if (closeFDWhenDone)
+        close(newsockfd); */
+      close(newsockfd); //close socket connection unconditionally to avoid leaking FD
       done = true;
     }//if ready
-    if (not done)
+    if (!done)
     {
       gettimeofday(&curr_time, NULL);
       done = ((curr_time.tv_sec>end_time.tv_sec)
@@ -240,6 +243,56 @@ bool UnixDomainSocketServer::startListening(const unsigned int milliseconds)
     }//if not done
   }//while
   return true;
+}
+
+bool UnixDomainSocketServer::sendString(const int clientSocketFD, const std::string& message)
+{
+  const std::string::size_type len = message.size()+1;
+  std::string::size_type written = 0;
+  while (written<len)
+  {
+    int new_written = send(clientSocketFD, message.c_str()+written, len-written, 0);
+    if (new_written>0)
+    {
+      written += new_written;
+    }
+    else
+    {
+      //some kind of error occurred or the connection was closed
+      break;
+    }
+  }//while
+  return (written>=len);
+}
+
+bool UnixDomainSocketServer::receiveString(const int clientSocketFD, std::string& message)
+{
+  std::string result;
+  const int cBufferSize = 4096;
+  char buffer[cBufferSize];
+  int read = 0;
+  int current_read = 0;
+  do
+  {
+    memset(buffer, '\0', cBufferSize);
+    current_read = recv(clientSocketFD, buffer, cBufferSize-1, 0);
+    if (current_read>0)
+    {
+      read += current_read;
+      result += std::string(buffer);
+    }
+    else
+    {
+      //error or connection closed
+      break;
+    }
+  } while (current_read>=cBufferSize-1);
+  if (current_read>0)
+  {
+    message = result;
+    return true;
+  }
+  return false;
 }
 
 } //namespace

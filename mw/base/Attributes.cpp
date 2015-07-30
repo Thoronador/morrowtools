@@ -21,6 +21,7 @@
 #include "Attributes.h"
 #include <iostream>
 #include <stdexcept>
+#include "../../base/UtilityFunctions.h"
 
 namespace MWTP
 {
@@ -58,7 +59,8 @@ std::string getSettingNameForAttribute(const int32_t AttributeIndex)
          break;
     default:
          std::cout << "No setting defined for attribute index "<<AttributeIndex<<".\n";
-         throw std::runtime_error("getSettingNameForAttribute(): No setting defined for attribute index "+AttributeIndex+".");
+         throw std::runtime_error(std::string("getSettingNameForAttribute(): No setting defined for attribute index ")
+                                  + intToString(AttributeIndex) + std::string("."));
          break;
   }//swi
 }

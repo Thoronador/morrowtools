@@ -19,6 +19,7 @@
 */
 
 #include "DialogueTopicRecord.h"
+#include <cstring>
 #include <iostream>
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
@@ -43,6 +44,7 @@ bool DialogueTopicRecord::equals(const DialogueTopicRecord& other) const
   return ((DialogueID==other.DialogueID) and (Type==other.Type));
 }
 
+#ifndef MW_UNSAVEABLE_RECORDS
 bool DialogueTopicRecord::saveToStream(std::ofstream& output) const
 {
   output.write((const char*) &cDIAL, 4);
@@ -84,6 +86,7 @@ bool DialogueTopicRecord::saveToStream(std::ofstream& output) const
 
   return output.good();
 }
+#endif
 
 bool DialogueTopicRecord::loadFromStream(std::ifstream& in_File)
 {

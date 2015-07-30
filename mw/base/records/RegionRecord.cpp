@@ -19,6 +19,7 @@
 */
 
 #include "RegionRecord.h"
+#include <cstring>
 #include <iostream>
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
@@ -38,7 +39,7 @@ RegionRecord::RegionRecord()
 {}
 
 RegionRecord::RegionRecord(const std::string& ID)
-: BasicRecord()
+: BasicRecord(),
   recordID(ID),
   RegionName(""),
   Clear(0), Cloudy(0), Foggy(0), Overcast(0), Rain(0), Thunder(0), Ash(0), Blight(0),

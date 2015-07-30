@@ -21,6 +21,7 @@
 #ifndef MW_SETBASEDRECORDMANAGER_H
 #define MW_SETBASEDRECORDMANAGER_H
 
+#include <fstream>
 #include <iostream>
 #include <set>
 #include <stdexcept>

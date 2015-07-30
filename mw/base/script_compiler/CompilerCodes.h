@@ -21,6 +21,8 @@
 #ifndef COMPILERCODES_H
 #define COMPILERCODES_H
 
+#include <stdint.h>
+
 namespace MWTP
 {
 

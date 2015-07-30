@@ -19,6 +19,7 @@
 */
 
 #include "RaceRecord.h"
+#include <cstring>
 #include <iostream>
 #include "../MW_Constants.h"
 #include "../HelperIO.h"

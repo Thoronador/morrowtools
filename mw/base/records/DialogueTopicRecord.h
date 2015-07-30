@@ -39,12 +39,14 @@ struct DialogueTopicRecord: public BasicRecord
   /* returns true, if the other record contains the same data */
   bool equals(const DialogueTopicRecord& other) const;
 
+  #ifndef MW_UNSAVEABLE_RECORDS
   /* writes the record to the given output stream and returns true on success
 
     parameters:
         output   - the output file stream
   */
   bool saveToStream(std::ofstream& output) const;
+  #endif
 
   /* loads the record from the given input stream and returns true on success
 

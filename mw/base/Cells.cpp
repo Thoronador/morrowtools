@@ -28,7 +28,7 @@ namespace MWTP
 
 CellRef::CellRef(const CellRecord& rec)
 : X(rec.GridX),
-  Y(ec.GridY),
+  Y(rec.GridY),
   Cell(rec.CellID)
 {
 }

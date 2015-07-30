@@ -21,6 +21,7 @@
 #ifndef MW_MAPBASEDRECORDMANAGER_H
 #define MW_MAPBASEDRECORDMANAGER_H
 
+#include <fstream>
 #include <iostream>
 #include <map>
 #include <stdexcept>

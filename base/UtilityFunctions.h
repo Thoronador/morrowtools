@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2015  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -47,6 +47,13 @@ bool stringToShort(const std::string& str, int16_t& value);
        If false is returned, the value of parameter value is undefined.
 */
 bool stringToLong(const std::string& str, int32_t& value);
+
+/* converts an integer value into its string representation
+
+   parameters:
+       value - the integer value
+*/
+std::string intToString(const int value);
 
 /* tries to convert a the string representation of a floating point value into
    a float and returns true on success, false on failure.

@@ -19,6 +19,7 @@
 */
 
 #include "SoundGeneratorRecord.h"
+#include <cstring>
 #include <iostream>
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
@@ -29,8 +30,8 @@ namespace MWTP
 SoundGeneratorRecord::SoundGeneratorRecord()
 : BasicRecord(),
   recordID(""),
-  SoundID(""),
   Type(-1),
+  SoundID(""),
   CreatureID("")
 {}
 

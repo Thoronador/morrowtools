@@ -25,6 +25,8 @@
 #include <iostream>
 #include <fstream>
 #include <stdexcept>
+#include <stdint.h>
+#include "StringTable.h"
 
 namespace SRTP
 {

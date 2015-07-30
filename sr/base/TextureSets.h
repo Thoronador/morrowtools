@@ -22,6 +22,7 @@
 #define SR_TEXTURESETS_H
 
 #include "records/TextureSetRecord.h"
+#include "MapBasedRecordManager.h"
 
 namespace SRTP
 {

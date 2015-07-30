@@ -19,6 +19,7 @@
 */
 
 #include "ClassRecord.h"
+#include <cstring>
 #include <iostream>
 #include "../MW_Constants.h"
 #include "../HelperIO.h"

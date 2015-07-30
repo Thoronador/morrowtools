@@ -19,6 +19,7 @@
 */
 
 #include "BirthSignRecord.h"
+#include <cstring>
 #include <iostream>
 #include "../MW_Constants.h"
 #include "../HelperIO.h"
@@ -32,7 +33,7 @@ BirthSignRecord::BirthSignRecord()
   Name(""),
   Texture(""),
   Description(""),
-  SignSpells(std::vector<std::string>());
+  SignSpells(std::vector<std::string>())
 {}
 
 BirthSignRecord::BirthSignRecord(const std::string& ID)
@@ -41,7 +42,7 @@ BirthSignRecord::BirthSignRecord(const std::string& ID)
   Name(""),
   Texture(""),
   Description(""),
-  SignSpells(std::vector<std::string>());
+  SignSpells(std::vector<std::string>())
 {}
 
 bool BirthSignRecord::equals(const BirthSignRecord& other) const

@@ -21,7 +21,9 @@
 #ifndef SR_ESMWRITERSINGLETYPE_H
 #define SR_ESMWRITERSINGLETYPE_H
 
+#include <iostream>
 #include "ESMWriter.h"
+#include "records/GroupData.h"
 
 #ifndef SR_UNSAVEABLE_RECORDS
 

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2015  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -86,6 +86,13 @@ bool stringToLong(const std::string& str, int32_t& value)
   }//for
   if (negative) value = -value;
   return true;
+}
+
+std::string intToString(const int value)
+{
+  std::ostringstream s_str;
+  s_str << value;
+  return s_str.str();
 }
 
 //tries to get the floating point representation of a string

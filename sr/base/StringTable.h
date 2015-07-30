@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SR_STRINGTABLE_H_INCLUDED
-#define SR_STRINGTABLE_H_INCLUDED
+#ifndef SR_STRINGTABLE_H
+#define SR_STRINGTABLE_H
 
 #include <string>
 #include <map>
@@ -123,4 +123,4 @@ class StringTable
 
 } //namespace
 
-#endif // SR_STRINGTABLE_H_INCLUDED
+#endif // SR_STRINGTABLE_H

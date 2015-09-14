@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2013  Thoronador
+    Copyright (C) 2012, 2013, 2015  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -96,21 +96,23 @@ namespace SRTP
                              e.g. "Skyrim" for Skyrim.esm
          languageComponent - string that will be used to return the language
                              component of the string file names
+         stringTableFiles  - vector that will be used to returns the found file
+                             names of the string table files
 
      remarks:
          The value of languageComponent is changed by this function, even if
          the an error occurs. However, the value is undefined in that case and
          does not represent a proper value.
   */
-  inline int getLanguageComponent(const std::string& dataDir, std::string pluginName, std::string& languageComponent)
+  inline int getLanguageComponent(const std::string& dataDir, const std::string& pluginName, std::string& languageComponent, std::vector<std::string>& stringTableFiles)
   {
-    pluginName = lowerCase(pluginName);
+    const std::string lcPluginName = lowerCase(pluginName);
     const std::string::size_type piNameLength = pluginName.length();
 
     languageComponent = "";
     std::string part_path, part_name, part_ext;
 
-    std::vector<FileEntry> files = getDirectoryFileList(dataDir+"Strings"+MWTP::pathDelimiter);
+    const std::vector<FileEntry> files = getDirectoryFileList(dataDir+"Strings"+MWTP::pathDelimiter);
     if (files.size()<3)
     {
       std::cout << "Error: could not find string table files for "<<pluginName<<"!\n";
@@ -122,7 +124,7 @@ namespace SRTP
     unsigned int i;
     for (i=0; i<files.size(); ++i)
     {
-      if ((!files[i].isDirectory) and (lowerCase(files[i].fileName.substr(0, piNameLength+1))==pluginName+"_"))
+      if ((!files[i].isDirectory) and (lowerCase(files[i].fileName.substr(0, piNameLength+1))==lcPluginName+"_"))
       {
         splitPathFileExtension(files[i].fileName, MWTP::pathDelimiter, part_path, part_name, part_ext);
         if ((lowerCaseCompare(part_ext, "dlstrings")==0) or (lowerCaseCompare(part_ext, "strings")==0)
@@ -132,13 +134,13 @@ namespace SRTP
           if (languageComponent.empty())
           {
             languageComponent = part_name.substr(piNameLength+1);
-            presentStuff.insert(lowerCase(part_ext));
+            presentStuff.insert(dataDir+"Strings"+MWTP::pathDelimiter + files[i].fileName);
           }
           else
           {
             if (part_name.substr(piNameLength+1)==languageComponent)
             {
-              presentStuff.insert(lowerCase(part_ext));
+              presentStuff.insert(dataDir+"Strings"+MWTP::pathDelimiter + files[i].fileName);
             }
           }//else
         }//if string file extension
@@ -147,17 +149,25 @@ namespace SRTP
 
     if (presentStuff.size()<3)
     {
-      std::cout << "Error: Could not find string table files!\n";
+      std::cout << "Error: Could not find all three string table files!\n";
       return SRTP::rcFileError;
     }
 
-    if ((!FileExists(dataDir+"Strings"+MWTP::pathDelimiter+pluginName+"_"+languageComponent+".dlstrings"))
-       or (!FileExists(dataDir+"Strings"+MWTP::pathDelimiter+pluginName+"_"+languageComponent+".ilstrings"))
-       or (!FileExists(dataDir+"Strings"+MWTP::pathDelimiter+pluginName+"_"+languageComponent+".strings")))
+    if (presentStuff.size()>3)
     {
-      std::cout << "Error: At least one string table file is missing!\n";
+      //Could possibly happen on file systems with case-insensitive file names.
+      std::cout << "Error: Found more than three string table files!\n";
       return SRTP::rcFileError;
     }
+
+    stringTableFiles.clear();
+    std::set<std::string>::const_iterator cIter = presentStuff.begin();
+    while (cIter != presentStuff.end())
+    {
+      stringTableFiles.push_back(*cIter);
+      ++cIter;
+    } //while
+
     return 0;
   }//function getLanguageComponent
 
@@ -174,15 +184,12 @@ namespace SRTP
     std::string part_path, part_name, part_ext;
     splitPathFileExtension(fileName, MWTP::pathDelimiter, part_path, part_name, part_ext);
 
-    int lc_return = getLanguageComponent(part_path, part_name, part_ext);
+    int lc_return = getLanguageComponent(part_path, part_name, part_ext, files);
     //If return code is not zero, an error occurred! We should return in that case.
-    if (lc_return!=0)
+    if (lc_return != 0)
       return lc_return;
-    files.clear();
-    files.push_back(part_path+"Strings"+MWTP::pathDelimiter+part_name+"_"+part_ext+".dlstrings");
-    files.push_back(part_path+"Strings"+MWTP::pathDelimiter+part_name+"_"+part_ext+".ilstrings");
-    files.push_back(part_path+"Strings"+MWTP::pathDelimiter+part_name+"_"+part_ext+".strings");
-    return 0;
+    else
+      return 0;
   }//function getAssociatedTableFiles
 
 } //namespace

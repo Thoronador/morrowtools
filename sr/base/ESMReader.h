@@ -45,7 +45,7 @@ class ESMReader
     static int skipGroup(std::ifstream& in_File, const GroupData& g_data);
 
     /* tries to read an .esm/.esp file and returns the number of relevant
-       records that were read. If an error occured, -1 is returned.
+       records that were read. If an error occurred, -1 is returned.
 
        parameters:
            FileName - name of the .esm/.esp file
@@ -64,7 +64,7 @@ class ESMReader
 
   protected:
     /* tries to read the next group from a file and returns the number of
-       relevant groups that were read (usually one). If an error occured,
+       relevant groups that were read (usually one). If an error occurred,
        -1 is returned. If the group was skipped or contained no relevant data,
        zero is returned.
 

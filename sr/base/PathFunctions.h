@@ -63,7 +63,7 @@ namespace SRTP
           //Does it have a trailing (back)slash? Add one, if not.
           dataDir = slashify(dataDir);
           /*add data dir to path, because installed path points only to Skyrim's
-            main direkctory */
+            main directory */
           dataDir = dataDir +"Data" +MWTP::pathDelimiter;
           std::cout << "Data files directory was set to \""<<dataDir<<"\" via registry.\n";
         }
@@ -87,7 +87,7 @@ namespace SRTP
   }//function getDataDir
 
   /* tries to find the language component of the string file names for a given
-     plugin. Returns an error code not equal to zero, if an error occured.
+     plugin. Returns an error code not equal to zero, if an error occurred.
      Returns zero in case of success.
 
      parameters:

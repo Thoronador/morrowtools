@@ -51,7 +51,7 @@ struct DependencyElement
 };
 
 /* determines the load order for the given ESM files and stores them in result.
-   Returns true in case of success; returns false, if an error occured.
+   Returns true in case of success; returns false, if an error occurred.
 
    parameters:
        esmNames - vector containing the basic .esm file names, i.e. not the
@@ -63,7 +63,7 @@ struct DependencyElement
 bool getLoadOrder(const std::vector<std::string>& esmNames, const std::string& dataDir, std::vector<std::string>& result);
 
 /* determines the load order for the given files and stores them in result.
-   Returns true in case of success; returns false, if an error occured.
+   Returns true in case of success; returns false, if an error occurred.
 
    parameters:
        files  - set of .esm file names, including their headers

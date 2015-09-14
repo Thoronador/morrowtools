@@ -44,7 +44,7 @@ int64_t getFileSize64(const std::string& fileName)
     //stat() was successful
     return buffer.st_size;
   }//if
-  //An error occured, so we don't have a proper value for file size.
+  //An error occurred, so we don't have a proper value for file size.
   // Return -1 in this case to indicate an error.
   return -1;
 }//function
@@ -62,7 +62,7 @@ bool setFileModificationTime(const std::string& FileName, const time_t new_mtime
     fileTimes.modtime = new_mtime;
     return (utime(FileName.c_str(), &fileTimes)==0);
   }//if
-  //An error occured, so return false.
+  //An error occurred, so return false.
   return false;
 }
 
@@ -76,7 +76,7 @@ bool getFileSizeAndModificationTime(const std::string& FileName, int64_t& FileSi
     FileTime = buffer.st_mtime;
     return true;
   }//if
-  //An error occured, so we don't have any proper values for that file.
+  //An error occurred, so we don't have any proper values for that file.
   // Set values to -1 and return false in this case to indicate an error.
   FileSize = -1;
   FileTime = -1;

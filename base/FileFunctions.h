@@ -26,7 +26,7 @@
 #include <vector>
 
 /* returns the file size of file fileName. If the file does not exist or if an
-   error occured, -1 will be returned.
+   error occurred, -1 will be returned.
 
   parameters:
       FileName - the file whose size shall be obtained
@@ -34,7 +34,7 @@
 int64_t getFileSize64(const std::string& fileName);
 
 /* sets the time when file FileName was last modified. If the file does not
-   exist or if an error occured, false will be returned.
+   exist or if an error occurred, false will be returned.
 
   parameters:
       FileName - the file whose time of last modification shall be changed
@@ -42,7 +42,7 @@ int64_t getFileSize64(const std::string& fileName);
 bool setFileModificationTime(const std::string& FileName, const time_t new_mtime);
 
 /* returns the file size of file FileName and the time of its last modification.
-   If the file does not exist or if an error occured, false will be returned and
+   If the file does not exist or if an error occurred, false will be returned and
    the values will be set to -1.
 
   parameters:
@@ -68,7 +68,7 @@ std::string getSizeString(const int64_t fileSize);
 bool FileExists(const std::string& FileName);
 
 /* tries to delete the file fileName and returns true, if it could be deleted,
-   or false if en error occured.
+   or false if en error occurred.
 
   parameters:
       fileName - the file that shall be deleted

@@ -60,7 +60,7 @@ class ESMReaderReIndexMod: public ESMReader
     bool indexMapsNeedsUpdate() const;
   protected:
     /* updates the index map for the current file header and returns true, if
-       all went well. Returns false, if an error occured.
+       all went well. Returns false, if an error occurred.
 
        parameters:
            currentModFile - name of the current .esm file without directory path

@@ -33,7 +33,7 @@ bool directoryExists(const std::string& dirName)
     //stat() was successful
     return ((buffer.st_mode & S_IFMT) == S_IFDIR);
   }//if
-  //An error occured, so return false.
+  //An error occurred, so return false.
   return false;
 }
 

@@ -28,7 +28,7 @@ namespace MWTP
 {
 
 /* This descendant of the ESMReader class tries to skip all records from the
-   given .esm/.esp file and just counts how often each record type occured.
+   given .esm/.esp file and just counts how often each record type occurred.
    Hence both processNextRecord() and readESM() will never return values larger
    than zero with this class.
 */
@@ -63,7 +63,7 @@ class ESMReaderCount: public ESMReader
 
   protected:
     /* tries to read the next record from a file and returns the number of
-       relevant records that were read (usually one). If an error occured,
+       relevant records that were read (usually one). If an error occurred,
        -1 is returned. If the record was skipped or contained no relevant data,
        zero is returned.
 

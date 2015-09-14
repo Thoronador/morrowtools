@@ -738,7 +738,7 @@ bool MGEF_Data::loadFromStream(std::ifstream& in_File)
            hasASND = true;
            break;
       default:
-           //unknown sub record, thus stop here, some error occured
+           //unknown sub record, thus stop here, some error occurred
            std::cout << "Error in MGEF_Data::loadFromStream: unexpected header "
                      << "found: \""<<IntTo4Char(SubRecName)<<"\".\n";
            return false;

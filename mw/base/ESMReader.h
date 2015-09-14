@@ -54,7 +54,7 @@ class ESMReader
     static int skipRecord(std::ifstream& in_File);
 
     /* tries to read an .esm/.esp file and returns the number of relevant
-       records that were read. If an error occured, -1 is returned. Note that
+       records that were read. If an error occurred, -1 is returned. Note that
        this function is deprecated, readESM() should be used instead.
 
        parameters:
@@ -66,7 +66,7 @@ class ESMReader
     int oldStyleReadESM(const std::string& FileName, DepFileList& deps, const bool verbose);
 
     /* tries to read an .esm/.esp file and returns the number of relevant
-       records that were read. If an error occured, -1 is returned.
+       records that were read. If an error occurred, -1 is returned.
 
        parameters:
            FileName - name of the .esm/.esp file
@@ -87,7 +87,7 @@ class ESMReader
 
   protected:
     /* tries to read the next record from a file and returns the number of
-       relevant records that were read (usually one). If an error occured,
+       relevant records that were read (usually one). If an error occurred,
        -1 is returned. If the record was skipped or contained no relevant data,
        zero is returned.
 

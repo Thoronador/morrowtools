@@ -128,7 +128,7 @@ int main(int argc, char **argv)
         {
           if ((i+1<argc) and (argv[i+1]!=NULL))
           {
-            //Is it long enough to be a directoy? (Minimum should be "./".)
+            //Is it long enough to be a directory? (Minimum should be "./".)
             if (std::string(argv[i+1]).size()>1)
             {
               baseDir = std::string(argv[i+1]);
@@ -260,7 +260,7 @@ int main(int argc, char **argv)
     MWTP::getAllDataFiles(baseDir, files);
   }//if
 
-  //Let's add master files, if neccessary.
+  //Let's add master files, if necessary.
   if (!files.hasDepFile("Bloodmoon.esm") and FileExists(baseDir+"Bloodmoon.esm"))
   {
     files.push_front("Bloodmoon.esm");
@@ -382,7 +382,7 @@ int main(int argc, char **argv)
         }
         std::cout <<".\n";
       }//if
-    }//if no error occured
+    }//if no error occurred
 
     std::string input;
     do

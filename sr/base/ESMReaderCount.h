@@ -121,7 +121,7 @@ class ESMReaderCount: public ESMReader
     virtual bool groupFinished(const GroupData& g_data);
 
     /* tries to read the next record from a file and returns the number of
-       relevant records that were read (usually one). If an error occured,
+       relevant records that were read (usually one). If an error occurred,
        -1 is returned. If the record was skipped or contained no relevant data,
        zero is returned.
 

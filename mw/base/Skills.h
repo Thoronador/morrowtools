@@ -81,7 +81,7 @@ class Skills
     /* tries to read a skill record from the given input file stream.
 
        return value:
-           If an error occured, the function returns -1. Otherwise it returns
+           If an error occurred, the function returns -1. Otherwise it returns
            the number of updated records. (Usually that is one. If, however, the
            record that was read is equal to the one already in the list, zero is
            returned.)

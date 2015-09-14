@@ -41,7 +41,7 @@ void StripEnclosingQuotes(std::string& str1);
 
 /* This function tries to "compile" the script given in text and stores the
    compiled script in result. If the function succeeded, true is returned. If an
-   error occured, false is returned. In the later case, the state of result
+   error occurred, false is returned. In the later case, the state of result
    has not changed.
 
    parameters:

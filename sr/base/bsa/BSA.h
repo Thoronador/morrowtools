@@ -100,7 +100,7 @@ struct BSA
     */
     uint32_t getIndexOfFile(const uint32_t folderIndex, std::string fileName) const;
 
-    /* will set folderIndex and fileIndex to the given folder and file indices
+    /* will set folderIndex and fileIndex to the given folder and file indexes
        for the specified file and return true in case of success. Returns false
        in case of error, e.g. if the archive has not been opened yet.
 
@@ -125,7 +125,7 @@ struct BSA
     */
     bool hasFile(const std::string& fileName) const;
 
-    /* returns true, if the file at the given indices is compressed, returns
+    /* returns true, if the file at the given indexes is compressed, returns
        false otherwise
 
        parameters:
@@ -166,7 +166,7 @@ struct BSA
     */
     std::vector<DirectoryStruct> getDirectories() const;
 
-    //structure to contain both indices for a file and its name
+    //structure to contain both indexes for a file and its name
     struct FileStruct
     {
       std::string name;
@@ -189,7 +189,7 @@ struct BSA
     */
     std::vector<FileStruct> getFilesOfDirectory(const uint32_t folderIndex, const bool fullName) const;
 
-    /* tries to extract the file with the given indices and writes it to the
+    /* tries to extract the file with the given indexes and writes it to the
        specified destination. Returns true in case of success, false on failure.
 
        parameters:
@@ -210,7 +210,7 @@ struct BSA
 
     /* tries to extract all files from the given archive folder and places them
        in the given output directory. Returns true in case of success, false if
-       an error occured.
+       an error occurred.
 
        parameters:
            folderIndex        - index of the folder
@@ -223,7 +223,7 @@ struct BSA
 
     /* tries to extract all files from the given archive folder and places them
        in the given output directory. Returns true in case of success, false if
-       an error occured.
+       an error occurred.
 
        parameters:
            folderName         - name of the folder in the archive
@@ -235,7 +235,7 @@ struct BSA
     bool extractFolder(const std::string& folderName, const std::string& outputDirName, uint32_t& extractedFileCount);
 
     /* tries to extract all files from the archive and places them in the given
-       output directory. Returns true in case of success, false if an error occured.
+       output directory. Returns true in case of success, false if an error occurred.
 
        parameters:
            outputDirName      - path of the output directory, without
@@ -245,7 +245,7 @@ struct BSA
     */
     bool extractAll(const std::string& outputDirName, uint32_t& extractedFileCount);
   protected:
-    /* returns true, if the given indices identify a valid index pair
+    /* returns true, if the given indexes identify a valid index pair
 
        parameters:
            folderIndex - index of the folder
@@ -253,7 +253,7 @@ struct BSA
     */
     bool isValidIndexPair(const uint32_t folderIndex, const uint32_t fileIndex) const;
 
-    //enum for internal status
+    //enumeration for internal status
     enum Status {bsFresh, bsOpen, bsOpenFolderData, bsOpenFolderBlocks,
                  bsOpenFileNames, bsClosed, bsFailed};
 

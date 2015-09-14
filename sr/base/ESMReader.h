@@ -122,7 +122,7 @@ class ESMReader
     virtual bool groupFinished(const GroupData& g_data) = 0;
 
     /* tries to read the next group from a file and returns the number of
-       relevant groups that were read (usually one). If an error occured,
+       relevant groups that were read (usually one). If an error occurred,
        -1 is returned. If the group was skipped or contained no relevant data,
        zero is returned.
        This function is guaranteed to be only called for needed groups (see the
@@ -145,7 +145,7 @@ class ESMReader
     virtual int readGroup(std::ifstream& in_File, const GroupData& g_data, const bool localized, const StringTable& table);
 
     /* tries to read the next record from a file and returns the number of
-       relevant records that were read (usually one). If an error occured,
+       relevant records that were read (usually one). If an error occurred,
        -1 is returned. If the record was skipped or contained no relevant data,
        zero is returned.
 

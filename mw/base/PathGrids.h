@@ -79,16 +79,16 @@ class PathGrids
            ref - the ref of the path grid
 
        remarks:
-           If no path grid with the given params is present, the function will throw
-           an exception. Use hasPathGrid() to determine, if a path grid with the
-           desired ref is present.
+           If no path grid with the given parameters is present, the function
+           will throw an exception. Use hasPathGrid() to determine, if a path
+           grid with the desired ref is present.
     */
     const PathGridRecord& getPathGrid(const PathGridRef& ref) const;
 
     /* tries to read a path grid record from the given input file stream.
 
        return value:
-           If an error occured, the function returns -1. Otherwise it returns
+           If an error occurred, the function returns -1. Otherwise it returns
            the number of updated records. (Usually that is one. If, however, the
            record that was read is equal to the one already in the list, zero is
            returned.)

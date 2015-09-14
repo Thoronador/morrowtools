@@ -179,7 +179,7 @@ bool AlchemyPotionRecord::loadFromStream(std::ifstream& in_File)
     }//swi
     if (!Success)
     {
-      //An error occured, quit here.
+      //An error occurred, quit here.
       return false;
     }//if
   }//while

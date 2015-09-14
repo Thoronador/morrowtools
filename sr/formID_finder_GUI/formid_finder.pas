@@ -130,7 +130,7 @@ begin
   //zero means we are in the child process
   else begin
     FpExecv(progName, args);
-    //if we get to this point, an error occured, because execv() does not return
+    //if we get to this point, an error occurred, because execv() does not return
     // in case of success
     Result:= false;
     Halt;

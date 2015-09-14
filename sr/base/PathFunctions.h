@@ -175,7 +175,7 @@ namespace SRTP
     splitPathFileExtension(fileName, MWTP::pathDelimiter, part_path, part_name, part_ext);
 
     int lc_return = getLanguageComponent(part_path, part_name, part_ext);
-    //If return code is not zero, an error occured! We should return in that case.
+    //If return code is not zero, an error occurred! We should return in that case.
     if (lc_return!=0)
       return lc_return;
     files.clear();

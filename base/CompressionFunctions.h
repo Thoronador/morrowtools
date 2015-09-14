@@ -28,7 +28,7 @@ namespace MWTP
 
 /* tries to decompress the data pointed to by compressedData and stores the
    decompressed bits in decompressionBuffer. Returns true in case of success,
-   or false if an error occured.
+   or false if an error occurred.
 
    parameters:
        compressedData - pointer to the buffer containing the compressed data

@@ -273,8 +273,9 @@ begin
     519: Result:= 'v0.23.rev519~experimental, 2013-03-02';
     520: Result:= 'v0.24.rev520, 2013-03-14';
     521: Result:= 'v0.24b.rev521, 2013-03-19';
+    522: Result:= 'v0.24c.rev522, 2015-09-14';
   else
-    Result:= 'v0.24b or later';
+    Result:= 'v0.24c or later';
   end;//case
 end;//func
 
@@ -611,7 +612,7 @@ var str1: string;
     allIsFine: Boolean;
 begin
   allIsFine:= true;
-  str1:= 'GUI version: rev521'+#13#10+cProgrammeName+' version: ';
+  str1:= 'GUI version: rev522'+#13#10+cProgrammeName+' version: ';
   if (not FileExists(cProgrammeName)) then
   begin
     str1:= str1 + 'not found';

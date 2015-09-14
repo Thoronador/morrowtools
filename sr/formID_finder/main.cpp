@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013 Thoronador
+    Copyright (C) 2011, 2012, 2013, 2015  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -66,7 +66,7 @@ void showGPLNotice()
 {
   std::cout << "Form ID finder for Skyrim\n"
             //<< "  This programme is part of the Skyrim Tools Project.\n"
-            << "  Copyright (C) 2011, 2012, 2013 Thoronador\n"
+            << "  Copyright (C) 2011, 2012, 2013, 2015  Thoronador\n"
             << "\n"
             << "  This programme is free software: you can redistribute it and/or\n"
             << "  modify it under the terms of the GNU General Public License as published\n"
@@ -85,13 +85,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Form ID Finder for Skyrim, version 0.24b.rev521, 2013-03-19\n";
+  std::cout << "Form ID Finder for Skyrim, version 0.24c.rev522, 2015-09-14\n";
 }
 
 int showVersionExitcode()
 {
   showVersion();
-  return 521;
+  return 522;
 }
 
 void showHelp()

@@ -74,7 +74,7 @@ bool ClassRecord::saveToStream(std::ofstream& output) const
         +4 /* CLDT */ +4 /* 4 bytes for length */ +60 /* length of CLDT */;
   if (!Description.empty())
   {
-    Size = Size +4 /* DESC */ +4 /* 4 bytes for length */;
+    Size = Size +4 /* DESC */ +4 /* 4 bytes for length */
         +Description.length() /* length of description (no NUL termination here) */;
   }
   output.write((const char*) &Size, 4);

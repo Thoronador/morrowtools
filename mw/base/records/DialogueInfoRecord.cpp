@@ -234,7 +234,7 @@ bool DialogueInfoRecord::saveToStream(std::ofstream& output) const
 			'5' = '<='
 		byte Name[]
 			Except for the function type, this is the ID for the global/local/etc...
-			Is not nessecarily NULL terminated. The function type SCVR sub-record has
+			Is not necessarily NULL terminated. The function type SCVR sub-record has
 			no name string.
 
 	INTV =
@@ -255,7 +255,7 @@ bool DialogueInfoRecord::saveToStream(std::ofstream& output) const
   SubLength = PreviousInfoID.length()+1;
   //write PNAM's length
   output.write((const char*) &SubLength, 4);
-  //write prevoius ID
+  //write previous ID
   output.write(PreviousInfoID.c_str(), SubLength);
 
   //write NNAM
@@ -518,7 +518,7 @@ bool DialogueInfoRecord::loadFromStream(std::ifstream& in_File)
 			'5' = '<='
 		byte Name[]
 			Except for the function type, this is the ID for the global/local/etc...
-			Is not nessecarily NULL terminated. The function type SCVR sub-record has
+			Is not necessarily NULL terminated. The function type SCVR sub-record has
 			no name string.
 
 	INTV =

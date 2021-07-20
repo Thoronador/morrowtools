@@ -50,7 +50,7 @@ void showHelp()
             << "                     (only allowed in explicit mode)\n"
             << "  -i               - same as --ini\n"
             << "  --verbose        - shows some additional information about data files\n"
-            << "  --silent         - opposite of --verbose; does not show additonal information\n";
+            << "  --silent         - opposite of --verbose; does not show additional information\n";
 }
 
 void showGPLNotice()

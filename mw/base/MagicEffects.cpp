@@ -492,8 +492,8 @@ std::string MagicEffects::getSettingNameForEffect(const int32_t Index)
          return "sEffectWeaknessToFire";
          break;
   }//swi
-  std::cout << "Error: No setting definded for effect "<<Index<<"!\n";
-  throw std::runtime_error("MagicEffects::getSettingNameForEffect(): Error: No setting definded for effect index!\n");
+  std::cout << "Error: No setting defined for effect "<<Index<<"!\n";
+  throw std::runtime_error("MagicEffects::getSettingNameForEffect(): Error: No setting defined for effect index!\n");
 }
 
 bool MagicEffects::isSkillRelatedEffect(const int32_t Index)

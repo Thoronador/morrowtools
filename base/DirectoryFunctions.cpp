@@ -60,7 +60,7 @@ bool createDirectoryRecursive(const std::string& dirName)
     //parent directory already exists, just create the requested dir
     return createDirectory(dirName);
   }
-  //recursive creation neccessary, parent directory does not exist
+  // recursive creation necessary, parent directory does not exist
   if (createDirectoryRecursive(dirName.substr(0, delimPos)))
   {
     //creation of parent directory completed, go on with the final directory

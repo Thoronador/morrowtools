@@ -475,7 +475,7 @@ int ESMReaderAll::readNextRecord(std::ifstream& in_File, const uint32_t recName,
          return WorldSpaces::getSingleton().readNextRecord(in_File, localized, table);
          break;
     default:
-         //this branch should not be neccessary once the reader class is finished
+         //this branch should not be necessary once the reader class is finished
          if (encounters.find(recName)==encounters.end())
          {
            std::cout << "Warning: unknown record type \""<< IntTo4Char(recName)

@@ -27,7 +27,7 @@ namespace MWTP
 {
 
 /* tries to read a string value from the HKEY_LOCAL_MACHINE branch of the
-   Windows registry. In case of success, the funtion will return true and the
+   Windows registry. In case of success, the function will return true and the
    retrieved path will be stored in the string referenced by theString. In case
    of failure, the function will return false and the string referenced by
    theString will not be changed.

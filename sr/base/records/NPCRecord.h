@@ -92,7 +92,7 @@ struct NPCRecord: public BasicRecord
       bool operator==(const PerkElem& other) const;
     };//struct
 
-    //struct fot TINI-TINC-TINV-TIAS sequences
+    //struct for TINI-TINC-TINV-TIAS sequences
     struct TINXstructure
     {
       uint16_t unknownTINI;

@@ -266,16 +266,16 @@ bool AlchemyPotionRecord::saveToStream(std::ofstream& output) const
   output.write((const char*) &Value, 4);
   output.write((const char*) &AutoCalc, 4);
 
-  //write enchantments
+  // write enchantments
   unsigned int i;
   for(i=0; i<Enchs.size(); ++i)
   {
-    //write ENAM
+    // write ENAM
     output.write((const char*) &cENAM, 4);
-    //ENAM's length
-    SubLength = 24;//length of enchantment data ist always 24 bytes
+    // ENAM's length
+    SubLength = 24; // length of enchantment data is always 24 bytes
     output.write((const char*) &SubLength, 4);
-    //write enchantment data
+    // write enchantment data
     output.write((const char*) &(Enchs[i].EffectID), 2);
     output.write((const char*) &(Enchs[i].SkillID), 1);
     output.write((const char*) &(Enchs[i].AttributeID), 1);

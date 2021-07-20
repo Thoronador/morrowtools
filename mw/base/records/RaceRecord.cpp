@@ -343,7 +343,7 @@ bool RaceRecord::saveToStream(std::ofstream& output) const
   if (!Description.empty())
   {
     Size = Size +4 /* DESC */ +4 /* 4 bytes for length */
-          +Description.length() /* length of decription (no NUL termination) */;
+          +Description.length() /* length of description (no NUL termination) */;
   }
   output.write((const char*) &Size, 4);
   output.write((const char*) &HeaderOne, 4);

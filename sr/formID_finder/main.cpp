@@ -120,7 +120,7 @@ void showHelp()
             << "                     to complete a search.\n";
 }
 
-/* auxillary function #1:
+/* auxiliary function #1:
    Returns true, if the keyword is found in haystack. Character case is taken
    into account, if caseMatters is true.
 
@@ -139,7 +139,7 @@ bool matchesKeyword(const std::string& haystack, const std::string& keyword, con
   return (lowerCase(haystack).find(keyword)!=std::string::npos);
 }
 
-/*...and another auxillary function (#2):
+/*...and another auxiliary function (#2):
   Writes all references of a base ID to the given ostream.
 
   parameters:
@@ -247,7 +247,7 @@ int main(int argc, char **argv)
           //enough parameters?
           if ((i+1<argc) and (argv[i+1]!=NULL))
           {
-            //Is it long enough to be a directoy? (Minimum should be "./".)
+            // Is it long enough to be a directory? (Minimum should be "./".)
             if (std::string(argv[i+1]).size()>1)
             {
               dataDir = std::string(argv[i+1]);

@@ -46,7 +46,7 @@ void showHelp()
             << "  -?                 - same as --help\n"
             << "  --version          - displays the version of the programme and quits\n"
             << "  -d DIRECTORY       - set path to the Data Files directory of Morrowind to\n"
-            << "                       DIRECTORY. If ommited, the path will be read from the\n"
+            << "                       DIRECTORY. If omitted, the path will be read from the\n"
             << "                       registry or a default value will be used.\n"
             << "  -dir DIRECTORY     - same as -d\n"
             << "  -f PLUGINFILE      - sets the plugin PLUGINFILE as the files that will be\n"
@@ -154,7 +154,7 @@ int main(int argc, char **argv)
           //enough parameters?
           if ((i+1<argc) and (argv[i+1]!=NULL))
           {
-            //Is it long enough to be a directoy? (Minimum should be "./".)
+            // Is it long enough to be a directory? (Minimum should be "./".)
             if (std::string(argv[i+1]).size()>1)
             {
               dataDir = std::string(argv[i+1]);
@@ -457,7 +457,7 @@ int main(int argc, char **argv)
     std::cout << "---End of info---\n";
     #endif
 
-    //read the dependency files to get the neccessary data for the script compiler
+    // read the dependency files to get the necessary data for the script compiler
     unsigned int i;
     MWTP::ESMReaderScriptCompiler sc_reader;
     for (i=0; i<deps.getSize(); ++i)

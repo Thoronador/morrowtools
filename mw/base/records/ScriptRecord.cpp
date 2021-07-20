@@ -159,7 +159,7 @@ bool ScriptRecord::saveToStream(std::ofstream& output) const
         long NumFloats
         long ScriptDataSize
         long LocalVarSize
-    SCVR = List of all the local script variables seperated by '\0' NULL characters.
+    SCVR = List of all the local script variables separated by '\0' NULL characters.
     SCDT = The compiled script data
     SCTX = Script text
       Note (thoronador): SCVR may not be present at all, if there are no local
@@ -251,7 +251,7 @@ bool ScriptRecord::loadFromStream(std::ifstream& in_File)
         long NumFloats
         long ScriptDataSize
         long LocalVarSize
-    SCVR = List of all the local script variables seperated by '\0' NULL characters.
+    SCVR = List of all the local script variables separated by '\0' NULL characters.
     SCDT = The compiled script data
     SCTX = Script text
       Note (thoronador): SCVR may not be present at all, if there are no local

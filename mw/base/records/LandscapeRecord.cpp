@@ -352,7 +352,7 @@ bool LandscapeRecord::loadFromStream(std::ifstream& in_File)
   bool readWNAM = false;
   bool readVCLR = false;
   bool readVTEX = false;
-  //read optinal part
+  // read optional part
   while (BytesRead<Size)
   {
     //read next subrecord
@@ -497,7 +497,7 @@ bool LandscapeRecord::loadFromStream(std::ifstream& in_File)
            readVTEX = true;
            break;
       default:
-           //unknown/ wron subrecord encountered
+           // unknown / wrong subrecord encountered
            std::cout << "Error: expected record name VNML, VHGT, WNAM, VCLR, or"
                      << " VTEX was not found. Instead, \""
                      <<IntTo4Char(SubRecName)<< "\" was found.\n";

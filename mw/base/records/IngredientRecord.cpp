@@ -85,16 +85,16 @@ bool IngredientRecord::saveToStream(std::ofstream& output) const
   uint32_t Size;
   Size = 4 /* NAME */ +4 /* 4 bytes for length */
         +recordID.length()+1 /* length of ID +1 byte for NUL-termination */
-        +4 /* MODL */ +4 /* 4 bytes for MODL's lenght */
+        +4 /* MODL */ +4 /* 4 bytes for MODL's length */
         +ModelName.length()+1 /*length of name plus one for NUL-termination */
-        +4 /* FNAM */ +4 /* 4 bytes for FNAM's lenght */
+        +4 /* FNAM */ +4 /* 4 bytes for FNAM's length */
         +IngredientName.length()+1 /*length of name plus one for NUL-termination */
         +4 /* IRDT */ +4 /* IRDT's length */ +56 /*size of ingredient data (IRDT)*/
         +4 /* ITEX */ +4 /* ITEX's length */
         +InventoryIcon.length() +1 /* length of path +1 byte for NUL-termination */;
   if (!ScriptName.empty())
   {
-    Size = Size +4 /* SCRI */ +4 /* 4 bytes for SCRI's lenght */
+    Size = Size +4 /* SCRI */ +4 /* 4 bytes for SCRI's length */
           +ScriptName.length()+1 /* length of script ID +1 byte for NUL-termination */;
   }
   output.write((const char*) &Size, 4);

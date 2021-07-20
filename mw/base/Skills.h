@@ -108,7 +108,7 @@ class Skills
     /* removes all skills from the list */
     void clearAll();
   private:
-    /* constrcutor - private due to singleton pattern */
+    /* constructor - private due to singleton pattern */
     Skills();
 
     /* copy constructor - empty due to singleton pattern */

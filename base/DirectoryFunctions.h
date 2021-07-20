@@ -50,7 +50,7 @@ bool directoryExists(const std::string& dirName);
 bool createDirectory(const std::string& dirName);
 
 /* tries to create the directory dirName and returns true, if the directory
-   could be created, false otherwise. If neccessary, the required parent
+   could be created, false otherwise. If necessary, the required parent
    directories will be created, too.
 
    parameters:

@@ -238,11 +238,11 @@ bool BSA::grabFileNames()
     //enough files?
     if (fileIndex>=m_FolderBlocks.at(dirIndex).files.size())
     {
-      //set to start of next folder block
+      // set to start of next folder block
       ++dirIndex;
       fileIndex = 0;
-      //another check is neccessary here
-      if (dirIndex>=m_FolderBlocks.size())
+      // another check is necessary here
+      if (dirIndex >= m_FolderBlocks.size())
       {
         std::cout << "BSA::grabFileNames: Error: not enough file blocks (2)!\n"
                   << "dir idx: "<<dirIndex<<", #blocks: "<<m_FolderBlocks.size()<<"\n"
@@ -263,11 +263,11 @@ bool BSA::grabFileNames()
   delete[] namesPointer;
   namesPointer = NULL;
 
-  if (namesRead!=m_Header.fileCount)
+  if (namesRead != m_Header.fileCount)
   {
     std::cout << "BSA::grabFileNames: Error: number of read file names does not "
-              << "match the number given in the header. "<<m_Header.fileCount
-              << " files shoud be there, but "<<namesRead<<" were found!\n";
+              << "match the number given in the header. " << m_Header.fileCount
+              << " files should be there, but " << namesRead << " were found!\n";
     m_Status = bsFailed;
     return false;
   }

@@ -207,7 +207,7 @@ bool RegionRecord::saveToStream(std::ofstream& output, const bool forceBloodmoon
     SubLength = 33;//fixed size is 33 bytes - 32 for name and one for chance
     output.write((const char*) &SubLength, 4);
     //write sound's name/ID
-    /* The sound name get's truncated here, if it's longer than 31 characters. */
+    /* The sound name gets truncated here, if it's longer than 31 characters. */
     len = SoundChances.at(i).Sound.length()+1;
     if (len>32)
     {

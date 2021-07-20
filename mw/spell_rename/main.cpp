@@ -60,7 +60,7 @@ void showHelp()
             << "  -id              - tries to load list of plugin files from Morrowind.ini and\n"
             << "                     discards all files that have been added via -f parameters\n"
             << "  --verbose        - shows some additional information about data files\n"
-            << "  --silent         - opposite of --verbose; does not show additonal information\n"
+            << "  --silent         - opposite of --verbose; does not show additional information\n"
             << "  --allow-truncate - In order to avoid errors during loading of the created\n"
             << "                     plugin file, the programme usually does not change the\n"
             << "                     name of spells that get too long for Morrowind. (Names\n"
@@ -285,7 +285,7 @@ int main(int argc, char **argv)
   }
   else
   { //There are already some files in the list, but are the master files in there, too?
-    //Let's add master files, if neccessary.
+    //Let's add master files, if necessary.
     if (!files.hasDepFile("Bloodmoon.esm") and FileExists(baseDir+"Bloodmoon.esm"))
     {
       files.push_front("Bloodmoon.esm");
@@ -345,7 +345,7 @@ int main(int argc, char **argv)
     }//if
     else if (read_result==0)
     {
-      //file contains no relevant data, so push it onto the list of unneccessary
+      //file contains no relevant data, so push it onto the list of unnecessary
       //files and remove it
       removedFiles.push_back(files.at(i));
       files.removeEntry(i);

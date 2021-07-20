@@ -384,7 +384,7 @@ Records and their sub-records:
           female child
       DATA (4 bytes)
           uint32_t flags
-              0x00000001 - Familiy Association
+              0x00000001 - Family Association
 
 
   BOOK: book
@@ -961,7 +961,7 @@ Records and their sub-records:
       VEND (4 bytes, optional)
           uint32_t Vendor Buy/Sell List Form ID (points to FLST)
       VENC (4 bytes, optional)
-          uint32_t Merchant Containter Form ID (points to REFR)
+          uint32_t Merchant Container Form ID (points to REFR)
       VENV (12 bytes, optional)
           Vendor Data
           uint16_t Start Hour
@@ -1322,7 +1322,7 @@ Records and their sub-records:
             float    Effect Duration
             uint32_t flags?
                 0x00000002 - ???
-            float    Angle Treshold
+            float    Angle Threshold
             float    Placement Radius
             uint32_t Sound Level
                 0x00000000 - Loud
@@ -1656,7 +1656,7 @@ Records and their sub-records:
           float Havok Display Color G
           float Havok Display Color B
       BNAM (4 bytes)
-          float Bouyancy
+          float Buoyancy
       FNAM (4 bytes)
           uint32_t flags
              0x00000001 - Stair Material
@@ -1903,8 +1903,8 @@ Records and their sub-records:
       DNAM (4 bytes, optional)
           float   Fade-Out (seconds) (allowed min.: 0; max.: 20s)
       SNAM (n* 4 bytes, optional)
-          std::vector<uint32_t> form IDs of tracks (only in pallette typed tracks)
-           ---> uint32_ts of value zero are used as layer seperator
+          std::vector<uint32_t> form IDs of tracks (only in palette typed tracks)
+           ---> uint32_ts of value zero are used as layer separator
       ANAM (string, NUL-terminated, optional)
           unknown music file path, usually .wav (does not occur for silent tracks)
       BNAM (string, NUL-terminated, optional)

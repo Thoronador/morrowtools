@@ -28,7 +28,7 @@ namespace MWTP
 {
 
 /* tries to read Morrowind's install path from the Windows registry. In case of
-   success, the funtion will return true and the retrieved path will be stored
+   success, the function will return true and the retrieved path will be stored
    in the string referenced by pathData. In case of failure, the function will
    return false and the string referenced by pathData will not be changed.
 

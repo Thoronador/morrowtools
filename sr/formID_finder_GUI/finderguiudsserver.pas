@@ -33,10 +33,10 @@ type
       { constructor }
       constructor Create;
 
-      { returns true, if the server has recieved some data }
+      { returns true, if the server has received some data }
       function hasData: Boolean;
 
-      { returns the recieved data, if any }
+      { returns the received data, if any }
       function getData: AnsiString;
     protected
       m_ExpectData: Boolean;

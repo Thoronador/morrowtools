@@ -48,7 +48,7 @@ namespace SRTP
              holds true, if the record's ID is an empty string.
 
              The record pointer must NOT be freed by the application, the
-             Database class will take care of this, when neccessary.
+             Database class will take care of this, when necessary.
       */
       void addRecord(BasicRecord* record);
 

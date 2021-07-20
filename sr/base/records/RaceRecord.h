@@ -72,7 +72,7 @@ struct RaceRecord: public BasicRecord
     /* returns the record's type, usually its header */
     virtual uint32_t getRecordType() const;
 
-    /* returns the lenght of the DATA record in bytes */
+    /* returns the length of the DATA record in bytes */
     uint32_t getDataLength() const;
 
     //type for data subrecord

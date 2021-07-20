@@ -143,7 +143,7 @@ int main(int argc, char **argv)
         {
           if ((i+1<argc) and (argv[i+1]!=NULL))
           {
-            //Is it long enough to be a directoy? (Minimum should be "./".)
+            // Is it long enough to be a directory? (Minimum should be "./".)
             if (std::string(argv[i+1]).size()>1)
             {
               baseDir = std::string(argv[i+1]);
@@ -233,7 +233,7 @@ int main(int argc, char **argv)
   {
     std::cout << "Error: Your specified output file name is the main master "
               << "file of Morrowind, Tribunal or Bloodmoon. In order to "
-              << "prevent you from overwriting one of these files, the programm"
+              << "prevent you from overwriting one of these files, the programme"
               << " will be aborted. Think again!\n";
     return MWTP::rcInvalidParameter;
   }

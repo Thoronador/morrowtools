@@ -78,7 +78,7 @@ struct RegionRecord: public BasicRecord
         output              - the output file stream
         forceBloodmoonStyle - if set to true, the written WEAT subrecord will
                               have a size of 10 bytes, even when it wouldn't be
-                              neccessary
+                              necessary
   */
   bool saveToStream(std::ofstream& output, const bool forceBloodmoonStyle) const;
 

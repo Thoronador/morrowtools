@@ -85,7 +85,7 @@ int main(int argc, char **argv)
 
   //data files directory - empty at start
   std::string dataDir = "";
-  //the plugin that has to be converted - emty at start, too
+  //the plugin that has to be converted - empty at start, too
   std::string pluginFile = "";
 
   if ((argc>1) and (argv!=NULL))
@@ -123,7 +123,7 @@ int main(int argc, char **argv)
           //enough parameters?
           if ((i+1<argc) and (argv[i+1]!=NULL))
           {
-            //Is it long enough to be a directoy? (Minimum should be "./".)
+            // Is it long enough to be a directory? (Minimum should be "./".)
             if (std::string(argv[i+1]).size()>1)
             {
               dataDir = std::string(argv[i+1]);

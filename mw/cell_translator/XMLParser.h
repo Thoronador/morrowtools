@@ -65,7 +65,7 @@ class XMLParser
     ParserToken parse(std::string& Content);
   private:
     /* returns true, if the character c is a space character as per XML spec.,
-       i.e. if it is a space, a line feed, carriage return or horzontal
+       i.e. if it is a space, a line feed, carriage return or horizontal
        tabulator
 
        parameters:

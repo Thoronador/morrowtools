@@ -1465,7 +1465,7 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File, const bool localized, c
                       bytesRead += 2;
                       if (subLength!=8)
                       {
-                        std::cout <<"Error: sub record CNTO of QUST has invlaid length ("
+                        std::cout <<"Error: sub record CNTO of QUST has invalid length ("
                                   <<subLength<<" bytes). Should be 8 bytes!\n";
                         return false;
                       }
@@ -1490,7 +1490,7 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File, const bool localized, c
                     bytesRead += 2;
                     if (subLength!=8)
                     {
-                      std::cout <<"Error: sub record CNTO of QUST has invlaid length ("
+                      std::cout <<"Error: sub record CNTO of QUST has invalid length ("
                                 <<subLength<<" bytes). Should be 8 bytes!\n";
                       return false;
                     }
@@ -1534,7 +1534,7 @@ bool QuestRecord::loadFromStream(std::ifstream& in_File, const bool localized, c
                     bytesRead += 2;
                     if (subLength!=4*size_int)
                     {
-                      std::cout <<"Error: sub record KWDA of QUST has invlaid length ("
+                      std::cout <<"Error: sub record KWDA of QUST has invalid length ("
                                 <<subLength<<" bytes). Should be "<<4*size_int<<" bytes!\n";
                       return false;
                     }

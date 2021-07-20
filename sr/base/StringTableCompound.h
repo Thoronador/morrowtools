@@ -92,11 +92,11 @@ class StringTableCompound
            The BaseFileName parameter has to be the full path to the tables
            without their respective extension. For example, if you want to
            read the three string table from the files
-             C:\Progam Files\Steam\SteamApps\common\skyrim\Data\Strings\Skyrim_English.DLStrings
-             C:\Progam Files\Steam\SteamApps\common\skyrim\Data\Strings\Skyrim_English.ILStrings
-             C:\Progam Files\Steam\SteamApps\common\skyrim\Data\Strings\Skyrim_English.strings
+             C:\Program Files\Steam\SteamApps\common\skyrim\Data\Strings\Skyrim_English.DLStrings
+             C:\Program Files\Steam\SteamApps\common\skyrim\Data\Strings\Skyrim_English.ILStrings
+             C:\Program Files\Steam\SteamApps\common\skyrim\Data\Strings\Skyrim_English.strings
            then the BaseFileName has to be
-             "C:\Progam Files\Steam\SteamApps\common\skyrim\Data\Strings\Skyrim_English"
+             "C:\Program Files\Steam\SteamApps\common\skyrim\Data\Strings\Skyrim_English"
              (without the quotes of course).
     */
     bool readCompound(const std::string& BaseFileName);

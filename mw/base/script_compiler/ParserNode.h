@@ -40,7 +40,7 @@ namespace ScriptCompiler
 std::string::size_type getNextOperatorPos(const std::string& expr, const std::string::size_type offset);
 
 /* returns true, of the operator character op1 has lower or equal operator
-   precendence, compared to op2
+   precedence, compared to op2
 
    parameters:
        op1 - first operator

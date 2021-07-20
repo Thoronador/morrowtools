@@ -21,5 +21,5 @@ SR_UNSAVEABLE_RECORDS         - This symbol removes the saveToStream() and
                                 all its derived classes. As a consequence it
                                 strips the ability to save records from all
                                 record manager singletons.
-                                Usefull if a programme just wants to read ESMs
+                                Useful if a programme just wants to read ESMs
                                 but never save any ESM data.

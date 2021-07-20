@@ -184,7 +184,7 @@ void DepFileList::sort()
         smallest = j;
       }//if
     }//for j
-    //now swap, if neccessary
+    // now swap, if necessary
     if (smallest!=i)
     {
       temp = m_List.at(i);

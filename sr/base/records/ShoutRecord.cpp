@@ -35,7 +35,7 @@ bool ShoutRecord::WordEntry::operator==(const ShoutRecord::WordEntry& other) con
       and (recharge==other.recharge));
 }
 
-/* ShoutRecord's funtions */
+/* ShoutRecord's functions */
 
 ShoutRecord::ShoutRecord()
 : BasicRecord(), editorID(""),

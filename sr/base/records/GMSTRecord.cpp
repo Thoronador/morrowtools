@@ -201,7 +201,7 @@ bool GMSTRecord::loadFromStream(std::ifstream& in_File, const bool localized, co
          break;
     case 'i':
          //read integer
-         //interger's length
+         //integer's length
          if (subRecSize != 4)
          {
            std::cout << "Error: sub record DATA of GMST has invalid length ("

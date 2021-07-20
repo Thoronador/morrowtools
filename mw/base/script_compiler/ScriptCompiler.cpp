@@ -5220,10 +5220,10 @@ bool ScriptFunctions_ThreeParameters(const std::vector<std::string>& params, Com
     chunk.data.push_back(0);
     return true;
   }//if AIWander
-  //workaorund for 3-param-version of Face
+  // workaround for 3-param-version of Face
   if (lowerFunction == "face")
   {
-    if (params.size()<4)
+    if (params.size() < 4)
     {
       std::cout << "ScriptCompiler: Error: Face needs two (three) parameters!\n";
       return false;
@@ -7399,7 +7399,7 @@ bool ScriptFunctions_TwelveParameters(const std::vector<std::string>& params, Co
 bool ScriptFunctions(const std::string& line, CompiledChunk& chunk, const bool isCompare)
 {
   if (line.empty()) return false;
-  //split line into seperate parameters
+  // split line into separate parameters
   std::vector<std::string> parameters = explodeParams(line);
   /* Now the first entry in vector params should be the function name, the rest
      is the list of parameters. That's why the size of the vector is one more
@@ -7637,7 +7637,7 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       offset = len;
     }//else
 
-    // -> remove any commments, if present (comments start with ';')
+    // -> remove any comments, if present (comments start with ';')
     pos = getCommentStart(new_line);
     if (pos!=std::string::npos)
     {

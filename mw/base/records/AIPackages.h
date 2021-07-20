@@ -55,7 +55,7 @@ struct NPC_BasicAIPackage
   #endif
 };//struct
 
-/* structure to hold tha AI activate data of an NPC */
+/* structure to hold the AI activate data of an NPC */
 struct NPC_AIActivate: public NPC_BasicAIPackage
 {
   std::string TargetID;

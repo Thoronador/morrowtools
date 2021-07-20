@@ -129,7 +129,7 @@ bool ArmourRecord::saveToStream(std::ofstream& output) const
          21=Right Upper Leg,22=Left Upper Leg,23=Right Pauldron,24=Left Pauldron,
          25=Weapon,26=Tail)
     BNAM = Male Part Name
-    CNAM = Female Body Part Name (0 occurences)
+    CNAM = Female Body Part Name (0 occurrences)
         INDX and BNAM/CNAM are grouped together.  INDX first followed
         by an optional BNAM (no BNAM indicates a NULL field for that index).
         Up to 7 pairs allowed.
@@ -272,7 +272,7 @@ bool ArmourRecord::loadFromStream(std::ifstream& in_File)
          21=Right Upper Leg,22=Left Upper Leg,23=Right Pauldron,24=Left Pauldron,
          25=Weapon,26=Tail)
     BNAM = Male Part Name
-    CNAM = Female Body Part Name (0 occurences)
+    CNAM = Female Body Part Name (0 occurrences)
         INDX and BNAM/CNAM are grouped together.  INDX first followed
         by an optional BNAM (no BNAM indicates a NULL field for that index).
         Up to 7 pairs allowed.

@@ -45,7 +45,7 @@ struct PathGridRef
 
   /* function to ease output of PathGridRef */
   std::string toString() const;
-};//struc
+};//struct
 
 //iterator type for path grid list
 typedef std::map<PathGridRef, PathGridRecord>::const_iterator PathGridListIterator;

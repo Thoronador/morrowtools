@@ -201,7 +201,7 @@ void splitPathFileExtension(const std::string fileName, const char pathSeperator
     path = fileName.substr(0, sepPos+1);
     name = fileName.substr(sepPos+1);
   }
-  // => now path has the path (including seperator), and name has the file including extension
+  // => now path has the path (including separator), and name has the file including extension
 
   //split extension from name
   const std::string::size_type dotPos = name.rfind('.');

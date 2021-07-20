@@ -33,12 +33,12 @@ namespace SRTP
 
 /* This descendant of the ESMWriter class tries to write all records of a given
    type, hold in a MapBasedRecordManager class, to the given .esm/.esp file.
-   This class is layed out for writing top level groups which contain only one
+   This class is laid out for writing top level groups which contain only one
    distinct record type and have no subgroups. It will only write one single
    top level group (or no group at all, if the singleton contains no records) to
    the given file.
 
-   If you want/need to write a file structure that contains nested groups or
+   If you want / need to write a file structure that contains nested groups or
    more than one group, try the ESMWriterContents class instead.
 */
 template<typename recT, typename singleT>
@@ -74,7 +74,7 @@ class ESMWriterSingleType: public ESMWriter
     */
     virtual uint32_t getTotalNumberOfGroups() const;
 
-    /* tries to write all gropus and data records and returns true on success
+    /* tries to write all groups and data records and returns true on success
 
        parameters:
            output - the output file stream that's used to write the data

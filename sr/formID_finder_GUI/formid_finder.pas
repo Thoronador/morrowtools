@@ -572,12 +572,12 @@ begin
   if (not m_HasData) then
   begin
     CleanUpGrid('No data.');
-    ShowMessage('No data recieved from formID_finder!');
+    ShowMessage('No data received from formID_finder!');
     SearchButton.Enabled:= true;
     Exit;
   end;//if
   trim4(m_StringData);
-  //ShowMessage('Trimmed recieved Content is:'+#13#10+'"'+m_StringData+'"');
+  //ShowMessage('Trimmed received Content is:'+#13#10+'"'+m_StringData+'"');
   CleanUpGrid('Preparing data for display...');
   Application.ProcessMessages;
   DataToStringGrid(total);

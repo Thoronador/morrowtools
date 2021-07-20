@@ -73,7 +73,7 @@ class ESMWriter
     */
     virtual uint32_t getTotalNumberOfGroups() const = 0;
 
-    /* tries to write all gropus and data records and returns true on success
+    /* tries to write all groups and data records and returns true on success
 
        parameters:
            output - the output file stream that's used to write the data

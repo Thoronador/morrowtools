@@ -194,7 +194,7 @@ bool replaceCellsInScriptText(std::string& scriptText, const CellListType& cells
           }//if (cell)
         }//if (1st param)
       }//if (function name)
-      //when done, set offset to occurence +1
+      // when done, set offset to occurrence +1
       if (std::string::npos!=pos_AIEscortCell)
       {
         offset = pos_AIEscortCell+1;
@@ -229,7 +229,7 @@ bool replaceCellsInScriptText(std::string& scriptText, const CellListType& cells
           }//if some match found
         }//if first param
       }//if function name
-      //when done, set offset to occurence +1
+      // when done, set offset to occurrence +1
       offset = pos_GetPCCell+1;
     }
     else if (std::string::npos!=pos_PlaceItemCell)
@@ -262,7 +262,7 @@ bool replaceCellsInScriptText(std::string& scriptText, const CellListType& cells
           }//if (cell)
         }//if (1st param)
       }//if (function name)
-      //when done, set offset to occurence +1
+      // when done, set offset to occurrence +1
       offset = pos_PlaceItemCell+1;
     }
     else if (std::string::npos!=pos_PositionCell)
@@ -307,7 +307,7 @@ bool replaceCellsInScriptText(std::string& scriptText, const CellListType& cells
           }//if second param
         }//if first param
       }//if function name
-      //when done, set offset to occurence +1
+      // when done, set offset to occurrence +1
       offset = pos_PositionCell+1;
     }
     else

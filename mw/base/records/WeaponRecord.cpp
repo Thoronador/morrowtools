@@ -440,7 +440,7 @@ bool WeaponRecord::loadFromStream(std::ifstream& in_File)
            ScriptID = std::string(Buffer);
            break;
       default:
-           //unknown/ wron subrecord encountered
+           // unknown / wrong subrecord encountered
            std::cout << "Error: expected record name ENAM or SCRI was not "
                      << "found. Instead, \""<<IntTo4Char(SubRecName)
                      <<"\" was found.\n";

@@ -71,7 +71,7 @@ bool ESMReaderCount::groupFinished(const GroupData& g_data)
   return false;
 }
 
-int ESMReaderCount::readNextRecord(std::ifstream& in_File, const uint32_t recName)
+int ESMReaderCount::readNextRecord(std::ifstream& in_File, const uint32_t recName, const bool localized, const StringTable& table)
 {
   ++RecordCounter[recName];
   ++totalRecords;

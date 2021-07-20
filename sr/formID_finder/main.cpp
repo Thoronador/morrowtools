@@ -1453,7 +1453,7 @@ int main(int argc, char **argv)
       std::cout << "Error in send data mode: cannot find receiving window!\n";
       return SRTP::rcWindowNotFound;
     }
-    int msgResult = SendMessage(receiver, WM_COPYDATA, 0, (long int) &cds);
+    int msgResult = SendMessage(receiver, WM_COPYDATA, 0, (LPARAM) &cds);
     #else
     //check for socket
     if (sendParam1st!="socket")

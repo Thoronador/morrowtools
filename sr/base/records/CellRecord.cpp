@@ -493,7 +493,7 @@ bool CellRecord::saveToStream(std::ofstream& output) const
     output.write((const char*) &defaultAcousticSpaceFormID, 4);
   }
 
-  return output;
+  return output.good();
 }
 #endif
 

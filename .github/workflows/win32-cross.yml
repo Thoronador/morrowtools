@@ -26,14 +26,26 @@ jobs:
         run: |
           cd "$GITHUB_WORKSPACE"/build
           ctest -V
-      - name: Prepare zlib1.dll for artifact upload
+      - name: Collect zlib1.dll and other DLLs for artifact upload
         run: |
-          cp /usr/i686-w64-mingw32/lib/zlib1.dll "$GITHUB_WORKSPACE"/build/sr/formID_finder/zlib1.dll
+          mkdir -p "$GITHUB_WORKSPACE"/build/artifacts
+          cp /usr/i686-w64-mingw32/lib/zlib1.dll "$GITHUB_WORKSPACE"/build/artifacts/zlib1.dll
+          cp /usr/lib/gcc/i686-w64-mingw32/9.3-win32/libstdc++-6.dll "$GITHUB_WORKSPACE"/build/artifacts/libstdc++-6.dll
+          cp /usr/lib/gcc/i686-w64-mingw32/9.3-win32/libgcc_s_sjlj-1.dll "$GITHUB_WORKSPACE"/build/artifacts/libgcc_s_sjlj-1.dll
+      - name: Collect build artifacts in one place
+        run: |
+          cd "$GITHUB_WORKSPACE"/build
+          cp mw/cell_translator/cell_translator.exe artifacts/
+          cp mw/data_cleaner/data_cleaner.exe artifacts/
+          cp mw/skill_rebalance/skill_rebalance.exe artifacts/
+          cp mw/spell_rename/spell_rename.exe artifacts/
+          cp sr/conv_cams/conv_cams.exe artifacts/
+          cp sr/formID_finder/formID_finder.exe artifacts/
+          cp sr/race_resize/race_resize.exe artifacts/
       - name: Archive build artifacts
         uses: actions/upload-artifact@v2
         with:
           name: build-artifacts
           path: |
-            build/sr/**/*.exe
-            build/mw/**/*.exe
-            build/sr/formID_finder/zlib1.dll
+            build/artifacts/*.exe
+            build/artifacts/*.dll

@@ -22,8 +22,8 @@
 #include <iostream>
 #include <cstring>
 #if defined(_WIN32)
-  //Windows includes
-  #include <Windows.h>
+  // Windows includes
+  #include <windows.h>
 #else
   #warning There is no Windows Registry on that OS! Registry related functions \
            will always fail here!

@@ -23,7 +23,7 @@
 #include <string>
 #include <set>
 #if defined(_WIN32)
-#include <Windows.h>
+#include <windows.h>
 #else
 #include <sys/socket.h>
 #include <sys/un.h>

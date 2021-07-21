@@ -1,0 +1,14 @@
+#Code::Blocks files
+*.depend
+*.layout
+
+# object and binary directories
+bin/
+obj/
+
+# Git repository
+.git/
+# GitHub workflows
+.github/
+
+Dockerfile

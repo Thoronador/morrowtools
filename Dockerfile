@@ -5,15 +5,13 @@
 FROM debian:10-slim AS builder
 LABEL maintainer="Dirk Stolle <striezel-dev@web.de>"
 RUN apt-get update && apt-get upgrade -y
-RUN apt-get install -y binutils-mingw-w64-i686 cmake g++-mingw-w64-i686 gcc-mingw-w64-i686 mingw-w64-i686-dev libz-mingw-w64-dev pkg-config
+RUN apt-get install -y binutils-mingw-w64-i686 cmake g++-mingw-w64-i686 gcc-mingw-w64-i686 mingw-w64-i686-dev libz-mingw-w64-dev pkg-config zip
 RUN mkdir -p /opt/morrowtools
 COPY ./ /opt/morrowtools
 WORKDIR /opt/morrowtools
 ENV CXX=i686-w64-mingw32-c++-win32
 ENV CC=i686-w64-mingw32-gcc-win32
 RUN mkdir build && cd build && cmake .. && make -j4 && ctest -V
-RUN apt-get install -y zip
-RUN ls -lah && ls -lah mw && ls -lah mw/cell_translator
 RUN cd /opt/morrowtools/build && zip artifacts.zip \
     mw/cell_translator/cell_translator.exe \
     mw/data_cleaner/data_cleaner.exe \

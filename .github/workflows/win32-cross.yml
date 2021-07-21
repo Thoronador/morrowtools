@@ -1,0 +1,39 @@
+name: Cross-compile for Win32
+
+on: push
+
+jobs:
+  build_ubuntu_20_04_cross-win32:
+    runs-on: ubuntu-20.04
+    steps:
+      # Checks-out the repository under $GITHUB_WORKSPACE.
+      - uses: actions/checkout@v2
+      - name: Install Debian packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake libz-mingw-w64-dev pkg-config
+          sudo apt-get install -y binutils-mingw-w64-i686 g++-mingw-w64-i686 gcc-mingw-w64-i686 mingw-w64-i686-dev
+      - name: Build with MinGW for Win32
+        run: |
+          export CXX=i686-w64-mingw32-c++-win32
+          export CC=i686-w64-mingw32-gcc-win32
+          cd $GITHUB_WORKSPACE
+          mkdir build
+          cd build
+          cmake ../
+          make -j4
+      - name: Tests
+        run: |
+          cd "$GITHUB_WORKSPACE"/build
+          ctest -V
+      - name: Prepare zlib1.dll for artifact upload
+        run: |
+          cp /usr/i686-w64-mingw32/lib/zlib1.dll "$GITHUB_WORKSPACE"/build/sr/formID_finder/zlib1.dll
+      - name: Archive build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-artifacts
+          path: |
+            build/sr/**/*.exe
+            build/mw/**/*.exe
+            build/sr/formID_finder/zlib1.dll

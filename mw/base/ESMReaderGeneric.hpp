@@ -50,6 +50,11 @@ class ESMReaderGeneric: public ESMReader
     /* destructor */
     virtual ~ESMReaderGeneric();
 
+    /// delete copy constructor
+    ESMReaderGeneric(const ESMReaderGeneric& other) = delete;
+    /// assignment operator
+    ESMReaderGeneric& operator=(const ESMReaderGeneric& other) = delete;
+
     /* tries to remove all record pointers from the given vector and deallocates
        them in turn
     */

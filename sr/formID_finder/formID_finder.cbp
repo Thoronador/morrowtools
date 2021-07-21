@@ -33,6 +33,7 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add option="-std=c++17" />
 			<Add option="-fexceptions" />
 		</Compiler>
 		<Linker>
@@ -171,9 +172,6 @@
 		<Unit filename="ESMReaderFinderReferences.hpp" />
 		<Unit filename="main.cpp" />
 		<Extensions>
-			<code_completion />
-			<envvars />
-			<debugger />
 			<lib_finder disable_auto="1" />
 		</Extensions>
 	</Project>

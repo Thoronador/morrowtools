@@ -20,7 +20,10 @@
 			</Target>
 		</Build>
 		<Compiler>
+			<Add option="-Weffc++" />
+			<Add option="-pedantic" />
 			<Add option="-Wall" />
+			<Add option="-std=c++17" />
 			<Add option="-fexceptions" />
 		</Compiler>
 		<Unit filename="../../base/ComparisonFunctor.hpp" />
@@ -114,10 +117,6 @@
 		<Unit filename="XMLParser.cpp" />
 		<Unit filename="XMLParser.hpp" />
 		<Unit filename="main.cpp" />
-		<Extensions>
-			<code_completion />
-			<envvars />
-			<debugger />
-		</Extensions>
+		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

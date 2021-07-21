@@ -20,7 +20,10 @@
 			</Target>
 		</Build>
 		<Compiler>
+			<Add option="-Weffc++" />
+			<Add option="-pedantic" />
 			<Add option="-Wall" />
+			<Add option="-std=c++17" />
 			<Add option="-fexceptions" />
 			<Add option="-DMW_UNSAVEABLE_RECORDS" />
 		</Compiler>
@@ -101,10 +104,6 @@
 		<Unit filename="ESMReaderCleaner.cpp" />
 		<Unit filename="ESMReaderCleaner.hpp" />
 		<Unit filename="main.cpp" />
-		<Extensions>
-			<code_completion />
-			<envvars />
-			<debugger />
-		</Extensions>
+		<Extensions />
 	</Project>
 </CodeBlocks_project_file>

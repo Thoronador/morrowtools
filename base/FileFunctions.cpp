@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2013  Thoronador
+    Copyright (C) 2011, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,10 +27,10 @@
 #include <iostream>
 #include <cstdio>
 #if defined(_WIN32)
-  //Windows includes go here
+  // Windows includes go here
   #include <io.h>
 #elif defined(__linux__) || defined(linux)
-  //Linux directory entries
+  // Linux directory entries
   #include <dirent.h>
 #else
   #error "Unknown operating system!"
@@ -128,55 +128,55 @@ std::vector<FileEntry> getDirectoryFileList(const std::string& Directory)
   std::vector<FileEntry> result;
   FileEntry one;
   #if defined(_WIN32)
-  //Windows part
+  // Windows part
   intptr_t handle;
   struct _finddata_t sr;
-  sr.attrib = _A_NORMAL | _A_RDONLY | _A_HIDDEN | _A_SYSTEM | _A_VOLID |
+  sr.attrib = _A_NORMAL | _A_RDONLY | _A_HIDDEN | _A_SYSTEM |
               _A_SUBDIR | _A_ARCH;
-  handle = _findfirst(std::string(Directory+"*").c_str(),&sr);
+  handle = _findfirst(std::string(Directory + "*").c_str(), &sr);
   if (handle == -1)
   {
     std::cout << "getDirectoryFileList: ERROR: unable to open directory "
-              <<"\""<<Directory<<"\". Returning empty list.\n";
+              << "\"" << Directory << "\". Returning empty list.\n";
     return result;
   }
-  //search it
+  // search it
   while( _findnext(handle, &sr)==0)
   {
     one.fileName = std::string(sr.name);
-    one.isDirectory = ((sr.attrib & _A_SUBDIR)==_A_SUBDIR);
+    one.isDirectory = ((sr.attrib & _A_SUBDIR) == _A_SUBDIR);
     result.push_back(one);
-  }//while
+  }
   _findclose(handle);
   #elif defined(__linux__) || defined(linux)
-  //Linux part
+  // Linux part
   DIR * direc = opendir(Directory.c_str());
   if (direc == NULL)
   {
     std::cout << "getDirectoryFileList: ERROR: unable to open directory "
-              <<"\""<<Directory<<"\". Returning empty list.\n";
+              << "\"" << Directory << "\". Returning empty list.\n";
     return result;
-  }//if
+  }
 
   struct dirent* entry = readdir(direc);
   while (entry != NULL)
   {
     one.fileName = std::string(entry->d_name);
     one.isDirectory = entry->d_type==DT_DIR;
-    //check for socket, pipes, block device and char device, which we don't want
+    // check for socket, pipes, block device and char device, which we don't want
     if (entry->d_type != DT_SOCK && entry->d_type != DT_FIFO && entry->d_type != DT_BLK
         && entry->d_type != DT_CHR)
     {
       result.push_back(one);
     }
     entry = readdir(direc);
-  }//while
+  }
   closedir(direc);
   #else
     #error "Unknown operating system!"
   #endif
   return result;
-}//function
+}
 
 void splitPathFileExtension(const std::string fileName, const char pathSeperator, std::string& path, std::string& name, std::string& extension)
 {

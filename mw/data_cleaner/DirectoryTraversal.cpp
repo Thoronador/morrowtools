@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@
 #include <vector>
 //includes for directory listing
 #if defined(_WIN32)
-  //Windows includes go here
+  // Windows includes go here
   #include <io.h>
 #elif defined(__linux__) || defined(linux)
   //Linux directory entries
@@ -47,55 +47,55 @@ std::vector<FileEntry> getFilesInDirectory(const std::string& directory)
   std::vector<FileEntry> result;
   FileEntry one;
   #if defined(_WIN32)
-  //Windows part
+  // Windows part
   intptr_t handle;
   struct _finddata_t sr;
-  sr.attrib = _A_NORMAL | _A_RDONLY | _A_HIDDEN | _A_SYSTEM | _A_VOLID |
+  sr.attrib = _A_NORMAL | _A_RDONLY | _A_HIDDEN | _A_SYSTEM |
               _A_SUBDIR | _A_ARCH;
-  handle = _findfirst(std::string(directory+"*").c_str(),&sr);
+  handle = _findfirst(std::string(directory + "*").c_str(), &sr);
   if (handle == -1)
   {
     std::cout << "getFilesInDirectory: ERROR: unable to open directory \""
-              <<directory<<"\". Returning empty list.\n";
+              << directory << "\". Returning empty list.\n";
     return result;
   }
-  //search it
+  // search it
   while( _findnext(handle, &sr)==0)
   {
     one.FileName = std::string(sr.name);
-    one.IsDirectory = ((sr.attrib & _A_SUBDIR)==_A_SUBDIR);
+    one.IsDirectory = ((sr.attrib & _A_SUBDIR) == _A_SUBDIR);
     result.push_back(one);
-  }//while
+  }
   _findclose(handle);
   #elif defined(__linux__) || defined(linux)
-  //Linux part
+  // Linux part
   DIR * direc = opendir(directory.c_str());
   if (direc == NULL)
   {
     std::cout << "getFilesInDirectory: ERROR: unable to open directory \""
-              <<directory<<"\". Returning empty list.\n";
+              << directory << "\". Returning empty list.\n";
     return result;
-  }//if
+  }
 
   struct dirent* entry = readdir(direc);
   while (entry != NULL)
   {
     one.FileName = std::string(entry->d_name);
     one.IsDirectory = entry->d_type==DT_DIR;
-    //check for socket, pipes, block device and char device, which we don't want
+    // check for socket, pipes, block device and char device, which we don't want
     if (entry->d_type != DT_SOCK && entry->d_type != DT_FIFO && entry->d_type != DT_BLK
         && entry->d_type != DT_CHR)
     {
       result.push_back(one);
     }
     entry = readdir(direc);
-  }//while
+  }
   closedir(direc);
   #else
     #error "Unknown operating system!"
   #endif
   return result;
-}//function getFilesInDirectory
+}
 
 void getAllDataFiles(const std::string& dir, DepFileList& files)
 {

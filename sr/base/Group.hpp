@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2011, 2012, 2021 Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,8 +22,8 @@
 #define SR_GROUP_HPP
 
 #include <map>
+#include <memory> // for std::shared_ptr
 #include <vector>
-#include <boost/smart_ptr/shared_ptr.hpp>
 #include "records/BasicRecord.hpp"
 #include "records/GroupData.hpp"
 
@@ -89,10 +89,10 @@ class Group
     void rebuildIndex();
 
     //type for constant record iterator
-    typedef std::vector<boost::shared_ptr<BasicRecord> >::const_iterator ConstRecIterator;
+    typedef std::vector<std::shared_ptr<BasicRecord> >::const_iterator ConstRecIterator;
 
     //type for non-const record iterator
-    typedef std::vector<boost::shared_ptr<BasicRecord> >::iterator RecIterator;
+    typedef std::vector<std::shared_ptr<BasicRecord> >::iterator RecIterator;
 
     /* returns a constant iterator to the start of the list of records */
     ConstRecIterator getRecBegin() const;
@@ -211,8 +211,8 @@ class Group
     //sub groups
     std::vector<Group> m_SubGroups;
 
-    //internal record list
-    std::vector<boost::shared_ptr<BasicRecord> > m_Records;
+    // internal record list
+    std::vector<std::shared_ptr<BasicRecord> > m_Records;
 
     //index - key is form ID, value is index of entry in m_Records
     std::map<uint32_t, uint32_t> m_Index;

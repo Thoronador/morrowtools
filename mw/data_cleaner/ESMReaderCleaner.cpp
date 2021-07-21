@@ -47,11 +47,11 @@ namespace MWTP
 {
 
 ESMReaderCleaner::ESMReaderCleaner(const std::string& base)
+: MeshSet(std::set<std::string, ci_less>()),
+  IconSet(std::set<std::string, ci_less>()),
+  baseDirMesh(base + "Meshes\\"),
+  baseDirIcon(base + "Icons\\")
 {
-  MeshSet.clear();
-  IconSet.clear();
-  baseDirIcon = base+ "Icons\\";
-  baseDirMesh = base+ "Meshes\\";
 }
 
 ESMReaderCleaner::~ESMReaderCleaner()

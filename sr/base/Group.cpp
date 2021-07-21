@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ namespace SRTP
 Group::Group()
 : headerData(GroupData()),
   m_SubGroups(std::vector<Group>()),
-  m_Records(std::vector<boost::shared_ptr<BasicRecord> >()),
+  m_Records(std::vector<std::shared_ptr<BasicRecord> >()),
   m_Index(std::map<uint32_t, uint32_t>())
 {
 }
@@ -42,7 +42,7 @@ void Group::addRecord(BasicRecord* rec)
   if (rec!=NULL)
   {
     m_Index[rec->headerFormID] = m_Records.size();
-    boost::shared_ptr<BasicRecord> s_ptr(rec);
+    std::shared_ptr<BasicRecord> s_ptr(rec);
     m_Records.push_back(s_ptr);
   }
 }
@@ -99,18 +99,11 @@ unsigned int Group::getNumberOfRecordsIncludingSubGroups() const
 
 void Group::removeRecords()
 {
-  //clear record index
+  // clear record index
   m_Index.clear();
-  //delete all records properly
-  // -- boost's shared pointer class should handle proper deallocation, when needed
+  // delete all records properly
+  // -- std::shared pointer class should handle proper deallocation, when needed
   m_Records.clear();
-  /*BasicRecord * recPtr;
-  while (!m_Records.empty())
-  {
-    recPtr = m_Records.back();
-    m_Records.pop_back();
-    delete recPtr;
-  }//while*/
 }
 
 void Group::rebuildIndex()

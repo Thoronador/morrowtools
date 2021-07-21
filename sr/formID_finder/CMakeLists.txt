@@ -69,10 +69,21 @@ set( CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -s" )
 
 add_executable(formID_finder ${formID_finder_sources})
 
-find_package (ZLIB)
-if (ZLIB_FOUND)
-  include_directories(${ZLIB_INCLUDE_DIRS})
-  target_link_libraries (formID_finder ${ZLIB_LIBRARIES})
-else ()
-  message ( FATAL_ERROR "zlib was not found!" )
-endif (ZLIB_FOUND)
+if (MINGW AND CMAKE_HOST_UNIX)
+  # If compiler is some kind of MinGW, but the CMake host is Unix, then this is
+  # a cross-compiling attempt. To get the library paths more easily, we just set
+  # them directly, because CMake has troubles finding them.
+  message(STATUS "Cross-compiling from Linux for Windows ...")
+  include_directories( /usr/i686-w64-mingw32/include/ )
+  link_directories( /usr/i686-w64-mingw32/lib )
+  target_link_libraries (formID_finder z)
+else()
+  # use default method to find zlib
+  find_package (ZLIB)
+  if (ZLIB_FOUND)
+    include_directories(${ZLIB_INCLUDE_DIRS})
+    target_link_libraries (formID_finder ${ZLIB_LIBRARIES})
+  else ()
+    message ( FATAL_ERROR "zlib was not found!" )
+  endif (ZLIB_FOUND)
+endif()

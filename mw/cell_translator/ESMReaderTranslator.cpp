@@ -18,19 +18,19 @@
  -------------------------------------------------------------------------------
 */
 
-#include "ESMReaderTranslator.h"
+#include "ESMReaderTranslator.hpp"
 
 #include <iostream>
 #include <stdexcept>
-#include "../base/HelperIO.h"
-#include "../base/MW_Constants.h"
-#include "../base/records/GenericRecord.h"
-#include "../base/records/CellRecord.h"
-#include "../base/records/CreatureRecord.h"
-#include "../base/records/DialogueInfoRecord.h"
-#include "../base/records/NPCRecord.h"
-#include "../base/records/PathGridRecord.h"
-#include "../base/records/ScriptRecord.h"
+#include "../base/HelperIO.hpp"
+#include "../base/MW_Constants.hpp"
+#include "../base/records/GenericRecord.hpp"
+#include "../base/records/CellRecord.hpp"
+#include "../base/records/CreatureRecord.hpp"
+#include "../base/records/DialogueInfoRecord.hpp"
+#include "../base/records/NPCRecord.hpp"
+#include "../base/records/PathGridRecord.hpp"
+#include "../base/records/ScriptRecord.hpp"
 
 namespace MWTP
 {

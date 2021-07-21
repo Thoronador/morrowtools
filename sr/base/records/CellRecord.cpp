@@ -18,13 +18,13 @@
  -------------------------------------------------------------------------------
 */
 
-#include "CellRecord.h"
+#include "CellRecord.hpp"
 #include <cstring>
 #include <iostream>
-#include "../SR_Constants.h"
-#include "../../../mw/base/HelperIO.h"
-#include "../../../base/CompressionFunctions.h"
-#include "../../../base/BufferStream.h"
+#include "../SR_Constants.hpp"
+#include "../../../mw/base/HelperIO.hpp"
+#include "../../../base/CompressionFunctions.hpp"
+#include "../../../base/BufferStream.hpp"
 
 namespace SRTP
 {

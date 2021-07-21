@@ -18,9 +18,9 @@
  -------------------------------------------------------------------------------
 */
 
-#include "TranslateRecords.h"
-#include "../../base/UtilityFunctions.h"
-#include "../base/script_compiler/ScriptCompiler.h"
+#include "TranslateRecords.hpp"
+#include "../../base/UtilityFunctions.hpp"
+#include "../base/script_compiler/ScriptCompiler.hpp"
 
 namespace MWTP
 {

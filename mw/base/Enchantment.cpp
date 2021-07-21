@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include "Enchantment.h"
+#include "Enchantment.hpp"
 
 namespace MWTP
 {

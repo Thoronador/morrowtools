@@ -18,13 +18,13 @@
  -------------------------------------------------------------------------------
 */
 
-#include "StringTable.h"
+#include "StringTable.hpp"
 #include <iostream>
 #include <fstream>
 #include <stdexcept>
 #include <vector>
 #include <cstring>
-#include "../../base/UtilityFunctions.h"
+#include "../../base/UtilityFunctions.hpp"
 
 namespace SRTP
 {

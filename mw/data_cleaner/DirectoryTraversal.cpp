@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include "DirectoryTraversal.h"
+#include "DirectoryTraversal.hpp"
 #include <iostream>
 #include <vector>
 //includes for directory listing
@@ -31,7 +31,7 @@
 #else
   #error "Unknown operating system!"
 #endif
-#include "../../base/UtilityFunctions.h"
+#include "../../base/UtilityFunctions.hpp"
 
 namespace MWTP
 {

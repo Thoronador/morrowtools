@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include "ESMWriter.h"
+#include "ESMWriter.hpp"
 #include <iostream>
 
 #ifndef SR_UNSAVEABLE_RECORDS

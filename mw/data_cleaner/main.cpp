@@ -20,12 +20,12 @@
 
 #include <iostream>
 #include <string>
-#include "ESMReaderCleaner.h"
-#include "../base/ReturnCodes.h"
-#include "../base/IniFunctions.h"
-#include "../../base/DirectoryFunctions.h"
-#include "../../base/FileFunctions.h"
-#include "DirectoryTraversal.h"
+#include "ESMReaderCleaner.hpp"
+#include "../base/ReturnCodes.hpp"
+#include "../base/IniFunctions.hpp"
+#include "../../base/DirectoryFunctions.hpp"
+#include "../../base/FileFunctions.hpp"
+#include "DirectoryTraversal.hpp"
 
 void showHelp()
 {

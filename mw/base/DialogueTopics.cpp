@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include "DialogueTopics.h"
+#include "DialogueTopics.hpp"
 #include <iostream>
 #include <stdexcept>
 

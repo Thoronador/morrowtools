@@ -18,13 +18,13 @@
  -------------------------------------------------------------------------------
 */
 
-#include "IniFunctions.h"
+#include "IniFunctions.hpp"
 #include <cstring>
 #include <iostream>
 #include <fstream>
-#include "../../base/DirectoryFunctions.h"
-#include "../../base/FileFunctions.h"
-#include "ReturnCodes.h"
+#include "../../base/DirectoryFunctions.hpp"
+#include "../../base/FileFunctions.hpp"
+#include "ReturnCodes.hpp"
 
 namespace MWTP
 {

@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include "DirectoryFunctions.h"
+#include "DirectoryFunctions.hpp"
 #include <sys/stat.h>
 
 #if defined(_WIN32)

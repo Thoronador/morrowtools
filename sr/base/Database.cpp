@@ -18,9 +18,9 @@
  -------------------------------------------------------------------------------
 */
 
-#include "Database.h"
+#include "Database.hpp"
 #include <iostream>
-#include "FormIDFunctions.h"
+#include "FormIDFunctions.hpp"
 
 namespace SRTP
 {

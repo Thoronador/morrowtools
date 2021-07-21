@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include "ESMWriterGeneric.h"
+#include "ESMWriterGeneric.hpp"
 #include <iostream>
 #include <stdexcept>
 

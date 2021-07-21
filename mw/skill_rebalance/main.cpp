@@ -20,18 +20,18 @@
 
 #include <iostream>
 #include <string>
-#include "../../base/UtilityFunctions.h"
-#include "../../base/FileFunctions.h"
-#include "../../base/DirectoryFunctions.h"
-#include "../base/ReturnCodes.h"
-#include "../base/records/GMSTRecord.h"
-#include "../base/records/SkillRecord.h"
-#include "../base/records/TES3Record.h"
-#include "../base/GameSettings.h"
-#include "../base/Skills.h"
-#include "../base/RegistryFunctions.h"
-#include "ESMReaderSkillRebalance.h"
-#include "ESMWriterSkillRebalance.h"
+#include "../../base/UtilityFunctions.hpp"
+#include "../../base/FileFunctions.hpp"
+#include "../../base/DirectoryFunctions.hpp"
+#include "../base/ReturnCodes.hpp"
+#include "../base/records/GMSTRecord.hpp"
+#include "../base/records/SkillRecord.hpp"
+#include "../base/records/TES3Record.hpp"
+#include "../base/GameSettings.hpp"
+#include "../base/Skills.hpp"
+#include "../base/RegistryFunctions.hpp"
+#include "ESMReaderSkillRebalance.hpp"
+#include "ESMWriterSkillRebalance.hpp"
 
 void showHelp()
 {

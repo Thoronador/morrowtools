@@ -18,14 +18,14 @@
  -------------------------------------------------------------------------------
 */
 
-#include "SearchContents.h"
-#include "Books.h"
-#include "Containers.h"
-#include "Factions.h"
-#include "FormLists.h"
-#include "LeveledItems.h"
-#include "NPCs.h"
-#include "FormIDFunctions.h"
+#include "SearchContents.hpp"
+#include "Books.hpp"
+#include "Containers.hpp"
+#include "Factions.hpp"
+#include "FormLists.hpp"
+#include "LeveledItems.hpp"
+#include "NPCs.hpp"
+#include "FormIDFunctions.hpp"
 
 namespace SRTP
 {

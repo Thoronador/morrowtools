@@ -18,11 +18,11 @@
  -------------------------------------------------------------------------------
 */
 
-#include "ESMWriter.h"
+#include "ESMWriter.hpp"
 #include <fstream>
 #include <iostream>
-#include "MW_Constants.h"
-#include "Spells.h"
+#include "MW_Constants.hpp"
+#include "Spells.hpp"
 
 namespace MWTP
 {

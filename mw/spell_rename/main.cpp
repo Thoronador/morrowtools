@@ -29,15 +29,15 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "ESMReaderSpells.h"
-#include "ESMWriterSpells.h"
-#include "../../base/DirectoryFunctions.h"
-#include "../../base/FileFunctions.h"
-#include "../base/GameSettings.h"
-#include "../base/IniFunctions.h"
-#include "../base/MagicEffects.h"
-#include "../base/ReturnCodes.h"
-#include "../base/Spells.h"
+#include "ESMReaderSpells.hpp"
+#include "ESMWriterSpells.hpp"
+#include "../../base/DirectoryFunctions.hpp"
+#include "../../base/FileFunctions.hpp"
+#include "../base/GameSettings.hpp"
+#include "../base/IniFunctions.hpp"
+#include "../base/MagicEffects.hpp"
+#include "../base/ReturnCodes.hpp"
+#include "../base/Spells.hpp"
 
 
 void showHelp()

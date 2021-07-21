@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include "DepFiles.h"
+#include "DepFiles.hpp"
 #include <iostream>
 
 namespace MWTP

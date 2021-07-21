@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include "ESMWriterContents.h"
+#include "ESMWriterContents.hpp"
 
 #ifndef SR_UNSAVEABLE_RECORDS
 namespace SRTP

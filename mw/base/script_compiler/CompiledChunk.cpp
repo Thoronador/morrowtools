@@ -18,10 +18,10 @@
  -------------------------------------------------------------------------------
 */
 
-#include "CompiledChunk.h"
+#include "CompiledChunk.hpp"
 #include <iostream>
 #include <stdexcept>
-#include "../../../base/UtilityFunctions.h"
+#include "../../../base/UtilityFunctions.hpp"
 
 namespace MWTP
 {

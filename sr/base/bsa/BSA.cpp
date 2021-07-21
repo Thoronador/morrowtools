@@ -18,13 +18,13 @@
  -------------------------------------------------------------------------------
 */
 
-#include "BSA.h"
+#include "BSA.hpp"
 #include <iostream>
 #include <stdexcept>
 #include <cstring>
-#include "../../../base/UtilityFunctions.h"
-#include "../../../base/DirectoryFunctions.h"
-#include "../../../base/CompressionFunctions.h"
+#include "../../../base/UtilityFunctions.hpp"
+#include "../../../base/DirectoryFunctions.hpp"
+#include "../../../base/CompressionFunctions.hpp"
 
 namespace SRTP
 {

@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include "BSAFolderBlock.h"
+#include "BSAFolderBlock.hpp"
 #include <iostream>
 #include <cstring>
 

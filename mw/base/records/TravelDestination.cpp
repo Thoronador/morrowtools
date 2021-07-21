@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include "TravelDestination.h"
+#include "TravelDestination.hpp"
 
 namespace MWTP
 {

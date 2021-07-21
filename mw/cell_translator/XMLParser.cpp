@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include "XMLParser.h"
+#include "XMLParser.hpp"
 
 XMLParser::XMLParser()
 : m_Buffer("")

@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include "StringTableCompound.h"
+#include "StringTableCompound.hpp"
 #include <iostream>
 #include <stdexcept>
 

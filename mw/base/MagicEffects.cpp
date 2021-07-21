@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include "MagicEffects.h"
+#include "MagicEffects.hpp"
 #include <iostream>
 #include <stdexcept>
 

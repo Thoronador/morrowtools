@@ -18,18 +18,18 @@
  -------------------------------------------------------------------------------
 */
 
-#include "ESMReaderScriptCompiler.h"
+#include "ESMReaderScriptCompiler.hpp"
 #include <iostream>
-#include "../base/Activators.h"
-#include "../base/Containers.h"
-#include "../base/Creatures.h"
-#include "../base/Globals.h"
-#include "../base/MagicEffects.h"
-#include "../base/NPCs.h"
-#include "../base/Scripts.h"
-#include "../base/Statics.h"
-#include "../base/MW_Constants.h"
-#include "../base/HelperIO.h"
+#include "../base/Activators.hpp"
+#include "../base/Containers.hpp"
+#include "../base/Creatures.hpp"
+#include "../base/Globals.hpp"
+#include "../base/MagicEffects.hpp"
+#include "../base/NPCs.hpp"
+#include "../base/Scripts.hpp"
+#include "../base/Statics.hpp"
+#include "../base/MW_Constants.hpp"
+#include "../base/HelperIO.hpp"
 
 namespace MWTP
 {

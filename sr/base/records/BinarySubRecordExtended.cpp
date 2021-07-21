@@ -18,12 +18,12 @@
  -------------------------------------------------------------------------------
 */
 
-#include "BinarySubRecordExtended.h"
+#include "BinarySubRecordExtended.hpp"
 
 #include <iostream>
 #include <cstring>
-#include "../../../mw/base/HelperIO.h"
-#include "../SR_Constants.h"
+#include "../../../mw/base/HelperIO.hpp"
+#include "../SR_Constants.hpp"
 
 namespace SRTP
 {

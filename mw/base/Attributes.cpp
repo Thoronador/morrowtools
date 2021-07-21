@@ -18,10 +18,10 @@
  -------------------------------------------------------------------------------
 */
 
-#include "Attributes.h"
+#include "Attributes.hpp"
 #include <iostream>
 #include <stdexcept>
-#include "../../base/UtilityFunctions.h"
+#include "../../base/UtilityFunctions.hpp"
 
 namespace MWTP
 {

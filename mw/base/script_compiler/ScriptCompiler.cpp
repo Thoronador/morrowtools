@@ -18,21 +18,21 @@
  -------------------------------------------------------------------------------
 */
 
-#include "ScriptCompiler.h"
+#include "ScriptCompiler.hpp"
 #include <iostream>
 #include <stdexcept>
-#include "CompilerCodes.h"
-#include "CompiledChunk.h"
-#include "../../../base/UtilityFunctions.h"
-#include "ParserNode.h"
-#include "../Statics.h"
-#include "../NPCs.h"
-#include "../MagicEffects.h"
-#include "../Globals.h"
-#include "../Creatures.h"
-#include "../Containers.h"
-#include "../Activators.h"
-#include "../Scripts.h"
+#include "CompilerCodes.hpp"
+#include "CompiledChunk.hpp"
+#include "../../../base/UtilityFunctions.hpp"
+#include "ParserNode.hpp"
+#include "../Statics.hpp"
+#include "../NPCs.hpp"
+#include "../MagicEffects.hpp"
+#include "../Globals.hpp"
+#include "../Creatures.hpp"
+#include "../Containers.hpp"
+#include "../Activators.hpp"
+#include "../Scripts.hpp"
 
 namespace MWTP
 {

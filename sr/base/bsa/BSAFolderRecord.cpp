@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include "BSAFolderRecord.h"
+#include "BSAFolderRecord.hpp"
 #include <iostream>
 
 namespace SRTP

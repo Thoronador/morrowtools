@@ -18,11 +18,11 @@
  -------------------------------------------------------------------------------
 */
 
-#include "SpellRecord.h"
+#include "SpellRecord.hpp"
 #include <iostream>
 #include <cstring>
-#include "../MW_Constants.h"
-#include "../HelperIO.h"
+#include "../MW_Constants.hpp"
+#include "../HelperIO.hpp"
 
 namespace MWTP
 {

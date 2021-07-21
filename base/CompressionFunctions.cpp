@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include "CompressionFunctions.h"
+#include "CompressionFunctions.hpp"
 #include <iostream>
 #include <zlib.h>
 

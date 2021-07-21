@@ -18,12 +18,12 @@
  -------------------------------------------------------------------------------
 */
 
-#include "ESMReaderFinderReferences.h"
-#include "../base/Cells.h"
-#include "../base/WorldSpaces.h"
-#include "../base/SR_Constants.h"
-#include "../base/records/CharacterReferenceRecord.h"
-#include "../base/records/SimplifiedReferenceRecord.h"
+#include "ESMReaderFinderReferences.hpp"
+#include "../base/Cells.hpp"
+#include "../base/WorldSpaces.hpp"
+#include "../base/SR_Constants.hpp"
+#include "../base/records/CharacterReferenceRecord.hpp"
+#include "../base/records/SimplifiedReferenceRecord.hpp"
 
 namespace SRTP
 {

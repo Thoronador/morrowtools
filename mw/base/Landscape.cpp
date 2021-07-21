@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include "Landscape.h"
+#include "Landscape.hpp"
 #include <iostream>
 #include <stdexcept>
 

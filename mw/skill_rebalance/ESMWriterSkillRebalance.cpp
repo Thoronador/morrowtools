@@ -18,9 +18,9 @@
  -------------------------------------------------------------------------------
 */
 
-#include "ESMWriterSkillRebalance.h"
-#include "../base/GameSettings.h"
-#include "../base/Skills.h"
+#include "ESMWriterSkillRebalance.hpp"
+#include "../base/GameSettings.hpp"
+#include "../base/Skills.hpp"
 
 namespace MWTP
 {

@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include "Skills.h"
+#include "Skills.hpp"
 #include <iostream>
 #include <stdexcept>
 

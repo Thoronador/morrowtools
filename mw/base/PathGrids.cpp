@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include "PathGrids.h"
+#include "PathGrids.hpp"
 #include <iostream>
 #include <sstream>
 #include <stdexcept>

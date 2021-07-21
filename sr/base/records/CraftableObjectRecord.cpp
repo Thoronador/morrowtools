@@ -18,9 +18,9 @@
  -------------------------------------------------------------------------------
 */
 
-#include "CraftableObjectRecord.h"
-#include "../SR_Constants.h"
-#include "../../../mw/base/HelperIO.h"
+#include "CraftableObjectRecord.hpp"
+#include "../SR_Constants.hpp"
+#include "../../../mw/base/HelperIO.hpp"
 #include <iostream>
 #include <cstring>
 

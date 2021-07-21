@@ -18,13 +18,13 @@
  -------------------------------------------------------------------------------
 */
 
-#include "ParserNode.h"
+#include "ParserNode.hpp"
 #include <iostream>
 #include <stdexcept>
-#include "../../../base/UtilityFunctions.h"
-#include "CompiledChunk.h"
-#include "ScriptCompiler.h"
-#include "../Globals.h"
+#include "../../../base/UtilityFunctions.hpp"
+#include "CompiledChunk.hpp"
+#include "ScriptCompiler.hpp"
+#include "../Globals.hpp"
 
 namespace MWTP
 {

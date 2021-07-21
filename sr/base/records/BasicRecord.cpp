@@ -18,10 +18,10 @@
  -------------------------------------------------------------------------------
 */
 
-#include "BasicRecord.h"
+#include "BasicRecord.hpp"
 #include <cstring>
 #include <iostream>
-#include "../../../mw/base/HelperIO.h"
+#include "../../../mw/base/HelperIO.hpp"
 
 namespace SRTP
 {

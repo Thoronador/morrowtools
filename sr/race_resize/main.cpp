@@ -19,14 +19,14 @@
 */
 
 #include <iostream>
-#include "../base/ESMReaderSingleType.h"
-#include "../base/ESMWriterContents.h"
-#include "../base/records/TES4HeaderRecord.h"
-#include "../base/Races.h"
-#include "../base/PathFunctions.h"
-#include "../base/SR_Constants.h"
-#include "../base/StringTable.h"
-#include "../base/StringTableCompound.h"
+#include "../base/ESMReaderSingleType.hpp"
+#include "../base/ESMWriterContents.hpp"
+#include "../base/records/TES4HeaderRecord.hpp"
+#include "../base/Races.hpp"
+#include "../base/PathFunctions.hpp"
+#include "../base/SR_Constants.hpp"
+#include "../base/StringTable.hpp"
+#include "../base/StringTableCompound.hpp"
 
 int main()
 {

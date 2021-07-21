@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include "FormIDFunctions.h"
+#include "FormIDFunctions.hpp"
 
 namespace SRTP
 {

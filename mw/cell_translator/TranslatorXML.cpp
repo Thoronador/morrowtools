@@ -18,10 +18,10 @@
  -------------------------------------------------------------------------------
 */
 
-#include "TranslatorXML.h"
+#include "TranslatorXML.hpp"
 #include <fstream>
 #include <iostream>
-#include "XMLParser.h"
+#include "XMLParser.hpp"
 
 namespace MWTP
 {

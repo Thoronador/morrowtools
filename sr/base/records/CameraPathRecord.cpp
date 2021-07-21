@@ -18,10 +18,10 @@
  -------------------------------------------------------------------------------
 */
 
-#include "CameraPathRecord.h"
-#include "../SR_Constants.h"
+#include "CameraPathRecord.hpp"
+#include "../SR_Constants.hpp"
 #include <iostream>
-#include "../../../mw/base/HelperIO.h"
+#include "../../../mw/base/HelperIO.hpp"
 
 namespace SRTP
 {

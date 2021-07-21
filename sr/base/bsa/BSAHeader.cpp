@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include "BSAHeader.h"
+#include "BSAHeader.hpp"
 #include <iostream>
 
 namespace SRTP

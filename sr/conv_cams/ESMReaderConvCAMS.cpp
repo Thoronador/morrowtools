@@ -18,11 +18,11 @@
  -------------------------------------------------------------------------------
 */
 
-#include "ESMReaderConvCAMS.h"
-#include "../base/SR_Constants.h"
-#include "../base/records/CameraShotRecord.h"
-#include "../base/records/GenericRecord.h"
-#include "../base/records/NAVIRecord.h"
+#include "ESMReaderConvCAMS.hpp"
+#include "../base/SR_Constants.hpp"
+#include "../base/records/CameraShotRecord.hpp"
+#include "../base/records/GenericRecord.hpp"
+#include "../base/records/NAVIRecord.hpp"
 
 namespace SRTP
 {

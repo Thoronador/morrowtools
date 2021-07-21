@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include "LeveledListBaseRecord.h"
+#include "LeveledListBaseRecord.hpp"
 
 namespace SRTP
 {

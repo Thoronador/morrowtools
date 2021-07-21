@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#include "PreNPCRecord.h"
-#include "../MW_Constants.h"
+#include "PreNPCRecord.hpp"
+#include "../MW_Constants.hpp"
 
 namespace MWTP
 {

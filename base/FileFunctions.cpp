@@ -18,12 +18,12 @@
  -------------------------------------------------------------------------------
 */
 
-#include "FileFunctions.h"
+#include "FileFunctions.hpp"
 #include <sys/stat.h>
 #include <utime.h>
 #include <unistd.h>
 #include <cmath>
-#include "UtilityFunctions.h"
+#include "UtilityFunctions.hpp"
 #include <iostream>
 #include <cstdio>
 #if defined(_WIN32)

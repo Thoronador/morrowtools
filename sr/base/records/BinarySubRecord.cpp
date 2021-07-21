@@ -18,10 +18,10 @@
  -------------------------------------------------------------------------------
 */
 
-#include "BinarySubRecord.h"
+#include "BinarySubRecord.hpp"
 #include <iostream>
 #include <cstring>
-#include "../../../mw/base/HelperIO.h"
+#include "../../../mw/base/HelperIO.hpp"
 
 namespace SRTP
 {

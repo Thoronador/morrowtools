@@ -18,9 +18,9 @@
  -------------------------------------------------------------------------------
 */
 
-#include "AIPackages.h"
+#include "AIPackages.hpp"
 #include <cstring>
-#include "../MW_Constants.h"
+#include "../MW_Constants.hpp"
 
 namespace MWTP
 {

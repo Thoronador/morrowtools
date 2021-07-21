@@ -18,11 +18,11 @@
  -------------------------------------------------------------------------------
 */
 
-#include "AcousticSpaceRecord.h"
+#include "AcousticSpaceRecord.hpp"
 #include <cstring>
 #include <iostream>
-#include "../SR_Constants.h"
-#include "../../../mw/base/HelperIO.h"
+#include "../SR_Constants.hpp"
+#include "../../../mw/base/HelperIO.hpp"
 
 namespace SRTP
 {

@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include "GameSettings.h"
+#include "GameSettings.hpp"
 #include <iostream>
 #include <stdexcept>
 

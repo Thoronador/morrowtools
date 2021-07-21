@@ -20,14 +20,14 @@
 
 #include <iostream>
 #include <sstream>
-#include "../base/ESMWriterContents.h"
-#include "../base/PathFunctions.h"
-#include "../base/ReturnCodes.h"
-#include "../base/SR_Constants.h"
-#include "../base/records/CameraShotRecord.h"
-#include "../base/records/TES4HeaderRecord.h"
-#include "../../base/FileFunctions.h"
-#include "ESMReaderConvCAMS.h"
+#include "../base/ESMWriterContents.hpp"
+#include "../base/PathFunctions.hpp"
+#include "../base/ReturnCodes.hpp"
+#include "../base/SR_Constants.hpp"
+#include "../base/records/CameraShotRecord.hpp"
+#include "../base/records/TES4HeaderRecord.hpp"
+#include "../../base/FileFunctions.hpp"
+#include "ESMReaderConvCAMS.hpp"
 
 void showGPLNotice()
 {

@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include "CTDAData.h"
+#include "CTDAData.hpp"
 #include <iostream>
 #include <cstring>
 

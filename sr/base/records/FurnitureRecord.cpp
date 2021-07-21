@@ -18,10 +18,10 @@
  -------------------------------------------------------------------------------
 */
 
-#include "FurnitureRecord.h"
+#include "FurnitureRecord.hpp"
 #include <iostream>
-#include "../SR_Constants.h"
-#include "../../../mw/base/HelperIO.h"
+#include "../SR_Constants.hpp"
+#include "../../../mw/base/HelperIO.hpp"
 
 namespace SRTP
 {

@@ -18,13 +18,13 @@
  -------------------------------------------------------------------------------
 */
 
-#include "GlobalRecord.h"
+#include "GlobalRecord.hpp"
 #include <iostream>
 #include <cstring>
 #include <stdexcept>
-#include "../MW_Constants.h"
-#include "../HelperIO.h"
-#include "../../../base/UtilityFunctions.h"
+#include "../MW_Constants.hpp"
+#include "../HelperIO.hpp"
+#include "../../../base/UtilityFunctions.hpp"
 
 namespace MWTP
 {

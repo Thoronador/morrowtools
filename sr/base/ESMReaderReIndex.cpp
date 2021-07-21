@@ -18,10 +18,10 @@
  -------------------------------------------------------------------------------
 */
 
-#include "ESMReaderReIndex.h"
+#include "ESMReaderReIndex.hpp"
 #include <algorithm>
 #include <iostream>
-#include "FormIDFunctions.h"
+#include "FormIDFunctions.hpp"
 
 namespace SRTP
 {

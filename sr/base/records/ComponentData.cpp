@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include "ComponentData.h"
+#include "ComponentData.hpp"
 
 namespace SRTP
 {

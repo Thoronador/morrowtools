@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include "BasicRecord.h"
+#include "BasicRecord.hpp"
 
 namespace MWTP
 {

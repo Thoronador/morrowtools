@@ -18,11 +18,11 @@
  -------------------------------------------------------------------------------
 */
 
-#include "ESMReaderSkillRebalance.h"
+#include "ESMReaderSkillRebalance.hpp"
 #include <iostream>
-#include "../base/MW_Constants.h"
-#include "../base/HelperIO.h"
-#include "../base/Skills.h"
+#include "../base/MW_Constants.hpp"
+#include "../base/HelperIO.hpp"
+#include "../base/Skills.hpp"
 
 namespace MWTP
 {

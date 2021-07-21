@@ -18,10 +18,10 @@
  -------------------------------------------------------------------------------
 */
 
-#include "WeaponRecord.h"
+#include "WeaponRecord.hpp"
 #include <iostream>
-#include "../SR_Constants.h"
-#include "../../../mw/base/HelperIO.h"
+#include "../SR_Constants.hpp"
+#include "../../../mw/base/HelperIO.hpp"
 #include <cstring>
 
 namespace SRTP

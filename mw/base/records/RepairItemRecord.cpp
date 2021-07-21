@@ -18,12 +18,12 @@
  -------------------------------------------------------------------------------
 */
 
-#include "RepairItemRecord.h"
+#include "RepairItemRecord.hpp"
 #include <cstring>
 #include <iostream>
-#include "../MW_Constants.h"
-#include "../HelperIO.h"
-#include "../../../base/UtilityFunctions.h"
+#include "../MW_Constants.hpp"
+#include "../HelperIO.hpp"
+#include "../../../base/UtilityFunctions.hpp"
 
 namespace MWTP
 {

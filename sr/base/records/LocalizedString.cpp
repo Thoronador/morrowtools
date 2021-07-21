@@ -18,10 +18,10 @@
  -------------------------------------------------------------------------------
 */
 
-#include "LocalizedString.h"
+#include "LocalizedString.hpp"
 #include <cstring>
 #include <iostream>
-#include "../../../mw/base/HelperIO.h"
+#include "../../../mw/base/HelperIO.hpp"
 
 namespace SRTP
 {

@@ -22,20 +22,20 @@
 #include <string>
 #include <map>
 #include <typeinfo>
-#include "ESMReaderTranslator.h"
-#include "TranslatorXML.h"
-#include "TranslateRecords.h"
-#include "../base/ESMWriterGeneric.h"
-#include "../base/ESMReaderScriptCompiler.h"
-#include "../base/records/GenericRecord.h"
-#include "../base/records/CreatureRecord.h"
-#include "../base/records/NPCRecord.h"
-#include "../base/records/PathGridRecord.h"
-#include "../base/RegistryFunctions.h"
-#include "../base/ReturnCodes.h"
-#include "../base/script_compiler/ScriptCompiler.h"
-#include "../../base/DirectoryFunctions.h"
-#include "../../base/FileFunctions.h"
+#include "ESMReaderTranslator.hpp"
+#include "TranslatorXML.hpp"
+#include "TranslateRecords.hpp"
+#include "../base/ESMWriterGeneric.hpp"
+#include "../base/ESMReaderScriptCompiler.hpp"
+#include "../base/records/GenericRecord.hpp"
+#include "../base/records/CreatureRecord.hpp"
+#include "../base/records/NPCRecord.hpp"
+#include "../base/records/PathGridRecord.hpp"
+#include "../base/RegistryFunctions.hpp"
+#include "../base/ReturnCodes.hpp"
+#include "../base/script_compiler/ScriptCompiler.hpp"
+#include "../../base/DirectoryFunctions.hpp"
+#include "../../base/FileFunctions.hpp"
 
 void showHelp()
 {

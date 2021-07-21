@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include "Cells.h"
+#include "Cells.hpp"
 #include <iostream>
 #include <sstream>
 #include <stdexcept>

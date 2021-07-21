@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#include "GroupData.h"
-#include "../SR_Constants.h"
+#include "GroupData.hpp"
+#include "../SR_Constants.hpp"
 
 namespace SRTP
 {

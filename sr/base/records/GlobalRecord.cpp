@@ -18,12 +18,12 @@
  -------------------------------------------------------------------------------
 */
 
-#include "GlobalRecord.h"
+#include "GlobalRecord.hpp"
 #include <iostream>
 #include <stdexcept>
 #include <cstring>
-#include "../SR_Constants.h"
-#include "../../../mw/base/HelperIO.h"
+#include "../SR_Constants.hpp"
+#include "../../../mw/base/HelperIO.hpp"
 
 namespace SRTP
 {

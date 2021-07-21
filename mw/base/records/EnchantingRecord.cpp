@@ -18,11 +18,11 @@
  -------------------------------------------------------------------------------
 */
 
-#include "EnchantingRecord.h"
+#include "EnchantingRecord.hpp"
 #include <cstring>
 #include <iostream>
-#include "../MW_Constants.h"
-#include "../HelperIO.h"
+#include "../MW_Constants.hpp"
+#include "../HelperIO.hpp"
 
 namespace MWTP
 {

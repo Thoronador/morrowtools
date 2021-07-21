@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include "UtilityFunctions.h"
+#include "UtilityFunctions.hpp"
 #include <sstream>
 
 //tries to get the integer representation of a string

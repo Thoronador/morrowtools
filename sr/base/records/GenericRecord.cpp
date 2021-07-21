@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include "GenericRecord.h"
+#include "GenericRecord.hpp"
 #include <cstring>
 #include <iostream>
 

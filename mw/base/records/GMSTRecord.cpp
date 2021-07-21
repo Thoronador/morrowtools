@@ -18,12 +18,12 @@
  -------------------------------------------------------------------------------
 */
 
-#include "GMSTRecord.h"
+#include "GMSTRecord.hpp"
 #include <iostream>
 #include <cstring>
 #include <stdexcept>
-#include "../MW_Constants.h"
-#include "../HelperIO.h"
+#include "../MW_Constants.hpp"
+#include "../HelperIO.hpp"
 
 namespace MWTP
 {

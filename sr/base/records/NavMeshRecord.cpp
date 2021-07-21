@@ -18,12 +18,12 @@
  -------------------------------------------------------------------------------
 */
 
-#include "NavMeshRecord.h"
+#include "NavMeshRecord.hpp"
 #include <iostream>
-#include "../SR_Constants.h"
-#include "../../../base/BufferStream.h"
-#include "../../../base/CompressionFunctions.h"
-#include "../../../mw/base/HelperIO.h"
+#include "../SR_Constants.hpp"
+#include "../../../base/BufferStream.hpp"
+#include "../../../base/CompressionFunctions.hpp"
+#include "../../../mw/base/HelperIO.hpp"
 
 namespace SRTP
 {

@@ -18,13 +18,13 @@
  -------------------------------------------------------------------------------
 */
 
-#include "ESMReaderSpells.h"
+#include "ESMReaderSpells.hpp"
 #include <iostream>
-#include "../base/MW_Constants.h"
-#include "../base/HelperIO.h"
-#include "../base/GameSettings.h"
-#include "../base/MagicEffects.h"
-#include "../base/Spells.h"
+#include "../base/MW_Constants.hpp"
+#include "../base/HelperIO.hpp"
+#include "../base/GameSettings.hpp"
+#include "../base/MagicEffects.hpp"
+#include "../base/Spells.hpp"
 
 namespace MWTP
 {

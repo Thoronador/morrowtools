@@ -18,12 +18,12 @@
  -------------------------------------------------------------------------------
 */
 
-#include "ESMReaderGeneric.h"
+#include "ESMReaderGeneric.hpp"
 #include <iostream>
 #include <stdexcept>
-#include "HelperIO.h"
-#include "MW_Constants.h"
-#include "records/GenericRecord.h"
+#include "HelperIO.hpp"
+#include "MW_Constants.hpp"
+#include "records/GenericRecord.hpp"
 
 namespace MWTP
 {

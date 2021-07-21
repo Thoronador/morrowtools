@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include "BodyPartAssociation.h"
+#include "BodyPartAssociation.hpp"
 
 namespace MWTP
 {

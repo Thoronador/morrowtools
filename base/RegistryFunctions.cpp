@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include "RegistryFunctions.h"
+#include "RegistryFunctions.hpp"
 #include <iostream>
 #include <cstring>
 #if defined(_WIN32)

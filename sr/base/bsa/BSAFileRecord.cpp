@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include "BSAFileRecord.h"
+#include "BSAFileRecord.hpp"
 #include <iostream>
 
 namespace SRTP

@@ -18,10 +18,10 @@
  -------------------------------------------------------------------------------
 */
 
-#include "ESMReaderContentsBase.h"
+#include "ESMReaderContentsBase.hpp"
 #include <iostream>
 #include <stdexcept>
-#include "SR_Constants.h"
+#include "SR_Constants.hpp"
 
 namespace SRTP
 {

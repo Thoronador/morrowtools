@@ -18,11 +18,11 @@
  -------------------------------------------------------------------------------
 */
 
-#include "SoulGemRecord.h"
+#include "SoulGemRecord.hpp"
 #include <cstring>
 #include <iostream>
-#include "../SR_Constants.h"
-#include "../../../mw/base/HelperIO.h"
+#include "../SR_Constants.hpp"
+#include "../../../mw/base/HelperIO.hpp"
 
 namespace SRTP
 {

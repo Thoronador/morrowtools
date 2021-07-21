@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include "Group.h"
+#include "Group.hpp"
 #include <iostream>
 
 namespace SRTP

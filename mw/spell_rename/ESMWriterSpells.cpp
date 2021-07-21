@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#include "ESMWriterSpells.h"
-#include "../base/Spells.h"
+#include "ESMWriterSpells.hpp"
+#include "../base/Spells.hpp"
 
 namespace MWTP
 {

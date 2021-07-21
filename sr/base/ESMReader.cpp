@@ -18,11 +18,11 @@
  -------------------------------------------------------------------------------
 */
 
-#include "ESMReader.h"
+#include "ESMReader.hpp"
 #include <iostream>
-#include "SR_Constants.h"
-#include "PathFunctions.h"
-#include "../../mw/base/HelperIO.h"
+#include "SR_Constants.hpp"
+#include "PathFunctions.hpp"
+#include "../../mw/base/HelperIO.hpp"
 
 namespace SRTP
 {

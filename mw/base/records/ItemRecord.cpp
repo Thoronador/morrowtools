@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include "ItemRecord.h"
+#include "ItemRecord.hpp"
 
 namespace MWTP
 {

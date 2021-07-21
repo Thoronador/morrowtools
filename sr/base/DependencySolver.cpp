@@ -18,11 +18,11 @@
  -------------------------------------------------------------------------------
 */
 
-#include "DependencySolver.h"
+#include "DependencySolver.hpp"
 #include <iostream>
-#include "../../base/UtilityFunctions.h"
-#include "../../base/ComparisonFunctor.h"
-#include "ESMReader.h"
+#include "../../base/UtilityFunctions.hpp"
+#include "../../base/ComparisonFunctor.hpp"
+#include "ESMReader.hpp"
 
 namespace SRTP
 {

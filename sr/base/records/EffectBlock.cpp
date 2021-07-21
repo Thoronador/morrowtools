@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#include "EffectBlock.h"
-#include "../SR_Constants.h"
+#include "EffectBlock.hpp"
+#include "../SR_Constants.hpp"
 
 namespace SRTP
 {

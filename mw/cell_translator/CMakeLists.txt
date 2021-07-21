@@ -39,7 +39,7 @@ set(cell_translator_sources
     ../base/script_compiler/ParserNode.cpp
     ../base/script_compiler/ScriptCompiler.cpp
     ESMReaderTranslator.cpp
-    ESMReaderTranslator.h
+    ESMReaderTranslator.hpp
     TranslateRecords.cpp
     TranslatorXML.cpp
     XMLParser.cpp

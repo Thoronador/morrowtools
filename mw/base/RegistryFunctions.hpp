@@ -40,7 +40,7 @@ namespace MWTP
 */
 inline bool getMorrowindPathFromRegistry(std::string& pathData)
 {
-  return getRegistryStringValueHKLM(pathData, "SOFTWARE\\Bethesda Softworks\\Morrowind", "Installed Pa.hpp");
+  return getRegistryStringValueHKLM(pathData, "SOFTWARE\\Bethesda Softworks\\Morrowind", "Installed Path");
 }
 
 } //namespace

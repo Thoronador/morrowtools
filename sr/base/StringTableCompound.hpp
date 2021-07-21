@@ -96,7 +96,7 @@ class StringTableCompound
              C:\Program Files\Steam\SteamApps\common\skyrim\Data\Strings\Skyrim_English.ILStrings
              C:\Program Files\Steam\SteamApps\common\skyrim\Data\Strings\Skyrim_English.strings
            then the BaseFileName has to be
-             "C:\Program Files\Steam\SteamApps\common\skyrim\Data\Strings\Skyrim_Engli.hpp"
+             "C:\Program Files\Steam\SteamApps\common\skyrim\Data\Strings\Skyrim_English"
              (without the quotes of course).
     */
     bool readCompound(const std::string& BaseFileName);

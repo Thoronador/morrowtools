@@ -40,7 +40,7 @@ namespace SRTP
 */
 inline bool getSkryrimPathFromRegistry(std::string& pathData)
 {
-  return MWTP::getRegistryStringValueHKLM(pathData, "SOFTWARE\\Bethesda Softworks\\Skyrim", "Installed Pa.hpp");
+  return MWTP::getRegistryStringValueHKLM(pathData, "SOFTWARE\\Bethesda Softworks\\Skyrim", "Installed Path");
 }
 
 } //namespace

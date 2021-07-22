@@ -11,7 +11,7 @@ jobs:
       - name: Install Debian packages
         run: |
           sudo apt-get update
-          sudo apt-get install -y cmake libz-mingw-w64-dev pkg-config
+          sudo apt-get install -y catch cmake libz-mingw-w64-dev pkg-config
           sudo apt-get install -y binutils-mingw-w64-i686 g++-mingw-w64-i686 gcc-mingw-w64-i686 mingw-w64-i686-dev
       - name: Build with MinGW for Win32
         run: |

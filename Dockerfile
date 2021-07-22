@@ -5,7 +5,9 @@
 FROM debian:10-slim AS builder
 LABEL maintainer="Dirk Stolle <striezel-dev@web.de>"
 RUN apt-get update && apt-get upgrade -y
-RUN apt-get install -y binutils-mingw-w64-i686 cmake g++-mingw-w64-i686 gcc-mingw-w64-i686 mingw-w64-i686-dev libz-mingw-w64-dev pkg-config zip
+RUN apt-get install -y binutils-mingw-w64-i686 catch cmake g++-mingw-w64-i686 gcc-mingw-w64-i686 \
+    mingw-w64-i686-dev libz-mingw-w64-dev pkg-config zip && \
+    ln -s /usr/include/catch.hpp /usr/i686-w64-mingw32/include/catch.hpp
 RUN mkdir -p /opt/morrowtools
 COPY ./ /opt/morrowtools
 WORKDIR /opt/morrowtools

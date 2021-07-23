@@ -20,6 +20,7 @@
 
 #include <catch.hpp>
 #include <ctime>
+#include <fstream>
 #include "../../../base/DirectoryFunctions.hpp"
 #include "../../../base/FileFunctions.hpp"
 
@@ -41,6 +42,10 @@ TEST_CASE("FileFunctions")
       REQUIRE( deleteFile(fileName) );
       // File does not exist after deletion.
       REQUIRE_FALSE( FileExists(fileName) );
+
+      // Clean up: restore file.
+      std::ofstream fs(fileName, std::ios::out | std::ios::trunc);
+      fs.close();
     }
 
     SECTION("non-existing file")

@@ -20,21 +20,92 @@
 
 #include <catch.hpp>
 #include "../../../base/DirectoryFunctions.hpp"
+#include "../../../base/FileFunctions.hpp"
 
 TEST_CASE("DirectoryFunctions")
 {
   using namespace MWTP;
 
+  const std::string delim = std::string(1, pathDelimiter);
+  const std::string currentFile = std::string(__FILE__);
+  const std::string test_directory = currentFile.substr(0, currentFile.size() - std::string("DirectoryFunctions.cpp").size())
+          .append("test_files").append(delim);
+
   SECTION("createDirectory")
   {
-    // TODO: Write some tests.
-    #warning Write tests.
+    SECTION("creating a directory that already exists shall fail")
+    {
+      const std::string existing = test_directory;
+      REQUIRE( directoryExists(existing) );
+      // Creation fails.
+      REQUIRE_FALSE( createDirectory(existing) );
+    }
+
+    SECTION("creating a new directory")
+    {
+      const std::string path = test_directory + delim + "new_dir_create";
+      // Directory must not exist yet.
+      REQUIRE_FALSE( directoryExists(path) );
+      // Creation shall succeed.
+      REQUIRE( createDirectory(path) );
+      // Directory does exist now.
+      REQUIRE( directoryExists(path) );
+
+      // Clean up.
+      REQUIRE( deleteFile(path) );
+    }
+
+    SECTION("creating multiple hierarchy levels fails")
+    {
+      const std::string path = test_directory + delim + "dir1" + delim + "dir2";
+      // Directory must not exist yet.
+      REQUIRE_FALSE( directoryExists(path) );
+      // Creation shall fail.
+      REQUIRE_FALSE( createDirectory(path) );
+    }
   }
 
   SECTION("createDirectoryRecursive")
   {
-    // TODO: Write some tests.
-    #warning Write tests.
+    SECTION("creating a directory that already exists shall fail")
+    {
+      const std::string existing = test_directory;
+      REQUIRE( directoryExists(existing) );
+      // Creation fails.
+      REQUIRE_FALSE( createDirectoryRecursive(existing) );
+    }
+
+    SECTION("creating a new directory: single level")
+    {
+      // Creating just one additional level is not what this function is meant
+      // to do, but it can do it, too.
+      const std::string path = test_directory + delim + "dir_create_rec";
+      // Directory must not exist yet.
+      REQUIRE_FALSE( directoryExists(path) );
+      // Creation shall succeed.
+      REQUIRE( createDirectory(path) );
+      // Directory does exist now.
+      REQUIRE( directoryExists(path) );
+
+      // Clean up.
+      REQUIRE( deleteFile(path) );
+    }
+
+    SECTION("creating multiple hierarchy levels at once")
+    {
+      const std::string path = test_directory + delim + "recursive_dir1" + delim + "dir2" + delim + "d3";
+      // Directory must not exist yet.
+      REQUIRE_FALSE( directoryExists(path) );
+      // Creation shall succeed.
+      REQUIRE( createDirectoryRecursive(path) );
+      // Directory does exist now.
+      REQUIRE( directoryExists(path) );
+
+      // Clean up.
+      REQUIRE( deleteFile(path) );
+      REQUIRE( deleteFile(test_directory + delim + "recursive_dir1" + delim + "dir2") );
+      REQUIRE( deleteFile(test_directory + delim + "recursive_dir1") );
+    }
   }
 
   SECTION("directoryExists")

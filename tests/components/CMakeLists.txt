@@ -7,10 +7,12 @@ project(component_tests)
 set(component_tests_sources
     ../../base/ComparisonFunctor.hpp
     ../../base/DirectoryFunctions.cpp
+    ../../base/FileFunctions.cpp
     ../../base/UtilityFunctions.cpp
     base/BufferStream.cpp
     base/ComparisonFunctor.cpp
     base/DirectoryFunctions.cpp
+    base/FileFunctions.cpp
     main.cpp)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")

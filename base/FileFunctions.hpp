@@ -68,7 +68,7 @@ std::string getSizeString(const int64_t fileSize);
 bool FileExists(const std::string& FileName);
 
 /* tries to delete the file fileName and returns true, if it could be deleted,
-   or false if en error occurred.
+   or false if an error occurred.
 
   parameters:
       fileName - the file that shall be deleted

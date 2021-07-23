@@ -67,9 +67,18 @@ TEST_CASE("DirectoryFunctions")
       #elif defined(_WIN32)
       // While this directory might exist on a Windows system, it is rather
       // unlikely that it does. We can never be sure, but then there is no way
-      // to be sure except for deleting them, but the tests shall be as
+      // to be sure except for deleting it, but the tests shall be as
       // unintrusive as possible.
       REQUIRE_FALSE( directoryExists("C:\\Windows\\foo\\bar\\baz\\quux") );
+      #endif
+    }
+
+    SECTION("normal files do not count as directory")
+    {
+      #if defined(__linux__) || defined(linux)
+      REQUIRE_FALSE( directoryExists("/bin/sh") );
+      #elif defined(_WIN32)
+      REQUIRE_FALSE( directoryExists("C:\\Windows\\notepad.exe") );
       #endif
     }
   }

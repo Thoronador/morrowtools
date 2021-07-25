@@ -28,8 +28,13 @@
 			<Add option="-std=c++17" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Linker>
+			<Add library="z" />
+		</Linker>
 		<Unit filename="../../base/BufferStream.hpp" />
 		<Unit filename="../../base/ComparisonFunctor.hpp" />
+		<Unit filename="../../base/CompressionFunctions.cpp" />
+		<Unit filename="../../base/CompressionFunctions.hpp" />
 		<Unit filename="../../base/DirectoryFunctions.cpp" />
 		<Unit filename="../../base/DirectoryFunctions.hpp" />
 		<Unit filename="../../base/FileFunctions.cpp" />
@@ -38,6 +43,7 @@
 		<Unit filename="../../base/UtilityFunctions.hpp" />
 		<Unit filename="base/BufferStream.cpp" />
 		<Unit filename="base/ComparisonFunctor.cpp" />
+		<Unit filename="base/CompressionFunctions.cpp" />
 		<Unit filename="base/DirectoryFunctions.cpp" />
 		<Unit filename="base/FileFunctions.cpp" />
 		<Unit filename="main.cpp" />

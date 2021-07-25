@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2011, 2012, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -38,7 +38,7 @@ namespace MWTP
        valueName - name of the registry value
 
    remarks:
-       This function will always return false on non-Win32-OSes.
+       This function will always return false on non-Windows-OSes.
 */
 bool getRegistryStringValueHKLM(std::string& theString, const std::string& subKey, const std::string& valueName);
 

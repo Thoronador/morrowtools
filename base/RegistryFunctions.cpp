@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2011, 2012, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 #include "RegistryFunctions.hpp"
 #include <iostream>
 #include <cstring>
-#if defined(_WIN32)
+#if defined(_WIN32) || defined(_WIN64)
   // Windows includes
   #include <windows.h>
 #else
@@ -34,7 +34,7 @@ namespace MWTP
 
 bool getRegistryStringValueHKLM(std::string& theString, const std::string& subKey, const std::string& valueName)
 {
-  #ifndef _WIN32
+  #if !defined(_WIN32) && !defined(_WIN64)
   std::cout << "Info: There is no registry on non-Windows OSes.\n";
   return false;
   #else

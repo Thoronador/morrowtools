@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2012 Thoronador
+    Copyright (C) 2012, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -36,11 +36,19 @@ namespace MWTP
        pathData - reference to a string that shall hold the read path
 
    remarks:
-       This function will always return false on non-Win32-OSes.
+       This function will always return false on non-Windows-OSes.
 */
 inline bool getMorrowindPathFromRegistry(std::string& pathData)
 {
+  #if defined(_WIN64)
+  return getRegistryStringValueHKLM(pathData, "SOFTWARE\\WOW6432Node\\Bethesda Softworks\\Morrowind", "Installed Path");
+  #elif defined(_WIN32)
   return getRegistryStringValueHKLM(pathData, "SOFTWARE\\Bethesda Softworks\\Morrowind", "Installed Path");
+  #else
+  // Assume Win32-type registry for non-Windows systems. Does not really matter,
+  // because there is no registry on non-Windows systems anyway.
+  return getRegistryStringValueHKLM(pathData, "SOFTWARE\\Bethesda Softworks\\Morrowind", "Installed Path");
+  #endif // _WIN64 or _WIN32 or else
 }
 
 } //namespace

@@ -26,6 +26,7 @@ namespace SRTP
 {
 
 GameSettings::GameSettings()
+: m_GameSettings(std::map<std::string, GMSTRecord>())
 {
   //empty
 }
@@ -66,8 +67,8 @@ const GMSTRecord& GameSettings::getGameSetting(const std::string& ID) const
   {
     return iter->second;
   }
-  std::cout << "No eye with the ID \""<<ID<<"\" is present.\n";
-  throw std::runtime_error("No eye with the ID \""+ID+"\" is present.");
+  std::cout << "No GameSetting with the ID \"" << ID << "\" is present.\n";
+  throw std::runtime_error("No GameSetting with the ID \"" + ID + "\" is present.");
 }
 
 GameSettingListIterator GameSettings::getBegin() const

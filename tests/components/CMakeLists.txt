@@ -15,6 +15,7 @@ set(component_tests_sources
     base/CompressionFunctions.cpp
     base/DirectoryFunctions.cpp
     base/FileFunctions.cpp
+    base/UtilityFunctions.cpp
     main.cpp)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")

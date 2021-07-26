@@ -30,6 +30,8 @@ bool stringToShort(const std::string& str, int16_t& value)
   bool negative;
   if (str.at(0)=='-')
   {
+    if (str.length() == 1)
+      return false;
     i=1;
     negative = true;
   }
@@ -63,6 +65,8 @@ bool stringToLong(const std::string& str, int32_t& value)
   bool negative;
   if (str.at(0)=='-')
   {
+    if (str.length() == 1)
+      return false;
     i=1;
     negative = true;
   }
@@ -104,6 +108,8 @@ bool stringToFloat(const std::string& str, float& value)
   bool negative;
   if (str.at(0)=='-')
   {
+    if (str.length() == 1)
+      return false;
     i=1;
     negative = true;
     next_look = 1;

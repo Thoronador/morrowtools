@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2015  Thoronador
+    Copyright (C) 2011, 2015, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,47 +19,60 @@
 */
 
 #include "UtilityFunctions.hpp"
+#include <limits>
 #include <sstream>
 
 //tries to get the integer representation of a string
 bool stringToShort(const std::string& str, int16_t& value)
 {
-  if (str.length()==0) return false;
+  if (str.length() == 0)
+    return false;
   value = 0;
   unsigned int i;
   bool negative;
-  if (str.at(0)=='-')
+  if (str.at(0) == '-')
   {
     if (str.length() == 1)
       return false;
-    i=1;
+    i = 1;
     negative = true;
   }
   else
   {
-    i=0;
+    i = 0;
     negative = false;
   }
-  for ( ; i<str.length(); ++i)
+  constexpr int16_t cTenthLimit = std::numeric_limits<int16_t>::max() / 10;
+  constexpr int16_t cRealLimit = std::numeric_limits<int16_t>::max();
+  for ( ; i < str.length(); ++i)
   {
-    if ((str.at(i)>='0') and (str.at(i)<='9'))
+    if ((str.at(i) >= '0') && (str.at(i) <= '9'))
     {
+      /* If the result of the multiplication in the next line would go out of
+         the type range, then the result is not useful anyway, so quit here. */
+      if (value > cTenthLimit)
+        return false;
       value = value * 10;
+      /* If the result of the addition in the next line would go out of the
+         type's range, then the result is not useful anyway, so quit here. */
+      if (value > cRealLimit - (str[i] - '0'))
+        return false;
       value = value + (str.at(i)-'0');
-    }//if
+    }
     else
     {
-      //unknown or invalid character detected
+      // unknown or invalid character detected
       return false;
     }
-  }//for
+  }
   if (negative) value = -value;
   return true;
 }
 
 bool stringToLong(const std::string& str, int32_t& value)
 {
-  if (str.length()==0) return false;
+  if (str.length() == 0)
+    return false;
   value = 0;
   unsigned int i;
   bool negative;
@@ -67,27 +80,37 @@ bool stringToLong(const std::string& str, int32_t& value)
   {
     if (str.length() == 1)
       return false;
-    i=1;
+    i = 1;
     negative = true;
   }
   else
   {
-    i=0;
+    i = 0;
     negative = false;
   }
-  for ( ; i<str.length(); ++i)
+  constexpr int32_t cTenthLimit = std::numeric_limits<int32_t>::max() / 10;
+  constexpr int32_t cRealLimit = std::numeric_limits<int32_t>::max();
+  for ( ; i < str.length(); ++i)
   {
-    if ((str.at(i)>='0') and (str.at(i)<='9'))
+    if ((str.at(i) >= '0') && (str.at(i) <= '9'))
     {
+      /* If the result of the multiplication in the next line would go out of
+         the type range, then the result is not useful anyway, so quit here. */
+      if (value > cTenthLimit)
+        return false;
       value = value * 10;
-      value = value + (str.at(i)-'0');
-    }//if
+      /* If the result of the addition in the next line would go out of the
+         type's range, then the result is not useful anyway, so quit here. */
+      if (value > cRealLimit - (str[i] - '0'))
+        return false;
+      value = value + (str.at(i) - '0');
+    }
     else
     {
-      //unknown or invalid character detected
+      // unknown or invalid character detected
       return false;
     }
-  }//for
+  }
   if (negative) value = -value;
   return true;
 }
@@ -102,59 +125,70 @@ std::string intToString(const int value)
 //tries to get the floating point representation of a string
 bool stringToFloat(const std::string& str, float& value)
 {
-  if (str.length()==0) return false;
+  if (str.length() == 0)
+    return false;
   value = 0.0f;
   unsigned int i, next_look;
   bool negative;
-  if (str.at(0)=='-')
+  if (str.at(0) == '-')
   {
     if (str.length() == 1)
       return false;
-    i=1;
+    i = 1;
     negative = true;
     next_look = 1;
   }
   else
   {
-    i=0;
+    i = 0;
     negative = false;
     next_look = 0;
   }
-  for ( ; i<str.length(); ++i)
+  constexpr float cTenthLimit = std::numeric_limits<float>::max() / 10.0f;
+  constexpr float cRealLimit = std::numeric_limits<float>::max();
+  for ( ; i < str.length(); ++i)
   {
-    if ((str.at(i)>='0') and (str.at(i)<='9'))
+    if ((str.at(i) >= '0') && (str.at(i) <= '9'))
     {
+      /* If the result of the multiplication in the next line would go out of
+         the type range, then the result is not useful anyway, so quit here. */
+      if (value > cTenthLimit)
+        return false;
       value = value * 10.0f;
-      value = value + (str.at(i)-'0');
+      /* If the result of the addition in the next line would go out of the
+         type's range, then the result is not useful anyway, so quit here. */
+      if (value > cRealLimit - (str[i] - '0'))
+        return false;
+      value = value + (str.at(i) - '0');
       ++next_look;
-    }//if
-    else if (str.at(i)=='.')
+    }
+    else if (str.at(i) == '.')
     {
-      //decimal separator found - break out of loop
-      next_look = i+1;
+      // decimal separator found - break out of loop
+      next_look = i + 1;
       break;
     }
     else
     {
-      //unknown or invalid character detected
+      // unknown or invalid character detected
       return false;
     }
-  }//for
-  //now go for the stuff after the separator
+  } //for
+  // now go for the stuff after the separator
   float second = 0.0f;
-  for (i=str.length()-1; i>=next_look; --i)
+  for (i = str.length() - 1; i >= next_look; --i)
   {
-    if ((str.at(i)>='0') and (str.at(i)<='9'))
+    if ((str.at(i) >= '0') && (str.at(i) <= '9'))
     {
-      second = second + (str.at(i)-'0');
+      second = second + (str.at(i) - '0');
       second = second / 10.0f;
-    }//if
+    }
     else
     {
-      //unknown or invalid character detected
+      // unknown or invalid character detected
       return false;
     }
-  }//for, second loop
+  } // for, second loop
   value = value + second;
   if (negative) value = -value;
   return true;

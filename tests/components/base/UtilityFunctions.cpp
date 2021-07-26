@@ -95,7 +95,6 @@ TEST_CASE("UtilityFunctions")
 
     SECTION("overflow")
     {
-      // TODO: Add overflow detection in stringToFloat().
       REQUIRE_FALSE( stringToFloat("350000000000000000000000000000000000000000000000", value));
       REQUIRE_FALSE( stringToFloat("-350000000000000000000000000000000000000000000000", value));
     }
@@ -155,7 +154,6 @@ TEST_CASE("UtilityFunctions")
 
     SECTION("overflow")
     {
-      // TODO: Add overflow detection in stringToLong().
       REQUIRE_FALSE( stringToLong("2147483648", value));
       REQUIRE_FALSE( stringToLong("-2147483649", value));
     }
@@ -215,7 +213,6 @@ TEST_CASE("UtilityFunctions")
 
     SECTION("overflow")
     {
-      // TODO: Add overflow detection in stringToShort().
       REQUIRE_FALSE( stringToShort("32768", value));
       REQUIRE_FALSE( stringToShort("-32769", value));
     }

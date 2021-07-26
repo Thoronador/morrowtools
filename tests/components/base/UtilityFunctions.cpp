@@ -23,6 +23,24 @@
 
 TEST_CASE("UtilityFunctions")
 {
+  SECTION("floatToString")
+  {
+    REQUIRE( floatToString(0) == "0" );
+    REQUIRE( floatToString(1) == "1" );
+    REQUIRE( floatToString(1.2f) == "1.2" );
+    REQUIRE( floatToString(1.25f) == "1.25" );
+    REQUIRE( floatToString(12.34) == "12.34" );
+    REQUIRE( floatToString(1.2345) == "1.2345" );
+    REQUIRE( floatToString(1000.75) == "1000.75" );
+
+    REQUIRE( floatToString(-1) == "-1" );
+    REQUIRE( floatToString(-1.2f) == "-1.2" );
+    REQUIRE( floatToString(-1.25f) == "-1.25" );
+    REQUIRE( floatToString(-12.34) == "-12.34" );
+    REQUIRE( floatToString(-1.2345) == "-1.2345" );
+    REQUIRE( floatToString(-1000.75) == "-1000.75" );
+  }
+
   SECTION("intToString")
   {
     REQUIRE( intToString(0) == "0" );
@@ -39,6 +57,146 @@ TEST_CASE("UtilityFunctions")
     REQUIRE( intToString(-1234) == "-1234" );
     REQUIRE( intToString(-12345) == "-12345" );
     REQUIRE( intToString(-32768) == "-32768" );
+  }
+
+  SECTION("lowerCase")
+  {
+    REQUIRE( lowerCase("") == "" );
+    REQUIRE( lowerCase(" ") == " " );
+    REQUIRE( lowerCase("abcdefghijklmnopqrstuvwxyz") == "abcdefghijklmnopqrstuvwxyz" );
+    REQUIRE( lowerCase("ABCDEFGHIJKLMNOPQRSTUVWXYZ") == "abcdefghijklmnopqrstuvwxyz" );
+    REQUIRE( lowerCase("AB1234CD") == "ab1234cd" );
+    REQUIRE( lowerCase("AbCdEfGhIjKlMnOpQrStUvWxYz") == "abcdefghijklmnopqrstuvwxyz" );
+    REQUIRE( lowerCase("0123456789") == "0123456789" );
+  }
+
+  SECTION("lowerCaseCompare")
+  {
+    REQUIRE( lowerCaseCompare("", "") == 0 );
+
+    REQUIRE( lowerCaseCompare("abc", "bcde") < 0 );
+    REQUIRE( lowerCaseCompare("ABC", "bcdef") < 0 );
+    REQUIRE( lowerCaseCompare("abc", "BCDf") < 0 );
+    REQUIRE( lowerCaseCompare("aBcD", "bCdE") < 0 );
+    REQUIRE( lowerCaseCompare("AbCd", "bCdE") < 0 );
+    REQUIRE( lowerCaseCompare("AbCd", "BcDe") < 0 );
+    REQUIRE( lowerCaseCompare("aBcD", "BcDe") < 0 );
+
+    REQUIRE( lowerCaseCompare("abc", "abc") == 0 );
+    REQUIRE( lowerCaseCompare("ABC", "abc") == 0 );
+    REQUIRE( lowerCaseCompare("abc", "ABC") == 0 );
+    REQUIRE( lowerCaseCompare("abcdefghijklmnopqrstuvwxyz", "abcdefghijklmnopqrstuvwxyz") == 0 );
+    REQUIRE( lowerCaseCompare("ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz") == 0 );
+    REQUIRE( lowerCaseCompare("AB1234CD", "ab1234cd") == 0 );
+    REQUIRE( lowerCaseCompare("AbCdEfGhIjKlMnOpQrStUvWxYz", "abcdefghijklmnopqrstuvwxyz") == 0 );
+    REQUIRE( lowerCaseCompare("0123456789", "0123456789") == 0 );
+
+    REQUIRE( lowerCaseCompare("def", "abc") > 0 );
+    REQUIRE( lowerCaseCompare("DEF", "abc") > 0 );
+    REQUIRE( lowerCaseCompare("def", "ABC") > 0 );
+  }
+
+  SECTION("removeEnclosingBrackets")
+  {
+    std::string s;
+
+    SECTION("empty string")
+    {
+      s = "";
+      REQUIRE_FALSE( removeEnclosingBrackets(s) );
+      REQUIRE( s == "" );
+    }
+
+    SECTION("string too short")
+    {
+      s = "(";
+      REQUIRE_FALSE( removeEnclosingBrackets(s) );
+      REQUIRE( s == "(" );
+
+      s = ")";
+      REQUIRE_FALSE( removeEnclosingBrackets(s) );
+      REQUIRE( s == ")" );
+
+      s = "a";
+      REQUIRE_FALSE( removeEnclosingBrackets(s) );
+      REQUIRE( s == "a" );
+    }
+
+    SECTION("simple brackets")
+    {
+      s = "( Abc )";
+      REQUIRE( removeEnclosingBrackets(s) );
+      REQUIRE( s == " Abc " );
+
+      s = "(Abc1)";
+      REQUIRE( removeEnclosingBrackets(s) );
+      REQUIRE( s == "Abc1" );
+
+      s = "(f(x))";
+      REQUIRE( removeEnclosingBrackets(s) );
+      REQUIRE( s == "f(x)" );
+
+      s = "( CellChanged == 0 )";
+      REQUIRE( removeEnclosingBrackets(s) );
+      REQUIRE( s == " CellChanged == 0 " );
+    }
+
+    SECTION("multiple brackets")
+    {
+      // Only the outermost pair gets removed.
+      s = "(( Abc ))";
+      REQUIRE( removeEnclosingBrackets(s) );
+      REQUIRE( s == "( Abc )" );
+
+      s = "((Abc1))";
+      REQUIRE( removeEnclosingBrackets(s) );
+      REQUIRE( s == "(Abc1)" );
+
+      s = "((((((((((((too much?))))))))))))";
+      REQUIRE( removeEnclosingBrackets(s) );
+      REQUIRE( s == "(((((((((((too much?)))))))))))" );
+    }
+
+    SECTION("nested brackets")
+    {
+      // Only the outermost pair gets removed.
+      s = "( Abc * ( item->foo + 1 ) )";
+      REQUIRE( removeEnclosingBrackets(s) );
+      REQUIRE( s == " Abc * ( item->foo + 1 ) " );
+
+      s = "( timer < (swingTime * 4) )";
+      REQUIRE( removeEnclosingBrackets(s) );
+      REQUIRE( s == " timer < (swingTime * 4) " );
+
+      s = "((Abc1))";
+      REQUIRE( removeEnclosingBrackets(s) );
+      REQUIRE( s == "(Abc1)" );
+
+      s = "((((((((((((too much?))))))))))))";
+      REQUIRE( removeEnclosingBrackets(s) );
+      REQUIRE( s == "(((((((((((too much?)))))))))))" );
+    }
+
+    SECTION("wrong nesting")
+    {
+      // String should keep its original value, if the nesting of the brackets
+      // is incorrect.
+      s = "( timer < ()swingTime * 4) )";
+      REQUIRE_FALSE( removeEnclosingBrackets(s) );
+      REQUIRE( s == "( timer < ()swingTime * 4) )" );
+
+      s = "( timer < (swingTime * 4)";
+      REQUIRE_FALSE( removeEnclosingBrackets(s) );
+      REQUIRE( s == "( timer < (swingTime * 4)" );
+
+      s = "( timer < (swingTime * 4) ))";
+      REQUIRE_FALSE( removeEnclosingBrackets(s) );
+      REQUIRE( s == "( timer < (swingTime * 4) ))" );
+
+      s = "timer < (swingTime * 4) )";
+      REQUIRE_FALSE( removeEnclosingBrackets(s) );
+      REQUIRE( s == "timer < (swingTime * 4) )" );
+    }
   }
 
   SECTION("stringToFloat")
@@ -215,6 +373,226 @@ TEST_CASE("UtilityFunctions")
     {
       REQUIRE_FALSE( stringToShort("32768", value));
       REQUIRE_FALSE( stringToShort("-32769", value));
+    }
+  }
+
+  SECTION("stripEnclosingQuotes")
+  {
+    std::string s;
+
+    SECTION("empty string")
+    {
+      s = "";
+      REQUIRE_FALSE( stripEnclosingQuotes(s) );
+      REQUIRE( s == "" );
+    }
+
+    SECTION("quotes")
+    {
+      s = "\"\"";
+      REQUIRE( stripEnclosingQuotes(s) );
+      REQUIRE( s == "" );
+
+      s = "\"To remove or not to remove, that is the question!\"";
+      REQUIRE( stripEnclosingQuotes(s) );
+      REQUIRE( s == "To remove or not to remove, that is the question!" );
+
+      // Single quotes should not get removed.
+      s = "'To remove or not to remove, that is the question!'";
+      REQUIRE_FALSE( stripEnclosingQuotes(s) );
+      REQUIRE( s == "'To remove or not to remove, that is the question!'" );
+    }
+
+    SECTION("mismatched quotes")
+    {
+      s = "\"foo'";
+      REQUIRE_FALSE( stripEnclosingQuotes(s) );
+      REQUIRE( s == "\"foo'" );
+
+      s = "'foo\"";
+      REQUIRE_FALSE( stripEnclosingQuotes(s) );
+      REQUIRE( s == "'foo\"" );
+
+      s = "\"foo";
+      REQUIRE_FALSE( stripEnclosingQuotes(s) );
+      REQUIRE( s == "\"foo" );
+
+      s = "foo\"";
+      REQUIRE_FALSE( stripEnclosingQuotes(s) );
+      REQUIRE( s == "foo\"" );
+    }
+
+    SECTION("nested quotes")
+    {
+      s = "\"foo \"bar\"\"";
+      REQUIRE( stripEnclosingQuotes(s) );
+      REQUIRE( s == "foo \"bar\"" );
+    }
+  }
+
+  SECTION("trim")
+  {
+    std::string s;
+
+    SECTION("empty string")
+    {
+      s = "";
+      trim(s);
+      REQUIRE( s == "" );
+    }
+
+    SECTION("whitespace string")
+    {
+      s = "        ";
+      trim(s);
+      REQUIRE( s == "" );
+
+      s = "\t   \t\t\t\t   ";
+      trim(s);
+      REQUIRE( s == "" );
+    }
+
+    SECTION("nothing to trim")
+    {
+      s = "abcdefghijk";
+      trim(s);
+      REQUIRE( s == "abcdefghijk" );
+    }
+
+    SECTION("left side trimming")
+    {
+      s = " a";
+      trim(s);
+      REQUIRE( s == "a" );
+
+      s = " abc";
+      trim(s);
+      REQUIRE( s == "abc" );
+
+      s = "            abcd";
+      trim(s);
+      REQUIRE( s == "abcd" );
+
+      s = "  \t  \t    abcdef";
+      trim(s);
+      REQUIRE( s == "abcdef" );
+    }
+
+    SECTION("right side trimming")
+    {
+      s = "a ";
+      trim(s);
+      REQUIRE( s == "a" );
+
+      s = "abc ";
+      trim(s);
+      REQUIRE( s == "abc" );
+
+      s = "abcd            ";
+      trim(s);
+      REQUIRE( s == "abcd" );
+
+      s = "abcdef  \t  \t    ";
+      trim(s);
+      REQUIRE( s == "abcdef" );
+    }
+
+    SECTION("trimming both sides")
+    {
+      s = " a ";
+      trim(s);
+      REQUIRE( s == "a" );
+
+      s = " abc ";
+      trim(s);
+      REQUIRE( s == "abc" );
+
+      s = "         abcd            ";
+      trim(s);
+      REQUIRE( s == "abcd" );
+
+      s = "  \t  \t    abcdef  \t  \t    ";
+      trim(s);
+      REQUIRE( s == "abcdef" );
+    }
+  }
+
+  SECTION("trimLeft")
+  {
+    std::string s;
+
+    SECTION("empty string")
+    {
+      s = "";
+      trimLeft(s);
+      REQUIRE( s == "" );
+    }
+
+    SECTION("whitespace string")
+    {
+      s = "        ";
+      trimLeft(s);
+      REQUIRE( s == "" );
+
+      s = "\t   \t\t\t\t   ";
+      trimLeft(s);
+      REQUIRE( s == "" );
+    }
+
+    SECTION("nothing to trim")
+    {
+      s = "abcdefghijk";
+      trimLeft(s);
+      REQUIRE( s == "abcdefghijk" );
+    }
+
+    SECTION("left side trimming")
+    {
+      s = " a";
+      trimLeft(s);
+      REQUIRE( s == "a" );
+
+      s = " abc";
+      trimLeft(s);
+      REQUIRE( s == "abc" );
+
+      s = "            abcd";
+      trimLeft(s);
+      REQUIRE( s == "abcd" );
+
+      s = "  \t  \t    abcdef";
+      trimLeft(s);
+      REQUIRE( s == "abcdef" );
+    }
+
+    SECTION("right side trimming does not happen")
+    {
+      s = "abcd            ";
+      trimLeft(s);
+      REQUIRE( s == "abcd            " );
+
+      s = "abcdef  \t  \t    ";
+      trimLeft(s);
+      REQUIRE( s == "abcdef  \t  \t    " );
+    }
+
+    SECTION("whitespace on both sides")
+    {
+      s = " a ";
+      trimLeft(s);
+      REQUIRE( s == "a " );
+
+      s = " abc ";
+      trimLeft(s);
+      REQUIRE( s == "abc " );
+
+      s = "         abcd            ";
+      trimLeft(s);
+      REQUIRE( s == "abcd            " );
+
+      s = "  \t  \t    abcdef  \t  \t    ";
+      trimLeft(s);
+      REQUIRE( s == "abcdef  \t  \t    " );
     }
   }
 }

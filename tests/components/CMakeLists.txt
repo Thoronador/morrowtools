@@ -12,6 +12,7 @@ set(component_tests_sources
     ../../base/RegistryFunctions.cpp
     ../../base/UtilityFunctions.cpp
     ../../mw/base/HelperIO.cpp
+    ../../sr/base/FormIDFunctions.cpp
     base/BufferStream.cpp
     base/ComparisonFunctor.cpp
     base/CompressionFunctions.cpp
@@ -20,6 +21,7 @@ set(component_tests_sources
     base/RegistryFunctions.cpp
     base/UtilityFunctions.cpp
     mw/base/HelperIO.cpp
+    sr/base/FormIDFunctions.cpp
     main.cpp)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")

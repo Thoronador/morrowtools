@@ -46,6 +46,8 @@
 		<Unit filename="../../mw/base/HelperIO.cpp" />
 		<Unit filename="../../mw/base/HelperIO.hpp" />
 		<Unit filename="../../mw/base/MW_Constants.hpp" />
+		<Unit filename="../../sr/base/FormIDFunctions.cpp" />
+		<Unit filename="../../sr/base/FormIDFunctions.hpp" />
 		<Unit filename="base/BufferStream.cpp" />
 		<Unit filename="base/ComparisonFunctor.cpp" />
 		<Unit filename="base/CompressionFunctions.cpp" />
@@ -55,6 +57,7 @@
 		<Unit filename="base/UtilityFunctions.cpp" />
 		<Unit filename="main.cpp" />
 		<Unit filename="mw/base/HelperIO.cpp" />
+		<Unit filename="sr/base/FormIDFunctions.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>

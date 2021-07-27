@@ -48,6 +48,13 @@
 		<Unit filename="../../mw/base/MW_Constants.hpp" />
 		<Unit filename="../../sr/base/FormIDFunctions.cpp" />
 		<Unit filename="../../sr/base/FormIDFunctions.hpp" />
+		<Unit filename="../../sr/base/SR_Constants.hpp" />
+		<Unit filename="../../sr/base/StringTable.cpp" />
+		<Unit filename="../../sr/base/StringTable.hpp" />
+		<Unit filename="../../sr/base/records/BasicRecord.cpp" />
+		<Unit filename="../../sr/base/records/BasicRecord.hpp" />
+		<Unit filename="../../sr/base/records/KeywordRecord.cpp" />
+		<Unit filename="../../sr/base/records/KeywordRecord.hpp" />
 		<Unit filename="base/BufferStream.cpp" />
 		<Unit filename="base/ComparisonFunctor.cpp" />
 		<Unit filename="base/CompressionFunctions.cpp" />
@@ -58,6 +65,7 @@
 		<Unit filename="main.cpp" />
 		<Unit filename="mw/base/HelperIO.cpp" />
 		<Unit filename="sr/base/FormIDFunctions.cpp" />
+		<Unit filename="sr/base/records/KeywordRecord.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>

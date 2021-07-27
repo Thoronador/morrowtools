@@ -114,7 +114,7 @@ uint32_t ActivatorRecord::getWriteSize() const
   if (isDeleted()) return 0;
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
-        +editorID.length()+1 /* length of strin +1 byte for NUL-termination */
+        +editorID.length()+1 /* length of string +1 byte for NUL-termination */
         +4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed size */;
   if (unknownVMAD.isPresent())
   {

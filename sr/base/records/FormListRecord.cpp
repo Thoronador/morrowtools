@@ -52,11 +52,11 @@ uint32_t FormListRecord::getWriteSize() const
 {
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
-             +editorID.length()+1 /* length of strin +1 byte for NUL-termination */;
+             +editorID.length()+1 /* length of string +1 byte for NUL-termination */;
   if (!listFormIDs.empty())
   {
     writeSize = writeSize + listFormIDs.size()*
-                (4 /* DATA */ +2 /* 2 bytes for length */ +4 /* fixed size */);
+                (4 /* LNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */);
   }
   return writeSize;
 }

@@ -67,7 +67,7 @@ uint32_t ShoutRecord::getWriteSize() const
 {
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
-        +editorID.length()+1 /* length of strin +1 byte for NUL-termination */
+        +editorID.length()+1 /* length of string +1 byte for NUL-termination */
         +description.getWriteSize() /* DESC */
         +words.size()
         *(4 /* SNAM */ +2 /* 2 bytes for length */ +12 /* fixed size */);

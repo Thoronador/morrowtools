@@ -9,12 +9,14 @@ set(component_tests_sources
     ../../base/CompressionFunctions.cpp
     ../../base/DirectoryFunctions.cpp
     ../../base/FileFunctions.cpp
+    ../../base/RegistryFunctions.cpp
     ../../base/UtilityFunctions.cpp
     base/BufferStream.cpp
     base/ComparisonFunctor.cpp
     base/CompressionFunctions.cpp
     base/DirectoryFunctions.cpp
     base/FileFunctions.cpp
+    base/RegistryFunctions.cpp
     base/UtilityFunctions.cpp
     main.cpp)
 

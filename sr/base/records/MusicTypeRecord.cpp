@@ -72,7 +72,7 @@ uint32_t MusicTypeRecord::getWriteSize() const
         +4 /* TNAM */ +2 /* 2 bytes for length */ +4*musicTrackFormIDs.size() /* fixed length of 4 bytes per entry */);
 }
 
-bool MusicTypeRecord::saveToStream(std::ofstream& output) const
+bool MusicTypeRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cMUSC, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
@@ -143,7 +143,7 @@ bool MusicTypeRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool MusicTypeRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
+bool MusicTypeRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;

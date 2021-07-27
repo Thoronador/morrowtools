@@ -149,7 +149,7 @@ uint32_t ReferenceRecord::getWriteSize() const
   return writeSize;
 }
 
-bool ReferenceRecord::saveToStream(std::ofstream& output) const
+bool ReferenceRecord::saveToStream(std::ostream& output) const
 {
   #warning Not completely implemented yet!
   output.write((const char*) &cREFR, 4);
@@ -335,7 +335,7 @@ bool ReferenceRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool ReferenceRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
+bool ReferenceRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   #warning Not completely implemented yet!
   uint32_t readSize = 0;

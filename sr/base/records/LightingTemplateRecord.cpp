@@ -64,7 +64,7 @@ uint32_t LightingTemplateRecord::getWriteSize() const
   return writeSize;
 }
 
-bool LightingTemplateRecord::saveToStream(std::ofstream& output) const
+bool LightingTemplateRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cLGTM, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
@@ -101,7 +101,7 @@ bool LightingTemplateRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool LightingTemplateRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
+bool LightingTemplateRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;

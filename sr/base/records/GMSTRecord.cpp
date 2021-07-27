@@ -88,7 +88,7 @@ uint32_t GMSTRecord::getWriteSize() const
   return writeSize;
 }
 
-bool GMSTRecord::saveToStream(std::ofstream& output) const
+bool GMSTRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cGMST, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
@@ -130,7 +130,7 @@ bool GMSTRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool GMSTRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
+bool GMSTRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t Size;
   if (!loadSizeAndUnknownValues(in_File, Size)) return false;

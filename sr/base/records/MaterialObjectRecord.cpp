@@ -106,7 +106,7 @@ uint32_t MaterialObjectRecord::getWriteSize() const
   return writeSize;
 }
 
-bool MaterialObjectRecord::saveToStream(std::ofstream& output) const
+bool MaterialObjectRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cMATO, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
@@ -180,7 +180,7 @@ bool MaterialObjectRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool MaterialObjectRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
+bool MaterialObjectRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;

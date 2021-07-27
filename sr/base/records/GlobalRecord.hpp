@@ -50,19 +50,19 @@ struct GlobalRecord: public BasicRecord
     /* writes the record to the given output stream and returns true on success
 
       parameters:
-          output   - the output file stream
+          output   - the output stream
     */
-    bool saveToStream(std::ofstream& output) const;
+    bool saveToStream(std::ostream& output) const;
     #endif
 
     /* loads the record from the given input stream and returns true on success
 
       parameters:
-          in_File   - the input file stream
+          in_File   - the input stream
           localized - whether the file to read from is localized or not
           table     - the associated string table for localized files
     */
-    bool loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table);
+    bool loadFromStream(std::istream& in_File, const bool localized, const StringTable& table);
 
     /* returns the record's type, usually its header */
     virtual uint32_t getRecordType() const;

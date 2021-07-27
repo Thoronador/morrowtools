@@ -74,7 +74,7 @@ uint32_t DialogViewRecord::getWriteSize() const
   return writeSize;
 }
 
-bool DialogViewRecord::saveToStream(std::ofstream& output) const
+bool DialogViewRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cDLVW, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
@@ -146,7 +146,7 @@ bool DialogViewRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool DialogViewRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
+bool DialogViewRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;

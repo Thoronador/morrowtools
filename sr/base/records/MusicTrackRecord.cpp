@@ -128,7 +128,7 @@ uint32_t MusicTrackRecord::getWriteSize() const
   return writeSize;
 }
 
-bool MusicTrackRecord::saveToStream(std::ofstream& output) const
+bool MusicTrackRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cMUST, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
@@ -266,7 +266,7 @@ bool MusicTrackRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool MusicTrackRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
+bool MusicTrackRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;

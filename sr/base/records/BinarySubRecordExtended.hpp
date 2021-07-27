@@ -64,10 +64,10 @@ struct BinarySubRecordExtended
     /* writes the sub record to the given output stream and returns true on success
 
       parameters:
-          output    - the output file stream
+          output    - the output stream
           subHeader - the sub record's header
     */
-    bool saveToStream(std::ofstream& output, const uint32_t subHeader) const;
+    bool saveToStream(std::ostream& output, const uint32_t subHeader) const;
     #endif
 
     /* loads the sub record from the given input stream and returns true on success

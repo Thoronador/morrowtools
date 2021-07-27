@@ -201,7 +201,7 @@ void QuestRecord::AliasEntry::clear()
   unknownVTCK = 0;
 }
 
-/*bool QuestRecord::AliasEntry::loadFromStream(std::ifstream& in_File, uint32_t& bytesRead, char * buffer)
+/*bool QuestRecord::AliasEntry::loadFromStream(std::istream& in_File, uint32_t& bytesRead, char * buffer)
 {
   //ALST is always first
   in_File.seekg(-4, std::ios_base::cur);
@@ -513,7 +513,7 @@ uint32_t QuestRecord::getWriteSize() const
   return writeSize;
 }
 
-bool QuestRecord::saveToStream(std::ofstream& output) const
+bool QuestRecord::saveToStream(std::ostream& output) const
 {
   #warning Not completely implemented yet!
   output.write((const char*) &cQUST, 4);
@@ -687,7 +687,7 @@ bool QuestRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool QuestRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
+bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;

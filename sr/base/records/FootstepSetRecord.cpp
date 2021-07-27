@@ -59,7 +59,7 @@ uint32_t FootstepSetRecord::getWriteSize() const
         +4*footstepFormIDs.size() /* 4 bytes per form ID */);
 }
 
-bool FootstepSetRecord::saveToStream(std::ofstream& output) const
+bool FootstepSetRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cFSTS, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
@@ -113,7 +113,7 @@ bool FootstepSetRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool FootstepSetRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
+bool FootstepSetRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;

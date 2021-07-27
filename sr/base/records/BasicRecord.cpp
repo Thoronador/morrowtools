@@ -64,7 +64,7 @@ bool BasicRecord::equalsBasic(const BasicRecord& other) const
 }
 #endif
 
-bool BasicRecord::loadSizeAndUnknownValues(std::ifstream& in_File, uint32_t& sizeStorage)
+bool BasicRecord::loadSizeAndUnknownValues(std::istream& in_File, uint32_t& sizeStorage)
 {
   in_File.read((char*) &sizeStorage, 4);
   //partially unknown values
@@ -83,7 +83,7 @@ bool BasicRecord::loadSizeAndUnknownValues(std::ifstream& in_File, uint32_t& siz
 }
 
 #ifndef SR_UNSAVEABLE_RECORDS
-bool BasicRecord::saveSizeAndUnknownValues(std::ofstream& output, const uint32_t theSize) const
+bool BasicRecord::saveSizeAndUnknownValues(std::ostream& output, const uint32_t theSize) const
 {
   //record size
   output.write((const char*) &theSize, 4);

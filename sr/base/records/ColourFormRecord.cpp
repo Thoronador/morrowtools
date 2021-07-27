@@ -65,7 +65,7 @@ uint32_t ColourFormRecord::getWriteSize() const
   return writeSize;
 }
 
-bool ColourFormRecord::saveToStream(std::ofstream& output) const
+bool ColourFormRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cCLFM, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
@@ -105,7 +105,7 @@ bool ColourFormRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool ColourFormRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
+bool ColourFormRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;

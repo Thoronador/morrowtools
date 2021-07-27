@@ -41,7 +41,7 @@ bool EffectBlock::operator==(const EffectBlock& other) const
 }
 
 #ifndef SR_UNSAVEABLE_RECORDS
-bool EffectBlock::saveToStream(std::ofstream& output) const
+bool EffectBlock::saveToStream(std::ostream& output) const
 {
   //write EFID
   output.write((const char*) &cEFID, 4);

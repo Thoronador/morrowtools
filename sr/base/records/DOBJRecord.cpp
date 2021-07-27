@@ -61,7 +61,7 @@ uint32_t DOBJRecord::getWriteSize() const
          +unknownDNAMs.size()*8 /* eight bytes per DNAM entry */);
 }
 
-bool DOBJRecord::saveToStream(std::ofstream& output) const
+bool DOBJRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cDOBJ, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
@@ -85,7 +85,7 @@ bool DOBJRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool DOBJRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
+bool DOBJRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;

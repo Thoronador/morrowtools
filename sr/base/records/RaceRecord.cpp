@@ -144,7 +144,7 @@ uint32_t RaceRecord::getWriteSize() const
   return writeSize;
 }
 
-bool RaceRecord::saveToStream(std::ofstream& output) const
+bool RaceRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cRACE, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
@@ -280,7 +280,7 @@ bool RaceRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool RaceRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
+bool RaceRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;

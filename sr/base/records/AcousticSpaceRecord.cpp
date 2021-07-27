@@ -75,7 +75,7 @@ uint32_t AcousticSpaceRecord::getWriteSize() const
   return writeSize;
 }
 
-bool AcousticSpaceRecord::saveToStream(std::ofstream& output) const
+bool AcousticSpaceRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cASPC, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
@@ -134,7 +134,7 @@ bool AcousticSpaceRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool AcousticSpaceRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
+bool AcousticSpaceRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;

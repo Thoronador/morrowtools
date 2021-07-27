@@ -97,7 +97,7 @@ uint32_t ImageSpaceRecord::getWriteSize() const
   return writeSize;
 }
 
-bool ImageSpaceRecord::saveToStream(std::ofstream& output) const
+bool ImageSpaceRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cIMGS, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
@@ -170,7 +170,7 @@ bool ImageSpaceRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool ImageSpaceRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
+bool ImageSpaceRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;

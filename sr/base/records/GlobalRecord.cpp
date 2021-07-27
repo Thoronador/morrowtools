@@ -76,7 +76,7 @@ uint32_t GlobalRecord::getWriteSize() const
         +4 /* FLTV */ +2 /* 2 bytes for length */ +4 /* fixed length of 4 byte2 */);
 }
 
-bool GlobalRecord::saveToStream(std::ofstream& output) const
+bool GlobalRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cGLOB, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
@@ -125,7 +125,7 @@ bool GlobalRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool GlobalRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
+bool GlobalRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;

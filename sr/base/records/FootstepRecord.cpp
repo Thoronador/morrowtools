@@ -58,7 +58,7 @@ uint32_t FootstepRecord::getWriteSize() const
         +unknownANAM.length()+1 /* length of name +1 byte for NUL termination */);
 }
 
-bool FootstepRecord::saveToStream(std::ofstream& output) const
+bool FootstepRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cFSTP, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
@@ -91,7 +91,7 @@ bool FootstepRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool FootstepRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
+bool FootstepRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;

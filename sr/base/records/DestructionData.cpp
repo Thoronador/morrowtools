@@ -65,7 +65,7 @@ uint32_t DestructionStage::getWriteSize() const
   return writeSize;
 }
 
-bool DestructionStage::saveToStream(std::ofstream& output) const
+bool DestructionStage::saveToStream(std::ostream& output) const
 {
   if (unknownDSTD.isPresent())
   {
@@ -138,7 +138,7 @@ uint32_t DestructionData::getWriteSize() const
   return writeSize;
 }
 
-bool DestructionData::saveToStream(std::ofstream& output) const
+bool DestructionData::saveToStream(std::ostream& output) const
 {
   if (!isPresent) return true;
   //write DEST
@@ -161,7 +161,7 @@ bool DestructionData::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool DestructionData::loadFromStream(std::ifstream& in_File, const uint32_t recordType, char * buffer, uint32_t& bytesRead)
+bool DestructionData::loadFromStream(std::istream& in_File, const uint32_t recordType, char * buffer, uint32_t& bytesRead)
 {
   //DEST's length
   uint16_t subLength = 0;

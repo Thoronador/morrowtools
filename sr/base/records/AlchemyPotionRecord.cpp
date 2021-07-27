@@ -128,7 +128,7 @@ uint32_t AlchemyPotionRecord::getWriteSize() const
   return writeSize;
 }
 
-bool AlchemyPotionRecord::saveToStream(std::ofstream& output) const
+bool AlchemyPotionRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cALCH, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
@@ -275,7 +275,7 @@ bool AlchemyPotionRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool AlchemyPotionRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
+bool AlchemyPotionRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;

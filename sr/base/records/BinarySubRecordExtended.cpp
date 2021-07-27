@@ -104,7 +104,7 @@ void BinarySubRecordExtended::setPresence(const bool presence_flag)
 }
 
 #ifndef SR_UNSAVEABLE_RECORDS
-bool BinarySubRecordExtended::saveToStream(std::ofstream& output, const uint32_t subHeader) const
+bool BinarySubRecordExtended::saveToStream(std::ostream& output, const uint32_t subHeader) const
 {
   //don't write if there is no subrecord
   if (!m_Present) return output.good();

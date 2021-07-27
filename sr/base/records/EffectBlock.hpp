@@ -53,9 +53,9 @@ struct EffectBlock
      of success, false on failure
 
      parameters:
-          output   - the output file stream
+          output   - the output stream
   */
-  bool saveToStream(std::ofstream& output) const;
+  bool saveToStream(std::ostream& output) const;
 
   /* returns the size in bytes that the EffectBlocks's data would occupy in a
      file stream

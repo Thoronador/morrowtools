@@ -313,7 +313,7 @@ uint32_t WeaponRecord::getWriteSize() const
   return writeSize;
 }
 
-bool WeaponRecord::saveToStream(std::ofstream& output) const
+bool WeaponRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cWEAP, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
@@ -623,7 +623,7 @@ bool WeaponRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool WeaponRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
+bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;

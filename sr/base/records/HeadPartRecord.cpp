@@ -104,7 +104,7 @@ uint32_t HeadPartRecord::getWriteSize() const
   return writeSize;
 }
 
-bool HeadPartRecord::saveToStream(std::ofstream& output) const
+bool HeadPartRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cHDPT, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
@@ -218,7 +218,7 @@ bool HeadPartRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool HeadPartRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
+bool HeadPartRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;

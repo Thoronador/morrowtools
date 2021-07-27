@@ -71,7 +71,7 @@ uint32_t KeywordRecord::getWriteSize() const
   return writeSize;
 }
 
-bool KeywordRecord::saveToStream(std::ofstream& output) const
+bool KeywordRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cKYWD, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
@@ -103,7 +103,7 @@ bool KeywordRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool KeywordRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
+bool KeywordRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;

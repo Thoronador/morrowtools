@@ -85,9 +85,9 @@ struct CTDA_CISx_compound
      in case of success, false on failure
 
      parameters:
-          output   - the output file stream
+          output   - the output stream
   */
-  bool saveToStream(std::ofstream& output) const;
+  bool saveToStream(std::ostream& output) const;
 
   /* returns the size in bytes that the CTDA_CIS2 compound's data would occupy
      in a file stream
@@ -122,7 +122,7 @@ bool CTDA_CISx_compound<cisRecName>::operator==(const CTDA_CISx_compound& other)
 
 #ifndef SR_UNSAVEABLE_RECORDS
 template<uint32_t cisRecName>
-bool CTDA_CISx_compound<cisRecName>::saveToStream(std::ofstream& output) const
+bool CTDA_CISx_compound<cisRecName>::saveToStream(std::ostream& output) const
 {
   if (!unknownCTDA.saveToStream(output)) return false;
 

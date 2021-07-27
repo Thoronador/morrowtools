@@ -47,19 +47,19 @@ struct BasicRecord
     /* writes the record to the given output stream and returns true on success
 
        parameters:
-           output   - the output file stream
+           output   - the output stream
     */
-    virtual bool saveToStream(std::ofstream& output) const = 0;
+    virtual bool saveToStream(std::ostream& output) const = 0;
     #endif
 
     /* loads the record from the given input stream and returns true on success
 
       parameters:
-          in_File   - the input file stream
+          in_File   - the input stream
           localized - whether the file to read from is localized or not
           table     - the associated string table for localized files
     */
-    virtual bool loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table) = 0;
+    virtual bool loadFromStream(std::istream& in_File, const bool localized, const StringTable& table) = 0;
 
     /* returns true, if the record is a generic record (see GenericRecord.h) */
     virtual bool isGenericRecord() const;
@@ -105,7 +105,7 @@ struct BasicRecord
            in_File     - the input file stream
            sizeStorage - reference to the variable that will be used to store the size
     */
-    bool loadSizeAndUnknownValues(std::ifstream& in_File, uint32_t& sizeStorage);
+    bool loadSizeAndUnknownValues(std::istream& in_File, uint32_t& sizeStorage);
 
     #ifndef SR_UNSAVEABLE_RECORDS
     /* writes the first data of a record, the record size and yet unknown other
@@ -115,7 +115,7 @@ struct BasicRecord
            output  - the output file stream
            theSize - size to be written
     */
-    bool saveSizeAndUnknownValues(std::ofstream& output, const uint32_t theSize) const;
+    bool saveSizeAndUnknownValues(std::ostream& output, const uint32_t theSize) const;
 
     /* returns the size in bytes that the record's data would occupy in a file
        stream, NOT including the header data

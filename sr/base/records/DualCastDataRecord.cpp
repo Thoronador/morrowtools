@@ -71,7 +71,7 @@ uint32_t DualCastDataRecord::getWriteSize() const
         +4 /* DATA */ +2 /* 2 bytes for length */ +24 /* fixed length of 24 bytes */);
 }
 
-bool DualCastDataRecord::saveToStream(std::ofstream& output) const
+bool DualCastDataRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cDUAL, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
@@ -109,7 +109,7 @@ bool DualCastDataRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool DualCastDataRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
+bool DualCastDataRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;

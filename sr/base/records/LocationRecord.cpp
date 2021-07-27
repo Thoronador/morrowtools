@@ -142,7 +142,7 @@ uint32_t LocationRecord::getWriteSize() const
   return writeSize;
 }
 
-bool LocationRecord::saveToStream(std::ofstream& output) const
+bool LocationRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cLCTN, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
@@ -328,7 +328,7 @@ bool LocationRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool LocationRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
+bool LocationRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;

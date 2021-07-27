@@ -66,7 +66,7 @@ uint32_t WordOfPowerRecord::getWriteSize() const
   return writeSize;
 }
 
-bool WordOfPowerRecord::saveToStream(std::ofstream& output) const
+bool WordOfPowerRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cWOOP, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
@@ -93,7 +93,7 @@ bool WordOfPowerRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool WordOfPowerRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
+bool WordOfPowerRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;

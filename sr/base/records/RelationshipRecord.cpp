@@ -79,7 +79,7 @@ uint32_t RelationshipRecord::getWriteSize() const
   return writeSize;
 }
 
-bool RelationshipRecord::saveToStream(std::ofstream& output) const
+bool RelationshipRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cRELA, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
@@ -113,7 +113,7 @@ bool RelationshipRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool RelationshipRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
+bool RelationshipRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;

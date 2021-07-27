@@ -115,7 +115,7 @@ uint32_t CameraShotRecord::getWriteSize() const
   return writeSize;
 }
 
-bool CameraShotRecord::saveToStream(std::ofstream& output) const
+bool CameraShotRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cCAMS, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
@@ -186,7 +186,7 @@ bool CameraShotRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool CameraShotRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
+bool CameraShotRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;

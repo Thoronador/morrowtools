@@ -85,7 +85,7 @@ uint32_t LeveledCharacterRecord::getWriteSize() const
   return writeSize;
 }
 
-bool LeveledCharacterRecord::saveToStream(std::ofstream& output) const
+bool LeveledCharacterRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cLVLN, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
@@ -182,7 +182,7 @@ bool LeveledCharacterRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool LeveledCharacterRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
+bool LeveledCharacterRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;

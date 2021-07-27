@@ -74,7 +74,7 @@ uint32_t LandscapeTextureRecord::getWriteSize() const
   return writeSize;
 }
 
-bool LandscapeTextureRecord::saveToStream(std::ofstream& output) const
+bool LandscapeTextureRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cLTEX, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
@@ -141,7 +141,7 @@ bool LandscapeTextureRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool LandscapeTextureRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
+bool LandscapeTextureRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;

@@ -79,7 +79,7 @@ uint32_t PerkRecord::getWriteSize() const
   return writeSize;
 }
 
-bool PerkRecord::saveToStream(std::ofstream& output) const
+bool PerkRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cPERK, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
@@ -131,7 +131,7 @@ bool PerkRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool PerkRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
+bool PerkRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;

@@ -104,7 +104,7 @@ uint32_t GenericRecord::getWriteSize() const
   return m_DataSize;
 }
 
-bool GenericRecord::saveToStream(std::ofstream& output) const
+bool GenericRecord::saveToStream(std::ostream& output) const
 {
   //record header
   output.write((const char*) &Header, 4);
@@ -116,7 +116,7 @@ bool GenericRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool GenericRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
+bool GenericRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t Size;
   if (!loadSizeAndUnknownValues(in_File, Size)) return false;

@@ -69,7 +69,7 @@ uint32_t AnimatedObjectRecord::getWriteSize() const
   return writeSize;
 }
 
-bool AnimatedObjectRecord::saveToStream(std::ofstream& output) const
+bool AnimatedObjectRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cANIO, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
@@ -115,7 +115,7 @@ bool AnimatedObjectRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool AnimatedObjectRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
+bool AnimatedObjectRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;

@@ -194,7 +194,7 @@ uint32_t CharacterReferenceRecord::getWriteSize() const
   return writeSize;
 }
 
-bool CharacterReferenceRecord::saveToStream(std::ofstream& output) const
+bool CharacterReferenceRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cACHR, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
@@ -424,7 +424,7 @@ bool CharacterReferenceRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool CharacterReferenceRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
+bool CharacterReferenceRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   #warning Not completely implemented yet!
   uint32_t readSize = 0;

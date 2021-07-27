@@ -83,7 +83,7 @@ uint32_t HazardRecord::getWriteSize() const
   return writeSize;
 }
 
-bool HazardRecord::saveToStream(std::ofstream& output) const
+bool HazardRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cHAZD, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
@@ -154,7 +154,7 @@ bool HazardRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool HazardRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
+bool HazardRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;

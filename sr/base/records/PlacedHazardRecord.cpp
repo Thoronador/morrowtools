@@ -74,7 +74,7 @@ uint32_t PlacedHazardRecord::getWriteSize() const
   return writeSize;
 }
 
-bool PlacedHazardRecord::saveToStream(std::ofstream& output) const
+bool PlacedHazardRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cPHZD, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
@@ -131,7 +131,7 @@ bool PlacedHazardRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool PlacedHazardRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
+bool PlacedHazardRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;

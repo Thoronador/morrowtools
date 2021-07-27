@@ -53,7 +53,7 @@ uint32_t SimplifiedReferenceRecord::getWriteSize() const
   return 0;
 }
 
-bool SimplifiedReferenceRecord::saveToStream(std::ofstream& output) const
+bool SimplifiedReferenceRecord::saveToStream(std::ostream& output) const
 {
   #warning This record type is not writable!
   std::cout << "Error: Simplified reference records cannot be saved to stream!\n";
@@ -61,7 +61,7 @@ bool SimplifiedReferenceRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool SimplifiedReferenceRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
+bool SimplifiedReferenceRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;

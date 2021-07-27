@@ -60,7 +60,7 @@ uint32_t ImpactDataSetRecord::getWriteSize() const
         +unknownPNAMs.size()* (4 /* PNAM */ +2 /* 2 bytes for length */ +8 /* fixed length */));
 }
 
-bool ImpactDataSetRecord::saveToStream(std::ofstream& output) const
+bool ImpactDataSetRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cIPDS, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
@@ -90,7 +90,7 @@ bool ImpactDataSetRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool ImpactDataSetRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
+bool ImpactDataSetRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;

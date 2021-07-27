@@ -186,7 +186,7 @@ uint32_t ArmourRecord::getWriteSize() const
   return writeSize;
 }
 
-bool ArmourRecord::saveToStream(std::ofstream& output) const
+bool ArmourRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cARMO, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
@@ -454,7 +454,7 @@ bool ArmourRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool ArmourRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
+bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;

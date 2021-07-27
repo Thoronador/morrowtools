@@ -108,7 +108,7 @@ uint32_t Tes4HeaderRecord::getWriteSize() const
   return writeSize;
 }
 
-bool Tes4HeaderRecord::saveToStream(std::ofstream& output) const
+bool Tes4HeaderRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cTES4, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
@@ -207,7 +207,7 @@ bool Tes4HeaderRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool Tes4HeaderRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
+bool Tes4HeaderRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;

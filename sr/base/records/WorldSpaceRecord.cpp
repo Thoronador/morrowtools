@@ -230,7 +230,7 @@ uint32_t WorldSpaceRecord::getWriteSize() const
   return writeSize;
 }
 
-bool WorldSpaceRecord::saveToStream(std::ofstream& output) const
+bool WorldSpaceRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cWRLD, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
@@ -537,7 +537,7 @@ bool WorldSpaceRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool WorldSpaceRecord::loadFromStream(std::ifstream& in_File, const bool localized, const StringTable& table)
+bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize)) return false;

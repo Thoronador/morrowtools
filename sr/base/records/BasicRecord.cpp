@@ -130,8 +130,9 @@ bool BasicRecord::loadUint32SubRecordFromStream(std::istream& in_File, const uin
   in_File.read((char*) &target, 4);
   if (!in_File.good())
   {
-    std::cout << "BasicRecord::loatUint32: Error while reading subrecord "
-              <<IntTo4Char(subHeader)<<" of "<<IntTo4Char(getRecordType())<<"!\n";
+    std::cout << "BasicRecord::loadUint32: Error while reading subrecord "
+              << IntTo4Char(subHeader) << " of " << IntTo4Char(getRecordType())
+              << "!\n";
     return false;
   }
   return true;

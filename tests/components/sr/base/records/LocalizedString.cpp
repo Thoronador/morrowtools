@@ -274,4 +274,71 @@ TEST_CASE("LocalizedString")
       REQUIRE_FALSE( localized.isPresent() );
     }
   }
+
+  SECTION("equality")
+  {
+    SECTION("equal indexed string")
+    {
+      LocalizedString a(LocalizedString::lsIndex, 12345, "foo bar");
+      LocalizedString b(LocalizedString::lsIndex, 12345, "foo bar");
+
+      REQUIRE( a == b );
+      REQUIRE( b == a );
+    }
+
+    SECTION("equal indexed string: string does not matter")
+    {
+      LocalizedString a(LocalizedString::lsIndex, 12345, "foo bar");
+      LocalizedString b(LocalizedString::lsIndex, 12345, "foo bar baz");
+
+      REQUIRE( a == b );
+      REQUIRE( b == a );
+      REQUIRE_FALSE( a != b );
+      REQUIRE_FALSE( b != a );
+    }
+
+    SECTION("unequal indexed string: index")
+    {
+      LocalizedString a(LocalizedString::lsIndex, 12345, "foo bar");
+      LocalizedString b(LocalizedString::lsIndex, 54321, "foo bar");
+
+      REQUIRE_FALSE( a == b );
+      REQUIRE_FALSE( b == a );
+      REQUIRE( a != b );
+      REQUIRE( b != a );
+    }
+
+    SECTION("equal direct string")
+    {
+      LocalizedString a(LocalizedString::lsString, 0, "foo bar");
+      LocalizedString b(LocalizedString::lsString, 0, "foo bar");
+
+      REQUIRE( a == b );
+      REQUIRE( b == a );
+      REQUIRE_FALSE( a != b );
+      REQUIRE_FALSE( b != a );
+    }
+
+    SECTION("equal direct string: index does not matter")
+    {
+      LocalizedString a(LocalizedString::lsString, 3210, "foo bar");
+      LocalizedString b(LocalizedString::lsString, 1234, "foo bar");
+
+      REQUIRE( a == b );
+      REQUIRE( b == a );
+      REQUIRE_FALSE( a != b );
+      REQUIRE_FALSE( b != a );
+    }
+
+    SECTION("unequal direct string: string")
+    {
+      LocalizedString a(LocalizedString::lsString, 0, "foo bar 123");
+      LocalizedString b(LocalizedString::lsString, 0, "foo bar");
+
+      REQUIRE_FALSE( a == b );
+      REQUIRE_FALSE( b == a );
+      REQUIRE( a != b );
+      REQUIRE( b != a );
+    }
+  }
 }

@@ -48,14 +48,23 @@ class WrongStringType: public std::exception
 struct LocalizedString
 {
   public:
+    /* enumeration type type of string */
+    enum Type {lsNone, lsIndex, lsString};
+
     /* constructor */
     LocalizedString();
+
+    /** \brief Constructor with initial values.
+     *
+     * \param t   the string type to use
+     * \param idx the index of the string
+     * \param str the actual string data
+     */
+    LocalizedString(const Type t, const uint32_t idx, const std::string& str);
 
     /* returns true, if the string is present in any form */
     bool isPresent() const;
 
-    /* enumeration type type of string */
-    enum Type {lsNone, lsIndex, lsString};
 
     inline Type getType() const
     {

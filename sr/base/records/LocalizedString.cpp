@@ -29,7 +29,11 @@ namespace SRTP
 LocalizedString::LocalizedString()
 : m_Type(lsNone), m_Index(0), m_String("")
 {
+}
 
+LocalizedString::LocalizedString(const Type t, const uint32_t idx, const std::string& str)
+: m_Type(t), m_Index(idx), m_String(str)
+{
 }
 
 bool LocalizedString::isPresent() const

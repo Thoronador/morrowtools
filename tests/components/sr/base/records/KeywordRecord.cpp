@@ -288,7 +288,7 @@ TEST_CASE("KeywordRecord")
     }
   }
 
-  SECTION("loadFromStream")
+  SECTION("saveToStream")
   {
     using namespace std::string_view_literals;
 

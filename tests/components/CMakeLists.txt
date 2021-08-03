@@ -17,6 +17,7 @@ set(component_tests_sources
     ../../sr/base/records/BasicRecord.cpp
     ../../sr/base/records/KeywordRecord.cpp
     ../../sr/base/records/LocalizedString.cpp
+    ../../sr/base/records/WordOfPowerRecord.cpp
     base/BufferStream.cpp
     base/ComparisonFunctor.cpp
     base/CompressionFunctions.cpp
@@ -28,6 +29,7 @@ set(component_tests_sources
     sr/base/FormIDFunctions.cpp
     sr/base/records/KeywordRecord.cpp
     sr/base/records/LocalizedString.cpp
+    sr/base/records/WordOfPowerRecord.cpp
     main.cpp)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")

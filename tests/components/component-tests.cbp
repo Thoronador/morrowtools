@@ -57,6 +57,8 @@
 		<Unit filename="../../sr/base/records/KeywordRecord.hpp" />
 		<Unit filename="../../sr/base/records/LocalizedString.cpp" />
 		<Unit filename="../../sr/base/records/LocalizedString.hpp" />
+		<Unit filename="../../sr/base/records/WordOfPowerRecord.cpp" />
+		<Unit filename="../../sr/base/records/WordOfPowerRecord.hpp" />
 		<Unit filename="base/BufferStream.cpp" />
 		<Unit filename="base/ComparisonFunctor.cpp" />
 		<Unit filename="base/CompressionFunctions.cpp" />
@@ -69,6 +71,7 @@
 		<Unit filename="sr/base/FormIDFunctions.cpp" />
 		<Unit filename="sr/base/records/KeywordRecord.cpp" />
 		<Unit filename="sr/base/records/LocalizedString.cpp" />
+		<Unit filename="sr/base/records/WordOfPowerRecord.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>

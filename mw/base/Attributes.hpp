@@ -20,7 +20,8 @@
 
 #ifndef MW_ATTRIBUTES_HPP
 #define MW_ATTRIBUTES_HPP
-#include <stdint.h>
+
+#include <cstdint>
 #include <string>
 
 namespace MWTP

@@ -21,9 +21,9 @@
 #ifndef SR_DESTRUCTIONDATA_HPP
 #define SR_DESTRUCTIONDATA_HPP
 
+#include <cstdint>
 #include <string>
 #include <vector>
-#include <stdint.h>
 #include "BinarySubRecord.hpp"
 
 namespace SRTP

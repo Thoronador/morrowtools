@@ -34,7 +34,7 @@ TEST_CASE("LocalizedString")
     LocalizedString localized;
 
     REQUIRE_FALSE( localized.isPresent() );
-    REQUIRE( localized.getType() == LocalizedString::lsNone );
+    REQUIRE( localized.getType() == LocalizedString::Type::None );
     REQUIRE_THROWS_AS( localized.getIndex(), WrongStringType& );
     REQUIRE_THROWS_AS( localized.getString(), WrongStringType& );
     REQUIRE( localized.getWriteSize() == 0 );
@@ -61,7 +61,7 @@ TEST_CASE("LocalizedString")
       LocalizedString localized;
       REQUIRE( localized.loadFromStream(stream_in, cFULL, true, bytesRead, true, table, nullptr) );
       // Check data.
-      REQUIRE( localized.getType() == LocalizedString::lsIndex );
+      REQUIRE( localized.getType() == LocalizedString::Type::Index );
       REQUIRE( localized.getIndex() == 0x0001267C );
       REQUIRE( localized.getString() == "foo bar" );
       REQUIRE( localized.isPresent() );
@@ -90,7 +90,7 @@ TEST_CASE("LocalizedString")
       LocalizedString localized;
       REQUIRE( localized.loadFromStream(stream_in, cTNAM, true, bytesRead, true, table, nullptr) );
       // Check data: index zero means empty string.
-      REQUIRE( localized.getType() == LocalizedString::lsIndex );
+      REQUIRE( localized.getType() == LocalizedString::Type::Index );
       REQUIRE( localized.getIndex() == 0 );
       REQUIRE( localized.getString().empty() );
       REQUIRE( localized.isPresent() );
@@ -125,7 +125,7 @@ TEST_CASE("LocalizedString")
       LocalizedString localized;
       REQUIRE( localized.loadFromStream(stream_in, cFULL, false, bytesRead, true, table, nullptr) );
       // Check data.
-      REQUIRE( localized.getType() == LocalizedString::lsIndex );
+      REQUIRE( localized.getType() == LocalizedString::Type::Index );
       REQUIRE( localized.getIndex() == 0x0102347C );
       REQUIRE( localized.getString() == "foo bar baz" );
       REQUIRE( localized.isPresent() );
@@ -154,7 +154,7 @@ TEST_CASE("LocalizedString")
       LocalizedString localized;
       REQUIRE( localized.loadFromStream(stream_in, cFULL, true, bytesRead, false, table, buffer) );
       // Check data.
-      REQUIRE( localized.getType() == LocalizedString::lsString );
+      REQUIRE( localized.getType() == LocalizedString::Type::String );
       REQUIRE( localized.getString() == "foo bar 3" );
       REQUIRE( localized.isPresent() );
       REQUIRE_THROWS_AS( localized.getIndex(), WrongStringType& );
@@ -187,7 +187,7 @@ TEST_CASE("LocalizedString")
       LocalizedString localized;
       REQUIRE( localized.loadFromStream(stream_in, cFULL, false, bytesRead, false, table, buffer) );
       // Check data.
-      REQUIRE( localized.getType() == LocalizedString::lsString );
+      REQUIRE( localized.getType() == LocalizedString::Type::String );
       REQUIRE( localized.getString() == "foo bar 42" );
       REQUIRE_THROWS_AS( localized.getIndex(), WrongStringType& );
       REQUIRE( localized.isPresent() );
@@ -279,8 +279,8 @@ TEST_CASE("LocalizedString")
   {
     SECTION("equal indexed string")
     {
-      LocalizedString a(LocalizedString::lsIndex, 12345, "foo bar");
-      LocalizedString b(LocalizedString::lsIndex, 12345, "foo bar");
+      LocalizedString a(LocalizedString::Type::Index, 12345, "foo bar");
+      LocalizedString b(LocalizedString::Type::Index, 12345, "foo bar");
 
       REQUIRE( a == b );
       REQUIRE( b == a );
@@ -288,8 +288,8 @@ TEST_CASE("LocalizedString")
 
     SECTION("equal indexed string: string does not matter")
     {
-      LocalizedString a(LocalizedString::lsIndex, 12345, "foo bar");
-      LocalizedString b(LocalizedString::lsIndex, 12345, "foo bar baz");
+      LocalizedString a(LocalizedString::Type::Index, 12345, "foo bar");
+      LocalizedString b(LocalizedString::Type::Index, 12345, "foo bar baz");
 
       REQUIRE( a == b );
       REQUIRE( b == a );
@@ -299,8 +299,8 @@ TEST_CASE("LocalizedString")
 
     SECTION("unequal indexed string: index")
     {
-      LocalizedString a(LocalizedString::lsIndex, 12345, "foo bar");
-      LocalizedString b(LocalizedString::lsIndex, 54321, "foo bar");
+      LocalizedString a(LocalizedString::Type::Index, 12345, "foo bar");
+      LocalizedString b(LocalizedString::Type::Index, 54321, "foo bar");
 
       REQUIRE_FALSE( a == b );
       REQUIRE_FALSE( b == a );
@@ -310,8 +310,8 @@ TEST_CASE("LocalizedString")
 
     SECTION("equal direct string")
     {
-      LocalizedString a(LocalizedString::lsString, 0, "foo bar");
-      LocalizedString b(LocalizedString::lsString, 0, "foo bar");
+      LocalizedString a(LocalizedString::Type::String, 0, "foo bar");
+      LocalizedString b(LocalizedString::Type::String, 0, "foo bar");
 
       REQUIRE( a == b );
       REQUIRE( b == a );
@@ -321,8 +321,8 @@ TEST_CASE("LocalizedString")
 
     SECTION("equal direct string: index does not matter")
     {
-      LocalizedString a(LocalizedString::lsString, 3210, "foo bar");
-      LocalizedString b(LocalizedString::lsString, 1234, "foo bar");
+      LocalizedString a(LocalizedString::Type::String, 3210, "foo bar");
+      LocalizedString b(LocalizedString::Type::String, 1234, "foo bar");
 
       REQUIRE( a == b );
       REQUIRE( b == a );
@@ -332,8 +332,8 @@ TEST_CASE("LocalizedString")
 
     SECTION("unequal direct string: string")
     {
-      LocalizedString a(LocalizedString::lsString, 0, "foo bar 123");
-      LocalizedString b(LocalizedString::lsString, 0, "foo bar");
+      LocalizedString a(LocalizedString::Type::String, 0, "foo bar 123");
+      LocalizedString b(LocalizedString::Type::String, 0, "foo bar");
 
       REQUIRE_FALSE( a == b );
       REQUIRE_FALSE( b == a );

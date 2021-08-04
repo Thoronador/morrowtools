@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2021 Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -18,10 +18,10 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef COMPILERCODES_H
-#define COMPILERCODES_H
+#ifndef COMPILERCODES_HPP
+#define COMPILERCODES_HPP
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace MWTP
 {
@@ -486,8 +486,8 @@ namespace ScriptCompiler
   const uint16_t CodeWakeUpPC = 0x10E1; //"E110"
   const uint16_t CodeWhile = 0x010A; //"0A01"
   const uint16_t CodeXBox = 0x113A; //"3A11"
-} //namespace ScriptCompiler
+} // namespace ScriptCompiler
 
-} //namespace MWTP
+} // namespace MWTP
 
-#endif // COMPILERCODES_H
+#endif // COMPILERCODES_HPP

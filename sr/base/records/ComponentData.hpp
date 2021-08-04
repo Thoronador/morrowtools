@@ -21,7 +21,7 @@
 #ifndef SR_COMPONENTDATA_HPP
 #define SR_COMPONENTDATA_HPP
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace SRTP
 {

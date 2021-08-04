@@ -21,8 +21,8 @@
 #ifndef SR_GROUPDATA_HPP
 #define SR_GROUPDATA_HPP
 
+#include <cstdint>
 #include <fstream>
-#include <stdint.h>
 
 namespace SRTP
 {

@@ -46,12 +46,12 @@ TEST_CASE("WordOfPowerRecord")
     SECTION("equal with FULL")
     {
       a.editorID = "foo";
-      a.name = LocalizedString(LocalizedString::lsIndex, 1234, "bar");
-      a.translated = LocalizedString(LocalizedString::lsIndex, 1234, "baz");
+      a.name = LocalizedString(LocalizedString::Type::Index, 1234, "bar");
+      a.translated = LocalizedString(LocalizedString::Type::Index, 1234, "baz");
 
       b.editorID = "foo";
-      b.name = LocalizedString(LocalizedString::lsIndex, 1234, "bar");
-      b.translated = LocalizedString(LocalizedString::lsIndex, 1234, "baz");
+      b.name = LocalizedString(LocalizedString::Type::Index, 1234, "bar");
+      b.translated = LocalizedString(LocalizedString::Type::Index, 1234, "baz");
 
       REQUIRE( a.equals(b) );
       REQUIRE( b.equals(a) );
@@ -61,11 +61,11 @@ TEST_CASE("WordOfPowerRecord")
     {
       a.editorID = "foo";
       a.name = LocalizedString();
-      a.translated = LocalizedString(LocalizedString::lsIndex, 1234, "baz");
+      a.translated = LocalizedString(LocalizedString::Type::Index, 1234, "baz");
 
       b.editorID = "foo";
       b.name = LocalizedString();
-      b.translated = LocalizedString(LocalizedString::lsIndex, 1234, "baz");
+      b.translated = LocalizedString(LocalizedString::Type::Index, 1234, "baz");
 
       REQUIRE( a.equals(b) );
       REQUIRE( b.equals(a) );
@@ -75,36 +75,36 @@ TEST_CASE("WordOfPowerRecord")
     {
       // editorID mismatch
       a.editorID = "foo";
-      a.name = LocalizedString(LocalizedString::lsIndex, 1234, "bar");
-      a.translated = LocalizedString(LocalizedString::lsIndex, 1234, "baz");
+      a.name = LocalizedString(LocalizedString::Type::Index, 1234, "bar");
+      a.translated = LocalizedString(LocalizedString::Type::Index, 1234, "baz");
 
       b.editorID = "bar";
-      b.name = LocalizedString(LocalizedString::lsIndex, 1234, "bar");
-      b.translated = LocalizedString(LocalizedString::lsIndex, 1234, "baz");
+      b.name = LocalizedString(LocalizedString::Type::Index, 1234, "bar");
+      b.translated = LocalizedString(LocalizedString::Type::Index, 1234, "baz");
 
       REQUIRE_FALSE( a.equals(b) );
       REQUIRE_FALSE( b.equals(a) );
 
       // FULL mismatch
       a.editorID = "foo";
-      a.name = LocalizedString(LocalizedString::lsString, 1234, "bar");
-      a.translated = LocalizedString(LocalizedString::lsIndex, 1234, "baz");
+      a.name = LocalizedString(LocalizedString::Type::String, 1234, "bar");
+      a.translated = LocalizedString(LocalizedString::Type::Index, 1234, "baz");
 
       b.editorID = "foo";
-      b.name = LocalizedString(LocalizedString::lsString, 1234, "quux");
-      b.translated = LocalizedString(LocalizedString::lsIndex, 1234, "baz");
+      b.name = LocalizedString(LocalizedString::Type::String, 1234, "quux");
+      b.translated = LocalizedString(LocalizedString::Type::Index, 1234, "baz");
 
       REQUIRE_FALSE( a.equals(b) );
       REQUIRE_FALSE( b.equals(a) );
 
       // TNAM mismatch
       a.editorID = "foo";
-      a.name = LocalizedString(LocalizedString::lsIndex, 1234, "bar");
-      a.translated = LocalizedString(LocalizedString::lsString, 1234, "baz");
+      a.name = LocalizedString(LocalizedString::Type::Index, 1234, "bar");
+      a.translated = LocalizedString(LocalizedString::Type::String, 1234, "baz");
 
       b.editorID = "foo";
-      b.name = LocalizedString(LocalizedString::lsIndex, 1234, "bar");
-      b.translated = LocalizedString(LocalizedString::lsString, 1234, "not the same");
+      b.name = LocalizedString(LocalizedString::Type::Index, 1234, "bar");
+      b.translated = LocalizedString(LocalizedString::Type::String, 1234, "not the same");
 
       REQUIRE_FALSE( a.equals(b) );
       REQUIRE_FALSE( b.equals(a) );
@@ -115,11 +115,11 @@ TEST_CASE("WordOfPowerRecord")
       // editorID mismatch
       a.editorID = "foo";
       a.name = LocalizedString();
-      a.translated = LocalizedString(LocalizedString::lsIndex, 1234, "baz");
+      a.translated = LocalizedString(LocalizedString::Type::Index, 1234, "baz");
 
       b.editorID = "bar";
       b.name = LocalizedString();
-      b.translated = LocalizedString(LocalizedString::lsIndex, 1234, "baz");
+      b.translated = LocalizedString(LocalizedString::Type::Index, 1234, "baz");
 
       REQUIRE_FALSE( a.equals(b) );
       REQUIRE_FALSE( b.equals(a) );
@@ -127,11 +127,11 @@ TEST_CASE("WordOfPowerRecord")
       // TNAM mismatch
       a.editorID = "foo";
       a.name = LocalizedString();
-      a.translated = LocalizedString(LocalizedString::lsString, 1234, "baz");
+      a.translated = LocalizedString(LocalizedString::Type::String, 1234, "baz");
 
       b.editorID = "foo";
       b.name = LocalizedString();
-      b.translated = LocalizedString(LocalizedString::lsString, 1234, "not the same");
+      b.translated = LocalizedString(LocalizedString::Type::String, 1234, "not the same");
 
       REQUIRE_FALSE( a.equals(b) );
       REQUIRE_FALSE( b.equals(a) );
@@ -153,35 +153,35 @@ TEST_CASE("WordOfPowerRecord")
     {
       record.editorID = "foobarfoobarbaz"; // 15 characters
       record.name = LocalizedString();
-      record.translated = LocalizedString(LocalizedString::lsIndex, 1234, "");
+      record.translated = LocalizedString(LocalizedString::Type::Index, 1234, "");
       REQUIRE( record.getWriteSize() == 32 );
 
       record.editorID = "foo"; // three characters
       record.name = LocalizedString();
-      record.translated = LocalizedString(LocalizedString::lsIndex, 1234, "");
+      record.translated = LocalizedString(LocalizedString::Type::Index, 1234, "");
       REQUIRE( record.getWriteSize() == 20 );
 
       record.editorID = "foo"; // three characters
       record.name = LocalizedString();
-      record.translated = LocalizedString(LocalizedString::lsString, 0, "test case string");
+      record.translated = LocalizedString(LocalizedString::Type::String, 0, "test case string");
       REQUIRE( record.getWriteSize() == 33 );
     }
 
     SECTION("with FULL")
     {
       record.editorID = "foobarfoobarbaz"; // 15 characters
-      record.name = LocalizedString(LocalizedString::lsIndex, 123, "");
-      record.translated = LocalizedString(LocalizedString::lsIndex, 1234, "");
+      record.name = LocalizedString(LocalizedString::Type::Index, 123, "");
+      record.translated = LocalizedString(LocalizedString::Type::Index, 1234, "");
       REQUIRE( record.getWriteSize() == 42 );
 
       record.editorID = "foobar"; // six characters
-      record.name = LocalizedString(LocalizedString::lsIndex, 123, "");
-      record.translated = LocalizedString(LocalizedString::lsIndex, 1234, "");
+      record.name = LocalizedString(LocalizedString::Type::Index, 123, "");
+      record.translated = LocalizedString(LocalizedString::Type::Index, 1234, "");
       REQUIRE( record.getWriteSize() == 33 );
 
       record.editorID = "foobarfoobarbaz"; // 15 characters
-      record.name = LocalizedString(LocalizedString::lsString, 0, "test case string");
-      record.translated = LocalizedString(LocalizedString::lsIndex, 1234, "");
+      record.name = LocalizedString(LocalizedString::Type::String, 0, "test case string");
+      record.translated = LocalizedString(LocalizedString::Type::Index, 1234, "");
       REQUIRE( record.getWriteSize() == 55 );
     }
   }
@@ -218,10 +218,10 @@ TEST_CASE("WordOfPowerRecord")
       // -- record data
       REQUIRE( record.editorID == "HowlCallOfTheWild3" );
       REQUIRE( record.name.isPresent() );
-      REQUIRE( record.name.getType() == LocalizedString::lsIndex );
+      REQUIRE( record.name.getType() == LocalizedString::Type::Index );
       REQUIRE( record.name.getIndex() == 0x000005A2 );
       REQUIRE( record.translated.isPresent() );
-      REQUIRE( record.translated.getType() == LocalizedString::lsIndex );
+      REQUIRE( record.translated.getType() == LocalizedString::Type::Index );
       REQUIRE( record.translated.getIndex() == 0 );
     }
 
@@ -249,7 +249,7 @@ TEST_CASE("WordOfPowerRecord")
       REQUIRE( record.editorID == "DragonFakeWord" );
       REQUIRE_FALSE( record.name.isPresent() );
       REQUIRE( record.translated.isPresent() );
-      REQUIRE( record.translated.getType() == LocalizedString::lsIndex );
+      REQUIRE( record.translated.getType() == LocalizedString::Type::Index );
       REQUIRE( record.translated.getIndex() == 0 );
     }
 
@@ -386,8 +386,8 @@ TEST_CASE("WordOfPowerRecord")
       record.headerUnknown5 = 0x0003;
       // -- record data
       record.editorID = "HowlCallOfTheWild3";
-      record.name = LocalizedString(LocalizedString::lsIndex, 0x000005A2, "");
-      record.translated = LocalizedString(LocalizedString::lsIndex, 0, "");
+      record.name = LocalizedString(LocalizedString::Type::Index, 0x000005A2, "");
+      record.translated = LocalizedString(LocalizedString::Type::Index, 0, "");
 
       // Writing should succeed.
       REQUIRE( record.saveToStream(stream) );
@@ -413,7 +413,7 @@ TEST_CASE("WordOfPowerRecord")
       // -- record data
       record.editorID = "DragonFakeWord";
       record.name = LocalizedString();
-      record.translated = LocalizedString(LocalizedString::lsIndex, 0, "");
+      record.translated = LocalizedString(LocalizedString::Type::Index, 0, "");
 
       // Writing should succeed.
       REQUIRE( record.saveToStream(stream) );

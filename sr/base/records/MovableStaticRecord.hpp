@@ -22,8 +22,8 @@
 #define SR_MOVABLESTATICRECORD_HPP
 
 #include "BasicRecord.hpp"
+#include <cstdint>
 #include <string>
-#include <stdint.h>
 #include "BinarySubRecord.hpp"
 #include "DestructionData.hpp"
 

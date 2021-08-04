@@ -22,9 +22,9 @@
 #define SR_PERKRECORD_HPP
 
 #include "BasicRecord.hpp"
+#include <cstdint>
 #include <string>
 #include <vector>
-#include <stdint.h>
 #include "BinarySubRecord.hpp"
 #include "LocalizedString.hpp"
 #include "SubBlock.hpp"

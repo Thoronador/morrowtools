@@ -21,8 +21,8 @@
 #ifndef SR_BASICRECORD_HPP
 #define SR_BASICRECORD_HPP
 
+#include <cstdint>
 #include <fstream>
-#include <stdint.h>
 
 namespace SRTP
 {

@@ -293,13 +293,13 @@ bool TalkingActivatorRecord::loadFromStream(std::istream& in_File, const bool lo
              std::cout << "Error: record TACT seems to have more than one FULL subrecord!\n";
              return false;
            }
-           //read FULL
+           // read FULL
            if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
              return false;
-           //sanity check
-           if ((name.getType()==LocalizedString::lsIndex) and (name.getIndex()==0))
+           // sanity check
+           if ((name.getType() == LocalizedString::Type::Index) && (name.getIndex() == 0))
            {
-             std::cout << "Error: subrecord FULL of TACT has invalid value zero!\n";
+             std::cerr << "Error: subrecord FULL of TACT has invalid value zero!\n";
              return false;
            }
            break;

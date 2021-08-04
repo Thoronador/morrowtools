@@ -22,8 +22,8 @@
 #define SR_ACOUSTICSPACERECORD_HPP
 
 #include "BasicRecord.hpp"
+#include <cstdint>
 #include <string>
-#include <stdint.h>
 
 namespace SRTP
 {

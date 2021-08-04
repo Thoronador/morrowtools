@@ -21,13 +21,13 @@
 #ifndef SR_ALCHEMYPOTIONRECORD_HPP
 #define SR_ALCHEMYPOTIONRECORD_HPP
 
+#include <cstdint>
+#include <string>
+#include <vector>
 #include "BasicRecord.hpp"
 #include "BinarySubRecord.hpp"
 #include "EffectBlock.hpp"
 #include "LocalizedString.hpp"
-#include <string>
-#include <vector>
-#include <stdint.h>
 
 namespace SRTP
 {

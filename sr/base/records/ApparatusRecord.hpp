@@ -22,8 +22,8 @@
 #define SR_APPARATUSRECORD_HPP
 
 #include "BasicRecord.hpp"
+#include <cstdint>
 #include <string>
-#include <stdint.h>
 #include "LocalizedString.hpp"
 
 namespace SRTP

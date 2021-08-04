@@ -21,11 +21,11 @@
 #ifndef SR_MAPBASEDRECORDMANAGER_HPP
 #define SR_MAPBASEDRECORDMANAGER_HPP
 
-#include <map>
-#include <iostream>
+#include <cstdint>
 #include <fstream>
+#include <iostream>
+#include <map>
 #include <stdexcept>
-#include <stdint.h>
 #include "StringTable.hpp"
 
 namespace SRTP

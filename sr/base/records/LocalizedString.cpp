@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2013  Thoronador
+    Copyright (C) 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@ namespace SRTP
 {
 
 LocalizedString::LocalizedString()
-: m_Type(lsNone), m_Index(0), m_String("")
+: m_Type(Type::None), m_Index(0), m_String("")
 {
 }
 
@@ -36,20 +36,26 @@ LocalizedString::LocalizedString(const Type t, const uint32_t idx, const std::st
 {
 }
 
-bool LocalizedString::isPresent() const
+bool LocalizedString::isPresent() const noexcept
 {
-  return (m_Type!=lsNone);
+  return m_Type != Type::None;
 }
 
 uint32_t LocalizedString::getIndex() const
 {
-  if (m_Type==lsIndex) return m_Index;
+  if (m_Type == Type::Index)
+  {
+    return m_Index;
+  }
   throw WrongStringType();
 }
 
 const std::string& LocalizedString::getString() const
 {
-  if (m_Type==lsNone) throw WrongStringType();
+  if (m_Type == Type::None)
+  {
+    throw WrongStringType();
+  }
   return m_String;
 }
 
@@ -61,92 +67,93 @@ bool LocalizedString::loadFromStream(std::istream& in_Stream, const uint32_t sub
   if (withHeader)
   {
     uint32_t subRecName = 0;
-    //read header
-    in_Stream.read((char*) &subRecName, 4);
+    // read header
+    in_Stream.read(reinterpret_cast<char*>(&subRecName), 4);
     bytesRead += 4;
-    if (subRecName!=subHeader)
+    if (subRecName != subHeader)
     {
       UnexpectedRecord(subHeader, subRecName);
       return false;
     }
-  }//if with header
+  } //if with header
 
-  //subrecord's length
+  // subrecord's length
   uint16_t subLength = 0;
-  in_Stream.read((char*) &subLength, 2);
+  in_Stream.read(reinterpret_cast<char*>(&subLength), 2);
   bytesRead += 2;
   if (localized)
   {
-    if (subLength!=4)
+    if (subLength != 4)
     {
-      std::cout << "Error: sub record " << IntTo4Char(subHeader)
+      std::cerr << "Error: sub record " << IntTo4Char(subHeader)
                 << " has invalid length (" << subLength
                 << " bytes). Should be four bytes.\n";
       return false;
     }
-    //read value
-    in_Stream.read((char*) &m_Index, 4);
+    // read value
+    in_Stream.read(reinterpret_cast<char*>(&m_Index), 4);
     bytesRead += 4;
     if (!in_Stream.good())
     {
-      std::cout << "LocalizedString::loadFromStream: Error while reading subrecord "
-                << IntTo4Char(subHeader)<<"!\n";
+      std::cerr << "LocalizedString::loadFromStream: Error while reading subrecord "
+                << IntTo4Char(subHeader) << "!\n";
       return false;
     }
-    //treat index zero as empty string, some subrecords allow zero as index
-    if (m_Index==0)
+    // treat index zero as empty string, some subrecords allow zero as index
+    if (m_Index == 0)
     {
       m_String.clear();
-      m_Type = lsIndex;
+      m_Type = Type::Index;
       return true;
-    }//if zero
+    }
     if (!table.hasString(m_Index))
     {
-      std::cout << "LocalizedString::loadFromStream: table has no entry for index "<<m_Index<<"!\n";
+      std::cerr << "LocalizedString::loadFromStream: table has no entry for index " << m_Index << "!\n";
       return false;
     }
     m_String = table.getString(m_Index);
-    m_Type = lsIndex;
+    m_Type = Type::Index;
   }
   else
   {
-    //unlocalized (plain string)
-    if (subLength>511)
+    // unlocalized (plain string)
+    if (subLength > 511)
     {
-      std::cout <<"Error: subrecord "<<IntTo4Char(subHeader)<<" is longer than 511 characters!\n";
+      std::cerr << "Error: subrecord " << IntTo4Char(subHeader)
+                << " is longer than 511 characters!\n";
       return false;
     }
-    //read string
+    // read string
     memset(buffer, 0, 512);
     in_Stream.read(buffer, subLength);
     bytesRead += subLength;
     if (!in_Stream.good())
     {
-      std::cout << "Error while reading subrecord "<<IntTo4Char(subHeader)<<"!\n";
+      std::cerr << "Error while reading subrecord " << IntTo4Char(subHeader) << "!\n";
       return false;
     }
     m_String = std::string(buffer);
-    m_Type = lsString;
+    m_Type = Type::String;
   }
   return true;
 }
 
 #ifndef SR_UNSAVEABLE_RECORDS
-uint32_t LocalizedString::getWriteSize() const
+uint32_t LocalizedString::getWriteSize() const noexcept
 {
   switch (m_Type)
   {
-    case lsIndex:
+    case Type::Index:
          return 10;
          break;
-    case lsString:
-         return (4 /* HEAD */ +2 /* 2 bytes for length */
-                 +m_String.length()+1 /* length of string +1 byte for NUL-termination */ );
+    case Type::String:
+         return (4 /* HEAD */ + 2 /* 2 bytes for length */
+                 + m_String.length() + 1 /* length of string +1 byte for NUL-termination */ );
          break;
-    default: //lsNone
+    default: // Type::None
          return 0;
          break;
-  }//swi
+  }
 }
 
 bool LocalizedString::saveToStream(std::ostream& output, const uint32_t subHeader) const
@@ -154,50 +161,51 @@ bool LocalizedString::saveToStream(std::ostream& output, const uint32_t subHeade
   uint16_t subLength = 0;
   switch (m_Type)
   {
-    case lsIndex:
-         //write header
-         output.write((const char*) &subHeader, 4);
-         //subrecord's length
+    case Type::Index:
+         // write header
+         output.write(reinterpret_cast<const char*>(&subHeader), 4);
+         // subrecord's length
          subLength = 4;
-         output.write((const char*) &subLength, 2);
-         //write index
-         output.write((const char*) &m_Index, 4);
+         output.write(reinterpret_cast<const char*>(&subLength), 2);
+         // write index
+         output.write(reinterpret_cast<const char*>(&m_Index), 4);
          break;
-    case lsString:
-         //write header
-         output.write((const char*) &subHeader, 4);
-         //subrecord's length
+    case Type::String:
+         // write header
+         output.write(reinterpret_cast<const char*>(&subHeader), 4);
+         // subrecord's length
          subLength = m_String.length()+1;
-         output.write((const char*) &subLength, 2);
-         //write string
+         output.write(reinterpret_cast<const char*>(&subLength), 2);
+         // write string
          output.write(m_String.c_str(), subLength);
          break;
-    default: //lsNone
+    default: // Type::None
          return true;
-  }//swi
+  }
   return output.good();
 }
 #endif
 
 void LocalizedString::reset()
 {
-  m_Type = lsNone;
+  m_Type = Type::None;
   m_Index = 0;
   m_String.clear();
 }
 
 bool LocalizedString::operator==(const LocalizedString& other) const
 {
-  if (m_Type!=other.getType()) return false;
+  if (m_Type != other.getType())
+    return false;
   switch(m_Type)
   {
-    case lsIndex:
-         return (m_Index==other.m_Index);
-    case lsString:
-         return (m_String==other.m_String);
-    default: //lsNone
+    case Type::Index:
+         return m_Index == other.m_Index;
+    case Type::String:
+         return m_String == other.m_String;
+    default: // Type::None
          return true;
-  }//swi
+  }
 }
 
-} //namespace
+} // namespace

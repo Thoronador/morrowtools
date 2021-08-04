@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2013  Thoronador
+    Copyright (C) 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,37 +21,38 @@
 #ifndef SR_LOCALIZEDSTRING_HPP
 #define SR_LOCALIZEDSTRING_HPP
 
+#include <cstdint>
 #include <exception>
 #include <string>
-#include <stdint.h>
 #include "../StringTable.hpp"
 
 namespace SRTP
 {
 
-/* class WrongStringType:
-     This exception gets thrown, if an invalid operation is performed,
-     i.e. requesting a string index for a non-indexed string.
-*/
+/** \brief This exception gets thrown, if an invalid operation is performed on
+ *         a LocalizedString, i.e. requesting a string index for a non-indexed
+ *         string.
+ */
 class WrongStringType: public std::exception
 {
   public:
-    WrongStringType() { }
+    WrongStringType() = default;
 
     virtual const char* what() const throw() //_GLIBCXX_USE_NOEXCEPT
     {
       return "LocalizedString: Invalid string type for requested operation!";
     }
-}; //class
+}; // class
 
 
+/** Holds a (possibly) localized string value. */
 struct LocalizedString
 {
   public:
-    /* enumeration type type of string */
-    enum Type {lsNone, lsIndex, lsString};
+    /** enumeration type indicating the type of string */
+    enum class Type { None, Index, String };
 
-    /* constructor */
+    /** \brief Constructor to create an empty string. */
     LocalizedString();
 
     /** \brief Constructor with initial values.
@@ -62,73 +63,94 @@ struct LocalizedString
      */
     LocalizedString(const Type t, const uint32_t idx, const std::string& str);
 
-    /* returns true, if the string is present in any form */
-    bool isPresent() const;
+    /** \brief Checks whether the string data is present in any form.
+     *
+     * \return Returns true, if the string contains data in any form.
+     */
+    bool isPresent() const noexcept;
 
-
-    inline Type getType() const
+    /** \brief Gets the type of the string: none, indexed, or plain string.
+     *
+     * \return Returns the type of the string.
+     */
+    inline Type getType() const noexcept
     {
       return m_Type;
     }
 
-    /* returns the index of the string, if present. If there is no index, the
-       function throws an exception
-    */
+    /** \brief Gets the index of the string, if present.
+     *
+     * \return Returns the index of the string, if present. If there is no
+     *         index, the function throws an exception
+     * \exception WrongStringType   the string is not an indexed string
+     */
     uint32_t getIndex() const;
 
-    /* returns the stored string value */
+    /** \brief Gets the stored string value.
+     *
+     * \exception WrongStringType  The string is of type None.
+     * \return Returns the stored string value.
+     */
     const std::string& getString() const;
 
-    /* loads the String from the given input stream and returns true on success
-
-      parameters:
-          in_Stream  - the input stream
-          subHeader  - the expected header of that subrecord
-          withHeader - if set to true, the record header will be read, too
-          bytesRead  - the variable that holds the number of bytes read so far
-          localized  - indicates whether a localized string index (true) or a
-                       plain text string (false) is to be loaded
-          table      - the current string table (only matters if localized is true)
-          buffer     - pointer to a pre-allocated buffer that can hold at least
-                       512 bytes
-    */
+    /** \brief Loads the string from the given input stream.
+     *
+     * \param in_Stream    the input stream
+     * \param subHeader    the expected header of that subrecord
+     * \param withHeader   if set to true, the record header will be read, too
+     * \param bytesRead    the variable that holds the number of bytes read so far
+     * \param localized    indicates whether a localized string index (true) or
+     *                     a plain text string (false) is to be loaded
+     * \param table        the current string table (only matters if @localized is true)
+     * \param buffer       pointer to a pre-allocated buffer that can hold at
+     *                     least 512 bytes
+     * \return Returns true on success. Returns false, if loading failed.
+     */
     bool loadFromStream(std::istream& in_Stream, const uint32_t subHeader,
                         const bool withHeader, uint32_t& bytesRead,
                         const bool localized, const StringTable& table,
                         char* buffer);
 
     #ifndef SR_UNSAVEABLE_RECORDS
-    /* returns the size in bytes that the LocalizedString record's data would
-       occupy in a file stream
-    */
-    uint32_t getWriteSize() const;
+    /** \brief Get the size in bytes that the LocalizedString record's data
+     *         would occupy in a (file) stream.
+     *
+     * \return Returns the size in bytes that the LocalizedString would need
+     *         were it written to a file.
+     */
+    uint32_t getWriteSize() const noexcept;
 
-    /* writes the LocalizedString to the given output stream and returns true
-       on success
-
-      parameters:
-          output    - the output file stream
-          subHeader - the record header that should be used for saving the string
-    */
+    /** \brief Writes the LocalizedString to the given output stream.
+     *
+     * \param output     the output stream
+     * \param subHeader  the record header that should be used for saving the string
+     * \return Returns true on success. Returns false if the operation failed.
+     */
     bool saveToStream(std::ostream& output, const uint32_t subHeader) const;
     #endif
 
-    /* resets the internal state of the localized string */
+    /** Resets the internal state of the localized string to None / empty. */
     void reset();
 
-    /* comparison operator */
+    /** \brief Comparison operator for LocalizedString instances.
+     *
+     * \param other   the other LocalizedString to compare with
+     * \return Returns true, if @other is equal to this instance.
+     *         Returns false otherwise.
+     */
     bool operator==(const LocalizedString& other) const;
 
+    /** inequality operator */
     inline bool operator!=(const LocalizedString& other) const
     {
       return (!(*this==other));
     }
   private:
-    Type m_Type;
-    uint32_t m_Index;
-    std::string m_String;
-}; //struct
+    Type m_Type; /**< type of the string: none, indexed, plain string */
+    uint32_t m_Index; /**< index of the string (only valid when type is Type::Index) */
+    std::string m_String; /**< actual string data (only valid when type != None) */
+}; // struct
 
-} //namespace
+} // namespace
 
 #endif // SR_LOCALIZEDSTRING_HPP

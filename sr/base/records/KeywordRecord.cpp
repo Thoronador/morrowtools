@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,8 +19,8 @@
 */
 
 #include "KeywordRecord.hpp"
-#include <iostream>
 #include <cstring>
+#include <iostream>
 #include "../SR_Constants.hpp"
 #include "../../../mw/base/HelperIO.hpp"
 
@@ -31,12 +31,10 @@ KeywordRecord::KeywordRecord()
 : BasicRecord(), editorID(""),
   unknownCNAM(0), hasCNAM(false)
 {
-
 }
 
 KeywordRecord::~KeywordRecord()
 {
-  //empty
 }
 
 uint32_t KeywordRecord::getRecordType() const
@@ -47,10 +45,11 @@ uint32_t KeywordRecord::getRecordType() const
 #ifndef SR_NO_RECORD_EQUALITY
 bool KeywordRecord::equals(const KeywordRecord& other) const
 {
-  if ((editorID==other.editorID) and (hasCNAM==other.hasCNAM)
-    and (equalsBasic(other)))
+  if ((editorID == other.editorID) && (hasCNAM == other.hasCNAM)
+    && (equalsBasic(other)))
   {
-    if (hasCNAM) return (unknownCNAM==other.unknownCNAM);
+    if (hasCNAM)
+      return (unknownCNAM == other.unknownCNAM);
     return true;
   }
   return false;
@@ -61,42 +60,42 @@ bool KeywordRecord::equals(const KeywordRecord& other) const
 uint32_t KeywordRecord::getWriteSize() const
 {
   uint32_t writeSize;
-  writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
-        +editorID.length()+1 /* length of name +1 byte for NUL termination */;
+  writeSize = 4 /* EDID */ + 2 /* 2 bytes for length */
+        + editorID.length() + 1 /* length of name +1 byte for NUL termination */;
   if (hasCNAM)
   {
-    writeSize = writeSize +4 /* CNAM */ +2 /* 2 bytes for length */
-               +4 /* fixed length of 4 bytes */;
+    writeSize = writeSize + 4 /* CNAM */ + 2 /* 2 bytes for length */
+               + 4 /* fixed length of 4 bytes */;
   }
   return writeSize;
 }
 
 bool KeywordRecord::saveToStream(std::ostream& output) const
 {
-  output.write((const char*) &cKYWD, 4);
+  output.write(reinterpret_cast<const char*>(&cKYWD), 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
-  //write EDID
-  output.write((const char*) &cEDID, 4);
-  //HEDR's length
-  uint16_t subLength = editorID.length()+1;
-  output.write((const char*) &subLength, 2);
-  //write editor ID
+  // write EDID
+  output.write(reinterpret_cast<const char*>(&cEDID), 4);
+  // EDID's length
+  uint16_t subLength = editorID.length() + 1;
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
+  // write editor ID
   output.write(editorID.c_str(), subLength);
   if (!output.good())
   {
-    std::cout << "Error while writing subrecord EDID of KYWD!\n";
+    std::cerr << "Error while writing subrecord EDID of KYWD!\n";
     return false;
   }
 
   if (hasCNAM)
   {
-    //write CNAM
-    output.write((const char*) &cCNAM, 4);
-    //CNAM's length
+    // write CNAM
+    output.write(reinterpret_cast<const char*>(&cCNAM), 4);
+    // CNAM's length
     subLength = 4; /* fixed length of four bytes */
-    output.write((const char*) &subLength, 2);
-    //write CNAM stuff
-    output.write((const char*) &unknownCNAM, 4);
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    // write CNAM stuff
+    output.write(reinterpret_cast<const char*>(&unknownCNAM), 4);
   }
 
   return output.good();
@@ -106,45 +105,47 @@ bool KeywordRecord::saveToStream(std::ostream& output) const
 bool KeywordRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
-  if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
-  uint32_t subRecName;
-  uint16_t subLength;
-  subRecName = subLength = 0;
-  uint32_t bytesRead;
+  if (!loadSizeAndUnknownValues(in_File, readSize))
+  {
+    return false;
+  }
+  uint32_t subRecName = 0;
+  uint16_t subLength = 0;
 
-  //read EDID
-  in_File.read((char*) &subRecName, 4);
-  bytesRead = 4;
-  if (subRecName!=cEDID)
+  // read EDID
+  in_File.read(reinterpret_cast<char*>(&subRecName), 4);
+  uint32_t bytesRead = 4;
+  if (subRecName != cEDID)
   {
     UnexpectedRecord(cEDID, subRecName);
     return false;
   }
-  //EDID's length
-  in_File.read((char*) &subLength, 2);
+  // EDID's length
+  in_File.read(reinterpret_cast<char*>(&subLength), 2);
   bytesRead += 2;
-  if (subLength>511)
+  if (subLength > 511)
   {
-    std::cout <<"Error: sub record EDID of KYWD is longer than 511 characters!\n";
+    std::cerr << "Error: sub record EDID of KYWD is longer than 511 characters!\n";
     return false;
   }
-  //read EDID's stuff
+  // read EDID's stuff
   char buffer[512];
   memset(buffer, 0, 512);
   in_File.read(buffer, subLength);
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of KYWD!\n";
+    std::cerr << "Error while reading subrecord EDID of KYWD!\n";
     return false;
   }
   editorID = std::string(buffer);
 
-  if (bytesRead<readSize)
+  if (bytesRead < readSize)
   {
     hasCNAM = true;
-    //read CNAM
-    if (!loadUint32SubRecordFromStream(in_File, cCNAM, unknownCNAM, true)) return false;
+    // read CNAM
+    if (!loadUint32SubRecordFromStream(in_File, cCNAM, unknownCNAM, true))
+      return false;
   }
   else
   {
@@ -155,4 +156,4 @@ bool KeywordRecord::loadFromStream(std::istream& in_File, const bool localized, 
   return true;
 }
 
-} //namespace
+} // namespace

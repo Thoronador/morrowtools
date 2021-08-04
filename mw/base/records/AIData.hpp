@@ -21,7 +21,7 @@
 #ifndef MW_AIDATA_HPP
 #define MW_AIDATA_HPP
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace MWTP
 {

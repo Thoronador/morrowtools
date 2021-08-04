@@ -24,8 +24,8 @@
 #ifndef SR_UNSAVEABLE_RECORDS
 #include <fstream>
 #endif
+#include <cstdint>
 #include <vector>
-#include <stdint.h>
 #include "CTDAData.hpp"
 
 namespace SRTP

@@ -21,8 +21,8 @@
 #ifndef MW_ITEMRECORD_HPP
 #define MW_ITEMRECORD_HPP
 
+#include <cstdint>
 #include <string>
-#include <stdint.h>
 
 namespace MWTP
 {

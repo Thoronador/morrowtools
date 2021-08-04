@@ -21,7 +21,7 @@
 #ifndef SR_SUBBLOCK_HPP
 #define SR_SUBBLOCK_HPP
 
-#include <stdint.h>
+#include <cstdint>
 #include "BinarySubRecord.hpp"
 
 namespace SRTP
@@ -41,7 +41,7 @@ struct SubBlock
   /* comparison operator */
   inline bool operator==(const SubBlock& other) const
   {
-    return ((subType==other.subType) and (subData==other.subData));
+    return ((subType == other.subType) && (subData == other.subData));
   }
 }; //struct
 

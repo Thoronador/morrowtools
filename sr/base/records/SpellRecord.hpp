@@ -21,8 +21,8 @@
 #ifndef SR_SPELLRECORD_HPP
 #define SR_SPELLRECORD_HPP
 
+#include <cstdint>
 #include <string>
-#include <stdint.h>
 #include "BasicRecord.hpp"
 #include "EffectBlock.hpp"
 #include "LocalizedString.hpp"

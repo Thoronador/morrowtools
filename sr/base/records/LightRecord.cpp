@@ -350,8 +350,8 @@ bool LightRecord::loadFromStream(std::istream& in_File, const bool localized, co
            //read FULL
            if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
              return false;
-           //check value
-           if ((name.getType()==LocalizedString::lsIndex) and (name.getIndex()==0))
+           // check value
+           if ((name.getType() == LocalizedString::Type::Index) && (name.getIndex() == 0))
            {
              std::cout << "Error: subrecord FULL of LIGH has invalid value zero!\n";
              return false;

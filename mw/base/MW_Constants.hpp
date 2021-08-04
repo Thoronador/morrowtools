@@ -21,7 +21,7 @@
 #ifndef MW_CONSTANTS_HPP
 #define MW_CONSTANTS_HPP
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace MWTP
 {

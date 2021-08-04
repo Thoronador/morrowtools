@@ -259,7 +259,7 @@ bool ExplosionRecord::loadFromStream(std::istream& in_File, const bool localized
            }
            if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
              return false;
-           if ((name.getType()==LocalizedString::lsIndex) and (name.getIndex()==0))
+           if ((name.getType() == LocalizedString::Type::Index) && (name.getIndex() == 0))
            {
              std::cout << "Error: subrecord FULL of EXPL has value zero!\n";
              return false;

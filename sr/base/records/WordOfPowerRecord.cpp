@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -31,12 +31,10 @@ WordOfPowerRecord::WordOfPowerRecord()
   name(LocalizedString()),
   translated(LocalizedString())
 {
-
 }
 
 WordOfPowerRecord::~WordOfPowerRecord()
 {
-  //empty
 }
 
 uint32_t WordOfPowerRecord::getRecordType() const
@@ -47,8 +45,8 @@ uint32_t WordOfPowerRecord::getRecordType() const
 #ifndef SR_NO_RECORD_EQUALITY
 bool WordOfPowerRecord::equals(const WordOfPowerRecord& other) const
 {
-  return ((equalsBasic(other)) and (editorID==other.editorID)
-      and (name==other.name) and (translated==other.translated));
+  return ((equalsBasic(other)) && (editorID == other.editorID)
+      and (name == other.name) && (translated == other.translated));
 }
 #endif
 
@@ -56,9 +54,9 @@ bool WordOfPowerRecord::equals(const WordOfPowerRecord& other) const
 uint32_t WordOfPowerRecord::getWriteSize() const
 {
   uint32_t writeSize;
-  writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
-        +editorID.length()+1 /* length of name +1 byte for NUL termination */
-        +translated.getWriteSize() /* TNAM */;
+  writeSize = 4 /* EDID */ + 2 /* 2 bytes for length */
+        + editorID.length() + 1 /* length of name +1 byte for NUL termination */
+        + translated.getWriteSize() /* TNAM */;
   if (name.isPresent())
   {
     writeSize += name.getWriteSize() /* FULL */;
@@ -68,24 +66,24 @@ uint32_t WordOfPowerRecord::getWriteSize() const
 
 bool WordOfPowerRecord::saveToStream(std::ostream& output) const
 {
-  output.write((const char*) &cWOOP, 4);
+  output.write(reinterpret_cast<const char*>(&cWOOP), 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
-  //write EDID
-  output.write((const char*) &cEDID, 4);
-  //EDID's length
+  // write EDID
+  output.write(reinterpret_cast<const char*>(&cEDID), 4);
+  // EDID's length
   uint16_t subLength = editorID.length()+1;
-  output.write((const char*) &subLength, 2);
-  //write editor ID
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
+  // write editor ID
   output.write(editorID.c_str(), subLength);
 
   if (name.isPresent())
   {
-    //write FULL
+    // write FULL
     if (!name.saveToStream(output, cFULL))
       return false;
   }
 
-  //write TNAM
+  // write TNAM
   if (!translated.saveToStream(output, cTNAM))
     return false;
 
@@ -96,55 +94,60 @@ bool WordOfPowerRecord::saveToStream(std::ostream& output) const
 bool WordOfPowerRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
-  if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
+  if (!loadSizeAndUnknownValues(in_File, readSize))
+  {
+    return false;
+  }
   uint32_t subRecName;
   uint16_t subLength;
   uint32_t bytesRead = 0;
   subRecName = subLength = 0;
 
-  //read EDID
+  // read EDID
   char buffer[512];
   if (!loadString512FromStream(in_File, editorID, buffer, cEDID, true, bytesRead))
+  {
     return false;
+  }
 
-  //read optional FULL
+  // read optional FULL
   in_File.read((char*) &subRecName, 4);
   bytesRead += 4;
-  if (subRecName==cFULL)
+  if (subRecName == cFULL)
   {
-    //FULL subrecord is present
-    //read FULL
+    // FULL subrecord is present
+    // read FULL
     if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
     {
-      std::cout << "Error while reading subrecord FULL of WOOP!\n";
+      std::cerr << "Error while reading subrecord FULL of WOOP!\n";
       return false;
     }
 
-    //read TNAM
+    // read TNAM
     in_File.read((char*) &subRecName, 4);
     bytesRead += 4;
   }
   else
   {
-    //full subrecord is not present
+    // full subrecord is not present
     name.reset();
   }
 
-  //read TNAM
-  //  --> was read before
-  if (subRecName!=cTNAM)
+  // read TNAM
+  //   --> header was read before
+  if (subRecName != cTNAM)
   {
     UnexpectedRecord(cTNAM, subRecName);
     return false;
   }
-  //read TNAM
+  // read TNAM
   if (!translated.loadFromStream(in_File, cTNAM, false, bytesRead, localized, table, buffer))
   {
-    std::cout << "Error while reading subrecord TNAM of WOOP!\n";
+    std::cerr << "Error while reading subrecord TNAM of WOOP!\n";
     return false;
   }
 
   return true;
 }
 
-} //namespace
+} // namespace

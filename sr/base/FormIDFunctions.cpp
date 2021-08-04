@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2013  Thoronador
+    Copyright (C) 2011, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -28,26 +28,26 @@ const char hexDigits[16] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
 
 uint8_t extractModIndex(const uint32_t fID)
 {
-  return (fID>>24);
+  return fID >> 24;
 }
 
 uint32_t extractObjectIndex(const uint32_t fID)
 {
-  return ((fID<<8)>>8);
+  return (fID << 8) >> 8;
 }
 
-// returns a string representation of the form ID
 std::string getFormIDAsString(uint32_t fID)
 {
   std::string result = "";
-  while (fID>0)
+  while (fID > 0)
   {
     result.insert(result.begin(), hexDigits[fID%16]);
     fID /= 16;
-  }//while
-  //check, if there are all digits
+  }
+
+  // check, if all eight digits are present
   const std::string::size_type len = result.length();
-  if (len<8)
+  if (len < 8)
   {
     result.insert(result.begin(), 8-len, '0');
   }
@@ -57,7 +57,7 @@ std::string getFormIDAsString(uint32_t fID)
 std::string getFormIDAsStringXX(const uint32_t fID)
 {
   std::string result(getFormIDAsString(fID));
-  if (extractModIndex(fID)!=0)
+  if (extractModIndex(fID) != 0)
   {
     result[0] = 'x';
     result[1] = 'x';
@@ -69,7 +69,7 @@ std::string getFormIDAsStringWithFile(const uint32_t fID, const std::vector<std:
 {
   std::string result(getFormIDAsString(fID));
   const uint8_t modIndex = extractModIndex(fID);
-  if (modIndex!=0)
+  if (modIndex != 0)
   {
     result[0] = 'x';
     result[1] = 'x';
@@ -77,7 +77,7 @@ std::string getFormIDAsStringWithFile(const uint32_t fID, const std::vector<std:
   if (withFiles)
   {
     result.append(" (file: ");
-    if (modIndex<loadOrder.size())
+    if (modIndex < loadOrder.size())
     {
       result.append(loadOrder[modIndex]);
     }
@@ -90,4 +90,4 @@ std::string getFormIDAsStringWithFile(const uint32_t fID, const std::vector<std:
   return result;
 }
 
-} //namespace
+} // namespace

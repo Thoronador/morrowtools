@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2013  Thoronador
+    Copyright (C) 2011, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,46 +21,70 @@
 #ifndef SR_FORMIDFUNCTIONS_HPP
 #define SR_FORMIDFUNCTIONS_HPP
 
-#include <stdint.h>
+#include <cstdint>
 #include <string>
 #include <vector>
 
 namespace SRTP
 {
 
-/* extracts the mod index from a form ID */
+/** \brief Extracts the mod index from a form ID.
+ *
+ * \param fID  the form ID
+ * \return Returns the form ID's mod index.
+ */
 uint8_t extractModIndex(const uint32_t fID);
 
-/* extracts the object index from a form ID */
+
+/** \brief Extracts the object index from a form ID.
+ *
+ * \param fID  the form ID
+ * \return Returns the object index part of the form ID.
+ */
 uint32_t extractObjectIndex(const uint32_t fID);
 
-/* changes the mode index of a form ID to newModIndex */
+/** \brief Changes the mod index of a form ID to @newModIndex.
+ *
+ * \param fID  the form ID to adjust
+ * \param  newModIndex  the new mod index to set
+ * \remarks This function changes the mod index directly in the given form ID.
+ *
+ */
 inline void changeModIndexInSitu(uint32_t& fID, const uint8_t newModIndex)
 {
-  fID = ((fID & 0x00FFFFFF) | (newModIndex<<24));
+  fID = ((fID & 0x00FFFFFF) | (newModIndex << 24));
 }
 
-/* returns a string representation of the form ID */
+/** \brief Gets a string representation of the form ID.
+ *
+ * \param fID  the form ID
+ * \return Returns the string representation of the form ID.
+ */
 std::string getFormIDAsString(uint32_t fID);
 
-/* returns a string representation of the form ID. If the mod index of the form
-   ID is non-zero, it will show 'xx' instead of the mod index part.
-*/
+/** \brief Gets a string representation of the form ID with its mod index part replaced by 'xx' if it is not zero.
+ *
+ * \param fID  the form ID
+ * \return Returns a string representation of the form ID. If the mod index of
+ *         the form ID is non-zero, it will show 'xx' instead of the mod index
+ *         part.
+ */
 std::string getFormIDAsStringXX(const uint32_t fID);
 
-/* returns a string representation of the form ID. If the mod index of the form
-   ID is non-zero, it will show 'xx' instead of the mod index part.
-   Additionally, it shows the file that the form ID came from, based on the mod
-   index.
-
-   parameters:
-       fID       - the form ID
-       loadOrder - list of master and plugin files in the order they were loaded
-       withFiles - if set to true, the file name is included (default) in the
-                   result, otherwise just the form ID is shown.
-*/
+/** \brief Gets a string representation of the form ID including file information.
+ *
+ * \param fID         the form ID
+ * \param loadOrder   list of master and plugin files in the order they were loaded
+ * \param withFiles   if set to true, the file name is included in the result,
+ *                    otherwise just the form ID is shown.
+ * \return Returns a string representation of the form ID. If the mod index of
+ *         the form ID is non-zero, it will show 'xx' instead of the mod index
+ *         part.
+ *         Additionally, it shows the file that the form ID came from, based on
+ *         the mod index, if @withFiles is true.
+ */
 std::string getFormIDAsStringWithFile(const uint32_t fID, const std::vector<std::string>& loadOrder, const bool withFiles);
 
-}//namespace
+} // namespace
 
 #endif // SR_FORMIDFUNCTIONS_HPP

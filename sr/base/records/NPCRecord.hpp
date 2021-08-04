@@ -21,9 +21,9 @@
 #ifndef SR_NPCRECORD_HPP
 #define SR_NPCRECORD_HPP
 
+#include <cstdint>
 #include <string>
 #include <vector>
-#include <stdint.h>
 #include "BasicRecord.hpp"
 #include "BinarySubRecord.hpp"
 #include "ComponentData.hpp"

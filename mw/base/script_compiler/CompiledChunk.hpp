@@ -21,9 +21,9 @@
 #ifndef COMPILEDCHUNK_H
 #define COMPILEDCHUNK_H
 
-#include <vector>
+#include <cstdint>
 #include <string>
-#include <stdint.h>
+#include <vector>
 
 namespace MWTP
 {

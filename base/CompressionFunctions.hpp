@@ -21,7 +21,7 @@
 #ifndef COMPRESSIONFUNCTIONS_HPP
 #define COMPRESSIONFUNCTIONS_HPP
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace MWTP
 {

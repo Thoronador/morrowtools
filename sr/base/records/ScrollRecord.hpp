@@ -21,8 +21,8 @@
 #ifndef SR_SCROLLRECORD_HPP
 #define SR_SCROLLRECORD_HPP
 
+#include <cstdint>
 #include <string>
-#include <stdint.h>
 #include "BasicRecord.hpp"
 #include "EffectBlock.hpp"
 #include "BinarySubRecord.hpp"

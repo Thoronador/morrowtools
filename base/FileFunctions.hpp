@@ -21,8 +21,8 @@
 #ifndef FILEFUNCTIONS_HPP
 #define FILEFUNCTIONS_HPP
 
+#include <cstdint>
 #include <string>
-#include <stdint.h>
 #include <vector>
 
 /* returns the file size of file fileName. If the file does not exist or if an

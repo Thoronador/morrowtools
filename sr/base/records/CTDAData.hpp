@@ -21,9 +21,9 @@
 #ifndef SR_CTDADATA_HPP
 #define SR_CTDADATA_HPP
 
+#include <cstdint>
 #include <fstream>
 #include <string>
-#include <stdint.h>
 #include "../SR_Constants.hpp"
 
 namespace SRTP

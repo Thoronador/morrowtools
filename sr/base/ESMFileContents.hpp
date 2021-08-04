@@ -22,9 +22,9 @@
 #define SR_ESMFILECONTENTS_HPP
 
 #include "Group.hpp"
+#include <cstdint>
 #include <map>
 #include <vector>
-#include <stdint.h>
 
 namespace SRTP
 {

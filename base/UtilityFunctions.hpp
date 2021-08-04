@@ -21,8 +21,8 @@
 #ifndef UTILITYFUNCTIONS_HPP
 #define UTILITYFUNCTIONS_HPP
 
+#include <cstdint>
 #include <string>
-#include <stdint.h>
 
 /* tries to convert a the string representation of a integer number into
    a 16-bit int and returns true on success, false on failure.

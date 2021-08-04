@@ -21,8 +21,8 @@
 #ifndef MW_BODYPARTASSOCIATION_HPP
 #define MW_BODYPARTASSOCIATION_HPP
 
+#include <cstdint>
 #include <string>
-#include <stdint.h>
 
 namespace MWTP
 {

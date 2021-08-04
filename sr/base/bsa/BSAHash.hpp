@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,14 +21,14 @@
 #ifndef SR_BSAHASH_HPP
 #define SR_BSAHASH_HPP
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace SRTP
 {
 
-//define hash type
+// define hash type
 typedef uint64_t BSAHash;
 
-} //namespace
+} // namespace
 
 #endif // SR_BSAHASH_HPP

@@ -21,9 +21,8 @@
 #ifndef MW_HELPERIO_HPP
 #define MW_HELPERIO_HPP
 
+#include <cstdint>
 #include <string>
-#include <fstream>
-#include <stdint.h>
 
 //converting "integer strings" to real C++ string
 std::string IntTo4Char(const uint32_t value);

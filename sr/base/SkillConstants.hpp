@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,12 +21,12 @@
 #ifndef SR_SKILLCONSTANTS_HPP
 #define SR_SKILLCONSTANTS_HPP
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace SRTP
 {
 
-//skill constants as they appear in skill books' DATA subrecords
+// skill constants as they appear in skill books' DATA subrecords
 const uint32_t cSkillOneHand = 6;
 const uint32_t cSkillTwoHand = 7;
 const uint32_t cSkillMarksman = 8;
@@ -46,6 +46,6 @@ const uint32_t cSkillIllusion = 21;
 const uint32_t cSkillRestoration = 22;
 const uint32_t cSkillEnchanting = 23;
 
-} //namespace
+} // namespace
 
 #endif // SR_SKILLCONSTANTS_HPP

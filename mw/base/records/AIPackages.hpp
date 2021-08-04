@@ -21,8 +21,8 @@
 #ifndef MW_AIPACKAGES_HPP
 #define MW_AIPACKAGES_HPP
 
+#include <cstdint>
 #include <string>
-#include <stdint.h>
 #include <fstream>
 
 namespace MWTP

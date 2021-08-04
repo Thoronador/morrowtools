@@ -22,7 +22,7 @@
 #define SR_ESMREADERSINGLETYPE_HPP
 
 #include "ESMReader.hpp"
-#include <stdint.h>
+#include <cstdint>
 #include <iostream>
 #include "../../mw/base/HelperIO.hpp"
 

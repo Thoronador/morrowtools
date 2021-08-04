@@ -21,9 +21,9 @@
 #ifndef SR_WEAPONRECORD_HPP
 #define SR_WEAPONRECORD_HPP
 
+#include <cstdint>
 #include <string>
 #include <vector>
-#include <stdint.h>
 #include "BasicRecord.hpp"
 #include "BinarySubRecord.hpp"
 #include "LocalizedString.hpp"

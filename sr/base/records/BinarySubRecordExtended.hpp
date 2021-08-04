@@ -21,7 +21,7 @@
 #ifndef SR_BINARYSUBRECORDEXTENDED_HPP
 #define SR_BINARYSUBRECORDEXTENDED_HPP
 
-#include <stdint.h>
+#include <cstdint>
 #include <fstream>
 
 namespace SRTP

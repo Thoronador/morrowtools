@@ -21,8 +21,8 @@
 #ifndef MW_BASICRECORD_HPP
 #define MW_BASICRECORD_HPP
 
+#include <cstdint>
 #include <fstream>
-#include <stdint.h>
 
 namespace MWTP
 {

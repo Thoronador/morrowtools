@@ -21,9 +21,9 @@
 #ifndef SR_STRINGTABLE_HPP
 #define SR_STRINGTABLE_HPP
 
-#include <string>
+#include <cstdint>
 #include <map>
-#include <stdint.h>
+#include <string>
 
 namespace SRTP
 {

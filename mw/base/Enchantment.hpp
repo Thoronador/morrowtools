@@ -21,7 +21,7 @@
 #ifndef MW_ENCHANTMENT_HPP
 #define MW_ENCHANTMENT_HPP
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace MWTP
 {

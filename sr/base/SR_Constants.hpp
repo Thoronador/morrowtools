@@ -21,7 +21,7 @@
 #ifndef SR_CONSTANTS_HPP
 #define SR_CONSTANTS_HPP
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace SRTP
 {
@@ -396,6 +396,6 @@ const uint32_t cXXXX = 0x58585858; //"XXXX" = 58 58 58 58
 const uint32_t cYNAM = 0x4D414E59; //"YNAM" = 59 4E 41 4D
 const uint32_t cZNAM = 0x4D414E5A; //"ZNAM" = 5A 4E 41 4D
 
-} //namespace
+} // namespace
 
 #endif // SR_CONSTANTS_HPP

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,8 +21,8 @@
 #ifndef SR_ESMWRITER_HPP
 #define SR_ESMWRITER_HPP
 
+#include <cstdint>
 #include <string>
-#include <stdint.h>
 #include "records/TES4HeaderRecord.hpp"
 
 #ifndef SR_UNSAVEABLE_RECORDS

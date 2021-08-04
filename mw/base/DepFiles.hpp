@@ -21,9 +21,9 @@
 #ifndef MW_DEPFILES_HPP
 #define MW_DEPFILES_HPP
 
+#include <cstdint>
 #include <string>
 #include <vector>
-#include <stdint.h>
 
 namespace MWTP
 {

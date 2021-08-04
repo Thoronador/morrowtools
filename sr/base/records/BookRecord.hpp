@@ -22,11 +22,11 @@
 #define SR_BOOKRECORD_HPP
 
 #include "BasicRecord.hpp"
-#include "BinarySubRecord.hpp"
-#include "LocalizedString.hpp"
+#include <cstdint>
 #include <string>
 #include <vector>
-#include <stdint.h>
+#include "BinarySubRecord.hpp"
+#include "LocalizedString.hpp"
 
 namespace SRTP
 {

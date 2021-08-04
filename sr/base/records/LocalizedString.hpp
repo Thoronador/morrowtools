@@ -21,9 +21,9 @@
 #ifndef SR_LOCALIZEDSTRING_HPP
 #define SR_LOCALIZEDSTRING_HPP
 
+#include <cstdint>
 #include <exception>
 #include <string>
-#include <stdint.h>
 #include "../StringTable.hpp"
 
 namespace SRTP

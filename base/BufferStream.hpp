@@ -34,7 +34,7 @@
 #define MWTP_BUFFERSTREAM_HPP
 
 #include <istream>
-#include <stdint.h>
+#include <cstdint>
 
 namespace MWTP
 {

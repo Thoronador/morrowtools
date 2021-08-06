@@ -100,14 +100,14 @@ int main(int argc, char **argv)
       if (argv[i]!=NULL)
       {
         const std::string param = std::string(argv[i]);
-        //help parameter
-        if (param=="--help" or param=="-?")
+        // help parameter
+        if (param == "--help" || param == "-?" || param == "/?")
         {
           showHelp();
           return 0;
-        }//if help wanted
-        //version information requested?
-        else if (param=="--version")
+        } // if help wanted
+        // version information requested?
+        else if (param == "--version")
         {
           showVersion();
           return 0;

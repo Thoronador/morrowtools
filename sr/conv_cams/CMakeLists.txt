@@ -35,6 +35,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set( CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -s" )
 
+if(ENABLE_LTO)
+  set(TARGET conv_cams PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
+endif()
+
 add_executable(conv_cams ${conv_cams_sources})
 
 # GNU GCC before 9.1.0 needs to link to libstdc++fs explicitly.

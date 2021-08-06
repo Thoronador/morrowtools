@@ -67,6 +67,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set( CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -s" )
 
+if (ENABLE_LTO)
+  set(TARGET formID_finder PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
+endif()
+
 add_executable(formID_finder ${formID_finder_sources})
 
 if (MINGW AND CMAKE_HOST_UNIX)

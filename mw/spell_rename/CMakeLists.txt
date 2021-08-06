@@ -33,4 +33,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set( CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -s" )
 
+if (ENABLE_LTO)
+  set(TARGET spell_rename PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
+endif ()
+
 add_executable(spell_rename ${spell_rename_sources})

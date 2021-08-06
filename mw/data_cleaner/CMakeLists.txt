@@ -54,4 +54,8 @@ add_definitions (-DMW_UNSAVEABLE_RECORDS)
 
 set( CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -s" )
 
+if (ENABLE_LTO)
+  set(TARGET data_cleaner PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
+endif()
+
 add_executable(data_cleaner ${data_cleaner_sources})

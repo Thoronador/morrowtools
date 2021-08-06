@@ -33,6 +33,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set( CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -s" )
 
+if (ENABLE_LTO)
+  set(TARGET race_resize PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
+endif()
+
 add_executable(race_resize ${race_resize_sources})
 
 # GNU GCC before 9.1.0 needs to link to libstdc++fs explicitly.

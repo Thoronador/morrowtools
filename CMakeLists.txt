@@ -5,6 +5,22 @@ project (morrowtools)
 
 enable_testing ()
 
+# If the option ENABLE_LTO is enabled (e. g. via `cmake -DENABLE_LTO=ON`)
+# during the build, then all binaries will use link-time optimization (LTO).
+option(ENABLE_LTO "Enable link-time optimization" OFF)
+# Not all compilers support LTO / IPO, so it has to be checked.
+if (ENABLE_LTO)
+  cmake_policy(SET CMP0069 NEW)
+  include(CheckIPOSupported)
+  check_ipo_supported(RESULT HAS_LTO_SUPPORT OUTPUT LTO_FAIL_REASON
+                      LANGUAGES C CXX)
+  if (NOT HAS_LTO_SUPPORT)
+    message(FATAL "IPO / LTO is not supported: ${LTO_FAIL_REASON}")
+  else()
+    message(STATUS "IPO / LTO is supported. Using it.")
+  endif()
+endif(ENABLE_LTO)
+
 # Recurse into subdirectory for Morrowind-related executables.
 add_subdirectory (mw)
 # Recurse into subdirectory for Skyrim-related executables.

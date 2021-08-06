@@ -63,7 +63,7 @@ jobs:
       - name: Install Debian packages
         run: |
           sudo apt-get update
-          sudo apt-get install -y catch cmake clang-8 pkg-config zlib1g-dev
+          sudo apt-get install -y catch cmake clang-8 libc++-8-dev pkg-config zlib1g-dev
       - name: Syntax check
         run: |
           export CXX=clang++-8

@@ -19,104 +19,96 @@
 */
 
 #include "FileFunctions.hpp"
-#include <sys/stat.h>
-#include <utime.h>
-#include <unistd.h>
-#include <cmath>
-#include "UtilityFunctions.hpp"
+#include <filesystem>
+#include <sys/stat.h> // stat()
+#include <utime.h> // utime(), struct utimbuf
+#include <cmath>   // std::round()
+#include "UtilityFunctions.hpp" // floatToString()
 #include <iostream>
-#include <cstdio>
-#if defined(_WIN32)
-  // Windows includes go here
-  #include <io.h>
-#elif defined(__linux__) || defined(linux)
-  // Linux directory entries
-  #include <dirent.h>
-#else
-  #error "Unknown operating system!"
-#endif
 
 int64_t getFileSize64(const std::string& fileName)
 {
-  struct stat buffer;
-  if (stat(fileName.c_str(), &buffer)==0)
+  std::error_code error;
+  const auto size = std::filesystem::file_size(fileName, error);
+  if (error)
   {
-    //stat() was successful
-    return buffer.st_size;
-  }//if
-  //An error occurred, so we don't have a proper value for file size.
-  // Return -1 in this case to indicate an error.
-  return -1;
-}//function
+    // An error occurred, so we don't have a proper value for file size.
+    // Return -1 in this case to indicate an error.
+    return -1;
+  }
+  // file_size() was successful.
+  return static_cast<int64_t>(size);
+}
 
 bool setFileModificationTime(const std::string& FileName, const time_t new_mtime)
 {
   struct stat buffer;
-  if (stat(FileName.c_str(), &buffer)==0)
+  if (stat(FileName.c_str(), &buffer) == 0)
   {
-    //stat() was successful
-    if (buffer.st_mtime==new_mtime) return true;
-    //change time
+    // stat() was successful.
+    if (buffer.st_mtime == new_mtime) return true;
+    // change time
     struct utimbuf fileTimes;
     fileTimes.actime = buffer.st_atime;
     fileTimes.modtime = new_mtime;
-    return (utime(FileName.c_str(), &fileTimes)==0);
-  }//if
-  //An error occurred, so return false.
+    return (utime(FileName.c_str(), &fileTimes) == 0);
+  } // if
+  // An error occurred, so return false.
   return false;
 }
 
 bool getFileSizeAndModificationTime(const std::string& FileName, int64_t& FileSize, time_t& FileTime)
 {
   struct stat buffer;
-  if (stat(FileName.c_str(), &buffer)==0)
+  if (stat(FileName.c_str(), &buffer) == 0)
   {
-    //stat() was successful
+    // stat() was successful
     FileSize = buffer.st_size;
     FileTime = buffer.st_mtime;
     return true;
-  }//if
-  //An error occurred, so we don't have any proper values for that file.
+  } // if
+  // An error occurred, so we don't have any proper values for that file.
   // Set values to -1 and return false in this case to indicate an error.
   FileSize = -1;
   FileTime = -1;
   return false;
-}//function
-
-
-float round(const float f)
-{
-  return floor(f + 0.5);
 }
+
 
 std::string getSizeString(const int64_t fileSize)
 {
-  if (fileSize<0) return "-"+getSizeString(-fileSize);
+  if (fileSize < 0)
+    return "-" + getSizeString(-fileSize);
 
-  //giga
-  if (fileSize>1024*1024*1024)
+  // giga
+  if (fileSize > 1024 * 1024 * 1024)
   {
-    return floatToString(round((fileSize*100.0f)/(1024.0f*1024*1024))/100.0f)+" GB";
+    return floatToString(std::round((fileSize * 100.0f) / (1024.0f * 1024 * 1024)) / 100.0f) + " GB";
   }
-  if (fileSize>1024*1024)
+  // mega
+  if (fileSize > 1024 * 1024)
   {
-    return floatToString(round((fileSize*100.0f)/(1024.0f*1024))/100.0f)+" MB";
+    return floatToString(std::round((fileSize * 100.0f) / (1024.0f * 1024)) / 100.0f) + " MB";
   }
-  if (fileSize>1024)
+  // kilo
+  if (fileSize > 1024)
   {
-    return floatToString(round((fileSize*100.0f)/1024.0f)/100.0f)+" KB";
+    return floatToString(std::round((fileSize * 100.0f) / 1024.0f) / 100.0f) + " KB";
   }
-  return floatToString(fileSize)+" byte";
+  return floatToString(fileSize) + " byte";
 }
 
 bool FileExists(const std::string& FileName)
 {
-  return (access(FileName.c_str(), F_OK)==0);
+  std::error_code error;
+  const auto status = std::filesystem::status(FileName, error);
+  return !error && std::filesystem::exists(FileName);
 }
 
 bool deleteFile(const std::string& fileName)
 {
-  return (remove(fileName.c_str())==0);
+  std::error_code error;
+  return std::filesystem::remove(fileName, error) && !error;
 }
 
 FileEntry::FileEntry()
@@ -125,63 +117,39 @@ FileEntry::FileEntry()
 
 std::vector<FileEntry> getDirectoryFileList(const std::string& Directory)
 {
+  namespace fs = std::filesystem;
+
   std::vector<FileEntry> result;
   FileEntry one;
-  #if defined(_WIN32)
-  // Windows part
-  intptr_t handle;
-  struct _finddata_t sr;
-  sr.attrib = _A_NORMAL | _A_RDONLY | _A_HIDDEN | _A_SYSTEM |
-              _A_SUBDIR | _A_ARCH;
-  handle = _findfirst(std::string(Directory + "*").c_str(), &sr);
-  if (handle == -1)
-  {
-    std::cout << "getDirectoryFileList: ERROR: unable to open directory "
-              << "\"" << Directory << "\". Returning empty list.\n";
-    return result;
-  }
-  // search it
-  while( _findnext(handle, &sr)==0)
-  {
-    one.fileName = std::string(sr.name);
-    one.isDirectory = ((sr.attrib & _A_SUBDIR) == _A_SUBDIR);
-    result.push_back(one);
-  }
-  _findclose(handle);
-  #elif defined(__linux__) || defined(linux)
-  // Linux part
-  DIR * direc = opendir(Directory.c_str());
-  if (direc == NULL)
-  {
-    std::cout << "getDirectoryFileList: ERROR: unable to open directory "
-              << "\"" << Directory << "\". Returning empty list.\n";
-    return result;
-  }
 
-  struct dirent* entry = readdir(direc);
-  while (entry != NULL)
+  std::error_code error;
+  fs::directory_iterator iter(Directory, error);
+  if (error)
   {
-    one.fileName = std::string(entry->d_name);
-    one.isDirectory = entry->d_type==DT_DIR;
+    std::cerr << "getDirectoryFileList: ERROR: unable to open directory "
+              << "\"" << Directory << "\". Returning empty list.\n";
+    return result;
+  }
+  for (const auto& entry: iter)
+  {
+    one.fileName = entry.path().filename();
+    const auto status = fs::status(entry.path());
+    one.isDirectory = fs::is_directory(status);
     // check for socket, pipes, block device and char device, which we don't want
-    if (entry->d_type != DT_SOCK && entry->d_type != DT_FIFO && entry->d_type != DT_BLK
-        && entry->d_type != DT_CHR)
+    const auto type = status.type();
+    if (type != fs::file_type::socket && type != fs::file_type::fifo && type != fs::file_type::block
+        && type != fs::file_type::character)
     {
       result.push_back(one);
     }
-    entry = readdir(direc);
   }
-  closedir(direc);
-  #else
-    #error "Unknown operating system!"
-  #endif
   return result;
 }
 
 void splitPathFileExtension(const std::string fileName, const char pathSeperator, std::string& path, std::string& name, std::string& extension)
 {
   const std::string::size_type len = fileName.length();
-  if (len==0)
+  if (len == 0)
   {
     path = "";
     name = "";
@@ -189,7 +157,7 @@ void splitPathFileExtension(const std::string fileName, const char pathSeperator
     return;
   }
 
-  //split path from file and ext.
+  // split path from file and ext.
   const std::string::size_type sepPos = fileName.rfind(pathSeperator);
   if (sepPos==std::string::npos)
   {
@@ -203,16 +171,16 @@ void splitPathFileExtension(const std::string fileName, const char pathSeperator
   }
   // => now path has the path (including separator), and name has the file including extension
 
-  //split extension from name
+  // split extension from name
   const std::string::size_type dotPos = name.rfind('.');
   if (dotPos==std::string::npos)
   {
     extension = "";
     return;
   }
-  if (dotPos+1<name.length())
+  if (dotPos + 1 < name.length())
   {
-    extension = name.substr(dotPos+1);
+    extension = name.substr(dotPos + 1);
   }
   else
   {

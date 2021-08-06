@@ -95,19 +95,9 @@ TEST_CASE("FileFunctions")
     {
       const auto vec = getDirectoryFileList(test_directory + "list");
 
-      REQUIRE( vec.size() == 5 );
-      // directory ".."
-      auto iter = std::find_if(vec.begin(), vec.end(), [] (FileEntry e) { return e.fileName == ".."; });
-      REQUIRE( iter != vec.end() );
-      REQUIRE( iter->isDirectory );
-      REQUIRE( iter->fileName == ".." );
-      // directory "."
-      iter = std::find_if(vec.begin(), vec.end(), [] (FileEntry e) { return e.fileName == "."; });
-      REQUIRE( iter != vec.end() );
-      REQUIRE( iter->isDirectory );
-      REQUIRE( iter->fileName == "." );
+      REQUIRE( vec.size() == 3 );
       // directory "d"
-      iter = std::find_if(vec.begin(), vec.end(), [] (FileEntry e) { return e.fileName == "d"; });
+      auto iter = std::find_if(vec.begin(), vec.end(), [] (FileEntry e) { return e.fileName == "d"; });
       REQUIRE( iter != vec.end() );
       REQUIRE( iter->isDirectory );
       REQUIRE( iter->fileName == "d" );

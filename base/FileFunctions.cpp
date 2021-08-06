@@ -132,7 +132,7 @@ std::vector<FileEntry> getDirectoryFileList(const std::string& Directory)
   }
   for (const auto& entry: iter)
   {
-    one.fileName = entry.path().filename();
+    one.fileName = entry.path().filename().string();
     const auto status = fs::status(entry.path());
     one.isDirectory = fs::is_directory(status);
     // check for socket, pipes, block device and char device, which we don't want

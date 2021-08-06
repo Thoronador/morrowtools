@@ -21,6 +21,19 @@ if (ENABLE_LTO)
   endif()
 endif(ENABLE_LTO)
 
+# If ENABLE_STATIC_LINKING is on (e. g. via `cmake -DENABLE_STATIC_LINKING=ON`),
+# then all libraries are linked statically. The option is off by default.
+#
+# Static linking increases the size of the binaries, but those binaries do not
+# need the libraries to be present on the system.
+option(ENABLE_STATIC_LINKING "Links all libraries statically" OFF)
+if (ENABLE_STATIC_LINKING)
+  set(CMAKE_LINK_SEARCH_START_STATIC 1)
+  set(CMAKE_LINK_SEARCH_END_STATIC 1)
+  set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -static-libgcc -static-libstdc++ -static")
+endif ()
+
 # Recurse into subdirectory for Morrowind-related executables.
 add_subdirectory (mw)
 # Recurse into subdirectory for Skyrim-related executables.

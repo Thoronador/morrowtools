@@ -29,6 +29,28 @@ jobs:
         run: |
           cd "$GITHUB_WORKSPACE"/build
           ctest -V
+  build_gcc10_lto:
+    runs-on: ubuntu-20.04
+    steps:
+      # Checks-out the repository under $GITHUB_WORKSPACE.
+      - uses: actions/checkout@v2
+      - name: Install Debian packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y catch cmake g++-10 pkg-config zlib1g-dev
+      - name: Build with GNU GCC 10
+        run: |
+          export CXX=g++-10
+          export CC=gcc-10
+          cd $GITHUB_WORKSPACE
+          mkdir build
+          cd build
+          cmake -DENABLE_LTO=ON ../
+          make -j4
+      - name: Tests
+        run: |
+          cd "$GITHUB_WORKSPACE"/build
+          ctest -V
   build_ubuntu_20_04_gcc9:
     runs-on: ubuntu-20.04
     steps:

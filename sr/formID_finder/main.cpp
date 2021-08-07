@@ -189,7 +189,7 @@ void showRefIDs(const uint32_t baseID, const std::map<uint32_t, std::vector<SRTP
     }
     if (!hasName)
     {
-      basic_out << " in unnamend cell\n";
+      basic_out << " in unnamed cell\n";
     }
     ++vecIter;
   }//while

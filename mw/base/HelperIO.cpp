@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011, 2012 Thoronador
+    Copyright (C) 2010, 2011, 2012, 2021 Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,17 +24,16 @@
 std::string IntTo4Char(const uint32_t value)
 {
   std::string result = "1234";
-  result[0] = char(value&255);
-  result[1] = char((value>>8)&255);
-  result[2] = char((value>>16)&255);
-  result[3] = char(value>>24);
+  result[0] = static_cast<char>(value & 255);
+  result[1] = static_cast<char>((value >> 8) & 255);
+  result[2] = static_cast<char>((value >> 16) & 255);
+  result[3] = static_cast<char>(value >> 24);
   return result;
 }
 
 void UnexpectedRecord(const uint32_t expected, const uint32_t unexpected)
 {
-  std::cout << "Error: expected record name \""<<IntTo4Char(expected)
-            <<"\" was not found. Instead, \""<<IntTo4Char(unexpected)
-            <<"\" was found.\n";
-  return;
+  std::cerr << "Error: expected record name \"" << IntTo4Char(expected)
+            << "\" was not found. Instead, \"" << IntTo4Char(unexpected)
+            << "\" was found.\n";
 }

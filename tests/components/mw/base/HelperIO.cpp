@@ -45,6 +45,6 @@ TEST_CASE("HelperIO")
 
   SECTION("UnexpectedRecord")
   {
-    // Cannot be tested, since it prints to standard output only.
+    // Cannot be tested, since it prints to standard error output only.
   }
 }

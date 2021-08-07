@@ -24,9 +24,21 @@
 #include <cstdint>
 #include <string>
 
-//converting "integer strings" to real C++ string
+/** \brief Converts four character "integer strings" to real C++ string.
+ *
+ * \remark This is not a "convert this integer to a string" function. Instead,
+ *         it takes the four bytes from the integer an reinterprets each of them
+ *         as a single character that - together - form a string of length 4.
+ * \param value  the 32 bit integer value
+ * \return Returns the string equivalent.
+ */
 std::string IntTo4Char(const uint32_t value);
-//helper function for message on wrong records
+
+/** \brief Utility function to write a message on wrong records to stderr.
+ *
+ * \param expected  the expected record header
+ * \param unexpected  the record header that was actually found
+ */
 void UnexpectedRecord(const uint32_t expected, const uint32_t unexpected);
 
 #endif // MW_HELPERIO_HPP

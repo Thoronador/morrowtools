@@ -22,7 +22,7 @@
 #include <limits>
 #include <sstream>
 
-//tries to get the integer representation of a string
+// tries to get the integer representation of a string
 bool stringToShort(const std::string& str, int16_t& value)
 {
   if (str.length() == 0)
@@ -122,7 +122,7 @@ std::string intToString(const int value)
   return s_str.str();
 }
 
-//tries to get the floating point representation of a string
+// tries to get the floating point representation of a string
 bool stringToFloat(const std::string& str, float& value)
 {
   if (str.length() == 0)
@@ -190,7 +190,8 @@ bool stringToFloat(const std::string& str, float& value)
     }
   } // for, second loop
   value = value + second;
-  if (negative) value = -value;
+  if (negative)
+    value = -value;
   return true;
 }
 
@@ -203,30 +204,32 @@ std::string floatToString(const float f)
 
 void trimLeft(std::string& str1)
 {
-  if (str1.empty()) return;
-  //trim stuff at begin
+  if (str1.empty())
+    return;
+
+  // trim stuff at begin
   int32_t len = str1.length();
   int32_t pos = 0;
   bool go_on = true;
   while (go_on)
   {
     char& ch = str1.at(pos);
-    if ((ch==' ') or (ch=='\t'))
+    if ((ch == ' ') || (ch == '\t'))
     {
       ++pos;
-      go_on = (pos<len);
+      go_on = pos < len;
     }
     else
     {
       go_on = false;
     }
-  }//while
-  if (pos>=len)
+  }
+  if (pos >= len)
   {
     str1 = "";
     return;
   }
-  else if (pos>0)
+  else if (pos > 0)
   {
     str1.erase(0, pos);
   }
@@ -235,31 +238,33 @@ void trimLeft(std::string& str1)
 
 void trimRight(std::string& str1)
 {
-  if (str1.empty()) return;
-  //trim stuff at end
+  if (str1.empty())
+    return;
+
+  // trim stuff at end
   int32_t len = str1.length();
-  int32_t pos = len-1;
+  int32_t pos = len - 1;
   bool go_on = true;
   while (go_on)
   {
     char& ch = str1.at(pos);
-    if ((ch==' ') or (ch=='\t'))
+    if ((ch == ' ') || (ch == '\t'))
     {
       --pos;
-      go_on = (pos>=0);
+      go_on = pos >= 0;
     }
     else
     {
       go_on = false;
     }
-  }//while
-  if (pos==-1)
+  }
+  if (pos == -1)
   {
     str1 = "";
   }
-  else if (pos<len-1)
+  else if (pos < len - 1)
   {
-    str1.erase(pos+1);
+    str1.erase(pos + 1);
   }
   return;
 }
@@ -269,23 +274,22 @@ void trim(std::string& str1)
   trimLeft(str1);
   trimRight(str1);
   return;
-} //end of trim
+}
 
 std::string lowerCase(const std::string& str1)
 {
   /* We assume ASCII or compatible charset where the characters for letters are
      in alphabetical sequence.
   */
-  const char lowerDiff = 'a'-'A';
+  const char lowerDiff = 'a' - 'A';
   std::string result = str1;
-  unsigned int i;
-  for (i=0; i<str1.length(); ++i)
+  for (std::string::size_type i = 0; i < str1.length(); ++i)
   {
-    if ((result[i]<='Z') and (result[i]>='A'))
+    if ((result[i] <= 'Z') && (result[i] >= 'A'))
     {
-      result[i] = result[i]+ lowerDiff;
+      result[i] = result[i] + lowerDiff;
     }
-  }//for
+  }
   return result;
 }
 
@@ -295,46 +299,49 @@ std::string lowerCase(const std::string& str1)
 bool removeEnclosingBrackets(std::string& expr)
 {
   const std::string::size_type len = expr.length();
-  //can't remove brackets, if there is not enough space for them
-  if (len<2) return false;
-  //... or if there aren't any
-  if ((expr.at(0)!='(') or (expr.at(len-1)!=')')) return false;
+  // can't remove brackets, if there is not enough space for them
+  if (len < 2)
+    return false;
+  // ... or if there aren't any
+  if ((expr.at(0) != '(') || (expr.at(len - 1) != ')'))
+    return false;
 
   std::string::size_type look = 0;
   int bracket_level = 0;
-  while (look<len)
+  while (look < len)
   {
-    if (expr.at(look)=='(')
+    if (expr.at(look) == '(')
     {
       ++bracket_level;
     }
-    else if (expr.at(look)==')')
+    else if (expr.at(look) == ')')
     {
       --bracket_level;
-      if (bracket_level==0)
+      if (bracket_level == 0)
       {
-        //Are we at the end?
-        if (len-1==look)
+        // Are we at the end?
+        if (len - 1 == look)
         {
-          //remove first and last character of string
-          expr.erase(len-1, 1); //last one
-          expr.erase(0,1); //first one
+          // remove first and last character of string
+          expr.erase(len - 1, 1); // last one
+          expr.erase(0, 1); // first one
           return true;
         }
         return false;
       }
     }
     ++look;
-  }//while
+  } // while
   return false;
 }
 
 bool stripEnclosingQuotes(std::string& str1)
 {
-  if (str1.length()<2) return false;
-  if ((str1.at(0)=='"') and (str1.at(str1.length()-1)=='"'))
+  if (str1.length() < 2)
+    return false;
+  if ((str1.at(0) == '"') && (str1.at(str1.length() - 1) == '"'))
   {
-    str1 = str1.substr(1, str1.length()-2);
+    str1 = str1.substr(1, str1.length() - 2);
     return true;
   }
   return false;
@@ -346,20 +353,19 @@ int lowerCaseCompare(const std::string& left, const std::string& right)
   const std::string::size_type r_size = right.size();
   const std::string::size_type len = std::min(l_size, r_size);
 
-  std::string::size_type i;
-  for (i=0; i<len; ++i)
+  for (std::string::size_type i = 0; i < len; ++i)
   {
-    const char l = tolower(left.at(i));
-    const char r = tolower(right.at(i));
-    if (l<r)
+    const char l = tolower(left[i]);
+    const char r = tolower(right[i]);
+    if (l < r)
     {
       return -1;
     }
-    if (l>r)
+    if (l > r)
     {
       return 1;
     }
-  }//for
-  //if they are equal so far, the length decides
-  return l_size-r_size;
+  }
+  // if they are equal so far, the length decides
+  return l_size - r_size;
 }

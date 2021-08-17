@@ -36,7 +36,7 @@ struct WordOfPowerRecord: public BasicRecord
     WordOfPowerRecord();
 
     /** Destructor. */
-    virtual ~WordOfPowerRecord();
+    virtual ~WordOfPowerRecord() = default;
 
     #ifndef SR_NO_RECORD_EQUALITY
     /** \brief Checks whether another instances contains the same data.

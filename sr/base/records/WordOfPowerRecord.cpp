@@ -33,10 +33,6 @@ WordOfPowerRecord::WordOfPowerRecord()
 {
 }
 
-WordOfPowerRecord::~WordOfPowerRecord()
-{
-}
-
 uint32_t WordOfPowerRecord::getRecordType() const
 {
   return cWOOP;
@@ -46,7 +42,7 @@ uint32_t WordOfPowerRecord::getRecordType() const
 bool WordOfPowerRecord::equals(const WordOfPowerRecord& other) const
 {
   return ((equalsBasic(other)) && (editorID == other.editorID)
-      and (name == other.name) && (translated == other.translated));
+      && (name == other.name) && (translated == other.translated));
 }
 #endif
 
@@ -98,10 +94,8 @@ bool WordOfPowerRecord::loadFromStream(std::istream& in_File, const bool localiz
   {
     return false;
   }
-  uint32_t subRecName;
-  uint16_t subLength;
+  uint32_t subRecName = 0;
   uint32_t bytesRead = 0;
-  subRecName = subLength = 0;
 
   // read EDID
   char buffer[512];

@@ -34,8 +34,8 @@ TEST_CASE("KeywordRecord")
     KeywordRecord record;
 
     REQUIRE( record.editorID.empty() );
-    REQUIRE_FALSE( record.hasCNAM );
-    REQUIRE( record.unknownCNAM == 0 );
+    REQUIRE_FALSE( record.unknownCNAM.has_value() );
+    REQUIRE( record.unknownCNAM.value_or(42) == 42 );
   }
 
   SECTION("equals")
@@ -46,11 +46,9 @@ TEST_CASE("KeywordRecord")
     SECTION("equal with CNAM")
     {
       a.editorID = "foo";
-      a.hasCNAM = true;
       a.unknownCNAM = 0xDEADBEEF;
 
       b.editorID = "foo";
-      b.hasCNAM = true;
       b.unknownCNAM = 0xDEADBEEF;
 
       REQUIRE( a.equals(b) );
@@ -60,13 +58,10 @@ TEST_CASE("KeywordRecord")
     SECTION("equal without CNAM")
     {
       a.editorID = "foo";
-      a.hasCNAM = false;
-      a.unknownCNAM = 0xDEADBEEF;
+      a.unknownCNAM = {};
 
       b.editorID = "foo";
-      b.hasCNAM = false;
-      // CNAM is ignored when hasCNAM is false.
-      b.unknownCNAM = 0xFFFFFFFF;
+      b.unknownCNAM = {};
 
       REQUIRE( a.equals(b) );
       REQUIRE( b.equals(a) );
@@ -76,11 +71,9 @@ TEST_CASE("KeywordRecord")
     {
       // editorID mismatch
       a.editorID = "foo";
-      a.hasCNAM = true;
       a.unknownCNAM = 0xDEADBEEF;
 
       b.editorID = "bar";
-      b.hasCNAM = true;
       b.unknownCNAM = 0xDEADBEEF;
 
       REQUIRE_FALSE( a.equals(b) );
@@ -88,11 +81,9 @@ TEST_CASE("KeywordRecord")
 
       // CNAM mismatch
       a.editorID = "foo";
-      a.hasCNAM = true;
       a.unknownCNAM = 0xDEADBEEF;
 
       b.editorID = "foo";
-      b.hasCNAM = true;
       b.unknownCNAM = 0x0F00B412;
 
       REQUIRE_FALSE( a.equals(b) );
@@ -103,12 +94,10 @@ TEST_CASE("KeywordRecord")
     {
       // editorID mismatch
       a.editorID = "foo";
-      a.hasCNAM = false;
-      a.unknownCNAM = 0xDEADBEEF;
+      a.unknownCNAM = {};
 
       b.editorID = "bar";
-      b.hasCNAM = false;
-      b.unknownCNAM = 0xDEADBEEF;
+      b.unknownCNAM = {};
 
       REQUIRE_FALSE( a.equals(b) );
       REQUIRE_FALSE( b.equals(a) );
@@ -129,25 +118,21 @@ TEST_CASE("KeywordRecord")
     SECTION("without CNAM")
     {
       record.editorID = "foobarfoobarbaz"; // 15 characters
-      record.hasCNAM = false;
-      record.unknownCNAM = 0xDEADBEEF;
+      record.unknownCNAM = {};
       REQUIRE( record.getWriteSize() == 22 );
 
       record.editorID = "foo"; // three characters
-      record.hasCNAM = false;
-      record.unknownCNAM = 0xDEADBEEF;
+      record.unknownCNAM = {};
       REQUIRE( record.getWriteSize() == 10 );
     }
 
     SECTION("with CNAM")
     {
       record.editorID = "foobarfoobarbaz"; // 15 characters
-      record.hasCNAM = true;
       record.unknownCNAM = 0xDEADBEEF;
       REQUIRE( record.getWriteSize() == 32 );
 
       record.editorID = "foobar"; // six characters
-      record.hasCNAM = true;
       record.unknownCNAM = 0xDEADBEEF;
       REQUIRE( record.getWriteSize() == 23 );
     }
@@ -182,7 +167,7 @@ TEST_CASE("KeywordRecord")
       REQUIRE( record.headerUnknown5 == 0x0001 );
       // -- record data
       REQUIRE( record.editorID == "PowerAttackBash" );
-      REQUIRE( record.hasCNAM );
+      REQUIRE( record.unknownCNAM.has_value() );
       REQUIRE( record.unknownCNAM == 0x00000043 );
     }
 
@@ -208,8 +193,8 @@ TEST_CASE("KeywordRecord")
       REQUIRE( record.headerUnknown5 == 0x0001 );
       // -- record data
       REQUIRE( record.editorID == "isSmelter" );
-      REQUIRE_FALSE( record.hasCNAM );
-      REQUIRE( record.unknownCNAM == 0 );
+      REQUIRE_FALSE( record.unknownCNAM.has_value() );
+      REQUIRE( record.unknownCNAM.value_or(0) == 0 );
     }
 
     SECTION("corrupt data: no EDID")
@@ -311,7 +296,6 @@ TEST_CASE("KeywordRecord")
       record.headerUnknown5 = 0x0001;
       // -- record data
       record.editorID = "PowerAttackBash";
-      record.hasCNAM = true;
       record.unknownCNAM = 0x00000043;
 
       // Writing should succeed.
@@ -337,8 +321,7 @@ TEST_CASE("KeywordRecord")
       record.headerUnknown5 = 0x0001;
       // -- record data
       record.editorID = "isSmelter";
-      record.hasCNAM = false;
-      record.unknownCNAM = 0;
+      record.unknownCNAM = {};
 
       // Writing should succeed.
       REQUIRE( record.saveToStream(stream) );

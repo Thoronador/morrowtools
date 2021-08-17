@@ -29,11 +29,7 @@ namespace SRTP
 
 KeywordRecord::KeywordRecord()
 : BasicRecord(), editorID(""),
-  unknownCNAM(0), hasCNAM(false)
-{
-}
-
-KeywordRecord::~KeywordRecord()
+  unknownCNAM(std::optional<uint32_t>())
 {
 }
 
@@ -45,14 +41,8 @@ uint32_t KeywordRecord::getRecordType() const
 #ifndef SR_NO_RECORD_EQUALITY
 bool KeywordRecord::equals(const KeywordRecord& other) const
 {
-  if ((editorID == other.editorID) && (hasCNAM == other.hasCNAM)
-    && (equalsBasic(other)))
-  {
-    if (hasCNAM)
-      return (unknownCNAM == other.unknownCNAM);
-    return true;
-  }
-  return false;
+  return ((editorID == other.editorID) && (unknownCNAM == other.unknownCNAM)
+    && (equalsBasic(other)));
 }
 #endif
 
@@ -62,7 +52,7 @@ uint32_t KeywordRecord::getWriteSize() const
   uint32_t writeSize;
   writeSize = 4 /* EDID */ + 2 /* 2 bytes for length */
         + editorID.length() + 1 /* length of name +1 byte for NUL termination */;
-  if (hasCNAM)
+  if (unknownCNAM.has_value())
   {
     writeSize = writeSize + 4 /* CNAM */ + 2 /* 2 bytes for length */
                + 4 /* fixed length of 4 bytes */;
@@ -87,7 +77,7 @@ bool KeywordRecord::saveToStream(std::ostream& output) const
     return false;
   }
 
-  if (hasCNAM)
+  if (unknownCNAM.has_value())
   {
     // write CNAM
     output.write(reinterpret_cast<const char*>(&cCNAM), 4);
@@ -95,7 +85,7 @@ bool KeywordRecord::saveToStream(std::ostream& output) const
     subLength = 4; /* fixed length of four bytes */
     output.write(reinterpret_cast<const char*>(&subLength), 2);
     // write CNAM stuff
-    output.write(reinterpret_cast<const char*>(&unknownCNAM), 4);
+    output.write(reinterpret_cast<const char*>(&unknownCNAM.value()), 4);
   }
 
   return output.good();
@@ -109,48 +99,25 @@ bool KeywordRecord::loadFromStream(std::istream& in_File, const bool localized, 
   {
     return false;
   }
-  uint32_t subRecName = 0;
-  uint16_t subLength = 0;
 
   // read EDID
-  in_File.read(reinterpret_cast<char*>(&subRecName), 4);
-  uint32_t bytesRead = 4;
-  if (subRecName != cEDID)
-  {
-    UnexpectedRecord(cEDID, subRecName);
-    return false;
-  }
-  // EDID's length
-  in_File.read(reinterpret_cast<char*>(&subLength), 2);
-  bytesRead += 2;
-  if (subLength > 511)
-  {
-    std::cerr << "Error: sub record EDID of KYWD is longer than 511 characters!\n";
-    return false;
-  }
-  // read EDID's stuff
+  uint32_t bytesRead = 0;
   char buffer[512];
-  memset(buffer, 0, 512);
-  in_File.read(buffer, subLength);
-  bytesRead += subLength;
-  if (!in_File.good())
-  {
-    std::cerr << "Error while reading subrecord EDID of KYWD!\n";
+  if (!loadString512FromStream(in_File, editorID, buffer, cEDID, true, bytesRead))
     return false;
-  }
-  editorID = std::string(buffer);
 
+  // Is there still more to read?
   if (bytesRead < readSize)
   {
-    hasCNAM = true;
     // read CNAM
-    if (!loadUint32SubRecordFromStream(in_File, cCNAM, unknownCNAM, true))
+    uint32_t dummy = 0;
+    if (!loadUint32SubRecordFromStream(in_File, cCNAM, dummy, true))
       return false;
+    unknownCNAM = dummy;
   }
   else
   {
-    hasCNAM = false;
-    unknownCNAM = 0;
+    unknownCNAM = {};
   }
 
   return true;

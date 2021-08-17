@@ -22,6 +22,7 @@
 #define SR_KEYWORDRECORD_HPP
 
 #include "BasicRecord.hpp"
+#include <optional>
 #include <string>
 
 namespace SRTP
@@ -35,7 +36,7 @@ struct KeywordRecord: public BasicRecord
     KeywordRecord();
 
     /** Destructor. */
-    virtual ~KeywordRecord();
+    virtual ~KeywordRecord() = default;
 
     #ifndef SR_NO_RECORD_EQUALITY
     /** \brief Checks whether another instances contains the same data.
@@ -82,8 +83,7 @@ struct KeywordRecord: public BasicRecord
     virtual uint32_t getRecordType() const;
 
     std::string editorID;
-    uint32_t unknownCNAM;
-    bool hasCNAM;
+    std::optional<uint32_t> unknownCNAM;
 }; // struct
 
 } // namespace

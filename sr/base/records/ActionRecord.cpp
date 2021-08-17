@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,12 +30,6 @@ namespace SRTP
 ActionRecord::ActionRecord()
 : BasicRecord(), editorID("")
 {
-
-}
-
-ActionRecord::~ActionRecord()
-{
-  //empty
 }
 
 uint32_t ActionRecord::getRecordType() const
@@ -46,30 +40,33 @@ uint32_t ActionRecord::getRecordType() const
 #ifndef SR_NO_RECORD_EQUALITY
 bool ActionRecord::equals(const ActionRecord& other) const
 {
-  return (equalsBasic(other) and (editorID==other.editorID));
+  return (equalsBasic(other) && (editorID == other.editorID));
 }
 #endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t ActionRecord::getWriteSize() const
 {
-  if (isDeleted()) return 0;
-  return (4 /* EDID */ +2 /* 2 bytes for length */
-        +editorID.length()+1 /* length of name +1 byte for NUL termination */);
+  if (isDeleted())
+    return 0;
+  return 4 /* EDID */ + 2 /* 2 bytes for length */
+      + editorID.length() + 1 /* length of name +1 byte for NUL termination */;
 }
 
 bool ActionRecord::saveToStream(std::ostream& output) const
 {
-  output.write((const char*) &cAACT, 4);
-  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
-  if (isDeleted()) return true;
+  output.write(reinterpret_cast<const char*>(&cAACT), 4);
+  if (!saveSizeAndUnknownValues(output, getWriteSize()))
+    return false;
+  if (isDeleted())
+    return true;
 
-  //write EDID
-  output.write((const char*) &cEDID, 4);
-  //EDID's length
-  uint16_t subLength = editorID.length()+1;
-  output.write((const char*) &subLength, 2);
-  //write editor ID
+  // write EDID
+  output.write(reinterpret_cast<const char*>(&cEDID), 4);
+  // EDID's length
+  uint16_t subLength = editorID.length() + 1;
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
+  // write editor ID
   output.write(editorID.c_str(), subLength);
 
   return output.good();
@@ -79,33 +76,34 @@ bool ActionRecord::saveToStream(std::ostream& output) const
 bool ActionRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
-  if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
-  if (isDeleted()) return true;
-  uint32_t subRecName;
-  uint16_t subLength;
-  subRecName = subLength = 0;
+  if (!loadSizeAndUnknownValues(in_File, readSize))
+    return false;
+  if (isDeleted())
+    return true;
+  uint32_t subRecName = 0;
+  uint16_t subLength = 0;
 
-  //read EDID
-  in_File.read((char*) &subRecName, 4);
-  if (subRecName!=cEDID)
+  // read EDID
+  in_File.read(reinterpret_cast<char*>(&subRecName), 4);
+  if (subRecName != cEDID)
   {
     UnexpectedRecord(cEDID, subRecName);
     return false;
   }
-  //EDID's length
-  in_File.read((char*) &subLength, 2);
-  if (subLength>511)
+  // EDID's length
+  in_File.read(reinterpret_cast<char*>(&subLength), 2);
+  if (subLength > 511)
   {
-    std::cout <<"Error: sub record EDID of AACT is longer than 511 characters!\n";
+    std::cerr << "Error: sub record EDID of AACT is longer than 511 characters!\n";
     return false;
   }
-  //read EDID's stuff
+  // read EDID's stuff
   char buffer[512];
   memset(buffer, 0, 512);
   in_File.read(buffer, subLength);
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of AACT!\n";
+    std::cerr << "Error while reading subrecord EDID of AACT!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -113,4 +111,4 @@ bool ActionRecord::loadFromStream(std::istream& in_File, const bool localized, c
   return true;
 }
 
-} //namespace
+} // namespace

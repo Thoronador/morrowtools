@@ -51,6 +51,8 @@
 		<Unit filename="../../sr/base/SR_Constants.hpp" />
 		<Unit filename="../../sr/base/StringTable.cpp" />
 		<Unit filename="../../sr/base/StringTable.hpp" />
+		<Unit filename="../../sr/base/records/ActionRecord.cpp" />
+		<Unit filename="../../sr/base/records/ActionRecord.hpp" />
 		<Unit filename="../../sr/base/records/BasicRecord.cpp" />
 		<Unit filename="../../sr/base/records/BasicRecord.hpp" />
 		<Unit filename="../../sr/base/records/KeywordRecord.cpp" />
@@ -69,6 +71,7 @@
 		<Unit filename="main.cpp" />
 		<Unit filename="mw/base/HelperIO.cpp" />
 		<Unit filename="sr/base/FormIDFunctions.cpp" />
+		<Unit filename="sr/base/records/ActionRecord.cpp" />
 		<Unit filename="sr/base/records/KeywordRecord.cpp" />
 		<Unit filename="sr/base/records/LocalizedString.cpp" />
 		<Unit filename="sr/base/records/WordOfPowerRecord.cpp" />

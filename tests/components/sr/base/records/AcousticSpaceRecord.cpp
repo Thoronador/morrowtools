@@ -407,6 +407,36 @@ TEST_CASE("AcousticSpaceRecord")
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
+    SECTION("corrupt data: SNAM is zero")
+    {
+      const std::string_view data = "ASPC\x64\0\0\0\0\0\0\0\x0D\xF9\x10\0\x05\x68\x27\x00\x27\x00\x02\0EDID\x2E\0IntRoomWoodLargeTempleOfKynarethAcousticSpace\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0SNAM\x04\0\0\0\0\0RDAT\x04\0\x0E\xF9\x10\0BNAM\x04\0\x46\x32\x0E\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read ASPC, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      AcousticSpaceRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: SNAM exists more than once")
+    {
+      const std::string_view data = "ASPC\x64\0\0\0\0\0\0\0\x0D\xF9\x10\0\x05\x68\x27\x00\x27\x00\x02\0EDID\x2E\0IntRoomWoodLargeTempleOfKynarethAcousticSpace\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0SNAM\x04\0\x08\x5D\x0C\0RDAT\x04\0\x0E\xF9\x10\0SNAM\x04\0\x46\x32\x0E\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read ASPC, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      AcousticSpaceRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: length of RDAT is not four")
     {
       const std::string_view data = "ASPC\x34\0\0\0\0\0\0\0\xAA\xD8\x10\0\x16\x67\x27\0\x27\0\x02\0EDID\x12\0ExtHelgenAttackAS\0OBND\x0C\0\xBE\xF1\xD0\xF0\x26\xFA\x42\x0E\x30\x0F\xDA\x05RDAT\x05\0\xA9\xD8\x10\0"sv;
@@ -422,9 +452,69 @@ TEST_CASE("AcousticSpaceRecord")
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
+    SECTION("corrupt data: RDAT is zero")
+    {
+      const std::string_view data = "ASPC\x46\0\0\0\0\0\0\0\x9E\xFE\x10\0\x12\x68\x38\0\x28\0\x01\0EDID\x24\0ExtMQFlashbackInteriorAcousticSpace\0OBND\x0C\0\x24\xFA\x24\xFA\x59\xFE\xDC\x05\xDC\x05\xA7\x01RDAT\x04\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read ASPC, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      AcousticSpaceRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: RDAT exists more than once")
+    {
+      const std::string_view data = "ASPC\x64\0\0\0\0\0\0\0\x0D\xF9\x10\0\x05\x68\x27\x00\x27\x00\x02\0EDID\x2E\0IntRoomWoodLargeTempleOfKynarethAcousticSpace\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0SNAM\x04\0\x08\x5D\x0C\0RDAT\x04\0\x0E\xF9\x10\0RDAT\x04\0\x46\x32\x0E\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read ASPC, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      AcousticSpaceRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: length of BNAM is not four")
     {
       const std::string_view data = "ASPC\x46\0\0\0\0\0\0\0\x9E\xFE\x10\0\x12\x68\x38\0\x28\0\x01\0EDID\x24\0ExtMQFlashbackInteriorAcousticSpace\0OBND\x0C\0\x24\xFA\x24\xFA\x59\xFE\xDC\x05\xDC\x05\xA7\x01\x42NAM\x03\0\x2A\xD9\x0F\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read ASPC, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      AcousticSpaceRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: BNAM is zero")
+    {
+      const std::string_view data = "ASPC\x46\0\0\0\0\0\0\0\x9E\xFE\x10\0\x12\x68\x38\0\x28\0\x01\0EDID\x24\0ExtMQFlashbackInteriorAcousticSpace\0OBND\x0C\0\x24\xFA\x24\xFA\x59\xFE\xDC\x05\xDC\x05\xA7\x01\x42NAM\x04\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read ASPC, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      AcousticSpaceRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: BNAM exists more than once")
+    {
+      const std::string_view data = "ASPC\x64\0\0\0\0\0\0\0\x0D\xF9\x10\0\x05\x68\x27\x00\x27\x00\x02\0EDID\x2E\0IntRoomWoodLargeTempleOfKynarethAcousticSpace\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0BNAM\x04\0\x08\x5D\x0C\0RDAT\x04\0\x0E\xF9\x10\0BNAM\x04\0\x46\x32\x0E\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 

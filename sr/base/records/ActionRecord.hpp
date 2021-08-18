@@ -80,7 +80,7 @@ struct ActionRecord: public BasicRecord
      */
     virtual uint32_t getRecordType() const;
 
-    std::string editorID;
+    std::string editorID; /**< ID of the record in the editor */
 }; // struct
 
 } // namespace

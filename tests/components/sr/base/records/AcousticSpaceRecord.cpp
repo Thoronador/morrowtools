@@ -19,7 +19,6 @@
 */
 
 #include <catch.hpp>
-#include <cstring>
 #include <sstream>
 #include <string_view>
 #include "../../../../../sr/base/records/AcousticSpaceRecord.hpp"
@@ -35,7 +34,8 @@ TEST_CASE("AcousticSpaceRecord")
     AcousticSpaceRecord record;
 
     REQUIRE( record.editorID.empty() );
-    REQUIRE( memcmp(record.unknownOBND, "\0\0\0\0\0\0\0\0\0\0\0\0", 12) == 0 );
+    std::array<uint8_t, 12> obnd = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    REQUIRE( record.unknownOBND == obnd );
     REQUIRE( record.loopingSoundFormID == 0 );
     REQUIRE( record.regionFormID == 0 );
     REQUIRE( record.environmentTypeFormID == 0 );
@@ -49,13 +49,13 @@ TEST_CASE("AcousticSpaceRecord")
     SECTION("equal")
     {
       a.editorID = "foo";
-      memcpy(a.unknownOBND, "\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1A\x1B\x1C", 12);
+      a.unknownOBND = { 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C };
       a.loopingSoundFormID = 0xDEADBEEF;
       a.regionFormID = 0x0F00BA12;
       a.environmentTypeFormID = 0xB412BA77;
 
       b.editorID = "foo";
-      memcpy(b.unknownOBND, "\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1A\x1B\x1C", 12);
+      b.unknownOBND = { 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C };
       b.loopingSoundFormID = 0xDEADBEEF;
       b.regionFormID = 0x0F00BA12;
       b.environmentTypeFormID = 0xB412BA77;
@@ -69,13 +69,13 @@ TEST_CASE("AcousticSpaceRecord")
       SECTION("editor ID mismatch")
       {
         a.editorID = "foo";
-        memcpy(a.unknownOBND, "\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1A\x1B\x1C", 12);
+        a.unknownOBND = { 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C };
         a.loopingSoundFormID = 0xDEADBEEF;
         a.regionFormID = 0x0F00BA12;
         a.environmentTypeFormID = 0xB412BA77;
 
         b.editorID = "bar";
-        memcpy(b.unknownOBND, "\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1A\x1B\x1C", 12);
+        b.unknownOBND = { 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C };
         b.loopingSoundFormID = 0xDEADBEEF;
         b.regionFormID = 0x0F00BA12;
         b.environmentTypeFormID = 0xB412BA77;
@@ -87,13 +87,13 @@ TEST_CASE("AcousticSpaceRecord")
       SECTION("object bounds mismatch")
       {
         a.editorID = "foo";
-        memcpy(a.unknownOBND, "\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1A\x1B\x1C", 12);
+        a.unknownOBND = { 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C };
         a.loopingSoundFormID = 0xDEADBEEF;
         a.regionFormID = 0x0F00BA12;
         a.environmentTypeFormID = 0xB412BA77;
 
         b.editorID = "foo";
-        memcpy(b.unknownOBND, "\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1A\x1B\xFF", 12);
+        b.unknownOBND = { 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0xFF };
         b.loopingSoundFormID = 0xDEADBEEF;
         b.regionFormID = 0x0F00BA12;
         b.environmentTypeFormID = 0xB412BA77;
@@ -105,13 +105,13 @@ TEST_CASE("AcousticSpaceRecord")
       SECTION("loopingSoundFormID mismatch")
       {
         a.editorID = "foo";
-        memcpy(a.unknownOBND, "\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1A\x1B\x1C", 12);
+        a.unknownOBND = { 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C };
         a.loopingSoundFormID = 0xDEADBEEF;
         a.regionFormID = 0x0F00BA12;
         a.environmentTypeFormID = 0xB412BA77;
 
         b.editorID = "foo";
-        memcpy(b.unknownOBND, "\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1A\x1B\x1C", 12);
+        b.unknownOBND = { 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C };
         b.loopingSoundFormID = 0xAFFEAFFE;
         b.regionFormID = 0x0F00BA12;
         b.environmentTypeFormID = 0xB412BA77;
@@ -123,13 +123,13 @@ TEST_CASE("AcousticSpaceRecord")
       SECTION("region form ID mismatch")
       {
         a.editorID = "foo";
-        memcpy(a.unknownOBND, "\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1A\x1B\x1C", 12);
+        a.unknownOBND = { 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C };
         a.loopingSoundFormID = 0xDEADBEEF;
         a.regionFormID = 0x0F00BA12;
         a.environmentTypeFormID = 0xB412BA77;
 
         b.editorID = "foo";
-        memcpy(b.unknownOBND, "\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1A\x1B\x1C", 12);
+        b.unknownOBND = { 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C };
         b.loopingSoundFormID = 0xDEADBEEF;
         b.regionFormID = 0x0AFFEAFFE;
         b.environmentTypeFormID = 0xB412BA77;
@@ -141,13 +141,13 @@ TEST_CASE("AcousticSpaceRecord")
       SECTION("environmentTypeFormID mismatch")
       {
         a.editorID = "foo";
-        memcpy(a.unknownOBND, "\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1A\x1B\x1C", 12);
+        a.unknownOBND = { 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C };
         a.loopingSoundFormID = 0xDEADBEEF;
         a.regionFormID = 0x0F00BA12;
         a.environmentTypeFormID = 0xB412BA77;
 
         b.editorID = "foo";
-        memcpy(b.unknownOBND, "\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1A\x1B\x1C", 12);
+        b.unknownOBND = { 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C };
         b.loopingSoundFormID = 0xDEADBEEF;
         b.regionFormID = 0x0F00BA12;
         b.environmentTypeFormID = 0xAFFEAFFE;
@@ -172,7 +172,7 @@ TEST_CASE("AcousticSpaceRecord")
     SECTION("size adjusts with length of editor ID")
     {
       record.editorID = "foobarfoobarbaz"; // 15 characters
-      memcpy(record.unknownOBND, "\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1A\x1B\x1C", 12);
+      record.unknownOBND = { 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C };
       record.loopingSoundFormID = 0xDEADBEEF;
       record.regionFormID = 0x0F00BA12;
       record.environmentTypeFormID = 0xB412BA77;
@@ -191,7 +191,7 @@ TEST_CASE("AcousticSpaceRecord")
     SECTION("write size declines with every unset form ID")
     {
       record.editorID = "foobarfoobarbaz"; // 15 characters
-      memcpy(record.unknownOBND, "\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1A\x1B\x1C", 12);
+      record.unknownOBND = { 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B, 0x1C };
       record.loopingSoundFormID = 0xDEADBEEF;
       record.regionFormID = 0x0F00BA12;
       record.environmentTypeFormID = 0xB412BA77;
@@ -237,7 +237,8 @@ TEST_CASE("AcousticSpaceRecord")
       REQUIRE( record.headerUnknown5 == 0x0002 );
       // -- record data
       REQUIRE( record.editorID == "IntRoomWoodLargeTempleOfKynarethAcousticSpace" );
-      REQUIRE( memcmp(record.unknownOBND, "\0\0\0\0\0\0\0\0\0\0\0\0", 12) == 0 );
+      const std::array<uint8_t, 12> expected_obnd = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+      REQUIRE( record.unknownOBND == expected_obnd );
       REQUIRE( record.loopingSoundFormID == 0x000C5D08 );
       REQUIRE( record.regionFormID == 0x0010F90E );
       REQUIRE( record.environmentTypeFormID == 0x000E3246 );
@@ -265,7 +266,8 @@ TEST_CASE("AcousticSpaceRecord")
       REQUIRE( record.headerUnknown5 == 0x0002 );
       // -- record data
       REQUIRE( record.editorID == "ExtHelgenAttackAS" );
-      REQUIRE( memcmp(record.unknownOBND, "\xBE\xF1\xD0\xF0\x26\xFA\x42\x0E\x30\x0F\xDA\x05", 12) == 0 );
+      const std::array<uint8_t, 12> expected_obnd = { 0xBE, 0xF1, 0xD0, 0xF0, 0x26, 0xFA, 0x42, 0x0E, 0x30, 0x0F, 0xDA, 0x05 };
+      REQUIRE( record.unknownOBND == expected_obnd );
       REQUIRE( record.loopingSoundFormID == 0 );
       REQUIRE( record.regionFormID == 0x0010D8A9 );
       REQUIRE( record.environmentTypeFormID == 0 );
@@ -293,7 +295,8 @@ TEST_CASE("AcousticSpaceRecord")
       REQUIRE( record.headerUnknown5 == 0x0001 );
       // -- record data
       REQUIRE( record.editorID == "ExtMQFlashbackInteriorAcousticSpace" );
-      REQUIRE( memcmp(record.unknownOBND, "\x24\xFA\x24\xFA\x59\xFE\xDC\x05\xDC\x05\xA7\x01", 12) == 0 );
+      const std::array<uint8_t, 12> expected_obnd = { 0x24, 0xFA, 0x24, 0xFA, 0x59, 0xFE, 0xDC, 0x05, 0xDC, 0x05, 0xA7, 0x01 };
+      REQUIRE( record.unknownOBND == expected_obnd );
       REQUIRE( record.loopingSoundFormID == 0 );
       REQUIRE( record.regionFormID == 0 );
       REQUIRE( record.environmentTypeFormID == 0x000FD92A );
@@ -458,7 +461,7 @@ TEST_CASE("AcousticSpaceRecord")
       record.headerUnknown5 = 0x0002;
       // -- record data
       record.editorID = "IntRoomWoodLargeTempleOfKynarethAcousticSpace";
-      memset(record.unknownOBND, '\0', 12);
+      record.unknownOBND = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
       record.loopingSoundFormID = 0x000C5D08;
       record.regionFormID = 0x0010F90E;
       record.environmentTypeFormID = 0x000E3246;
@@ -486,7 +489,7 @@ TEST_CASE("AcousticSpaceRecord")
       record.headerUnknown5 = 0x0002;
       // -- record data
       record.editorID = "ExtHelgenAttackAS";
-      memcpy(record.unknownOBND, "\xBE\xF1\xD0\xF0\x26\xFA\x42\x0E\x30\x0F\xDA\x05", 12);
+      record.unknownOBND = { 0xBE, 0xF1, 0xD0, 0xF0, 0x26, 0xFA, 0x42, 0x0E, 0x30, 0x0F, 0xDA, 0x05 };
       record.loopingSoundFormID = 0;
       record.regionFormID = 0x0010D8A9;
       record.environmentTypeFormID = 0;
@@ -514,7 +517,7 @@ TEST_CASE("AcousticSpaceRecord")
       record.headerUnknown5 = 0x0001;
       // -- record data
       record.editorID = "ExtMQFlashbackInteriorAcousticSpace";
-      memcpy(record.unknownOBND, "\x24\xFA\x24\xFA\x59\xFE\xDC\x05\xDC\x05\xA7\x01", 12);
+      record.unknownOBND = { 0x24, 0xFA, 0x24, 0xFA, 0x59, 0xFE, 0xDC, 0x05, 0xDC, 0x05, 0xA7, 0x01 };
       record.loopingSoundFormID = 0;
       record.regionFormID = 0;
       record.environmentTypeFormID = 0x000FD92A;
@@ -542,7 +545,7 @@ TEST_CASE("AcousticSpaceRecord")
       record.headerUnknown5 = 0x0002;
       // -- record data
       record.editorID = "IntRoomWoodLargeTempleOfKynarethAcousticSpace";
-      memset(record.unknownOBND, '\0', 12);
+      record.unknownOBND = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
       record.loopingSoundFormID = 0x000C5D08;
       record.regionFormID = 0x0010F90E;
       record.environmentTypeFormID = 0x000E3246;

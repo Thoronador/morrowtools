@@ -17,6 +17,7 @@ set(component_tests_sources
     ../../sr/base/records/AcousticSpaceRecord.cpp
     ../../sr/base/records/ActionRecord.cpp
     ../../sr/base/records/BasicRecord.cpp
+    ../../sr/base/records/BinarySubRecord.cpp
     ../../sr/base/records/KeywordRecord.cpp
     ../../sr/base/records/LocalizedString.cpp
     ../../sr/base/records/WordOfPowerRecord.cpp
@@ -31,6 +32,7 @@ set(component_tests_sources
     sr/base/FormIDFunctions.cpp
     sr/base/records/AcousticSpaceRecord.cpp
     sr/base/records/ActionRecord.cpp
+    sr/base/records/BinarySubRecord.cpp
     sr/base/records/KeywordRecord.cpp
     sr/base/records/LocalizedString.cpp
     sr/base/records/WordOfPowerRecord.cpp

@@ -14,6 +14,7 @@ set(component_tests_sources
     ../../mw/base/HelperIO.cpp
     ../../sr/base/FormIDFunctions.cpp
     ../../sr/base/StringTable.cpp
+    ../../sr/base/records/AcousticSpaceRecord.cpp
     ../../sr/base/records/ActionRecord.cpp
     ../../sr/base/records/BasicRecord.cpp
     ../../sr/base/records/KeywordRecord.cpp
@@ -28,6 +29,7 @@ set(component_tests_sources
     base/UtilityFunctions.cpp
     mw/base/HelperIO.cpp
     sr/base/FormIDFunctions.cpp
+    sr/base/records/AcousticSpaceRecord.cpp
     sr/base/records/ActionRecord.cpp
     sr/base/records/KeywordRecord.cpp
     sr/base/records/LocalizedString.cpp

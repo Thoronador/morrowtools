@@ -56,7 +56,7 @@ int ESMReader::skipGroup(std::ifstream& in_File, const GroupData& g_data)
 {
   if (g_data.getGroupSize()<24)
   {
-    std::cout << "ESMReader::skipGroup: Error: group size is below 24 bytes!\n";
+    std::cerr << "ESMReader::skipGroup: Error: group size is below 24 bytes!\n";
     return -1;
   }
   //skip it
@@ -74,7 +74,7 @@ int ESMReader::readESM(const std::string& FileName, Tes4HeaderRecord& head)
   input.open(FileName.c_str(), std::ios::in | std::ios::binary);
   if (!input)
   {
-    std::cout << "Error: could not open file \""<<FileName<<"\".\n";
+    std::cerr << "Error: could not open file \""<<FileName<<"\".\n";
     return -1;
   }
 
@@ -90,7 +90,7 @@ int ESMReader::readESM(const std::string& FileName, Tes4HeaderRecord& head)
   input.read((char*) &recordName, 4);
   if (recordName!=cTES4)
   {
-    std::cout << "Error: File \""<<FileName<<"\" is not a valid .esp/.esm file."
+    std::cerr << "Error: File \""<<FileName<<"\" is not a valid .esp/.esm file."
               << " Expected "<<IntTo4Char(cTES4)<<", but \""<<IntTo4Char(recordName)
               << "\" was found instead.\n";
     input.close();
@@ -99,7 +99,7 @@ int ESMReader::readESM(const std::string& FileName, Tes4HeaderRecord& head)
   //now read the actual header
   if (!head.loadFromStream(input, true, StringTable()))
   {
-    std::cout << "Error: Could not read header from \""<<FileName<<"\".\n";
+    std::cerr << "Error: Could not read header from \""<<FileName<<"\".\n";
     input.close();
     return -1;
   }
@@ -122,7 +122,7 @@ int ESMReader::readESM(const std::string& FileName, Tes4HeaderRecord& head)
       if (!table.readTable(files[i], StringTable::sdUnknown))
       {
         input.close();
-        std::cout << "Error while reading string tables for "<<FileName<<"!\n";
+        std::cerr << "Error while reading string tables for "<<FileName<<"!\n";
         return -1;
       }
     }//for
@@ -150,7 +150,7 @@ int ESMReader::readESM(const std::string& FileName, Tes4HeaderRecord& head)
   input.close();
   if (!good_result)
   {
-    std::cout << "Error: readESM of file \""<<FileName<<"\" failed. Last known "
+    std::cerr << "Error: readESM of file \""<<FileName<<"\" failed. Last known "
               << "good position was "<<lastGoodPosition<<".\n";
     return -1;
   }
@@ -164,7 +164,7 @@ bool ESMReader::peekESMHeader(const std::string& FileName, Tes4HeaderRecord& hea
   input.open(FileName.c_str(), std::ios::in | std::ios::binary);
   if (!input)
   {
-    std::cout << "ESMReader::peekESMHeader: Error: could not open file \""<<FileName<<"\".\n";
+    std::cerr << "ESMReader::peekESMHeader: Error: could not open file \""<<FileName<<"\".\n";
     return false;
   }
 
@@ -174,7 +174,7 @@ bool ESMReader::peekESMHeader(const std::string& FileName, Tes4HeaderRecord& hea
   input.read((char*) &recordName, 4);
   if (recordName!=cTES4)
   {
-    std::cout << "ESMReader::peekESMHeader: Error: File \""<<FileName
+    std::cerr << "ESMReader::peekESMHeader: Error: File \""<<FileName
               <<"\" is not a valid .esp/.esm file. Expected "<<IntTo4Char(cTES4)
               <<", but \""<<IntTo4Char(recordName)<< "\" was found instead.\n";
     input.close();
@@ -183,7 +183,7 @@ bool ESMReader::peekESMHeader(const std::string& FileName, Tes4HeaderRecord& hea
   //now read the actual header
   if (!head.loadFromStream(input, true, StringTable()))
   {
-    std::cout << "ESMReader::peekESMHeader: Error: Could not read header from \""<<FileName<<"\".\n";
+    std::cerr << "ESMReader::peekESMHeader: Error: Could not read header from \""<<FileName<<"\".\n";
     input.close();
     return false;
   }
@@ -201,7 +201,7 @@ int ESMReader::processGroup(std::ifstream& in_File, const bool withHeader, const
     in_File.read((char*) &recordHeader, 4);
     if (!in_File.good())
     {
-      std::cout << "ESMReader::processGroup: Error: could not read group header!\n";
+      std::cerr << "ESMReader::processGroup: Error: could not read group header!\n";
       return -1;
     }
     if (recordHeader!=cGRUP)
@@ -214,14 +214,14 @@ int ESMReader::processGroup(std::ifstream& in_File, const bool withHeader, const
   GroupData gd;
   if (!gd.loadFromStream(in_File))
   {
-    std::cout << "ESMReader::processGroup: Error: could not read group data!\n";
+    std::cerr << "ESMReader::processGroup: Error: could not read group data!\n";
     return -1;
   }
   if (needGroup(gd))
   {
     if (!nextGroupStarted(gd, !withHeader))
     {
-      std::cout << "ESMReader::processGroup: Error: nextGroupStarted returned false!\n";
+      std::cerr << "ESMReader::processGroup: Error: nextGroupStarted returned false!\n";
       return -1;
     }
     int result = readGroup(in_File, gd, localized, table);
@@ -229,7 +229,7 @@ int ESMReader::processGroup(std::ifstream& in_File, const bool withHeader, const
     {
       if (!groupFinished(gd))
       {
-        std::cout << "ESMReader::processGroup: Error: groupFinished returned false!\n";
+        std::cerr << "ESMReader::processGroup: Error: groupFinished returned false!\n";
         return -1;
       }
     }
@@ -253,7 +253,7 @@ int ESMReader::readGroup(std::ifstream& in_File, const GroupData& g_data, const 
     in_File.read((char*) &recName, 4);
     if (!in_File.good())
     {
-      std::cout << "ESMReader::readGroup: Error while reading next record "
+      std::cerr << "ESMReader::readGroup: Error while reading next record "
                 << "header!\nCurrent position is "<<in_File.tellg() <<" bytes.\n";
       return -1;
     }
@@ -278,7 +278,7 @@ int ESMReader::readGroup(std::ifstream& in_File, const GroupData& g_data, const 
     if (recordsRead>0) return 1;
     return 0;
   }
-  std::cout << "ESMReader::readGroup: Error while reading record of type "
+  std::cerr << "ESMReader::readGroup: Error while reading record of type "
             <<IntTo4Char(recName)<<"!\nCurrent position is "<<in_File.tellg()
             <<" bytes.\n";
   return -1;

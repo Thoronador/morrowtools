@@ -204,7 +204,7 @@ bool ArmourRecord::saveToStream(std::ostream& output) const
     //write VMAD
     if (!unknownVMAD.saveToStream(output, cVMAD))
     {
-      std::cout << "Error while writing VMAD of ARMO!";
+      std::cerr << "Error while writing VMAD of ARMO!";
       return false;
     }
   }//if VMAD
@@ -251,7 +251,7 @@ bool ArmourRecord::saveToStream(std::ostream& output) const
     //write MO2T
     if (!unknownMO2T.saveToStream(output, cMO2T))
     {
-      std::cout << "Error while writing MO2T of ARMO!";
+      std::cerr << "Error while writing MO2T of ARMO!";
       return false;
     }
   }//if MO2T
@@ -261,7 +261,7 @@ bool ArmourRecord::saveToStream(std::ostream& output) const
     //write MO2S
     if (!unknownMO2S.saveToStream(output, cMO2S))
     {
-      std::cout << "Error while writing MO2S of ARMO!";
+      std::cerr << "Error while writing MO2S of ARMO!";
       return false;
     }
   }//if MO2S
@@ -282,7 +282,7 @@ bool ArmourRecord::saveToStream(std::ostream& output) const
     //write MO4T
     if (!unknownMO4T.saveToStream(output, cMO4T))
     {
-      std::cout << "Error while writing MO4T of ARMO!";
+      std::cerr << "Error while writing MO4T of ARMO!";
       return false;
     }
   }//if MO4T
@@ -292,7 +292,7 @@ bool ArmourRecord::saveToStream(std::ostream& output) const
     //write MO4S
     if (!unknownMO4S.saveToStream(output, cMO4S))
     {
-      std::cout << "Error while writing MO4S of ARMO!";
+      std::cerr << "Error while writing MO4S of ARMO!";
       return false;
     }
   }//if MO4S
@@ -302,7 +302,7 @@ bool ArmourRecord::saveToStream(std::ostream& output) const
     //write BODT
     if (!unknownBODT.saveToStream(output, cBODT))
     {
-      std::cout << "Error while writing BODT of ARMO!";
+      std::cerr << "Error while writing BODT of ARMO!";
       return false;
     }
   }//if BODT
@@ -312,7 +312,7 @@ bool ArmourRecord::saveToStream(std::ostream& output) const
     //write BOD2
     if (!unknownBOD2.saveToStream(output, cBOD2))
     {
-      std::cout << "Error while writing BOD2 of ARMO!";
+      std::cerr << "Error while writing BOD2 of ARMO!";
       return false;
     }
   }//if BOD2
@@ -476,7 +476,7 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of ARMO is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of ARMO is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -486,7 +486,7 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of ARMO!\n";
+    std::cerr << "Error while reading subrecord EDID of ARMO!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -525,13 +525,13 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cVMAD:
            if (unknownVMAD.isPresent())
            {
-             std::cout << "Error: ARMO seems to have more than one VMAD subrecord!\n";
+             std::cerr << "Error: ARMO seems to have more than one VMAD subrecord!\n";
              return false;
            }
            //read VMAD
            if (!unknownVMAD.loadFromStream(in_File, cVMAD, false))
            {
-             std::cout << "Error while reading subrecord VMAD of ARMO!\n";
+             std::cerr << "Error while reading subrecord VMAD of ARMO!\n";
              return false;
            }
            bytesRead = bytesRead + 2 + unknownVMAD.size();
@@ -539,7 +539,7 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cOBND:
            if (hasReadOBND)
            {
-             std::cout << "Error: ARMO seems to have more than one OBND subrecord!\n";
+             std::cerr << "Error: ARMO seems to have more than one OBND subrecord!\n";
              return false;
            }
            //OBND's length
@@ -547,7 +547,7 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 2;
            if (subLength!=12)
            {
-             std::cout <<"Error: sub record OBND of ARMO has invalid length ("
+             std::cerr <<"Error: sub record OBND of ARMO has invalid length ("
                        <<subLength<<" bytes). Should be 12 bytes!\n";
              return false;
            }
@@ -556,7 +556,7 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 12;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord OBND of ARMO!\n";
+             std::cerr << "Error while reading subrecord OBND of ARMO!\n";
              return false;
            }
            hasReadOBND = true;
@@ -564,7 +564,7 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cFULL:
            if (name.isPresent())
            {
-             std::cout << "Error: record ARMO seems to have more than one FULL subrecord!\n";
+             std::cerr << "Error: record ARMO seems to have more than one FULL subrecord!\n";
              return false;
            }
            //read FULL
@@ -574,7 +574,7 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cEITM:
            if (enchantingFormID!=0)
            {
-             std::cout << "Error: record ARMO seems to have more than one EITM subrecord!\n";
+             std::cerr << "Error: record ARMO seems to have more than one EITM subrecord!\n";
              return false;
            }
            //read EITM
@@ -582,14 +582,14 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 6;
            if (enchantingFormID==0)
            {
-             std::cout <<"Error: sub record EITM of ARMO is zero!\n";
+             std::cerr <<"Error: sub record EITM of ARMO is zero!\n";
              return false;
            }
            break;
       case cMOD2:
            if (!modelPath.empty())
            {
-             std::cout << "Error: record ARMO seems to have more than one MOD2 subrecord!\n";
+             std::cerr << "Error: record ARMO seems to have more than one MOD2 subrecord!\n";
              return false;
            }
            //MOD2's length
@@ -597,7 +597,7 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 2;
            if (subLength>511)
            {
-             std::cout <<"Error: sub record MOD2 of ARMO is longer than 511 characters!\n";
+             std::cerr <<"Error: sub record MOD2 of ARMO is longer than 511 characters!\n";
              return false;
            }
            //read MOD2's stuff
@@ -606,7 +606,7 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += subLength;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord MOD2 of ARMO!\n";
+             std::cerr << "Error while reading subrecord MOD2 of ARMO!\n";
              return false;
            }
            modelPath = std::string(buffer);
@@ -614,13 +614,13 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cMO2T:
            if (unknownMO2T.isPresent())
            {
-             std::cout << "Error: ARMO seems to have more than one MO2T subrecord!\n";
+             std::cerr << "Error: ARMO seems to have more than one MO2T subrecord!\n";
              return false;
            }
            //read MO2T
            if (!unknownMO2T.loadFromStream(in_File, cMO2T, false))
            {
-             std::cout << "Error while reading subrecord MO2T of ARMO!\n";
+             std::cerr << "Error while reading subrecord MO2T of ARMO!\n";
              return false;
            }
            bytesRead = bytesRead + 2 + unknownMO2T.size();
@@ -628,13 +628,13 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cMO2S:
            if (unknownMO2S.isPresent())
            {
-             std::cout << "Error: ARMO seems to have more than one MO2S subrecord!\n";
+             std::cerr << "Error: ARMO seems to have more than one MO2S subrecord!\n";
              return false;
            }
            //read MO2S
            if (!unknownMO2S.loadFromStream(in_File, cMO2S, false))
            {
-             std::cout << "Error while reading subrecord MO2S of ARMO!\n";
+             std::cerr << "Error while reading subrecord MO2S of ARMO!\n";
              return false;
            }
            bytesRead = bytesRead + 2 + unknownMO2S.size();
@@ -642,7 +642,7 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cMOD4:
            if (!mod4Path.empty())
            {
-             std::cout << "Error: record ARMO seems to have more than one MOD4 subrecord!\n";
+             std::cerr << "Error: record ARMO seems to have more than one MOD4 subrecord!\n";
              return false;
            }
            //MOD4's length
@@ -650,7 +650,7 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 2;
            if (subLength>511)
            {
-             std::cout <<"Error: sub record MOD4 of ARMO is longer than 511 characters!\n";
+             std::cerr <<"Error: sub record MOD4 of ARMO is longer than 511 characters!\n";
              return false;
            }
            //read MOD4's stuff
@@ -659,7 +659,7 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += subLength;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord MOD4 of ARMO!\n";
+             std::cerr << "Error while reading subrecord MOD4 of ARMO!\n";
              return false;
            }
            mod4Path = std::string(buffer);
@@ -667,13 +667,13 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cMO4T:
            if (unknownMO4T.isPresent())
            {
-             std::cout << "Error: ARMO seems to have more than one MO4T subrecord!\n";
+             std::cerr << "Error: ARMO seems to have more than one MO4T subrecord!\n";
              return false;
            }
            //read MO4T
            if (!unknownMO4T.loadFromStream(in_File, cMO4T, false))
            {
-             std::cout << "Error while reading subrecord MO4T of ARMO!\n";
+             std::cerr << "Error while reading subrecord MO4T of ARMO!\n";
              return false;
            }
            bytesRead = bytesRead + 2 + unknownMO4T.size();
@@ -681,13 +681,13 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cMO4S:
            if (unknownMO4S.isPresent())
            {
-             std::cout << "Error: ARMO seems to have more than one MO4S subrecord!\n";
+             std::cerr << "Error: ARMO seems to have more than one MO4S subrecord!\n";
              return false;
            }
            //read MO4S
            if (!unknownMO4S.loadFromStream(in_File, cMO4S, false))
            {
-             std::cout << "Error while reading subrecord MO4S of ARMO!\n";
+             std::cerr << "Error while reading subrecord MO4S of ARMO!\n";
              return false;
            }
            bytesRead = bytesRead + 2 + unknownMO4S.size();
@@ -695,13 +695,13 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cBODT:
            if (unknownBODT.isPresent())
            {
-             std::cout << "Error: record ARMO seems to have more than one BODT subrecord!\n";
+             std::cerr << "Error: record ARMO seems to have more than one BODT subrecord!\n";
              return false;
            }
            //read BODT
            if (!unknownBODT.loadFromStream(in_File, cBODT, false))
            {
-             std::cout << "Error while reading subrecord BODT of ARMO!\n";
+             std::cerr << "Error while reading subrecord BODT of ARMO!\n";
              return false;
            }
            bytesRead = bytesRead + 2 + unknownBODT.size();
@@ -716,7 +716,7 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cBOD2:
            if (unknownBOD2.isPresent())
            {
-             std::cout << "Error: ARMO seems to have more than one BOD2 subrecord!\n";
+             std::cerr << "Error: ARMO seems to have more than one BOD2 subrecord!\n";
              return false;
            }
            // read BOD2
@@ -727,7 +727,7 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cETYP:
            if (equipTypeFormID!=0)
            {
-             std::cout << "Error: record ARMO seems to have more than one ETYP subrecord!\n";
+             std::cerr << "Error: record ARMO seems to have more than one ETYP subrecord!\n";
              return false;
            }
            //read ETYP
@@ -735,14 +735,14 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 6;
            if (equipTypeFormID==0)
            {
-             std::cout <<"Error: sub record ETYP of ARMO is zero!\n";
+             std::cerr <<"Error: sub record ETYP of ARMO is zero!\n";
              return false;
            }
            break;
       case cBIDS:
            if (blockBashImpactDataSetFormID!=0)
            {
-             std::cout << "Error: record ARMO seems to have more than one BIDS subrecord!\n";
+             std::cerr << "Error: record ARMO seems to have more than one BIDS subrecord!\n";
              return false;
            }
            //read BIDS
@@ -750,14 +750,14 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 6;
            if (blockBashImpactDataSetFormID==0)
            {
-             std::cout <<"Error: sub record BIDS of ARMO is zero!\n";
+             std::cerr <<"Error: sub record BIDS of ARMO is zero!\n";
              return false;
            }
            break;
       case cBAMT:
            if (alternateBlockMaterialFormID!=0)
            {
-             std::cout << "Error: record ARMO seems to have more than one BAMT subrecord!\n";
+             std::cerr << "Error: record ARMO seems to have more than one BAMT subrecord!\n";
              return false;
            }
            //read BAMT
@@ -765,14 +765,14 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 6;
            if (alternateBlockMaterialFormID==0)
            {
-             std::cout <<"Error: sub record BAMT of ARMO is zero!\n";
+             std::cerr <<"Error: sub record BAMT of ARMO is zero!\n";
              return false;
            }
            break;
       case cYNAM:
            if (pickupSoundFormID!=0)
            {
-             std::cout << "Error: ARMO seems to have more than one YNAM subrecord!\n";
+             std::cerr << "Error: ARMO seems to have more than one YNAM subrecord!\n";
              return false;
            }
            //read YNAM
@@ -780,14 +780,14 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 6;
            if (pickupSoundFormID==0)
            {
-             std::cout <<"Error: subrecord YNAM of ARMO is zero!\n";
+             std::cerr <<"Error: subrecord YNAM of ARMO is zero!\n";
              return false;
            }
            break;
       case cZNAM:
            if (putdownSoundFormID!=0)
            {
-             std::cout << "Error: ARMO seems to have more than one ZNAM subrecord!\n";
+             std::cerr << "Error: ARMO seems to have more than one ZNAM subrecord!\n";
              return false;
            }
            //read ZNAM
@@ -795,14 +795,14 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 6;
            if (putdownSoundFormID==0)
            {
-             std::cout << "Error: subrecord ZNAM of ARMO is zero!\n";
+             std::cerr << "Error: subrecord ZNAM of ARMO is zero!\n";
              return false;
            }
            break;
       case cRNAM:
            if (hasReadRNAM)
            {
-             std::cout << "Error: ARMO seems to have more than one RNAM subrecord!\n";
+             std::cerr << "Error: ARMO seems to have more than one RNAM subrecord!\n";
              return false;
            }
            //RNAM's length
@@ -810,7 +810,7 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 2;
            if (subLength!=4)
            {
-             std::cout <<"Error: subrecord RNAM of ARMO has invalid length ("
+             std::cerr <<"Error: subrecord RNAM of ARMO has invalid length ("
                        <<subLength<<" bytes). Should be four bytes!\n";
              return false;
            }
@@ -819,7 +819,7 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 4;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord RNAM of ARMO!\n";
+             std::cerr << "Error while reading subrecord RNAM of ARMO!\n";
              return false;
            }//if
            hasReadRNAM = true;
@@ -827,7 +827,7 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cKSIZ:
            if (!keywordArray.empty())
            {
-             std::cout << "Error: recurd ARMO seems to have more than one KSIZ subrecord!\n";
+             std::cerr << "Error: recurd ARMO seems to have more than one KSIZ subrecord!\n";
              return false;
            }
            //KSIZ's length
@@ -835,7 +835,7 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 2;
            if (subLength!=4)
            {
-             std::cout <<"Error: subrecord KSIZ of ARMO has invalid length ("
+             std::cerr <<"Error: subrecord KSIZ of ARMO has invalid length ("
                        <<subLength<<" bytes). Should be four bytes!\n";
              return false;
            }
@@ -845,7 +845,7 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 4;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord KSIZ of ARMO!\n";
+             std::cerr << "Error while reading subrecord KSIZ of ARMO!\n";
              return false;
            }//if
 
@@ -862,7 +862,7 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 2;
            if (subLength!=4*k_Size)
            {
-             std::cout <<"Error: sub record KWDA of ARMO has invalid length ("
+             std::cerr <<"Error: sub record KWDA of ARMO has invalid length ("
                        <<subLength<<" bytes. Should be "<<4*k_Size<<" bytes!\n";
              return false;
            }
@@ -873,7 +873,7 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
              bytesRead += 4;
              if (!in_File.good())
              {
-               std::cout << "Error while reading subrecord KWDA of ARMO!\n";
+               std::cerr << "Error while reading subrecord KWDA of ARMO!\n";
                return false;
              }//if
              keywordArray.push_back(temp);
@@ -882,13 +882,13 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cDESC:
            if (description.isPresent())
            {
-             std::cout << "Error: ARMO seems to have more than one DESC subrecord!\n";
+             std::cerr << "Error: ARMO seems to have more than one DESC subrecord!\n";
              return false;
            }
            //read DESC
            if (!description.loadFromStream(in_File, cDESC, false, bytesRead, localized, table, buffer))
            {
-             std::cout << "Error while reading subrecord DESC of ARMO!\n";
+             std::cerr << "Error while reading subrecord DESC of ARMO!\n";
              return false;
            }//if
            break;
@@ -898,7 +898,7 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 2;
            if (subLength!=4)
            {
-             std::cout <<"Error: subrecord MODL of ARMO has invalid length ("
+             std::cerr <<"Error: subrecord MODL of ARMO has invalid length ("
                        <<subLength<<" bytes). Should be four bytes!\n";
              return false;
            }
@@ -908,7 +908,7 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 4;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord MODL of ARMO!\n";
+             std::cerr << "Error while reading subrecord MODL of ARMO!\n";
              return false;
            }//if
            models.push_back(temp);
@@ -916,7 +916,7 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cDATA:
            if (hasReadDATA)
            {
-             std::cout << "Error: record ARMO seems to have more than one DATA subrecord!\n";
+             std::cerr << "Error: record ARMO seems to have more than one DATA subrecord!\n";
              return false;
            }
            //DATA's length
@@ -924,7 +924,7 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 2;
            if (subLength!=8)
            {
-             std::cout <<"Error: sub record DATA of ARMO has invalid length ("
+             std::cerr <<"Error: sub record DATA of ARMO has invalid length ("
                        <<subLength<<" bytes. Should be 8 bytes!\n";
              return false;
            }
@@ -934,7 +934,7 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 8;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord DATA of ARMO!\n";
+             std::cerr << "Error while reading subrecord DATA of ARMO!\n";
              return false;
            }
            hasReadDATA = true;
@@ -942,7 +942,7 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cDNAM:
            if (hasReadDNAM)
            {
-             std::cout << "Error: ARMO seems to have more than one DNAM subrecord!\n";
+             std::cerr << "Error: ARMO seems to have more than one DNAM subrecord!\n";
              return false;
            }
            //DNAM's length
@@ -950,7 +950,7 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 2;
            if (subLength!=4)
            {
-             std::cout <<"Error: subrecord DNAM of ARMO has invalid length ("
+             std::cerr <<"Error: subrecord DNAM of ARMO has invalid length ("
                        <<subLength<<" bytes). Should be four bytes!\n";
              return false;
            }
@@ -959,7 +959,7 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 4;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord DNAM of ARMO!\n";
+             std::cerr << "Error while reading subrecord DNAM of ARMO!\n";
              return false;
            }//if
            hasReadDNAM = true;
@@ -967,7 +967,7 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cTNAM:
            if (templateArmorFormID!=0)
            {
-             std::cout << "Error: ARMO seems to have more than one TNAM subrecord!\n";
+             std::cerr << "Error: ARMO seems to have more than one TNAM subrecord!\n";
              return false;
            }
            //read TNAM
@@ -975,12 +975,12 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 6;
            if (templateArmorFormID==4)
            {
-             std::cout <<"Error: subrecord TNAM of ARMO is zero!\n";
+             std::cerr <<"Error: subrecord TNAM of ARMO is zero!\n";
              return false;
            }
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only VMAD, OBND, FULL, EITM, MOD2, MO2T,"
                      << " MOD4, MO4T, BODT, BOD2, ETYP, BIDS, BAMT, YNAM, ZNAM,"
                      << " RNAM, KSIZ, DESC, MODL, DATA, DNAM, or TNAM are allowed here!\n";
@@ -992,7 +992,7 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
   //presence checks
   if (!(hasReadOBND and (unknownBODT.isPresent() or unknownBOD2.isPresent()) and hasReadRNAM and hasReadDATA and hasReadDNAM))
   {
-    std::cout << "Error: subrecord OBND, BODT/BOD2, DATA, DNAM or RNAM of ARMO is missing!\n";
+    std::cerr << "Error: subrecord OBND, BODT/BOD2, DATA, DNAM or RNAM of ARMO is missing!\n";
     return false;
   }
 

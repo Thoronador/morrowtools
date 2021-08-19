@@ -330,7 +330,7 @@ bool WeaponRecord::saveToStream(std::ostream& output) const
   {
     if (!unknownVMAD.saveToStream(output, cVMAD))
     {
-      std::cout << "Error while writing subrecord VMAD of WEAP!\n";
+      std::cerr << "Error while writing subrecord VMAD of WEAP!\n";
       return false;
     }
   }//if VMAD
@@ -366,7 +366,7 @@ bool WeaponRecord::saveToStream(std::ostream& output) const
     //write MODT
     if (!unknownMODT.saveToStream(output, cMODT))
     {
-      std::cout << "Error while writing subrecord MODT of WEAP!\n";
+      std::cerr << "Error while writing subrecord MODT of WEAP!\n";
       return false;
     }
   }
@@ -376,7 +376,7 @@ bool WeaponRecord::saveToStream(std::ostream& output) const
     //write MODS
     if (!unknownMODS.saveToStream(output, cMODS))
     {
-      std::cout << "Error while writing subrecord MODS of WEAP!\n";
+      std::cerr << "Error while writing subrecord MODS of WEAP!\n";
       return false;
     }
   }
@@ -645,7 +645,7 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of WEAP is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of WEAP is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -655,7 +655,7 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of WEAP!\n";
+    std::cerr << "Error while reading subrecord EDID of WEAP!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -709,7 +709,7 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cOBND:
            if (hasReadOBND)
            {
-             std::cout << "Error: WEAP seems to have more than one OBND subrecord!\n";
+             std::cerr << "Error: WEAP seems to have more than one OBND subrecord!\n";
              return false;
            }
            //OBND's length
@@ -717,7 +717,7 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 2;
            if (subLength!=12)
            {
-             std::cout << "Error: sub record OBND of WEAP has invalid length ("
+             std::cerr << "Error: sub record OBND of WEAP has invalid length ("
                        << subLength << " bytes). Should be 12 bytes.\n";
              return false;
            }
@@ -726,7 +726,7 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 12;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord OBND of WEAP!\n";
+             std::cerr << "Error while reading subrecord OBND of WEAP!\n";
              return false;
            }
            hasReadOBND = true;
@@ -734,7 +734,7 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cFULL:
            if (name.isPresent())
            {
-             std::cout << "Error: WEAP seems to have more than one FULL subrecord!\n";
+             std::cerr << "Error: WEAP seems to have more than one FULL subrecord!\n";
              return false;
            }
            //read FULL
@@ -800,14 +800,14 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            //check content
            if (enchantingFormID==0)
            {
-             std::cout << "Error: subrecord EITM of WEAP is zero!\n";
+             std::cerr << "Error: subrecord EITM of WEAP is zero!\n";
              return false;
            }
            break;
       case cEAMT:
            if (hasEAMT)
            {
-             std::cout << "Error: WEAP seems to have more than one EAMT subrecord!\n";
+             std::cerr << "Error: WEAP seems to have more than one EAMT subrecord!\n";
              return false;
            }
            //EAMT's length
@@ -815,7 +815,7 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 2;
            if (subLength!=2)
            {
-             std::cout <<"Error: sub record EAMT of WEAP has invalid length ("
+             std::cerr <<"Error: sub record EAMT of WEAP has invalid length ("
                        <<subLength <<" bytes). Should be two bytes.\n";
              return false;
            }
@@ -824,7 +824,7 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 2;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord EAMT of WEAP!\n";
+             std::cerr << "Error while reading subrecord EAMT of WEAP!\n";
              return false;
            }
            hasEAMT = true;
@@ -832,7 +832,7 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cETYP:
            if (equipTypeFormID!=0)
            {
-             std::cout << "Error: WEAP seems to have more than one ETYP subrecord!\n";
+             std::cerr << "Error: WEAP seems to have more than one ETYP subrecord!\n";
              return false;
            }
            //read ETYP
@@ -841,14 +841,14 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            //check content
            if (equipTypeFormID==0)
            {
-             std::cout << "Error: subrecord ETYP of WEAP is zero!\n";
+             std::cerr << "Error: subrecord ETYP of WEAP is zero!\n";
              return false;
            }
            break;
       case cBIDS:
            if (blockBashImpactDataSetFormID!=0)
            {
-             std::cout << "Error: WEAP seems to have more than one BIDS subrecord!\n";
+             std::cerr << "Error: WEAP seems to have more than one BIDS subrecord!\n";
              return false;
            }
            //read BIDS
@@ -857,14 +857,14 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            //check content
            if (blockBashImpactDataSetFormID==0)
            {
-             std::cout << "Error: subrecord BIDS of WEAP is zero!\n";
+             std::cerr << "Error: subrecord BIDS of WEAP is zero!\n";
              return false;
            }
            break;
       case cBAMT:
            if (alternateBlockMaterialFormID!=0)
            {
-             std::cout << "Error: WEAP seems to have more than one BAMT subrecord!\n";
+             std::cerr << "Error: WEAP seems to have more than one BAMT subrecord!\n";
              return false;
            }
            //read BAMT
@@ -873,14 +873,14 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            //check content
            if (alternateBlockMaterialFormID==0)
            {
-             std::cout << "Error: subrecord BAMT of WEAP is zero!\n";
+             std::cerr << "Error: subrecord BAMT of WEAP is zero!\n";
              return false;
            }
            break;
       case cKSIZ:
            if (!keywordArray.empty())
            {
-             std::cout << "Error: WEAP seems to have more than one KSIZ subrecord!\n";
+             std::cerr << "Error: WEAP seems to have more than one KSIZ subrecord!\n";
              return false;
            }
            //read KSIZ
@@ -901,7 +901,7 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 2;
            if (subLength!=4*k_Size)
            {
-             std::cout <<"Error: sub record KWDA of WEAP has invalid length ("<<subLength
+             std::cerr <<"Error: sub record KWDA of WEAP has invalid length ("<<subLength
                        <<" bytes). Should be "<<4*k_Size<<" bytes.\n";
              return false;
            }
@@ -916,14 +916,14 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            }
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord KWDA of WEAP!\n";
+             std::cerr << "Error while reading subrecord KWDA of WEAP!\n";
              return false;
            }
            break;
       case cDESC:
            if (description.isPresent())
            {
-             std::cout << "Error: WEAP seems to have more than one DESC subrecord!\n";
+             std::cerr << "Error: WEAP seems to have more than one DESC subrecord!\n";
              return false;
            }
            //read DESC
@@ -933,7 +933,7 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cNNAM:
            if (!unknownNNAM.empty())
            {
-             std::cout << "Error: WEAP seems to have more than one NNAM subrecord!\n";
+             std::cerr << "Error: WEAP seems to have more than one NNAM subrecord!\n";
              return false;
            }
            //NNAM's length
@@ -941,7 +941,7 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 2;
            if (subLength>511)
            {
-             std::cout <<"Error: sub record NNAM of WEAP is longer than 511 characters!\n";
+             std::cerr <<"Error: sub record NNAM of WEAP is longer than 511 characters!\n";
              return false;
            }
            //read NNAM (node name?)
@@ -950,7 +950,7 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += subLength;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord NNAM of WEAP!\n";
+             std::cerr << "Error while reading subrecord NNAM of WEAP!\n";
              return false;
            }
            unknownNNAM = std::string(buffer);
@@ -958,7 +958,7 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cINAM:
            if (impactDataSetFormID!=0)
            {
-             std::cout << "Error: WEAP seems to have more than one INAM subrecord!\n";
+             std::cerr << "Error: WEAP seems to have more than one INAM subrecord!\n";
              return false;
            }
            //read INAM
@@ -967,14 +967,14 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            //check content
            if (impactDataSetFormID==0)
            {
-             std::cout << "Error: subrecord INAM of WEAP is zero!\n";
+             std::cerr << "Error: subrecord INAM of WEAP is zero!\n";
              return false;
            }
            break;
       case cWNAM:
            if (firstPersonModelObjectFormID!=0)
            {
-             std::cout << "Error: WEAP seems to have more than one WNAM subrecord!\n";
+             std::cerr << "Error: WEAP seems to have more than one WNAM subrecord!\n";
              return false;
            }
            //read WNAM
@@ -983,14 +983,14 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            //check content
            if (firstPersonModelObjectFormID==0)
            {
-             std::cout << "Error: subrecord WNAM of WEAP is zero!\n";
+             std::cerr << "Error: subrecord WNAM of WEAP is zero!\n";
              return false;
            }
            break;
       case cXNAM:
            if (attackSound2DFormID!=0)
            {
-             std::cout << "Error: WEAP seems to have more than one XNAM subrecord!\n";
+             std::cerr << "Error: WEAP seems to have more than one XNAM subrecord!\n";
              return false;
            }
            //read XNAM
@@ -999,14 +999,14 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            //check content
            if (attackSound2DFormID==0)
            {
-             std::cout << "Error: subrecord XNAM of WEAP is zero!\n";
+             std::cerr << "Error: subrecord XNAM of WEAP is zero!\n";
              return false;
            }
            break;
       case cNAM7:
            if (attackLoopSoundFormID!=0)
            {
-             std::cout << "Error: WEAP seems to have more than one NAM7 subrecord!\n";
+             std::cerr << "Error: WEAP seems to have more than one NAM7 subrecord!\n";
              return false;
            }
            //read NAM7
@@ -1015,14 +1015,14 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            //check content
            if (attackLoopSoundFormID==0)
            {
-             std::cout << "Error: subrecord NAM7 of WEAP is zero!\n";
+             std::cerr << "Error: subrecord NAM7 of WEAP is zero!\n";
              return false;
            }
            break;
       case cTNAM:
            if (attackFailSoundFormID!=0)
            {
-             std::cout << "Error: WEAP seems to have more than one TNAM subrecord!\n";
+             std::cerr << "Error: WEAP seems to have more than one TNAM subrecord!\n";
              return false;
            }
            //read TNAM
@@ -1031,14 +1031,14 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            //check content
            if (attackFailSoundFormID==0)
            {
-             std::cout << "Error: subrecord TNAM of WEAP is zero!\n";
+             std::cerr << "Error: subrecord TNAM of WEAP is zero!\n";
              return false;
            }
            break;
       case cUNAM:
            if (idleSoundFormID!=0)
            {
-             std::cout << "Error: WEAP seems to have more than one UNAM subrecord!\n";
+             std::cerr << "Error: WEAP seems to have more than one UNAM subrecord!\n";
              return false;
            }
            //read UNAM
@@ -1047,14 +1047,14 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            //check content
            if (idleSoundFormID==0)
            {
-             std::cout << "Error: subrecord UNAM of WEAP is zero!\n";
+             std::cerr << "Error: subrecord UNAM of WEAP is zero!\n";
              return false;
            }
            break;
       case cNAM9:
            if (equipSoundFormID!=0)
            {
-             std::cout << "Error: WEAP seems to have more than one NAM9 subrecord!\n";
+             std::cerr << "Error: WEAP seems to have more than one NAM9 subrecord!\n";
              return false;
            }
            //read NAM9
@@ -1063,14 +1063,14 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            //check content
            if (equipSoundFormID==0)
            {
-             std::cout << "Error: subrecord NAM9 of WEAP is zero!\n";
+             std::cerr << "Error: subrecord NAM9 of WEAP is zero!\n";
              return false;
            }
            break;
       case cNAM8:
            if (unequipSoundFormID!=0)
            {
-             std::cout << "Error: WEAP seems to have more than one NAM8 subrecord!\n";
+             std::cerr << "Error: WEAP seems to have more than one NAM8 subrecord!\n";
              return false;
            }
            //read NAM8
@@ -1079,14 +1079,14 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            //check content
            if (unequipSoundFormID==0)
            {
-             std::cout << "Error: subrecord NAM9 of WEAP is zero!\n";
+             std::cerr << "Error: subrecord NAM9 of WEAP is zero!\n";
              return false;
            }
            break;
       case cSNAM:
            if (attackSoundFormID!=0)
            {
-             std::cout << "Error: WEAP seems to have more than one SNAM subrecord!\n";
+             std::cerr << "Error: WEAP seems to have more than one SNAM subrecord!\n";
              return false;
            }
            //read SNAM
@@ -1095,14 +1095,14 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            //check content
            if (attackSoundFormID==0)
            {
-             std::cout << "Error: subrecord SNAM of WEAP is zero!\n";
+             std::cerr << "Error: subrecord SNAM of WEAP is zero!\n";
              return false;
            }
            break;
       case cDATA:
            if (hasReadDATA)
            {
-             std::cout << "Error: WEAP seems to have more than one DATA subrecord!\n";
+             std::cerr << "Error: WEAP seems to have more than one DATA subrecord!\n";
              return false;
            }
            //DATA's length
@@ -1110,7 +1110,7 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 2;
            if (subLength!=10)
            {
-             std::cout <<"Error: sub record DATA of WEAP has invalid length ("<<subLength
+             std::cerr <<"Error: sub record DATA of WEAP has invalid length ("<<subLength
                        <<" bytes). Should be 10 bytes.\n";
              return false;
            }
@@ -1121,7 +1121,7 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 10;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord DATA of WEAP!\n";
+             std::cerr << "Error while reading subrecord DATA of WEAP!\n";
              return false;
            }
            hasReadDATA = true;
@@ -1139,7 +1139,7 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 2;
            if (subLength!=100)
            {
-             std::cout <<"Error: sub record DNAM of WEAP has invalid length ("<<subLength
+             std::cerr <<"Error: sub record DNAM of WEAP has invalid length ("<<subLength
                        <<" bytes). Should be 100 bytes.\n";
              return false;
            }
@@ -1148,7 +1148,7 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 100;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord DNAM of WEAP!\n";
+             std::cerr << "Error while reading subrecord DNAM of WEAP!\n";
              return false;
            }
 
@@ -1165,7 +1165,7 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 2;
            if (subLength!=16)
            {
-             std::cout <<"Error: sub record CRDT of WEAP has invalid length ("<<subLength
+             std::cerr <<"Error: sub record CRDT of WEAP has invalid length ("<<subLength
                        <<" bytes). Should be 16 bytes.\n";
              return false;
            }
@@ -1174,7 +1174,7 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 16;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord CRDT of WEAP!\n";
+             std::cerr << "Error while reading subrecord CRDT of WEAP!\n";
              return false;
            }
 
@@ -1185,7 +1185,7 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cCNAM:
            if (hasCNAM)
            {
-             std::cout << "Error: WEAP seems to have more than one CNAM subrecord!\n";
+             std::cerr << "Error: WEAP seems to have more than one CNAM subrecord!\n";
              return false;
            }
            //read CNAM
@@ -1194,7 +1194,7 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 6;
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only VMAD, OBND, FULL, MODL, MODS, EITM,"
                      << " EAMT, ETYP, BIDS, BAMT, KSIZ, DESC, NNAM, INAM, WNAM,"
                      << " XNAM, NAM7, TNAM, UNAM, NAM9, NAM8, SNAM, DATA or CNAM are allowed!\n";
@@ -1205,7 +1205,7 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
 
   if (!(hasReadOBND and description.isPresent() and hasReadDATA))
   {
-    std::cout << "Error: WEAP's OBND or DESC or DATA subrecord is missing!\n";
+    std::cerr << "Error: WEAP's OBND or DESC or DATA subrecord is missing!\n";
     return false;
   }
 

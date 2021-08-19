@@ -54,19 +54,19 @@ bool ESMReaderReIndexMod::updateIndexMap(const std::string& currentModFile)
   //We can't work without load order, so tell them!
   if (m_LoadOrder.empty())
   {
-    std::cout << "ESMReaderReIndexMod::updateIndexMap: Error: no load order given!\n";
+    std::cerr << "ESMReaderReIndexMod::updateIndexMap: Error: no load order given!\n";
     return false;
   }
   //More than 255 files won't work either.
   if (m_LoadOrder.size()>255)
   {
-    std::cout << "ESMReaderReIndexMod::updateIndexMap: Error: more than 255 files in load order!\n";
+    std::cerr << "ESMReaderReIndexMod::updateIndexMap: Error: more than 255 files in load order!\n";
     return false;
   }
   //Same here.
   if (currentHead.dependencies.size()>255)
   {
-    std::cout << "ESMReaderReIndexMod::updateIndexMap: Error: more than 255 dependencies!\n";
+    std::cerr << "ESMReaderReIndexMod::updateIndexMap: Error: more than 255 dependencies!\n";
     return false;
   }
 
@@ -79,7 +79,7 @@ bool ESMReaderReIndexMod::updateIndexMap(const std::string& currentModFile)
     std::vector<std::string>::const_iterator lo_iter = std::find(m_LoadOrder.begin(), m_LoadOrder.end(), mf_iter->fileName);
     if (lo_iter==m_LoadOrder.end())
     {
-      std::cout << "ESMReaderReIndexMod::updateIndexMap: Error: load order does not contain \""
+      std::cerr << "ESMReaderReIndexMod::updateIndexMap: Error: load order does not contain \""
                 << mf_iter->fileName << "\"!\n";
       return false;
     }//if
@@ -91,7 +91,7 @@ bool ESMReaderReIndexMod::updateIndexMap(const std::string& currentModFile)
   std::vector<std::string>::const_iterator lo_iter = std::find(m_LoadOrder.begin(), m_LoadOrder.end(), currentModFile);
   if (lo_iter==m_LoadOrder.end())
   {
-    std::cout << "ESMReaderReIndexMod::updateIndexMap: Error: load order does not contain \""
+    std::cerr << "ESMReaderReIndexMod::updateIndexMap: Error: load order does not contain \""
               << currentModFile << "\"!\n";
     return false;
   }//if
@@ -105,7 +105,7 @@ bool ESMReaderReIndexMod::reIndex(uint32_t& formID) const
   const std::map<uint8_t, uint8_t>::const_iterator mapIter = m_IndexMap.find(extractModIndex(formID));
   if (mapIter==m_IndexMap.end())
   {
-    std::cout << "ESMReaderReIndexMod::reIndex: Error: index "<<(unsigned int) extractModIndex(formID)
+    std::cerr << "ESMReaderReIndexMod::reIndex: Error: index "<<(unsigned int) extractModIndex(formID)
               << " not found in map!\n";
     return false;
   }

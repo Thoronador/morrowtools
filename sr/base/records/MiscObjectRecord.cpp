@@ -263,7 +263,7 @@ bool MiscObjectRecord::loadFromStream(std::istream& in_File, const bool localize
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of MISC is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of MISC is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -273,7 +273,7 @@ bool MiscObjectRecord::loadFromStream(std::istream& in_File, const bool localize
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of MISC!\n";
+    std::cerr << "Error while reading subrecord EDID of MISC!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -311,20 +311,20 @@ bool MiscObjectRecord::loadFromStream(std::istream& in_File, const bool localize
       case cFULL:
            if (fullName.isPresent())
            {
-             std::cout << "Error: record MISC seems to have more than one FULL subrecord.\n";
+             std::cerr << "Error: record MISC seems to have more than one FULL subrecord.\n";
              return false;
            }
            //FULL's length
            if (!fullName.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
            {
-             std::cout << "Error while reading subrecord FULL of MISC!\n";
+             std::cerr << "Error while reading subrecord FULL of MISC!\n";
              return false;
            }
            break;
       case cOBND:
            if (hasReadOBND)
            {
-             std::cout << "Error: record MISC seems to have more than one OBND subrecord.\n";
+             std::cerr << "Error: record MISC seems to have more than one OBND subrecord.\n";
              return false;
            }
            //OBND's length
@@ -332,7 +332,7 @@ bool MiscObjectRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if (subLength!=12)
            {
-             std::cout <<"Error: sub record OBND of MISC has invalid length ("
+             std::cerr <<"Error: sub record OBND of MISC has invalid length ("
                        <<subLength<<" bytes)! Should be 12 bytes.\n";
              return false;
            }
@@ -341,7 +341,7 @@ bool MiscObjectRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 12;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord OBND of MISC!\n";
+             std::cerr << "Error while reading subrecord OBND of MISC!\n";
              return false;
            }
            hasReadOBND = true;
@@ -349,7 +349,7 @@ bool MiscObjectRecord::loadFromStream(std::istream& in_File, const bool localize
       case cMODL:
            if (!modelPath.empty())
            {
-             std::cout << "Error: record MISC seems to have more than one MODL subrecord.\n";
+             std::cerr << "Error: record MISC seems to have more than one MODL subrecord.\n";
              return false;
            }
            //read MODL
@@ -357,7 +357,7 @@ bool MiscObjectRecord::loadFromStream(std::istream& in_File, const bool localize
              return false;
            if (modelPath.empty())
            {
-             std::cout << "Error: subrecord MODL of MISC is empty!\n";
+             std::cerr << "Error: subrecord MODL of MISC is empty!\n";
              return false;
            }
            break;
@@ -384,7 +384,7 @@ bool MiscObjectRecord::loadFromStream(std::istream& in_File, const bool localize
       case cICON:
            if (!iconPath.empty())
            {
-             std::cout << "Error: record MISC seems to have more than one ICON subrecord.\n";
+             std::cerr << "Error: record MISC seems to have more than one ICON subrecord.\n";
              return false;
            }
            //read ICON
@@ -392,14 +392,14 @@ bool MiscObjectRecord::loadFromStream(std::istream& in_File, const bool localize
              return false;
            if (iconPath.empty())
            {
-             std::cout <<"Error: subrecord ICON of MISC is empty!\n";
+             std::cerr <<"Error: subrecord ICON of MISC is empty!\n";
              return false;
            }
            break;
       case cYNAM:
            if (pickupSoundFormID!=0)
            {
-             std::cout << "Error: record MISC seems to have more than one YNAM subrecord.\n";
+             std::cerr << "Error: record MISC seems to have more than one YNAM subrecord.\n";
              return false;
            }
            //read YNAM
@@ -409,14 +409,14 @@ bool MiscObjectRecord::loadFromStream(std::istream& in_File, const bool localize
            //check content
            if (pickupSoundFormID==0)
            {
-             std::cout << "Error: subrecord YNAM of MISC is zero!\n";
+             std::cerr << "Error: subrecord YNAM of MISC is zero!\n";
              return false;
            }
            break;
       case cZNAM:
            if (putdownSoundFormID!=0)
            {
-             std::cout << "Error: record MISC seems to have more than one ZNAM subrecord.\n";
+             std::cerr << "Error: record MISC seems to have more than one ZNAM subrecord.\n";
              return false;
            }
            //read ZNAM
@@ -426,14 +426,14 @@ bool MiscObjectRecord::loadFromStream(std::istream& in_File, const bool localize
            //check content
            if (putdownSoundFormID==0)
            {
-             std::cout << "Error: subrecord ZNAM of MISC is zero!\n";
+             std::cerr << "Error: subrecord ZNAM of MISC is zero!\n";
              return false;
            }
            break;
       case cDATA:
            if (hasReadDATA)
            {
-             std::cout << "Error: record MISC seems to have more than one DATA subrecord.\n";
+             std::cerr << "Error: record MISC seems to have more than one DATA subrecord.\n";
              return false;
            }
            //DATA's length
@@ -441,7 +441,7 @@ bool MiscObjectRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if (subLength!=8)
            {
-             std::cout <<"Error: sub record DATA of MISC has invalid length ("
+             std::cerr <<"Error: sub record DATA of MISC has invalid length ("
                        <<subLength<<" bytes)! Should be 8 bytes.\n";
              return false;
            }
@@ -451,7 +451,7 @@ bool MiscObjectRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 8;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord DATA of MISC!\n";
+             std::cerr << "Error while reading subrecord DATA of MISC!\n";
              return false;
            }
            hasReadDATA = true;
@@ -459,7 +459,7 @@ bool MiscObjectRecord::loadFromStream(std::istream& in_File, const bool localize
       case cKSIZ:
            if (hasReadKSIZ)
            {
-             std::cout << "Error: record MISC seems to have more than one KSIZ subrecord.\n";
+             std::cerr << "Error: record MISC seems to have more than one KSIZ subrecord.\n";
              return false;
            }
            //KSIZ's length
@@ -467,7 +467,7 @@ bool MiscObjectRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if (subLength!=4)
            {
-             std::cout <<"Error: sub record KSIZ of MISC has invalid length ("
+             std::cerr <<"Error: sub record KSIZ of MISC has invalid length ("
                        <<subLength<<" bytes)! Should be four bytes.\n";
              return false;
            }
@@ -477,7 +477,7 @@ bool MiscObjectRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 4;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord KSIZ of MISC!\n";
+             std::cerr << "Error while reading subrecord KSIZ of MISC!\n";
              return false;
            }
            hasReadKSIZ = true;
@@ -496,7 +496,7 @@ bool MiscObjectRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if (subLength!=k_Size*4)
            {
-             std::cout <<"Error: sub record KWDA of MISC is has invalid length ("
+             std::cerr <<"Error: sub record KWDA of MISC is has invalid length ("
                        <<subLength<<" bytes)! Should be "<<k_Size*4<<" bytes.\n";
              return false;
            }
@@ -510,12 +510,12 @@ bool MiscObjectRecord::loadFromStream(std::istream& in_File, const bool localize
            }//for
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord KWDA of MISC!\n";
+             std::cerr << "Error while reading subrecord KWDA of MISC!\n";
              return false;
            }
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, only DATA, FULL, OBND, VMAD, MODL, KSIZ, MODT and MODS are allowed here!\n";
            return false;
     }//swi
@@ -524,7 +524,7 @@ bool MiscObjectRecord::loadFromStream(std::istream& in_File, const bool localize
   //have we read all required subrecords?
   if ((!hasReadDATA) or (!hasReadOBND))
   {
-    std::cout << "Error: at least one required subrecord of MISC was not found!\n";
+    std::cerr << "Error: at least one required subrecord of MISC was not found!\n";
     return false;
   }
 

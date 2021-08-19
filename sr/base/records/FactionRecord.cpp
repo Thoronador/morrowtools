@@ -335,7 +335,7 @@ bool FactionRecord::saveToStream(std::ostream& output) const
   {
     if (!unknownCRVA.saveToStream(output, cCRVA))
     {
-      std::cout << "Error while writing subrecord CRVA of FACT!\n";
+      std::cerr << "Error while writing subrecord CRVA of FACT!\n";
       return false;
     }
   }
@@ -410,7 +410,7 @@ bool FactionRecord::saveToStream(std::ostream& output) const
     //write PLVD
     if (!unknownPLVD.saveToStream(output, cPLVD))
     {
-      std::cout << "Error while writing subrecord PLVD of FACT!\n";
+      std::cerr << "Error while writing subrecord PLVD of FACT!\n";
       return false;
     }//if
   }//if PLVD
@@ -432,7 +432,7 @@ bool FactionRecord::saveToStream(std::ostream& output) const
       //write CTDA/CIS2
       if (!conditions[i].saveToStream(output))
       {
-        std::cout << "Error while writing subrecord CTDA or CIS2 of FACT!\n";
+        std::cerr << "Error while writing subrecord CTDA or CIS2 of FACT!\n";
         return false;
       }
     }//for
@@ -464,7 +464,7 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of FACT is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of FACT is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -474,7 +474,7 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of FACT!\n";
+    std::cerr << "Error while reading subrecord EDID of FACT!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -521,7 +521,7 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
            bytesRead += 2;
            if (subLength!=12)
            {
-             std::cout <<"Error: subrecord XNAM of FACT has invalid length ("
+             std::cerr <<"Error: subrecord XNAM of FACT has invalid length ("
                        <<subLength <<" bytes). Should be 12 bytes!\n";
              return false;
            }
@@ -532,7 +532,7 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
            bytesRead += 12;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord XNAM of FACT!\n";
+             std::cerr << "Error while reading subrecord XNAM of FACT!\n";
              return false;
            }
            relations.push_back(tempInterfacRel);
@@ -540,7 +540,7 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
       case cFULL:
            if (name.isPresent())
            {
-             std::cout << "Error: FACT seems to have more than one FULL subrecord!\n";
+             std::cerr << "Error: FACT seems to have more than one FULL subrecord!\n";
              return false;
            }
            //read FULL
@@ -552,7 +552,7 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
       case cDATA:
            if (hasReadDATA)
            {
-             std::cout << "Error: FACT seems to have more than one DATA subrecord!\n";
+             std::cerr << "Error: FACT seems to have more than one DATA subrecord!\n";
              return false;
            }
            if (!loadUint32SubRecordFromStream(in_File, cDATA, flags, false))
@@ -565,7 +565,7 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
       case cJAIL:
            if (exteriorJailMarkerRefID!=0)
            {
-             std::cout << "Error: FACT seems to have more than one JAIL subrecord!\n";
+             std::cerr << "Error: FACT seems to have more than one JAIL subrecord!\n";
              return false;
            }
            if (!loadUint32SubRecordFromStream(in_File, cJAIL, exteriorJailMarkerRefID, false))
@@ -575,14 +575,14 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
            bytesRead += 6;
            if (exteriorJailMarkerRefID==0)
            {
-             std::cout << "Error: JAIL subrecord of FACT has value zero!\n";
+             std::cerr << "Error: JAIL subrecord of FACT has value zero!\n";
              return false;
            }
            break;
       case cWAIT:
            if (followerWaitMarkerRefID!=0)
            {
-             std::cout << "Error: FACT seems to have more than one WAIT subrecord!\n";
+             std::cerr << "Error: FACT seems to have more than one WAIT subrecord!\n";
              return false;
            }
            if (!loadUint32SubRecordFromStream(in_File, cWAIT, followerWaitMarkerRefID, false))
@@ -592,14 +592,14 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
            bytesRead += 6;
            if (followerWaitMarkerRefID==0)
            {
-             std::cout << "Error: WAIT subrecord of FACT has value zero!\n";
+             std::cerr << "Error: WAIT subrecord of FACT has value zero!\n";
              return false;
            }
            break;
       case cSTOL:
            if (stolenGoodsContainerRefID!=0)
            {
-             std::cout << "Error: FACT seems to have more than one STOL subrecord!\n";
+             std::cerr << "Error: FACT seems to have more than one STOL subrecord!\n";
              return false;
            }
            if (!loadUint32SubRecordFromStream(in_File, cSTOL, stolenGoodsContainerRefID, false))
@@ -609,14 +609,14 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
            bytesRead += 6;
            if (stolenGoodsContainerRefID==0)
            {
-             std::cout << "Error: STOL subrecord of FACT has value zero!\n";
+             std::cerr << "Error: STOL subrecord of FACT has value zero!\n";
              return false;
            }
            break;
       case cPLCN:
            if (playerInventoryContainerRefID!=0)
            {
-             std::cout << "Error: FACT seems to have more than one PLCN subrecord!\n";
+             std::cerr << "Error: FACT seems to have more than one PLCN subrecord!\n";
              return false;
            }
            if (!loadUint32SubRecordFromStream(in_File, cPLCN, playerInventoryContainerRefID, false))
@@ -626,14 +626,14 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
            bytesRead += 6;
            if (playerInventoryContainerRefID==0)
            {
-             std::cout << "Error: PLCN subrecord of FACT has value zero!\n";
+             std::cerr << "Error: PLCN subrecord of FACT has value zero!\n";
              return false;
            }
            break;
       case cCRGR:
            if (crimeFactionListFormID!=0)
            {
-             std::cout << "Error: FACT seems to have more than one CRGR subrecord!\n";
+             std::cerr << "Error: FACT seems to have more than one CRGR subrecord!\n";
              return false;
            }
            if (!loadUint32SubRecordFromStream(in_File, cCRGR, crimeFactionListFormID, false))
@@ -643,14 +643,14 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
            bytesRead += 6;
            if (crimeFactionListFormID==0)
            {
-             std::cout << "Error: CRGR subrecord of FACT has value zero!\n";
+             std::cerr << "Error: CRGR subrecord of FACT has value zero!\n";
              return false;
            }
            break;
       case cJOUT:
            if (jailOutfitFormID!=0)
            {
-             std::cout << "Error: FACT seems to have more than one JOUT subrecord!\n";
+             std::cerr << "Error: FACT seems to have more than one JOUT subrecord!\n";
              return false;
            }
            if (!loadUint32SubRecordFromStream(in_File, cJOUT, jailOutfitFormID, false))
@@ -660,20 +660,20 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
            bytesRead += 6;
            if (jailOutfitFormID==0)
            {
-             std::cout << "Error: JOUT subrecord of FACT has value zero!\n";
+             std::cerr << "Error: JOUT subrecord of FACT has value zero!\n";
              return false;
            }
            break;
       case cCRVA:
            if (unknownCRVA.isPresent())
            {
-             std::cout << "Error: FACT seems to have more than one CRVA subrecord!\n";
+             std::cerr << "Error: FACT seems to have more than one CRVA subrecord!\n";
              return false;
            }
            //read CRVA
            if (!unknownCRVA.loadFromStream(in_File, cCRVA, false))
            {
-             std::cout << "Error while reading subrecord CRVA of FACT!\n";
+             std::cerr << "Error while reading subrecord CRVA of FACT!\n";
              return false;
            }
            subLength = unknownCRVA.size();
@@ -693,7 +693,7 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
              // useless, at least for player-accessable factions)
              if ((tempRank.maleNameStringID==0) and (tempRank.femaleNameStringID==0))
              {
-               std::cout << "Error while reading record of type FACT: string "
+               std::cerr << "Error while reading record of type FACT: string "
                         << "indices for both male and female name are zero!\n";
                return false;
              } */
@@ -712,13 +712,13 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
       case cMNAM:
            if (!hasUnpushedRank)
            {
-             std::cout << "Error while reading record of type FACT: MNAM "
+             std::cerr << "Error while reading record of type FACT: MNAM "
                        << "without previous RNAM subrecord encountered!\n";
              return false;
            }
            if (tempRank.maleName.isPresent())
            {
-             std::cout << "Error: FACT seems to have more than one MNAM "
+             std::cerr << "Error: FACT seems to have more than one MNAM "
                        << "subrecord per RNAM subrecord!\n";
              return false;
            }
@@ -728,13 +728,13 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
       case cFNAM:
            if (!hasUnpushedRank)
            {
-             std::cout << "Error while reading record of type FACT: FNAM "
+             std::cerr << "Error while reading record of type FACT: FNAM "
                        << "without previous RNAM subrecord encountered!\n";
              return false;
            }
            if (tempRank.femaleName.isPresent())
            {
-             std::cout << "Error: FACT seems to have more than one FNAM "
+             std::cerr << "Error: FACT seems to have more than one FNAM "
                        << "subrecord per RNAM subrecord!\n";
              return false;
            }
@@ -744,7 +744,7 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
       case cVEND:
            if (vendorListFormID!=0)
            {
-             std::cout << "Error: FACT seems to have more than one VEND subrecord!\n";
+             std::cerr << "Error: FACT seems to have more than one VEND subrecord!\n";
              return false;
            }
            if (!loadUint32SubRecordFromStream(in_File, cVEND, vendorListFormID, false))
@@ -754,14 +754,14 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
            bytesRead += 6;
            if (vendorListFormID==0)
            {
-             std::cout << "Error: subrecord VEND of FACT has value zero!\n";
+             std::cerr << "Error: subrecord VEND of FACT has value zero!\n";
              return false;
            }
            break;
       case cVENC:
            if (vendorContainterFormID!=0)
            {
-             std::cout << "Error: FACT seems to have more than one VENC subrecord!\n";
+             std::cerr << "Error: FACT seems to have more than one VENC subrecord!\n";
              return false;
            }
            if (!loadUint32SubRecordFromStream(in_File, cVENC, vendorContainterFormID, false))
@@ -771,14 +771,14 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
            bytesRead += 6;
            if (vendorContainterFormID==0)
            {
-             std::cout << "Error: subrecord VENC of FACT has value zero!\n";
+             std::cerr << "Error: subrecord VENC of FACT has value zero!\n";
              return false;
            }
            break;
       case cVENV:
            if (vendorStuff.isPresent)
            {
-             std::cout << "Error: FACT seems to have more than one VENV subrecord!\n";
+             std::cerr << "Error: FACT seems to have more than one VENV subrecord!\n";
              return false;
            }
            //VENV's length
@@ -786,7 +786,7 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
            bytesRead += 2;
            if (subLength!=12)
            {
-             std::cout <<"Error: subrecord VENV of FACT has invalid length ("
+             std::cerr <<"Error: subrecord VENV of FACT has invalid length ("
                        <<subLength <<" bytes). Should be 12 bytes!\n";
              return false;
            }
@@ -798,7 +798,7 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
            bytesRead += 12;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord VENV of FACT!\n";
+             std::cerr << "Error while reading subrecord VENV of FACT!\n";
              return false;
            }
            vendorStuff.isPresent = true;
@@ -806,13 +806,13 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
       case cPLVD:
            if (unknownPLVD.isPresent())
            {
-             std::cout << "Error: FACT seems to have more than one PLVD subrecord!\n";
+             std::cerr << "Error: FACT seems to have more than one PLVD subrecord!\n";
              return false;
            }
            //read PLVD
            if (!unknownPLVD.loadFromStream(in_File, cPLVD, false))
            {
-             std::cout << "Error while reading subrecord PLVD of FACT!\n";
+             std::cerr << "Error while reading subrecord PLVD of FACT!\n";
              return false;
            }
            // check length of PLVD
@@ -827,7 +827,7 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
       case cCITC:
            if ((!conditions.empty()) or (cond_count!=0))
            {
-             std::cout << "Error: FACT seems to have more than one CITC subrecord!\n";
+             std::cerr << "Error: FACT seems to have more than one CITC subrecord!\n";
              return false;
            }
            //read CITC
@@ -839,14 +839,14 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
 
            if (cond_count==0)
            {
-             std::cout << "Error: subrecord CITC of FACT has value zero!\n";
+             std::cerr << "Error: subrecord CITC of FACT has value zero!\n";
              return false;
            }
            break;
       case cCTDA:
            if (cond_count==0)
            {
-             std::cout << "Error while reading record of type FACT: CTDA "
+             std::cerr << "Error while reading record of type FACT: CTDA "
                        << "without previous CITC subrecord encountered!\n";
              return false;
            }
@@ -857,7 +857,7 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
            }
            if (conditions.size()>=cond_count)
            {
-             std::cout << "Error while reading record of type FACT: found more"
+             std::cerr << "Error while reading record of type FACT: found more"
                        << " CTDA records than CITC's value suggested!\n";
              return false;
            }
@@ -867,7 +867,7 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
            //read CTDA's data
            if (!tempCTDA_CIS2.unknownCTDA.loadFromStream(in_File, bytesRead))
            {
-             std::cout << "Error while reading subrecord CTDA of FACT!\n";
+             std::cerr << "Error while reading subrecord CTDA of FACT!\n";
              return false;
            }
            hasUnpushedCTDA_CIS2 = true;
@@ -875,13 +875,13 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
       case cCIS2:
            if (!hasUnpushedCTDA_CIS2)
            {
-             std::cout << "Error while reading record of type FACT: CIS2 "
+             std::cerr << "Error while reading record of type FACT: CIS2 "
                        << "without previous CTDA subrecord encountered!\n";
              return false;
            }
            if (!tempCTDA_CIS2.unknownCISx.empty())
            {
-             std::cout << "Error: FACT seems to have more than one CIS2 "
+             std::cerr << "Error: FACT seems to have more than one CIS2 "
                        << "subrecord per CTDA subrecord!\n";
              return false;
            }
@@ -890,14 +890,14 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
              return false;
            if (tempCTDA_CIS2.unknownCISx.empty())
            {
-             std::cout << "Error: subrecord CIS2 of FACT is empty!\n";
+             std::cerr << "Error: subrecord CIS2 of FACT is empty!\n";
              return false;
            }
            conditions.push_back(tempCTDA_CIS2);
            hasUnpushedCTDA_CIS2 = false;
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only XNAM, FULL, DATA, JAIL, WAIT, STOL,"
                      << " PLCN, CRGR, JOUT, CRVA, RNAM, MNAM, FNAM, VEND, VENC,"
                      << " VENV, PLVD, CITC, CTDA or CIS2 are allowed here!\n";
@@ -912,7 +912,7 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
     /* //zero index for both male and female is allowed (but kind of useless, at least for player-accessable factions)
     if ((tempRank.maleNameStringID==0) and (tempRank.femaleNameStringID==0))
     {
-      std::cout << "Error while reading record of type FACT: string indices "
+      std::cerr << "Error while reading record of type FACT: string indices "
                 << "for both male and female name are zero!\n";
       return false;
     }*/
@@ -927,7 +927,7 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
   //size check for conditions
   if (conditions.size()!=cond_count)
   {
-    std::cout << "Error while reading FACT: expected "<<cond_count
+    std::cerr << "Error while reading FACT: expected "<<cond_count
               << " condition record(s), but only "<<conditions.size()
               << " record(s) was/were found!\n";
     return false;
@@ -936,7 +936,7 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
   //presence checks
   if (!hasReadDATA)
   {
-    std::cout << "Error: at least one required subrecord of FACT is missing!\n";
+    std::cerr << "Error: at least one required subrecord of FACT is missing!\n";
     return false;
   }
 

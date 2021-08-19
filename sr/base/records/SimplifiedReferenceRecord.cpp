@@ -56,7 +56,7 @@ uint32_t SimplifiedReferenceRecord::getWriteSize() const
 bool SimplifiedReferenceRecord::saveToStream(std::ostream& output) const
 {
   #warning This record type is not writable!
-  std::cout << "Error: Simplified reference records cannot be saved to stream!\n";
+  std::cerr << "Error: Simplified reference records cannot be saved to stream!\n";
   return false;
 }
 #endif
@@ -81,7 +81,7 @@ bool SimplifiedReferenceRecord::loadFromStream(std::istream& in_File, const bool
       case cNAME:
            if (hasReadNAME)
            {
-             std::cout << "Error: REFR seems to have more than one NAME subrecord!\n";
+             std::cerr << "Error: REFR seems to have more than one NAME subrecord!\n";
              return false;
            }
            //read NAME
@@ -94,7 +94,7 @@ bool SimplifiedReferenceRecord::loadFromStream(std::istream& in_File, const bool
              in_File.seekg(readSize-bytesRead, std::ios_base::cur);
              if (!in_File.good())
              {
-               std::cout << "Error while skipping subrecords of REFR!\n";
+               std::cerr << "Error while skipping subrecords of REFR!\n";
                return false;
              }
              bytesRead = readSize;
@@ -108,7 +108,7 @@ bool SimplifiedReferenceRecord::loadFromStream(std::istream& in_File, const bool
            in_File.seekg(subLength, std::ios_base::cur);
            if (!in_File.good())
            {
-             std::cout << "Error while skipping subrecord of REFR!\n";
+             std::cerr << "Error while skipping subrecord of REFR!\n";
              return false;
            }
            bytesRead += subLength;
@@ -119,7 +119,7 @@ bool SimplifiedReferenceRecord::loadFromStream(std::istream& in_File, const bool
   //presence checks
   if (!hasReadNAME)
   {
-    std::cout << "Error: subrecord NAME of REFR is missing!\n";
+    std::cerr << "Error: subrecord NAME of REFR is missing!\n";
     return false;
   }
 

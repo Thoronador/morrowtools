@@ -72,7 +72,7 @@ bool ESMReaderFinderReferences::nextGroupStarted(const GroupData& g_data, const 
     uint32_t cellFormID = g_data.getGroupLabel();
     if (!reIndex(cellFormID))
     {
-      std::cout << "ESMReaderFinderReferences::nextGroupStarted: Warning: could not adjust mod index for cell!\n";
+      std::cerr << "ESMReaderFinderReferences::nextGroupStarted: Warning: could not adjust mod index for cell!\n";
       return false;
     }
     m_CellStack.push_back(cellFormID);
@@ -89,12 +89,12 @@ bool ESMReaderFinderReferences::groupFinished(const GroupData& g_data)
     uint32_t cellFormID = g_data.getGroupLabel();
     if (!reIndex(cellFormID))
     {
-      std::cout << "ESMReaderFinderReferences::groupFinished: Warning: could not adjust mod index for cell!\n";
+      std::cerr << "ESMReaderFinderReferences::groupFinished: Warning: could not adjust mod index for cell!\n";
       return false;
     }
     if (m_CellStack.back()!=cellFormID)
     {
-      std::cout << "ESMReaderFinderReferences::groupFinished: Warning: label does not match stack content!\n";
+      std::cerr << "ESMReaderFinderReferences::groupFinished: Warning: label does not match stack content!\n";
       return false;
     }
     m_CellStack.pop_back();
@@ -140,7 +140,7 @@ int ESMReaderFinderReferences::readNextRecord(std::ifstream& in_File, const uint
   if (!recPtr->loadFromStream(in_File, localized, table))
   {
     delete recPtr;
-    std::cout << "ESMReaderFinderReferences::readNextRecord: Error while reading reference record!\n";
+    std::cerr << "ESMReaderFinderReferences::readNextRecord: Error while reading reference record!\n";
     return -1;
   }
   //re-index record's form ID and ID of object

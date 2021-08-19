@@ -167,7 +167,7 @@ bool BinarySubRecordExtended::loadFromStream(std::istream& in_File, const uint32
   in_File.read((char*) m_Pointer, subLength);
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord "<<IntTo4Char(subHeader)<<"!\n";
+    std::cerr << "Error while reading subrecord "<<IntTo4Char(subHeader)<<"!\n";
     return false;
   }
   m_Present = true;
@@ -192,7 +192,7 @@ bool BinarySubRecordExtended::loadFromStreamExtended(std::istream& in_File, cons
   in_File.read((char*) &subLength, 2);
   if (subLength!=0)
   {
-    std::cout << "Error while reading extended subrecord "<<IntTo4Char(subHeader)
+    std::cerr << "Error while reading extended subrecord "<<IntTo4Char(subHeader)
               << "sub length is not zero!\n";
     return false;
   }
@@ -208,7 +208,7 @@ bool BinarySubRecordExtended::loadFromStreamExtended(std::istream& in_File, cons
   in_File.read((char*) m_Pointer, realSize);
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord "<<IntTo4Char(subHeader)<<"!\n";
+    std::cerr << "Error while reading subrecord "<<IntTo4Char(subHeader)<<"!\n";
     return false;
   }
   m_Present = true;

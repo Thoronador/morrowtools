@@ -134,7 +134,7 @@ bool ContainerRecord::saveToStream(std::ostream& output) const
     //write VMAD
     if (!unknownVMAD.saveToStream(output, cVMAD))
     {
-      std::cout << "Error while writing subrecord VMAD of CONT!\n";
+      std::cerr << "Error while writing subrecord VMAD of CONT!\n";
       return false;
     }
   }//if VMAD
@@ -170,7 +170,7 @@ bool ContainerRecord::saveToStream(std::ostream& output) const
     //write MODT
     if (!unknownMODT.saveToStream(output, cMODT))
     {
-      std::cout << "Error while writing subrecord MODT of CONT!\n";
+      std::cerr << "Error while writing subrecord MODT of CONT!\n";
       return false;
     }
   }//if MODT
@@ -180,7 +180,7 @@ bool ContainerRecord::saveToStream(std::ostream& output) const
     //write MODS
     if (!unknownMODS.saveToStream(output, cMODS))
     {
-      std::cout << "Error while writing subrecord MODS of CONT!\n";
+      std::cerr << "Error while writing subrecord MODS of CONT!\n";
       return false;
     }
   }//if MODS
@@ -216,7 +216,7 @@ bool ContainerRecord::saveToStream(std::ostream& output) const
     //write COED
     if (!unknownCOED.saveToStream(output, cCOED))
     {
-      std::cout << "Error while writing subrecord COED of CONT!\n";
+      std::cerr << "Error while writing subrecord COED of CONT!\n";
       return false;
     }
   }//if COED
@@ -278,7 +278,7 @@ bool ContainerRecord::loadFromStream(std::istream& in_File, const bool localized
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of CONT is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of CONT is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -288,7 +288,7 @@ bool ContainerRecord::loadFromStream(std::istream& in_File, const bool localized
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of CONT!\n";
+    std::cerr << "Error while reading subrecord EDID of CONT!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -316,7 +316,7 @@ bool ContainerRecord::loadFromStream(std::istream& in_File, const bool localized
       case cVMAD:
            if (unknownVMAD.isPresent())
            {
-             std::cout << "Error: CONT seems to have more than one VMAD subrecord.\n";
+             std::cerr << "Error: CONT seems to have more than one VMAD subrecord.\n";
              return false;
            }
            //read VMAD
@@ -326,7 +326,7 @@ bool ContainerRecord::loadFromStream(std::istream& in_File, const bool localized
       case cOBND:
            if (hasReadOBND)
            {
-             std::cout << "Error: record CONT seems to have more than one OBND subrecord!\n";
+             std::cerr << "Error: record CONT seems to have more than one OBND subrecord!\n";
              return false;
            }
            //OBND's length
@@ -334,7 +334,7 @@ bool ContainerRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength!=12)
            {
-             std::cout <<"Error: sub record OBND of CONT has invalid length ("
+             std::cerr <<"Error: sub record OBND of CONT has invalid length ("
                        <<subLength<<" bytes). Should be 12 bytes.\n";
              return false;
            }
@@ -343,7 +343,7 @@ bool ContainerRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 12;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord OBND of CONT!\n";
+             std::cerr << "Error while reading subrecord OBND of CONT!\n";
              return false;
            }
            hasReadOBND = true;
@@ -351,7 +351,7 @@ bool ContainerRecord::loadFromStream(std::istream& in_File, const bool localized
       case cFULL:
            if (name.isPresent())
            {
-             std::cout << "Error: record CONT seems to have more than one FULL subrecord!\n";
+             std::cerr << "Error: record CONT seems to have more than one FULL subrecord!\n";
              return false;
            }
            //read FULL
@@ -361,14 +361,14 @@ bool ContainerRecord::loadFromStream(std::istream& in_File, const bool localized
       case cMODL:
            if (!modelPath.empty())
            {
-             std::cout << "Error: CONT seems to have more than one MODL subrecord.\n";
+             std::cerr << "Error: CONT seems to have more than one MODL subrecord.\n";
              return false;
            }
            if (!loadString512FromStream(in_File, modelPath, buffer, cMODL, false, bytesRead))
              return false;
            if (modelPath.empty())
            {
-             std::cout << "Error: subrecord MODL of CONT is empty!\n";
+             std::cerr << "Error: subrecord MODL of CONT is empty!\n";
              return false;
            }
            break;
@@ -386,7 +386,7 @@ bool ContainerRecord::loadFromStream(std::istream& in_File, const bool localized
       case cMODS:
            if (unknownMODS.isPresent())
            {
-             std::cout << "Error: CONT seems to have more than one MODS subrecord.\n";
+             std::cerr << "Error: CONT seems to have more than one MODS subrecord.\n";
              return false;
            }
            //read MODS
@@ -396,7 +396,7 @@ bool ContainerRecord::loadFromStream(std::istream& in_File, const bool localized
       case cCOCT:
            if (!contents.empty())
            {
-             std::cout << "Error: record CONT seems to have more than one COCT subrecord!\n";
+             std::cerr << "Error: record CONT seems to have more than one COCT subrecord!\n";
              return false;
            }
            if (!loadUint32SubRecordFromStream(in_File, cCOCT, tempSize, false))
@@ -419,7 +419,7 @@ bool ContainerRecord::loadFromStream(std::istream& in_File, const bool localized
              bytesRead += 2;
              if (subLength!=8)
              {
-               std::cout <<"Error: sub record CNTO of CONT has invalid length ("
+               std::cerr <<"Error: sub record CNTO of CONT has invalid length ("
                          <<subLength<<" bytes). Should be eight bytes.\n";
                return false;
              }
@@ -429,7 +429,7 @@ bool ContainerRecord::loadFromStream(std::istream& in_File, const bool localized
              bytesRead += 8;
              if (!in_File.good())
              {
-               std::cout << "Error while reading subrecord COCT of CONT!\n";
+               std::cerr << "Error while reading subrecord COCT of CONT!\n";
                return false;
              }
              contents.push_back(tempComponent);
@@ -449,7 +449,7 @@ bool ContainerRecord::loadFromStream(std::istream& in_File, const bool localized
       case cDATA:
            if (hasReadDATA)
            {
-             std::cout << "Error: record CONT seems to have more than one DATA subrecord!\n";
+             std::cerr << "Error: record CONT seems to have more than one DATA subrecord!\n";
              return false;
            }
            //DATA's length
@@ -457,7 +457,7 @@ bool ContainerRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength!=5)
            {
-             std::cout <<"Error: sub record DATA of CONT has invalid length ("
+             std::cerr <<"Error: sub record DATA of CONT has invalid length ("
                        <<subLength<<" bytes). Should be five bytes.\n";
              return false;
            }
@@ -467,7 +467,7 @@ bool ContainerRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 5;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord DATA of CONT!\n";
+             std::cerr << "Error while reading subrecord DATA of CONT!\n";
              return false;
            }
            hasReadDATA = true;
@@ -475,7 +475,7 @@ bool ContainerRecord::loadFromStream(std::istream& in_File, const bool localized
       case cSNAM:
            if (openSoundFormID!=0)
            {
-             std::cout << "Error: record CONT seems to have more than one SNAM subrecord!\n";
+             std::cerr << "Error: record CONT seems to have more than one SNAM subrecord!\n";
              return false;
            }
            //read SNAM
@@ -483,14 +483,14 @@ bool ContainerRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 6;
            if (openSoundFormID==0)
            {
-             std::cout << "Error: subrecord SNAM of CONT is zero!\n";
+             std::cerr << "Error: subrecord SNAM of CONT is zero!\n";
              return false;
            }
            break;
       case cQNAM:
            if (closeSoundFormID!=0)
            {
-             std::cout << "Error: record CONT seems to have more than one QNAM subrecord!\n";
+             std::cerr << "Error: record CONT seems to have more than one QNAM subrecord!\n";
              return false;
            }
            //read QNAM
@@ -498,12 +498,12 @@ bool ContainerRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 6;
            if (closeSoundFormID==0)
            {
-             std::cout << "Error: subrecord QNAM of CONT is zero!\n";
+             std::cerr << "Error: subrecord QNAM of CONT is zero!\n";
              return false;
            }
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only VMAD, OBND, FULL, MODL, MODT, MODS,"
                      << " COCT, COED, DATA, SNAM or QNAM are allowed here!\n";
            return false;
@@ -514,7 +514,7 @@ bool ContainerRecord::loadFromStream(std::istream& in_File, const bool localized
   //presence checks
   if (!(hasReadOBND and hasReadDATA))
   {
-    std::cout << "Error: at least one required subrecord of CONT is missing!\n";
+    std::cerr << "Error: at least one required subrecord of CONT is missing!\n";
     return false;
   }
 

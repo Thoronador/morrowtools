@@ -90,7 +90,7 @@ bool ApparatusRecord::saveToStream(std::ostream& output) const
   //write FULL
   if (!name.saveToStream(output, cFULL))
   {
-    std::cout << "Error while writing subrecord FULL of APPA!\n";
+    std::cerr << "Error while writing subrecord FULL of APPA!\n";
     return false;
   }
 
@@ -105,7 +105,7 @@ bool ApparatusRecord::saveToStream(std::ostream& output) const
   //write DESC
   if (!description.saveToStream(output, cDESC))
   {
-    std::cout << "Error while writing subrecord DESC of APPA!\n";
+    std::cerr << "Error while writing subrecord DESC of APPA!\n";
     return false;
   }
 
@@ -144,7 +144,7 @@ bool ApparatusRecord::loadFromStream(std::istream& in_File, const bool localized
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of APPA is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of APPA is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -154,7 +154,7 @@ bool ApparatusRecord::loadFromStream(std::istream& in_File, const bool localized
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of APPA!\n";
+    std::cerr << "Error while reading subrecord EDID of APPA!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -172,7 +172,7 @@ bool ApparatusRecord::loadFromStream(std::istream& in_File, const bool localized
   bytesRead += 2;
   if (subLength!=12)
   {
-    std::cout <<"Error: sub record OBND of APPA has invalid length ("
+    std::cerr <<"Error: sub record OBND of APPA has invalid length ("
               <<subLength<<" bytes. Should be 12 bytes!\n";
     return false;
   }
@@ -181,21 +181,21 @@ bool ApparatusRecord::loadFromStream(std::istream& in_File, const bool localized
   bytesRead += 12;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord OBND of APPA!\n";
+    std::cerr << "Error while reading subrecord OBND of APPA!\n";
     return false;
   }
 
   //read FULL
   if (!name.loadFromStream(in_File, cFULL, true, bytesRead, localized, table, buffer))
   {
-    std::cout << "Error while reading subrecord FULL of APPA!\n";
+    std::cerr << "Error while reading subrecord FULL of APPA!\n";
     return false;
   }
 
   //read QUAL
   if (!loadUint32SubRecordFromStream(in_File, cQUAL, quality, true))
   {
-    std::cout << "Error while reading subrecord QUAL of APPA!\n";
+    std::cerr << "Error while reading subrecord QUAL of APPA!\n";
     return false;
   }
   bytesRead += 10;
@@ -203,7 +203,7 @@ bool ApparatusRecord::loadFromStream(std::istream& in_File, const bool localized
   //read DESC
   if (!description.loadFromStream(in_File, cDESC, true, bytesRead, localized, table, buffer))
   {
-    std::cout << "Error while reading subrecord DESC of APPA!\n";
+    std::cerr << "Error while reading subrecord DESC of APPA!\n";
     return false;
   }
 
@@ -220,7 +220,7 @@ bool ApparatusRecord::loadFromStream(std::istream& in_File, const bool localized
   bytesRead += 2;
   if (subLength!=8)
   {
-    std::cout <<"Error: sub record DATA of APPA has invalid length ("
+    std::cerr <<"Error: sub record DATA of APPA has invalid length ("
               <<subLength<<" bytes. Should be 8 bytes!\n";
     return false;
   }
@@ -230,7 +230,7 @@ bool ApparatusRecord::loadFromStream(std::istream& in_File, const bool localized
   bytesRead += 8;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord DATA of APPA!\n";
+    std::cerr << "Error while reading subrecord DATA of APPA!\n";
     return false;
   }
 

@@ -157,7 +157,7 @@ bool ShoutRecord::loadFromStream(std::istream& in_File, const bool localized, co
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of SHOU is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of SHOU is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -167,7 +167,7 @@ bool ShoutRecord::loadFromStream(std::istream& in_File, const bool localized, co
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of SHOU!\n";
+    std::cerr << "Error while reading subrecord EDID of SHOU!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -188,7 +188,7 @@ bool ShoutRecord::loadFromStream(std::istream& in_File, const bool localized, co
       case cFULL:
            if (fullName.isPresent())
            {
-             std::cout << "Error: SHOU seems to have more than one FULL subrecord.\n";
+             std::cerr << "Error: SHOU seems to have more than one FULL subrecord.\n";
              return false;
            }
            //read FULL
@@ -198,7 +198,7 @@ bool ShoutRecord::loadFromStream(std::istream& in_File, const bool localized, co
       case cMDOB:
            if (menuDisplayObjectFormID!=0)
            {
-             std::cout << "Error: SHOU seems to have more than one MDOB subrecord.\n";
+             std::cerr << "Error: SHOU seems to have more than one MDOB subrecord.\n";
              return false;
            }
            //read MDOB
@@ -207,14 +207,14 @@ bool ShoutRecord::loadFromStream(std::istream& in_File, const bool localized, co
            //check content
            if (menuDisplayObjectFormID==0)
            {
-             std::cout << "Error: subrecord MDOB of SHOU is zero!\n";
+             std::cerr << "Error: subrecord MDOB of SHOU is zero!\n";
              return false;
            }
            break;
       case cDESC:
            if (description.isPresent())
            {
-             std::cout << "Error: SHOU seems to have more than one DESC subrecord.\n";
+             std::cerr << "Error: SHOU seems to have more than one DESC subrecord.\n";
              return false;
            }
            //read DESC
@@ -227,7 +227,7 @@ bool ShoutRecord::loadFromStream(std::istream& in_File, const bool localized, co
            bytesRead += 2;
            if (subLength!=12)
            {
-             std::cout <<"Error: sub record SNAM of SHOU has invalid length("
+             std::cerr <<"Error: sub record SNAM of SHOU has invalid length("
                        <<subLength<<" bytes). Should be 12 bytes.\n";
              return false;
            }
@@ -241,13 +241,13 @@ bool ShoutRecord::loadFromStream(std::istream& in_File, const bool localized, co
            bytesRead += 12;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord SNAM of SHOU!\n";
+             std::cerr << "Error while reading subrecord SNAM of SHOU!\n";
              return false;
            }
            words.push_back(temp);
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only FULL, MDOB, DESC or SNAM are allowed!\n";
            return false;
            break;
@@ -257,7 +257,7 @@ bool ShoutRecord::loadFromStream(std::istream& in_File, const bool localized, co
   //check for presence of required elements
   if ((!description.isPresent()) or (words.size()!=3))
   {
-    std::cout << "Error: at least one subrecord of SHOU is not present!\n"
+    std::cerr << "Error: at least one subrecord of SHOU is not present!\n"
               << "hasDESC: "<<description.isPresent()<<", SNAM.size="<<words.size()<<"\n";
     return false;
   }

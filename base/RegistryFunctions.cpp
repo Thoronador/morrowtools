@@ -42,12 +42,12 @@ bool getRegistryStringValueHKLM(std::string& theString, const std::string& subKe
   LONG res = RegOpenKeyExA(HKEY_LOCAL_MACHINE, subKey.c_str(), 0, KEY_READ, &resultingHKEY);
   if (res==ERROR_FILE_NOT_FOUND)
   {
-    std::cout << "Error: Registry key \"HKLM\\"<<subKey<<"\" was not found!\n";
+    std::cerr << "Error: Registry key \"HKLM\\"<<subKey<<"\" was not found!\n";
     return false;
   }
   if (res!=ERROR_SUCCESS)
   {
-    std::cout << "Error: Could not open registry key \"HKLM\\"<<subKey<<"\"!\n";
+    std::cerr << "Error: Could not open registry key \"HKLM\\"<<subKey<<"\"!\n";
     return false;
   }
 
@@ -67,7 +67,7 @@ bool getRegistryStringValueHKLM(std::string& theString, const std::string& subKe
   }//if
   if (res==ERROR_FILE_NOT_FOUND)
   {
-    std::cout << "Error: Registry value \""<<valueName<<"\" was not found in HKLM!\n";
+    std::cerr << "Error: Registry value \""<<valueName<<"\" was not found in HKLM!\n";
     RegCloseKey(resultingHKEY);
     delete[] buffer;
     buffer = NULL;

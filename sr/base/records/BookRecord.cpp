@@ -136,7 +136,7 @@ bool BookRecord::saveToStream(std::ostream& output) const
   {
     if (!unknownVMAD.saveToStream(output, cVMAD))
     {
-      std::cout << "Error while writing subrecord VMAD of BOOK!\n";
+      std::cerr << "Error while writing subrecord VMAD of BOOK!\n";
       return false;
     }
   }//if VMAD
@@ -167,7 +167,7 @@ bool BookRecord::saveToStream(std::ostream& output) const
   //write MODT
   if (!unknownMODT.saveToStream(output, cMODT))
   {
-    std::cout << "Error while writing subrecord MODT of BOOK!\n";
+    std::cerr << "Error while writing subrecord MODT of BOOK!\n";
     return false;
   }
 
@@ -277,7 +277,7 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of BOOK is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of BOOK is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -287,7 +287,7 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of BOOK!\n";
+    std::cerr << "Error while reading subrecord EDID of BOOK!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -299,7 +299,7 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
   {
     if (!unknownVMAD.loadFromStream(in_File, cVMAD, false))
     {
-      std::cout << "Error while reading subrecord VMAD of BOOK!\n";
+      std::cerr << "Error while reading subrecord VMAD of BOOK!\n";
       return false;
     }
     bytesRead = bytesRead + 2 + unknownVMAD.size();
@@ -323,7 +323,7 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
   bytesRead += 2;
   if (subLength!=12)
   {
-    std::cout <<"Error: sub record OBND of BOOK has invalid length ("<<subLength
+    std::cerr <<"Error: sub record OBND of BOOK has invalid length ("<<subLength
               <<" bytes). Should be 12 bytes.\n";
     return false;
   }
@@ -332,7 +332,7 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
   bytesRead += 12;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord OBND of BOOK!\n";
+    std::cerr << "Error while reading subrecord OBND of BOOK!\n";
     return false;
   }
 
@@ -359,7 +359,7 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
       case cFULL:
            if (title.isPresent())
            {
-             std::cout << "Error: BOOK seems to have more than one FULL subrecord.\n";
+             std::cerr << "Error: BOOK seems to have more than one FULL subrecord.\n";
              return false;
            }
            //read FULL
@@ -369,7 +369,7 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
       case cMODL:
            if (hasReadMODL)
            {
-             std::cout << "Error: BOOK seems to have more than one MODL subrecord.\n";
+             std::cerr << "Error: BOOK seems to have more than one MODL subrecord.\n";
              return false;
            }
            //read MODL
@@ -378,7 +378,7 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
            bytesRead += 2;
            if (subLength>511)
            {
-             std::cout <<"Error: sub record MODL of BOOK is longer than 511 characters!\n";
+             std::cerr <<"Error: sub record MODL of BOOK is longer than 511 characters!\n";
              return false;
            }
            //read model path
@@ -387,7 +387,7 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
            bytesRead += subLength;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord MODL of BOOK!\n";
+             std::cerr << "Error while reading subrecord MODL of BOOK!\n";
              return false;
            }
            modelPath = std::string(buffer);
@@ -405,7 +405,7 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
       case cKSIZ:
            if (hasReadKSIZ)
            {
-             std::cout << "Error: BOOK seems to have more than one KSIZ subrecord.\n";
+             std::cerr << "Error: BOOK seems to have more than one KSIZ subrecord.\n";
              return false;
            }
            //read KSIZ
@@ -426,7 +426,7 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
            bytesRead += 2;
            if (subLength!=4*k_Size)
            {
-             std::cout <<"Error: sub record KWDA of BOOK has invalid length ("<<subLength
+             std::cerr <<"Error: sub record KWDA of BOOK has invalid length ("<<subLength
                        <<" bytes). Should be "<<4*k_Size<<" bytes.\n";
              return false;
            }
@@ -438,7 +438,7 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
              bytesRead += 4;
              if (!in_File.good())
              {
-               std::cout << "Error while reading subrecord KWDA of BOOK!\n";
+               std::cerr << "Error while reading subrecord KWDA of BOOK!\n";
                return false;
              }
              keywordArray.push_back(temp);
@@ -448,7 +448,7 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
       case cDATA:
            if (hasReadDATA)
            {
-             std::cout << "Error: BOOK seems to have more than one DATA subrecord.\n";
+             std::cerr << "Error: BOOK seems to have more than one DATA subrecord.\n";
              return false;
            }
            //DATA's length
@@ -456,7 +456,7 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
            bytesRead += 2;
            if (subLength!=16)
            {
-             std::cout <<"Error: sub record DATA of BOOK has invalid length ("<<subLength
+             std::cerr <<"Error: sub record DATA of BOOK has invalid length ("<<subLength
                        <<" bytes). Should be 16 bytes.\n";
              return false;
            }
@@ -468,7 +468,7 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
            bytesRead += 16;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord DATA of BOOK!\n";
+             std::cerr << "Error while reading subrecord DATA of BOOK!\n";
              return false;
            }
            hasReadDATA = true;
@@ -476,7 +476,7 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
       case cINAM:
            if (inventoryArtFormID!=0)
            {
-             std::cout << "Error: BOOK seems to have more than one INAM subrecord.\n";
+             std::cerr << "Error: BOOK seems to have more than one INAM subrecord.\n";
              return false;
            }
            //read INAM
@@ -484,14 +484,14 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
            bytesRead += 6;
            if (inventoryArtFormID==0)
            {
-             std::cout << "Error: subrecord INAM of BOOK is zero!\n";
+             std::cerr << "Error: subrecord INAM of BOOK is zero!\n";
              return false;
            }
            break;
       case cCNAM:
            if (hasReadCNAM)
            {
-             std::cout << "Error: BOOK seems to have more than one CNAM subrecord.\n";
+             std::cerr << "Error: BOOK seems to have more than one CNAM subrecord.\n";
              return false;
            }
            //read CNAM
@@ -502,7 +502,7 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
       case cYNAM:
            if (pickupSoundFormID!=0)
            {
-             std::cout << "Error: BOOK seems to have more than one YNAM subrecord.\n";
+             std::cerr << "Error: BOOK seems to have more than one YNAM subrecord.\n";
              return false;
            }
            //read YNAM
@@ -510,14 +510,14 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
            bytesRead += 6;
            if (pickupSoundFormID==0)
            {
-             std::cout << "Error: subrecord YNAM of BOOK is zero!\n";
+             std::cerr << "Error: subrecord YNAM of BOOK is zero!\n";
              return false;
            }
            break;
       case cZNAM:
            if (putdownSoundFormID!=0)
            {
-             std::cout << "Error: BOOK seems to have more than one ZNAM subrecord.\n";
+             std::cerr << "Error: BOOK seems to have more than one ZNAM subrecord.\n";
              return false;
            }
            //read ZNAM
@@ -525,12 +525,12 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
            bytesRead += 6;
            if (putdownSoundFormID==0)
            {
-             std::cout << "Error: subrecord ZNAM of BOOK is zero!\n";
+             std::cerr << "Error: subrecord ZNAM of BOOK is zero!\n";
              return false;
            }
            break;
       default:
-           std::cout << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
                      << "\", but only MODL, KSIZ, DATA, INAM, CNAM, YNAM or ZNAM are allowed here!\n";
            return false;
     }//swi
@@ -539,7 +539,7 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
   //check presence of all required subrecords
   if (!(hasReadMODL and hasReadDATA and hasReadCNAM))
   {
-    std::cout << "Error: At least one required subrecord of BOOK was not found!\n";
+    std::cerr << "Error: At least one required subrecord of BOOK was not found!\n";
     return false;
   }
   return in_File.good();

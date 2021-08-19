@@ -60,7 +60,7 @@ const std::string& StringTable::getString(const uint32_t stringID) const
   {
     return iter->second;
   }
-  std::cout << "StringTable: Error there is no string for ID "<<stringID<<"!\n";
+  std::cerr << "StringTable: Error there is no string for ID "<<stringID<<"!\n";
   throw std::runtime_error("StringTable: Error there is no string for the given ID!");
 }
 
@@ -97,7 +97,7 @@ bool StringTable::readTable(const std::string& FileName, DataType stringType)
     const std::string::size_type dotPos = FileName.rfind('.');
     if (dotPos==std::string::npos)
     {
-      std::cout << "Error: Cannot determine string data type!\n";
+      std::cerr << "Error: Cannot determine string data type!\n";
       return false;
     }
     std::string ext = lowerCase(FileName.substr(dotPos));
@@ -111,7 +111,7 @@ bool StringTable::readTable(const std::string& FileName, DataType stringType)
     }
     else
     {
-      std::cout << "Error: Cannot determine string data type, unknown extension \""<<ext<<"\"!\n";
+      std::cerr << "Error: Cannot determine string data type, unknown extension \""<<ext<<"\"!\n";
       return false;
     }
   }//if unknown type
@@ -120,7 +120,7 @@ bool StringTable::readTable(const std::string& FileName, DataType stringType)
   input.open(FileName.c_str(), std::ios::in | std::ios::binary);
   if (!input)
   {
-    std::cout << "StringTable: Error: could not open file \""<<FileName<<"\".\n";
+    std::cerr << "StringTable: Error: could not open file \""<<FileName<<"\".\n";
     return false;
   }
 
@@ -134,7 +134,7 @@ bool StringTable::readTable(const std::string& FileName, DataType stringType)
   input.read((char*)&dataSize, 4);
   if (!input.good())
   {
-    std::cout << "StringTable: Error while reading header!\n";
+    std::cerr << "StringTable: Error while reading header!\n";
     input.close();
     return false;
   }
@@ -149,7 +149,7 @@ bool StringTable::readTable(const std::string& FileName, DataType stringType)
     input.read((char*) &(temp.offset), 4);
     if (!input.good())
     {
-      std::cout << "StringTable: Error while reading directory!\n";
+      std::cerr << "StringTable: Error while reading directory!\n";
       input.close();
       return false;
     }
@@ -174,7 +174,7 @@ bool StringTable::readTable(const std::string& FileName, DataType stringType)
     input.seekg(offsetBase+static_cast<std::ifstream::pos_type>(theDirectory[i].offset), std::ios_base::beg);
     if (!input.good())
     {
-      std::cout << "StringTable::readTable: Error: could not jump to given offset!\n";
+      std::cerr << "StringTable::readTable: Error: could not jump to given offset!\n";
       delete[] ptrSpace;
       input.close();
       return false;
@@ -186,7 +186,7 @@ bool StringTable::readTable(const std::string& FileName, DataType stringType)
       input.read((char*) &length, 4);
       if (length>65536)
       {
-        std::cout << "Error: length ("<<length<<") is greater than 65536!\n";
+        std::cerr << "Error: length ("<<length<<") is greater than 65536!\n";
         delete[] ptrSpace;
         input.close();
         return false;
@@ -203,7 +203,7 @@ bool StringTable::readTable(const std::string& FileName, DataType stringType)
       input.read((char*) ptrSpace, length);
       if (!input.good())
       {
-        std::cout << "StringTable::readTable: Error while reading string!\n";
+        std::cerr << "StringTable::readTable: Error while reading string!\n";
         input.close();
         delete[] ptrSpace;
         return false;
@@ -222,7 +222,7 @@ bool StringTable::readTable(const std::string& FileName, DataType stringType)
       if (length+1==allocatedSpace)
       {
         ptrSpace[length] = '\0';
-        std::cout << "Error: string was cut off after reaching allocation limit!\n";
+        std::cerr << "Error: string was cut off after reaching allocation limit!\n";
         delete[] ptrSpace;
         return false;
       }
@@ -245,7 +245,7 @@ bool StringTable::writeTable(const std::string& FileName, DataType stringType) c
     const std::string::size_type dotPos = FileName.rfind('.');
     if (dotPos==std::string::npos)
     {
-      std::cout << "Error: Cannot determine string data type!\n";
+      std::cerr << "Error: Cannot determine string data type!\n";
       return false;
     }
     std::string ext = lowerCase(FileName.substr(dotPos));
@@ -259,7 +259,7 @@ bool StringTable::writeTable(const std::string& FileName, DataType stringType) c
     }
     else
     {
-      std::cout << "Error: Cannot determine string data type, unknown extension \""<<ext<<"\"!\n";
+      std::cerr << "Error: Cannot determine string data type, unknown extension \""<<ext<<"\"!\n";
       return false;
     }
   }//if unknown type
@@ -304,7 +304,7 @@ bool StringTable::writeTable(const std::string& FileName, DataType stringType) c
   output.open(FileName.c_str(), std::ios::out | std::ios::binary | std::ios::trunc);
   if (!output)
   {
-    std::cout << "StringTable::writeTable: Error: could not open file \""<<FileName<<"\".\n";
+    std::cerr << "StringTable::writeTable: Error: could not open file \""<<FileName<<"\".\n";
     return false;
   }
 
@@ -314,7 +314,7 @@ bool StringTable::writeTable(const std::string& FileName, DataType stringType) c
   output.write((const char*)&dataSize, 4);
   if (!output.good())
   {
-    std::cout << "StringTable::writeTable: Error while writing header!\n";
+    std::cerr << "StringTable::writeTable: Error while writing header!\n";
     output.close();
     return false;
   }
@@ -327,7 +327,7 @@ bool StringTable::writeTable(const std::string& FileName, DataType stringType) c
     output.write((const char*) &(theDirectory[i].offset), 4);
     if (!output.good())
     {
-      std::cout << "StringTable::writeTable: Error while writing directory entries!\n";
+      std::cerr << "StringTable::writeTable: Error while writing directory entries!\n";
       output.close();
       return false;
     }
@@ -348,7 +348,7 @@ bool StringTable::writeTable(const std::string& FileName, DataType stringType) c
     output.write(cIter->second.c_str(), i);
     if (!output.good())
     {
-      std::cout << "StringTable::writeTable: Error while writing string data!\n";
+      std::cerr << "StringTable::writeTable: Error while writing string data!\n";
       output.close();
       return false;
     }

@@ -117,7 +117,7 @@ bool KeyRecord::saveToStream(std::ostream& output) const
     //write VMAD
     if (!unknownVMAD.saveToStream(output, cVMAD))
     {
-      std::cout << "Error while writing VMAD of KEYM!";
+      std::cerr << "Error while writing VMAD of KEYM!";
       return false;
     }
   }//if VMAD
@@ -150,7 +150,7 @@ bool KeyRecord::saveToStream(std::ostream& output) const
     //write MODT
     if (!unknownMODT.saveToStream(output, cMODT))
     {
-      std::cout << "Error while writing MODT of KEYM!";
+      std::cerr << "Error while writing MODT of KEYM!";
       return false;
     }
   }//if MODT
@@ -236,7 +236,7 @@ bool KeyRecord::loadFromStream(std::istream& in_File, const bool localized, cons
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of KEYM is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of KEYM is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -246,7 +246,7 @@ bool KeyRecord::loadFromStream(std::istream& in_File, const bool localized, cons
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of KEYM!\n";
+    std::cerr << "Error while reading subrecord EDID of KEYM!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -285,7 +285,7 @@ bool KeyRecord::loadFromStream(std::istream& in_File, const bool localized, cons
   bytesRead += 2;
   if (subLength!=12)
   {
-    std::cout <<"Error: sub record OBND of KEYM has invalid length ("
+    std::cerr <<"Error: sub record OBND of KEYM has invalid length ("
               <<subLength<<" bytes. Should be 12 bytes!\n";
     return false;
   }
@@ -294,14 +294,14 @@ bool KeyRecord::loadFromStream(std::istream& in_File, const bool localized, cons
   bytesRead += 12;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord OBND of KEYM!\n";
+    std::cerr << "Error while reading subrecord OBND of KEYM!\n";
     return false;
   }
 
   //read FULL
   if (!name.loadFromStream(in_File, cFULL, true, bytesRead, localized, table, buffer))
   {
-    std::cout << "Error while reading subrecord FULL of KEYM!\n";
+    std::cerr << "Error while reading subrecord FULL of KEYM!\n";
     return false;
   }
 
@@ -322,7 +322,7 @@ bool KeyRecord::loadFromStream(std::istream& in_File, const bool localized, cons
       case cMODL:
            if (!modelPath.empty())
            {
-             std::cout << "Error: KEYM seems to have more than one MODL subrecord!\n";
+             std::cerr << "Error: KEYM seems to have more than one MODL subrecord!\n";
              return false;
            }
            //read MODL
@@ -331,7 +331,7 @@ bool KeyRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            //check content
            if (modelPath.empty())
            {
-             std::cout << "Error: subrecord MODL of KEYM is empty!\n";
+             std::cerr << "Error: subrecord MODL of KEYM is empty!\n";
              return false;
            }
            break;
@@ -352,7 +352,7 @@ bool KeyRecord::loadFromStream(std::istream& in_File, const bool localized, cons
       case cYNAM:
            if (pickupSoundFormID!=0)
            {
-             std::cout << "Error: KEYM seems to have more than one YNAM subrecord!\n";
+             std::cerr << "Error: KEYM seems to have more than one YNAM subrecord!\n";
              return false;
            }
            //read YNAM
@@ -361,14 +361,14 @@ bool KeyRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            //check value
            if (pickupSoundFormID==0)
            {
-             std::cout <<"Error: subrecord YNAM of KEYM has value zero!\n";
+             std::cerr <<"Error: subrecord YNAM of KEYM has value zero!\n";
              return false;
            }
            break;
       case cZNAM:
            if (putdownSoundFormID!=0)
            {
-             std::cout << "Error: KEYM seems to have more than one ZNAM subrecord!\n";
+             std::cerr << "Error: KEYM seems to have more than one ZNAM subrecord!\n";
              return false;
            }
            //read ZNAM
@@ -377,14 +377,14 @@ bool KeyRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            //check value
            if (putdownSoundFormID==0)
            {
-             std::cout <<"Error: subrecord ZNAM of KEYM has value zero!\n";
+             std::cerr <<"Error: subrecord ZNAM of KEYM has value zero!\n";
              return false;
            }
            break;
       case cKSIZ:
            if (!keywordArray.empty())
            {
-             std::cout << "Error: KEYM seems to have more than one KSIZ subrecord!\n";
+             std::cerr << "Error: KEYM seems to have more than one KSIZ subrecord!\n";
              return false;
            }
            //KSIZ's length
@@ -392,7 +392,7 @@ bool KeyRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 2;
            if (subLength!=4)
            {
-             std::cout <<"Error: subrecord KSIZ of KEYM has invalid length ("
+             std::cerr <<"Error: subrecord KSIZ of KEYM has invalid length ("
                        <<subLength<<" bytes). Should be four bytes!\n";
              return false;
            }
@@ -402,7 +402,7 @@ bool KeyRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 4;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord KSIZ of KEYM!\n";
+             std::cerr << "Error while reading subrecord KSIZ of KEYM!\n";
              return false;
            }//if
 
@@ -420,7 +420,7 @@ bool KeyRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 2;
            if (subLength!=4*k_Size)
            {
-             std::cout <<"Error: sub record KWDA of KEYM has invalid length ("
+             std::cerr <<"Error: sub record KWDA of KEYM has invalid length ("
                        <<subLength<<" bytes. Should be "<<4*k_Size<<" bytes!\n";
              return false;
            }
@@ -431,7 +431,7 @@ bool KeyRecord::loadFromStream(std::istream& in_File, const bool localized, cons
              bytesRead += 4;
              if (!in_File.good())
              {
-               std::cout << "Error while reading subrecord KWDA of KEYM!\n";
+               std::cerr << "Error while reading subrecord KWDA of KEYM!\n";
                return false;
              }//if
              keywordArray.push_back(temp);
@@ -440,7 +440,7 @@ bool KeyRecord::loadFromStream(std::istream& in_File, const bool localized, cons
       case cDATA:
            if (hasReadDATA)
            {
-             std::cout << "Error: KEYM seems to have more than one DATA subrecord!\n";
+             std::cerr << "Error: KEYM seems to have more than one DATA subrecord!\n";
              return false;
            }
            //DATA's length
@@ -448,7 +448,7 @@ bool KeyRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 2;
            if (subLength!=8)
            {
-             std::cout <<"Error: subrecord DATA of KEYM has invalid length ("
+             std::cerr <<"Error: subrecord DATA of KEYM has invalid length ("
                        <<subLength<<" bytes). Should be 8 bytes!\n";
              return false;
            }
@@ -458,13 +458,13 @@ bool KeyRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 8;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord DATA of KEYM!\n";
+             std::cerr << "Error while reading subrecord DATA of KEYM!\n";
              return false;
            }//if
            hasReadDATA = true;
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only MODL, MODT, YNAM, ZNAM, KSIZ or DATA "
                      << "are allowed here!\n";
            return false;
@@ -475,7 +475,7 @@ bool KeyRecord::loadFromStream(std::istream& in_File, const bool localized, cons
   //presence checks
   if (!hasReadDATA)
   {
-    std::cout << "Error: at least one subrecord of KEYM is missing!\n";
+    std::cerr << "Error: at least one subrecord of KEYM is missing!\n";
     return false;
   }
 

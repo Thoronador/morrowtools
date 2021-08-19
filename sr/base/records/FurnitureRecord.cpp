@@ -147,7 +147,7 @@ bool FurnitureRecord::saveToStream(std::ostream& output) const
     //write VMAD
     if (!unknownVMAD.saveToStream(output, cVMAD))
     {
-      std::cout << "Error while writing subrecord VMAD of FURN!\n";
+      std::cerr << "Error while writing subrecord VMAD of FURN!\n";
       return false;
     }
   }//if VMAD
@@ -157,7 +157,7 @@ bool FurnitureRecord::saveToStream(std::ostream& output) const
     //write OBND
     if (!unknownOBND.saveToStream(output, cOBND))
     {
-      std::cout << "Error while writing subrecord OBND of FURN!\n";
+      std::cerr << "Error while writing subrecord OBND of FURN!\n";
       return false;
     }
   }//if OBND
@@ -185,7 +185,7 @@ bool FurnitureRecord::saveToStream(std::ostream& output) const
     //write MODT
     if (!unknownMODT.saveToStream(output, cMODT))
     {
-      std::cout << "Error while writing subrecord MODT of FURN!\n";
+      std::cerr << "Error while writing subrecord MODT of FURN!\n";
       return false;
     }
   }//if MODT
@@ -195,14 +195,14 @@ bool FurnitureRecord::saveToStream(std::ostream& output) const
     //write MODS
     if (!unknownMODS.saveToStream(output, cMODS))
     {
-      std::cout << "Error while writing subrecord MODS of FURN!\n";
+      std::cerr << "Error while writing subrecord MODS of FURN!\n";
       return false;
     }
   }//if MODS
 
   if (!destruction.saveToStream(output))
   {
-    std::cout << "Error while writing destruction data of FURN!\n";
+    std::cerr << "Error while writing destruction data of FURN!\n";
     return false;
   }
 
@@ -401,7 +401,7 @@ bool FurnitureRecord::loadFromStream(std::istream& in_File, const bool localized
       case cFULL:
            if (name.isPresent())
            {
-             std::cout << "Error: FURN seems to have more than one FULL subrecord!\n";
+             std::cerr << "Error: FURN seems to have more than one FULL subrecord!\n";
              return false;
            }
            //read FULL
@@ -411,7 +411,7 @@ bool FurnitureRecord::loadFromStream(std::istream& in_File, const bool localized
       case cMODL:
            if (!modelPath.empty())
            {
-             std::cout << "Error: FURN seems to have more than one MODL subrecord!\n";
+             std::cerr << "Error: FURN seems to have more than one MODL subrecord!\n";
              return false;
            }
            //read MODL
@@ -420,7 +420,7 @@ bool FurnitureRecord::loadFromStream(std::istream& in_File, const bool localized
            //check content
            if (modelPath.empty())
            {
-             std::cout << "Error: subrecord MODL of FURN is empty!\n";
+             std::cerr << "Error: subrecord MODL of FURN is empty!\n";
              return false;
            }
            break;
@@ -449,7 +449,7 @@ bool FurnitureRecord::loadFromStream(std::istream& in_File, const bool localized
       case cDEST:
            if (destruction.isPresent)
            {
-             std::cout << "Error: FURN seems to have more than one DEST subrecord.\n";
+             std::cerr << "Error: FURN seems to have more than one DEST subrecord.\n";
              return false;
            }
            //read DEST and possible DSTD, DMDL, DMDT, DSTF subrecords
@@ -459,7 +459,7 @@ bool FurnitureRecord::loadFromStream(std::istream& in_File, const bool localized
       case cKSIZ:
            if (!keywords.empty())
            {
-             std::cout << "Error: FURN seems to have more than one KSIZ subrecord!\n";
+             std::cerr << "Error: FURN seems to have more than one KSIZ subrecord!\n";
              return false;
            }
            //read KSIZ
@@ -480,7 +480,7 @@ bool FurnitureRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength!=4*k_Size)
            {
-             std::cout << "Error: subrecord KWDA of FURN has invalid length ("
+             std::cerr << "Error: subrecord KWDA of FURN has invalid length ("
                        << subLength << " bytes). Should be "<<4*k_Size<<" bytes!\n";
              return false;
            }
@@ -490,7 +490,7 @@ bool FurnitureRecord::loadFromStream(std::istream& in_File, const bool localized
              in_File.read((char*) &tempUint32, 4);
              if (!in_File.good())
              {
-               std::cout << "Error while reading subrecord KWDA of FURN!\n";
+               std::cerr << "Error while reading subrecord KWDA of FURN!\n";
                return false;
              }
              keywords.push_back(tempUint32);
@@ -500,7 +500,7 @@ bool FurnitureRecord::loadFromStream(std::istream& in_File, const bool localized
       case cPNAM:
            if (hasReadPNAM)
            {
-             std::cout << "Error: FURN seems to have more than one PNAM subrecord!\n";
+             std::cerr << "Error: FURN seems to have more than one PNAM subrecord!\n";
              return false;
            }
            //read PNAM
@@ -512,7 +512,7 @@ bool FurnitureRecord::loadFromStream(std::istream& in_File, const bool localized
       case cFNAM:
            if (hasReadFNAM)
            {
-             std::cout << "Error: FURN seems to have more than one FNAM subrecord!\n";
+             std::cerr << "Error: FURN seems to have more than one FNAM subrecord!\n";
              return false;
            }
            //FNAM's length
@@ -520,7 +520,7 @@ bool FurnitureRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength!=2)
            {
-             std::cout << "Error: subrecord FNAM of FURN has invalid length ("
+             std::cerr << "Error: subrecord FNAM of FURN has invalid length ("
                        << subLength << " bytes). Should be two bytes!\n";
              return false;
            }
@@ -529,7 +529,7 @@ bool FurnitureRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord FNAM of FURN!\n";
+             std::cerr << "Error while reading subrecord FNAM of FURN!\n";
              return false;
            }
            hasReadFNAM = true;
@@ -537,7 +537,7 @@ bool FurnitureRecord::loadFromStream(std::istream& in_File, const bool localized
       case cKNAM:
            if (interactionKeywordFormID!=0)
            {
-             std::cout << "Error: FURN seems to have more than one KNAM subrecord!\n";
+             std::cerr << "Error: FURN seems to have more than one KNAM subrecord!\n";
              return false;
            }
            //read KNAM
@@ -547,14 +547,14 @@ bool FurnitureRecord::loadFromStream(std::istream& in_File, const bool localized
            //check content
            if (interactionKeywordFormID==0)
            {
-             std::cout << "Error: subrecord KNAM of FURN is zero!\n";
+             std::cerr << "Error: subrecord KNAM of FURN is zero!\n";
              return false;
            }
            break;
       case cMNAM:
            if (hasReadMNAM)
            {
-             std::cout << "Error: FURN seems to have more than one MNAM subrecord!\n";
+             std::cerr << "Error: FURN seems to have more than one MNAM subrecord!\n";
              return false;
            }
            //read MNAM
@@ -566,7 +566,7 @@ bool FurnitureRecord::loadFromStream(std::istream& in_File, const bool localized
       case cWBDT:
            if (hasReadWBDT)
            {
-             std::cout << "Error: FURN seems to have more than one WBDT subrecord!\n";
+             std::cerr << "Error: FURN seems to have more than one WBDT subrecord!\n";
              return false;
            }
            //WBDT's length
@@ -574,7 +574,7 @@ bool FurnitureRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength!=2)
            {
-             std::cout << "Error: subrecord WBDT of FURN has invalid length ("
+             std::cerr << "Error: subrecord WBDT of FURN has invalid length ("
                        << subLength << " bytes). Should be two bytes!\n";
              return false;
            }
@@ -583,7 +583,7 @@ bool FurnitureRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord WBDT of FURN!\n";
+             std::cerr << "Error while reading subrecord WBDT of FURN!\n";
              return false;
            }
            hasReadWBDT = true;
@@ -619,7 +619,7 @@ bool FurnitureRecord::loadFromStream(std::istream& in_File, const bool localized
       case cXMRK:
            if (!markerModelPath.empty())
            {
-             std::cout << "Error: FURN seems to have more than one XMRK subrecord!\n";
+             std::cerr << "Error: FURN seems to have more than one XMRK subrecord!\n";
              return false;
            }
            //read MODL
@@ -628,12 +628,12 @@ bool FurnitureRecord::loadFromStream(std::istream& in_File, const bool localized
            //check content
            if (markerModelPath.empty())
            {
-             std::cout << "Error: subrecord XMRK of FURN is empty!\n";
+             std::cerr << "Error: subrecord XMRK of FURN is empty!\n";
              return false;
            }
            break;
       default:
-           std::cout << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
                      << "\", but only VMAD, OBND, FULL, MODL, MODT, MODS, DEST,"
                      << " KSIZ, PNAM, FNAM, KNAM, MNAM, WBDT, ENAM, NAM0, FNMK,"
                      << " FNPR or XMRK are allowed here!\n";
@@ -645,8 +645,8 @@ bool FurnitureRecord::loadFromStream(std::istream& in_File, const bool localized
   if (!(hasReadPNAM and hasReadFNAM
         and hasReadMNAM and hasReadWBDT))
   {
-    std::cout << "Error: At least one required subrecord of FURN is missing!\n";
-    std::cout << "PNAM: "<<hasReadPNAM << ", FNAM: "<<hasReadFNAM
+    std::cerr << "Error: At least one required subrecord of FURN is missing!\n";
+    std::cerr << "PNAM: "<<hasReadPNAM << ", FNAM: "<<hasReadFNAM
               << ", MNAM: "<<hasReadMNAM<<", WBDT: "<<hasReadWBDT<<".\n";
     return false;
   }

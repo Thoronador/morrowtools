@@ -188,7 +188,7 @@ bool ScrollRecord::saveToStream(std::ostream& output) const
   {
     if (!unknownMODT.saveToStream(output, cMODT))
     {
-      std::cout << "Error while writing subrecord MODT of SCRL!\n";
+      std::cerr << "Error while writing subrecord MODT of SCRL!\n";
       return false;
     }
   }//if MODT
@@ -217,7 +217,7 @@ bool ScrollRecord::saveToStream(std::ostream& output) const
     {
       if (!effects[i].saveToStream(output))
       {
-        std::cout << "Error while writing effect block of SCRL!\n";
+        std::cerr << "Error while writing effect block of SCRL!\n";
         return false;
       }
     }//for i
@@ -249,7 +249,7 @@ bool ScrollRecord::loadFromStream(std::istream& in_File, const bool localized, c
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of SCRL is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of SCRL is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -259,7 +259,7 @@ bool ScrollRecord::loadFromStream(std::istream& in_File, const bool localized, c
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of SCRL!\n";
+    std::cerr << "Error while reading subrecord EDID of SCRL!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -277,7 +277,7 @@ bool ScrollRecord::loadFromStream(std::istream& in_File, const bool localized, c
   bytesRead += 2;
   if (subLength!=12)
   {
-    std::cout <<"Error: subrecord OBND of SCRL has invalid length ("<<subLength
+    std::cerr <<"Error: subrecord OBND of SCRL has invalid length ("<<subLength
               <<" bytes). Should be 12 bytes!\n";
     return false;
   }
@@ -286,7 +286,7 @@ bool ScrollRecord::loadFromStream(std::istream& in_File, const bool localized, c
   bytesRead += 12;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord OBND of SCRL!\n";
+    std::cerr << "Error while reading subrecord OBND of SCRL!\n";
     return false;
   }
 
@@ -314,7 +314,7 @@ bool ScrollRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cFULL:
            if (name.isPresent())
            {
-             std::cout << "Error: SCRL seems to have more than one FULL subrecord!\n";
+             std::cerr << "Error: SCRL seems to have more than one FULL subrecord!\n";
              return false;
            }
            //read FULL
@@ -324,7 +324,7 @@ bool ScrollRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cKSIZ:
            if (!keywordArray.empty())
            {
-             std::cout << "Error: SCRL seems to have more than one KSIZ subrecord!\n";
+             std::cerr << "Error: SCRL seems to have more than one KSIZ subrecord!\n";
              return false;
            }
            //read KSIZ
@@ -345,7 +345,7 @@ bool ScrollRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 2;
            if (subLength!=kwdaLength*4)
            {
-             std::cout <<"Error: subrecord KWDA of SCRL has invalid length ("<<subLength
+             std::cerr <<"Error: subrecord KWDA of SCRL has invalid length ("<<subLength
                        <<" bytes). Should be "<<kwdaLength*4<<" bytes!\n";
              return false;
            }
@@ -356,7 +356,7 @@ bool ScrollRecord::loadFromStream(std::istream& in_File, const bool localized, c
              bytesRead += 4;
              if (!in_File.good())
              {
-               std::cout << "Error while reading subrecord KWDA of SCRL!\n";
+               std::cerr << "Error while reading subrecord KWDA of SCRL!\n";
                return false;
              }
              keywordArray.push_back(tempKeyword);
@@ -365,7 +365,7 @@ bool ScrollRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cMDOB:
            if (hasReadMDOB)
            {
-             std::cout << "Error: SCRL seems to have more than one MDOB subrecord!\n";
+             std::cerr << "Error: SCRL seems to have more than one MDOB subrecord!\n";
              return false;
            }
            //read MDOB
@@ -376,7 +376,7 @@ bool ScrollRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cETYP:
            if (hasReadETYP)
            {
-             std::cout << "Error: SCRL seems to have more than one ETYP subrecord!\n";
+             std::cerr << "Error: SCRL seems to have more than one ETYP subrecord!\n";
              return false;
            }
            //read ETYP
@@ -387,7 +387,7 @@ bool ScrollRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cDESC:
            if (description.isPresent())
            {
-             std::cout << "Error: SCRL seems to have more than one DESC subrecord!\n";
+             std::cerr << "Error: SCRL seems to have more than one DESC subrecord!\n";
              return false;
            }
            //read DESC
@@ -397,7 +397,7 @@ bool ScrollRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cMODL:
            if (!modelPath.empty())
            {
-             std::cout << "Error: SCRL seems to have more than one MODL subrecord!\n";
+             std::cerr << "Error: SCRL seems to have more than one MODL subrecord!\n";
              return false;
            }
            //MODL's length
@@ -405,7 +405,7 @@ bool ScrollRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 2;
            if (subLength>511)
            {
-             std::cout <<"Error: sub record MODL of SCRL is longer than 511 characters!\n";
+             std::cerr <<"Error: sub record MODL of SCRL is longer than 511 characters!\n";
              return false;
            }
            //read MODL's stuff
@@ -414,7 +414,7 @@ bool ScrollRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += subLength;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord MODL of SCRL!\n";
+             std::cerr << "Error while reading subrecord MODL of SCRL!\n";
              return false;
            }
            modelPath = std::string(buffer);
@@ -436,7 +436,7 @@ bool ScrollRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cDATA:
            if (hasReadDATA)
            {
-             std::cout << "Error: SCRL seems to have more than one DATA subrecord!\n";
+             std::cerr << "Error: SCRL seems to have more than one DATA subrecord!\n";
              return false;
            }
            //DATA's length
@@ -444,7 +444,7 @@ bool ScrollRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 2;
            if (subLength!=8)
            {
-             std::cout <<"Error: subrecord DATA of SCRL has invalid length ("
+             std::cerr <<"Error: subrecord DATA of SCRL has invalid length ("
                        <<subLength<<" bytes). Should be 8 bytes!\n";
              return false;
            }
@@ -454,7 +454,7 @@ bool ScrollRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 8;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord DATA of SCRL!\n";
+             std::cerr << "Error while reading subrecord DATA of SCRL!\n";
              return false;
            }
            hasReadDATA = true;
@@ -462,7 +462,7 @@ bool ScrollRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cSPIT:
            if (hasReadSPIT)
            {
-             std::cout << "Error: SCRL seems to have more than one SPIT subrecord!\n";
+             std::cerr << "Error: SCRL seems to have more than one SPIT subrecord!\n";
              return false;
            }
            //SPIT's length
@@ -470,7 +470,7 @@ bool ScrollRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 2;
            if (subLength!=36)
            {
-             std::cout <<"Error: subrecord SPIT of SCRL has invalid length ("
+             std::cerr <<"Error: subrecord SPIT of SCRL has invalid length ("
                        <<subLength<<" bytes). Should be 36 bytes!\n";
              return false;
            }
@@ -479,7 +479,7 @@ bool ScrollRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 36;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord SPIT of SCRL!\n";
+             std::cerr << "Error while reading subrecord SPIT of SCRL!\n";
              return false;
            }
            hasReadSPIT = true;
@@ -499,7 +499,7 @@ bool ScrollRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 2;
            if (subLength!=4)
            {
-             std::cout <<"Error: subrecord EFID of SCRL has invalid length ("
+             std::cerr <<"Error: subrecord EFID of SCRL has invalid length ("
                        <<subLength<<" bytes). Should be four bytes!\n";
              return false;
            }
@@ -508,7 +508,7 @@ bool ScrollRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 4;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord EFID of SCRL!\n";
+             std::cerr << "Error while reading subrecord EFID of SCRL!\n";
              return false;
            }
 
@@ -525,7 +525,7 @@ bool ScrollRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 2;
            if (subLength!=12)
            {
-             std::cout <<"Error: subrecord EFIT of SCRL has invalid length ("
+             std::cerr <<"Error: subrecord EFIT of SCRL has invalid length ("
                        <<subLength<<" bytes). Should be 12 bytes!\n";
              return false;
            }
@@ -536,7 +536,7 @@ bool ScrollRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 12;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord EFIT of SCRL!\n";
+             std::cerr << "Error while reading subrecord EFIT of SCRL!\n";
              return false;
            }
            hasNonPushedEffect = true;
@@ -544,7 +544,7 @@ bool ScrollRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cCTDA:
            if (!hasNonPushedEffect)
            {
-             std::cout << "Error while reading SCRL: CTDA found, but there was no EFID/EFIT block.\n";
+             std::cerr << "Error while reading SCRL: CTDA found, but there was no EFID/EFIT block.\n";
              return false;
            }
            //CTDA's length
@@ -552,7 +552,7 @@ bool ScrollRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 2;
            if (subLength!=32)
            {
-             std::cout <<"Error: subrecord CTDA of SCRL has invalid length ("
+             std::cerr <<"Error: subrecord CTDA of SCRL has invalid length ("
                        <<subLength<<" bytes). Should be 32 bytes!\n";
              return false;
            }
@@ -561,7 +561,7 @@ bool ScrollRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 32;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord CTDA of SCRL!\n";
+             std::cerr << "Error while reading subrecord CTDA of SCRL!\n";
              return false;
            }
            tempEffect.unknownCTDA_CIS2s.push_back(CTDA_CIS2_compound(tempCTDA, ""));
@@ -569,17 +569,17 @@ bool ScrollRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cCIS2:
            if (!hasNonPushedEffect)
            {
-             std::cout << "Error while reading SCRL: CIS2 found, but there was no EFID/EFIT block!\n";
+             std::cerr << "Error while reading SCRL: CIS2 found, but there was no EFID/EFIT block!\n";
              return false;
            }
            if (tempEffect.unknownCTDA_CIS2s.empty())
            {
-             std::cout << "Error while reading SCRL: CIS2 found, but there was no CTDA before it!\n";
+             std::cerr << "Error while reading SCRL: CIS2 found, but there was no CTDA before it!\n";
              return false;
            }
            if (!tempEffect.unknownCTDA_CIS2s.back().unknownCISx.empty())
            {
-             std::cout << "Error: SCRL seems to have more than one CIS2 subrecord per CTDA!\n";
+             std::cerr << "Error: SCRL seems to have more than one CIS2 subrecord per CTDA!\n";
              return false;
            }
            //read CIS2
@@ -587,7 +587,7 @@ bool ScrollRecord::loadFromStream(std::istream& in_File, const bool localized, c
              return false;
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only FULL, MDOB, ETYP, DESC, SPIT, EFID,"
                      << " CTDA or CIS2 are allowed here!\n";
            return false;
@@ -604,7 +604,7 @@ bool ScrollRecord::loadFromStream(std::istream& in_File, const bool localized, c
   //check presence
   if (!(hasReadMDOB and hasReadETYP and description.isPresent() and (!modelPath.empty()) and hasReadDATA and hasReadSPIT))
   {
-    std::cout << "Error while reading record SCRL: at least one of the "
+    std::cerr << "Error while reading record SCRL: at least one of the "
               << "subrecords MDOB, ETYP, DESC, MODL, DATA or SPIT is missing!\n";
     return false;
   }

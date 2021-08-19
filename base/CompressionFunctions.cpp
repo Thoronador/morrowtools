@@ -29,7 +29,7 @@ bool zlibDecompress(uint8_t * compressedData, const uint32_t compressedSize, uin
 {
   if ((compressedData==NULL) or (compressedSize==0) or (decompBuffer==NULL) or (decompSize==0))
   {
-    std::cout << "zlibDecompress: Error: invalid buffer values given!\n";
+    std::cerr << "zlibDecompress: Error: invalid buffer values given!\n";
     return false;
   }
 
@@ -47,16 +47,16 @@ bool zlibDecompress(uint8_t * compressedData, const uint32_t compressedSize, uin
     switch (z_return)
     {
       case Z_MEM_ERROR:
-           std::cout << "zlibDecompress: Error: not enough memory to initialize z_stream!\n";
+           std::cerr << "zlibDecompress: Error: not enough memory to initialize z_stream!\n";
            break;
       case Z_VERSION_ERROR:
-           std::cout << "zlibDecompress: Error: incompatible library version!\n";
+           std::cerr << "zlibDecompress: Error: incompatible library version!\n";
            break;
       case Z_STREAM_ERROR:
-           std::cout << "zlibDecompress: Error: invalid parameters in z_stream!\n";
+           std::cerr << "zlibDecompress: Error: invalid parameters in z_stream!\n";
            break;
       default:
-           std::cout << "zlibDecompress: Error: could not initialize z_stream!\n";
+           std::cerr << "zlibDecompress: Error: could not initialize z_stream!\n";
            break;
     }//swi
     return false;
@@ -79,7 +79,7 @@ bool zlibDecompress(uint8_t * compressedData, const uint32_t compressedSize, uin
     case Z_STREAM_ERROR: //stream state
     case Z_MEM_ERROR:
          (void)inflateEnd(&streamZlib);
-         std::cout << "zlibDecompress: Error while calling inflate()!\n";
+         std::cerr << "zlibDecompress: Error while calling inflate()!\n";
          return false;
   }//swi
   uint32_t have = decompSize - streamZlib.avail_out;
@@ -88,7 +88,7 @@ bool zlibDecompress(uint8_t * compressedData, const uint32_t compressedSize, uin
   //check, if size matches expected number of bytes
   if (have!=decompSize)
   {
-    std::cout << "zlibDecompress: Error: Having only "<<have<<" bytes in output"
+    std::cerr << "zlibDecompress: Error: Having only "<<have<<" bytes in output"
               << "buffer, but expected size is "<<decompSize<<" bytes.\n";
     return false;
   }

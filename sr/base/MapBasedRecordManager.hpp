@@ -171,7 +171,7 @@ const recT& MapBasedRecordManager<recT>::getRecord(const uint32_t ID) const
   {
     return iter->second;
   }
-  std::cout << "MapBasedRecordManager: Error! No record with the ID \""<<ID<<"\" is present.\n";
+  std::cerr << "MapBasedRecordManager: Error! No record with the ID \""<<ID<<"\" is present.\n";
   throw std::runtime_error("MapBasedRecordManager: Error! No record with the requested ID is present.");
 }
 
@@ -200,7 +200,7 @@ bool MapBasedRecordManager<recT>::saveAllToStream(std::ofstream& output) const
 {
   if (!output.good())
   {
-    std::cout << "MapBasedRecordManager::saveAllToStream: Error: bad stream.\n";
+    std::cerr << "MapBasedRecordManager::saveAllToStream: Error: bad stream.\n";
     return false;
   }
   ListIterator iter = m_Records.begin();
@@ -209,7 +209,7 @@ bool MapBasedRecordManager<recT>::saveAllToStream(std::ofstream& output) const
   {
     if (!iter->second.saveToStream(output))
     {
-      std::cout << "MapBasedRecordManager::saveAllToStream: Error while writing record for \""
+      std::cerr << "MapBasedRecordManager::saveAllToStream: Error while writing record for \""
                 << iter->first <<"\".\n";
       return false;
     }
@@ -231,7 +231,7 @@ int MapBasedRecordManager<recT>::readNextRecord(std::ifstream& in_File, const bo
   recT temp;
   if(!temp.loadFromStream(in_File, localized, table))
   {
-    std::cout << "MapBasedRecordManager::readNextRecord: Error while reading record.\n";
+    std::cerr << "MapBasedRecordManager::readNextRecord: Error while reading record.\n";
     return -1;
   }
 

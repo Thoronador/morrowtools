@@ -144,7 +144,7 @@ bool AmmunitionRecord::saveToStream(std::ostream& output) const
   {
     if (!unknownMODT.saveToStream(output, cMODT))
     {
-      std::cout << "Error while writing subrecord MODT of AMMO!\n";
+      std::cerr << "Error while writing subrecord MODT of AMMO!\n";
       return false;
     }
   }//if MODT
@@ -168,7 +168,7 @@ bool AmmunitionRecord::saveToStream(std::ostream& output) const
   //write DESC
   if (!description.saveToStream(output, cDESC))
   {
-    std::cout << "Error while writing subrecord DESC of AMMO!\n";
+    std::cerr << "Error while writing subrecord DESC of AMMO!\n";
     return false;
   }
 
@@ -232,7 +232,7 @@ bool AmmunitionRecord::loadFromStream(std::istream& in_File, const bool localize
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of AMMO is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of AMMO is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -242,7 +242,7 @@ bool AmmunitionRecord::loadFromStream(std::istream& in_File, const bool localize
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of AMMO!\n";
+    std::cerr << "Error while reading subrecord EDID of AMMO!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -260,7 +260,7 @@ bool AmmunitionRecord::loadFromStream(std::istream& in_File, const bool localize
   bytesRead += 2;
   if (subLength!=12)
   {
-    std::cout <<"Error: sub record OBND of AMMO has invalid length("<<subLength
+    std::cerr <<"Error: sub record OBND of AMMO has invalid length("<<subLength
               <<" bytes). Should be 12 bytes!\n";
     return false;
   }
@@ -269,7 +269,7 @@ bool AmmunitionRecord::loadFromStream(std::istream& in_File, const bool localize
   bytesRead += 12;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord OBND of AMMO!\n";
+    std::cerr << "Error while reading subrecord OBND of AMMO!\n";
     return false;
   }
 
@@ -293,7 +293,7 @@ bool AmmunitionRecord::loadFromStream(std::istream& in_File, const bool localize
       case cFULL:
            if (name.isPresent())
            {
-             std::cout << "Error: Record AMMO seems to have more than one FULL subrecord!\n";
+             std::cerr << "Error: Record AMMO seems to have more than one FULL subrecord!\n";
              return false;
            }
            //read FULL
@@ -303,7 +303,7 @@ bool AmmunitionRecord::loadFromStream(std::istream& in_File, const bool localize
       case cMODL:
            if (!modelPath.empty())
            {
-             std::cout << "Error: Record AMMO seems to have more than one MODL subrecord!\n";
+             std::cerr << "Error: Record AMMO seems to have more than one MODL subrecord!\n";
              return false;
            }
            //MODL's length
@@ -311,7 +311,7 @@ bool AmmunitionRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if (subLength>511)
            {
-             std::cout <<"Error: sub record MODL of AMMO is longer than 511 characters!\n";
+             std::cerr <<"Error: sub record MODL of AMMO is longer than 511 characters!\n";
              return false;
            }
            //read MODL's stuff
@@ -320,7 +320,7 @@ bool AmmunitionRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += subLength;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord MODL of AMMO!\n";
+             std::cerr << "Error while reading subrecord MODL of AMMO!\n";
              return false;
            }
            modelPath = std::string(buffer);
@@ -328,13 +328,13 @@ bool AmmunitionRecord::loadFromStream(std::istream& in_File, const bool localize
       case cMODT:
            if (unknownMODT.isPresent())
            {
-             std::cout << "Error: Record AMMO seems to have more than one MODT subrecord!\n";
+             std::cerr << "Error: Record AMMO seems to have more than one MODT subrecord!\n";
              return false;
            }
            //read MODT
            if (!unknownMODT.loadFromStream(in_File, cMODT, false))
            {
-             std::cout << "Error while reading subrecord MODT of AMMO!\n";
+             std::cerr << "Error while reading subrecord MODT of AMMO!\n";
              return false;
            }
            bytesRead = bytesRead + 2 + unknownMODT.size();
@@ -342,7 +342,7 @@ bool AmmunitionRecord::loadFromStream(std::istream& in_File, const bool localize
       case cYNAM:
            if (pickupSoundFormID!=0)
            {
-             std::cout << "Error: Record AMMO seems to have more than one YNAM subrecord!\n";
+             std::cerr << "Error: Record AMMO seems to have more than one YNAM subrecord!\n";
              return false;
            }
            //read YNAM
@@ -351,14 +351,14 @@ bool AmmunitionRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 6;
            if (pickupSoundFormID==0)
            {
-             std::cout << "Error: subrecord YNAM of AMMO is zero!\n";
+             std::cerr << "Error: subrecord YNAM of AMMO is zero!\n";
              return false;
            }
            break;
       case cZNAM:
            if (putdownSoundFormID!=0)
            {
-             std::cout << "Error: Record AMMO seems to have more than one ZNAM subrecord!\n";
+             std::cerr << "Error: Record AMMO seems to have more than one ZNAM subrecord!\n";
              return false;
            }
            //read ZNAM
@@ -367,14 +367,14 @@ bool AmmunitionRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 6;
            if (putdownSoundFormID==0)
            {
-             std::cout << "Error: subrecord ZNAM of AMMO is zero!\n";
+             std::cerr << "Error: subrecord ZNAM of AMMO is zero!\n";
              return false;
            }
            break;
       case cDESC:
            if (description.isPresent())
            {
-             std::cout << "Error: Record AMMO seems to have more than one DESC subrecord!\n";
+             std::cerr << "Error: Record AMMO seems to have more than one DESC subrecord!\n";
              return false;
            }
            //read DESC
@@ -384,7 +384,7 @@ bool AmmunitionRecord::loadFromStream(std::istream& in_File, const bool localize
       case cKSIZ:
            if (!keywordArray.empty())
            {
-             std::cout << "Error: Record AMMO seems to have more than one KSIZ subrecord!\n";
+             std::cerr << "Error: Record AMMO seems to have more than one KSIZ subrecord!\n";
              return false;
            }
            //KSIZ's length
@@ -392,7 +392,7 @@ bool AmmunitionRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if (subLength!=4)
            {
-             std::cout <<"Error: sub record KSIZ of AMMO has invalid length("
+             std::cerr <<"Error: sub record KSIZ of AMMO has invalid length("
                        <<subLength<<" bytes). Should be four bytes!\n";
              return false;
            }
@@ -402,7 +402,7 @@ bool AmmunitionRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 4;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord KSIZ of AMMO!\n";
+             std::cerr << "Error while reading subrecord KSIZ of AMMO!\n";
              return false;
            }
 
@@ -419,7 +419,7 @@ bool AmmunitionRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if (subLength!=4*k_Size)
            {
-             std::cout <<"Error: sub record KWDA of AMMO has invalid length("
+             std::cerr <<"Error: sub record KWDA of AMMO has invalid length("
                        <<subLength<<" bytes). Should be "<<4*k_Size<<" bytes!\n";
              return false;
            }
@@ -429,7 +429,7 @@ bool AmmunitionRecord::loadFromStream(std::istream& in_File, const bool localize
              bytesRead += 4;
              if (!in_File.good())
              {
-               std::cout << "Error while reading subrecord KWDA of AMMO!\n";
+               std::cerr << "Error while reading subrecord KWDA of AMMO!\n";
                return false;
              }
              keywordArray.push_back(temp);
@@ -438,7 +438,7 @@ bool AmmunitionRecord::loadFromStream(std::istream& in_File, const bool localize
       case cDATA:
            if (hasReadDATA)
            {
-             std::cout << "Error: Record AMMO seems to have more than one DATA subrecord!\n";
+             std::cerr << "Error: Record AMMO seems to have more than one DATA subrecord!\n";
              return false;
            }
            //DATA's length
@@ -446,7 +446,7 @@ bool AmmunitionRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if (subLength!=16)
            {
-             std::cout <<"Error: sub record DATA of AMMO has invalid length("
+             std::cerr <<"Error: sub record DATA of AMMO has invalid length("
                        <<subLength<<" bytes). Should be 16 bytes!\n";
              return false;
            }
@@ -458,13 +458,13 @@ bool AmmunitionRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 16;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord DATA of AMMO!\n";
+             std::cerr << "Error while reading subrecord DATA of AMMO!\n";
              return false;
            }
            hasReadDATA = true;
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only MODL, MODT, YNAM, ZNAM, DESC, KSIZ or DATA are allowed!\n";
            return false;
            break;
@@ -474,7 +474,7 @@ bool AmmunitionRecord::loadFromStream(std::istream& in_File, const bool localize
   //check
   if ((!hasReadDATA) or (!description.isPresent()))
   {
-    std::cout << "Error: at least one required subrecord of AMMO is missing!\n";
+    std::cerr << "Error: at least one required subrecord of AMMO is missing!\n";
     return false;
   }
 

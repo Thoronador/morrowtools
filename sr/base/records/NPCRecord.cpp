@@ -341,7 +341,7 @@ bool NPCRecord::saveToStream(std::ostream& output) const
     //write VMAD
     if (!unknownVMAD.saveToStream(output, cVMAD))
     {
-      std::cout << "Error while writing subrecord VMAD of NPC_!\n!";
+      std::cerr << "Error while writing subrecord VMAD of NPC_!\n!";
       return false;
     }
   }
@@ -468,7 +468,7 @@ bool NPCRecord::saveToStream(std::ostream& output) const
     //write ATKD
     if (!unknownATKD.saveToStream(output, cATKD))
     {
-      std::cout << "Error while writing subrecord ATKD of NPC_!\n!";
+      std::cerr << "Error while writing subrecord ATKD of NPC_!\n!";
       return false;
     }
   }
@@ -859,7 +859,7 @@ bool NPCRecord::saveToStream(std::ostream& output) const
     //write NAM9
     if (!unknownNAM9.saveToStream(output, cNAM9))
     {
-      std::cout << "Error while writing subrecord NAM9 of NPC_!\n!";
+      std::cerr << "Error while writing subrecord NAM9 of NPC_!\n!";
       return false;
     }
   }
@@ -869,7 +869,7 @@ bool NPCRecord::saveToStream(std::ostream& output) const
     //write NAMA
     if (!unknownNAMA.saveToStream(output, cNAMA))
     {
-      std::cout << "Error while writing subrecord NAMA of NPC_!\n!";
+      std::cerr << "Error while writing subrecord NAMA of NPC_!\n!";
       return false;
     }
   }
@@ -937,12 +937,12 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
     in_File.read((char*) &decompressedSize, 4);
     if (!in_File.good())
     {
-      std::cout << "Error while reading decompression size of NPC_!\n";
+      std::cerr << "Error while reading decompression size of NPC_!\n";
       return false;
     }
     if (readSize<=4)
     {
-      std::cout << "Error: size of compressed NPC_ record is too small to contain any compressed data!\n";
+      std::cerr << "Error: size of compressed NPC_ record is too small to contain any compressed data!\n";
       return false;
     }
     //buffer to read compressed data
@@ -950,7 +950,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
     in_File.read((char*) stream_buffer, readSize-4);
     if (!in_File.good())
     {
-      std::cout << "Error while reading compressed data of NPC_!\n";
+      std::cerr << "Error while reading compressed data of NPC_!\n";
       delete[] stream_buffer;
       return false;
     }
@@ -958,7 +958,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
     uint8_t * decompBuffer = new uint8_t [decompressedSize];
     if (!MWTP::zlibDecompress(stream_buffer, readSize-4, decompBuffer, decompressedSize))
     {
-      std::cout << "Error while executing decompression function!\n";
+      std::cerr << "Error while executing decompression function!\n";
       delete[] stream_buffer;
       stream_buffer = NULL;
       delete[] decompBuffer;
@@ -987,7 +987,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of NPC_ is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of NPC_ is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -997,7 +997,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
   bytesRead += subLength;
   if (!actual_in->good())
   {
-    std::cout << "Error while reading subrecord EDID of NPC_!\n";
+    std::cerr << "Error while reading subrecord EDID of NPC_!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -1078,7 +1078,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
       case cOBND:
            if (hasReadOBND)
            {
-             std::cout << "Error: NPC_ seems to have more than one OBND subrecord.\n";
+             std::cerr << "Error: NPC_ seems to have more than one OBND subrecord.\n";
              return false;
            }
            //OBND's length
@@ -1086,7 +1086,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 2;
            if (subLength!=12)
            {
-             std::cout <<"Error: sub record OBND of NPC_ has invalid length ("
+             std::cerr <<"Error: sub record OBND of NPC_ has invalid length ("
                        <<subLength<<" bytes). Should be 12 bytes.\n";
              return false;
            }
@@ -1095,7 +1095,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 12;
            if (!actual_in->good())
            {
-             std::cout << "Error while reading subrecord OBND of NPC_!\n";
+             std::cerr << "Error while reading subrecord OBND of NPC_!\n";
              return false;
            }
            hasReadOBND = true;
@@ -1103,7 +1103,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
       case cACBS:
            if (hasReadACBS)
            {
-             std::cout << "Error: NPC_ seems to have more than one ACBS subrecord.\n";
+             std::cerr << "Error: NPC_ seems to have more than one ACBS subrecord.\n";
              return false;
            }
            //ACBS's length
@@ -1111,7 +1111,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 2;
            if (subLength!=24)
            {
-             std::cout <<"Error: sub record ACBS of NPC_ has invalid length ("
+             std::cerr <<"Error: sub record ACBS of NPC_ has invalid length ("
                        <<subLength<<" bytes). Should be 24 bytes.\n";
              return false;
            }
@@ -1120,7 +1120,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 24;
            if (!actual_in->good())
            {
-             std::cout << "Error while reading subrecord ACBS of NPC_!\n";
+             std::cerr << "Error while reading subrecord ACBS of NPC_!\n";
              return false;
            }
            hasReadACBS = true;
@@ -1131,7 +1131,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 2;
            if (subLength!=8)
            {
-             std::cout <<"Error: sub record SNAM of NPC_ has invalid length ("
+             std::cerr <<"Error: sub record SNAM of NPC_ has invalid length ("
                        <<subLength<<" bytes). Should be 8 bytes.\n";
              return false;
            }
@@ -1143,7 +1143,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 8;
            if (!actual_in->good())
            {
-             std::cout << "Error while reading subrecord SNAM of NPC_!\n";
+             std::cerr << "Error while reading subrecord SNAM of NPC_!\n";
              return false;
            }
            factions.push_back(tempFactionElem);
@@ -1151,7 +1151,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
       case cINAM:
            if (deathItemFormID!=0)
            {
-             std::cout << "Error: NPC_ seems to have more than one INAM subrecord.\n";
+             std::cerr << "Error: NPC_ seems to have more than one INAM subrecord.\n";
              return false;
            }
            //read INAM
@@ -1159,14 +1159,14 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 6;
            if (deathItemFormID==0)
            {
-             std::cout << "Error: subrecord INAM of NPC_ has value zero!\n";
+             std::cerr << "Error: subrecord INAM of NPC_ has value zero!\n";
              return false;
            }
            break;
       case cVTCK:
            if (voiceTypeFormID!=0)
            {
-             std::cout << "Error: NPC_ seems to have more than one VTCK subrecord.\n";
+             std::cerr << "Error: NPC_ seems to have more than one VTCK subrecord.\n";
              return false;
            }
            //read VTCK
@@ -1174,14 +1174,14 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 6;
            if (voiceTypeFormID==0)
            {
-             std::cout << "Error: subrecord VTCK of NPC_ has value zero!\n";
+             std::cerr << "Error: subrecord VTCK of NPC_ has value zero!\n";
              return false;
            }
            break;
       case cTPLT:
            if (templateActorBaseFormID)
            {
-             std::cout << "Error: NPC_ seems to have more than one TPLT subrecord.\n";
+             std::cerr << "Error: NPC_ seems to have more than one TPLT subrecord.\n";
              return false;
            }
            //read TPLT
@@ -1189,14 +1189,14 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 6;
            if (templateActorBaseFormID==0)
            {
-             std::cout << "Error: subrecord TPLT of NPC_ has value zero!\n";
+             std::cerr << "Error: subrecord TPLT of NPC_ has value zero!\n";
              return false;
            }
            break;
       case cRNAM:
            if (raceFormID!=0)
            {
-             std::cout << "Error: NPC_ seems to have more than one RNAM subrecord.\n";
+             std::cerr << "Error: NPC_ seems to have more than one RNAM subrecord.\n";
              return false;
            }
            //read RNAM
@@ -1204,14 +1204,14 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 6;
            if (raceFormID==0)
            {
-             std::cout << "Error: subrecord RNAM of NPC_ has value zero!\n";
+             std::cerr << "Error: subrecord RNAM of NPC_ has value zero!\n";
              return false;
            }
            break;
       case cDEST:
            if (hasDEST)
            {
-             std::cout << "Error: NPC_ seems to have more than one DEST subrecord.\n";
+             std::cerr << "Error: NPC_ seems to have more than one DEST subrecord.\n";
              return false;
            }
            //DEST's length
@@ -1219,7 +1219,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 2;
            if (subLength!=8)
            {
-             std::cout <<"Error: sub record DEST of NPC_ has invalid length ("
+             std::cerr <<"Error: sub record DEST of NPC_ has invalid length ("
                        <<subLength<<" bytes). Should be eight bytes.\n";
              return false;
            }
@@ -1228,7 +1228,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 8;
            if (!actual_in->good())
            {
-             std::cout << "Error while reading subrecord DEST of NPC_!\n";
+             std::cerr << "Error while reading subrecord DEST of NPC_!\n";
              return false;
            }
            hasDEST = true;
@@ -1236,7 +1236,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
       case cWNAM:
            if (skinFormID)
            {
-             std::cout << "Error: NPC_ seems to have more than one WNAM subrecord.\n";
+             std::cerr << "Error: NPC_ seems to have more than one WNAM subrecord.\n";
              return false;
            }
            //read WNAM
@@ -1245,14 +1245,14 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            //check value
            if (skinFormID==0)
            {
-             std::cout << "Error: subrecord WNAM of NPC_ is zero!\n";
+             std::cerr << "Error: subrecord WNAM of NPC_ is zero!\n";
              return false;
            }
            break;
       case cANAM:
            if (farAwayModelSkinFormID!=0)
            {
-             std::cout << "Error: NPC_ seems to have more than one ANAM subrecord.\n";
+             std::cerr << "Error: NPC_ seems to have more than one ANAM subrecord.\n";
              return false;
            }
            //read ANAM
@@ -1261,14 +1261,14 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            //check value
            if (farAwayModelSkinFormID==0)
            {
-             std::cout << "Error: subrecord ANAM of NPC_ is zero!\n";
+             std::cerr << "Error: subrecord ANAM of NPC_ is zero!\n";
              return false;
            }
            break;
       case cATKR:
            if (hasATKR)
            {
-             std::cout << "Error: NPC_ seems to have more than one ATKR subrecord.\n";
+             std::cerr << "Error: NPC_ seems to have more than one ATKR subrecord.\n";
              return false;
            }
            //read ATKR
@@ -1299,7 +1299,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
       case cATKE:
            if (!unknownATKE.empty())
            {
-             std::cout << "Error: NPC_ seems to have more than one ATKE subrecord.\n";
+             std::cerr << "Error: NPC_ seems to have more than one ATKE subrecord.\n";
              return false;
            }
            //ATKE's length
@@ -1307,7 +1307,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 2;
            if (subLength>511)
            {
-             std::cout <<"Error: sub record ATKE of NPC_ is longer than 511 characters!\n";
+             std::cerr <<"Error: sub record ATKE of NPC_ is longer than 511 characters!\n";
              return false;
            }
            //read ATKE's stuff
@@ -1316,20 +1316,20 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += subLength;
            if (!actual_in->good())
            {
-             std::cout << "Error while reading subrecord ATKE of NPC_!\n";
+             std::cerr << "Error while reading subrecord ATKE of NPC_!\n";
              return false;
            }
            unknownATKE = std::string(buffer);
            if (unknownATKE.empty())
            {
-             std::cout << "Error: subrecord ATKE of NPC_ is empty.\n";
+             std::cerr << "Error: subrecord ATKE of NPC_ is empty.\n";
              return false;
            }
            break;
       case cSPCT:
            if (!spellFormIDs.empty())
            {
-             std::cout << "Error: NPC_ seems to have more than one SPCT subrecord.\n";
+             std::cerr << "Error: NPC_ seems to have more than one SPCT subrecord.\n";
              return false;
            }
            //read SPCT
@@ -1337,7 +1337,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 6;
            if (size_int==0)
            {
-             std::cout << "Error: Value of subrecord SPCT of NPC_ is zero!\n";
+             std::cerr << "Error: Value of subrecord SPCT of NPC_ is zero!\n";
              return false;
            }
 
@@ -1356,7 +1356,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
              bytesRead += 2;
              if (subLength!=4)
              {
-               std::cout <<"Error: sub record SPLO of NPC_ has invalid length ("
+               std::cerr <<"Error: sub record SPLO of NPC_ has invalid length ("
                          <<subLength<<" bytes). Should be four bytes.\n";
                return false;
              }
@@ -1365,7 +1365,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
              bytesRead += 4;
              if (!actual_in->good())
              {
-               std::cout << "Error while reading subrecord SPLO of NPC_!\n";
+               std::cerr << "Error while reading subrecord SPLO of NPC_!\n";
                return false;
              }
              spellFormIDs.push_back(tempUint32);
@@ -1374,7 +1374,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
       case cPRKZ:
            if (!perkList.empty())
            {
-             std::cout << "Error: NPC_ seems to have more than one PRKZ subrecord.\n";
+             std::cerr << "Error: NPC_ seems to have more than one PRKZ subrecord.\n";
              return false;
            }
            //read PRKZ
@@ -1382,7 +1382,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 6;
            if (size_int==0)
            {
-             std::cout << "Error: Value of subrecord PRKZ of NPC_ is zero!\n";
+             std::cerr << "Error: Value of subrecord PRKZ of NPC_ is zero!\n";
              return false;
            }
 
@@ -1401,7 +1401,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
              bytesRead += 2;
              if (subLength!=8)
              {
-               std::cout <<"Error: sub record PRKR of NPC_ has invalid length ("
+               std::cerr <<"Error: sub record PRKR of NPC_ has invalid length ("
                          <<subLength<<" bytes). Should be 8 bytes.\n";
                return false;
              }
@@ -1411,7 +1411,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
              bytesRead += 8;
              if (!actual_in->good())
              {
-               std::cout << "Error while reading subrecord PRKR of NPC_!\n";
+               std::cerr << "Error while reading subrecord PRKR of NPC_!\n";
                return false;
              }
              perkList.push_back(tempPerk);
@@ -1420,7 +1420,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
       case cCOCT:
            if (!items.empty())
            {
-             std::cout << "Error: NPC_ seems to have more than one COCT subrecord.\n";
+             std::cerr << "Error: NPC_ seems to have more than one COCT subrecord.\n";
              return false;
            }
            //read COCT
@@ -1428,7 +1428,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 6;
            if (tempUint32==0)
            {
-             std::cout << "Error: Value of subrecord COCT of NPC_ is zero!\n";
+             std::cerr << "Error: Value of subrecord COCT of NPC_ is zero!\n";
              return false;
            }
 
@@ -1447,7 +1447,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
              bytesRead += 2;
              if (subLength!=8)
              {
-               std::cout <<"Error: sub record CNTO of NPC_ has invalid length ("
+               std::cerr <<"Error: sub record CNTO of NPC_ has invalid length ("
                          <<subLength<<" bytes). Should be 8 bytes.\n";
                return false;
              }
@@ -1457,7 +1457,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
              bytesRead += 8;
              if (!actual_in->good())
              {
-               std::cout << "Error while reading subrecord CNTO of NPC_!\n";
+               std::cerr << "Error while reading subrecord CNTO of NPC_!\n";
                return false;
              }
              items.push_back(tempComponent);
@@ -1466,7 +1466,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
       case cSPOR:
            if (spectatorOverridePackageListFormID!=0)
            {
-             std::cout << "Error: NPC_ seems to have more than one SPOR subrecord.\n";
+             std::cerr << "Error: NPC_ seems to have more than one SPOR subrecord.\n";
              return false;
            }
            //read SPOR
@@ -1475,14 +1475,14 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            //check value
            if (spectatorOverridePackageListFormID==0)
            {
-             std::cout << "Error: subrecord SPOR of NPC_ has value zero!\n";
+             std::cerr << "Error: subrecord SPOR of NPC_ has value zero!\n";
              return false;
            }
            break;
       case cECOR:
            if (combatOverridePackageListFormID!=0)
            {
-             std::cout << "Error: NPC_ seems to have more than one ECOR subrecord.\n";
+             std::cerr << "Error: NPC_ seems to have more than one ECOR subrecord.\n";
              return false;
            }
            //read ECOR
@@ -1490,14 +1490,14 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 6;
            if (combatOverridePackageListFormID==0)
            {
-             std::cout << "Error: subrecord ECOR of NPC_ has value zero!\n";
+             std::cerr << "Error: subrecord ECOR of NPC_ has value zero!\n";
              return false;
            }
            break;
       case cAIDT:
            if (hasReadAIDT)
            {
-             std::cout << "Error: NPC_ seems to have more than one AIDT subrecord.\n";
+             std::cerr << "Error: NPC_ seems to have more than one AIDT subrecord.\n";
              return false;
            }
            //AIDT's length
@@ -1505,7 +1505,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 2;
            if (subLength!=20)
            {
-             std::cout <<"Error: sub record AIDT of NPC_ has invalid length ("
+             std::cerr <<"Error: sub record AIDT of NPC_ has invalid length ("
                        <<subLength<<" bytes). Should be 20 bytes.\n";
              return false;
            }
@@ -1514,7 +1514,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 20;
            if (!actual_in->good())
            {
-             std::cout << "Error while reading subrecord AIDT of NPC_!\n";
+             std::cerr << "Error while reading subrecord AIDT of NPC_!\n";
              return false;
            }
            hasReadAIDT = true;
@@ -1525,7 +1525,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 2;
            if (subLength!=4)
            {
-             std::cout <<"Error: sub record PKID of NPC_ has invalid length ("
+             std::cerr <<"Error: sub record PKID of NPC_ has invalid length ("
                        <<subLength<<" bytes). Should be four bytes.\n";
              return false;
            }
@@ -1535,7 +1535,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 4;
            if (!actual_in->good())
            {
-             std::cout << "Error while reading subrecord PKID of NPC_!\n";
+             std::cerr << "Error while reading subrecord PKID of NPC_!\n";
              return false;
            }
            unknownPKIDs.push_back(tempUint32);
@@ -1543,7 +1543,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
       case cKSIZ:
            if (!keywordArray.empty())
            {
-             std::cout << "Error: NPC_ seems to have more than one KSIZ subrecord.\n";
+             std::cerr << "Error: NPC_ seems to have more than one KSIZ subrecord.\n";
              return false;
            }
            //read KSIZ
@@ -1551,7 +1551,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 6;
            if (size_int==0)
            {
-             std::cout << "Error: Value of subrecord KSIZ of NPC_ is zero!\n";
+             std::cerr << "Error: Value of subrecord KSIZ of NPC_ is zero!\n";
              return false;
            }
 
@@ -1568,7 +1568,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 2;
            if (subLength!=4*size_int)
            {
-             std::cout <<"Error: sub record KWDA of NPC_ has invalid length ("
+             std::cerr <<"Error: sub record KWDA of NPC_ has invalid length ("
                        <<subLength<<" bytes). Should be "<<4*size_int<<" bytes.\n";
              return false;
            }
@@ -1579,7 +1579,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
              bytesRead += 4;
              if (!actual_in->good())
              {
-               std::cout << "Error while reading subrecord KWDA of NPC_!\n";
+               std::cerr << "Error while reading subrecord KWDA of NPC_!\n";
                return false;
              }
              keywordArray.push_back(tempUint32);
@@ -1588,7 +1588,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
       case cCNAM:
            if (classFormID!=0)
            {
-             std::cout << "Error: NPC_ seems to have more than one CNAM subrecord.\n";
+             std::cerr << "Error: NPC_ seems to have more than one CNAM subrecord.\n";
              return false;
            }
            //read CNAM
@@ -1596,14 +1596,14 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 6;
            if (classFormID==0)
            {
-             std::cout << "Error: subrecord CNAM of NPC_ is zero!\n";
+             std::cerr << "Error: subrecord CNAM of NPC_ is zero!\n";
              return false;
            }
            break;
       case cFULL:
            if (name.isPresent())
            {
-             std::cout << "Error: NPC_ seems to have more than one FULL subrecord.\n";
+             std::cerr << "Error: NPC_ seems to have more than one FULL subrecord.\n";
              return false;
            }
            //read FULL
@@ -1613,7 +1613,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
       case cSHRT:
            if (hasSHRT)
            {
-             std::cout << "Error: NPC_ seems to have more than one SHRT subrecord.\n";
+             std::cerr << "Error: NPC_ seems to have more than one SHRT subrecord.\n";
              return false;
            }
            //read SHRT
@@ -1624,7 +1624,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
       case cDATA:
            if (hasReadDNAM)
            {
-             std::cout << "Error: NPC_ seems to have more than one DNAM subrecord.\n";
+             std::cerr << "Error: NPC_ seems to have more than one DNAM subrecord.\n";
              return false;
            }
            //DATA's length
@@ -1632,7 +1632,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 2;
            if (subLength!=0)
            {
-             std::cout <<"Error: sub record DATA of NPC_ has invalid length ("
+             std::cerr <<"Error: sub record DATA of NPC_ has invalid length ("
                        <<subLength<<" bytes). Should be zero bytes.\n";
              return false;
            }
@@ -1651,7 +1651,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 2;
            if (subLength!=52)
            {
-             std::cout <<"Error: sub record DNAM of NPC_ has invalid length ("
+             std::cerr <<"Error: sub record DNAM of NPC_ has invalid length ("
                        <<subLength<<" bytes). Should be 52 bytes.\n";
              return false;
            }
@@ -1660,7 +1660,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 52;
            if (!actual_in->good())
            {
-             std::cout << "Error while reading subrecord DNAM of NPC_!\n";
+             std::cerr << "Error while reading subrecord DNAM of NPC_!\n";
              return false;
            }
            hasReadDNAM = true;
@@ -1671,7 +1671,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 2;
            if (subLength!=4)
            {
-             std::cout <<"Error: sub record PNAM of NPC_ has invalid length ("
+             std::cerr <<"Error: sub record PNAM of NPC_ has invalid length ("
                        <<subLength<<" bytes). Should be four bytes.\n";
              return false;
            }
@@ -1681,7 +1681,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 4;
            if (!actual_in->good())
            {
-             std::cout << "Error while reading subrecord PNAM of NPC_!\n";
+             std::cerr << "Error while reading subrecord PNAM of NPC_!\n";
              return false;
            }
            unknownPNAMs.push_back(tempUint32);
@@ -1689,7 +1689,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
       case cHCLF:
            if (hairColorFormID!=0)
            {
-             std::cout << "Error: NPC_ seems to have more than one HCLF subrecord.\n";
+             std::cerr << "Error: NPC_ seems to have more than one HCLF subrecord.\n";
              return false;
            }
            //read HCLF
@@ -1698,14 +1698,14 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            //check value
            if (hairColorFormID==0)
            {
-             std::cout << "Error: subrecord HCLF of NPC_ is zero!\n";
+             std::cerr << "Error: subrecord HCLF of NPC_ is zero!\n";
              return false;
            }
            break;
       case cGNAM:
            if (giftFilterFormID!=0)
            {
-             std::cout << "Error: NPC_ seems to have more than one GNAM subrecord.\n";
+             std::cerr << "Error: NPC_ seems to have more than one GNAM subrecord.\n";
              return false;
            }
            //read GNAM
@@ -1713,14 +1713,14 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 6;
            if (giftFilterFormID==0)
            {
-             std::cout << "Error: subrecord GNAM of NPC_ is zero!\n";
+             std::cerr << "Error: subrecord GNAM of NPC_ is zero!\n";
              return false;
            }
            break;
       case cZNAM:
            if (combatStyleFormID!=0)
            {
-             std::cout << "Error: NPC_ seems to have more than one ZNAM subrecord.\n";
+             std::cerr << "Error: NPC_ seems to have more than one ZNAM subrecord.\n";
              return false;
            }
            //read ZNAM
@@ -1728,14 +1728,14 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 6;
            if (combatStyleFormID==0)
            {
-             std::cout << "Error: subrecord ZNAM of NPC_ is zero!\n";
+             std::cerr << "Error: subrecord ZNAM of NPC_ is zero!\n";
              return false;
            }
            break;
       case cNAM5:
            if (hasReadNAM5)
            {
-             std::cout << "Error: NPC_ seems to have more than one NAM5 subrecord.\n";
+             std::cerr << "Error: NPC_ seems to have more than one NAM5 subrecord.\n";
              return false;
            }
            //NAM5's length
@@ -1743,7 +1743,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 2;
            if (subLength!=2)
            {
-             std::cout <<"Error: sub record NAM5 of NPC_ has invalid length ("
+             std::cerr <<"Error: sub record NAM5 of NPC_ has invalid length ("
                        <<subLength<<" bytes). Should be two bytes.\n";
              return false;
            }
@@ -1752,7 +1752,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 2;
            if (!actual_in->good())
            {
-             std::cout << "Error while reading subrecord NAM5 of NPC_!\n";
+             std::cerr << "Error while reading subrecord NAM5 of NPC_!\n";
              return false;
            }
            hasReadNAM5 = true;
@@ -1760,7 +1760,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
       case cNAM6:
            if (hasReadNAM6)
            {
-             std::cout << "Error: NPC_ seems to have more than one NAM6 subrecord.\n";
+             std::cerr << "Error: NPC_ seems to have more than one NAM6 subrecord.\n";
              return false;
            }
            //read NAM6
@@ -1771,7 +1771,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
       case cNAM7:
            if (hasReadNAM7)
            {
-             std::cout << "Error: NPC_ seems to have more than one NAM7 subrecord.\n";
+             std::cerr << "Error: NPC_ seems to have more than one NAM7 subrecord.\n";
              return false;
            }
            //read NAM7
@@ -1782,7 +1782,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
       case cNAM8:
            if (hasReadNAM8)
            {
-             std::cout << "Error: NPC_ seems to have more than one NAM8 subrecord.\n";
+             std::cerr << "Error: NPC_ seems to have more than one NAM8 subrecord.\n";
              return false;
            }
            //read NAM8
@@ -1793,7 +1793,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
       case cDOFT:
            if (defaultOutfitFormID!=0)
            {
-             std::cout << "Error: NPC_ seems to have more than one DOFT subrecord.\n";
+             std::cerr << "Error: NPC_ seems to have more than one DOFT subrecord.\n";
              return false;
            }
            //read DOFT
@@ -1801,14 +1801,14 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 6;
            if (defaultOutfitFormID==0)
            {
-             std::cout << "Error: subrecord DOFT of NPC_ is zero!\n";
+             std::cerr << "Error: subrecord DOFT of NPC_ is zero!\n";
              return false;
            }
            break;
       case cSOFT:
            if (sleepOutfitFormID!=0)
            {
-             std::cout << "Error: NPC_ seems to have more than one SOFT subrecord.\n";
+             std::cerr << "Error: NPC_ seems to have more than one SOFT subrecord.\n";
              return false;
            }
            //read SOFT
@@ -1816,14 +1816,14 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 6;
            if (sleepOutfitFormID==0)
            {
-             std::cout << "Error: subrecord SOFT of NPC_ is zero!\n";
+             std::cerr << "Error: subrecord SOFT of NPC_ is zero!\n";
              return false;
            }
            break;
       case cCRIF:
            if (crimeFactionFormID!=0)
            {
-             std::cout << "Error: NPC_ seems to have more than one CRIF subrecord.\n";
+             std::cerr << "Error: NPC_ seems to have more than one CRIF subrecord.\n";
              return false;
            }
            //read CRIF
@@ -1832,14 +1832,14 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            //check value
            if (crimeFactionFormID==0)
            {
-             std::cout << "Error: subrecord CRIF of NPC_ has value zero!\n";
+             std::cerr << "Error: subrecord CRIF of NPC_ has value zero!\n";
              return false;
            }
            break;
       case cCSCR:
            if (soundTemplateFormID!=0)
            {
-             std::cout << "Error: NPC_ seems to have more than one CSCR subrecord.\n";
+             std::cerr << "Error: NPC_ seems to have more than one CSCR subrecord.\n";
              return false;
            }
            //read CSCR
@@ -1848,7 +1848,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            //check value
            if (soundTemplateFormID==0)
            {
-             std::cout << "Error: subrecord CSCR of NPC_ has value zero!\n";
+             std::cerr << "Error: subrecord CSCR of NPC_ has value zero!\n";
              return false;
            }
            break;
@@ -1874,7 +1874,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 2;
            if (subLength!=1)
            {
-             std::cout <<"Error: sub record CSDC of NPC_ has invalid length ("
+             std::cerr <<"Error: sub record CSDC of NPC_ has invalid length ("
                        <<subLength<<" bytes). Should be one byte.\n";
              return false;
            }
@@ -1883,7 +1883,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 1;
            if (!actual_in->good())
            {
-             std::cout << "Error while reading subrecord CSDC of NPC_!\n";
+             std::cerr << "Error while reading subrecord CSDC of NPC_!\n";
              return false;
            }
            unknownCSDXs.push_back(tempCSDX);
@@ -1909,7 +1909,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 2;
            if (subLength!=1)
            {
-             std::cout <<"Error: sub record CSDC of NPC_ has invalid length ("
+             std::cerr <<"Error: sub record CSDC of NPC_ has invalid length ("
                        <<subLength<<" bytes). Should be one byte.\n";
              return false;
            }
@@ -1918,7 +1918,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 1;
            if (!actual_in->good())
            {
-             std::cout << "Error while reading subrecord CSDC of NPC_!\n";
+             std::cerr << "Error while reading subrecord CSDC of NPC_!\n";
              return false;
            }
            unknownCSDXs.push_back(tempCSDX);
@@ -1926,7 +1926,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
       case cDPLT:
            if (defaultPackageListFormID!=0)
            {
-             std::cout << "Error: NPC_ seems to have more than one DPLT subrecord.\n";
+             std::cerr << "Error: NPC_ seems to have more than one DPLT subrecord.\n";
              return false;
            }
            //read DPLT
@@ -1935,14 +1935,14 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            //check value
            if (defaultPackageListFormID==0)
            {
-             std::cout << "Error: subrecord DPLT of NPC_ is zero!\n";
+             std::cerr << "Error: subrecord DPLT of NPC_ is zero!\n";
              return false;
            }
            break;
       case cFTST:
            if (faceComplexionFormID!=0)
            {
-             std::cout << "Error: NPC_ seems to have more than one FTST subrecord.\n";
+             std::cerr << "Error: NPC_ seems to have more than one FTST subrecord.\n";
              return false;
            }
            //read FTST
@@ -1951,14 +1951,14 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            //check value
            if (faceComplexionFormID==0)
            {
-             std::cout << "Error_ subrecord FTST of NPC_ is zero!\n";
+             std::cerr << "Error_ subrecord FTST of NPC_ is zero!\n";
              return false;
            }
            break;
       case cQNAM:
            if (hasReadQNAM)
            {
-             std::cout << "Error: NPC_ seems to have more than one QNAM subrecord.\n";
+             std::cerr << "Error: NPC_ seems to have more than one QNAM subrecord.\n";
              return false;
            }
            //QNAM's length
@@ -1966,7 +1966,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 2;
            if (subLength!=12)
            {
-             std::cout <<"Error: sub record QNAM of NPC_ has invalid length ("
+             std::cerr <<"Error: sub record QNAM of NPC_ has invalid length ("
                        <<subLength<<" bytes). Should be 12 bytes.\n";
              return false;
            }
@@ -1975,7 +1975,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 12;
            if (!actual_in->good())
            {
-             std::cout << "Error while reading subrecord QNAM of NPC_!\n";
+             std::cerr << "Error while reading subrecord QNAM of NPC_!\n";
              return false;
            }
            hasReadQNAM = true;
@@ -2026,7 +2026,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 2;
            if (subLength!=2)
            {
-             std::cout <<"Error: sub record TINI of NPC_ has invalid length ("
+             std::cerr <<"Error: sub record TINI of NPC_ has invalid length ("
                        <<subLength<<" bytes). Should be two bytes.\n";
              return false;
            }
@@ -2036,7 +2036,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 2;
            if (!actual_in->good())
            {
-             std::cout << "Error while reading subrecord TINI of NPC_!\n";
+             std::cerr << "Error while reading subrecord TINI of NPC_!\n";
              return false;
            }
 
@@ -2061,7 +2061,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 2;
            if (subLength!=2)
            {
-             std::cout <<"Error: sub record TIAS of NPC_ has invalid length ("
+             std::cerr <<"Error: sub record TIAS of NPC_ has invalid length ("
                        <<subLength<<" bytes). Should be two bytes.\n";
              return false;
            }
@@ -2070,7 +2070,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 2;
            if (!actual_in->good())
            {
-             std::cout << "Error while reading subrecord TIAS of NPC_!\n";
+             std::cerr << "Error while reading subrecord TIAS of NPC_!\n";
              return false;
            }
            unknownTINXs.push_back(tempTINX);
@@ -2082,7 +2082,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 2;
            if (subLength!=20)
            {
-             std::cout <<"Error: sub record DSTD of NPC_ has invalid length ("
+             std::cerr <<"Error: sub record DSTD of NPC_ has invalid length ("
                        <<subLength<<" bytes). Should be 20 bytes.\n";
              return false;
            }
@@ -2103,14 +2103,14 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 2;
            if (subLength!=0)
            {
-             std::cout <<"Error: sub record DSTF of NPC_ has invalid length ("
+             std::cerr <<"Error: sub record DSTF of NPC_ has invalid length ("
                        <<subLength<<" bytes). Should be zero bytes.\n";
              return false;
            }
            //nothing to skip, DSTF has length zero
            break;
       default:
-           std::cout << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
                      << "\", but only VMAD, OBND, ACBS, SNAM, INAM, VTCK, TPLT,"
                      << " RNAM, DEST, WNAM, ANAM, ATKR, ATKD, ATKE, SPCT, PRKZ,"
                      << " CNTO, ECOR, AIDT, KSIZ, CNAM, FULL, SHRT, DATA, PNAM,"
@@ -2125,7 +2125,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
         and (classFormID!=0) and hasReadDNAM and hasReadNAM5 and hasReadNAM6
         and hasReadNAM7 and hasReadNAM8 and hasReadQNAM))
   {
-    std::cout << "Error: At least one required subrecord of NPC_ was not found!\n";
+    std::cerr << "Error: At least one required subrecord of NPC_ was not found!\n";
     return false;
   }
 

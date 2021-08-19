@@ -135,7 +135,7 @@ bool TalkingActivatorRecord::saveToStream(std::ostream& output) const
     //write MODT
     if (!unknownMODT.saveToStream(output, cMODT))
     {
-      std::cout << "Error while writing subrecord MODT of TACT!\n";
+      std::cerr << "Error while writing subrecord MODT of TACT!\n";
       return false;
     }
   }
@@ -228,7 +228,7 @@ bool TalkingActivatorRecord::loadFromStream(std::istream& in_File, const bool lo
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of TACT is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of TACT is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -238,7 +238,7 @@ bool TalkingActivatorRecord::loadFromStream(std::istream& in_File, const bool lo
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of TACT!\n";
+    std::cerr << "Error while reading subrecord EDID of TACT!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -256,7 +256,7 @@ bool TalkingActivatorRecord::loadFromStream(std::istream& in_File, const bool lo
   bytesRead += 2;
   if (subLength!=12)
   {
-    std::cout <<"Error: sub record OBND of TACT has invalid length ("<<subLength
+    std::cerr <<"Error: sub record OBND of TACT has invalid length ("<<subLength
               << " bytes). Should be 12 bytes!\n";
     return false;
   }
@@ -266,7 +266,7 @@ bool TalkingActivatorRecord::loadFromStream(std::istream& in_File, const bool lo
   bytesRead += 12;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord OBND of TACT!\n";
+    std::cerr << "Error while reading subrecord OBND of TACT!\n";
     return false;
   }
 
@@ -290,7 +290,7 @@ bool TalkingActivatorRecord::loadFromStream(std::istream& in_File, const bool lo
       case cFULL:
            if (name.isPresent())
            {
-             std::cout << "Error: record TACT seems to have more than one FULL subrecord!\n";
+             std::cerr << "Error: record TACT seems to have more than one FULL subrecord!\n";
              return false;
            }
            // read FULL
@@ -306,7 +306,7 @@ bool TalkingActivatorRecord::loadFromStream(std::istream& in_File, const bool lo
       case cMODL:
            if (!modelPath.empty())
            {
-             std::cout << "Error: record TACT seems to have more than one MODL subrecord!\n";
+             std::cerr << "Error: record TACT seems to have more than one MODL subrecord!\n";
              return false;
            }
            //read MODL
@@ -314,7 +314,7 @@ bool TalkingActivatorRecord::loadFromStream(std::istream& in_File, const bool lo
            //sanity check
            if (modelPath.empty())
            {
-             std::cout << "Error: subrecord MODL of TACT is empty!\n";
+             std::cerr << "Error: subrecord MODL of TACT is empty!\n";
              return false;
            }
            break;
@@ -335,7 +335,7 @@ bool TalkingActivatorRecord::loadFromStream(std::istream& in_File, const bool lo
       case cKSIZ:
            if (!keywordArray.empty())
            {
-             std::cout << "Error: TACT seems to have more than one KSIZ subrecord.\n";
+             std::cerr << "Error: TACT seems to have more than one KSIZ subrecord.\n";
              return false;
            }
            //read KSIZ
@@ -344,7 +344,7 @@ bool TalkingActivatorRecord::loadFromStream(std::istream& in_File, const bool lo
            bytesRead += 6;
            if (0==k_Size)
            {
-             std::cout << "Error: subrecord KSIZ of TACT is zero!\n";
+             std::cerr << "Error: subrecord KSIZ of TACT is zero!\n";
              return false;
            }
 
@@ -356,7 +356,7 @@ bool TalkingActivatorRecord::loadFromStream(std::istream& in_File, const bool lo
            bytesRead += 2;
            if (subLength!=4*k_Size)
            {
-             std::cout <<"Error: sub record KWDA of TACT has invalid length ("
+             std::cerr <<"Error: sub record KWDA of TACT has invalid length ("
                        <<subLength<<" bytes). Should be "<<4*k_Size<<" bytes!\n";
              return false;
            }
@@ -367,7 +367,7 @@ bool TalkingActivatorRecord::loadFromStream(std::istream& in_File, const bool lo
              bytesRead += 4;
              if (!in_File.good())
              {
-               std::cout << "Error while reading subrecord KWDA of TACT!\n";
+               std::cerr << "Error while reading subrecord KWDA of TACT!\n";
                return false;
              }
              keywordArray.push_back(temp);
@@ -376,7 +376,7 @@ bool TalkingActivatorRecord::loadFromStream(std::istream& in_File, const bool lo
       case cPNAM:
            if (hasReadPNAM)
            {
-             std::cout << "Error: record TACT seems to have more than one PNAM subrecord!\n";
+             std::cerr << "Error: record TACT seems to have more than one PNAM subrecord!\n";
              return false;
            }
            //read PNAM
@@ -387,7 +387,7 @@ bool TalkingActivatorRecord::loadFromStream(std::istream& in_File, const bool lo
       case cSNAM:
            if (loopingSoundFormID!=0)
            {
-             std::cout << "Error: record TACT seems to have more than one SNAM subrecord!\n";
+             std::cerr << "Error: record TACT seems to have more than one SNAM subrecord!\n";
              return false;
            }
            //read SNAM
@@ -396,14 +396,14 @@ bool TalkingActivatorRecord::loadFromStream(std::istream& in_File, const bool lo
            //sanity check
            if (loopingSoundFormID==0)
            {
-             std::cout << "Error: subrecord SNAM of TACT has invalid value zero!\n";
+             std::cerr << "Error: subrecord SNAM of TACT has invalid value zero!\n";
              return false;
            }
            break;
       case cFNAM:
            if (hasReadFNAM)
            {
-             std::cout << "Error: record TACT seems to have more than one FNAM subrecord!\n";
+             std::cerr << "Error: record TACT seems to have more than one FNAM subrecord!\n";
              return false;
            }
            //FNAM's length
@@ -411,7 +411,7 @@ bool TalkingActivatorRecord::loadFromStream(std::istream& in_File, const bool lo
            bytesRead += 2;
            if (subLength!=2)
            {
-             std::cout <<"Error: sub record FNAM of TACT has invalid length ("
+             std::cerr <<"Error: sub record FNAM of TACT has invalid length ("
                        <<subLength << " bytes). Should be two bytes!\n";
              return false;
            }
@@ -420,7 +420,7 @@ bool TalkingActivatorRecord::loadFromStream(std::istream& in_File, const bool lo
            bytesRead +=2;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord FNAM of TACT!\n";
+             std::cerr << "Error while reading subrecord FNAM of TACT!\n";
              return false;
            }
            hasReadFNAM = true;
@@ -428,7 +428,7 @@ bool TalkingActivatorRecord::loadFromStream(std::istream& in_File, const bool lo
       case cVNAM:
            if (voiceTypeFormID!=0)
            {
-             std::cout << "Error: record TACT seems to have more than one VNAM subrecord!\n";
+             std::cerr << "Error: record TACT seems to have more than one VNAM subrecord!\n";
              return false;
            }
            //read VNAM
@@ -437,12 +437,12 @@ bool TalkingActivatorRecord::loadFromStream(std::istream& in_File, const bool lo
            //sanity check
            if (voiceTypeFormID==0)
            {
-             std::cout << "Error: subrecord VNAM of TACT has invalid value zero!\n";
+             std::cerr << "Error: subrecord VNAM of TACT has invalid value zero!\n";
              return false;
            }
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only FULL, MODL, MODT, KSIZ, PNAM, FNAM or VNAM are allowed here!\n";
            return false;
            break;
@@ -452,7 +452,7 @@ bool TalkingActivatorRecord::loadFromStream(std::istream& in_File, const bool lo
   //presence checks
   if (!((!modelPath.empty()) and hasReadPNAM and hasReadFNAM))
   {
-    std::cout << "Error: At least one required subrecord of TACT is missing!\n";
+    std::cerr << "Error: At least one required subrecord of TACT is missing!\n";
     return false;
   }
 

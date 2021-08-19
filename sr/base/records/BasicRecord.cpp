@@ -75,7 +75,7 @@ bool BasicRecord::loadSizeAndUnknownValues(std::istream& in_File, uint32_t& size
   in_File.read((char*) &headerUnknown5, 2);
   if (!in_File.good())
   {
-    std::cout << "BasicRecord::loadSizeAndUnknownValues: Error while reading "
+    std::cerr << "BasicRecord::loadSizeAndUnknownValues: Error while reading "
               << "record size and unknown header data.\n";
     return false;
   }
@@ -95,7 +95,7 @@ bool BasicRecord::saveSizeAndUnknownValues(std::ostream& output, const uint32_t 
   output.write((const char*) &headerUnknown5, 2);
   if (!output.good())
   {
-    std::cout << "BasicRecord::saveSizeAndUnknownValues: Error while writing "
+    std::cerr << "BasicRecord::saveSizeAndUnknownValues: Error while writing "
               << "record size and unknown header data.\n";
     return false;
   }
@@ -121,7 +121,7 @@ bool BasicRecord::loadUint32SubRecordFromStream(std::istream& in_File, const uin
   in_File.read((char*) &subLength, 2);
   if (subLength!=4)
   {
-    std::cout <<"Error: sub record "<<IntTo4Char(subHeader)<<" of "
+    std::cerr <<"Error: sub record "<<IntTo4Char(subHeader)<<" of "
               <<IntTo4Char(getRecordType())<<" has invalid length ("<<subLength
               <<" bytes). Should be four bytes.\n";
     return false;
@@ -130,7 +130,7 @@ bool BasicRecord::loadUint32SubRecordFromStream(std::istream& in_File, const uin
   in_File.read((char*) &target, 4);
   if (!in_File.good())
   {
-    std::cout << "BasicRecord::loadUint32: Error while reading subrecord "
+    std::cerr << "BasicRecord::loadUint32: Error while reading subrecord "
               << IntTo4Char(subHeader) << " of " << IntTo4Char(getRecordType())
               << "!\n";
     return false;
@@ -158,7 +158,7 @@ bool BasicRecord::loadString512FromStream(std::istream& in_File, std::string& ta
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record "<<IntTo4Char(subHeader)<<" of "<<IntTo4Char(getRecordType())<<" is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record "<<IntTo4Char(subHeader)<<" of "<<IntTo4Char(getRecordType())<<" is longer than 511 characters!\n";
     return false;
   }
   //read string
@@ -167,7 +167,7 @@ bool BasicRecord::loadString512FromStream(std::istream& in_File, std::string& ta
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord "<<IntTo4Char(subHeader)<<" of "<<IntTo4Char(getRecordType())<<"!\n";
+    std::cerr << "Error while reading subrecord "<<IntTo4Char(subHeader)<<" of "<<IntTo4Char(getRecordType())<<"!\n";
     return false;
   }
   target = std::string(buffer);
@@ -194,7 +194,7 @@ bool BasicRecord::loadBufferFromStream(std::istream& in_File, const uint16_t len
   bytesRead += 2;
   if (subLength!=len)
   {
-    std::cout <<"Error: sub record "<<IntTo4Char(subHeader)<<" of "<<IntTo4Char(getRecordType())
+    std::cerr <<"Error: sub record "<<IntTo4Char(subHeader)<<" of "<<IntTo4Char(getRecordType())
               <<" has invalid length ("<<subLength<<" bytes). Should be "<<len<<" bytes!\n";
     return false;
   }
@@ -202,7 +202,7 @@ bool BasicRecord::loadBufferFromStream(std::istream& in_File, const uint16_t len
   bytesRead += len;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord "<<IntTo4Char(subHeader)<<" of "<<IntTo4Char(getRecordType())<<"!\n";
+    std::cerr << "Error while reading subrecord "<<IntTo4Char(subHeader)<<" of "<<IntTo4Char(getRecordType())<<"!\n";
     return false;
   }
   return true;

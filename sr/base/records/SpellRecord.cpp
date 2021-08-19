@@ -205,7 +205,7 @@ bool SpellRecord::saveToStream(std::ostream& output) const
     {
       if (!effects[i].saveToStream(output))
       {
-        std::cout << "Error while writing effect block of SPEL!\n";
+        std::cerr << "Error while writing effect block of SPEL!\n";
         return false;
       }
     }//for i
@@ -237,7 +237,7 @@ bool SpellRecord::loadFromStream(std::istream& in_File, const bool localized, co
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of SPEL is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of SPEL is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -247,7 +247,7 @@ bool SpellRecord::loadFromStream(std::istream& in_File, const bool localized, co
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of SPEL!\n";
+    std::cerr << "Error while reading subrecord EDID of SPEL!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -265,7 +265,7 @@ bool SpellRecord::loadFromStream(std::istream& in_File, const bool localized, co
   bytesRead += 2;
   if (subLength!=12)
   {
-    std::cout <<"Error: subrecord OBND of SPEL has invalid length ("<<subLength
+    std::cerr <<"Error: subrecord OBND of SPEL has invalid length ("<<subLength
               <<" bytes). Should be 12 bytes!\n";
     return false;
   }
@@ -274,7 +274,7 @@ bool SpellRecord::loadFromStream(std::istream& in_File, const bool localized, co
   bytesRead += 12;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord OBND of SPEL!\n";
+    std::cerr << "Error while reading subrecord OBND of SPEL!\n";
     return false;
   }
 
@@ -297,7 +297,7 @@ bool SpellRecord::loadFromStream(std::istream& in_File, const bool localized, co
       case cFULL:
            if (name.isPresent())
            {
-             std::cout << "Error: SPEL seems to have more than one FULL subrecord!\n";
+             std::cerr << "Error: SPEL seems to have more than one FULL subrecord!\n";
              return false;
            }
            //read FULL
@@ -307,7 +307,7 @@ bool SpellRecord::loadFromStream(std::istream& in_File, const bool localized, co
       case cMDOB:
            if (menuDisplayObjectFormID!=0)
            {
-             std::cout << "Error: SPEL seems to have more than one MDOB subrecord!\n";
+             std::cerr << "Error: SPEL seems to have more than one MDOB subrecord!\n";
              return false;
            }
            //read MDOB
@@ -315,14 +315,14 @@ bool SpellRecord::loadFromStream(std::istream& in_File, const bool localized, co
            bytesRead += 6;
            if (menuDisplayObjectFormID==0)
            {
-             std::cout << "Error: subrecord MDOB of SPEL has value zero!\n";
+             std::cerr << "Error: subrecord MDOB of SPEL has value zero!\n";
              return false;
            }
            break;
       case cETYP:
            if (hasReadETYP)
            {
-             std::cout << "Error: SPEL seems to have more than one ETYP subrecord!\n";
+             std::cerr << "Error: SPEL seems to have more than one ETYP subrecord!\n";
              return false;
            }
            //read ETYP
@@ -333,7 +333,7 @@ bool SpellRecord::loadFromStream(std::istream& in_File, const bool localized, co
       case cDESC:
            if (description.isPresent())
            {
-             std::cout << "Error: SPEL seems to have more than one DESC subrecord!\n";
+             std::cerr << "Error: SPEL seems to have more than one DESC subrecord!\n";
              return false;
            }
            //read DESC
@@ -343,7 +343,7 @@ bool SpellRecord::loadFromStream(std::istream& in_File, const bool localized, co
       case cSPIT:
            if (hasReadSPIT)
            {
-             std::cout << "Error: SPEL seems to have more than one SPIT subrecord!\n";
+             std::cerr << "Error: SPEL seems to have more than one SPIT subrecord!\n";
              return false;
            }
            //SPIT's length
@@ -351,7 +351,7 @@ bool SpellRecord::loadFromStream(std::istream& in_File, const bool localized, co
            bytesRead += 2;
            if (subLength!=36)
            {
-             std::cout <<"Error: subrecord SPIT of SPEL has invalid length ("
+             std::cerr <<"Error: subrecord SPIT of SPEL has invalid length ("
                        <<subLength<<" bytes). Should be 36 bytes!\n";
              return false;
            }
@@ -368,7 +368,7 @@ bool SpellRecord::loadFromStream(std::istream& in_File, const bool localized, co
            bytesRead += 36;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord SPIT of SPEL!\n";
+             std::cerr << "Error while reading subrecord SPIT of SPEL!\n";
              return false;
            }
            hasReadSPIT = true;
@@ -388,7 +388,7 @@ bool SpellRecord::loadFromStream(std::istream& in_File, const bool localized, co
            bytesRead += 2;
            if (subLength!=4)
            {
-             std::cout <<"Error: subrecord EFID of SPEL has invalid length ("
+             std::cerr <<"Error: subrecord EFID of SPEL has invalid length ("
                        <<subLength<<" bytes). Should be four bytes!\n";
              return false;
            }
@@ -397,7 +397,7 @@ bool SpellRecord::loadFromStream(std::istream& in_File, const bool localized, co
            bytesRead += 4;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord EFID of SPEL!\n";
+             std::cerr << "Error while reading subrecord EFID of SPEL!\n";
              return false;
            }
 
@@ -414,7 +414,7 @@ bool SpellRecord::loadFromStream(std::istream& in_File, const bool localized, co
            bytesRead += 2;
            if (subLength!=12)
            {
-             std::cout <<"Error: subrecord EFIT of SPEL has invalid length ("
+             std::cerr <<"Error: subrecord EFIT of SPEL has invalid length ("
                        <<subLength<<" bytes). Should be 12 bytes!\n";
              return false;
            }
@@ -425,7 +425,7 @@ bool SpellRecord::loadFromStream(std::istream& in_File, const bool localized, co
            bytesRead += 12;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord EFIT of SPEL!\n";
+             std::cerr << "Error while reading subrecord EFIT of SPEL!\n";
              return false;
            }
            hasNonPushedEffect = true;
@@ -433,7 +433,7 @@ bool SpellRecord::loadFromStream(std::istream& in_File, const bool localized, co
       case cCTDA:
            if (!hasNonPushedEffect)
            {
-             std::cout << "Error while reading SPEL: CTDA found, but there was no EFID/EFIT block.\n";
+             std::cerr << "Error while reading SPEL: CTDA found, but there was no EFID/EFIT block.\n";
              return false;
            }
            //CTDA's length
@@ -441,7 +441,7 @@ bool SpellRecord::loadFromStream(std::istream& in_File, const bool localized, co
            bytesRead += 2;
            if (subLength!=32)
            {
-             std::cout <<"Error: subrecord CTDA of SPEL has invalid length ("
+             std::cerr <<"Error: subrecord CTDA of SPEL has invalid length ("
                        <<subLength<<" bytes). Should be 32 bytes!\n";
              return false;
            }
@@ -450,7 +450,7 @@ bool SpellRecord::loadFromStream(std::istream& in_File, const bool localized, co
            bytesRead += 32;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord CTDA of SPEL!\n";
+             std::cerr << "Error while reading subrecord CTDA of SPEL!\n";
              return false;
            }
            tempEffect.unknownCTDA_CIS2s.push_back(CTDA_CIS2_compound(tempCTDA, ""));
@@ -458,17 +458,17 @@ bool SpellRecord::loadFromStream(std::istream& in_File, const bool localized, co
       case cCIS2:
            if (!hasNonPushedEffect)
            {
-             std::cout << "Error while reading SPEL: CIS2 found, but there was no EFID/EFIT block!\n";
+             std::cerr << "Error while reading SPEL: CIS2 found, but there was no EFID/EFIT block!\n";
              return false;
            }
            if (tempEffect.unknownCTDA_CIS2s.empty())
            {
-             std::cout << "Error while reading SPEL: CIS2 found, but there was no CTDA before it!\n";
+             std::cerr << "Error while reading SPEL: CIS2 found, but there was no CTDA before it!\n";
              return false;
            }
            if (!tempEffect.unknownCTDA_CIS2s.back().unknownCISx.empty())
            {
-             std::cout << "Error: SPEL seems to have more than one CIS2 subrecord per CTDA!\n";
+             std::cerr << "Error: SPEL seems to have more than one CIS2 subrecord per CTDA!\n";
              return false;
            }
            //read CIS2
@@ -476,7 +476,7 @@ bool SpellRecord::loadFromStream(std::istream& in_File, const bool localized, co
              return false;
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only FULL, MDOB, ETYP, DESC, SPIT, EFID,"
                      << " CTDA or CIS2 are allowed here!\n";
            return false;
@@ -493,7 +493,7 @@ bool SpellRecord::loadFromStream(std::istream& in_File, const bool localized, co
   //check presence
   if (!(hasReadETYP and description.isPresent() and hasReadSPIT))
   {
-    std::cout << "Error while reading record SPEL: at least one of the "
+    std::cerr << "Error while reading record SPEL: at least one of the "
               << "subrecords ETYP, DESC or SPIT is missing!\n";
     return false;
   }

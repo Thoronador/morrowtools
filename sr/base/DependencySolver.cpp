@@ -40,13 +40,13 @@ bool depPostOrderTraverse(const std::string& fileName, const std::set<Dependency
   std::set<DependencyElement>::const_iterator iter = files.find(fileName);
   if (iter==files.end())
   {
-    std::cout << "Error: SRTP::dpot: no entry for \""<<fileName<<"\" found in file list!\n";
+    std::cerr << "Error: SRTP::dpot: no entry for \""<<fileName<<"\" found in file list!\n";
     return false;
   }
   //check for size limit
   if (presence.size()>255)
   {
-    std::cout << "Error: SRTP::dpot: limit of 255 entries exceeded!\n";
+    std::cerr << "Error: SRTP::dpot: limit of 255 entries exceeded!\n";
     return false;
   }
   //add child nodes
@@ -81,7 +81,7 @@ bool getLoadOrder(const std::vector<std::string>& esmNames, const std::string& d
     depElem.name = esmNames[i];
     if (!ESMReader::peekESMHeader(dataDir+esmNames[i], depElem.header))
     {
-      std::cout << "Error: could not read header of "<<dataDir+esmNames[i]<<"!\n";
+      std::cerr << "Error: could not read header of "<<dataDir+esmNames[i]<<"!\n";
       return false;
     }
     filesWithHeaders.insert(depElem);

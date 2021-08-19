@@ -97,7 +97,7 @@ bool PerkRecord::saveToStream(std::ostream& output) const
     //write VMAD
     if (!unknownVMAD.saveToStream(output, cVMAD))
     {
-      std::cout << "Error while writing subrecord VMAD of PERK!\n";
+      std::cerr << "Error while writing subrecord VMAD of PERK!\n";
       return false;
     }
   }//if VMAD
@@ -120,7 +120,7 @@ bool PerkRecord::saveToStream(std::ostream& output) const
     {
       if (!subBlocks[i].subData.saveToStream(output, subBlocks[i].subType))
       {
-        std::cout << "Error while writing (binary) subrecord "
+        std::cerr << "Error while writing (binary) subrecord "
                   << IntTo4Char(subBlocks[i].subType)<<" of PERK!\n";
         return false;
       }//if
@@ -153,7 +153,7 @@ bool PerkRecord::loadFromStream(std::istream& in_File, const bool localized, con
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of PERK is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of PERK is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -163,7 +163,7 @@ bool PerkRecord::loadFromStream(std::istream& in_File, const bool localized, con
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of PERK!\n";
+    std::cerr << "Error while reading subrecord EDID of PERK!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -194,7 +194,7 @@ bool PerkRecord::loadFromStream(std::istream& in_File, const bool localized, con
       case cFULL:
            if (name.isPresent())
            {
-             std::cout << "Error: record PERK seems to have more than one FULL subrecord.\n";
+             std::cerr << "Error: record PERK seems to have more than one FULL subrecord.\n";
              return false;
            }
            //read FULL
@@ -204,7 +204,7 @@ bool PerkRecord::loadFromStream(std::istream& in_File, const bool localized, con
       case cDESC:
            if (description.isPresent())
            {
-             std::cout << "Error: record PERK seems to have more than one DESC subrecord.\n";
+             std::cerr << "Error: record PERK seems to have more than one DESC subrecord.\n";
              return false;
            }
            //read DESC
@@ -227,7 +227,7 @@ bool PerkRecord::loadFromStream(std::istream& in_File, const bool localized, con
 
   if (!description.isPresent())
   {
-    std::cout << "Error: subrecord DESC of PERK is missing!\n";
+    std::cerr << "Error: subrecord DESC of PERK is missing!\n";
     return false;
   }
 

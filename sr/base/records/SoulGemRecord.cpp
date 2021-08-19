@@ -149,7 +149,7 @@ bool SoulGemRecord::saveToStream(std::ostream& output) const
   {
     if (!unknownMODT.saveToStream(output, cMODT))
     {
-      std::cout << "Error while writing subrecord MODT of SLGM!\n";
+      std::cerr << "Error while writing subrecord MODT of SLGM!\n";
       return false;
     }
   }//if MODT
@@ -231,7 +231,7 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of SLGM is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of SLGM is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -241,7 +241,7 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of SLGM!\n";
+    std::cerr << "Error while reading subrecord EDID of SLGM!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -259,7 +259,7 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
   bytesRead += 2;
   if (subLength!=12)
   {
-    std::cout <<"Error: sub record OBND of SLGM has invalid length ("<<subLength
+    std::cerr <<"Error: sub record OBND of SLGM has invalid length ("<<subLength
               <<" bytes). Should be 12 bytes.\n";
     return false;
   }
@@ -268,7 +268,7 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
   bytesRead += 12;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord OBND of SLGM!\n";
+    std::cerr << "Error while reading subrecord OBND of SLGM!\n";
     return false;
   }
 
@@ -291,7 +291,7 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
       case cFULL:
            if (name.isPresent())
            {
-             std::cout << "Error: SLGM seems to have more than one FULL subrecord.\n";
+             std::cerr << "Error: SLGM seems to have more than one FULL subrecord.\n";
              return false;
            }
            //read FULL
@@ -301,7 +301,7 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
       case cMODL:
            if (!modelPath.empty())
            {
-             std::cout << "Error: SLGM seems to have more than one MODL subrecord.\n";
+             std::cerr << "Error: SLGM seems to have more than one MODL subrecord.\n";
              return false;
            }
            //read MODL's length
@@ -309,7 +309,7 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
            bytesRead += 2;
            if (subLength>511)
            {
-             std::cout <<"Error: sub record MODL of SLGM is longer than 511 characters!\n";
+             std::cerr <<"Error: sub record MODL of SLGM is longer than 511 characters!\n";
              return false;
            }
            //read MODL's stuff
@@ -318,7 +318,7 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
            bytesRead += subLength;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord MODL of SLGM!\n";
+             std::cerr << "Error while reading subrecord MODL of SLGM!\n";
              return false;
            }
            modelPath = std::string(buffer);
@@ -340,7 +340,7 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
       case cKSIZ:
            if (!keywordArray.empty())
            {
-             std::cout << "Error: SLGM seems to have more than one KSIZ subrecord.\n";
+             std::cerr << "Error: SLGM seems to have more than one KSIZ subrecord.\n";
              return false;
            }
            //read KSIZ
@@ -349,7 +349,7 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
            bytesRead += 6;
            if (k_Size==0)
            {
-             std::cout << "Error: SLGM's KSIZ value is zero, but that's not allowed!\n";
+             std::cerr << "Error: SLGM's KSIZ value is zero, but that's not allowed!\n";
              return false;
            }
 
@@ -366,7 +366,7 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
            bytesRead += 2;
            if (subLength!=4*k_Size)
            {
-             std::cout <<"Error: sub record KWDA of SLGM has invalid length ("
+             std::cerr <<"Error: sub record KWDA of SLGM has invalid length ("
                        <<subLength<<" bytes). Should be "<<4*k_Size<<" bytes.\n";
              return false;
            }
@@ -377,7 +377,7 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
              bytesRead += 4;
              if (!in_File.good())
              {
-               std::cout << "Error while reading subrecord KWDA of SLGM!\n";
+               std::cerr << "Error while reading subrecord KWDA of SLGM!\n";
                return false;
              }
              keywordArray.push_back(tempUint32);
@@ -386,7 +386,7 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
       case cDATA:
            if (hasReadDATA)
            {
-             std::cout << "Error: SLGM seems to have more than one DATA subrecord.\n";
+             std::cerr << "Error: SLGM seems to have more than one DATA subrecord.\n";
              return false;
            }
            //DATA's length
@@ -394,7 +394,7 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
            bytesRead += 2;
            if (subLength!=8)
            {
-             std::cout <<"Error: sub record DATA of SLGM has invalid length ("
+             std::cerr <<"Error: sub record DATA of SLGM has invalid length ("
                        <<subLength<<" bytes). Should be eight bytes.\n";
              return false;
            }
@@ -404,7 +404,7 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
            bytesRead += 8;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord DATA of SLGM!\n";
+             std::cerr << "Error while reading subrecord DATA of SLGM!\n";
              return false;
            }
            hasReadDATA = true;
@@ -412,7 +412,7 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
       case cSOUL:
            if (hasReadSOUL)
            {
-             std::cout << "Error: SLGM seems to have more than one SOUL subrecord.\n";
+             std::cerr << "Error: SLGM seems to have more than one SOUL subrecord.\n";
              return false;
            }
            //SOUL's length
@@ -420,7 +420,7 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
            bytesRead += 2;
            if (subLength!=1)
            {
-             std::cout <<"Error: sub record SOUL of SLGM has invalid length ("
+             std::cerr <<"Error: sub record SOUL of SLGM has invalid length ("
                        <<subLength<<" bytes). Should be one byte.\n";
              return false;
            }
@@ -429,7 +429,7 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
            bytesRead += 1;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord SOUL of SLGM!\n";
+             std::cerr << "Error while reading subrecord SOUL of SLGM!\n";
              return false;
            }
            hasReadSOUL = true;
@@ -437,7 +437,7 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
       case cSLCP:
            if (hasReadSLCP)
            {
-             std::cout << "Error: SLGM seems to have more than one SLCP subrecord.\n";
+             std::cerr << "Error: SLGM seems to have more than one SLCP subrecord.\n";
              return false;
            }
            //SLCP's length
@@ -445,7 +445,7 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
            bytesRead += 2;
            if (subLength!=1)
            {
-             std::cout <<"Error: sub record SLCP of SLGM has invalid length ("
+             std::cerr <<"Error: sub record SLCP of SLGM has invalid length ("
                        <<subLength<<" bytes). Should be one byte.\n";
              return false;
            }
@@ -454,7 +454,7 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
            bytesRead += 1;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord SLCP of SLGM!\n";
+             std::cerr << "Error while reading subrecord SLCP of SLGM!\n";
              return false;
            }
            hasReadSLCP = true;
@@ -462,7 +462,7 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
       case cNAM0:
            if (linkedToFormID!=0)
            {
-             std::cout << "Error: SLGM seems to have more than one NAM0 subrecord.\n";
+             std::cerr << "Error: SLGM seems to have more than one NAM0 subrecord.\n";
              return false;
            }
            //read NAM0
@@ -471,12 +471,12 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
            //check content
            if (linkedToFormID==0)
            {
-             std::cout << "Error: subrecord NAM0 of SLGM is zero!\n";
+             std::cerr << "Error: subrecord NAM0 of SLGM is zero!\n";
              return false;
            }
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only FULL, MODL, MODT, KSIZ, DATA, SOUL, "
                      << "SLCP or NAM0 are allowed here!\n";
            return false;
@@ -487,7 +487,7 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
   //presence checks
   if (!((!modelPath.empty()) and hasReadDATA and hasReadSOUL and hasReadSLCP))
   {
-    std::cout << "Error: while reading SLGM record: at least one required subrecord is missing!\n";
+    std::cerr << "Error: while reading SLGM record: at least one required subrecord is missing!\n";
     return false;
   }
 

@@ -126,7 +126,7 @@ bool Tes4HeaderRecord::saveToStream(std::ostream& output) const
   output.write((const char*) &nextObjectID, 4);
   if (!output.good())
   {
-    std::cout << "Error while writing subrecord HEDR of TES4!\n";
+    std::cerr << "Error while writing subrecord HEDR of TES4!\n";
     return false;
   }
 
@@ -229,7 +229,7 @@ bool Tes4HeaderRecord::loadFromStream(std::istream& in_File, const bool localize
   BytesRead += 2;
   if (SubLength!=12)
   {
-    std::cout <<"Error: sub record HEDR of TES4 has invalid length ("<<SubLength
+    std::cerr <<"Error: sub record HEDR of TES4 has invalid length ("<<SubLength
               <<" bytes). Should be 12 bytes.\n";
     return false;
   }
@@ -242,7 +242,7 @@ bool Tes4HeaderRecord::loadFromStream(std::istream& in_File, const bool localize
   BytesRead += 12;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord HEDR of TES4!\n";
+    std::cerr << "Error while reading subrecord HEDR of TES4!\n";
     return false;
   }
 
@@ -259,7 +259,7 @@ bool Tes4HeaderRecord::loadFromStream(std::istream& in_File, const bool localize
   BytesRead += 2;
   if (SubLength>511)
   {
-    std::cout << "Error: subrecord CNAM of TES4 is longer than 511 characters.\n";
+    std::cerr << "Error: subrecord CNAM of TES4 is longer than 511 characters.\n";
     return false;
   }
   //read author's name
@@ -269,7 +269,7 @@ bool Tes4HeaderRecord::loadFromStream(std::istream& in_File, const bool localize
   BytesRead += SubLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord CNAM of TES4!\n";
+    std::cerr << "Error while reading subrecord CNAM of TES4!\n";
     return false;
   }
   authorName = std::string(Buffer);
@@ -292,7 +292,7 @@ bool Tes4HeaderRecord::loadFromStream(std::istream& in_File, const bool localize
       case cSNAM:
            if (!summary.empty())
            {
-             std::cout << "Error: Record TES4 seems to have more than one SNAM subrecord!\n";
+             std::cerr << "Error: Record TES4 seems to have more than one SNAM subrecord!\n";
              return false;
            }
            if (!loadString512FromStream(in_File, summary, Buffer, cSNAM, false, BytesRead))
@@ -300,7 +300,7 @@ bool Tes4HeaderRecord::loadFromStream(std::istream& in_File, const bool localize
            //check: empty strings not allowed
            if (summary.empty())
            {
-             std::cout << "Error: Subrecord SNAM of TES4 is empty!\n";
+             std::cerr << "Error: Subrecord SNAM of TES4 is empty!\n";
              return false;
            }
            break;
@@ -311,7 +311,7 @@ bool Tes4HeaderRecord::loadFromStream(std::istream& in_File, const bool localize
            BytesRead += 2;
            if (SubLength>511)
            {
-             std::cout << "Error: subrecord MAST of TES4 is longer than 511 characters.\n";
+             std::cerr << "Error: subrecord MAST of TES4 is longer than 511 characters.\n";
              return false;
            }
            //read master file name
@@ -320,7 +320,7 @@ bool Tes4HeaderRecord::loadFromStream(std::istream& in_File, const bool localize
            BytesRead += SubLength;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord MAST of TES4!\n";
+             std::cerr << "Error while reading subrecord MAST of TES4!\n";
              return false;
            }
            depEntry.fileName = std::string(Buffer);
@@ -339,7 +339,7 @@ bool Tes4HeaderRecord::loadFromStream(std::istream& in_File, const bool localize
            BytesRead += 2;
            if (SubLength!=8)
            {
-             std::cout <<"Error: sub record DATA of TES4 has invalid length ("
+             std::cerr <<"Error: sub record DATA of TES4 has invalid length ("
                        <<SubLength <<" bytes). Should be 8 bytes.\n";
              return false;
            }
@@ -348,7 +348,7 @@ bool Tes4HeaderRecord::loadFromStream(std::istream& in_File, const bool localize
            BytesRead += 8;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord DATA of TES4!\n";
+             std::cerr << "Error while reading subrecord DATA of TES4!\n";
              return false;
            }
            dependencies.push_back(depEntry);
@@ -356,7 +356,7 @@ bool Tes4HeaderRecord::loadFromStream(std::istream& in_File, const bool localize
       case cONAM:
            if (!unknownONAM.empty())
            {
-             std::cout << "Error: Record TES4 seems to have more than one ONAM subrecord!\n";
+             std::cerr << "Error: Record TES4 seems to have more than one ONAM subrecord!\n";
              return false;
            }
            //ONAM's length
@@ -364,7 +364,7 @@ bool Tes4HeaderRecord::loadFromStream(std::istream& in_File, const bool localize
            BytesRead += 2;
            if ((SubLength<=0) or ((SubLength%4)!=0))
            {
-             std::cout << "Error: subrecord ONAM of TES4 has invalid length ("
+             std::cerr << "Error: subrecord ONAM of TES4 has invalid length ("
                        << SubLength<<" bytes). Should be an integral multiple "
                        << "of four bytes and larger than zero.\n";
              return false;
@@ -376,7 +376,7 @@ bool Tes4HeaderRecord::loadFromStream(std::istream& in_File, const bool localize
              BytesRead += 4;
              if (!in_File.good())
              {
-               std::cout << "Error while reading subrecord ONAM of TES4!\n";
+               std::cerr << "Error while reading subrecord ONAM of TES4!\n";
                return false;
              }
              unknownONAM.push_back(tempUint32);
@@ -385,7 +385,7 @@ bool Tes4HeaderRecord::loadFromStream(std::istream& in_File, const bool localize
       case cINTV:
            if (hasDoneINTV)
            {
-             std::cout << "Error: Record TES4 seems to have more than one INTV subrecord!\n";
+             std::cerr << "Error: Record TES4 seems to have more than one INTV subrecord!\n";
              return false;
            }
            //read INTV
@@ -397,7 +397,7 @@ bool Tes4HeaderRecord::loadFromStream(std::istream& in_File, const bool localize
       case cINCC:
            if (hasINCC)
            {
-             std::cout << "Error: Record TES4 seems to have more than one INCC subrecord!\n";
+             std::cerr << "Error: Record TES4 seems to have more than one INCC subrecord!\n";
              return false;
            }
            //read INCC
@@ -407,7 +407,7 @@ bool Tes4HeaderRecord::loadFromStream(std::istream& in_File, const bool localize
            hasINCC = true;
            break;
       default:
-           std::cout << "Error: found unexpected subrecord \""<<IntTo4Char(SubRecName)
+           std::cerr << "Error: found unexpected subrecord \""<<IntTo4Char(SubRecName)
                      << "\", but only SNAM, MAST, DATA, ONAM, INTC or INCC are allowed here!\n";
            return false;
            break;
@@ -417,7 +417,7 @@ bool Tes4HeaderRecord::loadFromStream(std::istream& in_File, const bool localize
   //check for required field
   if (!hasDoneINTV)
   {
-    std::cout << "Error: Record TES4 does not have a INTV field!\n";
+    std::cerr << "Error: Record TES4 does not have a INTV field!\n";
     return false;
   }
 

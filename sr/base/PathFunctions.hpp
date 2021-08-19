@@ -53,7 +53,7 @@ namespace SRTP
                 << "will try to read it from the registry.\n";
       if (!SRTP::getSkryrimPathFromRegistry(dataDir))
       {
-        std::cout << "Error: Could not find Skyrim's installation path in registry!\n";
+        std::cerr << "Error: Could not find Skyrim's installation path in registry!\n";
         dataDir.clear();
       }
       else
@@ -69,7 +69,7 @@ namespace SRTP
         }
         else
         {
-          std::cout << "Error: Installation path in registry is empty!\n";
+          std::cerr << "Error: Installation path in registry is empty!\n";
         }
       }//else
 
@@ -115,7 +115,7 @@ namespace SRTP
     const std::vector<FileEntry> files = getDirectoryFileList(dataDir+"Strings"+MWTP::pathDelimiter);
     if (files.size()<3)
     {
-      std::cout << "Error: could not find string table files for "<<pluginName<<"!\n";
+      std::cerr << "Error: could not find string table files for "<<pluginName<<"!\n";
       return SRTP::rcFileError;
     }
 
@@ -149,14 +149,14 @@ namespace SRTP
 
     if (presentStuff.size()<3)
     {
-      std::cout << "Error: Could not find all three string table files!\n";
+      std::cerr << "Error: Could not find all three string table files!\n";
       return SRTP::rcFileError;
     }
 
     if (presentStuff.size()>3)
     {
       //Could possibly happen on file systems with case-insensitive file names.
-      std::cout << "Error: Found more than three string table files!\n";
+      std::cerr << "Error: Found more than three string table files!\n";
       return SRTP::rcFileError;
     }
 

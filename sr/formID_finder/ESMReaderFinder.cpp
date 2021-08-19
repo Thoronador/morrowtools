@@ -275,7 +275,7 @@ int ESMReaderFinder::readNextRecord(std::ifstream& in_File, const uint32_t recNa
          WordsOfPower::getSingleton().addRecord(*static_cast<WordOfPowerRecord*>(recPtr));
          break;
     default:
-         std::cout << "ESMReaderFinder::readNextRecord: cannot add unknown record type!\n";
+         std::cerr << "ESMReaderFinder::readNextRecord: cannot add unknown record type!\n";
          delete recPtr;
          return -1;
   }//swi

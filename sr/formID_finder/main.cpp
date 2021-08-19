@@ -241,7 +241,7 @@ int main(int argc, char **argv)
           //set more than once?
           if (!dataDir.empty())
           {
-            std::cout << "Error: Data directory was already set!\n";
+            std::cerr << "Error: Data directory was already set!\n";
             return SRTP::rcInvalidParameter;
           }
           //enough parameters?
@@ -258,14 +258,14 @@ int main(int argc, char **argv)
             }
             else
             {
-              std::cout << "Parameter \""<<std::string(argv[i+1])<<"\" is too"
+              std::cerr << "Parameter \""<<std::string(argv[i+1])<<"\" is too"
                         << " short to be a proper directory path.\n";
               return SRTP::rcInvalidParameter;
             }//else
           }
           else
           {
-            std::cout << "Error: You have to specify a directory name after \""
+            std::cerr << "Error: You have to specify a directory name after \""
                       << param<<"\".\n";
             return SRTP::rcInvalidParameter;
           }
@@ -275,7 +275,7 @@ int main(int argc, char **argv)
           //set more than once?
           if (!searchKeyword.empty())
           {
-            std::cout << "Error: search keyword was already set!\n";
+            std::cerr << "Error: search keyword was already set!\n";
             return SRTP::rcInvalidParameter;
           }
           //enough parameters?
@@ -287,7 +287,7 @@ int main(int argc, char **argv)
           }
           else
           {
-            std::cout << "Error: You have to enter some text after \""
+            std::cerr << "Error: You have to enter some text after \""
                       << param<<"\".\n";
             return SRTP::rcInvalidParameter;
           }
@@ -297,7 +297,7 @@ int main(int argc, char **argv)
           //set more than once?
           if (caseSensitive)
           {
-            std::cout << "Error: parameter \""<<param<<"\" was specified twice!\n";
+            std::cerr << "Error: parameter \""<<param<<"\" was specified twice!\n";
             return SRTP::rcInvalidParameter;
           }
           caseSensitive = true;
@@ -308,7 +308,7 @@ int main(int argc, char **argv)
           //set more than once?
           if (allQuestInfo)
           {
-            std::cout << "Error: parameter \""<<param<<"\" was specified twice!\n";
+            std::cerr << "Error: parameter \""<<param<<"\" was specified twice!\n";
             return SRTP::rcInvalidParameter;
           }
           allQuestInfo = true;
@@ -319,7 +319,7 @@ int main(int argc, char **argv)
           //set more than once?
           if (listFactionRanks)
           {
-            std::cout << "Error: parameter \""<<param<<"\" was specified twice!\n";
+            std::cerr << "Error: parameter \""<<param<<"\" was specified twice!\n";
             return SRTP::rcInvalidParameter;
           }
           listFactionRanks = true;
@@ -330,7 +330,7 @@ int main(int argc, char **argv)
           //set more than once?
           if (sendData)
           {
-            std::cout << "Error: parameter "<<param<<" was already specified!\n";
+            std::cerr << "Error: parameter "<<param<<" was already specified!\n";
             return SRTP::rcInvalidParameter;
           }
           //enough parameters?
@@ -344,7 +344,7 @@ int main(int argc, char **argv)
           }
           else
           {
-            std::cout << "Error: You have to enter two string parameters after \""
+            std::cerr << "Error: You have to enter two string parameters after \""
                       << param<<"\".\n";
             return SRTP::rcInvalidParameter;
           }
@@ -355,7 +355,7 @@ int main(int argc, char **argv)
           //set more than once?
           if (withReferences)
           {
-            std::cout << "Error: parameter \""<<param<<"\" was specified twice!\n";
+            std::cerr << "Error: parameter \""<<param<<"\" was specified twice!\n";
             return SRTP::rcInvalidParameter;
           }
           withReferences = true;
@@ -366,7 +366,7 @@ int main(int argc, char **argv)
           //set more than once?
           if (showFiles)
           {
-            std::cout << "Error: parameter "<<param<<" was already specified!\n";
+            std::cerr << "Error: parameter "<<param<<" was already specified!\n";
             return SRTP::rcInvalidParameter;
           }
           showFiles = true;
@@ -387,7 +387,7 @@ int main(int argc, char **argv)
       }//parameter exists
       else
       {
-        std::cout << "Parameter at index "<<i<<" is NULL.\n";
+        std::cerr << "Parameter at index "<<i<<" is NULL.\n";
         return SRTP::rcInvalidParameter;
       }
       ++i;//on to next parameter
@@ -437,7 +437,7 @@ int main(int argc, char **argv)
 
     if (!SRTP::getLoadOrder(esmNames, dataDir, loadOrder))
     {
-      std::cout << "Error: could not determine load order of ESM files!\n";
+      std::cerr << "Error: could not determine load order of ESM files!\n";
       return SRTP::rcFileError;
     }
   }
@@ -454,7 +454,7 @@ int main(int argc, char **argv)
       reader.requestIndexMapUpdate(loadOrder[lo_idx]);
       if (reader.readESM(dataDir+loadOrder[lo_idx], tes4rec)<0)
       {
-        std::cout << "Error while reading "<<dataDir+loadOrder[lo_idx]<<"!\n";
+        std::cerr << "Error while reading "<<dataDir+loadOrder[lo_idx]<<"!\n";
         return SRTP::rcFileError;
       }
     }
@@ -470,7 +470,7 @@ int main(int argc, char **argv)
         readerReferences.requestIndexMapUpdate(loadOrder[lo_idx]);
         if (readerReferences.readESM(dataDir+loadOrder[lo_idx], tes4rec)<0)
         {
-          std::cout << "Error while reading references from "<<dataDir+loadOrder[lo_idx]<<"!\n";
+          std::cerr << "Error while reading references from "<<dataDir+loadOrder[lo_idx]<<"!\n";
           return SRTP::rcFileError;
         }
       }
@@ -1450,7 +1450,7 @@ int main(int argc, char **argv)
     HWND receiver = FindWindow(ptrSend1, ptrSend2);
     if (receiver==NULL)
     {
-      std::cout << "Error in send data mode: cannot find receiving window!\n";
+      std::cerr << "Error in send data mode: cannot find receiving window!\n";
       return SRTP::rcWindowNotFound;
     }
     int msgResult = SendMessage(receiver, WM_COPYDATA, 0, (LPARAM) &cds);
@@ -1458,14 +1458,14 @@ int main(int argc, char **argv)
     //check for socket
     if (sendParam1st!="socket")
     {
-      std::cout << "Error: parameter --send-data expects socket as first part!\n";
+      std::cerr << "Error: parameter --send-data expects socket as first part!\n";
       return SRTP::rcInvalidParameter;
     }
     //create unix domain socket
     int socket_fd = socket(AF_UNIX, SOCK_STREAM, 0);
     if (socket_fd < 0)
     {
-      std::cout << "Error: could not open Unix domain socket!\n";
+      std::cerr << "Error: could not open Unix domain socket!\n";
       return SRTP::rcSocketError;
     }
     //prepare socket address structure
@@ -1476,7 +1476,7 @@ int main(int argc, char **argv)
     //now connect
     if (connect(socket_fd, (struct sockaddr *) &serv_addr, sizeof(struct sockaddr_un))!=0)
     {
-      std::cout << "Error: could not connect via Unix domain socket!\n";
+      std::cerr << "Error: could not connect via Unix domain socket!\n";
       return SRTP::rcSocketError;
     }
     //write to socket

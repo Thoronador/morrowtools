@@ -221,7 +221,7 @@ bool ActivatorRecord::saveToStream(std::ostream& output) const
   {
     if (!unknownVMAD.saveToStream(output, cVMAD))
     {
-      std::cout << "Error while writing subrecord VMAD of ACTI!\n";
+      std::cerr << "Error while writing subrecord VMAD of ACTI!\n";
       return false;
     }
   }//if VMAD
@@ -256,7 +256,7 @@ bool ActivatorRecord::saveToStream(std::ostream& output) const
   {
     if (!unknownMODT.saveToStream(output, cMODT))
     {
-      std::cout << "Error while writing subrecord MODT of ACTI!\n";
+      std::cerr << "Error while writing subrecord MODT of ACTI!\n";
       return false;
     }
   }//if MODT
@@ -265,7 +265,7 @@ bool ActivatorRecord::saveToStream(std::ostream& output) const
   {
     if (!unknownMODS.saveToStream(output, cMODS))
     {
-      std::cout << "Error while writing subrecord MODS of ACTI!\n";
+      std::cerr << "Error while writing subrecord MODS of ACTI!\n";
       return false;
     }
   }//if MODS
@@ -313,7 +313,7 @@ bool ActivatorRecord::saveToStream(std::ostream& output) const
       {
         if (!destructionStructures[i].unknownDMDT.saveToStream(output, cDMDT))
         {
-          std::cout << "Error while writing subrecord DMDT of ACTI!\n";
+          std::cerr << "Error while writing subrecord DMDT of ACTI!\n";
           return false;
         }
       }//if DMDT
@@ -322,7 +322,7 @@ bool ActivatorRecord::saveToStream(std::ostream& output) const
       {
         if (!destructionStructures[i].unknownDMDS.saveToStream(output, cDMDS))
         {
-          std::cout << "Error while writing subrecord DMDS of ACTI!\n";
+          std::cerr << "Error while writing subrecord DMDS of ACTI!\n";
           return false;
         }
       }//if DMDS
@@ -463,7 +463,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of ACTI is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of ACTI is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -473,7 +473,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of ACTI!\n";
+    std::cerr << "Error while reading subrecord EDID of ACTI!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -509,7 +509,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
       case cVMAD:
            if (unknownVMAD.isPresent())
            {
-             std::cout << "Error: ACTI seems to have more than one VMAD subrecord.\n";
+             std::cerr << "Error: ACTI seems to have more than one VMAD subrecord.\n";
              return false;
            }
            // read VMAD
@@ -520,7 +520,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
       case cOBND:
            if (hasReadOBND)
            {
-             std::cout << "Error: ACTI seems to have more than one OBND subrecord.\n";
+             std::cerr << "Error: ACTI seems to have more than one OBND subrecord.\n";
              return false;
            }
            //OBND's length
@@ -528,7 +528,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength!=12)
            {
-             std::cout <<"Error: sub record OBND of ACTI has invalid length ("<<subLength
+             std::cerr <<"Error: sub record OBND of ACTI has invalid length ("<<subLength
                        <<" bytes). Should be 12 bytes.\n";
              return false;
            }
@@ -537,7 +537,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 12;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord OBND of ACTI!\n";
+             std::cerr << "Error while reading subrecord OBND of ACTI!\n";
              return false;
            }
            hasReadOBND = true;
@@ -545,7 +545,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
       case cFULL:
            if (name.isPresent())
            {
-             std::cout << "Error: ACTI seems to have more than one FULL subrecord.\n";
+             std::cerr << "Error: ACTI seems to have more than one FULL subrecord.\n";
              return false;
            }
            //read FULL
@@ -555,7 +555,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
       case cMODL:
            if (!modelPath.empty())
            {
-             std::cout << "Error: ACTI seems to have more than one MODL subrecord.\n";
+             std::cerr << "Error: ACTI seems to have more than one MODL subrecord.\n";
              return false;
            }
            //MODL's length
@@ -563,7 +563,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength>511)
            {
-             std::cout <<"Error: sub record MODL of ACTI is longer than 511 characters!\n";
+             std::cerr <<"Error: sub record MODL of ACTI is longer than 511 characters!\n";
              return false;
            }
            //read model path
@@ -572,7 +572,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += subLength;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord MODL of ACTI!\n";
+             std::cerr << "Error while reading subrecord MODL of ACTI!\n";
              return false;
            }
            modelPath = std::string(buffer);
@@ -580,12 +580,12 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
       case cMODT:
            if (unknownMODT.isPresent())
            {
-             std::cout << "Error: ACTI seems to have more than one MODT subrecord.\n";
+             std::cerr << "Error: ACTI seems to have more than one MODT subrecord.\n";
              return false;
            }
            if (!unknownMODT.loadFromStream(in_File, cMODT, false))
            {
-             std::cout << "Error while reading subrecord MODT of ACTI!\n";
+             std::cerr << "Error while reading subrecord MODT of ACTI!\n";
              return false;
            }
            bytesRead = bytesRead + 2 + unknownMODT.size();
@@ -593,12 +593,12 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
       case cMODS:
            if (unknownMODS.isPresent())
            {
-             std::cout << "Error: ACTI seems to have more than one MODS subrecord.\n";
+             std::cerr << "Error: ACTI seems to have more than one MODS subrecord.\n";
              return false;
            }
            if (!unknownMODS.loadFromStream(in_File, cMODS, false))
            {
-             std::cout << "Error while reading subrecord MODS of ACTI!\n";
+             std::cerr << "Error while reading subrecord MODS of ACTI!\n";
              return false;
            }
            bytesRead = bytesRead + 2 + unknownMODS.size();
@@ -606,7 +606,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
       case cDEST:
            if (hasDEST)
            {
-             std::cout << "Error: ACTI seems to have more than one DEST subrecord.\n";
+             std::cerr << "Error: ACTI seems to have more than one DEST subrecord.\n";
              return false;
            }
            //DEST's length
@@ -614,7 +614,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength!=8)
            {
-             std::cout <<"Error: sub record DEST of ACTI has invalid length ("<<subLength
+             std::cerr <<"Error: sub record DEST of ACTI has invalid length ("<<subLength
                        <<" bytes). Should be 8 bytes.\n";
              return false;
            }
@@ -623,7 +623,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 8;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord DEST of ACTI!\n";
+             std::cerr << "Error while reading subrecord DEST of ACTI!\n";
              return false;
            }
            hasDEST = true;
@@ -635,7 +635,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
            }
            if (tempDestStruct.hasDSTD)
            {
-             std::cout << "Error: ACTI seems to have more than one DSTD subrecord.\n";
+             std::cerr << "Error: ACTI seems to have more than one DSTD subrecord.\n";
              return false;
            }
            //DSTD's length
@@ -643,7 +643,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength!=20)
            {
-             std::cout <<"Error: sub record DSTD of ACTI has invalid length ("
+             std::cerr <<"Error: sub record DSTD of ACTI has invalid length ("
                        <<subLength<<" bytes). Should be 20 bytes.\n";
              return false;
            }
@@ -652,7 +652,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 20;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord DSTD of ACTI!\n";
+             std::cerr << "Error while reading subrecord DSTD of ACTI!\n";
              return false;
            }
            tempDestStruct.hasDSTD = true;
@@ -665,7 +665,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
            }
            if (!tempDestStruct.destroyedModelPath.empty())
            {
-             std::cout << "Error: ACTI seems to have more than one DMDL subrecord.\n";
+             std::cerr << "Error: ACTI seems to have more than one DMDL subrecord.\n";
              return false;
            }
            //DMDL's length
@@ -673,7 +673,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength>511)
            {
-             std::cout <<"Error: sub record DMDL of ACTI is longer than 511 characters!\n";
+             std::cerr <<"Error: sub record DMDL of ACTI is longer than 511 characters!\n";
              return false;
            }
            //read dest. model path
@@ -682,7 +682,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += subLength;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord DMDL of ACTI!\n";
+             std::cerr << "Error while reading subrecord DMDL of ACTI!\n";
              return false;
            }
            tempDestStruct.destroyedModelPath = std::string(buffer);
@@ -695,12 +695,12 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
            }
            if (tempDestStruct.unknownDMDT.isPresent())
            {
-             std::cout << "Error: ACTI seems to have more than one DMDT subrecord.\n";
+             std::cerr << "Error: ACTI seems to have more than one DMDT subrecord.\n";
              return false;
            }
            if (!tempDestStruct.unknownDMDT.loadFromStream(in_File, cDMDT, false))
            {
-             std::cout << "Error while reading subrecord DMDT of ACTI!\n";
+             std::cerr << "Error while reading subrecord DMDT of ACTI!\n";
              return false;
            }
            bytesRead = bytesRead + 2 + tempDestStruct.unknownDMDT.size();
@@ -713,12 +713,12 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
            }
            if (tempDestStruct.unknownDMDS.isPresent())
            {
-             std::cout << "Error: ACTI seems to have more than one DMDS subrecord.\n";
+             std::cerr << "Error: ACTI seems to have more than one DMDS subrecord.\n";
              return false;
            }
            if (!tempDestStruct.unknownDMDS.loadFromStream(in_File, cDMDS, false))
            {
-             std::cout << "Error while reading subrecord DMDS of ACTI!\n";
+             std::cerr << "Error while reading subrecord DMDS of ACTI!\n";
              return false;
            }
            bytesRead = bytesRead + 2 + tempDestStruct.unknownDMDS.size();
@@ -727,7 +727,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
       case cDSTF:
            if (!hasBegunDestStruct)
            {
-             std::cout << "Error while reading record of type ACTI: no data prior to DSTF.\n";
+             std::cerr << "Error while reading record of type ACTI: no data prior to DSTF.\n";
              return false;
            }
            //DSTF's length
@@ -735,7 +735,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength!=0)
            {
-             std::cout <<"Error: sub record DSTF of ACTI has invalid length ("
+             std::cerr <<"Error: sub record DSTF of ACTI has invalid length ("
                        <<subLength<<" bytes). Should be zero bytes!\n";
              return false;
            }
@@ -745,7 +745,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
       case cKSIZ:
            if (!keywordArray.empty())
            {
-             std::cout << "Error: ACTI seems to have more than one KSIZ subrecord.\n";
+             std::cerr << "Error: ACTI seems to have more than one KSIZ subrecord.\n";
              return false;
            }
            //read KSIZ
@@ -754,7 +754,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 6;
            if (0==k_Size)
            {
-             std::cout << "Error: subrecord KSIZ of ACTI is zero!\n";
+             std::cerr << "Error: subrecord KSIZ of ACTI is zero!\n";
              return false;
            }
 
@@ -766,7 +766,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength!=4*k_Size)
            {
-             std::cout <<"Error: sub record KWDA of ACTI has invalid length ("
+             std::cerr <<"Error: sub record KWDA of ACTI has invalid length ("
                        <<subLength<<" bytes). Should be "<<4*k_Size<<" bytes!\n";
              return false;
            }
@@ -777,7 +777,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
              bytesRead += 4;
              if (!in_File.good())
              {
-               std::cout << "Error while reading subrecord KWDA of ACTI!\n";
+               std::cerr << "Error while reading subrecord KWDA of ACTI!\n";
                return false;
              }
              keywordArray.push_back(temp);
@@ -786,7 +786,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
       case cPNAM:
            if (hasPNAM)
            {
-             std::cout << "Error: ACTI seems to have more than one PNAM subrecord.\n";
+             std::cerr << "Error: ACTI seems to have more than one PNAM subrecord.\n";
              return false;
            }
            //PNAM's length
@@ -794,7 +794,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength!=4)
            {
-             std::cout <<"Error: sub record PNAM of ACTI has invalid length ("
+             std::cerr <<"Error: sub record PNAM of ACTI has invalid length ("
                        <<subLength<<" bytes). Should be four bytes!\n";
              return false;
            }
@@ -806,7 +806,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
            //read PNAM
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord PNAM of ACTI!\n";
+             std::cerr << "Error while reading subrecord PNAM of ACTI!\n";
              return false;
            }
            bytesRead += 4;
@@ -815,7 +815,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
       case cSNAM:
            if (loopingSoundFormID!=0)
            {
-             std::cout << "Error: ACTI seems to have more than one SNAM subrecord.\n";
+             std::cerr << "Error: ACTI seems to have more than one SNAM subrecord.\n";
              return false;
            }
            //read SNAM
@@ -823,14 +823,14 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 6;
            if (loopingSoundFormID==0)
            {
-             std::cout << "Error: subrecord SNAM of ACTI has value zero!\n";
+             std::cerr << "Error: subrecord SNAM of ACTI has value zero!\n";
              return false;
            }
            break;
       case cVNAM:
            if (activateSoundFormID!=0)
            {
-             std::cout << "Error: ACTI seems to have more than one VNAM subrecord.\n";
+             std::cerr << "Error: ACTI seems to have more than one VNAM subrecord.\n";
              return false;
            }
            //read VNAM
@@ -838,14 +838,14 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 6;
            if (activateSoundFormID==0)
            {
-             std::cout << "Error: subrecord VNAM of ACTI has value zero!\n";
+             std::cerr << "Error: subrecord VNAM of ACTI has value zero!\n";
              return false;
            }
            break;
       case cWNAM:
            if (waterTypeFormID!=0)
            {
-             std::cout << "Error: ACTI seems to have more than one WNAM subrecord.\n";
+             std::cerr << "Error: ACTI seems to have more than one WNAM subrecord.\n";
              return false;
            }
            //read WNAM
@@ -853,14 +853,14 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 6;
            if (waterTypeFormID==0)
            {
-             std::cout << "Error: subrecord WNAM of ACTI has value zero!\n";
+             std::cerr << "Error: subrecord WNAM of ACTI has value zero!\n";
              return false;
            }
            break;
       case cRNAM:
            if (activateTextOverride.isPresent())
            {
-             std::cout << "Error: ACTI seems to have more than one RNAM subrecord.\n";
+             std::cerr << "Error: ACTI seems to have more than one RNAM subrecord.\n";
              return false;
            }
            //read RNAM
@@ -868,14 +868,14 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
              return false;
            if (localized and (activateTextOverride.getIndex()==0))
            {
-             std::cout << "Error: subrecord RNAM of ACTI has value zero!\n";
+             std::cerr << "Error: subrecord RNAM of ACTI has value zero!\n";
              return false;
            }
            break;
       case cFNAM:
            if (hasFNAM)
            {
-             std::cout << "Error: ACTI seems to have more than one FNAM subrecord.\n";
+             std::cerr << "Error: ACTI seems to have more than one FNAM subrecord.\n";
              return false;
            }
            //FNAM's length
@@ -883,7 +883,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength!=2)
            {
-             std::cout <<"Error: sub record FNAM of ACTI has invalid length ("<<subLength
+             std::cerr <<"Error: sub record FNAM of ACTI has invalid length ("<<subLength
                        <<" bytes). Should be two bytes.\n";
              return false;
            }
@@ -892,7 +892,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord FNAM of ACTI!\n";
+             std::cerr << "Error while reading subrecord FNAM of ACTI!\n";
              return false;
            }
            hasFNAM = true;
@@ -900,7 +900,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
       case cKNAM:
            if (interactionKeywordFormID!=0)
            {
-             std::cout << "Error: ACTI seems to have more than one KNAM subrecord.\n";
+             std::cerr << "Error: ACTI seems to have more than one KNAM subrecord.\n";
              return false;
            }
            //read KNAM
@@ -908,12 +908,12 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 6;
            if (interactionKeywordFormID==0)
            {
-             std::cout << "Error: subrecord KNAM of ACTI has value zero!\n";
+             std::cerr << "Error: subrecord KNAM of ACTI has value zero!\n";
              return false;
            }
            break;
       default:
-           std::cout << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
                      << "\", but only VMAD, OBND, FULL, PNAM, FNAM, SNAM or KNAM are allowed here!\n";
            return false;
     }//swi
@@ -922,12 +922,12 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
   //check presence of all required subrecords
   if (!hasReadOBND)
   {
-    std::cout << "Error: At least one required subrecord of ACTI was not found!\n";
+    std::cerr << "Error: At least one required subrecord of ACTI was not found!\n";
     return false;
   }
   if (hasBegunDestStruct)
   {
-    std::cout << "Error: Unfinished DSTF stuff in ACTI!\n";
+    std::cerr << "Error: Unfinished DSTF stuff in ACTI!\n";
     return false;
   }
   return in_File.good();

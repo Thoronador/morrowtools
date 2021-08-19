@@ -86,8 +86,8 @@ uint32_t IngredientRecord::getWriteSize() const
         +4 /* ENIT */ +2 /* 2 bytes for length */ +8 /* fixed length of 8 bytes */;
   if (unknownVMAD.isPresent())
   {
-    writeSize = writeSize +4 /*VMAD*/ +2 /* 2 bytes for length */
-               +unknownVMAD.getSize() /* size */;
+    writeSize = writeSize + 4 /*VMAD*/ + 2 /* 2 bytes for length */
+               + unknownVMAD.size() /* size */;
   }
   if (!keywordArray.empty())
   {
@@ -101,13 +101,13 @@ uint32_t IngredientRecord::getWriteSize() const
   }
   if (unknownMODT.isPresent())
   {
-    writeSize = writeSize +4 /*MODT*/ +2 /* 2 bytes for length */
-               +unknownMODT.getSize() /* size */;
+    writeSize = writeSize + 4 /*MODT*/ + 2 /* 2 bytes for length */
+               + unknownMODT.size() /* size */;
   }
   if (unknownMODS.isPresent())
   {
-    writeSize = writeSize +4 /*MODS*/ +2 /* 2 bytes for length */
-               +unknownMODS.getSize() /* size */;
+    writeSize = writeSize + 4 /*MODS*/ + 2 /* 2 bytes for length */
+               + unknownMODS.size() /* size */;
   }
   if (pickupSoundFormID!=0)
   {
@@ -119,11 +119,10 @@ uint32_t IngredientRecord::getWriteSize() const
   }//if has ZNAM
   if (!effects.empty())
   {
-    unsigned int i;
-    for (i=0; i<effects.size(); ++i)
+    for (unsigned int i = 0; i < effects.size(); ++i)
     {
-      writeSize = writeSize +effects[i].getWriteSize();
-    }//for
+      writeSize = writeSize + effects[i].getWriteSize();
+    }
   }//if effects
   return writeSize;
 }
@@ -315,23 +314,23 @@ bool IngredientRecord::loadFromStream(std::istream& in_File, const bool localize
   //read (VMAD or) OBND
   in_File.read((char*) &subRecName, 4);
   bytesRead += 4;
-  if (subRecName==cVMAD)
+  if (subRecName == cVMAD)
   {
-    //has VMAD
+    // has VMAD
     if (!unknownVMAD.loadFromStream(in_File, cVMAD, false))
     {
-      std::cout << "Error while reading subrecord VMAD of INGR!\n";
+      std::cerr << "Error while reading subrecord VMAD of INGR!\n";
       return false;
     }
-    bytesRead = bytesRead +2 +unknownVMAD.getSize();
+    bytesRead = bytesRead + 2 + unknownVMAD.size();
 
-    //read next subrecord (OBND)
+    // read next subrecord (OBND)
     in_File.read((char*) &subRecName, 4);
     bytesRead += 4;
   }
   else
   {
-    //no VMAD here!
+    // no VMAD here!
     unknownVMAD.setPresence(false);
   }
 
@@ -448,30 +447,30 @@ bool IngredientRecord::loadFromStream(std::istream& in_File, const bool localize
       case cMODT:
            if (unknownMODT.isPresent())
            {
-             std::cout << "Error: INGR seems to have more than one MODT subrecord!\n";
+             std::cerr << "Error: INGR seems to have more than one MODT subrecord!\n";
              return false;
            }
-           //read MODT
+           // read MODT
            if (!unknownMODT.loadFromStream(in_File, cMODT, false))
            {
-             std::cout << "Error while reading subrecord MODT of INGR!\n";
+             std::cerr << "Error while reading subrecord MODT of INGR!\n";
              return false;
            }
-           bytesRead += (2 +unknownMODT.getSize());
+           bytesRead += (2 + unknownMODT.size());
            break;
       case cMODS:
            if (unknownMODS.isPresent())
            {
-             std::cout << "Error: INGR seems to have more than one MODS subrecord!\n";
+             std::cerr << "Error: INGR seems to have more than one MODS subrecord!\n";
              return false;
            }
-           //read MODS
+           // read MODS
            if (!unknownMODS.loadFromStream(in_File, cMODS, false))
            {
-             std::cout << "Error while reading subrecord MODS of INGR!\n";
+             std::cerr << "Error while reading subrecord MODS of INGR!\n";
              return false;
            }
-           bytesRead += (2+unknownMODS.getSize());
+           bytesRead += (2 + unknownMODS.size());
            break;
       case cYNAM:
            if (pickupSoundFormID!=0)

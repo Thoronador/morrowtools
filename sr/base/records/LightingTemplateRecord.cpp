@@ -55,12 +55,12 @@ uint32_t LightingTemplateRecord::getWriteSize() const
         +editorID.length()+1 /* length of name +1 byte for NUL termination */;
   if (unknownDATA.isPresent())
   {
-    writeSize = writeSize +4 /* DATA */ +2 /* 2 bytes for length */ +unknownDATA.getSize() /* length */;
-  }//if DATA
+    writeSize = writeSize + 4 /* DATA */ + 2 /* 2 bytes for length */ +unknownDATA.size() /* length */;
+  }
   if (unknownDALC.isPresent())
   {
-    writeSize = writeSize +4 /* DALC */ +2 /* 2 bytes for length */ +unknownDALC.getSize() /* length */;
-  }//if DALC
+    writeSize = writeSize + 4 /* DALC */ + 2 /* 2 bytes for length */ +unknownDALC.size() /* length */;
+  }
   return writeSize;
 }
 
@@ -138,31 +138,31 @@ bool LightingTemplateRecord::loadFromStream(std::istream& in_File, const bool lo
   }
   editorID = std::string(buffer);
 
-  //read DATA
+  // read DATA
   if (!unknownDATA.loadFromStream(in_File, cDATA, true))
   {
-    std::cout << "Error while reading subrecord DATA of LGTM!\n";
+    std::cerr << "Error while reading subrecord DATA of LGTM!\n";
     return false;
   }
-  //check length
-  if ((unknownDATA.getSize()!=92) and (unknownDATA.getSize()!=72) and (unknownDATA.getSize()!=64))
+  // check length
+  if ((unknownDATA.size() != 92) && (unknownDATA.size() != 72) && (unknownDATA.size() != 64))
   {
-    std::cout <<"Error: sub record DATA of LGTM has invalid length ("
-              <<unknownDATA.getSize()<<" bytes). Should be 92, 72 or 64 bytes!\n";
+    std::cerr << "Error: sub record DATA of LGTM has invalid length ("
+              << unknownDATA.size()<< " bytes). Should be 92, 72 or 64 bytes!\n";
     return false;
   }
 
-  //read DALC
+  // read DALC
   if (!unknownDALC.loadFromStream(in_File, cDALC, true))
   {
-    std::cout << "Error while reading subrecord DALC of LGTM!\n";
+    std::cerr << "Error while reading subrecord DALC of LGTM!\n";
     return false;
   }
-  //check length
-  if ((unknownDALC.getSize()!=32) and (unknownDALC.getSize()!=24))
+  // check length
+  if ((unknownDALC.size() != 32) && (unknownDALC.size() != 24))
   {
-    std::cout <<"Error: sub record DALC of LGTM has invalid length ("
-              <<unknownDALC.getSize()<<" bytes). Should be 32 or 24 bytes!\n";
+    std::cerr << "Error: sub record DALC of LGTM has invalid length ("
+              << unknownDALC.size() << " bytes). Should be 32 or 24 bytes!\n";
     return false;
   }
 

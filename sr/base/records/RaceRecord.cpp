@@ -121,11 +121,11 @@ uint32_t RaceRecord::getWriteSize() const
   }//if has WNAM
   if (unknownBODT.isPresent())
   {
-    writeSize = writeSize +4 /* BODT */ +2 /* 2 bytes for length */ +unknownBODT.getSize() /* length */;
+    writeSize = writeSize + 4 /* BODT */ + 2 /* 2 bytes for length */ + unknownBODT.size() /* length */;
   }
   if (unknownBOD2.isPresent())
   {
-    writeSize = writeSize +4 /* BOD2 */ +2 /* 2 bytes for length */ +unknownBOD2.getSize() /* length */;
+    writeSize = writeSize + 4 /* BOD2 */ + 2 /* 2 bytes for length */ + unknownBOD2.size() /* length */;
   }
   if (!keywordArray.empty())
   {
@@ -134,13 +134,12 @@ uint32_t RaceRecord::getWriteSize() const
   }
   if (!subBlocks.empty())
   {
-    unsigned int i;
-    for (i=0; i<subBlocks.size(); ++i)
+    for (unsigned int i = 0; i < subBlocks.size(); ++i)
     {
-      writeSize = writeSize +4 /*header*/ +2 /* 2 bytes for length */
-                 +subBlocks[i].subData.getSize() /* length */;
-    }//for
-  }//if subBlocks
+      writeSize = writeSize + 4 /*header*/ + 2 /* 2 bytes for length */
+                 + subBlocks[i].subData.size() /* length */;
+    }
+  }
   return writeSize;
 }
 
@@ -438,15 +437,15 @@ bool RaceRecord::loadFromStream(std::istream& in_File, const bool localized, con
              std::cout << "Error: RACE seems to have more than one BODT subrecord!\n";
              return false;
            }
-           //read BODT
+           // read BODT
            if (!unknownBODT.loadFromStream(in_File, cBODT, false))
              return false;
-           bytesRead += (2+unknownBODT.getSize());
-           //check length
-           if (unknownBODT.getSize()!=12)
+           bytesRead += (2 + unknownBODT.size());
+           // check length
+           if (unknownBODT.size() != 12)
            {
-             std::cout <<"Error: sub record BODT of RACE has invalid length("
-                       <<unknownBODT.getSize()<<" bytes). Should be 12 bytes!\n";
+             std::cerr << "Error: sub record BODT of RACE has invalid length("
+                       << unknownBODT.size() << " bytes). Should be 12 bytes!\n";
              return false;
            }
            break;
@@ -459,7 +458,7 @@ bool RaceRecord::loadFromStream(std::istream& in_File, const bool localized, con
            //read BOD2
            if (!unknownBOD2.loadFromStream(in_File, cBOD2, false))
              return false;
-           bytesRead += (2+unknownBOD2.getSize());
+           bytesRead += (2 + unknownBOD2.size());
            break;
       case cKSIZ:
            if (!keywordArray.empty())
@@ -593,7 +592,7 @@ bool RaceRecord::loadFromStream(std::istream& in_File, const bool localized, con
       std::cout << "Read size: "<<readSize<<",    bytes read: "<<bytesRead<<"\n";
       return false;
     }
-    bytesRead = bytesRead +2 +tempBlock.subData.getSize();
+    bytesRead = bytesRead + 2 + tempBlock.subData.size();
     subBlocks.push_back(tempBlock);
   }//while
 

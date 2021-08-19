@@ -49,12 +49,11 @@ bool EncounterZoneRecord::equals(const EncounterZoneRecord& other) const
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t EncounterZoneRecord::getWriteSize() const
 {
-  uint32_t writeSize;
-  writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
-        +editorID.length()+1 /* length of name +1 byte for NUL termination */;
+  uint32_t writeSize = 4 /* EDID */ + 2 /* 2 bytes for length */
+        + editorID.length() + 1 /* length of name +1 byte for NUL termination */;
   if (unknownDATA.isPresent())
   {
-    writeSize = writeSize +4 /* DATA */ +2 /* 2 bytes for length */ +unknownDATA.getSize() /* size */;
+    writeSize = writeSize + 4 /* DATA */ + 2 /* 2 bytes for length */ + unknownDATA.size() /* size */;
   }
   return writeSize;
 }

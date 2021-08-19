@@ -58,11 +58,11 @@ uint32_t NAVIRecord::getWriteSize() const
   uint32_t i;
   for (i=0; i<unknownNVMIs.size(); ++i)
   {
-    writeSize = writeSize +4 /* NVMI */ +2 /* 2 bytes for length */ +unknownNVMIs[i].getSize() /* size */;
+    writeSize = writeSize + 4 /* NVMI */ + 2 /* 2 bytes for length */ + unknownNVMIs[i].size() /* size */;
   }//for
   if (unknownNVPP.isPresent())
   {
-    writeSize = writeSize +4 /* NVPP */ +2 /* 2 bytes for length */ +unknownNVPP.getSize() /* size */;
+    writeSize = writeSize + 4 /* NVPP */ + 2 /* 2 bytes for length */ + unknownNVPP.size() /* size */;
   }
   if (unknownNVSI!=0)
   {
@@ -175,7 +175,7 @@ bool NAVIRecord::loadFromStream(std::istream& in_File, const bool localized, con
              std::cout << "Error while reading subrecord NVMI of NAVI!\n";
              return false;
            }
-           bytesRead = bytesRead +2 +tempBin.getSize();
+           bytesRead = bytesRead + 2 + tempBin.size();
            unknownNVMIs.push_back(tempBin);
            break;
       case cNVPP:
@@ -190,7 +190,7 @@ bool NAVIRecord::loadFromStream(std::istream& in_File, const bool localized, con
              std::cout << "Error while reading subrecord NVPP of NAVI!\n";
              return false;
            }
-           bytesRead = bytesRead +2 +unknownNVPP.getSize();
+           bytesRead = bytesRead + 2 + unknownNVPP.size();
            break;
       case cNVSI:
            if (unknownNVSI!=0)

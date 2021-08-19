@@ -102,11 +102,11 @@ uint32_t AlchemyPotionRecord::getWriteSize() const
   }//if keywords
   if (unknownMODT.isPresent())
   {
-    writeSize = writeSize +4 /* MODT */ +2 /* 2 bytes for length */ +unknownMODT.getSize() /* length */;
+    writeSize = writeSize + 4 /* MODT */ + 2 /* 2 bytes for length */ + unknownMODT.size() /* length */;
   }//if MODT
   if (unknownMODS.isPresent())
   {
-    writeSize = writeSize +4 /* MODS */ +2 /* 2 bytes for length */ +unknownMODS.getSize() /* length */;
+    writeSize = writeSize + 4 /* MODS */ + 2 /* 2 bytes for length */ + unknownMODS.size() /* length */;
   }//if MODS
   if (pickupSoundFormID!=0)
   {
@@ -462,7 +462,7 @@ bool AlchemyPotionRecord::loadFromStream(std::istream& in_File, const bool local
              std::cout << "Error while reading subrecord MODT of ALCH!\n";
              return false;
            }
-           bytesRead = bytesRead +2 +unknownMODT.getSize();
+           bytesRead = bytesRead + 2 + unknownMODT.size();
            break;
       case cMODS:
            if (unknownMODS.isPresent())
@@ -476,7 +476,7 @@ bool AlchemyPotionRecord::loadFromStream(std::istream& in_File, const bool local
              std::cout << "Error while reading subrecord MODS of ALCH!\n";
              return false;
            }
-           bytesRead = bytesRead +2 +unknownMODS.getSize();
+           bytesRead = bytesRead + 2 + unknownMODS.size();
            break;
       case cYNAM:
            if (pickupSoundFormID!=0)

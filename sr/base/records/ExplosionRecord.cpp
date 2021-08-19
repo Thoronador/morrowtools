@@ -59,10 +59,10 @@ bool ExplosionRecord::equals(const ExplosionRecord& other) const
 uint32_t ExplosionRecord::getWriteSize() const
 {
   uint32_t writeSize;
-  writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
-        +editorID.length()+1 /* length of name +1 byte for NUL termination */
-        +4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed length of 12 bytes */
-        +4 /* DATA */ +2 /* 2 bytes for length */ +unknownDATA.getSize() /* fixed length of 48 or 52 bytes */;
+  writeSize = 4 /* EDID */ + 2 /* 2 bytes for length */
+        + editorID.length() + 1 /* length of name +1 byte for NUL termination */
+        + 4 /* OBND */ + 2 /* 2 bytes for length */ + 12 /* fixed length of 12 bytes */
+        + 4 /* DATA */ + 2 /* 2 bytes for length */ + unknownDATA.size() /* fixed length of 48 or 52 bytes */;
   if (name.isPresent())
   {
     writeSize += name.getWriteSize() /* FULL */;
@@ -74,8 +74,8 @@ uint32_t ExplosionRecord::getWriteSize() const
   }//if MODL
   if (unknownMODT.isPresent())
   {
-    writeSize = writeSize +4 /* MODT */ +2 /* 2 bytes for length */ +unknownMODT.getSize() /* size */;
-  }//if MODT
+    writeSize = writeSize + 4 /* MODT */ + 2 /* 2 bytes for length */ + unknownMODT.size() /* size */;
+  }
   if (enchantmentFormID!=0)
   {
     writeSize = writeSize +4 /* EITM */ +2 /* 2 bytes for length */ +4 /* fixed length of four bytes */;
@@ -298,16 +298,16 @@ bool ExplosionRecord::loadFromStream(std::istream& in_File, const bool localized
       case cMODT:
            if (unknownMODT.isPresent())
            {
-             std::cout << "Error: EXPL seems to have more than one MODT subrecord!\n";
+             std::cerr << "Error: EXPL seems to have more than one MODT subrecord!\n";
              return false;
            }
-           //read MODT
+           // read MODT
            if (!unknownMODT.loadFromStream(in_File, cMODT, false))
            {
-             std::cout << "Error while reading subrecord MODT of EXPL!\n";
+             std::cerr << "Error while reading subrecord MODT of EXPL!\n";
              return false;
            }
-           bytesRead += (2+unknownMODT.getSize());
+           bytesRead += (2 + unknownMODT.size());
            break;
       case cEITM:
            if (enchantmentFormID!=0)
@@ -346,22 +346,22 @@ bool ExplosionRecord::loadFromStream(std::istream& in_File, const bool localized
       case cDATA:
            if (unknownDATA.isPresent())
            {
-             std::cout << "Error: EXPL seems to have more than one DATA subrecord!\n";
+             std::cerr << "Error: EXPL seems to have more than one DATA subrecord!\n";
              return false;
            }
-           //read DATA
+           // read DATA
            if (!unknownDATA.loadFromStream(in_File, cDATA, false))
            {
-             std::cout << "Error while reading subrecord DATA of EXPL!\n";
+             std::cerr << "Error while reading subrecord DATA of EXPL!\n";
              return false;
            }
-           subLength = unknownDATA.getSize();
-           bytesRead += (2+subLength);
-           //check DATA's length
-           if ((subLength!=52) and (subLength!=48) and (subLength!=44) and (subLength!=40))
+           subLength = unknownDATA.size();
+           bytesRead += (2 + subLength);
+           // check DATA's length
+           if ((subLength != 52) && (subLength != 48) && (subLength != 44) && (subLength != 40))
            {
-             std::cout <<"Error: subrecord DATA of EXPL has invalid length ("
-                       <<subLength <<" bytes). Should be 52 bytes or 48 bytes or 44 bytes or 40 bytes!\n";
+             std::cerr << "Error: subrecord DATA of EXPL has invalid length ("
+                       << subLength << " bytes). Should be 52 bytes or 48 bytes or 44 bytes or 40 bytes!\n";
              return false;
            }
            break;

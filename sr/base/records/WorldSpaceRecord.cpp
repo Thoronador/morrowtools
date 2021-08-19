@@ -112,12 +112,12 @@ uint32_t WorldSpaceRecord::getWriteSize() const
   {
     if (unknownRNAMs[i].isPresent())
     {
-      writeSize = writeSize +4 /* RNAM */ +2 /* 2 bytes for length */ +unknownRNAMs[i].getSize() /* size */;
+      writeSize = writeSize + 4 /* RNAM */ + 2 /* 2 bytes for length */ + unknownRNAMs[i].size() /* size */;
     }//if RNAM
   }//for
   if (unknownMHDT.isPresent())
   {
-    writeSize = writeSize +4 /* MHDT */ +2 /* 2 bytes for length */ +unknownMHDT.getSize() /* size */;
+    writeSize = writeSize + 4 /* MHDT */ + 2 /* 2 bytes for length */ + unknownMHDT.size() /* size */;
   }//if MHDT
   if (name.isPresent())
   {
@@ -162,12 +162,12 @@ uint32_t WorldSpaceRecord::getWriteSize() const
   }
   if (unknownMODT.isPresent())
   {
-    writeSize = writeSize +4 /* MODT */ +2 /* 2 bytes for length */ +unknownMODT.getSize() /* size */;
-  }//if MODT
+    writeSize = writeSize + 4 /* MODT */ + 2 /* 2 bytes for length */ + unknownMODT.size() /* size */;
+  }
   if (unknownMNAM.isPresent())
   {
-    writeSize = writeSize +4 /* MNAM */ +2 /* 2 bytes for length */ +unknownMNAM.getSize() /* size */;
-  }//if MNAM
+    writeSize = writeSize + 4 /* MNAM */ + 2 /* 2 bytes for length */ + unknownMNAM.size() /* size */;
+  }
   if (locationFormID!=0)
   {
     writeSize = writeSize +4 /* XLCN */ +2 /* 2 bytes for length */ +4 /* fixed size */;
@@ -182,8 +182,8 @@ uint32_t WorldSpaceRecord::getWriteSize() const
   }
   if (unknownONAM.isPresent())
   {
-    writeSize = writeSize +4 /* ONAM */ +2 /* 2 bytes for length */ +unknownONAM.getSize() /* size */;
-  }//if ONAM
+    writeSize = writeSize + 4 /* ONAM */ + 2 /* 2 bytes for length */ + unknownONAM.size() /* size */;
+  }
   if (hasDATA)
   {
     writeSize = writeSize +4 /* DATA */ +2 /* 2 bytes for length */ +1 /* fixed size */;
@@ -612,28 +612,28 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
     switch (subRecName)
     {
       case cRNAM:
-           //read RNAM
+           // read RNAM
            if (!tempBin.loadFromStream(in_File, cRNAM, false))
            {
-             std::cout << "Error while reading subrecord RNAM of WRLD!\n";
+             std::cerr << "Error while reading subrecord RNAM of WRLD!\n";
              return false;
            }
-           bytesRead = bytesRead +2 /*length value*/ +tempBin.getSize() /*data size*/;
+           bytesRead = bytesRead + 2 /* length */ + tempBin.size() /* data size */;
            unknownRNAMs.push_back(tempBin);
            break;
       case cMHDT:
            if (unknownMHDT.isPresent())
            {
-             std::cout << "Error: WRLD seems to have more than one MHDT subrecord.\n";
+             std::cerr << "Error: WRLD seems to have more than one MHDT subrecord.\n";
              return false;
            }
-           //read MHDT
+           // read MHDT
            if (!unknownMHDT.loadFromStream(in_File, cMHDT, false))
            {
-             std::cout << "Error while reading subrecord MHDT of WRLD!\n";
+             std::cerr << "Error while reading subrecord MHDT of WRLD!\n";
              return false;
            }
-           bytesRead = bytesRead +2 /*length value*/ +unknownMHDT.getSize() /*data size*/;
+           bytesRead = bytesRead + 2 /* length value */ + unknownMHDT.size() /* data size */;
            break;
       case cFULL:
            if (name.isPresent())
@@ -817,30 +817,30 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
       case cMODT:
            if (unknownMODT.isPresent())
            {
-             std::cout << "Error: WRLD seems to have more than one MODT subrecord.\n";
+             std::cerr << "Error: WRLD seems to have more than one MODT subrecord.\n";
              return false;
            }
-           //read MODT
+           // read MODT
            if (!unknownMODT.loadFromStream(in_File, cMODT, false))
            {
-             std::cout << "Error while reading subrecord MODT of WRLD!\n";
+             std::cerr << "Error while reading subrecord MODT of WRLD!\n";
              return false;
            }
-           bytesRead = bytesRead +2 /*length value*/ +unknownMODT.getSize() /*data size*/;
+           bytesRead = bytesRead + 2 /*length value*/ + unknownMODT.size() /* data size */;
            break;
       case cMNAM:
            if (unknownMNAM.isPresent())
            {
-             std::cout << "Error: WRLD seems to have more than one MNAM subrecord.\n";
+             std::cerr << "Error: WRLD seems to have more than one MNAM subrecord.\n";
              return false;
            }
-           //read MNAM
+           // read MNAM
            if (!unknownMNAM.loadFromStream(in_File, cMNAM, false))
            {
-             std::cout << "Error while reading subrecord MNAM of WRLD!\n";
+             std::cerr << "Error while reading subrecord MNAM of WRLD!\n";
              return false;
            }
-           bytesRead = bytesRead +2 /*length value*/ +unknownMNAM.getSize() /*data size*/;
+           bytesRead = bytesRead + 2 /* length value */ + unknownMNAM.size() /* data size */;
            break;
       case cXLCN:
            if (locationFormID!=0)
@@ -900,23 +900,23 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
       case cONAM:
            if (unknownONAM.isPresent())
            {
-             std::cout << "Error: WRLD seems to have more than one ONAM subrecord.\n";
+             std::cerr << "Error: WRLD seems to have more than one ONAM subrecord.\n";
              return false;
            }
-           //read ONAM
+           // read ONAM
            if (!unknownONAM.loadFromStream(in_File, cONAM, false))
            {
-             std::cout << "Error while reading subrecord ONAM of WRLD!\n";
+             std::cerr << "Error while reading subrecord ONAM of WRLD!\n";
              return false;
            }
-           //ONAM's length
-           if (unknownONAM.getSize()!=16)
+           // ONAM's length
+           if (unknownONAM.size() != 16)
            {
-             std::cout <<"Error: sub record ONAM of WRLD has invalid length ("
-                       <<unknownONAM.getSize()<<" bytes). Should be 16 bytes.\n";
+             std::cerr << "Error: sub record ONAM of WRLD has invalid length ("
+                       << unknownONAM.size() << " bytes). Should be 16 bytes.\n";
              return false;
            }
-           bytesRead = bytesRead +2 /*length value*/ +unknownONAM.getSize() /*data size*/;
+           bytesRead = bytesRead + 2 /* length value */ + unknownONAM.size() /* data size */;
            break;
       case cNAMA:
            if (hasReadNAMA)

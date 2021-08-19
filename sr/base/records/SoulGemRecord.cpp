@@ -92,7 +92,7 @@ uint32_t SoulGemRecord::getWriteSize() const
   }
   if (unknownMODT.isPresent())
   {
-    writeSize = writeSize +4 /* MODT */ +2 /* 2 bytes for length */ +unknownMODT.getSize() /* size */;
+    writeSize = writeSize + 4 /* MODT */ + 2 /* 2 bytes for length */ + unknownMODT.size() /* size */;
   }
   if (!keywordArray.empty())
   {
@@ -326,16 +326,16 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
       case cMODT:
            if (unknownMODT.isPresent())
            {
-             std::cout << "Error: SLGM seems to have more than one MODT subrecord.\n";
+             std::cerr << "Error: SLGM seems to have more than one MODT subrecord.\n";
              return false;
            }
-           //read MODT
+           // read MODT
            if (!unknownMODT.loadFromStream(in_File, cMODT, false))
            {
-             std::cout << "Error while reading subrecord MODT of SLGM!\n";
+             std::cerr << "Error while reading subrecord MODT of SLGM!\n";
              return false;
            }
-           bytesRead = bytesRead +2 /*length value*/ +unknownMODT.getSize() /*data size*/;
+           bytesRead = bytesRead + 2 /* length */ + unknownMODT.size() /* data size */;
            break;
       case cKSIZ:
            if (!keywordArray.empty())

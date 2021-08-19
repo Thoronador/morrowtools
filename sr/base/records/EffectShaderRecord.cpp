@@ -79,8 +79,8 @@ uint32_t EffectShaderRecord::getWriteSize() const
   }
   if (unknownDATA.isPresent())
   {
-    writeSize = writeSize +4 /* DATA */ +2 /* 2 bytes for length */ +unknownDATA.getSize() /* size */;
-  }//if
+    writeSize = writeSize + 4 /* DATA */ + 2 /* 2 bytes for length */ + unknownDATA.size() /* size */;
+  }
   return writeSize;
 }
 
@@ -274,27 +274,27 @@ bool EffectShaderRecord::loadFromStream(std::istream& in_File, const bool locali
       case cDATA:
            if (unknownDATA.isPresent())
            {
-             std::cout << "Error: record EFSH seems to have more than one DATA subrecord!\n";
+             std::cerr << "Error: record EFSH seems to have more than one DATA subrecord!\n";
              return false;
            }
-           //load DATA
+           // load DATA
            if (!unknownDATA.loadFromStream(in_File, cDATA, false))
            {
-             std::cout << "Error while reading subrecord NAM9 of EFSH!\n";
+             std::cerr << "Error while reading subrecord NAM9 of EFSH!\n";
              return false;
            }
 
-           //check length of DATA
-           if ((unknownDATA.getSize()>400) or (unknownDATA.getSize()<308) or ((unknownDATA.getSize()%4)!=0))
+           // check length of DATA
+           if ((unknownDATA.size() > 400) || (unknownDATA.size() < 308) || ((unknownDATA.size() % 4) != 0))
            {
-             std::cout <<"Error: sub record DATA of EFSH has invalid length ("
-                       <<unknownDATA.getSize()<<" bytes). Should be between 400 and 308 bytes and an integral multiple of four bytes!\n";
+             std::cerr << "Error: sub record DATA of EFSH has invalid length ("
+                       << unknownDATA.size() << " bytes). Should be between 400 and 308 bytes and an integral multiple of four bytes!\n";
              return false;
            }
-           bytesRead = bytesRead +2 +unknownDATA.getSize();
+           bytesRead = bytesRead + 2 + unknownDATA.size();
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \"" << IntTo4Char(subRecName)
                      << "\" found, but only ICON, ICO2, NAM7, NAM8, NAM9 or DATA are allowed here!\n";
            return false;
            break;

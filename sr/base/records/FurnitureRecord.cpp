@@ -88,11 +88,11 @@ uint32_t FurnitureRecord::getWriteSize() const
              +unknownFNPRs.size()*(4 /* FNPR */ +2 /* 2 bytes for length */ +4 /* fixed length */);
   if (unknownVMAD.isPresent())
   {
-    writeSize = writeSize +4 /* VMAD */ +2 /* 2 bytes for length */ + unknownVMAD.getSize() /* size */;
+    writeSize = writeSize + 4 /* VMAD */ + 2 /* 2 bytes for length */ + unknownVMAD.size() /* size */;
   }
   if (unknownOBND.isPresent())
   {
-    writeSize = writeSize +4 /* OBND */ +2 /* 2 bytes for length */ + unknownOBND.getSize() /* size */;
+    writeSize = writeSize + 4 /* OBND */ + 2 /* 2 bytes for length */ + unknownOBND.size() /* size */;
   }
   if (name.isPresent())
   {
@@ -105,11 +105,11 @@ uint32_t FurnitureRecord::getWriteSize() const
   }
   if (unknownMODT.isPresent())
   {
-    writeSize = writeSize +4 /* MODT */ +2 /* 2 bytes for length */ + unknownMODT.getSize() /* size */;
+    writeSize = writeSize + 4 /* MODT */ + 2 /* 2 bytes for length */ + unknownMODT.size() /* size */;
   }
   if (unknownMODS.isPresent())
   {
-    writeSize = writeSize +4 /* MODS */ +2 /* 2 bytes for length */ + unknownMODS.getSize() /* size */;
+    writeSize = writeSize + 4 /* MODS */ + 2 /* 2 bytes for length */ + unknownMODS.size() /* size */;
   }
   if (!keywords.empty())
   {
@@ -379,24 +379,24 @@ bool FurnitureRecord::loadFromStream(std::istream& in_File, const bool localized
       case cVMAD:
            if (unknownVMAD.isPresent())
            {
-             std::cout << "Error: FURN seems to have more than one VMAD subrecord!\n";
+             std::cerr << "Error: FURN seems to have more than one VMAD subrecord!\n";
              return false;
            }
-           //read VMAD
+           // read VMAD
            if (!unknownVMAD.loadFromStream(in_File, cVMAD, false))
              return false;
-           bytesRead += (2+unknownVMAD.getSize());
+           bytesRead += (2 + unknownVMAD.size());
            break;
       case cOBND:
            if (unknownOBND.isPresent())
            {
-             std::cout << "Error: FURN seems to have more than one OBND subrecord!\n";
+             std::cerr << "Error: FURN seems to have more than one OBND subrecord!\n";
              return false;
            }
-           //read OBND
+           // read OBND
            if (!unknownOBND.loadFromStream(in_File, cOBND, false))
              return false;
-           bytesRead += (2+unknownOBND.getSize());
+           bytesRead += (2 + unknownOBND.size());
            break;
       case cFULL:
            if (name.isPresent())
@@ -427,24 +427,24 @@ bool FurnitureRecord::loadFromStream(std::istream& in_File, const bool localized
       case cMODT:
            if (unknownMODT.isPresent())
            {
-             std::cout << "Error: FURN seems to have more than one MODT subrecord!\n";
+             std::cerr << "Error: FURN seems to have more than one MODT subrecord!\n";
              return false;
            }
-           //read MODT
+           // read MODT
            if (!unknownMODT.loadFromStream(in_File, cMODT, false))
              return false;
-           bytesRead += (2+unknownMODT.getSize());
+           bytesRead += (2 + unknownMODT.size());
            break;
       case cMODS:
            if (unknownMODS.isPresent())
            {
-             std::cout << "Error: FURN seems to have more than one MODS subrecord!\n";
+             std::cerr << "Error: FURN seems to have more than one MODS subrecord!\n";
              return false;
            }
-           //read MODS
+           // read MODS
            if (!unknownMODS.loadFromStream(in_File, cMODS, false))
              return false;
-           bytesRead += (2+unknownMODS.getSize());
+           bytesRead += (2 + unknownMODS.size());
            break;
       case cDEST:
            if (destruction.isPresent)

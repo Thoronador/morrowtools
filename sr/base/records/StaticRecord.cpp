@@ -69,18 +69,18 @@ uint32_t StaticRecord::getWriteSize() const
   }
   if (unknownMODT.isPresent())
   {
-    writeSize = writeSize +4 /* MODT */ +2 /* 2 bytes for length */
-                          +unknownMODT.getSize();
+    writeSize = writeSize + 4 /* MODT */ + 2 /* 2 bytes for length */
+                          + unknownMODT.size();
   }
   if (unknownMODS.isPresent())
   {
-    writeSize = writeSize +4 /* MODS */ +2 /* 2 bytes for length */
-                          +unknownMODS.getSize();
+    writeSize = writeSize + 4 /* MODS */ + 2 /* 2 bytes for length */
+                          + unknownMODS.size();
   }
   if (unknownMNAM.isPresent())
   {
-    writeSize = writeSize +4 /* MNAM */ +2 /* 2 bytes for length */
-                          +unknownMNAM.getSize();
+    writeSize = writeSize + 4 /* MNAM */ + 2 /* 2 bytes for length */
+                          + unknownMNAM.size();
   }
   return writeSize;
 }
@@ -262,30 +262,30 @@ bool StaticRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cMODT:
            if (unknownMODT.isPresent())
            {
-             std::cout << "Error: STAT seems to have more than one MODT subrecord!\n";
+             std::cerr << "Error: STAT seems to have more than one MODT subrecord!\n";
              return false;
            }
-           //read MODT
+           // read MODT
            if (!unknownMODT.loadFromStream(in_File, cMODT, false))
            {
-             std::cout << "Error while reading subrecord MODT of STAT!\n";
+             std::cerr << "Error while reading subrecord MODT of STAT!\n";
              return false;
            }
-           bytesRead = bytesRead +2 +unknownMODT.getSize();
+           bytesRead = bytesRead + 2 + unknownMODT.size();
            break;
       case cMODS:
            if (unknownMODS.isPresent())
            {
-             std::cout << "Error: STAT seems to have more than one MODS subrecord!\n";
+             std::cerr << "Error: STAT seems to have more than one MODS subrecord!\n";
              return false;
            }
-           //read MODS
+           // read MODS
            if (!unknownMODS.loadFromStream(in_File, cMODS, false))
            {
-             std::cout << "Error while reading subrecord MODS of STAT!\n";
+             std::cerr << "Error while reading subrecord MODS of STAT!\n";
              return false;
            }
-           bytesRead = bytesRead +2 +unknownMODS.getSize();
+           bytesRead = bytesRead + 2 + unknownMODS.size();
            break;
       case cDNAM:
            if (hasReadDNAM)
@@ -315,19 +315,19 @@ bool StaticRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cMNAM:
            if (unknownMNAM.isPresent())
            {
-             std::cout << "Error: STAT seems to have more than one MNAM subrecord!\n";
+             std::cerr << "Error: STAT seems to have more than one MNAM subrecord!\n";
              return false;
            }
-           //read MNAM
+           // read MNAM
            if (!unknownMNAM.loadFromStream(in_File, cMNAM, false))
            {
-             std::cout << "Error while reading subrecord MNAM of STAT!\n";
+             std::cerr << "Error while reading subrecord MNAM of STAT!\n";
              return false;
            }
-           bytesRead = bytesRead +2 +unknownMNAM.getSize();
+           bytesRead = bytesRead + 2 + unknownMNAM.size();
            break;
       default:
-           std::cout << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: found unexpected subrecord \"" << IntTo4Char(subRecName)
                      << "\", but only MODT, DNAM or MNAM are allowed here!\n";
            return false;
     }//swi

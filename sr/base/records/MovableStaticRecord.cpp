@@ -69,12 +69,12 @@ uint32_t MovableStaticRecord::getWriteSize() const
         +4 /* DATA */ +2 /* 2 bytes for length */ +1 /* fixed length */;
   if (unknownMODT.isPresent())
   {
-    writeSize = writeSize +4 /* MODT */ +2 /* 2 bytes for length */ +unknownMODT.getSize() /* size */;
-  }//if MODT
+    writeSize = writeSize + 4 /* MODT */ + 2 /* 2 bytes for length */ + unknownMODT.size() /* size */;
+  }
   if (unknownMODS.isPresent())
   {
-    writeSize = writeSize +4 /* MODS */ +2 /* 2 bytes for length */ +unknownMODS.getSize() /* size */;
-  }//if MODS
+    writeSize = writeSize + 4 /* MODS */ + 2 /* 2 bytes for length */ + unknownMODS.size() /* size */;
+  }
   if (loopingSoundFormID!=0)
   {
     writeSize = writeSize +4 /* SNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
@@ -258,22 +258,24 @@ bool MovableStaticRecord::loadFromStream(std::istream& in_File, const bool local
       case cMODT:
            if (unknownMODT.isPresent())
            {
-             std::cout << "Error: MSTT seems to have more than one MODT subrecord.\n";
+             std::cerr << "Error: MSTT seems to have more than one MODT subrecord.\n";
              return false;
            }
-           //read MODT
-           if (!unknownMODT.loadFromStream(in_File, cMODT, false)) return false;
-           bytesRead += (2+unknownMODT.getSize());
+           // read MODT
+           if (!unknownMODT.loadFromStream(in_File, cMODT, false))
+             return false;
+           bytesRead += (2 + unknownMODT.size());
            break;
       case cMODS:
            if (unknownMODS.isPresent())
            {
-             std::cout << "Error: MSTT seems to have more than one MODS subrecord.\n";
+             std::cerr << "Error: MSTT seems to have more than one MODS subrecord.\n";
              return false;
            }
-           //read MODS
-           if (!unknownMODS.loadFromStream(in_File, cMODS, false)) return false;
-           bytesRead += (2+unknownMODS.getSize());
+           // read MODS
+           if (!unknownMODS.loadFromStream(in_File, cMODS, false))
+             return false;
+           bytesRead += (2 + unknownMODS.size());
            break;
       case cDATA:
            if (hasReadDATA)

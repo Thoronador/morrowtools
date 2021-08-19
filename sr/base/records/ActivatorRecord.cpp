@@ -118,7 +118,7 @@ uint32_t ActivatorRecord::getWriteSize() const
         +4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed size */;
   if (unknownVMAD.isPresent())
   {
-    writeSize = writeSize +4 /* VMAD */ +2 /* 2 bytes for length */ +unknownVMAD.getSize();
+    writeSize = writeSize + 4 /* VMAD */ + 2 /* 2 bytes for length */ + unknownVMAD.size();
   }
   if (name.isPresent())
   {
@@ -131,11 +131,11 @@ uint32_t ActivatorRecord::getWriteSize() const
   }
   if (unknownMODT.isPresent())
   {
-    writeSize = writeSize + 4 /* MODT */ +2 /* 2 bytes for length */ +unknownMODT.getSize();
+    writeSize = writeSize + 4 /* MODT */ + 2 /* 2 bytes for length */ + unknownMODT.size();
   }
   if (unknownMODS.isPresent())
   {
-    writeSize = writeSize + 4 /* MODS */ +2 /* 2 bytes for length */ +unknownMODS.getSize();
+    writeSize = writeSize + 4 /* MODS */ + 2 /* 2 bytes for length */ + unknownMODS.size();
   }
   if (hasDEST)
   {
@@ -157,11 +157,11 @@ uint32_t ActivatorRecord::getWriteSize() const
       }
       if (destructionStructures[i].unknownDMDT.isPresent())
       {
-        writeSize = writeSize + 4 /* DMDT */ +2 /* 2 bytes for length */ +destructionStructures[i].unknownDMDT.getSize();
+        writeSize = writeSize + 4 /* DMDT */ + 2 /* 2 bytes for length */ + destructionStructures[i].unknownDMDT.size();
       }
       if (destructionStructures[i].unknownDMDS.isPresent())
       {
-        writeSize = writeSize + 4 /* DMDS */ +2 /* 2 bytes for length */ +destructionStructures[i].unknownDMDS.getSize();
+        writeSize = writeSize + 4 /* DMDS */ + 2 /* 2 bytes for length */ + destructionStructures[i].unknownDMDS.size();
       }
       writeSize = writeSize + 4 /* DSTF */ +2 /* 2 bytes for length */ +0 /* zero size */;
     }//for
@@ -512,9 +512,10 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
              std::cout << "Error: ACTI seems to have more than one VMAD subrecord.\n";
              return false;
            }
-           //read VMAD
-           if (!unknownVMAD.loadFromStream(in_File, cVMAD, false)) return false;
-           bytesRead += (2+unknownVMAD.getSize());
+           // read VMAD
+           if (!unknownVMAD.loadFromStream(in_File, cVMAD, false))
+             return false;
+           bytesRead += (2 + unknownVMAD.size());
            break;
       case cOBND:
            if (hasReadOBND)
@@ -587,7 +588,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
              std::cout << "Error while reading subrecord MODT of ACTI!\n";
              return false;
            }
-           bytesRead = bytesRead + 2 + unknownMODT.getSize();
+           bytesRead = bytesRead + 2 + unknownMODT.size();
            break;
       case cMODS:
            if (unknownMODS.isPresent())
@@ -600,7 +601,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
              std::cout << "Error while reading subrecord MODS of ACTI!\n";
              return false;
            }
-           bytesRead = bytesRead + 2 + unknownMODS.getSize();
+           bytesRead = bytesRead + 2 + unknownMODS.size();
            break;
       case cDEST:
            if (hasDEST)
@@ -702,7 +703,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
              std::cout << "Error while reading subrecord DMDT of ACTI!\n";
              return false;
            }
-           bytesRead = bytesRead + 2 + tempDestStruct.unknownDMDT.getSize();
+           bytesRead = bytesRead + 2 + tempDestStruct.unknownDMDT.size();
            hasBegunDestStruct = true;
            break;
       case cDMDS:
@@ -720,7 +721,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
              std::cout << "Error while reading subrecord DMDS of ACTI!\n";
              return false;
            }
-           bytesRead = bytesRead + 2 + tempDestStruct.unknownDMDS.getSize();
+           bytesRead = bytesRead + 2 + tempDestStruct.unknownDMDS.size();
            hasBegunDestStruct = true;
            break;
       case cDSTF:

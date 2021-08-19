@@ -79,7 +79,7 @@ uint32_t FloraRecord::getWriteSize() const
         +4 /* PFPC */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   if (unknownVMAD.isPresent())
   {
-    writeSize = writeSize +4 /* VMAD */ +2 /* 2 bytes for length */ +unknownVMAD.getSize() /* size */;
+    writeSize = writeSize + 4 /* VMAD */ + 2 /* 2 bytes for length */ + unknownVMAD.size() /* size */;
   }
   if (!modelPath.empty())
   {
@@ -88,11 +88,11 @@ uint32_t FloraRecord::getWriteSize() const
   }
   if (unknownMODT.isPresent())
   {
-    writeSize = writeSize +4 /* MODT */ +2 /* 2 bytes for length */ +unknownMODT.getSize() /* size */;
+    writeSize = writeSize + 4 /* MODT */ + 2 /* 2 bytes for length */ + unknownMODT.size() /* size */;
   }
   if (unknownMODS.isPresent())
   {
-    writeSize = writeSize +4 /* MODS */ +2 /* 2 bytes for length */ +unknownMODS.getSize() /* size */;
+    writeSize = writeSize + 4 /* MODS */ + 2 /* 2 bytes for length */ + unknownMODS.size() /* size */;
   }
   if (activateTextOverride.isPresent())
   {
@@ -294,13 +294,13 @@ bool FloraRecord::loadFromStream(std::istream& in_File, const bool localized, co
              std::cout << "Error: FLOR seems to have more than one VMAD subrecord.\n";
              return false;
            }
-           //read VMAD
+           // read VMAD
            if (!unknownVMAD.loadFromStream(in_File, cVMAD, false))
            {
-             std::cout << "Error while reading subrecord VMAD of FLOR!\n";
+             std::cerr << "Error while reading subrecord VMAD of FLOR!\n";
              return false;
            }
-           bytesRead = bytesRead +2 +unknownVMAD.getSize();
+           bytesRead = bytesRead + 2 + unknownVMAD.size();
            break;
       case cOBND:
            if (hasReadOBND)
@@ -355,30 +355,30 @@ bool FloraRecord::loadFromStream(std::istream& in_File, const bool localized, co
       case cMODT:
            if (unknownMODT.isPresent())
            {
-             std::cout << "Error: FLOR seems to have more than one MODT subrecord.\n";
+             std::cerr << "Error: FLOR seems to have more than one MODT subrecord.\n";
              return false;
            }
-           //read MODT
+           // read MODT
            if (!unknownMODT.loadFromStream(in_File, cMODT, false))
            {
-             std::cout << "Error while reading subrecord MODT of FLOR!\n";
+             std::cerr << "Error while reading subrecord MODT of FLOR!\n";
              return false;
            }
-           bytesRead += (2 +unknownMODT.getSize());
+           bytesRead += (2 + unknownMODT.size());
            break;
       case cMODS:
            if (unknownMODS.isPresent())
            {
-             std::cout << "Error: FLOR seems to have more than one MODS subrecord.\n";
+             std::cerr << "Error: FLOR seems to have more than one MODS subrecord.\n";
              return false;
            }
-           //read MODS
+           // read MODS
            if (!unknownMODS.loadFromStream(in_File, cMODS, false))
            {
-             std::cout << "Error while reading subrecord MODS of FLOR!\n";
+             std::cerr << "Error while reading subrecord MODS of FLOR!\n";
              return false;
            }
-           bytesRead += (2 +unknownMODS.getSize());
+           bytesRead += (2 + unknownMODS.size());
            break;
       case cPNAM:
            if (hasReadPNAM)

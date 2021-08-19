@@ -33,8 +33,8 @@ TEST_CASE("BinarySubRecord")
     BinarySubRecord record;
 
     REQUIRE_FALSE( record.isPresent() );
-    REQUIRE( record.getSize() == 0 );
-    REQUIRE( record.getPointer() == nullptr );
+    REQUIRE( record.size() == 0 );
+    REQUIRE( record.data() == nullptr );
   }
 
   SECTION("presence")
@@ -63,9 +63,9 @@ TEST_CASE("BinarySubRecord")
       REQUIRE( record.loadFromStream(streamIn, cEDID, true) );
       // Check data.
       REQUIRE( record.isPresent() );
-      REQUIRE( record.getSize() == 19 );
-      REQUIRE( record.getPointer() != nullptr );
-      const auto view = std::string_view(reinterpret_cast<const char*>(record.getPointer()), record.getSize());
+      REQUIRE( record.size() == 19 );
+      REQUIRE( record.data() != nullptr );
+      const auto view = std::string_view(reinterpret_cast<const char*>(record.data()), record.size());
       REQUIRE( view == data.substr(6) );
 
       // Saving should succeed.
@@ -94,9 +94,9 @@ TEST_CASE("BinarySubRecord")
       REQUIRE( record.loadFromStream(stream, cEDID, false) );
       // Check data.
       REQUIRE( record.isPresent() );
-      REQUIRE( record.getSize() == 19 );
-      REQUIRE( record.getPointer() != nullptr );
-      const auto view = std::string_view(reinterpret_cast<const char*>(record.getPointer()), record.getSize());
+      REQUIRE( record.size() == 19 );
+      REQUIRE( record.data() != nullptr );
+      const auto view = std::string_view(reinterpret_cast<const char*>(record.data()), record.size());
       REQUIRE( view == data.substr(2) );
 
       // Saving should succeed.
@@ -152,8 +152,8 @@ TEST_CASE("BinarySubRecord")
       REQUIRE( record.loadFromStream(stream, cEDID, false) );
       // Check data.
       REQUIRE( record.isPresent() );
-      REQUIRE( record.getPointer() != nullptr );
-      const auto view = std::string_view(reinterpret_cast<const char*>(record.getPointer()), record.getSize());
+      REQUIRE( record.data() != nullptr );
+      const auto view = std::string_view(reinterpret_cast<const char*>(record.data()), record.size());
       REQUIRE( view == data.substr(2) );
 
       // Reset presence.
@@ -200,15 +200,15 @@ TEST_CASE("BinarySubRecord")
       REQUIRE_FALSE( b != a );
 
       // Size should be equal, but pointers should not be equal.
-      REQUIRE( a.getSize() == b.getSize() );
-      REQUIRE( a.getPointer() != nullptr );
-      REQUIRE( b.getPointer() != nullptr );
-      REQUIRE( a.getPointer() != b.getPointer() );
+      REQUIRE( a.size() == b.size() );
+      REQUIRE( a.data() != nullptr );
+      REQUIRE( b.data() != nullptr );
+      REQUIRE( a.data() != b.data() );
       // However, the pointed to content should be equal.
-      REQUIRE( a.getPointer()[0] == b.getPointer()[0] );
-      REQUIRE( a.getPointer()[1] == b.getPointer()[1] );
-      REQUIRE( a.getPointer()[2] == b.getPointer()[2] );
-      REQUIRE( a.getPointer()[3] == b.getPointer()[3] );
+      REQUIRE( a.data()[0] == b.data()[0] );
+      REQUIRE( a.data()[1] == b.data()[1] );
+      REQUIRE( a.data()[2] == b.data()[2] );
+      REQUIRE( a.data()[3] == b.data()[3] );
     }
 
     SECTION("non-empty records with different content")
@@ -229,15 +229,15 @@ TEST_CASE("BinarySubRecord")
       REQUIRE( b != a );
 
       // Size should be equal, but pointers should not be equal.
-      REQUIRE( a.getSize() == b.getSize() );
-      REQUIRE( a.getPointer() != nullptr );
-      REQUIRE( b.getPointer() != nullptr );
-      REQUIRE( a.getPointer() != b.getPointer() );
+      REQUIRE( a.size() == b.size() );
+      REQUIRE( a.data() != nullptr );
+      REQUIRE( b.data() != nullptr );
+      REQUIRE( a.data() != b.data() );
       // However, the pointed to content should partially be equal.
-      REQUIRE( a.getPointer()[0] == b.getPointer()[0] );
-      REQUIRE( a.getPointer()[1] == b.getPointer()[1] );
-      REQUIRE( a.getPointer()[2] == b.getPointer()[2] );
-      REQUIRE( a.getPointer()[3] != b.getPointer()[3] );
+      REQUIRE( a.data()[0] == b.data()[0] );
+      REQUIRE( a.data()[1] == b.data()[1] );
+      REQUIRE( a.data()[2] == b.data()[2] );
+      REQUIRE( a.data()[3] != b.data()[3] );
     }
 
     SECTION("non-empty record and empty record")
@@ -256,9 +256,9 @@ TEST_CASE("BinarySubRecord")
       REQUIRE( a != b );
       REQUIRE( b != a );
 
-      REQUIRE( a.getSize() != b.getSize() );
-      REQUIRE( a.getPointer() != nullptr );
-      REQUIRE( b.getPointer() == nullptr );
+      REQUIRE( a.size() != b.size() );
+      REQUIRE( a.data() != nullptr );
+      REQUIRE( b.data() == nullptr );
       REQUIRE( a.isPresent() );
       REQUIRE_FALSE( b.isPresent() );
     }
@@ -274,17 +274,17 @@ TEST_CASE("BinarySubRecord")
 
     // load SNAM
     REQUIRE( a.loadFromStream(stream, cSNAM, true) );
-    const auto firstPointer = a.getPointer();
+    const auto firstPointer = a.data();
 
     // load EDID
     REQUIRE( a.loadFromStream(stream, cEDID, true) );
-    const auto secondPointer = a.getPointer();
+    const auto secondPointer = a.data();
 
     REQUIRE( firstPointer != secondPointer );
 
     // load DNAM
     REQUIRE( a.loadFromStream(stream, cDNAM, true) );
-    const auto thirdPointer = a.getPointer();
+    const auto thirdPointer = a.data();
 
     REQUIRE( secondPointer != thirdPointer );
   }

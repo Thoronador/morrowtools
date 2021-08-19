@@ -177,9 +177,9 @@ uint32_t FactionRecord::getWriteSize() const
   }//if JOUT
   if (unknownCRVA.isPresent())
   {
-    writeSize = writeSize +4 /* CRVA */ +2 /* 2 bytes for length */
-               +unknownCRVA.getSize() /* fixed length of 20 or 16 or 12 bytes */;
-  }//if CRVA
+    writeSize = writeSize + 4 /* CRVA */ +2 /* 2 bytes for length */
+               + unknownCRVA.size() /* fixed length of 20 or 16 or 12 bytes */;
+  }
   if (!ranks.empty())
   {
     std::vector<RankData>::size_type i;
@@ -204,7 +204,7 @@ uint32_t FactionRecord::getWriteSize() const
   }//if VENV
   if (unknownPLVD.isPresent())
   {
-    writeSize = writeSize +4 /* PLVD */ +2 /* 2 bytes for length */ +unknownPLVD.getSize() /* length */;
+    writeSize = writeSize + 4 /* PLVD */ + 2 /* 2 bytes for length */ + unknownPLVD.size() /* length */;
   }
   if (!conditions.empty())
   {
@@ -676,13 +676,13 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
              std::cout << "Error while reading subrecord CRVA of FACT!\n";
              return false;
            }
-           subLength = unknownCRVA.getSize();
-           bytesRead += (2+subLength);
-           //length check
-           if ((subLength!=20) and (subLength!=16)  and (subLength!=12))
+           subLength = unknownCRVA.size();
+           bytesRead += (2 + subLength);
+           // length check
+           if ((subLength != 20) && (subLength != 16)  && (subLength != 12))
            {
-             std::cout <<"Error: subrecord CRVA of FACT has invalid length ("
-                       <<subLength <<" bytes). Should be 12 or 16 or 20 bytes!\n";
+             std::cerr << "Error: subrecord CRVA of FACT has invalid length ("
+                       << subLength << " bytes). Should be 12 or 16 or 20 bytes!\n";
              return false;
            }
            break;
@@ -815,14 +815,14 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
              std::cout << "Error while reading subrecord PLVD of FACT!\n";
              return false;
            }
-           //check length of PLVD
-           if (unknownPLVD.getSize()!=12)
+           // check length of PLVD
+           if (unknownPLVD.size() != 12)
            {
-             std::cout <<"Error: subrecord PLVD of FACT has invalid length ("
-                       <<unknownPLVD.getSize()<<" bytes). Should be 12 bytes!\n";
+             std::cerr << "Error: subrecord PLVD of FACT has invalid length ("
+                       << unknownPLVD.size() << " bytes). Should be 12 bytes!\n";
              return false;
            }
-           bytesRead += (2+12);
+           bytesRead += (2 + 12);
            break;
       case cCITC:
            if ((!conditions.empty()) or (cond_count!=0))

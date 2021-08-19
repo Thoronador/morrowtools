@@ -77,31 +77,31 @@ uint32_t ImageSpaceModifierRecord::getWriteSize() const
 {
   if (isDeleted()) return 0;
   uint32_t writeSize;
-  writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
-        +editorID.length()+1 /* length of name +1 byte for NUL termination */
-        +4 /* DNAM */ +2 /* 2 bytes for length */ +244 /* fixed length */
-        +4 /* BNAM */ +2 /* 2 bytes for length */ +unknownBNAM.getSize() /* fixed length of 16 or 32 bytes */
-        +4 /* VNAM */ +2 /* 2 bytes for length */ +unknownVNAM.getSize() /* fixed length of 16 or 32 bytes */
-        +4 /* TNAM */ +2 /* 2 bytes for length */ +unknownTNAM.getSize() /* fixed length of 40 or 60 bytes*/
-        +4 /* NAM3 */ +2 /* 2 bytes for length */ +unknownNAM3.getSize() /* fixed length of 40 or 120 bytes */
-        +4 /* RNAM */ +2 /* 2 bytes for length */ +unknownRNAM.getSize() /* fixed length of 16 or 32 bytes*/
-        +4 /* SNAM */ +2 /* 2 bytes for length */ +unknownSNAM.getSize() /* fixed length of 16 or 32 bytes*/
-        +4 /* UNAM */ +2 /* 2 bytes for length */ +unknownUNAM.getSize() /* fixed length of 16 or 24 bytes*/
-        +4 /* NAM1 */ +2 /* 2 bytes for length */ +unknownNAM1.getSize() /* fixed length of 16 or 24 bytes*/
-        +4 /* NAM2 */ +2 /* 2 bytes for length */ +unknownNAM2.getSize() /* fixed length of 16 or 24 bytes*/
-        +4 /* WNAM */ +2 /* 2 bytes for length */ +unknownWNAM.getSize() /* fixed length of 16 or 32 bytes*/
-        +4 /* XNAM */ +2 /* 2 bytes for length */ +unknownXNAM.getSize() /* fixed length of 16 or 32 bytes*/
-        +4 /* YNAM */ +2 /* 2 bytes for length */ +unknownYNAM.getSize() /* fixed length of 16 or 32 bytes*/
-        +4 /* NAM4 */ +2 /* 2 bytes for length */ +unknownNAM4.getSize() /* fixed length of 16 or 24 bytes*/
-        +4 /* \0IAD */ +2 /* 2 bytes for length */ +unknownx00IAD.getSize() /* fixed length of 16 or 24 bytes*/
-        +4 /* @IAD */ +2 /* 2 bytes for length */ +unknownx40IAD.getSize() /* fixed length of 16 or 24 bytes*/;
+  writeSize = 4 /* EDID */ + 2 /* 2 bytes for length */
+        + editorID.length() + 1 /* length of name +1 byte for NUL termination */
+        + 4 /* DNAM */ + 2 /* 2 bytes for length */ + 244 /* fixed length */
+        + 4 /* BNAM */ + 2 /* 2 bytes for length */ + unknownBNAM.size() /* fixed length of 16 or 32 bytes */
+        + 4 /* VNAM */ + 2 /* 2 bytes for length */ + unknownVNAM.size() /* fixed length of 16 or 32 bytes */
+        + 4 /* TNAM */ + 2 /* 2 bytes for length */ + unknownTNAM.size() /* fixed length of 40 or 60 bytes*/
+        + 4 /* NAM3 */ + 2 /* 2 bytes for length */ + unknownNAM3.size() /* fixed length of 40 or 120 bytes */
+        + 4 /* RNAM */ + 2 /* 2 bytes for length */ + unknownRNAM.size() /* fixed length of 16 or 32 bytes*/
+        + 4 /* SNAM */ + 2 /* 2 bytes for length */ + unknownSNAM.size() /* fixed length of 16 or 32 bytes*/
+        + 4 /* UNAM */ + 2 /* 2 bytes for length */ + unknownUNAM.size() /* fixed length of 16 or 24 bytes*/
+        + 4 /* NAM1 */ + 2 /* 2 bytes for length */ + unknownNAM1.size() /* fixed length of 16 or 24 bytes*/
+        + 4 /* NAM2 */ + 2 /* 2 bytes for length */ + unknownNAM2.size() /* fixed length of 16 or 24 bytes*/
+        + 4 /* WNAM */ + 2 /* 2 bytes for length */ + unknownWNAM.size() /* fixed length of 16 or 32 bytes*/
+        + 4 /* XNAM */ + 2 /* 2 bytes for length */ + unknownXNAM.size() /* fixed length of 16 or 32 bytes*/
+        + 4 /* YNAM */ + 2 /* 2 bytes for length */ + unknownYNAM.size() /* fixed length of 16 or 32 bytes*/
+        + 4 /* NAM4 */ + 2 /* 2 bytes for length */ + unknownNAM4.size() /* fixed length of 16 or 24 bytes*/
+        + 4 /* \0IAD */ + 2 /* 2 bytes for length */ + unknownx00IAD.size() /* fixed length of 16 or 24 bytes*/
+        + 4 /* @IAD */ + 2 /* 2 bytes for length */ + unknownx40IAD.size() /* fixed length of 16 or 24 bytes*/;
   const unsigned int len = otherIADs.size();
   unsigned int i;
   for (i=0; i<len; ++i)
   {
-    writeSize = writeSize +4 /* label */ +2 /* 2 bytes for length */
-               +otherIADs[i].subData.getSize() /* length */;
-  }//for
+    writeSize = writeSize + 4 /* label */ + 2 /* 2 bytes for length */
+               +otherIADs[i].subData.size() /* length */;
+  }
   return writeSize;
 }
 
@@ -463,196 +463,196 @@ bool ImageSpaceModifierRecord::loadFromStream(std::istream& in_File, const bool 
       case cBNAM:
            if (unknownBNAM.isPresent())
            {
-             std::cout << "Error: IMAD seems to have more than one BNAM subrecord!\n";
+             std::cerr << "Error: IMAD seems to have more than one BNAM subrecord!\n";
              return false;
            }
-           //read BNAM
+           // read BNAM
            if (!unknownBNAM.loadFromStream(in_File, cBNAM, false))
            {
-             std::cout << "Error while reading subrecord BNAM of IMAD!\n";
+             std::cerr << "Error while reading subrecord BNAM of IMAD!\n";
              return false;
            }
-           subLength = unknownBNAM.getSize();
-           if ((subLength!=16) and (subLength!=24) and (subLength!=32) and (subLength!=40)
-               and (subLength!=48) and (subLength!=56) and (subLength!=64) and (subLength!=80)
-               and (subLength!=88) and (subLength!=344))
+           subLength = unknownBNAM.size();
+           if ((subLength != 16) && (subLength != 24) && (subLength != 32) && (subLength != 40)
+               && (subLength != 48) && (subLength != 56) && (subLength != 64) && (subLength != 80)
+               && (subLength != 88) && (subLength != 344))
            {
-             std::cout <<"Error: sub record BNAM of IMAD has invalid length ("
-                       <<subLength<<" bytes). Should be 16 or 24 or 32 or 40 or 48 or 56 or 64 or 80 or 88 or 344 bytes!\n";
+             std::cerr << "Error: sub record BNAM of IMAD has invalid length ("
+                       << subLength << " bytes). Should be 16 or 24 or 32 or 40 or 48 or 56 or 64 or 80 or 88 or 344 bytes!\n";
              return false;
            }
-           bytesRead += (2+subLength);
+           bytesRead += (2 + subLength);
            break;
       case cVNAM:
            if (unknownVNAM.isPresent())
            {
-             std::cout << "Error: IMAD seems to have more than one VNAM subrecord!\n";
+             std::cerr << "Error: IMAD seems to have more than one VNAM subrecord!\n";
              return false;
            }
-           //read VNAM
+           // read VNAM
            if (!unknownVNAM.loadFromStream(in_File, cVNAM, false))
            {
-             std::cout << "Error while reading subrecord VNAM of IMAD!\n";
+             std::cerr << "Error while reading subrecord VNAM of IMAD!\n";
              return false;
            }
-           subLength = unknownVNAM.getSize();
-           if ((subLength!=16) and (subLength!=24) and (subLength!=32) and (subLength!=40) and (subLength!=56)
-             and (subLength!=64) and (subLength!=72) and (subLength!=80) and (subLength!=344))
+           subLength = unknownVNAM.size();
+           if ((subLength != 16) && (subLength != 24) && (subLength != 32) && (subLength != 40) && (subLength != 56)
+             && (subLength != 64) && (subLength != 72) && (subLength != 80) && (subLength != 344))
            {
-             std::cout <<"Error: sub record VNAM of IMAD has invalid length ("
-                       <<subLength<<" bytes). Should be 16 or 24 or 32 or 40 or 56 or 64 or 72 or 80 or 344 bytes!\n";
+             std::cerr << "Error: sub record VNAM of IMAD has invalid length ("
+                       << subLength << " bytes). Should be 16 or 24 or 32 or 40 or 56 or 64 or 72 or 80 or 344 bytes!\n";
              return false;
            }
-           bytesRead += (2+subLength);
+           bytesRead += (2 + subLength);
            break;
       case cTNAM:
            if (unknownTNAM.isPresent())
            {
-             std::cout << "Error: IMAD seems to have more than one TNAM subrecord!\n";
+             std::cerr << "Error: IMAD seems to have more than one TNAM subrecord!\n";
              return false;
            }
-           //read TNAM
+           // read TNAM
            if (!unknownTNAM.loadFromStream(in_File, cTNAM, false))
            {
-             std::cout << "Error while reading subrecord TNAM of IMAD!\n";
+             std::cerr << "Error while reading subrecord TNAM of IMAD!\n";
              return false;
            }
-           subLength = unknownTNAM.getSize();
+           subLength = unknownTNAM.size();
            if ((subLength!=40) and (subLength!=60) and (subLength!=80) and (subLength!=100) and (subLength!=140) and (subLength!=280))
            {
-             std::cout <<"Error: sub record TNAM of IMAD has invalid length ("
-                       <<subLength<<" bytes). Should be 40 or 60 or 80 or 100 or 140 or 280 bytes!\n";
+             std::cerr << "Error: sub record TNAM of IMAD has invalid length ("
+                       << subLength << " bytes). Should be 40 or 60 or 80 or 100 or 140 or 280 bytes!\n";
              return false;
            }
-           bytesRead += (2+subLength);
+           bytesRead += (2 + subLength);
            break;
       case cNAM3:
            if (unknownNAM3.isPresent())
            {
-             std::cout << "Error: IMAD seems to have more than one NAM3 subrecord!\n";
+             std::cerr << "Error: IMAD seems to have more than one NAM3 subrecord!\n";
              return false;
            }
-           //read NAM3
+           // read NAM3
            if (!unknownNAM3.loadFromStream(in_File, cNAM3, false))
            {
-             std::cout << "Error while reading subrecord NAM3 of IMAD!\n";
+             std::cerr << "Error while reading subrecord NAM3 of IMAD!\n";
              return false;
            }
-           subLength = unknownNAM3.getSize();
+           subLength = unknownNAM3.size();
            if ((subLength!=40) and (subLength!=60) and (subLength!=80) and (subLength!=100)
                 and (subLength!=120) and (subLength!=140) and (subLength!=160))
            {
-             std::cout <<"Error: sub record NAM3 of IMAD has invalid length ("
-                       <<subLength<<" bytes). Should be 40 or 60 or 80 or 100 or 120 or 140 or 160 bytes!\n";
+             std::cerr << "Error: sub record NAM3 of IMAD has invalid length ("
+                       << subLength << " bytes). Should be 40 or 60 or 80 or 100 or 120 or 140 or 160 bytes!\n";
              return false;
            }
-           bytesRead += (2+subLength);
+           bytesRead += (2 + subLength);
            break;
       case cRNAM:
            if (unknownRNAM.isPresent())
            {
-             std::cout << "Error: IMAD seems to have more than one RNAM subrecord!\n";
+             std::cerr << "Error: IMAD seems to have more than one RNAM subrecord!\n";
              return false;
            }
-           //read RNAM
+           // read RNAM
            if (!unknownRNAM.loadFromStream(in_File, cRNAM, false))
            {
-             std::cout << "Error while reading subrecord RNAM of IMAD!\n";
+             std::cerr << "Error while reading subrecord RNAM of IMAD!\n";
              return false;
            }
-           subLength = unknownRNAM.getSize();
+           subLength = unknownRNAM.size();
            if ((subLength!=16) and (subLength!=24) and (subLength!=32) and (subLength!=40)
                and (subLength!=48) and (subLength!=56) and (subLength!=72))
            {
-             std::cout <<"Error: sub record RNAM of IMAD has invalid length ("
-                       <<subLength<<" bytes). Should be 16 or 24 or 32 or 40 or 48 or 56 or 72 bytes!\n";
+             std::cerr << "Error: sub record RNAM of IMAD has invalid length ("
+                       << subLength << " bytes). Should be 16 or 24 or 32 or 40 or 48 or 56 or 72 bytes!\n";
              return false;
            }
-           bytesRead += (2+subLength);
+           bytesRead += (2 + subLength);
            break;
       case cSNAM:
            if (unknownSNAM.isPresent())
            {
-             std::cout << "Error: IMAD seems to have more than one SNAM subrecord!\n";
+             std::cerr << "Error: IMAD seems to have more than one SNAM subrecord!\n";
              return false;
            }
-           //read SNAM
+           // read SNAM
            if (!unknownSNAM.loadFromStream(in_File, cSNAM, false))
            {
-             std::cout << "Error while reading subrecord SNAM of IMAD!\n";
+             std::cerr << "Error while reading subrecord SNAM of IMAD!\n";
              return false;
            }
-           subLength = unknownSNAM.getSize();
+           subLength = unknownSNAM.size();
            if ((subLength!=16) and (subLength!=24) and (subLength!=32) and (subLength!=40) and (subLength!=48) and (subLength!=64))
            {
-             std::cout <<"Error: sub record SNAM of IMAD has invalid length ("
-                       <<subLength<<" bytes). Should be 16 or 24 or 32 or 40 or 48 or 64 bytes!\n";
+             std::cerr << "Error: sub record SNAM of IMAD has invalid length ("
+                       << subLength << " bytes). Should be 16 or 24 or 32 or 40 or 48 or 64 bytes!\n";
              return false;
            }
-           bytesRead += (2+subLength);
+           bytesRead += (2 + subLength);
            break;
       case cUNAM:
            if (unknownUNAM.isPresent())
            {
-             std::cout << "Error: IMAD seems to have more than one UNAM subrecord!\n";
+             std::cerr << "Error: IMAD seems to have more than one UNAM subrecord!\n";
              return false;
            }
-           //read UNAM
+           // read UNAM
            if (!unknownUNAM.loadFromStream(in_File, cUNAM, false))
            {
-             std::cout << "Error while reading subrecord UNAM of IMAD!\n";
+             std::cerr << "Error while reading subrecord UNAM of IMAD!\n";
              return false;
            }
-           subLength = unknownUNAM.getSize();
+           subLength = unknownUNAM.size();
            if ((subLength!=16) and (subLength!=24) and (subLength!=32) and (subLength!=40) and (subLength!=88))
            {
-             std::cout <<"Error: sub record UNAM of IMAD has invalid length ("
-                       <<subLength<<" bytes). Should be 16 or 24 or 32 or 40 or 88 bytes!\n";
+             std::cerr << "Error: sub record UNAM of IMAD has invalid length ("
+                       << subLength << " bytes). Should be 16 or 24 or 32 or 40 or 88 bytes!\n";
              return false;
            }
-           bytesRead += (2+subLength);
+           bytesRead += (2 + subLength);
            break;
       case cNAM1:
            if (unknownNAM1.isPresent())
            {
-             std::cout << "Error: IMAD seems to have more than one NAM1 subrecord!\n";
+             std::cerr << "Error: IMAD seems to have more than one NAM1 subrecord!\n";
              return false;
            }
-           //read NAM1
+           // read NAM1
            if (!unknownNAM1.loadFromStream(in_File, cNAM1, false))
            {
-             std::cout << "Error while reading subrecord NAM1 of IMAD!\n";
+             std::cerr << "Error while reading subrecord NAM1 of IMAD!\n";
              return false;
            }
-           subLength = unknownNAM1.getSize();
+           subLength = unknownNAM1.size();
            if ((subLength!=16) and (subLength!=24) and (subLength!=32) and (subLength!=40))
            {
-             std::cout <<"Error: sub record NAM1 of IMAD has invalid length ("
-                       <<subLength<<" bytes). Should be 16 or 24 or 32 or 40 bytes!\n";
+             std::cerr << "Error: sub record NAM1 of IMAD has invalid length ("
+                       << subLength << " bytes). Should be 16 or 24 or 32 or 40 bytes!\n";
              return false;
            }
-           bytesRead += (2+subLength);
+           bytesRead += (2 + subLength);
            break;
       case cNAM2:
            if (unknownNAM2.isPresent())
            {
-             std::cout << "Error: IMAD seems to have more than one NAM2 subrecord!\n";
+             std::cerr << "Error: IMAD seems to have more than one NAM2 subrecord!\n";
              return false;
            }
-           //read NAM2
+           // read NAM2
            if (!unknownNAM2.loadFromStream(in_File, cNAM2, false))
            {
-             std::cout << "Error while reading subrecord NAM2 of IMAD!\n";
+             std::cerr << "Error while reading subrecord NAM2 of IMAD!\n";
              return false;
            }
-           subLength = unknownNAM2.getSize();
+           subLength = unknownNAM2.size();
            if ((subLength!=16) and (subLength!=24) and (subLength!=32) and (subLength!=40))
            {
              std::cout <<"Error: sub record NAM2 of IMAD has invalid length ("
                        <<subLength<<" bytes). Should be 16 or 24 or 32 or 40 bytes!\n";
              return false;
            }
-           bytesRead += (2+subLength);
+           bytesRead += (2 + subLength);
            break;
       case cWNAM:
            if (unknownWNAM.isPresent())
@@ -666,14 +666,14 @@ bool ImageSpaceModifierRecord::loadFromStream(std::istream& in_File, const bool 
              std::cout << "Error while reading subrecord WNAM of IMAD!\n";
              return false;
            }
-           subLength = unknownWNAM.getSize();
+           subLength = unknownWNAM.size();
            if ((subLength!=16) and (subLength!=24) and (subLength!=32) and (subLength!=48))
            {
              std::cout <<"Error: sub record WNAM of IMAD has invalid length ("
                        <<subLength<<" bytes). Should be 16 or 24 or 32 or 48 bytes!\n";
              return false;
            }
-           bytesRead += (2+subLength);
+           bytesRead += (2 + subLength);
            break;
       case cXNAM:
            if (unknownXNAM.isPresent())
@@ -687,14 +687,14 @@ bool ImageSpaceModifierRecord::loadFromStream(std::istream& in_File, const bool 
              std::cout << "Error while reading subrecord WNAM of IMAD!\n";
              return false;
            }
-           subLength = unknownXNAM.getSize();
+           subLength = unknownXNAM.size();
            if ((subLength!=16) and (subLength!=24) and (subLength!=32))
            {
              std::cout <<"Error: sub record XNAM of IMAD has invalid length ("
                        <<subLength<<" bytes). Should be 16 or 24 or 32 bytes!\n";
              return false;
            }
-           bytesRead += (2+subLength);
+           bytesRead += (2 + subLength);
            break;
       case cYNAM:
            if (unknownYNAM.isPresent())
@@ -708,14 +708,14 @@ bool ImageSpaceModifierRecord::loadFromStream(std::istream& in_File, const bool 
              std::cout << "Error while reading subrecord YNAM of IMAD!\n";
              return false;
            }
-           subLength = unknownYNAM.getSize();
+           subLength = unknownYNAM.size();
            if ((subLength!=16) and (subLength!=24) and (subLength!=32))
            {
              std::cout <<"Error: sub record YNAM of IMAD has invalid length ("
                        <<subLength<<" bytes). Should be 16 or 24 or 32 bytes!\n";
              return false;
            }
-           bytesRead += (2+subLength);
+           bytesRead += (2 + subLength);
            break;
       case cNAM4:
            if (unknownNAM4.isPresent())
@@ -729,19 +729,19 @@ bool ImageSpaceModifierRecord::loadFromStream(std::istream& in_File, const bool 
              std::cout << "Error while reading subrecord NAM4 of IMAD!\n";
              return false;
            }
-           subLength = unknownNAM4.getSize();
-           if ((subLength!=16) and (subLength!=24) /*and (subLength!=32)*/)
+           subLength = unknownNAM4.size();
+           if ((subLength != 16) && (subLength != 24) /*&& (subLength != 32)*/)
            {
-             std::cout <<"Error: sub record NAM4 of IMAD has invalid length ("
-                       <<subLength<<" bytes). Should be 16 or 24 bytes!\n";
+             std::cerr << "Error: sub record NAM4 of IMAD has invalid length ("
+                       << subLength << " bytes). Should be 16 or 24 bytes!\n";
              return false;
            }
-           bytesRead += (2+subLength);
+           bytesRead += (2 + subLength);
            break;
       case cx00IAD:
            if (unknownx00IAD.isPresent())
            {
-             std::cout << "Error: IMAD seems to have more than one x00IAD subrecord!\n";
+             std::cerr << "Error: IMAD seems to have more than one x00IAD subrecord!\n";
              return false;
            }
            //read \0IAD
@@ -750,14 +750,14 @@ bool ImageSpaceModifierRecord::loadFromStream(std::istream& in_File, const bool 
              std::cout << "Error while reading subrecord x00IAD of IMAD!\n";
              return false;
            }
-           subLength = unknownx00IAD.getSize();
+           subLength = unknownx00IAD.size();
            if ((subLength!=16) and (subLength!=24))
            {
              std::cout <<"Error: sub record x00IAD of IMAD has invalid length ("
                        <<subLength<<" bytes). Should be 16 or 24 bytes!\n";
              return false;
            }
-           bytesRead += (2+subLength);
+           bytesRead += (2 + subLength);
            break;
       case cx40IAD:
            if (unknownx40IAD.isPresent())
@@ -768,17 +768,17 @@ bool ImageSpaceModifierRecord::loadFromStream(std::istream& in_File, const bool 
            //read @IAD
            if (!unknownx40IAD.loadFromStream(in_File, cx40IAD, false))
            {
-             std::cout << "Error while reading subrecord x40IAD of IMAD!\n";
+             std::cerr << "Error while reading subrecord x40IAD of IMAD!\n";
              return false;
            }
-           subLength = unknownx40IAD.getSize();
-           if ((subLength!=16) and (subLength!=24))
+           subLength = unknownx40IAD.size();
+           if ((subLength != 16) && (subLength != 24))
            {
-             std::cout <<"Error: sub record x40IAD of IMAD has invalid length ("
-                       <<subLength<<" bytes). Should be 16 or 24 bytes!\n";
+             std::cerr << "Error: sub record x40IAD of IMAD has invalid length ("
+                       << subLength << " bytes). Should be 16 or 24 bytes!\n";
              return false;
            }
-           bytesRead += (2+subLength);
+           bytesRead += (2 + subLength);
            break;
       default:
            //should be some ?IAD here
@@ -827,7 +827,7 @@ bool ImageSpaceModifierRecord::loadFromStream(std::istream& in_File, const bool 
                return false;
              }
              //length check
-             subLength = tempSubBlock.subData.getSize();
+             subLength = tempSubBlock.subData.size();
              if (
                 ((subLength<16) or (subLength>56) or ((subLength%8)!=0))
                 and
@@ -844,7 +844,7 @@ bool ImageSpaceModifierRecord::loadFromStream(std::istream& in_File, const bool 
              //add it
              readxIADs.insert(subRecName);
              otherIADs.push_back(tempSubBlock);
-             bytesRead += (2+subLength);
+             bytesRead += (2 + subLength);
            //}//if other ?IAD
            break;
     }//swi

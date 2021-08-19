@@ -118,7 +118,7 @@ uint32_t CellRecord::getWriteSize() const
         +4 /* XCLW */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   if (unknownDATA.isPresent())
   {
-    writeSize = writeSize +4 /* DATA */ +2 /* 2 bytes for length */ +unknownDATA.getSize() /* size */;
+    writeSize = writeSize + 4 /* DATA */ + 2 /* 2 bytes for length */ + unknownDATA.size() /* size */;
   }
   if (!editorID.empty())
   {
@@ -131,11 +131,11 @@ uint32_t CellRecord::getWriteSize() const
   }
   if (unknownTVDT.isPresent())
   {
-    writeSize = writeSize +4 /* TVDT */ +2 /* 2 bytes for length */ +unknownTVDT.getSize() /* size of subrecord */;
+    writeSize = writeSize + 4 /* TVDT */ + 2 /* 2 bytes for length */ + unknownTVDT.size() /* size of subrecord */;
   }
   if (unknownMHDT.isPresent())
   {
-    writeSize = writeSize +4 /* MHDT */ +2 /* 2 bytes for length */ +unknownMHDT.getSize() /* size of subrecord */;
+    writeSize = writeSize + 4 /* MHDT */ + 2 /* 2 bytes for length */ + unknownMHDT.size() /* size of subrecord */;
   }
   if (gridLocation.presence)
   {
@@ -155,7 +155,7 @@ uint32_t CellRecord::getWriteSize() const
   }
   if (unknownXCLL.isPresent())
   {
-    writeSize = writeSize +4 /* XCLL */ +2 /* 2 bytes for length */ +unknownXCLL.getSize() /* size of subrecord */;
+    writeSize = writeSize + 4 /* XCLL */ + 2 /* 2 bytes for length */ + unknownXCLL.size() /* size of subrecord */;
   }
   if (locationFormID!=0)
   {
@@ -171,7 +171,7 @@ uint32_t CellRecord::getWriteSize() const
   }
   if (unknownXWCU.isPresent())
   {
-    writeSize = writeSize +4 /* XWCU */ +2 /* 2 bytes for length */ +unknownXWCU.getSize() /* size of subrecord */;
+    writeSize = writeSize + 4 /* XWCU */ + 2 /* 2 bytes for length */ + unknownXWCU.size() /* size of subrecord */;
   }
   if (imageSpaceFormID!=0)
   {
@@ -636,13 +636,13 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
              std::cout << "Error while reading subrecord DATA of CELL!\n";
              return false;
            }
-           bytesRead = bytesRead +2 +unknownDATA.getSize();
-           //DATA's length
-           subLength = unknownDATA.getSize();
-           if ((subLength!=2) and (subLength!=1))
+           bytesRead = bytesRead + 2 + unknownDATA.size();
+           // DATA's length
+           subLength = unknownDATA.size();
+           if ((subLength != 2) && (subLength != 1))
            {
-             std::cout <<"Error: sub record DATA of CELL has invalid length ("<<subLength
-                       <<" bytes). Should be one or two bytes.\n";
+             std::cerr << "Error: sub record DATA of CELL has invalid length ("
+                       << subLength << " bytes). Should be one or two bytes.\n";
              return false;
            }
            break;
@@ -657,12 +657,12 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
              std::cout << "Error while reading subrecord TVDT of CELL!\n";
              return false;
            }
-           bytesRead = bytesRead +2 +unknownTVDT.getSize();
-           //check size
-           if (unknownTVDT.getSize()!=684)
+           bytesRead = bytesRead + 2 + unknownTVDT.size();
+           // check size
+           if (unknownTVDT.size() != 684)
            {
-             std::cout <<"Error: sub record TVDT of CELL has invalid length ("
-                       <<unknownTVDT.getSize()<<" bytes). Should be 684 bytes.\n";
+             std::cerr << "Error: sub record TVDT of CELL has invalid length ("
+                       << unknownTVDT.size() << " bytes). Should be 684 bytes.\n";
              return false;
            }
            break;
@@ -677,12 +677,12 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
              std::cout << "Error while reading subrecord MHDT of CELL!\n";
              return false;
            }
-           bytesRead = bytesRead +2 +unknownMHDT.getSize();
-           //check size
-           if (unknownMHDT.getSize()!=1028)
+           bytesRead = bytesRead + 2 + unknownMHDT.size();
+           // check size
+           if (unknownMHDT.size() != 1028)
            {
-             std::cout <<"Error: sub record MHDT of CELL has invalid length ("
-                       <<unknownMHDT.getSize()<<" bytes). Should be 1028 bytes.\n";
+             std::cerr << "Error: sub record MHDT of CELL has invalid length ("
+                       << unknownMHDT.size() << " bytes). Should be 1028 bytes.\n";
              return false;
            }
            break;
@@ -724,7 +724,7 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
              std::cout << "Error while reading subrecord XCLL of CELL!\n";
              return false;
            }
-           bytesRead = bytesRead +2 +unknownXCLL.getSize();
+           bytesRead = bytesRead + 2 + unknownXCLL.size();
            break;
       case cLTMP:
            if (hasReadLTMP)
@@ -875,13 +875,13 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
              std::cout << "Error while reading subrecord XWCUT of CELL!\n";
              return false;
            }
-           bytesRead = bytesRead +2 +unknownXWCU.getSize();
-           //check size
-           subLength = unknownXWCU.getSize();
-           if ((subLength==0) or ((subLength%16)!=0))
+           bytesRead = bytesRead + 2 + unknownXWCU.size();
+           // check size
+           subLength = unknownXWCU.size();
+           if ((subLength == 0) || ((subLength % 16) != 0))
            {
-             std::cout <<"Error: sub record XWCU of CELL has invalid length ("
-                       <<unknownXWCU.getSize()<<" bytes). Should be an integral multiple of 16 bytes.\n";
+             std::cerr << "Error: sub record XWCU of CELL has invalid length ("
+                       << unknownXWCU.size() << " bytes). Should be an integral multiple of 16 bytes.\n";
              return false;
            }
            break;

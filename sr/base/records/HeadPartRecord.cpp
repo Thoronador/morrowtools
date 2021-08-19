@@ -84,7 +84,7 @@ uint32_t HeadPartRecord::getWriteSize() const
   }
   if (unknownMODT.isPresent())
   {
-    writeSize = writeSize +4 /* MODT */ +2 /* 2 bytes for length */ +unknownMODT.getSize() /* size */;
+    writeSize = writeSize + 4 /* MODT */ + 2 /* 2 bytes for length */ + unknownMODT.size() /* size */;
   }
   unsigned int i;
   for (i=0; i<unknownNAM0_NAM1s.size(); ++i)
@@ -311,16 +311,16 @@ bool HeadPartRecord::loadFromStream(std::istream& in_File, const bool localized,
       case cMODT:
            if (unknownMODT.isPresent())
            {
-             std::cout << "Error: HDPT seems to have more than one MODT subrecord.\n";
+             std::cerr << "Error: HDPT seems to have more than one MODT subrecord.\n";
              return false;
            }
-           //read MODT
+           // read MODT
            if (!unknownMODT.loadFromStream(in_File, cMODT, false))
            {
-             std::cout << "Error while reading subrecord MODT of HDPT!\n";
+             std::cerr << "Error while reading subrecord MODT of HDPT!\n";
              return false;
            }
-           bytesRead = bytesRead +2 /*length value*/ +unknownMODT.getSize() /*data size*/;
+           bytesRead = bytesRead + 2 /*length value*/ + unknownMODT.size() /*data size*/;
            break;
       case cDATA:
            if (hasReadDATA)

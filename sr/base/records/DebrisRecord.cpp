@@ -90,9 +90,9 @@ uint32_t DebrisRecord::getWriteSize() const
                +1 /* length of flags*/;
     if (unknownDATA_MODTs[i].unknownMODT.isPresent())
     {
-      writeSize = writeSize +4 /* MODT */ +2 /* 2 bytes for length */
-                 +unknownDATA_MODTs[i].unknownMODT.getSize() /* size */;
-    }//if
+      writeSize = writeSize + 4 /* MODT */ + 2 /* 2 bytes for length */
+                 + unknownDATA_MODTs[i].unknownMODT.size() /* size */;
+    }
   }//for
   return writeSize;
 }
@@ -239,8 +239,8 @@ bool DebrisRecord::loadFromStream(std::istream& in_File, const bool localized, c
              std::cout << "Error while reading subrecord MODT of DEBR!\n";
              return false;
            }
-           bytesRead += (2 /* 2 bytes for length */ +tempCompound.unknownMODT.getSize() /*size*/);
-           //push it to the back of the vector
+           bytesRead += (2 /* 2 bytes for length */ + tempCompound.unknownMODT.size() /*size*/);
+           // push it to the back of the vector
            unknownDATA_MODTs.push_back(tempCompound);
            //... and clear data for next run
            tempCompound.data.clear();

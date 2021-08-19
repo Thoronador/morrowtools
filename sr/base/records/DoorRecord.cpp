@@ -73,8 +73,8 @@ uint32_t DoorRecord::getWriteSize() const
   }
   if (unknownVMAD.isPresent())
   {
-    writeSize = writeSize +4 /*VMAD*/ +2 /* 2 bytes for length */
-               +unknownVMAD.getSize() /* size */;
+    writeSize = writeSize + 4 /*VMAD*/ + 2 /* 2 bytes for length */
+               + unknownVMAD.size() /* size */;
   }
   if (name.isPresent())
   {
@@ -87,13 +87,13 @@ uint32_t DoorRecord::getWriteSize() const
   }
   if (unknownMODT.isPresent())
   {
-    writeSize = writeSize +4 /*MODT*/ +2 /* 2 bytes for length */
-               +unknownMODT.getSize() /* size */;
+    writeSize = writeSize + 4 /*MODT*/ + 2 /* 2 bytes for length */
+               + unknownMODT.size() /* size */;
   }
   if (unknownMODS.isPresent())
   {
-    writeSize = writeSize +4 /*MODS*/ +2 /* 2 bytes for length */
-               +unknownMODS.getSize() /* size */;
+    writeSize = writeSize + 4 /*MODS*/ + 2 /* 2 bytes for length */
+               + unknownMODS.size() /* size */;
   }
   if (hasSNAM)
   {
@@ -263,16 +263,16 @@ bool DoorRecord::loadFromStream(std::istream& in_File, const bool localized, con
       case cVMAD:
            if (unknownVMAD.isPresent())
            {
-             std::cout << "Error: DOOR seems to have more than one VMAD subrecord!\n";
+             std::cerr << "Error: DOOR seems to have more than one VMAD subrecord!\n";
              return false;
            }
-           //read VMAD
+           // read VMAD
            if (!unknownVMAD.loadFromStream(in_File, cVMAD, false))
            {
-             std::cout << "Error while reading subrecord VMAD of DOOR!\n";
+             std::cerr << "Error while reading subrecord VMAD of DOOR!\n";
              return false;
            }
-           bytesRead += (2 +unknownVMAD.getSize());
+           bytesRead += (2 + unknownVMAD.size());
            break;
       case cOBND:
            if (hasReadOBND)
@@ -337,30 +337,30 @@ bool DoorRecord::loadFromStream(std::istream& in_File, const bool localized, con
       case cMODT:
            if (unknownMODT.isPresent())
            {
-             std::cout << "Error: DOOR seems to have more than one MODT subrecord!\n";
+             std::cerr << "Error: DOOR seems to have more than one MODT subrecord!\n";
              return false;
            }
-           //read MODT
+           // read MODT
            if (!unknownMODT.loadFromStream(in_File, cMODT, false))
            {
-             std::cout << "Error while reading subrecord MODT of DOOR!\n";
+             std::cerr << "Error while reading subrecord MODT of DOOR!\n";
              return false;
            }
-           bytesRead = bytesRead +2 +unknownMODT.getSize();
+           bytesRead = bytesRead + 2 + unknownMODT.size();
            break;
       case cMODS:
            if (unknownMODS.isPresent())
            {
-             std::cout << "Error: DOOR seems to have more than one MODS subrecord!\n";
+             std::cerr << "Error: DOOR seems to have more than one MODS subrecord!\n";
              return false;
            }
-           //read MODS
+           // read MODS
            if (!unknownMODS.loadFromStream(in_File, cMODS, false))
            {
-             std::cout << "Error while reading subrecord MODS of DOOR!\n";
+             std::cerr << "Error while reading subrecord MODS of DOOR!\n";
              return false;
            }
-           bytesRead = bytesRead +2 +unknownMODS.getSize();
+           bytesRead = bytesRead + 2 + unknownMODS.size();
            break;
       case cSNAM:
            if (hasSNAM)

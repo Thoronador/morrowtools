@@ -218,8 +218,8 @@ uint32_t WeaponRecord::getWriteSize() const
         +4 /* VNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   if (unknownVMAD.isPresent())
   {
-    writeSize = writeSize +4 /* VMAD */ +2 /* 2 bytes for length */
-               +unknownVMAD.getSize() /* subrecord size */;
+    writeSize = writeSize + 4 /* VMAD */ + 2 /* 2 bytes for length */
+               + unknownVMAD.size() /* subrecord size */;
   }
   if (!modelPath.empty())
   {
@@ -232,13 +232,13 @@ uint32_t WeaponRecord::getWriteSize() const
   }
   if (unknownMODT.isPresent())
   {
-    writeSize = writeSize +4 /* MODT */ +2 /* 2 bytes for length */
-               +unknownMODT.getSize() /* subrecord size */;
+    writeSize = writeSize + 4 /* MODT */ + 2 /* 2 bytes for length */
+               + unknownMODT.size() /* subrecord size */;
   }
   if (unknownMODS.isPresent())
   {
-    writeSize = writeSize +4 /* MODS */ +2 /* 2 bytes for length */
-               +unknownMODS.getSize() /* subrecord size */;
+    writeSize = writeSize + 4 /* MODS */ + 2 /* 2 bytes for length */
+               + unknownMODS.size() /* subrecord size */;
   }
   if (enchantingFormID!=0)
   {
@@ -695,16 +695,16 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cVMAD:
            if (unknownVMAD.isPresent())
            {
-             std::cout << "Error: WEAP seems to have more than one VMAD subrecord!\n";
+             std::cerr << "Error: WEAP seems to have more than one VMAD subrecord!\n";
              return false;
            }
-           //read VMAD
+           // read VMAD
            if (!unknownVMAD.loadFromStream(in_File, cVMAD, false))
            {
-             std::cout << "Error while reading subrecord VMAD of WEAP!\n";
+             std::cerr << "Error while reading subrecord VMAD of WEAP!\n";
              return false;
            }
-           bytesRead = bytesRead +2+unknownVMAD.getSize();
+           bytesRead = bytesRead + 2 + unknownVMAD.size();
            break;
       case cOBND:
            if (hasReadOBND)
@@ -744,54 +744,54 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cMODL:
            if (!modelPath.empty())
            {
-             std::cout << "Error: WEAP seems to have more than one MODL subrecord!\n";
+             std::cerr << "Error: WEAP seems to have more than one MODL subrecord!\n";
              return false;
            }
-           //MODL's length
+           // MODL's length
            in_File.read((char*) &subLength, 2);
            bytesRead += 2;
-           if (subLength>511)
+           if (subLength > 511)
            {
-             std::cout <<"Error: sub record MODL of WEAP is longer than 511 characters!\n";
+             std::cerr << "Error: sub record MODL of WEAP is longer than 511 characters!\n";
              return false;
            }
-           //read MODL path
+           // read MODL path
            memset(buffer, 0, 512);
            in_File.read(buffer, subLength);
            bytesRead += subLength;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord MODL of WEAP!\n";
+             std::cerr << "Error while reading subrecord MODL of WEAP!\n";
              return false;
            }
            modelPath = std::string(buffer);
 
-           //read MODT
+           // read MODT
            if (!unknownMODT.loadFromStream(in_File, cMODT, true))
            {
-             std::cout << "Error while reading subrecord MODT of WEAP!\n";
+             std::cerr << "Error while reading subrecord MODT of WEAP!\n";
              return false;
            }
-           bytesRead = bytesRead + 4+2 +unknownMODT.getSize();
+           bytesRead = bytesRead + 4 + 2 + unknownMODT.size();
            break;
       case cMODS:
            if (unknownMODS.isPresent())
            {
-             std::cout << "Error: WEAP seems to have more than one MODS subrecord!\n";
+             std::cerr << "Error: WEAP seems to have more than one MODS subrecord!\n";
              return false;
            }
-           //read MODS
+           // read MODS
            if (!unknownMODS.loadFromStream(in_File, cMODS, false))
            {
-             std::cout << "Error while reading subrecord MODS of WEAP!\n";
+             std::cerr << "Error while reading subrecord MODS of WEAP!\n";
              return false;
            }
-           bytesRead = bytesRead +2 +unknownMODS.getSize();
+           bytesRead = bytesRead + 2 + unknownMODS.size();
            break;
       case cEITM:
            if (enchantingFormID!=0)
            {
-             std::cout << "Error: WEAP seems to have more than one EITM subrecord!\n";
+             std::cerr << "Error: WEAP seems to have more than one EITM subrecord!\n";
              return false;
            }
            //read EITM

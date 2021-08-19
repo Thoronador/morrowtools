@@ -86,7 +86,7 @@ uint32_t BookRecord::getWriteSize() const
         +4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed size */
         +4 /* MODL */ +2 /* 2 bytes for length */
         +modelPath.length()+1 /* length of name +1 byte for NUL termination */
-        +4 /* MODT */ +2 /* 2 bytes for length */ +unknownMODT.getSize() /* size of subrecord */
+        + 4 /* MODT */ + 2 /* 2 bytes for length */ + unknownMODT.size() /* size of subrecord */
         +text.getWriteSize() /* DESC */
         +4 /* DATA */ +2 /* 2 bytes for length */ +16 /* fixed size */
         +4 /* CNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
@@ -113,8 +113,8 @@ uint32_t BookRecord::getWriteSize() const
   }//if ZNAM
   if (unknownVMAD.isPresent())
   {
-    writeSize = writeSize +4 /* VMAD */ +2 /* 2 bytes for length */
-               +unknownVMAD.getSize() /* subrecord size */;
+    writeSize = writeSize + 4 /* VMAD */ + 2 /* 2 bytes for length */
+               + unknownVMAD.size() /* subrecord size */;
   }
   return writeSize;
 }
@@ -127,7 +127,7 @@ bool BookRecord::saveToStream(std::ostream& output) const
   //write EDID
   output.write((const char*) &cEDID, 4);
   //EDID's length
-  uint16_t subLength = editorID.length()+1;
+  uint16_t subLength = editorID.length() + 1;
   output.write((const char*) &subLength, 2);
   //write editor ID
   output.write(editorID.c_str(), subLength);
@@ -302,7 +302,7 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
       std::cout << "Error while reading subrecord VMAD of BOOK!\n";
       return false;
     }
-    bytesRead = bytesRead +2+unknownVMAD.getSize();
+    bytesRead = bytesRead + 2 + unknownVMAD.size();
     //read OBND
     in_File.read((char*) &subRecName, 4);
     bytesRead += 4;
@@ -392,9 +392,10 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
            }
            modelPath = std::string(buffer);
 
-           //read MODT
-           if (!unknownMODT.loadFromStream(in_File, cMODT, true)) return false;
-           bytesRead += (4+2+unknownMODT.getSize());
+           // read MODT
+           if (!unknownMODT.loadFromStream(in_File, cMODT, true))
+             return false;
+           bytesRead += (4 + 2 + unknownMODT.size());
 
            //read DESC
            if (!text.loadFromStream(in_File, cDESC, true, bytesRead, localized, table, buffer))

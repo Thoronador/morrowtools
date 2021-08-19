@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,34 +27,34 @@ namespace SRTP
 {
 
 BinarySubRecord::BinarySubRecord()
-: m_Pointer(NULL), m_Size(0), m_Present(false)
+: m_Data(nullptr), m_Size(0), m_Present(false)
 {
-
 }
 
 BinarySubRecord::BinarySubRecord(const BinarySubRecord& op)
-: m_Pointer(NULL), m_Size(op.getSize()), m_Present(op.isPresent())
+: m_Data(nullptr), m_Size(op.size()), m_Present(op.isPresent())
 {
-  if (m_Size>0)
+  if (m_Size > 0)
   {
-    m_Pointer = new uint8_t[m_Size];
-    memcpy(m_Pointer, op.getPointer(), m_Size);
+    m_Data = new uint8_t[m_Size];
+    memcpy(m_Data, op.data(), m_Size);
   }
 }
 
 BinarySubRecord& BinarySubRecord::operator=(const BinarySubRecord& other)
 {
-  if (this==&other) return *this;
-  m_Size = other.getSize();
-  delete[] m_Pointer;
-  if (m_Size>0)
+  if (this == &other)
+    return *this;
+  m_Size = other.size();
+  delete[] m_Data;
+  if (m_Size > 0)
   {
-    m_Pointer = new uint8_t[m_Size];
-    memcpy(m_Pointer, other.getPointer(), m_Size);
+    m_Data = new uint8_t[m_Size];
+    memcpy(m_Data, other.data(), m_Size);
   }
   else
   {
-    m_Pointer = NULL;
+    m_Data = nullptr;
   }
   m_Present = other.isPresent();
   return *this;
@@ -62,33 +62,37 @@ BinarySubRecord& BinarySubRecord::operator=(const BinarySubRecord& other)
 
 bool BinarySubRecord::operator==(const BinarySubRecord& other) const
 {
-  if (m_Present!=other.isPresent()) return false;
-  if (!m_Present) return true;
-  if (m_Size!=other.getSize()) return false;
-  if (m_Size==0) return true;
-  return (memcmp(m_Pointer, other.getPointer(), m_Size)==0);
+  if (m_Present != other.isPresent())
+    return false;
+  if (!m_Present)
+    return true;
+  if (m_Size != other.size())
+    return false;
+  if (m_Size == 0)
+    return true;
+  return memcmp(m_Data, other.data(), m_Size) == 0;
 }
 
 bool BinarySubRecord::operator!=(const BinarySubRecord& other) const
 {
-  return (!(*this==other));
+  return !(*this == other);
 }
 
 BinarySubRecord::~BinarySubRecord()
 {
-  delete[] m_Pointer;
-  m_Pointer = NULL;
+  delete[] m_Data;
+  m_Data = nullptr;
   m_Size = 0;
 }
 
-uint16_t BinarySubRecord::getSize() const
+uint16_t BinarySubRecord::size() const
 {
   return m_Size;
 }
 
-const uint8_t* BinarySubRecord::getPointer() const
+const uint8_t* BinarySubRecord::data() const
 {
-  return m_Pointer;
+  return m_Data;
 }
 
 bool BinarySubRecord::isPresent() const
@@ -104,15 +108,16 @@ void BinarySubRecord::setPresence(const bool presence_flag)
 #ifndef SR_UNSAVEABLE_RECORDS
 bool BinarySubRecord::saveToStream(std::ostream& output, const uint32_t subHeader) const
 {
-  //don't write if there is no subrecord
-  if (!m_Present) return output.good();
+  // don't write if there is no subrecord
+  if (!m_Present)
+    return output.good();
 
-  //write subrecord's header
-  output.write((const char*) &subHeader, 4);
-  //subrecord's length
-  output.write((const char*) &m_Size, 2);
-  //write content
-  output.write((const char*) m_Pointer, m_Size);
+  // write subrecord's header
+  output.write(reinterpret_cast<const char*>(&subHeader), 4);
+  // subrecord's length
+  output.write(reinterpret_cast<const char*>(&m_Size), 2);
+  // write content
+  output.write(reinterpret_cast<const char*>(m_Data), m_Size);
 
   return output.good();
 }
@@ -123,33 +128,34 @@ bool BinarySubRecord::loadFromStream(std::istream& in_File, const uint32_t subHe
   if (withHeader)
   {
     uint32_t subRecName = 0;
-    //read sub header
-    in_File.read((char*) &subRecName, 4);
-    if (subRecName!=subHeader)
+    // read sub header
+    in_File.read(reinterpret_cast<char*>(&subRecName), 4);
+    if (subRecName != subHeader)
     {
       UnexpectedRecord(subHeader, subRecName);
       return false;
     }
   }
-  //subrecord's length
+  // subrecord's length
   uint16_t subLength = 0;
-  in_File.read((char*) &subLength, 2);
-  //read subrecord's data
-  if (subLength!=m_Size)
+  in_File.read(reinterpret_cast<char*>(&subLength), 2);
+  // read subrecord's data
+  if (subLength != m_Size)
   {
-    delete[] m_Pointer;
-    m_Pointer = new uint8_t[subLength];
+    delete[] m_Data;
+    m_Data = new uint8_t[subLength];
     m_Size = subLength;
   }
-  memset(m_Pointer, 0, subLength);
-  in_File.read((char*) m_Pointer, subLength);
+  memset(m_Data, 0, subLength);
+  in_File.read(reinterpret_cast<char*>(m_Data), subLength);
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord "<<IntTo4Char(subHeader)<<"!\n";
+    std::cerr << "Error while reading subrecord " << IntTo4Char(subHeader)
+              << "!\n";
     return false;
   }
   m_Present = true;
   return true;
 }
 
-} //namespace
+} // namespace

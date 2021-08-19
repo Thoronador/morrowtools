@@ -74,7 +74,7 @@ uint32_t HazardRecord::getWriteSize() const
   }
   if (unknownMODT.isPresent())
   {
-    writeSize = writeSize +4 /* MODT */ +2 /* 2 bytes for length */ +unknownMODT.getSize() /* size */;
+    writeSize = writeSize + 4 /* MODT */ + 2 /* 2 bytes for length */ + unknownMODT.size() /* size */;
   }
   if (hasMNAM)
   {
@@ -267,16 +267,16 @@ bool HazardRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cMODT:
            if (unknownMODT.isPresent())
            {
-             std::cout << "Error: HAZD seems to have more than one MODT subrecord.\n";
+             std::cerr << "Error: HAZD seems to have more than one MODT subrecord.\n";
              return false;
            }
-           //read MODT
+           // read MODT
            if (!unknownMODT.loadFromStream(in_File, cMODT, false))
            {
-             std::cout << "Error while reading subrecord MODT of HAZD!\n";
+             std::cerr << "Error while reading subrecord MODT of HAZD!\n";
              return false;
            }
-           bytesRead = bytesRead +2 /*length value*/ +unknownMODT.getSize() /*data size*/;
+           bytesRead = bytesRead + 2 /*length value*/ + unknownMODT.size() /*data size*/;
            break;
       case cMNAM:
            if (hasMNAM)

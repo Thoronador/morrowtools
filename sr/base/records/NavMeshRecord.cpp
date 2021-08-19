@@ -59,9 +59,9 @@ uint32_t NavMeshRecord::getWriteSize() const
 
   if (unknownNVNM.isPresent())
   {
-    if (unknownNVNM.getSize()<65536)
+    if (unknownNVNM.getSize() < 65536)
     {
-      writeSize = writeSize +4 /* NVNM */ +2 /* 2 bytes for length */ +unknownNVNM.getSize() /* size */;
+      writeSize = writeSize + 4 /* NVNM */ + 2 /* 2 bytes for length */ + unknownNVNM.getSize() /* size */;
     }
     else
     {
@@ -72,18 +72,18 @@ uint32_t NavMeshRecord::getWriteSize() const
 
   if (unknownONAM.isPresent())
   {
-    writeSize = writeSize +4 /* ONAM */ +2 /* 2 bytes for length */ +unknownONAM.getSize() /* size */;
-  }//if ONAM
+    writeSize = writeSize + 4 /* ONAM */ + 2 /* 2 bytes for length */ +unknownONAM.size() /* size */;
+  }
 
   if (unknownNNAM.isPresent())
   {
-    writeSize = writeSize +4 /* NNAM */ +2 /* 2 bytes for length */ +unknownNNAM.getSize() /* size */;
-  }//if NNAM
+    writeSize = writeSize + 4 /* NNAM */ + 2 /* 2 bytes for length */ +unknownNNAM.size() /* size */;
+  }
 
   if (unknownPNAM.isPresent())
   {
-    writeSize = writeSize +4 /* PNAM */ +2 /* 2 bytes for length */ +unknownPNAM.getSize() /* size */;
-  }//if PNAM
+    writeSize = writeSize + 4 /* PNAM */ + 2 /* 2 bytes for length */ + unknownPNAM.size() /* size */;
+  }
 
   return writeSize;
 }
@@ -253,44 +253,44 @@ bool NavMeshRecord::loadFromStream(std::istream& in_File, const bool localized, 
       case cONAM:
            if (unknownONAM.isPresent())
            {
-             std::cout << "Error: NAVM seems to have more than one ONAM subrecord.\n";
+             std::cerr << "Error: NAVM seems to have more than one ONAM subrecord.\n";
              return false;
            }
-           //read ONAM
+           // read ONAM
            if (!unknownONAM.loadFromStream(*actual_in, cONAM, false))
            {
-             std::cout << "Error while reading subrecord ONAM of NAVM!\n";
+             std::cerr << "Error while reading subrecord ONAM of NAVM!\n";
              return false;
            }
-           bytesRead += (2 + unknownONAM.getSize());
+           bytesRead += (2 + unknownONAM.size());
            break;
       case cNNAM:
            if (unknownNNAM.isPresent())
            {
-             std::cout << "Error: NAVM seems to have more than one NNAM subrecord.\n";
+             std::cerr << "Error: NAVM seems to have more than one NNAM subrecord.\n";
              return false;
            }
-           //read NNAM
+           // read NNAM
            if (!unknownNNAM.loadFromStream(*actual_in, cNNAM, false))
            {
-             std::cout << "Error while reading subrecord NNAM of NAVM!\n";
+             std::cerr << "Error while reading subrecord NNAM of NAVM!\n";
              return false;
            }
-           bytesRead += (2 + unknownNNAM.getSize());
+           bytesRead += (2 + unknownNNAM.size());
            break;
       case cPNAM:
            if (unknownPNAM.isPresent())
            {
-             std::cout << "Error: NAVM seems to have more than one PNAM subrecord.\n";
+             std::cerr << "Error: NAVM seems to have more than one PNAM subrecord.\n";
              return false;
            }
-           //read PNAM
+           // read PNAM
            if (!unknownPNAM.loadFromStream(*actual_in, cPNAM, false))
            {
-             std::cout << "Error while reading subrecord PNAM of NAVM!\n";
+             std::cerr << "Error while reading subrecord PNAM of NAVM!\n";
              return false;
            }
-           bytesRead += (2 + unknownPNAM.getSize());
+           bytesRead += (2 + unknownPNAM.size());
            break;
       default:
            std::cout << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)

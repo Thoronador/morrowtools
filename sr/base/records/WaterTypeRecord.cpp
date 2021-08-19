@@ -105,7 +105,7 @@ uint32_t WaterTypeRecord::getWriteSize() const
   }//if INAM
   if (unknownDNAM.isPresent())
   {
-    writeSize = writeSize +4 /* DNAM */ +2 /* 2 bytes for length */ +unknownDNAM.getSize() /* length */;
+    writeSize = writeSize + 4 /* DNAM */ + 2 /* 2 bytes for length */ + unknownDNAM.size() /* length */;
   }//if DNAM
   if (hasNAM0)
   {
@@ -559,23 +559,23 @@ bool WaterTypeRecord::loadFromStream(std::istream& in_File, const bool localized
       case cDNAM:
            if (unknownDNAM.isPresent())
            {
-             std::cout << "Error: WATR seems to have more than one DNAM subrecord!\n";
+             std::cerr << "Error: WATR seems to have more than one DNAM subrecord!\n";
              return false;
            }
-           //read DNAM
+           // read DNAM
            if (!unknownDNAM.loadFromStream(in_File, cDNAM, false))
            {
-             std::cout << "Error while reading subrecord DNAM of WATR!\n";
+             std::cerr << "Error while reading subrecord DNAM of WATR!\n";
              return false;
            }
-           //check length
-           if (unknownDNAM.getSize()!=228)
+           // check length
+           if (unknownDNAM.size() != 228)
            {
-             std::cout <<"Error: subrecord DNAM of WATR has invalid length ("
-                       <<unknownDNAM.getSize() <<" bytes). Should be 228 bytes!\n";
+             std::cerr << "Error: subrecord DNAM of WATR has invalid length ("
+                       << unknownDNAM.size() << " bytes). Should be 228 bytes!\n";
              return false;
            }
-           bytesRead = bytesRead +2 +228;
+           bytesRead = bytesRead + 2 + 228;
            break;
       case cGNAM:
            if (hasReadGNAM)

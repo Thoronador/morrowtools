@@ -71,8 +71,8 @@ uint32_t KeyRecord::getWriteSize() const
         +4 /* DATA */ +2 /* 2 bytes for length */ +8 /* fixed length */;
   if (unknownVMAD.isPresent())
   {
-    writeSize = writeSize +4 /* VMAD */ +2 /* 2 bytes for length */ +unknownVMAD.getSize() /* length */;
-  }//if VMAD
+    writeSize = writeSize + 4 /* VMAD */ + 2 /* 2 bytes for length */ + unknownVMAD.size() /* length */;
+  }
   if (!modelPath.empty())
   {
     writeSize = writeSize +4 /* MODL */ +2 /* 2 bytes for length */
@@ -80,8 +80,8 @@ uint32_t KeyRecord::getWriteSize() const
   }//if MODL
   if (unknownMODT.isPresent())
   {
-    writeSize = writeSize +4 /* MODT */ +2 /* 2 bytes for length */ +unknownMODT.getSize() /* length */;
-  }//if MODT
+    writeSize = writeSize + 4 /* MODT */ + 2 /* 2 bytes for length */ + unknownMODT.size() /* length */;
+  }
   if (!keywordArray.empty())
   {
     writeSize = writeSize +4 /* KSIZ */ +2 /* 2 bytes for length */ +4 /* fixed length */
@@ -254,15 +254,15 @@ bool KeyRecord::loadFromStream(std::istream& in_File, const bool localized, cons
   //read OBND (or VMAD)
   in_File.read((char*) &subRecName, 4);
   bytesRead += 4;
-  if (subRecName==cVMAD)
+  if (subRecName == cVMAD)
   {
-    //read VMAD
+    // read VMAD
     if (!unknownVMAD.loadFromStream(in_File, cVMAD, false))
     {
-      std::cout << "Error while reading subrecord VMAD of KEYM!\n";
+      std::cerr << "Error while reading subrecord VMAD of KEYM!\n";
       return false;
     }
-    bytesRead = bytesRead +2 +unknownVMAD.getSize();
+    bytesRead = bytesRead + 2 + unknownVMAD.size();
 
     //read OBND
     in_File.read((char*) &subRecName, 4);
@@ -270,7 +270,7 @@ bool KeyRecord::loadFromStream(std::istream& in_File, const bool localized, cons
   }
   else
   {
-    //no VMAD
+    // no VMAD
     unknownVMAD.setPresence(false);
   }
 
@@ -338,16 +338,16 @@ bool KeyRecord::loadFromStream(std::istream& in_File, const bool localized, cons
       case cMODT:
            if (unknownMODT.isPresent())
            {
-             std::cout << "Error: KEYM seems to have more than one MODT subrecord!\n";
+             std::cerr << "Error: KEYM seems to have more than one MODT subrecord!\n";
              return false;
            }
-           //read MODT
+           // read MODT
            if (!unknownMODT.loadFromStream(in_File, cMODT, false))
            {
-             std::cout << "Error while reading subrecord MODT of KEYM!\n";
+             std::cerr << "Error while reading subrecord MODT of KEYM!\n";
              return false;
            }
-           bytesRead = bytesRead +2 +unknownMODT.getSize();
+           bytesRead = bytesRead + 2 + unknownMODT.size();
            break;
       case cYNAM:
            if (pickupSoundFormID!=0)

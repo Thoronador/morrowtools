@@ -61,7 +61,7 @@ uint32_t PlacedHazardRecord::getWriteSize() const
         +4 /* DATA */ +2 /* 2 bytes for length */ +24 /* fixed size */;
   if (unknownVMAD.isPresent())
   {
-    writeSize = writeSize +4 /* VMAD */ +2 /* 2 bytes for length */ +unknownVMAD.getSize() /* fixed size */;
+    writeSize = writeSize + 4 /* VMAD */ + 2 /* 2 bytes for length */ + unknownVMAD.size() /* fixed size */;
   }
   if (hasXESP)
   {
@@ -155,16 +155,16 @@ bool PlacedHazardRecord::loadFromStream(std::istream& in_File, const bool locali
       case cVMAD:
            if (unknownVMAD.isPresent())
            {
-             std::cout << "Error: PHZD seems to have more than one VMAD subrecord.\n";
+             std::cerr << "Error: PHZD seems to have more than one VMAD subrecord.\n";
              return false;
            }
-           //read VMAD
+           // read VMAD
            if (!unknownVMAD.loadFromStream(in_File, cVMAD, false))
            {
-             std::cout << "Error while reading subrecord VMAD of PHZD!\n";
+             std::cerr << "Error while reading subrecord VMAD of PHZD!\n";
              return false;
            }
-           bytesRead = bytesRead +2 /*length value*/ +unknownVMAD.getSize() /*data size*/;
+           bytesRead = bytesRead + 2 /*length value*/ + unknownVMAD.size() /*data size*/;
            break;
       case cNAME:
            if (hasReadNAME)

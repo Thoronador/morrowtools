@@ -89,8 +89,8 @@ uint32_t AmmunitionRecord::getWriteSize() const
   }
   if (unknownMODT.isPresent())
   {
-    writeSize = writeSize + 4 /* MODT */ +2 /* 2 bytes for length */
-               +unknownMODT.getSize();
+    writeSize = writeSize + 4 /* MODT */ + 2 /* 2 bytes for length */
+               + unknownMODT.size();
   }
   if (!keywordArray.empty())
   {
@@ -337,7 +337,7 @@ bool AmmunitionRecord::loadFromStream(std::istream& in_File, const bool localize
              std::cout << "Error while reading subrecord MODT of AMMO!\n";
              return false;
            }
-           bytesRead = bytesRead +2 +unknownMODT.getSize();
+           bytesRead = bytesRead + 2 + unknownMODT.size();
            break;
       case cYNAM:
            if (pickupSoundFormID!=0)

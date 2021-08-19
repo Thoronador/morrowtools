@@ -99,8 +99,8 @@ uint32_t LightRecord::getWriteSize() const
         +4 /* FNAM */ +2 /* 2 bytes for length */ +4 /* fixed size of 4 bytes */;
   if (unknownVMAD.isPresent())
   {
-    writeSize = writeSize +4 /* VMAD */ +2 /* 2 bytes for length */
-        +unknownVMAD.getSize() /* length of VMAD data */;
+    writeSize = writeSize + 4 /* VMAD */ + 2 /* 2 bytes for length */
+        + unknownVMAD.size() /* length of VMAD data */;
   }
   if (!modelPath.empty())
   {
@@ -109,8 +109,8 @@ uint32_t LightRecord::getWriteSize() const
   }
   if (unknownMODT.isPresent())
   {
-    writeSize = writeSize +4 /* MODT */ +2 /* 2 bytes for length */
-        +unknownMODT.getSize() /* length of MODT data */;
+    writeSize = writeSize + 4 /* MODT */ + 2 /* 2 bytes for length */
+        + unknownMODT.size() /* length of MODT data */;
   }
   if (name.isPresent())
   {
@@ -277,15 +277,15 @@ bool LightRecord::loadFromStream(std::istream& in_File, const bool localized, co
       case cVMAD:
            if (unknownVMAD.isPresent())
            {
-             std::cout << "Error: record LIGH seems to have more than one VMAD subrecord!\n";
+             std::cerr << "Error: record LIGH seems to have more than one VMAD subrecord!\n";
              return false;
            }
            if (!unknownVMAD.loadFromStream(in_File, cVMAD, false))
            {
-             std::cout << "Error while reading subrecord VMAD of LIGH!\n";
+             std::cerr << "Error while reading subrecord VMAD of LIGH!\n";
              return false;
            }
-           bytesRead += (2 + unknownVMAD.getSize());
+           bytesRead += (2 + unknownVMAD.size());
            break;
       case cOBND:
            if (hasReadOBND)
@@ -331,15 +331,15 @@ bool LightRecord::loadFromStream(std::istream& in_File, const bool localized, co
       case cMODT:
            if (unknownMODT.isPresent())
            {
-             std::cout << "Error: record LIGH seems to have more than one MODT subrecord!\n";
+             std::cerr << "Error: record LIGH seems to have more than one MODT subrecord!\n";
              return false;
            }
            if (!unknownMODT.loadFromStream(in_File, cMODT, false))
            {
-             std::cout << "Error while reading subrecord MODT of LIGH!\n";
+             std::cerr << "Error while reading subrecord MODT of LIGH!\n";
              return false;
            }
-           bytesRead += (2 + unknownMODT.getSize());
+           bytesRead += (2 + unknownMODT.size());
            break;
       case cFULL:
            if (name.isPresent())

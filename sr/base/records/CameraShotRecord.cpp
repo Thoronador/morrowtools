@@ -98,7 +98,7 @@ uint32_t CameraShotRecord::getWriteSize() const
   }
   if (unknownMODT.isPresent())
   {
-    writeSize = writeSize +4 /* MODL */ +2 /* 2 bytes for length */ +unknownMODT.getSize() /* length */;
+    writeSize = writeSize + 4 /* MODL */ + 2 /* 2 bytes for length */ + unknownMODT.size() /* length */;
   }
   if (dataLen==dlt40Byte)
   {
@@ -264,7 +264,7 @@ bool CameraShotRecord::loadFromStream(std::istream& in_File, const bool localize
              std::cout << "Error while reading subrecord MODT of CAMS!\n";
              return false;
            }
-           bytesRead += (2 + unknownMODT.getSize());
+           bytesRead += (2 + unknownMODT.size());
            break;
       case cDATA:
            if (hasReadDATA)

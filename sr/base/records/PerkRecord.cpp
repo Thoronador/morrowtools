@@ -61,7 +61,8 @@ uint32_t PerkRecord::getWriteSize() const
         +description.getWriteSize() /* DESC */;
   if (unknownVMAD.isPresent())
   {
-    writeSize = writeSize +4 /*VMAD*/ +2 /* 2 bytes for length */ +unknownVMAD.getSize() /* size */;
+    writeSize = writeSize + 4 /*VMAD*/ + 2 /* 2 bytes for length */
+                + unknownVMAD.size() /* size */;
   }
   if (name.isPresent())
   {
@@ -69,13 +70,12 @@ uint32_t PerkRecord::getWriteSize() const
   }
   if (!subBlocks.empty())
   {
-    unsigned int i;
-    for (i=0; i<subBlocks.size(); ++i)
+    for (unsigned int i = 0; i < subBlocks.size(); ++i)
     {
-      writeSize = writeSize +4 /*header*/ +2 /* 2 bytes for length */
-                 +subBlocks[i].subData.getSize() /* length */;
-    }//for
-  }//if subBlocks
+      writeSize = writeSize + 4 /*header*/ + 2 /* 2 bytes for length */
+                 + subBlocks[i].subData.size() /* length */;
+    }
+  }
   return writeSize;
 }
 
@@ -184,11 +184,12 @@ bool PerkRecord::loadFromStream(std::istream& in_File, const bool localized, con
       case cVMAD:
            if (unknownVMAD.isPresent())
            {
-             std::cout << "Error: record PERK seems to have more than one VMAD subrecord.\n";
+             std::cerr << "Error: record PERK seems to have more than one VMAD subrecord.\n";
              return false;
            }
-           if (!unknownVMAD.loadFromStream(in_File, cVMAD, false)) return false;
-           bytesRead += (2 +unknownVMAD.getSize());
+           if (!unknownVMAD.loadFromStream(in_File, cVMAD, false))
+             return false;
+           bytesRead += (2 + unknownVMAD.size());
            break;
       case cFULL:
            if (name.isPresent())
@@ -214,11 +215,11 @@ bool PerkRecord::loadFromStream(std::istream& in_File, const bool localized, con
            temp.subType = subRecName;
            if (!temp.subData.loadFromStream(in_File, subRecName, false))
            {
-             std::cout << "Error while reading subrecord "<<IntTo4Char(subRecName)
+             std::cerr << "Error while reading subrecord "<<IntTo4Char(subRecName)
                        << " of PERK!\n";
              return false;
            }
-           bytesRead += (2 +temp.subData.getSize());
+           bytesRead += (2 + temp.subData.size());
            subBlocks.push_back(temp);
            break;
     }//swi

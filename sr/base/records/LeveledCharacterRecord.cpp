@@ -79,8 +79,8 @@ uint32_t LeveledCharacterRecord::getWriteSize() const
   }
   if (unknownMODT.isPresent())
   {
-    writeSize = writeSize +4 /* MODT */ +2 /* 2 bytes for length */
-        +unknownMODT.getSize() /* length of data */;
+    writeSize = writeSize + 4 /* MODT */ + 2 /* 2 bytes for length */
+        + unknownMODT.size() /* length of data */;
   }
   return writeSize;
 }
@@ -422,16 +422,16 @@ bool LeveledCharacterRecord::loadFromStream(std::istream& in_File, const bool lo
       case cMODT:
            if (unknownMODT.isPresent())
            {
-             std::cout << "Error: record LVLN seems to have more than one MODT subrecord!\n";
+             std::cerr << "Error: record LVLN seems to have more than one MODT subrecord!\n";
              return false;
            }
-           //read MODT
+           // read MODT
            if (!unknownMODT.loadFromStream(in_File, cMODT, false))
            {
-             std::cout << "Error while reading subrecord MODT of LVLN!\n";
+             std::cerr << "Error while reading subrecord MODT of LVLN!\n";
              return false;
            }
-           bytesRead += (2+unknownMODT.getSize());
+           bytesRead += (2 + unknownMODT.size());
            break;
       default:
            std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)

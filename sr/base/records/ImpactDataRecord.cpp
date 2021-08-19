@@ -116,8 +116,8 @@ uint32_t ImpactDataRecord::getWriteSize() const
   }
   if (unknownMODT.isPresent())
   {
-    writeSize = writeSize +4 /* MODT */ +2 /* 2 bytes for length */
-               +unknownMODT.getSize() /* length of subrecord */;
+    writeSize = writeSize + 4 /* MODT */ + 2 /* 2 bytes for length */
+               + unknownMODT.size() /* length of subrecord */;
   }
   if (decalData.isPresent())
   {
@@ -348,16 +348,16 @@ bool ImpactDataRecord::loadFromStream(std::istream& in_File, const bool localize
       case cMODT:
            if (unknownMODT.isPresent())
            {
-             std::cout << "Error: IPCT seems to have two MODT subrecords!\n";
+             std::cerr << "Error: IPCT seems to have two MODT subrecords!\n";
              return false;
            }
-           //load MODT
+           // load MODT
            if (!unknownMODT.loadFromStream(in_File, cMODT, false))
            {
-             std::cout << "Error while loading subrecord MODT of IPCT!\n";
+             std::cerr << "Error while loading subrecord MODT of IPCT!\n";
              return false;
            }
-           bytesRead += (2+unknownMODT.getSize());
+           bytesRead += (2 + unknownMODT.size());
            break;
       case cDATA:
            if (hasReadDATA)

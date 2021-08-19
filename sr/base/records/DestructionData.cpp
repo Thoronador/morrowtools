@@ -51,8 +51,8 @@ uint32_t DestructionStage::getWriteSize() const
   uint32_t writeSize = 4 /* DSTF */ +2 /* 2 bytes for length */;  //+zero for data :D
   if (unknownDSTD.isPresent())
   {
-    writeSize = writeSize +4 /* DSTD */ +2 /* 2 bytes for length */ +unknownDSTD.getSize();
-  }//if DSTD
+    writeSize = writeSize + 4 /* DSTD */ + 2 /* 2 bytes for length */ + unknownDSTD.size();
+  }
   if (!replacementModel.empty())
   {
     writeSize = writeSize +4 /* DMDL */ +2 /* 2 bytes for length */
@@ -60,8 +60,8 @@ uint32_t DestructionStage::getWriteSize() const
   }
   if (unknownDMDT.isPresent())
   {
-    writeSize = writeSize +4 /* DMDT */ +2 /* 2 bytes for length */ +unknownDMDT.getSize();
-  }//if DMDT
+    writeSize = writeSize + 4 /* DMDT */ + 2 /* 2 bytes for length */ +unknownDMDT.size();
+  }
   return writeSize;
 }
 
@@ -203,9 +203,10 @@ bool DestructionData::loadFromStream(std::istream& in_File, const uint32_t recor
              std::cout << "Error: "<<IntTo4Char(recordType)<<" seems to have more than one DSTD subrecord per stage!\n";
              return false;
            }//if
-           //read DSTD
-           if (!tempStage.unknownDSTD.loadFromStream(in_File, cDSTD, false)) return false;
-           bytesRead += (2+tempStage.unknownDSTD.getSize());
+           // read DSTD
+           if (!tempStage.unknownDSTD.loadFromStream(in_File, cDSTD, false))
+             return false;
+           bytesRead += (2 + tempStage.unknownDSTD.size());
            break;
       case cDMDL:
            if (!tempStage.replacementModel.empty())
@@ -241,13 +242,14 @@ bool DestructionData::loadFromStream(std::istream& in_File, const uint32_t recor
       case cDMDT:
            if (tempStage.unknownDMDT.isPresent())
            {
-             std::cout << "Error: "<<IntTo4Char(recordType)
+             std::cerr << "Error: " << IntTo4Char(recordType)
                        << " seems to have more than one DMDT subrecord per stage!\n";
              return false;
-           }//if
-           //read DMDT
-           if (!tempStage.unknownDMDT.loadFromStream(in_File, cDMDT, false)) return false;
-           bytesRead += (2+tempStage.unknownDMDT.getSize());
+           }
+           // read DMDT
+           if (!tempStage.unknownDMDT.loadFromStream(in_File, cDMDT, false))
+             return false;
+           bytesRead += (2 + tempStage.unknownDMDT.size());
            break;
       case cDSTF:
            //DSTF's length

@@ -59,7 +59,7 @@ uint32_t AnimatedObjectRecord::getWriteSize() const
         +modelPath.length()+1 /* length of string +1 byte for NUL-termination */;
   if (unknownMODT.isPresent())
   {
-    writeSize = writeSize +4 /* MODT */ +2 /* 2 bytes for length */ +unknownMODT.getSize();
+    writeSize = writeSize + 4 /* MODT */ + 2 /* 2 bytes for length */ + unknownMODT.size();
   }
   if (!unknownBNAM.empty())
   {
@@ -195,12 +195,13 @@ bool AnimatedObjectRecord::loadFromStream(std::istream& in_File, const bool loca
       case cMODT:
            if (unknownMODT.isPresent())
            {
-             std::cout << "Error: ANIO seems to have more than one MODT subrecord.\n";
+             std::cerr << "Error: ANIO seems to have more than one MODT subrecord.\n";
              return false;
            }
-           //read MODT
-           if (!unknownMODT.loadFromStream(in_File, cMODT, false)) return false;
-           bytesRead += (2+unknownMODT.getSize());
+           // read MODT
+           if (!unknownMODT.loadFromStream(in_File, cMODT, false))
+             return false;
+           bytesRead += (2 + unknownMODT.size());
            break;
       case cBNAM:
            if (!unknownBNAM.empty())

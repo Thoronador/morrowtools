@@ -185,7 +185,7 @@ uint32_t NPCRecord::getWriteSize() const
         +4 /* QNAM */ +2 /* 2 bytes for length */ +12 /* fixed size */;
   if (unknownVMAD.isPresent())
   {
-    writeSize = writeSize +4 /* VMAD */ +2 /* 2 bytes for length */ +unknownVMAD.getSize() /* size of subrecord */;
+    writeSize = writeSize + 4 /* VMAD */ + 2 /* 2 bytes for length */ + unknownVMAD.size() /* size of subrecord */;
   }
   if (deathItemFormID!=0)
   {
@@ -217,7 +217,7 @@ uint32_t NPCRecord::getWriteSize() const
   }
   if (unknownATKD.isPresent())
   {
-    writeSize = writeSize +4 /* ATKD */ +2 /* 2 bytes for length */ +unknownATKD.getSize() /* size */;
+    writeSize = writeSize + 4 /* ATKD */ + 2 /* 2 bytes for length */ + unknownATKD.size() /* size */;
   }
   if (!unknownATKE.empty())
   {
@@ -307,11 +307,11 @@ uint32_t NPCRecord::getWriteSize() const
   }
   if (unknownNAM9.isPresent())
   {
-    writeSize = writeSize +4 /* NAM9 */ +2 /* 2 bytes for length */ +unknownNAM9.getSize() /* size of subrecord */;
+    writeSize = writeSize + 4 /* NAM9 */ + 2 /* 2 bytes for length */ + unknownNAM9.size() /* size of subrecord */;
   }
   if (unknownNAMA.isPresent())
   {
-    writeSize = writeSize +4 /* NAMA */ +2 /* 2 bytes for length */ +unknownNAMA.getSize() /* size of subrecord */;
+    writeSize = writeSize + 4 /* NAMA */ + 2 /* 2 bytes for length */ + unknownNAMA.size() /* size of subrecord */;
   }
   if (unknownTINXs.empty())
   {
@@ -1064,16 +1064,16 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
       case cVMAD:
            if (unknownVMAD.isPresent())
            {
-             std::cout << "Error: NPC_ seems to have more than one VMAD subrecord.\n";
+             std::cerr << "Error: NPC_ seems to have more than one VMAD subrecord.\n";
              return false;
            }
-           //read VMAD
+           // read VMAD
            if (!unknownVMAD.loadFromStream(*actual_in, cVMAD, false))
            {
-             std::cout << "Error while reading subrecord VMAD of NPC_!\n";
+             std::cerr << "Error while reading subrecord VMAD of NPC_!\n";
              return false;
            }
-           bytesRead += (2+unknownVMAD.getSize());
+           bytesRead += (2 + unknownVMAD.size());
            break;
       case cOBND:
            if (hasReadOBND)
@@ -1279,20 +1279,20 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
       case cATKD:
            if (unknownATKD.isPresent())
            {
-             std::cout << "Error: NPC_ seems to have more than one ATKD subrecord.\n";
+             std::cerr << "Error: NPC_ seems to have more than one ATKD subrecord.\n";
              return false;
            }
-           //read ATKD
+           // read ATKD
            if (!unknownATKD.loadFromStream(*actual_in, cATKD, false))
            {
-             std::cout << "Error while reading subrecord ATKD of NPC_!\n";
+             std::cerr << "Error while reading subrecord ATKD of NPC_!\n";
              return false;
            }
-           bytesRead += (2+unknownATKD.getSize());
-           if (unknownATKD.getSize()!=44)
+           bytesRead += (2 + unknownATKD.size());
+           if (unknownATKD.size() != 44)
            {
-             std::cout <<"Error: sub record ATKD of NPC_ has invalid length ("
-                       <<unknownATKD.getSize()<<" bytes). Should be 44 bytes.\n";
+             std::cerr << "Error: sub record ATKD of NPC_ has invalid length ("
+                       << unknownATKD.size() << " bytes). Should be 44 bytes.\n";
              return false;
            }
            break;
@@ -1983,40 +1983,40 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
       case cNAM9:
            if (unknownNAM9.isPresent())
            {
-             std::cout << "Error: NPC_ seems to have more than one NAM9 subrecord.\n";
+             std::cerr << "Error: NPC_ seems to have more than one NAM9 subrecord.\n";
              return false;
            }
-           //read NAM9
+           // read NAM9
            if (!unknownNAM9.loadFromStream(*actual_in, cNAM9, false))
            {
-             std::cout << "Error while reading subrecord NAM9 of NPC_!\n";
+             std::cerr << "Error while reading subrecord NAM9 of NPC_!\n";
              return false;
            }
-           bytesRead += (2+unknownNAM9.getSize());
-           if (unknownNAM9.getSize()!=76)
+           bytesRead += (2 + unknownNAM9.size());
+           if (unknownNAM9.size() != 76)
            {
-             std::cout <<"Error: sub record NAM9 of NPC_ has invalid length ("
-                       <<unknownNAM9.getSize()<<" bytes). Should be 76 bytes.\n";
+             std::cerr << "Error: sub record NAM9 of NPC_ has invalid length ("
+                       << unknownNAM9.size()<< " bytes). Should be 76 bytes.\n";
              return false;
            }
            break;
       case cNAMA:
            if (unknownNAMA.isPresent())
            {
-             std::cout << "Error: NPC_ seems to have more than one NAMA subrecord.\n";
+             std::cerr << "Error: NPC_ seems to have more than one NAMA subrecord.\n";
              return false;
            }
-           //read NAMA
+           // read NAMA
            if (!unknownNAMA.loadFromStream(*actual_in, cNAMA, false))
            {
-             std::cout << "Error while reading subrecord NAMA of NPC_!\n";
+             std::cerr << "Error while reading subrecord NAMA of NPC_!\n";
              return false;
            }
-           bytesRead += (2+unknownNAMA.getSize());
-           if (unknownNAMA.getSize()!=16)
+           bytesRead += (2 + unknownNAMA.size());
+           if (unknownNAMA.size() != 16)
            {
-             std::cout <<"Error: sub record NAMA of NPC_ has invalid length ("
-                       <<unknownNAMA.getSize()<<" bytes). Should be 16 bytes.\n";
+             std::cerr << "Error: sub record NAMA of NPC_ has invalid length ("
+                       << unknownNAMA.size() << " bytes). Should be 16 bytes.\n";
              return false;
            }
            break;

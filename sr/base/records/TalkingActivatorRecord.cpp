@@ -76,7 +76,7 @@ uint32_t TalkingActivatorRecord::getWriteSize() const
   }
   if (unknownMODT.isPresent())
   {
-    writeSize = writeSize +4 /* MODT */ +2 /* 2 bytes for length */ +unknownMODT.getSize() /* size */;
+    writeSize = writeSize + 4 /* MODT */ + 2 /* 2 bytes for length */ + unknownMODT.size() /* size */;
   }
   if (!keywordArray.empty())
   {
@@ -321,16 +321,16 @@ bool TalkingActivatorRecord::loadFromStream(std::istream& in_File, const bool lo
       case cMODT:
            if (unknownMODT.isPresent())
            {
-             std::cout << "Error: record TACT seems to have more than one MODT subrecord!\n";
+             std::cerr << "Error: record TACT seems to have more than one MODT subrecord!\n";
              return false;
            }
-           //read MODT
+           // read MODT
            if (!unknownMODT.loadFromStream(in_File, cMODT, false))
            {
-             std::cout << "Error while reading subrecord MODT of TACT!";
+             std::cerr << "Error while reading subrecord MODT of TACT!";
              return false;
            }
-           bytesRead += (2+unknownMODT.getSize());
+           bytesRead += (2 + unknownMODT.size());
            break;
       case cKSIZ:
            if (!keywordArray.empty())

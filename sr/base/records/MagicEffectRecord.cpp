@@ -184,7 +184,7 @@ uint32_t MagicEffectRecord::getWriteSize() const
         (4 /* CTDA */ +2 /* 2 bytes for length */ +32 /* fixed size */);
   if (unknownVMAD.isPresent())
   {
-    writeSize = writeSize +4 /* VMAD */ +2 /* 2 bytes for length */ +unknownVMAD.getSize() /* size */;
+    writeSize = writeSize + 4 /* VMAD */ + 2 /* 2 bytes for length */ + unknownVMAD.size() /* size */;
   }
   if (name.isPresent())
   {
@@ -412,16 +412,16 @@ bool MagicEffectRecord::loadFromStream(std::istream& in_File, const bool localiz
       case cVMAD:
            if (unknownVMAD.isPresent())
            {
-             std::cout << "Error: MGEF seems to have more than one VMAD subrecord!\n";
+             std::cerr << "Error: MGEF seems to have more than one VMAD subrecord!\n";
              return false;
            }
-           //read VMAD's stuff
+           // read VMAD's stuff
            if (!unknownVMAD.loadFromStream(in_File, cVMAD, false))
            {
-             std::cout << "Error while reading subrecord VMAD of MGEF!\n";
+             std::cerr << "Error while reading subrecord VMAD of MGEF!\n";
              return false;
            }
-           bytesRead = bytesRead +2 +unknownVMAD.getSize();
+           bytesRead = bytesRead + 2 + unknownVMAD.size();
            break;
       case cFULL:
            if (name.isPresent())

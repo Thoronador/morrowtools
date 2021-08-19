@@ -82,7 +82,7 @@ uint32_t ContainerRecord::getWriteSize() const
         +4 /* DATA */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   if (unknownVMAD.isPresent())
   {
-    writeSize = writeSize +4 /* VMAD */ +2 /* 2 bytes for length */ +unknownVMAD.getSize() /* size */;
+    writeSize = writeSize + 4 /* VMAD */ + 2 /* 2 bytes for length */ + unknownVMAD.size() /* size */;
   }
   if (name.isPresent())
   {
@@ -95,15 +95,15 @@ uint32_t ContainerRecord::getWriteSize() const
   }
   if (unknownMODT.isPresent())
   {
-    writeSize = writeSize +4 /* MODT */ +2 /* 2 bytes for length */ +unknownMODT.getSize() /* size */;
+    writeSize = writeSize + 4 /* MODT */ + 2 /* 2 bytes for length */ + unknownMODT.size() /* size */;
   }
   if (unknownMODS.isPresent())
   {
-    writeSize = writeSize +4 /* MODS */ +2 /* 2 bytes for length */ +unknownMODS.getSize() /* size */;
+    writeSize = writeSize + 4 /* MODS */ + 2 /* 2 bytes for length */ +unknownMODS.size() /* size */;
   }
   if (unknownCOED.isPresent())
   {
-    writeSize = writeSize +4 /* COED */ +2 /* 2 bytes for length */ +unknownCOED.getSize() /* size */;
+    writeSize = writeSize + 4 /* COED */ + 2 /* 2 bytes for length */ + unknownCOED.size() /* size */;
   }
   if (openSoundFormID!=0)
   {
@@ -321,7 +321,7 @@ bool ContainerRecord::loadFromStream(std::istream& in_File, const bool localized
            }
            //read VMAD
            if (!unknownVMAD.loadFromStream(in_File, cVMAD, false)) return false;
-           bytesRead += (2+unknownVMAD.getSize());
+           bytesRead += (2 + unknownVMAD.size());
            break;
       case cOBND:
            if (hasReadOBND)
@@ -375,12 +375,13 @@ bool ContainerRecord::loadFromStream(std::istream& in_File, const bool localized
       case cMODT:
            if (unknownMODT.isPresent())
            {
-             std::cout << "Error: CONT seems to have more than one MODT subrecord.\n";
+             std::cerr << "Error: CONT seems to have more than one MODT subrecord.\n";
              return false;
            }
-           //read MODT
-           if (!unknownMODT.loadFromStream(in_File, cMODT, false)) return false;
-           bytesRead += (2+unknownMODT.getSize());
+           // read MODT
+           if (!unknownMODT.loadFromStream(in_File, cMODT, false))
+             return false;
+           bytesRead += (2 + unknownMODT.size());
            break;
       case cMODS:
            if (unknownMODS.isPresent())
@@ -390,7 +391,7 @@ bool ContainerRecord::loadFromStream(std::istream& in_File, const bool localized
            }
            //read MODS
            if (!unknownMODS.loadFromStream(in_File, cMODS, false)) return false;
-           bytesRead += (2+unknownMODS.getSize());
+           bytesRead += (2 + unknownMODS.size());
            break;
       case cCOCT:
            if (!contents.empty())
@@ -437,12 +438,13 @@ bool ContainerRecord::loadFromStream(std::istream& in_File, const bool localized
       case cCOED:
            if (unknownCOED.isPresent())
            {
-             std::cout << "Error: CONT seems to have more than one COED subrecord.\n";
+             std::cerr << "Error: CONT seems to have more than one COED subrecord.\n";
              return false;
            }
-           //read COED
-           if (!unknownCOED.loadFromStream(in_File, cCOED, false)) return false;
-           bytesRead += (2+unknownCOED.getSize());
+           // read COED
+           if (!unknownCOED.loadFromStream(in_File, cCOED, false))
+             return false;
+           bytesRead += (2 + unknownCOED.size());
            break;
       case cDATA:
            if (hasReadDATA)

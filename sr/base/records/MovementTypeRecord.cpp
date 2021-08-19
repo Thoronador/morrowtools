@@ -59,11 +59,11 @@ uint32_t MovementTypeRecord::getWriteSize() const
         +nameString.length()+1 /* length of name +1 byte for NUL termination */;
   if (unknownSPED.isPresent())
   {
-    writeSize = writeSize +4 /* SPED */ +2 /* 2 bytes for length */ +unknownSPED.getSize() /* size */;
+    writeSize = writeSize + 4 /* SPED */ + 2 /* 2 bytes for length */ + unknownSPED.size() /* size */;
   }
   if (unknownINAM.isPresent())
   {
-    writeSize = writeSize +4 /* INAM */ +2 /* 2 bytes for length */ +unknownINAM.getSize() /* size */;
+    writeSize = writeSize + 4 /* INAM */ + 2 /* 2 bytes for length */ + unknownINAM.size() /* size */;
   }
   return writeSize;
 }
@@ -171,37 +171,37 @@ bool MovementTypeRecord::loadFromStream(std::istream& in_File, const bool locali
   }
   nameString = std::string(buffer);
 
-  //read SPED
+  // read SPED
   if (!unknownSPED.loadFromStream(in_File, cSPED, true))
   {
-    std::cout << "Error while reading subrecord SPED of MOVT!\n";
+    std::cerr << "Error while reading subrecord SPED of MOVT!\n";
     return false;
   }
-  subLength = unknownSPED.getSize();
-  bytesRead = bytesRead +4 +2 +subLength;
-  //length check
-  if ((subLength!=44) and (subLength!=40))
+  subLength = unknownSPED.size();
+  bytesRead = bytesRead + 4 + 2 + subLength;
+  // length check
+  if ((subLength != 44) && (subLength != 40))
   {
-    std::cout <<"Error: sub record SPED of MOVT has invalid length ("<<subLength
-              <<" bytes). Should be 44 or 40 bytes.\n";
+    std::cerr << "Error: sub record SPED of MOVT has invalid length ("
+              << subLength << " bytes). Should be 44 or 40 bytes.\n";
     return false;
   }
 
-  //read INAM
+  // read INAM
   unknownINAM.setPresence(false);
-  if (bytesRead<readSize)
+  if (bytesRead < readSize)
   {
     if (!unknownINAM.loadFromStream(in_File, cINAM, true))
     {
-      std::cout << "Error while reading subrecord INAM of MOVT!\n";
+      std::cerr << "Error while reading subrecord INAM of MOVT!\n";
       return false;
     }
-    bytesRead = bytesRead +4 +2 +unknownINAM.getSize();
-    //INAM's length check
-    if (unknownINAM.getSize()!=12)
+    bytesRead = bytesRead + 4 + 2 + unknownINAM.size();
+    // INAM's length check
+    if (unknownINAM.size() != 12)
     {
-      std::cout <<"Error: sub record INAM of MOVT has invalid length ("<<subLength
-                <<" bytes). Should be 12 bytes.\n";
+      std::cerr << "Error: sub record INAM of MOVT has invalid length ("
+                << subLength << " bytes). Should be 12 bytes.\n";
       return false;
     }
   }

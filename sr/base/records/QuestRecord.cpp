@@ -444,7 +444,7 @@ uint32_t QuestRecord::getWriteSize() const
         +4 /* ANAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   if (unknownVMAD.isPresent())
   {
-    writeSize = writeSize +4 /* VMAD */ +2 /* 2 bytes for length */ +unknownVMAD.getSize();
+    writeSize = writeSize + 4 /* VMAD */ + 2 /* 2 bytes for length */ + unknownVMAD.size();
   }
   if (name.isPresent())
   {
@@ -489,7 +489,7 @@ uint32_t QuestRecord::getWriteSize() const
         }
         if (indices[i].theQSDTs[j].unknownSCHR.isPresent())
         {
-          writeSize = writeSize +4 /* SCHR */ +2 /* 2 bytes for length */ +indices[i].theQSDTs[j].unknownSCHR.getSize() /* size */;
+          writeSize = writeSize + 4 /* SCHR */ + 2 /* 2 bytes for length */ + indices[i].theQSDTs[j].unknownSCHR.size() /* size */;
         }
         if (!indices[i].theQSDTs[j].unknownSCTX.empty())
         {
@@ -761,15 +761,15 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
       case cVMAD:
            if (unknownVMAD.isPresent())
            {
-             std::cout << "Error: QUST seems to have more than one VMAD subrecord.\n";
+             std::cerr << "Error: QUST seems to have more than one VMAD subrecord.\n";
              return false;
            }
            if (!unknownVMAD.loadFromStream(in_File, cVMAD, false))
            {
-             std::cout << "Error while reading subrecord VMAD of QUST!\n";
+             std::cerr << "Error while reading subrecord VMAD of QUST!\n";
              return false;
            }
-           bytesRead = bytesRead +2 +unknownVMAD.getSize();
+           bytesRead = bytesRead + 2 + unknownVMAD.size();
            lastReadRec = cVMAD;
            break;
       case cFULL:
@@ -1017,26 +1017,26 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
       case cSCHR:
            if (!hasUnpushedQSDTRecord)
            {
-             std::cout << "Error in subrecord sequence of QUST! SCHR outside "
+             std::cerr << "Error in subrecord sequence of QUST! SCHR outside "
                        << "of QSDT encountered!\n";
              return false;
            }
            if (tempQSDT.unknownSCHR.isPresent())
            {
-             std::cout << "Error: QUST seems to have more than one SCHR subrecord per QSDT.\n";
+             std::cerr << "Error: QUST seems to have more than one SCHR subrecord per QSDT.\n";
              return false;
            }
            if (!tempQSDT.unknownSCHR.loadFromStream(in_File, cSCHR, false))
            {
-             std::cout << "Error while loading subrecord SCHR of QUST!\n";
+             std::cerr << "Error while loading subrecord SCHR of QUST!\n";
              return false;
            }
-           bytesRead = bytesRead +2 +tempQSDT.unknownSCHR.getSize();
-           //check length
-           if (tempQSDT.unknownSCHR.getSize()!=20)
+           bytesRead = bytesRead + 2 + tempQSDT.unknownSCHR.size();
+           // check length
+           if (tempQSDT.unknownSCHR.size() != 20)
            {
-             std::cout <<"Error: sub record SCHR of QUST has invalid length ("
-                       <<tempQSDT.unknownSCHR.getSize()<<" bytes). Should be 20 bytes.\n";
+             std::cerr << "Error: sub record SCHR of QUST has invalid length ("
+                       << tempQSDT.unknownSCHR.size() << " bytes). Should be 20 bytes.\n";
              return false;
            }
            lastReadRec = cSCHR;

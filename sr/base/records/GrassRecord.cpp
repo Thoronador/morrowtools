@@ -63,7 +63,7 @@ uint32_t GrassRecord::getWriteSize() const
         +4 /* DATA */ +2 /* 2 bytes for length */ +32 /* fixed length of 32 bytes */;
   if (unknownMODT.isPresent())
   {
-    writeSize = writeSize +4 /*MODT*/ +2 /* 2 bytes for length */ +unknownMODT.getSize() /* size */;
+    writeSize = writeSize + 4 /*MODT*/ + 2 /* 2 bytes for length */ + unknownMODT.size() /* size */;
   }
   return writeSize;
 }

@@ -71,28 +71,27 @@ bool ImageSpaceRecord::equals(const ImageSpaceRecord& other) const
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t ImageSpaceRecord::getWriteSize() const
 {
-  uint32_t writeSize;
-  writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
-        +editorID.length()+1 /* length of name +1 byte for NUL termination */;
+  uint32_t writeSize = 4 /* EDID */ + 2 /* 2 bytes for length */
+        + editorID.length() + 1 /* length of name +1 byte for NUL termination */;
   if (hasENAM)
   {
-    writeSize = writeSize +4 /* ENAM */ +2 /* 2 bytes for length */ +56 /* fixed length of 56 bytes */;
+    writeSize = writeSize + 4 /* ENAM */ + 2 /* 2 bytes for length */ + 56 /* fixed length of 56 bytes */;
   }
   if (unknownHNAM.isPresent())
   {
-    writeSize = writeSize +4 /* HNAM */ +2 /* 2 bytes for length */ +unknownHNAM.getSize();
+    writeSize = writeSize + 4 /* HNAM */ + 2 /* 2 bytes for length */ + unknownHNAM.size();
   }
   if (unknownCNAM.isPresent())
   {
-    writeSize = writeSize +4 /* CNAM */ +2 /* 2 bytes for length */ +unknownCNAM.getSize();
+    writeSize = writeSize + 4 /* CNAM */ + 2 /* 2 bytes for length */ + unknownCNAM.size();
   }
   if (unknownTNAM.isPresent())
   {
-    writeSize = writeSize +4 /* TNAM */ +2 /* 2 bytes for length */ +unknownTNAM.getSize();
+    writeSize = writeSize + 4 /* TNAM */ + 2 /* 2 bytes for length */ +unknownTNAM.size();
   }
   if (unknownDNAM.isPresent())
   {
-    writeSize = writeSize +4 /* DNAM */ +2 /* 2 bytes for length */ +unknownDNAM.getSize() /* fixed length of 16 bytes */;
+    writeSize = writeSize + 4 /* DNAM */ + 2 /* 2 bytes for length */ +unknownDNAM.size() /* fixed length of 16 bytes */;
   }
   return writeSize;
 }
@@ -252,20 +251,20 @@ bool ImageSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
       case cHNAM:
            if (unknownHNAM.isPresent())
            {
-             std::cout << "Error: IMGS seems to have more than one HNAM subrecord!\n";
+             std::cerr << "Error: IMGS seems to have more than one HNAM subrecord!\n";
              return false;
            }
-           //read HNAM
+           // read HNAM
            if (!unknownHNAM.loadFromStream(in_File, cHNAM, false))
            {
-             std::cout << "Error while reading subrecord HNAM of IMGS!\n";
+             std::cerr << "Error while reading subrecord HNAM of IMGS!\n";
              return false;
            }
-           //check length
-           if (unknownHNAM.getSize()!=36)
+           // check length
+           if (unknownHNAM.size() != 36)
            {
-             std::cout <<"Error: subrecord HNAM of IMGS has invalid length ("
-                       <<unknownHNAM.getSize()<<" bytes). Should be 36 bytes!\n";
+             std::cerr << "Error: subrecord HNAM of IMGS has invalid length ("
+                       << unknownHNAM.size() << " bytes). Should be 36 bytes!\n";
              return false;
            }
            bytesRead = bytesRead + 2 + 36;
@@ -273,20 +272,20 @@ bool ImageSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
       case cCNAM:
            if (unknownCNAM.isPresent())
            {
-             std::cout << "Error: IMGS seems to have more than one CNAM subrecord!\n";
+             std::cerr << "Error: IMGS seems to have more than one CNAM subrecord!\n";
              return false;
            }
-           //read CNAM
+           // read CNAM
            if (!unknownCNAM.loadFromStream(in_File, cCNAM, false))
            {
-             std::cout << "Error while reading subrecord CNAM of IMGS!\n";
+             std::cerr << "Error while reading subrecord CNAM of IMGS!\n";
              return false;
            }
-           //check length
-           if (unknownCNAM.getSize()!=12)
+           // check length
+           if (unknownCNAM.size() != 12)
            {
-             std::cout <<"Error: subrecord CNAM of IMGS has invalid length ("
-                       <<unknownCNAM.getSize()<<" bytes). Should be 12 bytes!\n";
+             std::cerr << "Error: subrecord CNAM of IMGS has invalid length ("
+                       << unknownCNAM.size() << " bytes). Should be 12 bytes!\n";
              return false;
            }
            bytesRead = bytesRead + 2 + 12;
@@ -294,20 +293,20 @@ bool ImageSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
       case cTNAM:
            if (unknownTNAM.isPresent())
            {
-             std::cout << "Error: IMGS seems to have more than one TNAM subrecord!\n";
+             std::cerr << "Error: IMGS seems to have more than one TNAM subrecord!\n";
              return false;
            }
-           //read TNAM
+           // read TNAM
            if (!unknownTNAM.loadFromStream(in_File, cTNAM, false))
            {
-             std::cout << "Error while reading subrecord TNAM of IMGS!\n";
+             std::cerr << "Error while reading subrecord TNAM of IMGS!\n";
              return false;
            }
-           //check length
-           if (unknownTNAM.getSize()!=16)
+           // check length
+           if (unknownTNAM.size() != 16)
            {
-             std::cout <<"Error: subrecord TNAM of IMGS has invalid length ("
-                       <<unknownTNAM.getSize()<<" bytes). Should be 16 bytes!\n";
+             std::cerr << "Error: subrecord TNAM of IMGS has invalid length ("
+                       << unknownTNAM.size() << " bytes). Should be 16 bytes!\n";
              return false;
            }
            bytesRead = bytesRead + 2 + 16;
@@ -315,26 +314,26 @@ bool ImageSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
       case cDNAM:
            if (unknownDNAM.isPresent())
            {
-             std::cout << "Error: IMGS seems to have more than one DNAM subrecord!\n";
+             std::cerr << "Error: IMGS seems to have more than one DNAM subrecord!\n";
              return false;
            }
-           //read DNAM
+           // read DNAM
            if (!unknownDNAM.loadFromStream(in_File, cDNAM, false))
            {
-             std::cout << "Error while reading subrecord DNAM of IMGS!\n";
+             std::cerr << "Error while reading subrecord DNAM of IMGS!\n";
              return false;
            }
-           //check length
-           if ((unknownDNAM.getSize()!=16) and (unknownDNAM.getSize()!=12))
+           // check length
+           if ((unknownDNAM.size() != 16) && (unknownDNAM.size() != 12))
            {
-             std::cout <<"Error: subrecord DNAM of IMGS has invalid length ("
-                       <<unknownDNAM.getSize()<<" bytes). Should be 12 or 16 bytes!\n";
+             std::cerr << "Error: subrecord DNAM of IMGS has invalid length ("
+                       << unknownDNAM.size() << " bytes). Should be 12 or 16 bytes!\n";
              return false;
            }
-           bytesRead = bytesRead + 2 + unknownDNAM.getSize();
+           bytesRead = bytesRead + 2 + unknownDNAM.size();
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \"" << IntTo4Char(subRecName)
                      << "\" found, but only HNAM, CNAM, TNAM or DNAM are allowed here!\n";
            return false;
            break;

@@ -74,7 +74,7 @@ uint32_t AddOnNodeRecord::getWriteSize() const
         +4 /* DNAM */ +2 /* 2 bytes for length */ +4 /* fixed size of 4 bytes */;
   if (unknownMODT.isPresent())
   {
-    writeSize = writeSize +4 /* MODT */ +2 /* 2 bytes for length */ +unknownMODT.getSize() /* size */;
+    writeSize = writeSize + 4 /* MODT */ + 2 /* 2 bytes for length */ + unknownMODT.size() /* size */;
   }
   if (soundDescriptorFormID!=0)
   {
@@ -236,16 +236,16 @@ bool AddOnNodeRecord::loadFromStream(std::istream& in_File, const bool localized
       case cMODT:
            if (unknownMODT.isPresent())
            {
-             std::cout << "Error: record ADDN seems to have more than one MODT subrecord!\n";
+             std::cerr << "Error: record ADDN seems to have more than one MODT subrecord!\n";
              return false;
            }
-           //read MODT
+           // read MODT
            if (!unknownMODT.loadFromStream(in_File, cMODT, false))
            {
-             std::cout << "Error while reading subrecord MODT of ADDN!";
+             std::cerr << "Error while reading subrecord MODT of ADDN!";
              return false;
            }
-           bytesRead += (2+unknownMODT.getSize());
+           bytesRead += (2 + unknownMODT.size());
            break;
       case cDATA:
            if (hasReadDATA)

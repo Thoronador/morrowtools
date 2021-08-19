@@ -74,8 +74,8 @@ uint32_t MiscObjectRecord::getWriteSize() const
         +4 /* DATA */ +2 /* 2 bytes for length */ +8 /* fixed size of 8 bytes */;
   if (unknownVMAD.isPresent())
   {
-    writeSize = writeSize + 4 /* VMAD */ +2 /* 2 bytes for length */
-               +unknownVMAD.getSize() /* length of subrecord */;
+    writeSize = writeSize + 4 /* VMAD */ + 2 /* 2 bytes for length */
+               + unknownVMAD.size() /* length of subrecord */;
   }
   if (fullName.isPresent())
   {
@@ -88,13 +88,13 @@ uint32_t MiscObjectRecord::getWriteSize() const
   }
   if (unknownMODT.isPresent())
   {
-    writeSize = writeSize + 4 /* MODT */ +2 /* 2 bytes for length */
-               +unknownMODT.getSize() /* length of subrecord */;
+    writeSize = writeSize + 4 /* MODT */ + 2 /* 2 bytes for length */
+               + unknownMODT.size() /* length of subrecord */;
   }
   if (unknownMODS.isPresent())
   {
-    writeSize = writeSize + 4 /* MODS */ +2 /* 2 bytes for length */
-               +unknownMODS.getSize() /* length of subrecord */;
+    writeSize = writeSize + 4 /* MODS */ + 2 /* 2 bytes for length */
+               + unknownMODS.size() /* length of subrecord */;
   }
   if (!iconPath.empty())
   {
@@ -301,11 +301,12 @@ bool MiscObjectRecord::loadFromStream(std::istream& in_File, const bool localize
       case cVMAD:
            if (unknownVMAD.isPresent())
            {
-             std::cout << "Error: record MISC seems to have more than one VMAD subrecord.\n";
+             std::cerr << "Error: record MISC seems to have more than one VMAD subrecord.\n";
              return false;
            }
-           if (!unknownVMAD.loadFromStream(in_File, cVMAD, false)) return false;
-           bytesRead = bytesRead + 2 +unknownVMAD.getSize();
+           if (!unknownVMAD.loadFromStream(in_File, cVMAD, false))
+             return false;
+           bytesRead = bytesRead + 2 + unknownVMAD.size();
            break;
       case cFULL:
            if (fullName.isPresent())
@@ -363,20 +364,22 @@ bool MiscObjectRecord::loadFromStream(std::istream& in_File, const bool localize
       case cMODT:
            if (unknownMODT.isPresent())
            {
-             std::cout << "Error: record MISC seems to have more than one MODT subrecord.\n";
+             std::cerr << "Error: record MISC seems to have more than one MODT subrecord.\n";
              return false;
            }
-           if (!unknownMODT.loadFromStream(in_File, cMODT, false)) return false;
-           bytesRead = bytesRead + 2 +unknownMODT.getSize();
+           if (!unknownMODT.loadFromStream(in_File, cMODT, false))
+             return false;
+           bytesRead = bytesRead + 2 + unknownMODT.size();
            break;
       case cMODS:
            if (unknownMODS.isPresent())
            {
-             std::cout << "Error: record MISC seems to have more than one MODS subrecord.\n";
+             std::cerr << "Error: record MISC seems to have more than one MODS subrecord.\n";
              return false;
            }
-           if (!unknownMODS.loadFromStream(in_File, cMODS, false)) return false;
-           bytesRead = bytesRead + 2 +unknownMODS.getSize();
+           if (!unknownMODS.loadFromStream(in_File, cMODS, false))
+             return false;
+           bytesRead = bytesRead + 2 + unknownMODS.size();
            break;
       case cICON:
            if (!iconPath.empty())

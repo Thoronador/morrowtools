@@ -90,8 +90,8 @@ uint32_t ScrollRecord::getWriteSize() const
   }
   if (unknownMODT.isPresent())
   {
-    writeSize = writeSize +4 /*MODT*/ +2 /* 2 bytes for length */
-               +unknownMODT.getSize() /* size */;
+    writeSize = writeSize + 4 /*MODT*/ + 2 /* 2 bytes for length */
+               + unknownMODT.size() /* size */;
   }
   if (!effects.empty())
   {
@@ -422,16 +422,16 @@ bool ScrollRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cMODT:
            if (unknownMODT.isPresent())
            {
-             std::cout << "Error: SCRL seems to have more than one MODT subrecord!\n";
+             std::cerr << "Error: SCRL seems to have more than one MODT subrecord!\n";
              return false;
            }
-           //read MODT
+           // read MODT
            if (!unknownMODT.loadFromStream(in_File, cMODT, false))
            {
-             std::cout << "Error while reading subrecord MODT of SCRL!\n";
+             std::cerr << "Error while reading subrecord MODT of SCRL!\n";
              return false;
            }
-           bytesRead = bytesRead +2 +unknownMODT.getSize();
+           bytesRead = bytesRead + 2 + unknownMODT.size();
            break;
       case cDATA:
            if (hasReadDATA)

@@ -128,16 +128,16 @@ uint32_t CharacterReferenceRecord::getWriteSize() const
   }
   if (unknownVMAD.isPresent())
   {
-    writeSize = writeSize +4 /* VMAD */ +2 /* 2 bytes for length */ +unknownVMAD.getSize() /* size */;
-  }//if VMAD
+    writeSize = writeSize + 4 /* VMAD */ + 2 /* 2 bytes for length */ + unknownVMAD.size() /* size */;
+  }
   if (unknownXRGD.isPresent())
   {
-    writeSize = writeSize +4 /* XRGD */ +2 /* 2 bytes for length */ +unknownXRGD.getSize() /* size */;
-  }//if XRGD
+    writeSize = writeSize + 4 /* XRGD */ + 2 /* 2 bytes for length */ +unknownXRGD.size() /* size */;
+  }
   if (unknownXRGB.isPresent())
   {
-    writeSize = writeSize +4 /* XRGB */ +2 /* 2 bytes for length */ +unknownXRGB.getSize() /* size */;
-  }//if XRGB
+    writeSize = writeSize + 4 /* XRGB */ + 2 /* 2 bytes for length */ +unknownXRGB.size() /* size */;
+  }
   if (hasXLCM)
   {
     writeSize = writeSize +4 /* XLCM */ +2 /* 2 bytes for length */ +4 /* fixed length of 4 bytes */;
@@ -188,9 +188,9 @@ uint32_t CharacterReferenceRecord::getWriteSize() const
   {
     if (subBlocks[i].subData.isPresent())
     {
-      writeSize = writeSize + 4 /* label */ +2 /* 2 bytes for length */ +subBlocks[i].subData.getSize() /* size of data*/;
+      writeSize = writeSize + 4 /* label */ + 2 /* 2 bytes for length */ + subBlocks[i].subData.size() /* size of data*/;
     }
-  }//for
+  }
   return writeSize;
 }
 
@@ -498,16 +498,16 @@ bool CharacterReferenceRecord::loadFromStream(std::istream& in_File, const bool 
       case cVMAD:
            if (unknownVMAD.isPresent())
            {
-             std::cout << "Error: ACHR seems to have more than one VMAD subrecord!\n";
+             std::cerr << "Error: ACHR seems to have more than one VMAD subrecord!\n";
              return false;
            }
-           //load VMAD
+           // load VMAD
            if (!unknownVMAD.loadFromStream(in_File, cVMAD, false))
            {
-             std::cout << "Error while reading subrecord VMAD of ACHR!\n";
+             std::cerr << "Error while reading subrecord VMAD of ACHR!\n";
              return false;
            }
-           bytesRead += (2 + unknownVMAD.getSize());
+           bytesRead += (2 + unknownVMAD.size());
            break;
       case cNAME:
            if (baseObjectFormID!=0)
@@ -530,30 +530,30 @@ bool CharacterReferenceRecord::loadFromStream(std::istream& in_File, const bool 
       case cXRGD:
            if (unknownXRGD.isPresent())
            {
-             std::cout << "Error: ACHR seems to have more than one XRGD subrecord!\n";
+             std::cerr << "Error: ACHR seems to have more than one XRGD subrecord!\n";
              return false;
            }
-           //load XRGD
+           // load XRGD
            if (!unknownXRGD.loadFromStream(in_File, cXRGD, false))
            {
-             std::cout << "Error while reading subrecord XRGD of ACHR!\n";
+             std::cerr << "Error while reading subrecord XRGD of ACHR!\n";
              return false;
            }
-           bytesRead += (2 + unknownXRGD.getSize());
+           bytesRead += (2 + unknownXRGD.size());
            break;
       case cXRGB:
            if (unknownXRGB.isPresent())
            {
-             std::cout << "Error: ACHR seems to have more than one XRGB subrecord!\n";
+             std::cerr << "Error: ACHR seems to have more than one XRGB subrecord!\n";
              return false;
            }
-           //load XRGB
+           // load XRGB
            if (!unknownXRGB.loadFromStream(in_File, cXRGB, false))
            {
-             std::cout << "Error while reading subrecord XRGB of ACHR!\n";
+             std::cerr << "Error while reading subrecord XRGB of ACHR!\n";
              return false;
            }
-           bytesRead += (2 + unknownXRGB.getSize());
+           bytesRead += (2 + unknownXRGB.size());
            break;
       case cXLCM:
            if (hasXLCM)
@@ -833,10 +833,11 @@ bool CharacterReferenceRecord::loadFromStream(std::istream& in_File, const bool 
            tempSubBlock.subType = subRecName;
            if (!tempSubBlock.subData.loadFromStream(in_File, subRecName, false))
            {
-             std::cout << "Error while loading subrecord "<<IntTo4Char(subRecName)<<" of ACHR into sub-blocks!\n";
+             std::cerr << "Error while loading subrecord " << IntTo4Char(subRecName)
+                       << " of ACHR into sub-blocks!\n";
              return false;
            }
-           bytesRead = bytesRead +2 + tempSubBlock.subData.getSize();
+           bytesRead = bytesRead + 2 + tempSubBlock.subData.size();
            subBlocks.push_back(tempSubBlock);
            /*
            std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)

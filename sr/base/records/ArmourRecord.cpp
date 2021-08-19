@@ -101,8 +101,8 @@ uint32_t ArmourRecord::getWriteSize() const
         +4 /* DNAM */ +2 /* 2 bytes for length */ +4 /* fixed length */;
   if (unknownVMAD.isPresent())
   {
-    writeSize = writeSize +4 /* VMAD */ +2 /* 2 bytes for length */ +unknownVMAD.getSize() /* length */;
-  }//if VMAD
+    writeSize = writeSize + 4 /* VMAD */ + 2 /* 2 bytes for length */ + unknownVMAD.size() /* length */;
+  }
   if (name.isPresent())
   {
     writeSize += name.getWriteSize();
@@ -119,12 +119,12 @@ uint32_t ArmourRecord::getWriteSize() const
   }
   if (unknownMO2T.isPresent())
   {
-    writeSize = writeSize +4 /* MO2T */ +2 /* 2 bytes for length */ +unknownMO2T.getSize() /* length */;
-  }//if MO2T
+    writeSize = writeSize + 4 /* MO2T */ + 2 /* 2 bytes for length */ +unknownMO2T.size() /* length */;
+  }
   if (unknownMO2S.isPresent())
   {
-    writeSize = writeSize +4 /* MO2S */ +2 /* 2 bytes for length */ +unknownMO2S.getSize() /* length */;
-  }//if MO2S
+    writeSize = writeSize + 4 /* MO2S */ + 2 /* 2 bytes for length */ +unknownMO2S.size() /* length */;
+  }
   if (!mod4Path.empty())
   {
     writeSize = writeSize +4 /* MOD4 */ +2 /* 2 bytes for length */
@@ -132,20 +132,20 @@ uint32_t ArmourRecord::getWriteSize() const
   }
   if (unknownMO4T.isPresent())
   {
-    writeSize = writeSize +4 /* MO4T */ +2 /* 2 bytes for length */ +unknownMO4T.getSize() /* length */;
-  }//if MO4T
+    writeSize = writeSize + 4 /* MO4T */ + 2 /* 2 bytes for length */ + unknownMO4T.size() /* length */;
+  }
   if (unknownMO4S.isPresent())
   {
-    writeSize = writeSize +4 /* MO4S */ +2 /* 2 bytes for length */ +unknownMO4S.getSize() /* length */;
-  }//if MO4S
+    writeSize = writeSize + 4 /* MO4S */ + 2 /* 2 bytes for length */ +unknownMO4S.size() /* length */;
+  }
   if (unknownBODT.isPresent())
   {
-    writeSize = writeSize +4 /* BODT */ +2 /* 2 bytes for length */ +unknownBODT.getSize() /* length */;
-  }//if BODT
+    writeSize = writeSize + 4 /* BODT */ + 2 /* 2 bytes for length */ + unknownBODT.size() /* length */;
+  }
   if (unknownBOD2.isPresent())
   {
-    writeSize = writeSize +4 /* BOD2 */ +2 /* 2 bytes for length */ +unknownBOD2.getSize() /* length */;
-  }//if BOD2
+    writeSize = writeSize + 4 /* BOD2 */ + 2 /* 2 bytes for length */ + unknownBOD2.size() /* length */;
+  }
   if (equipTypeFormID!=0)
   {
     writeSize = writeSize +4 /* ETYP */ +2 /* 2 bytes for length */ +4 /* fixed length */;
@@ -534,7 +534,7 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
              std::cout << "Error while reading subrecord VMAD of ARMO!\n";
              return false;
            }
-           bytesRead = bytesRead +2 +unknownVMAD.getSize();
+           bytesRead = bytesRead + 2 + unknownVMAD.size();
            break;
       case cOBND:
            if (hasReadOBND)
@@ -623,7 +623,7 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
              std::cout << "Error while reading subrecord MO2T of ARMO!\n";
              return false;
            }
-           bytesRead = bytesRead +2 +unknownMO2T.getSize();
+           bytesRead = bytesRead + 2 + unknownMO2T.size();
            break;
       case cMO2S:
            if (unknownMO2S.isPresent())
@@ -637,7 +637,7 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
              std::cout << "Error while reading subrecord MO2S of ARMO!\n";
              return false;
            }
-           bytesRead = bytesRead +2 +unknownMO2S.getSize();
+           bytesRead = bytesRead + 2 + unknownMO2S.size();
            break;
       case cMOD4:
            if (!mod4Path.empty())
@@ -676,7 +676,7 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
              std::cout << "Error while reading subrecord MO4T of ARMO!\n";
              return false;
            }
-           bytesRead = bytesRead +2 +unknownMO4T.getSize();
+           bytesRead = bytesRead + 2 + unknownMO4T.size();
            break;
       case cMO4S:
            if (unknownMO4S.isPresent())
@@ -690,7 +690,7 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
              std::cout << "Error while reading subrecord MO4S of ARMO!\n";
              return false;
            }
-           bytesRead = bytesRead +2 +unknownMO4S.getSize();
+           bytesRead = bytesRead + 2 + unknownMO4S.size();
            break;
       case cBODT:
            if (unknownBODT.isPresent())
@@ -704,12 +704,12 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
              std::cout << "Error while reading subrecord BODT of ARMO!\n";
              return false;
            }
-           bytesRead = bytesRead +2 +unknownBODT.getSize();
+           bytesRead = bytesRead + 2 + unknownBODT.size();
            //check BODT's length
-           if ((unknownBODT.getSize()!=12) and (unknownBODT.getSize()!=8))
+           if ((unknownBODT.size() != 12) && (unknownBODT.size() != 8))
            {
-             std::cout <<"Error: sub record BODT of ARMO has invalid length ("
-                       <<unknownBODT.getSize()<<" bytes). Should be 8 or 12 bytes!\n";
+             std::cerr << "Error: sub record BODT of ARMO has invalid length ("
+                       << unknownBODT.size() << " bytes). Should be 8 or 12 bytes!\n";
              return false;
            }
            break;
@@ -719,10 +719,10 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
              std::cout << "Error: ARMO seems to have more than one BOD2 subrecord!\n";
              return false;
            }
-           //read BOD2
+           // read BOD2
            if (!unknownBOD2.loadFromStream(in_File, cBOD2, false))
              return false;
-           bytesRead += (2+unknownBOD2.getSize());
+           bytesRead += (2 + unknownBOD2.size());
            break;
       case cETYP:
            if (equipTypeFormID!=0)

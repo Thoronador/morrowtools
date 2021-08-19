@@ -73,13 +73,13 @@ bool ProjectileRecord::equals(const ProjectileRecord& other) const
 uint32_t ProjectileRecord::getWriteSize() const
 {
   uint32_t writeSize;
-  writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
-        +editorID.length()+1 /* length of string +1 byte for NUL-termination */
-        +4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed size */
-        +4 /* DATA */ +2 /* 2 bytes for length */ +unknownDATA.getSize() /* size */
-        +4 /* NAM1 */ +2 /* 2 bytes for length */
-        +unknownNAM1.length()+1 /* length of string +1 byte for NUL-termination */
-        +4 /* VNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+  writeSize = 4 /* EDID */ + 2 /* 2 bytes for length */
+        + editorID.length() + 1 /* length of string +1 byte for NUL-termination */
+        + 4 /* OBND */ + 2 /* 2 bytes for length */ + 12 /* fixed size */
+        + 4 /* DATA */ + 2 /* 2 bytes for length */ + unknownDATA.size() /* size */
+        + 4 /* NAM1 */ + 2 /* 2 bytes for length */
+        + unknownNAM1.length() + 1 /* length of string +1 byte for NUL-termination */
+        + 4 /* VNAM */ + 2 /* 2 bytes for length */ + 4 /* fixed size */;
   if (name.isPresent())
   {
     writeSize += name.getWriteSize() /* FULL */;
@@ -91,8 +91,8 @@ uint32_t ProjectileRecord::getWriteSize() const
   }
   if (unknownMODT.isPresent())
   {
-    writeSize = writeSize + 4 /* MODT */ +2 /* 2 bytes for length */
-               +unknownMODT.getSize();
+    writeSize = writeSize + 4 /* MODT */ + 2 /* 2 bytes for length */
+               + unknownMODT.size();
   }
   if (hasDEST)
   {
@@ -105,8 +105,8 @@ uint32_t ProjectileRecord::getWriteSize() const
   }
   if (unknownNAM2.isPresent())
   {
-    writeSize = writeSize + 4 /* NAM2 */ +2 /* 2 bytes for length */
-               +unknownNAM2.getSize();
+    writeSize = writeSize + 4 /* NAM2 */ + 2 /* 2 bytes for length */
+               + unknownNAM2.size();
   }
   return writeSize;
 }
@@ -364,16 +364,16 @@ bool ProjectileRecord::loadFromStream(std::istream& in_File, const bool localize
       case cMODT:
            if (unknownMODT.isPresent())
            {
-             std::cout << "Error: Record PROJ seems to have more than one MODT subrecord!\n";
+             std::cerr << "Error: Record PROJ seems to have more than one MODT subrecord!\n";
              return false;
            }
-           //read MODT
+           // read MODT
            if (!unknownMODT.loadFromStream(in_File, cMODT, false))
            {
-             std::cout << "Error while reading subrecord MODT of PROJ!\n";
+             std::cerr << "Error while reading subrecord MODT of PROJ!\n";
              return false;
            }
-           bytesRead = bytesRead +2 +unknownMODT.getSize();
+           bytesRead = bytesRead + 2 + unknownMODT.size();
            break;
       case cDEST:
            if (hasDEST)
@@ -446,22 +446,22 @@ bool ProjectileRecord::loadFromStream(std::istream& in_File, const bool localize
       case cDATA:
            if (unknownDATA.isPresent())
            {
-             std::cout << "Error: Record PROJ seems to have more than one DATA subrecord!\n";
+             std::cerr << "Error: Record PROJ seems to have more than one DATA subrecord!\n";
              return false;
            }
-           //read DATA
+           // read DATA
            if (!unknownDATA.loadFromStream(in_File, cDATA, false))
            {
-             std::cout << "Error while reading subrecord DATA of PROJ!\n";
+             std::cerr << "Error while reading subrecord DATA of PROJ!\n";
              return false;
            }
-           bytesRead = bytesRead +2 +unknownDATA.getSize();
-           //check DATA's length
-           subLength = unknownDATA.getSize();
-           if ((subLength!=92) and (subLength!=88) and (subLength!=84))
+           bytesRead = bytesRead + 2 + unknownDATA.size();
+           // check DATA's length
+           subLength = unknownDATA.size();
+           if ((subLength != 92) && (subLength != 88) && (subLength != 84))
            {
-             std::cout <<"Error: sub record DATA of PROJ has invalid length("
-                       <<subLength <<" bytes). Should be 92 or 88 or 84 bytes!\n";
+             std::cerr << "Error: sub record DATA of PROJ has invalid length("
+                       << subLength << " bytes). Should be 92 or 88 or 84 bytes!\n";
              return false;
            }
            break;
@@ -494,21 +494,21 @@ bool ProjectileRecord::loadFromStream(std::istream& in_File, const bool localize
       case cNAM2:
            if (!hasReadNAM1)
            {
-             std::cout << "Error: Record PROJ seems to have a NAM2 subrecord but no NAM1 subrecord!\n";
+             std::cerr << "Error: Record PROJ seems to have a NAM2 subrecord but no NAM1 subrecord!\n";
              return false;
            }
            if (unknownNAM2.isPresent())
            {
-             std::cout << "Error: Record PROJ seems to have more than one NAM2 subrecord!\n";
+             std::cerr << "Error: Record PROJ seems to have more than one NAM2 subrecord!\n";
              return false;
            }
-           //read NAM2
+           // read NAM2
            if (!unknownNAM2.loadFromStream(in_File, cNAM2, false))
            {
-             std::cout << "Error while reading subrecord NAM2 of PROJ!\n";
+             std::cerr << "Error while reading subrecord NAM2 of PROJ!\n";
              return false;
            }
-           bytesRead = bytesRead +2 +unknownNAM2.getSize();
+           bytesRead = bytesRead + 2 + unknownNAM2.size();
            break;
       case cVNAM:
            if (hasReadVNAM)

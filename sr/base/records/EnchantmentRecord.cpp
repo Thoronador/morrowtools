@@ -55,10 +55,10 @@ bool EnchantmentRecord::equals(const EnchantmentRecord& other) const
 uint32_t EnchantmentRecord::getWriteSize() const
 {
   uint32_t writeSize;
-  writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
-        +editorID.length()+1 /* length of name +1 byte for NUL termination */
-        +4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed length of 12 bytes */
-        +4 /* ENIT */ +2 /* 2 bytes for length */ +unknownENIT.getSize() /* fixed length of 36 or 32 bytes */;
+  writeSize = 4 /* EDID */ + 2 /* 2 bytes for length */
+        + editorID.length() + 1 /* length of name +1 byte for NUL termination */
+        + 4 /* OBND */ + 2 /* 2 bytes for length */ +12 /* fixed length of 12 bytes */
+        + 4 /* ENIT */ + 2 /* 2 bytes for length */ + unknownENIT.size() /* fixed length of 36 or 32 bytes */;
   if (name.isPresent())
   {
     writeSize += name.getWriteSize() /*FULL*/;
@@ -224,21 +224,21 @@ bool EnchantmentRecord::loadFromStream(std::istream& in_File, const bool localiz
       case cENIT:
            if (unknownENIT.isPresent())
            {
-             std::cout << "Error: ENCH seems to have more than one ENIT subrecord!\n";
+             std::cerr << "Error: ENCH seems to have more than one ENIT subrecord!\n";
              return false;
            }
            if (!unknownENIT.loadFromStream(in_File, cENIT, false))
            {
-             std::cout << "Error while reading subrecord ENIT of SPEL!\n";
+             std::cerr << "Error while reading subrecord ENIT of SPEL!\n";
              return false;
            }
            //check ENIT's length
-           subLength = unknownENIT.getSize();
+           subLength = unknownENIT.size();
            bytesRead += 2;
-           if ((subLength!=36) and (subLength!=32))
+           if ((subLength != 36) && (subLength != 32))
            {
-             std::cout <<"Error: subrecord ENIT of ENCH has invalid length ("
-                       <<subLength<<" bytes). Should be 36 bytes or 32 bytes!\n";
+             std::cerr << "Error: subrecord ENIT of ENCH has invalid length ("
+                       << subLength << " bytes). Should be 36 bytes or 32 bytes!\n";
              return false;
            }
            bytesRead += (2 + subLength);

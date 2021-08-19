@@ -80,11 +80,11 @@ uint32_t ClimateRecord::getWriteSize() const
   }
   if (unknownMODT.isPresent())
   {
-    writeSize = writeSize +4 /* MODT */ +2 /* 2 bytes for length */ +unknownMODT.getSize() /* size */;
+    writeSize = writeSize + 4 /* MODT */ + 2 /* 2 bytes for length */ + unknownMODT.size() /* size */;
   }
   if (unknownTNAM.isPresent())
   {
-    writeSize = writeSize +4 /* TNAM */ +2 /* 2 bytes for length */ +unknownTNAM.getSize() /* fixed size of 6 bytes, usually */;
+    writeSize = writeSize + 4 /* TNAM */ + 2 /* 2 bytes for length */ + unknownTNAM.size() /* fixed size of 6 bytes, usually */;
   }
   return writeSize;
 }
@@ -299,22 +299,24 @@ bool ClimateRecord::loadFromStream(std::istream& in_File, const bool localized, 
       case cMODT:
            if (unknownMODT.isPresent())
            {
-             std::cout << "Error: CLMT seems to have more than one MODT subrecord.\n";
+             std::cerr << "Error: CLMT seems to have more than one MODT subrecord.\n";
              return false;
            }
-           //read MODT
-           if (!unknownMODT.loadFromStream(in_File, cMODT, false)) return false;
-           bytesRead += (2+unknownMODT.getSize());
+           // read MODT
+           if (!unknownMODT.loadFromStream(in_File, cMODT, false))
+             return false;
+           bytesRead += (2 + unknownMODT.size());
            break;
       case cTNAM:
            if (unknownTNAM.isPresent())
            {
-             std::cout << "Error: CLMT seems to have more than one TNAM subrecord.\n";
+             std::cerr << "Error: CLMT seems to have more than one TNAM subrecord.\n";
              return false;
            }
-           //read TNAM
-           if (!unknownTNAM.loadFromStream(in_File, cTNAM, false)) return false;
-           bytesRead += (2+unknownTNAM.getSize());
+           // read TNAM
+           if (!unknownTNAM.loadFromStream(in_File, cTNAM, false))
+             return false;
+           bytesRead += (2 + unknownTNAM.size());
            break;
       default:
            std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)

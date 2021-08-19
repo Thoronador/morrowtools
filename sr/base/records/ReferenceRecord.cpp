@@ -86,11 +86,11 @@ uint32_t ReferenceRecord::getWriteSize() const
   }
   if (unknownVMAD.isPresent())
   {
-    writeSize = writeSize + 4 /* VMAD */ +2 /* 2 bytes for length */ +unknownVMAD.getSize() /* size of record data */;
+    writeSize = writeSize + 4 /* VMAD */ + 2 /* 2 bytes for length */ + unknownVMAD.size() /* size of record data */;
   }
   if (unknownXTEL.isPresent())
   {
-    writeSize = writeSize + 4 /* XTEL */ +2 /* 2 bytes for length */ +unknownXTEL.getSize() /* size of record data */;
+    writeSize = writeSize + 4 /* XTEL */ + 2 /* 2 bytes for length */ + unknownXTEL.size() /* size of record data */;
   }
   if (hasXNDP)
   {
@@ -115,15 +115,15 @@ uint32_t ReferenceRecord::getWriteSize() const
   }
   if (unknownXPRM.isPresent())
   {
-    writeSize = writeSize + 4 /* XPRM */ +2 /* 2 bytes for length */ +unknownXPRM.getSize() /* size of record data */;
+    writeSize = writeSize + 4 /* XPRM */ + 2 /* 2 bytes for length */ + unknownXPRM.size() /* size of record data */;
   }
   if (unknownXLOC.isPresent())
   {
-    writeSize = writeSize + 4 /* XLOC */ +2 /* 2 bytes for length */ +unknownXLOC.getSize() /* size of record data */;
+    writeSize = writeSize + 4 /* XLOC */ + 2 /* 2 bytes for length */ + unknownXLOC.size() /* size of record data */;
   }
-  if (unknownXSCL!=1.0f)
+  if (unknownXSCL != 1.0f)
   {
-    writeSize = writeSize +4 /* XSCL */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+    writeSize = writeSize + 4 /* XSCL */ + 2 /* 2 bytes for length */ + 4 /* fixed size */;
   }
   if (hasXPRD)
   {
@@ -143,9 +143,9 @@ uint32_t ReferenceRecord::getWriteSize() const
   {
     if (subBlocks[i].subData.isPresent())
     {
-      writeSize = writeSize + 4 /* label */ +2 /* 2 bytes for length */ +subBlocks[i].subData.getSize() /* size of data*/;
+      writeSize = writeSize + 4 /* label */ + 2 /* 2 bytes for length */ + subBlocks[i].subData.size() /* size of data*/;
     }
-  }//for
+  }
   return writeSize;
 }
 
@@ -401,16 +401,16 @@ bool ReferenceRecord::loadFromStream(std::istream& in_File, const bool localized
       case cVMAD:
            if (unknownVMAD.isPresent())
            {
-             std::cout << "Error: REFR seems to have more than one VMAD subrecord!\n";
+             std::cerr << "Error: REFR seems to have more than one VMAD subrecord!\n";
              return false;
            }
-           //read VMAD
+           // read VMAD
            if (!unknownVMAD.loadFromStream(in_File, cVMAD, false))
            {
-             std::cout << "Error while reading subrecord VMAD of REFR!\n!";
+             std::cerr << "Error while reading subrecord VMAD of REFR!\n!";
              return false;
            }
-           bytesRead = bytesRead +2 +unknownVMAD.getSize();
+           bytesRead = bytesRead + 2 + unknownVMAD.size();
            break;
       case cNAME:
            if (hasReadNAME)
@@ -426,44 +426,44 @@ bool ReferenceRecord::loadFromStream(std::istream& in_File, const bool localized
       case cXTEL:
            if (unknownXTEL.isPresent())
            {
-             std::cout << "Error: REFR seems to have more than one XTEL subrecord!\n";
+             std::cerr << "Error: REFR seems to have more than one XTEL subrecord!\n";
              return false;
            }
-           //read XTEL
+           // read XTEL
            if (!unknownXTEL.loadFromStream(in_File, cXTEL, false))
            {
-             std::cout << "Error while reading subrecord XTEL of REFR!\n!";
+             std::cerr << "Error while reading subrecord XTEL of REFR!\n!";
              return false;
            }
-           bytesRead = bytesRead +2 +unknownXTEL.getSize();
-           if (unknownXTEL.getSize()!=32)
+           bytesRead = bytesRead + 2 + unknownXTEL.size();
+           if (unknownXTEL.size() != 32)
            {
-             std::cout <<"Error: sub record XTEL of REFR has invalid length ("
-                       <<unknownXTEL.getSize()<<" bytes). Should be 32 bytes.\n";
+             std::cerr << "Error: sub record XTEL of REFR has invalid length ("
+                       << unknownXTEL.size()<< " bytes). Should be 32 bytes.\n";
              return false;
            }
            break;
       case cXNDP:
            if (hasXNDP)
            {
-             std::cout << "Error: REFR seems to have more than one XNDP subrecord!\n";
+             std::cerr << "Error: REFR seems to have more than one XNDP subrecord!\n";
              return false;
            }
-           //XLKR's length
+           // XLKR's length
            in_File.read((char*) &subLength, 2);
            bytesRead += 2;
-           if (subLength!=8)
+           if (subLength != 8)
            {
-             std::cout <<"Error: sub record XNDP of REFR has invalid length ("<<subLength
-                       <<" bytes). Should be 8 bytes.\n";
+             std::cerr << "Error: sub record XNDP of REFR has invalid length ("
+                       << subLength << " bytes). Should be 8 bytes.\n";
              return false;
            }
-           //read XNDP
+           // read XNDP
            in_File.read((char*) &unknownXNDP, 8);
            bytesRead += 8;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord XNDP of REFR!\n";
+             std::cerr << "Error while reading subrecord XNDP of REFR!\n";
              return false;
            }
            hasXNDP = true;
@@ -532,36 +532,36 @@ bool ReferenceRecord::loadFromStream(std::istream& in_File, const bool localized
       case cXPRM:
            if (unknownXPRM.isPresent())
            {
-             std::cout << "Error: REFR seems to have more than one XPRM subrecord!\n";
+             std::cerr << "Error: REFR seems to have more than one XPRM subrecord!\n";
              return false;
            }
-           //read XPRM
+           // read XPRM
            if (!unknownXPRM.loadFromStream(in_File, cXPRM, false))
            {
-             std::cout << "Error while reading subrecord XPRM of REFR!\n!";
+             std::cerr << "Error while reading subrecord XPRM of REFR!\n!";
              return false;
            }
-           bytesRead = bytesRead +2 +unknownXPRM.getSize();
-           if (unknownXPRM.getSize()!=32)
+           bytesRead = bytesRead + 2 + unknownXPRM.size();
+           if (unknownXPRM.size() != 32)
            {
-             std::cout <<"Error: sub record XPRM of REFR has invalid length ("
-                       <<unknownXPRM.getSize()<<" bytes). Should be 32 bytes.\n";
+             std::cerr << "Error: sub record XPRM of REFR has invalid length ("
+                       << unknownXPRM.size() << " bytes). Should be 32 bytes.\n";
              return false;
            }
            break;
       case cXLOC:
            if (unknownXLOC.isPresent())
            {
-             std::cout << "Error: REFR seems to have more than one XLOC subrecord!\n";
+             std::cerr << "Error: REFR seems to have more than one XLOC subrecord!\n";
              return false;
            }
-           //read XLOC
+           // read XLOC
            if (!unknownXLOC.loadFromStream(in_File, cXLOC, false))
            {
-             std::cout << "Error while reading subrecord XLOC of REFR!\n!";
+             std::cerr << "Error while reading subrecord XLOC of REFR!\n!";
              return false;
            }
-           bytesRead = bytesRead +2 +unknownXLOC.getSize();
+           bytesRead = bytesRead + 2 + unknownXLOC.size();
            break;
       case cXSCL:
            if (unknownXSCL!=1.0f)
@@ -663,10 +663,10 @@ bool ReferenceRecord::loadFromStream(std::istream& in_File, const bool localized
            tempSubBlock.subType = subRecName;
            if (!tempSubBlock.subData.loadFromStream(in_File, subRecName, false))
            {
-             std::cout << "Error while loading subrecord "<<IntTo4Char(subRecName)<<" of REFR into sub-blocks!\n";
+             std::cerr << "Error while loading subrecord " << IntTo4Char(subRecName) << " of REFR into sub-blocks!\n";
              return false;
            }
-           bytesRead = bytesRead +2 + tempSubBlock.subData.getSize();
+           bytesRead = bytesRead + 2 + tempSubBlock.subData.size();
            subBlocks.push_back(tempSubBlock);
            /* std::cout << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
                      << "\", but only EDID, VMAD, NAME, XTEL, XNDP, XLKR, XESP,"

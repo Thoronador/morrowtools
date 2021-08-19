@@ -89,19 +89,19 @@ uint32_t MaterialObjectRecord::getWriteSize() const
   }//if MODL
   if (unknownMODT.isPresent())
   {
-    writeSize = writeSize +4 /* DNAM */ +2 /* 2 bytes for length */
-               +unknownMODT.getSize() /* size */;
-  }//if MODT
+    writeSize = writeSize + 4 /* MODT */ + 2 /* 2 bytes for length */
+               + unknownMODT.size() /* size */;
+  }
 
   unsigned int i;
   for (i=0; i<unknownDNAMs.size(); ++i)
   {
     if (unknownDNAMs[i].isPresent())
     {
-      writeSize = writeSize +4 /* DNAM */ +2 /* 2 bytes for length */
-                 +unknownDNAMs[i].getSize();
+      writeSize = writeSize + 4 /* DNAM */ + 2 /* 2 bytes for length */
+                 + unknownDNAMs[i].size();
     }
-  }//for
+  }
 
   return writeSize;
 }
@@ -252,25 +252,25 @@ bool MaterialObjectRecord::loadFromStream(std::istream& in_File, const bool loca
       case cMODT:
            if (unknownMODT.isPresent())
            {
-             std::cout << "Error: MATO seems to have more than one MODT subrecord.\n";
+             std::cerr << "Error: MATO seems to have more than one MODT subrecord.\n";
              return false;
            }
-           //read MODT
+           // read MODT
            if (!unknownMODT.loadFromStream(in_File, cMODT, false))
            {
-             std::cout << "Error while reading subrecord MODT of MATO!\n";
+             std::cerr << "Error while reading subrecord MODT of MATO!\n";
              return false;
            }
-           bytesRead += (2+unknownMODT.getSize());
+           bytesRead += (2 + unknownMODT.size());
            break;
       case cDNAM:
-           //read DNAM's stuff
+           // read DNAM's stuff
            if (!tempBinary.loadFromStream(in_File, cDNAM, false))
            {
-             std::cout << "Error while reading subrecord DNAM of MATO!\n";
+             std::cerr << "Error while reading subrecord DNAM of MATO!\n";
              return false;
            }
-           bytesRead = bytesRead + 2 + tempBinary.getSize();
+           bytesRead = bytesRead + 2 + tempBinary.size();
            unknownDNAMs.push_back(tempBinary);
            break;
       case cDATA:

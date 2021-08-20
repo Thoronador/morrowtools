@@ -37,7 +37,7 @@ struct ActionRecord: public BasicRecord
     virtual ~ActionRecord() = default;
 
     #ifndef SR_NO_RECORD_EQUALITY
-    /** \brief Checks whether another instances contains the same data.
+    /** \brief Checks whether another instance contains the same data.
      *
      * \param other   the other record to compare with
      * \return Returns true, if @other contains the same data as instance.

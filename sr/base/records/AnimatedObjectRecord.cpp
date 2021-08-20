@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2013  Thoronador
+    Copyright (C) 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,67 +30,62 @@ namespace SRTP
 AnimatedObjectRecord::AnimatedObjectRecord()
 : BasicRecord(), editorID(""),
   modelPath(""),
+  unknownMODT(BinarySubRecord()),
   unknownBNAM("")
 {
-  unknownMODT.setPresence(false);
-}
-
-AnimatedObjectRecord::~AnimatedObjectRecord()
-{
-  //empty
 }
 
 #ifndef SR_NO_RECORD_EQUALITY
 bool AnimatedObjectRecord::equals(const AnimatedObjectRecord& other) const
 {
-  return ((equalsBasic(other)) and (editorID==other.editorID)
-      and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
-      and (unknownBNAM==other.unknownBNAM));
+  return (equalsBasic(other) && (editorID == other.editorID)
+      && (modelPath == other.modelPath) && (unknownMODT == other.unknownMODT)
+      && (unknownBNAM == other.unknownBNAM));
 }
 #endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t AnimatedObjectRecord::getWriteSize() const
 {
-  uint32_t writeSize;
-  writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
-        +editorID.length()+1 /* length of string +1 byte for NUL-termination */
-        +4 /* MODL */ +2 /* 2 bytes for length */
-        +modelPath.length()+1 /* length of string +1 byte for NUL-termination */;
+  uint32_t writeSize = 4 /* EDID */ + 2 /* 2 bytes for length */
+      + editorID.length() + 1 /* length of string +1 byte for NUL-termination */
+      + 4 /* MODL */ + 2 /* 2 bytes for length */
+      + modelPath.length() + 1 /* length of string +1 byte for NUL-termination */;
   if (unknownMODT.isPresent())
   {
     writeSize = writeSize + 4 /* MODT */ + 2 /* 2 bytes for length */ + unknownMODT.size();
   }
   if (!unknownBNAM.empty())
   {
-    writeSize = writeSize +4 /* BNAM */ +2 /* 2 bytes for length */
-        +unknownBNAM.length()+1 /* length of string +1 byte for NUL-termination */;
+    writeSize = writeSize + 4 /* BNAM */ + 2 /* 2 bytes for length */
+        + unknownBNAM.length() + 1 /* length of string +1 byte for NUL-termination */;
   }
   return writeSize;
 }
 
 bool AnimatedObjectRecord::saveToStream(std::ostream& output) const
 {
-  output.write((const char*) &cANIO, 4);
-  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
+  output.write(reinterpret_cast<const char*>(&cANIO), 4);
+  if (!saveSizeAndUnknownValues(output, getWriteSize()))
+    return false;
 
-  //write EDID
-  output.write((const char*) &cEDID, 4);
-  //EDID's length
+  // write EDID
+  output.write(reinterpret_cast<const char*>(&cEDID), 4);
+  // EDID's length
   uint16_t subLength = editorID.length()+1;
-  output.write((const char*) &subLength, 2);
-  //write editor ID
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
+  // write editor ID
   output.write(editorID.c_str(), subLength);
 
-  //write MODL
-  output.write((const char*) &cMODL, 4);
-  //MODL's length
-  subLength = modelPath.length()+1;
-  output.write((const char*) &subLength, 2);
-  //write model path
+  // write MODL
+  output.write(reinterpret_cast<const char*>(&cMODL), 4);
+  // MODL's length
+  subLength = modelPath.length() + 1;
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
+  // write model path
   output.write(modelPath.c_str(), subLength);
 
-  //write MODT
+  // write MODT
   if (unknownMODT.isPresent())
   {
     if (!unknownMODT.saveToStream(output, cMODT))
@@ -98,18 +93,18 @@ bool AnimatedObjectRecord::saveToStream(std::ostream& output) const
       std::cerr << "Error while writing subrecord MODT of ACTI!\n";
       return false;
     }
-  }//if MODT
+  }
 
   if (!unknownBNAM.empty())
   {
-    //write BNAM
-    output.write((const char*) &cBNAM, 4);
-    //BNAM's length
-    subLength = unknownBNAM.length()+1;
-    output.write((const char*) &subLength, 2);
-    //write BNAM
+    // write BNAM
+    output.write(reinterpret_cast<const char*>(&cBNAM), 4);
+    // BNAM's length
+    subLength = unknownBNAM.length() + 1;
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    // write BNAM
     output.write(unknownBNAM.c_str(), subLength);
-  }//if BNAM
+  }
 
   return output.good();
 }
@@ -118,47 +113,24 @@ bool AnimatedObjectRecord::saveToStream(std::ostream& output) const
 bool AnimatedObjectRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
-  if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
-  uint32_t subRecName;
-  uint16_t subLength;
-  uint32_t bytesRead;
-  subRecName = subLength = 0;
+  if (!loadSizeAndUnknownValues(in_File, readSize))
+    return false;
+  uint32_t subRecName = 0;
+  uint16_t subLength = 0;
+  uint32_t bytesRead = 0;
 
-  //read EDID
-  in_File.read((char*) &subRecName, 4);
-  bytesRead = 4;
-  if (subRecName!=cEDID)
-  {
-    UnexpectedRecord(cEDID, subRecName);
-    return false;
-  }
-  //EDID's length
-  in_File.read((char*) &subLength, 2);
-  bytesRead += 2;
-  if (subLength>511)
-  {
-    std::cerr <<"Error: sub record EDID of ANIO is longer than 511 characters!\n";
-    return false;
-  }
-  //read EDID's stuff
+  // read EDID
   char buffer[512];
-  memset(buffer, 0, 512);
-  in_File.read(buffer, subLength);
-  bytesRead += subLength;
-  if (!in_File.good())
-  {
-    std::cerr << "Error while reading subrecord EDID of ANIO!\n";
+  if (!loadString512FromStream(in_File, editorID, buffer, cEDID, true, bytesRead))
     return false;
-  }
-  editorID = std::string(buffer);
 
   modelPath.clear();
   unknownMODT.setPresence(false);
   unknownBNAM.clear();
-  while (bytesRead<readSize)
+  while (bytesRead < readSize)
   {
-    //read next record
-    in_File.read((char*) &subRecName, 4);
+    // read next record
+    in_File.read(reinterpret_cast<char*>(&subRecName), 4);
     bytesRead += 4;
     switch (subRecName)
     {
@@ -168,24 +140,9 @@ bool AnimatedObjectRecord::loadFromStream(std::istream& in_File, const bool loca
              std::cerr << "Error: ANIO seems to have more than one MODL subrecord.\n";
              return false;
            }
-           //MODL's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength>511)
-           {
-             std::cerr <<"Error: sub record MODL of ANIO is longer than 511 characters!\n";
+           // read model path
+           if (!loadString512FromStream(in_File, modelPath, buffer, cMODL, false, bytesRead))
              return false;
-           }
-           //read model path
-           memset(buffer, 0, 512);
-           in_File.read(buffer, subLength);
-           bytesRead += subLength;
-           if (!in_File.good())
-           {
-             std::cerr << "Error while reading subrecord MODL of ANIO!\n";
-             return false;
-           }
-           modelPath = std::string(buffer);
            if (modelPath.empty())
            {
              std::cerr << "Error: ANIO seems to have empty MODL subrecord.\n";
@@ -209,24 +166,9 @@ bool AnimatedObjectRecord::loadFromStream(std::istream& in_File, const bool loca
              std::cerr << "Error: ANIO seems to have more than one BNAM subrecord.\n";
              return false;
            }
-           //BNAM's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength>511)
-           {
-             std::cerr <<"Error: sub record BNAM of ANIO is longer than 511 characters!\n";
+           // read BNAM
+           if (!loadString512FromStream(in_File, unknownBNAM, buffer, cBNAM, false, bytesRead))
              return false;
-           }
-           //read BNAM
-           memset(buffer, 0, 512);
-           in_File.read(buffer, subLength);
-           bytesRead += subLength;
-           if (!in_File.good())
-           {
-             std::cerr << "Error while reading subrecord BNAM of ANIO!\n";
-             return false;
-           }
-           unknownBNAM = std::string(buffer);
            if (unknownBNAM.empty())
            {
              std::cerr << "Error: ANIO seems to have empty BNAM subrecord.\n";
@@ -237,10 +179,10 @@ bool AnimatedObjectRecord::loadFromStream(std::istream& in_File, const bool loca
            std::cerr << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
                      << "\", but only MODL, MODT or BNAM are allowed here!\n";
            return false;
-    }//swi
-  }//while
+    }
+  } // while
 
-  //presence checks
+  // presence checks
   if (modelPath.empty())
   {
     std::cerr << "Error: At least one required subrecord of ANIO was not found!\n";
@@ -255,4 +197,4 @@ uint32_t AnimatedObjectRecord::getRecordType() const
   return cANIO;
 }
 
-} //namespace
+} // namespace

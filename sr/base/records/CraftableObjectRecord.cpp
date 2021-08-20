@@ -130,7 +130,7 @@ bool CraftableObjectRecord::saveToStream(std::ostream& output) const
     //write CTDA
     if (!unknownCTDA_CIS2s[i].saveToStream(output))
     {
-      std::cout << "Error while writing subrecord CTDA and CIS2 of COBJ!\n";
+      std::cerr << "Error while writing subrecord CTDA and CIS2 of COBJ!\n";
       return false;
     }
   }//for
@@ -185,7 +185,7 @@ bool CraftableObjectRecord::loadFromStream(std::istream& in_File, const bool loc
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of COBJ is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of COBJ is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -195,7 +195,7 @@ bool CraftableObjectRecord::loadFromStream(std::istream& in_File, const bool loc
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of COBJ!\n";
+    std::cerr << "Error while reading subrecord EDID of COBJ!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -217,7 +217,7 @@ bool CraftableObjectRecord::loadFromStream(std::istream& in_File, const bool loc
     bytesRead += 2;
     if (subLength!=4)
     {
-      std::cout <<"Error: sub record COCT of COBJ has invalid length ("<<subLength
+      std::cerr <<"Error: sub record COCT of COBJ has invalid length ("<<subLength
                 <<" bytes). Should be four bytes.\n";
       return false;
     }
@@ -226,7 +226,7 @@ bool CraftableObjectRecord::loadFromStream(std::istream& in_File, const bool loc
     bytesRead += 4;
     if (!in_File.good())
     {
-      std::cout << "Error while reading subrecord COCT of COBJ!\n";
+      std::cerr << "Error while reading subrecord COCT of COBJ!\n";
       return false;
     }
   }//else
@@ -250,7 +250,7 @@ bool CraftableObjectRecord::loadFromStream(std::istream& in_File, const bool loc
     bytesRead += 2;
     if (subLength!=8)
     {
-      std::cout <<"Error: sub record CNTO of COBJ has invalid length ("<<subLength
+      std::cerr <<"Error: sub record CNTO of COBJ has invalid length ("<<subLength
                 <<" bytes). Should be 8 bytes.\n";
       return false;
     }
@@ -260,7 +260,7 @@ bool CraftableObjectRecord::loadFromStream(std::istream& in_File, const bool loc
     bytesRead += 8;
     if (!in_File.good())
     {
-      std::cout << "Error while reading subrecord CNTO of COBJ!\n";
+      std::cerr << "Error while reading subrecord CNTO of COBJ!\n";
       return false;
     }
     components.push_back(tempCD);
@@ -285,7 +285,7 @@ bool CraftableObjectRecord::loadFromStream(std::istream& in_File, const bool loc
            //CTDA's length
            if (!tempCTDA.loadFromStream(in_File, bytesRead))
            {
-             std::cout << "Error while reading subrecord CTDA of COBJ!\n";
+             std::cerr << "Error while reading subrecord CTDA of COBJ!\n";
              return false;
            }
            unknownCTDA_CIS2s.push_back(CTDA_CIS2_compound(tempCTDA, ""));
@@ -293,25 +293,25 @@ bool CraftableObjectRecord::loadFromStream(std::istream& in_File, const bool loc
       case cCIS2:
            if (unknownCTDA_CIS2s.empty())
            {
-             std::cout << "Error: found CIS2 without prior CTDA in COBJ!\n";
+             std::cerr << "Error: found CIS2 without prior CTDA in COBJ!\n";
              return false;
            }
            if (!unknownCTDA_CIS2s.back().unknownCISx.empty())
            {
-             std::cout << "Error: COBJ seems to have more than one CIS2 subrecord per CTDA.\n";
+             std::cerr << "Error: COBJ seems to have more than one CIS2 subrecord per CTDA.\n";
              return false;
            }
            //read CIS2
            if (!loadString512FromStream(in_File, unknownCTDA_CIS2s.back().unknownCISx, buffer, cCIS2, false, bytesRead))
            {
-             std::cout << "Error while reading subrecord CIS2 of COBJ!\n";
+             std::cerr << "Error while reading subrecord CIS2 of COBJ!\n";
              return false;
            }
            break;
       case cCNAM:
            if (hasReadCNAM)
            {
-             std::cout << "Error: COBJ seems to have more than one CNAM subrecord.\n";
+             std::cerr << "Error: COBJ seems to have more than one CNAM subrecord.\n";
              return false;
            }
            //CNAM's length
@@ -319,7 +319,7 @@ bool CraftableObjectRecord::loadFromStream(std::istream& in_File, const bool loc
            bytesRead += 2;
            if (subLength!=4)
            {
-             std::cout <<"Error: sub record CNAM of COBJ has invalid length ("
+             std::cerr <<"Error: sub record CNAM of COBJ has invalid length ("
                        <<subLength<<" bytes). Should be 4 bytes.\n";
              return false;
            }
@@ -328,7 +328,7 @@ bool CraftableObjectRecord::loadFromStream(std::istream& in_File, const bool loc
            bytesRead += 4;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord CNAM of COBJ!\n";
+             std::cerr << "Error while reading subrecord CNAM of COBJ!\n";
              return false;
            }
            hasReadCNAM = true;
@@ -336,7 +336,7 @@ bool CraftableObjectRecord::loadFromStream(std::istream& in_File, const bool loc
       case cBNAM:
            if (hasReadBNAM)
            {
-             std::cout << "Error: COBJ seems to have more than one BNAM subrecord.\n";
+             std::cerr << "Error: COBJ seems to have more than one BNAM subrecord.\n";
              return false;
            }
            //BNAM's length
@@ -344,7 +344,7 @@ bool CraftableObjectRecord::loadFromStream(std::istream& in_File, const bool loc
            bytesRead += 2;
            if (subLength!=4)
            {
-             std::cout <<"Error: sub record BNAM of COBJ has invalid length ("
+             std::cerr <<"Error: sub record BNAM of COBJ has invalid length ("
                        <<subLength<<" bytes). Should be 4 bytes.\n";
              return false;
            }
@@ -353,7 +353,7 @@ bool CraftableObjectRecord::loadFromStream(std::istream& in_File, const bool loc
            bytesRead += 4;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord BNAM of COBJ!\n";
+             std::cerr << "Error while reading subrecord BNAM of COBJ!\n";
              return false;
            }
            hasReadBNAM = true;
@@ -361,7 +361,7 @@ bool CraftableObjectRecord::loadFromStream(std::istream& in_File, const bool loc
       case cNAM1:
            if (hasReadNAM1)
            {
-             std::cout << "Error: COBJ seems to have more than one NAM1 subrecord.\n";
+             std::cerr << "Error: COBJ seems to have more than one NAM1 subrecord.\n";
              return false;
            }
            //NAM1's length
@@ -369,7 +369,7 @@ bool CraftableObjectRecord::loadFromStream(std::istream& in_File, const bool loc
            bytesRead += 2;
            if (subLength!=2)
            {
-             std::cout <<"Error: sub record NAM1 of COBJ has invalid length ("
+             std::cerr <<"Error: sub record NAM1 of COBJ has invalid length ("
                        <<subLength<<" bytes). Should be 2 bytes.\n";
              return false;
            }
@@ -378,13 +378,13 @@ bool CraftableObjectRecord::loadFromStream(std::istream& in_File, const bool loc
            bytesRead += 2;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord NAM1 of COBJ!\n";
+             std::cerr << "Error while reading subrecord NAM1 of COBJ!\n";
              return false;
            }
            hasReadNAM1 = true;
            break;
       default:
-           std::cout << "Error while reading record COBJ: Found unexpected "
+           std::cerr << "Error while reading record COBJ: Found unexpected "
                      << "subrecord type \""<<IntTo4Char(subRecName)
                      <<"\", but only CTDA, CIS2, BNAM, CNAM or NAM1 are allowed!\n";
            return false;

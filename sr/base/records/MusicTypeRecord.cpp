@@ -165,7 +165,7 @@ bool MusicTypeRecord::loadFromStream(std::istream& in_File, const bool localized
   bytesRead += 4;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of MUSC is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of MUSC is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -175,7 +175,7 @@ bool MusicTypeRecord::loadFromStream(std::istream& in_File, const bool localized
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of MUSC!\n";
+    std::cerr << "Error while reading subrecord EDID of MUSC!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -198,7 +198,7 @@ bool MusicTypeRecord::loadFromStream(std::istream& in_File, const bool localized
       case cFNAM:
            if (hasReadFNAM)
            {
-             std::cout << "Error: MUSC seems to have more than one FNAM subrecord!\n";
+             std::cerr << "Error: MUSC seems to have more than one FNAM subrecord!\n";
              return false;
            }
            if (!loadUint32SubRecordFromStream(in_File, cFNAM, flags, false))
@@ -211,7 +211,7 @@ bool MusicTypeRecord::loadFromStream(std::istream& in_File, const bool localized
       case cPNAM:
            if (hasReadPNAM)
            {
-             std::cout << "Error: MUSC seems to have more than one PNAM subrecord!\n";
+             std::cerr << "Error: MUSC seems to have more than one PNAM subrecord!\n";
              return false;
            }
            //PNAM's length
@@ -219,7 +219,7 @@ bool MusicTypeRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength!=4)
            {
-             std::cout <<"Error: subrecord PNAM of MUSC has invalid length ("<<subLength
+             std::cerr <<"Error: subrecord PNAM of MUSC has invalid length ("<<subLength
                        <<" bytes). Should be four bytes!\n";
              return false;
            }
@@ -229,7 +229,7 @@ bool MusicTypeRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 4;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord PNAM of MUSC!\n";
+             std::cerr << "Error while reading subrecord PNAM of MUSC!\n";
              return false;
            }
            hasReadPNAM = true;
@@ -237,7 +237,7 @@ bool MusicTypeRecord::loadFromStream(std::istream& in_File, const bool localized
       case cWNAM:
            if (hasReadWNAM)
            {
-             std::cout << "Error: MUSC seems to have more than one WNAM subrecord!\n";
+             std::cerr << "Error: MUSC seems to have more than one WNAM subrecord!\n";
              return false;
            }
            //WNAM's length
@@ -245,7 +245,7 @@ bool MusicTypeRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength!=4)
            {
-             std::cout <<"Error: subrecord WNAM of MUSC has invalid length ("<<subLength
+             std::cerr <<"Error: subrecord WNAM of MUSC has invalid length ("<<subLength
                        <<" bytes). Should be four bytes!\n";
              return false;
            }
@@ -254,12 +254,12 @@ bool MusicTypeRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 4;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord WNAM of MUSC!\n";
+             std::cerr << "Error while reading subrecord WNAM of MUSC!\n";
              return false;
            }
            if (fadeDuration!=fadeDuration)
            {
-             std::cout << "Error while reading subrecord WNAM of MUSC: fade duration is NaN!\n";
+             std::cerr << "Error while reading subrecord WNAM of MUSC: fade duration is NaN!\n";
              return false;
            }
            hasReadWNAM = true;
@@ -267,7 +267,7 @@ bool MusicTypeRecord::loadFromStream(std::istream& in_File, const bool localized
       case cTNAM:
            if (!musicTrackFormIDs.empty())
            {
-             std::cout << "Error: MUSC seems to have more than one TNAM subrecord!\n";
+             std::cerr << "Error: MUSC seems to have more than one TNAM subrecord!\n";
              return false;
            }
            //TNAM's length
@@ -275,7 +275,7 @@ bool MusicTypeRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (((subLength%4)!=0) or (subLength==0))
            {
-             std::cout <<"Error: subrecord TNAM of MUSC has invalid length ("<<subLength
+             std::cerr <<"Error: subrecord TNAM of MUSC has invalid length ("<<subLength
                        <<" bytes). Should be a positive, integral multiple of four bytes!\n";
              return false;
            }
@@ -285,7 +285,7 @@ bool MusicTypeRecord::loadFromStream(std::istream& in_File, const bool localized
              in_File.read((char*) &tempUint32, 4);
              if (!in_File.good())
              {
-               std::cout << "Error while reading subrecord TNAM of MUSC!\n";
+               std::cerr << "Error while reading subrecord TNAM of MUSC!\n";
                return false;
              }
              musicTrackFormIDs.push_back(tempUint32);
@@ -293,7 +293,7 @@ bool MusicTypeRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += subLength;
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only FNAM, PNAM, WNAM or TNAM are allowed here!\n";
            return false;
            break;
@@ -303,7 +303,7 @@ bool MusicTypeRecord::loadFromStream(std::istream& in_File, const bool localized
   //presence checks
   if (!(hasReadFNAM and hasReadPNAM and hasReadWNAM and !musicTrackFormIDs.empty()))
   {
-    std::cout << "Error: at least one required subrecord of MUSC is missing!\n";
+    std::cerr << "Error: at least one required subrecord of MUSC is missing!\n";
     return false;
   }
 

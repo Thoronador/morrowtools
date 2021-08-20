@@ -127,7 +127,7 @@ bool ColourFormRecord::loadFromStream(std::istream& in_File, const bool localize
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of CLFM is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of CLFM is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -137,7 +137,7 @@ bool ColourFormRecord::loadFromStream(std::istream& in_File, const bool localize
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of CLFM!\n";
+    std::cerr << "Error while reading subrecord EDID of CLFM!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -155,7 +155,7 @@ bool ColourFormRecord::loadFromStream(std::istream& in_File, const bool localize
       case cFULL:
            if (name.isPresent())
            {
-             std::cout << "Error: CLFM seems to have more than one FULL subrecord.\n";
+             std::cerr << "Error: CLFM seems to have more than one FULL subrecord.\n";
              return false;
            }
            //read FULL
@@ -165,7 +165,7 @@ bool ColourFormRecord::loadFromStream(std::istream& in_File, const bool localize
       case cCNAM:
            if (hasReadCNAM)
            {
-             std::cout << "Error: CLFM seems to have more than one CNAM subrecord.\n";
+             std::cerr << "Error: CLFM seems to have more than one CNAM subrecord.\n";
              return false;
            }
            //read CNAM
@@ -176,7 +176,7 @@ bool ColourFormRecord::loadFromStream(std::istream& in_File, const bool localize
       case cFNAM:
            if (hasReadFNAM)
            {
-             std::cout << "Error: CLFM seems to have more than one FNAM subrecord.\n";
+             std::cerr << "Error: CLFM seems to have more than one FNAM subrecord.\n";
              return false;
            }
            //read FNAM
@@ -185,7 +185,7 @@ bool ColourFormRecord::loadFromStream(std::istream& in_File, const bool localize
            hasReadFNAM = true;
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only FULL, CNAM or FNAM are allowed here!\n";
            return false;
            break;
@@ -195,7 +195,7 @@ bool ColourFormRecord::loadFromStream(std::istream& in_File, const bool localize
   //presence check
   if (!(hasReadCNAM  and hasReadFNAM))
   {
-    std::cout << "Error: while reading CLFM record: at least one required subrecord is missing!\n";
+    std::cerr << "Error: while reading CLFM record: at least one required subrecord is missing!\n";
     return false;
   }//if
 

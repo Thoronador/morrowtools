@@ -159,7 +159,7 @@ bool SoundCategoryRecord::loadFromStream(std::istream& in_File, const bool local
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of SNCT is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of SNCT is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -169,7 +169,7 @@ bool SoundCategoryRecord::loadFromStream(std::istream& in_File, const bool local
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of SNCT!\n";
+    std::cerr << "Error while reading subrecord EDID of SNCT!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -190,24 +190,24 @@ bool SoundCategoryRecord::loadFromStream(std::istream& in_File, const bool local
       case cFULL:
            if (name.isPresent())
            {
-             std::cout << "Error: record SNCT seems to have more than one FULL subrecord!\n";
+             std::cerr << "Error: record SNCT seems to have more than one FULL subrecord!\n";
              return false;
            }
            if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
            {
-             std::cout << "Error while reading subrecord FULL of SNCT!\n";
+             std::cerr << "Error while reading subrecord FULL of SNCT!\n";
              return false;
            }
            break;
       case cFNAM:
            if (hasReadFNAM)
            {
-             std::cout << "Error: record SNCT seems to have more than one FNAM subrecord!\n";
+             std::cerr << "Error: record SNCT seems to have more than one FNAM subrecord!\n";
              return false;
            }
            if (!loadUint32SubRecordFromStream(in_File, cFNAM, unknownFNAM, false))
            {
-             std::cout << "Error while reading subrecord FNAM of SNCT!\n";
+             std::cerr << "Error while reading subrecord FNAM of SNCT!\n";
              return false;
            }
            bytesRead += 6;
@@ -216,12 +216,12 @@ bool SoundCategoryRecord::loadFromStream(std::istream& in_File, const bool local
       case cPNAM:
            if (hasParent)
            {
-             std::cout << "Error: record SNCT seems to have more than one PNAM subrecord!\n";
+             std::cerr << "Error: record SNCT seems to have more than one PNAM subrecord!\n";
              return false;
            }
            if (!loadUint32SubRecordFromStream(in_File, cPNAM, parentFormID, false))
            {
-             std::cout << "Error while reading subrecord PNAM of SNCT!\n";
+             std::cerr << "Error while reading subrecord PNAM of SNCT!\n";
              return false;
            }
            bytesRead += 6;
@@ -230,7 +230,7 @@ bool SoundCategoryRecord::loadFromStream(std::istream& in_File, const bool local
       case cVNAM:
            if (hasReadVNAM)
            {
-             std::cout << "Error: record SNCT seems to have more than one VNAM subrecord!\n";
+             std::cerr << "Error: record SNCT seems to have more than one VNAM subrecord!\n";
              return false;
            }
            //VNAM's length
@@ -238,7 +238,7 @@ bool SoundCategoryRecord::loadFromStream(std::istream& in_File, const bool local
            bytesRead += 2;
            if (subLength!=2)
            {
-             std::cout <<"Error: sub record VNAM of SNCT has invalid length ("
+             std::cerr <<"Error: sub record VNAM of SNCT has invalid length ("
                        <<subLength<<" bytes). Should be two bytes!\n";
              return false;
            }
@@ -247,7 +247,7 @@ bool SoundCategoryRecord::loadFromStream(std::istream& in_File, const bool local
            bytesRead += 2;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord VNAM of SNCT!\n";
+             std::cerr << "Error while reading subrecord VNAM of SNCT!\n";
              return false;
            }
            hasReadVNAM = true;
@@ -255,7 +255,7 @@ bool SoundCategoryRecord::loadFromStream(std::istream& in_File, const bool local
       case cUNAM:
            if (hasUNAM)
            {
-             std::cout << "Error: record SNCT seems to have more than one UNAM subrecord!\n";
+             std::cerr << "Error: record SNCT seems to have more than one UNAM subrecord!\n";
              return false;
            }
            //UNAM's length
@@ -263,7 +263,7 @@ bool SoundCategoryRecord::loadFromStream(std::istream& in_File, const bool local
            bytesRead += 2;
            if (subLength!=2)
            {
-             std::cout <<"Error: sub record UNAM of SNCT has invalid length ("
+             std::cerr <<"Error: sub record UNAM of SNCT has invalid length ("
                        <<subLength<<" bytes). Should be two bytes!\n";
              return false;
            }
@@ -272,13 +272,13 @@ bool SoundCategoryRecord::loadFromStream(std::istream& in_File, const bool local
            bytesRead += 2;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord UNAM of SNCT!\n";
+             std::cerr << "Error while reading subrecord UNAM of SNCT!\n";
              return false;
            }
            hasUNAM = true;
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only FULL, FNAM, PNAM, VNAM or UNAM are allowed here!\n";
            return false;
            break;
@@ -288,7 +288,7 @@ bool SoundCategoryRecord::loadFromStream(std::istream& in_File, const bool local
   //presence checks
   if (!(name.isPresent() and  hasReadFNAM and hasReadVNAM))
   {
-    std::cout << "Error while reading SNCT: at least one required subrecord is missing!\n";
+    std::cerr << "Error while reading SNCT: at least one required subrecord is missing!\n";
     return false;
   }
 

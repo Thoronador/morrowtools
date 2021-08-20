@@ -41,14 +41,14 @@ bool BSAFileRecord::loadFromStream(std::ifstream& in_File)
 {
   if (!in_File.good())
   {
-    std::cout << "BSAFileRecord::loadFromStream: Error: bad stream given!\n";
+    std::cerr << "BSAFileRecord::loadFromStream: Error: bad stream given!\n";
     return false;
   }
   //read file record's stuff
   in_File.read((char*) &nameHash, sizeof(BSAHash));
   if (!in_File.good())
   {
-    std::cout << "BSAFileRecord::loadFromStream: Error: could not read hash!\n";
+    std::cerr << "BSAFileRecord::loadFromStream: Error: could not read hash!\n";
     return false;
   }
   //rest of it
@@ -56,7 +56,7 @@ bool BSAFileRecord::loadFromStream(std::ifstream& in_File)
   in_File.read((char*) &offset, 4);
   if (!in_File.good())
   {
-    std::cout << "BSAFileRecord::loadFromStream: Error while reading data!\n";
+    std::cerr << "BSAFileRecord::loadFromStream: Error while reading data!\n";
     return false;
   }
   fileName.clear();

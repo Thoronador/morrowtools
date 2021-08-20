@@ -145,7 +145,7 @@ bool CameraShotRecord::saveToStream(std::ostream& output) const
     //write MODT
     if (!unknownMODT.saveToStream(output, cMODT))
     {
-      std::cout << "Error while writing subrecord MODT of CAMS!\n";
+      std::cerr << "Error while writing subrecord MODT of CAMS!\n";
       return false;
     }
   }//if MODT
@@ -209,7 +209,7 @@ bool CameraShotRecord::loadFromStream(std::istream& in_File, const bool localize
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of CAMS is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of CAMS is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -219,7 +219,7 @@ bool CameraShotRecord::loadFromStream(std::istream& in_File, const bool localize
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of CAMS!\n";
+    std::cerr << "Error while reading subrecord EDID of CAMS!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -238,7 +238,7 @@ bool CameraShotRecord::loadFromStream(std::istream& in_File, const bool localize
       case cMODL:
            if (!modelPath.empty())
            {
-             std::cout << "Error: CAMS seems to have more than one MODL subrecord!\n";
+             std::cerr << "Error: CAMS seems to have more than one MODL subrecord!\n";
              return false;
            }
            //read MODL
@@ -248,20 +248,20 @@ bool CameraShotRecord::loadFromStream(std::istream& in_File, const bool localize
            }
            if (modelPath.empty())
            {
-             std::cout << "Error: subrecord MODL of CAMS is empty!\n";
+             std::cerr << "Error: subrecord MODL of CAMS is empty!\n";
              return false;
            }
            break;
       case cMODT:
            if (unknownMODT.isPresent())
            {
-             std::cout << "Error: CAMS seems to have more than one MODT subrecord!\n";
+             std::cerr << "Error: CAMS seems to have more than one MODT subrecord!\n";
              return false;
            }
            //load MODT
            if (!unknownMODT.loadFromStream(in_File, cMODT, false))
            {
-             std::cout << "Error while reading subrecord MODT of CAMS!\n";
+             std::cerr << "Error while reading subrecord MODT of CAMS!\n";
              return false;
            }
            bytesRead += (2 + unknownMODT.size());
@@ -269,7 +269,7 @@ bool CameraShotRecord::loadFromStream(std::istream& in_File, const bool localize
       case cDATA:
            if (hasReadDATA)
            {
-             std::cout << "Error: CAMS seems to have more than one DATA subrecord!\n";
+             std::cerr << "Error: CAMS seems to have more than one DATA subrecord!\n";
              return false;
            }
            //DATA's length
@@ -277,7 +277,7 @@ bool CameraShotRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if ((subLength!=40) and (subLength!=44))
            {
-             std::cout << "Error: sub record DATA of CAMS has invalid length ("
+             std::cerr << "Error: sub record DATA of CAMS has invalid length ("
                        << subLength<<" bytes). Should be 40 or 44 bytes!\n";
              return false;
            }
@@ -299,7 +299,7 @@ bool CameraShotRecord::loadFromStream(std::istream& in_File, const bool localize
              //check it right here
              if ((nearTargetDistance>2000.0f) or (nearTargetDistance<0.0f))
              {
-               std::cout << "Error while reading subrecord DATA of CAMS: near "
+               std::cerr << "Error while reading subrecord DATA of CAMS: near "
                          << "target distanct is not in range [0;100]!Its "
                          << "current value is "<< nearTargetDistance<<".\n";
                return false;
@@ -313,60 +313,60 @@ bool CameraShotRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += subLength;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord DATA of CAMS!\n";
+             std::cerr << "Error while reading subrecord DATA of CAMS!\n";
              return false;
            }
            //integrity check
            if ((cameraAction>3) or (cameraLocation>3) or (cameraTarget>3))
            {
-             std::cout << "Error while reading subrecord DATA of CAMS: camera "
+             std::cerr << "Error while reading subrecord DATA of CAMS: camera "
                        << "action, location or target is invalid!\n";
              return false;
            }
            if (cameraFlags>0x3F)
            {
-             std::cout << "Error while reading subrecord DATA of CAMS: unknown"
+             std::cerr << "Error while reading subrecord DATA of CAMS: unknown"
                        << " flag values set!\n";
              return false;
            }
            if ((timeMultPlayer>20.0f) or (timeMultPlayer<0.0f))
            {
-             std::cout << "Error while reading subrecord DATA of CAMS: time "
+             std::cerr << "Error while reading subrecord DATA of CAMS: time "
                        << " multiplier for player is not in range [0;20]! Its "
                        << "current value is "<<timeMultPlayer<<".\n";
              return false;
            }
            if ((timeMultTarget>20.0f) or (timeMultTarget<0.0f))
            {
-             std::cout << "Error while reading subrecord DATA of CAMS: time "
+             std::cerr << "Error while reading subrecord DATA of CAMS: time "
                        << " multiplier for target is not in range [0;20]! Its "
                        << "current value is "<<timeMultTarget<<".\n";
              return false;
            }
            if ((timeMultGlobal>1.0f) or (timeMultGlobal<0.0f))
            {
-             std::cout << "Error while reading subrecord DATA of CAMS: global "
+             std::cerr << "Error while reading subrecord DATA of CAMS: global "
                        << " time multiplier is not in range [0;1]! Its current"
                        << " value is "<<timeMultGlobal<<".\n";
              return false;
            }
            if ((maxTime>120.0f) or (maxTime<0.0f))
            {
-             std::cout << "Error while reading subrecord DATA of CAMS: max. "
+             std::cerr << "Error while reading subrecord DATA of CAMS: max. "
                        << "time is not in range [0;120]! Its current value is "
                        << maxTime<<".\n";
              return false;
            }
            if ((minTime>120.0f) or (minTime<0.0f))
            {
-             std::cout << "Error while reading subrecord DATA of CAMS: min. "
+             std::cerr << "Error while reading subrecord DATA of CAMS: min. "
                        << "time is not in range [0;120]! Its current value is "
                        << minTime<<".\n";
              return false;
            }
            if ((targetPercentBetweenActors>100.0f) or (targetPercentBetweenActors<0.0f))
            {
-             std::cout << "Error while reading subrecord DATA of CAMS: target "
+             std::cerr << "Error while reading subrecord DATA of CAMS: target "
                        << "percentage between actors is not in range [0;100]! "
                        << "Its current value is "<< targetPercentBetweenActors
                        <<".\n";
@@ -377,23 +377,23 @@ bool CameraShotRecord::loadFromStream(std::istream& in_File, const bool localize
       case cMNAM:
            if (imageSpaceModFormID!=0)
            {
-             std::cout << "Error: CAMS seems to have more than one MNAM subrecord!\n";
+             std::cerr << "Error: CAMS seems to have more than one MNAM subrecord!\n";
              return false;
            }
            if (!loadUint32SubRecordFromStream(in_File, cMNAM, imageSpaceModFormID, false))
            {
-             std::cout << "Error while reading subrecord MNAM of CAMS!\n";
+             std::cerr << "Error while reading subrecord MNAM of CAMS!\n";
              return false;
            }
            bytesRead += 6;
            if (imageSpaceModFormID==0)
            {
-             std::cout << "Error: subrecord MNAM of CAMS has value zero!\n";
+             std::cerr << "Error: subrecord MNAM of CAMS has value zero!\n";
              return false;
            }
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only MODL, MODT, DATA or MNAM are allowed here!\n";
            return false;
            break;
@@ -403,8 +403,8 @@ bool CameraShotRecord::loadFromStream(std::istream& in_File, const bool localize
   //presence checks
   if (!hasReadDATA)
   {
-    std::cout << "Error: at least one required subrecord of CAMS is missing!\n";
-    std::cout << "DATA: "<< hasReadDATA<<"\n";
+    std::cerr << "Error: at least one required subrecord of CAMS is missing!\n";
+    std::cerr << "DATA: "<< hasReadDATA<<"\n";
     return false;
   }
 

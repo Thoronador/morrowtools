@@ -189,7 +189,7 @@ bool SoundDescriptorRecord::saveToStream(std::ostream& output) const
     //write CTDA
     if (!conditions[i].saveToStream(output))
     {
-      std::cout << "Error while writing subrecord CTDA of SNDR!\n";
+      std::cerr << "Error while writing subrecord CTDA of SNDR!\n";
       return false;
     }
   }//for
@@ -243,7 +243,7 @@ bool SoundDescriptorRecord::loadFromStream(std::istream& in_File, const bool loc
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of SNDR is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of SNDR is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -253,7 +253,7 @@ bool SoundDescriptorRecord::loadFromStream(std::istream& in_File, const bool loc
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of SNDR!\n";
+    std::cerr << "Error while reading subrecord EDID of SNDR!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -282,7 +282,7 @@ bool SoundDescriptorRecord::loadFromStream(std::istream& in_File, const bool loc
       case cGNAM:
            if (categoryFormID!=0)
            {
-             std::cout << "Error: record SNDR seems to have more than one GNAM subrecord!\n";
+             std::cerr << "Error: record SNDR seems to have more than one GNAM subrecord!\n";
              return false;
            }
            //read GNAM
@@ -291,14 +291,14 @@ bool SoundDescriptorRecord::loadFromStream(std::istream& in_File, const bool loc
            //sanity check
            if (categoryFormID==0)
            {
-             std::cout << "Error: subrecord GNAM of SNDR has invalid value zero!\n";
+             std::cerr << "Error: subrecord GNAM of SNDR has invalid value zero!\n";
              return false;
            }
            break;
       case cSNAM:
            if (alternateFormID!=0)
            {
-             std::cout << "Error: record SNDR seems to have more than one SNAM subrecord!\n";
+             std::cerr << "Error: record SNDR seems to have more than one SNAM subrecord!\n";
              return false;
            }
            //read SNAM
@@ -307,7 +307,7 @@ bool SoundDescriptorRecord::loadFromStream(std::istream& in_File, const bool loc
            //sanity check
            if (alternateFormID==0)
            {
-             std::cout << "Error: subrecord SNAM of SNDR has invalid value zero!\n";
+             std::cerr << "Error: subrecord SNAM of SNDR has invalid value zero!\n";
              return false;
            }
            break;
@@ -318,14 +318,14 @@ bool SoundDescriptorRecord::loadFromStream(std::istream& in_File, const bool loc
            //sanity check
            if (waveFiles.back().empty())
            {
-             std::cout << "Error: subrecord ANAM of SNDR is empty!\n";
+             std::cerr << "Error: subrecord ANAM of SNDR is empty!\n";
              return false;
            }
            break;
       case cONAM:
            if (outputModelFormID!=0)
            {
-             std::cout << "Error: record SNDR seems to have more than one ONAM subrecord!\n";
+             std::cerr << "Error: record SNDR seems to have more than one ONAM subrecord!\n";
              return false;
            }
            //read ONAM
@@ -334,14 +334,14 @@ bool SoundDescriptorRecord::loadFromStream(std::istream& in_File, const bool loc
            //sanity check
            if (outputModelFormID==0)
            {
-             std::cout << "Error: subrecord ONAM of SNDR has invalid value zero!\n";
+             std::cerr << "Error: subrecord ONAM of SNDR has invalid value zero!\n";
              return false;
            }
            break;
       case cFNAM:
            if (hasFNAM)
            {
-             std::cout << "Error: record SNDR seems to have more than one FNAM subrecord!\n";
+             std::cerr << "Error: record SNDR seems to have more than one FNAM subrecord!\n";
              return false;
            }
            //read FNAM
@@ -352,7 +352,7 @@ bool SoundDescriptorRecord::loadFromStream(std::istream& in_File, const bool loc
       case cCTDA:
            if (!tempCTDA.loadFromStream(in_File, bytesRead))
            {
-             std::cout << "Error while reading subrecord CTDA of SNDR!\n";
+             std::cerr << "Error while reading subrecord CTDA of SNDR!\n";
              return false;
            }
            conditions.push_back(tempCTDA);
@@ -360,7 +360,7 @@ bool SoundDescriptorRecord::loadFromStream(std::istream& in_File, const bool loc
       case cLNAM:
            if (hasLNAM)
            {
-             std::cout << "Error: record SNDR seems to have more than one LNAM subrecord!\n";
+             std::cerr << "Error: record SNDR seems to have more than one LNAM subrecord!\n";
              return false;
            }
            //read LNAM
@@ -371,7 +371,7 @@ bool SoundDescriptorRecord::loadFromStream(std::istream& in_File, const bool loc
       case cBNAM:
            if (hasReadBNAM)
            {
-             std::cout << "Error: record SNDR seems to have more than one BNAM subrecord!\n";
+             std::cerr << "Error: record SNDR seems to have more than one BNAM subrecord!\n";
              return false;
            }
            //BNAM's length
@@ -379,7 +379,7 @@ bool SoundDescriptorRecord::loadFromStream(std::istream& in_File, const bool loc
            bytesRead += 2;
            if (subLength!=6)
            {
-             std::cout <<"Error: sub record BNAM of SNDR has invalid length ("
+             std::cerr <<"Error: sub record BNAM of SNDR has invalid length ("
                        <<subLength << " bytes). Should be six bytes!\n";
              return false;
            }
@@ -391,14 +391,14 @@ bool SoundDescriptorRecord::loadFromStream(std::istream& in_File, const bool loc
            in_File.read((char*) &staticAttenuation_x100, 2);
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord BNAM of SNDR!\n";
+             std::cerr << "Error while reading subrecord BNAM of SNDR!\n";
             return false;
            }
            bytesRead += 6;
            hasReadBNAM = true;
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only GNAM, SNAM, ANAM, ONAM, FNAM, CTDA, LNAM or BNAM are allowed here!\n";
            return false;
            break;
@@ -408,7 +408,7 @@ bool SoundDescriptorRecord::loadFromStream(std::istream& in_File, const bool loc
   //presence checks
   if (!((outputModelFormID!=0) and (!waveFiles.empty()) and hasReadBNAM))
   {
-    std::cout << "Error: At least one required subrecord of SNDR is missing!\n";
+    std::cerr << "Error: At least one required subrecord of SNDR is missing!\n";
     return false;
   }
 

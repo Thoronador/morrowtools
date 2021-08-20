@@ -130,7 +130,7 @@ bool DialogBranchRecord::loadFromStream(std::istream& in_File, const bool locali
   in_File.read((char*) &subLength, 2);
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of DLBR is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of DLBR is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -139,7 +139,7 @@ bool DialogBranchRecord::loadFromStream(std::istream& in_File, const bool locali
   in_File.read(buffer, subLength);
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of DLBR!\n";
+    std::cerr << "Error while reading subrecord EDID of DLBR!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -147,28 +147,28 @@ bool DialogBranchRecord::loadFromStream(std::istream& in_File, const bool locali
   //read QNAM
   if (!loadUint32SubRecordFromStream(in_File, cQNAM, unknownQNAM, true))
   {
-    std::cout << "Error while reading subrecord QNAM of DLRB!\n";
+    std::cerr << "Error while reading subrecord QNAM of DLRB!\n";
     return false;
   }
 
   //read TNAM
   if (!loadUint32SubRecordFromStream(in_File, cTNAM, unknownTNAM, true))
   {
-    std::cout << "Error while reading subrecord TNAM of DLRB!\n";
+    std::cerr << "Error while reading subrecord TNAM of DLRB!\n";
     return false;
   }
 
   //read DNAM
   if (!loadUint32SubRecordFromStream(in_File, cDNAM, unknownDNAM, true))
   {
-    std::cout << "Error while reading subrecord DNAM of DLRB!\n";
+    std::cerr << "Error while reading subrecord DNAM of DLRB!\n";
     return false;
   }
 
   //read SNAM
   if (!loadUint32SubRecordFromStream(in_File, cSNAM, unknownSNAM, true))
   {
-    std::cout << "Error while reading subrecord SNAM of DLRB!\n";
+    std::cerr << "Error while reading subrecord SNAM of DLRB!\n";
     return false;
   }
 

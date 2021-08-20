@@ -112,7 +112,7 @@ bool ImpactDataSetRecord::loadFromStream(std::istream& in_File, const bool local
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of IPDS is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of IPDS is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -122,7 +122,7 @@ bool ImpactDataSetRecord::loadFromStream(std::istream& in_File, const bool local
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of IPDS!\n";
+    std::cerr << "Error while reading subrecord EDID of IPDS!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -142,7 +142,7 @@ bool ImpactDataSetRecord::loadFromStream(std::istream& in_File, const bool local
            bytesRead += 2;
            if (subLength!=8)
            {
-             std::cout <<"Error: subrecord PNAM of IPDS has invalid length ("<<subLength
+             std::cerr <<"Error: subrecord PNAM of IPDS has invalid length ("<<subLength
                        <<" bytes). Should be 8 bytes!\n";
              return false;
            }
@@ -152,13 +152,13 @@ bool ImpactDataSetRecord::loadFromStream(std::istream& in_File, const bool local
            bytesRead += 8;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord PNAM of IPDS!\n";
+             std::cerr << "Error while reading subrecord PNAM of IPDS!\n";
              return false;
            }//if
            unknownPNAMs.push_back(temp);
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                     << "\" found, but only PNAM is allowed here!\n";
            return false;
            break;

@@ -173,7 +173,7 @@ bool LeveledCharacterRecord::saveToStream(std::ostream& output) const
   {
     if (!unknownMODT.saveToStream(output, cMODT))
     {
-      std::cout << "Error while writing subrecord MODT of LVLN!\n";
+      std::cerr << "Error while writing subrecord MODT of LVLN!\n";
       return false;
     }
   }//if MODT
@@ -204,7 +204,7 @@ bool LeveledCharacterRecord::loadFromStream(std::istream& in_File, const bool lo
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of LVLN is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of LVLN is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -214,7 +214,7 @@ bool LeveledCharacterRecord::loadFromStream(std::istream& in_File, const bool lo
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of LVLN!\n";
+    std::cerr << "Error while reading subrecord EDID of LVLN!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -232,7 +232,7 @@ bool LeveledCharacterRecord::loadFromStream(std::istream& in_File, const bool lo
   bytesRead += 2;
   if (subLength!=12)
   {
-    std::cout <<"Error: sub record OBND of LVLN has invalid length ("<<subLength
+    std::cerr <<"Error: sub record OBND of LVLN has invalid length ("<<subLength
               <<" bytes). Should be 12 bytes!\n";
     return false;
   }
@@ -242,7 +242,7 @@ bool LeveledCharacterRecord::loadFromStream(std::istream& in_File, const bool lo
   bytesRead += 12;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord OBND of LVLN!\n";
+    std::cerr << "Error while reading subrecord OBND of LVLN!\n";
     return false;
   }
 
@@ -259,7 +259,7 @@ bool LeveledCharacterRecord::loadFromStream(std::istream& in_File, const bool lo
   bytesRead += 2;
   if (subLength!=1)
   {
-    std::cout <<"Error: sub record LVLD of LVLN has invalid length ("<<subLength
+    std::cerr <<"Error: sub record LVLD of LVLN has invalid length ("<<subLength
               <<" bytes). Should be one byte!\n";
     return false;
   }
@@ -268,7 +268,7 @@ bool LeveledCharacterRecord::loadFromStream(std::istream& in_File, const bool lo
   bytesRead += 1;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord LVLD of LVLN!\n";
+    std::cerr << "Error while reading subrecord LVLD of LVLN!\n";
     return false;
   }
 
@@ -285,7 +285,7 @@ bool LeveledCharacterRecord::loadFromStream(std::istream& in_File, const bool lo
   bytesRead += 2;
   if (subLength!=1)
   {
-    std::cout <<"Error: sub record LVLF of LVLN has invalid length ("<<subLength
+    std::cerr <<"Error: sub record LVLF of LVLN has invalid length ("<<subLength
               <<" bytes). Should be one byte!\n";
     return false;
   }
@@ -294,7 +294,7 @@ bool LeveledCharacterRecord::loadFromStream(std::istream& in_File, const bool lo
   bytesRead += 1;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord LVLF of LVLN!\n";
+    std::cerr << "Error while reading subrecord LVLF of LVLN!\n";
     return false;
   }
 
@@ -314,7 +314,7 @@ bool LeveledCharacterRecord::loadFromStream(std::istream& in_File, const bool lo
       case cLLCT:
            if (hasReadLLCT)
            {
-             std::cout << "Error: record LVLN seems to have more than one LLCT subrecord!\n";
+             std::cerr << "Error: record LVLN seems to have more than one LLCT subrecord!\n";
              return false;
            }
            //LLCT's length
@@ -322,7 +322,7 @@ bool LeveledCharacterRecord::loadFromStream(std::istream& in_File, const bool lo
            bytesRead += 2;
            if (subLength!=1)
            {
-             std::cout <<"Error: sub record LLCT of LVLN has invalid length ("
+             std::cerr <<"Error: sub record LLCT of LVLN has invalid length ("
                        <<subLength<<" bytes). Should be one byte!\n";
              return false;
            }
@@ -331,7 +331,7 @@ bool LeveledCharacterRecord::loadFromStream(std::istream& in_File, const bool lo
            bytesRead += 1;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord LLCT of LVLN!\n";
+             std::cerr << "Error while reading subrecord LLCT of LVLN!\n";
              return false;
            }
            hasReadLLCT = true;
@@ -339,7 +339,7 @@ bool LeveledCharacterRecord::loadFromStream(std::istream& in_File, const bool lo
       case cLVLO:
            if (entries.size()>=entryCount)
            {
-             std::cout << "Error: record LVLN seems to have more LVLO subrecords than the LLCT value indicates!\n";
+             std::cerr << "Error: record LVLN seems to have more LVLO subrecords than the LLCT value indicates!\n";
              return false;
            }
            //LVLO's length
@@ -347,7 +347,7 @@ bool LeveledCharacterRecord::loadFromStream(std::istream& in_File, const bool lo
            bytesRead += 2;
            if (subLength!=12)
            {
-             std::cout <<"Error: sub record LVLO of LVLN has invalid length ("
+             std::cerr <<"Error: sub record LVLO of LVLN has invalid length ("
                        <<subLength<<" bytes). Should be 12 bytes!\n";
              return false;
            }
@@ -358,7 +358,7 @@ bool LeveledCharacterRecord::loadFromStream(std::istream& in_File, const bool lo
            bytesRead += 12;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord LVLO of LVLN!\n";
+             std::cerr << "Error while reading subrecord LVLO of LVLN!\n";
              return false;
            }
            temp.coed.init(); //sets default values for COED part
@@ -367,14 +367,14 @@ bool LeveledCharacterRecord::loadFromStream(std::istream& in_File, const bool lo
       case cCOED:
            if (entries.empty())
            {
-             std::cout << "Error: COED subrecord not allowed without previous LVLO subrecord!\n";
+             std::cerr << "Error: COED subrecord not allowed without previous LVLO subrecord!\n";
              return false;
            }
            if ((entries.back().coed.factionFormID!=0)
                or (entries.back().coed.requiredRank!=0xFFFFFFFF)
                or (entries.back().coed.unknownFloat!=1.0f))
            {
-             std::cout << "Error: record LVLN seems to have more than one COED subrecord per LVLO!\n";
+             std::cerr << "Error: record LVLN seems to have more than one COED subrecord per LVLO!\n";
              return false;
            }
            //COED's length
@@ -382,7 +382,7 @@ bool LeveledCharacterRecord::loadFromStream(std::istream& in_File, const bool lo
            bytesRead += 2;
            if (subLength!=12)
            {
-             std::cout <<"Error: sub record COED of LVLN has invalid length ("
+             std::cerr <<"Error: sub record COED of LVLN has invalid length ("
                        <<subLength<<" bytes). Should be 12 bytes!\n";
              return false;
            }
@@ -393,20 +393,20 @@ bool LeveledCharacterRecord::loadFromStream(std::istream& in_File, const bool lo
            bytesRead += 12;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord COED of LVLN!\n";
+             std::cerr << "Error while reading subrecord COED of LVLN!\n";
              return false;
            }
            //status check
            if (entries.back().coed.isInit())
            {
-             std::cout << "Error: subrecord COED of LVLN contains invalid value!\n";
+             std::cerr << "Error: subrecord COED of LVLN contains invalid value!\n";
              return false;
            }
            break;
       case cMODL:
            if (!modelPath.empty())
            {
-             std::cout << "Error: record LVLN seems to have more than one MODL subrecord!\n";
+             std::cerr << "Error: record LVLN seems to have more than one MODL subrecord!\n";
              return false;
            }
            //read MODL
@@ -415,7 +415,7 @@ bool LeveledCharacterRecord::loadFromStream(std::istream& in_File, const bool lo
            //content check
            if (modelPath.empty())
            {
-             std::cout << "Error: subrecord MODL of LVLN is empty!\n";
+             std::cerr << "Error: subrecord MODL of LVLN is empty!\n";
              return false;
            }
            break;
@@ -434,7 +434,7 @@ bool LeveledCharacterRecord::loadFromStream(std::istream& in_File, const bool lo
            bytesRead += (2 + unknownMODT.size());
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only LLCT, MODL or MODT are allowed here!\n";
            return false;
            break;
@@ -444,13 +444,13 @@ bool LeveledCharacterRecord::loadFromStream(std::istream& in_File, const bool lo
   //presence check
   if (!hasReadLLCT)
   {
-    std::cout << "Error: at least one required subrecord of LVLN is missing!\n";
+    std::cerr << "Error: at least one required subrecord of LVLN is missing!\n";
     return false;
   }
   //count check
   if (entryCount!=entries.size())
   {
-    std::cout << "Error: entry count does not match number of actual entries!\n";
+    std::cerr << "Error: entry count does not match number of actual entries!\n";
     return false;
   }
 

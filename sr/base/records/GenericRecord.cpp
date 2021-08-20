@@ -123,7 +123,7 @@ bool GenericRecord::loadFromStream(std::istream& in_File, const bool localized, 
   //prevent excessive memory usage
   if (Size>256*1024)
   {
-    std::cout << "GenericRecord::loadFromStream: Error: record size is larger than 256 KB, aborting.\n";
+    std::cerr << "GenericRecord::loadFromStream: Error: record size is larger than 256 KB, aborting.\n";
     return false;
   }
   //allocate new memory
@@ -133,7 +133,7 @@ bool GenericRecord::loadFromStream(std::istream& in_File, const bool localized, 
   in_File.read((char*) tempPtr, Size);
   if (!in_File.good())
   {
-    std::cout << "GenericRecord::loadFromStream: Error while reading data!\n";
+    std::cerr << "GenericRecord::loadFromStream: Error while reading data!\n";
     delete[] tempPtr;
     return false;
   }

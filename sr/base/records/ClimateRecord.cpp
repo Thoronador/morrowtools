@@ -149,7 +149,7 @@ bool ClimateRecord::saveToStream(std::ostream& output) const
     //write MODT
     if (!unknownMODT.saveToStream(output, cMODT))
     {
-      std::cout << "Error while writing subrecord MODT of CLMT!\n";
+      std::cerr << "Error while writing subrecord MODT of CLMT!\n";
       return false;
     }
   }//if MODT
@@ -159,7 +159,7 @@ bool ClimateRecord::saveToStream(std::ostream& output) const
     //write TNAM
     if (!unknownTNAM.saveToStream(output, cTNAM))
     {
-      std::cout << "Error while writing subrecord TNAM of CLMT!\n";
+      std::cerr << "Error while writing subrecord TNAM of CLMT!\n";
       return false;
     }
   }//if TNAM
@@ -190,7 +190,7 @@ bool ClimateRecord::loadFromStream(std::istream& in_File, const bool localized, 
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of CLMT is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of CLMT is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -200,7 +200,7 @@ bool ClimateRecord::loadFromStream(std::istream& in_File, const bool localized, 
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of CLMT!\n";
+    std::cerr << "Error while reading subrecord EDID of CLMT!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -224,7 +224,7 @@ bool ClimateRecord::loadFromStream(std::istream& in_File, const bool localized, 
       case cWLST:
            if (!weatherList.empty())
            {
-             std::cout << "Error: record CLMT seems to have more than one WLST subrecord!\n";
+             std::cerr << "Error: record CLMT seems to have more than one WLST subrecord!\n";
              return false;
            }
            //WLST's length
@@ -232,7 +232,7 @@ bool ClimateRecord::loadFromStream(std::istream& in_File, const bool localized, 
            bytesRead += 2;
            if (((subLength%12)!=0) or (subLength==0))
            {
-             std::cout <<"Error: sub record WLST of CLMT has invalid length ("
+             std::cerr <<"Error: sub record WLST of CLMT has invalid length ("
                        <<subLength<<" bytes). Should be an integral multiple of 12 bytes.\n";
              return false;
            }
@@ -245,7 +245,7 @@ bool ClimateRecord::loadFromStream(std::istream& in_File, const bool localized, 
              bytesRead += 12;
              if (!in_File.good())
              {
-               std::cout << "Error while reading subrecord WLST of CLMT!\n";
+               std::cerr << "Error while reading subrecord WLST of CLMT!\n";
                return false;
              }
              weatherList.push_back(temp);
@@ -254,7 +254,7 @@ bool ClimateRecord::loadFromStream(std::istream& in_File, const bool localized, 
       case cFNAM:
            if (!sunTexture.empty())
            {
-             std::cout << "Error: CLMT seems to have more than one FNAM subrecord.\n";
+             std::cerr << "Error: CLMT seems to have more than one FNAM subrecord.\n";
              return false;
            }
            //read FNAM
@@ -262,14 +262,14 @@ bool ClimateRecord::loadFromStream(std::istream& in_File, const bool localized, 
            //length check
            if (sunTexture.empty())
            {
-             std::cout << "Error: subrecord FNAM of CLMT is empty.\n";
+             std::cerr << "Error: subrecord FNAM of CLMT is empty.\n";
              return false;
            }
            break;
       case cGNAM:
            if (!sunGlareTexture.empty())
            {
-             std::cout << "Error: CLMT seems to have more than one GNAM subrecord.\n";
+             std::cerr << "Error: CLMT seems to have more than one GNAM subrecord.\n";
              return false;
            }
            //read GNAM
@@ -277,14 +277,14 @@ bool ClimateRecord::loadFromStream(std::istream& in_File, const bool localized, 
            //length check
            if (sunGlareTexture.empty())
            {
-             std::cout << "Error: subrecord GNAM of CLMT is empty.\n";
+             std::cerr << "Error: subrecord GNAM of CLMT is empty.\n";
              return false;
            }
            break;
       case cMODL:
            if (!modelPath.empty())
            {
-             std::cout << "Error: CLMT seems to have more than one MODL subrecord.\n";
+             std::cerr << "Error: CLMT seems to have more than one MODL subrecord.\n";
              return false;
            }
            //read MODL
@@ -292,7 +292,7 @@ bool ClimateRecord::loadFromStream(std::istream& in_File, const bool localized, 
            //length check
            if (modelPath.empty())
            {
-             std::cout << "Error: subrecord MODL of CLMT is empty.\n";
+             std::cerr << "Error: subrecord MODL of CLMT is empty.\n";
              return false;
            }
            break;
@@ -319,7 +319,7 @@ bool ClimateRecord::loadFromStream(std::istream& in_File, const bool localized, 
            bytesRead += (2 + unknownTNAM.size());
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only WLST, FNAM, GNAM, MODL, MODT, MODS"
                      << " or TNAM are allowed here!\n";
            return false;
@@ -331,7 +331,7 @@ bool ClimateRecord::loadFromStream(std::istream& in_File, const bool localized, 
   if (!(!sunTexture.empty() and !sunGlareTexture.empty()
       and !modelPath.empty() and unknownTNAM.isPresent()))
   {
-    std::cout << "Error: at least one required subrecord of CLMT is missing!\n";
+    std::cerr << "Error: at least one required subrecord of CLMT is missing!\n";
     return false;
   }
 

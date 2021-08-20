@@ -126,7 +126,7 @@ bool DebrisRecord::saveToStream(std::ostream& output) const
     {
       if (!unknownDATA_MODTs[i].unknownMODT.saveToStream(output, cMODT))
       {
-        std::cout << "Error while writing subrecord MODT of DEBR!\n";
+        std::cerr << "Error while writing subrecord MODT of DEBR!\n";
         return false;
       }
     }//if
@@ -158,7 +158,7 @@ bool DebrisRecord::loadFromStream(std::istream& in_File, const bool localized, c
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of DEBR is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of DEBR is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -168,7 +168,7 @@ bool DebrisRecord::loadFromStream(std::istream& in_File, const bool localized, c
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of DEBR!\n";
+    std::cerr << "Error while reading subrecord EDID of DEBR!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -201,7 +201,7 @@ bool DebrisRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 2;
            if (subLength>511+2)
            {
-             std::cout <<"Error: model path in sub record DATA of DEBR is longer than 511 characters!\n";
+             std::cerr <<"Error: model path in sub record DATA of DEBR is longer than 511 characters!\n";
              return false;
            }
            //read DATA's stuff
@@ -214,7 +214,7 @@ bool DebrisRecord::loadFromStream(std::istream& in_File, const bool localized, c
            in_File.read((char*) &(tempCompound.data.flags), 1);
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord DATA of DEBR!\n";
+             std::cerr << "Error while reading subrecord DATA of DEBR!\n";
              return false;
            }
            tempCompound.data.modelPath = std::string(buffer);
@@ -225,18 +225,18 @@ bool DebrisRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cMODT:
            if (tempCompound.unknownMODT.isPresent())
            {
-             std::cout << "Error: record DEBR seems to have more than one MODT subrecord per DATA!\n";
+             std::cerr << "Error: record DEBR seems to have more than one MODT subrecord per DATA!\n";
              return false;
            }
            if (!hasUnpushedDATA)
            {
-             std::cout << "Error: record DEBR needs DATA before MODT!\n";
+             std::cerr << "Error: record DEBR needs DATA before MODT!\n";
              return false;
            }
            //now read MODT
            if (!tempCompound.unknownMODT.loadFromStream(in_File, cMODT, false))
            {
-             std::cout << "Error while reading subrecord MODT of DEBR!\n";
+             std::cerr << "Error while reading subrecord MODT of DEBR!\n";
              return false;
            }
            bytesRead += (2 /* 2 bytes for length */ + tempCompound.unknownMODT.size() /*size*/);
@@ -248,7 +248,7 @@ bool DebrisRecord::loadFromStream(std::istream& in_File, const bool localized, c
            hasUnpushedDATA = false;
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only DATA or MODT are allowed here!\n";
            return false;
            break;

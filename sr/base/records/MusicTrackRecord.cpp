@@ -256,7 +256,7 @@ bool MusicTrackRecord::saveToStream(std::ostream& output) const
       //write CTDA
       if (!conditions[i].saveToStream(output))
       {
-        std::cout << "Error while writing subrecord CTDA of MUST!\n";
+        std::cerr << "Error while writing subrecord CTDA of MUST!\n";
         return false;
       }
     }//for
@@ -288,7 +288,7 @@ bool MusicTrackRecord::loadFromStream(std::istream& in_File, const bool localize
   bytesRead += 4;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of MUST is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of MUST is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -298,7 +298,7 @@ bool MusicTrackRecord::loadFromStream(std::istream& in_File, const bool localize
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of MUST!\n";
+    std::cerr << "Error while reading subrecord EDID of MUST!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -333,7 +333,7 @@ bool MusicTrackRecord::loadFromStream(std::istream& in_File, const bool localize
       case cCNAM:
            if (hasReadCNAM)
            {
-             std::cout << "Error: MUST seems to have more than one CNAM subrecord!\n";
+             std::cerr << "Error: MUST seems to have more than one CNAM subrecord!\n";
              return false;
            }
            if (!loadUint32SubRecordFromStream(in_File, cCNAM, typeIdentifier, false))
@@ -346,7 +346,7 @@ bool MusicTrackRecord::loadFromStream(std::istream& in_File, const bool localize
       case cFLTV:
            if (hasFLTV)
            {
-             std::cout << "Error: MUST seems to have more than one FLTV subrecord!\n";
+             std::cerr << "Error: MUST seems to have more than one FLTV subrecord!\n";
              return false;
            }
            //FNAM's length
@@ -354,7 +354,7 @@ bool MusicTrackRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if (subLength!=4)
            {
-             std::cout <<"Error: subrecord FLTV of MUST has invalid length ("
+             std::cerr <<"Error: subrecord FLTV of MUST has invalid length ("
                        <<subLength <<" bytes). Should be four bytes!\n";
              return false;
            }
@@ -363,12 +363,12 @@ bool MusicTrackRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 4;
            if (duration<0.0f)
            {
-             std::cout << "Error while reading subrecord FLTV of MUST: value is less than zero!\n";
+             std::cerr << "Error while reading subrecord FLTV of MUST: value is less than zero!\n";
              return false;
            }
            if (duration!=duration)
            {
-             std::cout << "Error while reading subrecord FLTV of MUST: value is NaN!\n";
+             std::cerr << "Error while reading subrecord FLTV of MUST: value is NaN!\n";
              return false;
            }
            hasFLTV = true;
@@ -376,7 +376,7 @@ bool MusicTrackRecord::loadFromStream(std::istream& in_File, const bool localize
       case cDNAM:
            if (hasDNAM)
            {
-             std::cout << "Error: MUST seems to have more than one DNAM subrecord!\n";
+             std::cerr << "Error: MUST seems to have more than one DNAM subrecord!\n";
              return false;
            }
            //DNAM's length
@@ -384,7 +384,7 @@ bool MusicTrackRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if (subLength!=4)
            {
-             std::cout <<"Error: subrecord DNAM of MUST has invalid length ("
+             std::cerr <<"Error: subrecord DNAM of MUST has invalid length ("
                        <<subLength <<" bytes). Should be four bytes!\n";
              return false;
            }
@@ -393,17 +393,17 @@ bool MusicTrackRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 4;
            if (fadeOut<0.0f)
            {
-             std::cout << "Error while reading subrecord DNAM of MUST: value is less than zero!\n";
+             std::cerr << "Error while reading subrecord DNAM of MUST: value is less than zero!\n";
              return false;
            }
            if (fadeOut!=fadeOut)
            {
-             std::cout << "Error while reading subrecord DNAM of MUST: value is NaN!\n";
+             std::cerr << "Error while reading subrecord DNAM of MUST: value is NaN!\n";
              return false;
            }
            if (fadeOut>20.0f)
            {
-             std::cout << "Error while reading subrecord DNAM of MUST: value is greater than 20.0!\n";
+             std::cerr << "Error while reading subrecord DNAM of MUST: value is greater than 20.0!\n";
              return false;
            }
            hasDNAM = true;
@@ -411,7 +411,7 @@ bool MusicTrackRecord::loadFromStream(std::istream& in_File, const bool localize
       case cSNAM:
            if (!trackList.empty())
            {
-             std::cout << "Error: MUST seems to have more than one SNAM subrecord!\n";
+             std::cerr << "Error: MUST seems to have more than one SNAM subrecord!\n";
              return false;
            }
            //SNAM's length
@@ -419,7 +419,7 @@ bool MusicTrackRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if (((subLength%4)!=0) or (subLength==0))
            {
-             std::cout <<"Error: subrecord SNAM of MUST has invalid length ("<<subLength
+             std::cerr <<"Error: subrecord SNAM of MUST has invalid length ("<<subLength
                        <<" bytes). Should be a positive, integral multiple of four bytes!\n";
              return false;
            }
@@ -429,7 +429,7 @@ bool MusicTrackRecord::loadFromStream(std::istream& in_File, const bool localize
              in_File.read((char*) &cond_count, 4);
              if (!in_File.good())
              {
-               std::cout << "Error while reading subrecord SNAM of MUST!\n";
+               std::cerr << "Error while reading subrecord SNAM of MUST!\n";
                return false;
              }
              trackList.push_back(cond_count);
@@ -439,7 +439,7 @@ bool MusicTrackRecord::loadFromStream(std::istream& in_File, const bool localize
       case cANAM:
            if (hasReadANAM)
            {
-             std::cout << "Error: MUST seems to have more than one ANAM subrecord!\n";
+             std::cerr << "Error: MUST seems to have more than one ANAM subrecord!\n";
              return false;
            }
            if (!loadString512FromStream(in_File, unknownANAM, buffer, cANAM, false, bytesRead))
@@ -451,7 +451,7 @@ bool MusicTrackRecord::loadFromStream(std::istream& in_File, const bool localize
       case cBNAM:
            if (hasReadBNAM)
            {
-             std::cout << "Error: MUST seems to have more than one BNAM subrecord!\n";
+             std::cerr << "Error: MUST seems to have more than one BNAM subrecord!\n";
              return false;
            }
            if (!loadString512FromStream(in_File, finalePath, buffer, cBNAM, false, bytesRead))
@@ -463,7 +463,7 @@ bool MusicTrackRecord::loadFromStream(std::istream& in_File, const bool localize
       case cFNAM:
            if (!cuePoints.empty())
            {
-             std::cout << "Error: MUST seems to have more than one FNAM subrecord!\n";
+             std::cerr << "Error: MUST seems to have more than one FNAM subrecord!\n";
              return false;
            }
            //FNAM's length
@@ -471,7 +471,7 @@ bool MusicTrackRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if (((subLength%4)!=0) or (subLength==0))
            {
-             std::cout <<"Error: subrecord FNAM of MUST has invalid length ("<<subLength
+             std::cerr <<"Error: subrecord FNAM of MUST has invalid length ("<<subLength
                        <<" bytes). Should be a positive, integral multiple of four bytes!\n";
              return false;
            }
@@ -481,17 +481,17 @@ bool MusicTrackRecord::loadFromStream(std::istream& in_File, const bool localize
              in_File.read((char*) &tempFloat32, 4);
              if (!in_File.good())
              {
-               std::cout << "Error while reading subrecord FNAM of MUST!\n";
+               std::cerr << "Error while reading subrecord FNAM of MUST!\n";
                return false;
              }
              if (tempFloat32<0.0f)
              {
-               std::cout << "Error while reading subrecord FNAM of MUST: value is less than zero!\n";
+               std::cerr << "Error while reading subrecord FNAM of MUST: value is less than zero!\n";
                return false;
              }
              if (tempFloat32!=tempFloat32)
              {
-               std::cout << "Error while reading subrecord FNAM of MUST: value is NaN!\n";
+               std::cerr << "Error while reading subrecord FNAM of MUST: value is NaN!\n";
                return false;
              }
              cuePoints.push_back(tempFloat32);
@@ -501,7 +501,7 @@ bool MusicTrackRecord::loadFromStream(std::istream& in_File, const bool localize
       case cLNAM:
            if (loop.hasLNAM)
            {
-             std::cout << "Error: MUST seems to have more than one LNAM subrecord!\n";
+             std::cerr << "Error: MUST seems to have more than one LNAM subrecord!\n";
              return false;
            }
            //LNAM's length
@@ -509,7 +509,7 @@ bool MusicTrackRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if (subLength!=12)
            {
-             std::cout <<"Error: subrecord LNAM of MUST has invalid length ("<<subLength
+             std::cerr <<"Error: subrecord LNAM of MUST has invalid length ("<<subLength
                        <<" bytes). Should be 12 bytes!\n";
              return false;
            }
@@ -520,27 +520,27 @@ bool MusicTrackRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 12;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord LNAM of MUST!\n";
+             std::cerr << "Error while reading subrecord LNAM of MUST!\n";
              return false;
            }
            if (loop.loopBegins<0.0f)
            {
-             std::cout << "Error while reading subrecord LNAM of MUST: start value is less than zero!\n";
+             std::cerr << "Error while reading subrecord LNAM of MUST: start value is less than zero!\n";
              return false;
            }
            if (loop.loopBegins!=loop.loopBegins)
            {
-             std::cout << "Error while reading subrecord LNAM of MUST: start value is NaN!\n";
+             std::cerr << "Error while reading subrecord LNAM of MUST: start value is NaN!\n";
              return false;
            }
            if (loop.loopEnds<loop.loopBegins)
            {
-             std::cout << "Error while reading subrecord LNAM of MUST: end value is less than start value!\n";
+             std::cerr << "Error while reading subrecord LNAM of MUST: end value is less than start value!\n";
              return false;
            }
            if (loop.loopEnds!=loop.loopEnds)
            {
-             std::cout << "Error while reading subrecord LNAM of MUST: end value is NaN!\n";
+             std::cerr << "Error while reading subrecord LNAM of MUST: end value is NaN!\n";
              return false;
            }
            loop.hasLNAM = true;
@@ -548,7 +548,7 @@ bool MusicTrackRecord::loadFromStream(std::istream& in_File, const bool localize
       case cCITC:
            if (hasReadCITC)
            {
-             std::cout << "Error: MUST seems to have more than one CITC subrecord!\n";
+             std::cerr << "Error: MUST seems to have more than one CITC subrecord!\n";
              return false;
            }
            if (!loadUint32SubRecordFromStream(in_File, cCITC, cond_count, false))
@@ -572,14 +572,14 @@ bool MusicTrackRecord::loadFromStream(std::istream& in_File, const bool localize
              //read CTDA's data
              if (!tempCTDA.loadFromStream(in_File, bytesRead))
              {
-               std::cout << "Error while reading subrecord CTDA of MUST!\n";
+               std::cerr << "Error while reading subrecord CTDA of MUST!\n";
                return false;
              }
              conditions.push_back(tempCTDA);
            }//for
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only CNAM, FLTV, DNAM, SNAM, ANAM, BNAM, FNAM, LNAM or CITC are allowed here!\n";
            return false;
            break;
@@ -589,7 +589,7 @@ bool MusicTrackRecord::loadFromStream(std::istream& in_File, const bool localize
   //presence checks
   if (!hasReadCNAM)
   {
-    std::cout << "Error: at least one required subrecord of MUST is missing!\n";
+    std::cerr << "Error: at least one required subrecord of MUST is missing!\n";
     return false;
   }
 

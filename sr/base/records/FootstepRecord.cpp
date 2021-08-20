@@ -110,7 +110,7 @@ bool FootstepRecord::loadFromStream(std::istream& in_File, const bool localized,
   in_File.read((char*) &subLength, 2);
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of FSTP is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of FSTP is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -119,7 +119,7 @@ bool FootstepRecord::loadFromStream(std::istream& in_File, const bool localized,
   in_File.read(buffer, subLength);
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of FSTP!\n";
+    std::cerr << "Error while reading subrecord EDID of FSTP!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -135,7 +135,7 @@ bool FootstepRecord::loadFromStream(std::istream& in_File, const bool localized,
   in_File.read((char*) &subLength, 2);
   if (subLength!=4)
   {
-    std::cout <<"Error: sub record DATA of FSTP has invalid length ("
+    std::cerr <<"Error: sub record DATA of FSTP has invalid length ("
               <<subLength<<" bytes). Should be four bytes!\n";
     return false;
   }
@@ -143,7 +143,7 @@ bool FootstepRecord::loadFromStream(std::istream& in_File, const bool localized,
   in_File.read((char*) &unknownDATA, 4);
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord DATA of FSTP!\n";
+    std::cerr << "Error while reading subrecord DATA of FSTP!\n";
     return false;
   }
 
@@ -158,7 +158,7 @@ bool FootstepRecord::loadFromStream(std::istream& in_File, const bool localized,
   in_File.read((char*) &subLength, 2);
   if (subLength>511)
   {
-    std::cout <<"Error: sub record ANAM of FSTP is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record ANAM of FSTP is longer than 511 characters!\n";
     return false;
   }
   //read ANAM's stuff
@@ -166,7 +166,7 @@ bool FootstepRecord::loadFromStream(std::istream& in_File, const bool localized,
   in_File.read(buffer, subLength);
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord ANAM of FSTP!\n";
+    std::cerr << "Error while reading subrecord ANAM of FSTP!\n";
     return false;
   }
   unknownANAM = std::string(buffer);

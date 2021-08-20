@@ -114,7 +114,7 @@ bool VisualEffectRecord::loadFromStream(std::istream& in_File, const bool locali
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of RFCT is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of RFCT is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -124,7 +124,7 @@ bool VisualEffectRecord::loadFromStream(std::istream& in_File, const bool locali
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of RFCT!\n";
+    std::cerr << "Error while reading subrecord EDID of RFCT!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -142,7 +142,7 @@ bool VisualEffectRecord::loadFromStream(std::istream& in_File, const bool locali
   bytesRead += 2;
   if (subLength!=12)
   {
-    std::cout <<"Error: sub record DATA of RFCT has invalid length ("<<subLength
+    std::cerr <<"Error: sub record DATA of RFCT has invalid length ("<<subLength
               <<" bytes). Should be 12 bytes!\n";
     return false;
   }
@@ -153,7 +153,7 @@ bool VisualEffectRecord::loadFromStream(std::istream& in_File, const bool locali
   bytesRead += 12;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord DATA of RFCT!\n";
+    std::cerr << "Error while reading subrecord DATA of RFCT!\n";
     return false;
   }
 

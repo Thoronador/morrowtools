@@ -55,7 +55,7 @@ void StringTableCompound::addString(const uint32_t stringID, const std::string& 
     case ttNone:
          //do nothing here
          break;
-  }//swi
+  }
 }
 
 bool StringTableCompound::hasString(const uint32_t stringID) const
@@ -86,11 +86,11 @@ const std::string& StringTableCompound::getString(const uint32_t stringID) const
          return m_strings.getString(stringID);
          break;
     default: //location==ttNone
-         std::cout << "StringTableCompound::getString: Error: string with ID "
-                   << stringID<<" was not found!\n";
+         std::cerr << "StringTableCompound::getString: Error: string with ID "
+                   << stringID << " was not found!\n";
          throw std::runtime_error("StringTableCompound::getString: Error: string with the given ID was not found!");
          break;
-  }//swi
+  }
 }
 
 const StringTable& StringTableCompound::getStringTable(const TableType tt) const
@@ -107,29 +107,29 @@ const StringTable& StringTableCompound::getStringTable(const TableType tt) const
          return m_strings;
          break;
     default: //location==ttNone
-         std::cout << "StringTableCompound::getStringTable: Error: ttNone is "
+         std::cerr << "StringTableCompound::getStringTable: Error: ttNone is "
                    << "not allowed as parameter value!\n";
          throw std::invalid_argument("StringTableCompound::getStringTable(): "
-              +std::string("Error: ttNone is not allowed as parameter value!"));
+              + std::string("Error: ttNone is not allowed as parameter value!"));
          break;
-  }//swi
+  }
 }
 
 bool StringTableCompound::readCompound(const std::string& BaseFileName)
 {
   if (!m_DLStrings.readTable(BaseFileName+".DLStrings", StringTable::sdUnknown))
   {
-    std::cout << "StringTableCompound::readCompound: Error while reading 1st table!\n";
+    std::cerr << "StringTableCompound::readCompound: Error while reading 1st table!\n";
     return false;
   }
   if (!m_ILStrings.readTable(BaseFileName+".ILStrings", StringTable::sdUnknown))
   {
-    std::cout << "StringTableCompound::readCompound: Error while reading 2nd table!\n";
+    std::cerr << "StringTableCompound::readCompound: Error while reading 2nd table!\n";
     return false;
   }
   if (!m_strings.readTable(BaseFileName+".strings", StringTable::sdUnknown))
   {
-    std::cout << "StringTableCompound::readCompound: Error while reading 3rd table!\n";
+    std::cerr << "StringTableCompound::readCompound: Error while reading 3rd table!\n";
     return false;
   }
   return true;
@@ -139,17 +139,17 @@ bool StringTableCompound::writeCompound(const std::string& BaseFileName) const
 {
   if (!m_DLStrings.writeTable(BaseFileName+".DLStrings", StringTable::sdUnknown))
   {
-    std::cout << "StringTableCompound::writeCompound: Error while writing 1st table!\n";
+    std::cerr << "StringTableCompound::writeCompound: Error while writing 1st table!\n";
     return false;
   }
   if (!m_ILStrings.writeTable(BaseFileName+".ILStrings", StringTable::sdUnknown))
   {
-    std::cout << "StringTableCompound::writeCompound: Error while writing 2nd table!\n";
+    std::cerr << "StringTableCompound::writeCompound: Error while writing 2nd table!\n";
     return false;
   }
   if (!m_strings.writeTable(BaseFileName+".strings", StringTable::sdUnknown))
   {
-    std::cout << "StringTableCompound::writeCompound: Error while writing 3rd table!\n";
+    std::cerr << "StringTableCompound::writeCompound: Error while writing 3rd table!\n";
     return false;
   }
   return true;

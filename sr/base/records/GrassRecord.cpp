@@ -102,7 +102,7 @@ bool GrassRecord::saveToStream(std::ostream& output) const
     //write MODT
     if (!unknownMODT.saveToStream(output, cMODT))
     {
-      std::cout << "Error while writing subrecord MODT of GRAS!\n";
+      std::cerr << "Error while writing subrecord MODT of GRAS!\n";
       return false;
     }
   }//if has MODT
@@ -141,7 +141,7 @@ bool GrassRecord::loadFromStream(std::istream& in_File, const bool localized, co
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of GRAS is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of GRAS is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -151,7 +151,7 @@ bool GrassRecord::loadFromStream(std::istream& in_File, const bool localized, co
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of GRAS!\n";
+    std::cerr << "Error while reading subrecord EDID of GRAS!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -169,7 +169,7 @@ bool GrassRecord::loadFromStream(std::istream& in_File, const bool localized, co
   bytesRead += 2;
   if (subLength!=12)
   {
-    std::cout <<"Error: subrecord OBND of GRAS has invalid length ("<<subLength
+    std::cerr <<"Error: subrecord OBND of GRAS has invalid length ("<<subLength
               <<" bytes). Should be 12 bytes!\n";
     return false;
   }
@@ -178,7 +178,7 @@ bool GrassRecord::loadFromStream(std::istream& in_File, const bool localized, co
   bytesRead += 12;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord OBND of GRAS!\n";
+    std::cerr << "Error while reading subrecord OBND of GRAS!\n";
     return false;
   }
 
@@ -195,7 +195,7 @@ bool GrassRecord::loadFromStream(std::istream& in_File, const bool localized, co
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record MODL of GRAS is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record MODL of GRAS is longer than 511 characters!\n";
     return false;
   }
   //read MODL's stuff
@@ -204,7 +204,7 @@ bool GrassRecord::loadFromStream(std::istream& in_File, const bool localized, co
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord MODL of GRAS!\n";
+    std::cerr << "Error while reading subrecord MODL of GRAS!\n";
     return false;
   }
   modelPath = std::string(buffer);
@@ -212,7 +212,7 @@ bool GrassRecord::loadFromStream(std::istream& in_File, const bool localized, co
   //read MODT
   if (!unknownMODT.loadFromStream(in_File, cMODT, true))
   {
-    std::cout << "Error while reading subrecord MODT of GRAS!\n";
+    std::cerr << "Error while reading subrecord MODT of GRAS!\n";
     return false;
   }
 
@@ -229,7 +229,7 @@ bool GrassRecord::loadFromStream(std::istream& in_File, const bool localized, co
   bytesRead += 2;
   if (subLength!=32)
   {
-    std::cout <<"Error: subrecord DATA of GRAS has invalid length ("<<subLength
+    std::cerr <<"Error: subrecord DATA of GRAS has invalid length ("<<subLength
               <<" bytes). Should be 32 bytes!\n";
     return false;
   }
@@ -238,7 +238,7 @@ bool GrassRecord::loadFromStream(std::istream& in_File, const bool localized, co
   bytesRead += 32;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord DATA of GRAS!\n";
+    std::cerr << "Error while reading subrecord DATA of GRAS!\n";
     return false;
   }
 

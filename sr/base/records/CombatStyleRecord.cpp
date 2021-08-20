@@ -300,7 +300,7 @@ bool CombatStyleRecord::loadFromStream(std::istream& in_File, const bool localiz
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of CSTY is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of CSTY is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -310,7 +310,7 @@ bool CombatStyleRecord::loadFromStream(std::istream& in_File, const bool localiz
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of CSTY!\n";
+    std::cerr << "Error while reading subrecord EDID of CSTY!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -328,7 +328,7 @@ bool CombatStyleRecord::loadFromStream(std::istream& in_File, const bool localiz
   bytesRead += 2;
   if ((subLength!=40) and (subLength!=32) and (subLength!=8))
   {
-    std::cout <<"Error: sub record CSGD of CSTY has invalid length ("<<subLength
+    std::cerr <<"Error: sub record CSGD of CSTY has invalid length ("<<subLength
               << " bytes). Should be 40 or 32 bytes or 8 bytes!\n";
     return false;
   }
@@ -378,7 +378,7 @@ bool CombatStyleRecord::loadFromStream(std::istream& in_File, const bool localiz
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord CSGD of CSTY!\n";
+    std::cerr << "Error while reading subrecord CSGD of CSTY!\n";
     return false;
   }
 
@@ -409,7 +409,7 @@ bool CombatStyleRecord::loadFromStream(std::istream& in_File, const bool localiz
       case cCSMD:
            if (hasCSMD)
            {
-             std::cout << "Error: record CSTY seems to have more than one CSMD subrecord!\n";
+             std::cerr << "Error: record CSTY seems to have more than one CSMD subrecord!\n";
              return false;
            }
            //CSMD's length
@@ -417,7 +417,7 @@ bool CombatStyleRecord::loadFromStream(std::istream& in_File, const bool localiz
            bytesRead += 2;
            if (subLength!=8)
            {
-             std::cout <<"Error: sub record CSMD of CSTY has invalid length ("
+             std::cerr <<"Error: sub record CSMD of CSTY has invalid length ("
                        <<subLength<<" bytes). Should be 8 bytes!\n";
              return false;
            }
@@ -426,7 +426,7 @@ bool CombatStyleRecord::loadFromStream(std::istream& in_File, const bool localiz
            in_File.read((char*) &unknownCSMDTwo, 4);
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord CSMD of CSTY!\n";
+             std::cerr << "Error while reading subrecord CSMD of CSTY!\n";
              return false;
            }
            bytesRead += 8;
@@ -435,7 +435,7 @@ bool CombatStyleRecord::loadFromStream(std::istream& in_File, const bool localiz
       case cCSME:
            if (!unknownCSME.empty())
            {
-             std::cout << "Error: record CSTY seems to have more than one CSME subrecord!\n";
+             std::cerr << "Error: record CSTY seems to have more than one CSME subrecord!\n";
              return false;
            }
            //CSME's length
@@ -443,7 +443,7 @@ bool CombatStyleRecord::loadFromStream(std::istream& in_File, const bool localiz
            bytesRead += 2;
            if ((subLength<4) or (subLength%4!=0))
            {
-             std::cout <<"Error: sub record CSME of CSTY has invalid length ("<<subLength
+             std::cerr <<"Error: sub record CSME of CSTY has invalid length ("<<subLength
                        << " bytes). Should be a positive integral multiple of four bytes!\n";
              return false;
            }
@@ -454,7 +454,7 @@ bool CombatStyleRecord::loadFromStream(std::istream& in_File, const bool localiz
              in_File.read((char*) &tempFloat, 4);
              if (!in_File.good())
              {
-               std::cout << "Error while reading subrecord CSME of CSTY!\n";
+               std::cerr << "Error while reading subrecord CSME of CSTY!\n";
                return false;
              }
              unknownCSME.push_back(tempFloat);
@@ -464,7 +464,7 @@ bool CombatStyleRecord::loadFromStream(std::istream& in_File, const bool localiz
       case cCSCR:
            if (hasReadCSCR)
            {
-             std::cout << "Error: record CSTY seems to have more than one CSCR subrecord!\n";
+             std::cerr << "Error: record CSTY seems to have more than one CSCR subrecord!\n";
              return false;
            }
            //CSCR's length
@@ -472,7 +472,7 @@ bool CombatStyleRecord::loadFromStream(std::istream& in_File, const bool localiz
            bytesRead += 2;
            if ((subLength!=16) and (subLength!=8))
            {
-             std::cout <<"Error: sub record CSCR of CSTY has invalid length ("
+             std::cerr <<"Error: sub record CSCR of CSTY has invalid length ("
                        <<subLength<<" bytes). Should be 16 bytes or 8 bytes!\n";
              return false;
            }
@@ -500,7 +500,7 @@ bool CombatStyleRecord::loadFromStream(std::istream& in_File, const bool localiz
            bytesRead += subLength;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord CSCR of CSTY!\n";
+             std::cerr << "Error while reading subrecord CSCR of CSTY!\n";
              return false;
            }
            hasReadCSCR = true;
@@ -508,7 +508,7 @@ bool CombatStyleRecord::loadFromStream(std::istream& in_File, const bool localiz
       case cCSLR:
            if (hasCSLR)
            {
-             std::cout << "Error: record CSTY seems to have more than one CSLR subrecord!\n";
+             std::cerr << "Error: record CSTY seems to have more than one CSLR subrecord!\n";
              return false;
            }
            //CSLR's length
@@ -516,7 +516,7 @@ bool CombatStyleRecord::loadFromStream(std::istream& in_File, const bool localiz
            bytesRead += 2;
            if (subLength!=4)
            {
-             std::cout << "Error: sub record CSLR of CSTY has invalid length ("
+             std::cerr << "Error: sub record CSLR of CSTY has invalid length ("
                        << subLength << " bytes). Should be four bytes!\n";
              return false;
            }
@@ -525,7 +525,7 @@ bool CombatStyleRecord::loadFromStream(std::istream& in_File, const bool localiz
            bytesRead += 4;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord CSLR of CSTY!\n";
+             std::cerr << "Error while reading subrecord CSLR of CSTY!\n";
              return false;
            }
            hasCSLR = true;
@@ -533,7 +533,7 @@ bool CombatStyleRecord::loadFromStream(std::istream& in_File, const bool localiz
       case cCSFL:
            if (!unknownCSFL.empty())
            {
-             std::cout << "Error: record CSTY seems to have more than one CSFL subrecord!\n";
+             std::cerr << "Error: record CSTY seems to have more than one CSFL subrecord!\n";
              return false;
            }
            //CSFL's length
@@ -541,7 +541,7 @@ bool CombatStyleRecord::loadFromStream(std::istream& in_File, const bool localiz
            bytesRead += 2;
            if ((subLength<4) or (subLength%4!=0))
            {
-             std::cout <<"Error: sub record CSFL of CSTY has invalid length ("<<subLength
+             std::cerr <<"Error: sub record CSFL of CSTY has invalid length ("<<subLength
                        << " bytes). Should be a positive integral multiple of four bytes!\n";
              return false;
            }
@@ -552,7 +552,7 @@ bool CombatStyleRecord::loadFromStream(std::istream& in_File, const bool localiz
              in_File.read((char*) &tempFloat, 4);
              if (!in_File.good())
              {
-               std::cout << "Error while reading subrecord CSFL of CSTY!\n";
+               std::cerr << "Error while reading subrecord CSFL of CSTY!\n";
                return false;
              }
              unknownCSFL.push_back(tempFloat);
@@ -562,7 +562,7 @@ bool CombatStyleRecord::loadFromStream(std::istream& in_File, const bool localiz
       case cDATA:
            if (hasDATA)
            {
-             std::cout << "Error: record CSTY seems to have more than one DATA subrecord!\n";
+             std::cerr << "Error: record CSTY seems to have more than one DATA subrecord!\n";
              return false;
            }
            //read DATA
@@ -571,7 +571,7 @@ bool CombatStyleRecord::loadFromStream(std::istream& in_File, const bool localiz
            bytesRead += 6;
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only CSMD, CSME, CSCR, CSLR, CSFL or DATA are allowed here!\n";
            return false;
            break;

@@ -190,7 +190,7 @@ bool LeveledItemRecord::loadFromStream(std::istream& in_File, const bool localiz
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of LVLI is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of LVLI is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -200,7 +200,7 @@ bool LeveledItemRecord::loadFromStream(std::istream& in_File, const bool localiz
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of LVLI!\n";
+    std::cerr << "Error while reading subrecord EDID of LVLI!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -218,7 +218,7 @@ bool LeveledItemRecord::loadFromStream(std::istream& in_File, const bool localiz
   bytesRead += 2;
   if (subLength!=12)
   {
-    std::cout <<"Error: sub record OBND of LVLI has invalid length ("<<subLength
+    std::cerr <<"Error: sub record OBND of LVLI has invalid length ("<<subLength
               <<" bytes). Should be 12 bytes!\n";
     return false;
   }
@@ -228,7 +228,7 @@ bool LeveledItemRecord::loadFromStream(std::istream& in_File, const bool localiz
   bytesRead += 12;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord OBND of LVLI!\n";
+    std::cerr << "Error while reading subrecord OBND of LVLI!\n";
     return false;
   }
 
@@ -245,7 +245,7 @@ bool LeveledItemRecord::loadFromStream(std::istream& in_File, const bool localiz
   bytesRead += 2;
   if (subLength!=1)
   {
-    std::cout <<"Error: sub record LVLD of LVLI has invalid length ("<<subLength
+    std::cerr <<"Error: sub record LVLD of LVLI has invalid length ("<<subLength
               <<" bytes). Should be one byte!\n";
     return false;
   }
@@ -254,7 +254,7 @@ bool LeveledItemRecord::loadFromStream(std::istream& in_File, const bool localiz
   bytesRead += 1;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord LVLD of LVLI!\n";
+    std::cerr << "Error while reading subrecord LVLD of LVLI!\n";
     return false;
   }
 
@@ -271,7 +271,7 @@ bool LeveledItemRecord::loadFromStream(std::istream& in_File, const bool localiz
   bytesRead += 2;
   if (subLength!=1)
   {
-    std::cout <<"Error: sub record LVLF of LVLI has invalid length ("<<subLength
+    std::cerr <<"Error: sub record LVLF of LVLI has invalid length ("<<subLength
               <<" bytes). Should be one byte!\n";
     return false;
   }
@@ -280,7 +280,7 @@ bool LeveledItemRecord::loadFromStream(std::istream& in_File, const bool localiz
   bytesRead += 1;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord LVLF of LVLI!\n";
+    std::cerr << "Error while reading subrecord LVLF of LVLI!\n";
     return false;
   }
 
@@ -299,7 +299,7 @@ bool LeveledItemRecord::loadFromStream(std::istream& in_File, const bool localiz
       case cLLCT:
            if (hasReadLLCT)
            {
-             std::cout << "Error: record LVLI seems to have more than one LLCT subrecord!\n";
+             std::cerr << "Error: record LVLI seems to have more than one LLCT subrecord!\n";
              return false;
            }
            //LLCT's length
@@ -307,7 +307,7 @@ bool LeveledItemRecord::loadFromStream(std::istream& in_File, const bool localiz
            bytesRead += 2;
            if (subLength!=1)
            {
-             std::cout <<"Error: sub record LLCT of LVLI has invalid length ("
+             std::cerr <<"Error: sub record LLCT of LVLI has invalid length ("
                        <<subLength<<" bytes). Should be one byte!\n";
              return false;
            }
@@ -316,7 +316,7 @@ bool LeveledItemRecord::loadFromStream(std::istream& in_File, const bool localiz
            bytesRead += 1;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord LLCT of LVLI!\n";
+             std::cerr << "Error while reading subrecord LLCT of LVLI!\n";
              return false;
            }
            hasReadLLCT = true;
@@ -324,7 +324,7 @@ bool LeveledItemRecord::loadFromStream(std::istream& in_File, const bool localiz
       case cLVLO:
            if (entries.size()>=entryCount)
            {
-             std::cout << "Error: record LVLI seems to have more LVLO subrecords than the LLCT value indicates!\n";
+             std::cerr << "Error: record LVLI seems to have more LVLO subrecords than the LLCT value indicates!\n";
              return false;
            }
            //LVLO's length
@@ -332,7 +332,7 @@ bool LeveledItemRecord::loadFromStream(std::istream& in_File, const bool localiz
            bytesRead += 2;
            if (subLength!=12)
            {
-             std::cout <<"Error: sub record LVLO of LVLI has invalid length ("<<subLength
+             std::cerr <<"Error: sub record LVLO of LVLI has invalid length ("<<subLength
                        <<" bytes). Should be 12 bytes!\n";
              return false;
            }
@@ -343,7 +343,7 @@ bool LeveledItemRecord::loadFromStream(std::istream& in_File, const bool localiz
            bytesRead += 12;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord LVLO of LVLI!\n";
+             std::cerr << "Error while reading subrecord LVLO of LVLI!\n";
              return false;
            }
            temp.coed.init(); //sets default values for COED part
@@ -352,12 +352,12 @@ bool LeveledItemRecord::loadFromStream(std::istream& in_File, const bool localiz
       case cCOED:
            if (entries.empty())
            {
-             std::cout << "Error: COED subrecord not allowed without previous LVLO subrecord!\n";
+             std::cerr << "Error: COED subrecord not allowed without previous LVLO subrecord!\n";
              return false;
            }
            if (!entries.back().coed.isInit())
            {
-             std::cout << "Error: record LVLI seems to have more than one COED subrecord per LVLO!\n";
+             std::cerr << "Error: record LVLI seems to have more than one COED subrecord per LVLO!\n";
              return false;
            }
            //COED's length
@@ -365,7 +365,7 @@ bool LeveledItemRecord::loadFromStream(std::istream& in_File, const bool localiz
            bytesRead += 2;
            if (subLength!=12)
            {
-             std::cout <<"Error: sub record COED of LVLI has invalid length ("
+             std::cerr <<"Error: sub record COED of LVLI has invalid length ("
                        <<subLength<<" bytes). Should be 12 bytes!\n";
              return false;
            }
@@ -376,20 +376,20 @@ bool LeveledItemRecord::loadFromStream(std::istream& in_File, const bool localiz
            bytesRead += 12;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord COED of LVLI!\n";
+             std::cerr << "Error while reading subrecord COED of LVLI!\n";
              return false;
            }
            //status check
            if (entries.back().coed.isInit())
            {
-             std::cout << "Error: subrecord COED of LVLI contains invalid value!\n";
+             std::cerr << "Error: subrecord COED of LVLI contains invalid value!\n";
              return false;
            }
            break;
       case cLVLG:
            if (globalFormID!=0)
            {
-             std::cout << "Error: record LVLI seems to have more than one LVLG subrecord!\n";
+             std::cerr << "Error: record LVLI seems to have more than one LVLG subrecord!\n";
              return false;
            }
            //LVLG's length
@@ -399,12 +399,12 @@ bool LeveledItemRecord::loadFromStream(std::istream& in_File, const bool localiz
            //check content
            if (globalFormID==0)
            {
-             std::cout << "Error: subrecord LVLG of LVLI has invalid value!\n";
+             std::cerr << "Error: subrecord LVLG of LVLI has invalid value!\n";
              return false;
            }
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only LVLG, LLCT, COED or LVLO are allowed here!\n";
            return false;
            break;
@@ -414,7 +414,7 @@ bool LeveledItemRecord::loadFromStream(std::istream& in_File, const bool localiz
   //count check
   if (entryCount!=entries.size())
   {
-    std::cout << "Error: entry count does not match number of actual entries!\n";
+    std::cerr << "Error: entry count does not match number of actual entries!\n";
     return false;
   }
 

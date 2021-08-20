@@ -207,7 +207,7 @@ bool RaceRecord::saveToStream(std::ostream& output) const
     //write BODT
     if (!unknownBODT.saveToStream(output, cBODT))
     {
-      std::cout << "Error while writing subrecord BODT of RACE!\n";
+      std::cerr << "Error while writing subrecord BODT of RACE!\n";
       return false;
     }
   }//if BODT
@@ -217,7 +217,7 @@ bool RaceRecord::saveToStream(std::ostream& output) const
     //write BOD2
     if (!unknownBOD2.saveToStream(output, cBOD2))
     {
-      std::cout << "Error while writing subrecord BOD2 of RACE!\n";
+      std::cerr << "Error while writing subrecord BOD2 of RACE!\n";
       return false;
     }
   }//if BOD2
@@ -268,7 +268,7 @@ bool RaceRecord::saveToStream(std::ostream& output) const
     {
       if (!subBlocks[i].subData.saveToStream(output, subBlocks[i].subType))
       {
-        std::cout << "Error while writing (binary) subrecord "
+        std::cerr << "Error while writing (binary) subrecord "
                   << IntTo4Char(subBlocks[i].subType)<<" of RACE!\n";
         return false;
       }//if
@@ -301,7 +301,7 @@ bool RaceRecord::loadFromStream(std::istream& in_File, const bool localized, con
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of RACE is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of RACE is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -311,7 +311,7 @@ bool RaceRecord::loadFromStream(std::istream& in_File, const bool localized, con
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of RACE!\n";
+    std::cerr << "Error while reading subrecord EDID of RACE!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -336,31 +336,31 @@ bool RaceRecord::loadFromStream(std::istream& in_File, const bool localized, con
       case cFULL:
            if (name.isPresent())
            {
-             std::cout << "Error: RACE seems to have more than one FULL subrecord!\n";
+             std::cerr << "Error: RACE seems to have more than one FULL subrecord!\n";
              return false;
            }
            if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
            {
-             std::cout << "Error while reading subrecord FULL of RACE!\n";
+             std::cerr << "Error while reading subrecord FULL of RACE!\n";
              return false;
            }
            break;
       case cDESC:
            if (description.isPresent())
            {
-             std::cout << "Error: RACE seems to have more than one DESC subrecord!\n";
+             std::cerr << "Error: RACE seems to have more than one DESC subrecord!\n";
              return false;
            }
            if (!description.loadFromStream(in_File, cDESC, false, bytesRead, localized, table, buffer))
            {
-             std::cout << "Error while reading subrecord DESC of RACE!\n";
+             std::cerr << "Error while reading subrecord DESC of RACE!\n";
              return false;
            }
            break;
       case cSPCT:
            if (!spellFormIDs.empty())
            {
-             std::cout << "Error: RACE seems to have more than one SPCT subrecord!\n";
+             std::cerr << "Error: RACE seems to have more than one SPCT subrecord!\n";
              return false;
            }
            //SPCT's length
@@ -368,7 +368,7 @@ bool RaceRecord::loadFromStream(std::istream& in_File, const bool localized, con
            bytesRead += 2;
            if (subLength!=4)
            {
-             std::cout <<"Error: sub record SPCT of RACE has invalid length("
+             std::cerr <<"Error: sub record SPCT of RACE has invalid length("
                        <<subLength<<" bytes). Should be four bytes!\n";
              return false;
            }
@@ -378,12 +378,12 @@ bool RaceRecord::loadFromStream(std::istream& in_File, const bool localized, con
            bytesRead += 4;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord SPCT of RACE!\n";
+             std::cerr << "Error while reading subrecord SPCT of RACE!\n";
              return false;
            }
            if (spell_count==0)
            {
-             std::cout << "Error: subrecord SPCT of RACE is zero!\n";
+             std::cerr << "Error: subrecord SPCT of RACE is zero!\n";
              return false;
            }
 
@@ -402,7 +402,7 @@ bool RaceRecord::loadFromStream(std::istream& in_File, const bool localized, con
              bytesRead += 2;
              if (subLength!=4)
              {
-               std::cout <<"Error: sub record SPLO of RACE has invalid length("
+               std::cerr <<"Error: sub record SPLO of RACE has invalid length("
                          <<subLength<<" bytes). Should be four bytes!\n";
                return false;
              }
@@ -411,7 +411,7 @@ bool RaceRecord::loadFromStream(std::istream& in_File, const bool localized, con
              bytesRead += 4;
              if (!in_File.good())
              {
-               std::cout << "Error while reading subrecord SPLO of RACE!\n";
+               std::cerr << "Error while reading subrecord SPLO of RACE!\n";
                return false;
              }
              spellFormIDs.push_back(temp_uint32);
@@ -420,12 +420,12 @@ bool RaceRecord::loadFromStream(std::istream& in_File, const bool localized, con
       case cWNAM:
            if (hasWNAM)
            {
-             std::cout << "Error: RACE seems to have more than one WNAM subrecord!\n";
+             std::cerr << "Error: RACE seems to have more than one WNAM subrecord!\n";
              return false;
            }
            if (!loadUint32SubRecordFromStream(in_File, cWNAM, unknownWNAM, false))
            {
-             std::cout << "Error while reading subrecord WNAM of RACE!\n";
+             std::cerr << "Error while reading subrecord WNAM of RACE!\n";
              return false;
            }
            bytesRead += 6;
@@ -434,7 +434,7 @@ bool RaceRecord::loadFromStream(std::istream& in_File, const bool localized, con
       case cBODT:
            if (unknownBODT.isPresent())
            {
-             std::cout << "Error: RACE seems to have more than one BODT subrecord!\n";
+             std::cerr << "Error: RACE seems to have more than one BODT subrecord!\n";
              return false;
            }
            // read BODT
@@ -452,7 +452,7 @@ bool RaceRecord::loadFromStream(std::istream& in_File, const bool localized, con
       case cBOD2:
            if (unknownBOD2.isPresent())
            {
-             std::cout << "Error: RACE seems to have more than one BOD2 subrecord!\n";
+             std::cerr << "Error: RACE seems to have more than one BOD2 subrecord!\n";
              return false;
            }
            //read BOD2
@@ -463,7 +463,7 @@ bool RaceRecord::loadFromStream(std::istream& in_File, const bool localized, con
       case cKSIZ:
            if (!keywordArray.empty())
            {
-             std::cout << "Error: RACE seems to have more than one KSIZ subrecord!\n";
+             std::cerr << "Error: RACE seems to have more than one KSIZ subrecord!\n";
              return false;
            }
            //KSIZ's length
@@ -471,7 +471,7 @@ bool RaceRecord::loadFromStream(std::istream& in_File, const bool localized, con
            bytesRead += 2;
            if (subLength!=4)
            {
-             std::cout <<"Error: sub record KSIZ of RACE has invalid length("
+             std::cerr <<"Error: sub record KSIZ of RACE has invalid length("
                        <<subLength<<" bytes). Should be four bytes!\n";
              return false;
            }
@@ -481,12 +481,12 @@ bool RaceRecord::loadFromStream(std::istream& in_File, const bool localized, con
            bytesRead += 4;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord KSIZ of RACE!\n";
+             std::cerr << "Error while reading subrecord KSIZ of RACE!\n";
              return false;
            }
            if (spell_count==0)
            {
-             std::cout << "Error: subrecord KSIZ of RACE is zero!\n";
+             std::cerr << "Error: subrecord KSIZ of RACE is zero!\n";
              return false;
            }
 
@@ -503,7 +503,7 @@ bool RaceRecord::loadFromStream(std::istream& in_File, const bool localized, con
            bytesRead += 2;
            if (subLength!=4*spell_count)
            {
-             std::cout <<"Error: sub record KWDA of RACE has invalid length("
+             std::cerr <<"Error: sub record KWDA of RACE has invalid length("
                        <<subLength<<" bytes). Should be "<<4*spell_count<<" bytes!\n";
              return false;
            }
@@ -515,7 +515,7 @@ bool RaceRecord::loadFromStream(std::istream& in_File, const bool localized, con
              bytesRead += 4;
              if (!in_File.good())
              {
-               std::cout << "Error while reading subrecord KWDA of RACE!\n";
+               std::cerr << "Error while reading subrecord KWDA of RACE!\n";
                return false;
              }
              keywordArray.push_back(temp_uint32);
@@ -524,7 +524,7 @@ bool RaceRecord::loadFromStream(std::istream& in_File, const bool localized, con
       case cDATA:
            if (hasReadDATA)
            {
-             std::cout << "Error: RACE seems to have more than one DATA subrecord!\n";
+             std::cerr << "Error: RACE seems to have more than one DATA subrecord!\n";
              return false;
            }
            //DATA's length
@@ -532,7 +532,7 @@ bool RaceRecord::loadFromStream(std::istream& in_File, const bool localized, con
            bytesRead += 2;
            if (subLength!=getDataLength())
            {
-             std::cout << "Error: sub record DATA of RACE has invalid length("
+             std::cerr << "Error: sub record DATA of RACE has invalid length("
                        << subLength << " bytes). Should be " << getDataLength()
                        <<" bytes!\n";
              return false;
@@ -556,13 +556,13 @@ bool RaceRecord::loadFromStream(std::istream& in_File, const bool localized, con
            bytesRead += getDataLength();
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord DATA of RACE!\n";
+             std::cerr << "Error while reading subrecord DATA of RACE!\n";
              return false;
            }
            hasReadDATA = true;
            break;
       default:
-           std::cout << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
                      << "\", but only FULL, DESC, SPCT, WNAM, BODT, BOD2, KSIZ or DATA are allowed here!\n";
            return false;
     }//swi
@@ -571,7 +571,7 @@ bool RaceRecord::loadFromStream(std::istream& in_File, const bool localized, con
   //presence checks
   if (!((unknownBODT.isPresent() or unknownBOD2.isPresent()) and hasReadDATA and description.isPresent()))
   {
-    std::cout << "Error: subrecord BODT/BOD2, DATA or DESC of RACE is missing!\n";
+    std::cerr << "Error: subrecord BODT/BOD2, DATA or DESC of RACE is missing!\n";
     return false;
   }
 
@@ -587,9 +587,9 @@ bool RaceRecord::loadFromStream(std::istream& in_File, const bool localized, con
     tempBlock.subType = subRecName;
     if (!tempBlock.subData.loadFromStream(in_File, subRecName, false))
     {
-      std::cout << "Error while reading subrecord "<<IntTo4Char(subRecName)
+      std::cerr << "Error while reading subrecord "<<IntTo4Char(subRecName)
                 << " of RACE!\n";
-      std::cout << "Read size: "<<readSize<<",    bytes read: "<<bytesRead<<"\n";
+      std::cerr << "Read size: "<<readSize<<",    bytes read: "<<bytesRead<<"\n";
       return false;
     }
     bytesRead = bytesRead + 2 + tempBlock.subData.size();

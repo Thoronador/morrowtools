@@ -62,7 +62,7 @@ bool GlobalRecord::equals(const GlobalRecord& other) const
          return (floatVal==other.floatVal);
          break;
   }//swi
-  std::cout << "Unhandled case in GlobalRecord::equals!\n";
+  std::cerr << "Unhandled case in GlobalRecord::equals!\n";
   throw std::logic_error("Unhandled case in GlobalRecord::equals!");
 }
 #endif
@@ -145,12 +145,12 @@ bool GlobalRecord::loadFromStream(std::istream& in_File, const bool localized, c
   in_File.read((char*) &subLength, 2);
   if (subLength>511)
   {
-    std::cout << "Sub record EDID of GLOB is longer than 511 characters!\n";
+    std::cerr << "Sub record EDID of GLOB is longer than 511 characters!\n";
     return false;
   }
   if (subLength<=0)
   {
-    std::cout << "Sub record EDID of GLOB is shorter than one character!\n";
+    std::cerr << "Sub record EDID of GLOB is shorter than one character!\n";
     return false;
   }
   char buffer[512];
@@ -159,7 +159,7 @@ bool GlobalRecord::loadFromStream(std::istream& in_File, const bool localized, c
   in_File.read(buffer, subLength);
   if (!in_File.good())
   {
-    std::cout << "Error while reading sub record EDID of GLOB!\n";
+    std::cerr << "Error while reading sub record EDID of GLOB!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -176,7 +176,7 @@ bool GlobalRecord::loadFromStream(std::istream& in_File, const bool localized, c
   in_File.read((char*) &subLength, 2);
   if (subLength!=1)
   {
-    std::cout <<"Error: sub record FNAM of GLOB has invalid length ("<<subLength
+    std::cerr <<"Error: sub record FNAM of GLOB has invalid length ("<<subLength
               <<" bytes). Should be one byte.\n";
     return false;
   }
@@ -185,12 +185,12 @@ bool GlobalRecord::loadFromStream(std::istream& in_File, const bool localized, c
   in_File.read(&typeChar, 1);
   if (!in_File.good())
   {
-    std::cout << "Error while reading sub record FNAM of GLOB!\n";
+    std::cerr << "Error while reading sub record FNAM of GLOB!\n";
     return false;
   }
   if ((typeChar!='s') and (typeChar!='l') and (typeChar!='f'))
   {
-    std::cout << "Error: sub record FNAM of GLOB has invalid content!\n";
+    std::cerr << "Error: sub record FNAM of GLOB has invalid content!\n";
     return false;
   }
 
@@ -206,7 +206,7 @@ bool GlobalRecord::loadFromStream(std::istream& in_File, const bool localized, c
   in_File.read((char*) &subLength, 2);
   if (subLength!=4)
   {
-    std::cout <<"Error: sub record FLTV of GLOB has invalid length ("<<subLength
+    std::cerr <<"Error: sub record FLTV of GLOB has invalid length ("<<subLength
               <<" bytes). Should be four bytes.\n";
     return false;
   }
@@ -215,7 +215,7 @@ bool GlobalRecord::loadFromStream(std::istream& in_File, const bool localized, c
   in_File.read((char*) &tempFloat, 4);
   if (!in_File.good())
   {
-    std::cout << "Error while reading sub record FLTV of GLOB!\n";
+    std::cerr << "Error while reading sub record FLTV of GLOB!\n";
     return false;
   }
   switch (typeChar)

@@ -250,7 +250,7 @@ bool TextureSetRecord::loadFromStream(std::istream& in_File, const bool localize
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of TXST is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of TXST is longer than 511 characters!\n";
     return false;
   }
   //read TXST's stuff
@@ -260,7 +260,7 @@ bool TextureSetRecord::loadFromStream(std::istream& in_File, const bool localize
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of TXST!\n";
+    std::cerr << "Error while reading subrecord EDID of TXST!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -278,7 +278,7 @@ bool TextureSetRecord::loadFromStream(std::istream& in_File, const bool localize
   bytesRead += 2;
   if (subLength!=12)
   {
-    std::cout <<"Error: sub record OBND of TXST has invalid length ("<<subLength
+    std::cerr <<"Error: sub record OBND of TXST has invalid length ("<<subLength
               <<" bytes). Should be 12 bytes.\n";
     return false;
   }
@@ -287,7 +287,7 @@ bool TextureSetRecord::loadFromStream(std::istream& in_File, const bool localize
   bytesRead += 12;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord OBND of TXST!\n";
+    std::cerr << "Error while reading subrecord OBND of TXST!\n";
     return false;
   }
 
@@ -315,7 +315,7 @@ bool TextureSetRecord::loadFromStream(std::istream& in_File, const bool localize
       case cDNAM:
            if (hasReadDNAM)
            {
-             std::cout << "Error: record TXST seems to have more than one DNAM subrecord!\n";
+             std::cerr << "Error: record TXST seems to have more than one DNAM subrecord!\n";
              return false;
            }
            //DNAM's length
@@ -323,7 +323,7 @@ bool TextureSetRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if (subLength!=2)
            {
-             std::cout <<"Error: sub record DNAM of TXST has invalid length ("
+             std::cerr <<"Error: sub record DNAM of TXST has invalid length ("
                        <<subLength <<" bytes). Should be two bytes.\n";
              return false;
            }
@@ -332,7 +332,7 @@ bool TextureSetRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord DNAM of TXST!\n";
+             std::cerr << "Error while reading subrecord DNAM of TXST!\n";
              return false;
            }
            hasReadDNAM = true;
@@ -340,7 +340,7 @@ bool TextureSetRecord::loadFromStream(std::istream& in_File, const bool localize
       case cDODT:
            if (hasReadDODT)
            {
-             std::cout << "Error: record TXST seems to have more than one DODT subrecord!\n";
+             std::cerr << "Error: record TXST seems to have more than one DODT subrecord!\n";
              return false;
            }
            //DODT's length
@@ -348,7 +348,7 @@ bool TextureSetRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if (subLength!=36)
            {
-             std::cout <<"Error: sub record DODT of TXST has invalid length ("<<subLength
+             std::cerr <<"Error: sub record DODT of TXST has invalid length ("<<subLength
                        <<" bytes). Should be 36 bytes.\n";
              return false;
            }
@@ -357,7 +357,7 @@ bool TextureSetRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 36;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord DODT of TXST!\n";
+             std::cerr << "Error while reading subrecord DODT of TXST!\n";
              return false;
            }
            hasReadDODT = true;
@@ -366,7 +366,7 @@ bool TextureSetRecord::loadFromStream(std::istream& in_File, const bool localize
       case cTX01:
            if (!texture01.empty())
            {
-             std::cout << "Error: record TXST seems to have more than one TX01 subrecord!\n";
+             std::cerr << "Error: record TXST seems to have more than one TX01 subrecord!\n";
              return false;
            }
            //read TX01
@@ -376,7 +376,7 @@ bool TextureSetRecord::loadFromStream(std::istream& in_File, const bool localize
       case cTX02:
            if (!texture02.empty())
            {
-             std::cout << "Error: record TXST seems to have more than one TX02 subrecord!\n";
+             std::cerr << "Error: record TXST seems to have more than one TX02 subrecord!\n";
              return false;
            }
            //read TX02
@@ -386,7 +386,7 @@ bool TextureSetRecord::loadFromStream(std::istream& in_File, const bool localize
       case cTX03:
            if (!texture03.empty())
            {
-             std::cout << "Error: record TXST seems to have more than one TX03 subrecord!\n";
+             std::cerr << "Error: record TXST seems to have more than one TX03 subrecord!\n";
              return false;
            }
            //read TX03
@@ -396,7 +396,7 @@ bool TextureSetRecord::loadFromStream(std::istream& in_File, const bool localize
       case cTX04:
            if (!texture04.empty())
            {
-             std::cout << "Error: record TXST seems to have more than one TX04 subrecord!\n";
+             std::cerr << "Error: record TXST seems to have more than one TX04 subrecord!\n";
              return false;
            }
            //read TX04
@@ -406,7 +406,7 @@ bool TextureSetRecord::loadFromStream(std::istream& in_File, const bool localize
       case cTX05:
            if (!texture05.empty())
            {
-             std::cout << "Error: record TXST seems to have more than one TX05 subrecord!\n";
+             std::cerr << "Error: record TXST seems to have more than one TX05 subrecord!\n";
              return false;
            }
            //read TX05
@@ -416,7 +416,7 @@ bool TextureSetRecord::loadFromStream(std::istream& in_File, const bool localize
       case cTX07:
            if (!texture07.empty())
            {
-             std::cout << "Error: record TXST seems to have more than one TX07 subrecord!\n";
+             std::cerr << "Error: record TXST seems to have more than one TX07 subrecord!\n";
              return false;
            }
            //read TX07
@@ -424,7 +424,7 @@ bool TextureSetRecord::loadFromStream(std::istream& in_File, const bool localize
              return false;
            break;
       default:
-           std::cout << "Error: expected record name DNAM, DODT, TX01, TX02, "
+           std::cerr << "Error: expected record name DNAM, DODT, TX01, TX02, "
                      << "TX03, TX04, TX05 or TX07 was not found. Instead, \""
                      << IntTo4Char(subRecName)<<"\" was found.\n";
            return false;

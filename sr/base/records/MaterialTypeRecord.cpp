@@ -304,7 +304,7 @@ bool MaterialTypeRecord::loadFromStream(std::istream& in_File, const bool locali
            bytesRead += 2;
            if (subLength != 4)
            {
-             std::cout << "Error: sub record BNAM of MATT has invalid length ("
+             std::cerr << "Error: sub record BNAM of MATT has invalid length ("
                        << subLength << " bytes). Should be four bytes!\n";
              return false;
            }
@@ -335,7 +335,7 @@ bool MaterialTypeRecord::loadFromStream(std::istream& in_File, const bool locali
       case cHNAM:
            if (havokImpactDataSetID != 0)
            {
-             std::cout << "Error: MATT seems to have more than one HNAM subrecord!\n";
+             std::cerr << "Error: MATT seems to have more than one HNAM subrecord!\n";
              return false;
            }
            // HNAM's length
@@ -347,12 +347,12 @@ bool MaterialTypeRecord::loadFromStream(std::istream& in_File, const bool locali
            // check value
            if (havokImpactDataSetID == 0)
            {
-             std::cout << "Error: subrecord HNAM of MATT has value zero!\n";
+             std::cerr << "Error: subrecord HNAM of MATT has value zero!\n";
              return false;
            }
            break;
       default:
-           std::cout << "Error: unexpected record type \"" << IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \"" << IntTo4Char(subRecName)
                      << "\" found, but only MNAM, CNAM, BNAM or HNAM are allowed here!\n";
            return false;
            break;

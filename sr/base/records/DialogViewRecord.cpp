@@ -168,7 +168,7 @@ bool DialogViewRecord::loadFromStream(std::istream& in_File, const bool localize
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of DLVW is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of DLVW is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -178,7 +178,7 @@ bool DialogViewRecord::loadFromStream(std::istream& in_File, const bool localize
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of DLVW!\n";
+    std::cerr << "Error while reading subrecord EDID of DLVW!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -186,7 +186,7 @@ bool DialogViewRecord::loadFromStream(std::istream& in_File, const bool localize
   //read QNAM
   if (!loadUint32SubRecordFromStream(in_File, cQNAM, unknownQNAM, true))
   {
-    std::cout << "Error while reading subrecord QNAM of DLVW!\n";
+    std::cerr << "Error while reading subrecord QNAM of DLVW!\n";
     return false;
   }
   bytesRead += 10;
@@ -207,7 +207,7 @@ bool DialogViewRecord::loadFromStream(std::istream& in_File, const bool localize
            //read BNAM
            if (!loadUint32SubRecordFromStream(in_File, cBNAM, tempUint32, false))
            {
-             std::cout << "Error while reading subrecord BNAM of DLVW!\n";
+             std::cerr << "Error while reading subrecord BNAM of DLVW!\n";
              return false;
            }
            bytesRead += 6;
@@ -217,7 +217,7 @@ bool DialogViewRecord::loadFromStream(std::istream& in_File, const bool localize
            //read TNAM
            if (!loadUint32SubRecordFromStream(in_File, cTNAM, tempUint32, false))
            {
-             std::cout << "Error while reading subrecord TNAM of DLVW!\n";
+             std::cerr << "Error while reading subrecord TNAM of DLVW!\n";
              return false;
            }
            bytesRead += 6;
@@ -226,13 +226,13 @@ bool DialogViewRecord::loadFromStream(std::istream& in_File, const bool localize
       case cENAM:
            if (hasENAM)
            {
-             std::cout << "Error: record DLVW seems to have more than one ENAM subrecord!\n";
+             std::cerr << "Error: record DLVW seems to have more than one ENAM subrecord!\n";
              return false;
            }
            //load ENAM
            if (!loadUint32SubRecordFromStream(in_File, cENAM, unknownENAM, false))
            {
-             std::cout << "Error while reading subrecord ENAM of DLVW!\n";
+             std::cerr << "Error while reading subrecord ENAM of DLVW!\n";
              return false;
            }
            bytesRead += 6;
@@ -241,7 +241,7 @@ bool DialogViewRecord::loadFromStream(std::istream& in_File, const bool localize
       case cDNAM:
            if (hasDNAM)
            {
-             std::cout << "Error: record DLVW seems to have more than one DNAM subrecord!\n";
+             std::cerr << "Error: record DLVW seems to have more than one DNAM subrecord!\n";
              return false;
            }
            //DNAM's length
@@ -249,7 +249,7 @@ bool DialogViewRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if (subLength!=1)
            {
-             std::cout <<"Error: sub record DNAM of DLVW has invalid length ("
+             std::cerr <<"Error: sub record DNAM of DLVW has invalid length ("
                        <<subLength<<" bytes). Should be one byte!\n";
              return false;
            }
@@ -258,13 +258,13 @@ bool DialogViewRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 1;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord DNAM of DLVW!\n";
+             std::cerr << "Error while reading subrecord DNAM of DLVW!\n";
              return false;
            }
            hasDNAM = true;
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only BNAM, TNAM, ENAM or DNAM are allowed here!\n";
            return false;
            break;
@@ -274,7 +274,7 @@ bool DialogViewRecord::loadFromStream(std::istream& in_File, const bool localize
   //presence checks
   if ((!unknownBNAMs.empty()) and (!unknownTNAMs.empty()))
   {
-    std::cout << "Error while reading DLVW: only BNAM or TNAM can be present!\n";
+    std::cerr << "Error while reading DLVW: only BNAM or TNAM can be present!\n";
     return false;
   }
 

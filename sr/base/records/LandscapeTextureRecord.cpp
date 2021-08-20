@@ -163,7 +163,7 @@ bool LandscapeTextureRecord::loadFromStream(std::istream& in_File, const bool lo
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of LTEX is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of LTEX is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -173,7 +173,7 @@ bool LandscapeTextureRecord::loadFromStream(std::istream& in_File, const bool lo
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of LTEX!\n";
+    std::cerr << "Error while reading subrecord EDID of LTEX!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -194,13 +194,13 @@ bool LandscapeTextureRecord::loadFromStream(std::istream& in_File, const bool lo
       case cTNAM:
            if (hasTNAM)
            {
-             std::cout << "Error: LTEX seems to have more than one TNAM subrecord!\n";
+             std::cerr << "Error: LTEX seems to have more than one TNAM subrecord!\n";
              return false;
            }
            //readTNAM
            if (!loadUint32SubRecordFromStream(in_File, cTNAM, unknownTNAM, false))
            {
-             std::cout << "Error while reading subrecord TNAM of LTEX!\n";
+             std::cerr << "Error while reading subrecord TNAM of LTEX!\n";
              return false;
            }
            bytesRead += 6;
@@ -209,13 +209,13 @@ bool LandscapeTextureRecord::loadFromStream(std::istream& in_File, const bool lo
       case cMNAM:
            if (hasReadMNAM)
            {
-             std::cout << "Error: LTEX seems to have more than one MNAM subrecord!\n";
+             std::cerr << "Error: LTEX seems to have more than one MNAM subrecord!\n";
              return false;
            }
            //readMNAM
            if (!loadUint32SubRecordFromStream(in_File, cMNAM, unknownMNAM, false))
            {
-             std::cout << "Error while reading subrecord MNAM of LTEX!\n";
+             std::cerr << "Error while reading subrecord MNAM of LTEX!\n";
              return false;
            }
            bytesRead += 6;
@@ -224,7 +224,7 @@ bool LandscapeTextureRecord::loadFromStream(std::istream& in_File, const bool lo
       case cHNAM:
            if (hasReadHNAM)
            {
-             std::cout << "Error: LTEX seems to have more than one HNAM subrecord!\n";
+             std::cerr << "Error: LTEX seems to have more than one HNAM subrecord!\n";
              return false;
            }
            //HNAM's length
@@ -232,7 +232,7 @@ bool LandscapeTextureRecord::loadFromStream(std::istream& in_File, const bool lo
            bytesRead += 2;
            if (subLength!=2)
            {
-             std::cout <<"Error: sub record HNAM of LTEX has invalid length ("<<subLength
+             std::cerr <<"Error: sub record HNAM of LTEX has invalid length ("<<subLength
                        <<" bytes). Should be two bytes.\n";
              return false;
            }
@@ -241,7 +241,7 @@ bool LandscapeTextureRecord::loadFromStream(std::istream& in_File, const bool lo
            bytesRead += 2;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord HNAM of LTEX!\n";
+             std::cerr << "Error while reading subrecord HNAM of LTEX!\n";
              return false;
            }
            hasReadHNAM = true;
@@ -249,7 +249,7 @@ bool LandscapeTextureRecord::loadFromStream(std::istream& in_File, const bool lo
       case cSNAM:
            if (hasReadSNAM)
            {
-             std::cout << "Error: LTEX seems to have more than one SNAM subrecord!\n";
+             std::cerr << "Error: LTEX seems to have more than one SNAM subrecord!\n";
              return false;
            }
            //SNAM's length
@@ -257,7 +257,7 @@ bool LandscapeTextureRecord::loadFromStream(std::istream& in_File, const bool lo
            bytesRead += 2;
            if (subLength!=1)
            {
-             std::cout <<"Error: sub record SNAM of LTEX has invalid length ("<<subLength
+             std::cerr <<"Error: sub record SNAM of LTEX has invalid length ("<<subLength
                        <<" bytes). Should be one byte.\n";
              return false;
            }
@@ -266,7 +266,7 @@ bool LandscapeTextureRecord::loadFromStream(std::istream& in_File, const bool lo
            bytesRead += 1;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord SNAM of LTEX!\n";
+             std::cerr << "Error while reading subrecord SNAM of LTEX!\n";
              return false;
            }
            hasReadSNAM = true;
@@ -276,14 +276,14 @@ bool LandscapeTextureRecord::loadFromStream(std::istream& in_File, const bool lo
            //read GNAM
            if (!loadUint32SubRecordFromStream(in_File, cGNAM, temp, false))
            {
-             std::cout << "Error while reading subrecord GNAM of LTEX!\n";
+             std::cerr << "Error while reading subrecord GNAM of LTEX!\n";
              return false;
            }
            bytesRead += 6;
            unknownGNAMs.push_back(temp);
            break;
       default:
-           std::cout << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
                      << "\", but only TNAM, MNAM, HNAM, SNAM or GNAM are allowed here!\n";
            return false;
     }//swi
@@ -292,7 +292,7 @@ bool LandscapeTextureRecord::loadFromStream(std::istream& in_File, const bool lo
   //check for presence of required stuff
   if (!(hasReadMNAM and hasReadHNAM and hasReadSNAM))
   {
-    std::cout << "Error: At least one subrecord of LTEX is missing!\n";
+    std::cerr << "Error: At least one subrecord of LTEX is missing!\n";
     return false;
   }
 

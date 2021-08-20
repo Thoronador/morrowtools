@@ -110,7 +110,7 @@ bool LoadScreenRecord::saveToStream(std::ostream& output) const
     //write CTDA and CIS2
     if (!unknownCTDA_CIS2s[i].saveToStream(output))
     {
-      std::cout << "Error while writing CTDA and CIS2 of LSCR!\n";
+      std::cerr << "Error while writing CTDA and CIS2 of LSCR!\n";
       return false;
     }
   }//for
@@ -183,7 +183,7 @@ bool LoadScreenRecord::loadFromStream(std::istream& in_File, const bool localize
   char buffer[512];
   if (!loadString512FromStream(in_File, editorID, buffer, cEDID, true, bytesRead))
   {
-    std::cout << "Error while reading subrecord EDID of LSCR!\n";
+    std::cerr << "Error while reading subrecord EDID of LSCR!\n";
     return false;
   }
 
@@ -206,7 +206,7 @@ bool LoadScreenRecord::loadFromStream(std::istream& in_File, const bool localize
       case cDESC:
            if (text.isPresent())
            {
-             std::cout << "Error: LSCR seems to have more than one DESC subrecord.\n";
+             std::cerr << "Error: LSCR seems to have more than one DESC subrecord.\n";
              return false;
            }
            //read DESC
@@ -217,7 +217,7 @@ bool LoadScreenRecord::loadFromStream(std::istream& in_File, const bool localize
            //read CTDA
            if (!tempCTDA.loadFromStream(in_File, bytesRead))
            {
-             std::cout << "Error while reading subrecord CTDA of LSCR!\n";
+             std::cerr << "Error while reading subrecord CTDA of LSCR!\n";
              return false;
            }
            unknownCTDA_CIS2s.push_back(CTDA_CIS2_compound(tempCTDA, ""));
@@ -225,25 +225,25 @@ bool LoadScreenRecord::loadFromStream(std::istream& in_File, const bool localize
       case cCIS2:
            if (unknownCTDA_CIS2s.empty())
            {
-             std::cout << "Error: found CIS2 without prior CTDA in LSCR!\n";
+             std::cerr << "Error: found CIS2 without prior CTDA in LSCR!\n";
              return false;
            }
            if (!unknownCTDA_CIS2s.back().unknownCISx.empty())
            {
-             std::cout << "Error: LSCR seems to have more than one CIS2 subrecord per CTDA.\n";
+             std::cerr << "Error: LSCR seems to have more than one CIS2 subrecord per CTDA.\n";
              return false;
            }
            //read CIS2
            if (!loadString512FromStream(in_File, unknownCTDA_CIS2s.back().unknownCISx, buffer, cCIS2, false, bytesRead))
            {
-             std::cout << "Error while reading subrecord CIS2 of LSCR!\n";
+             std::cerr << "Error while reading subrecord CIS2 of LSCR!\n";
              return false;
            }
            break;
       case cNNAM:
            if (hasReadNNAM)
            {
-             std::cout << "Error: LSCR seems to have more than one NNAM subrecord.\n";
+             std::cerr << "Error: LSCR seems to have more than one NNAM subrecord.\n";
              return false;
            }
            //read NNAM
@@ -254,7 +254,7 @@ bool LoadScreenRecord::loadFromStream(std::istream& in_File, const bool localize
       case cSNAM:
            if (hasReadSNAM)
            {
-             std::cout << "Error: LSCR seems to have more than one SNAM subrecord.\n";
+             std::cerr << "Error: LSCR seems to have more than one SNAM subrecord.\n";
              return false;
            }
            //read SNAM
@@ -265,7 +265,7 @@ bool LoadScreenRecord::loadFromStream(std::istream& in_File, const bool localize
       case cRNAM:
            if (hasReadRNAM)
            {
-             std::cout << "Error: LSCR seems to have more than one RNAM subrecord.\n";
+             std::cerr << "Error: LSCR seems to have more than one RNAM subrecord.\n";
              return false;
            }
            //RNAM's length
@@ -273,7 +273,7 @@ bool LoadScreenRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if (subLength!=6)
            {
-             std::cout <<"Error: sub record RNAM of LSCR has invalid length ("<<subLength
+             std::cerr <<"Error: sub record RNAM of LSCR has invalid length ("<<subLength
                        <<" bytes). Should be six bytes.\n";
              return false;
            }
@@ -282,7 +282,7 @@ bool LoadScreenRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 6;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord RNAM of LSCR!\n";
+             std::cerr << "Error while reading subrecord RNAM of LSCR!\n";
              return false;
            }
            hasReadRNAM = true;
@@ -290,7 +290,7 @@ bool LoadScreenRecord::loadFromStream(std::istream& in_File, const bool localize
       case cONAM:
            if (hasReadONAM)
            {
-             std::cout << "Error: LSCR seems to have more than one ONAM subrecord.\n";
+             std::cerr << "Error: LSCR seems to have more than one ONAM subrecord.\n";
              return false;
            }
            //read ONAM
@@ -301,7 +301,7 @@ bool LoadScreenRecord::loadFromStream(std::istream& in_File, const bool localize
       case cXNAM:
            if (hasReadXNAM)
            {
-             std::cout << "Error: LSCR seems to have more than one XNAM subrecord.\n";
+             std::cerr << "Error: LSCR seems to have more than one XNAM subrecord.\n";
              return false;
            }
            //XNAM's length
@@ -309,7 +309,7 @@ bool LoadScreenRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if (subLength!=12)
            {
-             std::cout <<"Error: sub record XNAM of LSCR has invalid length ("<<subLength
+             std::cerr <<"Error: sub record XNAM of LSCR has invalid length ("<<subLength
                        <<" bytes). Should be 12 bytes.\n";
              return false;
            }
@@ -318,7 +318,7 @@ bool LoadScreenRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 12;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord XNAM of LSCR!\n";
+             std::cerr << "Error while reading subrecord XNAM of LSCR!\n";
              return false;
            }
            hasReadXNAM = true;
@@ -326,18 +326,18 @@ bool LoadScreenRecord::loadFromStream(std::istream& in_File, const bool localize
       case cMOD2:
            if (!unknownMOD2.empty())
            {
-             std::cout << "Error: LSCR seems to have more than one MOD2 subrecord.\n";
+             std::cerr << "Error: LSCR seems to have more than one MOD2 subrecord.\n";
              return false;
            }
            //read MOD2
            if (!loadString512FromStream(in_File, unknownMOD2, buffer, cMOD2, false, bytesRead))
            {
-             std::cout << "Error while reading subrecord MOD2 of LSCR!\n";
+             std::cerr << "Error while reading subrecord MOD2 of LSCR!\n";
              return false;
            }
            break;
       default:
-           std::cout << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
                      << "\", but only DESC, CTDA, NNAM, SNAM, RNAM, ONAM, XNAM or MOD2 are allowed here!\n";
            return false;
     }//swi
@@ -347,7 +347,7 @@ bool LoadScreenRecord::loadFromStream(std::istream& in_File, const bool localize
   if (!(text.isPresent() and hasReadNNAM and hasReadSNAM and hasReadRNAM
       and hasReadONAM and hasReadXNAM))
   {
-    std::cout << "Error while reading LSCR record: at least one required "
+    std::cerr << "Error while reading LSCR record: at least one required "
               << "subrecord is missing!\n";
     return false;
   }

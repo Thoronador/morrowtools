@@ -106,7 +106,7 @@ bool VoiceTypeRecord::loadFromStream(std::istream& in_File, const bool localized
   //bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of VTYP is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of VTYP is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -116,7 +116,7 @@ bool VoiceTypeRecord::loadFromStream(std::istream& in_File, const bool localized
   //bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of VTYP!\n";
+    std::cerr << "Error while reading subrecord EDID of VTYP!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -134,7 +134,7 @@ bool VoiceTypeRecord::loadFromStream(std::istream& in_File, const bool localized
   //bytesRead += 2;
   if (subLength!=1)
   {
-    std::cout <<"Error: subrecord DNAM of VTYP has invalid length ("<<subLength
+    std::cerr <<"Error: subrecord DNAM of VTYP has invalid length ("<<subLength
               <<" bytes). Should be one byte!\n";
     return false;
   }
@@ -143,7 +143,7 @@ bool VoiceTypeRecord::loadFromStream(std::istream& in_File, const bool localized
   //bytesRead += 1;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord DNAM of VTYP!\n";
+    std::cerr << "Error while reading subrecord DNAM of VTYP!\n";
     return false;
   }
 

@@ -216,7 +216,7 @@ bool CharacterReferenceRecord::saveToStream(std::ostream& output) const
     //write VMAD
     if (!unknownVMAD.saveToStream(output, cVMAD))
     {
-      std::cout << "Error while writing subrecord VMAD of ACHR!\n";
+      std::cerr << "Error while writing subrecord VMAD of ACHR!\n";
       return false;
     }
   }//if VMAD
@@ -234,7 +234,7 @@ bool CharacterReferenceRecord::saveToStream(std::ostream& output) const
     //write XRGD
     if (!unknownXRGD.saveToStream(output, cXRGD))
     {
-      std::cout << "Error while writing subrecord XRGD of ACHR!\n";
+      std::cerr << "Error while writing subrecord XRGD of ACHR!\n";
       return false;
     }
   }//if XRGD
@@ -244,7 +244,7 @@ bool CharacterReferenceRecord::saveToStream(std::ostream& output) const
     //write XRGB
     if (!unknownXRGB.saveToStream(output, cXRGB))
     {
-      std::cout << "Error while writing subrecord XRGB of ACHR!\n";
+      std::cerr << "Error while writing subrecord XRGB of ACHR!\n";
       return false;
     }
   }//if XRGB
@@ -406,7 +406,7 @@ bool CharacterReferenceRecord::saveToStream(std::ostream& output) const
     {
       if (!subBlocks[i].subData.saveToStream(output, subBlocks[i].subType))
       {
-        std::cout << "Error while writing subrecord "<<IntTo4Char(subBlocks[i].subType)<<" of ACHR!\n";
+        std::cerr << "Error while writing subrecord "<<IntTo4Char(subBlocks[i].subType)<<" of ACHR!\n";
         return false;
       }
     }
@@ -468,7 +468,7 @@ bool CharacterReferenceRecord::loadFromStream(std::istream& in_File, const bool 
       case cEDID:
            if (!editorID.empty())
            {
-             std::cout << "Error: ACHR seems to have more than one EDID subrecord!\n";
+             std::cerr << "Error: ACHR seems to have more than one EDID subrecord!\n";
              return false;
            }
            //EDID's length
@@ -476,7 +476,7 @@ bool CharacterReferenceRecord::loadFromStream(std::istream& in_File, const bool 
            bytesRead += 2;
            if (subLength>511)
            {
-             std::cout <<"Error: sub record EDID of EXPL is longer than 511 characters!\n";
+             std::cerr <<"Error: sub record EDID of EXPL is longer than 511 characters!\n";
              return false;
            }
            //read EDID's stuff
@@ -485,13 +485,13 @@ bool CharacterReferenceRecord::loadFromStream(std::istream& in_File, const bool 
            bytesRead += subLength;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord EDID of EXPL!\n";
+             std::cerr << "Error while reading subrecord EDID of EXPL!\n";
              return false;
            }
            editorID = std::string(buffer);
            if (editorID.empty())
            {
-             std::cout << "Error: subrecord EDID of ACHR is empty!\n";
+             std::cerr << "Error: subrecord EDID of ACHR is empty!\n";
              return false;
            }
            break;
@@ -512,18 +512,18 @@ bool CharacterReferenceRecord::loadFromStream(std::istream& in_File, const bool 
       case cNAME:
            if (baseObjectFormID!=0)
            {
-             std::cout << "Error: ACHR seems to have more than one NAME subrecord!\n";
+             std::cerr << "Error: ACHR seems to have more than one NAME subrecord!\n";
              return false;
            }
            if (!loadUint32SubRecordFromStream(in_File, cNAME, baseObjectFormID, false))
            {
-             std::cout << "Error while reading subrecord NAME of ACHR!\n";
+             std::cerr << "Error while reading subrecord NAME of ACHR!\n";
              return false;
            }
            bytesRead += 6;
            if (baseObjectFormID==0)
            {
-             std::cout << "Error: subrecord NAME of ACHR has value zero!\n";
+             std::cerr << "Error: subrecord NAME of ACHR has value zero!\n";
              return false;
            }
            break;
@@ -558,12 +558,12 @@ bool CharacterReferenceRecord::loadFromStream(std::istream& in_File, const bool 
       case cXLCM:
            if (hasXLCM)
            {
-             std::cout << "Error: ACHR seems to have more than one XLCM subrecord!\n";
+             std::cerr << "Error: ACHR seems to have more than one XLCM subrecord!\n";
              return false;
            }
            if (!loadUint32SubRecordFromStream(in_File, cXLCM, unknownXLCM, false))
            {
-             std::cout << "Error while reading subrecord XLCM of ACHR!\n";
+             std::cerr << "Error while reading subrecord XLCM of ACHR!\n";
              return false;
            }
            bytesRead += 6;
@@ -572,7 +572,7 @@ bool CharacterReferenceRecord::loadFromStream(std::istream& in_File, const bool 
       case cINAM:
            if (hasINAM)
            {
-             std::cout << "Error: ACHR seems to have more than one INAM subrecord!\n";
+             std::cerr << "Error: ACHR seems to have more than one INAM subrecord!\n";
              return false;
            }
            //read INAM
@@ -583,7 +583,7 @@ bool CharacterReferenceRecord::loadFromStream(std::istream& in_File, const bool 
       case cPDTO:
            if (hasPDTO)
            {
-             std::cout << "Error: ACHR seems to have more than one PDTO subrecord!\n";
+             std::cerr << "Error: ACHR seems to have more than one PDTO subrecord!\n";
              return false;
            }
            //PDTO's length
@@ -591,7 +591,7 @@ bool CharacterReferenceRecord::loadFromStream(std::istream& in_File, const bool 
            bytesRead += 2;
            if (subLength!=8)
            {
-             std::cout <<"Error: sub record PDTO of ACHR has invalid length ("<<subLength
+             std::cerr <<"Error: sub record PDTO of ACHR has invalid length ("<<subLength
                        <<" bytes). Should be 8 bytes.\n";
              return false;
            }
@@ -600,7 +600,7 @@ bool CharacterReferenceRecord::loadFromStream(std::istream& in_File, const bool 
            bytesRead += 8;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord PDTO of ACHR!\n";
+             std::cerr << "Error while reading subrecord PDTO of ACHR!\n";
              return false;
            }
            hasPDTO = true;
@@ -611,7 +611,7 @@ bool CharacterReferenceRecord::loadFromStream(std::istream& in_File, const bool 
            bytesRead += 2;
            if ((subLength!=8) and (subLength!=4))
            {
-             std::cout <<"Error: subrecord XLKR of ACHR has invalid length ("
+             std::cerr <<"Error: subrecord XLKR of ACHR has invalid length ("
                        <<subLength <<" bytes). Should be eight or four bytes!\n";
              return false;
            }
@@ -628,7 +628,7 @@ bool CharacterReferenceRecord::loadFromStream(std::istream& in_File, const bool 
            bytesRead += subLength;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord XLKR of ACHR!\n";
+             std::cerr << "Error while reading subrecord XLKR of ACHR!\n";
              return false;
            }
            linkedReferences.push_back(tempLinkedRef);
@@ -639,7 +639,7 @@ bool CharacterReferenceRecord::loadFromStream(std::istream& in_File, const bool 
            bytesRead += 2;
            if (subLength!=1)
            {
-             std::cout <<"Error: subrecord XAPD of ACHR has invalid length ("
+             std::cerr <<"Error: subrecord XAPD of ACHR has invalid length ("
                        <<subLength <<" bytes). Should be one byte!\n";
              return false;
            }
@@ -648,7 +648,7 @@ bool CharacterReferenceRecord::loadFromStream(std::istream& in_File, const bool 
            bytesRead += 1;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord XAPD of ACHR!\n";
+             std::cerr << "Error while reading subrecord XAPD of ACHR!\n";
              return false;
            }
            XAPDs.push_back(tempUint8);
@@ -659,7 +659,7 @@ bool CharacterReferenceRecord::loadFromStream(std::istream& in_File, const bool 
            bytesRead += 2;
            if (subLength!=8)
            {
-             std::cout <<"Error: subrecord XAPR of ACHR has invalid length ("
+             std::cerr <<"Error: subrecord XAPR of ACHR has invalid length ("
                        <<subLength <<" bytes). Should be eight bytes!\n";
              return false;
            }
@@ -668,7 +668,7 @@ bool CharacterReferenceRecord::loadFromStream(std::istream& in_File, const bool 
            bytesRead += 8;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord XAPR of ACHR!\n";
+             std::cerr << "Error while reading subrecord XAPR of ACHR!\n";
              return false;
            }
            XAPRs.push_back(tempUint64);
@@ -676,61 +676,61 @@ bool CharacterReferenceRecord::loadFromStream(std::istream& in_File, const bool 
       case cXLCN:
            if (persistenceLocationFormID!=0)
            {
-             std::cout << "Error: ACHR seems to have more than one XLCN subrecord!\n";
+             std::cerr << "Error: ACHR seems to have more than one XLCN subrecord!\n";
              return false;
            }
            if (!loadUint32SubRecordFromStream(in_File, cXLCN, persistenceLocationFormID, false))
            {
-             std::cout << "Error while reading subrecord XLCN of ACHR!\n";
+             std::cerr << "Error while reading subrecord XLCN of ACHR!\n";
              return false;
            }
            bytesRead += 6;
            if (persistenceLocationFormID==0)
            {
-             std::cout << "Error: subrecord XLCN of ACHR has value zero!\n";
+             std::cerr << "Error: subrecord XLCN of ACHR has value zero!\n";
              return false;
            }
            break;
       case cXLRT:
            if (locationRefTypeFormID!=0)
            {
-             std::cout << "Error: ACHR seems to have more than one XLRT subrecord!\n";
+             std::cerr << "Error: ACHR seems to have more than one XLRT subrecord!\n";
              return false;
            }
            if (!loadUint32SubRecordFromStream(in_File, cXLRT, locationRefTypeFormID, false))
            {
-             std::cout << "Error while reading subrecord XLRT of ACHR!\n";
+             std::cerr << "Error while reading subrecord XLRT of ACHR!\n";
              return false;
            }
            bytesRead += 6;
            if (locationRefTypeFormID==0)
            {
-             std::cout << "Error: subrecord XLRT of ACHR has value zero!\n";
+             std::cerr << "Error: subrecord XLRT of ACHR has value zero!\n";
              return false;
            }
            break;
       case cXEZN:
            if (encounterZoneFormID!=0)
            {
-             std::cout << "Error: ACHR seems to have more than one XEZN subrecord!\n";
+             std::cerr << "Error: ACHR seems to have more than one XEZN subrecord!\n";
              return false;
            }
            if (!loadUint32SubRecordFromStream(in_File, cXEZN, encounterZoneFormID, false))
            {
-             std::cout << "Error while reading subrecord XEZN of ACHR!\n";
+             std::cerr << "Error while reading subrecord XEZN of ACHR!\n";
              return false;
            }
            bytesRead += 6;
            if (encounterZoneFormID==0)
            {
-             std::cout << "Error: subrecord XEZN of ACHR has value zero!\n";
+             std::cerr << "Error: subrecord XEZN of ACHR has value zero!\n";
              return false;
            }
            break;
       case cXESP:
            if (subXESP.isPresent())
            {
-             std::cout << "Error: ACHR seems to have more than one XESP subrecord!\n";
+             std::cerr << "Error: ACHR seems to have more than one XESP subrecord!\n";
              return false;
            }
            //XESP's length
@@ -738,7 +738,7 @@ bool CharacterReferenceRecord::loadFromStream(std::istream& in_File, const bool 
            bytesRead += 2;
            if (subLength!=8)
            {
-             std::cout <<"Error: subrecord XESP of ACHR has invalid length ("
+             std::cerr <<"Error: subrecord XESP of ACHR has invalid length ("
                        <<subLength <<" bytes). Should be eight bytes!\n";
              return false;
            }
@@ -748,37 +748,37 @@ bool CharacterReferenceRecord::loadFromStream(std::istream& in_File, const bool 
            bytesRead += 8;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord XESP of ACHR!\n";
+             std::cerr << "Error while reading subrecord XESP of ACHR!\n";
              return false;
            }
            if (!subXESP.isPresent())
            {
-             std::cout << "Error: subrecord XESP of ACHR has value zero!\n";
+             std::cerr << "Error: subrecord XESP of ACHR has value zero!\n";
              return false;
            }
            break;
       case cXOWN:
            if (ownerFormID!=0)
            {
-             std::cout << "Error: ACHR seems to have more than one XOWN subrecord!\n";
+             std::cerr << "Error: ACHR seems to have more than one XOWN subrecord!\n";
              return false;
            }
            if (!loadUint32SubRecordFromStream(in_File, cXOWN, ownerFormID, false))
            {
-             std::cout << "Error while reading subrecord XOWN of ACHR!\n";
+             std::cerr << "Error while reading subrecord XOWN of ACHR!\n";
              return false;
            }
            bytesRead += 6;
            if (ownerFormID==0)
            {
-             std::cout << "Error: subrecord XOWN of ACHR has value zero!\n";
+             std::cerr << "Error: subrecord XOWN of ACHR has value zero!\n";
              return false;
            }
            break;
       case cXSCL:
            if (scale!=1.0f)
            {
-             std::cout << "Error: ACHR seems to have more than one XSCL subrecord!\n";
+             std::cerr << "Error: ACHR seems to have more than one XSCL subrecord!\n";
              return false;
            }
            //XSCL's length
@@ -786,7 +786,7 @@ bool CharacterReferenceRecord::loadFromStream(std::istream& in_File, const bool 
            bytesRead += 2;
            if (subLength!=4)
            {
-             std::cout <<"Error: subrecord XSCL of ACHR has invalid length ("
+             std::cerr <<"Error: subrecord XSCL of ACHR has invalid length ("
                        <<subLength <<" bytes). Should be four bytes!\n";
              return false;
            }
@@ -795,19 +795,19 @@ bool CharacterReferenceRecord::loadFromStream(std::istream& in_File, const bool 
            bytesRead += 4;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord XSCL of ACHR!\n";
+             std::cerr << "Error while reading subrecord XSCL of ACHR!\n";
              return false;
            }
            if ((scale==1.0f) or (scale<=0.0f))
            {
-             std::cout << "Error: subrecord XSCL of ACHR has invalid value "<<scale<<"!\n";
+             std::cerr << "Error: subrecord XSCL of ACHR has invalid value "<<scale<<"!\n";
              return false;
            }
            break;
       case cDATA:
            if (hasReadDATA)
            {
-             std::cout << "Error: ACHR seems to have more than one DATA subrecord!\n";
+             std::cerr << "Error: ACHR seems to have more than one DATA subrecord!\n";
              return false;
            }
            //DATA's length
@@ -815,7 +815,7 @@ bool CharacterReferenceRecord::loadFromStream(std::istream& in_File, const bool 
            bytesRead += 2;
            if (subLength!=24)
            {
-             std::cout <<"Error: subrecord DATA of ACHR has invalid length ("
+             std::cerr <<"Error: subrecord DATA of ACHR has invalid length ("
                        <<subLength <<" bytes). Should be 24 bytes!\n";
              return false;
            }
@@ -824,7 +824,7 @@ bool CharacterReferenceRecord::loadFromStream(std::istream& in_File, const bool 
            bytesRead += 24;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord DATA of ACHR!\n";
+             std::cerr << "Error while reading subrecord DATA of ACHR!\n";
              return false;
            }
            hasReadDATA = true;
@@ -840,7 +840,7 @@ bool CharacterReferenceRecord::loadFromStream(std::istream& in_File, const bool 
            bytesRead = bytesRead + 2 + tempSubBlock.subData.size();
            subBlocks.push_back(tempSubBlock);
            /*
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only EDID, VMAD, NAME, XRGD, XRGB, XLCM,"
                      << " INAM, PDTO, XLKR, XAPD, XAPR, XLCN, XLRT, XEZN, XESP,"
                      << " XOWN, XSCL or DATA are allowed here!\n";
@@ -852,7 +852,7 @@ bool CharacterReferenceRecord::loadFromStream(std::istream& in_File, const bool 
   //presence checks
   if (!(hasReadDATA and (baseObjectFormID!=0)))
   {
-    std::cout << "Error: at least one required subrecord of ACHR is missing!\n";
+    std::cerr << "Error: at least one required subrecord of ACHR is missing!\n";
     return false;
   }
 

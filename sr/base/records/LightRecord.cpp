@@ -140,7 +140,7 @@ bool LightRecord::saveToStream(std::ostream& output) const
   {
     if (!unknownVMAD.saveToStream(output, cVMAD))
     {
-      std::cout << "Error while writing subrecord VMAD of LIGH!\n";
+      std::cerr << "Error while writing subrecord VMAD of LIGH!\n";
       return false;
     }
   }//if VMAD
@@ -168,7 +168,7 @@ bool LightRecord::saveToStream(std::ostream& output) const
   {
     if (!unknownMODT.saveToStream(output, cMODT))
     {
-      std::cout << "Error while writing subrecord MODT of LIGH!\n";
+      std::cerr << "Error while writing subrecord MODT of LIGH!\n";
       return false;
     }
   }//if MODT
@@ -244,7 +244,7 @@ bool LightRecord::loadFromStream(std::istream& in_File, const bool localized, co
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of LIGH is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of LIGH is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -254,7 +254,7 @@ bool LightRecord::loadFromStream(std::istream& in_File, const bool localized, co
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of LIGH!\n";
+    std::cerr << "Error while reading subrecord EDID of LIGH!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -290,7 +290,7 @@ bool LightRecord::loadFromStream(std::istream& in_File, const bool localized, co
       case cOBND:
            if (hasReadOBND)
            {
-             std::cout << "Error: record LIGH seems to have more than one OBND subrecord!\n";
+             std::cerr << "Error: record LIGH seems to have more than one OBND subrecord!\n";
              return false;
            }
            //OBND's length
@@ -298,7 +298,7 @@ bool LightRecord::loadFromStream(std::istream& in_File, const bool localized, co
            bytesRead += 2;
            if (subLength!=12)
            {
-             std::cout << "Error: sub record OBND of LIGH has invalid length ("
+             std::cerr << "Error: sub record OBND of LIGH has invalid length ("
                        << subLength <<" bytes). Should be 12 bytes!\n";
              return false;
            }
@@ -308,7 +308,7 @@ bool LightRecord::loadFromStream(std::istream& in_File, const bool localized, co
            bytesRead += 12;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord OBND of LIGH!\n";
+             std::cerr << "Error while reading subrecord OBND of LIGH!\n";
              return false;
            }
            hasReadOBND = true;
@@ -316,7 +316,7 @@ bool LightRecord::loadFromStream(std::istream& in_File, const bool localized, co
       case cMODL:
            if (!modelPath.empty())
            {
-             std::cout << "Error: record LIGH seems to have more than one MODL subrecord!\n";
+             std::cerr << "Error: record LIGH seems to have more than one MODL subrecord!\n";
              return false;
            }
            if (!loadString512FromStream(in_File, modelPath, buffer, cMODL, false, bytesRead))
@@ -324,7 +324,7 @@ bool LightRecord::loadFromStream(std::istream& in_File, const bool localized, co
            //consistency check
            if (modelPath.empty())
            {
-             std::cout << "Error: subrecord MODL of LIGH contains empty string!\n";
+             std::cerr << "Error: subrecord MODL of LIGH contains empty string!\n";
              return false;
            }
            break;
@@ -344,7 +344,7 @@ bool LightRecord::loadFromStream(std::istream& in_File, const bool localized, co
       case cFULL:
            if (name.isPresent())
            {
-             std::cout << "Error: record LIGH seems to have more than one FULL subrecord!\n";
+             std::cerr << "Error: record LIGH seems to have more than one FULL subrecord!\n";
              return false;
            }
            //read FULL
@@ -353,14 +353,14 @@ bool LightRecord::loadFromStream(std::istream& in_File, const bool localized, co
            // check value
            if ((name.getType() == LocalizedString::Type::Index) && (name.getIndex() == 0))
            {
-             std::cout << "Error: subrecord FULL of LIGH has invalid value zero!\n";
+             std::cerr << "Error: subrecord FULL of LIGH has invalid value zero!\n";
              return false;
            }
            break;
       case cDATA:
            if (hasReadDATA)
            {
-             std::cout << "Error: record LIGH seems to have more than one DATA subrecord!\n";
+             std::cerr << "Error: record LIGH seems to have more than one DATA subrecord!\n";
              return false;
            }
            //DATA's length
@@ -368,7 +368,7 @@ bool LightRecord::loadFromStream(std::istream& in_File, const bool localized, co
            bytesRead += 2;
            if (subLength!=48)
            {
-             std::cout <<"Error: sub record DATA of LIGH has invalid length ("
+             std::cerr <<"Error: sub record DATA of LIGH has invalid length ("
                        <<subLength<<" bytes). Should be 48 bytes!\n";
              return false;
            }
@@ -387,7 +387,7 @@ bool LightRecord::loadFromStream(std::istream& in_File, const bool localized, co
            in_File.read((char*) &weight, 4);
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord DATA of LIGH!\n";
+             std::cerr << "Error while reading subrecord DATA of LIGH!\n";
              return false;
            }
            bytesRead += 48;
@@ -396,7 +396,7 @@ bool LightRecord::loadFromStream(std::istream& in_File, const bool localized, co
       case cFNAM:
            if (hasReadFNAM)
            {
-             std::cout << "Error: record LIGH seems to have more than one FNAM subrecord!\n";
+             std::cerr << "Error: record LIGH seems to have more than one FNAM subrecord!\n";
              return false;
            }
            //FNAM's length
@@ -404,7 +404,7 @@ bool LightRecord::loadFromStream(std::istream& in_File, const bool localized, co
            bytesRead += 2;
            if (subLength!=4)
            {
-             std::cout <<"Error: sub record FNAM of LIGH has invalid length ("
+             std::cerr <<"Error: sub record FNAM of LIGH has invalid length ("
                        <<subLength<<" bytes). Should be four bytes!\n";
              return false;
            }
@@ -412,7 +412,7 @@ bool LightRecord::loadFromStream(std::istream& in_File, const bool localized, co
            in_File.read((char*) &fadeTime, 4);
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord FNAM of LIGH!\n";
+             std::cerr << "Error while reading subrecord FNAM of LIGH!\n";
              return false;
            }
            bytesRead += 4;
@@ -421,7 +421,7 @@ bool LightRecord::loadFromStream(std::istream& in_File, const bool localized, co
       case cSNAM:
            if (soundFormID!=0)
            {
-             std::cout << "Error: record LIGH seems to have more than one SNAM subrecord!\n";
+             std::cerr << "Error: record LIGH seems to have more than one SNAM subrecord!\n";
              return false;
            }
            //read SNAM
@@ -430,13 +430,13 @@ bool LightRecord::loadFromStream(std::istream& in_File, const bool localized, co
            //check value
            if (soundFormID==0)
            {
-             std::cout << "Error: subrecord SNAM of LIGH has invalid value zero!\n";
+             std::cerr << "Error: subrecord SNAM of LIGH has invalid value zero!\n";
              return false;
            }
            bytesRead += 6;
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only VMAD, OBND, MODL, MODT, FULL, DATA,"
                      << " FNAM or SNAM are allowed here!\n";
            return false;
@@ -447,7 +447,7 @@ bool LightRecord::loadFromStream(std::istream& in_File, const bool localized, co
   //presence checks
   if (!(hasReadOBND and hasReadDATA and hasReadFNAM))
   {
-    std::cout << "Error: At least one required subrecord of LIGH is missing!\n";
+    std::cerr << "Error: At least one required subrecord of LIGH is missing!\n";
     return false;
   }
 

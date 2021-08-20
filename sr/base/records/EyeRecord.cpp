@@ -126,7 +126,7 @@ bool EyeRecord::loadFromStream(std::istream& in_File, const bool localized, cons
   in_File.read((char*) &subLength, 2);
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of EYES is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of EYES is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -135,7 +135,7 @@ bool EyeRecord::loadFromStream(std::istream& in_File, const bool localized, cons
   in_File.read(buffer, subLength);
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of EYES!\n";
+    std::cerr << "Error while reading subrecord EDID of EYES!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -143,7 +143,7 @@ bool EyeRecord::loadFromStream(std::istream& in_File, const bool localized, cons
   //read FULL
   if (!name.loadFromStream(in_File, cFULL, true, subRecName, localized, table, buffer))
   {
-    std::cout << "Error while reading subrecord FULL of EYES!\n";
+    std::cerr << "Error while reading subrecord FULL of EYES!\n";
     return false;
   }
 
@@ -158,7 +158,7 @@ bool EyeRecord::loadFromStream(std::istream& in_File, const bool localized, cons
   in_File.read((char*) &subLength, 2);
   if (subLength>511)
   {
-    std::cout <<"Error: sub record ICON of EYES is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record ICON of EYES is longer than 511 characters!\n";
     return false;
   }
   //read ICON path
@@ -166,7 +166,7 @@ bool EyeRecord::loadFromStream(std::istream& in_File, const bool localized, cons
   in_File.read(buffer, subLength);
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord ICON of EYES!\n";
+    std::cerr << "Error while reading subrecord ICON of EYES!\n";
     return false;
   }
   iconPath = std::string(buffer);
@@ -182,7 +182,7 @@ bool EyeRecord::loadFromStream(std::istream& in_File, const bool localized, cons
   in_File.read((char*) &subLength, 2);
   if (subLength!=1)
   {
-    std::cout <<"Error: sub record DATA of EYES has invalid length ("<<subLength
+    std::cerr <<"Error: sub record DATA of EYES has invalid length ("<<subLength
               <<" bytes). Should be one byte.\n";
     return false;
   }
@@ -190,7 +190,7 @@ bool EyeRecord::loadFromStream(std::istream& in_File, const bool localized, cons
   in_File.read((char*) &flags, 1);
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord FULL of EYES!\n";
+    std::cerr << "Error while reading subrecord FULL of EYES!\n";
     return false;
   }
 

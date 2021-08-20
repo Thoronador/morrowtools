@@ -173,7 +173,7 @@ bool CollisionRecord::loadFromStream(std::istream& in_File, const bool localized
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of COLL is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of COLL is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -183,7 +183,7 @@ bool CollisionRecord::loadFromStream(std::istream& in_File, const bool localized
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of COLL!\n";
+    std::cerr << "Error while reading subrecord EDID of COLL!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -206,7 +206,7 @@ bool CollisionRecord::loadFromStream(std::istream& in_File, const bool localized
       case cDESC:
            if (description.isPresent())
            {
-             std::cout << "Error: COLL seems to have more than one DESC subrecord.\n";
+             std::cerr << "Error: COLL seems to have more than one DESC subrecord.\n";
              return false;
            }
            //read DESC
@@ -216,7 +216,7 @@ bool CollisionRecord::loadFromStream(std::istream& in_File, const bool localized
       case cBNAM:
            if (hasReadBNAM)
            {
-             std::cout << "Error: COLL seems to have more than one BNAM subrecord.\n";
+             std::cerr << "Error: COLL seems to have more than one BNAM subrecord.\n";
              return false;
            }
            //read BNAM
@@ -227,7 +227,7 @@ bool CollisionRecord::loadFromStream(std::istream& in_File, const bool localized
       case cFNAM:
            if (hasReadFNAM)
            {
-             std::cout << "Error: COLL seems to have more than one FNAM subrecord.\n";
+             std::cerr << "Error: COLL seems to have more than one FNAM subrecord.\n";
              return false;
            }
            //read FNAM
@@ -238,7 +238,7 @@ bool CollisionRecord::loadFromStream(std::istream& in_File, const bool localized
       case cGNAM:
            if (hasReadGNAM)
            {
-             std::cout << "Error: COLL seems to have more than one GNAM subrecord.\n";
+             std::cerr << "Error: COLL seems to have more than one GNAM subrecord.\n";
              return false;
            }
            //read GNAM
@@ -249,7 +249,7 @@ bool CollisionRecord::loadFromStream(std::istream& in_File, const bool localized
       case cMNAM:
            if (!unknownMNAM.empty())
            {
-             std::cout << "Error: COLL seems to have more than one MNAM subrecord.\n";
+             std::cerr << "Error: COLL seems to have more than one MNAM subrecord.\n";
              return false;
            }
            //MNAM's length
@@ -257,7 +257,7 @@ bool CollisionRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength>511)
            {
-             std::cout <<"Error: sub record MNAM of COLL is longer than 511 characters!\n";
+             std::cerr <<"Error: sub record MNAM of COLL is longer than 511 characters!\n";
              return false;
            }
            //read MNAM's stuff
@@ -266,7 +266,7 @@ bool CollisionRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += subLength;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord MNAM of COLL!\n";
+             std::cerr << "Error while reading subrecord MNAM of COLL!\n";
              return false;
            }
            unknownMNAM = std::string(buffer);
@@ -274,7 +274,7 @@ bool CollisionRecord::loadFromStream(std::istream& in_File, const bool localized
       case cINTV:
            if (hasReadINTV)
            {
-             std::cout << "Error: COLL seems to have more than one INTV subrecord.\n";
+             std::cerr << "Error: COLL seems to have more than one INTV subrecord.\n";
              return false;
            }
            //read INTV
@@ -296,7 +296,7 @@ bool CollisionRecord::loadFromStream(std::istream& in_File, const bool localized
              bytesRead += 2;
              if (subLength!=4*size_int)
              {
-               std::cout <<"Error: sub record CNAM of COLL has invalid length ("
+               std::cerr <<"Error: sub record CNAM of COLL has invalid length ("
                          <<subLength<<" bytes). Should be "<<4*size_int<<" bytes.\n";
                return false;
              }
@@ -308,7 +308,7 @@ bool CollisionRecord::loadFromStream(std::istream& in_File, const bool localized
                bytesRead += 4;
                if (!in_File.good())
                {
-                 std::cout << "Error while reading subrecord CNAM of COLL!\n";
+                 std::cerr << "Error while reading subrecord CNAM of COLL!\n";
                  return false;
                }
                unknownCNAMs.push_back(tempUint32);
@@ -316,7 +316,7 @@ bool CollisionRecord::loadFromStream(std::istream& in_File, const bool localized
            }//if size>0
            break;
       default:
-           std::cout << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
                      << "\", but only DESC, BNAM, FNAM, GNAM, MNAM or INTV are allowed here!\n";
            return false;
     }//swi
@@ -326,7 +326,7 @@ bool CollisionRecord::loadFromStream(std::istream& in_File, const bool localized
   if (!(description.isPresent() and hasReadBNAM and hasReadFNAM and hasReadGNAM
       and (!unknownMNAM.empty()) and hasReadINTV))
   {
-    std::cout << "Error: at least one subrecord of COLL is missing!\n";
+    std::cerr << "Error: at least one subrecord of COLL is missing!\n";
     return false;
   }
 

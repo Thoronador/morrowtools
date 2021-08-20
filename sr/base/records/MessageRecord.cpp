@@ -189,7 +189,7 @@ bool MessageRecord::saveToStream(std::ostream& output) const
       {
         if (!unknownITXT_CTDAs[i].unknownCTDA.saveToStream(output))
         {
-          std::cout << "Error while writing subrecord CTDA of MESG!\n";
+          std::cerr << "Error while writing subrecord CTDA of MESG!\n";
           return false;
         }
       }//if
@@ -233,7 +233,7 @@ bool MessageRecord::loadFromStream(std::istream& in_File, const bool localized, 
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of MESG is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of MESG is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -243,7 +243,7 @@ bool MessageRecord::loadFromStream(std::istream& in_File, const bool localized, 
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of MESG!\n";
+    std::cerr << "Error while reading subrecord EDID of MESG!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -267,7 +267,7 @@ bool MessageRecord::loadFromStream(std::istream& in_File, const bool localized, 
       case cDESC:
            if (hasReadDESC)
            {
-             std::cout << "Error: record MESG seems to have more than one DESC subrecord!\n";
+             std::cerr << "Error: record MESG seems to have more than one DESC subrecord!\n";
              return false;
            }
            //read DESC
@@ -278,7 +278,7 @@ bool MessageRecord::loadFromStream(std::istream& in_File, const bool localized, 
       case cFULL:
            if (hasFULL)
            {
-             std::cout << "Error: record MESG seems to have more than one FULL subrecord!\n";
+             std::cerr << "Error: record MESG seems to have more than one FULL subrecord!\n";
              return false;
            }
            //read FULL
@@ -289,7 +289,7 @@ bool MessageRecord::loadFromStream(std::istream& in_File, const bool localized, 
       case cINAM:
            if (hasReadINAM)
            {
-             std::cout << "Error: record MESG seems to have more than one INAM subrecord!\n";
+             std::cerr << "Error: record MESG seems to have more than one INAM subrecord!\n";
              return false;
            }
            //read INAM
@@ -300,7 +300,7 @@ bool MessageRecord::loadFromStream(std::istream& in_File, const bool localized, 
       case cQNAM:
            if (hasQNAM)
            {
-             std::cout << "Error: record MESG seems to have more than one QNAM subrecord!\n";
+             std::cerr << "Error: record MESG seems to have more than one QNAM subrecord!\n";
              return false;
            }
            //read QNAM
@@ -311,7 +311,7 @@ bool MessageRecord::loadFromStream(std::istream& in_File, const bool localized, 
       case cDNAM:
            if (hasReadDNAM)
            {
-             std::cout << "Error: record MESG seems to have more than one DNAM subrecord!\n";
+             std::cerr << "Error: record MESG seems to have more than one DNAM subrecord!\n";
              return false;
            }
            //read DNAM
@@ -333,18 +333,18 @@ bool MessageRecord::loadFromStream(std::istream& in_File, const bool localized, 
       case cCTDA:
            if (!hasUnpushedITXT)
            {
-             std::cout << "Error while reading record of type MESG: there has to be a ITXT before CTDA subrecord!\n";
+             std::cerr << "Error while reading record of type MESG: there has to be a ITXT before CTDA subrecord!\n";
              return false;
            }
            if (tempITXT_CTDA.hasCTDA)
            {
-             std::cout << "Error: record MESG seems to have more than one CTDA subrecord per ITXT!\n";
+             std::cerr << "Error: record MESG seems to have more than one CTDA subrecord per ITXT!\n";
              return false;
            }
            //read CTDA
            if (!tempITXT_CTDA.unknownCTDA.loadFromStream(in_File, bytesRead))
            {
-             std::cout << "Error while reading subrecord CTDA of MESG!\n";
+             std::cerr << "Error while reading subrecord CTDA of MESG!\n";
              return false;
            }
            unknownITXT_CTDAs.push_back(tempITXT_CTDA);
@@ -353,7 +353,7 @@ bool MessageRecord::loadFromStream(std::istream& in_File, const bool localized, 
       case cTNAM:
            if (hasTNAM)
            {
-             std::cout << "Error: record MESG seems to have more than one TNAM subrecord!\n";
+             std::cerr << "Error: record MESG seems to have more than one TNAM subrecord!\n";
              return false;
            }
            //read TNAM
@@ -362,7 +362,7 @@ bool MessageRecord::loadFromStream(std::istream& in_File, const bool localized, 
            hasTNAM = true;
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only DESC, FULL, INAM, QNAM, DNAM, ITXT, CTDA or TNAM are allowed here!\n";
            return false;
            break;
@@ -377,7 +377,7 @@ bool MessageRecord::loadFromStream(std::istream& in_File, const bool localized, 
   //presence checks
   if (!(hasReadDESC and hasReadINAM and hasReadDNAM))
   {
-    std::cout << "Error: at least one required subrecord of MESG is missing!\n";
+    std::cerr << "Error: at least one required subrecord of MESG is missing!\n";
     return false;
   }
 

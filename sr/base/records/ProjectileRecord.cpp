@@ -154,7 +154,7 @@ bool ProjectileRecord::saveToStream(std::ostream& output) const
   {
     if (!unknownMODT.saveToStream(output, cMODT))
     {
-      std::cout << "Error while writing subrecord MODT of PROJ!\n";
+      std::cerr << "Error while writing subrecord MODT of PROJ!\n";
       return false;
     }
   }//if MODT
@@ -198,13 +198,13 @@ bool ProjectileRecord::saveToStream(std::ostream& output) const
   {
     if (!unknownDATA.saveToStream(output, cDATA))
     {
-      std::cout << "Error while writing subrecord DATA of PROJ!\n";
+      std::cerr << "Error while writing subrecord DATA of PROJ!\n";
       return false;
     }
   }//if DATA
   else
   {
-    std::cout << "Error while writing subrecord DATA of PROJ: no DATA subrecord present!\n";
+    std::cerr << "Error while writing subrecord DATA of PROJ: no DATA subrecord present!\n";
     return false;
   }
 
@@ -220,7 +220,7 @@ bool ProjectileRecord::saveToStream(std::ostream& output) const
   {
     if (!unknownNAM2.saveToStream(output, cNAM2))
     {
-      std::cout << "Error while writing subrecord NAM2 of PROJ!\n";
+      std::cerr << "Error while writing subrecord NAM2 of PROJ!\n";
       return false;
     }
   }//if NAM2
@@ -259,7 +259,7 @@ bool ProjectileRecord::loadFromStream(std::istream& in_File, const bool localize
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of PROJ is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of PROJ is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -269,7 +269,7 @@ bool ProjectileRecord::loadFromStream(std::istream& in_File, const bool localize
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord PROJ of AMMO!\n";
+    std::cerr << "Error while reading subrecord PROJ of AMMO!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -287,7 +287,7 @@ bool ProjectileRecord::loadFromStream(std::istream& in_File, const bool localize
   bytesRead += 2;
   if (subLength!=12)
   {
-    std::cout <<"Error: sub record OBND of PROJ has invalid length("<<subLength
+    std::cerr <<"Error: sub record OBND of PROJ has invalid length("<<subLength
               <<" bytes). Should be 12 bytes!\n";
     return false;
   }
@@ -296,7 +296,7 @@ bool ProjectileRecord::loadFromStream(std::istream& in_File, const bool localize
   bytesRead += 12;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord OBND of PROJ!\n";
+    std::cerr << "Error while reading subrecord OBND of PROJ!\n";
     return false;
   }
 
@@ -321,20 +321,20 @@ bool ProjectileRecord::loadFromStream(std::istream& in_File, const bool localize
       case cFULL:
            if (name.isPresent())
            {
-             std::cout << "Error: Record PROJ seems to have more than one FULL subrecord!\n";
+             std::cerr << "Error: Record PROJ seems to have more than one FULL subrecord!\n";
              return false;
            }
            //read FULL
            if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
            {
-             std::cout << "Error while reading subrecord FULL of PROJ!\n";
+             std::cerr << "Error while reading subrecord FULL of PROJ!\n";
              return false;
            }
            break;
       case cMODL:
            if (!modelPath.empty())
            {
-             std::cout << "Error: Record PROJ seems to have more than one MODL subrecord!\n";
+             std::cerr << "Error: Record PROJ seems to have more than one MODL subrecord!\n";
              return false;
            }
            //MODL's length
@@ -342,7 +342,7 @@ bool ProjectileRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if (subLength>511)
            {
-             std::cout <<"Error: sub record MODL of PROJ is longer than 511 characters!\n";
+             std::cerr <<"Error: sub record MODL of PROJ is longer than 511 characters!\n";
              return false;
            }
            //read MODL's stuff
@@ -351,13 +351,13 @@ bool ProjectileRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += subLength;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord MODL of PROJ!\n";
+             std::cerr << "Error while reading subrecord MODL of PROJ!\n";
              return false;
            }
            modelPath = std::string(buffer);
            if (modelPath.empty())
            {
-             std::cout << "Error: MODL subrecord of PROJ is empty!\n";
+             std::cerr << "Error: MODL subrecord of PROJ is empty!\n";
              return false;
            }
            break;
@@ -378,7 +378,7 @@ bool ProjectileRecord::loadFromStream(std::istream& in_File, const bool localize
       case cDEST:
            if (hasDEST)
            {
-             std::cout << "Error: Record PROJ seems to have more than one DEST subrecord!\n";
+             std::cerr << "Error: Record PROJ seems to have more than one DEST subrecord!\n";
              return false;
            }
            //DEST's length
@@ -386,7 +386,7 @@ bool ProjectileRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if (subLength!=8)
            {
-             std::cout <<"Error: sub record DEST of PROJ has invalid length("
+             std::cerr <<"Error: sub record DEST of PROJ has invalid length("
                        <<subLength <<" bytes). Should be eight bytes!\n";
              return false;
            }
@@ -395,7 +395,7 @@ bool ProjectileRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 8;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord DEST of PROJ!\n";
+             std::cerr << "Error while reading subrecord DEST of PROJ!\n";
              return false;
            }
            hasDEST = true;
@@ -403,7 +403,7 @@ bool ProjectileRecord::loadFromStream(std::istream& in_File, const bool localize
       case cDSTD:
            if (!hasDEST)
            {
-             std::cout << "Error: Record PROJ seems to have a DSTF subrecord but no DEST subrecord!\n";
+             std::cerr << "Error: Record PROJ seems to have a DSTF subrecord but no DEST subrecord!\n";
              return false;
            }
            //DSTD's length
@@ -411,7 +411,7 @@ bool ProjectileRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if (subLength!=20)
            {
-             std::cout <<"Error: sub record DSTD of PROJ has invalid length("
+             std::cerr <<"Error: sub record DSTD of PROJ has invalid length("
                        <<subLength <<" bytes). Should be 20 bytes!\n";
              return false;
            }
@@ -420,7 +420,7 @@ bool ProjectileRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 20;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord DSTD of PROJ!\n";
+             std::cerr << "Error while reading subrecord DSTD of PROJ!\n";
              return false;
            }
 
@@ -437,7 +437,7 @@ bool ProjectileRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if (subLength!=0)
            {
-             std::cout <<"Error: sub record DSTF of PROJ has invalid length("
+             std::cerr <<"Error: sub record DSTF of PROJ has invalid length("
                        <<subLength <<" bytes). Should be zero bytes!\n";
              return false;
            }
@@ -468,7 +468,7 @@ bool ProjectileRecord::loadFromStream(std::istream& in_File, const bool localize
       case cNAM1:
            if (hasReadNAM1)
            {
-             std::cout << "Error: Record PROJ seems to have more than one NAM1 subrecord!\n";
+             std::cerr << "Error: Record PROJ seems to have more than one NAM1 subrecord!\n";
              return false;
            }
            //NAM1's length
@@ -476,7 +476,7 @@ bool ProjectileRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if (subLength>511)
            {
-             std::cout <<"Error: sub record NAM1 of PROJ is longer than 511 characters!\n";
+             std::cerr <<"Error: sub record NAM1 of PROJ is longer than 511 characters!\n";
              return false;
            }
            //read NAM1's stuff
@@ -485,7 +485,7 @@ bool ProjectileRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += subLength;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord NAM1 of PROJ!\n";
+             std::cerr << "Error while reading subrecord NAM1 of PROJ!\n";
              return false;
            }
            unknownNAM1 = std::string(buffer);
@@ -513,7 +513,7 @@ bool ProjectileRecord::loadFromStream(std::istream& in_File, const bool localize
       case cVNAM:
            if (hasReadVNAM)
            {
-             std::cout << "Error: Record PROJ seems to have more than one VNAM subrecord!\n";
+             std::cerr << "Error: Record PROJ seems to have more than one VNAM subrecord!\n";
              return false;
            }
            //VNAM's length
@@ -521,7 +521,7 @@ bool ProjectileRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if (subLength!=4)
            {
-             std::cout <<"Error: sub record VNAM of PROJ has invalid length("
+             std::cerr <<"Error: sub record VNAM of PROJ has invalid length("
                        <<subLength<<" bytes). Should be four bytes!\n";
              return false;
            }
@@ -530,13 +530,13 @@ bool ProjectileRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 4;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord VNAM of PROJ!\n";
+             std::cerr << "Error while reading subrecord VNAM of PROJ!\n";
              return false;
            }
            hasReadVNAM = true;
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only FULL, MODL, MODT, DEST, DSTD, DATA, NAM1, NAM2 or VNAM are allowed!\n";
            return false;
            break;
@@ -546,7 +546,7 @@ bool ProjectileRecord::loadFromStream(std::istream& in_File, const bool localize
   //presence checks
   if (!(hasReadNAM1 and unknownDATA.isPresent() and hasReadVNAM))
   {
-    std::cout << "Error: At least one of the required subrecords of PROJ is missing!\n";
+    std::cerr << "Error: At least one of the required subrecords of PROJ is missing!\n";
     return false;
   }
 

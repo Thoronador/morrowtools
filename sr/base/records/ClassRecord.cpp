@@ -120,7 +120,7 @@ bool ClassRecord::loadFromStream(std::istream& in_File, const bool localized, co
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of CLASS is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of CLASS is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -130,7 +130,7 @@ bool ClassRecord::loadFromStream(std::istream& in_File, const bool localized, co
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of CLASS!\n";
+    std::cerr << "Error while reading subrecord EDID of CLASS!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -138,7 +138,7 @@ bool ClassRecord::loadFromStream(std::istream& in_File, const bool localized, co
   //read FULL
   if (!name.loadFromStream(in_File, cFULL, true, bytesRead, localized, table, buffer))
   {
-    std::cout << "Error while reading subrecord FULL of CLAS!\n";
+    std::cerr << "Error while reading subrecord FULL of CLAS!\n";
     return false;
   }//if
 
@@ -155,7 +155,7 @@ bool ClassRecord::loadFromStream(std::istream& in_File, const bool localized, co
   bytesRead += 2;
   if (subLength!=4)
   {
-    std::cout <<"Error: subrecord DESC of CLAS has invalid length ("<<subLength
+    std::cerr <<"Error: subrecord DESC of CLAS has invalid length ("<<subLength
               <<" bytes). Should be four bytes!\n";
     return false;
   }
@@ -164,7 +164,7 @@ bool ClassRecord::loadFromStream(std::istream& in_File, const bool localized, co
   bytesRead += 4;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord DESC of CLAS!\n";
+    std::cerr << "Error while reading subrecord DESC of CLAS!\n";
     return false;
   }//if
 
@@ -181,7 +181,7 @@ bool ClassRecord::loadFromStream(std::istream& in_File, const bool localized, co
   bytesRead += 2;
   if (subLength!=36)
   {
-    std::cout <<"Error: subrecord DATA of CLAS has invalid length ("<<subLength
+    std::cerr <<"Error: subrecord DATA of CLAS has invalid length ("<<subLength
               <<" bytes). Should be 36 bytes!\n";
     return false;
   }
@@ -190,7 +190,7 @@ bool ClassRecord::loadFromStream(std::istream& in_File, const bool localized, co
   bytesRead += 36;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord DATA of CLAS!\n";
+    std::cerr << "Error while reading subrecord DATA of CLAS!\n";
     return false;
   }//if
 

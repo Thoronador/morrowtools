@@ -128,7 +128,7 @@ bool DoorRecord::saveToStream(std::ostream& output) const
     //write VMAD
     if (!unknownVMAD.saveToStream(output, cVMAD))
     {
-      std::cout << "Error while writing subrecord VMAD of DOOR!\n";
+      std::cerr << "Error while writing subrecord VMAD of DOOR!\n";
       return false;
     }
   }//if VMAD
@@ -164,7 +164,7 @@ bool DoorRecord::saveToStream(std::ostream& output) const
     //write MODT
     if (!unknownMODT.saveToStream(output, cMODT))
     {
-      std::cout << "Error while writing subrecord MODT of DOOR!\n";
+      std::cerr << "Error while writing subrecord MODT of DOOR!\n";
       return false;
     }
   }//if MODT
@@ -174,7 +174,7 @@ bool DoorRecord::saveToStream(std::ostream& output) const
     //write MODS
     if (!unknownMODS.saveToStream(output, cMODS))
     {
-      std::cout << "Error while writing subrecord MODS of DOOR!\n";
+      std::cerr << "Error while writing subrecord MODS of DOOR!\n";
       return false;
     }
   }//if MODS
@@ -245,18 +245,18 @@ bool DoorRecord::loadFromStream(std::istream& in_File, const bool localized, con
       case cEDID:
            if (!editorID.empty())
            {
-             std::cout << "Error: DOOR seems to have more than one EDID subrecord!\n";
+             std::cerr << "Error: DOOR seems to have more than one EDID subrecord!\n";
              return false;
            }
            //read EDID
            if (!loadString512FromStream(in_File, editorID, buffer, cEDID, false, bytesRead))
            {
-             std::cout << "Error while reading subrecord EDID of DOOR!\n";
+             std::cerr << "Error while reading subrecord EDID of DOOR!\n";
              return false;
            }
            if (editorID.empty())
            {
-             std::cout << "Error: subrecord EDID of DOOR is empty!\n";
+             std::cerr << "Error: subrecord EDID of DOOR is empty!\n";
              return false;
            }
            break;
@@ -277,7 +277,7 @@ bool DoorRecord::loadFromStream(std::istream& in_File, const bool localized, con
       case cOBND:
            if (hasReadOBND)
            {
-             std::cout << "Error: DOOR seems to have more than one OBND subrecord!\n";
+             std::cerr << "Error: DOOR seems to have more than one OBND subrecord!\n";
              return false;
            }
            //OBND's length
@@ -285,7 +285,7 @@ bool DoorRecord::loadFromStream(std::istream& in_File, const bool localized, con
            bytesRead += 2;
            if (subLength!=12)
            {
-             std::cout << "Error: subrecord OBND of DOOR has invalid length ("
+             std::cerr << "Error: subrecord OBND of DOOR has invalid length ("
                        << subLength << " bytes). Should be 12 bytes!\n";
              return false;
            }
@@ -294,7 +294,7 @@ bool DoorRecord::loadFromStream(std::istream& in_File, const bool localized, con
            bytesRead += 12;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord OBND of DOOR!\n";
+             std::cerr << "Error while reading subrecord OBND of DOOR!\n";
              return false;
            }
            hasReadOBND = true;
@@ -302,7 +302,7 @@ bool DoorRecord::loadFromStream(std::istream& in_File, const bool localized, con
       case cFULL:
            if (name.isPresent())
            {
-             std::cout << "Error: DOOR seems to have more than one FULL subrecord!\n";
+             std::cerr << "Error: DOOR seems to have more than one FULL subrecord!\n";
              return false;
            }
            //read FULL
@@ -312,7 +312,7 @@ bool DoorRecord::loadFromStream(std::istream& in_File, const bool localized, con
       case cMODL:
            if (!modelPath.empty())
            {
-             std::cout << "Error: DOOR seems to have more than one MODL subrecord!\n";
+             std::cerr << "Error: DOOR seems to have more than one MODL subrecord!\n";
              return false;
            }
            //MODL's length
@@ -320,7 +320,7 @@ bool DoorRecord::loadFromStream(std::istream& in_File, const bool localized, con
            bytesRead += 2;
            if (subLength>511)
            {
-             std::cout <<"Error: sub record MODL of DOOR is longer than 511 characters!\n";
+             std::cerr <<"Error: sub record MODL of DOOR is longer than 511 characters!\n";
              return false;
            }
            //read MODL's stuff
@@ -329,7 +329,7 @@ bool DoorRecord::loadFromStream(std::istream& in_File, const bool localized, con
            bytesRead += subLength;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord MODL of DOOR!\n";
+             std::cerr << "Error while reading subrecord MODL of DOOR!\n";
              return false;
            }
            modelPath = std::string(buffer);
@@ -365,7 +365,7 @@ bool DoorRecord::loadFromStream(std::istream& in_File, const bool localized, con
       case cSNAM:
            if (hasSNAM)
            {
-             std::cout << "Error: DOOR seems to have more than one SNAM subrecord!\n";
+             std::cerr << "Error: DOOR seems to have more than one SNAM subrecord!\n";
              return false;
            }
            //read SNAM
@@ -376,7 +376,7 @@ bool DoorRecord::loadFromStream(std::istream& in_File, const bool localized, con
       case cANAM:
            if (hasANAM)
            {
-             std::cout << "Error: DOOR seems to have more than one ANAM subrecord!\n";
+             std::cerr << "Error: DOOR seems to have more than one ANAM subrecord!\n";
              return false;
            }
            //read ANAM
@@ -387,7 +387,7 @@ bool DoorRecord::loadFromStream(std::istream& in_File, const bool localized, con
       case cFNAM:
            if (hasReadFNAM)
            {
-             std::cout << "Error: DOOR seems to have more than one FNAM subrecord!\n";
+             std::cerr << "Error: DOOR seems to have more than one FNAM subrecord!\n";
              return false;
            }
            //FNAM's length
@@ -395,7 +395,7 @@ bool DoorRecord::loadFromStream(std::istream& in_File, const bool localized, con
            bytesRead += 2;
            if (subLength!=1)
            {
-             std::cout <<"Error: subrecord FNAM of DOOR has invalid length ("<<subLength
+             std::cerr <<"Error: subrecord FNAM of DOOR has invalid length ("<<subLength
                        <<" bytes). Should be one byte!\n";
              return false;
            }
@@ -404,13 +404,13 @@ bool DoorRecord::loadFromStream(std::istream& in_File, const bool localized, con
            bytesRead += 1;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord FNAM of DOOR!\n";
+             std::cerr << "Error while reading subrecord FNAM of DOOR!\n";
              return false;
            }
            hasReadFNAM = true;
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only EDID, VMAD, OBND, FULL, MODL, MODT,"
                      << " SNAM, ANAM or FNAM are allowed here!\n";
            return false;
@@ -421,7 +421,7 @@ bool DoorRecord::loadFromStream(std::istream& in_File, const bool localized, con
   //check for required records
   if (!(hasReadOBND and hasReadFNAM))
   {
-    std::cout << "Error while reading record DOOR: subrecord OBND or FNAM is missing!\n";
+    std::cerr << "Error while reading record DOOR: subrecord OBND or FNAM is missing!\n";
     return false;
   }
 

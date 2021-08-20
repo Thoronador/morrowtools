@@ -118,7 +118,7 @@ bool AddOnNodeRecord::saveToStream(std::ostream& output) const
     //write MODT
     if (!unknownMODT.saveToStream(output, cMODT))
     {
-      std::cout << "Error while writing subrecord MODT of ADDN!\n";
+      std::cerr << "Error while writing subrecord MODT of ADDN!\n";
       return false;
     }
   }
@@ -177,7 +177,7 @@ bool AddOnNodeRecord::loadFromStream(std::istream& in_File, const bool localized
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of ADDN is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of ADDN is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -187,7 +187,7 @@ bool AddOnNodeRecord::loadFromStream(std::istream& in_File, const bool localized
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of ADDN!\n";
+    std::cerr << "Error while reading subrecord EDID of ADDN!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -205,7 +205,7 @@ bool AddOnNodeRecord::loadFromStream(std::istream& in_File, const bool localized
   bytesRead += 2;
   if (subLength!=12)
   {
-    std::cout <<"Error: sub record OBND of ADDN has invalid length ("<<subLength
+    std::cerr <<"Error: sub record OBND of ADDN has invalid length ("<<subLength
               << " bytes). Should be 12 bytes!\n";
     return false;
   }
@@ -215,7 +215,7 @@ bool AddOnNodeRecord::loadFromStream(std::istream& in_File, const bool localized
   bytesRead += 12;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord OBND of ADDN!\n";
+    std::cerr << "Error while reading subrecord OBND of ADDN!\n";
     return false;
   }
 
@@ -250,7 +250,7 @@ bool AddOnNodeRecord::loadFromStream(std::istream& in_File, const bool localized
       case cDATA:
            if (hasReadDATA)
            {
-             std::cout << "Error: record ADDN seems to have more than one DATA subrecord!\n";
+             std::cerr << "Error: record ADDN seems to have more than one DATA subrecord!\n";
              return false;
            }
            //read DATA
@@ -262,7 +262,7 @@ bool AddOnNodeRecord::loadFromStream(std::istream& in_File, const bool localized
       case cSNAM:
            if (soundDescriptorFormID!=0)
            {
-             std::cout << "Error: record ADDN seems to have more than one SNAM subrecord!\n";
+             std::cerr << "Error: record ADDN seems to have more than one SNAM subrecord!\n";
              return false;
            }
            //read SNAM
@@ -271,14 +271,14 @@ bool AddOnNodeRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 6;
            if (soundDescriptorFormID==0)
            {
-             std::cout << "Error: subrecord SNAM of ADDN has value zero!\n";
+             std::cerr << "Error: subrecord SNAM of ADDN has value zero!\n";
              return false;
            }
            break;
       case cDNAM:
            if (hasReadDNAM)
            {
-             std::cout << "Error: record ADDN seems to have more than one DNAM subrecord!\n";
+             std::cerr << "Error: record ADDN seems to have more than one DNAM subrecord!\n";
              return false;
            }
            //DNAM's length
@@ -286,7 +286,7 @@ bool AddOnNodeRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength!=4)
            {
-             std::cout <<"Error: sub record DNAM of ADDN has invalid length ("<<subLength
+             std::cerr <<"Error: sub record DNAM of ADDN has invalid length ("<<subLength
                        << " bytes). Should be two bytes!\n";
              return false;
            }
@@ -297,7 +297,7 @@ bool AddOnNodeRecord::loadFromStream(std::istream& in_File, const bool localized
            hasReadDNAM = true;
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only MODT, DATA, SNAM or DNAM are allowed here!\n";
            return false;
            break;
@@ -307,7 +307,7 @@ bool AddOnNodeRecord::loadFromStream(std::istream& in_File, const bool localized
   //presence checks
   if (!(hasReadDATA and hasReadDNAM))
   {
-    std::cout << "Error: At least one required subrecord of ADDN is missing!\n";
+    std::cerr << "Error: At least one required subrecord of ADDN is missing!\n";
     return false;
   }
 

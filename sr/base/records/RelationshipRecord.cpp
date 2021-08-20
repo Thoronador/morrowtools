@@ -135,20 +135,20 @@ bool RelationshipRecord::loadFromStream(std::istream& in_File, const bool locali
       case cEDID:
            if (!editorID.empty())
            {
-             std::cout << "Error: RELA seems to have two EDID subrecords!\n";
+             std::cerr << "Error: RELA seems to have two EDID subrecords!\n";
              return false;
            }
            //load EDID
            if (!loadString512FromStream(in_File, editorID, buffer, cEDID, false, bytesRead))
            {
-             std::cout << "Error while reading subrecord EDID of RELA!\n";
+             std::cerr << "Error while reading subrecord EDID of RELA!\n";
              return false;
            }
            break;
       case cDATA:
            if (hasReadDATA)
            {
-             std::cout << "Error: RELA seems to have two DATA subrecords!\n";
+             std::cerr << "Error: RELA seems to have two DATA subrecords!\n";
              return false;
            }
            //DATA's length
@@ -156,7 +156,7 @@ bool RelationshipRecord::loadFromStream(std::istream& in_File, const bool locali
            bytesRead += 2;
            if (subLength!=16)
            {
-             std::cout <<"Error: sub record DATA of RELA has invalid length("<<subLength
+             std::cerr <<"Error: sub record DATA of RELA has invalid length("<<subLength
               <<" bytes). Should be 16 bytes!\n";
              return false;
            }
@@ -169,13 +169,13 @@ bool RelationshipRecord::loadFromStream(std::istream& in_File, const bool locali
            bytesRead += 16;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord DATA of RELA!\n";
+             std::cerr << "Error while reading subrecord DATA of RELA!\n";
              return false;
            }
            hasReadDATA = true;
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only EDID or DATA are allowed here!\n";
            return false;
            break;
@@ -185,7 +185,7 @@ bool RelationshipRecord::loadFromStream(std::istream& in_File, const bool locali
   //presence check
   if (!hasReadDATA)
   {
-    std::cout << "Error: subrecord DATA of RELA is missing!\n";
+    std::cerr << "Error: subrecord DATA of RELA is missing!\n";
     return false;
   }
 

@@ -119,7 +119,7 @@ bool LocationReferenceTypeRecord::loadFromStream(std::istream& in_File, const bo
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of LCRT is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of LCRT is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -129,7 +129,7 @@ bool LocationReferenceTypeRecord::loadFromStream(std::istream& in_File, const bo
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of LCRT!\n";
+    std::cerr << "Error while reading subrecord EDID of LCRT!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -149,7 +149,7 @@ bool LocationReferenceTypeRecord::loadFromStream(std::istream& in_File, const bo
     bytesRead += 2;
     if (subLength!=4)
     {
-      std::cout <<"Error: sub record CNAM of LCRT has invalid length ("
+      std::cerr <<"Error: sub record CNAM of LCRT has invalid length ("
                 <<subLength<<" bytes). Should be four bytes!\n";
       return false;
     }
@@ -158,7 +158,7 @@ bool LocationReferenceTypeRecord::loadFromStream(std::istream& in_File, const bo
     bytesRead += subLength;
     if (!in_File.good())
     {
-      std::cout << "Error while reading subrecord CNAM of LCRT!\n";
+      std::cerr << "Error while reading subrecord CNAM of LCRT!\n";
       return false;
     }
     hasCNAM = true;

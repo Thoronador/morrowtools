@@ -176,7 +176,7 @@ bool ImpactDataRecord::saveToStream(std::ostream& output) const
     //write MODT
     if (!unknownMODT.saveToStream(output, cMODT))
     {
-      std::cout << "Error while writing MODT of IPCT!";
+      std::cerr << "Error while writing MODT of IPCT!";
       return false;
     }
   }//if MODT
@@ -297,7 +297,7 @@ bool ImpactDataRecord::loadFromStream(std::istream& in_File, const bool localize
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of IPCT is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of IPCT is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -307,7 +307,7 @@ bool ImpactDataRecord::loadFromStream(std::istream& in_File, const bool localize
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of IPCT!\n";
+    std::cerr << "Error while reading subrecord EDID of IPCT!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -332,7 +332,7 @@ bool ImpactDataRecord::loadFromStream(std::istream& in_File, const bool localize
       case cMODL:
            if (!modelPath.empty())
            {
-             std::cout << "Error: IPCT seems to have two MODL subrecords!\n";
+             std::cerr << "Error: IPCT seems to have two MODL subrecords!\n";
              return false;
            }
            //load MODL
@@ -341,7 +341,7 @@ bool ImpactDataRecord::loadFromStream(std::istream& in_File, const bool localize
            //check content
            if (modelPath.empty())
            {
-             std::cout << "Error: subrecord MODL of IPCT is empty!\n";
+             std::cerr << "Error: subrecord MODL of IPCT is empty!\n";
              return false;
            }
            break;
@@ -362,7 +362,7 @@ bool ImpactDataRecord::loadFromStream(std::istream& in_File, const bool localize
       case cDATA:
            if (hasReadDATA)
            {
-             std::cout << "Error: IPCT seems to have two DATA subrecords!\n";
+             std::cerr << "Error: IPCT seems to have two DATA subrecords!\n";
              return false;
            }
            //read DATA's length
@@ -370,7 +370,7 @@ bool ImpactDataRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if (subLength!=24)
            {
-             std::cout << "Error: subrecord DATA of IPCT has invalid length ("
+             std::cerr << "Error: subrecord DATA of IPCT has invalid length ("
                        << subLength<<" bytes). Should be 24 bytes!\n";
              return false;
            }
@@ -384,7 +384,7 @@ bool ImpactDataRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 24;
            if (!in_File.good())
            {
-             std::cout << "Error while loading subrecord DATA of IPCT!\n";
+             std::cerr << "Error while loading subrecord DATA of IPCT!\n";
              return false;
            }
            hasReadDATA = true;
@@ -392,7 +392,7 @@ bool ImpactDataRecord::loadFromStream(std::istream& in_File, const bool localize
       case cDODT:
            if (decalData.isPresent())
            {
-             std::cout << "Error: IPCT seems to have two DODT subrecords!\n";
+             std::cerr << "Error: IPCT seems to have two DODT subrecords!\n";
              return false;
            }
            //read DODT's length
@@ -400,7 +400,7 @@ bool ImpactDataRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if (subLength!=36)
            {
-             std::cout << "Error: subrecord DODT of IPCT has invalid length ("
+             std::cerr << "Error: subrecord DODT of IPCT has invalid length ("
                        << subLength<<" bytes). Should be 36 bytes!\n";
              return false;
            }
@@ -420,14 +420,14 @@ bool ImpactDataRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 36;
            if (!in_File.good())
            {
-             std::cout << "Error while loading subrecord DODT of IPCT!\n";
+             std::cerr << "Error while loading subrecord DODT of IPCT!\n";
              return false;
            }
            break;
       case cDNAM:
            if (textureSetFormID!=0)
            {
-             std::cout << "Error: IPCT seems to have two DNAM subrecords!\n";
+             std::cerr << "Error: IPCT seems to have two DNAM subrecords!\n";
              return false;
            }
            //load DNAM
@@ -436,14 +436,14 @@ bool ImpactDataRecord::loadFromStream(std::istream& in_File, const bool localize
            //check value
            if (textureSetFormID==0)
            {
-             std::cout << "Error: subrecord DNAM of IPCT is zero!\n";
+             std::cerr << "Error: subrecord DNAM of IPCT is zero!\n";
              return false;
            }
            break;
       case cENAM:
            if (secondaryTextureSetFormID!=0)
            {
-             std::cout << "Error: IPCT seems to have two ENAM subrecords!\n";
+             std::cerr << "Error: IPCT seems to have two ENAM subrecords!\n";
              return false;
            }
            //load ENAM
@@ -452,14 +452,14 @@ bool ImpactDataRecord::loadFromStream(std::istream& in_File, const bool localize
            //check value
            if (secondaryTextureSetFormID==0)
            {
-             std::cout << "Error: subrecord ENAM of IPCT is zero!\n";
+             std::cerr << "Error: subrecord ENAM of IPCT is zero!\n";
              return false;
            }
            break;
       case cSNAM:
            if (impactSoundOneFormID!=0)
            {
-             std::cout << "Error: IPCT seems to have two SNAM subrecords!\n";
+             std::cerr << "Error: IPCT seems to have two SNAM subrecords!\n";
              return false;
            }
            //load SNAM
@@ -468,14 +468,14 @@ bool ImpactDataRecord::loadFromStream(std::istream& in_File, const bool localize
            //check value
            if (impactSoundOneFormID==0)
            {
-             std::cout << "Error: subrecord SNAM of IPCT is zero!\n";
+             std::cerr << "Error: subrecord SNAM of IPCT is zero!\n";
              return false;
            }
            break;
       case cNAM1:
            if (impactSoundTwoFormID!=0)
            {
-             std::cout << "Error: IPCT seems to have two NAM1 subrecords!\n";
+             std::cerr << "Error: IPCT seems to have two NAM1 subrecords!\n";
              return false;
            }
            //load NAM1
@@ -484,14 +484,14 @@ bool ImpactDataRecord::loadFromStream(std::istream& in_File, const bool localize
            //check value
            if (impactSoundTwoFormID==0)
            {
-             std::cout << "Error: subrecord NAM1 of IPCT is zero!\n";
+             std::cerr << "Error: subrecord NAM1 of IPCT is zero!\n";
              return false;
            }
            break;
       case cNAM2:
            if (hazardFormID!=0)
            {
-             std::cout << "Error: IPCT seems to have two NAM2 subrecords!\n";
+             std::cerr << "Error: IPCT seems to have two NAM2 subrecords!\n";
              return false;
            }
            //load NAM1
@@ -500,12 +500,12 @@ bool ImpactDataRecord::loadFromStream(std::istream& in_File, const bool localize
            //check value
            if (hazardFormID==0)
            {
-             std::cout << "Error: subrecord NAM2 of IPCT is zero!\n";
+             std::cerr << "Error: subrecord NAM2 of IPCT is zero!\n";
              return false;
            }
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only MODL, MODT, DATA, DODT, DNAM, ENAM, SNAM, NAM1 or NAM2 are allowed here!\n";
            return false;
            break;
@@ -515,7 +515,7 @@ bool ImpactDataRecord::loadFromStream(std::istream& in_File, const bool localize
   //presence checks
   if (!hasReadDATA)
   {
-    std::cout << "Error: at least one required subrecord of IPCT is missing!\n";
+    std::cerr << "Error: at least one required subrecord of IPCT is missing!\n";
     return false;
   }
 

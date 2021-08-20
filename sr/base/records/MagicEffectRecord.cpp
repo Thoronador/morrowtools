@@ -224,7 +224,7 @@ bool MagicEffectRecord::saveToStream(std::ostream& output) const
     //write VMAD
     if (!unknownVMAD.saveToStream(output, cVMAD))
     {
-      std::cout << "Error while writing subrecord VMAD of MGEF!\n";
+      std::cerr << "Error while writing subrecord VMAD of MGEF!\n";
       return false;
     }
   }//if VMAD
@@ -375,7 +375,7 @@ bool MagicEffectRecord::loadFromStream(std::istream& in_File, const bool localiz
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of MGEF is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of MGEF is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -385,7 +385,7 @@ bool MagicEffectRecord::loadFromStream(std::istream& in_File, const bool localiz
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of MGEF!\n";
+    std::cerr << "Error while reading subrecord EDID of MGEF!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -426,7 +426,7 @@ bool MagicEffectRecord::loadFromStream(std::istream& in_File, const bool localiz
       case cFULL:
            if (name.isPresent())
            {
-             std::cout << "Error: MGEF seems to have more than one FULL subrecord!\n";
+             std::cerr << "Error: MGEF seems to have more than one FULL subrecord!\n";
              return false;
            }
            //read FULL
@@ -436,7 +436,7 @@ bool MagicEffectRecord::loadFromStream(std::istream& in_File, const bool localiz
       case cMDOB:
            if (menuDisplayObjectFormID!=0)
            {
-             std::cout << "Error: MGEF seems to have more than one MDOB subrecord!\n";
+             std::cerr << "Error: MGEF seems to have more than one MDOB subrecord!\n";
              return false;
            }
            //read MDOB
@@ -444,14 +444,14 @@ bool MagicEffectRecord::loadFromStream(std::istream& in_File, const bool localiz
            bytesRead += 6;
            if (menuDisplayObjectFormID==0)
            {
-             std::cout << "Error: subrecord MDOB of MGEF has value zero!\n";
+             std::cerr << "Error: subrecord MDOB of MGEF has value zero!\n";
              return false;
            }
            break;
       case cKSIZ:
            if (!keywordArray.empty())
            {
-             std::cout << "Error: MGEF seems to have more than one KSIZ subrecord!\n";
+             std::cerr << "Error: MGEF seems to have more than one KSIZ subrecord!\n";
              return false;
            }
            //KSIZ's length
@@ -459,7 +459,7 @@ bool MagicEffectRecord::loadFromStream(std::istream& in_File, const bool localiz
            bytesRead += 2;
            if (subLength!=4)
            {
-             std::cout <<"Error: sub record KSIZ of MGEF has invalid length("
+             std::cerr <<"Error: sub record KSIZ of MGEF has invalid length("
                        <<subLength<<" bytes). Should be four bytes!\n";
              return false;
            }
@@ -469,7 +469,7 @@ bool MagicEffectRecord::loadFromStream(std::istream& in_File, const bool localiz
            bytesRead += 4;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord KSIZ of MGEF!\n";
+             std::cerr << "Error while reading subrecord KSIZ of MGEF!\n";
              return false;
            }
 
@@ -486,7 +486,7 @@ bool MagicEffectRecord::loadFromStream(std::istream& in_File, const bool localiz
            bytesRead += 2;
            if (subLength!=4*k_Size)
            {
-             std::cout <<"Error: sub record KWDA of MGEF has invalid length("
+             std::cerr <<"Error: sub record KWDA of MGEF has invalid length("
                        <<subLength<<" bytes). Should be "<<4*k_Size<<" bytes!\n";
              return false;
            }
@@ -497,7 +497,7 @@ bool MagicEffectRecord::loadFromStream(std::istream& in_File, const bool localiz
              bytesRead += 4;
              if (!in_File.good())
              {
-               std::cout << "Error while reading subrecord KWDA of MGEF!\n";
+               std::cerr << "Error while reading subrecord KWDA of MGEF!\n";
                return false;
              }
              keywordArray.push_back(helper);
@@ -506,7 +506,7 @@ bool MagicEffectRecord::loadFromStream(std::istream& in_File, const bool localiz
       case cDATA:
            if (hasReadDATA)
            {
-             std::cout << "Error: MGEF seems to have more than one DATA subrecord!\n";
+             std::cerr << "Error: MGEF seems to have more than one DATA subrecord!\n";
              return false;
            }
            //DATA's length
@@ -514,7 +514,7 @@ bool MagicEffectRecord::loadFromStream(std::istream& in_File, const bool localiz
            bytesRead += 2;
            if (subLength!=152)
            {
-             std::cout << "Error: sub record DATA of MGEF has invalid length("
+             std::cerr << "Error: sub record DATA of MGEF has invalid length("
                        << subLength << " bytes). Should be 152 bytes!\n";
              return false;
            }
@@ -561,7 +561,7 @@ bool MagicEffectRecord::loadFromStream(std::istream& in_File, const bool localiz
            //check length
            if (!in_File.good())
            {
-             std::cout <<"Error while reading subrecord DATA of MGEF!\n";
+             std::cerr <<"Error while reading subrecord DATA of MGEF!\n";
              return false;
            }
            hasReadDATA = true;
@@ -569,7 +569,7 @@ bool MagicEffectRecord::loadFromStream(std::istream& in_File, const bool localiz
       case cSNDD:
            if (!sounds.empty())
            {
-             std::cout << "Error: MGEF seems to have more than one SNDD subrecord!\n";
+             std::cerr << "Error: MGEF seems to have more than one SNDD subrecord!\n";
              return false;
            }
            //SNDD's length
@@ -577,7 +577,7 @@ bool MagicEffectRecord::loadFromStream(std::istream& in_File, const bool localiz
            bytesRead += 2;
            if (((subLength%8)!=0) or (subLength==0))
            {
-             std::cout <<"Error: sub record SNDD of MGEF has invalid length("
+             std::cerr <<"Error: sub record SNDD of MGEF has invalid length("
                        <<subLength<<" bytes). Should be an integral multiple of eight bytes!\n";
              return false;
            }
@@ -590,12 +590,12 @@ bool MagicEffectRecord::loadFromStream(std::istream& in_File, const bool localiz
              bytesRead += 8;
              if (!in_File.good())
              {
-               std::cout << "Error while reading subrecord SNDD of MGEF!\n";
+               std::cerr << "Error while reading subrecord SNDD of MGEF!\n";
                return false;
              }
              if (tempUint32==0)
              {
-               std::cout << "Error while reading subrecord SNDD of MGEF: form ID is zero!\n";
+               std::cerr << "Error while reading subrecord SNDD of MGEF: form ID is zero!\n";
                return false;
              }
              sounds[helper] = tempUint32;
@@ -603,20 +603,20 @@ bool MagicEffectRecord::loadFromStream(std::istream& in_File, const bool localiz
            //length check
            if (sounds.size()!=k_Size)
            {
-             std::cout << "Error: subrecord SNDD of MGEF contains duplicate entries!\n";
+             std::cerr << "Error: subrecord SNDD of MGEF contains duplicate entries!\n";
              return false;
            }
            break;
       case cDNAM:
            if (description.isPresent())
            {
-             std::cout << "Error: MGEF seems to have more than one DNAM subrecord!\n";
+             std::cerr << "Error: MGEF seems to have more than one DNAM subrecord!\n";
              return false;
            }
            //read DNAM
            if (!description.loadFromStream(in_File, cDNAM, false, bytesRead, localized, table, buffer))
            {
-             std::cout << "Error while reading subrecord DNAM of MGEF!\n";
+             std::cerr << "Error while reading subrecord DNAM of MGEF!\n";
              return false;
            }
            break;
@@ -626,7 +626,7 @@ bool MagicEffectRecord::loadFromStream(std::istream& in_File, const bool localiz
            bytesRead += 2;
            if (subLength!=32)
            {
-             std::cout <<"Error: sub record CTDA of MGEF has invalid length("
+             std::cerr <<"Error: sub record CTDA of MGEF has invalid length("
                        <<subLength<<" bytes). Should be 32 bytes!\n";
              return false;
            }
@@ -636,13 +636,13 @@ bool MagicEffectRecord::loadFromStream(std::istream& in_File, const bool localiz
            bytesRead += 32;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord CTDA of MGEF!\n";
+             std::cerr << "Error while reading subrecord CTDA of MGEF!\n";
              return false;
            }
            unknownCTDAs.push_back(tempCTDA);
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only VMAD, FULL, MDOB, KSIZ, SNDD, DATA or DNAM are allowed!\n";
            return false;
            break;
@@ -652,7 +652,7 @@ bool MagicEffectRecord::loadFromStream(std::istream& in_File, const bool localiz
   //check for required DNAM and DATA
   if (!(description.isPresent() and hasReadDATA))
   {
-    std::cout << "Error: DNAM or DATA subrecord of MGEF is missing!\n";
+    std::cerr << "Error: DNAM or DATA subrecord of MGEF is missing!\n";
     return false;
   }
 

@@ -119,7 +119,7 @@ bool ESMWriterSingleType<recT, singleT>::writeGroups(std::ofstream& output) cons
   // ---- group header goes first
   if (!headerData.saveToStream(output))
   {
-    std::cout << "ESMWriterSingleType::writeGroups: Error: could not write group header!\n";
+    std::cerr << "ESMWriterSingleType::writeGroups: Error: could not write group header!\n";
     return false;
   }
   // ---- records come next

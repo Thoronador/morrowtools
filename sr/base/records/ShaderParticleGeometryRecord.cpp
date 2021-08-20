@@ -167,7 +167,7 @@ bool ShaderParticleGeometryRecord::loadFromStream(std::istream& in_File, const b
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of SPGD is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of SPGD is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -177,7 +177,7 @@ bool ShaderParticleGeometryRecord::loadFromStream(std::istream& in_File, const b
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of SPGD!\n";
+    std::cerr << "Error while reading subrecord EDID of SPGD!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -195,7 +195,7 @@ bool ShaderParticleGeometryRecord::loadFromStream(std::istream& in_File, const b
   bytesRead += 2;
   if ((subLength!=48) and (subLength!=40))
   {
-    std::cout <<"Error: sub record DATA of SPGD has invalid length ("<<subLength
+    std::cerr <<"Error: sub record DATA of SPGD has invalid length ("<<subLength
               << " bytes). Should be 48 bytes or 40 bytes!\n";
     return false;
   }
@@ -225,7 +225,7 @@ bool ShaderParticleGeometryRecord::loadFromStream(std::istream& in_File, const b
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord DATA of SPGD!\n";
+    std::cerr << "Error while reading subrecord DATA of SPGD!\n";
     return false;
   }
 
@@ -236,7 +236,7 @@ bool ShaderParticleGeometryRecord::loadFromStream(std::istream& in_File, const b
     //make sure it's not empty
     if (particleTexture.empty())
     {
-      std::cout << "Error while reading subrecord ICON of SPGD: path is empty!\n";
+      std::cerr << "Error while reading subrecord ICON of SPGD: path is empty!\n";
       return false;
     }
   }

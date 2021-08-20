@@ -122,7 +122,7 @@ bool StaticRecord::saveToStream(std::ostream& output) const
   {
     if (!unknownMODT.saveToStream(output, cMODT))
     {
-      std::cout << "Error while writing subrecord MODT of STAT!\n";
+      std::cerr << "Error while writing subrecord MODT of STAT!\n";
       return false;
     }
   }//if MODT
@@ -132,7 +132,7 @@ bool StaticRecord::saveToStream(std::ostream& output) const
   {
     if (!unknownMODS.saveToStream(output, cMODS))
     {
-      std::cout << "Error while writing subrecord MODS of STAT!\n";
+      std::cerr << "Error while writing subrecord MODS of STAT!\n";
       return false;
     }
   }//if MODS
@@ -150,7 +150,7 @@ bool StaticRecord::saveToStream(std::ostream& output) const
   {
     if (!unknownMNAM.saveToStream(output, cMNAM))
     {
-      std::cout << "Error while writing subrecord MNAM of STAT!\n";
+      std::cerr << "Error while writing subrecord MNAM of STAT!\n";
       return false;
     }
   }//if MNAM
@@ -181,7 +181,7 @@ bool StaticRecord::loadFromStream(std::istream& in_File, const bool localized, c
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of STAT is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of STAT is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -191,7 +191,7 @@ bool StaticRecord::loadFromStream(std::istream& in_File, const bool localized, c
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of STAT!\n";
+    std::cerr << "Error while reading subrecord EDID of STAT!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -209,7 +209,7 @@ bool StaticRecord::loadFromStream(std::istream& in_File, const bool localized, c
   bytesRead += 2;
   if (subLength!=12)
   {
-    std::cout <<"Error: sub record OBND of STAT has invalid length ("<<subLength
+    std::cerr <<"Error: sub record OBND of STAT has invalid length ("<<subLength
               <<" bytes)! Should be 12 bytes.\n";
     return false;
   }
@@ -218,7 +218,7 @@ bool StaticRecord::loadFromStream(std::istream& in_File, const bool localized, c
   bytesRead += 12;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord OBND of STAT!\n";
+    std::cerr << "Error while reading subrecord OBND of STAT!\n";
     return false;
   }
 
@@ -237,7 +237,7 @@ bool StaticRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cMODL:
            if (!modelPath.empty())
            {
-             std::cout << "Error: STAT seems to have more than one MODL subrecord!\n";
+             std::cerr << "Error: STAT seems to have more than one MODL subrecord!\n";
              return false;
            }
            //MODL's length
@@ -245,7 +245,7 @@ bool StaticRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 2;
            if (subLength>511)
            {
-             std::cout <<"Error: sub record MODL of STAT is longer than 511 characters!\n";
+             std::cerr <<"Error: sub record MODL of STAT is longer than 511 characters!\n";
              return false;
            }
            //read MODL's stuff
@@ -254,7 +254,7 @@ bool StaticRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += subLength;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord MODL of STAT!\n";
+             std::cerr << "Error while reading subrecord MODL of STAT!\n";
              return false;
            }
            modelPath = std::string(buffer);
@@ -290,7 +290,7 @@ bool StaticRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cDNAM:
            if (hasReadDNAM)
            {
-             std::cout << "Error: STAT seems to have more than one DNAM subrecord!\n";
+             std::cerr << "Error: STAT seems to have more than one DNAM subrecord!\n";
              return false;
            }
            //DNAM's length
@@ -298,7 +298,7 @@ bool StaticRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 2;
            if (subLength!=8)
            {
-             std::cout <<"Error: sub record DNAM of STAT has invalid length ("
+             std::cerr <<"Error: sub record DNAM of STAT has invalid length ("
                        <<subLength<<" bytes)! Should be 8 bytes.\n";
              return false;
            }
@@ -307,7 +307,7 @@ bool StaticRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 8;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord DNAM of STAT!\n";
+             std::cerr << "Error while reading subrecord DNAM of STAT!\n";
              return false;
            }
            hasReadDNAM = true;
@@ -336,7 +336,7 @@ bool StaticRecord::loadFromStream(std::istream& in_File, const bool localized, c
   //check presence of DNAM (required subrecord)
   if (!hasReadDNAM)
   {
-    std::cout << "Error: STAT seems to have no DNAM subrecord!\n";
+    std::cerr << "Error: STAT seems to have no DNAM subrecord!\n";
     return false;
   }
 

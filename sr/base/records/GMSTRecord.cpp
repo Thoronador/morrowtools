@@ -149,12 +149,12 @@ bool GMSTRecord::loadFromStream(std::istream& in_File, const bool localized, con
   in_File.read((char*) &subRecSize, 2);
   if (subRecSize>511)
   {
-    std::cout << "Sub record EDID of GMST is longer than 511 characters!\n";
+    std::cerr << "Sub record EDID of GMST is longer than 511 characters!\n";
     return false;
   }
   if (subRecSize<=0)
   {
-    std::cout << "Sub record EDID of GMST is shorter than one character!\n";
+    std::cerr << "Sub record EDID of GMST is shorter than one character!\n";
     return false;
   }
   char buffer[512];
@@ -163,7 +163,7 @@ bool GMSTRecord::loadFromStream(std::istream& in_File, const bool localized, con
   in_File.read(buffer, subRecSize);
   if (!in_File.good())
   {
-    std::cout << "Error while reading sub record EDID of GMST!\n";
+    std::cerr << "Error while reading sub record EDID of GMST!\n";
     return false;
   }
   m_SettingName = std::string(buffer);
@@ -191,7 +191,7 @@ bool GMSTRecord::loadFromStream(std::istream& in_File, const bool localized, con
          //check length
          if (subRecSize != 4)
          {
-           std::cout << "Error: sub record DATA of GMST has invalid length ("
+           std::cerr << "Error: sub record DATA of GMST has invalid length ("
                      << subRecSize << " bytes). Should be 4 bytes.\n";
            return false;
          }
@@ -204,7 +204,7 @@ bool GMSTRecord::loadFromStream(std::istream& in_File, const bool localized, con
          //integer's length
          if (subRecSize != 4)
          {
-           std::cout << "Error: sub record DATA of GMST has invalid length ("
+           std::cerr << "Error: sub record DATA of GMST has invalid length ("
                      << subRecSize << " bytes). Should be 4 bytes.\n";
            return false;
          }
@@ -217,7 +217,7 @@ bool GMSTRecord::loadFromStream(std::istream& in_File, const bool localized, con
          //check  length
          if (subRecSize>511)
          {
-           std::cout << "Sub record DATA of GMST is longer than 511 characters!\n";
+           std::cerr << "Sub record DATA of GMST is longer than 511 characters!\n";
            return false;
          }
          //read string value
@@ -225,7 +225,7 @@ bool GMSTRecord::loadFromStream(std::istream& in_File, const bool localized, con
          in_File.read(buffer, subRecSize);
          if (!in_File.good())
          {
-           std::cout << "GMSTRecord::loadFromStream: Error while reading string data!\n";
+           std::cerr << "GMSTRecord::loadFromStream: Error while reading string data!\n";
            return false;
          }
          m_StringValue = std::string(buffer);

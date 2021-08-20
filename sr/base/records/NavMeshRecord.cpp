@@ -99,7 +99,7 @@ bool NavMeshRecord::saveToStream(std::ostream& output) const
     //write NVNM
     if (!unknownNVNM.saveToStream(output, cNVNM))
     {
-      std::cout << "Error while writing subrecord NVNM of NAVM!\n";
+      std::cerr << "Error while writing subrecord NVNM of NAVM!\n";
       return false;
     }
   }//if NVNM
@@ -109,7 +109,7 @@ bool NavMeshRecord::saveToStream(std::ostream& output) const
     //write ONAM
     if (!unknownONAM.saveToStream(output, cONAM))
     {
-      std::cout << "Error while writing subrecord ONAM of NAVM!\n";
+      std::cerr << "Error while writing subrecord ONAM of NAVM!\n";
       return false;
     }
   }//if ONAM
@@ -119,7 +119,7 @@ bool NavMeshRecord::saveToStream(std::ostream& output) const
     //write NNAM
     if (!unknownNNAM.saveToStream(output, cNNAM))
     {
-      std::cout << "Error while writing subrecord NNAM of NAVM!\n";
+      std::cerr << "Error while writing subrecord NNAM of NAVM!\n";
       return false;
     }
   }//if NNAM
@@ -129,7 +129,7 @@ bool NavMeshRecord::saveToStream(std::ostream& output) const
     //write PNAM
     if (!unknownPNAM.saveToStream(output, cPNAM))
     {
-      std::cout << "Error while writing subrecord PNAM of NAVM!\n";
+      std::cerr << "Error while writing subrecord PNAM of NAVM!\n";
       return false;
     }
   }//if PNAM
@@ -158,12 +158,12 @@ bool NavMeshRecord::loadFromStream(std::istream& in_File, const bool localized, 
     in_File.read((char*) &decompressedSize, 4);
     if (!in_File.good())
     {
-      std::cout << "Error while reading decompression size of NAVM!\n";
+      std::cerr << "Error while reading decompression size of NAVM!\n";
       return false;
     }
     if (readSize<=4)
     {
-      std::cout << "Error: size of compressed NAVM record is too small to contain any compressed data!\n";
+      std::cerr << "Error: size of compressed NAVM record is too small to contain any compressed data!\n";
       return false;
     }
     //buffer to read compressed data
@@ -171,7 +171,7 @@ bool NavMeshRecord::loadFromStream(std::istream& in_File, const bool localized, 
     in_File.read((char*) stream_buffer, readSize-4);
     if (!in_File.good())
     {
-      std::cout << "Error while reading compressed data of NAVM!\n";
+      std::cerr << "Error while reading compressed data of NAVM!\n";
       delete[] stream_buffer;
       return false;
     }
@@ -179,7 +179,7 @@ bool NavMeshRecord::loadFromStream(std::istream& in_File, const bool localized, 
     uint8_t * decompBuffer = new uint8_t [decompressedSize];
     if (!MWTP::zlibDecompress(stream_buffer, readSize-4, decompBuffer, decompressedSize))
     {
-      std::cout << "Error while executing decompression function!\n";
+      std::cerr << "Error while executing decompression function!\n";
       delete[] stream_buffer;
       stream_buffer = NULL;
       delete[] decompBuffer;
@@ -211,7 +211,7 @@ bool NavMeshRecord::loadFromStream(std::istream& in_File, const bool localized, 
       case cNVNM:
            if (unknownNVNM.isPresent())
            {
-             std::cout << "Error: NAVM seems to have more than one NVNM subrecord.\n";
+             std::cerr << "Error: NAVM seems to have more than one NVNM subrecord.\n";
              return false;
            }
 
@@ -220,7 +220,7 @@ bool NavMeshRecord::loadFromStream(std::istream& in_File, const bool localized, 
            {
              if (!unknownNVNM.loadFromStream(*actual_in, cNVNM, false))
              {
-               std::cout << "Error while reading subrecord NVNM of NAVM!\n";
+               std::cerr << "Error while reading subrecord NVNM of NAVM!\n";
                return false;
              }
            }
@@ -228,7 +228,7 @@ bool NavMeshRecord::loadFromStream(std::istream& in_File, const bool localized, 
            {
              if (!unknownNVNM.loadFromStreamExtended(*actual_in, cNVNM, false, sizeXXXX))
              {
-               std::cout << "Error while reading subrecord NVNM of NAVM!\n";
+               std::cerr << "Error while reading subrecord NVNM of NAVM!\n";
                return false;
              }
              sizeXXXX = 0;
@@ -238,7 +238,7 @@ bool NavMeshRecord::loadFromStream(std::istream& in_File, const bool localized, 
       case cXXXX:
            if (sizeXXXX!=0)
            {
-             std::cout << "Error: NAVM seems to have more than one XXXX subrecord in a row.\n";
+             std::cerr << "Error: NAVM seems to have more than one XXXX subrecord in a row.\n";
              return false;
            }
            //read XXXX
@@ -246,7 +246,7 @@ bool NavMeshRecord::loadFromStream(std::istream& in_File, const bool localized, 
            bytesRead += 6;
            if (0==sizeXXXX)
            {
-             std::cout << "Error: subrecord XXXX of NAVM has value zero!\n";
+             std::cerr << "Error: subrecord XXXX of NAVM has value zero!\n";
              return false;
            }
            break;
@@ -293,7 +293,7 @@ bool NavMeshRecord::loadFromStream(std::istream& in_File, const bool localized, 
            bytesRead += (2 + unknownPNAM.size());
            break;
       default:
-           std::cout << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
                      << "\", but only NVNM, ONAM, NNAM, PNAM or XXXX are allowed here!\n";
            return false;
     }//swi
@@ -302,7 +302,7 @@ bool NavMeshRecord::loadFromStream(std::istream& in_File, const bool localized, 
   //presence check
   if (!unknownNVNM.isPresent())
   {
-    std::cout << "Error: while reading NAVM record: subrecord NVNM is missing!\n";
+    std::cerr << "Error: while reading NAVM record: subrecord NVNM is missing!\n";
     return false;
   }//if
 

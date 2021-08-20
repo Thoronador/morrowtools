@@ -86,7 +86,7 @@ bool GameSettings::saveAllToStream(std::ofstream& output) const
 {
   if (!output.good())
   {
-    std::cout << "GameSettings::saveAllToStream: Error: bad stream.\n";
+    std::cerr << "GameSettings::saveAllToStream: Error: bad stream.\n";
     return false;
   }
   GameSettingListIterator iter = m_GameSettings.begin();
@@ -95,12 +95,12 @@ bool GameSettings::saveAllToStream(std::ofstream& output) const
   {
     if (!iter->second.saveToStream(output))
     {
-      std::cout << "GameSettings::saveAllToStream: Error while writing record for \""
+      std::cerr << "GameSettings::saveAllToStream: Error while writing record for \""
                 << iter->first <<"\".\n";
       return false;
     }
     ++iter;
-  }//while
+  }
   return output.good();
 }
 #endif
@@ -115,7 +115,7 @@ int GameSettings::readNextRecord(std::ifstream& in_File, const bool localized, c
   GMSTRecord temp;
   if(!temp.loadFromStream(in_File, localized, table))
   {
-    std::cout << "GameSettings::readNextRecord: Error while reading GMST record.\n";
+    std::cerr << "GameSettings::readNextRecord: Error while reading GMST record.\n";
     return -1;
   }
 

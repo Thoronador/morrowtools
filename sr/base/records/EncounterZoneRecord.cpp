@@ -75,7 +75,7 @@ bool EncounterZoneRecord::saveToStream(std::ostream& output) const
   {
     if (!unknownDATA.saveToStream(output, cDATA))
     {
-      std::cout << "Error while writing subrecord DATA of ECZN!\n";
+      std::cerr << "Error while writing subrecord DATA of ECZN!\n";
       return false;
     }
   }//if ECZN
@@ -106,7 +106,7 @@ bool EncounterZoneRecord::loadFromStream(std::istream& in_File, const bool local
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of ECZN is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of ECZN is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -116,14 +116,14 @@ bool EncounterZoneRecord::loadFromStream(std::istream& in_File, const bool local
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of ECZN!\n";
+    std::cerr << "Error while reading subrecord EDID of ECZN!\n";
     return false;
   }
   editorID = std::string(buffer);
 
   if (!unknownDATA.loadFromStream(in_File, cDATA, true))
   {
-    std::cout << "Error while reading subrecord DATA of ECZN!\n";
+    std::cerr << "Error while reading subrecord DATA of ECZN!\n";
     return false;
   }
 

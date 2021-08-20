@@ -147,7 +147,7 @@ bool EffectShaderRecord::saveToStream(std::ostream& output) const
   {
     if (!unknownDATA.saveToStream(output, cDATA))
     {
-      std::cout << "Error while writing subrecord DATA of EFSH!\n";
+      std::cerr << "Error while writing subrecord DATA of EFSH!\n";
       return false;
     }
   }//if
@@ -155,7 +155,7 @@ bool EffectShaderRecord::saveToStream(std::ostream& output) const
   {
     //EFSH should always have a DATA subrecord, so quit here, the game won't be
     // able to read the written stuff in that case anyway.
-    std::cout << "Error while writing subrecord DATA of EFSH: no DATA subrecord is present!\n";
+    std::cerr << "Error while writing subrecord DATA of EFSH: no DATA subrecord is present!\n";
     return false;
   }
 
@@ -185,7 +185,7 @@ bool EffectShaderRecord::loadFromStream(std::istream& in_File, const bool locali
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of EFSH is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of EFSH is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -195,7 +195,7 @@ bool EffectShaderRecord::loadFromStream(std::istream& in_File, const bool locali
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of EFSH!\n";
+    std::cerr << "Error while reading subrecord EDID of EFSH!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -219,7 +219,7 @@ bool EffectShaderRecord::loadFromStream(std::istream& in_File, const bool locali
       case cICON:
            if (hasReadICON)
            {
-             std::cout << "Error: record EFSH seems to have more than one ICON subrecord!\n";
+             std::cerr << "Error: record EFSH seems to have more than one ICON subrecord!\n";
              return false;
            }
            //read ICON
@@ -230,7 +230,7 @@ bool EffectShaderRecord::loadFromStream(std::istream& in_File, const bool locali
       case cICO2:
            if (hasReadICO2)
            {
-             std::cout << "Error: record EFSH seems to have more than one ICO2 subrecord!\n";
+             std::cerr << "Error: record EFSH seems to have more than one ICO2 subrecord!\n";
              return false;
            }
            //read ICO2
@@ -241,7 +241,7 @@ bool EffectShaderRecord::loadFromStream(std::istream& in_File, const bool locali
       case cNAM7:
            if (hasReadNAM7)
            {
-             std::cout << "Error: record EFSH seems to have more than one NAM7 subrecord!\n";
+             std::cerr << "Error: record EFSH seems to have more than one NAM7 subrecord!\n";
              return false;
            }
            //read NAM7
@@ -252,7 +252,7 @@ bool EffectShaderRecord::loadFromStream(std::istream& in_File, const bool locali
       case cNAM8:
            if (hasNAM8)
            {
-             std::cout << "Error: record EFSH seems to have more than one NAM8 subrecord!\n";
+             std::cerr << "Error: record EFSH seems to have more than one NAM8 subrecord!\n";
              return false;
            }
            //read NAM8
@@ -263,7 +263,7 @@ bool EffectShaderRecord::loadFromStream(std::istream& in_File, const bool locali
       case cNAM9:
            if (hasNAM9)
            {
-             std::cout << "Error: record EFSH seems to have more than one NAM9 subrecord!\n";
+             std::cerr << "Error: record EFSH seems to have more than one NAM9 subrecord!\n";
              return false;
            }
            //read NAM9
@@ -304,7 +304,7 @@ bool EffectShaderRecord::loadFromStream(std::istream& in_File, const bool locali
   //presence checks
   if (!(hasReadICON and hasReadICO2 and hasReadNAM7 and unknownDATA.isPresent()))
   {
-    std::cout << "Error while reading EFSH record: at least one required subrecord is missing!\n";
+    std::cerr << "Error while reading EFSH record: at least one required subrecord is missing!\n";
     return false;
   }
 

@@ -131,7 +131,7 @@ bool ExplosionRecord::saveToStream(std::ostream& output) const
     //write MODT
     if (!unknownMODT.saveToStream(output, cMODT))
     {
-      std::cout << "Error while writing subrecord MODT of EXPL!\n";
+      std::cerr << "Error while writing subrecord MODT of EXPL!\n";
       return false;
     }
   }//if MODT
@@ -160,14 +160,14 @@ bool ExplosionRecord::saveToStream(std::ostream& output) const
 
   if (!unknownDATA.isPresent())
   {
-    std::cout << "Error while writing subrecord DATA of EXPL: subrecord DATA is missing!\n";
+    std::cerr << "Error while writing subrecord DATA of EXPL: subrecord DATA is missing!\n";
     return false;
   }
 
   //write DATA
   if (!unknownDATA.saveToStream(output, cDATA))
   {
-    std::cout << "Error while writing subrecord DATA of EXPL!\n";
+    std::cerr << "Error while writing subrecord DATA of EXPL!\n";
     return false;
   }
 
@@ -197,7 +197,7 @@ bool ExplosionRecord::loadFromStream(std::istream& in_File, const bool localized
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of EXPL is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of EXPL is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -207,7 +207,7 @@ bool ExplosionRecord::loadFromStream(std::istream& in_File, const bool localized
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of EXPL!\n";
+    std::cerr << "Error while reading subrecord EDID of EXPL!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -229,7 +229,7 @@ bool ExplosionRecord::loadFromStream(std::istream& in_File, const bool localized
       case cOBND:
            if (hasReadOBND)
            {
-             std::cout << "Error: EXPL seems to have more than one OBND subrecord!\n";
+             std::cerr << "Error: EXPL seems to have more than one OBND subrecord!\n";
              return false;
            }
            //OBND's length
@@ -237,7 +237,7 @@ bool ExplosionRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength!=12)
            {
-             std::cout <<"Error: subrecord OBND of EXPL has invalid length ("
+             std::cerr <<"Error: subrecord OBND of EXPL has invalid length ("
                        <<subLength <<" bytes). Should be 12 bytes!\n";
              return false;
            }
@@ -246,7 +246,7 @@ bool ExplosionRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 12;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord OBND of EXPL!\n";
+             std::cerr << "Error while reading subrecord OBND of EXPL!\n";
              return false;
            }
            hasReadOBND = true;
@@ -254,21 +254,21 @@ bool ExplosionRecord::loadFromStream(std::istream& in_File, const bool localized
       case cFULL:
            if (name.isPresent())
            {
-             std::cout << "Error: EXPL seems to have more than one FULL subrecord!\n";
+             std::cerr << "Error: EXPL seems to have more than one FULL subrecord!\n";
              return false;
            }
            if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
              return false;
            if ((name.getType() == LocalizedString::Type::Index) && (name.getIndex() == 0))
            {
-             std::cout << "Error: subrecord FULL of EXPL has value zero!\n";
+             std::cerr << "Error: subrecord FULL of EXPL has value zero!\n";
              return false;
            }
            break;
       case cMODL:
            if (!modelPath.empty())
            {
-             std::cout << "Error: EXPL seems to have more than one MODL subrecord!\n";
+             std::cerr << "Error: EXPL seems to have more than one MODL subrecord!\n";
              return false;
            }
            //MODL's length
@@ -276,7 +276,7 @@ bool ExplosionRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength>511)
            {
-             std::cout <<"Error: sub record MODL of EXPL is longer than 511 characters!\n";
+             std::cerr <<"Error: sub record MODL of EXPL is longer than 511 characters!\n";
              return false;
            }
            //read MODL's stuff
@@ -285,13 +285,13 @@ bool ExplosionRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += subLength;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord MODL of EXPL!\n";
+             std::cerr << "Error while reading subrecord MODL of EXPL!\n";
              return false;
            }
            modelPath = std::string(buffer);
            if (modelPath.empty())
            {
-             std::cout << "Error: subrecord MODL of EXPL is empty!\n";
+             std::cerr << "Error: subrecord MODL of EXPL is empty!\n";
              return false;
            }
            break;
@@ -312,7 +312,7 @@ bool ExplosionRecord::loadFromStream(std::istream& in_File, const bool localized
       case cEITM:
            if (enchantmentFormID!=0)
            {
-             std::cout << "Error: EXPL seems to have more than one EITM subrecord!\n";
+             std::cerr << "Error: EXPL seems to have more than one EITM subrecord!\n";
              return false;
            }
            if (!loadUint32SubRecordFromStream(in_File, cEITM, enchantmentFormID, false))
@@ -322,14 +322,14 @@ bool ExplosionRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 6;
            if (enchantmentFormID==0)
            {
-             std::cout << "Error: subrecord EITM of EXPL has value zero!\n";
+             std::cerr << "Error: subrecord EITM of EXPL has value zero!\n";
              return false;
            }
            break;
       case cMNAM:
            if (imageSpaceModFormID!=0)
            {
-             std::cout << "Error: EXPL seems to have more than one MNAM subrecord!\n";
+             std::cerr << "Error: EXPL seems to have more than one MNAM subrecord!\n";
              return false;
            }
            if (!loadUint32SubRecordFromStream(in_File, cMNAM, imageSpaceModFormID, false))
@@ -339,7 +339,7 @@ bool ExplosionRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 6;
            if (imageSpaceModFormID==0)
            {
-             std::cout << "Error: subrecord MNAM of EXPL has value zero!\n";
+             std::cerr << "Error: subrecord MNAM of EXPL has value zero!\n";
              return false;
            }
            break;
@@ -366,7 +366,7 @@ bool ExplosionRecord::loadFromStream(std::istream& in_File, const bool localized
            }
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only OBND, MODL, MODT, EITM, MNAM or DATA are allowed here!\n";
            return false;
            break;
@@ -376,7 +376,7 @@ bool ExplosionRecord::loadFromStream(std::istream& in_File, const bool localized
   //presence checks
   if (!(hasReadOBND and unknownDATA.isPresent()))
   {
-    std::cout << "Error: at least one required subrecord of EXPL is missing!\n";
+    std::cerr << "Error: at least one required subrecord of EXPL is missing!\n";
     return false;
   }//if
 

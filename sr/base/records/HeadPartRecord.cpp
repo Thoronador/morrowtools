@@ -139,7 +139,7 @@ bool HeadPartRecord::saveToStream(std::ostream& output) const
   {
     if (!unknownMODT.saveToStream(output, cMODT))
     {
-      std::cout << "Error while writing subrecord MODT of HDPT!\n";
+      std::cerr << "Error while writing subrecord MODT of HDPT!\n";
       return false;
     }
   }//if MODT
@@ -240,7 +240,7 @@ bool HeadPartRecord::loadFromStream(std::istream& in_File, const bool localized,
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of HDPT is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of HDPT is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -250,7 +250,7 @@ bool HeadPartRecord::loadFromStream(std::istream& in_File, const bool localized,
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of HDPT!\n";
+    std::cerr << "Error while reading subrecord EDID of HDPT!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -276,7 +276,7 @@ bool HeadPartRecord::loadFromStream(std::istream& in_File, const bool localized,
       case cFULL:
            if (fullName.isPresent())
            {
-             std::cout << "Error: HDPT seems to have more than one FULL subrecord.\n";
+             std::cerr << "Error: HDPT seems to have more than one FULL subrecord.\n";
              return false;
            }
            //read FULL
@@ -286,7 +286,7 @@ bool HeadPartRecord::loadFromStream(std::istream& in_File, const bool localized,
       case cMODL:
            if (!modelPath.empty())
            {
-             std::cout << "Error: HDPT seems to have more than one MODL subrecord.\n";
+             std::cerr << "Error: HDPT seems to have more than one MODL subrecord.\n";
              return false;
            }
            //read MODL's length
@@ -294,7 +294,7 @@ bool HeadPartRecord::loadFromStream(std::istream& in_File, const bool localized,
            bytesRead += 2;
            if (subLength>511)
            {
-             std::cout <<"Error: sub record MODL of HDPT is longer than 511 characters!\n";
+             std::cerr <<"Error: sub record MODL of HDPT is longer than 511 characters!\n";
              return false;
            }
            //read MODL's stuff
@@ -303,7 +303,7 @@ bool HeadPartRecord::loadFromStream(std::istream& in_File, const bool localized,
            bytesRead += subLength;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord MODL of HDPT!\n";
+             std::cerr << "Error while reading subrecord MODL of HDPT!\n";
              return false;
            }
            modelPath = std::string(buffer);
@@ -325,7 +325,7 @@ bool HeadPartRecord::loadFromStream(std::istream& in_File, const bool localized,
       case cDATA:
            if (hasReadDATA)
            {
-             std::cout << "Error: HDPT seems to have more than one DATA subrecord.\n";
+             std::cerr << "Error: HDPT seems to have more than one DATA subrecord.\n";
              return false;
            }
            //read DATA
@@ -333,7 +333,7 @@ bool HeadPartRecord::loadFromStream(std::istream& in_File, const bool localized,
            bytesRead += 2;
            if (subLength!=1)
            {
-             std::cout <<"Error: sub record DATA of HDPT has invalid length ("<<subLength
+             std::cerr <<"Error: sub record DATA of HDPT has invalid length ("<<subLength
                        <<" bytes). Should be one byte.\n";
              return false;
            }
@@ -342,7 +342,7 @@ bool HeadPartRecord::loadFromStream(std::istream& in_File, const bool localized,
            bytesRead += 1;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord DATA of HDPT!\n";
+             std::cerr << "Error while reading subrecord DATA of HDPT!\n";
              return false;
            }
            hasReadDATA = true;
@@ -350,7 +350,7 @@ bool HeadPartRecord::loadFromStream(std::istream& in_File, const bool localized,
       case cPNAM:
            if (hasReadPNAM)
            {
-             std::cout << "Error: HDPT seems to have more than one PNAM subrecord.\n";
+             std::cerr << "Error: HDPT seems to have more than one PNAM subrecord.\n";
              return false;
            }
            //read PNAM
@@ -371,7 +371,7 @@ bool HeadPartRecord::loadFromStream(std::istream& in_File, const bool localized,
            bytesRead += 2;
            if (subLength!=4)
            {
-             std::cout <<"Error: sub record NAM0 of HDPT has invalid length ("<<subLength
+             std::cerr <<"Error: sub record NAM0 of HDPT has invalid length ("<<subLength
                        <<" bytes). Should be four bytes.\n";
              return false;
            }
@@ -380,7 +380,7 @@ bool HeadPartRecord::loadFromStream(std::istream& in_File, const bool localized,
            bytesRead += 4;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord NAM0 of HDPT!\n";
+             std::cerr << "Error while reading subrecord NAM0 of HDPT!\n";
              return false;
            }
 
@@ -397,7 +397,7 @@ bool HeadPartRecord::loadFromStream(std::istream& in_File, const bool localized,
            bytesRead += 2;
            if (subLength>511)
            {
-             std::cout <<"Error: sub record NAM1 of HDPT is longer than 511 characters!\n";
+             std::cerr <<"Error: sub record NAM1 of HDPT is longer than 511 characters!\n";
              return false;
            }
            //read NAM1's stuff
@@ -406,7 +406,7 @@ bool HeadPartRecord::loadFromStream(std::istream& in_File, const bool localized,
            bytesRead += subLength;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord NAM1 of HDPT!\n";
+             std::cerr << "Error while reading subrecord NAM1 of HDPT!\n";
              return false;
            }
            tempCompound.unknownNAM1 = std::string(buffer);
@@ -415,7 +415,7 @@ bool HeadPartRecord::loadFromStream(std::istream& in_File, const bool localized,
       case cTNAM:
            if (hasTNAM)
            {
-             std::cout << "Error: HDPT seems to have more than one TNAM subrecord.\n";
+             std::cerr << "Error: HDPT seems to have more than one TNAM subrecord.\n";
              return false;
            }
            //read TNAM
@@ -426,7 +426,7 @@ bool HeadPartRecord::loadFromStream(std::istream& in_File, const bool localized,
       case cRNAM:
            if (hasRNAM)
            {
-             std::cout << "Error: HDPT seems to have more than one RNAM subrecord.\n";
+             std::cerr << "Error: HDPT seems to have more than one RNAM subrecord.\n";
              return false;
            }
            //read RNAM
@@ -435,7 +435,7 @@ bool HeadPartRecord::loadFromStream(std::istream& in_File, const bool localized,
            hasRNAM = true;
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only FULL, MODL, MODT, DATA, PNAM, "
                      << "HNAM, NAM0, TNAM or RNAM are allowed here!\n";
            return false;
@@ -446,7 +446,7 @@ bool HeadPartRecord::loadFromStream(std::istream& in_File, const bool localized,
   //presence checks
   if (!(hasReadDATA and hasReadPNAM))
   {
-    std::cout << "Error while reading HDPT record: at least one required subrecord is missing!\n";
+    std::cerr << "Error while reading HDPT record: at least one required subrecord is missing!\n";
     return false;
   }
 

@@ -154,7 +154,7 @@ bool PlacedGrenadeRecord::loadFromStream(std::istream& in_File, const bool local
   bytesRead += 2;
   if (subLength!=4)
   {
-    std::cout <<"Error: sub record NAME of PGRE has invalid length ("<<subLength
+    std::cerr <<"Error: sub record NAME of PGRE has invalid length ("<<subLength
               <<" bytes). Should be four bytes.\n";
     return false;
   }
@@ -163,7 +163,7 @@ bool PlacedGrenadeRecord::loadFromStream(std::istream& in_File, const bool local
   bytesRead += 4;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord NAME of PGRE!\n";
+    std::cerr << "Error while reading subrecord NAME of PGRE!\n";
     return false;
   }
 
@@ -181,7 +181,7 @@ bool PlacedGrenadeRecord::loadFromStream(std::istream& in_File, const bool local
       case cXESP:
            if (hasXESP)
            {
-             std::cout << "Error: PGRE seems to have more than one XESP subrecord.\n";
+             std::cerr << "Error: PGRE seems to have more than one XESP subrecord.\n";
              return false;
            }
            //XESP's length
@@ -189,7 +189,7 @@ bool PlacedGrenadeRecord::loadFromStream(std::istream& in_File, const bool local
            bytesRead += 2;
            if (subLength!=8)
            {
-             std::cout <<"Error: sub record XESP of PGRE has invalid length ("<<subLength
+             std::cerr <<"Error: sub record XESP of PGRE has invalid length ("<<subLength
                        <<" bytes). Should be 8 bytes.\n";
              return false;
            }
@@ -198,7 +198,7 @@ bool PlacedGrenadeRecord::loadFromStream(std::istream& in_File, const bool local
            bytesRead += 8;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord XESP of PGRE!\n";
+             std::cerr << "Error while reading subrecord XESP of PGRE!\n";
              return false;
            }
            hasXESP = true;
@@ -206,7 +206,7 @@ bool PlacedGrenadeRecord::loadFromStream(std::istream& in_File, const bool local
       case cXOWN:
            if (hasXOWN)
            {
-             std::cout << "Error: PGRE seems to have more than one XOWN subrecord.\n";
+             std::cerr << "Error: PGRE seems to have more than one XOWN subrecord.\n";
              return false;
            }
            //XOWN's length
@@ -214,7 +214,7 @@ bool PlacedGrenadeRecord::loadFromStream(std::istream& in_File, const bool local
            bytesRead += 2;
            if (subLength!=4)
            {
-             std::cout <<"Error: sub record XOWN of PGRE has invalid length ("<<subLength
+             std::cerr <<"Error: sub record XOWN of PGRE has invalid length ("<<subLength
                        <<" bytes). Should be four bytes.\n";
              return false;
            }
@@ -223,7 +223,7 @@ bool PlacedGrenadeRecord::loadFromStream(std::istream& in_File, const bool local
            bytesRead += 4;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord XOWN of PGRE!\n";
+             std::cerr << "Error while reading subrecord XOWN of PGRE!\n";
              return false;
            }
            hasXOWN = true;
@@ -231,7 +231,7 @@ bool PlacedGrenadeRecord::loadFromStream(std::istream& in_File, const bool local
       case cXSCL:
            if (scale!=1.0f)
            {
-             std::cout << "Error: PGRE seems to have more than one XSCL subrecord.\n";
+             std::cerr << "Error: PGRE seems to have more than one XSCL subrecord.\n";
              return false;
            }
            //XSCL's length
@@ -239,7 +239,7 @@ bool PlacedGrenadeRecord::loadFromStream(std::istream& in_File, const bool local
            bytesRead += 2;
            if (subLength!=4)
            {
-             std::cout <<"Error: sub record XSCL of PGRE has invalid length ("<<subLength
+             std::cerr <<"Error: sub record XSCL of PGRE has invalid length ("<<subLength
                        <<" bytes). Should be four bytes.\n";
              return false;
            }
@@ -248,19 +248,19 @@ bool PlacedGrenadeRecord::loadFromStream(std::istream& in_File, const bool local
            bytesRead += 4;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord XSCL of PGRE!\n";
+             std::cerr << "Error while reading subrecord XSCL of PGRE!\n";
              return false;
            }
            if (scale==1.0f)
            {
-             std::cout << "Error while reading subrecord XSCL of PGRE: value is exactly 1.0!\n";
+             std::cerr << "Error while reading subrecord XSCL of PGRE: value is exactly 1.0!\n";
              return false;
            }
            break;
       case cDATA:
            if (hasReadDATA)
            {
-             std::cout << "Error: PGRE seems to have more than one DATA subrecord.\n";
+             std::cerr << "Error: PGRE seems to have more than one DATA subrecord.\n";
              return false;
            }
            //DATA's length
@@ -268,7 +268,7 @@ bool PlacedGrenadeRecord::loadFromStream(std::istream& in_File, const bool local
            bytesRead += 2;
            if (subLength!=24)
            {
-             std::cout <<"Error: sub record DATA of PGRE has invalid length ("<<subLength
+             std::cerr <<"Error: sub record DATA of PGRE has invalid length ("<<subLength
                        <<" bytes). Should be 24 bytes.\n";
              return false;
            }
@@ -277,13 +277,13 @@ bool PlacedGrenadeRecord::loadFromStream(std::istream& in_File, const bool local
            bytesRead += 24;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord DATA of PGRE!\n";
+             std::cerr << "Error while reading subrecord DATA of PGRE!\n";
              return false;
            }
            hasReadDATA = true;
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only XESP, XOWN, XSCL or DATA are allowed here!\n";
            return false;
            break;
@@ -293,7 +293,7 @@ bool PlacedGrenadeRecord::loadFromStream(std::istream& in_File, const bool local
   //presence checks
   if (!hasReadDATA)
   {
-    std::cout << "Error: while reading PGRE record: at least one required subrecord is missing!\n";
+    std::cerr << "Error: while reading PGRE record: at least one required subrecord is missing!\n";
     return false;
   }
 

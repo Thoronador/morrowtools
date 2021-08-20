@@ -235,7 +235,7 @@ bool WaterTypeRecord::saveToStream(std::ostream& output) const
     //write DNAM
     if (!unknownDNAM.saveToStream(output, cDNAM))
     {
-      std::cout << "Error while writing subrecord DNAM of WATR!\n";
+      std::cerr << "Error while writing subrecord DNAM of WATR!\n";
       return false;
     }
   }//if DNAM is present
@@ -274,7 +274,7 @@ bool WaterTypeRecord::saveToStream(std::ostream& output) const
   {
     if (unknownNNAMs.size()!=3)
     {
-      std::cout << "Error: WATR should have three NAM2, NAM3, NAM4 records, but it has "
+      std::cerr << "Error: WATR should have three NAM2, NAM3, NAM4 records, but it has "
                 << unknownNNAMs.size() << " instead!\n";
       return false;
     }
@@ -329,7 +329,7 @@ bool WaterTypeRecord::loadFromStream(std::istream& in_File, const bool localized
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of WATR is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of WATR is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -339,7 +339,7 @@ bool WaterTypeRecord::loadFromStream(std::istream& in_File, const bool localized
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of WATR!\n";
+    std::cerr << "Error while reading subrecord EDID of WATR!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -368,25 +368,25 @@ bool WaterTypeRecord::loadFromStream(std::istream& in_File, const bool localized
       case cFULL:
            if (name.isPresent())
            {
-             std::cout << "Error: WATR seems to have more than one FULL subrecord!\n";
+             std::cerr << "Error: WATR seems to have more than one FULL subrecord!\n";
              return false;
            }
            //read FULL
            if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
            {
-             std::cout << "Error while reading subrecord FULL of WATR!\n";
+             std::cerr << "Error while reading subrecord FULL of WATR!\n";
              return false;
            }//if
            break;
       case cNNAM:
            if (usesNAM2_3_4_as_NNAM)
            {
-             std::cout << "Error: WATR has NNAM subrecord, but there are already NAM2/NAM3/NAM4 subrecords!\n";
+             std::cerr << "Error: WATR has NNAM subrecord, but there are already NAM2/NAM3/NAM4 subrecords!\n";
              return false;
            }
            if (unknownNNAMs.size()>=3)
            {
-             std::cout << "Error: WATR seems to have more than three NNAM subrecords!\n";
+             std::cerr << "Error: WATR seems to have more than three NNAM subrecords!\n";
              return false;
            }
            //NNAM's length
@@ -394,7 +394,7 @@ bool WaterTypeRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength>511)
            {
-             std::cout <<"Error: sub record NNAM of WATR is longer than 511 characters!\n";
+             std::cerr <<"Error: sub record NNAM of WATR is longer than 511 characters!\n";
              return false;
            }
            //read NNAM's stuff
@@ -403,7 +403,7 @@ bool WaterTypeRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += subLength;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord NNAM of WATR!\n";
+             std::cerr << "Error while reading subrecord NNAM of WATR!\n";
              return false;
            }//if
            unknownNNAMs.push_back(std::string(buffer));
@@ -411,7 +411,7 @@ bool WaterTypeRecord::loadFromStream(std::istream& in_File, const bool localized
       case cANAM:
            if (hasReadANAM)
            {
-             std::cout << "Error: WATR seems to have more than one ANAM subrecord!\n";
+             std::cerr << "Error: WATR seems to have more than one ANAM subrecord!\n";
              return false;
            }
            //ANAM's length
@@ -419,7 +419,7 @@ bool WaterTypeRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength!=1)
            {
-             std::cout <<"Error: subrecord ANAM of WATR has invalid length ("<<subLength
+             std::cerr <<"Error: subrecord ANAM of WATR has invalid length ("<<subLength
                        <<" bytes). Should be one byte!\n";
              return false;
            }
@@ -428,7 +428,7 @@ bool WaterTypeRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 1;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord ANAM of WATR!\n";
+             std::cerr << "Error while reading subrecord ANAM of WATR!\n";
              return false;
            }//if
            hasReadANAM = true;
@@ -436,7 +436,7 @@ bool WaterTypeRecord::loadFromStream(std::istream& in_File, const bool localized
       case cFNAM:
            if (hasReadFNAM)
            {
-             std::cout << "Error: WATR seems to have more than one FNAM subrecord!\n";
+             std::cerr << "Error: WATR seems to have more than one FNAM subrecord!\n";
              return false;
            }
            //FNAM's length
@@ -444,7 +444,7 @@ bool WaterTypeRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength!=1)
            {
-             std::cout <<"Error: subrecord FNAM of WATR has invalid length ("<<subLength
+             std::cerr <<"Error: subrecord FNAM of WATR has invalid length ("<<subLength
                        <<" bytes). Should be one byte!\n";
              return false;
            }
@@ -453,7 +453,7 @@ bool WaterTypeRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 1;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord FNAM of WATR!\n";
+             std::cerr << "Error while reading subrecord FNAM of WATR!\n";
              return false;
            }//if
            hasReadFNAM = true;
@@ -461,7 +461,7 @@ bool WaterTypeRecord::loadFromStream(std::istream& in_File, const bool localized
       case cMNAM:
            if (hasMNAM)
            {
-             std::cout << "Error: WATR seems to have more than one MNAM subrecord!\n";
+             std::cerr << "Error: WATR seems to have more than one MNAM subrecord!\n";
              return false;
            }
            //MNAM's length
@@ -469,7 +469,7 @@ bool WaterTypeRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength!=1)
            {
-             std::cout <<"Error: subrecord MNAM of WATR has invalid length ("<<subLength
+             std::cerr <<"Error: subrecord MNAM of WATR has invalid length ("<<subLength
                        <<" bytes). Should be one byte!\n";
              return false;
            }
@@ -478,7 +478,7 @@ bool WaterTypeRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 1;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord MNAM of WATR!\n";
+             std::cerr << "Error while reading subrecord MNAM of WATR!\n";
              return false;
            }//if
            hasMNAM = true;
@@ -486,7 +486,7 @@ bool WaterTypeRecord::loadFromStream(std::istream& in_File, const bool localized
       case cSNAM:
            if (openSoundFormID!=0)
            {
-             std::cout << "Error: WATR seems to have more than one SNAM subrecord!\n";
+             std::cerr << "Error: WATR seems to have more than one SNAM subrecord!\n";
              return false;
            }
            //read SNAM
@@ -495,14 +495,14 @@ bool WaterTypeRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 6;
            if (0==openSoundFormID)
            {
-             std::cout << "Error: subrecord SNAM of WATR is zero!\n";
+             std::cerr << "Error: subrecord SNAM of WATR is zero!\n";
              return false;
            }
            break;
       case cTNAM:
            if (materialFormID!=0)
            {
-             std::cout << "Error: WATR seems to have more than one TNAM subrecord!\n";
+             std::cerr << "Error: WATR seems to have more than one TNAM subrecord!\n";
              return false;
            }
            //read TNAM
@@ -511,14 +511,14 @@ bool WaterTypeRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 6;
            if (0==materialFormID)
            {
-             std::cout << "Error: subrecord TNAM of WATR is zero!\n";
+             std::cerr << "Error: subrecord TNAM of WATR is zero!\n";
              return false;
            }
            break;
       case cINAM:
            if (imageSpaceFormID!=0)
            {
-             std::cout << "Error: WATR seems to have more than one INAM subrecord!\n";
+             std::cerr << "Error: WATR seems to have more than one INAM subrecord!\n";
              return false;
            }
            //read INAM
@@ -527,14 +527,14 @@ bool WaterTypeRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 6;
            if (0==imageSpaceFormID)
            {
-             std::cout << "Error: subrecord INAM of WATR is zero!\n";
+             std::cerr << "Error: subrecord INAM of WATR is zero!\n";
              return false;
            }
            break;
       case cDATA:
            if (hasReadDATA)
            {
-             std::cout << "Error: WATR seems to have more than one DATA subrecord!\n";
+             std::cerr << "Error: WATR seems to have more than one DATA subrecord!\n";
              return false;
            }
            //DATA's length
@@ -542,7 +542,7 @@ bool WaterTypeRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength!=2)
            {
-             std::cout <<"Error: subrecord DATA of WATR has invalid length ("<<subLength
+             std::cerr <<"Error: subrecord DATA of WATR has invalid length ("<<subLength
                        <<" bytes). Should be two bytes!\n";
              return false;
            }
@@ -551,7 +551,7 @@ bool WaterTypeRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord DATA of WATR!\n";
+             std::cerr << "Error while reading subrecord DATA of WATR!\n";
              return false;
            }//if
            hasReadDATA = true;
@@ -580,7 +580,7 @@ bool WaterTypeRecord::loadFromStream(std::istream& in_File, const bool localized
       case cGNAM:
            if (hasReadGNAM)
            {
-             std::cout << "Error: WATR seems to have more than one GNAM subrecord!\n";
+             std::cerr << "Error: WATR seems to have more than one GNAM subrecord!\n";
              return false;
            }
            //GNAM's length
@@ -588,7 +588,7 @@ bool WaterTypeRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength!=12)
            {
-             std::cout <<"Error: subrecord GNAM of WATR has invalid length ("<<subLength
+             std::cerr <<"Error: subrecord GNAM of WATR has invalid length ("<<subLength
                        <<" bytes). Should be 12 bytes!\n";
              return false;
            }
@@ -597,7 +597,7 @@ bool WaterTypeRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 12;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord GNAM of WATR!\n";
+             std::cerr << "Error while reading subrecord GNAM of WATR!\n";
              return false;
            }//if
            hasReadGNAM = true;
@@ -605,7 +605,7 @@ bool WaterTypeRecord::loadFromStream(std::istream& in_File, const bool localized
       case cNAM0:
            if (hasNAM0)
            {
-             std::cout << "Error: WATR seems to have more than one NAM0 subrecord!\n";
+             std::cerr << "Error: WATR seems to have more than one NAM0 subrecord!\n";
              return false;
            }
            //NAM0's length
@@ -613,7 +613,7 @@ bool WaterTypeRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength!=12)
            {
-             std::cout <<"Error: subrecord NAM0 of WATR has invalid length ("<<subLength
+             std::cerr <<"Error: subrecord NAM0 of WATR has invalid length ("<<subLength
                        <<" bytes). Should be 12 bytes!\n";
              return false;
            }
@@ -622,7 +622,7 @@ bool WaterTypeRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 12;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord NAM0 of WATR!\n";
+             std::cerr << "Error while reading subrecord NAM0 of WATR!\n";
              return false;
            }//if
            hasNAM0 = true;
@@ -630,7 +630,7 @@ bool WaterTypeRecord::loadFromStream(std::istream& in_File, const bool localized
       case cNAM1:
            if (hasNAM1)
            {
-             std::cout << "Error: WATR seems to have more than one NAM1 subrecord!\n";
+             std::cerr << "Error: WATR seems to have more than one NAM1 subrecord!\n";
              return false;
            }
            //NAM1's length
@@ -638,7 +638,7 @@ bool WaterTypeRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength!=12)
            {
-             std::cout <<"Error: subrecord NAM1 of WATR has invalid length ("<<subLength
+             std::cerr <<"Error: subrecord NAM1 of WATR has invalid length ("<<subLength
                        <<" bytes). Should be 12 bytes!\n";
              return false;
            }
@@ -647,7 +647,7 @@ bool WaterTypeRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 12;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord NAM1 of WATR!\n";
+             std::cerr << "Error while reading subrecord NAM1 of WATR!\n";
              return false;
            }//if
            hasNAM1 = true;
@@ -657,12 +657,12 @@ bool WaterTypeRecord::loadFromStream(std::istream& in_File, const bool localized
       case cNAM4:
            if (!unknownNNAMs.empty() and !usesNAM2_3_4_as_NNAM)
            {
-             std::cout << "Error: WATR has NAM2/NAM3/NAM4 subrecord, but there are already NNAM subrecords!\n";
+             std::cerr << "Error: WATR has NAM2/NAM3/NAM4 subrecord, but there are already NNAM subrecords!\n";
              return false;
            }
            if (unknownNNAMs.size()>=3)
            {
-             std::cout << "Error: WATR seems to have more than three NAM2/NAM3/NAM4 subrecords!\n";
+             std::cerr << "Error: WATR seems to have more than three NAM2/NAM3/NAM4 subrecords!\n";
              return false;
            }
            usesNAM2_3_4_as_NNAM = true;
@@ -673,12 +673,12 @@ bool WaterTypeRecord::loadFromStream(std::istream& in_File, const bool localized
                or ((subRecName==cNAM3) and (unknownNNAMs.size()!=2))
                or ((subRecName==cNAM4) and (unknownNNAMs.size()!=3)))
            {
-             std::cout << "Error: subrecord "<<IntTo4Char(subRecName)<<" of WATR does not appear in expected sequence!\n";
+             std::cerr << "Error: subrecord "<<IntTo4Char(subRecName)<<" of WATR does not appear in expected sequence!\n";
              return false;
            }//if
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                     << "\" found, but only NNAM, ANAM, FNAM, MNAM, SNAM, INAM,"
                     << " DATA, DNAM, GNAM, NAM0, NAM1, NAM2, NAM3 or NAM4 are allowed here!\n";
            return false;
@@ -690,7 +690,7 @@ bool WaterTypeRecord::loadFromStream(std::istream& in_File, const bool localized
   if (!(hasReadANAM and hasReadFNAM and hasReadDATA and unknownDNAM.isPresent()
        and hasReadGNAM))
   {
-    std::cout << "Error: at least one subrecord of WATR is missing!\n";
+    std::cerr << "Error: at least one subrecord of WATR is missing!\n";
     return false;
   }
 

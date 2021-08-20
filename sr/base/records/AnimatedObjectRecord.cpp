@@ -95,7 +95,7 @@ bool AnimatedObjectRecord::saveToStream(std::ostream& output) const
   {
     if (!unknownMODT.saveToStream(output, cMODT))
     {
-      std::cout << "Error while writing subrecord MODT of ACTI!\n";
+      std::cerr << "Error while writing subrecord MODT of ACTI!\n";
       return false;
     }
   }//if MODT
@@ -137,7 +137,7 @@ bool AnimatedObjectRecord::loadFromStream(std::istream& in_File, const bool loca
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of ANIO is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of ANIO is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -147,7 +147,7 @@ bool AnimatedObjectRecord::loadFromStream(std::istream& in_File, const bool loca
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of ANIO!\n";
+    std::cerr << "Error while reading subrecord EDID of ANIO!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -165,7 +165,7 @@ bool AnimatedObjectRecord::loadFromStream(std::istream& in_File, const bool loca
       case cMODL:
            if (!modelPath.empty())
            {
-             std::cout << "Error: ANIO seems to have more than one MODL subrecord.\n";
+             std::cerr << "Error: ANIO seems to have more than one MODL subrecord.\n";
              return false;
            }
            //MODL's length
@@ -173,7 +173,7 @@ bool AnimatedObjectRecord::loadFromStream(std::istream& in_File, const bool loca
            bytesRead += 2;
            if (subLength>511)
            {
-             std::cout <<"Error: sub record MODL of ANIO is longer than 511 characters!\n";
+             std::cerr <<"Error: sub record MODL of ANIO is longer than 511 characters!\n";
              return false;
            }
            //read model path
@@ -182,13 +182,13 @@ bool AnimatedObjectRecord::loadFromStream(std::istream& in_File, const bool loca
            bytesRead += subLength;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord MODL of ANIO!\n";
+             std::cerr << "Error while reading subrecord MODL of ANIO!\n";
              return false;
            }
            modelPath = std::string(buffer);
            if (modelPath.empty())
            {
-             std::cout << "Error: ANIO seems to have empty MODL subrecord.\n";
+             std::cerr << "Error: ANIO seems to have empty MODL subrecord.\n";
              return false;
            }
            break;
@@ -206,7 +206,7 @@ bool AnimatedObjectRecord::loadFromStream(std::istream& in_File, const bool loca
       case cBNAM:
            if (!unknownBNAM.empty())
            {
-             std::cout << "Error: ANIO seems to have more than one BNAM subrecord.\n";
+             std::cerr << "Error: ANIO seems to have more than one BNAM subrecord.\n";
              return false;
            }
            //BNAM's length
@@ -214,7 +214,7 @@ bool AnimatedObjectRecord::loadFromStream(std::istream& in_File, const bool loca
            bytesRead += 2;
            if (subLength>511)
            {
-             std::cout <<"Error: sub record BNAM of ANIO is longer than 511 characters!\n";
+             std::cerr <<"Error: sub record BNAM of ANIO is longer than 511 characters!\n";
              return false;
            }
            //read BNAM
@@ -223,18 +223,18 @@ bool AnimatedObjectRecord::loadFromStream(std::istream& in_File, const bool loca
            bytesRead += subLength;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord BNAM of ANIO!\n";
+             std::cerr << "Error while reading subrecord BNAM of ANIO!\n";
              return false;
            }
            unknownBNAM = std::string(buffer);
            if (unknownBNAM.empty())
            {
-             std::cout << "Error: ANIO seems to have empty BNAM subrecord.\n";
+             std::cerr << "Error: ANIO seems to have empty BNAM subrecord.\n";
              return false;
            }
            break;
       default:
-           std::cout << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
                      << "\", but only MODL, MODT or BNAM are allowed here!\n";
            return false;
     }//swi
@@ -243,7 +243,7 @@ bool AnimatedObjectRecord::loadFromStream(std::istream& in_File, const bool loca
   //presence checks
   if (modelPath.empty())
   {
-    std::cout << "Error: At least one required subrecord of ANIO was not found!\n";
+    std::cerr << "Error: At least one required subrecord of ANIO was not found!\n";
     return false;
   }
 

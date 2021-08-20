@@ -135,7 +135,7 @@ bool MaterialObjectRecord::saveToStream(std::ostream& output) const
     //write MODT
     if (!unknownMODT.saveToStream(output, cMODT))
     {
-      std::cout << "Error while writing subrecord MODT of MATO!\n";
+      std::cerr << "Error while writing subrecord MODT of MATO!\n";
       return false;
     }
   }
@@ -147,7 +147,7 @@ bool MaterialObjectRecord::saveToStream(std::ostream& output) const
     {
       if (!unknownDNAMs[i].saveToStream(output, cDNAM))
       {
-        std::cout << "Error while saving subrecord DNAM of MATO!\n";
+        std::cerr << "Error while saving subrecord DNAM of MATO!\n";
         return false;
       }
     }//if DNAM
@@ -202,7 +202,7 @@ bool MaterialObjectRecord::loadFromStream(std::istream& in_File, const bool loca
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of MATO is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of MATO is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -212,7 +212,7 @@ bool MaterialObjectRecord::loadFromStream(std::istream& in_File, const bool loca
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of MATO!\n";
+    std::cerr << "Error while reading subrecord EDID of MATO!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -233,19 +233,19 @@ bool MaterialObjectRecord::loadFromStream(std::istream& in_File, const bool loca
       case cMODL:
            if (!modelPath.empty())
            {
-             std::cout << "Error: MATO seems to have more than one MODL subrecord.\n";
+             std::cerr << "Error: MATO seems to have more than one MODL subrecord.\n";
              return false;
            }
            //read MODL
            if (!loadString512FromStream(in_File, modelPath, buffer, cMODL, false, bytesRead))
            {
-             std::cout << "Error while reading subrecord MODL of MATO!\n";
+             std::cerr << "Error while reading subrecord MODL of MATO!\n";
              return false;
            }
            //check content
            if (modelPath.empty())
            {
-             std::cout << "Error: model path of MATO is empty!\n";
+             std::cerr << "Error: model path of MATO is empty!\n";
              return false;
            }
            break;
@@ -276,7 +276,7 @@ bool MaterialObjectRecord::loadFromStream(std::istream& in_File, const bool loca
       case cDATA:
            if (hasReadDATA)
            {
-             std::cout << "Error: MATO seems to have more than one DATA subrecord.\n";
+             std::cerr << "Error: MATO seems to have more than one DATA subrecord.\n";
              return false;
            }
            //DATA's length
@@ -284,7 +284,7 @@ bool MaterialObjectRecord::loadFromStream(std::istream& in_File, const bool loca
            bytesRead += 2;
            if (subLength!=getExpectedDataLength())
            {
-             std::cout <<"Error: subrecord DATA of MATO has invalid length ("
+             std::cerr <<"Error: subrecord DATA of MATO has invalid length ("
                        <<subLength<<"bytes). Should be "<<getExpectedDataLength()
                        <<" bytes!\nInfo: Header version is "<<headerVersion<<".\n";
              return false;
@@ -323,13 +323,13 @@ bool MaterialObjectRecord::loadFromStream(std::istream& in_File, const bool loca
            bytesRead += subLength;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord DATA of MATO!\n";
+             std::cerr << "Error while reading subrecord DATA of MATO!\n";
              return false;
            }
            hasReadDATA = true;
            break;
       default:
-           std::cout << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
                      << "\", but only MODL, MODT, DNAM or DATA are allowed here!\n";
            return false;
     }//swi
@@ -338,7 +338,7 @@ bool MaterialObjectRecord::loadFromStream(std::istream& in_File, const bool loca
   //presence checks
   if (!hasReadDATA)
   {
-    std::cout << "Error: subrecord DATA of MATO is missing!\n";
+    std::cerr << "Error: subrecord DATA of MATO is missing!\n";
     return false;
   }
 

@@ -126,7 +126,7 @@ bool HazardRecord::saveToStream(std::ostream& output) const
   {
     if (!unknownMODT.saveToStream(output, cMODT))
     {
-      std::cout << "Error while writing subrecord MODT of HAZD!\n";
+      std::cerr << "Error while writing subrecord MODT of HAZD!\n";
       return false;
     }
   }//if MODT
@@ -176,7 +176,7 @@ bool HazardRecord::loadFromStream(std::istream& in_File, const bool localized, c
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of HAZD is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of HAZD is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -186,7 +186,7 @@ bool HazardRecord::loadFromStream(std::istream& in_File, const bool localized, c
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of HAZD!\n";
+    std::cerr << "Error while reading subrecord EDID of HAZD!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -204,7 +204,7 @@ bool HazardRecord::loadFromStream(std::istream& in_File, const bool localized, c
   bytesRead += 2;
   if (subLength!=12)
   {
-    std::cout <<"Error: sub record OBND of HAZD has invalid length ("<<subLength
+    std::cerr <<"Error: sub record OBND of HAZD has invalid length ("<<subLength
               <<" bytes). Should be 12 bytes.\n";
     return false;
   }
@@ -213,7 +213,7 @@ bool HazardRecord::loadFromStream(std::istream& in_File, const bool localized, c
   bytesRead += 12;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord OBND of HAZD!\n";
+    std::cerr << "Error while reading subrecord OBND of HAZD!\n";
     return false;
   }
 
@@ -232,7 +232,7 @@ bool HazardRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cFULL:
            if (name.isPresent())
            {
-             std::cout << "Error: HAZD seems to have more than one FULL subrecord.\n";
+             std::cerr << "Error: HAZD seems to have more than one FULL subrecord.\n";
              return false;
            }
            //read FULL
@@ -242,7 +242,7 @@ bool HazardRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cMODL:
            if (!modelPath.empty())
            {
-             std::cout << "Error: HAZD seems to have more than one MODL subrecord.\n";
+             std::cerr << "Error: HAZD seems to have more than one MODL subrecord.\n";
              return false;
            }
            //read MODL's length
@@ -250,7 +250,7 @@ bool HazardRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 2;
            if (subLength>511)
            {
-             std::cout <<"Error: sub record MODL of HAZD is longer than 511 characters!\n";
+             std::cerr <<"Error: sub record MODL of HAZD is longer than 511 characters!\n";
              return false;
            }
            //read MODL's stuff
@@ -259,7 +259,7 @@ bool HazardRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += subLength;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord MODL of HAZD!\n";
+             std::cerr << "Error while reading subrecord MODL of HAZD!\n";
              return false;
            }
            modelPath = std::string(buffer);
@@ -281,7 +281,7 @@ bool HazardRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cMNAM:
            if (hasMNAM)
            {
-             std::cout << "Error: HAZD seems to have more than one MNAM subrecord.\n";
+             std::cerr << "Error: HAZD seems to have more than one MNAM subrecord.\n";
              return false;
            }
            //read MNAM
@@ -292,7 +292,7 @@ bool HazardRecord::loadFromStream(std::istream& in_File, const bool localized, c
       case cDATA:
            if (hasReadDATA)
            {
-             std::cout << "Error: HAZD seems to have more than one DATA subrecord.\n";
+             std::cerr << "Error: HAZD seems to have more than one DATA subrecord.\n";
              return false;
            }
            //DATA's length
@@ -300,7 +300,7 @@ bool HazardRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 2;
            if (subLength!=40)
            {
-             std::cout <<"Error: sub record DATA of HAZD has invalid length ("<<subLength
+             std::cerr <<"Error: sub record DATA of HAZD has invalid length ("<<subLength
                        <<" bytes). Should be 40 bytes.\n";
              return false;
            }
@@ -309,13 +309,13 @@ bool HazardRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 40;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord DATA of HAZD!\n";
+             std::cerr << "Error while reading subrecord DATA of HAZD!\n";
              return false;
            }
            hasReadDATA = true;
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only FULL, MODL, MODT, MNAM or DATA are allowed here!\n";
            return false;
            break;
@@ -325,7 +325,7 @@ bool HazardRecord::loadFromStream(std::istream& in_File, const bool localized, c
   //presence checks
   if (!( (!modelPath.empty()) and hasReadDATA))
   {
-    std::cout << "Error: while reading HAZD record: at least one required subrecord is missing!\n";
+    std::cerr << "Error: while reading HAZD record: at least one required subrecord is missing!\n";
     return false;
   }
 

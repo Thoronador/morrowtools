@@ -117,7 +117,7 @@ bool MovableStaticRecord::saveToStream(std::ostream& output) const
     //write MODT
     if (!unknownMODT.saveToStream(output, cMODT))
     {
-      std::cout << "Error while writing subrecord MODT of MSTT!\n";
+      std::cerr << "Error while writing subrecord MODT of MSTT!\n";
       return false;
     }
   }//if MODT
@@ -127,14 +127,14 @@ bool MovableStaticRecord::saveToStream(std::ostream& output) const
     //write MODS
     if (!unknownMODS.saveToStream(output, cMODS))
     {
-      std::cout << "Error while writing subrecord MODS of MSTT!\n";
+      std::cerr << "Error while writing subrecord MODS of MSTT!\n";
       return false;
     }
   }//if MODS
 
   if (!destruction.saveToStream(output))
   {
-    std::cout << "Error while writing destruction data of MSTT!\n";
+    std::cerr << "Error while writing destruction data of MSTT!\n";
     return false;
   }//if
 
@@ -184,7 +184,7 @@ bool MovableStaticRecord::loadFromStream(std::istream& in_File, const bool local
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of MSTT is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of MSTT is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -194,7 +194,7 @@ bool MovableStaticRecord::loadFromStream(std::istream& in_File, const bool local
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of MSTT!\n";
+    std::cerr << "Error while reading subrecord EDID of MSTT!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -212,7 +212,7 @@ bool MovableStaticRecord::loadFromStream(std::istream& in_File, const bool local
   bytesRead += 2;
   if (subLength!=12)
   {
-    std::cout <<"Error: sub record OBND of MSTT has invalid length ("<<subLength
+    std::cerr <<"Error: sub record OBND of MSTT has invalid length ("<<subLength
               <<" bytes). Should be 12 bytes.\n";
     return false;
   }
@@ -221,7 +221,7 @@ bool MovableStaticRecord::loadFromStream(std::istream& in_File, const bool local
   bytesRead += 12;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord OBND of MSTT!\n";
+    std::cerr << "Error while reading subrecord OBND of MSTT!\n";
     return false;
   }
 
@@ -242,7 +242,7 @@ bool MovableStaticRecord::loadFromStream(std::istream& in_File, const bool local
       case cMODL:
            if (!modelPath.empty())
            {
-             std::cout << "Error: MSTT seems to have more than one MODL subrecord.\n";
+             std::cerr << "Error: MSTT seems to have more than one MODL subrecord.\n";
              return false;
            }
            //read MODL
@@ -251,7 +251,7 @@ bool MovableStaticRecord::loadFromStream(std::istream& in_File, const bool local
            //check content
            if (modelPath.empty())
            {
-             std::cout << "Error: subrecord MODL of MSTT is empty!\n";
+             std::cerr << "Error: subrecord MODL of MSTT is empty!\n";
              return false;
            }
            break;
@@ -280,7 +280,7 @@ bool MovableStaticRecord::loadFromStream(std::istream& in_File, const bool local
       case cDATA:
            if (hasReadDATA)
            {
-             std::cout << "Error: MSTT seems to have more than one DATA subrecord.\n";
+             std::cerr << "Error: MSTT seems to have more than one DATA subrecord.\n";
              return false;
            }
            //DATA's length
@@ -288,7 +288,7 @@ bool MovableStaticRecord::loadFromStream(std::istream& in_File, const bool local
            bytesRead += 2;
            if (subLength!=1)
            {
-             std::cout << "Error: sub record DATA of MSTT has invalid length ("
+             std::cerr << "Error: sub record DATA of MSTT has invalid length ("
                        << subLength << " bytes). Should be one byte.\n";
              return false;
            }
@@ -297,7 +297,7 @@ bool MovableStaticRecord::loadFromStream(std::istream& in_File, const bool local
            bytesRead += 1;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord DATA of MSTT!\n";
+             std::cerr << "Error while reading subrecord DATA of MSTT!\n";
              return false;
            }
            hasReadDATA = true;
@@ -305,7 +305,7 @@ bool MovableStaticRecord::loadFromStream(std::istream& in_File, const bool local
       case cSNAM:
            if (loopingSoundFormID!=0)
            {
-             std::cout << "Error: MSTT seems to have more than one SNAM subrecord.\n";
+             std::cerr << "Error: MSTT seems to have more than one SNAM subrecord.\n";
              return false;
            }
            //read SNAM
@@ -313,14 +313,14 @@ bool MovableStaticRecord::loadFromStream(std::istream& in_File, const bool local
            bytesRead += 6;
            if (loopingSoundFormID==0)
            {
-             std::cout << "Error: subrecord SNAM of MSTT has value zero!\n";
+             std::cerr << "Error: subrecord SNAM of MSTT has value zero!\n";
              return false;
            }
            break;
       case cDEST:
            if (destruction.isPresent)
            {
-             std::cout << "Error: MSTT seems to have more than one DEST subrecord.\n";
+             std::cerr << "Error: MSTT seems to have more than one DEST subrecord.\n";
              return false;
            }
            //read DEST and possible DSTD, DMDL, DMDT, DSTF subrecords
@@ -328,7 +328,7 @@ bool MovableStaticRecord::loadFromStream(std::istream& in_File, const bool local
              return false;
            break;
       default:
-           std::cout << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
                      << "\", but only MODL, MODT, MODS, DATA, SNAM or DEST are allowed here!\n";
            return false;
     }//swi
@@ -337,7 +337,7 @@ bool MovableStaticRecord::loadFromStream(std::istream& in_File, const bool local
   //presence checks
   if (!(hasReadDATA and !modelPath.empty()))
   {
-    std::cout << "Error: at least one required subrecord of MSTT is missing!\n"
+    std::cerr << "Error: at least one required subrecord of MSTT is missing!\n"
               << "DATA: "<<hasReadDATA<<", MODL: "<<!modelPath.empty()<<"\n";
     return false;
   }

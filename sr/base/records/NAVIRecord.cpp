@@ -91,7 +91,7 @@ bool NAVIRecord::saveToStream(std::ostream& output) const
     //write NVMI
     if (!unknownNVMIs[i].saveToStream(output, cNVMI))
     {
-      std::cout << "Error while writing subrecord NVMI of NAVI!\n";
+      std::cerr << "Error while writing subrecord NVMI of NAVI!\n";
       return false;
     }//if
   }//for
@@ -101,7 +101,7 @@ bool NAVIRecord::saveToStream(std::ostream& output) const
     //write NVPP
     if (!unknownNVPP.saveToStream(output, cNVPP))
     {
-      std::cout << "Error while writing subrecord NVPP of NAVI!\n";
+      std::cerr << "Error while writing subrecord NVPP of NAVI!\n";
       return false;
     }//if
   }//if NVPP
@@ -144,7 +144,7 @@ bool NAVIRecord::loadFromStream(std::istream& in_File, const bool localized, con
   bytesRead += 2;
   if (subLength!=4)
   {
-    std::cout <<"Error: sub record NVER of NAVI has invalid length ("<<subLength
+    std::cerr <<"Error: sub record NVER of NAVI has invalid length ("<<subLength
               << " bytes). Should be four bytes!\n";
     return false;
   }
@@ -153,7 +153,7 @@ bool NAVIRecord::loadFromStream(std::istream& in_File, const bool localized, con
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord NVER of NAVI!\n";
+    std::cerr << "Error while reading subrecord NVER of NAVI!\n";
     return false;
   }
 
@@ -172,7 +172,7 @@ bool NAVIRecord::loadFromStream(std::istream& in_File, const bool localized, con
            //read binary subrecord
            if (!tempBin.loadFromStream(in_File, cNVMI, false))
            {
-             std::cout << "Error while reading subrecord NVMI of NAVI!\n";
+             std::cerr << "Error while reading subrecord NVMI of NAVI!\n";
              return false;
            }
            bytesRead = bytesRead + 2 + tempBin.size();
@@ -181,13 +181,13 @@ bool NAVIRecord::loadFromStream(std::istream& in_File, const bool localized, con
       case cNVPP:
            if (unknownNVPP.isPresent())
            {
-             std::cout << "Error: NAVI seems to have more than one NVPP subrecord!\n";
+             std::cerr << "Error: NAVI seems to have more than one NVPP subrecord!\n";
              return false;
            }
            //read binary subrecord
            if (!unknownNVPP.loadFromStream(in_File, cNVPP, false))
            {
-             std::cout << "Error while reading subrecord NVPP of NAVI!\n";
+             std::cerr << "Error while reading subrecord NVPP of NAVI!\n";
              return false;
            }
            bytesRead = bytesRead + 2 + unknownNVPP.size();
@@ -195,7 +195,7 @@ bool NAVIRecord::loadFromStream(std::istream& in_File, const bool localized, con
       case cNVSI:
            if (unknownNVSI!=0)
            {
-             std::cout << "Error: NAVI seems to have more than one NVSI subrecord!\n";
+             std::cerr << "Error: NAVI seems to have more than one NVSI subrecord!\n";
              return false;
            }
            //load NVSI
@@ -204,12 +204,12 @@ bool NAVIRecord::loadFromStream(std::istream& in_File, const bool localized, con
            bytesRead += 6;
            if (unknownNVSI==0)
            {
-             std::cout << "Error: subrecord NVSI of NAVI is zero!\n";
+             std::cerr << "Error: subrecord NVSI of NAVI is zero!\n";
              return false;
            }
            break;
       default:
-           std::cout << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
                      << "\", but only NVMI, NVPP or NVSI are allowed here!\n";
            return false;
     }//swi

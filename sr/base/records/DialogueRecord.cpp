@@ -193,7 +193,7 @@ bool DialogueRecord::loadFromStream(std::istream& in_File, const bool localized,
       case cEDID:
            if (!editorID.empty())
            {
-             std::cout << "Error: DIAL seems to have more than one EDID subrecord!\n";
+             std::cerr << "Error: DIAL seems to have more than one EDID subrecord!\n";
              return false;
            }
            //load EDID
@@ -202,14 +202,14 @@ bool DialogueRecord::loadFromStream(std::istream& in_File, const bool localized,
            //check content
            if (editorID.empty())
            {
-             std::cout << "Error: EDID of DIAL is empty!\n";
+             std::cerr << "Error: EDID of DIAL is empty!\n";
              return false;
            }
            break;
       case cFULL:
            if (unknownFULL!=0)
            {
-             std::cout << "Error: DIAL seems to have more than one FULL subrecord!\n";
+             std::cerr << "Error: DIAL seems to have more than one FULL subrecord!\n";
              return false;
            }
            //read FULL
@@ -219,14 +219,14 @@ bool DialogueRecord::loadFromStream(std::istream& in_File, const bool localized,
            //check content
            if (unknownFULL==0)
            {
-             std::cout << "Error: subrecord FULL of DIAL is zero!\n";
+             std::cerr << "Error: subrecord FULL of DIAL is zero!\n";
              return false;
            }
            break;
       case cPNAM:
            if (hasReadPNAM)
            {
-             std::cout << "Error: DIAL seems to have more than one PNAM subrecord!\n";
+             std::cerr << "Error: DIAL seems to have more than one PNAM subrecord!\n";
              return false;
            }
            //read PNAM
@@ -238,7 +238,7 @@ bool DialogueRecord::loadFromStream(std::istream& in_File, const bool localized,
       case cBNAM:
            if (dialogueBranchFormID!=0)
            {
-             std::cout << "Error: DIAL seems to have more than one BNAM subrecord!\n";
+             std::cerr << "Error: DIAL seems to have more than one BNAM subrecord!\n";
              return false;
            }
            //read BNAM
@@ -248,14 +248,14 @@ bool DialogueRecord::loadFromStream(std::istream& in_File, const bool localized,
            //check content
            if (dialogueBranchFormID==0)
            {
-             std::cout << "Error: subrecord BNAM of DIAL is zero!\n";
+             std::cerr << "Error: subrecord BNAM of DIAL is zero!\n";
              return false;
            }
            break;
       case cQNAM:
            if (hasReadQNAM)
            {
-             std::cout << "Error: DIAL seems to have more than one QNAM subrecord!\n";
+             std::cerr << "Error: DIAL seems to have more than one QNAM subrecord!\n";
              return false;
            }
            //read QNAM
@@ -267,7 +267,7 @@ bool DialogueRecord::loadFromStream(std::istream& in_File, const bool localized,
       case cDATA:
            if (hasReadDATA)
            {
-             std::cout << "Error: DIAL seems to have more than one DATA subrecord!\n";
+             std::cerr << "Error: DIAL seems to have more than one DATA subrecord!\n";
              return false;
            }
            //read DATA
@@ -279,7 +279,7 @@ bool DialogueRecord::loadFromStream(std::istream& in_File, const bool localized,
       case cSNAM:
            if (hasReadSNAM)
            {
-             std::cout << "Error: DIAL seems to have more than one SNAM subrecord!\n";
+             std::cerr << "Error: DIAL seems to have more than one SNAM subrecord!\n";
              return false;
            }
            //read SNAM
@@ -291,7 +291,7 @@ bool DialogueRecord::loadFromStream(std::istream& in_File, const bool localized,
       case cTIFC:
            if (hasReadTIFC)
            {
-             std::cout << "Error: DIAL seems to have more than one TIFC subrecord!\n";
+             std::cerr << "Error: DIAL seems to have more than one TIFC subrecord!\n";
              return false;
            }
            //read TIFC
@@ -301,7 +301,7 @@ bool DialogueRecord::loadFromStream(std::istream& in_File, const bool localized,
            hasReadTIFC = true;
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only EDID, PNAM, BNAM, QNAM, DATA, SNAM or TIFC are allowed here!\n";
            return false;
            break;
@@ -311,7 +311,7 @@ bool DialogueRecord::loadFromStream(std::istream& in_File, const bool localized,
   //presence check
   if (!(hasReadPNAM and hasReadQNAM and hasReadDATA and hasReadSNAM and hasReadTIFC))
   {
-    std::cout << "Error: at least one subrecord of DIAL is missing!\n";
+    std::cerr << "Error: at least one subrecord of DIAL is missing!\n";
     return false;
   }
 

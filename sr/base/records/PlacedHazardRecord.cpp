@@ -84,7 +84,7 @@ bool PlacedHazardRecord::saveToStream(std::ostream& output) const
   {
     if (!unknownVMAD.saveToStream(output, cVMAD))
     {
-      std::cout << "Error while writing subrecord VMAD of PHZD!\n!";
+      std::cerr << "Error while writing subrecord VMAD of PHZD!\n!";
       return false;
     }
   }
@@ -169,7 +169,7 @@ bool PlacedHazardRecord::loadFromStream(std::istream& in_File, const bool locali
       case cNAME:
            if (hasReadNAME)
            {
-             std::cout << "Error: PHZD seems to have more than one NAME subrecord.\n";
+             std::cerr << "Error: PHZD seems to have more than one NAME subrecord.\n";
              return false;
            }
            //NAME's length
@@ -177,7 +177,7 @@ bool PlacedHazardRecord::loadFromStream(std::istream& in_File, const bool locali
            bytesRead += 2;
            if (subLength!=4)
            {
-             std::cout <<"Error: sub record NAME of PHZD has invalid length ("<<subLength
+             std::cerr <<"Error: sub record NAME of PHZD has invalid length ("<<subLength
                        <<" bytes). Should be four bytes.\n";
              return false;
            }
@@ -186,7 +186,7 @@ bool PlacedHazardRecord::loadFromStream(std::istream& in_File, const bool locali
            bytesRead += 4;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord NAME of PHZD!\n";
+             std::cerr << "Error while reading subrecord NAME of PHZD!\n";
              return false;
            }
            hasReadNAME = true;
@@ -194,7 +194,7 @@ bool PlacedHazardRecord::loadFromStream(std::istream& in_File, const bool locali
       case cXESP:
            if (hasXESP)
            {
-             std::cout << "Error: PHZD seems to have more than one XESP subrecord.\n";
+             std::cerr << "Error: PHZD seems to have more than one XESP subrecord.\n";
              return false;
            }
            //XESP's length
@@ -202,7 +202,7 @@ bool PlacedHazardRecord::loadFromStream(std::istream& in_File, const bool locali
            bytesRead += 2;
            if (subLength!=8)
            {
-             std::cout <<"Error: sub record XESP of PHZD has invalid length ("<<subLength
+             std::cerr <<"Error: sub record XESP of PHZD has invalid length ("<<subLength
                        <<" bytes). Should be 8 bytes.\n";
              return false;
            }
@@ -211,7 +211,7 @@ bool PlacedHazardRecord::loadFromStream(std::istream& in_File, const bool locali
            bytesRead += 8;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord XESP of PHZD!\n";
+             std::cerr << "Error while reading subrecord XESP of PHZD!\n";
              return false;
            }
            hasXESP = true;
@@ -219,7 +219,7 @@ bool PlacedHazardRecord::loadFromStream(std::istream& in_File, const bool locali
       case cXSCL:
            if (scale!=1.0f)
            {
-             std::cout << "Error: PHZD seems to have more than one XSCL subrecord.\n";
+             std::cerr << "Error: PHZD seems to have more than one XSCL subrecord.\n";
              return false;
            }
            //XSCL's length
@@ -227,7 +227,7 @@ bool PlacedHazardRecord::loadFromStream(std::istream& in_File, const bool locali
            bytesRead += 2;
            if (subLength!=4)
            {
-             std::cout <<"Error: sub record XSCL of PHZD has invalid length ("<<subLength
+             std::cerr <<"Error: sub record XSCL of PHZD has invalid length ("<<subLength
                        <<" bytes). Should be four bytes.\n";
              return false;
            }
@@ -236,19 +236,19 @@ bool PlacedHazardRecord::loadFromStream(std::istream& in_File, const bool locali
            bytesRead += 4;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord XSCL of PHZD!\n";
+             std::cerr << "Error while reading subrecord XSCL of PHZD!\n";
              return false;
            }
            if (scale==1.0f)
            {
-             std::cout << "Error while reading subrecord XSCL of PHZD: value is exactly 1.0!\n";
+             std::cerr << "Error while reading subrecord XSCL of PHZD: value is exactly 1.0!\n";
              return false;
            }
            break;
       case cDATA:
            if (hasReadDATA)
            {
-             std::cout << "Error: PHZD seems to have more than one DATA subrecord.\n";
+             std::cerr << "Error: PHZD seems to have more than one DATA subrecord.\n";
              return false;
            }
            //DATA's length
@@ -256,7 +256,7 @@ bool PlacedHazardRecord::loadFromStream(std::istream& in_File, const bool locali
            bytesRead += 2;
            if (subLength!=24)
            {
-             std::cout <<"Error: sub record DATA of PHZD has invalid length ("<<subLength
+             std::cerr <<"Error: sub record DATA of PHZD has invalid length ("<<subLength
                        <<" bytes). Should be 24 bytes.\n";
              return false;
            }
@@ -265,13 +265,13 @@ bool PlacedHazardRecord::loadFromStream(std::istream& in_File, const bool locali
            bytesRead += 24;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord DATA of PHZD!\n";
+             std::cerr << "Error while reading subrecord DATA of PHZD!\n";
              return false;
            }
            hasReadDATA = true;
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only VMAD, NAME, XESP, XSCL or DATA are allowed here!\n";
            return false;
            break;
@@ -281,7 +281,7 @@ bool PlacedHazardRecord::loadFromStream(std::istream& in_File, const bool locali
   //presence checks
   if (!(hasReadNAME and hasReadDATA))
   {
-    std::cout << "Error: while reading PHZD record: at least one required subrecord is missing!\n";
+    std::cerr << "Error: while reading PHZD record: at least one required subrecord is missing!\n";
     return false;
   }
 

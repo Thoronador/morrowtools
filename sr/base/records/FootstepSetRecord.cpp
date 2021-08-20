@@ -93,7 +93,7 @@ bool FootstepSetRecord::saveToStream(std::ostream& output) const
   const uint32_t id_count = footstepFormIDs.size();
   if (sum!=id_count)
   {
-    std::cout << "Error: Data in record FSTS is inconsistent. Sum of counts ("
+    std::cerr << "Error: Data in record FSTS is inconsistent. Sum of counts ("
               << sum<<") does not match the number of form IDs ("<<id_count<<")!\n";
     return false;
   }
@@ -132,7 +132,7 @@ bool FootstepSetRecord::loadFromStream(std::istream& in_File, const bool localiz
   in_File.read((char*) &subLength, 2);
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of FSTS is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of FSTS is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -141,7 +141,7 @@ bool FootstepSetRecord::loadFromStream(std::istream& in_File, const bool localiz
   in_File.read(buffer, subLength);
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of FSTS!\n";
+    std::cerr << "Error while reading subrecord EDID of FSTS!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -157,7 +157,7 @@ bool FootstepSetRecord::loadFromStream(std::istream& in_File, const bool localiz
   in_File.read((char*) &subLength, 2);
   if (subLength!=20)
   {
-    std::cout <<"Error: sub record XCNT of FSTS has invalid length ("
+    std::cerr <<"Error: sub record XCNT of FSTS has invalid length ("
               <<subLength<<" bytes). Should be 20 bytes!\n";
     return false;
   }
@@ -169,7 +169,7 @@ bool FootstepSetRecord::loadFromStream(std::istream& in_File, const bool localiz
   }
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord XCNT of FSTS!\n";
+    std::cerr << "Error while reading subrecord XCNT of FSTS!\n";
     return false;
   }
 
@@ -191,7 +191,7 @@ bool FootstepSetRecord::loadFromStream(std::istream& in_File, const bool localiz
   in_File.read((char*) &subLength, 2);
   if (subLength!=4*sum)
   {
-    std::cout <<"Error: sub record DATA of FSTS has invalid length ("
+    std::cerr <<"Error: sub record DATA of FSTS has invalid length ("
               <<subLength<<" bytes). Should be "<<4*sum<<" bytes!\n";
     return false;
   }
@@ -203,7 +203,7 @@ bool FootstepSetRecord::loadFromStream(std::istream& in_File, const bool localiz
     in_File.read((char*) &temp, 4);
     if (!in_File.good())
     {
-      std::cout << "Error while reading subrecord DATA of FSTS!\n";
+      std::cerr << "Error while reading subrecord DATA of FSTS!\n";
       return false;
     }
     footstepFormIDs.push_back(temp);

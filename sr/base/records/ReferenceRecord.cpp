@@ -171,7 +171,7 @@ bool ReferenceRecord::saveToStream(std::ostream& output) const
   {
     if (!unknownVMAD.saveToStream(output, cVMAD))
     {
-      std::cout << "Error while writing subrecord VMAD of REFR!\n";
+      std::cerr << "Error while writing subrecord VMAD of REFR!\n";
       return false;
     }
   }//if VMAD
@@ -188,7 +188,7 @@ bool ReferenceRecord::saveToStream(std::ostream& output) const
   {
     if (!unknownXTEL.saveToStream(output, cXTEL))
     {
-      std::cout << "Error while writing subrecord XTEL of REFR!\n";
+      std::cerr << "Error while writing subrecord XTEL of REFR!\n";
       return false;
     }
   }//if XTEL
@@ -250,7 +250,7 @@ bool ReferenceRecord::saveToStream(std::ostream& output) const
     //write XPRM
     if (!unknownXPRM.saveToStream(output, cXPRM))
     {
-      std::cout << "Error while writing subrecord XPRM of REFR!\n";
+      std::cerr << "Error while writing subrecord XPRM of REFR!\n";
       return false;
     }
   }//if XPRM
@@ -260,7 +260,7 @@ bool ReferenceRecord::saveToStream(std::ostream& output) const
     //write XLOC
     if (!unknownXLOC.saveToStream(output, cXLOC))
     {
-      std::cout << "Error while writing subrecord XLOC of REFR!\n";
+      std::cerr << "Error while writing subrecord XLOC of REFR!\n";
       return false;
     }
   }//if XLOC
@@ -317,7 +317,7 @@ bool ReferenceRecord::saveToStream(std::ostream& output) const
     {
       if (!subBlocks[i].subData.saveToStream(output, subBlocks[i].subType))
       {
-        std::cout << "Error while writing subrecord "<<IntTo4Char(subBlocks[i].subType)<<" of REFR!\n";
+        std::cerr << "Error while writing subrecord "<<IntTo4Char(subBlocks[i].subType)<<" of REFR!\n";
         return false;
       }
     }
@@ -376,7 +376,7 @@ bool ReferenceRecord::loadFromStream(std::istream& in_File, const bool localized
       case cEDID:
            if (!editorID.empty())
            {
-             std::cout << "Error: REFR seems to have more than one EDID subrecord!\n";
+             std::cerr << "Error: REFR seems to have more than one EDID subrecord!\n";
              return false;
            }
            //EDID's length
@@ -384,7 +384,7 @@ bool ReferenceRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength>511)
            {
-             std::cout <<"Error: sub record EDID of REFR is longer than 511 characters!\n";
+             std::cerr <<"Error: sub record EDID of REFR is longer than 511 characters!\n";
              return false;
            }
            //read EDID's stuff
@@ -393,7 +393,7 @@ bool ReferenceRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += subLength;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord EDID of REFR!\n";
+             std::cerr << "Error while reading subrecord EDID of REFR!\n";
              return false;
            }
            editorID = std::string(buffer);
@@ -415,7 +415,7 @@ bool ReferenceRecord::loadFromStream(std::istream& in_File, const bool localized
       case cNAME:
            if (hasReadNAME)
            {
-             std::cout << "Error: REFR seems to have more than one NAME subrecord!\n";
+             std::cerr << "Error: REFR seems to have more than one NAME subrecord!\n";
              return false;
            }
            //read NAME
@@ -474,7 +474,7 @@ bool ReferenceRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if ((subLength!=8) and (subLength!=4))
            {
-             std::cout <<"Error: sub record XLKR of REFR has invalid length ("<<subLength
+             std::cerr <<"Error: sub record XLKR of REFR has invalid length ("<<subLength
                        <<" bytes). Should be 8 or 4 bytes.\n";
              return false;
            }
@@ -488,7 +488,7 @@ bool ReferenceRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += subLength;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord XLKR of REFR!\n";
+             std::cerr << "Error while reading subrecord XLKR of REFR!\n";
              return false;
            }
            unknownXLKRs.push_back(tempVec32);
@@ -496,7 +496,7 @@ bool ReferenceRecord::loadFromStream(std::istream& in_File, const bool localized
       case cXESP:
            if (hasXESP)
            {
-             std::cout << "Error: REFR seems to have more than one XESP subrecord!\n";
+             std::cerr << "Error: REFR seems to have more than one XESP subrecord!\n";
              return false;
            }
            //XESP's length
@@ -504,7 +504,7 @@ bool ReferenceRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength!=8)
            {
-             std::cout <<"Error: sub record XESP of REFR has invalid length ("<<subLength
+             std::cerr <<"Error: sub record XESP of REFR has invalid length ("<<subLength
                        <<" bytes). Should be 8 bytes.\n";
              return false;
            }
@@ -513,7 +513,7 @@ bool ReferenceRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 8;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord XESP of REFR!\n";
+             std::cerr << "Error while reading subrecord XESP of REFR!\n";
              return false;
            }
            hasXESP = true;
@@ -521,7 +521,7 @@ bool ReferenceRecord::loadFromStream(std::istream& in_File, const bool localized
       case cXEMI:
            if (hasXEMI)
            {
-             std::cout << "Error: REFR seems to have more than one XEMI subrecord!\n";
+             std::cerr << "Error: REFR seems to have more than one XEMI subrecord!\n";
              return false;
            }
            //read XEMI
@@ -566,7 +566,7 @@ bool ReferenceRecord::loadFromStream(std::istream& in_File, const bool localized
       case cXSCL:
            if (unknownXSCL!=1.0f)
            {
-             std::cout << "Error: REFR seems to have more than one XSCL subrecord!\n";
+             std::cerr << "Error: REFR seems to have more than one XSCL subrecord!\n";
              return false;
            }
            //XSCL's length
@@ -574,7 +574,7 @@ bool ReferenceRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength!=4)
            {
-             std::cout <<"Error: sub record XSCL of REFR has invalid length ("<<subLength
+             std::cerr <<"Error: sub record XSCL of REFR has invalid length ("<<subLength
                        <<" bytes). Should be four bytes.\n";
              return false;
            }
@@ -583,14 +583,14 @@ bool ReferenceRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 4;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord XSCL of REFR!\n";
+             std::cerr << "Error while reading subrecord XSCL of REFR!\n";
              return false;
            }
            break;
       case cXPRD:
            if (hasXPRD)
            {
-             std::cout << "Error: REFR seems to have more than one XPRD subrecord!\n";
+             std::cerr << "Error: REFR seems to have more than one XPRD subrecord!\n";
              return false;
            }
            //read XPRD
@@ -601,7 +601,7 @@ bool ReferenceRecord::loadFromStream(std::istream& in_File, const bool localized
       case cINAM:
            if (hasINAM)
            {
-             std::cout << "Error: REFR seems to have more than one INAM subrecord!\n";
+             std::cerr << "Error: REFR seems to have more than one INAM subrecord!\n";
              return false;
            }
            //read INAM
@@ -612,7 +612,7 @@ bool ReferenceRecord::loadFromStream(std::istream& in_File, const bool localized
       case cPDTO:
            if (hasPDTO)
            {
-             std::cout << "Error: REFR seems to have more than one PDTO subrecord!\n";
+             std::cerr << "Error: REFR seems to have more than one PDTO subrecord!\n";
              return false;
            }
            //PDTO's length
@@ -620,7 +620,7 @@ bool ReferenceRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength!=8)
            {
-             std::cout <<"Error: sub record PDTO of REFR has invalid length ("<<subLength
+             std::cerr <<"Error: sub record PDTO of REFR has invalid length ("<<subLength
                        <<" bytes). Should be 8 bytes.\n";
              return false;
            }
@@ -629,7 +629,7 @@ bool ReferenceRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 8;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord PDTO of REFR!\n";
+             std::cerr << "Error while reading subrecord PDTO of REFR!\n";
              return false;
            }
            hasPDTO = true;
@@ -637,7 +637,7 @@ bool ReferenceRecord::loadFromStream(std::istream& in_File, const bool localized
       case cDATA:
            if (hasReadDATA)
            {
-             std::cout << "Error: REFR seems to have more than one DATA subrecord!\n";
+             std::cerr << "Error: REFR seems to have more than one DATA subrecord!\n";
              return false;
            }
            //DATA's length
@@ -645,7 +645,7 @@ bool ReferenceRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength!=24)
            {
-             std::cout <<"Error: sub record DATA of REFR has invalid length ("<<subLength
+             std::cerr <<"Error: sub record DATA of REFR has invalid length ("<<subLength
                        <<" bytes). Should be 24 bytes.\n";
              return false;
            }
@@ -654,7 +654,7 @@ bool ReferenceRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 24;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord DATA of REFR!\n";
+             std::cerr << "Error while reading subrecord DATA of REFR!\n";
              return false;
            }
            hasReadDATA = true;
@@ -668,7 +668,7 @@ bool ReferenceRecord::loadFromStream(std::istream& in_File, const bool localized
            }
            bytesRead = bytesRead + 2 + tempSubBlock.subData.size();
            subBlocks.push_back(tempSubBlock);
-           /* std::cout << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
+           /* std::cerr << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
                      << "\", but only EDID, VMAD, NAME, XTEL, XNDP, XLKR, XESP,"
                      << " XEMI, XPRM, XLOC, XSCL, XPRD, INAM, PDTO or DATA are allowed here!\n";
            return false; */
@@ -681,7 +681,7 @@ bool ReferenceRecord::loadFromStream(std::istream& in_File, const bool localized
   // - DATA only required for non-deleted records
   if (!(hasReadNAME and (hasReadDATA or isDeleted())))
   {
-    std::cout << "Error: subrecord NAME or DATA of REFR is missing!\n";
+    std::cerr << "Error: subrecord NAME or DATA of REFR is missing!\n";
     return false;
   }
 

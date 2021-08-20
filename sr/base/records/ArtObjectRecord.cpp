@@ -102,7 +102,7 @@ bool ArtObjectRecord::saveToStream(std::ostream& output) const
     //write MODT
     if (!unknownMODT.saveToStream(output, cMODT))
     {
-      std::cout << "Error while writing subrecord MODT of ARTO!\n";
+      std::cerr << "Error while writing subrecord MODT of ARTO!\n";
       return false;
     }
   }//if MODT
@@ -141,7 +141,7 @@ bool ArtObjectRecord::loadFromStream(std::istream& in_File, const bool localized
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of ARTO is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of ARTO is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -151,7 +151,7 @@ bool ArtObjectRecord::loadFromStream(std::istream& in_File, const bool localized
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of ARTO!\n";
+    std::cerr << "Error while reading subrecord EDID of ARTO!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -169,7 +169,7 @@ bool ArtObjectRecord::loadFromStream(std::istream& in_File, const bool localized
   bytesRead += 2;
   if (subLength!=12)
   {
-    std::cout <<"Error: sub record OBND of ARTO has invalid length ("<<subLength
+    std::cerr <<"Error: sub record OBND of ARTO has invalid length ("<<subLength
               <<" bytes). Should be 12 bytes.\n";
     return false;
   }
@@ -178,7 +178,7 @@ bool ArtObjectRecord::loadFromStream(std::istream& in_File, const bool localized
   bytesRead += 12;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord OBND of ARTO!\n";
+    std::cerr << "Error while reading subrecord OBND of ARTO!\n";
     return false;
   }
 
@@ -195,7 +195,7 @@ bool ArtObjectRecord::loadFromStream(std::istream& in_File, const bool localized
       case cMODL:
            if (!modelPath.empty())
            {
-             std::cout << "Error: ARTO seems to have more than one MODL subrecord.\n";
+             std::cerr << "Error: ARTO seems to have more than one MODL subrecord.\n";
              return false;
            }
            //MODL's length
@@ -203,7 +203,7 @@ bool ArtObjectRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength>511)
            {
-             std::cout <<"Error: sub record MODL of ARTO is longer than 511 characters!\n";
+             std::cerr <<"Error: sub record MODL of ARTO is longer than 511 characters!\n";
              return false;
            }
            //read model path
@@ -212,14 +212,14 @@ bool ArtObjectRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += subLength;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord MODL of ARTO!\n";
+             std::cerr << "Error while reading subrecord MODL of ARTO!\n";
              return false;
            }
            modelPath = std::string(buffer);
            //check right here
            if (modelPath.empty())
            {
-             std::cout << "Error while reading subrecord MODL of ARTO: empty path!\n";
+             std::cerr << "Error while reading subrecord MODL of ARTO: empty path!\n";
              return false;
            }
            break;
@@ -240,7 +240,7 @@ bool ArtObjectRecord::loadFromStream(std::istream& in_File, const bool localized
       case cDNAM:
            if (hasReadDNAM)
            {
-             std::cout << "Error: ARTO seems to have more than one DNAM subrecord.\n";
+             std::cerr << "Error: ARTO seems to have more than one DNAM subrecord.\n";
              return false;
            }
            //read DNAM
@@ -249,7 +249,7 @@ bool ArtObjectRecord::loadFromStream(std::istream& in_File, const bool localized
            hasReadDNAM = true;
            break;
       default:
-           std::cout << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
                      << "\", but only MODL, MODT or DNAM are allowed here!\n";
            return false;
     }//swi
@@ -258,7 +258,7 @@ bool ArtObjectRecord::loadFromStream(std::istream& in_File, const bool localized
   //presence checks
   if (!hasReadDNAM)
   {
-    std::cout << "Error: Subrecord DNAM of ARTO was not found!\n";
+    std::cerr << "Error: Subrecord DNAM of ARTO was not found!\n";
     return false;
   }
 

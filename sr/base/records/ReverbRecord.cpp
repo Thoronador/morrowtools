@@ -130,7 +130,7 @@ bool ReverbRecord::loadFromStream(std::istream& in_File, const bool localized, c
   in_File.read((char*) &subLength, 2);
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of REVB is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of REVB is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -139,7 +139,7 @@ bool ReverbRecord::loadFromStream(std::istream& in_File, const bool localized, c
   in_File.read(buffer, subLength);
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of REVB!\n";
+    std::cerr << "Error while reading subrecord EDID of REVB!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -155,7 +155,7 @@ bool ReverbRecord::loadFromStream(std::istream& in_File, const bool localized, c
   in_File.read((char*) &subLength, 2);
   if (subLength!=14)
   {
-    std::cout <<"Error: sub record DATA of REVB has invalid length ("
+    std::cerr <<"Error: sub record DATA of REVB has invalid length ("
               <<subLength<<" bytes). Should be 14 bytes!\n";
     return false;
   }
@@ -175,7 +175,7 @@ bool ReverbRecord::loadFromStream(std::istream& in_File, const bool localized, c
 
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord DATA of REVB!\n";
+    std::cerr << "Error while reading subrecord DATA of REVB!\n";
     return false;
   }
 

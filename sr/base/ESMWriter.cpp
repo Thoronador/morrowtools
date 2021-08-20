@@ -42,22 +42,22 @@ bool ESMWriter::writeESM(const std::string& FileName, Tes4HeaderRecord& theHeade
   output.open(FileName.c_str(), std::ios::out | std::ios::binary | std::ios::trunc);
   if (!output)
   {
-    std::cout << "ESMWriter::writeESM: Error: could not open/create file \""
-              << FileName<<"\" for writing.\n";
+    std::cerr << "ESMWriter::writeESM: Error: could not open/create file \""
+              << FileName << "\" for writing.\n";
     return false;
   }
   //write TES4 header
   if (!theHeader.saveToStream(output))
   {
-    std::cout << "ESMWriter::writeESM: Error while writing TES4 header for file \""
-              << FileName<<"\".\n";
+    std::cerr << "ESMWriter::writeESM: Error while writing TES4 header for file \""
+              << FileName << "\".\n";
     output.close();
     return false;
   }
   if (!writeGroups(output))
   {
-    std::cout << "ESMWriter::writeESM: Error while writing groups of file \""
-              << FileName <<"\".\n";
+    std::cerr << "ESMWriter::writeESM: Error while writing groups of file \""
+              << FileName << "\".\n";
     output.close();
     return false;
   }

@@ -76,7 +76,7 @@ void ESMFileContents::traverseGroups(traverseFunction func) const
 {
   if (func==NULL)
   {
-    std::cout << "ESMFileContents::traverseGroups: ERROR: pointer to function"
+    std::cerr << "ESMFileContents::traverseGroups: ERROR: pointer to function"
               << " is NULL!\n";
     return;
   }

@@ -118,7 +118,7 @@ bool IdleAnimationRecord::saveToStream(std::ostream& output) const
   {
     if (!conditions[i].saveToStream(output))
     {
-      std::cout << "Error while writing subrecord CTDA of IDLE!\n";
+      std::cerr << "Error while writing subrecord CTDA of IDLE!\n";
       return false;
     }
   }//for
@@ -202,7 +202,7 @@ bool IdleAnimationRecord::loadFromStream(std::istream& in_File, const bool local
       case cEDID:
            if (!editorID.empty())
            {
-             std::cout << "Error: IDLE seems to have more than one DNAM subrecord!\n";
+             std::cerr << "Error: IDLE seems to have more than one DNAM subrecord!\n";
              return false;
            }
            //read EDID
@@ -211,7 +211,7 @@ bool IdleAnimationRecord::loadFromStream(std::istream& in_File, const bool local
            //check content
            if (editorID.empty())
            {
-             std::cout << "Error: subrecord EDID of IDLE is empty!\n";
+             std::cerr << "Error: subrecord EDID of IDLE is empty!\n";
              return false;
            }
            break;
@@ -224,12 +224,12 @@ bool IdleAnimationRecord::loadFromStream(std::istream& in_File, const bool local
       case cCIS1:
            if (conditions.empty())
            {
-             std::cout << "Error: subrecord CIS1 without prior CTDA subrecord!\n";
+             std::cerr << "Error: subrecord CIS1 without prior CTDA subrecord!\n";
              return false;
            }
            if (!conditions.back().unknownCISx.empty())
            {
-             std::cout << "Error: IDLE seems to have more than one CIS1 subrecord per CTDA subrecord!\n";
+             std::cerr << "Error: IDLE seems to have more than one CIS1 subrecord per CTDA subrecord!\n";
              return false;
            }
            //load CIS1
@@ -241,7 +241,7 @@ bool IdleAnimationRecord::loadFromStream(std::istream& in_File, const bool local
       case cDNAM:
            if (!unknownDNAM.empty())
            {
-             std::cout << "Error: IDLE seems to have more than one DNAM subrecord!\n";
+             std::cerr << "Error: IDLE seems to have more than one DNAM subrecord!\n";
              return false;
            }
            //read DNAM
@@ -250,14 +250,14 @@ bool IdleAnimationRecord::loadFromStream(std::istream& in_File, const bool local
            //check content
            if (unknownDNAM.empty())
            {
-             std::cout << "Error: subrecord DNAM of IDLE is empty!\n";
+             std::cerr << "Error: subrecord DNAM of IDLE is empty!\n";
              return false;
            }
            break;
       case cENAM:
            if (!animEventName.empty())
            {
-             std::cout << "Error: IDLE seems to have more than one ENAM subrecord.\n";
+             std::cerr << "Error: IDLE seems to have more than one ENAM subrecord.\n";
              return false;
            }
            //read DNAM
@@ -266,14 +266,14 @@ bool IdleAnimationRecord::loadFromStream(std::istream& in_File, const bool local
            //check content
            if (animEventName.empty())
            {
-             std::cout << "Error: subrecord ENAM of IDLE is empty!\n";
+             std::cerr << "Error: subrecord ENAM of IDLE is empty!\n";
              return false;
            }
            break;
       case cANAM:
            if (hasReadANAM)
            {
-             std::cout << "Error: IDLE seems to have more than one ANAM subrecord.\n";
+             std::cerr << "Error: IDLE seems to have more than one ANAM subrecord.\n";
              return false;
            }
            //ANAM's length
@@ -281,7 +281,7 @@ bool IdleAnimationRecord::loadFromStream(std::istream& in_File, const bool local
            bytesRead += 2;
            if (subLength!=8)
            {
-             std::cout << "Error: subrecord ANAM of IDLE has invalid length ("
+             std::cerr << "Error: subrecord ANAM of IDLE has invalid length ("
                        << subLength << " bytes). Should be eight bytes!\n";
              return false;
            }
@@ -291,7 +291,7 @@ bool IdleAnimationRecord::loadFromStream(std::istream& in_File, const bool local
            bytesRead += 8;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord ANAM of IDLE!\n";
+             std::cerr << "Error while reading subrecord ANAM of IDLE!\n";
              return false;
            }
            hasReadANAM = true;
@@ -299,7 +299,7 @@ bool IdleAnimationRecord::loadFromStream(std::istream& in_File, const bool local
       case cDATA:
            if (hasReadDATA)
            {
-             std::cout << "Error: IDLE seems to have more than one DATA subrecord.\n";
+             std::cerr << "Error: IDLE seems to have more than one DATA subrecord.\n";
              return false;
            }
            //DATA's length
@@ -307,7 +307,7 @@ bool IdleAnimationRecord::loadFromStream(std::istream& in_File, const bool local
            bytesRead += 2;
            if (subLength!=6)
            {
-             std::cout << "Error: subrecord DATA of IDLE has invalid length ("
+             std::cerr << "Error: subrecord DATA of IDLE has invalid length ("
                        << subLength << " bytes). Should be six bytes!\n";
              return false;
            }
@@ -320,13 +320,13 @@ bool IdleAnimationRecord::loadFromStream(std::istream& in_File, const bool local
            bytesRead += 6;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord DATA of IDLE!\n";
+             std::cerr << "Error while reading subrecord DATA of IDLE!\n";
              return false;
            }
            hasReadDATA = true;
            break;
       default:
-           std::cout << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
                      << "\", but only EDID, CTDA, CIS1, DNAM, ENAM, ANAM or DATA are allowed here!\n";
            return false;
     }//swi
@@ -335,7 +335,7 @@ bool IdleAnimationRecord::loadFromStream(std::istream& in_File, const bool local
   //presence checks
   if (!(hasReadANAM and hasReadDATA))
   {
-    std::cout << "Error: At least one required subrecord of IDLE is missing!\n";
+    std::cerr << "Error: At least one required subrecord of IDLE is missing!\n";
     return false;
   }
 

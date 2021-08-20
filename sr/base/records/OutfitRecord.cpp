@@ -102,7 +102,7 @@ bool OutfitRecord::loadFromStream(std::istream& in_File, const bool localized, c
   in_File.read((char*) &subLength, 2);
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of OTFT is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of OTFT is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -111,7 +111,7 @@ bool OutfitRecord::loadFromStream(std::istream& in_File, const bool localized, c
   in_File.read(buffer, subLength);
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of STAT!\n";
+    std::cerr << "Error while reading subrecord EDID of STAT!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -127,7 +127,7 @@ bool OutfitRecord::loadFromStream(std::istream& in_File, const bool localized, c
   in_File.read((char*) &subLength, 2);
   if ((subLength%4)!=0)
   {
-    std::cout <<"Error: sub record OBND of STAT has invalid length ("<<subLength
+    std::cerr <<"Error: sub record OBND of STAT has invalid length ("<<subLength
               <<" bytes)! Should be a integral multiple of four bytes.\n";
     return false;
   }
@@ -140,7 +140,7 @@ bool OutfitRecord::loadFromStream(std::istream& in_File, const bool localized, c
     in_File.read((char*) &temp, 4);
     if (!in_File.good())
     {
-      std::cout << "Error while reading subrecord INAM of STAT!\n";
+      std::cerr << "Error while reading subrecord INAM of STAT!\n";
       return false;
     }
     itemFormIDs.push_back(temp);

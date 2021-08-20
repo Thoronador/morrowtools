@@ -126,7 +126,7 @@ bool EquipmentSlotRecord::loadFromStream(std::istream& in_File, const bool local
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of EQUP is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of EQUP is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -136,7 +136,7 @@ bool EquipmentSlotRecord::loadFromStream(std::istream& in_File, const bool local
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of EQUP!\n";
+    std::cerr << "Error while reading subrecord EDID of EQUP!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -155,7 +155,7 @@ bool EquipmentSlotRecord::loadFromStream(std::istream& in_File, const bool local
       case cDATA:
            if (hasReadDATA)
            {
-             std::cout << "Error: EQUP seems to have more than one DATA subrecord!\n";
+             std::cerr << "Error: EQUP seems to have more than one DATA subrecord!\n";
              return false;
            }
            //read DATA
@@ -166,7 +166,7 @@ bool EquipmentSlotRecord::loadFromStream(std::istream& in_File, const bool local
       case cPNAM:
            if (!parentSlots.empty())
            {
-             std::cout << "Error: EQUP seems to have more than one PNAM subrecord!\n";
+             std::cerr << "Error: EQUP seems to have more than one PNAM subrecord!\n";
              return false;
            }
            //read PNAM's length
@@ -174,7 +174,7 @@ bool EquipmentSlotRecord::loadFromStream(std::istream& in_File, const bool local
            bytesRead += 2;
            if ((subLength%4)!=0)
            {
-             std::cout <<"Error: sub record PNAM of EQUP has invalid length ("<<subLength
+             std::cerr <<"Error: sub record PNAM of EQUP has invalid length ("<<subLength
                        <<" bytes). Should be an integral multiple of four bytes.\n";
              return false;
            }
@@ -186,14 +186,14 @@ bool EquipmentSlotRecord::loadFromStream(std::istream& in_File, const bool local
              bytesRead += 4;
              if (!in_File.good())
              {
-               std::cout << "Error while reading subrecord PNAM of EQUP!\n";
+               std::cerr << "Error while reading subrecord PNAM of EQUP!\n";
                return false;
              }
              parentSlots.push_back(temp);
            }//for
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only DATA or PNAM are allowed!\n";
            return false;
            break;
@@ -203,7 +203,7 @@ bool EquipmentSlotRecord::loadFromStream(std::istream& in_File, const bool local
   //check for data
   if (!hasReadDATA)
   {
-    std::cout << "Error while reading EQUP record: subrecord DATA is missing!\n";
+    std::cerr << "Error while reading EQUP record: subrecord DATA is missing!\n";
     return false;
   }
 

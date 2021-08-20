@@ -82,7 +82,7 @@ bool LightingTemplateRecord::saveToStream(std::ostream& output) const
     //write DATA
     if (!unknownDATA.saveToStream(output, cDATA))
     {
-      std::cout << "Error while writing DATA of LGTM!";
+      std::cerr << "Error while writing DATA of LGTM!";
       return false;
     }
   }//if DATA
@@ -92,7 +92,7 @@ bool LightingTemplateRecord::saveToStream(std::ostream& output) const
     //write DALC
     if (!unknownDALC.saveToStream(output, cDALC))
     {
-      std::cout << "Error while writing DALC of LGTM!";
+      std::cerr << "Error while writing DALC of LGTM!";
       return false;
     }
   }//if DALC
@@ -123,7 +123,7 @@ bool LightingTemplateRecord::loadFromStream(std::istream& in_File, const bool lo
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of LGTM is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of LGTM is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -133,7 +133,7 @@ bool LightingTemplateRecord::loadFromStream(std::istream& in_File, const bool lo
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of LGTM!\n";
+    std::cerr << "Error while reading subrecord EDID of LGTM!\n";
     return false;
   }
   editorID = std::string(buffer);

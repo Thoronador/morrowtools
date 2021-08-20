@@ -158,7 +158,7 @@ bool SoundRecord::loadFromStream(std::istream& in_File, const bool localized, co
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of SOUN is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of SOUN is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -168,7 +168,7 @@ bool SoundRecord::loadFromStream(std::istream& in_File, const bool localized, co
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of SOUN!\n";
+    std::cerr << "Error while reading subrecord EDID of SOUN!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -186,7 +186,7 @@ bool SoundRecord::loadFromStream(std::istream& in_File, const bool localized, co
   bytesRead += 2;
   if (subLength!=12)
   {
-    std::cout <<"Error: sub record OBND of SOUN has invalid length ("<<subLength
+    std::cerr <<"Error: sub record OBND of SOUN has invalid length ("<<subLength
               <<" bytes). Should be 12 bytes.\n";
     return false;
   }
@@ -195,7 +195,7 @@ bool SoundRecord::loadFromStream(std::istream& in_File, const bool localized, co
   bytesRead += 12;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord OBND of SOUN!\n";
+    std::cerr << "Error while reading subrecord OBND of SOUN!\n";
     return false;
   }
 
@@ -216,7 +216,7 @@ bool SoundRecord::loadFromStream(std::istream& in_File, const bool localized, co
       case cSNDD:
            if (hasDoneSNDD)
            {
-             std::cout << "Error: SOUN seems to have more than one SNDD subrecord.\n";
+             std::cerr << "Error: SOUN seems to have more than one SNDD subrecord.\n";
              return false;
            }
            //SNDD's length
@@ -224,7 +224,7 @@ bool SoundRecord::loadFromStream(std::istream& in_File, const bool localized, co
            bytesRead += 2;
            if (subLength!=36)
            {
-             std::cout <<"Error: sub record SNDD of SOUN has invalid length ("<<subLength
+             std::cerr <<"Error: sub record SNDD of SOUN has invalid length ("<<subLength
                        <<" bytes). Should be 36 bytes.\n";
              return false;
            }
@@ -233,7 +233,7 @@ bool SoundRecord::loadFromStream(std::istream& in_File, const bool localized, co
            bytesRead += 36;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord SNDD of SOUN!\n";
+             std::cerr << "Error while reading subrecord SNDD of SOUN!\n";
              return false;
            }
            hasSNDD = true;
@@ -242,7 +242,7 @@ bool SoundRecord::loadFromStream(std::istream& in_File, const bool localized, co
       case cFNAM:
            if (hasDoneFNAM)
            {
-             std::cout << "Error: SOUN seems to have more than one FNAM subrecord.\n";
+             std::cerr << "Error: SOUN seems to have more than one FNAM subrecord.\n";
              return false;
            }
            //FNAM's length
@@ -250,7 +250,7 @@ bool SoundRecord::loadFromStream(std::istream& in_File, const bool localized, co
            bytesRead += 2;
            if (subLength>511)
            {
-             std::cout <<"Error: sub record FNAM of SOUN is longer than 511 characters!\n";
+             std::cerr <<"Error: sub record FNAM of SOUN is longer than 511 characters!\n";
              return false;
            }
            //read EDID's stuff
@@ -259,7 +259,7 @@ bool SoundRecord::loadFromStream(std::istream& in_File, const bool localized, co
            bytesRead += subLength;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord FNAM of SOUN!\n";
+             std::cerr << "Error while reading subrecord FNAM of SOUN!\n";
              return false;
            }
            soundFileName = std::string(buffer);
@@ -268,7 +268,7 @@ bool SoundRecord::loadFromStream(std::istream& in_File, const bool localized, co
       case cSDSC:
            if (hasDoneSDSC)
            {
-             std::cout << "Error: SOUN seems to have more than one SDSC subrecord.\n";
+             std::cerr << "Error: SOUN seems to have more than one SDSC subrecord.\n";
              return false;
            }
            //SDSC's length
@@ -276,7 +276,7 @@ bool SoundRecord::loadFromStream(std::istream& in_File, const bool localized, co
            bytesRead += 2;
            if (subLength!=4)
            {
-             std::cout <<"Error: sub record SDSC of SOUN has invalid length ("
+             std::cerr <<"Error: sub record SDSC of SOUN has invalid length ("
                        <<subLength<<" bytes). Should be 4 bytes.\n";
              return false;
            }
@@ -285,13 +285,13 @@ bool SoundRecord::loadFromStream(std::istream& in_File, const bool localized, co
            bytesRead += 4;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord SDSC of SOUN!\n";
+             std::cerr << "Error while reading subrecord SDSC of SOUN!\n";
              return false;
            }
            hasDoneSDSC = true;
            break;
       default:
-           std::cout << "Error while reading record SOUN: Found unexpected "
+           std::cerr << "Error while reading record SOUN: Found unexpected "
                      << "subrecord type \""<<IntTo4Char(subRecName)
                      <<"\", but only FNAM, SNDD or SDSC are allowed!\n";
            return false;

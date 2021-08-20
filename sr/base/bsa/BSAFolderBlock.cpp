@@ -40,7 +40,7 @@ bool BSAFolderBlock::loadFromStream(std::ifstream& in_File, const uint32_t fileC
 {
   if (!in_File.good())
   {
-    std::cout << "BSAFolderBlock::loadFromStream: Error: bad stream given!\n";
+    std::cerr << "BSAFolderBlock::loadFromStream: Error: bad stream given!\n";
     return false;
   }
   uint8_t byteLen = 0;
@@ -48,7 +48,7 @@ bool BSAFolderBlock::loadFromStream(std::ifstream& in_File, const uint32_t fileC
   in_File.read((char*) &byteLen, 1);
   if (!in_File.good())
   {
-    std::cout << "BSAFolderBlock::loadFromStream: Error while reading length byte!\n";
+    std::cerr << "BSAFolderBlock::loadFromStream: Error while reading length byte!\n";
     return false;
   }
   char * buffer = new char[byteLen+1];
@@ -57,7 +57,7 @@ bool BSAFolderBlock::loadFromStream(std::ifstream& in_File, const uint32_t fileC
   in_File.read(buffer, byteLen);
   if (!in_File.good())
   {
-    std::cout << "BSAFolderBlock::loadFromStream: Error while reading folder's name!\n";
+    std::cerr << "BSAFolderBlock::loadFromStream: Error while reading folder's name!\n";
     delete[] buffer;
     return false;
   }
@@ -73,11 +73,11 @@ bool BSAFolderBlock::loadFromStream(std::ifstream& in_File, const uint32_t fileC
   {
     if (!tempFileRecord.loadFromStream(in_File))
     {
-      std::cout << "BSAFolderBlock::loadFromStream: Error while reading file records!\n";
+      std::cerr << "BSAFolderBlock::loadFromStream: Error while reading file records!\n";
       return false;
     }
     files.push_back(tempFileRecord);
-  }//for
+  }
 
   return in_File.good();
 }

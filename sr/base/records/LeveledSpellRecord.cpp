@@ -151,7 +151,7 @@ bool LeveledSpellRecord::loadFromStream(std::istream& in_File, const bool locali
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of LVSP is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of LVSP is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -161,7 +161,7 @@ bool LeveledSpellRecord::loadFromStream(std::istream& in_File, const bool locali
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of LVSP!\n";
+    std::cerr << "Error while reading subrecord EDID of LVSP!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -179,7 +179,7 @@ bool LeveledSpellRecord::loadFromStream(std::istream& in_File, const bool locali
   bytesRead += 2;
   if (subLength!=12)
   {
-    std::cout <<"Error: sub record OBND of LVSP has invalid length ("<<subLength
+    std::cerr <<"Error: sub record OBND of LVSP has invalid length ("<<subLength
               <<" bytes). Should be 12 bytes!\n";
     return false;
   }
@@ -189,7 +189,7 @@ bool LeveledSpellRecord::loadFromStream(std::istream& in_File, const bool locali
   bytesRead += 12;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord OBND of LVSP!\n";
+    std::cerr << "Error while reading subrecord OBND of LVSP!\n";
     return false;
   }
 
@@ -206,7 +206,7 @@ bool LeveledSpellRecord::loadFromStream(std::istream& in_File, const bool locali
   bytesRead += 2;
   if (subLength!=1)
   {
-    std::cout <<"Error: sub record LVLD of LVSP has invalid length ("<<subLength
+    std::cerr <<"Error: sub record LVLD of LVSP has invalid length ("<<subLength
               <<" bytes). Should be one byte!\n";
     return false;
   }
@@ -215,7 +215,7 @@ bool LeveledSpellRecord::loadFromStream(std::istream& in_File, const bool locali
   bytesRead += 1;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord LVLD of LVSP!\n";
+    std::cerr << "Error while reading subrecord LVLD of LVSP!\n";
     return false;
   }
 
@@ -232,7 +232,7 @@ bool LeveledSpellRecord::loadFromStream(std::istream& in_File, const bool locali
   bytesRead += 2;
   if (subLength!=1)
   {
-    std::cout <<"Error: sub record LVLF of LVSP has invalid length ("<<subLength
+    std::cerr <<"Error: sub record LVLF of LVSP has invalid length ("<<subLength
               <<" bytes). Should be one byte!\n";
     return false;
   }
@@ -241,7 +241,7 @@ bool LeveledSpellRecord::loadFromStream(std::istream& in_File, const bool locali
   bytesRead += 1;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord LVLF of LVSP!\n";
+    std::cerr << "Error while reading subrecord LVLF of LVSP!\n";
     return false;
   }
 
@@ -259,7 +259,7 @@ bool LeveledSpellRecord::loadFromStream(std::istream& in_File, const bool locali
       case cLLCT:
            if (hasReadLLCT)
            {
-             std::cout << "Error: record LVSP seems to have more than one LLCT subrecord!\n";
+             std::cerr << "Error: record LVSP seems to have more than one LLCT subrecord!\n";
              return false;
            }
            //LLCT's length
@@ -267,7 +267,7 @@ bool LeveledSpellRecord::loadFromStream(std::istream& in_File, const bool locali
            bytesRead += 2;
            if (subLength!=1)
            {
-             std::cout <<"Error: sub record LLCT of LVSP has invalid length ("
+             std::cerr <<"Error: sub record LLCT of LVSP has invalid length ("
                        <<subLength<<" bytes). Should be one byte!\n";
              return false;
            }
@@ -276,7 +276,7 @@ bool LeveledSpellRecord::loadFromStream(std::istream& in_File, const bool locali
            bytesRead += 1;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord LLCT of LVSP!\n";
+             std::cerr << "Error while reading subrecord LLCT of LVSP!\n";
              return false;
            }
            hasReadLLCT = true;
@@ -284,7 +284,7 @@ bool LeveledSpellRecord::loadFromStream(std::istream& in_File, const bool locali
       case cLVLO:
            if (entries.size()>=entryCount)
            {
-             std::cout << "Error: record LVSP seems to have more LVLO subrecords than the LLCT value indicates!\n";
+             std::cerr << "Error: record LVSP seems to have more LVLO subrecords than the LLCT value indicates!\n";
              return false;
            }
            //LVLO's length
@@ -292,7 +292,7 @@ bool LeveledSpellRecord::loadFromStream(std::istream& in_File, const bool locali
            bytesRead += 2;
            if (subLength!=12)
            {
-             std::cout <<"Error: sub record LVLO of LVSP has invalid length ("
+             std::cerr <<"Error: sub record LVLO of LVSP has invalid length ("
                        <<subLength<<" bytes). Should be 12 bytes!\n";
              return false;
            }
@@ -303,14 +303,14 @@ bool LeveledSpellRecord::loadFromStream(std::istream& in_File, const bool locali
            bytesRead += 12;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord LVLO of LVSP!\n";
+             std::cerr << "Error while reading subrecord LVLO of LVSP!\n";
              return false;
            }
            temp.coed.init(); //sets default values for COED part
            entries.push_back(temp);
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only LLCT, or LVLO are allowed here!\n";
            return false;
            break;
@@ -320,13 +320,13 @@ bool LeveledSpellRecord::loadFromStream(std::istream& in_File, const bool locali
   //presence check
   if (!hasReadLLCT)
   {
-    std::cout << "Error: at least one required subrecord of LVSP is missing!\n";
+    std::cerr << "Error: at least one required subrecord of LVSP is missing!\n";
     return false;
   }
   //count check
   if (entryCount!=entries.size())
   {
-    std::cout << "Error: entry count does not match number of actual entries!\n";
+    std::cerr << "Error: entry count does not match number of actual entries!\n";
     return false;
   }
 

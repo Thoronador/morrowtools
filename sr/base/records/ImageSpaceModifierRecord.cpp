@@ -132,14 +132,14 @@ bool ImageSpaceModifierRecord::saveToStream(std::ostream& output) const
     //write BNAM
     if (!unknownBNAM.saveToStream(output, cBNAM))
     {
-      std::cout << "Error while writing subrecord BNAM of IMAD!\n";
+      std::cerr << "Error while writing subrecord BNAM of IMAD!\n";
       return false;
     }
   }
   else
   {
     //BNAM is required!
-    std::cout << "Error: Cannot write subrecord BNAM of IMAD, because it's missing!\n";
+    std::cerr << "Error: Cannot write subrecord BNAM of IMAD, because it's missing!\n";
     return false;
   }
 
@@ -148,14 +148,14 @@ bool ImageSpaceModifierRecord::saveToStream(std::ostream& output) const
     //write VNAM
     if (!unknownVNAM.saveToStream(output, cVNAM))
     {
-      std::cout << "Error while writing subrecord VNAM of IMAD!\n";
+      std::cerr << "Error while writing subrecord VNAM of IMAD!\n";
       return false;
     }
   }
   else
   {
     //VNAM is required!
-    std::cout << "Error: Cannot write subrecord VNAM of IMAD, because it's missing!\n";
+    std::cerr << "Error: Cannot write subrecord VNAM of IMAD, because it's missing!\n";
     return false;
   }
 
@@ -164,14 +164,14 @@ bool ImageSpaceModifierRecord::saveToStream(std::ostream& output) const
     //write TNAM
     if (!unknownTNAM.saveToStream(output, cTNAM))
     {
-      std::cout << "Error while writing subrecord TNAM of IMAD!\n";
+      std::cerr << "Error while writing subrecord TNAM of IMAD!\n";
       return false;
     }
   }
   else
   {
     //TNAM is required!
-    std::cout << "Error: Cannot write subrecord TNAM of IMAD, because it's missing!\n";
+    std::cerr << "Error: Cannot write subrecord TNAM of IMAD, because it's missing!\n";
     return false;
   }
 
@@ -180,14 +180,14 @@ bool ImageSpaceModifierRecord::saveToStream(std::ostream& output) const
     //write NAM3
     if (!unknownNAM3.saveToStream(output, cNAM3))
     {
-      std::cout << "Error while writing subrecord NAM3 of IMAD!\n";
+      std::cerr << "Error while writing subrecord NAM3 of IMAD!\n";
       return false;
     }
   }
   else
   {
     //NAM3 is required!
-    std::cout << "Error: Cannot write subrecord NAM3 of IMAD, because it's missing!\n";
+    std::cerr << "Error: Cannot write subrecord NAM3 of IMAD, because it's missing!\n";
     return false;
   }
 
@@ -196,14 +196,14 @@ bool ImageSpaceModifierRecord::saveToStream(std::ostream& output) const
     //write RNAM
     if (!unknownRNAM.saveToStream(output, cRNAM))
     {
-      std::cout << "Error while writing subrecord RNAM of IMAD!\n";
+      std::cerr << "Error while writing subrecord RNAM of IMAD!\n";
       return false;
     }
   }
   else
   {
     //RNAM is required!
-    std::cout << "Error: Cannot write subrecord RNAM of IMAD, because it's missing!\n";
+    std::cerr << "Error: Cannot write subrecord RNAM of IMAD, because it's missing!\n";
     return false;
   }
 
@@ -212,14 +212,14 @@ bool ImageSpaceModifierRecord::saveToStream(std::ostream& output) const
     //write SNAM
     if (!unknownSNAM.saveToStream(output, cSNAM))
     {
-      std::cout << "Error while writing subrecord SNAM of IMAD!\n";
+      std::cerr << "Error while writing subrecord SNAM of IMAD!\n";
       return false;
     }
   }
   else
   {
     //SNAM is required!
-    std::cout << "Error: Cannot write subrecord SNAM of IMAD, because it's missing!\n";
+    std::cerr << "Error: Cannot write subrecord SNAM of IMAD, because it's missing!\n";
     return false;
   }
 
@@ -228,14 +228,14 @@ bool ImageSpaceModifierRecord::saveToStream(std::ostream& output) const
     //write UNAM
     if (!unknownUNAM.saveToStream(output, cUNAM))
     {
-      std::cout << "Error while writing subrecord UNAM of IMAD!\n";
+      std::cerr << "Error while writing subrecord UNAM of IMAD!\n";
       return false;
     }
   }
   else
   {
     //UNAM is required!
-    std::cout << "Error: Cannot write subrecord UNAM of IMAD, because it's missing!\n";
+    std::cerr << "Error: Cannot write subrecord UNAM of IMAD, because it's missing!\n";
     return false;
   }
 
@@ -244,14 +244,14 @@ bool ImageSpaceModifierRecord::saveToStream(std::ostream& output) const
     //write NAM1
     if (!unknownNAM1.saveToStream(output, cNAM1))
     {
-      std::cout << "Error while writing subrecord NAM1 of IMAD!\n";
+      std::cerr << "Error while writing subrecord NAM1 of IMAD!\n";
       return false;
     }
   }
   else
   {
     //NAM1 is required!
-    std::cout << "Error: Cannot write subrecord NAM1 of IMAD, because it's missing!\n";
+    std::cerr << "Error: Cannot write subrecord NAM1 of IMAD, because it's missing!\n";
     return false;
   }
 
@@ -260,14 +260,14 @@ bool ImageSpaceModifierRecord::saveToStream(std::ostream& output) const
     //write NAM2
     if (!unknownNAM2.saveToStream(output, cNAM2))
     {
-      std::cout << "Error while writing subrecord NAM2 of IMAD!\n";
+      std::cerr << "Error while writing subrecord NAM2 of IMAD!\n";
       return false;
     }
   }
   else
   {
     //NAM2 is required!
-    std::cout << "Error: Cannot write subrecord NAM2 of IMAD, because it's missing!\n";
+    std::cerr << "Error: Cannot write subrecord NAM2 of IMAD, because it's missing!\n";
     return false;
   }
 
@@ -276,14 +276,14 @@ bool ImageSpaceModifierRecord::saveToStream(std::ostream& output) const
     //write WNAM
     if (!unknownWNAM.saveToStream(output, cWNAM))
     {
-      std::cout << "Error while writing subrecord WNAM of IMAD!\n";
+      std::cerr << "Error while writing subrecord WNAM of IMAD!\n";
       return false;
     }
   }
   else
   {
     //WNAM is required!
-    std::cout << "Error: Cannot write subrecord WNAM of IMAD, because it's missing!\n";
+    std::cerr << "Error: Cannot write subrecord WNAM of IMAD, because it's missing!\n";
     return false;
   }
 
@@ -292,14 +292,14 @@ bool ImageSpaceModifierRecord::saveToStream(std::ostream& output) const
     //write XNAM
     if (!unknownXNAM.saveToStream(output, cXNAM))
     {
-      std::cout << "Error while writing subrecord XNAM of IMAD!\n";
+      std::cerr << "Error while writing subrecord XNAM of IMAD!\n";
       return false;
     }
   }
   else
   {
     //XNAM is required!
-    std::cout << "Error: Cannot write subrecord XNAM of IMAD, because it's missing!\n";
+    std::cerr << "Error: Cannot write subrecord XNAM of IMAD, because it's missing!\n";
     return false;
   }
 
@@ -308,14 +308,14 @@ bool ImageSpaceModifierRecord::saveToStream(std::ostream& output) const
     //write YNAM
     if (!unknownYNAM.saveToStream(output, cYNAM))
     {
-      std::cout << "Error while writing subrecord YNAM of IMAD!\n";
+      std::cerr << "Error while writing subrecord YNAM of IMAD!\n";
       return false;
     }
   }
   else
   {
     //YNAM is required!
-    std::cout << "Error: Cannot write subrecord YNAM of IMAD, because it's missing!\n";
+    std::cerr << "Error: Cannot write subrecord YNAM of IMAD, because it's missing!\n";
     return false;
   }
 
@@ -324,14 +324,14 @@ bool ImageSpaceModifierRecord::saveToStream(std::ostream& output) const
     //write NAM4
     if (!unknownNAM4.saveToStream(output, cNAM4))
     {
-      std::cout << "Error while writing subrecord NAM4 of IMAD!\n";
+      std::cerr << "Error while writing subrecord NAM4 of IMAD!\n";
       return false;
     }
   }
   else
   {
     //NAM4 is required!
-    std::cout << "Error: Cannot write subrecord NAM4 of IMAD, because it's missing!\n";
+    std::cerr << "Error: Cannot write subrecord NAM4 of IMAD, because it's missing!\n";
     return false;
   }
 
@@ -340,14 +340,14 @@ bool ImageSpaceModifierRecord::saveToStream(std::ostream& output) const
     //write \0IAD
     if (!unknownx00IAD.saveToStream(output, cx00IAD))
     {
-      std::cout << "Error while writing subrecord x00IAD of IMAD!\n";
+      std::cerr << "Error while writing subrecord x00IAD of IMAD!\n";
       return false;
     }
   }
   else
   {
     //\0IAD is required!
-    std::cout << "Error: Cannot write subrecord x00IAD of IMAD, because it's missing!\n";
+    std::cerr << "Error: Cannot write subrecord x00IAD of IMAD, because it's missing!\n";
     return false;
   }
 
@@ -356,14 +356,14 @@ bool ImageSpaceModifierRecord::saveToStream(std::ostream& output) const
     //write @IAD
     if (!unknownx40IAD.saveToStream(output, cx40IAD))
     {
-      std::cout << "Error while writing subrecord @IAD of IMAD!\n";
+      std::cerr << "Error while writing subrecord @IAD of IMAD!\n";
       return false;
     }
   }
   else
   {
     //@IAD is required!
-    std::cout << "Error: Cannot write subrecord @IAD of IMAD, because it's missing!\n";
+    std::cerr << "Error: Cannot write subrecord @IAD of IMAD, because it's missing!\n";
     return false;
   }
 
@@ -373,7 +373,7 @@ bool ImageSpaceModifierRecord::saveToStream(std::ostream& output) const
   {
     if (!otherIADs[i].subData.saveToStream(output, otherIADs[i].subType))
     {
-      std::cout << "Error while writing xIAD record of IMAD!\n";
+      std::cerr << "Error while writing xIAD record of IMAD!\n";
       return false;
     }//if
   }//for
@@ -405,7 +405,7 @@ bool ImageSpaceModifierRecord::loadFromStream(std::istream& in_File, const bool 
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of IMAD is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of IMAD is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -415,7 +415,7 @@ bool ImageSpaceModifierRecord::loadFromStream(std::istream& in_File, const bool 
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of IMAD!\n";
+    std::cerr << "Error while reading subrecord EDID of IMAD!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -450,7 +450,7 @@ bool ImageSpaceModifierRecord::loadFromStream(std::istream& in_File, const bool 
       case cDNAM:
            if (hasReadDNAM)
            {
-             std::cout << "Error: IMAD seems to have more than one DNAM subrecord!\n";
+             std::cerr << "Error: IMAD seems to have more than one DNAM subrecord!\n";
              return false;
            }
            //read DNAM
@@ -648,7 +648,7 @@ bool ImageSpaceModifierRecord::loadFromStream(std::istream& in_File, const bool 
            subLength = unknownNAM2.size();
            if ((subLength!=16) and (subLength!=24) and (subLength!=32) and (subLength!=40))
            {
-             std::cout <<"Error: sub record NAM2 of IMAD has invalid length ("
+             std::cerr <<"Error: sub record NAM2 of IMAD has invalid length ("
                        <<subLength<<" bytes). Should be 16 or 24 or 32 or 40 bytes!\n";
              return false;
            }
@@ -657,19 +657,19 @@ bool ImageSpaceModifierRecord::loadFromStream(std::istream& in_File, const bool 
       case cWNAM:
            if (unknownWNAM.isPresent())
            {
-             std::cout << "Error: IMAD seems to have more than one WNAM subrecord!\n";
+             std::cerr << "Error: IMAD seems to have more than one WNAM subrecord!\n";
              return false;
            }
            //read WNAM
            if (!unknownWNAM.loadFromStream(in_File, cWNAM, false))
            {
-             std::cout << "Error while reading subrecord WNAM of IMAD!\n";
+             std::cerr << "Error while reading subrecord WNAM of IMAD!\n";
              return false;
            }
            subLength = unknownWNAM.size();
            if ((subLength!=16) and (subLength!=24) and (subLength!=32) and (subLength!=48))
            {
-             std::cout <<"Error: sub record WNAM of IMAD has invalid length ("
+             std::cerr <<"Error: sub record WNAM of IMAD has invalid length ("
                        <<subLength<<" bytes). Should be 16 or 24 or 32 or 48 bytes!\n";
              return false;
            }
@@ -678,19 +678,19 @@ bool ImageSpaceModifierRecord::loadFromStream(std::istream& in_File, const bool 
       case cXNAM:
            if (unknownXNAM.isPresent())
            {
-             std::cout << "Error: IMAD seems to have more than one XNAM subrecord!\n";
+             std::cerr << "Error: IMAD seems to have more than one XNAM subrecord!\n";
              return false;
            }
            //read XNAM
            if (!unknownXNAM.loadFromStream(in_File, cXNAM, false))
            {
-             std::cout << "Error while reading subrecord WNAM of IMAD!\n";
+             std::cerr << "Error while reading subrecord WNAM of IMAD!\n";
              return false;
            }
            subLength = unknownXNAM.size();
            if ((subLength!=16) and (subLength!=24) and (subLength!=32))
            {
-             std::cout <<"Error: sub record XNAM of IMAD has invalid length ("
+             std::cerr <<"Error: sub record XNAM of IMAD has invalid length ("
                        <<subLength<<" bytes). Should be 16 or 24 or 32 bytes!\n";
              return false;
            }
@@ -699,19 +699,19 @@ bool ImageSpaceModifierRecord::loadFromStream(std::istream& in_File, const bool 
       case cYNAM:
            if (unknownYNAM.isPresent())
            {
-             std::cout << "Error: IMAD seems to have more than one YNAM subrecord!\n";
+             std::cerr << "Error: IMAD seems to have more than one YNAM subrecord!\n";
              return false;
            }
            //read YNAM
            if (!unknownYNAM.loadFromStream(in_File, cYNAM, false))
            {
-             std::cout << "Error while reading subrecord YNAM of IMAD!\n";
+             std::cerr << "Error while reading subrecord YNAM of IMAD!\n";
              return false;
            }
            subLength = unknownYNAM.size();
            if ((subLength!=16) and (subLength!=24) and (subLength!=32))
            {
-             std::cout <<"Error: sub record YNAM of IMAD has invalid length ("
+             std::cerr <<"Error: sub record YNAM of IMAD has invalid length ("
                        <<subLength<<" bytes). Should be 16 or 24 or 32 bytes!\n";
              return false;
            }
@@ -720,13 +720,13 @@ bool ImageSpaceModifierRecord::loadFromStream(std::istream& in_File, const bool 
       case cNAM4:
            if (unknownNAM4.isPresent())
            {
-             std::cout << "Error: IMAD seems to have more than one NAM4 subrecord!\n";
+             std::cerr << "Error: IMAD seems to have more than one NAM4 subrecord!\n";
              return false;
            }
            //read NAM4
            if (!unknownNAM4.loadFromStream(in_File, cNAM4, false))
            {
-             std::cout << "Error while reading subrecord NAM4 of IMAD!\n";
+             std::cerr << "Error while reading subrecord NAM4 of IMAD!\n";
              return false;
            }
            subLength = unknownNAM4.size();
@@ -747,13 +747,13 @@ bool ImageSpaceModifierRecord::loadFromStream(std::istream& in_File, const bool 
            //read \0IAD
            if (!unknownx00IAD.loadFromStream(in_File, cx00IAD, false))
            {
-             std::cout << "Error while reading subrecord x00IAD of IMAD!\n";
+             std::cerr << "Error while reading subrecord x00IAD of IMAD!\n";
              return false;
            }
            subLength = unknownx00IAD.size();
            if ((subLength!=16) and (subLength!=24))
            {
-             std::cout <<"Error: sub record x00IAD of IMAD has invalid length ("
+             std::cerr <<"Error: sub record x00IAD of IMAD has invalid length ("
                        <<subLength<<" bytes). Should be 16 or 24 bytes!\n";
              return false;
            }
@@ -762,7 +762,7 @@ bool ImageSpaceModifierRecord::loadFromStream(std::istream& in_File, const bool 
       case cx40IAD:
            if (unknownx40IAD.isPresent())
            {
-             std::cout << "Error: IMAD seems to have more than one @IAD subrecord!\n";
+             std::cerr << "Error: IMAD seems to have more than one @IAD subrecord!\n";
              return false;
            }
            //read @IAD
@@ -784,7 +784,7 @@ bool ImageSpaceModifierRecord::loadFromStream(std::istream& in_File, const bool 
            //should be some ?IAD here
            if ((subRecName&0xFFFFFF00)!=cx00IAD)
            {
-             std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+             std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                        << "\" found, but only DNAM, BNAM, VNAM, TNAM, NAM3, RNAM,"
                        << " SNAM, UNAM, NAM1, NAM2, WNAM, XNAM, YNAM or NAM4 are allowed here!\n";
              return false;
@@ -805,13 +805,13 @@ bool ImageSpaceModifierRecord::loadFromStream(std::istream& in_File, const bool 
              first = (subRecName&0x000000FF);
              if (readxIADs.find(subRecName)!=readxIADs.end())
              {
-               std::cout << "Error: IMAD seems to have more than one ?IAD "
+               std::cerr << "Error: IMAD seems to have more than one ?IAD "
                          << "subrecord! ?="<< first<<".\n";
                return false;
              }
              if (!(((first>=1) and (first<=20)) or ((first>='A') and (first<='T'))))
              {
-               std::cout << "Error: unexpected ?IAD record type \""
+               std::cerr << "Error: unexpected ?IAD record type \""
                          << IntTo4Char(subRecName) << "\" found, but only values"
                          << " between AIAD and SIAD or x01IAD and x20IAD are "
                          << "allowed here! First value was "<<first<<".\n";
@@ -822,7 +822,7 @@ bool ImageSpaceModifierRecord::loadFromStream(std::istream& in_File, const bool 
              tempSubBlock.subType = subRecName;
              if (!tempSubBlock.subData.loadFromStream(in_File, subRecName, false))
              {
-               std::cout << "Error while reading subrecord ?IAD of IMAD! ?="
+               std::cerr << "Error while reading subrecord ?IAD of IMAD! ?="
                          << (subRecName&0x000000FF)<<".\n";
                return false;
              }
@@ -835,7 +835,7 @@ bool ImageSpaceModifierRecord::loadFromStream(std::istream& in_File, const bool 
                  and (subLength!=144)  and (subLength!=152)and (subLength!=376) )
                 )
              {
-               std::cout <<"Error: sub record ?IAD of IMAD has invalid length ("
+               std::cerr <<"Error: sub record ?IAD of IMAD has invalid length ("
                          <<subLength<<" bytes). Should be between 16 and 56 "
                          <<" bytes and an integral multiple of 8 bytes, or 80 or 104 or 120 or 136 or 144 or 152 or 376 bytes! First is "
                          <<first<<".\n";
@@ -857,7 +857,7 @@ bool ImageSpaceModifierRecord::loadFromStream(std::istream& in_File, const bool 
       and unknownXNAM.isPresent() and unknownYNAM.isPresent() and unknownNAM4.isPresent() and unknownx00IAD.isPresent()
       and unknownx40IAD.isPresent() and (otherIADs.size()==40) ))
   {
-    std::cout << "Error: at least one required subrecord of IMAD is missing!\n";
+    std::cerr << "Error: at least one required subrecord of IMAD is missing!\n";
     return false;
   }
 

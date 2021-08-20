@@ -115,7 +115,7 @@ bool FormListRecord::loadFromStream(std::istream& in_File, const bool localized,
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of FLST is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of FLST is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -125,7 +125,7 @@ bool FormListRecord::loadFromStream(std::istream& in_File, const bool localized,
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of FLST!\n";
+    std::cerr << "Error while reading subrecord EDID of FLST!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -147,7 +147,7 @@ bool FormListRecord::loadFromStream(std::istream& in_File, const bool localized,
     bytesRead += 2;
     if (subLength!=4)
     {
-      std::cout <<"Error: sub record LNAM of RELA has invalid length("<<subLength
+      std::cerr <<"Error: sub record LNAM of RELA has invalid length("<<subLength
                 <<" bytes). Should be four bytes!\n";
       return false;
     }
@@ -156,7 +156,7 @@ bool FormListRecord::loadFromStream(std::istream& in_File, const bool localized,
     bytesRead += 4;
     if (!in_File.good())
     {
-      std::cout << "Error while reading subrecord LNAM of FLST!\n";
+      std::cerr << "Error while reading subrecord LNAM of FLST!\n";
       return false;
     }//if
     listFormIDs.push_back(temp_fID);

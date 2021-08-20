@@ -103,7 +103,7 @@ bool CameraPathRecord::saveToStream(std::ostream& output) const
   {
     if (!conditions[i].saveToStream(output))
     {
-      std::cout << "Error while writing subrecord CTDA of CPTH!\n";
+      std::cerr << "Error while writing subrecord CTDA of CPTH!\n";
       return false;
     }
   }//for
@@ -182,12 +182,12 @@ bool CameraPathRecord::loadFromStream(std::istream& in_File, const bool localize
       case cCIS1:
            if (!hasCTDA)
            {
-             std::cout << "Error: CPTH has CIS1 subrecord without prior CTDA!\n";
+             std::cerr << "Error: CPTH has CIS1 subrecord without prior CTDA!\n";
              return false;
            }
            if (!tempCC.unknownCISx.empty())
            {
-             std::cout << "Error: CPTH seems to have more than one CIS1 per CTDA!\n";
+             std::cerr << "Error: CPTH seems to have more than one CIS1 per CTDA!\n";
              return false;
            }
            //load CIS1
@@ -196,7 +196,7 @@ bool CameraPathRecord::loadFromStream(std::istream& in_File, const bool localize
            //check content
            if (tempCC.unknownCISx.empty())
            {
-             std::cout << "Error: subrecord CIS1 of CPTH is empty!\n";
+             std::cerr << "Error: subrecord CIS1 of CPTH is empty!\n";
              return false;
            }
            conditions.push_back(tempCC);
@@ -205,7 +205,7 @@ bool CameraPathRecord::loadFromStream(std::istream& in_File, const bool localize
       case cANAM:
            if (hasReadANAM)
            {
-             std::cout << "Error: CPTH seems to have more than one ANAM subrecord!\n";
+             std::cerr << "Error: CPTH seems to have more than one ANAM subrecord!\n";
              return false;
            }
            //ANAM's length
@@ -213,7 +213,7 @@ bool CameraPathRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if (subLength!=8)
            {
-             std::cout <<"Error: subrecord ANAM of CPTH has invalid length ("
+             std::cerr <<"Error: subrecord ANAM of CPTH has invalid length ("
                        <<subLength <<" bytes). Should be eight bytes!\n";
              return false;
            }
@@ -223,7 +223,7 @@ bool CameraPathRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 8;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord ANAM of CPTH!\n";
+             std::cerr << "Error while reading subrecord ANAM of CPTH!\n";
              return false;
            }//if
            hasReadANAM = true;
@@ -231,7 +231,7 @@ bool CameraPathRecord::loadFromStream(std::istream& in_File, const bool localize
       case cDATA:
            if (hasReadDATA)
            {
-             std::cout << "Error: CPTH seems to have more than one DATA subrecord!\n";
+             std::cerr << "Error: CPTH seems to have more than one DATA subrecord!\n";
              return false;
            }
            //DATA's length
@@ -239,7 +239,7 @@ bool CameraPathRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if (subLength!=1)
            {
-             std::cout <<"Error: subrecord DATA of CPTH has invalid length ("
+             std::cerr <<"Error: subrecord DATA of CPTH has invalid length ("
                        <<subLength <<" bytes). Should be one byte!\n";
              return false;
            }
@@ -248,7 +248,7 @@ bool CameraPathRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 1;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord DATA of CPTH!\n";
+             std::cerr << "Error while reading subrecord DATA of CPTH!\n";
              return false;
            }//if
            hasReadDATA = true;
@@ -261,13 +261,13 @@ bool CameraPathRecord::loadFromStream(std::istream& in_File, const bool localize
            //check content
            if (tempUint32==0)
            {
-             std::cout << "Error: subrecord SNAM of CPTH is zero!\n";
+             std::cerr << "Error: subrecord SNAM of CPTH is zero!\n";
              return false;
            }
            camShotList.push_back(tempUint32);
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only CTDA, CIS1, ANAM, DATA or SNAM are allowed here!\n";
            return false;
            break;
@@ -283,7 +283,7 @@ bool CameraPathRecord::loadFromStream(std::istream& in_File, const bool localize
   //presence checks
   if (!(hasReadANAM and hasReadDATA))
   {
-    std::cout << "Error: At least one subrecord of CPTH is missing!\n";
+    std::cerr << "Error: At least one subrecord of CPTH is missing!\n";
     return false;
   }
 

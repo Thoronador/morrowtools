@@ -160,7 +160,7 @@ bool LocationRecord::saveToStream(std::ostream& output) const
     //write LCSR
     if (!unknownLCSR.saveToStream(output, useACxx() ? cACSR : cLCSR))
     {
-      std::cout << "Error while writing subrecord LCSR of LCTN!\n";
+      std::cerr << "Error while writing subrecord LCSR of LCTN!\n";
       return false;
     }
   }//if LCSR
@@ -170,7 +170,7 @@ bool LocationRecord::saveToStream(std::ostream& output) const
     //write LCPR
     if (!unknownLCPR.saveToStream(output, useACxx() ? cACPR : cLCPR))
     {
-      std::cout << "Error while writing subrecord LCPR of LCTN!\n";
+      std::cerr << "Error while writing subrecord LCPR of LCTN!\n";
       return false;
     }
   }//if LCPR
@@ -181,7 +181,7 @@ bool LocationRecord::saveToStream(std::ostream& output) const
     //write LCEC
     if (!unknownLCECs[i].saveToStream(output, useACxx() ? cACEC : cLCEC))
     {
-      std::cout << "Error while writing subrecord LCEC of LCTN!\n";
+      std::cerr << "Error while writing subrecord LCEC of LCTN!\n";
       return false;
     }
   }//for
@@ -191,7 +191,7 @@ bool LocationRecord::saveToStream(std::ostream& output) const
     //write LCEP
     if (!unknownLCEP.saveToStream(output, cLCEP))
     {
-      std::cout << "Error while writing subrecord LCEP of LCTN!\n";
+      std::cerr << "Error while writing subrecord LCEP of LCTN!\n";
       return false;
     }
   }//if LCEP
@@ -201,7 +201,7 @@ bool LocationRecord::saveToStream(std::ostream& output) const
     //write LCUN
     if (!unknownLCUN.saveToStream(output, useACxx() ? cACUN : cLCUN))
     {
-      std::cout << "Error while writing subrecord LCUN of LCTN!\n";
+      std::cerr << "Error while writing subrecord LCUN of LCTN!\n";
       return false;
     }
   }//if LCUN
@@ -211,7 +211,7 @@ bool LocationRecord::saveToStream(std::ostream& output) const
     //write LCID
     if (!unknownLCID.saveToStream(output, useACxx() ? cACID : cLCID))
     {
-      std::cout << "Error while writing subrecord LCID of LCTN!\n";
+      std::cerr << "Error while writing subrecord LCID of LCTN!\n";
       return false;
     }
   }//if LCID
@@ -350,7 +350,7 @@ bool LocationRecord::loadFromStream(std::istream& in_File, const bool localized,
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of LCTN is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of LCTN is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -360,7 +360,7 @@ bool LocationRecord::loadFromStream(std::istream& in_File, const bool localized,
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of LCTN!\n";
+    std::cerr << "Error while reading subrecord EDID of LCTN!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -490,18 +490,18 @@ bool LocationRecord::loadFromStream(std::istream& in_File, const bool localized,
       case cACID:
            if (unknownLCID.isPresent())
            {
-             std::cout << "Error: LCTN seems to have more than one LCID/ACID subrecord.\n";
+             std::cerr << "Error: LCTN seems to have more than one LCID/ACID subrecord.\n";
              return false;
            }
            if (useACxx()!=(subRecName==cACID))
            {
-             std::cout << "Error: LCID/ACID mismatch in LCTN record!\n";
+             std::cerr << "Error: LCID/ACID mismatch in LCTN record!\n";
              return false;
            }
            //read LCID/ACID
            if (!unknownLCID.loadFromStream(in_File, subRecName, false))
            {
-             std::cout << "Error while reading subrecord "<<IntTo4Char(subRecName)<<" of LCTN!\n";
+             std::cerr << "Error while reading subrecord "<<IntTo4Char(subRecName)<<" of LCTN!\n";
              return false;
            }
            bytesRead = bytesRead + 2 /*length value*/ + unknownLCID.size() /*data size*/;
@@ -509,7 +509,7 @@ bool LocationRecord::loadFromStream(std::istream& in_File, const bool localized,
       case cFULL:
            if (name.isPresent())
            {
-             std::cout << "Error: LCTN seems to have more than one FULL subrecord.\n";
+             std::cerr << "Error: LCTN seems to have more than one FULL subrecord.\n";
              return false;
            }
            //read FULL
@@ -519,7 +519,7 @@ bool LocationRecord::loadFromStream(std::istream& in_File, const bool localized,
       case cKSIZ:
            if (!keywordArray.empty())
            {
-             std::cout << "Error: LCTN seems to have more than one KSIZ subrecord.\n";
+             std::cerr << "Error: LCTN seems to have more than one KSIZ subrecord.\n";
              return false;
            }
            //read KSIZ
@@ -528,7 +528,7 @@ bool LocationRecord::loadFromStream(std::istream& in_File, const bool localized,
            bytesRead += 6;
            if (k_Size==0)
            {
-             std::cout << "Error: LCTN's KSIZ value is zero, but that's not allowed!\n";
+             std::cerr << "Error: LCTN's KSIZ value is zero, but that's not allowed!\n";
              return false;
            }
 
@@ -545,7 +545,7 @@ bool LocationRecord::loadFromStream(std::istream& in_File, const bool localized,
            bytesRead += 2;
            if (subLength!=4*k_Size)
            {
-             std::cout <<"Error: sub record KWDA of LCTN has invalid length ("
+             std::cerr <<"Error: sub record KWDA of LCTN has invalid length ("
                        <<subLength<<" bytes). Should be "<<4*k_Size<<" bytes.\n";
              return false;
            }
@@ -556,7 +556,7 @@ bool LocationRecord::loadFromStream(std::istream& in_File, const bool localized,
              bytesRead += 4;
              if (!in_File.good())
              {
-               std::cout << "Error while reading subrecord KWDA of LCTN!\n";
+               std::cerr << "Error while reading subrecord KWDA of LCTN!\n";
                return false;
              }
              keywordArray.push_back(tempUint32);
@@ -565,7 +565,7 @@ bool LocationRecord::loadFromStream(std::istream& in_File, const bool localized,
       case cPNAM:
            if (hasPNAM)
            {
-             std::cout << "Error: LCTN seems to have more than one PNAM subrecord.\n";
+             std::cerr << "Error: LCTN seems to have more than one PNAM subrecord.\n";
              return false;
            }
            //read PNAM
@@ -576,7 +576,7 @@ bool LocationRecord::loadFromStream(std::istream& in_File, const bool localized,
       case cFNAM:
            if (hasFNAM)
            {
-             std::cout << "Error: LCTN seems to have more than one FNAM subrecord.\n";
+             std::cerr << "Error: LCTN seems to have more than one FNAM subrecord.\n";
              return false;
            }
            //read FNAM
@@ -587,7 +587,7 @@ bool LocationRecord::loadFromStream(std::istream& in_File, const bool localized,
       case cMNAM:
            if (hasMNAM)
            {
-             std::cout << "Error: LCTN seems to have more than one MNAM subrecord.\n";
+             std::cerr << "Error: LCTN seems to have more than one MNAM subrecord.\n";
              return false;
            }
            //read MNAM
@@ -598,7 +598,7 @@ bool LocationRecord::loadFromStream(std::istream& in_File, const bool localized,
       case cRNAM:
            if (hasRNAM)
            {
-             std::cout << "Error: LCTN seems to have more than one RNAM subrecord.\n";
+             std::cerr << "Error: LCTN seems to have more than one RNAM subrecord.\n";
              return false;
            }
            //read RNAM
@@ -609,7 +609,7 @@ bool LocationRecord::loadFromStream(std::istream& in_File, const bool localized,
       case cNAM0:
            if (hasNAM0)
            {
-             std::cout << "Error: LCTN seems to have more than one NAM0 subrecord.\n";
+             std::cerr << "Error: LCTN seems to have more than one NAM0 subrecord.\n";
              return false;
            }
            //read NAM0
@@ -620,7 +620,7 @@ bool LocationRecord::loadFromStream(std::istream& in_File, const bool localized,
       case cCNAM:
            if (hasCNAM)
            {
-             std::cout << "Error: LCTN seems to have more than one CNAM subrecord.\n";
+             std::cerr << "Error: LCTN seems to have more than one CNAM subrecord.\n";
              return false;
            }
            //read CNAM
@@ -631,7 +631,7 @@ bool LocationRecord::loadFromStream(std::istream& in_File, const bool localized,
       case cNAM1:
            if (hasNAM1)
            {
-             std::cout << "Error: LCTN seems to have more than one NAM1 subrecord.\n";
+             std::cerr << "Error: LCTN seems to have more than one NAM1 subrecord.\n";
              return false;
            }
            //read NAM1
@@ -640,7 +640,7 @@ bool LocationRecord::loadFromStream(std::istream& in_File, const bool localized,
            hasNAM1 = true;
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only LCSR, LCPR, LCEC, LCEP, LCUN, LCID,"
                      << " FULL, KSIZ, PNAM, FNAM, MNAM, RNAM, NAM0, CNAM or "
                      << "NAM1 are allowed here!\n";

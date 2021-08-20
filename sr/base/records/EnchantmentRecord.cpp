@@ -107,14 +107,14 @@ bool EnchantmentRecord::saveToStream(std::ostream& output) const
     //write ENIT
     if (!unknownENIT.saveToStream(output, cENIT))
     {
-      std::cout << "Error while writing subrecord ENIT of ENCH!\n";
+      std::cerr << "Error while writing subrecord ENIT of ENCH!\n";
       return false;
     }
   }
   else
   {
     //no ENIT
-    std::cout << "Error while writing ENCH: no ENIT subrecord found!\n";
+    std::cerr << "Error while writing ENCH: no ENIT subrecord found!\n";
     return false;
   }
 
@@ -125,7 +125,7 @@ bool EnchantmentRecord::saveToStream(std::ostream& output) const
     {
       if (!effects[i].saveToStream(output))
       {
-        std::cout << "Error while writing effects of ENCH record.\n";
+        std::cerr << "Error while writing effects of ENCH record.\n";
         return false;
       }
     }//for i
@@ -157,7 +157,7 @@ bool EnchantmentRecord::loadFromStream(std::istream& in_File, const bool localiz
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of ENCH is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of ENCH is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -167,7 +167,7 @@ bool EnchantmentRecord::loadFromStream(std::istream& in_File, const bool localiz
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of ENCH!\n";
+    std::cerr << "Error while reading subrecord EDID of ENCH!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -185,7 +185,7 @@ bool EnchantmentRecord::loadFromStream(std::istream& in_File, const bool localiz
   bytesRead += 2;
   if (subLength!=12)
   {
-    std::cout <<"Error: subrecord OBND of ENCH has invalid length ("<<subLength
+    std::cerr <<"Error: subrecord OBND of ENCH has invalid length ("<<subLength
               <<" bytes). Should be 12 bytes!\n";
     return false;
   }
@@ -194,7 +194,7 @@ bool EnchantmentRecord::loadFromStream(std::istream& in_File, const bool localiz
   bytesRead += 12;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord OBND of ENCH!\n";
+    std::cerr << "Error while reading subrecord OBND of ENCH!\n";
     return false;
   }
 
@@ -214,7 +214,7 @@ bool EnchantmentRecord::loadFromStream(std::istream& in_File, const bool localiz
       case cFULL:
            if (name.isPresent())
            {
-             std::cout << "Error: ENCH seems to have more than one FULL subrecord!\n";
+             std::cerr << "Error: ENCH seems to have more than one FULL subrecord!\n";
              return false;
            }
            //read FULL
@@ -258,7 +258,7 @@ bool EnchantmentRecord::loadFromStream(std::istream& in_File, const bool localiz
            bytesRead += 2;
            if (subLength!=4)
            {
-             std::cout <<"Error: subrecord EFID of ENCH has invalid length ("
+             std::cerr <<"Error: subrecord EFID of ENCH has invalid length ("
                        <<subLength<<" bytes). Should be four bytes!\n";
              return false;
            }
@@ -267,7 +267,7 @@ bool EnchantmentRecord::loadFromStream(std::istream& in_File, const bool localiz
            bytesRead += 4;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord EFID of ENCH!\n";
+             std::cerr << "Error while reading subrecord EFID of ENCH!\n";
              return false;
            }
 
@@ -284,7 +284,7 @@ bool EnchantmentRecord::loadFromStream(std::istream& in_File, const bool localiz
            bytesRead += 2;
            if (subLength!=12)
            {
-             std::cout <<"Error: subrecord EFIT of ENCH has invalid length ("
+             std::cerr <<"Error: subrecord EFIT of ENCH has invalid length ("
                        <<subLength<<" bytes). Should be 12 bytes!\n";
              return false;
            }
@@ -295,7 +295,7 @@ bool EnchantmentRecord::loadFromStream(std::istream& in_File, const bool localiz
            bytesRead += 12;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord EFIT of ENCH!\n";
+             std::cerr << "Error while reading subrecord EFIT of ENCH!\n";
              return false;
            }
            hasNonPushedEffect = true;
@@ -303,7 +303,7 @@ bool EnchantmentRecord::loadFromStream(std::istream& in_File, const bool localiz
       case cCTDA:
            if (!hasNonPushedEffect)
            {
-             std::cout << "Error while reading ENCH: CTDA found, but there was no EFID/EFIT block.\n";
+             std::cerr << "Error while reading ENCH: CTDA found, but there was no EFID/EFIT block.\n";
              return false;
            }
            //CTDA's length
@@ -311,7 +311,7 @@ bool EnchantmentRecord::loadFromStream(std::istream& in_File, const bool localiz
            bytesRead += 2;
            if (subLength!=32)
            {
-             std::cout <<"Error: subrecord CTDA of ENCH has invalid length ("
+             std::cerr <<"Error: subrecord CTDA of ENCH has invalid length ("
                        <<subLength<<" bytes). Should be 32 bytes!\n";
              return false;
            }
@@ -320,7 +320,7 @@ bool EnchantmentRecord::loadFromStream(std::istream& in_File, const bool localiz
            bytesRead += 32;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord CTDA of ENCH!\n";
+             std::cerr << "Error while reading subrecord CTDA of ENCH!\n";
              return false;
            }
            tempEffect.unknownCTDA_CIS2s.push_back(CTDA_CIS2_compound(tempCTDA, ""));
@@ -328,17 +328,17 @@ bool EnchantmentRecord::loadFromStream(std::istream& in_File, const bool localiz
       case cCIS2:
            if (!hasNonPushedEffect)
            {
-             std::cout << "Error while reading ENCH: CIS2 found, but there was no EFID/EFIT block!\n";
+             std::cerr << "Error while reading ENCH: CIS2 found, but there was no EFID/EFIT block!\n";
              return false;
            }
            if (tempEffect.unknownCTDA_CIS2s.empty())
            {
-             std::cout << "Error while reading ENCH: CIS2 found, but there was no CTDA before it!\n";
+             std::cerr << "Error while reading ENCH: CIS2 found, but there was no CTDA before it!\n";
              return false;
            }
            if (!tempEffect.unknownCTDA_CIS2s.back().unknownCISx.empty())
            {
-             std::cout << "Error: ENCH seems to have more than one CIS2 subrecord per CTDA!\n";
+             std::cerr << "Error: ENCH seems to have more than one CIS2 subrecord per CTDA!\n";
              return false;
            }
            //read CIS2
@@ -347,7 +347,7 @@ bool EnchantmentRecord::loadFromStream(std::istream& in_File, const bool localiz
              return false;
            break;
       default:
-           std::cout << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only FULL, ENIT, EFID, CTDA or CIS2 are allowed here!\n";
            return false;
            break;
@@ -363,7 +363,7 @@ bool EnchantmentRecord::loadFromStream(std::istream& in_File, const bool localiz
   //check presence
   if ((!unknownENIT.isPresent()) or (effects.empty()))
   {
-    std::cout << "Error while reading record ENCH: required "
+    std::cerr << "Error while reading record ENCH: required "
               << "subrecords ENIT or EFID/EFIT are missing!\n";
     return false;
   }

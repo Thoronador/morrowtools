@@ -48,19 +48,19 @@ bool BSAHeader::loadFromStream(std::ifstream& in_File)
 {
   if (!in_File.good())
   {
-    std::cout << "BSAHeader::loadFromStream: Error: bad stream given!\n";
+    std::cerr << "BSAHeader::loadFromStream: Error: bad stream given!\n";
     return false;
   }
   //read stuff
   in_File.read((char*) &fileID, 4);
   if (!in_File.good())
   {
-    std::cout << "BSAHeader::loadFromStream: Error: could not read header!\n";
+    std::cerr << "BSAHeader::loadFromStream: Error: could not read header!\n";
     return false;
   }
   if (fileID!=cBSA_NUL)
   {
-    std::cout << "BSAHeader::loadFromStream: Error: invalid BSA header!\n";
+    std::cerr << "BSAHeader::loadFromStream: Error: invalid BSA header!\n";
     return false;
   }
   //read version
@@ -69,16 +69,16 @@ bool BSAHeader::loadFromStream(std::ifstream& in_File)
   in_File.read((char*) &offset, 4);
   if (!in_File.good())
   {
-    std::cout << "BSAHeader::loadFromStream: Error: could not read version and offset!\n";
+    std::cerr << "BSAHeader::loadFromStream: Error: could not read version and offset!\n";
     return false;
   }
   if (version!=104)
   {
-    std::cout << "BSAHeader::loadFromStream: Warning: invalid version detected, but let's give it a try anyway!\n";
+    std::clog << "BSAHeader::loadFromStream: Warning: invalid version detected, but let's give it a try anyway!\n";
   }
   if (offset!=36)
   {
-    std::cout << "BSAHeader::loadFromStream: Error: offset is not 36, aborting!\n";
+    std::cerr << "BSAHeader::loadFromStream: Error: offset is not 36, aborting!\n";
     return false;
   }
   //read rest
@@ -90,7 +90,7 @@ bool BSAHeader::loadFromStream(std::ifstream& in_File)
   in_File.read((char*) &fileFlags, 4);
   if (!in_File.good())
   {
-    std::cout << "BSAHeader::loadFromStream: Error while reading from stream!\n";
+    std::cerr << "BSAHeader::loadFromStream: Error while reading from stream!\n";
     return false;
   }
 

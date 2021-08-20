@@ -130,7 +130,7 @@ bool ImageSpaceRecord::saveToStream(std::ostream& output) const
     //write HNAM
     if (!unknownHNAM.saveToStream(output, cHNAM))
     {
-      std::cout << "Error while writing subrecord HNAM of IMGS!\n";
+      std::cerr << "Error while writing subrecord HNAM of IMGS!\n";
       return false;
     }
   }
@@ -140,7 +140,7 @@ bool ImageSpaceRecord::saveToStream(std::ostream& output) const
     //write CNAM
     if (!unknownCNAM.saveToStream(output, cCNAM))
     {
-      std::cout << "Error while writing subrecord CNAM of IMGS!\n";
+      std::cerr << "Error while writing subrecord CNAM of IMGS!\n";
       return false;
     }
   }
@@ -150,7 +150,7 @@ bool ImageSpaceRecord::saveToStream(std::ostream& output) const
     //write TNAM
     if (!unknownTNAM.saveToStream(output, cTNAM))
     {
-      std::cout << "Error while writing subrecord TNAM of IMGS!\n";
+      std::cerr << "Error while writing subrecord TNAM of IMGS!\n";
       return false;
     }
   }
@@ -160,7 +160,7 @@ bool ImageSpaceRecord::saveToStream(std::ostream& output) const
     //write DNAM
     if (!unknownDNAM.saveToStream(output, cDNAM))
     {
-      std::cout << "Error while writing subrecord DNAM of IMGS!\n";
+      std::cerr << "Error while writing subrecord DNAM of IMGS!\n";
       return false;
     }
   }
@@ -191,7 +191,7 @@ bool ImageSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of IMGS is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of IMGS is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -201,7 +201,7 @@ bool ImageSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of IMGS!\n";
+    std::cerr << "Error while reading subrecord EDID of IMGS!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -223,7 +223,7 @@ bool ImageSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
       case cENAM:
            if (hasENAM)
            {
-             std::cout << "Error: IMGS seems to have more than one ENAM subrecord!\n";
+             std::cerr << "Error: IMGS seems to have more than one ENAM subrecord!\n";
              return false;
            }
            //ENAM's length
@@ -231,7 +231,7 @@ bool ImageSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if (subLength!=56)
            {
-             std::cout <<"Error: subrecord ENAM of IMGS has invalid length ("<<subLength
+             std::cerr <<"Error: subrecord ENAM of IMGS has invalid length ("<<subLength
                        <<" bytes). Should be 56 bytes!\n";
              return false;
            }
@@ -242,7 +242,7 @@ bool ImageSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
              bytesRead += 4;
              if (!in_File.good())
              {
-               std::cout << "Error while reading subrecord ENAM of IMGS!\n";
+               std::cerr << "Error while reading subrecord ENAM of IMGS!\n";
                return false;
              }//if
            }//for

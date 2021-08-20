@@ -92,14 +92,14 @@ bool MovementTypeRecord::saveToStream(std::ostream& output) const
   //write SPED
   if (!unknownSPED.saveToStream(output, cSPED))
   {
-    std::cout << "Error while writing subrecord SPED of MOVT!\n";
+    std::cerr << "Error while writing subrecord SPED of MOVT!\n";
     return false;
   }
 
   //write INAM
   if (!unknownINAM.saveToStream(output, cINAM))
   {
-    std::cout << "Error while writing subrecord INAM of MOVT!\n";
+    std::cerr << "Error while writing subrecord INAM of MOVT!\n";
     return false;
   }
 
@@ -129,7 +129,7 @@ bool MovementTypeRecord::loadFromStream(std::istream& in_File, const bool locali
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record EDID of MOVT is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record EDID of MOVT is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -139,7 +139,7 @@ bool MovementTypeRecord::loadFromStream(std::istream& in_File, const bool locali
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord EDID of MOVT!\n";
+    std::cerr << "Error while reading subrecord EDID of MOVT!\n";
     return false;
   }
   editorID = std::string(buffer);
@@ -157,7 +157,7 @@ bool MovementTypeRecord::loadFromStream(std::istream& in_File, const bool locali
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cout <<"Error: sub record MNAM of MOVT is longer than 511 characters!\n";
+    std::cerr <<"Error: sub record MNAM of MOVT is longer than 511 characters!\n";
     return false;
   }
   //read MNAM's stuff
@@ -166,7 +166,7 @@ bool MovementTypeRecord::loadFromStream(std::istream& in_File, const bool locali
   bytesRead += subLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord MNAM of MOVT!\n";
+    std::cerr << "Error while reading subrecord MNAM of MOVT!\n";
     return false;
   }
   nameString = std::string(buffer);

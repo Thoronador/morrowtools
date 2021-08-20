@@ -21,7 +21,6 @@
 #include "ESMReaderContentsBase.hpp"
 #include <iostream>
 #include <stdexcept>
-#include "SR_Constants.hpp"
 
 namespace SRTP
 {
@@ -54,8 +53,8 @@ bool ESMReaderContentsBase::nextGroupStarted(const GroupData& g_data, const bool
   {
     if (m_InternalGroup==NULL)
     {
-      std::cout << "ESMReaderContentsBase::nextGroupStarted: Error: got NULL pointer for internal group!\n";
-       //we've screwed up somehow, nice job!
+      std::cerr << "ESMReaderContentsBase::nextGroupStarted: Error: got NULL pointer for internal group!\n";
+      // We've screwed up somehow, nice job!
       throw std::runtime_error("ESMReaderContentsBase::nextGroupStarted: Error: got NULL pointer for internal group!");
       return false;
     }
@@ -72,7 +71,7 @@ bool ESMReaderContentsBase::nextGroupStarted(const GroupData& g_data, const bool
       Group * parent = contents.determineLatestGroup(m_InternalGroupLevel-1);
       if (parent==NULL)
       {
-        std::cout << "ESMReaderContentsBase::nextGroupStarted: Error: got NULL pointer for parent group!\n";
+        std::cerr << "ESMReaderContentsBase::nextGroupStarted: Error: got NULL pointer for parent group!\n";
         throw std::runtime_error("ESMReaderContentsBase::nextGroupStarted: Error: got NULL pointer for parent group!");
         return false;
       }
@@ -92,7 +91,7 @@ bool ESMReaderContentsBase::groupFinished(const GroupData& g_data)
   }
   else
   {
-    std::cout << "ESMReaderContentsBase::groupFinished: Error: level is already at zero!\n";
+    std::cerr << "ESMReaderContentsBase::groupFinished: Error: level is already at zero!\n";
     throw std::logic_error("ESMReaderContentsBase::groupFinished: Error: level is already at zero!");
     return false;
   }

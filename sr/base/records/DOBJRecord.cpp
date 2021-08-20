@@ -108,7 +108,7 @@ bool DOBJRecord::loadFromStream(std::istream& in_File, const bool localized, con
   //bytesRead += 2;
   if ((subLength==0) or ((subLength%8)!=0))
   {
-    std::cout << "Error: subrecord DNAM of DOBJ has invalid length ("<<subLength
+    std::cerr << "Error: subrecord DNAM of DOBJ has invalid length ("<<subLength
               << " bytes). Should be an integral multiple of 8 bytes!\n";
     return false;
   }
@@ -122,7 +122,7 @@ bool DOBJRecord::loadFromStream(std::istream& in_File, const bool localized, con
     in_File.read((char*) &temp.id, 4);
     if (!in_File.good())
     {
-      std::cout << "Error while reading subrecord DNAM of DOBJ!\n";
+      std::cerr << "Error while reading subrecord DNAM of DOBJ!\n";
       return false;
     }
     unknownDNAMs.push_back(temp);

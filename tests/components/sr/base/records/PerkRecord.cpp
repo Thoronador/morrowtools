@@ -28,6 +28,7 @@
 TEST_CASE("PerkRecord")
 {
   using namespace SRTP;
+  using namespace std::string_view_literals;
 
   SECTION("constructor")
   {
@@ -120,6 +121,83 @@ TEST_CASE("PerkRecord")
       REQUIRE( record.getWriteSize() == 10 );
     }
 
+    SECTION("size adjusts with presence of description and name")
+    {
+      record.editorID = "foo";
+      REQUIRE( record.getWriteSize() == 10 );
+
+      record.description = LocalizedString(LocalizedString::Type::Index, 123, "");
+      REQUIRE( record.getWriteSize() == 20 );
+
+      record.name = LocalizedString(LocalizedString::Type::Index, 321, "");
+      REQUIRE( record.getWriteSize() == 30 );
+
+      record.name = LocalizedString();
+      REQUIRE( record.getWriteSize() == 20 );
+    }
+
+    SECTION("size adjusts with length of sub-blocks")
+    {
+      const std::string_view data = "PERK\xAC\0\0\0\0\0\0\0\x12\x1B\x05\0\x1B\x69\x55\0\x28\0\x0F\0EDID\x12\0HuntersDiscipline\0FULL\x04\0\xA2\x11\0\0DESC\x04\0\xF9\x43\0\0CTDA\x20\0\0\x85\x06\x26\0\0\x80\x3F\xC0\x01\x53\x43\x1C\x5F\x10\0\0\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\xFF\xFF\x43\x54\x44\x41\x20\0\x60\x85\x06\x26\0\0\x48\x42\x15\x01\x53\x43\x08\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\xFF\xFF\x44\x41\x54\x41\x05\0\0\0\x01\x01\0\x50\x52\x4B\x45\x03\0\x02\0\0\x44\x41\x54\x41\x03\0\x15\x01\x01\x45\x50\x46\x54\x01\0\x01\x45\x50\x46\x44\x04\0\0\0\x84\x42\x50\x52\x4B\x46\0\0"sv;
+      std::istringstream streamIn;
+      streamIn.str(std::string(data));
+
+      uint32_t dummy = 0;
+      StringTable dummy_table;
+      dummy_table.addString(0x000011A2, "Some name is here.");
+      dummy_table.addString(0x000043F9, "This is the description.");
+
+      // read PERK, because header is handled before loadFromStream.
+      streamIn.read((char*) &dummy, 4);
+      REQUIRE( streamIn.good() );
+
+      REQUIRE( record.loadFromStream(streamIn, true, dummy_table) );
+      // Size of original record is 172 bytes.
+      REQUIRE( record.getWriteSize() == 172 );
+      // There are eight blocks.
+      REQUIRE( record.subBlocks.size() == 8 );
+
+      record.subBlocks.pop_back();
+      // Block PRKF (zero / six bytes) was removed.
+      REQUIRE( record.subBlocks.size() == 7 );
+      REQUIRE( record.getWriteSize() == 166 );
+
+      record.subBlocks.pop_back();
+      // Block EPFD (four / ten bytes) was removed.
+      REQUIRE( record.subBlocks.size() == 6 );
+      REQUIRE( record.getWriteSize() == 156 );
+
+      record.subBlocks.pop_back();
+      // Block EPFT (one / seven bytes) was removed.
+      REQUIRE( record.subBlocks.size() == 5 );
+      REQUIRE( record.getWriteSize() == 149 );
+
+      record.subBlocks.pop_back();
+      // Block DATA (three / nine bytes) was removed.
+      REQUIRE( record.subBlocks.size() == 4 );
+      REQUIRE( record.getWriteSize() == 140 );
+
+      record.subBlocks.pop_back();
+      // Block PKRE (three / nine bytes) was removed.
+      REQUIRE( record.subBlocks.size() == 3 );
+      REQUIRE( record.getWriteSize() == 131 );
+
+      record.subBlocks.pop_back();
+      // Block DATA (five / eleven bytes) was removed.
+      REQUIRE( record.subBlocks.size() == 2 );
+      REQUIRE( record.getWriteSize() == 120 );
+
+      record.subBlocks.pop_back();
+      // Block CTDA (32 / 38 bytes) was removed.
+      REQUIRE( record.subBlocks.size() == 1 );
+      REQUIRE( record.getWriteSize() == 82 );
+
+      record.subBlocks.pop_back();
+      // Another CTDA (32 / 38 bytes) was removed.
+      REQUIRE( record.subBlocks.size() == 0 );
+      REQUIRE( record.getWriteSize() == 44 );
+    }
+
     SECTION("deleted record has size zero")
     {
       record.headerFlags = BasicRecord::cDeletedFlag;
@@ -129,8 +207,6 @@ TEST_CASE("PerkRecord")
 
   SECTION("loadFromStream")
   {
-    using namespace std::string_view_literals;
-
     uint32_t dummy = 0;
     StringTable dummy_table;
 

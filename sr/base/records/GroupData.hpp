@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,47 +21,61 @@
 #ifndef SR_GROUPDATA_HPP
 #define SR_GROUPDATA_HPP
 
+#include <array>
 #include <cstdint>
 #include <fstream>
 
 namespace SRTP
 {
 
+/** Holds information about a group header. */
 struct GroupData
 {
   public:
-    /* constructor */
+    /** Constructor, creates empty group data. */
     GroupData();
 
-    /* destructor */
-    virtual ~GroupData();
+    /** Destructor. */
+    ~GroupData() = default;
 
     #ifndef SR_UNSAVEABLE_RECORDS
-    /* writes the group data to the given output stream and returns true on success
-
-      parameters:
-          output   - the output stream
-    */
-    virtual bool saveToStream(std::ostream& output) const;
+    /** \brief Writes the group data to the given output stream.
+     *
+     * \param output  the output stream
+     * \return Returns true on success (data was written to stream).
+     *         Returns false, if an error occurred.
+     */
+    bool saveToStream(std::ostream& output) const;
     #endif
 
-    /* loads the group data from the given input stream and returns true on success
+    /** \brief Loads the group data from the given input stream.
+     *
+     * \param in_File    the input stream
+     * \return Returns true on success (data was loaded from stream).
+     *         Returns false, if an error occurred.
+     */
+    bool loadFromStream(std::istream& in_File);
 
-      parameters:
-          in_File - the input stream
-    */
-    virtual bool loadFromStream(std::istream& in_File);
-
-    /* returns the group "name" */
+    /** \brief Gets the group "name". Meaning depends on type.
+     *
+     * \return Returns the group "name".
+     */
     uint32_t getGroupLabel() const;
 
-    /* returns the size of the group read from the stream */
+    /** \brief Gets the size of the group read from the stream in bytes.
+     *
+     * \return Returns the size of the group read from the stream in bytes.
+     */
     uint32_t getGroupSize() const;
 
-    /* returns the type of the group read from the stream */
+    /** \brief Gets the type of the group.
+     *
+     * \return Returns type of the group.
+     * \remarks This is usually one of the predefined type constants.
+     */
     uint32_t getGroupType() const;
 
-    //type constants
+    /// type constants
     static const uint32_t cTopLevelGroup;
     static const uint32_t cWorldspaceChildren;
     static const uint32_t cCellChildren;
@@ -70,41 +84,45 @@ struct GroupData
     static const uint32_t cCellTemporaryChildren;
     static const uint32_t cCellVisibleDistantChildren;
 
-    /* returns true, if the group label is a cell form ID according to the
-       group type
-    */
+    /** \brief Checks whether the label is a cell form ID according to the group type.
+     *
+     * \return Returns true, if the group label is a cell form ID according to
+     *         the group type. Returns false otherwise.
+     */
     bool labelIsCellID() const;
 
-    /* sets a new group label
-
-       parameters:
-           newLabel - the new name value that shall be set
-    */
+    /** \brief Sets a new group label.
+     *
+     * \param newLabel    the new name / label that shall be set
+     */
     void setGroupLabel(const uint32_t newLabel);
 
-    /* sets a new group size value
-
-       parameters:
-           newSize - the new size value that shall be set
-    */
+    /** \brief Sets a new group size value.
+     *
+     * \param newSize    the new size that shall be set
+     */
     void setGroupSize(const uint32_t newSize);
 
-    /* sets a new group type value
-
-       parameters:
-           newType - the new type value that shall be set
-    */
+    /** \brief Sets a new group type.
+     *
+     * \param newType    the new type that shall be set
+     */
     void setGroupType(const uint32_t newType);
 
-    /* equality operator */
+    /** \brief Equality operator for GroupData.
+     *
+     * \param other  the other GroupData instance to compare to
+     * \return Returns true, if @other contains the same data as instance.
+     *         Returns false otherwise.
+     */
     bool operator==(const GroupData& other) const;
-  protected:
-    uint32_t m_GroupSize;
-    uint32_t m_GroupLabel;
-    uint32_t m_GroupType;
-    int32_t UnknownGroupDataTwo[2];
-}; //struct
+  private:
+    uint32_t m_GroupSize; /**< size of the group */
+    uint32_t m_GroupLabel; /**< label of the group */
+    uint32_t m_GroupType; /**< type of the group */
+    std::array<int32_t, 2> UnknownGroupDataTwo; /**< unknown data */
+}; // struct
 
-} //namespace
+} // namespace
 
 #endif // SR_GROUPDATA_HPP

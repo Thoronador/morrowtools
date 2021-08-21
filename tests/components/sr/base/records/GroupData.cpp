@@ -105,6 +105,35 @@ TEST_CASE("GroupData")
         REQUIRE_FALSE( a == b );
         REQUIRE_FALSE( b == a );
       }
+
+      SECTION("unknown data mismatch")
+      {
+        using namespace std::string_view_literals;
+        uint32_t dummy = 0;
+
+        {
+          const std::string_view data = "GRUP\x84\xA1\xEF\xCDWOOP\xEF\xBE\xFE\xAF\x01\x23\x45\x67\x89\xAB\xCD\xEF"sv;
+          std::istringstream streamIn;
+          streamIn.str(std::string(data));
+          // read GRUP, because header is handled before loadFromStream.
+          streamIn.read((char*) &dummy, 4);
+          // Reading should succeed.
+          REQUIRE( a.loadFromStream(streamIn) );
+        }
+
+        {
+          const std::string_view data = "GRUP\x84\xA1\xEF\xCDWOOP\xEF\xBE\xFE\xAF\x01\x23\x45\x67\x89\xAB\xCD\xFF"sv;
+          std::istringstream streamIn;
+          streamIn.str(std::string(data));
+          // read GRUP, because header is handled before loadFromStream.
+          streamIn.read((char*) &dummy, 4);
+          // Reading should succeed.
+          REQUIRE( b.loadFromStream(streamIn) );
+        }
+
+        REQUIRE_FALSE( a == b );
+        REQUIRE_FALSE( b == a );
+      }
     }
   }
 
@@ -223,5 +252,31 @@ TEST_CASE("GroupData")
       // Check written data.
       REQUIRE( streamOut.str() == data );
     }
+  }
+
+  SECTION("labelIsCellID")
+  {
+    GroupData group;
+
+    group.setGroupType(GroupData::cTopLevelGroup);
+    REQUIRE_FALSE( group.labelIsCellID() );
+
+    group.setGroupType(GroupData::cWorldspaceChildren);
+    REQUIRE_FALSE( group.labelIsCellID() );
+
+    group.setGroupType(GroupData::cCellChildren);
+    REQUIRE( group.labelIsCellID() );
+
+    group.setGroupType(GroupData::cTopicChildren);
+    REQUIRE_FALSE( group.labelIsCellID() );
+
+    group.setGroupType(GroupData::cCellPersistentChildren);
+    REQUIRE( group.labelIsCellID() );
+
+    group.setGroupType(GroupData::cCellTemporaryChildren);
+    REQUIRE( group.labelIsCellID() );
+
+    group.setGroupType(GroupData::cCellVisibleDistantChildren);
+    REQUIRE( group.labelIsCellID() );
   }
 }

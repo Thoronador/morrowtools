@@ -79,6 +79,8 @@ uint32_t Tes4HeaderRecord::getRecordType() const
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t Tes4HeaderRecord::getWriteSize() const
 {
+  if (isDeleted())
+    return 0;
   uint32_t writeSize;
   writeSize = 4 /* HEDR */ +2 /* 2 bytes for length */ +12 /* fixed length of 12 bytes */
         +4 /* CNAM */ +2 /* 2 bytes for length */
@@ -112,6 +114,8 @@ bool Tes4HeaderRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cTES4, 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
+  if (isDeleted())
+    return true;
 
   //write HEDR
   output.write((const char*) &cHEDR, 4);
@@ -408,7 +412,7 @@ bool Tes4HeaderRecord::loadFromStream(std::istream& in_File, const bool localize
            break;
       default:
            std::cerr << "Error: found unexpected subrecord \""<<IntTo4Char(SubRecName)
-                     << "\", but only SNAM, MAST, DATA, ONAM, INTC or INCC are allowed here!\n";
+                     << "\", but only SNAM, MAST, DATA, ONAM, INTV or INCC are allowed here!\n";
            return false;
            break;
     }//swi

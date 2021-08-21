@@ -65,6 +65,8 @@
 		<Unit filename="../../sr/base/records/KeywordRecord.hpp" />
 		<Unit filename="../../sr/base/records/LocalizedString.cpp" />
 		<Unit filename="../../sr/base/records/LocalizedString.hpp" />
+		<Unit filename="../../sr/base/records/TES4HeaderRecord.cpp" />
+		<Unit filename="../../sr/base/records/TES4HeaderRecord.hpp" />
 		<Unit filename="../../sr/base/records/WordOfPowerRecord.cpp" />
 		<Unit filename="../../sr/base/records/WordOfPowerRecord.hpp" />
 		<Unit filename="base/BufferStream.cpp" />
@@ -83,6 +85,7 @@
 		<Unit filename="sr/base/records/GroupData.cpp" />
 		<Unit filename="sr/base/records/KeywordRecord.cpp" />
 		<Unit filename="sr/base/records/LocalizedString.cpp" />
+		<Unit filename="sr/base/records/Tes4HeaderRecord.cpp" />
 		<Unit filename="sr/base/records/WordOfPowerRecord.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />

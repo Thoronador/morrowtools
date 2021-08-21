@@ -40,17 +40,17 @@ struct GroupData
     /* writes the group data to the given output stream and returns true on success
 
       parameters:
-          output   - the output file stream
+          output   - the output stream
     */
-    virtual bool saveToStream(std::ofstream& output) const;
+    virtual bool saveToStream(std::ostream& output) const;
     #endif
 
     /* loads the group data from the given input stream and returns true on success
 
       parameters:
-          in_File - the input file stream
+          in_File - the input stream
     */
-    virtual bool loadFromStream(std::ifstream& in_File);
+    virtual bool loadFromStream(std::istream& in_File);
 
     /* returns the group "name" */
     uint32_t getGroupLabel() const;

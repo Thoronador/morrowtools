@@ -48,7 +48,7 @@ GroupData::~GroupData()
 }
 
 #ifndef SR_UNSAVEABLE_RECORDS
-bool GroupData::saveToStream(std::ofstream& output) const
+bool GroupData::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cGRUP, 4);
   //write size
@@ -68,7 +68,7 @@ bool GroupData::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool GroupData::loadFromStream(std::ifstream& in_File)
+bool GroupData::loadFromStream(std::istream& in_File)
 {
   //read size
   in_File.read((char*) &m_GroupSize, 4);

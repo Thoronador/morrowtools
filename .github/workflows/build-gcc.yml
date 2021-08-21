@@ -60,10 +60,6 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y catch cmake g++-9 pkg-config zlib1g-dev
-      - name: Syntax check
-        run: |
-          export CXX=g++-9
-          ./ci/cpplint.sh
       - name: Build with GNU GCC 9
         run: |
           export CXX=g++-9
@@ -86,10 +82,6 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y catch cmake g++-8 pkg-config zlib1g-dev
-      - name: Syntax check
-        run: |
-          export CXX=g++-8
-          ./ci/cpplint.sh
       - name: Build with GNU GCC 8
         run: |
           export CXX=g++-8

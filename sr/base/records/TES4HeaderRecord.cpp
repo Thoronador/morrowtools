@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ Tes4HeaderRecord::MasterFile::MasterFile()
 
 bool Tes4HeaderRecord::MasterFile::operator==(const Tes4HeaderRecord::MasterFile& other) const
 {
-  return ((data==other.data) and (fileName==other.fileName));
+  return ((data == other.data) && (fileName == other.fileName));
 }
 
 Tes4HeaderRecord::Tes4HeaderRecord()
@@ -47,26 +47,20 @@ Tes4HeaderRecord::Tes4HeaderRecord()
   dependencies(std::vector<MasterFile>()),
   unknownONAM(std::vector<uint32_t>()),
   unknownIntValue(0),
-  hasINCC(false), unknownINCC(0)
+  unknownINCC(std::optional<uint32_t>())
 {
-
-}
-
-Tes4HeaderRecord::~Tes4HeaderRecord()
-{
-  //empty
 }
 
 #ifndef SR_NO_RECORD_EQUALITY
 bool Tes4HeaderRecord::equals(const Tes4HeaderRecord& other) const
 {
-  return ((equalsBasic(other)) and (version==other.version)
-    and (numRecordsAndGroups==other.numRecordsAndGroups)
-    and (nextObjectID==other.nextObjectID)
-    and (authorName==other.authorName) and (summary==other.summary)
-    and (dependencies==other.dependencies) and (unknownONAM==other.unknownONAM)
-    and (unknownIntValue==other.unknownIntValue)
-    and (hasINCC==other.hasINCC) and ((unknownINCC==other.unknownINCC) or (!hasINCC))
+  return (equalsBasic(other) && (version == other.version)
+    && (numRecordsAndGroups == other.numRecordsAndGroups)
+    && (nextObjectID == other.nextObjectID)
+    && (authorName == other.authorName) && (summary == other.summary)
+    && (dependencies == other.dependencies) && (unknownONAM == other.unknownONAM)
+    && (unknownIntValue == other.unknownIntValue)
+    && (unknownINCC == other.unknownINCC)
   );
 }
 #endif
@@ -81,131 +75,129 @@ uint32_t Tes4HeaderRecord::getWriteSize() const
 {
   if (isDeleted())
     return 0;
-  uint32_t writeSize;
-  writeSize = 4 /* HEDR */ +2 /* 2 bytes for length */ +12 /* fixed length of 12 bytes */
-        +4 /* CNAM */ +2 /* 2 bytes for length */
-        +authorName.length()+1 /* length of name +1 byte for NUL termination */
-        +4 /* INTV */ +2 /* 2 bytes for length */ +4 /* fixed length of 4 bytes */;
+  uint32_t writeSize = 4 /* HEDR */ + 2 /* 2 bytes for length */ + 12 /* fixed length of 12 bytes */
+        + 4 /* CNAM */ + 2 /* 2 bytes for length */
+        + authorName.size() + 1 /* length of name + 1 byte for NUL termination */
+        + 4 /* INTV */ + 2 /* 2 bytes for length */ + 4 /* fixed length of 4 bytes */;
   if (!summary.empty())
   {
-    writeSize = writeSize +4 /* SNAM */ +2 /* 2 bytes for length */
-        +summary.length()+1; /* length of summary +1 byte for NUL termination */
+    writeSize = writeSize + 4 /* SNAM */ + 2 /* 2 bytes for length */
+        + summary.size() + 1; /* length of summary +1 byte for NUL termination */
   }
-  unsigned int i;
-  for (i=0; i<dependencies.size(); ++i)
+  for (const auto& elem: dependencies)
   {
-    writeSize = writeSize +4 /* MAST */ +2 /* 2 bytes for length */
-        +dependencies[i].fileName.length()+1 /* length of name +1 byte for NUL termination */
-        +4 /* DATA */ +2 /* 2 bytes for length */ +8 /* fixed length of 8 bytes */;
-  }//for
+    writeSize = writeSize + 4 /* MAST */ + 2 /* 2 bytes for length */
+        + elem.fileName.size() + 1 /* length of name +1 byte for NUL termination */
+        + 4 /* DATA */ + 2 /* 2 bytes for length */ + 8 /* fixed length of 8 bytes */;
+  }
   if (!unknownONAM.empty())
   {
-    writeSize = writeSize +4 /* ONAM */ +2 /* 2 bytes for length */
-                +4*unknownONAM.size(); /* four bytes per value */
-  }//if ONAM
-  if (hasINCC)
+    writeSize = writeSize + 4 /* ONAM */ + 2 /* 2 bytes for length */
+                +4 * unknownONAM.size(); /* four bytes per value */
+  }
+  if (unknownINCC.has_value())
   {
-    writeSize = writeSize +4 /* INCC */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+    writeSize = writeSize + 4 /* INCC */ + 2 /* 2 bytes for length */ + 4 /* fixed size */;
   }
   return writeSize;
 }
 
 bool Tes4HeaderRecord::saveToStream(std::ostream& output) const
 {
-  output.write((const char*) &cTES4, 4);
-  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
+  output.write(reinterpret_cast<const char*>(&cTES4), 4);
+  if (!saveSizeAndUnknownValues(output, getWriteSize()))
+    return false;
   if (isDeleted())
     return true;
 
-  //write HEDR
-  output.write((const char*) &cHEDR, 4);
-  //HEDR's length
-  uint16_t SubLength = 12;
-  output.write((const char*) &SubLength, 2);
-  //write HEDR's stuff
+  // write HEDR
+  output.write(reinterpret_cast<const char*>(&cHEDR), 4);
+  // HEDR's length
+  uint16_t subLength = 12;
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
+  // write HEDR's content
   // ---- write version
-  output.write((const char*) &version, 4);
-  // ---- write unknown stuff
-  output.write((const char*) &numRecordsAndGroups, 4);
-  output.write((const char*) &nextObjectID, 4);
+  output.write(reinterpret_cast<const char*>(&version), 4);
+  // ---- write group-record-count + next free form ID
+  output.write(reinterpret_cast<const char*>(&numRecordsAndGroups), 4);
+  output.write(reinterpret_cast<const char*>(&nextObjectID), 4);
   if (!output.good())
   {
     std::cerr << "Error while writing subrecord HEDR of TES4!\n";
     return false;
   }
 
-  //write CNAM
-  output.write((const char*) &cCNAM, 4);
-  //CNAM's length
-  SubLength = authorName.length()+1;
-  output.write((const char*) &SubLength, 2);
-  //write author's name
-  output.write(authorName.c_str(), SubLength);
+  // write CNAM
+  output.write(reinterpret_cast<const char*>(&cCNAM), 4);
+  // CNAM's length
+  subLength = authorName.size() + 1;
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
+  // write author's name
+  output.write(authorName.c_str(), subLength);
 
   if (!summary.empty())
   {
-    //write SNAM
-    output.write((const char*) &cSNAM, 4);
-    //SNAM's length
-    SubLength = summary.length()+1;
-    output.write((const char*) &SubLength, 2);
-    //write summary
-    output.write(summary.c_str(), SubLength);
-  }//if SNAM
+    // write SNAM
+    output.write(reinterpret_cast<const char*>(&cSNAM), 4);
+    // SNAM's length
+    subLength = summary.size() + 1;
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    // write summary
+    output.write(summary.c_str(), subLength);
+  }
 
-  unsigned int i;
-  for (i=0; i<dependencies.size(); ++i)
+  for (const auto& elem : dependencies)
   {
-    //write MAST
-    output.write((const char*) &cMAST, 4);
-    //MAST's length
-    SubLength = dependencies[i].fileName.length()+1;
-    output.write((const char*) &SubLength, 2);
-    //write file name
-    output.write(dependencies[i].fileName.c_str(), SubLength);
+    // write MAST
+    output.write(reinterpret_cast<const char*>(&cMAST), 4);
+    // MAST's length
+    subLength = elem.fileName.size() + 1;
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    // write file name
+    output.write(elem.fileName.c_str(), subLength);
 
-    //write DATA
-    output.write((const char*) &cDATA, 4);
-    //DATA's length
-    SubLength = 8; //fixed length
-    output.write((const char*) &SubLength, 2);
-    //write data value
-    output.write((const char*) &(dependencies[i].data), 8);
-  }//for
+    // write DATA
+    output.write(reinterpret_cast<const char*>(&cDATA), 4);
+    // DATA's length
+    subLength = 8; // fixed length for int64_t
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    // write data value
+    output.write(reinterpret_cast<const char*>(&(elem.data)), 8);
+  }
 
   if (!unknownONAM.empty())
   {
-    //write ONAM
-    output.write((const char*) &cONAM, 4);
-    //ONAM's length
-    SubLength = unknownONAM.size()*4;
-    output.write((const char*) &SubLength, 2);
+    // write ONAM
+    output.write(reinterpret_cast<const char*>(&cONAM), 4);
+    // ONAM's length
+    subLength = unknownONAM.size() * 4;
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
 
-    //write ONAM's data
-    for (i=0; i<unknownONAM.size(); ++i)
+    // write ONAM's data
+    for (const uint32_t elem : unknownONAM)
     {
-      output.write((const char*) &unknownONAM[i], 4);
+      output.write(reinterpret_cast<const char*>(&elem), 4);
     }
-  }//if ONAM
+  }
 
-  //write INTV
-  output.write((const char*) &cINTV, 4);
-  //INTV's length
-  SubLength = 4; //fixed size
-  output.write((const char*) &SubLength, 2);
-  //write integer value
-  output.write((const char*) &unknownIntValue, 4);
+  // write INTV
+  output.write(reinterpret_cast<const char*>(&cINTV), 4);
+  // INTV's length
+  subLength = 4; // fixed size for uint32_t
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
+  // write integer value
+  output.write(reinterpret_cast<const char*>(&unknownIntValue), 4);
 
-  if (hasINCC)
+  if (unknownINCC.has_value())
   {
-    //write INCC
+    // write INCC
     output.write((const char*) &cINCC, 4);
-    //INCC's length
-    SubLength = 4; //fixed size
-    output.write((const char*) &SubLength, 2);
-    //write integer value
-    output.write((const char*) &unknownINCC, 4);
-  }//if INCC
+    // INCC's length
+    subLength = 4; // fixed size for uint32_t
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    // write integer value
+    output.write(reinterpret_cast<const char*>(&unknownINCC), 4);
+  }
 
   return output.good();
 }
@@ -214,35 +206,34 @@ bool Tes4HeaderRecord::saveToStream(std::ostream& output) const
 bool Tes4HeaderRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
-  if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
-  uint32_t SubRecName;
-  uint16_t SubLength;
-  uint32_t BytesRead;
-  SubRecName = SubLength = 0;
+  if (!loadSizeAndUnknownValues(in_File, readSize))
+    return false;
+  uint32_t SubRecName = 0;
+  uint16_t SubLength = 0;
 
-  //read HEDR
-  in_File.read((char*) &SubRecName, 4);
-  BytesRead = 4;
-  if (SubRecName!=cHEDR)
+  // read HEDR
+  in_File.read(reinterpret_cast<char*>(&SubRecName), 4);
+  uint32_t BytesRead = 4;
+  if (SubRecName != cHEDR)
   {
     UnexpectedRecord(cHEDR, SubRecName);
     return false;
   }
-  //HEDR's length
-  in_File.read((char*) &SubLength, 2);
+  // HEDR's length
+  in_File.read(reinterpret_cast<char*>(&SubLength), 2);
   BytesRead += 2;
-  if (SubLength!=12)
+  if (SubLength != 12)
   {
-    std::cerr <<"Error: sub record HEDR of TES4 has invalid length ("<<SubLength
-              <<" bytes). Should be 12 bytes.\n";
+    std::cerr << "Error: sub record HEDR of TES4 has invalid length ("
+              << SubLength << " bytes). Should be 12 bytes.\n";
     return false;
   }
-  //read HEDR's stuff
+  // read HEDR's stuff
   // ---- read version number
-  in_File.read((char*) &version, 4);
+  in_File.read(reinterpret_cast<char*>(&version), 4);
   // ---- read unknown values
-  in_File.read((char*) &numRecordsAndGroups, 4);
-  in_File.read((char*) &nextObjectID, 4);
+  in_File.read(reinterpret_cast<char*>(&numRecordsAndGroups), 4);
+  in_File.read(reinterpret_cast<char*>(&nextObjectID), 4);
   BytesRead += 12;
   if (!in_File.good())
   {
@@ -250,46 +241,23 @@ bool Tes4HeaderRecord::loadFromStream(std::istream& in_File, const bool localize
     return false;
   }
 
-  //read CNAM
-  in_File.read((char*) &SubRecName, 4);
-  BytesRead += 4;
-  if (SubRecName!=cCNAM)
-  {
-    UnexpectedRecord(cCNAM, SubRecName);
+  // read CNAM (author's name)
+  char buffer[512];
+  if (!loadString512FromStream(in_File, authorName, buffer, cCNAM, true, BytesRead))
     return false;
-  }
-  //CNAM's length
-  in_File.read((char*) &SubLength, 2);
-  BytesRead += 2;
-  if (SubLength>511)
-  {
-    std::cerr << "Error: subrecord CNAM of TES4 is longer than 511 characters.\n";
-    return false;
-  }
-  //read author's name
-  char Buffer[512];
-  memset(Buffer, '\0', 512);
-  in_File.read(Buffer, SubLength);
-  BytesRead += SubLength;
-  if (!in_File.good())
-  {
-    std::cerr << "Error while reading subrecord CNAM of TES4!\n";
-    return false;
-  }
-  authorName = std::string(Buffer);
 
   summary.clear();
   dependencies.clear();
   MasterFile depEntry;
   unknownONAM.clear();
   uint32_t tempUint32;
-  unsigned int count, i;
+  unsigned int count;
   bool hasDoneINTV = false;
-  hasINCC = false; unknownINCC = 0;
-  while (BytesRead<readSize)
+  unknownINCC = {};
+  while (BytesRead < readSize)
   {
-    //read next subrecord
-    in_File.read((char*) &SubRecName, 4);
+    // read next subrecord
+    in_File.read(reinterpret_cast<char*>(&SubRecName), 4);
     BytesRead += 4;
     switch (SubRecName)
     {
@@ -299,9 +267,9 @@ bool Tes4HeaderRecord::loadFromStream(std::istream& in_File, const bool localize
              std::cerr << "Error: Record TES4 seems to have more than one SNAM subrecord!\n";
              return false;
            }
-           if (!loadString512FromStream(in_File, summary, Buffer, cSNAM, false, BytesRead))
+           if (!loadString512FromStream(in_File, summary, buffer, cSNAM, false, BytesRead))
              return false;
-           //check: empty strings not allowed
+           // check: empty strings not allowed
            if (summary.empty())
            {
              std::cerr << "Error: Subrecord SNAM of TES4 is empty!\n";
@@ -309,53 +277,37 @@ bool Tes4HeaderRecord::loadFromStream(std::istream& in_File, const bool localize
            }
            break;
       case cMAST:
-           //master file coming
-           //MAST's length
-           in_File.read((char*) &SubLength, 2);
-           BytesRead += 2;
-           if (SubLength>511)
-           {
-             std::cerr << "Error: subrecord MAST of TES4 is longer than 511 characters.\n";
+           // master file incoming
+           if (!loadString512FromStream(in_File, depEntry.fileName, buffer, cMAST, false, BytesRead))
              return false;
-           }
-           //read master file name
-           memset(Buffer, '\0', 512);
-           in_File.read(Buffer, SubLength);
-           BytesRead += SubLength;
-           if (!in_File.good())
-           {
-             std::cerr << "Error while reading subrecord MAST of TES4!\n";
-             return false;
-           }
-           depEntry.fileName = std::string(Buffer);
 
-           //data coming next...
-           //read DATA
-           in_File.read((char*) &SubRecName, 4);
+           // data coming next...
+           // read DATA
+           in_File.read(reinterpret_cast<char*>(&SubRecName), 4);
            BytesRead += 4;
-           if (SubRecName!=cDATA)
+           if (SubRecName != cDATA)
            {
              UnexpectedRecord(cDATA, SubRecName);
              return false;
            }
-           //DATA's length
-           in_File.read((char*) &SubLength, 2);
+           // DATA's length
+           in_File.read(reinterpret_cast<char*>(&SubLength), 2);
            BytesRead += 2;
-           if (SubLength!=8)
+           if (SubLength != 8)
            {
-             std::cerr <<"Error: sub record DATA of TES4 has invalid length ("
-                       <<SubLength <<" bytes). Should be 8 bytes.\n";
+             std::cerr << "Error: sub record DATA of TES4 has invalid length ("
+                       << SubLength <<" bytes). Should be 8 bytes.\n";
              return false;
            }
-           //read DATA's stuff
-           in_File.read((char*) &(depEntry.data), 8);
+           // read DATA's stuff
+           in_File.read(reinterpret_cast<char*>(&(depEntry.data)), 8);
            BytesRead += 8;
            if (!in_File.good())
            {
              std::cerr << "Error while reading subrecord DATA of TES4!\n";
              return false;
            }
-           dependencies.push_back(depEntry);
+           dependencies.emplace_back(depEntry);
            break;
       case cONAM:
            if (!unknownONAM.empty())
@@ -363,18 +315,18 @@ bool Tes4HeaderRecord::loadFromStream(std::istream& in_File, const bool localize
              std::cerr << "Error: Record TES4 seems to have more than one ONAM subrecord!\n";
              return false;
            }
-           //ONAM's length
-           in_File.read((char*) &SubLength, 2);
+           // ONAM's length
+           in_File.read(reinterpret_cast<char*>(&SubLength), 2);
            BytesRead += 2;
-           if ((SubLength<=0) or ((SubLength%4)!=0))
+           if ((SubLength <= 0) || ((SubLength % 4) != 0))
            {
              std::cerr << "Error: subrecord ONAM of TES4 has invalid length ("
-                       << SubLength<<" bytes). Should be an integral multiple "
-                       << "of four bytes and larger than zero.\n";
+                       << SubLength << " bytes). Should be an integral multiple"
+                       << " of four bytes and larger than zero.\n";
              return false;
            }
            count = SubLength / 4;
-           for (i=0; i<count; ++i)
+           for (unsigned int i = 0; i < count; ++i)
            {
              in_File.read((char*) &tempUint32, 4);
              BytesRead += 4;
@@ -384,7 +336,7 @@ bool Tes4HeaderRecord::loadFromStream(std::istream& in_File, const bool localize
                return false;
              }
              unknownONAM.push_back(tempUint32);
-           }//for
+           }
            break;
       case cINTV:
            if (hasDoneINTV)
@@ -392,33 +344,33 @@ bool Tes4HeaderRecord::loadFromStream(std::istream& in_File, const bool localize
              std::cerr << "Error: Record TES4 seems to have more than one INTV subrecord!\n";
              return false;
            }
-           //read INTV
+           // read INTV
            if (!loadUint32SubRecordFromStream(in_File, cINTV, unknownIntValue, false))
              return false;
            BytesRead += 6;
            hasDoneINTV = true;
            break;
       case cINCC:
-           if (hasINCC)
+           if (unknownINCC.has_value())
            {
              std::cerr << "Error: Record TES4 seems to have more than one INCC subrecord!\n";
              return false;
            }
-           //read INCC
-           if (!loadUint32SubRecordFromStream(in_File, cINCC, unknownINCC, false))
+           // read INCC
+           if (!loadUint32SubRecordFromStream(in_File, cINCC, tempUint32, false))
              return false;
+           unknownINCC = tempUint32;
            BytesRead += 6;
-           hasINCC = true;
            break;
       default:
-           std::cerr << "Error: found unexpected subrecord \""<<IntTo4Char(SubRecName)
+           std::cerr << "Error: found unexpected subrecord \"" << IntTo4Char(SubRecName)
                      << "\", but only SNAM, MAST, DATA, ONAM, INTV or INCC are allowed here!\n";
            return false;
            break;
-    }//swi
-  }//while
+    }
+  } // while
 
-  //check for required field
+  // check for required field
   if (!hasDoneINTV)
   {
     std::cerr << "Error: Record TES4 does not have a INTV field!\n";
@@ -430,12 +382,12 @@ bool Tes4HeaderRecord::loadFromStream(std::istream& in_File, const bool localize
 
 bool Tes4HeaderRecord::isMasterFile() const
 {
-  return ((headerFlags & cMasterFlag) != 0);
+  return (headerFlags & cMasterFlag) != 0;
 }
 
 bool Tes4HeaderRecord::isLocalized() const
 {
-  return ((headerFlags & cLocalizedFlag) != 0);
+  return (headerFlags & cLocalizedFlag) != 0;
 }
 
-} //namespace
+} // namespace

@@ -41,8 +41,7 @@ TEST_CASE("Tes4HeaderRecord")
     REQUIRE( record.dependencies.empty() );
     REQUIRE( record.unknownONAM.empty() );
     REQUIRE( record.unknownIntValue == 0 );
-    REQUIRE_FALSE( record.hasINCC );
-    REQUIRE( record.unknownINCC == 0 );
+    REQUIRE_FALSE( record.unknownINCC.has_value() );
   }
 
   SECTION("equals")
@@ -59,7 +58,6 @@ TEST_CASE("Tes4HeaderRecord")
       a.summary = "foo bar";
       a.dependencies = {};
       a.unknownONAM = { 1, 2, 3, 4 };
-      a.hasINCC = true;
       a.unknownINCC = 0xDEADBEEF;
 
       b.version = 0.94f;
@@ -69,7 +67,6 @@ TEST_CASE("Tes4HeaderRecord")
       b.summary = "foo bar";
       b.dependencies = {};
       b.unknownONAM = { 1, 2, 3, 4 };
-      b.hasINCC = true;
       b.unknownINCC = 0xDEADBEEF;
 
       REQUIRE( a.equals(b) );
@@ -87,7 +84,6 @@ TEST_CASE("Tes4HeaderRecord")
         a.summary = "foo bar";
         a.dependencies = {};
         a.unknownONAM = { 1, 2, 3, 4 };
-        a.hasINCC = true;
         a.unknownINCC = 0xDEADBEEF;
 
         b.version = 0.94f;
@@ -97,7 +93,6 @@ TEST_CASE("Tes4HeaderRecord")
         b.summary = "foo bar";
         b.dependencies = {};
         b.unknownONAM = { 1, 2, 3, 4 };
-        b.hasINCC = true;
         b.unknownINCC = 0xDEADBEEF;
 
         REQUIRE_FALSE( a.equals(b) );
@@ -113,7 +108,6 @@ TEST_CASE("Tes4HeaderRecord")
         a.summary = "foo bar";
         a.dependencies = {};
         a.unknownONAM = { 1, 2, 3, 4 };
-        a.hasINCC = true;
         a.unknownINCC = 0xDEADBEEF;
 
         b.version = 0.94f;
@@ -123,7 +117,6 @@ TEST_CASE("Tes4HeaderRecord")
         b.summary = "foo bar";
         b.dependencies = {};
         b.unknownONAM = { 1, 2, 3, 4 };
-        b.hasINCC = true;
         b.unknownINCC = 0xDEADBEEF;
 
         REQUIRE_FALSE( a.equals(b) );
@@ -139,7 +132,6 @@ TEST_CASE("Tes4HeaderRecord")
         a.summary = "foo bar";
         a.dependencies = {};
         a.unknownONAM = { 1, 2, 3, 4 };
-        a.hasINCC = true;
         a.unknownINCC = 0xDEADBEEF;
 
         b.version = 0.94f;
@@ -149,7 +141,6 @@ TEST_CASE("Tes4HeaderRecord")
         b.summary = "foo bar";
         b.dependencies = {};
         b.unknownONAM = { 1, 2, 3, 4 };
-        b.hasINCC = true;
         b.unknownINCC = 0xDEADBEEF;
 
         REQUIRE_FALSE( a.equals(b) );
@@ -165,7 +156,6 @@ TEST_CASE("Tes4HeaderRecord")
         a.summary = "foo bar";
         a.dependencies = {};
         a.unknownONAM = { 1, 2, 3, 4 };
-        a.hasINCC = true;
         a.unknownINCC = 0xDEADBEEF;
 
         b.version = 0.94f;
@@ -175,7 +165,6 @@ TEST_CASE("Tes4HeaderRecord")
         b.summary = "foo bar";
         b.dependencies = {};
         b.unknownONAM = { 1, 2, 3, 4 };
-        b.hasINCC = true;
         b.unknownINCC = 0xDEADBEEF;
 
         REQUIRE_FALSE( a.equals(b) );
@@ -191,7 +180,6 @@ TEST_CASE("Tes4HeaderRecord")
         a.summary = "foo bar";
         a.dependencies = {};
         a.unknownONAM = { 1, 2, 3, 4 };
-        a.hasINCC = true;
         a.unknownINCC = 0xDEADBEEF;
 
         b.version = 0.94f;
@@ -201,7 +189,6 @@ TEST_CASE("Tes4HeaderRecord")
         b.summary = "foo bar baz";
         b.dependencies = {};
         b.unknownONAM = { 1, 2, 3, 4 };
-        b.hasINCC = true;
         b.unknownINCC = 0xDEADBEEF;
 
         REQUIRE_FALSE( a.equals(b) );
@@ -217,7 +204,6 @@ TEST_CASE("Tes4HeaderRecord")
         a.summary = "foo bar";
         a.dependencies = {};
         a.unknownONAM = { 1, 2, 3, 4 };
-        a.hasINCC = true;
         a.unknownINCC = 0xDEADBEEF;
 
         b.version = 0.94f;
@@ -230,7 +216,6 @@ TEST_CASE("Tes4HeaderRecord")
         master.data = 0;
         b.dependencies.push_back(master);
         b.unknownONAM = { 1, 2, 3, 4 };
-        b.hasINCC = true;
         b.unknownINCC = 0xDEADBEEF;
 
         REQUIRE_FALSE( a.equals(b) );
@@ -246,7 +231,6 @@ TEST_CASE("Tes4HeaderRecord")
         a.summary = "foo bar";
         a.dependencies = {};
         a.unknownONAM = { 1, 2, 3, 42 };
-        a.hasINCC = true;
         a.unknownINCC = 0xDEADBEEF;
 
         b.version = 0.94f;
@@ -256,7 +240,6 @@ TEST_CASE("Tes4HeaderRecord")
         b.summary = "foo bar";
         b.dependencies = {};
         b.unknownONAM = { 1, 2, 3, 4 };
-        b.hasINCC = true;
         b.unknownINCC = 0xDEADBEEF;
 
         REQUIRE_FALSE( a.equals(b) );
@@ -272,7 +255,6 @@ TEST_CASE("Tes4HeaderRecord")
         a.summary = "foo bar";
         a.dependencies = {};
         a.unknownONAM = { 1, 2, 3, 4 };
-        a.hasINCC = true;
         a.unknownINCC = 0xDEADBEEF;
 
         b.version = 0.94f;
@@ -282,7 +264,6 @@ TEST_CASE("Tes4HeaderRecord")
         b.summary = "foo bar";
         b.dependencies = {};
         b.unknownONAM = { 1, 2, 3, 4 };
-        b.hasINCC = true;
         b.unknownINCC = 0xAFFEAFFE;
 
         REQUIRE_FALSE( a.equals(b) );
@@ -298,7 +279,6 @@ TEST_CASE("Tes4HeaderRecord")
         a.summary = "foo bar";
         a.dependencies = {};
         a.unknownONAM = { 1, 2, 3, 4 };
-        a.hasINCC = true;
         a.unknownINCC = 0xDEADBEEF;
 
         b.version = 0.94f;
@@ -308,8 +288,7 @@ TEST_CASE("Tes4HeaderRecord")
         b.summary = "foo bar";
         b.dependencies = {};
         b.unknownONAM = { 1, 2, 3, 4 };
-        b.hasINCC = false;
-        b.unknownINCC = 0xDEADBEEF;
+        b.unknownINCC = {};
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
@@ -414,11 +393,10 @@ TEST_CASE("Tes4HeaderRecord")
     SECTION("size adjusts when INCC is present")
     {
       record.authorName = "foo bar";
-      record.unknownINCC = 0xDEADBEEF;
-      record.hasINCC = false;
+      record.unknownINCC = {};
       REQUIRE( record.getWriteSize() == 42 );
 
-      record.hasINCC = true;
+      record.unknownINCC = 0xDEADBEEF;
       REQUIRE( record.getWriteSize() == 52 );
     }
 
@@ -464,8 +442,7 @@ TEST_CASE("Tes4HeaderRecord")
       REQUIRE( record.dependencies.empty() );
       REQUIRE( record.unknownONAM.empty() );
       REQUIRE( record.unknownIntValue == 0x000126C5 );
-      REQUIRE_FALSE( record.hasINCC );
-      REQUIRE( record.unknownINCC == 0 );
+      REQUIRE_FALSE( record.unknownINCC.has_value() );
     }
 
     SECTION("default: load + save Update header")
@@ -504,8 +481,8 @@ TEST_CASE("Tes4HeaderRecord")
       // Note: There are more, but not all are checked here, only the last.
       REQUIRE( record.unknownONAM[38] == 0x00109CD2 );
       REQUIRE( record.unknownIntValue == 33 );
-      REQUIRE( record.hasINCC );
-      REQUIRE( record.unknownINCC == 23 );
+      REQUIRE( record.unknownINCC.has_value() );
+      REQUIRE( record.unknownINCC.value() == 23 );
 
       // Save it.
       std::ostringstream streamOut;
@@ -635,8 +612,7 @@ TEST_CASE("Tes4HeaderRecord")
       record.dependencies.clear();
       record.unknownONAM.clear();
       record.unknownIntValue = 0x000126C5;
-      record.hasINCC = false;
-      record.unknownINCC = 0;
+      record.unknownINCC = {};
 
       // Writing should succeed.
       REQUIRE( record.saveToStream(stream) );

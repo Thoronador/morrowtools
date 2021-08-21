@@ -34,7 +34,6 @@ TEST_CASE("PerkRecord")
     PerkRecord record;
 
     REQUIRE( record.editorID.empty() );
-    REQUIRE_FALSE( record.unknownVMAD.isPresent() );
     REQUIRE_FALSE( record.name.isPresent() );
     REQUIRE_FALSE( record.description.isPresent() );
     REQUIRE( record.subBlocks.empty() );
@@ -167,7 +166,6 @@ TEST_CASE("PerkRecord")
       REQUIRE( record.description.isPresent() );
       REQUIRE( record.description.getIndex() == 0x000043F9 );
       REQUIRE( record.description.getString() == "This is the description." );
-      REQUIRE_FALSE( record.unknownVMAD.isPresent() );
       REQUIRE( record.subBlocks.size() == 8 );
       REQUIRE( record.subBlocks[0].subType == cCTDA );
       REQUIRE( record.subBlocks[7].subType == cPRKF );

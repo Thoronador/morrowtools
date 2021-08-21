@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -29,26 +29,18 @@ namespace SRTP
 
 PerkRecord::PerkRecord()
 : BasicRecord(), editorID(""),
-  unknownVMAD(BinarySubRecord()),
   name(LocalizedString()),
   description(LocalizedString()),
   subBlocks(std::vector<SubBlock>())
 {
-
-}
-
-PerkRecord::~PerkRecord()
-{
-  //empty
 }
 
 #ifndef SR_NO_RECORD_EQUALITY
 bool PerkRecord::equals(const PerkRecord& other) const
 {
-  return ((equalsBasic(other)) and (editorID==other.editorID)
-      and (unknownVMAD==other.unknownVMAD)
-      and (name==other.name)
-      and (description==other.description) and (subBlocks==other.subBlocks));
+  return (equalsBasic(other) && (editorID == other.editorID)
+      && (name == other.name) && (description == other.description)
+      && (subBlocks == other.subBlocks));
 }
 #endif
 
@@ -57,80 +49,55 @@ uint32_t PerkRecord::getWriteSize() const
 {
   if (isDeleted())
     return 0;
-  uint32_t writeSize;
-  writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
-        +editorID.length()+1 /* length of name +1 byte for NUL termination */
-        +description.getWriteSize() /* DESC */;
-  if (unknownVMAD.isPresent())
-  {
-    writeSize = writeSize + 4 /*VMAD*/ + 2 /* 2 bytes for length */
-                + unknownVMAD.size() /* size */;
-  }
+  uint32_t writeSize = 4 /* EDID */ + 2 /* 2 bytes for length */
+        + editorID.length() + 1 /* length of name +1 byte for NUL termination */
+        + description.getWriteSize() /* DESC */;
   if (name.isPresent())
   {
     writeSize += name.getWriteSize();
   }
-  if (!subBlocks.empty())
+  for (const auto& block: subBlocks)
   {
-    for (unsigned int i = 0; i < subBlocks.size(); ++i)
-    {
-      writeSize = writeSize + 4 /*header*/ + 2 /* 2 bytes for length */
-                 + subBlocks[i].subData.size() /* length */;
-    }
+    writeSize = writeSize + 4 /* header */ + 2 /* 2 bytes for length */
+               + block.subData.size() /* length */;
   }
   return writeSize;
 }
 
 bool PerkRecord::saveToStream(std::ostream& output) const
 {
-  output.write((const char*) &cPERK, 4);
+  output.write(reinterpret_cast<const char*>(&cPERK), 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize()))
     return false;
   if (isDeleted())
     return true;
 
-  //write EDID
-  output.write((const char*) &cEDID, 4);
-  //EDID's length
-  uint16_t subLength = editorID.length()+1;
-  output.write((const char*) &subLength, 2);
-  //write editor ID
+  // write EDID (editorID)
+  output.write(reinterpret_cast<const char*>(&cEDID), 4);
+  uint16_t subLength = editorID.length() + 1;
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
   output.write(editorID.c_str(), subLength);
-
-  if (unknownVMAD.isPresent())
-  {
-    //write VMAD
-    if (!unknownVMAD.saveToStream(output, cVMAD))
-    {
-      std::cerr << "Error while writing subrecord VMAD of PERK!\n";
-      return false;
-    }
-  }//if VMAD
 
   if (name.isPresent())
   {
-    //write FULL
+    // write FULL
     if (!name.saveToStream(output, cFULL))
       return false;
-  }//if has FULL
+  }
 
-  //write DESC
+  // write DESC
   if (!description.saveToStream(output, cDESC))
     return false;
 
-  if (!subBlocks.empty())
+  for (const auto& block: subBlocks)
   {
-    unsigned int i;
-    for (i=0; i<subBlocks.size(); ++i)
+    if (!block.subData.saveToStream(output, block.subType))
     {
-      if (!subBlocks[i].subData.saveToStream(output, subBlocks[i].subType))
-      {
-        std::cerr << "Error while writing (binary) subrecord "
-                  << IntTo4Char(subBlocks[i].subType)<<" of PERK!\n";
-        return false;
-      }//if
-    }//for
-  }//if subBlocks
+      std::cerr << "Error while writing (binary) subrecord "
+                << IntTo4Char(block.subType) << " of PERK!\n";
+      return false;
+    }
+  }
 
   return output.good();
 }
@@ -139,70 +106,35 @@ bool PerkRecord::saveToStream(std::ostream& output) const
 bool PerkRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
-  if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
-  uint32_t subRecName;
-  uint16_t subLength;
-  subRecName = subLength = 0;
-  uint32_t bytesRead;
+  if (!loadSizeAndUnknownValues(in_File, readSize))
+    return false;
+  uint32_t subRecName = 0;
+  uint32_t bytesRead = 0;
 
-  //read EDID
-  in_File.read((char*) &subRecName, 4);
-  bytesRead = 4;
-  if (subRecName!=cEDID)
-  {
-    UnexpectedRecord(cEDID, subRecName);
-    return false;
-  }
-  //EDID's length
-  in_File.read((char*) &subLength, 2);
-  bytesRead += 2;
-  if (subLength>511)
-  {
-    std::cerr <<"Error: sub record EDID of PERK is longer than 511 characters!\n";
-    return false;
-  }
-  //read EDID's stuff
+  // read EDID
   char buffer[512];
-  memset(buffer, 0, 512);
-  in_File.read(buffer, subLength);
-  bytesRead += subLength;
-  if (!in_File.good())
-  {
-    std::cerr << "Error while reading subrecord EDID of PERK!\n";
+  if (!loadString512FromStream(in_File, editorID, buffer, cEDID, true, bytesRead))
     return false;
-  }
-  editorID = std::string(buffer);
 
-  //now read the rest
-  unknownVMAD.setPresence(false);
+  // now read the rest
   name.reset();
   description.reset();
   subBlocks.clear();
   SubBlock temp;
-  while (bytesRead<readSize)
+  while (bytesRead < readSize)
   {
-    //read next subrecord's name
-    in_File.read((char*) &subRecName, 4);
+    // read next subrecord's name
+    in_File.read(reinterpret_cast<char*>(&subRecName), 4);
     bytesRead += 4;
     switch (subRecName)
     {
-      case cVMAD:
-           if (unknownVMAD.isPresent())
-           {
-             std::cerr << "Error: record PERK seems to have more than one VMAD subrecord.\n";
-             return false;
-           }
-           if (!unknownVMAD.loadFromStream(in_File, cVMAD, false))
-             return false;
-           bytesRead += (2 + unknownVMAD.size());
-           break;
       case cFULL:
            if (name.isPresent())
            {
              std::cerr << "Error: record PERK seems to have more than one FULL subrecord.\n";
              return false;
            }
-           //read FULL
+           // read FULL
            if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
              return false;
            break;
@@ -212,7 +144,7 @@ bool PerkRecord::loadFromStream(std::istream& in_File, const bool localized, con
              std::cerr << "Error: record PERK seems to have more than one DESC subrecord.\n";
              return false;
            }
-           //read DESC
+           // read DESC
            if (!description.loadFromStream(in_File, cDESC, false, bytesRead, localized, table, buffer))
              return false;
            break;
@@ -220,15 +152,15 @@ bool PerkRecord::loadFromStream(std::istream& in_File, const bool localized, con
            temp.subType = subRecName;
            if (!temp.subData.loadFromStream(in_File, subRecName, false))
            {
-             std::cerr << "Error while reading subrecord "<<IntTo4Char(subRecName)
-                       << " of PERK!\n";
+             std::cerr << "Error while reading subrecord "
+                       << IntTo4Char(subRecName) << " of PERK!\n";
              return false;
            }
            bytesRead += (2 + temp.subData.size());
            subBlocks.push_back(temp);
            break;
-    }//swi
-  }//while
+    }
+  }
 
   if (!description.isPresent())
   {
@@ -244,4 +176,4 @@ uint32_t PerkRecord::getRecordType() const
   return cPERK;
 }
 
-} //namespace
+} // namespace

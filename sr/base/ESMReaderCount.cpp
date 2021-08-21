@@ -50,16 +50,16 @@ bool ESMReaderCount::needGroup(const GroupData& g_data) const
 
 bool ESMReaderCount::nextGroupStarted(const GroupData& g_data, const bool sub)
 {
-  //update group stats
-  if (g_data.getGroupType()==GroupData::cTopLevelGroup)
+  // update group stats
+  if (g_data.type() == GroupData::cTopLevelGroup)
   {
-    //for top level groups, the label contains the name
-    ++GroupCounter[g_data.getGroupLabel()];
+    // for top level groups, the label contains the name
+    ++GroupCounter[g_data.label()];
   }
   else
   {
-    //for sub groups we'll track the type
-    ++GroupCounter[g_data.getGroupType()];
+    // for sub groups we'll track the type
+    ++GroupCounter[g_data.type()];
   }
   ++totalGroups;
   return true;

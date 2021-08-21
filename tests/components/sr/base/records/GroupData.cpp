@@ -32,9 +32,9 @@ TEST_CASE("GroupData")
   {
     GroupData group;
 
-    REQUIRE( group.getGroupSize() == 0 );
-    REQUIRE( group.getGroupLabel() == 0 );
-    REQUIRE( group.getGroupType() == 0 );
+    REQUIRE( group.size() == 0 );
+    REQUIRE( group.label() == 0 );
+    REQUIRE( group.type() == 0 );
   }
 
   SECTION("equals")
@@ -50,13 +50,13 @@ TEST_CASE("GroupData")
 
     SECTION("equal")
     {
-      a.setGroupSize(4567);
-      a.setGroupLabel(cGMST);
-      a.setGroupType(GroupData::cTopLevelGroup);
+      a.setSize(4567);
+      a.setLabel(cGMST);
+      a.setType(GroupData::cTopLevelGroup);
 
-      b.setGroupSize(4567);
-      b.setGroupLabel(cGMST);
-      b.setGroupType(GroupData::cTopLevelGroup);
+      b.setSize(4567);
+      b.setLabel(cGMST);
+      b.setType(GroupData::cTopLevelGroup);
 
       REQUIRE( a == b );
       REQUIRE( b == a );
@@ -66,13 +66,13 @@ TEST_CASE("GroupData")
     {
       SECTION("size mismatch")
       {
-        a.setGroupSize(4567);
-        a.setGroupLabel(cGMST);
-        a.setGroupType(GroupData::cTopLevelGroup);
+        a.setSize(4567);
+        a.setLabel(cGMST);
+        a.setType(GroupData::cTopLevelGroup);
 
-        b.setGroupSize(1234);
-        b.setGroupLabel(cGMST);
-        b.setGroupType(GroupData::cTopLevelGroup);
+        b.setSize(1234);
+        b.setLabel(cGMST);
+        b.setType(GroupData::cTopLevelGroup);
 
         REQUIRE_FALSE( a == b );
         REQUIRE_FALSE( b == a );
@@ -80,13 +80,13 @@ TEST_CASE("GroupData")
 
       SECTION("label mismatch")
       {
-        a.setGroupSize(4567);
-        a.setGroupLabel(cGMST);
-        a.setGroupType(GroupData::cTopLevelGroup);
+        a.setSize(4567);
+        a.setLabel(cGMST);
+        a.setType(GroupData::cTopLevelGroup);
 
-        b.setGroupSize(4567);
-        b.setGroupLabel(cAACT);
-        b.setGroupType(GroupData::cTopLevelGroup);
+        b.setSize(4567);
+        b.setLabel(cAACT);
+        b.setType(GroupData::cTopLevelGroup);
 
         REQUIRE_FALSE( a == b );
         REQUIRE_FALSE( b == a );
@@ -94,13 +94,13 @@ TEST_CASE("GroupData")
 
       SECTION("type mismatch")
       {
-        a.setGroupSize(4567);
-        a.setGroupLabel(cGMST);
-        a.setGroupType(GroupData::cTopLevelGroup);
+        a.setSize(4567);
+        a.setLabel(cGMST);
+        a.setType(GroupData::cTopLevelGroup);
 
-        b.setGroupSize(4567);
-        b.setGroupLabel(cGMST);
-        b.setGroupType(GroupData::cCellChildren);
+        b.setSize(4567);
+        b.setLabel(cGMST);
+        b.setType(GroupData::cCellChildren);
 
         REQUIRE_FALSE( a == b );
         REQUIRE_FALSE( b == a );
@@ -141,27 +141,27 @@ TEST_CASE("GroupData")
   {
     GroupData group;
 
-    REQUIRE( group.getGroupSize() == 0 );
-    group.setGroupSize(0xABCD9876);
-    REQUIRE( group.getGroupSize() == 0xABCD9876 );
+    REQUIRE( group.size() == 0 );
+    group.setSize(0xABCD9876);
+    REQUIRE( group.size() == 0xABCD9876 );
   }
 
   SECTION("label")
   {
     GroupData group;
 
-    REQUIRE( group.getGroupLabel() == 0 );
-    group.setGroupLabel(0x87654321);
-    REQUIRE( group.getGroupLabel() == 0x87654321 );
+    REQUIRE( group.label() == 0 );
+    group.setLabel(0x87654321);
+    REQUIRE( group.label() == 0x87654321 );
   }
 
   SECTION("type")
   {
     GroupData group;
 
-    REQUIRE( group.getGroupType() == 0 );
-    group.setGroupType(0xDEADBEEF);
-    REQUIRE( group.getGroupType() == 0xDEADBEEF );
+    REQUIRE( group.type() == 0 );
+    group.setType(0xDEADBEEF);
+    REQUIRE( group.type() == 0xDEADBEEF );
   }
 
   SECTION("loadFromStream")
@@ -184,9 +184,9 @@ TEST_CASE("GroupData")
       GroupData group;
       REQUIRE( group.loadFromStream(stream) );
       // Check data.
-      REQUIRE( group.getGroupSize() == 0x0000A184 );
-      REQUIRE( group.getGroupLabel() == cKYWD );
-      REQUIRE( group.getGroupType() == 0 );
+      REQUIRE( group.size() == 0x0000A184 );
+      REQUIRE( group.label() == cKYWD );
+      REQUIRE( group.type() == 0 );
     }
 
     SECTION("corrupt data: stream is too short")
@@ -220,9 +220,9 @@ TEST_CASE("GroupData")
       GroupData group;
       // Fill data.
       // -- header
-      group.setGroupSize(0xCDEFA184);
-      group.setGroupLabel(cWOOP);
-      group.setGroupType(0xAFFEBEEF);
+      group.setSize(0xCDEFA184);
+      group.setLabel(cWOOP);
+      group.setType(0xAFFEBEEF);
 
       // Writing should succeed.
       REQUIRE( group.saveToStream(stream) );
@@ -258,25 +258,25 @@ TEST_CASE("GroupData")
   {
     GroupData group;
 
-    group.setGroupType(GroupData::cTopLevelGroup);
+    group.setType(GroupData::cTopLevelGroup);
     REQUIRE_FALSE( group.labelIsCellID() );
 
-    group.setGroupType(GroupData::cWorldspaceChildren);
+    group.setType(GroupData::cWorldspaceChildren);
     REQUIRE_FALSE( group.labelIsCellID() );
 
-    group.setGroupType(GroupData::cCellChildren);
+    group.setType(GroupData::cCellChildren);
     REQUIRE( group.labelIsCellID() );
 
-    group.setGroupType(GroupData::cTopicChildren);
+    group.setType(GroupData::cTopicChildren);
     REQUIRE_FALSE( group.labelIsCellID() );
 
-    group.setGroupType(GroupData::cCellPersistentChildren);
+    group.setType(GroupData::cCellPersistentChildren);
     REQUIRE( group.labelIsCellID() );
 
-    group.setGroupType(GroupData::cCellTemporaryChildren);
+    group.setType(GroupData::cCellTemporaryChildren);
     REQUIRE( group.labelIsCellID() );
 
-    group.setGroupType(GroupData::cCellVisibleDistantChildren);
+    group.setType(GroupData::cCellVisibleDistantChildren);
     REQUIRE( group.labelIsCellID() );
   }
 }

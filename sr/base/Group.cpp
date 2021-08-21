@@ -328,8 +328,8 @@ bool Group::saveToStream(std::ofstream& output) const
 
 void Group::updateGroupSize()
 {
-  //basic size for every group is 24 bytes, rest is records
-  headerData.setGroupSize(24 + getContentSize());
+  // basic size for every group is 24 bytes, rest is records
+  headerData.setSize(24 + getContentSize());
 }
 #endif
 

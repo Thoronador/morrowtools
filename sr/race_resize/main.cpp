@@ -119,7 +119,7 @@ int main()
   SRTP::ESMWriterContents writer;
   //add stuff
   SRTP::Group& currentGroup = writer.contents.addNewGroup();
-  currentGroup.headerData.setGroupLabel(SRTP::cRACE);
+  currentGroup.headerData.setLabel(SRTP::cRACE);
 
   iter = SRTP::Races::getSingleton().getBegin();
   while (iter!=SRTP::Races::getSingleton().getEnd())

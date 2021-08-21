@@ -31,7 +31,6 @@ namespace SRTP
 ESMReaderFinderReferences::CellRefIDPair::CellRefIDPair(const uint32_t cell, const uint32_t ref)
 : cellID(cell), refID(ref)
 {
-
 }
 
 ESMReaderFinderReferences::ESMReaderFinderReferences(const std::vector<std::string>& loadOrder)
@@ -39,7 +38,6 @@ ESMReaderFinderReferences::ESMReaderFinderReferences(const std::vector<std::stri
   refMap(std::map<uint32_t, std::vector<CellRefIDPair> >()),
   m_CellStack(std::vector<uint32_t>())
 {
-
 }
 
 ESMReaderFinderReferences::~ESMReaderFinderReferences()
@@ -50,11 +48,11 @@ ESMReaderFinderReferences::~ESMReaderFinderReferences()
 bool ESMReaderFinderReferences::needGroup(const GroupData& g_data) const
 {
   return  (
-          //we want top level cell and worldspace groups
-          ((g_data.getGroupType()==GroupData::cTopLevelGroup)
-         and ((g_data.getGroupLabel()==cWRLD) or (g_data.getGroupLabel()==cCELL)))
+          // We want top level cell and worldspace groups.
+          ((g_data.type() == GroupData::cTopLevelGroup)
+         && ((g_data.label() == cWRLD) || (g_data.label() == cCELL)))
         //...and non-top level groups, that are not topic-related
-        or (g_data.getGroupType()!=GroupData::cTopicChildren)
+        || (g_data.type() != GroupData::cTopicChildren)
         );
 }
 
@@ -65,11 +63,11 @@ bool ESMReaderFinderReferences::nextGroupStarted(const GroupData& g_data, const 
     updateIndexMap(m_CurrentMod);
   }
 
-  //if ((g_data.getGroupType()!=GroupData::cTopLevelGroup) and (g_data.getGroupType()!=GroupData::cTopicChildren))
+  //if ((g_data.type() != GroupData::cTopLevelGroup) && (g_data.type() != GroupData::cTopicChildren))
   if (g_data.labelIsCellID())
   {
-    //label is cell form ID in that case
-    uint32_t cellFormID = g_data.getGroupLabel();
+    // label is cell form ID in that case
+    uint32_t cellFormID = g_data.label();
     if (!reIndex(cellFormID))
     {
       std::cerr << "ESMReaderFinderReferences::nextGroupStarted: Warning: could not adjust mod index for cell!\n";
@@ -82,17 +80,17 @@ bool ESMReaderFinderReferences::nextGroupStarted(const GroupData& g_data, const 
 
 bool ESMReaderFinderReferences::groupFinished(const GroupData& g_data)
 {
-  //if ((g_data.getGroupType()!=GroupData::cTopLevelGroup) and (g_data.getGroupType()!=GroupData::cTopicChildren))
+  //if ((g_data.type() != GroupData::cTopLevelGroup) && (g_data.type() != GroupData::cTopicChildren))
   if (g_data.labelIsCellID())
   {
-    //label is cell form ID in that case - remove it from "stack"
-    uint32_t cellFormID = g_data.getGroupLabel();
+    // label is cell form ID in that case - remove it from "stack"
+    uint32_t cellFormID = g_data.label();
     if (!reIndex(cellFormID))
     {
       std::cerr << "ESMReaderFinderReferences::groupFinished: Warning: could not adjust mod index for cell!\n";
       return false;
     }
-    if (m_CellStack.back()!=cellFormID)
+    if (m_CellStack.back() != cellFormID)
     {
       std::cerr << "ESMReaderFinderReferences::groupFinished: Warning: label does not match stack content!\n";
       return false;

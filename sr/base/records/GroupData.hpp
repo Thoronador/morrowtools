@@ -60,20 +60,20 @@ struct GroupData
      *
      * \return Returns the group "name".
      */
-    uint32_t getGroupLabel() const;
+    uint32_t label() const;
 
     /** \brief Gets the size of the group read from the stream in bytes.
      *
      * \return Returns the size of the group read from the stream in bytes.
      */
-    uint32_t getGroupSize() const;
+    uint32_t size() const;
 
     /** \brief Gets the type of the group.
      *
      * \return Returns type of the group.
      * \remarks This is usually one of the predefined type constants.
      */
-    uint32_t getGroupType() const;
+    uint32_t type() const;
 
     /// type constants
     static const uint32_t cTopLevelGroup;
@@ -95,19 +95,19 @@ struct GroupData
      *
      * \param newLabel    the new name / label that shall be set
      */
-    void setGroupLabel(const uint32_t newLabel);
+    void setLabel(const uint32_t newLabel);
 
     /** \brief Sets a new group size value.
      *
      * \param newSize    the new size that shall be set
      */
-    void setGroupSize(const uint32_t newSize);
+    void setSize(const uint32_t newSize);
 
     /** \brief Sets a new group type.
      *
      * \param newType    the new type that shall be set
      */
-    void setGroupType(const uint32_t newType);
+    void setType(const uint32_t newType);
 
     /** \brief Equality operator for GroupData.
      *
@@ -117,10 +117,10 @@ struct GroupData
      */
     bool operator==(const GroupData& other) const;
   private:
-    uint32_t m_GroupSize; /**< size of the group */
-    uint32_t m_GroupLabel; /**< label of the group */
-    uint32_t m_GroupType; /**< type of the group */
-    std::array<int32_t, 2> UnknownGroupDataTwo; /**< unknown data */
+    uint32_t m_Size; /**< size of the group */
+    uint32_t m_Label; /**< label of the group */
+    uint32_t m_Type; /**< type of the group */
+    std::array<int32_t, 2> UnknownDataTwo; /**< unknown data */
 }; // struct
 
 } // namespace

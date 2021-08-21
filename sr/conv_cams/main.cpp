@@ -239,10 +239,10 @@ int main(int argc, char **argv)
   std::vector<SRTP::Group>::iterator groupIter = reader.contents.m_Groups.begin();
   while (groupIter!=reader.contents.m_Groups.end())
   {
-    if ((groupIter->headerData.getGroupLabel()==SRTP::cCAMS)
-        and (groupIter->headerData.getGroupType()==SRTP::GroupData::cTopLevelGroup))
+    if ((groupIter->headerData.label() == SRTP::cCAMS)
+        && (groupIter->headerData.type() == SRTP::GroupData::cTopLevelGroup))
     {
-      //found CAMS top level group
+      // found CAMS top level group
       SRTP::Group::RecIterator recIter = groupIter->getRecBegin();
       while (recIter!=groupIter->getRecEnd())
       {

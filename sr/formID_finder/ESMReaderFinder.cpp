@@ -61,7 +61,7 @@ ESMReaderFinder::~ESMReaderFinder()
 
 bool ESMReaderFinder::needGroup(const GroupData& g_data) const
 {
-  switch (g_data.getGroupLabel())
+  switch (g_data.label())
   {
     case cACTI:
     case cALCH:

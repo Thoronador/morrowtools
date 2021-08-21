@@ -102,8 +102,8 @@ bool ESMWriterSingleType<recT, singleT>::writeGroups(std::ofstream& output) cons
   //prepare group header
   GroupData headerData;
   recT dummyRec;
-  headerData.setGroupLabel(dummyRec.getRecordType());
-  headerData.setGroupType(GroupData::cTopLevelGroup);
+  headerData.setLabel(dummyRec.getRecordType());
+  headerData.setType(GroupData::cTopLevelGroup);
   // -- calculate size
   uint32_t total = 0;
   // -- ... by adding up record sizes
@@ -113,7 +113,7 @@ bool ESMWriterSingleType<recT, singleT>::writeGroups(std::ofstream& output) cons
     total += iter->second.getTotalWrittenSize();
     ++iter;
   }//while
-  headerData.setGroupSize(total);
+  headerData.setSize(total);
 
   //now write the actual stuff
   // ---- group header goes first

@@ -33,8 +33,8 @@ const uint32_t GroupData::cCellTemporaryChildren = 9;
 const uint32_t GroupData::cCellVisibleDistantChildren = 10;
 
 GroupData::GroupData()
-: m_GroupSize(0), m_GroupLabel(0), m_GroupType(0),
-  UnknownGroupDataTwo({0, 0})
+: m_Size(0), m_Label(0), m_Type(0),
+  UnknownDataTwo({0, 0})
 {
 }
 
@@ -43,13 +43,13 @@ bool GroupData::saveToStream(std::ostream& output) const
 {
   output.write(reinterpret_cast<const char*>(&cGRUP), 4);
   // write size
-  output.write(reinterpret_cast<const char*>(&m_GroupSize), 4);
+  output.write(reinterpret_cast<const char*>(&m_Size), 4);
   // write label
-  output.write(reinterpret_cast<const char*>(&m_GroupLabel), 4);
+  output.write(reinterpret_cast<const char*>(&m_Label), 4);
   // write type
-  output.write(reinterpret_cast<const char*>(&m_GroupType), 4);
+  output.write(reinterpret_cast<const char*>(&m_Type), 4);
   // write unknown data
-  for (const int32_t data : UnknownGroupDataTwo)
+  for (const int32_t data : UnknownDataTwo)
   {
     output.write(reinterpret_cast<const char*>(&data), 4);
   }
@@ -61,13 +61,13 @@ bool GroupData::saveToStream(std::ostream& output) const
 bool GroupData::loadFromStream(std::istream& in_File)
 {
   // read size
-  in_File.read(reinterpret_cast<char*>(&m_GroupSize), 4);
+  in_File.read(reinterpret_cast<char*>(&m_Size), 4);
   // read label
-  in_File.read(reinterpret_cast<char*>(&m_GroupLabel), 4);
+  in_File.read(reinterpret_cast<char*>(&m_Label), 4);
   // read type
-  in_File.read(reinterpret_cast<char*>(&m_GroupType), 4);
+  in_File.read(reinterpret_cast<char*>(&m_Type), 4);
   // read unknown data
-  for (int32_t& data : UnknownGroupDataTwo)
+  for (int32_t& data : UnknownDataTwo)
   {
     in_File.read(reinterpret_cast<char*>(&data), 4);
   }
@@ -75,24 +75,24 @@ bool GroupData::loadFromStream(std::istream& in_File)
   return in_File.good();
 }
 
-uint32_t GroupData::getGroupLabel() const
+uint32_t GroupData::label() const
 {
-  return m_GroupLabel;
+  return m_Label;
 }
 
-uint32_t GroupData::getGroupSize() const
+uint32_t GroupData::size() const
 {
-  return m_GroupSize;
+  return m_Size;
 }
 
-uint32_t GroupData::getGroupType() const
+uint32_t GroupData::type() const
 {
-  return m_GroupType;
+  return m_Type;
 }
 
 bool GroupData::labelIsCellID() const
 {
-  switch (m_GroupType)
+  switch (m_Type)
   {
     case cTopLevelGroup:
          return false;
@@ -106,27 +106,27 @@ bool GroupData::labelIsCellID() const
   }
 }
 
-void GroupData::setGroupLabel(const uint32_t newLabel)
+void GroupData::setLabel(const uint32_t newLabel)
 {
-  m_GroupLabel = newLabel;
+  m_Label = newLabel;
 }
 
-void GroupData::setGroupSize(const uint32_t newSize)
+void GroupData::setSize(const uint32_t newSize)
 {
-  m_GroupSize = newSize;
+  m_Size = newSize;
 }
 
-void GroupData::setGroupType(const uint32_t newType)
+void GroupData::setType(const uint32_t newType)
 {
-  m_GroupType = newType;
+  m_Type = newType;
 }
 
 bool GroupData::operator==(const GroupData& other) const
 {
-  return ((m_GroupSize == other.getGroupSize())
-      && (m_GroupLabel == other.getGroupLabel())
-      && (m_GroupType == other.getGroupType())
-      && (UnknownGroupDataTwo == other.UnknownGroupDataTwo));
+  return ((m_Size == other.size())
+      && (m_Label == other.label())
+      && (m_Type == other.type())
+      && (UnknownDataTwo == other.UnknownDataTwo));
 }
 
 } // namespace

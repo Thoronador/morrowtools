@@ -54,13 +54,13 @@ int ESMReader::skipRecord(std::ifstream& in_File)
 /* skips a group and returns 0 on success, and -1 on error */
 int ESMReader::skipGroup(std::ifstream& in_File, const GroupData& g_data)
 {
-  if (g_data.getGroupSize()<24)
+  if (g_data.size() < 24)
   {
     std::cerr << "ESMReader::skipGroup: Error: group size is below 24 bytes!\n";
     return -1;
   }
-  //skip it
-  in_File.seekg(g_data.getGroupSize()-24, std::ios::cur);
+  // skip it
+  in_File.seekg(g_data.size() - 24, std::ios::cur);
   if (in_File.good())
   {
     return 0;
@@ -242,7 +242,7 @@ int ESMReader::processGroup(std::ifstream& in_File, const bool withHeader, const
 int ESMReader::readGroup(std::ifstream& in_File, const GroupData& g_data, const bool localized, const StringTable& table)
 {
   //actually read the group
-  const std::ifstream::pos_type endPosition = in_File.tellg()+static_cast<std::ifstream::pos_type>(g_data.getGroupSize()-24);
+  const auto endPosition = in_File.tellg() + static_cast<std::ifstream::pos_type>(g_data.size() - 24);
   int recordsRead = 0;
   int lastResult = 0;
   uint32_t recName;

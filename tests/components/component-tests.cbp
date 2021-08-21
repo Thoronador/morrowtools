@@ -67,6 +67,7 @@
 		<Unit filename="../../sr/base/records/LocalizedString.hpp" />
 		<Unit filename="../../sr/base/records/PerkRecord.cpp" />
 		<Unit filename="../../sr/base/records/PerkRecord.hpp" />
+		<Unit filename="../../sr/base/records/SubBlock.hpp" />
 		<Unit filename="../../sr/base/records/TES4HeaderRecord.cpp" />
 		<Unit filename="../../sr/base/records/TES4HeaderRecord.hpp" />
 		<Unit filename="../../sr/base/records/WordOfPowerRecord.cpp" />

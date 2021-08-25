@@ -52,6 +52,15 @@ TEST_CASE("StringTable")
     REQUIRE( table.getString(42) == "foobar" );
   }
 
+  SECTION("addString with ID zero does not add anything")
+  {
+    StringTable table;
+    REQUIRE( table.getNumberOfTableEntries() == 0 );
+    table.addString(0, "foobar");
+    REQUIRE_FALSE( table.hasString(0) );
+    REQUIRE( table.getNumberOfTableEntries() == 0 );
+  }
+
   SECTION("getString throws when index is not present")
   {
     StringTable table;

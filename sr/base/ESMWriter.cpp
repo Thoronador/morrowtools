@@ -39,7 +39,7 @@ bool ESMWriter::writeESM(const std::string& FileName, Tes4HeaderRecord& theHeade
 {
   theHeader.numRecordsAndGroups = getTotalNumberOfGroups() + getTotalNumberOfRecords();
   std::ofstream output;
-  output.open(FileName.c_str(), std::ios::out | std::ios::binary | std::ios::trunc);
+  output.open(FileName, std::ios::out | std::ios::binary | std::ios::trunc);
   if (!output)
   {
     std::cerr << "ESMWriter::writeESM: Error: could not open/create file \""

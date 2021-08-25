@@ -71,10 +71,10 @@ int ESMReader::skipGroup(std::ifstream& in_File, const GroupData& g_data)
 int ESMReader::readESM(const std::string& FileName, Tes4HeaderRecord& head)
 {
   std::ifstream input;
-  input.open(FileName.c_str(), std::ios::in | std::ios::binary);
+  input.open(FileName, std::ios::in | std::ios::binary);
   if (!input)
   {
-    std::cerr << "Error: could not open file \""<<FileName<<"\".\n";
+    std::cerr << "Error: could not open file \"" << FileName << "\".\n";
     return -1;
   }
 
@@ -161,7 +161,7 @@ int ESMReader::readESM(const std::string& FileName, Tes4HeaderRecord& head)
 bool ESMReader::peekESMHeader(const std::string& FileName, Tes4HeaderRecord& head)
 {
   std::ifstream input;
-  input.open(FileName.c_str(), std::ios::in | std::ios::binary);
+  input.open(FileName, std::ios::in | std::ios::binary);
   if (!input)
   {
     std::cerr << "ESMReader::peekESMHeader: Error: could not open file \""<<FileName<<"\".\n";

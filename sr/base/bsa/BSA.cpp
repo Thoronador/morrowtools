@@ -50,7 +50,7 @@ bool BSA::open(const std::string& FileName)
     std::cerr << "BSA::open: Error: BSA was already opened!\n";
     return false;
   }
-  m_Stream.open(FileName.c_str(), std::ios_base::in | std::ios_base::binary);
+  m_Stream.open(FileName, std::ios_base::in | std::ios_base::binary);
   if (!m_Stream)
   {
     std::cerr << "BSA::open: Error while opening file \"" << FileName << "\".\n";
@@ -615,7 +615,7 @@ bool BSA::extractFile(const uint32_t folderIndex, const uint32_t fileIndex, cons
   }
 
   std::ofstream outputStream;
-  outputStream.open(outputFileName.c_str(), std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
+  outputStream.open(outputFileName, std::ios_base::out | std::ios_base::binary | std::ios_base::trunc);
   if (!outputStream)
   {
     std::cerr << "BSA::extractFile: Error: could not open/create file \""

@@ -232,7 +232,7 @@ bool StringTable::writeTable(const std::string& FileName, DataType stringType) c
       std::cerr << "Error: Cannot determine string data type!\n";
       return false;
     }
-    std::string ext = lowerCase(FileName.substr(dotPos));
+    const std::string ext = lowerCase(FileName.substr(dotPos));
     if (ext == ".strings")
     {
       stringType = sdNULterminated;

@@ -22,7 +22,7 @@
 #define SR_STRINGTABLE_HPP
 
 #include <cstdint>
-#include <map>
+#include <unordered_map>
 #include <string>
 
 namespace SRTP
@@ -106,7 +106,7 @@ class StringTable
       uint32_t offset;
     }; // struct
 
-    std::map<uint32_t, std::string> m_Strings; /**< holds the string */
+    std::unordered_map<uint32_t, std::string> m_Strings; /**< holds the string */
 }; // class
 
 } // namespace

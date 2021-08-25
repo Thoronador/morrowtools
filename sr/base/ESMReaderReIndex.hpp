@@ -22,6 +22,7 @@
 #define SR_ESMREADERREINDEXMOD_HPP
 
 #include "ESMReader.hpp"
+#include <map>
 
 namespace SRTP
 {

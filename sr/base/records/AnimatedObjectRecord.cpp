@@ -116,7 +116,6 @@ bool AnimatedObjectRecord::loadFromStream(std::istream& in_File, const bool loca
   if (!loadSizeAndUnknownValues(in_File, readSize))
     return false;
   uint32_t subRecName = 0;
-  uint16_t subLength = 0;
   uint32_t bytesRead = 0;
 
   // read EDID

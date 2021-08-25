@@ -82,6 +82,7 @@
 		<Unit filename="main.cpp" />
 		<Unit filename="mw/base/HelperIO.cpp" />
 		<Unit filename="sr/base/FormIDFunctions.cpp" />
+		<Unit filename="sr/base/StringTable.cpp" />
 		<Unit filename="sr/base/records/AcousticSpaceRecord.cpp" />
 		<Unit filename="sr/base/records/ActionRecord.cpp" />
 		<Unit filename="sr/base/records/BinarySubRecord.cpp" />

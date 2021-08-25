@@ -68,16 +68,6 @@ void StringTable::tabulaRasa()
   m_Strings.clear();
 }
 
-StringTable::TableIterator StringTable::getBegin() const
-{
-  return m_Strings.begin();
-}
-
-StringTable::TableIterator StringTable::getEnd() const
-{
-  return m_Strings.end();
-}
-
 uint32_t StringTable::getNumberOfTableEntries() const
 {
   return m_Strings.size();
@@ -349,17 +339,6 @@ bool StringTable::writeTable(const std::string& FileName, DataType stringType) c
 
   output.close();
   return true;
-}
-
-void StringTable::mergeTables(const StringTable& other)
-{
-  TableIterator iter = other.getBegin();
-  const TableIterator endIter = other.getEnd();
-  while (iter != endIter)
-  {
-    m_Strings[iter->first] = iter->second;
-    ++iter;
-  }
 }
 
 } // namespace

@@ -41,9 +41,6 @@ class StringTable
     /** enumeration type for table data type */
     enum DataType {sdUnknown, sdNULterminated, sdPascalStyle};
 
-    //iterator type
-    typedef std::map<uint32_t, std::string>::const_iterator TableIterator;
-
     /** \brief Adds a string with the given ID and content to the string table.
      *
      * If a string with the same ID is already present, that string will be
@@ -99,20 +96,6 @@ class StringTable
      * \return Returns true in case of success, false on failure.
      */
     bool writeTable(const std::string& FileName, DataType stringType) const;
-
-    /** \brief Merges the contents of the other table into this table.
-     *
-     * If there are strings with the same string ID in both tables, the strings
-     * from the other table take precedence.
-     * \param other  the other string table
-     */
-    void mergeTables(const StringTable& other);
-
-    /* returns iterator to the start of the table */
-    TableIterator getBegin() const;
-
-    /* returns iterator to the end of the table */
-    TableIterator getEnd() const;
 
     /** \brief Returns the number of strings in the table. */
     uint32_t getNumberOfTableEntries() const;

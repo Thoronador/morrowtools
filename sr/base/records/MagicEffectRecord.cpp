@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -83,6 +83,7 @@ const uint32_t MagicEffectRecord::cSoundTypeOnHit       = 0x00000005;
 
 MagicEffectRecord::MagicEffectRecord()
 : BasicRecord(), editorID(""),
+  unknownVMAD(BinarySubRecord()),
   name(LocalizedString()),
   menuDisplayObjectFormID(0),
   keywordArray(std::vector<uint32_t>()),
@@ -130,7 +131,6 @@ MagicEffectRecord::MagicEffectRecord()
   description(LocalizedString()),
   unknownCTDAs(std::vector<CTDAData>())
 {
-  unknownVMAD.setPresence(false);
 }
 
 MagicEffectRecord::~MagicEffectRecord()
@@ -337,17 +337,17 @@ bool MagicEffectRecord::saveToStream(std::ostream& output) const
   if (!description.saveToStream(output, cDNAM))
     return false;
 
-  //write CTDAs
-  for (i=0; i<unknownCTDAs.size(); ++i)
+  // write CTDAs
+  for (const auto& ctda: unknownCTDAs)
   {
-    //write CTDA
-    output.write((const char*) &cCTDA, 4);
-    //CTDA's length
+    // write CTDA
+    output.write(reinterpret_cast<const char*>(&cCTDA), 4);
+    // CTDA's length
     subLength = 32;
-    output.write((const char*) &subLength, 2);
-    //write CTDA
-    output.write((const char*) (unknownCTDAs[i].content), 32);
-  }//for
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    // write CTDA
+    output.write(reinterpret_cast<const char*>(ctda.content.data()), 32);
+  }
 
   return output.good();
 }
@@ -621,25 +621,14 @@ bool MagicEffectRecord::loadFromStream(std::istream& in_File, const bool localiz
            }
            break;
       case cCTDA:
-           //CTDA's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength!=32)
-           {
-             std::cerr <<"Error: sub record CTDA of MGEF has invalid length("
-                       <<subLength<<" bytes). Should be 32 bytes!\n";
-             return false;
-           }
-           //read CTDA's stuff
-           memset(tempCTDA.content, 0, 32);
-           in_File.read((char*) tempCTDA.content, 32);
-           bytesRead += 32;
-           if (!in_File.good())
+           // read CTDA's stuff
+           tempCTDA.clear();
+           if (!tempCTDA.loadFromStream(in_File, bytesRead))
            {
              std::cerr << "Error while reading subrecord CTDA of MGEF!\n";
              return false;
            }
-           unknownCTDAs.push_back(tempCTDA);
+           unknownCTDAs.emplace_back(tempCTDA);
            break;
       default:
            std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)

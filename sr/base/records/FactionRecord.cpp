@@ -864,7 +864,7 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
            //clear stuff
            tempCTDA_CIS2.unknownCTDA.clear();
            tempCTDA_CIS2.unknownCISx.clear();
-           //read CTDA's data
+           // read CTDA's data
            if (!tempCTDA_CIS2.unknownCTDA.loadFromStream(in_File, bytesRead))
            {
              std::cerr << "Error while reading subrecord CTDA of FACT!\n";

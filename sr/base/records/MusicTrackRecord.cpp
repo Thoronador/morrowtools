@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2013  Thoronador
+    Copyright (C) 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -558,25 +558,25 @@ bool MusicTrackRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 6;
            hasReadCITC = true;
 
-           //now read the conditions one by one
-           for (i=0; i<cond_count; ++i)
+           // now read the conditions one by one
+           for (i = 0; i < cond_count; ++i)
            {
-             //read CTDA
-             in_File.read((char*) &subRecName, 4);
+             // read CTDA
+             in_File.read(reinterpret_cast<char*>(&subRecName), 4);
              bytesRead += 4;
-             if (subRecName!=cCTDA)
+             if (subRecName != cCTDA)
              {
                UnexpectedRecord(cCTDA, subRecName);
                return false;
              }
-             //read CTDA's data
+             // read CTDA's data
              if (!tempCTDA.loadFromStream(in_File, bytesRead))
              {
                std::cerr << "Error while reading subrecord CTDA of MUST!\n";
                return false;
              }
              conditions.push_back(tempCTDA);
-           }//for
+           }
            break;
       default:
            std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)

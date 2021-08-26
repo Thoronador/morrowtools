@@ -313,9 +313,10 @@ bool SoundDescriptorRecord::loadFromStream(std::istream& in_File, const bool loc
            break;
       case cANAM:
            waveFiles.push_back("");
-           //read MODL
-           if (!loadString512FromStream(in_File, waveFiles.back(), buffer, cANAM, false, bytesRead)) return false;
-           //sanity check
+           // read ANAM
+           if (!loadString512FromStream(in_File, waveFiles.back(), buffer, cANAM, false, bytesRead))
+             return false;
+           // sanity check
            if (waveFiles.back().empty())
            {
              std::cerr << "Error: subrecord ANAM of SNDR is empty!\n";
@@ -405,8 +406,8 @@ bool SoundDescriptorRecord::loadFromStream(std::istream& in_File, const bool loc
     }//swi
   }//while
 
-  //presence checks
-  if (!((outputModelFormID!=0) and (!waveFiles.empty()) and hasReadBNAM))
+  // presence checks
+  if (!((outputModelFormID != 0) && (!waveFiles.empty()) && hasReadBNAM))
   {
     std::cerr << "Error: At least one required subrecord of SNDR is missing!\n";
     return false;

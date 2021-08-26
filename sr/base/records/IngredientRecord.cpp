@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -277,39 +277,16 @@ bool IngredientRecord::saveToStream(std::ostream& output) const
 bool IngredientRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
-  if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
-  uint32_t subRecName;
-  uint16_t subLength;
-  subRecName = subLength = 0;
-  uint32_t bytesRead;
+  if (!loadSizeAndUnknownValues(in_File, readSize))
+    return false;
+  uint32_t subRecName = 0;
+  uint16_t subLength = 0;
+  uint32_t bytesRead = 0;
 
-  //read EDID
-  in_File.read((char*) &subRecName, 4);
-  bytesRead = 4;
-  if (subRecName!=cEDID)
-  {
-    UnexpectedRecord(cEDID, subRecName);
-    return false;
-  }
-  //EDID's length
-  in_File.read((char*) &subLength, 2);
-  bytesRead += 2;
-  if (subLength>511)
-  {
-    std::cerr <<"Error: sub record EDID of INGR is longer than 511 characters!\n";
-    return false;
-  }
-  //read EDID's stuff
+  // read editor ID (EDID)
   char buffer[512];
-  memset(buffer, 0, 512);
-  in_File.read(buffer, subLength);
-  bytesRead += subLength;
-  if (!in_File.good())
-  {
-    std::cerr << "Error while reading subrecord EDID of INGR!\n";
+  if (!loadString512FromStream(in_File, editorID, buffer, cEDID, true, bytesRead))
     return false;
-  }
-  editorID = std::string(buffer);
 
   //read (VMAD or) OBND
   in_File.read((char*) &subRecName, 4);
@@ -617,19 +594,8 @@ bool IngredientRecord::loadFromStream(std::istream& in_File, const bool localize
              std::cerr << "Error while reading INGR: CTDA found, but there was no EFID/EFIT block.\n";
              return false;
            }
-           //CTDA's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength!=32)
-           {
-             std::cerr <<"Error: subrecord CTDA of INGR has invalid length ("
-                       <<subLength<<" bytes). Should be 32 bytes!\n";
-             return false;
-           }
-           //read CTDA's stuff
-           in_File.read((char*) &(tempCTDA.content), 32);
-           bytesRead += 32;
-           if (!in_File.good())
+           // read CTDA's stuff
+           if (!tempCTDA.loadFromStream(in_File, bytesRead))
            {
              std::cerr << "Error while reading subrecord CTDA of INGR!\n";
              return false;

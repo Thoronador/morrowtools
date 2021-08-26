@@ -216,7 +216,7 @@ bool IdleAnimationRecord::loadFromStream(std::istream& in_File, const bool local
            }
            break;
       case cCTDA:
-           //read CTDA
+           // read CTDA
            if (!tempCTDA.loadFromStream(in_File, bytesRead))
              return false;
            conditions.push_back(CTDA_CIS1_compound(tempCTDA, ""));

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -644,19 +644,8 @@ bool AlchemyPotionRecord::loadFromStream(std::istream& in_File, const bool local
              std::cerr << "Error while reading ALCH: CTDA found, but there was no EFID/EFIT block.\n";
              return false;
            }
-           //CTDA's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength!=32)
-           {
-             std::cerr <<"Error: subrecord CTDA of ALCH has invalid length ("
-                       <<subLength<<" bytes). Should be 32 bytes!\n";
-             return false;
-           }
-           //read CTDA's stuff
-           in_File.read((char*) &(tempCTDA.content), 32);
-           bytesRead += 32;
-           if (!in_File.good())
+           // read CTDA's stuff
+           if (!tempCTDA.loadFromStream(in_File, bytesRead))
            {
              std::cerr << "Error while reading subrecord CTDA of ALCH!\n";
              return false;

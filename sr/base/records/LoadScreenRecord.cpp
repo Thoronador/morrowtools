@@ -214,7 +214,7 @@ bool LoadScreenRecord::loadFromStream(std::istream& in_File, const bool localize
              return false;
            break;
       case cCTDA:
-           //read CTDA
+           // read CTDA
            if (!tempCTDA.loadFromStream(in_File, bytesRead))
            {
              std::cerr << "Error while reading subrecord CTDA of LSCR!\n";

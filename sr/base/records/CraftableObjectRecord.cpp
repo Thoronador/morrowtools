@@ -282,7 +282,7 @@ bool CraftableObjectRecord::loadFromStream(std::istream& in_File, const bool loc
     switch(subRecName)
     {
       case cCTDA:
-           //CTDA's length
+           // CTDA's content
            if (!tempCTDA.loadFromStream(in_File, bytesRead))
            {
              std::cerr << "Error while reading subrecord CTDA of COBJ!\n";

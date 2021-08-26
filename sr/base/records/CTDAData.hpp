@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 #ifndef SR_CTDADATA_HPP
 #define SR_CTDADATA_HPP
 
+#include <array>
 #include <cstdint>
 #include <fstream>
 #include <string>
@@ -29,36 +30,37 @@
 namespace SRTP
 {
 
+/** Holds condition data (for a magic effect, etc.). */
 struct CTDAData
 {
-  /* constructor */
+  /** Constructor, creates a record with all content set to zero. */
   CTDAData();
 
-  uint8_t content[32];
+  std::array<uint8_t, 32> content; /**< the subrecord's content */
 
-  /* loads the CTDA data from the given input stream and returns true on success
-
-     parameters:
-         in_Stream - the input stream
-         bytesRead - reference to the variable that counts the number of read bytes
-  */
+  /** \brief Loads the CTDA data from the given input stream.
+   *
+   * \param in_Stream  the input stream
+   * \param bytesRead  reference to the variable that counts the number of read bytes
+   * \return Returns true on success, or false on failure.
+   */
   bool loadFromStream(std::istream& in_Stream, uint32_t& bytesRead);
 
   #ifndef SR_UNSAVEABLE_RECORDS
-  /* writes the CTDA data to the given output stream and returns true on success
-
-     parameters:
-         output - the output stream
-  */
+  /** \brief Writes the CTDA data to the given output stream.
+   *
+   * \param output the output stream
+   * \return Returns true on success, or false on failure.
+   */
   bool saveToStream(std::ostream& output) const;
   #endif
 
-  /* equality operator */
+  /** equality operator */
   bool operator==(const CTDAData& other) const;
 
-  /* clears content */
+  /** Clears content by setting it all to zero. */
   void clear();
-}; //struct
+}; // struct
 
 
 
@@ -111,31 +113,31 @@ template<uint32_t cisRecName>
 CTDA_CISx_compound<cisRecName>::CTDA_CISx_compound(const CTDAData& ctda, const std::string& cisx)
 : unknownCTDA(ctda), unknownCISx(cisx)
 {
-
 }
 
 template<uint32_t cisRecName>
 bool CTDA_CISx_compound<cisRecName>::operator==(const CTDA_CISx_compound& other) const
 {
-  return ((unknownCTDA==other.unknownCTDA) and (unknownCISx==other.unknownCISx));
+  return ((unknownCTDA == other.unknownCTDA) && (unknownCISx == other.unknownCISx));
 }
 
 #ifndef SR_UNSAVEABLE_RECORDS
 template<uint32_t cisRecName>
 bool CTDA_CISx_compound<cisRecName>::saveToStream(std::ostream& output) const
 {
-  if (!unknownCTDA.saveToStream(output)) return false;
+  if (!unknownCTDA.saveToStream(output))
+    return false;
 
   if (!unknownCISx.empty())
   {
-    //write CISx
-    output.write((const char*) &cCISx, 4);
-    //CIS1's/CIS2's length
-    const uint16_t subLength = unknownCISx.length()+1;
-    output.write((const char*) &subLength, 2);
-    //write CIS1's/CIS2's stuff
+    // write CISx
+    output.write(reinterpret_cast<const char*>(&cCISx), 4);
+    // CIS1's/CIS2's length
+    const uint16_t subLength = unknownCISx.length() + 1;
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    // write CIS1's/CIS2's stuff
     output.write(unknownCISx.c_str(), subLength);
-  }//if CIS1/CIS2
+  }
 
   return output.good();
 }
@@ -143,12 +145,12 @@ bool CTDA_CISx_compound<cisRecName>::saveToStream(std::ostream& output) const
 template<uint32_t cisRecName>
 uint32_t CTDA_CISx_compound<cisRecName>::getWriteSize() const
 {
-  uint32_t writeSize = 4 /* CTDA */ +2 /* 2 bytes for length */ +32 /* fixed length */;
+  uint32_t writeSize = 4 /* CTDA */ + 2 /* 2 bytes for length */ + 32 /* fixed length */;
   if (!unknownCISx.empty())
   {
-    writeSize = writeSize +4 /* CIS1/CIS2 */ +2 /* 2 bytes for length */
-               +unknownCISx.length()+1 /* length of string +1 byte for NUL termination */;
-  }//if CIS2
+    writeSize = writeSize + 4 /* CIS1/CIS2 */ + 2 /* 2 bytes for length */
+               + unknownCISx.length() + 1 /* length of string +1 byte for NUL termination */;
+  }
 
   return writeSize;
 }
@@ -157,6 +159,6 @@ uint32_t CTDA_CISx_compound<cisRecName>::getWriteSize() const
 typedef CTDA_CISx_compound<cCIS1> CTDA_CIS1_compound;
 typedef CTDA_CISx_compound<cCIS2> CTDA_CIS2_compound;
 
-} //namespace
+} // namespace
 
 #endif // SR_CTDADATA_HPP

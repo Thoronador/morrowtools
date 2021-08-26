@@ -32,9 +32,9 @@ TEST_CASE("CTDAData")
   {
     CTDAData ctda;
 
-    for(auto i = 0; i < 32; ++i)
+    for(const auto byte: ctda.content)
     {
-      REQUIRE( ctda.content[i] == 0 );
+      REQUIRE( byte == 0 );
     }
   }
 
@@ -74,9 +74,9 @@ TEST_CASE("CTDAData")
       REQUIRE( ctda.content[i] != 0 );
     }
     ctda.clear();
-    for (unsigned int i = 0; i < 32; ++i)
+    for (const uint8_t byte: ctda.content)
     {
-      REQUIRE( ctda.content[i] == 0 );
+      REQUIRE( byte == 0 );
     }
   }
 

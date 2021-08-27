@@ -89,6 +89,7 @@
 		<Unit filename="sr/base/records/ActionRecord.cpp" />
 		<Unit filename="sr/base/records/BinarySubRecord.cpp" />
 		<Unit filename="sr/base/records/CTDAData.cpp" />
+		<Unit filename="sr/base/records/CTDA_CISx_compound.cpp" />
 		<Unit filename="sr/base/records/GroupData.cpp" />
 		<Unit filename="sr/base/records/KeywordRecord.cpp" />
 		<Unit filename="sr/base/records/LocalizedString.cpp" />

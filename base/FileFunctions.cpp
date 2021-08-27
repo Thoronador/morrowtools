@@ -102,7 +102,7 @@ bool FileExists(const std::string& FileName)
 {
   std::error_code error;
   const auto status = std::filesystem::status(FileName, error);
-  return !error && std::filesystem::exists(FileName);
+  return !error && std::filesystem::exists(status);
 }
 
 bool deleteFile(const std::string& fileName)

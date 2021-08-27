@@ -67,38 +67,43 @@ struct CTDAData
 template<uint32_t cisRecName>
 struct CTDA_CISx_compound
 {
-  CTDAData unknownCTDA;
-  std::string unknownCISx;
+  CTDAData unknownCTDA; /**< condition data */
+  std::string unknownCISx; /**< variable name for x-th parameter */
 
-  /* constant to allow easy access to CISx 'type' */
+  /** constant to allow easy access to CISx 'type' */
   static const uint32_t cCISx;
 
-  /* constructor */
+  /** Constructor, creates empty compound. */
   CTDA_CISx_compound();
 
-  /* alternative constructor */
+  /** Alternative constructor to create compound with preset data.
+   *
+   * \param ctda  value for CTDA subrecord
+   * \param cisx  value for CISx subrecord
+   */
   CTDA_CISx_compound(const CTDAData& ctda, const std::string& cisx);
 
-  /* equality operator */
+  /** equality operator */
   bool operator==(const CTDA_CISx_compound& other) const;
 
   #ifndef SR_UNSAVEABLE_RECORDS
-  /* tries to save the CTDA_CIS2 compound to the given stream and returns true
-     in case of success, false on failure
-
-     parameters:
-          output   - the output stream
-  */
+  /** Tries to save the CTDA_CIS2 compound to the given stream.
+   *
+   * \param output    the output stream
+   * \return Returns true in case of success, false on failure.
+   */
   bool saveToStream(std::ostream& output) const;
 
-  /* returns the size in bytes that the CTDA_CIS2 compound's data would occupy
-     in a file stream
-  */
+  /** Gets the size in bytes that the CTDA_CIS2 compound's data would occupy.
+   *
+   * \return Returns the size in bytes that the CTDA_CIS2 compound's data would
+   *         occupy in a file stream.
+   */
   uint32_t getWriteSize() const;
   #endif
-}; //struct
+}; // struct
 
-/* constant to allow easy access to CISx 'type' */
+/** constant to allow easy access to CISx 'type' */
 template<uint32_t cisRecName>
 const uint32_t CTDA_CISx_compound<cisRecName>::cCISx = cisRecName;
 
@@ -118,7 +123,7 @@ CTDA_CISx_compound<cisRecName>::CTDA_CISx_compound(const CTDAData& ctda, const s
 template<uint32_t cisRecName>
 bool CTDA_CISx_compound<cisRecName>::operator==(const CTDA_CISx_compound& other) const
 {
-  return ((unknownCTDA == other.unknownCTDA) && (unknownCISx == other.unknownCISx));
+  return (unknownCTDA == other.unknownCTDA) && (unknownCISx == other.unknownCISx);
 }
 
 #ifndef SR_UNSAVEABLE_RECORDS
@@ -156,8 +161,11 @@ uint32_t CTDA_CISx_compound<cisRecName>::getWriteSize() const
 }
 #endif
 
-typedef CTDA_CISx_compound<cCIS1> CTDA_CIS1_compound;
-typedef CTDA_CISx_compound<cCIS2> CTDA_CIS2_compound;
+/** alias for compound with CIS1 subrecord for string */
+using CTDA_CIS1_compound = CTDA_CISx_compound<cCIS1>;
+
+/** alias for compound with CIS2 subrecord for string */
+using CTDA_CIS2_compound = CTDA_CISx_compound<cCIS2>;
 
 } // namespace
 

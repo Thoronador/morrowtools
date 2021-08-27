@@ -181,7 +181,7 @@ TEST_CASE("CTDA_CISx_compound")
       std::ostringstream stream;
       REQUIRE( stream.good() );
 
-      CTDA_CISx_compound<cCIS1> compound;
+      CTDA_CIS1_compound compound;
       // Fill data.
       auto& ctda = compound.unknownCTDA;
       ctda.content[0] = 0x09;
@@ -231,7 +231,7 @@ TEST_CASE("CTDA_CISx_compound")
       std::ostringstream stream;
       REQUIRE( stream.good() );
 
-      CTDA_CISx_compound<cCIS2> compound;
+      CTDA_CIS2_compound compound;
       // Fill data.
       auto& ctda = compound.unknownCTDA;
       ctda.content[0] = 0x01;

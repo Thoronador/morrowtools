@@ -1,11 +1,37 @@
-build:
-  image: docker:20
+#build_docker_image:
+#  image: docker:20
+#  stage: build
+#  services:
+#    - docker:20-dind
+#  script:
+#    - cd ci/
+#    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+#    - docker build -t $CI_REGISTRY/striezel/morrowtools/ci-cross-win64:10.2-deb11 . -f Dockerfile_cross_win64
+#    - docker push $CI_REGISTRY/striezel/morrowtools/ci-cross-win64:10.2-deb11
+#    - docker logout $CI_REGISTRY
+win64_cross:
+  image: registry.gitlab.com/striezel/morrowtools/ci-cross-win64:10.2-deb11
   stage: build
-  services:
-    - docker:20-dind
   script:
-    - cd ci/
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -t $CI_REGISTRY/striezel/morrowtools/ci-cross-win64:10.2-deb11 . -f Dockerfile_cross_win64
-    - docker push $CI_REGISTRY/striezel/morrowtools/ci-cross-win64:10.2-deb11
-    - docker logout $CI_REGISTRY
+    # build
+    - export CXX=x86_64-w64-mingw32-c++
+    - export CC=x86_64-w64-mingw32-gcc
+    - mkdir build
+    - cd build
+    - cmake -DENABLE_LTO=ON -DENABLE_STATIC_LINKING=ON ../
+    - make -j4
+    # tests
+    - ctest -V
+    # Collect build artifacts in one place.
+    - mkdir -p artifacts
+    - cp mw/cell_translator/cell_translator.exe artifacts/
+    - cp mw/data_cleaner/data_cleaner.exe artifacts/
+    - cp mw/skill_rebalance/skill_rebalance.exe artifacts/
+    - cp mw/spell_rename/spell_rename.exe artifacts/
+    - cp sr/conv_cams/conv_cams.exe artifacts/
+    - cp sr/formID_finder/formID_finder.exe artifacts/
+    - cp sr/race_resize/race_resize.exe artifacts/
+    # build artifacts
+  artifacts:
+    paths:
+      - build/artifacts/

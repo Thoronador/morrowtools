@@ -532,9 +532,6 @@ TEST_CASE("AcousticSpaceRecord")
   {
     using namespace std::string_view_literals;
 
-    uint32_t dummy = 0;
-    StringTable dummy_table;
-
     SECTION("save record with SNAM, RDAT and BNAM")
     {
       std::ostringstream stream;

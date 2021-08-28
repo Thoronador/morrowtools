@@ -367,9 +367,6 @@ TEST_CASE("WordOfPowerRecord")
   {
     using namespace std::string_view_literals;
 
-    uint32_t dummy = 0;
-    StringTable dummy_table;
-
     SECTION("save record with FULL")
     {
       std::ostringstream stream;

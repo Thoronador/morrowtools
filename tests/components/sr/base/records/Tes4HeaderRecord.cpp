@@ -587,9 +587,6 @@ TEST_CASE("Tes4HeaderRecord")
   {
     using namespace std::string_view_literals;
 
-    uint32_t dummy = 0;
-    StringTable dummy_table;
-
     SECTION("default: save record of Skyrim.esm")
     {
       std::ostringstream stream;

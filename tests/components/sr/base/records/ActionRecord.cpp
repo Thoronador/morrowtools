@@ -169,9 +169,6 @@ TEST_CASE("ActionRecord")
   {
     using namespace std::string_view_literals;
 
-    uint32_t dummy = 0;
-    StringTable dummy_table;
-
     SECTION("save record with EDID")
     {
       std::ostringstream stream;

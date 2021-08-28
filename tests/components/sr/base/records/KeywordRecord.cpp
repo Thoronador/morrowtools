@@ -277,9 +277,6 @@ TEST_CASE("KeywordRecord")
   {
     using namespace std::string_view_literals;
 
-    uint32_t dummy = 0;
-    StringTable dummy_table;
-
     SECTION("save record with CNAM")
     {
       std::ostringstream stream;

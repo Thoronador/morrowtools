@@ -1,0 +1,18 @@
+# Note: This Dockerfile is still incomplete, but it attempts to be a base image
+#       to build the project by cross-compiling it for 64-bit Windows OS.
+
+# build stage
+FROM debian:11-slim AS builder
+LABEL maintainer="Dirk Stolle <striezel-dev@web.de>"
+# Always update any existing packages first.
+RUN apt-get update && apt-get upgrade -y
+# Install build toolchain.
+RUN apt-get install -y catch cmake pkg-config \
+    binutils-mingw-w64-x86-64 \
+    g++-mingw-w64-x86-64-win32 \
+    gcc-mingw-w64-x86-64-win32 \
+    mingw-w64-x86-64-dev \
+    libz-mingw-w64-dev
+# Set environment variables.
+ENV CXX=x86_64-w64-mingw32-c++
+ENV CC=x86_64-w64-mingw32-gcc

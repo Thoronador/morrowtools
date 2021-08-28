@@ -12,6 +12,8 @@
 win64_cross:
   image: registry.gitlab.com/striezel/morrowtools/ci-cross-win64:10.2-deb11
   stage: build
+  before_script:
+    - apt-get update && apt-get -y upgrade
   script:
     # build
     - export CXX=x86_64-w64-mingw32-c++

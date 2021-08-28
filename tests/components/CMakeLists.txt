@@ -16,6 +16,7 @@ set(component_tests_sources
     ../../sr/base/StringTable.cpp
     ../../sr/base/records/AcousticSpaceRecord.cpp
     ../../sr/base/records/ActionRecord.cpp
+    ../../sr/base/records/AddOnNodeRecord.cpp
     ../../sr/base/records/BasicRecord.cpp
     ../../sr/base/records/BinarySubRecord.cpp
     ../../sr/base/records/CTDAData.cpp
@@ -37,6 +38,7 @@ set(component_tests_sources
     sr/base/StringTable.cpp
     sr/base/records/AcousticSpaceRecord.cpp
     sr/base/records/ActionRecord.cpp
+    sr/base/records/AddOnNodeRecord.cpp
     sr/base/records/BinarySubRecord.cpp
     sr/base/records/CTDAData.cpp
     sr/base/records/CTDA_CISx_compound.cpp

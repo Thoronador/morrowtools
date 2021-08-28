@@ -55,6 +55,8 @@
 		<Unit filename="../../sr/base/records/AcousticSpaceRecord.hpp" />
 		<Unit filename="../../sr/base/records/ActionRecord.cpp" />
 		<Unit filename="../../sr/base/records/ActionRecord.hpp" />
+		<Unit filename="../../sr/base/records/AddOnNodeRecord.cpp" />
+		<Unit filename="../../sr/base/records/AddOnNodeRecord.hpp" />
 		<Unit filename="../../sr/base/records/BasicRecord.cpp" />
 		<Unit filename="../../sr/base/records/BasicRecord.hpp" />
 		<Unit filename="../../sr/base/records/BinarySubRecord.cpp" />
@@ -87,6 +89,7 @@
 		<Unit filename="sr/base/StringTable.cpp" />
 		<Unit filename="sr/base/records/AcousticSpaceRecord.cpp" />
 		<Unit filename="sr/base/records/ActionRecord.cpp" />
+		<Unit filename="sr/base/records/AddOnNodeRecord.cpp" />
 		<Unit filename="sr/base/records/BinarySubRecord.cpp" />
 		<Unit filename="sr/base/records/CTDAData.cpp" />
 		<Unit filename="sr/base/records/CTDA_CISx_compound.cpp" />

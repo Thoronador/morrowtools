@@ -184,6 +184,12 @@ TEST_CASE("WordOfPowerRecord")
       record.translated = LocalizedString(LocalizedString::Type::Index, 1234, "");
       REQUIRE( record.getWriteSize() == 55 );
     }
+
+    SECTION("deleted record has size zero")
+    {
+      record.headerFlags = BasicRecord::cDeletedFlag;
+      REQUIRE( record.getWriteSize() == 0 );
+    }
   }
 
   SECTION("loadFromStream")
@@ -416,6 +422,35 @@ TEST_CASE("WordOfPowerRecord")
       REQUIRE( record.saveToStream(stream) );
       // Check written data.
       const std::string_view data = "WOOP\x1F\0\0\0\0\0\0\0\xCB\x6A\x10\0\x1B\x69\x55\0\x28\0\x02\0EDID\x0F\0DragonFakeWord\0TNAM\x04\0\0\0\0\0"sv;
+      REQUIRE( stream.str() == data );
+    }
+
+    SECTION("save deleted record")
+    {
+      std::ostringstream stream;
+
+      REQUIRE( stream.good() );
+
+      WordOfPowerRecord record;
+      // Fill data.
+      // -- header
+      record.headerFlags = BasicRecord::cDeletedFlag;
+      record.headerFormID = 0x000E5F67;
+      record.headerRevision = 0x0055691B;
+      record.headerVersion = 40;
+      record.headerUnknown5 = 0x0003;
+      // -- record data
+      record.editorID = "HowlCallOfTheWild3";
+      record.name = LocalizedString(LocalizedString::Type::Index, 0x000005A2, "");
+      record.translated = LocalizedString(LocalizedString::Type::Index, 0, "");
+
+      // Record should be deleted.
+      REQUIRE( record.isDeleted() );
+
+      // Writing should succeed.
+      REQUIRE( record.saveToStream(stream) );
+      // Check written data.
+      const std::string_view data = "WOOP\0\0\0\0\x20\0\0\0\x67\x5F\x0E\0\x1B\x69\x55\0\x28\0\x03\0"sv;
       REQUIRE( stream.str() == data );
     }
   }

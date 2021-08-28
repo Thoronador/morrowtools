@@ -41,7 +41,7 @@ uint32_t WordOfPowerRecord::getRecordType() const
 #ifndef SR_NO_RECORD_EQUALITY
 bool WordOfPowerRecord::equals(const WordOfPowerRecord& other) const
 {
-  return ((equalsBasic(other)) && (editorID == other.editorID)
+  return (equalsBasic(other) && (editorID == other.editorID)
       && (name == other.name) && (translated == other.translated));
 }
 #endif
@@ -49,8 +49,9 @@ bool WordOfPowerRecord::equals(const WordOfPowerRecord& other) const
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t WordOfPowerRecord::getWriteSize() const
 {
-  uint32_t writeSize;
-  writeSize = 4 /* EDID */ + 2 /* 2 bytes for length */
+  if (isDeleted())
+    return 0;
+  uint32_t writeSize = 4 /* EDID */ + 2 /* 2 bytes for length */
         + editorID.length() + 1 /* length of name +1 byte for NUL termination */
         + translated.getWriteSize() /* TNAM */;
   if (name.isPresent())
@@ -63,7 +64,11 @@ uint32_t WordOfPowerRecord::getWriteSize() const
 bool WordOfPowerRecord::saveToStream(std::ostream& output) const
 {
   output.write(reinterpret_cast<const char*>(&cWOOP), 4);
-  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
+  if (!saveSizeAndUnknownValues(output, getWriteSize()))
+    return false;
+  if (isDeleted())
+    return true;
+
   // write EDID
   output.write(reinterpret_cast<const char*>(&cEDID), 4);
   // EDID's length

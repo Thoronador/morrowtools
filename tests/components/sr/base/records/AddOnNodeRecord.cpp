@@ -35,9 +35,9 @@ TEST_CASE("AddOnNodeRecord")
     AddOnNodeRecord record;
 
     REQUIRE( record.editorID.empty() );
-    for (unsigned int i = 0; i < 12; ++i)
+    for (const uint8_t byte: record.unknownOBND)
     {
-      REQUIRE( record.unknownOBND[i] == 0 );
+      REQUIRE( byte == 0 );
     }
     REQUIRE( record.modelPath.empty() );
     REQUIRE_FALSE( record.unknownMODT.isPresent() );
@@ -57,18 +57,7 @@ TEST_CASE("AddOnNodeRecord")
       a.editorID = "foo";
       a.modelPath = "foo\\bar.nif";
       a.unknownDATA = 0xDEADBEEF;
-      a.unknownOBND[0] = 0x10;
-      a.unknownOBND[1] = 0x11;
-      a.unknownOBND[2] = 0x12;
-      a.unknownOBND[3] = 0x13;
-      a.unknownOBND[4] = 0x14;
-      a.unknownOBND[5] = 0x15;
-      a.unknownOBND[6] = 0x16;
-      a.unknownOBND[7] = 0x17;
-      a.unknownOBND[8] = 0x18;
-      a.unknownOBND[9] = 0x19;
-      a.unknownOBND[10] = 0x1A;
-      a.unknownOBND[11] = 0x1B;
+      a.unknownOBND = { 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B };
       a.soundDescriptorFormID = 0xAFFEAFFE;
       a.MasterParticleSystemCap = 0x1234;
       a.flags = 0x5678;
@@ -76,18 +65,7 @@ TEST_CASE("AddOnNodeRecord")
       b.editorID = "foo";
       b.modelPath = "foo\\bar.nif";
       b.unknownDATA = 0xDEADBEEF;
-      b.unknownOBND[0] = 0x10;
-      b.unknownOBND[1] = 0x11;
-      b.unknownOBND[2] = 0x12;
-      b.unknownOBND[3] = 0x13;
-      b.unknownOBND[4] = 0x14;
-      b.unknownOBND[5] = 0x15;
-      b.unknownOBND[6] = 0x16;
-      b.unknownOBND[7] = 0x17;
-      b.unknownOBND[8] = 0x18;
-      b.unknownOBND[9] = 0x19;
-      b.unknownOBND[10] = 0x1A;
-      b.unknownOBND[11] = 0x1B;
+      b.unknownOBND = { 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x1B };
       b.soundDescriptorFormID = 0xAFFEAFFE;
       b.MasterParticleSystemCap = 0x1234;
       b.flags = 0x5678;
@@ -271,18 +249,8 @@ TEST_CASE("AddOnNodeRecord")
       REQUIRE( record.headerUnknown5 == 0x0002 );
       // -- record data
       REQUIRE( record.editorID == "MPSFireWallBase" );
-      REQUIRE( record.unknownOBND[0] == 0 );
-      REQUIRE( record.unknownOBND[1] == 0x80 );
-      REQUIRE( record.unknownOBND[2] == 0 );
-      REQUIRE( record.unknownOBND[3] == 0x80 );
-      REQUIRE( record.unknownOBND[4] == 0 );
-      REQUIRE( record.unknownOBND[5] == 0x80 );
-      REQUIRE( record.unknownOBND[6] == 0xFF );
-      REQUIRE( record.unknownOBND[7] == 0x7F );
-      REQUIRE( record.unknownOBND[8] == 0xFF );
-      REQUIRE( record.unknownOBND[9] == 0x7F );
-      REQUIRE( record.unknownOBND[10] == 0xFF );
-      REQUIRE( record.unknownOBND[11] == 0x7F );
+      const auto expectedOBND = std::array<uint8_t, 12>({ 0, 0x80, 0, 0x80, 0, 0x80, 0xFF, 0x7F, 0xFF, 0x7F, 0xFF, 0x7F });
+      REQUIRE( record.unknownOBND == expectedOBND );
       REQUIRE( record.modelPath == "MPS\\MPSFireWallBase.nif" );
       REQUIRE( record.unknownMODT.isPresent() );
       REQUIRE( record.unknownMODT.size() == 24 );

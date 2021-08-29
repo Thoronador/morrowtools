@@ -63,6 +63,8 @@
 		<Unit filename="../../sr/base/records/BinarySubRecord.hpp" />
 		<Unit filename="../../sr/base/records/CTDAData.cpp" />
 		<Unit filename="../../sr/base/records/CTDAData.hpp" />
+		<Unit filename="../../sr/base/records/EffectBlock.cpp" />
+		<Unit filename="../../sr/base/records/EffectBlock.hpp" />
 		<Unit filename="../../sr/base/records/GroupData.cpp" />
 		<Unit filename="../../sr/base/records/GroupData.hpp" />
 		<Unit filename="../../sr/base/records/KeywordRecord.cpp" />
@@ -93,6 +95,7 @@
 		<Unit filename="sr/base/records/BinarySubRecord.cpp" />
 		<Unit filename="sr/base/records/CTDAData.cpp" />
 		<Unit filename="sr/base/records/CTDA_CISx_compound.cpp" />
+		<Unit filename="sr/base/records/EffectBlock.cpp" />
 		<Unit filename="sr/base/records/GroupData.cpp" />
 		<Unit filename="sr/base/records/KeywordRecord.cpp" />
 		<Unit filename="sr/base/records/LocalizedString.cpp" />

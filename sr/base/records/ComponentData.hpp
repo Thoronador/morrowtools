@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,15 +26,25 @@
 namespace SRTP
 {
 
+/** Holds information about an object and its count.
+ *
+ * \remarks This data can be part of e. g. an inventory or a recipe. In the
+ *          inventory case it denotes how often an object is in the inventory.
+ *          In the recipe case it denotes how much of that component is required
+ *          to craft the resulting object.
+ */
 struct ComponentData
 {
-  uint32_t formID;
-  uint32_t count;
+  uint32_t formID; /**< the form ID of the referenced component */
+  uint32_t count;  /**< how often that component occurs / is required */
 
-  /* equality operator */
+  /** Constructs a new object with its data members set to zero. */
+  ComponentData();
+
+  /** equality operator */
   bool operator==(const ComponentData& other) const;
-}; //struct
+}; // struct
 
-} //namespace
+} // namespace
 
 #endif // SR_COMPONENTDATA_HPP

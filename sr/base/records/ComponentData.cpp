@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -23,11 +23,14 @@
 namespace SRTP
 {
 
-/* ComponentData's functions */
+ComponentData::ComponentData()
+: formID(0), count(0)
+{
+}
 
 bool ComponentData::operator==(const ComponentData& other) const
 {
-  return ((formID==other.formID) and (count==other.count));
+  return (formID == other.formID) && (count == other.count);
 }
 
-} //namespace
+} // namespace

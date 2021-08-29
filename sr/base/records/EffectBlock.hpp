@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,49 +21,51 @@
 #ifndef SR_EFFECTBLOCK_HPP
 #define SR_EFFECTBLOCK_HPP
 
+#include <cstdint>
 #ifndef SR_UNSAVEABLE_RECORDS
 #include <fstream>
 #endif
-#include <cstdint>
 #include <vector>
 #include "CTDAData.hpp"
 
 namespace SRTP
 {
 
-//type for effect blocks
+/// Holds information about concrete magic effects.
 struct EffectBlock
 {
-  /* constructor */
+  /** Constructor, creates an empty block. */
   EffectBlock();
 
-  uint32_t effectFormID; //subrecord EFID, form ID of MGEF
-  //subrecord EFIT
+  uint32_t effectFormID; /**< form ID of MGEF, subrecord EFID */
+  // subrecord EFIT
   float magnitude;
   uint32_t areaOfEffect;
   uint32_t duration;
-  //end of subrecord EFIT
+  // end of subrecord EFIT
   std::vector<CTDA_CIS2_compound> unknownCTDA_CIS2s;
 
-  /* comparison operator */
+  /** equality operator */
   bool operator==(const EffectBlock& other) const;
 
   #ifndef SR_UNSAVEABLE_RECORDS
-  /* tries to save the effect block to the given stream and returns true in case
-     of success, false on failure
-
-     parameters:
-          output   - the output stream
-  */
+  /** \brief Writes the block data to the given output stream.
+   *
+   * \param output  the output stream
+   * \return Returns true on success (block was written to stream).
+   *         Returns false, if an error occurred.
+   */
   bool saveToStream(std::ostream& output) const;
 
-  /* returns the size in bytes that the EffectBlocks's data would occupy in a
-     file stream
-  */
+  /** \brief Gets the size in bytes that the block's data would occupy in a file
+   *         stream.
+   *
+   * \return Returns the size in bytes that the block would need.
+   */
   uint32_t getWriteSize() const;
   #endif
-}; //struct
+}; // struct
 
-} //namespace
+} // namespace
 
 #endif // SR_EFFECTBLOCK_HPP

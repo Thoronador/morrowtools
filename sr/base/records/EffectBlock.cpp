@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -35,50 +35,47 @@ EffectBlock::EffectBlock()
 
 bool EffectBlock::operator==(const EffectBlock& other) const
 {
-  return ((effectFormID==other.effectFormID) and (magnitude==other.magnitude)
-      and (areaOfEffect==other.areaOfEffect) and (duration==other.duration)
-      and (unknownCTDA_CIS2s==other.unknownCTDA_CIS2s));
+  return ((effectFormID == other.effectFormID) && (magnitude == other.magnitude)
+      && (areaOfEffect == other.areaOfEffect) && (duration == other.duration)
+      && (unknownCTDA_CIS2s == other.unknownCTDA_CIS2s));
 }
 
 #ifndef SR_UNSAVEABLE_RECORDS
 bool EffectBlock::saveToStream(std::ostream& output) const
 {
-  //write EFID
-  output.write((const char*) &cEFID, 4);
-  //EFID's length
-  uint16_t subLength = 4; //fixed
-  output.write((const char*) &subLength, 2);
-  //write EFID's stuff
-  output.write((const char*) &effectFormID, 4);
+  // write EFID
+  output.write(reinterpret_cast<const char*>(&cEFID), 4);
+  uint16_t subLength = 4; // fixed length
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
+  output.write(reinterpret_cast<const char*>(&effectFormID), 4);
 
-  //write EFIT
-  output.write((const char*) &cEFIT, 4);
-  //EFIT's length
-  subLength = 12; //fixed
-  output.write((const char*) &subLength, 2);
-  //write EFIT's stuff
-  output.write((const char*) &magnitude, 4);
-  output.write((const char*) &areaOfEffect, 4);
-  output.write((const char*) &duration, 4);
+  // write EFIT
+  output.write(reinterpret_cast<const char*>(&cEFIT), 4);
+  subLength = 12; // fixed length
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
+  // write EFIT's stuff
+  output.write(reinterpret_cast<const char*>(&magnitude), 4);
+  output.write(reinterpret_cast<const char*>(&areaOfEffect), 4);
+  output.write(reinterpret_cast<const char*>(&duration), 4);
 
-  unsigned int jay;
-  for (jay=0; jay<unknownCTDA_CIS2s.size(); ++jay)
+  // write CTDA-CIS2 compounds
+  for (const auto& elem: unknownCTDA_CIS2s)
   {
-    if (!unknownCTDA_CIS2s[jay].saveToStream(output)) return false;
-  }//for jay
+    if (!elem.saveToStream(output))
+      return false;
+  }
 
   return output.good();
 }
 
 uint32_t EffectBlock::getWriteSize() const
 {
-  uint32_t writeSize = 4 /* EFID */ +2 /* 2 bytes for length */ +4 /* fixed length */
-                      +4 /* EFIT */ +2 /* 2 bytes for length */ +12 /* fixed length */;
-  unsigned int i;
-  for (i=0; i<unknownCTDA_CIS2s.size(); ++i)
+  uint32_t writeSize = 4 /* EFID */ + 2 /* 2 bytes for length */ + 4 /* fixed length */
+                     + 4 /* EFIT */ + 2 /* 2 bytes for length */ + 12 /* fixed length */;
+  for (const auto& compound: unknownCTDA_CIS2s)
   {
-    writeSize += unknownCTDA_CIS2s[i].getWriteSize();
-  }//for
+    writeSize += compound.getWriteSize();
+  }
   return writeSize;
 }
 #endif

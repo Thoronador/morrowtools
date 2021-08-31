@@ -118,7 +118,7 @@ TEST_CASE("LocalizedString")
       table.addString(0x0102347C, "foo bar baz");
 
       // read FULL, because header is handled before loadFromStream.
-      stream_in.read((char*) &dummy, 4);
+      stream_in.read(reinterpret_cast<char*>(&dummy), 4);
       REQUIRE( stream_in.good() );
 
       // Reading should succeed.
@@ -180,7 +180,7 @@ TEST_CASE("LocalizedString")
       stream_in.str(std::string(data));
 
       // read FULL, because header is handled before loadFromStream.
-      stream_in.read((char*) &dummy, 4);
+      stream_in.read(reinterpret_cast<char*>(&dummy), 4);
       REQUIRE( stream_in.good() );
 
       // Reading should succeed.
@@ -253,7 +253,7 @@ TEST_CASE("LocalizedString")
       stream.str(std::string(data));
 
       // read FULL, because header is handled before loadFromStream.
-      stream.read((char*) &dummy, 4);
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
       REQUIRE( stream.good() );
 
       // Reading should fail.

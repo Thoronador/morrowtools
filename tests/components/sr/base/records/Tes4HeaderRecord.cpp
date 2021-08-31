@@ -421,7 +421,7 @@ TEST_CASE("Tes4HeaderRecord")
       stream.str(std::string(data));
 
       // read TES4, because header is handled before loadFromStream.
-      stream.read((char*) &dummy, 4);
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -452,7 +452,7 @@ TEST_CASE("Tes4HeaderRecord")
       stream.str(std::string(data));
 
       // read TES4, because header is handled before loadFromStream.
-      stream.read((char*) &dummy, 4);
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -499,7 +499,7 @@ TEST_CASE("Tes4HeaderRecord")
       stream.str(std::string(data));
 
       // read TES4, because header is handled before loadFromStream.
-      stream.read((char*) &dummy, 4);
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -514,7 +514,7 @@ TEST_CASE("Tes4HeaderRecord")
       stream.str(std::string(data));
 
       // read TES4, because header is handled before loadFromStream.
-      stream.read((char*) &dummy, 4);
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -529,7 +529,7 @@ TEST_CASE("Tes4HeaderRecord")
       stream.str(std::string(data));
 
       // read TES4, because header is handled before loadFromStream.
-      stream.read((char*) &dummy, 4);
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -544,7 +544,7 @@ TEST_CASE("Tes4HeaderRecord")
       stream.str(std::string(data));
 
       // read TES4, because header is handled before loadFromStream.
-      stream.read((char*) &dummy, 4);
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -559,7 +559,7 @@ TEST_CASE("Tes4HeaderRecord")
       stream.str(std::string(data));
 
       // read TES4, because header is handled before loadFromStream.
-      stream.read((char*) &dummy, 4);
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -574,7 +574,7 @@ TEST_CASE("Tes4HeaderRecord")
       stream.str(std::string(data));
 
       // read TES4, because header is handled before loadFromStream.
-      stream.read((char*) &dummy, 4);
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
       REQUIRE( stream.good() );
 
       // Reading should fail.

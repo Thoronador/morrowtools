@@ -102,7 +102,7 @@ TEST_CASE("ActionRecord")
       stream.str(std::string(data));
 
       // read AACT, because header is handled before loadFromStream.
-      stream.read((char*) &dummy, 4);
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -126,7 +126,7 @@ TEST_CASE("ActionRecord")
       stream.str(std::string(data));
 
       // read AACT, because header is handled before loadFromStream.
-      stream.read((char*) &dummy, 4);
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -141,7 +141,7 @@ TEST_CASE("ActionRecord")
       stream.str(std::string(data));
 
       // read AACT, because header is handled before loadFromStream.
-      stream.read((char*) &dummy, 4);
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -156,7 +156,7 @@ TEST_CASE("ActionRecord")
       stream.str(std::string(data));
 
       // read AACT, because header is handled before loadFromStream.
-      stream.read((char*) &dummy, 4);
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
       REQUIRE( stream.good() );
 
       // Reading should fail.

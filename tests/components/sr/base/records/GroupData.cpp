@@ -177,7 +177,7 @@ TEST_CASE("GroupData")
       stream.str(std::string(data));
 
       // read GRUP, because header is handled before loadFromStream.
-      stream.read((char*) &dummy, 4);
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -196,7 +196,7 @@ TEST_CASE("GroupData")
       stream.str(std::string(data));
 
       // read GRUP, because header is handled before loadFromStream.
-      stream.read((char*) &dummy, 4);
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
       REQUIRE( stream.good() );
 
       // Reading should fail.

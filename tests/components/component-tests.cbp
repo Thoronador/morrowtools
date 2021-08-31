@@ -69,6 +69,8 @@
 		<Unit filename="../../sr/base/records/EffectBlock.hpp" />
 		<Unit filename="../../sr/base/records/GroupData.cpp" />
 		<Unit filename="../../sr/base/records/GroupData.hpp" />
+		<Unit filename="../../sr/base/records/KeyRecord.cpp" />
+		<Unit filename="../../sr/base/records/KeyRecord.hpp" />
 		<Unit filename="../../sr/base/records/KeywordRecord.cpp" />
 		<Unit filename="../../sr/base/records/KeywordRecord.hpp" />
 		<Unit filename="../../sr/base/records/LocalizedString.cpp" />
@@ -102,6 +104,7 @@
 		<Unit filename="sr/base/records/ComponentData.cpp" />
 		<Unit filename="sr/base/records/EffectBlock.cpp" />
 		<Unit filename="sr/base/records/GroupData.cpp" />
+		<Unit filename="sr/base/records/KeyRecord.cpp" />
 		<Unit filename="sr/base/records/KeywordRecord.cpp" />
 		<Unit filename="sr/base/records/LocalizedString.cpp" />
 		<Unit filename="sr/base/records/PerkRecord.cpp" />

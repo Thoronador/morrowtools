@@ -23,6 +23,7 @@ set(component_tests_sources
     ../../sr/base/records/ComponentData.cpp
     ../../sr/base/records/EffectBlock.cpp
     ../../sr/base/records/GroupData.cpp
+    ../../sr/base/records/KeyRecord.cpp
     ../../sr/base/records/KeywordRecord.cpp
     ../../sr/base/records/LocalizedString.cpp
     ../../sr/base/records/PerkRecord.cpp
@@ -48,6 +49,7 @@ set(component_tests_sources
     sr/base/records/ComponentData.cpp
     sr/base/records/EffectBlock.cpp
     sr/base/records/GroupData.cpp
+    sr/base/records/KeyRecord.cpp
     sr/base/records/KeywordRecord.cpp
     sr/base/records/LocalizedString.cpp
     sr/base/records/PerkRecord.cpp

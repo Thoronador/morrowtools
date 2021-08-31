@@ -286,7 +286,7 @@ bool KeyRecord::loadFromStream(std::istream& in_File, const bool localized, cons
   if (subLength!=12)
   {
     std::cerr <<"Error: sub record OBND of KEYM has invalid length ("
-              <<subLength<<" bytes. Should be 12 bytes!\n";
+              <<subLength<<" bytes). Should be 12 bytes!\n";
     return false;
   }
   //read OBND's stuff
@@ -421,7 +421,7 @@ bool KeyRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            if (subLength!=4*k_Size)
            {
              std::cerr <<"Error: sub record KWDA of KEYM has invalid length ("
-                       <<subLength<<" bytes. Should be "<<4*k_Size<<" bytes!\n";
+                       <<subLength<<" bytes). Should be "<<4*k_Size<<" bytes!\n";
              return false;
            }
            //read KWDA's stuff

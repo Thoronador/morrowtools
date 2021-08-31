@@ -75,6 +75,8 @@
 		<Unit filename="../../sr/base/records/LocalizedString.hpp" />
 		<Unit filename="../../sr/base/records/PerkRecord.cpp" />
 		<Unit filename="../../sr/base/records/PerkRecord.hpp" />
+		<Unit filename="../../sr/base/records/ShoutRecord.cpp" />
+		<Unit filename="../../sr/base/records/ShoutRecord.hpp" />
 		<Unit filename="../../sr/base/records/SubBlock.hpp" />
 		<Unit filename="../../sr/base/records/TES4HeaderRecord.cpp" />
 		<Unit filename="../../sr/base/records/TES4HeaderRecord.hpp" />
@@ -103,6 +105,7 @@
 		<Unit filename="sr/base/records/KeywordRecord.cpp" />
 		<Unit filename="sr/base/records/LocalizedString.cpp" />
 		<Unit filename="sr/base/records/PerkRecord.cpp" />
+		<Unit filename="sr/base/records/ShoutRecord.cpp" />
 		<Unit filename="sr/base/records/Tes4HeaderRecord.cpp" />
 		<Unit filename="sr/base/records/WordOfPowerRecord.cpp" />
 		<Extensions>

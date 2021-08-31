@@ -26,6 +26,7 @@ set(component_tests_sources
     ../../sr/base/records/KeywordRecord.cpp
     ../../sr/base/records/LocalizedString.cpp
     ../../sr/base/records/PerkRecord.cpp
+    ../../sr/base/records/ShoutRecord.cpp
     ../../sr/base/records/TES4HeaderRecord.cpp
     ../../sr/base/records/WordOfPowerRecord.cpp
     base/BufferStream.cpp
@@ -50,6 +51,7 @@ set(component_tests_sources
     sr/base/records/KeywordRecord.cpp
     sr/base/records/LocalizedString.cpp
     sr/base/records/PerkRecord.cpp
+    sr/base/records/ShoutRecord.cpp
     sr/base/records/Tes4HeaderRecord.cpp
     sr/base/records/WordOfPowerRecord.cpp
     main.cpp)

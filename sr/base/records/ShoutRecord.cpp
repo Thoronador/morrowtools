@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -65,8 +65,9 @@ bool ShoutRecord::equals(const ShoutRecord& other) const
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t ShoutRecord::getWriteSize() const
 {
-  uint32_t writeSize;
-  writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
+  if (isDeleted())
+    return 0;
+  uint32_t writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of string +1 byte for NUL-termination */
         +description.getWriteSize() /* DESC */
         +words.size()
@@ -85,7 +86,10 @@ uint32_t ShoutRecord::getWriteSize() const
 bool ShoutRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cSHOU, 4);
-  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
+  if (!saveSizeAndUnknownValues(output, getWriteSize()))
+    return false;
+  if (isDeleted())
+    return true;
 
   //write EDID
   output.write((const char*) &cEDID, 4);

@@ -20,22 +20,17 @@
 
 #include "ShoutRecord.hpp"
 #include <iostream>
-#include <cstring>
 #include "../SR_Constants.hpp"
 #include "../../../mw/base/HelperIO.hpp"
 
 namespace SRTP
 {
 
-/* WordEntry's functions */
-
 bool ShoutRecord::WordEntry::operator==(const ShoutRecord::WordEntry& other) const
 {
-  return ((wordFormID==other.wordFormID) and (spellFormID==other.spellFormID)
-      and (recharge==other.recharge));
+  return ((wordFormID == other.wordFormID) && (spellFormID == other.spellFormID)
+      && (recharge == other.recharge));
 }
-
-/* ShoutRecord's functions */
 
 ShoutRecord::ShoutRecord()
 : BasicRecord(), editorID(""),
@@ -44,21 +39,15 @@ ShoutRecord::ShoutRecord()
   description(LocalizedString()),
   words(std::vector<WordEntry>())
 {
-
-}
-
-ShoutRecord::~ShoutRecord()
-{
-  //empty
 }
 
 #ifndef SR_NO_RECORD_EQUALITY
 bool ShoutRecord::equals(const ShoutRecord& other) const
 {
-  return ((equalsBasic(other)) and (editorID==other.editorID)
-      and (fullName==other.fullName)
-      and (menuDisplayObjectFormID==other.menuDisplayObjectFormID)
-      and (description==other.description) and (words==other.words));
+  return (equalsBasic(other) && (editorID == other.editorID)
+      && (fullName == other.fullName)
+      && (menuDisplayObjectFormID == other.menuDisplayObjectFormID)
+      && (description == other.description) && (words == other.words));
 }
 #endif
 
@@ -67,73 +56,68 @@ uint32_t ShoutRecord::getWriteSize() const
 {
   if (isDeleted())
     return 0;
-  uint32_t writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
-        +editorID.length()+1 /* length of string +1 byte for NUL-termination */
-        +description.getWriteSize() /* DESC */
-        +words.size()
-        *(4 /* SNAM */ +2 /* 2 bytes for length */ +12 /* fixed size */);
+  uint32_t writeSize = 4 /* EDID */ + 2 /* 2 bytes for length */
+      + editorID.length() + 1 /* length of string +1 byte for NUL-termination */
+      + description.getWriteSize() /* DESC */
+      + words.size()
+      * (4 /* SNAM */ + 2 /* 2 bytes for length */ + 12 /* fixed size */);
   if (fullName.isPresent())
   {
     writeSize += fullName.getWriteSize() /* FULL */;
   }
-  if (menuDisplayObjectFormID!=0)
+  if (menuDisplayObjectFormID != 0)
   {
-    writeSize = writeSize +4 /* MDOB */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+    writeSize = writeSize + 4 /* MDOB */ + 2 /* 2 bytes for length */ + 4 /* fixed size */;
   }
   return writeSize;
 }
 
 bool ShoutRecord::saveToStream(std::ostream& output) const
 {
-  output.write((const char*) &cSHOU, 4);
+  output.write(reinterpret_cast<const char*>(&cSHOU), 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize()))
     return false;
   if (isDeleted())
     return true;
 
-  //write EDID
-  output.write((const char*) &cEDID, 4);
-  //EDID's length
-  uint16_t subLength = editorID.length()+1;
-  output.write((const char*) &subLength, 2);
-  //write editor ID
+  // write editor ID (EDID)
+  output.write(reinterpret_cast<const char*>(&cEDID), 4);
+  uint16_t subLength = editorID.length() + 1;
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
   output.write(editorID.c_str(), subLength);
 
   if (fullName.isPresent())
   {
-    //write FULL
+    // write FULL
     if (!fullName.saveToStream(output, cFULL))
       return false;
   }
 
   if (menuDisplayObjectFormID!=0)
   {
-    //write MDOB
-    output.write((const char*) &cMDOB, 4);
-    //MDOB's length
-    subLength = 4; // fixed
-     output.write((const char*) &subLength, 2);
-    //write Menu Display Object's form ID
-    output.write((const char*) &menuDisplayObjectFormID, 4);
-  }//if has MDOB
+    // write Menu Display Object's form ID (MDOB)
+    output.write(reinterpret_cast<const char*>(&cMDOB), 4);
+    subLength = 4; // fixed size
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    output.write(reinterpret_cast<const char*>(&menuDisplayObjectFormID), 4);
+  }
 
-  //write DESC
+  // write description (DESC)
   if (!description.saveToStream(output, cDESC))
     return false;
 
-  unsigned int i;
-  for (i=0; i<words.size(); ++i)
+  for (const auto& word: words)
   {
-    //write SNAM
-    output.write((const char*) &cSNAM, 4);
-    //SNAM's length
-    subLength = 12; //fixed size of 12 bytes
-    output.write((const char*) &subLength, 2);
-    //write SNAM's data
-    output.write((const char*) &(words[i].wordFormID), 4);
-    output.write((const char*) &(words[i].spellFormID), 4);
-    output.write((const char*) &(words[i].recharge), 4);
-  }//for
+    // write SNAM
+    output.write(reinterpret_cast<const char*>(&cSNAM), 4);
+    // SNAM's length
+    subLength = 12; // fixed size of 12 bytes
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    // write word's data
+    output.write(reinterpret_cast<const char*>(&word.wordFormID), 4);
+    output.write(reinterpret_cast<const char*>(&word.spellFormID), 4);
+    output.write(reinterpret_cast<const char*>(&word.recharge), 4);
+  }
 
   return output.good();
 }
@@ -142,39 +126,16 @@ bool ShoutRecord::saveToStream(std::ostream& output) const
 bool ShoutRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
-  if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
-  uint32_t subRecName;
-  uint16_t subLength;
-  subRecName = subLength = 0;
+  if (!loadSizeAndUnknownValues(in_File, readSize))
+    return false;
+  uint32_t subRecName = 0;
+  uint16_t subLength = 0;
   uint32_t bytesRead = 0;
 
-  //read EDID
-  in_File.read((char*) &subRecName, 4);
-  bytesRead = 4;
-  if (subRecName!=cEDID)
-  {
-    UnexpectedRecord(cEDID, subRecName);
-    return false;
-  }
-  //EDID's length
-  in_File.read((char*) &subLength, 2);
-  bytesRead += 2;
-  if (subLength>511)
-  {
-    std::cerr <<"Error: sub record EDID of SHOU is longer than 511 characters!\n";
-    return false;
-  }
-  //read EDID's stuff
+  // read editor ID (EDID)
   char buffer[512];
-  memset(buffer, 0, 512);
-  in_File.read(buffer, subLength);
-  bytesRead += subLength;
-  if (!in_File.good())
-  {
-    std::cerr << "Error while reading subrecord EDID of SHOU!\n";
+  if (!loadString512FromStream(in_File, editorID, buffer, cEDID, true, bytesRead))
     return false;
-  }
-  editorID = std::string(buffer);
 
   fullName.reset();
   menuDisplayObjectFormID = 0;
@@ -182,10 +143,10 @@ bool ShoutRecord::loadFromStream(std::istream& in_File, const bool localized, co
   words.clear();
   WordEntry temp;
 
-  while (bytesRead<readSize)
+  while (bytesRead < readSize)
   {
-    //read next subrecord
-    in_File.read((char*) &subRecName, 4);
+    // read next subrecord header
+    in_File.read(reinterpret_cast<char*>(&subRecName), 4);
     bytesRead += 4;
     switch (subRecName)
     {
@@ -195,21 +156,20 @@ bool ShoutRecord::loadFromStream(std::istream& in_File, const bool localized, co
              std::cerr << "Error: SHOU seems to have more than one FULL subrecord.\n";
              return false;
            }
-           //read FULL
            if (!fullName.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
              return false;
            break;
       case cMDOB:
-           if (menuDisplayObjectFormID!=0)
+           if (menuDisplayObjectFormID != 0)
            {
              std::cerr << "Error: SHOU seems to have more than one MDOB subrecord.\n";
              return false;
            }
-           //read MDOB
-           if (!loadUint32SubRecordFromStream(in_File, cMDOB, menuDisplayObjectFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cMDOB, menuDisplayObjectFormID, false))
+             return false;
            bytesRead += 6;
-           //check content
-           if (menuDisplayObjectFormID==0)
+           // check content
+           if (menuDisplayObjectFormID == 0)
            {
              std::cerr << "Error: subrecord MDOB of SHOU is zero!\n";
              return false;
@@ -221,27 +181,26 @@ bool ShoutRecord::loadFromStream(std::istream& in_File, const bool localized, co
              std::cerr << "Error: SHOU seems to have more than one DESC subrecord.\n";
              return false;
            }
-           //read DESC
            if (!description.loadFromStream(in_File, cDESC, false, bytesRead, localized, table, buffer))
              return false;
            break;
       case cSNAM:
-           //SNAM's length
-           in_File.read((char*) &subLength, 2);
+           // SNAM's length
+           in_File.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
-           if (subLength!=12)
+           if (subLength != 12)
            {
-             std::cerr <<"Error: sub record SNAM of SHOU has invalid length("
-                       <<subLength<<" bytes). Should be 12 bytes.\n";
+             std::cerr << "Error: sub record SNAM of SHOU has invalid length ("
+                       << subLength << " bytes). Should be 12 bytes.\n";
              return false;
            }
-           //read SNAM's stuff
+           // read SNAM's stuff
            temp.wordFormID = 0;
            temp.spellFormID = 0;
            temp.recharge = 0.0f;
-           in_File.read((char*) &(temp.wordFormID), 4);
-           in_File.read((char*) &(temp.spellFormID), 4);
-           in_File.read((char*) &(temp.recharge), 4);
+           in_File.read(reinterpret_cast<char*>(&temp.wordFormID), 4);
+           in_File.read(reinterpret_cast<char*>(&temp.spellFormID), 4);
+           in_File.read(reinterpret_cast<char*>(&temp.recharge), 4);
            bytesRead += 12;
            if (!in_File.good())
            {
@@ -251,18 +210,20 @@ bool ShoutRecord::loadFromStream(std::istream& in_File, const bool localized, co
            words.push_back(temp);
            break;
       default:
-           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""
+                     << IntTo4Char(subRecName)
                      << "\" found, but only FULL, MDOB, DESC or SNAM are allowed!\n";
            return false;
            break;
-    }//swi
-  }//while
+    }
+  } // while
 
-  //check for presence of required elements
-  if ((!description.isPresent()) or (words.size()!=3))
+  // check for presence of required elements
+  if (!description.isPresent() || (words.size() != 3))
   {
     std::cerr << "Error: at least one subrecord of SHOU is not present!\n"
-              << "hasDESC: "<<description.isPresent()<<", SNAM.size="<<words.size()<<"\n";
+              << "has DESC: " << description.isPresent() << ", SNAM.size = "
+              << words.size() << "\n";
     return false;
   }
 
@@ -274,4 +235,4 @@ uint32_t ShoutRecord::getRecordType() const
   return cSHOU;
 }
 
-} //namespace
+} // namespace

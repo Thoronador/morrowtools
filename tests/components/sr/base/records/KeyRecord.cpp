@@ -36,16 +36,14 @@ TEST_CASE("KeyRecord")
 
     REQUIRE( record.editorID.empty() );
     REQUIRE_FALSE( record.unknownVMAD.isPresent() );
-    for (unsigned int i = 0; i < 12; ++i)
-    {
-      REQUIRE( record.unknownOBND[i] == 0 );
-    }
+    const auto obnd = std::array<uint8_t, 12>({0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
+    REQUIRE( record.unknownOBND == obnd );
     REQUIRE_FALSE( record.name.isPresent() );
     REQUIRE( record.modelPath.empty() );
     REQUIRE_FALSE( record.unknownMODT.isPresent() );
     REQUIRE( record.pickupSoundFormID == 0 );
     REQUIRE( record.putdownSoundFormID == 0 );
-    REQUIRE( record.keywordArray.empty() );
+    REQUIRE( record.keywords.empty() );
     REQUIRE( record.value == 0 );
     REQUIRE( record.weight == 0 );
   }
@@ -140,9 +138,9 @@ TEST_CASE("KeyRecord")
 
       SECTION("keyword array mismatch")
       {
-        a.keywordArray.clear();
-        b.keywordArray.push_back(0x12345678);
-        b.keywordArray.push_back(0x90ABCDEF);
+        a.keywords.clear();
+        b.keywords.push_back(0x12345678);
+        b.keywords.push_back(0x90ABCDEF);
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
@@ -272,11 +270,11 @@ TEST_CASE("KeyRecord")
       record.editorID = "foo";
       REQUIRE( record.getWriteSize() == 42 );
 
-      record.keywordArray.push_back(0x00000001);
+      record.keywords.push_back(0x00000001);
       REQUIRE( record.getWriteSize() == 62 );
-      record.keywordArray.push_back(0x0000000F);
+      record.keywords.push_back(0x0000000F);
       REQUIRE( record.getWriteSize() == 66 );
-      record.keywordArray.push_back(0x0000AFFE);
+      record.keywords.push_back(0x0000AFFE);
       REQUIRE( record.getWriteSize() == 70 );
     }
 
@@ -337,8 +335,8 @@ TEST_CASE("KeyRecord")
       REQUIRE( MODT == "\x02\0\0\0\x04\0\0\0\0\0\0\0\x7B\x24\xA2\x37\x64\x64\x73\0\xBF\xFA\x25\xDA\x8A\x7E\xE1\x67\x64\x64\x73\0\xBF\xFA\x25\xDA\x6B\xBB\x96\xD1\x64\x64\x73\0\x26\x2C\x33\x3B\xFA\xE0\xBB\xA4\x64\x64\x73\0\x7F\x66\xA5\xC0"sv);
       REQUIRE( record.pickupSoundFormID == 0x0003ED75 );
       REQUIRE( record.putdownSoundFormID == 0x0003ED78 );
-      REQUIRE( record.keywordArray.size() == 1 );
-      REQUIRE( record.keywordArray[0] == 0x000914EF );
+      REQUIRE( record.keywords.size() == 1 );
+      REQUIRE( record.keywords[0] == 0x000914EF );
       REQUIRE( record.value == 0 );
       REQUIRE( record.weight == 0.0f );
 

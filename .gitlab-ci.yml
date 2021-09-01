@@ -37,3 +37,28 @@ win64_cross:
   artifacts:
     paths:
       - build/artifacts/
+
+coverage:
+  image: debian:11-slim
+  stage: test
+  before_script:
+    - apt-get update && apt-get -y upgrade
+    - apt-get install -y catch cmake g++-10 gcovr pkg-config zlib1g-dev
+  script:
+    # build
+    - export CXX=g++-10
+    - export CC=gcc-10
+    - mkdir build-coverage
+    - cd build-coverage
+    - cmake -DCODE_COVERAGE=ON ../
+    - make -j4
+    # tests
+    - ctest -V
+    # collect code coverage data
+    - gcovr --xml-pretty --exclude-unreachable-branches --print-summary -o coverage.xml --root ${CI_PROJECT_DIR}
+  coverage: /^\s*lines:\s*\d+.\d+\%/
+  artifacts:
+    name: ${CI_JOB_NAME}-${CI_COMMIT_REF_NAME}-${CI_COMMIT_SHA}
+    expire_in: 2 days
+    reports:
+      cobertura: build-coverage/coverage.xml

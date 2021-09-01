@@ -42,7 +42,7 @@ TEST_CASE("TalkingActivatorRecord")
     REQUIRE_FALSE( record.name.isPresent() );
     REQUIRE( record.modelPath.empty() );
     REQUIRE_FALSE( record.unknownMODT.isPresent() );
-    REQUIRE( record.keywordArray.empty() );
+    REQUIRE( record.keywords.empty() );
     REQUIRE( record.unknownPNAM == 0 );
     REQUIRE( record.loopingSoundFormID == 0 );
     REQUIRE( record.unknownFNAM == 0 );
@@ -121,9 +121,9 @@ TEST_CASE("TalkingActivatorRecord")
 
       SECTION("keyword array mismatch")
       {
-        a.keywordArray.clear();
-        b.keywordArray.push_back(0x12345678);
-        b.keywordArray.push_back(0x90ABCDEF);
+        a.keywords.clear();
+        b.keywords.push_back(0x12345678);
+        b.keywords.push_back(0x90ABCDEF);
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
@@ -232,14 +232,14 @@ TEST_CASE("TalkingActivatorRecord")
 
     SECTION("size adjusts with presence of keywords")
     {
-      record.keywordArray.clear();
+      record.keywords.clear();
       REQUIRE( record.getWriteSize() == 60 );
 
-      record.keywordArray.push_back(0x00000001);
+      record.keywords.push_back(0x00000001);
       REQUIRE( record.getWriteSize() == 80 );
-      record.keywordArray.push_back(0x0000000F);
+      record.keywords.push_back(0x0000000F);
       REQUIRE( record.getWriteSize() == 84 );
-      record.keywordArray.push_back(0x0000AFFE);
+      record.keywords.push_back(0x0000AFFE);
       REQUIRE( record.getWriteSize() == 88 );
     }
 
@@ -309,7 +309,7 @@ TEST_CASE("TalkingActivatorRecord")
       REQUIRE( record.unknownMODT.size() == 36 );
       const auto MODT = std::string_view(reinterpret_cast<const char*>(record.unknownMODT.data()), record.unknownMODT.size());
       REQUIRE( MODT == "\x02\0\0\0\x02\0\0\0\0\0\0\0\xF9\x20\x9B\x23\x64\x64\x73\0\xE0\x4D\xF5\xD7\x63\x54\x39\x69\x64\x64\x73\0\xE0\x4D\xF5\xD7"sv);
-      REQUIRE( record.keywordArray.empty() );
+      REQUIRE( record.keywords.empty() );
       REQUIRE( record.unknownPNAM == 0 );
       REQUIRE( record.loopingSoundFormID == 0 );
       REQUIRE( record.unknownFNAM == 0 );
@@ -586,8 +586,8 @@ TEST_CASE("TalkingActivatorRecord")
       record.name = LocalizedString(LocalizedString::Type::Index, 0x0000A1E0, "");
       record.modelPath = "Clutter\\Statues\\ClavicusVileShrine01.nif";
       record.unknownMODT.setPresence(false);
-      REQUIRE( record.keywordArray .empty() );
-      record.keywordArray.push_back(0x78563412);
+      REQUIRE( record.keywords.empty() );
+      record.keywords.push_back(0x78563412);
       record.unknownPNAM = 0;
       record.loopingSoundFormID = 0;
       record.unknownFNAM = 0;

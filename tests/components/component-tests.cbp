@@ -84,6 +84,8 @@
 		<Unit filename="../../sr/base/records/SubBlock.hpp" />
 		<Unit filename="../../sr/base/records/TES4HeaderRecord.cpp" />
 		<Unit filename="../../sr/base/records/TES4HeaderRecord.hpp" />
+		<Unit filename="../../sr/base/records/TalkingActivatorRecord.cpp" />
+		<Unit filename="../../sr/base/records/TalkingActivatorRecord.hpp" />
 		<Unit filename="../../sr/base/records/WordOfPowerRecord.cpp" />
 		<Unit filename="../../sr/base/records/WordOfPowerRecord.hpp" />
 		<Unit filename="base/BufferStream.cpp" />
@@ -112,6 +114,7 @@
 		<Unit filename="sr/base/records/LocalizedString.cpp" />
 		<Unit filename="sr/base/records/PerkRecord.cpp" />
 		<Unit filename="sr/base/records/ShoutRecord.cpp" />
+		<Unit filename="sr/base/records/TalkingActivatorRecord.cpp" />
 		<Unit filename="sr/base/records/Tes4HeaderRecord.cpp" />
 		<Unit filename="sr/base/records/WordOfPowerRecord.cpp" />
 		<Extensions>

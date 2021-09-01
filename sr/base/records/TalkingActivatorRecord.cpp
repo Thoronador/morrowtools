@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2013  Thoronador
+    Copyright (C) 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -62,6 +62,8 @@ bool TalkingActivatorRecord::equals(const TalkingActivatorRecord& other) const
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t TalkingActivatorRecord::getWriteSize() const
 {
+  if (isDeleted())
+    return 0;
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
@@ -97,7 +99,10 @@ uint32_t TalkingActivatorRecord::getWriteSize() const
 bool TalkingActivatorRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cTACT, 4);
-  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
+  if (!saveSizeAndUnknownValues(output, getWriteSize()))
+    return false;
+  if (isDeleted())
+    return true;
 
   //write EDID
   output.write((const char*) &cEDID, 4);

@@ -243,6 +243,11 @@ TEST_CASE("FileFunctions")
     REQUIRE( name == "readme" );
     REQUIRE( extension == "txt" );
 
+    splitPathFileExtension("/home/user/path/readme.", '/', path, name, extension );
+    REQUIRE( path == "/home/user/path/" );
+    REQUIRE( name == "readme" );
+    REQUIRE( extension == "" );
+
     splitPathFileExtension("/home/user/readme", '/', path, name, extension );
     REQUIRE( path == "/home/user/" );
     REQUIRE( name == "readme" );
@@ -253,10 +258,25 @@ TEST_CASE("FileFunctions")
     REQUIRE( name == "readme" );
     REQUIRE( extension == "txt" );
 
+    splitPathFileExtension("readme.txt", '/', path, name, extension );
+    REQUIRE( path == "" );
+    REQUIRE( name == "readme" );
+    REQUIRE( extension == "txt" );
+
+    splitPathFileExtension("", '/', path, name, extension );
+    REQUIRE( path == "" );
+    REQUIRE( name == "" );
+    REQUIRE( extension == "" );
+
     splitPathFileExtension("C:\\Windows\\notepad.exe", '\\', path, name, extension );
     REQUIRE( path == "C:\\Windows\\" );
     REQUIRE( name == "notepad" );
     REQUIRE( extension == "exe" );
+
+    splitPathFileExtension("D:\\Folder\\file.", '\\', path, name, extension );
+    REQUIRE( path == "D:\\Folder\\" );
+    REQUIRE( name == "file" );
+    REQUIRE( extension == "" );
 
     splitPathFileExtension("D:\\Folder\\file", '\\', path, name, extension );
     REQUIRE( path == "D:\\Folder\\" );
@@ -265,6 +285,11 @@ TEST_CASE("FileFunctions")
 
     splitPathFileExtension("E:\\binary.dat", '\\', path, name, extension );
     REQUIRE( path == "E:\\" );
+    REQUIRE( name == "binary" );
+    REQUIRE( extension == "dat" );
+
+    splitPathFileExtension("binary.dat", '\\', path, name, extension );
+    REQUIRE( path == "" );
     REQUIRE( name == "binary" );
     REQUIRE( extension == "dat" );
   }

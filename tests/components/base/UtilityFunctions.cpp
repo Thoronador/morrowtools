@@ -314,6 +314,8 @@ TEST_CASE("UtilityFunctions")
     {
       REQUIRE_FALSE( stringToLong("2147483648", value));
       REQUIRE_FALSE( stringToLong("-2147483649", value));
+      // overflow more
+      REQUIRE_FALSE( stringToLong("2147489999", value));
     }
   }
 
@@ -373,6 +375,8 @@ TEST_CASE("UtilityFunctions")
     {
       REQUIRE_FALSE( stringToShort("32768", value));
       REQUIRE_FALSE( stringToShort("-32769", value));
+      // overflow more
+      REQUIRE_FALSE( stringToShort("45678", value));
     }
   }
 

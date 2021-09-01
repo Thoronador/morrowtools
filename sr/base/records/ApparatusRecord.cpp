@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -57,6 +57,8 @@ bool ApparatusRecord::equals(const ApparatusRecord& other) const
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t ApparatusRecord::getWriteSize() const
 {
+  if (isDeleted())
+    return 0;
   return (4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
         +4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed length */
@@ -69,7 +71,10 @@ uint32_t ApparatusRecord::getWriteSize() const
 bool ApparatusRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cAPPA, 4);
-  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
+  if (!saveSizeAndUnknownValues(output, getWriteSize()))
+    return false;
+  if (isDeleted())
+    return true;
 
   //write EDID
   output.write((const char*) &cEDID, 4);
@@ -172,8 +177,8 @@ bool ApparatusRecord::loadFromStream(std::istream& in_File, const bool localized
   bytesRead += 2;
   if (subLength!=12)
   {
-    std::cerr <<"Error: sub record OBND of APPA has invalid length ("
-              <<subLength<<" bytes. Should be 12 bytes!\n";
+    std::cerr << "Error: sub record OBND of APPA has invalid length ("
+              << subLength << " bytes). Should be 12 bytes!\n";
     return false;
   }
   //read OBND's stuff
@@ -220,8 +225,8 @@ bool ApparatusRecord::loadFromStream(std::istream& in_File, const bool localized
   bytesRead += 2;
   if (subLength!=8)
   {
-    std::cerr <<"Error: sub record DATA of APPA has invalid length ("
-              <<subLength<<" bytes. Should be 8 bytes!\n";
+    std::cerr << "Error: sub record DATA of APPA has invalid length ("
+              << subLength << " bytes). Should be 8 bytes!\n";
     return false;
   }
   //read DATA's stuff

@@ -34,9 +34,9 @@ TEST_CASE("ApparatusRecord")
     ApparatusRecord record;
 
     REQUIRE( record.editorID.empty() );
-    for (unsigned int i = 0; i < 12; ++i)
+    for (const uint8_t byte: record.unknownOBND)
     {
-      REQUIRE( record.unknownOBND[i] == 0 );
+      REQUIRE( byte == 0 );
     }
     REQUIRE_FALSE( record.name.isPresent() );
     REQUIRE( record.quality == 0 );
@@ -201,9 +201,9 @@ TEST_CASE("ApparatusRecord")
       REQUIRE( record.headerUnknown5 == 0x0003 );
       // -- record data
       REQUIRE( record.editorID == "Alembic01Novice" );
-      for (unsigned int i = 0; i < 12; ++i)
+      for (const uint8_t byte: record.unknownOBND)
       {
-        REQUIRE( record.unknownOBND[i] == 0 );
+        REQUIRE( byte == 0 );
       }
       REQUIRE( record.name.isPresent() );
       REQUIRE( record.name.getType() == LocalizedString::Type::Index );
@@ -420,10 +420,7 @@ TEST_CASE("ApparatusRecord")
       record.headerUnknown5 = 0x0003;
       // -- record data
       record.editorID = "Alembic01Novice";
-      for (unsigned int i = 0; i < 12; ++i)
-      {
-        record.unknownOBND[i] = i + 1;
-      }
+      record.unknownOBND = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
       record.name = LocalizedString(LocalizedString::Type::Index, 0x0000BE31, "" );
       record.quality = 5;
       record.description = LocalizedString(LocalizedString::Type::Index, 0, "" );

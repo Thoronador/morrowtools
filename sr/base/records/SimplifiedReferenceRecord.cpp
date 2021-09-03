@@ -68,9 +68,9 @@ bool SimplifiedReferenceRecord::loadFromStream(std::istream& in_File, const bool
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize))
     return false;
+  uint32_t bytesRead = 0;
   uint32_t subRecName = 0;
   uint16_t subLength = 0;
-  uint32_t bytesRead = 0;
 
   baseObjectFormID = 0;
   while (bytesRead < readSize)
@@ -94,9 +94,8 @@ bool SimplifiedReferenceRecord::loadFromStream(std::istream& in_File, const bool
                std::cerr << "Error while skipping subrecords of REFR!\n";
                return false;
              }
-             bytesRead = readSize;
            }
-           return in_File.good();
+           return true;
            break;
       default:
            // read subrecord's length

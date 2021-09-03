@@ -72,7 +72,6 @@ bool SimplifiedReferenceRecord::loadFromStream(std::istream& in_File, const bool
   uint16_t subLength = 0;
   uint32_t bytesRead = 0;
 
-  bool hasReadNAME = false;
   baseObjectFormID = 0;
   while (bytesRead < readSize)
   {
@@ -82,16 +81,10 @@ bool SimplifiedReferenceRecord::loadFromStream(std::istream& in_File, const bool
     switch (subRecName)
     {
       case cNAME:
-           if (hasReadNAME)
-           {
-             std::cerr << "Error: REFR seems to have more than one NAME subrecord!\n";
-             return false;
-           }
            // read NAME
            if (!loadUint32SubRecordFromStream(in_File, cNAME, baseObjectFormID, false))
              return false;
            bytesRead += 6;
-           hasReadNAME = true;
            // skip rest of record
            if (bytesRead < readSize)
            {
@@ -103,6 +96,7 @@ bool SimplifiedReferenceRecord::loadFromStream(std::istream& in_File, const bool
              }
              bytesRead = readSize;
            }
+           return in_File.good();
            break;
       default:
            // read subrecord's length
@@ -120,14 +114,9 @@ bool SimplifiedReferenceRecord::loadFromStream(std::istream& in_File, const bool
     }
   }
 
-  // presence checks
-  if (!hasReadNAME)
-  {
-    std::cerr << "Error: subrecord NAME of REFR is missing!\n";
-    return false;
-  }
-
-  return in_File.good();
+  // If we get to this point, no NAME has been seen so far.
+  std::cerr << "Error: subrecord NAME of REFR is missing!\n";
+  return false;
 }
 
 uint32_t SimplifiedReferenceRecord::getRecordType() const

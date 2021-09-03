@@ -116,6 +116,78 @@ TEST_CASE("SimplifiedReferenceRecord")
       REQUIRE( record.baseObjectFormID == 0x000201F6 );
     }
 
+    SECTION("default: load record with NAME not as first record")
+    {
+      const std::string_view data = "REFR\x28\0\0\0\0\x80\0\0\x0C\x44\x10\0\x18\x66\x47\0\x25\0\0\0DATA\x18\0\xEE\x25\xE1\xC4\x24\xAE\xC4\xC5\x9E\x7C\x0C\x45\x1A\x63\x4A\xBE\xD6\x2D\x80\xBE\x98\x56\xE8\x3ENAME\x04\0\xF6\x01\x02\x03"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read REFR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      SimplifiedReferenceRecord record;
+      REQUIRE( record.loadFromStream(stream, true, dummy_table) );
+      // Check data.
+      // -- header
+      REQUIRE( record.headerFlags == 0x00008000 );
+      REQUIRE( record.headerFormID == 0x0010440C );
+      REQUIRE( record.headerRevision == 0x00476618 );
+      REQUIRE( record.headerVersion == 37 );
+      REQUIRE( record.headerUnknown5 == 0x0000 );
+      // -- record data
+      REQUIRE( record.baseObjectFormID == 0x030201F6 );
+    }
+
+    SECTION("default: load record with NAME not as first record and entry after name")
+    {
+      const std::string_view data = "REFR\x30\0\0\0\0\x80\0\0\x0C\x44\x10\0\x18\x66\x47\0\x25\0\0\0DATA\x18\0\xEE\x25\xE1\xC4\x24\xAE\xC4\xC5\x9E\x7C\x0C\x45\x1A\x63\x4A\xBE\xD6\x2D\x80\xBE\x98\x56\xE8\x3ENAME\x04\0\xAA\x01\x02\x03NOOB\x02\0AR"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read REFR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      SimplifiedReferenceRecord record;
+      REQUIRE( record.loadFromStream(stream, true, dummy_table) );
+      // Check data.
+      // -- header
+      REQUIRE( record.headerFlags == 0x00008000 );
+      REQUIRE( record.headerFormID == 0x0010440C );
+      REQUIRE( record.headerRevision == 0x00476618 );
+      REQUIRE( record.headerVersion == 37 );
+      REQUIRE( record.headerUnknown5 == 0x0000 );
+      // -- record data
+      REQUIRE( record.baseObjectFormID == 0x030201AA );
+    }
+
+    SECTION("constructed example: load record with NAME only")
+    {
+      const std::string_view data = "REFR\x0A\0\0\0\0\x80\0\0\x0C\x44\x10\0\x18\x66\x47\0\x25\0\0\0NAME\x04\0\xF6\x01\x02\xAF"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read REFR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      SimplifiedReferenceRecord record;
+      REQUIRE( record.loadFromStream(stream, true, dummy_table) );
+      // Check data.
+      // -- header
+      REQUIRE( record.headerFlags == 0x00008000 );
+      REQUIRE( record.headerFormID == 0x0010440C );
+      REQUIRE( record.headerRevision == 0x00476618 );
+      REQUIRE( record.headerVersion == 37 );
+      REQUIRE( record.headerUnknown5 == 0x0000 );
+      // -- record data
+      REQUIRE( record.baseObjectFormID == 0xAF0201F6 );
+    }
+
     SECTION("corrupt data: no NAME")
     {
       const std::string_view data = "REFR\x28\0\0\0\0\x80\0\0\x0C\x44\x10\0\x18\x66\x47\0\x25\0\0\0FAIL\x04\0\xF6\x01\x02\0DATA\x18\0\xEE\x25\xE1\xC4\x24\xAE\xC4\xC5\x9E\x7C\x0C\x45\x1A\x63\x4A\xBE\xD6\x2D\x80\xBE\x98\x56\xE8\x3E"sv;

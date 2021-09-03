@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2013  Thoronador
+    Copyright (C) 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,60 +26,67 @@
 namespace SRTP
 {
 
+/** Holds the minimal data of a reference record, i. e. its header and the form
+ *  ID of the referred to object.
+ */
 struct SimplifiedReferenceRecord: public BasicRecord
 {
   public:
-    /* constructor */
+    /** Constructor, creates an empty record. */
     SimplifiedReferenceRecord();
 
-    /* destructor */
-    virtual ~SimplifiedReferenceRecord();
+    /** Destructor. */
+    virtual ~SimplifiedReferenceRecord() = default;
 
     #ifndef SR_NO_RECORD_EQUALITY
-    /* returns true, if the other record contains the same data */
+    /** \brief Checks whether another instance contains the same data.
+     *
+     * \param other   the other record to compare with
+     * \return Returns true, if @other contains the same data as instance.
+     *         Returns false otherwise.
+     */
     bool equals(const SimplifiedReferenceRecord& other) const;
     #endif
 
     #ifndef SR_UNSAVEABLE_RECORDS
-    /* returns the size in bytes that the record's data would occupy in a file
-       stream, NOT including the header data
-
-       remarks:
-           This function will always return zero.
-           See the remarks on saveToStream() for a further explanation.
-    */
+    /** \brief Gets the size in bytes that the record's data would occupy in a file
+     *         stream, NOT including the header data.
+     *
+     * \return Returns the size in bytes that the record would need. Size of the
+     *         header is not included.
+     */
     virtual uint32_t getWriteSize() const;
 
-    /* writes the record to the given output stream and returns true on success
-
-      parameters:
-          output   - the output stream
-
-      remarks:
-          This function will always return false, because the
-           SimplifiedReferenceRecord class cannot be saved to stream. Saving the
-           incomplete data that is available in this record would result in an
-           unreadable or invalid record, at least for the original Skyrim
-           engine. Therefore, saveToStream() does nothing and returns false.
-    */
+    /** \brief Writes the record to the given output stream.
+     *
+     * \param output  the output stream
+     * \return Returns true on success (record was written to stream).
+     *         Returns false, if an error occurred.
+     * \remarks This only works, if the deleted flag is set. Otherwise the
+     *          record does not have the required data to save it.
+     */
     virtual bool saveToStream(std::ostream& output) const;
     #endif
 
-    /* loads the record from the given input stream and returns true on success
-
-      parameters:
-          in_File   - the input stream
-          localized - whether the file to read from is localized or not
-          table     - the associated string table for localized files
-    */
+    /** \brief Loads the record from the given input stream.
+     *
+     * \param in_File    the input stream
+     * \param localized  whether the file to read from is localized or not
+     * \param table      the associated string table for localized files
+     * \return Returns true on success (record was loaded from stream).
+     *         Returns false, if an error occurred.
+     */
     virtual bool loadFromStream(std::istream& in_File, const bool localized, const StringTable& table);
 
-    /* returns the record's type, usually its header */
+    /** \brief Gets the record's type, usually its header.
+     *
+     * \return Returns the record's type.
+     */
     virtual uint32_t getRecordType() const;
 
     uint32_t baseObjectFormID;
-}; //struct
+}; // struct
 
-} //namespace
+} // namespace
 
 #endif // SR_SIMPLIFIEDREFERENCERECORD_HPP

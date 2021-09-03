@@ -20,6 +20,7 @@ set(component_tests_sources
     ../../sr/base/records/ApparatusRecord.cpp
     ../../sr/base/records/BasicRecord.cpp
     ../../sr/base/records/BinarySubRecord.cpp
+    ../../sr/base/records/BinarySubRecordExtended.cpp
     ../../sr/base/records/CTDAData.cpp
     ../../sr/base/records/ComponentData.cpp
     ../../sr/base/records/EffectBlock.cpp
@@ -48,6 +49,7 @@ set(component_tests_sources
     sr/base/records/AddOnNodeRecord.cpp
     sr/base/records/ApparatusRecord.cpp
     sr/base/records/BinarySubRecord.cpp
+    sr/base/records/BinarySubRecordExtended.cpp
     sr/base/records/CTDAData.cpp
     sr/base/records/CTDA_CISx_compound.cpp
     sr/base/records/ComponentData.cpp

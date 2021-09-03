@@ -56,13 +56,26 @@ coverage:
     - ctest -V
     # collect code coverage data
     - gcovr --xml-pretty --exclude-unreachable-branches --print-summary -o coverage.xml --root ${CI_PROJECT_DIR}
-#    - lcov -c --directory . --output-file main_coverage.info
-#    - genhtml main_coverage.info --output-directory ../public
+    - lcov -c --directory . --output-file main_coverage.info
+    - lcov --remove main_coverage.info '/usr/include/*' '*tests/*' -o main_coverage_filtered.info
+    - genhtml main_coverage_filtered.info --output-directory ../public
   coverage: /^\s*lines:\s*\d+.\d+\%/
   artifacts:
     name: ${CI_JOB_NAME}-${CI_COMMIT_REF_NAME}-${CI_COMMIT_SHA}
     expire_in: 2 days
     reports:
       cobertura: build-coverage/coverage.xml
-#    paths:
-#      - public
+    paths:
+      - public
+
+pages:
+  image: debian:11-slim
+  stage: deploy
+  needs: ["coverage"]
+  dependencies:
+  - coverage
+  script:
+    - ls -l
+  artifacts:
+    paths:
+      - public

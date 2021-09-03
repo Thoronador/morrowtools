@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2013  Thoronador
+    Copyright (C) 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -55,6 +55,14 @@ uint32_t SimplifiedReferenceRecord::getWriteSize() const
 
 bool SimplifiedReferenceRecord::saveToStream(std::ostream& output) const
 {
+  // Only the header can be written correctly, and only when the deleted flag
+  // is set. For all other cases, the record does not have all the required
+  // data.
+  if (isDeleted())
+  {
+    output.write(reinterpret_cast<const char*>(&cREFR), 4);
+    return saveSizeAndUnknownValues(output, 0);
+  }
   #warning This record type is not writable!
   std::cerr << "Error: Simplified reference records cannot be saved to stream!\n";
   return false;

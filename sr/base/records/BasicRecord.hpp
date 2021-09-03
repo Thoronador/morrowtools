@@ -61,7 +61,7 @@ struct BasicRecord
     */
     virtual bool loadFromStream(std::istream& in_File, const bool localized, const StringTable& table) = 0;
 
-    /* returns true, if the record is a generic record (see GenericRecord.h) */
+    /* returns true, if the record is a generic record (see GenericRecord.hpp) */
     virtual bool isGenericRecord() const;
 
     /* returns the record's type, usually its header */

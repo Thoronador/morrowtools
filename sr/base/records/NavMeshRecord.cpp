@@ -59,16 +59,16 @@ uint32_t NavMeshRecord::getWriteSize() const
 
   if (unknownNVNM.isPresent())
   {
-    if (unknownNVNM.getSize() < 65536)
+    if (unknownNVNM.size() < 65536)
     {
-      writeSize = writeSize + 4 /* NVNM */ + 2 /* 2 bytes for length */ + unknownNVNM.getSize() /* size */;
+      writeSize = writeSize + 4 /* NVNM */ + 2 /* 2 bytes for length */ + unknownNVNM.size() /* size */;
     }
     else
     {
-      writeSize = writeSize +4 /* XXXX */ +2 /* 2 bytes for length */ +4 /* fixed size */
-                 +4 /* NVNM */ +2 /* 2 bytes for length */ +unknownNVNM.getSize() /* size */;
+      writeSize = writeSize + 4 /* XXXX */ + 2 /* 2 bytes for length */ + 4 /* fixed size */
+                 + 4 /* NVNM */ + 2 /* 2 bytes for length */ + unknownNVNM.size() /* size */;
     }
-  }//if NVNM
+  }
 
   if (unknownONAM.isPresent())
   {
@@ -233,7 +233,7 @@ bool NavMeshRecord::loadFromStream(std::istream& in_File, const bool localized, 
              }
              sizeXXXX = 0;
            }//else - load extended version of subrecord
-           bytesRead += (2 /*length value*/ +unknownNVNM.getSize() /*data size*/);
+           bytesRead += (2 /* length value */ + unknownNVNM.size() /* data size */);
            break;
       case cXXXX:
            if (sizeXXXX!=0)

@@ -60,7 +60,6 @@ WorldSpaceRecord::WorldSpaceRecord()
   unknownXWEM(""),
   unknownOFST(BinarySubRecordExtended())
 {
-
 }
 
 WorldSpaceRecord::~WorldSpaceRecord()
@@ -217,16 +216,16 @@ uint32_t WorldSpaceRecord::getWriteSize() const
   }
   if (unknownOFST.isPresent())
   {
-    if (unknownOFST.getSize()<65536)
+    if (unknownOFST.size() < 65536)
     {
-      writeSize = writeSize +4 /* OFST */ +2 /* 2 bytes for length */ +unknownOFST.getSize() /* size */;
+      writeSize = writeSize + 4 /* OFST */ + 2 /* 2 bytes for length */ + unknownOFST.size() /* size */;
     }
     else
     {
-      writeSize = writeSize +4 /* XXXX */ +2 /* 2 bytes for length */ +4 /* fixed size */
-                 +4 /* OFST */ +2 /* 2 bytes for length */ +unknownOFST.getSize() /* size */;
+      writeSize = writeSize + 4 /* XXXX */ + 2 /* 2 bytes for length */ + 4 /* fixed size */
+                 + 4 /* OFST */ + 2 /* 2 bytes for length */ + unknownOFST.size() /* size */;
     }
-  }//if OFST
+  }
   return writeSize;
 }
 
@@ -1121,7 +1120,7 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
              sizeXXXX = 0;
            }//else - load extended version of subrecord
 
-           bytesRead = bytesRead +2 /*length value*/ +unknownOFST.getSize() /*data size*/;
+           bytesRead = bytesRead + 2 /* length value */ + unknownOFST.size() /* data size */;
            break;
       default:
            std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)

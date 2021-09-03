@@ -94,7 +94,7 @@ struct BinarySubRecord
     void setPresence(const bool presence_flag);
 
     #ifndef SR_UNSAVEABLE_RECORDS
-    /** \brief Writes the record to the given output stream.
+    /** \brief Writes the sub record to the given output stream.
      *
      * \param output       the output stream
      * \param subHeader    the sub record's header

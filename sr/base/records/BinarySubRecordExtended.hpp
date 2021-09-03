@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012 Thoronador
+    Copyright (C) 2012, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,75 +27,122 @@
 namespace SRTP
 {
 
+/** Holds data of a subrecord as BLOB. As a difference to the BinarySubRecord
+ *  the BinarySubRecordExtended can read subrecords that are larger than
+ *  65535 bytes. Since the Skyrim ESM format only allows subrecords up to
+ *  65535 bytes, it uses a hack: The size is set to zero, but it adds an
+ *  additional subrecord with XXXX header that contains the real size as an
+ *  32 bit integer.
+ */
 struct BinarySubRecordExtended
 {
   public:
-    /* constructor */
+    /** Constructor, creates an empty record. */
     BinarySubRecordExtended();
 
-    /* copy constructor */
+    /** Copy constructor.
+     *
+     * \param op  the other record to copy from
+     */
     BinarySubRecordExtended(const BinarySubRecordExtended& op);
 
-    /* assignment operator */
+    /** Assignment operator. */
     BinarySubRecordExtended& operator=(const BinarySubRecordExtended& other);
 
-    /* comparison operator */
+    /** \brief Compares two BinarySubRecordExtended instances for equality.
+     *
+     * \param other   the other BinarySubRecord to compare to
+     * \return Returns true, if @other is equal to this instance.
+     *         Returns false otherwise.
+     */
     bool operator==(const BinarySubRecordExtended& other) const;
 
-    /* comparison operator */
+    /** \brief Checks two BinarySubRecord instances for inequality.
+     *
+     * \param other   the other BinarySubRecordExtended to compare to
+     * \return Returns true, if @other is not equal to this instance.
+     *         Returns false otherwise.
+     */
     bool operator!=(const BinarySubRecordExtended& other) const;
 
-    /* destructor */
+    /** Destructor. */
     ~BinarySubRecordExtended();
 
-    /* returns size of the internal data in bytes */
-    uint32_t getSize() const;
+    /** \brief Gets the size of the internal data in bytes.
+     *
+     * \return Returns size of the internal data in bytes.
+     *         This may be zero, if no internal data is present.
+     */
+    uint32_t size() const;
 
-    /* returns pointer to the internal data */
-    const uint8_t* getPointer() const;
+    /** \brief Gets a pointer to the internal data.
+     *
+     * \return Returns a pointer to the internal data.
+     *         Note that this pointer may be a null pointer if there is no data.
+     *         Use isPresent() to check whether pointer is valid first.
+     */
+    const uint8_t* data() const;
 
-    /* returns true, if the presence flag is set */
+    /** \brief Indicates whether the record is present and has data.
+     *
+     * \return Returns true, if the record is present and has data.
+     *         Returns false otherwise.
+     * \remarks If this returns false, then the functions getting the size and
+     *          the internal data pointer may return unexpected values like zero
+     *          or null pointers. In that case do not rely on their values.
+     */
     bool isPresent() const;
 
-    /* sets the subrecord's presence flag */
+    /** \brief Sets the subrecord's presence flag.
+     *
+     * \param presence_flag  new value of the flag (true == present, false == absent)
+     */
     void setPresence(const bool presence_flag);
 
     #ifndef SR_UNSAVEABLE_RECORDS
-    /* writes the sub record to the given output stream and returns true on success
-
-      parameters:
-          output    - the output stream
-          subHeader - the sub record's header
-    */
+    /** \brief Writes the sub record to the given output stream.
+     *
+     * \param output       the output stream
+     * \param subHeader    the sub record's header
+     * \return Returns true on success.
+     *         Returns false, if an error occurred.
+     * \remarks If the subrecord's presence flag is false, this method does not
+     *          write any data to the stream.
+     */
     bool saveToStream(std::ostream& output, const uint32_t subHeader) const;
     #endif
 
-    /* loads the sub record from the given input stream and returns true on success
-
-      parameters:
-          in_File    - the input stream
-          subHeader  - the sub record's header
-          withHeader - if set to true, it will read the header, too. If set to
-                       false, it will begin with the length bytes.
-    */
+    /** \brief Loads the sub record from the given input stream.
+     *
+     * \param in_File       the input stream
+     * \param subHeader     the sub record's header
+     * \param withHeader    whether the sub record's header has to be read, too;
+     *                      If set to true, the method will read the header,
+     *                      too. If set to false, it will begin with the length
+     *                      bytes of the sub record.
+     * \return Returns true on success (sub record was loaded from stream).
+     *         Returns false, if an error occurred.
+     */
     bool loadFromStream(std::istream& in_File, const uint32_t subHeader, const bool withHeader);
 
-    /* loads the sub record from the given input stream and returns true on success
-
-      parameters:
-          in_File    - the input stream
-          subHeader  - the sub record's header
-          withHeader - if set to true, it will read the header, too. If set to
-                       false, it will begin with the length bytes.
-          realSize   - the subrecord's real size, as read from the previous XXXX subrecord
-    */
+    /** \brief Loads an extended sub record (>64 KiB) from the given input stream.
+     *
+     * \param in_File       the input stream
+     * \param subHeader     the sub record's header
+     * \param withHeader    whether the sub record's header has to be read, too;
+     *                      If set to true, the method will read the header,
+     *                      too. If set to false, it will begin with the length
+     *                      bytes of the sub record.
+     * \param realSize      the subrecord's real size, as read from the previous
+     *                      XXXX subrecord
+     */
     bool loadFromStreamExtended(std::istream& in_File, const uint32_t subHeader, const bool withHeader, const uint32_t realSize);
   protected:
-    uint8_t* m_Pointer;
-    uint32_t m_Size;
-    bool m_Present;
-}; //struct
+    uint8_t* m_Data; /**< pointer to internal BLOB, may be nullptr */
+    uint32_t m_Size; /**< size of the internal data, may be zero if there's no data */
+    bool m_Present;  /**< flag to indicate whether subrecord has a value */
+}; // struct
 
-} //namespace
+} // namespace
 
 #endif // SR_BINARYSUBRECORDEXTENDED_HPP

@@ -492,9 +492,39 @@ TEST_CASE("Tes4HeaderRecord")
       REQUIRE( streamOut.str() == data );
     }
 
+    SECTION("corrupt data: stream ends before full header can be read")
+    {
+      const std::string_view data = "TES4\x2C\0\0\0\x81\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read TES4, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      Tes4HeaderRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: no HEDR")
     {
       const std::string_view data = "TES4\x2C\0\0\0\x81\0\0\0\0\0\0\0\0\0\0\0\x28\0\0\0FAIL\x0C\0\xD7\xA3\x70\x3F\x78\x0A\x0E\x00\x92\x0F\0\0CNAM\x0A\0mcarofano\0INTV\x04\0\xC5\x26\x01\x00"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read TES4, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      Tes4HeaderRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: stream ends before full HEDR can be read")
+    {
+      const std::string_view data = "TES4\x2C\0\0\0\x81\0\0\0\0\0\0\0\0\0\0\0\x28\0\0\0HEDR\x0C\0\xD7\xA3\x70\x3F"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 
@@ -552,9 +582,69 @@ TEST_CASE("Tes4HeaderRecord")
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
+    SECTION("corrupt data: multiple ONAM")
+    {
+      const std::string_view data = "TES4\xF6\0\0\0\x81\0\0\0\0\0\0\0\0\0\0\0\x2B\0\0\0HEDR\x0C\0\x9A\x99\xD9\x3F\x69\x05\0\0\xDF\x09\x00\xFF\x43NAM\x09\0bnesmith\0MAST\x0B\0Skyrim.esm\0DATA\x08\0\0\0\0\0\0\0\0\0ONAM\x9C\0\xFE\x48\x07\x00\xA4\xFE\x10\x00\x9B\xF4\x0D\x00\x5E\x6D\x0A\x00\x04\x8A\x0E\x00\xA0\xFE\x10\x00\x71\x6D\x0A\x00\x65\xBA\x09\x00\xA7\xFE\x10\x00\x46\xE9\x0F\x00\x27\x4D\x10\x00\x60\x6D\x0A\x00\xAC\x0E\x0C\x00\x72\x6D\x0A\x00\x74\xBA\x09\x00\x50\xE9\x0F\x00\x60\xBD\x02\x00\xA3\xFE\x10\x00\xD9\x0E\x0C\x00\xA6\xFE\x10\x00\xE9\x6C\x10\x00\x79\x19\x08\x00\x61\x6D\x0A\x00\xA2\xFE\x10\x00\x73\x6D\x0A\x00\xEF\x89\x0E\x00\x48\xE9\x0F\x00\x6C\xBA\x09\x00\x2D\x4F\x0C\x00\xD2\x2E\x10\x00\xEA\x6C\x10\x00\x2F\xEF\x09\x00\xA5\xFE\x10\x00\x4B\xE9\x0F\x00\x5F\x6D\x0A\x00\xEC\x89\x0E\x00\x70\x6D\x0A\x00\xA1\xFE\x10\x00\xD2\x9C\x10\0ONAM\x04\0\x21\0\0\0ONAM\x04\0\x17\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read TES4, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      Tes4HeaderRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of ONAM is not a multiple of four")
+    {
+      const std::string_view data = "TES4\x6B\0\0\0\x81\0\0\0\0\0\0\0\0\0\0\0\x2B\0\0\0HEDR\x0C\0\x9A\x99\xD9\x3F\x69\x05\0\0\xDF\x09\x00\xFF\x43NAM\x09\0bnesmith\0MAST\x0B\0Skyrim.esm\0DATA\x08\0\0\0\0\0\0\0\0\0ONAM\x07\0\xFE\x48\x07\x00\xA4\xFE\x10INCC\x04\0\x17\0\0\0INTV\x04\0\xC5\x26\x01\x00"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read TES4, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      Tes4HeaderRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: no INTV")
     {
       const std::string_view data = "TES4\x2C\0\0\0\x81\0\0\0\0\0\0\0\0\0\0\0\x28\0\0\0HEDR\x0C\0\xD7\xA3\x70\x3F\x78\x0A\x0E\x00\x92\x0F\0\0CNAM\x0A\0mcarofano\0FAIL\x04\0\xC5\x26\x01\x00"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read TES4, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      Tes4HeaderRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: missing INTV")
+    {
+      const std::string_view data = "TES4\x22\0\0\0\x81\0\0\0\0\0\0\0\0\0\0\0\x28\0\0\0HEDR\x0C\0\xD7\xA3\x70\x3F\x78\x0A\x0E\x00\x92\x0F\0\0CNAM\x0A\0mcarofano\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read TES4, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      Tes4HeaderRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple INTV")
+    {
+      const std::string_view data = "TES4\x36\0\0\0\x81\0\0\0\0\0\0\0\0\0\0\0\x28\0\0\0HEDR\x0C\0\xD7\xA3\x70\x3F\x78\x0A\x0E\x00\x92\x0F\0\0CNAM\x0A\0mcarofano\0INTV\x04\0\xC5\x26\x01\x00INTV\x04\0\xC5\x26\x01\x00"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 

@@ -322,6 +322,21 @@ TEST_CASE("TalkingActivatorRecord")
       REQUIRE( streamOut.str() == data );
     }
 
+    SECTION("corrupt data: stream too short to read even header data")
+    {
+      const std::string_view data = "TACT\xAE\0\0\0\0\0\0\0\xE8\xC4\x01\0\x1B\x69\x55\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read TACT, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      TalkingActivatorRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: no EDID")
     {
       const std::string_view data = "TACT\xAE\0\0\0\0\0\0\0\xE8\xC4\x01\0\x1B\x69\x55\0\x28\0\x08\0FAIL\x17\0DA03ClavicusVileShrine\0OBND\x0C\0\x74\xFF\x6D\xFF\x03\xFF\x8C\0\x93\0\xFD\0FULL\x04\0\xE0\xA1\0\0MODL\x29\0Clutter\\Statues\\ClavicusVileShrine01.nif\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\xF9\x20\x9B\x23\x64\x64\x73\0\xE0\x4D\xF5\xD7\x63\x54\x39\x69\x64\x64\x73\0\xE0\x4D\xF5\xD7PNAM\x04\0\0\0\0\0FNAM\x02\0\0\0VNAM\x04\0\xA4\x8C\x02\0"sv;
@@ -413,9 +428,39 @@ TEST_CASE("TalkingActivatorRecord")
       }
     }
 
+    SECTION("corrupt data: stream ends before OBND's length")
+    {
+      const std::string_view data = "TACT\xAE\0\0\0\0\0\0\0\xE8\xC4\x01\0\x1B\x69\x55\0\x28\0\x08\0EDID\x17\0DA03ClavicusVileShrine\0OBND\x0C\0\x74\xFF\x6D\xFF\x03\xFF\x8C\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read TACT, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      TalkingActivatorRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: no MODL")
     {
       const std::string_view data = "TACT\xAE\0\0\0\0\0\0\0\xE8\xC4\x01\0\x1B\x69\x55\0\x28\0\x08\0EDID\x17\0DA03ClavicusVileShrine\0OBND\x0C\0\x74\xFF\x6D\xFF\x03\xFF\x8C\0\x93\0\xFD\0FULL\x04\0\xE0\xA1\0\0FAIL\x29\0Clutter\\Statues\\ClavicusVileShrine01.nif\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\xF9\x20\x9B\x23\x64\x64\x73\0\xE0\x4D\xF5\xD7\x63\x54\x39\x69\x64\x64\x73\0\xE0\x4D\xF5\xD7PNAM\x04\0\0\0\0\0FNAM\x02\0\0\0VNAM\x04\0\xA4\x8C\x02\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read TACT, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      TalkingActivatorRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: missing MODL entry")
+    {
+      const std::string_view data = "TACT\x7F\0\0\0\0\0\0\0\xE8\xC4\x01\0\x1B\x69\x55\0\x28\0\x08\0EDID\x17\0DA03ClavicusVileShrine\0OBND\x0C\0\x74\xFF\x6D\xFF\x03\xFF\x8C\0\x93\0\xFD\0FULL\x04\0\xE0\xA1\0\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\xF9\x20\x9B\x23\x64\x64\x73\0\xE0\x4D\xF5\xD7\x63\x54\x39\x69\x64\x64\x73\0\xE0\x4D\xF5\xD7PNAM\x04\0\0\0\0\0FNAM\x02\0\0\0VNAM\x04\0\xA4\x8C\x02\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 
@@ -458,6 +503,51 @@ TEST_CASE("TalkingActivatorRecord")
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
+    SECTION("corrupt data: multiple MODL entries")
+    {
+      const std::string_view data = "TACT\xB4\0\0\0\0\0\0\0\xE8\xC4\x01\0\x1B\x69\x55\0\x28\0\x08\0EDID\x17\0DA03ClavicusVileShrine\0OBND\x0C\0\x74\xFF\x6D\xFF\x03\xFF\x8C\0\x93\0\xFD\0FULL\x04\0\xE0\xA1\0\0MODL\x29\0Clutter\\Statues\\ClavicusVileShrine01.nif\0MODL\x29\0Clutter\\Statues\\ClavicusVileShrine01.nif\0PNAM\x04\0\0\0\0\0FNAM\x02\0\0\0VNAM\x04\0\xA4\x8C\x02\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read TACT, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      TalkingActivatorRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: empty MODL")
+    {
+      const std::string_view data = "TACT\x86\0\0\0\0\0\0\0\xE8\xC4\x01\0\x1B\x69\x55\0\x28\0\x08\0EDID\x17\0DA03ClavicusVileShrine\0OBND\x0C\0\x74\xFF\x6D\xFF\x03\xFF\x8C\0\x93\0\xFD\0FULL\x04\0\xE0\xA1\0\0MODL\x01\0\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\xF9\x20\x9B\x23\x64\x64\x73\0\xE0\x4D\xF5\xD7\x63\x54\x39\x69\x64\x64\x73\0\xE0\x4D\xF5\xD7PNAM\x04\0\0\0\0\0FNAM\x02\0\0\0VNAM\x04\0\xA4\x8C\x02\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read TACT, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      TalkingActivatorRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple MODT entries")
+    {
+      const std::string_view data = "TACT\xAE\0\0\0\0\0\0\0\xE8\xC4\x01\0\x1B\x69\x55\0\x28\0\x08\0EDID\x17\0DA03ClavicusVileShrine\0OBND\x0C\0\x74\xFF\x6D\xFF\x03\xFF\x8C\0\x93\0\xFD\0FULL\x04\0\xE0\xA1\0\0MODL\x29\0Clutter\\Statues\\ClavicusVileShrine01.nif\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\xF9\x20\x9B\x23\x64\x64\x73\0\xE0\x4D\xF5\xD7\x63\x54\x39\x69\x64\x64\x73\0\xE0\x4D\xF5\xD7MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\xF9\x20\x9B\x23\x64\x64\x73\0\xE0\x4D\xF5\xD7\x63\x54\x39\x69\x64\x64\x73\0\xE0\x4D\xF5\xD7PNAM\x04\0\0\0\0\0FNAM\x02\0\0\0VNAM\x04\0\xA4\x8C\x02\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read TACT, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      TalkingActivatorRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: length of PNAM is not four")
     {
       {
@@ -487,6 +577,21 @@ TEST_CASE("TalkingActivatorRecord")
         TalkingActivatorRecord record;
         REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
       }
+    }
+
+    SECTION("corrupt data: multiple PNAM entries")
+    {
+      const std::string_view data = "TACT\xAE\0\0\0\0\0\0\0\xE8\xC4\x01\0\x1B\x69\x55\0\x28\0\x08\0EDID\x17\0DA03ClavicusVileShrine\0OBND\x0C\0\x74\xFF\x6D\xFF\x03\xFF\x8C\0\x93\0\xFD\0FULL\x04\0\xE0\xA1\0\0MODL\x29\0Clutter\\Statues\\ClavicusVileShrine01.nif\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\xF9\x20\x9B\x23\x64\x64\x73\0\xE0\x4D\xF5\xD7\x63\x54\x39\x69\x64\x64\x73\0\xE0\x4D\xF5\xD7PNAM\x04\0\0\0\0\0FNAM\x02\0\0\0PNAM\x04\0\xA4\x8C\x02\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read TACT, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      TalkingActivatorRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
     SECTION("corrupt data: length of FNAM is not two")
@@ -549,6 +654,21 @@ TEST_CASE("TalkingActivatorRecord")
         TalkingActivatorRecord record;
         REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
       }
+    }
+
+    SECTION("corrupt data: multiple VNAM entries")
+    {
+      const std::string_view data = "TACT\xAE\0\0\0\0\0\0\0\xE8\xC4\x01\0\x1B\x69\x55\0\x28\0\x08\0EDID\x17\0DA03ClavicusVileShrine\0OBND\x0C\0\x74\xFF\x6D\xFF\x03\xFF\x8C\0\x93\0\xFD\0FULL\x04\0\xE0\xA1\0\0MODL\x29\0Clutter\\Statues\\ClavicusVileShrine01.nif\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\xF9\x20\x9B\x23\x64\x64\x73\0\xE0\x4D\xF5\xD7\x63\x54\x39\x69\x64\x64\x73\0\xE0\x4D\xF5\xD7VNAM\x04\0\xA4\x8C\x02\0FNAM\x02\0\0\0VNAM\x04\0\xA4\x8C\x02\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read TACT, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      TalkingActivatorRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
   }
 

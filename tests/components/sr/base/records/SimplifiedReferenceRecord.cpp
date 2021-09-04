@@ -188,6 +188,51 @@ TEST_CASE("SimplifiedReferenceRecord")
       REQUIRE( record.baseObjectFormID == 0xAF0201F6 );
     }
 
+    SECTION("corrupt data: not enough stream data to read header")
+    {
+      const std::string_view data = "REFR\x28\0\0\0\0\x80\0\0\x0C\x44\x10\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read REFR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      SimplifiedReferenceRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: not enough stream data to skip a non-NAME entry")
+    {
+      const std::string_view data = "REFR\x28\0\0\0\0\x80\0\0\x0C\x44\x10\0\x18\x66\x47\0\x25\0\0\0DATA\x18\0\xEE\x25NAME\x04\0\xF6\x01\x02\x03"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read REFR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      SimplifiedReferenceRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: not enough stream data to skip stuff after NAME (wrong length in header)")
+    {
+      const std::string_view data = "REFR\x28\0\0\0\0\x80\0\0\x0C\x44\x10\0\x18\x66\x47\0\x25\0\0\0NAME\x04\0\xF6\x01\x02\0    "sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read REFR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      SimplifiedReferenceRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: no NAME")
     {
       const std::string_view data = "REFR\x28\0\0\0\0\x80\0\0\x0C\x44\x10\0\x18\x66\x47\0\x25\0\0\0FAIL\x04\0\xF6\x01\x02\0DATA\x18\0\xEE\x25\xE1\xC4\x24\xAE\xC4\xC5\x9E\x7C\x0C\x45\x1A\x63\x4A\xBE\xD6\x2D\x80\xBE\x98\x56\xE8\x3E"sv;

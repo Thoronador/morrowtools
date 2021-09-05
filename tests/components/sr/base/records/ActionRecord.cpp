@@ -119,6 +119,46 @@ TEST_CASE("ActionRecord")
       REQUIRE( record.editorID == "ActionShieldChange" );
     }
 
+    SECTION("special: load deleted record")
+    {
+      const std::string_view data = "AACT\0\0\0\0\x20\0\0\0\x65\x40\x09\0\x11\x60\x0C\0\x1F\0\x01\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read AACT, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      ActionRecord record;
+      REQUIRE( record.loadFromStream(stream, true, dummy_table) );
+      // Check data.
+      // -- header
+      REQUIRE( record.isDeleted() );
+      REQUIRE( record.headerFlags == 0x20 );
+      REQUIRE( record.headerFormID == 0x00094065 );
+      REQUIRE( record.headerRevision == 0x000C6011 );
+      REQUIRE( record.headerVersion == 31 );
+      REQUIRE( record.headerUnknown5 == 0x0001 );
+      // -- record data
+      REQUIRE( record.editorID.empty() );
+    }
+
+    SECTION("corrupt data: stream ends before header can be read")
+    {
+      const std::string_view data = "AACT\x19\0\0\0\0\0\0\0\x65\x40\x09\0\x11"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read AACT, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ActionRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: no EDID")
     {
       const std::string_view data = "AACT\x19\0\0\0\0\0\0\0\x65\x40\x09\0\x11\x60\x0C\0\x1F\0\x01\0FAIL\x13\0ActionShieldChange\0"sv;

@@ -302,6 +302,21 @@ TEST_CASE("AcousticSpaceRecord")
       REQUIRE( record.environmentTypeFormID == 0x000FD92A );
     }
 
+    SECTION("corrupt data: stream ends before header can be read")
+    {
+      const std::string_view data = "ASPC\x64\0\0\0\0\0\0\0\x0D\xF9\x10\0\x05"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read ASPC, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      AcousticSpaceRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: no EDID")
     {
       const std::string_view data = "ASPC\x64\0\0\0\0\0\0\0\x0D\xF9\x10\0\x05\x68\x27\x00\x27\x00\x02\0FAIL\x2E\0IntRoomWoodLargeTempleOfKynarethAcousticSpace\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0SNAM\x04\0\x08\x5D\x0C\0RDAT\x04\0\x0E\xF9\x10\0BNAM\x04\0\x46\x32\x0E\0"sv;
@@ -350,6 +365,21 @@ TEST_CASE("AcousticSpaceRecord")
     SECTION("corrupt data: no OBND")
     {
       const std::string_view data = "ASPC\x46\0\0\0\0\0\0\0\x9E\xFE\x10\0\x12\x68\x38\0\x28\0\x01\0EDID\x24\0ExtMQFlashbackInteriorAcousticSpace\0FAIL\x0C\0\x24\xFA\x24\xFA\x59\xFE\xDC\x05\xDC\x05\xA7\x01\x42NAM\x04\0\x2A\xD9\x0F\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read ASPC, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      AcousticSpaceRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: stream end in the middle of OBND")
+    {
+      const std::string_view data = "ASPC\x46\0\0\0\0\0\0\0\x9E\xFE\x10\0\x12\x68\x38\0\x28\0\x01\0EDID\x24\0ExtMQFlashbackInteriorAcousticSpace\0OBND\x0C\0\x24\xFA\x24\xFA\x59\xFE"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 

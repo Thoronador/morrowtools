@@ -197,6 +197,21 @@ TEST_CASE("KeywordRecord")
       REQUIRE( record.unknownCNAM.value_or(0) == 0 );
     }
 
+    SECTION("corrupt data: stream end before header can be read")
+    {
+      const std::string_view data = "KYWD\x10\0\0\0\0\0\0\0\xC3\xC6"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read KYWD, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      KeywordRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, false, dummy_table) );
+    }
+
     SECTION("corrupt data: no EDID")
     {
       const std::string_view data = "KYWD\x10\0\0\0\0\0\0\0\xC3\xC6\x09\0\x06\x64\x61\0\x23\0\x01\0FAIL\x0A\0isSmelter\0"sv;

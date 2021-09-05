@@ -38,8 +38,8 @@ TEST_CASE("GenericRecord")
     GenericRecord record;
 
     REQUIRE( record.Header == 0 );
-    REQUIRE( record.getDataSize() == 0 );
-    REQUIRE( record.getDataPointer() == nullptr );
+    REQUIRE( record.size() == 0 );
+    REQUIRE( record.data() == nullptr );
   }
 
   SECTION("isGenericRecord")
@@ -76,7 +76,7 @@ TEST_CASE("GenericRecord")
         streamIn.read(reinterpret_cast<char*>(&dummy), 4);
         // Reading should succeed.
         REQUIRE( record.loadFromStream(streamIn, true, dummy_table) );
-        REQUIRE( record.getWriteSize() == record.getDataSize() );
+        REQUIRE( record.getWriteSize() == record.size() );
         REQUIRE( record.getWriteSize() == 25 );
       }
 
@@ -89,7 +89,7 @@ TEST_CASE("GenericRecord")
         streamIn.read(reinterpret_cast<char*>(&dummy), 4);
         // Reading should succeed.
         REQUIRE( record.loadFromStream(streamIn, true, dummy_table) );
-        REQUIRE( record.getWriteSize() == record.getDataSize() );
+        REQUIRE( record.getWriteSize() == record.size() );
         REQUIRE( record.getWriteSize() == 27 );
       }
     }
@@ -118,9 +118,9 @@ TEST_CASE("GenericRecord")
       REQUIRE( record.loadFromStream(streamIn, true, dummy_table) );
       record.Header = cAACT;
       // Check data.
-      REQUIRE( record.getDataSize() == 25 );
-      REQUIRE( record.getDataPointer() != nullptr );
-      const auto view = std::string_view(reinterpret_cast<const char*>(record.getDataPointer()), record.getDataSize());
+      REQUIRE( record.size() == 25 );
+      REQUIRE( record.data() != nullptr );
+      const auto view = std::string_view(reinterpret_cast<const char*>(record.data()), record.size());
       REQUIRE( view == data.substr(24) );
 
       // Saving should succeed.
@@ -226,14 +226,14 @@ TEST_CASE("GenericRecord")
       REQUIRE( b.equals(a) );
 
       // Size should be equal, but pointers should not be equal.
-      REQUIRE( a.getDataSize() == b.getDataSize() );
-      REQUIRE( a.getDataPointer() != nullptr );
-      REQUIRE( b.getDataPointer() != nullptr );
-      REQUIRE( a.getDataPointer() != b.getDataPointer() );
+      REQUIRE( a.size() == b.size() );
+      REQUIRE( a.data() != nullptr );
+      REQUIRE( b.data() != nullptr );
+      REQUIRE( a.data() != b.data() );
       // However, the pointed to content should be equal.
-      for (unsigned int i = 0; i < a.getDataSize(); ++i)
+      for (unsigned int i = 0; i < a.size(); ++i)
       {
-        REQUIRE( a.getDataPointer()[i] == b.getDataPointer()[i] );
+        REQUIRE( a.data()[i] == b.data()[i] );
       }
     }
 
@@ -261,17 +261,17 @@ TEST_CASE("GenericRecord")
       REQUIRE_FALSE( b.equals(a) );
 
       // Size should be equal, but pointers should not be equal.
-      REQUIRE( a.getDataSize() == b.getDataSize() );
-      REQUIRE( a.getDataPointer() != nullptr );
-      REQUIRE( b.getDataPointer() != nullptr );
-      REQUIRE( a.getDataPointer() != b.getDataPointer() );
+      REQUIRE( a.size() == b.size() );
+      REQUIRE( a.data() != nullptr );
+      REQUIRE( b.data() != nullptr );
+      REQUIRE( a.data() != b.data() );
       // However, the pointed to content should partially be equal.
-      REQUIRE( a.getDataPointer()[0] == b.getDataPointer()[0] );
-      REQUIRE( a.getDataPointer()[1] == b.getDataPointer()[1] );
-      REQUIRE( a.getDataPointer()[2] == b.getDataPointer()[2] );
-      REQUIRE( a.getDataPointer()[3] == b.getDataPointer()[3] );
-      REQUIRE( a.getDataPointer()[4] == b.getDataPointer()[4] );
-      REQUIRE( a.getDataPointer()[5] == b.getDataPointer()[5] );
+      REQUIRE( a.data()[0] == b.data()[0] );
+      REQUIRE( a.data()[1] == b.data()[1] );
+      REQUIRE( a.data()[2] == b.data()[2] );
+      REQUIRE( a.data()[3] == b.data()[3] );
+      REQUIRE( a.data()[4] == b.data()[4] );
+      REQUIRE( a.data()[5] == b.data()[5] );
     }
 
     SECTION("non-empty record and empty record")
@@ -291,9 +291,9 @@ TEST_CASE("GenericRecord")
       REQUIRE_FALSE( a.equals(b) );
       REQUIRE_FALSE( b.equals(a) );
 
-      REQUIRE( a.getDataSize() != b.getDataSize() );
-      REQUIRE( a.getDataPointer() != nullptr );
-      REQUIRE( b.getDataPointer() == nullptr );
+      REQUIRE( a.size() != b.size() );
+      REQUIRE( a.data() != nullptr );
+      REQUIRE( b.data() == nullptr );
     }
   }
 
@@ -310,12 +310,12 @@ TEST_CASE("GenericRecord")
 
     // load first AACT
     REQUIRE( a.loadFromStream(stream, true, dummy_table) );
-    const auto firstPointer = a.getDataPointer();
+    const auto firstPointer = a.data();
 
     // load second AACT
     stream.read(reinterpret_cast<char*>(&dummy), 4);
     REQUIRE( a.loadFromStream(stream, true, dummy_table) );
-    const auto secondPointer = a.getDataPointer();
+    const auto secondPointer = a.data();
 
     REQUIRE( firstPointer != secondPointer );
   }

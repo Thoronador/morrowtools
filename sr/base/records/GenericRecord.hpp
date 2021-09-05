@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,72 +26,91 @@
 namespace SRTP
 {
 
+/** Record type that holds the whole record as BLOB. */
 struct GenericRecord: public BasicRecord
 {
   public:
-    /* constructor */
+    /** Constructor, creates an empty record. */
     GenericRecord();
 
-    /* copy constructor */
+    /** Copy constructor. */
     GenericRecord(const GenericRecord& other);
 
-    /* assignment operator */
+    /** assignment operator */
     GenericRecord& operator=(const GenericRecord& other);
 
-    /* destructor */
+    /** Destructor. */
     virtual ~GenericRecord();
 
     #ifndef SR_NO_RECORD_EQUALITY
-    /* returns true, if the other record contains the same data */
+    /** \brief Checks whether another instance contains the same data.
+     *
+     * \param other   the other record to compare with
+     * \return Returns true, if @other contains the same data as instance.
+     *         Returns false otherwise.
+     */
     bool equals(const GenericRecord& other) const;
     #endif
 
     #ifndef SR_UNSAVEABLE_RECORDS
-    /* returns the size in bytes that the record's data would occupy in a file
-       stream, NOT including the header data
-    */
+    /** \brief Gets the size in bytes that the record's data would occupy in a file
+     *         stream, NOT including the header data.
+     *
+     * \return Returns the size in bytes that the record would need. Size of the
+     *         header is not included.
+     */
     virtual uint32_t getWriteSize() const;
 
-    /* writes the record to the given output stream and returns true on success
-
-      parameters:
-          output   - the output stream
-    */
+    /** \brief Writes the record to the given output stream.
+     *
+     * \param output  the output stream
+     * \return Returns true on success (record was written to stream).
+     *         Returns false, if an error occurred.
+     */
     virtual bool saveToStream(std::ostream& output) const;
     #endif
 
-    /* loads the record from the given input stream and returns true on success
-
-      parameters:
-          in_File   - the input stream
-          localized - whether the file to read from is localized or not
-          table     - the associated string table for localized files
-    */
+    /** \brief Loads the record from the given input stream.
+     *
+     * \param in_File    the input stream
+     * \param localized  whether the file to read from is localized or not
+     * \param table      the associated string table for localized files
+     * \return Returns true on success (record was loaded from stream).
+     *         Returns false, if an error occurred.
+     */
     virtual bool loadFromStream(std::istream& in_File, const bool localized, const StringTable& table);
 
-    /* returns true, if the record is a generic record (see GenericRecord.h) */
+    /** \brief Returns true, because this is the GenericRecord class.
+     *
+     * \return Returns true.
+     */
     virtual bool isGenericRecord() const;
 
-    /* returns the record's type, usually its header */
+    /** \brief Gets the record's type, usually its header.
+     *
+     * \return Returns the record's type.
+     */
     virtual uint32_t getRecordType() const;
 
-    /* returns a pointer to the record data
+    /** \brief Gets a pointer to the record data.
+     *
+     * \return Returns a pointer to the record data.
+     * \remark Can be nullptr, if no data was read yet.
+     */
+    const unsigned char* data() const;
 
-       remarks:
-           Can be NULL; if no data was read yet.
-    */
-    const unsigned char* getDataPointer() const;
+    /** \brief Gets the size of the data in bytes.
+     *
+     * \return Returns the size of the data in bytes.
+     */
+    uint32_t size() const;
 
-    /* returns the size of the data in bytes */
-    uint32_t getDataSize() const;
-
-    /* holds the header for the record */
-    uint32_t Header;
+    uint32_t Header; /**< holds the header for the record */
   protected:
-    uint32_t m_DataSize;
-    unsigned char* m_Data;
-}; //struct
+    uint32_t m_Size; /**< size of the data */
+    unsigned char* m_Data; /**< data pointer */
+}; // struct
 
-} //namespace
+} // namespace
 
 #endif // SR_GENERICRECORD_HPP

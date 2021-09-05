@@ -206,6 +206,22 @@ TEST_CASE("LocalizedString")
       REQUIRE_FALSE( localized.isPresent() );
     }
 
+    SECTION("saving uninitialized string (type none) to stream")
+    {
+      LocalizedString localized;
+      REQUIRE( localized.getType() == LocalizedString::Type::None );
+      REQUIRE_FALSE( localized.isPresent() );
+
+      // Check write size.
+      REQUIRE( localized.getWriteSize() == 0 );
+
+      // Write data to stream.
+      std::ostringstream stream_out;
+      REQUIRE( stream_out.good() );
+      REQUIRE( localized.saveToStream(stream_out, cTNAM) );
+      REQUIRE( stream_out.str().empty() );
+    }
+
     SECTION("corrupt data: localized indexed string with mismatched header")
     {
       const std::string_view data = "FULL\x04\0\x7c\x26\x01\0"sv;
@@ -234,9 +250,33 @@ TEST_CASE("LocalizedString")
       REQUIRE_FALSE( localized.isPresent() );
     }
 
+    SECTION("corrupt data: localized indexed string with header and short stream")
+    {
+      const std::string_view data = "FULL\x04\0\x7c\x26"sv;
+      std::istringstream stream_in;
+      stream_in.str(std::string(data));
+
+      table.addString(0x0000267C, "foo bar");
+
+      // Reading should succeed.
+      LocalizedString localized;
+      REQUIRE_FALSE( localized.loadFromStream(stream_in, cFULL, true, bytesRead, true, table, nullptr) );
+    }
+
+    SECTION("corrupt table: localized indexed string with header has no matching index in table")
+    {
+      const std::string_view data = "FULL\x04\0\x7c\x26\x01\0"sv;
+      std::istringstream stream_in;
+      stream_in.str(std::string(data));
+
+      // Reading should fail.
+      LocalizedString localized;
+      REQUIRE_FALSE( localized.loadFromStream(stream_in, cFULL, true, bytesRead, true, table, nullptr) );
+    }
+
     SECTION("corrupt data: plain string with header and length > 512")
     {
-      const std::string_view data = "FULL\x2A\0foo bar 3\0"sv;
+      const std::string_view data = "FULL\x02\x02Noo bar 3\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 
@@ -248,7 +288,7 @@ TEST_CASE("LocalizedString")
 
     SECTION("corrupt data: plain string without header and length > 512")
     {
-      const std::string_view data = "FULL\x2B\0foo bar 42\0"sv;
+      const std::string_view data = "FULL\x01\x02Noo bar 42\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 
@@ -271,6 +311,18 @@ TEST_CASE("LocalizedString")
       // Reading should fail.
       LocalizedString localized;
       REQUIRE_FALSE( localized.loadFromStream(stream, cFULL, true, bytesRead, false, table, buffer) );
+      REQUIRE_FALSE( localized.isPresent() );
+    }
+
+    SECTION("corrupt data: plain string with header has wrong length")
+    {
+      const std::string_view data = "FULL\x0B\0foo bar 3\0"sv;
+      std::istringstream stream_in;
+      stream_in.str(std::string(data));
+
+      // Reading should fail.
+      LocalizedString localized;
+      REQUIRE_FALSE( localized.loadFromStream(stream_in, cFULL, true, bytesRead, false, table, buffer) );
       REQUIRE_FALSE( localized.isPresent() );
     }
   }

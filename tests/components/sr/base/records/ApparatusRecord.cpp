@@ -216,6 +216,21 @@ TEST_CASE("ApparatusRecord")
       REQUIRE( record.weight == 0 );
     }
 
+    SECTION("corrupt data: stream ends before header data can be read completely")
+    {
+      const std::string_view data = "APPA\x54\0\0\0\0\0\0\0\xA7\x32\x03\0\x1B\x69"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read APPA, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ApparatusRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: no EDID")
     {
       const std::string_view data = "APPA\x54\0\0\0\0\0\0\0\xA7\x32\x03\0\x1B\x69\x55\0\x28\0\x03\0FAIL\x10\0Alembic01Novice\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0\x31\xBE\0\0QUAL\x04\0\0\0\0\0DESC\x04\0\0\0\0\0DATA\x08\0\0\0\0\0\0\0\0\0"sv;
@@ -307,6 +322,36 @@ TEST_CASE("ApparatusRecord")
       }
     }
 
+    SECTION("corrupt data: stream ends before OBND can be read")
+    {
+      const std::string_view data = "APPA\x54\0\0\0\0\0\0\0\xA7\x32\x03\0\x1B\x69\x55\0\x28\0\x03\0EDID\x10\0Alembic01Novice\0OBND\x0C\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read APPA, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ApparatusRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: stream ends before FULL can be read completely")
+    {
+      const std::string_view data = "APPA\x54\0\0\0\0\0\0\0\xA7\x32\x03\0\x1B\x69\x55\0\x28\0\x03\0EDID\x10\0Alembic01Novice\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0\x31\xBE"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read APPA, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ApparatusRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: no QUAL")
     {
       const std::string_view data = "APPA\x54\0\0\0\0\0\0\0\xA7\x32\x03\0\x1B\x69\x55\0\x28\0\x03\0EDID\x10\0Alembic01Novice\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0\x31\xBE\0\0FAIL\x04\0\0\0\0\0DESC\x04\0\0\0\0\0DATA\x08\0\0\0\0\0\0\0\0\0"sv;
@@ -353,6 +398,36 @@ TEST_CASE("ApparatusRecord")
       }
     }
 
+    SECTION("corrupt data: stream ends before QUAL can be read completely")
+    {
+      const std::string_view data = "APPA\x54\0\0\0\0\0\0\0\xA7\x32\x03\0\x1B\x69\x55\0\x28\0\x03\0EDID\x10\0Alembic01Novice\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0\x31\xBE\0\0QUAL\x04\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read APPA, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ApparatusRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: stream ends before DESC can be read completely")
+    {
+      const std::string_view data = "APPA\x54\0\0\0\0\0\0\0\xA7\x32\x03\0\x1B\x69\x55\0\x28\0\x03\0EDID\x10\0Alembic01Novice\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0\x31\xBE\0\0QUAL\x04\0\0\0\0\0DESC\x04\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read APPA, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ApparatusRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: no DATA")
     {
       const std::string_view data = "APPA\x54\0\0\0\0\0\0\0\xA7\x32\x03\0\x1B\x69\x55\0\x28\0\x03\0EDID\x10\0Alembic01Novice\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0\x31\xBE\0\0QUAL\x04\0\0\0\0\0DESC\x04\0\0\0\0\0FAIL\x08\0\0\0\0\0\0\0\0\0"sv;
@@ -397,6 +472,21 @@ TEST_CASE("ApparatusRecord")
         ApparatusRecord record;
         REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
       }
+    }
+
+    SECTION("corrupt data: stream ends before DATA can be read completely")
+    {
+      const std::string_view data = "APPA\x54\0\0\0\0\0\0\0\xA7\x32\x03\0\x1B\x69\x55\0\x28\0\x03\0EDID\x10\0Alembic01Novice\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0\x31\xBE\0\0QUAL\x04\0\0\0\0\0DESC\x04\0\0\0\0\0DATA\x08\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read APPA, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ApparatusRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
   }
 

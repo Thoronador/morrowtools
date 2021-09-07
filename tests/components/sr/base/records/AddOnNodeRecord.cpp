@@ -268,6 +268,21 @@ TEST_CASE("AddOnNodeRecord")
       REQUIRE( streamOut.str() == data );
     }
 
+    SECTION("corrupt data: cannot read header data")
+    {
+      const std::string_view data = "ADDN\x78\0\0\0\0\0\0\0\xB0\xC2\x01\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read ADDN, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      AddOnNodeRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: no EDID")
     {
       const std::string_view data = "ADDN\x78\0\0\0\0\0\0\0\xB0\xC2\x01\0\x13\x67\x0E\0\x27\0\x02\0FAIL\x10\0MPSFireWallBase\0OBND\x0C\0\0\x80\0\x80\0\x80\xFF\x7F\xFF\x7F\xFF\x7FMODL\x18\0MPS\\MPSFireWallBase.nif\0MODT\x18\0\x12\x77\x91\x7C\x64\x64\x73\0\x38\x97\x3C\xEA\xA8\x21\xF6\x78\x64\x64\x73\0\x58\x2C\x55\x33\x44\x41TA\x04\0\x03\0\0\0DNAM\x04\0\0\0\x01\0"sv;
@@ -328,6 +343,21 @@ TEST_CASE("AddOnNodeRecord")
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
+    SECTION("corrupt data: stream ends before OBND can be read completely")
+    {
+      const std::string_view data = "ADDN\x78\0\0\0\0\0\0\0\xB0\xC2\x01\0\x13\x67\x0E\0\x27\0\x02\0EDID\x10\0MPSFireWallBase\0OBND\x0C\0\0\x80\0\x80\0\x80"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read ADDN, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      AddOnNodeRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: length of OBND is not twelve")
     {
       const std::string_view data = "ADDN\x78\0\0\0\0\0\0\0\xB0\xC2\x01\0\x13\x67\x0E\0\x27\0\x02\0EDID\x10\0MPSFireWallBase\0OBND\x0D\0\0\x80\0\x80\0\x80\xFF\x7F\xFF\x7F\xFF\x7FMODL\x18\0MPS\\MPSFireWallBase.nif\0MODT\x18\0\x12\x77\x91\x7C\x64\x64\x73\0\x38\x97\x3C\xEA\xA8\x21\xF6\x78\x64\x64\x73\0\x58\x2C\x55\x33\x44\x41TA\x04\0\x03\0\0\0DNAM\x04\0\0\0\x01\0"sv;
@@ -373,9 +403,39 @@ TEST_CASE("AddOnNodeRecord")
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
+    SECTION("corrupt data: stream ends before MODT can be read completely")
+    {
+      const std::string_view data = "ADDN\x78\0\0\0\0\0\0\0\xB0\xC2\x01\0\x13\x67\x0E\0\x27\0\x02\0EDID\x10\0MPSFireWallBase\0OBND\x0C\0\0\x80\0\x80\0\x80\xFF\x7F\xFF\x7F\xFF\x7FMODL\x18\0MPS\\MPSFireWallBase.nif\0MODT\x18\0\x12\x77"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read ADDN, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      AddOnNodeRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: no DATA")
     {
       const std::string_view data = "ADDN\x78\0\0\0\0\0\0\0\xB0\xC2\x01\0\x13\x67\x0E\0\x27\0\x02\0EDID\x10\0MPSFireWallBase\0OBND\x0C\0\0\x80\0\x80\0\x80\xFF\x7F\xFF\x7F\xFF\x7FMODL\x18\0MPS\\MPSFireWallBase.nif\0MODT\x18\0\x12\x77\x91\x7C\x64\x64\x73\0\x38\x97\x3C\xEA\xA8\x21\xF6\x78\x64\x64\x73\0\x58\x2C\x55\x33\x46\x41IL\x04\0\x03\0\0\0DNAM\x04\0\0\0\x01\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read ADDN, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      AddOnNodeRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: missing DATA subrecord")
+    {
+      const std::string_view data = "ADDN\x6E\0\0\0\0\0\0\0\xB0\xC2\x01\0\x13\x67\x0E\0\x27\0\x02\0EDID\x10\0MPSFireWallBase\0OBND\x0C\0\0\x80\0\x80\0\x80\xFF\x7F\xFF\x7F\xFF\x7FMODL\x18\0MPS\\MPSFireWallBase.nif\0MODT\x18\0\x12\x77\x91\x7C\x64\x64\x73\0\x38\x97\x3C\xEA\xA8\x21\xF6\x78\x64\x64\x73\0\x58\x2C\x55\x33\x44NAM\x04\0\0\0\x01\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 
@@ -406,6 +466,21 @@ TEST_CASE("AddOnNodeRecord")
     SECTION("corrupt data: no DNAM")
     {
       const std::string_view data = "ADDN\x78\0\0\0\0\0\0\0\xB0\xC2\x01\0\x13\x67\x0E\0\x27\0\x02\0EDID\x10\0MPSFireWallBase\0OBND\x0C\0\0\x80\0\x80\0\x80\xFF\x7F\xFF\x7F\xFF\x7FMODL\x18\0MPS\\MPSFireWallBase.nif\0MODT\x18\0\x12\x77\x91\x7C\x64\x64\x73\0\x38\x97\x3C\xEA\xA8\x21\xF6\x78\x64\x64\x73\0\x58\x2C\x55\x33\x44\x41TA\x04\0\x03\0\0\0FAIL\x04\0\0\0\x01\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read ADDN, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      AddOnNodeRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: missing DNAM subrecord")
+    {
+      const std::string_view data = "ADDN\x6E\0\0\0\0\0\0\0\xB0\xC2\x01\0\x13\x67\x0E\0\x27\0\x02\0EDID\x10\0MPSFireWallBase\0OBND\x0C\0\0\x80\0\x80\0\x80\xFF\x7F\xFF\x7F\xFF\x7FMODL\x18\0MPS\\MPSFireWallBase.nif\0MODT\x18\0\x12\x77\x91\x7C\x64\x64\x73\0\x38\x97\x3C\xEA\xA8\x21\xF6\x78\x64\x64\x73\0\x58\x2C\x55\x33\x44\x41TA\x04\0\x03\0\0\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 
@@ -462,5 +537,13 @@ TEST_CASE("AddOnNodeRecord")
       const std::string_view data = "ADDN\0\0\0\0\x20\0\0\0\xB0\xC2\x01\0\x13\x67\x0E\0\x27\0\x02\0"sv;
       REQUIRE( stream.str() == data );
     }
+  }
+
+  SECTION("alwaysLoaded")
+  {
+    AddOnNodeRecord record;
+    REQUIRE_FALSE( record.alwaysLoaded() );
+    record.flags |= AddOnNodeRecord::cFlagAlwaysLoaded;
+    REQUIRE( record.alwaysLoaded() );
   }
 }

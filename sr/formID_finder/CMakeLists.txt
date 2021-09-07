@@ -83,8 +83,19 @@ if (MINGW AND CMAKE_HOST_UNIX)
   # a cross-compiling attempt. To get the library paths more easily, we just set
   # them directly, because CMake has troubles finding them.
   message(STATUS "Cross-compiling from Linux for Windows ...")
-  include_directories( /usr/i686-w64-mingw32/include/ )
-  link_directories( /usr/i686-w64-mingw32/lib )
+  try_compile(BUILDS_FOR_WIN64
+              ${CMAKE_CURRENT_SOURCE_DIR}/win64-test
+              ${CMAKE_CURRENT_SOURCE_DIR}/../../win64-compile-test
+              formID_finder-win64-test)
+  if (BUILDS_FOR_WIN64)
+    message(STATUS "Cross-compiling for 64-bit Windows ...")
+    include_directories( /usr/x86_64-w64-mingw32/include/ )
+    link_directories( /usr/x86_64-w64-mingw32/lib )
+  else ()
+    message(STATUS "Cross-compiling for 32-bit Windows ...")
+    include_directories( /usr/i686-w64-mingw32/include/ )
+    link_directories( /usr/i686-w64-mingw32/lib )
+  endif ()
   target_link_libraries (formID_finder z)
 else()
   # use default method to find zlib

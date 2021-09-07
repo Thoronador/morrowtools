@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2013  Thoronador
+    Copyright (C) 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -29,45 +29,57 @@
 namespace SRTP
 {
 
+/** Contains data about one destruction stage. */
 struct DestructionStage
 {
   public:
-    /* constructor */
+    /** Constructor, creates an empty stage. */
     DestructionStage();
 
     #ifndef SR_NO_RECORD_EQUALITY
-    /* comparison operator */
+    /** \brief Checks whether another instance contains the same data.
+     *
+     * \param other   the other stage to compare with
+     * \return Returns true, if @other contains the same data as instance.
+     *         Returns false otherwise.
+     */
     bool operator==(const DestructionStage& other) const;
     #endif
 
     #ifndef SR_UNSAVEABLE_RECORDS
-    /* returns the size in bytes that the DestructionStage's data would occupy
-       in a file stream
-    */
+    /** \brief Gets the size in bytes that the DestructionStage's data would
+     *         occupy in a file stream.
+     *
+     * \return Returns the size in bytes that the stage would need.
+     */
     uint32_t getWriteSize() const;
 
-    /* writes the DestructionStage to the given output stream and returns true
-       on success
-
-       parameters:
-           output - the output stream
-    */
+    /** \brief Writes the DestructionStage to the given output stream.
+     *
+     * \param output  the output stream
+     * \return Returns true on success (stage was written to stream).
+     *         Returns false, if an error occurred.
+     */
     bool saveToStream(std::ostream& output) const;
     #endif
 
-    /* clears all data members */
+    /** Clears all data members. */
     void reset();
 
-    /* returns true, if the data is reset to the initial state */
+    /** Checks whether all data is reset to the initial state.
+     *
+     * \return Returns true, if the data is reset to the initial state.
+     *         Returns false otherwise.
+     */
     inline bool isReset() const
     {
-      return (!unknownDSTD.isPresent() and replacementModel.empty() and !unknownDMDT.isPresent());
+      return !unknownDSTD.isPresent() && replacementModel.empty() && !unknownDMDT.isPresent();
     }
 
     BinarySubRecord unknownDSTD;
     std::string replacementModel;
     BinarySubRecord unknownDMDT;
-};//struct
+}; // struct
 
 struct DestructionData
 {

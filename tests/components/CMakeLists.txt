@@ -23,6 +23,7 @@ set(component_tests_sources
     ../../sr/base/records/BinarySubRecordExtended.cpp
     ../../sr/base/records/CTDAData.cpp
     ../../sr/base/records/ComponentData.cpp
+    ../../sr/base/records/DestructionData.cpp
     ../../sr/base/records/EffectBlock.cpp
     ../../sr/base/records/GenericRecord.cpp
     ../../sr/base/records/GroupData.cpp
@@ -54,6 +55,7 @@ set(component_tests_sources
     sr/base/records/CTDAData.cpp
     sr/base/records/CTDA_CISx_compound.cpp
     sr/base/records/ComponentData.cpp
+    sr/base/records/DestructionStage.cpp
     sr/base/records/EffectBlock.cpp
     sr/base/records/GenericRecord.cpp
     sr/base/records/GroupData.cpp

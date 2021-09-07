@@ -259,6 +259,21 @@ TEST_CASE("WordOfPowerRecord")
       REQUIRE( record.translated.getIndex() == 0 );
     }
 
+    SECTION("corrupt data: stream ends before header can be read")
+    {
+      const std::string_view data = "WOOP\x1F\0\0\0\0\0\0\0\xCB\x6A\x10"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read WOOP, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      WordOfPowerRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: no EDID")
     {
       const std::string_view data = "WOOP\x1F\0\0\0\0\0\0\0\xCB\x6A\x10\0\x1B\x69\x55\0\x28\0\x02\0FAIL\x0F\0DragonFakeWord\0TNAM\x04\0\0\0\0\0"sv;

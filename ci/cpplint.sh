@@ -23,20 +23,12 @@ then
   CXX=g++
 fi
 
-if [[ -x /usr/bin/xml2-config ]]
-then
-  CFLAGS=$(/usr/bin/xml2-config --cflags)
-else
-  # just use some standard path for libxml2 includes
-  CFLAGS="-I/usr/include/libxml2"
-fi
-
 # print $CXX version to see which version is used for syntax check
 $CXX --version
 echo
 
 # find all C++ files and run them through the compiler's syntax check
-find ./ \( -name '*.cpp' -o -name '*.hpp' -o -name '*.h' \) -print0 | xargs -0 -i $CXX $CFLAGS -std=c++17 -fsyntax-only -Wall {}
+find ./ \( \( -name '*.cpp' -a ! -path './win64-compile-test/main.cpp' \) -o -name '*.hpp' -o -name '*.h' \) -print0 | xargs -0 -i $CXX $CFLAGS -std=c++17 -fsyntax-only -Wall {}
 if [[ $? -ne 0 ]]
 then
   echo "Some source code files contain syntax errors!"

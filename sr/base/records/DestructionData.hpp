@@ -81,59 +81,64 @@ struct DestructionStage
     BinarySubRecord unknownDMDT;
 }; // struct
 
+/** Contains data about destruction stages of an object. */
 struct DestructionData
 {
   public:
-    /* constructor */
+    /** Constructor, creates empty / absent data. */
     DestructionData();
 
-    /* destructor */
-    ~DestructionData() {}
-
     #ifndef SR_NO_RECORD_EQUALITY
-    /* comparison operator */
+    /** \brief Checks whether another instance contains the same data.
+     *
+     * \param other   the other DestructionData instance to compare with
+     * \return Returns true, if @other contains the same data as instance.
+     *         Returns false otherwise.
+     */
     bool operator==(const DestructionData& other) const;
     #endif
 
     #ifndef SR_UNSAVEABLE_RECORDS
-    /* returns the size in bytes that the DestructionData would occupy in a
-       file stream
-    */
+    /** \brief Gets the size in bytes that the DestructionData would occupy
+     *         in a file stream.
+     *
+     * \return Returns the size in bytes that the data would need.
+     */
     uint32_t getWriteSize() const;
 
-    /* writes the DestructionData to the given output stream and returns true
-       on success
-
-       parameters:
-           output - the output stream
-    */
+    /** \brief Writes the DestructionData to the given output stream.
+     *
+     * \param output  the output stream
+     * \return Returns true on success (data was written to stream).
+     *         Returns false, if an error occurred.
+     */
     bool saveToStream(std::ostream& output) const;
     #endif
 
-    /* loads the DestructionData from the given input stream and returns true
-       on success
-
-       parameters:
-          in_File    - the input stream
-          recordType - type of the record the destruction data belongs to
-          buffer     - a pre-allocated array of char that can hold at least 512 bytes
-          bytesRead  - the variable that holds the number of bytes read so far
-    */
+    /** \brief Loads the DestructionData from the given input stream.
+     *
+     * \param in_File      the input stream
+     * \param recordType   type of the record the destruction data belongs to
+     * \param buffer       a pre-allocated array of char that can hold at least 512 bytes
+     * \param bytesRead    the variable that holds the number of bytes read so far
+     * \return Returns true on success (data was loaded from stream).
+     *         Returns false, if an error occurred.
+     */
     bool loadFromStream(std::istream& in_File, const uint32_t recordType, char * buffer, uint32_t& bytesRead);
 
-    /* clears all data members and sets the status to "not present" */
+    /** Clears all data members and sets the status to "not present". */
     void clear();
 
-    //subrecord DEST
+    // subrecord DEST
     bool isPresent;
     uint32_t health;
     uint8_t  stageCount;
     uint8_t  unknownTwo;
     uint16_t unknownThreeFour;
-    //end of subrecord DEST
+    // end of subrecord DEST
     std::vector<DestructionStage> stages;
-};//struct
+}; // struct
 
-} //namespace
+} // namespace
 
 #endif // SR_DESTRUCTIONDATA_HPP

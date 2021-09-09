@@ -104,7 +104,8 @@ void DestructionStage::reset()
 /* DestructionData's functions */
 
 DestructionData::DestructionData()
-: isPresent(false), health(0), stageCount(0), unknownTwo(0), unknownThreeFour(0),
+: isPresent(false),
+  health(0), stageCount(0), unknownTwo(0), unknownThreeFour(0),
   stages(std::vector<DestructionStage>())
 {
 }
@@ -116,9 +117,11 @@ bool DestructionData::operator==(const DestructionData& other) const
     return false;
   if (!isPresent)
     return true;
-  return ((health==other.health) and (stageCount==other.stageCount)
-      and (unknownTwo==other.unknownTwo) and (unknownThreeFour==other.unknownThreeFour)
-      and (stages==other.stages));
+  return (health == other.health)
+      && (stageCount == other.stageCount)
+      && (unknownTwo == other.unknownTwo)
+      && (unknownThreeFour == other.unknownThreeFour)
+      && (stages == other.stages);
 }
 #endif
 
@@ -128,9 +131,9 @@ uint32_t DestructionData::getWriteSize() const
   if (!isPresent)
     return 0;
   uint32_t writeSize = 4 /* DEST */ + 2 /* 2 bytes for length */ + 8 /* fixed size */;
-  for (unsigned int i = 0; i < stages.size(); ++i)
+  for (const auto& stage : stages)
   {
-    writeSize += stages[i].getWriteSize();
+    writeSize += stage.getWriteSize();
   }
   return writeSize;
 }
@@ -140,20 +143,19 @@ bool DestructionData::saveToStream(std::ostream& output) const
   if (!isPresent)
     return true;
   // write DEST
-  output.write((const char*) &cDEST, 4);
-  // DEST's length
+  output.write(reinterpret_cast<const char*>(&cDEST), 4);
   const uint16_t subLength = 8;
-  output.write((const char*) &subLength, 2);
-  // write DEST
-  output.write((const char*) &health, 4);
-  output.write((const char*) &stageCount, 1);
-  output.write((const char*) &unknownTwo, 1);
-  output.write((const char*) &unknownThreeFour, 2);
-  for (unsigned int i = 0; i < stages.size(); ++i)
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
+  // write DEST's data
+  output.write(reinterpret_cast<const char*>(&health), 4);
+  output.write(reinterpret_cast<const char*>(&stageCount), 1);
+  output.write(reinterpret_cast<const char*>(&unknownTwo), 1);
+  output.write(reinterpret_cast<const char*>(&unknownThreeFour), 2);
+  for (const auto& stage : stages)
   {
-    if (!stages[i].saveToStream(output))
+    if (!stage.saveToStream(output))
       return false;
-  }//for
+  }
   return output.good();
 }
 #endif
@@ -162,24 +164,25 @@ bool DestructionData::loadFromStream(std::istream& in_File, const uint32_t recor
 {
   // DEST's length
   uint16_t subLength = 0;
-  in_File.read((char*) &subLength, 2);
+  in_File.read(reinterpret_cast<char*>(&subLength), 2);
   bytesRead += 2;
-  if (subLength!=8)
+  if (subLength != 8)
   {
-    std::cerr << "Error: subrecord DEST of " <<IntTo4Char(recordType)
+    std::cerr << "Error: subrecord DEST of " << IntTo4Char(recordType)
               << " has invalid length (" << subLength
               << " bytes). Should be eight bytes.\n";
     return false;
   }
-  // read DEST
-  in_File.read((char*) &health, 4);
-  in_File.read((char*) &stageCount, 1);
-  in_File.read((char*) &unknownTwo, 1);
-  in_File.read((char*) &unknownThreeFour, 2);
+  // read DEST's data
+  in_File.read(reinterpret_cast<char*>(&health), 4);
+  in_File.read(reinterpret_cast<char*>(&stageCount), 1);
+  in_File.read(reinterpret_cast<char*>(&unknownTwo), 1);
+  in_File.read(reinterpret_cast<char*>(&unknownThreeFour), 2);
   bytesRead += 8;
   if (!in_File.good())
   {
-    std::cerr << "Error while reading subrecord DEST of "<<IntTo4Char(recordType)<<"!\n";
+    std::cerr << "Error while reading subrecord DEST of "
+              << IntTo4Char(recordType) << "!\n";
     return false;
   }
 
@@ -187,11 +190,11 @@ bool DestructionData::loadFromStream(std::istream& in_File, const uint32_t recor
   stages.clear();
   DestructionStage tempStage;
 
-  while (stages.size()<stageCount)
+  while (stages.size() < stageCount)
   {
     // read next record header
     uint32_t innerRecordName = 0;
-    in_File.read((char*) &innerRecordName, 4);
+    in_File.read(reinterpret_cast<char*>(&innerRecordName), 4);
     bytesRead += 4;
     switch (innerRecordName)
     {
@@ -215,7 +218,7 @@ bool DestructionData::loadFromStream(std::istream& in_File, const uint32_t recor
              return false;
            }
            // DMDL's length
-           in_File.read((char*) &subLength, 2);
+           in_File.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
            if (subLength > 511)
            {
@@ -256,9 +259,9 @@ bool DestructionData::loadFromStream(std::istream& in_File, const uint32_t recor
            break;
       case cDSTF:
            // DSTF's length
-           in_File.read((char*) &subLength, 2);
+           in_File.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
-           if (subLength!=0)
+           if (subLength != 0)
            {
              std::cerr << "Error: subrecord DSTF of " << IntTo4Char(recordType)
                        << " has invalid length (" << subLength
@@ -268,14 +271,16 @@ bool DestructionData::loadFromStream(std::istream& in_File, const uint32_t recor
            // push it, if not empty
            if (tempStage.isReset())
            {
-             std::cerr << "Error: " << IntTo4Char(recordType) << " seems to have an empty destruction stage!\n";
+             std::cerr << "Error: " << IntTo4Char(recordType)
+                       << " seems to have an empty destruction stage!\n";
              return false;
            }
            stages.push_back(tempStage);
            tempStage.reset();
            break;
       default:
-           std::cerr << "Error: found unexpected subrecord \"" << IntTo4Char(innerRecordName)
+           std::cerr << "Error: found unexpected subrecord \""
+                     << IntTo4Char(innerRecordName)
                      << "\", but only DSTD, DMDL, DMDT or DSTF are allowed here!\n";
            return false;
     }

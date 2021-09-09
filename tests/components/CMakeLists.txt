@@ -25,6 +25,7 @@ set(component_tests_sources
     ../../sr/base/records/ComponentData.cpp
     ../../sr/base/records/DestructionData.cpp
     ../../sr/base/records/EffectBlock.cpp
+    ../../sr/base/records/FloraRecord.cpp
     ../../sr/base/records/GenericRecord.cpp
     ../../sr/base/records/GroupData.cpp
     ../../sr/base/records/KeyRecord.cpp
@@ -58,6 +59,7 @@ set(component_tests_sources
     sr/base/records/DestructionData.cpp
     sr/base/records/DestructionStage.cpp
     sr/base/records/EffectBlock.cpp
+    sr/base/records/FloraRecord.cpp
     sr/base/records/GenericRecord.cpp
     sr/base/records/GroupData.cpp
     sr/base/records/KeyRecord.cpp

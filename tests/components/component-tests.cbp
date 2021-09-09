@@ -73,6 +73,8 @@
 		<Unit filename="../../sr/base/records/DestructionData.hpp" />
 		<Unit filename="../../sr/base/records/EffectBlock.cpp" />
 		<Unit filename="../../sr/base/records/EffectBlock.hpp" />
+		<Unit filename="../../sr/base/records/FloraRecord.cpp" />
+		<Unit filename="../../sr/base/records/FloraRecord.hpp" />
 		<Unit filename="../../sr/base/records/GenericRecord.cpp" />
 		<Unit filename="../../sr/base/records/GenericRecord.hpp" />
 		<Unit filename="../../sr/base/records/GroupData.cpp" />
@@ -119,6 +121,7 @@
 		<Unit filename="sr/base/records/DestructionData.cpp" />
 		<Unit filename="sr/base/records/DestructionStage.cpp" />
 		<Unit filename="sr/base/records/EffectBlock.cpp" />
+		<Unit filename="sr/base/records/FloraRecord.cpp" />
 		<Unit filename="sr/base/records/GenericRecord.cpp" />
 		<Unit filename="sr/base/records/GroupData.cpp" />
 		<Unit filename="sr/base/records/KeyRecord.cpp" />

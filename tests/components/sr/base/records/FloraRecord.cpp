@@ -408,6 +408,12 @@ TEST_CASE("FloraRecord")
       REQUIRE( record.ingredientFormID == 0x00034D32 );
       REQUIRE( record.harvestSoundFormID == 0x00100F88 );
       REQUIRE( record.unknownPFPC == 0x64646464 );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( record.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
     }
 
     SECTION("special: load deleted record")
@@ -494,6 +500,51 @@ TEST_CASE("FloraRecord")
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
+    SECTION("corrupt data: no OBND")
+    {
+      const std::string_view data = "FLOR\xC1\0\0\0\0\0\0\0\x2C\x4D\x03\0\x1B\x69\x55\0\x28\0\x0D\0EDID\x14\0HangingFrostMirriam\0FAIL\x0C\0\xEC\xFF\xEC\xFF\xD0\xFF\x14\0\x0E\0\x08\0FULL\x04\0\xBE\x0D\0\0MODL\x21\0Plants\\HangingFrostMirriam01.nif\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x8C\xF0\x72\x2A\x64\x64\x73\0\x13\x4C\x1E\xFA\xED\x02\xA2\xBD\x64\x64\x73\0\x13\x4C\x1E\xFAPNAM\x04\0\0\0\0\0RNAM\x04\0\x2F\x05\x01\0FNAM\x02\0\0\0PFIG\x04\0\x32\x4D\x03\0SNAM\x04\0\x88\x0F\x10\0PFPC\x04\0\x64\x64\x64\x64"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FLOR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      FloraRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: missing OBND")
+    {
+      const std::string_view data = "FLOR\xAF\0\0\0\0\0\0\0\x2C\x4D\x03\0\x1B\x69\x55\0\x28\0\x0D\0EDID\x14\0HangingFrostMirriam\0FULL\x04\0\xBE\x0D\0\0MODL\x21\0Plants\\HangingFrostMirriam01.nif\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x8C\xF0\x72\x2A\x64\x64\x73\0\x13\x4C\x1E\xFA\xED\x02\xA2\xBD\x64\x64\x73\0\x13\x4C\x1E\xFAPNAM\x04\0\0\0\0\0RNAM\x04\0\x2F\x05\x01\0FNAM\x02\0\0\0PFIG\x04\0\x32\x4D\x03\0SNAM\x04\0\x88\x0F\x10\0PFPC\x04\0\x64\x64\x64\x64"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FLOR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      FloraRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple OBND")
+    {
+      const std::string_view data = "FLOR\xD3\0\0\0\0\0\0\0\x2C\x4D\x03\0\x1B\x69\x55\0\x28\0\x0D\0EDID\x14\0HangingFrostMirriam\0OBND\x0C\0\xEC\xFF\xEC\xFF\xD0\xFF\x14\0\x0E\0\x08\0OBND\x0C\0\xEC\xFF\xEC\xFF\xD0\xFF\x14\0\x0E\0\x08\0FULL\x04\0\xBE\x0D\0\0MODL\x21\0Plants\\HangingFrostMirriam01.nif\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x8C\xF0\x72\x2A\x64\x64\x73\0\x13\x4C\x1E\xFA\xED\x02\xA2\xBD\x64\x64\x73\0\x13\x4C\x1E\xFAPNAM\x04\0\0\0\0\0RNAM\x04\0\x2F\x05\x01\0FNAM\x02\0\0\0PFIG\x04\0\x32\x4D\x03\0SNAM\x04\0\x88\x0F\x10\0PFPC\x04\0\x64\x64\x64\x64"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FLOR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      FloraRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: length of OBND is not 12")
     {
       {
@@ -555,9 +606,39 @@ TEST_CASE("FloraRecord")
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
+    SECTION("corrupt data: multiple FULL entries")
+    {
+      const std::string_view data = "FLOR\xCB\0\0\0\0\0\0\0\x2C\x4D\x03\0\x1B\x69\x55\0\x28\0\x0D\0EDID\x14\0HangingFrostMirriam\0OBND\x0C\0\xEC\xFF\xEC\xFF\xD0\xFF\x14\0\x0E\0\x08\0FULL\x04\0\xBE\x0D\0\0FULL\x04\0\xBE\x0D\0\0MODL\x21\0Plants\\HangingFrostMirriam01.nif\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x8C\xF0\x72\x2A\x64\x64\x73\0\x13\x4C\x1E\xFA\xED\x02\xA2\xBD\x64\x64\x73\0\x13\x4C\x1E\xFAPNAM\x04\0\0\0\0\0RNAM\x04\0\x2F\x05\x01\0FNAM\x02\0\0\0PFIG\x04\0\x32\x4D\x03\0SNAM\x04\0\x88\x0F\x10\0PFPC\x04\0\x64\x64\x64\x64"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FLOR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      FloraRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: length of MODL > 512")
     {
       const std::string_view data = "FLOR\xC1\0\0\0\0\0\0\0\x2C\x4D\x03\0\x1B\x69\x55\0\x28\0\x0D\0EDID\x14\0HangingFrostMirriam\0OBND\x0C\0\xEC\xFF\xEC\xFF\xD0\xFF\x14\0\x0E\0\x08\0FULL\x04\0\xBE\x0D\0\0MODL\x21\x02Plants\\HangingFrostMirriam01.nif\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x8C\xF0\x72\x2A\x64\x64\x73\0\x13\x4C\x1E\xFA\xED\x02\xA2\xBD\x64\x64\x73\0\x13\x4C\x1E\xFAPNAM\x04\0\0\0\0\0RNAM\x04\0\x2F\x05\x01\0FNAM\x02\0\0\0PFIG\x04\0\x32\x4D\x03\0SNAM\x04\0\x88\x0F\x10\0PFPC\x04\0\x64\x64\x64\x64"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FLOR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      FloraRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple model paths")
+    {
+      const std::string_view data = "FLOR\xCB\0\0\0\0\0\0\0\x2C\x4D\x03\0\x1B\x69\x55\0\x28\0\x0D\0EDID\x14\0HangingFrostMirriam\0OBND\x0C\0\xEC\xFF\xEC\xFF\xD0\xFF\x14\0\x0E\0\x08\0FULL\x04\0\xBE\x0D\0\0MODL\x21\0Plants\\HangingFrostMirriam01.nif\0MODL\x0A\0foo12.nif\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x8C\xF0\x72\x2A\x64\x64\x73\0\x13\x4C\x1E\xFA\xED\x02\xA2\xBD\x64\x64\x73\0\x13\x4C\x1E\xFAPNAM\x04\0\0\0\0\0RNAM\x04\0\x2F\x05\x01\0FNAM\x02\0\0\0PFIG\x04\0\x32\x4D\x03\0SNAM\x04\0\x88\x0F\x10\0PFPC\x04\0\x64\x64\x64\x64"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 
@@ -585,6 +666,36 @@ TEST_CASE("FloraRecord")
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
+    SECTION("corrupt data: multiple MODTs")
+    {
+      const std::string_view data = "FLOR\xEB\0\0\0\0\0\0\0\x2C\x4D\x03\0\x1B\x69\x55\0\x28\0\x0D\0EDID\x14\0HangingFrostMirriam\0OBND\x0C\0\xEC\xFF\xEC\xFF\xD0\xFF\x14\0\x0E\0\x08\0FULL\x04\0\xBE\x0D\0\0MODL\x21\0Plants\\HangingFrostMirriam01.nif\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x8C\xF0\x72\x2A\x64\x64\x73\0\x13\x4C\x1E\xFA\xED\x02\xA2\xBD\x64\x64\x73\0\x13\x4C\x1E\xFAMODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x8C\xF0\x72\x2A\x64\x64\x73\0\x13\x4C\x1E\xFA\xED\x02\xA2\xBD\x64\x64\x73\0\x13\x4C\x1E\xFAPNAM\x04\0\0\0\0\0RNAM\x04\0\x2F\x05\x01\0FNAM\x02\0\0\0PFIG\x04\0\x32\x4D\x03\0SNAM\x04\0\x88\x0F\x10\0PFPC\x04\0\x64\x64\x64\x64"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FLOR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      FloraRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: stream end before all of MODT can be read")
+    {
+      const std::string_view data = "FLOR\xC1\0\0\0\0\0\0\0\x2C\x4D\x03\0\x1B\x69\x55\0\x28\0\x0D\0EDID\x14\0HangingFrostMirriam\0OBND\x0C\0\xEC\xFF\xEC\xFF\xD0\xFF\x14\0\x0E\0\x08\0FULL\x04\0\xBE\x0D\0\0MODL\x21\0Plants\\HangingFrostMirriam01.nif\0MODT\x24\0\x02\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FLOR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      FloraRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: multiple PNAMs")
     {
       const std::string_view data = "FLOR\xCB\0\0\0\0\0\0\0\x2C\x4D\x03\0\x1B\x69\x55\0\x28\0\x0D\0EDID\x14\0HangingFrostMirriam\0OBND\x0C\0\xEC\xFF\xEC\xFF\xD0\xFF\x14\0\x0E\0\x08\0FULL\x04\0\xBE\x0D\0\0MODL\x21\0Plants\\HangingFrostMirriam01.nif\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x8C\xF0\x72\x2A\x64\x64\x73\0\x13\x4C\x1E\xFA\xED\x02\xA2\xBD\x64\x64\x73\0\x13\x4C\x1E\xFAPNAM\x04\0\0\0\0\0PNAM\x04\0\0\0\0\0RNAM\x04\0\x2F\x05\x01\0FNAM\x02\0\0\0PFIG\x04\0\x32\x4D\x03\0SNAM\x04\0\x88\x0F\x10\0PFPC\x04\0\x64\x64\x64\x64"sv;
@@ -600,9 +711,39 @@ TEST_CASE("FloraRecord")
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
+    SECTION("corrupt data: stream ends before all of PNAM can be read")
+    {
+      const std::string_view data = "FLOR\xC1\0\0\0\0\0\0\0\x2C\x4D\x03\0\x1B\x69\x55\0\x28\0\x0D\0EDID\x14\0HangingFrostMirriam\0OBND\x0C\0\xEC\xFF\xEC\xFF\xD0\xFF\x14\0\x0E\0\x08\0FULL\x04\0\xBE\x0D\0\0MODL\x21\0Plants\\HangingFrostMirriam01.nif\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x8C\xF0\x72\x2A\x64\x64\x73\0\x13\x4C\x1E\xFA\xED\x02\xA2\xBD\x64\x64\x73\0\x13\x4C\x1E\xFAPNAM\x04\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FLOR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      FloraRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: multiple RNAMs")
     {
       const std::string_view data = "FLOR\xCB\0\0\0\0\0\0\0\x2C\x4D\x03\0\x1B\x69\x55\0\x28\0\x0D\0EDID\x14\0HangingFrostMirriam\0OBND\x0C\0\xEC\xFF\xEC\xFF\xD0\xFF\x14\0\x0E\0\x08\0FULL\x04\0\xBE\x0D\0\0MODL\x21\0Plants\\HangingFrostMirriam01.nif\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x8C\xF0\x72\x2A\x64\x64\x73\0\x13\x4C\x1E\xFA\xED\x02\xA2\xBD\x64\x64\x73\0\x13\x4C\x1E\xFAPNAM\x04\0\0\0\0\0RNAM\x04\0\x2F\x05\x01\0RNAM\x04\0\x2F\x05\x01\0FNAM\x02\0\0\0PFIG\x04\0\x32\x4D\x03\0SNAM\x04\0\x88\x0F\x10\0PFPC\x04\0\x64\x64\x64\x64"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FLOR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      FloraRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: stream ends before all of RNAM can be read")
+    {
+      const std::string_view data = "FLOR\xC1\0\0\0\0\0\0\0\x2C\x4D\x03\0\x1B\x69\x55\0\x28\0\x0D\0EDID\x14\0HangingFrostMirriam\0OBND\x0C\0\xEC\xFF\xEC\xFF\xD0\xFF\x14\0\x0E\0\x08\0FULL\x04\0\xBE\x0D\0\0MODL\x21\0Plants\\HangingFrostMirriam01.nif\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x8C\xF0\x72\x2A\x64\x64\x73\0\x13\x4C\x1E\xFA\xED\x02\xA2\xBD\x64\x64\x73\0\x13\x4C\x1E\xFAPNAM\x04\0\0\0\0\0RNAM\x04\0\x2F\x05"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 
@@ -676,9 +817,39 @@ TEST_CASE("FloraRecord")
       }
     }
 
+    SECTION("corrupt data: stream ends before all of FNAM can be read")
+    {
+      const std::string_view data = "FLOR\xC1\0\0\0\0\0\0\0\x2C\x4D\x03\0\x1B\x69\x55\0\x28\0\x0D\0EDID\x14\0HangingFrostMirriam\0OBND\x0C\0\xEC\xFF\xEC\xFF\xD0\xFF\x14\0\x0E\0\x08\0FULL\x04\0\xBE\x0D\0\0MODL\x21\0Plants\\HangingFrostMirriam01.nif\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x8C\xF0\x72\x2A\x64\x64\x73\0\x13\x4C\x1E\xFA\xED\x02\xA2\xBD\x64\x64\x73\0\x13\x4C\x1E\xFAPNAM\x04\0\0\0\0\0RNAM\x04\0\x2F\x05\x01\0FNAM\x02\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FLOR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      FloraRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: multiple PFIGs")
     {
       const std::string_view data = "FLOR\xCB\0\0\0\0\0\0\0\x2C\x4D\x03\0\x1B\x69\x55\0\x28\0\x0D\0EDID\x14\0HangingFrostMirriam\0OBND\x0C\0\xEC\xFF\xEC\xFF\xD0\xFF\x14\0\x0E\0\x08\0FULL\x04\0\xBE\x0D\0\0MODL\x21\0Plants\\HangingFrostMirriam01.nif\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x8C\xF0\x72\x2A\x64\x64\x73\0\x13\x4C\x1E\xFA\xED\x02\xA2\xBD\x64\x64\x73\0\x13\x4C\x1E\xFAPNAM\x04\0\0\0\0\0RNAM\x04\0\x2F\x05\x01\0FNAM\x02\0\0\0PFIG\x04\0\x32\x4D\x03\0PFIG\x04\0\x32\x4D\x03\0SNAM\x04\0\x88\x0F\x10\0PFPC\x04\0\x64\x64\x64\x64"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FLOR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      FloraRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: stream ends before all of PFIG can be read")
+    {
+      const std::string_view data = "FLOR\xC1\0\0\0\0\0\0\0\x2C\x4D\x03\0\x1B\x69\x55\0\x28\0\x0D\0EDID\x14\0HangingFrostMirriam\0OBND\x0C\0\xEC\xFF\xEC\xFF\xD0\xFF\x14\0\x0E\0\x08\0FULL\x04\0\xBE\x0D\0\0MODL\x21\0Plants\\HangingFrostMirriam01.nif\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x8C\xF0\x72\x2A\x64\x64\x73\0\x13\x4C\x1E\xFA\xED\x02\xA2\xBD\x64\x64\x73\0\x13\x4C\x1E\xFAPNAM\x04\0\0\0\0\0RNAM\x04\0\x2F\x05\x01\0FNAM\x02\0\0\0PFIG\x04\0\x32\x4D"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 
@@ -721,6 +892,21 @@ TEST_CASE("FloraRecord")
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
+    SECTION("corrupt data: stream ends before all of SNAM can be read")
+    {
+      const std::string_view data = "FLOR\xC1\0\0\0\0\0\0\0\x2C\x4D\x03\0\x1B\x69\x55\0\x28\0\x0D\0EDID\x14\0HangingFrostMirriam\0OBND\x0C\0\xEC\xFF\xEC\xFF\xD0\xFF\x14\0\x0E\0\x08\0FULL\x04\0\xBE\x0D\0\0MODL\x21\0Plants\\HangingFrostMirriam01.nif\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x8C\xF0\x72\x2A\x64\x64\x73\0\x13\x4C\x1E\xFA\xED\x02\xA2\xBD\x64\x64\x73\0\x13\x4C\x1E\xFAPNAM\x04\0\0\0\0\0RNAM\x04\0\x2F\x05\x01\0FNAM\x02\0\0\0PFIG\x04\0\x32\x4D\x03\0SNAM\x04\0\x88\x0F"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FLOR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      FloraRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: SNAM is zero")
     {
       const std::string_view data = "FLOR\xC1\0\0\0\0\0\0\0\x2C\x4D\x03\0\x1B\x69\x55\0\x28\0\x0D\0EDID\x14\0HangingFrostMirriam\0OBND\x0C\0\xEC\xFF\xEC\xFF\xD0\xFF\x14\0\x0E\0\x08\0FULL\x04\0\xBE\x0D\0\0MODL\x21\0Plants\\HangingFrostMirriam01.nif\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x8C\xF0\x72\x2A\x64\x64\x73\0\x13\x4C\x1E\xFA\xED\x02\xA2\xBD\x64\x64\x73\0\x13\x4C\x1E\xFAPNAM\x04\0\0\0\0\0RNAM\x04\0\x2F\x05\x01\0FNAM\x02\0\0\0PFIG\x04\0\x32\x4D\x03\0SNAM\x04\0\0\0\0\0PFPC\x04\0\x64\x64\x64\x64"sv;
@@ -739,6 +925,21 @@ TEST_CASE("FloraRecord")
     SECTION("corrupt data: multiple PFPCs")
     {
       const std::string_view data = "FLOR\xCB\0\0\0\0\0\0\0\x2C\x4D\x03\0\x1B\x69\x55\0\x28\0\x0D\0EDID\x14\0HangingFrostMirriam\0OBND\x0C\0\xEC\xFF\xEC\xFF\xD0\xFF\x14\0\x0E\0\x08\0FULL\x04\0\xBE\x0D\0\0MODL\x21\0Plants\\HangingFrostMirriam01.nif\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x8C\xF0\x72\x2A\x64\x64\x73\0\x13\x4C\x1E\xFA\xED\x02\xA2\xBD\x64\x64\x73\0\x13\x4C\x1E\xFAPNAM\x04\0\0\0\0\0RNAM\x04\0\x2F\x05\x01\0FNAM\x02\0\0\0PFIG\x04\0\x32\x4D\x03\0SNAM\x04\0\x88\x0F\x10\0PFPC\x04\0\x64\x64\x64\x64PFPC\x04\0\x64\x64\x64\x64"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FLOR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      FloraRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: stream end before all of PFPC can be read")
+    {
+      const std::string_view data = "FLOR\xC1\0\0\0\0\0\0\0\x2C\x4D\x03\0\x1B\x69\x55\0\x28\0\x0D\0EDID\x14\0HangingFrostMirriam\0OBND\x0C\0\xEC\xFF\xEC\xFF\xD0\xFF\x14\0\x0E\0\x08\0FULL\x04\0\xBE\x0D\0\0MODL\x21\0Plants\\HangingFrostMirriam01.nif\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x8C\xF0\x72\x2A\x64\x64\x73\0\x13\x4C\x1E\xFA\xED\x02\xA2\xBD\x64\x64\x73\0\x13\x4C\x1E\xFAPNAM\x04\0\0\0\0\0RNAM\x04\0\x2F\x05\x01\0FNAM\x02\0\0\0PFIG\x04\0\x32\x4D\x03\0SNAM\x04\0\x88\x0F\x10\0PFPC\x04\0\x64\x64"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 

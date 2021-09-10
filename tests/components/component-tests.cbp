@@ -96,6 +96,8 @@
 		<Unit filename="../../sr/base/records/TES4HeaderRecord.hpp" />
 		<Unit filename="../../sr/base/records/TalkingActivatorRecord.cpp" />
 		<Unit filename="../../sr/base/records/TalkingActivatorRecord.hpp" />
+		<Unit filename="../../sr/base/records/TreeRecord.cpp" />
+		<Unit filename="../../sr/base/records/TreeRecord.hpp" />
 		<Unit filename="../../sr/base/records/WordOfPowerRecord.cpp" />
 		<Unit filename="../../sr/base/records/WordOfPowerRecord.hpp" />
 		<Unit filename="base/BufferStream.cpp" />
@@ -132,6 +134,7 @@
 		<Unit filename="sr/base/records/SimplifiedReferenceRecord.cpp" />
 		<Unit filename="sr/base/records/TalkingActivatorRecord.cpp" />
 		<Unit filename="sr/base/records/Tes4HeaderRecord.cpp" />
+		<Unit filename="sr/base/records/TreeRecord.cpp" />
 		<Unit filename="sr/base/records/WordOfPowerRecord.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />

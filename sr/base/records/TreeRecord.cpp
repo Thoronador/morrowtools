@@ -19,7 +19,6 @@
 */
 
 #include "TreeRecord.hpp"
-#include <cstring>
 #include <iostream>
 #include "../SR_Constants.hpp"
 #include "../../../mw/base/HelperIO.hpp"
@@ -28,34 +27,30 @@ namespace SRTP
 {
 
 TreeRecord::TreeRecord()
-: BasicRecord(), editorID(""),
+: BasicRecord(),
+  editorID(""),
+  unknownOBND(std::array<uint8_t, 12>({ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 })),
   modelPath(""),
   unknownMODT(BinarySubRecord()),
   ingredientFormID(0),
   harvestSoundFormID(0),
   unknownPFPC(0),
-  name(LocalizedString())
+  name(LocalizedString()),
+  unknownCNAM(std::array<uint8_t, 48>({ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }))
 {
-  memset(unknownOBND, 0, 12);
-  memset(unknownCNAM, 0, 48);
-}
-
-TreeRecord::~TreeRecord()
-{
-  //empty
 }
 
 #ifndef SR_NO_RECORD_EQUALITY
 bool TreeRecord::equals(const TreeRecord& other) const
 {
-  return ((equalsBasic(other)) and (editorID==other.editorID)
-      and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
-      and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
-      and (ingredientFormID==other.ingredientFormID)
-      and (harvestSoundFormID==other.harvestSoundFormID)
-      and (unknownPFPC==other.unknownPFPC)
-      and (name==other.name)
-      and (memcmp(unknownCNAM, other.unknownCNAM, 48)==0));
+  return equalsBasic(other) && (editorID == other.editorID)
+      && (unknownOBND == other.unknownOBND)
+      && (modelPath == other.modelPath) && (unknownMODT == other.unknownMODT)
+      && (ingredientFormID == other.ingredientFormID)
+      && (harvestSoundFormID == other.harvestSoundFormID)
+      && (unknownPFPC == other.unknownPFPC)
+      && (name == other.name)
+      && (unknownCNAM == other.unknownCNAM);
 }
 #endif
 
@@ -64,69 +59,63 @@ uint32_t TreeRecord::getWriteSize() const
 {
   if (isDeleted())
     return 0;
-  uint32_t writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
-        +editorID.length()+1 /* length of name +1 byte for NUL termination */
-        +4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed size */
-        +4 /* PFPC */ +2 /* 2 bytes for length */ +4 /* fixed size */
-        +4 /* CNAM */ +2 /* 2 bytes for length */ +48 /* fixed size */;
+  uint32_t writeSize = 4 /* EDID */ + 2 /* 2 bytes for length */
+        + editorID.length() + 1 /* length of name +1 byte for NUL termination */
+        + 4 /* OBND */ + 2 /* 2 bytes for length */ + 12 /* fixed size */
+        + 4 /* PFPC */ + 2 /* 2 bytes for length */ + 4 /* fixed size */
+        + 4 /* CNAM */ + 2 /* 2 bytes for length */ + 48 /* fixed size */;
   if (!modelPath.empty())
   {
-    writeSize = writeSize +4 /* MODL */ +2 /* 2 bytes for length */
-               +modelPath.length()+1 /* length of path +1 byte for NUL termination */;
+    writeSize = writeSize + 4 /* MODL */ + 2 /* 2 bytes for length */
+               + modelPath.length() + 1 /* length of path +1 byte for NUL termination */;
   }
   if (unknownMODT.isPresent())
   {
     writeSize = writeSize + 4 /* MODT */ + 2 /* 2 bytes for length */ + unknownMODT.size() /* size */;
   }
-  if (ingredientFormID!=0)
+  if (ingredientFormID != 0)
   {
-    writeSize = writeSize +4 /* PFIG */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+    writeSize = writeSize + 4 /* PFIG */ + 2 /* 2 bytes for length */ + 4 /* fixed size */;
   }
-  if (harvestSoundFormID!=0)
+  if (harvestSoundFormID != 0)
   {
-    writeSize = writeSize +4 /* SNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+    writeSize = writeSize + 4 /* SNAM */ + 2 /* 2 bytes for length */ + 4 /* fixed size */;
   }
   if (name.isPresent())
   {
-    writeSize += name.getWriteSize() /* FULL */;
+    writeSize += name.getWriteSize();
   }
   return writeSize;
 }
 
 bool TreeRecord::saveToStream(std::ostream& output) const
 {
-  output.write((const char*) &cTREE, 4);
+  output.write(reinterpret_cast<const char*>(&cTREE), 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize()))
     return false;
   if (isDeleted())
     return true;
 
-  //write EDID
-  output.write((const char*) &cEDID, 4);
-  //EDID's length
-  uint16_t subLength = editorID.length()+1;
-  output.write((const char*) &subLength, 2);
-  //write editor ID
+  // write editor ID (EDID)
+  output.write(reinterpret_cast<const char*>(&cEDID), 4);
+  uint16_t subLength = editorID.length() + 1;
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
   output.write(editorID.c_str(), subLength);
 
-  //write OBND
-  output.write((const char*) &cOBND, 4);
-  //OBND's length
-  subLength = 12; //fixed
-  output.write((const char*) &subLength, 2);
-  //write OBND's stuff
-  output.write((const char*) unknownOBND, 12);
+  // write OBND
+  output.write(reinterpret_cast<const char*>(&cOBND), 4);
+  subLength = 12; // fixed length
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
+  output.write(reinterpret_cast<const char*>(unknownOBND.data()), 12);
 
   if (!modelPath.empty())
   {
-    //write MODL
-    output.write((const char*) &cMODL, 4);
-    //EDID's length
-    subLength = modelPath.length()+1;
-    output.write((const char*) &subLength, 2);
-    //write model path
+    // write model path (MODL)
+    output.write(reinterpret_cast<const char*>(&cMODL), 4);
+    subLength = modelPath.length() + 1;
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
     output.write(modelPath.c_str(), subLength);
-  }//if MODL
+  }
 
   if (unknownMODT.isPresent())
   {
@@ -135,52 +124,44 @@ bool TreeRecord::saveToStream(std::ostream& output) const
       std::cerr << "Error while writing subrecord MODT of TREE!\n";
       return false;
     }
-  }//if MODT
-
-  if (ingredientFormID!=0)
-  {
-    //write PFIG
-    output.write((const char*) &cPFIG, 4);
-    //PFIG's length
-    subLength = 4; // fixed
-    output.write((const char*) &subLength, 2);
-    //write Production Ingredient form ID
-    output.write((const char*) &ingredientFormID, 4);
-  }//if PFIG
-
-  if (harvestSoundFormID!=0)
-  {
-    //write SNAM
-    output.write((const char*) &cSNAM, 4);
-    //SNAM's length
-    subLength = 4; // fixed
-    output.write((const char*) &subLength, 2);
-    //write Harvest Sound form ID
-    output.write((const char*) &harvestSoundFormID, 4);
   }
 
-  //write PFPC
-  output.write((const char*) &cPFPC, 4);
-  //PFPC's length
-  subLength = 4; // fixed
-  output.write((const char*) &subLength, 2);
-  //write PFPC
-  output.write((const char*) &unknownPFPC, 4);
+  if (ingredientFormID != 0)
+  {
+    // write Production Ingredient form ID (PFIG)
+    output.write(reinterpret_cast<const char*>(&cPFIG), 4);
+    subLength = 4; // fixed length
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    output.write(reinterpret_cast<const char*>(&ingredientFormID), 4);
+  }
+
+  if (harvestSoundFormID != 0)
+  {
+    // write Harvest Sound form ID (SNAM)
+    output.write(reinterpret_cast<const char*>(&cSNAM), 4);
+    subLength = 4; // fixed length
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    output.write(reinterpret_cast<const char*>(&harvestSoundFormID), 4);
+  }
+
+  // write PFPC
+  output.write(reinterpret_cast<const char*>(&cPFPC), 4);
+  subLength = 4; // fixed length
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
+  output.write(reinterpret_cast<const char*>(&unknownPFPC), 4);
 
   if (name.isPresent())
   {
-    //write FULL
+    // write FULL
     if (!name.saveToStream(output, cFULL))
       return false;
-  }//if FULL
+  }
 
-  //write CNAM
-  output.write((const char*) &cCNAM, 4);
-  //CNAM's length
-  subLength = 48; //fixed
-  output.write((const char*) &subLength, 2);
-  //write CNAM's stuff
-  output.write((const char*) unknownCNAM, 48);
+  // write CNAM
+  output.write(reinterpret_cast<const char*>(&cCNAM), 4);
+  subLength = 48; // fixed length
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
+  output.write(reinterpret_cast<const char*>(unknownCNAM.data()), 48);
 
   return output.good();
 }
@@ -193,58 +174,34 @@ bool TreeRecord::loadFromStream(std::istream& in_File, const bool localized, con
     return false;
   if (isDeleted())
     return true;
-  uint32_t subRecName;
-  uint16_t subLength;
-  subRecName = subLength = 0;
+  uint32_t subRecName = 0;
+  uint16_t subLength = 0;
   uint32_t bytesRead = 0;
 
-  //read EDID
-  in_File.read((char*) &subRecName, 4);
-  bytesRead = 4;
-  if (subRecName!=cEDID)
-  {
-    UnexpectedRecord(cEDID, subRecName);
-    return false;
-  }
-  //EDID's length
-  in_File.read((char*) &subLength, 2);
-  bytesRead += 2;
-  if (subLength>511)
-  {
-    std::cerr <<"Error: sub record EDID of TREE is longer than 511 characters!\n";
-    return false;
-  }
-  //read EDID's stuff
+  // read editor ID (EDID)
   char buffer[512];
-  memset(buffer, 0, 512);
-  in_File.read(buffer, subLength);
-  bytesRead += subLength;
-  if (!in_File.good())
-  {
-    std::cerr << "Error while reading subrecord EDID of TREE!\n";
+  if (!loadString512FromStream(in_File, editorID, buffer, cEDID, true, bytesRead))
     return false;
-  }
-  editorID = std::string(buffer);
 
-  //read OBND
-  in_File.read((char*) &subRecName, 4);
+  // read OBND
+  in_File.read(reinterpret_cast<char*>(&subRecName), 4);
   bytesRead += 4;
-  if (subRecName!=cOBND)
+  if (subRecName != cOBND)
   {
     UnexpectedRecord(cOBND, subRecName);
     return false;
   }
-  //OBND's length
-  in_File.read((char*) &subLength, 2);
+  // OBND's length
+  in_File.read(reinterpret_cast<char*>(&subLength), 2);
   bytesRead += 2;
-  if (subLength!=12)
+  if (subLength != 12)
   {
-    std::cerr <<"Error: sub record OBND of TREE has invalid length ("<<subLength
-              <<" bytes). Should be 12 bytes.\n";
+    std::cerr << "Error: sub record OBND of TREE has invalid length ("
+               << subLength << " bytes). Should be 12 bytes.\n";
     return false;
   }
-  //read OBND's stuff
-  in_File.read((char*) unknownOBND, 12);
+  // read OBND's stuff
+  in_File.read(reinterpret_cast<char*>(unknownOBND.data()), 12);
   bytesRead += 12;
   if (!in_File.good())
   {
@@ -259,10 +216,10 @@ bool TreeRecord::loadFromStream(std::istream& in_File, const bool localized, con
   bool hasReadPFPC = false;
   name.reset();
   bool hasReadCNAM = false;
-  while (bytesRead<readSize)
+  while (bytesRead < readSize)
   {
-    //read next subrecord
-    in_File.read((char*) &subRecName, 4);
+    // read next subrecord
+    in_File.read(reinterpret_cast<char*>(&subRecName), 4);
     bytesRead += 4;
     switch (subRecName)
     {
@@ -272,24 +229,9 @@ bool TreeRecord::loadFromStream(std::istream& in_File, const bool localized, con
              std::cerr << "Error: TREE seems to have more than one MODL subrecord.\n";
              return false;
            }
-           //read MODL's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength>511)
-           {
-             std::cerr <<"Error: sub record MODL of TREE is longer than 511 characters!\n";
+           // read model path (MODL)
+           if (!loadString512FromStream(in_File, modelPath, buffer, cMODL, false, bytesRead))
              return false;
-           }
-           //read MODL's stuff
-           memset(buffer, 0, 512);
-           in_File.read(buffer, subLength);
-           bytesRead += subLength;
-           if (!in_File.good())
-           {
-             std::cerr << "Error while reading subrecord MODL of TREE!\n";
-             return false;
-           }
-           modelPath = std::string(buffer);
            break;
       case cMODT:
            if (unknownMODT.isPresent())
@@ -306,32 +248,34 @@ bool TreeRecord::loadFromStream(std::istream& in_File, const bool localized, con
            bytesRead = bytesRead + 2 /*length value*/ + unknownMODT.size() /*data size*/;
            break;
       case cPFIG:
-           if (ingredientFormID!=0)
+           if (ingredientFormID != 0)
            {
              std::cerr << "Error: TREE seems to have more than one PFIG subrecord.\n";
              return false;
            }
-           //read PFIG
-           if (!loadUint32SubRecordFromStream(in_File, cPFIG, ingredientFormID, false)) return false;
+           // read PFIG
+           if (!loadUint32SubRecordFromStream(in_File, cPFIG, ingredientFormID, false))
+             return false;
            bytesRead += 6;
-           //check content
-           if (ingredientFormID==0)
+           // check content
+           if (ingredientFormID == 0)
            {
              std::cerr << "Error: subrecord PFIG of TREE is zero!\n";
              return false;
            }
            break;
       case cSNAM:
-           if (harvestSoundFormID!=0)
+           if (harvestSoundFormID != 0)
            {
              std::cerr << "Error: TREE seems to have more than one SNAM subrecord.\n";
              return false;
            }
-           //read SNAM
-           if (!loadUint32SubRecordFromStream(in_File, cSNAM, harvestSoundFormID, false)) return false;
+           // read SNAM
+           if (!loadUint32SubRecordFromStream(in_File, cSNAM, harvestSoundFormID, false))
+             return false;
            bytesRead += 6;
-           //check content
-           if (harvestSoundFormID==0)
+           // check content
+           if (harvestSoundFormID == 0)
            {
              std::cerr << "Error: subrecord SNAM of TREE is zero!\n";
              return false;
@@ -343,8 +287,9 @@ bool TreeRecord::loadFromStream(std::istream& in_File, const bool localized, con
              std::cerr << "Error: TREE seems to have more than one PFCP subrecord.\n";
              return false;
            }
-           //read PFCP
-           if (!loadUint32SubRecordFromStream(in_File, cPFPC, unknownPFPC, false)) return false;
+           // read PFCP
+           if (!loadUint32SubRecordFromStream(in_File, cPFPC, unknownPFPC, false))
+             return false;
            bytesRead += 6;
            hasReadPFPC = true;
            break;
@@ -354,7 +299,7 @@ bool TreeRecord::loadFromStream(std::istream& in_File, const bool localized, con
              std::cerr << "Error: TREE seems to have more than one FULL subrecord.\n";
              return false;
            }
-           //read FULL
+           // read FULL
            if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
              return false;
            break;
@@ -364,17 +309,17 @@ bool TreeRecord::loadFromStream(std::istream& in_File, const bool localized, con
              std::cerr << "Error: TREE seems to have more than one CNAM subrecord.\n";
              return false;
            }
-           //CNAM's length
-           in_File.read((char*) &subLength, 2);
+           // CNAM's length
+           in_File.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
-           if (subLength!=48)
+           if (subLength != 48)
            {
-             std::cerr <<"Error: sub record CNAM of TREE has invalid length ("<<subLength
-                       <<" bytes). Should be 48 bytes.\n";
+             std::cerr << "Error: sub record CNAM of TREE has invalid length ("
+                       << subLength << " bytes). Should be 48 bytes.\n";
              return false;
            }
-           //read CNAM's stuff
-           in_File.read((char*) unknownCNAM, 48);
+           // read CNAM's stuff
+           in_File.read(reinterpret_cast<char*>(unknownCNAM.data()), 48);
            bytesRead += 48;
            if (!in_File.good())
            {
@@ -384,16 +329,17 @@ bool TreeRecord::loadFromStream(std::istream& in_File, const bool localized, con
            hasReadCNAM = true;
            break;
       default:
-           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \""
+                     << IntTo4Char(subRecName)
                      << "\" found, but only MODL, MODT, PFIG, SNAM, PFPC, "
                      << " FULL or CNAM are allowed here!\n";
            return false;
            break;
-    }//swi
-  }//while
+    }
+  }
 
-  //presence checks
-  if (!((!modelPath.empty()) and hasReadPFPC and hasReadCNAM))
+  // presence checks
+  if (modelPath.empty() || !hasReadPFPC || !hasReadCNAM)
   {
     std::cerr << "Error while reading TREE record: at least one required subrecord is missing!\n";
     return false;
@@ -407,4 +353,4 @@ uint32_t TreeRecord::getRecordType() const
   return cTREE;
 }
 
-} //namespace
+} // namespace

@@ -976,4 +976,44 @@ TEST_CASE("ContainerRecord")
       REQUIRE( stream.str() == data );
     }
   }
+
+  SECTION("flag: respawns")
+  {
+    ContainerRecord record;
+    REQUIRE_FALSE( record.respawns() );
+    record.flags = ContainerRecord::cFlagRespawns;
+    REQUIRE( record.respawns() );
+    record.flags = 0xFF & !ContainerRecord::cFlagRespawns;
+    REQUIRE_FALSE( record.respawns() );
+  }
+
+  SECTION("flag: showsOwner")
+  {
+    ContainerRecord record;
+    REQUIRE_FALSE( record.showsOwner() );
+    record.flags = ContainerRecord::cFlagShowOwner;
+    REQUIRE( record.showsOwner() );
+    record.flags = 0xFF & !ContainerRecord::cFlagShowOwner;
+    REQUIRE_FALSE( record.showsOwner() );
+  }
+
+  SECTION("flag: hasRandomAnimStart")
+  {
+    ContainerRecord record;
+    REQUIRE_FALSE( record.hasRandomAnimStart() );
+    record.headerFlags = ContainerRecord::cFlagRandomAnimStart;
+    REQUIRE( record.hasRandomAnimStart() );
+    record.headerFlags = 0xFFFFFFFF & !ContainerRecord::cFlagRandomAnimStart;
+    REQUIRE_FALSE( record.hasRandomAnimStart() );
+  }
+
+  SECTION("flag: isObstacle")
+  {
+    ContainerRecord record;
+    REQUIRE_FALSE( record.isObstacle() );
+    record.headerFlags = ContainerRecord::cFlagObstacle;
+    REQUIRE( record.isObstacle() );
+    record.headerFlags = 0xFFFFFFFF & !ContainerRecord::cFlagObstacle;
+    REQUIRE_FALSE( record.isObstacle() );
+  }
 }

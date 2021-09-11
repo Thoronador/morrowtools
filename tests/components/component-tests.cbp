@@ -57,6 +57,8 @@
 		<Unit filename="../../sr/base/records/ActionRecord.hpp" />
 		<Unit filename="../../sr/base/records/AddOnNodeRecord.cpp" />
 		<Unit filename="../../sr/base/records/AddOnNodeRecord.hpp" />
+		<Unit filename="../../sr/base/records/AmmunitionRecord.cpp" />
+		<Unit filename="../../sr/base/records/AmmunitionRecord.hpp" />
 		<Unit filename="../../sr/base/records/ApparatusRecord.cpp" />
 		<Unit filename="../../sr/base/records/ApparatusRecord.hpp" />
 		<Unit filename="../../sr/base/records/BasicRecord.cpp" />
@@ -114,6 +116,7 @@
 		<Unit filename="sr/base/records/AcousticSpaceRecord.cpp" />
 		<Unit filename="sr/base/records/ActionRecord.cpp" />
 		<Unit filename="sr/base/records/AddOnNodeRecord.cpp" />
+		<Unit filename="sr/base/records/AmmunitionRecord.cpp" />
 		<Unit filename="sr/base/records/ApparatusRecord.cpp" />
 		<Unit filename="sr/base/records/BinarySubRecord.cpp" />
 		<Unit filename="sr/base/records/BinarySubRecordExtended.cpp" />

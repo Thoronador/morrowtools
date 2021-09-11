@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -213,10 +213,12 @@ bool AmmunitionRecord::saveToStream(std::ostream& output) const
 bool AmmunitionRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
-  if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
-  uint32_t subRecName;
-  uint16_t subLength;
-  subRecName = subLength = 0;
+  if (!loadSizeAndUnknownValues(in_File, readSize))
+    return false;
+  if (isDeleted())
+    return true;
+  uint32_t subRecName = 0;
+  uint16_t subLength = 0;
   uint32_t bytesRead;
 
   //read EDID
@@ -324,6 +326,11 @@ bool AmmunitionRecord::loadFromStream(std::istream& in_File, const bool localize
              return false;
            }
            modelPath = std::string(buffer);
+           if (modelPath.empty())
+           {
+             std::cerr << "Error: subrecord MODL of AMMO is empty!\n";
+             return false;
+           }
            break;
       case cMODT:
            if (unknownMODT.isPresent())

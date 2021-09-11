@@ -71,6 +71,8 @@
 		<Unit filename="../../sr/base/records/CTDAData.hpp" />
 		<Unit filename="../../sr/base/records/ComponentData.cpp" />
 		<Unit filename="../../sr/base/records/ComponentData.hpp" />
+		<Unit filename="../../sr/base/records/ContainerRecord.cpp" />
+		<Unit filename="../../sr/base/records/ContainerRecord.hpp" />
 		<Unit filename="../../sr/base/records/DestructionData.cpp" />
 		<Unit filename="../../sr/base/records/DestructionData.hpp" />
 		<Unit filename="../../sr/base/records/EffectBlock.cpp" />
@@ -123,6 +125,7 @@
 		<Unit filename="sr/base/records/CTDAData.cpp" />
 		<Unit filename="sr/base/records/CTDA_CISx_compound.cpp" />
 		<Unit filename="sr/base/records/ComponentData.cpp" />
+		<Unit filename="sr/base/records/ContainerRecord.cpp" />
 		<Unit filename="sr/base/records/DestructionData.cpp" />
 		<Unit filename="sr/base/records/DestructionStage.cpp" />
 		<Unit filename="sr/base/records/EffectBlock.cpp" />

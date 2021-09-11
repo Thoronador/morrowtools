@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2013  Thoronador
+    Copyright (C) 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -75,11 +75,12 @@ bool ContainerRecord::equals(const ContainerRecord& other) const
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t ContainerRecord::getWriteSize() const
 {
-  uint32_t writeSize;
-  writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
-        +editorID.length()+1 /* length of name +1 byte for NUL termination */
-        +4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed size */
-        +4 /* DATA */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+  if (isDeleted())
+    return 0;
+  uint32_t writeSize = 4 /* EDID */ + 2 /* 2 bytes for length */
+        + editorID.length() + 1 /* length of name +1 byte for NUL termination */
+        + 4 /* OBND */ + 2 /* 2 bytes for length */ + 12 /* fixed size */
+        + 4 /* DATA */ + 2 /* 2 bytes for length */ + 5 /* fixed size */;
   if (unknownVMAD.isPresent())
   {
     writeSize = writeSize + 4 /* VMAD */ + 2 /* 2 bytes for length */ + unknownVMAD.size() /* size */;
@@ -101,6 +102,11 @@ uint32_t ContainerRecord::getWriteSize() const
   {
     writeSize = writeSize + 4 /* MODS */ + 2 /* 2 bytes for length */ +unknownMODS.size() /* size */;
   }
+  if (!contents.empty())
+  {
+    writeSize = writeSize + 4 /* COCT */ + 2 /* 2 bytes for length */ + 4 /* fixed size */
+        + contents.size() * (4 /* CNTO */ + 2 /* 2 bytes for length */ + 8 /* fixed size */);
+  }
   if (unknownCOED.isPresent())
   {
     writeSize = writeSize + 4 /* COED */ + 2 /* 2 bytes for length */ + unknownCOED.size() /* size */;
@@ -119,7 +125,10 @@ uint32_t ContainerRecord::getWriteSize() const
 bool ContainerRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cCONT, 4);
-  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
+  if (!saveSizeAndUnknownValues(output, getWriteSize()))
+    return false;
+  if (isDeleted())
+    return true;
 
   //write EDID
   output.write((const char*) &cEDID, 4);
@@ -259,7 +268,11 @@ bool ContainerRecord::saveToStream(std::ostream& output) const
 bool ContainerRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
-  if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
+  if (!loadSizeAndUnknownValues(in_File, readSize))
+    return false;
+  if (isDeleted())
+    return true;
+
   uint32_t subRecName;
   uint16_t subLength;
   subRecName = subLength = 0;

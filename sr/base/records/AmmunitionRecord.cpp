@@ -19,7 +19,6 @@
 */
 
 #include "AmmunitionRecord.hpp"
-#include <cstring>
 #include <iostream>
 #include "../SR_Constants.hpp"
 #include "../../../mw/base/HelperIO.hpp"
@@ -28,60 +27,57 @@ namespace SRTP
 {
 
 AmmunitionRecord::AmmunitionRecord()
-: BasicRecord(), editorID(""),
+: BasicRecord(),
+  editorID(""),
+  unknownOBND(std::array<uint8_t, 12>({ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 })),
   name(LocalizedString()),
   modelPath(""),
   unknownMODT(BinarySubRecord()),
   pickupSoundFormID(0),
   putdownSoundFormID(0),
   description(LocalizedString()),
-  keywordArray(std::vector<uint32_t>()),
-  //DATA
+  keywords(std::vector<uint32_t>()),
+  // DATA
   projectileFormID(0),
   DATAflags(0),
   baseDamage(0.0f),
   value(0)
-  //end of DATA
+  // end of DATA
 {
-  memset(unknownOBND, 0, 12);
-}
-
-AmmunitionRecord::~AmmunitionRecord()
-{
-  //empty
 }
 
 #ifndef SR_NO_RECORD_EQUALITY
 bool AmmunitionRecord::equals(const AmmunitionRecord& other) const
 {
-  return ((equalsBasic(other)) and (editorID==other.editorID)
-      and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
-      and (name==other.name)
-      and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
-      and (pickupSoundFormID==other.pickupSoundFormID) and (putdownSoundFormID==other.putdownSoundFormID)
-      and (description==other.description)
-      and (keywordArray==other.keywordArray) and (projectileFormID==other.projectileFormID)
-      and (DATAflags==other.DATAflags) and (baseDamage==other.baseDamage)
-      and (value==other.value));
+  return (equalsBasic(other) && (editorID == other.editorID)
+      && (unknownOBND == other.unknownOBND)
+      && (name == other.name)
+      && (modelPath == other.modelPath) && (unknownMODT == other.unknownMODT)
+      && (pickupSoundFormID == other.pickupSoundFormID)
+      && (putdownSoundFormID == other.putdownSoundFormID)
+      && (description==other.description)
+      && (keywords == other.keywords) && (projectileFormID == other.projectileFormID)
+      && (DATAflags == other.DATAflags) && (baseDamage == other.baseDamage)
+      && (value == other.value));
 }
 #endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t AmmunitionRecord::getWriteSize() const
 {
-  if (isDeleted()) return 0;
-  uint32_t writeSize;
-  writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
-        +editorID.length()+1 /* length of string +1 byte for NUL-termination */
-        +4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed size */
-        +4 /* YNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */
-        +4 /* ZNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */
-        +description.getWriteSize() /* DESC */
-        +4 /* DATA */ +2 /* 2 bytes for length */ +16 /* fixed size */;
+  if (isDeleted())
+    return 0;
+  uint32_t writeSize = 4 /* EDID */ + 2 /* 2 bytes for length */
+        + editorID.length() + 1 /* length of string +1 byte for NUL-termination */
+        + 4 /* OBND */ + 2 /* 2 bytes for length */ + 12 /* fixed size */
+        + 4 /* YNAM */ + 2 /* 2 bytes for length */ + 4 /* fixed size */
+        + 4 /* ZNAM */ + 2 /* 2 bytes for length */ + 4 /* fixed size */
+        + description.getWriteSize() /* DESC */
+        + 4 /* DATA */ + 2 /* 2 bytes for length */ + 16 /* fixed size */;
   if (!modelPath.empty())
   {
-    writeSize = writeSize + 4 /* MODL */ +2 /* 2 bytes for length */
-               +modelPath.length()+1 /* length of string +1 byte for NUL-termination */;
+    writeSize = writeSize + 4 /* MODL */ + 2 /* 2 bytes for length */
+               + modelPath.length() + 1 /* length of string +1 byte for NUL-termination */;
   }
   if (name.isPresent())
   {
@@ -92,53 +88,49 @@ uint32_t AmmunitionRecord::getWriteSize() const
     writeSize = writeSize + 4 /* MODT */ + 2 /* 2 bytes for length */
                + unknownMODT.size();
   }
-  if (!keywordArray.empty())
+  if (!keywords.empty())
   {
-    writeSize = writeSize +4 /* KSIZ */ +2 /* 2 bytes for length */ +4 /* fixed size */
-               +keywordArray.size()*(4 /* KSIZ */ +2 /* 2 bytes for length */ +4 /* fixed size */);
+    writeSize = writeSize + 4 /* KSIZ */ + 2 /* 2 bytes for length */ + 4 /* fixed size */
+        + keywords.size() * (4 /* KSIZ */ + 2 /* 2 bytes for length */ + 4 /* fixed size */);
   }
   return writeSize;
 }
 
 bool AmmunitionRecord::saveToStream(std::ostream& output) const
 {
-  output.write((const char*) &cAMMO, 4);
-  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
-  if (isDeleted()) return true;
+  output.write(reinterpret_cast<const char*>(&cAMMO), 4);
+  if (!saveSizeAndUnknownValues(output, getWriteSize()))
+    return false;
+  if (isDeleted())
+    return true;
 
-  //write EDID
-  output.write((const char*) &cEDID, 4);
-  //EDID's length
+  // write editor ID (EDID)
+  output.write(reinterpret_cast<const char*>(&cEDID), 4);
   uint16_t subLength = editorID.length()+1;
-  output.write((const char*) &subLength, 2);
-  //write editor ID
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
   output.write(editorID.c_str(), subLength);
 
-  //write OBND
-  output.write((const char*) &cOBND, 4);
-  //OBND's length
-  subLength = 12; //fixed size
-  output.write((const char*) &subLength, 2);
-  //write OBND's stuff
-  output.write((const char*) unknownOBND, 12);
+  // write OBND
+  output.write(reinterpret_cast<const char*>(&cOBND), 4);
+  subLength = 12; // fixed size
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
+  output.write(reinterpret_cast<const char*>(unknownOBND.data()), 12);
 
   if (name.isPresent())
   {
-    //write FULL
+    // write FULL
     if (!name.saveToStream(output, cFULL))
       return false;
-  }//if hasFULL
+  }
 
   if (!modelPath.empty())
   {
-    //write MODL
-    output.write((const char*) &cMODL, 4);
-    //MODL's length
-    subLength = modelPath.length()+1;
-    output.write((const char*) &subLength, 2);
-    //write model path
+    // write model path (MODL)
+    output.write(reinterpret_cast<const char*>(&cMODL), 4);
+    subLength = modelPath.length() + 1;
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
     output.write(modelPath.c_str(), subLength);
-  }//if modelPath
+  }
 
   if (unknownMODT.isPresent())
   {
@@ -147,64 +139,56 @@ bool AmmunitionRecord::saveToStream(std::ostream& output) const
       std::cerr << "Error while writing subrecord MODT of AMMO!\n";
       return false;
     }
-  }//if MODT
+  }
 
-  //write YNAM
-  output.write((const char*) &cYNAM, 4);
-  //YNAM's length
-  subLength = 4; //fixed size
-  output.write((const char*) &subLength, 2);
-  //write Pickup Sound form ID
-  output.write((const char*) &pickupSoundFormID, 4);
+  // write Pickup Sound form ID (YNAM)
+  output.write(reinterpret_cast<const char*>(&cYNAM), 4);
+  subLength = 4; // fixed size
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
+  output.write(reinterpret_cast<const char*>(&pickupSoundFormID), 4);
 
-  //write ZNAM
-  output.write((const char*) &cZNAM, 4);
-  //ZNAM's length
-  subLength = 4; //fixed size
-  output.write((const char*) &subLength, 2);
-  //write Putdown Sound form ID
-  output.write((const char*) &putdownSoundFormID, 4);
+  // write Putdown Sound form ID (ZNAM)
+  output.write(reinterpret_cast<const char*>(&cZNAM), 4);
+  subLength = 4; // fixed size
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
+  output.write(reinterpret_cast<const char*>(&putdownSoundFormID), 4);
 
-  //write DESC
+  // write DESC
   if (!description.saveToStream(output, cDESC))
   {
     std::cerr << "Error while writing subrecord DESC of AMMO!\n";
     return false;
   }
 
-  if (!keywordArray.empty())
+  if (!keywords.empty())
   {
-    //write KSIZ
-    output.write((const char*) &cKSIZ, 4);
-    //KSIZ's length
-    subLength = 4; //fixed size
-    output.write((const char*) &subLength, 2);
-    //write KSIZ's stuff
-    const uint32_t k_Size = keywordArray.size();
-    output.write((const char*) &k_Size, 4);
+    // write KSIZ
+    output.write(reinterpret_cast<const char*>(&cKSIZ), 4);
+    subLength = 4; // fixed size
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    // write KSIZ's data
+    const uint32_t k_Size = keywords.size();
+    output.write(reinterpret_cast<const char*>(&k_Size), 4);
 
-    //write KWDA
-    output.write((const char*) &cKWDA, 4);
-    //KWDA's length
-    subLength = 4*k_Size;
-    output.write((const char*) &subLength, 2);
-    unsigned int i;
-    for (i=0; i<k_Size; ++i)
+    // write KWDA
+    output.write(reinterpret_cast<const char*>(&cKWDA), 4);
+    subLength = 4 * k_Size;
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    for (const uint32_t keyword: keywords)
     {
-      output.write((const char*) &(keywordArray[i]), 4);
-    }//for
-  }//if keywords
+      output.write(reinterpret_cast<const char*>(&keyword), 4);
+    }
+  }
 
-  //write DATA
-  output.write((const char*) &cDATA, 4);
-  //DATA's length
-  subLength = 16; //fixed size
-  output.write((const char*) &subLength, 2);
-  //write DATA's stuff
-  output.write((const char*) &projectileFormID, 4);
-  output.write((const char*) &DATAflags, 4);
-  output.write((const char*) &baseDamage, 4);
-  output.write((const char*) &value, 4);
+  // write DATA
+  output.write(reinterpret_cast<const char*>(&cDATA), 4);
+  subLength = 16; // fixed size
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
+  // write DATA's stuff
+  output.write(reinterpret_cast<const char*>(&projectileFormID), 4);
+  output.write(reinterpret_cast<const char*>(&DATAflags), 4);
+  output.write(reinterpret_cast<const char*>(&baseDamage), 4);
+  output.write(reinterpret_cast<const char*>(&value), 4);
 
   return output.good();
 }
@@ -219,55 +203,32 @@ bool AmmunitionRecord::loadFromStream(std::istream& in_File, const bool localize
     return true;
   uint32_t subRecName = 0;
   uint16_t subLength = 0;
-  uint32_t bytesRead;
+  uint32_t bytesRead = 0;
 
-  //read EDID
-  in_File.read((char*) &subRecName, 4);
-  bytesRead = 4;
-  if (subRecName!=cEDID)
-  {
-    UnexpectedRecord(cEDID, subRecName);
-    return false;
-  }
-  //EDID's length
-  in_File.read((char*) &subLength, 2);
-  bytesRead += 2;
-  if (subLength>511)
-  {
-    std::cerr <<"Error: sub record EDID of AMMO is longer than 511 characters!\n";
-    return false;
-  }
-  //read EDID's stuff
+  // read editor ID (EDID)
   char buffer[512];
-  memset(buffer, 0, 512);
-  in_File.read(buffer, subLength);
-  bytesRead += subLength;
-  if (!in_File.good())
-  {
-    std::cerr << "Error while reading subrecord EDID of AMMO!\n";
+  if (!loadString512FromStream(in_File, editorID, buffer, cEDID, true, bytesRead))
     return false;
-  }
-  editorID = std::string(buffer);
 
-  //read OBND
-  in_File.read((char*) &subRecName, 4);
+  // read OBND
+  in_File.read(reinterpret_cast<char*>(&subRecName), 4);
   bytesRead += 4;
-  if (subRecName!=cOBND)
+  if (subRecName != cOBND)
   {
     UnexpectedRecord(cOBND, subRecName);
     return false;
   }
-  //OBND's length
-  in_File.read((char*) &subLength, 2);
+  // OBND's length
+  in_File.read(reinterpret_cast<char*>(&subLength), 2);
   bytesRead += 2;
-  if (subLength!=12)
+  if (subLength != 12)
   {
-    std::cerr <<"Error: sub record OBND of AMMO has invalid length("<<subLength
-              <<" bytes). Should be 12 bytes!\n";
+    std::cerr << "Error: sub record OBND of AMMO has invalid length("
+              << subLength << " bytes). Should be 12 bytes!\n";
     return false;
   }
-  //read OBND's stuff
-  in_File.read((char*) unknownOBND, 12);
+  // read OBND's stuff
+  in_File.read(reinterpret_cast<char*>(unknownOBND.data()), 12);
   bytesRead += 12;
   if (!in_File.good())
   {
@@ -281,14 +242,14 @@ bool AmmunitionRecord::loadFromStream(std::istream& in_File, const bool localize
   pickupSoundFormID = 0;
   putdownSoundFormID = 0;
   description.reset();
-  keywordArray.clear();
-  uint32_t k_Size, i, temp;
+  keywords.clear();
+  uint32_t k_Size, temp;
   bool hasReadDATA = false;
 
-  while (bytesRead<readSize)
+  while (bytesRead < readSize)
   {
-    //read next subrecord name
-    in_File.read((char*) &subRecName, 4);
+    // read next subrecord name
+    in_File.read(reinterpret_cast<char*>(&subRecName), 4);
     bytesRead += 4;
     switch (subRecName)
     {
@@ -298,7 +259,7 @@ bool AmmunitionRecord::loadFromStream(std::istream& in_File, const bool localize
              std::cerr << "Error: Record AMMO seems to have more than one FULL subrecord!\n";
              return false;
            }
-           //read FULL
+           // read FULL
            if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
              return false;
            break;
@@ -308,24 +269,9 @@ bool AmmunitionRecord::loadFromStream(std::istream& in_File, const bool localize
              std::cerr << "Error: Record AMMO seems to have more than one MODL subrecord!\n";
              return false;
            }
-           //MODL's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength>511)
-           {
-             std::cerr <<"Error: sub record MODL of AMMO is longer than 511 characters!\n";
+           // read model path (MODL)
+           if (!loadString512FromStream(in_File, modelPath, buffer, cMODL, false, bytesRead))
              return false;
-           }
-           //read MODL's stuff
-           memset(buffer, 0, 512);
-           in_File.read(buffer, subLength);
-           bytesRead += subLength;
-           if (!in_File.good())
-           {
-             std::cerr << "Error while reading subrecord MODL of AMMO!\n";
-             return false;
-           }
-           modelPath = std::string(buffer);
            if (modelPath.empty())
            {
              std::cerr << "Error: subrecord MODL of AMMO is empty!\n";
@@ -338,7 +284,7 @@ bool AmmunitionRecord::loadFromStream(std::istream& in_File, const bool localize
              std::cerr << "Error: Record AMMO seems to have more than one MODT subrecord!\n";
              return false;
            }
-           //read MODT
+           // read MODT
            if (!unknownMODT.loadFromStream(in_File, cMODT, false))
            {
              std::cerr << "Error while reading subrecord MODT of AMMO!\n";
@@ -347,32 +293,32 @@ bool AmmunitionRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead = bytesRead + 2 + unknownMODT.size();
            break;
       case cYNAM:
-           if (pickupSoundFormID!=0)
+           if (pickupSoundFormID != 0)
            {
              std::cerr << "Error: Record AMMO seems to have more than one YNAM subrecord!\n";
              return false;
            }
-           //read YNAM
+           // read YNAM
            if (!loadUint32SubRecordFromStream(in_File, cYNAM, pickupSoundFormID, false))
              return false;
            bytesRead += 6;
-           if (pickupSoundFormID==0)
+           if (pickupSoundFormID == 0)
            {
              std::cerr << "Error: subrecord YNAM of AMMO is zero!\n";
              return false;
            }
            break;
       case cZNAM:
-           if (putdownSoundFormID!=0)
+           if (putdownSoundFormID != 0)
            {
              std::cerr << "Error: Record AMMO seems to have more than one ZNAM subrecord!\n";
              return false;
            }
-           //read ZNAM
+           // read ZNAM
            if (!loadUint32SubRecordFromStream(in_File, cZNAM, putdownSoundFormID, false))
              return false;
            bytesRead += 6;
-           if (putdownSoundFormID==0)
+           if (putdownSoundFormID == 0)
            {
              std::cerr << "Error: subrecord ZNAM of AMMO is zero!\n";
              return false;
@@ -384,28 +330,28 @@ bool AmmunitionRecord::loadFromStream(std::istream& in_File, const bool localize
              std::cerr << "Error: Record AMMO seems to have more than one DESC subrecord!\n";
              return false;
            }
-           //read DESC
+           // read DESC
            if (!description.loadFromStream(in_File, cDESC, false, bytesRead, localized, table, buffer))
              return false;
            break;
       case cKSIZ:
-           if (!keywordArray.empty())
+           if (!keywords.empty())
            {
              std::cerr << "Error: Record AMMO seems to have more than one KSIZ subrecord!\n";
              return false;
            }
-           //KSIZ's length
-           in_File.read((char*) &subLength, 2);
+           // KSIZ's length
+           in_File.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
-           if (subLength!=4)
+           if (subLength != 4)
            {
-             std::cerr <<"Error: sub record KSIZ of AMMO has invalid length("
-                       <<subLength<<" bytes). Should be four bytes!\n";
+             std::cerr << "Error: sub record KSIZ of AMMO has invalid length("
+                       << subLength << " bytes). Should be four bytes!\n";
              return false;
            }
-           //read KSIZ's stuff
+           // read KSIZ's stuff
            k_Size = 0;
-           in_File.read((char*) &k_Size, 4);
+           in_File.read(reinterpret_cast<char*>(&k_Size), 4);
            bytesRead += 4;
            if (!in_File.good())
            {
@@ -413,34 +359,35 @@ bool AmmunitionRecord::loadFromStream(std::istream& in_File, const bool localize
              return false;
            }
 
-           //read KWDA
-           in_File.read((char*) &subRecName, 4);
+           // read KWDA
+           in_File.read(reinterpret_cast<char*>(&subRecName), 4);
            bytesRead += 4;
-           if (subRecName!=cKWDA)
+           if (subRecName != cKWDA)
            {
              UnexpectedRecord(cKWDA, subRecName);
              return false;
            }
-           //KWDA's length
-           in_File.read((char*) &subLength, 2);
+           // KWDA's length
+           in_File.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
-           if (subLength!=4*k_Size)
+           if (subLength != 4 * k_Size)
            {
-             std::cerr <<"Error: sub record KWDA of AMMO has invalid length("
-                       <<subLength<<" bytes). Should be "<<4*k_Size<<" bytes!\n";
+             std::cerr << "Error: sub record KWDA of AMMO has invalid length("
+                       << subLength << " bytes). Should be " << 4 * k_Size
+                       << " bytes!\n";
              return false;
            }
-           for (i=0; i<k_Size; ++i)
+           for (uint32_t i = 0; i < k_Size; ++i)
            {
-             in_File.read((char*) &temp, 4);
+             in_File.read(reinterpret_cast<char*>(&temp), 4);
              bytesRead += 4;
              if (!in_File.good())
              {
                std::cerr << "Error while reading subrecord KWDA of AMMO!\n";
                return false;
              }
-             keywordArray.push_back(temp);
-           }//for
+             keywords.push_back(temp);
+           }
            break;
       case cDATA:
            if (hasReadDATA)
@@ -448,20 +395,20 @@ bool AmmunitionRecord::loadFromStream(std::istream& in_File, const bool localize
              std::cerr << "Error: Record AMMO seems to have more than one DATA subrecord!\n";
              return false;
            }
-           //DATA's length
-           in_File.read((char*) &subLength, 2);
+           // DATA's length
+           in_File.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
-           if (subLength!=16)
+           if (subLength != 16)
            {
-             std::cerr <<"Error: sub record DATA of AMMO has invalid length("
-                       <<subLength<<" bytes). Should be 16 bytes!\n";
+             std::cerr << "Error: sub record DATA of AMMO has invalid length("
+                       << subLength << " bytes). Should be 16 bytes!\n";
              return false;
            }
-           //read DATA's stuff
-           in_File.read((char*) &projectileFormID, 4);
-           in_File.read((char*) &DATAflags, 4);
-           in_File.read((char*) &baseDamage, 4);
-           in_File.read((char*) &value, 4);
+           // read DATA's stuff
+           in_File.read(reinterpret_cast<char*>(&projectileFormID), 4);
+           in_File.read(reinterpret_cast<char*>(&DATAflags), 4);
+           in_File.read(reinterpret_cast<char*>(&baseDamage), 4);
+           in_File.read(reinterpret_cast<char*>(&value), 4);
            bytesRead += 16;
            if (!in_File.good())
            {
@@ -471,15 +418,15 @@ bool AmmunitionRecord::loadFromStream(std::istream& in_File, const bool localize
            hasReadDATA = true;
            break;
       default:
-           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \"" << IntTo4Char(subRecName)
                      << "\" found, but only MODL, MODT, YNAM, ZNAM, DESC, KSIZ or DATA are allowed!\n";
            return false;
            break;
-    }//swi
-  }//while
+    }
+  }
 
-  //check
-  if ((!hasReadDATA) or (!description.isPresent()))
+  // check
+  if (!hasReadDATA || !description.isPresent())
   {
     std::cerr << "Error: at least one required subrecord of AMMO is missing!\n";
     return false;
@@ -493,4 +440,4 @@ uint32_t AmmunitionRecord::getRecordType() const
   return cAMMO;
 }
 
-} //namespace
+} // namespace

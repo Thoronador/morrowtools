@@ -45,7 +45,7 @@ TEST_CASE("AmmunitionRecord")
     REQUIRE( record.pickupSoundFormID == 0 );
     REQUIRE( record.putdownSoundFormID == 0 );
     REQUIRE_FALSE( record.description.isPresent() );
-    REQUIRE( record.keywordArray.empty() );
+    REQUIRE( record.keywords.empty() );
     REQUIRE( record.projectileFormID == 0 );
     REQUIRE( record.DATAflags == 0 );
     REQUIRE( record.baseDamage == 0 );
@@ -145,7 +145,7 @@ TEST_CASE("AmmunitionRecord")
 
       SECTION("keywords mismatch")
       {
-        a.keywordArray.push_back(0xDEADBEEF);
+        a.keywords.push_back(0xDEADBEEF);
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
@@ -321,9 +321,8 @@ TEST_CASE("AmmunitionRecord")
       REQUIRE( record.putdownSoundFormID == 0x0003E877 );
       REQUIRE( record.description.getType() == LocalizedString::Type::Index );
       REQUIRE( record.description.getIndex() == 0 );
-      REQUIRE( record.keywordArray.size() == 1 );
-      REQUIRE( record.keywordArray[0] == 0x000917E7 );
-      // DATA\x10\0\x11\xBE\x03\0\0\0\0\0\0\0\0\x41\x01\0\0\0"sv;
+      REQUIRE( record.keywords.size() == 1 );
+      REQUIRE( record.keywords[0] == 0x000917E7 );
       REQUIRE( record.projectileFormID == 0x0003BE11 );
       REQUIRE( record.DATAflags == 0 );
       REQUIRE( record.baseDamage == 8.0f );

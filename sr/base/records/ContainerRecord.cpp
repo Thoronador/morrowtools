@@ -19,7 +19,6 @@
 */
 
 #include "ContainerRecord.hpp"
-#include <cstring>
 #include <iostream>
 #include "../SR_Constants.hpp"
 #include "../../../mw/base/HelperIO.hpp"
@@ -37,8 +36,10 @@ const uint32_t ContainerRecord::cFlagObstacle        = 0x02000000;
 /* ContainerRecord's functions */
 
 ContainerRecord::ContainerRecord()
-: BasicRecord(), editorID(""),
+: BasicRecord(),
+  editorID(""),
   unknownVMAD(BinarySubRecord()),
+  unknownOBND(std::array<uint8_t, 12>({ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 })),
   name(LocalizedString()),
   modelPath(""),
   unknownMODT(BinarySubRecord()),
@@ -50,25 +51,21 @@ ContainerRecord::ContainerRecord()
   openSoundFormID(0),
   closeSoundFormID(0)
 {
-  memset(unknownOBND, 0, 12);
-}
-
-ContainerRecord::~ContainerRecord()
-{
-  //empty
 }
 
 #ifndef SR_NO_RECORD_EQUALITY
 bool ContainerRecord::equals(const ContainerRecord& other) const
 {
-  return ((equalsBasic(other)) and (editorID==other.editorID)
-      and (unknownVMAD==other.unknownVMAD)
-      and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
-      and (name==other.name)
-      and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
-      and (unknownMODS==other.unknownMODS) and (contents==other.contents)
-      and (unknownCOED==other.unknownCOED) and (flags==other.flags) and (weight==other.weight)
-      and (openSoundFormID==other.openSoundFormID) and (closeSoundFormID==other.closeSoundFormID));
+  return equalsBasic(other) && (editorID == other.editorID)
+      && (unknownVMAD==other.unknownVMAD)
+      && (unknownOBND == other.unknownOBND)
+      && (name == other.name) && (modelPath == other.modelPath)
+      && (unknownMODT == other.unknownMODT)
+      && (unknownMODS == other.unknownMODS)
+      && (contents == other.contents)
+      && (unknownCOED == other.unknownCOED) && (flags == other.flags)
+      && (weight == other.weight) && (openSoundFormID == other.openSoundFormID)
+      && (closeSoundFormID == other.closeSoundFormID);
 }
 #endif
 
@@ -91,8 +88,8 @@ uint32_t ContainerRecord::getWriteSize() const
   }
   if (!modelPath.empty())
   {
-    writeSize = writeSize +4 /* MODL */ +2 /* 2 bytes for length */
-        +modelPath.length()+1 /* length of path +1 byte for NUL termination */;
+    writeSize = writeSize + 4 /* MODL */ + 2 /* 2 bytes for length */
+        + modelPath.length() + 1 /* length of path +1 byte for NUL termination */;
   }
   if (unknownMODT.isPresent())
   {
@@ -100,7 +97,7 @@ uint32_t ContainerRecord::getWriteSize() const
   }
   if (unknownMODS.isPresent())
   {
-    writeSize = writeSize + 4 /* MODS */ + 2 /* 2 bytes for length */ +unknownMODS.size() /* size */;
+    writeSize = writeSize + 4 /* MODS */ + 2 /* 2 bytes for length */ + unknownMODS.size() /* size */;
   }
   if (!contents.empty())
   {
@@ -111,155 +108,138 @@ uint32_t ContainerRecord::getWriteSize() const
   {
     writeSize = writeSize + 4 /* COED */ + 2 /* 2 bytes for length */ + unknownCOED.size() /* size */;
   }
-  if (openSoundFormID!=0)
+  if (openSoundFormID != 0)
   {
-    writeSize = writeSize +4 /* SNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+    writeSize = writeSize + 4 /* SNAM */ + 2 /* 2 bytes for length */ + 4 /* fixed size */;
   }
-  if (closeSoundFormID!=0)
+  if (closeSoundFormID != 0)
   {
-    writeSize = writeSize +4 /* QNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+    writeSize = writeSize + 4 /* QNAM */ + 2 /* 2 bytes for length */ + 4 /* fixed size */;
   }
   return writeSize;
 }
 
 bool ContainerRecord::saveToStream(std::ostream& output) const
 {
-  output.write((const char*) &cCONT, 4);
+  output.write(reinterpret_cast<const char*>(&cCONT), 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize()))
     return false;
   if (isDeleted())
     return true;
 
-  //write EDID
-  output.write((const char*) &cEDID, 4);
-  //EDID's length
-  uint16_t subLength = editorID.length()+1;
-  output.write((const char*) &subLength, 2);
-  //write editor ID
+  // write editor ID (EDID)
+  output.write(reinterpret_cast<const char*>(&cEDID), 4);
+  uint16_t subLength = editorID.length() + 1;
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
   output.write(editorID.c_str(), subLength);
 
   if (unknownVMAD.isPresent())
   {
-    //write VMAD
+    // write VMAD
     if (!unknownVMAD.saveToStream(output, cVMAD))
     {
       std::cerr << "Error while writing subrecord VMAD of CONT!\n";
       return false;
     }
-  }//if VMAD
+  }
 
-  //write OBND
-  output.write((const char*) &cOBND, 4);
-  //OBND's length
-  subLength = 12; //fixed
-  output.write((const char*) &subLength, 2);
-  //write OBND's stuff
-  output.write((const char*) unknownOBND, 12);
+  // write OBND
+  output.write(reinterpret_cast<const char*>(&cOBND), 4);
+  subLength = 12; // fixed length
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
+  output.write(reinterpret_cast<const char*>(unknownOBND.data()), 12);
 
   if (name.isPresent())
   {
-    //write FULL
+    // write FULL
     if (!name.saveToStream(output, cFULL))
       return false;
-  }//if has FULL
+  }
 
   if (!modelPath.empty())
   {
-    //write MODL
-    output.write((const char*) &cMODL, 4);
-    //MODL's length
-    subLength = modelPath.length()+1;
-    output.write((const char*) &subLength, 2);
-    //write model path
+    // write model path (MODL)
+    output.write(reinterpret_cast<const char*>(&cMODL), 4);
+    subLength = modelPath.length() + 1;
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
     output.write(modelPath.c_str(), subLength);
   }
 
   if (unknownMODT.isPresent())
   {
-    //write MODT
+    // write MODT
     if (!unknownMODT.saveToStream(output, cMODT))
     {
       std::cerr << "Error while writing subrecord MODT of CONT!\n";
       return false;
     }
-  }//if MODT
+  }
 
   if (unknownMODS.isPresent())
   {
-    //write MODS
+    // write MODS
     if (!unknownMODS.saveToStream(output, cMODS))
     {
       std::cerr << "Error while writing subrecord MODS of CONT!\n";
       return false;
     }
-  }//if MODS
+  }
 
   if (!contents.empty())
   {
     const uint32_t len = contents.size();
 
-    //write COCT
-    output.write((const char*) &cCOCT, 4);
-    //COCT's length
-    subLength = 4; //fixed
-    output.write((const char*) &subLength, 2);
-    //write COCT's stuff
-    output.write((const char*) &len, 4);
+    // write component count (COCT)
+    output.write(reinterpret_cast<const char*>(&cCOCT), 4);
+    subLength = 4; // fixed length
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    output.write(reinterpret_cast<const char*>(&len), 4);
 
-    unsigned int i;
-    for (i=0; i<len; ++i)
+    for (const auto& component: contents)
     {
-      //write CNTO
-      output.write((const char*) &cCNTO, 4);
-      //CNTO's length
-      subLength = 8; //fixed
-      output.write((const char*) &subLength, 2);
-      //write CNTO's stuff
-      output.write((const char*) &(contents[i].formID), 4);
-      output.write((const char*) &(contents[i].count), 4);
-    }//for
-  }//contents
+      // write component object (CNTO)
+      output.write(reinterpret_cast<const char*>(&cCNTO), 4);
+      subLength = 8; // fixed length
+      output.write(reinterpret_cast<const char*>(&subLength), 2);
+      output.write(reinterpret_cast<const char*>(&component.formID), 4);
+      output.write(reinterpret_cast<const char*>(&component.count), 4);
+    }
+  }
 
   if (unknownCOED.isPresent())
   {
-    //write COED
+    // write COED
     if (!unknownCOED.saveToStream(output, cCOED))
     {
       std::cerr << "Error while writing subrecord COED of CONT!\n";
       return false;
     }
-  }//if COED
+  }
 
-  //write DATA
-  output.write((const char*) &cDATA, 4);
-  //DATA's length
-  subLength = 5; //fixed
-  output.write((const char*) &subLength, 2);
-  //write DATA's stuff
-  output.write((const char*) &flags, 1);
-  output.write((const char*) &weight, 4);
+  // write DATA
+  output.write(reinterpret_cast<const char*>(&cDATA), 4);
+  subLength = 5; // fixed length
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
+  output.write(reinterpret_cast<const char*>(&flags), 1);
+  output.write(reinterpret_cast<const char*>(&weight), 4);
 
-  if (openSoundFormID!=0)
+  if (openSoundFormID != 0)
   {
-    //write SNAM
-    output.write((const char*) &cSNAM, 4);
-    //SNAM's length
-    subLength = 4; //fixed
-    output.write((const char*) &subLength, 2);
-    //write Open Sound form ID
-    output.write((const char*) &openSoundFormID, 4);
-  }//if SNAM
+    // write Open Sound Form ID (SNAM)
+    output.write(reinterpret_cast<const char*>(&cSNAM), 4);
+    subLength = 4; // fixed length
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    output.write(reinterpret_cast<const char*>(&openSoundFormID), 4);
+  }
 
-  if (closeSoundFormID!=0)
+  if (closeSoundFormID != 0)
   {
-    //write QNAM
-    output.write((const char*) &cQNAM, 4);
-    //QNAM's length
-    subLength = 4; //fixed
-    output.write((const char*) &subLength, 2);
-    //write Close Sound form ID
-    output.write((const char*) &closeSoundFormID, 4);
-  }//if QNAM
+    // write Close Sound Form ID (QNAM)
+    output.write(reinterpret_cast<const char*>(&cQNAM), 4);
+    subLength = 4; // fixed length
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    output.write(reinterpret_cast<const char*>(&closeSoundFormID), 4);
+  }
 
   return output.good();
 }
@@ -273,38 +253,14 @@ bool ContainerRecord::loadFromStream(std::istream& in_File, const bool localized
   if (isDeleted())
     return true;
 
-  uint32_t subRecName;
-  uint16_t subLength;
-  subRecName = subLength = 0;
+  uint32_t subRecName = 0;
+  uint16_t subLength = 0;
   uint32_t bytesRead = 0;
 
-  //read EDID
-  in_File.read((char*) &subRecName, 4);
-  bytesRead += 4;
-  if (subRecName!=cEDID)
-  {
-    UnexpectedRecord(cEDID, subRecName);
-    return false;
-  }
-  //EDID's length
-  in_File.read((char*) &subLength, 2);
-  bytesRead += 2;
-  if (subLength>511)
-  {
-    std::cerr <<"Error: sub record EDID of CONT is longer than 511 characters!\n";
-    return false;
-  }
-  //read EDID's stuff
+  // read editor ID (EDID)
   char buffer[512];
-  memset(buffer, 0, 512);
-  in_File.read(buffer, subLength);
-  bytesRead += subLength;
-  if (!in_File.good())
-  {
-    std::cerr << "Error while reading subrecord EDID of CONT!\n";
+  if (!loadString512FromStream(in_File, editorID, buffer, cEDID, true, bytesRead))
     return false;
-  }
-  editorID = std::string(buffer);
 
   unknownVMAD.setPresence(false);
   bool hasReadOBND = false;
@@ -314,15 +270,15 @@ bool ContainerRecord::loadFromStream(std::istream& in_File, const bool localized
   unknownMODS.setPresence(false);
   contents.clear();
   ComponentData tempComponent;
-  uint32_t tempSize, i;
+  uint32_t tempSize;
   unknownCOED.setPresence(false);
   bool hasReadDATA = false;
   openSoundFormID = 0;
   closeSoundFormID = 0;
-  while (bytesRead<readSize)
+  while (bytesRead < readSize)
   {
-    //read next subrecord
-    in_File.read((char*) &subRecName, 4);
+    // read next subrecord
+    in_File.read(reinterpret_cast<char*>(&subRecName), 4);
     bytesRead += 4;
     switch (subRecName)
     {
@@ -332,8 +288,9 @@ bool ContainerRecord::loadFromStream(std::istream& in_File, const bool localized
              std::cerr << "Error: CONT seems to have more than one VMAD subrecord.\n";
              return false;
            }
-           //read VMAD
-           if (!unknownVMAD.loadFromStream(in_File, cVMAD, false)) return false;
+           // read VMAD
+           if (!unknownVMAD.loadFromStream(in_File, cVMAD, false))
+             return false;
            bytesRead += (2 + unknownVMAD.size());
            break;
       case cOBND:
@@ -342,17 +299,17 @@ bool ContainerRecord::loadFromStream(std::istream& in_File, const bool localized
              std::cerr << "Error: record CONT seems to have more than one OBND subrecord!\n";
              return false;
            }
-           //OBND's length
-           in_File.read((char*) &subLength, 2);
+           // OBND's length
+           in_File.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
-           if (subLength!=12)
+           if (subLength != 12)
            {
-             std::cerr <<"Error: sub record OBND of CONT has invalid length ("
-                       <<subLength<<" bytes). Should be 12 bytes.\n";
+             std::cerr << "Error: sub record OBND of CONT has invalid length ("
+                       << subLength << " bytes). Should be 12 bytes.\n";
              return false;
            }
-           //read OBND
-           in_File.read((char*) unknownOBND, 12);
+           // read OBND
+           in_File.read(reinterpret_cast<char*>(unknownOBND.data()), 12);
            bytesRead += 12;
            if (!in_File.good())
            {
@@ -367,7 +324,7 @@ bool ContainerRecord::loadFromStream(std::istream& in_File, const bool localized
              std::cerr << "Error: record CONT seems to have more than one FULL subrecord!\n";
              return false;
            }
-           //read FULL
+           // read FULL
            if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
              return false;
            break;
@@ -402,8 +359,9 @@ bool ContainerRecord::loadFromStream(std::istream& in_File, const bool localized
              std::cerr << "Error: CONT seems to have more than one MODS subrecord.\n";
              return false;
            }
-           //read MODS
-           if (!unknownMODS.loadFromStream(in_File, cMODS, false)) return false;
+           // read MODS
+           if (!unknownMODS.loadFromStream(in_File, cMODS, false))
+             return false;
            bytesRead += (2 + unknownMODS.size());
            break;
       case cCOCT:
@@ -417,28 +375,28 @@ bool ContainerRecord::loadFromStream(std::istream& in_File, const bool localized
 
            bytesRead += 6;
 
-           for (i=0; i<tempSize; ++i)
+           for (uint32_t i = 0; i < tempSize; ++i)
            {
-             //read CNTO
-             in_File.read((char*) &subRecName, 4);
+             // read CNTO
+             in_File.read(reinterpret_cast<char*>(&subRecName), 4);
              bytesRead += 4;
-             if (subRecName!=cCNTO)
+             if (subRecName != cCNTO)
              {
                UnexpectedRecord(cCNTO, subRecName);
                return false;
              }
-             //CNTO's length
-             in_File.read((char*) &subLength, 2);
+             // CNTO's length
+             in_File.read(reinterpret_cast<char*>(&subLength), 2);
              bytesRead += 2;
-             if (subLength!=8)
+             if (subLength != 8)
              {
-               std::cerr <<"Error: sub record CNTO of CONT has invalid length ("
-                         <<subLength<<" bytes). Should be eight bytes.\n";
+               std::cerr << "Error: sub record CNTO of CONT has invalid length ("
+                         << subLength << " bytes). Should be eight bytes.\n";
                return false;
              }
-             //read COCT
-             in_File.read((char*) &tempComponent.formID, 4);
-             in_File.read((char*) &tempComponent.count, 4);
+             // read COCT
+             in_File.read(reinterpret_cast<char*>(&tempComponent.formID), 4);
+             in_File.read(reinterpret_cast<char*>(&tempComponent.count), 4);
              bytesRead += 8;
              if (!in_File.good())
              {
@@ -446,7 +404,7 @@ bool ContainerRecord::loadFromStream(std::istream& in_File, const bool localized
                return false;
              }
              contents.push_back(tempComponent);
-           }//for
+           }
            break;
       case cCOED:
            if (unknownCOED.isPresent())
@@ -465,18 +423,18 @@ bool ContainerRecord::loadFromStream(std::istream& in_File, const bool localized
              std::cerr << "Error: record CONT seems to have more than one DATA subrecord!\n";
              return false;
            }
-           //DATA's length
-           in_File.read((char*) &subLength, 2);
+           // DATA's length
+           in_File.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
-           if (subLength!=5)
+           if (subLength != 5)
            {
-             std::cerr <<"Error: sub record DATA of CONT has invalid length ("
-                       <<subLength<<" bytes). Should be five bytes.\n";
+             std::cerr << "Error: sub record DATA of CONT has invalid length ("
+                       << subLength << " bytes). Should be five bytes.\n";
              return false;
            }
-           //read DATA
-           in_File.read((char*) &flags, 1);
-           in_File.read((char*) &weight, 4);
+           // read DATA
+           in_File.read(reinterpret_cast<char*>(&flags), 1);
+           in_File.read(reinterpret_cast<char*>(&weight), 4);
            bytesRead += 5;
            if (!in_File.good())
            {
@@ -486,46 +444,48 @@ bool ContainerRecord::loadFromStream(std::istream& in_File, const bool localized
            hasReadDATA = true;
            break;
       case cSNAM:
-           if (openSoundFormID!=0)
+           if (openSoundFormID != 0)
            {
              std::cerr << "Error: record CONT seems to have more than one SNAM subrecord!\n";
              return false;
            }
            //read SNAM
-           if (!loadUint32SubRecordFromStream(in_File, cSNAM, openSoundFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cSNAM, openSoundFormID, false))
+             return false;
            bytesRead += 6;
-           if (openSoundFormID==0)
+           if (openSoundFormID == 0)
            {
              std::cerr << "Error: subrecord SNAM of CONT is zero!\n";
              return false;
            }
            break;
       case cQNAM:
-           if (closeSoundFormID!=0)
+           if (closeSoundFormID != 0)
            {
              std::cerr << "Error: record CONT seems to have more than one QNAM subrecord!\n";
              return false;
            }
-           //read QNAM
-           if (!loadUint32SubRecordFromStream(in_File, cQNAM, closeSoundFormID, false)) return false;
+           // read QNAM
+           if (!loadUint32SubRecordFromStream(in_File, cQNAM, closeSoundFormID, false))
+             return false;
            bytesRead += 6;
-           if (closeSoundFormID==0)
+           if (closeSoundFormID == 0)
            {
              std::cerr << "Error: subrecord QNAM of CONT is zero!\n";
              return false;
            }
            break;
       default:
-           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \"" << IntTo4Char(subRecName)
                      << "\" found, but only VMAD, OBND, FULL, MODL, MODT, MODS,"
                      << " COCT, COED, DATA, SNAM or QNAM are allowed here!\n";
            return false;
            break;
-    }//swi
-  }//while
+    }
+  }
 
-  //presence checks
-  if (!(hasReadOBND and hasReadDATA))
+  // presence checks
+  if (!hasReadOBND || !hasReadDATA)
   {
     std::cerr << "Error: at least one required subrecord of CONT is missing!\n";
     return false;
@@ -539,4 +499,4 @@ uint32_t ContainerRecord::getRecordType() const
   return cCONT;
 }
 
-} //namespace
+} // namespace

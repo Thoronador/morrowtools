@@ -657,6 +657,36 @@ TEST_CASE("SoulGemRecord")
       }
     }
 
+    SECTION("corrupt data: KSIZ is zero")
+    {
+      const std::string_view data = "SLGM\xC8\0\0\0\0\0\x02\0\0\xE5\x02\0\x1B\x69\x55\0\x28\0\x0C\0EDID\x0D\0SoulGemBlack\0OBND\x0C\0\xFD\xFF\xFD\xFF\xF5\xFF\x03\0\x03\0\x0B\0FULL\x04\0\x3A\x59\0\0MODL\x23\0Clutter\\SoulGem\\SoulGemBlack01.nif\0MODT\x30\0\x02\0\0\0\x03\0\0\0\0\0\0\0\xC7\x96\xA2\xC2\x64\x64\x73\0\xF7\xBB\x84\x5B\xFF\x77\x91\xE4\x64\x64\x73\0\xF7\xBB\x84\x5B\xA8\x37\x08\xC1\x64\x64\x73\0\x26\x2C\x33\x3BKSIZ\x04\0\0\0\0\0KWDA\x04\0\xA3\x37\x09\0DATA\x08\0\x2C\x01\0\0\0\0\x80\x3FSOUL\x01\0\0SLCP\x01\0\x05NAM0\x04\0\x04\xE5\x02\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read SLGM, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      SoulGemRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: KSIZ is zero and KWDA is missing")
+    {
+      const std::string_view data = "SLGM\xBE\0\0\0\0\0\x02\0\0\xE5\x02\0\x1B\x69\x55\0\x28\0\x0C\0EDID\x0D\0SoulGemBlack\0OBND\x0C\0\xFD\xFF\xFD\xFF\xF5\xFF\x03\0\x03\0\x0B\0FULL\x04\0\x3A\x59\0\0MODL\x23\0Clutter\\SoulGem\\SoulGemBlack01.nif\0MODT\x30\0\x02\0\0\0\x03\0\0\0\0\0\0\0\xC7\x96\xA2\xC2\x64\x64\x73\0\xF7\xBB\x84\x5B\xFF\x77\x91\xE4\x64\x64\x73\0\xF7\xBB\x84\x5B\xA8\x37\x08\xC1\x64\x64\x73\0\x26\x2C\x33\x3BKSIZ\x04\0\0\0\0\0DATA\x08\0\x2C\x01\0\0\0\0\x80\x3FSOUL\x01\0\0SLCP\x01\0\x05NAM0\x04\0\x04\xE5\x02\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read SLGM, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      SoulGemRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: no KWDA")
     {
       const std::string_view data = "SLGM\xC8\0\0\0\0\0\x02\0\0\xE5\x02\0\x1B\x69\x55\0\x28\0\x0C\0EDID\x0D\0SoulGemBlack\0OBND\x0C\0\xFD\xFF\xFD\xFF\xF5\xFF\x03\0\x03\0\x0B\0FULL\x04\0\x3A\x59\0\0MODL\x23\0Clutter\\SoulGem\\SoulGemBlack01.nif\0MODT\x30\0\x02\0\0\0\x03\0\0\0\0\0\0\0\xC7\x96\xA2\xC2\x64\x64\x73\0\xF7\xBB\x84\x5B\xFF\x77\x91\xE4\x64\x64\x73\0\xF7\xBB\x84\x5B\xA8\x37\x08\xC1\x64\x64\x73\0\x26\x2C\x33\x3BKSIZ\x04\0\x01\0\0\0FAIL\x04\0\xA3\x37\x09\0DATA\x08\0\x2C\x01\0\0\0\0\x80\x3FSOUL\x01\0\0SLCP\x01\0\x05NAM0\x04\0\x04\xE5\x02\0"sv;

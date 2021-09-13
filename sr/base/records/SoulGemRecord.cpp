@@ -19,7 +19,6 @@
 */
 
 #include "SoulGemRecord.hpp"
-#include <cstring>
 #include <iostream>
 #include "../SR_Constants.hpp"
 #include "../../../mw/base/HelperIO.hpp"
@@ -36,38 +35,34 @@ const uint8_t SoulGemRecord::cCapacityGreater = 4;
 const uint8_t SoulGemRecord::cCapacityAzura = 5;
 
 SoulGemRecord::SoulGemRecord()
-: BasicRecord(), editorID(""),
+: BasicRecord(),
+  editorID(""),
+  unknownOBND(std::array<uint8_t, 12>({ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 })),
   name(LocalizedString()),
   modelPath(""),
   unknownMODT(BinarySubRecord()),
-  keywordArray(std::vector<uint32_t>()),
-  //subrecord DATA
+  keywords(std::vector<uint32_t>()),
+  // subrecord DATA
   value(0),
   weight(0.0f),
-  //end of DATA
-  soulInside(0), //subrecord SOUL
-  capacity(0), //subrecord SLCP
+  // end of DATA
+  soulInside(0), // subrecord SOUL
+  capacity(0),   // subrecord SLCP
   linkedToFormID(0)
 {
-  memset(unknownOBND, 0, 12);
-}
-
-SoulGemRecord::~SoulGemRecord()
-{
-  //empty
 }
 
 #ifndef SR_NO_RECORD_EQUALITY
 bool SoulGemRecord::equals(const SoulGemRecord& other) const
 {
-  return ((equalsBasic(other)) and (editorID==other.editorID)
-      and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
-      and (name==other.name)
-      and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
-      and (keywordArray==other.keywordArray) and (value==other.value)
-      and (weight==other.weight) and (soulInside==other.soulInside)
-      and (capacity==other.capacity)
-      and (linkedToFormID==other.linkedToFormID));
+  return equalsBasic(other) && (editorID == other.editorID)
+      && (unknownOBND == other.unknownOBND)
+      && (name == other.name)
+      && (modelPath == other.modelPath) && (unknownMODT == other.unknownMODT)
+      && (keywords == other.keywords) && (value == other.value)
+      && (weight == other.weight) && (soulInside == other.soulInside)
+      && (capacity == other.capacity)
+      && (linkedToFormID == other.linkedToFormID);
 }
 #endif
 
@@ -76,78 +71,72 @@ uint32_t SoulGemRecord::getWriteSize() const
 {
   if (isDeleted())
     return 0;
-  uint32_t writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
-        +editorID.length()+1 /* length of name +1 byte for NUL termination */
-        +4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed size */
-        +4 /* DATA */ +2 /* 2 bytes for length */ +8 /* fixed size */
-        +4 /* SOUL */ +2 /* 2 bytes for length */ +1 /* fixed size */
-        +4 /* SLCP */ +2 /* 2 bytes for length */ +1 /* fixed size */;
+  uint32_t writeSize = 4 /* EDID */ + 2 /* 2 bytes for length */
+      + editorID.length() + 1 /* length of name +1 byte for NUL termination */
+      + 4 /* OBND */ + 2 /* 2 bytes for length */ + 12 /* fixed size */
+      + 4 /* DATA */ + 2 /* 2 bytes for length */ + 8 /* fixed size */
+      + 4 /* SOUL */ + 2 /* 2 bytes for length */ + 1 /* fixed size */
+      + 4 /* SLCP */ + 2 /* 2 bytes for length */ + 1 /* fixed size */;
   if (name.isPresent())
   {
     writeSize += name.getWriteSize() /* FULL */;
   }
   if (!modelPath.empty())
   {
-    writeSize = writeSize +4 /* MODL */ +2 /* 2 bytes for length */
-               +modelPath.length()+1 /* length of path +1 byte for NUL termination */;
+    writeSize = writeSize + 4 /* MODL */ + 2 /* 2 bytes for length */
+      + modelPath.length() + 1 /* length of path +1 byte for NUL termination */;
   }
   if (unknownMODT.isPresent())
   {
     writeSize = writeSize + 4 /* MODT */ + 2 /* 2 bytes for length */ + unknownMODT.size() /* size */;
   }
-  if (!keywordArray.empty())
+  if (!keywords.empty())
   {
-    writeSize = writeSize +4 /* KSIZ */ +2 /* 2 bytes for length */ +4 /* fixed size */
-               +4 /* KWDA */ +2 /* 2 bytes for length */ +4*keywordArray.size() /* 4 bytes per element */;
+    writeSize = writeSize + 4 /* KSIZ */ + 2 /* 2 bytes for length */ + 4 /* fixed size */
+               + 4 /* KWDA */ + 2 /* 2 bytes for length */ + 4 * keywords.size() /* 4 bytes per element */;
   }
-  if (linkedToFormID!=0)
+  if (linkedToFormID != 0)
   {
-    writeSize = writeSize +4 /* NAM0 */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+    writeSize = writeSize + 4 /* NAM0 */ + 2 /* 2 bytes for length */ + 4 /* fixed size */;
   }
   return writeSize;
 }
 
 bool SoulGemRecord::saveToStream(std::ostream& output) const
 {
-  output.write((const char*) &cSLGM, 4);
+  output.write(reinterpret_cast<const char*>(&cSLGM), 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize()))
     return false;
   if (isDeleted())
     return true;
 
-  //write EDID
-  output.write((const char*) &cEDID, 4);
-  //EDID's length
-  uint16_t subLength = editorID.length()+1;
-  output.write((const char*) &subLength, 2);
-  //write editor ID
+  // write editor ID (EDID)
+  output.write(reinterpret_cast<const char*>(&cEDID), 4);
+  uint16_t subLength = editorID.length() + 1;
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
   output.write(editorID.c_str(), subLength);
 
-  //write OBND
-  output.write((const char*) &cOBND, 4);
-  //OBND's length
-  subLength = 12; //fixed
-  output.write((const char*) &subLength, 2);
-  //write OBND's stuff
-  output.write((const char*) unknownOBND, 12);
+  // write object bounds (OBND)
+  output.write(reinterpret_cast<const char*>(&cOBND), 4);
+  subLength = 12; // fixed length
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
+  output.write(reinterpret_cast<const char*>(unknownOBND.data()), 12);
 
   if (name.isPresent())
   {
-    //write FULL
+    // write FULL
     if (!name.saveToStream(output, cFULL))
       return false;
-  }//if FULL
+  }
 
   if (!modelPath.empty())
   {
-    //write MODL
-    output.write((const char*) &cMODL, 4);
-    //EDID's length
-    subLength = modelPath.length()+1;
-    output.write((const char*) &subLength, 2);
-    //write model path
+    // write model path (MODL)
+    output.write(reinterpret_cast<const char*>(&cMODL), 4);
+    subLength = modelPath.length() + 1;
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
     output.write(modelPath.c_str(), subLength);
-  }//if MODL
+  }
 
   if (unknownMODT.isPresent())
   {
@@ -156,66 +145,57 @@ bool SoulGemRecord::saveToStream(std::ostream& output) const
       std::cerr << "Error while writing subrecord MODT of SLGM!\n";
       return false;
     }
-  }//if MODT
+  }
 
-  if (!keywordArray.empty())
+  if (!keywords.empty())
   {
-    //write KSIZ
-    output.write((const char*) &cKSIZ, 4);
-    //KSIZ's length
-    subLength = 4; // fixed
-    output.write((const char*) &subLength, 2);
-    //write keyword count
-    const uint32_t k_Size = keywordArray.size();
-    output.write((const char*) &k_Size, 4);
+    // write KSIZ
+    output.write(reinterpret_cast<const char*>(&cKSIZ), 4);
+    subLength = 4; // fixed length
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    // write keyword count
+    const uint32_t k_Size = keywords.size();
+    output.write(reinterpret_cast<const char*>(&k_Size), 4);
 
-    //write KWDA
-    output.write((const char*) &cKWDA, 4);
-    //KWDA's length
-    subLength = 4*k_Size;
-    output.write((const char*) &subLength, 2);
-    //write keywords
-    uint32_t i;
-    for (i=0; i<k_Size; ++i)
+    // write keyword array (KWDA)
+    output.write(reinterpret_cast<const char*>(&cKWDA), 4);
+    subLength = 4 * k_Size; // four bytes per element
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    // write keywords
+    for (const uint32_t keyword: keywords)
     {
-      output.write((const char*) &(keywordArray[i]), 4);
-    }//for
-  }//if keywords
+      output.write(reinterpret_cast<const char*>(&keyword), 4);
+    }
+  }
 
   // write DATA
   output.write(reinterpret_cast<const char*>(&cDATA), 4);
-  subLength = 8; //fixed length
+  subLength = 8; // fixed length
   output.write(reinterpret_cast<const char*>(&subLength), 2);
   // write DATA's stuff
   output.write(reinterpret_cast<const char*>(&value), 4);
   output.write(reinterpret_cast<const char*>(&weight), 4);
 
-  //write SOUL
-  output.write((const char*) &cSOUL, 4);
-  //SOUL's length
-  subLength = 1; //fixed
-  output.write((const char*) &subLength, 2);
-  //write SOUL's stuff
-  output.write((const char*) &soulInside, 1);
+  // write power of the trapped soul (SOUL)
+  output.write(reinterpret_cast<const char*>(&cSOUL), 4);
+  subLength = 1; // fixed length
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
+  output.write(reinterpret_cast<const char*>(&soulInside), 1);
 
-  //write SLCP
-  output.write((const char*) &cSLCP, 4);
-  //SLCP's length
-  subLength = 1; //fixed
-  output.write((const char*) &subLength, 2);
-  //write SLCP's stuff
-  output.write((const char*) &capacity, 1);
+  // write soul gem capacity (SLCP)
+  output.write(reinterpret_cast<const char*>(&cSLCP), 4);
+  subLength = 1; // fixed length
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
+  output.write(reinterpret_cast<const char*>(&capacity), 1);
 
-  if (linkedToFormID!=0)
+  if (linkedToFormID != 0)
   {
-    //write NAM0
-    output.write((const char*) &cNAM0, 4);
-    //NAM0's length
-    subLength = 4; // fixed
-    output.write((const char*) &subLength, 2);
-    //write "Linked to" form ID
-    output.write((const char*) &linkedToFormID, 4);
-  }//if NAM0
+    // write "Linked to" form ID (NAM0)
+    output.write(reinterpret_cast<const char*>(&cNAM0), 4);
+    subLength = 4; // fixed length
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    output.write(reinterpret_cast<const char*>(&linkedToFormID), 4);
+  }
 
   return output.good();
 }
@@ -228,58 +208,34 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
     return false;
   if (isDeleted())
     return true;
-  uint32_t subRecName;
-  uint16_t subLength;
-  subRecName = subLength = 0;
+  uint32_t subRecName = 0;
+  uint16_t subLength = 0;
   uint32_t bytesRead = 0;
 
-  //read EDID
-  in_File.read((char*) &subRecName, 4);
-  bytesRead = 4;
-  if (subRecName!=cEDID)
-  {
-    UnexpectedRecord(cEDID, subRecName);
-    return false;
-  }
-  //EDID's length
-  in_File.read((char*) &subLength, 2);
-  bytesRead += 2;
-  if (subLength>511)
-  {
-    std::cerr <<"Error: sub record EDID of SLGM is longer than 511 characters!\n";
-    return false;
-  }
-  //read EDID's stuff
+  // read editor ID (EDID)
   char buffer[512];
-  memset(buffer, 0, 512);
-  in_File.read(buffer, subLength);
-  bytesRead += subLength;
-  if (!in_File.good())
-  {
-    std::cerr << "Error while reading subrecord EDID of SLGM!\n";
+  if (!loadString512FromStream(in_File, editorID, buffer, cEDID, true, bytesRead))
     return false;
-  }
-  editorID = std::string(buffer);
 
-  //read OBND
-  in_File.read((char*) &subRecName, 4);
+  // read OBND
+  in_File.read(reinterpret_cast<char*>(&subRecName), 4);
   bytesRead += 4;
-  if (subRecName!=cOBND)
+  if (subRecName != cOBND)
   {
     UnexpectedRecord(cOBND, subRecName);
     return false;
   }
-  //OBND's length
-  in_File.read((char*) &subLength, 2);
+  // OBND's length
+  in_File.read(reinterpret_cast<char*>(&subLength), 2);
   bytesRead += 2;
-  if (subLength!=12)
+  if (subLength != 12)
   {
-    std::cerr <<"Error: sub record OBND of SLGM has invalid length ("<<subLength
-              <<" bytes). Should be 12 bytes.\n";
+    std::cerr << "Error: sub record OBND of SLGM has invalid length ("
+              << subLength << " bytes). Should be 12 bytes.\n";
     return false;
   }
-  //read OBND's stuff
-  in_File.read((char*) unknownOBND, 12);
+  // read OBND's stuff
+  in_File.read(reinterpret_cast<char*>(unknownOBND.data()), 12);
   bytesRead += 12;
   if (!in_File.good())
   {
@@ -290,16 +246,16 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
   name.reset();
   modelPath.clear();
   unknownMODT.setPresence(false);
-  keywordArray.clear();
-  uint32_t i, k_Size, tempUint32;
+  keywords.clear();
+  uint32_t k_Size, tempUint32;
   bool hasReadDATA = false;
   bool hasReadSOUL = false;
   bool hasReadSLCP = false;
   linkedToFormID = 0;
-  while (bytesRead<readSize)
+  while (bytesRead < readSize)
   {
-    //read next subrecord
-    in_File.read((char*) &subRecName, 4);
+    // read next subrecord
+    in_File.read(reinterpret_cast<char*>(&subRecName), 4);
     bytesRead += 4;
     switch (subRecName)
     {
@@ -309,7 +265,6 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
              std::cerr << "Error: SLGM seems to have more than one FULL subrecord.\n";
              return false;
            }
-           //read FULL
            if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
              return false;
            break;
@@ -319,24 +274,9 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
              std::cerr << "Error: SLGM seems to have more than one MODL subrecord.\n";
              return false;
            }
-           //read MODL's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength>511)
-           {
-             std::cerr <<"Error: sub record MODL of SLGM is longer than 511 characters!\n";
+           // read model path (MODL)
+           if (!loadString512FromStream(in_File, modelPath, buffer, cMODL, false, bytesRead))
              return false;
-           }
-           //read MODL's stuff
-           memset(buffer, 0, 512);
-           in_File.read(buffer, subLength);
-           bytesRead += subLength;
-           if (!in_File.good())
-           {
-             std::cerr << "Error while reading subrecord MODL of SLGM!\n";
-             return false;
-           }
-           modelPath = std::string(buffer);
            break;
       case cMODT:
            if (unknownMODT.isPresent())
@@ -353,51 +293,52 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
            bytesRead = bytesRead + 2 /* length */ + unknownMODT.size() /* data size */;
            break;
       case cKSIZ:
-           if (!keywordArray.empty())
+           if (!keywords.empty())
            {
              std::cerr << "Error: SLGM seems to have more than one KSIZ subrecord.\n";
              return false;
            }
-           //read KSIZ
+           // read KSIZ
            k_Size = 0;
            if (!loadUint32SubRecordFromStream(in_File, cKSIZ, k_Size, false))
              return false;
            bytesRead += 6;
-           if (k_Size==0)
+           if (k_Size == 0)
            {
              std::cerr << "Error: SLGM's KSIZ value is zero, but that's not allowed!\n";
              return false;
            }
 
-           //read KWDA
-           in_File.read((char*) &subRecName, 4);
+           // read KWDA
+           in_File.read(reinterpret_cast<char*>(&subRecName), 4);
            bytesRead += 4;
-           if (subRecName!=cKWDA)
+           if (subRecName != cKWDA)
            {
              UnexpectedRecord(cKWDA, subRecName);
              return false;
            }
-           //KWDA's length
-           in_File.read((char*) &subLength, 2);
+           // KWDA's length
+           in_File.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
-           if (subLength!=4*k_Size)
+           if (subLength != 4 * k_Size)
            {
-             std::cerr <<"Error: sub record KWDA of SLGM has invalid length ("
-                       <<subLength<<" bytes). Should be "<<4*k_Size<<" bytes.\n";
+             std::cerr << "Error: sub record KWDA of SLGM has invalid length ("
+                       << subLength << " bytes). Should be " << 4 * k_Size
+                       << " bytes.\n";
              return false;
            }
-           //read KWDA's stuff
-           for (i=0; i<k_Size; ++i)
+           // read KWDA's stuff
+           for (uint32_t i = 0; i < k_Size; ++i)
            {
-             in_File.read((char*) &tempUint32, 4);
+             in_File.read(reinterpret_cast<char*>(&tempUint32), 4);
              bytesRead += 4;
              if (!in_File.good())
              {
                std::cerr << "Error while reading subrecord KWDA of SLGM!\n";
                return false;
              }
-             keywordArray.push_back(tempUint32);
-           }//for
+             keywords.push_back(tempUint32);
+           }
            break;
       case cDATA:
            if (hasReadDATA)
@@ -405,18 +346,18 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
              std::cerr << "Error: SLGM seems to have more than one DATA subrecord.\n";
              return false;
            }
-           //DATA's length
-           in_File.read((char*) &subLength, 2);
+           // DATA's length
+           in_File.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
-           if (subLength!=8)
+           if (subLength != 8)
            {
-             std::cerr <<"Error: sub record DATA of SLGM has invalid length ("
-                       <<subLength<<" bytes). Should be eight bytes.\n";
+             std::cerr << "Error: sub record DATA of SLGM has invalid length ("
+                       << subLength << " bytes). Should be eight bytes.\n";
              return false;
            }
-           //read DATA
-           in_File.read((char*) &value, 4);
-           in_File.read((char*) &weight, 4);
+           // read DATA
+           in_File.read(reinterpret_cast<char*>(&value), 4);
+           in_File.read(reinterpret_cast<char*>(&weight), 4);
            bytesRead += 8;
            if (!in_File.good())
            {
@@ -431,17 +372,17 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
              std::cerr << "Error: SLGM seems to have more than one SOUL subrecord.\n";
              return false;
            }
-           //SOUL's length
-           in_File.read((char*) &subLength, 2);
+           // SOUL's length
+           in_File.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
-           if (subLength!=1)
+           if (subLength != 1)
            {
-             std::cerr <<"Error: sub record SOUL of SLGM has invalid length ("
-                       <<subLength<<" bytes). Should be one byte.\n";
+             std::cerr << "Error: sub record SOUL of SLGM has invalid length ("
+                       << subLength << " bytes). Should be one byte.\n";
              return false;
            }
-           //read SOUL
-           in_File.read((char*) &soulInside, 1);
+           // read SOUL
+           in_File.read(reinterpret_cast<char*>(&soulInside), 1);
            bytesRead += 1;
            if (!in_File.good())
            {
@@ -456,17 +397,17 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
              std::cerr << "Error: SLGM seems to have more than one SLCP subrecord.\n";
              return false;
            }
-           //SLCP's length
-           in_File.read((char*) &subLength, 2);
+           // SLCP's length
+           in_File.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
-           if (subLength!=1)
+           if (subLength != 1)
            {
-             std::cerr <<"Error: sub record SLCP of SLGM has invalid length ("
-                       <<subLength<<" bytes). Should be one byte.\n";
+             std::cerr << "Error: sub record SLCP of SLGM has invalid length ("
+                       << subLength << " bytes). Should be one byte.\n";
              return false;
            }
-           //read SLCP
-           in_File.read((char*) &capacity, 1);
+           // read SLCP
+           in_File.read(reinterpret_cast<char*>(&capacity), 1);
            bytesRead += 1;
            if (!in_File.good())
            {
@@ -476,33 +417,33 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
            hasReadSLCP = true;
            break;
       case cNAM0:
-           if (linkedToFormID!=0)
+           if (linkedToFormID != 0)
            {
              std::cerr << "Error: SLGM seems to have more than one NAM0 subrecord.\n";
              return false;
            }
-           //read NAM0
+           // read NAM0
            if (!loadUint32SubRecordFromStream(in_File, cNAM0, linkedToFormID, false))
              return false;
            bytesRead += 6;
-           //check content
-           if (linkedToFormID==0)
+           // check content
+           if (linkedToFormID == 0)
            {
              std::cerr << "Error: subrecord NAM0 of SLGM is zero!\n";
              return false;
            }
            break;
       default:
-           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
-                     << "\" found, but only FULL, MODL, MODT, KSIZ, DATA, SOUL, "
-                     << "SLCP or NAM0 are allowed here!\n";
+           std::cerr << "Error: unexpected record type \"" << IntTo4Char(subRecName)
+                     << "\" found, but only FULL, MODL, MODT, KSIZ, DATA, "
+                     << "SOUL, SLCP or NAM0 are allowed here!\n";
            return false;
            break;
-    }//swi
-  }//while
+    }
+  }
 
-  //presence checks
-  if (!((!modelPath.empty()) and hasReadDATA and hasReadSOUL and hasReadSLCP))
+  // presence checks
+  if (modelPath.empty() || !hasReadDATA || !hasReadSOUL || !hasReadSLCP)
   {
     std::cerr << "Error: while reading SLGM record: at least one required subrecord is missing!\n";
     return false;
@@ -516,4 +457,4 @@ uint32_t SoulGemRecord::getRecordType() const
   return cSLGM;
 }
 
-} //namespace
+} // namespace

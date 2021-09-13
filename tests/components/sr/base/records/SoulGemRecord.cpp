@@ -42,7 +42,7 @@ TEST_CASE("SoulGemRecord")
     REQUIRE_FALSE( record.name.isPresent() );
     REQUIRE( record.modelPath.empty() );
     REQUIRE_FALSE( record.unknownMODT.isPresent() );
-    REQUIRE( record.keywordArray.empty() );
+    REQUIRE( record.keywords.empty() );
     REQUIRE( record.value == 0 );
     REQUIRE( record.weight == 0.0f );
     REQUIRE( record.soulInside == 0 );
@@ -117,13 +117,13 @@ TEST_CASE("SoulGemRecord")
 
       SECTION("keywords mismatch")
       {
-        a.keywordArray.push_back(0x01234567);
+        a.keywords.push_back(0x01234567);
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        b.keywordArray.push_back(0x01234567);
-        b.keywordArray.push_back(0x09ABCDEF);
+        b.keywords.push_back(0x01234567);
+        b.keywords.push_back(0x09ABCDEF);
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
@@ -246,10 +246,10 @@ TEST_CASE("SoulGemRecord")
       record.editorID = "foo";
       REQUIRE( record.getWriteSize() == 56 );
 
-      record.keywordArray.push_back(0x01234567);
+      record.keywords.push_back(0x01234567);
       REQUIRE( record.getWriteSize() == 76 );
 
-      record.keywordArray.push_back(0x01234567);
+      record.keywords.push_back(0x01234567);
       REQUIRE( record.getWriteSize() == 80 );
     }
 
@@ -316,8 +316,8 @@ TEST_CASE("SoulGemRecord")
       REQUIRE( record.unknownMODT.isPresent() );
       const auto MODT = std::string_view(reinterpret_cast<const char*>(record.unknownMODT.data()), record.unknownMODT.size());
       REQUIRE( MODT == "\x02\0\0\0\x03\0\0\0\0\0\0\0\xC7\x96\xA2\xC2\x64\x64\x73\0\xF7\xBB\x84\x5B\xFF\x77\x91\xE4\x64\x64\x73\0\xF7\xBB\x84\x5B\xA8\x37\x08\xC1\x64\x64\x73\0\x26\x2C\x33\x3B"sv );
-      REQUIRE( record.keywordArray.size() == 1 );
-      REQUIRE( record.keywordArray[0] == 0x000937A3 );
+      REQUIRE( record.keywords.size() == 1 );
+      REQUIRE( record.keywords[0] == 0x000937A3 );
       REQUIRE( record.value == 300 );
       REQUIRE( record.weight == 1.0f );
       REQUIRE( record.soulInside == 0 );

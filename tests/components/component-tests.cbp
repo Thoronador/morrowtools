@@ -95,6 +95,8 @@
 		<Unit filename="../../sr/base/records/ShoutRecord.hpp" />
 		<Unit filename="../../sr/base/records/SimplifiedReferenceRecord.cpp" />
 		<Unit filename="../../sr/base/records/SimplifiedReferenceRecord.hpp" />
+		<Unit filename="../../sr/base/records/SoulGemRecord.cpp" />
+		<Unit filename="../../sr/base/records/SoulGemRecord.hpp" />
 		<Unit filename="../../sr/base/records/SubBlock.hpp" />
 		<Unit filename="../../sr/base/records/TES4HeaderRecord.cpp" />
 		<Unit filename="../../sr/base/records/TES4HeaderRecord.hpp" />
@@ -138,6 +140,7 @@
 		<Unit filename="sr/base/records/PerkRecord.cpp" />
 		<Unit filename="sr/base/records/ShoutRecord.cpp" />
 		<Unit filename="sr/base/records/SimplifiedReferenceRecord.cpp" />
+		<Unit filename="sr/base/records/SoulGemRecord.cpp" />
 		<Unit filename="sr/base/records/TalkingActivatorRecord.cpp" />
 		<Unit filename="sr/base/records/Tes4HeaderRecord.cpp" />
 		<Unit filename="sr/base/records/TreeRecord.cpp" />

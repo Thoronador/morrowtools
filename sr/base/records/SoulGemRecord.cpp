@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2013  Thoronador
+    Copyright (C) 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -74,8 +74,9 @@ bool SoulGemRecord::equals(const SoulGemRecord& other) const
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t SoulGemRecord::getWriteSize() const
 {
-  uint32_t writeSize;
-  writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
+  if (isDeleted())
+    return 0;
+  uint32_t writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
         +4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed size */
         +4 /* DATA */ +2 /* 2 bytes for length */ +8 /* fixed size */
@@ -109,7 +110,10 @@ uint32_t SoulGemRecord::getWriteSize() const
 bool SoulGemRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cSLGM, 4);
-  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
+  if (!saveSizeAndUnknownValues(output, getWriteSize()))
+    return false;
+  if (isDeleted())
+    return true;
 
   //write EDID
   output.write((const char*) &cEDID, 4);
@@ -178,6 +182,14 @@ bool SoulGemRecord::saveToStream(std::ostream& output) const
     }//for
   }//if keywords
 
+  // write DATA
+  output.write(reinterpret_cast<const char*>(&cDATA), 4);
+  subLength = 8; //fixed length
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
+  // write DATA's stuff
+  output.write(reinterpret_cast<const char*>(&value), 4);
+  output.write(reinterpret_cast<const char*>(&weight), 4);
+
   //write SOUL
   output.write((const char*) &cSOUL, 4);
   //SOUL's length
@@ -212,7 +224,10 @@ bool SoulGemRecord::saveToStream(std::ostream& output) const
 bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
-  if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
+  if (!loadSizeAndUnknownValues(in_File, readSize))
+    return false;
+  if (isDeleted())
+    return true;
   uint32_t subRecName;
   uint16_t subLength;
   subRecName = subLength = 0;
@@ -345,7 +360,8 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
            }
            //read KSIZ
            k_Size = 0;
-           if (!loadUint32SubRecordFromStream(in_File, cKSIZ, k_Size, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cKSIZ, k_Size, false))
+             return false;
            bytesRead += 6;
            if (k_Size==0)
            {
@@ -466,7 +482,8 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
              return false;
            }
            //read NAM0
-           if (!loadUint32SubRecordFromStream(in_File, cNAM0, linkedToFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cNAM0, linkedToFormID, false))
+             return false;
            bytesRead += 6;
            //check content
            if (linkedToFormID==0)

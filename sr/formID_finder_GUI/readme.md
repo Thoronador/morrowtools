@@ -20,7 +20,9 @@ All of that can usually be installed be typing
 
 or
 
-    yum install lazarus
+    yum install epel-release # needed for fpc (Free Pascal compiler) on CentOS 8
+                             # ... and maybe on other Red Hat-based distros, too
+    yum install fpc lazarus
 
 into a root terminal.
 

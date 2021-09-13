@@ -384,6 +384,7 @@ TEST_CASE("ContainerRecord")
     StringTable dummy_table;
     dummy_table.addString(0x0000DE55, "foo");
     dummy_table.addString(0x0000724D, "bar");
+    dummy_table.addString(0x0000EE38, "baz");
 
     SECTION("default: load record without content and sounds")
     {
@@ -501,6 +502,66 @@ TEST_CASE("ContainerRecord")
       REQUIRE( streamOut.str() == data );
     }
 
+    SECTION("default: load record with VMAD")
+    {
+      const std::string_view data = "CONT\xBF\0\0\0\0\0\0\0\xD1\x30\x0D\0\x1B\x69\x55\0\x28\0\x07\0EDID\x18\0dunMiddenRelicContainer\0VMAD\x27\0\x05\0\x02\0\x01\0\x1C\0\x64\x75\x6E\x4D\x69\x64\x64\x65\x6E\x48\x61\x6E\x64\x53\x63\x75\x6C\x70\x74\x75\x72\x65\x53\x43\x52\x49\x50\x54\0\0\0OBND\x0C\0\xF9\xFF\xF5\xFF\xFC\xFF\x07\0\x0B\0\x03\0FULL\x04\0\x38\xEE\0\0MODL\x1D\0Clutter\\Bones\\BloodyHand.nif\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\xAC\x99\xDE\x09\x64\x64\x73\0\x0C\x54\xDE\x96\x1F\xDC\x48\x1C\x64\x64\x73\0\x0C\x54\xDE\x96\x44\x41TA\x05\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read CONT, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      ContainerRecord record;
+      REQUIRE( record.loadFromStream(stream, true, dummy_table) );
+      // Check data.
+      // -- header
+      REQUIRE( record.headerFlags == 0 );
+      REQUIRE( record.headerFormID == 0x000D30D1 );
+      REQUIRE( record.headerRevision == 0x0055691B );
+      REQUIRE( record.headerVersion == 40 );
+      REQUIRE( record.headerUnknown5 == 0x0007 );
+      // -- record data
+      REQUIRE( record.editorID == "dunMiddenRelicContainer" );
+      REQUIRE( record.unknownVMAD.isPresent() );
+      const auto VMAD = std::string_view(reinterpret_cast<const char*>(record.unknownVMAD.data()), record.unknownVMAD.size());
+      REQUIRE( VMAD == "\x05\0\x02\0\x01\0\x1C\0\x64\x75\x6E\x4D\x69\x64\x64\x65\x6E\x48\x61\x6E\x64\x53\x63\x75\x6C\x70\x74\x75\x72\x65\x53\x43\x52\x49\x50\x54\0\0\0"sv );
+      // \xF9\xFF\xF5\xFF\xFC\xFF\x07\0\x0B\0\x03\0
+      REQUIRE( record.unknownOBND[0] == 0xF9 );
+      REQUIRE( record.unknownOBND[1] == 0xFF );
+      REQUIRE( record.unknownOBND[2] == 0xF5 );
+      REQUIRE( record.unknownOBND[3] == 0xFF );
+      REQUIRE( record.unknownOBND[4] == 0xFC );
+      REQUIRE( record.unknownOBND[5] == 0xFF );
+      REQUIRE( record.unknownOBND[6] == 0x07 );
+      REQUIRE( record.unknownOBND[7] == 0x00 );
+      REQUIRE( record.unknownOBND[8] == 0x0B );
+      REQUIRE( record.unknownOBND[9] == 0x00 );
+      REQUIRE( record.unknownOBND[10] == 0x03 );
+      REQUIRE( record.unknownOBND[11] == 0x00 );
+      REQUIRE( record.name.isPresent() );
+      REQUIRE( record.name.getType() == LocalizedString::Type::Index );
+      REQUIRE( record.name.getIndex() == 0x0000EE38 );
+      REQUIRE( record.modelPath == "Clutter\\Bones\\BloodyHand.nif" );
+      REQUIRE( record.unknownMODT.isPresent() );
+      const auto MODT = std::string_view(reinterpret_cast<const char*>(record.unknownMODT.data()), record.unknownMODT.size());
+      REQUIRE( MODT == "\x02\0\0\0\x02\0\0\0\0\0\0\0\xAC\x99\xDE\x09\x64\x64\x73\0\x0C\x54\xDE\x96\x1F\xDC\x48\x1C\x64\x64\x73\0\x0C\x54\xDE\x96"sv );
+      REQUIRE_FALSE( record.unknownMODS.isPresent() );
+      REQUIRE( record.contents.size() == 0 );
+      REQUIRE_FALSE( record.unknownCOED.isPresent() );
+      REQUIRE( record.flags == 0x00 );
+      REQUIRE( record.weight == 0.0f );
+      REQUIRE( record.openSoundFormID == 0 );
+      REQUIRE( record.closeSoundFormID == 0 );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( record.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
+    }
+
     SECTION("special: load deleted record")
     {
       const std::string_view data = "CONT\0\0\0\0\x20\0\0\x08\x45\x08\0\0\x1B\x69\x55\0\x28\0\x0D\0"sv;
@@ -573,6 +634,36 @@ TEST_CASE("ContainerRecord")
     SECTION("corrupt data: length of EDID is beyond stream")
     {
       const std::string_view data = "CONT\x9D\0\0\0\0\0\0\x08\xE7\x67\x02\0\x1B\x69\x55\0\x28\0\x0A\0EDID\x9D\0EvidenceChestStolenGoods\0OBND\x0C\0\xD0\xFF\xE7\xFF\0\0\x30\0\x18\0\x30\0FULL\x04\0\x4D\x72\0\0MODL\x27\0Clutter\\Containers\\Chest01\\Chest01.nif\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x45\xDA\xC1\xAB\x64\x64\x73\0\xB3\xB8\x24\x94\x8F\x26\x21\x7C\x64\x64\x73\0\xB3\xB8\x24\x94\x44\x41TA\x05\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read CONT, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ContainerRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple VMAD")
+    {
+      const std::string_view data = "CONT\xEC\0\0\0\0\0\0\0\xD1\x30\x0D\0\x1B\x69\x55\0\x28\0\x07\0EDID\x18\0dunMiddenRelicContainer\0VMAD\x27\0\x05\0\x02\0\x01\0\x1C\0\x64\x75\x6E\x4D\x69\x64\x64\x65\x6E\x48\x61\x6E\x64\x53\x63\x75\x6C\x70\x74\x75\x72\x65\x53\x43\x52\x49\x50\x54\0\0\0VMAD\x27\0\x05\0\x02\0\x01\0\x1C\0\x64\x75\x6E\x4D\x69\x64\x64\x65\x6E\x48\x61\x6E\x64\x53\x63\x75\x6C\x70\x74\x75\x72\x65\x53\x43\x52\x49\x50\x54\0\0\0OBND\x0C\0\xF9\xFF\xF5\xFF\xFC\xFF\x07\0\x0B\0\x03\0FULL\x04\0\x38\xEE\0\0MODL\x1D\0Clutter\\Bones\\BloodyHand.nif\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\xAC\x99\xDE\x09\x64\x64\x73\0\x0C\x54\xDE\x96\x1F\xDC\x48\x1C\x64\x64\x73\0\x0C\x54\xDE\x96\x44\x41TA\x05\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read CONT, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ContainerRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: stream ends before all of VMAD can be read")
+    {
+      const std::string_view data = "CONT\xBF\0\0\0\0\0\0\0\xD1\x30\x0D\0\x1B\x69\x55\0\x28\0\x07\0EDID\x18\0dunMiddenRelicContainer\0VMAD\x27\0\x05\0\x02\0\x01\0\x1C\0\x64"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 
@@ -676,7 +767,7 @@ TEST_CASE("ContainerRecord")
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
-    SECTION("corrupt data: stream end before all of FULL can be read")
+    SECTION("corrupt data: stream ends before all of FULL can be read")
     {
       const std::string_view data = "CONT\x9D\0\0\0\0\0\0\x08\xE7\x67\x02\0\x1B\x69\x55\0\x28\0\x0A\0EDID\x19\0EvidenceChestStolenGoods\0OBND\x0C\0\xD0\xFF\xE7\xFF\0\0\x30\0\x18\0\x30\0FULL\x04\0\x4D\x72"sv;
       std::istringstream stream;
@@ -781,6 +872,21 @@ TEST_CASE("ContainerRecord")
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
+    SECTION("corrupt data: multiple COCTs")
+    {
+      const std::string_view data = "CONT\xC0\0\0\0\0\0\0\x08\x45\x08\0\0\x1B\x69\x55\0\x28\0\x0D\0EDID\x0D\0BarrelFood01\0OBND\x0C\0\xE5\xFF\xE5\xFF\0\0\x1B\0\x1B\0\x50\0FULL\x04\0\x55\xDE\0\0MODL\x15\0Clutter\\Barrel01.NIF\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x4E\xFC\x5A\xB9\x64\x64\x73\0\xBF\xFA\x25\xDA\x22\x68\xD8\x4D\x64\x64\x73\0\xBF\xFA\x25\xDA\x43OCT\x04\0\x01\0\0\0CNTO\x08\0\xFB\xFC\x10\0\x01\0\0\0\x43OCT\x04\0\x01\0\0\0CNTO\x08\0\xFB\xFC\x10\0\x01\0\0\0DATA\x05\0\x02\0\0\0\0SNAM\x04\0\x6D\xC8\x03\0QNAM\x04\0\x70\xC8\x03\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read CONT, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ContainerRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: length of COCT is not four")
     {
       {
@@ -810,6 +916,97 @@ TEST_CASE("ContainerRecord")
         ContainerRecord record;
         REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
       }
+    }
+
+    SECTION("corrupt data: no CNTO")
+    {
+      const std::string_view data = "CONT\xAB\0\0\0\0\0\0\x08\x45\x08\0\0\x1B\x69\x55\0\x28\0\x0D\0EDID\x0D\0BarrelFood01\0OBND\x0C\0\xE5\xFF\xE5\xFF\0\0\x1B\0\x1B\0\x50\0FULL\x04\0\x55\xDE\0\0MODL\x15\0Clutter\\Barrel01.NIF\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x4E\xFC\x5A\xB9\x64\x64\x73\0\xBF\xFA\x25\xDA\x22\x68\xD8\x4D\x64\x64\x73\0\xBF\xFA\x25\xDA\x43OCT\x04\0\x01\0\0\0FAIL\x08\0\xFB\xFC\x10\0\x01\0\0\0DATA\x05\0\x02\0\0\0\0SNAM\x04\0\x6D\xC8\x03\0QNAM\x04\0\x70\xC8\x03\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read CONT, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ContainerRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: missing CNTO")
+    {
+      const std::string_view data = "CONT\x9A\0\0\0\0\0\0\x08\x45\x08\0\0\x1B\x69\x55\0\x28\0\x0D\0EDID\x0D\0BarrelFood01\0OBND\x0C\0\xE5\xFF\xE5\xFF\0\0\x1B\0\x1B\0\x50\0FULL\x04\0\x55\xDE\0\0MODL\x15\0Clutter\\Barrel01.NIF\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x4E\xFC\x5A\xB9\x64\x64\x73\0\xBF\xFA\x25\xDA\x22\x68\xD8\x4D\x64\x64\x73\0\xBF\xFA\x25\xDA\x43OCT\x04\0\x01\0\0\0DATA\x05\0\x02\0\0\0\0SNAM\x04\0\x6D\xC8\x03\0QNAM\x04\0\x70\xC8\x03\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read CONT, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ContainerRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of CNTO is not eight")
+    {
+      {
+        const std::string_view data = "CONT\xAA\0\0\0\0\0\0\x08\x45\x08\0\0\x1B\x69\x55\0\x28\0\x0D\0EDID\x0D\0BarrelFood01\0OBND\x0C\0\xE5\xFF\xE5\xFF\0\0\x1B\0\x1B\0\x50\0FULL\x04\0\x55\xDE\0\0MODL\x15\0Clutter\\Barrel01.NIF\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x4E\xFC\x5A\xB9\x64\x64\x73\0\xBF\xFA\x25\xDA\x22\x68\xD8\x4D\x64\x64\x73\0\xBF\xFA\x25\xDA\x43OCT\x04\0\x01\0\0\0CNTO\x07\0\xFB\xFC\x10\0\x01\0\0DATA\x05\0\x02\0\0\0\0SNAM\x04\0\x6D\xC8\x03\0QNAM\x04\0\x70\xC8\x03\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read CONT, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        ContainerRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+
+      {
+        const std::string_view data = "CONT\xAC\0\0\0\0\0\0\x08\x45\x08\0\0\x1B\x69\x55\0\x28\0\x0D\0EDID\x0D\0BarrelFood01\0OBND\x0C\0\xE5\xFF\xE5\xFF\0\0\x1B\0\x1B\0\x50\0FULL\x04\0\x55\xDE\0\0MODL\x15\0Clutter\\Barrel01.NIF\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x4E\xFC\x5A\xB9\x64\x64\x73\0\xBF\xFA\x25\xDA\x22\x68\xD8\x4D\x64\x64\x73\0\xBF\xFA\x25\xDA\x43OCT\x04\0\x01\0\0\0CNTO\x09\0\xFB\xFC\x10\0\x01\0\0\0\0DATA\x05\0\x02\0\0\0\0SNAM\x04\0\x6D\xC8\x03\0QNAM\x04\0\x70\xC8\x03\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read CONT, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        ContainerRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+    }
+
+    SECTION("corrupt data: stream ends before all of CNTO can be read")
+    {
+      const std::string_view data = "CONT\xAB\0\0\0\0\0\0\x08\x45\x08\0\0\x1B\x69\x55\0\x28\0\x0D\0EDID\x0D\0BarrelFood01\0OBND\x0C\0\xE5\xFF\xE5\xFF\0\0\x1B\0\x1B\0\x50\0FULL\x04\0\x55\xDE\0\0MODL\x15\0Clutter\\Barrel01.NIF\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x4E\xFC\x5A\xB9\x64\x64\x73\0\xBF\xFA\x25\xDA\x22\x68\xD8\x4D\x64\x64\x73\0\xBF\xFA\x25\xDA\x43OCT\x04\0\x01\0\0\0CNTO\x08\0\xFB\xFC\x10\0\x01\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read CONT, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ContainerRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple DATAs")
+    {
+      const std::string_view data = "CONT\xA8\0\0\0\0\0\0\x08\xE7\x67\x02\0\x1B\x69\x55\0\x28\0\x0A\0EDID\x19\0EvidenceChestStolenGoods\0OBND\x0C\0\xD0\xFF\xE7\xFF\0\0\x30\0\x18\0\x30\0FULL\x04\0\x4D\x72\0\0MODL\x27\0Clutter\\Containers\\Chest01\\Chest01.nif\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x45\xDA\xC1\xAB\x64\x64\x73\0\xB3\xB8\x24\x94\x8F\x26\x21\x7C\x64\x64\x73\0\xB3\xB8\x24\x94\x44\x41TA\x05\0\0\0\0\0\0DATA\x05\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read CONT, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ContainerRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
     SECTION("corrupt data: length of DATA is not five")

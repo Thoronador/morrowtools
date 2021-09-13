@@ -6,7 +6,7 @@ related to mods ("plugins") for Morrowind and allow things that would be
 difficult to do with Morrowind's own modkit.
 
 Some programs for The Elder Scrolls V: Skyrim were added more recently. So
-despite its name the project also contains tools for Skyrim
+despite its name the project also contains tools for Skyrim.
 
 ## Contents of repository
 
@@ -14,6 +14,8 @@ despite its name the project also contains tools for Skyrim
   more than one branch of morrowtools.
 - **mw**: contains code for Morrowind-related programmes
 - **sr**: contains code for Skyrim-related programmes
+- **tests**: contains code for test cases
+- win64-compile-test: utility to test for 64 bit Windows OS when compiling
 - LICENSE: Full text of the GNU General Public License version 3 as published
   by the Free Software Foundation.
 

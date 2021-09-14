@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -80,19 +80,38 @@ bool BookRecord::equals(const BookRecord& other) const
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t BookRecord::getWriteSize() const
 {
+  if (isDeleted())
+    return 0;
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
         +4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed size */
         +4 /* MODL */ +2 /* 2 bytes for length */
         +modelPath.length()+1 /* length of name +1 byte for NUL termination */
-        + 4 /* MODT */ + 2 /* 2 bytes for length */ + unknownMODT.size() /* size of subrecord */
         +text.getWriteSize() /* DESC */
         +4 /* DATA */ +2 /* 2 bytes for length */ +16 /* fixed size */
         +4 /* CNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+  if (unknownVMAD.isPresent())
+  {
+    writeSize = writeSize + 4 /* VMAD */ + 2 /* 2 bytes for length */
+               + unknownVMAD.size() /* subrecord size */;
+  }
   if (title.isPresent())
   {
     writeSize += title.getWriteSize();
+  }
+  if (unknownMODT.isPresent())
+  {
+    writeSize = writeSize + 4 /* MODT */ + 2 /* 2 bytes for length */
+               + unknownMODT.size() /* size of subrecord */;
+  }
+  if (pickupSoundFormID != 0)
+  {
+    writeSize = writeSize + 4 /* YNAM */ + 2 /* 2 bytes for length */ + 4 /* fixed size */;
+  }
+  if (putdownSoundFormID != 0)
+  {
+    writeSize = writeSize + 4 /* ZNAM */ + 2 /* 2 bytes for length */ + 4 /* fixed size */;
   }
   if (!keywordArray.empty())
   {
@@ -103,26 +122,16 @@ uint32_t BookRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* INAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
-  if (pickupSoundFormID!=0)
-  {
-    writeSize = writeSize +4 /* YNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
-  }//if YNAM is present
-  if (putdownSoundFormID!=0)
-  {
-    writeSize = writeSize +4 /* ZNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
-  }//if ZNAM
-  if (unknownVMAD.isPresent())
-  {
-    writeSize = writeSize + 4 /* VMAD */ + 2 /* 2 bytes for length */
-               + unknownVMAD.size() /* subrecord size */;
-  }
   return writeSize;
 }
 
 bool BookRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cBOOK, 4);
-  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
+  if (!saveSizeAndUnknownValues(output, getWriteSize()))
+    return false;
+  if (isDeleted())
+    return true;
 
   //write EDID
   output.write((const char*) &cEDID, 4);
@@ -224,7 +233,7 @@ bool BookRecord::saveToStream(std::ostream& output) const
   //write DATA
   output.write((const char*) &cDATA, 4);
   //DATA's length
-  subLength = 10;
+  subLength = 16;
   output.write((const char*) &subLength, 2);
   //write DATA
   output.write((const char*) &bookFlags, 4);
@@ -258,7 +267,10 @@ bool BookRecord::saveToStream(std::ostream& output) const
 bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
-  if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
+  if (!loadSizeAndUnknownValues(in_File, readSize))
+    return false;
+  if (isDeleted())
+    return true;
   uint32_t subRecName;
   uint16_t subLength;
   subRecName = subLength = 0;
@@ -391,6 +403,11 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
              return false;
            }
            modelPath = std::string(buffer);
+           if (modelPath.empty())
+           {
+             std::cerr <<"Error: sub record MODL of BOOK is empty!\n";
+             return false;
+           }
 
            // read MODT
            if (!unknownMODT.loadFromStream(in_File, cMODT, true))
@@ -410,7 +427,8 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
            }
            //read KSIZ
            k_Size = 0;
-           if (!loadUint32SubRecordFromStream(in_File, cKSIZ, k_Size, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cKSIZ, k_Size, false))
+             return false;
            bytesRead += 6;
            //keyword array follows, always
            //read KWDA
@@ -480,7 +498,8 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
              return false;
            }
            //read INAM
-           if (!loadUint32SubRecordFromStream(in_File, cINAM, inventoryArtFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cINAM, inventoryArtFormID, false))
+             return false;
            bytesRead += 6;
            if (inventoryArtFormID==0)
            {
@@ -495,7 +514,8 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
              return false;
            }
            //read CNAM
-           if (!loadUint32SubRecordFromStream(in_File, cCNAM, unknownCNAM, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cCNAM, unknownCNAM, false))
+             return false;
            bytesRead += 6;
            hasReadCNAM = true;
            break;
@@ -506,7 +526,8 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
              return false;
            }
            //read YNAM
-           if (!loadUint32SubRecordFromStream(in_File, cYNAM, pickupSoundFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cYNAM, pickupSoundFormID, false))
+             return false;
            bytesRead += 6;
            if (pickupSoundFormID==0)
            {
@@ -521,7 +542,8 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
              return false;
            }
            //read ZNAM
-           if (!loadUint32SubRecordFromStream(in_File, cZNAM, putdownSoundFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cZNAM, putdownSoundFormID, false))
+             return false;
            bytesRead += 6;
            if (putdownSoundFormID==0)
            {
@@ -530,7 +552,8 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
            }
            break;
       default:
-           std::cerr << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: found unexpected subrecord \""
+                     << IntTo4Char(subRecName)
                      << "\", but only MODL, KSIZ, DATA, INAM, CNAM, YNAM or ZNAM are allowed here!\n";
            return false;
     }//swi

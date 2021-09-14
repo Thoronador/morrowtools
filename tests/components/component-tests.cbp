@@ -67,6 +67,8 @@
 		<Unit filename="../../sr/base/records/BinarySubRecord.hpp" />
 		<Unit filename="../../sr/base/records/BinarySubRecordExtended.cpp" />
 		<Unit filename="../../sr/base/records/BinarySubRecordExtended.hpp" />
+		<Unit filename="../../sr/base/records/BookRecord.cpp" />
+		<Unit filename="../../sr/base/records/BookRecord.hpp" />
 		<Unit filename="../../sr/base/records/CTDAData.cpp" />
 		<Unit filename="../../sr/base/records/CTDAData.hpp" />
 		<Unit filename="../../sr/base/records/ComponentData.cpp" />
@@ -126,6 +128,7 @@
 		<Unit filename="sr/base/records/ApparatusRecord.cpp" />
 		<Unit filename="sr/base/records/BinarySubRecord.cpp" />
 		<Unit filename="sr/base/records/BinarySubRecordExtended.cpp" />
+		<Unit filename="sr/base/records/BookRecord.cpp" />
 		<Unit filename="sr/base/records/CTDAData.cpp" />
 		<Unit filename="sr/base/records/CTDA_CISx_compound.cpp" />
 		<Unit filename="sr/base/records/ComponentData.cpp" />

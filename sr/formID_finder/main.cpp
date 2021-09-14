@@ -961,18 +961,18 @@ int main(int argc, char **argv)
     SRTP::MiscObjects::ListIterator misc_iter = SRTP::MiscObjects::getSingleton().getBegin();
     while (misc_iter!=SRTP::MiscObjects::getSingleton().getEnd())
     {
-      if (misc_iter->second.fullName.isPresent())
+      if (misc_iter->second.name.isPresent())
       {
-        if (!misc_iter->second.fullName.getString().empty())
+        if (!misc_iter->second.name.getString().empty())
         {
-          if (matchesKeyword(misc_iter->second.fullName.getString(), searchKeyword, caseSensitive))
+          if (matchesKeyword(misc_iter->second.name.getString(), searchKeyword, caseSensitive))
           {
             //found matching misc object record
             if (miscMatches==0)
             {
               basic_out << "\n\nMatching misc. objects:\n";
             }
-            basic_out << "    \""<<misc_iter->second.fullName.getString()
+            basic_out << "    \""<<misc_iter->second.name.getString()
                       <<"\"\n        form ID "<<SRTP::getFormIDAsStringWithFile(misc_iter->second.headerFormID, loadOrder, showFiles)
                       <<"\n        editor ID \""<<misc_iter->second.editorID<<"\"\n";
             if (withReferences)

@@ -19,48 +19,43 @@
 */
 
 #include "MiscObjectRecord.hpp"
+#include <iostream>
 #include "../SR_Constants.hpp"
 #include "../../../mw/base/HelperIO.hpp"
-#include <iostream>
-#include <cstring>
 
 namespace SRTP
 {
 
 MiscObjectRecord::MiscObjectRecord()
-: BasicRecord(), editorID(""),
+: BasicRecord(),
+  editorID(""),
   unknownVMAD(BinarySubRecord()),
-  fullName(LocalizedString()),
+  unknownOBND(std::array<uint8_t, 12>({ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 })),
+  name(LocalizedString()),
   modelPath(""),
   unknownMODT(BinarySubRecord()),
   unknownMODS(BinarySubRecord()),
   iconPath(""),
   pickupSoundFormID(0),
   putdownSoundFormID(0),
-  keywordArray(std::vector<uint32_t>()),
+  keywords(std::vector<uint32_t>()),
   value(0),
   weight(0.0f)
 {
-  memset(unknownOBND, 0, 12);
-}
-
-MiscObjectRecord::~MiscObjectRecord()
-{
-  //empty
 }
 
 #ifndef SR_NO_RECORD_EQUALITY
 bool MiscObjectRecord::equals(const MiscObjectRecord& other) const
 {
-  return ((equalsBasic(other)) and (editorID==other.editorID)
-    and (unknownVMAD==other.unknownVMAD) and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
-    and (fullName==other.fullName)
-    and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
-    and (unknownMODS==other.unknownMODS) and (iconPath==other.iconPath)
-    and (pickupSoundFormID==other.pickupSoundFormID)
-    and (putdownSoundFormID==other.putdownSoundFormID)
-    and (keywordArray==other.keywordArray)
-    and (value==other.value) and (weight==other.weight));
+  return equalsBasic(other) && (editorID == other.editorID)
+    && (unknownVMAD == other.unknownVMAD) && (unknownOBND == other.unknownOBND)
+    && (name == other.name)
+    && (modelPath == other.modelPath) && (unknownMODT == other.unknownMODT)
+    && (unknownMODS == other.unknownMODS) && (iconPath == other.iconPath)
+    && (pickupSoundFormID == other.pickupSoundFormID)
+    && (putdownSoundFormID == other.putdownSoundFormID)
+    && (keywords == other.keywords)
+    && (value == other.value) && (weight == other.weight);
 }
 #endif
 
@@ -69,23 +64,23 @@ uint32_t MiscObjectRecord::getWriteSize() const
 {
   if (isDeleted())
     return 0;
-  uint32_t writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
-        +editorID.length()+1 /* length of name +1 byte for NUL termination */
-        +4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed size of 12 bytes */
-        +4 /* DATA */ +2 /* 2 bytes for length */ +8 /* fixed size of 8 bytes */;
+  uint32_t writeSize = 4 /* EDID */ + 2 /* 2 bytes for length */
+        + editorID.length() + 1 /* length of name +1 byte for NUL termination */
+        + 4 /* OBND */ + 2 /* 2 bytes for length */ + 12 /* fixed size of 12 bytes */
+        + 4 /* DATA */ + 2 /* 2 bytes for length */ + 8 /* fixed size of 8 bytes */;
   if (unknownVMAD.isPresent())
   {
     writeSize = writeSize + 4 /* VMAD */ + 2 /* 2 bytes for length */
                + unknownVMAD.size() /* length of subrecord */;
   }
-  if (fullName.isPresent())
+  if (name.isPresent())
   {
-    writeSize += fullName.getWriteSize() /* FULL */;
+    writeSize += name.getWriteSize() /* FULL */;
   }
   if (!modelPath.empty())
   {
-    writeSize = writeSize +4 /* MODL */ +2 /* 2 bytes for length */
-        +modelPath.length()+1 /* length of name +1 byte for NUL termination */;
+    writeSize = writeSize + 4 /* MODL */ + 2 /* 2 bytes for length */
+        + modelPath.length() + 1 /* length of name +1 byte for NUL termination */;
   }
   if (unknownMODT.isPresent())
   {
@@ -99,8 +94,8 @@ uint32_t MiscObjectRecord::getWriteSize() const
   }
   if (!iconPath.empty())
   {
-    writeSize = writeSize +4 /* ICON */ +2 /* 2 bytes for length */
-               +iconPath.length()+1 /* length of name +1 byte for NUL termination */;
+    writeSize = writeSize + 4 /* ICON */ + 2 /* 2 bytes for length */
+        + iconPath.length() + 1 /* length of name +1 byte for NUL termination */;
   }
   if (pickupSoundFormID != 0)
   {
@@ -110,85 +105,82 @@ uint32_t MiscObjectRecord::getWriteSize() const
   {
     writeSize = writeSize + 4 /* ZNAM */ + 2 /* 2 bytes for length */ + 4 /* fixed size of four bytes */;
   }
-  if (!keywordArray.empty())
+  if (!keywords.empty())
   {
-    writeSize = writeSize +4 /* KSIZ */ +2 /* 2 bytes for length */ +4 /* fixed size of four bytes */
-               +4 /* KWDA */ +2 /* 2 bytes for length */+ 4*keywordArray.size();
+    writeSize = writeSize + 4 /* KSIZ */ + 2 /* 2 bytes for length */ + 4 /* fixed size of four bytes */
+               + 4 /* KWDA */ + 2 /* 2 bytes for length */+ 4 * keywords.size();
   }
   return writeSize;
 }
 
 bool MiscObjectRecord::saveToStream(std::ostream& output) const
 {
-  output.write((const char*) &cMISC, 4);
+  output.write(reinterpret_cast<const char*>(&cMISC), 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize()))
     return false;
   if (isDeleted())
     return true;
 
-  //write EDID
-  output.write((const char*) &cEDID, 4);
-  //EDID's length
-  uint16_t subLength = editorID.length()+1;
-  output.write((const char*) &subLength, 2);
-  //write editor ID
+  //write editor ID (EDID)
+  output.write(reinterpret_cast<const char*>(&cEDID), 4);
+  uint16_t subLength = editorID.length() + 1;
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
   output.write(editorID.c_str(), subLength);
 
-  //write VMAD
+  // write VMAD
   if (unknownVMAD.isPresent())
   {
-    if (!unknownVMAD.saveToStream(output, cVMAD)) return false;
+    if (!unknownVMAD.saveToStream(output, cVMAD))
+      return false;
   }
 
-  //write OBND
-  output.write((const char*) &cOBND, 4);
-  //OBND's length
+  // write object bounds (OBND)
+  output.write(reinterpret_cast<const char*>(&cOBND), 4);
+  // OBND's length
   subLength = 12; /* fixed length */
-  output.write((const char*) &subLength, 2);
-  //write OBND's data
-  output.write((const char*) unknownOBND, 12);
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
+  // write OBND's data
+  output.write(reinterpret_cast<const char*>(unknownOBND.data()), 12);
 
-  if (fullName.isPresent())
+  if (name.isPresent())
   {
-    //write FULL
-    if (!fullName.saveToStream(output, cFULL))
+    // write FULL
+    if (!name.saveToStream(output, cFULL))
       return false;
-  }//if hasFULL
+  }
 
   if (!modelPath.empty())
   {
-    //write MODL
-    output.write((const char*) &cMODL, 4);
-    //MODL's length
-    subLength = modelPath.length()+1;
-    output.write((const char*) &subLength, 2);
-    //write model path
+    // write model path (MODL)
+    output.write(reinterpret_cast<const char*>(&cMODL), 4);
+    subLength = modelPath.length() + 1;
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
     output.write(modelPath.c_str(), subLength);
   }
 
-  //write MODT
-  if (!unknownMODT.saveToStream(output, cMODT)) return false;
+  // write MODT
+  if (!unknownMODT.saveToStream(output, cMODT))
+    return false;
 
-  //write MODS
+  // write MODS
   if (unknownMODS.isPresent())
   {
-    if (!unknownMODS.saveToStream(output, cMODS)) return false;
+    if (!unknownMODS.saveToStream(output, cMODS))
+      return false;
   }
 
   if (!iconPath.empty())
   {
-    //write ICON
-    output.write((const char*) &cICON, 4);
-    //ICON's length
-    subLength = iconPath.length()+1;
-    output.write((const char*) &subLength, 2);
-    //write icon path
+    // write icon path (ICON)
+    output.write(reinterpret_cast<const char*>(&cICON), 4);
+    subLength = iconPath.length() + 1;
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
     output.write(iconPath.c_str(), subLength);
-  }//if icon path present
+  }
 
   if (pickupSoundFormID != 0)
   {
-    //write Pickup Sound form ID (YNAM)
+    // write Pickup Sound form ID (YNAM)
     output.write(reinterpret_cast<const char*>(&cYNAM), 4);
     subLength = 4; /* fixed length */
     output.write(reinterpret_cast<const char*>(&subLength), 2);
@@ -204,38 +196,32 @@ bool MiscObjectRecord::saveToStream(std::ostream& output) const
     output.write(reinterpret_cast<const char*>(&putdownSoundFormID), 4);
   }
 
-  if (!keywordArray.empty())
+  if (!keywords.empty())
   {
-    //write KSIZ
-    output.write((const char*) &cKSIZ, 4);
-    //KSIZ's length
+    // write KSIZ
+    output.write(reinterpret_cast<const char*>(&cKSIZ), 4);
     subLength = 4; /* fixed length */
-    output.write((const char*) &subLength, 2);
-    //write KSIZ's data
-    const uint32_t k_Size = keywordArray.size();
-    output.write((const char*) &k_Size, 4);
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    // write KSIZ's data
+    const uint32_t k_Size = keywords.size();
+    output.write(reinterpret_cast<const char*>(&k_Size), 4);
 
-    //write KWDA
-    output.write((const char*) &cKWDA, 4);
-    //KWDA's length
-    subLength = 4*k_Size;
-    output.write((const char*) &subLength, 2);
-    //write KWDA's data
-    uint32_t i;
-    for (i=0; i<k_Size; ++i)
+    // write keyword array (KWDA)
+    output.write(reinterpret_cast<const char*>(&cKWDA), 4);
+    subLength = 4 * k_Size;
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    for (const uint32_t keyword: keywords)
     {
-      output.write((const char*) &(keywordArray[i]), 4);
-    }//for
+      output.write(reinterpret_cast<const char*>(&keyword), 4);
+    }
   }
 
-  //write DATA
-  output.write((const char*) &cDATA, 4);
-  //DATA's length
+  // write DATA
+  output.write(reinterpret_cast<const char*>(&cDATA), 4);
   subLength = 8; /* fixed length */
-  output.write((const char*) &subLength, 2);
-  //write DATA's data
-  output.write((const char*) &value, 4);
-  output.write((const char*) &weight, 4);
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
+  output.write(reinterpret_cast<const char*>(&value), 4);
+  output.write(reinterpret_cast<const char*>(&weight), 4);
 
   return output.good();
 }
@@ -248,56 +234,32 @@ bool MiscObjectRecord::loadFromStream(std::istream& in_File, const bool localize
     return false;
   if (isDeleted())
     return true;
-  uint32_t subRecName;
-  uint16_t subLength;
-  subRecName = subLength = 0;
-  uint32_t bytesRead;
+  uint32_t subRecName = 0;
+  uint16_t subLength = 0;
+  uint32_t bytesRead = 0;
 
-  //read EDID
-  in_File.read((char*) &subRecName, 4);
-  bytesRead = 4;
-  if (subRecName!=cEDID)
-  {
-    UnexpectedRecord(cEDID, subRecName);
-    return false;
-  }
-  //EDID's length
-  in_File.read((char*) &subLength, 2);
-  bytesRead += 2;
-  if (subLength>511)
-  {
-    std::cerr <<"Error: sub record EDID of MISC is longer than 511 characters!\n";
-    return false;
-  }
-  //read EDID's stuff
+  //read editor ID (EDID)
   char buffer[512];
-  memset(buffer, 0, 512);
-  in_File.read(buffer, subLength);
-  bytesRead += subLength;
-  if (!in_File.good())
-  {
-    std::cerr << "Error while reading subrecord EDID of MISC!\n";
+  if (!loadString512FromStream(in_File, editorID, buffer, cEDID, true, bytesRead))
     return false;
-  }
-  editorID = std::string(buffer);
 
   unknownVMAD.setPresence(false);
   unknownMODT.setPresence(false);
   unknownMODS.setPresence(false);
   modelPath.clear();
   iconPath.clear();
-  fullName.reset();
+  name.reset();
   pickupSoundFormID = 0;
   putdownSoundFormID = 0;
-  keywordArray.clear();
-  uint32_t k_Size, i, temp;
+  keywords.clear();
+  uint32_t k_Size, temp;
   bool hasReadOBND = false;
   bool hasReadDATA = false;
   bool hasReadKSIZ = false;
-  while (bytesRead<readSize)
+  while (bytesRead < readSize)
   {
-    //read next subrecord header
-    in_File.read((char*) &subRecName, 4);
+    // read next subrecord header
+    in_File.read(reinterpret_cast<char*>(&subRecName), 4);
     bytesRead += 4;
     switch (subRecName)
     {
@@ -312,13 +274,12 @@ bool MiscObjectRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead = bytesRead + 2 + unknownVMAD.size();
            break;
       case cFULL:
-           if (fullName.isPresent())
+           if (name.isPresent())
            {
              std::cerr << "Error: record MISC seems to have more than one FULL subrecord.\n";
              return false;
            }
-           //FULL's length
-           if (!fullName.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
+           if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
            {
              std::cerr << "Error while reading subrecord FULL of MISC!\n";
              return false;
@@ -330,17 +291,17 @@ bool MiscObjectRecord::loadFromStream(std::istream& in_File, const bool localize
              std::cerr << "Error: record MISC seems to have more than one OBND subrecord.\n";
              return false;
            }
-           //OBND's length
-           in_File.read((char*) &subLength, 2);
+           // OBND's length
+           in_File.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
-           if (subLength!=12)
+           if (subLength != 12)
            {
-             std::cerr <<"Error: sub record OBND of MISC has invalid length ("
-                       <<subLength<<" bytes)! Should be 12 bytes.\n";
+             std::cerr << "Error: sub record OBND of MISC has invalid length ("
+                       << subLength << " bytes)! Should be 12 bytes.\n";
              return false;
            }
-           //read OBND's stuff
-           in_File.read((char*) &unknownOBND, 12);
+           // read OBND's stuff
+           in_File.read(reinterpret_cast<char*>(unknownOBND.data()), 12);
            bytesRead += 12;
            if (!in_File.good())
            {
@@ -355,7 +316,6 @@ bool MiscObjectRecord::loadFromStream(std::istream& in_File, const bool localize
              std::cerr << "Error: record MISC seems to have more than one MODL subrecord.\n";
              return false;
            }
-           //read MODL
            if (!loadString512FromStream(in_File, modelPath, buffer, cMODL, false, bytesRead))
              return false;
            if (modelPath.empty())
@@ -390,7 +350,7 @@ bool MiscObjectRecord::loadFromStream(std::istream& in_File, const bool localize
              std::cerr << "Error: record MISC seems to have more than one ICON subrecord.\n";
              return false;
            }
-           //read ICON
+           // read ICON
            if (!loadString512FromStream(in_File, iconPath, buffer, cICON, false, bytesRead))
              return false;
            if (iconPath.empty())
@@ -400,34 +360,32 @@ bool MiscObjectRecord::loadFromStream(std::istream& in_File, const bool localize
            }
            break;
       case cYNAM:
-           if (pickupSoundFormID!=0)
+           if (pickupSoundFormID != 0)
            {
              std::cerr << "Error: record MISC seems to have more than one YNAM subrecord.\n";
              return false;
            }
-           //read YNAM
            if (!loadUint32SubRecordFromStream(in_File, cYNAM, pickupSoundFormID, false))
              return false;
            bytesRead += 6;
-           //check content
-           if (pickupSoundFormID==0)
+           // check content
+           if (pickupSoundFormID == 0)
            {
              std::cerr << "Error: subrecord YNAM of MISC is zero!\n";
              return false;
            }
            break;
       case cZNAM:
-           if (putdownSoundFormID!=0)
+           if (putdownSoundFormID != 0)
            {
              std::cerr << "Error: record MISC seems to have more than one ZNAM subrecord.\n";
              return false;
            }
-           //read ZNAM
            if (!loadUint32SubRecordFromStream(in_File, cZNAM, putdownSoundFormID, false))
              return false;
            bytesRead += 6;
-           //check content
-           if (putdownSoundFormID==0)
+           // check content
+           if (putdownSoundFormID == 0)
            {
              std::cerr << "Error: subrecord ZNAM of MISC is zero!\n";
              return false;
@@ -439,18 +397,18 @@ bool MiscObjectRecord::loadFromStream(std::istream& in_File, const bool localize
              std::cerr << "Error: record MISC seems to have more than one DATA subrecord.\n";
              return false;
            }
-           //DATA's length
-           in_File.read((char*) &subLength, 2);
+           // DATA's length
+           in_File.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
-           if (subLength!=8)
+           if (subLength != 8)
            {
-             std::cerr <<"Error: sub record DATA of MISC has invalid length ("
-                       <<subLength<<" bytes)! Should be 8 bytes.\n";
+             std::cerr << "Error: sub record DATA of MISC has invalid length ("
+                       << subLength << " bytes)! Should be 8 bytes.\n";
              return false;
            }
-           //read DATA's stuff
-           in_File.read((char*) &value, 4);
-           in_File.read((char*) &weight, 4);
+           // read DATA's stuff
+           in_File.read(reinterpret_cast<char*>(&value), 4);
+           in_File.read(reinterpret_cast<char*>(&weight), 4);
            bytesRead += 8;
            if (!in_File.good())
            {
@@ -465,18 +423,18 @@ bool MiscObjectRecord::loadFromStream(std::istream& in_File, const bool localize
              std::cerr << "Error: record MISC seems to have more than one KSIZ subrecord.\n";
              return false;
            }
-           //KSIZ's length
-           in_File.read((char*) &subLength, 2);
+           // KSIZ's length
+           in_File.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
-           if (subLength!=4)
+           if (subLength != 4)
            {
-             std::cerr <<"Error: sub record KSIZ of MISC has invalid length ("
-                       <<subLength<<" bytes)! Should be four bytes.\n";
+             std::cerr << "Error: sub record KSIZ of MISC has invalid length ("
+                       << subLength << " bytes)! Should be four bytes.\n";
              return false;
            }
-           //read KSIZ's stuff
+           // read KSIZ's stuff
            k_Size = 0;
-           in_File.read((char*) &k_Size, 4);
+           in_File.read(reinterpret_cast<char*>(&k_Size), 4);
            bytesRead += 4;
            if (!in_File.good())
            {
@@ -485,32 +443,33 @@ bool MiscObjectRecord::loadFromStream(std::istream& in_File, const bool localize
            }
            hasReadKSIZ = true;
 
-           //keywords follow now
-           //read KWDA
-           in_File.read((char*) &subRecName, 4);
+           // keywords follow now
+           // read KWDA
+           in_File.read(reinterpret_cast<char*>(&subRecName), 4);
            bytesRead += 4;
-           if (subRecName!=cKWDA)
+           if (subRecName != cKWDA)
            {
              UnexpectedRecord(cKWDA, subRecName);
              return false;
            }
-           //KWDA's length
-           in_File.read((char*) &subLength, 2);
+           // KWDA's length
+           in_File.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
-           if (subLength!=k_Size*4)
+           if (subLength != k_Size * 4)
            {
-             std::cerr <<"Error: sub record KWDA of MISC is has invalid length ("
-                       <<subLength<<" bytes)! Should be "<<k_Size*4<<" bytes.\n";
+             std::cerr << "Error: sub record KWDA of MISC is has invalid length ("
+                       << subLength << " bytes)! Should be " << k_Size * 4
+                       << " bytes.\n";
              return false;
            }
-           //read keywords
-           for (i=0; i<k_Size; ++i)
+           // read keywords
+           for (uint32_t i = 0; i < k_Size; ++i)
            {
              temp = 0;
-             in_File.read((char*) &temp, 4);
+             in_File.read(reinterpret_cast<char*>(&temp), 4);
              bytesRead += 4;
-             keywordArray.push_back(temp);
-           }//for
+             keywords.push_back(temp);
+           }
            if (!in_File.good())
            {
              std::cerr << "Error while reading subrecord KWDA of MISC!\n";
@@ -518,14 +477,14 @@ bool MiscObjectRecord::loadFromStream(std::istream& in_File, const bool localize
            }
            break;
       default:
-           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: unexpected record type \"" << IntTo4Char(subRecName)
                      << "\" found, only DATA, FULL, OBND, VMAD, MODL, KSIZ, MODT and MODS are allowed here!\n";
            return false;
-    }//swi
-  }//while
+    }
+  }
 
-  //have we read all required subrecords?
-  if ((!hasReadDATA) or (!hasReadOBND))
+  // Have all required subrecords been read?
+  if (!hasReadDATA || !hasReadOBND)
   {
     std::cerr << "Error: at least one required subrecord of MISC was not found!\n";
     return false;
@@ -539,4 +498,4 @@ uint32_t MiscObjectRecord::getRecordType() const
   return cMISC;
 }
 
-} //namespace
+} // namespace

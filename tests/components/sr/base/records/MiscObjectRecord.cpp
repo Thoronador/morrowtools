@@ -40,12 +40,12 @@ TEST_CASE("MiscObjectRecord")
     {
       REQUIRE( record.unknownOBND[i] == 0 );
     }
-    REQUIRE_FALSE( record.fullName.isPresent() );
+    REQUIRE_FALSE( record.name.isPresent() );
     REQUIRE( record.modelPath.empty() );
     REQUIRE_FALSE( record.unknownMODT.isPresent() );
     REQUIRE_FALSE( record.unknownMODS.isPresent() );
     REQUIRE( record.iconPath.empty() );
-    REQUIRE( record.keywordArray.empty() );
+    REQUIRE( record.keywords.empty() );
     REQUIRE( record.pickupSoundFormID == 0 );
     REQUIRE( record.putdownSoundFormID == 0 );
     REQUIRE( record.value == 0 );
@@ -102,7 +102,7 @@ TEST_CASE("MiscObjectRecord")
 
       SECTION("name mismatch")
       {
-        a.fullName = LocalizedString(LocalizedString::Type::Index, 2, "");
+        a.name = LocalizedString(LocalizedString::Type::Index, 2, "");
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
@@ -174,13 +174,13 @@ TEST_CASE("MiscObjectRecord")
 
       SECTION("keywords mismatch")
       {
-        a.keywordArray.push_back(0x01234567);
+        a.keywords.push_back(0x01234567);
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        b.keywordArray.push_back(0x01234567);
-        b.keywordArray.push_back(0x09ABCDEF);
+        b.keywords.push_back(0x01234567);
+        b.keywords.push_back(0x09ABCDEF);
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
@@ -255,7 +255,7 @@ TEST_CASE("MiscObjectRecord")
       record.editorID = "foo";
       REQUIRE( record.getWriteSize() == 42 );
 
-      record.fullName = LocalizedString(LocalizedString::Type::Index, 1, "");
+      record.name = LocalizedString(LocalizedString::Type::Index, 1, "");
       REQUIRE( record.getWriteSize() == 52 );
     }
 
@@ -354,10 +354,10 @@ TEST_CASE("MiscObjectRecord")
       record.editorID = "foo";
       REQUIRE( record.getWriteSize() == 42 );
 
-      record.keywordArray.push_back(0x01234567);
+      record.keywords.push_back(0x01234567);
       REQUIRE( record.getWriteSize() == 62 );
 
-      record.keywordArray.push_back(0x01234567);
+      record.keywords.push_back(0x01234567);
       REQUIRE( record.getWriteSize() == 66 );
     }
 
@@ -409,9 +409,9 @@ TEST_CASE("MiscObjectRecord")
       REQUIRE( record.unknownOBND[9] == 0x00 );
       REQUIRE( record.unknownOBND[10] == 0x00 );
       REQUIRE( record.unknownOBND[11] == 0x00 );
-      REQUIRE( record.fullName.isPresent() );
-      REQUIRE( record.fullName.getType() == LocalizedString::Type::Index );
-      REQUIRE( record.fullName.getIndex() == 0x0000D502 );
+      REQUIRE( record.name.isPresent() );
+      REQUIRE( record.name.getType() == LocalizedString::Type::Index );
+      REQUIRE( record.name.getIndex() == 0x0000D502 );
       REQUIRE( record.modelPath == "Clutter\\Coin01.nif" );
       REQUIRE( record.unknownMODT.isPresent() );
       const auto MODT = std::string_view(reinterpret_cast<const char*>(record.unknownMODT.data()), record.unknownMODT.size());
@@ -420,8 +420,8 @@ TEST_CASE("MiscObjectRecord")
       REQUIRE( record.iconPath == "Clutter\\Coin01.dds" );
       REQUIRE( record.pickupSoundFormID == 0x0003E952 );
       REQUIRE( record.putdownSoundFormID == 0x0003E955 );
-      REQUIRE( record.keywordArray.size() == 1 );
-      REQUIRE( record.keywordArray[0] == 0x000914E9 );
+      REQUIRE( record.keywords.size() == 1 );
+      REQUIRE( record.keywords[0] == 0x000914E9 );
       REQUIRE( record.value == 1 );
       REQUIRE( record.weight == 0.0f );
 

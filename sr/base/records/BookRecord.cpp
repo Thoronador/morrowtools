@@ -20,60 +20,55 @@
 
 #include "BookRecord.hpp"
 #include <iostream>
-#include <cstring>
 #include "../SR_Constants.hpp"
 #include "../../../mw/base/HelperIO.hpp"
 
 namespace SRTP
 {
 
-//flag constants
+// flag constants
 const uint32_t BookRecord::cSkillBookFlag = 0x00000001;
 const uint32_t BookRecord::cSpellTomeFlag = 0x00000004;
 const uint32_t BookRecord::cNoteOrScrollTypeFlag = 0x0000FF00;
 
 BookRecord::BookRecord()
-: BasicRecord(), editorID(""),
+: BasicRecord(),
+  editorID(""),
   unknownVMAD(BinarySubRecord()),
+  unknownOBND(std::array<uint8_t, 12>({ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 })),
   title(LocalizedString()),
   modelPath(""),
   unknownMODT(BinarySubRecord()),
   text(LocalizedString()),
   pickupSoundFormID(0),
   putdownSoundFormID(0),
-  keywordArray(std::vector<uint32_t>()),
-  //DATA
+  keywords(std::vector<uint32_t>()),
+  // DATA
   bookFlags(0),
   spellOrSkillID(0),
   bookValue(0),
   weight(0.0f),
-  //end of DATA
+  // end of DATA
   inventoryArtFormID(0),
   unknownCNAM(0)
 {
-  memset(unknownOBND, 0, 12);
-}
-
-BookRecord::~BookRecord()
-{
-  //empty
 }
 
 #ifndef SR_NO_RECORD_EQUALITY
 bool BookRecord::equals(const BookRecord& other) const
 {
-  return ((equalsBasic(other)) and (editorID==other.editorID)
-    and (unknownVMAD==other.unknownVMAD)
-    and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
-    and (title==other.title)
-    and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
-    and (text==other.text) and (unknownCNAM==other.unknownCNAM)
-    and (pickupSoundFormID==other.pickupSoundFormID)
-    and (putdownSoundFormID==other.putdownSoundFormID)
-    and (keywordArray==other.keywordArray)
-    and (bookFlags==other.bookFlags) and (spellOrSkillID==other.spellOrSkillID)
-    and (bookValue==other.bookValue) and (weight==other.weight)
-    and (inventoryArtFormID==other.inventoryArtFormID));
+  return equalsBasic(other) && (editorID == other.editorID)
+    && (unknownVMAD == other.unknownVMAD)
+    && (unknownOBND == other.unknownOBND)
+    && (title == other.title)
+    && (modelPath == other.modelPath) && (unknownMODT == other.unknownMODT)
+    && (text == other.text) && (unknownCNAM == other.unknownCNAM)
+    && (pickupSoundFormID == other.pickupSoundFormID)
+    && (putdownSoundFormID == other.putdownSoundFormID)
+    && (keywords == other.keywords)
+    && (bookFlags == other.bookFlags) && (spellOrSkillID == other.spellOrSkillID)
+    && (bookValue == other.bookValue) && (weight == other.weight)
+    && (inventoryArtFormID == other.inventoryArtFormID);
 }
 #endif
 
@@ -82,19 +77,18 @@ uint32_t BookRecord::getWriteSize() const
 {
   if (isDeleted())
     return 0;
-  uint32_t writeSize;
-  writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
-        +editorID.length()+1 /* length of name +1 byte for NUL termination */
-        +4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed size */
-        +4 /* MODL */ +2 /* 2 bytes for length */
-        +modelPath.length()+1 /* length of name +1 byte for NUL termination */
-        +text.getWriteSize() /* DESC */
-        +4 /* DATA */ +2 /* 2 bytes for length */ +16 /* fixed size */
-        +4 /* CNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+  uint32_t writeSize = 4 /* EDID */ + 2 /* 2 bytes for length */
+      + editorID.length() + 1 /* length of name +1 byte for NUL termination */
+      + 4 /* OBND */ + 2 /* 2 bytes for length */ + 12 /* fixed size */
+      + 4 /* MODL */ + 2 /* 2 bytes for length */
+      + modelPath.length() + 1 /* length of name +1 byte for NUL termination */
+      + text.getWriteSize() /* DESC */
+      + 4 /* DATA */ + 2 /* 2 bytes for length */ + 16 /* fixed size */
+      + 4 /* CNAM */ + 2 /* 2 bytes for length */ + 4 /* fixed size */;
   if (unknownVMAD.isPresent())
   {
     writeSize = writeSize + 4 /* VMAD */ + 2 /* 2 bytes for length */
-               + unknownVMAD.size() /* subrecord size */;
+               + unknownVMAD.size();
   }
   if (title.isPresent())
   {
@@ -113,32 +107,30 @@ uint32_t BookRecord::getWriteSize() const
   {
     writeSize = writeSize + 4 /* ZNAM */ + 2 /* 2 bytes for length */ + 4 /* fixed size */;
   }
-  if (!keywordArray.empty())
+  if (!keywords.empty())
   {
-    writeSize = writeSize +4 /* KSIZ */ +2 /* 2 bytes for length */ +4 /* fixed size */
-               +4 /* KWDA */ +2 /* 2 bytes for length */ +keywordArray.size()*4 /* n*fixed size */;
+    writeSize = writeSize + 4 /* KSIZ */ + 2 /* 2 bytes for length */ + 4 /* fixed size */
+               + 4 /* KWDA */ + 2 /* 2 bytes for length */ + keywords.size() * 4 /* n * fixed size */;
   }
-  if (inventoryArtFormID!=0)
+  if (inventoryArtFormID != 0)
   {
-    writeSize = writeSize +4 /* INAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+    writeSize = writeSize + 4 /* INAM */ + 2 /* 2 bytes for length */ + 4 /* fixed size */;
   }
   return writeSize;
 }
 
 bool BookRecord::saveToStream(std::ostream& output) const
 {
-  output.write((const char*) &cBOOK, 4);
+  output.write(reinterpret_cast<const char*>(&cBOOK), 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize()))
     return false;
   if (isDeleted())
     return true;
 
-  //write EDID
-  output.write((const char*) &cEDID, 4);
-  //EDID's length
+  // write editor ID (EDID)
+  output.write(reinterpret_cast<const char*>(&cEDID), 4);
   uint16_t subLength = editorID.length() + 1;
-  output.write((const char*) &subLength, 2);
-  //write editor ID
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
   output.write(editorID.c_str(), subLength);
 
   if (unknownVMAD.isPresent())
@@ -148,117 +140,99 @@ bool BookRecord::saveToStream(std::ostream& output) const
       std::cerr << "Error while writing subrecord VMAD of BOOK!\n";
       return false;
     }
-  }//if VMAD
+  }
 
-  //write OBND
-  output.write((const char*) &cOBND, 4);
-  //OBND's length
+  // write object bounds (OBND)
+  output.write(reinterpret_cast<const char*>(&cOBND), 4);
   subLength = 12;
-  output.write((const char*) &subLength, 2);
-  //write OBND
-  output.write((const char*) unknownOBND, 12);
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
+  output.write(reinterpret_cast<const char*>(unknownOBND.data()), 12);
 
   if (title.isPresent())
   {
-    //write FULL
+    // write FULL
     if (!title.saveToStream(output, cFULL))
       return false;
-  }//if has FULL subrecord
+  }
 
-  //write MODL
-  output.write((const char*) &cMODL, 4);
-  //MODL's length
-  subLength = modelPath.length()+1;
-  output.write((const char*) &subLength, 2);
-  //write model path
+  // write model path (MODL)
+  output.write(reinterpret_cast<const char*>(&cMODL), 4);
+  subLength = modelPath.length() + 1;
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
   output.write(modelPath.c_str(), subLength);
 
-  //write MODT
+  // write MODT
   if (!unknownMODT.saveToStream(output, cMODT))
   {
     std::cerr << "Error while writing subrecord MODT of BOOK!\n";
     return false;
   }
 
-  //write DESC
+  // write DESC
   if (!text.saveToStream(output, cDESC))
     return false;
 
-  if (pickupSoundFormID!=0)
+  if (pickupSoundFormID != 0)
   {
-    //write YNAM
-    output.write((const char*) &cYNAM, 4);
-    //YNAM's length
-    subLength = 4; //fixed size
-    output.write((const char*) &subLength, 2);
-    //write Pickup Sound form ID
-    output.write((const char*) &pickupSoundFormID, 4);
+    // write Pickup Sound form ID (YNAM)
+    output.write(reinterpret_cast<const char*>(&cYNAM), 4);
+    subLength = 4; // fixed size
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    output.write(reinterpret_cast<const char*>(&pickupSoundFormID), 4);
   }
 
-  if (putdownSoundFormID!=0)
+  if (putdownSoundFormID != 0)
   {
-    //write ZNAM
-    output.write((const char*) &cZNAM, 4);
-    //ZNAM's length
-    subLength = 4; //fixed size
-    output.write((const char*) &subLength, 2);
-    //write Putdown Sound form ID
-    output.write((const char*) &putdownSoundFormID, 4);
+    // write Putdown Sound form ID (ZNAM)
+    output.write(reinterpret_cast<const char*>(&cZNAM), 4);
+    subLength = 4; // fixed size
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    output.write(reinterpret_cast<const char*>(&putdownSoundFormID), 4);
   }
 
-  if (!keywordArray.empty())
+  if (!keywords.empty())
   {
-    //write KSIZ
-    output.write((const char*) &cKSIZ, 4);
-    //KSIZ's length
-    subLength = 4; //fixed size
-    output.write((const char*) &subLength, 2);
-    //write keyword size
-    const uint32_t k_Size = keywordArray.size();
-    output.write((const char*) &k_Size, 4);
+    // write keyword size (KSIZ)
+    output.write(reinterpret_cast<const char*>(&cKSIZ), 4);
+    subLength = 4; // fixed size
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    const uint32_t k_Size = keywords.size();
+    output.write(reinterpret_cast<const char*>(&k_Size), 4);
 
-    //write KWDA
-    output.write((const char*) &cKWDA, 4);
-    //KWDA's length
-    subLength = 4*k_Size; //fixed size
-    output.write((const char*) &subLength, 2);
-    //write actual data
-    uint32_t i;
-    for (i=0; i<k_Size; ++i)
+    // write keyword array (KWDA)
+    output.write(reinterpret_cast<const char*>(&cKWDA), 4);
+    subLength = 4 * k_Size; // fixed size
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    for (const uint32_t keyword: keywords)
     {
-      output.write((const char*) &(keywordArray[i]), 4);
-    }//for
-  }//if keyword array not empty
+      output.write(reinterpret_cast<const char*>(&keyword), 4);
+    }
+  }
 
-  //write DATA
-  output.write((const char*) &cDATA, 4);
-  //DATA's length
+  // write DATA
+  output.write(reinterpret_cast<const char*>(&cDATA), 4);
   subLength = 16;
-  output.write((const char*) &subLength, 2);
-  //write DATA
-  output.write((const char*) &bookFlags, 4);
-  output.write((const char*) &spellOrSkillID, 4);
-  output.write((const char*) &bookValue, 4);
-  output.write((const char*) &weight, 4);
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
+  // write DATA's content
+  output.write(reinterpret_cast<const char*>(&bookFlags), 4);
+  output.write(reinterpret_cast<const char*>(&spellOrSkillID), 4);
+  output.write(reinterpret_cast<const char*>(&bookValue), 4);
+  output.write(reinterpret_cast<const char*>(&weight), 4);
 
-  if (inventoryArtFormID!=0)
+  if (inventoryArtFormID != 0)
   {
-    //write INAM
-    output.write((const char*) &cINAM, 4);
-    //INAM's length
-    subLength = 4; //fixed size
-    output.write((const char*) &subLength, 2);
-    //write Inventory Art form ID
-    output.write((const char*) &inventoryArtFormID, 4);
-  }//if has INAM
+    // write Inventory Art form ID (INAM)
+    output.write(reinterpret_cast<const char*>(&cINAM), 4);
+    subLength = 4; // fixed size
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    output.write(reinterpret_cast<const char*>(&inventoryArtFormID), 4);
+  }
 
-  //write CNAM
-  output.write((const char*) &cCNAM, 4);
-  //CNAM's length
-  subLength = 4; //fixed size
-  output.write((const char*) &subLength, 2);
-  //write CNAM
-  output.write((const char*) &unknownCNAM, 4);
+  // write CNAM
+  output.write(reinterpret_cast<const char*>(&cCNAM), 4);
+  subLength = 4; // fixed size
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
+  output.write(reinterpret_cast<const char*>(&unknownCNAM), 4);
 
   return output.good();
 }
@@ -271,43 +245,19 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
     return false;
   if (isDeleted())
     return true;
-  uint32_t subRecName;
-  uint16_t subLength;
-  subRecName = subLength = 0;
-  uint32_t bytesRead;
+  uint32_t subRecName = 0;
+  uint16_t subLength = 0;
+  uint32_t bytesRead = 0;
 
-  //read EDID
-  in_File.read((char*) &subRecName, 4);
-  bytesRead = 4;
-  if (subRecName!=cEDID)
-  {
-    UnexpectedRecord(cEDID, subRecName);
-    return false;
-  }
-  //EDID's length
-  in_File.read((char*) &subLength, 2);
-  bytesRead += 2;
-  if (subLength>511)
-  {
-    std::cerr <<"Error: sub record EDID of BOOK is longer than 511 characters!\n";
-    return false;
-  }
-  //read EDID's stuff
+  // read editor ID (EDID)
   char buffer[512];
-  memset(buffer, 0, 512);
-  in_File.read(buffer, subLength);
-  bytesRead += subLength;
-  if (!in_File.good())
-  {
-    std::cerr << "Error while reading subrecord EDID of BOOK!\n";
+  if (!loadString512FromStream(in_File, editorID, buffer, cEDID, true, bytesRead))
     return false;
-  }
-  editorID = std::string(buffer);
 
-  //read OBND or VMAD
-  in_File.read((char*) &subRecName, 4);
+  // read OBND or VMAD
+  in_File.read(reinterpret_cast<char*>(&subRecName), 4);
   bytesRead += 4;
-  if (subRecName==cVMAD)
+  if (subRecName == cVMAD)
   {
     if (!unknownVMAD.loadFromStream(in_File, cVMAD, false))
     {
@@ -315,32 +265,32 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
       return false;
     }
     bytesRead = bytesRead + 2 + unknownVMAD.size();
-    //read OBND
-    in_File.read((char*) &subRecName, 4);
+    // read OBND's header
+    in_File.read(reinterpret_cast<char*>(&subRecName), 4);
     bytesRead += 4;
   }
   else
   {
-    //no VMAD subrecord
+    // no VMAD subrecord
     unknownVMAD.setPresence(false);
   }
 
-  if (subRecName!=cOBND)
+  if (subRecName != cOBND)
   {
     UnexpectedRecord(cOBND, subRecName);
     return false;
   }
-  //OBND's length
-  in_File.read((char*) &subLength, 2);
+  // OBND's length
+  in_File.read(reinterpret_cast<char*>(&subLength), 2);
   bytesRead += 2;
-  if (subLength!=12)
+  if (subLength != 12)
   {
-    std::cerr <<"Error: sub record OBND of BOOK has invalid length ("<<subLength
-              <<" bytes). Should be 12 bytes.\n";
+    std::cerr << "Error: sub record OBND of BOOK has invalid length ("
+              << subLength << " bytes). Should be 12 bytes.\n";
     return false;
   }
-  //read OBND
-  in_File.read((char*) unknownOBND, 12);
+  // read OBND
+  in_File.read(reinterpret_cast<char*>(unknownOBND.data()), 12);
   bytesRead += 12;
   if (!in_File.good())
   {
@@ -352,7 +302,7 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
   pickupSoundFormID = 0;
   putdownSoundFormID = 0;
   inventoryArtFormID = 0;
-  keywordArray.clear();
+  keywords.clear();
 
   bool hasReadMODL = false;
   text.reset();
@@ -360,11 +310,11 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
   bool hasReadDATA = false;
   bool hasReadCNAM = false;
 
-  uint32_t k_Size, i, temp;
-  while (bytesRead<readSize)
+  uint32_t k_Size, temp;
+  while (bytesRead < readSize)
   {
-    //read next header
-    in_File.read((char*) &subRecName, 4);
+    // read next header
+    in_File.read(reinterpret_cast<char*>(&subRecName), 4);
     bytesRead += 4;
     switch (subRecName)
     {
@@ -374,7 +324,6 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
              std::cerr << "Error: BOOK seems to have more than one FULL subrecord.\n";
              return false;
            }
-           //read FULL
            if (!title.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
              return false;
            break;
@@ -384,25 +333,10 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
              std::cerr << "Error: BOOK seems to have more than one MODL subrecord.\n";
              return false;
            }
-           //read MODL
-           //MODL's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength>511)
-           {
-             std::cerr <<"Error: sub record MODL of BOOK is longer than 511 characters!\n";
+           // read model path (MODL)
+           if (!loadString512FromStream(in_File, modelPath, buffer, cMODL, false, bytesRead))
              return false;
-           }
-           //read model path
-           memset(buffer, 0, 512);
-           in_File.read(buffer, subLength);
-           bytesRead += subLength;
-           if (!in_File.good())
-           {
-             std::cerr << "Error while reading subrecord MODL of BOOK!\n";
-             return false;
-           }
-           modelPath = std::string(buffer);
+           // Check content, path must not be empty.
            if (modelPath.empty())
            {
              std::cerr <<"Error: sub record MODL of BOOK is empty!\n";
@@ -414,7 +348,7 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
              return false;
            bytesRead += (4 + 2 + unknownMODT.size());
 
-           //read DESC
+           // read DESC
            if (!text.loadFromStream(in_File, cDESC, true, bytesRead, localized, table, buffer))
              return false;
            hasReadMODL = true;
@@ -425,42 +359,42 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
              std::cerr << "Error: BOOK seems to have more than one KSIZ subrecord.\n";
              return false;
            }
-           //read KSIZ
+           // read KSIZ
            k_Size = 0;
            if (!loadUint32SubRecordFromStream(in_File, cKSIZ, k_Size, false))
              return false;
            bytesRead += 6;
-           //keyword array follows, always
-           //read KWDA
-           in_File.read((char*) &subRecName, 4);
+           // keyword array follows, always
+           // read KWDA
+           in_File.read(reinterpret_cast<char*>(&subRecName), 4);
            bytesRead += 4;
-           if (subRecName!=cKWDA)
+           if (subRecName != cKWDA)
            {
              UnexpectedRecord(cKWDA, subRecName);
              return false;
            }
-           //KWDA's length
-           in_File.read((char*) &subLength, 2);
+           // KWDA's length
+           in_File.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
-           if (subLength!=4*k_Size)
+           if (subLength != 4 * k_Size)
            {
-             std::cerr <<"Error: sub record KWDA of BOOK has invalid length ("<<subLength
-                       <<" bytes). Should be "<<4*k_Size<<" bytes.\n";
+             std::cerr << "Error: sub record KWDA of BOOK has invalid length ("
+                       << subLength << " bytes). Should be " << 4 * k_Size
+                       << " bytes.\n";
              return false;
            }
-           //read KWDA
-           keywordArray.clear();
-           for (i=0; i<k_Size; ++i)
+           // read KWDA
+           for (uint32_t i = 0; i < k_Size; ++i)
            {
-             in_File.read((char*) &temp, 4);
+             in_File.read(reinterpret_cast<char*>(&temp), 4);
              bytesRead += 4;
              if (!in_File.good())
              {
                std::cerr << "Error while reading subrecord KWDA of BOOK!\n";
                return false;
              }
-             keywordArray.push_back(temp);
-           }//for
+             keywords.push_back(temp);
+           }
            hasReadKSIZ = true;
            break;
       case cDATA:
@@ -469,20 +403,20 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
              std::cerr << "Error: BOOK seems to have more than one DATA subrecord.\n";
              return false;
            }
-           //DATA's length
-           in_File.read((char*) &subLength, 2);
+           // DATA's length
+           in_File.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
-           if (subLength!=16)
+           if (subLength != 16)
            {
-             std::cerr <<"Error: sub record DATA of BOOK has invalid length ("<<subLength
-                       <<" bytes). Should be 16 bytes.\n";
+             std::cerr << "Error: sub record DATA of BOOK has invalid length ("
+                       << subLength << " bytes). Should be 16 bytes.\n";
              return false;
            }
-           //read DATA
-           in_File.read((char*) &bookFlags, 4);
-           in_File.read((char*) &spellOrSkillID, 4);
-           in_File.read((char*) &bookValue, 4);
-           in_File.read((char*) &weight, 4);
+           // read DATA
+           in_File.read(reinterpret_cast<char*>(&bookFlags), 4);
+           in_File.read(reinterpret_cast<char*>(&spellOrSkillID), 4);
+           in_File.read(reinterpret_cast<char*>(&bookValue), 4);
+           in_File.read(reinterpret_cast<char*>(&weight), 4);
            bytesRead += 16;
            if (!in_File.good())
            {
@@ -492,16 +426,16 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
            hasReadDATA = true;
            break;
       case cINAM:
-           if (inventoryArtFormID!=0)
+           if (inventoryArtFormID != 0)
            {
              std::cerr << "Error: BOOK seems to have more than one INAM subrecord.\n";
              return false;
            }
-           //read INAM
+           // read INAM
            if (!loadUint32SubRecordFromStream(in_File, cINAM, inventoryArtFormID, false))
              return false;
            bytesRead += 6;
-           if (inventoryArtFormID==0)
+           if (inventoryArtFormID == 0)
            {
              std::cerr << "Error: subrecord INAM of BOOK is zero!\n";
              return false;
@@ -513,39 +447,39 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
              std::cerr << "Error: BOOK seems to have more than one CNAM subrecord.\n";
              return false;
            }
-           //read CNAM
+           // read CNAM
            if (!loadUint32SubRecordFromStream(in_File, cCNAM, unknownCNAM, false))
              return false;
            bytesRead += 6;
            hasReadCNAM = true;
            break;
       case cYNAM:
-           if (pickupSoundFormID!=0)
+           if (pickupSoundFormID != 0)
            {
              std::cerr << "Error: BOOK seems to have more than one YNAM subrecord.\n";
              return false;
            }
-           //read YNAM
+           // read YNAM
            if (!loadUint32SubRecordFromStream(in_File, cYNAM, pickupSoundFormID, false))
              return false;
            bytesRead += 6;
-           if (pickupSoundFormID==0)
+           if (pickupSoundFormID == 0)
            {
              std::cerr << "Error: subrecord YNAM of BOOK is zero!\n";
              return false;
            }
            break;
       case cZNAM:
-           if (putdownSoundFormID!=0)
+           if (putdownSoundFormID != 0)
            {
              std::cerr << "Error: BOOK seems to have more than one ZNAM subrecord.\n";
              return false;
            }
-           //read ZNAM
+           // read ZNAM
            if (!loadUint32SubRecordFromStream(in_File, cZNAM, putdownSoundFormID, false))
              return false;
            bytesRead += 6;
-           if (putdownSoundFormID==0)
+           if (putdownSoundFormID == 0)
            {
              std::cerr << "Error: subrecord ZNAM of BOOK is zero!\n";
              return false;
@@ -556,11 +490,11 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
                      << IntTo4Char(subRecName)
                      << "\", but only MODL, KSIZ, DATA, INAM, CNAM, YNAM or ZNAM are allowed here!\n";
            return false;
-    }//swi
-  }//while
+    }
+  }
 
-  //check presence of all required subrecords
-  if (!(hasReadMODL and hasReadDATA and hasReadCNAM))
+  // check presence of all required subrecords
+  if (!hasReadMODL || !hasReadDATA || !hasReadCNAM)
   {
     std::cerr << "Error: At least one required subrecord of BOOK was not found!\n";
     return false;
@@ -575,12 +509,12 @@ uint32_t BookRecord::getRecordType() const
 
 bool BookRecord::isSkillBook() const
 {
-  return ((bookFlags bitand cSkillBookFlag)==cSkillBookFlag);
+  return (bookFlags & cSkillBookFlag) == cSkillBookFlag;
 }
 
 bool BookRecord::isSpellTome() const
 {
-  return ((bookFlags bitand cSpellTomeFlag)==cSpellTomeFlag);
+  return (bookFlags & cSpellTomeFlag) == cSpellTomeFlag;
 }
 
-} //namespace
+} // namespace

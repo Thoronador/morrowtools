@@ -46,7 +46,7 @@ TEST_CASE("BookRecord")
     REQUIRE_FALSE( record.text.isPresent() );
     REQUIRE( record.pickupSoundFormID == 0 );
     REQUIRE( record.putdownSoundFormID == 0 );
-    REQUIRE( record.keywordArray.empty() );
+    REQUIRE( record.keywords.empty() );
     REQUIRE( record.bookFlags == 0 );
     REQUIRE( record.spellOrSkillID == 0 );
     REQUIRE( record.bookValue == 0 );
@@ -162,13 +162,13 @@ TEST_CASE("BookRecord")
 
       SECTION("keywords mismatch")
       {
-        a.keywordArray.push_back(0x01234567);
+        a.keywords.push_back(0x01234567);
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        b.keywordArray.push_back(0x01234567);
-        b.keywordArray.push_back(0x09ABCDEF);
+        b.keywords.push_back(0x01234567);
+        b.keywords.push_back(0x09ABCDEF);
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
@@ -345,10 +345,10 @@ TEST_CASE("BookRecord")
     {
       REQUIRE( record.getWriteSize() == 78 );
 
-      record.keywordArray.push_back(0x01234567);
+      record.keywords.push_back(0x01234567);
       REQUIRE( record.getWriteSize() == 98 );
 
-      record.keywordArray.push_back(0x01234567);
+      record.keywords.push_back(0x01234567);
       REQUIRE( record.getWriteSize() == 102 );
     }
 
@@ -423,8 +423,8 @@ TEST_CASE("BookRecord")
       REQUIRE( record.text.getIndex() == 0x0000DC0A );
       REQUIRE( record.pickupSoundFormID == 0 );
       REQUIRE( record.putdownSoundFormID == 0 );
-      REQUIRE( record.keywordArray.size() == 1 );
-      REQUIRE( record.keywordArray[0] == 0x000937A2 );
+      REQUIRE( record.keywords.size() == 1 );
+      REQUIRE( record.keywords[0] == 0x000937A2 );
       REQUIRE( record.bookFlags == 0 );
       REQUIRE( record.spellOrSkillID == 0xFFFFFFFF );
       REQUIRE( record.bookValue == 6 );
@@ -488,8 +488,8 @@ TEST_CASE("BookRecord")
       REQUIRE( record.text.getIndex() == 0x0000FD83 );
       REQUIRE( record.pickupSoundFormID == 0x000C7A54 );
       REQUIRE( record.putdownSoundFormID == 0 );
-      REQUIRE( record.keywordArray.size() == 1 );
-      REQUIRE( record.keywordArray[0] == 0x0000937A2 );
+      REQUIRE( record.keywords.size() == 1 );
+      REQUIRE( record.keywords[0] == 0x0000937A2 );
       REQUIRE( record.bookFlags == 0 );
       REQUIRE( record.spellOrSkillID == 0xFFFFFFFF );
       REQUIRE( record.bookValue == 0 );
@@ -1342,6 +1342,29 @@ TEST_CASE("BookRecord")
       // Check written data.
       const std::string_view data = "BOOK\0\0\0\0\x20\0\0\0\xCD\xAC\x01\0\x1B\x69\x55\0\x28\0\x01\0"sv;
       REQUIRE( stream.str() == data );
+    }
+  }
+
+  SECTION("flag status checks")
+  {
+    BookRecord record;
+
+    SECTION("isSkillBook")
+    {
+      REQUIRE_FALSE( record.isSkillBook() );
+      record.bookFlags = BookRecord::cSkillBookFlag;
+      REQUIRE( record.isSkillBook() );
+      record.bookFlags = 0xFFFFFFFF & !BookRecord::cSkillBookFlag;
+      REQUIRE_FALSE( record.isSkillBook() );
+    }
+
+    SECTION("isSpellTome")
+    {
+      REQUIRE_FALSE( record.isSpellTome() );
+      record.bookFlags = BookRecord::cSpellTomeFlag;
+      REQUIRE( record.isSpellTome() );
+      record.bookFlags = 0xFFFFFFFF & !BookRecord::cSpellTomeFlag;
+      REQUIRE_FALSE( record.isSpellTome() );
     }
   }
 }

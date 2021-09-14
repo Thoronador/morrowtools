@@ -727,6 +727,21 @@ TEST_CASE("MiscObjectRecord")
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
+    SECTION("corrupt data: stream ends before all of MODS can be read")
+    {
+      const std::string_view data = "MISC\xD4\0\0\0\0\0\0\0\x0F\0\0\0\x1B\x69\x55\0\x28\0\x0C\0EDID\x08\0Gold001\0OBND\x0C\0\xFE\xFF\xFE\xFF\0\0\x02\0\x02\0\0\0FULL\x04\0\x02\xD5\0\0MODL\x13\0Clutter\\Coin01.nif\0MODT\x3C\0\x02\0\0\0\x04\0\0\0\0\0\0\0\x02\xF5\xFD\x1F\x64\x64\x73\0\xBF\xFA\x25\xDA\x28\x76\xC8\x68\x64\x64\x73\0\xBF\xFA\x25\xDA\x18\x8F\xFC\x7C\x64\x64\x73\0\x26\x2C\x33\x3B\xFA\xE0\xBB\xA4\x64\x64\x73\0\x7F\x66\xA5\xC0MODS\x21\0\x01\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read MISC, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      MiscObjectRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: length of ICON > 512")
     {
       const std::string_view data = "MISC\xD4\0\0\0\0\0\0\0\x0F\0\0\0\x1B\x69\x55\0\x28\0\x0C\0EDID\x08\0Gold001\0OBND\x0C\0\xFE\xFF\xFE\xFF\0\0\x02\0\x02\0\0\0FULL\x04\0\x02\xD5\0\0MODL\x13\0Clutter\\Coin01.nif\0MODT\x3C\0\x02\0\0\0\x04\0\0\0\0\0\0\0\x02\xF5\xFD\x1F\x64\x64\x73\0\xBF\xFA\x25\xDA\x28\x76\xC8\x68\x64\x64\x73\0\xBF\xFA\x25\xDA\x18\x8F\xFC\x7C\x64\x64\x73\0\x26\x2C\x33\x3B\xFA\xE0\xBB\xA4\x64\x64\x73\0\x7F\x66\xA5\xC0ICON\x13\x02Clutter\\Coin01.dds\0YNAM\x04\0\x52\xE9\x03\0ZNAM\x04\0\x55\xE9\x03\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0\xE9\x14\x09\0DATA\x08\0\x01\0\0\0\0\0\0\0"sv;
@@ -968,6 +983,21 @@ TEST_CASE("MiscObjectRecord")
         MiscObjectRecord record;
         REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
       }
+    }
+
+    SECTION("corrupt data: stream ends before KSIZ can be read completely")
+    {
+      const std::string_view data = "MISC\xD4\0\0\0\0\0\0\0\x0F\0\0\0\x1B\x69\x55\0\x28\0\x0C\0EDID\x08\0Gold001\0OBND\x0C\0\xFE\xFF\xFE\xFF\0\0\x02\0\x02\0\0\0FULL\x04\0\x02\xD5\0\0MODL\x13\0Clutter\\Coin01.nif\0MODT\x3C\0\x02\0\0\0\x04\0\0\0\0\0\0\0\x02\xF5\xFD\x1F\x64\x64\x73\0\xBF\xFA\x25\xDA\x28\x76\xC8\x68\x64\x64\x73\0\xBF\xFA\x25\xDA\x18\x8F\xFC\x7C\x64\x64\x73\0\x26\x2C\x33\x3B\xFA\xE0\xBB\xA4\x64\x64\x73\0\x7F\x66\xA5\xC0ICON\x13\0Clutter\\Coin01.dds\0YNAM\x04\0\x52\xE9\x03\0ZNAM\x04\0\x55\xE9\x03\0KSIZ\x04\0\x01\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read MISC, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      MiscObjectRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
     SECTION("corrupt data: KSIZ is zero")

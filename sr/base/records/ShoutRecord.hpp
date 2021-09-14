@@ -94,7 +94,7 @@ struct ShoutRecord: public BasicRecord
     }; // struct
 
     std::string editorID; /**< ID of the record in the editor */
-    LocalizedString fullName; /**< name of the shout */
+    LocalizedString name; /**< name of the shout */
     uint32_t menuDisplayObjectFormID; /**< subrecord MDOB */
     LocalizedString description; /**< description of the shout */
     std::vector<WordEntry> words; /**< words of the shout (SNAM subrecords) */

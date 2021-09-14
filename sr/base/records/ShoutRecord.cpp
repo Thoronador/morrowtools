@@ -34,7 +34,7 @@ bool ShoutRecord::WordEntry::operator==(const ShoutRecord::WordEntry& other) con
 
 ShoutRecord::ShoutRecord()
 : BasicRecord(), editorID(""),
-  fullName(LocalizedString()),
+  name(LocalizedString()),
   menuDisplayObjectFormID(0),
   description(LocalizedString()),
   words(std::vector<WordEntry>())
@@ -45,7 +45,7 @@ ShoutRecord::ShoutRecord()
 bool ShoutRecord::equals(const ShoutRecord& other) const
 {
   return (equalsBasic(other) && (editorID == other.editorID)
-      && (fullName == other.fullName)
+      && (name == other.name)
       && (menuDisplayObjectFormID == other.menuDisplayObjectFormID)
       && (description == other.description) && (words == other.words));
 }
@@ -61,9 +61,9 @@ uint32_t ShoutRecord::getWriteSize() const
       + description.getWriteSize() /* DESC */
       + words.size()
       * (4 /* SNAM */ + 2 /* 2 bytes for length */ + 12 /* fixed size */);
-  if (fullName.isPresent())
+  if (name.isPresent())
   {
-    writeSize += fullName.getWriteSize() /* FULL */;
+    writeSize += name.getWriteSize() /* FULL */;
   }
   if (menuDisplayObjectFormID != 0)
   {
@@ -86,10 +86,10 @@ bool ShoutRecord::saveToStream(std::ostream& output) const
   output.write(reinterpret_cast<const char*>(&subLength), 2);
   output.write(editorID.c_str(), subLength);
 
-  if (fullName.isPresent())
+  if (name.isPresent())
   {
     // write FULL
-    if (!fullName.saveToStream(output, cFULL))
+    if (!name.saveToStream(output, cFULL))
       return false;
   }
 
@@ -137,7 +137,7 @@ bool ShoutRecord::loadFromStream(std::istream& in_File, const bool localized, co
   if (!loadString512FromStream(in_File, editorID, buffer, cEDID, true, bytesRead))
     return false;
 
-  fullName.reset();
+  name.reset();
   menuDisplayObjectFormID = 0;
   description.reset();
   words.clear();
@@ -151,12 +151,12 @@ bool ShoutRecord::loadFromStream(std::istream& in_File, const bool localized, co
     switch (subRecName)
     {
       case cFULL:
-           if (fullName.isPresent())
+           if (name.isPresent())
            {
              std::cerr << "Error: SHOU seems to have more than one FULL subrecord.\n";
              return false;
            }
-           if (!fullName.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
+           if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
              return false;
            break;
       case cMDOB:

@@ -34,7 +34,7 @@ TEST_CASE("ShoutRecord")
     ShoutRecord record;
 
     REQUIRE( record.editorID.empty() );
-    REQUIRE_FALSE( record.fullName.isPresent() );
+    REQUIRE_FALSE( record.name.isPresent() );
     REQUIRE( record.menuDisplayObjectFormID == 0 );
     REQUIRE_FALSE( record.description.isPresent() );
     REQUIRE( record.words.empty() );
@@ -48,13 +48,13 @@ TEST_CASE("ShoutRecord")
     SECTION("equal")
     {
       a.editorID = "foo";
-      a.fullName = LocalizedString(LocalizedString::Type::Index, 123, "");
+      a.name = LocalizedString(LocalizedString::Type::Index, 123, "");
       a.menuDisplayObjectFormID = 0x78563421;
       a.description = LocalizedString(LocalizedString::Type::Index, 456, "");
       a.words = { { 1, 2, 5.0f }, { 3, 4, 6.0f } };
 
       b.editorID = "foo";
-      b.fullName = LocalizedString(LocalizedString::Type::Index, 123, "");
+      b.name = LocalizedString(LocalizedString::Type::Index, 123, "");
       b.menuDisplayObjectFormID = 0x78563421;
       b.description = LocalizedString(LocalizedString::Type::Index, 456, "");
       b.words = { { 1, 2, 5.0f }, { 3, 4, 6.0f } };
@@ -74,10 +74,10 @@ TEST_CASE("ShoutRecord")
         REQUIRE_FALSE( b.equals(a) );
       }
 
-      SECTION("full name mismatch")
+      SECTION("name mismatch")
       {
-        a.fullName = LocalizedString(LocalizedString::Type::Index, 123, "");
-        b.fullName = LocalizedString(LocalizedString::Type::Index, 987, "");
+        a.name = LocalizedString(LocalizedString::Type::Index, 123, "");
+        b.name = LocalizedString(LocalizedString::Type::Index, 987, "");
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
@@ -138,7 +138,7 @@ TEST_CASE("ShoutRecord")
       record.editorID = "foo";
       REQUIRE( record.getWriteSize() == 20 );
 
-      record.fullName = LocalizedString(LocalizedString::Type::Index, 123, "");
+      record.name = LocalizedString(LocalizedString::Type::Index, 123, "");
       REQUIRE( record.getWriteSize() == 30 );
     }
 
@@ -202,8 +202,8 @@ TEST_CASE("ShoutRecord")
       REQUIRE( record.headerUnknown5 == 0x0005 );
       // -- record data
       REQUIRE( record.editorID == "UnrelentingForceShout" );
-      REQUIRE( record.fullName.getType() == LocalizedString::Type::Index );
-      REQUIRE( record.fullName.getIndex() == 0x000003B2 );
+      REQUIRE( record.name.getType() == LocalizedString::Type::Index );
+      REQUIRE( record.name.getIndex() == 0x000003B2 );
       REQUIRE( record.menuDisplayObjectFormID == 0x000A59AC );
       REQUIRE( record.description.getType() == LocalizedString::Type::Index );
       REQUIRE( record.description.getIndex() == 0x000003AF );
@@ -241,7 +241,7 @@ TEST_CASE("ShoutRecord")
       REQUIRE( record.headerUnknown5 == 0x0005 );
       // -- record data
       REQUIRE( record.editorID == "UnrelentingForceShout" );
-      REQUIRE_FALSE( record.fullName.isPresent() );
+      REQUIRE_FALSE( record.name.isPresent() );
       REQUIRE( record.menuDisplayObjectFormID == 0x000A59AC );
       REQUIRE( record.description.getType() == LocalizedString::Type::Index );
       REQUIRE( record.description.getIndex() == 0x000003AF );
@@ -353,7 +353,7 @@ TEST_CASE("ShoutRecord")
       record.headerUnknown5 = 0x0005;
       // -- record data
       record.editorID = "UnrelentingForceShout";
-      record.fullName = LocalizedString(LocalizedString::Type::Index, 0x000003B2, "");
+      record.name = LocalizedString(LocalizedString::Type::Index, 0x000003B2, "");
       record.menuDisplayObjectFormID = 0x000A59AC;
       record.description = LocalizedString(LocalizedString::Type::Index, 0x000003AF, "");
       record.words.clear();
@@ -384,7 +384,7 @@ TEST_CASE("ShoutRecord")
       record.headerUnknown5 = 0x0005;
       // -- record data
       record.editorID = "UnrelentingForceShout";
-      record.fullName = LocalizedString(LocalizedString::Type::None, 0, "");
+      record.name = LocalizedString(LocalizedString::Type::None, 0, "");
       record.menuDisplayObjectFormID = 0x000A59AC;
       record.description = LocalizedString(LocalizedString::Type::Index, 0x000003AF, "");
       record.words.clear();

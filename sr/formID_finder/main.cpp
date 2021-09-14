@@ -1268,18 +1268,18 @@ int main(int argc, char **argv)
     SRTP::Shouts::ListIterator shout_iter = SRTP::Shouts::getSingleton().getBegin();
     while (shout_iter!=SRTP::Shouts::getSingleton().getEnd())
     {
-      if (shout_iter->second.fullName.isPresent())
+      if (shout_iter->second.name.isPresent())
       {
-        if (!shout_iter->second.fullName.getString().empty())
+        if (!shout_iter->second.name.getString().empty())
         {
-          if (matchesKeyword(shout_iter->second.fullName.getString(), searchKeyword, caseSensitive))
+          if (matchesKeyword(shout_iter->second.name.getString(), searchKeyword, caseSensitive))
           {
             //found matching shout record
             if (shoutMatches==0)
             {
               basic_out << "\n\nMatching dragon shouts:\n";
             }
-            basic_out << "    \""<<shout_iter->second.fullName.getString()
+            basic_out << "    \""<<shout_iter->second.name.getString()
                       <<"\"\n        form ID "<<SRTP::getFormIDAsStringWithFile(shout_iter->second.headerFormID, loadOrder, showFiles)
                       <<"\n        editor ID \""<<shout_iter->second.editorID<<"\"\n";
             ++shoutMatches;

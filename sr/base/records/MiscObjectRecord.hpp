@@ -78,9 +78,9 @@ struct MiscObjectRecord: public BasicRecord
     BinarySubRecord unknownMODT;
     BinarySubRecord unknownMODS;
     std::string iconPath;
+    uint32_t pickupSoundFormID; // subrecord YNAM
+    uint32_t putdownSoundFormID; // subrecord ZNAM
     std::vector<uint32_t> keywordArray;
-    uint32_t pickupSoundFormID; //subrecord YNAM
-    uint32_t putdownSoundFormID; //subrecord ZNAM
     //DATA subrecord
     uint32_t value;
     float weight;

@@ -33,6 +33,7 @@ set(component_tests_sources
     ../../sr/base/records/KeyRecord.cpp
     ../../sr/base/records/KeywordRecord.cpp
     ../../sr/base/records/LocalizedString.cpp
+    ../../sr/base/records/MiscObjectRecord.cpp
     ../../sr/base/records/PerkRecord.cpp
     ../../sr/base/records/ShoutRecord.cpp
     ../../sr/base/records/SimplifiedReferenceRecord.cpp
@@ -71,6 +72,7 @@ set(component_tests_sources
     sr/base/records/KeyRecord.cpp
     sr/base/records/KeywordRecord.cpp
     sr/base/records/LocalizedString.cpp
+    sr/base/records/MiscObjectRecord.cpp
     sr/base/records/PerkRecord.cpp
     sr/base/records/ShoutRecord.cpp
     sr/base/records/SimplifiedReferenceRecord.cpp

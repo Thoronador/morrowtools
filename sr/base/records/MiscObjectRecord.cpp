@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -35,9 +35,9 @@ MiscObjectRecord::MiscObjectRecord()
   unknownMODT(BinarySubRecord()),
   unknownMODS(BinarySubRecord()),
   iconPath(""),
-  keywordArray(std::vector<uint32_t>()),
   pickupSoundFormID(0),
   putdownSoundFormID(0),
+  keywordArray(std::vector<uint32_t>()),
   value(0),
   weight(0.0f)
 {
@@ -57,9 +57,9 @@ bool MiscObjectRecord::equals(const MiscObjectRecord& other) const
     and (fullName==other.fullName)
     and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
     and (unknownMODS==other.unknownMODS) and (iconPath==other.iconPath)
-    and (keywordArray==other.keywordArray)
     and (pickupSoundFormID==other.pickupSoundFormID)
     and (putdownSoundFormID==other.putdownSoundFormID)
+    and (keywordArray==other.keywordArray)
     and (value==other.value) and (weight==other.weight));
 }
 #endif
@@ -67,8 +67,9 @@ bool MiscObjectRecord::equals(const MiscObjectRecord& other) const
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t MiscObjectRecord::getWriteSize() const
 {
-  uint32_t writeSize;
-  writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
+  if (isDeleted())
+    return 0;
+  uint32_t writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
         +4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed size of 12 bytes */
         +4 /* DATA */ +2 /* 2 bytes for length */ +8 /* fixed size of 8 bytes */;
@@ -101,18 +102,18 @@ uint32_t MiscObjectRecord::getWriteSize() const
     writeSize = writeSize +4 /* ICON */ +2 /* 2 bytes for length */
                +iconPath.length()+1 /* length of name +1 byte for NUL termination */;
   }
+  if (pickupSoundFormID != 0)
+  {
+    writeSize = writeSize + 4 /* YNAM */ + 2 /* 2 bytes for length */ + 4 /* fixed size of four bytes */;
+  }
+  if (putdownSoundFormID != 0)
+  {
+    writeSize = writeSize + 4 /* ZNAM */ + 2 /* 2 bytes for length */ + 4 /* fixed size of four bytes */;
+  }
   if (!keywordArray.empty())
   {
     writeSize = writeSize +4 /* KSIZ */ +2 /* 2 bytes for length */ +4 /* fixed size of four bytes */
                +4 /* KWDA */ +2 /* 2 bytes for length */+ 4*keywordArray.size();
-  }
-  if (pickupSoundFormID!=0)
-  {
-    writeSize = writeSize +4 /* YNAM */ +2 /* 2 bytes for length */ +4 /* fixed size of four bytes */;
-  }
-  if (putdownSoundFormID!=0)
-  {
-    writeSize = writeSize +4 /* ZNAM */ +2 /* 2 bytes for length */ +4 /* fixed size of four bytes */;
   }
   return writeSize;
 }
@@ -120,7 +121,10 @@ uint32_t MiscObjectRecord::getWriteSize() const
 bool MiscObjectRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cMISC, 4);
-  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
+  if (!saveSizeAndUnknownValues(output, getWriteSize()))
+    return false;
+  if (isDeleted())
+    return true;
 
   //write EDID
   output.write((const char*) &cEDID, 4);
@@ -182,6 +186,24 @@ bool MiscObjectRecord::saveToStream(std::ostream& output) const
     output.write(iconPath.c_str(), subLength);
   }//if icon path present
 
+  if (pickupSoundFormID != 0)
+  {
+    //write Pickup Sound form ID (YNAM)
+    output.write(reinterpret_cast<const char*>(&cYNAM), 4);
+    subLength = 4; /* fixed length */
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    output.write(reinterpret_cast<const char*>(&pickupSoundFormID), 4);
+  }
+
+  if (putdownSoundFormID != 0)
+  {
+    // write Putdown Sound form ID (ZNAM)
+    output.write(reinterpret_cast<const char*>(&cZNAM), 4);
+    subLength = 4; /* fixed length */
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    output.write(reinterpret_cast<const char*>(&putdownSoundFormID), 4);
+  }
+
   if (!keywordArray.empty())
   {
     //write KSIZ
@@ -206,28 +228,6 @@ bool MiscObjectRecord::saveToStream(std::ostream& output) const
     }//for
   }
 
-  if (pickupSoundFormID!=0)
-  {
-    //write YNAM
-    output.write((const char*) &cYNAM, 4);
-    //YNAM's length
-    subLength = 4; /* fixed length */
-    output.write((const char*) &subLength, 2);
-    //write Pickup Sound form ID
-    output.write((const char*) &pickupSoundFormID, 4);
-  }//if hasYNAM
-
-  if (putdownSoundFormID!=0)
-  {
-    //write ZNAM
-    output.write((const char*) &cZNAM, 4);
-    //ZNAM's length
-    subLength = 4; /* fixed length */
-    output.write((const char*) &subLength, 2);
-    //write Putdown Sound form ID
-    output.write((const char*) &putdownSoundFormID, 4);
-  }//if hasZNAM
-
   //write DATA
   output.write((const char*) &cDATA, 4);
   //DATA's length
@@ -244,7 +244,10 @@ bool MiscObjectRecord::saveToStream(std::ostream& output) const
 bool MiscObjectRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
-  if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
+  if (!loadSizeAndUnknownValues(in_File, readSize))
+    return false;
+  if (isDeleted())
+    return true;
   uint32_t subRecName;
   uint16_t subLength;
   subRecName = subLength = 0;

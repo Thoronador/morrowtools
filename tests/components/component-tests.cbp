@@ -89,6 +89,8 @@
 		<Unit filename="../../sr/base/records/KeywordRecord.hpp" />
 		<Unit filename="../../sr/base/records/LocalizedString.cpp" />
 		<Unit filename="../../sr/base/records/LocalizedString.hpp" />
+		<Unit filename="../../sr/base/records/MiscObjectRecord.cpp" />
+		<Unit filename="../../sr/base/records/MiscObjectRecord.hpp" />
 		<Unit filename="../../sr/base/records/PerkRecord.cpp" />
 		<Unit filename="../../sr/base/records/PerkRecord.hpp" />
 		<Unit filename="../../sr/base/records/ShoutRecord.cpp" />
@@ -137,6 +139,7 @@
 		<Unit filename="sr/base/records/KeyRecord.cpp" />
 		<Unit filename="sr/base/records/KeywordRecord.cpp" />
 		<Unit filename="sr/base/records/LocalizedString.cpp" />
+		<Unit filename="sr/base/records/MiscObjectRecord.cpp" />
 		<Unit filename="sr/base/records/PerkRecord.cpp" />
 		<Unit filename="sr/base/records/ShoutRecord.cpp" />
 		<Unit filename="sr/base/records/SimplifiedReferenceRecord.cpp" />

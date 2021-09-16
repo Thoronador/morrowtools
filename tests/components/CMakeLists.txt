@@ -24,6 +24,7 @@ set(component_tests_sources
     ../../sr/base/records/BinarySubRecordExtended.cpp
     ../../sr/base/records/BookRecord.cpp
     ../../sr/base/records/CTDAData.cpp
+    ../../sr/base/records/CameraShotRecord.cpp
     ../../sr/base/records/ComponentData.cpp
     ../../sr/base/records/ContainerRecord.cpp
     ../../sr/base/records/DestructionData.cpp
@@ -63,6 +64,7 @@ set(component_tests_sources
     sr/base/records/BookRecord.cpp
     sr/base/records/CTDAData.cpp
     sr/base/records/CTDA_CISx_compound.cpp
+    sr/base/records/CameraShotRecord.cpp
     sr/base/records/ComponentData.cpp
     sr/base/records/ContainerRecord.cpp
     sr/base/records/DestructionData.cpp

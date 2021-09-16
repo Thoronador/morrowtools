@@ -87,7 +87,8 @@ bool CameraShotRecord::equals(const CameraShotRecord& other) const
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t CameraShotRecord::getWriteSize() const
 {
-  if (isDeleted()) return 0;
+  if (isDeleted())
+    return 0;
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */;
@@ -118,8 +119,10 @@ uint32_t CameraShotRecord::getWriteSize() const
 bool CameraShotRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cCAMS, 4);
-  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
-  if (isDeleted()) return true;
+  if (!saveSizeAndUnknownValues(output, getWriteSize()))
+    return false;
+  if (isDeleted())
+    return true;
 
   //write EDID
   output.write((const char*) &cEDID, 4);
@@ -189,8 +192,10 @@ bool CameraShotRecord::saveToStream(std::ostream& output) const
 bool CameraShotRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
-  if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
-  if (isDeleted()) return true;
+  if (!loadSizeAndUnknownValues(in_File, readSize))
+    return false;
+  if (isDeleted())
+    return true;
   uint32_t subRecName;
   uint16_t subLength;
   subRecName = subLength = 0;
@@ -300,7 +305,7 @@ bool CameraShotRecord::loadFromStream(std::istream& in_File, const bool localize
              if ((nearTargetDistance>2000.0f) or (nearTargetDistance<0.0f))
              {
                std::cerr << "Error while reading subrecord DATA of CAMS: near "
-                         << "target distanct is not in range [0;100]!Its "
+                         << "target distanct is not in range [0;2000]! Its "
                          << "current value is "<< nearTargetDistance<<".\n";
                return false;
              }//if (range check)

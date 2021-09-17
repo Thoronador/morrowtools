@@ -252,10 +252,10 @@ int main(int argc, char **argv)
           SRTP::CameraShotRecord* camPtr = static_cast<SRTP::CameraShotRecord*>(recIter->get());
           if (camPtr!=NULL)
           {
-            if ((camPtr->dataLen==SRTP::CameraShotRecord::dlt44Byte) and (!(camPtr->isDeleted())))
+            if ((camPtr->dataLen == SRTP::CameraShotRecord::DataLengthType::dlt44Byte) && !camPtr->isDeleted())
             {
-              //record has 44 byte variant of DATA subrecord, change it
-              camPtr->dataLen = SRTP::CameraShotRecord::dlt40Byte;
+              // record has 44 byte variant of DATA subrecord, change it
+              camPtr->dataLen = SRTP::CameraShotRecord::DataLengthType::dlt40Byte;
               ++changedRecords;
             }//if
           }//if not NULL

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2013  Thoronador
+    Copyright (C) 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -28,65 +28,76 @@
 namespace SRTP
 {
 
+/** Contains information about a camera shot, e. g. for kill camera. */
 struct CameraShotRecord: public BasicRecord
 {
   public:
-    /* constructor */
+    /** Constructor, creates an empty record. */
     CameraShotRecord();
 
-    /* destructor */
-    virtual ~CameraShotRecord();
-
     #ifndef SR_NO_RECORD_EQUALITY
-    /* returns true, if the other record contains the same data */
+    /** \brief Checks whether another instances contains the same data.
+     *
+     * \param other   the other record to compare with
+     * \return Returns true, if @other contains the same data as instance.
+     *         Returns false otherwise.
+     */
     bool equals(const CameraShotRecord& other) const;
     #endif
 
     #ifndef SR_UNSAVEABLE_RECORDS
-    /* returns the size in bytes that the record's data would occupy in a file
-       stream, NOT including the header data
-    */
+    /** \brief Gets the size in bytes that the record's data would occupy in a file
+     *         stream, NOT including the header data.
+     *
+     * \return Returns the size in bytes that the record would need. Size of the
+     *         header is not included.
+     */
     virtual uint32_t getWriteSize() const;
 
-    /* writes the record to the given output stream and returns true on success
-
-      parameters:
-          output   - the output stream
-    */
+    /** \brief Writes the record to the given output stream.
+     *
+     * \param output  the output stream
+     * \return Returns true on success (record was written to stream).
+     *         Returns false, if an error occurred.
+     */
     virtual bool saveToStream(std::ostream& output) const;
     #endif
 
-    /* loads the record from the given input stream and returns true on success
-
-      parameters:
-          in_File   - the input stream
-          localized - whether the file to read from is localized or not
-          table     - the associated string table for localized files
-    */
+    /** \brief Loads the record from the given input stream.
+     *
+     * \param in_File    the input stream
+     * \param localized  whether the file to read from is localized or not
+     * \param table      the associated string table for localized files
+     * \return Returns true on success (record was loaded from stream).
+     *         Returns false, if an error occurred.
+     */
     virtual bool loadFromStream(std::istream& in_File, const bool localized, const StringTable& table);
 
-    /* returns the record's type, usually its header */
+    /** \brief Gets the record's type, usually its header.
+     *
+     * \return Returns the record's type.
+     */
     virtual uint32_t getRecordType() const;
 
-    //enumeration type for DATA's length
-    enum DataLengthType {dlt40Byte=40, dlt44Byte=44};
+    /// enumeration type for DATA's length
+    enum class DataLengthType: uint16_t { dlt40Byte = 40, dlt44Byte = 44 };
 
-    //constants for camera action
+    /// constants for camera action
     static const uint32_t cActionShoot;
     static const uint32_t cActionFly;
     static const uint32_t cActionHit;
     static const uint32_t cActionZoom;
 
-    //constants for location/target
+    /// constants for location/target
     static const uint32_t cLocationAttacker;
     static const uint32_t cLocationProjectile;
     static const uint32_t cLocationTarget;
     static const uint32_t cLocationLeadActor;
 
     std::string editorID;
-    std::string modelPath; //subrecord MODL
+    std::string modelPath; // subrecord MODL
     BinarySubRecord unknownMODT;
-    //subrecord DATA
+    // subrecord DATA
     DataLengthType dataLen;
     uint32_t cameraAction;
     uint32_t cameraLocation;
@@ -99,10 +110,10 @@ struct CameraShotRecord: public BasicRecord
     float minTime;
     float targetPercentBetweenActors;
     float nearTargetDistance;
-    //end of subrecord DATA
-    uint32_t imageSpaceModFormID; //subrecord MNAM
-}; //struct
+    // end of subrecord DATA
+    uint32_t imageSpaceModFormID; // subrecord MNAM
+}; // struct
 
-} //namespace
+} // namespace
 
 #endif // SR_CAMERASHOTRECORD_HPP

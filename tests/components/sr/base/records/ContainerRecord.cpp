@@ -872,6 +872,21 @@ TEST_CASE("ContainerRecord")
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
+    SECTION("corrupt data: stream ends before all of MODS can be read")
+    {
+      const std::string_view data = "CONT\xAB\0\0\0\0\0\0\x08\x45\x08\0\0\x1B\x69\x55\0\x28\0\x0D\0EDID\x0D\0BarrelFood01\0OBND\x0C\0\xE5\xFF\xE5\xFF\0\0\x1B\0\x1B\0\x50\0FULL\x04\0\x55\xDE\0\0MODL\x15\0Clutter\\Barrel01.NIF\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x4E\xFC\x5A\xB9\x64\x64\x73\0\xBF\xFA\x25\xDA\x22\x68\xD8\x4D\x64\x64\x73\0\xBF\xFA\x25\xDAMODS\x24\0\x02\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read CONT, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ContainerRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: multiple COCTs")
     {
       const std::string_view data = "CONT\xC0\0\0\0\0\0\0\x08\x45\x08\0\0\x1B\x69\x55\0\x28\0\x0D\0EDID\x0D\0BarrelFood01\0OBND\x0C\0\xE5\xFF\xE5\xFF\0\0\x1B\0\x1B\0\x50\0FULL\x04\0\x55\xDE\0\0MODL\x15\0Clutter\\Barrel01.NIF\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x4E\xFC\x5A\xB9\x64\x64\x73\0\xBF\xFA\x25\xDA\x22\x68\xD8\x4D\x64\x64\x73\0\xBF\xFA\x25\xDA\x43OCT\x04\0\x01\0\0\0CNTO\x08\0\xFB\xFC\x10\0\x01\0\0\0\x43OCT\x04\0\x01\0\0\0CNTO\x08\0\xFB\xFC\x10\0\x01\0\0\0DATA\x05\0\x02\0\0\0\0SNAM\x04\0\x6D\xC8\x03\0QNAM\x04\0\x70\xC8\x03\0"sv;
@@ -982,6 +997,21 @@ TEST_CASE("ContainerRecord")
     SECTION("corrupt data: stream ends before all of CNTO can be read")
     {
       const std::string_view data = "CONT\xAB\0\0\0\0\0\0\x08\x45\x08\0\0\x1B\x69\x55\0\x28\0\x0D\0EDID\x0D\0BarrelFood01\0OBND\x0C\0\xE5\xFF\xE5\xFF\0\0\x1B\0\x1B\0\x50\0FULL\x04\0\x55\xDE\0\0MODL\x15\0Clutter\\Barrel01.NIF\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x4E\xFC\x5A\xB9\x64\x64\x73\0\xBF\xFA\x25\xDA\x22\x68\xD8\x4D\x64\x64\x73\0\xBF\xFA\x25\xDA\x43OCT\x04\0\x01\0\0\0CNTO\x08\0\xFB\xFC\x10\0\x01\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read CONT, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ContainerRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: stream ends before all of COED can be read")
+    {
+      const std::string_view data = "CONT\xAB\0\0\0\0\0\0\x08\x45\x08\0\0\x1B\x69\x55\0\x28\0\x0D\0EDID\x0D\0BarrelFood01\0OBND\x0C\0\xE5\xFF\xE5\xFF\0\0\x1B\0\x1B\0\x50\0FULL\x04\0\x55\xDE\0\0MODL\x15\0Clutter\\Barrel01.NIF\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x4E\xFC\x5A\xB9\x64\x64\x73\0\xBF\xFA\x25\xDA\x22\x68\xD8\x4D\x64\x64\x73\0\xBF\xFA\x25\xDA\x43OCT\x04\0\x01\0\0\0CNTO\x08\0\xFB\xFC\x10\0\x01\0\0\0COED\x0C\0\x5A"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 

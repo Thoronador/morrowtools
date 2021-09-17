@@ -484,6 +484,21 @@ TEST_CASE("CameraShotRecord")
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
+    SECTION("corrupt data: no MODL")
+    {
+      const std::string_view data = "CAMS\x87\0\0\0\0\0\0\0\x4A\x08\0\x01\x11\x6E\x25\0\x28\0\0\0EDID\x0F\0F02bLeftFlyCam\0FAIL\x1E\0Cameras\\MissileFlyByCam01.nif\0MODT\x0C\0\x02\0\0\0\0\0\0\0\0\0\0\0DATA\x2C\0\x01\0\0\0\x01\0\0\0\x01\0\0\0\x27\0\0\0\0\0\x80\x3F\xCD\xCC\xCC\x3D\0\0\0\x3F\0\0\x80\x40\xCD\xCC\xCC\x3D\0\0\0\0\0\0\0\0MNAM\x04\0\x01\x53\x03\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read CAMS, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      CameraShotRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: length of MODL > 512")
     {
       const std::string_view data = "CAMS\x94\0\0\0\0\0\0\0\x35\x77\x0E\0\x11\x68\x25\0\x28\0\x0C\0EDID\x19\0KillCam_LeftSideCloseUpA\0MODL\x25\x02Tameras\\KillCam_LeftSideCloseUpA.nif\0MODT\x0C\0\x02\0\0\0\0\0\0\0\0\0\0\0DATA\x28\0\0\0\0\0\0\0\0\0\x02\0\0\0\x27\0\0\0\0\0\x80\x3F\0\0\x80\x3F\0\0\x80\x3F\0\0\xC0\x40\xCD\xCC\xCC\x3D\0\0\0\0MNAM\x04\0\x01\x53\x03\0"sv;

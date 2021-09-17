@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -105,6 +105,8 @@ bool SpellRecord::equals(const SpellRecord& other) const
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t SpellRecord::getWriteSize() const
 {
+  if (isDeleted())
+    return 0;
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
@@ -134,7 +136,10 @@ uint32_t SpellRecord::getWriteSize() const
 bool SpellRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cSPEL, 4);
-  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
+  if (!saveSizeAndUnknownValues(output, getWriteSize()))
+    return false;
+  if (isDeleted())
+    return true;
 
   //write EDID
   output.write((const char*) &cEDID, 4);
@@ -218,7 +223,10 @@ bool SpellRecord::saveToStream(std::ostream& output) const
 bool SpellRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
-  if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
+  if (!loadSizeAndUnknownValues(in_File, readSize))
+    return false;
+  if (isDeleted())
+    return true;
   uint32_t subRecName;
   uint16_t subLength;
   subRecName = subLength = 0;
@@ -280,7 +288,7 @@ bool SpellRecord::loadFromStream(std::istream& in_File, const bool localized, co
 
   name.reset();
   menuDisplayObjectFormID = 0;
-  bool hasReadETYP = false;
+  equipTypeFormID = 0;
   description.reset();
   bool hasReadSPIT = false;
   effects.clear();
@@ -311,7 +319,8 @@ bool SpellRecord::loadFromStream(std::istream& in_File, const bool localized, co
              return false;
            }
            //read MDOB
-           if (!loadUint32SubRecordFromStream(in_File, cMDOB, menuDisplayObjectFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cMDOB, menuDisplayObjectFormID, false))
+             return false;
            bytesRead += 6;
            if (menuDisplayObjectFormID==0)
            {
@@ -320,15 +329,19 @@ bool SpellRecord::loadFromStream(std::istream& in_File, const bool localized, co
            }
            break;
       case cETYP:
-           if (hasReadETYP)
+           if (equipTypeFormID != 0)
            {
              std::cerr << "Error: SPEL seems to have more than one ETYP subrecord!\n";
              return false;
            }
-           //read ETYP
-           if (!loadUint32SubRecordFromStream(in_File, cETYP, equipTypeFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cETYP, equipTypeFormID, false))
+             return false;
            bytesRead += 6;
-           hasReadETYP = true;
+           if (equipTypeFormID == 0)
+           {
+             std::cerr << "Error: subrecord ETYP of SPEL has value zero!\n";
+             return false;
+           }
            break;
       case cDESC:
            if (description.isPresent())
@@ -491,7 +504,7 @@ bool SpellRecord::loadFromStream(std::istream& in_File, const bool localized, co
   }
 
   //check presence
-  if (!(hasReadETYP and description.isPresent() and hasReadSPIT))
+  if (!((equipTypeFormID != 0) and description.isPresent() and hasReadSPIT))
   {
     std::cerr << "Error while reading record SPEL: at least one of the "
               << "subrecords ETYP, DESC or SPIT is missing!\n";

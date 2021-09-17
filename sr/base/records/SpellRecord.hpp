@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 #ifndef SR_SPELLRECORD_HPP
 #define SR_SPELLRECORD_HPP
 
+#include <array>
 #include <cstdint>
 #include <string>
 #include "BasicRecord.hpp"
@@ -30,44 +31,55 @@
 namespace SRTP
 {
 
+/** Holds information about a spell. */
 struct SpellRecord: public BasicRecord
 {
   public:
-    /* constructor */
+    /** Constructor, creates an empty record. */
     SpellRecord();
 
-    /* destructor */
-    virtual ~SpellRecord();
-
     #ifndef SR_NO_RECORD_EQUALITY
-    /* returns true, if the other record contains the same data */
+    /** \brief Checks whether another instance contains the same data.
+     *
+     * \param other   the other record to compare with
+     * \return Returns true, if @other contains the same data as instance.
+     *         Returns false otherwise.
+     */
     bool equals(const SpellRecord& other) const;
     #endif
 
     #ifndef SR_UNSAVEABLE_RECORDS
-    /* returns the size in bytes that the record's data would occupy in a file
-       stream, NOT including the header data
-    */
+    /** \brief Gets the size in bytes that the record's data would occupy in a file
+     *         stream, NOT including the header data.
+     *
+     * \return Returns the size in bytes that the record would need. Size of the
+     *         header is not included.
+     */
     virtual uint32_t getWriteSize() const;
 
-    /* writes the record to the given output stream and returns true on success
-
-      parameters:
-          output   - the output stream
-    */
+    /** \brief Writes the record to the given output stream.
+     *
+     * \param output  the output stream
+     * \return Returns true on success (record was written to stream).
+     *         Returns false, if an error occurred.
+     */
     virtual bool saveToStream(std::ostream& output) const;
     #endif
 
-    /* loads the record from the given input stream and returns true on success
-
-      parameters:
-          in_File   - the input stream
-          localized - whether the file to read from is localized or not
-          table     - the associated string table for localized files
-    */
+    /** \brief Loads the record from the given input stream.
+     *
+     * \param in_File    the input stream
+     * \param localized  whether the file to read from is localized or not
+     * \param table      the associated string table for localized files
+     * \return Returns true on success (record was loaded from stream).
+     *         Returns false, if an error occurred.
+     */
     virtual bool loadFromStream(std::istream& in_File, const bool localized, const StringTable& table);
 
-    /* returns the record's type, usually its header */
+    /** \brief Gets the record's type, usually its header.
+     *
+     * \return Returns the record's type.
+     */
     virtual uint32_t getRecordType() const;
 
     /* flag constants */
@@ -101,12 +113,12 @@ struct SpellRecord: public BasicRecord
     static const uint32_t cTargetLocation;
 
     std::string editorID;
-    uint8_t unknownOBND[12];
-    LocalizedString name; //subrecord FULL
-    uint32_t menuDisplayObjectFormID; //subrecord MDOB
-    uint32_t equipTypeFormID; //subrecord ETYP
-    LocalizedString description; //subrecord DESC
-    //subrecord SPIT
+    std::array<uint8_t, 12> unknownOBND;
+    LocalizedString name; // subrecord FULL
+    uint32_t menuDisplayObjectFormID; // subrecord MDOB
+    uint32_t equipTypeFormID; // subrecord ETYP
+    LocalizedString description; // subrecord DESC
+    // subrecord SPIT
     uint32_t castingCost;
     uint32_t flags;
     uint32_t type;
@@ -114,30 +126,54 @@ struct SpellRecord: public BasicRecord
     uint32_t castingType;
     uint32_t delivery;
     float castDuration;
-    float range; // (in ft)
+    float range; /**< spell range in feet */
     uint32_t castingPerkFormID;
-    //end of subrecord SPIT
+    // end of subrecord SPIT
     std::vector<EffectBlock> effects;
 
-    /* returns true, if the cost etc. are calculated automatically */
+    /** \brief Checks whether the cost etc. are calculated automatically.
+     *
+     * \return Returns true, if the costs etc. are calculated automatically.
+     *         Returns false otherwise.
+     */
     bool doesAutoCalc() const;
 
-    /* returns true, if the spell is a PC start spell, according to flags */
+    /** \brief Checks whether the spell is a PC start spell.
+     *
+     * \return Returns true, if the spell is a PC start spell.
+     *         Returns false otherwise.
+     */
     bool isPCStartSpell() const;
 
-    /* returns true, if the spell ignores LOS for area effects, according to flags */
+    /** \brief Checks whether the ignores LOS for area effects.
+     *
+     * \return Returns true, if the spell ignores LOS for area effects.
+     *         Returns false otherwise.
+     */
     bool areaEffectIgnoresLOS() const;
 
-    /* returns true, if the spell ignores resistance, according to flags */
+    /** \brief Checks whether the spell ignores resistance.
+     *
+     * \return Returns true, if the spell ignores resistance.
+     *         Returns false otherwise.
+     */
     bool ignoresResistance() const;
 
-    /* returns true, if the spell cannot be absorbed or reflected, according to flags */
+    /** \brief Checks whether the spell cannot be absorbed or reflected.
+     *
+     * \return Returns true, if the spell cannot be absorbed or reflected.
+     *         Returns false otherwise.
+     */
     bool disallowsAbsorbAndReflect() const;
 
-    /* returns true, if the spell has no dual cast modifications, according to flags */
+    /** \brief Checks whether the spell has no dual cast modifications.
+     *
+     * \return Returns true, if the spell has no dual cast modifications.
+     *         Returns false otherwise.
+     */
     bool noDualCastModifications() const;
-}; //struct
+}; // struct
 
-} //namespace
+} // namespace
 
 #endif // SR_SPELLRECORD_HPP

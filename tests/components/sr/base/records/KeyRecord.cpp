@@ -407,6 +407,21 @@ TEST_CASE("KeyRecord")
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
+    SECTION("corrupt data: stream ends before all of VMAD can be read")
+    {
+      const std::string_view data = "KEYM\xBA\0\0\0\0\0\0\0\x50\xC2\x01\0\x1B\x69\x55\0\x28\0\x0A\0EDID\x08\0SR01Key\0VMAD\x0C\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read KEYM, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      KeyRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: no OBND")
     {
       const std::string_view data = "KEYM\xBA\0\0\0\0\0\0\0\x50\xC2\x01\0\x1B\x69\x55\0\x28\0\x0A\0EDID\x08\0SR01Key\0FAIL\x0C\0\0\0\xF4\xFF\xFE\xFF\0\0\x0C\0\x02\0FULL\x04\0\xBA\xA2\0\0MODL\x12\0Clutter\\Key01.nif\0MODT\x3C\0\x02\0\0\0\x04\0\0\0\0\0\0\0\x7B\x24\xA2\x37\x64\x64\x73\0\xBF\xFA\x25\xDA\x8A\x7E\xE1\x67\x64\x64\x73\0\xBF\xFA\x25\xDA\x6B\xBB\x96\xD1\x64\x64\x73\0\x26\x2C\x33\x3B\xFA\xE0\xBB\xA4\x64\x64\x73\0\x7F\x66\xA5\xC0YNAM\x04\0\x75\xED\x03\0ZNAM\x04\0\x78\xED\x03\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0\xEF\x14\x09\0DATA\x08\0\0\0\0\0\0\0\0\0"sv;
@@ -498,6 +513,21 @@ TEST_CASE("KeyRecord")
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
+    SECTION("corrupt data: multiple MODLs")
+    {
+      const std::string_view data = "KEYM\xD2\0\0\0\0\0\0\0\x50\xC2\x01\0\x1B\x69\x55\0\x28\0\x0A\0EDID\x08\0SR01Key\0OBND\x0C\0\0\0\xF4\xFF\xFE\xFF\0\0\x0C\0\x02\0FULL\x04\0\xBA\xA2\0\0MODL\x12\0Clutter\\Key01.nif\0MODL\x12\0Clutter\\Key01.nif\0MODT\x3C\0\x02\0\0\0\x04\0\0\0\0\0\0\0\x7B\x24\xA2\x37\x64\x64\x73\0\xBF\xFA\x25\xDA\x8A\x7E\xE1\x67\x64\x64\x73\0\xBF\xFA\x25\xDA\x6B\xBB\x96\xD1\x64\x64\x73\0\x26\x2C\x33\x3B\xFA\xE0\xBB\xA4\x64\x64\x73\0\x7F\x66\xA5\xC0YNAM\x04\0\x75\xED\x03\0ZNAM\x04\0\x78\xED\x03\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0\xEF\x14\x09\0DATA\x08\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read KEYM, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      KeyRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: MODL is empty string")
     {
       const std::string_view data = "KEYM\xA9\0\0\0\0\0\0\0\x50\xC2\x01\0\x1B\x69\x55\0\x28\0\x0A\0EDID\x08\0SR01Key\0OBND\x0C\0\0\0\xF4\xFF\xFE\xFF\0\0\x0C\0\x02\0FULL\x04\0\xBA\xA2\0\0MODL\x01\0\0MODT\x3C\0\x02\0\0\0\x04\0\0\0\0\0\0\0\x7B\x24\xA2\x37\x64\x64\x73\0\xBF\xFA\x25\xDA\x8A\x7E\xE1\x67\x64\x64\x73\0\xBF\xFA\x25\xDA\x6B\xBB\x96\xD1\x64\x64\x73\0\x26\x2C\x33\x3B\xFA\xE0\xBB\xA4\x64\x64\x73\0\x7F\x66\xA5\xC0YNAM\x04\0\x75\xED\x03\0ZNAM\x04\0\x78\xED\x03\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0\xEF\x14\x09\0DATA\x08\0\0\0\0\0\0\0\0\0"sv;
@@ -528,9 +558,54 @@ TEST_CASE("KeyRecord")
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
+    SECTION("corrupt data: multiple MODTs")
+    {
+      const std::string_view data = "KEYM\xFC\0\0\0\0\0\0\0\x50\xC2\x01\0\x1B\x69\x55\0\x28\0\x0A\0EDID\x08\0SR01Key\0OBND\x0C\0\0\0\xF4\xFF\xFE\xFF\0\0\x0C\0\x02\0FULL\x04\0\xBA\xA2\0\0MODL\x12\0Clutter\\Key01.nif\0MODT\x3C\0\x02\0\0\0\x04\0\0\0\0\0\0\0\x7B\x24\xA2\x37\x64\x64\x73\0\xBF\xFA\x25\xDA\x8A\x7E\xE1\x67\x64\x64\x73\0\xBF\xFA\x25\xDA\x6B\xBB\x96\xD1\x64\x64\x73\0\x26\x2C\x33\x3B\xFA\xE0\xBB\xA4\x64\x64\x73\0\x7F\x66\xA5\xC0MODT\x3C\0\x02\0\0\0\x04\0\0\0\0\0\0\0\x7B\x24\xA2\x37\x64\x64\x73\0\xBF\xFA\x25\xDA\x8A\x7E\xE1\x67\x64\x64\x73\0\xBF\xFA\x25\xDA\x6B\xBB\x96\xD1\x64\x64\x73\0\x26\x2C\x33\x3B\xFA\xE0\xBB\xA4\x64\x64\x73\0\x7F\x66\xA5\xC0YNAM\x04\0\x75\xED\x03\0ZNAM\x04\0\x78\xED\x03\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0\xEF\x14\x09\0DATA\x08\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read KEYM, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      KeyRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: stream ends before MODT can be read")
     {
       const std::string_view data = "KEYM\xBA\0\0\0\0\0\0\0\x50\xC2\x01\0\x1B\x69\x55\0\x28\0\x0A\0EDID\x08\0SR01Key\0OBND\x0C\0\0\0\xF4\xFF\xFE\xFF\0\0\x0C\0\x02\0FULL\x04\0\xBA\xA2\0\0MODL\x12\0Clutter\\Key01.nif\0MODT\x3C\0\x02\0\0\0\x04\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read KEYM, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      KeyRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple YNAMs")
+    {
+      const std::string_view data = "KEYM\xC4\0\0\0\0\0\0\0\x50\xC2\x01\0\x1B\x69\x55\0\x28\0\x0A\0EDID\x08\0SR01Key\0OBND\x0C\0\0\0\xF4\xFF\xFE\xFF\0\0\x0C\0\x02\0FULL\x04\0\xBA\xA2\0\0MODL\x12\0Clutter\\Key01.nif\0MODT\x3C\0\x02\0\0\0\x04\0\0\0\0\0\0\0\x7B\x24\xA2\x37\x64\x64\x73\0\xBF\xFA\x25\xDA\x8A\x7E\xE1\x67\x64\x64\x73\0\xBF\xFA\x25\xDA\x6B\xBB\x96\xD1\x64\x64\x73\0\x26\x2C\x33\x3B\xFA\xE0\xBB\xA4\x64\x64\x73\0\x7F\x66\xA5\xC0YNAM\x04\0\x75\xED\x03\0YNAM\x04\0\x75\xED\x03\0ZNAM\x04\0\x78\xED\x03\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0\xEF\x14\x09\0DATA\x08\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read KEYM, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      KeyRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: stream ends before all of YNAM can be read")
+    {
+      const std::string_view data = "KEYM\xBA\0\0\0\0\0\0\0\x50\xC2\x01\0\x1B\x69\x55\0\x28\0\x0A\0EDID\x08\0SR01Key\0OBND\x0C\0\0\0\xF4\xFF\xFE\xFF\0\0\x0C\0\x02\0FULL\x04\0\xBA\xA2\0\0MODL\x12\0Clutter\\Key01.nif\0MODT\x3C\0\x02\0\0\0\x04\0\0\0\0\0\0\0\x7B\x24\xA2\x37\x64\x64\x73\0\xBF\xFA\x25\xDA\x8A\x7E\xE1\x67\x64\x64\x73\0\xBF\xFA\x25\xDA\x6B\xBB\x96\xD1\x64\x64\x73\0\x26\x2C\x33\x3B\xFA\xE0\xBB\xA4\x64\x64\x73\0\x7F\x66\xA5\xC0YNAM\x04\0\x75\xED"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 
@@ -558,9 +633,54 @@ TEST_CASE("KeyRecord")
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
+    SECTION("corrupt data: multiple ZNAMs")
+    {
+      const std::string_view data = "KEYM\xC4\0\0\0\0\0\0\0\x50\xC2\x01\0\x1B\x69\x55\0\x28\0\x0A\0EDID\x08\0SR01Key\0OBND\x0C\0\0\0\xF4\xFF\xFE\xFF\0\0\x0C\0\x02\0FULL\x04\0\xBA\xA2\0\0MODL\x12\0Clutter\\Key01.nif\0MODT\x3C\0\x02\0\0\0\x04\0\0\0\0\0\0\0\x7B\x24\xA2\x37\x64\x64\x73\0\xBF\xFA\x25\xDA\x8A\x7E\xE1\x67\x64\x64\x73\0\xBF\xFA\x25\xDA\x6B\xBB\x96\xD1\x64\x64\x73\0\x26\x2C\x33\x3B\xFA\xE0\xBB\xA4\x64\x64\x73\0\x7F\x66\xA5\xC0YNAM\x04\0\x75\xED\x03\0ZNAM\x04\0\x78\xED\x03\0ZNAM\x04\0\x78\xED\x03\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0\xEF\x14\x09\0DATA\x08\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read KEYM, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      KeyRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: stream ends before all of ZNAM can be read")
+    {
+      const std::string_view data = "KEYM\xBA\0\0\0\0\0\0\0\x50\xC2\x01\0\x1B\x69\x55\0\x28\0\x0A\0EDID\x08\0SR01Key\0OBND\x0C\0\0\0\xF4\xFF\xFE\xFF\0\0\x0C\0\x02\0FULL\x04\0\xBA\xA2\0\0MODL\x12\0Clutter\\Key01.nif\0MODT\x3C\0\x02\0\0\0\x04\0\0\0\0\0\0\0\x7B\x24\xA2\x37\x64\x64\x73\0\xBF\xFA\x25\xDA\x8A\x7E\xE1\x67\x64\x64\x73\0\xBF\xFA\x25\xDA\x6B\xBB\x96\xD1\x64\x64\x73\0\x26\x2C\x33\x3B\xFA\xE0\xBB\xA4\x64\x64\x73\0\x7F\x66\xA5\xC0YNAM\x04\0\x75\xED\x03\0ZNAM\x04\0\x78\xED"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read KEYM, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      KeyRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: ZNAM is zero")
     {
       const std::string_view data = "KEYM\xBA\0\0\0\0\0\0\0\x50\xC2\x01\0\x1B\x69\x55\0\x28\0\x0A\0EDID\x08\0SR01Key\0OBND\x0C\0\0\0\xF4\xFF\xFE\xFF\0\0\x0C\0\x02\0FULL\x04\0\xBA\xA2\0\0MODL\x12\0Clutter\\Key01.nif\0MODT\x3C\0\x02\0\0\0\x04\0\0\0\0\0\0\0\x7B\x24\xA2\x37\x64\x64\x73\0\xBF\xFA\x25\xDA\x8A\x7E\xE1\x67\x64\x64\x73\0\xBF\xFA\x25\xDA\x6B\xBB\x96\xD1\x64\x64\x73\0\x26\x2C\x33\x3B\xFA\xE0\xBB\xA4\x64\x64\x73\0\x7F\x66\xA5\xC0YNAM\x04\0\x75\xED\x03\0ZNAM\x04\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0\xEF\x14\x09\0DATA\x08\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read KEYM, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      KeyRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple KSIZ")
+    {
+      const std::string_view data = "KEYM\xCE\0\0\0\0\0\0\0\x50\xC2\x01\0\x1B\x69\x55\0\x28\0\x0A\0EDID\x08\0SR01Key\0OBND\x0C\0\0\0\xF4\xFF\xFE\xFF\0\0\x0C\0\x02\0FULL\x04\0\xBA\xA2\0\0MODL\x12\0Clutter\\Key01.nif\0MODT\x3C\0\x02\0\0\0\x04\0\0\0\0\0\0\0\x7B\x24\xA2\x37\x64\x64\x73\0\xBF\xFA\x25\xDA\x8A\x7E\xE1\x67\x64\x64\x73\0\xBF\xFA\x25\xDA\x6B\xBB\x96\xD1\x64\x64\x73\0\x26\x2C\x33\x3B\xFA\xE0\xBB\xA4\x64\x64\x73\0\x7F\x66\xA5\xC0YNAM\x04\0\x75\xED\x03\0ZNAM\x04\0\x78\xED\x03\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0\xEF\x14\x09\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0\xEF\x14\x09\0DATA\x08\0\0\0\0\0\0\0\0\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 
@@ -588,9 +708,69 @@ TEST_CASE("KeyRecord")
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
+    SECTION("corrupt data: stream ends before all of KSIZ can be read")
+    {
+      const std::string_view data = "KEYM\xBA\0\0\0\0\0\0\0\x50\xC2\x01\0\x1B\x69\x55\0\x28\0\x0A\0EDID\x08\0SR01Key\0OBND\x0C\0\0\0\xF4\xFF\xFE\xFF\0\0\x0C\0\x02\0FULL\x04\0\xBA\xA2\0\0MODL\x12\0Clutter\\Key01.nif\0MODT\x3C\0\x02\0\0\0\x04\0\0\0\0\0\0\0\x7B\x24\xA2\x37\x64\x64\x73\0\xBF\xFA\x25\xDA\x8A\x7E\xE1\x67\x64\x64\x73\0\xBF\xFA\x25\xDA\x6B\xBB\x96\xD1\x64\x64\x73\0\x26\x2C\x33\x3B\xFA\xE0\xBB\xA4\x64\x64\x73\0\x7F\x66\xA5\xC0YNAM\x04\0\x75\xED\x03\0ZNAM\x04\0\x78\xED\x03\0KSIZ\x04\0\x01\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read KEYM, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      KeyRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: no KWDA after KSIZ")
+    {
+      const std::string_view data = "KEYM\xBA\0\0\0\0\0\0\0\x50\xC2\x01\0\x1B\x69\x55\0\x28\0\x0A\0EDID\x08\0SR01Key\0OBND\x0C\0\0\0\xF4\xFF\xFE\xFF\0\0\x0C\0\x02\0FULL\x04\0\xBA\xA2\0\0MODL\x12\0Clutter\\Key01.nif\0MODT\x3C\0\x02\0\0\0\x04\0\0\0\0\0\0\0\x7B\x24\xA2\x37\x64\x64\x73\0\xBF\xFA\x25\xDA\x8A\x7E\xE1\x67\x64\x64\x73\0\xBF\xFA\x25\xDA\x6B\xBB\x96\xD1\x64\x64\x73\0\x26\x2C\x33\x3B\xFA\xE0\xBB\xA4\x64\x64\x73\0\x7F\x66\xA5\xC0YNAM\x04\0\x75\xED\x03\0ZNAM\x04\0\x78\xED\x03\0KSIZ\x04\0\x01\0\0\0FAIL\x04\0\xEF\x14\x09\0DATA\x08\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read KEYM, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      KeyRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: stream ends before all of KWDA can be read")
+    {
+      const std::string_view data = "KEYM\xBA\0\0\0\0\0\0\0\x50\xC2\x01\0\x1B\x69\x55\0\x28\0\x0A\0EDID\x08\0SR01Key\0OBND\x0C\0\0\0\xF4\xFF\xFE\xFF\0\0\x0C\0\x02\0FULL\x04\0\xBA\xA2\0\0MODL\x12\0Clutter\\Key01.nif\0MODT\x3C\0\x02\0\0\0\x04\0\0\0\0\0\0\0\x7B\x24\xA2\x37\x64\x64\x73\0\xBF\xFA\x25\xDA\x8A\x7E\xE1\x67\x64\x64\x73\0\xBF\xFA\x25\xDA\x6B\xBB\x96\xD1\x64\x64\x73\0\x26\x2C\x33\x3B\xFA\xE0\xBB\xA4\x64\x64\x73\0\x7F\x66\xA5\xC0YNAM\x04\0\x75\xED\x03\0ZNAM\x04\0\x78\xED\x03\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0\xEF\x14"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read KEYM, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      KeyRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: length of KWDA is not a multiple of four")
     {
       const std::string_view data = "KEYM\xBA\0\0\0\0\0\0\0\x50\xC2\x01\0\x1B\x69\x55\0\x28\0\x0A\0EDID\x08\0SR01Key\0OBND\x0C\0\0\0\xF4\xFF\xFE\xFF\0\0\x0C\0\x02\0FULL\x04\0\xBA\xA2\0\0MODL\x12\0Clutter\\Key01.nif\0MODT\x3C\0\x02\0\0\0\x04\0\0\0\0\0\0\0\x7B\x24\xA2\x37\x64\x64\x73\0\xBF\xFA\x25\xDA\x8A\x7E\xE1\x67\x64\x64\x73\0\xBF\xFA\x25\xDA\x6B\xBB\x96\xD1\x64\x64\x73\0\x26\x2C\x33\x3B\xFA\xE0\xBB\xA4\x64\x64\x73\0\x7F\x66\xA5\xC0YNAM\x04\0\x75\xED\x03\0ZNAM\x04\0\x78\xED\x03\0KSIZ\x04\0\x01\0\0\0KWDA\x03\0\xEF\x14\x09\0DATA\x08\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read KEYM, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      KeyRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple DATA subrecords")
+    {
+      const std::string_view data = "KEYM\xC8\0\0\0\0\0\0\0\x50\xC2\x01\0\x1B\x69\x55\0\x28\0\x0A\0EDID\x08\0SR01Key\0OBND\x0C\0\0\0\xF4\xFF\xFE\xFF\0\0\x0C\0\x02\0FULL\x04\0\xBA\xA2\0\0MODL\x12\0Clutter\\Key01.nif\0MODT\x3C\0\x02\0\0\0\x04\0\0\0\0\0\0\0\x7B\x24\xA2\x37\x64\x64\x73\0\xBF\xFA\x25\xDA\x8A\x7E\xE1\x67\x64\x64\x73\0\xBF\xFA\x25\xDA\x6B\xBB\x96\xD1\x64\x64\x73\0\x26\x2C\x33\x3B\xFA\xE0\xBB\xA4\x64\x64\x73\0\x7F\x66\xA5\xC0YNAM\x04\0\x75\xED\x03\0ZNAM\x04\0\x78\xED\x03\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0\xEF\x14\x09\0DATA\x08\0\0\0\0\0\0\0\0\0DATA\x08\0\0\0\0\0\0\0\0\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 

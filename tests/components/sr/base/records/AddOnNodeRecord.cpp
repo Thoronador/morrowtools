@@ -403,6 +403,21 @@ TEST_CASE("AddOnNodeRecord")
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
+    SECTION("corrupt data: multiple MODTs")
+    {
+      const std::string_view data = "ADDN\x96\0\0\0\0\0\0\0\xB0\xC2\x01\0\x13\x67\x0E\0\x27\0\x02\0EDID\x10\0MPSFireWallBase\0OBND\x0C\0\0\x80\0\x80\0\x80\xFF\x7F\xFF\x7F\xFF\x7FMODL\x18\0MPS\\MPSFireWallBase.nif\0MODT\x18\0\x12\x77\x91\x7C\x64\x64\x73\0\x38\x97\x3C\xEA\xA8\x21\xF6\x78\x64\x64\x73\0\x58\x2C\x55\x33MODT\x18\0\x12\x77\x91\x7C\x64\x64\x73\0\x38\x97\x3C\xEA\xA8\x21\xF6\x78\x64\x64\x73\0\x58\x2C\x55\x33\x44\x41TA\x04\0\x03\0\0\0DNAM\x04\0\0\0\x01\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read ADDN, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      AddOnNodeRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: stream ends before MODT can be read completely")
     {
       const std::string_view data = "ADDN\x78\0\0\0\0\0\0\0\xB0\xC2\x01\0\x13\x67\x0E\0\x27\0\x02\0EDID\x10\0MPSFireWallBase\0OBND\x0C\0\0\x80\0\x80\0\x80\xFF\x7F\xFF\x7F\xFF\x7FMODL\x18\0MPS\\MPSFireWallBase.nif\0MODT\x18\0\x12\x77"sv;
@@ -448,6 +463,21 @@ TEST_CASE("AddOnNodeRecord")
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
+    SECTION("corrupt data: multiple DATAs")
+    {
+      const std::string_view data = "ADDN\x82\0\0\0\0\0\0\0\xB0\xC2\x01\0\x13\x67\x0E\0\x27\0\x02\0EDID\x10\0MPSFireWallBase\0OBND\x0C\0\0\x80\0\x80\0\x80\xFF\x7F\xFF\x7F\xFF\x7FMODL\x18\0MPS\\MPSFireWallBase.nif\0MODT\x18\0\x12\x77\x91\x7C\x64\x64\x73\0\x38\x97\x3C\xEA\xA8\x21\xF6\x78\x64\x64\x73\0\x58\x2C\x55\x33\x44\x41TA\x04\0\x03\0\0\0DATA\x04\0\x03\0\0\0DNAM\x04\0\0\0\x01\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read ADDN, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      AddOnNodeRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: length of DATA is not four")
     {
       const std::string_view data = "ADDN\x78\0\0\0\0\0\0\0\xB0\xC2\x01\0\x13\x67\x0E\0\x27\0\x02\0EDID\x10\0MPSFireWallBase\0OBND\x0C\0\0\x80\0\x80\0\x80\xFF\x7F\xFF\x7F\xFF\x7FMODL\x18\0MPS\\MPSFireWallBase.nif\0MODT\x18\0\x12\x77\x91\x7C\x64\x64\x73\0\x38\x97\x3C\xEA\xA8\x21\xF6\x78\x64\x64\x73\0\x58\x2C\x55\x33\x44\x41TA\x05\0\x03\0\0\0DNAM\x04\0\0\0\x01\0"sv;
@@ -481,6 +511,21 @@ TEST_CASE("AddOnNodeRecord")
     SECTION("corrupt data: missing DNAM subrecord")
     {
       const std::string_view data = "ADDN\x6E\0\0\0\0\0\0\0\xB0\xC2\x01\0\x13\x67\x0E\0\x27\0\x02\0EDID\x10\0MPSFireWallBase\0OBND\x0C\0\0\x80\0\x80\0\x80\xFF\x7F\xFF\x7F\xFF\x7FMODL\x18\0MPS\\MPSFireWallBase.nif\0MODT\x18\0\x12\x77\x91\x7C\x64\x64\x73\0\x38\x97\x3C\xEA\xA8\x21\xF6\x78\x64\x64\x73\0\x58\x2C\x55\x33\x44\x41TA\x04\0\x03\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read ADDN, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      AddOnNodeRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple DNAMs")
+    {
+      const std::string_view data = "ADDN\x82\0\0\0\0\0\0\0\xB0\xC2\x01\0\x13\x67\x0E\0\x27\0\x02\0EDID\x10\0MPSFireWallBase\0OBND\x0C\0\0\x80\0\x80\0\x80\xFF\x7F\xFF\x7F\xFF\x7FMODL\x18\0MPS\\MPSFireWallBase.nif\0MODT\x18\0\x12\x77\x91\x7C\x64\x64\x73\0\x38\x97\x3C\xEA\xA8\x21\xF6\x78\x64\x64\x73\0\x58\x2C\x55\x33\x44\x41TA\x04\0\x03\0\0\0DNAM\x04\0\0\0\x01\0DNAM\x04\0\0\0\x01\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 

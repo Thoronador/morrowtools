@@ -40,7 +40,7 @@ TEST_CASE("ScrollRecord")
       REQUIRE( record.unknownOBND[i] == 0 );
     }
     REQUIRE_FALSE( record.name.isPresent() );
-    REQUIRE( record.keywordArray.empty() );
+    REQUIRE( record.keywords.empty() );
     REQUIRE( record.menuDisplayObjectFormID == 0 );
     REQUIRE( record.equipTypeFormID == 0 );
     REQUIRE_FALSE( record.description.isPresent() );
@@ -214,10 +214,10 @@ TEST_CASE("ScrollRecord")
     {
       REQUIRE( record.getWriteSize() == 122 );
 
-      record.keywordArray.push_back(0x01234567);
+      record.keywords.push_back(0x01234567);
       REQUIRE( record.getWriteSize() == 142 );
 
-      record.keywordArray.push_back(0x01234567);
+      record.keywords.push_back(0x01234567);
       REQUIRE( record.getWriteSize() == 146 );
     }
 
@@ -301,8 +301,8 @@ TEST_CASE("ScrollRecord")
       REQUIRE( record.name.isPresent() );
       REQUIRE( record.name.getType() == LocalizedString::Type::Index );
       REQUIRE( record.name.getIndex() == 0x00002355 );
-      REQUIRE( record.keywordArray.size() == 1 );
-      REQUIRE( record.keywordArray[0] == 0x000A0E57 );
+      REQUIRE( record.keywords.size() == 1 );
+      REQUIRE( record.keywords[0] == 0x000A0E57 );
       REQUIRE( record.menuDisplayObjectFormID == 0x00076E8F );
       REQUIRE( record.equipTypeFormID == 0x00013F44 );
       REQUIRE( record.description.isPresent() );
@@ -313,8 +313,7 @@ TEST_CASE("ScrollRecord")
       REQUIRE( MODT == "\x02\0\0\0\x02\0\0\0\0\0\0\0\x6B\xC0\xAC\x7B\x64\x64\x73\0\x8E\xAE\xA7\x92\xB4\x06\x44\x8A\x64\x64\x73\0\x8E\xAE\xA7\x92"sv );
       REQUIRE( record.value == 25 );
       REQUIRE( record.weight == 0.5f );
-      //const auto SPIT = std::string_view(reinterpret_cast<const char*>(record.unknownSPIT.data()), record.unknownSPIT.size());
-      const auto SPIT = std::string_view(reinterpret_cast<const char*>(record.unknownSPIT), 36);
+      const auto SPIT = std::string_view(reinterpret_cast<const char*>(record.unknownSPIT.data()), record.unknownSPIT.size());
       REQUIRE( SPIT == "\x31\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x03\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"sv );
 
       REQUIRE( record.effects.size() == 1 );

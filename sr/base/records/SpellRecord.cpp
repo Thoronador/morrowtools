@@ -202,7 +202,13 @@ bool SpellRecord::loadFromStream(std::istream& in_File, const bool localized, co
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize))
     return false;
-  if (isDeleted())
+  // There is at least one deleted spell record in Dragonborn.esm (with the
+  // editor ID MGRSummonDremoraCOPY0000) that has data after the header, so
+  // we check the size value instead of using isDeleted(). Otherwise loading
+  // this version of Dragonborn.esm fails.
+  // Question: Should this approach be used in other record types, too?
+  // This issue needs more research to get a reliable answer.
+  if (readSize == 0)
     return true;
   uint32_t subRecName = 0;
   uint16_t subLength = 0;

@@ -287,6 +287,7 @@ TEST_CASE("SpellRecord")
     StringTable dummy_table;
     dummy_table.addString(0x00001C1B, "foo");
     dummy_table.addString(0x0000EEF2, "foo");
+    dummy_table.addString(0x000125C7, "foo");
 
     SECTION("default: load record")
     {
@@ -453,6 +454,82 @@ TEST_CASE("SpellRecord")
       REQUIRE( record.headerUnknown5 == 0x0001 );
       // -- record data
       REQUIRE( record.editorID.empty() );
+    }
+
+    SECTION("special: load deleted record MGRSummonDremoraCOPY0000 of Dragonborn.esm")
+    {
+      const std::string_view data = "SPEL\x33\x01\0\0\x20\0\0\0\x8C\xE3\x10\0\x07\x77\x55\0\x2B\0\x03\0EDID\x19\0MGRSummonDremoraCOPY0000\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0\xC7\x25\x01\0MDOB\x04\0\x59\x64\x0A\0ETYP\x04\0\x45\x3F\x01\0DESC\x04\0\0\0\0\0SPIT\x24\0\x64\0\0\0\x01\0\0\0\0\0\0\0\0\0\xA0\x40\x01\0\0\0\x04\0\0\0\0\0\0\0\0\0\x48\x42\0\0\0\0EFID\x04\0\x35\x9F\x09\0EFIT\x0C\0\0\0\0\0\0\0\0\0\xE7\x03\0\0CTDA\x20\0\0\xE3\x10\0\0\0\x80\x3F\x75\x02\0\0\x27\x9F\x09\0\x30\xA4\xB8\x12\0\0\0\0\0\0\0\0\xFF\xFF\xFF\xFF\x43IS2\x10\0::InTrigger_var\0EFID\x04\0\x35\x9F\x09\0EFIT\x0C\0\0\0\0\0\0\0\0\0\xE7\x03\0\0CTDA\x20\0\0\xE3\x10\0\0\0\x80\x3F\x75\x02\0\0\x27\x9F\x09\0\x30\x74\xAF\x26\0\0\0\0\0\0\0\0\xFF\xFF\xFF\xFF\x43IS2\x10\0::InTrigger_var\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read SPEL, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      SpellRecord record;
+      REQUIRE( record.loadFromStream(stream, true, dummy_table) );
+      // Check data.
+      // -- header
+      REQUIRE( record.headerFlags == 0x00000020 );
+      REQUIRE( record.headerFormID == 0x0010E38C );
+      REQUIRE( record.headerRevision == 0x00557707 );
+      REQUIRE( record.headerVersion == 43 );
+      REQUIRE( record.headerUnknown5 == 0x0003 );
+      // -- record data
+      REQUIRE( record.editorID == "MGRSummonDremoraCOPY0000" );
+      REQUIRE( record.unknownOBND[0] == 0x00 );
+      REQUIRE( record.unknownOBND[1] == 0x00 );
+      REQUIRE( record.unknownOBND[2] == 0x00 );
+      REQUIRE( record.unknownOBND[3] == 0x00 );
+      REQUIRE( record.unknownOBND[4] == 0x00 );
+      REQUIRE( record.unknownOBND[5] == 0x00 );
+      REQUIRE( record.unknownOBND[6] == 0x00 );
+      REQUIRE( record.unknownOBND[7] == 0x00 );
+      REQUIRE( record.unknownOBND[8] == 0x00 );
+      REQUIRE( record.unknownOBND[9] == 0x00 );
+      REQUIRE( record.unknownOBND[10] == 0x00 );
+      REQUIRE( record.unknownOBND[11] == 0x00 );
+      REQUIRE( record.name.isPresent() );
+      REQUIRE( record.name.getType() == LocalizedString::Type::Index );
+      REQUIRE( record.name.getIndex() == 0x000125C7 );
+      REQUIRE( record.menuDisplayObjectFormID == 0x000A6459 );
+      REQUIRE( record.equipTypeFormID == 0x00013F45 );
+      REQUIRE( record.description.isPresent() );
+      REQUIRE( record.description.getType() == LocalizedString::Type::Index );
+      REQUIRE( record.description.getIndex() == 0 );
+
+      REQUIRE( record.castingCost == 100 );
+      REQUIRE( record.flags == 1 );
+      REQUIRE( record.type == 0 );
+      REQUIRE( record.chargeTime == 5.0f );
+      REQUIRE( record.castingType == 1 );
+      REQUIRE( record.delivery == 4 );
+      REQUIRE( record.castDuration == 0.0f );
+      REQUIRE( record.range == 50.0f );
+      REQUIRE( record.castingPerkFormID == 0x0000000 );
+
+      REQUIRE( record.effects.size() == 2 );
+
+      REQUIRE( record.effects[0].effectFormID == 0x00099F35 );
+      REQUIRE( record.effects[0].magnitude == 0.0f );
+      REQUIRE( record.effects[0].areaOfEffect == 0.0f );
+      REQUIRE( record.effects[0].duration == 999 );
+      REQUIRE( record.effects[0].unknownCTDA_CIS2s.size() == 1 );
+      const auto& ctda0 = record.effects[0].unknownCTDA_CIS2s[0].unknownCTDA;
+      const auto CTDA0 = std::string_view(reinterpret_cast<const char*>(ctda0.content.data()), ctda0.content.size());
+      REQUIRE( CTDA0 == "\0\xE3\x10\0\0\0\x80\x3F\x75\x02\0\0\x27\x9F\x09\0\x30\xA4\xB8\x12\0\0\0\0\0\0\0\0\xFF\xFF\xFF\xFF"sv );
+      REQUIRE( record.effects[0].unknownCTDA_CIS2s[0].unknownCISx == "::InTrigger_var" );
+
+      REQUIRE( record.effects[1].effectFormID == 0x00099F35 );
+      REQUIRE( record.effects[1].magnitude == 0.0f );
+      REQUIRE( record.effects[1].areaOfEffect == 0.0f );
+      REQUIRE( record.effects[1].duration == 999 );
+      REQUIRE( record.effects[1].unknownCTDA_CIS2s.size() == 1 );
+      const auto& ctda1 = record.effects[1].unknownCTDA_CIS2s[0].unknownCTDA;
+      const auto CTDA1 = std::string_view(reinterpret_cast<const char*>(ctda1.content.data()), ctda1.content.size());
+      REQUIRE( CTDA1 == "\0\xE3\x10\0\0\0\x80\x3F\x75\x02\0\0\x27\x9F\x09\0\x30\x74\xAF\x26\0\0\0\0\0\0\0\0\xFF\xFF\xFF\xFF"sv );
+      REQUIRE( record.effects[1].unknownCTDA_CIS2s[0].unknownCISx == "::InTrigger_var" );
     }
 
     SECTION("corrupt data: stream ends before header can be read")

@@ -286,8 +286,9 @@ TEST_CASE("SpellRecord")
     uint32_t dummy = 0;
     StringTable dummy_table;
     dummy_table.addString(0x00001C1B, "foo");
+    dummy_table.addString(0x0000EEF2, "foo");
 
-    SECTION("default: load record with keyword + sounds")
+    SECTION("default: load record")
     {
       const std::string_view data = "SPEL\xA9\0\0\0\0\0\0\0\xCD\x2F\x01\0\x1B\x69\x55\0\x28\0\x01\0EDID\x07\0Flames\0OBND\x0C\0\xFF\xEE\xDD\xCC\xBB\xAA\x99\x88\x77\x66\x55\0FULL\x04\0\x1B\x1C\0\0MDOB\x04\0\x64\xE2\x04\0ETYP\x04\0\x44\x3F\x01\0DESC\x04\0\0\0\0\0SPIT\x24\0\x0E\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x02\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\xA8\x2C\x0F\0EFID\x04\0\xA9\x3C\x01\0EFIT\x0C\0\0\0\0\x41\0\0\0\0\x01\0\0\0EFID\x04\0\x2F\x39\x0F\0EFIT\x0C\0\0\0\xC6\x42\0\0\0\0\x0F\0\0\0"sv;
       std::istringstream stream;
@@ -329,7 +330,7 @@ TEST_CASE("SpellRecord")
       REQUIRE( record.description.isPresent() );
       REQUIRE( record.description.getType() == LocalizedString::Type::Index );
       REQUIRE( record.description.getIndex() == 0 );
-      // SPIT\x24\0 \x0E\0\0\0 \0\0\0\0 \0\0\0\0 \0\0\0\0 \x02\0\0\0 \x02\0\0\0 \0\0\0\0 \0\0\0\0 \xA8\x2C\x0F\0
+
       REQUIRE( record.castingCost == 14 );
       REQUIRE( record.flags == 0 );
       REQUIRE( record.type == 0 );
@@ -340,16 +341,88 @@ TEST_CASE("SpellRecord")
       REQUIRE( record.range == 0.0f );
       REQUIRE( record.castingPerkFormID == 0x000F2CA8 );
 
-      // EFID\x04\0 \xA9\x3C\x01\0 EFIT\x0C\0 \0\0\0\x41 \0\0\0\0 \x01\0\0\0 EFID\x04\0 \x2F\x39\x0F\0 EFIT\x0C\0 \0\0\xC6\x42 \0\0\0\0 \x0F\0\0\0
       REQUIRE( record.effects.size() == 2 );
       REQUIRE( record.effects[0].effectFormID == 0x00013CA9 );
       REQUIRE( record.effects[0].magnitude == 8.0f );
       REQUIRE( record.effects[0].areaOfEffect == 0.0f );
       REQUIRE( record.effects[0].duration == 1 );
+      REQUIRE( record.effects[0].unknownCTDA_CIS2s.empty() );
       REQUIRE( record.effects[1].effectFormID == 0x000F392F );
       REQUIRE( record.effects[1].magnitude == 99.0f );
       REQUIRE( record.effects[1].areaOfEffect == 0.0f );
       REQUIRE( record.effects[1].duration == 15 );
+      REQUIRE( record.effects[1].unknownCTDA_CIS2s.empty() );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( record.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
+    }
+
+    SECTION("default: load record with CTDA + CIS2")
+    {
+      const std::string_view data = "SPEL\xD3\0\0\0\0\0\0\0\x39\x9F\x09\0\x1B\x69\x55\0\x28\0\x06\0EDID\x11\0MGRSummonDremora\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0\xF2\xEE\0\0MDOB\x04\0\x59\x64\x0A\0ETYP\x04\0\x45\x3F\x01\0DESC\x04\0\0\0\0\0SPIT\x24\0\x64\0\0\0\x01\0\0\0\0\0\0\0\0\0\xA0\x40\x01\0\0\0\x04\0\0\0\0\0\0\0\0\0\x48\x42\0\0\0\0EFID\x04\0\x35\x9F\x09\0EFIT\x0C\0\0\0\0\0\0\0\0\0\xE7\x03\0\0CTDA\x20\0\0\xFC\x55\x12\0\0\x80\x3F\x75\x02\0\0\x27\x9F\x09\0\xD0\x2F\x9A\x12\0\0\0\0\0\0\0\0\xFF\xFF\xFF\xFF\x43IS2\x10\0::InTrigger_var\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read SPEL, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      SpellRecord record;
+      REQUIRE( record.loadFromStream(stream, true, dummy_table) );
+      // Check data.
+      // -- header
+      REQUIRE( record.headerFlags == 0 );
+      REQUIRE( record.headerFormID == 0x00099F39 );
+      REQUIRE( record.headerRevision == 0x0055691B );
+      REQUIRE( record.headerVersion == 40 );
+      REQUIRE( record.headerUnknown5 == 0x0006 );
+      // -- record data
+      REQUIRE( record.editorID == "MGRSummonDremora" );
+      REQUIRE( record.unknownOBND[0] == 0x00 );
+      REQUIRE( record.unknownOBND[1] == 0x00 );
+      REQUIRE( record.unknownOBND[2] == 0x00 );
+      REQUIRE( record.unknownOBND[3] == 0x00 );
+      REQUIRE( record.unknownOBND[4] == 0x00 );
+      REQUIRE( record.unknownOBND[5] == 0x00 );
+      REQUIRE( record.unknownOBND[6] == 0x00 );
+      REQUIRE( record.unknownOBND[7] == 0x00 );
+      REQUIRE( record.unknownOBND[8] == 0x00 );
+      REQUIRE( record.unknownOBND[9] == 0x00 );
+      REQUIRE( record.unknownOBND[10] == 0x00 );
+      REQUIRE( record.unknownOBND[11] == 0x00 );
+      REQUIRE( record.name.isPresent() );
+      REQUIRE( record.name.getType() == LocalizedString::Type::Index );
+      REQUIRE( record.name.getIndex() == 0x0000EEF2 );
+      REQUIRE( record.menuDisplayObjectFormID == 0x000A6459 );
+      REQUIRE( record.equipTypeFormID == 0x00013F45 );
+      REQUIRE( record.description.isPresent() );
+      REQUIRE( record.description.getType() == LocalizedString::Type::Index );
+      REQUIRE( record.description.getIndex() == 0 );
+
+      REQUIRE( record.castingCost == 100 );
+      REQUIRE( record.flags == 1 );
+      REQUIRE( record.type == 0 );
+      REQUIRE( record.chargeTime == 5.0f );
+      REQUIRE( record.castingType == 1 );
+      REQUIRE( record.delivery == 4 );
+      REQUIRE( record.castDuration == 0.0f );
+      REQUIRE( record.range == 50.0f );
+      REQUIRE( record.castingPerkFormID == 0x0000000 );
+
+      REQUIRE( record.effects.size() == 1 );
+      REQUIRE( record.effects[0].effectFormID == 0x00099F35 );
+      REQUIRE( record.effects[0].magnitude == 0.0f );
+      REQUIRE( record.effects[0].areaOfEffect == 0.0f );
+      REQUIRE( record.effects[0].duration == 999 );
+      REQUIRE( record.effects[0].unknownCTDA_CIS2s.size() == 1 );
+      const auto& ctda = record.effects[0].unknownCTDA_CIS2s[0].unknownCTDA;
+      const auto CTDA = std::string_view(reinterpret_cast<const char*>(ctda.content.data()), ctda.content.size());
+      REQUIRE( CTDA == "\0\xFC\x55\x12\0\0\x80\x3F\x75\x02\0\0\x27\x9F\x09\0\xD0\x2F\x9A\x12\0\0\0\0\0\0\0\0\xFF\xFF\xFF\xFF"sv );
+      REQUIRE( record.effects[0].unknownCTDA_CIS2s[0].unknownCISx == "::InTrigger_var" );
 
       // Writing should succeed.
       std::ostringstream streamOut;
@@ -979,6 +1052,82 @@ TEST_CASE("SpellRecord")
     SECTION("corrupt data: stream ends before all of EFIT can be read")
     {
       const std::string_view data = "SPEL\xA9\0\0\0\0\0\0\0\xCD\x2F\x01\0\x1B\x69\x55\0\x28\0\x01\0EDID\x07\0Flames\0OBND\x0C\0\xFF\xEE\xDD\xCC\xBB\xAA\x99\x88\x77\x66\x55\0FULL\x04\0\x1B\x1C\0\0MDOB\x04\0\x64\xE2\x04\0ETYP\x04\0\x44\x3F\x01\0DESC\x04\0\0\0\0\0SPIT\x24\0\x0E\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x02\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\xA8\x2C\x0F\0EFID\x04\0\xA9\x3C\x01\0EFIT\x0C\0\0\0\0\x41"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read SPEL, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      SpellRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of CTDA is not 32")
+    {
+      {
+        const std::string_view data = "SPEL\xD2\0\0\0\0\0\0\0\x39\x9F\x09\0\x1B\x69\x55\0\x28\0\x06\0EDID\x11\0MGRSummonDremora\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0\xF2\xEE\0\0MDOB\x04\0\x59\x64\x0A\0ETYP\x04\0\x45\x3F\x01\0DESC\x04\0\0\0\0\0SPIT\x24\0\x64\0\0\0\x01\0\0\0\0\0\0\0\0\0\xA0\x40\x01\0\0\0\x04\0\0\0\0\0\0\0\0\0\x48\x42\0\0\0\0EFID\x04\0\x35\x9F\x09\0EFIT\x0C\0\0\0\0\0\0\0\0\0\xE7\x03\0\0CTDA\x1F\0\0\xFC\x55\x12\0\0\x80\x3F\x75\x02\0\0\x27\x9F\x09\0\xD0\x2F\x9A\x12\0\0\0\0\0\0\0\0\xFF\xFF\xFF\x43IS2\x10\0::InTrigger_var\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read SPEL, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        SpellRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+
+      {
+        const std::string_view data = "SPEL\xD4\0\0\0\0\0\0\0\x39\x9F\x09\0\x1B\x69\x55\0\x28\0\x06\0EDID\x11\0MGRSummonDremora\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0\xF2\xEE\0\0MDOB\x04\0\x59\x64\x0A\0ETYP\x04\0\x45\x3F\x01\0DESC\x04\0\0\0\0\0SPIT\x24\0\x64\0\0\0\x01\0\0\0\0\0\0\0\0\0\xA0\x40\x01\0\0\0\x04\0\0\0\0\0\0\0\0\0\x48\x42\0\0\0\0EFID\x04\0\x35\x9F\x09\0EFIT\x0C\0\0\0\0\0\0\0\0\0\xE7\x03\0\0CTDA\x21\0\0\xFC\x55\x12\0\0\x80\x3F\x75\x02\0\0\x27\x9F\x09\0\xD0\x2F\x9A\x12\0\0\0\0\0\0\0\0\xFF\xFF\xFF\xFF\0\x43IS2\x10\0::InTrigger_var\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read SPEL, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        SpellRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+    }
+
+    SECTION("corrupt data: stream ends before all of CTDA can be read")
+    {
+      const std::string_view data = "SPEL\xD3\0\0\0\0\0\0\0\x39\x9F\x09\0\x1B\x69\x55\0\x28\0\x06\0EDID\x11\0MGRSummonDremora\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0\xF2\xEE\0\0MDOB\x04\0\x59\x64\x0A\0ETYP\x04\0\x45\x3F\x01\0DESC\x04\0\0\0\0\0SPIT\x24\0\x64\0\0\0\x01\0\0\0\0\0\0\0\0\0\xA0\x40\x01\0\0\0\x04\0\0\0\0\0\0\0\0\0\x48\x42\0\0\0\0EFID\x04\0\x35\x9F\x09\0EFIT\x0C\0\0\0\0\0\0\0\0\0\xE7\x03\0\0CTDA\x20\0\0\xFC\x55\x12"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read SPEL, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      SpellRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of CIS2 > 512")
+    {
+      const std::string_view data = "SPEL\xD3\0\0\0\0\0\0\0\x39\x9F\x09\0\x1B\x69\x55\0\x28\0\x06\0EDID\x11\0MGRSummonDremora\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0\xF2\xEE\0\0MDOB\x04\0\x59\x64\x0A\0ETYP\x04\0\x45\x3F\x01\0DESC\x04\0\0\0\0\0SPIT\x24\0\x64\0\0\0\x01\0\0\0\0\0\0\0\0\0\xA0\x40\x01\0\0\0\x04\0\0\0\0\0\0\0\0\0\x48\x42\0\0\0\0EFID\x04\0\x35\x9F\x09\0EFIT\x0C\0\0\0\0\0\0\0\0\0\xE7\x03\0\0CTDA\x20\0\0\xFC\x55\x12\0\0\x80\x3F\x75\x02\0\0\x27\x9F\x09\0\xD0\x2F\x9A\x12\0\0\0\0\0\0\0\0\xFF\xFF\xFF\xFF\x43IS2\x10\x02::InTrigger_var\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read SPEL, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      SpellRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of CIS2 is beyond stream")
+    {
+      const std::string_view data = "SPEL\xD3\0\0\0\0\0\0\0\x39\x9F\x09\0\x1B\x69\x55\0\x28\0\x06\0EDID\x11\0MGRSummonDremora\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0\xF2\xEE\0\0MDOB\x04\0\x59\x64\x0A\0ETYP\x04\0\x45\x3F\x01\0DESC\x04\0\0\0\0\0SPIT\x24\0\x64\0\0\0\x01\0\0\0\0\0\0\0\0\0\xA0\x40\x01\0\0\0\x04\0\0\0\0\0\0\0\0\0\x48\x42\0\0\0\0EFID\x04\0\x35\x9F\x09\0EFIT\x0C\0\0\0\0\0\0\0\0\0\xE7\x03\0\0CTDA\x20\0\0\xFC\x55\x12\0\0\x80\x3F\x75\x02\0\0\x27\x9F\x09\0\xD0\x2F\x9A\x12\0\0\0\0\0\0\0\0\xFF\xFF\xFF\xFF\x43IS2\x11\0::InTrigger_var\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 

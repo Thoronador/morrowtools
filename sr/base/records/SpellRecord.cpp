@@ -399,19 +399,8 @@ bool SpellRecord::loadFromStream(std::istream& in_File, const bool localized, co
              std::cerr << "Error while reading SPEL: CTDA found, but there was no EFID/EFIT block.\n";
              return false;
            }
-           // CTDA's length
-           in_File.read(reinterpret_cast<char*>(&subLength), 2);
-           bytesRead += 2;
-           if (subLength != 32)
-           {
-             std::cerr << "Error: subrecord CTDA of SPEL has invalid length ("
-                       << subLength << " bytes). Should be 32 bytes!\n";
-             return false;
-           }
-           // read CTDA's stuff
-           in_File.read(reinterpret_cast<char*>(tempCTDA.content.data()), 32);
-           bytesRead += 32;
-           if (!in_File.good())
+           // load CTDA
+           if (!tempCTDA.loadFromStream(in_File, bytesRead))
            {
              std::cerr << "Error while reading subrecord CTDA of SPEL!\n";
              return false;

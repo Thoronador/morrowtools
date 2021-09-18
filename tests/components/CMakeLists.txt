@@ -37,6 +37,7 @@ set(component_tests_sources
     ../../sr/base/records/LocalizedString.cpp
     ../../sr/base/records/MiscObjectRecord.cpp
     ../../sr/base/records/PerkRecord.cpp
+    ../../sr/base/records/ScrollRecord.cpp
     ../../sr/base/records/ShoutRecord.cpp
     ../../sr/base/records/SimplifiedReferenceRecord.cpp
     ../../sr/base/records/SoulGemRecord.cpp
@@ -79,6 +80,7 @@ set(component_tests_sources
     sr/base/records/LocalizedString.cpp
     sr/base/records/MiscObjectRecord.cpp
     sr/base/records/PerkRecord.cpp
+    sr/base/records/ScrollRecord.cpp
     sr/base/records/ShoutRecord.cpp
     sr/base/records/SimplifiedReferenceRecord.cpp
     sr/base/records/SoulGemRecord.cpp

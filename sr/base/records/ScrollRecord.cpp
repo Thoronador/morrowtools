@@ -28,7 +28,8 @@ namespace SRTP
 {
 
 ScrollRecord::ScrollRecord()
-: BasicRecord(), editorID(""),
+: BasicRecord(),
+  editorID(""),
   name(LocalizedString()),
   keywordArray(std::vector<uint32_t>()),
   menuDisplayObjectFormID(0),
@@ -368,9 +369,15 @@ bool ScrollRecord::loadFromStream(std::istream& in_File, const bool localized, c
              std::cerr << "Error: SCRL seems to have more than one MDOB subrecord!\n";
              return false;
            }
-           //read MDOB
-           if (!loadUint32SubRecordFromStream(in_File, cMDOB, menuDisplayObjectFormID, false)) return false;
+           // read MDOB
+           if (!loadUint32SubRecordFromStream(in_File, cMDOB, menuDisplayObjectFormID, false))
+             return false;
            bytesRead += 6;
+           if (menuDisplayObjectFormID == 0)
+           {
+             std::cerr << "Error: Subrecord MDOB of SCRL is zero!\n";
+             return false;
+           }
            hasReadMDOB = true;
            break;
       case cETYP:
@@ -379,9 +386,15 @@ bool ScrollRecord::loadFromStream(std::istream& in_File, const bool localized, c
              std::cerr << "Error: SCRL seems to have more than one ETYP subrecord!\n";
              return false;
            }
-           //read ETYP
-           if (!loadUint32SubRecordFromStream(in_File, cETYP, equipTypeFormID, false)) return false;
+           // read ETYP
+           if (!loadUint32SubRecordFromStream(in_File, cETYP, equipTypeFormID, false))
+             return false;
            bytesRead += 6;
+           if (equipTypeFormID == 0)
+           {
+             std::cerr << "Error: Subrecord ETYP of SCRL is zero!\n";
+             return false;
+           }
            hasReadETYP = true;
            break;
       case cDESC:

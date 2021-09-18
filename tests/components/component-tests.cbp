@@ -97,6 +97,8 @@
 		<Unit filename="../../sr/base/records/MiscObjectRecord.hpp" />
 		<Unit filename="../../sr/base/records/PerkRecord.cpp" />
 		<Unit filename="../../sr/base/records/PerkRecord.hpp" />
+		<Unit filename="../../sr/base/records/ScrollRecord.cpp" />
+		<Unit filename="../../sr/base/records/ScrollRecord.hpp" />
 		<Unit filename="../../sr/base/records/ShoutRecord.cpp" />
 		<Unit filename="../../sr/base/records/ShoutRecord.hpp" />
 		<Unit filename="../../sr/base/records/SimplifiedReferenceRecord.cpp" />
@@ -149,6 +151,7 @@
 		<Unit filename="sr/base/records/LocalizedString.cpp" />
 		<Unit filename="sr/base/records/MiscObjectRecord.cpp" />
 		<Unit filename="sr/base/records/PerkRecord.cpp" />
+		<Unit filename="sr/base/records/ScrollRecord.cpp" />
 		<Unit filename="sr/base/records/ShoutRecord.cpp" />
 		<Unit filename="sr/base/records/SimplifiedReferenceRecord.cpp" />
 		<Unit filename="sr/base/records/SoulGemRecord.cpp" />

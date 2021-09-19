@@ -41,7 +41,7 @@ TEST_CASE("IngredientRecord")
       REQUIRE( record.unknownOBND[i] == 0 );
     }
     REQUIRE_FALSE( record.name.isPresent() );
-    REQUIRE( record.keywordArray.empty() );
+    REQUIRE( record.keywords.empty() );
     REQUIRE( record.modelPath.empty() );
     REQUIRE_FALSE( record.unknownMODT.isPresent() );
     REQUIRE_FALSE( record.unknownMODS.isPresent() );
@@ -112,7 +112,7 @@ TEST_CASE("IngredientRecord")
 
       SECTION("keywords mismatch")
       {
-        a.keywordArray.push_back(0x01234567);
+        a.keywords.push_back(0x01234567);
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
@@ -278,10 +278,10 @@ TEST_CASE("IngredientRecord")
       record.editorID = "foo";
       REQUIRE( record.getWriteSize() == 56 );
 
-      record.keywordArray.push_back(0x01234567);
+      record.keywords.push_back(0x01234567);
       REQUIRE( record.getWriteSize() == 76 );
 
-      record.keywordArray.push_back(0x01234567);
+      record.keywords.push_back(0x01234567);
       REQUIRE( record.getWriteSize() == 80 );
     }
 
@@ -420,8 +420,8 @@ TEST_CASE("IngredientRecord")
       REQUIRE( record.name.isPresent() );
       REQUIRE( record.name.getType() == LocalizedString::Type::Index );
       REQUIRE( record.name.getIndex() == 0x00007D9C );
-      REQUIRE( record.keywordArray.size() == 1 );
-      REQUIRE( record.keywordArray[0] == 0x0008CDEB );
+      REQUIRE( record.keywords.size() == 1 );
+      REQUIRE( record.keywords[0] == 0x0008CDEB );
       REQUIRE( record.modelPath == "Plants\\Thistle01.nif" );
       REQUIRE( record.unknownMODT.isPresent() );
       const auto MODT = std::string_view(reinterpret_cast<const char*>(record.unknownMODT.data()), record.unknownMODT.size());
@@ -1253,6 +1253,25 @@ TEST_CASE("IngredientRecord")
       // Reading should fail.
       IngredientRecord record;
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+  }
+
+  SECTION("flag queries")
+  {
+    IngredientRecord record;
+
+    SECTION("doesAutoCalc")
+    {
+      REQUIRE( record.doesAutoCalc() );
+      record.flags = IngredientRecord::cFlagNoAutoCalc;
+      REQUIRE_FALSE( record.doesAutoCalc() );
+    }
+
+    SECTION("isFoodItem")
+    {
+      REQUIRE_FALSE( record.isFoodItem() );
+      record.flags = IngredientRecord::cFlagFoodItem;
+      REQUIRE( record.isFoodItem() );
     }
   }
 }

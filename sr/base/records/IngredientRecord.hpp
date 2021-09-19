@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013 Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 #ifndef SR_INGREDIENTRECORD_HPP
 #define SR_INGREDIENTRECORD_HPP
 
+#include <array>
 #include <string>
 #include "BasicRecord.hpp"
 #include "EffectBlock.hpp"
@@ -30,44 +31,55 @@
 namespace SRTP
 {
 
+/** Holds information about an ingredient for potions. */
 struct IngredientRecord: public BasicRecord
 {
   public:
-    /* constructor */
+    /** Constructor, creates an empty record. */
     IngredientRecord();
 
-    /* destructor */
-    virtual ~IngredientRecord();
-
     #ifndef SR_NO_RECORD_EQUALITY
-    /* returns true, if the other record contains the same data */
+    /** \brief Checks whether another instance contains the same data.
+     *
+     * \param other   the other record to compare with
+     * \return Returns true, if @other contains the same data as instance.
+     *         Returns false otherwise.
+     */
     bool equals(const IngredientRecord& other) const;
     #endif
 
     #ifndef SR_UNSAVEABLE_RECORDS
-    /* returns the size in bytes that the record's data would occupy in a file
-       stream, NOT including the header data
-    */
+    /** \brief Gets the size in bytes that the record's data would occupy in a file
+     *         stream, NOT including the header data.
+     *
+     * \return Returns the size in bytes that the record would need. Size of the
+     *         header is not included.
+     */
     virtual uint32_t getWriteSize() const;
 
-    /* writes the record to the given output stream and returns true on success
-
-      parameters:
-          output   - the output stream
-    */
+    /** \brief Writes the record to the given output stream.
+     *
+     * \param output  the output stream
+     * \return Returns true on success (record was written to stream).
+     *         Returns false, if an error occurred.
+     */
     virtual bool saveToStream(std::ostream& output) const;
     #endif
 
-    /* loads the record from the given input stream and returns true on success
-
-      parameters:
-          in_File   - the input stream
-          localized - whether the file to read from is localized or not
-          table     - the associated string table for localized files
-    */
+    /** \brief Loads the record from the given input stream.
+     *
+     * \param in_File    the input stream
+     * \param localized  whether the file to read from is localized or not
+     * \param table      the associated string table for localized files
+     * \return Returns true on success (record was loaded from stream).
+     *         Returns false, if an error occurred.
+     */
     virtual bool loadFromStream(std::istream& in_File, const bool localized, const StringTable& table);
 
-    /* returns the record's type, usually its header */
+    /** \brief Gets the record's type, usually its header.
+     *
+     * \return Returns the record's type.
+     */
     virtual uint32_t getRecordType() const;
 
     /* flag constants */
@@ -76,37 +88,43 @@ struct IngredientRecord: public BasicRecord
 
     std::string editorID;
     BinarySubRecord unknownVMAD;
-    uint8_t unknownOBND[12];
-    LocalizedString name; //subrecord FULL
-    std::vector<uint32_t> keywordArray;
+    std::array<uint8_t, 12> unknownOBND;
+    LocalizedString name; // subrecord FULL
+    std::vector<uint32_t> keywords;
     std::string modelPath;
     BinarySubRecord unknownMODT;
     BinarySubRecord unknownMODS;
-    uint32_t pickupSoundFormID; //subrecord YNAM
-    uint32_t putdownSoundFormID; //subrecord ZNAM
-    //subreord DATA
+    uint32_t pickupSoundFormID; // subrecord YNAM
+    uint32_t putdownSoundFormID; // subrecord ZNAM
+    // subrecord DATA
     uint32_t value;
     float weight;
-    //end of DATA
-    //subrecord ENIT
+    // end of DATA
+    // subrecord ENIT
     uint32_t baseCost;
     uint32_t flags;
-    //end of ENIT
+    // end of ENIT
     std::vector<EffectBlock> effects;
 
-    /* returns true, if the Food Item flag is set */
+    /** \brief Checks whether the Food Item flag is set.
+     *
+     * \return Returns true, if the Food Item flag is set.
+     */
     inline bool isFoodItem() const
     {
-      return ((flags&cFlagFoodItem)!=0);
+      return (flags & cFlagFoodItem) != 0;
     }
 
-    /* returns true, if the Auto Calc option is active */
+    /** \brief Checks whether the Auto Calc option is active.
+     *
+     * \brief Returns true, if the Auto Calc option is active.
+     */
     inline bool doesAutoCalc() const
     {
-      return ((flags&cFlagNoAutoCalc)==0);
+      return (flags & cFlagNoAutoCalc) == 0;
     }
-}; //struct
+}; // struct
 
-} //namespace
+} // namespace
 
 #endif // SR_INGREDIENTRECORD_HPP

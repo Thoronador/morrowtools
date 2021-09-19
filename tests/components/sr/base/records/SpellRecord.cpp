@@ -1124,8 +1124,6 @@ TEST_CASE("SpellRecord")
       }
     }
 
-    // const std::string_view data = "SPEL\xA9\0\0\0\0\0\0\0\xCD\x2F\x01\0\x1B\x69\x55\0\x28\0\x01\0EDID\x07\0Flames\0OBND\x0C\0\xFF\xEE\xDD\xCC\xBB\xAA\x99\x88\x77\x66\x55\0FULL\x04\0\x1B\x1C\0\0MDOB\x04\0\x64\xE2\x04\0ETYP\x04\0\x44\x3F\x01\0DESC\x04\0\0\0\0\0SPIT\x24\0\x0E\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x02\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\xA8\x2C\x0F\0EFID\x04\0\xA9\x3C\x01\0EFIT\x0C\0\0\0\0\x41\0\0\0\0\x01\0\0\0EFID\x04\0\x2F\x39\x0F\0EFIT\x0C\0\0\0\xC6\x42\0\0\0\0\x0F\0\0\0"sv;
-
     SECTION("corrupt data: stream ends before all of EFIT can be read")
     {
       const std::string_view data = "SPEL\xA9\0\0\0\0\0\0\0\xCD\x2F\x01\0\x1B\x69\x55\0\x28\0\x01\0EDID\x07\0Flames\0OBND\x0C\0\xFF\xEE\xDD\xCC\xBB\xAA\x99\x88\x77\x66\x55\0FULL\x04\0\x1B\x1C\0\0MDOB\x04\0\x64\xE2\x04\0ETYP\x04\0\x44\x3F\x01\0DESC\x04\0\0\0\0\0SPIT\x24\0\x0E\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x02\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\xA8\x2C\x0F\0EFID\x04\0\xA9\x3C\x01\0EFIT\x0C\0\0\0\0\x41"sv;

@@ -87,6 +87,8 @@
 		<Unit filename="../../sr/base/records/GenericRecord.hpp" />
 		<Unit filename="../../sr/base/records/GroupData.cpp" />
 		<Unit filename="../../sr/base/records/GroupData.hpp" />
+		<Unit filename="../../sr/base/records/IngredientRecord.cpp" />
+		<Unit filename="../../sr/base/records/IngredientRecord.hpp" />
 		<Unit filename="../../sr/base/records/KeyRecord.cpp" />
 		<Unit filename="../../sr/base/records/KeyRecord.hpp" />
 		<Unit filename="../../sr/base/records/KeywordRecord.cpp" />
@@ -148,6 +150,7 @@
 		<Unit filename="sr/base/records/FloraRecord.cpp" />
 		<Unit filename="sr/base/records/GenericRecord.cpp" />
 		<Unit filename="sr/base/records/GroupData.cpp" />
+		<Unit filename="sr/base/records/IngredientRecord.cpp" />
 		<Unit filename="sr/base/records/KeyRecord.cpp" />
 		<Unit filename="sr/base/records/KeywordRecord.cpp" />
 		<Unit filename="sr/base/records/LocalizedString.cpp" />

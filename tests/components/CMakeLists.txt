@@ -32,6 +32,7 @@ set(component_tests_sources
     ../../sr/base/records/FloraRecord.cpp
     ../../sr/base/records/GenericRecord.cpp
     ../../sr/base/records/GroupData.cpp
+    ../../sr/base/records/IngredientRecord.cpp
     ../../sr/base/records/KeyRecord.cpp
     ../../sr/base/records/KeywordRecord.cpp
     ../../sr/base/records/LocalizedString.cpp
@@ -76,6 +77,7 @@ set(component_tests_sources
     sr/base/records/FloraRecord.cpp
     sr/base/records/GenericRecord.cpp
     sr/base/records/GroupData.cpp
+    sr/base/records/IngredientRecord.cpp
     sr/base/records/KeyRecord.cpp
     sr/base/records/KeywordRecord.cpp
     sr/base/records/LocalizedString.cpp

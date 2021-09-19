@@ -48,10 +48,15 @@ TEST_CASE("ScrollRecord")
     REQUIRE_FALSE( record.unknownMODT.isPresent() );
     REQUIRE( record.value == 0 );
     REQUIRE( record.weight == 0.0f );
-    for (unsigned int i = 0; i < 36; ++i)
-    {
-      REQUIRE( record.unknownSPIT[i] == 0 );
-    }
+    REQUIRE( record.data.castingCost == 0 );
+    REQUIRE( record.data.flags == 0 );
+    REQUIRE( record.data.type == 0 );
+    REQUIRE( record.data.chargeTime == 0.0f );
+    REQUIRE( record.data.castingType == 0 );
+    REQUIRE( record.data.delivery == 0 );
+    REQUIRE( record.data.castDuration == 0 );
+    REQUIRE( record.data.range == 0 );
+    REQUIRE( record.data.castingPerkFormID == 0 );
     REQUIRE( record.effects.empty() );
   }
 
@@ -161,8 +166,8 @@ TEST_CASE("ScrollRecord")
 
       SECTION("SPIT mismatch")
       {
-        a.unknownSPIT[35] = 12;
-        b.unknownSPIT[35] = 34;
+        a.data.castDuration = 12;
+        b.data.castDuration = 34;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
@@ -313,8 +318,16 @@ TEST_CASE("ScrollRecord")
       REQUIRE( MODT == "\x02\0\0\0\x02\0\0\0\0\0\0\0\x6B\xC0\xAC\x7B\x64\x64\x73\0\x8E\xAE\xA7\x92\xB4\x06\x44\x8A\x64\x64\x73\0\x8E\xAE\xA7\x92"sv );
       REQUIRE( record.value == 25 );
       REQUIRE( record.weight == 0.5f );
-      const auto SPIT = std::string_view(reinterpret_cast<const char*>(record.unknownSPIT.data()), record.unknownSPIT.size());
-      REQUIRE( SPIT == "\x31\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x03\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"sv );
+
+      REQUIRE( record.data.castingCost == 49 );
+      REQUIRE( record.data.flags == 0 );
+      REQUIRE( record.data.type == 0 );
+      REQUIRE( record.data.chargeTime == 0.0f );
+      REQUIRE( record.data.castingType == 3 );
+      REQUIRE( record.data.delivery == 2 );
+      REQUIRE( record.data.castDuration == 0.0f );
+      REQUIRE( record.data.range == 0.0f );
+      REQUIRE( record.data.castingPerkFormID == 0x00000000 );
 
       REQUIRE( record.effects.size() == 1 );
       REQUIRE( record.effects[0].effectFormID == 0x00065BD6 );

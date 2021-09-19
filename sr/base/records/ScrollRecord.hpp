@@ -27,6 +27,7 @@
 #include "EffectBlock.hpp"
 #include "BinarySubRecord.hpp"
 #include "LocalizedString.hpp"
+#include "SpellItem.hpp"
 
 namespace SRTP
 {
@@ -95,7 +96,7 @@ struct ScrollRecord: public BasicRecord
     uint32_t value;
     float weight;
     // end of subrecord DATA
-    std::array<uint8_t, 36> unknownSPIT;
+    SpellItem data; /**< subrecord SPIT */
     std::vector<EffectBlock> effects;
 }; // struct
 

@@ -39,7 +39,7 @@ ScrollRecord::ScrollRecord()
   unknownMODT(BinarySubRecord()),
   value(0),
   weight(0.0f),
-  unknownSPIT(std::array<uint8_t, 36>({ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 })),
+  data(SpellItem()),
   effects(std::vector<EffectBlock>())
 {
 }
@@ -52,11 +52,11 @@ bool ScrollRecord::equals(const ScrollRecord& other) const
       && (name == other.name)
       && (menuDisplayObjectFormID == other.menuDisplayObjectFormID)
       && (keywords == other.keywords)
-      && (equipTypeFormID == other.equipTypeFormID) && (description == other.description)
+      && (equipTypeFormID == other.equipTypeFormID)
+      && (description == other.description)
       && (modelPath == other.modelPath) && (unknownMODT == other.unknownMODT)
       && (value == other.value) && (weight == other.weight)
-      && (unknownSPIT == other.unknownSPIT)
-      && (effects == other.effects);
+      && (data == other.data) && (effects == other.effects);
 }
 #endif
 
@@ -177,10 +177,11 @@ bool ScrollRecord::saveToStream(std::ostream& output) const
   output.write(reinterpret_cast<const char*>(&weight), 4);
 
   // write spell item (SPIT)
-  output.write(reinterpret_cast<const char*>(&cSPIT), 4);
-  subLength = 36; // fixed length
-  output.write(reinterpret_cast<const char*>(&subLength), 2);
-  output.write(reinterpret_cast<const char*>(unknownSPIT.data()), 36);
+  if (!data.saveToStream(output))
+  {
+    std::cerr << "Error while writing subrecord SPIT of SCRL!\n";
+    return false;
+  }
 
   for (const auto& effect: effects)
   {
@@ -404,23 +405,8 @@ bool ScrollRecord::loadFromStream(std::istream& in_File, const bool localized, c
              std::cerr << "Error: SCRL seems to have more than one SPIT subrecord!\n";
              return false;
            }
-           // SPIT's length
-           in_File.read(reinterpret_cast<char*>(&subLength), 2);
-           bytesRead += 2;
-           if (subLength != 36)
-           {
-             std::cerr << "Error: subrecord SPIT of SCRL has invalid length ("
-                       << subLength << " bytes). Should be 36 bytes!\n";
+           if (!data.loadFromStream(in_File, cSCRL, bytesRead))
              return false;
-           }
-           // read SPIT's stuff
-           in_File.read(reinterpret_cast<char*>(unknownSPIT.data()), 36);
-           bytesRead += 36;
-           if (!in_File.good())
-           {
-             std::cerr << "Error while reading subrecord SPIT of SCRL!\n";
-             return false;
-           }
            hasReadSPIT = true;
            break;
       case cEFID:

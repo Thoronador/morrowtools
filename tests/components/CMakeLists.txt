@@ -41,6 +41,7 @@ set(component_tests_sources
     ../../sr/base/records/ShoutRecord.cpp
     ../../sr/base/records/SimplifiedReferenceRecord.cpp
     ../../sr/base/records/SoulGemRecord.cpp
+    ../../sr/base/records/SpellItem.cpp
     ../../sr/base/records/SpellRecord.cpp
     ../../sr/base/records/TalkingActivatorRecord.cpp
     ../../sr/base/records/TES4HeaderRecord.cpp
@@ -84,6 +85,7 @@ set(component_tests_sources
     sr/base/records/ShoutRecord.cpp
     sr/base/records/SimplifiedReferenceRecord.cpp
     sr/base/records/SoulGemRecord.cpp
+    sr/base/records/SpellItem.cpp
     sr/base/records/SpellRecord.cpp
     sr/base/records/TalkingActivatorRecord.cpp
     sr/base/records/Tes4HeaderRecord.cpp

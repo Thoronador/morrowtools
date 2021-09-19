@@ -151,6 +151,8 @@
 		<Unit filename="../base/records/SimplifiedReferenceRecord.hpp" />
 		<Unit filename="../base/records/SoulGemRecord.cpp" />
 		<Unit filename="../base/records/SoulGemRecord.hpp" />
+		<Unit filename="../base/records/SpellItem.cpp" />
+		<Unit filename="../base/records/SpellItem.hpp" />
 		<Unit filename="../base/records/SpellRecord.cpp" />
 		<Unit filename="../base/records/SpellRecord.hpp" />
 		<Unit filename="../base/records/SubBlock.hpp" />

@@ -105,6 +105,8 @@
 		<Unit filename="../../sr/base/records/SimplifiedReferenceRecord.hpp" />
 		<Unit filename="../../sr/base/records/SoulGemRecord.cpp" />
 		<Unit filename="../../sr/base/records/SoulGemRecord.hpp" />
+		<Unit filename="../../sr/base/records/SpellItem.cpp" />
+		<Unit filename="../../sr/base/records/SpellItem.hpp" />
 		<Unit filename="../../sr/base/records/SpellRecord.cpp" />
 		<Unit filename="../../sr/base/records/SpellRecord.hpp" />
 		<Unit filename="../../sr/base/records/SubBlock.hpp" />
@@ -155,6 +157,7 @@
 		<Unit filename="sr/base/records/ShoutRecord.cpp" />
 		<Unit filename="sr/base/records/SimplifiedReferenceRecord.cpp" />
 		<Unit filename="sr/base/records/SoulGemRecord.cpp" />
+		<Unit filename="sr/base/records/SpellItem.cpp" />
 		<Unit filename="sr/base/records/SpellRecord.cpp" />
 		<Unit filename="sr/base/records/TalkingActivatorRecord.cpp" />
 		<Unit filename="sr/base/records/Tes4HeaderRecord.cpp" />

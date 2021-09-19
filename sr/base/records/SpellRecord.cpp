@@ -26,37 +26,6 @@
 namespace SRTP
 {
 
-// flag constants
-const uint32_t SpellRecord::cFlagNoAutoCalc              = 0x00000001;
-const uint32_t SpellRecord::cFlagPCStartSpell            = 0x00020000;
-const uint32_t SpellRecord::cFlagAreaEffectIgnoresLOS    = 0x00080000;
-const uint32_t SpellRecord::cFlagIgnoreResistance        = 0x00100000;
-const uint32_t SpellRecord::cFlagDisallowAbsorbReflect   = 0x00200000;
-const uint32_t SpellRecord::cFlagNoDualCastModifications = 0x00800000;
-
-// type constants
-const uint32_t SpellRecord::cSpell       = 0x00000000;
-const uint32_t SpellRecord::cDisease     = 0x00000001;
-const uint32_t SpellRecord::cPower       = 0x00000002;
-const uint32_t SpellRecord::cLesserPower = 0x00000003;
-const uint32_t SpellRecord::cAbility     = 0x00000004;
-const uint32_t SpellRecord::cPoison      = 0x00000005;
-const uint32_t SpellRecord::cAddiction   = 0x0000000A;
-const uint32_t SpellRecord::cVoicePower  = 0x0000000B;
-
-// casting type constants
-const uint32_t SpellRecord::cConstantEffect = 0x00000000;
-const uint32_t SpellRecord::cFireAndForget  = 0x00000001;
-const uint32_t SpellRecord::cConcentration  = 0x00000002;
-
-// delivery constants
-const uint32_t SpellRecord::cSelf           = 0x00000000;
-const uint32_t SpellRecord::cContact        = 0x00000001;
-const uint32_t SpellRecord::cAimed          = 0x00000002;
-const uint32_t SpellRecord::cTargetActor    = 0x00000003;
-const uint32_t SpellRecord::cTargetLocation = 0x00000004;
-
-
 SpellRecord::SpellRecord()
 : BasicRecord(),
   editorID(""),
@@ -65,17 +34,7 @@ SpellRecord::SpellRecord()
   menuDisplayObjectFormID(0),
   equipTypeFormID(0),
   description(LocalizedString()),
-  // subrecord SPIT
-  castingCost(0),
-  flags(0),
-  type(0),
-  chargeTime(0.0f),
-  castingType(0),
-  delivery(0),
-  castDuration(0.0f),
-  range(0.0f),
-  castingPerkFormID(0),
-  // end of SPIT
+  data(SpellItem()),
   effects(std::vector<EffectBlock>())
 {
 }
@@ -88,11 +47,7 @@ bool SpellRecord::equals(const SpellRecord& other) const
       && (name == other.name)
       && (menuDisplayObjectFormID == other.menuDisplayObjectFormID)
       && (equipTypeFormID == other.equipTypeFormID) && (description == other.description)
-      && (castingCost == other.castingCost) && (flags == other.flags)
-      && (type == other.type) && (chargeTime == other.chargeTime)
-      && (castingType == other.castingType) && (delivery == other.delivery)
-      && (castDuration == other.castDuration) && (range == other.range)
-      && (castingPerkFormID == other.castingPerkFormID)
+      && (data == other.data)
       && (effects == other.effects);
 }
 #endif
@@ -170,19 +125,8 @@ bool SpellRecord::saveToStream(std::ostream& output) const
     return false;
 
   // write SPIT
-  output.write(reinterpret_cast<const char*>(&cSPIT), 4);
-  subLength = 36; // fixed length
-  output.write(reinterpret_cast<const char*>(&subLength), 2);
-  //write SPIT's stuff
-  output.write(reinterpret_cast<const char*>(&castingCost), 4);
-  output.write(reinterpret_cast<const char*>(&flags), 4);
-  output.write(reinterpret_cast<const char*>(&type), 4);
-  output.write(reinterpret_cast<const char*>(&chargeTime), 4);
-  output.write(reinterpret_cast<const char*>(&castingType), 4);
-  output.write(reinterpret_cast<const char*>(&delivery), 4);
-  output.write(reinterpret_cast<const char*>(&castDuration), 4);
-  output.write(reinterpret_cast<const char*>(&range), 4);
-  output.write(reinterpret_cast<const char*>(&castingPerkFormID), 4);
+  if (!data.saveToStream(output))
+    return false;
 
   for (const auto& effect: effects)
   {
@@ -315,31 +259,8 @@ bool SpellRecord::loadFromStream(std::istream& in_File, const bool localized, co
              std::cerr << "Error: SPEL seems to have more than one SPIT subrecord!\n";
              return false;
            }
-           // SPIT's length
-           in_File.read(reinterpret_cast<char*>(&subLength), 2);
-           bytesRead += 2;
-           if (subLength != 36)
-           {
-             std::cerr << "Error: subrecord SPIT of SPEL has invalid length ("
-                       << subLength << " bytes). Should be 36 bytes!\n";
+           if (!data.loadFromStream(in_File, cSPEL, bytesRead))
              return false;
-           }
-           // read SPIT's stuff
-           in_File.read(reinterpret_cast<char*>(&castingCost), 4);
-           in_File.read(reinterpret_cast<char*>(&flags), 4);
-           in_File.read(reinterpret_cast<char*>(&type), 4);
-           in_File.read(reinterpret_cast<char*>(&chargeTime), 4);
-           in_File.read(reinterpret_cast<char*>(&castingType), 4);
-           in_File.read(reinterpret_cast<char*>(&delivery), 4);
-           in_File.read(reinterpret_cast<char*>(&castDuration), 4);
-           in_File.read(reinterpret_cast<char*>(&range), 4);
-           in_File.read(reinterpret_cast<char*>(&castingPerkFormID), 4);
-           bytesRead += 36;
-           if (!in_File.good())
-           {
-             std::cerr << "Error while reading subrecord SPIT of SPEL!\n";
-             return false;
-           }
            hasReadSPIT = true;
            break;
       case cEFID:
@@ -462,36 +383,6 @@ bool SpellRecord::loadFromStream(std::istream& in_File, const bool localized, co
 uint32_t SpellRecord::getRecordType() const
 {
   return cSPEL;
-}
-
-bool SpellRecord::doesAutoCalc() const
-{
-  return (flags & cFlagNoAutoCalc) == 0;
-}
-
-bool SpellRecord::isPCStartSpell() const
-{
-  return (flags & cFlagPCStartSpell) != 0;
-}
-
-bool SpellRecord::areaEffectIgnoresLOS() const
-{
-  return (flags & cFlagAreaEffectIgnoresLOS) != 0;
-}
-
-bool SpellRecord::ignoresResistance() const
-{
-  return (flags & cFlagIgnoreResistance) != 0;
-}
-
-bool SpellRecord::disallowsAbsorbAndReflect() const
-{
-  return (flags & cFlagDisallowAbsorbReflect) != 0;
-}
-
-bool SpellRecord::noDualCastModifications() const
-{
-  return (flags & cFlagNoDualCastModifications) != 0;
 }
 
 } // namespace

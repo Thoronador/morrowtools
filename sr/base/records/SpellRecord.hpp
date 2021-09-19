@@ -27,6 +27,7 @@
 #include "BasicRecord.hpp"
 #include "EffectBlock.hpp"
 #include "LocalizedString.hpp"
+#include "SpellItem.hpp"
 
 namespace SRTP
 {
@@ -82,35 +83,6 @@ struct SpellRecord: public BasicRecord
      */
     virtual uint32_t getRecordType() const;
 
-    /* flag constants */
-    static const uint32_t cFlagNoAutoCalc;
-    static const uint32_t cFlagPCStartSpell;
-    static const uint32_t cFlagAreaEffectIgnoresLOS;
-    static const uint32_t cFlagIgnoreResistance;
-    static const uint32_t cFlagDisallowAbsorbReflect;
-    static const uint32_t cFlagNoDualCastModifications;
-
-    /* type constants */
-    static const uint32_t cSpell;
-    static const uint32_t cDisease;
-    static const uint32_t cPower;
-    static const uint32_t cLesserPower;
-    static const uint32_t cAbility;
-    static const uint32_t cPoison;
-    static const uint32_t cAddiction;
-    static const uint32_t cVoicePower;
-
-    /* casting type constants */
-    static const uint32_t cConstantEffect;
-    static const uint32_t cFireAndForget;
-    static const uint32_t cConcentration;
-
-    /* delivery constants */
-    static const uint32_t cSelf;
-    static const uint32_t cContact;
-    static const uint32_t cAimed;
-    static const uint32_t cTargetActor;
-    static const uint32_t cTargetLocation;
 
     std::string editorID;
     std::array<uint8_t, 12> unknownOBND;
@@ -118,60 +90,8 @@ struct SpellRecord: public BasicRecord
     uint32_t menuDisplayObjectFormID; // subrecord MDOB
     uint32_t equipTypeFormID; // subrecord ETYP
     LocalizedString description; // subrecord DESC
-    // subrecord SPIT
-    uint32_t castingCost;
-    uint32_t flags;
-    uint32_t type;
-    float chargeTime;
-    uint32_t castingType;
-    uint32_t delivery;
-    float castDuration;
-    float range; /**< spell range in feet */
-    uint32_t castingPerkFormID;
-    // end of subrecord SPIT
+    SpellItem data; /**< subrecord SPIT */
     std::vector<EffectBlock> effects;
-
-    /** \brief Checks whether the cost etc. are calculated automatically.
-     *
-     * \return Returns true, if the costs etc. are calculated automatically.
-     *         Returns false otherwise.
-     */
-    bool doesAutoCalc() const;
-
-    /** \brief Checks whether the spell is a PC start spell.
-     *
-     * \return Returns true, if the spell is a PC start spell.
-     *         Returns false otherwise.
-     */
-    bool isPCStartSpell() const;
-
-    /** \brief Checks whether the ignores LOS for area effects.
-     *
-     * \return Returns true, if the spell ignores LOS for area effects.
-     *         Returns false otherwise.
-     */
-    bool areaEffectIgnoresLOS() const;
-
-    /** \brief Checks whether the spell ignores resistance.
-     *
-     * \return Returns true, if the spell ignores resistance.
-     *         Returns false otherwise.
-     */
-    bool ignoresResistance() const;
-
-    /** \brief Checks whether the spell cannot be absorbed or reflected.
-     *
-     * \return Returns true, if the spell cannot be absorbed or reflected.
-     *         Returns false otherwise.
-     */
-    bool disallowsAbsorbAndReflect() const;
-
-    /** \brief Checks whether the spell has no dual cast modifications.
-     *
-     * \return Returns true, if the spell has no dual cast modifications.
-     *         Returns false otherwise.
-     */
-    bool noDualCastModifications() const;
 }; // struct
 
 } // namespace

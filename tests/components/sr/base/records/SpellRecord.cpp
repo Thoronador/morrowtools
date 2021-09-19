@@ -43,15 +43,15 @@ TEST_CASE("SpellRecord")
     REQUIRE( record.menuDisplayObjectFormID == 0 );
     REQUIRE( record.equipTypeFormID == 0 );
     REQUIRE_FALSE( record.description.isPresent() );
-    REQUIRE( record.castingCost == 0 );
-    REQUIRE( record.flags == 0 );
-    REQUIRE( record.type == 0 );
-    REQUIRE( record.chargeTime == 0.0f );
-    REQUIRE( record.castingType == 0 );
-    REQUIRE( record.delivery == 0 );
-    REQUIRE( record.castDuration == 0 );
-    REQUIRE( record.range == 0 );
-    REQUIRE( record.castingPerkFormID == 0 );
+    REQUIRE( record.data.castingCost == 0 );
+    REQUIRE( record.data.flags == 0 );
+    REQUIRE( record.data.type == 0 );
+    REQUIRE( record.data.chargeTime == 0.0f );
+    REQUIRE( record.data.castingType == 0 );
+    REQUIRE( record.data.delivery == 0 );
+    REQUIRE( record.data.castDuration == 0 );
+    REQUIRE( record.data.range == 0 );
+    REQUIRE( record.data.castingPerkFormID == 0 );
     REQUIRE( record.effects.empty() );
   }
 
@@ -125,8 +125,8 @@ TEST_CASE("SpellRecord")
 
       SECTION("castingCost mismatch")
       {
-        a.castingCost = 1;
-        b.castingCost = 2;
+        a.data.castingCost = 1;
+        b.data.castingCost = 2;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
@@ -134,8 +134,8 @@ TEST_CASE("SpellRecord")
 
       SECTION("flags mismatch")
       {
-        a.flags = 1;
-        b.flags = 2;
+        a.data.flags = 1;
+        b.data.flags = 2;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
@@ -143,8 +143,8 @@ TEST_CASE("SpellRecord")
 
       SECTION("type mismatch")
       {
-        a.type = 1;
-        b.type = 2;
+        a.data.type = 1;
+        b.data.type = 2;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
@@ -152,8 +152,8 @@ TEST_CASE("SpellRecord")
 
       SECTION("chargeTime mismatch")
       {
-        a.chargeTime = 1.0f;
-        b.chargeTime = 1.5f;
+        a.data.chargeTime = 1.0f;
+        b.data.chargeTime = 1.5f;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
@@ -161,8 +161,8 @@ TEST_CASE("SpellRecord")
 
       SECTION("castingType mismatch")
       {
-        a.castingType = 1;
-        b.castingType = 2;
+        a.data.castingType = 1;
+        b.data.castingType = 2;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
@@ -170,8 +170,8 @@ TEST_CASE("SpellRecord")
 
       SECTION("delivery mismatch")
       {
-        a.delivery = 1;
-        b.delivery = 2;
+        a.data.delivery = 1;
+        b.data.delivery = 2;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
@@ -179,8 +179,8 @@ TEST_CASE("SpellRecord")
 
       SECTION("castDuration mismatch")
       {
-        a.castDuration = 1.0f;
-        b.castDuration = 1.5f;
+        a.data.castDuration = 1.0f;
+        b.data.castDuration = 1.5f;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
@@ -188,8 +188,8 @@ TEST_CASE("SpellRecord")
 
       SECTION("range mismatch")
       {
-        a.range = 1.0f;
-        b.range = 1.5f;
+        a.data.range = 1.0f;
+        b.data.range = 1.5f;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
@@ -197,8 +197,8 @@ TEST_CASE("SpellRecord")
 
       SECTION("castingPerkFormID mismatch")
       {
-        a.castingPerkFormID = 0x01234567;
-        b.castingPerkFormID = 0x0FEDCBA9;
+        a.data.castingPerkFormID = 0x01234567;
+        b.data.castingPerkFormID = 0x0FEDCBA9;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
@@ -332,15 +332,15 @@ TEST_CASE("SpellRecord")
       REQUIRE( record.description.getType() == LocalizedString::Type::Index );
       REQUIRE( record.description.getIndex() == 0 );
 
-      REQUIRE( record.castingCost == 14 );
-      REQUIRE( record.flags == 0 );
-      REQUIRE( record.type == 0 );
-      REQUIRE( record.chargeTime == 0.0f );
-      REQUIRE( record.castingType == 2 );
-      REQUIRE( record.delivery == 2 );
-      REQUIRE( record.castDuration == 0.0f );
-      REQUIRE( record.range == 0.0f );
-      REQUIRE( record.castingPerkFormID == 0x000F2CA8 );
+      REQUIRE( record.data.castingCost == 14 );
+      REQUIRE( record.data.flags == 0 );
+      REQUIRE( record.data.type == 0 );
+      REQUIRE( record.data.chargeTime == 0.0f );
+      REQUIRE( record.data.castingType == 2 );
+      REQUIRE( record.data.delivery == 2 );
+      REQUIRE( record.data.castDuration == 0.0f );
+      REQUIRE( record.data.range == 0.0f );
+      REQUIRE( record.data.castingPerkFormID == 0x000F2CA8 );
 
       REQUIRE( record.effects.size() == 2 );
       REQUIRE( record.effects[0].effectFormID == 0x00013CA9 );
@@ -404,15 +404,15 @@ TEST_CASE("SpellRecord")
       REQUIRE( record.description.getType() == LocalizedString::Type::Index );
       REQUIRE( record.description.getIndex() == 0 );
 
-      REQUIRE( record.castingCost == 100 );
-      REQUIRE( record.flags == 1 );
-      REQUIRE( record.type == 0 );
-      REQUIRE( record.chargeTime == 5.0f );
-      REQUIRE( record.castingType == 1 );
-      REQUIRE( record.delivery == 4 );
-      REQUIRE( record.castDuration == 0.0f );
-      REQUIRE( record.range == 50.0f );
-      REQUIRE( record.castingPerkFormID == 0x0000000 );
+      REQUIRE( record.data.castingCost == 100 );
+      REQUIRE( record.data.flags == 1 );
+      REQUIRE( record.data.type == 0 );
+      REQUIRE( record.data.chargeTime == 5.0f );
+      REQUIRE( record.data.castingType == 1 );
+      REQUIRE( record.data.delivery == 4 );
+      REQUIRE( record.data.castDuration == 0.0f );
+      REQUIRE( record.data.range == 50.0f );
+      REQUIRE( record.data.castingPerkFormID == 0x0000000 );
 
       REQUIRE( record.effects.size() == 1 );
       REQUIRE( record.effects[0].effectFormID == 0x00099F35 );
@@ -499,15 +499,15 @@ TEST_CASE("SpellRecord")
       REQUIRE( record.description.getType() == LocalizedString::Type::Index );
       REQUIRE( record.description.getIndex() == 0 );
 
-      REQUIRE( record.castingCost == 100 );
-      REQUIRE( record.flags == 1 );
-      REQUIRE( record.type == 0 );
-      REQUIRE( record.chargeTime == 5.0f );
-      REQUIRE( record.castingType == 1 );
-      REQUIRE( record.delivery == 4 );
-      REQUIRE( record.castDuration == 0.0f );
-      REQUIRE( record.range == 50.0f );
-      REQUIRE( record.castingPerkFormID == 0x0000000 );
+      REQUIRE( record.data.castingCost == 100 );
+      REQUIRE( record.data.flags == 1 );
+      REQUIRE( record.data.type == 0 );
+      REQUIRE( record.data.chargeTime == 5.0f );
+      REQUIRE( record.data.castingType == 1 );
+      REQUIRE( record.data.delivery == 4 );
+      REQUIRE( record.data.castDuration == 0.0f );
+      REQUIRE( record.data.range == 50.0f );
+      REQUIRE( record.data.castingPerkFormID == 0x0000000 );
 
       REQUIRE( record.effects.size() == 2 );
 
@@ -1243,53 +1243,6 @@ TEST_CASE("SpellRecord")
       // Check written data.
       const std::string_view data = "SPEL\0\0\0\0\x20\0\0\0\xCD\x2F\x01\0\x1B\x69\x55\0\x28\0\x01\0"sv;
       REQUIRE( stream.str() == data );
-    }
-  }
-
-  SECTION("flags query methods")
-  {
-    SpellRecord record;
-
-    SECTION("doesAutoCalc")
-    {
-      REQUIRE( record.doesAutoCalc() );
-      record.flags = SpellRecord::cFlagNoAutoCalc;
-      REQUIRE_FALSE( record.doesAutoCalc() );
-    }
-
-    SECTION("isPCStartSpell")
-    {
-      REQUIRE_FALSE( record.isPCStartSpell() );
-      record.flags = SpellRecord::cFlagPCStartSpell;
-      REQUIRE( record.isPCStartSpell() );
-    }
-
-    SECTION("areaEffectIgnoresLOS")
-    {
-      REQUIRE_FALSE( record.areaEffectIgnoresLOS() );
-      record.flags = SpellRecord::cFlagAreaEffectIgnoresLOS;
-      REQUIRE( record.areaEffectIgnoresLOS() );
-    }
-
-    SECTION("ignoresResistance")
-    {
-      REQUIRE_FALSE( record.ignoresResistance() );
-      record.flags = SpellRecord::cFlagIgnoreResistance;
-      REQUIRE( record.ignoresResistance() );
-    }
-
-    SECTION("disallowsAbsorbAndReflect")
-    {
-      REQUIRE_FALSE( record.disallowsAbsorbAndReflect() );
-      record.flags = SpellRecord::cFlagDisallowAbsorbReflect;
-      REQUIRE( record.disallowsAbsorbAndReflect() );
-    }
-
-    SECTION("noDualCastModifications")
-    {
-      REQUIRE_FALSE( record.noDualCastModifications() );
-      record.flags = SpellRecord::cFlagNoDualCastModifications;
-      REQUIRE( record.noDualCastModifications() );
     }
   }
 }

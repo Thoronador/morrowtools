@@ -47,6 +47,7 @@ set(formID_finder_sources
     ../base/records/ShoutRecord.cpp
     ../base/records/SimplifiedReferenceRecord.cpp
     ../base/records/SoulGemRecord.cpp
+    ../base/records/SpellItem.cpp
     ../base/records/SpellRecord.cpp
     ../base/records/TES4HeaderRecord.cpp
     ../base/records/TalkingActivatorRecord.cpp

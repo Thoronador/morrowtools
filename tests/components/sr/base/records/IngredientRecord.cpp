@@ -1148,6 +1148,82 @@ TEST_CASE("IngredientRecord")
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
+    SECTION("corrupt data: multiple ENITs")
+    {
+      const std::string_view data = "INGR\x33\x01\0\0\0\0\0\0\xAA\x34\x01\0\x1B\x69\x55\0\x28\0\x08\0EDID\x0A\0Thistle01\0OBND\x0C\0\xF6\xFF\xFE\xFF\xFF\xFF\x0B\0\x1A\0\x0B\0FULL\x04\0\x9C\x7D\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0\xEB\xCD\x08\0MODL\x15\0Plants\\Thistle01.nif\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x38\x6E\xFF\x80\x64\x64\x73\0\x13\x4C\x1E\xFA\x9F\x7D\xBC\x2A\x64\x64\x73\0\x13\x4C\x1E\xFAYNAM\x04\0\xD5\x19\x05\0ZNAM\x04\0\xD1\x19\x05\0DATA\x08\0\x01\0\0\0\xCD\xCC\xCC\x3D\x45NIT\x08\0\x17\0\0\0\0\0\0\0ENIT\x08\0\x17\0\0\0\0\0\0\0EFID\x04\0\xEB\xEA\x03\0EFIT\x0C\0\0\0\x40\x40\0\0\0\0\x3C\0\0\0EFID\x04\0\x23\x3F\x07\0EFIT\x0C\0\0\0\0\x40\0\0\0\0\x0A\0\0\0EFID\x04\0\x41\0\x09\0EFIT\x0C\0\0\0\x40\x40\0\0\0\0\0\0\0\0EFID\x04\0\x1E\xEB\x03\0EFIT\x0C\0\0\0\0\x40\0\0\0\0\x3C\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read INGR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      IngredientRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of ENIT is not eight")
+    {
+      {
+        const std::string_view data = "INGR\x24\x01\0\0\0\0\0\0\xAA\x34\x01\0\x1B\x69\x55\0\x28\0\x08\0EDID\x0A\0Thistle01\0OBND\x0C\0\xF6\xFF\xFE\xFF\xFF\xFF\x0B\0\x1A\0\x0B\0FULL\x04\0\x9C\x7D\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0\xEB\xCD\x08\0MODL\x15\0Plants\\Thistle01.nif\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x38\x6E\xFF\x80\x64\x64\x73\0\x13\x4C\x1E\xFA\x9F\x7D\xBC\x2A\x64\x64\x73\0\x13\x4C\x1E\xFAYNAM\x04\0\xD5\x19\x05\0ZNAM\x04\0\xD1\x19\x05\0DATA\x08\0\x01\0\0\0\xCD\xCC\xCC\x3D\x45NIT\x07\0\x17\0\0\0\0\0\0EFID\x04\0\xEB\xEA\x03\0EFIT\x0C\0\0\0\x40\x40\0\0\0\0\x3C\0\0\0EFID\x04\0\x23\x3F\x07\0EFIT\x0C\0\0\0\0\x40\0\0\0\0\x0A\0\0\0EFID\x04\0\x41\0\x09\0EFIT\x0C\0\0\0\x40\x40\0\0\0\0\0\0\0\0EFID\x04\0\x1E\xEB\x03\0EFIT\x0C\0\0\0\0\x40\0\0\0\0\x3C\0\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read INGR, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        IngredientRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+
+      {
+        const std::string_view data = "INGR\x26\x01\0\0\0\0\0\0\xAA\x34\x01\0\x1B\x69\x55\0\x28\0\x08\0EDID\x0A\0Thistle01\0OBND\x0C\0\xF6\xFF\xFE\xFF\xFF\xFF\x0B\0\x1A\0\x0B\0FULL\x04\0\x9C\x7D\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0\xEB\xCD\x08\0MODL\x15\0Plants\\Thistle01.nif\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x38\x6E\xFF\x80\x64\x64\x73\0\x13\x4C\x1E\xFA\x9F\x7D\xBC\x2A\x64\x64\x73\0\x13\x4C\x1E\xFAYNAM\x04\0\xD5\x19\x05\0ZNAM\x04\0\xD1\x19\x05\0DATA\x08\0\x01\0\0\0\xCD\xCC\xCC\x3D\x45NIT\x09\0\x17\0\0\0\0\0\0\0\0EFID\x04\0\xEB\xEA\x03\0EFIT\x0C\0\0\0\x40\x40\0\0\0\0\x3C\0\0\0EFID\x04\0\x23\x3F\x07\0EFIT\x0C\0\0\0\0\x40\0\0\0\0\x0A\0\0\0EFID\x04\0\x41\0\x09\0EFIT\x0C\0\0\0\x40\x40\0\0\0\0\0\0\0\0EFID\x04\0\x1E\xEB\x03\0EFIT\x0C\0\0\0\0\x40\0\0\0\0\x3C\0\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read INGR, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        IngredientRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+    }
+
+    SECTION("corrupt data: stream ends before all of ENIT can be read")
+    {
+      const std::string_view data = "INGR\x25\x01\0\0\0\0\0\0\xAA\x34\x01\0\x1B\x69\x55\0\x28\0\x08\0EDID\x0A\0Thistle01\0OBND\x0C\0\xF6\xFF\xFE\xFF\xFF\xFF\x0B\0\x1A\0\x0B\0FULL\x04\0\x9C\x7D\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0\xEB\xCD\x08\0MODL\x15\0Plants\\Thistle01.nif\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x38\x6E\xFF\x80\x64\x64\x73\0\x13\x4C\x1E\xFA\x9F\x7D\xBC\x2A\x64\x64\x73\0\x13\x4C\x1E\xFAYNAM\x04\0\xD5\x19\x05\0ZNAM\x04\0\xD1\x19\x05\0DATA\x08\0\x01\0\0\0\xCD\xCC\xCC\x3D\x45NIT\x08\0\x17\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read INGR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      IngredientRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: missing ENIT subrecord")
+    {
+      const std::string_view data = "INGR\x17\x01\0\0\0\0\0\0\xAA\x34\x01\0\x1B\x69\x55\0\x28\0\x08\0EDID\x0A\0Thistle01\0OBND\x0C\0\xF6\xFF\xFE\xFF\xFF\xFF\x0B\0\x1A\0\x0B\0FULL\x04\0\x9C\x7D\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0\xEB\xCD\x08\0MODL\x15\0Plants\\Thistle01.nif\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x38\x6E\xFF\x80\x64\x64\x73\0\x13\x4C\x1E\xFA\x9F\x7D\xBC\x2A\x64\x64\x73\0\x13\x4C\x1E\xFAYNAM\x04\0\xD5\x19\x05\0ZNAM\x04\0\xD1\x19\x05\0DATA\x08\0\x01\0\0\0\xCD\xCC\xCC\x3D\x45\x46ID\x04\0\xEB\xEA\x03\0EFIT\x0C\0\0\0\x40\x40\0\0\0\0\x3C\0\0\0EFID\x04\0\x23\x3F\x07\0EFIT\x0C\0\0\0\0\x40\0\0\0\0\x0A\0\0\0EFID\x04\0\x41\0\x09\0EFIT\x0C\0\0\0\x40\x40\0\0\0\0\0\0\0\0EFID\x04\0\x1E\xEB\x03\0EFIT\x0C\0\0\0\0\x40\0\0\0\0\x3C\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read INGR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      IngredientRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: length of EFID is not four")
     {
       {
@@ -1192,6 +1268,37 @@ TEST_CASE("IngredientRecord")
       // Reading should fail.
       IngredientRecord record;
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: record has not exactly four effect blocks")
+    {
+      {
+        const std::string_view data = "INGR\x09\x01\0\0\0\0\0\0\xAA\x34\x01\0\x1B\x69\x55\0\x28\0\x08\0EDID\x0A\0Thistle01\0OBND\x0C\0\xF6\xFF\xFE\xFF\xFF\xFF\x0B\0\x1A\0\x0B\0FULL\x04\0\x9C\x7D\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0\xEB\xCD\x08\0MODL\x15\0Plants\\Thistle01.nif\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x38\x6E\xFF\x80\x64\x64\x73\0\x13\x4C\x1E\xFA\x9F\x7D\xBC\x2A\x64\x64\x73\0\x13\x4C\x1E\xFAYNAM\x04\0\xD5\x19\x05\0ZNAM\x04\0\xD1\x19\x05\0DATA\x08\0\x01\0\0\0\xCD\xCC\xCC\x3D\x45NIT\x08\0\x17\0\0\0\0\0\0\0EFID\x04\0\xEB\xEA\x03\0EFIT\x0C\0\0\0\x40\x40\0\0\0\0\x3C\0\0\0EFID\x04\0\x23\x3F\x07\0EFIT\x0C\0\0\0\0\x40\0\0\0\0\x0A\0\0\0EFID\x04\0\x41\0\x09\0EFIT\x0C\0\0\0\x40\x40\0\0\0\0\0\0\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read INGR, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        IngredientRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+
+      {
+        const std::string_view data = "INGR\x41\x01\0\0\0\0\0\0\xAA\x34\x01\0\x1B\x69\x55\0\x28\0\x08\0EDID\x0A\0Thistle01\0OBND\x0C\0\xF6\xFF\xFE\xFF\xFF\xFF\x0B\0\x1A\0\x0B\0FULL\x04\0\x9C\x7D\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0\xEB\xCD\x08\0MODL\x15\0Plants\\Thistle01.nif\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x38\x6E\xFF\x80\x64\x64\x73\0\x13\x4C\x1E\xFA\x9F\x7D\xBC\x2A\x64\x64\x73\0\x13\x4C\x1E\xFAYNAM\x04\0\xD5\x19\x05\0ZNAM\x04\0\xD1\x19\x05\0DATA\x08\0\x01\0\0\0\xCD\xCC\xCC\x3D\x45NIT\x08\0\x17\0\0\0\0\0\0\0EFID\x04\0\xEB\xEA\x03\0EFIT\x0C\0\0\0\x40\x40\0\0\0\0\x3C\0\0\0EFID\x04\0\x23\x3F\x07\0EFIT\x0C\0\0\0\0\x40\0\0\0\0\x0A\0\0\0EFID\x04\0\x41\0\x09\0EFIT\x0C\0\0\0\x40\x40\0\0\0\0\0\0\0\0EFID\x04\0\x1E\xEB\x03\0EFIT\x0C\0\0\0\0\x40\0\0\0\0\x3C\0\0\0EFID\x04\0\x1E\xEB\x09\0EFIT\x0C\0\0\0\0\x40\0\0\0\0\x3C\0\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read INGR, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        IngredientRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
     }
 
     SECTION("corrupt data: no EFIT")

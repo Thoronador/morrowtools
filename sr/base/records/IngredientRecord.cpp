@@ -489,7 +489,7 @@ bool IngredientRecord::loadFromStream(std::istream& in_File, const bool localize
                        << subLength << " bytes). Should be 8 bytes!\n";
              return false;
            }
-           // read DATA's stuff
+           // read ENIT's stuff
            in_File.read(reinterpret_cast<char*>(&baseCost), 4);
            in_File.read(reinterpret_cast<char*>(&flags), 4);
            bytesRead += 8;

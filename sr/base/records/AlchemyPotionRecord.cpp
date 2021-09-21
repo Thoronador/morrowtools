@@ -331,7 +331,7 @@ bool AlchemyPotionRecord::loadFromStream(std::istream& in_File, const bool local
   if (subLength != 12)
   {
     std::cerr << "Error: sub record OBND of ALCH has invalid length ("
-              << subLength << " bytes. Should be 12 bytes!\n";
+              << subLength << " bytes). Should be 12 bytes!\n";
     return false;
   }
   // read OBND's stuff
@@ -368,7 +368,7 @@ bool AlchemyPotionRecord::loadFromStream(std::istream& in_File, const bool local
       case cFULL:
            if (name.isPresent())
            {
-             std::cerr << "Error: recurd ALCH seems to have more than one FULL subrecord!\n";
+             std::cerr << "Error: record ALCH seems to have more than one FULL subrecord!\n";
              return false;
            }
            //FULL's length
@@ -378,7 +378,7 @@ bool AlchemyPotionRecord::loadFromStream(std::istream& in_File, const bool local
       case cKSIZ:
            if (!keywordArray.empty())
            {
-             std::cerr << "Error: recurd ALCH seems to have more than one KSIZ subrecord!\n";
+             std::cerr << "Error: record ALCH seems to have more than one KSIZ subrecord!\n";
              return false;
            }
            // KSIZ's length
@@ -414,7 +414,7 @@ bool AlchemyPotionRecord::loadFromStream(std::istream& in_File, const bool local
            if (subLength!=4*k_Size)
            {
              std::cerr << "Error: sub record KWDA of ALCH has invalid length ("
-                       << subLength << " bytes. Should be " << 4 * k_Size
+                       << subLength << " bytes). Should be " << 4 * k_Size
                        << " bytes!\n";
              return false;
            }
@@ -455,6 +455,11 @@ bool AlchemyPotionRecord::loadFromStream(std::istream& in_File, const bool local
              return false;
            }
            modelPath = std::string(buffer);
+           if (modelPath.empty())
+           {
+             std::cerr << "Error: Subrecord MODL of ALCH is empty!\n";
+             return false;
+           }
            break;
       case cMODT:
            if (unknownMODT.isPresent())

@@ -39,7 +39,7 @@ TEST_CASE("AlchemyPotionRecord")
     {
       REQUIRE( record.unknownOBND[i] == 0 );
     }
-    REQUIRE( record.keywordArray.empty() );
+    REQUIRE( record.keywords.empty() );
     REQUIRE_FALSE( record.name.isPresent() );
     REQUIRE( record.modelPath.empty() );
     REQUIRE_FALSE( record.unknownMODT.isPresent() );
@@ -91,13 +91,13 @@ TEST_CASE("AlchemyPotionRecord")
 
       SECTION("keywords mismatch")
       {
-        a.keywordArray.push_back(0x01234567);
+        a.keywords.push_back(0x01234567);
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        b.keywordArray.push_back(0x01234567);
-        b.keywordArray.push_back(0x09ABCDEF);
+        b.keywords.push_back(0x01234567);
+        b.keywords.push_back(0x09ABCDEF);
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
@@ -266,10 +266,10 @@ TEST_CASE("AlchemyPotionRecord")
     {
       REQUIRE( record.getWriteSize() == 82 );
 
-      record.keywordArray.push_back(0x01234567);
+      record.keywords.push_back(0x01234567);
       REQUIRE( record.getWriteSize() == 102 );
 
-      record.keywordArray.push_back(0x01234567);
+      record.keywords.push_back(0x01234567);
       REQUIRE( record.getWriteSize() == 106 );
     }
 
@@ -414,8 +414,8 @@ TEST_CASE("AlchemyPotionRecord")
       REQUIRE( record.name.isPresent() );
       REQUIRE( record.name.getType() == LocalizedString::Type::Index );
       REQUIRE( record.name.getIndex() == 0x000025A6 );
-      REQUIRE( record.keywordArray.size() == 1 );
-      REQUIRE( record.keywordArray[0] == 0x0008CDEA );
+      REQUIRE( record.keywords.size() == 1 );
+      REQUIRE( record.keywords[0] == 0x0008CDEA );
       REQUIRE( record.modelPath == "Clutter\\Ingredients\\Mead01.nif" );
       REQUIRE( record.unknownMODT.isPresent() );
       const auto MODT = std::string_view(reinterpret_cast<const char*>(record.unknownMODT.data()), record.unknownMODT.size());
@@ -1299,6 +1299,22 @@ TEST_CASE("AlchemyPotionRecord")
       AlchemyPotionRecord record;
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
+
+    SECTION("corrupt data: potion has no effects")
+    {
+      const std::string_view data = "ALCH\x09\x01\0\0\0\0\0\0\x5E\x4C\x03\0\x1B\x69\x55\0\x28\0\x0E\0EDID\x04\0Ale\0OBND\x0C\0\xFD\xFF\xFE\xFF\x02\0\x03\0\x03\0\x18\0FULL\x04\0\xA6\x25\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0\xEA\xCD\x08\0MODL\x1F\0Clutter\\Ingredients\\Mead01.nif\0MODT\x6C\0\x02\0\0\0\x08\0\0\0\0\0\0\0\x63\xDF\x5C\x01\x64\x64\x73\0\xBF\xFA\x25\xDA\xB9\xFB\x95\xCF\x64\x64\x73\0\xBF\xFA\x25\xDA\xFA\xE0\xBB\xA4\x64\x64\x73\0\x7F\x66\xA5\xC0\xCE\x35\x3C\x09\x64\x64\x73\0\x26\x2C\x33\x3B\xFD\x5A\x85\x62\x64\x64\x73\0\xBF\xFA\x25\xDA\xEA\x21\x64\xA7\x64\x64\x73\0\x60\x4D\xDD\x5C\x98\xA1\xD1\x7F\x64\x64\x73\0\x60\x4D\xDD\x5C\xF9\x0E\x5C\x2E\x64\x64\x73\0\x60\x4D\xDD\x5CYNAM\x04\0\xBD\xED\x03\0ZNAM\x04\0\xC0\xED\x03\0DATA\x04\0\0\0\0\x3F\x45NIT\x14\0\x05\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x35\x64\x0B\0"sv;
+      REQUIRE( data.size() == 0x0109 + 24 );
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read ALCH, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      AlchemyPotionRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
   }
 
   SECTION("saveToStream")
@@ -1326,6 +1342,39 @@ TEST_CASE("AlchemyPotionRecord")
       // Check written data.
       const std::string_view data = "ALCH\0\0\0\0\x20\0\0\0\x5E\x4C\x03\0\x1B\x69\x55\0\x28\0\x0E\0"sv;
       REQUIRE( stream.str() == data );
+    }
+  }
+
+  SECTION("flag queries")
+  {
+    AlchemyPotionRecord record;
+
+    SECTION("doesAutoCalc")
+    {
+      REQUIRE( record.doesAutoCalc() );
+      record.flags = AlchemyPotionRecord::cFlagNoAutoCalc;
+      REQUIRE_FALSE( record.doesAutoCalc() );
+    }
+
+    SECTION("isFoodItem")
+    {
+      REQUIRE_FALSE( record.isFoodItem() );
+      record.flags = AlchemyPotionRecord::cFlagFoodItem;
+      REQUIRE( record.isFoodItem() );
+    }
+
+    SECTION("isMedicine")
+    {
+      REQUIRE_FALSE( record.isMedicine() );
+      record.flags = AlchemyPotionRecord::cFlagMedicine;
+      REQUIRE( record.isMedicine() );
+    }
+
+    SECTION("isPoison")
+    {
+      REQUIRE_FALSE( record.isPoison() );
+      record.flags = AlchemyPotionRecord::cFlagPoison;
+      REQUIRE( record.isPoison() );
     }
   }
 }

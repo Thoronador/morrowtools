@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2011, 2012, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 #ifndef SR_ALCHEMYPOTIONRECORD_HPP
 #define SR_ALCHEMYPOTIONRECORD_HPP
 
-#include <cstdint>
+#include <array>
 #include <string>
 #include <vector>
 #include "BasicRecord.hpp"
@@ -32,47 +32,59 @@
 namespace SRTP
 {
 
+/** Holds information about a potion. */
 struct AlchemyPotionRecord: public BasicRecord
 {
   public:
-    /* constructor */
+    /** Constructor, creates an empty record. */
     AlchemyPotionRecord();
 
-    /* destructor */
-    virtual ~AlchemyPotionRecord();
+    /** Destructor. */
+    virtual ~AlchemyPotionRecord() = default;
 
     #ifndef SR_NO_RECORD_EQUALITY
-    /* returns true, if the other record contains the same data */
+    /** \brief Checks whether another instance contains the same data.
+     *
+     * \param other   the other record to compare with
+     * \return Returns true, if @other contains the same data as instance.
+     *         Returns false otherwise.
+     */
     bool equals(const AlchemyPotionRecord& other) const;
     #endif
 
     #ifndef SR_UNSAVEABLE_RECORDS
-    /* writes the record to the given output stream and returns true on success
+    /** \brief Gets the size in bytes that the record's data would occupy in a file
+     *         stream, NOT including the header data.
+     *
+     * \return Returns the size in bytes that the record would need. Size of the
+     *         header is not included.
+     */
+    virtual uint32_t getWriteSize() const;
 
-      parameters:
-          output   - the output stream
-    */
+    /** \brief Writes the record to the given output stream.
+     *
+     * \param output  the output stream
+     * \return Returns true on success (record was written to stream).
+     *         Returns false, if an error occurred.
+     */
     virtual bool saveToStream(std::ostream& output) const;
     #endif
 
-    /* loads the record from the given input stream and returns true on success
-
-      parameters:
-          in_File   - the input stream
-          localized - whether the data in the stream is localized or not
-          table     - the associated string table
-    */
+    /** \brief Loads the record from the given input stream.
+     *
+     * \param in_File    the input stream
+     * \param localized  whether the file to read from is localized or not
+     * \param table      the associated string table for localized files
+     * \return Returns true on success (record was loaded from stream).
+     *         Returns false, if an error occurred.
+     */
     virtual bool loadFromStream(std::istream& in_File, const bool localized, const StringTable& table);
 
-    /* returns the record's type, usually its header */
+    /** \brief Gets the record's type, usually its header.
+     *
+     * \return Returns the record's type.
+     */
     virtual uint32_t getRecordType() const;
-
-    #ifndef SR_UNSAVEABLE_RECORDS
-    /* returns the size in bytes that the record's data would occupy in a file
-       stream, NOT including the header data
-    */
-    virtual uint32_t getWriteSize() const;
-    #endif
 
     /* flag constants */
     static const uint32_t cFlagNoAutoCalc;
@@ -81,47 +93,59 @@ struct AlchemyPotionRecord: public BasicRecord
     static const uint32_t cFlagPoison;
 
     std::string editorID;
-    uint8_t unknownOBND[12];
-    LocalizedString name; //subrecord FULL
-    std::vector<uint32_t> keywordArray;
+    std::array<uint8_t, 12> unknownOBND;
+    LocalizedString name; // subrecord FULL
+    std::vector<uint32_t> keywords;
     std::string modelPath;
     BinarySubRecord unknownMODT;
     BinarySubRecord unknownMODS;
-    uint32_t pickupSoundFormID; //subrecord YNAM
-    uint32_t putdownSoundFormID; //subrecord ZNAM
-    uint32_t equipTypeFormID; //subrecord ETYP
-    float weight; //subrecord DATA
-    //subrecord ENIT
+    uint32_t pickupSoundFormID; // subrecord YNAM
+    uint32_t putdownSoundFormID; // subrecord ZNAM
+    uint32_t equipTypeFormID; // subrecord ETYP
+    float weight; // subrecord DATA
+    // subrecord ENIT
     uint32_t value;
     uint32_t flags;
     uint32_t unknownThirdENIT;
     float    addictionChance;
     uint32_t useSoundFormID;
-    //end of subrecord ENIT
+    // end of subrecord ENIT
     std::vector<EffectBlock> effects;
 
-    /* returns true, if the cost etc. are calculated automatically */
+    /** \brief Checks whether the cost etc. are calculated automatically.
+     *
+     * \return Returns true, if the cost etc. are calculated automatically.
+     */
     bool doesAutoCalc() const;
 
-    /* returns true, if the potion is a food item, according to flags */
+    /** \brief Checks whether the potion is a food item.
+     *
+     * \return Returns true, if the potion is a food item, according to flags.
+     */
     inline bool isFoodItem() const
     {
-      return ((flags & cFlagFoodItem)!=0);
+      return (flags & cFlagFoodItem) != 0;
     }
 
-    /* returns true, if the potion is a medicine, according to flags */
+    /** \brief Checks whether the potion is a medicine.
+     *
+     * \return Returns true, if the potion is a medicine, according to flags.
+     */
     inline bool isMedicine() const
     {
-      return ((flags & cFlagMedicine)!=0);
+      return (flags & cFlagMedicine) != 0;
     }
 
-    /* returns true, if the potion is a poison, according to flags */
+    /** \brief Checks whether the potion is a poison.
+     *
+     * \return Returns true, if the potion is a poison, according to flags.
+     */
     inline bool isPoison() const
     {
-      return ((flags & cFlagPoison)!=0);
+      return (flags & cFlagPoison) != 0;
     }
-}; //struct
+}; // struct
 
-} //namespace
+} // namespace
 
 #endif // SR_ALCHEMYPOTIONRECORD_HPP

@@ -20,7 +20,6 @@
 
 #include "AlchemyPotionRecord.hpp"
 #include <iostream>
-#include <cstring>
 #include "../SR_Constants.hpp"
 #include "../../../mw/base/HelperIO.hpp"
 
@@ -36,8 +35,9 @@ const uint32_t AlchemyPotionRecord::cFlagPoison     = 0x00020000;
 AlchemyPotionRecord::AlchemyPotionRecord()
 : BasicRecord(),
   editorID(""),
+  unknownOBND({ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }),
   name(LocalizedString()),
-  keywordArray(std::vector<uint32_t>()),
+  keywords(std::vector<uint32_t>()),
   modelPath(""),
   unknownMODT(BinarySubRecord()),
   unknownMODS(BinarySubRecord()),
@@ -45,38 +45,31 @@ AlchemyPotionRecord::AlchemyPotionRecord()
   putdownSoundFormID(0),
   equipTypeFormID(0),
   weight(0.0f),
-  //subrecord ENIT
   value(0),
   flags(0),
   unknownThirdENIT(0),
   addictionChance(0.0f),
   useSoundFormID(0),
-  //end of ENIT
   effects(std::vector<EffectBlock>())
 {
-  memset(unknownOBND, 0, 12);
-}
-
-AlchemyPotionRecord::~AlchemyPotionRecord()
-{
-  //empty
 }
 
 #ifndef SR_NO_RECORD_EQUALITY
 bool AlchemyPotionRecord::equals(const AlchemyPotionRecord& other) const
 {
-  return ((equalsBasic(other)) and (editorID==other.editorID)
-      and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
-      and (name==other.name) and (keywordArray==other.keywordArray)
-      and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
-      and (unknownMODS==other.unknownMODS)
-      and (pickupSoundFormID==other.pickupSoundFormID)
-      and (putdownSoundFormID==other.putdownSoundFormID)
-      and (equipTypeFormID==other.equipTypeFormID) and (weight==other.weight)
-      and (value==other.value) and (flags==other.flags)
-      and (unknownThirdENIT==other.unknownThirdENIT) and (addictionChance==other.addictionChance)
-      and (useSoundFormID==other.useSoundFormID)
-      and (effects==other.effects));
+  return equalsBasic(other) && (editorID == other.editorID)
+      && (unknownOBND == other.unknownOBND)
+      && (name == other.name) && (keywords == other.keywords)
+      && (modelPath == other.modelPath) && (unknownMODT == other.unknownMODT)
+      && (unknownMODS == other.unknownMODS)
+      && (pickupSoundFormID == other.pickupSoundFormID)
+      && (putdownSoundFormID == other.putdownSoundFormID)
+      && (equipTypeFormID == other.equipTypeFormID) && (weight == other.weight)
+      && (value == other.value) && (flags == other.flags)
+      && (unknownThirdENIT == other.unknownThirdENIT)
+      && (addictionChance == other.addictionChance)
+      && (useSoundFormID == other.useSoundFormID)
+      && (effects == other.effects);
 }
 #endif
 
@@ -85,195 +78,171 @@ uint32_t AlchemyPotionRecord::getWriteSize() const
 {
   if (isDeleted())
     return 0;
-  uint32_t writeSize;
-  writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
-        +editorID.length()+1 /* length of name +1 byte for NUL termination */
-        +4 /* OBND */ +2 /* 2 bytes for length */ +12 /* fixed length */
-        +4 /* MODL */ +2 /* 2 bytes for length */
-        +modelPath.length()+1 /* length of path +1 byte for NUL termination */
-        +4 /* DATA */ +2 /* 2 bytes for length */ +4 /* fixed length */
-        +4 /* ENIT */ +2 /* 2 bytes for length */ +20 /* fixed length */;
+  uint32_t writeSize = 4 /* EDID */ + 2 /* 2 bytes for length */
+        + editorID.length() + 1 /* length of name +1 byte for NUL termination */
+        + 4 /* OBND */ + 2 /* 2 bytes for length */ + 12 /* fixed length */
+        + 4 /* MODL */ + 2 /* 2 bytes for length */
+        + modelPath.length() + 1 /* length of path +1 byte for NUL termination */
+        + 4 /* DATA */ + 2 /* 2 bytes for length */ + 4 /* fixed length */
+        + 4 /* ENIT */ + 2 /* 2 bytes for length */ + 20 /* fixed length */;
   if (name.isPresent())
   {
     writeSize += name.getWriteSize();
-  }//if has FULL
-  if (!keywordArray.empty())
+  }
+  if (!keywords.empty())
   {
-    writeSize = writeSize +4 /* KSIZ */ +2 /* 2 bytes for length */ +4 /* fixed length */
-                          +4 /* KWDA */ +2 /* 2 bytes for length */ +4*keywordArray.size() /*data length*/ ;
-  }//if keywords
+    writeSize = writeSize + 4 /* KSIZ */ + 2 /* 2 bytes for length */ + 4 /* fixed length */
+                          + 4 /* KWDA */ + 2 /* 2 bytes for length */ + 4 * keywords.size();
+  }
   if (unknownMODT.isPresent())
   {
     writeSize = writeSize + 4 /* MODT */ + 2 /* 2 bytes for length */ + unknownMODT.size() /* length */;
-  }//if MODT
+  }
   if (unknownMODS.isPresent())
   {
     writeSize = writeSize + 4 /* MODS */ + 2 /* 2 bytes for length */ + unknownMODS.size() /* length */;
-  }//if MODS
-  if (pickupSoundFormID!=0)
+  }
+  if (pickupSoundFormID != 0)
   {
-    writeSize = writeSize +4 /* YNAM */ +2 /* 2 bytes for length */ +4 /* fixed length */;
-  }//if has YNAM
-  if (putdownSoundFormID!=0)
+    writeSize = writeSize + 4 /* YNAM */ + 2 /* 2 bytes for length */ + 4 /* fixed length */;
+  }
+  if (putdownSoundFormID != 0)
   {
-    writeSize = writeSize +4 /* ZNAM */ +2 /* 2 bytes for length */ +4 /* fixed length */;
-  }//if has ZNAM
-  if (equipTypeFormID!=0)
+    writeSize = writeSize + 4 /* ZNAM */ + 2 /* 2 bytes for length */ + 4 /* fixed length */;
+  }
+  if (equipTypeFormID != 0)
   {
-    writeSize = writeSize +4 /* ETYP */ +2 /* 2 bytes for length */ +4 /* fixed length */;
-  }//if has ETYP
-  uint32_t i;
-  for (i=0; i<effects.size(); ++i)
+    writeSize = writeSize + 4 /* ETYP */ + 2 /* 2 bytes for length */ + 4 /* fixed length */;
+  }
+  for (const auto& effect: effects)
   {
-    writeSize = writeSize +effects.at(i).getWriteSize();
-  }//for
+    writeSize += effect.getWriteSize();
+  }
   return writeSize;
 }
 
 bool AlchemyPotionRecord::saveToStream(std::ostream& output) const
 {
-  output.write((const char*) &cALCH, 4);
+  output.write(reinterpret_cast<const char*>(&cALCH), 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize()))
     return false;
   if (isDeleted())
     return true;
 
-  //write EDID
-  output.write((const char*) &cEDID, 4);
-  //EDID's length
-  uint16_t subLength = editorID.length()+1;
-  output.write((const char*) &subLength, 2);
-  //write editor ID
+  // write editor ID (EDID)
+  output.write(reinterpret_cast<const char*>(&cEDID), 4);
+  uint16_t subLength = editorID.length() + 1;
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
   output.write(editorID.c_str(), subLength);
 
-  //write OBND
-  output.write((const char*) &cOBND, 4);
-  //OBND's length
-  subLength = 12; //fixed
-  output.write((const char*) &subLength, 2);
-  //write OBND
-  output.write((const char*) unknownOBND, 12);
+  // write object bounds (OBND)
+  output.write(reinterpret_cast<const char*>(&cOBND), 4);
+  subLength = 12; // fixed length
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
+  output.write(reinterpret_cast<const char*>(unknownOBND.data()), 12);
 
   if (name.isPresent())
   {
-    //write FULL
     if (!name.saveToStream(output, cFULL))
       return false;
-  }//if has FULL
+  }
 
-  uint32_t i;
-  if (!keywordArray.empty())
+  if (!keywords.empty())
   {
-    //write KSIZ
-    output.write((const char*) &cKSIZ, 4);
-    //KSIZ's length
-    subLength = 4; //fixed
-    output.write((const char*) &subLength, 2);
-    //write KSIZ's data
-    const uint32_t k_Size = keywordArray.size();
-    output.write((const char*) &k_Size, 4);
+    // write keyword size (KSIZ)
+    output.write(reinterpret_cast<const char*>(&cKSIZ), 4);
+    subLength = 4;
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    const uint32_t k_Size = keywords.size();
+    output.write(reinterpret_cast<const char*>(&k_Size), 4);
 
-    //write KWDA
-    output.write((const char*) &cKWDA, 4);
-    //KWDA's length
-    subLength = 4*k_Size; //fixed
-    output.write((const char*) &subLength, 2);
+    // write keyword array (KWDA)
+    output.write(reinterpret_cast<const char*>(&cKWDA), 4);
+    subLength = 4 * k_Size;
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
     //write KWDA's data
-    for (i=0; i<k_Size; ++i)
+    for (const uint32_t keyword: keywords)
     {
-      output.write((const char*) &(keywordArray.at(i)), 4);
-    }//for
-  }//if keyword array
+      output.write(reinterpret_cast<const char*>(&keyword), 4);
+    }
+  }
 
-  //write MODL
-  output.write((const char*) &cMODL, 4);
-  //MODL's length
-  subLength = modelPath.length()+1;
-  output.write((const char*) &subLength, 2);
-  //write model path
+  // write model path (MODL)
+  output.write(reinterpret_cast<const char*>(&cMODL), 4);
+  subLength = modelPath.length() + 1;
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
   output.write(modelPath.c_str(), subLength);
 
   if (unknownMODT.isPresent())
   {
-    //write MODT
     if (!unknownMODT.saveToStream(output, cMODT))
     {
       std::cerr << "Error while writing MODT of ALCH!";
       return false;
     }
-  }//if MODT
+  }
 
   if (unknownMODS.isPresent())
   {
-    //write MODS
     if (!unknownMODS.saveToStream(output, cMODS))
     {
       std::cerr << "Error while writing MODS of ALCH!";
       return false;
     }
-  }//if MODS
+  }
 
-  if (pickupSoundFormID!=0)
+  if (pickupSoundFormID != 0)
   {
-    //write YNAM
-    output.write((const char*) &cYNAM, 4);
-    //YNAM's length
-    subLength = 4; //fixed
-    output.write((const char*) &subLength, 2);
-    //write pickup sound form ID
-    output.write((const char*) &pickupSoundFormID, 4);
-  }//if has YNAM
+    // write pickup sound form ID (YNAM)
+    output.write(reinterpret_cast<const char*>(&cYNAM), 4);
+    subLength = 4; // fixed length
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    output.write(reinterpret_cast<const char*>(&pickupSoundFormID), 4);
+  }
 
   if (putdownSoundFormID!=0)
   {
-    //write ZNAM
-    output.write((const char*) &cZNAM, 4);
-    //ZNAM's length
-    subLength = 4; //fixed
-    output.write((const char*) &subLength, 2);
-    //write putdown sound form ID
-    output.write((const char*) &putdownSoundFormID, 4);
-  }//if has ZNAM
+    // write putdown sound form ID (ZNAM)
+    output.write(reinterpret_cast<const char*>(&cZNAM), 4);
+    subLength = 4; // fixed length
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    output.write(reinterpret_cast<const char*>(&putdownSoundFormID), 4);
+  }
 
   if (equipTypeFormID!=0)
   {
-    //write ETYP
-    output.write((const char*) &cETYP, 4);
-    //ETYP's length
-    subLength = 4; //fixed
-    output.write((const char*) &subLength, 2);
-    //write equip type form ID
-    output.write((const char*) &equipTypeFormID, 4);
-  }//if has ETYP
+    // write equip type form ID (ETYP)
+    output.write(reinterpret_cast<const char*>(&cETYP), 4);
+    subLength = 4; // fixed length
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    output.write(reinterpret_cast<const char*>(&equipTypeFormID), 4);
+  }
 
-  //write DATA
-  output.write((const char*) &cDATA, 4);
-  //DATA's length
-  subLength = 4; //fixed
-  output.write((const char*) &subLength, 2);
-  //write DATA
-  output.write((const char*) &weight, 4);
+  // write DATA
+  output.write(reinterpret_cast<const char*>(&cDATA), 4);
+  subLength = 4; // fixed length
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
+  output.write(reinterpret_cast<const char*>(&weight), 4);
 
+  // write ENIT
+  output.write(reinterpret_cast<const char*>(&cENIT), 4);
+  subLength = 20; // fixed length
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
   //write ENIT
-  output.write((const char*) &cENIT, 4);
-  //ENIT's length
-  subLength = 20; //fixed
-  output.write((const char*) &subLength, 2);
-  //write ENIT
-  output.write((const char*) &value, 4);
-  output.write((const char*) &flags, 4);
-  output.write((const char*) &unknownThirdENIT, 4);
-  output.write((const char*) &addictionChance, 4);
-  output.write((const char*) &useSoundFormID, 4);
+  output.write(reinterpret_cast<const char*>(&value), 4);
+  output.write(reinterpret_cast<const char*>(&flags), 4);
+  output.write(reinterpret_cast<const char*>(&unknownThirdENIT), 4);
+  output.write(reinterpret_cast<const char*>(&addictionChance), 4);
+  output.write(reinterpret_cast<const char*>(&useSoundFormID), 4);
 
-  for (i=0; i<effects.size(); ++i)
+  for (const auto& effect: effects)
   {
-    if (!effects[i].saveToStream(output))
+    if (!effect.saveToStream(output))
     {
       std::cerr << "Error while writing effect blocks of ALCH!\n";
       return false;
     }
-  }//for
+  }
 
   return  output.good();
 }
@@ -284,49 +253,25 @@ bool AlchemyPotionRecord::loadFromStream(std::istream& in_File, const bool local
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize))
     return false;
-  uint32_t subRecName;
-  uint16_t subLength;
-  subRecName = subLength = 0;
-  uint32_t bytesRead;
+  uint32_t subRecName = 0;
+  uint16_t subLength = 0;
+  uint32_t bytesRead = 0;
 
-  //read EDID
-  in_File.read((char*) &subRecName, 4);
-  bytesRead = 4;
-  if (subRecName!=cEDID)
-  {
-    UnexpectedRecord(cEDID, subRecName);
-    return false;
-  }
-  //EDID's length
-  in_File.read((char*) &subLength, 2);
-  bytesRead += 2;
-  if (subLength>511)
-  {
-    std::cerr <<"Error: sub record EDID of ALCH is longer than 511 characters!\n";
-    return false;
-  }
-  //read EDID's stuff
+  // read editor ID (EDID)
   char buffer[512];
-  memset(buffer, 0, 512);
-  in_File.read(buffer, subLength);
-  bytesRead += subLength;
-  if (!in_File.good())
-  {
-    std::cerr << "Error while reading subrecord EDID of ALCH!\n";
+  if (!loadString512FromStream(in_File, editorID, buffer, cEDID, true, bytesRead))
     return false;
-  }
-  editorID = std::string(buffer);
 
-  //read OBND
-  in_File.read((char*) &subRecName, 4);
+  // read OBND
+  in_File.read(reinterpret_cast<char*>(&subRecName), 4);
   bytesRead += 4;
-  if (subRecName!=cOBND)
+  if (subRecName != cOBND)
   {
     UnexpectedRecord(cOBND, subRecName);
     return false;
   }
-  //OBND's length
-  in_File.read((char*) &subLength, 2);
+  // OBND's length
+  in_File.read(reinterpret_cast<char*>(&subLength), 2);
   bytesRead += 2;
   if (subLength != 12)
   {
@@ -335,7 +280,7 @@ bool AlchemyPotionRecord::loadFromStream(std::istream& in_File, const bool local
     return false;
   }
   // read OBND's stuff
-  in_File.read((char*) unknownOBND, 12);
+  in_File.read(reinterpret_cast<char*>(unknownOBND.data()), 12);
   bytesRead += 12;
   if (!in_File.good())
   {
@@ -344,8 +289,8 @@ bool AlchemyPotionRecord::loadFromStream(std::istream& in_File, const bool local
   }
 
   name.reset();
-  keywordArray.clear();
-  uint32_t i, temp, k_Size;
+  keywords.clear();
+  uint32_t temp, k_Size;
   modelPath.clear();
   unknownMODT.setPresence(false);
   unknownMODS.setPresence(false);
@@ -360,8 +305,8 @@ bool AlchemyPotionRecord::loadFromStream(std::istream& in_File, const bool local
   bool hasNonPushedEffect = false;
   while (bytesRead < readSize)
   {
-    //read next subrecord
-    in_File.read((char*) &subRecName, 4);
+    // read next subrecord
+    in_File.read(reinterpret_cast<char*>(&subRecName), 4);
     bytesRead += 4;
     switch (subRecName)
     {
@@ -371,18 +316,17 @@ bool AlchemyPotionRecord::loadFromStream(std::istream& in_File, const bool local
              std::cerr << "Error: record ALCH seems to have more than one FULL subrecord!\n";
              return false;
            }
-           //FULL's length
            if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
              return false;
            break;
       case cKSIZ:
-           if (!keywordArray.empty())
+           if (!keywords.empty())
            {
              std::cerr << "Error: record ALCH seems to have more than one KSIZ subrecord!\n";
              return false;
            }
            // KSIZ's length
-           in_File.read((char*) &subLength, 2);
+           in_File.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
            if (subLength != 4)
            {
@@ -392,7 +336,7 @@ bool AlchemyPotionRecord::loadFromStream(std::istream& in_File, const bool local
            }
            // read KSIZ's stuff
            k_Size = 0;
-           in_File.read((char*) &k_Size, 4);
+           in_File.read(reinterpret_cast<char*>(&k_Size), 4);
            bytesRead += 4;
            if (!in_File.good())
            {
@@ -401,7 +345,7 @@ bool AlchemyPotionRecord::loadFromStream(std::istream& in_File, const bool local
            }
 
            // read KWDA
-           in_File.read((char*) &subRecName, 4);
+           in_File.read(reinterpret_cast<char*>(&subRecName), 4);
            bytesRead += 4;
            if (subRecName != cKWDA)
            {
@@ -409,9 +353,9 @@ bool AlchemyPotionRecord::loadFromStream(std::istream& in_File, const bool local
              return false;
            }
            // KWDA's length
-           in_File.read((char*) &subLength, 2);
+           in_File.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
-           if (subLength!=4*k_Size)
+           if (subLength != 4 * k_Size)
            {
              std::cerr << "Error: sub record KWDA of ALCH has invalid length ("
                        << subLength << " bytes). Should be " << 4 * k_Size
@@ -419,16 +363,16 @@ bool AlchemyPotionRecord::loadFromStream(std::istream& in_File, const bool local
              return false;
            }
            // read KWDA's stuff
-           for (i = 0; i < k_Size; ++i)
+           for (uint32_t i = 0; i < k_Size; ++i)
            {
-             in_File.read((char*) &temp, 4);
+             in_File.read(reinterpret_cast<char*>(&temp), 4);
              bytesRead += 4;
              if (!in_File.good())
              {
                std::cerr << "Error while reading subrecord KWDA of ALCH!\n";
                return false;
              }
-             keywordArray.push_back(temp);
+             keywords.push_back(temp);
            }
            break;
       case cMODL:
@@ -437,24 +381,9 @@ bool AlchemyPotionRecord::loadFromStream(std::istream& in_File, const bool local
              std::cerr << "Error: ALCH seems to have more than one MODL subrecord!\n";
              return false;
            }
-           //MODL's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength>511)
-           {
-             std::cerr <<"Error: sub record MODL of ALCH is longer than 511 characters!\n";
+           // read model path
+           if (!loadString512FromStream(in_File, modelPath, buffer, cMODL, false, bytesRead))
              return false;
-           }
-           //read MODL's stuff
-           memset(buffer, 0, 512);
-           in_File.read(buffer, subLength);
-           bytesRead += subLength;
-           if (!in_File.good())
-           {
-             std::cerr << "Error while reading subrecord MODL of ALCH!\n";
-             return false;
-           }
-           modelPath = std::string(buffer);
            if (modelPath.empty())
            {
              std::cerr << "Error: Subrecord MODL of ALCH is empty!\n";
@@ -546,23 +475,23 @@ bool AlchemyPotionRecord::loadFromStream(std::istream& in_File, const bool local
              std::cerr << "Error: ALCH seems to have more than one DATA subrecord!\n";
              return false;
            }
-           //DATA's length
-           in_File.read((char*) &subLength, 2);
+           // DATA's length
+           in_File.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
-           if (subLength!=4)
+           if (subLength != 4)
            {
              std::cerr << "Error: subrecord DATA of ALCH has invalid length ("
                        << subLength << " bytes). Should be four bytes!\n";
              return false;
            }
-           //read DATA's stuff
-           in_File.read((char*) &weight, 4);
+           // read DATA's stuff
+           in_File.read(reinterpret_cast<char*>(&weight), 4);
            bytesRead += 4;
            if (!in_File.good())
            {
              std::cerr << "Error while reading subrecord DATA of ALCH!\n";
              return false;
-           }//if
+           }
            hasReadDATA = true;
            break;
       case cENIT:
@@ -571,50 +500,50 @@ bool AlchemyPotionRecord::loadFromStream(std::istream& in_File, const bool local
              std::cerr << "Error: ALCH seems to have more than one ENIT subrecord!\n";
              return false;
            }
-           //ENIT's length
-           in_File.read((char*) &subLength, 2);
+           // ENIT's length
+           in_File.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
-           if (subLength!=20)
+           if (subLength != 20)
            {
-             std::cerr <<"Error: subrecord ENIT of ALCH has invalid length ("
-                       <<subLength<<" bytes). Should be 20 bytes!\n";
+             std::cerr << "Error: subrecord ENIT of ALCH has invalid length ("
+                       << subLength << " bytes). Should be 20 bytes!\n";
              return false;
            }
-           //read ENIT's stuff
-           in_File.read((char*) &value, 4);
-           in_File.read((char*) &flags, 4);
-           in_File.read((char*) &unknownThirdENIT, 4);
-           in_File.read((char*) &addictionChance, 4);
-           in_File.read((char*) &useSoundFormID, 4);
+           // read ENIT's stuff
+           in_File.read(reinterpret_cast<char*>(&value), 4);
+           in_File.read(reinterpret_cast<char*>(&flags), 4);
+           in_File.read(reinterpret_cast<char*>(&unknownThirdENIT), 4);
+           in_File.read(reinterpret_cast<char*>(&addictionChance), 4);
+           in_File.read(reinterpret_cast<char*>(&useSoundFormID), 4);
            bytesRead += 20;
            if (!in_File.good())
            {
              std::cerr << "Error while reading subrecord ENIT of ALCH!\n";
              return false;
-           }//if
+           }
            hasReadENIT = true;
            break;
       case cEFID:
-           //check for old effect block
+           // check for old effect block
            if (hasNonPushedEffect)
            {
-             //need to push
+             // need to push
              effects.push_back(tempEffect);
              hasNonPushedEffect = false;
            }
-           //new effect block
+           // new effect block
            tempEffect.unknownCTDA_CIS2s.clear();
-           //EFID's length
-           in_File.read((char*) &subLength, 2);
+           // EFID's length
+           in_File.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
-           if (subLength!=4)
+           if (subLength != 4)
            {
-             std::cerr <<"Error: subrecord EFID of ALCH has invalid length ("
-                       <<subLength<<" bytes). Should be four bytes!\n";
+             std::cerr << "Error: subrecord EFID of ALCH has invalid length ("
+                       << subLength << " bytes). Should be four bytes!\n";
              return false;
            }
-           //read EFID's stuff
-           in_File.read((char*) &(tempEffect.effectFormID), 4);
+           // read EFID's stuff
+           in_File.read(reinterpret_cast<char*>(&tempEffect.effectFormID), 4);
            bytesRead += 4;
            if (!in_File.good())
            {
@@ -622,27 +551,27 @@ bool AlchemyPotionRecord::loadFromStream(std::istream& in_File, const bool local
              return false;
            }
 
-           //read EFIT
-           in_File.read((char*) &subRecName, 4);
+           // read EFIT
+           in_File.read(reinterpret_cast<char*>(&subRecName), 4);
            bytesRead += 4;
-           if (subRecName!=cEFIT)
+           if (subRecName != cEFIT)
            {
              UnexpectedRecord(cEFIT, subRecName);
              return false;
            }
-           //EFIT's length
-           in_File.read((char*) &subLength, 2);
+           // EFIT's length
+           in_File.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
-           if (subLength!=12)
+           if (subLength != 12)
            {
-             std::cerr <<"Error: subrecord EFIT of ALCH has invalid length ("
-                       <<subLength<<" bytes). Should be 12 bytes!\n";
+             std::cerr << "Error: subrecord EFIT of ALCH has invalid length ("
+                       << subLength << " bytes). Should be 12 bytes!\n";
              return false;
            }
-           //read EFIT's stuff
-           in_File.read((char*) &(tempEffect.magnitude), 4);
-           in_File.read((char*) &(tempEffect.areaOfEffect), 4);
-           in_File.read((char*) &(tempEffect.duration), 4);
+           // read EFIT's stuff
+           in_File.read(reinterpret_cast<char*>(&tempEffect.magnitude), 4);
+           in_File.read(reinterpret_cast<char*>(&tempEffect.areaOfEffect), 4);
+           in_File.read(reinterpret_cast<char*>(&tempEffect.duration), 4);
            bytesRead += 12;
            if (!in_File.good())
            {
@@ -651,7 +580,7 @@ bool AlchemyPotionRecord::loadFromStream(std::istream& in_File, const bool local
            }
            hasNonPushedEffect = true;
            break;
-      //We don't need CTDA stuff yet, but it might be useful in the future.
+      // We don't need CTDA stuff yet, but it might be useful in the future.
       case cCTDA:
            if (!hasNonPushedEffect)
            {
@@ -672,17 +601,17 @@ bool AlchemyPotionRecord::loadFromStream(std::istream& in_File, const bool local
                      << " ETYP, DATA, ENIT, EFID or CTDA are allowed here!\n";
            return false;
            break;
-    }//swi
-  }//while
+    }
+  }
 
-  //check possibly not yet pushed effect block
+  // check for possibly not yet pushed effect block
   if (hasNonPushedEffect)
   {
     effects.push_back(tempEffect);
   }
 
-  //presence checks
-  if (!(hasReadDATA and hasReadENIT))
+  // presence checks
+  if (!hasReadDATA || !hasReadENIT)
   {
     std::cerr << "Error: DATA or ENIT subrecord of ALCH is missing!\n";
     return false;
@@ -703,7 +632,7 @@ uint32_t AlchemyPotionRecord::getRecordType() const
 
 bool AlchemyPotionRecord::doesAutoCalc() const
 {
-  return ((flags & cFlagNoAutoCalc)==0);
+  return (flags & cFlagNoAutoCalc) == 0;
 }
 
-} //namespace
+} // namespace

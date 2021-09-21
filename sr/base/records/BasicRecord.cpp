@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,7 +30,6 @@ BasicRecord::BasicRecord()
 : headerFlags(0), headerFormID(0), headerRevision(0),
   headerVersion(0), headerUnknown5(0)
 {
-
 }
 
 BasicRecord::~BasicRecord()
@@ -56,24 +55,24 @@ void BasicRecord::copyBasicMembers(const BasicRecord& other)
 #ifndef SR_NO_RECORD_EQUALITY
 bool BasicRecord::equalsBasic(const BasicRecord& other) const
 {
-  return ((headerFlags==other.headerFlags)
-    and (headerFormID==other.headerFormID)
-    and (headerRevision==other.headerRevision)
-    and (headerVersion==other.headerVersion)
-    and (headerUnknown5==other.headerUnknown5));
+  return (headerFlags == other.headerFlags)
+    && (headerFormID == other.headerFormID)
+    && (headerRevision == other.headerRevision)
+    && (headerVersion == other.headerVersion)
+    && (headerUnknown5 == other.headerUnknown5);
 }
 #endif
 
-bool BasicRecord::loadSizeAndUnknownValues(std::istream& in_File, uint32_t& sizeStorage)
+bool BasicRecord::loadSizeAndUnknownValues(std::istream& input, uint32_t& sizeStorage)
 {
-  in_File.read((char*) &sizeStorage, 4);
-  //partially unknown values
-  in_File.read((char*) &headerFlags, 4);
-  in_File.read((char*) &headerFormID, 4);
-  in_File.read((char*) &headerRevision, 4);
-  in_File.read((char*) &headerVersion, 2);
-  in_File.read((char*) &headerUnknown5, 2);
-  if (!in_File.good())
+  input.read(reinterpret_cast<char*>(&sizeStorage), 4);
+  // partially unknown values
+  input.read(reinterpret_cast<char*>(&headerFlags), 4);
+  input.read(reinterpret_cast<char*>(&headerFormID), 4);
+  input.read(reinterpret_cast<char*>(&headerRevision), 4);
+  input.read(reinterpret_cast<char*>(&headerVersion), 2);
+  input.read(reinterpret_cast<char*>(&headerUnknown5), 2);
+  if (!input.good())
   {
     std::cerr << "BasicRecord::loadSizeAndUnknownValues: Error while reading "
               << "record size and unknown header data.\n";
@@ -85,14 +84,14 @@ bool BasicRecord::loadSizeAndUnknownValues(std::istream& in_File, uint32_t& size
 #ifndef SR_UNSAVEABLE_RECORDS
 bool BasicRecord::saveSizeAndUnknownValues(std::ostream& output, const uint32_t theSize) const
 {
-  //record size
-  output.write((const char*) &theSize, 4);
-  //partially unknown values
-  output.write((const char*) &headerFlags, 4);
-  output.write((const char*) &headerFormID, 4);
-  output.write((const char*) &headerRevision, 4);
-  output.write((const char*) &headerVersion, 2);
-  output.write((const char*) &headerUnknown5, 2);
+  // record size
+  output.write(reinterpret_cast<const char*>(&theSize), 4);
+  // partially unknown values
+  output.write(reinterpret_cast<const char*>(&headerFlags), 4);
+  output.write(reinterpret_cast<const char*>(&headerFormID), 4);
+  output.write(reinterpret_cast<const char*>(&headerRevision), 4);
+  output.write(reinterpret_cast<const char*>(&headerVersion), 2);
+  output.write(reinterpret_cast<const char*>(&headerUnknown5), 2);
   if (!output.good())
   {
     std::cerr << "BasicRecord::saveSizeAndUnknownValues: Error while writing "
@@ -103,32 +102,32 @@ bool BasicRecord::saveSizeAndUnknownValues(std::ostream& output, const uint32_t 
 }
 #endif
 
-bool BasicRecord::loadUint32SubRecordFromStream(std::istream& in_File, const uint32_t subHeader, uint32_t& target, const bool withHeader) const
+bool BasicRecord::loadUint32SubRecordFromStream(std::istream& input, const uint32_t subHeader, uint32_t& target, const bool withHeader) const
 {
   if (withHeader)
   {
     uint32_t subRecName = 0;
-    //read header
-    in_File.read((char*) &subRecName, 4);
-    if (subRecName!=subHeader)
+    // read header
+    input.read(reinterpret_cast<char*>(&subRecName), 4);
+    if (subRecName != subHeader)
     {
       UnexpectedRecord(subHeader, subRecName);
       return false;
     }
-  }//if header
-  //subrecord's length
+  }
+  // subrecord's length
   uint16_t subLength = 0;
-  in_File.read((char*) &subLength, 2);
-  if (subLength!=4)
+  input.read(reinterpret_cast<char*>(&subLength), 2);
+  if (subLength != 4)
   {
-    std::cerr <<"Error: sub record "<<IntTo4Char(subHeader)<<" of "
-              <<IntTo4Char(getRecordType())<<" has invalid length ("<<subLength
-              <<" bytes). Should be four bytes.\n";
+    std::cerr << "Error: sub record " << IntTo4Char(subHeader) << " of "
+              << IntTo4Char(getRecordType()) << " has invalid length ("
+              << subLength << " bytes). Should be four bytes.\n";
     return false;
   }
-  //read value
-  in_File.read((char*) &target, 4);
-  if (!in_File.good())
+  // read value
+  input.read(reinterpret_cast<char*>(&target), 4);
+  if (!input.good())
   {
     std::cerr << "BasicRecord::loadUint32: Error while reading subrecord "
               << IntTo4Char(subHeader) << " of " << IntTo4Char(getRecordType())
@@ -138,36 +137,39 @@ bool BasicRecord::loadUint32SubRecordFromStream(std::istream& in_File, const uin
   return true;
 }
 
-bool BasicRecord::loadString512FromStream(std::istream& in_File, std::string& target, char * buffer, const uint32_t subHeader, const bool withHeader, uint32_t& bytesRead) const
+bool BasicRecord::loadString512FromStream(std::istream& input, std::string& target, char * buffer, const uint32_t subHeader, const bool withHeader, uint32_t& bytesRead) const
 {
   if (withHeader)
   {
     uint32_t subRecName = 0;
-    //read header
-    in_File.read((char*) &subRecName, 4);
+    // read header
+    input.read(reinterpret_cast<char*>(&subRecName), 4);
     bytesRead += 4;
-    if (subRecName!=subHeader)
+    if (subRecName != subHeader)
     {
       UnexpectedRecord(subHeader, subRecName);
       return false;
     }
-  }//if with header
-  //subrecord's length
+  }
+  // subrecord's length
   uint16_t subLength = 0;
-  in_File.read((char*) &subLength, 2);
+  input.read(reinterpret_cast<char*>(&subLength), 2);
   bytesRead += 2;
-  if (subLength>511)
+  if (subLength > 511)
   {
-    std::cerr <<"Error: sub record "<<IntTo4Char(subHeader)<<" of "<<IntTo4Char(getRecordType())<<" is longer than 511 characters!\n";
+    std::cerr << "Error: sub record " << IntTo4Char(subHeader) << " of "
+              << IntTo4Char(getRecordType())
+              << " is longer than 511 characters!\n";
     return false;
   }
-  //read string
+  // read string
   memset(buffer, 0, 512);
-  in_File.read(buffer, subLength);
+  input.read(buffer, subLength);
   bytesRead += subLength;
-  if (!in_File.good())
+  if (!input.good())
   {
-    std::cerr << "Error while reading subrecord "<<IntTo4Char(subHeader)<<" of "<<IntTo4Char(getRecordType())<<"!\n";
+    std::cerr << "Error while reading subrecord " << IntTo4Char(subHeader)
+              << " of " << IntTo4Char(getRecordType()) << "!\n";
     return false;
   }
   target = std::string(buffer);
@@ -179,30 +181,32 @@ bool BasicRecord::loadBufferFromStream(std::istream& in_File, const uint16_t len
   if (withHeader)
   {
     uint32_t subRecName = 0;
-    //read header
-    in_File.read((char*) &subRecName, 4);
+    // read header
+    in_File.read(reinterpret_cast<char*>(&subRecName), 4);
     bytesRead += 4;
-    if (subRecName!=subHeader)
+    if (subRecName != subHeader)
     {
       UnexpectedRecord(subHeader, subRecName);
       return false;
     }
-  }//if with header
-  //subrecord's length
+  }
+  // subrecord's length
   uint16_t subLength = 0;
-  in_File.read((char*) &subLength, 2);
+  in_File.read(reinterpret_cast<char*>(&subLength), 2);
   bytesRead += 2;
-  if (subLength!=len)
+  if (subLength != len)
   {
-    std::cerr <<"Error: sub record "<<IntTo4Char(subHeader)<<" of "<<IntTo4Char(getRecordType())
-              <<" has invalid length ("<<subLength<<" bytes). Should be "<<len<<" bytes!\n";
+    std::cerr << "Error: sub record " << IntTo4Char(subHeader) << " of "
+              << IntTo4Char(getRecordType()) << " has invalid length ("
+              << subLength << " bytes). Should be " << len << " bytes!\n";
     return false;
   }
-  in_File.read((char*) target, len);
+  in_File.read(reinterpret_cast<char*>(target), len);
   bytesRead += len;
   if (!in_File.good())
   {
-    std::cerr << "Error while reading subrecord "<<IntTo4Char(subHeader)<<" of "<<IntTo4Char(getRecordType())<<"!\n";
+    std::cerr << "Error while reading subrecord " << IntTo4Char(subHeader)
+              << " of " << IntTo4Char(getRecordType()) << "!\n";
     return false;
   }
   return true;
@@ -212,23 +216,23 @@ bool BasicRecord::loadBufferFromStream(std::istream& in_File, const uint16_t len
 uint32_t BasicRecord::getTotalWrittenSize() const
 {
   /* 24 bytes are the "header" of each record, containing type, size and so on */
-  return (24 + getWriteSize());
+  return 24 + getWriteSize();
 }
 #endif
 
 bool BasicRecord::isCompressed() const
 {
-  return ((headerFlags & cCompressionFlag)!=0);
+  return (headerFlags & cCompressionFlag) != 0;
 }
 
 bool BasicRecord::isDeleted() const
 {
-  return ((headerFlags & cDeletedFlag)!=0);
+  return (headerFlags & cDeletedFlag) != 0;
 }
 
 bool BasicRecord::isIgnored() const
 {
-  return ((headerFlags & cIgnoredFlag)!=0);
+  return (headerFlags & cIgnoredFlag) != 0;
 }
 
-} //namespace
+} // namespace

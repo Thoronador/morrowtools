@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,150 +27,176 @@
 namespace SRTP
 {
 
+// forward declaration for StringTable
 class StringTable;
 
+/** Abstract base class for all records in Skyrim's ESM files. */
 struct BasicRecord
 {
   public:
-    /* constructor */
+    /** Constructor. */
     BasicRecord();
 
-    /* destructor */
+    /** Destructor. */
     virtual ~BasicRecord();
 
     #ifndef SR_UNSAVEABLE_RECORDS
-    /* returns the size in bytes that the record's data would occupy in a file
-       stream, including the size of the header data
-    */
+    /** \brief Gets the size in bytes that the record's data would occupy in a stream.
+     *
+     * \return Returns the size in bytes that the record's data would occupy in
+     *         a file stream, including the size of the header data.
+     */
     uint32_t getTotalWrittenSize() const;
 
-    /* writes the record to the given output stream and returns true on success
-
-       parameters:
-           output   - the output stream
-    */
+    /** \brief Writes the record to the given output stream.
+     *
+     * \param output  the output stream
+     * \return Returns true on success (record was written to stream).
+     *         Returns false, if an error occurred.
+     */
     virtual bool saveToStream(std::ostream& output) const = 0;
     #endif
 
-    /* loads the record from the given input stream and returns true on success
-
-      parameters:
-          in_File   - the input stream
-          localized - whether the file to read from is localized or not
-          table     - the associated string table for localized files
-    */
+    /** \brief Loads the record from the given input stream.
+     *
+     * \param in_File    the input stream
+     * \param localized  whether the file to read from is localized or not
+     * \param table      the associated string table for localized files
+     * \return Returns true on success (record was loaded from stream).
+     *         Returns false, if an error occurred.
+     */
     virtual bool loadFromStream(std::istream& in_File, const bool localized, const StringTable& table) = 0;
 
-    /* returns true, if the record is a generic record (see GenericRecord.hpp) */
+    /** \brief Checks whether this is an instance of the GenericRecord class.
+     *
+     * \return Returns true, if the record is a generic record (see
+     *         GenericRecord.hpp).
+     */
     virtual bool isGenericRecord() const;
 
-    /* returns the record's type, usually its header */
+    /** \brief Gets the record's type, usually its header.
+     *
+     * \return Returns the record's type.
+     */
     virtual uint32_t getRecordType() const = 0;
 
-    /* returns true, if the record's data is compressed, according to the set
-       flags
-    */
+    /** \brief Checks whether the record's data is compressed.
+     *
+     * \return Returns true, if the record's data is compressed, according to
+     *         the set flags.
+     */
     bool isCompressed() const;
 
-    /* returns true, if the record is deleted, according to the set flags */
+    /** \brief Checks whether the record is deleted.
+     *
+     * \brief Returns true, if the record is deleted, according to the set flags.
+     */
     bool isDeleted() const;
 
-    /* returns true, if the record should be ignored, according to the set flags */
+    /** \brief Checks whether the record should be ignored.
+     *
+     * \return Returns true, if the record should be ignored, according to the
+     *         set flags.
+     */
     bool isIgnored() const;
 
-    //flag constants
+    // flag constants
     static const uint32_t cDeletedFlag     = 0x00000020;
     static const uint32_t cIgnoredFlag     = 0x00001000;
     static const uint32_t cCompressionFlag = 0x00040000;
 
-    //partially unknown values - 16 bytes, i.e. 4 x uint32_t
-    uint32_t headerFlags;
-    uint32_t headerFormID;
+    // partially unknown values - 16 bytes, i.e. 4 x uint32_t
+    uint32_t headerFlags;    /**< generic flags of the record */
+    uint32_t headerFormID;   /**< form id of the record */
     uint32_t headerRevision;
-    uint16_t headerVersion;
+    uint16_t headerVersion;  /**< version of the record */
     uint16_t headerUnknown5;
   protected:
-    //util. func.
     void copyBasicMembers(const BasicRecord& other);
 
     #ifndef SR_NO_RECORD_EQUALITY
-    /* returns true, if the other basic record contains the same data */
+    /** Returns true, if the other basic record contains the same data. */
     bool equalsBasic(const BasicRecord& other) const;
     #endif
 
-    /* loads the first data of a record, the record size and yet unknown other
-       values, from the given input stream and returns true on success
-
-       parameters:
-           in_File     - the input file stream
-           sizeStorage - reference to the variable that will be used to store the size
-    */
-    bool loadSizeAndUnknownValues(std::istream& in_File, uint32_t& sizeStorage);
+    /** \brief Loads the record's header data.
+     *
+     * Loads the first data of a record, the record size and yet unknown other
+       values, from the given input stream.
+     * \param input        the input stream
+     * \param sizeStorage  reference to the variable that will be used to store
+     *                     the size
+     * \return Returns true on success (data was loaded successfully).
+     *         Returns false, if an error occurred.
+     */
+    bool loadSizeAndUnknownValues(std::istream& input, uint32_t& sizeStorage);
 
     #ifndef SR_UNSAVEABLE_RECORDS
-    /* writes the first data of a record, the record size and yet unknown other
-       values, to the given output stream and returns true on success
-
-       parameters:
-           output  - the output file stream
-           theSize - size to be written
-    */
+    /** \brief Writes the record header to the output stream.
+     *
+     * Writes the first data of a record, the record size and yet unknown other
+     * values, to the given output stream.
+     *
+     * \param output   the output stream
+     * \param theSize  size value to be written
+     * \return Returns true on success (data was written successfully).
+     *         Returns false, if an error occurred.
+     */
     bool saveSizeAndUnknownValues(std::ostream& output, const uint32_t theSize) const;
 
-    /* returns the size in bytes that the record's data would occupy in a file
-       stream, NOT including the header data
-
-       parameters:
-           none
-
-       remarks:
-           This function has to be reimplemented for every new record type
-    */
+    /** \brief Gets the size in bytes that the record's data would occupy in a file
+     *         stream, NOT including the header data.
+     *
+     * \return Returns the size in bytes that the record would need. Size of the
+     *         header is not included.
+     * \remarks
+     *     This function has to be reimplemented for every new record type.
+     */
     virtual uint32_t getWriteSize() const = 0;
     #endif
 
-    /* tries to load a 4 byte long subrecord from the stream and returns true
-       in case of success
+    /** \brief Tries to load a 4 byte long subrecord from the stream.
+     *
+     * \param input       the input stream
+     * \param subHeader   the expected header of that subrecord
+     * \param target      the uint32_t that will be used to store the read data
+     * \param withHeader  if set to true, the header is read, too. Otherwise
+     *                    just the subrecord's content is read.
+     * \return Returns true on success (data was loaded successfully).
+     *         Returns false, if an error occurred.
+     */
+    bool loadUint32SubRecordFromStream(std::istream& input, const uint32_t subHeader, uint32_t& target, const bool withHeader) const;
 
-       parameters:
-           in_File   - the input stream
-           subHeader - the expected header of that subrecord
-           target    - the uint32_t that will be used to store the read data
-           withHeader - if set to true, the header is read, too. Otherwise just
-                        the subrecord's content is read
-    */
-    bool loadUint32SubRecordFromStream(std::istream& in_File, const uint32_t subHeader, uint32_t& target, const bool withHeader) const;
+    /** \brief Tries to load a NUL-terminated string from the stream.
+     *
+     * \param input       the input stream
+     * \param target      the string that will be used to store the read data
+     * \param buffer      a pre-allocated array of char that can hold at least 512 bytes
+     * \param subHeader   the expected header of that subrecord
+     * \param withHeader  if set to true, the header is read, too. Otherwise
+     *                    just the subrecord's content is read.
+     * \param bytesRead   the variable that holds the number of bytes read so far
+     * \return Returns true on success (data was loaded successfully).
+     *         Returns false, if an error occurred.
+     */
+    bool loadString512FromStream(std::istream& input, std::string& target, char * buffer, const uint32_t subHeader, const bool withHeader, uint32_t& bytesRead) const;
 
-    /* tries to load a NUL-terminated string from the stream and returns true
-       in case of success
-
-       parameters:
-           in_File    - the input stream
-           target     - the string that will be used to store the read data
-           buffer     - a pre-allocated array of char that can hold at least 512 bytes
-           subHeader  - the expected header of that subrecord
-           withHeader - if set to true, the header is read, too. Otherwise just
-                        the subrecord's content is read
-           bytesRead  - the variable that holds the number of bytes read so far
-    */
-    bool loadString512FromStream(std::istream& in_File, std::string& target, char * buffer, const uint32_t subHeader, const bool withHeader, uint32_t& bytesRead) const;
-
-    /* tries to load a fixed length buffer from the stream and returns true in
-       case of success
-
-       parameters:
-           in_File    - the input stream
-           len        - expected length of the buffer in bytes
-           target     - the pre-allocated buffer that will be used to store the
-                        read data, has to have a length of at least len bytes
-           subHeader  - the expected header of that subrecord
-           withHeader - if set to true, the header is read, too. Otherwise just
-                        the subrecord's content is read
-           bytesRead  - the variable that holds the number of bytes read so far
-    */
+    /** \brief Tries to load a fixed length buffer from the stream.
+     *
+     * \param in_File     the input stream
+     * \param len         expected length of the buffer in bytes
+     * \param target      the pre-allocated buffer that will be used to store the
+     *                    read data, has to have a length of at least len bytes
+     * \param subHeader   the expected header of that subrecord
+     * \param withHeader  if set to true, the header is read, too. Otherwise
+     *                    just the subrecord's content is read.
+     * \param bytesRead   the variable that holds the number of bytes read so far
+     * \return Returns true on success (data was loaded successfully).
+     *         Returns false, if an error occurred.
+     */
     bool loadBufferFromStream(std::istream& in_File, const uint16_t len, uint8_t * target, const uint32_t subHeader, const bool withHeader, uint32_t& bytesRead) const;
-}; //struct
+}; // struct
 
-} //namespace
+} // namespace
 
 #endif // SR_BASICRECORD_HPP

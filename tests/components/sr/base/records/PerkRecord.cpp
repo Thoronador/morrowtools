@@ -253,6 +253,21 @@ TEST_CASE("PerkRecord")
       REQUIRE( streamOut.str() == data );
     }
 
+    SECTION("corrupt data: stream ends before header can be read completely")
+    {
+      const std::string_view data = "PERK\xAC\0\0\0\0\0\0\0\x12\x1B\x05"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read PERK, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      PerkRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: no EDID")
     {
       const std::string_view data = "PERK\xAC\0\0\0\0\0\0\0\x12\x1B\x05\0\x1B\x69\x55\0\x28\0\x0F\0FAIL\x12\0HuntersDiscipline\0FULL\x04\0\xA2\x11\0\0DESC\x04\0\xF9\x43\0\0CTDA\x20\0\0\x85\x06\x26\0\0\x80\x3F\xC0\x01\x53\x43\x1C\x5F\x10\0\0\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\xFF\xFF\x43\x54\x44\x41\x20\0\x60\x85\x06\x26\0\0\x48\x42\x15\x01\x53\x43\x08\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\xFF\xFF\x44\x41\x54\x41\x05\0\0\0\x01\x01\0\x50\x52\x4B\x45\x03\0\x02\0\0\x44\x41\x54\x41\x03\0\x15\x01\x01\x45\x50\x46\x54\x01\0\x01\x45\x50\x46\x44\x04\0\0\0\x84\x42\x50\x52\x4B\x46\0\0"sv;
@@ -298,9 +313,84 @@ TEST_CASE("PerkRecord")
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
+    SECTION("corrupt data: multiple FULL")
+    {
+      const std::string_view data = "PERK\xB6\0\0\0\0\0\0\0\x12\x1B\x05\0\x1B\x69\x55\0\x28\0\x0F\0EDID\x12\0HuntersDiscipline\0FULL\x04\0\xA2\x11\0\0FULL\x04\0\xA2\x11\0\0DESC\x04\0\xF9\x43\0\0CTDA\x20\0\0\x85\x06\x26\0\0\x80\x3F\xC0\x01\x53\x43\x1C\x5F\x10\0\0\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\xFF\xFF\x43\x54\x44\x41\x20\0\x60\x85\x06\x26\0\0\x48\x42\x15\x01\x53\x43\x08\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\xFF\xFF\x44\x41\x54\x41\x05\0\0\0\x01\x01\0\x50\x52\x4B\x45\x03\0\x02\0\0\x44\x41\x54\x41\x03\0\x15\x01\x01\x45\x50\x46\x54\x01\0\x01\x45\x50\x46\x44\x04\0\0\0\x84\x42\x50\x52\x4B\x46\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read PERK, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      PerkRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: stream ends before FULL be read completely")
+    {
+      const std::string_view data = "PERK\xAC\0\0\0\0\0\0\0\x12\x1B\x05\0\x1B\x69\x55\0\x28\0\x0F\0EDID\x12\0HuntersDiscipline\0FULL\x04\0\xA2\x11"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read PERK, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      PerkRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple DESC")
+    {
+      const std::string_view data = "PERK\xB6\0\0\0\0\0\0\0\x12\x1B\x05\0\x1B\x69\x55\0\x28\0\x0F\0EDID\x12\0HuntersDiscipline\0FULL\x04\0\xA2\x11\0\0DESC\x04\0\xF9\x43\0\0DESC\x04\0\xF9\x43\0\0CTDA\x20\0\0\x85\x06\x26\0\0\x80\x3F\xC0\x01\x53\x43\x1C\x5F\x10\0\0\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\xFF\xFF\x43\x54\x44\x41\x20\0\x60\x85\x06\x26\0\0\x48\x42\x15\x01\x53\x43\x08\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\xFF\xFF\x44\x41\x54\x41\x05\0\0\0\x01\x01\0\x50\x52\x4B\x45\x03\0\x02\0\0\x44\x41\x54\x41\x03\0\x15\x01\x01\x45\x50\x46\x54\x01\0\x01\x45\x50\x46\x44\x04\0\0\0\x84\x42\x50\x52\x4B\x46\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read PERK, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      PerkRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: stream ends before DESC can be read completely")
+    {
+      const std::string_view data = "PERK\xAC\0\0\0\0\0\0\0\x12\x1B\x05\0\x1B\x69\x55\0\x28\0\x0F\0EDID\x12\0HuntersDiscipline\0FULL\x04\0\xA2\x11\0\0DESC\x04\0\xF9\x43"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read PERK, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      PerkRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: description (DESC) is missing")
     {
       const std::string_view data = "PERK\xA2\0\0\0\0\0\0\0\x12\x1B\x05\0\x1B\x69\x55\0\x28\0\x0F\0EDID\x12\0HuntersDiscipline\0FULL\x04\0\xA2\x11\0\0CTDA\x20\0\0\x85\x06\x26\0\0\x80\x3F\xC0\x01\x53\x43\x1C\x5F\x10\0\0\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\xFF\xFF\x43\x54\x44\x41\x20\0\x60\x85\x06\x26\0\0\x48\x42\x15\x01\x53\x43\x08\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\xFF\xFF\x44\x41\x54\x41\x05\0\0\0\x01\x01\0\x50\x52\x4B\x45\x03\0\x02\0\0\x44\x41\x54\x41\x03\0\x15\x01\x01\x45\x50\x46\x54\x01\0\x01\x45\x50\x46\x44\x04\0\0\0\x84\x42\x50\x52\x4B\x46\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read PERK, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      PerkRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: stream ends before CTDA be read completely")
+    {
+      const std::string_view data = "PERK\xAC\0\0\0\0\0\0\0\x12\x1B\x05\0\x1B\x69\x55\0\x28\0\x0F\0EDID\x12\0HuntersDiscipline\0FULL\x04\0\xA2\x11\0\0DESC\x04\0\xF9\x43\0\0CTDA\x20\0\0\x85\x06"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 

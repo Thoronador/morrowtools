@@ -228,7 +228,6 @@ bool TalkingActivatorRecord::loadFromStream(std::istream& in_File, const bool lo
   modelPath.clear();
   unknownMODT.setPresence(false);
   keywords.clear();
-  uint32_t k_Size, temp;
   bool hasReadPNAM = false;
   loopingSoundFormID = 0;
   bool hasReadFNAM = false;
@@ -288,47 +287,8 @@ bool TalkingActivatorRecord::loadFromStream(std::istream& in_File, const bool lo
            bytesRead += (2 + unknownMODT.size());
            break;
       case cKSIZ:
-           if (!keywords.empty())
-           {
-             std::cerr << "Error: TACT seems to have more than one KSIZ subrecord.\n";
+           if (!loadKeywords(in_File, keywords, bytesRead))
              return false;
-           }
-           // read KSIZ
-           k_Size = 0;
-           if (!loadUint32SubRecordFromStream(in_File, cKSIZ, k_Size, false))
-             return false;
-           bytesRead += 6;
-           if (0 == k_Size)
-           {
-             std::cerr << "Error: subrecord KSIZ of TACT is zero!\n";
-             return false;
-           }
-
-           // read KWDA
-           in_File.read(reinterpret_cast<char*>(&subRecName), 4);
-           bytesRead += 4;
-           // KWDA's length
-           in_File.read(reinterpret_cast<char*>(&subLength), 2);
-           bytesRead += 2;
-           if (subLength != 4 * k_Size)
-           {
-             std::cerr << "Error: sub record KWDA of TACT has invalid length ("
-                       << subLength << " bytes). Should be " << 4 * k_Size
-                       << " bytes!\n";
-             return false;
-           }
-           // read keywords
-           for (uint32_t i = 0; i < k_Size; ++i)
-           {
-             in_File.read(reinterpret_cast<char*>(&temp), 4);
-             bytesRead += 4;
-             if (!in_File.good())
-             {
-               std::cerr << "Error while reading subrecord KWDA of TACT!\n";
-               return false;
-             }
-             keywords.push_back(temp);
-           }
            break;
       case cPNAM:
            if (hasReadPNAM)

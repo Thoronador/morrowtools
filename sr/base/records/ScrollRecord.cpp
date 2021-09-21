@@ -238,7 +238,6 @@ bool ScrollRecord::loadFromStream(std::istream& in_File, const bool localized, c
 
   name.reset();
   keywords.clear();
-  uint32_t tempKeyword, kwdaLength;
   bool hasReadMDOB = false;
   bool hasReadETYP = false;
   description.reset();
@@ -267,47 +266,8 @@ bool ScrollRecord::loadFromStream(std::istream& in_File, const bool localized, c
              return false;
            break;
       case cKSIZ:
-           if (!keywords.empty())
-           {
-             std::cerr << "Error: SCRL seems to have more than one KSIZ subrecord!\n";
+           if (!loadKeywords(in_File, keywords, bytesRead))
              return false;
-           }
-           // read KSIZ
-           kwdaLength = 0;
-           if (!loadUint32SubRecordFromStream(in_File, cKSIZ, kwdaLength, false))
-             return false;
-           bytesRead += 6;
-
-           // read KWDA
-           in_File.read(reinterpret_cast<char*>(&subRecName), 4);
-           bytesRead += 4;
-           if (subRecName != cKWDA)
-           {
-             UnexpectedRecord(cOBND, subRecName);
-             return false;
-           }
-           // KWDA's length
-           in_File.read(reinterpret_cast<char*>(&subLength), 2);
-           bytesRead += 2;
-           if (subLength != kwdaLength * 4)
-           {
-             std::cerr << "Error: subrecord KWDA of SCRL has invalid length ("
-                       << subLength << " bytes). Should be " << kwdaLength * 4
-                       << " bytes!\n";
-             return false;
-           }
-           // read KWDA's stuff
-           for (uint32_t i = 0; i < kwdaLength; ++i)
-           {
-             in_File.read(reinterpret_cast<char*>(&tempKeyword), 4);
-             bytesRead += 4;
-             if (!in_File.good())
-             {
-               std::cerr << "Error while reading subrecord KWDA of SCRL!\n";
-               return false;
-             }
-             keywords.push_back(tempKeyword);
-           }
            break;
       case cMDOB:
            if (hasReadMDOB)

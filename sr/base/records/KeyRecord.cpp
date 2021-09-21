@@ -270,9 +270,8 @@ bool KeyRecord::loadFromStream(std::istream& in_File, const bool localized, cons
   pickupSoundFormID = 0;
   putdownSoundFormID = 0;
   keywords.clear();
-  uint32_t temp, k_Size;
   bool hasReadDATA = false;
-  while (bytesRead<readSize)
+  while (bytesRead < readSize)
   {
     // read next subrecord
     in_File.read(reinterpret_cast<char*>(&subRecName), 4);
@@ -344,61 +343,8 @@ bool KeyRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            }
            break;
       case cKSIZ:
-           if (!keywords.empty())
-           {
-             std::cerr << "Error: KEYM seems to have more than one KSIZ subrecord!\n";
+           if (!loadKeywords(in_File, keywords, bytesRead))
              return false;
-           }
-           // KSIZ's length
-           in_File.read(reinterpret_cast<char*>(&subLength), 2);
-           bytesRead += 2;
-           if (subLength != 4)
-           {
-             std::cerr << "Error: subrecord KSIZ of KEYM has invalid length ("
-                       << subLength << " bytes). Should be four bytes!\n";
-             return false;
-           }
-           // read KSIZ's stuff
-           k_Size = 0;
-           in_File.read(reinterpret_cast<char*>(&k_Size), 4);
-           bytesRead += 4;
-           if (!in_File.good())
-           {
-             std::cerr << "Error while reading subrecord KSIZ of KEYM!\n";
-             return false;
-           }
-
-           // on we go...
-           // read KWDA
-           in_File.read(reinterpret_cast<char*>(&subRecName), 4);
-           bytesRead += 4;
-           if (subRecName != cKWDA)
-           {
-             UnexpectedRecord(cKWDA, subRecName);
-             return false;
-           }
-           // KWDA's length
-           in_File.read(reinterpret_cast<char*>(&subLength), 2);
-           bytesRead += 2;
-           if (subLength != 4 * k_Size)
-           {
-             std::cerr << "Error: sub record KWDA of KEYM has invalid length ("
-                       << subLength << " bytes). Should be " << 4 * k_Size
-                       << " bytes!\n";
-             return false;
-           }
-           // read KWDA's stuff
-           for (unsigned int i = 0; i < k_Size; ++i)
-           {
-             in_File.read(reinterpret_cast<char*>(&temp), 4);
-             bytesRead += 4;
-             if (!in_File.good())
-             {
-               std::cerr << "Error while reading subrecord KWDA of KEYM!\n";
-               return false;
-             }
-             keywords.emplace_back(temp);
-           }
            break;
       case cDATA:
            if (hasReadDATA)

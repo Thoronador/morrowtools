@@ -23,6 +23,7 @@
 
 #include <cstdint>
 #include <fstream>
+#include <vector>
 
 namespace SRTP
 {
@@ -173,6 +174,18 @@ struct BasicRecord
      *         Returns false, if an error occurred.
      */
     bool loadString512FromStream(std::istream& input, std::string& target, char * buffer, const uint32_t subHeader, const bool withHeader, uint32_t& bytesRead) const;
+
+    /** \brief Loads a keyword array (KSIZ/KWDA) from the stream.
+     *
+     * \param input       the input stream
+     * \param keywords    the vector that will be used to store the read keywords
+     * \param bytesRead   the variable that holds the number of bytes read so far
+     * \remarks This method assumes that the KSIZ header has already been read
+     *          when it's called.
+     * \return Returns true on success (data was loaded successfully).
+     *         Returns false, if an error occurred.
+     */
+    bool loadKeywords(std::istream& input, std::vector<uint32_t>& keywords, uint32_t& bytesRead) const;
 
     /** \brief Tries to load a fixed length buffer from the stream.
      *

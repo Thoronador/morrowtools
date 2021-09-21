@@ -306,11 +306,9 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
 
   bool hasReadMODL = false;
   text.reset();
-  bool hasReadKSIZ = false;
   bool hasReadDATA = false;
   bool hasReadCNAM = false;
 
-  uint32_t k_Size, temp;
   while (bytesRead < readSize)
   {
     // read next header
@@ -354,48 +352,8 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
            hasReadMODL = true;
            break;
       case cKSIZ:
-           if (hasReadKSIZ)
-           {
-             std::cerr << "Error: BOOK seems to have more than one KSIZ subrecord.\n";
+           if (!loadKeywords(in_File, keywords, bytesRead))
              return false;
-           }
-           // read KSIZ
-           k_Size = 0;
-           if (!loadUint32SubRecordFromStream(in_File, cKSIZ, k_Size, false))
-             return false;
-           bytesRead += 6;
-           // keyword array follows, always
-           // read KWDA
-           in_File.read(reinterpret_cast<char*>(&subRecName), 4);
-           bytesRead += 4;
-           if (subRecName != cKWDA)
-           {
-             UnexpectedRecord(cKWDA, subRecName);
-             return false;
-           }
-           // KWDA's length
-           in_File.read(reinterpret_cast<char*>(&subLength), 2);
-           bytesRead += 2;
-           if (subLength != 4 * k_Size)
-           {
-             std::cerr << "Error: sub record KWDA of BOOK has invalid length ("
-                       << subLength << " bytes). Should be " << 4 * k_Size
-                       << " bytes.\n";
-             return false;
-           }
-           // read KWDA
-           for (uint32_t i = 0; i < k_Size; ++i)
-           {
-             in_File.read(reinterpret_cast<char*>(&temp), 4);
-             bytesRead += 4;
-             if (!in_File.good())
-             {
-               std::cerr << "Error while reading subrecord KWDA of BOOK!\n";
-               return false;
-             }
-             keywords.push_back(temp);
-           }
-           hasReadKSIZ = true;
            break;
       case cDATA:
            if (hasReadDATA)

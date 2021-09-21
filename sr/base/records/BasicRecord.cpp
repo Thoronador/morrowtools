@@ -22,6 +22,7 @@
 #include <cstring>
 #include <iostream>
 #include "../../../mw/base/HelperIO.hpp"
+#include "../SR_Constants.hpp"
 
 namespace SRTP
 {
@@ -168,6 +169,77 @@ bool BasicRecord::loadString512FromStream(std::istream& input, std::string& targ
     return false;
   }
   target = std::string(buffer);
+  return true;
+}
+
+bool BasicRecord::loadKeywords(std::istream& input, std::vector<uint32_t>& keywords, uint32_t& bytesRead) const
+{
+  if (!keywords.empty())
+  {
+    std::cerr << "Error: Record " << IntTo4Char(getRecordType())
+              << " seems to have more than one KSIZ subrecord!\n";
+    return false;
+  }
+  // KSIZ's length
+  uint16_t subLength = 0;
+  input.read(reinterpret_cast<char*>(&subLength), 2);
+  bytesRead += 2;
+  if (subLength != 4)
+  {
+    std::cerr << "Error: Subrecord KSIZ of " << IntTo4Char(getRecordType())
+              << " has invalid length (" << subLength
+              << " bytes). Should be four bytes!\n";
+    return false;
+  }
+  // read KSIZ's stuff
+  uint32_t k_Size = 0;
+  input.read(reinterpret_cast<char*>(&k_Size), 4);
+  bytesRead += 4;
+  if (!input.good())
+  {
+    std::cerr << "Error while reading subrecord KSIZ of "
+              << IntTo4Char(getRecordType()) << "!\n";
+    return false;
+  }
+  if (k_Size == 0)
+  {
+    std::cerr << "Error: " << IntTo4Char(getRecordType())
+              << "'s KSIZ value is zero, but that's not allowed!\n";
+    return false;
+  }
+
+  // read KWDA
+  uint32_t u32 = 0;
+  input.read(reinterpret_cast<char*>(&u32), 4);
+  bytesRead += 4;
+  if (u32 != cKWDA)
+  {
+    UnexpectedRecord(cKWDA, u32);
+    return false;
+  }
+  // KWDA's length
+  input.read(reinterpret_cast<char*>(&subLength), 2);
+  bytesRead += 2;
+  if (subLength != 4 * k_Size)
+  {
+    std::cerr << "Error: sub record KWDA of " << IntTo4Char(getRecordType())
+              << " has invalid length (" << subLength << " bytes). Should be "
+              << 4 * k_Size << " bytes!\n";
+    return false;
+  }
+  // read KWDA's stuff
+  for (uint32_t i = 0; i < k_Size; ++i)
+  {
+    input.read(reinterpret_cast<char*>(&u32), 4);
+    keywords.push_back(u32);
+  }
+  bytesRead += 4 * k_Size;
+  if (!input.good())
+  {
+    std::cerr << "Error while reading subrecord KWDA of "
+              << IntTo4Char(getRecordType()) << "!\n";
+    return false;
+  }
   return true;
 }
 

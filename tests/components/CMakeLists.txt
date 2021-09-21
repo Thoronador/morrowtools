@@ -65,6 +65,7 @@ set(component_tests_sources
     sr/base/records/AlchemyPotionRecord.cpp
     sr/base/records/AmmunitionRecord.cpp
     sr/base/records/ApparatusRecord.cpp
+    sr/base/records/BasicRecord.cpp
     sr/base/records/BinarySubRecord.cpp
     sr/base/records/BinarySubRecordExtended.cpp
     sr/base/records/BookRecord.cpp

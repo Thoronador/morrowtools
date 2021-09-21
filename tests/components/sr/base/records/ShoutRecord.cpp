@@ -257,6 +257,21 @@ TEST_CASE("ShoutRecord")
       REQUIRE( record.words[2].recharge == 45.0f );
     }
 
+    SECTION("corrupt data: stream ends before header can be read")
+    {
+      const std::string_view data = "SHOU\x70\0\0\0\0\0\0\0\x07\x3E"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read SHOU, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ShoutRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: no EDID")
     {
       const std::string_view data = "SHOU\x70\0\0\0\0\0\0\0\x07\x3E\x01\0\x1B\x69\x55\0\x28\0\x05\0FAIL\x16\0UnrelentingForceShout\0FULL\x04\0\xB2\x03\0\0MDOB\x04\0\xAC\x59\x0A\0DESC\x04\0\xAF\x03\0\0SNAM\x0C\0\x22\x3E\x01\0\x09\x3E\x01\0\0\0\x70\x41SNAM\x0C\0\x23\x3E\x01\0\x39\x3F\x01\0\0\0\xA0\x41SNAM\x0C\0\x24\x3E\x01\0\x3A\x3F\x01\0\0\0\x34\x42"sv;
@@ -302,9 +317,175 @@ TEST_CASE("ShoutRecord")
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
+    SECTION("corrupt data: no FULL")
+    {
+      const std::string_view data = "SHOU\x70\0\0\0\0\0\0\0\x07\x3E\x01\0\x1B\x69\x55\0\x28\0\x05\0EDID\x16\0UnrelentingForceShout\0FAIL\x04\0\xB2\x03\0\0MDOB\x04\0\xAC\x59\x0A\0DESC\x04\0\xAF\x03\0\0SNAM\x0C\0\x22\x3E\x01\0\x09\x3E\x01\0\0\0\x70\x41SNAM\x0C\0\x23\x3E\x01\0\x39\x3F\x01\0\0\0\xA0\x41SNAM\x0C\0\x24\x3E\x01\0\x3A\x3F\x01\0\0\0\x34\x42"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read SHOU, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ShoutRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple FULL")
+    {
+      const std::string_view data = "SHOU\x7A\0\0\0\0\0\0\0\x07\x3E\x01\0\x1B\x69\x55\0\x28\0\x05\0EDID\x16\0UnrelentingForceShout\0FULL\x04\0\xB2\x03\0\0FULL\x04\0\xB2\x03\0\0MDOB\x04\0\xAC\x59\x0A\0DESC\x04\0\xAF\x03\0\0SNAM\x0C\0\x22\x3E\x01\0\x09\x3E\x01\0\0\0\x70\x41SNAM\x0C\0\x23\x3E\x01\0\x39\x3F\x01\0\0\0\xA0\x41SNAM\x0C\0\x24\x3E\x01\0\x3A\x3F\x01\0\0\0\x34\x42"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read SHOU, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ShoutRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: stream ends before FULL can be read completely")
+    {
+      const std::string_view data = "SHOU\x70\0\0\0\0\0\0\0\x07\x3E\x01\0\x1B\x69\x55\0\x28\0\x05\0EDID\x16\0UnrelentingForceShout\0FULL\x04\0\xB2\x03"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read SHOU, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ShoutRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple MDOB")
+    {
+      const std::string_view data = "SHOU\x70\0\0\0\0\0\0\0\x07\x3E\x01\0\x1B\x69\x55\0\x28\0\x05\0EDID\x16\0UnrelentingForceShout\0MDOB\x04\0\xAC\x59\x0A\0MDOB\x04\0\xAC\x59\x0A\0DESC\x04\0\xAF\x03\0\0SNAM\x0C\0\x22\x3E\x01\0\x09\x3E\x01\0\0\0\x70\x41SNAM\x0C\0\x23\x3E\x01\0\x39\x3F\x01\0\0\0\xA0\x41SNAM\x0C\0\x24\x3E\x01\0\x3A\x3F\x01\0\0\0\x34\x42"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read SHOU, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ShoutRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: stream ends before MDOB can be read completely")
+    {
+      const std::string_view data = "SHOU\x70\0\0\0\0\0\0\0\x07\x3E\x01\0\x1B\x69\x55\0\x28\0\x05\0EDID\x16\0UnrelentingForceShout\0FULL\x04\0\xB2\x03\0\0MDOB\x04\0\xAC\x59"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read SHOU, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ShoutRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: MDOB is zero")
+    {
+      const std::string_view data = "SHOU\x66\0\0\0\0\0\0\0\x07\x3E\x01\0\x1B\x69\x55\0\x28\0\x05\0EDID\x16\0UnrelentingForceShout\0MDOB\x04\0\0\0\0\0DESC\x04\0\xAF\x03\0\0SNAM\x0C\0\x22\x3E\x01\0\x09\x3E\x01\0\0\0\x70\x41SNAM\x0C\0\x23\x3E\x01\0\x39\x3F\x01\0\0\0\xA0\x41SNAM\x0C\0\x24\x3E\x01\0\x3A\x3F\x01\0\0\0\x34\x42"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read SHOU, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ShoutRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple DESC")
+    {
+      const std::string_view data = "SHOU\x70\0\0\0\0\0\0\0\x07\x3E\x01\0\x1B\x69\x55\0\x28\0\x05\0EDID\x16\0UnrelentingForceShout\0MDOB\x04\0\xAC\x59\x0A\0DESC\x04\0\xAF\x03\0\0DESC\x04\0\xAF\x03\0\0SNAM\x0C\0\x22\x3E\x01\0\x09\x3E\x01\0\0\0\x70\x41SNAM\x0C\0\x23\x3E\x01\0\x39\x3F\x01\0\0\0\xA0\x41SNAM\x0C\0\x24\x3E\x01\0\x3A\x3F\x01\0\0\0\x34\x42"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read SHOU, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ShoutRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: no DESC")
     {
       const std::string_view data = "SHOU\x66\0\0\0\0\0\0\0\x07\x3E\x01\0\x1B\x69\x55\0\x28\0\x05\0EDID\x16\0UnrelentingForceShout\0FULL\x04\0\xB2\x03\0\0MDOB\x04\0\xAC\x59\x0A\0SNAM\x0C\0\x22\x3E\x01\0\x09\x3E\x01\0\0\0\x70\x41SNAM\x0C\0\x23\x3E\x01\0\x39\x3F\x01\0\0\0\xA0\x41SNAM\x0C\0\x24\x3E\x01\0\x3A\x3F\x01\0\0\0\x34\x42"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read SHOU, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ShoutRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: stream ends before DESC can be read completely")
+    {
+      const std::string_view data = "SHOU\x66\0\0\0\0\0\0\0\x07\x3E\x01\0\x1B\x69\x55\0\x28\0\x05\0EDID\x16\0UnrelentingForceShout\0MDOB\x04\0\xAC\x59\x0A\0DESC\x04\0\xAF\x03"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read SHOU, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ShoutRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of SNAM is not twelve")
+    {
+      {
+        const std::string_view data = "SHOU\x65\0\0\0\0\0\0\0\x07\x3E\x01\0\x1B\x69\x55\0\x28\0\x05\0EDID\x16\0UnrelentingForceShout\0MDOB\x04\0\xAC\x59\x0A\0DESC\x04\0\xAF\x03\0\0SNAM\x0B\0\x22\x3E\x01\0\x09\x3E\x01\0\0\x70\x41SNAM\x0C\0\x23\x3E\x01\0\x39\x3F\x01\0\0\0\xA0\x41SNAM\x0C\0\x24\x3E\x01\0\x3A\x3F\x01\0\0\0\x34\x42"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read SHOU, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        ShoutRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+
+      {
+        const std::string_view data = "SHOU\x67\0\0\0\0\0\0\0\x07\x3E\x01\0\x1B\x69\x55\0\x28\0\x05\0EDID\x16\0UnrelentingForceShout\0MDOB\x04\0\xAC\x59\x0A\0DESC\x04\0\xAF\x03\0\0SNAM\x0D\0\x22\x3E\x01\0\x09\x3E\x01\0\0\0\x70\x41\0SNAM\x0C\0\x23\x3E\x01\0\x39\x3F\x01\0\0\0\xA0\x41SNAM\x0C\0\x24\x3E\x01\0\x3A\x3F\x01\0\0\0\x34\x42"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read SHOU, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        ShoutRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+    }
+
+    SECTION("corrupt data: stream ends before SNAM can be read completely")
+    {
+      const std::string_view data = "SHOU\x66\0\0\0\0\0\0\0\x07\x3E\x01\0\x1B\x69\x55\0\x28\0\x05\0EDID\x16\0UnrelentingForceShout\0MDOB\x04\0\xAC\x59\x0A\0DESC\x04\0\xAF\x03\0\0SNAM\x0C\0\x22\x3E\x01\0\x09\x3E\x01\0\0\0\x70\x41SNAM\x0C\0\x23\x3E\x01\0\x39\x3F\x01\0\0\0\xA0\x41SNAM\x0C\0\x24\x3E"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 

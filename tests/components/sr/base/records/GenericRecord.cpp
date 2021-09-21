@@ -42,13 +42,6 @@ TEST_CASE("GenericRecord")
     REQUIRE( record.data() == nullptr );
   }
 
-  SECTION("isGenericRecord")
-  {
-    GenericRecord record;
-
-    REQUIRE( record.isGenericRecord() );
-  }
-
   SECTION("getRecordType")
   {
     GenericRecord record;

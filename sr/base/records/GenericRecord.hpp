@@ -80,12 +80,6 @@ struct GenericRecord: public BasicRecord
      */
     virtual bool loadFromStream(std::istream& in_File, const bool localized, const StringTable& table);
 
-    /** \brief Returns true, because this is the GenericRecord class.
-     *
-     * \return Returns true.
-     */
-    virtual bool isGenericRecord() const;
-
     /** \brief Gets the record's type, usually its header.
      *
      * \return Returns the record's type.

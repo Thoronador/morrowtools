@@ -83,6 +83,8 @@
 		<Unit filename="../../sr/base/records/DestructionData.hpp" />
 		<Unit filename="../../sr/base/records/EffectBlock.cpp" />
 		<Unit filename="../../sr/base/records/EffectBlock.hpp" />
+		<Unit filename="../../sr/base/records/FactionRecord.cpp" />
+		<Unit filename="../../sr/base/records/FactionRecord.hpp" />
 		<Unit filename="../../sr/base/records/FloraRecord.cpp" />
 		<Unit filename="../../sr/base/records/FloraRecord.hpp" />
 		<Unit filename="../../sr/base/records/FurnitureRecord.cpp" />
@@ -153,6 +155,9 @@
 		<Unit filename="sr/base/records/DestructionData.cpp" />
 		<Unit filename="sr/base/records/DestructionStage.cpp" />
 		<Unit filename="sr/base/records/EffectBlock.cpp" />
+		<Unit filename="sr/base/records/FactionRecord_InterfactionRelation.cpp" />
+		<Unit filename="sr/base/records/FactionRecord_RankData.cpp" />
+		<Unit filename="sr/base/records/FactionRecord_VendorData.cpp" />
 		<Unit filename="sr/base/records/FloraRecord.cpp" />
 		<Unit filename="sr/base/records/FurnitureRecord.cpp" />
 		<Unit filename="sr/base/records/GenericRecord.cpp" />

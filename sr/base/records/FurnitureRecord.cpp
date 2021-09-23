@@ -622,10 +622,10 @@ bool FurnitureRecord::loadFromStream(std::istream& in_File, const bool localized
              std::cerr << "Error: FURN seems to have more than one XMRK subrecord!\n";
              return false;
            }
-           //read MODL
+           // read XMRK
            if (!loadString512FromStream(in_File, markerModelPath, buffer, cXMRK, false, bytesRead))
              return false;
-           //check content
+           // check content
            if (markerModelPath.empty())
            {
              std::cerr << "Error: subrecord XMRK of FURN is empty!\n";

@@ -786,6 +786,36 @@ TEST_CASE("FurnitureRecord")
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
+    SECTION("corrupt data: multiple MODTs")
+    {
+      const std::string_view data = "FURN\xBC\0\0\0\0\0\x80\0\x1B\x41\x06\0\x1B\x69\x55\0\x28\0\x09\0EDID\x15\0InvisibleChairMarker\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0\x5C\x27\0\0MODL\x23\0Furniture\\ChairInvisibleSingle.nif\0MODT\x0C\0\x02\0\0\0\0\0\0\0\0\0\0\0MODT\x0C\0\x02\0\0\0\0\0\0\0\0\0\0\0PNAM\x04\0\0\0\0\0FNAM\x02\0\0\0KNAM\x04\0\x94\x37\x01\0MNAM\x04\0\x01\0\0\x40WBDT\x02\0\0\xFF\x46NPR\x04\0\x01\0\x0D\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FURN, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      FurnitureRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: stream ends before all of MODT can be read")
+    {
+      const std::string_view data = "FURN\xAA\0\0\0\0\0\x80\0\x1B\x41\x06\0\x1B\x69\x55\0\x28\0\x09\0EDID\x15\0InvisibleChairMarker\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0\x5C\x27\0\0MODL\x23\0Furniture\\ChairInvisibleSingle.nif\0MODT\x0C\0\x02\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FURN, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      FurnitureRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: multiple KSIZs")
     {
       const std::string_view data = "FURN\xB2\0\0\0\0\0\x80\0\xF5\x2F\x05\0\x0A\x66\x3D\0\x25\0\x08\0EDID\x0F\0WallLeanMarker\0OBND\x0C\0\xE7\xFF\xEE\xFF\xF2\xFF\x18\0\x1C\0\x96\0MODL\x1D\0Furniture\\WallLeanMarker.nif\0KSIZ\x04\0\x02\0\0\0KWDA\x08\0\xC7\xE9\x06\0\xE1\xD0\x0F\0KSIZ\x04\0\x02\0\0\0KWDA\x08\0\xC7\xE9\x06\0\xE1\xD0\x0F\0PNAM\x04\0\0\0\0\0FNAM\x02\0\0\0KNAM\x04\0\x94\x37\x01\0MNAM\x04\0\x01\0\0\x10WBDT\x02\0\0\xFF\x46NPR\x04\0\x04\0\x01\0"sv;
@@ -953,6 +983,97 @@ TEST_CASE("FurnitureRecord")
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
+    SECTION("corrupt data: multiple PNAMs")
+    {
+      const std::string_view data = "FURN\xB4\0\0\0\0\0\x80\0\x1B\x41\x06\0\x1B\x69\x55\0\x28\0\x09\0EDID\x15\0InvisibleChairMarker\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0\x5C\x27\0\0MODL\x23\0Furniture\\ChairInvisibleSingle.nif\0MODT\x0C\0\x02\0\0\0\0\0\0\0\0\0\0\0PNAM\x04\0\0\0\0\0PNAM\x04\0\0\0\0\0FNAM\x02\0\0\0KNAM\x04\0\x94\x37\x01\0MNAM\x04\0\x01\0\0\x40WBDT\x02\0\0\xFF\x46NPR\x04\0\x01\0\x0D\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FURN, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      FurnitureRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: stream ends before all of PNAM can be read")
+    {
+      const std::string_view data = "FURN\x9A\0\0\0\0\0\x80\0\xF5\x2F\x05\0\x0A\x66\x3D\0\x25\0\x08\0EDID\x0F\0WallLeanMarker\0OBND\x0C\0\xE7\xFF\xEE\xFF\xF2\xFF\x18\0\x1C\0\x96\0MODL\x1D\0Furniture\\WallLeanMarker.nif\0KSIZ\x04\0\x02\0\0\0KWDA\x08\0\xC7\xE9\x06\0\xE1\xD0\x0F\0PNAM\x04\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FURN, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      FurnitureRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple FNAMs")
+    {
+      const std::string_view data = "FURN\xB2\0\0\0\0\0\x80\0\x1B\x41\x06\0\x1B\x69\x55\0\x28\0\x09\0EDID\x15\0InvisibleChairMarker\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0\x5C\x27\0\0MODL\x23\0Furniture\\ChairInvisibleSingle.nif\0MODT\x0C\0\x02\0\0\0\0\0\0\0\0\0\0\0PNAM\x04\0\0\0\0\0FNAM\x02\0\0\0FNAM\x02\0\0\0KNAM\x04\0\x94\x37\x01\0MNAM\x04\0\x01\0\0\x40WBDT\x02\0\0\xFF\x46NPR\x04\0\x01\0\x0D\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FURN, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      FurnitureRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of FNAM is not two")
+    {
+      {
+        const std::string_view data = "FURN\xA9\0\0\0\0\0\x80\0\x1B\x41\x06\0\x1B\x69\x55\0\x28\0\x09\0EDID\x15\0InvisibleChairMarker\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0\x5C\x27\0\0MODL\x23\0Furniture\\ChairInvisibleSingle.nif\0MODT\x0C\0\x02\0\0\0\0\0\0\0\0\0\0\0PNAM\x04\0\0\0\0\0FNAM\x01\0\0KNAM\x04\0\x94\x37\x01\0MNAM\x04\0\x01\0\0\x40WBDT\x02\0\0\xFF\x46NPR\x04\0\x01\0\x0D\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read FURN, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        FurnitureRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+
+      {
+        const std::string_view data = "FURN\xAA\0\0\0\0\0\x80\0\x1B\x41\x06\0\x1B\x69\x55\0\x28\0\x09\0EDID\x15\0InvisibleChairMarker\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0\x5C\x27\0\0MODL\x23\0Furniture\\ChairInvisibleSingle.nif\0MODT\x0C\0\x02\0\0\0\0\0\0\0\0\0\0\0PNAM\x04\0\0\0\0\0FNAM\x03\0\0\0\0KNAM\x04\0\x94\x37\x01\0MNAM\x04\0\x01\0\0\x40WBDT\x02\0\0\xFF\x46NPR\x04\0\x01\0\x0D\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read FURN, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        FurnitureRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+    }
+
+    SECTION("corrupt data: stream ends before all of FNAM can be read")
+    {
+      const std::string_view data = "FURN\x9A\0\0\0\0\0\x80\0\xF5\x2F\x05\0\x0A\x66\x3D\0\x25\0\x08\0EDID\x0F\0WallLeanMarker\0OBND\x0C\0\xE7\xFF\xEE\xFF\xF2\xFF\x18\0\x1C\0\x96\0MODL\x1D\0Furniture\\WallLeanMarker.nif\0KSIZ\x04\0\x02\0\0\0KWDA\x08\0\xC7\xE9\x06\0\xE1\xD0\x0F\0PNAM\x04\0\0\0\0\0FNAM\x02\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FURN, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      FurnitureRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: multiple KNAMs")
     {
       const std::string_view data = "FURN\xA4\0\0\0\0\0\x80\0\xF5\x2F\x05\0\x0A\x66\x3D\0\x25\0\x08\0EDID\x0F\0WallLeanMarker\0OBND\x0C\0\xE7\xFF\xEE\xFF\xF2\xFF\x18\0\x1C\0\x96\0MODL\x1D\0Furniture\\WallLeanMarker.nif\0KSIZ\x04\0\x02\0\0\0KWDA\x08\0\xC7\xE9\x06\0\xE1\xD0\x0F\0PNAM\x04\0\0\0\0\0FNAM\x02\0\0\0KNAM\x04\0\x94\x37\x01\0KNAM\x04\0\x94\x37\x01\0MNAM\x04\0\x01\0\0\x10WBDT\x02\0\0\xFF\x46NPR\x04\0\x04\0\x01\0"sv;
@@ -1017,6 +1138,112 @@ TEST_CASE("FurnitureRecord")
     SECTION("corrupt data: KNAM is zero")
     {
       const std::string_view data = "FURN\x9A\0\0\0\0\0\x80\0\xF5\x2F\x05\0\x0A\x66\x3D\0\x25\0\x08\0EDID\x0F\0WallLeanMarker\0OBND\x0C\0\xE7\xFF\xEE\xFF\xF2\xFF\x18\0\x1C\0\x96\0MODL\x1D\0Furniture\\WallLeanMarker.nif\0KSIZ\x04\0\x02\0\0\0KWDA\x08\0\xC7\xE9\x06\0\xE1\xD0\x0F\0PNAM\x04\0\0\0\0\0FNAM\x02\0\0\0KNAM\x04\0\0\0\0\0MNAM\x04\0\x01\0\0\x10WBDT\x02\0\0\xFF\x46NPR\x04\0\x04\0\x01\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FURN, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      FurnitureRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple MNAMs")
+    {
+      const std::string_view data = "FURN\xB4\0\0\0\0\0\x80\0\x1B\x41\x06\0\x1B\x69\x55\0\x28\0\x09\0EDID\x15\0InvisibleChairMarker\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0\x5C\x27\0\0MODL\x23\0Furniture\\ChairInvisibleSingle.nif\0MODT\x0C\0\x02\0\0\0\0\0\0\0\0\0\0\0PNAM\x04\0\0\0\0\0FNAM\x02\0\0\0KNAM\x04\0\x94\x37\x01\0MNAM\x04\0\x01\0\0\x40MNAM\x04\0\x01\0\0\x40WBDT\x02\0\0\xFF\x46NPR\x04\0\x01\0\x0D\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FURN, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      FurnitureRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: stream ends before all of MNAM can be read")
+    {
+      const std::string_view data = "FURN\x9A\0\0\0\0\0\x80\0\xF5\x2F\x05\0\x0A\x66\x3D\0\x25\0\x08\0EDID\x0F\0WallLeanMarker\0OBND\x0C\0\xE7\xFF\xEE\xFF\xF2\xFF\x18\0\x1C\0\x96\0MODL\x1D\0Furniture\\WallLeanMarker.nif\0KSIZ\x04\0\x02\0\0\0KWDA\x08\0\xC7\xE9\x06\0\xE1\xD0\x0F\0PNAM\x04\0\0\0\0\0FNAM\x02\0\0\0KNAM\x04\0\x94\x37\x01\0MNAM\x04\0\x01\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FURN, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      FurnitureRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple WBDTs")
+    {
+      const std::string_view data = "FURN\xB2\0\0\0\0\0\x80\0\x1B\x41\x06\0\x1B\x69\x55\0\x28\0\x09\0EDID\x15\0InvisibleChairMarker\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0\x5C\x27\0\0MODL\x23\0Furniture\\ChairInvisibleSingle.nif\0MODT\x0C\0\x02\0\0\0\0\0\0\0\0\0\0\0PNAM\x04\0\0\0\0\0FNAM\x02\0\0\0KNAM\x04\0\x94\x37\x01\0MNAM\x04\0\x01\0\0\x40WBDT\x02\0\0\xFFWBDT\x02\0\0\xFF\x46NPR\x04\0\x01\0\x0D\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FURN, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      FurnitureRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of WBDT is not two")
+    {
+      {
+        const std::string_view data = "FURN\xA9\0\0\0\0\0\x80\0\x1B\x41\x06\0\x1B\x69\x55\0\x28\0\x09\0EDID\x15\0InvisibleChairMarker\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0\x5C\x27\0\0MODL\x23\0Furniture\\ChairInvisibleSingle.nif\0MODT\x0C\0\x02\0\0\0\0\0\0\0\0\0\0\0PNAM\x04\0\0\0\0\0FNAM\x02\0\0\0KNAM\x04\0\x94\x37\x01\0MNAM\x04\0\x01\0\0\x40WBDT\x01\0\0\x46NPR\x04\0\x01\0\x0D\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read FURN, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        FurnitureRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+
+      {
+        const std::string_view data = "FURN\xAB\0\0\0\0\0\x80\0\x1B\x41\x06\0\x1B\x69\x55\0\x28\0\x09\0EDID\x15\0InvisibleChairMarker\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0\x5C\x27\0\0MODL\x23\0Furniture\\ChairInvisibleSingle.nif\0MODT\x0C\0\x02\0\0\0\0\0\0\0\0\0\0\0PNAM\x04\0\0\0\0\0FNAM\x02\0\0\0KNAM\x04\0\x94\x37\x01\0MNAM\x04\0\x01\0\0\x40WBDT\x03\0\0\xFF\0\x46NPR\x04\0\x01\0\x0D\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read FURN, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        FurnitureRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+    }
+
+    SECTION("corrupt data: stream ends before all of WBDT can be read")
+    {
+      const std::string_view data = "FURN\x9A\0\0\0\0\0\x80\0\xF5\x2F\x05\0\x0A\x66\x3D\0\x25\0\x08\0EDID\x0F\0WallLeanMarker\0OBND\x0C\0\xE7\xFF\xEE\xFF\xF2\xFF\x18\0\x1C\0\x96\0MODL\x1D\0Furniture\\WallLeanMarker.nif\0KSIZ\x04\0\x02\0\0\0KWDA\x08\0\xC7\xE9\x06\0\xE1\xD0\x0F\0PNAM\x04\0\0\0\0\0FNAM\x02\0\0\0KNAM\x04\0\x94\x37\x01\0MNAM\x04\0\x01\0\0\x10WBDT\x02\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FURN, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      FurnitureRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: stream ends before all of FNPR can be read")
+    {
+      const std::string_view data = "FURN\x9A\0\0\0\0\0\x80\0\xF5\x2F\x05\0\x0A\x66\x3D\0\x25\0\x08\0EDID\x0F\0WallLeanMarker\0OBND\x0C\0\xE7\xFF\xEE\xFF\xF2\xFF\x18\0\x1C\0\x96\0MODL\x1D\0Furniture\\WallLeanMarker.nif\0KSIZ\x04\0\x02\0\0\0KWDA\x08\0\xC7\xE9\x06\0\xE1\xD0\x0F\0PNAM\x04\0\0\0\0\0FNAM\x02\0\0\0KNAM\x04\0\x94\x37\x01\0MNAM\x04\0\x01\0\0\x10WBDT\x02\0\0\xFF\x46NPR\x04\0\x04\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 

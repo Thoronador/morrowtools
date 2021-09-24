@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2013  Thoronador
+    Copyright (C) 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -31,44 +31,55 @@
 namespace SRTP
 {
 
+/** Holds information about a faction. */
 struct FactionRecord: public BasicRecord
 {
   public:
-    /* constructor */
+    /** Constructor, creates an empty record. */
     FactionRecord();
 
-    /* destructor */
-    virtual ~FactionRecord();
-
     #ifndef SR_NO_RECORD_EQUALITY
-    /* returns true, if the other record contains the same data */
+    /** \brief Checks whether another instance contains the same data.
+     *
+     * \param other   the other record to compare with
+     * \return Returns true, if @other contains the same data as instance.
+     *         Returns false otherwise.
+     */
     bool equals(const FactionRecord& other) const;
     #endif
 
     #ifndef SR_UNSAVEABLE_RECORDS
-    /* returns the size in bytes that the record's data would occupy in a file
-       stream, NOT including the header data
-    */
+    /** \brief Gets the size in bytes that the record's data would occupy in a file
+     *         stream, NOT including the header data.
+     *
+     * \return Returns the size in bytes that the record would need. Size of the
+     *         header is not included.
+     */
     virtual uint32_t getWriteSize() const;
 
-    /* writes the record to the given output stream and returns true on success
-
-      parameters:
-          output   - the output stream
-    */
+    /** \brief Writes the record to the given output stream.
+     *
+     * \param output  the output stream
+     * \return Returns true on success (record was written to stream).
+     *         Returns false, if an error occurred.
+     */
     virtual bool saveToStream(std::ostream& output) const;
     #endif
 
-    /* loads the record from the given input stream and returns true on success
-
-      parameters:
-          in_File   - the input stream
-          localized - whether the file to read from is localized or not
-          table     - the associated string table for localized files
-    */
+    /** \brief Loads the record from the given input stream.
+     *
+     * \param in_File    the input stream
+     * \param localized  whether the file to read from is localized or not
+     * \param table      the associated string table for localized files
+     * \return Returns true on success (record was loaded from stream).
+     *         Returns false, if an error occurred.
+     */
     virtual bool loadFromStream(std::istream& in_File, const bool localized, const StringTable& table);
 
-    /* returns the record's type, usually its header */
+    /** \brief Gets the record's type, usually its header.
+     *
+     * \return Returns the record's type.
+     */
     virtual uint32_t getRecordType() const;
 
     /* flag constants */
@@ -91,32 +102,29 @@ struct FactionRecord: public BasicRecord
     static const uint32_t ReactionAlly;
     static const uint32_t ReactionFriend;
 
-    //structure for interfaction relations
     struct InterfactionRelation
     {
       uint32_t factionFormID;
       uint32_t mod;
       uint32_t groupCombatReaction;
 
-      /* equality operator */
       bool operator==(const InterfactionRelation& other) const;
-    };//struct
+    };
 
-    //structure for ranks
+    /// Holds information about a rank in a faction.
     struct RankData
     {
-      uint32_t index;              //RNAM
+      uint32_t index;             //RNAM
       LocalizedString maleName;   //MNAM
       LocalizedString femaleName; //FNAM
 
-      /* constructor */
+      /** Constructor, creates an empty struct. */
       RankData();
 
       /* equality operator */
       bool operator==(const RankData& other) const;
-    };//struct
+    };
 
-    //structure for vendor stuff
     struct VendorData
     {
       /* flag constants */
@@ -130,38 +138,38 @@ struct FactionRecord: public BasicRecord
 
       bool isPresent;
 
-      /* constructor */
+      /** Constructor, creates an empty struct. */
       VendorData();
 
       /* equality operator */
       bool operator==(const VendorData& other) const;
-    };//struct
+    };
 
     std::string editorID;
-    std::vector<InterfactionRelation> relations; //subrecords XNAM
-    LocalizedString name; //subrecord FULL
-    uint32_t flags; //subrecord DATA
-    uint32_t exteriorJailMarkerRefID; //subrecord JAIL
-    uint32_t followerWaitMarkerRefID; //subrecord WAIT
-    uint32_t stolenGoodsContainerRefID; //subrecord STOL
-    uint32_t playerInventoryContainerRefID; //subrecord PLCN
-    uint32_t crimeFactionListFormID; //subrecord CRGR, opt.
-    uint32_t jailOutfitFormID; //subrecord JOUT, opt.
-    BinarySubRecord unknownCRVA; //subrecord CRVA
-    std::vector<RankData> ranks; //subrecord RNAM/MNAM/FNAM
-    uint32_t vendorListFormID; //subrecord VEND
-    uint32_t vendorContainterFormID; //subrecord VENC
-    VendorData vendorStuff; //subrecord VENV
+    std::vector<InterfactionRelation> relations; // subrecords XNAM
+    LocalizedString name; // subrecord FULL
+    uint32_t flags; // subrecord DATA
+    uint32_t exteriorJailMarkerRefID; // subrecord JAIL
+    uint32_t followerWaitMarkerRefID; // subrecord WAIT
+    uint32_t stolenGoodsContainerRefID; // subrecord STOL
+    uint32_t playerInventoryContainerRefID; // subrecord PLCN
+    uint32_t crimeFactionListFormID; // subrecord CRGR, opt.
+    uint32_t jailOutfitFormID; // subrecord JOUT, opt.
+    BinarySubRecord unknownCRVA; // subrecord CRVA
+    std::vector<RankData> ranks; // subrecord RNAM/MNAM/FNAM
+    uint32_t vendorListFormID; // subrecord VEND
+    uint32_t vendorContainterFormID; // subrecord VENC
+    VendorData vendorStuff; // subrecord VENV
     BinarySubRecord unknownPLVD;
-    std::vector<CTDA_CIS2_compound> conditions; //subrecords CITC and CTDA(s)+CIS2(s)
+    std::vector<CTDA_CIS2_compound> conditions; // subrecords CITC and CTDA(s)+CIS2(s)
 
     /* returns true, if the NPC is a vendor according to the set flags */
     inline bool isVendor() const
     {
-      return ((cFlagVendor&flags)!=0);
+      return (cFlagVendor & flags) != 0;
     }
-}; //struct
+}; // struct
 
-} //namespace
+} // namespace
 
 #endif // SR_FACTIONRECORD_HPP

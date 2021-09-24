@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2013  Thoronador
+    Copyright (C) 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -54,8 +54,8 @@ const uint32_t FactionRecord::VendorData::cFlagNotBuySell          = 0x00000100;
 /* InterfactionRelation's functions */
 bool FactionRecord::InterfactionRelation::operator==(const FactionRecord::InterfactionRelation& other) const
 {
-  return ((factionFormID==other.factionFormID) and (mod==other.mod)
-      and (groupCombatReaction==other.groupCombatReaction));
+  return (factionFormID == other.factionFormID) && (mod == other.mod)
+      && (groupCombatReaction == other.groupCombatReaction);
 }
 
 /* VendorData's functions */
@@ -74,8 +74,8 @@ bool FactionRecord::VendorData::operator==(const VendorData& other) const
     return false;
   if (!isPresent)
     return true;
-  return ((startHour==other.startHour) and (endHour==other.endHour)
-      and (radius==other.radius) and (flagsVendor==other.flagsVendor));
+  return (startHour == other.startHour) && (endHour == other.endHour)
+      && (radius == other.radius) && (flagsVendor == other.flagsVendor);
 }
 
 /* RankData's functions */
@@ -88,24 +88,24 @@ FactionRecord::RankData::RankData()
 
 bool FactionRecord::RankData::operator==(const FactionRecord::RankData& other) const
 {
-  return ((index==other.index) and(maleName==other.maleName)
-      and (femaleName==other.femaleName));
+  return (index == other.index) && (maleName == other.maleName)
+      && (femaleName == other.femaleName);
 }
 
 /* FactionRecord's functions */
 
 FactionRecord::FactionRecord()
 : BasicRecord(), editorID(""),
-  relations(std::vector<InterfactionRelation>()), //subrecords XNAM
+  relations(std::vector<InterfactionRelation>()), // subrecords XNAM
   name(LocalizedString()),
   flags(0),
-  exteriorJailMarkerRefID(0), //subrecord JAIL opt.
-  followerWaitMarkerRefID(0), //subrecord WAIT, opt.
-  stolenGoodsContainerRefID(0), //subrecord STOL, opt.
-  playerInventoryContainerRefID(0), //subrecord PLCN, opt.
-  crimeFactionListFormID(0), //subrecord CRGR, opt.
-  jailOutfitFormID(0), //subrecord JOUT, opt.
-  unknownCRVA(BinarySubRecord()), //subrecord CRVA, opt.
+  exteriorJailMarkerRefID(0), // subrecord JAIL opt.
+  followerWaitMarkerRefID(0), // subrecord WAIT, opt.
+  stolenGoodsContainerRefID(0), // subrecord STOL, opt.
+  playerInventoryContainerRefID(0), // subrecord PLCN, opt.
+  crimeFactionListFormID(0), // subrecord CRGR, opt.
+  jailOutfitFormID(0), // subrecord JOUT, opt.
+  unknownCRVA(BinarySubRecord()), // subrecord CRVA, opt.
   ranks(std::vector<RankData>()),
   vendorListFormID(0),
   vendorContainterFormID(0),
@@ -115,124 +115,111 @@ FactionRecord::FactionRecord()
 {
 }
 
-FactionRecord::~FactionRecord()
-{
-  //empty
-}
-
 #ifndef SR_NO_RECORD_EQUALITY
 bool FactionRecord::equals(const FactionRecord& other) const
 {
-  return ((equalsBasic(other)) and (editorID==other.editorID)
-      and (relations==other.relations)
-      and (name==other.name)
-      and (flags==other.flags)
-      and (exteriorJailMarkerRefID==other.exteriorJailMarkerRefID)
-      and (followerWaitMarkerRefID==other.followerWaitMarkerRefID)
-      and (stolenGoodsContainerRefID==other.stolenGoodsContainerRefID)
-      and (playerInventoryContainerRefID==other.playerInventoryContainerRefID)
-      and (crimeFactionListFormID==other.crimeFactionListFormID)
-      and (jailOutfitFormID==other.jailOutfitFormID)
-      and (unknownCRVA==other.unknownCRVA) and (ranks==other.ranks)
-      and (vendorListFormID==other.vendorListFormID)
-      and (vendorContainterFormID==other.vendorContainterFormID)
-      and (vendorStuff==other.vendorStuff) and (unknownPLVD==other.unknownPLVD)
-      and (conditions==other.conditions));
+  return equalsBasic(other) && (editorID == other.editorID)
+      && (relations == other.relations)
+      && (name == other.name)
+      && (flags == other.flags)
+      && (exteriorJailMarkerRefID == other.exteriorJailMarkerRefID)
+      && (followerWaitMarkerRefID == other.followerWaitMarkerRefID)
+      && (stolenGoodsContainerRefID == other.stolenGoodsContainerRefID)
+      && (playerInventoryContainerRefID == other.playerInventoryContainerRefID)
+      && (crimeFactionListFormID == other.crimeFactionListFormID)
+      && (jailOutfitFormID == other.jailOutfitFormID)
+      && (unknownCRVA == other.unknownCRVA) && (ranks == other.ranks)
+      && (vendorListFormID == other.vendorListFormID)
+      && (vendorContainterFormID == other.vendorContainterFormID)
+      && (vendorStuff == other.vendorStuff) && (unknownPLVD == other.unknownPLVD)
+      && (conditions == other.conditions);
 }
 #endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t FactionRecord::getWriteSize() const
 {
-  uint32_t writeSize;
-  writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
-        +editorID.length()+1 /* length of name +1 byte for NUL termination */
-        +relations.size()*(4 /* XNAM */ +2 /* 2 bytes for length */ +12 /* fixed length of 12 bytes */)
-        +4 /* DATA */ +2 /* 2 bytes for length */ +4 /* fixed length of four bytes */;
+  uint32_t writeSize = 4 /* EDID */ + 2 /* 2 bytes for length */
+        + editorID.length() + 1 /* length of name +1 byte for NUL termination */
+        + relations.size() * (4 /* XNAM */ + 2 /* 2 bytes for length */ + 12 /* fixed length of 12 bytes */)
+        + 4 /* DATA */ + 2 /* 2 bytes for length */ + 4 /* fixed length of four bytes */;
   if (name.isPresent())
   {
     writeSize += name.getWriteSize();
-  }//if FULL
-  if (exteriorJailMarkerRefID!=0)
+  }
+  if (exteriorJailMarkerRefID != 0)
   {
-    writeSize = writeSize +4 /* JAIL */ +2 /* 2 bytes for length */ +4 /* fixed length of four bytes */;
-  }//if JAIL
-  if (followerWaitMarkerRefID!=0)
+    writeSize = writeSize + 4 /* JAIL */ + 2 /* 2 bytes for length */ + 4 /* fixed length of four bytes */;
+  }
+  if (followerWaitMarkerRefID != 0)
   {
-    writeSize = writeSize +4 /* WAIT */ +2 /* 2 bytes for length */ +4 /* fixed length of four bytes */;
-  }//if WAIT
-  if (stolenGoodsContainerRefID!=0)
+    writeSize = writeSize + 4 /* WAIT */ + 2 /* 2 bytes for length */ + 4 /* fixed length of four bytes */;
+  }
+  if (stolenGoodsContainerRefID != 0)
   {
-    writeSize = writeSize +4 /* STOL */ +2 /* 2 bytes for length */ +4 /* fixed length of four bytes */;
-  }//if STOL
-  if (playerInventoryContainerRefID!=0)
+    writeSize = writeSize + 4 /* STOL */ + 2 /* 2 bytes for length */ + 4 /* fixed length of four bytes */;
+  }
+  if (playerInventoryContainerRefID != 0)
   {
-    writeSize = writeSize +4 /* PLCN */ +2 /* 2 bytes for length */ +4 /* fixed length of four bytes */;
-  }//if PLCN
-  if (crimeFactionListFormID!=0)
+    writeSize = writeSize + 4 /* PLCN */ + 2 /* 2 bytes for length */ + 4 /* fixed length of four bytes */;
+  }
+  if (crimeFactionListFormID != 0)
   {
-    writeSize = writeSize +4 /* CRGR */ +2 /* 2 bytes for length */ +4 /* fixed length of four bytes */;
-  }//if CRGR
-  if (jailOutfitFormID!=0)
+    writeSize = writeSize + 4 /* CRGR */ + 2 /* 2 bytes for length */ + 4 /* fixed length of four bytes */;
+  }
+  if (jailOutfitFormID != 0)
   {
-    writeSize = writeSize +4 /* JOUT */ +2 /* 2 bytes for length */ +4 /* fixed length of four bytes */;
-  }//if JOUT
+    writeSize = writeSize + 4 /* JOUT */ + 2 /* 2 bytes for length */ + 4 /* fixed length of four bytes */;
+  }
   if (unknownCRVA.isPresent())
   {
-    writeSize = writeSize + 4 /* CRVA */ +2 /* 2 bytes for length */
+    writeSize = writeSize + 4 /* CRVA */ + 2 /* 2 bytes for length */
                + unknownCRVA.size() /* fixed length of 20 or 16 or 12 bytes */;
   }
-  if (!ranks.empty())
+  for (const auto& rank: ranks)
   {
-    std::vector<RankData>::size_type i;
-    for (i=0; i<ranks.size(); ++i)
-    {
-      writeSize = writeSize +4 /* RNAM */ +2 /* 2 bytes for length */ +4 /* fixed length of four bytes */
-                 +ranks[i].maleName.getWriteSize() /* MNAM */
-                 +ranks[i].femaleName.getWriteSize() /* FNAM */;
-    }//for
-  }//if ranks
-  if (vendorListFormID!=0)
+    writeSize = writeSize + 4 /* RNAM */ + 2 /* 2 bytes for length */ + 4 /* fixed length of four bytes */
+               + rank.maleName.getWriteSize() /* MNAM */
+               + rank.femaleName.getWriteSize() /* FNAM */;
+  }
+  if (vendorListFormID != 0)
   {
-    writeSize = writeSize +4 /* VEND */ +2 /* 2 bytes for length */ +4 /* fixed length of four bytes */;
-  }//if VEND
-  if (vendorContainterFormID!=0)
+    writeSize = writeSize + 4 /* VEND */ + 2 /* 2 bytes for length */ + 4 /* fixed length of four bytes */;
+  }
+  if (vendorContainterFormID != 0)
   {
-    writeSize = writeSize +4 /* VENC */ +2 /* 2 bytes for length */ +4 /* fixed length of four bytes */;
-  }//if VENC
+    writeSize = writeSize + 4 /* VENC */ + 2 /* 2 bytes for length */ + 4 /* fixed length of four bytes */;
+  }
   if (vendorStuff.isPresent)
   {
-    writeSize = writeSize +4 /* VENV */ +2 /* 2 bytes for length */ +12 /* fixed length of 12 bytes */;
-  }//if VENV
+    writeSize = writeSize + 4 /* VENV */ + 2 /* 2 bytes for length */ + 12 /* fixed length of 12 bytes */;
+  }
   if (unknownPLVD.isPresent())
   {
     writeSize = writeSize + 4 /* PLVD */ + 2 /* 2 bytes for length */ + unknownPLVD.size() /* length */;
   }
   if (!conditions.empty())
   {
-    writeSize = writeSize +4 /* CITC */ +2 /* 2 bytes for length */ +4 /* fixed length of four bytes */;
-    unsigned int i;
-    for (i=0; i<conditions.size(); ++i)
+    writeSize = writeSize + 4 /* CITC */ + 2 /* 2 bytes for length */ + 4 /* fixed length of four bytes */;
+    for (const auto& condition: conditions)
     {
-      //calculate size of CTDA/CIS2
-      writeSize += conditions[i].getWriteSize();
-    }//for
-  }//if conditions
+      // calculate size of CTDA/CIS2
+      writeSize += condition.getWriteSize();
+    }
+  }
   return writeSize;
 }
 
 bool FactionRecord::saveToStream(std::ostream& output) const
 {
-  output.write((const char*) &cFACT, 4);
+  output.write(reinterpret_cast<const char*>(&cFACT), 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize()))
     return false;
 
-  //write EDID
-  output.write((const char*) &cEDID, 4);
-  //EDID's length
-  uint16_t subLength = editorID.length()+1;
+  // write editor ID (EDID)
+  output.write(reinterpret_cast<const char*>(&cEDID), 4);
+  uint16_t subLength = editorID.length() + 1;
   output.write((const char*) &subLength, 2);
-  //write editor ID
   output.write(editorID.c_str(), subLength);
 
   if (name.isPresent())
@@ -241,98 +228,79 @@ bool FactionRecord::saveToStream(std::ostream& output) const
       return false;
   }
 
-  if (!relations.empty())
+  for (const auto& relation: relations)
   {
-    unsigned int i;
-    for (i=0; i<relations.size(); ++i)
-    {
-      //write XNAM
-      output.write((const char*) &cXNAM, 4);
-      //XNAM's length
-      subLength = 12; //fixed
-      output.write((const char*) &subLength, 2);
-      //write XNAM's data
-      output.write((const char*) &relations[i].factionFormID, 4);
-      output.write((const char*) &relations[i].mod, 4);
-      output.write((const char*) &relations[i].groupCombatReaction, 4);
-    }//for
+    // write inter-faction relation (XNAM)
+    output.write(reinterpret_cast<const char*>(&cXNAM), 4);
+    subLength = 12; // fixed length
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    output.write(reinterpret_cast<const char*>(&relation.factionFormID), 4);
+    output.write(reinterpret_cast<const char*>(&relation.mod), 4);
+    output.write(reinterpret_cast<const char*>(&relation.groupCombatReaction), 4);
   }
 
-  //write DATA
-  output.write((const char*) &cDATA, 4);
-  //DATA's length
-  subLength = 4; //fixed
-  output.write((const char*) &subLength, 2);
-  //write DATA's data :P (or flags, for short)
-  output.write((const char*) &flags, 4);
+  // write DATA
+  output.write(reinterpret_cast<const char*>(&cDATA), 4);
+  subLength = 4; // fixed length
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
+  // write DATA's data :P (or flags, for short)
+  output.write(reinterpret_cast<const char*>(&flags), 4);
 
-  if (exteriorJailMarkerRefID!=0)
+  if (exteriorJailMarkerRefID != 0)
   {
-    //write JAIL
-    output.write((const char*) &cJAIL, 4);
-    //JAIL's length
-    subLength = 4; //fixed
-    output.write((const char*) &subLength, 2);
-    //write JAIL's data
-    output.write((const char*) &exteriorJailMarkerRefID, 4);
+    // write jail marker ID (JAIL)
+    output.write(reinterpret_cast<const char*>(&cJAIL), 4);
+    subLength = 4; // fixed length
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    output.write(reinterpret_cast<const char*>(&exteriorJailMarkerRefID), 4);
   }
 
-  if (followerWaitMarkerRefID!=0)
+  if (followerWaitMarkerRefID != 0)
   {
-    //write WAIT
-    output.write((const char*) &cWAIT, 4);
-    //WAIT's length
-    subLength = 4; //fixed
-    output.write((const char*) &subLength, 2);
-    //write WAIT's data
-    output.write((const char*) &followerWaitMarkerRefID, 4);
+    // write wait marker id (WAIT)
+    output.write(reinterpret_cast<const char*>(&cWAIT), 4);
+    subLength = 4;
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    output.write(reinterpret_cast<const char*>(&followerWaitMarkerRefID), 4);
   }
 
-  if (stolenGoodsContainerRefID!=0)
+  if (stolenGoodsContainerRefID != 0)
   {
-    //write STOL
-    output.write((const char*) &cSTOL, 4);
-    //STOL's length
-    subLength = 4; //fixed
-    output.write((const char*) &subLength, 2);
-    //write STOL's data
-    output.write((const char*) &stolenGoodsContainerRefID, 4);
+    // write stolen goods container reference id (STOL)
+    output.write(reinterpret_cast<const char*>(&cSTOL), 4);
+    subLength = 4;
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    output.write(reinterpret_cast<const char*>(&stolenGoodsContainerRefID), 4);
   }
 
-  if (playerInventoryContainerRefID!=0)
+  if (playerInventoryContainerRefID != 0)
   {
-    //write PLCN
-    output.write((const char*) &cPLCN, 4);
-    //PLCN's length
-    subLength = 4; //fixed
-    output.write((const char*) &subLength, 2);
-    //write PLCN's data
-    output.write((const char*) &playerInventoryContainerRefID, 4);
+    // write PLCN
+    output.write(reinterpret_cast<const char*>(&cPLCN), 4);
+    subLength = 4;
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    output.write(reinterpret_cast<const char*>(&playerInventoryContainerRefID), 4);
   }
 
-  if (crimeFactionListFormID!=0)
+  if (crimeFactionListFormID != 0)
   {
-    //write CRGR
-    output.write((const char*) &cCRGR, 4);
-    //CRGR's length
-    subLength = 4; //fixed
-    output.write((const char*) &subLength, 2);
-    //write CRGR's data
-    output.write((const char*) &crimeFactionListFormID, 4);
+    // write CRGR
+    output.write(reinterpret_cast<const char*>(&cCRGR), 4);
+    subLength = 4;
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    output.write(reinterpret_cast<const char*>(&crimeFactionListFormID), 4);
   }
 
-  if (jailOutfitFormID!=0)
+  if (jailOutfitFormID != 0)
   {
-    //write JOUT
-    output.write((const char*) &cJOUT, 4);
-    //JOUT's length
-    subLength = 4; //fixed
-    output.write((const char*) &subLength, 2);
-    //write JOUT's data
-    output.write((const char*) &jailOutfitFormID, 4);
+    // write jail outfit form ID (JOUT)
+    output.write(reinterpret_cast<const char*>(&cJOUT), 4);
+    subLength = 4;
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    output.write(reinterpret_cast<const char*>(&jailOutfitFormID), 4);
   }
 
-  //write CRVA
+  // write CRVA
   if (unknownCRVA.isPresent())
   {
     if (!unknownCRVA.saveToStream(output, cCRVA))
@@ -342,103 +310,85 @@ bool FactionRecord::saveToStream(std::ostream& output) const
     }
   }
 
-  if (!ranks.empty())
+  for (const auto& rank: ranks)
   {
-    std::vector<RankData>::size_type i;
-    for (i=0; i<ranks.size(); ++i)
+    // write rank index (RNAM)
+    output.write(reinterpret_cast<const char*>(&cRNAM), 4);
+    subLength = 4;
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    output.write(reinterpret_cast<const char*>(&rank.index), 4);
+
+    if (rank.maleName.isPresent())
     {
-      //write RNAM
-      output.write((const char*) &cRNAM, 4);
-      //RNAM's length
-      subLength = 4; //fixed
-      output.write((const char*) &subLength, 2);
-      //write rank index
-      output.write((const char*) &(ranks[i].index), 4);
-
-      if (ranks[i].maleName.isPresent())
-      {
-        //write MNAM
-        if (!ranks[i].maleName.saveToStream(output, cMNAM))
-          return false;
-      }
-      if (ranks[i].femaleName.isPresent())
-      {
-        //write FNAM
-        if (!ranks[i].femaleName.saveToStream(output, cFNAM))
-          return false;
-      }
-    }//for
-  }//if ranks
-
-  if (vendorListFormID!=0)
-  {
-    //write VEND
-    output.write((const char*) &cVEND, 4);
-    //VEND's length
-    subLength = 4; //fixed
-    output.write((const char*) &subLength, 2);
-    //write vendor list's form ID
-    output.write((const char*) &vendorListFormID, 4);
+      if (!rank.maleName.saveToStream(output, cMNAM))
+        return false;
+    }
+    if (rank.femaleName.isPresent())
+    {
+      if (!rank.femaleName.saveToStream(output, cFNAM))
+        return false;
+    }
   }
 
-  if (vendorContainterFormID!=0)
+  if (vendorListFormID != 0)
   {
-    //write VENC
-    output.write((const char*) &cVENC, 4);
-    //VENC's length
-    subLength = 4; //fixed
-    output.write((const char*) &subLength, 2);
-    //write Vendor Containter's form ID
-    output.write((const char*) &vendorContainterFormID, 4);
+    // write vendor list's form ID (VEND)
+    output.write(reinterpret_cast<const char*>(&cVEND), 4);
+    subLength = 4;
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    output.write(reinterpret_cast<const char*>(&vendorListFormID), 4);
+  }
+
+  if (vendorContainterFormID != 0)
+  {
+    // write Vendor Containter's form ID (VENC)
+    output.write(reinterpret_cast<const char*>(&cVENC), 4);
+    subLength = 4;
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    output.write(reinterpret_cast<const char*>(&vendorContainterFormID), 4);
   }
 
 
   if (vendorStuff.isPresent)
   {
-    //write VENV
-    output.write((const char*) &cVENV, 4);
-    //VENV's length
-    subLength = 12; //fixed
-    output.write((const char*) &subLength, 2);
-    //write vendor stuff
-    output.write((const char*) &vendorStuff.startHour, 2);
-    output.write((const char*) &vendorStuff.endHour, 2);
-    output.write((const char*) &vendorStuff.radius, 4);
-    output.write((const char*) &vendorStuff.flagsVendor, 4);
+    // write vendor data (VENV)
+    output.write(reinterpret_cast<const char*>(&cVENV), 4);
+    subLength = 12;
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    output.write(reinterpret_cast<const char*>(&vendorStuff.startHour), 2);
+    output.write(reinterpret_cast<const char*>(&vendorStuff.endHour), 2);
+    output.write(reinterpret_cast<const char*>(&vendorStuff.radius), 4);
+    output.write(reinterpret_cast<const char*>(&vendorStuff.flagsVendor), 4);
   }
 
   if (unknownPLVD.isPresent())
   {
-    //write PLVD
     if (!unknownPLVD.saveToStream(output, cPLVD))
     {
       std::cerr << "Error while writing subrecord PLVD of FACT!\n";
       return false;
-    }//if
+    }
   }
 
   if (!conditions.empty())
   {
     const uint32_t cond_count = conditions.size();
-    //write CITC
-    output.write((const char*) &cCITC, 4);
-    //CITC's length
-    subLength = 4; //fixed
-    output.write((const char*) &subLength, 2);
-    //write CITC's data
-    output.write((const char*) &cond_count, 4);
+    // write condition item counter (CITC)
+    output.write(reinterpret_cast<const char*>(&cCITC), 4);
+    subLength = 4;
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    output.write(reinterpret_cast<const char*>(&cond_count), 4);
 
-    unsigned int i;
-    for (i=0; i<cond_count; ++i)
+    for (const auto& condition: conditions)
     {
-      //write CTDA/CIS2
-      if (!conditions[i].saveToStream(output))
+      // write CTDA/CIS2
+      if (!condition.saveToStream(output))
       {
         std::cerr << "Error while writing subrecord CTDA or CIS2 of FACT!\n";
         return false;
       }
-    }//for
-  }//if conditions
+    }
+  }
 
   return output.good();
 }
@@ -449,48 +399,24 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize))
     return false;
-  uint32_t subRecName;
-  uint16_t subLength;
-  subRecName = subLength = 0;
-  uint32_t bytesRead;
+  uint32_t subRecName = 0;
+  uint16_t subLength = 0;
+  uint32_t bytesRead = 0;
 
   //read EDID
-  in_File.read((char*) &subRecName, 4);
-  bytesRead = 4;
-  if (subRecName!=cEDID)
-  {
-    UnexpectedRecord(cEDID, subRecName);
-    return false;
-  }
-  //EDID's length
-  in_File.read((char*) &subLength, 2);
-  bytesRead += 2;
-  if (subLength>511)
-  {
-    std::cerr <<"Error: sub record EDID of FACT is longer than 511 characters!\n";
-    return false;
-  }
-  //read EDID's stuff
   char buffer[512];
-  memset(buffer, 0, 512);
-  in_File.read(buffer, subLength);
-  bytesRead += subLength;
-  if (!in_File.good())
-  {
-    std::cerr << "Error while reading subrecord EDID of FACT!\n";
+  if (!loadString512FromStream(in_File, editorID, buffer, cEDID, true, bytesRead))
     return false;
-  }
-  editorID = std::string(buffer);
 
   relations.clear();
   InterfactionRelation tempInterfacRel;
   name.reset();
   bool hasReadDATA = false;
   flags = 0;
-  exteriorJailMarkerRefID = 0; //subrecord JAIL
-  followerWaitMarkerRefID = 0; //subrecord WAIT
-  stolenGoodsContainerRefID = 0; //subrecord STOL
-  playerInventoryContainerRefID = 0; //subrecord PLCN
+  exteriorJailMarkerRefID = 0; // subrecord JAIL
+  followerWaitMarkerRefID = 0; // subrecord WAIT
+  stolenGoodsContainerRefID = 0; // subrecord STOL
+  playerInventoryContainerRefID = 0; // subrecord PLCN
   crimeFactionListFormID = 0;
   jailOutfitFormID = 0;
   unknownCRVA.setPresence(false);
@@ -499,39 +425,39 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
   bool hasUnpushedRank = false;
   vendorListFormID = 0;
   vendorContainterFormID = 0;
-  //VENV
+  // VENV
   vendorStuff.startHour = 0;
   vendorStuff.endHour = 0;
   vendorStuff.radius = 0;
   vendorStuff.flagsVendor = 0;
   vendorStuff.isPresent = false;
-  //end of VENV
+  // end of VENV
   unknownPLVD.setPresence(false);
   conditions.clear();
   CTDA_CIS2_compound tempCTDA_CIS2;
   uint32_t cond_count = 0;
   bool hasUnpushedCTDA_CIS2 = false;
-  while (bytesRead<readSize)
+  while (bytesRead < readSize)
   {
-    //read next subrecord's name
-    in_File.read((char*) &subRecName, 4);
+    // read next subrecord's name
+    in_File.read(reinterpret_cast<char*>(&subRecName), 4);
     bytesRead += 4;
     switch(subRecName)
     {
       case cXNAM:
-           //XNAM's length
+           // XNAM's length
            in_File.read((char*) &subLength, 2);
            bytesRead += 2;
-           if (subLength!=12)
+           if (subLength != 12)
            {
-             std::cerr <<"Error: subrecord XNAM of FACT has invalid length ("
-                       <<subLength <<" bytes). Should be 12 bytes!\n";
+             std::cerr << "Error: subrecord XNAM of FACT has invalid length ("
+                       << subLength << " bytes). Should be 12 bytes!\n";
              return false;
            }
-           //read XNAM's stuff
-           in_File.read((char*) &(tempInterfacRel.factionFormID), 4);
-           in_File.read((char*) &(tempInterfacRel.mod), 4);
-           in_File.read((char*) &(tempInterfacRel.groupCombatReaction), 4);
+           // read XNAM's stuff
+           in_File.read(reinterpret_cast<char*>(&tempInterfacRel.factionFormID), 4);
+           in_File.read(reinterpret_cast<char*>(&tempInterfacRel.mod), 4);
+           in_File.read(reinterpret_cast<char*>(&tempInterfacRel.groupCombatReaction), 4);
            bytesRead += 12;
            if (!in_File.good())
            {
@@ -551,11 +477,8 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
              std::cerr << "Error: FACT seems to have more than one FULL subrecord!\n";
              return false;
            }
-           //read FULL
            if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
-           {
              return false;
-           }
            break;
       case cDATA:
            if (hasReadDATA)
@@ -564,109 +487,95 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
              return false;
            }
            if (!loadUint32SubRecordFromStream(in_File, cDATA, flags, false))
-           {
              return false;
-           }
            bytesRead += 6;
            hasReadDATA = true;
            break;
       case cJAIL:
-           if (exteriorJailMarkerRefID!=0)
+           if (exteriorJailMarkerRefID != 0)
            {
              std::cerr << "Error: FACT seems to have more than one JAIL subrecord!\n";
              return false;
            }
            if (!loadUint32SubRecordFromStream(in_File, cJAIL, exteriorJailMarkerRefID, false))
-           {
              return false;
-           }
            bytesRead += 6;
-           if (exteriorJailMarkerRefID==0)
+           if (exteriorJailMarkerRefID == 0)
            {
              std::cerr << "Error: JAIL subrecord of FACT has value zero!\n";
              return false;
            }
            break;
       case cWAIT:
-           if (followerWaitMarkerRefID!=0)
+           if (followerWaitMarkerRefID != 0)
            {
              std::cerr << "Error: FACT seems to have more than one WAIT subrecord!\n";
              return false;
            }
            if (!loadUint32SubRecordFromStream(in_File, cWAIT, followerWaitMarkerRefID, false))
-           {
              return false;
-           }
            bytesRead += 6;
-           if (followerWaitMarkerRefID==0)
+           if (followerWaitMarkerRefID == 0)
            {
              std::cerr << "Error: WAIT subrecord of FACT has value zero!\n";
              return false;
            }
            break;
       case cSTOL:
-           if (stolenGoodsContainerRefID!=0)
+           if (stolenGoodsContainerRefID != 0)
            {
              std::cerr << "Error: FACT seems to have more than one STOL subrecord!\n";
              return false;
            }
            if (!loadUint32SubRecordFromStream(in_File, cSTOL, stolenGoodsContainerRefID, false))
-           {
              return false;
-           }
            bytesRead += 6;
-           if (stolenGoodsContainerRefID==0)
+           if (stolenGoodsContainerRefID == 0)
            {
              std::cerr << "Error: STOL subrecord of FACT has value zero!\n";
              return false;
            }
            break;
       case cPLCN:
-           if (playerInventoryContainerRefID!=0)
+           if (playerInventoryContainerRefID != 0)
            {
              std::cerr << "Error: FACT seems to have more than one PLCN subrecord!\n";
              return false;
            }
            if (!loadUint32SubRecordFromStream(in_File, cPLCN, playerInventoryContainerRefID, false))
-           {
              return false;
-           }
            bytesRead += 6;
-           if (playerInventoryContainerRefID==0)
+           if (playerInventoryContainerRefID == 0)
            {
              std::cerr << "Error: PLCN subrecord of FACT has value zero!\n";
              return false;
            }
            break;
       case cCRGR:
-           if (crimeFactionListFormID!=0)
+           if (crimeFactionListFormID != 0)
            {
              std::cerr << "Error: FACT seems to have more than one CRGR subrecord!\n";
              return false;
            }
            if (!loadUint32SubRecordFromStream(in_File, cCRGR, crimeFactionListFormID, false))
-           {
              return false;
-           }
            bytesRead += 6;
-           if (crimeFactionListFormID==0)
+           if (crimeFactionListFormID == 0)
            {
              std::cerr << "Error: CRGR subrecord of FACT has value zero!\n";
              return false;
            }
            break;
       case cJOUT:
-           if (jailOutfitFormID!=0)
+           if (jailOutfitFormID != 0)
            {
              std::cerr << "Error: FACT seems to have more than one JOUT subrecord!\n";
              return false;
            }
            if (!loadUint32SubRecordFromStream(in_File, cJOUT, jailOutfitFormID, false))
-           {
              return false;
-           }
            bytesRead += 6;
-           if (jailOutfitFormID==0)
+           if (jailOutfitFormID == 0)
            {
              std::cerr << "Error: JOUT subrecord of FACT has value zero!\n";
              return false;
@@ -678,7 +587,6 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
              std::cerr << "Error: FACT seems to have more than one CRVA subrecord!\n";
              return false;
            }
-           //read CRVA
            if (!unknownCRVA.loadFromStream(in_File, cCRVA, false))
            {
              std::cerr << "Error while reading subrecord CRVA of FACT!\n";
@@ -697,23 +605,13 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
       case cRNAM:
            if (hasUnpushedRank)
            {
-             /* //zero index for both male and female is allowed (but kind of
-             // useless, at least for player-accessable factions)
-             if ((tempRank.maleNameStringID==0) and (tempRank.femaleNameStringID==0))
-             {
-               std::cerr << "Error while reading record of type FACT: string "
-                        << "indices for both male and female name are zero!\n";
-               return false;
-             } */
              ranks.push_back(tempRank);
            }
            tempRank.index = 0;
            tempRank.maleName.reset();
            tempRank.femaleName.reset();
            if (!loadUint32SubRecordFromStream(in_File, cRNAM, tempRank.index, false))
-           {
              return false;
-           }
            bytesRead += 6;
            hasUnpushedRank = true;
            break;
@@ -750,34 +648,30 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
              return false;
            break;
       case cVEND:
-           if (vendorListFormID!=0)
+           if (vendorListFormID != 0)
            {
              std::cerr << "Error: FACT seems to have more than one VEND subrecord!\n";
              return false;
            }
            if (!loadUint32SubRecordFromStream(in_File, cVEND, vendorListFormID, false))
-           {
              return false;
-           }
            bytesRead += 6;
-           if (vendorListFormID==0)
+           if (vendorListFormID == 0)
            {
              std::cerr << "Error: subrecord VEND of FACT has value zero!\n";
              return false;
            }
            break;
       case cVENC:
-           if (vendorContainterFormID!=0)
+           if (vendorContainterFormID != 0)
            {
              std::cerr << "Error: FACT seems to have more than one VENC subrecord!\n";
              return false;
            }
            if (!loadUint32SubRecordFromStream(in_File, cVENC, vendorContainterFormID, false))
-           {
              return false;
-           }
            bytesRead += 6;
-           if (vendorContainterFormID==0)
+           if (vendorContainterFormID == 0)
            {
              std::cerr << "Error: subrecord VENC of FACT has value zero!\n";
              return false;
@@ -789,20 +683,20 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
              std::cerr << "Error: FACT seems to have more than one VENV subrecord!\n";
              return false;
            }
-           //VENV's length
-           in_File.read((char*) &subLength, 2);
+           // VENV's length
+           in_File.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
-           if (subLength!=12)
+           if (subLength != 12)
            {
-             std::cerr <<"Error: subrecord VENV of FACT has invalid length ("
-                       <<subLength <<" bytes). Should be 12 bytes!\n";
+             std::cerr << "Error: subrecord VENV of FACT has invalid length ("
+                       << subLength << " bytes). Should be 12 bytes!\n";
              return false;
            }
-           //read VENV's stuff
-           in_File.read((char*) &(vendorStuff.startHour), 2);
-           in_File.read((char*) &(vendorStuff.endHour), 2);
-           in_File.read((char*) &(vendorStuff.radius), 4);
-           in_File.read((char*) &(vendorStuff.flagsVendor), 4);
+           // read VENV's stuff
+           in_File.read(reinterpret_cast<char*>(&vendorStuff.startHour), 2);
+           in_File.read(reinterpret_cast<char*>(&vendorStuff.endHour), 2);
+           in_File.read(reinterpret_cast<char*>(&vendorStuff.radius), 4);
+           in_File.read(reinterpret_cast<char*>(&vendorStuff.flagsVendor), 4);
            bytesRead += 12;
            if (!in_File.good())
            {
@@ -817,7 +711,6 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
              std::cerr << "Error: FACT seems to have more than one PLVD subrecord!\n";
              return false;
            }
-           //read PLVD
            if (!unknownPLVD.loadFromStream(in_File, cPLVD, false))
            {
              std::cerr << "Error while reading subrecord PLVD of FACT!\n";
@@ -833,43 +726,41 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
            bytesRead += (2 + 12);
            break;
       case cCITC:
-           if ((!conditions.empty()) or (cond_count!=0))
+           if (!conditions.empty() || (cond_count != 0))
            {
              std::cerr << "Error: FACT seems to have more than one CITC subrecord!\n";
              return false;
            }
-           //read CITC
+           // read CITC
            if (!loadUint32SubRecordFromStream(in_File, cCITC, cond_count, false))
-           {
              return false;
-           }
            bytesRead += 6;
 
-           if (cond_count==0)
+           if (cond_count == 0)
            {
              std::cerr << "Error: subrecord CITC of FACT has value zero!\n";
              return false;
            }
            break;
       case cCTDA:
-           if (cond_count==0)
+           if (cond_count == 0)
            {
              std::cerr << "Error while reading record of type FACT: CTDA "
                        << "without previous CITC subrecord encountered!\n";
              return false;
            }
-           //push what's still left
+           // push what's still left
            if (hasUnpushedCTDA_CIS2)
            {
              conditions.push_back(tempCTDA_CIS2);
            }
-           if (conditions.size()>=cond_count)
+           if (conditions.size() >= cond_count)
            {
              std::cerr << "Error while reading record of type FACT: found more"
                        << " CTDA records than CITC's value suggested!\n";
              return false;
            }
-           //clear stuff
+           // clear stuff
            tempCTDA_CIS2.unknownCTDA.clear();
            tempCTDA_CIS2.unknownCISx.clear();
            // read CTDA's data
@@ -893,7 +784,6 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
                        << "subrecord per CTDA subrecord!\n";
              return false;
            }
-           //read CIS2's length
            if (!loadString512FromStream(in_File, tempCTDA_CIS2.unknownCISx, buffer, cCIS2, false, bytesRead))
              return false;
            if (tempCTDA_CIS2.unknownCISx.empty())
@@ -911,37 +801,30 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
                      << " VENV, PLVD, CITC, CTDA or CIS2 are allowed here!\n";
            return false;
            break;
-    }//swi
-  }//while
+    }
+  }
 
-  //handle remaining rank data chunk
+  // handle remaining rank data chunk
   if (hasUnpushedRank)
   {
-    /* //zero index for both male and female is allowed (but kind of useless, at least for player-accessable factions)
-    if ((tempRank.maleNameStringID==0) and (tempRank.femaleNameStringID==0))
-    {
-      std::cerr << "Error while reading record of type FACT: string indices "
-                << "for both male and female name are zero!\n";
-      return false;
-    }*/
     ranks.push_back(tempRank);
-  }//if unpushed stuff
+  }
 
-  //push what's still left for conditions
+  // push what's still left for conditions
   if (hasUnpushedCTDA_CIS2)
   {
     conditions.push_back(tempCTDA_CIS2);
   }
-  //size check for conditions
-  if (conditions.size()!=cond_count)
+  // size check for conditions
+  if (conditions.size() != cond_count)
   {
-    std::cerr << "Error while reading FACT: expected "<<cond_count
-              << " condition record(s), but only "<<conditions.size()
+    std::cerr << "Error while reading FACT: expected " << cond_count
+              << " condition record(s), but only " << conditions.size()
               << " record(s) was/were found!\n";
     return false;
   }
 
-  //presence checks
+  // presence checks
   if (!hasReadDATA)
   {
     std::cerr << "Error: at least one required subrecord of FACT is missing!\n";
@@ -956,4 +839,4 @@ uint32_t FactionRecord::getRecordType() const
   return cFACT;
 }
 
-} //namespace
+} // namespace

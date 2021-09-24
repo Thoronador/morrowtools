@@ -70,8 +70,10 @@ FactionRecord::VendorData::VendorData()
 
 bool FactionRecord::VendorData::operator==(const VendorData& other) const
 {
-  if (isPresent!=other.isPresent) return false;
-  if (!isPresent) return true;
+  if (isPresent!=other.isPresent)
+    return false;
+  if (!isPresent)
+    return true;
   return ((startHour==other.startHour) and (endHour==other.endHour)
       and (radius==other.radius) and (flagsVendor==other.flagsVendor));
 }
@@ -222,7 +224,8 @@ uint32_t FactionRecord::getWriteSize() const
 bool FactionRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cFACT, 4);
-  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
+  if (!saveSizeAndUnknownValues(output, getWriteSize()))
+    return false;
 
   //write EDID
   output.write((const char*) &cEDID, 4);
@@ -231,6 +234,12 @@ bool FactionRecord::saveToStream(std::ostream& output) const
   output.write((const char*) &subLength, 2);
   //write editor ID
   output.write(editorID.c_str(), subLength);
+
+  if (name.isPresent())
+  {
+    if (!name.saveToStream(output, cFULL))
+      return false;
+  }
 
   if (!relations.empty())
   {
@@ -247,14 +256,7 @@ bool FactionRecord::saveToStream(std::ostream& output) const
       output.write((const char*) &relations[i].mod, 4);
       output.write((const char*) &relations[i].groupCombatReaction, 4);
     }//for
-  }//if relations
-
-  if (name.isPresent())
-  {
-    //write FULL
-    if (!name.saveToStream(output, cFULL))
-      return false;
-  }//if has FULL
+  }
 
   //write DATA
   output.write((const char*) &cDATA, 4);
@@ -273,7 +275,7 @@ bool FactionRecord::saveToStream(std::ostream& output) const
     output.write((const char*) &subLength, 2);
     //write JAIL's data
     output.write((const char*) &exteriorJailMarkerRefID, 4);
-  }//if has JAIL
+  }
 
   if (followerWaitMarkerRefID!=0)
   {
@@ -284,7 +286,7 @@ bool FactionRecord::saveToStream(std::ostream& output) const
     output.write((const char*) &subLength, 2);
     //write WAIT's data
     output.write((const char*) &followerWaitMarkerRefID, 4);
-  }//if has WAIT
+  }
 
   if (stolenGoodsContainerRefID!=0)
   {
@@ -295,7 +297,7 @@ bool FactionRecord::saveToStream(std::ostream& output) const
     output.write((const char*) &subLength, 2);
     //write STOL's data
     output.write((const char*) &stolenGoodsContainerRefID, 4);
-  }//if has STOL
+  }
 
   if (playerInventoryContainerRefID!=0)
   {
@@ -306,7 +308,7 @@ bool FactionRecord::saveToStream(std::ostream& output) const
     output.write((const char*) &subLength, 2);
     //write PLCN's data
     output.write((const char*) &playerInventoryContainerRefID, 4);
-  }//if has PLCN
+  }
 
   if (crimeFactionListFormID!=0)
   {
@@ -317,7 +319,7 @@ bool FactionRecord::saveToStream(std::ostream& output) const
     output.write((const char*) &subLength, 2);
     //write CRGR's data
     output.write((const char*) &crimeFactionListFormID, 4);
-  }//if has CRGR
+  }
 
   if (jailOutfitFormID!=0)
   {
@@ -328,7 +330,7 @@ bool FactionRecord::saveToStream(std::ostream& output) const
     output.write((const char*) &subLength, 2);
     //write JOUT's data
     output.write((const char*) &jailOutfitFormID, 4);
-  }//if has JOUT
+  }
 
   //write CRVA
   if (unknownCRVA.isPresent())
@@ -377,7 +379,7 @@ bool FactionRecord::saveToStream(std::ostream& output) const
     output.write((const char*) &subLength, 2);
     //write vendor list's form ID
     output.write((const char*) &vendorListFormID, 4);
-  }//if has VEND
+  }
 
   if (vendorContainterFormID!=0)
   {
@@ -388,7 +390,7 @@ bool FactionRecord::saveToStream(std::ostream& output) const
     output.write((const char*) &subLength, 2);
     //write Vendor Containter's form ID
     output.write((const char*) &vendorContainterFormID, 4);
-  }//if has VENC
+  }
 
 
   if (vendorStuff.isPresent)
@@ -403,7 +405,7 @@ bool FactionRecord::saveToStream(std::ostream& output) const
     output.write((const char*) &vendorStuff.endHour, 2);
     output.write((const char*) &vendorStuff.radius, 4);
     output.write((const char*) &vendorStuff.flagsVendor, 4);
-  }//if VENV
+  }
 
   if (unknownPLVD.isPresent())
   {
@@ -413,7 +415,7 @@ bool FactionRecord::saveToStream(std::ostream& output) const
       std::cerr << "Error while writing subrecord PLVD of FACT!\n";
       return false;
     }//if
-  }//if PLVD
+  }
 
   if (!conditions.empty())
   {
@@ -445,7 +447,8 @@ bool FactionRecord::saveToStream(std::ostream& output) const
 bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
-  if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
+  if (!loadSizeAndUnknownValues(in_File, readSize))
+    return false;
   uint32_t subRecName;
   uint16_t subLength;
   subRecName = subLength = 0;
@@ -533,6 +536,11 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
            if (!in_File.good())
            {
              std::cerr << "Error while reading subrecord XNAM of FACT!\n";
+             return false;
+           }
+           if (tempInterfacRel.factionFormID == 0)
+           {
+             std::cerr << "Error: XNAM subrecord of FACT has form ID of value zero!\n";
              return false;
            }
            relations.push_back(tempInterfacRel);

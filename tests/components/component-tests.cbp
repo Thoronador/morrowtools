@@ -155,6 +155,7 @@
 		<Unit filename="sr/base/records/DestructionData.cpp" />
 		<Unit filename="sr/base/records/DestructionStage.cpp" />
 		<Unit filename="sr/base/records/EffectBlock.cpp" />
+		<Unit filename="sr/base/records/FactionRecord.cpp" />
 		<Unit filename="sr/base/records/FactionRecord_InterfactionRelation.cpp" />
 		<Unit filename="sr/base/records/FactionRecord_RankData.cpp" />
 		<Unit filename="sr/base/records/FactionRecord_VendorData.cpp" />

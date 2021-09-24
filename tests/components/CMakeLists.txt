@@ -79,6 +79,7 @@ set(component_tests_sources
     sr/base/records/DestructionData.cpp
     sr/base/records/DestructionStage.cpp
     sr/base/records/EffectBlock.cpp
+    sr/base/records/FactionRecord.cpp
     sr/base/records/FactionRecord_InterfactionRelation.cpp
     sr/base/records/FactionRecord_RankData.cpp
     sr/base/records/FactionRecord_VendorData.cpp

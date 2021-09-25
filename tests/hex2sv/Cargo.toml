@@ -1,0 +1,10 @@
+[package]
+name = "hex2sv"
+version = "0.1.0"
+description = "Small command-line program to turn hex digit sequences into C++ std::string_view literals"
+authors = ["Dirk Stolle <striezel-dev@web.de>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]

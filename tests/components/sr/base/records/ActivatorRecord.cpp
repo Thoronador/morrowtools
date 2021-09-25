@@ -44,20 +44,15 @@ TEST_CASE("ActivatorRecord")
     REQUIRE( record.modelPath.empty() );
     REQUIRE_FALSE( record.unknownMODT.isPresent() );
     REQUIRE_FALSE( record.unknownMODS.isPresent() );
-    REQUIRE_FALSE( record.hasDEST );
-    REQUIRE( record.unknownDEST == 0 );
+    REQUIRE_FALSE( record.unknownDEST.has_value() );
     REQUIRE( record.destructionStructures.empty() );
-    REQUIRE( record.keywordArray.empty() );
-    REQUIRE_FALSE( record.hasPNAM );
-    REQUIRE( record.defaultPrimitiveColourRed == 0 );
-    REQUIRE( record.defaultPrimitiveColourGreen == 0 );
-    REQUIRE( record.defaultPrimitiveColourBlue == 0 );
+    REQUIRE( record.keywords.empty() );
+    REQUIRE_FALSE( record.defaultPrimitiveColour.has_value() );
     REQUIRE( record.loopingSoundFormID == 0 );
     REQUIRE( record.activateSoundFormID == 0 );
     REQUIRE( record.waterTypeFormID == 0 );
     REQUIRE_FALSE( record.activateTextOverride.isPresent() );
-    REQUIRE_FALSE( record.hasFNAM );
-    REQUIRE( record.unknownFNAM == 0 );
+    REQUIRE_FALSE( record.unknownFNAM.has_value() );
     REQUIRE( record.interactionKeywordFormID == 0 );
   }
 
@@ -156,15 +151,13 @@ TEST_CASE("ActivatorRecord")
 
       SECTION("DEST mismatch")
       {
-        a.hasDEST = false;
-        b.hasDEST = true;
+        a.unknownDEST = {};
+        b.unknownDEST = 2;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        a.hasDEST = true;
         a.unknownDEST = 1;
-        b.hasDEST = true;
         b.unknownDEST = 2;
 
         REQUIRE_FALSE( a.equals(b) );
@@ -181,13 +174,13 @@ TEST_CASE("ActivatorRecord")
 
       SECTION("keywords mismatch")
       {
-        a.keywordArray.push_back(0x01234567);
+        a.keywords.push_back(0x01234567);
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        b.keywordArray.push_back(0x01234567);
-        b.keywordArray.push_back(0x09ABCDEF);
+        b.keywords.push_back(0x01234567);
+        b.keywords.push_back(0x09ABCDEF);
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
@@ -195,33 +188,33 @@ TEST_CASE("ActivatorRecord")
 
       SECTION("PNAM mismatch")
       {
-        a.hasPNAM = false;
-        b.hasPNAM = true;
+        a.defaultPrimitiveColour = {};
+        b.defaultPrimitiveColour = ActivatorRecord::Colour();
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        a.hasPNAM = true;
-        b.hasPNAM = true;
+        a.defaultPrimitiveColour = ActivatorRecord::Colour();
+        b.defaultPrimitiveColour = ActivatorRecord::Colour();
 
-        a.defaultPrimitiveColourRed = 1;
-        b.defaultPrimitiveColourRed = 2;
-
-        REQUIRE_FALSE( a.equals(b) );
-        REQUIRE_FALSE( b.equals(a) );
-
-        a.defaultPrimitiveColourRed = 1;
-        a.defaultPrimitiveColourGreen = 1;
-        b.defaultPrimitiveColourRed = 1;
-        b.defaultPrimitiveColourGreen = 2;
+        a.defaultPrimitiveColour.value().red = 1;
+        b.defaultPrimitiveColour.value().red = 2;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        a.defaultPrimitiveColourGreen = 1;
-        b.defaultPrimitiveColourGreen = 1;
-        a.defaultPrimitiveColourBlue = 2;
-        b.defaultPrimitiveColourBlue = 3;
+        a.defaultPrimitiveColour.value().red = 1;
+        a.defaultPrimitiveColour.value().green = 1;
+        b.defaultPrimitiveColour.value().red = 1;
+        b.defaultPrimitiveColour.value().green = 2;
+
+        REQUIRE_FALSE( a.equals(b) );
+        REQUIRE_FALSE( b.equals(a) );
+
+        a.defaultPrimitiveColour.value().green = 1;
+        b.defaultPrimitiveColour.value().green = 1;
+        a.defaultPrimitiveColour.value().blue = 2;
+        b.defaultPrimitiveColour.value().blue = 3;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
@@ -264,8 +257,8 @@ TEST_CASE("ActivatorRecord")
 
       SECTION("FNAM mismatch")
       {
-        a.hasFNAM = false;
-        b.hasFNAM = true;
+        a.unknownFNAM = {};
+        b.unknownFNAM = 1;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
@@ -400,7 +393,7 @@ TEST_CASE("ActivatorRecord")
       record.editorID = "foo";
       REQUIRE( record.getWriteSize() == 28 );
 
-      record.hasDEST = true;
+      record.unknownDEST = 1;
 
       REQUIRE( record.getWriteSize() == 42 );
     }
@@ -410,10 +403,10 @@ TEST_CASE("ActivatorRecord")
       record.editorID = "foo";
       REQUIRE( record.getWriteSize() == 28 );
 
-      record.keywordArray.push_back(0x01234567);
+      record.keywords.push_back(0x01234567);
       REQUIRE( record.getWriteSize() == 48 );
 
-      record.keywordArray.push_back(0x01234567);
+      record.keywords.push_back(0x01234567);
       REQUIRE( record.getWriteSize() == 52 );
     }
 
@@ -422,7 +415,7 @@ TEST_CASE("ActivatorRecord")
       record.editorID = "foo";
       REQUIRE( record.getWriteSize() == 28 );
 
-      record.hasPNAM = true;
+      record.defaultPrimitiveColour = ActivatorRecord::Colour();
 
       REQUIRE( record.getWriteSize() == 38 );
     }
@@ -468,7 +461,7 @@ TEST_CASE("ActivatorRecord")
       record.editorID = "foo";
       REQUIRE( record.getWriteSize() == 28 );
 
-      record.hasFNAM = true;
+      record.unknownFNAM = 5;
 
       REQUIRE( record.getWriteSize() == 36 );
     }
@@ -540,22 +533,22 @@ TEST_CASE("ActivatorRecord")
       const auto MODT = std::string_view(reinterpret_cast<const char*>(record.unknownMODT.data()), record.unknownMODT.size());
       REQUIRE( MODT == "\x02\0\0\0\x02\0\0\0\0\0\0\0\xB7\x4D\x67\xC4\x64\x64\x73\0\xE4\xF2\xA5\x13\xF1\xCC\xC0\x34\x64\x64\x73\0\xE4\xF2\xA5\x13"sv );
       REQUIRE_FALSE( record.unknownMODS.isPresent() );
-      REQUIRE_FALSE( record.hasDEST );
+      REQUIRE_FALSE( record.unknownDEST.has_value() );
       REQUIRE( record.destructionStructures.empty() );
-      REQUIRE( record.keywordArray.size() == 2 );
-      REQUIRE( record.keywordArray[0] == 0x0006DEAD );
-      REQUIRE( record.keywordArray[1] == 0x00100769 );
+      REQUIRE( record.keywords.size() == 2 );
+      REQUIRE( record.keywords[0] == 0x0006DEAD );
+      REQUIRE( record.keywords[1] == 0x00100769 );
       // PNAM\x04\0\xCC\x4C\x33\0
-      REQUIRE( record.hasPNAM );
-      REQUIRE( record.defaultPrimitiveColourRed == 0xCC );
-      REQUIRE( record.defaultPrimitiveColourGreen == 0x4C );
-      REQUIRE( record.defaultPrimitiveColourBlue == 0x33 );
+      REQUIRE( record.defaultPrimitiveColour.has_value() );
+      REQUIRE( record.defaultPrimitiveColour.value().red == 0xCC );
+      REQUIRE( record.defaultPrimitiveColour.value().green == 0x4C );
+      REQUIRE( record.defaultPrimitiveColour.value().blue == 0x33 );
       REQUIRE( record.loopingSoundFormID == 0 );
       REQUIRE( record.activateSoundFormID == 0 );
       REQUIRE( record.waterTypeFormID == 0 );
       REQUIRE_FALSE( record.activateTextOverride.isPresent() );
-      REQUIRE( record.hasFNAM );
-      REQUIRE( record.unknownFNAM == 0 );
+      REQUIRE( record.unknownFNAM.has_value() );
+      REQUIRE( record.unknownFNAM.value() == 0 );
       REQUIRE( record.interactionKeywordFormID == 0 );
 
       // Writing should succeed.

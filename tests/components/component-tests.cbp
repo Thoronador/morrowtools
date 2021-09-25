@@ -55,6 +55,8 @@
 		<Unit filename="../../sr/base/records/AcousticSpaceRecord.hpp" />
 		<Unit filename="../../sr/base/records/ActionRecord.cpp" />
 		<Unit filename="../../sr/base/records/ActionRecord.hpp" />
+		<Unit filename="../../sr/base/records/ActivatorRecord.cpp" />
+		<Unit filename="../../sr/base/records/ActivatorRecord.hpp" />
 		<Unit filename="../../sr/base/records/AddOnNodeRecord.cpp" />
 		<Unit filename="../../sr/base/records/AddOnNodeRecord.hpp" />
 		<Unit filename="../../sr/base/records/AlchemyPotionRecord.cpp" />
@@ -139,6 +141,7 @@
 		<Unit filename="sr/base/StringTable.cpp" />
 		<Unit filename="sr/base/records/AcousticSpaceRecord.cpp" />
 		<Unit filename="sr/base/records/ActionRecord.cpp" />
+		<Unit filename="sr/base/records/ActivatorRecord.cpp" />
 		<Unit filename="sr/base/records/AddOnNodeRecord.cpp" />
 		<Unit filename="sr/base/records/AlchemyPotionRecord.cpp" />
 		<Unit filename="sr/base/records/AmmunitionRecord.cpp" />

@@ -54,7 +54,8 @@ void ActivatorRecord::destStruct::reset()
 /* ActivatorRecord's functions */
 
 ActivatorRecord::ActivatorRecord()
-: BasicRecord(), editorID(""),
+: BasicRecord(),
+  editorID(""),
   unknownVMAD(BinarySubRecord()),
   name(LocalizedString()),
   modelPath(""),
@@ -111,7 +112,8 @@ bool ActivatorRecord::equals(const ActivatorRecord& other) const
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t ActivatorRecord::getWriteSize() const
 {
-  if (isDeleted()) return 0;
+  if (isDeleted())
+    return 0;
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of string +1 byte for NUL-termination */
@@ -205,8 +207,10 @@ uint32_t ActivatorRecord::getWriteSize() const
 bool ActivatorRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cACTI, 4);
-  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
-  if (isDeleted()) return true;
+  if (!saveSizeAndUnknownValues(output, getWriteSize()))
+    return false;
+  if (isDeleted())
+    return true;
 
   //write EDID
   output.write((const char*) &cEDID, 4);
@@ -443,8 +447,10 @@ bool ActivatorRecord::saveToStream(std::ostream& output) const
 bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
-  if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
-  if (isDeleted()) return true;
+  if (!loadSizeAndUnknownValues(in_File, readSize))
+    return false;
+  if (isDeleted())
+    return true;
   uint32_t subRecName;
   uint16_t subLength;
   uint32_t bytesRead;
@@ -576,6 +582,11 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
              return false;
            }
            modelPath = std::string(buffer);
+           if (modelPath.empty())
+           {
+             std::cerr << "Error: Subrecord MODL of ACTI is empty!\n";
+             return false;
+           }
            break;
       case cMODT:
            if (unknownMODT.isPresent())
@@ -761,6 +772,11 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
            //read KWDA
            in_File.read((char*) &subRecName, 4);
            bytesRead += 4;
+           if (subRecName != cKWDA)
+           {
+             UnexpectedRecord(cKWDA, subRecName);
+             return false;
+           }
            //KWDA's length
            in_File.read((char*) &subLength, 2);
            bytesRead += 2;

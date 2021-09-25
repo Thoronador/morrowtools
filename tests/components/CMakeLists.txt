@@ -16,6 +16,7 @@ set(component_tests_sources
     ../../sr/base/StringTable.cpp
     ../../sr/base/records/AcousticSpaceRecord.cpp
     ../../sr/base/records/ActionRecord.cpp
+    ../../sr/base/records/ActivatorRecord.cpp
     ../../sr/base/records/AddOnNodeRecord.cpp
     ../../sr/base/records/AlchemyPotionRecord.cpp
     ../../sr/base/records/AmmunitionRecord.cpp
@@ -63,6 +64,7 @@ set(component_tests_sources
     sr/base/StringTable.cpp
     sr/base/records/AcousticSpaceRecord.cpp
     sr/base/records/ActionRecord.cpp
+    sr/base/records/ActivatorRecord.cpp
     sr/base/records/AddOnNodeRecord.cpp
     sr/base/records/AlchemyPotionRecord.cpp
     sr/base/records/AmmunitionRecord.cpp

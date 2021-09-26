@@ -6,6 +6,8 @@ This directory contains a Rust command line application that can generate a C++
 It reads the hexadecimal sequence from the standard input stream and prints the
 result to the standard output.
 
+[![GitHub CI](https://github.com/Thoronador/morrowtools/workflows/hex2sv/badge.svg)](https://github.com/Thoronador/morrowtools/actions)
+
 ## Building the application from source
 
 ### Prerequisites

@@ -30,6 +30,10 @@ fn to_sequence(byte: &u8) -> String
   {
     return "\\0".to_string();
   }
+  if *byte == 34u8
+  {
+    return "\\\"".to_string();
+  }
   if *byte == 92u8
   {
     return "\\\\".to_string();
@@ -74,7 +78,7 @@ fn hex_to_string_view(octets: &str) -> Result<String, String>
     else
     {
       let c = byte as char;
-      if c.is_ascii_graphic() && c != '\\' && is_safe_to_push(&c, &result)
+      if c.is_ascii_graphic() && c != '\\' && c != '"' && is_safe_to_push(&c, &result)
       {
         result.push(c);
       }
@@ -131,6 +135,7 @@ mod tests
   {
     assert_eq!(to_sequence(&0), "\\0");
     assert_eq!(to_sequence(&10), "\\x0A");
+    assert_eq!(to_sequence(&34), "\\\"");
     assert_eq!(to_sequence(&42), "\\x2A");
     assert_eq!(to_sequence(&81), "\\x51");
     assert_eq!(to_sequence(&255), "\\xFF");

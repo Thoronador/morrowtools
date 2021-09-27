@@ -431,10 +431,12 @@ TEST_CASE("FactionRecord")
     dummy_table.addString(0x00000132, "foo");
     dummy_table.addString(0x00002430, "foo");
     dummy_table.addString(0x0000D0A1, "foo");
-    dummy_table.addString(0x000D2E9, "foo");
+    dummy_table.addString(0x0000D235, "foo");
+    dummy_table.addString(0x0000D2E9, "foo");
     dummy_table.addString(0x00002C08, "foo");
     dummy_table.addString(0x0000087F, "foo");
     dummy_table.addString(0x0000E67C, "foo");
+    dummy_table.addString(0x00008EEA, "foo");
 
     SECTION("default: load record")
     {
@@ -498,7 +500,6 @@ TEST_CASE("FactionRecord")
       const auto CRVA = std::string_view(reinterpret_cast<const char*>(record.unknownCRVA.data()), record.unknownCRVA.size());
       REQUIRE( CRVA == "\x01\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"sv );
 
-      // RNAM\x04\0\0\0\0\0 MNAM\x04\0 \x32\x01\0\0
       REQUIRE( record.ranks.size() == 7 );
 
       REQUIRE( record.ranks[0].index == 0 );
@@ -542,6 +543,120 @@ TEST_CASE("FactionRecord")
       REQUIRE( record.ranks[6].maleName.getType() == LocalizedString::Type::Index );
       REQUIRE( record.ranks[6].maleName.getIndex() == 0x0000E67C );
       REQUIRE_FALSE( record.ranks[6].femaleName.isPresent() );
+
+      REQUIRE( record.vendorListFormID == 0 );
+      REQUIRE( record.vendorContainterFormID == 0 );
+      REQUIRE( record.vendorStuff.isPresent );
+      REQUIRE( record.vendorStuff.startHour == 0 );
+      REQUIRE( record.vendorStuff.endHour == 0 );
+      REQUIRE( record.vendorStuff.radius == 0 );
+      REQUIRE( record.vendorStuff.flagsVendor == 0 );
+      REQUIRE_FALSE( record.unknownPLVD.isPresent() );
+      REQUIRE( record.conditions.empty() );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( record.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
+    }
+
+    SECTION("default: load record with JAIL + WAIT + CRGR")
+    {
+      const auto data = "FACT\x84\0\0\0\0\0\0\0\x24\x03\x0A\0\x1B\x69\x55\0\x28\0\x06\0EDID\x20\0HonorhallKidsIgnoreCrimeFaction\0FULL\x04\0\x35\xD2\0\0DATA\x04\0\x81\x37\0\0JAIL\x04\0X\xEF\x03\0WAIT\x04\0X\xEF\x03\0CRGR\x04\0Si\x02\0CRVA\x14\0\0\0\xE8\x03(\0\x05\0\x19\0\0\0\0\0\0?d\0\0\0VENV\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FACT, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      FactionRecord record;
+      REQUIRE( record.loadFromStream(stream, true, dummy_table) );
+      // Check data.
+      // -- header
+      REQUIRE( record.headerFlags == 0 );
+      REQUIRE( record.headerFormID == 0x000A0324 );
+      REQUIRE( record.headerRevision == 0x0055691B );
+      REQUIRE( record.headerVersion == 40 );
+      REQUIRE( record.headerUnknown5 == 0x0006 );
+      // -- record data
+      REQUIRE( record.editorID == "HonorhallKidsIgnoreCrimeFaction" );
+      REQUIRE( record.name.isPresent() );
+      REQUIRE( record.name.getType() == LocalizedString::Type::Index );
+      REQUIRE( record.name.getIndex() == 0x0000D235 );
+      REQUIRE( record.relations.empty() );
+
+      REQUIRE( record.flags == 0x00003781 );
+      REQUIRE( record.exteriorJailMarkerRefID == 0x0003EF58 );
+      REQUIRE( record.followerWaitMarkerRefID == 0x0003EF58 );
+      REQUIRE( record.stolenGoodsContainerRefID == 0 );
+      REQUIRE( record.playerInventoryContainerRefID == 0 );
+      REQUIRE( record.crimeFactionListFormID == 0x00026953 );
+      REQUIRE( record.jailOutfitFormID == 0 );
+      REQUIRE( record.unknownCRVA.isPresent() );
+      const auto CRVA = std::string_view(reinterpret_cast<const char*>(record.unknownCRVA.data()), record.unknownCRVA.size());
+      REQUIRE( CRVA == "\0\0\xE8\x03(\0\x05\0\x19\0\0\0\0\0\0?d\0\0\0"sv );
+
+      REQUIRE( record.ranks.empty() );
+
+      REQUIRE( record.vendorListFormID == 0 );
+      REQUIRE( record.vendorContainterFormID == 0 );
+      REQUIRE( record.vendorStuff.isPresent );
+      REQUIRE( record.vendorStuff.startHour == 0 );
+      REQUIRE( record.vendorStuff.endHour == 0 );
+      REQUIRE( record.vendorStuff.radius == 0 );
+      REQUIRE( record.vendorStuff.flagsVendor == 0 );
+      REQUIRE_FALSE( record.unknownPLVD.isPresent() );
+      REQUIRE( record.conditions.empty() );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( record.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
+    }
+
+    SECTION("default: load record with STOL + PLCN + JOUT")
+    {
+      const auto data = "FACT\x95\0\0\0\0\0\0\0\x27\x7C\x0E\0\x1B\x69\x55\0\x28\0\x05\0EDID\x13\0DBCrimeFactionMaro\0FULL\x04\0\xEA\x8E\0\0DATA\x04\0\x41\x10\0\0JAIL\x04\0\x19\xEF\x03\0WAIT\x04\0\x19\xEF\x03\0STOL\x04\0\xFF\xEE\x03\0PLCN\x04\0\xFF\xEE\x03\0CRGR\x04\0Si\x02\0JOUT\x04\0`\x8B\x02\0CRVA\x14\0\x01\x01\xE8\x03(\0\x05\0\x19\0\0\0\0\0\0?d\0d\0VENV\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FACT, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      FactionRecord record;
+      REQUIRE( record.loadFromStream(stream, true, dummy_table) );
+      // Check data.
+      // -- header
+      REQUIRE( record.headerFlags == 0 );
+      REQUIRE( record.headerFormID == 0x000E7C27 );
+      REQUIRE( record.headerRevision == 0x0055691B );
+      REQUIRE( record.headerVersion == 40 );
+      REQUIRE( record.headerUnknown5 == 0x0005 );
+      // -- record data
+      REQUIRE( record.editorID == "DBCrimeFactionMaro" );
+      REQUIRE( record.name.isPresent() );
+      REQUIRE( record.name.getType() == LocalizedString::Type::Index );
+      REQUIRE( record.name.getIndex() == 0x00008EEA );
+      REQUIRE( record.relations.empty() );
+
+      REQUIRE( record.flags == 0x00001041 );
+      REQUIRE( record.exteriorJailMarkerRefID == 0x0003EF19 );
+      REQUIRE( record.followerWaitMarkerRefID == 0x0003EF19 );
+      REQUIRE( record.stolenGoodsContainerRefID == 0x0003EEFF );
+      REQUIRE( record.playerInventoryContainerRefID == 0x0003EEFF );
+      REQUIRE( record.crimeFactionListFormID == 0x00026953 );
+      REQUIRE( record.jailOutfitFormID == 0x00028B60 );
+      REQUIRE( record.unknownCRVA.isPresent() );
+      const auto CRVA = std::string_view(reinterpret_cast<const char*>(record.unknownCRVA.data()), record.unknownCRVA.size());
+      REQUIRE( CRVA == "\x01\x01\xE8\x03(\0\x05\0\x19\0\0\0\0\0\0?d\0d\0"sv );
+
+      REQUIRE( record.ranks.empty() );
 
       REQUIRE( record.vendorListFormID == 0 );
       REQUIRE( record.vendorContainterFormID == 0 );
@@ -787,9 +902,54 @@ TEST_CASE("FactionRecord")
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
+    SECTION("corrupt data: multiple JAILs")
+    {
+      const auto data = "FACT\x8E\0\0\0\0\0\0\0\x24\x03\x0A\0\x1B\x69\x55\0\x28\0\x06\0EDID\x20\0HonorhallKidsIgnoreCrimeFaction\0FULL\x04\0\x35\xD2\0\0DATA\x04\0\x81\x37\0\0JAIL\x04\0X\xEF\x03\0JAIL\x04\0X\xEF\x03\0WAIT\x04\0X\xEF\x03\0CRGR\x04\0Si\x02\0CRVA\x14\0\0\0\xE8\x03(\0\x05\0\x19\0\0\0\0\0\0?d\0\0\0VENV\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FACT, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      FactionRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: stream ends before all of JAIL can be read")
     {
       const std::string_view data = "FACT\x59\x01\0\0\0\0\0\0\x59\xF2\x01\0\x1B\x69\x55\0\x28\0\x01\0EDID\x1B\0CollegeofWinterholdFaction\0FULL\x04\0\x05\xF5\0\0XNAM\x0C\0\xA0\x35\x01\0\0\0\0\0\x02\0\0\0XNAM\x0C\0\x86\xB3\x0D\0\0\0\0\0\0\0\0\0XNAM\x0C\0\x4E\xC8\x05\0\0\0\0\0\x02\0\0\0XNAM\x0C\0\x72\x33\x10\0\0\0\0\0\x02\0\0\0XNAM\x0C\0\xC5\x80\x01\0\0\0\0\0\x02\0\0\0XNAM\x0C\0\x59\xF2\x01\0\0\0\0\0\x02\0\0\0JAIL\x04\0\0\x80"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FACT, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      FactionRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: JAIL is zero")
+    {
+      const auto data = "FACT\x84\0\0\0\0\0\0\0\x24\x03\x0A\0\x1B\x69\x55\0\x28\0\x06\0EDID\x20\0HonorhallKidsIgnoreCrimeFaction\0FULL\x04\0\x35\xD2\0\0DATA\x04\0\x81\x37\0\0JAIL\x04\0\0\0\0\0WAIT\x04\0X\xEF\x03\0CRGR\x04\0Si\x02\0CRVA\x14\0\0\0\xE8\x03(\0\x05\0\x19\0\0\0\0\0\0?d\0\0\0VENV\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FACT, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      FactionRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple WAITs")
+    {
+      const auto data = "FACT\x8E\0\0\0\0\0\0\0\x24\x03\x0A\0\x1B\x69\x55\0\x28\0\x06\0EDID\x20\0HonorhallKidsIgnoreCrimeFaction\0FULL\x04\0\x35\xD2\0\0DATA\x04\0\x81\x37\0\0JAIL\x04\0X\xEF\x03\0WAIT\x04\0X\xEF\x03\0WAIT\x04\0X\xEF\x03\0CRGR\x04\0Si\x02\0CRVA\x14\0\0\0\xE8\x03(\0\x05\0\x19\0\0\0\0\0\0?d\0\0\0VENV\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 
@@ -817,9 +977,69 @@ TEST_CASE("FactionRecord")
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
+    SECTION("corrupt data: WAIT is zero")
+    {
+      const auto data = "FACT\x84\0\0\0\0\0\0\0\x24\x03\x0A\0\x1B\x69\x55\0\x28\0\x06\0EDID\x20\0HonorhallKidsIgnoreCrimeFaction\0FULL\x04\0\x35\xD2\0\0DATA\x04\0\x81\x37\0\0JAIL\x04\0X\xEF\x03\0WAIT\x04\0\0\0\0\0CRGR\x04\0Si\x02\0CRVA\x14\0\0\0\xE8\x03(\0\x05\0\x19\0\0\0\0\0\0?d\0\0\0VENV\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FACT, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      FactionRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple STOLs")
+    {
+      const auto data = "FACT\x9F\0\0\0\0\0\0\0\x27\x7C\x0E\0\x1B\x69\x55\0\x28\0\x05\0EDID\x13\0DBCrimeFactionMaro\0FULL\x04\0\xEA\x8E\0\0DATA\x04\0\x41\x10\0\0JAIL\x04\0\x19\xEF\x03\0WAIT\x04\0\x19\xEF\x03\0STOL\x04\0\xFF\xEE\x03\0STOL\x04\0\xFF\xEE\x03\0PLCN\x04\0\xFF\xEE\x03\0CRGR\x04\0Si\x02\0JOUT\x04\0`\x8B\x02\0CRVA\x14\0\x01\x01\xE8\x03(\0\x05\0\x19\0\0\0\0\0\0?d\0d\0VENV\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FACT, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      FactionRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: stream ends before all of STOL can be read")
     {
       const std::string_view data = "FACT\x59\x01\0\0\0\0\0\0\x59\xF2\x01\0\x1B\x69\x55\0\x28\0\x01\0EDID\x1B\0CollegeofWinterholdFaction\0FULL\x04\0\x05\xF5\0\0XNAM\x0C\0\xA0\x35\x01\0\0\0\0\0\x02\0\0\0XNAM\x0C\0\x86\xB3\x0D\0\0\0\0\0\0\0\0\0XNAM\x0C\0\x4E\xC8\x05\0\0\0\0\0\x02\0\0\0XNAM\x0C\0\x72\x33\x10\0\0\0\0\0\x02\0\0\0XNAM\x0C\0\xC5\x80\x01\0\0\0\0\0\x02\0\0\0XNAM\x0C\0\x59\xF2\x01\0\0\0\0\0\x02\0\0\0STOL\x04\0\0\x80"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FACT, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      FactionRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: STOL is zero")
+    {
+      const auto data = "FACT\x95\0\0\0\0\0\0\0\x27\x7C\x0E\0\x1B\x69\x55\0\x28\0\x05\0EDID\x13\0DBCrimeFactionMaro\0FULL\x04\0\xEA\x8E\0\0DATA\x04\0\x41\x10\0\0JAIL\x04\0\x19\xEF\x03\0WAIT\x04\0\x19\xEF\x03\0STOL\x04\0\0\0\0\0PLCN\x04\0\xFF\xEE\x03\0CRGR\x04\0Si\x02\0JOUT\x04\0`\x8B\x02\0CRVA\x14\0\x01\x01\xE8\x03(\0\x05\0\x19\0\0\0\0\0\0?d\0d\0VENV\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FACT, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      FactionRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple PLCNs")
+    {
+      const auto data = "FACT\x9F\0\0\0\0\0\0\0\x27\x7C\x0E\0\x1B\x69\x55\0\x28\0\x05\0EDID\x13\0DBCrimeFactionMaro\0FULL\x04\0\xEA\x8E\0\0DATA\x04\0\x41\x10\0\0JAIL\x04\0\x19\xEF\x03\0WAIT\x04\0\x19\xEF\x03\0STOL\x04\0\xFF\xEE\x03\0PLCN\x04\0\xFF\xEE\x03\0PLCN\x04\0\xFF\xEE\x03\0CRGR\x04\0Si\x02\0JOUT\x04\0`\x8B\x02\0CRVA\x14\0\x01\x01\xE8\x03(\0\x05\0\x19\0\0\0\0\0\0?d\0d\0VENV\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 
@@ -847,6 +1067,36 @@ TEST_CASE("FactionRecord")
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
+    SECTION("corrupt data: PLCN is zero")
+    {
+      const auto data = "FACT\x95\0\0\0\0\0\0\0\x27\x7C\x0E\0\x1B\x69\x55\0\x28\0\x05\0EDID\x13\0DBCrimeFactionMaro\0FULL\x04\0\xEA\x8E\0\0DATA\x04\0\x41\x10\0\0JAIL\x04\0\x19\xEF\x03\0WAIT\x04\0\x19\xEF\x03\0STOL\x04\0\xFF\xEE\x03\0PLCN\x04\0\0\0\0\0CRGR\x04\0Si\x02\0JOUT\x04\0`\x8B\x02\0CRVA\x14\0\x01\x01\xE8\x03(\0\x05\0\x19\0\0\0\0\0\0?d\0d\0VENV\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FACT, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      FactionRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple CRGRs")
+    {
+      const auto data = "FACT\x8E\0\0\0\0\0\0\0\x24\x03\x0A\0\x1B\x69\x55\0\x28\0\x06\0EDID\x20\0HonorhallKidsIgnoreCrimeFaction\0FULL\x04\0\x35\xD2\0\0DATA\x04\0\x81\x37\0\0JAIL\x04\0X\xEF\x03\0WAIT\x04\0X\xEF\x03\0CRGR\x04\0Si\x02\0CRGR\x04\0Si\x02\0CRVA\x14\0\0\0\xE8\x03(\0\x05\0\x19\0\0\0\0\0\0?d\0\0\0VENV\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FACT, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      FactionRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: stream ends before all of CRGR can be read")
     {
       const std::string_view data = "FACT\x59\x01\0\0\0\0\0\0\x59\xF2\x01\0\x1B\x69\x55\0\x28\0\x01\0EDID\x1B\0CollegeofWinterholdFaction\0FULL\x04\0\x05\xF5\0\0XNAM\x0C\0\xA0\x35\x01\0\0\0\0\0\x02\0\0\0XNAM\x0C\0\x86\xB3\x0D\0\0\0\0\0\0\0\0\0XNAM\x0C\0\x4E\xC8\x05\0\0\0\0\0\x02\0\0\0XNAM\x0C\0\x72\x33\x10\0\0\0\0\0\x02\0\0\0XNAM\x0C\0\xC5\x80\x01\0\0\0\0\0\x02\0\0\0XNAM\x0C\0\x59\xF2\x01\0\0\0\0\0\x02\0\0\0CRGR\x04\0\0\x80"sv;
@@ -862,9 +1112,54 @@ TEST_CASE("FactionRecord")
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
+    SECTION("corrupt data: CRGR is zero")
+    {
+      const auto data = "FACT\x84\0\0\0\0\0\0\0\x24\x03\x0A\0\x1B\x69\x55\0\x28\0\x06\0EDID\x20\0HonorhallKidsIgnoreCrimeFaction\0FULL\x04\0\x35\xD2\0\0DATA\x04\0\x81\x37\0\0JAIL\x04\0X\xEF\x03\0WAIT\x04\0X\xEF\x03\0CRGR\x04\0\0\0\0\0CRVA\x14\0\0\0\xE8\x03(\0\x05\0\x19\0\0\0\0\0\0?d\0\0\0VENV\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FACT, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      FactionRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple JOUTs")
+    {
+      const auto data = "FACT\x9F\0\0\0\0\0\0\0\x27\x7C\x0E\0\x1B\x69\x55\0\x28\0\x05\0EDID\x13\0DBCrimeFactionMaro\0FULL\x04\0\xEA\x8E\0\0DATA\x04\0\x41\x10\0\0JAIL\x04\0\x19\xEF\x03\0WAIT\x04\0\x19\xEF\x03\0STOL\x04\0\xFF\xEE\x03\0PLCN\x04\0\xFF\xEE\x03\0CRGR\x04\0Si\x02\0JOUT\x04\0`\x8B\x02\0JOUT\x04\0`\x8B\x02\0CRVA\x14\0\x01\x01\xE8\x03(\0\x05\0\x19\0\0\0\0\0\0?d\0d\0VENV\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FACT, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      FactionRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: stream ends before all of JOUT can be read")
     {
       const std::string_view data = "FACT\x59\x01\0\0\0\0\0\0\x59\xF2\x01\0\x1B\x69\x55\0\x28\0\x01\0EDID\x1B\0CollegeofWinterholdFaction\0FULL\x04\0\x05\xF5\0\0XNAM\x0C\0\xA0\x35\x01\0\0\0\0\0\x02\0\0\0XNAM\x0C\0\x86\xB3\x0D\0\0\0\0\0\0\0\0\0XNAM\x0C\0\x4E\xC8\x05\0\0\0\0\0\x02\0\0\0XNAM\x0C\0\x72\x33\x10\0\0\0\0\0\x02\0\0\0XNAM\x0C\0\xC5\x80\x01\0\0\0\0\0\x02\0\0\0XNAM\x0C\0\x59\xF2\x01\0\0\0\0\0\x02\0\0\0JOUT\x04\0\0\x80"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FACT, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      FactionRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: JOUT is zero")
+    {
+      const auto data = "FACT\x95\0\0\0\0\0\0\0\x27\x7C\x0E\0\x1B\x69\x55\0\x28\0\x05\0EDID\x13\0DBCrimeFactionMaro\0FULL\x04\0\xEA\x8E\0\0DATA\x04\0\x41\x10\0\0JAIL\x04\0\x19\xEF\x03\0WAIT\x04\0\x19\xEF\x03\0STOL\x04\0\xFF\xEE\x03\0PLCN\x04\0\xFF\xEE\x03\0CRGR\x04\0Si\x02\0JOUT\x04\0\0\0\0\0CRVA\x14\0\x01\x01\xE8\x03(\0\x05\0\x19\0\0\0\0\0\0?d\0d\0VENV\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 

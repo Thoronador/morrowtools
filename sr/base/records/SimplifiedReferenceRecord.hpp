@@ -35,9 +35,6 @@ struct SimplifiedReferenceRecord: public BasicRecord
     /** Constructor, creates an empty record. */
     SimplifiedReferenceRecord();
 
-    /** Destructor. */
-    virtual ~SimplifiedReferenceRecord() = default;
-
     #ifndef SR_NO_RECORD_EQUALITY
     /** \brief Checks whether another instance contains the same data.
      *

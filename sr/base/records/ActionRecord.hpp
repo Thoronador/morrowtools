@@ -33,9 +33,6 @@ struct ActionRecord: public BasicRecord
     /** Constructor, creates an empty record. */
     ActionRecord();
 
-    /** Destructor. */
-    virtual ~ActionRecord() = default;
-
     #ifndef SR_NO_RECORD_EQUALITY
     /** \brief Checks whether another instance contains the same data.
      *

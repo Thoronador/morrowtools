@@ -39,9 +39,6 @@ struct ContainerRecord: public BasicRecord
     /** Constructor, creates an empty record. */
     ContainerRecord();
 
-    /** Destructor. */
-    virtual ~ContainerRecord() = default;
-
     #ifndef SR_NO_RECORD_EQUALITY
     /** \brief Checks whether another instance contains the same data.
      *

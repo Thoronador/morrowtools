@@ -35,9 +35,6 @@ struct WordOfPowerRecord: public BasicRecord
     /** Constructor, creates an empty record. */
     WordOfPowerRecord();
 
-    /** Destructor. */
-    virtual ~WordOfPowerRecord() = default;
-
     #ifndef SR_NO_RECORD_EQUALITY
     /** \brief Checks whether another instances contains the same data.
      *

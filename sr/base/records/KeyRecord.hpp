@@ -37,9 +37,6 @@ struct KeyRecord: public BasicRecord
     /** Constructor, creates an empty record. */
     KeyRecord();
 
-    /** Destructor. */
-    virtual ~KeyRecord() = default;
-
     #ifndef SR_NO_RECORD_EQUALITY
     /** \brief Checks whether another instance contains the same data.
      *

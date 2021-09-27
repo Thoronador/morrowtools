@@ -35,9 +35,6 @@ struct KeywordRecord: public BasicRecord
     /** Constructor, creates an empty record. */
     KeywordRecord();
 
-    /** Destructor. */
-    virtual ~KeywordRecord() = default;
-
     #ifndef SR_NO_RECORD_EQUALITY
     /** \brief Checks whether another instances contains the same data.
      *

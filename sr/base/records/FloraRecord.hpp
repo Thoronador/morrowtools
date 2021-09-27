@@ -37,9 +37,6 @@ struct FloraRecord: public BasicRecord
     /** Constructor, creates an empty record. */
     FloraRecord();
 
-    /** Destructor. */
-    virtual ~FloraRecord() = default;
-
     #ifndef SR_NO_RECORD_EQUALITY
     /** \brief Checks whether another instance contains the same data.
      *

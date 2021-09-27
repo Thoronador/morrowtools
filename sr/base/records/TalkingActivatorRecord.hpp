@@ -40,9 +40,6 @@ struct TalkingActivatorRecord: public BasicRecord
     /** Constructor, creates an empty record. */
     TalkingActivatorRecord();
 
-    /** Destructor. */
-    virtual ~TalkingActivatorRecord() = default;
-
     #ifndef SR_NO_RECORD_EQUALITY
     /** \brief Checks whether another instance contains the same data.
      *

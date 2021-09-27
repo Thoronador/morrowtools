@@ -38,9 +38,6 @@ struct PerkRecord: public BasicRecord
     /** Constructor, creates an empty record. */
     PerkRecord();
 
-    /** Destructor. */
-    virtual ~PerkRecord() = default;
-
     #ifndef SR_NO_RECORD_EQUALITY
     /** \brief Checks whether another instance contains the same data.
      *

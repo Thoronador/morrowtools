@@ -35,9 +35,6 @@ struct Tes4HeaderRecord: public BasicRecord
     /** Constructor, creates an empty record. */
     Tes4HeaderRecord();
 
-    /** Destructor. */
-    virtual ~Tes4HeaderRecord() = default;
-
     #ifndef SR_NO_RECORD_EQUALITY
     /** \brief Checks whether another instance contains the same data.
      *

@@ -38,9 +38,6 @@ struct AmmunitionRecord: public BasicRecord
     /** Constructor, creates an empty record. */
     AmmunitionRecord();
 
-    /** Destructor. */
-    virtual ~AmmunitionRecord() = default;
-
     #ifndef SR_NO_RECORD_EQUALITY
     /** \brief Checks whether another instance contains the same data.
      *

@@ -38,9 +38,6 @@ struct SoulGemRecord: public BasicRecord
     /** Constructor, creates an empty record. */
     SoulGemRecord();
 
-    /** Destructor. */
-    virtual ~SoulGemRecord() = default;
-
     #ifndef SR_NO_RECORD_EQUALITY
     /** \brief Checks whether another instance contains the same data.
      *

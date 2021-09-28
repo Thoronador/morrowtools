@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2013  Thoronador
+    Copyright (C) 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -83,119 +83,120 @@ int main(int argc, char **argv)
 {
   showGPLNotice();
 
-  //data files directory - empty at start
+  // data files directory - empty at start
   std::string dataDir = "";
-  //the plugin that has to be converted - empty at start, too
+  // the plugin that has to be converted - empty at start, too
   std::string pluginFile = "";
 
-  if ((argc>1) and (argv!=NULL))
+  if ((argc > 1) && (argv != nullptr))
   {
-    int i=1;
-    while (i<argc)
+    int i = 1;
+    while (i < argc)
     {
-      if (argv[i]!=NULL)
+      if (argv[i] != nullptr)
       {
         const std::string param = std::string(argv[i]);
-        //help parameter
-        if ((param=="--help") or (param=="-?") or (param=="/?"))
+        // help parameter
+        if ((param == "--help") || (param == "-?") || (param == "/?"))
         {
           showHelp();
           return 0;
-        }//if help wanted
-        //version information requested?
-        else if ((param=="--version") or (param=="-v"))
+        }
+        // version information requested?
+        else if ((param == "--version") || (param == "-v"))
         {
           showVersion();
           return 0;
         }
-        else if (param=="--version-with-exitcode")
+        else if (param == "--version-with-exitcode")
         {
           return showVersionExitcode();
         }
-        else if ((param=="-d") or (param=="-dir") or (param=="--data-files"))
+        else if ((param == "-d") || (param == "-dir") || (param == "--data-files"))
         {
-          //set more than once?
+          // Set more than once?
           if (!dataDir.empty())
           {
             std::cout << "Error: Data directory was already set!\n";
             return SRTP::rcInvalidParameter;
           }
-          //enough parameters?
-          if ((i+1<argc) and (argv[i+1]!=NULL))
+          // enough parameters?
+          if ((i + 1 < argc) && (argv[i + 1] != nullptr))
           {
             // Is it long enough to be a directory? (Minimum should be "./".)
-            if (std::string(argv[i+1]).size()>1)
+            if (std::string(argv[i + 1]).size() > 1)
             {
-              dataDir = std::string(argv[i+1]);
+              dataDir = std::string(argv[i + 1]);
               ++i; //skip next parameter, because it's used as directory name already
-              //Does it have a trailing (back)slash? If not, add one.
+              // Does it have a trailing (back)slash? If not, add one.
               dataDir = slashify(dataDir);
-              std::cout << "Data files directory was set to \""<<dataDir<<"\".\n";
+              std::cout << "Data files directory was set to \"" << dataDir
+                        << "\".\n";
             }
             else
             {
-              std::cout << "Parameter \""<<std::string(argv[i+1])<<"\" is too"
-                        << " short to be a proper directory path.\n";
+              std::cout << "Parameter \"" << std::string(argv[i + 1])
+                        << "\" is too short to be a proper directory path.\n";
               return SRTP::rcInvalidParameter;
-            }//else
+            }
           }
           else
           {
             std::cout << "Error: You have to specify a directory name after \""
-                      << param<<"\".\n";
+                      << param << "\".\n";
             return SRTP::rcInvalidParameter;
           }
-        }//data files directory
+        } //data files directory
 
 
-        else if ((param=="-f") or (param=="-file") or (param=="--plugin-file"))
+        else if ((param == "-f") || (param == "-file") || (param == "--plugin-file"))
         {
-          //set more than once?
+          // set more than once?
           if (!pluginFile.empty())
           {
             std::cout << "Error: Plugin file was already set!\n";
             return SRTP::rcInvalidParameter;
           }
-          //enough parameters?
-          if ((i+1<argc) and (argv[i+1]!=NULL))
+          // enough parameters?
+          if ((i + 1 < argc) && (argv[i + 1] != nullptr))
           {
-            //Is it long enough to be a file? (Minimum should be "a.esp".)
-            if (std::string(argv[i+1]).size()>4)
+            // Is it long enough to be a file? (Minimum should be "a.esp".)
+            if (std::string(argv[i + 1]).size() > 4)
             {
-              pluginFile = std::string(argv[i+1]);
+              pluginFile = std::string(argv[i + 1]);
               ++i; //skip next parameter, because it's used as plugin name already
-              std::cout << "Plugin file was set to \""<<pluginFile<<"\".\n";
+              std::cout << "Plugin file was set to \"" << pluginFile << "\".\n";
             }
             else
             {
-              std::cout << "Parameter \""<<std::string(argv[i+1])<<"\" is too"
-                        << " short to be a proper plugin file name.\n";
+              std::cout << "Parameter \"" << std::string(argv[i + 1])
+                        << "\" is too short to be a proper plugin file name.\n";
               return SRTP::rcInvalidParameter;
-            }//else
+            }
           }
           else
           {
             std::cout << "Error: You have to specify a file name after \""
-                      << param<<"\".\n";
+                      << param << "\".\n";
             return SRTP::rcInvalidParameter;
           }
-        }//plugin file name
+        } // plugin file name
         else
         {
-          //unknown or wrong parameter
-          std::cout << "Invalid parameter given: \""<<param<<"\".\n"
+          // unknown or wrong parameter
+          std::cout << "Invalid parameter given: \"" << param << "\".\n"
                     << "Use --help to get a list of valid parameters.\n";
           return SRTP::rcInvalidParameter;
         }
-      }//parameter exists
+      } // parameter exists
       else
       {
-        std::cout << "Parameter at index "<<i<<" is NULL.\n";
+        std::cout << "Parameter at index " << i << " is NULL.\n";
         return SRTP::rcInvalidParameter;
       }
-      ++i;//on to next parameter
-    }//while
-  }//if arguments present
+      ++i; // on to next parameter
+    }
+  }
   else
   {
     std::cout << "You have to specify certain parameters for this programme to run properly.\n"
@@ -203,7 +204,7 @@ int main(int argc, char **argv)
     return SRTP::rcInvalidParameter;
   }
 
-  //was a plugin file set?
+  // was a plugin file set?
   if (pluginFile.empty())
   {
     std::cout << "You have to specify a plugin file as parameter for this "
@@ -212,14 +213,14 @@ int main(int argc, char **argv)
     return SRTP::rcInvalidParameter;
   }
 
-  //Has the user specified a data directory?
+  // Has the user specified a data directory?
   SRTP::getDataDir(dataDir);
 
-  //Does the plugin file even exist?
+  // Does the plugin file even exist?
   if (!FileExists(dataDir+pluginFile))
   {
-    std::cout << "Error: The given plugin file \""<<dataDir+pluginFile
-              <<"\" does not exist! Aborting programme.\n";
+    std::cout << "Error: The given plugin file \"" << dataDir + pluginFile
+              << "\" does not exist! Aborting programme.\n";
     return SRTP::rcFileError;
   }
 
@@ -227,9 +228,9 @@ int main(int argc, char **argv)
   //now we can start the reading process
   SRTP::Tes4HeaderRecord tes4rec;
   SRTP::ESMReaderConvCAMS reader;
-  if (reader.readESM(dataDir+pluginFile, tes4rec)<0)
+  if (reader.readESM(dataDir + pluginFile, tes4rec) < 0)
   {
-    std::cout << "Error while reading \""<<dataDir+pluginFile<<"\"!\n";
+    std::cout << "Error while reading \"" << dataDir + pluginFile << "\"!\n";
     return SRTP::rcFileError;
   }
 
@@ -244,60 +245,60 @@ int main(int argc, char **argv)
     {
       // found CAMS top level group
       SRTP::Group::RecIterator recIter = groupIter->getRecBegin();
-      while (recIter!=groupIter->getRecEnd())
+      while (recIter != groupIter->getRecEnd())
       {
-        if ((*recIter)->getRecordType()==SRTP::cCAMS)
+        if ((*recIter)->getRecordType() == SRTP::cCAMS)
         {
           //CAMS record type found
           SRTP::CameraShotRecord* camPtr = static_cast<SRTP::CameraShotRecord*>(recIter->get());
-          if (camPtr!=NULL)
+          if (camPtr != nullptr)
           {
             if ((camPtr->dataLen == SRTP::CameraShotRecord::DataLengthType::dlt44Byte) && !camPtr->isDeleted())
             {
               // record has 44 byte variant of DATA subrecord, change it
               camPtr->dataLen = SRTP::CameraShotRecord::DataLengthType::dlt40Byte;
               ++changedRecords;
-            }//if
-          }//if not NULL
-        }//if
+            }
+          } // if not NULL
+        }
         ++recIter;
-      }//while (inner)
-      //update group size for later use/writing
-      if (changedRecords>0)
+      } // while (inner)
+      // update group size for later use/writing
+      if (changedRecords > 0)
       {
         groupIter->updateGroupSize();
       }
-    }//if CAMS found
+    } // if CAMS found
     ++groupIter;
-  }//while
+  }
 
-  //did we actually change anything?
-  if (changedRecords==0)
+  // Did we actually change anything?
+  if (changedRecords == 0)
   {
-    std::cout << "Hint: The file \""<<dataDir+pluginFile<<"\" did not contain "
+    std::cout << "Hint: The file \"" << dataDir + pluginFile << "\" did not contain "
               << "any CAMS records that need to be changed. Exiting programme "
               << "without creating a new plugin file.\n";
     return SRTP::rcNoChange;
   }
 
-  //find a new name for the modified file to avoid overwriting an existing file
+  // find a new name for the modified file to avoid overwriting an existing file
   std::string dummyPath;
   std::string piName, piExt;
   splitPathFileExtension(pluginFile, MWTP::pathDelimiter, dummyPath, piName, piExt);
   std::string newName = "_conv_cams";
   unsigned int i = 0;
-  while (FileExists(dataDir+piName+newName+"."+piExt))
+  while (FileExists(dataDir + piName + newName + "." + piExt))
   {
     ++i;
     std::ostringstream s_str;
     s_str << i;
-    newName = "_conv_cams"+s_str.str();
-  }//while
-  //get the new name right
-  newName = dataDir+piName+newName+"."+piExt;
-  std::cout << "Converted plugin file will be saved as \"" <<newName<<"\".\n";
+    newName = "_conv_cams" + s_str.str();
+  }
+  // get the new name right
+  newName = dataDir + piName + newName + "." + piExt;
+  std::cout << "Converted plugin file will be saved as \"" << newName << "\".\n";
 
-  //save it
+  // save it
   std::cout << "Saving file...\n";
   SRTP::ESMWriterContents writer;
   // ---- copy contents from reader to writer (expensive in terms of memory,
@@ -305,10 +306,11 @@ int main(int argc, char **argv)
   //      Or wait for C++11's move semantics to be implemented by most compilers
   //      and use that instead of copying that stuff.)
   writer.contents = reader.contents;
-  //now write the actual .esm/.esp file
+  // now write the actual .esm/.esp file
   if (!writer.writeESM(newName, tes4rec))
   {
-    std::cout << "Error: Could not write converted data to \""<<newName<<"\"!\n";
+    std::cout << "Error: Could not write converted data to \"" << newName
+              << "\"!\n";
     return SRTP::rcFileError;
   }
   std::cout << "Success!\n";

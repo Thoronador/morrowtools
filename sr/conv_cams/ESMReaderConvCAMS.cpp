@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2013  Thoronador
+    Copyright (C) 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -39,36 +39,36 @@ ESMReaderConvCAMS::~ESMReaderConvCAMS()
 
 bool ESMReaderConvCAMS::needGroup(const GroupData& g_data) const
 {
-  //we want all the stuff
+  // We want all the stuff.
   return true;
 }
 
 int ESMReaderConvCAMS::readNextRecord(std::ifstream& in_File, const uint32_t recName, const bool localized, const StringTable& table)
 {
-  BasicRecord * recPtr = NULL;
+  BasicRecord * recPtr = nullptr;
   switch (recName)
   {
     case cCAMS:
          recPtr = new CameraShotRecord;
          break;
-    //we have an extra entry for that type, because this one is too large for
-    // GenericRecord's size check limit
+    // We have an extra entry for that type, because this one is too large for
+    // GenericRecord's size check limit.
     case cNAVI:
          recPtr = new NAVIRecord;
          break;
     default:
-         //use generic record type for all other types we don't care about
+         // Use generic record type for all other types we don't care about.
          recPtr = new GenericRecord;
          break;
-  }//swi
+  }
   if (recPtr->loadFromStream(in_File, localized, table))
   {
     contents.m_Groups.back().addRecord(recPtr);
-    return 1; //success
+    return 1; // success
   }
   delete recPtr;
-  recPtr = NULL;
-  return -1; //error
+  recPtr = nullptr;
+  return -1; // error
 }
 
-} //namespace
+} // namespace

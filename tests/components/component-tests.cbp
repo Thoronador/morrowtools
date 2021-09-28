@@ -105,6 +105,8 @@
 		<Unit filename="../../sr/base/records/LocalizedString.hpp" />
 		<Unit filename="../../sr/base/records/MiscObjectRecord.cpp" />
 		<Unit filename="../../sr/base/records/MiscObjectRecord.hpp" />
+		<Unit filename="../../sr/base/records/NAVIRecord.cpp" />
+		<Unit filename="../../sr/base/records/NAVIRecord.hpp" />
 		<Unit filename="../../sr/base/records/PerkRecord.cpp" />
 		<Unit filename="../../sr/base/records/PerkRecord.hpp" />
 		<Unit filename="../../sr/base/records/ScrollRecord.cpp" />
@@ -171,6 +173,7 @@
 		<Unit filename="sr/base/records/KeywordRecord.cpp" />
 		<Unit filename="sr/base/records/LocalizedString.cpp" />
 		<Unit filename="sr/base/records/MiscObjectRecord.cpp" />
+		<Unit filename="sr/base/records/NAVIRecord.cpp" />
 		<Unit filename="sr/base/records/PerkRecord.cpp" />
 		<Unit filename="sr/base/records/ScrollRecord.cpp" />
 		<Unit filename="sr/base/records/ShoutRecord.cpp" />

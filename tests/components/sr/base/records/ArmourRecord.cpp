@@ -56,7 +56,7 @@ TEST_CASE("ArmourRecord")
     REQUIRE( record.pickupSoundFormID == 0 );
     REQUIRE( record.putdownSoundFormID == 0 );
     REQUIRE( record.unknownRNAM == 0 );
-    REQUIRE( record.keywordArray.empty() );
+    REQUIRE( record.keywords.empty() );
     REQUIRE_FALSE( record.description.isPresent() );
     REQUIRE( record.models.empty() );
     REQUIRE( record.value == 0 );
@@ -288,13 +288,13 @@ TEST_CASE("ArmourRecord")
 
       SECTION("keywords mismatch")
       {
-        a.keywordArray.push_back(0x01234567);
+        a.keywords.push_back(0x01234567);
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        b.keywordArray.push_back(0x01234567);
-        b.keywordArray.push_back(0x09ABCDEF);
+        b.keywords.push_back(0x01234567);
+        b.keywords.push_back(0x09ABCDEF);
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
@@ -625,10 +625,10 @@ TEST_CASE("ArmourRecord")
     {
       REQUIRE( record.getWriteSize() == 62 );
 
-      record.keywordArray.push_back(0x01234567);
+      record.keywords.push_back(0x01234567);
       REQUIRE( record.getWriteSize() == 82 );
 
-      record.keywordArray.push_back(0x01234567);
+      record.keywords.push_back(0x01234567);
       REQUIRE( record.getWriteSize() == 86 );
     }
 
@@ -728,11 +728,11 @@ TEST_CASE("ArmourRecord")
       REQUIRE( record.pickupSoundFormID == 0 );
       REQUIRE( record.putdownSoundFormID == 0 );
       REQUIRE( record.unknownRNAM == 0x00000019 );
-      REQUIRE( record.keywordArray.size() == 4 );
-      REQUIRE( record.keywordArray[0] == 0x0006BBD2 );
-      REQUIRE( record.keywordArray[1] == 0x0006BBE3 );
-      REQUIRE( record.keywordArray[2] == 0x0006C0EC );
-      REQUIRE( record.keywordArray[3] == 0x0008F959 );
+      REQUIRE( record.keywords.size() == 4 );
+      REQUIRE( record.keywords[0] == 0x0006BBD2 );
+      REQUIRE( record.keywords[1] == 0x0006BBE3 );
+      REQUIRE( record.keywords[2] == 0x0006C0EC );
+      REQUIRE( record.keywords[3] == 0x0008F959 );
       REQUIRE( record.description.isPresent() );
       REQUIRE( record.description.getType() == LocalizedString::Type::Index );
       REQUIRE( record.description.getIndex() == 0 );

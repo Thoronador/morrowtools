@@ -610,6 +610,11 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
              return false;
            }
            modelPath = std::string(buffer);
+           if (modelPath.empty())
+           {
+             std::cerr << "Error: sub record MOD2 of ARMO is empty!\n";
+             return false;
+           }
            break;
       case cMO2T:
            if (unknownMO2T.isPresent())
@@ -663,6 +668,11 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
              return false;
            }
            mod4Path = std::string(buffer);
+           if (mod4Path.empty())
+           {
+             std::cerr << "Error: sub record MOD2 of ARMO is empty!\n";
+             return false;
+           }
            break;
       case cMO4T:
            if (unknownMO4T.isPresent())
@@ -860,10 +870,11 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
            //KWDA's length
            in_File.read((char*) &subLength, 2);
            bytesRead += 2;
-           if (subLength!=4*k_Size)
+           if (subLength != 4 * k_Size)
            {
              std::cerr <<"Error: sub record KWDA of ARMO has invalid length ("
-                       <<subLength<<" bytes. Should be "<<4*k_Size<<" bytes!\n";
+                       << subLength << " bytes). Should be " << 4 * k_Size
+                       << " bytes!\n";
              return false;
            }
            //read KWDA's stuff
@@ -922,10 +933,10 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
            //DATA's length
            in_File.read((char*) &subLength, 2);
            bytesRead += 2;
-           if (subLength!=8)
+           if (subLength != 8)
            {
-             std::cerr <<"Error: sub record DATA of ARMO has invalid length ("
-                       <<subLength<<" bytes. Should be 8 bytes!\n";
+             std::cerr << "Error: sub record DATA of ARMO has invalid length ("
+                       << subLength << " bytes). Should be 8 bytes!\n";
              return false;
            }
            //read DATA's stuff

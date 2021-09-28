@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -35,87 +35,78 @@ NAVIRecord::NAVIRecord()
 {
 }
 
-NAVIRecord::~NAVIRecord()
-{
-  unknownNVMIs.clear();
-}
-
 #ifndef SR_NO_RECORD_EQUALITY
 bool NAVIRecord::equals(const NAVIRecord& other) const
 {
-  return ((equalsBasic(other)) and (unknownNVER==other.unknownNVER)
-      and (unknownNVMIs==other.unknownNVMIs) and (unknownNVPP==other.unknownNVPP)
-      and (unknownNVSI==other.unknownNVSI));
+  return equalsBasic(other) && (unknownNVER == other.unknownNVER)
+      && (unknownNVMIs == other.unknownNVMIs) && (unknownNVPP == other.unknownNVPP)
+      && (unknownNVSI == other.unknownNVSI);
 }
 #endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t NAVIRecord::getWriteSize() const
 {
-  if (isDeleted()) return 0;
-  uint32_t writeSize;
-  writeSize = 4 /* NVER */ +2 /* 2 bytes for length */ +4 /* fixed size */;
-  uint32_t i;
-  for (i=0; i<unknownNVMIs.size(); ++i)
+  if (isDeleted())
+    return 0;
+  uint32_t writeSize = 4 /* NVER */ + 2 /* 2 bytes for length */ + 4 /* fixed size */;
+  for (const auto& nvmi: unknownNVMIs)
   {
-    writeSize = writeSize + 4 /* NVMI */ + 2 /* 2 bytes for length */ + unknownNVMIs[i].size() /* size */;
-  }//for
+    writeSize = writeSize + 4 /* NVMI */ + 2 /* 2 bytes for length */ + nvmi.size() /* size */;
+  }
   if (unknownNVPP.isPresent())
   {
     writeSize = writeSize + 4 /* NVPP */ + 2 /* 2 bytes for length */ + unknownNVPP.size() /* size */;
   }
-  if (unknownNVSI!=0)
+  if (unknownNVSI != 0)
   {
-    writeSize = writeSize +4 /* NVSI */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+    writeSize = writeSize + 4 /* NVSI */ + 2 /* 2 bytes for length */ + 4 /* fixed size */;
   }
   return writeSize;
 }
 
 bool NAVIRecord::saveToStream(std::ostream& output) const
 {
-  output.write((const char*) &cNAVI, 4);
-  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
-  if (isDeleted()) return true;
+  output.write(reinterpret_cast<const char*>(&cNAVI), 4);
+  if (!saveSizeAndUnknownValues(output, getWriteSize()))
+    return false;
+  if (isDeleted())
+    return true;
 
-  //write NVER
-  output.write((const char*) &cNVER, 4);
-  //NVER's length
+  // write NVER
+  output.write(reinterpret_cast<const char*>(&cNVER), 4);
   uint16_t subLength = 4; //fixed size
-  output.write((const char*) &subLength, 2);
-  //write NVER
-  output.write((const char*) &unknownNVER, 4);
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
+  output.write(reinterpret_cast<const char*>(&unknownNVER), 4);
 
-  unsigned int i;
-  for (i=0; i<unknownNVMIs.size(); ++i)
+  // write NVMIs
+  for (const auto& nvmi: unknownNVMIs)
   {
-    //write NVMI
-    if (!unknownNVMIs[i].saveToStream(output, cNVMI))
+
+    if (!nvmi.saveToStream(output, cNVMI))
     {
       std::cerr << "Error while writing subrecord NVMI of NAVI!\n";
       return false;
-    }//if
-  }//for
+    }
+  }
 
   if (unknownNVPP.isPresent())
   {
-    //write NVPP
     if (!unknownNVPP.saveToStream(output, cNVPP))
     {
       std::cerr << "Error while writing subrecord NVPP of NAVI!\n";
       return false;
-    }//if
-  }//if NVPP
+    }
+  }
 
-  if (unknownNVSI!=0)
+  if (unknownNVSI != 0)
   {
-    //write NVSI
-    output.write((const char*) &cNVSI, 4);
-    //NVSI's length
-    subLength = 4; //fixed size
-    output.write((const char*) &subLength, 2);
-    //write NVSI
-    output.write((const char*) &unknownNVSI, 4);
-  }//if NVSI
+    // write NVSI
+    output.write(reinterpret_cast<const char*>(&cNVSI), 4);
+    subLength = 4; // fixed size
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    output.write(reinterpret_cast<const char*>(&unknownNVSI), 4);
+  }
 
   return output.good();
 }
@@ -124,59 +115,36 @@ bool NAVIRecord::saveToStream(std::ostream& output) const
 bool NAVIRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
-  if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
-  if (isDeleted()) return true;
-  uint32_t subRecName;
-  uint16_t subLength;
-  subRecName = subLength = 0;
-  uint32_t bytesRead = 0;
+  if (!loadSizeAndUnknownValues(in_File, readSize))
+    return false;
+  if (isDeleted())
+    return true;
+  uint32_t subRecName = 0;
 
-  //read NVER
-  in_File.read((char*) &subRecName, 4);
-  bytesRead = 4;
-  if (subRecName!=cNVER)
-  {
-    UnexpectedRecord(cNVER, subRecName);
+  // read NVER
+  if (!loadUint32SubRecordFromStream(in_File, cNVER, unknownNVER, true))
     return false;
-  }
-  //NVER's length
-  in_File.read((char*) &subLength, 2);
-  bytesRead += 2;
-  if (subLength!=4)
-  {
-    std::cerr <<"Error: sub record NVER of NAVI has invalid length ("<<subLength
-              << " bytes). Should be four bytes!\n";
-    return false;
-  }
-  //read EDID's stuff
-  in_File.read((char*) &unknownNVER, 4);
-  bytesRead += subLength;
-  if (!in_File.good())
-  {
-    std::cerr << "Error while reading subrecord NVER of NAVI!\n";
-    return false;
-  }
+  uint32_t bytesRead = 10;
 
   unknownNVMIs.clear();
   unknownNVPP.setPresence(false);
-  BinarySubRecord tempBin;
+  BinarySubRecord tempNVMI;
   unknownNVSI = 0;
-  while (bytesRead<readSize)
+  while (bytesRead < readSize)
   {
-    //read next header
-    in_File.read((char*) &subRecName, 4);
+    // read next subrecord header
+    in_File.read(reinterpret_cast<char*>(&subRecName), 4);
     bytesRead += 4;
     switch (subRecName)
     {
       case cNVMI:
-           //read binary subrecord
-           if (!tempBin.loadFromStream(in_File, cNVMI, false))
+           if (!tempNVMI.loadFromStream(in_File, cNVMI, false))
            {
              std::cerr << "Error while reading subrecord NVMI of NAVI!\n";
              return false;
            }
-           bytesRead = bytesRead + 2 + tempBin.size();
-           unknownNVMIs.push_back(tempBin);
+           bytesRead = bytesRead + 2 + tempNVMI.size();
+           unknownNVMIs.emplace_back(tempNVMI);
            break;
       case cNVPP:
            if (unknownNVPP.isPresent())
@@ -184,7 +152,7 @@ bool NAVIRecord::loadFromStream(std::istream& in_File, const bool localized, con
              std::cerr << "Error: NAVI seems to have more than one NVPP subrecord!\n";
              return false;
            }
-           //read binary subrecord
+           // read binary subrecord
            if (!unknownNVPP.loadFromStream(in_File, cNVPP, false))
            {
              std::cerr << "Error while reading subrecord NVPP of NAVI!\n";
@@ -193,27 +161,27 @@ bool NAVIRecord::loadFromStream(std::istream& in_File, const bool localized, con
            bytesRead = bytesRead + 2 + unknownNVPP.size();
            break;
       case cNVSI:
-           if (unknownNVSI!=0)
+           if (unknownNVSI != 0)
            {
              std::cerr << "Error: NAVI seems to have more than one NVSI subrecord!\n";
              return false;
            }
-           //load NVSI
            if (!loadUint32SubRecordFromStream(in_File, cNVSI, unknownNVSI, false))
              return false;
            bytesRead += 6;
-           if (unknownNVSI==0)
+           if (unknownNVSI == 0)
            {
              std::cerr << "Error: subrecord NVSI of NAVI is zero!\n";
              return false;
            }
            break;
       default:
-           std::cerr << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: found unexpected subrecord \""
+                     << IntTo4Char(subRecName)
                      << "\", but only NVMI, NVPP or NVSI are allowed here!\n";
            return false;
-    }//swi
-  }//while
+    }
+  }
 
   return in_File.good();
 }
@@ -223,4 +191,4 @@ uint32_t NAVIRecord::getRecordType() const
   return cNAVI;
 }
 
-} //namespace
+} // namespace

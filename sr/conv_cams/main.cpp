@@ -32,7 +32,7 @@
 void showGPLNotice()
 {
   std::cout << "CAMS record converter for Skyrim\n"
-            << "  Copyright (C) 2012, 2013  Thoronador\n"
+            << "  Copyright (C) 2012, 2013, 2021  Thoronador\n"
             << "\n"
             << "  This programme is free software: you can redistribute it and/or\n"
             << "  modify it under the terms of the GNU General Public License as published\n"
@@ -51,13 +51,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "CAMS record converter for Skyrim, version 0.01c.rev521~experimental, 2013-03-19\n";
+  std::cout << "CAMS record converter for Skyrim, version 0.01d.rev523~experimental, 2021-09-28\n";
 }
 
 int showVersionExitcode()
 {
   showVersion();
-  return 521;
+  return 523;
 }
 
 void showHelp()

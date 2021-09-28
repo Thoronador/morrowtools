@@ -59,6 +59,7 @@ int ESMReaderConvCAMS::readNextRecord(std::ifstream& in_File, const uint32_t rec
     default:
          // Use generic record type for all other types we don't care about.
          recPtr = new GenericRecord;
+         static_cast<GenericRecord*>(recPtr)->Header = recName;
          break;
   }
   if (recPtr->loadFromStream(in_File, localized, table))

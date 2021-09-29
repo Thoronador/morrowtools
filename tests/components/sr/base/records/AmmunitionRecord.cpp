@@ -735,6 +735,21 @@ TEST_CASE("AmmunitionRecord")
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
+    SECTION("corrupt data: missing DESC subrecord")
+    {
+      const std::string_view data = "AMMO\xB5\0\0\0\0\0\0\0\x7D\x39\x01\0\x1B\x69\x55\0\x28\0\x0F\0EDID\x0A\0IronArrow\0OBND\x0C\0\xFF\xFF\xC6\xFF\xFE\xFF\x02\0\0\0\x02\0FULL\x04\0\xCD\x7D\0\0MODL\x1B\0Weapons\\Iron\\IronArrow.nif\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x42\x92\x9F\x41\x64\x64\x73\0\x68\xEF\xBA\x75\xB4\x93\x67\x4B\x64\x64\x73\0\x68\xEF\xBA\x75YNAM\x04\0\xB7\xE7\x03\0ZNAM\x04\0\x77\xE8\x03\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0\xE7\x17\x09\0DATA\x10\0\x11\xBE\x03\0\0\0\0\0\0\0\0\x41\x01\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read AMMO, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      AmmunitionRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: length of KSIZ is not four")
     {
       const std::string_view data = "AMMO\xC0\0\0\0\0\0\0\0\x7D\x39\x01\0\x1B\x69\x55\0\x28\0\x0F\0EDID\x0A\0IronArrow\0OBND\x0C\0\xFF\xFF\xC6\xFF\xFE\xFF\x02\0\0\0\x02\0FULL\x04\0\xCD\x7D\0\0MODL\x1B\0Weapons\\Iron\\IronArrow.nif\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x42\x92\x9F\x41\x64\x64\x73\0\x68\xEF\xBA\x75\xB4\x93\x67\x4B\x64\x64\x73\0\x68\xEF\xBA\x75YNAM\x04\0\xB7\xE7\x03\0ZNAM\x04\0\x77\xE8\x03\0DESC\x04\0\0\0\0\0KSIZ\x05\0\x01\0\0\0\0KWDA\x04\0\xE7\x17\x09\0DATA\x10\0\x11\xBE\x03\0\0\0\0\0\0\0\0\x41\x01\0\0\0"sv;
@@ -814,6 +829,21 @@ TEST_CASE("AmmunitionRecord")
     SECTION("corrupt data: stream ends before all of DATA can be read")
     {
       const std::string_view data = "AMMO\xBF\0\0\0\0\0\0\0\x7D\x39\x01\0\x1B\x69\x55\0\x28\0\x0F\0EDID\x0A\0IronArrow\0OBND\x0C\0\xFF\xFF\xC6\xFF\xFE\xFF\x02\0\0\0\x02\0FULL\x04\0\xCD\x7D\0\0MODL\x1B\0Weapons\\Iron\\IronArrow.nif\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x42\x92\x9F\x41\x64\x64\x73\0\x68\xEF\xBA\x75\xB4\x93\x67\x4B\x64\x64\x73\0\x68\xEF\xBA\x75YNAM\x04\0\xB7\xE7\x03\0ZNAM\x04\0\x77\xE8\x03\0DESC\x04\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0\xE7\x17\x09\0DATA\x10\0\x11\xBE\x03\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read AMMO, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      AmmunitionRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: missing DATA subrecord")
+    {
+      const std::string_view data = "AMMO\xA9\0\0\0\0\0\0\0\x7D\x39\x01\0\x1B\x69\x55\0\x28\0\x0F\0EDID\x0A\0IronArrow\0OBND\x0C\0\xFF\xFF\xC6\xFF\xFE\xFF\x02\0\0\0\x02\0FULL\x04\0\xCD\x7D\0\0MODL\x1B\0Weapons\\Iron\\IronArrow.nif\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x42\x92\x9F\x41\x64\x64\x73\0\x68\xEF\xBA\x75\xB4\x93\x67\x4B\x64\x64\x73\0\x68\xEF\xBA\x75YNAM\x04\0\xB7\xE7\x03\0ZNAM\x04\0\x77\xE8\x03\0DESC\x04\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0\xE7\x17\x09\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 

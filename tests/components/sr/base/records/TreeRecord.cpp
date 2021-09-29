@@ -772,6 +772,37 @@ TEST_CASE("TreeRecord")
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
+    SECTION("corrupt data: length of CNAM is not 48")
+    {
+      {
+        const std::string_view data = "TREE\xD2\0\0\0\0\0\0\0\xF0\x91\x0B\0\x1B\x69\x55\0\x28\0\x07\0EDID\x13\0TreeFloraThistle01\0OBND\x0C\0\xB0\xFF\xB8\xFF\xED\xFF\x47\0\x45\0\x72\0MODL\x1A\0Plants\\FloraThistle01.nif\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x38\x6E\xFF\x80\x64\x64\x73\0\x13\x4C\x1E\xFA\x9F\x7D\xBC\x2A\x64\x64\x73\0\x13\x4C\x1E\xFAPFIG\x04\0\xAA\x34\x01\0SNAM\x04\0\xD5\x19\x05\0PFPC\x04\0\x64\x64\x64\x64\x46ULL\x04\0\xAC\x22\0\0CNAM\x2F\0\0\0\x80\x3F\0\x80\x3F\x0B\xD7\x23\x3D\x90\xC2\xF5\x3C\x0B\xD7\x23\x3D\x96\x43\x0B\x3D\0\0\0\x3F\0\0\0\x3F\xCD\xCC\xCC\x3E\0\0\x80\x3F\0\0\x20\x40\0\0\0\x3F"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read TREE, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        TreeRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+
+      {
+        const std::string_view data = "TREE\xD4\0\0\0\0\0\0\0\xF0\x91\x0B\0\x1B\x69\x55\0\x28\0\x07\0EDID\x13\0TreeFloraThistle01\0OBND\x0C\0\xB0\xFF\xB8\xFF\xED\xFF\x47\0\x45\0\x72\0MODL\x1A\0Plants\\FloraThistle01.nif\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x38\x6E\xFF\x80\x64\x64\x73\0\x13\x4C\x1E\xFA\x9F\x7D\xBC\x2A\x64\x64\x73\0\x13\x4C\x1E\xFAPFIG\x04\0\xAA\x34\x01\0SNAM\x04\0\xD5\x19\x05\0PFPC\x04\0\x64\x64\x64\x64\x46ULL\x04\0\xAC\x22\0\0CNAM\x31\0\0\0\x80\x3F\0\0\0\x80\x3F\x0B\xD7\x23\x3D\x90\xC2\xF5\x3C\x0B\xD7\x23\x3D\x96\x43\x0B\x3D\0\0\0\x3F\0\0\0\x3F\xCD\xCC\xCC\x3E\0\0\x80\x3F\0\0\x20\x40\0\0\0\x3F"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read TREE, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        TreeRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+    }
+
     SECTION("corrupt data: stream ends before all of CNAM can be read")
     {
       const std::string_view data = "TREE\xD6\0\0\0\0\0\0\0\x6D\x30\x01\0\x15\x68\x0A\0\x28\0\x0C\0EDID\x11\0TreePineForest01\0OBND\x0C\0\x35\xFE\x16\xFE\xBE\xFF\xE9\x01\xE6\x01\xC2\x09MODL\x25\0Landscape\\Trees\\TreePineForest01.nif\0MODT\x3C\0\x02\0\0\0\x04\0\0\0\0\0\0\0\xFA\x66\x29\xB9\x64\x64\x73\0\x3B\xAC\x5C\x0A\xB7\x79\xAB\xDD\x64\x64\x73\0\x3B\xAC\x5C\x0A\x26\x1B\x51\x60\x64\x64\x73\0\x3B\xAC\x5C\x0A\x5D\x27\x92\xDE\x64\x64\x73\0\x3B\xAC\x5C\x0APFPC\x04\0\0\0\0\0CNAM\x30\0\0\0\0\0\0\0"sv;

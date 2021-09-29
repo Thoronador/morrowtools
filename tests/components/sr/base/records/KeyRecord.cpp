@@ -290,6 +290,7 @@ TEST_CASE("KeyRecord")
     uint32_t dummy = 0;
     StringTable dummy_table;
     dummy_table.addString(0x0000A2BA, "foo");
+    dummy_table.addString(0x00000619, "bar");
 
     SECTION("default: load record + save it again")
     {
@@ -313,6 +314,7 @@ TEST_CASE("KeyRecord")
       REQUIRE( record.headerUnknown5 == 0x000A );
       // -- record data
       REQUIRE( record.editorID == "SR01Key" );
+      REQUIRE_FALSE( record.unknownVMAD.isPresent() );
       REQUIRE( record.unknownOBND[0] == 0x00 );
       REQUIRE( record.unknownOBND[1] == 0x00 );
       REQUIRE( record.unknownOBND[2] == 0xF4 );
@@ -335,6 +337,65 @@ TEST_CASE("KeyRecord")
       REQUIRE( MODT == "\x02\0\0\0\x04\0\0\0\0\0\0\0\x7B\x24\xA2\x37\x64\x64\x73\0\xBF\xFA\x25\xDA\x8A\x7E\xE1\x67\x64\x64\x73\0\xBF\xFA\x25\xDA\x6B\xBB\x96\xD1\x64\x64\x73\0\x26\x2C\x33\x3B\xFA\xE0\xBB\xA4\x64\x64\x73\0\x7F\x66\xA5\xC0"sv);
       REQUIRE( record.pickupSoundFormID == 0x0003ED75 );
       REQUIRE( record.putdownSoundFormID == 0x0003ED78 );
+      REQUIRE( record.keywords.size() == 1 );
+      REQUIRE( record.keywords[0] == 0x000914EF );
+      REQUIRE( record.value == 0 );
+      REQUIRE( record.weight == 0.0f );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( record.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
+    }
+
+    SECTION("default: load record with VMAD + save it again")
+    {
+      const auto data = "KEYM\xDF\0\0\0\0\0\0\0\x8B\x8D\x02\0\x1B\x69\x55\0\x28\0\x0A\0EDID\x16\0DA08WhisperingDoorKey\0VMAD\x36\0\x05\0\x02\0\x01\0\x1B\0DA08WhisperingDoorKeyScript\0\x01\0\x04\0DA08\x01\x01\0\0\xFF\xFF{\xA3\x04\0OBND\x0C\0\xFF\xFF\xF3\xFF\xFC\xFF\x01\0\x0D\0\x04\0FULL\x04\0\x19\x06\0\0MODL\x19\0Clutter\\DA08EbonyKey.nif\0MODT$\0\x02\0\0\0\x02\0\0\0\0\0\0\0`\xE4p\x7F\x64\x64s\0\xBF\xFA%\xDAr?\xB3Udds\0\xBF\xFA%\xDAKSIZ\x04\0\x01\0\0\0KWDA\x04\0\xEF\x14\x09\0DATA\x08\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream streamIn;
+      streamIn.str(std::string(data));
+
+      // read KEYM, because header is handled before loadFromStream.
+      streamIn.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( streamIn.good() );
+
+      // Reading should succeed.
+      KeyRecord record;
+      REQUIRE( record.loadFromStream(streamIn, true, dummy_table) );
+      // Check data.
+      // -- header
+      REQUIRE( record.headerFlags == 0 );
+      REQUIRE( record.headerFormID == 0x00028D8B );
+      REQUIRE( record.headerRevision == 0x0055691B );
+      REQUIRE( record.headerVersion == 40 );
+      REQUIRE( record.headerUnknown5 == 0x000A );
+      // -- record data
+      REQUIRE( record.editorID == "DA08WhisperingDoorKey" );
+      REQUIRE( record.unknownVMAD.isPresent() );
+      const auto VMAD = std::string_view(reinterpret_cast<const char*>(record.unknownVMAD.data()), record.unknownVMAD.size());
+      REQUIRE( VMAD == "\x05\0\x02\0\x01\0\x1B\0DA08WhisperingDoorKeyScript\0\x01\0\x04\0DA08\x01\x01\0\0\xFF\xFF{\xA3\x04\0"sv);
+      REQUIRE( record.unknownOBND[0] == 0xFF );
+      REQUIRE( record.unknownOBND[1] == 0xFF );
+      REQUIRE( record.unknownOBND[2] == 0xF3 );
+      REQUIRE( record.unknownOBND[3] == 0xFF );
+      REQUIRE( record.unknownOBND[4] == 0xFC );
+      REQUIRE( record.unknownOBND[5] == 0xFF );
+      REQUIRE( record.unknownOBND[6] == 0x01 );
+      REQUIRE( record.unknownOBND[7] == 0x00 );
+      REQUIRE( record.unknownOBND[8] == 0x0D );
+      REQUIRE( record.unknownOBND[9] == 0x00 );
+      REQUIRE( record.unknownOBND[10] == 0x04 );
+      REQUIRE( record.unknownOBND[11] == 0x00 );
+      REQUIRE( record.name.isPresent() );
+      REQUIRE( record.name.getType() == LocalizedString::Type::Index );
+      REQUIRE( record.name.getIndex() == 0x00000619 );
+      REQUIRE( record.modelPath == "Clutter\\DA08EbonyKey.nif" );
+      REQUIRE( record.unknownMODT.isPresent() );
+      REQUIRE( record.unknownMODT.size() == 36 );
+      const auto MODT = std::string_view(reinterpret_cast<const char*>(record.unknownMODT.data()), record.unknownMODT.size());
+      REQUIRE( MODT == "\x02\0\0\0\x02\0\0\0\0\0\0\0`\xE4p\x7F\x64\x64s\0\xBF\xFA%\xDAr?\xB3Udds\0\xBF\xFA%\xDA"sv);
+      REQUIRE( record.pickupSoundFormID == 0 );
+      REQUIRE( record.putdownSoundFormID == 0 );
       REQUIRE( record.keywords.size() == 1 );
       REQUIRE( record.keywords[0] == 0x000914EF );
       REQUIRE( record.value == 0 );

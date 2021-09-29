@@ -384,7 +384,7 @@ bool KeyRecord::loadFromStream(std::istream& in_File, const bool localized, cons
   // presence checks
   if (!hasReadDATA)
   {
-    std::cerr << "Error: at least one subrecord of KEYM is missing!\n";
+    std::cerr << "Error: At least one subrecord of KEYM is missing!\n";
     return false;
   }
 

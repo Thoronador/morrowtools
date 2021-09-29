@@ -376,7 +376,7 @@ bool AmmunitionRecord::loadFromStream(std::istream& in_File, const bool localize
   // check
   if (!hasReadDATA || !description.isPresent())
   {
-    std::cerr << "Error: at least one required subrecord of AMMO is missing!\n";
+    std::cerr << "Error: At least one required subrecord of AMMO is missing!\n";
     return false;
   }
 

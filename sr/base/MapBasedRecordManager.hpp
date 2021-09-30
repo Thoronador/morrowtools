@@ -31,107 +31,107 @@
 namespace SRTP
 {
 
+/** Singleton-based manager for records of a given type recT, using std::map. */
 template<typename recT>
 class MapBasedRecordManager
 {
   public:
-    //iterator type for record list/map
-    typedef typename std::map<uint32_t, recT>::const_iterator ListIterator;
+    /// iterator type for internal map structure
+    using ListIterator = typename std::map<uint32_t, recT>::const_iterator;
 
-    /* destructor */
-    ~MapBasedRecordManager();
-
-    /* singleton access method */
+    /** \brief Provides access to the singleton instance.
+     *
+     * \return Returns a reference to the singleton instance.
+     */
     static MapBasedRecordManager& getSingleton();
 
-    /* adds a record to the list */
+    /** \brief Adds a record to the instance.
+     *
+     * \param record   the record to add
+     * \remarks The record will NOT be added, if its form ID is zero.
+     *          An existing record with the same form ID will be replaced.
+     */
     void addRecord(const recT& record);
 
-    /* returns true, if a record with the given editor ID is present
-
-       parameters:
-           ID - the ID of the record object
-    */
+    /** \brief Checks whether a record with the given form ID is present.
+     *
+     * \param ID  the form ID of the record object
+     * \return Returns true, if a record with the given form ID is present.
+     *         Returns false otherwise.
+     */
     bool hasRecord(const uint32_t ID) const;
 
-    /* returns the number of records in the list */
+    /** Gets the number of records in the instance.
+     *
+     * \return Returns the number of records in the instance.
+     */
     unsigned int getNumberOfRecords() const;
 
-    /* returns a reference to the record with the given ID
-
-       parameters:
-           ID - the ID of the record
-
-       remarks:
-           If no record with the given ID is present, the function will throw
-           an exception. Use hasRecord() to determine, if a record with the
-           desired ID is present.
-    */
+    /** Gets a reference to the record with the given form ID.
+     *
+     * \param ID  the form ID of the record
+     * \return Returns a reference to the record with the given ID, if such a
+     *         record is present. Throws, if no such record exists.
+     * \remarks If no record with the given ID is present, the function will
+     *          throw an exception. Use hasRecord() to determine, if a record
+     *          with the desired ID is present.
+     */
     const recT& getRecord(const uint32_t ID) const;
 
-    /* tries to read a record from the given input stream.
-
-       return value:
-           If an error occurred, the function returns -1. Otherwise it returns
-           the number of updated records. (Usually that is one. If, however, the
-           record that was read is equal to the one already in the list, zero is
-           returned.)
-
-       parameters:
-           input     - the input stream that is used to read the record
-           localized - true, if the data in the stream is localized
-           table     - in case of localized data: the string table
-    */
+    /** \brief Tries to read a record from the given input stream.
+     *
+     * \param input       the input stream that is used to read the record
+     * \param localized   true, if the data in the stream is localized
+     * \param table       in case of localized data: the string table
+     * \return If an error occurred, the function returns -1. Otherwise it
+     *         returns the number of updated records. (Usually that is one.
+     *         If, however, the record that was read is equal to the one already
+     *         in the list, zero is returned and the existing record remains
+     *         unchanged.)
+     */
     int readNextRecord(std::istream& input, const bool localized, const StringTable& table);
 
-    /* removes the record with the given ID from the internal list and returns
-       true, if such a record existed. Returns false otherwise.
-
-       parameters:
-           ID - the ID of the record to be removed
-    */
+    /** \brief Removes the record with the given ID from the instance.
+     *
+     * \param ID  the form ID of the record to be removed
+     * \return Returns true, if a record was removed. Returns false otherwise.
+     */
     bool removeRecord(const uint32_t ID);
 
-    /* returns constant iterator to the beginning of the internal list */
+    /** Returns constant iterator to the beginning of the internal structure. */
     ListIterator getBegin() const;
 
-    /* returns constant iterator to the end of the internal list */
+    /** Returns constant iterator to the end of the internal structure. */
     ListIterator getEnd() const;
 
     #ifndef SR_UNSAVEABLE_RECORDS
-    /* tries to save all available records to the given stream and returns
-       true on success, false on failure
-
-       parameters:
-           output - the output stream that shall be used to save the record
-    */
+    /** \brief Tries to save all available records to the given stream.
+     *
+     * \param output  the output stream that shall be used to save the records
+     * \return Returns true on success, false on failure.
+     */
     bool saveAllToStream(std::ostream& output) const;
     #endif
 
-    /* removes all records from the list */
+    /** Removes all records from the instance. */
     void clearAll();
   private:
-    /* constructor */
+    /** Constructor. */
     MapBasedRecordManager();
 
-    /* empty copy constructor */
-    MapBasedRecordManager(const MapBasedRecordManager& op) {}
+    /** Deleted copy constructor. */
+    MapBasedRecordManager(const MapBasedRecordManager& op) = delete;
 
-    /* internal data */
-    std::map<uint32_t, recT> m_Records;
-};//class
+    /** Deleted move constructor. */
+    MapBasedRecordManager(MapBasedRecordManager&& op) = delete;
+
+    std::map<uint32_t, recT> m_Records; /**< internal data */
+};
 
 template<typename recT>
 MapBasedRecordManager<recT>::MapBasedRecordManager()
 : m_Records(std::map<uint32_t, recT>())
 {
-  //empty
-}
-
-template<typename recT>
-MapBasedRecordManager<recT>::~MapBasedRecordManager()
-{
-  //empty
 }
 
 template<typename recT>
@@ -144,7 +144,7 @@ MapBasedRecordManager<recT>& MapBasedRecordManager<recT>::getSingleton()
 template<typename recT>
 void MapBasedRecordManager<recT>::addRecord(const recT& record)
 {
-  if (record.headerFormID!=0)
+  if (record.headerFormID != 0)
   {
     m_Records[record.headerFormID] = record;
   }
@@ -153,7 +153,7 @@ void MapBasedRecordManager<recT>::addRecord(const recT& record)
 template<typename recT>
 bool MapBasedRecordManager<recT>::hasRecord(const uint32_t ID) const
 {
-  return (m_Records.find(ID)!=m_Records.end());
+  return m_Records.find(ID) != m_Records.end();
 }
 
 template<typename recT>
@@ -166,18 +166,19 @@ template<typename recT>
 const recT& MapBasedRecordManager<recT>::getRecord(const uint32_t ID) const
 {
   const ListIterator iter = m_Records.find(ID);
-  if (iter!=m_Records.end())
+  if (iter != m_Records.end())
   {
     return iter->second;
   }
-  std::cerr << "MapBasedRecordManager: Error! No record with the ID \""<<ID<<"\" is present.\n";
+  std::cerr << "MapBasedRecordManager: Error! No record with the ID \"" << ID
+            << "\" is present.\n";
   throw std::runtime_error("MapBasedRecordManager: Error! No record with the requested ID is present.");
 }
 
 template<typename recT>
 bool MapBasedRecordManager<recT>::removeRecord(const uint32_t ID)
 {
-  return (m_Records.erase(ID)!=0);
+  return m_Records.erase(ID) !=0;
 }
 
 template<typename recT>
@@ -199,21 +200,18 @@ bool MapBasedRecordManager<recT>::saveAllToStream(std::ostream& output) const
 {
   if (!output.good())
   {
-    std::cerr << "MapBasedRecordManager::saveAllToStream: Error: bad stream.\n";
+    std::cerr << "MapBasedRecordManager::saveAllToStream: Error: Bad stream.\n";
     return false;
   }
-  ListIterator iter = m_Records.begin();
-  const ListIterator end_iter = m_Records.end();
-  while (iter!=end_iter)
+  for (const auto& [id, record]: m_Records)
   {
-    if (!iter->second.saveToStream(output))
+    if (!record.saveToStream(output))
     {
       std::cerr << "MapBasedRecordManager::saveAllToStream: Error while writing record for \""
-                << iter->first <<"\".\n";
+                << record.headerFormID << "\".\n";
       return false;
     }
-    ++iter;
-  }//while
+  }
   return output.good();
 }
 #endif
@@ -235,20 +233,20 @@ int MapBasedRecordManager<recT>::readNextRecord(std::istream& input, const bool 
   }
 
   #if !defined(SR_NO_SINGLETON_EQUALITY_CHECK) && !defined(SR_NO_RECORD_EQUALITY)
-  //add it to the list, if not present with same data
+  // add it to the list, if not present with same data
   if (hasRecord(temp.headerFormID))
   {
     if (getRecord(temp.headerFormID).equals(temp))
     {
-      //same record with equal data is already present, return zero
+      // Same record with equal data is already present, return zero.
       return 0;
     }
-  }//if record present
-  #endif //SR_NO_SINGLETON_EQUALITY_CHECK
+  }
+  #endif // SR_NO_SINGLETON_EQUALITY_CHECK
   addRecord(temp);
   return 1;
-} //readNextRecord
+}
 
-} //namespace
+} // namespace
 
 #endif // SR_MAPBASEDRECORDMANAGER_HPP

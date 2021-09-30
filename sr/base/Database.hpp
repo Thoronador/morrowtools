@@ -34,7 +34,7 @@ namespace SRTP
       virtual ~Database();
 
       /* singleton access method */
-      static Database& getSingleton();
+      static Database& get();
 
       /* Adds a record to the database.
 

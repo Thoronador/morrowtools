@@ -71,9 +71,9 @@ bool containsItemDeep(const LeveledListBaseRecord& llBase, const uint32_t itemID
       return true;
     }
     //check, if there is a leveled list with that ID
-    if (SRTP::LeveledItems::getSingleton().hasRecord(llBase.entries[i].entry.formID))
+    if (SRTP::LeveledItems::get().hasRecord(llBase.entries[i].entry.formID))
     {
-      if (containsItemDeep(SRTP::LeveledItems::getSingleton().getRecord(llBase.entries[i].entry.formID), itemID))
+      if (containsItemDeep(SRTP::LeveledItems::get().getRecord(llBase.entries[i].entry.formID), itemID))
         return true;
     }
   }//for
@@ -90,9 +90,9 @@ bool containsItemDeep(const std::vector<SRTP::ComponentData>& list, const uint32
       return true;
     }
     //check, if there is a leveled list with that ID
-    if (SRTP::LeveledItems::getSingleton().hasRecord(list[i].formID))
+    if (SRTP::LeveledItems::get().hasRecord(list[i].formID))
     {
-      if (containsItemDeep(SRTP::LeveledItems::getSingleton().getRecord(list[i].formID), needleFormID))
+      if (containsItemDeep(SRTP::LeveledItems::get().getRecord(list[i].formID), needleFormID))
         return true;
     }
   }//for
@@ -106,9 +106,9 @@ bool hasItemDeep(const NPCRecord& npc, const uint32_t needleFormID, const std::m
   unsigned int i;
   for (i=0; i<npc.factions.size(); ++i)
   {
-    if (SRTP::Factions::getSingleton().hasRecord(npc.factions[i].formID))
+    if (SRTP::Factions::get().hasRecord(npc.factions[i].formID))
     {
-      const SRTP::FactionRecord& facRec = SRTP::Factions::getSingleton().getRecord(npc.factions[i].formID);
+      const SRTP::FactionRecord& facRec = SRTP::Factions::get().getRecord(npc.factions[i].formID);
       if (facRec.isVendor())
       {
         //check vendor container
@@ -124,10 +124,10 @@ bool hasItemDeep(const NPCRecord& npc, const uint32_t needleFormID, const std::m
           else
           {
             //search the container
-            if (SRTP::Containers::getSingleton().hasRecord(rtbIter->second))
+            if (SRTP::Containers::get().hasRecord(rtbIter->second))
             {
-              //if (containsItemDeep(SRTP::Containers::getSingleton().getRecord(rtbIter->second), itemID))
-              if (containsItemDeep(SRTP::Containers::getSingleton().getRecord(rtbIter->second), needleFormID))
+              //if (containsItemDeep(SRTP::Containers::get().getRecord(rtbIter->second), itemID))
+              if (containsItemDeep(SRTP::Containers::get().getRecord(rtbIter->second), needleFormID))
               {
                 //found it!
                 return true;
@@ -154,8 +154,8 @@ bool hasItemDeep(const NPCRecord& npc, const uint32_t needleFormID, const std::m
 std::vector<uint32_t> findNPCsWithItem(const uint32_t itemID, const std::map<uint32_t, uint32_t>& refToBase, const bool tradeOnly)
 {
   std::vector<uint32_t> result;
-  SRTP::NPCs::ListIterator npcIter = SRTP::NPCs::getSingleton().getBegin();
-  while (npcIter!=SRTP::NPCs::getSingleton().getEnd())
+  SRTP::NPCs::ListIterator npcIter = SRTP::NPCs::get().begin();
+  while (npcIter != SRTP::NPCs::get().end())
   {
     if (hasItemDeep(npcIter->second, itemID, refToBase, tradeOnly))
     {
@@ -191,17 +191,17 @@ bool sellListAllowsKeyword(const NPCRecord& npc, const uint32_t keyword)
   unsigned int i;
   for (i=0; i<npc.factions.size(); ++i)
   {
-    if (Factions::getSingleton().hasRecord(npc.factions[i].formID))
+    if (Factions::get().hasRecord(npc.factions[i].formID))
     {
-      const FactionRecord& facRec = Factions::getSingleton().getRecord(npc.factions[i].formID);
+      const FactionRecord& facRec = Factions::get().getRecord(npc.factions[i].formID);
       if (facRec.isVendor())
       {
         if (facRec.vendorListFormID!=0)
         {
-          if (FormLists::getSingleton().hasRecord(facRec.vendorListFormID))
+          if (FormLists::get().hasRecord(facRec.vendorListFormID))
           {
             return (
-            formListContains(FormLists::getSingleton().getRecord(facRec.vendorListFormID), keyword) and
+            formListContains(FormLists::get().getRecord(facRec.vendorListFormID), keyword) and
 
             (facRec.vendorStuff.isPresent and ((facRec.vendorStuff.flagsVendor&FactionRecord::VendorData::cFlagNotBuySell)==0) )
                     );

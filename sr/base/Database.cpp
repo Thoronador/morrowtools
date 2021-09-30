@@ -35,7 +35,7 @@ Database::~Database()
   deleteAllRecords();
 }
 
-Database& Database::getSingleton()
+Database& Database::get()
 {
   static Database Instance;
   return Instance;

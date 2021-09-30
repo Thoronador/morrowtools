@@ -41,7 +41,7 @@ int main()
   if (readResult>=0)
   {
     std::cout << "File was read/skipped successfully! Groups read: "<<readResult<<".\n";
-    std::cout << "Race records read so far: "<<SRTP::Races::getSingleton().getNumberOfRecords()<<"\n";
+    std::cout << "Race records read so far: " << SRTP::Races::get().getNumberOfRecords() << "\n";
   }
   else
   {
@@ -63,23 +63,23 @@ int main()
 
   // --- race stuff
   std::cout << "Removing unwanted stuff...\n";
-  SRTP::Races::ListIterator iter = SRTP::Races::getSingleton().getBegin();
-  while (iter!=SRTP::Races::getSingleton().getEnd())
+  SRTP::Races::ListIterator iter = SRTP::Races::get().begin();
+  while (iter != SRTP::Races::get().end())
   {
     if (iter->second.editorID.find("HighElf")==std::string::npos)
     {
-      SRTP::Races::getSingleton().removeRecord(iter->second.headerFormID);
-      iter = SRTP::Races::getSingleton().getBegin();
+      SRTP::Races::get().removeRecord(iter->second.headerFormID);
+      iter = SRTP::Races::get().begin();
     }
     else
     {
       ++iter;
     }
   }//while
-  std::cout << "Race records now: "<<SRTP::Races::getSingleton().getNumberOfRecords()<<"\n";
+  std::cout << "Race records now: "<<SRTP::Races::get().getNumberOfRecords()<<"\n";
 
-  iter = SRTP::Races::getSingleton().getBegin();
-  while (iter!=SRTP::Races::getSingleton().getEnd())
+  iter = SRTP::Races::get().begin();
+  while (iter != SRTP::Races::get().end())
   {
     std::cout << "RACE \""<<iter->second.editorID<<"\":\n";
     //FULL
@@ -121,8 +121,8 @@ int main()
   SRTP::Group& currentGroup = writer.contents.addNewGroup();
   currentGroup.headerData.setLabel(SRTP::cRACE);
 
-  iter = SRTP::Races::getSingleton().getBegin();
-  while (iter!=SRTP::Races::getSingleton().getEnd())
+  iter = SRTP::Races::get().begin();
+  while (iter != SRTP::Races::get().end())
   {
     //create new record
     tempRaceRec = new SRTP::RaceRecord;
@@ -162,8 +162,8 @@ int main()
   //prepare tables
   SRTP::StringTableCompound writeCompound;
   SRTP::StringTableCompound::TableType tt;
-  iter = SRTP::Races::getSingleton().getBegin();
-  while (iter!=SRTP::Races::getSingleton().getEnd())
+  iter = SRTP::Races::get().begin();
+  while (iter!=SRTP::Races::get().end())
   {
     //FULL
     if (iter->second.name.isPresent())

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -203,76 +203,76 @@ int ESMReaderFinder::readNextRecord(std::ifstream& in_File, const uint32_t recNa
   switch (recName)
   {
     case cACTI:
-         Activators::getSingleton().addRecord(*static_cast<ActivatorRecord*>(recPtr));
+         Activators::get().addRecord(*static_cast<ActivatorRecord*>(recPtr));
          break;
     case cALCH:
-         AlchemyPotions::getSingleton().addRecord(*static_cast<AlchemyPotionRecord*>(recPtr));
+         AlchemyPotions::get().addRecord(*static_cast<AlchemyPotionRecord*>(recPtr));
          break;
     case cAMMO:
-         Ammunitions::getSingleton().addRecord(*static_cast<AmmunitionRecord*>(recPtr));
+         Ammunitions::get().addRecord(*static_cast<AmmunitionRecord*>(recPtr));
          break;
     case cAPPA:
-         Apparatuses::getSingleton().addRecord(*static_cast<ApparatusRecord*>(recPtr));
+         Apparatuses::get().addRecord(*static_cast<ApparatusRecord*>(recPtr));
          break;
     case cARMO:
-         Armours::getSingleton().addRecord(*static_cast<ArmourRecord*>(recPtr));
+         Armours::get().addRecord(*static_cast<ArmourRecord*>(recPtr));
          break;
     case cBOOK:
-         Books::getSingleton().addRecord(*static_cast<BookRecord*>(recPtr));
+         Books::get().addRecord(*static_cast<BookRecord*>(recPtr));
          break;
     case cCONT:
-         Containers::getSingleton().addRecord(*static_cast<ContainerRecord*>(recPtr));
+         Containers::get().addRecord(*static_cast<ContainerRecord*>(recPtr));
          break;
     case cFACT:
-         Factions::getSingleton().addRecord(*static_cast<FactionRecord*>(recPtr));
+         Factions::get().addRecord(*static_cast<FactionRecord*>(recPtr));
          break;
     case cFLOR:
-         Floras::getSingleton().addRecord(*static_cast<FloraRecord*>(recPtr));
+         Floras::get().addRecord(*static_cast<FloraRecord*>(recPtr));
          break;
     case cFURN:
-         Furniture::getSingleton().addRecord(*static_cast<FurnitureRecord*>(recPtr));
+         Furniture::get().addRecord(*static_cast<FurnitureRecord*>(recPtr));
          break;
     case cINGR:
-         Ingredients::getSingleton().addRecord(*static_cast<IngredientRecord*>(recPtr));
+         Ingredients::get().addRecord(*static_cast<IngredientRecord*>(recPtr));
          break;
     case cKEYM:
-         Keys::getSingleton().addRecord(*static_cast<KeyRecord*>(recPtr));
+         Keys::get().addRecord(*static_cast<KeyRecord*>(recPtr));
          break;
     case cMISC:
-         MiscObjects::getSingleton().addRecord(*static_cast<MiscObjectRecord*>(recPtr));
+         MiscObjects::get().addRecord(*static_cast<MiscObjectRecord*>(recPtr));
          break;
     case cNPC_:
-         NPCs::getSingleton().addRecord(*static_cast<NPCRecord*>(recPtr));
+         NPCs::get().addRecord(*static_cast<NPCRecord*>(recPtr));
          break;
     case cPERK:
-         Perks::getSingleton().addRecord(*static_cast<PerkRecord*>(recPtr));
+         Perks::get().addRecord(*static_cast<PerkRecord*>(recPtr));
          break;
     case cQUST:
-         Quests::getSingleton().addRecord(*static_cast<QuestRecord*>(recPtr));
+         Quests::get().addRecord(*static_cast<QuestRecord*>(recPtr));
          break;
     case cSCRL:
-         Scrolls::getSingleton().addRecord(*static_cast<ScrollRecord*>(recPtr));
+         Scrolls::get().addRecord(*static_cast<ScrollRecord*>(recPtr));
          break;
     case cSHOU:
-         Shouts::getSingleton().addRecord(*static_cast<ShoutRecord*>(recPtr));
+         Shouts::get().addRecord(*static_cast<ShoutRecord*>(recPtr));
          break;
     case cSLGM:
-         SoulGems::getSingleton().addRecord(*static_cast<SoulGemRecord*>(recPtr));
+         SoulGems::get().addRecord(*static_cast<SoulGemRecord*>(recPtr));
          break;
     case cSPEL:
-         Spells::getSingleton().addRecord(*static_cast<SpellRecord*>(recPtr));
+         Spells::get().addRecord(*static_cast<SpellRecord*>(recPtr));
          break;
     case cTACT:
-          TalkingActivators::getSingleton().addRecord(*static_cast<TalkingActivatorRecord*>(recPtr));
+          TalkingActivators::get().addRecord(*static_cast<TalkingActivatorRecord*>(recPtr));
          break;
     case cTREE:
-         Trees::getSingleton().addRecord(*static_cast<TreeRecord*>(recPtr));
+         Trees::get().addRecord(*static_cast<TreeRecord*>(recPtr));
          break;
     case cWEAP:
-         Weapons::getSingleton().addRecord(*static_cast<WeaponRecord*>(recPtr));
+         Weapons::get().addRecord(*static_cast<WeaponRecord*>(recPtr));
          break;
     case cWOOP:
-         WordsOfPower::getSingleton().addRecord(*static_cast<WordOfPowerRecord*>(recPtr));
+         WordsOfPower::get().addRecord(*static_cast<WordOfPowerRecord*>(recPtr));
          break;
     default:
          std::cerr << "ESMReaderFinder::readNextRecord: cannot add unknown record type!\n";

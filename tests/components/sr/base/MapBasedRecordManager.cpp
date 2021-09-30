@@ -29,18 +29,18 @@ TEST_CASE("MapBasedRecordManager")
 {
   using namespace SRTP;
 
-  SECTION("getSingleton")
+  SECTION("get (Singleton)")
   {
-    auto& mgr = MapBasedRecordManager<ActionRecord>::getSingleton();
-    auto& mgr2 = MapBasedRecordManager<ActionRecord>::getSingleton();
+    auto& mgr = MapBasedRecordManager<ActionRecord>::get();
+    auto& mgr2 = MapBasedRecordManager<ActionRecord>::get();
 
     REQUIRE( &mgr == &mgr2 );
   }
 
   SECTION("addRecord / hasRecord / getRecord")
   {
-    auto& mgr = MapBasedRecordManager<ActionRecord>::getSingleton();
-    mgr.clearAll();
+    auto& mgr = MapBasedRecordManager<ActionRecord>::get();
+    mgr.clear();
 
     ActionRecord recordOne;
     recordOne.headerFormID = 0xDEADBEEF;
@@ -67,8 +67,8 @@ TEST_CASE("MapBasedRecordManager")
 
   SECTION("addRecord with ID zero does not add anything")
   {
-    auto& mgr = MapBasedRecordManager<ActionRecord>::getSingleton();
-    mgr.clearAll();
+    auto& mgr = MapBasedRecordManager<ActionRecord>::get();
+    mgr.clear();
 
     ActionRecord recordZero;
     recordZero.headerFormID = 0x00000000;
@@ -82,8 +82,8 @@ TEST_CASE("MapBasedRecordManager")
 
   SECTION("getRecord throws when ID is not present")
   {
-    auto& mgr = MapBasedRecordManager<ActionRecord>::getSingleton();
-    mgr.clearAll();
+    auto& mgr = MapBasedRecordManager<ActionRecord>::get();
+    mgr.clear();
 
     REQUIRE_FALSE( mgr.hasRecord(0xDEADBEEF) );
     REQUIRE_THROWS( mgr.getRecord(0xDEADBEEF) );
@@ -91,8 +91,8 @@ TEST_CASE("MapBasedRecordManager")
 
   SECTION("removeRecord")
   {
-    auto& mgr = MapBasedRecordManager<ActionRecord>::getSingleton();
-    mgr.clearAll();
+    auto& mgr = MapBasedRecordManager<ActionRecord>::get();
+    mgr.clear();
 
     ActionRecord recordOne;
     recordOne.headerFormID = 0xDEADBEEF;
@@ -109,10 +109,10 @@ TEST_CASE("MapBasedRecordManager")
     REQUIRE( mgr.removeRecord(0x000F0000) == 0 );
   }
 
-  SECTION("clearAll")
+  SECTION("clear")
   {
-    auto& mgr = MapBasedRecordManager<ActionRecord>::getSingleton();
-    mgr.clearAll();
+    auto& mgr = MapBasedRecordManager<ActionRecord>::get();
+    mgr.clear();
 
     ActionRecord recordOne;
     recordOne.headerFormID = 0xDEADBEEF;
@@ -133,7 +133,7 @@ TEST_CASE("MapBasedRecordManager")
     REQUIRE( mgr.hasRecord(0xF00BAA12) );
     REQUIRE( mgr.hasRecord(0x00000333) );
 
-    mgr.clearAll();
+    mgr.clear();
     REQUIRE_FALSE( mgr.hasRecord(0xDEADBEEF) );
     REQUIRE_FALSE( mgr.hasRecord(0xF00BAA12) );
     REQUIRE_FALSE( mgr.hasRecord(0x00000333) );
@@ -141,8 +141,8 @@ TEST_CASE("MapBasedRecordManager")
 
   SECTION("getNumberOfRecords")
   {
-    auto& mgr = MapBasedRecordManager<ActionRecord>::getSingleton();
-    mgr.clearAll();
+    auto& mgr = MapBasedRecordManager<ActionRecord>::get();
+    mgr.clear();
 
     ActionRecord recordOne;
     recordOne.headerFormID = 0xDEADBEEF;
@@ -177,10 +177,10 @@ TEST_CASE("MapBasedRecordManager")
     REQUIRE( mgr.getNumberOfRecords() == 5 );
   }
 
-  SECTION("getBegin / getEnd")
+  SECTION("begin / end")
   {
-    auto& mgr = MapBasedRecordManager<ActionRecord>::getSingleton();
-    mgr.clearAll();
+    auto& mgr = MapBasedRecordManager<ActionRecord>::get();
+    mgr.clear();
 
     ActionRecord recordOne;
     recordOne.headerFormID = 0xDEADBEEF;
@@ -194,25 +194,25 @@ TEST_CASE("MapBasedRecordManager")
     recordThree.headerFormID = 0x00000333;
     recordThree.editorID = "TestThree";
 
-    REQUIRE( mgr.getBegin() == mgr.getEnd() );
+    REQUIRE( mgr.begin() == mgr.end() );
 
     mgr.addRecord(recordOne);
     mgr.addRecord(recordTwo);
     mgr.addRecord(recordThree);
 
-    REQUIRE_FALSE( mgr.getBegin() == mgr.getEnd() );
+    REQUIRE_FALSE( mgr.begin() == mgr.end() );
 
-    auto iter = mgr.getBegin();
+    auto iter = mgr.begin();
     REQUIRE( iter->first == 0x00000333 );
     ++iter;
     REQUIRE( iter->first == 0xDEADBEEF );
     ++iter;
     REQUIRE( iter->first == 0xF00BAA12 );
     ++iter;
-    REQUIRE( iter == mgr.getEnd() );
+    REQUIRE( iter == mgr.end() );
 
-    mgr.clearAll();
-    REQUIRE( mgr.getBegin() == mgr.getEnd() );
+    mgr.clear();
+    REQUIRE( mgr.begin() == mgr.end() );
   }
 
   SECTION("readNextRecord + saveToStream: basic stuff")
@@ -225,8 +225,8 @@ TEST_CASE("MapBasedRecordManager")
     StringTable dummyTable;
     uint32_t dummy = 0;
 
-    auto& mgr = MapBasedRecordManager<ActionRecord>::getSingleton();
-    mgr.clearAll();
+    auto& mgr = MapBasedRecordManager<ActionRecord>::get();
+    mgr.clear();
 
     // read AACT, because header is handled before loadFromStream.
     stream.read(reinterpret_cast<char*>(&dummy), 4);
@@ -255,8 +255,8 @@ TEST_CASE("MapBasedRecordManager")
     StringTable dummyTable;
     uint32_t dummy = 0;
 
-    auto& mgr = MapBasedRecordManager<ActionRecord>::getSingleton();
-    mgr.clearAll();
+    auto& mgr = MapBasedRecordManager<ActionRecord>::get();
+    mgr.clear();
 
     // read AACT, because header is handled before loadFromStream.
     stream.read(reinterpret_cast<char*>(&dummy), 4);
@@ -285,8 +285,8 @@ TEST_CASE("MapBasedRecordManager")
     StringTable dummyTable;
     uint32_t dummy = 0;
 
-    auto& mgr = MapBasedRecordManager<ActionRecord>::getSingleton();
-    mgr.clearAll();
+    auto& mgr = MapBasedRecordManager<ActionRecord>::get();
+    mgr.clear();
 
     // read AACT, because header is handled before loadFromStream.
     stream.read(reinterpret_cast<char*>(&dummy), 4);
@@ -335,8 +335,8 @@ TEST_CASE("MapBasedRecordManager")
     StringTable dummyTable;
     uint32_t dummy = 0;
 
-    auto& mgr = MapBasedRecordManager<ActionRecord>::getSingleton();
-    mgr.clearAll();
+    auto& mgr = MapBasedRecordManager<ActionRecord>::get();
+    mgr.clear();
 
     // read AACT, because header is handled before loadFromStream.
     stream.read(reinterpret_cast<char*>(&dummy), 4);

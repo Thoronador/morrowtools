@@ -85,14 +85,15 @@ class ESMWriterSingleType: public ESMWriter
 template<typename recT, typename singleT>
 uint32_t ESMWriterSingleType<recT, singleT>::getTotalNumberOfRecords() const
 {
-  return singleT::getSingleton().getNumberOfRecords();
+  return singleT::get().getNumberOfRecords();
 }
 
 template<typename recT, typename singleT>
 uint32_t ESMWriterSingleType<recT, singleT>::getTotalNumberOfGroups() const
 {
-  if (singleT::getSingleton().getNumberOfRecords()>0) return 1;
-  //no records, thus no group to write
+  if (singleT::get().getNumberOfRecords() > 0)
+    return 1;
+  // no records, thus no group to write
   return 0;
 }
 
@@ -107,12 +108,12 @@ bool ESMWriterSingleType<recT, singleT>::writeGroups(std::ofstream& output) cons
   // -- calculate size
   uint32_t total = 0;
   // -- ... by adding up record sizes
-  typename singleT::ListIterator iter = singleT::getSingleton().getBegin();
-  while (iter!=singleT::getSingleton().getEnd())
+  typename singleT::ListIterator iter = singleT::get().begin();
+  while (iter != singleT::get().end())
   {
     total += iter->second.getTotalWrittenSize();
     ++iter;
-  }//while
+  }
   headerData.setSize(total);
 
   //now write the actual stuff
@@ -123,7 +124,7 @@ bool ESMWriterSingleType<recT, singleT>::writeGroups(std::ofstream& output) cons
     return false;
   }
   // ---- records come next
-  return singleT::getSingleton().saveAllToStream(output);
+  return singleT::get().saveAllToStream(output);
 }
 
 } //namespace

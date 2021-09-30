@@ -132,7 +132,7 @@ int ESMReaderSingleType<recT, singleT, headerT>::readNextRecord(std::ifstream& i
     UnexpectedRecord(headerT, recName);
     return -1;
   }
-  return singleT::getSingleton().readNextRecord(in_File, localized, table);
+  return singleT::get().readNextRecord(in_File, localized, table);
 }
 
 } //namespace

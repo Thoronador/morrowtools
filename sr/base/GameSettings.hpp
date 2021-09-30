@@ -38,7 +38,7 @@ class GameSettings
     ~GameSettings();
 
     /* singleton access method */
-    static GameSettings& getSingleton();
+    static GameSettings& get();
 
     /* adds a game setting to the list */
     void addGameSetting(const GMSTRecord& record);
@@ -82,10 +82,10 @@ class GameSettings
     int readNextRecord(std::ifstream& in_File, const bool localized, const StringTable& table);
 
     /* returns constant iterator to the beginning of the internal list */
-    GameSettingListIterator getBegin() const;
+    GameSettingListIterator begin() const;
 
     /* returns constant iterator to the end of the internal list */
-    GameSettingListIterator getEnd() const;
+    GameSettingListIterator end() const;
 
     #ifndef SR_UNSAVEABLE_RECORDS
     /* tries to save all available game settings to the given stream and returns

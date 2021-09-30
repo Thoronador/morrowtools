@@ -36,7 +36,7 @@ GameSettings::~GameSettings()
   //empty
 }
 
-GameSettings& GameSettings::getSingleton()
+GameSettings& GameSettings::get()
 {
   static GameSettings Instance;
   return Instance;
@@ -71,12 +71,12 @@ const GMSTRecord& GameSettings::getGameSetting(const std::string& ID) const
   throw std::runtime_error("No GameSetting with the ID \"" + ID + "\" is present.");
 }
 
-GameSettingListIterator GameSettings::getBegin() const
+GameSettingListIterator GameSettings::begin() const
 {
   return m_GameSettings.begin();
 }
 
-GameSettingListIterator GameSettings::getEnd() const
+GameSettingListIterator GameSettings::end() const
 {
   return m_GameSettings.end();
 }

@@ -166,9 +166,9 @@ void showRefIDs(const uint32_t baseID, const std::map<uint32_t, std::vector<SRTP
   {
     hasName = false;
     basic_out << "          ref ID "<<SRTP::getFormIDAsStringXX(vecIter->refID);
-    if (SRTP::Cells::getSingleton().hasRecord(vecIter->cellID))
+    if (SRTP::Cells::get().hasRecord(vecIter->cellID))
     {
-      const SRTP::CellRecord& theCell = SRTP::Cells::getSingleton().getRecord(vecIter->cellID);
+      const SRTP::CellRecord& theCell = SRTP::Cells::get().getRecord(vecIter->cellID);
       if (theCell.name.isPresent())
       {
         if (!theCell.name.getString().empty())
@@ -492,8 +492,8 @@ int main(int argc, char **argv)
   //check activator for matches
   {
     unsigned int activatorMatches = 0;
-    SRTP::Activators::ListIterator activator_iter = SRTP::Activators::getSingleton().getBegin();
-    while (activator_iter!=SRTP::Activators::getSingleton().getEnd())
+    SRTP::Activators::ListIterator activator_iter = SRTP::Activators::get().begin();
+    while (activator_iter!=SRTP::Activators::get().end())
     {
       if (activator_iter->second.name.isPresent())
       {
@@ -529,8 +529,8 @@ int main(int argc, char **argv)
   //check alchemy for matches
   {
     unsigned int alchemyMatches = 0;
-    SRTP::AlchemyPotions::ListIterator alchemy_iter = SRTP::AlchemyPotions::getSingleton().getBegin();
-    while (alchemy_iter!=SRTP::AlchemyPotions::getSingleton().getEnd())
+    SRTP::AlchemyPotions::ListIterator alchemy_iter = SRTP::AlchemyPotions::get().begin();
+    while (alchemy_iter!=SRTP::AlchemyPotions::get().end())
     {
       if (alchemy_iter->second.name.isPresent())
       {
@@ -566,8 +566,8 @@ int main(int argc, char **argv)
   //check ammunitions for matches
   {
     unsigned int ammoMatches = 0;
-    SRTP::Ammunitions::ListIterator ammo_iter = SRTP::Ammunitions::getSingleton().getBegin();
-    while (ammo_iter!=SRTP::Ammunitions::getSingleton().getEnd())
+    SRTP::Ammunitions::ListIterator ammo_iter = SRTP::Ammunitions::get().begin();
+    while (ammo_iter!=SRTP::Ammunitions::get().end())
     {
       if (ammo_iter->second.name.isPresent())
       {
@@ -603,8 +603,8 @@ int main(int argc, char **argv)
   //check apparatuses for matches
   {
     unsigned int appaMatches = 0;
-    SRTP::Apparatuses::ListIterator appa_iter = SRTP::Apparatuses::getSingleton().getBegin();
-    while (appa_iter!=SRTP::Apparatuses::getSingleton().getEnd())
+    SRTP::Apparatuses::ListIterator appa_iter = SRTP::Apparatuses::get().begin();
+    while (appa_iter!=SRTP::Apparatuses::get().end())
     {
       if (appa_iter->second.name.isPresent())
       {
@@ -640,8 +640,8 @@ int main(int argc, char **argv)
   //check armour for matches
   {
     unsigned int armourMatches = 0;
-    SRTP::Armours::ListIterator armour_iter = SRTP::Armours::getSingleton().getBegin();
-    while (armour_iter!=SRTP::Armours::getSingleton().getEnd())
+    SRTP::Armours::ListIterator armour_iter = SRTP::Armours::get().begin();
+    while (armour_iter!=SRTP::Armours::get().end())
     {
       if (armour_iter->second.name.isPresent())
       {
@@ -677,8 +677,8 @@ int main(int argc, char **argv)
   //check books for matches
   {
     unsigned int bookMatches = 0;
-    SRTP::Books::ListIterator book_iter = SRTP::Books::getSingleton().getBegin();
-    while (book_iter!=SRTP::Books::getSingleton().getEnd())
+    SRTP::Books::ListIterator book_iter = SRTP::Books::get().begin();
+    while (book_iter!=SRTP::Books::get().end())
     {
       if (book_iter->second.title.isPresent())
       {
@@ -714,8 +714,8 @@ int main(int argc, char **argv)
   //check containers for matches
   {
     unsigned int containerMatches = 0;
-    SRTP::Containers::ListIterator container_iter = SRTP::Containers::getSingleton().getBegin();
-    while (container_iter!=SRTP::Containers::getSingleton().getEnd())
+    SRTP::Containers::ListIterator container_iter = SRTP::Containers::get().begin();
+    while (container_iter!=SRTP::Containers::get().end())
     {
       if (container_iter->second.name.isPresent())
       {
@@ -751,8 +751,8 @@ int main(int argc, char **argv)
   //check factions for matches
   {
     unsigned int factionMatches = 0;
-    SRTP::Factions::ListIterator faction_iter = SRTP::Factions::getSingleton().getBegin();
-    while (faction_iter!=SRTP::Factions::getSingleton().getEnd())
+    SRTP::Factions::ListIterator faction_iter = SRTP::Factions::get().begin();
+    while (faction_iter!=SRTP::Factions::get().end())
     {
       if (faction_iter->second.name.isPresent())
       {
@@ -820,8 +820,8 @@ int main(int argc, char **argv)
   //check flora for matches
   {
     unsigned int floraMatches = 0;
-    SRTP::Floras::ListIterator flora_iter = SRTP::Floras::getSingleton().getBegin();
-    while (flora_iter!=SRTP::Floras::getSingleton().getEnd())
+    SRTP::Floras::ListIterator flora_iter = SRTP::Floras::get().begin();
+    while (flora_iter!=SRTP::Floras::get().end())
     {
         if (flora_iter->second.name.isPresent())
         {
@@ -850,8 +850,8 @@ int main(int argc, char **argv)
   //check furniture for matches
   {
     unsigned int furnitureMatches = 0;
-    SRTP::Furniture::ListIterator furniture_iter = SRTP::Furniture::getSingleton().getBegin();
-    while (furniture_iter!=SRTP::Furniture::getSingleton().getEnd())
+    SRTP::Furniture::ListIterator furniture_iter = SRTP::Furniture::get().begin();
+    while (furniture_iter!=SRTP::Furniture::get().end())
     {
       if (furniture_iter->second.name.isPresent())
       {
@@ -887,8 +887,8 @@ int main(int argc, char **argv)
   //check ingredients for matches
   {
     unsigned int ingredMatches = 0;
-    SRTP::Ingredients::ListIterator ingred_iter = SRTP::Ingredients::getSingleton().getBegin();
-    while (ingred_iter!=SRTP::Ingredients::getSingleton().getEnd())
+    SRTP::Ingredients::ListIterator ingred_iter = SRTP::Ingredients::get().begin();
+    while (ingred_iter!=SRTP::Ingredients::get().end())
     {
       //if (ingred_iter->second.hasFULL)
       //{
@@ -924,8 +924,8 @@ int main(int argc, char **argv)
   //check keys for matches
   {
     unsigned int keyMatches = 0;
-    SRTP::Keys::ListIterator key_iter = SRTP::Keys::getSingleton().getBegin();
-    while (key_iter!=SRTP::Keys::getSingleton().getEnd())
+    SRTP::Keys::ListIterator key_iter = SRTP::Keys::get().begin();
+    while (key_iter!=SRTP::Keys::get().end())
     {
         if (key_iter->second.name.isPresent())
         {
@@ -958,8 +958,8 @@ int main(int argc, char **argv)
   //check misc. objects for matches
   {
     unsigned int miscMatches = 0;
-    SRTP::MiscObjects::ListIterator misc_iter = SRTP::MiscObjects::getSingleton().getBegin();
-    while (misc_iter!=SRTP::MiscObjects::getSingleton().getEnd())
+    SRTP::MiscObjects::ListIterator misc_iter = SRTP::MiscObjects::get().begin();
+    while (misc_iter!=SRTP::MiscObjects::get().end())
     {
       if (misc_iter->second.name.isPresent())
       {
@@ -995,8 +995,8 @@ int main(int argc, char **argv)
   //check NPCs for matches
   {
     unsigned int NPCMatches = 0;
-    SRTP::NPCs::ListIterator npc_iter = SRTP::NPCs::getSingleton().getBegin();
-    while (npc_iter!=SRTP::NPCs::getSingleton().getEnd())
+    SRTP::NPCs::ListIterator npc_iter = SRTP::NPCs::get().begin();
+    while (npc_iter!=SRTP::NPCs::get().end())
     {
       if (npc_iter->second.name.isPresent())
       {
@@ -1032,8 +1032,8 @@ int main(int argc, char **argv)
   //check perks for matches
   {
     unsigned int perkMatches = 0;
-    SRTP::Perks::ListIterator perk_iter = SRTP::Perks::getSingleton().getBegin();
-    while (perk_iter!=SRTP::Perks::getSingleton().getEnd())
+    SRTP::Perks::ListIterator perk_iter = SRTP::Perks::get().begin();
+    while (perk_iter!=SRTP::Perks::get().end())
     {
       if (perk_iter->second.name.isPresent())
       {
@@ -1067,8 +1067,8 @@ int main(int argc, char **argv)
     unsigned int questMatches = 0;
     unsigned int i, j;
     bool prefix;
-    SRTP::Quests::ListIterator quest_iter = SRTP::Quests::getSingleton().getBegin();
-    while (quest_iter!=SRTP::Quests::getSingleton().getEnd())
+    SRTP::Quests::ListIterator quest_iter = SRTP::Quests::get().begin();
+    while (quest_iter!=SRTP::Quests::get().end())
     {
       if (quest_iter->second.name.isPresent())
       {
@@ -1154,8 +1154,8 @@ int main(int argc, char **argv)
   //check scrolls for matches
   {
     unsigned int scrollMatches = 0;
-    SRTP::Scrolls::ListIterator scroll_iter = SRTP::Scrolls::getSingleton().getBegin();
-    while (scroll_iter!=SRTP::Scrolls::getSingleton().getEnd())
+    SRTP::Scrolls::ListIterator scroll_iter = SRTP::Scrolls::get().begin();
+    while (scroll_iter!=SRTP::Scrolls::get().end())
     {
       //if (scroll_iter->second.hasFULL)
       //{
@@ -1191,8 +1191,8 @@ int main(int argc, char **argv)
   //check soul gems for matches
   {
     unsigned int soulgemMatches = 0;
-    SRTP::SoulGems::ListIterator soulgem_iter = SRTP::SoulGems::getSingleton().getBegin();
-    while (soulgem_iter!=SRTP::SoulGems::getSingleton().getEnd())
+    SRTP::SoulGems::ListIterator soulgem_iter = SRTP::SoulGems::get().begin();
+    while (soulgem_iter!=SRTP::SoulGems::get().end())
     {
       if (soulgem_iter->second.name.isPresent())
       {
@@ -1228,8 +1228,8 @@ int main(int argc, char **argv)
   //check spells for matches
   {
     unsigned int spellMatches = 0;
-    SRTP::Spells::ListIterator spell_iter = SRTP::Spells::getSingleton().getBegin();
-    while (spell_iter!=SRTP::Spells::getSingleton().getEnd())
+    SRTP::Spells::ListIterator spell_iter = SRTP::Spells::get().begin();
+    while (spell_iter!=SRTP::Spells::get().end())
     {
       if (spell_iter->second.name.isPresent())
       {
@@ -1265,8 +1265,8 @@ int main(int argc, char **argv)
   //check shouts for matches
   {
     unsigned int shoutMatches = 0;
-    SRTP::Shouts::ListIterator shout_iter = SRTP::Shouts::getSingleton().getBegin();
-    while (shout_iter!=SRTP::Shouts::getSingleton().getEnd())
+    SRTP::Shouts::ListIterator shout_iter = SRTP::Shouts::get().begin();
+    while (shout_iter!=SRTP::Shouts::get().end())
     {
       if (shout_iter->second.name.isPresent())
       {
@@ -1298,8 +1298,8 @@ int main(int argc, char **argv)
   //check words of power for matches
   {
     unsigned int wordMatches = 0;
-    SRTP::WordsOfPower::ListIterator word_iter = SRTP::WordsOfPower::getSingleton().getBegin();
-    while (word_iter!=SRTP::WordsOfPower::getSingleton().getEnd())
+    SRTP::WordsOfPower::ListIterator word_iter = SRTP::WordsOfPower::get().begin();
+    while (word_iter!=SRTP::WordsOfPower::get().end())
     {
       if (word_iter->second.name.isPresent())
       {
@@ -1332,8 +1332,8 @@ int main(int argc, char **argv)
   //check talking activators for matches
   {
     unsigned int talkingActivatorMatches = 0;
-    SRTP::TalkingActivators::ListIterator talkingActivator_iter = SRTP::TalkingActivators::getSingleton().getBegin();
-    while (talkingActivator_iter!=SRTP::TalkingActivators::getSingleton().getEnd())
+    SRTP::TalkingActivators::ListIterator talkingActivator_iter = SRTP::TalkingActivators::get().begin();
+    while (talkingActivator_iter!=SRTP::TalkingActivators::get().end())
     {
       if (talkingActivator_iter->second.name.isPresent())
       {
@@ -1369,8 +1369,8 @@ int main(int argc, char **argv)
   //check trees for matches
   {
     unsigned int treeMatches = 0;
-    SRTP::Trees::ListIterator tree_iter = SRTP::Trees::getSingleton().getBegin();
-    while (tree_iter!=SRTP::Trees::getSingleton().getEnd())
+    SRTP::Trees::ListIterator tree_iter = SRTP::Trees::get().begin();
+    while (tree_iter!=SRTP::Trees::get().end())
     {
       if (tree_iter->second.name.isPresent())
       {
@@ -1402,8 +1402,8 @@ int main(int argc, char **argv)
   //check weapons for matches
   {
     unsigned int weaponMatches = 0;
-    SRTP::Weapons::ListIterator weapon_iter = SRTP::Weapons::getSingleton().getBegin();
-    while (weapon_iter!=SRTP::Weapons::getSingleton().getEnd())
+    SRTP::Weapons::ListIterator weapon_iter = SRTP::Weapons::get().begin();
+    while (weapon_iter!=SRTP::Weapons::get().end())
     {
       if (weapon_iter->second.name.isPresent())
       {

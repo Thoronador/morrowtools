@@ -112,7 +112,7 @@ int ESMReaderFinderReferences::readNextRecord(std::ifstream& in_File, const uint
              return -1;
            if (!reIndex(recC.headerFormID))
              return -1;
-           Cells::getSingleton().addRecord(recC);
+           Cells::get().addRecord(recC);
            return 1;
          }
          break;
@@ -123,7 +123,7 @@ int ESMReaderFinderReferences::readNextRecord(std::ifstream& in_File, const uint
              return -1;
            if (!reIndex(recW.headerFormID))
              return -1;
-           WorldSpaces::getSingleton().addRecord(recW);
+           WorldSpaces::get().addRecord(recW);
            return 1;
          }
          break;

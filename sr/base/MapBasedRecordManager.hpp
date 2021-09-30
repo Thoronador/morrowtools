@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2014  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2014, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -69,7 +69,7 @@ class MapBasedRecordManager
     */
     const recT& getRecord(const uint32_t ID) const;
 
-    /* tries to read a record from the given input file stream.
+    /* tries to read a record from the given input stream.
 
        return value:
            If an error occurred, the function returns -1. Otherwise it returns
@@ -78,11 +78,11 @@ class MapBasedRecordManager
            returned.)
 
        parameters:
-           in_File   - the input file stream that is used to read the record
+           input     - the input stream that is used to read the record
            localized - true, if the data in the stream is localized
            table     - in case of localized data: the string table
     */
-    int readNextRecord(std::ifstream& in_File, const bool localized, const StringTable& table);
+    int readNextRecord(std::istream& input, const bool localized, const StringTable& table);
 
     /* removes the record with the given ID from the internal list and returns
        true, if such a record existed. Returns false otherwise.
@@ -103,10 +103,9 @@ class MapBasedRecordManager
        true on success, false on failure
 
        parameters:
-           output - the output file stream that shall be used to save the
-                    records
+           output - the output stream that shall be used to save the record
     */
-    bool saveAllToStream(std::ofstream& output) const;
+    bool saveAllToStream(std::ostream& output) const;
     #endif
 
     /* removes all records from the list */
@@ -196,7 +195,7 @@ typename MapBasedRecordManager<recT>::ListIterator MapBasedRecordManager<recT>::
 
 #ifndef SR_UNSAVEABLE_RECORDS
 template<typename recT>
-bool MapBasedRecordManager<recT>::saveAllToStream(std::ofstream& output) const
+bool MapBasedRecordManager<recT>::saveAllToStream(std::ostream& output) const
 {
   if (!output.good())
   {
@@ -226,10 +225,10 @@ void MapBasedRecordManager<recT>::clearAll()
 }
 
 template<typename recT>
-int MapBasedRecordManager<recT>::readNextRecord(std::ifstream& in_File, const bool localized, const StringTable& table)
+int MapBasedRecordManager<recT>::readNextRecord(std::istream& input, const bool localized, const StringTable& table)
 {
   recT temp;
-  if(!temp.loadFromStream(in_File, localized, table))
+  if(!temp.loadFromStream(input, localized, table))
   {
     std::cerr << "MapBasedRecordManager::readNextRecord: Error while reading record.\n";
     return -1;

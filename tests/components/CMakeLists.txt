@@ -13,6 +13,7 @@ set(component_tests_sources
     ../../base/UtilityFunctions.cpp
     ../../mw/base/HelperIO.cpp
     ../../sr/base/FormIDFunctions.cpp
+    ../../sr/base/MapBasedRecordManager.hpp
     ../../sr/base/StringTable.cpp
     ../../sr/base/records/AcousticSpaceRecord.cpp
     ../../sr/base/records/ActionRecord.cpp
@@ -63,6 +64,7 @@ set(component_tests_sources
     base/UtilityFunctions.cpp
     mw/base/HelperIO.cpp
     sr/base/FormIDFunctions.cpp
+    sr/base/MapBasedRecordManager.cpp
     sr/base/StringTable.cpp
     sr/base/records/AcousticSpaceRecord.cpp
     sr/base/records/ActionRecord.cpp

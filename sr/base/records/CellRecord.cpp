@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2013  Thoronador
+    Copyright (C) 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -39,17 +39,19 @@ CellRecord::SubrecordXCLC::SubrecordXCLC()
 
 bool CellRecord::SubrecordXCLC::operator==(const CellRecord::SubrecordXCLC& other) const
 {
-  if (presence!=other.presence) return false;
+  if (presence != other.presence)
+    return false;
   if (presence)
   {
-    return ((locationX==other.locationX) and (locationY==other.locationY)
-        and (unknownThird==other.unknownThird));
+    return (locationX == other.locationX) && (locationY == other.locationY)
+        && (unknownThird == other.unknownThird);
   }
   return true;
 }
 
 CellRecord::CellRecord()
-: BasicRecord(), editorID(""),
+: BasicRecord(),
+  editorID(""),
   name(LocalizedString()),
   unknownDATA(BinarySubRecord()),
   unknownTVDT(BinarySubRecord()),
@@ -85,34 +87,35 @@ CellRecord::~CellRecord()
 #ifndef SR_NO_RECORD_EQUALITY
 bool CellRecord::equals(const CellRecord& other) const
 {
-  return ((equalsBasic(other)) and (editorID==other.editorID)
-      and (name==other.name)
-      and (unknownDATA==other.unknownDATA) and (unknownTVDT==other.unknownTVDT)
-      and (unknownMHDT==other.unknownMHDT) and (gridLocation==other.gridLocation)
-      and (unknownXCLL==other.unknownXCLL) and (lightingTemplateFormID==other.lightingTemplateFormID)
-      and (hasLNAM==other.hasLNAM) and ((unknownLNAM==other.unknownLNAM) or (!hasLNAM))
-      and (unknownXCLW==other.unknownXCLW) and (unknownXCLR==other.unknownXCLR)
-      and (hasXNAM==other.hasXNAM) and ((unknownXNAM==other.unknownXNAM) or (!hasXNAM))
-      and (locationFormID==other.locationFormID)
-      and (hasXWCN==other.hasXWCN) and ((unknownXWCN==other.unknownXWCN) or (!hasXWCN))
-      and (hasXWCS==other.hasXWCS) and ((unknownXWCS==other.unknownXWCS) or (!hasXWCS))
-      and (unknownXWCU==other.unknownXWCU)
-      and (imageSpaceFormID==other.imageSpaceFormID)
-      and (encounterZoneFormID==other.encounterZoneFormID)
-      and (hasXCWT==other.hasXCWT) and ((unknownXCWT==other.unknownXCWT) or (!hasXCWT))
-      and (musicTypeFormID==other.musicTypeFormID)
-      and (unknownXWEM==other.unknownXWEM)
-      and (ownerFactionFormID==other.ownerFactionFormID)
-      and (lockListFormID==other.lockListFormID)
-      and (regionFormID==other.regionFormID)
-      and (defaultAcousticSpaceFormID==other.defaultAcousticSpaceFormID));
+  return equalsBasic(other) && (editorID == other.editorID)
+      && (name == other.name)
+      && (unknownDATA == other.unknownDATA) && (unknownTVDT == other.unknownTVDT)
+      && (unknownMHDT == other.unknownMHDT) && (gridLocation == other.gridLocation)
+      && (unknownXCLL == other.unknownXCLL) && (lightingTemplateFormID == other.lightingTemplateFormID)
+      && (hasLNAM == other.hasLNAM) && ((unknownLNAM == other.unknownLNAM) || !hasLNAM)
+      && (unknownXCLW == other.unknownXCLW) && (unknownXCLR == other.unknownXCLR)
+      && (hasXNAM == other.hasXNAM) && ((unknownXNAM == other.unknownXNAM) || !hasXNAM)
+      && (locationFormID == other.locationFormID)
+      && (hasXWCN == other.hasXWCN) && ((unknownXWCN == other.unknownXWCN) || !hasXWCN)
+      && (hasXWCS == other.hasXWCS) && ((unknownXWCS == other.unknownXWCS) || !hasXWCS)
+      && (unknownXWCU == other.unknownXWCU)
+      && (imageSpaceFormID == other.imageSpaceFormID)
+      && (encounterZoneFormID == other.encounterZoneFormID)
+      && (hasXCWT == other.hasXCWT) && ((unknownXCWT == other.unknownXCWT) || (!hasXCWT))
+      && (musicTypeFormID == other.musicTypeFormID)
+      && (unknownXWEM == other.unknownXWEM)
+      && (ownerFactionFormID == other.ownerFactionFormID)
+      && (lockListFormID == other.lockListFormID)
+      && (regionFormID == other.regionFormID)
+      && (defaultAcousticSpaceFormID == other.defaultAcousticSpaceFormID);
 }
 #endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t CellRecord::getWriteSize() const
 {
-  if (isDeleted()) return 0;
+  if (isDeleted())
+    return 0;
   uint32_t writeSize;
   writeSize = 4 /* LTMP */ +2 /* 2 bytes for length */ +4 /* fixed size */
         +4 /* XCLW */ +2 /* 2 bytes for length */ +4 /* fixed size */;
@@ -216,8 +219,10 @@ uint32_t CellRecord::getWriteSize() const
 bool CellRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cCELL, 4);
-  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
-  if (isDeleted()) return true;
+  if (!saveSizeAndUnknownValues(output, getWriteSize()))
+    return false;
+  if (isDeleted())
+    return true;
 
   uint16_t subLength;
   if (!editorID.empty())
@@ -500,14 +505,16 @@ bool CellRecord::saveToStream(std::ostream& output) const
 bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
-  if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
-  if (isDeleted()) return true;
+  if (!loadSizeAndUnknownValues(in_File, readSize))
+    return false;
+  if (isDeleted())
+    return true;
   uint32_t subRecName;
   uint16_t subLength;
   subRecName = subLength = 0;
   uint32_t bytesRead = 0;
 
-  MWTP::BufferStream decompStream(NULL, 0);
+  MWTP::BufferStream decompStream(nullptr, 0);
   std::basic_istream<char>* actual_in = &in_File;
 
   if (isCompressed())
@@ -567,7 +574,7 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
   hasLNAM = false; unknownLNAM = 0;
   bool hasReadXCLW = false;
   unknownXCLR.clear();
-  uint32_t tempUint32, i, count;
+  uint32_t tempUint32, count;
   hasXNAM = false; unknownXNAM = 0;
   locationFormID = 0;
   hasXWCN = false; unknownXWCN = 0;
@@ -692,21 +699,21 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
              std::cerr << "Error: CELL seems to have more than one XCLC subrecord.\n";
              return false;
            }
-           //XCLC's length
-           actual_in->read((char*) &subLength, 2);
+           // XCLC's length
+           actual_in->read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
-           if (subLength!=12)
+           if (subLength != 12)
            {
-             std::cerr <<"Error: sub record XCLC of CELL has invalid length ("<<subLength
-                       <<" bytes). Should be 12 bytes.\n";
+             std::cerr << "Error: sub record XCLC of CELL has invalid length ("
+                       << subLength << " bytes). Should be 12 bytes.\n";
              return false;
            }
-           //read XCLC
-           actual_in->read((char*) &(gridLocation.locationX), 4);
-           actual_in->read((char*) &(gridLocation.locationY), 4);
-           actual_in->read((char*) &(gridLocation.unknownThird), 4);
+           // read XCLC
+           actual_in->read(reinterpret_cast<char*>(&gridLocation.locationX), 4);
+           actual_in->read(reinterpret_cast<char*>(&gridLocation.locationY), 4);
+           actual_in->read(reinterpret_cast<char*>(&gridLocation.unknownThird), 4);
            bytesRead += 12;
-           if (!(actual_in->good()))
+           if (!actual_in->good())
            {
              std::cerr << "Error while reading subrecord XCLC of CELL!\n";
              return false;
@@ -732,8 +739,8 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
              std::cerr << "Error: CELL seems to have more than one LTMP subrecord.\n";
              return false;
            }
-           //read LTMP
-           if (!loadUint32SubRecordFromStream(*actual_in, cLTMP, lightingTemplateFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cLTMP, lightingTemplateFormID, false))
+             return false;
            bytesRead += 6;
            hasReadLTMP = true;
            break;
@@ -743,8 +750,8 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
              std::cerr << "Error: CELL seems to have more than one LNAM subrecord.\n";
              return false;
            }
-           //read LNAM
-           if (!loadUint32SubRecordFromStream(*actual_in, cLNAM, unknownLNAM, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cLNAM, unknownLNAM, false))
+             return false;
            bytesRead += 6;
            hasLNAM = true;
            break;
@@ -754,17 +761,17 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
              std::cerr << "Error: CELL seems to have more than one XCLW subrecord.\n";
              return false;
            }
-           //XCLW's length
-           actual_in->read((char*) &subLength, 2);
+           // XCLW's length
+           actual_in->read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
-           if (subLength!=4)
+           if (subLength != 4)
            {
-             std::cerr <<"Error: sub record XCLW of CELL has invalid length ("<<subLength
-                       <<" bytes). Should be four bytes.\n";
+             std::cerr << "Error: sub record XCLW of CELL has invalid length ("
+                       << subLength << " bytes). Should be four bytes.\n";
              return false;
            }
-           //read XCLW
-           actual_in->read((char*) &unknownXCLW, 4);
+           // read XCLW
+           actual_in->read(reinterpret_cast<char*>(&unknownXCLW), 4);
            bytesRead += 4;
            if (!actual_in->good())
            {
@@ -779,20 +786,21 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
              std::cerr << "Error: CELL seems to have more than one XCLR subrecord.\n";
              return false;
            }
-           //XCLR's length
-           actual_in->read((char*) &subLength, 2);
+           // XCLR's length
+           actual_in->read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
-           if ((subLength==0) or ((subLength%4)!=0))
+           if ((subLength == 0) || ((subLength % 4) != 0))
            {
-             std::cerr <<"Error: sub record XCLR of CELL has invalid length ("<<subLength
-                       <<" bytes). Should be an integral, non-zero multiple of four bytes.\n";
+             std::cerr << "Error: sub record XCLR of CELL has invalid length ("
+                       << subLength
+                       << " bytes). Should be an integral, non-zero multiple of four bytes.\n";
              return false;
            }
-           //read XCLR
+           // read XCLR
            count = subLength / 4;
-           for (i=0; i<count; ++i)
+           for (uint32_t i = 0; i < count; ++i)
            {
-             actual_in->read((char*) &tempUint32, 4);
+             actual_in->read(reinterpret_cast<char*>(&tempUint32), 4);
              bytesRead += 4;
              if (!actual_in->good())
              {
@@ -800,7 +808,7 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
                return false;
              }
              unknownXCLR.push_back(tempUint32);
-           }//for
+           }
            break;
       case cXNAM:
            if (hasXNAM)
@@ -834,7 +842,8 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
              return false;
            }
            //read XLCN
-           if (!loadUint32SubRecordFromStream(*actual_in, cXLCN, locationFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cXLCN, locationFormID, false))
+             return false;
            bytesRead += 6;
            if (locationFormID==0)
            {
@@ -849,7 +858,8 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
              return false;
            }
            //read XWCN
-           if (!loadUint32SubRecordFromStream(*actual_in, cXWCN, unknownXWCN, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cXWCN, unknownXWCN, false))
+             return false;
            bytesRead += 6;
            hasXWCN = true;
            break;
@@ -860,7 +870,8 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
              return false;
            }
            //read XWCS
-           if (!loadUint32SubRecordFromStream(*actual_in, cXWCS, unknownXWCS, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cXWCS, unknownXWCS, false))
+             return false;
            bytesRead += 6;
            hasXWCS = true;
            break;
@@ -892,7 +903,8 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
              return false;
            }
            //read XCIM
-           if (!loadUint32SubRecordFromStream(*actual_in, cXCIM, imageSpaceFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cXCIM, imageSpaceFormID, false))
+             return false;
            bytesRead += 6;
            if (imageSpaceFormID==0)
            {
@@ -907,7 +919,8 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
              return false;
            }
            //read XEZN
-           if (!loadUint32SubRecordFromStream(*actual_in, cXEZN, encounterZoneFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cXEZN, encounterZoneFormID, false))
+             return false;
            bytesRead += 6;
            if (encounterZoneFormID==0)
            {
@@ -922,7 +935,8 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
              return false;
            }
            //read XCWT
-           if (!loadUint32SubRecordFromStream(*actual_in, cXCWT, unknownXCWT, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cXCWT, unknownXCWT, false))
+             return false;
            bytesRead += 6;
            hasXCWT = true;
            break;
@@ -933,7 +947,8 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
              return false;
            }
            //read XCMO
-           if (!loadUint32SubRecordFromStream(*actual_in, cXCMO, musicTypeFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cXCMO, musicTypeFormID, false))
+             return false;
            bytesRead += 6;
            if (musicTypeFormID==0)
            {
@@ -973,7 +988,8 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
              return false;
            }
            //read XOWN
-           if (!loadUint32SubRecordFromStream(*actual_in, cXOWN, ownerFactionFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cXOWN, ownerFactionFormID, false))
+             return false;
            bytesRead += 6;
            if (ownerFactionFormID==0)
            {
@@ -988,7 +1004,8 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
              return false;
            }
            //read XILL
-           if (!loadUint32SubRecordFromStream(*actual_in, cXILL, lockListFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cXILL, lockListFormID, false))
+             return false;
            bytesRead += 6;
            if (lockListFormID==0)
            {
@@ -1003,7 +1020,8 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
              return false;
            }
            //read XCCM
-           if (!loadUint32SubRecordFromStream(*actual_in, cXCCM, regionFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cXCCM, regionFormID, false))
+             return false;
            bytesRead += 6;
            if (regionFormID==0)
            {
@@ -1018,7 +1036,8 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
              return false;
            }
            //read XCAS
-           if (!loadUint32SubRecordFromStream(*actual_in, cXCAS, defaultAcousticSpaceFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cXCAS, defaultAcousticSpaceFormID, false))
+             return false;
            bytesRead += 6;
            if (defaultAcousticSpaceFormID==0)
            {
@@ -1053,7 +1072,5 @@ uint32_t CellRecord::getRecordType() const
 {
   return cCELL;
 }
-
-
 
 } //namespace

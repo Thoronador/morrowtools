@@ -80,6 +80,8 @@
 		<Unit filename="../../sr/base/records/CTDAData.hpp" />
 		<Unit filename="../../sr/base/records/CameraShotRecord.cpp" />
 		<Unit filename="../../sr/base/records/CameraShotRecord.hpp" />
+		<Unit filename="../../sr/base/records/CellRecord.cpp" />
+		<Unit filename="../../sr/base/records/CellRecord.hpp" />
 		<Unit filename="../../sr/base/records/ComponentData.cpp" />
 		<Unit filename="../../sr/base/records/ComponentData.hpp" />
 		<Unit filename="../../sr/base/records/ContainerRecord.cpp" />
@@ -160,6 +162,8 @@
 		<Unit filename="sr/base/records/CTDAData.cpp" />
 		<Unit filename="sr/base/records/CTDA_CISx_compound.cpp" />
 		<Unit filename="sr/base/records/CameraShotRecord.cpp" />
+		<Unit filename="sr/base/records/CellRecord.cpp" />
+		<Unit filename="sr/base/records/CellRecord_SubrecordXCLC.cpp" />
 		<Unit filename="sr/base/records/ComponentData.cpp" />
 		<Unit filename="sr/base/records/ContainerRecord.cpp" />
 		<Unit filename="sr/base/records/DestructionData.cpp" />

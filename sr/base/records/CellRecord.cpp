@@ -589,9 +589,9 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
   lockListFormID = 0;
   regionFormID = 0;
   defaultAcousticSpaceFormID = 0;
-  while (bytesRead<readSize)
+  while (bytesRead < readSize)
   {
-      //read next header
+    // read next header
     actual_in->read((char*) &subRecName, 4);
     bytesRead += 4;
     switch (subRecName)
@@ -602,24 +602,8 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
              std::cerr << "Error: CELL seems to have more than one EDID subrecord.\n";
              return false;
            }
-           //EDID's length
-           actual_in->read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength>511)
-           {
-             std::cerr <<"Error: sub record EDID of CELL is longer than 511 characters!\n";
+           if (!loadString512FromStream(*actual_in, editorID, buffer, cEDID, false, bytesRead))
              return false;
-           }
-           //read EDID's stuff
-           memset(buffer, 0, 512);
-           actual_in->read(buffer, subLength);
-           bytesRead += subLength;
-           if (!actual_in->good())
-           {
-             std::cerr << "Error while reading subrecord EDID of CELL!\n";
-             return false;
-           }
-           editorID = std::string(buffer);
            break;
       case cFULL:
            if (name.isPresent())
@@ -897,7 +881,7 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
            }
            break;
       case cXCIM:
-           if (imageSpaceFormID!=0)
+           if (imageSpaceFormID != 0)
            {
              std::cerr << "Error: CELL seems to have more than one XCIM subrecord.\n";
              return false;
@@ -906,23 +890,22 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
            if (!loadUint32SubRecordFromStream(*actual_in, cXCIM, imageSpaceFormID, false))
              return false;
            bytesRead += 6;
-           if (imageSpaceFormID==0)
+           if (imageSpaceFormID == 0)
            {
              std::cerr << "Error: subrecord XCIM of CELL has value zero!\n";
              return false;
            }
            break;
       case cXEZN:
-           if (encounterZoneFormID!=0)
+           if (encounterZoneFormID != 0)
            {
              std::cerr << "Error: CELL seems to have more than one XEZN subrecord.\n";
              return false;
            }
-           //read XEZN
            if (!loadUint32SubRecordFromStream(*actual_in, cXEZN, encounterZoneFormID, false))
              return false;
            bytesRead += 6;
-           if (encounterZoneFormID==0)
+           if (encounterZoneFormID == 0)
            {
              std::cerr << "Error: subrecord XEZN of CELL has value zero!\n";
              return false;
@@ -934,25 +917,23 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
              std::cerr << "Error: CELL seems to have more than one XCWT subrecord.\n";
              return false;
            }
-           //read XCWT
            if (!loadUint32SubRecordFromStream(*actual_in, cXCWT, unknownXCWT, false))
              return false;
            bytesRead += 6;
            hasXCWT = true;
            break;
       case cXCMO:
-           if (musicTypeFormID!=0)
+           if (musicTypeFormID != 0)
            {
              std::cerr << "Error: CELL seems to have more than one XCMO subrecord.\n";
              return false;
            }
-           //read XCMO
            if (!loadUint32SubRecordFromStream(*actual_in, cXCMO, musicTypeFormID, false))
              return false;
            bytesRead += 6;
-           if (musicTypeFormID==0)
+           if (musicTypeFormID == 0)
            {
-             std::cerr << "Error: subrecord XCMO of CELL has value zero!\n";
+             std::cerr << "Error: Subrecord XCMO of CELL has value zero!\n";
              return false;
            }
            break;
@@ -982,7 +963,7 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
            unknownXWEM = std::string(buffer);
            break;
       case cXOWN:
-           if (ownerFactionFormID!=0)
+           if (ownerFactionFormID != 0)
            {
              std::cerr << "Error: CELL seems to have more than one XOWN subrecord.\n";
              return false;
@@ -991,14 +972,14 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
            if (!loadUint32SubRecordFromStream(*actual_in, cXOWN, ownerFactionFormID, false))
              return false;
            bytesRead += 6;
-           if (ownerFactionFormID==0)
+           if (ownerFactionFormID == 0)
            {
              std::cerr << "Error: subrecord XOWN of CELL has value zero!\n";
              return false;
            }
            break;
       case cXILL:
-           if (lockListFormID!=0)
+           if (lockListFormID != 0)
            {
              std::cerr << "Error: CELL seems to have more than one XILL subrecord.\n";
              return false;
@@ -1007,14 +988,14 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
            if (!loadUint32SubRecordFromStream(*actual_in, cXILL, lockListFormID, false))
              return false;
            bytesRead += 6;
-           if (lockListFormID==0)
+           if (lockListFormID == 0)
            {
              std::cerr << "Error: subrecord XILL of CELL has value zero!\n";
              return false;
            }
            break;
       case cXCCM:
-           if (regionFormID!=0)
+           if (regionFormID != 0)
            {
              std::cerr << "Error: CELL seems to have more than one XCCM subrecord.\n";
              return false;
@@ -1023,14 +1004,14 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
            if (!loadUint32SubRecordFromStream(*actual_in, cXCCM, regionFormID, false))
              return false;
            bytesRead += 6;
-           if (regionFormID==0)
+           if (regionFormID == 0)
            {
              std::cerr << "Error: subrecord XCCM of CELL has value zero!\n";
              return false;
            }
            break;
       case cXCAS:
-           if (defaultAcousticSpaceFormID!=0)
+           if (defaultAcousticSpaceFormID != 0)
            {
              std::cerr << "Error: CELL seems to have more than one XCAS subrecord.\n";
              return false;
@@ -1039,7 +1020,7 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
            if (!loadUint32SubRecordFromStream(*actual_in, cXCAS, defaultAcousticSpaceFormID, false))
              return false;
            bytesRead += 6;
-           if (defaultAcousticSpaceFormID==0)
+           if (defaultAcousticSpaceFormID == 0)
            {
              std::cerr << "Error: subrecord XCAS of CELL has value zero!\n";
              return false;
@@ -1056,7 +1037,7 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
     }//swi
   }//while
 
-  //presence checks
+  // presence checks
   if (!(unknownDATA.isPresent() and hasReadLTMP and hasReadXCLW))
   {
     std::cerr << "Error: At least one required subrecord of CELL was not found!\n"

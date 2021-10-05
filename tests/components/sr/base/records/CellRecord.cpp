@@ -49,13 +49,13 @@ TEST_CASE("CellRecord")
     REQUIRE( record.unknownXCLR.empty() );
     REQUIRE_FALSE( record.hasXNAM );
     REQUIRE( record.unknownXNAM == 0 );
-    REQUIRE( record.locationFormID == 0 );
     REQUIRE_FALSE( record.hasXWCN );
     REQUIRE( record.unknownXWCN == 0 );
     REQUIRE_FALSE( record.hasXWCS );
     REQUIRE( record.unknownXWCS == 0 );
     REQUIRE_FALSE( record.unknownXWCU.isPresent() );
     REQUIRE( record.imageSpaceFormID == 0 );
+    REQUIRE( record.locationFormID == 0 );
     REQUIRE( record.encounterZoneFormID == 0 );
     REQUIRE_FALSE( record.hasXCWT );
     REQUIRE( record.unknownXCWT == 0 );
@@ -262,15 +262,6 @@ TEST_CASE("CellRecord")
         REQUIRE_FALSE( b.equals(a) );
       }
 
-      SECTION("locationFormID mismatch")
-      {
-        a.locationFormID = 0x01234567;
-        b.locationFormID = 0x0FEDCBA9;
-
-        REQUIRE_FALSE( a.equals(b) );
-        REQUIRE_FALSE( b.equals(a) );
-      }
-
       SECTION("XCWN mismatch")
       {
         a.hasXWCN = true;
@@ -333,6 +324,15 @@ TEST_CASE("CellRecord")
       {
         a.imageSpaceFormID = 0x01234567;
         b.imageSpaceFormID = 0x0FEDCBA9;
+
+        REQUIRE_FALSE( a.equals(b) );
+        REQUIRE_FALSE( b.equals(a) );
+      }
+
+      SECTION("locationFormID mismatch")
+      {
+        a.locationFormID = 0x01234567;
+        b.locationFormID = 0x0FEDCBA9;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
@@ -585,14 +585,6 @@ TEST_CASE("CellRecord")
       REQUIRE( record.getWriteSize() == 27 );
     }
 
-    SECTION("size adjusts when locationFormID is present")
-    {
-      REQUIRE( record.getWriteSize() == 20 );
-
-      record.locationFormID = 0x01234567;
-      REQUIRE( record.getWriteSize() == 30 );
-    }
-
     SECTION("size adjusts when XWCN is present")
     {
       REQUIRE( record.getWriteSize() == 20 );
@@ -637,6 +629,14 @@ TEST_CASE("CellRecord")
       REQUIRE( record.getWriteSize() == 20 );
 
       record.imageSpaceFormID = 0x01234567;
+      REQUIRE( record.getWriteSize() == 30 );
+    }
+
+    SECTION("size adjusts when locationFormID is present")
+    {
+      REQUIRE( record.getWriteSize() == 20 );
+
+      record.locationFormID = 0x01234567;
       REQUIRE( record.getWriteSize() == 30 );
     }
 
@@ -760,13 +760,13 @@ TEST_CASE("CellRecord")
       REQUIRE( record.unknownXCLR[0] == 0x00106668 );
       REQUIRE_FALSE( record.hasXNAM );
       REQUIRE( record.unknownXNAM == 0 );
-      REQUIRE( record.locationFormID == 0 );
       REQUIRE_FALSE( record.hasXWCN );
       REQUIRE( record.unknownXWCN == 0 );
       REQUIRE_FALSE( record.hasXWCS );
       REQUIRE( record.unknownXWCS == 0 );
       REQUIRE_FALSE( record.unknownXWCU.isPresent() );
       REQUIRE( record.imageSpaceFormID == 0 );
+      REQUIRE( record.locationFormID == 0 );
       REQUIRE( record.encounterZoneFormID == 0 );
       REQUIRE_FALSE( record.hasXCWT );
       REQUIRE( record.unknownXCWT == 0 );
@@ -827,13 +827,13 @@ TEST_CASE("CellRecord")
       REQUIRE( record.unknownXCLR.empty() );
       REQUIRE_FALSE( record.hasXNAM );
       REQUIRE( record.unknownXNAM == 0 );
-      REQUIRE( record.locationFormID == 0 );
       REQUIRE_FALSE( record.hasXWCN );
       REQUIRE( record.unknownXWCN == 0 );
       REQUIRE_FALSE( record.hasXWCS );
       REQUIRE( record.unknownXWCS == 0 );
       REQUIRE_FALSE( record.unknownXWCU.isPresent() );
       REQUIRE( record.imageSpaceFormID == 0 );
+      REQUIRE( record.locationFormID == 0 );
       REQUIRE( record.encounterZoneFormID == 0 );
       REQUIRE_FALSE( record.hasXCWT );
       REQUIRE( record.unknownXCWT == 0 );
@@ -886,13 +886,13 @@ TEST_CASE("CellRecord")
       REQUIRE( record.unknownXCLR[0] == 0x00106668 );
       REQUIRE_FALSE( record.hasXNAM );
       REQUIRE( record.unknownXNAM == 0 );
-      REQUIRE( record.locationFormID == 0 );
       REQUIRE_FALSE( record.hasXWCN );
       REQUIRE( record.unknownXWCN == 0 );
       REQUIRE_FALSE( record.hasXWCS );
       REQUIRE( record.unknownXWCS == 0 );
       REQUIRE_FALSE( record.unknownXWCU.isPresent() );
       REQUIRE( record.imageSpaceFormID == 0 );
+      REQUIRE( record.locationFormID == 0 );
       REQUIRE( record.encounterZoneFormID == 0 );
       REQUIRE_FALSE( record.hasXCWT );
       REQUIRE( record.unknownXCWT == 0 );
@@ -902,6 +902,70 @@ TEST_CASE("CellRecord")
       REQUIRE( record.lockListFormID == 0 );
       REQUIRE( record.regionFormID == 0 );
       REQUIRE( record.defaultAcousticSpaceFormID == 0 );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( record.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
+    }
+
+    SECTION("default: load record with XCIM + XLCN + XCAS")
+    {
+      const auto data = "CELL\x56\0\0\0\0\0\0\0\xF7\x97\x0C\0\x14\x67\x27\0\x27\0\x03\0DATA\x02\0\x02\0XCLC\x0C\0\0\0\0\0\xFE\xFF\xFF\xFF\0\xCFS\0LTMP\x04\0\0\0\0\0XCLW\x04\0\xFF\xFF\x7F\x7FXCIM\x04\0\x0EV\x01\0XLCN\x04\0\xB8\x92\x01\0XCMO\x04\0\xDDK\x09\0XCAS\x04\0\x83\xCB\x10\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read CELL, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      CellRecord record;
+      REQUIRE( record.loadFromStream(stream, true, dummy_table) );
+      // Check data.
+      // -- header
+      REQUIRE( record.headerFlags == 0 );
+      REQUIRE( record.headerFormID == 0x000C97F7 );
+      REQUIRE( record.headerRevision == 0x00276714 );
+      REQUIRE( record.headerVersion == 39 );
+      REQUIRE( record.headerUnknown5 == 0x0003 );
+      // -- record data
+      REQUIRE( record.editorID.empty() );
+      REQUIRE_FALSE( record.name.isPresent() );
+      REQUIRE( record.unknownDATA.isPresent() );
+      const auto DATA = std::string_view(reinterpret_cast<const char*>(record.unknownDATA.data()), record.unknownDATA.size());
+      REQUIRE( DATA == "\x02\0"sv );
+      REQUIRE_FALSE( record.unknownTVDT.isPresent() );
+      REQUIRE_FALSE( record.unknownMHDT.isPresent() );
+      REQUIRE( record.gridLocation.presence );
+      REQUIRE( record.gridLocation.locationX == 0 );
+      REQUIRE( record.gridLocation.locationY == 0xFFFFFFFE );
+      REQUIRE( record.gridLocation.unknownThird == 0x0053CF00 );
+      REQUIRE_FALSE( record.unknownXCLL.isPresent() );
+      REQUIRE( record.lightingTemplateFormID == 0 );
+      REQUIRE_FALSE( record.hasLNAM );
+      REQUIRE( record.unknownLNAM == 0 );
+      REQUIRE( record.unknownXCLW == std::numeric_limits<float>::max() );
+      REQUIRE( record.unknownXCLR.empty() );
+      REQUIRE_FALSE( record.hasXNAM );
+      REQUIRE( record.unknownXNAM == 0 );
+      REQUIRE_FALSE( record.hasXWCN );
+      REQUIRE( record.unknownXWCN == 0 );
+      REQUIRE_FALSE( record.hasXWCS );
+      REQUIRE( record.unknownXWCS == 0 );
+      REQUIRE_FALSE( record.unknownXWCU.isPresent() );
+      REQUIRE( record.imageSpaceFormID == 0x0001560E );
+      REQUIRE( record.locationFormID == 0x000192B8 );
+      REQUIRE( record.encounterZoneFormID == 0 );
+      REQUIRE_FALSE( record.hasXCWT );
+      REQUIRE( record.unknownXCWT == 0 );
+      REQUIRE( record.musicTypeFormID == 0x00094BDD );
+      REQUIRE( record.unknownXWEM.empty() );
+      REQUIRE( record.ownerFactionFormID == 0 );
+      REQUIRE( record.lockListFormID == 0 );
+      REQUIRE( record.regionFormID == 0 );
+      REQUIRE( record.defaultAcousticSpaceFormID == 0x0010CB83 );
 
       // Writing should succeed.
       std::ostringstream streamOut;
@@ -1069,6 +1133,21 @@ TEST_CASE("CellRecord")
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
+    SECTION("corrupt data: multiple DATAs")
+    {
+      const auto data = "CELL\x40\0\0\0\0\0\0\0\x66\x66\x10\0\x1D\x66\x0A\0\x25\0\x01\0DATA\x02\0\x02\0DATA\x02\0\x02\0XCLC\x0C\0\xFF\xFF\xFF\xFF\xFD\xFF\xFF\xFF\0\xBAS\0LTMP\x04\0\0\0\0\0XCLW\x04\0\xFF\xFF\x7F\x7FXCLR\x04\0hf\x10\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read CELL, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      CellRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: stream ends before all of DATA can be read")
     {
       const auto data = "CELL\x38\0\0\0\0\0\0\0\x66\x66\x10\0\x1D\x66\x0A\0\x25\0\x01\0DATA\x02\0\x02"sv;
@@ -1082,6 +1161,37 @@ TEST_CASE("CellRecord")
       // Reading should fail.
       CellRecord record;
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of DATA is not one or two")
+    {
+      {
+        const auto data = "CELL\x36\0\0\0\0\0\0\0\x66\x66\x10\0\x1D\x66\x0A\0\x25\0\x01\0DATA\0\0XCLC\x0C\0\xFF\xFF\xFF\xFF\xFD\xFF\xFF\xFF\0\xBAS\0LTMP\x04\0\0\0\0\0XCLW\x04\0\xFF\xFF\x7F\x7FXCLR\x04\0hf\x10\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read CELL, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        CellRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+
+      {
+        const auto data = "CELL\x39\0\0\0\0\0\0\0\x66\x66\x10\0\x1D\x66\x0A\0\x25\0\x01\0DATA\x03\0\x02\0\0XCLC\x0C\0\xFF\xFF\xFF\xFF\xFD\xFF\xFF\xFF\0\xBAS\0LTMP\x04\0\0\0\0\0XCLW\x04\0\xFF\xFF\x7F\x7FXCLR\x04\0hf\x10\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read CELL, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        CellRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
     }
 
     SECTION("corrupt data: multiple XCLCs")
@@ -1343,6 +1453,158 @@ TEST_CASE("CellRecord")
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
+    SECTION("corrupt data: multiple XCIMs")
+    {
+      const auto data = "CELL\x60\0\0\0\0\0\0\0\xF7\x97\x0C\0\x14\x67\x27\0\x27\0\x03\0DATA\x02\0\x02\0XCLC\x0C\0\0\0\0\0\xFE\xFF\xFF\xFF\0\xCFS\0LTMP\x04\0\0\0\0\0XCLW\x04\0\xFF\xFF\x7F\x7FXCIM\x04\0\x0EV\x01\0XCIM\x04\0\x0EV\x01\0XLCN\x04\0\xB8\x92\x01\0XCMO\x04\0\xDDK\x09\0XCAS\x04\0\x83\xCB\x10\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read CELL, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      CellRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of XCIM is not four")
+    {
+      {
+        const auto data = "CELL\x55\0\0\0\0\0\0\0\xF7\x97\x0C\0\x14\x67\x27\0\x27\0\x03\0DATA\x02\0\x02\0XCLC\x0C\0\0\0\0\0\xFE\xFF\xFF\xFF\0\xCFS\0LTMP\x04\0\0\0\0\0XCLW\x04\0\xFF\xFF\x7F\x7FXCIM\x03\0\x0EV\0XLCN\x04\0\xB8\x92\x01\0XCMO\x04\0\xDDK\x09\0XCAS\x04\0\x83\xCB\x10\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read CELL, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        CellRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+
+      {
+        const auto data = "CELL\x57\0\0\0\0\0\0\0\xF7\x97\x0C\0\x14\x67\x27\0\x27\0\x03\0DATA\x02\0\x02\0XCLC\x0C\0\0\0\0\0\xFE\xFF\xFF\xFF\0\xCFS\0LTMP\x04\0\0\0\0\0XCLW\x04\0\xFF\xFF\x7F\x7FXCIM\x05\0\x0EV\x01\0\0XLCN\x04\0\xB8\x92\x01\0XCMO\x04\0\xDDK\x09\0XCAS\x04\0\x83\xCB\x10\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read CELL, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        CellRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+    }
+
+    SECTION("corrupt data: stream ends before all of XCIM can be read")
+    {
+      const auto data = "CELL\x56\0\0\0\0\0\0\0\xF7\x97\x0C\0\x14\x67\x27\0\x27\0\x03\0DATA\x02\0\x02\0XCLC\x0C\0\0\0\0\0\xFE\xFF\xFF\xFF\0\xCFS\0LTMP\x04\0\0\0\0\0XCLW\x04\0\xFF\xFF\x7F\x7FXCIM\x04\0\x0E"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read CELL, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      CellRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: XCIM is zero")
+    {
+      const auto data = "CELL\x56\0\0\0\0\0\0\0\xF7\x97\x0C\0\x14\x67\x27\0\x27\0\x03\0DATA\x02\0\x02\0XCLC\x0C\0\0\0\0\0\xFE\xFF\xFF\xFF\0\xCFS\0LTMP\x04\0\0\0\0\0XCLW\x04\0\xFF\xFF\x7F\x7FXCIM\x04\0\0\0\0\0XLCN\x04\0\xB8\x92\x01\0XCMO\x04\0\xDDK\x09\0XCAS\x04\0\x83\xCB\x10\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read CELL, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      CellRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple XLCNs")
+    {
+      const auto data = "CELL\x60\0\0\0\0\0\0\0\xF7\x97\x0C\0\x14\x67\x27\0\x27\0\x03\0DATA\x02\0\x02\0XCLC\x0C\0\0\0\0\0\xFE\xFF\xFF\xFF\0\xCFS\0LTMP\x04\0\0\0\0\0XCLW\x04\0\xFF\xFF\x7F\x7FXCIM\x04\0\x0EV\x01\0XLCN\x04\0\xB8\x92\x01\0XLCN\x04\0\xB8\x92\x01\0XCMO\x04\0\xDDK\x09\0XCAS\x04\0\x83\xCB\x10\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read CELL, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      CellRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of XLCN is not four")
+    {
+      {
+        const auto data = "CELL\x55\0\0\0\0\0\0\0\xF7\x97\x0C\0\x14\x67\x27\0\x27\0\x03\0DATA\x02\0\x02\0XCLC\x0C\0\0\0\0\0\xFE\xFF\xFF\xFF\0\xCFS\0LTMP\x04\0\0\0\0\0XCLW\x04\0\xFF\xFF\x7F\x7FXCIM\x04\0\x0EV\x01\0XLCN\x03\0\xB8\x92\0XCMO\x04\0\xDDK\x09\0XCAS\x04\0\x83\xCB\x10\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read CELL, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        CellRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+
+      {
+        const auto data = "CELL\x57\0\0\0\0\0\0\0\xF7\x97\x0C\0\x14\x67\x27\0\x27\0\x03\0DATA\x02\0\x02\0XCLC\x0C\0\0\0\0\0\xFE\xFF\xFF\xFF\0\xCFS\0LTMP\x04\0\0\0\0\0XCLW\x04\0\xFF\xFF\x7F\x7FXCIM\x04\0\x0EV\x01\0XLCN\x05\0\xB8\x92\x01\0\0XCMO\x04\0\xDDK\x09\0XCAS\x04\0\x83\xCB\x10\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read CELL, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        CellRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+    }
+
+    SECTION("corrupt data: stream ends before all of XLCN can be read")
+    {
+      const auto data = "CELL\x56\0\0\0\0\0\0\0\xF7\x97\x0C\0\x14\x67\x27\0\x27\0\x03\0DATA\x02\0\x02\0XCLC\x0C\0\0\0\0\0\xFE\xFF\xFF\xFF\0\xCFS\0LTMP\x04\0\0\0\0\0XCLW\x04\0\xFF\xFF\x7F\x7FXCIM\x04\0\x0EV\x01\0XLCN\x04\0\xB8\x92"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read CELL, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      CellRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: XLCN is zero")
+    {
+      const auto data = "CELL\x56\0\0\0\0\0\0\0\xF7\x97\x0C\0\x14\x67\x27\0\x27\0\x03\0DATA\x02\0\x02\0XCLC\x0C\0\0\0\0\0\xFE\xFF\xFF\xFF\0\xCFS\0LTMP\x04\0\0\0\0\0XCLW\x04\0\xFF\xFF\x7F\x7FXCIM\x04\0\x0EV\x01\0XLCN\x04\0\0\0\0\0XCMO\x04\0\xDDK\x09\0XCAS\x04\0\x83\xCB\x10\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read CELL, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      CellRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: multiple XCMOs")
     {
       const auto data = "CELL\x5C\0\0\0\0\0\0\0\x20\x42\x10\0\x15\x67\x27\0\x27\0\x02\0EDID\x0A\0MazeStart\0DATA\x02\0\x02\0XCLC\x0C\0\0\0\0\0\xFF\xFF\xFF\xFF\x0F\x17\0\0LTMP\x04\0\0\0\0\0XCLW\x04\0\0\0\0\xCFXCLR\x04\0hf\x10\0XCMO\x04\0\xC2\xD4\x02\0XCMO\x04\0\xC2\xD4\x02\0"sv;
@@ -1407,6 +1669,82 @@ TEST_CASE("CellRecord")
     SECTION("corrupt data: XCMO is zero")
     {
       const auto data = "CELL\x52\0\0\0\0\0\0\0\x20\x42\x10\0\x15\x67\x27\0\x27\0\x02\0EDID\x0A\0MazeStart\0DATA\x02\0\x02\0XCLC\x0C\0\0\0\0\0\xFF\xFF\xFF\xFF\x0F\x17\0\0LTMP\x04\0\0\0\0\0XCLW\x04\0\0\0\0\xCFXCLR\x04\0hf\x10\0XCMO\x04\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read CELL, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      CellRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple XCASs")
+    {
+      const auto data = "CELL\x60\0\0\0\0\0\0\0\xF7\x97\x0C\0\x14\x67\x27\0\x27\0\x03\0DATA\x02\0\x02\0XCLC\x0C\0\0\0\0\0\xFE\xFF\xFF\xFF\0\xCFS\0LTMP\x04\0\0\0\0\0XCLW\x04\0\xFF\xFF\x7F\x7FXCIM\x04\0\x0EV\x01\0XLCN\x04\0\xB8\x92\x01\0XCMO\x04\0\xDDK\x09\0XCAS\x04\0\x83\xCB\x10\0XCAS\x04\0\x83\xCB\x10\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read CELL, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      CellRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of XCAS is not four")
+    {
+      {
+        const auto data = "CELL\x55\0\0\0\0\0\0\0\xF7\x97\x0C\0\x14\x67\x27\0\x27\0\x03\0DATA\x02\0\x02\0XCLC\x0C\0\0\0\0\0\xFE\xFF\xFF\xFF\0\xCFS\0LTMP\x04\0\0\0\0\0XCLW\x04\0\xFF\xFF\x7F\x7FXCIM\x04\0\x0EV\x01\0XLCN\x04\0\xB8\x92\x01\0XCMO\x04\0\xDDK\x09\0XCAS\x03\0\x83\xCB\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read CELL, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        CellRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+
+      {
+        const auto data = "CELL\x57\0\0\0\0\0\0\0\xF7\x97\x0C\0\x14\x67\x27\0\x27\0\x03\0DATA\x02\0\x02\0XCLC\x0C\0\0\0\0\0\xFE\xFF\xFF\xFF\0\xCFS\0LTMP\x04\0\0\0\0\0XCLW\x04\0\xFF\xFF\x7F\x7FXCIM\x04\0\x0EV\x01\0XLCN\x04\0\xB8\x92\x01\0XCMO\x04\0\xDDK\x09\0XCAS\x05\0\x83\xCB\x10\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read CELL, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        CellRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+    }
+
+    SECTION("corrupt data: stream ends before all of XCAS can be read")
+    {
+      const auto data = "CELL\x56\0\0\0\0\0\0\0\xF7\x97\x0C\0\x14\x67\x27\0\x27\0\x03\0DATA\x02\0\x02\0XCLC\x0C\0\0\0\0\0\xFE\xFF\xFF\xFF\0\xCFS\0LTMP\x04\0\0\0\0\0XCLW\x04\0\xFF\xFF\x7F\x7FXCIM\x04\0\x0EV\x01\0XLCN\x04\0\xB8\x92\x01\0XCMO\x04\0\xDDK\x09\0XCAS\x04\0\x83\xCB"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read CELL, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      CellRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: XCAS is zero")
+    {
+      const auto data = "CELL\x56\0\0\0\0\0\0\0\xF7\x97\x0C\0\x14\x67\x27\0\x27\0\x03\0DATA\x02\0\x02\0XCLC\x0C\0\0\0\0\0\xFE\xFF\xFF\xFF\0\xCFS\0LTMP\x04\0\0\0\0\0XCLW\x04\0\xFF\xFF\x7F\x7FXCIM\x04\0\x0EV\x01\0XLCN\x04\0\xB8\x92\x01\0XCMO\x04\0\xDDK\x09\0XCAS\x04\0\0\0\0\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 

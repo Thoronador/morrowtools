@@ -99,13 +99,13 @@ struct CellRecord: public BasicRecord
     std::vector<uint32_t> unknownXCLR;
     bool hasXNAM;
     uint8_t unknownXNAM;
-    uint32_t locationFormID; //subrecord XLCN
     bool hasXWCN;
     uint32_t unknownXWCN;
     bool hasXWCS;
     uint32_t unknownXWCS;
     BinarySubRecord unknownXWCU;
     uint32_t imageSpaceFormID; //subrecord XCIM
+    uint32_t locationFormID; //subrecord XLCN
     uint32_t encounterZoneFormID; //subrecord XEZN
     bool hasXCWT;
     uint32_t unknownXCWT;

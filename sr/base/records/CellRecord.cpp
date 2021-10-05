@@ -63,11 +63,11 @@ CellRecord::CellRecord()
   unknownXCLW(0.0f),
   unknownXCLR(std::vector<uint32_t>()),
   hasXNAM(false), unknownXNAM(0),
-  locationFormID(0),
   hasXWCN(false), unknownXWCN(0),
   hasXWCS(false), unknownXWCS(0),
   unknownXWCU(BinarySubRecord()),
   imageSpaceFormID(0),
+  locationFormID(0),
   encounterZoneFormID(0),
   hasXCWT(0), unknownXCWT(0),
   musicTypeFormID(0),
@@ -95,11 +95,11 @@ bool CellRecord::equals(const CellRecord& other) const
       && (hasLNAM == other.hasLNAM) && ((unknownLNAM == other.unknownLNAM) || !hasLNAM)
       && (unknownXCLW == other.unknownXCLW) && (unknownXCLR == other.unknownXCLR)
       && (hasXNAM == other.hasXNAM) && ((unknownXNAM == other.unknownXNAM) || !hasXNAM)
-      && (locationFormID == other.locationFormID)
       && (hasXWCN == other.hasXWCN) && ((unknownXWCN == other.unknownXWCN) || !hasXWCN)
       && (hasXWCS == other.hasXWCS) && ((unknownXWCS == other.unknownXWCS) || !hasXWCS)
       && (unknownXWCU == other.unknownXWCU)
       && (imageSpaceFormID == other.imageSpaceFormID)
+      && (locationFormID == other.locationFormID)
       && (encounterZoneFormID == other.encounterZoneFormID)
       && (hasXCWT == other.hasXCWT) && ((unknownXCWT == other.unknownXCWT) || (!hasXCWT))
       && (musicTypeFormID == other.musicTypeFormID)
@@ -160,10 +160,6 @@ uint32_t CellRecord::getWriteSize() const
   {
     writeSize = writeSize + 4 /* XCLL */ + 2 /* 2 bytes for length */ + unknownXCLL.size() /* size of subrecord */;
   }
-  if (locationFormID!=0)
-  {
-    writeSize = writeSize +4 /* XLCN */ +2 /* 2 bytes for length */ +4 /* fixed size */;
-  }
   if (hasXWCN)
   {
     writeSize = writeSize +4 /* XWCN */ +2 /* 2 bytes for length */ +4 /* fixed size */;
@@ -179,6 +175,10 @@ uint32_t CellRecord::getWriteSize() const
   if (imageSpaceFormID!=0)
   {
     writeSize = writeSize +4 /* XCIM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+  }
+  if (locationFormID!=0)
+  {
+    writeSize = writeSize +4 /* XLCN */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
   if (encounterZoneFormID!=0)
   {
@@ -356,17 +356,6 @@ bool CellRecord::saveToStream(std::ostream& output) const
     output.write((const char*) &unknownXNAM, 1);
   }
 
-  if (locationFormID!=0)
-  {
-    //write XLCN
-    output.write((const char*) &cXLCN, 4);
-    //XLCN's length
-    subLength = 4; //fixed size
-    output.write((const char*) &subLength, 2);
-    //write XLCN
-    output.write((const char*) &locationFormID, 4);
-  }
-
   if (hasXWCN)
   {
     //write XWCN
@@ -408,6 +397,17 @@ bool CellRecord::saveToStream(std::ostream& output) const
     output.write((const char*) &subLength, 2);
     //write XCIM
     output.write((const char*) &imageSpaceFormID, 4);
+  }
+
+  if (locationFormID!=0)
+  {
+    //write XLCN
+    output.write((const char*) &cXLCN, 4);
+    //XLCN's length
+    subLength = 4; //fixed size
+    output.write((const char*) &subLength, 2);
+    //write XLCN
+    output.write((const char*) &locationFormID, 4);
   }
 
   if (encounterZoneFormID!=0)
@@ -819,22 +819,6 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
            }
            hasXNAM = true;
            break;
-      case cXLCN:
-           if (locationFormID!=0)
-           {
-             std::cerr << "Error: CELL seems to have more than one XLCN subrecord.\n";
-             return false;
-           }
-           //read XLCN
-           if (!loadUint32SubRecordFromStream(*actual_in, cXLCN, locationFormID, false))
-             return false;
-           bytesRead += 6;
-           if (locationFormID==0)
-           {
-             std::cerr << "Error: subrecord XLCN of CELL has value zero!\n";
-             return false;
-           }
-           break;
       case cXWCN:
            if (hasXWCN)
            {
@@ -893,6 +877,22 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
            if (imageSpaceFormID == 0)
            {
              std::cerr << "Error: subrecord XCIM of CELL has value zero!\n";
+             return false;
+           }
+           break;
+      case cXLCN:
+           if (locationFormID != 0)
+           {
+             std::cerr << "Error: CELL seems to have more than one XLCN subrecord.\n";
+             return false;
+           }
+           //read XLCN
+           if (!loadUint32SubRecordFromStream(*actual_in, cXLCN, locationFormID, false))
+             return false;
+           bytesRead += 6;
+           if (locationFormID == 0)
+           {
+             std::cerr << "Error: subrecord XLCN of CELL has value zero!\n";
              return false;
            }
            break;

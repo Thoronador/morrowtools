@@ -114,6 +114,7 @@ set(component_tests_sources
     sr/base/records/Tes4HeaderRecord.cpp
     sr/base/records/TreeRecord.cpp
     sr/base/records/WordOfPowerRecord.cpp
+    sr/base/records/WrongStringType.cpp
     main.cpp)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")

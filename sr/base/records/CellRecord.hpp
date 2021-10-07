@@ -88,9 +88,9 @@ struct CellRecord: public BasicRecord
     std::string editorID;
     LocalizedString name; //subrecord FULL
     BinarySubRecord unknownDATA;
+    SubrecordXCLC gridLocation;
     BinarySubRecord unknownTVDT;
     BinarySubRecord unknownMHDT;
-    SubrecordXCLC gridLocation;
     BinarySubRecord unknownXCLL;
     uint32_t lightingTemplateFormID; //subrecord LTMP
     bool hasLNAM;

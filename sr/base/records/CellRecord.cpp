@@ -54,9 +54,9 @@ CellRecord::CellRecord()
   editorID(""),
   name(LocalizedString()),
   unknownDATA(BinarySubRecord()),
+  gridLocation(SubrecordXCLC()),
   unknownTVDT(BinarySubRecord()),
   unknownMHDT(BinarySubRecord()),
-  gridLocation(SubrecordXCLC()),
   unknownXCLL(BinarySubRecord()),
   lightingTemplateFormID(0),
   hasLNAM(false), unknownLNAM(0),
@@ -89,8 +89,8 @@ bool CellRecord::equals(const CellRecord& other) const
 {
   return equalsBasic(other) && (editorID == other.editorID)
       && (name == other.name)
-      && (unknownDATA == other.unknownDATA) && (unknownTVDT == other.unknownTVDT)
-      && (unknownMHDT == other.unknownMHDT) && (gridLocation == other.gridLocation)
+      && (unknownDATA == other.unknownDATA) && (gridLocation == other.gridLocation)
+      && (unknownTVDT == other.unknownTVDT) && (unknownMHDT == other.unknownMHDT)
       && (unknownXCLL == other.unknownXCLL) && (lightingTemplateFormID == other.lightingTemplateFormID)
       && (hasLNAM == other.hasLNAM) && ((unknownLNAM == other.unknownLNAM) || !hasLNAM)
       && (unknownXCLW == other.unknownXCLW) && (unknownXCLR == other.unknownXCLR)
@@ -132,6 +132,10 @@ uint32_t CellRecord::getWriteSize() const
   {
     writeSize += name.getWriteSize() /* FULL */;
   }
+  if (gridLocation.presence)
+  {
+    writeSize = writeSize +4 /* XCLC */ +2 /* 2 bytes for length */ +12 /* fixed size */;
+  }
   if (unknownTVDT.isPresent())
   {
     writeSize = writeSize + 4 /* TVDT */ + 2 /* 2 bytes for length */ + unknownTVDT.size() /* size of subrecord */;
@@ -139,10 +143,6 @@ uint32_t CellRecord::getWriteSize() const
   if (unknownMHDT.isPresent())
   {
     writeSize = writeSize + 4 /* MHDT */ + 2 /* 2 bytes for length */ + unknownMHDT.size() /* size of subrecord */;
-  }
-  if (gridLocation.presence)
-  {
-    writeSize = writeSize +4 /* XCLC */ +2 /* 2 bytes for length */ +12 /* fixed size */;
   }
   if (hasLNAM)
   {
@@ -259,6 +259,19 @@ bool CellRecord::saveToStream(std::ostream& output) const
     return false;
   }
 
+  if (gridLocation.presence)
+  {
+    // write XCLC
+    output.write((const char*) &cXCLC, 4);
+    // XCLC's length
+    subLength = 12; // fixed size
+    output.write((const char*) &subLength, 2);
+    // write XCLC's content
+    output.write((const char*) &(gridLocation.locationX), 4);
+    output.write((const char*) &(gridLocation.locationY), 4);
+    output.write((const char*) &(gridLocation.unknownThird), 4);
+  }
+
   if (unknownTVDT.isPresent())
   {
     //write TVDT
@@ -277,19 +290,6 @@ bool CellRecord::saveToStream(std::ostream& output) const
       std::cerr << "Error while writing subrecord MHDT of CELL!\n!";
       return false;
     }
-  }
-
-  if (gridLocation.presence)
-  {
-    //write XCLC
-    output.write((const char*) &cXCLC, 4);
-    //XCLC's length
-    subLength = 12; //fixed size
-    output.write((const char*) &subLength, 2);
-    //write XCLC
-    output.write((const char*) &(gridLocation.locationX), 4);
-    output.write((const char*) &(gridLocation.locationY), 4);
-    output.write((const char*) &(gridLocation.unknownThird), 4);
   }
 
   if (unknownXCLL.isPresent())
@@ -566,9 +566,9 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
   char buffer[512];
   name.reset();
   unknownDATA.setPresence(false);
+  gridLocation.presence = false;
   unknownTVDT.setPresence(false);
   unknownMHDT.setPresence(false);
-  gridLocation.presence = false;
   unknownXCLL.setPresence(false);
   bool hasReadLTMP = false;
   hasLNAM = false; unknownLNAM = 0;
@@ -637,6 +637,33 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
              return false;
            }
            break;
+      case cXCLC:
+           if (gridLocation.presence)
+           {
+             std::cerr << "Error: CELL seems to have more than one XCLC subrecord.\n";
+             return false;
+           }
+           // XCLC's length
+           actual_in->read(reinterpret_cast<char*>(&subLength), 2);
+           bytesRead += 2;
+           if (subLength != 12)
+           {
+             std::cerr << "Error: sub record XCLC of CELL has invalid length ("
+                       << subLength << " bytes). Should be 12 bytes.\n";
+             return false;
+           }
+           // read XCLC
+           actual_in->read(reinterpret_cast<char*>(&gridLocation.locationX), 4);
+           actual_in->read(reinterpret_cast<char*>(&gridLocation.locationY), 4);
+           actual_in->read(reinterpret_cast<char*>(&gridLocation.unknownThird), 4);
+           bytesRead += 12;
+           if (!actual_in->good())
+           {
+             std::cerr << "Error while reading subrecord XCLC of CELL!\n";
+             return false;
+           }
+           gridLocation.presence = true;
+           break;
       case cTVDT:
            if (unknownTVDT.isPresent())
            {
@@ -676,33 +703,6 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
                        << unknownMHDT.size() << " bytes). Should be 1028 bytes.\n";
              return false;
            }
-           break;
-      case cXCLC:
-           if (gridLocation.presence)
-           {
-             std::cerr << "Error: CELL seems to have more than one XCLC subrecord.\n";
-             return false;
-           }
-           // XCLC's length
-           actual_in->read(reinterpret_cast<char*>(&subLength), 2);
-           bytesRead += 2;
-           if (subLength != 12)
-           {
-             std::cerr << "Error: sub record XCLC of CELL has invalid length ("
-                       << subLength << " bytes). Should be 12 bytes.\n";
-             return false;
-           }
-           // read XCLC
-           actual_in->read(reinterpret_cast<char*>(&gridLocation.locationX), 4);
-           actual_in->read(reinterpret_cast<char*>(&gridLocation.locationY), 4);
-           actual_in->read(reinterpret_cast<char*>(&gridLocation.unknownThird), 4);
-           bytesRead += 12;
-           if (!actual_in->good())
-           {
-             std::cerr << "Error while reading subrecord XCLC of CELL!\n";
-             return false;
-           }
-           gridLocation.presence = true;
            break;
       case cXCLL:
            if (unknownXCLL.isPresent())

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="one_record_type_reader" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/one_record_type_reader" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/one_record_type_reader" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O3" />
+					<Add option="-DSR_UNSAVEABLE_RECORDS" />
+					<Add option="-DSR_NO_SINGLETON_EQUALITY_CHECK" />
+					<Add option="-DSR_NO_RECORD_EQUALITY" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-std=c++17" />
+			<Add option="-fexceptions" />
+		</Compiler>
+		<Linker>
+			<Add library="z" />
+		</Linker>
+		<Unit filename="../../base/BufferStream.hpp" />
+		<Unit filename="../../base/CompressionFunctions.cpp" />
+		<Unit filename="../../base/CompressionFunctions.hpp" />
+		<Unit filename="../../base/DirectoryFunctions.cpp" />
+		<Unit filename="../../base/DirectoryFunctions.hpp" />
+		<Unit filename="../../base/FileFunctions.cpp" />
+		<Unit filename="../../base/FileFunctions.hpp" />
+		<Unit filename="../../base/UtilityFunctions.cpp" />
+		<Unit filename="../../base/UtilityFunctions.hpp" />
+		<Unit filename="../../mw/base/HelperIO.cpp" />
+		<Unit filename="../../mw/base/HelperIO.hpp" />
+		<Unit filename="../../sr/base/Cells.hpp" />
+		<Unit filename="../../sr/base/ESMReader.cpp" />
+		<Unit filename="../../sr/base/ESMReader.hpp" />
+		<Unit filename="../../sr/base/FormIDFunctions.cpp" />
+		<Unit filename="../../sr/base/FormIDFunctions.hpp" />
+		<Unit filename="../../sr/base/MapBasedRecordManager.hpp" />
+		<Unit filename="../../sr/base/ReturnCodes.hpp" />
+		<Unit filename="../../sr/base/SR_Constants.hpp" />
+		<Unit filename="../../sr/base/StringTable.cpp" />
+		<Unit filename="../../sr/base/StringTable.hpp" />
+		<Unit filename="../../sr/base/records/BasicRecord.cpp" />
+		<Unit filename="../../sr/base/records/BasicRecord.hpp" />
+		<Unit filename="../../sr/base/records/BinarySubRecord.cpp" />
+		<Unit filename="../../sr/base/records/BinarySubRecord.hpp" />
+		<Unit filename="../../sr/base/records/CellRecord.cpp" />
+		<Unit filename="../../sr/base/records/CellRecord.hpp" />
+		<Unit filename="../../sr/base/records/GroupData.cpp" />
+		<Unit filename="../../sr/base/records/GroupData.hpp" />
+		<Unit filename="../../sr/base/records/LocalizedString.cpp" />
+		<Unit filename="../../sr/base/records/LocalizedString.hpp" />
+		<Unit filename="../../sr/base/records/TES4HeaderRecord.cpp" />
+		<Unit filename="../../sr/base/records/TES4HeaderRecord.hpp" />
+		<Unit filename="../base/records/BasicRecord.hpp" />
+		<Unit filename="../base/records/BinarySubRecord.hpp" />
+		<Unit filename="../base/records/CellRecord.hpp" />
+		<Unit filename="../base/records/GroupData.hpp" />
+		<Unit filename="../base/records/LocalizedString.hpp" />
+		<Unit filename="../base/records/TES4HeaderRecord.hpp" />
+		<Unit filename="../base/records/WorldSpaceRecord.hpp" />
+		<Unit filename="ESMReaderOneRecordType.cpp" />
+		<Unit filename="ESMReaderOneRecordType.hpp" />
+		<Unit filename="main.cpp" />
+		<Extensions>
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

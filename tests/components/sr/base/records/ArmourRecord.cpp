@@ -669,6 +669,7 @@ TEST_CASE("ArmourRecord")
     StringTable dummy_table;
     dummy_table.addString(0x0000D057, "foo");
     dummy_table.addString(0x00012133, "bar");
+    dummy_table.addString(0x0001261E, "bar");
 
     SECTION("default: load record with name, keywords + description")
     {
@@ -824,6 +825,84 @@ TEST_CASE("ArmourRecord")
       REQUIRE( record.weight == 4.0f );
       REQUIRE( record.unknownDNAM == 0x00000B54 );
       REQUIRE( record.templateArmorFormID == 0x000896A3 );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( record.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
+    }
+
+    SECTION("default: load record with ETYP, BIDS and BAMT")
+    {
+      const auto data = "ARMO\x38\x01\0\0\x40\0\0\0\x28\xFC\x10\0\x1B\x69\x55\0\x28\0\x05\0EDID\x1C\0EnchArmorElvenShieldBlock04\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0\x1E&\x01\0EITM\x04\0\x34\xE0\x0B\0MOD2\x1C\0Armor\\Elven\\ElvenShield.nif\0MO2T<\0\x02\0\0\0\x04\0\0\0\0\0\0\0\x9D\x94\x14\x92\x64\x64s\0j\x86\xCD\xCC\xDA<\xA4\xA4\x64\x64s\0j\x86\xCD\xCC\x18\x8F\xFC|dds\0&,\x33;`m\xAD=dds\0j\x86\xCD\xCC\x42ODT\x0C\0\0\x02\0\0\0\xF4\xC5\x03\0\0\0\0ETYP\x04\0\xE8\x41\x01\0BIDS\x04\0\xFE\x83\x01\0BAMT\x04\0yi\x01\0RNAM\x04\0\x19\0\0\0KSIZ\x04\0\x03\0\0\0KWDA\x0C\0\xD9\xBB\x06\0Y\xF9\x08\0\xB2\x65\x09\0DESC\x04\0\0\0\0\0MODL\x04\0xr\x09\0DATA\x08\0s\0\0\0\0\0\x80@DNAM\x04\0\x34\x08\0\0TNAM\x04\0\x1E\x39\x01\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read ARMO, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      ArmourRecord record;
+      REQUIRE( record.loadFromStream(stream, true, dummy_table) );
+      // Check data.
+      // -- header
+      REQUIRE( record.headerFlags == 0x00000040 );
+      REQUIRE( record.headerFormID == 0x0010FC28 );
+      REQUIRE( record.headerRevision == 0x0055691B );
+      REQUIRE( record.headerVersion == 40 );
+      REQUIRE( record.headerUnknown5 == 0x0005 );
+      // -- record data
+      REQUIRE( record.editorID == "EnchArmorElvenShieldBlock04" );
+      REQUIRE_FALSE( record.unknownVMAD.isPresent() );
+      REQUIRE( record.unknownOBND[0] == 0x00 );
+      REQUIRE( record.unknownOBND[1] == 0x00 );
+      REQUIRE( record.unknownOBND[2] == 0x00 );
+      REQUIRE( record.unknownOBND[3] == 0x00 );
+      REQUIRE( record.unknownOBND[4] == 0x00 );
+      REQUIRE( record.unknownOBND[5] == 0x00 );
+      REQUIRE( record.unknownOBND[6] == 0x00 );
+      REQUIRE( record.unknownOBND[7] == 0x00 );
+      REQUIRE( record.unknownOBND[8] == 0x00 );
+      REQUIRE( record.unknownOBND[9] == 0x00 );
+      REQUIRE( record.unknownOBND[10] == 0x00 );
+      REQUIRE( record.unknownOBND[11] == 0x00 );
+      REQUIRE( record.name.isPresent() );
+      REQUIRE( record.name.getType() == LocalizedString::Type::Index );
+      REQUIRE( record.name.getIndex() == 0x0001261E );
+      REQUIRE( record.enchantingFormID == 0x000BE034 );
+      REQUIRE( record.modelPath == "Armor\\Elven\\ElvenShield.nif" );
+      REQUIRE( record.unknownMO2T.isPresent() );
+      const auto MO2T = std::string_view(reinterpret_cast<const char*>(record.unknownMO2T.data()), record.unknownMO2T.size());
+      REQUIRE( MO2T == "\x02\0\0\0\x04\0\0\0\0\0\0\0\x9D\x94\x14\x92\x64\x64s\0j\x86\xCD\xCC\xDA<\xA4\xA4\x64\x64s\0j\x86\xCD\xCC\x18\x8F\xFC|dds\0&,\x33;`m\xAD=dds\0j\x86\xCD\xCC"sv );
+      REQUIRE_FALSE( record.unknownMO2S.isPresent() );
+      REQUIRE( record.mod4Path.empty() );
+      REQUIRE_FALSE( record.unknownMO4T.isPresent() );
+      REQUIRE_FALSE( record.unknownMO4S.isPresent() );
+      REQUIRE( record.unknownBODT.isPresent() );
+      const auto BODT = std::string_view(reinterpret_cast<const char*>(record.unknownBODT.data()), record.unknownBODT.size());
+      REQUIRE( BODT == "\0\x02\0\0\0\xF4\xC5\x03\0\0\0\0"sv );
+      REQUIRE_FALSE( record.unknownBOD2.isPresent() );
+      REQUIRE( record.equipTypeFormID == 0x000141E8 );
+      REQUIRE( record.blockBashImpactDataSetFormID == 0x000183FE );
+      REQUIRE( record.alternateBlockMaterialFormID == 0x00016979 );
+      REQUIRE( record.pickupSoundFormID == 0 );
+      REQUIRE( record.putdownSoundFormID == 0 );
+      REQUIRE( record.unknownRNAM == 0x00000019 );
+      REQUIRE( record.keywords.size() == 3 );
+      REQUIRE( record.keywords[0] == 0x0006BBD9 );
+      REQUIRE( record.keywords[1] == 0x0008F959 );
+      REQUIRE( record.keywords[2] == 0x000965B2 );
+      REQUIRE( record.description.isPresent() );
+      REQUIRE( record.description.getType() == LocalizedString::Type::Index );
+      REQUIRE( record.description.getIndex() == 0 );
+      REQUIRE( record.models.size() == 1 );
+      REQUIRE( record.models[0] == 0x00097278 );
+      REQUIRE( record.value == 115 );
+      REQUIRE( record.weight == 4.0f );
+      REQUIRE( record.unknownDNAM == 0x00000834 );
+      REQUIRE( record.templateArmorFormID == 0x0001391E );
 
       // Writing should succeed.
       std::ostringstream streamOut;
@@ -1348,6 +1427,234 @@ TEST_CASE("ArmourRecord")
     SECTION("corrupt data: stream ends before all of BOD2 can be read")
     {
       const auto data = "ARMO\x40\x01\0\0\0\0\0\0\x49\x2E\x01\0\x1B\x69\x55\0\x28\0\x09\0EDID\x11\0ArmorIronCuirass\0OBND\x0C\0\xEF\xFF\xF0\xFF\0\0\x11\0\x10\0\x0E\0FULL\x04\0W\xD0\0\0MOD2\x24\0Armor\\Iron\\Male\\CuirassLightGND.nif\0MO2T$\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x1A\xB1\xD5\xD8\x64\x64s\0\xC1\xD3\x0E\xB6\xD0\xAC\x62\x9B\x64\x64s\0\xC1\xD3\x0E\xB6MOD4!\0Armor\\Iron\\F\\CuirassLightGND.nif\0MO4T$\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x1A\xB1\xD5\xD8\x64\x64s\0\xC1\xD3\x0E\xB6\xD0\xAC\x62\x9B\x64\x64s\0\xC1\xD3\x0E\xB6\x42ODT\x0C\0\x04\0\0\0\0\x64s\0\x01\0\0\0BOD2\x0C\0\x04\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read ARMO, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ArmourRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple ETYPs")
+    {
+      const auto data = "ARMO\x42\x01\0\0\x40\0\0\0\x28\xFC\x10\0\x1B\x69\x55\0\x28\0\x05\0EDID\x1C\0EnchArmorElvenShieldBlock04\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0\x1E&\x01\0EITM\x04\0\x34\xE0\x0B\0MOD2\x1C\0Armor\\Elven\\ElvenShield.nif\0MO2T<\0\x02\0\0\0\x04\0\0\0\0\0\0\0\x9D\x94\x14\x92\x64\x64s\0j\x86\xCD\xCC\xDA<\xA4\xA4\x64\x64s\0j\x86\xCD\xCC\x18\x8F\xFC|dds\0&,\x33;`m\xAD=dds\0j\x86\xCD\xCC\x42ODT\x0C\0\0\x02\0\0\0\xF4\xC5\x03\0\0\0\0ETYP\x04\0\xE8\x41\x01\0ETYP\x04\0\xE8\x41\x01\0BIDS\x04\0\xFE\x83\x01\0BAMT\x04\0yi\x01\0RNAM\x04\0\x19\0\0\0KSIZ\x04\0\x03\0\0\0KWDA\x0C\0\xD9\xBB\x06\0Y\xF9\x08\0\xB2\x65\x09\0DESC\x04\0\0\0\0\0MODL\x04\0xr\x09\0DATA\x08\0s\0\0\0\0\0\x80@DNAM\x04\0\x34\x08\0\0TNAM\x04\0\x1E\x39\x01\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read ARMO, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ArmourRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of ETYP is not four")
+    {
+      {
+        const auto data = "ARMO\x37\x01\0\0\x40\0\0\0\x28\xFC\x10\0\x1B\x69\x55\0\x28\0\x05\0EDID\x1C\0EnchArmorElvenShieldBlock04\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0\x1E&\x01\0EITM\x04\0\x34\xE0\x0B\0MOD2\x1C\0Armor\\Elven\\ElvenShield.nif\0MO2T<\0\x02\0\0\0\x04\0\0\0\0\0\0\0\x9D\x94\x14\x92\x64\x64s\0j\x86\xCD\xCC\xDA<\xA4\xA4\x64\x64s\0j\x86\xCD\xCC\x18\x8F\xFC|dds\0&,\x33;`m\xAD=dds\0j\x86\xCD\xCC\x42ODT\x0C\0\0\x02\0\0\0\xF4\xC5\x03\0\0\0\0ETYP\x03\0\xE8\x41\0BIDS\x04\0\xFE\x83\x01\0BAMT\x04\0yi\x01\0RNAM\x04\0\x19\0\0\0KSIZ\x04\0\x03\0\0\0KWDA\x0C\0\xD9\xBB\x06\0Y\xF9\x08\0\xB2\x65\x09\0DESC\x04\0\0\0\0\0MODL\x04\0xr\x09\0DATA\x08\0s\0\0\0\0\0\x80@DNAM\x04\0\x34\x08\0\0TNAM\x04\0\x1E\x39\x01\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read ARMO, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        ArmourRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+
+      {
+        const auto data = "ARMO\x39\x01\0\0\x40\0\0\0\x28\xFC\x10\0\x1B\x69\x55\0\x28\0\x05\0EDID\x1C\0EnchArmorElvenShieldBlock04\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0\x1E&\x01\0EITM\x04\0\x34\xE0\x0B\0MOD2\x1C\0Armor\\Elven\\ElvenShield.nif\0MO2T<\0\x02\0\0\0\x04\0\0\0\0\0\0\0\x9D\x94\x14\x92\x64\x64s\0j\x86\xCD\xCC\xDA<\xA4\xA4\x64\x64s\0j\x86\xCD\xCC\x18\x8F\xFC|dds\0&,\x33;`m\xAD=dds\0j\x86\xCD\xCC\x42ODT\x0C\0\0\x02\0\0\0\xF4\xC5\x03\0\0\0\0ETYP\x05\0\xE8\x41\x01\0\0BIDS\x04\0\xFE\x83\x01\0BAMT\x04\0yi\x01\0RNAM\x04\0\x19\0\0\0KSIZ\x04\0\x03\0\0\0KWDA\x0C\0\xD9\xBB\x06\0Y\xF9\x08\0\xB2\x65\x09\0DESC\x04\0\0\0\0\0MODL\x04\0xr\x09\0DATA\x08\0s\0\0\0\0\0\x80@DNAM\x04\0\x34\x08\0\0TNAM\x04\0\x1E\x39\x01\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read ARMO, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        ArmourRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+    }
+
+    SECTION("corrupt data: stream ends before all of ETYP can be read")
+    {
+      const auto data = "ARMO\x38\x01\0\0\x40\0\0\0\x28\xFC\x10\0\x1B\x69\x55\0\x28\0\x05\0EDID\x1C\0EnchArmorElvenShieldBlock04\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0\x1E&\x01\0EITM\x04\0\x34\xE0\x0B\0MOD2\x1C\0Armor\\Elven\\ElvenShield.nif\0MO2T<\0\x02\0\0\0\x04\0\0\0\0\0\0\0\x9D\x94\x14\x92\x64\x64s\0j\x86\xCD\xCC\xDA<\xA4\xA4\x64\x64s\0j\x86\xCD\xCC\x18\x8F\xFC|dds\0&,\x33;`m\xAD=dds\0j\x86\xCD\xCC\x42ODT\x0C\0\0\x02\0\0\0\xF4\xC5\x03\0\0\0\0ETYP\x04\0\xE8\x41"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read ARMO, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ArmourRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: ETYP is zero")
+    {
+      const auto data = "ARMO\x38\x01\0\0\x40\0\0\0\x28\xFC\x10\0\x1B\x69\x55\0\x28\0\x05\0EDID\x1C\0EnchArmorElvenShieldBlock04\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0\x1E&\x01\0EITM\x04\0\x34\xE0\x0B\0MOD2\x1C\0Armor\\Elven\\ElvenShield.nif\0MO2T<\0\x02\0\0\0\x04\0\0\0\0\0\0\0\x9D\x94\x14\x92\x64\x64s\0j\x86\xCD\xCC\xDA<\xA4\xA4\x64\x64s\0j\x86\xCD\xCC\x18\x8F\xFC|dds\0&,\x33;`m\xAD=dds\0j\x86\xCD\xCC\x42ODT\x0C\0\0\x02\0\0\0\xF4\xC5\x03\0\0\0\0ETYP\x04\0\0\0\0\0BIDS\x04\0\xFE\x83\x01\0BAMT\x04\0yi\x01\0RNAM\x04\0\x19\0\0\0KSIZ\x04\0\x03\0\0\0KWDA\x0C\0\xD9\xBB\x06\0Y\xF9\x08\0\xB2\x65\x09\0DESC\x04\0\0\0\0\0MODL\x04\0xr\x09\0DATA\x08\0s\0\0\0\0\0\x80@DNAM\x04\0\x34\x08\0\0TNAM\x04\0\x1E\x39\x01\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read ARMO, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ArmourRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple BIDSs")
+    {
+      const auto data = "ARMO\x42\x01\0\0\x40\0\0\0\x28\xFC\x10\0\x1B\x69\x55\0\x28\0\x05\0EDID\x1C\0EnchArmorElvenShieldBlock04\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0\x1E&\x01\0EITM\x04\0\x34\xE0\x0B\0MOD2\x1C\0Armor\\Elven\\ElvenShield.nif\0MO2T<\0\x02\0\0\0\x04\0\0\0\0\0\0\0\x9D\x94\x14\x92\x64\x64s\0j\x86\xCD\xCC\xDA<\xA4\xA4\x64\x64s\0j\x86\xCD\xCC\x18\x8F\xFC|dds\0&,\x33;`m\xAD=dds\0j\x86\xCD\xCC\x42ODT\x0C\0\0\x02\0\0\0\xF4\xC5\x03\0\0\0\0ETYP\x04\0\xE8\x41\x01\0BIDS\x04\0\xFE\x83\x01\0BIDS\x04\0\xFE\x83\x01\0BAMT\x04\0yi\x01\0RNAM\x04\0\x19\0\0\0KSIZ\x04\0\x03\0\0\0KWDA\x0C\0\xD9\xBB\x06\0Y\xF9\x08\0\xB2\x65\x09\0DESC\x04\0\0\0\0\0MODL\x04\0xr\x09\0DATA\x08\0s\0\0\0\0\0\x80@DNAM\x04\0\x34\x08\0\0TNAM\x04\0\x1E\x39\x01\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read ARMO, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ArmourRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of BIDS is not four")
+    {
+      {
+        const auto data = "ARMO\x37\x01\0\0\x40\0\0\0\x28\xFC\x10\0\x1B\x69\x55\0\x28\0\x05\0EDID\x1C\0EnchArmorElvenShieldBlock04\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0\x1E&\x01\0EITM\x04\0\x34\xE0\x0B\0MOD2\x1C\0Armor\\Elven\\ElvenShield.nif\0MO2T<\0\x02\0\0\0\x04\0\0\0\0\0\0\0\x9D\x94\x14\x92\x64\x64s\0j\x86\xCD\xCC\xDA<\xA4\xA4\x64\x64s\0j\x86\xCD\xCC\x18\x8F\xFC|dds\0&,\x33;`m\xAD=dds\0j\x86\xCD\xCC\x42ODT\x0C\0\0\x02\0\0\0\xF4\xC5\x03\0\0\0\0ETYP\x04\0\xE8\x41\x01\0BIDS\x03\0\xFE\x83\0BAMT\x04\0yi\x01\0RNAM\x04\0\x19\0\0\0KSIZ\x04\0\x03\0\0\0KWDA\x0C\0\xD9\xBB\x06\0Y\xF9\x08\0\xB2\x65\x09\0DESC\x04\0\0\0\0\0MODL\x04\0xr\x09\0DATA\x08\0s\0\0\0\0\0\x80@DNAM\x04\0\x34\x08\0\0TNAM\x04\0\x1E\x39\x01\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read ARMO, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        ArmourRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+
+      {
+        const auto data = "ARMO\x39\x01\0\0\x40\0\0\0\x28\xFC\x10\0\x1B\x69\x55\0\x28\0\x05\0EDID\x1C\0EnchArmorElvenShieldBlock04\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0\x1E&\x01\0EITM\x04\0\x34\xE0\x0B\0MOD2\x1C\0Armor\\Elven\\ElvenShield.nif\0MO2T<\0\x02\0\0\0\x04\0\0\0\0\0\0\0\x9D\x94\x14\x92\x64\x64s\0j\x86\xCD\xCC\xDA<\xA4\xA4\x64\x64s\0j\x86\xCD\xCC\x18\x8F\xFC|dds\0&,\x33;`m\xAD=dds\0j\x86\xCD\xCC\x42ODT\x0C\0\0\x02\0\0\0\xF4\xC5\x03\0\0\0\0ETYP\x04\0\xE8\x41\x01\0BIDS\x05\0\xFE\x83\x01\0\0BAMT\x04\0yi\x01\0RNAM\x04\0\x19\0\0\0KSIZ\x04\0\x03\0\0\0KWDA\x0C\0\xD9\xBB\x06\0Y\xF9\x08\0\xB2\x65\x09\0DESC\x04\0\0\0\0\0MODL\x04\0xr\x09\0DATA\x08\0s\0\0\0\0\0\x80@DNAM\x04\0\x34\x08\0\0TNAM\x04\0\x1E\x39\x01\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read ARMO, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        ArmourRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+    }
+
+    SECTION("corrupt data: stream ends before all of BIDS can be read")
+    {
+      const auto data = "ARMO\x38\x01\0\0\x40\0\0\0\x28\xFC\x10\0\x1B\x69\x55\0\x28\0\x05\0EDID\x1C\0EnchArmorElvenShieldBlock04\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0\x1E&\x01\0EITM\x04\0\x34\xE0\x0B\0MOD2\x1C\0Armor\\Elven\\ElvenShield.nif\0MO2T<\0\x02\0\0\0\x04\0\0\0\0\0\0\0\x9D\x94\x14\x92\x64\x64s\0j\x86\xCD\xCC\xDA<\xA4\xA4\x64\x64s\0j\x86\xCD\xCC\x18\x8F\xFC|dds\0&,\x33;`m\xAD=dds\0j\x86\xCD\xCC\x42ODT\x0C\0\0\x02\0\0\0\xF4\xC5\x03\0\0\0\0ETYP\x04\0\xE8\x41\x01\0BIDS\x04\0\xFE\x83"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read ARMO, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ArmourRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: BIDS is zero")
+    {
+      const auto data = "ARMO\x38\x01\0\0\x40\0\0\0\x28\xFC\x10\0\x1B\x69\x55\0\x28\0\x05\0EDID\x1C\0EnchArmorElvenShieldBlock04\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0\x1E&\x01\0EITM\x04\0\x34\xE0\x0B\0MOD2\x1C\0Armor\\Elven\\ElvenShield.nif\0MO2T<\0\x02\0\0\0\x04\0\0\0\0\0\0\0\x9D\x94\x14\x92\x64\x64s\0j\x86\xCD\xCC\xDA<\xA4\xA4\x64\x64s\0j\x86\xCD\xCC\x18\x8F\xFC|dds\0&,\x33;`m\xAD=dds\0j\x86\xCD\xCC\x42ODT\x0C\0\0\x02\0\0\0\xF4\xC5\x03\0\0\0\0ETYP\x04\0\xE8\x41\x01\0BIDS\x04\0\0\0\0\0BAMT\x04\0yi\x01\0RNAM\x04\0\x19\0\0\0KSIZ\x04\0\x03\0\0\0KWDA\x0C\0\xD9\xBB\x06\0Y\xF9\x08\0\xB2\x65\x09\0DESC\x04\0\0\0\0\0MODL\x04\0xr\x09\0DATA\x08\0s\0\0\0\0\0\x80@DNAM\x04\0\x34\x08\0\0TNAM\x04\0\x1E\x39\x01\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read ARMO, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ArmourRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple BAMTs")
+    {
+      const auto data = "ARMO\x42\x01\0\0\x40\0\0\0\x28\xFC\x10\0\x1B\x69\x55\0\x28\0\x05\0EDID\x1C\0EnchArmorElvenShieldBlock04\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0\x1E&\x01\0EITM\x04\0\x34\xE0\x0B\0MOD2\x1C\0Armor\\Elven\\ElvenShield.nif\0MO2T<\0\x02\0\0\0\x04\0\0\0\0\0\0\0\x9D\x94\x14\x92\x64\x64s\0j\x86\xCD\xCC\xDA<\xA4\xA4\x64\x64s\0j\x86\xCD\xCC\x18\x8F\xFC|dds\0&,\x33;`m\xAD=dds\0j\x86\xCD\xCC\x42ODT\x0C\0\0\x02\0\0\0\xF4\xC5\x03\0\0\0\0ETYP\x04\0\xE8\x41\x01\0BIDS\x04\0\xFE\x83\x01\0BAMT\x04\0yi\x01\0BAMT\x04\0yi\x01\0RNAM\x04\0\x19\0\0\0KSIZ\x04\0\x03\0\0\0KWDA\x0C\0\xD9\xBB\x06\0Y\xF9\x08\0\xB2\x65\x09\0DESC\x04\0\0\0\0\0MODL\x04\0xr\x09\0DATA\x08\0s\0\0\0\0\0\x80@DNAM\x04\0\x34\x08\0\0TNAM\x04\0\x1E\x39\x01\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read ARMO, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ArmourRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of BAMT is not four")
+    {
+      {
+        const auto data = "ARMO\x37\x01\0\0\x40\0\0\0\x28\xFC\x10\0\x1B\x69\x55\0\x28\0\x05\0EDID\x1C\0EnchArmorElvenShieldBlock04\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0\x1E&\x01\0EITM\x04\0\x34\xE0\x0B\0MOD2\x1C\0Armor\\Elven\\ElvenShield.nif\0MO2T<\0\x02\0\0\0\x04\0\0\0\0\0\0\0\x9D\x94\x14\x92\x64\x64s\0j\x86\xCD\xCC\xDA<\xA4\xA4\x64\x64s\0j\x86\xCD\xCC\x18\x8F\xFC|dds\0&,\x33;`m\xAD=dds\0j\x86\xCD\xCC\x42ODT\x0C\0\0\x02\0\0\0\xF4\xC5\x03\0\0\0\0ETYP\x04\0\xE8\x41\x01\0BIDS\x04\0\xFE\x83\x01\0BAMT\x03\0\x01\0\0RNAM\x04\0\x19\0\0\0KSIZ\x04\0\x03\0\0\0KWDA\x0C\0\xD9\xBB\x06\0Y\xF9\x08\0\xB2\x65\x09\0DESC\x04\0\0\0\0\0MODL\x04\0xr\x09\0DATA\x08\0s\0\0\0\0\0\x80@DNAM\x04\0\x34\x08\0\0TNAM\x04\0\x1E\x39\x01\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read ARMO, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        ArmourRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+
+      {
+        const auto data = "ARMO\x39\x01\0\0\x40\0\0\0\x28\xFC\x10\0\x1B\x69\x55\0\x28\0\x05\0EDID\x1C\0EnchArmorElvenShieldBlock04\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0\x1E&\x01\0EITM\x04\0\x34\xE0\x0B\0MOD2\x1C\0Armor\\Elven\\ElvenShield.nif\0MO2T<\0\x02\0\0\0\x04\0\0\0\0\0\0\0\x9D\x94\x14\x92\x64\x64s\0j\x86\xCD\xCC\xDA<\xA4\xA4\x64\x64s\0j\x86\xCD\xCC\x18\x8F\xFC|dds\0&,\x33;`m\xAD=dds\0j\x86\xCD\xCC\x42ODT\x0C\0\0\x02\0\0\0\xF4\xC5\x03\0\0\0\0ETYP\x04\0\xE8\x41\x01\0BIDS\x04\0\xFE\x83\x01\0BAMT\x05\0yi\x01\0\0RNAM\x04\0\x19\0\0\0KSIZ\x04\0\x03\0\0\0KWDA\x0C\0\xD9\xBB\x06\0Y\xF9\x08\0\xB2\x65\x09\0DESC\x04\0\0\0\0\0MODL\x04\0xr\x09\0DATA\x08\0s\0\0\0\0\0\x80@DNAM\x04\0\x34\x08\0\0TNAM\x04\0\x1E\x39\x01\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read ARMO, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        ArmourRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+    }
+
+    SECTION("corrupt data: stream ends before all of BAMT can be read")
+    {
+      const auto data = "ARMO\x38\x01\0\0\x40\0\0\0\x28\xFC\x10\0\x1B\x69\x55\0\x28\0\x05\0EDID\x1C\0EnchArmorElvenShieldBlock04\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0\x1E&\x01\0EITM\x04\0\x34\xE0\x0B\0MOD2\x1C\0Armor\\Elven\\ElvenShield.nif\0MO2T<\0\x02\0\0\0\x04\0\0\0\0\0\0\0\x9D\x94\x14\x92\x64\x64s\0j\x86\xCD\xCC\xDA<\xA4\xA4\x64\x64s\0j\x86\xCD\xCC\x18\x8F\xFC|dds\0&,\x33;`m\xAD=dds\0j\x86\xCD\xCC\x42ODT\x0C\0\0\x02\0\0\0\xF4\xC5\x03\0\0\0\0ETYP\x04\0\xE8\x41\x01\0BIDS\x04\0\xFE\x83\x01\0BAMT\x04\0yi"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read ARMO, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ArmourRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: BAMT is zero")
+    {
+      const auto data = "ARMO\x38\x01\0\0\x40\0\0\0\x28\xFC\x10\0\x1B\x69\x55\0\x28\0\x05\0EDID\x1C\0EnchArmorElvenShieldBlock04\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0\x1E&\x01\0EITM\x04\0\x34\xE0\x0B\0MOD2\x1C\0Armor\\Elven\\ElvenShield.nif\0MO2T<\0\x02\0\0\0\x04\0\0\0\0\0\0\0\x9D\x94\x14\x92\x64\x64s\0j\x86\xCD\xCC\xDA<\xA4\xA4\x64\x64s\0j\x86\xCD\xCC\x18\x8F\xFC|dds\0&,\x33;`m\xAD=dds\0j\x86\xCD\xCC\x42ODT\x0C\0\0\x02\0\0\0\xF4\xC5\x03\0\0\0\0ETYP\x04\0\xE8\x41\x01\0BIDS\x04\0\xFE\x83\x01\0BAMT\x04\0\0\0\0\0RNAM\x04\0\x19\0\0\0KSIZ\x04\0\x03\0\0\0KWDA\x0C\0\xD9\xBB\x06\0Y\xF9\x08\0\xB2\x65\x09\0DESC\x04\0\0\0\0\0MODL\x04\0xr\x09\0DATA\x08\0s\0\0\0\0\0\x80@DNAM\x04\0\x34\x08\0\0TNAM\x04\0\x1E\x39\x01\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 

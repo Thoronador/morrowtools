@@ -109,9 +109,9 @@ struct CellRecord: public BasicRecord
     uint32_t encounterZoneFormID; //subrecord XEZN
     bool hasXCWT;
     uint32_t unknownXCWT;
-    uint32_t musicTypeFormID; //subrecord XCMO
     uint32_t ownerFactionFormID; //subrecord XOWN
     uint32_t lockListFormID; //subrecord XILL
+    uint32_t musicTypeFormID; //subrecord XCMO
     uint32_t regionFormID; //subrecord XCCM
     std::string unknownXWEM;
     uint32_t defaultAcousticSpaceFormID; //subrecord CAS

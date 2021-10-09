@@ -70,9 +70,9 @@ CellRecord::CellRecord()
   locationFormID(0),
   encounterZoneFormID(0),
   hasXCWT(0), unknownXCWT(0),
-  musicTypeFormID(0),
   ownerFactionFormID(0),
   lockListFormID(0),
+  musicTypeFormID(0),
   regionFormID(0),
   unknownXWEM(""),
   defaultAcousticSpaceFormID(0)
@@ -102,9 +102,9 @@ bool CellRecord::equals(const CellRecord& other) const
       && (locationFormID == other.locationFormID)
       && (encounterZoneFormID == other.encounterZoneFormID)
       && (hasXCWT == other.hasXCWT) && ((unknownXCWT == other.unknownXCWT) || (!hasXCWT))
-      && (musicTypeFormID == other.musicTypeFormID)
       && (ownerFactionFormID == other.ownerFactionFormID)
       && (lockListFormID == other.lockListFormID)
+      && (musicTypeFormID == other.musicTypeFormID)
       && (regionFormID == other.regionFormID)
       && (unknownXWEM == other.unknownXWEM)
       && (defaultAcousticSpaceFormID == other.defaultAcousticSpaceFormID);
@@ -188,10 +188,6 @@ uint32_t CellRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* XCWT */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
-  if (musicTypeFormID!=0)
-  {
-    writeSize = writeSize +4 /* XCMO */ +2 /* 2 bytes for length */ +4 /* fixed size */;
-  }
   if (ownerFactionFormID!=0)
   {
     writeSize = writeSize +4 /* XOWN */ +2 /* 2 bytes for length */ +4 /* fixed size */;
@@ -199,6 +195,10 @@ uint32_t CellRecord::getWriteSize() const
   if (lockListFormID!=0)
   {
     writeSize = writeSize +4 /* XILL */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+  }
+  if (musicTypeFormID!=0)
+  {
+    writeSize = writeSize +4 /* XCMO */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
   if (regionFormID!=0)
   {
@@ -432,17 +432,6 @@ bool CellRecord::saveToStream(std::ostream& output) const
     output.write((const char*) &unknownXCWT, 4);
   }
 
-  if (musicTypeFormID!=0)
-  {
-    //write XCMO
-    output.write((const char*) &cXCMO, 4);
-    //XCMO's length
-    subLength = 4; //fixed size
-    output.write((const char*) &subLength, 2);
-    //write XCMO
-    output.write((const char*) &musicTypeFormID, 4);
-  }
-
   if (ownerFactionFormID!=0)
   {
     //write XOWN
@@ -463,6 +452,17 @@ bool CellRecord::saveToStream(std::ostream& output) const
     output.write((const char*) &subLength, 2);
     //write XILL
     output.write((const char*) &lockListFormID, 4);
+  }
+
+  if (musicTypeFormID!=0)
+  {
+    //write XCMO
+    output.write((const char*) &cXCMO, 4);
+    //XCMO's length
+    subLength = 4; //fixed size
+    output.write((const char*) &subLength, 2);
+    //write XCMO
+    output.write((const char*) &musicTypeFormID, 4);
   }
 
   if (regionFormID!=0)
@@ -583,11 +583,11 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
   imageSpaceFormID = 0;
   encounterZoneFormID = 0;
   hasXCWT = false; unknownXCWT = 0;
-  musicTypeFormID = 0;
-  unknownXWEM.clear();
   ownerFactionFormID = 0;
   lockListFormID = 0;
+  musicTypeFormID = 0;
   regionFormID = 0;
+  unknownXWEM.clear();
   defaultAcousticSpaceFormID = 0;
   while (bytesRead < readSize)
   {
@@ -922,21 +922,6 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
            bytesRead += 6;
            hasXCWT = true;
            break;
-      case cXCMO:
-           if (musicTypeFormID != 0)
-           {
-             std::cerr << "Error: CELL seems to have more than one XCMO subrecord.\n";
-             return false;
-           }
-           if (!loadUint32SubRecordFromStream(*actual_in, cXCMO, musicTypeFormID, false))
-             return false;
-           bytesRead += 6;
-           if (musicTypeFormID == 0)
-           {
-             std::cerr << "Error: Subrecord XCMO of CELL has value zero!\n";
-             return false;
-           }
-           break;
       case cXOWN:
            if (ownerFactionFormID != 0)
            {
@@ -966,6 +951,21 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
            if (lockListFormID == 0)
            {
              std::cerr << "Error: subrecord XILL of CELL has value zero!\n";
+             return false;
+           }
+           break;
+      case cXCMO:
+           if (musicTypeFormID != 0)
+           {
+             std::cerr << "Error: CELL seems to have more than one XCMO subrecord.\n";
+             return false;
+           }
+           if (!loadUint32SubRecordFromStream(*actual_in, cXCMO, musicTypeFormID, false))
+             return false;
+           bytesRead += 6;
+           if (musicTypeFormID == 0)
+           {
+             std::cerr << "Error: Subrecord XCMO of CELL has value zero!\n";
              return false;
            }
            break;

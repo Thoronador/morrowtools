@@ -101,7 +101,8 @@ bool WorldSpaceRecord::equals(const WorldSpaceRecord& other) const
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t WorldSpaceRecord::getWriteSize() const
 {
-  if (isDeleted()) return 0;
+  if (isDeleted())
+    return 0;
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
@@ -232,8 +233,10 @@ uint32_t WorldSpaceRecord::getWriteSize() const
 bool WorldSpaceRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cWRLD, 4);
-  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
-  if (isDeleted()) return true;
+  if (!saveSizeAndUnknownValues(output, getWriteSize()))
+    return false;
+  if (isDeleted())
+    return true;
 
   //write EDID
   output.write((const char*) &cEDID, 4);
@@ -539,8 +542,10 @@ bool WorldSpaceRecord::saveToStream(std::ostream& output) const
 bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
-  if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
-  if (isDeleted()) return true;
+  if (!loadSizeAndUnknownValues(in_File, readSize))
+    return false;
+  if (isDeleted())
+    return true;
   uint32_t subRecName;
   uint16_t subLength;
   subRecName = subLength = 0;
@@ -677,7 +682,8 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
              return false;
            }
            //read LTMP
-           if (!loadUint32SubRecordFromStream(in_File, cLTMP, interiorLightingFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cLTMP, interiorLightingFormID, false))
+             return false;
            bytesRead += 6;
            if (interiorLightingFormID==0)
            {
@@ -692,7 +698,8 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
              return false;
            }
            //read XEZN
-           if (!loadUint32SubRecordFromStream(in_File, cXEZN, encounterZoneFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cXEZN, encounterZoneFormID, false))
+             return false;
            bytesRead += 6;
            if (encounterZoneFormID==0)
            {
@@ -707,7 +714,8 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
              return false;
            }
            //read CNAM
-           if (!loadUint32SubRecordFromStream(in_File, cCNAM, climateFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cCNAM, climateFormID, false))
+             return false;
            bytesRead += 6;
            //check content
            if (climateFormID==0)
@@ -723,7 +731,8 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
              return false;
            }
            //read NAM2
-           if (!loadUint32SubRecordFromStream(in_File, cNAM2, waterFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cNAM2, waterFormID, false))
+             return false;
            bytesRead += 6;
            //check content
            if (waterFormID==0)
@@ -739,7 +748,8 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
              return false;
            }
            //read NAM3
-           if (!loadUint32SubRecordFromStream(in_File, cNAM3, LODWaterTypeFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cNAM3, LODWaterTypeFormID, false))
+             return false;
            bytesRead += 6;
            //check content
            if (LODWaterTypeFormID==0)
@@ -848,7 +858,8 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
              return false;
            }
            //read XLCN
-           if (!loadUint32SubRecordFromStream(in_File, cXLCN, locationFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cXLCN, locationFormID, false))
+             return false;
            bytesRead += 6;
            if (locationFormID==0)
            {
@@ -863,7 +874,8 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
              return false;
            }
            //read WNAM
-           if (!loadUint32SubRecordFromStream(in_File, cWNAM, parentWorldSpaceFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cWNAM, parentWorldSpaceFormID, false))
+             return false;
            bytesRead += 6;
            if (parentWorldSpaceFormID==0)
            {
@@ -1024,7 +1036,8 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
              return false;
            }
            //read ZNAM
-           if (!loadUint32SubRecordFromStream(in_File, cZNAM, musicFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cZNAM, musicFormID, false))
+             return false;
            bytesRead += 6;
            if (musicFormID==0)
            {
@@ -1087,7 +1100,8 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
              return false;
            }
            //read XXXX
-           if (!loadUint32SubRecordFromStream(in_File, cXXXX, sizeXXXX, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cXXXX, sizeXXXX, false))
+             return false;
            bytesRead += 6;
            if (0==sizeXXXX)
            {

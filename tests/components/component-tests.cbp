@@ -135,6 +135,8 @@
 		<Unit filename="../../sr/base/records/TreeRecord.hpp" />
 		<Unit filename="../../sr/base/records/WordOfPowerRecord.cpp" />
 		<Unit filename="../../sr/base/records/WordOfPowerRecord.hpp" />
+		<Unit filename="../../sr/base/records/WorldSpaceRecord.cpp" />
+		<Unit filename="../../sr/base/records/WorldSpaceRecord.hpp" />
 		<Unit filename="base/BufferStream.cpp" />
 		<Unit filename="base/ComparisonFunctor.cpp" />
 		<Unit filename="base/CompressionFunctions.cpp" />
@@ -194,6 +196,7 @@
 		<Unit filename="sr/base/records/Tes4HeaderRecord.cpp" />
 		<Unit filename="sr/base/records/TreeRecord.cpp" />
 		<Unit filename="sr/base/records/WordOfPowerRecord.cpp" />
+		<Unit filename="sr/base/records/WorldSpaceRecord.cpp" />
 		<Unit filename="sr/base/records/WrongStringType.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />

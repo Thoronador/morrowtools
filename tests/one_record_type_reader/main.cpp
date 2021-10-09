@@ -175,7 +175,7 @@ int main(int argc, char **argv)
     const auto end = SRTP::Cells::get().end();
     while (iter != end)
     {
-      if (iter->second.hasXNAM /*&& iter->second.hasXWCN && iter->second.hasXWCS*/)
+      if (iter->second.unknownXNAM.has_value())
       {
         // found matching cell record
         std::cout << "        form ID "<< SRTP::getFormIDAsString(iter->second.headerFormID) << "\n";

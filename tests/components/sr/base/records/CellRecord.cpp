@@ -43,27 +43,22 @@ TEST_CASE("CellRecord")
     REQUIRE_FALSE( record.gridLocation.presence );
     REQUIRE_FALSE( record.unknownXCLL.isPresent() );
     REQUIRE( record.lightingTemplateFormID == 0 );
-    REQUIRE_FALSE( record.hasLNAM );
-    REQUIRE( record.unknownLNAM == 0 );
+    REQUIRE_FALSE( record.unknownLNAM.has_value() );
     REQUIRE( record.unknownXCLW == 0.0f );
     REQUIRE( record.unknownXCLR.empty() );
-    REQUIRE_FALSE( record.hasXNAM );
-    REQUIRE( record.unknownXNAM == 0 );
-    REQUIRE_FALSE( record.hasXWCN );
-    REQUIRE( record.unknownXWCN == 0 );
-    REQUIRE_FALSE( record.hasXWCS );
-    REQUIRE( record.unknownXWCS == 0 );
+    REQUIRE_FALSE( record.unknownXNAM.has_value() );
+    REQUIRE_FALSE( record.unknownXWCN.has_value() );
+    REQUIRE_FALSE( record.unknownXWCS.has_value() );
     REQUIRE_FALSE( record.unknownXWCU.isPresent() );
     REQUIRE( record.imageSpaceFormID == 0 );
     REQUIRE( record.locationFormID == 0 );
     REQUIRE( record.encounterZoneFormID == 0 );
-    REQUIRE_FALSE( record.hasXCWT );
-    REQUIRE( record.unknownXCWT == 0 );
+    REQUIRE_FALSE( record.unknownXCWT.has_value() );
     REQUIRE( record.musicTypeFormID == 0 );
-    REQUIRE( record.unknownXWEM.empty() );
     REQUIRE( record.ownerFactionFormID == 0 );
     REQUIRE( record.lockListFormID == 0 );
     REQUIRE( record.regionFormID == 0 );
+    REQUIRE( record.environmentMap.empty() );
     REQUIRE( record.defaultAcousticSpaceFormID == 0 );
   }
 
@@ -197,20 +192,18 @@ TEST_CASE("CellRecord")
 
       SECTION("LNAM mismatch")
       {
-        a.hasLNAM = true;
+        a.unknownLNAM = 0;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        a.hasLNAM = false;
-        b.hasLNAM = true;
+        a.unknownLNAM.reset();
+        b.unknownLNAM = 0;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        a.hasLNAM = true;
         a.unknownLNAM = 1;
-        b.hasLNAM = true;
         a.unknownLNAM = 2;
 
         REQUIRE_FALSE( a.equals(b) );
@@ -242,20 +235,18 @@ TEST_CASE("CellRecord")
 
       SECTION("XNAM mismatch")
       {
-        a.hasXNAM = true;
+        a.unknownXNAM = 0;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        a.hasXNAM = false;
-        b.hasXNAM = true;
+        a.unknownXNAM = std::nullopt;
+        b.unknownXNAM = 0;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        a.hasXNAM = true;
         a.unknownXNAM = 1;
-        b.hasXNAM = true;
         a.unknownXNAM = 2;
 
         REQUIRE_FALSE( a.equals(b) );
@@ -264,20 +255,18 @@ TEST_CASE("CellRecord")
 
       SECTION("XCWN mismatch")
       {
-        a.hasXWCN = true;
+        a.unknownXWCN = 0;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        a.hasXWCN = false;
-        b.hasXWCN = true;
+        a.unknownXWCN.reset();
+        b.unknownXWCN = 0;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        a.hasXWCN = true;
         a.unknownXWCN = 1;
-        b.hasXWCN = true;
         a.unknownXWCN = 2;
 
         REQUIRE_FALSE( a.equals(b) );
@@ -286,20 +275,18 @@ TEST_CASE("CellRecord")
 
       SECTION("XCWS mismatch")
       {
-        a.hasXWCS = true;
+        a.unknownXWCS = 0;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        a.hasXWCS = false;
-        b.hasXWCS = true;
+        a.unknownXWCS.reset();
+        b.unknownXWCS = 0;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        a.hasXWCS = true;
         a.unknownXWCS = 1;
-        b.hasXWCS = true;
         a.unknownXWCS = 2;
 
         REQUIRE_FALSE( a.equals(b) );
@@ -349,20 +336,18 @@ TEST_CASE("CellRecord")
 
       SECTION("XCWT mismatch")
       {
-        a.hasXCWT = true;
+        a.unknownXCWT = 0;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        a.hasXCWT = false;
-        b.hasXCWT = true;
+        a.unknownXCWT.reset();
+        b.unknownXCWT = 0;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        a.hasXCWT = true;
         a.unknownXCWT = 1;
-        b.hasXCWT = true;
         a.unknownXCWT = 2;
 
         REQUIRE_FALSE( a.equals(b) );
@@ -380,8 +365,8 @@ TEST_CASE("CellRecord")
 
       SECTION("XWEM mismatch")
       {
-        a.unknownXWEM = "foo";
-        b.unknownXWEM = "bar";
+        a.environmentMap = "foo.dds";
+        b.environmentMap = "bar.dds";
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
@@ -559,7 +544,7 @@ TEST_CASE("CellRecord")
     {
       REQUIRE( record.getWriteSize() == 20 );
 
-      record.hasLNAM = true;
+      record.unknownLNAM = 0;
       REQUIRE( record.getWriteSize() == 30 );
     }
 
@@ -581,7 +566,7 @@ TEST_CASE("CellRecord")
     {
       REQUIRE( record.getWriteSize() == 20 );
 
-      record.hasXNAM = true;
+      record.unknownXNAM = 0;
       REQUIRE( record.getWriteSize() == 27 );
     }
 
@@ -589,7 +574,7 @@ TEST_CASE("CellRecord")
     {
       REQUIRE( record.getWriteSize() == 20 );
 
-      record.hasXWCN = true;
+      record.unknownXWCN = 0;
       REQUIRE( record.getWriteSize() == 30 );
     }
 
@@ -597,7 +582,7 @@ TEST_CASE("CellRecord")
     {
       REQUIRE( record.getWriteSize() == 20 );
 
-      record.hasXWCS = true;
+      record.unknownXWCS = 0;
       REQUIRE( record.getWriteSize() == 30 );
     }
 
@@ -652,7 +637,7 @@ TEST_CASE("CellRecord")
     {
       REQUIRE( record.getWriteSize() == 20 );
 
-      record.hasXCWT = true;
+      record.unknownXCWT = 0;
       REQUIRE( record.getWriteSize() == 30 );
     }
 
@@ -668,10 +653,10 @@ TEST_CASE("CellRecord")
     {
       REQUIRE( record.getWriteSize() == 20 );
 
-      record.unknownXWEM = "foo"; // three characters
+      record.environmentMap = "foo"; // three characters
       REQUIRE( record.getWriteSize() == 30 );
 
-      record.unknownXWEM = "foobarfoobarbaz"; // 15 characters
+      record.environmentMap = "foobarfoobarbaz"; // 15 characters
       REQUIRE( record.getWriteSize() == 42 );
     }
 
@@ -755,25 +740,20 @@ TEST_CASE("CellRecord")
       REQUIRE( record.gridLocation.unknownThird == 0x0053BA00 );
       REQUIRE_FALSE( record.unknownXCLL.isPresent() );
       REQUIRE( record.lightingTemplateFormID == 0 );
-      REQUIRE_FALSE( record.hasLNAM );
-      REQUIRE( record.unknownLNAM == 0 );
+      REQUIRE_FALSE( record.unknownLNAM.has_value() );
       REQUIRE( record.unknownXCLW == std::numeric_limits<float>::max() );
       REQUIRE( record.unknownXCLR.size() == 1 );
       REQUIRE( record.unknownXCLR[0] == 0x00106668 );
-      REQUIRE_FALSE( record.hasXNAM );
-      REQUIRE( record.unknownXNAM == 0 );
-      REQUIRE_FALSE( record.hasXWCN );
-      REQUIRE( record.unknownXWCN == 0 );
-      REQUIRE_FALSE( record.hasXWCS );
-      REQUIRE( record.unknownXWCS == 0 );
+      REQUIRE_FALSE( record.unknownXNAM.has_value() );
+      REQUIRE_FALSE( record.unknownXWCN.has_value() );
+      REQUIRE_FALSE( record.unknownXWCS.has_value() );
       REQUIRE_FALSE( record.unknownXWCU.isPresent() );
       REQUIRE( record.imageSpaceFormID == 0 );
       REQUIRE( record.locationFormID == 0 );
       REQUIRE( record.encounterZoneFormID == 0 );
-      REQUIRE_FALSE( record.hasXCWT );
-      REQUIRE( record.unknownXCWT == 0 );
+      REQUIRE_FALSE( record.unknownXCWT.has_value() );
       REQUIRE( record.musicTypeFormID == 0 );
-      REQUIRE( record.unknownXWEM.empty() );
+      REQUIRE( record.environmentMap.empty() );
       REQUIRE( record.ownerFactionFormID == 0 );
       REQUIRE( record.lockListFormID == 0 );
       REQUIRE( record.regionFormID == 0 );
@@ -823,27 +803,22 @@ TEST_CASE("CellRecord")
       REQUIRE( record.gridLocation.unknownThird == 0x0053D400 );
       REQUIRE_FALSE( record.unknownXCLL.isPresent() );
       REQUIRE( record.lightingTemplateFormID == 0 );
-      REQUIRE_FALSE( record.hasLNAM );
-      REQUIRE( record.unknownLNAM == 0 );
+      REQUIRE_FALSE( record.unknownLNAM.has_value() );
       REQUIRE( record.unknownXCLW == std::numeric_limits<float>::max() );
       REQUIRE( record.unknownXCLR.empty() );
-      REQUIRE_FALSE( record.hasXNAM );
-      REQUIRE( record.unknownXNAM == 0 );
-      REQUIRE_FALSE( record.hasXWCN );
-      REQUIRE( record.unknownXWCN == 0 );
-      REQUIRE_FALSE( record.hasXWCS );
-      REQUIRE( record.unknownXWCS == 0 );
+      REQUIRE_FALSE( record.unknownXNAM.has_value() );
+      REQUIRE_FALSE( record.unknownXWCN.has_value() );
+      REQUIRE_FALSE( record.unknownXWCS.has_value() );
       REQUIRE_FALSE( record.unknownXWCU.isPresent() );
       REQUIRE( record.imageSpaceFormID == 0 );
       REQUIRE( record.locationFormID == 0 );
       REQUIRE( record.encounterZoneFormID == 0 );
-      REQUIRE_FALSE( record.hasXCWT );
-      REQUIRE( record.unknownXCWT == 0 );
+      REQUIRE_FALSE( record.unknownXCWT.has_value() );
       REQUIRE( record.musicTypeFormID == 0 );
-      REQUIRE( record.unknownXWEM.empty() );
       REQUIRE( record.ownerFactionFormID == 0 );
       REQUIRE( record.lockListFormID == 0 );
       REQUIRE( record.regionFormID == 0 );
+      REQUIRE( record.environmentMap.empty() );
       REQUIRE( record.defaultAcousticSpaceFormID == 0 );
     }
 
@@ -881,28 +856,23 @@ TEST_CASE("CellRecord")
       REQUIRE( record.gridLocation.unknownThird == 0x0000170F );
       REQUIRE_FALSE( record.unknownXCLL.isPresent() );
       REQUIRE( record.lightingTemplateFormID == 0 );
-      REQUIRE_FALSE( record.hasLNAM );
-      REQUIRE( record.unknownLNAM == 0 );
+      REQUIRE_FALSE( record.unknownLNAM.has_value() );
       REQUIRE( record.unknownXCLW == -2147483648.0f );
       REQUIRE( record.unknownXCLR.size() == 1 );
       REQUIRE( record.unknownXCLR[0] == 0x00106668 );
-      REQUIRE_FALSE( record.hasXNAM );
-      REQUIRE( record.unknownXNAM == 0 );
-      REQUIRE_FALSE( record.hasXWCN );
-      REQUIRE( record.unknownXWCN == 0 );
-      REQUIRE_FALSE( record.hasXWCS );
-      REQUIRE( record.unknownXWCS == 0 );
+      REQUIRE_FALSE( record.unknownXNAM.has_value() );
+      REQUIRE_FALSE( record.unknownXWCN.has_value() );
+      REQUIRE_FALSE( record.unknownXWCS.has_value() );
       REQUIRE_FALSE( record.unknownXWCU.isPresent() );
       REQUIRE( record.imageSpaceFormID == 0 );
       REQUIRE( record.locationFormID == 0 );
       REQUIRE( record.encounterZoneFormID == 0 );
-      REQUIRE_FALSE( record.hasXCWT );
-      REQUIRE( record.unknownXCWT == 0 );
+      REQUIRE_FALSE( record.unknownXCWT.has_value() );
       REQUIRE( record.musicTypeFormID == 0x0002D4C2 );
-      REQUIRE( record.unknownXWEM.empty() );
       REQUIRE( record.ownerFactionFormID == 0 );
       REQUIRE( record.lockListFormID == 0 );
       REQUIRE( record.regionFormID == 0 );
+      REQUIRE( record.environmentMap.empty() );
       REQUIRE( record.defaultAcousticSpaceFormID == 0 );
 
       // Writing should succeed.
@@ -946,27 +916,22 @@ TEST_CASE("CellRecord")
       REQUIRE( record.gridLocation.unknownThird == 0x0053CF00 );
       REQUIRE_FALSE( record.unknownXCLL.isPresent() );
       REQUIRE( record.lightingTemplateFormID == 0 );
-      REQUIRE_FALSE( record.hasLNAM );
-      REQUIRE( record.unknownLNAM == 0 );
+      REQUIRE_FALSE( record.unknownLNAM.has_value() );
       REQUIRE( record.unknownXCLW == std::numeric_limits<float>::max() );
       REQUIRE( record.unknownXCLR.empty() );
-      REQUIRE_FALSE( record.hasXNAM );
-      REQUIRE( record.unknownXNAM == 0 );
-      REQUIRE_FALSE( record.hasXWCN );
-      REQUIRE( record.unknownXWCN == 0 );
-      REQUIRE_FALSE( record.hasXWCS );
-      REQUIRE( record.unknownXWCS == 0 );
+      REQUIRE_FALSE( record.unknownXNAM.has_value() );
+      REQUIRE_FALSE( record.unknownXWCN.has_value() );
+      REQUIRE_FALSE( record.unknownXWCS.has_value() );
       REQUIRE_FALSE( record.unknownXWCU.isPresent() );
       REQUIRE( record.imageSpaceFormID == 0x0001560E );
       REQUIRE( record.locationFormID == 0x000192B8 );
       REQUIRE( record.encounterZoneFormID == 0 );
-      REQUIRE_FALSE( record.hasXCWT );
-      REQUIRE( record.unknownXCWT == 0 );
+      REQUIRE_FALSE( record.unknownXCWT.has_value() );
       REQUIRE( record.musicTypeFormID == 0x00094BDD );
-      REQUIRE( record.unknownXWEM.empty() );
       REQUIRE( record.ownerFactionFormID == 0 );
       REQUIRE( record.lockListFormID == 0 );
       REQUIRE( record.regionFormID == 0 );
+      REQUIRE( record.environmentMap.empty() );
       REQUIRE( record.defaultAcousticSpaceFormID == 0x0010CB83 );
 
       // Writing should succeed.
@@ -1010,27 +975,24 @@ TEST_CASE("CellRecord")
       REQUIRE( record.gridLocation.unknownThird == 0 );
       REQUIRE_FALSE( record.unknownXCLL.isPresent() );
       REQUIRE( record.lightingTemplateFormID == 0 );
-      REQUIRE( record.hasLNAM );
-      REQUIRE( record.unknownLNAM == 0x0000039F );
+      REQUIRE( record.unknownLNAM.has_value() );
+      REQUIRE( record.unknownLNAM.value() == 0x0000039F );
       REQUIRE( record.unknownXCLW == std::numeric_limits<float>::max() );
       REQUIRE( record.unknownXCLR.empty() );
-      REQUIRE( record.hasXNAM );
+      REQUIRE( record.unknownXNAM.has_value() );
       REQUIRE( record.unknownXNAM == 0x34 );
-      REQUIRE_FALSE( record.hasXWCN );
-      REQUIRE( record.unknownXWCN == 0 );
-      REQUIRE_FALSE( record.hasXWCS );
-      REQUIRE( record.unknownXWCS == 0 );
+      REQUIRE_FALSE( record.unknownXWCN.has_value() );
+      REQUIRE_FALSE( record.unknownXWCS.has_value() );
       REQUIRE_FALSE( record.unknownXWCU.isPresent() );
       REQUIRE( record.imageSpaceFormID == 0 );
       REQUIRE( record.locationFormID == 0 );
       REQUIRE( record.encounterZoneFormID == 0 );
-      REQUIRE_FALSE( record.hasXCWT );
-      REQUIRE( record.unknownXCWT == 0 );
+      REQUIRE_FALSE( record.unknownXCWT.has_value() );
       REQUIRE( record.musicTypeFormID == 0 );
-      REQUIRE( record.unknownXWEM.empty() );
       REQUIRE( record.ownerFactionFormID == 0 );
       REQUIRE( record.lockListFormID == 0 );
       REQUIRE( record.regionFormID == 0 );
+      REQUIRE( record.environmentMap.empty() );
       REQUIRE( record.defaultAcousticSpaceFormID == 0 );
 
       // Writing should succeed.
@@ -1078,8 +1040,7 @@ TEST_CASE("CellRecord")
       REQUIRE( record.gridLocation.unknownThird == 0x0053FD00 );
       REQUIRE_FALSE( record.unknownXCLL.isPresent() );
       REQUIRE( record.lightingTemplateFormID == 0 );
-      REQUIRE_FALSE( record.hasLNAM );
-      REQUIRE( record.unknownLNAM == 0 );
+      REQUIRE_FALSE( record.unknownLNAM.has_value() );
       REQUIRE( record.unknownXCLW == -1400.0f );
       REQUIRE( record.unknownXCLR.size() == 8 );
       REQUIRE( record.unknownXCLR[0] == 0x0002A72D );
@@ -1090,25 +1051,22 @@ TEST_CASE("CellRecord")
       REQUIRE( record.unknownXCLR[5] == 0x0008FB97 );
       REQUIRE( record.unknownXCLR[6] == 0x000F7C40 );
       REQUIRE( record.unknownXCLR[7] == 0x000C5859 );
-      REQUIRE_FALSE( record.hasXNAM );
-      REQUIRE( record.unknownXNAM == 0 );
-      REQUIRE( record.hasXWCN );
-      REQUIRE( record.unknownXWCN == 0x00000004 );
-      REQUIRE_FALSE( record.hasXWCS );
-      REQUIRE( record.unknownXWCS == 0 );
+      REQUIRE_FALSE( record.unknownXNAM.has_value() );
+      REQUIRE( record.unknownXWCN.has_value() );
+      REQUIRE( record.unknownXWCN.value() == 0x00000004 );
+      REQUIRE_FALSE( record.unknownXWCS.has_value() );
       REQUIRE( record.unknownXWCU.isPresent() );
       const auto XWCU = std::string_view(reinterpret_cast<const char*>(record.unknownXWCU.data()), record.unknownXWCU.size());
       REQUIRE( XWCU == "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x8CP9\xC4\xE9\x83o\xC4r\xFB\xB9\xC0\x03\0\0\0\0\0\0\0\0\0\x80\xBF\0\0\0\x80\x1F\x16j?"sv );
       REQUIRE( record.imageSpaceFormID == 0 );
       REQUIRE( record.locationFormID == 0x00019174 );
       REQUIRE( record.encounterZoneFormID == 0 );
-      REQUIRE_FALSE( record.hasXCWT );
-      REQUIRE( record.unknownXCWT == 0 );
+      REQUIRE_FALSE( record.unknownXCWT.has_value() );
       REQUIRE( record.musicTypeFormID == 0 );
-      REQUIRE( record.unknownXWEM.empty() );
       REQUIRE( record.ownerFactionFormID == 0 );
       REQUIRE( record.lockListFormID == 0 );
       REQUIRE( record.regionFormID == 0 );
+      REQUIRE( record.environmentMap.empty() );
       REQUIRE( record.defaultAcousticSpaceFormID == 0 );
 
       // Writing should succeed.
@@ -1156,27 +1114,22 @@ TEST_CASE("CellRecord")
       const auto XCLL = std::string_view(reinterpret_cast<const char*>(record.unknownXCLL.data()), record.unknownXCLL.size());
       REQUIRE( XCLL == "\xFF\xFF\xFF\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x80?\0\0\0\0\0\0\x80?\x18\xFF\x0A\0\xE5\xFF\xF3\0\xFF\x0A\xFF\0\xFF\xF3\xFF\0yys\0\x84\x84\x8A\0\0\0\0\0\0\0\x80?\0\0\0\0\0\0\x80?\0\0\0\0\0\0\0\0\x9F\0\0\0"sv );
       REQUIRE( record.lightingTemplateFormID == 0 );
-      REQUIRE_FALSE( record.hasLNAM );
-      REQUIRE( record.unknownLNAM == 0 );
+      REQUIRE_FALSE( record.unknownLNAM.has_value() );
       REQUIRE( record.unknownXCLW == -std::numeric_limits<float>::max() );
       REQUIRE( record.unknownXCLR.empty() );
-      REQUIRE_FALSE( record.hasXNAM );
-      REQUIRE( record.unknownXNAM == 0 );
-      REQUIRE_FALSE( record.hasXWCN );
-      REQUIRE( record.unknownXWCN == 0 );
-      REQUIRE_FALSE( record.hasXWCS );
-      REQUIRE( record.unknownXWCS == 0 );
+      REQUIRE_FALSE( record.unknownXNAM.has_value() );
+      REQUIRE_FALSE( record.unknownXWCN.has_value() );
+      REQUIRE_FALSE( record.unknownXWCS.has_value() );
       REQUIRE_FALSE( record.unknownXWCU.isPresent() );
       REQUIRE( record.imageSpaceFormID == 0x000A2687 );
       REQUIRE( record.locationFormID == 0x000884C8 );
       REQUIRE( record.encounterZoneFormID == 0 );
-      REQUIRE_FALSE( record.hasXCWT );
-      REQUIRE( record.unknownXCWT == 0 );
+      REQUIRE_FALSE( record.unknownXCWT.has_value() );
       REQUIRE( record.musicTypeFormID == 0 );
-      REQUIRE( record.unknownXWEM.empty() );
       REQUIRE( record.ownerFactionFormID == 0 );
       REQUIRE( record.lockListFormID == 0 );
       REQUIRE( record.regionFormID == 0 );
+      REQUIRE( record.environmentMap.empty() );
       REQUIRE( record.defaultAcousticSpaceFormID == 0 );
 
       // Writing should succeed.
@@ -1220,29 +1173,25 @@ TEST_CASE("CellRecord")
       REQUIRE( record.gridLocation.unknownThird == 0 );
       REQUIRE_FALSE( record.unknownXCLL.isPresent() );
       REQUIRE( record.lightingTemplateFormID == 0 );
-      REQUIRE_FALSE( record.hasLNAM );
-      REQUIRE( record.unknownLNAM == 0 );
+      REQUIRE_FALSE( record.unknownLNAM.has_value() );
       REQUIRE( record.unknownXCLW == std::numeric_limits<float>::max() );
       REQUIRE( record.unknownXCLR.empty() );
-      REQUIRE_FALSE( record.hasXNAM );
-      REQUIRE( record.unknownXNAM == 0 );
-      REQUIRE_FALSE( record.hasXWCN );
-      REQUIRE( record.unknownXWCN == 0 );
-      REQUIRE( record.hasXWCS );
-      REQUIRE( record.unknownXWCS == 3 );
+      REQUIRE_FALSE( record.unknownXNAM.has_value() );
+      REQUIRE_FALSE( record.unknownXWCN.has_value() );
+      REQUIRE( record.unknownXWCS.has_value() );
+      REQUIRE( record.unknownXWCS.value() == 3 );
       REQUIRE( record.unknownXWCU.isPresent() );
       const auto XWCU = std::string_view(reinterpret_cast<const char*>(record.unknownXWCU.data()), record.unknownXWCU.size());
       REQUIRE( XWCU == "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"sv );
       REQUIRE( record.imageSpaceFormID == 0x0001560E );
       REQUIRE( record.locationFormID == 0 );
       REQUIRE( record.encounterZoneFormID == 0 );
-      REQUIRE_FALSE( record.hasXCWT );
-      REQUIRE( record.unknownXCWT == 0 );
+      REQUIRE_FALSE( record.unknownXCWT.has_value() );
       REQUIRE( record.musicTypeFormID == 0 );
-      REQUIRE( record.unknownXWEM.empty() );
       REQUIRE( record.ownerFactionFormID == 0 );
       REQUIRE( record.lockListFormID == 0 );
       REQUIRE( record.regionFormID == 0 );
+      REQUIRE( record.environmentMap.empty() );
       REQUIRE( record.defaultAcousticSpaceFormID == 0 );
 
       // Writing should succeed.
@@ -1286,28 +1235,24 @@ TEST_CASE("CellRecord")
       REQUIRE( record.gridLocation.unknownThird == 0x00538000 );
       REQUIRE_FALSE( record.unknownXCLL.isPresent() );
       REQUIRE( record.lightingTemplateFormID == 0 );
-      REQUIRE_FALSE( record.hasLNAM );
-      REQUIRE( record.unknownLNAM == 0 );
+      REQUIRE_FALSE( record.unknownLNAM.has_value() );
       REQUIRE( record.unknownXCLW == -14000.0f );
       REQUIRE( record.unknownXCLR.size() == 1 );
       REQUIRE( record.unknownXCLR[0] == 0x00048C2E );
-      REQUIRE_FALSE( record.hasXNAM );
-      REQUIRE( record.unknownXNAM == 0 );
-      REQUIRE_FALSE( record.hasXWCN );
-      REQUIRE( record.unknownXWCN == 0 );
-      REQUIRE_FALSE( record.hasXWCS );
-      REQUIRE( record.unknownXWCS == 0 );
+      REQUIRE_FALSE( record.unknownXNAM.has_value() );
+      REQUIRE_FALSE( record.unknownXWCN.has_value() );
+      REQUIRE_FALSE( record.unknownXWCS.has_value() );
       REQUIRE_FALSE( record.unknownXWCU.isPresent() );
       REQUIRE( record.imageSpaceFormID == 0 );
       REQUIRE( record.locationFormID == 0 );
       REQUIRE( record.encounterZoneFormID == 0 );
-      REQUIRE( record.hasXCWT );
-      REQUIRE( record.unknownXCWT == 0x00000018 );
+      REQUIRE( record.unknownXCWT.has_value() );
+      REQUIRE( record.unknownXCWT.value() == 0x00000018 );
       REQUIRE( record.musicTypeFormID == 0 );
-      REQUIRE( record.unknownXWEM.empty() );
       REQUIRE( record.ownerFactionFormID == 0 );
       REQUIRE( record.lockListFormID == 0 );
       REQUIRE( record.regionFormID == 0 );
+      REQUIRE( record.environmentMap.empty() );
       REQUIRE( record.defaultAcousticSpaceFormID == 0 );
 
       // Writing should succeed.
@@ -1355,27 +1300,22 @@ TEST_CASE("CellRecord")
       const auto XCLL = std::string_view(reinterpret_cast<const char*>(record.unknownXCLL.data()), record.unknownXCLL.size());
       REQUIRE( XCLL == "\x22\x1F\x13\0?GI\0`fH\0\0\0\xAA\x43\0\0zE\0\0\0\0Z\0\0\0\0\0\x80?\0@\x9C\x45\xCD\xCCL?%\x1F\x13\0\x1E\x1F\x12\0\"\x20\x13\0\"\x1D\x13\0\x10\x0E\x08\0\x33/\x1D\0`fH\0\0\0\x80?`fH\0\0\0\x80?\0\0zE\0@\x9C\x45\xEF\x03\0\0"sv );
       REQUIRE( record.lightingTemplateFormID == 0x0005C734 );
-      REQUIRE_FALSE( record.hasLNAM );
-      REQUIRE( record.unknownLNAM == 0 );
+      REQUIRE_FALSE( record.unknownLNAM.has_value() );
       REQUIRE( record.unknownXCLW == 0.0f );
       REQUIRE( record.unknownXCLR.empty() );
-      REQUIRE_FALSE( record.hasXNAM );
-      REQUIRE( record.unknownXNAM == 0 );
-      REQUIRE_FALSE( record.hasXWCN );
-      REQUIRE( record.unknownXWCN == 0 );
-      REQUIRE_FALSE( record.hasXWCS );
-      REQUIRE( record.unknownXWCS == 0 );
+      REQUIRE_FALSE( record.unknownXNAM.has_value() );
+      REQUIRE_FALSE( record.unknownXWCN.has_value() );
+      REQUIRE_FALSE( record.unknownXWCS.has_value() );
       REQUIRE_FALSE( record.unknownXWCU.isPresent() );
       REQUIRE( record.imageSpaceFormID == 0x0005C73D );
       REQUIRE( record.locationFormID == 0x0002264A );
       REQUIRE( record.encounterZoneFormID == 0x0009FBB9 );
-      REQUIRE_FALSE( record.hasXCWT );
-      REQUIRE( record.unknownXCWT == 0 );
+      REQUIRE_FALSE( record.unknownXCWT.has_value() );
       REQUIRE( record.musicTypeFormID == 0x0005615B );
-      REQUIRE( record.unknownXWEM == "Data\\Textures\\Cubemaps\\WRTemple_e.dds" );
       REQUIRE( record.ownerFactionFormID == 0x000A2522 );
       REQUIRE( record.lockListFormID == 0 );
       REQUIRE( record.regionFormID == 0x0007042E );
+      REQUIRE( record.environmentMap == "Data\\Textures\\Cubemaps\\WRTemple_e.dds" );
       REQUIRE( record.defaultAcousticSpaceFormID == 0x00108E60 );
 
       // Writing should succeed.
@@ -1425,27 +1365,22 @@ TEST_CASE("CellRecord")
       const auto XCLL = std::string_view(reinterpret_cast<const char*>(record.unknownXCLL.data()), record.unknownXCLL.size());
       REQUIRE( XCLL == "#&&\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x80?&&'\0\x1F&$\0#'&\0#$&\0\x10\x12\x11\0\x35\x39:\0\0\0\0\0\0\0\x80?\0\0\0\0\0\0\x80?\0\0\0\0\0\0\0\0\x9E\x07\0\0"sv );
       REQUIRE( record.lightingTemplateFormID == 0x000A1196 );
-      REQUIRE_FALSE( record.hasLNAM );
-      REQUIRE( record.unknownLNAM == 0 );
+      REQUIRE_FALSE( record.unknownLNAM.has_value() );
       REQUIRE( record.unknownXCLW == 0.0f );
       REQUIRE( record.unknownXCLR.empty() );
-      REQUIRE_FALSE( record.hasXNAM );
-      REQUIRE( record.unknownXNAM == 0 );
-      REQUIRE_FALSE( record.hasXWCN );
-      REQUIRE( record.unknownXWCN == 0 );
-      REQUIRE_FALSE( record.hasXWCS );
-      REQUIRE( record.unknownXWCS == 0 );
+      REQUIRE_FALSE( record.unknownXNAM.has_value() );
+      REQUIRE_FALSE( record.unknownXWCN.has_value() );
+      REQUIRE_FALSE( record.unknownXWCS.has_value() );
       REQUIRE_FALSE( record.unknownXWCU.isPresent() );
       REQUIRE( record.imageSpaceFormID == 0 );
       REQUIRE( record.locationFormID == 0x02019A1F );
       REQUIRE( record.encounterZoneFormID == 0 );
-      REQUIRE_FALSE( record.hasXCWT );
-      REQUIRE( record.unknownXCWT == 0 );
+      REQUIRE_FALSE( record.unknownXCWT.has_value() );
       REQUIRE( record.musicTypeFormID == 0x02034281 );
-      REQUIRE( record.unknownXWEM.empty() );
       REQUIRE( record.ownerFactionFormID == 0x02018426 );
       REQUIRE( record.lockListFormID == 0x0201845D );
       REQUIRE( record.regionFormID == 0 );
+      REQUIRE( record.environmentMap.empty() );
       REQUIRE( record.defaultAcousticSpaceFormID == 0x000C5B6D );
 
       // Writing should succeed.

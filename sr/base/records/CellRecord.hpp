@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2013  Thoronador
+    Copyright (C) 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 #ifndef SR_CELLRECORD_HPP
 #define SR_CELLRECORD_HPP
 
+#include <optional>
 #include <string>
 #include <vector>
 #include "BasicRecord.hpp"
@@ -33,44 +34,54 @@ namespace SRTP
 struct CellRecord: public BasicRecord
 {
   public:
-    /* constructor */
+    /** Constructor, creates an empty record. */
     CellRecord();
 
-    /* destructor */
-    virtual ~CellRecord();
-
     #ifndef SR_NO_RECORD_EQUALITY
-    /* returns true, if the other record contains the same data */
+    /** \brief Checks whether another instance contains the same data.
+     *
+     * \param other   the other record to compare with
+     * \return Returns true, if @other contains the same data as instance.
+     *         Returns false otherwise.
+     */
     bool equals(const CellRecord& other) const;
     #endif
 
     #ifndef SR_UNSAVEABLE_RECORDS
-    /* returns the size in bytes that the record's data would occupy in a file
-       stream, NOT including the header data
-    */
+    /** \brief Gets the size in bytes that the record's data would occupy in a file
+     *         stream, NOT including the header data.
+     *
+     * \return Returns the size in bytes that the record would need. Size of the
+     *         header is not included.
+     */
     virtual uint32_t getWriteSize() const;
 
-    /* writes the record to the given output stream and returns true on success
-
-      parameters:
-          output   - the output stream
-    */
+    /** \brief Writes the record to the given output stream.
+     *
+     * \param output  the output stream
+     * \return Returns true on success (record was written to stream).
+     *         Returns false, if an error occurred.
+     */
     virtual bool saveToStream(std::ostream& output) const;
     #endif
 
-    /* loads the record from the given input stream and returns true on success
-
-      parameters:
-          in_File   - the input stream
-          localized - whether the file to read from is localized or not
-          table     - the associated string table for localized files
-    */
+    /** \brief Loads the record from the given input stream.
+     *
+     * \param in_File    the input stream
+     * \param localized  whether the file to read from is localized or not
+     * \param table      the associated string table for localized files
+     * \return Returns true on success (record was loaded from stream).
+     *         Returns false, if an error occurred.
+     */
     virtual bool loadFromStream(std::istream& in_File, const bool localized, const StringTable& table);
 
-    /* returns the record's type, usually its header */
+    /** \brief Gets the record's type, usually its header.
+     *
+     * \return Returns the record's type.
+     */
     virtual uint32_t getRecordType() const;
 
-    //type for XCLC subrecord
+    /// type for XCLC subrecord
     struct SubrecordXCLC
     {
       bool presence;
@@ -78,45 +89,38 @@ struct CellRecord: public BasicRecord
       int32_t locationY;
       uint32_t unknownThird;
 
-      /* constructor */
       SubrecordXCLC();
 
-      /* equality operator */
       bool operator==(const SubrecordXCLC& other) const;
     };
 
-    std::string editorID;
-    LocalizedString name; //subrecord FULL
+    std::string editorID; /**< ID of the record in the editor */
+    LocalizedString name; // subrecord FULL
     BinarySubRecord unknownDATA;
     SubrecordXCLC gridLocation;
     BinarySubRecord unknownTVDT;
     BinarySubRecord unknownMHDT;
     BinarySubRecord unknownXCLL;
-    uint32_t lightingTemplateFormID; //subrecord LTMP
-    bool hasLNAM;
-    uint32_t unknownLNAM;
+    uint32_t lightingTemplateFormID; // subrecord LTMP
+    std::optional<uint32_t> unknownLNAM;
     float    unknownXCLW;
     std::vector<uint32_t> unknownXCLR;
-    bool hasXNAM;
-    uint8_t unknownXNAM;
-    bool hasXWCN;
-    uint32_t unknownXWCN;
-    bool hasXWCS;
-    uint32_t unknownXWCS;
+    std::optional<uint8_t> unknownXNAM;
+    std::optional<uint32_t> unknownXWCN;
+    std::optional<uint32_t> unknownXWCS;
     BinarySubRecord unknownXWCU;
-    uint32_t imageSpaceFormID; //subrecord XCIM
-    uint32_t locationFormID; //subrecord XLCN
-    uint32_t encounterZoneFormID; //subrecord XEZN
-    bool hasXCWT;
-    uint32_t unknownXCWT;
-    uint32_t ownerFactionFormID; //subrecord XOWN
-    uint32_t lockListFormID; //subrecord XILL
-    uint32_t musicTypeFormID; //subrecord XCMO
-    uint32_t regionFormID; //subrecord XCCM
-    std::string unknownXWEM;
-    uint32_t defaultAcousticSpaceFormID; //subrecord CAS
-}; //struct
+    uint32_t imageSpaceFormID; // subrecord XCIM
+    uint32_t locationFormID; // subrecord XLCN
+    uint32_t encounterZoneFormID; // subrecord XEZN
+    std::optional<uint32_t> unknownXCWT;
+    uint32_t ownerFactionFormID; // subrecord XOWN
+    uint32_t lockListFormID; // subrecord XILL
+    uint32_t musicTypeFormID; // subrecord XCMO
+    uint32_t regionFormID; // subrecord XCCM
+    std::string environmentMap; // subrecord XWEM
+    uint32_t defaultAcousticSpaceFormID; // subrecord CAS
+}; // struct
 
-} //namespace
+} // namespace
 
 #endif // SR_CELLRECORD_HPP

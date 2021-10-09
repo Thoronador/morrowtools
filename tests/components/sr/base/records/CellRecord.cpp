@@ -718,6 +718,7 @@ TEST_CASE("CellRecord")
   {
     uint32_t dummy = 0;
     StringTable dummy_table;
+    dummy_table.addString(0x0000ED3E, "foo");
 
     SECTION("default: load uncompressed record")
     {
@@ -1113,6 +1114,7 @@ TEST_CASE("CellRecord")
       std::ostringstream streamOut;
       REQUIRE( record.saveToStream(streamOut) );
       // Check written data.
+      REQUIRE( streamOut.str().size() == data.size() );
       // TODO: Fix write order of XLCN and XWCN so the following line passes.
       // REQUIRE( streamOut.str() == data );
     }
@@ -1314,6 +1316,76 @@ TEST_CASE("CellRecord")
       REQUIRE( streamOut.str() == data );
     }
 
+    SECTION("default: load record with FULL, XEZN, XOWN, XCCM, XWEM")
+    {
+      const auto data = "CELL\x13\x01\0\0\0\0\0\0\xCF\x6B\x01\0\x1B\x69\x55\0\x28\0\x09\0EDID\x13\0RiftenRaggedFlagon\0FULL\x04\0>\xED\0\0DATA\x02\0\xA3\0XCLL\x5C\0\x22\x1F\x13\0?GI\0`fH\0\0\0\xAA\x43\0\0zE\0\0\0\0Z\0\0\0\0\0\x80?\0@\x9C\x45\xCD\xCCL?%\x1F\x13\0\x1E\x1F\x12\0\"\x20\x13\0\"\x1D\x13\0\x10\x0E\x08\0\x33/\x1D\0`fH\0\0\0\x80?`fH\0\0\0\x80?\0\0zE\0@\x9C\x45\xEF\x03\0\0LTMP\x04\0\x34\xC7\x05\0XCLW\x04\0\0\0\0\0XLCN\x04\0J&\x02\0XCIM\x04\0=\xC7\x05\0XCMO\x04\0[a\x05\0XEZN\x04\0\xB9\xFB\x09\0XOWN\x04\0\x22\x25\x0A\0XCCM\x04\0.\x04\x07\0XWEM\x26\0Data\\Textures\\Cubemaps\\WRTemple_e.dds\0XCAS\x04\0\x60\x8E\x10\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read CELL, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      CellRecord record;
+      REQUIRE( record.loadFromStream(stream, true, dummy_table) );
+      // Check data.
+      // -- header
+      REQUIRE( record.headerFlags == 0 );
+      REQUIRE( record.headerFormID == 0x00016BCF );
+      REQUIRE( record.headerRevision == 0x0055691B );
+      REQUIRE( record.headerVersion == 40 );
+      REQUIRE( record.headerUnknown5 == 0x0009 );
+      // -- record data
+      REQUIRE( record.editorID == "RiftenRaggedFlagon" );
+      REQUIRE( record.name.isPresent() );
+      REQUIRE( record.name.getType() == LocalizedString::Type::Index );
+      REQUIRE( record.name.getIndex() == 0x0000ED3E );
+      REQUIRE( record.unknownDATA.isPresent() );
+      const auto DATA = std::string_view(reinterpret_cast<const char*>(record.unknownDATA.data()), record.unknownDATA.size());
+      REQUIRE( DATA == "\xA3\0"sv );
+      REQUIRE_FALSE( record.unknownTVDT.isPresent() );
+      REQUIRE_FALSE( record.unknownMHDT.isPresent() );
+      REQUIRE_FALSE( record.gridLocation.presence );
+      REQUIRE( record.gridLocation.locationX == 0 );
+      REQUIRE( record.gridLocation.locationY == 0 );
+      REQUIRE( record.gridLocation.unknownThird == 0 );
+      REQUIRE( record.unknownXCLL.isPresent() );
+      const auto XCLL = std::string_view(reinterpret_cast<const char*>(record.unknownXCLL.data()), record.unknownXCLL.size());
+      REQUIRE( XCLL == "\x22\x1F\x13\0?GI\0`fH\0\0\0\xAA\x43\0\0zE\0\0\0\0Z\0\0\0\0\0\x80?\0@\x9C\x45\xCD\xCCL?%\x1F\x13\0\x1E\x1F\x12\0\"\x20\x13\0\"\x1D\x13\0\x10\x0E\x08\0\x33/\x1D\0`fH\0\0\0\x80?`fH\0\0\0\x80?\0\0zE\0@\x9C\x45\xEF\x03\0\0"sv );
+      REQUIRE( record.lightingTemplateFormID == 0x0005C734 );
+      REQUIRE_FALSE( record.hasLNAM );
+      REQUIRE( record.unknownLNAM == 0 );
+      REQUIRE( record.unknownXCLW == 0.0f );
+      REQUIRE( record.unknownXCLR.empty() );
+      REQUIRE_FALSE( record.hasXNAM );
+      REQUIRE( record.unknownXNAM == 0 );
+      REQUIRE_FALSE( record.hasXWCN );
+      REQUIRE( record.unknownXWCN == 0 );
+      REQUIRE_FALSE( record.hasXWCS );
+      REQUIRE( record.unknownXWCS == 0 );
+      REQUIRE_FALSE( record.unknownXWCU.isPresent() );
+      REQUIRE( record.imageSpaceFormID == 0x0005C73D );
+      REQUIRE( record.locationFormID == 0x0002264A );
+      REQUIRE( record.encounterZoneFormID == 0x0009FBB9 );
+      REQUIRE_FALSE( record.hasXCWT );
+      REQUIRE( record.unknownXCWT == 0 );
+      REQUIRE( record.musicTypeFormID == 0x0005615B );
+      REQUIRE( record.unknownXWEM == "Data\\Textures\\Cubemaps\\WRTemple_e.dds" );
+      REQUIRE( record.ownerFactionFormID == 0x000A2522 );
+      REQUIRE( record.lockListFormID == 0 );
+      REQUIRE( record.regionFormID == 0x0007042E );
+      REQUIRE( record.defaultAcousticSpaceFormID == 0x00108E60 );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( record.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str().size() == data.size() );
+      // TODO: Fix write order of XEZN and surrounding subrecords so the following line passes.
+      // REQUIRE( streamOut.str() == data );
+    }
+
     SECTION("special: load deleted record")
     {
       const std::string_view data = "CELL\0\0\0\0\x20\0\0\0\x66\x66\x10\0\x1D\x66\x0A\0\x25\0\x01\0"sv;
@@ -1461,6 +1533,36 @@ TEST_CASE("CellRecord")
     SECTION("corrupt data: length of EDID is beyond stream")
     {
       const auto data = "CELL\x52\0\0\0\0\0\0\0\x20\x42\x10\0\x15\x67\x27\0\x27\0\x02\0EDID\x52\0MazeStart\0DATA\x02\0\x02\0XCLC\x0C\0\0\0\0\0\xFF\xFF\xFF\xFF\x0F\x17\0\0LTMP\x04\0\0\0\0\0XCLW\x04\0\0\0\0\xCFXCLR\x04\0hf\x10\0XCMO\x04\0\xC2\xD4\x02\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read CELL, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      CellRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple FULLs")
+    {
+      const auto data = "CELL\x1D\x01\0\0\0\0\0\0\xCF\x6B\x01\0\x1B\x69\x55\0\x28\0\x09\0EDID\x13\0RiftenRaggedFlagon\0FULL\x04\0>\xED\0\0FULL\x04\0>\xED\0\0DATA\x02\0\xA3\0XCLL\x5C\0\x22\x1F\x13\0?GI\0`fH\0\0\0\xAA\x43\0\0zE\0\0\0\0Z\0\0\0\0\0\x80?\0@\x9C\x45\xCD\xCCL?%\x1F\x13\0\x1E\x1F\x12\0\"\x20\x13\0\"\x1D\x13\0\x10\x0E\x08\0\x33/\x1D\0`fH\0\0\0\x80?`fH\0\0\0\x80?\0\0zE\0@\x9C\x45\xEF\x03\0\0LTMP\x04\0\x34\xC7\x05\0XCLW\x04\0\0\0\0\0XLCN\x04\0J&\x02\0XCIM\x04\0=\xC7\x05\0XCMO\x04\0[a\x05\0XEZN\x04\0\xB9\xFB\x09\0XOWN\x04\0\x22\x25\x0A\0XCCM\x04\0.\x04\x07\0XWEM\x26\0Data\\Textures\\Cubemaps\\WRTemple_e.dds\0XCAS\x04\0\x60\x8E\x10\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read CELL, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      CellRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: stream ends before all of FULL can be read")
+    {
+      const auto data = "CELL\x13\x01\0\0\0\0\0\0\xCF\x6B\x01\0\x1B\x69\x55\0\x28\0\x09\0EDID\x13\0RiftenRaggedFlagon\0FULL\x04\0>\xED"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 
@@ -2402,6 +2504,82 @@ TEST_CASE("CellRecord")
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
+    SECTION("corrupt data: multiple XEZNs")
+    {
+      const auto data = "CELL\x1D\x01\0\0\0\0\0\0\xCF\x6B\x01\0\x1B\x69\x55\0\x28\0\x09\0EDID\x13\0RiftenRaggedFlagon\0FULL\x04\0>\xED\0\0DATA\x02\0\xA3\0XCLL\x5C\0\x22\x1F\x13\0?GI\0`fH\0\0\0\xAA\x43\0\0zE\0\0\0\0Z\0\0\0\0\0\x80?\0@\x9C\x45\xCD\xCCL?%\x1F\x13\0\x1E\x1F\x12\0\"\x20\x13\0\"\x1D\x13\0\x10\x0E\x08\0\x33/\x1D\0`fH\0\0\0\x80?`fH\0\0\0\x80?\0\0zE\0@\x9C\x45\xEF\x03\0\0LTMP\x04\0\x34\xC7\x05\0XCLW\x04\0\0\0\0\0XLCN\x04\0J&\x02\0XCIM\x04\0=\xC7\x05\0XCMO\x04\0[a\x05\0XEZN\x04\0\xB9\xFB\x09\0XEZN\x04\0\xB9\xFB\x09\0XOWN\x04\0\x22\x25\x0A\0XCCM\x04\0.\x04\x07\0XWEM\x26\0Data\\Textures\\Cubemaps\\WRTemple_e.dds\0XCAS\x04\0\x60\x8E\x10\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read CELL, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      CellRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of XEZN is not four")
+    {
+      {
+        const auto data = "CELL\x12\x01\0\0\0\0\0\0\xCF\x6B\x01\0\x1B\x69\x55\0\x28\0\x09\0EDID\x13\0RiftenRaggedFlagon\0FULL\x04\0>\xED\0\0DATA\x02\0\xA3\0XCLL\x5C\0\x22\x1F\x13\0?GI\0`fH\0\0\0\xAA\x43\0\0zE\0\0\0\0Z\0\0\0\0\0\x80?\0@\x9C\x45\xCD\xCCL?%\x1F\x13\0\x1E\x1F\x12\0\"\x20\x13\0\"\x1D\x13\0\x10\x0E\x08\0\x33/\x1D\0`fH\0\0\0\x80?`fH\0\0\0\x80?\0\0zE\0@\x9C\x45\xEF\x03\0\0LTMP\x04\0\x34\xC7\x05\0XCLW\x04\0\0\0\0\0XLCN\x04\0J&\x02\0XCIM\x04\0=\xC7\x05\0XCMO\x04\0[a\x05\0XEZN\x03\0\xB9\x09\0XOWN\x04\0\x22\x25\x0A\0XCCM\x04\0.\x04\x07\0XWEM\x26\0Data\\Textures\\Cubemaps\\WRTemple_e.dds\0XCAS\x04\0\x60\x8E\x10\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read CELL, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        CellRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+
+      {
+        const auto data = "CELL\x14\x01\0\0\0\0\0\0\xCF\x6B\x01\0\x1B\x69\x55\0\x28\0\x09\0EDID\x13\0RiftenRaggedFlagon\0FULL\x04\0>\xED\0\0DATA\x02\0\xA3\0XCLL\x5C\0\x22\x1F\x13\0?GI\0`fH\0\0\0\xAA\x43\0\0zE\0\0\0\0Z\0\0\0\0\0\x80?\0@\x9C\x45\xCD\xCCL?%\x1F\x13\0\x1E\x1F\x12\0\"\x20\x13\0\"\x1D\x13\0\x10\x0E\x08\0\x33/\x1D\0`fH\0\0\0\x80?`fH\0\0\0\x80?\0\0zE\0@\x9C\x45\xEF\x03\0\0LTMP\x04\0\x34\xC7\x05\0XCLW\x04\0\0\0\0\0XLCN\x04\0J&\x02\0XCIM\x04\0=\xC7\x05\0XCMO\x04\0[a\x05\0XEZN\x05\0\xB9\xFB\x09\0\0XOWN\x04\0\x22\x25\x0A\0XCCM\x04\0.\x04\x07\0XWEM\x26\0Data\\Textures\\Cubemaps\\WRTemple_e.dds\0XCAS\x04\0\x60\x8E\x10\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read CELL, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        CellRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+    }
+
+    SECTION("corrupt data: stream ends before all of XEZN can be read")
+    {
+      const auto data = "CELL\x13\x01\0\0\0\0\0\0\xCF\x6B\x01\0\x1B\x69\x55\0\x28\0\x09\0EDID\x13\0RiftenRaggedFlagon\0FULL\x04\0>\xED\0\0DATA\x02\0\xA3\0XCLL\x5C\0\x22\x1F\x13\0?GI\0`fH\0\0\0\xAA\x43\0\0zE\0\0\0\0Z\0\0\0\0\0\x80?\0@\x9C\x45\xCD\xCCL?%\x1F\x13\0\x1E\x1F\x12\0\"\x20\x13\0\"\x1D\x13\0\x10\x0E\x08\0\x33/\x1D\0`fH\0\0\0\x80?`fH\0\0\0\x80?\0\0zE\0@\x9C\x45\xEF\x03\0\0LTMP\x04\0\x34\xC7\x05\0XCLW\x04\0\0\0\0\0XLCN\x04\0J&\x02\0XCIM\x04\0=\xC7\x05\0XCMO\x04\0[a\x05\0XEZN\x04\0\xB9"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read CELL, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      CellRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: XEZN is zero")
+    {
+      const auto data = "CELL\x13\x01\0\0\0\0\0\0\xCF\x6B\x01\0\x1B\x69\x55\0\x28\0\x09\0EDID\x13\0RiftenRaggedFlagon\0FULL\x04\0>\xED\0\0DATA\x02\0\xA3\0XCLL\x5C\0\x22\x1F\x13\0?GI\0`fH\0\0\0\xAA\x43\0\0zE\0\0\0\0Z\0\0\0\0\0\x80?\0@\x9C\x45\xCD\xCCL?%\x1F\x13\0\x1E\x1F\x12\0\"\x20\x13\0\"\x1D\x13\0\x10\x0E\x08\0\x33/\x1D\0`fH\0\0\0\x80?`fH\0\0\0\x80?\0\0zE\0@\x9C\x45\xEF\x03\0\0LTMP\x04\0\x34\xC7\x05\0XCLW\x04\0\0\0\0\0XLCN\x04\0J&\x02\0XCIM\x04\0=\xC7\x05\0XCMO\x04\0[a\x05\0XEZN\x04\0\0\0\0\0XOWN\x04\0\x22\x25\x0A\0XCCM\x04\0.\x04\x07\0XWEM\x26\0Data\\Textures\\Cubemaps\\WRTemple_e.dds\0XCAS\x04\0\x60\x8E\x10\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read CELL, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      CellRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: multiple XCWTs")
     {
       const auto data = "CELL\x6C\0\0\0\0\0\0\0\xC1\x37\x02\0\x0D\x65\x4F\0\x23\0\x06\0EDID\x1A\0BlackreachSinderionsShack\0DATA\x02\0\x02\0XCLC\x0C\0\x04\0\0\0\x04\0\0\0\0\x80S\0LTMP\x04\0\0\0\0\0XCLW\x04\0\0\xC0Z\xC6XCLR\x04\0.\x8C\x04\0XCWT\x04\0\x18\0\0\0XCWT\x04\0\x18\0\0\0"sv;
@@ -2527,6 +2705,203 @@ TEST_CASE("CellRecord")
     SECTION("corrupt data: XCMO is zero")
     {
       const auto data = "CELL\x52\0\0\0\0\0\0\0\x20\x42\x10\0\x15\x67\x27\0\x27\0\x02\0EDID\x0A\0MazeStart\0DATA\x02\0\x02\0XCLC\x0C\0\0\0\0\0\xFF\xFF\xFF\xFF\x0F\x17\0\0LTMP\x04\0\0\0\0\0XCLW\x04\0\0\0\0\xCFXCLR\x04\0hf\x10\0XCMO\x04\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read CELL, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      CellRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple XOWNs")
+    {
+      const auto data = "CELL\x1D\x01\0\0\0\0\0\0\xCF\x6B\x01\0\x1B\x69\x55\0\x28\0\x09\0EDID\x13\0RiftenRaggedFlagon\0FULL\x04\0>\xED\0\0DATA\x02\0\xA3\0XCLL\x5C\0\x22\x1F\x13\0?GI\0`fH\0\0\0\xAA\x43\0\0zE\0\0\0\0Z\0\0\0\0\0\x80?\0@\x9C\x45\xCD\xCCL?%\x1F\x13\0\x1E\x1F\x12\0\"\x20\x13\0\"\x1D\x13\0\x10\x0E\x08\0\x33/\x1D\0`fH\0\0\0\x80?`fH\0\0\0\x80?\0\0zE\0@\x9C\x45\xEF\x03\0\0LTMP\x04\0\x34\xC7\x05\0XCLW\x04\0\0\0\0\0XLCN\x04\0J&\x02\0XCIM\x04\0=\xC7\x05\0XCMO\x04\0[a\x05\0XEZN\x04\0\xB9\xFB\x09\0XOWN\x04\0\x22\x25\x0A\0XOWN\x04\0\x22\x25\x0A\0XCCM\x04\0.\x04\x07\0XWEM\x26\0Data\\Textures\\Cubemaps\\WRTemple_e.dds\0XCAS\x04\0\x60\x8E\x10\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read CELL, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      CellRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of XOWN is not four")
+    {
+      {
+        const auto data = "CELL\x12\x01\0\0\0\0\0\0\xCF\x6B\x01\0\x1B\x69\x55\0\x28\0\x09\0EDID\x13\0RiftenRaggedFlagon\0FULL\x04\0>\xED\0\0DATA\x02\0\xA3\0XCLL\x5C\0\x22\x1F\x13\0?GI\0`fH\0\0\0\xAA\x43\0\0zE\0\0\0\0Z\0\0\0\0\0\x80?\0@\x9C\x45\xCD\xCCL?%\x1F\x13\0\x1E\x1F\x12\0\"\x20\x13\0\"\x1D\x13\0\x10\x0E\x08\0\x33/\x1D\0`fH\0\0\0\x80?`fH\0\0\0\x80?\0\0zE\0@\x9C\x45\xEF\x03\0\0LTMP\x04\0\x34\xC7\x05\0XCLW\x04\0\0\0\0\0XLCN\x04\0J&\x02\0XCIM\x04\0=\xC7\x05\0XCMO\x04\0[a\x05\0XEZN\x04\0\xB9\xFB\x09\0XOWN\x03\0\x22\x0A\0XCCM\x04\0.\x04\x07\0XWEM\x26\0Data\\Textures\\Cubemaps\\WRTemple_e.dds\0XCAS\x04\0\x60\x8E\x10\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read CELL, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        CellRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+
+      {
+        const auto data = "CELL\x14\x01\0\0\0\0\0\0\xCF\x6B\x01\0\x1B\x69\x55\0\x28\0\x09\0EDID\x13\0RiftenRaggedFlagon\0FULL\x04\0>\xED\0\0DATA\x02\0\xA3\0XCLL\x5C\0\x22\x1F\x13\0?GI\0`fH\0\0\0\xAA\x43\0\0zE\0\0\0\0Z\0\0\0\0\0\x80?\0@\x9C\x45\xCD\xCCL?%\x1F\x13\0\x1E\x1F\x12\0\"\x20\x13\0\"\x1D\x13\0\x10\x0E\x08\0\x33/\x1D\0`fH\0\0\0\x80?`fH\0\0\0\x80?\0\0zE\0@\x9C\x45\xEF\x03\0\0LTMP\x04\0\x34\xC7\x05\0XCLW\x04\0\0\0\0\0XLCN\x04\0J&\x02\0XCIM\x04\0=\xC7\x05\0XCMO\x04\0[a\x05\0XEZN\x04\0\xB9\xFB\x09\0XOWN\x05\0\x22\x25\x0A\0\0XCCM\x04\0.\x04\x07\0XWEM\x26\0Data\\Textures\\Cubemaps\\WRTemple_e.dds\0XCAS\x04\0\x60\x8E\x10\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read CELL, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        CellRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+    }
+
+    SECTION("corrupt data: stream ends before all of XOWN can be read")
+    {
+      const auto data = "CELL\x13\x01\0\0\0\0\0\0\xCF\x6B\x01\0\x1B\x69\x55\0\x28\0\x09\0EDID\x13\0RiftenRaggedFlagon\0FULL\x04\0>\xED\0\0DATA\x02\0\xA3\0XCLL\x5C\0\x22\x1F\x13\0?GI\0`fH\0\0\0\xAA\x43\0\0zE\0\0\0\0Z\0\0\0\0\0\x80?\0@\x9C\x45\xCD\xCCL?%\x1F\x13\0\x1E\x1F\x12\0\"\x20\x13\0\"\x1D\x13\0\x10\x0E\x08\0\x33/\x1D\0`fH\0\0\0\x80?`fH\0\0\0\x80?\0\0zE\0@\x9C\x45\xEF\x03\0\0LTMP\x04\0\x34\xC7\x05\0XCLW\x04\0\0\0\0\0XLCN\x04\0J&\x02\0XCIM\x04\0=\xC7\x05\0XCMO\x04\0[a\x05\0XEZN\x04\0\xB9\xFB\x09\0XOWN\x04\0\x22\x25"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read CELL, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      CellRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: XOWN is zero")
+    {
+      const auto data = "CELL\x13\x01\0\0\0\0\0\0\xCF\x6B\x01\0\x1B\x69\x55\0\x28\0\x09\0EDID\x13\0RiftenRaggedFlagon\0FULL\x04\0>\xED\0\0DATA\x02\0\xA3\0XCLL\x5C\0\x22\x1F\x13\0?GI\0`fH\0\0\0\xAA\x43\0\0zE\0\0\0\0Z\0\0\0\0\0\x80?\0@\x9C\x45\xCD\xCCL?%\x1F\x13\0\x1E\x1F\x12\0\"\x20\x13\0\"\x1D\x13\0\x10\x0E\x08\0\x33/\x1D\0`fH\0\0\0\x80?`fH\0\0\0\x80?\0\0zE\0@\x9C\x45\xEF\x03\0\0LTMP\x04\0\x34\xC7\x05\0XCLW\x04\0\0\0\0\0XLCN\x04\0J&\x02\0XCIM\x04\0=\xC7\x05\0XCMO\x04\0[a\x05\0XEZN\x04\0\xB9\xFB\x09\0XOWN\x04\0\0\0\0\0XCCM\x04\0.\x04\x07\0XWEM\x26\0Data\\Textures\\Cubemaps\\WRTemple_e.dds\0XCAS\x04\0\x60\x8E\x10\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read CELL, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      CellRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple XCCMs")
+    {
+      const auto data = "CELL\x1D\x01\0\0\0\0\0\0\xCF\x6B\x01\0\x1B\x69\x55\0\x28\0\x09\0EDID\x13\0RiftenRaggedFlagon\0FULL\x04\0>\xED\0\0DATA\x02\0\xA3\0XCLL\x5C\0\x22\x1F\x13\0?GI\0`fH\0\0\0\xAA\x43\0\0zE\0\0\0\0Z\0\0\0\0\0\x80?\0@\x9C\x45\xCD\xCCL?%\x1F\x13\0\x1E\x1F\x12\0\"\x20\x13\0\"\x1D\x13\0\x10\x0E\x08\0\x33/\x1D\0`fH\0\0\0\x80?`fH\0\0\0\x80?\0\0zE\0@\x9C\x45\xEF\x03\0\0LTMP\x04\0\x34\xC7\x05\0XCLW\x04\0\0\0\0\0XLCN\x04\0J&\x02\0XCIM\x04\0=\xC7\x05\0XCMO\x04\0[a\x05\0XEZN\x04\0\xB9\xFB\x09\0XOWN\x04\0\x22\x25\x0A\0XCCM\x04\0.\x04\x07\0XCCM\x04\0.\x04\x07\0XWEM\x26\0Data\\Textures\\Cubemaps\\WRTemple_e.dds\0XCAS\x04\0\x60\x8E\x10\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read CELL, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      CellRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of XCCM is not four")
+    {
+      {
+        const auto data = "CELL\x12\x01\0\0\0\0\0\0\xCF\x6B\x01\0\x1B\x69\x55\0\x28\0\x09\0EDID\x13\0RiftenRaggedFlagon\0FULL\x04\0>\xED\0\0DATA\x02\0\xA3\0XCLL\x5C\0\x22\x1F\x13\0?GI\0`fH\0\0\0\xAA\x43\0\0zE\0\0\0\0Z\0\0\0\0\0\x80?\0@\x9C\x45\xCD\xCCL?%\x1F\x13\0\x1E\x1F\x12\0\"\x20\x13\0\"\x1D\x13\0\x10\x0E\x08\0\x33/\x1D\0`fH\0\0\0\x80?`fH\0\0\0\x80?\0\0zE\0@\x9C\x45\xEF\x03\0\0LTMP\x04\0\x34\xC7\x05\0XCLW\x04\0\0\0\0\0XLCN\x04\0J&\x02\0XCIM\x04\0=\xC7\x05\0XCMO\x04\0[a\x05\0XEZN\x04\0\xB9\xFB\x09\0XOWN\x04\0\x22\x25\x0A\0XCCM\x03\0.\x04\0XWEM\x26\0Data\\Textures\\Cubemaps\\WRTemple_e.dds\0XCAS\x04\0\x60\x8E\x10\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read CELL, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        CellRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+
+      {
+        const auto data = "CELL\x14\x01\0\0\0\0\0\0\xCF\x6B\x01\0\x1B\x69\x55\0\x28\0\x09\0EDID\x13\0RiftenRaggedFlagon\0FULL\x04\0>\xED\0\0DATA\x02\0\xA3\0XCLL\x5C\0\x22\x1F\x13\0?GI\0`fH\0\0\0\xAA\x43\0\0zE\0\0\0\0Z\0\0\0\0\0\x80?\0@\x9C\x45\xCD\xCCL?%\x1F\x13\0\x1E\x1F\x12\0\"\x20\x13\0\"\x1D\x13\0\x10\x0E\x08\0\x33/\x1D\0`fH\0\0\0\x80?`fH\0\0\0\x80?\0\0zE\0@\x9C\x45\xEF\x03\0\0LTMP\x04\0\x34\xC7\x05\0XCLW\x04\0\0\0\0\0XLCN\x04\0J&\x02\0XCIM\x04\0=\xC7\x05\0XCMO\x04\0[a\x05\0XEZN\x04\0\xB9\xFB\x09\0XOWN\x04\0\x22\x25\x0A\0XCCM\x05\0.\x04\x07\0\0XWEM\x26\0Data\\Textures\\Cubemaps\\WRTemple_e.dds\0XCAS\x04\0\x60\x8E\x10\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read CELL, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        CellRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+    }
+
+    SECTION("corrupt data: stream ends before all of XCCM can be read")
+    {
+      const auto data = "CELL\x13\x01\0\0\0\0\0\0\xCF\x6B\x01\0\x1B\x69\x55\0\x28\0\x09\0EDID\x13\0RiftenRaggedFlagon\0FULL\x04\0>\xED\0\0DATA\x02\0\xA3\0XCLL\x5C\0\x22\x1F\x13\0?GI\0`fH\0\0\0\xAA\x43\0\0zE\0\0\0\0Z\0\0\0\0\0\x80?\0@\x9C\x45\xCD\xCCL?%\x1F\x13\0\x1E\x1F\x12\0\"\x20\x13\0\"\x1D\x13\0\x10\x0E\x08\0\x33/\x1D\0`fH\0\0\0\x80?`fH\0\0\0\x80?\0\0zE\0@\x9C\x45\xEF\x03\0\0LTMP\x04\0\x34\xC7\x05\0XCLW\x04\0\0\0\0\0XLCN\x04\0J&\x02\0XCIM\x04\0=\xC7\x05\0XCMO\x04\0[a\x05\0XEZN\x04\0\xB9\xFB\x09\0XOWN\x04\0\x22\x25\x0A\0XCCM\x04\0.\x04"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read CELL, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      CellRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: XCCM is zero")
+    {
+      const auto data = "CELL\x13\x01\0\0\0\0\0\0\xCF\x6B\x01\0\x1B\x69\x55\0\x28\0\x09\0EDID\x13\0RiftenRaggedFlagon\0FULL\x04\0>\xED\0\0DATA\x02\0\xA3\0XCLL\x5C\0\x22\x1F\x13\0?GI\0`fH\0\0\0\xAA\x43\0\0zE\0\0\0\0Z\0\0\0\0\0\x80?\0@\x9C\x45\xCD\xCCL?%\x1F\x13\0\x1E\x1F\x12\0\"\x20\x13\0\"\x1D\x13\0\x10\x0E\x08\0\x33/\x1D\0`fH\0\0\0\x80?`fH\0\0\0\x80?\0\0zE\0@\x9C\x45\xEF\x03\0\0LTMP\x04\0\x34\xC7\x05\0XCLW\x04\0\0\0\0\0XLCN\x04\0J&\x02\0XCIM\x04\0=\xC7\x05\0XCMO\x04\0[a\x05\0XEZN\x04\0\xB9\xFB\x09\0XOWN\x04\0\x22\x25\x0A\0XCCM\x04\0\0\0\0\0XWEM\x26\0Data\\Textures\\Cubemaps\\WRTemple_e.dds\0XCAS\x04\0\x60\x8E\x10\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read CELL, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      CellRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple XWEMs")
+    {
+      const auto data = "CELL\x3F\x01\0\0\0\0\0\0\xCF\x6B\x01\0\x1B\x69\x55\0\x28\0\x09\0EDID\x13\0RiftenRaggedFlagon\0FULL\x04\0>\xED\0\0DATA\x02\0\xA3\0XCLL\x5C\0\x22\x1F\x13\0?GI\0`fH\0\0\0\xAA\x43\0\0zE\0\0\0\0Z\0\0\0\0\0\x80?\0@\x9C\x45\xCD\xCCL?%\x1F\x13\0\x1E\x1F\x12\0\"\x20\x13\0\"\x1D\x13\0\x10\x0E\x08\0\x33/\x1D\0`fH\0\0\0\x80?`fH\0\0\0\x80?\0\0zE\0@\x9C\x45\xEF\x03\0\0LTMP\x04\0\x34\xC7\x05\0XCLW\x04\0\0\0\0\0XLCN\x04\0J&\x02\0XCIM\x04\0=\xC7\x05\0XCMO\x04\0[a\x05\0XEZN\x04\0\xB9\xFB\x09\0XOWN\x04\0\x22\x25\x0A\0XCCM\x04\0.\x04\x07\0XWEM\x26\0Data\\Textures\\Cubemaps\\WRTemple_e.dds\0XWEM\x26\0Data\\Textures\\Cubemaps\\WRTemple_e.dds\0XCAS\x04\0\x60\x8E\x10\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read CELL, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      CellRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of XWEM > 512")
+    {
+      const auto data = "CELL\x13\x01\0\0\0\0\0\0\xCF\x6B\x01\0\x1B\x69\x55\0\x28\0\x09\0EDID\x13\0RiftenRaggedFlagon\0FULL\x04\0>\xED\0\0DATA\x02\0\xA3\0XCLL\x5C\0\x22\x1F\x13\0?GI\0`fH\0\0\0\xAA\x43\0\0zE\0\0\0\0Z\0\0\0\0\0\x80?\0@\x9C\x45\xCD\xCCL?%\x1F\x13\0\x1E\x1F\x12\0\"\x20\x13\0\"\x1D\x13\0\x10\x0E\x08\0\x33/\x1D\0`fH\0\0\0\x80?`fH\0\0\0\x80?\0\0zE\0@\x9C\x45\xEF\x03\0\0LTMP\x04\0\x34\xC7\x05\0XCLW\x04\0\0\0\0\0XLCN\x04\0J&\x02\0XCIM\x04\0=\xC7\x05\0XCMO\x04\0[a\x05\0XEZN\x04\0\xB9\xFB\x09\0XOWN\x04\0\x22\x25\x0A\0XCCM\x04\0.\x04\x07\0XWEM\x26\x02Gata\\Textures\\Cubemaps\\WRTemple_e.dds\0XCAS\x04\0\x60\x8E\x10\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read CELL, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      CellRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of XWEM is beyond stream")
+    {
+      const auto data = "CELL\x13\x01\0\0\0\0\0\0\xCF\x6B\x01\0\x1B\x69\x55\0\x28\0\x09\0EDID\x13\0RiftenRaggedFlagon\0FULL\x04\0>\xED\0\0DATA\x02\0\xA3\0XCLL\x5C\0\x22\x1F\x13\0?GI\0`fH\0\0\0\xAA\x43\0\0zE\0\0\0\0Z\0\0\0\0\0\x80?\0@\x9C\x45\xCD\xCCL?%\x1F\x13\0\x1E\x1F\x12\0\"\x20\x13\0\"\x1D\x13\0\x10\x0E\x08\0\x33/\x1D\0`fH\0\0\0\x80?`fH\0\0\0\x80?\0\0zE\0@\x9C\x45\xEF\x03\0\0LTMP\x04\0\x34\xC7\x05\0XCLW\x04\0\0\0\0\0XLCN\x04\0J&\x02\0XCIM\x04\0=\xC7\x05\0XCMO\x04\0[a\x05\0XEZN\x04\0\xB9\xFB\x09\0XOWN\x04\0\x22\x25\x0A\0XCCM\x04\0.\x04\x07\0XWEM\x31\0Data\\Textures\\Cubemaps\\WRTemple_e.dds\0XCAS\x04\0\x60\x8E\x10\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 

@@ -71,10 +71,10 @@ CellRecord::CellRecord()
   encounterZoneFormID(0),
   hasXCWT(0), unknownXCWT(0),
   musicTypeFormID(0),
-  unknownXWEM(""),
   ownerFactionFormID(0),
   lockListFormID(0),
   regionFormID(0),
+  unknownXWEM(""),
   defaultAcousticSpaceFormID(0)
 {
 }
@@ -103,10 +103,10 @@ bool CellRecord::equals(const CellRecord& other) const
       && (encounterZoneFormID == other.encounterZoneFormID)
       && (hasXCWT == other.hasXCWT) && ((unknownXCWT == other.unknownXCWT) || (!hasXCWT))
       && (musicTypeFormID == other.musicTypeFormID)
-      && (unknownXWEM == other.unknownXWEM)
       && (ownerFactionFormID == other.ownerFactionFormID)
       && (lockListFormID == other.lockListFormID)
       && (regionFormID == other.regionFormID)
+      && (unknownXWEM == other.unknownXWEM)
       && (defaultAcousticSpaceFormID == other.defaultAcousticSpaceFormID);
 }
 #endif
@@ -192,11 +192,6 @@ uint32_t CellRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* XCMO */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
-  if (!unknownXWEM.empty())
-  {
-    writeSize = writeSize + 4 /* XWEM */ +2 /* 2 bytes for length */
-        +unknownXWEM.length()+1 /* length of name +1 byte for NUL termination */;
-  }
   if (ownerFactionFormID!=0)
   {
     writeSize = writeSize +4 /* XOWN */ +2 /* 2 bytes for length */ +4 /* fixed size */;
@@ -208,6 +203,11 @@ uint32_t CellRecord::getWriteSize() const
   if (regionFormID!=0)
   {
     writeSize = writeSize +4 /* XCCM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+  }
+  if (!unknownXWEM.empty())
+  {
+    writeSize = writeSize + 4 /* XWEM */ +2 /* 2 bytes for length */
+        +unknownXWEM.length()+1 /* length of name +1 byte for NUL termination */;
   }
   if (defaultAcousticSpaceFormID!=0)
   {
@@ -443,17 +443,6 @@ bool CellRecord::saveToStream(std::ostream& output) const
     output.write((const char*) &musicTypeFormID, 4);
   }
 
-  if (!unknownXWEM.empty())
-  {
-    //write XWEM
-    output.write((const char*) &cXWEM, 4);
-    //XWEM's length
-    subLength = unknownXWEM.length()+1;
-    output.write((const char*) &subLength, 2);
-    //write XWEM path
-    output.write(unknownXWEM.c_str(), subLength);
-  }
-
   if (ownerFactionFormID!=0)
   {
     //write XOWN
@@ -485,6 +474,17 @@ bool CellRecord::saveToStream(std::ostream& output) const
     output.write((const char*) &subLength, 2);
     //write XCCM
     output.write((const char*) &regionFormID, 4);
+  }
+
+  if (!unknownXWEM.empty())
+  {
+    //write XWEM
+    output.write((const char*) &cXWEM, 4);
+    //XWEM's length
+    subLength = unknownXWEM.length()+1;
+    output.write((const char*) &subLength, 2);
+    //write XWEM path
+    output.write(unknownXWEM.c_str(), subLength);
   }
 
   if (defaultAcousticSpaceFormID!=0)
@@ -937,31 +937,6 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
              return false;
            }
            break;
-      case cXWEM:
-           if (!unknownXWEM.empty())
-           {
-             std::cerr << "Error: CELL seems to have more than one XWEM subrecord.\n";
-             return false;
-           }
-           //XWEM's length
-           actual_in->read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength>511)
-           {
-             std::cerr <<"Error: sub record XWEM of CELL is longer than 511 characters!\n";
-             return false;
-           }
-           //read XWEM's stuff
-           memset(buffer, 0, 512);
-           actual_in->read(buffer, subLength);
-           bytesRead += subLength;
-           if (!actual_in->good())
-           {
-             std::cerr << "Error while reading subrecord XWEM of CELL!\n";
-             return false;
-           }
-           unknownXWEM = std::string(buffer);
-           break;
       case cXOWN:
            if (ownerFactionFormID != 0)
            {
@@ -1010,6 +985,31 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
              return false;
            }
            break;
+      case cXWEM:
+           if (!unknownXWEM.empty())
+           {
+             std::cerr << "Error: CELL seems to have more than one XWEM subrecord.\n";
+             return false;
+           }
+           //XWEM's length
+           actual_in->read((char*) &subLength, 2);
+           bytesRead += 2;
+           if (subLength>511)
+           {
+             std::cerr <<"Error: sub record XWEM of CELL is longer than 511 characters!\n";
+             return false;
+           }
+           //read XWEM's stuff
+           memset(buffer, 0, 512);
+           actual_in->read(buffer, subLength);
+           bytesRead += subLength;
+           if (!actual_in->good())
+           {
+             std::cerr << "Error while reading subrecord XWEM of CELL!\n";
+             return false;
+           }
+           unknownXWEM = std::string(buffer);
+           break;
       case cXCAS:
            if (defaultAcousticSpaceFormID != 0)
            {
@@ -1030,7 +1030,7 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
            std::cerr << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
                      << "\", but only EDID, FULL, DATA, TVDT, MHDT, XCLC, XCLL,"
                      << " LTMP, LNAM, XCLW, XCLR, XNAM, XLCN, XWCN, XWCS, XWCU,"
-                     << " XCIM, XEZN, XCWT, XCMO, XWEM, XOWN, XILL, XCCM or XCAS are allowed here!\n";
+                     << " XCIM, XEZN, XCWT, XCMO, XOWN, XILL, XCCM, XWEM or XCAS are allowed here!\n";
            std::cerr << "Local stream position is "<< actual_in->tellg()
                      << " bytes. Bytes read so far: "<<bytesRead<<".\n";
            return false;

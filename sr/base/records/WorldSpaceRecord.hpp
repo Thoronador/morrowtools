@@ -37,9 +37,6 @@ struct WorldSpaceRecord: public BasicRecord
     /* constructor */
     WorldSpaceRecord();
 
-    /* destructor */
-    virtual ~WorldSpaceRecord();
-
     #ifndef SR_NO_RECORD_EQUALITY
     /* returns true, if the other record contains the same data */
     bool equals(const WorldSpaceRecord& other) const;

@@ -63,11 +63,6 @@ WorldSpaceRecord::WorldSpaceRecord()
 {
 }
 
-WorldSpaceRecord::~WorldSpaceRecord()
-{
-  //empty
-}
-
 #ifndef SR_NO_RECORD_EQUALITY
 bool WorldSpaceRecord::equals(const WorldSpaceRecord& other) const
 {

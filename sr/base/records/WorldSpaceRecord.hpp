@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2013  Thoronador
+    Copyright (C) 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -83,6 +83,10 @@ struct WorldSpaceRecord: public BasicRecord
     uint32_t interiorLightingFormID; //subrecord LTMP
     uint32_t encounterZoneFormID; //subrecord XEZN
     uint32_t climateFormID; //subrecord CNAM
+    uint32_t locationFormID; //subrecord XLCN
+    uint32_t parentWorldSpaceFormID; //subrecord WNAM
+    bool hasPNAM;
+    uint16_t unknownPNAM;
     uint32_t waterFormID; //subrecord NAM2
     uint32_t LODWaterTypeFormID; //subrecord NAM3
     bool hasNAM4;
@@ -92,10 +96,6 @@ struct WorldSpaceRecord: public BasicRecord
     std::string modelPath;
     BinarySubRecord unknownMODT;
     BinarySubRecord unknownMNAM;
-    uint32_t locationFormID; //subrecord XLCN
-    uint32_t parentWorldSpaceFormID; //subrecord WNAM
-    bool hasPNAM;
-    uint16_t unknownPNAM;
     BinarySubRecord unknownONAM;
     float distantLODMultiplier; //subrecord NAMA
     bool hasDATA;

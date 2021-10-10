@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2013  Thoronador
+    Copyright (C) 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -28,7 +28,8 @@ namespace SRTP
 {
 
 WorldSpaceRecord::WorldSpaceRecord()
-: BasicRecord(), editorID(""),
+: BasicRecord(),
+  editorID(""),
   unknownRNAMs(std::vector<BinarySubRecord>()),
   unknownMHDT(BinarySubRecord()),
   name(LocalizedString()),
@@ -38,6 +39,9 @@ WorldSpaceRecord::WorldSpaceRecord()
   interiorLightingFormID(0),
   encounterZoneFormID(0),
   climateFormID(0),
+  locationFormID(0),
+  parentWorldSpaceFormID(0),
+  hasPNAM(false), unknownPNAM(0),
   waterFormID(0),
   LODWaterTypeFormID(0),
   hasNAM4(false),
@@ -46,9 +50,6 @@ WorldSpaceRecord::WorldSpaceRecord()
   modelPath(""),
   unknownMODT(BinarySubRecord()),
   unknownMNAM(BinarySubRecord()),
-  locationFormID(0),
-  parentWorldSpaceFormID(0),
-  hasPNAM(false), unknownPNAM(0),
   unknownONAM(BinarySubRecord()),
   distantLODMultiplier(0.0f),
   hasDATA(false), unknownDATA(0),
@@ -70,31 +71,32 @@ WorldSpaceRecord::~WorldSpaceRecord()
 #ifndef SR_NO_RECORD_EQUALITY
 bool WorldSpaceRecord::equals(const WorldSpaceRecord& other) const
 {
-  return ((equalsBasic(other)) and (editorID==other.editorID)
-      and (unknownRNAMs==other.unknownRNAMs) and (unknownMHDT==other.unknownMHDT)
-      and (name==other.name)
-      and (hasWCTR==other.hasWCTR) and (((centerCellX==other.centerCellX) and (centerCellY==other.centerCellY)) or (!hasWCTR))
-      and (interiorLightingFormID==other.interiorLightingFormID)
-      and (encounterZoneFormID==other.encounterZoneFormID)
-      and (climateFormID==other.climateFormID)
-      and (waterFormID==other.waterFormID)
-      and (LODWaterTypeFormID==other.LODWaterTypeFormID)
-      and (hasNAM4==other.hasNAM4) and ((LODWaterHeight==other.LODWaterHeight) or (!hasNAM4))
-      and (hasDNAM==other.hasDNAM) and ((unknownDNAM==other.unknownDNAM) or (!hasDNAM))
-      and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
-      and (unknownMNAM==other.unknownMNAM)
-      and (locationFormID==other.locationFormID)
-      and (parentWorldSpaceFormID==other.parentWorldSpaceFormID)
-      and (hasPNAM==other.hasPNAM) and ((unknownPNAM==other.unknownPNAM) or (!hasPNAM))
-      and (unknownONAM==other.unknownONAM) and (distantLODMultiplier==other.distantLODMultiplier)
-      and (hasDATA==other.hasDATA) and ((unknownDATA==other.unknownDATA) or (!hasDATA))
-      and (hasNAM0==other.hasNAM0) and ((unknownNAM0==other.unknownNAM0) or (!hasNAM0))
-      and (hasNAM9==other.hasNAM9) and ((unknownNAM9==other.unknownNAM9) or (!hasNAM9))
-      and (musicFormID==other.musicFormID)
-      and (HD_LOD_DiffuseTexture==other.HD_LOD_DiffuseTexture)
-      and (HD_LOD_NormalTexture==other.HD_LOD_NormalTexture)
-      and (unknownXWEM==other.unknownXWEM)
-      and (unknownOFST==other.unknownOFST));
+  return equalsBasic(other) && (editorID == other.editorID)
+      && (unknownRNAMs == other.unknownRNAMs) && (unknownMHDT == other.unknownMHDT)
+      && (name == other.name)
+      && (hasWCTR == other.hasWCTR) && (((centerCellX == other.centerCellX) && (centerCellY == other.centerCellY)) || (!hasWCTR))
+      && (interiorLightingFormID == other.interiorLightingFormID)
+      && (encounterZoneFormID == other.encounterZoneFormID)
+      && (climateFormID == other.climateFormID)
+      && (locationFormID == other.locationFormID)
+      && (parentWorldSpaceFormID == other.parentWorldSpaceFormID)
+      && (hasPNAM == other.hasPNAM) && ((unknownPNAM == other.unknownPNAM) || !hasPNAM)
+      && (waterFormID == other.waterFormID)
+      && (LODWaterTypeFormID == other.LODWaterTypeFormID)
+      && (hasNAM4 == other.hasNAM4) && ((LODWaterHeight == other.LODWaterHeight) || !hasNAM4)
+      && (hasDNAM == other.hasDNAM) && ((unknownDNAM == other.unknownDNAM) || !hasDNAM)
+      && (modelPath == other.modelPath) && (unknownMODT == other.unknownMODT)
+      && (unknownMNAM == other.unknownMNAM)
+      && (unknownONAM == other.unknownONAM)
+      && (distantLODMultiplier == other.distantLODMultiplier)
+      && (hasDATA == other.hasDATA) && ((unknownDATA == other.unknownDATA) || !hasDATA)
+      && (hasNAM0 == other.hasNAM0) && ((unknownNAM0 == other.unknownNAM0) || !hasNAM0)
+      && (hasNAM9 == other.hasNAM9) && ((unknownNAM9 == other.unknownNAM9) || !hasNAM9)
+      && (musicFormID == other.musicFormID)
+      && (HD_LOD_DiffuseTexture == other.HD_LOD_DiffuseTexture)
+      && (HD_LOD_NormalTexture == other.HD_LOD_NormalTexture)
+      && (unknownXWEM == other.unknownXWEM)
+      && (unknownOFST == other.unknownOFST);
 }
 #endif
 
@@ -139,6 +141,18 @@ uint32_t WorldSpaceRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* CNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
+  if (locationFormID!=0)
+  {
+    writeSize = writeSize +4 /* XLCN */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+  }
+  if (parentWorldSpaceFormID!=0)
+  {
+    writeSize = writeSize +4 /* WNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+  }
+  if (hasPNAM)
+  {
+    writeSize = writeSize +4 /* PNAM */ +2 /* 2 bytes for length */ +2 /* fixed size */;
+  }
   if (waterFormID!=0)
   {
     writeSize = writeSize +4 /* NAM2 */ +2 /* 2 bytes for length */ +4 /* fixed size */;
@@ -167,18 +181,6 @@ uint32_t WorldSpaceRecord::getWriteSize() const
   if (unknownMNAM.isPresent())
   {
     writeSize = writeSize + 4 /* MNAM */ + 2 /* 2 bytes for length */ + unknownMNAM.size() /* size */;
-  }
-  if (locationFormID!=0)
-  {
-    writeSize = writeSize +4 /* XLCN */ +2 /* 2 bytes for length */ +4 /* fixed size */;
-  }
-  if (parentWorldSpaceFormID!=0)
-  {
-    writeSize = writeSize +4 /* WNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
-  }
-  if (hasPNAM)
-  {
-    writeSize = writeSize +4 /* PNAM */ +2 /* 2 bytes for length */ +2 /* fixed size */;
   }
   if (unknownONAM.isPresent())
   {
@@ -322,6 +324,39 @@ bool WorldSpaceRecord::saveToStream(std::ostream& output) const
     output.write((const char*) &climateFormID, 4);
   }//if CNAM
 
+  if (locationFormID!=0)
+  {
+    //write XLCN
+    output.write((const char*) &cXLCN, 4);
+    //XLCN's length
+    subLength = 4; // fixed
+    output.write((const char*) &subLength, 2);
+    //write XLCN
+    output.write((const char*) &locationFormID, 4);
+  }
+
+  if (parentWorldSpaceFormID!=0)
+  {
+    //write WNAM
+    output.write((const char*) &cWNAM, 4);
+    //WNAM's length
+    subLength = 4; // fixed
+    output.write((const char*) &subLength, 2);
+    //write WNAM
+    output.write((const char*) &parentWorldSpaceFormID, 4);
+  }
+
+  if (hasPNAM)
+  {
+    //write PNAM
+    output.write((const char*) &cPNAM, 4);
+    //PNAM's length
+    subLength = 2; // fixed
+    output.write((const char*) &subLength, 2);
+    //write PNAM
+    output.write((const char*) &unknownPNAM, 2);
+  }
+
   if (waterFormID!=0)
   {
     //write NAM2
@@ -397,39 +432,6 @@ bool WorldSpaceRecord::saveToStream(std::ostream& output) const
     }
   }//if MNAM
 
-  if (locationFormID!=0)
-  {
-    //write XLCN
-    output.write((const char*) &cXLCN, 4);
-    //XLCN's length
-    subLength = 4; // fixed
-    output.write((const char*) &subLength, 2);
-    //write XLCN
-    output.write((const char*) &locationFormID, 4);
-  }
-
-  if (parentWorldSpaceFormID!=0)
-  {
-    //write WNAM
-    output.write((const char*) &cWNAM, 4);
-    //WNAM's length
-    subLength = 4; // fixed
-    output.write((const char*) &subLength, 2);
-    //write WNAM
-    output.write((const char*) &parentWorldSpaceFormID, 4);
-  }
-
-  if (hasPNAM)
-  {
-    //write PNAM
-    output.write((const char*) &cPNAM, 4);
-    //PNAM's length
-    subLength = 2; // fixed
-    output.write((const char*) &subLength, 2);
-    //write PNAM
-    output.write((const char*) &unknownPNAM, 2);
-  }
-
   if (unknownONAM.isPresent())
   {
     //write ONAM
@@ -489,7 +491,7 @@ bool WorldSpaceRecord::saveToStream(std::ostream& output) const
     subLength = 4; // fixed
     output.write((const char*) &subLength, 2);
     //write ZNAM
-    output.write((const char*) &musicFormID, 1);
+    output.write((const char*) &musicFormID, 4);
   }
 
   if (!HD_LOD_DiffuseTexture.empty())
@@ -806,7 +808,7 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
              return false;
            }
            bytesRead += 8;
-           hasDNAM = false;
+           hasDNAM = true;
            break;
       case cMODL:
            if (!modelPath.empty())
@@ -906,7 +908,7 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
              return false;
            }
            bytesRead += 2;
-           hasPNAM = false;
+           hasPNAM = true;
            break;
       case cONAM:
            if (unknownONAM.isPresent())
@@ -977,7 +979,7 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
              return false;
            }
            bytesRead += 1;
-           hasDATA = false;
+           hasDATA = true;
            break;
       case cNAM0:
            if (hasNAM0)
@@ -1002,7 +1004,7 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
              return false;
            }
            bytesRead += 8;
-           hasNAM0 = false;
+           hasNAM0 = true;
            break;
       case cNAM9:
            if (hasNAM9)
@@ -1027,7 +1029,7 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
              return false;
            }
            bytesRead += 8;
-           hasNAM9 = false;
+           hasNAM9 = true;
            break;
       case cZNAM:
            if (musicFormID!=0)

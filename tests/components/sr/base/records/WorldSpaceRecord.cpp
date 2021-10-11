@@ -843,6 +843,7 @@ TEST_CASE("WorldSpaceRecord")
     uint32_t dummy = 0;
     StringTable dummy_table;
     dummy_table.addString(0x00003EF4, "foo");
+    dummy_table.addString(0x0000081A, "bar");
 
     SECTION("default: load record")
     {
@@ -921,6 +922,79 @@ TEST_CASE("WorldSpaceRecord")
       REQUIRE( record.saveToStream(streamOut) );
       // Check written data.
       REQUIRE( streamOut.str() == data );
+    }
+
+    SECTION("default: load constructed record with CNAM + textures")
+    {
+      const auto data = "WRLD\x9E\x01\0\0\0\0\0\0\x71\x6D\x01\0\x1B\x69\x55\0\x28\0\x05\0EDID\x0E\0MarkarthWorld\0RNAM8\0\x04\0\xD5\xFF\x06\0\0\0\x99\xD3\x06\0\x02\0\xD4\xFF\x9A\xD3\x06\0\x03\0\xD4\xFF\xF1\xD3\x06\0\x02\0\xD7\xFF\x99'\x0B\0\x03\0\xD7\xFF\x97\xD3\x06\0\x02\0\xD5\xFF\xF0\xD3\x06\0\x03\0\xD6\xFF\x46ULL\x04\0\x1A\x08\0\0WNAM\x04\0\0\x08\0\x02PNAM\x02\0\x04\0CNAM\x04\0\xFCL\x03\x02NAM2\x04\0\xF1\xDF\x01\x02NAM3\x04\0\xF1\xDF\x01\x02NAM4\x04\0\0\x80;DDNAM\x08\0\0\0\xFA\xC4\0\x80;DONAM\x10\0\0\0\x80\xBF\0\0\0\0\0\0\0\0\0\0\0\0NAMA\x04\0\0\0\x80?DATA\x01\0\x93NAM0\x08\0\0\0H\xC8\0\0H\xC8NAM9\x08\0\0\0\\H\0\0LHZNAM\x04\0\x81\x42\x03\x02TNAM5\0Data\\Textures\\Landscape\\Mountains\\MountainSlab02.dds\0UNAM7\0Data\\Textures\\Landscape\\Mountains\\MountainSlab02_N.dds\0XWEM%\0data\\Textures\\Cubemaps\\Apocrypha.dds\0OFST\x04\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read WRLD, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      WorldSpaceRecord record;
+      REQUIRE( record.loadFromStream(stream, true, dummy_table) );
+      // Check data.
+      // -- header
+      REQUIRE( record.headerFlags == 0 );
+      REQUIRE( record.headerFormID == 0x00016D71 );
+      REQUIRE( record.headerRevision == 0x0055691B );
+      REQUIRE( record.headerVersion == 40 );
+      REQUIRE( record.headerUnknown5 == 0x0005 );
+      // -- record data
+      REQUIRE( record.editorID == "MarkarthWorld" );
+      REQUIRE( record.unknownRNAMs.size() == 1 );
+      const auto RNAM_0 = std::string_view(reinterpret_cast<const char*>(record.unknownRNAMs[0].data()), record.unknownRNAMs[0].size());
+      REQUIRE( RNAM_0 == "\x04\0\xD5\xFF\x06\0\0\0\x99\xD3\x06\0\x02\0\xD4\xFF\x9A\xD3\x06\0\x03\0\xD4\xFF\xF1\xD3\x06\0\x02\0\xD7\xFF\x99'\x0B\0\x03\0\xD7\xFF\x97\xD3\x06\0\x02\0\xD5\xFF\xF0\xD3\x06\0\x03\0\xD6\xFF"sv );
+      REQUIRE_FALSE( record.unknownMHDT.isPresent() );
+      REQUIRE( record.name.isPresent() );
+      REQUIRE( record.name.getType() == LocalizedString::Type::Index );
+      REQUIRE( record.name.getIndex() == 0x0000081A );
+      REQUIRE_FALSE( record.hasWCTR );
+      REQUIRE( record.centerCellX == 0 );
+      REQUIRE( record.centerCellY == 0 );
+      REQUIRE( record.interiorLightingFormID == 0 );
+      REQUIRE( record.encounterZoneFormID == 0 );
+      REQUIRE( record.climateFormID == 0x02034CFC );
+      REQUIRE( record.waterFormID == 0x0201DFF1 );
+      REQUIRE( record.LODWaterTypeFormID == 0x0201DFF1 );
+      REQUIRE( record.hasNAM4 );
+      REQUIRE( record.LODWaterHeight == 750.0f );
+      REQUIRE( record.hasDNAM );
+      REQUIRE( record.unknownDNAM == 0x443B8000C4FA0000 );
+      REQUIRE( record.modelPath.empty() );
+      REQUIRE_FALSE( record.unknownMODT.isPresent() );
+      REQUIRE_FALSE( record.unknownMNAM.isPresent() );
+      REQUIRE( record.locationFormID == 0 );
+      REQUIRE( record.parentWorldSpaceFormID == 0x02000800 );
+      REQUIRE( record.hasPNAM );
+      REQUIRE( record.unknownPNAM == 0x0004 );
+      REQUIRE( record.unknownONAM.isPresent() );
+      const auto ONAM = std::string_view(reinterpret_cast<const char*>(record.unknownONAM.data()), record.unknownONAM.size());
+      REQUIRE( ONAM == "\0\0\x80\xBF\0\0\0\0\0\0\0\0\0\0\0\0"sv );
+      REQUIRE( record.distantLODMultiplier == 1.0f );
+      REQUIRE( record.hasDATA );
+      REQUIRE( record.unknownDATA == 0x93 );
+      REQUIRE( record.hasNAM0 );
+      REQUIRE( record.unknownNAM0 == 0xC8480000C8480000 );
+      REQUIRE( record.hasNAM9 );
+      REQUIRE( record.unknownNAM9 == 0x484C0000485C0000 );
+      REQUIRE( record.musicFormID == 0x02034281 );
+      REQUIRE( record.HD_LOD_DiffuseTexture == "Data\\Textures\\Landscape\\Mountains\\MountainSlab02.dds" );
+      REQUIRE( record.HD_LOD_NormalTexture == "Data\\Textures\\Landscape\\Mountains\\MountainSlab02_N.dds" );
+      REQUIRE( record.unknownXWEM == "data\\Textures\\Cubemaps\\Apocrypha.dds" );
+      REQUIRE( record.unknownOFST.isPresent() );
+      const auto OFST = std::string_view(reinterpret_cast<const char*>(record.unknownOFST.data()), record.unknownOFST.size());
+      REQUIRE( OFST == "\0\0\0\0"sv );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( record.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str().size() == data.size() );
     }
 
     SECTION("special: load deleted record")
@@ -1268,6 +1342,82 @@ TEST_CASE("WorldSpaceRecord")
     SECTION("corrupt data: XEZN is zero")
     {
       const auto data = "WRLD\xF3\x02\0\0\0\0\0\0\xD3\xCD\x01\0\x1B\x69\x55\0\x28\0\x09\0EDID\x12\0LabyrinthianWorld\0RNAM\x10\0\x0A\0\xFC\xFF\x01\0\0\0\x04\xDB\x01\0\x0A\0\xFC\xFFRNAM8\0\x0A\0\xFD\xFF\x06\0\0\0\x0A\x07\x10\0\x0A\0\xFD\xFF\x0C\x07\x10\0\x0A\0\xFD\xFF\x0C\x07\x10\0\x0A\0\xFD\xFF\x0A\x07\x10\0\x0A\0\xFD\xFF\x0E\x07\x10\0\x0A\0\xFD\xFF\x04\xDB\x01\0\x0A\0\xFC\xFFRNAM8\0\x0A\0\xFE\xFF\x06\0\0\0\xFC\x06\x10\0\x0A\0\xFE\xFF\xFF\x06\x10\0\x0A\0\xFE\xFF\x04\x07\x10\0\x0A\0\xFE\xFF\x04\x07\x10\0\x0A\0\xFE\xFF\xFF\x06\x10\0\x0A\0\xFE\xFF\xFC\x06\x10\0\x0A\0\xFE\xFFRNAM\x18\0\x0B\0\xFE\xFF\x02\0\0\0\xFA\x06\x10\0\x0B\0\xFE\xFF\xFA\x06\x10\0\x0B\0\xFE\xFF\x46ULL\x04\0\xF4>\0\0WCTR\x04\0\xFD\xFF\x0A\0LTMP\x04\0\x8C\x12\x03\0XEZN\x04\0\0\0\0\0XLCN\x04\0b\x92\x01\0WNAM\x04\0<\0\0\0PNAM\x02\0\x14\0NAM2\x04\0\x18\0\0\0NAM3\x04\0\x18\0\0\0NAM4\x04\0\0\0\0\0DNAM\x08\0\0\0\0\0\0\0\x80\xC3ONAM\x10\0\0\0\x80?\0\0\0\0\0\0\0\0\0\0\x80\xC5NAMA\x04\0\0\0\x80?DATA\x01\0aNAM0\x08\0\0\0\x80\xC6\0\0\x80\xC5NAM9\x08\0\0\0\x80\x45\0\0PGZNAM\x04\0\xC2\xD4\x02\0OFSTh\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\xC2\x13\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\xDD\x12\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0L\x19\0\0\0\0\0\0\0\0\0\0\0\0\0\0\xD3\x39\0\0\x16l\x01\0\xDB\xB4\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x80\x1A\0\0\x37\xDC\0\0>L\0\0\0\0\0\0\0\0\0\0\0\0\0\0\xEB\x16\0\0I\x14\0\0\x44;\0\0S\x88\x01\0L\x13\0\0\0\0\0\0\0\0\0\0)\x1A\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read WRLD, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      WorldSpaceRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple CNAMs")
+    {
+      const auto data = "WRLD\xA8\x01\0\0\0\0\0\0\x71\x6D\x01\0\x1B\x69\x55\0\x28\0\x05\0EDID\x0E\0MarkarthWorld\0RNAM8\0\x04\0\xD5\xFF\x06\0\0\0\x99\xD3\x06\0\x02\0\xD4\xFF\x9A\xD3\x06\0\x03\0\xD4\xFF\xF1\xD3\x06\0\x02\0\xD7\xFF\x99'\x0B\0\x03\0\xD7\xFF\x97\xD3\x06\0\x02\0\xD5\xFF\xF0\xD3\x06\0\x03\0\xD6\xFF\x46ULL\x04\0\x1A\x08\0\0WNAM\x04\0\0\x08\0\x02PNAM\x02\0\x04\0CNAM\x04\0\xFCL\x03\0CNAM\x04\0\xFCL\x03\x02NAM2\x04\0\xF1\xDF\x01\x02NAM3\x04\0\xF1\xDF\x01\x02NAM4\x04\0\0\x80;DDNAM\x08\0\0\0\xFA\xC4\0\x80;DONAM\x10\0\0\0\x80\xBF\0\0\0\0\0\0\0\0\0\0\0\0NAMA\x04\0\0\0\x80?DATA\x01\0\x93NAM0\x08\0\0\0H\xC8\0\0H\xC8NAM9\x08\0\0\0\\H\0\0LHZNAM\x04\0\x81\x42\x03\x02TNAM5\0Data\\Textures\\Landscape\\Mountains\\MountainSlab02.dds\0UNAM7\0Data\\Textures\\Landscape\\Mountains\\MountainSlab02_N.dds\0XWEM%\0data\\Textures\\Cubemaps\\Apocrypha.dds\0OFST\x04\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read WRLD, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      WorldSpaceRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of CNAM is not four")
+    {
+      {
+        const auto data = "WRLD\x9D\x01\0\0\0\0\0\0\x71\x6D\x01\0\x1B\x69\x55\0\x28\0\x05\0EDID\x0E\0MarkarthWorld\0RNAM8\0\x04\0\xD5\xFF\x06\0\0\0\x99\xD3\x06\0\x02\0\xD4\xFF\x9A\xD3\x06\0\x03\0\xD4\xFF\xF1\xD3\x06\0\x02\0\xD7\xFF\x99'\x0B\0\x03\0\xD7\xFF\x97\xD3\x06\0\x02\0\xD5\xFF\xF0\xD3\x06\0\x03\0\xD6\xFF\x46ULL\x04\0\x1A\x08\0\0WNAM\x04\0\0\x08\0\x02PNAM\x02\0\x04\0CNAM\x03\0\xFCL\x02NAM2\x04\0\xF1\xDF\x01\x02NAM3\x04\0\xF1\xDF\x01\x02NAM4\x04\0\0\x80;DDNAM\x08\0\0\0\xFA\xC4\0\x80;DONAM\x10\0\0\0\x80\xBF\0\0\0\0\0\0\0\0\0\0\0\0NAMA\x04\0\0\0\x80?DATA\x01\0\x93NAM0\x08\0\0\0H\xC8\0\0H\xC8NAM9\x08\0\0\0\\H\0\0LHZNAM\x04\0\x81\x42\x03\x02TNAM5\0Data\\Textures\\Landscape\\Mountains\\MountainSlab02.dds\0UNAM7\0Data\\Textures\\Landscape\\Mountains\\MountainSlab02_N.dds\0XWEM%\0data\\Textures\\Cubemaps\\Apocrypha.dds\0OFST\x04\0\0\0\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read WRLD, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        WorldSpaceRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+
+      {
+        const auto data = "WRLD\x9F\x01\0\0\0\0\0\0\x71\x6D\x01\0\x1B\x69\x55\0\x28\0\x05\0EDID\x0E\0MarkarthWorld\0RNAM8\0\x04\0\xD5\xFF\x06\0\0\0\x99\xD3\x06\0\x02\0\xD4\xFF\x9A\xD3\x06\0\x03\0\xD4\xFF\xF1\xD3\x06\0\x02\0\xD7\xFF\x99'\x0B\0\x03\0\xD7\xFF\x97\xD3\x06\0\x02\0\xD5\xFF\xF0\xD3\x06\0\x03\0\xD6\xFF\x46ULL\x04\0\x1A\x08\0\0WNAM\x04\0\0\x08\0\x02PNAM\x02\0\x04\0CNAM\x05\0\xFCL\x03\x02\0NAM2\x04\0\xF1\xDF\x01\x02NAM3\x04\0\xF1\xDF\x01\x02NAM4\x04\0\0\x80;DDNAM\x08\0\0\0\xFA\xC4\0\x80;DONAM\x10\0\0\0\x80\xBF\0\0\0\0\0\0\0\0\0\0\0\0NAMA\x04\0\0\0\x80?DATA\x01\0\x93NAM0\x08\0\0\0H\xC8\0\0H\xC8NAM9\x08\0\0\0\\H\0\0LHZNAM\x04\0\x81\x42\x03\x02TNAM5\0Data\\Textures\\Landscape\\Mountains\\MountainSlab02.dds\0UNAM7\0Data\\Textures\\Landscape\\Mountains\\MountainSlab02_N.dds\0XWEM%\0data\\Textures\\Cubemaps\\Apocrypha.dds\0OFST\x04\0\0\0\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read WRLD, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        WorldSpaceRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+    }
+
+    SECTION("corrupt data: stream ends before all of CNAM can be read")
+    {
+      const auto data = "WRLD\x9E\x01\0\0\0\0\0\0\x71\x6D\x01\0\x1B\x69\x55\0\x28\0\x05\0EDID\x0E\0MarkarthWorld\0RNAM8\0\x04\0\xD5\xFF\x06\0\0\0\x99\xD3\x06\0\x02\0\xD4\xFF\x9A\xD3\x06\0\x03\0\xD4\xFF\xF1\xD3\x06\0\x02\0\xD7\xFF\x99'\x0B\0\x03\0\xD7\xFF\x97\xD3\x06\0\x02\0\xD5\xFF\xF0\xD3\x06\0\x03\0\xD6\xFF\x46ULL\x04\0\x1A\x08\0\0WNAM\x04\0\0\x08\0\x02PNAM\x02\0\x04\0CNAM\x04\0\xFC"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read WRLD, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      WorldSpaceRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: CNAM is zero")
+    {
+      const auto data = "WRLD\x9E\x01\0\0\0\0\0\0\x71\x6D\x01\0\x1B\x69\x55\0\x28\0\x05\0EDID\x0E\0MarkarthWorld\0RNAM8\0\x04\0\xD5\xFF\x06\0\0\0\x99\xD3\x06\0\x02\0\xD4\xFF\x9A\xD3\x06\0\x03\0\xD4\xFF\xF1\xD3\x06\0\x02\0\xD7\xFF\x99'\x0B\0\x03\0\xD7\xFF\x97\xD3\x06\0\x02\0\xD5\xFF\xF0\xD3\x06\0\x03\0\xD6\xFF\x46ULL\x04\0\x1A\x08\0\0WNAM\x04\0\0\x08\0\x02PNAM\x02\0\x04\0CNAM\x04\0\0\0\0\0NAM2\x04\0\xF1\xDF\x01\x02NAM3\x04\0\xF1\xDF\x01\x02NAM4\x04\0\0\x80;DDNAM\x08\0\0\0\xFA\xC4\0\x80;DONAM\x10\0\0\0\x80\xBF\0\0\0\0\0\0\0\0\0\0\0\0NAMA\x04\0\0\0\x80?DATA\x01\0\x93NAM0\x08\0\0\0H\xC8\0\0H\xC8NAM9\x08\0\0\0\\H\0\0LHZNAM\x04\0\x81\x42\x03\x02TNAM5\0Data\\Textures\\Landscape\\Mountains\\MountainSlab02.dds\0UNAM7\0Data\\Textures\\Landscape\\Mountains\\MountainSlab02_N.dds\0XWEM%\0data\\Textures\\Cubemaps\\Apocrypha.dds\0OFST\x04\0\0\0\0\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 
@@ -2120,6 +2270,186 @@ TEST_CASE("WorldSpaceRecord")
     SECTION("corrupt data: ZNAM is zero")
     {
       const auto data = "WRLD\xF3\x02\0\0\0\0\0\0\xD3\xCD\x01\0\x1B\x69\x55\0\x28\0\x09\0EDID\x12\0LabyrinthianWorld\0RNAM\x10\0\x0A\0\xFC\xFF\x01\0\0\0\x04\xDB\x01\0\x0A\0\xFC\xFFRNAM8\0\x0A\0\xFD\xFF\x06\0\0\0\x0A\x07\x10\0\x0A\0\xFD\xFF\x0C\x07\x10\0\x0A\0\xFD\xFF\x0C\x07\x10\0\x0A\0\xFD\xFF\x0A\x07\x10\0\x0A\0\xFD\xFF\x0E\x07\x10\0\x0A\0\xFD\xFF\x04\xDB\x01\0\x0A\0\xFC\xFFRNAM8\0\x0A\0\xFE\xFF\x06\0\0\0\xFC\x06\x10\0\x0A\0\xFE\xFF\xFF\x06\x10\0\x0A\0\xFE\xFF\x04\x07\x10\0\x0A\0\xFE\xFF\x04\x07\x10\0\x0A\0\xFE\xFF\xFF\x06\x10\0\x0A\0\xFE\xFF\xFC\x06\x10\0\x0A\0\xFE\xFFRNAM\x18\0\x0B\0\xFE\xFF\x02\0\0\0\xFA\x06\x10\0\x0B\0\xFE\xFF\xFA\x06\x10\0\x0B\0\xFE\xFF\x46ULL\x04\0\xF4>\0\0WCTR\x04\0\xFD\xFF\x0A\0LTMP\x04\0\x8C\x12\x03\0XEZN\x04\0B\xEC\x03\0XLCN\x04\0b\x92\x01\0WNAM\x04\0<\0\0\0PNAM\x02\0\x14\0NAM2\x04\0\x18\0\0\0NAM3\x04\0\x18\0\0\0NAM4\x04\0\0\0\0\0DNAM\x08\0\0\0\0\0\0\0\x80\xC3ONAM\x10\0\0\0\x80?\0\0\0\0\0\0\0\0\0\0\x80\xC5NAMA\x04\0\0\0\x80?DATA\x01\0aNAM0\x08\0\0\0\x80\xC6\0\0\x80\xC5NAM9\x08\0\0\0\x80\x45\0\0PGZNAM\x04\0\0\0\0\0OFSTh\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\xC2\x13\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\xDD\x12\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0L\x19\0\0\0\0\0\0\0\0\0\0\0\0\0\0\xD3\x39\0\0\x16l\x01\0\xDB\xB4\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x80\x1A\0\0\x37\xDC\0\0>L\0\0\0\0\0\0\0\0\0\0\0\0\0\0\xEB\x16\0\0I\x14\0\0\x44;\0\0S\x88\x01\0L\x13\0\0\0\0\0\0\0\0\0\0)\x1A\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read WRLD, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      WorldSpaceRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple TNAMs")
+    {
+      const auto data = "WRLD\x9E\x01\0\0\0\0\0\0\x71\x6D\x01\0\x1B\x69\x55\0\x28\0\x05\0EDID\x0E\0MarkarthWorld\0RNAM8\0\x04\0\xD5\xFF\x06\0\0\0\x99\xD3\x06\0\x02\0\xD4\xFF\x9A\xD3\x06\0\x03\0\xD4\xFF\xF1\xD3\x06\0\x02\0\xD7\xFF\x99'\x0B\0\x03\0\xD7\xFF\x97\xD3\x06\0\x02\0\xD5\xFF\xF0\xD3\x06\0\x03\0\xD6\xFF\x46ULL\x04\0\x1A\x08\0\0WNAM\x04\0\0\x08\0\x02PNAM\x02\0\x04\0CNAM\x04\0\xFCL\x03\x02NAM2\x04\0\xF1\xDF\x01\x02NAM3\x04\0\xF1\xDF\x01\x02NAM4\x04\0\0\x80;DDNAM\x08\0\0\0\xFA\xC4\0\x80;DONAM\x10\0\0\0\x80\xBF\0\0\0\0\0\0\0\0\0\0\0\0NAMA\x04\0\0\0\x80?DATA\x01\0\x93NAM0\x08\0\0\0H\xC8\0\0H\xC8NAM9\x08\0\0\0\\H\0\0LHZNAM\x04\0\x81\x42\x03\x02TNAM5\0Data\\Textures\\Landscape\\Mountains\\MountainSlab02.dds\0TNAM7\0Data\\Textures\\Landscape\\Mountains\\MountainSlab02_N.dds\0XWEM%\0data\\Textures\\Cubemaps\\Apocrypha.dds\0OFST\x04\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read WRLD, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      WorldSpaceRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of TNAM > 512")
+    {
+      const auto data = "WRLD\x9E\x01\0\0\0\0\0\0\x71\x6D\x01\0\x1B\x69\x55\0\x28\0\x05\0EDID\x0E\0MarkarthWorld\0RNAM8\0\x04\0\xD5\xFF\x06\0\0\0\x99\xD3\x06\0\x02\0\xD4\xFF\x9A\xD3\x06\0\x03\0\xD4\xFF\xF1\xD3\x06\0\x02\0\xD7\xFF\x99'\x0B\0\x03\0\xD7\xFF\x97\xD3\x06\0\x02\0\xD5\xFF\xF0\xD3\x06\0\x03\0\xD6\xFF\x46ULL\x04\0\x1A\x08\0\0WNAM\x04\0\0\x08\0\x02PNAM\x02\0\x04\0CNAM\x04\0\xFCL\x03\x02NAM2\x04\0\xF1\xDF\x01\x02NAM3\x04\0\xF1\xDF\x01\x02NAM4\x04\0\0\x80;DDNAM\x08\0\0\0\xFA\xC4\0\x80;DONAM\x10\0\0\0\x80\xBF\0\0\0\0\0\0\0\0\0\0\0\0NAMA\x04\0\0\0\x80?DATA\x01\0\x93NAM0\x08\0\0\0H\xC8\0\0H\xC8NAM9\x08\0\0\0\\H\0\0LHZNAM\x04\0\x81\x42\x03\x02TNAM5\x02Gata\\Textures\\Landscape\\Mountains\\MountainSlab02.dds\0UNAM7\0Data\\Textures\\Landscape\\Mountains\\MountainSlab02_N.dds\0XWEM%\0data\\Textures\\Cubemaps\\Apocrypha.dds\0OFST\x04\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read WRLD, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      WorldSpaceRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of TNAM is beyond stream")
+    {
+      const auto data = "WRLD\x9E\x01\0\0\0\0\0\0\x71\x6D\x01\0\x1B\x69\x55\0\x28\0\x05\0EDID\x0E\0MarkarthWorld\0RNAM8\0\x04\0\xD5\xFF\x06\0\0\0\x99\xD3\x06\0\x02\0\xD4\xFF\x9A\xD3\x06\0\x03\0\xD4\xFF\xF1\xD3\x06\0\x02\0\xD7\xFF\x99'\x0B\0\x03\0\xD7\xFF\x97\xD3\x06\0\x02\0\xD5\xFF\xF0\xD3\x06\0\x03\0\xD6\xFF\x46ULL\x04\0\x1A\x08\0\0WNAM\x04\0\0\x08\0\x02PNAM\x02\0\x04\0CNAM\x04\0\xFCL\x03\x02NAM2\x04\0\xF1\xDF\x01\x02NAM3\x04\0\xF1\xDF\x01\x02NAM4\x04\0\0\x80;DDNAM\x08\0\0\0\xFA\xC4\0\x80;DONAM\x10\0\0\0\x80\xBF\0\0\0\0\0\0\0\0\0\0\0\0NAMA\x04\0\0\0\x80?DATA\x01\0\x93NAM0\x08\0\0\0H\xC8\0\0H\xC8NAM9\x08\0\0\0\\H\0\0LHZNAM\x04\0\x81\x42\x03\x02TNAM\x9E\x01Gata\\Textures\\Landscape\\Mountains\\MountainSlab02.dds\0UNAM7\0Data\\Textures\\Landscape\\Mountains\\MountainSlab02_N.dds\0XWEM%\0data\\Textures\\Cubemaps\\Apocrypha.dds\0OFST\x04\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read WRLD, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      WorldSpaceRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: TNAM is empty")
+    {
+      const auto data = "WRLD\x6A\x01\0\0\0\0\0\0\x71\x6D\x01\0\x1B\x69\x55\0\x28\0\x05\0EDID\x0E\0MarkarthWorld\0RNAM8\0\x04\0\xD5\xFF\x06\0\0\0\x99\xD3\x06\0\x02\0\xD4\xFF\x9A\xD3\x06\0\x03\0\xD4\xFF\xF1\xD3\x06\0\x02\0\xD7\xFF\x99'\x0B\0\x03\0\xD7\xFF\x97\xD3\x06\0\x02\0\xD5\xFF\xF0\xD3\x06\0\x03\0\xD6\xFF\x46ULL\x04\0\x1A\x08\0\0WNAM\x04\0\0\x08\0\x02PNAM\x02\0\x04\0CNAM\x04\0\xFCL\x03\x02NAM2\x04\0\xF1\xDF\x01\x02NAM3\x04\0\xF1\xDF\x01\x02NAM4\x04\0\0\x80;DDNAM\x08\0\0\0\xFA\xC4\0\x80;DONAM\x10\0\0\0\x80\xBF\0\0\0\0\0\0\0\0\0\0\0\0NAMA\x04\0\0\0\x80?DATA\x01\0\x93NAM0\x08\0\0\0H\xC8\0\0H\xC8NAM9\x08\0\0\0\\H\0\0LHZNAM\x04\0\x81\x42\x03\x02TNAM\x01\0\0UNAM7\0Data\\Textures\\Landscape\\Mountains\\MountainSlab02_N.dds\0XWEM%\0data\\Textures\\Cubemaps\\Apocrypha.dds\0OFST\x04\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read WRLD, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      WorldSpaceRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple UNAMs")
+    {
+      const auto data = "WRLD\x9E\x01\0\0\0\0\0\0\x71\x6D\x01\0\x1B\x69\x55\0\x28\0\x05\0EDID\x0E\0MarkarthWorld\0RNAM8\0\x04\0\xD5\xFF\x06\0\0\0\x99\xD3\x06\0\x02\0\xD4\xFF\x9A\xD3\x06\0\x03\0\xD4\xFF\xF1\xD3\x06\0\x02\0\xD7\xFF\x99'\x0B\0\x03\0\xD7\xFF\x97\xD3\x06\0\x02\0\xD5\xFF\xF0\xD3\x06\0\x03\0\xD6\xFF\x46ULL\x04\0\x1A\x08\0\0WNAM\x04\0\0\x08\0\x02PNAM\x02\0\x04\0CNAM\x04\0\xFCL\x03\x02NAM2\x04\0\xF1\xDF\x01\x02NAM3\x04\0\xF1\xDF\x01\x02NAM4\x04\0\0\x80;DDNAM\x08\0\0\0\xFA\xC4\0\x80;DONAM\x10\0\0\0\x80\xBF\0\0\0\0\0\0\0\0\0\0\0\0NAMA\x04\0\0\0\x80?DATA\x01\0\x93NAM0\x08\0\0\0H\xC8\0\0H\xC8NAM9\x08\0\0\0\\H\0\0LHZNAM\x04\0\x81\x42\x03\x02UNAM5\0Data\\Textures\\Landscape\\Mountains\\MountainSlab02.dds\0UNAM7\0Data\\Textures\\Landscape\\Mountains\\MountainSlab02_N.dds\0XWEM%\0data\\Textures\\Cubemaps\\Apocrypha.dds\0OFST\x04\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read WRLD, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      WorldSpaceRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of UNAM > 512")
+    {
+      const auto data = "WRLD\x9E\x01\0\0\0\0\0\0\x71\x6D\x01\0\x1B\x69\x55\0\x28\0\x05\0EDID\x0E\0MarkarthWorld\0RNAM8\0\x04\0\xD5\xFF\x06\0\0\0\x99\xD3\x06\0\x02\0\xD4\xFF\x9A\xD3\x06\0\x03\0\xD4\xFF\xF1\xD3\x06\0\x02\0\xD7\xFF\x99'\x0B\0\x03\0\xD7\xFF\x97\xD3\x06\0\x02\0\xD5\xFF\xF0\xD3\x06\0\x03\0\xD6\xFF\x46ULL\x04\0\x1A\x08\0\0WNAM\x04\0\0\x08\0\x02PNAM\x02\0\x04\0CNAM\x04\0\xFCL\x03\x02NAM2\x04\0\xF1\xDF\x01\x02NAM3\x04\0\xF1\xDF\x01\x02NAM4\x04\0\0\x80;DDNAM\x08\0\0\0\xFA\xC4\0\x80;DONAM\x10\0\0\0\x80\xBF\0\0\0\0\0\0\0\0\0\0\0\0NAMA\x04\0\0\0\x80?DATA\x01\0\x93NAM0\x08\0\0\0H\xC8\0\0H\xC8NAM9\x08\0\0\0\\H\0\0LHZNAM\x04\0\x81\x42\x03\x02TNAM5\0Data\\Textures\\Landscape\\Mountains\\MountainSlab02.dds\0UNAM7\x02Gata\\Textures\\Landscape\\Mountains\\MountainSlab02_N.dds\0XWEM%\0data\\Textures\\Cubemaps\\Apocrypha.dds\0OFST\x04\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read WRLD, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      WorldSpaceRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of UNAM is beyond stream")
+    {
+      const auto data = "WRLD\x9E\x01\0\0\0\0\0\0\x71\x6D\x01\0\x1B\x69\x55\0\x28\0\x05\0EDID\x0E\0MarkarthWorld\0RNAM8\0\x04\0\xD5\xFF\x06\0\0\0\x99\xD3\x06\0\x02\0\xD4\xFF\x9A\xD3\x06\0\x03\0\xD4\xFF\xF1\xD3\x06\0\x02\0\xD7\xFF\x99'\x0B\0\x03\0\xD7\xFF\x97\xD3\x06\0\x02\0\xD5\xFF\xF0\xD3\x06\0\x03\0\xD6\xFF\x46ULL\x04\0\x1A\x08\0\0WNAM\x04\0\0\x08\0\x02PNAM\x02\0\x04\0CNAM\x04\0\xFCL\x03\x02NAM2\x04\0\xF1\xDF\x01\x02NAM3\x04\0\xF1\xDF\x01\x02NAM4\x04\0\0\x80;DDNAM\x08\0\0\0\xFA\xC4\0\x80;DONAM\x10\0\0\0\x80\xBF\0\0\0\0\0\0\0\0\0\0\0\0NAMA\x04\0\0\0\x80?DATA\x01\0\x93NAM0\x08\0\0\0H\xC8\0\0H\xC8NAM9\x08\0\0\0\\H\0\0LHZNAM\x04\0\x81\x42\x03\x02TNAM5\0Data\\Textures\\Landscape\\Mountains\\MountainSlab02.dds\0UNAM\x9E\x01Gata\\Textures\\Landscape\\Mountains\\MountainSlab02_N.dds\0XWEM%\0data\\Textures\\Cubemaps\\Apocrypha.dds\0OFST\x04\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read WRLD, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      WorldSpaceRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: UNAM is empty")
+    {
+      const auto data = "WRLD\x68\x01\0\0\0\0\0\0\x71\x6D\x01\0\x1B\x69\x55\0\x28\0\x05\0EDID\x0E\0MarkarthWorld\0RNAM8\0\x04\0\xD5\xFF\x06\0\0\0\x99\xD3\x06\0\x02\0\xD4\xFF\x9A\xD3\x06\0\x03\0\xD4\xFF\xF1\xD3\x06\0\x02\0\xD7\xFF\x99'\x0B\0\x03\0\xD7\xFF\x97\xD3\x06\0\x02\0\xD5\xFF\xF0\xD3\x06\0\x03\0\xD6\xFF\x46ULL\x04\0\x1A\x08\0\0WNAM\x04\0\0\x08\0\x02PNAM\x02\0\x04\0CNAM\x04\0\xFCL\x03\x02NAM2\x04\0\xF1\xDF\x01\x02NAM3\x04\0\xF1\xDF\x01\x02NAM4\x04\0\0\x80;DDNAM\x08\0\0\0\xFA\xC4\0\x80;DONAM\x10\0\0\0\x80\xBF\0\0\0\0\0\0\0\0\0\0\0\0NAMA\x04\0\0\0\x80?DATA\x01\0\x93NAM0\x08\0\0\0H\xC8\0\0H\xC8NAM9\x08\0\0\0\\H\0\0LHZNAM\x04\0\x81\x42\x03\x02TNAM5\0Data\\Textures\\Landscape\\Mountains\\MountainSlab02.dds\0UNAM\x01\0\0XWEM%\0data\\Textures\\Cubemaps\\Apocrypha.dds\0OFST\x04\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read WRLD, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      WorldSpaceRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple XWEMs")
+    {
+      const auto data = "WRLD\x9E\x01\0\0\0\0\0\0\x71\x6D\x01\0\x1B\x69\x55\0\x28\0\x05\0EDID\x0E\0MarkarthWorld\0RNAM8\0\x04\0\xD5\xFF\x06\0\0\0\x99\xD3\x06\0\x02\0\xD4\xFF\x9A\xD3\x06\0\x03\0\xD4\xFF\xF1\xD3\x06\0\x02\0\xD7\xFF\x99'\x0B\0\x03\0\xD7\xFF\x97\xD3\x06\0\x02\0\xD5\xFF\xF0\xD3\x06\0\x03\0\xD6\xFF\x46ULL\x04\0\x1A\x08\0\0WNAM\x04\0\0\x08\0\x02PNAM\x02\0\x04\0CNAM\x04\0\xFCL\x03\x02NAM2\x04\0\xF1\xDF\x01\x02NAM3\x04\0\xF1\xDF\x01\x02NAM4\x04\0\0\x80;DDNAM\x08\0\0\0\xFA\xC4\0\x80;DONAM\x10\0\0\0\x80\xBF\0\0\0\0\0\0\0\0\0\0\0\0NAMA\x04\0\0\0\x80?DATA\x01\0\x93NAM0\x08\0\0\0H\xC8\0\0H\xC8NAM9\x08\0\0\0\\H\0\0LHZNAM\x04\0\x81\x42\x03\x02TNAM5\0Data\\Textures\\Landscape\\Mountains\\MountainSlab02.dds\0XWEM7\0Data\\Textures\\Landscape\\Mountains\\MountainSlab02_N.dds\0XWEM%\0data\\Textures\\Cubemaps\\Apocrypha.dds\0OFST\x04\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read WRLD, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      WorldSpaceRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of XWEM > 512")
+    {
+      const auto data = "WRLD\x9E\x01\0\0\0\0\0\0\x71\x6D\x01\0\x1B\x69\x55\0\x28\0\x05\0EDID\x0E\0MarkarthWorld\0RNAM8\0\x04\0\xD5\xFF\x06\0\0\0\x99\xD3\x06\0\x02\0\xD4\xFF\x9A\xD3\x06\0\x03\0\xD4\xFF\xF1\xD3\x06\0\x02\0\xD7\xFF\x99'\x0B\0\x03\0\xD7\xFF\x97\xD3\x06\0\x02\0\xD5\xFF\xF0\xD3\x06\0\x03\0\xD6\xFF\x46ULL\x04\0\x1A\x08\0\0WNAM\x04\0\0\x08\0\x02PNAM\x02\0\x04\0CNAM\x04\0\xFCL\x03\x02NAM2\x04\0\xF1\xDF\x01\x02NAM3\x04\0\xF1\xDF\x01\x02NAM4\x04\0\0\x80;DDNAM\x08\0\0\0\xFA\xC4\0\x80;DONAM\x10\0\0\0\x80\xBF\0\0\0\0\0\0\0\0\0\0\0\0NAMA\x04\0\0\0\x80?DATA\x01\0\x93NAM0\x08\0\0\0H\xC8\0\0H\xC8NAM9\x08\0\0\0\\H\0\0LHZNAM\x04\0\x81\x42\x03\x02TNAM5\0Data\\Textures\\Landscape\\Mountains\\MountainSlab02.dds\0UNAM7\0Data\\Textures\\Landscape\\Mountains\\MountainSlab02_N.dds\0XWEM%\x02gata\\Textures\\Cubemaps\\Apocrypha.dds\0OFST\x04\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read WRLD, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      WorldSpaceRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of XWEM is beyond stream")
+    {
+      const auto data = "WRLD\x9E\x01\0\0\0\0\0\0\x71\x6D\x01\0\x1B\x69\x55\0\x28\0\x05\0EDID\x0E\0MarkarthWorld\0RNAM8\0\x04\0\xD5\xFF\x06\0\0\0\x99\xD3\x06\0\x02\0\xD4\xFF\x9A\xD3\x06\0\x03\0\xD4\xFF\xF1\xD3\x06\0\x02\0\xD7\xFF\x99'\x0B\0\x03\0\xD7\xFF\x97\xD3\x06\0\x02\0\xD5\xFF\xF0\xD3\x06\0\x03\0\xD6\xFF\x46ULL\x04\0\x1A\x08\0\0WNAM\x04\0\0\x08\0\x02PNAM\x02\0\x04\0CNAM\x04\0\xFCL\x03\x02NAM2\x04\0\xF1\xDF\x01\x02NAM3\x04\0\xF1\xDF\x01\x02NAM4\x04\0\0\x80;DDNAM\x08\0\0\0\xFA\xC4\0\x80;DONAM\x10\0\0\0\x80\xBF\0\0\0\0\0\0\0\0\0\0\0\0NAMA\x04\0\0\0\x80?DATA\x01\0\x93NAM0\x08\0\0\0H\xC8\0\0H\xC8NAM9\x08\0\0\0\\H\0\0LHZNAM\x04\0\x81\x42\x03\x02TNAM5\0Data\\Textures\\Landscape\\Mountains\\MountainSlab02.dds\0UNAM7\0Data\\Textures\\Landscape\\Mountains\\MountainSlab02_N.dds\0XWEM\x35\0data\\Textures\\Cubemaps\\Apocrypha.dds\0OFST\x04\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read WRLD, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      WorldSpaceRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: XWEM is empty")
+    {
+      const auto data = "WRLD\x7A\x01\0\0\0\0\0\0\x71\x6D\x01\0\x1B\x69\x55\0\x28\0\x05\0EDID\x0E\0MarkarthWorld\0RNAM8\0\x04\0\xD5\xFF\x06\0\0\0\x99\xD3\x06\0\x02\0\xD4\xFF\x9A\xD3\x06\0\x03\0\xD4\xFF\xF1\xD3\x06\0\x02\0\xD7\xFF\x99'\x0B\0\x03\0\xD7\xFF\x97\xD3\x06\0\x02\0\xD5\xFF\xF0\xD3\x06\0\x03\0\xD6\xFF\x46ULL\x04\0\x1A\x08\0\0WNAM\x04\0\0\x08\0\x02PNAM\x02\0\x04\0CNAM\x04\0\xFCL\x03\x02NAM2\x04\0\xF1\xDF\x01\x02NAM3\x04\0\xF1\xDF\x01\x02NAM4\x04\0\0\x80;DDNAM\x08\0\0\0\xFA\xC4\0\x80;DONAM\x10\0\0\0\x80\xBF\0\0\0\0\0\0\0\0\0\0\0\0NAMA\x04\0\0\0\x80?DATA\x01\0\x93NAM0\x08\0\0\0H\xC8\0\0H\xC8NAM9\x08\0\0\0\\H\0\0LHZNAM\x04\0\x81\x42\x03\x02TNAM5\0Data\\Textures\\Landscape\\Mountains\\MountainSlab02.dds\0UNAM7\0Data\\Textures\\Landscape\\Mountains\\MountainSlab02_N.dds\0XWEM\x01\0\0OFST\x04\0\0\0\0\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 

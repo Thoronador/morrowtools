@@ -21,6 +21,7 @@
 #ifndef SR_WORLDSPACERECORD_HPP
 #define SR_WORLDSPACERECORD_HPP
 
+#include <optional>
 #include <string>
 #include <vector>
 #include "BasicRecord.hpp"
@@ -31,83 +32,91 @@
 namespace SRTP
 {
 
+/** Holds information about a world space in the game. */
 struct WorldSpaceRecord: public BasicRecord
 {
   public:
-    /* constructor */
+    /** Constructor, creates an empty record. */
     WorldSpaceRecord();
 
     #ifndef SR_NO_RECORD_EQUALITY
-    /* returns true, if the other record contains the same data */
+    /** \brief Checks whether another instance contains the same data.
+     *
+     * \param other   the other record to compare with
+     * \return Returns true, if @other contains the same data as instance.
+     *         Returns false otherwise.
+     */
     bool equals(const WorldSpaceRecord& other) const;
     #endif
 
     #ifndef SR_UNSAVEABLE_RECORDS
-    /* returns the size in bytes that the record's data would occupy in a file
-       stream, NOT including the header data
-    */
+    /** \brief Gets the size in bytes that the record's data would occupy in a file
+     *         stream, NOT including the header data.
+     *
+     * \return Returns the size in bytes that the record would need. Size of the
+     *         header is not included.
+     */
     virtual uint32_t getWriteSize() const;
 
-    /* writes the record to the given output stream and returns true on success
-
-      parameters:
-          output   - the output stream
-    */
+    /** \brief Writes the record to the given output stream.
+     *
+     * \param output  the output stream
+     * \return Returns true on success (record was written to stream).
+     *         Returns false, if an error occurred.
+     */
     virtual bool saveToStream(std::ostream& output) const;
     #endif
 
-    /* loads the record from the given input stream and returns true on success
-
-      parameters:
-          in_File   - the input stream
-          localized - whether the file to read from is localized or not
-          table     - the associated string table for localized files
-    */
+    /** \brief Loads the record from the given input stream.
+     *
+     * \param in_File    the input stream
+     * \param localized  whether the file to read from is localized or not
+     * \param table      the associated string table for localized files
+     * \return Returns true on success (record was loaded from stream).
+     *         Returns false, if an error occurred.
+     */
     virtual bool loadFromStream(std::istream& in_File, const bool localized, const StringTable& table);
 
-    /* returns the record's type, usually its header */
+    /** \brief Gets the record's type, usually its header.
+     *
+     * \return Returns the record's type.
+     */
     virtual uint32_t getRecordType() const;
 
-    std::string editorID;
+    std::string editorID; /**< ID of the record in the editor */
     std::vector<BinarySubRecord> unknownRNAMs;
     BinarySubRecord unknownMHDT;
-    LocalizedString name; //subrecord FULL
-    //subrecord WCTR
+    LocalizedString name; // subrecord FULL
+    // subrecord WCTR
     bool hasWCTR;
     int16_t centerCellX;
     int16_t centerCellY;
-    //end of subrecord WCTR
-    uint32_t interiorLightingFormID; //subrecord LTMP
-    uint32_t encounterZoneFormID; //subrecord XEZN
-    uint32_t climateFormID; //subrecord CNAM
-    uint32_t locationFormID; //subrecord XLCN
-    uint32_t parentWorldSpaceFormID; //subrecord WNAM
-    bool hasPNAM;
-    uint16_t unknownPNAM;
-    uint32_t waterFormID; //subrecord NAM2
-    uint32_t LODWaterTypeFormID; //subrecord NAM3
-    bool hasNAM4;
-    float LODWaterHeight; //subrecord NAM4
-    bool hasDNAM;
-    uint64_t unknownDNAM;
+    // end of subrecord WCTR
+    uint32_t interiorLightingFormID; // subrecord LTMP
+    uint32_t encounterZoneFormID; // subrecord XEZN
+    uint32_t climateFormID; // subrecord CNAM
+    uint32_t locationFormID; // subrecord XLCN
+    uint32_t parentWorldSpaceFormID; // subrecord WNAM
+    std::optional<uint16_t> unknownPNAM;
+    uint32_t waterFormID; // subrecord NAM2
+    uint32_t LODWaterTypeFormID; // subrecord NAM3
+    std::optional<float> LODWaterHeight; // subrecord NAM4
+    std::optional<uint64_t> unknownDNAM;
     std::string modelPath;
     BinarySubRecord unknownMODT;
     BinarySubRecord unknownMNAM;
     BinarySubRecord unknownONAM;
-    float distantLODMultiplier; //subrecord NAMA
-    bool hasDATA;
-    uint8_t unknownDATA;
-    bool hasNAM0;
-    uint64_t unknownNAM0;
-    bool hasNAM9;
-    uint64_t unknownNAM9;
-    uint32_t musicFormID; //subrecord ZNAM
-    std::string HD_LOD_DiffuseTexture; //subrecord TNAN
-    std::string HD_LOD_NormalTexture; //subrecord UNAM
-    std::string unknownXWEM; //subrecord XWEM
+    float distantLODMultiplier; // subrecord NAMA
+    std::optional<uint8_t> unknownDATA;
+    std::optional<uint64_t> unknownNAM0;
+    std::optional<uint64_t> unknownNAM9;
+    uint32_t musicFormID; // subrecord ZNAM
+    std::string HD_LOD_DiffuseTexture; // subrecord TNAN
+    std::string HD_LOD_NormalTexture; // subrecord UNAM
+    std::string unknownXWEM; // subrecord XWEM
     BinarySubRecordExtended unknownOFST;
-}; //struct
+}; // struct
 
-} //namespace
+} // namespace
 
 #endif // SR_WORLDSPACERECORD_HPP

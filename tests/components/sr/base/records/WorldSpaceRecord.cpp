@@ -46,25 +46,19 @@ TEST_CASE("WorldSpaceRecord")
     REQUIRE( record.climateFormID == 0 );
     REQUIRE( record.waterFormID == 0 );
     REQUIRE( record.LODWaterTypeFormID == 0 );
-    REQUIRE_FALSE( record.hasNAM4 );
-    REQUIRE( record.LODWaterHeight == 0.0f );
-    REQUIRE_FALSE( record.hasDNAM );
-    REQUIRE( record.unknownDNAM == 0 );
+    REQUIRE_FALSE( record.LODWaterHeight.has_value() );
+    REQUIRE_FALSE( record.unknownDNAM.has_value() );
     REQUIRE( record.modelPath.empty() );
     REQUIRE_FALSE( record.unknownMODT.isPresent() );
     REQUIRE_FALSE( record.unknownMNAM.isPresent() );
     REQUIRE( record.locationFormID == 0 );
     REQUIRE( record.parentWorldSpaceFormID == 0 );
-    REQUIRE_FALSE( record.hasPNAM );
-    REQUIRE( record.unknownPNAM == 0 );
+    REQUIRE_FALSE( record.unknownPNAM.has_value() );
     REQUIRE_FALSE( record.unknownONAM.isPresent() );
     REQUIRE( record.distantLODMultiplier == 0.0f );
-    REQUIRE_FALSE( record.hasDATA );
-    REQUIRE( record.unknownDATA == 0 );
-    REQUIRE_FALSE( record.hasNAM0 );
-    REQUIRE( record.unknownNAM0 == 0 );
-    REQUIRE_FALSE( record.hasNAM9 );
-    REQUIRE( record.unknownNAM9 == 0 );
+    REQUIRE_FALSE( record.unknownDATA.has_value() );
+    REQUIRE_FALSE( record.unknownNAM0.has_value() );
+    REQUIRE_FALSE( record.unknownNAM9.has_value() );
     REQUIRE( record.musicFormID == 0 );
     REQUIRE( record.HD_LOD_DiffuseTexture.empty() );
     REQUIRE( record.HD_LOD_NormalTexture.empty() );
@@ -206,21 +200,19 @@ TEST_CASE("WorldSpaceRecord")
 
       SECTION("NAM4 mismatch")
       {
-        a.hasNAM4 = true;
-        b.hasNAM4 = false;
+        a.LODWaterHeight = 0.0f;
+        b.LODWaterHeight.reset();
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        a.hasNAM4 = false;
-        b.hasNAM4 = true;
+        a.LODWaterHeight.reset();
+        b.LODWaterHeight = 0.0f;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        a.hasNAM4 = true;
         a.LODWaterHeight = 1.0f;
-        b.hasNAM4 = true;
         b.LODWaterHeight = 2.0f;
 
         REQUIRE_FALSE( a.equals(b) );
@@ -229,21 +221,19 @@ TEST_CASE("WorldSpaceRecord")
 
       SECTION("DNAM mismatch")
       {
-        a.hasDNAM = true;
-        b.hasDNAM = false;
+        a.unknownDNAM = 0;
+        b.unknownDNAM.reset();
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        a.hasDNAM = false;
-        b.hasDNAM = true;
+        a.unknownDNAM.reset();
+        b.unknownDNAM = 0;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        a.hasDNAM = true;
         a.unknownDNAM = 1;
-        b.hasDNAM = true;
         b.unknownDNAM = 2;
 
         REQUIRE_FALSE( a.equals(b) );
@@ -307,21 +297,19 @@ TEST_CASE("WorldSpaceRecord")
 
       SECTION("PNAM mismatch")
       {
-        a.hasPNAM = true;
-        b.hasPNAM = false;
+        a.unknownPNAM = 0;
+        b.unknownPNAM.reset();
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        a.hasPNAM = false;
-        b.hasPNAM = true;
+        a.unknownPNAM.reset();
+        b.unknownPNAM = 0;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        a.hasPNAM = true;
         a.unknownPNAM = 1;
-        b.hasPNAM = true;
         b.unknownPNAM = 2;
 
         REQUIRE_FALSE( a.equals(b) );
@@ -353,21 +341,19 @@ TEST_CASE("WorldSpaceRecord")
 
       SECTION("DATA mismatch")
       {
-        a.hasDATA = true;
-        b.hasDATA = false;
+        a.unknownDATA = 0;
+        b.unknownDATA.reset();
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        a.hasDATA = false;
-        b.hasDATA = true;
+        a.unknownDATA.reset();
+        b.unknownDATA = 0;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        a.hasDATA = true;
         a.unknownDATA = 1;
-        b.hasDATA = true;
         b.unknownDATA = 2;
 
         REQUIRE_FALSE( a.equals(b) );
@@ -376,21 +362,19 @@ TEST_CASE("WorldSpaceRecord")
 
       SECTION("NAM0 mismatch")
       {
-        a.hasNAM0 = true;
-        b.hasNAM0 = false;
+        a.unknownNAM0 = 0;
+        b.unknownNAM0.reset();
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        a.hasNAM0 = false;
-        b.hasNAM0 = true;
+        a.unknownNAM0.reset();
+        b.unknownNAM0 = 0;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        a.hasNAM0 = true;
         a.unknownNAM0 = 1;
-        b.hasNAM0 = true;
         b.unknownNAM0 = 2;
 
         REQUIRE_FALSE( a.equals(b) );
@@ -399,21 +383,19 @@ TEST_CASE("WorldSpaceRecord")
 
       SECTION("NAM9 mismatch")
       {
-        a.hasNAM9 = true;
-        b.hasNAM9 = false;
+        a.unknownNAM9 = 0;
+        b.unknownNAM9.reset();
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        a.hasNAM9 = false;
-        b.hasNAM9 = true;
+        a.unknownNAM9.reset();
+        b.unknownNAM9 = 0;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        a.hasNAM9 = true;
         a.unknownNAM9 = 1;
-        b.hasNAM9 = true;
         b.unknownNAM9 = 2;
 
         REQUIRE_FALSE( a.equals(b) );
@@ -604,7 +586,7 @@ TEST_CASE("WorldSpaceRecord")
     {
       REQUIRE( record.getWriteSize() == 20 );
 
-      record.hasNAM4 = true;
+      record.LODWaterHeight = 0.0f;
       REQUIRE( record.getWriteSize() == 30 );
     }
 
@@ -612,7 +594,7 @@ TEST_CASE("WorldSpaceRecord")
     {
       REQUIRE( record.getWriteSize() == 20 );
 
-      record.hasDNAM = true;
+      record.unknownDNAM = 0;
       REQUIRE( record.getWriteSize() == 34 );
     }
 
@@ -693,7 +675,7 @@ TEST_CASE("WorldSpaceRecord")
     {
       REQUIRE( record.getWriteSize() == 20 );
 
-      record.hasPNAM = true;
+      record.unknownPNAM = 1;
       REQUIRE( record.getWriteSize() == 28 );
     }
 
@@ -724,7 +706,7 @@ TEST_CASE("WorldSpaceRecord")
     {
       REQUIRE( record.getWriteSize() == 20 );
 
-      record.hasDATA = true;
+      record.unknownDATA = 0x01;
       REQUIRE( record.getWriteSize() == 27 );
     }
 
@@ -732,7 +714,7 @@ TEST_CASE("WorldSpaceRecord")
     {
       REQUIRE( record.getWriteSize() == 20 );
 
-      record.hasNAM0 = true;
+      record.unknownNAM0 = 1;
       REQUIRE( record.getWriteSize() == 34 );
     }
 
@@ -740,7 +722,7 @@ TEST_CASE("WorldSpaceRecord")
     {
       REQUIRE( record.getWriteSize() == 20 );
 
-      record.hasNAM9 = true;
+      record.unknownNAM9 = 1;
       REQUIRE( record.getWriteSize() == 34 );
     }
 
@@ -888,27 +870,27 @@ TEST_CASE("WorldSpaceRecord")
       REQUIRE( record.climateFormID == 0 );
       REQUIRE( record.waterFormID == 0x00000018 );
       REQUIRE( record.LODWaterTypeFormID == 0x00000018 );
-      REQUIRE( record.hasNAM4 );
+      REQUIRE( record.LODWaterHeight.has_value() );
       REQUIRE( record.LODWaterHeight == 0.0f );
-      REQUIRE( record.hasDNAM );
-      REQUIRE( record.unknownDNAM == 0xC380000000000000 );
+      REQUIRE( record.unknownDNAM.has_value() );
+      REQUIRE( record.unknownDNAM.value() == 0xC380000000000000 );
       REQUIRE( record.modelPath.empty() );
       REQUIRE_FALSE( record.unknownMODT.isPresent() );
       REQUIRE_FALSE( record.unknownMNAM.isPresent() );
       REQUIRE( record.locationFormID == 0x00019262 );
       REQUIRE( record.parentWorldSpaceFormID == 0x0000003C );
-      REQUIRE( record.hasPNAM );
-      REQUIRE( record.unknownPNAM == 0x0014 );
+      REQUIRE( record.unknownPNAM.has_value() );
+      REQUIRE( record.unknownPNAM.value() == 0x0014 );
       REQUIRE( record.unknownONAM.isPresent() );
       const auto ONAM = std::string_view(reinterpret_cast<const char*>(record.unknownONAM.data()), record.unknownONAM.size());
       REQUIRE( ONAM == "\0\0\x80\x3F\0\0\0\0\0\0\0\0\0\0\x80\xC5"sv );
       REQUIRE( record.distantLODMultiplier == 1.0f );
-      REQUIRE( record.hasDATA );
-      REQUIRE( record.unknownDATA == 0x61 );
-      REQUIRE( record.hasNAM0 );
-      REQUIRE( record.unknownNAM0 == 0xC5800000C6800000 );
-      REQUIRE( record.hasNAM9 );
-      REQUIRE( record.unknownNAM9 == 0x4750000045800000 );
+      REQUIRE( record.unknownDATA.has_value() );
+      REQUIRE( record.unknownDATA.value() == 0x61 );
+      REQUIRE( record.unknownNAM0.has_value() );
+      REQUIRE( record.unknownNAM0.value() == 0xC5800000C6800000 );
+      REQUIRE( record.unknownNAM9.has_value() );
+      REQUIRE( record.unknownNAM9.value() == 0x4750000045800000 );
       REQUIRE( record.musicFormID == 0x0002D4C2 );
       REQUIRE( record.HD_LOD_DiffuseTexture.empty() );
       REQUIRE( record.HD_LOD_NormalTexture.empty() );
@@ -961,27 +943,27 @@ TEST_CASE("WorldSpaceRecord")
       REQUIRE( record.climateFormID == 0x02034CFC );
       REQUIRE( record.waterFormID == 0x0201DFF1 );
       REQUIRE( record.LODWaterTypeFormID == 0x0201DFF1 );
-      REQUIRE( record.hasNAM4 );
+      REQUIRE( record.LODWaterHeight.has_value() );
       REQUIRE( record.LODWaterHeight == 750.0f );
-      REQUIRE( record.hasDNAM );
-      REQUIRE( record.unknownDNAM == 0x443B8000C4FA0000 );
+      REQUIRE( record.unknownDNAM.has_value() );
+      REQUIRE( record.unknownDNAM.value() == 0x443B8000C4FA0000 );
       REQUIRE( record.modelPath.empty() );
       REQUIRE_FALSE( record.unknownMODT.isPresent() );
       REQUIRE_FALSE( record.unknownMNAM.isPresent() );
       REQUIRE( record.locationFormID == 0 );
       REQUIRE( record.parentWorldSpaceFormID == 0x02000800 );
-      REQUIRE( record.hasPNAM );
-      REQUIRE( record.unknownPNAM == 0x0004 );
+      REQUIRE( record.unknownPNAM.has_value() );
+      REQUIRE( record.unknownPNAM.value() == 0x0004 );
       REQUIRE( record.unknownONAM.isPresent() );
       const auto ONAM = std::string_view(reinterpret_cast<const char*>(record.unknownONAM.data()), record.unknownONAM.size());
       REQUIRE( ONAM == "\0\0\x80\xBF\0\0\0\0\0\0\0\0\0\0\0\0"sv );
       REQUIRE( record.distantLODMultiplier == 1.0f );
-      REQUIRE( record.hasDATA );
-      REQUIRE( record.unknownDATA == 0x93 );
-      REQUIRE( record.hasNAM0 );
-      REQUIRE( record.unknownNAM0 == 0xC8480000C8480000 );
-      REQUIRE( record.hasNAM9 );
-      REQUIRE( record.unknownNAM9 == 0x484C0000485C0000 );
+      REQUIRE( record.unknownDATA.has_value() );
+      REQUIRE( record.unknownDATA.value() == 0x93 );
+      REQUIRE( record.unknownNAM0.has_value() );
+      REQUIRE( record.unknownNAM0.value() == 0xC8480000C8480000 );
+      REQUIRE( record.unknownNAM9.has_value() );
+      REQUIRE( record.unknownNAM9.value() == 0x484C0000485C0000 );
       REQUIRE( record.musicFormID == 0x02034281 );
       REQUIRE( record.HD_LOD_DiffuseTexture == "Data\\Textures\\Landscape\\Mountains\\MountainSlab02.dds" );
       REQUIRE( record.HD_LOD_NormalTexture == "Data\\Textures\\Landscape\\Mountains\\MountainSlab02_N.dds" );

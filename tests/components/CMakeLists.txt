@@ -55,6 +55,7 @@ set(component_tests_sources
     ../../sr/base/records/TalkingActivatorRecord.cpp
     ../../sr/base/records/TES4HeaderRecord.cpp
     ../../sr/base/records/TreeRecord.cpp
+    ../../sr/base/records/WeaponRecord.cpp
     ../../sr/base/records/WordOfPowerRecord.cpp
     ../../sr/base/records/WorldSpaceRecord.cpp
     base/BufferStream.cpp
@@ -114,6 +115,7 @@ set(component_tests_sources
     sr/base/records/TalkingActivatorRecord.cpp
     sr/base/records/Tes4HeaderRecord.cpp
     sr/base/records/TreeRecord.cpp
+    sr/base/records/WeaponRecord.cpp
     sr/base/records/WordOfPowerRecord.cpp
     sr/base/records/WorldSpaceRecord.cpp
     sr/base/records/WrongStringType.cpp

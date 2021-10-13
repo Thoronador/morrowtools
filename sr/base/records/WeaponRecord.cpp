@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -765,6 +765,11 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
              return false;
            }
            modelPath = std::string(buffer);
+           if (modelPath.empty())
+           {
+             std::cerr << "Error: WEAP seems to have an empty MODL subrecord!\n";
+             return false;
+           }
 
            // read MODT
            if (!unknownMODT.loadFromStream(in_File, cMODT, true))
@@ -868,7 +873,8 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
              return false;
            }
            //read BAMT
-           if (!loadUint32SubRecordFromStream(in_File, cBAMT, alternateBlockMaterialFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cBAMT, alternateBlockMaterialFormID, false))
+             return false;
            bytesRead += 6;
            //check content
            if (alternateBlockMaterialFormID==0)
@@ -885,7 +891,8 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            }
            //read KSIZ
            k_Size = 0;
-           if (!loadUint32SubRecordFromStream(in_File, cKSIZ, k_Size, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cKSIZ, k_Size, false))
+             return false;
            bytesRead += 6;
 
            //read KWDA
@@ -899,10 +906,11 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            //KWDA's length
            in_File.read((char*) &subLength, 2);
            bytesRead += 2;
-           if (subLength!=4*k_Size)
+           if (subLength != 4 * k_Size)
            {
-             std::cerr <<"Error: sub record KWDA of WEAP has invalid length ("<<subLength
-                       <<" bytes). Should be "<<4*k_Size<<" bytes.\n";
+             std::cerr << "Error: sub record KWDA of WEAP has invalid length ("
+                       << subLength << " bytes). Should be " << 4 * k_Size
+                       << " bytes.\n";
              return false;
            }
            //read KWDA
@@ -912,7 +920,7 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
              fid = 0;
              in_File.read((char*) &fid, 4);
              bytesRead += 4;
-             keywordArray.push_back(subRecName);
+             keywordArray.push_back(fid);
            }
            if (!in_File.good())
            {
@@ -962,71 +970,76 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
              return false;
            }
            //read INAM
-           if (!loadUint32SubRecordFromStream(in_File, cINAM, impactDataSetFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cINAM, impactDataSetFormID, false))
+             return false;
            bytesRead += 6;
            //check content
-           if (impactDataSetFormID==0)
+           if (impactDataSetFormID == 0)
            {
              std::cerr << "Error: subrecord INAM of WEAP is zero!\n";
              return false;
            }
            break;
       case cWNAM:
-           if (firstPersonModelObjectFormID!=0)
+           if (firstPersonModelObjectFormID != 0)
            {
              std::cerr << "Error: WEAP seems to have more than one WNAM subrecord!\n";
              return false;
            }
            //read WNAM
-           if (!loadUint32SubRecordFromStream(in_File, cWNAM, firstPersonModelObjectFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cWNAM, firstPersonModelObjectFormID, false))
+             return false;
            bytesRead += 6;
-           //check content
-           if (firstPersonModelObjectFormID==0)
+           // check content
+           if (firstPersonModelObjectFormID == 0)
            {
              std::cerr << "Error: subrecord WNAM of WEAP is zero!\n";
              return false;
            }
            break;
       case cXNAM:
-           if (attackSound2DFormID!=0)
+           if (attackSound2DFormID != 0)
            {
              std::cerr << "Error: WEAP seems to have more than one XNAM subrecord!\n";
              return false;
            }
            //read XNAM
-           if (!loadUint32SubRecordFromStream(in_File, cXNAM, attackSound2DFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cXNAM, attackSound2DFormID, false))
+             return false;
            bytesRead += 6;
            //check content
-           if (attackSound2DFormID==0)
+           if (attackSound2DFormID == 0)
            {
              std::cerr << "Error: subrecord XNAM of WEAP is zero!\n";
              return false;
            }
            break;
       case cNAM7:
-           if (attackLoopSoundFormID!=0)
+           if (attackLoopSoundFormID != 0)
            {
              std::cerr << "Error: WEAP seems to have more than one NAM7 subrecord!\n";
              return false;
            }
            //read NAM7
-           if (!loadUint32SubRecordFromStream(in_File, cNAM7, attackSound2DFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cNAM7, attackSound2DFormID, false))
+             return false;
            bytesRead += 6;
            //check content
-           if (attackLoopSoundFormID==0)
+           if (attackLoopSoundFormID == 0)
            {
              std::cerr << "Error: subrecord NAM7 of WEAP is zero!\n";
              return false;
            }
            break;
       case cTNAM:
-           if (attackFailSoundFormID!=0)
+           if (attackFailSoundFormID != 0)
            {
              std::cerr << "Error: WEAP seems to have more than one TNAM subrecord!\n";
              return false;
            }
            //read TNAM
-           if (!loadUint32SubRecordFromStream(in_File, cTNAM, attackFailSoundFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cTNAM, attackFailSoundFormID, false))
+             return false;
            bytesRead += 6;
            //check content
            if (attackFailSoundFormID==0)
@@ -1042,7 +1055,8 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
              return false;
            }
            //read UNAM
-           if (!loadUint32SubRecordFromStream(in_File, cUNAM, idleSoundFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cUNAM, idleSoundFormID, false))
+             return false;
            bytesRead += 6;
            //check content
            if (idleSoundFormID==0)
@@ -1058,7 +1072,8 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
              return false;
            }
            //read NAM9
-           if (!loadUint32SubRecordFromStream(in_File, cNAM9, equipSoundFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cNAM9, equipSoundFormID, false))
+             return false;
            bytesRead += 6;
            //check content
            if (equipSoundFormID==0)
@@ -1074,7 +1089,8 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
              return false;
            }
            //read NAM8
-           if (!loadUint32SubRecordFromStream(in_File, cNAM8, unequipSoundFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cNAM8, unequipSoundFormID, false))
+             return false;
            bytesRead += 6;
            //check content
            if (unequipSoundFormID==0)
@@ -1090,7 +1106,8 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
              return false;
            }
            //read SNAM
-           if (!loadUint32SubRecordFromStream(in_File, cSNAM, attackSoundFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cSNAM, attackSoundFormID, false))
+             return false;
            bytesRead += 6;
            //check content
            if (attackSoundFormID==0)
@@ -1110,8 +1127,8 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 2;
            if (subLength!=10)
            {
-             std::cerr <<"Error: sub record DATA of WEAP has invalid length ("<<subLength
-                       <<" bytes). Should be 10 bytes.\n";
+             std::cerr << "Error: sub record DATA of WEAP has invalid length ("
+                       << subLength << " bytes). Should be 10 bytes.\n";
              return false;
            }
            //read DATA's content

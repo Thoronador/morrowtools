@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -104,13 +104,13 @@ struct WeaponRecord: public BasicRecord
     std::string unknownNNAM;
     uint32_t impactDataSetFormID; //subrecord INAM
     uint32_t firstPersonModelObjectFormID; //subrecord WNAM
+    uint32_t attackSoundFormID; // subrecord SNAM
     uint32_t attackSound2DFormID; //subrecord XNAM
     uint32_t attackLoopSoundFormID; //subrecord NAM7
     uint32_t attackFailSoundFormID; //subrecord TNAM
     uint32_t idleSoundFormID; //subrecord UNAM
     uint32_t equipSoundFormID; //subrecord NAM9
     uint32_t unequipSoundFormID; //subrecord NAM8
-    uint32_t attackSoundFormID; //subrecord SNAM
     //DATA
     uint32_t value;
     float weight;

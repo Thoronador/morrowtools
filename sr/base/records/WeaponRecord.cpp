@@ -55,13 +55,13 @@ WeaponRecord::WeaponRecord()
   unknownNNAM(""),
   impactDataSetFormID(0),
   firstPersonModelObjectFormID(0),
+  attackSoundFormID(0),
   attackSound2DFormID(0),
   attackLoopSoundFormID(0),
   attackFailSoundFormID(0),
   idleSoundFormID(0),
   equipSoundFormID(0),
   unequipSoundFormID(0),
-  attackSoundFormID(0),
   //DATA
   value(0),
   weight(0.0f),
@@ -92,13 +92,13 @@ WeaponRecord::WeaponRecord(const WeaponRecord& other)
   unknownNNAM(other.unknownNNAM),
   impactDataSetFormID(other.impactDataSetFormID),
   firstPersonModelObjectFormID(other.firstPersonModelObjectFormID),
+  attackSoundFormID(other.attackSoundFormID),
   attackSound2DFormID(other.attackSound2DFormID),
   attackLoopSoundFormID(other.attackLoopSoundFormID),
   attackFailSoundFormID(other.attackFailSoundFormID),
   idleSoundFormID(other.idleSoundFormID),
   equipSoundFormID(other.equipSoundFormID),
   unequipSoundFormID(other.unequipSoundFormID),
-  attackSoundFormID(other.attackSoundFormID),
   value(other.value),
   weight(other.weight),
   baseDamage(other.baseDamage),
@@ -278,6 +278,10 @@ uint32_t WeaponRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* WNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
+  if (attackSoundFormID != 0)
+  {
+    writeSize = writeSize + 4 /* SNAM */ + 2 /* 2 bytes for length */ + 4 /* fixed size */;
+  }
   if (attackSound2DFormID!=0)
   {
     writeSize = writeSize +4 /* XNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
@@ -301,10 +305,6 @@ uint32_t WeaponRecord::getWriteSize() const
   if (unequipSoundFormID!=0)
   {
     writeSize = writeSize +4 /* NAM8 */ +2 /* 2 bytes for length */ +4 /* fixed size */;
-  }
-  if (attackSoundFormID!=0)
-  {
-    writeSize = writeSize +4 /* SNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
   if (hasCNAM)
   {
@@ -497,6 +497,15 @@ bool WeaponRecord::saveToStream(std::ostream& output) const
     output.write((const char*) &firstPersonModelObjectFormID, 4);
   }//if has WNAM subrecord
 
+  if (attackSoundFormID != 0)
+  {
+    // write Attack Sound form ID (SNAM)
+    output.write(reinterpret_cast<const char*>(&cSNAM), 4);
+    subLength = 4;
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    output.write(reinterpret_cast<const char*>(&attackSoundFormID), 4);
+  }
+
   if (attackSound2DFormID!=0)
   {
     //write XNAM
@@ -562,17 +571,6 @@ bool WeaponRecord::saveToStream(std::ostream& output) const
     //write UnEquip Sound form ID
     output.write((const char*) &unequipSoundFormID, 4);
   }//if has NAM8 subrecord
-
-  if (attackSoundFormID!=0)
-  {
-    //write SNAM
-    output.write((const char*) &cSNAM, 4);
-    //SNAM's length
-    subLength = 4; //fixed size
-    output.write((const char*) &subLength, 2);
-    //write Attack Sound form ID
-    output.write((const char*) &attackSoundFormID, 4);
-  }//if has SNAM subrecord
 
   //write DATA
   output.write((const char*) &cDATA, 4);
@@ -1000,6 +998,22 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
              return false;
            }
            break;
+      case cSNAM:
+           if (attackSoundFormID != 0)
+           {
+             std::cerr << "Error: WEAP seems to have more than one SNAM subrecord!\n";
+             return false;
+           }
+           if (!loadUint32SubRecordFromStream(in_File, cSNAM, attackSoundFormID, false))
+             return false;
+           bytesRead += 6;
+           // check content
+           if (attackSoundFormID == 0)
+           {
+             std::cerr << "Error: subrecord SNAM of WEAP is zero!\n";
+             return false;
+           }
+           break;
       case cXNAM:
            if (attackSound2DFormID != 0)
            {
@@ -1102,23 +1116,6 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
              return false;
            }
            break;
-      case cSNAM:
-           if (attackSoundFormID!=0)
-           {
-             std::cerr << "Error: WEAP seems to have more than one SNAM subrecord!\n";
-             return false;
-           }
-           //read SNAM
-           if (!loadUint32SubRecordFromStream(in_File, cSNAM, attackSoundFormID, false))
-             return false;
-           bytesRead += 6;
-           //check content
-           if (attackSoundFormID==0)
-           {
-             std::cerr << "Error: subrecord SNAM of WEAP is zero!\n";
-             return false;
-           }
-           break;
       case cDATA:
            if (hasReadDATA)
            {
@@ -1210,7 +1207,8 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
              return false;
            }
            //read CNAM
-           if (!loadUint32SubRecordFromStream(in_File, cCNAM, unknownCNAM, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cCNAM, unknownCNAM, false))
+             return false;
            hasCNAM = true;
            bytesRead += 6;
            break;

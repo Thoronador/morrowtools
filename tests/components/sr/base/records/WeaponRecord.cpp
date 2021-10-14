@@ -689,6 +689,7 @@ TEST_CASE("WeaponRecord")
     dummy_table.addString(0x00010499, "foo");
     dummy_table.addString(0x00012616, "bar");
     dummy_table.addString(0x000005C0, "baz");
+    dummy_table.addString(0x0000AC9A, "quux");
 
     SECTION("default: load record with keywords")
     {
@@ -777,7 +778,7 @@ TEST_CASE("WeaponRecord")
       REQUIRE( streamOut.str() == data );
     }
 
-    SECTION("default: load another record with EAMT, SNAM, XNAM, CNAM")
+    SECTION("default: load record with EAMT, SNAM, XNAM, CNAM")
     {
       const auto data = "WEAP\xB4\x01\0\0\0\0\0\0\xCA\xD0\0\x02\x1D\x71\x55\0\x2B\0\x06\0EDID\x16\0DLC1EnchCrossbowFire1\0OBND\x0C\0\xE5\xFF\xE5\xFF\xFD\xFF\x1B\0\x1B\0\x06\0FULL\x04\0\xC0\x05\0\0MODL$\0DLC01\\Weapons\\Crossbow\\Crossbow.nif\0MODT\x0C\0\x02\0\0\0\0\0\0\0\0\0\0\0EITM\x04\0\xB7\x9B\x04\0EAMT\x02\0\xC8\0ETYP\x04\0E?\x01\0BIDS\x04\0\xC6\x93\x01\0BAMT\x04\0\xB6t\x07\0KSIZ\x04\0\x03\0\0\0KWDA\x0C\0\x15\xE7\x01\0\x19\xE7\x01\0X\xF9\x08\0DESC\x04\0\0\0\0\0INAM\x04\0\x11\xA3\0\x02WNAM\x04\0\x02\x08\0\x02SNAM\x04\0\x34\x8E\0\x02XNAM\x04\0\x35\x8E\0\x02TNAM\x04\0\x30\xC7\x03\0NAM9\x04\0\xC9~\x01\x02NAM8\x04\0\xCA~\x01\x02\x44\x41TA\x0A\0x\0\0\0\0\0`A\x13\0DNAMd\0\x09\0\0\0\0\0\x80?\0\0\x80?\0\0\x93\0\0\0\0\0\0\0\0\0\x05\xFF\x01\0\0\0\xFA\x43\0\0\xFA\x44\0\0\0\0\0\0\0\0\0\0\x80?\0\0\x80?\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x08\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\xFF\xFF\0\0\0\0\0\0@?CRDT\x10\0\x09\0\0\0\0\0\x80?\x01\xFF\xFF\xFF\0\0\0\0VNAM\x04\0\x02\0\0\0CNAM\x04\0\x01\x08\0\x02"sv;
       std::istringstream stream;
@@ -853,6 +854,89 @@ TEST_CASE("WeaponRecord")
       REQUIRE( record.unknownVNAM == 2 );
       REQUIRE( record.hasCNAM );
       REQUIRE( record.unknownCNAM == 0x02000801 );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( record.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
+    }
+
+    SECTION("default: load record with UNAM")
+    {
+      const auto data = "WEAP\xA5\x01\0\0\0\0\0\0\x5E\x8F\x05\0\x1B\x69\x55\0\x28\0\x05\0EDID\x15\0BoundWeaponBattleaxe\0OBND\x0C\0\xFE\xFF\x09\0\x06\0\xFF\xFF\x09\0\x07\0FULL\x04\0\x9A\xAC\0\0MODL(\0Weapons\\BoundWeapons\\BoundAxeHolder.nif\0MODT$\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x35\xFC\x8B#dds\08\x97<\xEAw|Qpdds\0X,U3EITM\x04\0\xE2[\x0C\0ETYP\x04\0E?\x01\0BIDS\x04\0\xC7\x93\x01\0BAMT\x04\0\xA9\x64\x0E\0KSIZ\x04\0\x02\0\0\0KWDA\x08\0\x32\xD9\x06\0X\xF9\x08\0DESC\x04\0\0\0\0\0INAM\x04\0[j\x03\0TNAM\x04\0\xACL\x0E\0UNAM\x04\0\xE6`\x09\0NAM9\x04\0j\x03\x06\0NAM8\x04\0\xD3\x05\x06\0DATA\x0A\0\0\0\0\0\0\0\0\0\x11\0DNAMd\0\x06\0\0\0\x33\x33\x33?ff\xA6?\xC8\0\x91\0\0\0\0\0\0\0\0\0\0\xFF\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0!\0\0\0\0\x80?33\xB3?\0\0\0?\0\0\x80?\xC3\xF5\xA8>\0\0\0\0\0\0\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\xFF\xFF\0\0\0\0\x33\x33\x93?CRDT\x10\0\x09\0\0\0\0\0\x80?\x01\xFF\xFF\xFF\0\0\0\0VNAM\x04\0\x01\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read WEAP, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      WeaponRecord record;
+      REQUIRE( record.loadFromStream(stream, true, dummy_table) );
+      // Check data.
+      // -- header
+      REQUIRE( record.headerFlags == 0 );
+      REQUIRE( record.headerFormID == 0x00058F5E );
+      REQUIRE( record.headerRevision == 0x0055691B );
+      REQUIRE( record.headerVersion == 40 );
+      REQUIRE( record.headerUnknown5 == 0x0005 );
+      // -- record data
+      REQUIRE( record.editorID == "BoundWeaponBattleaxe" );
+      REQUIRE_FALSE( record.unknownVMAD.isPresent() );
+      REQUIRE( record.unknownOBND[0] == 0xFE );
+      REQUIRE( record.unknownOBND[1] == 0xFF );
+      REQUIRE( record.unknownOBND[2] == 0x09 );
+      REQUIRE( record.unknownOBND[3] == 0x00 );
+      REQUIRE( record.unknownOBND[4] == 0x06 );
+      REQUIRE( record.unknownOBND[5] == 0x00 );
+      REQUIRE( record.unknownOBND[6] == 0xFF );
+      REQUIRE( record.unknownOBND[7] == 0xFF );
+      REQUIRE( record.unknownOBND[8] == 0x09 );
+      REQUIRE( record.unknownOBND[9] == 0x00 );
+      REQUIRE( record.unknownOBND[10] == 0x07 );
+      REQUIRE( record.unknownOBND[11] == 0x00 );
+      REQUIRE( record.name.isPresent() );
+      REQUIRE( record.name.getType() == LocalizedString::Type::Index );
+      REQUIRE( record.name.getIndex() == 0x0000AC9A );
+      REQUIRE( record.modelPath == "Weapons\\BoundWeapons\\BoundAxeHolder.nif" );
+      REQUIRE( record.unknownMODT.isPresent() );
+      const auto MODT = std::string_view(reinterpret_cast<const char*>(record.unknownMODT.data()), record.unknownMODT.size());
+      REQUIRE( MODT == "\x02\0\0\0\x02\0\0\0\0\0\0\0\x35\xFC\x8B#dds\08\x97<\xEAw|Qpdds\0X,U3"sv );
+      REQUIRE_FALSE( record.unknownMODS.isPresent() );
+      REQUIRE( record.enchantingFormID == 0x000C5BE2 );
+      REQUIRE_FALSE( record.hasEAMT );
+      REQUIRE( record.enchantmentAmount == 0 );
+      REQUIRE( record.equipTypeFormID == 0x00013F45 );
+      REQUIRE( record.blockBashImpactDataSetFormID == 0x000193C7 );
+      REQUIRE( record.alternateBlockMaterialFormID == 0x000E64A9 );
+      REQUIRE( record.keywordArray.size() == 2 );
+      REQUIRE( record.keywordArray[0] == 0x0006D932 );
+      REQUIRE( record.keywordArray[1] == 0x0008F958 );
+      REQUIRE( record.description.isPresent() );
+      REQUIRE( record.description.getType() == LocalizedString::Type::Index );
+      REQUIRE( record.description.getIndex() == 0 );
+      REQUIRE( record.unknownNNAM.empty() );
+      REQUIRE( record.impactDataSetFormID == 0x00036A5B );
+      REQUIRE( record.firstPersonModelObjectFormID == 0 );
+      REQUIRE( record.attackSound2DFormID == 0 );
+      REQUIRE( record.attackLoopSoundFormID == 0 );
+      REQUIRE( record.attackFailSoundFormID == 0x000E4CAC );
+      REQUIRE( record.idleSoundFormID == 0x000960E6 );
+      REQUIRE( record.equipSoundFormID == 0x0006036A );
+      REQUIRE( record.unequipSoundFormID == 0x000605D3 );
+      REQUIRE( record.attackSoundFormID == 0 );
+      REQUIRE( record.value == 0 );
+      REQUIRE( record.weight == 0.0f );
+      REQUIRE( record.baseDamage == 17 );
+      const auto DNAM = std::string_view(reinterpret_cast<const char*>(record.unknownDNAM), 100);
+      REQUIRE( DNAM == "\x06\0\0\0\x33\x33\x33?ff\xA6?\xC8\0\x91\0\0\0\0\0\0\0\0\0\0\xFF\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0!\0\0\0\0\x80?33\xB3?\0\0\0?\0\0\x80?\xC3\xF5\xA8>\0\0\0\0\0\0\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\xFF\xFF\0\0\0\0\x33\x33\x93?"sv );
+      const auto CRDT = std::string_view(reinterpret_cast<const char*>(record.unknownCRDT), 16);
+      REQUIRE( CRDT == "\x09\0\0\0\0\0\x80?\x01\xFF\xFF\xFF\0\0\0\0"sv );
+      REQUIRE( record.unknownVNAM == 1 );
+      REQUIRE_FALSE( record.hasCNAM );
+      REQUIRE( record.unknownCNAM == 0 );
 
       // Writing should succeed.
       std::ostringstream streamOut;
@@ -2122,6 +2206,82 @@ TEST_CASE("WeaponRecord")
     SECTION("corrupt data: TNAM is zero")
     {
       const auto data = "WEAP\x2B\x02\0\0\0\0\0\0\x8F\xA3\x04\0\x1B\x69\x55\0\x28\0\x06\0EDID\x0F\0DA08EbonyBlade\0VMADH\0\x05\0\x02\0\x01\0\x14\0DA08EbonyBladeScript\0\x02\0\x04\0DA08\x01\x01\0\0\xFF\xFF{\xA3\x04\0\x0D\0InitialPickup\x01\x01\0\0\xFF\xFF\xF0,\x06\0OBND\x0C\0\xFB\xFF\xEA\xFF\xFC\xFF\x09\0X\0\x05\0FULL\x04\0\x99\x04\x01\0MODL\"\0Weapons\\EbonyBlade\\EbonyBlade.nif\0MODT`\0\x02\0\0\0\x07\0\0\0\0\0\0\0O\xE0uddds\0\xA0\xB8\x63\x05\x33\x16\x8C\x07\x64\x64s\0\xA0\xB8\x63\x05\x03\xD8\xC2@dds\0\xA0\xB8\x63\x05\x45Ij\\dds\0\x7F\xD1Y\x13\xDA\x13'\x15\x64\x64s\0\x7F\xD1Y\x13\xB6]\x9E\x1F\x64\x64s\0&,\x33;\xF6\x38\x90\xAC\x64\x64s\0&,\x33;EITM\x04\0\xF0\xFA\x10\0ETYP\x04\0E?\x01\0BIDS\x04\0\xFF\x83\x01\0BAMT\x04\0\x01\x84\x01\0KSIZ\x04\0\x04\0\0\0KWDA\x10\0\x11\xE7\x01\0\xBD'\x0C\0\xE8\x17\x09\0h\x86\x0A\0DESC\x04\0\x16&\x01\0INAM\x04\0\xAC<\x01\0WNAM\x04\0\x34\x14\x0C\0TNAM\x04\0\0\0\0\0NAM9\x04\0.\xC7\x03\0NAM8\x04\0/\xC7\x03\0DATA\x0A\0\xD0\x07\0\0\0\0\x20\x41\x0B\0DNAMd\0\x05\0\0\0\0\0\x80?\0\0\x80?\0\0\x91\0\0\0\0\0\0\0\0\0\0\xFF\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x80?\xCD\xCCL?\0\0\0?\0\0\x80?\xC3\xF5\xA8>\0\0\0\0\0\0\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\xFF\xFF\0\0\0\0\0\0@?CRDT\x10\0\0\0\0\0\0\0\x80?\x01\xFF\xFF\xFF\0\0\0\0VNAM\x04\0\x01\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read WEAP, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      WeaponRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple UNAMs")
+    {
+      const auto data = "WEAP\xA5\x01\0\0\0\0\0\0\x5E\x8F\x05\0\x1B\x69\x55\0\x28\0\x05\0EDID\x15\0BoundWeaponBattleaxe\0OBND\x0C\0\xFE\xFF\x09\0\x06\0\xFF\xFF\x09\0\x07\0FULL\x04\0\x9A\xAC\0\0MODL(\0Weapons\\BoundWeapons\\BoundAxeHolder.nif\0MODT$\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x35\xFC\x8B#dds\08\x97<\xEAw|Qpdds\0X,U3EITM\x04\0\xE2[\x0C\0ETYP\x04\0E?\x01\0BIDS\x04\0\xC7\x93\x01\0BAMT\x04\0\xA9\x64\x0E\0KSIZ\x04\0\x02\0\0\0KWDA\x08\0\x32\xD9\x06\0X\xF9\x08\0DESC\x04\0\0\0\0\0INAM\x04\0[j\x03\0UNAM\x04\0\xACL\x0E\0UNAM\x04\0\xE6`\x09\0NAM9\x04\0j\x03\x06\0NAM8\x04\0\xD3\x05\x06\0DATA\x0A\0\0\0\0\0\0\0\0\0\x11\0DNAMd\0\x06\0\0\0\x33\x33\x33?ff\xA6?\xC8\0\x91\0\0\0\0\0\0\0\0\0\0\xFF\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0!\0\0\0\0\x80?33\xB3?\0\0\0?\0\0\x80?\xC3\xF5\xA8>\0\0\0\0\0\0\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\xFF\xFF\0\0\0\0\x33\x33\x93?CRDT\x10\0\x09\0\0\0\0\0\x80?\x01\xFF\xFF\xFF\0\0\0\0VNAM\x04\0\x01\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read WEAP, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      WeaponRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of UNAM is not four")
+    {
+      {
+        const auto data = "WEAP\xA4\x01\0\0\0\0\0\0\x5E\x8F\x05\0\x1B\x69\x55\0\x28\0\x05\0EDID\x15\0BoundWeaponBattleaxe\0OBND\x0C\0\xFE\xFF\x09\0\x06\0\xFF\xFF\x09\0\x07\0FULL\x04\0\x9A\xAC\0\0MODL(\0Weapons\\BoundWeapons\\BoundAxeHolder.nif\0MODT$\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x35\xFC\x8B#dds\08\x97<\xEAw|Qpdds\0X,U3EITM\x04\0\xE2[\x0C\0ETYP\x04\0E?\x01\0BIDS\x04\0\xC7\x93\x01\0BAMT\x04\0\xA9\x64\x0E\0KSIZ\x04\0\x02\0\0\0KWDA\x08\0\x32\xD9\x06\0X\xF9\x08\0DESC\x04\0\0\0\0\0INAM\x04\0[j\x03\0TNAM\x04\0\xACL\x0E\0UNAM\x03\0\xE6`\0NAM9\x04\0j\x03\x06\0NAM8\x04\0\xD3\x05\x06\0DATA\x0A\0\0\0\0\0\0\0\0\0\x11\0DNAMd\0\x06\0\0\0\x33\x33\x33?ff\xA6?\xC8\0\x91\0\0\0\0\0\0\0\0\0\0\xFF\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0!\0\0\0\0\x80?33\xB3?\0\0\0?\0\0\x80?\xC3\xF5\xA8>\0\0\0\0\0\0\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\xFF\xFF\0\0\0\0\x33\x33\x93?CRDT\x10\0\x09\0\0\0\0\0\x80?\x01\xFF\xFF\xFF\0\0\0\0VNAM\x04\0\x01\0\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read WEAP, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        WeaponRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+
+      {
+        const auto data = "WEAP\xA6\x01\0\0\0\0\0\0\x5E\x8F\x05\0\x1B\x69\x55\0\x28\0\x05\0EDID\x15\0BoundWeaponBattleaxe\0OBND\x0C\0\xFE\xFF\x09\0\x06\0\xFF\xFF\x09\0\x07\0FULL\x04\0\x9A\xAC\0\0MODL(\0Weapons\\BoundWeapons\\BoundAxeHolder.nif\0MODT$\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x35\xFC\x8B#dds\08\x97<\xEAw|Qpdds\0X,U3EITM\x04\0\xE2[\x0C\0ETYP\x04\0E?\x01\0BIDS\x04\0\xC7\x93\x01\0BAMT\x04\0\xA9\x64\x0E\0KSIZ\x04\0\x02\0\0\0KWDA\x08\0\x32\xD9\x06\0X\xF9\x08\0DESC\x04\0\0\0\0\0INAM\x04\0[j\x03\0TNAM\x04\0\xACL\x0E\0UNAM\x05\0\xE6`\x09\0\0NAM9\x04\0j\x03\x06\0NAM8\x04\0\xD3\x05\x06\0DATA\x0A\0\0\0\0\0\0\0\0\0\x11\0DNAMd\0\x06\0\0\0\x33\x33\x33?ff\xA6?\xC8\0\x91\0\0\0\0\0\0\0\0\0\0\xFF\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0!\0\0\0\0\x80?33\xB3?\0\0\0?\0\0\x80?\xC3\xF5\xA8>\0\0\0\0\0\0\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\xFF\xFF\0\0\0\0\x33\x33\x93?CRDT\x10\0\x09\0\0\0\0\0\x80?\x01\xFF\xFF\xFF\0\0\0\0VNAM\x04\0\x01\0\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read WEAP, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        WeaponRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+    }
+
+    SECTION("corrupt data: stream ends before all of UNAM can be read")
+    {
+      const auto data = "WEAP\xA5\x01\0\0\0\0\0\0\x5E\x8F\x05\0\x1B\x69\x55\0\x28\0\x05\0EDID\x15\0BoundWeaponBattleaxe\0OBND\x0C\0\xFE\xFF\x09\0\x06\0\xFF\xFF\x09\0\x07\0FULL\x04\0\x9A\xAC\0\0MODL(\0Weapons\\BoundWeapons\\BoundAxeHolder.nif\0MODT$\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x35\xFC\x8B#dds\08\x97<\xEAw|Qpdds\0X,U3EITM\x04\0\xE2[\x0C\0ETYP\x04\0E?\x01\0BIDS\x04\0\xC7\x93\x01\0BAMT\x04\0\xA9\x64\x0E\0KSIZ\x04\0\x02\0\0\0KWDA\x08\0\x32\xD9\x06\0X\xF9\x08\0DESC\x04\0\0\0\0\0INAM\x04\0[j\x03\0TNAM\x04\0\xACL\x0E\0UNAM\x04\0\xE6"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read WEAP, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      WeaponRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: UNAM is zero")
+    {
+      const auto data = "WEAP\xA5\x01\0\0\0\0\0\0\x5E\x8F\x05\0\x1B\x69\x55\0\x28\0\x05\0EDID\x15\0BoundWeaponBattleaxe\0OBND\x0C\0\xFE\xFF\x09\0\x06\0\xFF\xFF\x09\0\x07\0FULL\x04\0\x9A\xAC\0\0MODL(\0Weapons\\BoundWeapons\\BoundAxeHolder.nif\0MODT$\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x35\xFC\x8B#dds\08\x97<\xEAw|Qpdds\0X,U3EITM\x04\0\xE2[\x0C\0ETYP\x04\0E?\x01\0BIDS\x04\0\xC7\x93\x01\0BAMT\x04\0\xA9\x64\x0E\0KSIZ\x04\0\x02\0\0\0KWDA\x08\0\x32\xD9\x06\0X\xF9\x08\0DESC\x04\0\0\0\0\0INAM\x04\0[j\x03\0TNAM\x04\0\xACL\x0E\0UNAM\x04\0\0\0\0\0NAM9\x04\0j\x03\x06\0NAM8\x04\0\xD3\x05\x06\0DATA\x0A\0\0\0\0\0\0\0\0\0\x11\0DNAMd\0\x06\0\0\0\x33\x33\x33?ff\xA6?\xC8\0\x91\0\0\0\0\0\0\0\0\0\0\xFF\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0!\0\0\0\0\x80?33\xB3?\0\0\0?\0\0\x80?\xC3\xF5\xA8>\0\0\0\0\0\0\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\xFF\xFF\0\0\0\0\x33\x33\x93?CRDT\x10\0\x09\0\0\0\0\0\x80?\x01\xFF\xFF\xFF\0\0\0\0VNAM\x04\0\x01\0\0\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 

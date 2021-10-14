@@ -794,16 +794,17 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead = bytesRead + 2 + unknownMODS.size();
            break;
       case cEITM:
-           if (enchantingFormID!=0)
+           if (enchantingFormID != 0)
            {
              std::cerr << "Error: WEAP seems to have more than one EITM subrecord!\n";
              return false;
            }
            //read EITM
-           if (!loadUint32SubRecordFromStream(in_File, cEITM, enchantingFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cEITM, enchantingFormID, false))
+             return false;
            bytesRead += 6;
            //check content
-           if (enchantingFormID==0)
+           if (enchantingFormID == 0)
            {
              std::cerr << "Error: subrecord EITM of WEAP is zero!\n";
              return false;
@@ -835,39 +836,41 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            hasEAMT = true;
            break;
       case cETYP:
-           if (equipTypeFormID!=0)
+           if (equipTypeFormID != 0)
            {
              std::cerr << "Error: WEAP seems to have more than one ETYP subrecord!\n";
              return false;
            }
            //read ETYP
-           if (!loadUint32SubRecordFromStream(in_File, cETYP, equipTypeFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cETYP, equipTypeFormID, false))
+             return false;
            bytesRead += 6;
            //check content
-           if (equipTypeFormID==0)
+           if (equipTypeFormID == 0)
            {
              std::cerr << "Error: subrecord ETYP of WEAP is zero!\n";
              return false;
            }
            break;
       case cBIDS:
-           if (blockBashImpactDataSetFormID!=0)
+           if (blockBashImpactDataSetFormID != 0)
            {
              std::cerr << "Error: WEAP seems to have more than one BIDS subrecord!\n";
              return false;
            }
            //read BIDS
-           if (!loadUint32SubRecordFromStream(in_File, cBIDS, blockBashImpactDataSetFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cBIDS, blockBashImpactDataSetFormID, false))
+             return false;
            bytesRead += 6;
            //check content
-           if (blockBashImpactDataSetFormID==0)
+           if (blockBashImpactDataSetFormID == 0)
            {
              std::cerr << "Error: subrecord BIDS of WEAP is zero!\n";
              return false;
            }
            break;
       case cBAMT:
-           if (alternateBlockMaterialFormID!=0)
+           if (alternateBlockMaterialFormID != 0)
            {
              std::cerr << "Error: WEAP seems to have more than one BAMT subrecord!\n";
              return false;
@@ -877,7 +880,7 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
              return false;
            bytesRead += 6;
            //check content
-           if (alternateBlockMaterialFormID==0)
+           if (alternateBlockMaterialFormID == 0)
            {
              std::cerr << "Error: subrecord BAMT of WEAP is zero!\n";
              return false;
@@ -1066,7 +1069,7 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            }
            break;
       case cNAM9:
-           if (equipSoundFormID!=0)
+           if (equipSoundFormID != 0)
            {
              std::cerr << "Error: WEAP seems to have more than one NAM9 subrecord!\n";
              return false;
@@ -1076,14 +1079,14 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
              return false;
            bytesRead += 6;
            //check content
-           if (equipSoundFormID==0)
+           if (equipSoundFormID == 0)
            {
              std::cerr << "Error: subrecord NAM9 of WEAP is zero!\n";
              return false;
            }
            break;
       case cNAM8:
-           if (unequipSoundFormID!=0)
+           if (unequipSoundFormID != 0)
            {
              std::cerr << "Error: WEAP seems to have more than one NAM8 subrecord!\n";
              return false;
@@ -1093,9 +1096,9 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
              return false;
            bytesRead += 6;
            //check content
-           if (unequipSoundFormID==0)
+           if (unequipSoundFormID == 0)
            {
-             std::cerr << "Error: subrecord NAM9 of WEAP is zero!\n";
+             std::cerr << "Error: subrecord NAM8 of WEAP is zero!\n";
              return false;
            }
            break;
@@ -1196,7 +1199,8 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            }
 
            //read VNAM
-           if (!loadUint32SubRecordFromStream(in_File, cVNAM, unknownVNAM, true)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cVNAM, unknownVNAM, true))
+             return false;
            bytesRead += 10;
            break;
       case cCNAM:

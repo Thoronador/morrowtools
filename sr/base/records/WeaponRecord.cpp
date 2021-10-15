@@ -963,6 +963,11 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
              return false;
            }
            unknownNNAM = std::string(buffer);
+           if (unknownNNAM.empty())
+           {
+             std::cerr << "Error: Subrecord NNAM of WEAP is empty!\n";
+             return false;
+           }
            break;
       case cINAM:
            if (impactDataSetFormID!=0)

@@ -21,7 +21,8 @@
 #ifndef SR_WEAPONRECORD_HPP
 #define SR_WEAPONRECORD_HPP
 
-#include <cstdint>
+#include <array>
+#include <optional>
 #include <string>
 #include <vector>
 #include "BasicRecord.hpp"
@@ -31,98 +32,101 @@
 namespace SRTP
 {
 
+/** Holds information about a weapon. */
 struct WeaponRecord: public BasicRecord
 {
   public:
-    /* constructor */
+    /** Constructor, creates an empty record. */
     WeaponRecord();
 
-    /* copy constructor */
-    WeaponRecord(const WeaponRecord& other);
-
-    /* assignment operator */
-    WeaponRecord& operator=(const WeaponRecord& other);
-
-    /* destructor */
-    virtual ~WeaponRecord();
-
     #ifndef SR_NO_RECORD_EQUALITY
-    /* returns true, if the other record contains the same data */
+    /** \brief Checks whether another instance contains the same data.
+     *
+     * \param other   the other record to compare with
+     * \return Returns true, if @other contains the same data as instance.
+     *         Returns false otherwise.
+     */
     bool equals(const WeaponRecord& other) const;
     #endif
 
     #ifndef SR_UNSAVEABLE_RECORDS
-    /* returns the size in bytes that the record's data would occupy in a file
-       stream, NOT including the header data
-    */
+    /** \brief Gets the size in bytes that the record's data would occupy in a file
+     *         stream, NOT including the header data.
+     *
+     * \return Returns the size in bytes that the record would need. Size of the
+     *         header is not included.
+     */
     virtual uint32_t getWriteSize() const;
 
-    /* writes the record to the given output stream and returns true on success
-
-      parameters:
-          output   - the output stream
-    */
+    /** \brief Writes the record to the given output stream.
+     *
+     * \param output  the output stream
+     * \return Returns true on success (record was written to stream).
+     *         Returns false, if an error occurred.
+     */
     virtual bool saveToStream(std::ostream& output) const;
     #endif
 
-    /* loads the record from the given input stream and returns true on success
-
-      parameters:
-          in_File   - the input stream
-          localized - whether the file to read from is localized or not
-          table     - the associated string table for localized files
-    */
+    /** \brief Loads the record from the given input stream.
+     *
+     * \param in_File    the input stream
+     * \param localized  whether the file to read from is localized or not
+     * \param table      the associated string table for localized files
+     * \return Returns true on success (record was loaded from stream).
+     *         Returns false, if an error occurred.
+     */
     virtual bool loadFromStream(std::istream& in_File, const bool localized, const StringTable& table);
 
-    /* returns the record's type, usually its header */
+    /** \brief Gets the record's type, usually its header.
+     *
+     * \return Returns the record's type.
+     */
     virtual uint32_t getRecordType() const;
 
-    static const unsigned int cTypeSwordOneHand; //swords
-    static const unsigned int cTypeDagger; //daggers
-    static const unsigned int cTypeAxeOneHand; //axes
-    static const unsigned int cTypeMaceOneHand; //maces
-    static const unsigned int cTypeSwordTwoHand; //swords (and giant clubs)
-    static const unsigned int cTypeBluntTwoHand; //axes, war hammers
-    static const unsigned int cTypeBow; //bows and crossbows
-    static const unsigned int cTypeStaves; //staves
+    static const unsigned int cTypeSwordOneHand; // swords
+    static const unsigned int cTypeDagger; // daggers
+    static const unsigned int cTypeAxeOneHand; // axes
+    static const unsigned int cTypeMaceOneHand; // maces
+    static const unsigned int cTypeSwordTwoHand; // swords (and giant clubs)
+    static const unsigned int cTypeBluntTwoHand; // axes, war hammers
+    static const unsigned int cTypeBow; // bows and crossbows
+    static const unsigned int cTypeStaves; // staves
 
     std::string editorID;
     BinarySubRecord unknownVMAD;
-    uint8_t unknownOBND[12];
-    LocalizedString name; //subrecord FULL
+    std::array<uint8_t, 12> unknownOBND;
+    LocalizedString name; // subrecord FULL
     std::string modelPath;
     BinarySubRecord unknownMODT;
     BinarySubRecord unknownMODS;
-    uint32_t enchantingFormID; //subrecord EITM
-    bool hasEAMT;
-    uint16_t enchantmentAmount; //subrecord EAMT
-    uint32_t equipTypeFormID; //subrecord ETYP
-    uint32_t blockBashImpactDataSetFormID; //subrecord BIDS
-    uint32_t alternateBlockMaterialFormID; //subrecord BAMT
-    std::vector<uint32_t> keywordArray;
-    LocalizedString description; //subrecord DESC
+    uint32_t enchantingFormID; // subrecord EITM
+    std::optional<uint16_t> enchantmentAmount; // subrecord EAMT
+    uint32_t equipTypeFormID; // subrecord ETYP
+    uint32_t blockBashImpactDataSetFormID; // subrecord BIDS
+    uint32_t alternateBlockMaterialFormID; // subrecord BAMT
+    std::vector<uint32_t> keywords;
+    LocalizedString description; // subrecord DESC
     std::string unknownNNAM;
-    uint32_t impactDataSetFormID; //subrecord INAM
-    uint32_t firstPersonModelObjectFormID; //subrecord WNAM
+    uint32_t impactDataSetFormID; // subrecord INAM
+    uint32_t firstPersonModelObjectFormID; // subrecord WNAM
     uint32_t attackSoundFormID; // subrecord SNAM
-    uint32_t attackSound2DFormID; //subrecord XNAM
-    uint32_t attackLoopSoundFormID; //subrecord NAM7
-    uint32_t attackFailSoundFormID; //subrecord TNAM
-    uint32_t idleSoundFormID; //subrecord UNAM
-    uint32_t equipSoundFormID; //subrecord NAM9
-    uint32_t unequipSoundFormID; //subrecord NAM8
-    //DATA
+    uint32_t attackSound2DFormID; // subrecord XNAM
+    uint32_t attackLoopSoundFormID; // subrecord NAM7
+    uint32_t attackFailSoundFormID; // subrecord TNAM
+    uint32_t idleSoundFormID; // subrecord UNAM
+    uint32_t equipSoundFormID; // subrecord NAM9
+    uint32_t unequipSoundFormID; // subrecord NAM8
+    // DATA
     uint32_t value;
     float weight;
     uint16_t baseDamage;
-    //end of data
-    uint8_t  unknownDNAM[100];
-    uint8_t  unknownCRDT[16];
+    // end of data
+    std::array<uint8_t, 100> unknownDNAM;
+    std::array<uint8_t, 16>  unknownCRDT;
     uint32_t unknownVNAM;
-    bool hasCNAM;
-    uint32_t unknownCNAM;
-}; //struct
+    std::optional<uint32_t> unknownCNAM;
+}; // struct
 
-} //namespace
+} // namespace
 
 #endif // SR_WEAPONRECORD_HPP

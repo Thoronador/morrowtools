@@ -45,12 +45,11 @@ TEST_CASE("WeaponRecord")
     REQUIRE_FALSE( record.unknownMODT.isPresent() );
     REQUIRE_FALSE( record.unknownMODS.isPresent() );
     REQUIRE( record.enchantingFormID == 0 );
-    REQUIRE_FALSE( record.hasEAMT );
-    REQUIRE( record.enchantmentAmount == 0 );
+    REQUIRE_FALSE( record.enchantmentAmount.has_value() );
     REQUIRE( record.equipTypeFormID == 0 );
     REQUIRE( record.blockBashImpactDataSetFormID == 0 );
     REQUIRE( record.alternateBlockMaterialFormID == 0 );
-    REQUIRE( record.keywordArray.empty() );
+    REQUIRE( record.keywords.empty() );
     REQUIRE_FALSE( record.description.isPresent() );
     REQUIRE( record.unknownNNAM.empty() );
     REQUIRE( record.impactDataSetFormID == 0 );
@@ -74,8 +73,7 @@ TEST_CASE("WeaponRecord")
       REQUIRE( record.unknownCRDT[i] == 0 );
     }
     REQUIRE( record.unknownVNAM == 0 );
-    REQUIRE_FALSE( record.hasCNAM );
-    REQUIRE( record.unknownCNAM == 0 );
+    REQUIRE_FALSE( record.unknownCNAM.has_value() );
   }
 
   SECTION("equals")
@@ -182,21 +180,19 @@ TEST_CASE("WeaponRecord")
 
       SECTION("EAMT mismatch")
       {
-        a.hasEAMT = true;
-        b.hasEAMT = false;
+        a.enchantmentAmount = 0;
+        b.enchantmentAmount.reset();
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        a.hasEAMT = false;
-        b.hasEAMT = true;
+        a.enchantmentAmount.reset();
+        b.enchantmentAmount = 0;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        a.hasEAMT = true;
         a.enchantmentAmount = 1;
-        b.hasEAMT = true;
         b.enchantmentAmount = 2;
 
         REQUIRE_FALSE( a.equals(b) );
@@ -232,13 +228,13 @@ TEST_CASE("WeaponRecord")
 
       SECTION("keywords mismatch")
       {
-        a.keywordArray.push_back(0x01234567);
+        a.keywords.push_back(0x01234567);
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        b.keywordArray.push_back(0x01234567);
-        b.keywordArray.push_back(0x09ABCDEF);
+        b.keywords.push_back(0x01234567);
+        b.keywords.push_back(0x09ABCDEF);
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
@@ -398,21 +394,19 @@ TEST_CASE("WeaponRecord")
 
       SECTION("CNAM mismatch")
       {
-        a.hasCNAM = true;
-        b.hasCNAM = false;
+        a.unknownCNAM = 0;
+        b.unknownCNAM.reset();
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        a.hasCNAM = false;
-        b.hasCNAM = true;
+        a.unknownCNAM.reset();
+        b.unknownCNAM = 0;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        a.hasCNAM = true;
         a.unknownCNAM = 1;
-        b.hasCNAM = true;
         b.unknownCNAM = 2;
 
         REQUIRE_FALSE( a.equals(b) );
@@ -543,7 +537,7 @@ TEST_CASE("WeaponRecord")
     {
       REQUIRE( record.getWriteSize() == 182 );
 
-      record.hasEAMT = true;
+      record.enchantmentAmount = 42;
       REQUIRE( record.getWriteSize() == 190 );
     }
 
@@ -575,10 +569,10 @@ TEST_CASE("WeaponRecord")
     {
       REQUIRE( record.getWriteSize() == 182 );
 
-      record.keywordArray.push_back(0x01234567);
+      record.keywords.push_back(0x01234567);
       REQUIRE( record.getWriteSize() == 202 );
 
-      record.keywordArray.push_back(0x01234567);
+      record.keywords.push_back(0x01234567);
       REQUIRE( record.getWriteSize() == 206 );
     }
 
@@ -677,7 +671,7 @@ TEST_CASE("WeaponRecord")
     {
       REQUIRE( record.getWriteSize() == 182 );
 
-      record.hasCNAM = true;
+      record.unknownCNAM = 42;
       REQUIRE( record.getWriteSize() == 192 );
     }
   }
@@ -737,16 +731,15 @@ TEST_CASE("WeaponRecord")
       REQUIRE( MODT == "\x02\0\0\0\x07\0\0\0\0\0\0\0O\xE0uddds\0\xA0\xB8\x63\x05\x33\x16\x8C\x07\x64\x64s\0\xA0\xB8\x63\x05\x03\xD8\xC2@dds\0\xA0\xB8\x63\x05\x45Ij\\dds\0\x7F\xD1Y\x13\xDA\x13'\x15\x64\x64s\0\x7F\xD1Y\x13\xB6]\x9E\x1F\x64\x64s\0&,\x33;\xF6\x38\x90\xAC\x64\x64s\0&,\x33;"sv );
       REQUIRE_FALSE( record.unknownMODS.isPresent() );
       REQUIRE( record.enchantingFormID == 0x0010FAF0 );
-      REQUIRE_FALSE( record.hasEAMT );
-      REQUIRE( record.enchantmentAmount == 0 );
+      REQUIRE_FALSE( record.enchantmentAmount.has_value() );
       REQUIRE( record.equipTypeFormID == 0x00013F45 );
       REQUIRE( record.blockBashImpactDataSetFormID == 0x000183FF );
       REQUIRE( record.alternateBlockMaterialFormID == 0x00018401 );
-      REQUIRE( record.keywordArray.size() == 4 );
-      REQUIRE( record.keywordArray[0] == 0x0001E711 );
-      REQUIRE( record.keywordArray[1] == 0x000C27BD );
-      REQUIRE( record.keywordArray[2] == 0x000917E8 );
-      REQUIRE( record.keywordArray[3] == 0x000A8668 );
+      REQUIRE( record.keywords.size() == 4 );
+      REQUIRE( record.keywords[0] == 0x0001E711 );
+      REQUIRE( record.keywords[1] == 0x000C27BD );
+      REQUIRE( record.keywords[2] == 0x000917E8 );
+      REQUIRE( record.keywords[3] == 0x000A8668 );
       REQUIRE( record.description.isPresent() );
       REQUIRE( record.description.getType() == LocalizedString::Type::Index );
       REQUIRE( record.description.getIndex() == 0x00012616 );
@@ -763,13 +756,12 @@ TEST_CASE("WeaponRecord")
       REQUIRE( record.value == 2000 );
       REQUIRE( record.weight == 10.0f );
       REQUIRE( record.baseDamage == 11 );
-      const auto DNAM = std::string_view(reinterpret_cast<const char*>(record.unknownDNAM), 100);
+      const auto DNAM = std::string_view(reinterpret_cast<const char*>(record.unknownDNAM.data()), record.unknownDNAM.size());
       REQUIRE( DNAM == "\x05\0\0\0\0\0\x80?\0\0\x80?\0\0\x91\0\0\0\0\0\0\0\0\0\0\xFF\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x80?\xCD\xCCL?\0\0\0?\0\0\x80?\xC3\xF5\xA8>\0\0\0\0\0\0\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\xFF\xFF\0\0\0\0\0\0@?"sv );
-      const auto CRDT = std::string_view(reinterpret_cast<const char*>(record.unknownCRDT), 16);
+      const auto CRDT = std::string_view(reinterpret_cast<const char*>(record.unknownCRDT.data()), record.unknownCRDT.size());
       REQUIRE( CRDT == "\0\0\0\0\0\0\x80?\x01\xFF\xFF\xFF\0\0\0\0"sv );
       REQUIRE( record.unknownVNAM == 1 );
-      REQUIRE_FALSE( record.hasCNAM );
-      REQUIRE( record.unknownCNAM == 0 );
+      REQUIRE_FALSE( record.unknownCNAM.has_value() );
 
       // Writing should succeed.
       std::ostringstream streamOut;
@@ -822,15 +814,15 @@ TEST_CASE("WeaponRecord")
       REQUIRE( MODT == "\x02\0\0\0\0\0\0\0\0\0\0\0"sv );
       REQUIRE_FALSE( record.unknownMODS.isPresent() );
       REQUIRE( record.enchantingFormID == 0x00049BB7 );
-      REQUIRE( record.hasEAMT );
+      REQUIRE( record.enchantmentAmount.has_value() );
       REQUIRE( record.enchantmentAmount == 0x00C8 );
       REQUIRE( record.equipTypeFormID == 0x00013F45 );
       REQUIRE( record.blockBashImpactDataSetFormID == 0x000193C6 );
       REQUIRE( record.alternateBlockMaterialFormID == 0x000774B6 );
-      REQUIRE( record.keywordArray.size() == 3 );
-      REQUIRE( record.keywordArray[0] == 0x0001E715 );
-      REQUIRE( record.keywordArray[1] == 0x0001E719 );
-      REQUIRE( record.keywordArray[2] == 0x0008F958 );
+      REQUIRE( record.keywords.size() == 3 );
+      REQUIRE( record.keywords[0] == 0x0001E715 );
+      REQUIRE( record.keywords[1] == 0x0001E719 );
+      REQUIRE( record.keywords[2] == 0x0008F958 );
       REQUIRE( record.description.isPresent() );
       REQUIRE( record.description.getType() == LocalizedString::Type::Index );
       REQUIRE( record.description.getIndex() == 0 );
@@ -847,12 +839,12 @@ TEST_CASE("WeaponRecord")
       REQUIRE( record.value == 120 );
       REQUIRE( record.weight == 14.0f );
       REQUIRE( record.baseDamage == 19 );
-      const auto DNAM = std::string_view(reinterpret_cast<const char*>(record.unknownDNAM), 100);
+      const auto DNAM = std::string_view(reinterpret_cast<const char*>(record.unknownDNAM.data()), 100);
       REQUIRE( DNAM == "\x09\0\0\0\0\0\x80?\0\0\x80?\0\0\x93\0\0\0\0\0\0\0\0\0\x05\xFF\x01\0\0\0\xFA\x43\0\0\xFA\x44\0\0\0\0\0\0\0\0\0\0\x80?\0\0\x80?\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x08\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\xFF\xFF\0\0\0\0\0\0@?"sv );
-      const auto CRDT = std::string_view(reinterpret_cast<const char*>(record.unknownCRDT), 16);
+      const auto CRDT = std::string_view(reinterpret_cast<const char*>(record.unknownCRDT.data()), 16);
       REQUIRE( CRDT == "\x09\0\0\0\0\0\x80?\x01\xFF\xFF\xFF\0\0\0\0"sv );
       REQUIRE( record.unknownVNAM == 2 );
-      REQUIRE( record.hasCNAM );
+      REQUIRE( record.unknownCNAM.has_value() );
       REQUIRE( record.unknownCNAM == 0x02000801 );
 
       // Writing should succeed.
@@ -906,14 +898,13 @@ TEST_CASE("WeaponRecord")
       REQUIRE( MODT == "\x02\0\0\0\x02\0\0\0\0\0\0\0\x35\xFC\x8B#dds\08\x97<\xEAw|Qpdds\0X,U3"sv );
       REQUIRE_FALSE( record.unknownMODS.isPresent() );
       REQUIRE( record.enchantingFormID == 0x000C5BE2 );
-      REQUIRE_FALSE( record.hasEAMT );
-      REQUIRE( record.enchantmentAmount == 0 );
+      REQUIRE_FALSE( record.enchantmentAmount.has_value() );
       REQUIRE( record.equipTypeFormID == 0x00013F45 );
       REQUIRE( record.blockBashImpactDataSetFormID == 0x000193C7 );
       REQUIRE( record.alternateBlockMaterialFormID == 0x000E64A9 );
-      REQUIRE( record.keywordArray.size() == 2 );
-      REQUIRE( record.keywordArray[0] == 0x0006D932 );
-      REQUIRE( record.keywordArray[1] == 0x0008F958 );
+      REQUIRE( record.keywords.size() == 2 );
+      REQUIRE( record.keywords[0] == 0x0006D932 );
+      REQUIRE( record.keywords[1] == 0x0008F958 );
       REQUIRE( record.description.isPresent() );
       REQUIRE( record.description.getType() == LocalizedString::Type::Index );
       REQUIRE( record.description.getIndex() == 0 );
@@ -930,13 +921,12 @@ TEST_CASE("WeaponRecord")
       REQUIRE( record.value == 0 );
       REQUIRE( record.weight == 0.0f );
       REQUIRE( record.baseDamage == 17 );
-      const auto DNAM = std::string_view(reinterpret_cast<const char*>(record.unknownDNAM), 100);
+      const auto DNAM = std::string_view(reinterpret_cast<const char*>(record.unknownDNAM.data()), 100);
       REQUIRE( DNAM == "\x06\0\0\0\x33\x33\x33?ff\xA6?\xC8\0\x91\0\0\0\0\0\0\0\0\0\0\xFF\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0!\0\0\0\0\x80?33\xB3?\0\0\0?\0\0\x80?\xC3\xF5\xA8>\0\0\0\0\0\0\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\xFF\xFF\0\0\0\0\x33\x33\x93?"sv );
-      const auto CRDT = std::string_view(reinterpret_cast<const char*>(record.unknownCRDT), 16);
+      const auto CRDT = std::string_view(reinterpret_cast<const char*>(record.unknownCRDT.data()), 16);
       REQUIRE( CRDT == "\x09\0\0\0\0\0\x80?\x01\xFF\xFF\xFF\0\0\0\0"sv );
       REQUIRE( record.unknownVNAM == 1 );
-      REQUIRE_FALSE( record.hasCNAM );
-      REQUIRE( record.unknownCNAM == 0 );
+      REQUIRE_FALSE( record.unknownCNAM.has_value() );
 
       // Writing should succeed.
       std::ostringstream streamOut;
@@ -988,13 +978,12 @@ TEST_CASE("WeaponRecord")
       REQUIRE( MODT == "\x02\0\0\0\x04\0\0\0\0\0\0\0\x9D\xC0\xB4%dds\0\x14\xF2@\xE6\x97\x1E\xA2\xC8\x64\x64s\0\x14\xF2@\xE6\xB8\xEC\x30{dds\0&,\x33;-O\xABQdds\0\x14\xF2@\xE6"sv );
       REQUIRE_FALSE( record.unknownMODS.isPresent() );
       REQUIRE( record.enchantingFormID == 0 );
-      REQUIRE_FALSE( record.hasEAMT );
-      REQUIRE( record.enchantmentAmount == 0 );
+      REQUIRE_FALSE( record.enchantmentAmount.has_value() );
       REQUIRE( record.equipTypeFormID == 0x00013F45 );
       REQUIRE( record.blockBashImpactDataSetFormID == 0x000193C6 );
       REQUIRE( record.alternateBlockMaterialFormID == 0x00018401 );
-      REQUIRE( record.keywordArray.size() == 1 );
-      REQUIRE( record.keywordArray[0] == 0x0008F958 );
+      REQUIRE( record.keywords.size() == 1 );
+      REQUIRE( record.keywords[0] == 0x0008F958 );
       REQUIRE( record.description.isPresent() );
       REQUIRE( record.description.getType() == LocalizedString::Type::Index );
       REQUIRE( record.description.getIndex() == 0 );
@@ -1011,13 +1000,12 @@ TEST_CASE("WeaponRecord")
       REQUIRE( record.value == 5 );
       REQUIRE( record.weight == 4.0f );
       REQUIRE( record.baseDamage == 10 );
-      const auto DNAM = std::string_view(reinterpret_cast<const char*>(record.unknownDNAM), 100);
+      const auto DNAM = std::string_view(reinterpret_cast<const char*>(record.unknownDNAM.data()), 100);
       REQUIRE( DNAM == "\x07\0\0\0\0\0\x80?\0\0\x80?\x88\0\x91\0\xCD\xCC\xCC>\0\0\0\0\x05\xFF\x01\0\0\0\xFA\x43\0\0\xFA\x44\0\0\0\0\0\0\0\0\0\0\x80?\0\0\xA0@\0\0\0?\0\0\x80?\xC3\xF5\xA8>\0\0\0\0\0\0\0\0\0\0\0\0\x08\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\xFF\xFF\0\0\0\0\0\0\0\0"sv );
-      const auto CRDT = std::string_view(reinterpret_cast<const char*>(record.unknownCRDT), 16);
+      const auto CRDT = std::string_view(reinterpret_cast<const char*>(record.unknownCRDT.data()), 16);
       REQUIRE( CRDT == "\0\0\0\0\0\0\x80?\x01\xFF\xFF\xFF\0\0\0\0"sv );
       REQUIRE( record.unknownVNAM == 1 );
-      REQUIRE_FALSE( record.hasCNAM );
-      REQUIRE( record.unknownCNAM == 0 );
+      REQUIRE_FALSE( record.unknownCNAM.has_value() );
 
       // Writing should succeed.
       std::ostringstream streamOut;

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2013  Thoronador
+    Copyright (C) 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -31,32 +31,59 @@ namespace SRTP
 
 /* FactionElem's functions */
 
+NPCRecord::FactionElem::FactionElem()
+: formID(0),
+  rank(0)
+{
+}
+
 bool NPCRecord::FactionElem::operator==(const FactionElem& other) const
 {
-  return ((formID==other.formID) and (rank==other.rank));
+  return (formID == other.formID) && (rank == other.rank);
 }
 
 /* PerkElem's functions */
 
+NPCRecord::PerkElem::PerkElem()
+: formID(0),
+  valueTwo(0)
+{
+}
+
 bool NPCRecord::PerkElem::operator==(const NPCRecord::PerkElem& other) const
 {
-  return ((formID==other.formID) and (valueTwo==other.valueTwo));
+  return (formID == other.formID) && (valueTwo == other.valueTwo);
 }
 
 /* TINXstructure's functions */
 
+NPCRecord::TINXstructure::TINXstructure()
+: unknownTINI(0),
+  unknownTINC(0),
+  unknownTINV(0),
+  unknownTIAS(0)
+{
+}
+
 bool NPCRecord::TINXstructure::operator==(const NPCRecord::TINXstructure& other) const
 {
-  return ((unknownTINI==other.unknownTINI) and (unknownTINC==other.unknownTINC)
-      and (unknownTINV==other.unknownTINV) and (unknownTIAS==other.unknownTIAS));
+  return (unknownTINI == other.unknownTINI) && (unknownTINC == other.unknownTINC)
+      && (unknownTINV == other.unknownTINV) && (unknownTIAS == other.unknownTIAS);
 }
 
 /* CSDXstruct's functions */
 
+NPCRecord::CSDXstruct::CSDXstruct()
+: unknownCSDT(0),
+  unknownCSDI(0),
+  unknownCSDC(0)
+{
+}
+
 bool NPCRecord::CSDXstruct::operator==(const NPCRecord::CSDXstruct& other) const
 {
-  return ((unknownCSDT==other.unknownCSDT) and (unknownCSDI==other.unknownCSDI)
-      and (unknownCSDC==other.unknownCSDC));
+  return (unknownCSDT == other.unknownCSDT) && (unknownCSDI == other.unknownCSDI)
+      && (unknownCSDC == other.unknownCSDC);
 }
 
 /* NPCRecord's functions */

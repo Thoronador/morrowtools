@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2013  Thoronador
+    Copyright (C) 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -78,6 +78,8 @@ struct NPCRecord: public BasicRecord
       uint32_t formID;
       uint32_t rank;
 
+      FactionElem();
+
       /* equality operator */
       bool operator==(const FactionElem& other) const;
     }; //struct
@@ -87,6 +89,8 @@ struct NPCRecord: public BasicRecord
     {
       uint32_t formID;
       uint32_t valueTwo; //unknown
+
+      PerkElem();
 
       /* equality operator */
       bool operator==(const PerkElem& other) const;
@@ -100,6 +104,8 @@ struct NPCRecord: public BasicRecord
       uint32_t unknownTINV;
       uint16_t unknownTIAS;
 
+      TINXstructure();
+
       /* equality operator */
       bool operator==(const TINXstructure& other) const;
     }; //struct
@@ -110,6 +116,8 @@ struct NPCRecord: public BasicRecord
       uint32_t unknownCSDT;
       uint32_t unknownCSDI;
       uint8_t unknownCSDC;
+
+      CSDXstruct();
 
       /* equality operator */
       bool operator==(const CSDXstruct& other) const;

@@ -49,12 +49,10 @@ TEST_CASE("NPCRecord")
     REQUIRE( record.voiceTypeFormID == 0 );
     REQUIRE( record.templateActorBaseFormID == 0 );
     REQUIRE( record.raceFormID == 0 );
-    REQUIRE_FALSE( record.hasDEST );
-    REQUIRE( record.unknownDEST == 0 );
+    REQUIRE_FALSE( record.unknownDEST.has_value() );
     REQUIRE( record.skinFormID == 0 );
     REQUIRE( record.farAwayModelSkinFormID == 0 );
-    REQUIRE_FALSE( record.hasATKR );
-    REQUIRE( record.unknownATKR == 0 );
+    REQUIRE_FALSE( record.unknownATKR.has_value() );
     REQUIRE_FALSE( record.unknownATKD.isPresent() );
     REQUIRE( record.unknownATKE.empty() );
     REQUIRE( record.spellFormIDs.empty() );
@@ -67,11 +65,10 @@ TEST_CASE("NPCRecord")
       REQUIRE( record.unknownAIDT[i] == 0 );
     }
     REQUIRE( record.unknownPKIDs.empty() );
-    REQUIRE( record.keywordArray.empty() );
+    REQUIRE( record.keywords.empty() );
     REQUIRE( record.classFormID == 0 );
     REQUIRE_FALSE( record.name.isPresent() );
-    REQUIRE_FALSE( record.hasSHRT );
-    REQUIRE( record.unknownSHRT == 0 );
+    REQUIRE_FALSE( record.unknownSHRT.has_value() );
     for (unsigned int i = 0; i < 52; ++i)
     {
       REQUIRE( record.unknownDNAM[i] == 0 );
@@ -203,21 +200,19 @@ TEST_CASE("NPCRecord")
 
       SECTION("DEST mismatch")
       {
-        a.hasDEST = true;
-        b.hasDEST = false;
+        a.unknownDEST = 0;
+        b.unknownDEST.reset();
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        a.hasDEST = false;
-        b.hasDEST = true;
+        a.unknownDEST.reset();
+        b.unknownDEST = 0;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        a.hasDEST = true;
         a.unknownDEST = 1;
-        b.hasDEST = true;
         b.unknownDEST = 2;
 
         REQUIRE_FALSE( a.equals(b) );
@@ -244,21 +239,19 @@ TEST_CASE("NPCRecord")
 
       SECTION("ATKR mismatch")
       {
-        a.hasATKR = true;
-        b.hasATKR = false;
+        a.unknownATKR = 0;
+        b.unknownATKR.reset();
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        a.hasATKR = false;
-        b.hasATKR = true;
+        a.unknownATKR.reset();
+        b.unknownATKR = 0;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        a.hasATKR = true;
         a.unknownATKR = 1;
-        b.hasATKR = true;
         b.unknownATKR = 2;
 
         REQUIRE_FALSE( a.equals(b) );
@@ -361,13 +354,13 @@ TEST_CASE("NPCRecord")
 
       SECTION("keywords mismatch")
       {
-        a.keywordArray.push_back(0x01234567);
+        a.keywords.push_back(0x01234567);
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        b.keywordArray.push_back(0x01234567);
-        b.keywordArray.push_back(0x89ABCDEF);
+        b.keywords.push_back(0x01234567);
+        b.keywords.push_back(0x89ABCDEF);
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
@@ -392,21 +385,19 @@ TEST_CASE("NPCRecord")
 
       SECTION("SHRT mismatch")
       {
-        a.hasSHRT = true;
-        b.hasSHRT = false;
+        a.unknownSHRT = 0;
+        b.unknownSHRT.reset();
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        a.hasSHRT = false;
-        b.hasSHRT = true;
+        a.unknownSHRT.reset();
+        b.unknownSHRT = 0;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        a.hasSHRT = true;
         a.unknownSHRT = 1;
-        b.hasSHRT = true;
         b.unknownSHRT = 2;
 
         REQUIRE_FALSE( a.equals(b) );
@@ -692,7 +683,7 @@ TEST_CASE("NPCRecord")
     {
       REQUIRE( record.getWriteSize() == 224 );
 
-      record.hasDEST = true;
+      record.unknownDEST = 1;
       REQUIRE( record.getWriteSize() == 238 );
     }
 
@@ -716,7 +707,7 @@ TEST_CASE("NPCRecord")
     {
       REQUIRE( record.getWriteSize() == 224 );
 
-      record.hasATKR = true;
+      record.unknownATKR = 1;
       REQUIRE( record.getWriteSize() == 234 );
     }
 
@@ -818,10 +809,10 @@ TEST_CASE("NPCRecord")
     {
       REQUIRE( record.getWriteSize() == 224 );
 
-      record.keywordArray.push_back(0x01234567);
+      record.keywords.push_back(0x01234567);
       REQUIRE( record.getWriteSize() == 244 );
 
-      record.keywordArray.push_back(0x01234568);
+      record.keywords.push_back(0x01234568);
       REQUIRE( record.getWriteSize() == 248 );
     }
 
@@ -837,7 +828,7 @@ TEST_CASE("NPCRecord")
     {
       REQUIRE( record.getWriteSize() == 224 );
 
-      record.hasSHRT = true;
+      record.unknownSHRT = 1;
       REQUIRE( record.getWriteSize() == 234 );
     }
 
@@ -1072,12 +1063,10 @@ TEST_CASE("NPCRecord")
       REQUIRE( record.voiceTypeFormID == 0 );
       REQUIRE( record.templateActorBaseFormID == 0x000FAE86 );
       REQUIRE( record.raceFormID == 0x00109C7C );
-      REQUIRE_FALSE( record.hasDEST );
-      REQUIRE( record.unknownDEST == 0 );
+      REQUIRE_FALSE( record.unknownDEST.has_value() );
       REQUIRE( record.skinFormID == 0 );
       REQUIRE( record.farAwayModelSkinFormID == 0 );
-      REQUIRE_FALSE( record.hasATKR );
-      REQUIRE( record.unknownATKR == 0 );
+      REQUIRE_FALSE( record.unknownATKR.has_value() );
       REQUIRE_FALSE( record.unknownATKD.isPresent() );
       REQUIRE( record.unknownATKE.empty() );
       REQUIRE( record.spellFormIDs.empty() );
@@ -1106,15 +1095,14 @@ TEST_CASE("NPCRecord")
       REQUIRE( record.unknownAIDT[18] == 0x00 );
       REQUIRE( record.unknownAIDT[19] == 0x00 );
       REQUIRE( record.unknownPKIDs.empty() );
-      REQUIRE( record.keywordArray.size() == 1 );
-      REQUIRE( record.keywordArray[0] == 0x00035D59 );
+      REQUIRE( record.keywords.size() == 1 );
+      REQUIRE( record.keywords[0] == 0x00035D59 );
       REQUIRE( record.classFormID == 0x00017008 );
       REQUIRE( record.name.isPresent() );
       REQUIRE( record.name.getType() == LocalizedString::Type::Index );
       REQUIRE( record.name.getIndex() == 0x00008845 );
-      REQUIRE_FALSE( record.hasSHRT );
-      REQUIRE( record.unknownSHRT == 0 );
-      const auto DNAM = std::string_view(reinterpret_cast<const char*>(record.unknownDNAM), 52);
+      REQUIRE_FALSE( record.unknownSHRT.has_value() );
+      const auto DNAM = std::string_view(reinterpret_cast<const char*>(record.unknownDNAM.data()), 52);
       REQUIRE( DNAM == "\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0"sv );
       REQUIRE( record.unknownPNAMs.empty() );
       REQUIRE( record.hairColorFormID == 0 );
@@ -1131,7 +1119,7 @@ TEST_CASE("NPCRecord")
       REQUIRE( record.unknownCSDXs.empty() );
       REQUIRE( record.defaultPackageListFormID == 0 );
       REQUIRE( record.faceComplexionFormID == 0 );
-      const auto QNAM = std::string_view(reinterpret_cast<const char*>(record.unknownQNAM), 12);
+      const auto QNAM = std::string_view(reinterpret_cast<const char*>(record.unknownQNAM.data()), 12);
       REQUIRE( QNAM == "\0\0\0\0\0\0\0\0\0\0\0\0"sv );
       REQUIRE_FALSE( record.unknownNAM9.isPresent() );
       REQUIRE_FALSE( record.unknownNAMA.isPresent() );
@@ -1210,12 +1198,10 @@ TEST_CASE("NPCRecord")
       REQUIRE( record.voiceTypeFormID == 0 );
       REQUIRE( record.templateActorBaseFormID == 0x000FAE86 );
       REQUIRE( record.raceFormID == 0x00109C7C );
-      REQUIRE_FALSE( record.hasDEST );
-      REQUIRE( record.unknownDEST == 0 );
+      REQUIRE_FALSE( record.unknownDEST.has_value() );
       REQUIRE( record.skinFormID == 0 );
       REQUIRE( record.farAwayModelSkinFormID == 0 );
-      REQUIRE_FALSE( record.hasATKR );
-      REQUIRE( record.unknownATKR == 0 );
+      REQUIRE_FALSE( record.unknownATKR.has_value() );
       REQUIRE_FALSE( record.unknownATKD.isPresent() );
       REQUIRE( record.unknownATKE.empty() );
       REQUIRE( record.spellFormIDs.empty() );
@@ -1244,15 +1230,14 @@ TEST_CASE("NPCRecord")
       REQUIRE( record.unknownAIDT[18] == 0x00 );
       REQUIRE( record.unknownAIDT[19] == 0x00 );
       REQUIRE( record.unknownPKIDs.empty() );
-      REQUIRE( record.keywordArray.size() == 1 );
-      REQUIRE( record.keywordArray[0] == 0x00035D59 );
+      REQUIRE( record.keywords.size() == 1 );
+      REQUIRE( record.keywords[0] == 0x00035D59 );
       REQUIRE( record.classFormID == 0x00017008 );
       REQUIRE( record.name.isPresent() );
       REQUIRE( record.name.getType() == LocalizedString::Type::Index );
       REQUIRE( record.name.getIndex() == 0x00008845 );
-      REQUIRE_FALSE( record.hasSHRT );
-      REQUIRE( record.unknownSHRT == 0 );
-      const auto DNAM = std::string_view(reinterpret_cast<const char*>(record.unknownDNAM), 52);
+      REQUIRE_FALSE( record.unknownSHRT.has_value() );
+      const auto DNAM = std::string_view(reinterpret_cast<const char*>(record.unknownDNAM.data()), 52);
       REQUIRE( DNAM == "\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0"sv );
       REQUIRE( record.unknownPNAMs.empty() );
       REQUIRE( record.hairColorFormID == 0 );
@@ -1269,7 +1254,7 @@ TEST_CASE("NPCRecord")
       REQUIRE( record.unknownCSDXs.empty() );
       REQUIRE( record.defaultPackageListFormID == 0 );
       REQUIRE( record.faceComplexionFormID == 0 );
-      const auto QNAM = std::string_view(reinterpret_cast<const char*>(record.unknownQNAM), 12);
+      const auto QNAM = std::string_view(reinterpret_cast<const char*>(record.unknownQNAM.data()), 12);
       REQUIRE( QNAM == "\0\0\0\0\0\0\0\0\0\0\0\0"sv );
       REQUIRE_FALSE( record.unknownNAM9.isPresent() );
       REQUIRE_FALSE( record.unknownNAMA.isPresent() );
@@ -1350,14 +1335,13 @@ TEST_CASE("NPCRecord")
       REQUIRE( record.voiceTypeFormID == 0x00029986 );
       REQUIRE( record.templateActorBaseFormID == 0x0008A1C9 );
       REQUIRE( record.raceFormID == 0x000131EF );
-      REQUIRE_FALSE( record.hasDEST );
-      REQUIRE( record.unknownDEST == 0 );
+      REQUIRE_FALSE( record.unknownDEST.has_value() );
       REQUIRE( record.spellFormIDs.size() == 1 );
       REQUIRE( record.spellFormIDs[0] == 0x00020258 );
       REQUIRE( record.skinFormID == 0x0003B5AB );
       REQUIRE( record.farAwayModelSkinFormID == 0 );
-      REQUIRE( record.hasATKR );
-      REQUIRE( record.unknownATKR == 0x000131EF );
+      REQUIRE( record.unknownATKR.has_value() );
+      REQUIRE( record.unknownATKR.value() == 0x000131EF );
       REQUIRE_FALSE( record.unknownATKD.isPresent() );
       REQUIRE( record.unknownATKE.empty() );
       REQUIRE( record.perkList.size() == 9 );
@@ -1408,14 +1392,14 @@ TEST_CASE("NPCRecord")
       REQUIRE( record.unknownPKIDs[0] == 0x0009448B );
       REQUIRE( record.unknownPKIDs[1] == 0x00088978 );
       REQUIRE( record.unknownPKIDs[2] == 0x0009BCBD );
-      REQUIRE( record.keywordArray.empty() );
+      REQUIRE( record.keywords.empty() );
       REQUIRE( record.classFormID == 0x0001CE1C );
       REQUIRE( record.name.isPresent() );
       REQUIRE( record.name.getType() == LocalizedString::Type::Index );
       REQUIRE( record.name.getIndex() == 0x0000C59F );
-      REQUIRE( record.hasSHRT );
-      REQUIRE( record.unknownSHRT == 0x00010148 );
-      const auto DNAM = std::string_view(reinterpret_cast<const char*>(record.unknownDNAM), 52);
+      REQUIRE( record.unknownSHRT.has_value() );
+      REQUIRE( record.unknownSHRT.value() == 0x00010148 );
+      const auto DNAM = std::string_view(reinterpret_cast<const char*>(record.unknownDNAM.data()), 52);
       REQUIRE( DNAM == "\x0F\x0F\x0F\x0F\x0F\x0F\x0F\x0F\x0F\x37\x0F\x0F\x64\x64\x64\x0F\x64\x0F\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\xD2\x05!\x02\0\0\x03\0\0\0\0\0\x01\x8CT\0"sv );
       REQUIRE( record.unknownPNAMs.empty() );
       REQUIRE( record.hairColorFormID == 0 );
@@ -1432,7 +1416,7 @@ TEST_CASE("NPCRecord")
       REQUIRE( record.unknownCSDXs.empty() );
       REQUIRE( record.defaultPackageListFormID == 0x00032AE2 );
       REQUIRE( record.faceComplexionFormID == 0 );
-      const auto QNAM = std::string_view(reinterpret_cast<const char*>(record.unknownQNAM), 12);
+      const auto QNAM = std::string_view(reinterpret_cast<const char*>(record.unknownQNAM.data()), 12);
       REQUIRE( QNAM == "\x81\x80\0?\x81\x80\0?\x81\x80\0?"sv );
       REQUIRE_FALSE( record.unknownNAM9.isPresent() );
       REQUIRE_FALSE( record.unknownNAMA.isPresent() );

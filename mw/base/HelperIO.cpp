@@ -33,7 +33,7 @@ std::string IntTo4Char(const uint32_t value)
 
 void UnexpectedRecord(const uint32_t expected, const uint32_t unexpected)
 {
-  std::cerr << "Error: expected record name \"" << IntTo4Char(expected)
+  std::cerr << "Error: Expected record name \"" << IntTo4Char(expected)
             << "\" was not found. Instead, \"" << IntTo4Char(unexpected)
             << "\" was found.\n";
 }

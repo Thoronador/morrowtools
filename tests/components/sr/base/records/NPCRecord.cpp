@@ -1398,5 +1398,1128 @@ TEST_CASE("NPCRecord")
       NPCRecord record;
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
+
+    SECTION("corrupt data: stream ends before all of VMAD can be read")
+    {
+      const std::string_view data = "NPC_\x52\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x52\x01MQ104Dragon\0VMAD\x64\0\xFE"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: no OBND")
+    {
+      const auto data = "NPC_\x52\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0FAIL\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: missing OBND")
+    {
+      const auto data = "NPC_\x40\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple OBND")
+    {
+      const auto data = "NPC_\x64\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of OBND is not 12")
+    {
+      {
+        const auto data = "NPC_\x51\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0B\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read NPC_, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        NPCRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+
+      {
+        const auto data = "NPC_\x53\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0D\0\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read NPC_, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        NPCRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+    }
+
+    SECTION("corrupt data: stream end before all of OBND can be read")
+    {
+      const auto data = "NPC_\x52\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: missing ACBS")
+    {
+      const auto data = "NPC_\x34\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple ACBS")
+    {
+      const auto data = "NPC_\x70\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of ACBS is not 24")
+    {
+      {
+        const auto data = "NPC_\x51\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x17\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read NPC_, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        NPCRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+
+      {
+        const auto data = "NPC_\x53\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x19\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read NPC_, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        NPCRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+    }
+
+    SECTION("corrupt data: stream end before all of ACBS can be read")
+    {
+      const auto data = "NPC_\x52\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of SNAM is not 8")
+    {
+      {
+        const auto data = "NPC_\x51\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x07\0\x9C-\x03\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read NPC_, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        NPCRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+
+      {
+        const auto data = "NPC_\x52\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x09\0\x9C-\x03\0\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read NPC_, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        NPCRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+    }
+
+    SECTION("corrupt data: stream end before all of SNAM can be read")
+    {
+      const auto data = "NPC_\x52\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple TPLTs")
+    {
+      const auto data = "NPC_\x5C\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of TPLT is not four")
+    {
+      {
+        const auto data = "NPC_\x51\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x03\0\x86\xAE\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read NPC_, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        NPCRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+
+      {
+        const auto data = "NPC_\x53\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x05\0\x86\xAE\x0F\0\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read NPC_, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        NPCRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+    }
+
+    SECTION("corrupt data: stream end before all of TPLT can be read")
+    {
+      const auto data = "NPC_\x52\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: TPLT is zero")
+    {
+      const auto data = "NPC_\x52\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\0\0\0\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple RNAMs")
+    {
+      const auto data = "NPC_\x5C\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of RNAM is not four")
+    {
+      {
+        const auto data = "NPC_\x51\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x03\0|\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read NPC_, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        NPCRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+
+      {
+        const auto data = "NPC_\x53\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x05\0|\x9C\x10\0\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read NPC_, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        NPCRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+    }
+
+    SECTION("corrupt data: stream end before all of RNAM can be read")
+    {
+      const auto data = "NPC_\x52\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: RNAM is zero")
+    {
+      const auto data = "NPC_\x52\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0\0\0\0\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple AIDTs")
+    {
+      const auto data = "NPC_\x6C\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of AIDT is not 20")
+    {
+      {
+        const auto data = "NPC_\x51\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x13\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read NPC_, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        NPCRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+
+      {
+        const auto data = "NPC_\x53\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x15\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read NPC_, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        NPCRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+    }
+
+    SECTION("corrupt data: stream end before all of AIDT can be read")
+    {
+      const auto data = "NPC_\x52\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: AIDT is missing")
+    {
+      const auto data = "NPC_\x38\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple KSIZs")
+    {
+      const auto data = "NPC_\x66\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of KSIZ is not four")
+    {
+      {
+        const auto data = "NPC_\x51\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x03\0\x01\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read NPC_, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        NPCRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+
+      {
+        const auto data = "NPC_\x52\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x05\0\x01\0\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read NPC_, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        NPCRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+    }
+
+    SECTION("corrupt data: stream ends before KSIZ can be read completely")
+    {
+      const auto data = "NPC_\x52\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: KSIZ is zero")
+    {
+      const auto data = "NPC_\x52\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\0\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: KSIZ is zero and KWDA is missing")
+    {
+      const auto data = "NPC_\x48\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\0\0\0\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: no KWDA")
+    {
+      const auto data = "NPC_\x52\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0FAIL\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: missing KWDA")
+    {
+      const auto data = "NPC_\x48\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of KWDA is not a multiple of four or it's zero")
+    {
+      {
+        const auto data = "NPC_\x53\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x05\0Y]\x03\0\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read NPC_, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        NPCRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+
+      {
+        const auto data = "NPC_\x4E\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\0\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read NPC_, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        NPCRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+    }
+
+    SECTION("corrupt data: stream ends before all of KWDA can be read")
+    {
+      const auto data = "NPC_\x52\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple CNAMs")
+    {
+      const auto data = "NPC_\x5C\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of CNAM is not four")
+    {
+      {
+        const auto data = "NPC_\x51\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x03\0\x08p\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read NPC_, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        NPCRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+
+      {
+        const auto data = "NPC_\x53\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x05\0\x08p\x01\0\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read NPC_, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        NPCRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+    }
+
+    SECTION("corrupt data: stream end before all of CNAM can be read")
+    {
+      const auto data = "NPC_\x52\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: CNAM is zero")
+    {
+      const auto data = "NPC_\x52\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\0\0\0\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple FULL entries")
+    {
+      const auto data = "NPC_\x5C\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: stream ends before all of FULL can be read")
+    {
+      const auto data = "NPC_\x52\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0\xFA"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple DATAs")
+    {
+      const auto data = "NPC_\x92\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of DATA is not zero")
+    {
+      const auto data = "NPC_\x53\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\x01\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: no DNAM after DATA")
+    {
+      const auto data = "NPC_\x52\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0FAIL4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of DNAM is not 52")
+    {
+      {
+        const auto data = "NPC_\x51\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM3\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read NPC_, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        NPCRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+
+      {
+        const auto data = "NPC_\x53\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM5\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read NPC_, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        NPCRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+    }
+
+    SECTION("corrupt data: stream ends before all of DNAM can be read")
+    {
+      const auto data = "NPC_\x52\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple ZNAMs")
+    {
+      const auto data = "NPC_\x5C\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of ZNAM is not four")
+    {
+      {
+        const auto data = "NPC_\x51\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x03\0\x83\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read NPC_, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        NPCRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+
+      {
+        const auto data = "NPC_\x53\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x05\0\x83\x8C\x04\0\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read NPC_, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        NPCRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+    }
+
+    SECTION("corrupt data: stream ends before all of ZNAM can be read")
+    {
+      const auto data = "NPC_\x52\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: ZNAM is zero")
+    {
+      const auto data = "NPC_\x52\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\0\0\0\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple NAM5s")
+    {
+      const auto data = "NPC_\x5A\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of NAM5 is not two")
+    {
+      {
+        const auto data = "NPC_\x51\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x01\0\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read NPC_, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        NPCRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+
+      {
+        const auto data = "NPC_\x53\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x03\0\xFF\0\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read NPC_, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        NPCRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+    }
+
+    SECTION("corrupt data: stream ends before all of NAM5 can be read")
+    {
+      const auto data = "NPC_\x52\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple NAM6s")
+    {
+      const auto data = "NPC_\x5C\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: stream ends before all of NAM6 can be read")
+    {
+      const auto data = "NPC_\x52\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple NAM7s")
+    {
+      const auto data = "NPC_\x5C\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: stream ends before all of NAM7 can be read")
+    {
+      const auto data = "NPC_\x52\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple NAM8s")
+    {
+      const auto data = "NPC_\x5C\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0NAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: stream ends before all of NAM8 can be read")
+    {
+      const auto data = "NPC_\x52\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: missing QNAM")
+    {
+      const auto data = "NPC_\x40\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple QNAMs")
+    {
+      const auto data = "NPC_\x64\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of QNAM is not 12")
+    {
+      {
+        const auto data = "NPC_\x51\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0B\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read NPC_, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        NPCRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+
+      {
+        const auto data = "NPC_\x53\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0D\0\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read NPC_, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        NPCRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+    }
+
+    SECTION("corrupt data: stream end before all of QNAM can be read")
+    {
+      const auto data = "NPC_\x52\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
   }
 }

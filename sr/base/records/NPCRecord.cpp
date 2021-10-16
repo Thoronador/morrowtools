@@ -613,7 +613,7 @@ bool NPCRecord::saveToStream(std::ostream& output) const
   subLength = 20; //fixed size
   output.write((const char*) &subLength, 2);
   //write AIDT
-  output.write((const char*) unknownACBS, 20);
+  output.write((const char*) unknownAIDT, 20);
 
   if (!unknownPKIDs.empty())
   {

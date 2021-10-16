@@ -992,4 +992,411 @@ TEST_CASE("NPCRecord")
       REQUIRE( record.getWriteSize() == 296 );
     }
   }
+
+  SECTION("loadFromStream")
+  {
+    uint32_t dummy = 0;
+    StringTable dummy_table;
+    dummy_table.addString(0x00008845, "foo");
+
+    SECTION("default: load compressed record")
+    {
+      const auto data = "NPC_\xD1\0\0\0\0\0\x04\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0R\x01\0\0x\xDAsu\xF1t\xE1\x61\xF0\x0D\x34\x34\x30q)JL\xCF\xCF\x63\xF0w\xF2\x03\x8A\x20\x03Gg\xA7`\x09\x38\x8F\x11L\xA6\x30(3d\xF3\x83X\xC1~\x8E\xBE\x1C\x0Cst\x99\x19\x10<a\xA8Z\x08\x8F\xC1\x97\x15\x89\x37\xD9\x99\x13\xCC\x0B\x09\xF0\x09\x61\x61h[\xC7\xCF\x10\x04\x14ga\xA8\x99#\xC0\xE0\xE8\xE9\x12\"\xC2\xC0\xC8\x62\x04\xB3\x06\x0E\xBC\x83=\xA3X\xC0\x82\xDE\xE1.\x8E,\x0C\x91\xB1\xCC\x0C\xCE`}\x1C\x05\x8C\x0Cn\xA1>>,\x0C\xAE\x1D\x0C\x0C.\x8E!\x8E@\x12(c\xC2\xC0\x8A\x01\x18\x30\x80)\xD3\x34\x86&\xA8\x65\x8C=!\x0CQ`3\x9B{X\x18\x80\x0CS&\x86\xFF\x20\xDA\x8C\x05(\xDB`\x0F\x64\x99\x83X\x1EN@\x96\x05\xC4\x35\x81@&jh\x01\0i\xE8+<"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      NPCRecord record;
+      REQUIRE( record.loadFromStream(stream, true, dummy_table) );
+      // Check data.
+      // -- header
+      REQUIRE( record.headerFlags == 0x20040000 );
+      REQUIRE( record.headerFormID == 0x0001CA05 );
+      REQUIRE( record.headerRevision == 0x0055691B );
+      REQUIRE( record.headerVersion == 40 );
+      REQUIRE( record.headerUnknown5 == 0x0007 );
+      // -- record data
+      REQUIRE( record.editorID == "MQ104Dragon" );
+      REQUIRE_FALSE( record.unknownVMAD.isPresent() );
+      REQUIRE( record.unknownOBND[0] == 0x00 );
+      REQUIRE( record.unknownOBND[1] == 0x00 );
+      REQUIRE( record.unknownOBND[2] == 0x00 );
+      REQUIRE( record.unknownOBND[3] == 0x00 );
+      REQUIRE( record.unknownOBND[4] == 0x00 );
+      REQUIRE( record.unknownOBND[5] == 0x00 );
+      REQUIRE( record.unknownOBND[6] == 0x00 );
+      REQUIRE( record.unknownOBND[7] == 0x00 );
+      REQUIRE( record.unknownOBND[8] == 0x00 );
+      REQUIRE( record.unknownOBND[9] == 0x00 );
+      REQUIRE( record.unknownOBND[10] == 0x00 );
+      REQUIRE( record.unknownOBND[11] == 0x00 );
+      REQUIRE( record.unknownACBS[0] == 0x00 );
+      REQUIRE( record.unknownACBS[1] == 0x00 );
+      REQUIRE( record.unknownACBS[2] == 0x00 );
+      REQUIRE( record.unknownACBS[3] == 0x00 );
+      REQUIRE( record.unknownACBS[4] == 0x00 );
+      REQUIRE( record.unknownACBS[5] == 0x00 );
+      REQUIRE( record.unknownACBS[6] == 0x00 );
+      REQUIRE( record.unknownACBS[7] == 0x00 );
+      REQUIRE( record.unknownACBS[8] == 0x01 );
+      REQUIRE( record.unknownACBS[9] == 0x00 );
+      REQUIRE( record.unknownACBS[10] == 0x00 );
+      REQUIRE( record.unknownACBS[11] == 0x00 );
+      REQUIRE( record.unknownACBS[12] == 0x00 );
+      REQUIRE( record.unknownACBS[13] == 0x00 );
+      REQUIRE( record.unknownACBS[14] == 0x64 );
+      REQUIRE( record.unknownACBS[15] == 0x00 );
+      REQUIRE( record.unknownACBS[16] == 0x23 );
+      REQUIRE( record.unknownACBS[17] == 0x00 );
+      REQUIRE( record.unknownACBS[18] == 0x6B );
+      REQUIRE( record.unknownACBS[19] == 0x0F );
+      REQUIRE( record.unknownACBS[20] == 0x00 );
+      REQUIRE( record.unknownACBS[21] == 0x00 );
+      REQUIRE( record.unknownACBS[22] == 0x00 );
+      REQUIRE( record.unknownACBS[23] == 0x00 );
+      REQUIRE( record.factions.size() == 4 );
+      REQUIRE( record.factions[0].formID == 0x00032D9C );
+      REQUIRE( record.factions[0].rank == 0 );
+      REQUIRE( record.factions[1].formID == 0x00000013 );
+      REQUIRE( record.factions[1].rank == 0 );
+      REQUIRE( record.factions[2].formID == 0x00054D00 );
+      REQUIRE( record.factions[2].rank == 0 );
+      REQUIRE( record.factions[3].formID == 0x00094393 );
+      REQUIRE( record.factions[3].rank == 0 );
+      REQUIRE( record.deathItemFormID == 0 );
+      REQUIRE( record.voiceTypeFormID == 0 );
+      REQUIRE( record.templateActorBaseFormID == 0x000FAE86 );
+      REQUIRE( record.raceFormID == 0x00109C7C );
+      REQUIRE_FALSE( record.hasDEST );
+      REQUIRE( record.unknownDEST == 0 );
+      REQUIRE( record.skinFormID == 0 );
+      REQUIRE( record.farAwayModelSkinFormID == 0 );
+      REQUIRE_FALSE( record.hasATKR );
+      REQUIRE( record.unknownATKR == 0 );
+      REQUIRE_FALSE( record.unknownATKD.isPresent() );
+      REQUIRE( record.unknownATKE.empty() );
+      REQUIRE( record.spellFormIDs.empty() );
+      REQUIRE( record.perkList.empty() );
+      REQUIRE( record.items.empty() );
+      REQUIRE( record.spectatorOverridePackageListFormID == 0 );
+      REQUIRE( record.combatOverridePackageListFormID == 0 );
+      REQUIRE( record.unknownAIDT[0] == 0x01 );
+      REQUIRE( record.unknownAIDT[1] == 0x04 );
+      REQUIRE( record.unknownAIDT[2] == 0x32 );
+      REQUIRE( record.unknownAIDT[3] == 0x00 );
+      REQUIRE( record.unknownAIDT[4] == 0x00 );
+      REQUIRE( record.unknownAIDT[5] == 0x01 );
+      REQUIRE( record.unknownAIDT[6] == 0x00 );
+      REQUIRE( record.unknownAIDT[7] == 0x00 );
+      REQUIRE( record.unknownAIDT[8] == 0x00 );
+      REQUIRE( record.unknownAIDT[9] == 0x00 );
+      REQUIRE( record.unknownAIDT[10] == 0x00 );
+      REQUIRE( record.unknownAIDT[11] == 0x00 );
+      REQUIRE( record.unknownAIDT[12] == 0x00 );
+      REQUIRE( record.unknownAIDT[13] == 0x00 );
+      REQUIRE( record.unknownAIDT[14] == 0x00 );
+      REQUIRE( record.unknownAIDT[15] == 0x00 );
+      REQUIRE( record.unknownAIDT[16] == 0x00 );
+      REQUIRE( record.unknownAIDT[17] == 0x00 );
+      REQUIRE( record.unknownAIDT[18] == 0x00 );
+      REQUIRE( record.unknownAIDT[19] == 0x00 );
+      REQUIRE( record.keywordArray.size() == 1 );
+      REQUIRE( record.keywordArray[0] == 0x00035D59 );
+      REQUIRE( record.classFormID == 0x00017008 );
+      REQUIRE( record.name.isPresent() );
+      REQUIRE( record.name.getType() == LocalizedString::Type::Index );
+      REQUIRE( record.name.getIndex() == 0x00008845 );
+      REQUIRE_FALSE( record.hasSHRT );
+      REQUIRE( record.unknownSHRT == 0 );
+      const auto DNAM = std::string_view(reinterpret_cast<const char*>(record.unknownDNAM), 52);
+      REQUIRE( DNAM == "\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0"sv );
+      REQUIRE( record.unknownPNAMs.empty() );
+      REQUIRE( record.hairColorFormID == 0 );
+      REQUIRE( record.giftFilterFormID == 0 );
+      REQUIRE( record.combatStyleFormID == 0x00048C83 );
+      REQUIRE( record.unknownNAM5 == 0x00FF );
+      REQUIRE( record.unknownNAM6 == 0x3F800000 );
+      REQUIRE( record.unknownNAM7 == 0x42480000 );
+      REQUIRE( record.unknownNAM8 == 1 );
+      REQUIRE( record.defaultOutfitFormID == 0 );
+      REQUIRE( record.sleepOutfitFormID == 0 );
+      REQUIRE( record.crimeFactionFormID == 0 );
+      REQUIRE( record.soundTemplateFormID == 0 );
+      REQUIRE( record.unknownCSDXs.empty() );
+      REQUIRE( record.defaultPackageListFormID == 0 );
+      REQUIRE( record.faceComplexionFormID == 0 );
+      const auto QNAM = std::string_view(reinterpret_cast<const char*>(record.unknownQNAM), 12);
+      REQUIRE( QNAM == "\0\0\0\0\0\0\0\0\0\0\0\0"sv );
+      REQUIRE_FALSE( record.unknownNAM9.isPresent() );
+      REQUIRE_FALSE( record.unknownNAMA.isPresent() );
+      REQUIRE( record.unknownTINXs.empty() );
+    }
+
+    SECTION("default: load uncompressed record")
+    {
+      const auto data = "NPC_\x52\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      NPCRecord record;
+      REQUIRE( record.loadFromStream(stream, true, dummy_table) );
+      // Check data.
+      // -- header
+      REQUIRE( record.headerFlags == 0x20000000 );
+      REQUIRE( record.headerFormID == 0x0001CA05 );
+      REQUIRE( record.headerRevision == 0x0055691B );
+      REQUIRE( record.headerVersion == 40 );
+      REQUIRE( record.headerUnknown5 == 0x0007 );
+      // -- record data
+      REQUIRE( record.editorID == "MQ104Dragon" );
+      REQUIRE_FALSE( record.unknownVMAD.isPresent() );
+      REQUIRE( record.unknownOBND[0] == 0x00 );
+      REQUIRE( record.unknownOBND[1] == 0x00 );
+      REQUIRE( record.unknownOBND[2] == 0x00 );
+      REQUIRE( record.unknownOBND[3] == 0x00 );
+      REQUIRE( record.unknownOBND[4] == 0x00 );
+      REQUIRE( record.unknownOBND[5] == 0x00 );
+      REQUIRE( record.unknownOBND[6] == 0x00 );
+      REQUIRE( record.unknownOBND[7] == 0x00 );
+      REQUIRE( record.unknownOBND[8] == 0x00 );
+      REQUIRE( record.unknownOBND[9] == 0x00 );
+      REQUIRE( record.unknownOBND[10] == 0x00 );
+      REQUIRE( record.unknownOBND[11] == 0x00 );
+      REQUIRE( record.unknownACBS[0] == 0x00 );
+      REQUIRE( record.unknownACBS[1] == 0x00 );
+      REQUIRE( record.unknownACBS[2] == 0x00 );
+      REQUIRE( record.unknownACBS[3] == 0x00 );
+      REQUIRE( record.unknownACBS[4] == 0x00 );
+      REQUIRE( record.unknownACBS[5] == 0x00 );
+      REQUIRE( record.unknownACBS[6] == 0x00 );
+      REQUIRE( record.unknownACBS[7] == 0x00 );
+      REQUIRE( record.unknownACBS[8] == 0x01 );
+      REQUIRE( record.unknownACBS[9] == 0x00 );
+      REQUIRE( record.unknownACBS[10] == 0x00 );
+      REQUIRE( record.unknownACBS[11] == 0x00 );
+      REQUIRE( record.unknownACBS[12] == 0x00 );
+      REQUIRE( record.unknownACBS[13] == 0x00 );
+      REQUIRE( record.unknownACBS[14] == 0x64 );
+      REQUIRE( record.unknownACBS[15] == 0x00 );
+      REQUIRE( record.unknownACBS[16] == 0x23 );
+      REQUIRE( record.unknownACBS[17] == 0x00 );
+      REQUIRE( record.unknownACBS[18] == 0x6B );
+      REQUIRE( record.unknownACBS[19] == 0x0F );
+      REQUIRE( record.unknownACBS[20] == 0x00 );
+      REQUIRE( record.unknownACBS[21] == 0x00 );
+      REQUIRE( record.unknownACBS[22] == 0x00 );
+      REQUIRE( record.unknownACBS[23] == 0x00 );
+      REQUIRE( record.factions.size() == 4 );
+      REQUIRE( record.factions[0].formID == 0x00032D9C );
+      REQUIRE( record.factions[0].rank == 0 );
+      REQUIRE( record.factions[1].formID == 0x00000013 );
+      REQUIRE( record.factions[1].rank == 0 );
+      REQUIRE( record.factions[2].formID == 0x00054D00 );
+      REQUIRE( record.factions[2].rank == 0 );
+      REQUIRE( record.factions[3].formID == 0x00094393 );
+      REQUIRE( record.factions[3].rank == 0 );
+      REQUIRE( record.deathItemFormID == 0 );
+      REQUIRE( record.voiceTypeFormID == 0 );
+      REQUIRE( record.templateActorBaseFormID == 0x000FAE86 );
+      REQUIRE( record.raceFormID == 0x00109C7C );
+      REQUIRE_FALSE( record.hasDEST );
+      REQUIRE( record.unknownDEST == 0 );
+      REQUIRE( record.skinFormID == 0 );
+      REQUIRE( record.farAwayModelSkinFormID == 0 );
+      REQUIRE_FALSE( record.hasATKR );
+      REQUIRE( record.unknownATKR == 0 );
+      REQUIRE_FALSE( record.unknownATKD.isPresent() );
+      REQUIRE( record.unknownATKE.empty() );
+      REQUIRE( record.spellFormIDs.empty() );
+      REQUIRE( record.perkList.empty() );
+      REQUIRE( record.items.empty() );
+      REQUIRE( record.spectatorOverridePackageListFormID == 0 );
+      REQUIRE( record.combatOverridePackageListFormID == 0 );
+      REQUIRE( record.unknownAIDT[0] == 0x01 );
+      REQUIRE( record.unknownAIDT[1] == 0x04 );
+      REQUIRE( record.unknownAIDT[2] == 0x32 );
+      REQUIRE( record.unknownAIDT[3] == 0x00 );
+      REQUIRE( record.unknownAIDT[4] == 0x00 );
+      REQUIRE( record.unknownAIDT[5] == 0x01 );
+      REQUIRE( record.unknownAIDT[6] == 0x00 );
+      REQUIRE( record.unknownAIDT[7] == 0x00 );
+      REQUIRE( record.unknownAIDT[8] == 0x00 );
+      REQUIRE( record.unknownAIDT[9] == 0x00 );
+      REQUIRE( record.unknownAIDT[10] == 0x00 );
+      REQUIRE( record.unknownAIDT[11] == 0x00 );
+      REQUIRE( record.unknownAIDT[12] == 0x00 );
+      REQUIRE( record.unknownAIDT[13] == 0x00 );
+      REQUIRE( record.unknownAIDT[14] == 0x00 );
+      REQUIRE( record.unknownAIDT[15] == 0x00 );
+      REQUIRE( record.unknownAIDT[16] == 0x00 );
+      REQUIRE( record.unknownAIDT[17] == 0x00 );
+      REQUIRE( record.unknownAIDT[18] == 0x00 );
+      REQUIRE( record.unknownAIDT[19] == 0x00 );
+      REQUIRE( record.keywordArray.size() == 1 );
+      REQUIRE( record.keywordArray[0] == 0x00035D59 );
+      REQUIRE( record.classFormID == 0x00017008 );
+      REQUIRE( record.name.isPresent() );
+      REQUIRE( record.name.getType() == LocalizedString::Type::Index );
+      REQUIRE( record.name.getIndex() == 0x00008845 );
+      REQUIRE_FALSE( record.hasSHRT );
+      REQUIRE( record.unknownSHRT == 0 );
+      const auto DNAM = std::string_view(reinterpret_cast<const char*>(record.unknownDNAM), 52);
+      REQUIRE( DNAM == "\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0"sv );
+      REQUIRE( record.unknownPNAMs.empty() );
+      REQUIRE( record.hairColorFormID == 0 );
+      REQUIRE( record.giftFilterFormID == 0 );
+      REQUIRE( record.combatStyleFormID == 0x00048C83 );
+      REQUIRE( record.unknownNAM5 == 0x00FF );
+      REQUIRE( record.unknownNAM6 == 0x3F800000 );
+      REQUIRE( record.unknownNAM7 == 0x42480000 );
+      REQUIRE( record.unknownNAM8 == 1 );
+      REQUIRE( record.defaultOutfitFormID == 0 );
+      REQUIRE( record.sleepOutfitFormID == 0 );
+      REQUIRE( record.crimeFactionFormID == 0 );
+      REQUIRE( record.soundTemplateFormID == 0 );
+      REQUIRE( record.unknownCSDXs.empty() );
+      REQUIRE( record.defaultPackageListFormID == 0 );
+      REQUIRE( record.faceComplexionFormID == 0 );
+      const auto QNAM = std::string_view(reinterpret_cast<const char*>(record.unknownQNAM), 12);
+      REQUIRE( QNAM == "\0\0\0\0\0\0\0\0\0\0\0\0"sv );
+      REQUIRE_FALSE( record.unknownNAM9.isPresent() );
+      REQUIRE_FALSE( record.unknownNAMA.isPresent() );
+      REQUIRE( record.unknownTINXs.empty() );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( record.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
+    }
+
+    SECTION("corrupt data: stream ends before header can be read")
+    {
+      const auto data = "NPC_\x52\x01\0\0\0\0\0\x20\x05"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: stream ends before decompressed size of a compressed record can be read")
+    {
+      const auto data = "NPC_\xD1\0\0\0\0\0\x04\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0R\x01"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: record size is too small to contain compressed data")
+    {
+      const auto data = "NPC_\x04\0\0\0\0\0\x04\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0R\x01\0\0x\xDAsu\xF1t\xE1\x61\xF0\x0D\x34\x34\x30q)JL\xCF\xCF\x63\xF0w\xF2\x03\x8A\x20\x03Gg\xA7`\x09\x38\x8F\x11L\xA6\x30(3d\xF3\x83X\xC1~\x8E\xBE\x1C\x0Cst\x99\x19\x10<a\xA8Z\x08\x8F\xC1\x97\x15\x89\x37\xD9\x99\x13\xCC\x0B\x09\xF0\x09\x61\x61h[\xC7\xCF\x10\x04\x14ga\xA8\x99#\xC0\xE0\xE8\xE9\x12\"\xC2\xC0\xC8\x62\x04\xB3\x06\x0E\xBC\x83=\xA3X\xC0\x82\xDE\xE1.\x8E,\x0C\x91\xB1\xCC\x0C\xCE`}\x1C\x05\x8C\x0Cn\xA1>>,\x0C\xAE\x1D\x0C\x0C.\x8E!\x8E@\x12(c\xC2\xC0\x8A\x01\x18\x30\x80)\xD3\x34\x86&\xA8\x65\x8C=!\x0CQ`3\x9B{X\x18\x80\x0CS&\x86\xFF\x20\xDA\x8C\x05(\xDB`\x0F\x64\x99\x83X\x1EN@\x96\x05\xC4\x35\x81@&jh\x01\0i\xE8+<"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: stream ends before all compressed data of a record can be read")
+    {
+      const auto data = "NPC_\xD1\0\0\0\0\0\x04\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0R\x01\0\0x\xDAsu\xF1t\xE1"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: invalid compressed data in a compressed record")
+    {
+      const auto data = "NPC_\xD1\0\0\0\0\0\x04\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0R\x01\0\0x\xFFzz\xF1t\xE1\x61\xF0\x0D\x34\x34\x30q)JL\xCF\xCF\x63\xF0w\xF2\x03\x8A\x20\x03Gg\xA7`\x09\x38\x8F\x11L\xA6\x30(3d\xF3\x83X\xC1~\x8E\xBE\x1C\x0Cst\x99\x19\x10<a\xA8Z\x08\x8F\xC1\x97\x15\x89\x37\xD9\x99\x13\xCC\x0B\x09\xF0\x09\x61\x61h[\xC7\xCF\x10\x04\x14ga\xA8\x99#\xC0\xE0\xE8\xE9\x12\"\xC2\xC0\xC8\x62\x04\xB3\x06\x0E\xBC\x83=\xA3X\xC0\x82\xDE\xE1.\x8E,\x0C\x91\xB1\xCC\x0C\xCE`}\x1C\x05\x8C\x0Cn\xA1>>,\x0C\xAE\x1D\x0C\x0C.\x8E!\x8E@\x12(c\xC2\xC0\x8A\x01\x18\x30\x80)\xD3\x34\x86&\xA8\x65\x8C=!\x0CQ`3\x9B{X\x18\x80\x0CS&\x86\xFF\x20\xDA\x8C\x05(\xDB`\x0F\x64\x99\x83X\x1EN@\x96\x05\xC4\x35\x81@&jh\x01\0i\xE8+<"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: no EDID")
+    {
+      const auto data = "NPC_\x52\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0FAIL\x0C\0MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of EDID > 512")
+    {
+      const auto data = "NPC_\x52\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x0C\x02MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of EDID is beyond stream")
+    {
+      const auto data = "NPC_\x52\x01\0\0\0\0\0\x20\x05\xCA\x01\0\x1B\x69\x55\0\x28\0\x07\0EDID\x52\x01MQ104Dragon\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0ACBS\x18\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\x64\0#\0k\x0F\0\0\0\0SNAM\x08\0\x9C-\x03\0\0\0\0\0SNAM\x08\0\x13\0\0\0\0\0\0\0SNAM\x08\0\0M\x05\0\0\0\0\0SNAM\x08\0\x93\x43\x09\0\0\0\0\0TPLT\x04\0\x86\xAE\x0F\0RNAM\x04\0|\x9C\x10\0AIDT\x14\0\x01\x04\x32\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0Y]\x03\0CNAM\x04\0\x08p\x01\0FULL\x04\0E\x88\0\0DATA\0\0DNAM4\0\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\x05\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x35\x02\x96\0\x82\0\x01\0\0\0\0\0\x01\x8CT\0ZNAM\x04\0\x83\x8C\x04\0NAM5\x02\0\xFF\0NAM6\x04\0\0\0\x80?NAM7\x04\0\0\0HBNAM8\x04\0\x01\0\0\0QNAM\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read NPC_, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+  }
 }

@@ -98,12 +98,12 @@ NPCRecord::NPCRecord()
   raceFormID(0),
   hasDEST(false),
   unknownDEST(0),
+  spellFormIDs(std::vector<uint32_t>()),
   skinFormID(0),
   farAwayModelSkinFormID(0),
   hasATKR(false), unknownATKR(0),
   unknownATKD(BinarySubRecord()),
   unknownATKE(""),
-  spellFormIDs(std::vector<uint32_t>()),
   perkList(std::vector<PerkElem>()),
   items(std::vector<ComponentData>()),
   spectatorOverridePackageListFormID(0),
@@ -121,10 +121,10 @@ NPCRecord::NPCRecord()
   unknownNAM6(0),
   unknownNAM7(0),
   unknownNAM8(0),
+  soundTemplateFormID(0),
   defaultOutfitFormID(0),
   sleepOutfitFormID(0),
   crimeFactionFormID(0),
-  soundTemplateFormID(0),
   unknownCSDXs(std::vector<CSDXstruct>()),
   defaultPackageListFormID(0),
   faceComplexionFormID(0),
@@ -157,11 +157,12 @@ bool NPCRecord::equals(const NPCRecord& other) const
       and (templateActorBaseFormID==other.templateActorBaseFormID)
       and (raceFormID==other.raceFormID)
       and (hasDEST==other.hasDEST) and ((unknownDEST==other.unknownDEST) or (!hasDEST))
+      and (spellFormIDs==other.spellFormIDs)
       and (skinFormID==other.skinFormID)
       and (farAwayModelSkinFormID==other.farAwayModelSkinFormID)
       and (hasATKR==other.hasATKR) and ((unknownATKR==other.unknownATKR) or (!hasATKR))
       and (unknownATKD==other.unknownATKD) and (unknownATKE==other.unknownATKE)
-      and (spellFormIDs==other.spellFormIDs) and (perkList==other.perkList)
+      and (perkList==other.perkList)
       and (items==other.items)
       and (spectatorOverridePackageListFormID==other.spectatorOverridePackageListFormID)
       and (combatOverridePackageListFormID==other.combatOverridePackageListFormID)
@@ -177,10 +178,10 @@ bool NPCRecord::equals(const NPCRecord& other) const
       and (combatStyleFormID==other.combatStyleFormID)
       and (unknownNAM5==other.unknownNAM5) and (unknownNAM6==other.unknownNAM6)
       and (unknownNAM7==other.unknownNAM7) and (unknownNAM8==other.unknownNAM8)
+      and (soundTemplateFormID==other.soundTemplateFormID)
       and (defaultOutfitFormID==other.defaultOutfitFormID)
       and (sleepOutfitFormID==other.sleepOutfitFormID)
       and (crimeFactionFormID==other.crimeFactionFormID)
-      and (soundTemplateFormID==other.soundTemplateFormID)
       and (unknownCSDXs==other.unknownCSDXs)
       and (defaultPackageListFormID==other.defaultPackageListFormID)
       and (faceComplexionFormID==other.faceComplexionFormID)
@@ -230,6 +231,11 @@ uint32_t NPCRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* DEST */ +2 /* 2 bytes for length */ +8 /* fixed size */;
   }
+  if (!spellFormIDs.empty())
+  {
+    writeSize = writeSize +4 /* SPCT */ +2 /* 2 bytes for length */ +4 /* fixed size */
+               +spellFormIDs.size()*(4 /* SPLO */ +2 /* 2 bytes for length */ +4 /* fixed size */);
+  }
   if (skinFormID!=0)
   {
     writeSize = writeSize +4 /* WNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
@@ -249,11 +255,6 @@ uint32_t NPCRecord::getWriteSize() const
   if (!unknownATKE.empty())
   {
     writeSize = writeSize +4 /* ATKE */ +2 /* 2 bytes for length */ +unknownATKE.length()+1 /* length + NUL */;
-  }
-  if (!spellFormIDs.empty())
-  {
-    writeSize = writeSize +4 /* SPCT */ +2 /* 2 bytes for length */ +4 /* fixed size */
-               +spellFormIDs.size()*(4 /* SPLO */ +2 /* 2 bytes for length */ +4 /* fixed size */);
   }
   if (!perkList.empty())
   {
@@ -302,6 +303,10 @@ uint32_t NPCRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* ZNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
+  if (soundTemplateFormID!=0)
+  {
+    writeSize = writeSize +4 /* CSCR */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+  }
   if (defaultOutfitFormID!=0)
   {
     writeSize = writeSize +4 /* DOFT */ +2 /* 2 bytes for length */ +4 /* fixed size */;
@@ -313,10 +318,6 @@ uint32_t NPCRecord::getWriteSize() const
   if (crimeFactionFormID!=0)
   {
     writeSize = writeSize +4 /* CRIF */ +2 /* 2 bytes for length */ +4 /* fixed size */;
-  }
-  if (soundTemplateFormID!=0)
-  {
-    writeSize = writeSize +4 /* CSCR */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
   if (!unknownCSDXs.empty())
   {
@@ -457,6 +458,30 @@ bool NPCRecord::saveToStream(std::ostream& output) const
     output.write((const char*) &unknownDEST, 8);
   }//if DEST
 
+  if (!spellFormIDs.empty())
+  {
+    const uint32_t count = spellFormIDs.size();
+    //write SPCT
+    output.write((const char*) &cSPCT, 4);
+    //SPCT's length
+    subLength = 4; //fixed size
+    output.write((const char*) &subLength, 2);
+    //write SPCT
+    output.write((const char*) &count, 4);
+
+    unsigned int i;
+    for (i=0; i<count; ++i)
+    {
+      //write SPLO
+      output.write((const char*) &cSPLO, 4);
+      //SPLO's length
+      subLength = 4; //fixed size
+      output.write((const char*) &subLength, 2);
+      //write SPLO
+      output.write((const char*) &(spellFormIDs[i]), 4);
+    }//for
+  }//spells
+
   if (skinFormID!=0)
   {
     //write WNAM
@@ -510,30 +535,6 @@ bool NPCRecord::saveToStream(std::ostream& output) const
     //write ATKE
     output.write(unknownATKE.c_str(), subLength);
   }
-
-  if (!spellFormIDs.empty())
-  {
-    const uint32_t count = spellFormIDs.size();
-    //write SPCT
-    output.write((const char*) &cSPCT, 4);
-    //SPCT's length
-    subLength = 4; //fixed size
-    output.write((const char*) &subLength, 2);
-    //write SPCT
-    output.write((const char*) &count, 4);
-
-    unsigned int i;
-    for (i=0; i<count; ++i)
-    {
-      //write SPLO
-      output.write((const char*) &cSPLO, 4);
-      //SPLO's length
-      subLength = 4; //fixed size
-      output.write((const char*) &subLength, 2);
-      //write SPLO
-      output.write((const char*) &(spellFormIDs[i]), 4);
-    }//for
-  }//spells
 
   if (!perkList.empty())
   {
@@ -776,6 +777,17 @@ bool NPCRecord::saveToStream(std::ostream& output) const
   //write NAM8
   output.write((const char*) &unknownNAM8, 4);
 
+  if (soundTemplateFormID != 0)
+  {
+    //write CSCR
+    output.write((const char*) &cCSCR, 4);
+    //CSCR's length
+    subLength = 4; //fixed size
+    output.write((const char*) &subLength, 2);
+    //write sound template form ID ("Inherits Sounds From...")
+    output.write((const char*) &soundTemplateFormID, 4);
+  }
+
   if (defaultOutfitFormID!=0)
   {
     //write DOFT
@@ -808,17 +820,6 @@ bool NPCRecord::saveToStream(std::ostream& output) const
     //write crime faction form ID
     output.write((const char*) &crimeFactionFormID, 4);
   }//if CRIF
-
-  if (soundTemplateFormID!=0)
-  {
-    //write CSCR
-    output.write((const char*) &cCSCR, 4);
-    //CSCR's length
-    subLength = 4; //fixed size
-    output.write((const char*) &subLength, 2);
-    //write sound template form ID ("Inherits Sounds From...")
-    output.write((const char*) &soundTemplateFormID, 4);
-  }//if CSCR
 
   if (!unknownCSDXs.empty())
   {

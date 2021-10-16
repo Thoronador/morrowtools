@@ -134,13 +134,13 @@ struct NPCRecord: public BasicRecord
     uint32_t raceFormID; //subrecord RNAM
     bool hasDEST;
     uint64_t unknownDEST;
+    std::vector<uint32_t> spellFormIDs;
     uint32_t skinFormID; //subrecord WNAM
     uint32_t farAwayModelSkinFormID; //subrecord ANAM
     bool hasATKR;
     uint32_t unknownATKR;
     BinarySubRecord unknownATKD;
     std::string unknownATKE;
-    std::vector<uint32_t> spellFormIDs;
     std::vector<PerkElem> perkList;
     std::vector<ComponentData> items;
     uint32_t spectatorOverridePackageListFormID; //subrecord SPOR
@@ -161,10 +161,10 @@ struct NPCRecord: public BasicRecord
     uint32_t unknownNAM6;
     uint32_t unknownNAM7;
     uint32_t unknownNAM8;
+    uint32_t soundTemplateFormID; // subrecord CSCR, ID of the NPC_ from which the sounds are inherited
     uint32_t defaultOutfitFormID; //subrecord DOFT
     uint32_t sleepOutfitFormID; //subrecord SOFT
     uint32_t crimeFactionFormID; //subrecord CRIF
-    uint32_t soundTemplateFormID; //subrecord CSCR, ID of the NPC_ from which the sounds are inherited
     std::vector<CSDXstruct> unknownCSDXs;
     uint32_t defaultPackageListFormID; //subrecord DPLT
     uint32_t faceComplexionFormID; //subrecord FST

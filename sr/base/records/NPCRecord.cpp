@@ -318,7 +318,7 @@ uint32_t NPCRecord::getWriteSize() const
   {
     writeSize = writeSize +4 /* CSCR */ +2 /* 2 bytes for length */ +4 /* fixed size */;
   }
-  if (unknownCSDXs.empty())
+  if (!unknownCSDXs.empty())
   {
     writeSize = writeSize +unknownCSDXs.size()*(4 /* CSDT */ +2 /* 2 bytes for length */ +4 /* fixed size */
                +4 /* CSDI */ +2 /* 2 bytes for length */ +4 /* fixed size */
@@ -340,7 +340,7 @@ uint32_t NPCRecord::getWriteSize() const
   {
     writeSize = writeSize + 4 /* NAMA */ + 2 /* 2 bytes for length */ + unknownNAMA.size() /* size of subrecord */;
   }
-  if (unknownTINXs.empty())
+  if (!unknownTINXs.empty())
   {
     writeSize = writeSize +unknownTINXs.size()*(4 /* TINI */ +2 /* 2 bytes for length */ +2 /* fixed size */
                +4 /* TINC */ +2 /* 2 bytes for length */ +4 /* fixed size */
@@ -948,7 +948,8 @@ bool NPCRecord::saveToStream(std::ostream& output) const
 bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
-  if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
+  if (!loadSizeAndUnknownValues(in_File, readSize))
+    return false;
   uint32_t subRecName;
   uint16_t subLength;
   subRecName = subLength = 0;
@@ -1182,7 +1183,8 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
              return false;
            }
            //read INAM
-           if (!loadUint32SubRecordFromStream(*actual_in, cINAM, deathItemFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cINAM, deathItemFormID, false))
+             return false;
            bytesRead += 6;
            if (deathItemFormID==0)
            {
@@ -1197,7 +1199,8 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
              return false;
            }
            //read VTCK
-           if (!loadUint32SubRecordFromStream(*actual_in, cVTCK, voiceTypeFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cVTCK, voiceTypeFormID, false))
+             return false;
            bytesRead += 6;
            if (voiceTypeFormID==0)
            {
@@ -1212,7 +1215,8 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
              return false;
            }
            //read TPLT
-           if (!loadUint32SubRecordFromStream(*actual_in, cTPLT, templateActorBaseFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cTPLT, templateActorBaseFormID, false))
+             return false;
            bytesRead += 6;
            if (templateActorBaseFormID==0)
            {
@@ -1227,7 +1231,8 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
              return false;
            }
            //read RNAM
-           if (!loadUint32SubRecordFromStream(*actual_in, cRNAM, raceFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cRNAM, raceFormID, false))
+             return false;
            bytesRead += 6;
            if (raceFormID==0)
            {
@@ -1267,7 +1272,8 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
              return false;
            }
            //read WNAM
-           if (!loadUint32SubRecordFromStream(*actual_in, cWNAM, skinFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cWNAM, skinFormID, false))
+             return false;
            bytesRead += 6;
            //check value
            if (skinFormID==0)
@@ -1283,7 +1289,8 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
              return false;
            }
            //read ANAM
-           if (!loadUint32SubRecordFromStream(*actual_in, cANAM, farAwayModelSkinFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cANAM, farAwayModelSkinFormID, false))
+             return false;
            bytesRead += 6;
            //check value
            if (farAwayModelSkinFormID==0)
@@ -1299,7 +1306,8 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
              return false;
            }
            //read ATKR
-           if (!loadUint32SubRecordFromStream(*actual_in, cATKR, unknownATKR, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cATKR, unknownATKR, false))
+             return false;
            bytesRead += 6;
            hasATKR = true;
            break;
@@ -1360,7 +1368,8 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
              return false;
            }
            //read SPCT
-           if (!loadUint32SubRecordFromStream(*actual_in, cSPCT, size_int, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cSPCT, size_int, false))
+             return false;
            bytesRead += 6;
            if (size_int==0)
            {
@@ -1405,7 +1414,8 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
              return false;
            }
            //read PRKZ
-           if (!loadUint32SubRecordFromStream(*actual_in, cPRKZ, size_int, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cPRKZ, size_int, false))
+             return false;
            bytesRead += 6;
            if (size_int==0)
            {
@@ -1451,7 +1461,8 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
              return false;
            }
            //read COCT
-           if (!loadUint32SubRecordFromStream(*actual_in, cCOCT, tempUint32, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cCOCT, tempUint32, false))
+             return false;
            bytesRead += 6;
            if (tempUint32==0)
            {
@@ -1497,7 +1508,8 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
              return false;
            }
            //read SPOR
-           if (!loadUint32SubRecordFromStream(*actual_in, cSPOR, spectatorOverridePackageListFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cSPOR, spectatorOverridePackageListFormID, false))
+             return false;
            bytesRead += 6;
            //check value
            if (spectatorOverridePackageListFormID==0)
@@ -1513,7 +1525,8 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
              return false;
            }
            //read ECOR
-           if (!loadUint32SubRecordFromStream(*actual_in, cECOR, combatOverridePackageListFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cECOR, combatOverridePackageListFormID, false))
+             return false;
            bytesRead += 6;
            if (combatOverridePackageListFormID==0)
            {
@@ -1574,7 +1587,8 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
              return false;
            }
            //read KSIZ
-           if (!loadUint32SubRecordFromStream(*actual_in, cKSIZ, size_int, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cKSIZ, size_int, false))
+             return false;
            bytesRead += 6;
            if (size_int==0)
            {
@@ -1619,7 +1633,8 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
              return false;
            }
            //read CNAM
-           if (!loadUint32SubRecordFromStream(*actual_in, cCNAM, classFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cCNAM, classFormID, false))
+             return false;
            bytesRead += 6;
            if (classFormID==0)
            {
@@ -1644,7 +1659,8 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
              return false;
            }
            //read SHRT
-           if (!loadUint32SubRecordFromStream(*actual_in, cSHRT, unknownSHRT, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cSHRT, unknownSHRT, false))
+             return false;
            bytesRead += 6;
            hasSHRT = true;
            break;
@@ -1720,7 +1736,8 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
              return false;
            }
            //read HCLF
-           if (!loadUint32SubRecordFromStream(*actual_in, cHCLF, hairColorFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cHCLF, hairColorFormID, false))
+             return false;
            bytesRead += 6;
            //check value
            if (hairColorFormID==0)
@@ -1736,7 +1753,8 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
              return false;
            }
            //read GNAM
-           if (!loadUint32SubRecordFromStream(*actual_in, cGNAM, giftFilterFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cGNAM, giftFilterFormID, false))
+             return false;
            bytesRead += 6;
            if (giftFilterFormID==0)
            {
@@ -1751,7 +1769,8 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
              return false;
            }
            //read ZNAM
-           if (!loadUint32SubRecordFromStream(*actual_in, cZNAM, combatStyleFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cZNAM, combatStyleFormID, false))
+             return false;
            bytesRead += 6;
            if (combatStyleFormID==0)
            {
@@ -1791,7 +1810,8 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
              return false;
            }
            //read NAM6
-           if (!loadUint32SubRecordFromStream(*actual_in, cNAM6, unknownNAM6, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cNAM6, unknownNAM6, false))
+             return false;
            bytesRead += 6;
            hasReadNAM6 = true;
            break;
@@ -1802,7 +1822,8 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
              return false;
            }
            //read NAM7
-           if (!loadUint32SubRecordFromStream(*actual_in, cNAM7, unknownNAM7, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cNAM7, unknownNAM7, false))
+             return false;
            bytesRead += 6;
            hasReadNAM7 = true;
            break;
@@ -1813,7 +1834,8 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
              return false;
            }
            //read NAM8
-           if (!loadUint32SubRecordFromStream(*actual_in, cNAM8, unknownNAM8, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cNAM8, unknownNAM8, false))
+             return false;
            bytesRead += 6;
            hasReadNAM8 = true;
            break;
@@ -1824,7 +1846,8 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
              return false;
            }
            //read DOFT
-           if (!loadUint32SubRecordFromStream(*actual_in, cDOFT, defaultOutfitFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cDOFT, defaultOutfitFormID, false))
+             return false;
            bytesRead += 6;
            if (defaultOutfitFormID==0)
            {
@@ -1839,7 +1862,8 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
              return false;
            }
            //read SOFT
-           if (!loadUint32SubRecordFromStream(*actual_in, cSOFT, sleepOutfitFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cSOFT, sleepOutfitFormID, false))
+             return false;
            bytesRead += 6;
            if (sleepOutfitFormID==0)
            {
@@ -1854,7 +1878,8 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
              return false;
            }
            //read CRIF
-           if (!loadUint32SubRecordFromStream(*actual_in, cCRIF, crimeFactionFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cCRIF, crimeFactionFormID, false))
+             return false;
            bytesRead += 6;
            //check value
            if (crimeFactionFormID==0)
@@ -1870,7 +1895,8 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
              return false;
            }
            //read CSCR
-           if (!loadUint32SubRecordFromStream(*actual_in, cCSCR, soundTemplateFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cCSCR, soundTemplateFormID, false))
+             return false;
            bytesRead += 6;
            //check value
            if (soundTemplateFormID==0)
@@ -1881,11 +1907,13 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            break;
       case cCSDT:
            //read CSDT
-           if (!loadUint32SubRecordFromStream(*actual_in, cCSDT, tempCSDX.unknownCSDT, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cCSDT, tempCSDX.unknownCSDT, false))
+             return false;
            bytesRead += 6;
 
            //read CSDI
-           if (!loadUint32SubRecordFromStream(*actual_in, cCSDI, tempCSDX.unknownCSDI, true)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cCSDI, tempCSDX.unknownCSDI, true))
+             return false;
            bytesRead += 10;
 
            //read CSDC
@@ -1901,8 +1929,8 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 2;
            if (subLength!=1)
            {
-             std::cerr <<"Error: sub record CSDC of NPC_ has invalid length ("
-                       <<subLength<<" bytes). Should be one byte.\n";
+             std::cerr << "Error: sub record CSDC of NPC_ has invalid length ("
+                       << subLength << " bytes). Should be one byte.\n";
              return false;
            }
            //read CSDC
@@ -1920,7 +1948,8 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            tempCSDX.unknownCSDT = 0;
 
            //read CSDI
-           if (!loadUint32SubRecordFromStream(*actual_in, cCSDI, tempCSDX.unknownCSDI, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cCSDI, tempCSDX.unknownCSDI, false))
+             return false;
            bytesRead += 10;
 
            //read CSDC
@@ -1936,8 +1965,8 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 2;
            if (subLength!=1)
            {
-             std::cerr <<"Error: sub record CSDC of NPC_ has invalid length ("
-                       <<subLength<<" bytes). Should be one byte.\n";
+             std::cerr << "Error: sub record CSDC of NPC_ has invalid length ("
+                       << subLength << " bytes). Should be one byte.\n";
              return false;
            }
            //read CSDC
@@ -1957,7 +1986,8 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
              return false;
            }
            //read DPLT
-           if (!loadUint32SubRecordFromStream(*actual_in, cDPLT, defaultPackageListFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cDPLT, defaultPackageListFormID, false))
+             return false;
            bytesRead += 6;
            //check value
            if (defaultPackageListFormID==0)
@@ -1973,7 +2003,8 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
              return false;
            }
            //read FTST
-           if (!loadUint32SubRecordFromStream(*actual_in, cFTST, faceComplexionFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cFTST, faceComplexionFormID, false))
+             return false;
            bytesRead += 6;
            //check value
            if (faceComplexionFormID==0)
@@ -2068,11 +2099,13 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            }
 
            //read TINC
-           if (!loadUint32SubRecordFromStream(*actual_in, cTINC, tempTINX.unknownTINC, true)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cTINC, tempTINX.unknownTINC, true))
+             return false;
            bytesRead += 10;
 
            //read TINV
-           if (!loadUint32SubRecordFromStream(*actual_in, cTINV, tempTINX.unknownTINV, true)) return false;
+           if (!loadUint32SubRecordFromStream(*actual_in, cTINV, tempTINX.unknownTINV, true))
+             return false;
            bytesRead += 10;
 
            //read TIAS
@@ -2086,10 +2119,10 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            //TIAS's length
            actual_in->read((char*) &subLength, 2);
            bytesRead += 2;
-           if (subLength!=2)
+           if (subLength != 2)
            {
-             std::cerr <<"Error: sub record TIAS of NPC_ has invalid length ("
-                       <<subLength<<" bytes). Should be two bytes.\n";
+             std::cerr << "Error: sub record TIAS of NPC_ has invalid length ("
+                       << subLength << " bytes). Should be two bytes.\n";
              return false;
            }
            //read TIAS

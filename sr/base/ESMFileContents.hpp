@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2011, 2012, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,63 +22,63 @@
 #define SR_ESMFILECONTENTS_HPP
 
 #include "Group.hpp"
-#include <cstdint>
 #include <map>
 #include <vector>
 
 namespace SRTP
 {
 
+/** Holds contents of an ESM file. */
 class ESMFileContents
 {
   public:
-    /* constructor */
     ESMFileContents();
 
-    /* destructor */
-    ~ESMFileContents();
-
-    /* adds a new group to the internal list and returns a reference to that
-       group
-    */
+    /** Adds a new group to the internal list and returns a reference to it.
+     *
+     * \return Returns a reference to the new group.
+     */
     Group& addNewGroup();
 
-    /* returns the number of (top level) groups in the internal list */
+    /** Returns the number of (top level) groups in the internal list. */
     unsigned int getNumberOfGroups() const;
 
-    /* removes all contents */
+    /** Removes all contents. */
     void removeContents();
 
-    /* removes all empty groups and returns the number of groups that were
-       removed during the process
-    */
+    /** Removes all empty groups.
+     *
+     * \return Returns the number of groups that were removed.
+     */
     unsigned int purgeEmptyGroups();
 
-    //function type for following traverseGroups() function
+    /// function type for following traverseGroups() function
     typedef bool (*traverseFunction) (const Group& current, const Group* parent);
 
-    /* traverses through all groups and subgroups within the file contents and
-       calls func for each group, passing the current group in the first
-       parameter and its parent group in the second parameter of func. Note
-       that the later one will be NULL, if the current group is at top level.
-
-       parameters:
-           func - the function that will be called for each group
+    /** Traverses through all groups and subgroups within the file contents and
+     *  calls func for each group, passing the current group in the first
+     *  parameter and its parent group in the second parameter of func. Note
+     *  that the later one will be NULL, if the current group is at top level.
+     *
+     * \param func  function that will be called for each group
     */
     void traverseGroups(traverseFunction func) const;
   //private:
-    //internal group list
-    std::vector<Group> m_Groups;
+    std::vector<Group> m_Groups; /**< internal group list */
 
-    /* determines the latest group according to the given group nesting level
-       and returns a pointer to it. If NULL is returned, the level was invalid
-       or no group exists.
+    /** Determines the latest group according to the given group nesting level.
+     *
+     * \param level   the one-based nesting level; top-level group is level one,
+     *                the next sub-group is level one, its sub groups level 2,
+     *                and so on.
+     * \return Returns a pointer to the latest group. If nullptr is returned,
+     *         the level was invalid or no group exists.
      */
     Group * determineLatestGroup(const unsigned int level);
   private:
     bool traverseSubGroups(const Group& grp, traverseFunction func) const;
-}; //class
+}; // class
 
-} //namespace
+} // namespace
 
 #endif // SR_ESMFILECONTENTS_HPP

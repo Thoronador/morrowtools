@@ -12,7 +12,9 @@ set(component_tests_sources
     ../../base/RegistryFunctions.cpp
     ../../base/UtilityFunctions.cpp
     ../../mw/base/HelperIO.cpp
+    ../../sr/base/ESMFileContents.cpp
     ../../sr/base/FormIDFunctions.cpp
+    ../../sr/base/Group.cpp
     ../../sr/base/MapBasedRecordManager.hpp
     ../../sr/base/StringTable.cpp
     ../../sr/base/records/AcousticSpaceRecord.cpp
@@ -68,6 +70,7 @@ set(component_tests_sources
     base/RegistryFunctions.cpp
     base/UtilityFunctions.cpp
     mw/base/HelperIO.cpp
+    sr/base/ESMFileContents.cpp
     sr/base/FormIDFunctions.cpp
     sr/base/MapBasedRecordManager.cpp
     sr/base/StringTable.cpp

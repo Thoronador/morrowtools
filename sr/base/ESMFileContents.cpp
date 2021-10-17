@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -29,11 +29,6 @@ ESMFileContents::ESMFileContents()
 {
 }
 
-ESMFileContents::~ESMFileContents()
-{
-  //empty
-}
-
 Group& ESMFileContents::addNewGroup()
 {
   Group temp;
@@ -55,10 +50,10 @@ unsigned int ESMFileContents::purgeEmptyGroups()
 {
   unsigned int purged = 0;
   std::vector<Group>::iterator iter = m_Groups.begin();
-  while (iter!=m_Groups.end())
+  while (iter != m_Groups.end())
   {
     purged += iter->purgeEmptySubGroups();
-    //top group
+    // top group
     if (iter->isEmpty())
     {
       iter = m_Groups.erase(iter);
@@ -68,54 +63,59 @@ unsigned int ESMFileContents::purgeEmptyGroups()
     {
       ++iter;
     }
-  }//while
+  }
   return purged;
 }
 
 void ESMFileContents::traverseGroups(traverseFunction func) const
 {
-  if (func==NULL)
+  if (func == nullptr)
   {
     std::cerr << "ESMFileContents::traverseGroups: ERROR: pointer to function"
               << " is NULL!\n";
     return;
   }
 
-  const unsigned int grp_count = m_Groups.size();
-  unsigned int i;
-  for (i=0; i<grp_count; ++i)
+  for (const auto& group: m_Groups)
   {
-    //top group
-    if (!(*func)(m_Groups[i], NULL)) return;
-    //now go into sub groups
-    if (!traverseSubGroups(m_Groups[i], func)) return;
-  }//for
+    // top-level group
+    if (!(*func)(group, nullptr))
+      return;
+    // now go into sub groups
+    if (!traverseSubGroups(group, func))
+      return;
+  }
   return;
 }
 
 bool ESMFileContents::traverseSubGroups(const Group& grp, traverseFunction func) const
 {
   SRTP::Group::SubIterator groupIter = grp.getSubBegin();
-  while (groupIter!= grp.getSubEnd())
+  while (groupIter != grp.getSubEnd())
   {
-    if (!(*func)(*groupIter, &grp)) return false;
-    //subs
-    if (!traverseSubGroups(*groupIter, func)) return false;
+    if (!(*func)(*groupIter, &grp))
+      return false;
+    // subs
+    if (!traverseSubGroups(*groupIter, func))
+      return false;
     ++groupIter;
-  }//while
+  }
   return true;
 }
 
 Group * ESMFileContents::determineLatestGroup(const unsigned int level)
 {
-  //level zero means no group
-  if (level==0) return NULL;
-  //level one is the first valid level, meaning the current one
-  //If there are no groups, we can't return anything useful.
-  if (m_Groups.empty()) return NULL;
-  if (level==1) return &(m_Groups.back());
-  //level is larger than one, so we have to go into sub groups
-  return m_Groups.back().determineLatestGroup(level-1);
+  // level zero means no group
+  if (level == 0)
+    return nullptr;
+  // level one is the first valid level, meaning the current one
+  // If there are no groups, we can't return anything useful.
+  if (m_Groups.empty())
+    return nullptr;
+  if (level == 1)
+    return &(m_Groups.back());
+  // level is larger than one, so we have to go into sub groups
+  return m_Groups.back().determineLatestGroup(level - 1);
 }
 
-} //namespace
+} // namespace

@@ -12,7 +12,9 @@ set(component_tests_sources
     ../../base/RegistryFunctions.cpp
     ../../base/UtilityFunctions.cpp
     ../../mw/base/HelperIO.cpp
+    ../../sr/base/DependencySolver.cpp
     ../../sr/base/ESMFileContents.cpp
+    ../../sr/base/ESMReader.cpp
     ../../sr/base/FormIDFunctions.cpp
     ../../sr/base/Group.cpp
     ../../sr/base/MapBasedRecordManager.hpp
@@ -70,6 +72,7 @@ set(component_tests_sources
     base/RegistryFunctions.cpp
     base/UtilityFunctions.cpp
     mw/base/HelperIO.cpp
+    sr/base/DependencyElement.cpp
     sr/base/ESMFileContents.cpp
     sr/base/FormIDFunctions.cpp
     sr/base/MapBasedRecordManager.cpp

@@ -46,8 +46,12 @@
 		<Unit filename="../../mw/base/HelperIO.cpp" />
 		<Unit filename="../../mw/base/HelperIO.hpp" />
 		<Unit filename="../../mw/base/MW_Constants.hpp" />
+		<Unit filename="../../sr/base/DependencySolver.cpp" />
+		<Unit filename="../../sr/base/DependencySolver.hpp" />
 		<Unit filename="../../sr/base/ESMFileContents.cpp" />
 		<Unit filename="../../sr/base/ESMFileContents.hpp" />
+		<Unit filename="../../sr/base/ESMReader.cpp" />
+		<Unit filename="../../sr/base/ESMReader.hpp" />
 		<Unit filename="../../sr/base/FormIDFunctions.cpp" />
 		<Unit filename="../../sr/base/FormIDFunctions.hpp" />
 		<Unit filename="../../sr/base/Group.cpp" />
@@ -156,6 +160,7 @@
 		<Unit filename="base/UtilityFunctions.cpp" />
 		<Unit filename="main.cpp" />
 		<Unit filename="mw/base/HelperIO.cpp" />
+		<Unit filename="sr/base/DependencyElement.cpp" />
 		<Unit filename="sr/base/ESMFileContents.cpp" />
 		<Unit filename="sr/base/FormIDFunctions.cpp" />
 		<Unit filename="sr/base/MapBasedRecordManager.cpp" />

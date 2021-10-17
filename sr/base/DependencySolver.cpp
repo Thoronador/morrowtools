@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2013  Thoronador
+    Copyright (C) 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,65 +27,79 @@
 namespace SRTP
 {
 
+DependencyElement::DependencyElement()
+: name(""), header(Tes4HeaderRecord())
+{
+}
+
+DependencyElement::DependencyElement(const std::string& fn)
+: name(fn), header(Tes4HeaderRecord())
+{
+}
+
+DependencyElement::DependencyElement(const std::string& fn, const Tes4HeaderRecord& head)
+: name(fn), header(head)
+{
+}
+
 /* comparison operator */
 bool DependencyElement::operator<(const DependencyElement& other) const
 {
-  return (lowerCaseCompare(name, other.name)<0);
+  return lowerCaseCompare(name, other.name) < 0;
 }
 
 /* function for traversing the dependency "graph" */
 bool depPostOrderTraverse(const std::string& fileName, const std::set<DependencyElement>& files,
                           std::vector<std::string>& result, std::set<std::string, MWTP::ci_less>& presence)
 {
-  std::set<DependencyElement>::const_iterator iter = files.find(fileName);
-  if (iter==files.end())
+  const std::set<DependencyElement>::const_iterator iter = files.find(fileName);
+  if (iter == files.end())
   {
-    std::cerr << "Error: SRTP::dpot: no entry for \""<<fileName<<"\" found in file list!\n";
+    std::cerr << "Error: SRTP::dpot: no entry for \"" << fileName << "\" found in file list!\n";
     return false;
   }
   //check for size limit
-  if (presence.size()>255)
+  if (presence.size() > 255)
   {
     std::cerr << "Error: SRTP::dpot: limit of 255 entries exceeded!\n";
     return false;
   }
-  //add child nodes
+  // add child nodes
   std::vector<Tes4HeaderRecord::MasterFile>::const_iterator mf_iter = iter->header.dependencies.begin();
-  while (mf_iter!=iter->header.dependencies.end())
+  while (mf_iter != iter->header.dependencies.end())
   {
-    if (presence.find(mf_iter->fileName)==presence.end())
+    if (presence.find(mf_iter->fileName) == presence.end())
     {
-      //file not found, iterate over children
+      // file not found, iterate over children
       if (!depPostOrderTraverse(mf_iter->fileName, files, result, presence))
         return false;
     }
     ++mf_iter;
-  }//while
-  //add file itself
-  if (presence.find(fileName)==presence.end())
+  }
+  // add file itself
+  if (presence.find(fileName) == presence.end())
   {
     presence.insert(fileName);
     result.push_back(fileName);
   }
   return true;
-}//function
+}
 
 bool getLoadOrder(const std::vector<std::string>& esmNames, const std::string& dataDir, std::vector<std::string>& result)
 {
   std::set<SRTP::DependencyElement> filesWithHeaders;
 
-  unsigned int i;
-  for (i=0; i<esmNames.size(); ++i)
+  for (unsigned int i = 0; i < esmNames.size(); ++i)
   {
     DependencyElement depElem;
     depElem.name = esmNames[i];
     if (!ESMReader::peekESMHeader(dataDir+esmNames[i], depElem.header))
     {
-      std::cerr << "Error: could not read header of "<<dataDir+esmNames[i]<<"!\n";
+      std::cerr << "Error: could not read header of " << dataDir + esmNames[i] << "!\n";
       return false;
     }
     filesWithHeaders.insert(depElem);
-  }//for
+  }
   return getLoadOrder(filesWithHeaders, result);
 }
 
@@ -104,8 +118,8 @@ bool getLoadOrder(const std::set<DependencyElement>& files, std::vector<std::str
     if (!depPostOrderTraverse(set_iter->name, files, result, presence))
       return false;
     ++set_iter;
-  }//while
+  }
   return true;
-}//function getLoadOrder
+}
 
-} //namespace
+} // namespace

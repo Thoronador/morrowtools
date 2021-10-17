@@ -34,19 +34,10 @@ struct DependencyElement
   std::string name;
   SRTP::Tes4HeaderRecord header;
 
-  DependencyElement()
-  : name(""), header(Tes4HeaderRecord())
-  { }
+  DependencyElement();
+  DependencyElement(const std::string& fn);
+  DependencyElement(const std::string& fn, const Tes4HeaderRecord& head);
 
-  DependencyElement(const std::string& fn)
-  : name(fn), header(Tes4HeaderRecord())
-  { }
-
-  DependencyElement(const std::string& fn, const Tes4HeaderRecord& head)
-  : name(fn), header(head)
-  { }
-
-  /* comparison operator */
   bool operator<(const DependencyElement& other) const;
 };
 

@@ -35,9 +35,6 @@ class StringTable
     /** Constructor, creates an empty table. */
     StringTable();
 
-    /** Destructor. */
-    ~StringTable() = default;
-
     /** enumeration type for table data type */
     enum DataType {sdUnknown, sdNULterminated, sdPascalStyle};
 

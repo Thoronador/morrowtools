@@ -35,9 +35,6 @@ struct GroupData
     /** Constructor, creates empty group data. */
     GroupData();
 
-    /** Destructor. */
-    ~GroupData() = default;
-
     #ifndef SR_UNSAVEABLE_RECORDS
     /** \brief Writes the group data to the given output stream.
      *

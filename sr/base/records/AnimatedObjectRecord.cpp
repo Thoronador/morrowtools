@@ -28,7 +28,8 @@ namespace SRTP
 {
 
 AnimatedObjectRecord::AnimatedObjectRecord()
-: BasicRecord(), editorID(""),
+: BasicRecord(),
+  editorID(""),
   modelPath(""),
   unknownMODT(BinarySubRecord()),
   unknownBNAM("")
@@ -38,9 +39,9 @@ AnimatedObjectRecord::AnimatedObjectRecord()
 #ifndef SR_NO_RECORD_EQUALITY
 bool AnimatedObjectRecord::equals(const AnimatedObjectRecord& other) const
 {
-  return (equalsBasic(other) && (editorID == other.editorID)
+  return equalsBasic(other) && (editorID == other.editorID)
       && (modelPath == other.modelPath) && (unknownMODT == other.unknownMODT)
-      && (unknownBNAM == other.unknownBNAM));
+      && (unknownBNAM == other.unknownBNAM);
 }
 #endif
 
@@ -69,20 +70,16 @@ bool AnimatedObjectRecord::saveToStream(std::ostream& output) const
   if (!saveSizeAndUnknownValues(output, getWriteSize()))
     return false;
 
-  // write EDID
+  // write editor ID (EDID)
   output.write(reinterpret_cast<const char*>(&cEDID), 4);
-  // EDID's length
-  uint16_t subLength = editorID.length()+1;
+  uint16_t subLength = editorID.length() + 1;
   output.write(reinterpret_cast<const char*>(&subLength), 2);
-  // write editor ID
   output.write(editorID.c_str(), subLength);
 
-  // write MODL
+  // write model path (MODL)
   output.write(reinterpret_cast<const char*>(&cMODL), 4);
-  // MODL's length
   subLength = modelPath.length() + 1;
   output.write(reinterpret_cast<const char*>(&subLength), 2);
-  // write model path
   output.write(modelPath.c_str(), subLength);
 
   // write MODT
@@ -99,10 +96,8 @@ bool AnimatedObjectRecord::saveToStream(std::ostream& output) const
   {
     // write BNAM
     output.write(reinterpret_cast<const char*>(&cBNAM), 4);
-    // BNAM's length
     subLength = unknownBNAM.length() + 1;
     output.write(reinterpret_cast<const char*>(&subLength), 2);
-    // write BNAM
     output.write(unknownBNAM.c_str(), subLength);
   }
 
@@ -175,11 +170,11 @@ bool AnimatedObjectRecord::loadFromStream(std::istream& in_File, const bool loca
            }
            break;
       default:
-           std::cerr << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: found unexpected subrecord \"" << IntTo4Char(subRecName)
                      << "\", but only MODL, MODT or BNAM are allowed here!\n";
            return false;
     }
-  } // while
+  }
 
   // presence checks
   if (modelPath.empty())

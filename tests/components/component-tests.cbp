@@ -64,6 +64,8 @@
 		<Unit filename="../../sr/base/records/AlchemyPotionRecord.hpp" />
 		<Unit filename="../../sr/base/records/AmmunitionRecord.cpp" />
 		<Unit filename="../../sr/base/records/AmmunitionRecord.hpp" />
+		<Unit filename="../../sr/base/records/AnimatedObjectRecord.cpp" />
+		<Unit filename="../../sr/base/records/AnimatedObjectRecord.hpp" />
 		<Unit filename="../../sr/base/records/ApparatusRecord.cpp" />
 		<Unit filename="../../sr/base/records/ApparatusRecord.hpp" />
 		<Unit filename="../../sr/base/records/ArmourRecord.cpp" />
@@ -159,6 +161,7 @@
 		<Unit filename="sr/base/records/AddOnNodeRecord.cpp" />
 		<Unit filename="sr/base/records/AlchemyPotionRecord.cpp" />
 		<Unit filename="sr/base/records/AmmunitionRecord.cpp" />
+		<Unit filename="sr/base/records/AnimatedObjectRecord.cpp" />
 		<Unit filename="sr/base/records/ApparatusRecord.cpp" />
 		<Unit filename="sr/base/records/ArmourRecord.cpp" />
 		<Unit filename="sr/base/records/BasicRecord.cpp" />

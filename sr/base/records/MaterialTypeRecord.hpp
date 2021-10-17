@@ -34,9 +34,6 @@ struct MaterialTypeRecord: public BasicRecord
     /** Constructor, creates an empty record. */
     MaterialTypeRecord();
 
-    /** Destructor. */
-    virtual ~MaterialTypeRecord() = default;
-
     #ifndef SR_NO_RECORD_EQUALITY
     /** \brief Checks whether another instances contains the same data.
      *

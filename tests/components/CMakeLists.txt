@@ -21,6 +21,7 @@ set(component_tests_sources
     ../../sr/base/records/AddOnNodeRecord.cpp
     ../../sr/base/records/AlchemyPotionRecord.cpp
     ../../sr/base/records/AmmunitionRecord.cpp
+    ../../sr/base/records/AnimatedObjectRecord.cpp
     ../../sr/base/records/ApparatusRecord.cpp
     ../../sr/base/records/ArmourRecord.cpp
     ../../sr/base/records/BasicRecord.cpp
@@ -76,6 +77,7 @@ set(component_tests_sources
     sr/base/records/AddOnNodeRecord.cpp
     sr/base/records/AlchemyPotionRecord.cpp
     sr/base/records/AmmunitionRecord.cpp
+    sr/base/records/AnimatedObjectRecord.cpp
     sr/base/records/ApparatusRecord.cpp
     sr/base/records/ArmourRecord.cpp
     sr/base/records/BasicRecord.cpp

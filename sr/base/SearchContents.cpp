@@ -36,27 +36,25 @@ namespace Search
 /*
 bool containsItemShallow(const std::vector<SRTP::ComponentData>& list, const uint32_t itemID)
 {
-  unsigned int i;
-  for (i=0; i<list.size(); ++i)
+  for (unsigned int i = 0; i < list.size(); ++i)
   {
-    if (list[i].formID==itemID)
+    if (list[i].formID == itemID)
     {
       return true;
     }
-  }//for
+  }
   return false;
 }
 
 bool containsItemShallow(const LeveledListBaseRecord& llBase, const uint32_t itemID)
 {
-  unsigned int i;
-  for (i=0; i<llBase.entries.size(); ++i)
+  for (unsigned int i = 0; i < llBase.entries.size(); ++i)
   {
-    if (llBase.entries[i].entry.formID==itemID)
+    if (llBase.entries[i].entry.formID == itemID)
     {
       return true;
     }
-  }//for
+  }
   return false;
 }
 */
@@ -162,41 +160,40 @@ std::vector<uint32_t> findNPCsWithItem(const uint32_t itemID, const std::map<uin
       result.push_back(npcIter->first);
     }
     ++npcIter;
-  }//while
+  }
   return result;
 }
 
 bool hasKeyword(const NPCRecord& npc, const uint32_t keyword)
 {
-  unsigned int i;
-  for (i=0; i<npc.keywordArray.size(); ++i)
+  for (unsigned int i = 0; i < npc.keywords.size(); ++i)
   {
-    if (npc.keywordArray[i]==keyword) return true;
-  }//for
+    if (npc.keywords[i] == keyword)
+      return true;
+  }
   return false;
 }
 
 bool formListContains(const FormListRecord& fList, const uint32_t needleID)
 {
-  unsigned int i;
-  for (i=0; i<fList.listFormIDs.size(); ++i)
+  for (unsigned int i = 0; i < fList.listFormIDs.size(); ++i)
   {
-    if (fList.listFormIDs[i]==needleID) return true;
-  }//for
+    if (fList.listFormIDs[i] == needleID)
+      return true;
+  }
   return false;
 }
 
 bool sellListAllowsKeyword(const NPCRecord& npc, const uint32_t keyword)
 {
-  unsigned int i;
-  for (i=0; i<npc.factions.size(); ++i)
+  for (unsigned int i = 0; i < npc.factions.size(); ++i)
   {
     if (Factions::get().hasRecord(npc.factions[i].formID))
     {
       const FactionRecord& facRec = Factions::get().getRecord(npc.factions[i].formID);
       if (facRec.isVendor())
       {
-        if (facRec.vendorListFormID!=0)
+        if (facRec.vendorListFormID != 0)
         {
           if (FormLists::get().hasRecord(facRec.vendorListFormID))
           {
@@ -212,10 +209,10 @@ bool sellListAllowsKeyword(const NPCRecord& npc, const uint32_t keyword)
           return true;
       }
     }
-  }//for
+  }
   return false;
 }
 
-}//namespace Search
+} // namespace Search
 
-}//namespace SRTP
+} // namespace SRTP

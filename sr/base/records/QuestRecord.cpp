@@ -31,10 +31,10 @@ namespace SRTP
 /* functions of index entry structure */
 
 QuestRecord::IndexEntry::IndexEntry()
-: index(0), indexUnknownPart(0),
+: index(0),
+  indexUnknownPart(0),
   theQSDTs(std::vector<QSDTRecord>())
 {
-
 }
 
 bool QuestRecord::IndexEntry::operator==(const QuestRecord::IndexEntry& other) const
@@ -399,7 +399,8 @@ bool QuestRecord::QOBJEntry::QSTAEntry::operator==(const QuestRecord::QOBJEntry:
 /* quest record's functions */
 
 QuestRecord::QuestRecord()
-: BasicRecord(), editorID(""),
+: BasicRecord(),
+  editorID(""),
   unknownVMAD(BinarySubRecord()),
   name(LocalizedString()),
   hasENAM(false), unknownENAM(0),
@@ -414,73 +415,63 @@ QuestRecord::QuestRecord()
   memset(unknownDNAM, 0, 12);
 }
 
-QuestRecord::~QuestRecord()
-{
-  //empty
-}
-
 #ifndef SR_NO_RECORD_EQUALITY
 bool QuestRecord::equals(const QuestRecord& other) const
 {
-  return ((equalsBasic(other)) and (editorID==other.editorID)
-    and (unknownVMAD==other.unknownVMAD)
-    and (name==other.name)
-    and (memcmp(unknownDNAM, other.unknownDNAM, 12)==0)
-    and (hasENAM==other.hasENAM) and ((unknownENAM==other.unknownENAM) or (!hasENAM))
-    and (unknownQTGLs==other.unknownQTGLs) and (unknownCTDA_CIS2s==other.unknownCTDA_CIS2s)
-    and (filter==other.filter) and (indices==other.indices) and (theQOBJs==other.theQOBJs)
-    and (unknownANAM==other.unknownANAM) and (aliases==other.aliases));
+  return equalsBasic(other) && (editorID == other.editorID)
+    && (unknownVMAD == other.unknownVMAD)
+    && (name == other.name)
+    && (memcmp(unknownDNAM, other.unknownDNAM, 12) == 0)
+    && (hasENAM == other.hasENAM) && ((unknownENAM == other.unknownENAM) || (!hasENAM))
+    && (unknownQTGLs == other.unknownQTGLs)
+    && (unknownCTDA_CIS2s == other.unknownCTDA_CIS2s)
+    && (filter == other.filter) && (indices == other.indices)
+    && (theQOBJs == other.theQOBJs)
+    && (unknownANAM == other.unknownANAM) && (aliases == other.aliases);
 }
 #endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t QuestRecord::getWriteSize() const
 {
-  uint32_t writeSize;
-  writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
-        +editorID.length()+1 /* length of string +1 byte for NUL-termination */
-        +4 /* DNAM */ +2 /* 2 bytes for length */ +12 /* fixed size */
-        +4 /* NEXT */ +2 /* 2 bytes for length */ +0 /* fixed size */
-        +4 /* ANAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+  uint32_t writeSize = 4 /* EDID */ + 2 /* 2 bytes for length */
+        + editorID.length()+1 /* length of string +1 byte for NUL-termination */
+        + 4 /* DNAM */ + 2 /* 2 bytes for length */ + 12 /* fixed size */
+        + 4 /* NEXT */ + 2 /* 2 bytes for length */ + 0 /* fixed size */
+        + 4 /* ANAM */ + 2 /* 2 bytes for length */ + 4 /* fixed size */;
   if (unknownVMAD.isPresent())
   {
     writeSize = writeSize + 4 /* VMAD */ + 2 /* 2 bytes for length */ + unknownVMAD.size();
   }
   if (name.isPresent())
   {
-    writeSize += name.getWriteSize() /* FULL */;
+    writeSize += name.getWriteSize();
   }
   if (hasENAM)
   {
-    writeSize = writeSize +4 /* ENAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
+    writeSize = writeSize + 4 /* ENAM */ + 2 /* 2 bytes for length */ + 4 /* fixed size */;
   }
   if (!unknownQTGLs.empty())
   {
-    writeSize = writeSize +unknownQTGLs.size()*(4 /* QTGL */ +2 /* 2 bytes for length */ +4 /* fixed size */);
+    writeSize = writeSize + unknownQTGLs.size() * (4 /* QTGL */ + 2 /* 2 bytes for length */ + 4 /* fixed size */);
   }
-  if (!unknownCTDA_CIS2s.empty())
+  for (const auto& condition: unknownCTDA_CIS2s)
   {
-    unsigned int i;
-    const unsigned int count = unknownCTDA_CIS2s.size();
-    for (i=0; i<count; ++i)
-    {
-      writeSize += unknownCTDA_CIS2s[i].getWriteSize();
-    }//for
+    writeSize += condition.getWriteSize();
   }
   if (!filter.empty())
   {
-    writeSize = writeSize +4 /* FLTR */ +2 /* 2 bytes for length */
-        +filter.length()+1 /* length of string +1 byte for NUL-termination */;
+    writeSize = writeSize + 4 /* FLTR */ + 2 /* 2 bytes for length */
+        + filter.length() + 1 /* length of string +1 byte for NUL-termination */;
   }
   if (!indices.empty())
   {
-    unsigned int i, j, k;
     const unsigned int idx_count = indices.size();
-    for (i=0; i<idx_count; ++i)
+    for (unsigned int i = 0; i < idx_count; ++i)
     {
       writeSize = writeSize +4 /* INDX */ +2 /* 2 bytes for length */ +4 /* fixed size */;
       const unsigned int q_size = indices[i].theQSDTs.size();
-      for (j=0; j<q_size; ++j)
+      for (unsigned int j = 0; j < q_size; ++j)
       {
         writeSize = writeSize +4 /* QSDT */ +2 /* 2 bytes for length */ +1 /* fixed size */;
         if (indices[i].theQSDTs[j].nextQuestFormID!=0)
@@ -500,14 +491,14 @@ uint32_t QuestRecord::getWriteSize() const
           writeSize = writeSize +4 /* QNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
         }
         const unsigned int compound_count = indices[i].theQSDTs[j].unknownCTDA_CIS2s.size();
-        for (k=0; k<compound_count; ++k)
+        for (unsigned int k = 0; k < compound_count; ++k)
         {
           writeSize += indices[i].theQSDTs[j].unknownCTDA_CIS2s[k].getWriteSize();
-        }//for k
+        } // for k
         writeSize += indices[i].theQSDTs[j].logEntry.getWriteSize() /* CNAM */;
-      }//for j
-    }//for i
-  }//indices
+      } // for j
+    } // for i
+  } // indices
   /// ... more to come
   #warning Size of QOBJ and alias are not properly calculated here!
   return writeSize;
@@ -517,7 +508,8 @@ bool QuestRecord::saveToStream(std::ostream& output) const
 {
   #warning Not completely implemented yet!
   output.write((const char*) &cQUST, 4);
-  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
+  if (!saveSizeAndUnknownValues(output, getWriteSize()))
+    return false;
 
   //write EDID
   output.write((const char*) &cEDID, 4);
@@ -690,7 +682,8 @@ bool QuestRecord::saveToStream(std::ostream& output) const
 bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
-  if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
+  if (!loadSizeAndUnknownValues(in_File, readSize))
+    return false;
   uint32_t subRecName, lastReadRec;
   uint16_t subLength;
   subRecName = subLength = 0;
@@ -816,14 +809,16 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
              return false;
            }
            //read ENAM
-           if (!loadUint32SubRecordFromStream(in_File, cENAM, unknownENAM, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cENAM, unknownENAM, false))
+             return false;
            bytesRead += 6;
            hasENAM = true;
            lastReadRec = cENAM;
            break;
       case cQTGL:
            //read QTGL
-           if (!loadUint32SubRecordFromStream(in_File, cQTGL, tempUint32, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cQTGL, tempUint32, false))
+             return false;
            bytesRead += 6;
            unknownQTGLs.push_back(tempUint32);
            lastReadRec = cQTGL;
@@ -987,7 +982,8 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
              return false;
            }
            //read NAM0
-           if (!loadUint32SubRecordFromStream(in_File, cNAM0, tempQSDT.nextQuestFormID, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cNAM0, tempQSDT.nextQuestFormID, false))
+             return false;
            bytesRead += 6;
            if (tempQSDT.nextQuestFormID==0)
            {
@@ -1009,7 +1005,8 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
              return false;
            }
            //read QNAM
-           if (!loadUint32SubRecordFromStream(in_File, cQNAM, tempQSDT.unknownQNAM, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cQNAM, tempQSDT.unknownQNAM, false))
+             return false;
            bytesRead += 6;
            tempQSDT.hasQNAM = true;
            lastReadRec = cQNAM;
@@ -1136,7 +1133,8 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
            }
 
            //read FNAM
-           if (!loadUint32SubRecordFromStream(in_File, cFNAM, tempQOBJ.unknownFNAM, true)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cFNAM, tempQOBJ.unknownFNAM, true))
+             return false;
            bytesRead += 10;
 
            //read NNAM
@@ -1282,7 +1280,8 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
              return false;
            }
            //read ANAM
-           if (!loadUint32SubRecordFromStream(in_File, cANAM, unknownANAM, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, cANAM, unknownANAM, false))
+             return false;
            bytesRead += 6;
            hasReadANAM = true;
            lastReadRec = cANAM;
@@ -1293,7 +1292,8 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
            al_entry.clear();
            //ALST is always first
            //read ALST/ALLS
-           if (!loadUint32SubRecordFromStream(in_File, subRecName, al_entry.unknownALST, false)) return false;
+           if (!loadUint32SubRecordFromStream(in_File, subRecName, al_entry.unknownALST, false))
+             return false;
            bytesRead += 6;
 
            if (subRecName==cALST)
@@ -1351,7 +1351,8 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                       return false;
                     }
                     //read FNAM
-                    if (!loadUint32SubRecordFromStream(in_File, cFNAM, al_entry.unknownFNAM, false)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cFNAM, al_entry.unknownFNAM, false))
+                      return false;
                     bytesRead += 6;
                     hasReadFNAM = true;
                     break;
@@ -1362,7 +1363,8 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                       return false;
                     }
                     //read ALFA
-                    if (!loadUint32SubRecordFromStream(in_File, cALFA, al_entry.unknownALFA, false)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cALFA, al_entry.unknownALFA, false))
+                      return false;
                     bytesRead += 6;
                     al_entry.hasALFA = true;
                     break;
@@ -1373,7 +1375,8 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                       return false;
                     }
                     //read ALRT
-                    if (!loadUint32SubRecordFromStream(in_File, cALRT, al_entry.locationRefTypeFormID, false)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cALRT, al_entry.locationRefTypeFormID, false))
+                      return false;
                     bytesRead += 6;
                     //check content
                     if (al_entry.locationRefTypeFormID==0)
@@ -1389,7 +1392,8 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                       return false;
                     }
                     //read ALCO
-                    if (!loadUint32SubRecordFromStream(in_File, cALCO, al_entry.createReferenceToObjectFormID, false)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cALCO, al_entry.createReferenceToObjectFormID, false))
+                      return false;
                     bytesRead += 6;
                     if (al_entry.createReferenceToObjectFormID==0)
                     {
@@ -1404,7 +1408,8 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                       return false;
                     }
                     //read ALCA
-                    if (!loadUint32SubRecordFromStream(in_File, cALCA, al_entry.unknownALCA, false)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cALCA, al_entry.unknownALCA, false))
+                      return false;
                     bytesRead += 6;
                     al_entry.hasALCA = true;
                     break;
@@ -1415,7 +1420,8 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                       return false;
                     }
                     //read ALCL
-                    if (!loadUint32SubRecordFromStream(in_File, cALCL, al_entry.unknownALCL, false)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cALCL, al_entry.unknownALCL, false))
+                      return false;
                     bytesRead += 6;
                     al_entry.hasALCL = true;
                     break;
@@ -1426,7 +1432,8 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                       return false;
                     }
                     //read ALDN
-                    if (!loadUint32SubRecordFromStream(in_File, cALDN, al_entry.displayNameFormID, false)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cALDN, al_entry.displayNameFormID, false))
+                      return false;
                     bytesRead += 6;
                     if (al_entry.displayNameFormID==0)
                     {
@@ -1442,7 +1449,8 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                     }
                     //read COCT
                     size_int = 0;
-                    if (!loadUint32SubRecordFromStream(in_File, cCOCT, size_int, false)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cCOCT, size_int, false))
+                      return false;
                     bytesRead += 6;
                     if (size_int==0)
                     {
@@ -1513,7 +1521,8 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                     }
                     //read KSIZ
                     size_int = 0;
-                    if (!loadUint32SubRecordFromStream(in_File, cKSIZ, size_int, false)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cKSIZ, size_int, false))
+                      return false;
                     bytesRead += 6;
                     if (size_int==0)
                     {
@@ -1558,7 +1567,8 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                       return false;
                     }
                     //read ALFE
-                    if (!loadUint32SubRecordFromStream(in_File, cALFE, al_entry.unknownALFE, false)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cALFE, al_entry.unknownALFE, false))
+                      return false;
                     bytesRead += 6;
                     al_entry.hasALFE = true;
                     break;
@@ -1569,7 +1579,8 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                       return false;
                     }
                     //read ALFD
-                    if (!loadUint32SubRecordFromStream(in_File, cALFD, al_entry.unknownALFD, false)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cALFD, al_entry.unknownALFD, false))
+                      return false;
                     bytesRead += 6;
                     al_entry.hasALFD = true;
                     break;
@@ -1580,7 +1591,8 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                       return false;
                     }
                     //read ALFI
-                    if (!loadUint32SubRecordFromStream(in_File, cALFI, al_entry.forcedIntoAliasID, false)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cALFI, al_entry.forcedIntoAliasID, false))
+                      return false;
                     bytesRead += 6;
                     al_entry.hasALFI = true;
                     break;
@@ -1591,7 +1603,8 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                       return false;
                     }
                     //read ALFL
-                    if (!loadUint32SubRecordFromStream(in_File, cALFL, al_entry.specificLocationFormID, false)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cALFL, al_entry.specificLocationFormID, false))
+                      return false;
                     bytesRead += 6;
                     if (al_entry.specificLocationFormID==0)
                     {
@@ -1606,7 +1619,8 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                       return false;
                     }
                     //read ALFR
-                    if (!loadUint32SubRecordFromStream(in_File, cALFR, al_entry.specificReferenceID, false)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cALFR, al_entry.specificReferenceID, false))
+                      return false;
                     bytesRead += 6;
                     if (al_entry.specificReferenceID==0)
                     {
@@ -1621,7 +1635,8 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                       return false;
                     }
                     //read ALNA
-                    if (!loadUint32SubRecordFromStream(in_File, cALNA, al_entry.unknownALNA, false)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cALNA, al_entry.unknownALNA, false))
+                      return false;
                     bytesRead += 6;
                     al_entry.hasALNA = true;
                     break;
@@ -1632,7 +1647,8 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                       return false;
                     }
                     //read ALNT
-                    if (!loadUint32SubRecordFromStream(in_File, cALNT, al_entry.unknownALNT, false)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cALNT, al_entry.unknownALNT, false))
+                      return false;
                     bytesRead += 6;
                     al_entry.hasALNT = true;
                     break;
@@ -1643,7 +1659,8 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                       return false;
                     }
                     //read ALUA
-                    if (!loadUint32SubRecordFromStream(in_File, cALUA, al_entry.uniqueActorFormID, false)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cALUA, al_entry.uniqueActorFormID, false))
+                      return false;
                     bytesRead += 6;
                     if (al_entry.uniqueActorFormID==0)
                     {
@@ -1658,7 +1675,8 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                       return false;
                     }
                     //read ALEQ
-                    if (!loadUint32SubRecordFromStream(in_File, cALEQ, al_entry.externalAliasReferenceFormID, false)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cALEQ, al_entry.externalAliasReferenceFormID, false))
+                      return false;
                     bytesRead += 6;
                     if (al_entry.externalAliasReferenceFormID==0)
                     {
@@ -1673,13 +1691,15 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                       return false;
                     }
                     //read ALEA
-                    if (!loadUint32SubRecordFromStream(in_File, cALEA, al_entry.unknownALEA, false)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cALEA, al_entry.unknownALEA, false))
+                      return false;
                     bytesRead += 6;
                     al_entry.hasALEA = true;
                     break;
                case cALSP:
                     //read ALSP
-                    if (!loadUint32SubRecordFromStream(in_File, cALSP, tempUint32, false)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cALSP, tempUint32, false))
+                      return false;
                     bytesRead += 6;
                     al_entry.spellFormIDs.push_back(tempUint32);
                     break;
@@ -1690,7 +1710,8 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                       return false;
                     }
                     //read KNAM
-                    if (!loadUint32SubRecordFromStream(in_File, cKNAM, al_entry.keywordFormID, false)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cKNAM, al_entry.keywordFormID, false))
+                      return false;
                     bytesRead += 6;
                     if (al_entry.keywordFormID==0)
                     {
@@ -1743,7 +1764,8 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                       return false;
                     }
                     //read SPOR
-                    if (!loadUint32SubRecordFromStream(in_File, cSPOR, al_entry.spectatorOverridePackageListFormID, false)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cSPOR, al_entry.spectatorOverridePackageListFormID, false))
+                      return false;
                     bytesRead += 6;
                     //check content
                     if (al_entry.spectatorOverridePackageListFormID==0)
@@ -1759,7 +1781,8 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                       return false;
                     }
                     //read ECOR
-                    if (!loadUint32SubRecordFromStream(in_File, cECOR, al_entry.combatOverridePackageListFormID, false)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cECOR, al_entry.combatOverridePackageListFormID, false))
+                      return false;
                     bytesRead += 6;
                     if (al_entry.combatOverridePackageListFormID==0)
                     {
@@ -1769,13 +1792,15 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                     break;
                case cALFC:
                     //read ALFC
-                    if (!loadUint32SubRecordFromStream(in_File, cALFC, tempUint32, false)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cALFC, tempUint32, false))
+                      return false;
                     bytesRead += 6;
                     al_entry.factionFormIDs.push_back(tempUint32);
                     break;
                case cALPC:
                     //read ALPC
-                    if (!loadUint32SubRecordFromStream(in_File, cALPC, tempUint32, false)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cALPC, tempUint32, false))
+                      return false;
                     bytesRead += 6;
                     al_entry.packageDataFormIDs.push_back(tempUint32);
                     break;
@@ -1786,7 +1811,8 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                       return false;
                     }
                     //read VTCK
-                    if (!loadUint32SubRecordFromStream(in_File, cVTCK, al_entry.unknownVTCK, false)) return false;
+                    if (!loadUint32SubRecordFromStream(in_File, cVTCK, al_entry.unknownVTCK, false))
+                      return false;
                     bytesRead += 6;
                     al_entry.hasVTCK = true;
                     break;

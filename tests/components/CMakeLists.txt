@@ -52,6 +52,7 @@ set(component_tests_sources
     ../../sr/base/records/NAVIRecord.cpp
     ../../sr/base/records/NPCRecord.cpp
     ../../sr/base/records/PerkRecord.cpp
+    ../../sr/base/records/QuestRecord.cpp
     ../../sr/base/records/ScrollRecord.cpp
     ../../sr/base/records/ShoutRecord.cpp
     ../../sr/base/records/SimplifiedReferenceRecord.cpp
@@ -120,6 +121,7 @@ set(component_tests_sources
     sr/base/records/NPCRecord_PerkElem.cpp
     sr/base/records/NPCRecord_TINXstructure.cpp
     sr/base/records/PerkRecord.cpp
+    sr/base/records/QuestRecord.cpp
     sr/base/records/ScrollRecord.cpp
     sr/base/records/ShoutRecord.cpp
     sr/base/records/SimplifiedReferenceRecord.cpp

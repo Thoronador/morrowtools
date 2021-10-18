@@ -38,9 +38,6 @@ struct QuestRecord: public BasicRecord
     /* constructor */
     QuestRecord();
 
-    /* destructor */
-    virtual ~QuestRecord();
-
     #ifndef SR_NO_RECORD_EQUALITY
     /* returns true, if the other record contains the same data */
     bool equals(const QuestRecord& other) const;

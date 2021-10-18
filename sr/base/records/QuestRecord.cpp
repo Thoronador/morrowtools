@@ -359,7 +359,6 @@ QuestRecord::QOBJEntry::QOBJEntry()
   displayText(LocalizedString()),
   theQSTAs(std::vector<QSTAEntry>())
 {
-
 }
 
 void QuestRecord::QOBJEntry::clear()
@@ -372,8 +371,8 @@ void QuestRecord::QOBJEntry::clear()
 
 bool QuestRecord::QOBJEntry::operator==(const QuestRecord::QOBJEntry& other) const
 {
-  return ((unknownQOBJ==other.unknownQOBJ) and (unknownFNAM==other.unknownFNAM)
-      and (displayText==other.displayText) and (theQSTAs==other.theQSTAs));
+  return (unknownQOBJ == other.unknownQOBJ) && (unknownFNAM == other.unknownFNAM)
+      && (displayText == other.displayText) && (theQSTAs == other.theQSTAs);
 }
 
 /* QSTAEntry's functions */
@@ -382,7 +381,6 @@ QuestRecord::QOBJEntry::QSTAEntry::QSTAEntry()
 : unknownQSTA(0),
   unknownCTDA_CIS2s(std::vector<CTDA_CIS2_compound>())
 {
-
 }
 
 void QuestRecord::QOBJEntry::QSTAEntry::clear()
@@ -393,7 +391,7 @@ void QuestRecord::QOBJEntry::QSTAEntry::clear()
 
 bool QuestRecord::QOBJEntry::QSTAEntry::operator==(const QuestRecord::QOBJEntry::QSTAEntry& other) const
 {
-  return ((unknownQSTA==other.unknownQSTA) and (unknownCTDA_CIS2s==other.unknownCTDA_CIS2s));
+  return (unknownQSTA == other.unknownQSTA) && (unknownCTDA_CIS2s == other.unknownCTDA_CIS2s);
 }
 
 /* quest record's functions */

@@ -122,6 +122,8 @@ set(component_tests_sources
     sr/base/records/NPCRecord_TINXstructure.cpp
     sr/base/records/PerkRecord.cpp
     sr/base/records/QuestRecord.cpp
+    sr/base/records/QuestRecord_QOBJEntry.cpp
+    sr/base/records/QuestRecord_QOBJEntry_QSTAEntry.cpp
     sr/base/records/ScrollRecord.cpp
     sr/base/records/ShoutRecord.cpp
     sr/base/records/SimplifiedReferenceRecord.cpp

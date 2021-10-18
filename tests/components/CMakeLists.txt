@@ -65,6 +65,10 @@ set(component_tests_sources
     ../../sr/base/records/WeaponRecord.cpp
     ../../sr/base/records/WordOfPowerRecord.cpp
     ../../sr/base/records/WorldSpaceRecord.cpp
+    ../../sr/base/records/quest/IndexEntry.cpp
+    ../../sr/base/records/quest/QOBJEntry.cpp
+    ../../sr/base/records/quest/QSDTRecord.cpp
+    ../../sr/base/records/quest/QSTAEntry.cpp
     base/BufferStream.cpp
     base/ComparisonFunctor.cpp
     base/CompressionFunctions.cpp
@@ -122,10 +126,10 @@ set(component_tests_sources
     sr/base/records/NPCRecord_TINXstructure.cpp
     sr/base/records/PerkRecord.cpp
     sr/base/records/QuestRecord.cpp
-    sr/base/records/QuestRecord_IndexEntry.cpp
-    sr/base/records/QuestRecord_IndexEntry_QSDTRecord.cpp
-    sr/base/records/QuestRecord_QOBJEntry.cpp
-    sr/base/records/QuestRecord_QOBJEntry_QSTAEntry.cpp
+    sr/base/records/quest/IndexEntry.cpp
+    sr/base/records/quest/QOBJEntry.cpp
+    sr/base/records/quest/QSDTRecord.cpp
+    sr/base/records/quest/QSTAEntry.cpp
     sr/base/records/ScrollRecord.cpp
     sr/base/records/ShoutRecord.cpp
     sr/base/records/SimplifiedReferenceRecord.cpp

@@ -19,15 +19,15 @@
 */
 
 #include <catch.hpp>
-#include "../../../../../sr/base/records/QuestRecord.hpp"
+#include "../../../../../../sr/base/records/quest/QSDTRecord.hpp"
 
-TEST_CASE("QuestRecord::IndexEntry::QSDTRecord")
+TEST_CASE("QSDTRecord")
 {
   using namespace SRTP;
 
   SECTION("constructor")
   {
-    QuestRecord::IndexEntry::QSDTRecord entry;
+    QSDTRecord entry;
 
     REQUIRE_FALSE( entry.isFinisher );
     REQUIRE( entry.nextQuestFormID == 0 );
@@ -41,8 +41,8 @@ TEST_CASE("QuestRecord::IndexEntry::QSDTRecord")
 
   SECTION("equality")
   {
-    QuestRecord::IndexEntry::QSDTRecord a;
-    QuestRecord::IndexEntry::QSDTRecord b;
+    QSDTRecord a;
+    QSDTRecord b;
 
     SECTION("equal")
     {

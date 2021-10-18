@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -28,6 +28,8 @@
 #include "ComponentData.hpp"
 #include "CTDAData.hpp"
 #include "LocalizedString.hpp"
+#include "quest/IndexEntry.hpp"
+#include "quest/QOBJEntry.hpp"
 
 namespace SRTP
 {
@@ -68,41 +70,6 @@ struct QuestRecord: public BasicRecord
 
     /* returns the record's type, usually its header */
     virtual uint32_t getRecordType() const;
-
-    /* type for holding quest stages / indices*/
-    struct IndexEntry
-    {
-
-      struct QSDTRecord
-      {
-        bool isFinisher; //true, if entry finishes the quest
-        uint32_t nextQuestFormID; //subrecord NAM0
-        BinarySubRecord unknownSCHR;
-        std::string unknownSCTX;
-        bool hasQNAM;
-        uint32_t unknownQNAM;
-        std::vector<CTDA_CIS2_compound> unknownCTDA_CIS2s;
-        LocalizedString logEntry; //CNAM - string ID of log entry
-
-        /* constructor */
-        QSDTRecord();
-
-        /* equality operator */
-        bool operator==(const QSDTRecord& other) const;
-      }; //struct
-      uint16_t index; //stage index
-      uint16_t indexUnknownPart; //flags or something?
-      std::vector<QSDTRecord> theQSDTs;
-
-      /* constructor */
-      IndexEntry();
-
-      /* equality operator */
-      bool operator==(const IndexEntry& other) const;
-
-      /* returns true, if the finishing flag is set for one of the index' QSDTs */
-      bool hasFinishingQSDT() const;
-    };//struct
 
     //struct for alias-related data
     struct AliasEntry
@@ -159,41 +126,6 @@ struct QuestRecord: public BasicRecord
       /* equality operator */
       bool operator==(const AliasEntry& other) const;
     };//struct
-
-    //struct for QOBJ
-    struct QOBJEntry
-    {
-      //struct for QSTA stuff
-      struct QSTAEntry
-      {
-        uint64_t unknownQSTA;
-        std::vector<CTDA_CIS2_compound> unknownCTDA_CIS2s;
-
-        /* constructor */
-        QSTAEntry();
-
-        /* clears all data members */
-        void clear();
-
-        /* equality operator */
-        bool operator==(const QSTAEntry& other) const;
-      };//struct
-
-      uint16_t unknownQOBJ;
-      uint32_t unknownFNAM;
-      LocalizedString displayText; //subrecord NNAM
-      std::vector<QSTAEntry> theQSTAs;
-
-      /* constructor */
-      QOBJEntry();
-
-      /* clears all data members */
-      void clear();
-
-      /* equality operator */
-      bool operator==(const QOBJEntry& other) const;
-    };//struct
-
 
     /* returns true, if an QOBJ record with the given index is present
 

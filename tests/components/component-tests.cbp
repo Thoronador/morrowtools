@@ -153,6 +153,14 @@
 		<Unit filename="../../sr/base/records/WordOfPowerRecord.hpp" />
 		<Unit filename="../../sr/base/records/WorldSpaceRecord.cpp" />
 		<Unit filename="../../sr/base/records/WorldSpaceRecord.hpp" />
+		<Unit filename="../../sr/base/records/quest/IndexEntry.cpp" />
+		<Unit filename="../../sr/base/records/quest/IndexEntry.hpp" />
+		<Unit filename="../../sr/base/records/quest/QOBJEntry.cpp" />
+		<Unit filename="../../sr/base/records/quest/QOBJEntry.hpp" />
+		<Unit filename="../../sr/base/records/quest/QSDTRecord.cpp" />
+		<Unit filename="../../sr/base/records/quest/QSDTRecord.hpp" />
+		<Unit filename="../../sr/base/records/quest/QSTAEntry.cpp" />
+		<Unit filename="../../sr/base/records/quest/QSTAEntry.hpp" />
 		<Unit filename="base/BufferStream.cpp" />
 		<Unit filename="base/ComparisonFunctor.cpp" />
 		<Unit filename="base/CompressionFunctions.cpp" />
@@ -211,10 +219,6 @@
 		<Unit filename="sr/base/records/NPCRecord_TINXstructure.cpp" />
 		<Unit filename="sr/base/records/PerkRecord.cpp" />
 		<Unit filename="sr/base/records/QuestRecord.cpp" />
-		<Unit filename="sr/base/records/QuestRecord_IndexEntry.cpp" />
-		<Unit filename="sr/base/records/QuestRecord_IndexEntry_QSDTRecord.cpp" />
-		<Unit filename="sr/base/records/QuestRecord_QOBJEntry.cpp" />
-		<Unit filename="sr/base/records/QuestRecord_QOBJEntry_QSTAEntry.cpp" />
 		<Unit filename="sr/base/records/ScrollRecord.cpp" />
 		<Unit filename="sr/base/records/ShoutRecord.cpp" />
 		<Unit filename="sr/base/records/SimplifiedReferenceRecord.cpp" />
@@ -228,6 +232,10 @@
 		<Unit filename="sr/base/records/WordOfPowerRecord.cpp" />
 		<Unit filename="sr/base/records/WorldSpaceRecord.cpp" />
 		<Unit filename="sr/base/records/WrongStringType.cpp" />
+		<Unit filename="sr/base/records/quest/IndexEntry.cpp" />
+		<Unit filename="sr/base/records/quest/QOBJEntry.cpp" />
+		<Unit filename="sr/base/records/quest/QSDTRecord.cpp" />
+		<Unit filename="sr/base/records/quest/QSTAEntry.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>

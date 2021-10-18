@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2014  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2014, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,54 +27,6 @@
 
 namespace SRTP
 {
-
-/* functions of index entry structure */
-
-QuestRecord::IndexEntry::IndexEntry()
-: index(0),
-  indexUnknownPart(0),
-  theQSDTs(std::vector<QSDTRecord>())
-{
-}
-
-bool QuestRecord::IndexEntry::operator==(const QuestRecord::IndexEntry& other) const
-{
-  return (index == other.index) && (indexUnknownPart == other.indexUnknownPart)
-      && (theQSDTs == other.theQSDTs);
-}
-
-bool QuestRecord::IndexEntry::hasFinishingQSDT() const
-{
-  for (const auto& qsdt: theQSDTs)
-  {
-    if (qsdt.isFinisher)
-      return true;
-  }
-  return false;
-}
-
-/* QSDTRecord functions */
-
-QuestRecord::IndexEntry::QSDTRecord::QSDTRecord()
-: isFinisher(false),
-  nextQuestFormID(0),
-  unknownSCHR(BinarySubRecord()),
-  unknownSCTX(""),
-  hasQNAM(false), unknownQNAM(0),
-  unknownCTDA_CIS2s(std::vector<CTDA_CIS2_compound>()),
-  logEntry(LocalizedString())
-{
-}
-
-bool QuestRecord::IndexEntry::QSDTRecord::operator==(const QuestRecord::IndexEntry::QSDTRecord& other) const
-{
-  return (isFinisher == other.isFinisher) && (unknownCTDA_CIS2s == other.unknownCTDA_CIS2s)
-      && (nextQuestFormID == other.nextQuestFormID)
-      && (hasQNAM == other.hasQNAM) && ((unknownQNAM == other.unknownQNAM) || !hasQNAM)
-      && (logEntry == other.logEntry)
-      && (unknownSCHR == other.unknownSCHR)
-      && (unknownSCTX == other.unknownSCTX);
-}
 
 /* AliasEntry's functions */
 
@@ -351,49 +303,6 @@ void QuestRecord::AliasEntry::clear()
 
   return in_File.good();
 } */
-
-/* QOBJEntry's functions */
-
-QuestRecord::QOBJEntry::QOBJEntry()
-: unknownQOBJ(0),
-  unknownFNAM(0),
-  displayText(LocalizedString()),
-  theQSTAs(std::vector<QSTAEntry>())
-{
-}
-
-void QuestRecord::QOBJEntry::clear()
-{
-  unknownQOBJ = 0;
-  unknownFNAM = 0;
-  displayText.reset();
-  theQSTAs.clear();
-}
-
-bool QuestRecord::QOBJEntry::operator==(const QuestRecord::QOBJEntry& other) const
-{
-  return (unknownQOBJ == other.unknownQOBJ) && (unknownFNAM == other.unknownFNAM)
-      && (displayText == other.displayText) && (theQSTAs == other.theQSTAs);
-}
-
-/* QSTAEntry's functions */
-
-QuestRecord::QOBJEntry::QSTAEntry::QSTAEntry()
-: unknownQSTA(0),
-  unknownCTDA_CIS2s(std::vector<CTDA_CIS2_compound>())
-{
-}
-
-void QuestRecord::QOBJEntry::QSTAEntry::clear()
-{
-  unknownQSTA = 0;
-  unknownCTDA_CIS2s.clear();
-}
-
-bool QuestRecord::QOBJEntry::QSTAEntry::operator==(const QuestRecord::QOBJEntry::QSTAEntry& other) const
-{
-  return (unknownQSTA == other.unknownQSTA) && (unknownCTDA_CIS2s == other.unknownCTDA_CIS2s);
-}
 
 /* quest record's functions */
 
@@ -728,12 +637,12 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
   IndexEntry i_entry;
   bool hasUnpushedIndexEntry = false;
   bool indexPartStarted = false;
-  IndexEntry::QSDTRecord tempQSDT;
+  QSDTRecord tempQSDT;
   bool hasUnpushedQSDTRecord = false;
   theQOBJs.clear();
   QOBJEntry tempQOBJ;
   bool hasUnpushedQOBJEntry = false;
-  QOBJEntry::QSTAEntry tempQSTA;
+  QSTAEntry tempQSTA;
   bool hasUnpushedQSTAEntry = false;
   bool hasReadANAM = false;
   aliases.clear();
@@ -1900,7 +1809,7 @@ bool QuestRecord::hasQOBJForIndex(const uint16_t idx) const
   return false;
 }
 
-const QuestRecord::QOBJEntry& QuestRecord::getQOBJForIndex(const uint16_t idx) const
+const QOBJEntry& QuestRecord::getQOBJForIndex(const uint16_t idx) const
 {
   unsigned int i;
   for (i=0; i<theQOBJs.size(); ++i)

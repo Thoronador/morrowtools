@@ -43,6 +43,10 @@ set(formID_finder_sources
     ../base/records/NPCRecord.cpp
     ../base/records/PerkRecord.cpp
     ../base/records/QuestRecord.cpp
+    ../base/records/quest/IndexEntry.cpp
+    ../base/records/quest/QOBJEntry.cpp
+    ../base/records/quest/QSDTRecord.cpp
+    ../base/records/quest/QSTAEntry.cpp
     ../base/records/ScrollRecord.cpp
     ../base/records/ShoutRecord.cpp
     ../base/records/SimplifiedReferenceRecord.cpp

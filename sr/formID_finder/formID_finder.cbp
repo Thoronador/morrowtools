@@ -168,6 +168,14 @@
 		<Unit filename="../base/records/WordOfPowerRecord.hpp" />
 		<Unit filename="../base/records/WorldSpaceRecord.cpp" />
 		<Unit filename="../base/records/WorldSpaceRecord.hpp" />
+		<Unit filename="../base/records/quest/IndexEntry.cpp" />
+		<Unit filename="../base/records/quest/IndexEntry.hpp" />
+		<Unit filename="../base/records/quest/QOBJEntry.cpp" />
+		<Unit filename="../base/records/quest/QOBJEntry.hpp" />
+		<Unit filename="../base/records/quest/QSDTRecord.cpp" />
+		<Unit filename="../base/records/quest/QSDTRecord.hpp" />
+		<Unit filename="../base/records/quest/QSTAEntry.cpp" />
+		<Unit filename="../base/records/quest/QSTAEntry.hpp" />
 		<Unit filename="ESMReaderFinder.cpp" />
 		<Unit filename="ESMReaderFinder.hpp" />
 		<Unit filename="ESMReaderFinderReferences.cpp" />

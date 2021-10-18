@@ -19,15 +19,15 @@
 */
 
 #include <catch.hpp>
-#include "../../../../../sr/base/records/QuestRecord.hpp"
+#include "../../../../../../sr/base/records/quest/IndexEntry.hpp"
 
-TEST_CASE("QuestRecord::IndexEntry")
+TEST_CASE("IndexEntry")
 {
   using namespace SRTP;
 
   SECTION("constructor")
   {
-    QuestRecord::IndexEntry entry;
+    IndexEntry entry;
 
     REQUIRE( entry.index == 0 );
     REQUIRE( entry.indexUnknownPart == 0 );
@@ -36,8 +36,8 @@ TEST_CASE("QuestRecord::IndexEntry")
 
   SECTION("equality")
   {
-    QuestRecord::IndexEntry a;
-    QuestRecord::IndexEntry b;
+    IndexEntry a;
+    IndexEntry b;
 
     SECTION("equal")
     {
@@ -70,7 +70,7 @@ TEST_CASE("QuestRecord::IndexEntry")
 
       SECTION("QSDTs mismatch")
       {
-        a.theQSDTs.push_back(QuestRecord::IndexEntry::QSDTRecord());
+        a.theQSDTs.push_back(QSDTRecord());
 
         REQUIRE_FALSE( a == b );
         REQUIRE_FALSE( b == a );
@@ -80,7 +80,7 @@ TEST_CASE("QuestRecord::IndexEntry")
 
   SECTION("hasFinishingQSDT")
   {
-    QuestRecord::IndexEntry entry;
+    IndexEntry entry;
 
     SECTION("empty")
     {
@@ -89,17 +89,17 @@ TEST_CASE("QuestRecord::IndexEntry")
 
     SECTION("no finishers")
     {
-      entry.theQSDTs.push_back(QuestRecord::IndexEntry::QSDTRecord());
-      entry.theQSDTs.push_back(QuestRecord::IndexEntry::QSDTRecord());
-      entry.theQSDTs.push_back(QuestRecord::IndexEntry::QSDTRecord());
+      entry.theQSDTs.push_back(QSDTRecord());
+      entry.theQSDTs.push_back(QSDTRecord());
+      entry.theQSDTs.push_back(QSDTRecord());
 
       REQUIRE_FALSE( entry.hasFinishingQSDT() );
     }
 
     SECTION("one finisher")
     {
-      entry.theQSDTs.push_back(QuestRecord::IndexEntry::QSDTRecord());
-      entry.theQSDTs.push_back(QuestRecord::IndexEntry::QSDTRecord());
+      entry.theQSDTs.push_back(QSDTRecord());
+      entry.theQSDTs.push_back(QSDTRecord());
       entry.theQSDTs.back().isFinisher = true;
 
       REQUIRE( entry.hasFinishingQSDT() );
@@ -107,12 +107,12 @@ TEST_CASE("QuestRecord::IndexEntry")
 
     SECTION("multiple finisher")
     {
-      entry.theQSDTs.push_back(QuestRecord::IndexEntry::QSDTRecord());
-      entry.theQSDTs.push_back(QuestRecord::IndexEntry::QSDTRecord());
-      entry.theQSDTs.push_back(QuestRecord::IndexEntry::QSDTRecord());
+      entry.theQSDTs.push_back(QSDTRecord());
+      entry.theQSDTs.push_back(QSDTRecord());
+      entry.theQSDTs.push_back(QSDTRecord());
       entry.theQSDTs.back().isFinisher = true;
-      entry.theQSDTs.push_back(QuestRecord::IndexEntry::QSDTRecord());
-      entry.theQSDTs.push_back(QuestRecord::IndexEntry::QSDTRecord());
+      entry.theQSDTs.push_back(QSDTRecord());
+      entry.theQSDTs.push_back(QSDTRecord());
       entry.theQSDTs.back().isFinisher = true;
 
       REQUIRE( entry.hasFinishingQSDT() );

@@ -1129,7 +1129,7 @@ int main(int argc, char **argv)
                 //check for objective
                 if (quest_iter->second.hasQOBJForIndex(quest_iter->second.indices[i].index))
                 {
-                  const SRTP::QuestRecord::QOBJEntry& ziel = quest_iter->second.getQOBJForIndex(quest_iter->second.indices[i].index);
+                  const SRTP::QOBJEntry& ziel = quest_iter->second.getQOBJForIndex(quest_iter->second.indices[i].index);
                   if (ziel.displayText.isPresent())
                   {
                     basic_out <<"            [new objective] \""<<ziel.displayText.getString()<<"\"\n";

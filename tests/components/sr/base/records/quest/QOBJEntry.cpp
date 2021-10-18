@@ -19,15 +19,15 @@
 */
 
 #include <catch.hpp>
-#include "../../../../../sr/base/records/QuestRecord.hpp"
+#include "../../../../../../sr/base/records/quest/QOBJEntry.hpp"
 
-TEST_CASE("QuestRecord::QOBJEntry")
+TEST_CASE("QOBJEntry")
 {
   using namespace SRTP;
 
   SECTION("constructor")
   {
-    QuestRecord::QOBJEntry entry;
+    QOBJEntry entry;
 
     REQUIRE( entry.unknownQOBJ == 0 );
     REQUIRE( entry.unknownFNAM == 0 );
@@ -37,8 +37,8 @@ TEST_CASE("QuestRecord::QOBJEntry")
 
   SECTION("equality")
   {
-    QuestRecord::QOBJEntry a;
-    QuestRecord::QOBJEntry b;
+    QOBJEntry a;
+    QOBJEntry b;
 
     SECTION("equal")
     {
@@ -79,7 +79,7 @@ TEST_CASE("QuestRecord::QOBJEntry")
 
       SECTION("QSTAs mismatch")
       {
-        a.theQSTAs.push_back(QuestRecord::QOBJEntry::QSTAEntry());
+        a.theQSTAs.push_back(QSTAEntry());
 
         REQUIRE_FALSE( a == b );
         REQUIRE_FALSE( b == a );
@@ -89,13 +89,13 @@ TEST_CASE("QuestRecord::QOBJEntry")
 
   SECTION("clear")
   {
-    QuestRecord::QOBJEntry entry;
+    QOBJEntry entry;
 
     entry.unknownQOBJ = 0x1234;
     entry.unknownFNAM = 0x12345678;
     entry.displayText = LocalizedString(LocalizedString::Type::Index, 1, "");
-    entry.theQSTAs.push_back(QuestRecord::QOBJEntry::QSTAEntry());
-    entry.theQSTAs.push_back(QuestRecord::QOBJEntry::QSTAEntry());
+    entry.theQSTAs.push_back(QSTAEntry());
+    entry.theQSTAs.push_back(QSTAEntry());
 
     entry.clear();
 

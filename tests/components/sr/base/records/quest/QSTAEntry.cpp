@@ -19,15 +19,15 @@
 */
 
 #include <catch.hpp>
-#include "../../../../../sr/base/records/QuestRecord.hpp"
+#include "../../../../../../sr/base/records/quest/QSTAEntry.hpp"
 
-TEST_CASE("QuestRecord::QOBJEntry::QSTAEntry")
+TEST_CASE("QSTAEntry")
 {
   using namespace SRTP;
 
   SECTION("constructor")
   {
-    QuestRecord::QOBJEntry::QSTAEntry entry;
+    QSTAEntry entry;
 
     REQUIRE( entry.unknownQSTA == 0 );
     REQUIRE( entry.unknownCTDA_CIS2s.empty() );
@@ -35,8 +35,8 @@ TEST_CASE("QuestRecord::QOBJEntry::QSTAEntry")
 
   SECTION("equality")
   {
-    QuestRecord::QOBJEntry::QSTAEntry a;
-    QuestRecord::QOBJEntry::QSTAEntry b;
+    QSTAEntry a;
+    QSTAEntry b;
 
     SECTION("equal")
     {
@@ -70,7 +70,7 @@ TEST_CASE("QuestRecord::QOBJEntry::QSTAEntry")
 
   SECTION("clear")
   {
-    QuestRecord::QOBJEntry::QSTAEntry entry;
+    QSTAEntry entry;
 
     entry.unknownQSTA = 0xF00BA12;
     entry.unknownCTDA_CIS2s.push_back(CTDA_CIS2_compound(CTDAData(), "foo"));

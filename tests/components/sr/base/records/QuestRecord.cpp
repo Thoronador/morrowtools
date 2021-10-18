@@ -162,7 +162,7 @@ TEST_CASE("QuestRecord")
 
       SECTION("indices mismatch")
       {
-        a.indices.push_back(QuestRecord::IndexEntry());
+        a.indices.push_back(IndexEntry());
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
@@ -170,7 +170,7 @@ TEST_CASE("QuestRecord")
 
       SECTION("QOBJs mismatch")
       {
-        a.theQOBJs.push_back(QuestRecord::QOBJEntry());
+        a.theQOBJs.push_back(QOBJEntry());
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );

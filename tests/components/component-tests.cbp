@@ -211,6 +211,8 @@
 		<Unit filename="sr/base/records/NPCRecord_TINXstructure.cpp" />
 		<Unit filename="sr/base/records/PerkRecord.cpp" />
 		<Unit filename="sr/base/records/QuestRecord.cpp" />
+		<Unit filename="sr/base/records/QuestRecord_IndexEntry.cpp" />
+		<Unit filename="sr/base/records/QuestRecord_IndexEntry_QSDTRecord.cpp" />
 		<Unit filename="sr/base/records/QuestRecord_QOBJEntry.cpp" />
 		<Unit filename="sr/base/records/QuestRecord_QOBJEntry_QSTAEntry.cpp" />
 		<Unit filename="sr/base/records/ScrollRecord.cpp" />

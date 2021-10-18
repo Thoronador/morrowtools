@@ -39,21 +39,22 @@ QuestRecord::IndexEntry::IndexEntry()
 
 bool QuestRecord::IndexEntry::operator==(const QuestRecord::IndexEntry& other) const
 {
-  return ((index==other.index) and (indexUnknownPart==other.indexUnknownPart)
-      and (theQSDTs==other.theQSDTs));
+  return (index == other.index) && (indexUnknownPart == other.indexUnknownPart)
+      && (theQSDTs == other.theQSDTs);
 }
 
 bool QuestRecord::IndexEntry::hasFinishingQSDT() const
 {
-  unsigned int i;
-  for (i=0; i<theQSDTs.size(); ++i)
+  for (const auto& qsdt: theQSDTs)
   {
-    if (theQSDTs[i].isFinisher) return true;
-  }//for
+    if (qsdt.isFinisher)
+      return true;
+  }
   return false;
 }
 
 /* QSDTRecord functions */
+
 QuestRecord::IndexEntry::QSDTRecord::QSDTRecord()
 : isFinisher(false),
   nextQuestFormID(0),
@@ -63,16 +64,16 @@ QuestRecord::IndexEntry::QSDTRecord::QSDTRecord()
   unknownCTDA_CIS2s(std::vector<CTDA_CIS2_compound>()),
   logEntry(LocalizedString())
 {
-
 }
 
 bool QuestRecord::IndexEntry::QSDTRecord::operator==(const QuestRecord::IndexEntry::QSDTRecord& other) const
 {
-  return ((isFinisher==other.isFinisher) and (unknownCTDA_CIS2s==other.unknownCTDA_CIS2s)
-      and (nextQuestFormID==other.nextQuestFormID)
-      and (hasQNAM==other.hasQNAM) and ((unknownQNAM==other.unknownQNAM) or (!hasQNAM))
-      and (logEntry==other.logEntry)
-      and (unknownSCHR==other.unknownSCHR) and (unknownSCTX==other.unknownSCTX));
+  return (isFinisher == other.isFinisher) && (unknownCTDA_CIS2s == other.unknownCTDA_CIS2s)
+      && (nextQuestFormID == other.nextQuestFormID)
+      && (hasQNAM == other.hasQNAM) && ((unknownQNAM == other.unknownQNAM) || !hasQNAM)
+      && (logEntry == other.logEntry)
+      && (unknownSCHR == other.unknownSCHR)
+      && (unknownSCTX == other.unknownSCTX);
 }
 
 /* AliasEntry's functions */

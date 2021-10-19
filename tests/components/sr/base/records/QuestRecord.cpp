@@ -187,7 +187,7 @@ TEST_CASE("QuestRecord")
 
       SECTION("aliases mismatch")
       {
-        a.aliases.push_back(QuestRecord::AliasEntry());
+        a.aliases.push_back(AliasEntry());
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );

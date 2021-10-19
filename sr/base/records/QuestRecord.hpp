@@ -28,6 +28,7 @@
 #include "ComponentData.hpp"
 #include "CTDAData.hpp"
 #include "LocalizedString.hpp"
+#include "quest/AliasEntry.hpp"
 #include "quest/IndexEntry.hpp"
 #include "quest/QOBJEntry.hpp"
 
@@ -70,62 +71,6 @@ struct QuestRecord: public BasicRecord
 
     /* returns the record's type, usually its header */
     virtual uint32_t getRecordType() const;
-
-    //struct for alias-related data
-    struct AliasEntry
-    {
-      bool hasALST;
-      uint32_t unknownALST;
-      bool hasALLS;
-      uint32_t unknownALLS;
-      std::string aliasID; //subrecord ALID
-      uint32_t unknownFNAM;
-      bool hasALFA;
-      uint32_t unknownALFA;
-      uint32_t locationRefTypeFormID; //subrecord ALRT
-      uint32_t createReferenceToObjectFormID; //subrecord ALCO
-      bool hasALCA;
-      uint32_t unknownALCA;
-      bool hasALCL;
-      uint32_t unknownALCL;
-      uint32_t displayNameFormID; //subrecord ALDN
-      std::vector<ComponentData> components;
-      std::vector<uint32_t> keywordArray;
-      bool hasALFE;
-      uint32_t unknownALFE;
-      bool hasALFD;
-      uint32_t unknownALFD;
-      bool hasALFI;
-      uint32_t forcedIntoAliasID; //subrecord ALFI
-      uint32_t specificLocationFormID; //subrecord ALFL
-      uint32_t specificReferenceID; //subrecord ALFR
-      bool hasALNA;
-      uint32_t unknownALNA;
-      bool hasALNT;
-      uint32_t unknownALNT;
-      uint32_t uniqueActorFormID; //subrecord ALUA
-      uint32_t externalAliasReferenceFormID; //subrecord ALEQ
-      bool hasALEA;
-      uint32_t unknownALEA;
-      uint32_t keywordFormID; //subrecord KNAM
-      std::vector<CTDA_CIS2_compound> unknownCTDA_CIS2s;
-      uint32_t spectatorOverridePackageListFormID; //subrecord SPOR
-      uint32_t combatOverridePackageListFormID; //subrecord ECOR
-      std::vector<uint32_t> spellFormIDs; //subrecords ALSP
-      std::vector<uint32_t> factionFormIDs; //subrecords ALFC
-      std::vector<uint32_t> packageDataFormIDs; //subrecords ALPC
-      bool hasVTCK;
-      uint32_t unknownVTCK;
-
-      /* constructor */
-      AliasEntry();
-
-      /* clears all data members */
-      void clear();
-
-      /* equality operator */
-      bool operator==(const AliasEntry& other) const;
-    };//struct
 
     /* returns true, if an QOBJ record with the given index is present
 

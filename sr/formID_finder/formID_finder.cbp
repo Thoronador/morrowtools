@@ -168,6 +168,8 @@
 		<Unit filename="../base/records/WordOfPowerRecord.hpp" />
 		<Unit filename="../base/records/WorldSpaceRecord.cpp" />
 		<Unit filename="../base/records/WorldSpaceRecord.hpp" />
+		<Unit filename="../base/records/quest/AliasEntry.cpp" />
+		<Unit filename="../base/records/quest/AliasEntry.hpp" />
 		<Unit filename="../base/records/quest/IndexEntry.cpp" />
 		<Unit filename="../base/records/quest/IndexEntry.hpp" />
 		<Unit filename="../base/records/quest/QOBJEntry.cpp" />

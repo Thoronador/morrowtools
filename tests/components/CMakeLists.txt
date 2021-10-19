@@ -65,6 +65,7 @@ set(component_tests_sources
     ../../sr/base/records/WeaponRecord.cpp
     ../../sr/base/records/WordOfPowerRecord.cpp
     ../../sr/base/records/WorldSpaceRecord.cpp
+    ../../sr/base/records/quest/AliasEntry.cpp
     ../../sr/base/records/quest/IndexEntry.cpp
     ../../sr/base/records/quest/QOBJEntry.cpp
     ../../sr/base/records/quest/QSDTRecord.cpp

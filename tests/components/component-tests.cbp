@@ -234,6 +234,7 @@
 		<Unit filename="sr/base/records/WordOfPowerRecord.cpp" />
 		<Unit filename="sr/base/records/WorldSpaceRecord.cpp" />
 		<Unit filename="sr/base/records/WrongStringType.cpp" />
+		<Unit filename="sr/base/records/quest/AliasEntry.cpp" />
 		<Unit filename="sr/base/records/quest/IndexEntry.cpp" />
 		<Unit filename="sr/base/records/quest/QOBJEntry.cpp" />
 		<Unit filename="sr/base/records/quest/QSDTRecord.cpp" />

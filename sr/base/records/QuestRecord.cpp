@@ -137,19 +137,16 @@ uint32_t QuestRecord::getWriteSize() const
 bool QuestRecord::saveToStream(std::ostream& output) const
 {
   #warning Not completely implemented yet!
-  output.write((const char*) &cQUST, 4);
+  output.write(reinterpret_cast<const char*>(&cQUST), 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize()))
     return false;
 
-  //write EDID
-  output.write((const char*) &cEDID, 4);
-  //EDID's length
-  uint16_t subLength = editorID.length()+1;
-  output.write((const char*) &subLength, 2);
-  //write editor ID
+  // write editor ID (EDID)
+  output.write(reinterpret_cast<const char*>(&cEDID), 4);
+  uint16_t subLength = editorID.length() + 1;
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
   output.write(editorID.c_str(), subLength);
 
-  //write VMAD
   if (unknownVMAD.isPresent())
   {
     if (!unknownVMAD.saveToStream(output, cVMAD))
@@ -157,64 +154,60 @@ bool QuestRecord::saveToStream(std::ostream& output) const
       std::cerr << "Error while writing subrecord VMAD of QUST!\n";
       return false;
     }
-  }//if VMAD
+  }
 
   if (name.isPresent())
   {
-    //write FULL
     if (!name.saveToStream(output, cFULL))
       return false;
-  }//if FULL
+  }
 
-  //write DNAM
-  output.write((const char*) &cDNAM, 4);
-  //DNAM's length
-  subLength = 12; //fixed size
-  output.write((const char*) &subLength, 2);
-  //write DNAM stuff
-  output.write((const char*) unknownDNAM, 12);
+  // write DNAM
+  output.write(reinterpret_cast<const char*>(&cDNAM), 4);
+  subLength = 12;
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
+  output.write(reinterpret_cast<const char*>(unknownDNAM), 12);
 
   if (hasENAM)
   {
-    //write ENAM
-    output.write((const char*) &cENAM, 4);
-    //ENAM's length
-    subLength = 4; // fixed
-    output.write((const char*) &subLength, 2);
-    //write ENAM
-    output.write((const char*) &unknownENAM, 4);
-  }//if ENAM
+    // write ENAM
+    output.write(reinterpret_cast<const char*>(&cENAM), 4);
+    subLength = 4;
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    output.write(reinterpret_cast<const char*>(&unknownENAM), 4);
+  }
 
-  if (!unknownQTGLs.empty())
+  for (const uint32_t element: unknownQTGLs)
   {
-    unsigned int i;
-    const unsigned int count = unknownCTDA_CIS2s.size();
-    for (i=0; i<count; ++i)
-    {
-      if (!unknownCTDA_CIS2s[i].saveToStream(output))
-      {
-        std::cerr << "Error while writing subrecord CTDA or CIS2 of QUST!\n";
-        return false;
-      }
-    }//for
-  }//if QTGL
+    // write QTGL
+    output.write(reinterpret_cast<const char*>(&cQTGL), 4);
+    subLength = 4;
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    output.write(reinterpret_cast<const char*>(&element), 4);
+  }
 
   if (!filter.empty())
   {
-    //write FLTR
-    output.write((const char*) &cFLTR, 4);
-    //FLTR's length
-    subLength = filter.length()+1;
-    output.write((const char*) &subLength, 2);
-    //write filter string
+    // write filter (FLTR)
+    output.write(reinterpret_cast<const char*>(&cFLTR), 4);
+    subLength = filter.length() + 1;
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
     output.write(filter.c_str(), subLength);
-  }//if FLTR
+  }
 
-  //write NEXT
-  output.write((const char*) &cNEXT, 4);
-  //NEXT's length
-  subLength = 0; //fixed
-  output.write((const char*) &subLength, 2);
+  for (const auto& ctdaCis2: unknownCTDA_CIS2s)
+  {
+    if (!ctdaCis2.saveToStream(output))
+    {
+      std::cerr << "Error while writing subrecord CTDA or CIS2 of QUST!\n";
+      return false;
+    }
+  }
+
+  // write NEXT
+  output.write(reinterpret_cast<const char*>(&cNEXT), 4);
+  subLength = 0; // zero, because it is just a marker
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
 
   if (!indices.empty())
   {
@@ -296,16 +289,14 @@ bool QuestRecord::saveToStream(std::ostream& output) const
     }//for i
   }//indices
 
-  //write ANAM
-  output.write((const char*) &cANAM, 4);
-  //ANAM's length
-  subLength = 4; //fixed
-  output.write((const char*) &subLength, 2);
-  //write ANAM
-  output.write((const char*) &unknownANAM, 4);
+  // write ANAM
+  output.write(reinterpret_cast<const char*>(&cANAM), 4);
+  subLength = 4;
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
+  output.write(reinterpret_cast<const char*>(&unknownANAM), 4);
 
   #warning Code more! (QOBJ and aliases are still missing.)
-  return false;
+  return theQOBJs.empty() && aliases.empty();
 }
 #endif
 
@@ -314,38 +305,15 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize))
     return false;
-  uint32_t subRecName, lastReadRec;
-  uint16_t subLength;
-  subRecName = subLength = 0;
-  uint32_t bytesRead;
+  uint32_t subRecName = 0;
+  uint32_t lastReadRec = 0;
+  uint16_t subLength = 0;
+  uint32_t bytesRead = 0;
 
-  //read EDID
-  in_File.read((char*) &subRecName, 4);
-  bytesRead = 4;
-  if (subRecName!=cEDID)
-  {
-    UnexpectedRecord(cEDID, subRecName);
-    return false;
-  }
-  //EDID's length
-  in_File.read((char*) &subLength, 2);
-  bytesRead += 2;
-  if (subLength>511)
-  {
-    std::cerr <<"Error: sub record EDID of QUST is longer than 511 characters!\n";
-    return false;
-  }
-  //read EDID's stuff
+  // read editor ID (EDID)
   char buffer[512];
-  memset(buffer, 0, 512);
-  in_File.read(buffer, subLength);
-  bytesRead += subLength;
-  if (!in_File.good())
-  {
-    std::cerr << "Error while reading subrecord EDID of QUST!\n";
+  if (!loadString512FromStream(in_File, editorID, buffer, cEDID, true, bytesRead))
     return false;
-  }
-  editorID = std::string(buffer);
 
   unknownVMAD.setPresence(false);
   name.reset();
@@ -374,10 +342,10 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
     uint32_t tempUint32, size_int, i;
     ComponentData tempComp;
   lastReadRec = cEDID;
-  while (bytesRead<readSize)
+  while (bytesRead < readSize)
   {
-    //read next subrecord
-    in_File.read((char*) &subRecName, 4);
+    // read next subrecord
+    in_File.read(reinterpret_cast<char*>(&subRecName), 4);
     bytesRead += 4;
     switch (subRecName)
     {
@@ -401,7 +369,6 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
              std::cerr << "Error: QUST seems to have more than one FULL subrecord.\n";
              return false;
            }
-           //read FULL
            if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
              return false;
            lastReadRec = cFULL;
@@ -412,17 +379,17 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
              std::cerr << "Error: QUST seems to have more than one DNAM subrecord.\n";
              return false;
            }
-           //DNAM's length
-           in_File.read((char*) &subLength, 2);
+           // check DNAM's length
+           in_File.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
-           if (subLength!=12)
+           if (subLength != 12)
            {
-             std::cerr <<"Error: sub record DNAM of QUST has invalid length ("<<subLength
-                       <<" bytes). Should be 12 bytes.\n";
+             std::cerr << "Error: sub record DNAM of QUST has invalid length ("
+                       << subLength << " bytes). Should be 12 bytes.\n";
              return false;
            }
-           //read DNAM
-           in_File.read((char*) unknownDNAM, 12);
+           // read DNAM
+           in_File.read(reinterpret_cast<char*>(unknownDNAM), 12);
            bytesRead += 12;
            if (!in_File.good())
            {
@@ -438,7 +405,6 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
              std::cerr << "Error: QUST seems to have more than one ENAM subrecord.\n";
              return false;
            }
-           //read ENAM
            if (!loadUint32SubRecordFromStream(in_File, cENAM, unknownENAM, false))
              return false;
            bytesRead += 6;
@@ -446,7 +412,6 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
            lastReadRec = cENAM;
            break;
       case cQTGL:
-           //read QTGL
            if (!loadUint32SubRecordFromStream(in_File, cQTGL, tempUint32, false))
              return false;
            bytesRead += 6;
@@ -489,34 +454,18 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
              std::cerr << "Error: QUST seems to have more than one FLTR subrecord.\n";
              return false;
            }
-           //FLTR's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength>511)
-           {
-             std::cerr <<"Error: sub record FLTR of QUST is longer than 511 characters!\n";
+           // read FLTR
+           if (!loadString512FromStream(in_File, filter, buffer, cFLTR, false, bytesRead))
              return false;
-           }
-           //read FLTR's stuff
-           memset(buffer, 0, 512);
-           in_File.read(buffer, subLength);
-           bytesRead += subLength;
-           if (!in_File.good())
-           {
-             std::cerr << "Error while reading subrecord FLTR of QUST!\n";
-             return false;
-           }
-           filter = std::string(buffer);
            lastReadRec = cFLTR;
            break;
       case cNEXT:
-           //NEXT's length
-           in_File.read((char*) &subLength, 2);
+           in_File.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
-           if (subLength!=0)
+           if (subLength != 0)
            {
-             std::cerr <<"Error: sub record NEXT of QUST has invalid length ("<<subLength
-                       <<" bytes). Should be zero bytes.\n";
+             std::cerr << "Error: Sub record NEXT of QUST has invalid length ("
+                       << subLength << " bytes). Should be zero bytes.\n";
              return false;
            }
            lastReadRec = cNEXT;
@@ -1504,11 +1453,11 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
     theQOBJs.push_back(tempQOBJ);
   }
 
-  //presence checks
-  if (!(hasReadANAM and hasReadDNAM))
+  // presence checks
+  if (!hasReadANAM || !hasReadDNAM)
   {
     std::cerr << "Error: at least one required subrecord of QUST is missing!\n";
-    std::cerr << "ANAM: "<<hasReadANAM<<"    DNAM: "<<hasReadDNAM<<"\n";
+    std::cerr << "ANAM: " << hasReadANAM << "    DNAM: " << hasReadDNAM << "\n";
     return false;
   }
 
@@ -1533,14 +1482,14 @@ bool QuestRecord::hasQOBJForIndex(const uint16_t idx) const
 
 const QOBJEntry& QuestRecord::getQOBJForIndex(const uint16_t idx) const
 {
-  unsigned int i;
-  for (i=0; i<theQOBJs.size(); ++i)
+  for (unsigned int i = 0; i < theQOBJs.size(); ++i)
   {
-    if (theQOBJs[i].unknownQOBJ==idx) return theQOBJs[i];
+    if (theQOBJs[i].unknownQOBJ==idx)
+      return theQOBJs[i];
   }
   std::cerr << "QuestRecord::getQOBJForIndex(): Error: There is no QOBJ for that index!\n";
   std::cerr.flush();
   throw std::runtime_error("QuestRecord::getQOBJForIndex(): Error: There is no QOBJ for that index!");
 }
 
-} //namespace
+} // namespace

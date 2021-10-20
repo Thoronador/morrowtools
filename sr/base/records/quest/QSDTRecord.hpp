@@ -48,6 +48,14 @@ struct QSDTRecord
   /* equality operator */
   bool operator==(const QSDTRecord& other) const;
   #endif // SR_NO_RECORD_EQUALITY
+
+  #ifndef SR_UNSAVEABLE_RECORDS
+  /** Gets the size in bytes that the instances's data would occupy.
+   *
+   * \return Returns the size in bytes that the instances's data would occupy.
+   */
+  uint32_t getWriteSize() const;
+  #endif
 }; // struct
 
 } // namespace

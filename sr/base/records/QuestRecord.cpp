@@ -94,41 +94,15 @@ uint32_t QuestRecord::getWriteSize() const
     writeSize = writeSize + 4 /* FLTR */ + 2 /* 2 bytes for length */
         + filter.length() + 1 /* length of string +1 byte for NUL-termination */;
   }
-  if (!indices.empty())
+  // indices
+  for (const auto& index: indices)
   {
-    const unsigned int idx_count = indices.size();
-    for (unsigned int i = 0; i < idx_count; ++i)
+    writeSize = writeSize + 4 /* INDX */ + 2 /* 2 bytes for length */ + 4 /* fixed size */;
+    for (const auto& record: index.theQSDTs)
     {
-      writeSize = writeSize +4 /* INDX */ +2 /* 2 bytes for length */ +4 /* fixed size */;
-      const unsigned int q_size = indices[i].theQSDTs.size();
-      for (unsigned int j = 0; j < q_size; ++j)
-      {
-        writeSize = writeSize +4 /* QSDT */ +2 /* 2 bytes for length */ +1 /* fixed size */;
-        if (indices[i].theQSDTs[j].nextQuestFormID!=0)
-        {
-          writeSize = writeSize +4 /* NAM0 */ +2 /* 2 bytes for length */ +4 /* fixed size */;
-        }
-        if (indices[i].theQSDTs[j].unknownSCHR.isPresent())
-        {
-          writeSize = writeSize + 4 /* SCHR */ + 2 /* 2 bytes for length */ + indices[i].theQSDTs[j].unknownSCHR.size() /* size */;
-        }
-        if (!indices[i].theQSDTs[j].unknownSCTX.empty())
-        {
-          writeSize = writeSize +4 /* SCTX */ +2 /* 2 bytes for length */ +indices[i].theQSDTs[j].unknownSCTX.length() /* length */;
-        }
-        if (indices[i].theQSDTs[j].hasQNAM)
-        {
-          writeSize = writeSize +4 /* QNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */;
-        }
-        const unsigned int compound_count = indices[i].theQSDTs[j].unknownCTDA_CIS2s.size();
-        for (unsigned int k = 0; k < compound_count; ++k)
-        {
-          writeSize += indices[i].theQSDTs[j].unknownCTDA_CIS2s[k].getWriteSize();
-        } // for k
-        writeSize += indices[i].theQSDTs[j].logEntry.getWriteSize() /* CNAM */;
-      } // for j
-    } // for i
-  } // indices
+      writeSize += record.getWriteSize();
+    }
+  }
   /// ... more to come
   #warning Size of QOBJ and alias are not properly calculated here!
   return writeSize;

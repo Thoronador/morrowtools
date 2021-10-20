@@ -45,8 +45,10 @@ struct EffectBlock
   // end of subrecord EFIT
   std::vector<CTDA_CIS2_compound> unknownCTDA_CIS2s;
 
+  #ifndef SR_NO_RECORD_EQUALITY
   /** equality operator */
   bool operator==(const EffectBlock& other) const;
+  #endif
 
   #ifndef SR_UNSAVEABLE_RECORDS
   /** \brief Writes the block data to the given output stream.

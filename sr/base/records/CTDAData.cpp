@@ -67,10 +67,12 @@ bool CTDAData::saveToStream(std::ostream& output) const
 }
 #endif
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool CTDAData::operator==(const CTDAData& other) const
 {
   return content == other.content;
 }
+#endif // SR_NO_RECORD_EQUALITY
 
 void CTDAData::clear()
 {

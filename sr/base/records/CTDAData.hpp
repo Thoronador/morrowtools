@@ -55,8 +55,10 @@ struct CTDAData
   bool saveToStream(std::ostream& output) const;
   #endif
 
+  #ifndef SR_NO_RECORD_EQUALITY
   /** equality operator */
   bool operator==(const CTDAData& other) const;
+  #endif
 
   /** Clears content by setting it all to zero. */
   void clear();
@@ -83,8 +85,10 @@ struct CTDA_CISx_compound
    */
   CTDA_CISx_compound(const CTDAData& ctda, const std::string& cisx);
 
+  #ifndef SR_NO_RECORD_EQUALITY
   /** equality operator */
   bool operator==(const CTDA_CISx_compound& other) const;
+  #endif
 
   #ifndef SR_UNSAVEABLE_RECORDS
   /** Tries to save the CTDA_CIS2 compound to the given stream.
@@ -120,11 +124,13 @@ CTDA_CISx_compound<cisRecName>::CTDA_CISx_compound(const CTDAData& ctda, const s
 {
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 template<uint32_t cisRecName>
 bool CTDA_CISx_compound<cisRecName>::operator==(const CTDA_CISx_compound& other) const
 {
   return (unknownCTDA == other.unknownCTDA) && (unknownCISx == other.unknownCISx);
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 template<uint32_t cisRecName>

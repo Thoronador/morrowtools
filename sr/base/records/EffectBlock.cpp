@@ -33,12 +33,14 @@ EffectBlock::EffectBlock()
 {
 }
 
+#ifndef SR_NO_RECORD_EQUALITY
 bool EffectBlock::operator==(const EffectBlock& other) const
 {
-  return ((effectFormID == other.effectFormID) && (magnitude == other.magnitude)
+  return (effectFormID == other.effectFormID) && (magnitude == other.magnitude)
       && (areaOfEffect == other.areaOfEffect) && (duration == other.duration)
-      && (unknownCTDA_CIS2s == other.unknownCTDA_CIS2s));
+      && (unknownCTDA_CIS2s == other.unknownCTDA_CIS2s);
 }
+#endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 bool EffectBlock::saveToStream(std::ostream& output) const
@@ -80,4 +82,4 @@ uint32_t EffectBlock::getWriteSize() const
 }
 #endif
 
-} //namespace
+} // namespace

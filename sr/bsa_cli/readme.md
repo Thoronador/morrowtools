@@ -17,6 +17,7 @@ options:
   -v           - same as --version
   OPERATION    - sets the operation that shall be performed on the BSA
                  file. Allowed operations are:
+                     info - show header information
                      list - lists all folders and files in the archive
 
                  More operations may be added in the future.

@@ -8,11 +8,13 @@ set(bsa_cli_sources
     ../../base/DirectoryFunctions.cpp
     ../../base/FileFunctions.cpp
     ../../base/UtilityFunctions.cpp
+    ../base/FormIDFunctions.cpp
     ../base/bsa/BSA.cpp
     ../base/bsa/BSAFileRecord.cpp
     ../base/bsa/BSAFolderBlock.cpp
     ../base/bsa/BSAFolderRecord.cpp
     ../base/bsa/BSAHeader.cpp
+    OperationInfo.cpp
     OperationList.cpp
     main.cpp)
 

@@ -46,6 +46,8 @@
 		<Unit filename="../../base/FileFunctions.hpp" />
 		<Unit filename="../../base/UtilityFunctions.cpp" />
 		<Unit filename="../../base/UtilityFunctions.hpp" />
+		<Unit filename="../base/FormIDFunctions.cpp" />
+		<Unit filename="../base/FormIDFunctions.hpp" />
 		<Unit filename="../base/ReturnCodes.hpp" />
 		<Unit filename="../base/bsa/BSA.cpp" />
 		<Unit filename="../base/bsa/BSA.hpp" />
@@ -57,6 +59,8 @@
 		<Unit filename="../base/bsa/BSAFolderRecord.hpp" />
 		<Unit filename="../base/bsa/BSAHeader.cpp" />
 		<Unit filename="../base/bsa/BSAHeader.hpp" />
+		<Unit filename="OperationInfo.cpp" />
+		<Unit filename="OperationInfo.hpp" />
 		<Unit filename="OperationList.cpp" />
 		<Unit filename="OperationList.hpp" />
 		<Unit filename="main.cpp" />

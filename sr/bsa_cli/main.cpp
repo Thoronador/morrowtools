@@ -20,13 +20,14 @@
 
 #include <iostream>
 #include <string>
+#include "OperationInfo.hpp"
 #include "OperationList.hpp"
 #include "../base/ReturnCodes.hpp"
 #include "../../base/FileFunctions.hpp"
 
 void showVersion()
 {
-  std::cout << "BSA Command Line Tool for Skyrim, version 0.01, 2021-10-22\n";
+  std::cout << "BSA Command Line Tool for Skyrim, version 0.2.0, 2021-10-22\n";
 }
 
 void showHelp()
@@ -40,6 +41,7 @@ void showHelp()
             << "  -v           - same as --version\n"
             << "  OPERATION    - sets the operation that shall be performed on the BSA\n"
             << "                 file. Allowed operations are:\n"
+            << "                     info - show header information\n"
             << "                     list - lists all folders and files in the archive\n"
             << "\n"
             << "                 More operations may be added in the future.\n"
@@ -75,7 +77,7 @@ int main(int argc, char **argv)
         }
         else if (operation.empty())
         {
-          if (param != "list")
+          if (param != "list" && param != "info")
           {
             std::cerr << "Error: '" << param << "' is not an allowed operation.\n"
                       << "An allowed operation is 'list'.\n" ;
@@ -128,6 +130,9 @@ int main(int argc, char **argv)
     return SRTP::rcInvalidParameter;
   }
 
-  // Currently, only "list" is implemented as operation, so use it.
-  return SRTP::listBsaContent(bsaFileName);
+  // Currently, only "list" and "info" are implemented as operations.
+  if (operation == "list")
+    return SRTP::listBsaContent(bsaFileName);
+  else
+    return SRTP::showBsaInfo(bsaFileName);
 }

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,68 +27,63 @@ namespace SRTP
 const int32_t cBSA_NUL = 0x00415342; //"BSA\0" = 42 53 41 00
 
 BSAHeader::BSAHeader()
+: fileID(0),
+  version(0),
+  offset(0),
+  archiveFlags(0),
+  folderCount(0),
+  fileCount(0),
+  totalFolderNameLength(0),
+  totalFileNameLength(0),
+  fileFlags(0)
 {
-  fileID = 0;
-  version = 0;
-  offset = 0;
-  archiveFlags = 0;
-  folderCount = 0;
-  fileCount = 0;
-  totalFolderNameLength = 0;
-  totalFileNameLength = 0;
-  fileFlags = 0;
 }
 
-BSAHeader::~BSAHeader()
+bool BSAHeader::loadFromStream(std::istream& input)
 {
-  //empty
-}
-
-bool BSAHeader::loadFromStream(std::ifstream& in_File)
-{
-  if (!in_File.good())
+  if (!input.good())
   {
-    std::cerr << "BSAHeader::loadFromStream: Error: bad stream given!\n";
+    std::cerr << "BSAHeader::loadFromStream: Error: Bad stream given!\n";
     return false;
   }
-  //read stuff
-  in_File.read((char*) &fileID, 4);
-  if (!in_File.good())
+  // read stuff
+  input.read(reinterpret_cast<char*>(&fileID), 4);
+  if (!input.good())
   {
-    std::cerr << "BSAHeader::loadFromStream: Error: could not read header!\n";
+    std::cerr << "BSAHeader::loadFromStream: Error: Could not read header!\n";
     return false;
   }
-  if (fileID!=cBSA_NUL)
+  if (fileID != cBSA_NUL)
   {
-    std::cerr << "BSAHeader::loadFromStream: Error: invalid BSA header!\n";
+    std::cerr << "BSAHeader::loadFromStream: Error: Invalid BSA header!\n";
     return false;
   }
-  //read version
-  in_File.read((char*) &version, 4);
-  //read offset
-  in_File.read((char*) &offset, 4);
-  if (!in_File.good())
+  // read version
+  input.read(reinterpret_cast<char*>(&version), 4);
+  // read offset
+  input.read(reinterpret_cast<char*>(&offset), 4);
+  if (!input.good())
   {
-    std::cerr << "BSAHeader::loadFromStream: Error: could not read version and offset!\n";
+    std::cerr << "BSAHeader::loadFromStream: Error: Could not read version and offset!\n";
     return false;
   }
-  if (version!=104)
+  if (version != 104)
   {
-    std::clog << "BSAHeader::loadFromStream: Warning: invalid version detected, but let's give it a try anyway!\n";
+    std::clog << "BSAHeader::loadFromStream: Warning: Invalid version detected, but let's give it a try anyway!\n";
   }
-  if (offset!=36)
+  if (offset != 36)
   {
-    std::cerr << "BSAHeader::loadFromStream: Error: offset is not 36, aborting!\n";
+    std::cerr << "BSAHeader::loadFromStream: Error: Offset is not 36, aborting!\n";
     return false;
   }
-  //read rest
-  in_File.read((char*) &archiveFlags, 4);
-  in_File.read((char*) &folderCount, 4);
-  in_File.read((char*) &fileCount, 4);
-  in_File.read((char*) &totalFolderNameLength, 4);
-  in_File.read((char*) &totalFileNameLength, 4);
-  in_File.read((char*) &fileFlags, 4);
-  if (!in_File.good())
+  // read rest
+  input.read(reinterpret_cast<char*>(&archiveFlags), 4);
+  input.read(reinterpret_cast<char*>(&folderCount), 4);
+  input.read(reinterpret_cast<char*>(&fileCount), 4);
+  input.read(reinterpret_cast<char*>(&totalFolderNameLength), 4);
+  input.read(reinterpret_cast<char*>(&totalFileNameLength), 4);
+  input.read(reinterpret_cast<char*>(&fileFlags), 4);
+  if (!input.good())
   {
     std::cerr << "BSAHeader::loadFromStream: Error while reading from stream!\n";
     return false;
@@ -99,18 +94,17 @@ bool BSAHeader::loadFromStream(std::ifstream& in_File)
 
 bool BSAHeader::hasNamesForFolders() const
 {
-  return ((archiveFlags & 1)!=0);
+  return (archiveFlags & 1) != 0;
 }
 
 bool BSAHeader::hasNamesForFiles() const
 {
-  return ((archiveFlags & (1<<1))!=0);
+  return (archiveFlags & (1<<1)) != 0;
 }
 
 bool BSAHeader::filesCompressedByDefault() const
 {
-  return ((archiveFlags & (1<<2))!=0);
+  return (archiveFlags & (1<<2)) != 0;
 }
 
-
-} //namespace
+} // namespace

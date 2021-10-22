@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011  Thoronador
+    Copyright (C) 2011, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,16 +27,13 @@
 namespace SRTP
 {
 
+/** Holds header data of an *.bsa archive. */
 struct BSAHeader
 {
   public:
-    /* constructor */
+    /** Constructor, sets all data to zero. */
     BSAHeader();
 
-    /* destructor */
-    ~BSAHeader();
-
-    //stuff
     int32_t fileID;
     uint32_t version;
     uint32_t offset;
@@ -47,22 +44,24 @@ struct BSAHeader
     uint32_t totalFileNameLength;
     uint32_t fileFlags;
 
-    /* tries to read the header from the given file stream and returns true in
-       case of success, false in case of failure
-
-       parameters:
-          in_File - the input file stream
-    */
-    bool loadFromStream(std::ifstream& in_File);
+    /** \brief Tries to read the header from the given stream.
+     *
+     * \param input  the input stream
+     * \return Returns true in case of success, false in case of failure.
+     */
+    bool loadFromStream(std::istream& input);
 
     /* flag stuff */
     bool hasNamesForFolders() const;
     bool hasNamesForFiles() const;
 
-    /* returns true, if files are compressed by default, according to flags */
+    /** \brief Checks whether files are compressed by default, according to flags.
+     *
+     * \return Returns true, if files are compressed by default.
+     */
     bool filesCompressedByDefault() const;
-}; //struct
+}; // struct
 
-} //namespace
+} // namespace
 
 #endif // SR_BSAHEADER_HPP

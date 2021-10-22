@@ -19,6 +19,7 @@ set(component_tests_sources
     ../../sr/base/Group.cpp
     ../../sr/base/MapBasedRecordManager.hpp
     ../../sr/base/StringTable.cpp
+    ../../sr/base/bsa/BSAHeader.cpp
     ../../sr/base/records/AcousticSpaceRecord.cpp
     ../../sr/base/records/ActionRecord.cpp
     ../../sr/base/records/ActivatorRecord.cpp
@@ -83,6 +84,7 @@ set(component_tests_sources
     sr/base/FormIDFunctions.cpp
     sr/base/MapBasedRecordManager.cpp
     sr/base/StringTable.cpp
+    sr/base/bsa/BSAHeader.cpp
     sr/base/records/AcousticSpaceRecord.cpp
     sr/base/records/ActionRecord.cpp
     sr/base/records/ActivatorRecord.cpp

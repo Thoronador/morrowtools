@@ -81,7 +81,7 @@ jobs:
           cp mw/data_cleaner/data_cleaner.exe artifacts/
           cp mw/skill_rebalance/skill_rebalance.exe artifacts/
           cp mw/spell_rename/spell_rename.exe artifacts/
-          cp sr/bsa_cli/bsa_cli.exe artifacts/
+          cp sr/bsa_cli/bsa-cli.exe artifacts/
           cp sr/conv_cams/conv_cams.exe artifacts/
           cp sr/formID_finder/formID_finder.exe artifacts/
           cp sr/race_resize/race_resize.exe artifacts/

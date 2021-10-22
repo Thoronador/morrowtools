@@ -329,7 +329,6 @@ TEST_CASE("QuestRecord")
       REQUIRE( record.name.isPresent() );
       REQUIRE( record.name.getType() == LocalizedString::Type::Index );
       REQUIRE( record.name.getIndex() == 0x00000AD7 );
-      // \x11\0\0\0\0\0\0\0\0\0\0\0
       REQUIRE( record.unknownDNAM[0] == 0x11 );
       REQUIRE( record.unknownDNAM[1] == 0 );
       REQUIRE( record.unknownDNAM[2] == 0 );
@@ -357,6 +356,112 @@ TEST_CASE("QuestRecord")
       REQUIRE( record.indices.empty() );
       REQUIRE( record.theQOBJs.empty() );
       REQUIRE( record.unknownANAM == 0 );
+      REQUIRE( record.aliases.empty() );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( record.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
+    }
+
+    SECTION("default: load record with INDX, QSDT, SCHR, SCTX, QNAM")
+    {
+      const auto data = "QUST\xE4\x01\0\0\0\0\0\0\x51\x41\x02\0\x02\x5F\x44\0\x1E\0\x02\0EDID\x19\0DarkSideContractDialogue\0VMAD|\0\x04\0\x01\0\x02\0$\0QF_DarkSideContractDialogue_00024151\0\0\0\x18\0DarkSideContractDialogue\0\x02\0\x14\0DarkBrotherhoodQuest\x01\x01\\\xEA\x01\0\xFF\xFF\0\0\x04\0DB02\x01\x01Q\xEA\x01\0\xFF\xFF\0\0DNAM\x0C\0\x11\x01\x46\0\0\0\0\0\x04\0\0\0FLTR\x1A\0Faction\\Dark Brotherhood\\\0NEXT\0\0INDX\x04\0\0\0\0\x41QSDT\x01\0\0SCHR\x14\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0SCTX\\\0;Set DarkBrotherhood.FirstSet to 1\r\n;SetStage DB02a 20\r\n;Startquest DarkSideContractDialogueQNAM\x04\0QA\x02\0INDX\x04\0\x01\0\x02\x41QSDT\x01\0\0SCHR\x14\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0QNAM\x04\0QA\x02\0INDX\x04\0\xFF\0\x04lQSDT\x01\0\0SCHR\x14\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0QNAM\x04\0QA\x02\0ANAM\x04\0\x02\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Read QUST, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      QuestRecord record;
+      REQUIRE( record.loadFromStream(stream, true, dummy_table) );
+      // Check data.
+      // -- header
+      REQUIRE( record.headerFlags == 0 );
+      REQUIRE( record.headerFormID == 0x00024151 );
+      REQUIRE( record.headerRevision == 0x00445F02 );
+      REQUIRE( record.headerVersion == 30 );
+      REQUIRE( record.headerUnknown5 == 0x0002 );
+      // -- record data
+      REQUIRE( record.editorID == "DarkSideContractDialogue" );
+      REQUIRE( record.unknownVMAD.isPresent() );
+      const auto VMAD = std::string_view(reinterpret_cast<const char*>(record.unknownVMAD.data()), record.unknownVMAD.size());
+      REQUIRE( VMAD == "\x04\0\x01\0\x02\0$\0QF_DarkSideContractDialogue_00024151\0\0\0\x18\0DarkSideContractDialogue\0\x02\0\x14\0DarkBrotherhoodQuest\x01\x01\\\xEA\x01\0\xFF\xFF\0\0\x04\0DB02\x01\x01Q\xEA\x01\0\xFF\xFF\0\0"sv );
+      REQUIRE_FALSE( record.name.isPresent() );
+      REQUIRE( record.name.getType() == LocalizedString::Type::None );
+      REQUIRE( record.unknownDNAM[0] == 0x11 );
+      REQUIRE( record.unknownDNAM[1] == 0x01 );
+      REQUIRE( record.unknownDNAM[2] == 0x46 );
+      REQUIRE( record.unknownDNAM[3] == 0 );
+      REQUIRE( record.unknownDNAM[4] == 0 );
+      REQUIRE( record.unknownDNAM[5] == 0 );
+      REQUIRE( record.unknownDNAM[6] == 0 );
+      REQUIRE( record.unknownDNAM[7] == 0 );
+      REQUIRE( record.unknownDNAM[8] == 0x04 );
+      REQUIRE( record.unknownDNAM[9] == 0 );
+      REQUIRE( record.unknownDNAM[10] == 0 );
+      REQUIRE( record.unknownDNAM[11] == 0 );
+      REQUIRE_FALSE( record.hasENAM );
+      REQUIRE( record.unknownENAM == 0 );
+      REQUIRE( record.unknownQTGLs.empty() );
+      REQUIRE( record.unknownCTDA_CIS2s.empty() );
+      REQUIRE( record.filter == "Faction\\Dark Brotherhood\\" );
+      REQUIRE( record.indices.size() == 3 );
+
+      const auto& idx_0 = record.indices[0];
+      REQUIRE( idx_0.index == 0 );
+      REQUIRE( idx_0.indexUnknownPart == 0x4100 );
+      REQUIRE( idx_0.theQSDTs.size() == 1 );
+      const auto& idx_0_qsdt_0 = idx_0.theQSDTs[0];
+      REQUIRE_FALSE( idx_0_qsdt_0.isFinisher );
+      REQUIRE( idx_0_qsdt_0.nextQuestFormID == 0 );
+      REQUIRE( idx_0_qsdt_0.unknownSCHR.isPresent() );
+      const auto SCHR_0_0 = std::string_view(reinterpret_cast<const char*>(idx_0_qsdt_0.unknownSCHR.data()), idx_0_qsdt_0.unknownSCHR.size());
+      REQUIRE( SCHR_0_0 == "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0"sv );
+      REQUIRE( idx_0_qsdt_0.unknownSCTX == ";Set DarkBrotherhood.FirstSet to 1\r\n;SetStage DB02a 20\r\n;Startquest DarkSideContractDialogue"sv );
+      REQUIRE( idx_0_qsdt_0.hasQNAM );
+      REQUIRE( idx_0_qsdt_0.unknownQNAM == 0x00024151 );
+      REQUIRE( idx_0_qsdt_0.unknownCTDA_CIS2s.empty() );
+      REQUIRE_FALSE( idx_0_qsdt_0.logEntry.isPresent() );
+
+      const auto& idx_1 = record.indices[1];
+      REQUIRE( idx_1.index == 1 );
+      REQUIRE( idx_1.indexUnknownPart == 0x4102 );
+      REQUIRE( idx_1.theQSDTs.size() == 1 );
+      const auto& idx_1_qsdt_0 = idx_1.theQSDTs[0];
+      REQUIRE_FALSE( idx_1_qsdt_0.isFinisher );
+      REQUIRE( idx_1_qsdt_0.nextQuestFormID == 0 );
+      REQUIRE( idx_1_qsdt_0.unknownSCHR.isPresent() );
+      const auto SCHR_1_0 = std::string_view(reinterpret_cast<const char*>(idx_1_qsdt_0.unknownSCHR.data()), idx_1_qsdt_0.unknownSCHR.size());
+      REQUIRE( SCHR_1_0 == "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0"sv );
+      REQUIRE( idx_1_qsdt_0.unknownSCTX.empty() );
+      REQUIRE( idx_1_qsdt_0.hasQNAM );
+      REQUIRE( idx_1_qsdt_0.unknownQNAM == 0x00024151 );
+      REQUIRE( idx_1_qsdt_0.unknownCTDA_CIS2s.empty() );
+      REQUIRE_FALSE( idx_1_qsdt_0.logEntry.isPresent() );
+
+      const auto& idx_2 = record.indices[2];
+      REQUIRE( idx_2.index == 0x00FF );
+      REQUIRE( idx_2.indexUnknownPart == 0x6C04 );
+      REQUIRE( idx_2.theQSDTs.size() == 1 );
+      const auto& idx_2_qsdt_0 = idx_2.theQSDTs[0];
+      REQUIRE_FALSE( idx_2_qsdt_0.isFinisher );
+      REQUIRE( idx_2_qsdt_0.nextQuestFormID == 0 );
+      REQUIRE( idx_2_qsdt_0.unknownSCHR.isPresent() );
+      const auto SCHR_2_0 = std::string_view(reinterpret_cast<const char*>(idx_2_qsdt_0.unknownSCHR.data()), idx_2_qsdt_0.unknownSCHR.size());
+      REQUIRE( SCHR_2_0 == "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0"sv );
+      REQUIRE( idx_2_qsdt_0.unknownSCTX.empty() );
+      REQUIRE( idx_2_qsdt_0.hasQNAM );
+      REQUIRE( idx_2_qsdt_0.unknownQNAM == 0x00024151 );
+      REQUIRE( idx_2_qsdt_0.unknownCTDA_CIS2s.empty() );
+      REQUIRE_FALSE( idx_2_qsdt_0.logEntry.isPresent() );
+
+
+      REQUIRE( record.theQOBJs.empty() );
+      REQUIRE( record.unknownANAM == 0x00000002 );
       REQUIRE( record.aliases.empty() );
 
       // Writing should succeed.
@@ -608,6 +713,21 @@ TEST_CASE("QuestRecord")
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
+    SECTION("corrupt data: multiple FLTRs")
+    {
+      const auto data = "QUST\x06\x01\0\0\0\0\0\0\xB3\x3E\x01\0\x1B\x69\x55\0\x28\0\x0F\0EDID\x10\0DialogueGeneric\0VMADJ\0\x05\0\x02\0\x01\0\x15\0DialogueGenericScript\0\x02\0\x04\0Gold\x01\x01\0\0\xFF\xFF\x0F\0\0\0\x0E\0RoomRentalCost\x01\x01\0\0\xFF\xFF\x98\xCC\x09\0FULL\x04\0\xD7\x0A\0\0DNAM\x0C\0\x11\0\0\0\0\0\0\0\0\0\0\0QTGL\x04\0\x98\xCC\x09\0FLTR\x09\0Generic\\\0FLTR\x09\0Generic\\\0CTDA\x20\0\0\0\0\0\0\0\0\0\xBC\x02TR\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\xFF\xFF\x43TDA\x20\0\0\0\0\0\0\0\x80?\xAA\x01TR\xA5\xB4\x03\0\0\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\xFF\xFFNEXT\0\0ANAM\x04\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Read QUST, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      QuestRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: length of FLTR > 512")
     {
       const auto data = "QUST\xF7\0\0\0\0\0\0\0\xB3\x3E\x01\0\x1B\x69\x55\0\x28\0\x0F\0EDID\x10\0DialogueGeneric\0VMADJ\0\x05\0\x02\0\x01\0\x15\0DialogueGenericScript\0\x02\0\x04\0Gold\x01\x01\0\0\xFF\xFF\x0F\0\0\0\x0E\0RoomRentalCost\x01\x01\0\0\xFF\xFF\x98\xCC\x09\0FULL\x04\0\xD7\x0A\0\0DNAM\x0C\0\x11\0\0\0\0\0\0\0\0\0\0\0QTGL\x04\0\x98\xCC\x09\0FLTR\x09\x02Generic\\\0CTDA\x20\0\0\0\0\0\0\0\0\0\xBC\x02TR\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\xFF\xFF\x43TDA\x20\0\0\0\0\0\0\0\x80?\xAA\x01TR\xA5\xB4\x03\0\0\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\xFF\xFFNEXT\0\0ANAM\x04\0\0\0\0\0"sv;
@@ -641,6 +761,279 @@ TEST_CASE("QuestRecord")
     SECTION("corrupt data: stream ends before all of FLTR can be read")
     {
       const auto data = "QUST\xF7\0\0\0\0\0\0\0\xB3\x3E\x01\0\x1B\x69\x55\0\x28\0\x0F\0EDID\x10\0DialogueGeneric\0VMADJ\0\x05\0\x02\0\x01\0\x15\0DialogueGenericScript\0\x02\0\x04\0Gold\x01\x01\0\0\xFF\xFF\x0F\0\0\0\x0E\0RoomRentalCost\x01\x01\0\0\xFF\xFF\x98\xCC\x09\0FULL\x04\0\xD7\x0A\0\0DNAM\x0C\0\x11\0\0\0\0\0\0\0\0\0\0\0QTGL\x04\0\x98\xCC\x09\0FLTR\x09\0Gen"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Read QUST, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      QuestRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of NEXT is not zero")
+    {
+      const auto data = "QUST\xF9\0\0\0\0\0\0\0\xB3\x3E\x01\0\x1B\x69\x55\0\x28\0\x0F\0EDID\x10\0DialogueGeneric\0VMADJ\0\x05\0\x02\0\x01\0\x15\0DialogueGenericScript\0\x02\0\x04\0Gold\x01\x01\0\0\xFF\xFF\x0F\0\0\0\x0E\0RoomRentalCost\x01\x01\0\0\xFF\xFF\x98\xCC\x09\0FULL\x04\0\xD7\x0A\0\0DNAM\x0C\0\x11\0\0\0\0\0\0\0\0\0\0\0QTGL\x04\0\x98\xCC\x09\0FLTR\x09\0Generic\\\0CTDA\x20\0\0\0\0\0\0\0\0\0\xBC\x02TR\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\xFF\xFF\x43TDA\x20\0\0\0\0\0\0\0\x80?\xAA\x01TR\xA5\xB4\x03\0\0\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\xFF\xFFNEXT\x02\0\0\0ANAM\x04\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Read QUST, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      QuestRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of INDX is not four")
+    {
+      {
+        const auto data = "QUST\xE3\x01\0\0\0\0\0\0\x51\x41\x02\0\x02\x5F\x44\0\x1E\0\x02\0EDID\x19\0DarkSideContractDialogue\0VMAD|\0\x04\0\x01\0\x02\0$\0QF_DarkSideContractDialogue_00024151\0\0\0\x18\0DarkSideContractDialogue\0\x02\0\x14\0DarkBrotherhoodQuest\x01\x01\\\xEA\x01\0\xFF\xFF\0\0\x04\0DB02\x01\x01Q\xEA\x01\0\xFF\xFF\0\0DNAM\x0C\0\x11\x01\x46\0\0\0\0\0\x04\0\0\0FLTR\x1A\0Faction\\Dark Brotherhood\\\0NEXT\0\0INDX\x03\0\0\0\x41QSDT\x01\0\0SCHR\x14\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0SCTX\\\0;Set DarkBrotherhood.FirstSet to 1\r\n;SetStage DB02a 20\r\n;Startquest DarkSideContractDialogueQNAM\x04\0QA\x02\0INDX\x04\0\x01\0\x02\x41QSDT\x01\0\0SCHR\x14\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0QNAM\x04\0QA\x02\0INDX\x04\0\xFF\0\x04lQSDT\x01\0\0SCHR\x14\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0QNAM\x04\0QA\x02\0ANAM\x04\0\x02\0\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // Read QUST, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        QuestRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+
+      {
+        const auto data = "QUST\xE5\x01\0\0\0\0\0\0\x51\x41\x02\0\x02\x5F\x44\0\x1E\0\x02\0EDID\x19\0DarkSideContractDialogue\0VMAD|\0\x04\0\x01\0\x02\0$\0QF_DarkSideContractDialogue_00024151\0\0\0\x18\0DarkSideContractDialogue\0\x02\0\x14\0DarkBrotherhoodQuest\x01\x01\\\xEA\x01\0\xFF\xFF\0\0\x04\0DB02\x01\x01Q\xEA\x01\0\xFF\xFF\0\0DNAM\x0C\0\x11\x01\x46\0\0\0\0\0\x04\0\0\0FLTR\x1A\0Faction\\Dark Brotherhood\\\0NEXT\0\0INDX\x05\0\0\0\0\x41\0QSDT\x01\0\0SCHR\x14\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0SCTX\\\0;Set DarkBrotherhood.FirstSet to 1\r\n;SetStage DB02a 20\r\n;Startquest DarkSideContractDialogueQNAM\x04\0QA\x02\0INDX\x04\0\x01\0\x02\x41QSDT\x01\0\0SCHR\x14\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0QNAM\x04\0QA\x02\0INDX\x04\0\xFF\0\x04lQSDT\x01\0\0SCHR\x14\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0QNAM\x04\0QA\x02\0ANAM\x04\0\x02\0\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // Read QUST, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        QuestRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+    }
+
+    SECTION("corrupt data: stream ends before all of INDX can be read")
+    {
+      const auto data = "QUST\xE4\x01\0\0\0\0\0\0\x51\x41\x02\0\x02\x5F\x44\0\x1E\0\x02\0EDID\x19\0DarkSideContractDialogue\0VMAD|\0\x04\0\x01\0\x02\0$\0QF_DarkSideContractDialogue_00024151\0\0\0\x18\0DarkSideContractDialogue\0\x02\0\x14\0DarkBrotherhoodQuest\x01\x01\\\xEA\x01\0\xFF\xFF\0\0\x04\0DB02\x01\x01Q\xEA\x01\0\xFF\xFF\0\0DNAM\x0C\0\x11\x01\x46\0\0\0\0\0\x04\0\0\0FLTR\x1A\0Faction\\Dark Brotherhood\\\0NEXT\0\0INDX\x04\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Read QUST, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      QuestRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: QSDT without previous INDX subrecord")
+    {
+      const auto data = "QUST\xDA\x01\0\0\0\0\0\0\x51\x41\x02\0\x02\x5F\x44\0\x1E\0\x02\0EDID\x19\0DarkSideContractDialogue\0VMAD|\0\x04\0\x01\0\x02\0$\0QF_DarkSideContractDialogue_00024151\0\0\0\x18\0DarkSideContractDialogue\0\x02\0\x14\0DarkBrotherhoodQuest\x01\x01\\\xEA\x01\0\xFF\xFF\0\0\x04\0DB02\x01\x01Q\xEA\x01\0\xFF\xFF\0\0DNAM\x0C\0\x11\x01\x46\0\0\0\0\0\x04\0\0\0FLTR\x1A\0Faction\\Dark Brotherhood\\\0NEXT\0\0QSDT\x01\0\0SCHR\x14\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0SCTX\\\0;Set DarkBrotherhood.FirstSet to 1\r\n;SetStage DB02a 20\r\n;Startquest DarkSideContractDialogueQNAM\x04\0QA\x02\0INDX\x04\0\x01\0\x02\x41QSDT\x01\0\0SCHR\x14\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0QNAM\x04\0QA\x02\0INDX\x04\0\xFF\0\x04lQSDT\x01\0\0SCHR\x14\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0QNAM\x04\0QA\x02\0ANAM\x04\0\x02\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Read QUST, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      QuestRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of QSDT is not one")
+    {
+      {
+        const auto data = "QUST\xE3\x01\0\0\0\0\0\0\x51\x41\x02\0\x02\x5F\x44\0\x1E\0\x02\0EDID\x19\0DarkSideContractDialogue\0VMAD|\0\x04\0\x01\0\x02\0$\0QF_DarkSideContractDialogue_00024151\0\0\0\x18\0DarkSideContractDialogue\0\x02\0\x14\0DarkBrotherhoodQuest\x01\x01\\\xEA\x01\0\xFF\xFF\0\0\x04\0DB02\x01\x01Q\xEA\x01\0\xFF\xFF\0\0DNAM\x0C\0\x11\x01\x46\0\0\0\0\0\x04\0\0\0FLTR\x1A\0Faction\\Dark Brotherhood\\\0NEXT\0\0INDX\x04\0\0\0\0\x41QSDT\0\0SCHR\x14\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0SCTX\\\0;Set DarkBrotherhood.FirstSet to 1\r\n;SetStage DB02a 20\r\n;Startquest DarkSideContractDialogueQNAM\x04\0QA\x02\0INDX\x04\0\x01\0\x02\x41QSDT\x01\0\0SCHR\x14\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0QNAM\x04\0QA\x02\0INDX\x04\0\xFF\0\x04lQSDT\x01\0\0SCHR\x14\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0QNAM\x04\0QA\x02\0ANAM\x04\0\x02\0\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // Read QUST, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        QuestRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+
+      {
+        const auto data = "QUST\xE5\x01\0\0\0\0\0\0\x51\x41\x02\0\x02\x5F\x44\0\x1E\0\x02\0EDID\x19\0DarkSideContractDialogue\0VMAD|\0\x04\0\x01\0\x02\0$\0QF_DarkSideContractDialogue_00024151\0\0\0\x18\0DarkSideContractDialogue\0\x02\0\x14\0DarkBrotherhoodQuest\x01\x01\\\xEA\x01\0\xFF\xFF\0\0\x04\0DB02\x01\x01Q\xEA\x01\0\xFF\xFF\0\0DNAM\x0C\0\x11\x01\x46\0\0\0\0\0\x04\0\0\0FLTR\x1A\0Faction\\Dark Brotherhood\\\0NEXT\0\0INDX\x04\0\0\0\0\x41QSDT\x02\0\0\0SCHR\x14\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0SCTX\\\0;Set DarkBrotherhood.FirstSet to 1\r\n;SetStage DB02a 20\r\n;Startquest DarkSideContractDialogueQNAM\x04\0QA\x02\0INDX\x04\0\x01\0\x02\x41QSDT\x01\0\0SCHR\x14\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0QNAM\x04\0QA\x02\0INDX\x04\0\xFF\0\x04lQSDT\x01\0\0SCHR\x14\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0QNAM\x04\0QA\x02\0ANAM\x04\0\x02\0\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // Read QUST, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        QuestRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+    }
+
+    SECTION("corrupt data: stream ends before all of QSDT can be read")
+    {
+      const auto data = "QUST\xE4\x01\0\0\0\0\0\0\x51\x41\x02\0\x02\x5F\x44\0\x1E\0\x02\0EDID\x19\0DarkSideContractDialogue\0VMAD|\0\x04\0\x01\0\x02\0$\0QF_DarkSideContractDialogue_00024151\0\0\0\x18\0DarkSideContractDialogue\0\x02\0\x14\0DarkBrotherhoodQuest\x01\x01\\\xEA\x01\0\xFF\xFF\0\0\x04\0DB02\x01\x01Q\xEA\x01\0\xFF\xFF\0\0DNAM\x0C\0\x11\x01\x46\0\0\0\0\0\x04\0\0\0FLTR\x1A\0Faction\\Dark Brotherhood\\\0NEXT\0\0INDX\x04\0\0\0\0\x41QSDT\x01\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Read QUST, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      QuestRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple SCHRs")
+    {
+      const auto data = "QUST\xFE\x01\0\0\0\0\0\0\x51\x41\x02\0\x02\x5F\x44\0\x1E\0\x02\0EDID\x19\0DarkSideContractDialogue\0VMAD|\0\x04\0\x01\0\x02\0$\0QF_DarkSideContractDialogue_00024151\0\0\0\x18\0DarkSideContractDialogue\0\x02\0\x14\0DarkBrotherhoodQuest\x01\x01\\\xEA\x01\0\xFF\xFF\0\0\x04\0DB02\x01\x01Q\xEA\x01\0\xFF\xFF\0\0DNAM\x0C\0\x11\x01\x46\0\0\0\0\0\x04\0\0\0FLTR\x1A\0Faction\\Dark Brotherhood\\\0NEXT\0\0INDX\x04\0\0\0\0\x41QSDT\x01\0\0SCHR\x14\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0SCHR\x14\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0SCTX\\\0;Set DarkBrotherhood.FirstSet to 1\r\n;SetStage DB02a 20\r\n;Startquest DarkSideContractDialogueQNAM\x04\0QA\x02\0INDX\x04\0\x01\0\x02\x41QSDT\x01\0\0SCHR\x14\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0QNAM\x04\0QA\x02\0INDX\x04\0\xFF\0\x04lQSDT\x01\0\0SCHR\x14\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0QNAM\x04\0QA\x02\0ANAM\x04\0\x02\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Read QUST, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      QuestRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: stream ends before all of SCHR can be read")
+    {
+      const auto data = "QUST\xE4\x01\0\0\0\0\0\0\x51\x41\x02\0\x02\x5F\x44\0\x1E\0\x02\0EDID\x19\0DarkSideContractDialogue\0VMAD|\0\x04\0\x01\0\x02\0$\0QF_DarkSideContractDialogue_00024151\0\0\0\x18\0DarkSideContractDialogue\0\x02\0\x14\0DarkBrotherhoodQuest\x01\x01\\\xEA\x01\0\xFF\xFF\0\0\x04\0DB02\x01\x01Q\xEA\x01\0\xFF\xFF\0\0DNAM\x0C\0\x11\x01\x46\0\0\0\0\0\x04\0\0\0FLTR\x1A\0Faction\\Dark Brotherhood\\\0NEXT\0\0INDX\x04\0\0\0\0\x41QSDT\x01\0\0SCHR\x14\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Read QUST, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      QuestRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple SCTXs")
+    {
+      const auto data = "QUST\x46\x02\0\0\0\0\0\0\x51\x41\x02\0\x02\x5F\x44\0\x1E\0\x02\0EDID\x19\0DarkSideContractDialogue\0VMAD|\0\x04\0\x01\0\x02\0$\0QF_DarkSideContractDialogue_00024151\0\0\0\x18\0DarkSideContractDialogue\0\x02\0\x14\0DarkBrotherhoodQuest\x01\x01\\\xEA\x01\0\xFF\xFF\0\0\x04\0DB02\x01\x01Q\xEA\x01\0\xFF\xFF\0\0DNAM\x0C\0\x11\x01\x46\0\0\0\0\0\x04\0\0\0FLTR\x1A\0Faction\\Dark Brotherhood\\\0NEXT\0\0INDX\x04\0\0\0\0\x41QSDT\x01\0\0SCHR\x14\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0SCTX\\\0;Set DarkBrotherhood.FirstSet to 1\r\n;SetStage DB02a 20\r\n;Startquest DarkSideContractDialogueSCTX\\\0;Set DarkBrotherhood.FirstSet to 1\r\n;SetStage DB02a 20\r\n;Startquest DarkSideContractDialogueQNAM\x04\0QA\x02\0INDX\x04\0\x01\0\x02\x41QSDT\x01\0\0SCHR\x14\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0QNAM\x04\0QA\x02\0INDX\x04\0\xFF\0\x04lQSDT\x01\0\0SCHR\x14\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0QNAM\x04\0QA\x02\0ANAM\x04\0\x02\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Read QUST, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      QuestRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of SCTX > 512")
+    {
+      const auto data = "QUST\xE4\x01\0\0\0\0\0\0\x51\x41\x02\0\x02\x5F\x44\0\x1E\0\x02\0EDID\x19\0DarkSideContractDialogue\0VMAD|\0\x04\0\x01\0\x02\0$\0QF_DarkSideContractDialogue_00024151\0\0\0\x18\0DarkSideContractDialogue\0\x02\0\x14\0DarkBrotherhoodQuest\x01\x01\\\xEA\x01\0\xFF\xFF\0\0\x04\0DB02\x01\x01Q\xEA\x01\0\xFF\xFF\0\0DNAM\x0C\0\x11\x01\x46\0\0\0\0\0\x04\0\0\0FLTR\x1A\0Faction\\Dark Brotherhood\\\0NEXT\0\0INDX\x04\0\0\0\0\x41QSDT\x01\0\0SCHR\x14\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0SCTX\x02\x02;Set DarkBrotherhood.FirstSet to 1\r\n;SetStage DB02a 20\r\n;Startquest DarkSideContractDialogueQNAM\x04\0QA\x02\0INDX\x04\0\x01\0\x02\x41QSDT\x01\0\0SCHR\x14\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0QNAM\x04\0QA\x02\0INDX\x04\0\xFF\0\x04lQSDT\x01\0\0SCHR\x14\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0QNAM\x04\0QA\x02\0ANAM\x04\0\x02\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Read QUST, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      QuestRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of SCTX is beyond stream")
+    {
+      const auto data = "QUST\xE4\x01\0\0\0\0\0\0\x51\x41\x02\0\x02\x5F\x44\0\x1E\0\x02\0EDID\x19\0DarkSideContractDialogue\0VMAD|\0\x04\0\x01\0\x02\0$\0QF_DarkSideContractDialogue_00024151\0\0\0\x18\0DarkSideContractDialogue\0\x02\0\x14\0DarkBrotherhoodQuest\x01\x01\\\xEA\x01\0\xFF\xFF\0\0\x04\0DB02\x01\x01Q\xEA\x01\0\xFF\xFF\0\0DNAM\x0C\0\x11\x01\x46\0\0\0\0\0\x04\0\0\0FLTR\x1A\0Faction\\Dark Brotherhood\\\0NEXT\0\0INDX\x04\0\0\0\0\x41QSDT\x01\0\0SCHR\x14\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0SCTX\xE4\x01;Set DarkBrotherhood.FirstSet to 1\r\n;SetStage DB02a 20\r\n;Startquest DarkSideContractDialogueQNAM\x04\0QA\x02\0INDX\x04\0\x01\0\x02\x41QSDT\x01\0\0SCHR\x14\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0QNAM\x04\0QA\x02\0INDX\x04\0\xFF\0\x04lQSDT\x01\0\0SCHR\x14\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0QNAM\x04\0QA\x02\0ANAM\x04\0\x02\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Read QUST, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      QuestRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: stream ends before all of SCTX can be read")
+    {
+      const auto data = "QUST\xE4\x01\0\0\0\0\0\0\x51\x41\x02\0\x02\x5F\x44\0\x1E\0\x02\0EDID\x19\0DarkSideContractDialogue\0VMAD|\0\x04\0\x01\0\x02\0$\0QF_DarkSideContractDialogue_00024151\0\0\0\x18\0DarkSideContractDialogue\0\x02\0\x14\0DarkBrotherhoodQuest\x01\x01\\\xEA\x01\0\xFF\xFF\0\0\x04\0DB02\x01\x01Q\xEA\x01\0\xFF\xFF\0\0DNAM\x0C\0\x11\x01\x46\0\0\0\0\0\x04\0\0\0FLTR\x1A\0Faction\\Dark Brotherhood\\\0NEXT\0\0INDX\x04\0\0\0\0\x41QSDT\x01\0\0SCHR\x14\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0SCTX\\\0;Set DarkBrot"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Read QUST, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      QuestRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple QNAMs")
+    {
+      const auto data = "QUST\xEE\x01\0\0\0\0\0\0\x51\x41\x02\0\x02\x5F\x44\0\x1E\0\x02\0EDID\x19\0DarkSideContractDialogue\0VMAD|\0\x04\0\x01\0\x02\0$\0QF_DarkSideContractDialogue_00024151\0\0\0\x18\0DarkSideContractDialogue\0\x02\0\x14\0DarkBrotherhoodQuest\x01\x01\\\xEA\x01\0\xFF\xFF\0\0\x04\0DB02\x01\x01Q\xEA\x01\0\xFF\xFF\0\0DNAM\x0C\0\x11\x01\x46\0\0\0\0\0\x04\0\0\0FLTR\x1A\0Faction\\Dark Brotherhood\\\0NEXT\0\0INDX\x04\0\0\0\0\x41QSDT\x01\0\0SCHR\x14\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0SCTX\\\0;Set DarkBrotherhood.FirstSet to 1\r\n;SetStage DB02a 20\r\n;Startquest DarkSideContractDialogueQNAM\x04\0QA\x02\0QNAM\x04\0QA\x02\0INDX\x04\0\x01\0\x02\x41QSDT\x01\0\0SCHR\x14\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0QNAM\x04\0QA\x02\0INDX\x04\0\xFF\0\x04lQSDT\x01\0\0SCHR\x14\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0QNAM\x04\0QA\x02\0ANAM\x04\0\x02\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Read QUST, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      QuestRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: length of QNAM is not four")
+    {
+      {
+        const auto data = "QUST\xE3\x01\0\0\0\0\0\0\x51\x41\x02\0\x02\x5F\x44\0\x1E\0\x02\0EDID\x19\0DarkSideContractDialogue\0VMAD|\0\x04\0\x01\0\x02\0$\0QF_DarkSideContractDialogue_00024151\0\0\0\x18\0DarkSideContractDialogue\0\x02\0\x14\0DarkBrotherhoodQuest\x01\x01\\\xEA\x01\0\xFF\xFF\0\0\x04\0DB02\x01\x01Q\xEA\x01\0\xFF\xFF\0\0DNAM\x0C\0\x11\x01\x46\0\0\0\0\0\x04\0\0\0FLTR\x1A\0Faction\\Dark Brotherhood\\\0NEXT\0\0INDX\x04\0\0\0\0\x41QSDT\x01\0\0SCHR\x14\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0SCTX\\\0;Set DarkBrotherhood.FirstSet to 1\r\n;SetStage DB02a 20\r\n;Startquest DarkSideContractDialogueQNAM\x03\0QA\0INDX\x04\0\x01\0\x02\x41QSDT\x01\0\0SCHR\x14\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0QNAM\x04\0QA\x02\0INDX\x04\0\xFF\0\x04lQSDT\x01\0\0SCHR\x14\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0QNAM\x04\0QA\x02\0ANAM\x04\0\x02\0\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // Read QUST, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        QuestRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+
+      {
+        const auto data = "QUST\xE5\x01\0\0\0\0\0\0\x51\x41\x02\0\x02\x5F\x44\0\x1E\0\x02\0EDID\x19\0DarkSideContractDialogue\0VMAD|\0\x04\0\x01\0\x02\0$\0QF_DarkSideContractDialogue_00024151\0\0\0\x18\0DarkSideContractDialogue\0\x02\0\x14\0DarkBrotherhoodQuest\x01\x01\\\xEA\x01\0\xFF\xFF\0\0\x04\0DB02\x01\x01Q\xEA\x01\0\xFF\xFF\0\0DNAM\x0C\0\x11\x01\x46\0\0\0\0\0\x04\0\0\0FLTR\x1A\0Faction\\Dark Brotherhood\\\0NEXT\0\0INDX\x04\0\0\0\0\x41QSDT\x01\0\0SCHR\x14\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0SCTX\\\0;Set DarkBrotherhood.FirstSet to 1\r\n;SetStage DB02a 20\r\n;Startquest DarkSideContractDialogueQNAM\x05\0QA\x02\0\0INDX\x04\0\x01\0\x02\x41QSDT\x01\0\0SCHR\x14\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0QNAM\x04\0QA\x02\0INDX\x04\0\xFF\0\x04lQSDT\x01\0\0SCHR\x14\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0QNAM\x04\0QA\x02\0ANAM\x04\0\x02\0\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // Read QUST, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        QuestRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+    }
+
+    SECTION("corrupt data: stream ends before all of QNAM can be read")
+    {
+      const auto data = "QUST\xE4\x01\0\0\0\0\0\0\x51\x41\x02\0\x02\x5F\x44\0\x1E\0\x02\0EDID\x19\0DarkSideContractDialogue\0VMAD|\0\x04\0\x01\0\x02\0$\0QF_DarkSideContractDialogue_00024151\0\0\0\x18\0DarkSideContractDialogue\0\x02\0\x14\0DarkBrotherhoodQuest\x01\x01\\\xEA\x01\0\xFF\xFF\0\0\x04\0DB02\x01\x01Q\xEA\x01\0\xFF\xFF\0\0DNAM\x0C\0\x11\x01\x46\0\0\0\0\0\x04\0\0\0FLTR\x1A\0Faction\\Dark Brotherhood\\\0NEXT\0\0INDX\x04\0\0\0\0\x41QSDT\x01\0\0SCHR\x14\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0SCTX\\\0;Set DarkBrotherhood.FirstSet to 1\r\n;SetStage DB02a 20\r\n;Startquest DarkSideContractDialogueQNAM\x04\0Q"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 

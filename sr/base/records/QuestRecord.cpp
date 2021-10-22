@@ -498,15 +498,16 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
            tempQSDT.hasQNAM = false;
            tempQSDT.unknownQNAM = 0;
            tempQSDT.unknownSCHR.setPresence(false);
+           tempQSDT.unknownSCTX.clear();
            tempQSDT.unknownCTDA_CIS2s.clear();
            tempQSDT.logEntry.reset();
            //QSDT's length
            in_File.read((char*) &subLength, 2);
            bytesRead += 2;
-           if (subLength!=1)
+           if (subLength != 1)
            {
-             std::cerr <<"Error: sub record QSDT of QUST has invalid length ("<<subLength
-                       <<" bytes). Should be one byte.\n";
+             std::cerr << "Error: sub record QSDT of QUST has invalid length ("
+                       << subLength << " bytes). Should be one byte.\n";
              return false;
            }
            //read QSDT
@@ -518,7 +519,7 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
              std::cerr << "Error while reading subrecord QSDT of QUST!\n";
              return false;
            }
-           tempQSDT.isFinisher = (buffer[0]!=0);
+           tempQSDT.isFinisher = (buffer[0] != 0);
            hasUnpushedQSDTRecord = true;
            lastReadRec = cQSDT;
            break;

@@ -1112,7 +1112,7 @@ int main(int argc, char **argv)
                   prefix = false;
                   if (quest_iter->second.indices[i].theQSDTs[j].isFinisher)
                   {
-                    basic_out << "            (finishes quest)";
+                    basic_out << "            (finishes quest) ";
                     prefix = true;
                   }
                   if (quest_iter->second.indices[i].theQSDTs[j].logEntry.isPresent())

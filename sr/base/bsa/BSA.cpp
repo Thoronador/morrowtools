@@ -33,6 +33,7 @@ const uint32_t BSA::cIndexNotFound = 0xFFFFFFFF;
 
 BSA::BSA()
 : m_Status(bsFresh),
+  m_Header(BSAHeader()),
   m_Folders(std::vector<BSAFolderRecord>()),
   m_FolderBlocks(std::vector<BSAFolderBlock>())
 {
@@ -156,8 +157,6 @@ bool BSA::grabFolderBlocks()
     m_FolderBlocks.push_back(tempFolderBlock);
   }
 
-  std::cout << "Info: Current stream offset is "
-            << static_cast<unsigned int>(m_Stream.tellg()) << " bytes.\n";
   m_Status = bsOpenFolderBlocks;
   return m_Stream.good();
 }

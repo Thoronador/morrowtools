@@ -39,8 +39,7 @@ TEST_CASE("QuestRecord")
     {
       REQUIRE( record.unknownDNAM[i] == 0 );
     }
-    REQUIRE_FALSE( record.hasENAM );
-    REQUIRE( record.unknownENAM == 0 );
+    REQUIRE_FALSE( record.unknownENAM.has_value() );
     REQUIRE( record.unknownQTGLs.empty() );
     REQUIRE( record.unknownCTDA_CIS2s.empty() );
     REQUIRE( record.filter.empty() );
@@ -108,21 +107,19 @@ TEST_CASE("QuestRecord")
 
       SECTION("ENAM mismatch")
       {
-        a.hasENAM = true;
-        b.hasENAM = false;
+        a.unknownENAM = 0;
+        b.unknownENAM.reset();
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        a.hasENAM = false;
-        b.hasENAM = true;
+        a.unknownENAM.reset();
+        b.unknownENAM = 0;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        a.hasENAM = true;
         a.unknownENAM = 1;
-        b.hasENAM = true;
         b.unknownENAM = 2;
 
         REQUIRE_FALSE( a.equals(b) );
@@ -252,7 +249,7 @@ TEST_CASE("QuestRecord")
     {
       REQUIRE( record.getWriteSize() == 44 );
 
-      record.hasENAM = true;
+      record.unknownENAM = 1;
       REQUIRE( record.getWriteSize() == 54 );
     }
 
@@ -341,8 +338,7 @@ TEST_CASE("QuestRecord")
       REQUIRE( record.unknownDNAM[9] == 0 );
       REQUIRE( record.unknownDNAM[10] == 0 );
       REQUIRE( record.unknownDNAM[11] == 0 );
-      REQUIRE_FALSE( record.hasENAM );
-      REQUIRE( record.unknownENAM == 0 );
+      REQUIRE_FALSE( record.unknownENAM.has_value() );
       REQUIRE( record.unknownQTGLs.size() == 1 );
       REQUIRE( record.unknownQTGLs[0] == 0x0009CC98 );
       REQUIRE( record.unknownCTDA_CIS2s.size() == 2 );
@@ -404,8 +400,7 @@ TEST_CASE("QuestRecord")
       REQUIRE( record.unknownDNAM[9] == 0 );
       REQUIRE( record.unknownDNAM[10] == 0 );
       REQUIRE( record.unknownDNAM[11] == 0 );
-      REQUIRE_FALSE( record.hasENAM );
-      REQUIRE( record.unknownENAM == 0 );
+      REQUIRE_FALSE( record.unknownENAM.has_value() );
       REQUIRE( record.unknownQTGLs.empty() );
       REQUIRE( record.unknownCTDA_CIS2s.empty() );
       REQUIRE( record.filter == "Faction\\Dark Brotherhood\\" );
@@ -422,8 +417,8 @@ TEST_CASE("QuestRecord")
       const auto SCHR_0_0 = std::string_view(reinterpret_cast<const char*>(idx_0_qsdt_0.unknownSCHR.data()), idx_0_qsdt_0.unknownSCHR.size());
       REQUIRE( SCHR_0_0 == "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0"sv );
       REQUIRE( idx_0_qsdt_0.unknownSCTX == ";Set DarkBrotherhood.FirstSet to 1\r\n;SetStage DB02a 20\r\n;Startquest DarkSideContractDialogue"sv );
-      REQUIRE( idx_0_qsdt_0.hasQNAM );
-      REQUIRE( idx_0_qsdt_0.unknownQNAM == 0x00024151 );
+      REQUIRE( idx_0_qsdt_0.unknownQNAM.has_value() );
+      REQUIRE( idx_0_qsdt_0.unknownQNAM.value() == 0x00024151 );
       REQUIRE( idx_0_qsdt_0.unknownCTDA_CIS2s.empty() );
       REQUIRE_FALSE( idx_0_qsdt_0.logEntry.isPresent() );
 
@@ -438,8 +433,8 @@ TEST_CASE("QuestRecord")
       const auto SCHR_1_0 = std::string_view(reinterpret_cast<const char*>(idx_1_qsdt_0.unknownSCHR.data()), idx_1_qsdt_0.unknownSCHR.size());
       REQUIRE( SCHR_1_0 == "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0"sv );
       REQUIRE( idx_1_qsdt_0.unknownSCTX.empty() );
-      REQUIRE( idx_1_qsdt_0.hasQNAM );
-      REQUIRE( idx_1_qsdt_0.unknownQNAM == 0x00024151 );
+      REQUIRE( idx_1_qsdt_0.unknownQNAM.has_value() );
+      REQUIRE( idx_1_qsdt_0.unknownQNAM.value() == 0x00024151 );
       REQUIRE( idx_1_qsdt_0.unknownCTDA_CIS2s.empty() );
       REQUIRE_FALSE( idx_1_qsdt_0.logEntry.isPresent() );
 
@@ -454,8 +449,8 @@ TEST_CASE("QuestRecord")
       const auto SCHR_2_0 = std::string_view(reinterpret_cast<const char*>(idx_2_qsdt_0.unknownSCHR.data()), idx_2_qsdt_0.unknownSCHR.size());
       REQUIRE( SCHR_2_0 == "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0"sv );
       REQUIRE( idx_2_qsdt_0.unknownSCTX.empty() );
-      REQUIRE( idx_2_qsdt_0.hasQNAM );
-      REQUIRE( idx_2_qsdt_0.unknownQNAM == 0x00024151 );
+      REQUIRE( idx_2_qsdt_0.unknownQNAM.has_value() );
+      REQUIRE( idx_2_qsdt_0.unknownQNAM.value() == 0x00024151 );
       REQUIRE( idx_2_qsdt_0.unknownCTDA_CIS2s.empty() );
       REQUIRE_FALSE( idx_2_qsdt_0.logEntry.isPresent() );
 

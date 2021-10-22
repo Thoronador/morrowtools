@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2014  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2014, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,6 +19,9 @@
 */
 
 #include "QSDTRecord.hpp"
+#ifndef SR_UNSAVEABLE_RECORDS
+#include <iostream>
+#endif // SR_UNSAVEABLE_RECORDS
 
 namespace SRTP
 {
@@ -28,7 +31,7 @@ QSDTRecord::QSDTRecord()
   nextQuestFormID(0),
   unknownSCHR(BinarySubRecord()),
   unknownSCTX(""),
-  hasQNAM(false), unknownQNAM(0),
+  unknownQNAM(std::nullopt),
   unknownCTDA_CIS2s(std::vector<CTDA_CIS2_compound>()),
   logEntry(LocalizedString())
 {
@@ -37,12 +40,13 @@ QSDTRecord::QSDTRecord()
 #ifndef SR_NO_RECORD_EQUALITY
 bool QSDTRecord::operator==(const QSDTRecord& other) const
 {
-  return (isFinisher == other.isFinisher) && (unknownCTDA_CIS2s == other.unknownCTDA_CIS2s)
+  return (isFinisher == other.isFinisher)
       && (nextQuestFormID == other.nextQuestFormID)
-      && (hasQNAM == other.hasQNAM) && ((unknownQNAM == other.unknownQNAM) || !hasQNAM)
-      && (logEntry == other.logEntry)
       && (unknownSCHR == other.unknownSCHR)
-      && (unknownSCTX == other.unknownSCTX);
+      && (unknownSCTX == other.unknownSCTX)
+      && (unknownQNAM == other.unknownQNAM)
+      && (unknownCTDA_CIS2s == other.unknownCTDA_CIS2s)
+      && (logEntry == other.logEntry);
 }
 #endif // SR_NO_RECORD_EQUALITY
 
@@ -63,7 +67,7 @@ uint32_t QSDTRecord::getWriteSize() const
   {
     writeSize = writeSize + 4 /* SCTX */ + 2 /* 2 bytes for length */ + unknownSCTX.length() /* length */;
   }
-  if (hasQNAM)
+  if (unknownQNAM.has_value())
   {
     writeSize = writeSize + 4 /* QNAM */ + 2 /* 2 bytes for length */ + 4 /* fixed size */;
   }
@@ -72,6 +76,58 @@ uint32_t QSDTRecord::getWriteSize() const
     writeSize += compound.getWriteSize();
   }
   return writeSize;
+}
+
+bool QSDTRecord::saveToStream(std::ostream& output) const
+{
+  // write QSDT
+  output.write(reinterpret_cast<const char*>(&cQSDT), 4);
+  uint16_t subLength = 1;
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
+  output.write(reinterpret_cast<const char*>(&isFinisher), 1);
+
+  if (nextQuestFormID != 0)
+  {
+    // write NAM0
+    output.write(reinterpret_cast<const char*>(&cNAM0), 4);
+    subLength = 4;
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    output.write(reinterpret_cast<const char*>(&nextQuestFormID), 4);
+  }
+  if (unknownSCHR.isPresent())
+  {
+    if (!unknownSCHR.saveToStream(output, cSCHR))
+    {
+      std::cerr << "Error while writing subrecord SCHR of QUST!\n";
+      return false;
+    }
+  }
+  if (!unknownSCTX.empty())
+  {
+    // write script text (SCTX)
+    output.write(reinterpret_cast<const char*>(&cSCTX), 4);
+    subLength = unknownSCTX.length(); // not NUL-terminated
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    output.write(unknownSCTX.c_str(), subLength);
+  }
+  if (unknownQNAM.has_value())
+  {
+    // write QNAM
+    output.write(reinterpret_cast<const char*>(&cQNAM), 4);
+    subLength = 4;
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    output.write(reinterpret_cast<const char*>(&unknownQNAM.value()), 4);
+  }
+  for (const auto& ctda_cis2: unknownCTDA_CIS2s)
+  {
+    if (!ctda_cis2.saveToStream(output))
+    {
+      std::cerr << "Error while writing subrecord CTDA or CIS2 of QUST!\n";
+      return false;
+    }
+  }
+  // write CNAM
+  return logEntry.saveToStream(output, cCNAM);
 }
 #endif // SR_UNSAVEABLE_RECORDS
 

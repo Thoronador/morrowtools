@@ -21,6 +21,10 @@
 #ifndef SR_QUEST_QSDTRECORD_HPP
 #define SR_QUEST_QSDTRECORD_HPP
 
+#ifndef SR_UNSAVEABLE_RECORDS
+#include <fstream>
+#endif
+#include <optional>
 #include <string>
 #include <vector>
 #include "../BinarySubRecord.hpp"
@@ -32,14 +36,13 @@ namespace SRTP
 
 struct QSDTRecord
 {
-  bool isFinisher; //true, if entry finishes the quest
-  uint32_t nextQuestFormID; //subrecord NAM0
+  bool isFinisher; // true, if entry finishes the quest
+  uint32_t nextQuestFormID; // subrecord NAM0
   BinarySubRecord unknownSCHR;
   std::string unknownSCTX;
-  bool hasQNAM;
-  uint32_t unknownQNAM;
+  std::optional<uint32_t> unknownQNAM;
   std::vector<CTDA_CIS2_compound> unknownCTDA_CIS2s;
-  LocalizedString logEntry; //CNAM - string ID of log entry
+  LocalizedString logEntry; // CNAM - string ID of log entry
 
   /* constructor */
   QSDTRecord();
@@ -55,6 +58,14 @@ struct QSDTRecord
    * \return Returns the size in bytes that the instances's data would occupy.
    */
   uint32_t getWriteSize() const;
+
+  /** \brief Writes the record to the given output stream.
+   *
+   * \param output  the output stream
+   * \return Returns true on success (record was written to stream).
+   *         Returns false, if an error occurred.
+   */
+  bool saveToStream(std::ostream& output) const;
   #endif
 }; // struct
 

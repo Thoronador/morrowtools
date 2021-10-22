@@ -33,7 +33,8 @@ QuestRecord::QuestRecord()
   editorID(""),
   unknownVMAD(BinarySubRecord()),
   name(LocalizedString()),
-  hasENAM(false), unknownENAM(0),
+  unknownDNAM({ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }),
+  unknownENAM(std::nullopt),
   unknownQTGLs(std::vector<uint32_t>()),
   unknownCTDA_CIS2s(std::vector<CTDA_CIS2_compound>()),
   filter(""),
@@ -42,7 +43,6 @@ QuestRecord::QuestRecord()
   unknownANAM(0),
   aliases(std::vector<AliasEntry>())
 {
-  memset(unknownDNAM, 0, 12);
 }
 
 #ifndef SR_NO_RECORD_EQUALITY
@@ -51,8 +51,8 @@ bool QuestRecord::equals(const QuestRecord& other) const
   return equalsBasic(other) && (editorID == other.editorID)
     && (unknownVMAD == other.unknownVMAD)
     && (name == other.name)
-    && (memcmp(unknownDNAM, other.unknownDNAM, 12) == 0)
-    && (hasENAM == other.hasENAM) && ((unknownENAM == other.unknownENAM) || (!hasENAM))
+    && (unknownDNAM == other.unknownDNAM)
+    && (unknownENAM == other.unknownENAM)
     && (unknownQTGLs == other.unknownQTGLs)
     && (unknownCTDA_CIS2s == other.unknownCTDA_CIS2s)
     && (filter == other.filter) && (indices == other.indices)
@@ -65,7 +65,7 @@ bool QuestRecord::equals(const QuestRecord& other) const
 uint32_t QuestRecord::getWriteSize() const
 {
   uint32_t writeSize = 4 /* EDID */ + 2 /* 2 bytes for length */
-        + editorID.length()+1 /* length of string +1 byte for NUL-termination */
+        + editorID.length() + 1 /* length of string +1 byte for NUL-termination */
         + 4 /* DNAM */ + 2 /* 2 bytes for length */ + 12 /* fixed size */
         + 4 /* NEXT */ + 2 /* 2 bytes for length */ + 0 /* fixed size */
         + 4 /* ANAM */ + 2 /* 2 bytes for length */ + 4 /* fixed size */;
@@ -77,7 +77,7 @@ uint32_t QuestRecord::getWriteSize() const
   {
     writeSize += name.getWriteSize();
   }
-  if (hasENAM)
+  if (unknownENAM.has_value())
   {
     writeSize = writeSize + 4 /* ENAM */ + 2 /* 2 bytes for length */ + 4 /* fixed size */;
   }
@@ -140,15 +140,15 @@ bool QuestRecord::saveToStream(std::ostream& output) const
   output.write(reinterpret_cast<const char*>(&cDNAM), 4);
   subLength = 12;
   output.write(reinterpret_cast<const char*>(&subLength), 2);
-  output.write(reinterpret_cast<const char*>(unknownDNAM), 12);
+  output.write(reinterpret_cast<const char*>(unknownDNAM.data()), 12);
 
-  if (hasENAM)
+  if (unknownENAM.has_value())
   {
     // write ENAM
     output.write(reinterpret_cast<const char*>(&cENAM), 4);
     subLength = 4;
     output.write(reinterpret_cast<const char*>(&subLength), 2);
-    output.write(reinterpret_cast<const char*>(&unknownENAM), 4);
+    output.write(reinterpret_cast<const char*>(&unknownENAM.value()), 4);
   }
 
   for (const uint32_t element: unknownQTGLs)
@@ -183,85 +183,25 @@ bool QuestRecord::saveToStream(std::ostream& output) const
   subLength = 0; // zero, because it is just a marker
   output.write(reinterpret_cast<const char*>(&subLength), 2);
 
-  if (!indices.empty())
+  // indices
+  for (const auto& index: indices)
   {
-    unsigned int i, j, k;
-    const unsigned int idx_count = indices.size();
-    for (i=0; i<idx_count; ++i)
+    // write INDX
+    output.write(reinterpret_cast<const char*>(&cINDX), 4);
+    subLength = 4;
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    output.write(reinterpret_cast<const char*>(&index.index), 2);
+    output.write(reinterpret_cast<const char*>(&index.indexUnknownPart), 2);
+
+    for (const auto& qsdt: index.theQSDTs)
     {
-      //write INDX
-      output.write((const char*) &cINDX, 4);
-      //INDX's length
-      subLength = 4;
-      output.write((const char*) &subLength, 2);
-      //write index
-      output.write((const char*) &(indices[i].index), 2);
-      output.write((const char*) &(indices[i].indexUnknownPart), 2);
-
-      const unsigned int q_size = indices[i].theQSDTs.size();
-      for (j=0; j<q_size; ++j)
+      if (!qsdt.saveToStream(output))
       {
-        //write QSDT
-        output.write((const char*) &cQSDT, 4);
-        //QSDT's length
-        subLength = 1; //fixed
-        output.write((const char*) &subLength, 2);
-        //write QSTD
-        output.write((const char*) &(indices[i].theQSDTs[j].isFinisher), 1);
-
-        if (indices[i].theQSDTs[j].nextQuestFormID!=0)
-        {
-          //write NAM0
-          output.write((const char*) &cNAM0, 4);
-          //NAM0's length
-          subLength = 4;
-          output.write((const char*) &subLength, 2);
-          //write NAM0
-          output.write((const char*) &(indices[i].theQSDTs[j].nextQuestFormID), 4);
-        }
-        if (indices[i].theQSDTs[j].unknownSCHR.isPresent())
-        {
-          if (!indices[i].theQSDTs[j].unknownSCHR.saveToStream(output, cSCHR))
-          {
-            std::cerr << "Error while writing subrecord SCHR of QUST!\n";
-            return false;
-          }
-        }
-        if (!indices[i].theQSDTs[j].unknownSCTX.empty())
-        {
-          //write SCTX
-          output.write((const char*) &cSCTX, 4);
-          //SCTX's length
-          subLength = indices[i].theQSDTs[j].unknownSCTX.length(); //not NUL-terminated
-          output.write((const char*) &subLength, 2);
-          //write SCTX
-          output.write(indices[i].theQSDTs[j].unknownSCTX.c_str(), subLength);
-        }
-        if (indices[i].theQSDTs[j].hasQNAM)
-        {
-          //write QNAM
-          output.write((const char*) &cQNAM, 4);
-          //QNAM's length
-          subLength = 4;
-          output.write((const char*) &subLength, 2);
-          //write QNAM
-          output.write((const char*) &(indices[i].theQSDTs[j].unknownQNAM), 4);
-        }
-        const unsigned int compound_count = indices[i].theQSDTs[j].unknownCTDA_CIS2s.size();
-        for (k=0; k<compound_count; ++k)
-        {
-          if (!indices[i].theQSDTs[j].unknownCTDA_CIS2s[k].saveToStream(output))
-          {
-            std::cerr << "Error while writing subrecord CTDA or CIS2 of QUST!\n";
-            return false;
-          }
-        }//for k
-        //write CNAM
-        if (!indices[i].theQSDTs[j].logEntry.saveToStream(output, cCNAM))
-          return false;
-      }//for j
-    }//for i
-  }//indices
+        std::cerr << "Error while writing QSDT structure of QUST!\n";
+        return false;
+      }
+    }
+  }
 
   // write ANAM
   output.write(reinterpret_cast<const char*>(&cANAM), 4);
@@ -292,8 +232,8 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
   unknownVMAD.setPresence(false);
   name.reset();
   bool hasReadDNAM = false;
-  memset(unknownDNAM, 0, 12);
-  hasENAM = false; unknownENAM = 0;
+  unknownDNAM.fill(0);
+  unknownENAM.reset();
   unknownQTGLs.clear();
   CTDAData tempCTDA;
   filter.clear();
@@ -313,7 +253,7 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
   AliasEntry al_entry;
     bool toDo = false;
     bool hasReadFNAM = false;
-    uint32_t tempUint32, size_int, i;
+    uint32_t tempUint32, size_int;
     ComponentData tempComp;
   lastReadRec = cEDID;
   while (bytesRead < readSize)
@@ -358,12 +298,12 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
            bytesRead += 2;
            if (subLength != 12)
            {
-             std::cerr << "Error: sub record DNAM of QUST has invalid length ("
+             std::cerr << "Error: Sub record DNAM of QUST has invalid length ("
                        << subLength << " bytes). Should be 12 bytes.\n";
              return false;
            }
            // read DNAM
-           in_File.read(reinterpret_cast<char*>(unknownDNAM), 12);
+           in_File.read(reinterpret_cast<char*>(unknownDNAM.data()), 12);
            bytesRead += 12;
            if (!in_File.good())
            {
@@ -374,15 +314,15 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
            lastReadRec = cDNAM;
            break;
       case cENAM:
-           if (hasENAM)
+           if (unknownENAM.has_value())
            {
              std::cerr << "Error: QUST seems to have more than one ENAM subrecord.\n";
              return false;
            }
-           if (!loadUint32SubRecordFromStream(in_File, cENAM, unknownENAM, false))
+           unknownENAM = 0;
+           if (!loadUint32SubRecordFromStream(in_File, cENAM, unknownENAM.value(), false))
              return false;
            bytesRead += 6;
-           hasENAM = true;
            lastReadRec = cENAM;
            break;
       case cQTGL:
@@ -428,7 +368,6 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
              std::cerr << "Error: QUST seems to have more than one FLTR subrecord.\n";
              return false;
            }
-           // read FLTR
            if (!loadString512FromStream(in_File, filter, buffer, cFLTR, false, bytesRead))
              return false;
            lastReadRec = cFLTR;
@@ -457,25 +396,25 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
              indices.push_back(i_entry);
            }
            indexPartStarted = true;
-           //INDX's length
-           in_File.read((char*) &subLength, 2);
+           // INDX's length
+           in_File.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
-           if (subLength!=4)
+           if (subLength != 4)
            {
-             std::cerr <<"Error: sub record INDX of QUST has invalid length ("<<subLength
-                       <<" bytes). Should be four bytes.\n";
+             std::cerr << "Error: Sub record INDX of QUST has invalid length ("
+                       << subLength << " bytes). Should be four bytes.\n";
              return false;
            }
-           //read index
-           in_File.read((char*) &(i_entry.index), 2);
-           in_File.read((char*) &(i_entry.indexUnknownPart), 2);
+           // read index
+           in_File.read(reinterpret_cast<char*>(&i_entry.index), 2);
+           in_File.read(reinterpret_cast<char*>(&i_entry.indexUnknownPart), 2);
            bytesRead += 4;
            if (!in_File.good())
            {
              std::cerr << "Error while reading subrecord INDX of QUST!\n";
              return false;
            }
-           //preset for other fields of index entry
+           // preset for other fields of index entry
            i_entry.theQSDTs.clear();
            hasUnpushedIndexEntry = true;
            lastReadRec = cINDX;
@@ -495,23 +434,22 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
            }
            tempQSDT.isFinisher = false;
            tempQSDT.nextQuestFormID = 0;
-           tempQSDT.hasQNAM = false;
-           tempQSDT.unknownQNAM = 0;
+           tempQSDT.unknownQNAM.reset();
            tempQSDT.unknownSCHR.setPresence(false);
            tempQSDT.unknownSCTX.clear();
            tempQSDT.unknownCTDA_CIS2s.clear();
            tempQSDT.logEntry.reset();
-           //QSDT's length
-           in_File.read((char*) &subLength, 2);
+           // QSDT's length
+           in_File.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
            if (subLength != 1)
            {
-             std::cerr << "Error: sub record QSDT of QUST has invalid length ("
+             std::cerr << "Error: Sub record QSDT of QUST has invalid length ("
                        << subLength << " bytes). Should be one byte.\n";
              return false;
            }
-           //read QSDT
-           memset(buffer, 0, 1);
+           // read QSDT
+           buffer[0] = 0;
            in_File.read(buffer, 1);
            bytesRead += 1;
            if (!in_File.good())
@@ -530,18 +468,17 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                        << "of QSDT encountered!\n";
              return false;
            }
-           if (tempQSDT.nextQuestFormID!=0)
+           if (tempQSDT.nextQuestFormID != 0)
            {
              std::cerr << "Error: QUST seems to have more than one NAM0 subrecord per QSDT.\n";
              return false;
            }
-           //read NAM0
            if (!loadUint32SubRecordFromStream(in_File, cNAM0, tempQSDT.nextQuestFormID, false))
              return false;
            bytesRead += 6;
-           if (tempQSDT.nextQuestFormID==0)
+           if (tempQSDT.nextQuestFormID == 0)
            {
-             std::cerr << "Error: subrecord NAM0 of QUST is zero!\n";
+             std::cerr << "Error: Subrecord NAM0 of QUST is zero!\n";
              return false;
            }
            lastReadRec = cNAM0;
@@ -553,16 +490,15 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                        << "of QSDT encountered!\n";
              return false;
            }
-           if (tempQSDT.hasQNAM)
+           if (tempQSDT.unknownQNAM.has_value())
            {
              std::cerr << "Error: QUST seems to have more than one QNAM subrecord per QSDT.\n";
              return false;
            }
-           //read QNAM
-           if (!loadUint32SubRecordFromStream(in_File, cQNAM, tempQSDT.unknownQNAM, false))
+           tempQSDT.unknownQNAM = 0;
+           if (!loadUint32SubRecordFromStream(in_File, cQNAM, tempQSDT.unknownQNAM.value(), false))
              return false;
            bytesRead += 6;
-           tempQSDT.hasQNAM = true;
            lastReadRec = cQNAM;
            break;
       case cSCHR:
@@ -586,7 +522,7 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
            // check length
            if (tempQSDT.unknownSCHR.size() != 20)
            {
-             std::cerr << "Error: sub record SCHR of QUST has invalid length ("
+             std::cerr << "Error: Sub record SCHR of QUST has invalid length ("
                        << tempQSDT.unknownSCHR.size() << " bytes). Should be 20 bytes.\n";
              return false;
            }
@@ -604,24 +540,9 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
              std::cerr << "Error: QUST seems to have more than one SCTX subrecord per QSDT.\n";
              return false;
            }
-           //SCTX's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength>511)
-           {
-             std::cerr <<"Error: sub record SCTX of QUST is longer than 511 characters!\n";
+           // read SCTX's length
+           if (!loadString512FromStream(in_File, tempQSDT.unknownSCTX, buffer, cSCTX, false, bytesRead))
              return false;
-           }
-           //read SCTX's stuff
-           memset(buffer, 0, 512);
-           in_File.read(buffer, subLength);
-           bytesRead += subLength;
-           if (!in_File.good())
-           {
-             std::cerr << "Error while reading subrecord SCTX of QUST!\n";
-             return false;
-           }
-           tempQSDT.unknownSCTX = std::string(buffer);
            lastReadRec = cSCTX;
            break;
       case cCNAM:
@@ -629,7 +550,7 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
            {
              std::cerr << "Error in subrecord sequence of QUST! CNAM should "
                        << "follow in index part after QSDT, but previous record was \""
-                       << IntTo4Char(lastReadRec) <<"\" and no index was "
+                       << IntTo4Char(lastReadRec) << "\" and no index was "
                        << "started yet.\n";
              return false;
            }
@@ -637,7 +558,7 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
            {
              std::cerr << "Error in subrecord sequence of QUST! CNAM should "
                        << "follow in index part after QSDT, but previous record was \""
-                       << IntTo4Char(lastReadRec) <<"\" and no QSDT was "
+                       << IntTo4Char(lastReadRec) << "\" and no QSDT was "
                        << "started yet.\n";
              return false;
            }
@@ -646,7 +567,6 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
              std::cerr << "Error: QUST seems to have more than one CNAM subrecord per QSDT.\n";
              return false;
            }
-           //read CNAM
            if (!tempQSDT.logEntry.loadFromStream(in_File, cCNAM, false, bytesRead, localized, table, buffer))
            {
              std::cerr << "Error while reading subrecord CNAM of QUST!\n";
@@ -664,21 +584,21 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                tempQOBJ.theQSTAs.push_back(tempQSTA);
                hasUnpushedQSTAEntry = false;
              }
-             //now push the real record
+             // now push the real record
              theQOBJs.push_back(tempQOBJ);
            }
            tempQOBJ.clear();
-           //QOBJ's length
-           in_File.read((char*) &subLength, 2);
+           // QOBJ's length
+           in_File.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
-           if (subLength!=2)
+           if (subLength != 2)
            {
-             std::cerr <<"Error: sub record QOBJ of QUST has invalid length ("
-                       <<subLength <<" bytes). Should be two bytes.\n";
+             std::cerr << "Error: Sub record QOBJ of QUST has invalid length ("
+                       << subLength << " bytes). Should be two bytes.\n";
              return false;
            }
-           //read index
-           in_File.read((char*) &(tempQOBJ.unknownQOBJ), 2);
+           // read index
+           in_File.read(reinterpret_cast<char*>(&tempQOBJ.unknownQOBJ), 2);
            bytesRead += 2;
            if (!in_File.good())
            {
@@ -686,12 +606,12 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
              return false;
            }
 
-           //read FNAM
+           // read FNAM
            if (!loadUint32SubRecordFromStream(in_File, cFNAM, tempQOBJ.unknownFNAM, true))
              return false;
            bytesRead += 10;
 
-           //read NNAM
+           // read NNAM
            if (!tempQOBJ.displayText.loadFromStream(in_File, cNNAM, true, bytesRead, localized, table, buffer))
              return false;
 
@@ -711,17 +631,17 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
            }
            tempQSTA.clear();
 
-           //QSTA's length
-           in_File.read((char*) &subLength, 2);
+           // QSTA's length
+           in_File.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
-           if (subLength!=8)
+           if (subLength != 8)
            {
-             std::cerr <<"Error: sub record QOBJ of QUST has invalid length ("
-                       <<subLength <<" bytes). Should be eight bytes.\n";
+             std::cerr << "Error: Sub record QOBJ of QUST has invalid length ("
+                       << subLength << " bytes). Should be eight bytes.\n";
              return false;
            }
-           //read QSTA
-           in_File.read((char*) &(tempQSTA.unknownQSTA), 8);
+           // read QSTA
+           in_File.read(reinterpret_cast<char*>(&tempQSTA.unknownQSTA), 8);
            bytesRead += 8;
            if (!in_File.good())
            {
@@ -732,15 +652,15 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
            lastReadRec = cQSTA;
            break;
       case cCIS2:
-           //CIS2's length
-           in_File.read((char*) &subLength, 2);
+           // CIS2's length
+           in_File.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
-           if (subLength>511)
+           if (subLength > 511)
            {
-             std::cerr <<"Error: sub record CIS2 of QUST is longer than 511 characters!\n";
+             std::cerr << "Error: sub record CIS2 of QUST is longer than 511 characters!\n";
              return false;
            }
-           //read CIS2's stuff
+           // read CIS2's stuff
            memset(buffer, 0, 512);
            in_File.read(buffer, subLength);
            bytesRead += subLength;
@@ -782,7 +702,7 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
            }
            else
            {
-             //normal record
+             // normal record
              if (indexPartStarted)
              {
                std::cerr << "Error while reading record of type QUST: encountered"
@@ -817,14 +737,14 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
            }
            if (hasUnpushedQOBJEntry)
            {
-             //push previous QOBJ entry
-             //... and check for QSTA first
+             // push previous QOBJ entry
+             // ... and check for QSTA first
              if (hasUnpushedQSTAEntry)
              {
                tempQOBJ.theQSTAs.push_back(tempQSTA);
                hasUnpushedQSTAEntry = false;
              }
-             //now push the real record
+             // now push the real record
              theQOBJs.push_back(tempQOBJ);
              hasUnpushedQOBJEntry = false;
            }
@@ -833,7 +753,7 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
              std::cerr << "Error: QUST seems to have more than one ANAM subrecord.\n";
              return false;
            }
-           //read ANAM
+           // read ANAM
            if (!loadUint32SubRecordFromStream(in_File, cANAM, unknownANAM, false))
              return false;
            bytesRead += 6;
@@ -842,15 +762,15 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
            break;
       case cALST:
       case cALLS:
-           //alias started
+           // alias started
            al_entry.clear();
-           //ALST is always first
-           //read ALST/ALLS
+           // ALST is always first
+           // read ALST/ALLS
            if (!loadUint32SubRecordFromStream(in_File, subRecName, al_entry.unknownALST, false))
              return false;
            bytesRead += 6;
 
-           if (subRecName==cALST)
+           if (subRecName == cALST)
            {
              al_entry.hasALLS = false;
              al_entry.unknownALLS = 0;
@@ -868,8 +788,8 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
            hasReadFNAM = false;
            while (toDo)
            {
-             //read next subrecord
-             in_File.read((char*) &subRecName, 4);
+             // read next subrecord
+             in_File.read(reinterpret_cast<char*>(&subRecName), 4);
              bytesRead += 4;
              switch (subRecName)
              {
@@ -879,24 +799,9 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                       std::cerr << "Error: QUST seems to have more than one ALID subrecord per alias structure.\n";
                       return false;
                     }
-                    //ALID's length
-                    in_File.read((char*) &subLength, 2);
-                    bytesRead += 2;
-                    if (subLength>511)
-                    {
-                      std::cerr <<"Error: sub record ALID of QUST is longer than 511 characters!\n";
+                    // read ALID
+                    if (!loadString512FromStream(in_File, al_entry.aliasID, buffer, cALID, false, bytesRead))
                       return false;
-                    }
-                    //read ALID's stuff
-                    memset(buffer, 0, 512);
-                    in_File.read(buffer, subLength);
-                    bytesRead += subLength;
-                    if (!in_File.good())
-                    {
-                      std::cerr << "Error while reading subrecord ALID of QUST!\n";
-                      return false;
-                    }
-                    al_entry.aliasID = std::string(buffer);
                     break;
                case cFNAM:
                     if (hasReadFNAM)
@@ -904,7 +809,6 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                       std::cerr << "Error: QUST seems to have more than one FNAM subrecord per alias structure.\n";
                       return false;
                     }
-                    //read FNAM
                     if (!loadUint32SubRecordFromStream(in_File, cFNAM, al_entry.unknownFNAM, false))
                       return false;
                     bytesRead += 6;
@@ -916,42 +820,39 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                       std::cerr << "Error: QUST seems to have more than one ALFA subrecord per alias structure.\n";
                       return false;
                     }
-                    //read ALFA
                     if (!loadUint32SubRecordFromStream(in_File, cALFA, al_entry.unknownALFA, false))
                       return false;
                     bytesRead += 6;
                     al_entry.hasALFA = true;
                     break;
                case cALRT:
-                    if (al_entry.locationRefTypeFormID!=0)
+                    if (al_entry.locationRefTypeFormID != 0)
                     {
                       std::cerr << "Error: QUST seems to have more than one ALRT subrecord per alias structure.\n";
                       return false;
                     }
-                    //read ALRT
                     if (!loadUint32SubRecordFromStream(in_File, cALRT, al_entry.locationRefTypeFormID, false))
                       return false;
                     bytesRead += 6;
-                    //check content
-                    if (al_entry.locationRefTypeFormID==0)
+                    // check content
+                    if (al_entry.locationRefTypeFormID == 0)
                     {
-                      std::cerr << "Error: subrecord ALRT of QUST is zero!\n";
+                      std::cerr << "Error: Subrecord ALRT of QUST is zero!\n";
                       return false;
                     }
                     break;
                case cALCO:
-                    if (al_entry.createReferenceToObjectFormID!=0)
+                    if (al_entry.createReferenceToObjectFormID != 0)
                     {
                       std::cerr << "Error: QUST seems to have more than one ALCO subrecord per alias structure.\n";
                       return false;
                     }
-                    //read ALCO
                     if (!loadUint32SubRecordFromStream(in_File, cALCO, al_entry.createReferenceToObjectFormID, false))
                       return false;
                     bytesRead += 6;
-                    if (al_entry.createReferenceToObjectFormID==0)
+                    if (al_entry.createReferenceToObjectFormID == 0)
                     {
-                      std::cerr << "Error: subrecord ALCO of QUST is zero!\n";
+                      std::cerr << "Error: Subrecord ALCO of QUST is zero!\n";
                       return false;
                     }
                     break;
@@ -961,7 +862,6 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                       std::cerr << "Error: QUST seems to have more than one ALCA subrecord per alias structure.\n";
                       return false;
                     }
-                    //read ALCA
                     if (!loadUint32SubRecordFromStream(in_File, cALCA, al_entry.unknownALCA, false))
                       return false;
                     bytesRead += 6;
@@ -973,25 +873,23 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                       std::cerr << "Error: QUST seems to have more than one ALCL subrecord per alias structure.\n";
                       return false;
                     }
-                    //read ALCL
                     if (!loadUint32SubRecordFromStream(in_File, cALCL, al_entry.unknownALCL, false))
                       return false;
                     bytesRead += 6;
                     al_entry.hasALCL = true;
                     break;
                case cALDN:
-                    if (al_entry.displayNameFormID!=0)
+                    if (al_entry.displayNameFormID != 0)
                     {
                       std::cerr << "Error: QUST seems to have more than one ALDN subrecord per alias structure.\n";
                       return false;
                     }
-                    //read ALDN
                     if (!loadUint32SubRecordFromStream(in_File, cALDN, al_entry.displayNameFormID, false))
                       return false;
                     bytesRead += 6;
-                    if (al_entry.displayNameFormID==0)
+                    if (al_entry.displayNameFormID == 0)
                     {
-                      std::cerr << "Error: subrecord ALDN of QUST is zero!\n";
+                      std::cerr << "Error: Subrecord ALDN of QUST is zero!\n";
                       return false;
                     }
                     break;
@@ -1001,39 +899,39 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                       std::cerr << "Error: QUST seems to have more than one COCT subrecord per alias structure.\n";
                       return false;
                     }
-                    //read COCT
+                    // read COCT
                     size_int = 0;
                     if (!loadUint32SubRecordFromStream(in_File, cCOCT, size_int, false))
                       return false;
                     bytesRead += 6;
-                    if (size_int==0)
+                    if (size_int == 0)
                     {
-                      std::cerr << "Error: subrecord COCT of QUST has invalid value!\n";
+                      std::cerr << "Error: Subrecord COCT of QUST has invalid value!\n";
                       return false;
                     }
 
-                    for (i=0; i<size_int; ++i)
+                    for (uint32_t i = 0; i < size_int; ++i)
                     {
-                      //read CNTO
-                      in_File.read((char*) &subRecName, 4);
+                      // read CNTO
+                      in_File.read(reinterpret_cast<char*>(&subRecName), 4);
                       bytesRead += 4;
-                      if (subRecName!=cCNTO)
+                      if (subRecName != cCNTO)
                       {
                         UnexpectedRecord(cCNTO, subRecName);
                         return false;
                       }
-                      //CNTO's length
-                      in_File.read((char*) &subLength, 2);
+                      // CNTO's length
+                      in_File.read(reinterpret_cast<char*>(&subLength), 2);
                       bytesRead += 2;
-                      if (subLength!=8)
+                      if (subLength != 8)
                       {
-                        std::cerr <<"Error: sub record CNTO of QUST has invalid length ("
-                                  <<subLength<<" bytes). Should be 8 bytes!\n";
+                        std::cerr << "Error: Sub record CNTO of QUST has invalid length ("
+                                  << subLength << " bytes). Should be 8 bytes!\n";
                         return false;
                       }
-                      //read CNTO's stuff
-                      in_File.read((char*) &tempComp.formID, 4);
-                      in_File.read((char*) &tempComp.count, 4);
+                      // read CNTO's stuff
+                      in_File.read(reinterpret_cast<char*>(&tempComp.formID), 4);
+                      in_File.read(reinterpret_cast<char*>(&tempComp.count), 4);
                       bytesRead += 8;
                       if (!in_File.good())
                       {
@@ -1041,24 +939,24 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                         return false;
                       }
                       al_entry.components.push_back(tempComp);
-                    }//for
+                    }
                     break;
                case cCNTO:
                     /*Sometimes a single CNTO record appears without a previous
                       COCT record. I'm not sure why this would happen, but let's
                       assume this is one single component entry. */
                     //CNTO's length
-                    in_File.read((char*) &subLength, 2);
+                    in_File.read(reinterpret_cast<char*>(&subLength), 2);
                     bytesRead += 2;
-                    if (subLength!=8)
+                    if (subLength != 8)
                     {
-                      std::cerr <<"Error: sub record CNTO of QUST has invalid length ("
-                                <<subLength<<" bytes). Should be 8 bytes!\n";
+                      std::cerr << "Error: Sub record CNTO of QUST has invalid length ("
+                                << subLength << " bytes). Should be 8 bytes!\n";
                       return false;
                     }
-                    //read CNTO's stuff
-                    in_File.read((char*) &tempComp.formID, 4);
-                    in_File.read((char*) &tempComp.count, 4);
+                    // read CNTO's stuff
+                    in_File.read(reinterpret_cast<char*>(&tempComp.formID), 4);
+                    in_File.read(reinterpret_cast<char*>(&tempComp.count), 4);
                     bytesRead += 8;
                     if (!in_File.good())
                     {
@@ -1073,46 +971,8 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                       std::cerr << "Error: QUST seems to have more than one KSIZ subrecord per alias structure.\n";
                       return false;
                     }
-                    //read KSIZ
-                    size_int = 0;
-                    if (!loadUint32SubRecordFromStream(in_File, cKSIZ, size_int, false))
+                    if (!loadKeywords(in_File, al_entry.keywordArray, bytesRead))
                       return false;
-                    bytesRead += 6;
-                    if (size_int==0)
-                    {
-                      std::cerr << "Error: subrecord KSIZ of QUST has invalid value!\n";
-                      return false;
-                    }
-
-                    //read KWDA
-                    in_File.read((char*) &subRecName, 4);
-                    bytesRead += 4;
-                    if (subRecName!=cKWDA)
-                    {
-                      UnexpectedRecord(cKWDA, subRecName);
-                      return false;
-                    }
-                    //KWDA's length
-                    in_File.read((char*) &subLength, 2);
-                    bytesRead += 2;
-                    if (subLength!=4*size_int)
-                    {
-                      std::cerr <<"Error: sub record KWDA of QUST has invalid length ("
-                                <<subLength<<" bytes). Should be "<<4*size_int<<" bytes!\n";
-                      return false;
-                    }
-                    //read KWDA's stuff
-                    for (i=0; i<size_int; ++i)
-                    {
-                      in_File.read((char*) &tempUint32, 4);
-                      bytesRead += 4;
-                      if (!in_File.good())
-                      {
-                        std::cerr << "Error while reading subrecord KWDA of QUST!\n";
-                        return false;
-                      }
-                      al_entry.keywordArray.push_back(tempUint32);
-                    }//for
                     break;
                case cALFE:
                     if (al_entry.hasALFE)
@@ -1120,7 +980,6 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                       std::cerr << "Error: QUST seems to have more than one ALFE subrecord per alias structure.\n";
                       return false;
                     }
-                    //read ALFE
                     if (!loadUint32SubRecordFromStream(in_File, cALFE, al_entry.unknownALFE, false))
                       return false;
                     bytesRead += 6;
@@ -1132,7 +991,6 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                       std::cerr << "Error: QUST seems to have more than one ALFD subrecord per alias structure.\n";
                       return false;
                     }
-                    //read ALFD
                     if (!loadUint32SubRecordFromStream(in_File, cALFD, al_entry.unknownALFD, false))
                       return false;
                     bytesRead += 6;
@@ -1144,41 +1002,38 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                       std::cerr << "Error: QUST seems to have more than one ALFI subrecord per alias structure.\n";
                       return false;
                     }
-                    //read ALFI
                     if (!loadUint32SubRecordFromStream(in_File, cALFI, al_entry.forcedIntoAliasID, false))
                       return false;
                     bytesRead += 6;
                     al_entry.hasALFI = true;
                     break;
                case cALFL:
-                    if (al_entry.specificLocationFormID!=0)
+                    if (al_entry.specificLocationFormID != 0)
                     {
                       std::cerr << "Error: QUST seems to have more than one ALFL subrecord per alias structure.\n";
                       return false;
                     }
-                    //read ALFL
                     if (!loadUint32SubRecordFromStream(in_File, cALFL, al_entry.specificLocationFormID, false))
                       return false;
                     bytesRead += 6;
-                    if (al_entry.specificLocationFormID==0)
+                    if (al_entry.specificLocationFormID == 0)
                     {
-                      std::cerr << "Error: subrecord ALFL of QUST is zero!\n";
+                      std::cerr << "Error: Subrecord ALFL of QUST is zero!\n";
                       return false;
                     }
                     break;
                case cALFR:
-                    if (al_entry.specificReferenceID!=0)
+                    if (al_entry.specificReferenceID != 0)
                     {
                       std::cerr << "Error: QUST seems to have more than one ALFR subrecord per alias structure.\n";
                       return false;
                     }
-                    //read ALFR
                     if (!loadUint32SubRecordFromStream(in_File, cALFR, al_entry.specificReferenceID, false))
                       return false;
                     bytesRead += 6;
-                    if (al_entry.specificReferenceID==0)
+                    if (al_entry.specificReferenceID == 0)
                     {
-                      std::cerr << "Error: subrecord ALFR of QUST is zero!\n";
+                      std::cerr << "Error: Subrecord ALFR of QUST is zero!\n";
                       return false;
                     }
                     break;
@@ -1188,7 +1043,6 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                       std::cerr << "Error: QUST seems to have more than one ALNA subrecord per alias structure.\n";
                       return false;
                     }
-                    //read ALNA
                     if (!loadUint32SubRecordFromStream(in_File, cALNA, al_entry.unknownALNA, false))
                       return false;
                     bytesRead += 6;
@@ -1200,41 +1054,38 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                       std::cerr << "Error: QUST seems to have more than one ALNT subrecord per alias structure.\n";
                       return false;
                     }
-                    //read ALNT
                     if (!loadUint32SubRecordFromStream(in_File, cALNT, al_entry.unknownALNT, false))
                       return false;
                     bytesRead += 6;
                     al_entry.hasALNT = true;
                     break;
                case cALUA:
-                    if (al_entry.uniqueActorFormID!=0)
+                    if (al_entry.uniqueActorFormID != 0)
                     {
                       std::cerr << "Error: QUST seems to have more than one ALUA subrecord per alias structure.\n";
                       return false;
                     }
-                    //read ALUA
                     if (!loadUint32SubRecordFromStream(in_File, cALUA, al_entry.uniqueActorFormID, false))
                       return false;
                     bytesRead += 6;
-                    if (al_entry.uniqueActorFormID==0)
+                    if (al_entry.uniqueActorFormID == 0)
                     {
-                      std::cerr << "Error: subrecord ALUA of QUST is zero!\n";
+                      std::cerr << "Error: Subrecord ALUA of QUST is zero!\n";
                       return false;
                     }
                     break;
                case cALEQ:
-                    if (al_entry.externalAliasReferenceFormID!=0)
+                    if (al_entry.externalAliasReferenceFormID != 0)
                     {
                       std::cerr << "Error: QUST seems to have more than one ALEQ subrecord per alias structure.\n";
                       return false;
                     }
-                    //read ALEQ
                     if (!loadUint32SubRecordFromStream(in_File, cALEQ, al_entry.externalAliasReferenceFormID, false))
                       return false;
                     bytesRead += 6;
-                    if (al_entry.externalAliasReferenceFormID==0)
+                    if (al_entry.externalAliasReferenceFormID == 0)
                     {
-                      std::cerr << "Error: subrecord ALEQ of QUST is zero!\n";
+                      std::cerr << "Error: Subrecord ALEQ of QUST is zero!\n";
                       return false;
                     }
                     break;
@@ -1244,32 +1095,29 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                       std::cerr << "Error: QUST seems to have more than one ALEA subrecord per alias structure.\n";
                       return false;
                     }
-                    //read ALEA
                     if (!loadUint32SubRecordFromStream(in_File, cALEA, al_entry.unknownALEA, false))
                       return false;
                     bytesRead += 6;
                     al_entry.hasALEA = true;
                     break;
                case cALSP:
-                    //read ALSP
                     if (!loadUint32SubRecordFromStream(in_File, cALSP, tempUint32, false))
                       return false;
                     bytesRead += 6;
                     al_entry.spellFormIDs.push_back(tempUint32);
                     break;
                case cKNAM:
-                    if (al_entry.keywordFormID!=0)
+                    if (al_entry.keywordFormID != 0)
                     {
                       std::cerr << "Error: QUST seems to have more than one KNAM subrecord per alias structure.\n";
                       return false;
                     }
-                    //read KNAM
                     if (!loadUint32SubRecordFromStream(in_File, cKNAM, al_entry.keywordFormID, false))
                       return false;
                     bytesRead += 6;
-                    if (al_entry.keywordFormID==0)
+                    if (al_entry.keywordFormID == 0)
                     {
-                      std::cerr << "Error: subrecord KNAM of QUST is empty!\n";
+                      std::cerr << "Error: Subrecord KNAM of QUST is empty!\n";
                       return false;
                     }
                     break;
@@ -1292,67 +1140,47 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                       std::cerr << "Error: QUST seems to have more than one CIS2 subrecord per CTDA in alias structure.\n";
                       return false;
                     }
-                    //CIS2's length
-                    in_File.read((char*) &subLength, 2);
-                    bytesRead += 2;
-                    if (subLength>511)
-                    {
-                      std::cerr <<"Error: sub record CIS2 of QUST is longer than 511 characters!\n";
+                    // read CIS2
+                    if (!loadString512FromStream(in_File, al_entry.unknownCTDA_CIS2s.back().unknownCISx, buffer, cCIS2, false, bytesRead))
                       return false;
-                    }
-                    //read CIS2's stuff
-                    memset(buffer, 0, 512);
-                    in_File.read(buffer, subLength);
-                    bytesRead += subLength;
-                    if (!in_File.good())
-                    {
-                      std::cerr << "Error while reading subrecord CIS2 of QUST!\n";
-                      return false;
-                    }
-                    al_entry.unknownCTDA_CIS2s.back().unknownCISx = std::string(buffer);
                     break;
                case cSPOR:
-                    if (al_entry.spectatorOverridePackageListFormID!=0)
+                    if (al_entry.spectatorOverridePackageListFormID != 0)
                     {
                       std::cerr << "Error: QUST seems to have more than one SPOR subrecord per alias structure.\n";
                       return false;
                     }
-                    //read SPOR
                     if (!loadUint32SubRecordFromStream(in_File, cSPOR, al_entry.spectatorOverridePackageListFormID, false))
                       return false;
                     bytesRead += 6;
-                    //check content
-                    if (al_entry.spectatorOverridePackageListFormID==0)
+                    if (al_entry.spectatorOverridePackageListFormID == 0)
                     {
-                      std::cerr << "Error: subrecord SPOR of QUST is zero!\n";
+                      std::cerr << "Error: Subrecord SPOR of QUST is zero!\n";
                       return false;
                     }
                     break;
                case cECOR:
-                    if (al_entry.combatOverridePackageListFormID!=0)
+                    if (al_entry.combatOverridePackageListFormID != 0)
                     {
                       std::cerr << "Error: QUST seems to have more than one ECOR subrecord per alias structure.\n";
                       return false;
                     }
-                    //read ECOR
                     if (!loadUint32SubRecordFromStream(in_File, cECOR, al_entry.combatOverridePackageListFormID, false))
                       return false;
                     bytesRead += 6;
-                    if (al_entry.combatOverridePackageListFormID==0)
+                    if (al_entry.combatOverridePackageListFormID == 0)
                     {
-                      std::cerr << "Error: subrecord ECOR of QUST is zero!\n";
+                      std::cerr << "Error: Subrecord ECOR of QUST is zero!\n";
                       return false;
                     }
                     break;
                case cALFC:
-                    //read ALFC
                     if (!loadUint32SubRecordFromStream(in_File, cALFC, tempUint32, false))
                       return false;
                     bytesRead += 6;
                     al_entry.factionFormIDs.push_back(tempUint32);
                     break;
                case cALPC:
-                    //read ALPC
                     if (!loadUint32SubRecordFromStream(in_File, cALPC, tempUint32, false))
                       return false;
                     bytesRead += 6;
@@ -1364,49 +1192,48 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                       std::cerr << "Error: QUST seems to have more than one VTCK subrecord per alias structure.\n";
                       return false;
                     }
-                    //read VTCK
                     if (!loadUint32SubRecordFromStream(in_File, cVTCK, al_entry.unknownVTCK, false))
                       return false;
                     bytesRead += 6;
                     al_entry.hasVTCK = true;
                     break;
                case cALED:
-                    //end marker
+                    // end marker
                     //ALED's length
                     in_File.read((char*) &subLength, 2);
                     bytesRead += 2;
-                    if (subLength!=0)
+                    if (subLength != 0)
                     {
-                      std::cerr <<"Error: sub record ALED of QUST has invalid length ("
-                                <<subLength<<" bytes). Should be zero bytes!\n";
+                      std::cerr << "Error: Sub record ALED of QUST has invalid length ("
+                                << subLength << " bytes). Should be zero bytes!\n";
                       return false;
                     }
                     toDo = false;
                     break;
                default:
-                    std::cerr << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
+                    std::cerr << "Error: found unexpected subrecord \"" << IntTo4Char(subRecName)
                               << "\", but only ALID, FNAM, ALFA, ALRT, ALCO, "
                               << "ALCA, ALCL, ALDN, ALFE, ALFD, ALFI, ALFL, "
                               << "ALFR, ALUA, ALEQ, ALEA, ALSP, KNAM, CTDA, CIS2, SPOR, ECOR, ALFC, ALPC, VTCK or ALED are allowed here!\n";
                     return false;
-             }//swi
-           }//while
+             } // switch (inner, for alias)
+           } // while (inner, for alias)
 
-           //presence checks
-           if (!(hasReadFNAM))
+           // presence checks
+           if (!hasReadFNAM)
            {
-             std::cerr << "Error: at least one required subrecord of alias structure in QUST is missing!\n";
+             std::cerr << "Error: At least one required subrecord of alias structure in QUST is missing!\n";
              return false;
            }
            aliases.push_back(al_entry);
            lastReadRec = cALED;
            break;
       default:
-           std::cerr << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: Found unexpected subrecord \"" << IntTo4Char(subRecName)
                      << "\", but only VMAD, FULL, DNAM, FLTR, NEXT, INDX, QSDT, NAM0, CNAM or ANAM are allowed here!\n";
            return false;
-    }//swi
-  }//while
+    } // switch (outer)
+  } // while (outer)
 
   if (hasUnpushedIndexEntry)
   {
@@ -1431,7 +1258,7 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
   // presence checks
   if (!hasReadANAM || !hasReadDNAM)
   {
-    std::cerr << "Error: at least one required subrecord of QUST is missing!\n";
+    std::cerr << "Error: At least one required subrecord of QUST is missing!\n";
     std::cerr << "ANAM: " << hasReadANAM << "    DNAM: " << hasReadDNAM << "\n";
     return false;
   }
@@ -1447,10 +1274,10 @@ uint32_t QuestRecord::getRecordType() const
 bool QuestRecord::hasQOBJForIndex(const uint16_t idx) const
 {
   //Note to self: We should use an ordered structure for that
-  unsigned int i;
-  for (i=0; i<theQOBJs.size(); ++i)
+  for (const auto& element: theQOBJs)
   {
-    if (theQOBJs[i].unknownQOBJ==idx) return true;
+    if (element.unknownQOBJ == idx)
+      return true;
   }
   return false;
 }

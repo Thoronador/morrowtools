@@ -21,6 +21,8 @@
 #ifndef SR_QUESTRECORD_HPP
 #define SR_QUESTRECORD_HPP
 
+#include <array>
+#include <optional>
 #include <string>
 #include <vector>
 #include "BasicRecord.hpp"
@@ -35,65 +37,79 @@
 namespace SRTP
 {
 
+/** Holds information about a quest and its stages. */
 struct QuestRecord: public BasicRecord
 {
   public:
-    /* constructor */
     QuestRecord();
 
     #ifndef SR_NO_RECORD_EQUALITY
-    /* returns true, if the other record contains the same data */
+    /** \brief Checks whether another instance contains the same data.
+     *
+     * \param other   the other record to compare with
+     * \return Returns true, if @other contains the same data as instance.
+     *         Returns false otherwise.
+     */
     bool equals(const QuestRecord& other) const;
     #endif
 
     #ifndef SR_UNSAVEABLE_RECORDS
-    /* returns the size in bytes that the record's data would occupy in a file
-       stream, NOT including the header data
-    */
+    /** \brief Gets the size in bytes that the record's data would occupy in a file
+     *         stream, NOT including the header data.
+     *
+     * \return Returns the size in bytes that the record would need. Size of the
+     *         header is not included.
+     */
     virtual uint32_t getWriteSize() const;
 
-    /* writes the record to the given output stream and returns true on success
-
-      parameters:
-          output   - the output stream
-    */
+    /** \brief Writes the record to the given output stream.
+     *
+     * \param output  the output stream
+     * \return Returns true on success (record was written to stream).
+     *         Returns false, if an error occurred.
+     */
     virtual bool saveToStream(std::ostream& output) const;
     #endif
 
-    /* loads the record from the given input stream and returns true on success
-
-      parameters:
-          in_File   - the input stream
-          localized - whether the file to read from is localized or not
-          table     - the associated string table for localized files
-    */
+    /** \brief Loads the record from the given input stream.
+     *
+     * \param in_File    the input stream
+     * \param localized  whether the file to read from is localized or not
+     * \param table      the associated string table for localized files
+     * \return Returns true on success (record was loaded from stream).
+     *         Returns false, if an error occurred.
+     */
     virtual bool loadFromStream(std::istream& in_File, const bool localized, const StringTable& table);
 
-    /* returns the record's type, usually its header */
+    /** \brief Gets the record's type, usually its header.
+     *
+     * \return Returns the record's type.
+     */
     virtual uint32_t getRecordType() const;
 
-    /* returns true, if an QOBJ record with the given index is present
-
-       parameters:
-           idx - the requested index
-    */
+    /** \brief Checks whether an QOBJ record with the given index is present.
+     *
+     * \param idx  the requested index
+     * \return Returns true, if an QOBJ record with the given index is present.
+     */
     bool hasQOBJForIndex(const uint16_t idx) const;
 
-    /* returns the QOBJ record with the given index, if it is present.
-       If no such QOBJ is present, the function will throw an exception. Use
-       hasQOBJForIndex() to check for presence first.
-
-       parameters:
-           idx - the requested index
-    */
+    /** \brief Returns the QOBJ record with the given index, if it is present.
+     *         If no such QOBJ is present, the method will throw an exception.
+     *         Use hasQOBJForIndex() to check for presence first.
+     *
+     * \param idx  the requested index
+     * \return Returns the QOBJ record with the given index, if it is present.
+     * \throws If no QOBJ with matching index is present, the method will throw
+     *         an exception.
+     */
     const QOBJEntry& getQOBJForIndex(const uint16_t idx) const;
 
     std::string editorID;
     BinarySubRecord unknownVMAD;
-    LocalizedString name; //subrecord FULL
-    uint8_t unknownDNAM[12];
-    bool hasENAM;
-    uint32_t unknownENAM;
+    LocalizedString name; // subrecord FULL
+    std::array<uint8_t, 12> unknownDNAM;
+    std::optional<uint32_t> unknownENAM;
     std::vector<uint32_t> unknownQTGLs;
     std::vector<CTDA_CIS2_compound> unknownCTDA_CIS2s;
     std::string filter;
@@ -101,8 +117,8 @@ struct QuestRecord: public BasicRecord
     std::vector<QOBJEntry> theQOBJs;
     uint32_t unknownANAM;
     std::vector<AliasEntry> aliases;
-};//struct
+};// struct
 
-} //namespace
+} // namespace
 
 #endif // SR_QUESTRECORD_HPP

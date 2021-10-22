@@ -33,8 +33,7 @@ TEST_CASE("QSDTRecord")
     REQUIRE( entry.nextQuestFormID == 0 );
     REQUIRE_FALSE( entry.unknownSCHR.isPresent() );
     REQUIRE( entry.unknownSCTX.empty() );
-    REQUIRE_FALSE( entry.hasQNAM );
-    REQUIRE( entry.unknownQNAM == 0 );
+    REQUIRE_FALSE( entry.unknownQNAM.has_value() );
     REQUIRE( entry.unknownCTDA_CIS2s.empty() );
     REQUIRE_FALSE( entry.logEntry.isPresent() );
   }
@@ -98,21 +97,19 @@ TEST_CASE("QSDTRecord")
 
       SECTION("QNAM mismatch")
       {
-        a.hasQNAM = true;
-        b.hasQNAM = false;
+        a.unknownQNAM = 0;
+        b.unknownQNAM.reset();
 
         REQUIRE_FALSE( a == b );
         REQUIRE_FALSE( b == a );
 
-        a.hasQNAM = false;
-        b.hasQNAM = true;
+        a.unknownQNAM.reset();
+        b.unknownQNAM = 0;
 
         REQUIRE_FALSE( a == b );
         REQUIRE_FALSE( b == a );
 
-        a.hasQNAM = true;
         a.unknownQNAM = 1;
-        b.hasQNAM = true;
         b.unknownQNAM = 2;
 
         REQUIRE_FALSE( a == b );
@@ -189,7 +186,7 @@ TEST_CASE("QSDTRecord")
     {
       REQUIRE( record.getWriteSize() == 7 );
 
-      record.hasQNAM = true;
+      record.unknownQNAM = 0;
       REQUIRE( record.getWriteSize() == 17 );
     }
 

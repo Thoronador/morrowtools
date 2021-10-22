@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2013  Thoronador
+    Copyright (C) 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -28,30 +28,29 @@
 namespace SRTP
 {
 
-/* This descendant of the ESMReader class tries to read all reference records
-   from the given .esm/.esp file, that are relevant to the form ID finder.
+/** This descendant of the ESMReader class tries to read all reference records
+    from the given .esm/.esp file, that are relevant to the form ID finder.
 
-   Still not complete yet!
+    Still not complete yet!
 */
 class ESMReaderFinderReferences: public ESMReaderReIndexMod
 {
   public:
-    /* constructor */
+    /** Constructor.
+     *
+     * \param loadOrder  ESM file names in load order
+     */
     ESMReaderFinderReferences(const std::vector<std::string>& loadOrder);
-
-    /* destructor */
-    virtual ~ESMReaderFinderReferences();
 
     struct CellRefIDPair
     {
       uint32_t cellID;
       uint32_t refID;
 
-      /* constructor */
       CellRefIDPair(const uint32_t cell, const uint32_t ref);
-    };//struct
+    }; // struct
 
-    //fid map - key is base object form ID, value is list of cell IDs
+    // fid map - key is base object form ID, value is list of cell IDs
     std::map<uint32_t, std::vector<CellRefIDPair> > refMap;
   protected:
     /* returns true, if the given group may contains some data that the reader
@@ -107,10 +106,10 @@ class ESMReaderFinderReferences: public ESMReaderReIndexMod
     */
     virtual int readNextRecord(std::ifstream& in_File, const uint32_t recName, const bool localized, const StringTable& table);
 
-   //cell form ID stack
+   // cell form ID stack
    std::vector<uint32_t> m_CellStack;
-};//class
+}; // class
 
-} //namespace
+} // namespace
 
 #endif // SR_ESMREADERFINDERREFERENCES_HPP

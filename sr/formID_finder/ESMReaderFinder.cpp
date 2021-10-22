@@ -51,12 +51,6 @@ namespace SRTP
 ESMReaderFinder::ESMReaderFinder(const std::vector<std::string>& loadOrder)
 : ESMReaderReIndexMod(loadOrder)
 {
-  //empty
-}
-
-ESMReaderFinder::~ESMReaderFinder()
-{
-  //empty
 }
 
 bool ESMReaderFinder::needGroup(const GroupData& g_data) const
@@ -89,7 +83,7 @@ bool ESMReaderFinder::needGroup(const GroupData& g_data) const
     case cWOOP:
          return true;
          break;
-  }//swi
+  }
   return false;
 }
 
@@ -109,7 +103,7 @@ bool ESMReaderFinder::groupFinished(const GroupData& g_data)
 
 int ESMReaderFinder::readNextRecord(std::ifstream& in_File, const uint32_t recName, const bool localized, const StringTable& table)
 {
-  BasicRecord * recPtr = NULL;
+  BasicRecord * recPtr = nullptr;
   switch (recName)
   {
     case cACTI:
@@ -186,20 +180,20 @@ int ESMReaderFinder::readNextRecord(std::ifstream& in_File, const uint32_t recNa
          break;
     default:
          return -1;
-  }//swi
-  //load record
+  }
+  // load record
   if (!recPtr->loadFromStream(in_File, localized, table))
   {
     delete recPtr;
     return -1;
   }
-  //re-index record's form ID
+  // re-index record's form ID
   if (!reIndex(recPtr->headerFormID))
   {
     delete recPtr;
     return -1;
   }
-  //add record
+  // add record
   switch (recName)
   {
     case cACTI:
@@ -278,9 +272,9 @@ int ESMReaderFinder::readNextRecord(std::ifstream& in_File, const uint32_t recNa
          std::cerr << "ESMReaderFinder::readNextRecord: cannot add unknown record type!\n";
          delete recPtr;
          return -1;
-  }//swi
+  }
   delete recPtr;
   return 1;
 }
 
-} //namespace
+} // namespace

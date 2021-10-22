@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2013  Thoronador
+    Copyright (C) 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -40,20 +40,14 @@ ESMReaderFinderReferences::ESMReaderFinderReferences(const std::vector<std::stri
 {
 }
 
-ESMReaderFinderReferences::~ESMReaderFinderReferences()
-{
-  //empty
-}
-
 bool ESMReaderFinderReferences::needGroup(const GroupData& g_data) const
 {
-  return  (
+  return
           // We want top level cell and worldspace groups.
           ((g_data.type() == GroupData::cTopLevelGroup)
          && ((g_data.label() == cWRLD) || (g_data.label() == cCELL)))
-        //...and non-top level groups, that are not topic-related
-        || (g_data.type() != GroupData::cTopicChildren)
-        );
+        // ...and non-top level groups, that are not topic-related
+        || (g_data.type() != GroupData::cTopicChildren);
 }
 
 bool ESMReaderFinderReferences::nextGroupStarted(const GroupData& g_data, const bool sub)
@@ -63,7 +57,6 @@ bool ESMReaderFinderReferences::nextGroupStarted(const GroupData& g_data, const 
     updateIndexMap(m_CurrentMod);
   }
 
-  //if ((g_data.type() != GroupData::cTopLevelGroup) && (g_data.type() != GroupData::cTopicChildren))
   if (g_data.labelIsCellID())
   {
     // label is cell form ID in that case
@@ -80,7 +73,6 @@ bool ESMReaderFinderReferences::nextGroupStarted(const GroupData& g_data, const 
 
 bool ESMReaderFinderReferences::groupFinished(const GroupData& g_data)
 {
-  //if ((g_data.type() != GroupData::cTopLevelGroup) && (g_data.type() != GroupData::cTopicChildren))
   if (g_data.labelIsCellID())
   {
     // label is cell form ID in that case - remove it from "stack"
@@ -134,23 +126,23 @@ int ESMReaderFinderReferences::readNextRecord(std::ifstream& in_File, const uint
     default:
          return skipRecord(in_File);
          break;
-  }//swi
+  }
   if (!recPtr->loadFromStream(in_File, localized, table))
   {
     delete recPtr;
     std::cerr << "ESMReaderFinderReferences::readNextRecord: Error while reading reference record!\n";
     return -1;
   }
-  //re-index record's form ID and ID of object
-  if ((!reIndex(recPtr->headerFormID)) or (!reIndex(recPtr->baseObjectFormID)))
+  // re-index record's form ID and ID of object
+  if ((!reIndex(recPtr->headerFormID)) || (!reIndex(recPtr->baseObjectFormID)))
   {
     delete recPtr;
     return -1;
   }
-  //save form IDs in refMap
+  // save form IDs in refMap
   refMap[recPtr->baseObjectFormID].push_back(CellRefIDPair(m_CellStack.back(), recPtr->headerFormID));
   delete recPtr;
   return 1;
 }
 
-} //namespace
+} // namespace

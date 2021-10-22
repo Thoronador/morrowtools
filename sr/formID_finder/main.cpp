@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2015  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2015, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -65,7 +65,6 @@
 void showGPLNotice()
 {
   std::cout << "Form ID finder for Skyrim\n"
-            //<< "  This programme is part of the Skyrim Tools Project.\n"
             << "  Copyright (C) 2011, 2012, 2013, 2015  Thoronador\n"
             << "\n"
             << "  This programme is free software: you can redistribute it and/or\n"
@@ -134,9 +133,9 @@ bool matchesKeyword(const std::string& haystack, const std::string& keyword, con
 {
   if (caseMatters)
   {
-    return (haystack.find(keyword)!=std::string::npos);
+    return haystack.find(keyword) != std::string::npos;
   }
-  return (lowerCase(haystack).find(keyword)!=std::string::npos);
+  return lowerCase(haystack).find(keyword) != std::string::npos;
 }
 
 /*...and another auxiliary function (#2):
@@ -151,9 +150,9 @@ void showRefIDs(const uint32_t baseID, const std::map<uint32_t, std::vector<SRTP
 {
   basic_out << "        references: ";
   std::map<uint32_t, std::vector<SRTP::ESMReaderFinderReferences::CellRefIDPair> >::const_iterator iter = refMap.find(baseID);
-  if (iter!=refMap.end())
+  if (iter != refMap.end())
   {
-    basic_out << iter->second.size()<<"\n";
+    basic_out << iter->second.size() << "\n";
   }
   else
   {
@@ -162,10 +161,10 @@ void showRefIDs(const uint32_t baseID, const std::map<uint32_t, std::vector<SRTP
   }
   bool hasName = false;
   std::vector<SRTP::ESMReaderFinderReferences::CellRefIDPair>::const_iterator vecIter = iter->second.begin();
-  while (vecIter!=iter->second.end())
+  while (vecIter != iter->second.end())
   {
     hasName = false;
-    basic_out << "          ref ID "<<SRTP::getFormIDAsStringXX(vecIter->refID);
+    basic_out << "          ref ID " << SRTP::getFormIDAsStringXX(vecIter->refID);
     if (SRTP::Cells::get().hasRecord(vecIter->cellID))
     {
       const SRTP::CellRecord& theCell = SRTP::Cells::get().getRecord(vecIter->cellID);
@@ -173,16 +172,17 @@ void showRefIDs(const uint32_t baseID, const std::map<uint32_t, std::vector<SRTP
       {
         if (!theCell.name.getString().empty())
         {
-          basic_out << " in cell \""<<theCell.name.getString()<<"\"\n";
+          basic_out << " in cell \"" << theCell.name.getString() << "\"\n";
           hasName = true;
         }
-      }//if FULL
+      }
       else
       {
-        //check for coordinates
+        // check for coordinates
         if (theCell.gridLocation.presence)
         {
-          basic_out << " in exterior cell ["<<theCell.gridLocation.locationX<<";"<<theCell.gridLocation.locationY<<"]\n";
+          basic_out << " in exterior cell [" << theCell.gridLocation.locationX
+                    << ";" << theCell.gridLocation.locationY << "]\n";
           hasName = true;
         }
       }
@@ -192,207 +192,209 @@ void showRefIDs(const uint32_t baseID, const std::map<uint32_t, std::vector<SRTP
       basic_out << " in unnamed cell\n";
     }
     ++vecIter;
-  }//while
+  }
 }
 
-/* the main functions, obviously */
 int main(int argc, char **argv)
 {
   showGPLNotice();
 
-  //data files directory - empty at start
+  // data files directory - empty at start
   std::string dataDir = "";
-  //word to be searched for - empty at start, user has to(!) set it
+  // word to be searched for - empty at start, user has to(!) set it
   std::string searchKeyword = "";
   bool caseSensitive = false;
   bool allQuestInfo = false;
   bool listFactionRanks = false;
   bool sendData = false;
-  std::string sendParam1st ="", sendParam2nd ="";
+  std::string sendParam1st = "";
+  std::string sendParam2nd = "";
   bool withReferences = false;
   bool showFiles = false;
 
-  if ((argc>1) and (argv!=NULL))
+  if ((argc > 1) && (argv != nullptr))
   {
-    int i=1;
-    while (i<argc)
+    int i = 1;
+    while (i < argc)
     {
-      if (argv[i]!=NULL)
+      if (argv[i] != nullptr)
       {
         const std::string param = std::string(argv[i]);
-        //help parameter
-        if ((param=="--help") or (param=="-?") or (param=="/?"))
+        // help parameter
+        if ((param == "--help") || (param == "-?") || (param == "/?"))
         {
           showHelp();
           return 0;
-        }//if help wanted
-        //version information requested?
-        else if ((param=="--version") or (param=="-v"))
+        }
+        // version information requested?
+        else if ((param == "--version") || (param == "-v"))
         {
           showVersion();
           return 0;
         }
-        else if (param=="--version-with-exitcode")
+        else if (param == "--version-with-exitcode")
         {
           return showVersionExitcode();
         }
-        else if ((param=="-d") or (param=="-dir") or (param=="--data-files"))
+        else if ((param == "-d") || (param == "-dir") || (param == "--data-files"))
         {
-          //set more than once?
+          // set more than once?
           if (!dataDir.empty())
           {
             std::cerr << "Error: Data directory was already set!\n";
             return SRTP::rcInvalidParameter;
           }
-          //enough parameters?
-          if ((i+1<argc) and (argv[i+1]!=NULL))
+          // enough parameters?
+          if ((i + 1 < argc) && (argv[i+1] != nullptr))
           {
             // Is it long enough to be a directory? (Minimum should be "./".)
-            if (std::string(argv[i+1]).size()>1)
+            if (std::string(argv[i+1]).size() > 1)
             {
               dataDir = std::string(argv[i+1]);
-              ++i; //skip next parameter, because it's used as directory name already
-              //Does it have a trailing (back)slash? If not, add it.
+              ++i; // skip next parameter, because it's used as directory name already
+              // Does it have a trailing (back)slash? If not, add it.
               dataDir = slashify(dataDir);
-              std::cout << "Data files directory was set to \""<<dataDir<<"\".\n";
+              std::cout << "Data files directory was set to \"" << dataDir << "\".\n";
             }
             else
             {
-              std::cerr << "Parameter \""<<std::string(argv[i+1])<<"\" is too"
+              std::cerr << "Parameter \"" << std::string(argv[i+1]) << "\" is too"
                         << " short to be a proper directory path.\n";
               return SRTP::rcInvalidParameter;
-            }//else
+            }
           }
           else
           {
             std::cerr << "Error: You have to specify a directory name after \""
-                      << param<<"\".\n";
+                      << param <<"\".\n";
             return SRTP::rcInvalidParameter;
           }
-        }//data files directory
-        else if ((param=="-p") or (param=="--keyword"))
+        } //data files directory
+        else if ((param == "-p") || (param == "--keyword"))
         {
-          //set more than once?
+          // set more than once?
           if (!searchKeyword.empty())
           {
             std::cerr << "Error: search keyword was already set!\n";
             return SRTP::rcInvalidParameter;
           }
-          //enough parameters?
-          if ((i+1<argc) and (argv[i+1]!=NULL))
+          // enough parameters?
+          if ((i+1 < argc) && (argv[i+1] != nullptr))
           {
             searchKeyword = std::string(argv[i+1]);
             ++i; //skip next parameter, because it's used as search keyword already
-            std::cout << "Search keyword was set to \""<<searchKeyword<<"\".\n";
+            std::cout << "Search keyword was set to \"" << searchKeyword << "\".\n";
           }
           else
           {
             std::cerr << "Error: You have to enter some text after \""
-                      << param<<"\".\n";
+                      << param << "\".\n";
             return SRTP::rcInvalidParameter;
           }
-        }//keyword
-        else if (param=="--case-sensitive")
+        } // keyword
+        else if (param == "--case-sensitive")
         {
-          //set more than once?
+          // set more than once?
           if (caseSensitive)
           {
-            std::cerr << "Error: parameter \""<<param<<"\" was specified twice!\n";
+            std::cerr << "Error: parameter \"" << param << "\" was specified twice!\n";
             return SRTP::rcInvalidParameter;
           }
           caseSensitive = true;
           std::cout << "Case-sensitive search modus enabled.\n";
-        }//case sensitive
-        else if (param=="--all-quest-info")
+        } // case sensitive
+        else if (param == "--all-quest-info")
         {
-          //set more than once?
+          // set more than once?
           if (allQuestInfo)
           {
-            std::cerr << "Error: parameter \""<<param<<"\" was specified twice!\n";
+            std::cerr << "Error: parameter \"" << param << "\" was specified twice!\n";
             return SRTP::rcInvalidParameter;
           }
           allQuestInfo = true;
           std::cout << "Complete quest texts enabled.\n";
-        }//all quest info
-        else if ((param=="--faction-ranks") or (param=="--ranks"))
+        } // all quest info
+        else if ((param == "--faction-ranks") || (param == "--ranks"))
         {
-          //set more than once?
+          // set more than once?
           if (listFactionRanks)
           {
-            std::cerr << "Error: parameter \""<<param<<"\" was specified twice!\n";
+            std::cerr << "Error: parameter \"" << param << "\" was specified twice!\n";
             return SRTP::rcInvalidParameter;
           }
           listFactionRanks = true;
           std::cout << "Listing faction ranks was enabled.\n";
-        }//faction rank info
-        else if (param=="--send-data")
+        } // faction rank info
+        else if (param == "--send-data")
         {
-          //set more than once?
+          // set more than once?
           if (sendData)
           {
-            std::cerr << "Error: parameter "<<param<<" was already specified!\n";
+            std::cerr << "Error: parameter " << param << " was already specified!\n";
             return SRTP::rcInvalidParameter;
           }
-          //enough parameters?
-          if ((i+2<argc) and (argv[i+1]!=NULL) and (argv[i+2]!=NULL))
+          // enough parameters?
+          if ((i + 2 < argc) && (argv[i+1] != nullptr) && (argv[i+2] != nullptr))
           {
             sendData = true;
             sendParam1st = std::string(argv[i+1]);
             sendParam2nd = std::string(argv[i+2]);
-            i=i+2; //skip next two parameters, because they are used as send params already
-            std::cout << "Data sending mode was requested (\""<<sendParam1st<<"\", \""<<sendParam2nd<<"\").\n";
+            i = i + 2; // skip next two parameters, because they are used as send params already
+            std::cout << "Data sending mode was requested (\"" << sendParam1st
+                      << "\", \"" << sendParam2nd << "\").\n";
           }
           else
           {
             std::cerr << "Error: You have to enter two string parameters after \""
-                      << param<<"\".\n";
+                      << param << "\".\n";
             return SRTP::rcInvalidParameter;
           }
-        }//send data
-        else if ((param=="--ref-id") or (param=="--ref-ids") or (param=="--ref")
-                  or (param=="--refs")or (param=="--references"))
+        } // send data
+        else if ((param == "--ref-id") || (param == "--ref-ids") || (param == "--ref")
+                  || (param == "--refs") || (param == "--references"))
         {
-          //set more than once?
+          // set more than once?
           if (withReferences)
           {
-            std::cerr << "Error: parameter \""<<param<<"\" was specified twice!\n";
+            std::cerr << "Error: parameter \"" << param << "\" was specified twice!\n";
             return SRTP::rcInvalidParameter;
           }
           withReferences = true;
           std::cout << "Search for reference IDs activated.\n";
-        }//references
-        else if (param=="--show-files")
+        } // references
+        else if (param == "--show-files")
         {
-          //set more than once?
+          // set more than once?
           if (showFiles)
           {
-            std::cerr << "Error: parameter "<<param<<" was already specified!\n";
+            std::cerr << "Error: parameter " << param << " was already specified!\n";
             return SRTP::rcInvalidParameter;
           }
           showFiles = true;
-        }//show files
+        } // show files
         else if (searchKeyword.empty())
         {
-          //assume search keyword was given without prior --keyword option
+          // assume search keyword was given without prior --keyword option
           searchKeyword = std::string(argv[i]);
-          std::cout << "Assuming sloppy command line parameters, search keyword was set to \""<<searchKeyword<<"\".\n";
+          std::cout << "Assuming sloppy command line parameters, search keyword was set to \""
+                    << searchKeyword << "\".\n";
         }
         else
         {
-          //unknown or wrong parameter
-          std::cout << "Invalid parameter given: \""<<param<<"\".\n"
+          // unknown or wrong parameter
+          std::cout << "Invalid parameter given: \"" << param << "\".\n"
                     << "Use --help to get a list of valid parameters.\n";
           return SRTP::rcInvalidParameter;
         }
-      }//parameter exists
+      } // parameter exists
       else
       {
-        std::cerr << "Parameter at index "<<i<<" is NULL.\n";
+        std::cerr << "Parameter at index " << i << " is NULL.\n";
         return SRTP::rcInvalidParameter;
       }
-      ++i;//on to next parameter
-    }//while
-  }//if arguments present
+      ++i; // on to next parameter
+    } // while
+  } // if arguments present
   else
   {
     std::cout << "You have to specify certain parameters for this programme to run properly.\n"
@@ -400,22 +402,24 @@ int main(int argc, char **argv)
     return SRTP::rcInvalidParameter;
   }
 
-  //Has the user specified a data directory?
+  // Has the user specified a data directory?
   SRTP::getDataDir(dataDir);
 
-  //keyword given?
+  // keyword given?
   if (searchKeyword.empty())
   {
     std::cout << "Error: No search keyword was specified. Use the parameter --keyword"
               << " to specify the stuff you want that programme to search for.\n";
     return SRTP::rcInvalidParameter;
-  }//if no keyword given
+  }
 
-  //adjust keyword to selected case-sensitivity
-  if (!caseSensitive) searchKeyword = lowerCase(searchKeyword);
+  // adjust keyword to selected case-sensitivity
+  if (!caseSensitive)
+    searchKeyword = lowerCase(searchKeyword);
 
-  std::cout << "\n\nSearching for \""<<searchKeyword<<"\" using case-";
-  if (!caseSensitive) std::cout <<"in";
+  std::cout << "\n\nSearching for \"" << searchKeyword << "\" using case-";
+  if (!caseSensitive)
+    std::cout << "in";
   std::cout << "sensitive search. This may take a while...\n";
   if (withReferences)
   {
@@ -445,37 +449,37 @@ int main(int argc, char **argv)
   SRTP::ESMReaderFinder reader(loadOrder);
   SRTP::Tes4HeaderRecord tes4rec;
 
-  //read the usual stuff (for base IDs)
-  unsigned int lo_idx;
-  for (lo_idx=0; lo_idx<loadOrder.size(); ++lo_idx)
+  // read the usual stuff (for base IDs)
+  for (const auto& element: loadOrder)
   {
-    if (loadOrder[lo_idx]!="Update.esm")
+    if (element != "Update.esm")
     {
-      reader.requestIndexMapUpdate(loadOrder[lo_idx]);
-      if (reader.readESM(dataDir+loadOrder[lo_idx], tes4rec)<0)
+      reader.requestIndexMapUpdate(element);
+      if (reader.readESM(dataDir + element, tes4rec) < 0)
       {
-        std::cerr << "Error while reading "<<dataDir+loadOrder[lo_idx]<<"!\n";
+        std::cerr << "Error while reading " << dataDir + element << "!\n";
         return SRTP::rcFileError;
       }
     }
-  }//for i
+  }
 
   SRTP::ESMReaderFinderReferences readerReferences(loadOrder);
   if (withReferences)
   {
-    for (lo_idx=0; lo_idx<loadOrder.size(); ++lo_idx)
+    for (const auto& fileName: loadOrder)
     {
-      if (loadOrder[lo_idx]!="Update.esm")
+      if (fileName != "Update.esm")
       {
-        readerReferences.requestIndexMapUpdate(loadOrder[lo_idx]);
-        if (readerReferences.readESM(dataDir+loadOrder[lo_idx], tes4rec)<0)
+        readerReferences.requestIndexMapUpdate(fileName);
+        if (readerReferences.readESM(dataDir + fileName, tes4rec) < 0)
         {
-          std::cerr << "Error while reading references from "<<dataDir+loadOrder[lo_idx]<<"!\n";
+          std::cerr << "Error while reading references from "
+                    << dataDir + fileName << "!\n";
           return SRTP::rcFileError;
         }
       }
     }
-  }//if references requested
+  } // if references requested
 
   std::ostringstream string_out;
   std::basic_ostream<char>& basic_out = sendData ? string_out : std::cout;
@@ -485,7 +489,7 @@ int main(int argc, char **argv)
     Files are shown by default. However, if sendData is true, then they are not
     shown for compatibility reasons, unless the --show-files parameter was set.
   */
-  showFiles = (showFiles or !sendData);
+  showFiles = (showFiles || !sendData);
 
   unsigned int totalMatches = 0;
 
@@ -1443,48 +1447,48 @@ int main(int argc, char **argv)
     #if defined(_WIN32)
     COPYDATASTRUCT cds;
     cds.dwData = 0;
-    cds.cbData = string_out.str().length()+1;
+    cds.cbData = string_out.str().length() + 1;
     cds.lpData = (void*) string_out.str().c_str();
-    const char * ptrSend1 = (sendParam1st=="NULL") ? NULL : sendParam1st.c_str();
-    const char * ptrSend2 = (sendParam2nd=="NULL") ? NULL : sendParam2nd.c_str();
+    const char * ptrSend1 = (sendParam1st == "NULL") ? nullptr : sendParam1st.c_str();
+    const char * ptrSend2 = (sendParam2nd == "NULL") ? nullptr : sendParam2nd.c_str();
     HWND receiver = FindWindow(ptrSend1, ptrSend2);
-    if (receiver==NULL)
+    if (receiver == nullptr)
     {
       std::cerr << "Error in send data mode: cannot find receiving window!\n";
       return SRTP::rcWindowNotFound;
     }
     int msgResult = SendMessage(receiver, WM_COPYDATA, 0, (LPARAM) &cds);
     #else
-    //check for socket
-    if (sendParam1st!="socket")
+    // check for socket
+    if (sendParam1st != "socket")
     {
       std::cerr << "Error: parameter --send-data expects socket as first part!\n";
       return SRTP::rcInvalidParameter;
     }
-    //create unix domain socket
-    int socket_fd = socket(AF_UNIX, SOCK_STREAM, 0);
+    // create unix domain socket
+    const int socket_fd = socket(AF_UNIX, SOCK_STREAM, 0);
     if (socket_fd < 0)
     {
       std::cerr << "Error: could not open Unix domain socket!\n";
       return SRTP::rcSocketError;
     }
-    //prepare socket address structure
+    // prepare socket address structure
     struct sockaddr_un serv_addr;
     memset(&serv_addr, 0, sizeof(struct sockaddr_un));
     serv_addr.sun_family = AF_UNIX;
-    snprintf(serv_addr.sun_path, sendParam2nd.length()+1, sendParam2nd.c_str());
-    //now connect
-    if (connect(socket_fd, (struct sockaddr *) &serv_addr, sizeof(struct sockaddr_un))!=0)
+    snprintf(serv_addr.sun_path, sendParam2nd.length() + 1, sendParam2nd.c_str());
+    // now connect
+    if (connect(socket_fd, (struct sockaddr *) &serv_addr, sizeof(struct sockaddr_un)) != 0)
     {
       std::cerr << "Error: could not connect via Unix domain socket!\n";
       return SRTP::rcSocketError;
     }
-    //write to socket
+    // write to socket
     const std::string socketBuffer = string_out.str();
-    write(socket_fd, socketBuffer.c_str(), socketBuffer.length()+1);
-    //...and close socket
+    write(socket_fd, socketBuffer.c_str(), socketBuffer.length() + 1);
+    // ...and close socket
     close(socket_fd);
     #endif
-  }//if sendData
+  } // if sendData
   return 0;
 }

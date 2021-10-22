@@ -32,11 +32,11 @@ namespace SRTP
 class ESMReaderFinder: public ESMReaderReIndexMod
 {
   public:
-    /* constructor */
+    /** Constructor.
+     *
+     * \param loadOrder   file names of ESM file in load order
+     */
     ESMReaderFinder(const std::vector<std::string>& loadOrder);
-
-    /* destructor */
-    virtual ~ESMReaderFinder();
   protected:
     /* returns true, if the given group may contains some data that the reader
        wants to read. Returns false otherwise.
@@ -90,8 +90,8 @@ class ESMReaderFinder: public ESMReaderReIndexMod
            table     - the associated string table
     */
     virtual int readNextRecord(std::ifstream& in_File, const uint32_t recName, const bool localized, const StringTable& table);
-};//class
+}; // class
 
-} //namespace
+} // namespace
 
 #endif // SR_ESMREADERFINDER_HPP

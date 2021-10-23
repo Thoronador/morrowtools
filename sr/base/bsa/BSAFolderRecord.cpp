@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -31,35 +31,29 @@ BSAFolderRecord::BSAFolderRecord()
 {
 }
 
-BSAFolderRecord::~BSAFolderRecord()
+bool BSAFolderRecord::loadFromStream(std::istream& input)
 {
-  //empty
-}
-
-bool BSAFolderRecord::loadFromStream(std::ifstream& in_File)
-{
-  if (!in_File.good())
+  if (!input.good())
   {
-    std::cerr << "BSAFolderRecord::loadFromStream: Error: bad stream given!\n";
+    std::cerr << "BSAFolderRecord::loadFromStream: Error: Bad stream given!\n";
     return false;
   }
-  //read folder record's stuff
-  in_File.read((char*) &nameHash, sizeof(BSAHash));
-  if (!in_File.good())
+  // read folder record's stuff
+  input.read(reinterpret_cast<char*>(&nameHash), sizeof(BSAHash));
+  if (!input.good())
   {
-    std::cerr << "BSAFolderRecord::loadFromStream: Error: could not read hash!\n";
+    std::cerr << "BSAFolderRecord::loadFromStream: Error: Could not read hash!\n";
     return false;
   }
-  //rest of it
-  in_File.read((char*) &count, 4);
-  in_File.read((char*) &offset, 4);
-  if (!in_File.good())
+  input.read(reinterpret_cast<char*>(&count), 4);
+  input.read(reinterpret_cast<char*>(&offset), 4);
+  if (!input.good())
   {
     std::cerr << "BSAFolderRecord::loadFromStream: Error while reading data!\n";
     return false;
   }
-  //all's well
+  // All is well.
   return true;
 }
 
-} //namespace
+} // namespace

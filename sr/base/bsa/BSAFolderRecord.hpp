@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,26 +30,20 @@ namespace SRTP
 struct BSAFolderRecord
 {
   public:
-    /* constructor */
     BSAFolderRecord();
 
-    /* destructor */
-    ~BSAFolderRecord();
-
-    //stuff
     BSAHash nameHash;
     uint32_t count;
     uint32_t offset;
 
-    /* tries to read the folder record from the given file stream and returns
-       true in case of success, false in case of failure
+    /** \brief Tries to read the folder record from the given stream.
+     *
+     * \param  input  the input stream
+     * \return Returns true in case of success, false in case of failure.
+     */
+    bool loadFromStream(std::istream& input);
+}; // struct
 
-       parameters:
-          in_File - the input file stream
-    */
-    bool loadFromStream(std::ifstream& in_File);
-}; //struct
-
-} //namespace
+} // namespace
 
 #endif // SR_BSAFOLDERRECORD_HPP

@@ -60,6 +60,8 @@
 		<Unit filename="../../sr/base/SR_Constants.hpp" />
 		<Unit filename="../../sr/base/StringTable.cpp" />
 		<Unit filename="../../sr/base/StringTable.hpp" />
+		<Unit filename="../../sr/base/bsa/BSAFolderRecord.cpp" />
+		<Unit filename="../../sr/base/bsa/BSAFolderRecord.hpp" />
 		<Unit filename="../../sr/base/bsa/BSAHeader.cpp" />
 		<Unit filename="../../sr/base/bsa/BSAHeader.hpp" />
 		<Unit filename="../../sr/base/records/AcousticSpaceRecord.cpp" />
@@ -179,6 +181,7 @@
 		<Unit filename="sr/base/FormIDFunctions.cpp" />
 		<Unit filename="sr/base/MapBasedRecordManager.cpp" />
 		<Unit filename="sr/base/StringTable.cpp" />
+		<Unit filename="sr/base/bsa/BSAFolderRecord.cpp" />
 		<Unit filename="sr/base/bsa/BSAHeader.cpp" />
 		<Unit filename="sr/base/records/AcousticSpaceRecord.cpp" />
 		<Unit filename="sr/base/records/ActionRecord.cpp" />

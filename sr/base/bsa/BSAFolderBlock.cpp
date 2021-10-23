@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,36 +26,31 @@ namespace SRTP
 {
 
 BSAFolderBlock::BSAFolderBlock()
+: folderName(std::string()),
+  files(std::vector<BSAFileRecord>())
 {
-  folderName = "";
-  files.clear();
 }
 
-BSAFolderBlock::~BSAFolderBlock()
+bool BSAFolderBlock::loadFromStream(std::istream& input, const uint32_t fileCount)
 {
-  //empty
-}
-
-bool BSAFolderBlock::loadFromStream(std::ifstream& in_File, const uint32_t fileCount)
-{
-  if (!in_File.good())
+  if (!input.good())
   {
-    std::cerr << "BSAFolderBlock::loadFromStream: Error: bad stream given!\n";
+    std::cerr << "BSAFolderBlock::loadFromStream: Error: Bad stream given!\n";
     return false;
   }
   uint8_t byteLen = 0;
-  //read length
-  in_File.read((char*) &byteLen, 1);
-  if (!in_File.good())
+  // read length of folder name
+  input.read(reinterpret_cast<char*>(&byteLen), 1);
+  if (!input.good())
   {
     std::cerr << "BSAFolderBlock::loadFromStream: Error while reading length byte!\n";
     return false;
   }
-  char * buffer = new char[byteLen+1];
-  memset(buffer, 0, byteLen+1);
-  //read folder's name
-  in_File.read(buffer, byteLen);
-  if (!in_File.good())
+  char * buffer = new char[byteLen + 1];
+  memset(buffer, 0, byteLen + 1);
+  // read folder's name
+  input.read(buffer, byteLen);
+  if (!input.good())
   {
     std::cerr << "BSAFolderBlock::loadFromStream: Error while reading folder's name!\n";
     delete[] buffer;
@@ -63,23 +58,22 @@ bool BSAFolderBlock::loadFromStream(std::ifstream& in_File, const uint32_t fileC
   }
   folderName = std::string(buffer);
   delete[] buffer;
-  buffer = NULL;
+  buffer = nullptr;
 
-  //read file entries
+  // read file entries
   files.clear();
   BSAFileRecord tempFileRecord;
-  uint32_t i;
-  for (i=0; i<fileCount; ++i)
+  for (uint32_t i = 0; i < fileCount; ++i)
   {
-    if (!tempFileRecord.loadFromStream(in_File))
+    if (!tempFileRecord.loadFromStream(input))
     {
       std::cerr << "BSAFolderBlock::loadFromStream: Error while reading file records!\n";
       return false;
     }
-    files.push_back(tempFileRecord);
+    files.emplace_back(tempFileRecord);
   }
 
-  return in_File.good();
+  return true;
 }
 
-} //namespace
+} // namespace

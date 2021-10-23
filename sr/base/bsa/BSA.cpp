@@ -33,6 +33,7 @@ const uint32_t BSA::cIndexNotFound = 0xFFFFFFFF;
 
 BSA::BSA()
 : m_Status(bsFresh),
+  m_Stream(std::ifstream()),
   m_Header(BSAHeader()),
   m_Folders(std::vector<BSAFolderRecord>()),
   m_FolderBlocks(std::vector<BSAFolderBlock>())
@@ -242,7 +243,7 @@ bool BSA::grabFileNames()
       // another check is necessary here
       if (dirIndex >= m_FolderBlocks.size())
       {
-        std::cerr << "BSA::grabFileNames: Error: not enough file blocks (2)!\n"
+        std::cerr << "BSA::grabFileNames: Error: Not enough file blocks (2)!\n"
                   << "dir idx: " << dirIndex << ", #blocks: " << m_FolderBlocks.size() << "\n"
                   << "char offset: " << charOffset << ", ptr. len.: " << m_Header.totalFileNameLength << "\n"
                   << "names done: " << namesRead << "\n";
@@ -318,7 +319,7 @@ std::vector<BSA::DirectoryStruct> BSA::getDirectories() const
   std::vector<DirectoryStruct> result;
   if (!hasAllStructureData())
   {
-    std::cerr << "BSA::getDirectories: Error: not all structure data is "
+    std::cerr << "BSA::getDirectories: Error: Not all structure data is "
               << "present to properly fulfill the requested operation!\n";
     return result;
   }
@@ -402,7 +403,7 @@ uint32_t BSA::getIndexOfFolder(std::string folderName) const
 {
   if (!hasAllStructureData())
   {
-    std::cerr << "BSA::getIndexOfFolder: Error: not all structure data is "
+    std::cerr << "BSA::getIndexOfFolder: Error: Not all structure data is "
               << "present to properly fulfill the requested operation!\n";
     return cIndexNotFound;
   }
@@ -489,7 +490,7 @@ bool BSA::hasFile(const std::string& fileName) const
   {
     std::cerr << "BSA::hasFile: Error: Not all structure data is present to "
               << "properly fulfill the requested operation!\n";
-    return cIndexNotFound;
+    return false;
   }
 
   uint32_t folderIdx, fileIdx;

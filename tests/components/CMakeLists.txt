@@ -19,6 +19,7 @@ set(component_tests_sources
     ../../sr/base/Group.cpp
     ../../sr/base/MapBasedRecordManager.hpp
     ../../sr/base/StringTable.cpp
+    ../../sr/base/bsa/BSA.cpp
     ../../sr/base/bsa/BSAFileRecord.cpp
     ../../sr/base/bsa/BSAFolderBlock.cpp
     ../../sr/base/bsa/BSAFolderRecord.cpp
@@ -87,6 +88,7 @@ set(component_tests_sources
     sr/base/FormIDFunctions.cpp
     sr/base/MapBasedRecordManager.cpp
     sr/base/StringTable.cpp
+    sr/base/bsa/BSA.cpp
     sr/base/bsa/BSAFileRecord.cpp
     sr/base/bsa/BSAFolderBlock.cpp
     sr/base/bsa/BSAFolderRecord.cpp

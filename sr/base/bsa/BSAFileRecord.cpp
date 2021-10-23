@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,53 +25,48 @@ namespace SRTP
 {
 
 BSAFileRecord::BSAFileRecord()
+: nameHash(0),
+  fileSize(0),
+  offset(0),
+  fileName("")
 {
-  nameHash = 0;
-  fileSize = 0;
-  offset = 0;
-  fileName = "";
 }
 
-BSAFileRecord::~BSAFileRecord()
+bool BSAFileRecord::loadFromStream(std::istream& input)
 {
-  //empty
-}
-
-bool BSAFileRecord::loadFromStream(std::ifstream& in_File)
-{
-  if (!in_File.good())
+  if (!input.good())
   {
-    std::cerr << "BSAFileRecord::loadFromStream: Error: bad stream given!\n";
+    std::cerr << "BSAFileRecord::loadFromStream: Error: Bad stream given!\n";
     return false;
   }
-  //read file record's stuff
-  in_File.read((char*) &nameHash, sizeof(BSAHash));
-  if (!in_File.good())
+  // read file record's stuff
+  input.read(reinterpret_cast<char*>(&nameHash), sizeof(BSAHash));
+  if (!input.good())
   {
-    std::cerr << "BSAFileRecord::loadFromStream: Error: could not read hash!\n";
+    std::cerr << "BSAFileRecord::loadFromStream: Error: Could not read hash!\n";
     return false;
   }
-  //rest of it
-  in_File.read((char*) &fileSize, 4);
-  in_File.read((char*) &offset, 4);
-  if (!in_File.good())
+  input.read(reinterpret_cast<char*>(&fileSize), 4);
+  input.read(reinterpret_cast<char*>(&offset), 4);
+  if (!input.good())
   {
     std::cerr << "BSAFileRecord::loadFromStream: Error while reading data!\n";
     return false;
   }
+  // File name is at another location in the file, so it cannot be set here.
   fileName.clear();
-  //all's well
+  // All is well.
   return true;
 }
 
 bool BSAFileRecord::isCompressionToggled() const
 {
-  return ((fileSize & (1<<30))!=0);
+  return (fileSize & (1 << 30)) != 0;
 }
 
 uint32_t BSAFileRecord::getRealFileSize() const
 {
-  return (fileSize & (~(1<<30)));
+  return fileSize & ~(1 << 30);
 }
 
-} //namespace
+} // namespace

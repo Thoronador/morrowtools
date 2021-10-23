@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -23,42 +23,46 @@
 
 #include "BSAHash.hpp"
 #include <fstream>
+#include <string>
 
 namespace SRTP
 {
 
+/** Holds hash, size, flag and offset data of a file as well as its name. */
 struct BSAFileRecord
 {
   public:
-    /* constructor */
     BSAFileRecord();
 
-    /* destructor */
-    ~BSAFileRecord();
-
-    //stuff
     BSAHash nameHash;
-    uint32_t fileSize;
+    uint32_t fileSize; /**< size of the file in bytes plus flags */
     uint32_t offset;
 
     // not directly part of record
     std::string fileName;
 
-    /* tries to read the file record from the given file stream and returns
-       true in case of success, false in case of failure
+    /** \brief Tries to read the file record from the given stream.
+     *
+     * \param input  the input stream to read from
+     * \return Returns true in case of success, false in case of failure.
+     */
+    bool loadFromStream(std::istream& input);
 
-       parameters:
-          in_File - the input file stream
-    */
-    bool loadFromStream(std::ifstream& in_File);
-
-    /* returns true, if the file's compression deviates from the archive's default */
+    /** \brief Checks whether the file's compression deviates from the archive's
+     *         default.
+     *
+     * \return Returns true, if the file's compression deviates from the
+     *         archive's default. Returns false otherwise.
+     */
     bool isCompressionToggled() const;
 
-    /* returns the file's size, i.e. fileSize without the flag bit */
+    /** \brief Gets the actual file size.
+     *
+     * \return Returns the file's size, i.e. fileSize without the flag bit.
+     */
     uint32_t getRealFileSize() const;
-}; //struct
+}; // struct
 
-} //namespace
+} // namespace
 
 #endif // SR_BSAFILERECORD_HPP

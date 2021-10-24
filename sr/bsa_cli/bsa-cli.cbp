@@ -63,6 +63,8 @@
 		<Unit filename="OperationInfo.hpp" />
 		<Unit filename="OperationList.cpp" />
 		<Unit filename="OperationList.hpp" />
+		<Unit filename="Operations.cpp" />
+		<Unit filename="Operations.hpp" />
 		<Unit filename="main.cpp" />
 		<Extensions />
 	</Project>

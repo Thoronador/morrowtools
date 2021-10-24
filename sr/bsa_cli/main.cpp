@@ -20,6 +20,7 @@
 
 #include <iostream>
 #include <string>
+#include "Operations.hpp"
 #include "OperationInfo.hpp"
 #include "OperationList.hpp"
 #include "../base/ReturnCodes.hpp"
@@ -52,7 +53,7 @@ void showHelp()
 
 int main(int argc, char **argv)
 {
-  std::string operation;
+  std::optional<SRTP::Operation> operation;
   std::string bsaFileName;
 
   if ((argc > 1) && (argv != nullptr))
@@ -75,15 +76,15 @@ int main(int argc, char **argv)
           showVersion();
           return 0;
         }
-        else if (operation.empty())
+        else if (!operation.has_value())
         {
-          if (param != "list" && param != "info")
+          operation = SRTP::parseOperation(param);
+          if (!operation)
           {
             std::cerr << "Error: '" << param << "' is not an allowed operation.\n"
-                      << "An allowed operation is 'list'.\n" ;
+                      << "An allowed operation is 'list' or 'info'.\n" ;
             return SRTP::rcInvalidParameter;
           }
-          operation = param;
         }
         else if (bsaFileName.empty())
         {
@@ -117,7 +118,7 @@ int main(int argc, char **argv)
     return SRTP::rcInvalidParameter;
   }
 
-  if (operation.empty())
+  if (!operation)
   {
     std::cerr << "Error: An operation has to be specified!\n"
               << "Use --help to get a list of valid parameters and operations.\n";
@@ -131,7 +132,7 @@ int main(int argc, char **argv)
   }
 
   // Currently, only "list" and "info" are implemented as operations.
-  if (operation == "list")
+  if (operation == SRTP::Operation::List)
     return SRTP::listBsaContent(bsaFileName);
   else
     return SRTP::showBsaInfo(bsaFileName);

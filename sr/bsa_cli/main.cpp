@@ -22,6 +22,7 @@
 #include <memory>
 #include <string>
 #include "commands/Operations.hpp"
+#include "commands/CommandFactory.hpp"
 #include "commands/Info.hpp"
 #include "commands/List.hpp"
 #include "../base/ReturnCodes.hpp"
@@ -116,9 +117,7 @@ int main(int argc, char **argv)
               << "Use --help to get a list of valid parameters and operations.\n";
     return SRTP::rcInvalidParameter;
   }
-  std::unique_ptr<Command> command = (operation == SRTP::Operation::List)
-                                   ? std::unique_ptr<Command>(new List())
-                                   : std::unique_ptr<Command>(new Info());
+  auto command = CommandFactory::createCommand(operation.value());
   const int parse = command->parseArguments(argc, argv);
   if (parse != 0)
     return parse;

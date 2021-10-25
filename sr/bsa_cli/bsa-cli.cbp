@@ -62,6 +62,8 @@
 		<Unit filename="commands/ArgumentParsingUtilities.cpp" />
 		<Unit filename="commands/ArgumentParsingUtilities.hpp" />
 		<Unit filename="commands/Command.hpp" />
+		<Unit filename="commands/CommandFactory.cpp" />
+		<Unit filename="commands/CommandFactory.hpp" />
 		<Unit filename="commands/Info.cpp" />
 		<Unit filename="commands/Info.hpp" />
 		<Unit filename="commands/List.cpp" />

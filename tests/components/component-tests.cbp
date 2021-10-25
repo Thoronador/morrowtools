@@ -176,11 +176,14 @@
 		<Unit filename="../../sr/bsa_cli/commands/ArgumentParsingUtilities.cpp" />
 		<Unit filename="../../sr/bsa_cli/commands/ArgumentParsingUtilities.hpp" />
 		<Unit filename="../../sr/bsa_cli/commands/Command.hpp" />
+		<Unit filename="../../sr/bsa_cli/commands/CommandFactory.cpp" />
+		<Unit filename="../../sr/bsa_cli/commands/CommandFactory.hpp" />
 		<Unit filename="../../sr/bsa_cli/commands/Info.cpp" />
 		<Unit filename="../../sr/bsa_cli/commands/Info.hpp" />
 		<Unit filename="../../sr/bsa_cli/commands/List.cpp" />
 		<Unit filename="../../sr/bsa_cli/commands/List.hpp" />
 		<Unit filename="../../sr/bsa_cli/commands/Operations.cpp" />
+		<Unit filename="../../sr/bsa_cli/commands/Operations.hpp" />
 		<Unit filename="base/BufferStream.cpp" />
 		<Unit filename="base/ComparisonFunctor.cpp" />
 		<Unit filename="base/CompressionFunctions.cpp" />
@@ -263,6 +266,7 @@
 		<Unit filename="sr/base/records/quest/QSDTRecord.cpp" />
 		<Unit filename="sr/base/records/quest/QSTAEntry.cpp" />
 		<Unit filename="sr/bsa_cli/commands/ArgumentParsingUtilities.cpp" />
+		<Unit filename="sr/bsa_cli/commands/CommandFactory.cpp" />
 		<Unit filename="sr/bsa_cli/commands/Info.cpp" />
 		<Unit filename="sr/bsa_cli/commands/List.cpp" />
 		<Unit filename="sr/bsa_cli/commands/Operations.cpp" />

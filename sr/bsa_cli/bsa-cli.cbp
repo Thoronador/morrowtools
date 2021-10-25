@@ -59,12 +59,15 @@
 		<Unit filename="../base/bsa/BSAFolderRecord.hpp" />
 		<Unit filename="../base/bsa/BSAHeader.cpp" />
 		<Unit filename="../base/bsa/BSAHeader.hpp" />
-		<Unit filename="OperationInfo.cpp" />
-		<Unit filename="OperationInfo.hpp" />
-		<Unit filename="OperationList.cpp" />
-		<Unit filename="OperationList.hpp" />
-		<Unit filename="Operations.cpp" />
-		<Unit filename="Operations.hpp" />
+		<Unit filename="commands/ArgumentParsingUtilities.cpp" />
+		<Unit filename="commands/ArgumentParsingUtilities.hpp" />
+		<Unit filename="commands/Command.hpp" />
+		<Unit filename="commands/Info.cpp" />
+		<Unit filename="commands/Info.hpp" />
+		<Unit filename="commands/List.cpp" />
+		<Unit filename="commands/List.hpp" />
+		<Unit filename="commands/Operations.cpp" />
+		<Unit filename="commands/Operations.hpp" />
 		<Unit filename="main.cpp" />
 		<Extensions />
 	</Project>

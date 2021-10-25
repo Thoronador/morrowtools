@@ -14,9 +14,10 @@ set(bsa_cli_sources
     ../base/bsa/BSAFolderBlock.cpp
     ../base/bsa/BSAFolderRecord.cpp
     ../base/bsa/BSAHeader.cpp
-    OperationInfo.cpp
-    OperationList.cpp
-    Operations.cpp
+    commands/ArgumentParsingUtilities.cpp
+    commands/Info.cpp
+    commands/List.cpp
+    commands/Operations.cpp
     main.cpp)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")

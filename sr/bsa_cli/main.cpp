@@ -19,12 +19,12 @@
 */
 
 #include <iostream>
+#include <memory>
 #include <string>
-#include "Operations.hpp"
-#include "OperationInfo.hpp"
-#include "OperationList.hpp"
+#include "commands/Operations.hpp"
+#include "commands/Info.hpp"
+#include "commands/List.hpp"
 #include "../base/ReturnCodes.hpp"
-#include "../../base/FileFunctions.hpp"
 
 void showVersion()
 {
@@ -53,8 +53,8 @@ void showHelp()
 
 int main(int argc, char **argv)
 {
+  using namespace SRTP::bsa_cli;
   std::optional<SRTP::Operation> operation;
-  std::string bsaFileName;
 
   if ((argc > 1) && (argv != nullptr))
   {
@@ -85,16 +85,8 @@ int main(int argc, char **argv)
                       << "An allowed operation is 'list' or 'info'.\n" ;
             return SRTP::rcInvalidParameter;
           }
+          break;
         }
-        else if (bsaFileName.empty())
-        {
-          if (!FileExists(param))
-          {
-            std::cerr << "Error: The file " << param << " does not exist!\n";
-            return SRTP::rcInvalidParameter;
-          }
-          bsaFileName = param;
-        } // case sensitive
         else
         {
           // unknown or wrong parameter
@@ -124,16 +116,11 @@ int main(int argc, char **argv)
               << "Use --help to get a list of valid parameters and operations.\n";
     return SRTP::rcInvalidParameter;
   }
-  if (bsaFileName.empty())
-  {
-    std::cerr << "Error: A BSA file name has to be specified after the "
-              << "operation!\n";
-    return SRTP::rcInvalidParameter;
-  }
-
-  // Currently, only "list" and "info" are implemented as operations.
-  if (operation == SRTP::Operation::List)
-    return SRTP::listBsaContent(bsaFileName);
-  else
-    return SRTP::showBsaInfo(bsaFileName);
+  std::unique_ptr<Command> command = (operation == SRTP::Operation::List)
+                                   ? std::unique_ptr<Command>(new List())
+                                   : std::unique_ptr<Command>(new Info());
+  const int parse = command->parseArguments(argc, argv);
+  if (parse != 0)
+    return parse;
+  return command->run();
 }

@@ -18,19 +18,30 @@
  -------------------------------------------------------------------------------
 */
 
-#include "OperationInfo.hpp"
+#include "Info.hpp"
 #include <iostream>
-#include "../base/FormIDFunctions.hpp"
-#include "../base/ReturnCodes.hpp"
-#include "../base/bsa/BSA.hpp"
+#include "../../base/FormIDFunctions.hpp"
+#include "../../base/ReturnCodes.hpp"
+#include "../../base/bsa/BSA.hpp"
+#include "ArgumentParsingUtilities.hpp"
 
-namespace SRTP
+namespace SRTP::bsa_cli
 {
 
-int showBsaInfo(const std::string& fileName)
+Info::Info()
+: bsaFileName(std::string())
+{
+}
+
+int Info::parseArguments(int argc, char** argv)
+{
+  return parseArgumentsBsaFileNameOnly(argc, argv, bsaFileName);
+}
+
+int Info::run()
 {
   BSA bsa;
-  if (!bsa.open(fileName))
+  if (!bsa.open(bsaFileName))
     return SRTP::rcFileError;
   const auto& header = bsa.getHeader();
   std::cout

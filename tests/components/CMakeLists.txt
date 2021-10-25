@@ -75,6 +75,10 @@ set(component_tests_sources
     ../../sr/base/records/quest/QOBJEntry.cpp
     ../../sr/base/records/quest/QSDTRecord.cpp
     ../../sr/base/records/quest/QSTAEntry.cpp
+    ../../sr/bsa_cli/commands/ArgumentParsingUtilities.cpp
+    ../../sr/bsa_cli/commands/Info.cpp
+    ../../sr/bsa_cli/commands/List.cpp
+    ../../sr/bsa_cli/commands/Operations.cpp
     base/BufferStream.cpp
     base/ComparisonFunctor.cpp
     base/CompressionFunctions.cpp
@@ -155,6 +159,10 @@ set(component_tests_sources
     sr/base/records/WordOfPowerRecord.cpp
     sr/base/records/WorldSpaceRecord.cpp
     sr/base/records/WrongStringType.cpp
+    sr/bsa_cli/commands/ArgumentParsingUtilities.cpp
+    sr/bsa_cli/commands/Info.cpp
+    sr/bsa_cli/commands/List.cpp
+    sr/bsa_cli/commands/Operations.cpp
     main.cpp)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")

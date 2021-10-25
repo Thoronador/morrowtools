@@ -33,5 +33,4 @@ std::optional<Operation> parseOperation(const std::string_view op)
   return std::nullopt;
 }
 
-
 } // namespace

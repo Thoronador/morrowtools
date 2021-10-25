@@ -18,23 +18,35 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SRTP_BSACLI_OPERATIONLIST_HPP
-#define SRTP_BSACLI_OPERATIONLIST_HPP
+#ifndef SRTP_BSACLI_COMMAND_HPP
+#define SRTP_BSACLI_COMMAND_HPP
 
-#include <string>
-
-namespace SRTP
+namespace SRTP::bsa_cli
 {
 
-/** \brief List contents (folder names and file names) of the BSA.
- *
- * \param fileName  name of the BSA file
- * \return Returns zero in case of success.
- *         Returns a non-zero exit code in case of failure.
- * \remark The return value can be used as exit code of the main() function.
- */
-int listBsaContent(const std::string& fileName);
+/** Abstract base class for commands. */
+class Command
+{
+  public:
+    virtual ~Command() = default;
+
+    /** \brief Parses command line arguments.
+     *
+     * \return Returns zero in case of success.
+     *         Returns a non-zero exit code in case of failure.
+     * \remark The return value can be used as exit code of the main() function.
+     */
+    virtual int parseArguments(int argc, char** argv) = 0;
+
+    /** \brief Runs the command.
+     *
+     * \return Returns zero in case of success.
+     *         Returns a non-zero exit code in case of failure.
+     * \remark The return value can be used as exit code of the main() function.
+     */
+    virtual int run() = 0;
+}; // class
 
 } // namespace
 
-#endif // SRTP_BSACLI_OPERATIONLIST_HPP
+#endif // SRTP_BSACLI_COMMAND_HPP

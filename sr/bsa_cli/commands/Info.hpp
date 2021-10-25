@@ -18,23 +18,33 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SRTP_BSACLI_OPERATIONINFO_HPP
-#define SRTP_BSACLI_OPERATIONINFO_HPP
+#ifndef SRTP_BSACLI_COMMAND_INFO_HPP
+#define SRTP_BSACLI_COMMAND_INFO_HPP
 
 #include <string>
+#include "Command.hpp"
 
-namespace SRTP
+namespace SRTP::bsa_cli
 {
 
-/** \brief Shows header information of the BSA.
- *
- * \param fileName  name of the BSA file
- * \return Returns zero in case of success.
- *         Returns a non-zero exit code in case of failure.
- * \remark The return value can be used as exit code of the main() function.
- */
-int showBsaInfo(const std::string& fileName);
+class Info: public Command
+{
+  public:
+    Info();
+
+    int parseArguments(int argc, char** argv) final;
+
+    /** \brief Shows header information of the BSA.
+     *
+     * \return Returns zero in case of success.
+     *         Returns a non-zero exit code in case of failure.
+     * \remark The return value can be used as exit code of the main() function.
+     */
+    int run() final;
+  private:
+    std::string bsaFileName; /**< name of the BSA file */
+};
 
 } // namespace
 
-#endif // SRTP_BSACLI_OPERATIONINFO_HPP
+#endif // SRTP_BSACLI_COMMAND_INFO_HPP

@@ -18,18 +18,29 @@
  -------------------------------------------------------------------------------
 */
 
-#include "OperationList.hpp"
+#include "List.hpp"
 #include <iostream>
-#include "../base/ReturnCodes.hpp"
-#include "../base/bsa/BSA.hpp"
+#include "../../base/ReturnCodes.hpp"
+#include "../../base/bsa/BSA.hpp"
+#include "ArgumentParsingUtilities.hpp"
 
-namespace SRTP
+namespace SRTP::bsa_cli
 {
 
-int listBsaContent(const std::string& fileName)
+List::List()
+: bsaFileName(std::string())
+{
+}
+
+int List::parseArguments(int argc, char** argv)
+{
+  return parseArgumentsBsaFileNameOnly(argc, argv, bsaFileName);
+}
+
+int List::run()
 {
   BSA bsa;
-  if (!bsa.open(fileName))
+  if (!bsa.open(bsaFileName))
     return SRTP::rcFileError;
   if (!bsa.grabAllStructureData())
     return SRTP::rcFileError;
@@ -38,7 +49,7 @@ int listBsaContent(const std::string& fileName)
   const auto& header = bsa.getHeader();
   if (!header.hasNamesForFolders() || !header.hasNamesForFiles())
   {
-    std::cout << "Info: The file " << fileName << " does not contain "
+    std::cout << "Info: The file " << bsaFileName << " does not contain "
               << "information about its folder names and file names.\n";
     return 0;
   }

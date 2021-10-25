@@ -31,6 +31,20 @@ namespace SRTP
 
 const uint32_t BSA::cIndexNotFound = 0xFFFFFFFF;
 
+BSA::DirectoryStruct::DirectoryStruct()
+: name(std::string()),
+  index(cIndexNotFound)
+{
+}
+
+BSA::FileStruct::FileStruct()
+: name(std::string()),
+  folderIndex(cIndexNotFound),
+  fileIndex(cIndexNotFound),
+  compressed(false)
+{
+}
+
 BSA::BSA()
 : m_Status(bsFresh),
   m_Stream(std::ifstream()),
@@ -286,10 +300,9 @@ void BSA::listFileNames(bool withCompressionStatus)
   uint32_t rawFiles = 0;
   for (uint32_t folderIdx = 0; folderIdx < m_FolderBlocks.size(); ++folderIdx)
   {
-    std::cout << m_FolderBlocks[folderIdx].folderName << "\n";
+    const std::string folder = m_FolderBlocks[folderIdx].folderName + "\\";
     for (uint32_t fileIdx = 0; fileIdx < m_FolderBlocks[folderIdx].files.size(); ++fileIdx)
     {
-      std::cout << "    ";
       if (withCompressionStatus)
       {
         if (isFileCompressed(folderIdx, fileIdx))
@@ -303,9 +316,8 @@ void BSA::listFileNames(bool withCompressionStatus)
           ++rawFiles;
         }
       } // if compression info requested
-      std::cout << m_FolderBlocks[folderIdx].files.at(fileIdx).fileName << "\n";
+      std::cout << folder << m_FolderBlocks[folderIdx].files[fileIdx].fileName << "\n";
     }
-    std::cout << "\n";
   }
   if (withCompressionStatus)
   {

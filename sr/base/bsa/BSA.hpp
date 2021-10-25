@@ -156,6 +156,8 @@ struct BSA
     {
       std::string name;
       uint32_t index;
+
+      DirectoryStruct();
     }; //struct
 
     /* returns a list of all directories within the archive.
@@ -173,6 +175,8 @@ struct BSA
       uint32_t folderIndex;
       uint32_t fileIndex;
       bool compressed;
+
+      FileStruct();
     }; //struct
 
     /* returns a list of all file names within a certain directory.

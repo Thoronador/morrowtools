@@ -28,6 +28,12 @@ namespace SRTP::bsa_cli
 
 int parseArgumentsBsaFileNameOnly(int argc, char** argv, std::string& bsaFileName)
 {
+  if (argv == nullptr)
+  {
+    std::cerr << "Error: Parameter array pointer is NULL.\n";
+    return SRTP::rcInvalidParameter;
+  }
+
   for(int i = 2; i < argc; ++i)
   {
     if (argv[i] != nullptr)
@@ -52,7 +58,7 @@ int parseArgumentsBsaFileNameOnly(int argc, char** argv, std::string& bsaFileNam
     }
     else
     {
-      std::cerr << "Parameter at index " << i << " is NULL.\n";
+      std::cerr << "Error: Parameter at index " << i << " is NULL.\n";
       return SRTP::rcInvalidParameter;
     }
   }

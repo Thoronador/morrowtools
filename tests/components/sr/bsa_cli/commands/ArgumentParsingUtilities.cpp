@@ -32,40 +32,67 @@ TEST_CASE("bsa_cli::ArgumentParsingUtilities")
 
   SECTION("parseArgumentsBsaFileNameOnly")
   {
-    const auto arguments = std::string("a.out\0list\0foo.bsa\0fail\0"sv);
-    std::array<char*, 4> argArr = {
-        const_cast<char*>(&arguments.c_str()[0]),
-        const_cast<char*>(&arguments.c_str()[6]),
-        const_cast<char*>(&arguments.c_str()[11]),
-        const_cast<char*>(&arguments.c_str()[19])
-    };
-    char ** argv = argArr.data();
+    SECTION("list example")
+    {
+      const auto arguments = std::string("a.out\0list\0foo.bsa\0fail\0"sv);
+      std::array<char*, 4> argArr = {
+          const_cast<char*>(&arguments.c_str()[0]),
+          const_cast<char*>(&arguments.c_str()[6]),
+          const_cast<char*>(&arguments.c_str()[11]),
+          const_cast<char*>(&arguments.c_str()[19])
+      };
+      char ** argv = argArr.data();
 
-    REQUIRE( argv[0] == "a.out"s );
-    REQUIRE( argv[1] == "list"s );
-    REQUIRE( argv[2] == "foo.bsa"s );
-    REQUIRE( argv[3] == "fail"s );
+      REQUIRE( argv[0] == "a.out"s );
+      REQUIRE( argv[1] == "list"s );
+      REQUIRE( argv[2] == "foo.bsa"s );
+      REQUIRE( argv[3] == "fail"s );
 
-    std::string fileName = "";
-    REQUIRE( parseArgumentsBsaFileNameOnly(1, argv, fileName) != 0 );
-    REQUIRE( fileName.empty() );
-    REQUIRE( parseArgumentsBsaFileNameOnly(2, argv, fileName) != 0 );
-    REQUIRE( fileName.empty() );
-    REQUIRE( parseArgumentsBsaFileNameOnly(3, argv, fileName) != 0 );
-    REQUIRE( fileName.empty() );
+      std::string fileName = "";
+      REQUIRE( parseArgumentsBsaFileNameOnly(1, argv, fileName) != 0 );
+      REQUIRE( fileName.empty() );
+      REQUIRE( parseArgumentsBsaFileNameOnly(2, argv, fileName) != 0 );
+      REQUIRE( fileName.empty() );
+      REQUIRE( parseArgumentsBsaFileNameOnly(3, argv, fileName) != 0 );
+      REQUIRE( fileName.empty() );
 
-    // create temp. "BSA" file
-    std::ofstream bsa("foo.bsa", std::ios::trunc | std::ios::out);
-    bsa.close();
+      // create temp. "BSA" file
+      std::ofstream bsa("foo.bsa", std::ios::trunc | std::ios::out);
+      bsa.close();
 
-    REQUIRE( parseArgumentsBsaFileNameOnly(3, argv, fileName) == 0 );
-    REQUIRE( fileName == "foo.bsa" );
+      REQUIRE( parseArgumentsBsaFileNameOnly(3, argv, fileName) == 0 );
+      REQUIRE( fileName == "foo.bsa" );
 
-    fileName.clear();
-    REQUIRE( parseArgumentsBsaFileNameOnly(4, argv, fileName) != 0 );
-    REQUIRE( fileName == "foo.bsa" );
+      fileName.clear();
+      REQUIRE( parseArgumentsBsaFileNameOnly(4, argv, fileName) != 0 );
+      REQUIRE( fileName == "foo.bsa" );
 
-    // cleanup: delete file
-    REQUIRE( deleteFile("foo.bsa") );
+      // cleanup: delete file
+      REQUIRE( deleteFile("foo.bsa") );
+    }
+
+    SECTION("null in argument pointers")
+    {
+      std::array<char*, 4> argArr = {
+          nullptr,
+          nullptr,
+          nullptr,
+          nullptr
+      };
+      char ** argv = argArr.data();
+
+      std::string fileName = "";
+      REQUIRE( parseArgumentsBsaFileNameOnly(3, argv, fileName) != 0 );
+      REQUIRE( fileName.empty() );
+    }
+
+    SECTION("null as argument pointer")
+    {
+      char ** argv = nullptr;
+
+      std::string fileName = "";
+      REQUIRE( parseArgumentsBsaFileNameOnly(3, argv, fileName) != 0 );
+      REQUIRE( fileName.empty() );
+    }
   }
 }

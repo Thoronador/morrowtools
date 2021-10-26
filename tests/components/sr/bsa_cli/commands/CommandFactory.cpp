@@ -20,6 +20,7 @@
 
 #include <catch.hpp>
 #include "../../../../../sr/bsa_cli/commands/CommandFactory.hpp"
+#include "../../../../../sr/bsa_cli/commands/Commands.hpp"
 #include "../../../../../sr/bsa_cli/commands/Info.hpp"
 #include "../../../../../sr/bsa_cli/commands/List.hpp"
 #include "../../../../../sr/bsa_cli/commands/Operations.hpp"
@@ -32,6 +33,27 @@ TEST_CASE("bsa_cli::CommandFactory")
 
   SECTION("createCommand")
   {
+    SECTION("all operations return a non-null pointer")
+    {
+      const auto allOps = allOperations();
+      for (const auto op: allOps)
+      {
+        const auto ptr = createCommand(op);
+        REQUIRE_FALSE( ptr == nullptr );
+      }
+    }
+
+    SECTION("commands")
+    {
+      const auto ptr = createCommand(Operation::Commands);
+
+      REQUIRE_FALSE( ptr == nullptr );
+      const auto typed = dynamic_cast<Commands*>(ptr.get());
+      REQUIRE_FALSE( typed == nullptr );
+      const auto wrongType = dynamic_cast<Info*>(ptr.get());
+      REQUIRE( wrongType == nullptr );
+    }
+
     SECTION("info")
     {
       const auto ptr = createCommand(Operation::Info);

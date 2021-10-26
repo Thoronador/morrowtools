@@ -58,4 +58,9 @@ int Info::run()
   return 0;
 }
 
+std::string Info::helpShort() const
+{
+  return "Shows header information of the archive.";
+}
+
 } // namespace

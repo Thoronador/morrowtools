@@ -18,27 +18,38 @@
  -------------------------------------------------------------------------------
 */
 
-#include "CommandFactory.hpp"
-#include "Commands.hpp"
-#include "Info.hpp"
-#include "List.hpp"
+#ifndef SRTP_BSACLI_OPERATIONCOMMANDS_HPP
+#define SRTP_BSACLI_OPERATIONCOMMANDS_HPP
 
-namespace SRTP::bsa_cli::CommandFactory
+#include <string>
+#include "Command.hpp"
+
+namespace SRTP::bsa_cli
 {
 
-std::unique_ptr<Command> createCommand(const Operation op)
+class Commands: public Command
 {
-  switch (op)
-  {
-    case Operation::List:
-         return std::unique_ptr<Command>(new List());
-    case Operation::Info:
-         return std::unique_ptr<Command>(new Info());
-    case Operation::Commands:
-         return std::unique_ptr<Command>(new Commands());
-    default:
-         return nullptr;
-  }
-}
+  public:
+    Commands() = default;
+
+    int parseArguments(int argc, char** argv) final;
+
+    /** \brief List contents (folder names and file names) of the BSA.
+     *
+     * \param fileName  name of the BSA file
+     * \return Returns zero in case of success.
+     *         Returns a non-zero exit code in case of failure.
+     * \remark The return value can be used as exit code of the main() function.
+     */
+    int run() final;
+
+    /** \brief Gets a short help message (e. g. one line) for the command.
+     *
+     * \return Returns a short help message describing the command.
+     */
+    std::string helpShort() const final;
+};
 
 } // namespace
+
+#endif // SRTP_BSACLI_OPERATIONCOMMANDS_HPP

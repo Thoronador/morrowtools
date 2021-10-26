@@ -21,6 +21,8 @@
 #ifndef SRTP_BSACLI_COMMAND_HPP
 #define SRTP_BSACLI_COMMAND_HPP
 
+#include <string>
+
 namespace SRTP::bsa_cli
 {
 
@@ -45,6 +47,12 @@ class Command
      * \remark The return value can be used as exit code of the main() function.
      */
     virtual int run() = 0;
+
+    /** \brief Gets a short help message (e. g. one line) for the command.
+     *
+     * \return Returns a short help message describing the command.
+     */
+    virtual std::string helpShort() const = 0;
 }; // class
 
 } // namespace

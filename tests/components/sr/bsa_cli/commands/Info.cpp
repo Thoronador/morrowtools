@@ -88,4 +88,10 @@ TEST_CASE("bsa_cli::Info")
     // cleanup: delete file
     REQUIRE( deleteFile("foo_info_run.bsa") );
   }
+
+  SECTION("helpShort returns non-empty string")
+  {
+    Info command;
+    REQUIRE_FALSE( command.helpShort().empty() );
+  }
 }

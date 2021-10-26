@@ -21,6 +21,7 @@
 #ifndef SRTP_BSACLI_OPERATIONS_HPP
 #define SRTP_BSACLI_OPERATIONS_HPP
 
+#include <array>
 #include <optional>
 #include <string_view>
 
@@ -29,6 +30,7 @@ namespace SRTP
 
 enum class Operation
 {
+  Commands,
   List,
   Info
 };
@@ -40,6 +42,20 @@ enum class Operation
  *         match was found. Returns an empty optional otherwise.
  */
 std::optional<Operation> parseOperation(const std::string_view op);
+
+/** \brief Returns string representation of an operation.
+ *
+ * \param op  the operation
+ * \return Returns the operation name.
+ */
+std::string operationToString(const Operation op);
+
+/** \brief Gets a container containing all possible operations.
+ *
+ * \remarks There is no real reflection in C++, so we use this instead.
+ * \return Returns an array containing all possible operations.
+ */
+std::array<Operation, 3> allOperations();
 
 } // namespace
 

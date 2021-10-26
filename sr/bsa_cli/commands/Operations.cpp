@@ -29,8 +29,34 @@ std::optional<Operation> parseOperation(const std::string_view op)
     return Operation::List;
   if (op == "info")
     return Operation::Info;
+  if (op == "commands")
+    return Operation::Commands;
 
   return std::nullopt;
+}
+
+std::string operationToString(const Operation op)
+{
+  switch (op)
+  {
+    case Operation::List:
+         return "list";
+    case Operation::Info:
+         return "info";
+    case Operation::Commands:
+         return "commands";
+    default:
+         return "";
+  }
+}
+
+std::array<Operation, 3> allOperations()
+{
+  return {
+    Operation::Commands,
+    Operation::Info,
+    Operation::List
+  };
 }
 
 } // namespace

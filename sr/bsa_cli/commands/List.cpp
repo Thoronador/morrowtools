@@ -58,4 +58,9 @@ int List::run()
   return 0;
 }
 
+std::string List::helpShort() const
+{
+  return "Lists all files in the archive.";
+}
+
 } // namespace

@@ -42,6 +42,12 @@ class List: public Command
      * \remark The return value can be used as exit code of the main() function.
      */
     int run() final;
+
+    /** \brief Gets a short help message (e. g. one line) for the command.
+     *
+     * \return Returns a short help message describing the command.
+     */
+    std::string helpShort() const final;
   private:
     std::string bsaFileName; /**< name of the BSA file */
 };

@@ -16,6 +16,7 @@ set(bsa_cli_sources
     ../base/bsa/BSAHeader.cpp
     commands/ArgumentParsingUtilities.cpp
     commands/CommandFactory.cpp
+    commands/Commands.cpp
     commands/Info.cpp
     commands/List.cpp
     commands/Operations.cpp

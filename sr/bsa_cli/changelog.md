@@ -1,5 +1,9 @@
 # Version history of bsa-cli
 
+## Version 0.3.0 (2021-10-27)
+
+The new `commands` operation is added. It shows available operations / commands.
+
 ## Version 0.2.1 (2021-10-25)
 
 The output of the `list` operation has been changed to include the path directly

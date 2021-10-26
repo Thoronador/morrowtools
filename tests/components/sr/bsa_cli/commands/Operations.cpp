@@ -25,12 +25,41 @@ TEST_CASE("bsa_cli::Operations")
 {
   using namespace SRTP;
 
+  SECTION("allOperations")
+  {
+    const auto all = allOperations();
+
+    REQUIRE( std::find(all.begin(), all.end(), Operation::Commands) != all.end() );
+    REQUIRE( std::find(all.begin(), all.end(), Operation::Info) != all.end() );
+    REQUIRE( std::find(all.begin(), all.end(), Operation::List) != all.end() );
+  }
+
+  SECTION("operationToString")
+  {
+    const auto all = allOperations();
+    for (const auto op: all)
+    {
+      REQUIRE_FALSE( operationToString(op).empty() );
+    }
+  }
+
+  SECTION("operationToString - parseOperation - roundtrip")
+  {
+    const auto all = allOperations();
+    for (const auto op: all)
+    {
+      REQUIRE( parseOperation(operationToString(op)) == op );
+    }
+  }
+
   SECTION("parseOperation")
   {
     REQUIRE( parseOperation("") == std::nullopt );
+    REQUIRE( parseOperation("commands") == Operation::Commands );
     REQUIRE( parseOperation("list") == Operation::List );
     REQUIRE( parseOperation("info") == Operation::Info );
 
+    REQUIRE( parseOperation("CoMMaNdS") == std::nullopt );
     REQUIRE( parseOperation("LiSt") == std::nullopt );
     REQUIRE( parseOperation("InFo") == std::nullopt );
   }

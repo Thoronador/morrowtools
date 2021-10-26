@@ -178,6 +178,8 @@
 		<Unit filename="../../sr/bsa_cli/commands/Command.hpp" />
 		<Unit filename="../../sr/bsa_cli/commands/CommandFactory.cpp" />
 		<Unit filename="../../sr/bsa_cli/commands/CommandFactory.hpp" />
+		<Unit filename="../../sr/bsa_cli/commands/Commands.cpp" />
+		<Unit filename="../../sr/bsa_cli/commands/Commands.hpp" />
 		<Unit filename="../../sr/bsa_cli/commands/Info.cpp" />
 		<Unit filename="../../sr/bsa_cli/commands/Info.hpp" />
 		<Unit filename="../../sr/bsa_cli/commands/List.cpp" />
@@ -267,6 +269,7 @@
 		<Unit filename="sr/base/records/quest/QSTAEntry.cpp" />
 		<Unit filename="sr/bsa_cli/commands/ArgumentParsingUtilities.cpp" />
 		<Unit filename="sr/bsa_cli/commands/CommandFactory.cpp" />
+		<Unit filename="sr/bsa_cli/commands/Commands.cpp" />
 		<Unit filename="sr/bsa_cli/commands/Info.cpp" />
 		<Unit filename="sr/bsa_cli/commands/List.cpp" />
 		<Unit filename="sr/bsa_cli/commands/Operations.cpp" />

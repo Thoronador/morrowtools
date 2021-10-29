@@ -45,7 +45,7 @@ void showHelp()
             << "               file. Allowed commands are:\n"
             << "                   commands     - lists available commands\n"
             << "                   extract-file - extracts a single file from the archive\n"
-            << "                   help         - shows help for an operation\n"
+            << "                   help         - shows help for a command\n"
             << "                   info         - shows BSA header information\n"
             << "                   list         - lists all folders and files in the archive\n"
             << "\n"
@@ -87,9 +87,9 @@ int main(int argc, char **argv)
           operation = SRTP::parseOperation(param);
           if (!operation)
           {
-            std::cerr << "Error: '" << param << "' is not an allowed operation.\n"
-                      << "Allowed operations are 'commands', 'extract-file', "
-                      << "'list', or 'info'.\n";
+            std::cerr << "Error: '" << param << "' is not an allowed command.\n"
+                      << "Allowed commands are 'commands', 'extract-file', "
+                      << "'help', list', or 'info'.\n";
             return SRTP::rcInvalidParameter;
           }
           break;
@@ -119,8 +119,8 @@ int main(int argc, char **argv)
 
   if (!operation)
   {
-    std::cerr << "Error: An operation has to be specified!\n"
-              << "Use --help to get a list of valid parameters and operations.\n";
+    std::cerr << "Error: A command has to be specified!\n"
+              << "Use --help to get a list of valid parameters and commands.\n";
     return SRTP::rcInvalidParameter;
   }
   auto command = CommandFactory::createCommand(operation.value());

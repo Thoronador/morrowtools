@@ -65,7 +65,7 @@ int parseArgumentsBsaFileNameOnly(int argc, char** argv, std::string& bsaFileNam
   if (bsaFileName.empty())
   {
     std::cerr << "Error: A BSA file name has to be specified after the "
-              << "operation!\n";
+              << "command!\n";
     return SRTP::rcInvalidParameter;
   }
 

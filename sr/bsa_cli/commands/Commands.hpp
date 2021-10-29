@@ -48,6 +48,13 @@ class Commands: public Command
      * \return Returns a short help message describing the command.
      */
     std::string helpShort() const final;
+
+    /** \brief Gets the full help message (e. g. several lines) for the command.
+     *
+     * \param  binaryName  name of the binary file
+     * \return Returns a help message describing the command in detail.
+     */
+    std::string helpFull(const std::string_view binaryName) const final;
 };
 
 } // namespace

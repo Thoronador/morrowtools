@@ -18,23 +18,25 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SRTP_BSACLI_COMMAND_EXTRACTFILE_HPP
-#define SRTP_BSACLI_COMMAND_EXTRACTFILE_HPP
+#ifndef SRTP_BSACLI_COMMAND_HELP_HPP
+#define SRTP_BSACLI_COMMAND_HELP_HPP
 
-#include <string>
 #include "Command.hpp"
+#include <optional>
+#include "Operations.hpp"
 
 namespace SRTP::bsa_cli
 {
 
-class ExtractFile: public Command
+/** Command to show help for another command. */
+class Help: public Command
 {
   public:
-    ExtractFile();
+    Help();
 
     int parseArguments(int argc, char** argv) final;
 
-    /** \brief Extracts a file from the BSA.
+    /** \brief Shows help for a command.
      *
      * \return Returns zero in case of success.
      *         Returns a non-zero exit code in case of failure.
@@ -55,11 +57,10 @@ class ExtractFile: public Command
      */
     std::string helpFull(const std::string_view binaryName) const final;
   private:
-    std::string bsaFileName; /**< name of the BSA file */
-    std::string inArchiveName; /**< name of the file inside the BSA */
-    std::string outputFileName; /**< destination for extraction */
+    std::string executableName; /**< name of the program */
+    std::optional<Operation> cmd; /**< the command for which to show the help */
 };
 
 } // namespace
 
-#endif // SRTP_BSACLI_COMMAND_EXTRACTFILE_HPP
+#endif // SRTP_BSACLI_COMMAND_HELP_HPP

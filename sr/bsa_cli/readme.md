@@ -1,6 +1,7 @@
 # bsa-cli - a simple command-line interface for BSA files
 
-bsa-cli is a command-line tool to perform some operations on BSA files.
+bsa-cli is a command-line tool to perform some operations on BSA files, an
+archive format that is used by TES V: Skyrim (and some other games).
 
 _Note: The bsa-cli is still in an early stage of development. So far it can only
 perform very few operations._
@@ -8,24 +9,27 @@ perform very few operations._
 ## Usage
 
 ```
-bsa-cli [OPTIONS] OPERATION BSA_FILE
+bsa-cli [OPTIONS] COMMAND BSA_FILE
 
 options:
-  --help       - displays this help message and quits
-  -?           - same as --help
-  --version    - displays the version of the program and quits
-  -v           - same as --version
-  OPERATION    - sets the operation that shall be performed on the BSA
-                 file. Allowed operations are:
-                     commands     - lists available operations
-                     extract-file - extracts a single file from the archive
-                     info         - show header information
-                     list         - lists all folders and files in the archive
+  --help     - displays this help message and quits
+  -?         - same as --help
+  --version  - displays the version of the program and quits
+  -v         - same as --version
+  COMMAND    - sets the command that shall be performed on the BSA
+               file. Allowed commands are:
+                   commands     - lists available commands
+                   extract-file - extracts a single file from the archive
+                   help         - shows help for an operation
+                   info         - shows BSA header information
+                   list         - lists all folders and files in the archive
 
-                 More operations may be added in the future.
-                 The operation must be given in most cases.
-  BSA_FILE     - set path to the BSA file to operate on to BSA_FILE.
-                 The BSA_FILE must be given in most cases.
+               More commands may be added in the future.
+               The command must be given in most cases.
+  BSA_FILE   - set path to the BSA file to operate on to BSA_FILE.
+               The BSA_FILE must be given in most cases.
+
+Use `bsa-cli help <command>` for more information on a specific command.
 ```
 
 ## History of changes

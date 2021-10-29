@@ -108,4 +108,10 @@ TEST_CASE("bsa_cli::ExtractFile")
     ExtractFile command;
     REQUIRE_FALSE( command.helpShort().empty() );
   }
+
+  SECTION("helpFull returns non-empty string")
+  {
+    ExtractFile command;
+    REQUIRE_FALSE( command.helpFull("foo").empty() );
+  }
 }

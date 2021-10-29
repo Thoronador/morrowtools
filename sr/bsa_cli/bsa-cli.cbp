@@ -68,6 +68,8 @@
 		<Unit filename="commands/Commands.hpp" />
 		<Unit filename="commands/ExtractFile.cpp" />
 		<Unit filename="commands/ExtractFile.hpp" />
+		<Unit filename="commands/Help.cpp" />
+		<Unit filename="commands/Help.hpp" />
 		<Unit filename="commands/Info.cpp" />
 		<Unit filename="commands/Info.hpp" />
 		<Unit filename="commands/List.cpp" />

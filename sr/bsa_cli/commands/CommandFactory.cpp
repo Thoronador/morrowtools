@@ -21,6 +21,7 @@
 #include "CommandFactory.hpp"
 #include "Commands.hpp"
 #include "ExtractFile.hpp"
+#include "Help.hpp"
 #include "Info.hpp"
 #include "List.hpp"
 
@@ -39,6 +40,8 @@ std::unique_ptr<Command> createCommand(const Operation op)
          return std::unique_ptr<Command>(new Info());
     case Operation::Commands:
          return std::unique_ptr<Command>(new Commands());
+    case Operation::Help:
+         return std::unique_ptr<Command>(new Help());
     default:
          return nullptr;
   }

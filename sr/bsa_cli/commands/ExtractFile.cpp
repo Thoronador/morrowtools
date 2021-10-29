@@ -130,4 +130,19 @@ std::string ExtractFile::helpShort() const
   return "Extracts a single file from the archive.";
 }
 
+std::string ExtractFile::helpFull(const std::string_view binaryName) const
+{
+  return std::string(binaryName).append(" extract-file\n")
+      .append("Extracts a single file from an archive.\n\n")
+      .append("Usage:\n    ")
+      .append(binaryName).append(" extract-file BSA_FILE ARCHIVE_MEMBER EXTRACT_DESTINATION\n\n")
+      .append("Options:\n    BSA_FILE            - set path to the BSA file to operate on to BSA_FILE.\n")
+      .append("                          The BSA_FILE must be given.\n")
+      .append("    ARCHIVE_MEMBER      - full path and name of the file from the archive to\n")
+      .append("                          extract. This option must be present.\n")
+      .append("    EXTRACT_DESTINATION - destination file name for extraction. This option\n")
+      .append("                          must be present. The destination file must not exist\n")
+      .append("                          yet. Otherwise the extraction will not be performed.\n");
+}
+
 } // namespace

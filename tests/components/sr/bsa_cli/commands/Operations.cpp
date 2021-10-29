@@ -56,10 +56,14 @@ TEST_CASE("bsa_cli::Operations")
   {
     REQUIRE( parseOperation("") == std::nullopt );
     REQUIRE( parseOperation("commands") == Operation::Commands );
+    REQUIRE( parseOperation("extract-file") == Operation::ExtractFile );
+    REQUIRE( parseOperation("help") == Operation::Help );
     REQUIRE( parseOperation("list") == Operation::List );
     REQUIRE( parseOperation("info") == Operation::Info );
 
     REQUIRE( parseOperation("CoMMaNdS") == std::nullopt );
+    REQUIRE( parseOperation("EXTRACT-file") == std::nullopt );
+    REQUIRE( parseOperation("hELp") == std::nullopt );
     REQUIRE( parseOperation("LiSt") == std::nullopt );
     REQUIRE( parseOperation("InFo") == std::nullopt );
   }

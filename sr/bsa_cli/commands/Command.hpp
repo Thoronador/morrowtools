@@ -22,6 +22,7 @@
 #define SRTP_BSACLI_COMMAND_HPP
 
 #include <string>
+#include <string_view>
 
 namespace SRTP::bsa_cli
 {
@@ -53,6 +54,13 @@ class Command
      * \return Returns a short help message describing the command.
      */
     virtual std::string helpShort() const = 0;
+
+    /** \brief Gets the full help message (e. g. several lines) for the command.
+     *
+     * \param  binaryName  name of the binary file
+     * \return Returns a help message describing the command in detail.
+     */
+    virtual std::string helpFull(const std::string_view binaryName) const = 0;
 }; // class
 
 } // namespace

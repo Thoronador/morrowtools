@@ -22,49 +22,42 @@
 #include <array>
 #include <fstream>
 #include "../../../../../base/FileFunctions.hpp"
-#include "../../../../../sr/bsa_cli/commands/List.hpp"
+#include "../../../../../sr/bsa_cli/commands/Help.hpp"
 
-TEST_CASE("bsa_cli::List")
+TEST_CASE("bsa_cli::Help")
 {
   using namespace std::string_view_literals;
   using namespace std::string_literals;
   using namespace SRTP::bsa_cli;
 
-  SECTION("parseArguments")
+  SECTION("parseArguments: default")
   {
-    const auto arguments = std::string("a.out\0list\0foo_list.bsa\0fail\0"sv);
+    const auto arguments = std::string("a.out\0help\0list\0fail\0"sv);
     std::array<char*, 4> argArr = {
         const_cast<char*>(&arguments.c_str()[0]),
         const_cast<char*>(&arguments.c_str()[6]),
         const_cast<char*>(&arguments.c_str()[11]),
-        const_cast<char*>(&arguments.c_str()[24])
+        const_cast<char*>(&arguments.c_str()[16])
     };
     char ** argv = argArr.data();
 
     REQUIRE( argv[0] == "a.out"s );
-    REQUIRE( argv[1] == "list"s );
-    REQUIRE( argv[2] == "foo_list.bsa"s );
+    REQUIRE( argv[1] == "help"s );
+    REQUIRE( argv[2] == "list"s );
     REQUIRE( argv[3] == "fail"s );
 
-    List command;
+    Help command;
 
     REQUIRE( command.parseArguments(1, argv) != 0 );
     REQUIRE( command.parseArguments(2, argv) != 0 );
-    REQUIRE( command.parseArguments(3, argv) != 0 );
-
-    // create "BSA" file
-    std::ofstream bsa("foo_list.bsa", std::ios::trunc | std::ios::out);
-    bsa.close();
-
     REQUIRE( command.parseArguments(3, argv) == 0 );
-
-    // cleanup: delete file
-    REQUIRE( deleteFile("foo_list.bsa") );
+    REQUIRE( command.parseArguments(3, nullptr) != 0 );
+    REQUIRE( command.parseArguments(4, argv) != 0 );
   }
 
-  SECTION("run: fail with empty file")
+  SECTION("parseArguments: unknown command")
   {
-    const auto arguments = std::string("a.out\0list\0foo_list_run.bsa\0"sv);
+    const auto arguments = std::string("a.out\0help\0what-ever\0"sv);
     std::array<char*, 3> argArr = {
         const_cast<char*>(&arguments.c_str()[0]),
         const_cast<char*>(&arguments.c_str()[6]),
@@ -73,31 +66,43 @@ TEST_CASE("bsa_cli::List")
     char ** argv = argArr.data();
 
     REQUIRE( argv[0] == "a.out"s );
-    REQUIRE( argv[1] == "list"s );
-    REQUIRE( argv[2] == "foo_list_run.bsa"s );
+    REQUIRE( argv[1] == "help"s );
+    REQUIRE( argv[2] == "what-ever"s );
 
-    List command;
+    Help command;
+    REQUIRE( command.parseArguments(3, argv) != 0 );
+  }
 
-    // create "BSA" file
-    std::ofstream bsa("foo_list_run.bsa", std::ios::trunc | std::ios::out);
-    bsa.close();
-    // parse arguments to get file name of BSA
+  SECTION("run: help for list command")
+  {
+    const auto arguments = std::string("a.out\0help\0list\0"sv);
+    std::array<char*, 4> argArr = {
+        const_cast<char*>(&arguments.c_str()[0]),
+        const_cast<char*>(&arguments.c_str()[6]),
+        const_cast<char*>(&arguments.c_str()[11])
+    };
+    char ** argv = argArr.data();
+
+    REQUIRE( argv[0] == "a.out"s );
+    REQUIRE( argv[1] == "help"s );
+    REQUIRE( argv[2] == "list"s );
+
+    Help command;
+    // parse arguments to get command name
     REQUIRE( command.parseArguments(3, argv) == 0 );
-    // Run should fail.
-    REQUIRE( command.run() != 0 );
-    // cleanup: delete file
-    REQUIRE( deleteFile("foo_list_run.bsa") );
+    // Run should succeed.
+    REQUIRE( command.run() == 0 );
   }
 
   SECTION("helpShort returns non-empty string")
   {
-    List command;
+    Help command;
     REQUIRE_FALSE( command.helpShort().empty() );
   }
 
   SECTION("helpFull returns non-empty string")
   {
-    List command;
+    Help command;
     REQUIRE_FALSE( command.helpFull("foo").empty() );
   }
 }

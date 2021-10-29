@@ -36,7 +36,6 @@ class List: public Command
 
     /** \brief List contents (folder names and file names) of the BSA.
      *
-     * \param fileName  name of the BSA file
      * \return Returns zero in case of success.
      *         Returns a non-zero exit code in case of failure.
      * \remark The return value can be used as exit code of the main() function.
@@ -48,6 +47,13 @@ class List: public Command
      * \return Returns a short help message describing the command.
      */
     std::string helpShort() const final;
+
+    /** \brief Gets the full help message (e. g. several lines) for the command.
+     *
+     * \param  binaryName  name of the binary file
+     * \return Returns a help message describing the command in detail.
+     */
+    std::string helpFull(const std::string_view binaryName) const final;
   private:
     std::string bsaFileName; /**< name of the BSA file */
 };

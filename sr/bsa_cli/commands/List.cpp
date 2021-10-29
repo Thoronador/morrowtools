@@ -63,4 +63,14 @@ std::string List::helpShort() const
   return "Lists all files in the archive.";
 }
 
+std::string List::helpFull(const std::string_view binaryName) const
+{
+  return std::string(binaryName).append(" list\n")
+      .append("Lists all files in the archive.\n\n")
+      .append("Usage:\n    ")
+      .append(binaryName).append(" list BSA_FILE\n\n")
+      .append("Options:\n    BSA_FILE    - set path to the BSA file to operate on to BSA_FILE.\n")
+      .append("                  The BSA_FILE must be given.\n");
+}
+
 } // namespace

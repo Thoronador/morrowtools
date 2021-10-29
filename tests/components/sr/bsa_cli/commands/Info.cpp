@@ -94,4 +94,10 @@ TEST_CASE("bsa_cli::Info")
     Info command;
     REQUIRE_FALSE( command.helpShort().empty() );
   }
+
+  SECTION("helpFull returns non-empty string")
+  {
+    Info command;
+    REQUIRE_FALSE( command.helpFull("foo").empty() );
+  }
 }

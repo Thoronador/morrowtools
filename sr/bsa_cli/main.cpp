@@ -29,29 +29,32 @@
 
 void showVersion()
 {
-  std::cout << "BSA Command Line Tool for Skyrim, version 0.4.0, 2021-10-29\n";
+  std::cout << "BSA Command Line Tool for Skyrim, version 0.4.1, 2021-10-30\n";
 }
 
 void showHelp()
 {
-  std::cout << "bsa-cli [OPTIONS] OPERATION BSA_FILE\n"
+  std::cout << "bsa-cli [OPTIONS] COMMAND BSA_FILE\n"
             << "\n"
             << "options:\n"
-            << "  --help       - displays this help message and quits\n"
-            << "  -?           - same as --help\n"
-            << "  --version    - displays the version of the program and quits\n"
-            << "  -v           - same as --version\n"
-            << "  OPERATION    - sets the operation that shall be performed on the BSA\n"
-            << "                 file. Allowed operations are:\n"
-            << "                     commands     - lists available operations\n"
-            << "                     extract-file - extracts a single file from the archive\n"
-            << "                     info         - show header information\n"
-            << "                     list         - lists all folders and files in the archive\n"
+            << "  --help     - displays this help message and quits\n"
+            << "  -?         - same as --help\n"
+            << "  --version  - displays the version of the program and quits\n"
+            << "  -v         - same as --version\n"
+            << "  COMMAND    - sets the command that shall be performed on the BSA\n"
+            << "               file. Allowed commands are:\n"
+            << "                   commands     - lists available commands\n"
+            << "                   extract-file - extracts a single file from the archive\n"
+            << "                   help         - shows help for an operation\n"
+            << "                   info         - shows BSA header information\n"
+            << "                   list         - lists all folders and files in the archive\n"
             << "\n"
-            << "                 More operations may be added in the future.\n"
-            << "                 The operation must be given in most cases.\n"
-            << "  BSA_FILE     - set path to the BSA file to operate on to BSA_FILE.\n"
-            << "                 The BSA_FILE must be given in most cases.\n";
+            << "               More commands may be added in the future.\n"
+            << "               The command must be given in most cases.\n"
+            << "  BSA_FILE   - set path to the BSA file to operate on to BSA_FILE.\n"
+            << "               The BSA_FILE must be given in most cases.\n"
+            << "\n"
+            << "Use `bsa-cli help <command>` for more information on a specific command.\n";
 }
 
 int main(int argc, char **argv)

@@ -1,5 +1,10 @@
 # Version history of bsa-cli
 
+## Version 0.4.1 (2021-10-30)
+
+A new `help` command is added to provide a bit more detailed help for the
+various other commands.
+
 ## Version 0.4.0 (2021-10-29)
 
 The new `extract-file` operation to extract a single file from a BSA file is

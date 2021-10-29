@@ -63,4 +63,14 @@ std::string Info::helpShort() const
   return "Shows header information of the archive.";
 }
 
+std::string Info::helpFull(const std::string_view binaryName) const
+{
+  return std::string(binaryName).append(" info\n")
+      .append("Shows header information of an archive.\n\n")
+      .append("Usage:\n    ")
+      .append(binaryName).append(" info BSA_FILE\n\n")
+      .append("Options:\n    BSA_FILE    - set path to the BSA file to operate on to BSA_FILE.\n")
+      .append("                  The BSA_FILE must be given.\n");
+}
+
 } // namespace

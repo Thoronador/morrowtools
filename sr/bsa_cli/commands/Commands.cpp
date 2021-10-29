@@ -64,12 +64,22 @@ int Commands::run()
               << std::string(maxNameLength - name.size(), ' ') << "\t"
               << command->helpShort() << "\n";
   }
+  std::cout << "\nUse `bsa-cli help <command>` for more information on a specific command.\n";
   return 0;
 }
 
 std::string Commands::helpShort() const
 {
   return "Lists available commands.";
+}
+
+std::string Commands::helpFull(const std::string_view binaryName) const
+{
+  return std::string(binaryName).append(" commands\n")
+      .append("Lists all available commands.\n\n")
+      .append("Usage:\n    ")
+      .append(binaryName).append(" commands\n\n")
+      .append("Options:\n    This commands does not have any options.\n");
 }
 
 } // namespace

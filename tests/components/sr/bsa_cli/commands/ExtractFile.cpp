@@ -30,6 +30,12 @@ TEST_CASE("bsa_cli::ExtractFile")
   using namespace std::string_literals;
   using namespace SRTP::bsa_cli;
 
+  SECTION("parseArguments with nullptr")
+  {
+    ExtractFile command;
+    REQUIRE( command.parseArguments(5, nullptr) != 0 );
+  }
+
   SECTION("parseArguments")
   {
     const auto arguments = std::string("a.out\0extract-file\0foo_list.bsa\0dir\\file.dat\0foo.dat"sv);

@@ -766,22 +766,19 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
            al_entry.clear();
            // ALST is always first
            // read ALST/ALLS
-           if (!loadUint32SubRecordFromStream(in_File, subRecName, al_entry.unknownALST, false))
+           al_entry.unknownALST = 0;
+           if (!loadUint32SubRecordFromStream(in_File, subRecName, al_entry.unknownALST.value(), false))
              return false;
            bytesRead += 6;
 
            if (subRecName == cALST)
            {
-             al_entry.hasALLS = false;
-             al_entry.unknownALLS = 0;
-             al_entry.hasALST = true;
+             al_entry.unknownALLS.reset();
            }
            else
            {
-             al_entry.hasALLS = true;
              al_entry.unknownALLS = al_entry.unknownALST;
-             al_entry.hasALST = false;
-             al_entry.unknownALST = 0;
+             al_entry.unknownALST.reset();
            }
 
            toDo = true;
@@ -815,15 +812,15 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                     hasReadFNAM = true;
                     break;
                case cALFA:
-                    if (al_entry.hasALFA)
+                    if (al_entry.unknownALFA.has_value())
                     {
                       std::cerr << "Error: QUST seems to have more than one ALFA subrecord per alias structure.\n";
                       return false;
                     }
-                    if (!loadUint32SubRecordFromStream(in_File, cALFA, al_entry.unknownALFA, false))
+                    al_entry.unknownALFA = 0;
+                    if (!loadUint32SubRecordFromStream(in_File, cALFA, al_entry.unknownALFA.value(), false))
                       return false;
                     bytesRead += 6;
-                    al_entry.hasALFA = true;
                     break;
                case cALRT:
                     if (al_entry.locationRefTypeFormID != 0)
@@ -857,26 +854,26 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                     }
                     break;
                case cALCA:
-                    if (al_entry.hasALCA)
+                    if (al_entry.unknownALCA.has_value())
                     {
                       std::cerr << "Error: QUST seems to have more than one ALCA subrecord per alias structure.\n";
                       return false;
                     }
-                    if (!loadUint32SubRecordFromStream(in_File, cALCA, al_entry.unknownALCA, false))
+                    al_entry.unknownALCA = 0;
+                    if (!loadUint32SubRecordFromStream(in_File, cALCA, al_entry.unknownALCA.value(), false))
                       return false;
                     bytesRead += 6;
-                    al_entry.hasALCA = true;
                     break;
                case cALCL:
-                    if (al_entry.hasALCL)
+                    if (al_entry.unknownALCL.has_value())
                     {
                       std::cerr << "Error: QUST seems to have more than one ALCL subrecord per alias structure.\n";
                       return false;
                     }
-                    if (!loadUint32SubRecordFromStream(in_File, cALCL, al_entry.unknownALCL, false))
+                    al_entry.unknownALCL = 0;
+                    if (!loadUint32SubRecordFromStream(in_File, cALCL, al_entry.unknownALCL.value(), false))
                       return false;
                     bytesRead += 6;
-                    al_entry.hasALCL = true;
                     break;
                case cALDN:
                     if (al_entry.displayNameFormID != 0)
@@ -975,37 +972,37 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                       return false;
                     break;
                case cALFE:
-                    if (al_entry.hasALFE)
+                    if (al_entry.unknownALFE.has_value())
                     {
                       std::cerr << "Error: QUST seems to have more than one ALFE subrecord per alias structure.\n";
                       return false;
                     }
-                    if (!loadUint32SubRecordFromStream(in_File, cALFE, al_entry.unknownALFE, false))
+                    al_entry.unknownALFE = 0;
+                    if (!loadUint32SubRecordFromStream(in_File, cALFE, al_entry.unknownALFE.value(), false))
                       return false;
                     bytesRead += 6;
-                    al_entry.hasALFE = true;
                     break;
                case cALFD:
-                    if (al_entry.hasALFD)
+                    if (al_entry.unknownALFD.has_value())
                     {
                       std::cerr << "Error: QUST seems to have more than one ALFD subrecord per alias structure.\n";
                       return false;
                     }
-                    if (!loadUint32SubRecordFromStream(in_File, cALFD, al_entry.unknownALFD, false))
+                    al_entry.unknownALFD = 0;
+                    if (!loadUint32SubRecordFromStream(in_File, cALFD, al_entry.unknownALFD.value(), false))
                       return false;
                     bytesRead += 6;
-                    al_entry.hasALFD = true;
                     break;
                case cALFI:
-                    if (al_entry.hasALFI)
+                    if (al_entry.forcedIntoAliasID.has_value())
                     {
                       std::cerr << "Error: QUST seems to have more than one ALFI subrecord per alias structure.\n";
                       return false;
                     }
-                    if (!loadUint32SubRecordFromStream(in_File, cALFI, al_entry.forcedIntoAliasID, false))
+                    al_entry.forcedIntoAliasID = 0;
+                    if (!loadUint32SubRecordFromStream(in_File, cALFI, al_entry.forcedIntoAliasID.value(), false))
                       return false;
                     bytesRead += 6;
-                    al_entry.hasALFI = true;
                     break;
                case cALFL:
                     if (al_entry.specificLocationFormID != 0)
@@ -1038,26 +1035,26 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                     }
                     break;
                case cALNA:
-                    if (al_entry.hasALNA)
+                    if (al_entry.unknownALNA.has_value())
                     {
                       std::cerr << "Error: QUST seems to have more than one ALNA subrecord per alias structure.\n";
                       return false;
                     }
-                    if (!loadUint32SubRecordFromStream(in_File, cALNA, al_entry.unknownALNA, false))
+                    al_entry.unknownALNA = 0;
+                    if (!loadUint32SubRecordFromStream(in_File, cALNA, al_entry.unknownALNA.value(), false))
                       return false;
                     bytesRead += 6;
-                    al_entry.hasALNA = true;
                     break;
                case cALNT:
-                    if (al_entry.hasALNT)
+                    if (al_entry.unknownALNT.has_value())
                     {
                       std::cerr << "Error: QUST seems to have more than one ALNT subrecord per alias structure.\n";
                       return false;
                     }
-                    if (!loadUint32SubRecordFromStream(in_File, cALNT, al_entry.unknownALNT, false))
+                    al_entry.unknownALNT = 0;
+                    if (!loadUint32SubRecordFromStream(in_File, cALNT, al_entry.unknownALNT.value(), false))
                       return false;
                     bytesRead += 6;
-                    al_entry.hasALNT = true;
                     break;
                case cALUA:
                     if (al_entry.uniqueActorFormID != 0)
@@ -1090,15 +1087,15 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                     }
                     break;
                case cALEA:
-                    if (al_entry.hasALEA)
+                    if (al_entry.unknownALEA.has_value())
                     {
                       std::cerr << "Error: QUST seems to have more than one ALEA subrecord per alias structure.\n";
                       return false;
                     }
-                    if (!loadUint32SubRecordFromStream(in_File, cALEA, al_entry.unknownALEA, false))
+                    al_entry.unknownALEA = 0;
+                    if (!loadUint32SubRecordFromStream(in_File, cALEA, al_entry.unknownALEA.value(), false))
                       return false;
                     bytesRead += 6;
-                    al_entry.hasALEA = true;
                     break;
                case cALSP:
                     if (!loadUint32SubRecordFromStream(in_File, cALSP, tempUint32, false))
@@ -1187,15 +1184,15 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                     al_entry.packageDataFormIDs.push_back(tempUint32);
                     break;
                case cVTCK:
-                    if (al_entry.hasVTCK)
+                    if (al_entry.unknownVTCK.has_value())
                     {
                       std::cerr << "Error: QUST seems to have more than one VTCK subrecord per alias structure.\n";
                       return false;
                     }
-                    if (!loadUint32SubRecordFromStream(in_File, cVTCK, al_entry.unknownVTCK, false))
+                    al_entry.unknownVTCK = 0;
+                    if (!loadUint32SubRecordFromStream(in_File, cVTCK, al_entry.unknownVTCK.value(), false))
                       return false;
                     bytesRead += 6;
-                    al_entry.hasVTCK = true;
                     break;
                case cALED:
                     // end marker

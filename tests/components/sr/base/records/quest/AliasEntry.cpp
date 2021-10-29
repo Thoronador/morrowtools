@@ -29,39 +29,28 @@ TEST_CASE("AliasEntry")
   {
     AliasEntry entry;
 
-    REQUIRE_FALSE( entry.hasALST );
-    REQUIRE( entry.unknownALST == 0 );
-    REQUIRE_FALSE( entry.hasALLS );
-    REQUIRE( entry.unknownALLS == 0 );
+    REQUIRE_FALSE( entry.unknownALST.has_value() );
+    REQUIRE_FALSE( entry.unknownALLS.has_value() );
     REQUIRE( entry.aliasID.empty() );
     REQUIRE( entry.unknownFNAM == 0 );
-    REQUIRE_FALSE( entry.hasALFA );
-    REQUIRE( entry.unknownALFA == 0 );
+    REQUIRE_FALSE( entry.unknownALFA.has_value() );
     REQUIRE( entry.locationRefTypeFormID == 0 );
     REQUIRE( entry.createReferenceToObjectFormID == 0 );
-    REQUIRE_FALSE( entry.hasALCA );
-    REQUIRE( entry.unknownALCA == 0 );
-    REQUIRE_FALSE( entry.hasALCL );
-    REQUIRE( entry.unknownALCL == 0 );
+    REQUIRE_FALSE( entry.unknownALCA.has_value() );
+    REQUIRE_FALSE( entry.unknownALCL.has_value() );
     REQUIRE( entry.displayNameFormID == 0 );
     REQUIRE( entry.components.empty() );
     REQUIRE( entry.keywordArray.empty() );
-    REQUIRE_FALSE( entry.hasALFE );
-    REQUIRE( entry.unknownALFE == 0 );
-    REQUIRE_FALSE( entry.hasALFD );
-    REQUIRE( entry.unknownALFD == 0 );
-    REQUIRE_FALSE( entry.hasALFI );
-    REQUIRE( entry.forcedIntoAliasID == 0 );
+    REQUIRE_FALSE( entry.unknownALFE.has_value() );
+    REQUIRE_FALSE( entry.unknownALFD.has_value() );
+    REQUIRE_FALSE( entry.forcedIntoAliasID.has_value() );
     REQUIRE( entry.specificLocationFormID == 0 );
     REQUIRE( entry.specificReferenceID == 0 );
-    REQUIRE_FALSE( entry.hasALNA );
-    REQUIRE( entry.unknownALNA == 0 );
-    REQUIRE_FALSE( entry.hasALNT );
-    REQUIRE( entry.unknownALNT == 0 );
+    REQUIRE_FALSE( entry.unknownALNA.has_value() );
+    REQUIRE_FALSE( entry.unknownALNT.has_value() );
     REQUIRE( entry.uniqueActorFormID == 0 );
     REQUIRE( entry.externalAliasReferenceFormID == 0 );
-    REQUIRE_FALSE( entry.hasALEA );
-    REQUIRE( entry.unknownALEA == 0 );
+    REQUIRE_FALSE( entry.unknownALEA.has_value() );
     REQUIRE( entry.keywordFormID == 0 );
     REQUIRE( entry.unknownCTDA_CIS2s.empty() );
     REQUIRE( entry.spectatorOverridePackageListFormID == 0 );
@@ -69,8 +58,7 @@ TEST_CASE("AliasEntry")
     REQUIRE( entry.spellFormIDs.empty() );
     REQUIRE( entry.factionFormIDs.empty() );
     REQUIRE( entry.packageDataFormIDs.empty() );
-    REQUIRE_FALSE( entry.hasVTCK );
-    REQUIRE( entry.unknownVTCK == 0 );
+    REQUIRE_FALSE( entry.unknownVTCK.has_value() );
   }
 
   SECTION("equality")
@@ -91,21 +79,19 @@ TEST_CASE("AliasEntry")
     {
       SECTION("ALST mismatch")
       {
-        a.hasALST = true;
-        b.hasALST = false;
+        a.unknownALST = 0;
+        b.unknownALST.reset();
 
         REQUIRE_FALSE( a == b );
         REQUIRE_FALSE( b == a );
 
-        a.hasALST = false;
-        b.hasALST = true;
+        a.unknownALST.reset();
+        b.unknownALST = 0;
 
         REQUIRE_FALSE( a == b );
         REQUIRE_FALSE( b == a );
 
-        a.hasALST = true;
         a.unknownALST = 1;
-        b.hasALST = true;
         b.unknownALST = 2;
 
         REQUIRE_FALSE( a == b );
@@ -114,21 +100,19 @@ TEST_CASE("AliasEntry")
 
       SECTION("ALLS mismatch")
       {
-        a.hasALLS = true;
-        b.hasALLS = false;
+        a.unknownALLS = 0;
+        b.unknownALLS.reset();
 
         REQUIRE_FALSE( a == b );
         REQUIRE_FALSE( b == a );
 
-        a.hasALLS = false;
-        b.hasALLS = true;
+        a.unknownALLS.reset();
+        b.unknownALLS = 0;
 
         REQUIRE_FALSE( a == b );
         REQUIRE_FALSE( b == a );
 
-        a.hasALLS = true;
         a.unknownALLS = 1;
-        b.hasALLS = true;
         b.unknownALLS = 2;
 
         REQUIRE_FALSE( a == b );
@@ -155,21 +139,19 @@ TEST_CASE("AliasEntry")
 
       SECTION("ALFA mismatch")
       {
-        a.hasALFA = true;
-        b.hasALFA = false;
+        a.unknownALFA = 0;
+        b.unknownALFA.reset();
 
         REQUIRE_FALSE( a == b );
         REQUIRE_FALSE( b == a );
 
-        a.hasALFA = false;
-        b.hasALFA = true;
+        a.unknownALFA.reset();
+        b.unknownALFA = 0;
 
         REQUIRE_FALSE( a == b );
         REQUIRE_FALSE( b == a );
 
-        a.hasALFA = true;
         a.unknownALFA = 1;
-        b.hasALFA = true;
         b.unknownALFA = 2;
 
         REQUIRE_FALSE( a == b );
@@ -196,21 +178,19 @@ TEST_CASE("AliasEntry")
 
       SECTION("ALCA mismatch")
       {
-        a.hasALCA = true;
-        b.hasALCA = false;
+        a.unknownALCA = 0;
+        b.unknownALCA.reset();
 
         REQUIRE_FALSE( a == b );
         REQUIRE_FALSE( b == a );
 
-        a.hasALCA = false;
-        b.hasALCA = true;
+        a.unknownALCA.reset();
+        b.unknownALCA = 0;
 
         REQUIRE_FALSE( a == b );
         REQUIRE_FALSE( b == a );
 
-        a.hasALCA = true;
         a.unknownALCA = 1;
-        b.hasALCA = true;
         b.unknownALCA = 2;
 
         REQUIRE_FALSE( a == b );
@@ -219,21 +199,19 @@ TEST_CASE("AliasEntry")
 
       SECTION("ALCL mismatch")
       {
-        a.hasALCL = true;
-        b.hasALCL = false;
+        a.unknownALCL = 0;
+        b.unknownALCL.reset();
 
         REQUIRE_FALSE( a == b );
         REQUIRE_FALSE( b == a );
 
-        a.hasALCL = false;
-        b.hasALCL = true;
+        a.unknownALCL.reset();
+        b.unknownALCL = 0;
 
         REQUIRE_FALSE( a == b );
         REQUIRE_FALSE( b == a );
 
-        a.hasALCL = true;
         a.unknownALCL = 1;
-        b.hasALCL = true;
         b.unknownALCL = 2;
 
         REQUIRE_FALSE( a == b );
@@ -267,21 +245,19 @@ TEST_CASE("AliasEntry")
 
       SECTION("ALFE mismatch")
       {
-        a.hasALFE = true;
-        b.hasALFE = false;
+        a.unknownALFE = 0;
+        b.unknownALFE.reset();
 
         REQUIRE_FALSE( a == b );
         REQUIRE_FALSE( b == a );
 
-        a.hasALFE = false;
-        b.hasALFE = true;
+        a.unknownALFE.reset();
+        b.unknownALFE = 0;
 
         REQUIRE_FALSE( a == b );
         REQUIRE_FALSE( b == a );
 
-        a.hasALFE = true;
         a.unknownALFE = 1;
-        b.hasALFE = true;
         b.unknownALFE = 2;
 
         REQUIRE_FALSE( a == b );
@@ -290,21 +266,19 @@ TEST_CASE("AliasEntry")
 
       SECTION("ALFD mismatch")
       {
-        a.hasALFD = true;
-        b.hasALFD = false;
+        a.unknownALFD = 0;
+        b.unknownALFD.reset();
 
         REQUIRE_FALSE( a == b );
         REQUIRE_FALSE( b == a );
 
-        a.hasALFD = false;
-        b.hasALFD = true;
+        a.unknownALFD.reset();
+        b.unknownALFD = 0;
 
         REQUIRE_FALSE( a == b );
         REQUIRE_FALSE( b == a );
 
-        a.hasALFD = true;
         a.unknownALFD = 1;
-        b.hasALFD = true;
         b.unknownALFD = 2;
 
         REQUIRE_FALSE( a == b );
@@ -313,21 +287,19 @@ TEST_CASE("AliasEntry")
 
       SECTION("forcedIntoAliasID mismatch")
       {
-        a.hasALFI = true;
-        b.hasALFI = false;
-
-        REQUIRE_FALSE( a == b );
-        REQUIRE_FALSE( b == a );
-
-        a.hasALFI = false;
-        b.hasALFI = true;
-
-        REQUIRE_FALSE( a == b );
-        REQUIRE_FALSE( b == a );
-
-        a.hasALFI = true;
         a.forcedIntoAliasID = 1;
-        b.hasALFI = true;
+        b.forcedIntoAliasID.reset();
+
+        REQUIRE_FALSE( a == b );
+        REQUIRE_FALSE( b == a );
+
+        a.forcedIntoAliasID.reset();
+        b.forcedIntoAliasID = 1;
+
+        REQUIRE_FALSE( a == b );
+        REQUIRE_FALSE( b == a );
+
+        a.forcedIntoAliasID = 1;
         b.forcedIntoAliasID = 2;
 
         REQUIRE_FALSE( a == b );
@@ -354,21 +326,19 @@ TEST_CASE("AliasEntry")
 
       SECTION("ALNA mismatch")
       {
-        a.hasALNA = true;
-        b.hasALNA = false;
+        a.unknownALNA = 0;
+        b.unknownALNA.reset();
 
         REQUIRE_FALSE( a == b );
         REQUIRE_FALSE( b == a );
 
-        a.hasALNA = false;
-        b.hasALNA = true;
+        a.unknownALNA.reset();
+        b.unknownALNA = 0;
 
         REQUIRE_FALSE( a == b );
         REQUIRE_FALSE( b == a );
 
-        a.hasALNA = true;
         a.unknownALNA = 1;
-        b.hasALNA = true;
         b.unknownALNA = 2;
 
         REQUIRE_FALSE( a == b );
@@ -377,21 +347,19 @@ TEST_CASE("AliasEntry")
 
       SECTION("ALNT mismatch")
       {
-        a.hasALNT = true;
-        b.hasALNT = false;
+        a.unknownALNT = 0;
+        b.unknownALNT.reset();
 
         REQUIRE_FALSE( a == b );
         REQUIRE_FALSE( b == a );
 
-        a.hasALNT = false;
-        b.hasALNT = true;
+        a.unknownALNT.reset();
+        b.unknownALNT = 0;
 
         REQUIRE_FALSE( a == b );
         REQUIRE_FALSE( b == a );
 
-        a.hasALNT = true;
         a.unknownALNT = 1;
-        b.hasALNT = true;
         b.unknownALNT = 2;
 
         REQUIRE_FALSE( a == b );
@@ -418,21 +386,19 @@ TEST_CASE("AliasEntry")
 
       SECTION("ALEA mismatch")
       {
-        a.hasALEA = true;
-        b.hasALEA = false;
-
-        REQUIRE_FALSE( a == b );
-        REQUIRE_FALSE( b == a );
-
-        a.hasALEA = false;
-        b.hasALEA = true;
-
-        REQUIRE_FALSE( a == b );
-        REQUIRE_FALSE( b == a );
-
-        a.hasALEA = true;
         a.unknownALEA = 1;
-        b.hasALEA = true;
+        b.unknownALEA.reset();
+
+        REQUIRE_FALSE( a == b );
+        REQUIRE_FALSE( b == a );
+
+        a.unknownALEA.reset();
+        b.unknownALEA = 1;
+
+        REQUIRE_FALSE( a == b );
+        REQUIRE_FALSE( b == a );
+
+        a.unknownALEA = 1;
         b.unknownALEA = 2;
 
         REQUIRE_FALSE( a == b );
@@ -500,21 +466,19 @@ TEST_CASE("AliasEntry")
 
       SECTION("VTCK mismatch")
       {
-        a.hasVTCK = true;
-        b.hasVTCK = false;
+        a.unknownVTCK = 0;
+        b.unknownVTCK.reset();
 
         REQUIRE_FALSE( a == b );
         REQUIRE_FALSE( b == a );
 
-        a.hasVTCK = false;
-        b.hasVTCK = true;
+        a.unknownVTCK.reset();
+        b.unknownVTCK = 0;
 
         REQUIRE_FALSE( a == b );
         REQUIRE_FALSE( b == a );
 
-        a.hasVTCK = true;
         a.unknownVTCK = 1;
-        b.hasVTCK = true;
         b.unknownVTCK = 2;
 
         REQUIRE_FALSE( a == b );
@@ -527,38 +491,27 @@ TEST_CASE("AliasEntry")
   {
     AliasEntry entry;
 
-    entry.hasALST = true;
     entry.unknownALST = 1;
-    entry.hasALLS = true;
     entry.unknownALLS = 1;
     entry.aliasID = "foo";
     entry.unknownFNAM = 1;
-    entry.hasALFA = true;
     entry.unknownALFA = 1;
     entry.locationRefTypeFormID = 1;
     entry.createReferenceToObjectFormID = 1;
-    entry.hasALCA = true;
     entry.unknownALCA = 1;
-    entry.hasALCL = true;
     entry.unknownALCL = 1;
     entry.displayNameFormID = 1;
     entry.components = { ComponentData(), ComponentData() };
     entry.keywordArray = { 0x01234567 };
-    entry.hasALFE = true;
     entry.unknownALFE = 1;
-    entry.hasALFD = true;
     entry.unknownALFD = 1;
-    entry.hasALFI = true;
     entry.forcedIntoAliasID = 1;
     entry.specificLocationFormID = 1;
     entry.specificReferenceID = 1;
-    entry.hasALNA = true;
     entry.unknownALNA = 1;
-    entry.hasALNT = true;
     entry.unknownALNT = 1;
     entry.uniqueActorFormID = 1;
     entry.externalAliasReferenceFormID = 1;
-    entry.hasALEA = true;
     entry.unknownALEA = 1;
     entry.keywordFormID = 1;
     entry.unknownCTDA_CIS2s = { CTDA_CIS2_compound() };
@@ -567,44 +520,32 @@ TEST_CASE("AliasEntry")
     entry.spellFormIDs = { 0x01234567 };
     entry.factionFormIDs = { 0x01234567 };
     entry.packageDataFormIDs = { 0x01234567 };
-    entry.hasVTCK = true;
     entry.unknownVTCK = 1;
 
     entry.clear();
 
-    REQUIRE_FALSE( entry.hasALST );
-    REQUIRE( entry.unknownALST == 0 );
-    REQUIRE_FALSE( entry.hasALLS );
-    REQUIRE( entry.unknownALLS == 0 );
+    REQUIRE_FALSE( entry.unknownALST.has_value() );
+    REQUIRE_FALSE( entry.unknownALLS.has_value() );
     REQUIRE( entry.aliasID.empty() );
     REQUIRE( entry.unknownFNAM == 0 );
-    REQUIRE_FALSE( entry.hasALFA );
-    REQUIRE( entry.unknownALFA == 0 );
+    REQUIRE_FALSE( entry.unknownALFA.has_value() );
     REQUIRE( entry.locationRefTypeFormID == 0 );
     REQUIRE( entry.createReferenceToObjectFormID == 0 );
-    REQUIRE_FALSE( entry.hasALCA );
-    REQUIRE( entry.unknownALCA == 0 );
-    REQUIRE_FALSE( entry.hasALCL );
-    REQUIRE( entry.unknownALCL == 0 );
+    REQUIRE_FALSE( entry.unknownALCA.has_value() );
+    REQUIRE_FALSE( entry.unknownALCL.has_value() );
     REQUIRE( entry.displayNameFormID == 0 );
     REQUIRE( entry.components.empty() );
     REQUIRE( entry.keywordArray.empty() );
-    REQUIRE_FALSE( entry.hasALFE );
-    REQUIRE( entry.unknownALFE == 0 );
-    REQUIRE_FALSE( entry.hasALFD );
-    REQUIRE( entry.unknownALFD == 0 );
-    REQUIRE_FALSE( entry.hasALFI );
-    REQUIRE( entry.forcedIntoAliasID == 0 );
+    REQUIRE_FALSE( entry.unknownALFE.has_value() );
+    REQUIRE_FALSE( entry.unknownALFD.has_value() );
+    REQUIRE_FALSE( entry.forcedIntoAliasID.has_value() );
     REQUIRE( entry.specificLocationFormID == 0 );
     REQUIRE( entry.specificReferenceID == 0 );
-    REQUIRE_FALSE( entry.hasALNA );
-    REQUIRE( entry.unknownALNA == 0 );
-    REQUIRE_FALSE( entry.hasALNT );
-    REQUIRE( entry.unknownALNT == 0 );
+    REQUIRE_FALSE( entry.unknownALNA.has_value() );
+    REQUIRE_FALSE( entry.unknownALNT.has_value() );
     REQUIRE( entry.uniqueActorFormID == 0 );
     REQUIRE( entry.externalAliasReferenceFormID == 0 );
-    REQUIRE_FALSE( entry.hasALEA );
-    REQUIRE( entry.unknownALEA == 0 );
+    REQUIRE_FALSE( entry.unknownALEA.has_value() );
     REQUIRE( entry.keywordFormID == 0 );
     REQUIRE( entry.unknownCTDA_CIS2s.empty() );
     REQUIRE( entry.spectatorOverridePackageListFormID == 0 );
@@ -612,7 +553,6 @@ TEST_CASE("AliasEntry")
     REQUIRE( entry.spellFormIDs.empty() );
     REQUIRE( entry.factionFormIDs.empty() );
     REQUIRE( entry.packageDataFormIDs.empty() );
-    REQUIRE_FALSE( entry.hasVTCK );
-    REQUIRE( entry.unknownVTCK == 0 );
+    REQUIRE_FALSE( entry.unknownVTCK.has_value() );
   }
 }

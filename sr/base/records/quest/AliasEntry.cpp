@@ -24,120 +24,97 @@ namespace SRTP
 {
 
 AliasEntry::AliasEntry()
-: hasALST(false),
-  unknownALST(0),
-  hasALLS(false),
-  unknownALLS(0),
+: unknownALST(std::nullopt),
+  unknownALLS(std::nullopt),
   aliasID(""), //subrecord ALID
   unknownFNAM(0),
-  hasALFA(false),
-  unknownALFA(0),
+  unknownALFA(std::nullopt),
   locationRefTypeFormID(0), //subrecord ALRT
   createReferenceToObjectFormID(0), //subrecord ALCO
-  hasALCA(false),
-  unknownALCA(0),
-  hasALCL(false),
-  unknownALCL(0),
-  displayNameFormID(0), //subrecord ALDN
+  unknownALCA(std::nullopt),
+  unknownALCL(std::nullopt),
+  displayNameFormID(0), // subrecord ALDN
   components(std::vector<ComponentData>()),
   keywordArray(std::vector<uint32_t>()),
-  hasALFE(false),
-  unknownALFE(0),
-  hasALFD(false),
-  unknownALFD(0),
-  hasALFI(false),
-  forcedIntoAliasID(0), //subrecord ALFI
-  specificLocationFormID(0), //subrecord ALFL
-  specificReferenceID(0), //subrecord ALFR
-  hasALNA(false),
-  unknownALNA(0),
-  hasALNT(false),
-  unknownALNT(0),
-  uniqueActorFormID(0), //subrecord ALUA
-  externalAliasReferenceFormID(0), //subrecord ALEQ
-  hasALEA(false),
-  unknownALEA(0),
-  keywordFormID(0), //subrecord KNAM
+  unknownALFE(std::nullopt),
+  unknownALFD(std::nullopt),
+  forcedIntoAliasID(std::nullopt), // subrecord ALFI
+  specificLocationFormID(0),
+  specificReferenceID(0),
+  unknownALNA(std::nullopt),
+  unknownALNT(std::nullopt),
+  uniqueActorFormID(0), // subrecord ALUA
+  externalAliasReferenceFormID(0), // subrecord ALEQ
+  unknownALEA(std::nullopt),
+  keywordFormID(0), // subrecord KNAM
   unknownCTDA_CIS2s(std::vector<CTDA_CIS2_compound>()),
-  spectatorOverridePackageListFormID(0), //subrecord SPOR
-  combatOverridePackageListFormID(0), //subrecord ECOR
-  spellFormIDs(std::vector<uint32_t>()), //subrecords ALSP
-  factionFormIDs(std::vector<uint32_t>()), //subrecords ALFC
-  packageDataFormIDs(std::vector<uint32_t>()), //subrecords ALPC
-  hasVTCK(false),
-  unknownVTCK(0)
+  spectatorOverridePackageListFormID(0), // subrecord SPOR
+  combatOverridePackageListFormID(0), // subrecord ECOR
+  spellFormIDs(std::vector<uint32_t>()), // subrecords ALSP
+  factionFormIDs(std::vector<uint32_t>()), // subrecords ALFC
+  packageDataFormIDs(std::vector<uint32_t>()), // subrecords ALPC
+  unknownVTCK(std::nullopt)
 {
 }
 
 #ifndef SR_NO_RECORD_EQUALITY
 bool AliasEntry::operator==(const AliasEntry& other) const
 {
-  return ((hasALLS==other.hasALLS) and ((unknownALLS==other.unknownALLS) or (!hasALLS))
-      and (hasALST==other.hasALST) and ((unknownALST==other.unknownALST) or (!hasALST))
-      and (aliasID==other.aliasID) and (unknownFNAM==other.unknownFNAM)
-      and (hasALFA==other.hasALFA) and ((unknownALFA==other.unknownALFA) or (!hasALFA))
-      and (locationRefTypeFormID==other.locationRefTypeFormID)
-      and (createReferenceToObjectFormID==other.createReferenceToObjectFormID)
-      and (hasALCA==other.hasALCA) and ((unknownALCA==other.unknownALCA) or (!hasALCA))
-      and (hasALCL==other.hasALCL) and ((unknownALCL==other.unknownALCL) or (!hasALCL))
-      and (displayNameFormID==other.displayNameFormID)
-      and (components==other.components) and (keywordArray==other.keywordArray)
-      and (hasALFE==other.hasALFE) and ((unknownALFE==other.unknownALFE) or (!hasALFE))
-      and (hasALFD==other.hasALFD) and ((unknownALFD==other.unknownALFD) or (!hasALFD))
-      and (hasALFI==other.hasALFI) and ((forcedIntoAliasID==other.forcedIntoAliasID) or (!hasALFI))
-      and (specificLocationFormID==other.specificLocationFormID)
-      and (specificReferenceID==other.specificReferenceID)
-      and (hasALNA==other.hasALNA) and ((unknownALNA==other.unknownALNA) or (!hasALNA))
-      and (hasALNT==other.hasALNT) and ((unknownALNT==other.unknownALNT) or (!hasALNT))
-      and (uniqueActorFormID==other.uniqueActorFormID)
-      and (externalAliasReferenceFormID==other.externalAliasReferenceFormID)
-      and (hasALEA==other.hasALEA) and ((unknownALEA==other.unknownALEA) or (!hasALEA))
-      and (spellFormIDs==other.spellFormIDs)
-      and (keywordFormID==other.keywordFormID)
-      and (unknownCTDA_CIS2s==other.unknownCTDA_CIS2s)
-      and (spectatorOverridePackageListFormID==other.spectatorOverridePackageListFormID)
-      and (combatOverridePackageListFormID==other.combatOverridePackageListFormID)
-      and (factionFormIDs==other.factionFormIDs)
-      and (packageDataFormIDs==other.packageDataFormIDs)
-      and (hasVTCK==other.hasVTCK) and ((unknownVTCK==other.unknownVTCK) or (!hasVTCK)));
+  return (unknownALLS == other.unknownALLS)
+      && (unknownALST == other.unknownALST)
+      && (aliasID == other.aliasID) && (unknownFNAM == other.unknownFNAM)
+      && (unknownALFA == other.unknownALFA)
+      && (locationRefTypeFormID == other.locationRefTypeFormID)
+      && (createReferenceToObjectFormID == other.createReferenceToObjectFormID)
+      && (unknownALCA == other.unknownALCA)
+      && (unknownALCL == other.unknownALCL)
+      && (displayNameFormID == other.displayNameFormID)
+      && (components == other.components) && (keywordArray == other.keywordArray)
+      && (unknownALFE == other.unknownALFE)
+      && (unknownALFD == other.unknownALFD)
+      && (forcedIntoAliasID == other.forcedIntoAliasID)
+      && (specificLocationFormID == other.specificLocationFormID)
+      && (specificReferenceID == other.specificReferenceID)
+      && (unknownALNA == other.unknownALNA)
+      && (unknownALNT == other.unknownALNT)
+      && (uniqueActorFormID == other.uniqueActorFormID)
+      && (externalAliasReferenceFormID == other.externalAliasReferenceFormID)
+      && (unknownALEA == other.unknownALEA)
+      && (spellFormIDs == other.spellFormIDs)
+      && (keywordFormID == other.keywordFormID)
+      && (unknownCTDA_CIS2s == other.unknownCTDA_CIS2s)
+      && (spectatorOverridePackageListFormID == other.spectatorOverridePackageListFormID)
+      && (combatOverridePackageListFormID == other.combatOverridePackageListFormID)
+      && (factionFormIDs == other.factionFormIDs)
+      && (packageDataFormIDs == other.packageDataFormIDs)
+      && (unknownVTCK == other.unknownVTCK);
 }
 #endif // SR_NO_RECORD_EQUALITY
 
 void AliasEntry::clear()
 {
-  hasALST = false;
-  unknownALST = 0;
-  hasALLS = false;
-  unknownALLS = 0;
-  aliasID.clear(); //subrecord ALID
+  unknownALST.reset();
+  unknownALLS.reset();
+  aliasID.clear(); // subrecord ALID
   unknownFNAM = 0;
-  hasALFA = false;
-  unknownALFA = 0;
+  unknownALFA.reset();
   locationRefTypeFormID = 0;
   createReferenceToObjectFormID = 0;
-  hasALCA = false;
-  unknownALCA = 0;
-  hasALCL = false;
-  unknownALCL = 0;
+  unknownALCA.reset();
+  unknownALCL.reset();
   displayNameFormID = 0;
   components.clear();
   keywordArray.clear();
-  hasALFE = false;
-  unknownALFE = 0;
-  hasALFD = false;
-  unknownALFD = 0;
-  hasALFI = false;
-  forcedIntoAliasID = 0;
+  unknownALFE.reset();
+  unknownALFD.reset();
+  forcedIntoAliasID.reset();
   specificLocationFormID = 0;
   specificReferenceID = 0;
-  hasALNA = false;
-  unknownALNA = 0;
-  hasALNT = false;
-  unknownALNT = 0;
+  unknownALNA.reset();
+  unknownALNT.reset();
   uniqueActorFormID = 0;
   externalAliasReferenceFormID = 0;
-  hasALEA = false;
-  unknownALEA = 0;
+  unknownALEA.reset();
   keywordFormID = 0;
   unknownCTDA_CIS2s.clear();
   spectatorOverridePackageListFormID = 0;
@@ -145,8 +122,7 @@ void AliasEntry::clear()
   spellFormIDs.clear();
   factionFormIDs.clear();
   packageDataFormIDs.clear();
-  hasVTCK = false;
-  unknownVTCK = 0;
+  unknownVTCK.reset();
 }
 
 /*bool QuestRecord::AliasEntry::loadFromStream(std::istream& in_File, uint32_t& bytesRead, char * buffer)

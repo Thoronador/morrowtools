@@ -78,6 +78,7 @@ set(component_tests_sources
     ../../sr/bsa_cli/commands/ArgumentParsingUtilities.cpp
     ../../sr/bsa_cli/commands/CommandFactory.cpp
     ../../sr/bsa_cli/commands/Commands.cpp
+    ../../sr/bsa_cli/commands/ExtractFile.cpp
     ../../sr/bsa_cli/commands/Info.cpp
     ../../sr/bsa_cli/commands/List.cpp
     ../../sr/bsa_cli/commands/Operations.cpp
@@ -164,6 +165,7 @@ set(component_tests_sources
     sr/bsa_cli/commands/ArgumentParsingUtilities.cpp
     sr/bsa_cli/commands/CommandFactory.cpp
     sr/bsa_cli/commands/Commands.cpp
+    sr/bsa_cli/commands/ExtractFile.cpp
     sr/bsa_cli/commands/Info.cpp
     sr/bsa_cli/commands/List.cpp
     sr/bsa_cli/commands/Operations.cpp

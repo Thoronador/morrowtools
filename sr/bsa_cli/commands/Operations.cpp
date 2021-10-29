@@ -25,6 +25,8 @@ namespace SRTP
 
 std::optional<Operation> parseOperation(const std::string_view op)
 {
+  if (op == "extract-file")
+    return Operation::ExtractFile;
   if (op == "list")
     return Operation::List;
   if (op == "info")
@@ -39,6 +41,8 @@ std::string operationToString(const Operation op)
 {
   switch (op)
   {
+    case Operation::ExtractFile:
+         return "extract-file";
     case Operation::List:
          return "list";
     case Operation::Info:
@@ -50,10 +54,11 @@ std::string operationToString(const Operation op)
   }
 }
 
-std::array<Operation, 3> allOperations()
+std::array<Operation, 4> allOperations()
 {
   return {
     Operation::Commands,
+    Operation::ExtractFile,
     Operation::Info,
     Operation::List
   };

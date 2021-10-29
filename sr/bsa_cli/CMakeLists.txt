@@ -17,6 +17,7 @@ set(bsa_cli_sources
     commands/ArgumentParsingUtilities.cpp
     commands/CommandFactory.cpp
     commands/Commands.cpp
+    commands/ExtractFile.cpp
     commands/Info.cpp
     commands/List.cpp
     commands/Operations.cpp

@@ -29,7 +29,7 @@
 
 void showVersion()
 {
-  std::cout << "BSA Command Line Tool for Skyrim, version 0.3.0, 2021-10-27\n";
+  std::cout << "BSA Command Line Tool for Skyrim, version 0.4.0, 2021-10-29\n";
 }
 
 void showHelp()
@@ -43,9 +43,10 @@ void showHelp()
             << "  -v           - same as --version\n"
             << "  OPERATION    - sets the operation that shall be performed on the BSA\n"
             << "                 file. Allowed operations are:\n"
-            << "                     commands - lists available operations\n"
-            << "                     info     - show header information\n"
-            << "                     list     - lists all folders and files in the archive\n"
+            << "                     commands     - lists available operations\n"
+            << "                     extract-file - extracts a single file from the archive\n"
+            << "                     info         - show header information\n"
+            << "                     list         - lists all folders and files in the archive\n"
             << "\n"
             << "                 More operations may be added in the future.\n"
             << "                 The operation must be given in most cases.\n"
@@ -84,7 +85,8 @@ int main(int argc, char **argv)
           if (!operation)
           {
             std::cerr << "Error: '" << param << "' is not an allowed operation.\n"
-                      << "An allowed operation is 'list' or 'info'.\n" ;
+                      << "Allowed operations are 'commands', 'extract-file', "
+                      << "'list', or 'info'.\n";
             return SRTP::rcInvalidParameter;
           }
           break;

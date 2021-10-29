@@ -498,14 +498,7 @@ bool BSA::getIndexPairForFile(const std::string& fileName, uint32_t& folderIndex
 
 bool BSA::hasFile(const std::string& fileName) const
 {
-  if (!hasAllStructureData())
-  {
-    std::cerr << "BSA::hasFile: Error: Not all structure data is present to "
-              << "properly fulfill the requested operation!\n";
-    return false;
-  }
-
-  uint32_t folderIdx, fileIdx;
+  uint32_t folderIdx = cIndexNotFound, fileIdx = cIndexNotFound;
   if (!getIndexPairForFile(fileName, folderIdx, fileIdx))
     return false;
 
@@ -560,7 +553,7 @@ bool BSA::extractFile(const uint32_t folderIndex, const uint32_t fileIndex, cons
 
   if (!isValidIndexPair(folderIndex, fileIndex))
   {
-    std::cerr << "BSA::extractFile: Hint: file is not in the archive!\n";
+    std::cerr << "BSA::extractFile: Hint: File is not in the archive!\n";
     return false;
   }
 

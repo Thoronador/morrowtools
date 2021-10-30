@@ -18,6 +18,7 @@ set(bsa_cli_sources
     commands/CommandFactory.cpp
     commands/Commands.cpp
     commands/ExtractFile.cpp
+    commands/ExtractFolder.cpp
     commands/Folders.cpp
     commands/Help.cpp
     commands/Info.cpp

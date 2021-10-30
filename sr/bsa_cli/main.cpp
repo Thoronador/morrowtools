@@ -29,7 +29,7 @@
 
 void showVersion()
 {
-  std::cout << "BSA Command Line Tool for Skyrim, version 0.4.1, 2021-10-30\n";
+  std::cout << "BSA Command Line Tool for Skyrim, version 0.5.0, 2021-10-31\n";
 }
 
 void showHelp()
@@ -43,12 +43,13 @@ void showHelp()
             << "  -v         - same as --version\n"
             << "  COMMAND    - sets the command that shall be performed on the BSA\n"
             << "               file. Allowed commands are:\n"
-            << "                   commands     - lists available commands\n"
-            << "                   extract-file - extracts a single file from the archive\n"
-            << "                   folders      - lists all folders in the archive\n"
-            << "                   help         - shows help for a command\n"
-            << "                   info         - shows BSA header information\n"
-            << "                   list         - lists all folders and files in the archive\n"
+            << "                   commands       - lists available commands\n"
+            << "                   extract-file   - extracts a single file from the archive\n"
+            << "                   extract-folder - extracts a single folder from the archive\n"
+            << "                   folders        - lists all folders in the archive\n"
+            << "                   help           - shows help for a command\n"
+            << "                   info           - shows BSA header information\n"
+            << "                   list           - lists all folders and files in the archive\n"
             << "\n"
             << "               More commands may be added in the future.\n"
             << "               The command must be given in most cases.\n"

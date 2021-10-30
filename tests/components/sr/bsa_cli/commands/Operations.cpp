@@ -30,6 +30,10 @@ TEST_CASE("bsa_cli::Operations")
     const auto all = allOperations();
 
     REQUIRE( std::find(all.begin(), all.end(), Operation::Commands) != all.end() );
+    REQUIRE( std::find(all.begin(), all.end(), Operation::ExtractFile) != all.end() );
+    REQUIRE( std::find(all.begin(), all.end(), Operation::ExtractFolder) != all.end() );
+    REQUIRE( std::find(all.begin(), all.end(), Operation::Folders) != all.end() );
+    REQUIRE( std::find(all.begin(), all.end(), Operation::Help) != all.end() );
     REQUIRE( std::find(all.begin(), all.end(), Operation::Info) != all.end() );
     REQUIRE( std::find(all.begin(), all.end(), Operation::List) != all.end() );
   }
@@ -57,12 +61,16 @@ TEST_CASE("bsa_cli::Operations")
     REQUIRE( parseOperation("") == std::nullopt );
     REQUIRE( parseOperation("commands") == Operation::Commands );
     REQUIRE( parseOperation("extract-file") == Operation::ExtractFile );
+    REQUIRE( parseOperation("extract-folder") == Operation::ExtractFolder );
+    REQUIRE( parseOperation("folders") == Operation::Folders );
     REQUIRE( parseOperation("help") == Operation::Help );
     REQUIRE( parseOperation("list") == Operation::List );
     REQUIRE( parseOperation("info") == Operation::Info );
 
     REQUIRE( parseOperation("CoMMaNdS") == std::nullopt );
     REQUIRE( parseOperation("EXTRACT-file") == std::nullopt );
+    REQUIRE( parseOperation("EXTRACT-FoLdEr") == std::nullopt );
+    REQUIRE( parseOperation("FoLdErS") == std::nullopt );
     REQUIRE( parseOperation("hELp") == std::nullopt );
     REQUIRE( parseOperation("LiSt") == std::nullopt );
     REQUIRE( parseOperation("InFo") == std::nullopt );

@@ -27,12 +27,11 @@ TEST_CASE("BSA")
 
   SECTION("constructor")
   {
-    BSAFileRecord file;
+    BSA bsa;
 
-    REQUIRE( file.nameHash == 0 );
-    REQUIRE( file.fileSize == 0 );
-    REQUIRE( file.offset == 0 );
-    REQUIRE( file.fileName.empty() );
+    REQUIRE_FALSE( bsa.hasAllStructureData() );
+    REQUIRE( bsa.getFolders().empty() );
+    REQUIRE( bsa.getFolderBlocks().empty() );
   }
 
   SECTION("open")

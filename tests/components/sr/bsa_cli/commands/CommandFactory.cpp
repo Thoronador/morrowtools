@@ -22,6 +22,8 @@
 #include "../../../../../sr/bsa_cli/commands/CommandFactory.hpp"
 #include "../../../../../sr/bsa_cli/commands/Commands.hpp"
 #include "../../../../../sr/bsa_cli/commands/ExtractFile.hpp"
+#include "../../../../../sr/bsa_cli/commands/ExtractFolder.hpp"
+#include "../../../../../sr/bsa_cli/commands/Folders.hpp"
 #include "../../../../../sr/bsa_cli/commands/Help.hpp"
 #include "../../../../../sr/bsa_cli/commands/Info.hpp"
 #include "../../../../../sr/bsa_cli/commands/List.hpp"
@@ -62,6 +64,28 @@ TEST_CASE("bsa_cli::CommandFactory")
 
       REQUIRE_FALSE( ptr == nullptr );
       const auto typed = dynamic_cast<ExtractFile*>(ptr.get());
+      REQUIRE_FALSE( typed == nullptr );
+      const auto wrongType = dynamic_cast<Info*>(ptr.get());
+      REQUIRE( wrongType == nullptr );
+    }
+
+    SECTION("extract-folder")
+    {
+      const auto ptr = createCommand(Operation::ExtractFolder);
+
+      REQUIRE_FALSE( ptr == nullptr );
+      const auto typed = dynamic_cast<ExtractFolder*>(ptr.get());
+      REQUIRE_FALSE( typed == nullptr );
+      const auto wrongType = dynamic_cast<Info*>(ptr.get());
+      REQUIRE( wrongType == nullptr );
+    }
+
+    SECTION("folders")
+    {
+      const auto ptr = createCommand(Operation::Folders);
+
+      REQUIRE_FALSE( ptr == nullptr );
+      const auto typed = dynamic_cast<Folders*>(ptr.get());
       REQUIRE_FALSE( typed == nullptr );
       const auto wrongType = dynamic_cast<Info*>(ptr.get());
       REQUIRE( wrongType == nullptr );

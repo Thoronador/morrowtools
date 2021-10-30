@@ -21,6 +21,7 @@
 #include "CommandFactory.hpp"
 #include "Commands.hpp"
 #include "ExtractFile.hpp"
+#include "ExtractFolder.hpp"
 #include "Folders.hpp"
 #include "Help.hpp"
 #include "Info.hpp"
@@ -35,6 +36,8 @@ std::unique_ptr<Command> createCommand(const Operation op)
   {
     case Operation::ExtractFile:
          return std::unique_ptr<Command>(new ExtractFile());
+    case Operation::ExtractFolder:
+         return std::unique_ptr<Command>(new ExtractFolder());
     case Operation::List:
          return std::unique_ptr<Command>(new List());
     case Operation::Folders:

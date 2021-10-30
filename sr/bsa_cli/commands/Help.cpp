@@ -62,7 +62,7 @@ int Help::parseArguments(int argc, char** argv)
       if (!cmd.has_value())
       {
         std::cerr << "Error: " << param << " is no known command.\n"
-                  << "Run `" << executableName << " commands` to get a list of available commands.\n";
+                  << "Run '" << executableName << " commands' to get a list of available commands.\n";
         return SRTP::rcInvalidParameter;
       }
     }
@@ -74,8 +74,8 @@ int Help::parseArguments(int argc, char** argv)
   }
   if (!cmd.has_value())
   {
-    std::cerr << "Error: A command has to be specified to show the help, e. g. `"
-              << executableName << " help list` to show the help for the list"
+    std::cerr << "Error: A command has to be specified to show the help, e. g. '"
+              << executableName << " help list' to show the help for the list"
               << " command.\n";
     return SRTP::rcInvalidParameter;
   }

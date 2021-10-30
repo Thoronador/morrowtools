@@ -43,6 +43,7 @@ void showHelp()
             << "  -v         - same as --version\n"
             << "  COMMAND    - sets the command that shall be performed on the BSA\n"
             << "               file. Allowed commands are:\n"
+            << "\n"
             << "                   commands       - lists available commands\n"
             << "                   extract-file   - extracts a single file from the archive\n"
             << "                   extract-folder - extracts a single folder from the archive\n"
@@ -56,7 +57,7 @@ void showHelp()
             << "  BSA_FILE   - set path to the BSA file to operate on to BSA_FILE.\n"
             << "               The BSA_FILE must be given in most cases.\n"
             << "\n"
-            << "Use `bsa-cli help <command>` for more information on a specific command.\n";
+            << "Use 'bsa-cli help <command>' for more information on a specific command.\n";
 }
 
 int main(int argc, char **argv)

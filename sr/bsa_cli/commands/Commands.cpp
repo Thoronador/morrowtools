@@ -47,7 +47,7 @@ int Commands::parseArguments(int argc, char** argv)
 int Commands::run()
 {
   const auto all = allOperations();
-  std::cout << "Available commands:\n";
+  std::cout << "Available commands:\n\n";
   std::string::size_type maxNameLength = 0;
   for (const auto operation: all)
   {
@@ -64,7 +64,7 @@ int Commands::run()
               << std::string(maxNameLength - name.size(), ' ') << "\t"
               << command->helpShort() << "\n";
   }
-  std::cout << "\nUse `bsa-cli help <command>` for more information on a specific command.\n";
+  std::cout << "\nUse 'bsa-cli help <command>' for more information on a specific command.\n";
   return 0;
 }
 

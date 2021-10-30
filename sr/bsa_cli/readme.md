@@ -18,19 +18,21 @@ options:
   -v         - same as --version
   COMMAND    - sets the command that shall be performed on the BSA
                file. Allowed commands are:
-                   commands     - lists available commands
-                   extract-file - extracts a single file from the archive
-                   folders      - lists all folders in the archive
-                   help         - shows help for a command
-                   info         - shows BSA header information
-                   list         - lists all folders and files in the archive
+
+                   commands       - lists available commands
+                   extract-file   - extracts a single file from the archive
+                   extract-folder - extracts a single folder from the archive
+                   folders        - lists all folders in the archive
+                   help           - shows help for a command
+                   info           - shows BSA header information
+                   list           - lists all folders and files in the archive
 
                More commands may be added in the future.
                The command must be given in most cases.
   BSA_FILE   - set path to the BSA file to operate on to BSA_FILE.
                The BSA_FILE must be given in most cases.
 
-Use `bsa-cli help <command>` for more information on a specific command.
+Use 'bsa-cli help <command>' for more information on a specific command.
 ```
 
 ## History of changes

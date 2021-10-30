@@ -329,19 +329,20 @@ void BSA::listFileNames(bool withCompressionStatus)
 std::vector<BSA::DirectoryStruct> BSA::getDirectories() const
 {
   std::vector<DirectoryStruct> result;
-  if (!hasAllStructureData())
+  if ((m_Status != bsOpenFolderBlocks) && (m_Status != bsOpenFileNames))
   {
-    std::cerr << "BSA::getDirectories: Error: Not all structure data is "
-              << "present to properly fulfill the requested operation!\n";
+    std::cerr << "BSA::getDirectories: Error: Not all folder data is present "
+              << "to properly fulfill the requested operation!\n";
     return result;
   }
+  const auto count = m_FolderBlocks.size();
+  result.reserve(count);
   DirectoryStruct tempStruct;
-  const unsigned int count = m_FolderBlocks.size();
-  for (unsigned int i = 0; i < count; ++i)
+  for (std::vector<BSAFolderBlock>::size_type i = 0; i < count; ++i)
   {
     tempStruct.index = i;
     tempStruct.name = m_FolderBlocks[i].folderName;
-    result.push_back(tempStruct);
+    result.emplace_back(tempStruct);
   }
   return result;
 }

@@ -20,6 +20,7 @@ options:
                file. Allowed commands are:
                    commands     - lists available commands
                    extract-file - extracts a single file from the archive
+                   folders      - lists all folders in the archive
                    help         - shows help for a command
                    info         - shows BSA header information
                    list         - lists all folders and files in the archive

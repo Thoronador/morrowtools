@@ -1,5 +1,9 @@
 # Version history of bsa-cli
 
+## Version 0.?.? (2021-10-??)
+
+The new `folders` command to list all folders inside a BSA file is added.
+
 ## Version 0.4.1 (2021-10-30)
 
 A new `help` command is added to provide a bit more detailed help for the

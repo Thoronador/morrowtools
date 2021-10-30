@@ -31,6 +31,8 @@ std::optional<Operation> parseOperation(const std::string_view op)
     return Operation::Help;
   if (op == "list")
     return Operation::List;
+  if (op == "folders")
+    return Operation::Folders;
   if (op == "info")
     return Operation::Info;
   if (op == "commands")
@@ -45,6 +47,8 @@ std::string operationToString(const Operation op)
   {
     case Operation::ExtractFile:
          return "extract-file";
+    case Operation::Folders:
+         return "folders";
     case Operation::Help:
          return "help";
     case Operation::List:
@@ -58,11 +62,12 @@ std::string operationToString(const Operation op)
   }
 }
 
-std::array<Operation, 5> allOperations()
+std::array<Operation, 6> allOperations()
 {
   return {
     Operation::Commands,
     Operation::ExtractFile,
+    Operation::Folders,
     Operation::Help,
     Operation::Info,
     Operation::List

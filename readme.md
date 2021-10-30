@@ -14,8 +14,8 @@ despite its name the project also contains tools for Skyrim.
   more than one branch of morrowtools.
 - **ci**: scripts and other files that are used as part of Continuous
   Integration (automated builds and tests, etc.)
-- **mw**: contains code for Morrowind-related programmes
-- **sr**: contains code for Skyrim-related programmes
+- **mw**: contains code for Morrowind-related programs
+- **sr**: contains code for Skyrim-related programs
 - **tests**: contains code for test cases
 - **win64-compile-test**: utility to test for 64 bit Windows OS when compiling
 

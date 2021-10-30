@@ -45,6 +45,7 @@ void showHelp()
             << "               file. Allowed commands are:\n"
             << "                   commands     - lists available commands\n"
             << "                   extract-file - extracts a single file from the archive\n"
+            << "                   folders      - lists all folders in the archive\n"
             << "                   help         - shows help for a command\n"
             << "                   info         - shows BSA header information\n"
             << "                   list         - lists all folders and files in the archive\n"

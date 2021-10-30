@@ -160,12 +160,12 @@ struct BSA
       DirectoryStruct();
     }; //struct
 
-    /* returns a list of all directories within the archive.
-
-       remarks:
-           Only works properly, if grabAllStructureData() has been called with
-           success.
-    */
+    /** Returns a list of all directories within the archive.
+     *
+     * \remarks Only works properly, if either grabAllStructureData() or both of
+     *          grabFolderData() and grabFolderBlocks() have been called with
+     *          success.
+     */
     std::vector<DirectoryStruct> getDirectories() const;
 
     //structure to contain both indexes for a file and its name

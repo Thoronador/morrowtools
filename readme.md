@@ -12,12 +12,12 @@ despite its name the project also contains tools for Skyrim.
 
 - **base**: This directory contains the source code for stuff that is used in
   more than one branch of morrowtools.
+- **ci**: scripts and other files that are used as part of Continuous
+  Integration (automated builds and tests, etc.)
 - **mw**: contains code for Morrowind-related programmes
 - **sr**: contains code for Skyrim-related programmes
 - **tests**: contains code for test cases
-- win64-compile-test: utility to test for 64 bit Windows OS when compiling
-- LICENSE: Full text of the GNU General Public License version 3 as published
-  by the Free Software Foundation.
+- **win64-compile-test**: utility to test for 64 bit Windows OS when compiling
 
 Within some directories you may find files named TODO or ToDo.txt. These files
 list some of the work that still has to be done for that specific directory.
@@ -54,10 +54,12 @@ into a root terminal.
 
 _Note:_ Instructions for building on Windows systems are currently not included.
 It it possible, but the setup is a bit complicated. The easiest way to do it is
-probably to get a MinGW compiler (e. g. as part of Code::Blocks IDE) and
-download and compile zlib manually. A few hints on how to compile zlib manually
-can be found in the file `zlib_info.txt`. After that is done, you can use the
-Code::Blocks project files (*.cbp) in the directories to build the applications.
+probably to get a MinGW compiler (e. g. as part of
+[Code::Blocks IDE](https://www.codeblocks.org/)) and download and compile
+[zlib](https://www.zlib.net/) manually. A few hints on how to compile zlib
+manually can be found in the file `zlib_info.txt`. After that is done, you can
+use the Code::Blocks project files (*.cbp) in the directories to build the
+applications.
 
 ### Getting the source code
 

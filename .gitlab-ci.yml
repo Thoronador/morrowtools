@@ -5,8 +5,8 @@
 #    - docker:20-dind
 #  script:
 #    - cd ci/
-#    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
 #    - docker build -t $CI_REGISTRY/striezel/morrowtools/ci-cross-win64:10.2-deb11 . -f Dockerfile_cross_win64
+#    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
 #    - docker push $CI_REGISTRY/striezel/morrowtools/ci-cross-win64:10.2-deb11
 #    - docker logout $CI_REGISTRY
 win64_cross:

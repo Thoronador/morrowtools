@@ -129,7 +129,7 @@ bool BSA::grabFolderData()
     std::cerr << "BSA::grabFolderData: Error: BSA has wrong status!\n";
     return false;
   }
-  if (m_Header.version != 104)
+  if ((m_Header.version < 104) || (m_Header.version > 105))
   {
     std::clog << "BSAHeader::grabFolderData: Warning: Unknown BSA version ("
               << m_Header.version << ") detected! This may have unknown side "
@@ -140,7 +140,7 @@ bool BSA::grabFolderData()
   BSAFolderRecord tempFolder;
   for (uint32_t i = 0; i < m_Header.folderCount; ++i)
   {
-    if (!tempFolder.loadFromStream(m_Stream))
+    if (!tempFolder.loadFromStream(m_Stream, m_Header.version))
     {
       std::cerr << "BSA::grabFolderData: Error while reading folders!\n";
       m_Status = bsFailed;

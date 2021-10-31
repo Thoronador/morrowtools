@@ -1,5 +1,10 @@
 # Version history of bsa-cli
 
+## Version 0.6.1 (2021-10-31)
+
+`bsa-cli` can now also handle the newer archive version 105 which is used in
+Skyrim Special Edition.
+
 ## Version 0.6.0 (2021-10-31)
 
 The new `extract-all` command to extract all content from a BSA file is added.

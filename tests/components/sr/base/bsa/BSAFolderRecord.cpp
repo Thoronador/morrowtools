@@ -38,7 +38,7 @@ TEST_CASE("BSAFolderRecord")
   {
     using namespace std::string_view_literals;
 
-    SECTION("default: load record")
+    SECTION("default: load record version 104")
     {
       const auto data = "\x30\x36\x16\x69\xF9\xF3\xC5\x3D\x03\0\0\0\x15\x0C\0\0"sv;
       std::istringstream stream;
@@ -47,11 +47,27 @@ TEST_CASE("BSAFolderRecord")
 
       // Reading should succeed.
       BSAFolderRecord folder;
-      REQUIRE( folder.loadFromStream(stream) );
+      REQUIRE( folder.loadFromStream(stream, 104) );
       // Check data.
       REQUIRE( folder.nameHash == 0x3DC5F3F969163630 );
       REQUIRE( folder.count == 3 );
       REQUIRE( folder.offset == 3093 );
+    }
+
+    SECTION("default: load record version 105")
+    {
+      const auto data = "\x30\x36\x16\x69\xF9\xF3\xC5\x3D\x03\0\0\0\0\0\0\0\x40\x19\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      BSAFolderRecord folder;
+      REQUIRE( folder.loadFromStream(stream, 105) );
+      // Check data.
+      REQUIRE( folder.nameHash == 0x3DC5F3F969163630 );
+      REQUIRE( folder.count == 3 );
+      REQUIRE( folder.offset == 6464 );
     }
 
     SECTION("corrupt state: bad stream on entry")
@@ -65,7 +81,7 @@ TEST_CASE("BSAFolderRecord")
 
       // Reading should fail.
       BSAFolderRecord folder;
-      REQUIRE_FALSE( folder.loadFromStream(stream) );
+      REQUIRE_FALSE( folder.loadFromStream(stream, 104) );
     }
 
     SECTION("corrupt data: stream ends before hash can be read")
@@ -77,10 +93,10 @@ TEST_CASE("BSAFolderRecord")
 
       // Reading should fail.
       BSAFolderRecord folder;
-      REQUIRE_FALSE( folder.loadFromStream(stream) );
+      REQUIRE_FALSE( folder.loadFromStream(stream, 104) );
     }
 
-    SECTION("corrupt data: stream ends before count can be read")
+    SECTION("corrupt data: stream ends before count can be read, version 104")
     {
       const auto data = "\x30\x36\x16\x69\xF9\xF3\xC5\x3D\x03\0"sv;
       std::istringstream stream;
@@ -89,10 +105,22 @@ TEST_CASE("BSAFolderRecord")
 
       // Reading should fail.
       BSAFolderRecord folder;
-      REQUIRE_FALSE( folder.loadFromStream(stream) );
+      REQUIRE_FALSE( folder.loadFromStream(stream, 104) );
     }
 
-    SECTION("corrupt data: stream ends before offset can be read")
+    SECTION("corrupt data: stream ends before count can be read, version 105")
+    {
+      const auto data = "\x30\x36\x16\x69\xF9\xF3\xC5\x3D\x03\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      BSAFolderRecord folder;
+      REQUIRE_FALSE( folder.loadFromStream(stream, 105) );
+    }
+
+    SECTION("corrupt data: stream ends before offset can be read, version 104")
     {
       const auto data = "\x30\x36\x16\x69\xF9\xF3\xC5\x3D\x03\0\0\0\x15"sv;
       std::istringstream stream;
@@ -101,7 +129,19 @@ TEST_CASE("BSAFolderRecord")
 
       // Reading should fail.
       BSAFolderRecord folder;
-      REQUIRE_FALSE( folder.loadFromStream(stream) );
+      REQUIRE_FALSE( folder.loadFromStream(stream, 104) );
+    }
+
+    SECTION("corrupt data: stream ends before offset can be read, version 105")
+    {
+      const auto data = "\x30\x36\x16\x69\xF9\xF3\xC5\x3D\x03\0\0\0\0\0\0\0\x40\x19\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      BSAFolderRecord folder;
+      REQUIRE_FALSE( folder.loadFromStream(stream, 105) );
     }
   }
 }

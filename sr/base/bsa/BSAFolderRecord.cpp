@@ -31,7 +31,7 @@ BSAFolderRecord::BSAFolderRecord()
 {
 }
 
-bool BSAFolderRecord::loadFromStream(std::istream& input)
+bool BSAFolderRecord::loadFromStream(std::istream& input, const uint32_t bsaVersion)
 {
   if (!input.good())
   {
@@ -46,7 +46,17 @@ bool BSAFolderRecord::loadFromStream(std::istream& input)
     return false;
   }
   input.read(reinterpret_cast<char*>(&count), 4);
+  if (bsaVersion >= 105)
+  {
+    // Skip the four bytes of padding that are new in version 105.
+    input.seekg(4, std::ios::cur);
+  }
   input.read(reinterpret_cast<char*>(&offset), 4);
+  if (bsaVersion >= 105)
+  {
+    // Skip the four bytes of padding that are new in version 105.
+    input.seekg(4, std::ios::cur);
+  }
   if (!input.good())
   {
     std::cerr << "BSAFolderRecord::loadFromStream: Error while reading data!\n";

@@ -38,10 +38,11 @@ struct BSAFolderRecord
 
     /** \brief Tries to read the folder record from the given stream.
      *
-     * \param  input  the input stream
+     * \param  input       the input stream
+     * \param  bsaVersion  version from the BSA header
      * \return Returns true in case of success, false in case of failure.
      */
-    bool loadFromStream(std::istream& input);
+    bool loadFromStream(std::istream& input, const uint32_t bsaVersion);
 }; // struct
 
 } // namespace

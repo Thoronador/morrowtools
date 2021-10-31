@@ -1,5 +1,9 @@
 # Version history of bsa-cli
 
+## Version 0.6.0 (2021-10-31)
+
+The new `extract-all` command to extract all content from a BSA file is added.
+
 ## Version 0.5.0 (2021-10-31)
 
 The new `folders` command to list all folders inside a BSA file is added.

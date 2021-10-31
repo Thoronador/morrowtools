@@ -20,6 +20,7 @@ options:
                file. Allowed commands are:
 
                    commands       - lists available commands
+                   extract-all    - extracts everything from the archive
                    extract-file   - extracts a single file from the archive
                    extract-folder - extracts a single folder from the archive
                    folders        - lists all folders in the archive

@@ -32,6 +32,14 @@ class ExtractFolder: public Command
   public:
     ExtractFolder();
 
+    /** \brief Parses command line arguments.
+     *
+     * \param argc  number of arguments
+     * \param argv  array of argument values
+     * \return Returns zero in case of success.
+     *         Returns a non-zero exit code in case of failure.
+     * \remark The return value can be used as exit code of the main() function.
+     */
     int parseArguments(int argc, char** argv) final;
 
     /** \brief Extracts a folder and its contents from the BSA.

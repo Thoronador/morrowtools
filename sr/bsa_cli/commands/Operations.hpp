@@ -31,6 +31,7 @@ namespace SRTP
 enum class Operation
 {
   Commands,
+  ExtractAll,
   ExtractFile,
   ExtractFolder,
   Folders,
@@ -59,7 +60,7 @@ std::string operationToString(const Operation op);
  * \remarks There is no real reflection in C++, so we use this instead.
  * \return Returns an array containing all possible operations.
  */
-std::array<Operation, 7> allOperations();
+std::array<Operation, 8> allOperations();
 
 } // namespace
 

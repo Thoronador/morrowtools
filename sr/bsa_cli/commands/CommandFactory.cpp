@@ -20,6 +20,7 @@
 
 #include "CommandFactory.hpp"
 #include "Commands.hpp"
+#include "ExtractAll.hpp"
 #include "ExtractFile.hpp"
 #include "ExtractFolder.hpp"
 #include "Folders.hpp"
@@ -34,6 +35,8 @@ std::unique_ptr<Command> createCommand(const Operation op)
 {
   switch (op)
   {
+    case Operation::ExtractAll:
+         return std::unique_ptr<Command>(new ExtractAll());
     case Operation::ExtractFile:
          return std::unique_ptr<Command>(new ExtractFile());
     case Operation::ExtractFolder:

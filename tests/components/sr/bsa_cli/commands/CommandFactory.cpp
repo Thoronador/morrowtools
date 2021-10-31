@@ -21,6 +21,7 @@
 #include <catch.hpp>
 #include "../../../../../sr/bsa_cli/commands/CommandFactory.hpp"
 #include "../../../../../sr/bsa_cli/commands/Commands.hpp"
+#include "../../../../../sr/bsa_cli/commands/ExtractAll.hpp"
 #include "../../../../../sr/bsa_cli/commands/ExtractFile.hpp"
 #include "../../../../../sr/bsa_cli/commands/ExtractFolder.hpp"
 #include "../../../../../sr/bsa_cli/commands/Folders.hpp"
@@ -53,6 +54,17 @@ TEST_CASE("bsa_cli::CommandFactory")
 
       REQUIRE_FALSE( ptr == nullptr );
       const auto typed = dynamic_cast<Commands*>(ptr.get());
+      REQUIRE_FALSE( typed == nullptr );
+      const auto wrongType = dynamic_cast<Info*>(ptr.get());
+      REQUIRE( wrongType == nullptr );
+    }
+
+    SECTION("extract-all")
+    {
+      const auto ptr = createCommand(Operation::ExtractAll);
+
+      REQUIRE_FALSE( ptr == nullptr );
+      const auto typed = dynamic_cast<ExtractAll*>(ptr.get());
       REQUIRE_FALSE( typed == nullptr );
       const auto wrongType = dynamic_cast<Info*>(ptr.get());
       REQUIRE( wrongType == nullptr );

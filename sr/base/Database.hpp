@@ -30,8 +30,7 @@ namespace SRTP
   class Database
   {
     public:
-      /* destructor */
-      virtual ~Database();
+      ~Database();
 
       /* singleton access method */
       static Database& get();
@@ -44,8 +43,7 @@ namespace SRTP
          remarks:
              If a record with the same ID already exists, the old data will be
              replaced by the new data.
-             If the record pointer is NULL, no data will be added. This also
-             holds true, if the record's ID is an empty string.
+             If the record pointer is NULL, no data will be added.
 
              The record pointer must NOT be freed by the application, the
              Database class will take care of this, when necessary.

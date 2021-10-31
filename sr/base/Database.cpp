@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012  Thoronador
+    Copyright (C) 2012, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,8 +26,8 @@ namespace SRTP
 {
 
 Database::Database()
+: m_Records(std::map<uint32_t, BasicRecord*>())
 {
-  //empty
 }
 
 Database::~Database()
@@ -43,19 +43,21 @@ Database& Database::get()
 
 void Database::addRecord(BasicRecord* record)
 {
-  if (record==NULL) return;
+  if (record == nullptr)
+    return;
   std::map<uint32_t, BasicRecord*>::iterator iter = m_Records.find(record->headerFormID);
-  if (iter==m_Records.end())
+  if (iter == m_Records.end())
   {
-    //just insert it
+    // just insert it
     m_Records[record->headerFormID] = record;
   }
   else
   {
-    if (record==iter->second) return; //avoid replacing with itself
-    //save old record first (for deletion)
+    if (record == iter->second)
+      return; // avoid replacing with itself
+    // save old record first (for deletion)
     BasicRecord * temp = iter->second;
-    //replace it by new record
+    // replace it by new record
     iter->second = record;
     delete temp;
   }
@@ -64,31 +66,32 @@ void Database::addRecord(BasicRecord* record)
 bool Database::deleteRecord(const uint32_t formID)
 {
   std::map<uint32_t, BasicRecord*>::iterator iter = m_Records.find(formID);
-  if (iter!=m_Records.end())
+  if (iter != m_Records.end())
   {
-    //save old record first (for deletion)
+    // save old record first (for deletion)
     BasicRecord * temp = iter->second;
     m_Records.erase(iter);
     delete temp;
     return true;
   }
-  //nothing found, nothing deleted
+  // nothing found, nothing deleted
   return false;
 }
 
 bool Database::hasRecord(const uint32_t formID) const
 {
-  return (m_Records.find(formID)!=m_Records.end());
+  return m_Records.find(formID) != m_Records.end();
 }
 
 const BasicRecord& Database::getRecord(const uint32_t formID) const
 {
-  const std::map<uint32_t, BasicRecord*>::const_iterator iter = m_Records.find(formID);
-  if (iter!=m_Records.end())
+  const auto iter = m_Records.find(formID);
+  if (iter != m_Records.end())
   {
     return *(iter->second);
   }
-  std::cout << "Database::getRecord: ERROR: no record with ID \"" << SRTP::getFormIDAsString(formID)
+  std::cout << "Database::getRecord: ERROR: No record with ID \""
+            << SRTP::getFormIDAsString(formID)
             << "\" found. Exception will be thrown.\n";
   std::cout.flush();
   throw 42;
@@ -96,14 +99,12 @@ const BasicRecord& Database::getRecord(const uint32_t formID) const
 
 void Database::deleteAllRecords()
 {
-  std::map<uint32_t, BasicRecord*>::iterator iter = m_Records.begin();
-  while (!m_Records.empty())
+  for (auto iter = m_Records.begin(); iter != m_Records.end(); )
   {
     BasicRecord* temp = iter->second;
-    m_Records.erase(iter);
-    iter = m_Records.begin();
+    iter = m_Records.erase(iter);
     delete temp;
-  }//while
+  }
 }
 
 unsigned int Database::getNumberOfRecords() const
@@ -121,4 +122,4 @@ Database::Iterator Database::getEnd() const
   return m_Records.end();
 }
 
-}//namespace
+} // namespace

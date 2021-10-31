@@ -7,6 +7,7 @@ set(bsa_cli_sources
     ../../base/CompressionFunctions.cpp
     ../../base/DirectoryFunctions.cpp
     ../../base/FileFunctions.cpp
+    ../../base/SlashFunctions.cpp
     ../../base/UtilityFunctions.cpp
     ../base/FormIDFunctions.cpp
     ../base/bsa/BSA.cpp

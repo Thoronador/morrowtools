@@ -22,6 +22,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <cstring>
+#include "../../../base/SlashFunctions.hpp"
 #include "../../../base/UtilityFunctions.hpp"
 #include "../../../base/DirectoryFunctions.hpp"
 #include "../../../base/CompressionFunctions.hpp"
@@ -755,21 +756,30 @@ bool BSA::extractAll(const std::string& outputDirName, uint32_t& extractedFileCo
 
   for (uint32_t i = 0; i < m_FolderBlocks.size(); ++i)
   {
+    #if defined(_WIN32)
+    // Windows file systems take backslashes in folderName directly, because
+    // that is their usual directory separator.
+    const auto directoryPath = outputDirName + MWTP::pathDelimiter + m_FolderBlocks[i].folderName;
+    #else
+    // Unix-like file systems use slash instead of backslash, so it has to be
+    // replaced in folderName.
+    const auto directoryPath = outputDirName + MWTP::pathDelimiter + MWTP::flipBackslashes(m_FolderBlocks[i].folderName);
+    #endif
     // create output directory, if necessary
-    if (!directoryExists(outputDirName + MWTP::pathDelimiter + m_FolderBlocks[i].folderName))
+    if (!directoryExists(directoryPath))
     {
-      if (!createDirectoryRecursive(outputDirName + MWTP::pathDelimiter + m_FolderBlocks[i].folderName))
+      if (!createDirectoryRecursive(directoryPath))
       {
         std::cerr << "BSA::extractAll: Error: Could not create destination subdirectory \""
-                  << outputDirName + MWTP::pathDelimiter + m_FolderBlocks[i].folderName << "\".\n";
+                  << directoryPath << "\".\n";
         return false;
       }
     }
     // now extract each file in that directory
     for (uint32_t j = 0; j < m_FolderBlocks[i].files.size(); ++j)
     {
-      if (!extractFile(i, j, outputDirName + MWTP::pathDelimiter + m_FolderBlocks[i].folderName
-           + MWTP::pathDelimiter + m_FolderBlocks[i].files[j].fileName))
+      if (!extractFile(i, j, directoryPath + MWTP::pathDelimiter
+                             + m_FolderBlocks[i].files[j].fileName))
       {
         std::cerr << "BSA::extractAll: Error: Could not extract file \""
                   << m_FolderBlocks[i].folderName + MWTP::pathDelimiter

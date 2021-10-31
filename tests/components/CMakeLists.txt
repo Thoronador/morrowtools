@@ -10,6 +10,7 @@ set(component_tests_sources
     ../../base/DirectoryFunctions.cpp
     ../../base/FileFunctions.cpp
     ../../base/RegistryFunctions.cpp
+    ../../base/SlashFunctions.cpp
     ../../base/UtilityFunctions.cpp
     ../../mw/base/HelperIO.cpp
     ../../sr/base/DependencySolver.cpp
@@ -92,6 +93,7 @@ set(component_tests_sources
     base/DirectoryFunctions.cpp
     base/FileFunctions.cpp
     base/RegistryFunctions.cpp
+    base/SlashFunctions.cpp
     base/UtilityFunctions.cpp
     mw/base/HelperIO.cpp
     sr/base/DependencyElement.cpp

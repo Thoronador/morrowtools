@@ -44,6 +44,8 @@
 		<Unit filename="../../base/DirectoryFunctions.hpp" />
 		<Unit filename="../../base/FileFunctions.cpp" />
 		<Unit filename="../../base/FileFunctions.hpp" />
+		<Unit filename="../../base/SlashFunctions.cpp" />
+		<Unit filename="../../base/SlashFunctions.hpp" />
 		<Unit filename="../../base/UtilityFunctions.cpp" />
 		<Unit filename="../../base/UtilityFunctions.hpp" />
 		<Unit filename="../base/FormIDFunctions.cpp" />

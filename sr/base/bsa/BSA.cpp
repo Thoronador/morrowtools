@@ -128,6 +128,12 @@ bool BSA::grabFolderData()
     std::cerr << "BSA::grabFolderData: Error: BSA has wrong status!\n";
     return false;
   }
+  if (m_Header.version != 104)
+  {
+    std::clog << "BSAHeader::grabFolderData: Warning: Unknown BSA version ("
+              << m_Header.version << ") detected! This may have unknown side "
+              << "effects and could cause errors. But let's give it a try anyway.\n";
+  }
 
   m_Folders.clear();
   BSAFolderRecord tempFolder;

@@ -67,10 +67,6 @@ bool BSAHeader::loadFromStream(std::istream& input)
     std::cerr << "BSAHeader::loadFromStream: Error: Could not read version and offset!\n";
     return false;
   }
-  if (version != 104)
-  {
-    std::clog << "BSAHeader::loadFromStream: Warning: Invalid version detected, but let's give it a try anyway!\n";
-  }
   if (offset != 36)
   {
     std::cerr << "BSAHeader::loadFromStream: Error: Offset is not 36, aborting!\n";

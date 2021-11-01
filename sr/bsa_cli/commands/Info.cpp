@@ -49,12 +49,42 @@ int Info::run()
     << "Archive flags:           0x" << SRTP::getFormIDAsString(header.archiveFlags) << "\n"
     << "  has folder names:      " << (header.hasNamesForFolders() ? "yes" : "no") << "\n"
     << "  has file names:        " << (header.hasNamesForFiles() ? "yes" : "no") << "\n"
-    << "  compressed by default: " << (header.filesCompressedByDefault() ? "yes" : "no") << "\n"
+    << "  compressed by default: ";
+  if (header.filesCompressedByDefault())
+  {
+    std::cout << "yes";
+    switch (header.version)
+    {
+      case 103:
+      case 104:
+           std::cout << " (zlib)";
+           break;
+      case 105:
+           std::cout << " (lz4)";
+           break;
+    }
+  }
+  else
+  {
+    std::cout << "no";
+  }
+  std::cout << "\n"
+    << "  Xbox archive:          " << (header.isXboxArchive() ? "yes" : "no") << "\n"
+    << "  uses XMem compression: " << (header.usesXMemCodec() ? "yes" : "no") << "\n"
     << "Number of folders:       " << header.folderCount << "\n"
     << "Number of files:         " << header.fileCount << "\n"
     << "Folder name length:      " << header.totalFolderNameLength << "\n"
     << "File name length:        " << header.totalFileNameLength << "\n"
-    << "File flags:              0x" << SRTP::getFormIDAsString(header.fileFlags) << "\n";
+    << "File flags:              0x" << SRTP::getFormIDAsString(header.fileFlags) << "\n"
+    << "  Meshes:                " << (header.contains(ContentType::Meshes) ? "yes" : "no") << "\n"
+    << "  Textures:              " << (header.contains(ContentType::Textures) ? "yes" : "no") << "\n"
+    << "  Menus:                 " << (header.contains(ContentType::Menus) ? "yes" : "no") << "\n"
+    << "  Sounds:                " << (header.contains(ContentType::Sounds) ? "yes" : "no") << "\n"
+    << "  Voices:                " << (header.contains(ContentType::Voices) ? "yes" : "no") << "\n"
+    << "  Shaders:               " << (header.contains(ContentType::Shaders) ? "yes" : "no") << "\n"
+    << "  Fonts:                 " << (header.contains(ContentType::Fonts) ? "yes" : "no") << "\n"
+    << "  Miscellaneous:         " << (header.contains(ContentType::Misc) ? "yes" : "no") << "\n"
+    << "(Note: File flags are only a rough indication for the actual archive content.)\n";
   return 0;
 }
 

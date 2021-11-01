@@ -29,7 +29,7 @@
 
 void showVersion()
 {
-  std::cout << "BSA Command Line Tool for Skyrim, version 0.6.1, 2021-10-31\n";
+  std::cout << "BSA Command Line Tool for Skyrim, version 0.7.0-pre, 2021-11-01\n";
 }
 
 void showHelp()

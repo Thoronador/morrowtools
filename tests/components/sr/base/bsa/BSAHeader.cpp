@@ -304,4 +304,212 @@ TEST_CASE("BSAHeader")
     header.archiveFlags = 255;
     REQUIRE( header.filesCompressedByDefault() );
   }
+
+  SECTION("isXboxArchive")
+  {
+    BSAHeader header;
+
+    header.archiveFlags = 0;
+    REQUIRE_FALSE( header.isXboxArchive() );
+
+    header.archiveFlags = 64;
+    REQUIRE( header.isXboxArchive() );
+
+    header.archiveFlags = 2;
+    REQUIRE_FALSE( header.isXboxArchive() );
+
+    header.archiveFlags = 255;
+    REQUIRE( header.isXboxArchive() );
+  }
+
+  SECTION("usesXMemCodec, BSA version 103")
+  {
+    BSAHeader header;
+    header.version = 103;
+
+    // In version 103 the bit has a different (unknown) meaning, so it shall
+    // never indicate XMem there.
+    header.archiveFlags = 512;
+    REQUIRE_FALSE( header.usesXMemCodec() );
+
+    header.archiveFlags = 65535;
+    REQUIRE_FALSE( header.usesXMemCodec() );
+  }
+
+  SECTION("usesXMemCodec, BSA version 104")
+  {
+    BSAHeader header;
+    header.version = 104;
+
+    header.archiveFlags = 0;
+    REQUIRE_FALSE( header.usesXMemCodec() );
+
+    header.archiveFlags = 512;
+    REQUIRE( header.usesXMemCodec() );
+
+    header.archiveFlags = 32;
+    REQUIRE_FALSE( header.usesXMemCodec() );
+
+    header.archiveFlags = 65535;
+    REQUIRE( header.usesXMemCodec() );
+  }
+
+  SECTION("usesXMemCodec, BSA version 105")
+  {
+    BSAHeader header;
+    header.version = 105;
+
+    header.archiveFlags = 0;
+    REQUIRE_FALSE( header.usesXMemCodec() );
+
+    header.archiveFlags = 512;
+    REQUIRE( header.usesXMemCodec() );
+
+    header.archiveFlags = 32;
+    REQUIRE_FALSE( header.usesXMemCodec() );
+
+    header.archiveFlags = 65535;
+    REQUIRE( header.usesXMemCodec() );
+  }
+
+  SECTION("contains")
+  {
+    BSAHeader header;
+    header.version = 104;
+
+    SECTION("meshes")
+    {
+      header.fileFlags = 0;
+      REQUIRE_FALSE( header.contains(BSAHeader::ContentType::Meshes) );
+
+      header.fileFlags = 1;
+      REQUIRE( header.contains(BSAHeader::ContentType::Meshes) );
+
+      header.fileFlags = 32;
+      REQUIRE_FALSE( header.contains(BSAHeader::ContentType::Meshes) );
+
+      header.fileFlags = 65535;
+      REQUIRE( header.contains(BSAHeader::ContentType::Meshes) );
+    }
+
+    SECTION("textures")
+    {
+      header.fileFlags = 0;
+      REQUIRE_FALSE( header.contains(BSAHeader::ContentType::Textures) );
+
+      header.fileFlags = 2;
+      REQUIRE( header.contains(BSAHeader::ContentType::Textures) );
+
+      header.fileFlags = 32;
+      REQUIRE_FALSE( header.contains(BSAHeader::ContentType::Textures) );
+
+      header.fileFlags = 65535;
+      REQUIRE( header.contains(BSAHeader::ContentType::Textures) );
+    }
+
+    SECTION("menus")
+    {
+      header.fileFlags = 0;
+      REQUIRE_FALSE( header.contains(BSAHeader::ContentType::Menus) );
+
+      header.fileFlags = 4;
+      REQUIRE( header.contains(BSAHeader::ContentType::Menus) );
+
+      header.fileFlags = 32;
+      REQUIRE_FALSE( header.contains(BSAHeader::ContentType::Menus) );
+
+      header.fileFlags = 65535;
+      REQUIRE( header.contains(BSAHeader::ContentType::Menus) );
+    }
+
+    SECTION("sounds")
+    {
+      header.fileFlags = 0;
+      REQUIRE_FALSE( header.contains(BSAHeader::ContentType::Sounds) );
+
+      header.fileFlags = 8;
+      REQUIRE( header.contains(BSAHeader::ContentType::Sounds) );
+
+      header.fileFlags = 32;
+      REQUIRE_FALSE( header.contains(BSAHeader::ContentType::Sounds) );
+
+      header.fileFlags = 65535;
+      REQUIRE( header.contains(BSAHeader::ContentType::Sounds) );
+    }
+
+    SECTION("voices")
+    {
+      header.fileFlags = 0;
+      REQUIRE_FALSE( header.contains(BSAHeader::ContentType::Voices) );
+
+      header.fileFlags = 16;
+      REQUIRE( header.contains(BSAHeader::ContentType::Voices) );
+
+      header.fileFlags = 32;
+      REQUIRE_FALSE( header.contains(BSAHeader::ContentType::Voices) );
+
+      header.fileFlags = 65535;
+      REQUIRE( header.contains(BSAHeader::ContentType::Voices) );
+    }
+
+    SECTION("shaders")
+    {
+      header.fileFlags = 0;
+      REQUIRE_FALSE( header.contains(BSAHeader::ContentType::Shaders) );
+
+      header.fileFlags = 32;
+      REQUIRE( header.contains(BSAHeader::ContentType::Shaders) );
+
+      header.fileFlags = 2;
+      REQUIRE_FALSE( header.contains(BSAHeader::ContentType::Shaders) );
+
+      header.fileFlags = 65535;
+      REQUIRE( header.contains(BSAHeader::ContentType::Shaders) );
+    }
+
+    SECTION("trees")
+    {
+      header.fileFlags = 0;
+      REQUIRE_FALSE( header.contains(BSAHeader::ContentType::Trees) );
+
+      header.fileFlags = 64;
+      REQUIRE( header.contains(BSAHeader::ContentType::Trees) );
+
+      header.fileFlags = 32;
+      REQUIRE_FALSE( header.contains(BSAHeader::ContentType::Trees) );
+
+      header.fileFlags = 65535;
+      REQUIRE( header.contains(BSAHeader::ContentType::Trees) );
+    }
+
+    SECTION("fonts")
+    {
+      header.fileFlags = 0;
+      REQUIRE_FALSE( header.contains(BSAHeader::ContentType::Fonts) );
+
+      header.fileFlags = 128;
+      REQUIRE( header.contains(BSAHeader::ContentType::Fonts) );
+
+      header.fileFlags = 32;
+      REQUIRE_FALSE( header.contains(BSAHeader::ContentType::Fonts) );
+
+      header.fileFlags = 65535;
+      REQUIRE( header.contains(BSAHeader::ContentType::Fonts) );
+    }
+
+    SECTION("misc")
+    {
+      header.fileFlags = 0;
+      REQUIRE_FALSE( header.contains(BSAHeader::ContentType::Misc) );
+
+      header.fileFlags = 256;
+      REQUIRE( header.contains(BSAHeader::ContentType::Misc) );
+
+      header.fileFlags = 32;
+      REQUIRE_FALSE( header.contains(BSAHeader::ContentType::Misc) );
+
+      header.fileFlags = 65535;
+      REQUIRE( header.contains(BSAHeader::ContentType::Misc) );
+    }
+  }
 }

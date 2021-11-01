@@ -95,12 +95,29 @@ bool BSAHeader::hasNamesForFolders() const
 
 bool BSAHeader::hasNamesForFiles() const
 {
-  return (archiveFlags & (1<<1)) != 0;
+  return (archiveFlags & (1 << 1)) != 0;
 }
 
 bool BSAHeader::filesCompressedByDefault() const
 {
-  return (archiveFlags & (1<<2)) != 0;
+  return (archiveFlags & (1 << 2)) != 0;
+}
+
+bool BSAHeader::isXboxArchive() const
+{
+  return (archiveFlags & (1 << 6)) != 0;
+}
+
+bool BSAHeader::usesXMemCodec() const
+{
+  // Meaning of the 10th flag bit is not clear in version 103 and earlier, so
+  // do not use it to indicate XMem compression codec there.
+  return ((archiveFlags & (1 << 9)) != 0) && (version >= 104);
+}
+
+bool BSAHeader::contains(const ContentType content) const
+{
+  return (fileFlags & static_cast<uint32_t>(content)) != 0;
 }
 
 } // namespace

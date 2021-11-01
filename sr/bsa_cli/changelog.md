@@ -1,5 +1,12 @@
 # Version history of bsa-cli
 
+## Version 0.7.0-pre (2021-11-01)
+
+The `info` command will now show more information about the archive's flags.
+This includes two XBox-related flags as well as information about the content
+types of the files in the archive. Note that the later is only a rough
+indication for the actual contents.
+
 ## Version 0.6.1 (2021-10-31)
 
 `bsa-cli` can now also handle the newer archive version 105 which is used in

@@ -27,7 +27,7 @@
 namespace SRTP
 {
 
-/** Holds header data of an *.bsa archive. */
+/** Holds header data of a *.bsa archive. */
 struct BSAHeader
 {
   public:
@@ -35,14 +35,14 @@ struct BSAHeader
     BSAHeader();
 
     int32_t fileID;
-    uint32_t version;
+    uint32_t version; /**< BSA version, usually 104 or 105 for Skyrim */
     uint32_t offset;
-    uint32_t archiveFlags;
-    uint32_t folderCount;
-    uint32_t fileCount;
+    uint32_t archiveFlags; /**< contains flag bits for the archive */
+    uint32_t folderCount; /**< number of folders in the archive */
+    uint32_t fileCount; /**< number of files in the archive */
     uint32_t totalFolderNameLength;
     uint32_t totalFileNameLength;
-    uint32_t fileFlags;
+    uint32_t fileFlags; /**< content type flags */
 
     /** \brief Tries to read the header from the given stream.
      *
@@ -52,7 +52,16 @@ struct BSAHeader
     bool loadFromStream(std::istream& input);
 
     /* flag stuff */
+    /** \brief Checks whether the archive has folder names, according to flags.
+     *
+     * \return Returns true, if the archive has folder names.
+     */
     bool hasNamesForFolders() const;
+
+    /** \brief Checks whether the archive has file names, according to flags.
+     *
+     * \return Returns true, if the archive has file names.
+     */
     bool hasNamesForFiles() const;
 
     /** \brief Checks whether files are compressed by default, according to flags.
@@ -60,7 +69,42 @@ struct BSAHeader
      * \return Returns true, if files are compressed by default.
      */
     bool filesCompressedByDefault() const;
+
+    /** \brief Checks whether the file is an Xbox archive, according to flags.
+     *
+     * \return Returns true, the file is an Xbox archive.
+     */
+    bool isXboxArchive() const;
+
+    /** \brief Checks whether the file is an Xbox archive, according to flags.
+     *
+     * \return Returns true, the file is an Xbox archive.
+     */
+    bool usesXMemCodec() const;
+
+
+    enum class ContentType : std::uint32_t
+    {
+      Meshes = 0x00000001,
+      Textures = 0x00000002,
+      Menus = 0x00000004,
+      Sounds = 0x00000008,
+      Voices = 0x00000010,
+      Shaders = 0x00000020,
+      Trees = 0x00000040,
+      Fonts = 0x00000080,
+      Misc = 0x00000100
+    };
+
+    /** \brief Checks whether the file contains certain types of content, according to flags.
+     *
+     * \param content   the content type to test for
+     * \return Returns true, the contains te given content type.
+     */
+    bool contains(const ContentType content) const;
 }; // struct
+
+using ContentType = BSAHeader::ContentType;
 
 } // namespace
 

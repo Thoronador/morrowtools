@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,7 +27,8 @@ namespace MWTP
 
 bool zlibDecompress(uint8_t * compressedData, const uint32_t compressedSize, uint8_t * decompBuffer, const uint32_t decompSize)
 {
-  if ((compressedData==NULL) or (compressedSize==0) or (decompBuffer==NULL) or (decompSize==0))
+  if ((compressedData == nullptr) || (compressedSize == 0)
+     || (decompBuffer == nullptr) || (decompSize == 0))
   {
     std::cerr << "zlibDecompress: Error: invalid buffer values given!\n";
     return false;
@@ -47,21 +48,20 @@ bool zlibDecompress(uint8_t * compressedData, const uint32_t compressedSize, uin
     switch (z_return)
     {
       case Z_MEM_ERROR:
-           std::cerr << "zlibDecompress: Error: not enough memory to initialize z_stream!\n";
+           std::cerr << "zlibDecompress: Error: Not enough memory to initialize z_stream!\n";
            break;
       case Z_VERSION_ERROR:
-           std::cerr << "zlibDecompress: Error: incompatible library version!\n";
+           std::cerr << "zlibDecompress: Error: Incompatible library version!\n";
            break;
       case Z_STREAM_ERROR:
-           std::cerr << "zlibDecompress: Error: invalid parameters in z_stream!\n";
+           std::cerr << "zlibDecompress: Error: Invalid parameters in z_stream!\n";
            break;
       default:
-           std::cerr << "zlibDecompress: Error: could not initialize z_stream!\n";
+           std::cerr << "zlibDecompress: Error: Could not initialize z_stream!\n";
            break;
-    }//swi
+    }
     return false;
-  }//if error occurred
-
+  }
 
   streamZlib.avail_in = compressedSize;
   streamZlib.next_in = compressedData;
@@ -81,20 +81,19 @@ bool zlibDecompress(uint8_t * compressedData, const uint32_t compressedSize, uin
          (void)inflateEnd(&streamZlib);
          std::cerr << "zlibDecompress: Error while calling inflate()!\n";
          return false;
-  }//swi
-  uint32_t have = decompSize - streamZlib.avail_out;
+  }
+  const uint32_t have = decompSize - streamZlib.avail_out;
   /* clean up zlib */
-  (void)inflateEnd(&streamZlib);
-  //check, if size matches expected number of bytes
-  if (have!=decompSize)
+  (void) inflateEnd(&streamZlib);
+  // check, if size matches expected number of bytes
+  if (have != decompSize)
   {
-    std::cerr << "zlibDecompress: Error: Having only "<<have<<" bytes in output"
-              << "buffer, but expected size is "<<decompSize<<" bytes.\n";
+    std::cerr << "zlibDecompress: Error: Having only " << have << " bytes in output"
+              << "buffer, but expected size is " << decompSize << " bytes.\n";
     return false;
   }
-  //return value Z_STREAM_END should be the right one, if all was successful
-  if (z_return==Z_STREAM_END) return true;
-  return false;
+  // Return value Z_STREAM_END is the right one, if all was successful.
+  return (z_return == Z_STREAM_END);
 }
 
-} //namespace
+} // namespace

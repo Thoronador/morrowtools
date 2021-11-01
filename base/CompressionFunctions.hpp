@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,18 +26,17 @@
 namespace MWTP
 {
 
-/* tries to decompress the data pointed to by compressedData and stores the
-   decompressed bits in decompressionBuffer. Returns true in case of success,
-   or false if an error occurred.
-
-   parameters:
-       compressedData - pointer to the buffer containing the compressed data
-       compressedSize - length of the buffer in bytes
-       decompBuffer   - pre-allocated buffer that will hold the decompressed data
-       decompSize     - size of decompBuffer
-*/
+/** Tries to decompress the data pointed to by compressedData and stores the
+ * decompressed bits in decompressionBuffer.
+ *
+ * \param compressedData   pointer to the buffer containing the compressed data
+ * \param compressedSize   length of the compressed data buffer in bytes
+ * \param decompBuffer     pre-allocated buffer that will hold the decompressed data
+ * \param decompSize       size of decompBuffer in bytes
+ * \return Returns true in case of success, or false if an error occurred.
+ */
 bool zlibDecompress(uint8_t * compressedData, const uint32_t compressedSize, uint8_t * decompBuffer, const uint32_t decompSize);
 
-} //namespace
+} // namespace
 
 #endif // COMPRESSIONFUNCTIONS_HPP

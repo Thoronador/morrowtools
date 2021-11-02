@@ -418,190 +418,48 @@ int main(int argc, char **argv)
 
   unsigned int totalMatches = 0;
 
-  //check activator for matches
+  auto listMatches = [&] (const auto& mgr, const std::string_view typePlural)
   {
-    unsigned int activatorMatches = 0;
-    SRTP::Activators::ListIterator activator_iter = SRTP::Activators::get().begin();
-    while (activator_iter!=SRTP::Activators::get().end())
+    unsigned int typedMatches = 0;
+    auto mgr_iter = mgr.begin();
+    while (mgr_iter != mgr.end())
     {
-      if (activator_iter->second.name.isPresent())
+      if (mgr_iter->second.name.isPresent())
       {
-        if (!activator_iter->second.name.getString().empty())
+        if (!mgr_iter->second.name.getString().empty())
         {
-          if (matchesKeyword(activator_iter->second.name.getString(), searchKeyword, caseSensitive))
+          if (matchesKeyword(mgr_iter->second.name.getString(), searchKeyword, caseSensitive))
           {
-            //found matching activator record
-            if (activatorMatches==0)
+            // found matching record
+            if (typedMatches == 0)
             {
-              basic_out << "\n\nMatching activators:\n";
+              basic_out << "\n\nMatching " << typePlural << ":\n";
             }
-            basic_out << "    \""<<activator_iter->second.name.getString()
-                      <<"\"\n        form ID "<<SRTP::getFormIDAsStringWithFile(activator_iter->second.headerFormID, loadOrder, showFiles)
-                      <<"\n        editor ID \""<<activator_iter->second.editorID<<"\"\n";
+            basic_out << "    \"" << mgr_iter->second.name.getString()
+                      << "\"\n        form ID " << SRTP::getFormIDAsStringWithFile(mgr_iter->second.headerFormID, loadOrder, showFiles)
+                      << "\n        editor ID \"" << mgr_iter->second.editorID << "\"\n";
             if (withReferences)
             {
-              showRefIDs(activator_iter->second.headerFormID, readerReferences.refMap, basic_out);
+              showRefIDs(mgr_iter->second.headerFormID, readerReferences.refMap, basic_out);
             }
-            ++activatorMatches;
+            ++typedMatches;
             ++totalMatches;
-          }//if match found
-        }//if table has string
-      }//if hasFULL
-      ++activator_iter;
-    }//while
-    if (activatorMatches>0)
-    {
-      basic_out << "Total matching activators: "<<activatorMatches<<"\n";
+          }
+        }
+      }
+      ++mgr_iter;
     }
-  }//scope for activator stuff
+    if (typedMatches > 0)
+    {
+      basic_out << "Total matching " << typePlural << ": " << typedMatches << "\n";
+    }
+  };
 
-  //check alchemy for matches
-  {
-    unsigned int alchemyMatches = 0;
-    SRTP::AlchemyPotions::ListIterator alchemy_iter = SRTP::AlchemyPotions::get().begin();
-    while (alchemy_iter!=SRTP::AlchemyPotions::get().end())
-    {
-      if (alchemy_iter->second.name.isPresent())
-      {
-        if (!alchemy_iter->second.name.getString().empty())
-        {
-          if (matchesKeyword(alchemy_iter->second.name.getString(), searchKeyword, caseSensitive))
-          {
-            //found matching alchemy record
-            if (alchemyMatches==0)
-            {
-              basic_out << "\n\nMatching alchemy potions:\n";
-            }
-            basic_out << "    \""<<alchemy_iter->second.name.getString()
-                      <<"\"\n        form ID "<<SRTP::getFormIDAsStringWithFile(alchemy_iter->second.headerFormID, loadOrder, showFiles)
-                      <<"\n        editor ID \""<<alchemy_iter->second.editorID<<"\"\n";
-            if (withReferences)
-            {
-              showRefIDs(alchemy_iter->second.headerFormID, readerReferences.refMap, basic_out);
-            }
-            ++alchemyMatches;
-            ++totalMatches;
-          }//if match found
-        }//if table has string
-      }//if hasFULL
-      ++alchemy_iter;
-    }//while
-    if (alchemyMatches>0)
-    {
-      basic_out << "Total matching alchemy potions: "<<alchemyMatches<<"\n";
-    }
-  }//scope for alchemy stuff
-
-  //check ammunitions for matches
-  {
-    unsigned int ammoMatches = 0;
-    SRTP::Ammunitions::ListIterator ammo_iter = SRTP::Ammunitions::get().begin();
-    while (ammo_iter!=SRTP::Ammunitions::get().end())
-    {
-      if (ammo_iter->second.name.isPresent())
-      {
-        if (!ammo_iter->second.name.getString().empty())
-        {
-          if (matchesKeyword(ammo_iter->second.name.getString(), searchKeyword, caseSensitive))
-          {
-            //found matching ammo record
-            if (ammoMatches==0)
-            {
-              basic_out << "\n\nMatching ammunition:\n";
-            }
-            basic_out << "    \""<<ammo_iter->second.name.getString()
-                      <<"\"\n        form ID "<<SRTP::getFormIDAsStringWithFile(ammo_iter->second.headerFormID, loadOrder, showFiles)
-                      <<"\n        editor ID \""<<ammo_iter->second.editorID<<"\"\n";
-            if (withReferences)
-            {
-              showRefIDs(ammo_iter->second.headerFormID, readerReferences.refMap, basic_out);
-            }
-            ++ammoMatches;
-            ++totalMatches;
-          }//if match found
-        }//if table has string
-      }//if hasFULL
-      ++ammo_iter;
-    }//while
-    if (ammoMatches>0)
-    {
-      basic_out << "Total matching ammunition: "<<ammoMatches<<"\n";
-    }
-  }//scope for ammo stuff
-
-  //check apparatuses for matches
-  {
-    unsigned int appaMatches = 0;
-    SRTP::Apparatuses::ListIterator appa_iter = SRTP::Apparatuses::get().begin();
-    while (appa_iter!=SRTP::Apparatuses::get().end())
-    {
-      if (appa_iter->second.name.isPresent())
-      {
-        if (!appa_iter->second.name.getString().empty())
-        {
-          if (matchesKeyword(appa_iter->second.name.getString(), searchKeyword, caseSensitive))
-          {
-            //found matching apparatus record
-            if (appaMatches==0)
-            {
-              basic_out << "\n\nMatching apparatuses:\n";
-            }
-            basic_out << "    \""<<appa_iter->second.name.getString()
-                      <<"\"\n        form ID "<<SRTP::getFormIDAsStringWithFile(appa_iter->second.headerFormID, loadOrder, showFiles)
-                      <<"\n        editor ID \""<<appa_iter->second.editorID<<"\"\n";
-            if (withReferences)
-            {
-              showRefIDs(appa_iter->second.headerFormID, readerReferences.refMap, basic_out);
-            }
-            ++appaMatches;
-            ++totalMatches;
-          }//if match found
-        }//if table has string
-      }//if name is present
-      ++appa_iter;
-    }//while
-    if (appaMatches>0)
-    {
-      basic_out << "Total matching apparatuses: "<<appaMatches<<"\n";
-    }
-  }//scope for apparatus stuff
-
-  //check armour for matches
-  {
-    unsigned int armourMatches = 0;
-    SRTP::Armours::ListIterator armour_iter = SRTP::Armours::get().begin();
-    while (armour_iter!=SRTP::Armours::get().end())
-    {
-      if (armour_iter->second.name.isPresent())
-      {
-        if (!armour_iter->second.name.getString().empty())
-        {
-          if (matchesKeyword(armour_iter->second.name.getString(), searchKeyword, caseSensitive))
-          {
-            //found matching armour record
-            if (armourMatches==0)
-            {
-              basic_out << "\n\nMatching armours:\n";
-            }
-            basic_out << "    \""<<armour_iter->second.name.getString()
-                      <<"\"\n        form ID "<<SRTP::getFormIDAsStringWithFile(armour_iter->second.headerFormID, loadOrder, showFiles)
-                      <<"\n        editor ID \""<<armour_iter->second.editorID<<"\"\n";
-            if (withReferences)
-            {
-              showRefIDs(armour_iter->second.headerFormID, readerReferences.refMap, basic_out);
-            }
-            ++armourMatches;
-            ++totalMatches;
-          }//if match found
-        }//if table has string
-      }//if hasFULL
-      ++armour_iter;
-    }//while
-    if (armourMatches>0)
-    {
-      basic_out << "Total matching armours: "<<armourMatches<<"\n";
-    }
-  }//scope for armour stuff
+  listMatches(SRTP::Activators::get(), "activators");
+  listMatches(SRTP::AlchemyPotions::get(), "alchemy potions");
+  listMatches(SRTP::Ammunitions::get(), "ammunition");
+  listMatches(SRTP::Apparatuses::get(), "apparatuses");
+  listMatches(SRTP::Armours::get(), "armours");
 
   //check books for matches
   {
@@ -640,42 +498,7 @@ int main(int argc, char **argv)
     }
   }//scope for book stuff
 
-  //check containers for matches
-  {
-    unsigned int containerMatches = 0;
-    SRTP::Containers::ListIterator container_iter = SRTP::Containers::get().begin();
-    while (container_iter!=SRTP::Containers::get().end())
-    {
-      if (container_iter->second.name.isPresent())
-      {
-        if (!container_iter->second.name.getString().empty())
-        {
-          if (matchesKeyword(container_iter->second.name.getString(), searchKeyword, caseSensitive))
-          {
-            //found matching container record
-            if (containerMatches==0)
-            {
-              basic_out << "\n\nMatching containers:\n";
-            }
-            basic_out << "    \""<<container_iter->second.name.getString()
-                      <<"\"\n        form ID "<<SRTP::getFormIDAsStringWithFile(container_iter->second.headerFormID, loadOrder, showFiles)
-                      <<"\n        editor ID \""<<container_iter->second.editorID<<"\"\n";
-            if (withReferences)
-            {
-              showRefIDs(container_iter->second.headerFormID, readerReferences.refMap, basic_out);
-            }
-            ++containerMatches;
-            ++totalMatches;
-          }//if match found
-        }//if table has string
-      }//if hasFULL
-      ++container_iter;
-    }//while
-    if (containerMatches>0)
-    {
-      basic_out << "Total matching containers: "<<containerMatches<<"\n";
-    }
-  }//scope for container stuff
+  listMatches(SRTP::Containers::get(), "containers");
 
   //check factions for matches
   {
@@ -776,42 +599,7 @@ int main(int argc, char **argv)
     }
   }//scope for flora stuff
 
-  //check furniture for matches
-  {
-    unsigned int furnitureMatches = 0;
-    SRTP::Furniture::ListIterator furniture_iter = SRTP::Furniture::get().begin();
-    while (furniture_iter!=SRTP::Furniture::get().end())
-    {
-      if (furniture_iter->second.name.isPresent())
-      {
-        if (!furniture_iter->second.name.getString().empty())
-        {
-          if (matchesKeyword(furniture_iter->second.name.getString(), searchKeyword, caseSensitive))
-          {
-            //found matching furniture record
-            if (furnitureMatches==0)
-            {
-              basic_out << "\n\nMatching furniture:\n";
-            }
-            basic_out << "    \""<<furniture_iter->second.name.getString()
-                      <<"\"\n        form ID "<<SRTP::getFormIDAsStringWithFile(furniture_iter->second.headerFormID, loadOrder, showFiles)
-                      <<"\n        editor ID \""<<furniture_iter->second.editorID<<"\"\n";
-            if (withReferences)
-            {
-              showRefIDs(furniture_iter->second.headerFormID, readerReferences.refMap, basic_out);
-            }
-            ++furnitureMatches;
-            ++totalMatches;
-          }//if match found
-        }//if table has string
-      }//if hasFULL
-      ++furniture_iter;
-    }//while
-    if (furnitureMatches>0)
-    {
-      basic_out << "Total matching furniture: "<<furnitureMatches<<"\n";
-    }
-  }//scope for furniture stuff
+  listMatches(SRTP::Furniture::get(), "furniture");
 
   //check ingredients for matches
   {
@@ -884,81 +672,10 @@ int main(int argc, char **argv)
     }
   }//scope for key stuff
 
-  //check misc. objects for matches
-  {
-    unsigned int miscMatches = 0;
-    SRTP::MiscObjects::ListIterator misc_iter = SRTP::MiscObjects::get().begin();
-    while (misc_iter!=SRTP::MiscObjects::get().end())
-    {
-      if (misc_iter->second.name.isPresent())
-      {
-        if (!misc_iter->second.name.getString().empty())
-        {
-          if (matchesKeyword(misc_iter->second.name.getString(), searchKeyword, caseSensitive))
-          {
-            //found matching misc object record
-            if (miscMatches==0)
-            {
-              basic_out << "\n\nMatching misc. objects:\n";
-            }
-            basic_out << "    \""<<misc_iter->second.name.getString()
-                      <<"\"\n        form ID "<<SRTP::getFormIDAsStringWithFile(misc_iter->second.headerFormID, loadOrder, showFiles)
-                      <<"\n        editor ID \""<<misc_iter->second.editorID<<"\"\n";
-            if (withReferences)
-            {
-              showRefIDs(misc_iter->second.headerFormID, readerReferences.refMap, basic_out);
-            }
-            ++miscMatches;
-            ++totalMatches;
-          }//if match found
-        }//if table has string
-      }//if hasFULL
-      ++misc_iter;
-    }//while
-    if (miscMatches>0)
-    {
-      basic_out << "Total matching misc. objects: "<<miscMatches<<"\n";
-    }
-  }//scope for misc. object stuff
+  listMatches(SRTP::MiscObjects::get(), "misc. objects");
+  listMatches(SRTP::NPCs::get(), "NPCs");
 
-  //check NPCs for matches
-  {
-    unsigned int NPCMatches = 0;
-    SRTP::NPCs::ListIterator npc_iter = SRTP::NPCs::get().begin();
-    while (npc_iter!=SRTP::NPCs::get().end())
-    {
-      if (npc_iter->second.name.isPresent())
-      {
-        if (!npc_iter->second.name.getString().empty())
-        {
-          if (matchesKeyword(npc_iter->second.name.getString(), searchKeyword, caseSensitive))
-          {
-            //found matching NPC record
-            if (NPCMatches==0)
-            {
-              basic_out << "\n\nMatching NPCs:\n";
-            }
-            basic_out << "    \""<<npc_iter->second.name.getString()
-                      <<"\"\n        form ID "<<SRTP::getFormIDAsStringWithFile(npc_iter->second.headerFormID, loadOrder, showFiles)
-                      <<"\n        editor ID \""<<npc_iter->second.editorID<<"\"\n";
-            if (withReferences)
-            {
-              showRefIDs(npc_iter->second.headerFormID, readerReferences.refMap, basic_out);
-            }
-            ++NPCMatches;
-            ++totalMatches;
-          }//if match found
-        }//if table has string
-      }//if hasFULL
-      ++npc_iter;
-    }//while
-    if (NPCMatches>0)
-    {
-      basic_out << "Total matching NPCs: "<<NPCMatches<<"\n";
-    }
-  }//scope for NPC stuff
-
-  //check perks for matches
+  // check perks for matches - no reference checks
   {
     unsigned int perkMatches = 0;
     SRTP::Perks::ListIterator perk_iter = SRTP::Perks::get().begin();
@@ -1117,81 +834,10 @@ int main(int argc, char **argv)
     }
   }//scope for scrolls
 
-  //check soul gems for matches
-  {
-    unsigned int soulgemMatches = 0;
-    SRTP::SoulGems::ListIterator soulgem_iter = SRTP::SoulGems::get().begin();
-    while (soulgem_iter!=SRTP::SoulGems::get().end())
-    {
-      if (soulgem_iter->second.name.isPresent())
-      {
-        if (!soulgem_iter->second.name.getString().empty())
-        {
-          if (matchesKeyword(soulgem_iter->second.name.getString(), searchKeyword, caseSensitive))
-          {
-            //found matching SoulGem record
-            if (soulgemMatches==0)
-            {
-              basic_out << "\n\nMatching soul gems:\n";
-            }
-            basic_out << "    \""<<soulgem_iter->second.name.getString()
-                      <<"\"\n        form ID "<<SRTP::getFormIDAsStringWithFile(soulgem_iter->second.headerFormID, loadOrder, showFiles)
-                      <<"\n        editor ID \""<<soulgem_iter->second.editorID<<"\"\n";
-            if (withReferences)
-            {
-              showRefIDs(soulgem_iter->second.headerFormID, readerReferences.refMap, basic_out);
-            }
-            ++soulgemMatches;
-            ++totalMatches;
-          }//if match found
-        }//if table has string
-      }//if hasFULL
-      ++soulgem_iter;
-    }//while
-    if (soulgemMatches>0)
-    {
-      basic_out << "Total matching soul gems: "<<soulgemMatches<<"\n";
-    }
-  }//scope for soul gem stuff
+  listMatches(SRTP::SoulGems::get(), "soul gems");
+  listMatches(SRTP::Spells::get(), "spells");
 
-  //check spells for matches
-  {
-    unsigned int spellMatches = 0;
-    SRTP::Spells::ListIterator spell_iter = SRTP::Spells::get().begin();
-    while (spell_iter!=SRTP::Spells::get().end())
-    {
-      if (spell_iter->second.name.isPresent())
-      {
-        if (!spell_iter->second.name.getString().empty())
-        {
-          if (matchesKeyword(spell_iter->second.name.getString(), searchKeyword, caseSensitive))
-          {
-            //found matching spell record
-            if (spellMatches==0)
-            {
-              basic_out << "\n\nMatching spells:\n";
-            }
-            basic_out << "    \""<<spell_iter->second.name.getString()
-                      <<"\"\n        form ID "<<SRTP::getFormIDAsStringWithFile(spell_iter->second.headerFormID, loadOrder, showFiles)
-                      <<"\n        editor ID \""<<spell_iter->second.editorID<<"\"\n";
-            if (withReferences)
-            {
-              showRefIDs(spell_iter->second.headerFormID, readerReferences.refMap, basic_out);
-            }
-            ++spellMatches;
-            ++totalMatches;
-          }//if match found
-        }//if table has string
-      }//if hasFULL
-      ++spell_iter;
-    }//while
-    if (spellMatches>0)
-    {
-      basic_out << "Total matching spells: "<<spellMatches<<"\n";
-    }
-  }//scope for spell stuff
-
-  //check shouts for matches
+  // check shouts for matches - no reference checks
   {
     unsigned int shoutMatches = 0;
     SRTP::Shouts::ListIterator shout_iter = SRTP::Shouts::get().begin();
@@ -1258,44 +904,9 @@ int main(int argc, char **argv)
     }
   }//scope for word of power stuff
 
-  //check talking activators for matches
-  {
-    unsigned int talkingActivatorMatches = 0;
-    SRTP::TalkingActivators::ListIterator talkingActivator_iter = SRTP::TalkingActivators::get().begin();
-    while (talkingActivator_iter!=SRTP::TalkingActivators::get().end())
-    {
-      if (talkingActivator_iter->second.name.isPresent())
-      {
-        if (!talkingActivator_iter->second.name.getString().empty())
-        {
-          if (matchesKeyword(talkingActivator_iter->second.name.getString(), searchKeyword, caseSensitive))
-          {
-            //found matching talking activator record
-            if (talkingActivatorMatches==0)
-            {
-              basic_out << "\n\nMatching talking activators:\n";
-            }
-            basic_out << "    \""<<talkingActivator_iter->second.name.getString()
-                      <<"\"\n        form ID "<<SRTP::getFormIDAsStringWithFile(talkingActivator_iter->second.headerFormID, loadOrder, showFiles)
-                      <<"\n        editor ID \""<<talkingActivator_iter->second.editorID<<"\"\n";
-            if (withReferences)
-            {
-              showRefIDs(talkingActivator_iter->second.headerFormID, readerReferences.refMap, basic_out);
-            }
-            ++talkingActivatorMatches;
-            ++totalMatches;
-          }//if match found
-        }//if table has string
-      }//if hasFULL
-      ++talkingActivator_iter;
-    }//while
-    if (talkingActivatorMatches>0)
-    {
-      basic_out << "Total matching talking activators: "<<talkingActivatorMatches<<"\n";
-    }
-  }//scope for talking activator stuff
+  listMatches(SRTP::TalkingActivators::get(), "talking activators");
 
-  //check trees for matches
+  // check trees for matches - no reference checks
   {
     unsigned int treeMatches = 0;
     SRTP::Trees::ListIterator tree_iter = SRTP::Trees::get().begin();
@@ -1307,7 +918,7 @@ int main(int argc, char **argv)
         {
           if (matchesKeyword(tree_iter->second.name.getString(), searchKeyword, caseSensitive))
           {
-            //found matching alchemy record
+            // found matching tree record
             if (treeMatches==0)
             {
               basic_out << "\n\nMatching trees:\n";
@@ -1328,42 +939,7 @@ int main(int argc, char **argv)
     }
   }//scope for tree stuff
 
-  //check weapons for matches
-  {
-    unsigned int weaponMatches = 0;
-    SRTP::Weapons::ListIterator weapon_iter = SRTP::Weapons::get().begin();
-    while (weapon_iter!=SRTP::Weapons::get().end())
-    {
-      if (weapon_iter->second.name.isPresent())
-      {
-        if (!weapon_iter->second.name.getString().empty())
-        {
-          if (matchesKeyword(weapon_iter->second.name.getString(), searchKeyword, caseSensitive))
-          {
-            //found matching weapon record
-            if (weaponMatches==0)
-            {
-              basic_out << "\n\nMatching weapons:\n";
-            }
-            basic_out << "    \""<<weapon_iter->second.name.getString()
-                      <<"\"\n        form ID "<<SRTP::getFormIDAsStringWithFile(weapon_iter->second.headerFormID, loadOrder, showFiles)
-                      <<"\n        editor ID \""<<weapon_iter->second.editorID<<"\"\n";
-            if (withReferences)
-            {
-              showRefIDs(weapon_iter->second.headerFormID, readerReferences.refMap, basic_out);
-            }
-            ++weaponMatches;
-            ++totalMatches;
-          }//if match found
-        }//if table has string
-      }//if hasFULL
-      ++weapon_iter;
-    }//while
-    if (weaponMatches>0)
-    {
-      basic_out << "Total matching weapons: "<<weaponMatches<<"\n";
-    }
-  }//scope for weapon stuff
+  listMatches(SRTP::Weapons::get(), "weapons");
 
   basic_out << "\nTotal matching objects found: "<<totalMatches<<"\n";
 

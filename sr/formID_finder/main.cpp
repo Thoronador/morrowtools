@@ -59,6 +59,7 @@
 #include "../base/Weapons.hpp"
 #include "../base/WordsOfPower.hpp"
 #include "../base/records/TES4HeaderRecord.hpp"
+#include "AuxFunctions.hpp"
 #include "ESMReaderFinder.hpp"
 #include "ESMReaderFinderReferences.hpp"
 
@@ -117,82 +118,6 @@ void showHelp()
             << "  --ref-id         - try to find reference IDs, too. With this parameter the\n"
             << "                     programme will need a significantly longer amount of time\n"
             << "                     to complete a search.\n";
-}
-
-/* auxiliary function #1:
-   Returns true, if the keyword is found in haystack. Character case is taken
-   into account, if caseMatters is true.
-
-   parameters:
-       haystack    - the string to search in
-       keyword     - the string to search for
-       caseMatters - If true, case-sensitive search is performed. Otherwise the
-                     search is case-insensitive.
-*/
-bool matchesKeyword(const std::string& haystack, const std::string& keyword, const bool caseMatters)
-{
-  if (caseMatters)
-  {
-    return haystack.find(keyword) != std::string::npos;
-  }
-  return lowerCase(haystack).find(keyword) != std::string::npos;
-}
-
-/*...and another auxiliary function (#2):
-  Writes all references of a base ID to the given ostream.
-
-  parameters:
-      baseID    - baseID of the object
-      refMap    - reference map as produced by ESMReaderFinderReferences
-      basic_out - the output stream to which the references are written
-*/
-void showRefIDs(const uint32_t baseID, const std::map<uint32_t, std::vector<SRTP::ESMReaderFinderReferences::CellRefIDPair> >& refMap, std::basic_ostream<char>& basic_out)
-{
-  basic_out << "        references: ";
-  std::map<uint32_t, std::vector<SRTP::ESMReaderFinderReferences::CellRefIDPair> >::const_iterator iter = refMap.find(baseID);
-  if (iter != refMap.end())
-  {
-    basic_out << iter->second.size() << "\n";
-  }
-  else
-  {
-    basic_out << "none\n";
-    return;
-  }
-  bool hasName = false;
-  std::vector<SRTP::ESMReaderFinderReferences::CellRefIDPair>::const_iterator vecIter = iter->second.begin();
-  while (vecIter != iter->second.end())
-  {
-    hasName = false;
-    basic_out << "          ref ID " << SRTP::getFormIDAsStringXX(vecIter->refID);
-    if (SRTP::Cells::get().hasRecord(vecIter->cellID))
-    {
-      const SRTP::CellRecord& theCell = SRTP::Cells::get().getRecord(vecIter->cellID);
-      if (theCell.name.isPresent())
-      {
-        if (!theCell.name.getString().empty())
-        {
-          basic_out << " in cell \"" << theCell.name.getString() << "\"\n";
-          hasName = true;
-        }
-      }
-      else
-      {
-        // check for coordinates
-        if (theCell.gridLocation.presence)
-        {
-          basic_out << " in exterior cell [" << theCell.gridLocation.locationX
-                    << ";" << theCell.gridLocation.locationY << "]\n";
-          hasName = true;
-        }
-      }
-    }
-    if (!hasName)
-    {
-      basic_out << " in unnamed cell\n";
-    }
-    ++vecIter;
-  }
 }
 
 int main(int argc, char **argv)
@@ -430,13 +355,13 @@ int main(int argc, char **argv)
   {
     std::vector<std::string> esmNames;
     esmNames.push_back("Skyrim.esm");
-    if (FileExists(dataDir+"Update.esm"))
+    if (FileExists(dataDir + "Update.esm"))
       esmNames.push_back("Update.esm");
-    if (FileExists(dataDir+"Dawnguard.esm"))
+    if (FileExists(dataDir + "Dawnguard.esm"))
       esmNames.push_back("Dawnguard.esm");
-    if (FileExists(dataDir+"HearthFires.esm"))
+    if (FileExists(dataDir + "HearthFires.esm"))
       esmNames.push_back("HearthFires.esm");
-    if (FileExists(dataDir+"Dragonborn.esm"))
+    if (FileExists(dataDir + "Dragonborn.esm"))
       esmNames.push_back("Dragonborn.esm");
 
     if (!SRTP::getLoadOrder(esmNames, dataDir, loadOrder))

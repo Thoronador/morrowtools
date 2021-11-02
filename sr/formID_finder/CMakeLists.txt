@@ -60,6 +60,7 @@ set(formID_finder_sources
     ../base/records/WeaponRecord.cpp
     ../base/records/WordOfPowerRecord.cpp
     ../base/records/WorldSpaceRecord.cpp
+    AuxFunctions.cpp
     ESMReaderFinder.cpp
     ESMReaderFinderReferences.cpp
     main.cpp)

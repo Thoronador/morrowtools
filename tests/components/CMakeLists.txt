@@ -88,6 +88,7 @@ set(component_tests_sources
     ../../sr/bsa_cli/commands/Info.cpp
     ../../sr/bsa_cli/commands/List.cpp
     ../../sr/bsa_cli/commands/Operations.cpp
+    ../../sr/formID_finder/AuxFunctions.cpp
     base/BufferStream.cpp
     base/ComparisonFunctor.cpp
     base/CompressionFunctions.cpp
@@ -181,6 +182,7 @@ set(component_tests_sources
     sr/bsa_cli/commands/Info.cpp
     sr/bsa_cli/commands/List.cpp
     sr/bsa_cli/commands/Operations.cpp
+    sr/formID_finder/AuxFunctions.cpp
     main.cpp)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")

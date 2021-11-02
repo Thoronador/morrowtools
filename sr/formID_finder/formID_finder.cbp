@@ -178,6 +178,8 @@
 		<Unit filename="../base/records/quest/QSDTRecord.hpp" />
 		<Unit filename="../base/records/quest/QSTAEntry.cpp" />
 		<Unit filename="../base/records/quest/QSTAEntry.hpp" />
+		<Unit filename="AuxFunctions.cpp" />
+		<Unit filename="AuxFunctions.hpp" />
 		<Unit filename="ESMReaderFinder.cpp" />
 		<Unit filename="ESMReaderFinder.hpp" />
 		<Unit filename="ESMReaderFinderReferences.cpp" />

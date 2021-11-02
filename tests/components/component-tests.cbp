@@ -201,6 +201,8 @@
 		<Unit filename="../../sr/bsa_cli/commands/List.hpp" />
 		<Unit filename="../../sr/bsa_cli/commands/Operations.cpp" />
 		<Unit filename="../../sr/bsa_cli/commands/Operations.hpp" />
+		<Unit filename="../../sr/formID_finder/AuxFunctions.cpp" />
+		<Unit filename="../../sr/formID_finder/AuxFunctions.hpp" />
 		<Unit filename="base/BufferStream.cpp" />
 		<Unit filename="base/ComparisonFunctor.cpp" />
 		<Unit filename="base/CompressionFunctions.cpp" />
@@ -295,6 +297,7 @@
 		<Unit filename="sr/bsa_cli/commands/Info.cpp" />
 		<Unit filename="sr/bsa_cli/commands/List.cpp" />
 		<Unit filename="sr/bsa_cli/commands/Operations.cpp" />
+		<Unit filename="sr/formID_finder/AuxFunctions.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />
 		</Extensions>

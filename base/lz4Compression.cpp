@@ -35,6 +35,11 @@ bool lz4Decompress(uint8_t * compressedData, const uint32_t compressedSize, uint
     return false;
   }
 
+  #if LZ4_VERSION_NUMBER < 10703
+  // Older lz4 versions have a different type for the compression context.
+  using LZ4F_dctx = LZ4F_dctx_s;
+  #endif
+
   // Skyrim seems to use the lz4 frame API and not the "simple" API.
   LZ4F_dctx* context = nullptr;
   auto errorCode = LZ4F_createDecompressionContext(&context, LZ4F_VERSION);

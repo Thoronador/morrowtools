@@ -1,7 +1,13 @@
 # Version history of bsa-cli
 
-## Version 0.7.0-pre (2021-11-01)
+## Version 0.7.0-pre (2021-11-02)
 
+__[bugfix]__
+A bug with the extraction of compressed files where only parts of the
+decompressed data was written to the file has been fixed. Extracted compressed
+files will now have the correct size.
+
+__[feature]__
 The `info` command will now show more information about the archive's flags.
 This includes two XBox-related flags as well as information about the content
 types of the files in the archive. Note that the later is only a rough

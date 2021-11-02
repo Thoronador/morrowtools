@@ -565,7 +565,7 @@ bool BSA::extractFile(const uint32_t folderIndex, const uint32_t fileIndex, cons
     return false;
   }
 
-  const uint32_t extractedFileSize = m_FolderBlocks[folderIndex].files[fileIndex].getRealFileSize();
+  uint32_t extractedFileSize = m_FolderBlocks[folderIndex].files[fileIndex].getRealFileSize();
   m_Stream.seekg(m_FolderBlocks[folderIndex].files[fileIndex].offset, std::ios_base::beg);
   if (!m_Stream.good())
   {
@@ -610,6 +610,8 @@ bool BSA::extractFile(const uint32_t folderIndex, const uint32_t fileIndex, cons
     // success, delete compressed data buffer
     delete [] compressedBuffer;
     compressedBuffer = nullptr;
+    // Adjust size for file output, because decompressed data is usually bigger.
+    extractedFileSize = decompSize;
   }
   else
   {

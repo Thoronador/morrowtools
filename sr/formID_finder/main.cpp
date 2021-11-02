@@ -102,7 +102,7 @@ void showHelp()
             << "options:\n"
             << "  --help           - displays this help message and quits\n"
             << "  -?               - same as --help\n"
-            << "  --version        - displays the version of the programme and quits\n"
+            << "  --version        - displays the version of the program and quits\n"
             << "  -v               - same as --version\n"
             << "  -d DIRECTORY     - set path to the Data Files directory of Skyrim to\n"
             << "                     DIRECTORY\n"
@@ -206,7 +206,7 @@ int main(int argc, char **argv)
           // set more than once?
           if (!searchKeyword.empty())
           {
-            std::cerr << "Error: search keyword was already set!\n";
+            std::cerr << "Error: Search keyword was already set!\n";
             return SRTP::rcInvalidParameter;
           }
           // enough parameters?
@@ -228,18 +228,18 @@ int main(int argc, char **argv)
           // set more than once?
           if (caseSensitive)
           {
-            std::cerr << "Error: parameter \"" << param << "\" was specified twice!\n";
+            std::cerr << "Error: Parameter \"" << param << "\" was specified twice!\n";
             return SRTP::rcInvalidParameter;
           }
           caseSensitive = true;
-          std::cout << "Case-sensitive search modus enabled.\n";
+          std::cout << "Case-sensitive search mode enabled.\n";
         } // case sensitive
         else if (param == "--all-quest-info")
         {
           // set more than once?
           if (allQuestInfo)
           {
-            std::cerr << "Error: parameter \"" << param << "\" was specified twice!\n";
+            std::cerr << "Error: Parameter \"" << param << "\" was specified twice!\n";
             return SRTP::rcInvalidParameter;
           }
           allQuestInfo = true;
@@ -250,7 +250,7 @@ int main(int argc, char **argv)
           // set more than once?
           if (listFactionRanks)
           {
-            std::cerr << "Error: parameter \"" << param << "\" was specified twice!\n";
+            std::cerr << "Error: Parameter \"" << param << "\" was specified twice!\n";
             return SRTP::rcInvalidParameter;
           }
           listFactionRanks = true;
@@ -261,7 +261,7 @@ int main(int argc, char **argv)
           // set more than once?
           if (sendData)
           {
-            std::cerr << "Error: parameter " << param << " was already specified!\n";
+            std::cerr << "Error: Parameter " << param << " was already specified!\n";
             return SRTP::rcInvalidParameter;
           }
           // enough parameters?
@@ -309,7 +309,7 @@ int main(int argc, char **argv)
           // set more than once?
           if (withReferences)
           {
-            std::cerr << "Error: parameter \"" << param << "\" was specified twice!\n";
+            std::cerr << "Error: Parameter \"" << param << "\" was specified twice!\n";
             return SRTP::rcInvalidParameter;
           }
           withReferences = true;
@@ -320,7 +320,7 @@ int main(int argc, char **argv)
           // set more than once?
           if (showFiles)
           {
-            std::cerr << "Error: parameter " << param << " was already specified!\n";
+            std::cerr << "Error: Parameter " << param << " was already specified!\n";
             return SRTP::rcInvalidParameter;
           }
           showFiles = true;

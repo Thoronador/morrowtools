@@ -223,7 +223,7 @@ int main(int argc, char **argv)
   }
   else
   {
-    std::cout << "You have to specify certain parameters for this programme to run properly.\n"
+    std::cout << "You have to specify certain parameters for this program to run properly.\n"
               << "Use --help to get a list of valid parameters.\n";
     return SRTP::rcInvalidParameter;
   }
@@ -232,7 +232,7 @@ int main(int argc, char **argv)
   if (pluginFile.empty())
   {
     std::cout << "You have to specify a plugin file as parameter for this "
-              << "programme to run properly.\nUse --help to get a list of "
+              << "program to run properly.\nUse --help to get a list of "
               << "valid parameters.\n";
     return SRTP::rcInvalidParameter;
   }
@@ -241,10 +241,10 @@ int main(int argc, char **argv)
   SRTP::getDataDir(dataDir, edition);
 
   // Does the plugin file even exist?
-  if (!FileExists(dataDir+pluginFile))
+  if (!FileExists(dataDir + pluginFile))
   {
     std::cout << "Error: The given plugin file \"" << dataDir + pluginFile
-              << "\" does not exist! Aborting programme.\n";
+              << "\" does not exist! Aborting program.\n";
     return SRTP::rcFileError;
   }
 

@@ -114,4 +114,14 @@ bool lz4Decompress(uint8_t * compressedData, const uint32_t compressedSize, uint
   #endif
 }
 
+std::string lz4Version()
+{
+  #if defined(_WIN32)
+  // No Windows builds with liblz4, yet.
+  return std::string("none");
+  #else
+  return std::string(LZ4_versionString());
+  #endif
+}
+
 } // namespace

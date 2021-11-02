@@ -25,11 +25,16 @@
 #include "commands/CommandFactory.hpp"
 #include "commands/Info.hpp"
 #include "commands/List.hpp"
+#include "../../base/CompressionFunctions.hpp"
+#include "../../base/lz4Compression.hpp"
 #include "../base/ReturnCodes.hpp"
 
 void showVersion()
 {
-  std::cout << "BSA Command Line Tool for Skyrim, version 0.7.0-pre, 2021-11-02\n";
+  std::cout << "BSA Command Line Tool for Skyrim, version 0.7.0-pre, 2021-11-02\n"
+            << "\nLibrary versions:\n"
+            << " * lz4:  " << MWTP::lz4Version() << "\n"
+            << " * zlib: " << MWTP::zlibVersion() << "\n";
 }
 
 void showHelp()

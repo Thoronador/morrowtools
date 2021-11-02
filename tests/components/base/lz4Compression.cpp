@@ -147,4 +147,9 @@ TEST_CASE("lz4Compression")
                                          reinterpret_cast<uint8_t*>(decompression), 555) );
     }
   }
+
+  SECTION("lz4Version")
+  {
+    REQUIRE_FALSE( MWTP::lz4Version().empty() );
+  }
 }

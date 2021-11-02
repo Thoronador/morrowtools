@@ -19,6 +19,10 @@ compressed with lz4. That usually occurs in version 105 of the BSA format.
 _(This feature may or may not become available on Windows in later versions of
 `bsa-cli`.)_
 
+__[feature]__
+`bsa-cli`'s version information does now show the versions of the used
+(de-)compression libraries, too.
+
 ## Version 0.6.1 (2021-10-31)
 
 `bsa-cli` can now also handle the newer archive version 105 which is used in

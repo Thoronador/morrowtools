@@ -96,4 +96,9 @@ bool zlibDecompress(uint8_t * compressedData, const uint32_t compressedSize, uin
   return (z_return == Z_STREAM_END);
 }
 
+std::string zlibVersion()
+{
+  return std::string(::zlibVersion());
+}
+
 } // namespace

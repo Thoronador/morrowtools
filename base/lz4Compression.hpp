@@ -22,6 +22,7 @@
 #define LZ4_COMPRESSIONFUNCTIONS_HPP
 
 #include <cstdint>
+#include <string>
 
 namespace MWTP
 {
@@ -36,6 +37,12 @@ namespace MWTP
  * \return Returns true in case of success, or false if an error occurred.
  */
 bool lz4Decompress(uint8_t * compressedData, const uint32_t compressedSize, uint8_t * decompBuffer, const uint32_t decompSize);
+
+/** \brief Gets version of the lz4 library.
+ *
+ * \return Returns a string containing lz4's version.
+ */
+std::string lz4Version();
 
 } // namespace
 

@@ -22,6 +22,7 @@
 #define COMPRESSIONFUNCTIONS_HPP
 
 #include <cstdint>
+#include <string>
 
 namespace MWTP
 {
@@ -36,6 +37,12 @@ namespace MWTP
  * \return Returns true in case of success, or false if an error occurred.
  */
 bool zlibDecompress(uint8_t * compressedData, const uint32_t compressedSize, uint8_t * decompBuffer, const uint32_t decompSize);
+
+/** \brief Gets version of the zlib library
+ *
+ * \return Returns a string containing zlib's version.
+ */
+std::string zlibVersion();
 
 } // namespace
 

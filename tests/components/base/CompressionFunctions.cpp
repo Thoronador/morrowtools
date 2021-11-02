@@ -106,4 +106,9 @@ TEST_CASE("CompressionFunctions")
       REQUIRE_FALSE( MWTP::zlibDecompress((uint8_t*) compressed, 98, (uint8_t*) decompression, 120) );
     }
   }
+
+  SECTION("zlibVersion")
+  {
+    REQUIRE_FALSE( MWTP::zlibVersion().empty() );
+  }
 }

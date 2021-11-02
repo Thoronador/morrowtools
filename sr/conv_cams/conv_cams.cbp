@@ -55,6 +55,7 @@
 		<Unit filename="../base/ESMWriter.hpp" />
 		<Unit filename="../base/ESMWriterContents.cpp" />
 		<Unit filename="../base/ESMWriterContents.hpp" />
+		<Unit filename="../base/Edition.hpp" />
 		<Unit filename="../base/Group.cpp" />
 		<Unit filename="../base/Group.hpp" />
 		<Unit filename="../base/PathFunctions.hpp" />

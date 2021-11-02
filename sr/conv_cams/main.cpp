@@ -20,6 +20,7 @@
 
 #include <iostream>
 #include <sstream>
+#include "../base/Edition.hpp"
 #include "../base/ESMWriterContents.hpp"
 #include "../base/PathFunctions.hpp"
 #include "../base/ReturnCodes.hpp"
@@ -87,6 +88,7 @@ int main(int argc, char **argv)
   std::string dataDir = "";
   // the plugin that has to be converted - empty at start, too
   std::string pluginFile = "";
+  std::optional<SRTP::Edition> edition = std::nullopt;
 
   if ((argc > 1) && (argv != nullptr))
   {
@@ -181,6 +183,28 @@ int main(int argc, char **argv)
             return SRTP::rcInvalidParameter;
           }
         } // plugin file name
+        else if ((param == "--special-edition") || (param == "--skyrim-se"))
+        {
+          // set more than once?
+          if (edition.has_value())
+          {
+            std::cerr << "Error: Skyrim edition was specified twice!\n";
+            return SRTP::rcInvalidParameter;
+          }
+          edition = SRTP::Edition::SpecialEdition;
+          std::cout << "Info: Handling Skyrim as Skyrim Special Edition.\n";
+        } // edition: Skyrim SE
+        else if ((param == "--original-edition") || (param == "--oldrim"))
+        {
+          // set more than once?
+          if (edition.has_value())
+          {
+            std::cerr << "Error: Skyrim edition was specified twice!\n";
+            return SRTP::rcInvalidParameter;
+          }
+          edition = SRTP::Edition::Skyrim2011;
+          std::cout << "Info: Handling Skyrim as Skyrim of 2011.\n";
+        } // edition: Skyrim (original)
         else
         {
           // unknown or wrong parameter
@@ -214,7 +238,7 @@ int main(int argc, char **argv)
   }
 
   // Has the user specified a data directory?
-  SRTP::getDataDir(dataDir);
+  SRTP::getDataDir(dataDir, edition);
 
   // Does the plugin file even exist?
   if (!FileExists(dataDir+pluginFile))

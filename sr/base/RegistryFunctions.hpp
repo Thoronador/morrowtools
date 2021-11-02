@@ -21,29 +21,37 @@
 #ifndef SR_REGISTRYFUNCTIONS_HPP
 #define SR_REGISTRYFUNCTIONS_HPP
 
+#include <optional>
 #include <string>
+#include "Edition.hpp"
 #include "../../base/RegistryFunctions.hpp"
 
 namespace SRTP
 {
 
-/* tries to read Skyrim's install path from the Windows registry. In case of
-   success, the function will return true and the retrieved path will be stored
-   in the string referenced by pathData. In case of failure, the function will
-   return false and the string referenced by pathData will not be changed.
-
-   parameters:
-       pathData - reference to a string that shall hold the read path
-
-   remarks:
-       This function will always return false on non-Windows-OSes.
-*/
-inline bool getSkryrimPathFromRegistry(std::string& pathData)
+/** Tries to read Skyrim's install path from the Windows registry.
+ *
+ * \param pathData  reference to a string that shall hold the read path
+ * \param edition      the expected edition of Skyrim
+ * \return In case of success, the function will return true and the retrieved
+ *         path will be stored in the string referenced by pathData. In case of
+ *         failure, the function will return false and the string referenced by
+ *         pathData will not be changed.
+ *
+ * \remarks This function will always return false on non-Windows-OSes.
+ */
+inline bool getSkryrimPathFromRegistry(std::string& pathData, const std::optional<Edition> edition)
 {
   #if defined(_WIN64)
-  return MWTP::getRegistryStringValueHKLM(pathData, "SOFTWARE\\WOW6432Node\\Bethesda Softworks\\Skyrim", "Installed Path");
+  if (edition == Edition::SpecialEdition)
+    return MWTP::getRegistryStringValueHKLM(pathData, "SOFTWARE\\WOW6432Node\\Bethesda Softworks\\Skyrim Special Edition", "Installed Path");
+  else
+    return MWTP::getRegistryStringValueHKLM(pathData, "SOFTWARE\\WOW6432Node\\Bethesda Softworks\\Skyrim", "Installed Path");
   #elif defined(_WIN32)
-  return MWTP::getRegistryStringValueHKLM(pathData, "SOFTWARE\\Bethesda Softworks\\Skyrim", "Installed Path");
+  if (edition == Edition::SpecialEdition)
+    return MWTP::getRegistryStringValueHKLM(pathData, "SOFTWARE\\Bethesda Softworks\\Skyrim Special Edition", "Installed Path");
+  else
+    return MWTP::getRegistryStringValueHKLM(pathData, "SOFTWARE\\Bethesda Softworks\\Skyrim", "Installed Path");
   #else
   // Assume Win32-type registry for non-Windows systems. Does not really matter,
   // because there is no registry on non-Windows systems anyway.

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2013, 2015  Thoronador
+    Copyright (C) 2012, 2013, 2015, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 
 #include <iostream>
 #include <set>
+#include "Edition.hpp"
 #include "RegistryFunctions.hpp"
 #include "../../base/DirectoryFunctions.hpp"
 #include "../../base/FileFunctions.hpp"
@@ -31,27 +32,26 @@
 
 namespace SRTP
 {
-  /* tries to set the path to Skyrim's Data directory by reading the Skyrim
-     directory from the Windows registry. If that fails, a default value will
-     be used instead.
-
-     parameters:
-         dataDir     - the string that will hold the data directory path
-         defaultPath - default path that should be used in case of error
-
-     remarks:
-         The string given by reference as dataDir will only be updated, if it
-         is empty. Non-empty strings will not be touched.
-  */
-  inline void getDataDir(std::string& dataDir, const std::string& defaultPath="C:\\Program Files\\Steam\\SteamApps\\common\\skyrim\\Data\\")
+  /** Tries to set the path to Skyrim's Data directory by reading the Skyrim
+   * directory from the Windows registry. If that fails, a default value will
+   * be used instead.
+   *
+   * \param dataDir      the string that will hold the data directory path
+   * \param edition      the expected edition of Skyrim
+   * \param defaultPath  default path that should be used in case of error
+   *
+   * \remarks The string given by reference as dataDir will only be updated, if
+   *          it is empty. Non-empty strings will not be touched.
+   */
+  inline void getDataDir(std::string& dataDir, const std::optional<Edition> edition, const std::string& defaultPath = "C:\\Program Files\\Steam\\SteamApps\\common\\Skyrim\\Data\\")
   {
-    //Has the user already specified a data directory?
+    // Has the user already specified a data directory?
     if (dataDir.empty())
     {
-      //No, so let's search the registry first...
+      // No, so let's search the registry first...
       std::cout << "Warning: Data files directory of Skyrim was not specified, "
                 << "will try to read it from the registry.\n";
-      if (!SRTP::getSkryrimPathFromRegistry(dataDir))
+      if (!SRTP::getSkryrimPathFromRegistry(dataDir, edition))
       {
         std::cerr << "Error: Could not find Skyrim's installation path in registry!\n";
         dataDir.clear();
@@ -60,31 +60,31 @@ namespace SRTP
       {
         if (!dataDir.empty())
         {
-          //Does it have a trailing (back)slash? Add one, if not.
+          // Does it have a trailing (back)slash? Add one, if not.
           dataDir = slashify(dataDir);
-          /*add data dir to path, because installed path points only to Skyrim's
-            main directory */
-          dataDir = dataDir +"Data" +MWTP::pathDelimiter;
-          std::cout << "Data files directory was set to \""<<dataDir<<"\" via registry.\n";
+          /* add data dir to path, because installed path points only to Skyrim's
+             main directory */
+          dataDir = dataDir + "Data" + MWTP::pathDelimiter;
+          std::cout << "Data files directory was set to \"" << dataDir << "\" via registry.\n";
         }
         else
         {
           std::cerr << "Error: Installation path in registry is empty!\n";
         }
-      }//else
+      }
 
-      //check again, in case registry failed
+      // check again, in case registry failed
       if (dataDir.empty())
       {
-        //empty, so let's try a default value.
+        // empty, so let's try a default value.
         dataDir = defaultPath;
         std::cout << "Warning: Data files directory of Skyrim was not specified, "
-                  << "will use default path \""<<dataDir<<"\". This might not work"
-                  << " properly on your machine, use the appropriate programme "
+                  << "will use default path \"" << dataDir << "\". This might not work"
+                  << " properly on your machine, use the appropriate program "
                   << "parameter to specify the proper path.\n";
       }
-    }//if no data dir is given
-  }//function getDataDir
+    } // if no data directory is given
+  }
 
   /* tries to find the language component of the string file names for a given
      plugin. Returns an error code not equal to zero, if an error occurred.

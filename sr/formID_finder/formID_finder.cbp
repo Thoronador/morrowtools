@@ -66,6 +66,7 @@
 		<Unit filename="../base/ESMReader.hpp" />
 		<Unit filename="../base/ESMReaderReIndex.cpp" />
 		<Unit filename="../base/ESMReaderReIndex.hpp" />
+		<Unit filename="../base/Edition.hpp" />
 		<Unit filename="../base/Factions.hpp" />
 		<Unit filename="../base/FormIDFunctions.cpp" />
 		<Unit filename="../base/FormIDFunctions.hpp" />

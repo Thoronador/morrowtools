@@ -39,6 +39,7 @@
 #include "../base/Cells.hpp"
 #include "../base/Containers.hpp"
 #include "../base/DependencySolver.hpp"
+#include "../base/Edition.hpp"
 #include "../base/Factions.hpp"
 #include "../base/Floras.hpp"
 #include "../base/FormIDFunctions.hpp"
@@ -116,8 +117,12 @@ void showHelp()
             << "  --faction-ranks  - shows the ranks of matching factions, too.\n"
             << "  --ranks          - same as --faction-ranks\n"
             << "  --ref-id         - try to find reference IDs, too. With this parameter the\n"
-            << "                     programme will need a significantly longer amount of time\n"
-            << "                     to complete a search.\n";
+            << "                     program will need a significantly longer amount of time\n"
+            << "                     to complete a search.\n"
+            << "  --skyrim-se      - assume that Skyrim Special Edition is installed and use\n"
+            << "                     that installation.\n"
+            << "  --oldrim         - assume that the old Skyrim of 2011 is installed and use\n"
+            << "                     that installation.\n";
 }
 
 int main(int argc, char **argv)
@@ -136,6 +141,7 @@ int main(int argc, char **argv)
   std::string sendParam2nd = "";
   bool withReferences = false;
   bool showFiles = false;
+  std::optional<SRTP::Edition> edition = std::nullopt;
 
   if ((argc > 1) && (argv != nullptr))
   {
@@ -275,6 +281,28 @@ int main(int argc, char **argv)
             return SRTP::rcInvalidParameter;
           }
         } // send data
+        else if ((param == "--special-edition") || (param == "--skyrim-se"))
+        {
+          // set more than once?
+          if (edition.has_value())
+          {
+            std::cerr << "Error: Skyrim edition was specified twice!\n";
+            return SRTP::rcInvalidParameter;
+          }
+          edition = SRTP::Edition::SpecialEdition;
+          std::cout << "Info: Handling Skyrim as Skyrim Special Edition.\n";
+        } // edition: Skyrim SE
+        else if ((param == "--original-edition") || (param == "--oldrim"))
+        {
+          // set more than once?
+          if (edition.has_value())
+          {
+            std::cerr << "Error: Skyrim edition was specified twice!\n";
+            return SRTP::rcInvalidParameter;
+          }
+          edition = SRTP::Edition::Skyrim2011;
+          std::cout << "Info: Handling Skyrim as Skyrim of 2011.\n";
+        } // edition: Skyrim (original)
         else if ((param == "--ref-id") || (param == "--ref-ids") || (param == "--ref")
                   || (param == "--refs") || (param == "--references"))
         {
@@ -328,7 +356,7 @@ int main(int argc, char **argv)
   }
 
   // Has the user specified a data directory?
-  SRTP::getDataDir(dataDir);
+  SRTP::getDataDir(dataDir, edition);
 
   // keyword given?
   if (searchKeyword.empty())

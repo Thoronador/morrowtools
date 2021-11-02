@@ -35,7 +35,7 @@ int main()
   //SRTP::ESMReaderAll reader;
 
   std::string SkyrimDir;
-  SRTP::getDataDir(SkyrimDir);
+  SRTP::getDataDir(SkyrimDir, std::nullopt);
 
   const int readResult = reader.readESM(SkyrimDir+"Skyrim.esm", header_rec);
   if (readResult>=0)

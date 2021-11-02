@@ -552,13 +552,13 @@ TEST_CASE("CellRecord")
     {
       REQUIRE( record.getWriteSize() == 20 );
 
-      record.unknownXCLR.push_back(1.0f);
+      record.unknownXCLR.push_back(0x01234567);
       REQUIRE( record.getWriteSize() == 30 );
 
-      record.unknownXCLR.push_back(1.5f);
+      record.unknownXCLR.push_back(0x89ABCDEF);
       REQUIRE( record.getWriteSize() == 34 );
 
-      record.unknownXCLR.push_back(1.25f);
+      record.unknownXCLR.push_back(0x0F00BA12);
       REQUIRE( record.getWriteSize() == 38 );
     }
 

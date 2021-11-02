@@ -122,7 +122,7 @@ struct WeaponRecord: public BasicRecord
     uint16_t baseDamage;
     // end of data
     std::array<uint8_t, 100> unknownDNAM;
-    std::array<uint8_t, 16>  unknownCRDT;
+    BinarySubRecord unknownCRDT;
     uint32_t unknownVNAM;
     std::optional<uint32_t> unknownCNAM;
 }; // struct

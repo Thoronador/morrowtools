@@ -68,10 +68,7 @@ TEST_CASE("WeaponRecord")
     {
       REQUIRE( record.unknownDNAM[i] == 0 );
     }
-    for (unsigned int i = 0; i < 16; ++i)
-    {
-      REQUIRE( record.unknownCRDT[i] == 0 );
-    }
+    REQUIRE_FALSE( record.unknownCRDT.isPresent() );
     REQUIRE( record.unknownVNAM == 0 );
     REQUIRE_FALSE( record.unknownCNAM.has_value() );
   }
@@ -376,8 +373,8 @@ TEST_CASE("WeaponRecord")
 
       SECTION("CRDT mismatch")
       {
-        a.unknownCRDT[15] = 12;
-        b.unknownCRDT[15] = 34;
+        a.unknownCRDT.setPresence(true);
+        b.unknownCRDT.setPresence(false);
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
@@ -427,6 +424,14 @@ TEST_CASE("WeaponRecord")
     WeaponRecord record;
 
     record.editorID = "foo";
+    // Reading data from a stream is currently the only way to get a record
+    // with data, so we do that here.
+    {
+      const std::string_view data = "CRDT\x10\0_234567890123456"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+      REQUIRE( record.unknownCRDT.loadFromStream(stream, cCRDT, true) );
+    }
 
     SECTION("size adjusts with length of editor ID")
     {
@@ -667,6 +672,29 @@ TEST_CASE("WeaponRecord")
       REQUIRE( record.getWriteSize() == 192 );
     }
 
+    SECTION("size adjusts with length of CRDT")
+    {
+      REQUIRE( record.getWriteSize() == 182 );
+
+      // Reading data from a stream is currently the only way to get a record
+      // with data, so we do that here.
+      {
+        const std::string_view data = "CRDT\x12\0_23456789012345678"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+        REQUIRE( record.unknownCRDT.loadFromStream(stream, cCRDT, true) );
+      }
+      REQUIRE( record.getWriteSize() == 184 );
+
+      {
+        const std::string_view data = "CRDT\x01\0_"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+        REQUIRE( record.unknownCRDT.loadFromStream(stream, cCRDT, true) );
+      }
+      REQUIRE( record.getWriteSize() == 167 );
+    }
+
     SECTION("size adjusts when CNAM is present")
     {
       REQUIRE( record.getWriteSize() == 182 );
@@ -682,6 +710,7 @@ TEST_CASE("WeaponRecord")
     StringTable dummy_table;
     dummy_table.addString(0x00010499, "foo");
     dummy_table.addString(0x00012616, "bar");
+    dummy_table.addString(0x000126B3, "bazinga");
     dummy_table.addString(0x000005C0, "baz");
     dummy_table.addString(0x0000AC9A, "quux");
 
@@ -1005,6 +1034,89 @@ TEST_CASE("WeaponRecord")
       const auto CRDT = std::string_view(reinterpret_cast<const char*>(record.unknownCRDT.data()), 16);
       REQUIRE( CRDT == "\0\0\0\0\0\0\x80?\x01\xFF\xFF\xFF\0\0\0\0"sv );
       REQUIRE( record.unknownVNAM == 1 );
+      REQUIRE_FALSE( record.unknownCNAM.has_value() );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( record.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
+    }
+
+    SECTION("default: load record from Skyrim Special Edition with 24 byte CRDT")
+    {
+      const auto data = "WEAP\xA6\x01\0\0\0\0\0\0\x88\x72\x01\0\x6C\x27\x1E\0\x2C\0\x03\0EDID\x1C\0DA14DremoraGreatswordFire03\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0\xB3&\x01\0MODL&\0Weapons\\Daedric\\DaedricGreatSword.nif\0MODT\x0C\0\x02\0\0\0\0\0\0\0\0\0\0\0EITM\x04\0,\\\x04\0EAMT\x02\0\xDC\x05\x45TYP\x04\0E?\x01\0BIDS\x04\0\xFF\x83\x01\0BAMT\x04\0\x86w\x09\0KSIZ\x04\0\x03\0\0\0KWDA\x0C\0\x1F\xE7\x01\0\x31\xD9\x06\0X\xF9\x08\0DESC\x04\0\0\0\0\0INAM\x04\0\xD5I\x09\0WNAM\x04\0\x05%\x09\0TNAM\x04\0\xACL\x0E\0NAM9\x04\0\xA9\xC8\x03\0NAM8\x04\0\xAA\xC8\x03\0DATA\x0A\0Z\0\0\0\0\0\x88\x41\x11\0DNAMd\0\x05\0\0\0\x33\x33\x33?ff\xA6?\x88\0\0\0\0\0\0\0\0\0\0\0\0\xFF\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x80?ff\xA6?\0\0\0?\0\0\x80?\xC3\xF5\xA8>\0\0\0\0\0\0\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\xFF\xFF\0\0\0\0\xCD\xCC\x8C?CRDT\x18\0\x08\0\x12\0\0\0\x80?\x01\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0VNAM\x04\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read WEAP, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      WeaponRecord record;
+      REQUIRE( record.loadFromStream(stream, true, dummy_table) );
+      // Check data.
+      // -- header
+      REQUIRE( record.headerFlags == 0 );
+      REQUIRE( record.headerFormID == 0x00017288 );
+      REQUIRE( record.headerRevision == 0x001E276C );
+      REQUIRE( record.headerVersion == 44 );
+      REQUIRE( record.headerUnknown5 == 0x0003 );
+      // -- record data
+      REQUIRE( record.editorID == "DA14DremoraGreatswordFire03" );
+      REQUIRE_FALSE( record.unknownVMAD.isPresent() );
+      REQUIRE( record.unknownOBND[0] == 0x00 );
+      REQUIRE( record.unknownOBND[1] == 0x00 );
+      REQUIRE( record.unknownOBND[2] == 0x00 );
+      REQUIRE( record.unknownOBND[3] == 0x00 );
+      REQUIRE( record.unknownOBND[4] == 0x00 );
+      REQUIRE( record.unknownOBND[5] == 0x00 );
+      REQUIRE( record.unknownOBND[6] == 0x00 );
+      REQUIRE( record.unknownOBND[7] == 0x00 );
+      REQUIRE( record.unknownOBND[8] == 0x00 );
+      REQUIRE( record.unknownOBND[9] == 0x00 );
+      REQUIRE( record.unknownOBND[10] == 0x00 );
+      REQUIRE( record.unknownOBND[11] == 0x00 );
+      REQUIRE( record.name.isPresent() );
+      REQUIRE( record.name.getType() == LocalizedString::Type::Index );
+      REQUIRE( record.name.getIndex() == 0x000126B3 );
+      REQUIRE( record.modelPath == "Weapons\\Daedric\\DaedricGreatSword.nif" );
+      REQUIRE( record.unknownMODT.isPresent() );
+      const auto MODT = std::string_view(reinterpret_cast<const char*>(record.unknownMODT.data()), record.unknownMODT.size());
+      REQUIRE( MODT == "\x02\0\0\0\0\0\0\0\0\0\0\0"sv );
+      REQUIRE_FALSE( record.unknownMODS.isPresent() );
+      REQUIRE( record.enchantingFormID == 0x00045C2C );
+      REQUIRE( record.enchantmentAmount.has_value() );
+      REQUIRE( record.enchantmentAmount.value() == 1500 );
+      REQUIRE( record.equipTypeFormID == 0x00013F45 );
+      REQUIRE( record.blockBashImpactDataSetFormID == 0x000183FF );
+      REQUIRE( record.alternateBlockMaterialFormID == 0x00097786 );
+      REQUIRE( record.keywords.size() == 3 );
+      REQUIRE( record.keywords[0] == 0x0001E71F );
+      REQUIRE( record.keywords[1] == 0x0006D931 );
+      REQUIRE( record.keywords[2] == 0x0008F958 );
+      REQUIRE( record.description.isPresent() );
+      REQUIRE( record.description.getType() == LocalizedString::Type::Index );
+      REQUIRE( record.description.getIndex() == 0 );
+      REQUIRE( record.unknownNNAM.empty() );
+      REQUIRE( record.impactDataSetFormID == 0x000949D5 );
+      REQUIRE( record.firstPersonModelObjectFormID == 0x00092505 );
+      REQUIRE( record.attackSoundFormID == 0 );
+      REQUIRE( record.attackSound2DFormID == 0 );
+      REQUIRE( record.attackLoopSoundFormID == 0 );
+      REQUIRE( record.attackFailSoundFormID == 0x000E4CAC );
+      REQUIRE( record.idleSoundFormID == 0 );
+      REQUIRE( record.equipSoundFormID == 0x0003C8A9 );
+      REQUIRE( record.unequipSoundFormID == 0x0003C8AA );
+      REQUIRE( record.value == 90 );
+      REQUIRE( record.weight == 17.0f );
+      REQUIRE( record.baseDamage == 17 );
+      const auto DNAM = std::string_view(reinterpret_cast<const char*>(record.unknownDNAM.data()), 100);
+      REQUIRE( DNAM == "\x05\0\0\0\x33\x33\x33?ff\xA6?\x88\0\0\0\0\0\0\0\0\0\0\0\0\xFF\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x80?ff\xA6?\0\0\0?\0\0\x80?\xC3\xF5\xA8>\0\0\0\0\0\0\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\xFF\xFF\0\0\0\0\xCD\xCC\x8C?"sv );
+      const auto CRDT = std::string_view(reinterpret_cast<const char*>(record.unknownCRDT.data()), record.unknownCRDT.size());
+      REQUIRE( CRDT == "\x08\0\x12\0\0\0\x80?\x01\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0"sv );
+      REQUIRE( record.unknownVNAM == 0 );
       REQUIRE_FALSE( record.unknownCNAM.has_value() );
 
       // Writing should succeed.

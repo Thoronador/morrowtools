@@ -1,6 +1,6 @@
 # Version history of bsa-cli
 
-## Version 0.7.0-pre (2021-11-02)
+## Version 0.7.0 (2021-11-02)
 
 __[bugfix]__
 A bug with the extraction of compressed files where only parts of the

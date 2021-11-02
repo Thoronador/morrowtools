@@ -13,6 +13,12 @@ This includes two XBox-related flags as well as information about the content
 types of the files in the archive. Note that the later is only a rough
 indication for the actual contents.
 
+__[feature]__
+The Linux version of `bsa-cli` does now support extraction of files that were
+compressed with lz4. That usually occurs in version 105 of the BSA format.
+_(This feature may or may not become available on Windows in later versions of
+`bsa-cli`.)_
+
 ## Version 0.6.1 (2021-10-31)
 
 `bsa-cli` can now also handle the newer archive version 105 which is used in

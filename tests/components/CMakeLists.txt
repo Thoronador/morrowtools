@@ -9,6 +9,7 @@ set(component_tests_sources
     ../../base/CompressionFunctions.cpp
     ../../base/DirectoryFunctions.cpp
     ../../base/FileFunctions.cpp
+    ../../base/lz4Compression.cpp
     ../../base/RegistryFunctions.cpp
     ../../base/SlashFunctions.cpp
     ../../base/UtilityFunctions.cpp
@@ -92,6 +93,7 @@ set(component_tests_sources
     base/CompressionFunctions.cpp
     base/DirectoryFunctions.cpp
     base/FileFunctions.cpp
+    base/lz4Compression.cpp
     base/RegistryFunctions.cpp
     base/SlashFunctions.cpp
     base/UtilityFunctions.cpp
@@ -213,6 +215,19 @@ else()
     message ( FATAL_ERROR "zlib was not found!" )
   endif (ZLIB_FOUND)
 endif()
+
+# lz4 integration is non-trivial on Windows, so only use it on Linux.
+if (NOT WIN32)
+  set(LZ4_DIR "../../cmake/" )
+
+  find_package (LZ4)
+  if (LZ4_FOUND)
+    include_directories(${LZ4_INCLUDE_DIRS})
+    target_link_libraries (component_tests ${LZ4_LIBRARIES})
+  else ()
+    message ( FATAL_ERROR "liblz4 was not found!" )
+  endif (LZ4_FOUND)
+endif ()
 
 # GNU GCC before 9.1.0 needs to link to libstdc++fs explicitly.
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "9.1.0")

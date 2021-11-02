@@ -11,7 +11,7 @@ jobs:
       - name: Install Debian packages
         run: |
           sudo apt-get update
-          sudo apt-get install -y catch cmake g++-10 pkg-config zlib1g-dev
+          sudo apt-get install -y catch cmake g++-10 liblz4-dev pkg-config zlib1g-dev
       - name: Syntax check
         run: |
           export CXX=g++-10
@@ -37,7 +37,7 @@ jobs:
       - name: Install Debian packages
         run: |
           sudo apt-get update
-          sudo apt-get install -y catch cmake g++-10 pkg-config zlib1g-dev
+          sudo apt-get install -y catch cmake g++-10 liblz4-dev pkg-config zlib1g-dev
       - name: Build with GNU GCC 10
         run: |
           export CXX=g++-10
@@ -59,7 +59,7 @@ jobs:
       - name: Install Debian packages
         run: |
           sudo apt-get update
-          sudo apt-get install -y catch cmake g++-9 pkg-config zlib1g-dev
+          sudo apt-get install -y catch cmake g++-9 liblz4-dev pkg-config zlib1g-dev
       - name: Build with GNU GCC 9
         run: |
           export CXX=g++-9
@@ -81,7 +81,7 @@ jobs:
       - name: Install Debian packages
         run: |
           sudo apt-get update
-          sudo apt-get install -y catch cmake g++-8 pkg-config zlib1g-dev
+          sudo apt-get install -y catch cmake g++-8 liblz4-dev pkg-config zlib1g-dev
       - name: Build with GNU GCC 8
         run: |
           export CXX=g++-8

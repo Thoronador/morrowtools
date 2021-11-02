@@ -30,6 +30,7 @@
 		</Compiler>
 		<Linker>
 			<Add library="z" />
+			<Add library="lz4" />
 		</Linker>
 		<Unit filename="../../base/BufferStream.hpp" />
 		<Unit filename="../../base/ComparisonFunctor.hpp" />
@@ -45,6 +46,8 @@
 		<Unit filename="../../base/SlashFunctions.hpp" />
 		<Unit filename="../../base/UtilityFunctions.cpp" />
 		<Unit filename="../../base/UtilityFunctions.hpp" />
+		<Unit filename="../../base/lz4Compression.cpp" />
+		<Unit filename="../../base/lz4Compression.hpp" />
 		<Unit filename="../../mw/base/HelperIO.cpp" />
 		<Unit filename="../../mw/base/HelperIO.hpp" />
 		<Unit filename="../../mw/base/MW_Constants.hpp" />
@@ -206,6 +209,7 @@
 		<Unit filename="base/RegistryFunctions.cpp" />
 		<Unit filename="base/SlashFunctions.cpp" />
 		<Unit filename="base/UtilityFunctions.cpp" />
+		<Unit filename="base/lz4Compression.cpp" />
 		<Unit filename="main.cpp" />
 		<Unit filename="mw/base/HelperIO.cpp" />
 		<Unit filename="sr/base/DependencyElement.cpp" />

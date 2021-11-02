@@ -26,6 +26,10 @@
 #include "../../../base/UtilityFunctions.hpp"
 #include "../../../base/DirectoryFunctions.hpp"
 #include "../../../base/CompressionFunctions.hpp"
+#if !defined(_WIN32)
+  // Currently, this class has no lz4 support for Windows yet.
+  #include "../../../base/lz4Compression.hpp"
+#endif
 
 namespace SRTP
 {
@@ -576,6 +580,19 @@ bool BSA::extractFile(const uint32_t folderIndex, const uint32_t fileIndex, cons
   uint8_t * buffer = nullptr; // buffer for output data
   if (isFileCompressed(folderIndex, fileIndex))
   {
+    const bool compressionUsesLZ4 = m_Header.version >= 105;
+    // bsa-cli cannot handle LZ4 decompression for Windows systems, yet.
+    #if defined(_WIN32)
+    if (compressionUsesLZ4)
+    {
+      std::cerr << "BSA::extractFile: Error: This archive uses LZ4 for "
+                << "compressed data, but LZ4 decompression is not yet "
+                << "implemented in the Windows operating system version of "
+                << "this program!\n";
+                // a.k.a. classic "That wouldn't have happened with Linux."
+      return false;
+    }
+    #endif
     if (extractedFileSize < 4)
     {
       std::cerr << "BSA::extractFile: Error: Size is too small to contain any compressed data!\n";
@@ -598,9 +615,16 @@ bool BSA::extractFile(const uint32_t folderIndex, const uint32_t fileIndex, cons
       delete [] compressedBuffer;
       return false;
     }
-    //allocate buffer for decompressed data
+    // allocate buffer for decompressed data
     buffer = new uint8_t[decompSize];
-    if (!MWTP::zlibDecompress(compressedBuffer, extractedFileSize - 4, buffer, decompSize))
+    #if defined(_WIN32)
+    const bool success = MWTP::zlibDecompress(compressedBuffer, extractedFileSize - 4, buffer, decompSize);
+    #else
+    const bool success = compressionUsesLZ4 ?
+        MWTP::lz4Decompress(compressedBuffer, extractedFileSize - 4, buffer, decompSize)
+        : MWTP::zlibDecompress(compressedBuffer, extractedFileSize - 4, buffer, decompSize);
+    #endif
+    if (!success)
     {
       std::cerr << "BSA::extractFile: Error: Decompression failed!\n";
       delete [] compressedBuffer;

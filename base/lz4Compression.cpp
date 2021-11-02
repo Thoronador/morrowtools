@@ -120,7 +120,19 @@ std::string lz4Version()
   // No Windows builds with liblz4, yet.
   return std::string("none");
   #else
-  return std::string(LZ4_versionString());
+    #if LZ4_VERSION_NUMBER < 10703
+    // Predefined macros could be used, too, but that would just get us the
+    // compile time version of the library, not the runtime version.
+    const int version = LZ4_versionNumber();
+    const int major = version / 10000;
+    const int minor = (version - (10000 * major)) / 100;
+    const int patch = version % 100;
+    return std::to_string(major).append(".")
+           .append(std::to_string(minor)).append(".")
+           .append(std::to_string(patch));
+    #else
+    return std::string(LZ4_versionString());
+    #endif // LZ4_VERSION_NUMBER
   #endif
 }
 

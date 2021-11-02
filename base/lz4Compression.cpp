@@ -20,14 +20,20 @@
 
 #include "lz4Compression.hpp"
 #include <iostream>
+#if !defined(_WIN32)
 #include <lz4.h>
 #include <lz4frame.h>
+#endif
 
 namespace MWTP
 {
 
 bool lz4Decompress(uint8_t * compressedData, const uint32_t compressedSize, uint8_t * decompBuffer, const uint32_t decompSize)
 {
+  #if defined(_WIN32)
+  // No Windows builds with liblz4, yet.
+  return false;
+  #else
   if ((compressedData == nullptr) || (compressedSize == 0)
      || (decompBuffer == nullptr) || (decompSize == 0))
   {
@@ -105,6 +111,7 @@ bool lz4Decompress(uint8_t * compressedData, const uint32_t compressedSize, uint
   }
 
   return true;
+  #endif
 }
 
 } // namespace

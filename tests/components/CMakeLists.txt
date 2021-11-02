@@ -217,7 +217,7 @@ else()
 endif()
 
 # lz4 integration is non-trivial on Windows, so only use it on Linux.
-if (NOT WIN32)
+if (NOT MINGW)
   set(LZ4_DIR "../../cmake/" )
 
   find_package (LZ4)

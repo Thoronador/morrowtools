@@ -32,10 +32,10 @@ bool matchesKeyword(const std::string& haystack, const std::string& keyword, con
   return lowerCase(haystack).find(keyword) != std::string::npos;
 }
 
-void showRefIDs(const uint32_t baseID, const std::map<uint32_t, std::vector<SRTP::ESMReaderFinderReferences::CellRefIDPair> >& refMap, std::basic_ostream<char>& basic_out)
+void showRefIDs(const uint32_t baseID, const std::map<uint32_t, std::vector<SRTP::ESMReaderFinderReferences::CellRefIDPair> >& refMap, std::ostream& basic_out)
 {
   basic_out << "        references: ";
-  std::map<uint32_t, std::vector<SRTP::ESMReaderFinderReferences::CellRefIDPair> >::const_iterator iter = refMap.find(baseID);
+  const auto iter = refMap.find(baseID);
   if (iter != refMap.end())
   {
     basic_out << iter->second.size() << "\n";
@@ -46,14 +46,13 @@ void showRefIDs(const uint32_t baseID, const std::map<uint32_t, std::vector<SRTP
     return;
   }
   bool hasName = false;
-  std::vector<SRTP::ESMReaderFinderReferences::CellRefIDPair>::const_iterator vecIter = iter->second.begin();
-  while (vecIter != iter->second.end())
+  for (const auto& cellRefPair: iter->second)
   {
     hasName = false;
-    basic_out << "          ref ID " << SRTP::getFormIDAsStringXX(vecIter->refID);
-    if (SRTP::Cells::get().hasRecord(vecIter->cellID))
+    basic_out << "          ref ID " << SRTP::getFormIDAsStringXX(cellRefPair.refID);
+    if (SRTP::Cells::get().hasRecord(cellRefPair.cellID))
     {
-      const SRTP::CellRecord& theCell = SRTP::Cells::get().getRecord(vecIter->cellID);
+      const SRTP::CellRecord& theCell = SRTP::Cells::get().getRecord(cellRefPair.cellID);
       if (theCell.name.isPresent())
       {
         if (!theCell.name.getString().empty())
@@ -77,6 +76,5 @@ void showRefIDs(const uint32_t baseID, const std::map<uint32_t, std::vector<SRTP
     {
       basic_out << " in unnamed cell\n";
     }
-    ++vecIter;
   }
 }

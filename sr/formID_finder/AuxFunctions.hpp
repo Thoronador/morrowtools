@@ -22,24 +22,21 @@
 #include <string>
 #include "ESMReaderFinderReferences.hpp"
 
-/* auxiliary function #1:
-   Returns true, if the keyword is found in haystack. Character case is taken
-   into account, if caseMatters is true.
-
-   parameters:
-       haystack    - the string to search in
-       keyword     - the string to search for
-       caseMatters - If true, case-sensitive search is performed. Otherwise the
-                     search is case-insensitive.
+/** \brief Checks whether the keyword occurs in the haystack. Character case is
+ * taken into account, if caseMatters is true.
+ *
+ * \param haystack     the string to search in
+ * \param keyword      the string to search for
+ * \param caseMatters  If true, case-sensitive search is performed. Otherwise the
+ *                     search is case-insensitive.
+ * \return Returns true, if the keyword is found in haystack.
 */
 bool matchesKeyword(const std::string& haystack, const std::string& keyword, const bool caseMatters);
 
-/*...and another auxiliary function (#2):
-  Writes all references of a base ID to the given ostream.
-
-  parameters:
-      baseID    - baseID of the object
-      refMap    - reference map as produced by ESMReaderFinderReferences
-      basic_out - the output stream to which the references are written
-*/
-void showRefIDs(const uint32_t baseID, const std::map<uint32_t, std::vector<SRTP::ESMReaderFinderReferences::CellRefIDPair> >& refMap, std::basic_ostream<char>& basic_out);
+/** \brief Writes all references of a base ID to the given ostream.
+ *
+ * \param baseID     baseID of the object
+ * \param refMap     reference map as produced by ESMReaderFinderReferences
+ * \param basic_out  the output stream to which the references are written
+ */
+void showRefIDs(const uint32_t baseID, const std::map<uint32_t, std::vector<SRTP::ESMReaderFinderReferences::CellRefIDPair> >& refMap, std::ostream& basic_out);

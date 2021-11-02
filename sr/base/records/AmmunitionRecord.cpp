@@ -41,7 +41,8 @@ AmmunitionRecord::AmmunitionRecord()
   projectileFormID(0),
   DATAflags(0),
   baseDamage(0.0f),
-  value(0)
+  value(0),
+  weight(std::nullopt)
   // end of DATA
 {
 }
@@ -49,7 +50,7 @@ AmmunitionRecord::AmmunitionRecord()
 #ifndef SR_NO_RECORD_EQUALITY
 bool AmmunitionRecord::equals(const AmmunitionRecord& other) const
 {
-  return (equalsBasic(other) && (editorID == other.editorID)
+  return equalsBasic(other) && (editorID == other.editorID)
       && (unknownOBND == other.unknownOBND)
       && (name == other.name)
       && (modelPath == other.modelPath) && (unknownMODT == other.unknownMODT)
@@ -58,7 +59,7 @@ bool AmmunitionRecord::equals(const AmmunitionRecord& other) const
       && (description==other.description)
       && (keywords == other.keywords) && (projectileFormID == other.projectileFormID)
       && (DATAflags == other.DATAflags) && (baseDamage == other.baseDamage)
-      && (value == other.value));
+      && (value == other.value) && (weight == other.weight);
 }
 #endif
 
@@ -92,6 +93,11 @@ uint32_t AmmunitionRecord::getWriteSize() const
   {
     writeSize = writeSize + 4 /* KSIZ */ + 2 /* 2 bytes for length */ + 4 /* fixed size */
         + keywords.size() * (4 /* KSIZ */ + 2 /* 2 bytes for length */ + 4 /* fixed size */);
+  }
+  if (weight.has_value())
+  {
+    // Weight adds four bytes to DATA sub record.
+    writeSize += 4;
   }
   return writeSize;
 }
@@ -182,13 +188,15 @@ bool AmmunitionRecord::saveToStream(std::ostream& output) const
 
   // write DATA
   output.write(reinterpret_cast<const char*>(&cDATA), 4);
-  subLength = 16; // fixed size
+  subLength = weight.has_value() ? 20 : 16;
   output.write(reinterpret_cast<const char*>(&subLength), 2);
   // write DATA's stuff
   output.write(reinterpret_cast<const char*>(&projectileFormID), 4);
   output.write(reinterpret_cast<const char*>(&DATAflags), 4);
   output.write(reinterpret_cast<const char*>(&baseDamage), 4);
   output.write(reinterpret_cast<const char*>(&value), 4);
+  if (weight.has_value())
+    output.write(reinterpret_cast<const char*>(&weight.value()), 4);
 
   return output.good();
 }
@@ -346,10 +354,10 @@ bool AmmunitionRecord::loadFromStream(std::istream& in_File, const bool localize
            // DATA's length
            in_File.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
-           if (subLength != 16)
+           if ((subLength != 16) && (subLength != 20))
            {
-             std::cerr << "Error: sub record DATA of AMMO has invalid length("
-                       << subLength << " bytes). Should be 16 bytes!\n";
+             std::cerr << "Error: sub record DATA of AMMO has invalid length ("
+                       << subLength << " bytes). Should be 16 or 20 bytes!\n";
              return false;
            }
            // read DATA's stuff
@@ -357,7 +365,12 @@ bool AmmunitionRecord::loadFromStream(std::istream& in_File, const bool localize
            in_File.read(reinterpret_cast<char*>(&DATAflags), 4);
            in_File.read(reinterpret_cast<char*>(&baseDamage), 4);
            in_File.read(reinterpret_cast<char*>(&value), 4);
-           bytesRead += 16;
+           if (subLength >= 20)
+           {
+             weight = 0.0f;
+             in_File.read(reinterpret_cast<char*>(&weight.value()), 4);
+           }
+           bytesRead += subLength;
            if (!in_File.good())
            {
              std::cerr << "Error while reading subrecord DATA of AMMO!\n";

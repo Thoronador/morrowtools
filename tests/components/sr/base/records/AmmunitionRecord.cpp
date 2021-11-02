@@ -50,6 +50,7 @@ TEST_CASE("AmmunitionRecord")
     REQUIRE( record.DATAflags == 0 );
     REQUIRE( record.baseDamage == 0 );
     REQUIRE( record.value == 0 );
+    REQUIRE_FALSE( record.weight.has_value() );
   }
 
   SECTION("equals")
@@ -186,6 +187,27 @@ TEST_CASE("AmmunitionRecord")
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
       }
+
+      SECTION("weight mismatch")
+      {
+        a.weight.reset();
+        b.weight = 1.25f;
+
+        REQUIRE_FALSE( a.equals(b) );
+        REQUIRE_FALSE( b.equals(a) );
+
+        a.weight = 1.25f;
+        b.weight.reset();
+
+        REQUIRE_FALSE( a.equals(b) );
+        REQUIRE_FALSE( b.equals(a) );
+
+        a.weight = 2.0f;
+        b.weight = 1.25f;
+
+        REQUIRE_FALSE( a.equals(b) );
+        REQUIRE_FALSE( b.equals(a) );
+      }
     }
   }
 
@@ -263,6 +285,15 @@ TEST_CASE("AmmunitionRecord")
       REQUIRE( record.getWriteSize() == 80 );
     }
 
+    SECTION("size adjusts when weight is present")
+    {
+      record.editorID = "foo";
+      REQUIRE( record.getWriteSize() == 70 );
+
+      record.weight = 0.1f;
+      REQUIRE( record.getWriteSize() == 74 );
+    }
+
     SECTION("deleted record has size zero")
     {
       record.headerFlags = BasicRecord::cDeletedFlag;
@@ -275,6 +306,7 @@ TEST_CASE("AmmunitionRecord")
     uint32_t dummy = 0;
     StringTable dummy_table;
     dummy_table.addString(0x00007DCD, "foo");
+    dummy_table.addString(0x00012470, "bar");
 
     SECTION("default: load record")
     {
@@ -327,6 +359,66 @@ TEST_CASE("AmmunitionRecord")
       REQUIRE( record.DATAflags == 0 );
       REQUIRE( record.baseDamage == 8.0f );
       REQUIRE( record.value == 1 );
+      REQUIRE_FALSE( record.weight.has_value() );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( record.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
+    }
+
+    SECTION("default: load record with 20 byte DATA including weight")
+    {
+      const auto data = "AMMO\x82\0\0\0\0\0\0\0\x8C\xEC\x10\0\x6C\x27\x1E\0\x2C\0\x03\0EDID\x14\0DwarvenSphereBolt02\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0p$\x01\0YNAM\x04\0\xB7\xE7\x03\0ZNAM\x04\0w\xE8\x03\0DESC\x04\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0\xE7\x17\x09\0DATA\x14\0\x36\xB9\x07\0\x06\0\0\0\0\0pA\0\0\0\0\xCD\xCC\xCC="sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read AMMO, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      AmmunitionRecord record;
+      REQUIRE( record.loadFromStream(stream, true, dummy_table) );
+      // Check data.
+      // -- header
+      REQUIRE( record.headerFlags == 0 );
+      REQUIRE( record.headerFormID == 0x0010EC8C );
+      REQUIRE( record.headerRevision == 0x001E276C );
+      REQUIRE( record.headerVersion == 44 );
+      REQUIRE( record.headerUnknown5 == 0x0003 );
+      // -- record data
+      REQUIRE( record.editorID == "DwarvenSphereBolt02" );
+      REQUIRE( record.unknownOBND[0] == 0x00 );
+      REQUIRE( record.unknownOBND[1] == 0x00 );
+      REQUIRE( record.unknownOBND[2] == 0x00 );
+      REQUIRE( record.unknownOBND[3] == 0x00 );
+      REQUIRE( record.unknownOBND[4] == 0x00 );
+      REQUIRE( record.unknownOBND[5] == 0x00 );
+      REQUIRE( record.unknownOBND[6] == 0x00 );
+      REQUIRE( record.unknownOBND[7] == 0x00 );
+      REQUIRE( record.unknownOBND[8] == 0x00 );
+      REQUIRE( record.unknownOBND[9] == 0x00 );
+      REQUIRE( record.unknownOBND[10] == 0x00 );
+      REQUIRE( record.unknownOBND[11] == 0x00 );
+      REQUIRE( record.name.isPresent() );
+      REQUIRE( record.name.getType() == LocalizedString::Type::Index );
+      REQUIRE( record.name.getIndex() == 0x00012470 );
+      REQUIRE( record.modelPath.empty() );
+      REQUIRE_FALSE( record.unknownMODT.isPresent() );
+      REQUIRE( record.pickupSoundFormID == 0x0003E7B7 );
+      REQUIRE( record.putdownSoundFormID == 0x0003E877 );
+      REQUIRE( record.description.getType() == LocalizedString::Type::Index );
+      REQUIRE( record.description.getIndex() == 0 );
+      REQUIRE( record.keywords.size() == 1 );
+      REQUIRE( record.keywords[0] == 0x000917E7 );
+      REQUIRE( record.projectileFormID == 0x0007B936 );
+      REQUIRE( record.DATAflags == 0x00000006 );
+      REQUIRE( record.baseDamage == 15.0f );
+      REQUIRE( record.value == 0 );
+      REQUIRE( record.weight.has_value() );
+      REQUIRE( record.weight.value() == 0.1f );
 
       // Writing should succeed.
       std::ostringstream streamOut;
@@ -813,6 +905,37 @@ TEST_CASE("AmmunitionRecord")
 
       {
         const std::string_view data = "AMMO\xBF\0\0\0\0\0\0\0\x7D\x39\x01\0\x1B\x69\x55\0\x28\0\x0F\0EDID\x0A\0IronArrow\0OBND\x0C\0\xFF\xFF\xC6\xFF\xFE\xFF\x02\0\0\0\x02\0FULL\x04\0\xCD\x7D\0\0MODL\x1B\0Weapons\\Iron\\IronArrow.nif\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x42\x92\x9F\x41\x64\x64\x73\0\x68\xEF\xBA\x75\xB4\x93\x67\x4B\x64\x64\x73\0\x68\xEF\xBA\x75YNAM\x04\0\xB7\xE7\x03\0ZNAM\x04\0\x77\xE8\x03\0DESC\x04\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0\xE7\x17\x09\0DATA\x11\0\x11\xBE\x03\0\0\0\0\0\0\0\0\x41\x01\0\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read AMMO, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        AmmunitionRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+    }
+
+    SECTION("corrupt data: length of DATA is not 20")
+    {
+      {
+        const auto data = "AMMO\x81\0\0\0\0\0\0\0\x8C\xEC\x10\0\x6C\x27\x1E\0\x2C\0\x03\0EDID\x14\0DwarvenSphereBolt02\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0p$\x01\0YNAM\x04\0\xB7\xE7\x03\0ZNAM\x04\0w\xE8\x03\0DESC\x04\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0\xE7\x17\x09\0DATA\x13\0\x36\xB9\x07\0\x06\0\0\0\0\0pA\0\0\0\0\xCD\xCC\xCC="sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read AMMO, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        AmmunitionRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+      }
+
+      {
+        const auto data = "AMMO\x83\0\0\0\0\0\0\0\x8C\xEC\x10\0\x6C\x27\x1E\0\x2C\0\x03\0EDID\x14\0DwarvenSphereBolt02\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0p$\x01\0YNAM\x04\0\xB7\xE7\x03\0ZNAM\x04\0w\xE8\x03\0DESC\x04\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0\xE7\x17\x09\0DATA\x15\0\x36\xB9\x07\0\x06\0\0\0\0\0pA\0\0\0\0\xCD\xCC\xCC=\0"sv;
         std::istringstream stream;
         stream.str(std::string(data));
 

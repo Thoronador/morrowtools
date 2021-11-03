@@ -39,10 +39,10 @@ class ESMReader
     virtual ~ESMReader();
 
     /* skips a record and returns 0 on success, and -1 on error */
-    static int skipRecord(std::ifstream& in_File);
+    static int skipRecord(std::istream& input);
 
     /* skips a group and returns 0 on success, and -1 on error */
-    static int skipGroup(std::ifstream& in_File, const GroupData& g_data);
+    static int skipGroup(std::istream& input, const GroupData& g_data);
 
     /* tries to read an .esm/.esp file and returns the number of relevant
        records that were read. If an error occurred, -1 is returned.
@@ -69,14 +69,14 @@ class ESMReader
        zero is returned.
 
        parameters:
-           in_File    - the input file stream the group shall be read from
+           input      - the input stream the group shall be read from
            withHeader - if set to true, the starting four bytes (GRUP) will be
                         read, too. If set to false, the functions expects the
                         data directly.
            localized  - true, if the data in the stream is localized
            table      - in case of localized data: the string table
     */
-    int processGroup(std::ifstream& in_File, const bool withHeader, const bool localized, const StringTable& table);
+    int processGroup(std::istream& input, const bool withHeader, const bool localized, const StringTable& table);
 
     /* returns true, if the given group may contains some data that the reader
        wants to read. Returns false otherwise.
@@ -129,7 +129,7 @@ class ESMReader
        function needGroup() for details).
 
        parameters:
-           in_File   - the input file stream used to read the group
+           input     - the input stream used to read the group
            g_data    - group's data header
            localized - true, if the data in the stream is localized
            table     - in case of localized data: the string table
@@ -142,7 +142,7 @@ class ESMReader
            So naturally, this function will never return values larger than
            zero.
     */
-    virtual int readGroup(std::ifstream& in_File, const GroupData& g_data, const bool localized, const StringTable& table);
+    virtual int readGroup(std::istream& input, const GroupData& g_data, const bool localized, const StringTable& table);
 
     /* tries to read the next record from a file and returns the number of
        relevant records that were read (usually one). If an error occurred,
@@ -150,7 +150,7 @@ class ESMReader
        zero is returned.
 
        parameters:
-           in_File   - the input file stream the record shall be read from
+           input     - the input stream the record shall be read from
            recName   - name (header) of the next record
            localized - true, if the data in the stream is localized
            table     - in case of localized data: the string table
@@ -160,7 +160,7 @@ class ESMReader
            from ESMReader and set its readNextRecord() function up in a way
            that does read the data records you want to have.
     */
-    virtual int readNextRecord(std::ifstream& in_File, const uint32_t recName, const bool localized, const StringTable& table) = 0;
+    virtual int readNextRecord(std::istream& input, const uint32_t recName, const bool localized, const StringTable& table) = 0;
 
     /* Member variable to hold the current/last TES4 header record that was
        read by the reader.
@@ -170,8 +170,8 @@ class ESMReader
            content is undefined.
     */
     Tes4HeaderRecord currentHead;
-};//class
+}; // class
 
-} //namespace
+} // namespace
 
 #endif // SR_ESMREADER_HPP

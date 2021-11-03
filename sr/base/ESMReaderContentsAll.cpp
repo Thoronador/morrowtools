@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -145,7 +145,7 @@ bool ESMReaderContentsAll::needGroup(const GroupData& g_data) const
   return true;
 }
 
-int ESMReaderContentsAll::readNextRecord(std::ifstream& in_File, const uint32_t recName, const bool localized, const StringTable& table)
+int ESMReaderContentsAll::readNextRecord(std::istream& input, const uint32_t recName, const bool localized, const StringTable& table)
 {
   BasicRecord * recPtr = NULL;
   switch (recName)
@@ -463,18 +463,18 @@ int ESMReaderContentsAll::readNextRecord(std::ifstream& in_File, const uint32_t 
          recPtr = new WorldSpaceRecord;
          break;
     default:
-         //use generic record type for all other / unimplemented types
+         // use generic record type for all other / unimplemented types
          recPtr = new GenericRecord;
          break;
-  }//swi
-  if (recPtr->loadFromStream(in_File, localized, table))
+  }
+  if (recPtr->loadFromStream(input, localized, table))
   {
     contents.m_Groups.back().addRecord(recPtr);
-    return 1; //success
+    return 1; // success
   }
   delete recPtr;
-  recPtr = NULL;
-  return -1; //error
+  recPtr = nullptr;
+  return -1; // error
 }
 
-} //namespace
+} // namespace

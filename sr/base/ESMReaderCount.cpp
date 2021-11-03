@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -32,7 +32,6 @@ ESMReaderCount::ESMReaderCount()
 
 ESMReaderCount::~ESMReaderCount()
 {
-  //empty
 }
 
 void ESMReaderCount::resetStats()
@@ -67,16 +66,15 @@ bool ESMReaderCount::nextGroupStarted(const GroupData& g_data, const bool sub)
 
 bool ESMReaderCount::groupFinished(const GroupData& g_data)
 {
-  //nothing to do here
   return false;
 }
 
-int ESMReaderCount::readNextRecord(std::ifstream& in_File, const uint32_t recName, const bool localized, const StringTable& table)
+int ESMReaderCount::readNextRecord(std::istream& input, const uint32_t recName, const bool localized, const StringTable& table)
 {
   ++RecordCounter[recName];
   ++totalRecords;
-  //we skip it
-  return skipRecord(in_File);
+  // We skip it.
+  return skipRecord(input);
 }
 
 void ESMReaderCount::showStats(const bool withPercentage) const
@@ -137,4 +135,4 @@ void ESMReaderCount::showStats(const bool withPercentage) const
   std::cout << "There are "<<GroupCounter.size()<<" distinct group types.\n";
 }
 
-} //namespace
+} // namespace

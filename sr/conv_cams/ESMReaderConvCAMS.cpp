@@ -43,7 +43,7 @@ bool ESMReaderConvCAMS::needGroup(const GroupData& g_data) const
   return true;
 }
 
-int ESMReaderConvCAMS::readNextRecord(std::ifstream& in_File, const uint32_t recName, const bool localized, const StringTable& table)
+int ESMReaderConvCAMS::readNextRecord(std::istream& input, const uint32_t recName, const bool localized, const StringTable& table)
 {
   BasicRecord * recPtr = nullptr;
   switch (recName)
@@ -62,7 +62,7 @@ int ESMReaderConvCAMS::readNextRecord(std::ifstream& in_File, const uint32_t rec
          static_cast<GenericRecord*>(recPtr)->Header = recName;
          break;
   }
-  if (recPtr->loadFromStream(in_File, localized, table))
+  if (recPtr->loadFromStream(input, localized, table))
   {
     contents.m_Groups.back().addRecord(recPtr);
     return 1; // success

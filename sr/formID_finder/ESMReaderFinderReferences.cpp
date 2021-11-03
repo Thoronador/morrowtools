@@ -92,7 +92,7 @@ bool ESMReaderFinderReferences::groupFinished(const GroupData& g_data)
   return true;
 }
 
-int ESMReaderFinderReferences::readNextRecord(std::ifstream& in_File, const uint32_t recName, const bool localized, const StringTable& table)
+int ESMReaderFinderReferences::readNextRecord(std::istream& input, const uint32_t recName, const bool localized, const StringTable& table)
 {
   SimplifiedReferenceRecord * recPtr;
   switch (recName)
@@ -100,7 +100,7 @@ int ESMReaderFinderReferences::readNextRecord(std::ifstream& in_File, const uint
     case cCELL:
          {
            CellRecord recC;
-           if (!recC.loadFromStream(in_File, localized, table))
+           if (!recC.loadFromStream(input, localized, table))
              return -1;
            if (!reIndex(recC.headerFormID))
              return -1;
@@ -111,7 +111,7 @@ int ESMReaderFinderReferences::readNextRecord(std::ifstream& in_File, const uint
     case cWRLD:
          {
            WorldSpaceRecord recW;
-           if (!recW.loadFromStream(in_File, localized, table))
+           if (!recW.loadFromStream(input, localized, table))
              return -1;
            if (!reIndex(recW.headerFormID))
              return -1;
@@ -124,10 +124,10 @@ int ESMReaderFinderReferences::readNextRecord(std::ifstream& in_File, const uint
          recPtr = new SimplifiedReferenceRecord;
          break;
     default:
-         return skipRecord(in_File);
+         return skipRecord(input);
          break;
   }
-  if (!recPtr->loadFromStream(in_File, localized, table))
+  if (!recPtr->loadFromStream(input, localized, table))
   {
     delete recPtr;
     std::cerr << "ESMReaderFinderReferences::readNextRecord: Error while reading reference record!\n";

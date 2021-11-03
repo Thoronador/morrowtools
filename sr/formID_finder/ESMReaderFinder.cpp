@@ -101,7 +101,7 @@ bool ESMReaderFinder::groupFinished(const GroupData& g_data)
   return true;
 }
 
-int ESMReaderFinder::readNextRecord(std::ifstream& in_File, const uint32_t recName, const bool localized, const StringTable& table)
+int ESMReaderFinder::readNextRecord(std::istream& input, const uint32_t recName, const bool localized, const StringTable& table)
 {
   BasicRecord * recPtr = nullptr;
   switch (recName)
@@ -182,7 +182,7 @@ int ESMReaderFinder::readNextRecord(std::ifstream& in_File, const uint32_t recNa
          return -1;
   }
   // load record
-  if (!recPtr->loadFromStream(in_File, localized, table))
+  if (!recPtr->loadFromStream(input, localized, table))
   {
     delete recPtr;
     return -1;

@@ -54,7 +54,7 @@ int ESMReader::skipGroup(std::istream& input, const GroupData& g_data)
 {
   if (g_data.size() < 24)
   {
-    std::cerr << "ESMReader::skipGroup: Error: group size is below 24 bytes!\n";
+    std::cerr << "ESMReader::skipGroup: Error: Group size is below 24 bytes!\n";
     return -1;
   }
   // skip it
@@ -72,7 +72,7 @@ int ESMReader::readESM(const std::string& FileName, Tes4HeaderRecord& head)
   input.open(FileName, std::ios::in | std::ios::binary);
   if (!input)
   {
-    std::cerr << "Error: could not open file \"" << FileName << "\".\n";
+    std::cerr << "Error: Could not open file \"" << FileName << "\".\n";
     return -1;
   }
 
@@ -161,7 +161,8 @@ bool ESMReader::peekESMHeader(const std::string& FileName, Tes4HeaderRecord& hea
   input.open(FileName, std::ios::in | std::ios::binary);
   if (!input)
   {
-    std::cerr << "ESMReader::peekESMHeader: Error: could not open file \""<<FileName<<"\".\n";
+    std::cerr << "ESMReader::peekESMHeader: Error: Could not open file \""
+              << FileName << "\".\n";
     return false;
   }
 
@@ -169,7 +170,7 @@ bool ESMReader::peekESMHeader(const std::string& FileName, Tes4HeaderRecord& hea
   // TES4
   uint32_t recordName = 0;
   input.read(reinterpret_cast<char*>(&recordName), 4);
-  if (recordName!=cTES4)
+  if (recordName != cTES4)
   {
     std::cerr << "ESMReader::peekESMHeader: Error: File \"" << FileName
               << "\" is not a valid .esp/.esm file. Expected " << IntTo4Char(cTES4)
@@ -180,7 +181,8 @@ bool ESMReader::peekESMHeader(const std::string& FileName, Tes4HeaderRecord& hea
   // now read the actual header
   if (!head.loadFromStream(input, true, StringTable()))
   {
-    std::cerr << "ESMReader::peekESMHeader: Error: Could not read header from \"" << FileName << "\".\n";
+    std::cerr << "ESMReader::peekESMHeader: Error: Could not read header from \""
+              << FileName << "\".\n";
     input.close();
     return false;
   }
@@ -259,15 +261,15 @@ int ESMReader::readGroup(std::istream& input, const GroupData& g_data, const boo
     {
       // read next record
       lastResult = readNextRecord(input, recName, localized, table);
-      if (lastResult > 0)
-      {
-        recordsRead += lastResult;
-      }
     }
     else
     {
       // next group
       lastResult = processGroup(input, false, localized, table);
+    }
+    if (lastResult > 0)
+    {
+      recordsRead += lastResult;
     }
   }
   if (lastResult >= 0)

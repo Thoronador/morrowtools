@@ -176,7 +176,7 @@ bool SpellRecord::loadFromStream(std::istream& in_File, const bool localized, co
   bytesRead += 2;
   if (subLength != 12)
   {
-    std::cerr << "Error: subrecord OBND of SPEL has invalid length ("
+    std::cerr << "Error: Subrecord OBND of SPEL has invalid length ("
               << subLength << " bytes). Should be 12 bytes!\n";
     return false;
   }
@@ -225,7 +225,7 @@ bool SpellRecord::loadFromStream(std::istream& in_File, const bool localized, co
            bytesRead += 6;
            if (menuDisplayObjectFormID == 0)
            {
-             std::cerr << "Error: subrecord MDOB of SPEL has value zero!\n";
+             std::cerr << "Error: Subrecord MDOB of SPEL has value zero!\n";
              return false;
            }
            break;
@@ -240,7 +240,7 @@ bool SpellRecord::loadFromStream(std::istream& in_File, const bool localized, co
            bytesRead += 6;
            if (equipTypeFormID == 0)
            {
-             std::cerr << "Error: subrecord ETYP of SPEL has value zero!\n";
+             std::cerr << "Error: Subrecord ETYP of SPEL has value zero!\n";
              return false;
            }
            break;
@@ -278,7 +278,7 @@ bool SpellRecord::loadFromStream(std::istream& in_File, const bool localized, co
            bytesRead += 2;
            if (subLength != 4)
            {
-             std::cerr << "Error: subrecord EFID of SPEL has invalid length ("
+             std::cerr << "Error: Subrecord EFID of SPEL has invalid length ("
                        << subLength << " bytes). Should be four bytes!\n";
              return false;
            }
@@ -304,7 +304,7 @@ bool SpellRecord::loadFromStream(std::istream& in_File, const bool localized, co
            bytesRead += 2;
            if (subLength != 12)
            {
-             std::cerr << "Error: subrecord EFIT of SPEL has invalid length ("
+             std::cerr << "Error: Subrecord EFIT of SPEL has invalid length ("
                        << subLength << " bytes). Should be 12 bytes!\n";
              return false;
            }
@@ -355,7 +355,7 @@ bool SpellRecord::loadFromStream(std::istream& in_File, const bool localized, co
              return false;
            break;
       default:
-           std::cerr << "Error: unexpected record type \"" << IntTo4Char(subRecName)
+           std::cerr << "Error: Unexpected record type \"" << IntTo4Char(subRecName)
                      << "\" found, but only FULL, MDOB, ETYP, DESC, SPIT, EFID,"
                      << " CTDA or CIS2 are allowed here!\n";
            return false;
@@ -372,7 +372,7 @@ bool SpellRecord::loadFromStream(std::istream& in_File, const bool localized, co
   // check presence
   if ((equipTypeFormID == 0) || !description.isPresent() || !hasReadSPIT)
   {
-    std::cerr << "Error while reading record SPEL: at least one of the "
+    std::cerr << "Error while reading record SPEL: At least one of the "
               << "subrecords ETYP, DESC or SPIT is missing!\n";
     return false;
   }

@@ -85,7 +85,7 @@ bool LocalizedString::loadFromStream(std::istream& in_Stream, const uint32_t sub
   {
     if (subLength != 4)
     {
-      std::cerr << "Error: sub record " << IntTo4Char(subHeader)
+      std::cerr << "Error: Sub record " << IntTo4Char(subHeader)
                 << " has invalid length (" << subLength
                 << " bytes). Should be four bytes.\n";
       return false;
@@ -108,7 +108,7 @@ bool LocalizedString::loadFromStream(std::istream& in_Stream, const uint32_t sub
     }
     if (!table.hasString(m_Index))
     {
-      std::cerr << "LocalizedString::loadFromStream: table has no entry for index " << m_Index << "!\n";
+      std::cerr << "LocalizedString::loadFromStream: Table has no entry for index " << m_Index << "!\n";
       return false;
     }
     m_String = table.getString(m_Index);
@@ -119,7 +119,7 @@ bool LocalizedString::loadFromStream(std::istream& in_Stream, const uint32_t sub
     // unlocalized (plain string)
     if (subLength > 511)
     {
-      std::cerr << "Error: subrecord " << IntTo4Char(subHeader)
+      std::cerr << "Error: Subrecord " << IntTo4Char(subHeader)
                 << " is longer than 511 characters!\n";
       return false;
     }

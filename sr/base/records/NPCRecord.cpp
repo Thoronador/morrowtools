@@ -836,7 +836,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
     }
     if (readSize <= 4)
     {
-      std::cerr << "Error: size of compressed NPC_ record is too small to contain any compressed data!\n";
+      std::cerr << "Error: Size of compressed NPC_ record is too small to contain any compressed data!\n";
       return false;
     }
     // buffer to read compressed data
@@ -1741,7 +1741,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 6;
            if (faceComplexionFormID == 0)
            {
-             std::cerr << "Error_ subrecord FTST of NPC_ is zero!\n";
+             std::cerr << "Error: Subrecord FTST of NPC_ is zero!\n";
              return false;
            }
            break;

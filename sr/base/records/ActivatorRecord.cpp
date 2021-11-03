@@ -469,7 +469,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength != 12)
            {
-             std::cerr << "Error: sub record OBND of ACTI has invalid length ("
+             std::cerr << "Error: Sub record OBND of ACTI has invalid length ("
                        << subLength << " bytes). Should be 12 bytes.\n";
              return false;
            }
@@ -544,7 +544,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength != 8)
            {
-             std::cerr << "Error: sub record DEST of ACTI has invalid length ("
+             std::cerr << "Error: Sub record DEST of ACTI has invalid length ("
                        << subLength << " bytes). Should be 8 bytes.\n";
              return false;
            }
@@ -573,7 +573,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength != 20)
            {
-             std::cerr <<"Error: sub record DSTD of ACTI has invalid length ("
+             std::cerr <<"Error: Sub record DSTD of ACTI has invalid length ("
                        << subLength << " bytes). Should be 20 bytes.\n";
              return false;
            }
@@ -649,7 +649,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength != 0)
            {
-             std::cerr << "Error: sub record DSTF of ACTI has invalid length ("
+             std::cerr << "Error: Sub record DSTF of ACTI has invalid length ("
                        << subLength << " bytes). Should be zero bytes!\n";
              return false;
            }
@@ -671,7 +671,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength != 4)
            {
-             std::cerr << "Error: sub record PNAM of ACTI has invalid length ("
+             std::cerr << "Error: Sub record PNAM of ACTI has invalid length ("
                        << subLength << " bytes). Should be four bytes!\n";
              return false;
            }
@@ -699,7 +699,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 6;
            if (loopingSoundFormID == 0)
            {
-             std::cerr << "Error: subrecord SNAM of ACTI has value zero!\n";
+             std::cerr << "Error: Subrecord SNAM of ACTI has value zero!\n";
              return false;
            }
            break;
@@ -714,7 +714,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 6;
            if (activateSoundFormID == 0)
            {
-             std::cerr << "Error: subrecord VNAM of ACTI has value zero!\n";
+             std::cerr << "Error: Subrecord VNAM of ACTI has value zero!\n";
              return false;
            }
            break;
@@ -729,7 +729,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 6;
            if (waterTypeFormID == 0)
            {
-             std::cerr << "Error: subrecord WNAM of ACTI has value zero!\n";
+             std::cerr << "Error: Subrecord WNAM of ACTI has value zero!\n";
              return false;
            }
            break;
@@ -743,7 +743,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
              return false;
            if (localized && (activateTextOverride.getIndex() == 0))
            {
-             std::cerr << "Error: subrecord RNAM of ACTI has value zero!\n";
+             std::cerr << "Error: Subrecord RNAM of ACTI has value zero!\n";
              return false;
            }
            break;
@@ -758,7 +758,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength != 2)
            {
-             std::cerr << "Error: sub record FNAM of ACTI has invalid length ("
+             std::cerr << "Error: Sub record FNAM of ACTI has invalid length ("
                        << subLength << " bytes). Should be two bytes.\n";
              return false;
            }
@@ -783,7 +783,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 6;
            if (interactionKeywordFormID == 0)
            {
-             std::cerr << "Error: subrecord KNAM of ACTI has value zero!\n";
+             std::cerr << "Error: Subrecord KNAM of ACTI has value zero!\n";
              return false;
            }
            break;

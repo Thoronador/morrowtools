@@ -168,7 +168,7 @@ bool DestructionData::loadFromStream(std::istream& in_File, const uint32_t recor
   bytesRead += 2;
   if (subLength != 8)
   {
-    std::cerr << "Error: subrecord DEST of " << IntTo4Char(recordType)
+    std::cerr << "Error: Subrecord DEST of " << IntTo4Char(recordType)
               << " has invalid length (" << subLength
               << " bytes). Should be eight bytes.\n";
     return false;
@@ -222,7 +222,7 @@ bool DestructionData::loadFromStream(std::istream& in_File, const uint32_t recor
            bytesRead += 2;
            if (subLength > 511)
            {
-             std::cerr << "Error: sub record DMDL of " << IntTo4Char(recordType)
+             std::cerr << "Error: Sub record DMDL of " << IntTo4Char(recordType)
                        << " is longer than 511 characters!\n";
              return false;
            }
@@ -240,7 +240,7 @@ bool DestructionData::loadFromStream(std::istream& in_File, const uint32_t recor
            // check content
            if (tempStage.replacementModel.empty())
            {
-             std::cerr << "Error: subrecord DMDL of " << IntTo4Char(recordType)
+             std::cerr << "Error: Subrecord DMDL of " << IntTo4Char(recordType)
                        << " is empty!\n";
              return false;
            }
@@ -263,7 +263,7 @@ bool DestructionData::loadFromStream(std::istream& in_File, const uint32_t recor
            bytesRead += 2;
            if (subLength != 0)
            {
-             std::cerr << "Error: subrecord DSTF of " << IntTo4Char(recordType)
+             std::cerr << "Error: Subrecord DSTF of " << IntTo4Char(recordType)
                        << " has invalid length (" << subLength
                        << " bytes). Should be zero bytes.\n";
              return false;
@@ -279,7 +279,7 @@ bool DestructionData::loadFromStream(std::istream& in_File, const uint32_t recor
            tempStage.reset();
            break;
       default:
-           std::cerr << "Error: found unexpected subrecord \""
+           std::cerr << "Error: Found unexpected subrecord \""
                      << IntTo4Char(innerRecordName)
                      << "\", but only DSTD, DMDL, DMDT or DSTF are allowed here!\n";
            return false;

@@ -223,7 +223,7 @@ bool ScrollRecord::loadFromStream(std::istream& in_File, const bool localized, c
   bytesRead += 2;
   if (subLength != 12)
   {
-    std::cerr << "Error: subrecord OBND of SCRL has invalid length ("
+    std::cerr << "Error: Subrecord OBND of SCRL has invalid length ("
               << subLength << " bytes). Should be 12 bytes!\n";
     return false;
   }
@@ -344,7 +344,7 @@ bool ScrollRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 2;
            if (subLength != 8)
            {
-             std::cerr << "Error: subrecord DATA of SCRL has invalid length ("
+             std::cerr << "Error: Subrecord DATA of SCRL has invalid length ("
                        << subLength << " bytes). Should be 8 bytes!\n";
              return false;
            }
@@ -384,7 +384,7 @@ bool ScrollRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 2;
            if (subLength != 4)
            {
-             std::cerr << "Error: subrecord EFID of SCRL has invalid length ("
+             std::cerr << "Error: Subrecord EFID of SCRL has invalid length ("
                        << subLength << " bytes). Should be four bytes!\n";
              return false;
            }
@@ -410,7 +410,7 @@ bool ScrollRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 2;
            if (subLength != 12)
            {
-             std::cerr << "Error: subrecord EFIT of SCRL has invalid length ("
+             std::cerr << "Error: Subrecord EFIT of SCRL has invalid length ("
                        << subLength << " bytes). Should be 12 bytes!\n";
              return false;
            }
@@ -461,7 +461,7 @@ bool ScrollRecord::loadFromStream(std::istream& in_File, const bool localized, c
              return false;
            break;
       default:
-           std::cerr << "Error: unexpected record type \"" << IntTo4Char(subRecName)
+           std::cerr << "Error: Unexpected record type \"" << IntTo4Char(subRecName)
                      << "\" found, but only FULL, MDOB, ETYP, DESC, SPIT, EFID,"
                      << " CTDA or CIS2 are allowed here!\n";
            return false;

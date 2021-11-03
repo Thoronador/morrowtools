@@ -38,7 +38,7 @@ bool CTDAData::loadFromStream(std::istream& in_Stream, uint32_t& bytesRead)
   bytesRead += 2;
   if (subLength != 32)
   {
-    std::cerr << "Error: sub record CTDA has invalid length (" << subLength
+    std::cerr << "Error: Sub record CTDA has invalid length (" << subLength
               << " bytes). Should be 32 bytes.\n";
     return false;
   }

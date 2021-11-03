@@ -560,7 +560,7 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 2;
            if (subLength != 12)
            {
-             std::cerr << "Error: sub record OBND of WEAP has invalid length ("
+             std::cerr << "Error: Sub record OBND of WEAP has invalid length ("
                        << subLength << " bytes). Should be 12 bytes.\n";
              return false;
            }
@@ -645,7 +645,7 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 2;
            if (subLength != 2)
            {
-             std::cerr << "Error: sub record EAMT of WEAP has invalid length ("
+             std::cerr << "Error: Sub record EAMT of WEAP has invalid length ("
                        << subLength << " bytes). Should be two bytes.\n";
              return false;
            }
@@ -877,7 +877,7 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 2;
            if (subLength != 10)
            {
-             std::cerr << "Error: sub record DATA of WEAP has invalid length ("
+             std::cerr << "Error: Sub record DATA of WEAP has invalid length ("
                        << subLength << " bytes). Should be 10 bytes.\n";
              return false;
            }
@@ -906,7 +906,7 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 2;
            if (subLength != 100)
            {
-             std::cerr << "Error: sub record DNAM of WEAP has invalid length ("
+             std::cerr << "Error: Sub record DNAM of WEAP has invalid length ("
                        << subLength << " bytes). Should be 100 bytes.\n";
              return false;
            }
@@ -928,7 +928,7 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 6 + unknownCRDT.size();
            if ((unknownCRDT.size() != 16) && (unknownCRDT.size() != 24))
            {
-             std::cerr << "Error: sub record CRDT of WEAP has invalid length ("
+             std::cerr << "Error: Sub record CRDT of WEAP has invalid length ("
                        << unknownCRDT.size() << " bytes). Should be either 16 "
                        << "or 24 bytes.\n";
              return false;
@@ -952,7 +952,7 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 6;
            break;
       default:
-           std::cerr << "Error: unexpected record type \"" << IntTo4Char(subRecName)
+           std::cerr << "Error: Unexpected record type \"" << IntTo4Char(subRecName)
                      << "\" found, but only VMAD, OBND, FULL, MODL, MODS, EITM,"
                      << " EAMT, ETYP, BIDS, BAMT, KSIZ, DESC, NNAM, INAM, WNAM,"
                      << " XNAM, NAM7, TNAM, UNAM, NAM9, NAM8, SNAM, DATA or CNAM are allowed!\n";

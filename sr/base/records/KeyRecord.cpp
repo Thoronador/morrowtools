@@ -245,7 +245,7 @@ bool KeyRecord::loadFromStream(std::istream& in_File, const bool localized, cons
   bytesRead += 2;
   if (subLength != 12)
   {
-    std::cerr << "Error: sub record OBND of KEYM has invalid length ("
+    std::cerr << "Error: Sub record OBND of KEYM has invalid length ("
               << subLength << " bytes). Should be 12 bytes!\n";
     return false;
   }
@@ -290,7 +290,7 @@ bool KeyRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            // check content
            if (modelPath.empty())
            {
-             std::cerr << "Error: subrecord MODL of KEYM is empty!\n";
+             std::cerr << "Error: Subrecord MODL of KEYM is empty!\n";
              return false;
            }
            break;
@@ -321,7 +321,7 @@ bool KeyRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            // check value
            if (pickupSoundFormID == 0)
            {
-             std::cerr << "Error: subrecord YNAM of KEYM has value zero!\n";
+             std::cerr << "Error: Subrecord YNAM of KEYM has value zero!\n";
              return false;
            }
            break;
@@ -338,7 +338,7 @@ bool KeyRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            // check value
            if (putdownSoundFormID == 0)
            {
-             std::cerr << "Error: subrecord ZNAM of KEYM has value zero!\n";
+             std::cerr << "Error: Subrecord ZNAM of KEYM has value zero!\n";
              return false;
            }
            break;
@@ -357,7 +357,7 @@ bool KeyRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            bytesRead += 2;
            if (subLength != 8)
            {
-             std::cerr << "Error: subrecord DATA of KEYM has invalid length ("
+             std::cerr << "Error: Subrecord DATA of KEYM has invalid length ("
                        << subLength << " bytes). Should be 8 bytes!\n";
              return false;
            }
@@ -373,7 +373,7 @@ bool KeyRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            hasReadDATA = true;
            break;
       default:
-           std::cerr << "Error: unexpected record type \"" << IntTo4Char(subRecName)
+           std::cerr << "Error: Unexpected record type \"" << IntTo4Char(subRecName)
                      << "\" found, but only MODL, MODT, YNAM, ZNAM, KSIZ or DATA "
                      << "are allowed here!\n";
            return false;

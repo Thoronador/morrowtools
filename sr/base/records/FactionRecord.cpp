@@ -450,7 +450,7 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
            bytesRead += 2;
            if (subLength != 12)
            {
-             std::cerr << "Error: subrecord XNAM of FACT has invalid length ("
+             std::cerr << "Error: Subrecord XNAM of FACT has invalid length ("
                        << subLength << " bytes). Should be 12 bytes!\n";
              return false;
            }
@@ -597,7 +597,7 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
            // length check
            if ((subLength != 20) && (subLength != 16)  && (subLength != 12))
            {
-             std::cerr << "Error: subrecord CRVA of FACT has invalid length ("
+             std::cerr << "Error: Subrecord CRVA of FACT has invalid length ("
                        << subLength << " bytes). Should be 12 or 16 or 20 bytes!\n";
              return false;
            }
@@ -658,7 +658,7 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
            bytesRead += 6;
            if (vendorListFormID == 0)
            {
-             std::cerr << "Error: subrecord VEND of FACT has value zero!\n";
+             std::cerr << "Error: Subrecord VEND of FACT has value zero!\n";
              return false;
            }
            break;
@@ -673,7 +673,7 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
            bytesRead += 6;
            if (vendorContainterFormID == 0)
            {
-             std::cerr << "Error: subrecord VENC of FACT has value zero!\n";
+             std::cerr << "Error: Subrecord VENC of FACT has value zero!\n";
              return false;
            }
            break;
@@ -688,7 +688,7 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
            bytesRead += 2;
            if (subLength != 12)
            {
-             std::cerr << "Error: subrecord VENV of FACT has invalid length ("
+             std::cerr << "Error: Subrecord VENV of FACT has invalid length ("
                        << subLength << " bytes). Should be 12 bytes!\n";
              return false;
            }
@@ -719,7 +719,7 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
            // check length of PLVD
            if (unknownPLVD.size() != 12)
            {
-             std::cerr << "Error: subrecord PLVD of FACT has invalid length ("
+             std::cerr << "Error: Subrecord PLVD of FACT has invalid length ("
                        << unknownPLVD.size() << " bytes). Should be 12 bytes!\n";
              return false;
            }
@@ -738,7 +738,7 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
 
            if (cond_count == 0)
            {
-             std::cerr << "Error: subrecord CITC of FACT has value zero!\n";
+             std::cerr << "Error: Subrecord CITC of FACT has value zero!\n";
              return false;
            }
            break;
@@ -788,14 +788,14 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
              return false;
            if (tempCTDA_CIS2.unknownCISx.empty())
            {
-             std::cerr << "Error: subrecord CIS2 of FACT is empty!\n";
+             std::cerr << "Error: Subrecord CIS2 of FACT is empty!\n";
              return false;
            }
            conditions.push_back(tempCTDA_CIS2);
            hasUnpushedCTDA_CIS2 = false;
            break;
       default:
-           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: Unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only XNAM, FULL, DATA, JAIL, WAIT, STOL,"
                      << " PLCN, CRGR, JOUT, CRVA, RNAM, MNAM, FNAM, VEND, VENC,"
                      << " VENV, PLVD, CITC, CTDA or CIS2 are allowed here!\n";
@@ -818,7 +818,7 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
   // size check for conditions
   if (conditions.size() != cond_count)
   {
-    std::cerr << "Error while reading FACT: expected " << cond_count
+    std::cerr << "Error while reading FACT: Expected " << cond_count
               << " condition record(s), but only " << conditions.size()
               << " record(s) was/were found!\n";
     return false;
@@ -827,7 +827,7 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
   // presence checks
   if (!hasReadDATA)
   {
-    std::cerr << "Error: at least one required subrecord of FACT is missing!\n";
+    std::cerr << "Error: At least one required subrecord of FACT is missing!\n";
     return false;
   }
 

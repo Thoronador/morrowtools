@@ -285,7 +285,7 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
   bytesRead += 2;
   if (subLength != 12)
   {
-    std::cerr << "Error: sub record OBND of BOOK has invalid length ("
+    std::cerr << "Error: Sub record OBND of BOOK has invalid length ("
               << subLength << " bytes). Should be 12 bytes.\n";
     return false;
   }
@@ -337,7 +337,7 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
            // Check content, path must not be empty.
            if (modelPath.empty())
            {
-             std::cerr <<"Error: sub record MODL of BOOK is empty!\n";
+             std::cerr << "Error: Sub record MODL of BOOK is empty!\n";
              return false;
            }
 
@@ -366,7 +366,7 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
            bytesRead += 2;
            if (subLength != 16)
            {
-             std::cerr << "Error: sub record DATA of BOOK has invalid length ("
+             std::cerr << "Error: Sub record DATA of BOOK has invalid length ("
                        << subLength << " bytes). Should be 16 bytes.\n";
              return false;
            }
@@ -395,7 +395,7 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
            bytesRead += 6;
            if (inventoryArtFormID == 0)
            {
-             std::cerr << "Error: subrecord INAM of BOOK is zero!\n";
+             std::cerr << "Error: Subrecord INAM of BOOK is zero!\n";
              return false;
            }
            break;
@@ -423,7 +423,7 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
            bytesRead += 6;
            if (pickupSoundFormID == 0)
            {
-             std::cerr << "Error: subrecord YNAM of BOOK is zero!\n";
+             std::cerr << "Error: Subrecord YNAM of BOOK is zero!\n";
              return false;
            }
            break;
@@ -439,12 +439,12 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
            bytesRead += 6;
            if (putdownSoundFormID == 0)
            {
-             std::cerr << "Error: subrecord ZNAM of BOOK is zero!\n";
+             std::cerr << "Error: Subrecord ZNAM of BOOK is zero!\n";
              return false;
            }
            break;
       default:
-           std::cerr << "Error: found unexpected subrecord \""
+           std::cerr << "Error: Found unexpected subrecord \""
                      << IntTo4Char(subRecName)
                      << "\", but only MODL, KSIZ, DATA, INAM, CNAM, YNAM or ZNAM are allowed here!\n";
            return false;

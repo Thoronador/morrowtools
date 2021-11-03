@@ -275,7 +275,7 @@ bool AlchemyPotionRecord::loadFromStream(std::istream& in_File, const bool local
   bytesRead += 2;
   if (subLength != 12)
   {
-    std::cerr << "Error: sub record OBND of ALCH has invalid length ("
+    std::cerr << "Error: Sub record OBND of ALCH has invalid length ("
               << subLength << " bytes). Should be 12 bytes!\n";
     return false;
   }
@@ -312,7 +312,7 @@ bool AlchemyPotionRecord::loadFromStream(std::istream& in_File, const bool local
       case cFULL:
            if (name.isPresent())
            {
-             std::cerr << "Error: record ALCH seems to have more than one FULL subrecord!\n";
+             std::cerr << "Error: Record ALCH seems to have more than one FULL subrecord!\n";
              return false;
            }
            if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
@@ -427,7 +427,7 @@ bool AlchemyPotionRecord::loadFromStream(std::istream& in_File, const bool local
            bytesRead += 2;
            if (subLength != 4)
            {
-             std::cerr << "Error: subrecord DATA of ALCH has invalid length ("
+             std::cerr << "Error: Subrecord DATA of ALCH has invalid length ("
                        << subLength << " bytes). Should be four bytes!\n";
              return false;
            }
@@ -452,7 +452,7 @@ bool AlchemyPotionRecord::loadFromStream(std::istream& in_File, const bool local
            bytesRead += 2;
            if (subLength != 20)
            {
-             std::cerr << "Error: subrecord ENIT of ALCH has invalid length ("
+             std::cerr << "Error: Subrecord ENIT of ALCH has invalid length ("
                        << subLength << " bytes). Should be 20 bytes!\n";
              return false;
            }
@@ -485,7 +485,7 @@ bool AlchemyPotionRecord::loadFromStream(std::istream& in_File, const bool local
            bytesRead += 2;
            if (subLength != 4)
            {
-             std::cerr << "Error: subrecord EFID of ALCH has invalid length ("
+             std::cerr << "Error: Subrecord EFID of ALCH has invalid length ("
                        << subLength << " bytes). Should be four bytes!\n";
              return false;
            }
@@ -511,7 +511,7 @@ bool AlchemyPotionRecord::loadFromStream(std::istream& in_File, const bool local
            bytesRead += 2;
            if (subLength != 12)
            {
-             std::cerr << "Error: subrecord EFIT of ALCH has invalid length ("
+             std::cerr << "Error: Subrecord EFIT of ALCH has invalid length ("
                        << subLength << " bytes). Should be 12 bytes!\n";
              return false;
            }
@@ -543,7 +543,7 @@ bool AlchemyPotionRecord::loadFromStream(std::istream& in_File, const bool local
            tempEffect.unknownCTDA_CIS2s.push_back(CTDA_CIS2_compound(tempCTDA, ""));
            break;
       default:
-           std::cerr << "Error: unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: Unexpected record type \""<<IntTo4Char(subRecName)
                      << "\" found, but only KSIZ, MODL, MODT, MODS, YNAM, ZNAM,"
                      << " ETYP, DATA, ENIT, EFID or CTDA are allowed here!\n";
            return false;

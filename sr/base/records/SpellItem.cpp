@@ -111,7 +111,7 @@ bool SpellItem::loadFromStream(std::istream& input, const uint32_t recordName, u
   bytesRead += 2;
   if (subLength != 36)
   {
-    std::cerr << "Error: subrecord SPIT of " << IntTo4Char(recordName)
+    std::cerr << "Error: Subrecord SPIT of " << IntTo4Char(recordName)
               << " has invalid length (" << subLength
               << " bytes). Should be 36 bytes!\n";
     return false;

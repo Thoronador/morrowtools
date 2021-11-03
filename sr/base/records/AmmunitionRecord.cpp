@@ -231,7 +231,7 @@ bool AmmunitionRecord::loadFromStream(std::istream& in_File, const bool localize
   bytesRead += 2;
   if (subLength != 12)
   {
-    std::cerr << "Error: sub record OBND of AMMO has invalid length("
+    std::cerr << "Error: Sub record OBND of AMMO has invalid length("
               << subLength << " bytes). Should be 12 bytes!\n";
     return false;
   }
@@ -281,7 +281,7 @@ bool AmmunitionRecord::loadFromStream(std::istream& in_File, const bool localize
              return false;
            if (modelPath.empty())
            {
-             std::cerr << "Error: subrecord MODL of AMMO is empty!\n";
+             std::cerr << "Error: Subrecord MODL of AMMO is empty!\n";
              return false;
            }
            break;
@@ -311,7 +311,7 @@ bool AmmunitionRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 6;
            if (pickupSoundFormID == 0)
            {
-             std::cerr << "Error: subrecord YNAM of AMMO is zero!\n";
+             std::cerr << "Error: Subrecord YNAM of AMMO is zero!\n";
              return false;
            }
            break;
@@ -327,7 +327,7 @@ bool AmmunitionRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 6;
            if (putdownSoundFormID == 0)
            {
-             std::cerr << "Error: subrecord ZNAM of AMMO is zero!\n";
+             std::cerr << "Error: Subrecord ZNAM of AMMO is zero!\n";
              return false;
            }
            break;
@@ -356,7 +356,7 @@ bool AmmunitionRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if ((subLength != 16) && (subLength != 20))
            {
-             std::cerr << "Error: sub record DATA of AMMO has invalid length ("
+             std::cerr << "Error: Sub record DATA of AMMO has invalid length ("
                        << subLength << " bytes). Should be 16 or 20 bytes!\n";
              return false;
            }
@@ -379,7 +379,7 @@ bool AmmunitionRecord::loadFromStream(std::istream& in_File, const bool localize
            hasReadDATA = true;
            break;
       default:
-           std::cerr << "Error: unexpected record type \"" << IntTo4Char(subRecName)
+           std::cerr << "Error: Unexpected record type \"" << IntTo4Char(subRecName)
                      << "\" found, but only MODL, MODT, YNAM, ZNAM, DESC, KSIZ or DATA are allowed!\n";
            return false;
            break;

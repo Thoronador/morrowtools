@@ -576,7 +576,7 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if (subLength != 4)
            {
-             std::cerr << "Error: sub record WCTR of WRLD has invalid length ("
+             std::cerr << "Error: Sub record WCTR of WRLD has invalid length ("
                        << subLength << " bytes). Should be four bytes.\n";
              return false;
            }
@@ -602,7 +602,7 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 6;
            if (interiorLightingFormID == 0)
            {
-             std::cerr << "Error: subrecord LTMP of WRLD has value zero!\n";
+             std::cerr << "Error: Subrecord LTMP of WRLD has value zero!\n";
              return false;
            }
            break;
@@ -617,7 +617,7 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 6;
            if (encounterZoneFormID == 0)
            {
-             std::cerr << "Error: subrecord XEZN of WRLD has value zero!\n";
+             std::cerr << "Error: Subrecord XEZN of WRLD has value zero!\n";
              return false;
            }
            break;
@@ -632,7 +632,7 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 6;
            if (climateFormID == 0)
            {
-             std::cerr << "Error: subrecord CNAM of WRLD has value zero!\n";
+             std::cerr << "Error: Subrecord CNAM of WRLD has value zero!\n";
              return false;
            }
            break;
@@ -647,7 +647,7 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 6;
            if (waterFormID == 0)
            {
-             std::cerr << "Error: subrecord NAM2 of WRLD has value zero!\n";
+             std::cerr << "Error: Subrecord NAM2 of WRLD has value zero!\n";
              return false;
            }
            break;
@@ -662,7 +662,7 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 6;
            if (LODWaterTypeFormID == 0)
            {
-             std::cerr << "Error: subrecord NAM3 of WRLD has value zero!\n";
+             std::cerr << "Error: Subrecord NAM3 of WRLD has value zero!\n";
              return false;
            }
            break;
@@ -677,7 +677,7 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if (subLength != 4)
            {
-             std::cerr << "Error: sub record NAM4 of WRLD has invalid length ("
+             std::cerr << "Error: Sub record NAM4 of WRLD has invalid length ("
                        << subLength << " bytes). Should be four bytes.\n";
              return false;
            }
@@ -702,7 +702,7 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if (subLength != 8)
            {
-             std::cerr << "Error: sub record DNAM of WRLD has invalid length ("
+             std::cerr << "Error: Sub record DNAM of WRLD has invalid length ("
                        << subLength << " bytes). Should be eight bytes.\n";
              return false;
            }
@@ -726,7 +726,7 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
              return false;
            if (modelPath.empty())
            {
-             std::cerr << "Error: subrecord MODL of WRLD is empty!\n";
+             std::cerr << "Error: Subrecord MODL of WRLD is empty!\n";
              return false;
            }
            break;
@@ -767,7 +767,7 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 6;
            if (locationFormID == 0)
            {
-             std::cerr << "Error: subrecord XLCN of WRLD has value zero!\n";
+             std::cerr << "Error: Subrecord XLCN of WRLD has value zero!\n";
              return false;
            }
            break;
@@ -782,7 +782,7 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 6;
            if (parentWorldSpaceFormID == 0)
            {
-             std::cerr << "Error: subrecord WNAM of WRLD has value zero!\n";
+             std::cerr << "Error: Subrecord WNAM of WRLD has value zero!\n";
              return false;
            }
            break;
@@ -797,7 +797,7 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if (subLength != 2)
            {
-             std::cerr << "Error: sub record PNAM of WRLD has invalid length ("
+             std::cerr << "Error: Sub record PNAM of WRLD has invalid length ("
                        << subLength << " bytes). Should be two bytes.\n";
              return false;
            }
@@ -825,7 +825,7 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
            // ONAM's length
            if (unknownONAM.size() != 16)
            {
-             std::cerr << "Error: sub record ONAM of WRLD has invalid length ("
+             std::cerr << "Error: Sub record ONAM of WRLD has invalid length ("
                        << unknownONAM.size() << " bytes). Should be 16 bytes.\n";
              return false;
            }
@@ -842,7 +842,7 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if (subLength != 4)
            {
-             std::cerr << "Error: sub record NAMA of WRLD has invalid length ("
+             std::cerr << "Error: Sub record NAMA of WRLD has invalid length ("
                        << subLength << " bytes). Should be four bytes.\n";
              return false;
            }
@@ -867,7 +867,7 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if (subLength != 1)
            {
-             std::cerr << "Error: sub record DATA of WRLD has invalid length ("
+             std::cerr << "Error: Sub record DATA of WRLD has invalid length ("
                        << subLength << " bytes). Should be one byte.\n";
              return false;
            }
@@ -892,7 +892,7 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if (subLength != 8)
            {
-             std::cerr << "Error: sub record NAM0 of WRLD has invalid length ("
+             std::cerr << "Error: Sub record NAM0 of WRLD has invalid length ("
                        << subLength << " bytes). Should be eight bytes.\n";
              return false;
            }
@@ -917,7 +917,7 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if (subLength != 8)
            {
-             std::cerr << "Error: sub record NAM9 of WRLD has invalid length ("
+             std::cerr << "Error: Sub record NAM9 of WRLD has invalid length ("
                        << subLength << " bytes). Should be eight bytes.\n";
              return false;
            }
@@ -942,7 +942,7 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 6;
            if (musicFormID == 0)
            {
-             std::cerr << "Error: subrecord ZNAM of WRLD has value zero!\n";
+             std::cerr << "Error: Subrecord ZNAM of WRLD has value zero!\n";
              return false;
            }
            break;
@@ -957,7 +957,7 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
            // check content
            if (HD_LOD_DiffuseTexture.empty())
            {
-             std::cerr << "Error: subrecord TNAM of WRLD is empty!\n";
+             std::cerr << "Error: Subrecord TNAM of WRLD is empty!\n";
              return false;
            }
            break;
@@ -972,7 +972,7 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
            // check content
            if (HD_LOD_NormalTexture.empty())
            {
-             std::cerr << "Error: subrecord UNAM of WRLD is empty!\n";
+             std::cerr << "Error: Subrecord UNAM of WRLD is empty!\n";
              return false;
            }
            break;
@@ -987,7 +987,7 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
            // check content
            if (unknownXWEM.empty())
            {
-             std::cerr << "Error: subrecord XWEM of WRLD is empty!\n";
+             std::cerr << "Error: Subrecord XWEM of WRLD is empty!\n";
              return false;
            }
            break;
@@ -1003,7 +1003,7 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 6;
            if (0 == sizeXXXX)
            {
-             std::cerr << "Error: subrecord XXXX of WRLD has value zero!\n";
+             std::cerr << "Error: Subrecord XXXX of WRLD has value zero!\n";
              return false;
            }
            break;
@@ -1036,7 +1036,7 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead = bytesRead + 2 + unknownOFST.size();
            break;
       default:
-           std::cerr << "Error: unexpected record type \"" << IntTo4Char(subRecName)
+           std::cerr << "Error: Unexpected record type \"" << IntTo4Char(subRecName)
                      << "\" found, but only RNAM, MHDT, FULL, WCTR, LTMP, XEZN,"
                      << " CNAM, NAM2, NAM3, NAM4, DNAM, MODL, MODT, MNAM, XLCN,"
                      << " WNAM, PNAM, ONAM, NAMA, DATA, NAM0, NAM9, ZNAM, TNAM,"
@@ -1049,7 +1049,7 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
   // presence checks
   if (!hasReadNAMA || !unknownOFST.isPresent())
   {
-    std::cerr << "Error: while reading WRLD record: at least one required subrecord is missing!\n";
+    std::cerr << "Error while reading WRLD record: At least one required subrecord is missing!\n";
     std::cerr << "NAMA: " << hasReadNAMA << "    OFST: " << unknownOFST.isPresent() << "\n";
     return false;
   }

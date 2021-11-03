@@ -387,7 +387,7 @@ bool FurnitureRecord::loadFromStream(std::istream& in_File, const bool localized
            // check content
            if (modelPath.empty())
            {
-             std::cerr << "Error: subrecord MODL of FURN is empty!\n";
+             std::cerr << "Error: Subrecord MODL of FURN is empty!\n";
              return false;
            }
            break;
@@ -447,7 +447,7 @@ bool FurnitureRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength != 2)
            {
-             std::cerr << "Error: subrecord FNAM of FURN has invalid length ("
+             std::cerr << "Error: Subrecord FNAM of FURN has invalid length ("
                        << subLength << " bytes). Should be two bytes!\n";
              return false;
            }
@@ -473,7 +473,7 @@ bool FurnitureRecord::loadFromStream(std::istream& in_File, const bool localized
            // check content
            if (interactionKeywordFormID == 0)
            {
-             std::cerr << "Error: subrecord KNAM of FURN is zero!\n";
+             std::cerr << "Error: Subrecord KNAM of FURN is zero!\n";
              return false;
            }
            break;
@@ -499,7 +499,7 @@ bool FurnitureRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength != 2)
            {
-             std::cerr << "Error: subrecord WBDT of FURN has invalid length ("
+             std::cerr << "Error: Subrecord WBDT of FURN has invalid length ("
                        << subLength << " bytes). Should be two bytes!\n";
              return false;
            }
@@ -549,12 +549,12 @@ bool FurnitureRecord::loadFromStream(std::istream& in_File, const bool localized
            // check content
            if (markerModelPath.empty())
            {
-             std::cerr << "Error: subrecord XMRK of FURN is empty!\n";
+             std::cerr << "Error: Subrecord XMRK of FURN is empty!\n";
              return false;
            }
            break;
       default:
-           std::cerr << "Error: found unexpected subrecord \"" << IntTo4Char(subRecName)
+           std::cerr << "Error: Found unexpected subrecord \"" << IntTo4Char(subRecName)
                      << "\", but only VMAD, OBND, FULL, MODL, MODT, MODS, DEST,"
                      << " KSIZ, PNAM, FNAM, KNAM, MNAM, WBDT, ENAM, NAM0, FNMK,"
                      << " FNPR or XMRK are allowed here!\n";

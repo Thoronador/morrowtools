@@ -123,7 +123,7 @@ bool ApparatusRecord::loadFromStream(std::istream& in_File, const bool localized
   uint16_t subLength = 0;
   uint32_t bytesRead = 0;
 
-  //read editor ID (EDID)
+  // read editor ID (EDID)
   char buffer[512];
   if (!loadString512FromStream(in_File, editorID, buffer, cEDID, true, bytesRead))
     return false;
@@ -141,7 +141,7 @@ bool ApparatusRecord::loadFromStream(std::istream& in_File, const bool localized
   bytesRead += 2;
   if (subLength != 12)
   {
-    std::cerr << "Error: sub record OBND of APPA has invalid length ("
+    std::cerr << "Error: Sub record OBND of APPA has invalid length ("
               << subLength << " bytes). Should be 12 bytes!\n";
     return false;
   }
@@ -189,7 +189,7 @@ bool ApparatusRecord::loadFromStream(std::istream& in_File, const bool localized
   bytesRead += 2;
   if (subLength != 8)
   {
-    std::cerr << "Error: sub record DATA of APPA has invalid length ("
+    std::cerr << "Error: Sub record DATA of APPA has invalid length ("
               << subLength << " bytes). Should be 8 bytes!\n";
     return false;
   }

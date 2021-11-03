@@ -40,14 +40,14 @@ bool getRegistryStringValueHKLM(std::string& theString, const std::string& subKe
   #else
   HKEY resultingHKEY;
   LONG res = RegOpenKeyExA(HKEY_LOCAL_MACHINE, subKey.c_str(), 0, KEY_READ, &resultingHKEY);
-  if (res==ERROR_FILE_NOT_FOUND)
+  if (res == ERROR_FILE_NOT_FOUND)
   {
-    std::cerr << "Error: Registry key \"HKLM\\"<<subKey<<"\" was not found!\n";
+    std::cerr << "Error: Registry key \"HKLM\\" << subKey << "\" was not found!\n";
     return false;
   }
-  if (res!=ERROR_SUCCESS)
+  if (res != ERROR_SUCCESS)
   {
-    std::cerr << "Error: Could not open registry key \"HKLM\\"<<subKey<<"\"!\n";
+    std::cerr << "Error: Could not open registry key \"HKLM\\" << subKey << "\"!\n";
     return false;
   }
 
@@ -56,7 +56,7 @@ bool getRegistryStringValueHKLM(std::string& theString, const std::string& subKe
   unsigned char * buffer = new unsigned char[1024];
   memset(buffer, 0, 1024);
   res = RegQueryValueExA(resultingHKEY, valueName.c_str(), NULL, &valueType, buffer, &valueSize);
-  if (res==ERROR_MORE_DATA)
+  if (res == ERROR_MORE_DATA)
   {
     //buffer is too small, allocate the required size
     delete[] buffer;
@@ -65,20 +65,20 @@ bool getRegistryStringValueHKLM(std::string& theString, const std::string& subKe
     //... and do it again!
     res = RegQueryValueExA(resultingHKEY, valueName.c_str(), NULL, &valueType, buffer, &valueSize);
   }//if
-  if (res==ERROR_FILE_NOT_FOUND)
+  if (res == ERROR_FILE_NOT_FOUND)
   {
-    std::cerr << "Error: Registry value \""<<valueName<<"\" was not found in HKLM!\n";
+    std::cerr << "Error: Registry value \"" << valueName << "\" was not found in HKLM!\n";
     RegCloseKey(resultingHKEY);
     delete[] buffer;
-    buffer = NULL;
+    buffer = nullptr;
     return false;
   }
   theString = std::string((char*) buffer);
   RegCloseKey(resultingHKEY);
   delete[] buffer;
-  buffer = NULL;
+  buffer = nullptr;
   return true;
   #endif
-}//func
+}
 
-} //namespace
+} // namespace

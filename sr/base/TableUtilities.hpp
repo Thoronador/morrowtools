@@ -58,12 +58,21 @@ int getAssociatedTableFiles(const std::string& fileName, std::vector<std::string
 
 /** \brief Loads all associated string tables for an ESM / ESP file.
  *
- * \param esmFileName   path of the master / plugin file
+ * \param esmFileName  path of the master / plugin file
  * \param table        the table to load the data into
  * \return Returns true in case of success.
  *         Returns false in case of failure.
  */
 bool loadStringTables(const std::string& esmFileName, StringTable& table);
+
+/** \brief Loads all associated string tables for an ESM / ESP file from the BSA.
+ *
+ * \param esmFileName  path of the master / plugin file
+ * \param table        the table to load the data into
+ * \return Returns true in case of success.
+ *         Returns false in case of failure.
+ */
+bool loadStringTablesFromBSA(const std::string& esmFileName, StringTable& table);
 
 } // namespace
 

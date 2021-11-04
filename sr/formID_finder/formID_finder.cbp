@@ -38,6 +38,7 @@
 		</Compiler>
 		<Linker>
 			<Add library="z" />
+			<Add library="lz4" />
 		</Linker>
 		<Unit filename="../../base/BufferStream.hpp" />
 		<Unit filename="../../base/CompressionFunctions.cpp" />
@@ -48,8 +49,12 @@
 		<Unit filename="../../base/FileFunctions.hpp" />
 		<Unit filename="../../base/RegistryFunctions.cpp" />
 		<Unit filename="../../base/RegistryFunctions.hpp" />
+		<Unit filename="../../base/SlashFunctions.cpp" />
+		<Unit filename="../../base/SlashFunctions.hpp" />
 		<Unit filename="../../base/UtilityFunctions.cpp" />
 		<Unit filename="../../base/UtilityFunctions.hpp" />
+		<Unit filename="../../base/lz4Compression.cpp" />
+		<Unit filename="../../base/lz4Compression.hpp" />
 		<Unit filename="../../mw/base/HelperIO.cpp" />
 		<Unit filename="../../mw/base/HelperIO.hpp" />
 		<Unit filename="../../mw/base/ReturnCodes.hpp" />
@@ -94,6 +99,17 @@
 		<Unit filename="../base/Weapons.hpp" />
 		<Unit filename="../base/WordsOfPower.hpp" />
 		<Unit filename="../base/WorldSpaces.hpp" />
+		<Unit filename="../base/bsa/BSA.cpp" />
+		<Unit filename="../base/bsa/BSA.hpp" />
+		<Unit filename="../base/bsa/BSAFileRecord.cpp" />
+		<Unit filename="../base/bsa/BSAFileRecord.hpp" />
+		<Unit filename="../base/bsa/BSAFolderBlock.cpp" />
+		<Unit filename="../base/bsa/BSAFolderBlock.hpp" />
+		<Unit filename="../base/bsa/BSAFolderRecord.cpp" />
+		<Unit filename="../base/bsa/BSAFolderRecord.hpp" />
+		<Unit filename="../base/bsa/BSAHash.hpp" />
+		<Unit filename="../base/bsa/BSAHeader.cpp" />
+		<Unit filename="../base/bsa/BSAHeader.hpp" />
 		<Unit filename="../base/records/ActivatorRecord.cpp" />
 		<Unit filename="../base/records/ActivatorRecord.hpp" />
 		<Unit filename="../base/records/AlchemyPotionRecord.cpp" />

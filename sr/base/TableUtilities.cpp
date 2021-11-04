@@ -19,11 +19,13 @@
 */
 
 #include "TableUtilities.hpp"
+#include <filesystem>
 #include <iostream>
 #include <set>
 #include "../../base/DirectoryFunctions.hpp" // for path delimiter
 #include "../../base/FileFunctions.hpp"      // for getDirectoryFileList()
 #include "../../base/UtilityFunctions.hpp"   // for lowerCase()
+#include "bsa/BSA.hpp"
 #include "ReturnCodes.hpp"
 
 namespace SRTP
@@ -114,13 +116,49 @@ bool loadStringTables(const std::string& esmFileName, StringTable& table)
   const int rc = getAssociatedTableFiles(esmFileName, files);
   if (rc != 0)
   {
-    return false;
+    return loadStringTablesFromBSA(esmFileName, table);
   }
   for (const auto& fileName: files)
   {
     if (!table.readTable(fileName, StringTable::sdUnknown))
     {
       std::cerr << "Error while reading string tables for " << esmFileName << "!\n";
+      return false;
+    }
+  }
+
+  return true;
+}
+
+bool loadStringTablesFromBSA(const std::string& esmFileName, StringTable& table)
+{
+  std::string part_path, part_name, part_ext;
+  splitPathFileExtension(esmFileName, MWTP::pathDelimiter, part_path, part_name, part_ext);
+  const std::string bsaFileName = part_path + "Skyrim - Interface.bsa";
+
+  BSA bsa;
+  if (!bsa.open(bsaFileName) || !bsa.grabAllStructureData())
+    return false;
+  part_name = lowerCase(part_name);
+
+  const auto tempPath = std::filesystem::temp_directory_path();
+  const std::string language = "english";
+
+  for (const auto& extension: { ".strings", ".dlstrings", ".ilstrings" })
+  {
+    const auto fn = part_name + "_" + language + extension;
+    const auto destination = tempPath / fn;
+    if (!bsa.extractFile("strings\\" + fn, destination))
+      return false;
+    const bool success = table.readTable(destination, StringTable::sdUnknown);
+    // Delete extracted file.
+    std::error_code error;
+    std::filesystem::remove(destination, error);
+    if (error)
+      std::cerr << "Error: Failed to delete temporary file " << destination
+                << ": " << error.message() << "\n";
+    if (!success)
+    {
       return false;
     }
   }

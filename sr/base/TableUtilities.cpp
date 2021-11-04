@@ -145,7 +145,7 @@ bool loadStringTablesFromBSA(const std::string& esmFileName, StringTable& table)
   for (const auto& extension: { ".strings", ".dlstrings", ".ilstrings" })
   {
     const auto fn = part_name + "_" + language + extension;
-    const auto destination = tempPath / fn;
+    const auto destination = (tempPath / fn).string();
     if (!bsa.extractFile("strings\\" + fn, destination))
       return false;
     const bool success = table.readTable(destination, StringTable::sdUnknown);

@@ -22,6 +22,7 @@
 #define SR_AMMUNITIONRECORD_HPP
 
 #include <array>
+#include <optional>
 #include <string>
 #include <vector>
 #include "BasicRecord.hpp"
@@ -96,6 +97,7 @@ struct AmmunitionRecord: public BasicRecord
     uint32_t DATAflags;
     float baseDamage;
     uint32_t value;
+    std::optional<float> weight;
     // end of subrecord DATA
 }; // struct
 

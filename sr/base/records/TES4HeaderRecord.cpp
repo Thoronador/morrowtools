@@ -224,7 +224,7 @@ bool Tes4HeaderRecord::loadFromStream(std::istream& in_File, const bool localize
   BytesRead += 2;
   if (SubLength != 12)
   {
-    std::cerr << "Error: sub record HEDR of TES4 has invalid length ("
+    std::cerr << "Error: Sub record HEDR of TES4 has invalid length ("
               << SubLength << " bytes). Should be 12 bytes.\n";
     return false;
   }
@@ -295,7 +295,7 @@ bool Tes4HeaderRecord::loadFromStream(std::istream& in_File, const bool localize
            BytesRead += 2;
            if (SubLength != 8)
            {
-             std::cerr << "Error: sub record DATA of TES4 has invalid length ("
+             std::cerr << "Error: Sub record DATA of TES4 has invalid length ("
                        << SubLength <<" bytes). Should be 8 bytes.\n";
              return false;
            }
@@ -320,7 +320,7 @@ bool Tes4HeaderRecord::loadFromStream(std::istream& in_File, const bool localize
            BytesRead += 2;
            if ((SubLength <= 0) || ((SubLength % 4) != 0))
            {
-             std::cerr << "Error: subrecord ONAM of TES4 has invalid length ("
+             std::cerr << "Error: Subrecord ONAM of TES4 has invalid length ("
                        << SubLength << " bytes). Should be an integral multiple"
                        << " of four bytes and larger than zero.\n";
              return false;
@@ -363,7 +363,7 @@ bool Tes4HeaderRecord::loadFromStream(std::istream& in_File, const bool localize
            BytesRead += 6;
            break;
       default:
-           std::cerr << "Error: found unexpected subrecord \"" << IntTo4Char(SubRecName)
+           std::cerr << "Error: Found unexpected subrecord \"" << IntTo4Char(SubRecName)
                      << "\", but only SNAM, MAST, DATA, ONAM, INTV or INCC are allowed here!\n";
            return false;
            break;

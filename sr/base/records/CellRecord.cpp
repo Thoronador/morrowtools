@@ -477,7 +477,7 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
     }
     if (readSize <= 4)
     {
-      std::cerr << "Error: size of compressed CELL record is too small to contain any compressed data!\n";
+      std::cerr << "Error: Size of compressed CELL record is too small to contain any compressed data!\n";
       return false;
     }
     // buffer to read compressed data
@@ -951,7 +951,7 @@ bool CellRecord::loadFromStream(std::istream& in_File, const bool localized, con
            }
            break;
       default:
-           std::cerr << "Error: found unexpected subrecord \"" << IntTo4Char(subRecName)
+           std::cerr << "Error: Found unexpected subrecord \"" << IntTo4Char(subRecName)
                      << "\", but only EDID, FULL, DATA, TVDT, MHDT, XCLC, XCLL,"
                      << " LTMP, LNAM, XCLW, XCLR, XNAM, XLCN, XWCN, XWCS, XWCU,"
                      << " XCIM, XEZN, XCWT, XCMO, XOWN, XILL, XCCM, XWEM or XCAS are allowed here!\n";

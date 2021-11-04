@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -36,7 +36,6 @@ class ESMReaderCount: public ESMReader
     /* constructor */
     ESMReaderCount();
 
-    /* destructor */
     virtual ~ESMReaderCount();
 
     /* the map that counts the records. Key is the record name, value is the
@@ -77,7 +76,7 @@ class ESMReaderCount: public ESMReader
                             percentage of each record type, measured on the
                             total number of records
     */
-    void showStats(const bool withPercentage=false) const;
+    void showStats(const bool withPercentage = false) const;
 
   protected:
     /* returns true, if the given group may contains some data that the reader
@@ -89,7 +88,7 @@ class ESMReaderCount: public ESMReader
        remarks:
            Returns true for all groups.
     */
-    virtual bool needGroup(const GroupData& g_data) const;
+    virtual bool needGroup(const GroupData& g_data) const override;
 
     /* This function's sole purpose is to "notify" the reader that a new group
        was encountered and give the classes derived from ESMReader the
@@ -103,7 +102,7 @@ class ESMReaderCount: public ESMReader
            sub    - if set to true, the new group is a sub-group of another
                     group
     */
-    virtual bool nextGroupStarted(const GroupData& g_data, const bool sub);
+    virtual bool nextGroupStarted(const GroupData& g_data, const bool sub) override;
 
     /* This function's sole purpose is to "notify" the reader that a started
        group has been read (or skipped) completely and give the classes derived
@@ -118,7 +117,7 @@ class ESMReaderCount: public ESMReader
        parameters:
            g_data - the group header data
     */
-    virtual bool groupFinished(const GroupData& g_data);
+    virtual bool groupFinished(const GroupData& g_data) override;
 
     /* tries to read the next record from a file and returns the number of
        relevant records that were read (usually one). If an error occurred,
@@ -126,14 +125,14 @@ class ESMReaderCount: public ESMReader
        zero is returned.
 
        parameters:
-           in_File - the input file stream the record shall be read from
+           input   - the input stream the record shall be read from
            recName - name (header) of the next record
            localized - true, if the data in the stream is localized
            table     - in case of localized data: the string table
     */
-    virtual int readNextRecord(std::ifstream& in_File, const uint32_t recName, const bool localized, const StringTable& table);
-};//class
+    virtual int readNextRecord(std::istream& input, const uint32_t recName, const bool localized, const StringTable& table) override;
+}; // class
 
-} //namespace
+} // namespace
 
 #endif // SR_ESMREADERCOUNT_HPP

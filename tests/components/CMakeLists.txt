@@ -17,10 +17,12 @@ set(component_tests_sources
     ../../sr/base/DependencySolver.cpp
     ../../sr/base/ESMFileContents.cpp
     ../../sr/base/ESMReader.cpp
+    ../../sr/base/ESMReaderSingleType.hpp
     ../../sr/base/FormIDFunctions.cpp
     ../../sr/base/Group.cpp
     ../../sr/base/MapBasedRecordManager.hpp
     ../../sr/base/StringTable.cpp
+    ../../sr/base/TableUtilities.cpp
     ../../sr/base/bsa/BSA.cpp
     ../../sr/base/bsa/BSAFileRecord.cpp
     ../../sr/base/bsa/BSAFolderBlock.cpp
@@ -101,9 +103,12 @@ set(component_tests_sources
     mw/base/HelperIO.cpp
     sr/base/DependencyElement.cpp
     sr/base/ESMFileContents.cpp
+    sr/base/ESMReader.cpp
     sr/base/FormIDFunctions.cpp
     sr/base/MapBasedRecordManager.cpp
     sr/base/StringTable.cpp
+    sr/base/TableUtilities.cpp
+    sr/base/TestFactionsReader.cpp
     sr/base/bsa/BSA.cpp
     sr/base/bsa/BSAFileRecord.cpp
     sr/base/bsa/BSAFolderBlock.cpp

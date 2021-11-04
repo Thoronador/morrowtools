@@ -41,17 +41,17 @@ bool ESMReaderOneRecordType::groupFinished(const GroupData& g_data)
   return true;
 }
 
-int ESMReaderOneRecordType::readNextRecord(std::ifstream& in_File, const uint32_t recName, const bool localized, const StringTable& table)
+int ESMReaderOneRecordType::readNextRecord(std::istream& input, const uint32_t recName, const bool localized, const StringTable& table)
 {
   if (recName == cCELL)
   {
     CellRecord record;
-    if (!record.loadFromStream(in_File, localized, table))
+    if (!record.loadFromStream(input, localized, table))
       return -1;
     Cells::get().addRecord(record);
     return 1;
   }
-  return skipRecord(in_File);
+  return skipRecord(input);
 }
 
 } // namespace

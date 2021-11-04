@@ -4,9 +4,12 @@ cmake_minimum_required (VERSION 3.8)
 project(race_resize)
 
 set(race_resize_sources
+    ../../base/CompressionFunctions.cpp
     ../../base/DirectoryFunctions.cpp
     ../../base/FileFunctions.cpp
+    ../../base/lz4Compression.cpp
     ../../base/RegistryFunctions.cpp
+    ../../base/SlashFunctions.cpp
     ../../base/UtilityFunctions.cpp
     ../../mw/base/HelperIO.cpp
     ../base/ESMFileContents.cpp
@@ -16,6 +19,12 @@ set(race_resize_sources
     ../base/Group.cpp
     ../base/StringTable.cpp
     ../base/StringTableCompound.cpp
+    ../base/TableUtilities.cpp
+    ../base/bsa/BSA.cpp
+    ../base/bsa/BSAFileRecord.cpp
+    ../base/bsa/BSAFolderBlock.cpp
+    ../base/bsa/BSAFolderRecord.cpp
+    ../base/bsa/BSAHeader.cpp
     ../base/records/BasicRecord.cpp
     ../base/records/BinarySubRecord.cpp
     ../base/records/GroupData.cpp
@@ -43,6 +52,49 @@ if (ENABLE_LTO)
 endif()
 
 add_executable(race_resize ${race_resize_sources})
+
+if (MINGW AND CMAKE_HOST_UNIX)
+  # If compiler is some kind of MinGW, but the CMake host is Unix, then this is
+  # a cross-compiling attempt. To get the library paths more easily, we just set
+  # them directly, because CMake has troubles finding them.
+  message(STATUS "Cross-compiling from Linux for Windows ...")
+  try_compile(BUILDS_FOR_WIN64
+              ${CMAKE_CURRENT_SOURCE_DIR}/win64-test
+              ${CMAKE_CURRENT_SOURCE_DIR}/../../win64-compile-test
+              formID_finder-win64-test)
+  if (BUILDS_FOR_WIN64)
+    message(STATUS "Cross-compiling for 64-bit Windows ...")
+    include_directories( /usr/x86_64-w64-mingw32/include/ )
+    link_directories( /usr/x86_64-w64-mingw32/lib )
+  else ()
+    message(STATUS "Cross-compiling for 32-bit Windows ...")
+    include_directories( /usr/i686-w64-mingw32/include/ )
+    link_directories( /usr/i686-w64-mingw32/lib )
+  endif ()
+  target_link_libraries (race_resize z)
+else()
+  # use default method to find zlib
+  find_package (ZLIB)
+  if (ZLIB_FOUND)
+    include_directories(${ZLIB_INCLUDE_DIRS})
+    target_link_libraries (race_resize ${ZLIB_LIBRARIES})
+  else ()
+    message ( FATAL_ERROR "zlib was not found!" )
+  endif (ZLIB_FOUND)
+endif()
+
+# lz4 integration is non-trivial on Windows, so only use it on Linux.
+if (NOT MINGW)
+  set(LZ4_DIR "../../cmake/" )
+
+  find_package (LZ4)
+  if (LZ4_FOUND)
+    include_directories(${LZ4_INCLUDE_DIRS})
+    target_link_libraries (race_resize ${LZ4_LIBRARIES})
+  else ()
+    message ( FATAL_ERROR "liblz4 was not found!" )
+  endif (LZ4_FOUND)
+endif ()
 
 # GNU GCC before 9.1.0 needs to link to libstdc++fs explicitly.
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "9.1.0")

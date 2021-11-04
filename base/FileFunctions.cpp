@@ -52,7 +52,7 @@ bool setFileModificationTime(const std::string& FileName, const time_t new_mtime
     fileTimes.actime = buffer.st_atime;
     fileTimes.modtime = new_mtime;
     return (utime(FileName.c_str(), &fileTimes) == 0);
-  } // if
+  }
   // An error occurred, so return false.
   return false;
 }
@@ -66,7 +66,7 @@ bool getFileSizeAndModificationTime(const std::string& FileName, int64_t& FileSi
     FileSize = buffer.st_size;
     FileTime = buffer.st_mtime;
     return true;
-  } // if
+  }
   // An error occurred, so we don't have any proper values for that file.
   // Set values to -1 and return false in this case to indicate an error.
   FileSize = -1;
@@ -115,27 +115,26 @@ FileEntry::FileEntry()
 : fileName(""), isDirectory(false)
 { }
 
-std::vector<FileEntry> getDirectoryFileList(const std::string& Directory)
+std::optional<std::vector<FileEntry> > getDirectoryFileList(const std::string& Directory)
 {
   namespace fs = std::filesystem;
-
-  std::vector<FileEntry> result;
-  FileEntry one;
 
   std::error_code error;
   fs::directory_iterator iter(Directory, error);
   if (error)
   {
-    std::cerr << "getDirectoryFileList: ERROR: unable to open directory "
-              << "\"" << Directory << "\". Returning empty list.\n";
-    return result;
+    // Returning empty optional to indicate error.
+    return std::nullopt;
   }
+
+  std::vector<FileEntry> result;
+  FileEntry one;
   for (const auto& entry: iter)
   {
     one.fileName = entry.path().filename().string();
     const auto status = fs::status(entry.path());
     one.isDirectory = fs::is_directory(status);
-    // check for socket, pipes, block device and char device, which we don't want
+    // Check for socket, pipe, block device and char device, which we don't want.
     const auto type = status.type();
     if (type != fs::file_type::socket && type != fs::file_type::fifo && type != fs::file_type::block
         && type != fs::file_type::character)
@@ -159,21 +158,21 @@ void splitPathFileExtension(const std::string fileName, const char pathSeperator
 
   // split path from file and ext.
   const std::string::size_type sepPos = fileName.rfind(pathSeperator);
-  if (sepPos==std::string::npos)
+  if (sepPos == std::string::npos)
   {
     path = "";
     name = fileName;
   }
   else
   {
-    path = fileName.substr(0, sepPos+1);
-    name = fileName.substr(sepPos+1);
+    path = fileName.substr(0, sepPos + 1);
+    name = fileName.substr(sepPos + 1);
   }
   // => now path has the path (including separator), and name has the file including extension
 
   // split extension from name
   const std::string::size_type dotPos = name.rfind('.');
-  if (dotPos==std::string::npos)
+  if (dotPos == std::string::npos)
   {
     extension = "";
     return;

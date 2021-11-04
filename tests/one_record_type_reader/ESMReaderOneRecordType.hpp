@@ -43,7 +43,7 @@ class ESMReaderOneRecordType: public ESMReader
        remarks:
            Returns true for all weapon groups, false for any other group.
     */
-    virtual bool needGroup(const GroupData& g_data) const;
+    virtual bool needGroup(const GroupData& g_data) const override;
 
     /* This function's sole purpose is to "notify" the reader that a new group
        was encountered and give the classes derived from ESMReader the
@@ -57,7 +57,7 @@ class ESMReaderOneRecordType: public ESMReader
            sub    - if set to true, the new group is a sub-group of another
                     group
     */
-    virtual bool nextGroupStarted(const GroupData& g_data, const bool sub);
+    virtual bool nextGroupStarted(const GroupData& g_data, const bool sub) override;
 
     /* This function's sole purpose is to "notify" the reader that a started
        group has been read (or skipped) completely and give the classes derived
@@ -72,7 +72,7 @@ class ESMReaderOneRecordType: public ESMReader
        parameters:
            g_data - the group header data
     */
-    virtual bool groupFinished(const GroupData& g_data);
+    virtual bool groupFinished(const GroupData& g_data) override;
 
     /* tries to read the next record from a file and returns the number of
        relevant records that were read (usually one). If an error occurred,
@@ -80,12 +80,12 @@ class ESMReaderOneRecordType: public ESMReader
        zero is returned.
 
        parameters:
-           in_File   - the input file stream the record shall be read from
+           input     - the input stream the record shall be read from
            recName   - name (header) of the next record
            localized - whether the data in the stream is localized or not
            table     - the associated string table
     */
-    virtual int readNextRecord(std::ifstream& in_File, const uint32_t recName, const bool localized, const StringTable& table);
+    virtual int readNextRecord(std::istream& input, const uint32_t recName, const bool localized, const StringTable& table) override;
 }; // class
 
 } // namespace

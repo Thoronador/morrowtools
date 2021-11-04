@@ -30,8 +30,6 @@ namespace SRTP
 
 /** This descendant of the ESMReader class tries to read all reference records
     from the given .esm/.esp file, that are relevant to the form ID finder.
-
-    Still not complete yet!
 */
 class ESMReaderFinderReferences: public ESMReaderReIndexMod
 {
@@ -62,7 +60,7 @@ class ESMReaderFinderReferences: public ESMReaderReIndexMod
        remarks:
            Returns true for all weapon groups, false for any other group.
     */
-    virtual bool needGroup(const GroupData& g_data) const;
+    virtual bool needGroup(const GroupData& g_data) const override;
 
     /* This function's sole purpose is to "notify" the reader that a new group
        was encountered and give the classes derived from ESMReader the
@@ -76,7 +74,7 @@ class ESMReaderFinderReferences: public ESMReaderReIndexMod
            sub    - if set to true, the new group is a sub-group of another
                     group
     */
-    virtual bool nextGroupStarted(const GroupData& g_data, const bool sub);
+    virtual bool nextGroupStarted(const GroupData& g_data, const bool sub) override;
 
     /* This function's sole purpose is to "notify" the reader that a started
        group has been read (or skipped) completely and give the classes derived
@@ -91,7 +89,7 @@ class ESMReaderFinderReferences: public ESMReaderReIndexMod
        parameters:
            g_data - the group header data
     */
-    virtual bool groupFinished(const GroupData& g_data);
+    virtual bool groupFinished(const GroupData& g_data) override;
 
     /* tries to read the next record from a file and returns the number of
        relevant records that were read (usually one). If an error occurred,
@@ -99,12 +97,12 @@ class ESMReaderFinderReferences: public ESMReaderReIndexMod
        zero is returned.
 
        parameters:
-           in_File   - the input file stream the record shall be read from
+           input     - the input stream the record shall be read from
            recName   - name (header) of the next record
            localized - true, if the data in the stream is localized
            table     - in case of localized data: the string table
     */
-    virtual int readNextRecord(std::ifstream& in_File, const uint32_t recName, const bool localized, const StringTable& table);
+    virtual int readNextRecord(std::istream& input, const uint32_t recName, const bool localized, const StringTable& table) override;
 
    // cell form ID stack
    std::vector<uint32_t> m_CellStack;

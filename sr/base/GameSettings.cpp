@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2014  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2014, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -28,12 +28,10 @@ namespace SRTP
 GameSettings::GameSettings()
 : m_GameSettings(std::map<std::string, GMSTRecord>())
 {
-  //empty
 }
 
 GameSettings::~GameSettings()
 {
-  //empty
 }
 
 GameSettings& GameSettings::get()
@@ -52,7 +50,7 @@ void GameSettings::addGameSetting(const GMSTRecord& record)
 
 bool GameSettings::hasGameSetting(const std::string& ID) const
 {
-  return (m_GameSettings.find(ID)!=m_GameSettings.end());
+  return m_GameSettings.find(ID) != m_GameSettings.end();
 }
 
 unsigned int GameSettings::getNumberOfGameSettings() const
@@ -63,7 +61,7 @@ unsigned int GameSettings::getNumberOfGameSettings() const
 const GMSTRecord& GameSettings::getGameSetting(const std::string& ID) const
 {
   std::map<std::string, GMSTRecord>::const_iterator iter = m_GameSettings.find(ID);
-  if (iter!=m_GameSettings.end())
+  if (iter != m_GameSettings.end())
   {
     return iter->second;
   }
@@ -82,21 +80,21 @@ GameSettingListIterator GameSettings::end() const
 }
 
 #ifndef SR_UNSAVEABLE_RECORDS
-bool GameSettings::saveAllToStream(std::ofstream& output) const
+bool GameSettings::saveAllToStream(std::ostream& output) const
 {
   if (!output.good())
   {
-    std::cerr << "GameSettings::saveAllToStream: Error: bad stream.\n";
+    std::cerr << "GameSettings::saveAllToStream: Error: Bad stream.\n";
     return false;
   }
   GameSettingListIterator iter = m_GameSettings.begin();
   const GameSettingListIterator end_iter = m_GameSettings.end();
-  while (iter!=end_iter)
+  while (iter != end_iter)
   {
     if (!iter->second.saveToStream(output))
     {
       std::cerr << "GameSettings::saveAllToStream: Error while writing record for \""
-                << iter->first <<"\".\n";
+                << iter->first << "\".\n";
       return false;
     }
     ++iter;
@@ -110,28 +108,28 @@ void GameSettings::clearAll()
   m_GameSettings.clear();
 }
 
-int GameSettings::readNextRecord(std::ifstream& in_File, const bool localized, const StringTable& table)
+int GameSettings::readNextRecord(std::istream& input, const bool localized, const StringTable& table)
 {
   GMSTRecord temp;
-  if(!temp.loadFromStream(in_File, localized, table))
+  if(!temp.loadFromStream(input, localized, table))
   {
     std::cerr << "GameSettings::readNextRecord: Error while reading GMST record.\n";
     return -1;
   }
 
   #if !defined(SR_NO_SINGLETON_EQUALITY_CHECK) && !defined(SR_NO_RECORD_EQUALITY)
-  //add it to the list, if not present with same data
+  // add it to the list, if not present with same data
   if (hasGameSetting(temp.getSettingName()))
   {
     if (getGameSetting(temp.getSettingName()).equals(temp))
     {
-      //same record with equal data is already present, return zero
+      // same record with equal data is already present, return zero
       return 0;
     }
-  }//if game setting present
+  }// if game setting present
   #endif
   addGameSetting(temp);
   return 1;
-} //readNextRecord
+}
 
-} //namespace
+} // namespace

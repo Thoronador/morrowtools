@@ -29,6 +29,7 @@
 #include <sys/un.h>
 #include <unistd.h>
 #endif
+#include "../../base/FileFunctions.hpp"
 #include "../../base/UtilityFunctions.hpp"
 #include "../base/Activators.hpp"
 #include "../base/AlchemyPotions.hpp"
@@ -39,6 +40,7 @@
 #include "../base/Cells.hpp"
 #include "../base/Containers.hpp"
 #include "../base/DependencySolver.hpp"
+#include "../base/Edition.hpp"
 #include "../base/Factions.hpp"
 #include "../base/Floras.hpp"
 #include "../base/FormIDFunctions.hpp"
@@ -49,6 +51,7 @@
 #include "../base/NPCs.hpp"
 #include "../base/PathFunctions.hpp"
 #include "../base/Perks.hpp"
+#include "../base/ReturnCodes.hpp"
 #include "../base/Quests.hpp"
 #include "../base/Scrolls.hpp"
 #include "../base/Shouts.hpp"
@@ -101,7 +104,7 @@ void showHelp()
             << "options:\n"
             << "  --help           - displays this help message and quits\n"
             << "  -?               - same as --help\n"
-            << "  --version        - displays the version of the programme and quits\n"
+            << "  --version        - displays the version of the program and quits\n"
             << "  -v               - same as --version\n"
             << "  -d DIRECTORY     - set path to the Data Files directory of Skyrim to\n"
             << "                     DIRECTORY\n"
@@ -116,8 +119,12 @@ void showHelp()
             << "  --faction-ranks  - shows the ranks of matching factions, too.\n"
             << "  --ranks          - same as --faction-ranks\n"
             << "  --ref-id         - try to find reference IDs, too. With this parameter the\n"
-            << "                     programme will need a significantly longer amount of time\n"
-            << "                     to complete a search.\n";
+            << "                     program will need a significantly longer amount of time\n"
+            << "                     to complete a search.\n"
+            << "  --skyrim-se      - assume that Skyrim Special Edition is installed and use\n"
+            << "                     that installation.\n"
+            << "  --oldrim         - assume that the old Skyrim of 2011 is installed and use\n"
+            << "                     that installation.\n";
 }
 
 int main(int argc, char **argv)
@@ -136,6 +143,7 @@ int main(int argc, char **argv)
   std::string sendParam2nd = "";
   bool withReferences = false;
   bool showFiles = false;
+  std::optional<SRTP::Edition> edition = std::nullopt;
 
   if ((argc > 1) && (argv != nullptr))
   {
@@ -200,7 +208,7 @@ int main(int argc, char **argv)
           // set more than once?
           if (!searchKeyword.empty())
           {
-            std::cerr << "Error: search keyword was already set!\n";
+            std::cerr << "Error: Search keyword was already set!\n";
             return SRTP::rcInvalidParameter;
           }
           // enough parameters?
@@ -222,18 +230,18 @@ int main(int argc, char **argv)
           // set more than once?
           if (caseSensitive)
           {
-            std::cerr << "Error: parameter \"" << param << "\" was specified twice!\n";
+            std::cerr << "Error: Parameter \"" << param << "\" was specified twice!\n";
             return SRTP::rcInvalidParameter;
           }
           caseSensitive = true;
-          std::cout << "Case-sensitive search modus enabled.\n";
+          std::cout << "Case-sensitive search mode enabled.\n";
         } // case sensitive
         else if (param == "--all-quest-info")
         {
           // set more than once?
           if (allQuestInfo)
           {
-            std::cerr << "Error: parameter \"" << param << "\" was specified twice!\n";
+            std::cerr << "Error: Parameter \"" << param << "\" was specified twice!\n";
             return SRTP::rcInvalidParameter;
           }
           allQuestInfo = true;
@@ -244,7 +252,7 @@ int main(int argc, char **argv)
           // set more than once?
           if (listFactionRanks)
           {
-            std::cerr << "Error: parameter \"" << param << "\" was specified twice!\n";
+            std::cerr << "Error: Parameter \"" << param << "\" was specified twice!\n";
             return SRTP::rcInvalidParameter;
           }
           listFactionRanks = true;
@@ -255,7 +263,7 @@ int main(int argc, char **argv)
           // set more than once?
           if (sendData)
           {
-            std::cerr << "Error: parameter " << param << " was already specified!\n";
+            std::cerr << "Error: Parameter " << param << " was already specified!\n";
             return SRTP::rcInvalidParameter;
           }
           // enough parameters?
@@ -275,13 +283,35 @@ int main(int argc, char **argv)
             return SRTP::rcInvalidParameter;
           }
         } // send data
+        else if ((param == "--special-edition") || (param == "--skyrim-se"))
+        {
+          // set more than once?
+          if (edition.has_value())
+          {
+            std::cerr << "Error: Skyrim edition was specified twice!\n";
+            return SRTP::rcInvalidParameter;
+          }
+          edition = SRTP::Edition::SpecialEdition;
+          std::cout << "Info: Handling Skyrim as Skyrim Special Edition.\n";
+        } // edition: Skyrim SE
+        else if ((param == "--original-edition") || (param == "--oldrim"))
+        {
+          // set more than once?
+          if (edition.has_value())
+          {
+            std::cerr << "Error: Skyrim edition was specified twice!\n";
+            return SRTP::rcInvalidParameter;
+          }
+          edition = SRTP::Edition::Skyrim2011;
+          std::cout << "Info: Handling Skyrim as Skyrim of 2011.\n";
+        } // edition: Skyrim (original)
         else if ((param == "--ref-id") || (param == "--ref-ids") || (param == "--ref")
                   || (param == "--refs") || (param == "--references"))
         {
           // set more than once?
           if (withReferences)
           {
-            std::cerr << "Error: parameter \"" << param << "\" was specified twice!\n";
+            std::cerr << "Error: Parameter \"" << param << "\" was specified twice!\n";
             return SRTP::rcInvalidParameter;
           }
           withReferences = true;
@@ -292,7 +322,7 @@ int main(int argc, char **argv)
           // set more than once?
           if (showFiles)
           {
-            std::cerr << "Error: parameter " << param << " was already specified!\n";
+            std::cerr << "Error: Parameter " << param << " was already specified!\n";
             return SRTP::rcInvalidParameter;
           }
           showFiles = true;
@@ -328,7 +358,7 @@ int main(int argc, char **argv)
   }
 
   // Has the user specified a data directory?
-  SRTP::getDataDir(dataDir);
+  SRTP::getDataDir(dataDir, edition);
 
   // keyword given?
   if (searchKeyword.empty())

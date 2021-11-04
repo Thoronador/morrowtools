@@ -657,7 +657,7 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
            bytesRead += 2;
            if (subLength > 511)
            {
-             std::cerr << "Error: sub record CIS2 of QUST is longer than 511 characters!\n";
+             std::cerr << "Error: Sub record CIS2 of QUST is longer than 511 characters!\n";
              return false;
            }
            // read CIS2's stuff
@@ -689,7 +689,7 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
            {
              if (tempQSDT.unknownCTDA_CIS2s.empty())
              {
-               std::cerr << "Error while reading record of type QUST: encountered"
+               std::cerr << "Error while reading record of type QUST: Encountered"
                          << " CIS2 subrecord without previous CTDA subrecord.\n";
                return false;
              }
@@ -705,13 +705,13 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
              // normal record
              if (indexPartStarted)
              {
-               std::cerr << "Error while reading record of type QUST: encountered"
+               std::cerr << "Error while reading record of type QUST: Encountered"
                          << " CIS2 subrecord in index part!\n";
                return false;
              }
              if (unknownCTDA_CIS2s.empty())
              {
-               std::cerr << "Error while reading record of type QUST: encountered"
+               std::cerr << "Error while reading record of type QUST: Encountered"
                          << " CIS2 subrecord without previous CTDA subrecord.\n";
                return false;
              }
@@ -1208,7 +1208,7 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                     toDo = false;
                     break;
                default:
-                    std::cerr << "Error: found unexpected subrecord \"" << IntTo4Char(subRecName)
+                    std::cerr << "Error: Found unexpected subrecord \"" << IntTo4Char(subRecName)
                               << "\", but only ALID, FNAM, ALFA, ALRT, ALCO, "
                               << "ALCA, ALCL, ALDN, ALFE, ALFD, ALFI, ALFL, "
                               << "ALFR, ALUA, ALEQ, ALEA, ALSP, KNAM, CTDA, CIS2, SPOR, ECOR, ALFC, ALPC, VTCK or ALED are allowed here!\n";
@@ -1283,7 +1283,7 @@ const QOBJEntry& QuestRecord::getQOBJForIndex(const uint16_t idx) const
 {
   for (unsigned int i = 0; i < theQOBJs.size(); ++i)
   {
-    if (theQOBJs[i].unknownQOBJ==idx)
+    if (theQOBJs[i].unknownQOBJ == idx)
       return theQOBJs[i];
   }
   std::cerr << "QuestRecord::getQOBJForIndex(): Error: There is no QOBJ for that index!\n";

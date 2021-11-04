@@ -35,14 +35,24 @@
 			<Add option="-std=c++17" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Linker>
+			<Add library="z" />
+			<Add library="lz4" />
+		</Linker>
+		<Unit filename="../../base/CompressionFunctions.cpp" />
+		<Unit filename="../../base/CompressionFunctions.hpp" />
 		<Unit filename="../../base/DirectoryFunctions.cpp" />
 		<Unit filename="../../base/DirectoryFunctions.hpp" />
 		<Unit filename="../../base/FileFunctions.cpp" />
 		<Unit filename="../../base/FileFunctions.hpp" />
 		<Unit filename="../../base/RegistryFunctions.cpp" />
 		<Unit filename="../../base/RegistryFunctions.hpp" />
+		<Unit filename="../../base/SlashFunctions.cpp" />
+		<Unit filename="../../base/SlashFunctions.hpp" />
 		<Unit filename="../../base/UtilityFunctions.cpp" />
 		<Unit filename="../../base/UtilityFunctions.hpp" />
+		<Unit filename="../../base/lz4Compression.cpp" />
+		<Unit filename="../../base/lz4Compression.hpp" />
 		<Unit filename="../../mw/base/HelperIO.cpp" />
 		<Unit filename="../../mw/base/HelperIO.hpp" />
 		<Unit filename="../base/ESMFileContents.cpp" />
@@ -59,11 +69,25 @@
 		<Unit filename="../base/PathFunctions.hpp" />
 		<Unit filename="../base/Races.hpp" />
 		<Unit filename="../base/RegistryFunctions.hpp" />
+		<Unit filename="../base/ReturnCodes.hpp" />
 		<Unit filename="../base/SR_Constants.hpp" />
 		<Unit filename="../base/StringTable.cpp" />
 		<Unit filename="../base/StringTable.hpp" />
 		<Unit filename="../base/StringTableCompound.cpp" />
 		<Unit filename="../base/StringTableCompound.hpp" />
+		<Unit filename="../base/TableUtilities.cpp" />
+		<Unit filename="../base/TableUtilities.hpp" />
+		<Unit filename="../base/bsa/BSA.cpp" />
+		<Unit filename="../base/bsa/BSA.hpp" />
+		<Unit filename="../base/bsa/BSAFileRecord.cpp" />
+		<Unit filename="../base/bsa/BSAFileRecord.hpp" />
+		<Unit filename="../base/bsa/BSAFolderBlock.cpp" />
+		<Unit filename="../base/bsa/BSAFolderBlock.hpp" />
+		<Unit filename="../base/bsa/BSAFolderRecord.cpp" />
+		<Unit filename="../base/bsa/BSAFolderRecord.hpp" />
+		<Unit filename="../base/bsa/BSAHash.hpp" />
+		<Unit filename="../base/bsa/BSAHeader.cpp" />
+		<Unit filename="../base/bsa/BSAHeader.hpp" />
 		<Unit filename="../base/records/BasicRecord.cpp" />
 		<Unit filename="../base/records/BasicRecord.hpp" />
 		<Unit filename="../base/records/BinarySubRecord.cpp" />

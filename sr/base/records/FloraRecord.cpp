@@ -278,7 +278,7 @@ bool FloraRecord::loadFromStream(std::istream& in_File, const bool localized, co
            bytesRead += 2;
            if (subLength != 12)
            {
-             std::cerr << "Error: sub record OBND of FLOR has invalid length ("
+             std::cerr << "Error: Sub record OBND of FLOR has invalid length ("
                        << subLength << " bytes). Should be 12 bytes.\n";
              return false;
            }
@@ -313,7 +313,7 @@ bool FloraRecord::loadFromStream(std::istream& in_File, const bool localized, co
              return false;
            if (modelPath.empty())
            {
-             std::cerr << "Error: subrecord MODL of FLOR is empty!\n";
+             std::cerr << "Error: Subrecord MODL of FLOR is empty!\n";
              return false;
            }
            break;
@@ -378,7 +378,7 @@ bool FloraRecord::loadFromStream(std::istream& in_File, const bool localized, co
            bytesRead += 2;
            if (subLength != 2)
            {
-             std::cerr << "Error: sub record FNAM of FLOR has invalid length ("
+             std::cerr << "Error: Sub record FNAM of FLOR has invalid length ("
                        << subLength << " bytes). Should be two bytes.\n";
              return false;
            }
@@ -405,7 +405,7 @@ bool FloraRecord::loadFromStream(std::istream& in_File, const bool localized, co
            // check content
            if (ingredientFormID == 0)
            {
-             std::cerr << "Error: subrecord PFIG of FLOR is zero!\n";
+             std::cerr << "Error: Subrecord PFIG of FLOR is zero!\n";
              return false;
            }
            break;
@@ -422,7 +422,7 @@ bool FloraRecord::loadFromStream(std::istream& in_File, const bool localized, co
            // check content
            if (harvestSoundFormID == 0)
            {
-             std::cerr << "Error: subrecord SNAM of FLOR is zero!\n";
+             std::cerr << "Error: Subrecord SNAM of FLOR is zero!\n";
              return false;
            }
            break;
@@ -439,7 +439,7 @@ bool FloraRecord::loadFromStream(std::istream& in_File, const bool localized, co
            hasReadPFPC = true;
            break;
       default:
-           std::cerr << "Error: found unexpected subrecord \"" << IntTo4Char(subRecName)
+           std::cerr << "Error: Found unexpected subrecord \"" << IntTo4Char(subRecName)
                      << "\", but only VMAD, OBND, MODL, MODT, MODS, PNAM, RNAM,"
                      << " FNAM, PFIG, SNAM or PFPC are allowed here!\n";
            return false;
@@ -450,7 +450,7 @@ bool FloraRecord::loadFromStream(std::istream& in_File, const bool localized, co
   if (!hasReadOBND || !name.isPresent() || !hasReadPNAM || !hasReadFNAM
       || !hasReadPFPC)
   {
-    std::cerr << "Error: at least one required subrecord of FLOR is missing!\n";
+    std::cerr << "Error: At least one required subrecord of FLOR is missing!\n";
     return false;
   }
 

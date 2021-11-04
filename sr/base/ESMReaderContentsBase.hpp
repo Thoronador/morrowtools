@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -33,7 +33,6 @@ class ESMReaderContentsBase: public ESMReader
     /* constructor */
     ESMReaderContentsBase();
 
-    /* destructor */
     virtual ~ESMReaderContentsBase();
 
     //the structure that is used to store the read data
@@ -62,7 +61,7 @@ class ESMReaderContentsBase: public ESMReader
            sub    - if set to true, the new group is a sub-group of another
                     group
     */
-    virtual bool nextGroupStarted(const GroupData& g_data, const bool sub);
+    virtual bool nextGroupStarted(const GroupData& g_data, const bool sub) override;
 
     /* This function's sole purpose is to "notify" the reader that a started
        group has been read (or skipped) completely and give the classes derived
@@ -77,7 +76,7 @@ class ESMReaderContentsBase: public ESMReader
        parameters:
            g_data - the group header data
     */
-    virtual bool groupFinished(const GroupData& g_data);
+    virtual bool groupFinished(const GroupData& g_data) override;
 
     /* internal group nesting level counter and pointer to latest group - should
        be made private later on */
@@ -90,7 +89,7 @@ class ESMReaderContentsBase: public ESMReader
        zero is returned.
 
        parameters:
-           in_File   - the input file stream the record shall be read from
+           input     - the input stream the record shall be read from
            recName   - name (header) of the next record
            localized - true, if the data in the stream is localized
            table     - in case of localized data: the string table
@@ -98,9 +97,9 @@ class ESMReaderContentsBase: public ESMReader
        remarks:
            Pure virtual.
     */
-    virtual int readNextRecord(std::ifstream& in_File, const uint32_t recName, const bool localized, const StringTable& table) = 0;
-}; //class
+    virtual int readNextRecord(std::istream& input, const uint32_t recName, const bool localized, const StringTable& table) override = 0;
+}; // class
 
-}//namespace
+} // namespace
 
 #endif // SR_ESMREADERCONTENTSBASE_HPP

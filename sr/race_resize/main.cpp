@@ -24,6 +24,7 @@
 #include "../base/records/TES4HeaderRecord.hpp"
 #include "../base/Races.hpp"
 #include "../base/PathFunctions.hpp"
+#include "../base/ReturnCodes.hpp"
 #include "../base/SR_Constants.hpp"
 #include "../base/StringTable.hpp"
 #include "../base/StringTableCompound.hpp"
@@ -35,7 +36,7 @@ int main()
   //SRTP::ESMReaderAll reader;
 
   std::string SkyrimDir;
-  SRTP::getDataDir(SkyrimDir);
+  SRTP::getDataDir(SkyrimDir, std::nullopt);
 
   const int readResult = reader.readESM(SkyrimDir+"Skyrim.esm", header_rec);
   if (readResult>=0)

@@ -230,7 +230,7 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
   bytesRead += 2;
   if (subLength != 12)
   {
-    std::cerr << "Error: sub record OBND of SLGM has invalid length ("
+    std::cerr << "Error: Sub record OBND of SLGM has invalid length ("
               << subLength << " bytes). Should be 12 bytes.\n";
     return false;
   }
@@ -306,7 +306,7 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
            bytesRead += 2;
            if (subLength != 8)
            {
-             std::cerr << "Error: sub record DATA of SLGM has invalid length ("
+             std::cerr << "Error: Sub record DATA of SLGM has invalid length ("
                        << subLength << " bytes). Should be eight bytes.\n";
              return false;
            }
@@ -332,7 +332,7 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
            bytesRead += 2;
            if (subLength != 1)
            {
-             std::cerr << "Error: sub record SOUL of SLGM has invalid length ("
+             std::cerr << "Error: Sub record SOUL of SLGM has invalid length ("
                        << subLength << " bytes). Should be one byte.\n";
              return false;
            }
@@ -357,7 +357,7 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
            bytesRead += 2;
            if (subLength != 1)
            {
-             std::cerr << "Error: sub record SLCP of SLGM has invalid length ("
+             std::cerr << "Error: Sub record SLCP of SLGM has invalid length ("
                        << subLength << " bytes). Should be one byte.\n";
              return false;
            }
@@ -384,12 +384,12 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
            // check content
            if (linkedToFormID == 0)
            {
-             std::cerr << "Error: subrecord NAM0 of SLGM is zero!\n";
+             std::cerr << "Error: Subrecord NAM0 of SLGM is zero!\n";
              return false;
            }
            break;
       default:
-           std::cerr << "Error: unexpected record type \"" << IntTo4Char(subRecName)
+           std::cerr << "Error: Unexpected record type \"" << IntTo4Char(subRecName)
                      << "\" found, but only FULL, MODL, MODT, KSIZ, DATA, "
                      << "SOUL, SLCP or NAM0 are allowed here!\n";
            return false;
@@ -400,7 +400,7 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
   // presence checks
   if (modelPath.empty() || !hasReadDATA || !hasReadSOUL || !hasReadSLCP)
   {
-    std::cerr << "Error: while reading SLGM record: at least one required subrecord is missing!\n";
+    std::cerr << "Error while reading SLGM record: At least one required subrecord is missing!\n";
     return false;
   }
 

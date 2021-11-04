@@ -116,7 +116,7 @@ bool BasicRecord::loadUint32SubRecordFromStream(std::istream& input, const uint3
   input.read(reinterpret_cast<char*>(&subLength), 2);
   if (subLength != 4)
   {
-    std::cerr << "Error: sub record " << IntTo4Char(subHeader) << " of "
+    std::cerr << "Error: Sub record " << IntTo4Char(subHeader) << " of "
               << IntTo4Char(getRecordType()) << " has invalid length ("
               << subLength << " bytes). Should be four bytes.\n";
     return false;
@@ -153,7 +153,7 @@ bool BasicRecord::loadString512FromStream(std::istream& input, std::string& targ
   bytesRead += 2;
   if (subLength > 511)
   {
-    std::cerr << "Error: sub record " << IntTo4Char(subHeader) << " of "
+    std::cerr << "Error: Sub record " << IntTo4Char(subHeader) << " of "
               << IntTo4Char(getRecordType())
               << " is longer than 511 characters!\n";
     return false;
@@ -222,7 +222,7 @@ bool BasicRecord::loadKeywords(std::istream& input, std::vector<uint32_t>& keywo
   bytesRead += 2;
   if (subLength != 4 * k_Size)
   {
-    std::cerr << "Error: sub record KWDA of " << IntTo4Char(getRecordType())
+    std::cerr << "Error: Sub record KWDA of " << IntTo4Char(getRecordType())
               << " has invalid length (" << subLength << " bytes). Should be "
               << 4 * k_Size << " bytes!\n";
     return false;
@@ -263,7 +263,7 @@ bool BasicRecord::loadBufferFromStream(std::istream& in_File, const uint16_t len
   bytesRead += 2;
   if (subLength != len)
   {
-    std::cerr << "Error: sub record " << IntTo4Char(subHeader) << " of "
+    std::cerr << "Error: Sub record " << IntTo4Char(subHeader) << " of "
               << IntTo4Char(getRecordType()) << " has invalid length ("
               << subLength << " bytes). Should be " << len << " bytes!\n";
     return false;

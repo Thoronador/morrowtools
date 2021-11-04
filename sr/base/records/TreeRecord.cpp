@@ -196,7 +196,7 @@ bool TreeRecord::loadFromStream(std::istream& in_File, const bool localized, con
   bytesRead += 2;
   if (subLength != 12)
   {
-    std::cerr << "Error: sub record OBND of TREE has invalid length ("
+    std::cerr << "Error: Sub record OBND of TREE has invalid length ("
                << subLength << " bytes). Should be 12 bytes.\n";
     return false;
   }
@@ -260,7 +260,7 @@ bool TreeRecord::loadFromStream(std::istream& in_File, const bool localized, con
            // check content
            if (ingredientFormID == 0)
            {
-             std::cerr << "Error: subrecord PFIG of TREE is zero!\n";
+             std::cerr << "Error: Subrecord PFIG of TREE is zero!\n";
              return false;
            }
            break;
@@ -277,7 +277,7 @@ bool TreeRecord::loadFromStream(std::istream& in_File, const bool localized, con
            // check content
            if (harvestSoundFormID == 0)
            {
-             std::cerr << "Error: subrecord SNAM of TREE is zero!\n";
+             std::cerr << "Error: Subrecord SNAM of TREE is zero!\n";
              return false;
            }
            break;
@@ -314,7 +314,7 @@ bool TreeRecord::loadFromStream(std::istream& in_File, const bool localized, con
            bytesRead += 2;
            if (subLength != 48)
            {
-             std::cerr << "Error: sub record CNAM of TREE has invalid length ("
+             std::cerr << "Error: Sub record CNAM of TREE has invalid length ("
                        << subLength << " bytes). Should be 48 bytes.\n";
              return false;
            }
@@ -329,7 +329,7 @@ bool TreeRecord::loadFromStream(std::istream& in_File, const bool localized, con
            hasReadCNAM = true;
            break;
       default:
-           std::cerr << "Error: unexpected record type \""
+           std::cerr << "Error: Unexpected record type \""
                      << IntTo4Char(subRecName)
                      << "\" found, but only MODL, MODT, PFIG, SNAM, PFPC, "
                      << " FULL or CNAM are allowed here!\n";

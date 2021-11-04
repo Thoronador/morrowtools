@@ -20,6 +20,7 @@
 
 #include <iostream>
 #include <sstream>
+#include "../base/Edition.hpp"
 #include "../base/ESMWriterContents.hpp"
 #include "../base/PathFunctions.hpp"
 #include "../base/ReturnCodes.hpp"
@@ -87,6 +88,7 @@ int main(int argc, char **argv)
   std::string dataDir = "";
   // the plugin that has to be converted - empty at start, too
   std::string pluginFile = "";
+  std::optional<SRTP::Edition> edition = std::nullopt;
 
   if ((argc > 1) && (argv != nullptr))
   {
@@ -181,6 +183,28 @@ int main(int argc, char **argv)
             return SRTP::rcInvalidParameter;
           }
         } // plugin file name
+        else if ((param == "--special-edition") || (param == "--skyrim-se"))
+        {
+          // set more than once?
+          if (edition.has_value())
+          {
+            std::cerr << "Error: Skyrim edition was specified twice!\n";
+            return SRTP::rcInvalidParameter;
+          }
+          edition = SRTP::Edition::SpecialEdition;
+          std::cout << "Info: Handling Skyrim as Skyrim Special Edition.\n";
+        } // edition: Skyrim SE
+        else if ((param == "--original-edition") || (param == "--oldrim"))
+        {
+          // set more than once?
+          if (edition.has_value())
+          {
+            std::cerr << "Error: Skyrim edition was specified twice!\n";
+            return SRTP::rcInvalidParameter;
+          }
+          edition = SRTP::Edition::Skyrim2011;
+          std::cout << "Info: Handling Skyrim as Skyrim of 2011.\n";
+        } // edition: Skyrim (original)
         else
         {
           // unknown or wrong parameter
@@ -199,7 +223,7 @@ int main(int argc, char **argv)
   }
   else
   {
-    std::cout << "You have to specify certain parameters for this programme to run properly.\n"
+    std::cout << "You have to specify certain parameters for this program to run properly.\n"
               << "Use --help to get a list of valid parameters.\n";
     return SRTP::rcInvalidParameter;
   }
@@ -208,19 +232,19 @@ int main(int argc, char **argv)
   if (pluginFile.empty())
   {
     std::cout << "You have to specify a plugin file as parameter for this "
-              << "programme to run properly.\nUse --help to get a list of "
+              << "program to run properly.\nUse --help to get a list of "
               << "valid parameters.\n";
     return SRTP::rcInvalidParameter;
   }
 
   // Has the user specified a data directory?
-  SRTP::getDataDir(dataDir);
+  SRTP::getDataDir(dataDir, edition);
 
   // Does the plugin file even exist?
-  if (!FileExists(dataDir+pluginFile))
+  if (!FileExists(dataDir + pluginFile))
   {
     std::cout << "Error: The given plugin file \"" << dataDir + pluginFile
-              << "\" does not exist! Aborting programme.\n";
+              << "\" does not exist! Aborting program.\n";
     return SRTP::rcFileError;
   }
 

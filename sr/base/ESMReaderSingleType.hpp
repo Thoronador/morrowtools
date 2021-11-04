@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -59,7 +59,7 @@ class ESMReaderSingleType: public ESMReader
            Returns true for all top level groups of given type, false for any
            other group.
     */
-    virtual bool needGroup(const GroupData& g_data) const;
+    virtual bool needGroup(const GroupData& g_data) const override;
 
     /* This function's sole purpose is to "notify" the reader that a new group
        was encountered and give the classes derived from ESMReader the
@@ -73,7 +73,7 @@ class ESMReaderSingleType: public ESMReader
            sub    - if set to true, the new group is a sub-group of another
                     group
     */
-    virtual bool nextGroupStarted(const GroupData& g_data, const bool sub);
+    virtual bool nextGroupStarted(const GroupData& g_data, const bool sub) override;
 
     /* This function's sole purpose is to "notify" the reader that a started
        group has been read (or skipped) completely and give the classes derived
@@ -88,7 +88,7 @@ class ESMReaderSingleType: public ESMReader
        parameters:
            g_data - the group header data
     */
-    virtual bool groupFinished(const GroupData& g_data);
+    virtual bool groupFinished(const GroupData& g_data) override;
 
     /* tries to read the next record from a file and returns the number of
        relevant records that were read (usually one). If an error occurred,
@@ -96,12 +96,12 @@ class ESMReaderSingleType: public ESMReader
        zero is returned.
 
        parameters:
-           in_File   - the input file stream the record shall be read from
+           input     - the input stream the record shall be read from
            recName   - name (header) of the next record
            localized - true, if the data in the stream is localized
            table     - in case of localized data: the string table
     */
-    virtual int readNextRecord(std::ifstream& in_File, const uint32_t recName, const bool localized, const StringTable& table);
+    virtual int readNextRecord(std::istream& input, const uint32_t recName, const bool localized, const StringTable& table) override;
 };//class
 
 template<typename recT, typename singleT, uint32_t headerT>
@@ -113,28 +113,28 @@ bool ESMReaderSingleType<recT, singleT, headerT>::needGroup(const GroupData& g_d
 template<typename recT, typename singleT, uint32_t headerT>
 bool ESMReaderSingleType<recT, singleT, headerT>::nextGroupStarted(const GroupData& g_data, const bool sub)
 {
-  //empty, because we don't need to care about new groups anyway
+  // empty, because we don't need to care about new groups anyway
   return true;
 }
 
 template<typename recT, typename singleT, uint32_t headerT>
 bool ESMReaderSingleType<recT, singleT, headerT>::groupFinished(const GroupData& g_data)
 {
-  //empty, because we don't need to care about new groups anyway
+  // empty, because we don't need to care about new groups anyway
   return true;
 }
 
 template<typename recT, typename singleT, uint32_t headerT>
-int ESMReaderSingleType<recT, singleT, headerT>::readNextRecord(std::ifstream& in_File, const uint32_t recName, const bool localized, const StringTable& table)
+int ESMReaderSingleType<recT, singleT, headerT>::readNextRecord(std::istream& input, const uint32_t recName, const bool localized, const StringTable& table)
 {
-  if (recName!=headerT)
+  if (recName != headerT)
   {
     UnexpectedRecord(headerT, recName);
     return -1;
   }
-  return singleT::get().readNextRecord(in_File, localized, table);
+  return singleT::get().readNextRecord(input, localized, table);
 }
 
-} //namespace
+} // namespace
 
 #endif // SR_ESMREADERSINGLETYPE_HPP

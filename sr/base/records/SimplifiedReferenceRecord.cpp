@@ -114,7 +114,7 @@ bool SimplifiedReferenceRecord::loadFromStream(std::istream& in_File, const bool
   }
 
   // If we get to this point, no NAME has been seen so far.
-  std::cerr << "Error: subrecord NAME of REFR is missing!\n";
+  std::cerr << "Error: Subrecord NAME of REFR is missing!\n";
   return false;
 }
 

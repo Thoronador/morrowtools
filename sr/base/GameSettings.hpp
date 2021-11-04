@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2013  Thoronador
+    Copyright (C) 2011, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -34,7 +34,6 @@ typedef std::map<std::string, GMSTRecord>::const_iterator GameSettingListIterato
 class GameSettings
 {
   public:
-    /* destructor */
     ~GameSettings();
 
     /* singleton access method */
@@ -75,11 +74,11 @@ class GameSettings
            returned.)
 
        parameters:
-           in_File   - the input file stream that is used to read the record
+           input     - the input stream that is used to read the record
            localized - true, if the data in the stream is localized
            table     - in case of localized data: the string table
     */
-    int readNextRecord(std::ifstream& in_File, const bool localized, const StringTable& table);
+    int readNextRecord(std::istream& input, const bool localized, const StringTable& table);
 
     /* returns constant iterator to the beginning of the internal list */
     GameSettingListIterator begin() const;
@@ -92,10 +91,10 @@ class GameSettings
        true on success, false on failure
 
        parameters:
-           output - the output file stream that shall be used to save the
+           output - the output stream that shall be used to save the
                     game settings
     */
-    bool saveAllToStream(std::ofstream& output) const;
+    bool saveAllToStream(std::ostream& output) const;
     #endif
 
     /* removes all game settings from the list */
@@ -109,8 +108,8 @@ class GameSettings
 
     /* internal data */
     std::map<std::string, GMSTRecord> m_GameSettings;
-};//class
+}; // class
 
-} //namespace
+} // namespace
 
 #endif // SR_GAMESETTINGS_HPP

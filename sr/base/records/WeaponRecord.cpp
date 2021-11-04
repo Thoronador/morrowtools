@@ -71,7 +71,7 @@ WeaponRecord::WeaponRecord()
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }),
-  unknownCRDT({ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }),
+  unknownCRDT(BinarySubRecord()),
   unknownVNAM(0),
   unknownCNAM(std::nullopt)
 {
@@ -125,7 +125,6 @@ uint32_t WeaponRecord::getWriteSize() const
         + description.getWriteSize() /* DESC */
         + 4 /* DATA */ + 2 /* 2 bytes for length */ + 10 /* fixed size */
         + 4 /* DNAM */ + 2 /* 2 bytes for length */ + 100 /* fixed size */
-        + 4 /* CRDT */ + 2 /* 2 bytes for length */ + 16 /* fixed size */
         + 4 /* VNAM */ + 2 /* 2 bytes for length */ + 4 /* fixed size */;
   if (unknownVMAD.isPresent())
   {
@@ -220,6 +219,11 @@ uint32_t WeaponRecord::getWriteSize() const
   if (unknownCNAM.has_value())
   {
     writeSize = writeSize + 4 /* CNAM */ + 2 /* 2 bytes for length */ + 4 /* fixed size */;
+  }
+  if (unknownCRDT.isPresent())
+  {
+    writeSize = writeSize + 4 /* CRDT */ + 2 /* 2 bytes for length */
+               + unknownCRDT.size() /* subrecord size */;
   }
   return writeSize;
 }
@@ -457,10 +461,14 @@ bool WeaponRecord::saveToStream(std::ostream& output) const
   output.write(reinterpret_cast<const char*>(unknownDNAM.data()), 100);
 
   // write CRDT
-  output.write(reinterpret_cast<const char*>(&cCRDT), 4);
-  subLength = 16;
-  output.write(reinterpret_cast<const char*>(&subLength), 2);
-  output.write(reinterpret_cast<const char*>(unknownCRDT.data()), 16);
+  if (unknownCRDT.isPresent())
+  {
+    if (!unknownCRDT.saveToStream(output, cCRDT))
+    {
+      std::cerr << "Error while writing subrecord CRDT of WEAP!\n";
+      return false;
+    }
+  }
 
   // write VNAM
   output.write(reinterpret_cast<const char*>(&cVNAM), 4);
@@ -520,6 +528,7 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
   equipSoundFormID = 0;
   unequipSoundFormID = 0;
   unknownCNAM.reset();
+  unknownCRDT.setPresence(false);
   while (bytesRead < readSize)
   {
     // read next subrecord's name
@@ -551,7 +560,7 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 2;
            if (subLength != 12)
            {
-             std::cerr << "Error: sub record OBND of WEAP has invalid length ("
+             std::cerr << "Error: Sub record OBND of WEAP has invalid length ("
                        << subLength << " bytes). Should be 12 bytes.\n";
              return false;
            }
@@ -636,7 +645,7 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 2;
            if (subLength != 2)
            {
-             std::cerr << "Error: sub record EAMT of WEAP has invalid length ("
+             std::cerr << "Error: Sub record EAMT of WEAP has invalid length ("
                        << subLength << " bytes). Should be two bytes.\n";
              return false;
            }
@@ -868,7 +877,7 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 2;
            if (subLength != 10)
            {
-             std::cerr << "Error: sub record DATA of WEAP has invalid length ("
+             std::cerr << "Error: Sub record DATA of WEAP has invalid length ("
                        << subLength << " bytes). Should be 10 bytes.\n";
              return false;
            }
@@ -897,7 +906,7 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 2;
            if (subLength != 100)
            {
-             std::cerr << "Error: sub record DNAM of WEAP has invalid length ("
+             std::cerr << "Error: Sub record DNAM of WEAP has invalid length ("
                        << subLength << " bytes). Should be 100 bytes.\n";
              return false;
            }
@@ -911,28 +920,17 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            }
 
            // read CRDT
-           in_File.read(reinterpret_cast<char*>(&subRecName), 4);
-           bytesRead += 4;
-           if (subRecName != cCRDT)
-           {
-             UnexpectedRecord(cCRDT, subRecName);
-             return false;
-           }
-           // CRDT's length
-           in_File.read(reinterpret_cast<char*>(&subLength), 2);
-           bytesRead += 2;
-           if (subLength != 16)
-           {
-             std::cerr << "Error: sub record CRDT of WEAP has invalid length ("
-                       << subLength << " bytes). Should be 16 bytes.\n";
-             return false;
-           }
-           // read CRDT's content
-           in_File.read(reinterpret_cast<char*>(unknownCRDT.data()), 16);
-           bytesRead += 16;
-           if (!in_File.good())
+           if (!unknownCRDT.loadFromStream(in_File, cCRDT, true))
            {
              std::cerr << "Error while reading subrecord CRDT of WEAP!\n";
+             return false;
+           }
+           bytesRead += 6 + unknownCRDT.size();
+           if ((unknownCRDT.size() != 16) && (unknownCRDT.size() != 24))
+           {
+             std::cerr << "Error: Sub record CRDT of WEAP has invalid length ("
+                       << unknownCRDT.size() << " bytes). Should be either 16 "
+                       << "or 24 bytes.\n";
              return false;
            }
 
@@ -954,7 +952,7 @@ bool WeaponRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 6;
            break;
       default:
-           std::cerr << "Error: unexpected record type \"" << IntTo4Char(subRecName)
+           std::cerr << "Error: Unexpected record type \"" << IntTo4Char(subRecName)
                      << "\" found, but only VMAD, OBND, FULL, MODL, MODS, EITM,"
                      << " EAMT, ETYP, BIDS, BAMT, KSIZ, DESC, NNAM, INAM, WNAM,"
                      << " XNAM, NAM7, TNAM, UNAM, NAM9, NAM8, SNAM, DATA or CNAM are allowed!\n";

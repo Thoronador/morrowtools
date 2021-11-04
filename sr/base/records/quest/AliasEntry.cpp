@@ -163,7 +163,7 @@ void AliasEntry::clear()
            bytesRead += 2;
            if (subLength>511)
            {
-             std::cerr <<"Error: sub record ALID of QUST is longer than 511 characters!\n";
+             std::cerr <<"Error: Sub record ALID of QUST is longer than 511 characters!\n";
              return false;
            }
            //read ALID's stuff
@@ -252,14 +252,14 @@ void AliasEntry::clear()
            bytesRead += 2;
            if (subLength!=0)
            {
-             std::cerr <<"Error: sub record ALED of QUST has invalid length ("
+             std::cerr <<"Error: Sub record ALED of QUST has invalid length ("
                        <<subLength<<" bytes). Should be zero bytes!\n";
              return false;
            }
            toDo = false;
            break;
       default:
-           std::cerr << "Error: found unexpected subrecord \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: Found unexpected subrecord \""<<IntTo4Char(subRecName)
                      << "\", but only ALID, FNAM, ALFE, ALFD, ALFR, CTDA, VTCK or ALED are allowed here!\n";
            return false;
     }//swi
@@ -268,7 +268,7 @@ void AliasEntry::clear()
   //presence checks
   if (!(hasReadFNAM and hasReadVTCK))
   {
-    std::cerr << "Error: at least one required subrecord of alias structure in QUST is missing!\n";
+    std::cerr << "Error: At least one required subrecord of alias structure in QUST is missing!\n";
     return false;
   }
 

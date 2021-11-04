@@ -93,8 +93,9 @@ TEST_CASE("FileFunctions")
   {
     SECTION("directory 'list' in test_files")
     {
-      const auto vec = getDirectoryFileList(test_directory + "list");
-
+      const auto result = getDirectoryFileList(test_directory + "list");
+      REQUIRE( result.has_value() );
+      const auto& vec = result.value();
       REQUIRE( vec.size() == 3 );
       // directory "d"
       auto iter = std::find_if(vec.begin(), vec.end(), [] (FileEntry e) { return e.fileName == "d"; });
@@ -123,7 +124,7 @@ TEST_CASE("FileFunctions")
     {
       const auto vec = getDirectoryFileList(test_directory + "list_missing");
       // If there is no matching directory, the result is empty.
-      REQUIRE( vec.empty() );
+      REQUIRE_FALSE( vec.has_value() );
     }
   }
 

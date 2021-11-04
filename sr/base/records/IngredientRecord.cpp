@@ -290,7 +290,7 @@ bool IngredientRecord::loadFromStream(std::istream& in_File, const bool localize
   bytesRead += 2;
   if (subLength != 12)
   {
-    std::cerr << "Error: subrecord OBND of INGR has invalid length ("
+    std::cerr << "Error: Subrecord OBND of INGR has invalid length ("
               << subLength << " bytes). Should be 12 bytes!\n";
     return false;
   }
@@ -346,7 +346,7 @@ bool IngredientRecord::loadFromStream(std::istream& in_File, const bool localize
              return false;
            if (modelPath.empty())
            {
-             std::cerr << "Error: subrecord MODL of INGR is empty!\n";
+             std::cerr << "Error: Subrecord MODL of INGR is empty!\n";
              return false;
            }
            break;
@@ -389,7 +389,7 @@ bool IngredientRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 6;
            if (pickupSoundFormID == 0)
            {
-             std::cerr << "Error: subrecord YNAM of INGR is zero!\n";
+             std::cerr << "Error: Subrecord YNAM of INGR is zero!\n";
              return false;
            }
            break;
@@ -404,7 +404,7 @@ bool IngredientRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 6;
            if (putdownSoundFormID == 0)
            {
-             std::cerr << "Error: subrecord ZNAM of INGR is zero!\n";
+             std::cerr << "Error: Subrecord ZNAM of INGR is zero!\n";
              return false;
            }
            break;
@@ -419,7 +419,7 @@ bool IngredientRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if (subLength != 8)
            {
-             std::cerr << "Error: subrecord DATA of INGR has invalid length ("
+             std::cerr << "Error: Subrecord DATA of INGR has invalid length ("
                        << subLength << " bytes). Should be 8 bytes!\n";
              return false;
            }
@@ -445,7 +445,7 @@ bool IngredientRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if (subLength != 8)
            {
-             std::cerr << "Error: subrecord ENIT of INGR has invalid length ("
+             std::cerr << "Error: Subrecord ENIT of INGR has invalid length ("
                        << subLength << " bytes). Should be 8 bytes!\n";
              return false;
            }
@@ -475,7 +475,7 @@ bool IngredientRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if (subLength != 4)
            {
-             std::cerr << "Error: subrecord EFID of INGR has invalid length ("
+             std::cerr << "Error: Subrecord EFID of INGR has invalid length ("
                        << subLength << " bytes). Should be four bytes!\n";
              return false;
            }
@@ -501,7 +501,7 @@ bool IngredientRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if (subLength != 12)
            {
-             std::cerr << "Error: subrecord EFIT of INGR has invalid length ("
+             std::cerr << "Error: Subrecord EFIT of INGR has invalid length ("
                        << subLength << " bytes). Should be 12 bytes!\n";
              return false;
            }
@@ -532,7 +532,7 @@ bool IngredientRecord::loadFromStream(std::istream& in_File, const bool localize
            tempEffect.unknownCTDA_CIS2s.push_back(CTDA_CIS2_compound(tempCTDA, ""));
            break;
       default:
-           std::cerr << "Error: unexpected record type \"" << IntTo4Char(subRecName)
+           std::cerr << "Error: Unexpected record type \"" << IntTo4Char(subRecName)
                      << "\" found, but only FULL, KSIZ, MODL, MODT, MODS, ENIT,"
                      << " EFID or CTDA are allowed here!\n";
            return false;

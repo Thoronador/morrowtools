@@ -206,7 +206,7 @@ bool StringTable::readTable(const std::string& FileName, DataType stringType)
       if (length + 1 == allocatedSpace)
       {
         ptrSpace[length] = '\0';
-        std::cerr << "Error: string was cut off after reaching allocation limit!\n";
+        std::cerr << "Error: String was cut off after reaching allocation limit!\n";
         delete[] ptrSpace;
         return false;
       }

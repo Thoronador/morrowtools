@@ -57,6 +57,8 @@
 		<Unit filename="../../sr/base/ESMFileContents.hpp" />
 		<Unit filename="../../sr/base/ESMReader.cpp" />
 		<Unit filename="../../sr/base/ESMReader.hpp" />
+		<Unit filename="../../sr/base/ESMReaderSingleType.hpp" />
+		<Unit filename="../../sr/base/Factions.hpp" />
 		<Unit filename="../../sr/base/FormIDFunctions.cpp" />
 		<Unit filename="../../sr/base/FormIDFunctions.hpp" />
 		<Unit filename="../../sr/base/Group.cpp" />
@@ -65,6 +67,8 @@
 		<Unit filename="../../sr/base/SR_Constants.hpp" />
 		<Unit filename="../../sr/base/StringTable.cpp" />
 		<Unit filename="../../sr/base/StringTable.hpp" />
+		<Unit filename="../../sr/base/TableUtilities.cpp" />
+		<Unit filename="../../sr/base/TableUtilities.hpp" />
 		<Unit filename="../../sr/base/bsa/BSA.cpp" />
 		<Unit filename="../../sr/base/bsa/BSA.hpp" />
 		<Unit filename="../../sr/base/bsa/BSAFileRecord.cpp" />
@@ -216,9 +220,13 @@
 		<Unit filename="mw/base/HelperIO.cpp" />
 		<Unit filename="sr/base/DependencyElement.cpp" />
 		<Unit filename="sr/base/ESMFileContents.cpp" />
+		<Unit filename="sr/base/ESMReader.cpp" />
 		<Unit filename="sr/base/FormIDFunctions.cpp" />
 		<Unit filename="sr/base/MapBasedRecordManager.cpp" />
 		<Unit filename="sr/base/StringTable.cpp" />
+		<Unit filename="sr/base/TableUtilities.cpp" />
+		<Unit filename="sr/base/TestFactionsReader.cpp" />
+		<Unit filename="sr/base/TestFactionsReader.hpp" />
 		<Unit filename="sr/base/bsa/BSA.cpp" />
 		<Unit filename="sr/base/bsa/BSAFileRecord.cpp" />
 		<Unit filename="sr/base/bsa/BSAFolderBlock.cpp" />

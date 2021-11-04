@@ -17,6 +17,7 @@ set(race_resize_sources
     ../base/ESMWriter.cpp
     ../base/ESMWriterContents.cpp
     ../base/Group.cpp
+    ../base/Localization.cpp
     ../base/StringTable.cpp
     ../base/StringTableCompound.cpp
     ../base/TableUtilities.cpp

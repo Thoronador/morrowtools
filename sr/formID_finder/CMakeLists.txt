@@ -18,6 +18,7 @@ set(formID_finder_sources
     ../base/ESMReader.cpp
     ../base/ESMReaderReIndex.cpp
     ../base/FormIDFunctions.cpp
+    ../base/Localization.cpp
     ../base/StringTable.cpp
     ../base/TableUtilities.cpp
     ../base/bsa/BSA.cpp

@@ -20,6 +20,7 @@ set(component_tests_sources
     ../../sr/base/ESMReaderSingleType.hpp
     ../../sr/base/FormIDFunctions.cpp
     ../../sr/base/Group.cpp
+    ../../sr/base/Localization.cpp
     ../../sr/base/MapBasedRecordManager.hpp
     ../../sr/base/StringTable.cpp
     ../../sr/base/TableUtilities.cpp
@@ -105,6 +106,7 @@ set(component_tests_sources
     sr/base/ESMFileContents.cpp
     sr/base/ESMReader.cpp
     sr/base/FormIDFunctions.cpp
+    sr/base/Localization.cpp
     sr/base/MapBasedRecordManager.cpp
     sr/base/StringTable.cpp
     sr/base/TableUtilities.cpp

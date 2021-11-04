@@ -78,6 +78,8 @@
 		<Unit filename="../base/Furniture.hpp" />
 		<Unit filename="../base/Ingredients.hpp" />
 		<Unit filename="../base/Keys.hpp" />
+		<Unit filename="../base/Localization.cpp" />
+		<Unit filename="../base/Localization.hpp" />
 		<Unit filename="../base/MapBasedRecordManager.hpp" />
 		<Unit filename="../base/MiscObjects.hpp" />
 		<Unit filename="../base/NPCs.hpp" />

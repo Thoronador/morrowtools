@@ -132,7 +132,7 @@ TEST_CASE("ESMReader")
       Factions::get().clear();
 
       Tes4HeaderRecord record;
-      REQUIRE( reader.readESM("readESM-sample.esm", record) > 0 );
+      REQUIRE( reader.readESM("readESM-sample.esm", record, std::nullopt) > 0 );
       REQUIRE( std::filesystem::remove("readESM-sample.esm") );
 
       // Check data.
@@ -157,7 +157,7 @@ TEST_CASE("ESMReader")
 
     SECTION("failure: file does not exist")
     {
-      REQUIRE( reader.readESM("does-not-exist.esm", header) == -1 );
+      REQUIRE( reader.readESM("does-not-exist.esm", header, std::nullopt) == -1 );
     }
 
     SECTION("failure: file does not start with TES4 header")
@@ -169,7 +169,7 @@ TEST_CASE("ESMReader")
         file.close();
       }
 
-      REQUIRE( reader.readESM("readESM-not-valid-tes4-header.esm", header) == -1 );
+      REQUIRE( reader.readESM("readESM-not-valid-tes4-header.esm", header, std::nullopt) == -1 );
 
       REQUIRE( std::filesystem::remove("readESM-not-valid-tes4-header.esm") );
     }
@@ -184,7 +184,7 @@ TEST_CASE("ESMReader")
         file.close();
       }
 
-      REQUIRE( reader.readESM("readESM-incompleteHeader.esm", header) == -1 );
+      REQUIRE( reader.readESM("readESM-incompleteHeader.esm", header, std::nullopt) == -1 );
 
       REQUIRE( std::filesystem::remove("readESM-incompleteHeader.esm") );
     }

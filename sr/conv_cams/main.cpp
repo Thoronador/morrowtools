@@ -252,7 +252,7 @@ int main(int argc, char **argv)
   //now we can start the reading process
   SRTP::Tes4HeaderRecord tes4rec;
   SRTP::ESMReaderConvCAMS reader;
-  if (reader.readESM(dataDir + pluginFile, tes4rec) < 0)
+  if (reader.readESM(dataDir + pluginFile, tes4rec, std::nullopt) < 0)
   {
     std::cout << "Error while reading \"" << dataDir + pluginFile << "\"!\n";
     return SRTP::rcFileError;

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 #define SR_ESMREADER_HPP
 
 #include <fstream>
+#include "Localization.hpp"
 #include "StringTable.hpp"
 #include "records/TES4HeaderRecord.hpp"
 #include "records/GroupData.hpp"
@@ -50,8 +51,9 @@ class ESMReader
        parameters:
            FileName - name of the .esm/.esp file
            head     - the record that will be used to store the header information
+           l10n     - the preferred localization for string tables, if any
     */
-    int readESM(const std::string& FileName, Tes4HeaderRecord& head);
+    int readESM(const std::string& FileName, Tes4HeaderRecord& head, const std::optional<Localization>& l10n);
 
     /* tries to read the TES4 record of an .esm/.esp file and returns true in
        case of success, false on failure.

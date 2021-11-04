@@ -108,13 +108,13 @@ int getAssociatedTableFiles(const std::string& fileName, std::vector<std::string
     return 0;
 }
 
-bool loadStringTables(const std::string& esmFileName, StringTable& table)
+bool loadStringTables(const std::string& esmFileName, StringTable& table, const std::optional<Localization>& l10n)
 {
   std::vector<std::string> files;
   const int rc = getAssociatedTableFiles(esmFileName, files);
   if (rc != 0)
   {
-    return loadStringTablesFromBSA(esmFileName, table);
+    return loadStringTablesFromBSA(esmFileName, table, l10n);
   }
   for (const auto& fileName: files)
   {
@@ -128,7 +128,7 @@ bool loadStringTables(const std::string& esmFileName, StringTable& table)
   return true;
 }
 
-bool loadStringTablesFromBSA(const std::string& esmFileName, StringTable& table)
+bool loadStringTablesFromBSA(const std::string& esmFileName, StringTable& table, const std::optional<Localization>& l10n)
 {
   std::string part_path, part_name, part_ext;
   splitPathFileExtension(esmFileName, MWTP::pathDelimiter, part_path, part_name, part_ext);
@@ -140,7 +140,7 @@ bool loadStringTablesFromBSA(const std::string& esmFileName, StringTable& table)
   part_name = lowerCase(part_name);
 
   const auto tempPath = std::filesystem::temp_directory_path();
-  const std::string language = "english";
+  const std::string language = stringTableSuffix(l10n.value_or(Localization::German));
 
   for (const auto& extension: { ".strings", ".dlstrings", ".ilstrings" })
   {

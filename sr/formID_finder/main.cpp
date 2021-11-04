@@ -47,6 +47,7 @@
 #include "../base/Furniture.hpp"
 #include "../base/Ingredients.hpp"
 #include "../base/Keys.hpp"
+#include "../base/Localization.hpp"
 #include "../base/MiscObjects.hpp"
 #include "../base/NPCs.hpp"
 #include "../base/PathFunctions.hpp"
@@ -124,7 +125,17 @@ void showHelp()
             << "  --skyrim-se      - assume that Skyrim Special Edition is installed and use\n"
             << "                     that installation.\n"
             << "  --oldrim         - assume that the old Skyrim of 2011 is installed and use\n"
-            << "                     that installation.\n";
+            << "                     that installation.\n"
+            << "  --english | --en - set the language to load to English. This only triggers,\n"
+            << "                     if there are no lose string table files and loading from\n"
+            << "                     the BSA file takes place. Same holds for other language\n"
+            << "                     options.  Default is German, if no language is set.\n"
+            << "  --french | --fr  - set the language to load to French.\n"
+            << "  --german | --de  - set the language to load to German.\n"
+            << "  --italian | --it - set the language to load to Italian.\n"
+            << "  --polish | --pl  - set the language to load to Polish.\n"
+            << "  --russian | --ru - set the language to load to Russian.\n"
+            << "  --spanish | --es - set the language to load to Spanish.\n";
 }
 
 int main(int argc, char **argv)
@@ -144,6 +155,7 @@ int main(int argc, char **argv)
   bool withReferences = false;
   bool showFiles = false;
   std::optional<SRTP::Edition> edition = std::nullopt;
+  std::optional<SRTP::Localization> localization = std::nullopt;
 
   if ((argc > 1) && (argv != nullptr))
   {
@@ -305,6 +317,76 @@ int main(int argc, char **argv)
           edition = SRTP::Edition::Skyrim2011;
           std::cout << "Info: Handling Skyrim as Skyrim of 2011.\n";
         } // edition: Skyrim (original)
+        else if ((param == "--english") || (param == "--en"))
+        {
+          // set more than once?
+          if (localization.has_value())
+          {
+            std::cerr << "Error: Localization was specified twice!\n";
+            return SRTP::rcInvalidParameter;
+          }
+          localization = SRTP::Localization::English;
+        } // string table language: English
+        else if ((param == "--french") || (param == "--fr"))
+        {
+          // set more than once?
+          if (localization.has_value())
+          {
+            std::cerr << "Error: Localization was specified twice!\n";
+            return SRTP::rcInvalidParameter;
+          }
+          localization = SRTP::Localization::French;
+        } // string table language: French
+        else if ((param == "--german") || (param == "--de"))
+        {
+          // set more than once?
+          if (localization.has_value())
+          {
+            std::cerr << "Error: Localization was specified twice!\n";
+            return SRTP::rcInvalidParameter;
+          }
+          localization = SRTP::Localization::German;
+        } // string table language: German
+        else if ((param == "--italian") || (param == "--it"))
+        {
+          // set more than once?
+          if (localization.has_value())
+          {
+            std::cerr << "Error: Localization was specified twice!\n";
+            return SRTP::rcInvalidParameter;
+          }
+          localization = SRTP::Localization::Italian;
+        } // string table language: Italian
+        else if ((param == "--polish") || (param == "--pl"))
+        {
+          // set more than once?
+          if (localization.has_value())
+          {
+            std::cerr << "Error: Localization was specified twice!\n";
+            return SRTP::rcInvalidParameter;
+          }
+          localization = SRTP::Localization::Polish;
+        } // string table language: Polish
+        else if ((param == "--russian") || (param == "--ru"))
+        {
+          // set more than once?
+          if (localization.has_value())
+          {
+            std::cerr << "Error: Localization was specified twice!\n";
+            return SRTP::rcInvalidParameter;
+          }
+          localization = SRTP::Localization::Russian;
+        } // string table language: Russian
+        else if ((param == "--spanish") || (param == "--es"))
+        {
+          // set more than once?
+          if (localization.has_value())
+          {
+            std::cerr << "Error: Localization was specified twice!\n";
+            return SRTP::rcInvalidParameter;
+          }
+          localization = SRTP::Localization::Spanish;
+        } // string table language: Spanish
         else if ((param == "--ref-id") || (param == "--ref-ids") || (param == "--ref")
                   || (param == "--refs") || (param == "--references"))
         {
@@ -410,7 +492,7 @@ int main(int argc, char **argv)
     if (element != "Update.esm")
     {
       reader.requestIndexMapUpdate(element);
-      if (reader.readESM(dataDir + element, tes4rec) < 0)
+      if (reader.readESM(dataDir + element, tes4rec, localization) < 0)
       {
         std::cerr << "Error while reading " << dataDir + element << "!\n";
         return SRTP::rcFileError;
@@ -426,7 +508,7 @@ int main(int argc, char **argv)
       if (fileName != "Update.esm")
       {
         readerReferences.requestIndexMapUpdate(fileName);
-        if (readerReferences.readESM(dataDir + fileName, tes4rec) < 0)
+        if (readerReferences.readESM(dataDir + fileName, tes4rec, localization) < 0)
         {
           std::cerr << "Error while reading references from "
                     << dataDir + fileName << "!\n";

@@ -66,7 +66,7 @@ int ESMReader::skipGroup(std::istream& input, const GroupData& g_data)
   return -1;
 }
 
-int ESMReader::readESM(const std::string& FileName, Tes4HeaderRecord& head)
+int ESMReader::readESM(const std::string& FileName, Tes4HeaderRecord& head, const std::optional<Localization>& l10n)
 {
   std::ifstream input;
   input.open(FileName, std::ios::in | std::ios::binary);
@@ -106,7 +106,7 @@ int ESMReader::readESM(const std::string& FileName, Tes4HeaderRecord& head)
   StringTable table;
   if (localized)
   {
-    if (!loadStringTables(FileName, table))
+    if (!loadStringTables(FileName, table, l10n))
     {
       input.close();
       std::cerr << "Error while reading string tables for " << FileName << "!\n";

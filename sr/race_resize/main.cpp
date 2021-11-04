@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -33,15 +33,14 @@ int main()
 {
   SRTP::Tes4HeaderRecord header_rec, write_header;
   SRTP::ESMReaderSingleType<SRTP::RaceRecord, SRTP::Races, SRTP::cRACE> reader;
-  //SRTP::ESMReaderAll reader;
 
   std::string SkyrimDir;
   SRTP::getDataDir(SkyrimDir, std::nullopt);
 
-  const int readResult = reader.readESM(SkyrimDir+"Skyrim.esm", header_rec);
-  if (readResult>=0)
+  const int readResult = reader.readESM(SkyrimDir + "Skyrim.esm", header_rec, SRTP::Localization::German);
+  if (readResult >= 0)
   {
-    std::cout << "File was read/skipped successfully! Groups read: "<<readResult<<".\n";
+    std::cout << "File was read/skipped successfully! Groups read: " << readResult << ".\n";
     std::cout << "Race records read so far: " << SRTP::Races::get().getNumberOfRecords() << "\n";
   }
   else
@@ -50,9 +49,9 @@ int main()
     return SRTP::rcFileError;
   }
 
-  //String tables
+  // String tables
   SRTP::StringTableCompound table_compound;
-  if (table_compound.readCompound(SkyrimDir+"Strings\\Skyrim_German"))
+  if (table_compound.readCompound(SkyrimDir + "Strings\\Skyrim_German"))
   {
     std::cout << "Table compound read successfully! Table contains "<<table_compound.getNumberOfCompoundEntries()<<" entries.\n";
   }
@@ -144,7 +143,7 @@ int main()
   {
     std::cout << "Writing new file was successful!\n";
     //just for checks, try to load it
-    int result = reader.readESM("C:\\Temp\\KleineHochelfen.esm", header_rec);
+    int result = reader.readESM("C:\\Temp\\KleineHochelfen.esm", header_rec, SRTP::Localization::German);
     if (result<0)
     {
       std::cout << "Error: could not load saved stuff!\n";

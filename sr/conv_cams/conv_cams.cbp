@@ -68,6 +68,8 @@
 		<Unit filename="../base/Edition.hpp" />
 		<Unit filename="../base/Group.cpp" />
 		<Unit filename="../base/Group.hpp" />
+		<Unit filename="../base/Localization.cpp" />
+		<Unit filename="../base/Localization.hpp" />
 		<Unit filename="../base/PathFunctions.hpp" />
 		<Unit filename="../base/RegistryFunctions.hpp" />
 		<Unit filename="../base/ReturnCodes.hpp" />

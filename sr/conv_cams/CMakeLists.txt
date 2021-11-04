@@ -18,6 +18,7 @@ set(conv_cams_sources
     ../base/ESMWriter.cpp
     ../base/ESMWriterContents.cpp
     ../base/Group.cpp
+    ../base/Localization.cpp
     ../base/StringTable.cpp
     ../base/TableUtilities.cpp
     ../base/bsa/BSA.cpp

@@ -63,6 +63,8 @@
 		<Unit filename="../../sr/base/FormIDFunctions.hpp" />
 		<Unit filename="../../sr/base/Group.cpp" />
 		<Unit filename="../../sr/base/Group.hpp" />
+		<Unit filename="../../sr/base/Localization.cpp" />
+		<Unit filename="../../sr/base/Localization.hpp" />
 		<Unit filename="../../sr/base/MapBasedRecordManager.hpp" />
 		<Unit filename="../../sr/base/SR_Constants.hpp" />
 		<Unit filename="../../sr/base/StringTable.cpp" />
@@ -222,6 +224,7 @@
 		<Unit filename="sr/base/ESMFileContents.cpp" />
 		<Unit filename="sr/base/ESMReader.cpp" />
 		<Unit filename="sr/base/FormIDFunctions.cpp" />
+		<Unit filename="sr/base/Localization.cpp" />
 		<Unit filename="sr/base/MapBasedRecordManager.cpp" />
 		<Unit filename="sr/base/StringTable.cpp" />
 		<Unit filename="sr/base/TableUtilities.cpp" />

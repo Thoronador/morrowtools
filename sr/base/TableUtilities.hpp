@@ -23,6 +23,7 @@
 
 #include <string>
 #include <vector>
+#include "Localization.hpp"
 #include "StringTable.hpp"
 
 namespace SRTP
@@ -60,19 +61,21 @@ int getAssociatedTableFiles(const std::string& fileName, std::vector<std::string
  *
  * \param esmFileName  path of the master / plugin file
  * \param table        the table to load the data into
+ * \param l10n         the preferred localization, if any
  * \return Returns true in case of success.
  *         Returns false in case of failure.
  */
-bool loadStringTables(const std::string& esmFileName, StringTable& table);
+bool loadStringTables(const std::string& esmFileName, StringTable& table, const std::optional<Localization>& l10n);
 
 /** \brief Loads all associated string tables for an ESM / ESP file from the BSA.
  *
  * \param esmFileName  path of the master / plugin file
  * \param table        the table to load the data into
+ * \param l10n         the preferred localization, if any
  * \return Returns true in case of success.
  *         Returns false in case of failure.
  */
-bool loadStringTablesFromBSA(const std::string& esmFileName, StringTable& table);
+bool loadStringTablesFromBSA(const std::string& esmFileName, StringTable& table, const std::optional<Localization>& l10n);
 
 } // namespace
 

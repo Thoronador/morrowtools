@@ -126,7 +126,7 @@ TEST_CASE("TableUtilities")
     SECTION("success: all tables exist")
     {
       StringTable table;
-      REQUIRE( loadStringTables(glcDirectory + "TestTables.esm", table) );
+      REQUIRE( loadStringTables(glcDirectory + "TestTables.esm", table, std::nullopt) );
       // Check read strings.
       // -- *.strings
       REQUIRE( table.hasString(0x12345678) );
@@ -154,14 +154,14 @@ TEST_CASE("TableUtilities")
     SECTION("failure: no matching string files exist")
     {
       StringTable table;
-      REQUIRE_FALSE( loadStringTables(glcDirectory + "TestNone.esm", table) );
+      REQUIRE_FALSE( loadStringTables(glcDirectory + "TestNone.esm", table, std::nullopt) );
     }
 
     SECTION("failure: matching string files exist, but they are empty")
     {
       StringTable table;
 
-      REQUIRE_FALSE( loadStringTables(glcDirectory + "test.esm", table) );
+      REQUIRE_FALSE( loadStringTables(glcDirectory + "test.esm", table, std::nullopt) );
       REQUIRE( table.getNumberOfTableEntries() == 0 );
     }
   }

@@ -16,6 +16,7 @@ set(race_resize_sources
     ../base/Group.cpp
     ../base/StringTable.cpp
     ../base/StringTableCompound.cpp
+    ../base/TableUtilities.cpp
     ../base/records/BasicRecord.cpp
     ../base/records/BinarySubRecord.cpp
     ../base/records/GroupData.cpp

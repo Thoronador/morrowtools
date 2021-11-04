@@ -24,6 +24,7 @@
 #include "../base/records/TES4HeaderRecord.hpp"
 #include "../base/Races.hpp"
 #include "../base/PathFunctions.hpp"
+#include "../base/ReturnCodes.hpp"
 #include "../base/SR_Constants.hpp"
 #include "../base/StringTable.hpp"
 #include "../base/StringTableCompound.hpp"

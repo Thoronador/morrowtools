@@ -29,6 +29,7 @@
 #include <sys/un.h>
 #include <unistd.h>
 #endif
+#include "../../base/FileFunctions.hpp"
 #include "../../base/UtilityFunctions.hpp"
 #include "../base/Activators.hpp"
 #include "../base/AlchemyPotions.hpp"
@@ -50,6 +51,7 @@
 #include "../base/NPCs.hpp"
 #include "../base/PathFunctions.hpp"
 #include "../base/Perks.hpp"
+#include "../base/ReturnCodes.hpp"
 #include "../base/Quests.hpp"
 #include "../base/Scrolls.hpp"
 #include "../base/Shouts.hpp"

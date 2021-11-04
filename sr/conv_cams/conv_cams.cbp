@@ -64,6 +64,8 @@
 		<Unit filename="../base/SR_Constants.hpp" />
 		<Unit filename="../base/StringTable.cpp" />
 		<Unit filename="../base/StringTable.hpp" />
+		<Unit filename="../base/TableUtilities.cpp" />
+		<Unit filename="../base/TableUtilities.hpp" />
 		<Unit filename="../base/records/BasicRecord.cpp" />
 		<Unit filename="../base/records/BasicRecord.hpp" />
 		<Unit filename="../base/records/BinarySubRecord.cpp" />

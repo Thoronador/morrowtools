@@ -67,6 +67,8 @@
 		<Unit filename="../../sr/base/SR_Constants.hpp" />
 		<Unit filename="../../sr/base/StringTable.cpp" />
 		<Unit filename="../../sr/base/StringTable.hpp" />
+		<Unit filename="../../sr/base/TableUtilities.cpp" />
+		<Unit filename="../../sr/base/TableUtilities.hpp" />
 		<Unit filename="../../sr/base/bsa/BSA.cpp" />
 		<Unit filename="../../sr/base/bsa/BSA.hpp" />
 		<Unit filename="../../sr/base/bsa/BSAFileRecord.cpp" />

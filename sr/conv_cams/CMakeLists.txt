@@ -16,6 +16,7 @@ set(conv_cams_sources
     ../base/ESMWriterContents.cpp
     ../base/Group.cpp
     ../base/StringTable.cpp
+    ../base/TableUtilities.cpp
     ../base/records/BasicRecord.cpp
     ../base/records/BinarySubRecord.cpp
     ../base/records/CameraShotRecord.cpp

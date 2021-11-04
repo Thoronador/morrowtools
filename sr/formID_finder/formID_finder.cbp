@@ -88,6 +88,8 @@
 		<Unit filename="../base/Spells.hpp" />
 		<Unit filename="../base/StringTable.cpp" />
 		<Unit filename="../base/StringTable.hpp" />
+		<Unit filename="../base/TableUtilities.cpp" />
+		<Unit filename="../base/TableUtilities.hpp" />
 		<Unit filename="../base/TalkingActivators.hpp" />
 		<Unit filename="../base/Weapons.hpp" />
 		<Unit filename="../base/WordsOfPower.hpp" />

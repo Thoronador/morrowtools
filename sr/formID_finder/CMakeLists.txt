@@ -17,6 +17,7 @@ set(formID_finder_sources
     ../base/ESMReaderReIndex.cpp
     ../base/FormIDFunctions.cpp
     ../base/StringTable.cpp
+    ../base/TableUtilities.cpp
     ../base/records/ActivatorRecord.cpp
     ../base/records/AlchemyPotionRecord.cpp
     ../base/records/AmmunitionRecord.cpp

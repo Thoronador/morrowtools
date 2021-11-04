@@ -22,6 +22,7 @@ set(component_tests_sources
     ../../sr/base/Group.cpp
     ../../sr/base/MapBasedRecordManager.hpp
     ../../sr/base/StringTable.cpp
+    ../../sr/base/TableUtilities.cpp
     ../../sr/base/bsa/BSA.cpp
     ../../sr/base/bsa/BSAFileRecord.cpp
     ../../sr/base/bsa/BSAFolderBlock.cpp

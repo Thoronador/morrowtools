@@ -103,27 +103,16 @@ int ESMReader::readESM(const std::string& FileName, Tes4HeaderRecord& head)
   }
 
   const bool localized = head.isLocalized();
-  //TODO: read string tables
   StringTable table;
   if (localized)
   {
-    std::vector<std::string> files;
-    const int rc = getAssociatedTableFiles(FileName, files);
-    if (rc != 0)
+    if (!loadStringTables(FileName, table))
     {
       input.close();
+      std::cerr << "Error while reading string tables for " << FileName << "!\n";
       return -1;
     }
-    for (unsigned int i = 0; i < files.size(); ++i)
-    {
-      if (!table.readTable(files[i], StringTable::sdUnknown))
-      {
-        input.close();
-        std::cerr << "Error while reading string tables for " << FileName << "!\n";
-        return -1;
-      }
-    }
-  }//if localized
+  } // if localized
 
   // save header for subsequent functions that might need it
   currentHead = head;

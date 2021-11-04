@@ -23,6 +23,7 @@
 
 #include <string>
 #include <vector>
+#include "StringTable.hpp"
 
 namespace SRTP
 {
@@ -54,6 +55,15 @@ int getLanguageComponent(const std::string& dataDir, const std::string& pluginNa
        files    - vector that will hold the string table files
 */
 int getAssociatedTableFiles(const std::string& fileName, std::vector<std::string>& files);
+
+/** \brief Loads all associated string tables for an ESM / ESP file.
+ *
+ * \param esmFileName   path of the master / plugin file
+ * \param table        the table to load the data into
+ * \return Returns true in case of success.
+ *         Returns false in case of failure.
+ */
+bool loadStringTables(const std::string& esmFileName, StringTable& table);
 
 } // namespace
 

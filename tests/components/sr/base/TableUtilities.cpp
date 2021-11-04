@@ -72,7 +72,6 @@ TEST_CASE("TableUtilities")
     }
   }
 
-
   SECTION("getLanguageComponent")
   {
     const auto glcDirectory = test_directory + "getLanguageComponent" + delim;
@@ -117,6 +116,53 @@ TEST_CASE("TableUtilities")
 
       REQUIRE( getLanguageComponent(glcDirectory,
                    "four", component, files) != 0 );
+    }
+  }
+
+  SECTION("loadStringTables")
+  {
+    const auto glcDirectory = test_directory + "getLanguageComponent" + delim;
+
+    SECTION("success: all tables exist")
+    {
+      StringTable table;
+      REQUIRE( loadStringTables(glcDirectory + "TestTables.esm", table) );
+      // Check read strings.
+      // -- *.strings
+      REQUIRE( table.hasString(0x12345678) );
+      REQUIRE( table.getString(0x12345678) == "foo" );
+      REQUIRE( table.hasString(0x0000AFFE) );
+      REQUIRE( table.getString(0x0000AFFE) == "bar" );
+      REQUIRE( table.hasString(42) );
+      REQUIRE( table.getString(42) == "foobar" );
+      // -- *.dlstrings
+      REQUIRE( table.hasString(0x123456AA) );
+      REQUIRE( table.getString(0x123456AA) == "xyz" );
+      REQUIRE( table.hasString(0xC001AFFE) );
+      REQUIRE( table.getString(0xC001AFFE) == "bar" );
+      REQUIRE( table.hasString(43) );
+      REQUIRE( table.getString(43) == "string" );
+      // -- *.ilstrings
+      REQUIRE( table.hasString(0x123456BB) );
+      REQUIRE( table.getString(0x123456BB) == "abc" );
+      REQUIRE( table.hasString(0x000BAFFE) );
+      REQUIRE( table.getString(0x000BAFFE) == "bar" );
+      REQUIRE( table.hasString(44) );
+      REQUIRE( table.getString(44) == "Italia" );
+    }
+
+    SECTION("failure: no matching string files exist")
+    {
+      StringTable table;
+      REQUIRE_FALSE( loadStringTables(glcDirectory + "TestNone.esm", table) );
+    }
+
+    SECTION("failure: matching string files exist, but they are empty")
+    {
+      StringTable table;
+
+      REQUIRE_FALSE( loadStringTables(glcDirectory + "test.esm", table) );
+      REQUIRE( table.getNumberOfTableEntries() == 0 );
     }
   }
 }

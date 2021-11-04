@@ -108,4 +108,24 @@ int getAssociatedTableFiles(const std::string& fileName, std::vector<std::string
     return 0;
 }
 
+bool loadStringTables(const std::string& esmFileName, StringTable& table)
+{
+  std::vector<std::string> files;
+  const int rc = getAssociatedTableFiles(esmFileName, files);
+  if (rc != 0)
+  {
+    return false;
+  }
+  for (const auto& fileName: files)
+  {
+    if (!table.readTable(fileName, StringTable::sdUnknown))
+    {
+      std::cerr << "Error while reading string tables for " << esmFileName << "!\n";
+      return false;
+    }
+  }
+
+  return true;
+}
+
 } // namespace

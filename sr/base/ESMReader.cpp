@@ -89,7 +89,7 @@ int ESMReader::readESM(const std::string& FileName, Tes4HeaderRecord& head)
   if (recordName != cTES4)
   {
     std::cerr << "Error: File \"" << FileName << "\" is not a valid .esp/.esm file."
-              << " Expected " << IntTo4Char(cTES4) << ", but \"" << IntTo4Char(recordName)
+              << " Expected TES4, but \"" << IntTo4Char(recordName)
               << "\" was found instead.\n";
     input.close();
     return -1;
@@ -173,8 +173,8 @@ bool ESMReader::peekESMHeader(const std::string& FileName, Tes4HeaderRecord& hea
   if (recordName != cTES4)
   {
     std::cerr << "ESMReader::peekESMHeader: Error: File \"" << FileName
-              << "\" is not a valid .esp/.esm file. Expected " << IntTo4Char(cTES4)
-              << ", but \"" << IntTo4Char(recordName) << "\" was found instead.\n";
+              << "\" is not a valid .esp/.esm file. Expected TES4, but \""
+              << IntTo4Char(recordName) << "\" was found instead.\n";
     input.close();
     return false;
   }

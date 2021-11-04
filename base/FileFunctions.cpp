@@ -115,20 +115,20 @@ FileEntry::FileEntry()
 : fileName(""), isDirectory(false)
 { }
 
-std::vector<FileEntry> getDirectoryFileList(const std::string& Directory)
+std::optional<std::vector<FileEntry> > getDirectoryFileList(const std::string& Directory)
 {
   namespace fs = std::filesystem;
-
-  std::vector<FileEntry> result;
-  FileEntry one;
 
   std::error_code error;
   fs::directory_iterator iter(Directory, error);
   if (error)
   {
-    // Returning empty container.
-    return result;
+    // Returning empty optional to indicate error.
+    return std::nullopt;
   }
+
+  std::vector<FileEntry> result;
+  FileEntry one;
   for (const auto& entry: iter)
   {
     one.fileName = entry.path().filename().string();

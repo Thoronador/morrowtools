@@ -39,8 +39,8 @@ int getLanguageComponent(const std::string& dataDir, const std::string& pluginNa
   languageComponent = "";
   std::string part_path, part_name, part_ext;
 
-  const std::vector<FileEntry> files = getDirectoryFileList(dataDir + "Strings" + MWTP::pathDelimiter);
-  if (files.size() < 3)
+  const auto files = getDirectoryFileList(dataDir + "Strings" + MWTP::pathDelimiter);
+  if (!files.has_value() || files.value().size() < 3)
   {
     // Not enough files.
     return SRTP::rcFileError;
@@ -48,11 +48,11 @@ int getLanguageComponent(const std::string& dataDir, const std::string& pluginNa
 
   std::set<std::string> presentStuff;
 
-  for (unsigned int i = 0; i < files.size(); ++i)
+  for (const auto& entry: files.value())
   {
-    if ((!files[i].isDirectory) && (lowerCase(files[i].fileName.substr(0, piNameLength + 1)) == lcPluginName + "_"))
+    if ((!entry.isDirectory) && (lowerCase(entry.fileName.substr(0, piNameLength + 1)) == lcPluginName + "_"))
     {
-      splitPathFileExtension(files[i].fileName, MWTP::pathDelimiter, part_path, part_name, part_ext);
+      splitPathFileExtension(entry.fileName, MWTP::pathDelimiter, part_path, part_name, part_ext);
       if ((lowerCaseCompare(part_ext, "dlstrings") == 0) || (lowerCaseCompare(part_ext, "strings") == 0)
         || (lowerCaseCompare(part_ext, "ilstrings") == 0))
       {
@@ -60,13 +60,13 @@ int getLanguageComponent(const std::string& dataDir, const std::string& pluginNa
         if (languageComponent.empty())
         {
           languageComponent = part_name.substr(piNameLength + 1);
-          presentStuff.insert(dataDir + "Strings" + MWTP::pathDelimiter + files[i].fileName);
+          presentStuff.insert(dataDir + "Strings" + MWTP::pathDelimiter + entry.fileName);
         }
         else
         {
           if (part_name.substr(piNameLength + 1) == languageComponent)
           {
-            presentStuff.insert(dataDir + "Strings" + MWTP::pathDelimiter + files[i].fileName);
+            presentStuff.insert(dataDir + "Strings" + MWTP::pathDelimiter + entry.fileName);
           }
         }
       } // if string file extension
@@ -87,11 +87,9 @@ int getLanguageComponent(const std::string& dataDir, const std::string& pluginNa
   }
 
   stringTableFiles.clear();
-  std::set<std::string>::const_iterator cIter = presentStuff.begin();
-  while (cIter != presentStuff.end())
+  for (const auto& fn: presentStuff)
   {
-    stringTableFiles.push_back(*cIter);
-    ++cIter;
+    stringTableFiles.push_back(fn);
   }
 
   return 0;

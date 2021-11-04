@@ -22,6 +22,7 @@
 #define FILEFUNCTIONS_HPP
 
 #include <cstdint>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -90,11 +91,12 @@ struct FileEntry {
  *
  * \param Directory   the directory to search for files
  * \return Returns a vector containing one entry for each file.
+ *         If an error occurred, an empty optional is returned instead.
  * \remark The function does no recursive directory traversal. It only gets the
  *         files and directories in the given directory itself, not the files in
  *         its subordinate directories.
  */
-std::vector<FileEntry> getDirectoryFileList(const std::string& Directory);
+std::optional<std::vector<FileEntry> > getDirectoryFileList(const std::string& Directory);
 
 /** \brief Splits a file name into path, file and extension.
  *

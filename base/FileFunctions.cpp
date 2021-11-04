@@ -126,8 +126,7 @@ std::vector<FileEntry> getDirectoryFileList(const std::string& Directory)
   fs::directory_iterator iter(Directory, error);
   if (error)
   {
-    std::cerr << "getDirectoryFileList: ERROR: Unable to open directory "
-              << "\"" << Directory << "\". Returning empty list.\n";
+    // Returning empty container.
     return result;
   }
   for (const auto& entry: iter)

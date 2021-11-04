@@ -42,7 +42,7 @@ int getLanguageComponent(const std::string& dataDir, const std::string& pluginNa
   const std::vector<FileEntry> files = getDirectoryFileList(dataDir + "Strings" + MWTP::pathDelimiter);
   if (files.size() < 3)
   {
-    std::cerr << "Error: Could not find string table files for " << pluginName << "!\n";
+    // Not enough files.
     return SRTP::rcFileError;
   }
 

@@ -70,7 +70,7 @@
 void showGPLNotice()
 {
   std::cout << "Form ID finder for Skyrim\n"
-            << "  Copyright (C) 2011, 2012, 2013, 2015  Thoronador\n"
+            << "  Copyright (C) 2011, 2012, 2013, 2015, 2021  Thoronador\n"
             << "\n"
             << "  This programme is free software: you can redistribute it and/or\n"
             << "  modify it under the terms of the GNU General Public License as published\n"
@@ -89,13 +89,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Form ID Finder for Skyrim, version 0.24c.rev522, 2015-09-14\n";
+  std::cout << "Form ID Finder for Skyrim, version 0.25-pre.rev523, 2021-11-04\n";
 }
 
 int showVersionExitcode()
 {
   showVersion();
-  return 522;
+  return 523;
 }
 
 void showHelp()

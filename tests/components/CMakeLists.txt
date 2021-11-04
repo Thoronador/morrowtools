@@ -107,6 +107,7 @@ set(component_tests_sources
     sr/base/FormIDFunctions.cpp
     sr/base/MapBasedRecordManager.cpp
     sr/base/StringTable.cpp
+    sr/base/TableUtilities.cpp
     sr/base/TestFactionsReader.cpp
     sr/base/bsa/BSA.cpp
     sr/base/bsa/BSAFileRecord.cpp

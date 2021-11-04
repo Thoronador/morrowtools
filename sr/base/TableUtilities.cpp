@@ -39,7 +39,7 @@ namespace SRTP
     const std::vector<FileEntry> files = getDirectoryFileList(dataDir + "Strings" + MWTP::pathDelimiter);
     if (files.size() < 3)
     {
-      std::cerr << "Error: could not find string table files for " << pluginName << "!\n";
+      std::cerr << "Error: Could not find string table files for " << pluginName << "!\n";
       return SRTP::rcFileError;
     }
 

@@ -224,6 +224,7 @@
 		<Unit filename="sr/base/FormIDFunctions.cpp" />
 		<Unit filename="sr/base/MapBasedRecordManager.cpp" />
 		<Unit filename="sr/base/StringTable.cpp" />
+		<Unit filename="sr/base/TableUtilities.cpp" />
 		<Unit filename="sr/base/TestFactionsReader.cpp" />
 		<Unit filename="sr/base/TestFactionsReader.hpp" />
 		<Unit filename="sr/base/bsa/BSA.cpp" />

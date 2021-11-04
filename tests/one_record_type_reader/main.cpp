@@ -158,7 +158,7 @@ int main(int argc, char **argv)
   for (const auto& esm: esmNames)
   {
     std::cout << "Reading " << esm << " ...\n";
-    if (reader.readESM(dataDir + esm, tes4rec) < 0)
+    if (reader.readESM(dataDir + esm, tes4rec, std::nullopt) < 0)
     {
       std::cerr << "Error while reading "<< dataDir + esm << "!\n";
       return SRTP::rcFileError;

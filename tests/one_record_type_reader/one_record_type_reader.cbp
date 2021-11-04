@@ -38,6 +38,7 @@
 		</Compiler>
 		<Linker>
 			<Add library="z" />
+			<Add library="lz4" />
 		</Linker>
 		<Unit filename="../../base/BufferStream.hpp" />
 		<Unit filename="../../base/CompressionFunctions.cpp" />
@@ -46,8 +47,12 @@
 		<Unit filename="../../base/DirectoryFunctions.hpp" />
 		<Unit filename="../../base/FileFunctions.cpp" />
 		<Unit filename="../../base/FileFunctions.hpp" />
+		<Unit filename="../../base/SlashFunctions.cpp" />
+		<Unit filename="../../base/SlashFunctions.hpp" />
 		<Unit filename="../../base/UtilityFunctions.cpp" />
 		<Unit filename="../../base/UtilityFunctions.hpp" />
+		<Unit filename="../../base/lz4Compression.cpp" />
+		<Unit filename="../../base/lz4Compression.hpp" />
 		<Unit filename="../../mw/base/HelperIO.cpp" />
 		<Unit filename="../../mw/base/HelperIO.hpp" />
 		<Unit filename="../../sr/base/Cells.hpp" />
@@ -55,6 +60,8 @@
 		<Unit filename="../../sr/base/ESMReader.hpp" />
 		<Unit filename="../../sr/base/FormIDFunctions.cpp" />
 		<Unit filename="../../sr/base/FormIDFunctions.hpp" />
+		<Unit filename="../../sr/base/Localization.cpp" />
+		<Unit filename="../../sr/base/Localization.hpp" />
 		<Unit filename="../../sr/base/MapBasedRecordManager.hpp" />
 		<Unit filename="../../sr/base/ReturnCodes.hpp" />
 		<Unit filename="../../sr/base/SR_Constants.hpp" />
@@ -62,6 +69,17 @@
 		<Unit filename="../../sr/base/StringTable.hpp" />
 		<Unit filename="../../sr/base/TableUtilities.cpp" />
 		<Unit filename="../../sr/base/TableUtilities.hpp" />
+		<Unit filename="../../sr/base/bsa/BSA.cpp" />
+		<Unit filename="../../sr/base/bsa/BSA.hpp" />
+		<Unit filename="../../sr/base/bsa/BSAFileRecord.cpp" />
+		<Unit filename="../../sr/base/bsa/BSAFileRecord.hpp" />
+		<Unit filename="../../sr/base/bsa/BSAFolderBlock.cpp" />
+		<Unit filename="../../sr/base/bsa/BSAFolderBlock.hpp" />
+		<Unit filename="../../sr/base/bsa/BSAFolderRecord.cpp" />
+		<Unit filename="../../sr/base/bsa/BSAFolderRecord.hpp" />
+		<Unit filename="../../sr/base/bsa/BSAHash.hpp" />
+		<Unit filename="../../sr/base/bsa/BSAHeader.cpp" />
+		<Unit filename="../../sr/base/bsa/BSAHeader.hpp" />
 		<Unit filename="../../sr/base/records/BasicRecord.cpp" />
 		<Unit filename="../../sr/base/records/BasicRecord.hpp" />
 		<Unit filename="../../sr/base/records/BinarySubRecord.cpp" />

@@ -275,8 +275,9 @@ begin
     521: Result:= 'v0.24b.rev521, 2013-03-19';
     522: Result:= 'v0.24c.rev522, 2015-09-14';
     523: Result:= 'v0.25-pre.rev523, 2021-11-04';
+    524: Result:= 'v0.25-pre2.rev524, 2021-11-06';
   else
-    Result:= 'v0.25-pre or later';
+    Result:= 'v0.25-pre2 or later';
   end;//case
 end;//func
 

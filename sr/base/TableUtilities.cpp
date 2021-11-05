@@ -25,6 +25,7 @@
 #include <set>
 #include "../../base/DirectoryFunctions.hpp" // for path delimiter
 #include "../../base/FileFunctions.hpp"      // for getDirectoryFileList()
+#include "../../base/RandomFunctions.hpp"    // for randomAlphaNumericSequence()
 #include "../../base/UtilityFunctions.hpp"   // for lowerCase()
 #include "bsa/BSA.hpp"
 #include "ReturnCodes.hpp"
@@ -197,13 +198,19 @@ bool loadStringTablesFromBSA(const std::string& esmFileName, StringTable& table,
   part_name = lowerCase(part_name);
 
   const auto tempPath = getTemporaryDirectory();
-
+  if (tempPath.empty())
+  {
+    std::cerr << "Error: Could not determine temporary directory for extraction"
+              << " of language files from BSA!\n";
+    return false;
+  }
   const std::string language = stringTableSuffix(l10n.value_or(Localization::German));
+  const auto prefix = "a" + MWTP::randomAlphaNumericSequence(7);
 
   for (const auto& extension: { ".strings", ".dlstrings", ".ilstrings" })
   {
     const auto fn = part_name + "_" + language + extension;
-    const auto destination = (tempPath / fn).string();
+    const auto destination = (tempPath / (prefix + fn)).string();
     if (!bsa.extractFile("strings\\" + fn, destination))
       return false;
     const bool success = table.readTable(destination, StringTable::sdUnknown);

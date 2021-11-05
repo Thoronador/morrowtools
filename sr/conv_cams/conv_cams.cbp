@@ -45,6 +45,8 @@
 		<Unit filename="../../base/DirectoryFunctions.hpp" />
 		<Unit filename="../../base/FileFunctions.cpp" />
 		<Unit filename="../../base/FileFunctions.hpp" />
+		<Unit filename="../../base/RandomFunctions.cpp" />
+		<Unit filename="../../base/RandomFunctions.hpp" />
 		<Unit filename="../../base/RegistryFunctions.cpp" />
 		<Unit filename="../../base/RegistryFunctions.hpp" />
 		<Unit filename="../../base/SlashFunctions.cpp" />

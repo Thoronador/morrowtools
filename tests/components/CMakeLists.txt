@@ -10,6 +10,7 @@ set(component_tests_sources
     ../../base/DirectoryFunctions.cpp
     ../../base/FileFunctions.cpp
     ../../base/lz4Compression.cpp
+    ../../base/RandomFunctions.cpp
     ../../base/RegistryFunctions.cpp
     ../../base/SlashFunctions.cpp
     ../../base/UtilityFunctions.cpp
@@ -98,6 +99,7 @@ set(component_tests_sources
     base/DirectoryFunctions.cpp
     base/FileFunctions.cpp
     base/lz4Compression.cpp
+    base/RandomFunctions.cpp
     base/RegistryFunctions.cpp
     base/SlashFunctions.cpp
     base/UtilityFunctions.cpp

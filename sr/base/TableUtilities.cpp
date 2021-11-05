@@ -19,6 +19,7 @@
 */
 
 #include "TableUtilities.hpp"
+#include <cstdlib>
 #include <filesystem>
 #include <iostream>
 #include <set>
@@ -27,6 +28,9 @@
 #include "../../base/UtilityFunctions.hpp"   // for lowerCase()
 #include "bsa/BSA.hpp"
 #include "ReturnCodes.hpp"
+#if defined(_WIN32) || defined(_WIN64)
+#include <shlobj.h>  // for SHGetKnownFolderPath()
+#endif
 
 namespace SRTP
 {
@@ -128,6 +132,59 @@ bool loadStringTables(const std::string& esmFileName, StringTable& table, const 
   return true;
 }
 
+std::filesystem::path getTemporaryDirectory()
+{
+  namespace fs = std::filesystem;
+
+  std::error_code error;
+  auto tempPath = fs::temp_directory_path(error);
+  if (!error)
+    return tempPath;
+  #if defined(_WIN32) || defined(_WIN64)
+  // Get it from WinAPI.
+  TCHAR path[MAX_PATH];
+  const auto result = SHGetFolderPath(NULL, CSIDL_LOCAL_APPDATA | CSIDL_FLAG_CREATE,
+                                      NULL, SHGFP_TYPE_CURRENT, path);
+  if (result == S_OK)
+  {
+    tempPath = path;
+    tempPath /= "Temp";
+    if (fs::exists(tempPath, error) && !error
+      && fs::is_directory(tempPath, error) && !error)
+        return tempPath;
+  }
+  #else
+  // The /tmp directory basically exists on every major Linux distribution.
+  tempPath = "/tmp";
+  if (fs::exists(tempPath, error) && !error
+    && fs::is_directory(tempPath, error) && !error)
+      return tempPath;
+  #endif
+  // Try some common environment variables as last resort.
+  const auto vars = {
+      "TMP",
+      "TEMP",
+      #if defined(_WIN32) || defined(_WIN64)
+      "LOCALAPPDATA"
+      #else
+      "TMPDIR"
+      #endif
+  };
+  for (const auto& var: vars)
+  {
+    const char * envVar = std::getenv(var);
+    if (envVar != nullptr)
+    {
+      tempPath = envVar;
+      if (fs::exists(tempPath, error) && !error
+          && fs::is_directory(tempPath, error) && !error)
+          return tempPath;
+    }
+  }
+  // No success. Return empty path.
+  return fs::path();
+}
+
 bool loadStringTablesFromBSA(const std::string& esmFileName, StringTable& table, const std::optional<Localization>& l10n)
 {
   std::string part_path, part_name, part_ext;
@@ -139,7 +196,8 @@ bool loadStringTablesFromBSA(const std::string& esmFileName, StringTable& table,
     return false;
   part_name = lowerCase(part_name);
 
-  const auto tempPath = std::filesystem::temp_directory_path();
+  const auto tempPath = getTemporaryDirectory();
+
   const std::string language = stringTableSuffix(l10n.value_or(Localization::German));
 
   for (const auto& extension: { ".strings", ".dlstrings", ".ilstrings" })

@@ -1,5 +1,13 @@
 # Form ID Finder - version history
 
+## Version 0.25-pre2, 2021-11-06
+- fix a bug that could lead to crash when the program is used with Skyrim
+  Special Edition
+
+## Version 0.25-pre, 2021-11-04
+- add support for Skryim Special Edition
+- application is now 64 bit instead of 32 bit
+
 ## Version 0.24, 2013-03-14
 - show form IDs of DLCs together with file name
 

@@ -113,14 +113,15 @@ ScriptRecord::~ScriptRecord()
 
 bool ScriptRecord::equals(const ScriptRecord& other) const
 {
-  if ((recordID==other.recordID) and (NumShorts==other.NumShorts)
-    and (NumLongs==other.NumLongs) and (NumFloats==other.NumFloats)
-    and (ScriptDataSize==other.ScriptDataSize) and (LocalVarSize==other.LocalVarSize)
-    and (LocalVars==other.LocalVars) and (ScriptText==other.ScriptText))
+  if ((recordID == other.recordID) && (NumShorts == other.NumShorts)
+    && (NumLongs == other.NumLongs) && (NumFloats == other.NumFloats)
+    && (ScriptDataSize == other.ScriptDataSize) && (LocalVarSize == other.LocalVarSize)
+    && (LocalVars == other.LocalVars) && (ScriptText == other.ScriptText))
   {
     //check script data
     //Is one NULL, the other not?
-    if ((ScriptData==NULL) xor (other.ScriptData==NULL)) return false;
+    if ((ScriptData == NULL) ^ (other.ScriptData == NULL))
+        return false;
     //So either both are NULL or none is NULL - if NULL, return true.
     if (ScriptData==NULL) return true;
     //compare memory

@@ -45,12 +45,13 @@ bool RefDoorData::operator==(const RefDoorData& other) const
 
 bool AmbientLight::operator==(const AmbientLight& other) const
 {
-  if (isPresent xor other.isPresent) return false;
+  if (isPresent ^ other.isPresent)
+    return false;
   if (isPresent)
   {
-    return ((AmbientColour==other.AmbientColour)
-        and (SunlightColour==other.SunlightColour)
-        and (FogColour==other.FogColour) and (FogDensity==other.FogDensity));
+    return (AmbientColour == other.AmbientColour)
+        && (SunlightColour == other.SunlightColour)
+        && (FogColour == other.FogColour) && (FogDensity == other.FogDensity);
   }
   return true;
 }

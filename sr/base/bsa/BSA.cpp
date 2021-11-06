@@ -551,7 +551,7 @@ bool BSA::isFileCompressed(const uint32_t folderIndex, const uint32_t fileIndex)
     return false;
   }
 
-  return (m_Header.filesCompressedByDefault() xor m_FolderBlocks.at(folderIndex).files.at(fileIndex).isCompressionToggled());
+  return m_Header.filesCompressedByDefault() ^ m_FolderBlocks.at(folderIndex).files.at(fileIndex).isCompressionToggled();
 }
 
 bool BSA::extractFile(const uint32_t folderIndex, const uint32_t fileIndex, const std::string& outputFileName)

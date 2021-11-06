@@ -49,14 +49,14 @@ LandscapeRecord::LandscapeRecord()
 
 bool LandscapeRecord::equals(const LandscapeRecord& other) const
 {
-  if ((CellX==other.CellX) and (CellY==other.CellY) and (UnknownData==other.UnknownData)
-    and (hasNormals==other.hasNormals) and (hasHeightSubrecord==other.hasHeightSubrecord)
-    and (hasWNAMSubrecord==other.hasWNAMSubrecord) and (hasVertexColour==other.hasVertexColour)
-    and (hasVertexTextures==other.hasVertexTextures))
+  if ((CellX == other.CellX) && (CellY == other.CellY) && (UnknownData == other.UnknownData)
+    && (hasNormals == other.hasNormals) && (hasHeightSubrecord == other.hasHeightSubrecord)
+    && (hasWNAMSubrecord == other.hasWNAMSubrecord) && (hasVertexColour == other.hasVertexColour)
+    && (hasVertexTextures == other.hasVertexTextures))
   {
     //check other stuff
     // ---- normals
-    //if (hasNormals xor other.hasNormals)
+    //if (hasNormals ^ other.hasNormals)
     //  return false; //one is present and one is not - return
     if (hasNormals)
     {
@@ -66,8 +66,8 @@ bool LandscapeRecord::equals(const LandscapeRecord& other) const
     // ---- height data
     if (hasHeightSubrecord)
     {
-      if ((HeightOffset!=other.HeightOffset) or (UnknownByte!=other.UnknownByte)
-        or (UnknownShort!=other.UnknownShort))
+      if ((HeightOffset!=other.HeightOffset) || (UnknownByte!=other.UnknownByte)
+        || (UnknownShort!=other.UnknownShort))
         return false;
       if (memcmp(&(HeightData[0][0]), &(other.HeightData[0][0]), 65*65)!=0)
         return false;

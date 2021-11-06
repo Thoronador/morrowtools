@@ -53,7 +53,7 @@ bool PreNPCRecord::hasEqualAIPackages(const PreNPCRecord& other) const
   unsigned int i;
   for (i=0; i<len; ++i)
   {
-    if ((AIPackages.at(i)==NULL) xor (other.AIPackages.at(i)==NULL))
+    if ((AIPackages.at(i) == NULL) ^ (other.AIPackages.at(i) == NULL))
       return false;
     if (AIPackages.at(i)!=NULL)
     {

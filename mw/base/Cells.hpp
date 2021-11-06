@@ -85,7 +85,7 @@ class Cells
     */
     const CellRecord& getCell(const CellRef& ref) const;
 
-    /* tries to read a cell record from the given input file stream.
+    /* tries to read a cell record from the given input stream.
 
        return value:
            If an error occurred, the function returns -1. Otherwise it returns
@@ -94,9 +94,9 @@ class Cells
            returned.)
 
        parameters:
-           in_File  - the input file stream that is used to read the record
+           input  - the input stream that is used to read the record
     */
-    int readRecordCELL(std::ifstream& in_File);
+    int readRecordCELL(std::istream& input);
 
     /* returns constant iterator to the beginning of the internal list */
     CellListIterator getBegin() const;
@@ -108,10 +108,9 @@ class Cells
        true on success, false on failure
 
        parameters:
-           output - the output file stream that shall be used to save the
-                    cells
+           output - the output stream that shall be used to save the cells
     */
-    bool saveAllToStream(std::ofstream& output) const;
+    bool saveAllToStream(std::ostream& output) const;
 
     /* removes all cells from the list */
     void clearAll();

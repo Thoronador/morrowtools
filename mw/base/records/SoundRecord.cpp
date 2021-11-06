@@ -44,7 +44,7 @@ bool SoundRecord::equals(const SoundRecord& other) const
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool SoundRecord::saveToStream(std::ofstream& output) const
+bool SoundRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cSOUN, 4);
   uint32_t Size;
@@ -95,7 +95,7 @@ bool SoundRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool SoundRecord::loadFromStream(std::ifstream& in_File)
+bool SoundRecord::loadFromStream(std::istream& in_File)
 {
   uint32_t Size;
   in_File.read((char*) &Size, 4);

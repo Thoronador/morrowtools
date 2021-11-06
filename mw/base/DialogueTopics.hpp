@@ -65,7 +65,7 @@ class DialogueTopics
     */
     const DialogueTopicRecord& getDialogueTopic(const std::string& ID) const;
 
-    /* tries to read a dialogue topic record from the given input file stream.
+    /* tries to read a dialogue topic record from the given input stream.
 
        return value:
            If an error occurred, the function returns -1. Otherwise it returns
@@ -74,9 +74,9 @@ class DialogueTopics
            returned.)
 
        parameters:
-           in_File  - the input file stream that is used to read the record
+           input - the input stream that is used to read the record
     */
-    int readRecordDIAL(std::ifstream& in_File);
+    int readRecordDIAL(std::istream& input);
 
     /* returns constant iterator to the beginning of the internal list */
     DialogueTopicListIterator getBegin() const;
@@ -88,10 +88,10 @@ class DialogueTopics
        returns true on success, false on failure
 
        parameters:
-           output - the output file stream that shall be used to save the
+           output - the output stream that shall be used to save the
                     dialogue topics
     */
-    bool saveAllToStream(std::ofstream& output) const;
+    bool saveAllToStream(std::ostream& output) const;
 
     /* removes all dialogue topics from the list */
     void clearAll();

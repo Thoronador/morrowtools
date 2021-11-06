@@ -83,7 +83,7 @@ class MagicEffects
     */
     static bool isAttributeRelatedEffect(const int32_t Index);
 
-    /* tries to read a magic effect record from the given input file stream.
+    /* tries to read a magic effect record from the given input stream.
 
        return value:
            If an error occurRed, the function returns -1. Otherwise it returns
@@ -92,9 +92,9 @@ class MagicEffects
            returned.)
 
        parameters:
-           in_File - the input file stream that is used to read the record
+           input - the input stream that is used to read the record
     */
-    int readRecordMGEF(std::ifstream& in_File);
+    int readRecordMGEF(std::istream& input);
 
     /* returns constant iterator to the beginning of the internal list */
     EffectListIterator getBegin() const;
@@ -106,10 +106,10 @@ class MagicEffects
        true on success, false on failure
 
        parameters:
-           output - the output file stream that shall be used to save the magic
+           output - the output stream that shall be used to save the magic
                     effects
     */
-    bool saveAllToStream(std::ofstream& output) const;
+    bool saveAllToStream(std::ostream& output) const;
 
     /* deletes all effects */
     void clearAll();

@@ -40,17 +40,17 @@ struct BasicRecord
     /* writes the record to the given output stream and returns true on success
 
       parameters:
-          output   - the output file stream
+          output - the output stream
     */
-    virtual bool saveToStream(std::ofstream& output) const = 0;
+    virtual bool saveToStream(std::ostream& output) const = 0;
     #endif
 
     /* loads the record from the given input stream and returns true on success
 
       parameters:
-          in_File - the input file stream
+          in_File - the input stream
     */
-    virtual bool loadFromStream(std::ifstream& in_File) = 0;
+    virtual bool loadFromStream(std::istream& in_File) = 0;
 
     //returns the first header part of this record
     int32_t getHeaderOne() const;

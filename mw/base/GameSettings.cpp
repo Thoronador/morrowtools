@@ -69,10 +69,10 @@ unsigned int GameSettings::getNumberOfSettings() const
   return m_Settings.size();
 }
 
-int GameSettings::readRecordGMST(std::ifstream& in_File)
+int GameSettings::readRecordGMST(std::istream& input)
 {
   GMSTRecord temp;
-  if (temp.loadFromStream(in_File))
+  if (temp.loadFromStream(input))
   {
     //check for presence of setting
     if (hasSetting(temp.SettingName))
@@ -87,14 +87,14 @@ int GameSettings::readRecordGMST(std::ifstream& in_File)
   }//if
   std::cout << "Error while reading data subrecord of GMST.\n";
   return -1;
-}//readRecordGMST (integer version of readGMST)
+}
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool GameSettings::saveAllToStream(std::ofstream& output) const
+bool GameSettings::saveAllToStream(std::ostream& output) const
 {
   if (!output.good())
   {
-    std::cout << "GameSettings::saveAllToStream: Error: bad stream.\n";
+    std::cout << "GameSettings::saveAllToStream: Error: Bad stream.\n";
     return false;
   }
   GMSTListIterator iter = m_Settings.begin();

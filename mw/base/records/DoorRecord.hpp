@@ -51,29 +51,29 @@ struct DoorRecord: public BasicRecord
     /* writes the record to the given output stream and returns true on success
 
       parameters:
-          output   - the output file stream
+          output - the output stream
     */
-    bool saveToStream(std::ofstream& output) const;
+    bool saveToStream(std::ostream& output) const override;
     #endif
 
     /* loads the record from the given input stream and returns true on success
 
       parameters:
-          in_File - the input file stream
+          in_File - the input stream
     */
-    bool loadFromStream(std::ifstream& in_File);
+    bool loadFromStream(std::istream& in_File) override;
 
   protected:
     /*tries to read a string subrecord and returns true on success
 
       parameters:
-          in_File     - the input file stream
+          in_File     - the input stream
           Buffer      - pointer to a buffer of at least 256 bytes length
           BytesRead   - reference to a variable that counts the number of bytes
                         that were read from the stream
           Destination - the string that will hold the read string after success
     */
-    bool readSubRecordString(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead, std::string& Destination);
+    bool readSubRecordString(std::istream& in_File, char* Buffer, uint32_t& BytesRead, std::string& Destination);
 };//struct
 
 } //namespace

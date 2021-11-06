@@ -82,19 +82,19 @@ struct ReferencedObject
   /* loads the object reference from the given input stream and returns true on success
 
     parameters:
-        in_File   - the input file stream
-        BytesRead - reference to the 32bit unsignet int that counts the bytes read
+        in_File   - the input stream
+        BytesRead - reference to the 32 bit unsigned int that counts the bytes read
         Buffer    - pointer to a char array that can hold at least 256 bytes
   */
-  bool loadFromStream(std::ifstream& in_File, uint32_t& BytesRead, char* Buffer);
+  bool loadFromStream(std::istream& in_File, uint32_t& BytesRead, char* Buffer);
 
   #ifndef MW_UNSAVEABLE_RECORDS
   /* writes the object reference to the given output stream and returns true on success
 
     parameters:
-        output      - the output file stream
+        output - the output stream
   */
-  bool saveToStream(std::ofstream& output) const;
+  bool saveToStream(std::ostream& output) const;
   #endif
 
   /* returns the size in bytes of this reference's data written to a stream */
@@ -142,17 +142,17 @@ struct CellRecord: public BasicRecord
   /* writes the record to the given output stream and returns true on success
 
     parameters:
-        output      - the output file stream
+        output - the output stream
   */
-  bool saveToStream(std::ofstream& output) const;
+  bool saveToStream(std::ostream& output) const override;
   #endif
 
   /* loads the record from the given input stream and returns true on success
 
     parameters:
-        in_File - the input file stream
+        in_File - the input stream
   */
-  bool loadFromStream(std::ifstream& in_File);
+  bool loadFromStream(std::istream& in_File) override;
 
   /* returns true, if the interior cell flag is set */
   bool isInterior() const;

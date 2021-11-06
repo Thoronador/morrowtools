@@ -55,7 +55,7 @@ bool AlchemyPotionRecord::equals(const AlchemyPotionRecord& other) const
   return true;
 }
 
-bool AlchemyPotionRecord::loadFromStream(std::ifstream& in_File)
+bool AlchemyPotionRecord::loadFromStream(std::istream& in_File)
 {
   uint32_t Size;
   in_File.read((char*) &Size, 4);
@@ -187,7 +187,7 @@ bool AlchemyPotionRecord::loadFromStream(std::ifstream& in_File)
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool AlchemyPotionRecord::saveToStream(std::ofstream& output) const
+bool AlchemyPotionRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cALCH, 4);
   uint32_t Size;
@@ -307,7 +307,7 @@ bool AlchemyPotionRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool AlchemyPotionRecord::readSubRecordALDT(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead)
+bool AlchemyPotionRecord::readSubRecordALDT(std::istream& in_File, char* Buffer, uint32_t& BytesRead)
 {
   uint32_t SubLength = 0;
   //ALDT's length
@@ -332,7 +332,7 @@ bool AlchemyPotionRecord::readSubRecordALDT(std::ifstream& in_File, char* Buffer
   return true;
 }
 
-bool AlchemyPotionRecord::readSubRecordENAM(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead)
+bool AlchemyPotionRecord::readSubRecordENAM(std::istream& in_File, char* Buffer, uint32_t& BytesRead)
 {
   //ENAM's length
   uint32_t SubLength = 0;
@@ -364,7 +364,7 @@ bool AlchemyPotionRecord::readSubRecordENAM(std::ifstream& in_File, char* Buffer
   return true;
 }
 
-bool AlchemyPotionRecord::readSubRecordFNAM(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead)
+bool AlchemyPotionRecord::readSubRecordFNAM(std::istream& in_File, char* Buffer, uint32_t& BytesRead)
 {
   //FNAM's length
   uint32_t SubLength = 0;
@@ -388,7 +388,7 @@ bool AlchemyPotionRecord::readSubRecordFNAM(std::ifstream& in_File, char* Buffer
   return true;
 }
 
-bool AlchemyPotionRecord::readSubRecordSCRI(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead)
+bool AlchemyPotionRecord::readSubRecordSCRI(std::istream& in_File, char* Buffer, uint32_t& BytesRead)
 {
   //SCRI's length
   uint32_t SubLength = 0;
@@ -412,7 +412,7 @@ bool AlchemyPotionRecord::readSubRecordSCRI(std::ifstream& in_File, char* Buffer
   return true;
 }
 
-bool AlchemyPotionRecord::readSubRecordTEXT(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead)
+bool AlchemyPotionRecord::readSubRecordTEXT(std::istream& in_File, char* Buffer, uint32_t& BytesRead)
 {
   uint32_t SubLength = 0;
   //TEXT's length

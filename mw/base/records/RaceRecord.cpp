@@ -112,7 +112,7 @@ bool RaceRecord::equals(const RaceRecord& other) const
   return false;
 }
 
-bool RaceRecord::loadFromStream(std::ifstream& in_File)
+bool RaceRecord::loadFromStream(std::istream& in_File)
 {
   uint32_t Size;
   in_File.read((char*) &Size, 4);
@@ -329,7 +329,7 @@ bool RaceRecord::loadFromStream(std::ifstream& in_File)
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool RaceRecord::saveToStream(std::ofstream& output) const
+bool RaceRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cRACE, 4);
   uint32_t Size;

@@ -45,7 +45,7 @@ bool SkillRecord::equals(const SkillRecord& other) const
          and (UseValue[3]==other.UseValue[3]) and (SkillIndex==other.SkillIndex));
 }
 
-bool SkillRecord::saveToStream(std::ofstream& output) const
+bool SkillRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cSKIL, 4);
   uint32_t Size;
@@ -95,7 +95,7 @@ bool SkillRecord::saveToStream(std::ofstream& output) const
   return output.good();
 }
 
-bool SkillRecord::loadFromStream(std::ifstream& in_File)
+bool SkillRecord::loadFromStream(std::istream& in_File)
 {
   uint32_t Size;
   in_File.read((char*) &Size, 4);

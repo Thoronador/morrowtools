@@ -39,7 +39,7 @@ ESMReaderSpells::~ESMReaderSpells()
   //empty
 }
 
-int ESMReaderSpells::processNextRecord(std::ifstream& in_File)
+int ESMReaderSpells::processNextRecord(std::istream& in_File)
 {
   int32_t RecordName = 0; //normally should be 4 char, but char is not eligible for switch
   int lastResult = 0;
@@ -110,8 +110,8 @@ int ESMReaderSpells::processNextRecord(std::ifstream& in_File)
                    << "Current file position: "<<in_File.tellg()<< " bytes.\n";
          lastResult = -1;
          break;
-  }//swi
+  }
   return lastResult;
-}//processNextRecord of ESMReaderSpells
+}
 
 } //namespace

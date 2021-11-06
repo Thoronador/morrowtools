@@ -47,7 +47,7 @@ bool StartScriptRecord::equals(const StartScriptRecord& other) const
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool StartScriptRecord::saveToStream(std::ofstream& output) const
+bool StartScriptRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cSSCR, 4);
   uint32_t Size;
@@ -82,7 +82,7 @@ bool StartScriptRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool StartScriptRecord::loadFromStream(std::ifstream& in_File)
+bool StartScriptRecord::loadFromStream(std::istream& in_File)
 {
   uint32_t Size;
   in_File.read((char*) &Size, 4);

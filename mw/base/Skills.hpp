@@ -78,7 +78,7 @@ class Skills
     /* returns the number of current skills */
     unsigned int getNumberOfSkills() const;
 
-    /* tries to read a skill record from the given input file stream.
+    /* tries to read a skill record from the given input stream.
 
        return value:
            If an error occurred, the function returns -1. Otherwise it returns
@@ -87,9 +87,9 @@ class Skills
            returned.)
 
        parameters:
-           in_File - the input file stream that is used to read the record
+           input - the input stream that is used to read the record
     */
-    int readRecordSKIL(std::ifstream& in_File);
+    int readRecordSKIL(std::istream& input);
 
     /* returns a constant iterator the the start of the list */
     SkillListIterator getBegin() const;
@@ -101,9 +101,9 @@ class Skills
        on success, false on failure
 
        parameters:
-           output - the output file stream that shall be used to save the skills
+           output - the output stream that shall be used to save the skills
     */
-    bool saveAllToStream(std::ofstream& output) const;
+    bool saveAllToStream(std::ostream& output) const;
 
     /* removes all skills from the list */
     void clearAll();

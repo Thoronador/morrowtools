@@ -36,13 +36,13 @@ ESMReaderCount::~ESMReaderCount()
   RecordCounter.clear();
 }
 
-int ESMReaderCount::processNextRecord(std::ifstream& in_File)
+int ESMReaderCount::processNextRecord(std::istream& input)
 {
   uint32_t RecordName = 0; //normally should be 4 char, but char is not eligible for switch
   int lastResult = 0;
 
   //read record name
-  in_File.read((char*) &RecordName, 4);
+  input.read((char*) &RecordName, 4);
   switch(RecordName)
   {
     case cACTI:
@@ -87,18 +87,18 @@ int ESMReaderCount::processNextRecord(std::ifstream& in_File)
     case cSSCR:
     case cSTAT:
     case cWEAP:
-         lastResult = ESMReader::skipRecord(in_File);
+         lastResult = ESMReader::skipRecord(input);
          ++RecordCounter[RecordName];
          break;
     default:
          std::cout << "processNextRecord: ERROR: unknown record type found: \""
                    <<IntTo4Char(RecordName)<<"\".\n"
-                   << "Current file position: "<<in_File.tellg()<< " bytes.\n";
+                   << "Current file position: " << input.tellg() << " bytes.\n";
          lastResult = -1;
          break;
-  }//swi
+  }
   return lastResult;
-}//processNextRecord of ESMReaderCount class
+}
 
 void ESMReaderCount::showStats(const bool withPercentage) const
 {

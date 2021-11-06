@@ -60,7 +60,7 @@ bool LightRecord::equals(const LightRecord& other) const
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool LightRecord::saveToStream(std::ofstream& output) const
+bool LightRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cLIGH, 4);
   uint32_t Size;
@@ -190,7 +190,7 @@ bool LightRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool LightRecord::loadFromStream(std::ifstream& in_File)
+bool LightRecord::loadFromStream(std::istream& in_File)
 {
   uint32_t Size;
   in_File.read((char*) &Size, 4);

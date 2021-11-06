@@ -85,7 +85,7 @@ class PathGrids
     */
     const PathGridRecord& getPathGrid(const PathGridRef& ref) const;
 
-    /* tries to read a path grid record from the given input file stream.
+    /* tries to read a path grid record from the given input stream.
 
        return value:
            If an error occurred, the function returns -1. Otherwise it returns
@@ -94,9 +94,9 @@ class PathGrids
            returned.)
 
        parameters:
-           in_File  - the input file stream that is used to read the record
+           input  - the input stream that is used to read the record
     */
-    int readRecordPGRD(std::ifstream& in_File);
+    int readRecordPGRD(std::istream& input);
 
     /* returns constant iterator to the beginning of the internal list */
     PathGridListIterator getBegin() const;
@@ -108,10 +108,9 @@ class PathGrids
        true on success, false on failure
 
        parameters:
-           output - the output file stream that shall be used to save the
-                    path grids
+           output - the output stream that shall be used to save the path grids
     */
-    bool saveAllToStream(std::ofstream& output) const;
+    bool saveAllToStream(std::ostream& output) const;
 
     /* removes all path grids from the list */
     void clearAll();

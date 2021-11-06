@@ -53,7 +53,7 @@ bool EnchantingRecord::equals(const EnchantingRecord& other) const
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool EnchantingRecord::saveToStream(std::ofstream& output) const
+bool EnchantingRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cENCH, 4);
   uint32_t Size;
@@ -125,7 +125,7 @@ bool EnchantingRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool EnchantingRecord::loadFromStream(std::ifstream& in_File)
+bool EnchantingRecord::loadFromStream(std::istream& in_File)
 {
   uint32_t Size;
   in_File.read((char*) &Size, 4);

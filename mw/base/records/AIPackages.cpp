@@ -51,7 +51,7 @@ PackageType NPC_AIActivate::getPackageType() const
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool NPC_AIActivate::saveToStream(std::ofstream& output) const
+bool NPC_AIActivate::saveToStream(std::ostream& output) const
 {
   //write AI_A
   output.write((const char*) &cAI_A, 4);
@@ -112,7 +112,7 @@ bool NPC_AIEscortFollow::equals(const NPC_AIEscortFollow& other) const
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool NPC_AIEscortFollow::saveToStream(std::ofstream& output) const
+bool NPC_AIEscortFollow::saveToStream(std::ostream& output) const
 {
   if (getPackageType()==ptEscort)
   {
@@ -209,7 +209,7 @@ PackageType NPC_AITravel::getPackageType() const
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool NPC_AITravel::saveToStream(std::ofstream& output) const
+bool NPC_AITravel::saveToStream(std::ostream& output) const
 {
   //write AI_T
   output.write((const char*) &cAI_T, 4);
@@ -261,7 +261,7 @@ PackageType NPC_AIWander::getPackageType() const
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool NPC_AIWander::saveToStream(std::ofstream& output) const
+bool NPC_AIWander::saveToStream(std::ostream& output) const
 {
   //write AI_W
   output.write((const char*) &cAI_W, 4);

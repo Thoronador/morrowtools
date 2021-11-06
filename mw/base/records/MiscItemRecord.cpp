@@ -55,7 +55,7 @@ bool MiscItemRecord::equals(const MiscItemRecord& other) const
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool MiscItemRecord::saveToStream(std::ofstream& output) const
+bool MiscItemRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cMISC, 4);
   uint32_t Size;
@@ -152,7 +152,7 @@ bool MiscItemRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool MiscItemRecord::loadFromStream(std::ifstream& in_File)
+bool MiscItemRecord::loadFromStream(std::istream& in_File)
 {
   uint32_t Size;
   in_File.read((char*) &Size, 4);

@@ -55,68 +55,68 @@ struct AlchemyPotionRecord: public BasicRecord
     /* writes the record to the given output stream and returns true on success
 
       parameters:
-          output - the output file stream
+          output - the output stream
     */
-    bool saveToStream(std::ofstream& output) const;
+    bool saveToStream(std::ostream& output) const override;
     #endif
 
     /* loads the record from the given input stream and returns true on success
 
       parameters:
-          in_File - the input file stream
+          in_File - the input stream
     */
-    bool loadFromStream(std::ifstream& in_File);
+    bool loadFromStream(std::istream& in_File) override;
   protected:
     /*tries to read a subrecord for the alchemy data and returns true on success
 
       parameters:
-          in_File   - the input file stream
+          in_File   - the input stream
           Buffer    - pointer to a buffer of at least 256 bytes length
           BytesRead - reference to a variable that counts the number of bytes
                       that were read from the stream
     */
-    bool readSubRecordALDT(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead);
+    bool readSubRecordALDT(std::istream& in_File, char* Buffer, uint32_t& BytesRead);
 
     /*tries to read a subrecord for the enchantment and returns true on success
 
       parameters:
-          in_File   - the input file stream
+          in_File   - the input stream
           Buffer    - pointer to a buffer of at least 256 bytes length
           BytesRead - reference to a variable that counts the number of bytes
                       that were read from the stream
     */
-    bool readSubRecordENAM(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead);
+    bool readSubRecordENAM(std::istream& in_File, char* Buffer, uint32_t& BytesRead);
 
     /*tries to read a subrecord for the item name and returns true on success
 
       parameters:
-          in_File   - the input file stream
+          in_File   - the input stream
           Buffer    - pointer to a buffer of at least 256 bytes length
           BytesRead - reference to a variable that counts the number of bytes
                       that were read from the stream
     */
-    bool readSubRecordFNAM(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead);
+    bool readSubRecordFNAM(std::istream& in_File, char* Buffer, uint32_t& BytesRead);
 
     /*tries to read a subrecord for the script ID and returns true on success
 
       parameters:
-          in_File   - the input file stream
+          in_File   - the input stream
           Buffer    - pointer to a buffer of at least 256 bytes length
           BytesRead - reference to a variable that counts the number of bytes
                       that were read from the stream
     */
-    bool readSubRecordSCRI(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead);
+    bool readSubRecordSCRI(std::istream& in_File, char* Buffer, uint32_t& BytesRead);
 
     /*tries to read a subrecord for the inventory icon and returns true on
       success
 
       parameters:
-          in_File   - the input file stream
+          in_File   - the input stream
           Buffer    - pointer to a buffer of at least 256 bytes length
           BytesRead - reference to a variable that counts the number of bytes
                       that were read from the stream
     */
-    bool readSubRecordTEXT(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead);
+    bool readSubRecordTEXT(std::istream& in_File, char* Buffer, uint32_t& BytesRead);
 }; //struct
 
 } //namespace

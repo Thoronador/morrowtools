@@ -154,7 +154,7 @@ bool PreNPCRecord::doesRepair() const
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool PreNPCRecord::writeItemsSpellsAIDataDestinations(std::ofstream& output) const
+bool PreNPCRecord::writeItemsSpellsAIDataDestinations(std::ostream& output) const
 {
   //items and spells
   unsigned int i, len;

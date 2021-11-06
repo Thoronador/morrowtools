@@ -60,7 +60,7 @@ bool BodyPartRecord::equals(const BodyPartRecord& other) const
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool BodyPartRecord::saveToStream(std::ofstream& output) const
+bool BodyPartRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cBODY, 4);
   uint32_t Size;
@@ -145,7 +145,7 @@ bool BodyPartRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool BodyPartRecord::loadFromStream(std::ifstream& in_File)
+bool BodyPartRecord::loadFromStream(std::istream& in_File)
 {
   uint32_t Size;
   in_File.read((char*) &Size, 4);

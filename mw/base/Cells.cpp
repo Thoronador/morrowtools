@@ -109,7 +109,7 @@ CellListIterator Cells::getEnd() const
   return m_Cells.end();
 }
 
-bool Cells::saveAllToStream(std::ofstream& output) const
+bool Cells::saveAllToStream(std::ostream& output) const
 {
   if (!output.good())
   {
@@ -136,10 +136,10 @@ void Cells::clearAll()
   m_Cells.clear();
 }
 
-int Cells::readRecordCELL(std::ifstream& in_File)
+int Cells::readRecordCELL(std::istream& input)
 {
   CellRecord temp;
-  if(!temp.loadFromStream(in_File))
+  if(!temp.loadFromStream(input))
   {
     std::cout << "readRecordCELL: Error while reading cell record.\n";
     return -1;

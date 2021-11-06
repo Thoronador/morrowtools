@@ -49,9 +49,9 @@ struct NPC_BasicAIPackage
      on success
 
      parameters:
-         output - the output file stream
+         output - the output stream
   */
-  virtual bool saveToStream(std::ofstream& output) const = 0;
+  virtual bool saveToStream(std::ostream& output) const = 0;
   #endif
 };//struct
 
@@ -68,16 +68,16 @@ struct NPC_AIActivate: public NPC_BasicAIPackage
   bool equals(const NPC_AIActivate& other) const;
 
   /* returns enum for type */
-  virtual PackageType getPackageType() const;
+  PackageType getPackageType() const override;
 
   #ifndef MW_UNSAVEABLE_RECORDS
   /* writes the package subrecord to the given output stream and returns true
      on success
 
      parameters:
-         output - the output file stream
+         output - the output stream
   */
-  virtual bool saveToStream(std::ofstream& output) const;
+  bool saveToStream(std::ostream& output) const override;
   #endif
 };//struct
 
@@ -105,22 +105,22 @@ struct NPC_AIEscortFollow: public NPC_BasicAIPackage
      on success
 
      parameters:
-         output - the output file stream
+         output - the output stream
   */
-  virtual bool saveToStream(std::ofstream& output) const;
+  bool saveToStream(std::ostream& output) const override;
   #endif
 };//struct
 
 struct NPC_AIEscort: public NPC_AIEscortFollow
 {
   /* returns enum for type */
-  virtual PackageType getPackageType() const;
+  PackageType getPackageType() const override;
 };//struct
 
 struct NPC_AIFollow: public NPC_AIEscortFollow
 {
   /* returns enum for type */
-  virtual PackageType getPackageType() const;
+  PackageType getPackageType() const override;
 };//struct
 
 /* structure to hold the travel data of an NPC */
@@ -139,16 +139,16 @@ struct NPC_AITravel: public NPC_BasicAIPackage
   bool equals(const NPC_AITravel& other) const;
 
   /* returns enum for type */
-  virtual PackageType getPackageType() const;
+  PackageType getPackageType() const override;
 
   #ifndef MW_UNSAVEABLE_RECORDS
   /* writes the package subrecord to the given output stream and returns true
      on success
 
      parameters:
-         output - the output file stream
+         output - the output stream
   */
-  virtual bool saveToStream(std::ofstream& output) const;
+  bool saveToStream(std::ostream& output) const override;
   #endif
 };//struct
 
@@ -171,16 +171,16 @@ struct NPC_AIWander: public NPC_BasicAIPackage
   bool equals(const NPC_AIWander& other) const;
 
   /* returns enum indicating the type */
-  virtual PackageType getPackageType() const;
+  PackageType getPackageType() const override;
 
   #ifndef MW_UNSAVEABLE_RECORDS
   /* writes the package subrecord to the given output stream and returns true
      on success
 
      parameters:
-         output - the output file stream
+         output - the output stream
   */
-  virtual bool saveToStream(std::ofstream& output) const;
+  bool saveToStream(std::ostream& output) const override;
   #endif
 };//struct
 

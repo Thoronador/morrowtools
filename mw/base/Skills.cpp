@@ -161,10 +161,10 @@ unsigned int Skills::getNumberOfSkills() const
   return m_Skills.size();
 }
 
-int Skills::readRecordSKIL(std::ifstream& in_File)
+int Skills::readRecordSKIL(std::istream& input)
 {
   SkillRecord temp;
-  if (temp.loadFromStream(in_File))
+  if (temp.loadFromStream(input))
   {
     if (hasSkill(temp.SkillIndex))
     {
@@ -180,7 +180,7 @@ int Skills::readRecordSKIL(std::ifstream& in_File)
   }
   std::cout << "readRecordSKIL: Error while reading record.\n";
   return -1;
-}//readRecordSKIL
+}
 
 SkillListIterator Skills::getBegin() const
 {
@@ -192,11 +192,11 @@ SkillListIterator Skills::getEnd() const
   return m_Skills.end();
 }
 
-bool Skills::saveAllToStream(std::ofstream& output) const
+bool Skills::saveAllToStream(std::ostream& output) const
 {
   if (!output.good())
   {
-    std::cout << "Skills::saveAllToStream: Error: bad stream.\n";
+    std::cout << "Skills::saveAllToStream: Error: Bad stream.\n";
     return false;
   }
   SkillListIterator iter = m_Skills.begin();

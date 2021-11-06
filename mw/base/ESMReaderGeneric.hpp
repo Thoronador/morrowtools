@@ -60,7 +60,7 @@ class ESMReaderGeneric: public ESMReader
     */
     void deallocateRecordsInVector();
   protected:
-    /* tries to read the next record from a file and returns the number of
+    /* tries to read the next record from a stream and returns the number of
        relevant records that were read (usually one). If an error occurred,
        -1 is returned. If the record was skipped or contained no relevant data,
        zero is returned.
@@ -68,7 +68,7 @@ class ESMReaderGeneric: public ESMReader
        parameters:
            in_File  - the input file stream the record shall be read from
     */
-    virtual int processNextRecord(std::ifstream& in_File);
+    virtual int processNextRecord(std::istream& in_File) override;
 
     /* pointer to the vector where the read data will be stored*/
     VectorType* m_VectorPointer;

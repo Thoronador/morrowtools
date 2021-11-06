@@ -36,21 +36,21 @@ ESMReader::~ESMReader()
   //empty
 }
 
-int ESMReader::skipRecord(std::ifstream& in_File)
+int ESMReader::skipRecord(std::istream& input)
 {
   int32_t Size, HeaderOne, Flags;
   Size = 0;
-  in_File.read((char*) &Size, 4);
+  input.read((char*) &Size, 4);
   if (Size<0)
   {
     std::cout << "Error: record size is negative.\n";
     return -1;
   }
-  in_File.read((char*) &HeaderOne, 4);
-  in_File.read((char*) &Flags, 4);
+  input.read((char*) &HeaderOne, 4);
+  input.read((char*) &Flags, 4);
   /* data does not really matter here */
-  in_File.seekg(Size, std::ios::cur);
-  if (in_File.good())
+  input.seekg(Size, std::ios::cur);
+  if (input.good())
   {
     return 0;
   }
@@ -206,7 +206,7 @@ bool ESMReader::peekESMHeader(const std::string& FileName, TES3Record& theHead)
   return input.good();
 }
 
-int ESMReader::processNextRecord(std::ifstream& in_File)
+int ESMReader::processNextRecord(std::istream& in_File)
 {
   uint32_t RecordName = 0; //normally should be 4 char, but char is not eligible for switch
   int lastResult = 0;

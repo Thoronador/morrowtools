@@ -44,7 +44,7 @@ ESMReaderGeneric::~ESMReaderGeneric()
   //NOTE: We should possibly call deallocateRecordsInVector() here!
 }
 
-int ESMReaderGeneric::processNextRecord(std::ifstream& in_File)
+int ESMReaderGeneric::processNextRecord(std::istream& in_File)
 {
   uint32_t RecordName = 0; //normally should be 4 char, but char is not eligible for switch
   int lastResult = 0;

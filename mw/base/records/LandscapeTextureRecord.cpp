@@ -41,7 +41,7 @@ bool LandscapeTextureRecord::equals(const LandscapeTextureRecord& other) const
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool LandscapeTextureRecord::saveToStream(std::ofstream& output) const
+bool LandscapeTextureRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cLTEX, 4);
   uint32_t Size;
@@ -86,7 +86,7 @@ bool LandscapeTextureRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool LandscapeTextureRecord::loadFromStream(std::ifstream& in_File)
+bool LandscapeTextureRecord::loadFromStream(std::istream& in_File)
 {
   uint32_t Size;
   in_File.read((char*) &Size, 4);

@@ -44,7 +44,7 @@ ESMReaderScriptCompiler::~ESMReaderScriptCompiler()
   //empty
 }
 
-int ESMReaderScriptCompiler::processNextRecord(std::ifstream& in_File)
+int ESMReaderScriptCompiler::processNextRecord(std::istream& in_File)
 {
   int32_t RecordName = 0; //normally should be 4 char, but char is not eligible for switch
   int lastResult = 0;

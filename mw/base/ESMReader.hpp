@@ -51,7 +51,7 @@ class ESMReader
     virtual ~ESMReader();
 
     /* skips a record and returns 0 on success, and -1 on error */
-    static int skipRecord(std::ifstream& in_File);
+    static int skipRecord(std::istream& input);
 
     /* tries to read an .esm/.esp file and returns the number of relevant
        records that were read. If an error occurred, -1 is returned. Note that
@@ -86,13 +86,13 @@ class ESMReader
     static bool peekESMHeader(const std::string& FileName, TES3Record& theHead);
 
   protected:
-    /* tries to read the next record from a file and returns the number of
+    /* tries to read the next record from a stream and returns the number of
        relevant records that were read (usually one). If an error occurred,
        -1 is returned. If the record was skipped or contained no relevant data,
        zero is returned.
 
        parameters:
-           in_File  - the input file stream the record shall be read from
+           in_File  - the input stream the record shall be read from
 
        remarks:
            If you actually want to read some data, you have to derive a class
@@ -102,7 +102,7 @@ class ESMReader
            So naturally, this function will never return values larger than
            zero.
     */
-    virtual int processNextRecord(std::ifstream& in_File);
+    virtual int processNextRecord(std::istream& in_File);
 };//class
 
 } //namespace

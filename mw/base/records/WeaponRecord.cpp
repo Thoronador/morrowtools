@@ -63,7 +63,7 @@ bool WeaponRecord::equals(const WeaponRecord& other) const
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool WeaponRecord::saveToStream(std::ofstream& output) const
+bool WeaponRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cWEAP, 4);
   uint32_t Size;
@@ -206,7 +206,7 @@ bool WeaponRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool WeaponRecord::loadFromStream(std::ifstream& in_File)
+bool WeaponRecord::loadFromStream(std::istream& in_File)
 {
   uint32_t Size;
   in_File.read((char*) &Size, 4);

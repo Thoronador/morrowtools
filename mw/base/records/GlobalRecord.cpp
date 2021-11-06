@@ -70,7 +70,7 @@ bool GlobalRecord::equals(const GlobalRecord& other) const
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool GlobalRecord::saveToStream(std::ofstream& output) const
+bool GlobalRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cGLOB, 4);
   uint32_t Size;
@@ -141,7 +141,7 @@ bool GlobalRecord::saveToStream(std::ofstream& output) const
 #endif
 
 
-bool GlobalRecord::loadFromStream(std::ifstream& in_File)
+bool GlobalRecord::loadFromStream(std::istream& in_File)
 {
   uint32_t Size;
   in_File.read((char*) &Size, 4);

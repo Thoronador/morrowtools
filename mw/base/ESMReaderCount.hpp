@@ -62,19 +62,19 @@ class ESMReaderCount: public ESMReader
     void showStats(const bool withPercentage=false) const;
 
   protected:
-    /* tries to read the next record from a file and returns the number of
+    /* tries to read the next record from a stream and returns the number of
        relevant records that were read (usually one). If an error occurred,
        -1 is returned. If the record was skipped or contained no relevant data,
        zero is returned.
 
        parameters:
-           in_File  - the input file stream the record shall be read from
+           in_File  - the input stream the record shall be read from
 
        remarks:
            Naturally, this implementation of processNextRecord() will never
            return values larger than zero, because all record data is skipped.
     */
-    virtual int processNextRecord(std::ifstream& in_File);
+    virtual int processNextRecord(std::istream& in_File) override;
 };//class
 
 } //namespace

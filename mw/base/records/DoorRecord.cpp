@@ -50,7 +50,7 @@ bool DoorRecord::equals(const DoorRecord& other) const
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool DoorRecord::saveToStream(std::ofstream& output) const
+bool DoorRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cDOOR, 4);
   uint32_t Size;
@@ -155,7 +155,7 @@ bool DoorRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool DoorRecord::loadFromStream(std::ifstream& in_File)
+bool DoorRecord::loadFromStream(std::istream& in_File)
 {
   uint32_t Size;
   in_File.read((char*) &Size, 4);
@@ -284,7 +284,7 @@ bool DoorRecord::loadFromStream(std::ifstream& in_File)
   return in_File.good();
 }
 
-bool DoorRecord::readSubRecordString(std::ifstream& in_File, char* Buffer, uint32_t& BytesRead, std::string& Destination)
+bool DoorRecord::readSubRecordString(std::istream& in_File, char* Buffer, uint32_t& BytesRead, std::string& Destination)
 {
   uint32_t SubLength = 0;
   //read string's length

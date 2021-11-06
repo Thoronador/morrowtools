@@ -72,17 +72,17 @@ struct IngredientRecord: public BasicRecord
        true on success, false on failure.
 
        parameters:
-           output   - the output file stream that is used to save the record
+           output - the output stream that is used to save the record
     */
-    bool saveToStream(std::ofstream& output) const;
+    bool saveToStream(std::ostream& output) const override;
     #endif
 
     /* loads the record from the given input stream and returns true on success
 
       parameters:
-          in_File - the input file stream
+          in_File - the input stream
     */
-    bool loadFromStream(std::ifstream& in_File);
+    bool loadFromStream(std::istream& in_File) override;
 };//struct
 
 } //namespace

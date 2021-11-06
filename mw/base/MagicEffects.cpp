@@ -510,10 +510,10 @@ bool MagicEffects::isAttributeRelatedEffect(const int32_t Index)
        or (Index==EffectAbsorbAttribute));
 }
 
-int MagicEffects::readRecordMGEF(std::ifstream& in_File)
+int MagicEffects::readRecordMGEF(std::istream& input)
 {
   MGEF_Data tempData;
-  if (tempData.loadFromStream(in_File))
+  if (tempData.loadFromStream(input))
   {
     if (hasEffect(tempData.Index))
     {
@@ -541,11 +541,11 @@ EffectListIterator MagicEffects::getEnd() const
   return m_Effects.end();
 }
 
-bool MagicEffects::saveAllToStream(std::ofstream& output) const
+bool MagicEffects::saveAllToStream(std::ostream& output) const
 {
   if (!output.good())
   {
-    std::cout << "MagicEffects::saveAllToStream: Error: bad stream.\n";
+    std::cout << "MagicEffects::saveAllToStream: Error: Bad stream.\n";
     return false;
   }
   EffectListIterator iter = m_Effects.begin();

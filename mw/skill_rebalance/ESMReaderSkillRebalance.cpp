@@ -37,11 +37,11 @@ ESMReaderSkillRebalance::~ESMReaderSkillRebalance()
   //empty
 }
 
-int ESMReaderSkillRebalance::processNextRecord(std::ifstream& in_File)
+int ESMReaderSkillRebalance::processNextRecord(std::istream& input)
 {
-  int32_t RecordName = 0; //normally should be 4 char, but char is not eligible for switch
+  uint32_t RecordName = 0; // normally should be 4 char, but char is not eligible for switch
   //read record name
-  in_File.read((char*) &RecordName, 4);
+  input.read((char*) &RecordName, 4);
   switch(RecordName)
   {
     case cACTI:
@@ -85,18 +85,18 @@ int ESMReaderSkillRebalance::processNextRecord(std::ifstream& in_File)
     case cSSCR:
     case cSTAT:
     case cWEAP:
-         return skipRecord(in_File);
+         return skipRecord(input);
          break;
     case cSKIL:
-         return Skills::getSingleton().readRecordSKIL(in_File);
+         return Skills::getSingleton().readRecordSKIL(input);
          break;
     default:
          std::cout << "processNextRecord: ERROR: unknown record type found: \""
-                   <<IntTo4Char(RecordName)<<"\".\n"
-                   << "Current file position: "<<in_File.tellg()<< " bytes.\n";
+                   << IntTo4Char(RecordName) << "\".\n"
+                   << "Current file position: " << input.tellg() << " bytes.\n";
          return -1;
          break;
-  }//swi
+  }
 }
 
 } //namespace

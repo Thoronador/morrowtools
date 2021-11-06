@@ -45,7 +45,7 @@ bool TES3Record::equals(const TES3Record& other) const
       and (NumRecords==other.NumRecords) and (dependencies==other.dependencies));
 }
 
-bool TES3Record::saveToStream(std::ofstream& output) const
+bool TES3Record::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cTES3, 4);
   uint32_t Size;
@@ -144,7 +144,7 @@ bool TES3Record::saveToStream(std::ofstream& output) const
   return output.good();
 }
 
-bool TES3Record::loadFromStream(std::ifstream& in_File)
+bool TES3Record::loadFromStream(std::istream& in_File)
 {
   uint32_t Size = 0;
   in_File.read((char*) &Size, 4);

@@ -78,149 +78,149 @@ ESMReaderAll::~ESMReaderAll()
   //empty
 }
 
-int ESMReaderAll::processNextRecord(std::ifstream& in_File)
+int ESMReaderAll::processNextRecord(std::istream& input)
 {
   uint32_t RecordName = 0; //normally should be 4 char, but char is not eligible for switch
   int lastResult = 0;
 
   //read record name
-  in_File.read((char*) &RecordName, 4);
+  input.read((char*) &RecordName, 4);
   switch(RecordName)
   {
     case cACTI:
-         lastResult = Activators::getSingleton().readNextRecord(in_File);
+         lastResult = Activators::getSingleton().readNextRecord(input);
          break;
     case cALCH:
-         lastResult = AlchemyPotions::getSingleton().readNextRecord(in_File);
+         lastResult = AlchemyPotions::getSingleton().readNextRecord(input);
          break;
     case cAPPA:
-         lastResult = Apparatuses::getSingleton().readNextRecord(in_File);
+         lastResult = Apparatuses::getSingleton().readNextRecord(input);
          break;
     case cARMO:
-         lastResult = Armours::getSingleton().readNextRecord(in_File);
+         lastResult = Armours::getSingleton().readNextRecord(input);
          break;
     case cBODY:
-         lastResult = BodyParts::getSingleton().readNextRecord(in_File);
+         lastResult = BodyParts::getSingleton().readNextRecord(input);
          break;
     case cBOOK:
-         lastResult = Books::getSingleton().readNextRecord(in_File);
+         lastResult = Books::getSingleton().readNextRecord(input);
          break;
     case cBSGN:
-         lastResult = BirthSigns::getSingleton().readNextRecord(in_File);
+         lastResult = BirthSigns::getSingleton().readNextRecord(input);
          break;
     case cCELL:
-         lastResult = Cells::getSingleton().readRecordCELL(in_File);
+         lastResult = Cells::getSingleton().readRecordCELL(input);
          break;
     case cCLAS:
-         lastResult = Classes::getSingleton().readNextRecord(in_File);
+         lastResult = Classes::getSingleton().readNextRecord(input);
          break;
     case cCLOT:
-         lastResult = Clothings::getSingleton().readNextRecord(in_File);
+         lastResult = Clothings::getSingleton().readNextRecord(input);
          break;
     case cCONT:
-         lastResult = Containers::getSingleton().readNextRecord(in_File);
+         lastResult = Containers::getSingleton().readNextRecord(input);
          break;
     case cCREA:
-         lastResult = Creatures::getSingleton().readNextRecord(in_File);
+         lastResult = Creatures::getSingleton().readNextRecord(input);
          break;
     case cDIAL:
-         lastResult = DialogueTopics::getSingleton().readRecordDIAL(in_File);
+         lastResult = DialogueTopics::getSingleton().readRecordDIAL(input);
          break;
     case cDOOR:
-         lastResult = Doors::getSingleton().readNextRecord(in_File);
+         lastResult = Doors::getSingleton().readNextRecord(input);
          break;
     case cENCH:
-         lastResult = Enchantings::getSingleton().readNextRecord(in_File);
+         lastResult = Enchantings::getSingleton().readNextRecord(input);
          break;
     case cFACT:
-         lastResult = Factions::getSingleton().readNextRecord(in_File);
+         lastResult = Factions::getSingleton().readNextRecord(input);
          break;
     case cGLOB:
-         lastResult = Globals::getSingleton().readNextRecord(in_File);
+         lastResult = Globals::getSingleton().readNextRecord(input);
          break;
     case cGMST:
-         lastResult = GameSettings::getSingleton().readRecordGMST(in_File);
+         lastResult = GameSettings::getSingleton().readRecordGMST(input);
          break;
     case cINFO:
-         lastResult = DialogueInfos::getSingleton().readNextRecord(in_File);
+         lastResult = DialogueInfos::getSingleton().readNextRecord(input);
          break;
     case cINGR:
-         lastResult = Ingredients::getSingleton().readNextRecord(in_File);
+         lastResult = Ingredients::getSingleton().readNextRecord(input);
          break;
     case cLAND:
-         lastResult = Landscape::getSingleton().readRecordLAND(in_File);
+         lastResult = Landscape::getSingleton().readRecordLAND(input);
          break;
     case cLEVC:
-         lastResult = LeveledCreatures::getSingleton().readNextRecord(in_File);
+         lastResult = LeveledCreatures::getSingleton().readNextRecord(input);
          break;
     case cLEVI:
-         lastResult = LeveledItems::getSingleton().readNextRecord(in_File);
+         lastResult = LeveledItems::getSingleton().readNextRecord(input);
          break;
     case cLIGH:
-         lastResult = Lights::getSingleton().readNextRecord(in_File);
+         lastResult = Lights::getSingleton().readNextRecord(input);
          break;
     case cLOCK:
-         lastResult = Lockpicks::getSingleton().readNextRecord(in_File);
+         lastResult = Lockpicks::getSingleton().readNextRecord(input);
          break;
     case cLTEX:
-         lastResult = LandscapeTextures::getSingleton().readNextRecord(in_File);
+         lastResult = LandscapeTextures::getSingleton().readNextRecord(input);
          break;
     case cMGEF:
-         lastResult = MagicEffects::getSingleton().readRecordMGEF(in_File);
+         lastResult = MagicEffects::getSingleton().readRecordMGEF(input);
          break;
     case cMISC:
-         lastResult = MiscItems::getSingleton().readNextRecord(in_File);
+         lastResult = MiscItems::getSingleton().readNextRecord(input);
          break;
     case cNPC_:
-         lastResult = NPCs::getSingleton().readNextRecord(in_File);
+         lastResult = NPCs::getSingleton().readNextRecord(input);
          break;
     case cPGRD:
-         lastResult = PathGrids::getSingleton().readRecordPGRD(in_File);
+         lastResult = PathGrids::getSingleton().readRecordPGRD(input);
          break;
     case cPROB:
-         lastResult = Probes::getSingleton().readNextRecord(in_File);
+         lastResult = Probes::getSingleton().readNextRecord(input);
          break;
     case cRACE:
-         lastResult = Races::getSingleton().readNextRecord(in_File);
+         lastResult = Races::getSingleton().readNextRecord(input);
          break;
     case cREGN:
-         lastResult = Regions::getSingleton().readNextRecord(in_File);
+         lastResult = Regions::getSingleton().readNextRecord(input);
          break;
     case cREPA:
-         lastResult = RepairItems::getSingleton().readNextRecord(in_File);
+         lastResult = RepairItems::getSingleton().readNextRecord(input);
          break;
     case cSCPT:
-         lastResult = Scripts::getSingleton().readNextRecord(in_File);
+         lastResult = Scripts::getSingleton().readNextRecord(input);
          break;
     case cSKIL:
-         lastResult = Skills::getSingleton().readRecordSKIL(in_File);
+         lastResult = Skills::getSingleton().readRecordSKIL(input);
          break;
     case cSNDG:
-         lastResult = SoundGenerators::getSingleton().readNextRecord(in_File);
+         lastResult = SoundGenerators::getSingleton().readNextRecord(input);
          break;
     case cSOUN:
-         lastResult = Sounds::getSingleton().readNextRecord(in_File);
+         lastResult = Sounds::getSingleton().readNextRecord(input);
          break;
     case cSPEL:
-         lastResult = Spells::getSingleton().readNextRecord(in_File);
+         lastResult = Spells::getSingleton().readNextRecord(input);
          break;
     case cSSCR:
-         lastResult = StartScripts::getSingleton().readNextRecord(in_File);
+         lastResult = StartScripts::getSingleton().readNextRecord(input);
          break;
     case cSTAT:
-         lastResult = Statics::getSingleton().readNextRecord(in_File);
+         lastResult = Statics::getSingleton().readNextRecord(input);
          break;
     case cWEAP:
-         lastResult = Weapons::getSingleton().readNextRecord(in_File);
+         lastResult = Weapons::getSingleton().readNextRecord(input);
          break;
     default:
          std::cout << "processNextRecord: ERROR: unknown record type found: \""
                    <<IntTo4Char(RecordName)<<"\".\n"
-                   << "Current file position: "<<in_File.tellg()<< " bytes.\n";
+                   << "Current file position: " << input.tellg() << " bytes.\n";
          lastResult = -1;
          break;
-  }//swi
+  }
   return lastResult;
-}//processNextRecord of ESMReaderAll class
+}
 
 } //namespace

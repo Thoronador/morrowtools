@@ -52,7 +52,7 @@ bool LockpickRecord::equals(const LockpickRecord& other) const
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool LockpickRecord::saveToStream(std::ofstream& output) const
+bool LockpickRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cLOCK, 4);
   uint32_t Size;
@@ -145,7 +145,7 @@ bool LockpickRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool LockpickRecord::loadFromStream(std::ifstream& in_File)
+bool LockpickRecord::loadFromStream(std::istream& in_File)
 {
   uint32_t Size;
   in_File.read((char*) &Size, 4);

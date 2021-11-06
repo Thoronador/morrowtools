@@ -70,7 +70,7 @@ bool FactionRecord::equals(const FactionRecord& other) const
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool FactionRecord::saveToStream(std::ofstream& output) const
+bool FactionRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cFACT, 4);
   uint32_t Size;
@@ -204,7 +204,7 @@ bool FactionRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool FactionRecord::loadFromStream(std::ifstream& in_File)
+bool FactionRecord::loadFromStream(std::istream& in_File)
 {
   uint32_t Size;
   in_File.read((char*) &Size, 4);

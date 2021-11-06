@@ -56,7 +56,7 @@ bool PathGridRecord::equals(const PathGridRecord& other) const
       and (Connections==other.Connections));
 }
 
-bool PathGridRecord::saveToStream(std::ofstream& output) const
+bool PathGridRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cPGRD, 4);
   uint32_t Size;
@@ -160,7 +160,7 @@ bool PathGridRecord::saveToStream(std::ofstream& output) const
   return output.good();
 }
 
-bool PathGridRecord::loadFromStream(std::ifstream& in_File)
+bool PathGridRecord::loadFromStream(std::istream& in_File)
 {
   uint32_t Size;
   in_File.read((char*) &Size, 4);

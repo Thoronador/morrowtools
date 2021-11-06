@@ -43,7 +43,7 @@ bool ActivatorRecord::equals(const ActivatorRecord& other) const
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool ActivatorRecord::saveToStream(std::ofstream& output) const
+bool ActivatorRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cACTI, 4);
   uint32_t Size;
@@ -103,7 +103,7 @@ bool ActivatorRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool ActivatorRecord::loadFromStream(std::ifstream& in_File)
+bool ActivatorRecord::loadFromStream(std::istream& in_File)
 {
   uint32_t Size;
   in_File.read((char*) &Size, 4);

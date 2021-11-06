@@ -40,7 +40,7 @@ bool StaticRecord::equals(const StaticRecord& other) const
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool StaticRecord::saveToStream(std::ofstream& output) const
+bool StaticRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cSTAT, 4);
   uint32_t Size;
@@ -74,7 +74,7 @@ bool StaticRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool StaticRecord::loadFromStream(std::ifstream& in_File)
+bool StaticRecord::loadFromStream(std::istream& in_File)
 {
   uint32_t Size;
   in_File.read((char*) &Size, 4);

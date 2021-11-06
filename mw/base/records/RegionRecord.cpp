@@ -77,12 +77,12 @@ bool RegionRecord::equals(const RegionRecord& other) const
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool RegionRecord::saveToStream(std::ofstream& output) const
+bool RegionRecord::saveToStream(std::ostream& output) const
 {
   return saveToStream(output, false);
 }
 
-bool RegionRecord::saveToStream(std::ofstream& output, const bool forceBloodmoonStyle) const
+bool RegionRecord::saveToStream(std::ostream& output, const bool forceBloodmoonStyle) const
 {
   output.write((const char*) &cREGN, 4);
   uint32_t Size;
@@ -229,7 +229,7 @@ bool RegionRecord::saveToStream(std::ofstream& output, const bool forceBloodmoon
 }
 #endif
 
-bool RegionRecord::loadFromStream(std::ifstream& in_File)
+bool RegionRecord::loadFromStream(std::istream& in_File)
 {
   uint32_t Size;
   in_File.read((char*) &Size, 4);

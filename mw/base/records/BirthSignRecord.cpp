@@ -53,7 +53,7 @@ bool BirthSignRecord::equals(const BirthSignRecord& other) const
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool BirthSignRecord::saveToStream(std::ofstream& output) const
+bool BirthSignRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cBSGN, 4);
   uint32_t Size;
@@ -133,7 +133,7 @@ bool BirthSignRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool BirthSignRecord::loadFromStream(std::ifstream& in_File)
+bool BirthSignRecord::loadFromStream(std::istream& in_File)
 {
   uint32_t Size;
   in_File.read((char*) &Size, 4);

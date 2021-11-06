@@ -64,7 +64,7 @@ bool GMSTRecord::equals(const GMSTRecord& other) const
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool GMSTRecord::saveToStream(std::ofstream& output) const
+bool GMSTRecord::saveToStream(std::ostream& output) const
 {
   //write GMST
   output.write((const char*) &cGMST, 4);
@@ -133,7 +133,7 @@ bool GMSTRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool GMSTRecord::loadFromStream(std::ifstream& in_File)
+bool GMSTRecord::loadFromStream(std::istream& in_File)
 {
   uint32_t Size;
   in_File.read((char*) &Size, 4);

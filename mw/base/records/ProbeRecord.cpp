@@ -70,7 +70,7 @@ bool ProbeRecord::equals(const ProbeRecord& other) const
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool ProbeRecord::saveToStream(std::ofstream& output) const
+bool ProbeRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cPROB, 4);
   uint32_t Size;
@@ -163,7 +163,7 @@ bool ProbeRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool ProbeRecord::loadFromStream(std::ifstream& in_File)
+bool ProbeRecord::loadFromStream(std::istream& in_File)
 {
   uint32_t Size;
   in_File.read((char*) &Size, 4);

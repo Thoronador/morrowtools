@@ -50,7 +50,7 @@ bool ApparatusRecord::equals(const ApparatusRecord& other) const
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool ApparatusRecord::saveToStream(std::ofstream& output) const
+bool ApparatusRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cAPPA, 4);
   uint32_t Size;
@@ -137,7 +137,7 @@ bool ApparatusRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool ApparatusRecord::loadFromStream(std::ifstream& in_File)
+bool ApparatusRecord::loadFromStream(std::istream& in_File)
 {
   uint32_t Size;
   in_File.read((char*) &Size, 4);

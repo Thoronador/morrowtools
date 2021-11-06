@@ -63,7 +63,7 @@ bool ClassRecord::equals(const ClassRecord& other) const
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool ClassRecord::saveToStream(std::ofstream& output) const
+bool ClassRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cCLAS, 4);
   uint32_t Size;
@@ -177,7 +177,7 @@ bool ClassRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool ClassRecord::loadFromStream(std::ifstream& in_File)
+bool ClassRecord::loadFromStream(std::istream& in_File)
 {
   uint32_t Size;
   in_File.read((char*) &Size, 4);

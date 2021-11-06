@@ -49,7 +49,7 @@ bool LeveledCreatureRecord::equals(const LeveledCreatureRecord& other) const
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool LeveledCreatureRecord::saveToStream(std::ofstream& output) const
+bool LeveledCreatureRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cLEVC, 4);
   uint32_t Size;
@@ -143,7 +143,7 @@ bool LeveledCreatureRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool LeveledCreatureRecord::loadFromStream(std::ifstream& in_File)
+bool LeveledCreatureRecord::loadFromStream(std::istream& in_File)
 {
   uint32_t Size;
   in_File.read((char*) &Size, 4);

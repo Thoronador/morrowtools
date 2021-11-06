@@ -42,7 +42,7 @@ bool SoundGeneratorRecord::equals(const SoundGeneratorRecord& other) const
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool SoundGeneratorRecord::saveToStream(std::ofstream& output) const
+bool SoundGeneratorRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cSNDG, 4);
   uint32_t Size;
@@ -109,7 +109,7 @@ bool SoundGeneratorRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool SoundGeneratorRecord::loadFromStream(std::ifstream& in_File)
+bool SoundGeneratorRecord::loadFromStream(std::istream& in_File)
 {
   uint32_t Size;
   in_File.read((char*) &Size, 4);

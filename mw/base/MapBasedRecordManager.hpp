@@ -69,7 +69,7 @@ class MapBasedRecordManager
     */
     const recT& getRecord(const std::string& ID) const;
 
-    /* tries to read a record from the given input file stream.
+    /* tries to read a record from the given input stream.
 
        return value:
            If an error occurred, the function returns -1. Otherwise it returns
@@ -78,9 +78,9 @@ class MapBasedRecordManager
            returned.)
 
        parameters:
-           in_File  - the input file stream that is used to read the record
+           input  - the input stream that is used to read the record
     */
-    int readNextRecord(std::ifstream& in_File);
+    int readNextRecord(std::istream& in_File);
 
     /* removes the record with the given ID from the internal list and returns
        true, if such a record existed. Returns false otherwise.
@@ -101,10 +101,10 @@ class MapBasedRecordManager
        true on success, false on failure
 
        parameters:
-           output - the output file stream that shall be used to save the
+           output - the output stream that shall be used to save the
                     records
     */
-    bool saveAllToStream(std::ofstream& output) const;
+    bool saveAllToStream(std::ostream& output) const;
     #endif
 
     /* removes all records from the list */
@@ -174,10 +174,10 @@ const recT& MapBasedRecordManager<recT>::getRecord(const std::string& ID) const
 }
 
 template<typename recT>
-int MapBasedRecordManager<recT>::readNextRecord(std::ifstream& in_File)
+int MapBasedRecordManager<recT>::readNextRecord(std::istream& input)
 {
   recT temp;
-  if(!temp.loadFromStream(in_File))
+  if(!temp.loadFromStream(input))
   {
     std::cout << "MapBasedRecordManager::readNextRecord: Error while reading record.\n";
     return -1;
@@ -218,7 +218,7 @@ typename MapBasedRecordManager<recT>::ListIterator MapBasedRecordManager<recT>::
 
 #ifndef MW_UNSAVEABLE_RECORDS
 template<typename recT>
-bool MapBasedRecordManager<recT>::saveAllToStream(std::ofstream& output) const
+bool MapBasedRecordManager<recT>::saveAllToStream(std::ostream& output) const
 {
   if (!output.good())
   {

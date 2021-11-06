@@ -109,7 +109,7 @@ PathGridListIterator PathGrids::getEnd() const
   return m_PathGrids.end();
 }
 
-bool PathGrids::saveAllToStream(std::ofstream& output) const
+bool PathGrids::saveAllToStream(std::ostream& output) const
 {
   if (!output.good())
   {
@@ -136,10 +136,10 @@ void PathGrids::clearAll()
   m_PathGrids.clear();
 }
 
-int PathGrids::readRecordPGRD(std::ifstream& in_File)
+int PathGrids::readRecordPGRD(std::istream& input)
 {
   PathGridRecord temp;
-  if(!temp.loadFromStream(in_File))
+  if(!temp.loadFromStream(input))
   {
     std::cout << "readRecordPGRD: Error while reading path grid record.\n";
     return -1;

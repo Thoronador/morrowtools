@@ -50,7 +50,7 @@ bool ContainerRecord::equals(const ContainerRecord& other) const
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool ContainerRecord::saveToStream(std::ofstream& output) const
+bool ContainerRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cCONT, 4);
   uint32_t Size;
@@ -168,7 +168,7 @@ bool ContainerRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool ContainerRecord::loadFromStream(std::ifstream& in_File)
+bool ContainerRecord::loadFromStream(std::istream& in_File)
 {
   uint32_t Size;
   in_File.read((char*) &Size, 4);

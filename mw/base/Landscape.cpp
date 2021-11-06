@@ -111,7 +111,7 @@ LandscapeListIterator Landscape::getEnd() const
   return m_Landscape.end();
 }
 
-bool Landscape::saveAllToStream(std::ofstream& output) const
+bool Landscape::saveAllToStream(std::ostream& output) const
 {
   if (!output.good())
   {
@@ -146,11 +146,11 @@ void Landscape::clearAll()
   m_Landscape.clear();
 }
 
-int Landscape::readRecordLAND(std::ifstream& in_File)
+int Landscape::readRecordLAND(std::istream& input)
 {
   LandscapeRecord* temp;
   temp = new LandscapeRecord;
-  if(!temp->loadFromStream(in_File))
+  if(!temp->loadFromStream(input))
   {
     std::cout << "Landscape::readRecordLAND: Error while reading landscape record.\n";
     delete temp;

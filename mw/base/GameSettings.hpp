@@ -72,7 +72,7 @@ class GameSettings
     /* returns the current number of present setting */
     unsigned int getNumberOfSettings() const;
 
-    /* tries to read a GMST record from the given input file stream.
+    /* tries to read a GMST record from the given input stream.
 
        return value:
            If an error occurred, the function returns -1. Otherwise it returns
@@ -81,18 +81,18 @@ class GameSettings
            returned.)
 
        parameters:
-           in_File  - the input file stream that is used to read the record
+           input  - the input stream that is used to read the record
     */
-    int readRecordGMST(std::ifstream& in_File);
+    int readRecordGMST(std::istream& input);
 
     #ifndef MW_UNSAVEABLE_RECORDS
     /* tries to save all available GMSTs to the given stream and returns true
        on success, false on failure
 
        parameters:
-           output - the output file stream that shall be used to save the GMSTs
+           output - the output stream that shall be used to save the GMSTs
     */
-    bool saveAllToStream(std::ofstream& output) const;
+    bool saveAllToStream(std::ostream& output) const;
     #endif
 
     /* returns constant iterator to the beginning of the internal list */

@@ -58,7 +58,7 @@ bool ArmourRecord::equals(const ArmourRecord& other) const
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool ArmourRecord::saveToStream(std::ofstream& output) const
+bool ArmourRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cARMO, 4);
   uint32_t Size;
@@ -242,7 +242,7 @@ bool ArmourRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool ArmourRecord::loadFromStream(std::ifstream& in_File)
+bool ArmourRecord::loadFromStream(std::istream& in_File)
 {
   uint32_t Size;
   in_File.read((char*) &Size, 4);

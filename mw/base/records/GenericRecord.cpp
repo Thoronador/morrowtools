@@ -75,7 +75,7 @@ GenericRecord::~GenericRecord()
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool GenericRecord::saveToStream(std::ofstream& output) const
+bool GenericRecord::saveToStream(std::ostream& output) const
 {
   //record header
   output.write((const char*) &Header, 4);
@@ -90,7 +90,7 @@ bool GenericRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool GenericRecord::loadFromStream(std::ifstream& in_File)
+bool GenericRecord::loadFromStream(std::istream& in_File)
 {
   uint32_t Size;
   in_File.read((char*) &Size, 4);

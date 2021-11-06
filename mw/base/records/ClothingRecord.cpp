@@ -55,7 +55,7 @@ bool ClothingRecord::equals(const ClothingRecord& other) const
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool ClothingRecord::saveToStream(std::ofstream& output) const
+bool ClothingRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cCLOT, 4);
   uint32_t Size;
@@ -233,7 +233,7 @@ bool ClothingRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool ClothingRecord::loadFromStream(std::ifstream& in_File)
+bool ClothingRecord::loadFromStream(std::istream& in_File)
 {
   uint32_t Size;
   in_File.read((char*) &Size, 4);

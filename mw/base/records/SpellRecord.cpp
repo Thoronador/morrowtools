@@ -41,7 +41,7 @@ SpellRecord::SpellRecord()
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool SpellRecord::saveToStream(std::ofstream& output) const
+bool SpellRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cSPEL, 4);
   uint32_t Size;
@@ -141,7 +141,7 @@ bool SpellRecord::equals(const SpellRecord& other) const
       and (Enchs==other.Enchs));
 }
 
-bool SpellRecord::loadFromStream(std::ifstream& in_File)
+bool SpellRecord::loadFromStream(std::istream& in_File)
 {
   uint32_t Size;
   in_File.read((char*) &Size, 4);

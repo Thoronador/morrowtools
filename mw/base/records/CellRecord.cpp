@@ -138,7 +138,7 @@ bool ReferencedObject::operator==(const ReferencedObject& other) const
   return false;
 }
 
-bool ReferencedObject::loadFromStream(std::ifstream& in_File, uint32_t& BytesRead, char* Buffer)
+bool ReferencedObject::loadFromStream(std::istream& in_File, uint32_t& BytesRead, char* Buffer)
 {
   uint32_t SubRecName;
   uint32_t SubLength;
@@ -719,7 +719,7 @@ bool ReferencedObject::loadFromStream(std::ifstream& in_File, uint32_t& BytesRea
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool ReferencedObject::saveToStream(std::ofstream& output) const
+bool ReferencedObject::saveToStream(std::ostream& output) const
 {
   /*Referenced Object Data Grouping
         FRMR = Object Index (starts at 1) (4 bytes, long)
@@ -1081,7 +1081,7 @@ bool CellRecord::equals(const CellRecord& other) const
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool CellRecord::saveToStream(std::ofstream& output) const
+bool CellRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cCELL, 4);
   uint32_t Size;
@@ -1280,7 +1280,7 @@ bool CellRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool CellRecord::loadFromStream(std::ifstream& in_File)
+bool CellRecord::loadFromStream(std::istream& in_File)
 {
   uint32_t Size;
   in_File.read((char*) &Size, 4);

@@ -97,7 +97,7 @@ bool LandscapeRecord::equals(const LandscapeRecord& other) const
   return false;
 }
 
-bool LandscapeRecord::saveToStream(std::ofstream& output) const
+bool LandscapeRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cLAND, 4);
   uint32_t Size;
@@ -243,7 +243,7 @@ bool LandscapeRecord::saveToStream(std::ofstream& output) const
   return output.good();
 }
 
-bool LandscapeRecord::loadFromStream(std::ifstream& in_File)
+bool LandscapeRecord::loadFromStream(std::istream& in_File)
 {
   uint32_t Size;
   in_File.read((char*) &Size, 4);

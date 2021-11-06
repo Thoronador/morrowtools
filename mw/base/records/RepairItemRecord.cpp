@@ -67,7 +67,7 @@ bool RepairItemRecord::equals(const RepairItemRecord& other) const
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool RepairItemRecord::saveToStream(std::ofstream& output) const
+bool RepairItemRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cREPA, 4);
   uint32_t Size;
@@ -160,7 +160,7 @@ bool RepairItemRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool RepairItemRecord::loadFromStream(std::ifstream& in_File)
+bool RepairItemRecord::loadFromStream(std::istream& in_File)
 {
   uint32_t Size;
   in_File.read((char*) &Size, 4);

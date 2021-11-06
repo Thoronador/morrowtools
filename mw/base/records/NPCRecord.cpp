@@ -135,7 +135,7 @@ bool NPCRecord::equals(const NPCRecord& other) const
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool NPCRecord::saveToStream(std::ofstream& output) const
+bool NPCRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cNPC_, 4);
   uint32_t Size;
@@ -501,7 +501,7 @@ bool NPCRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool NPCRecord::loadFromStream(std::ifstream& in_File)
+bool NPCRecord::loadFromStream(std::istream& in_File)
 {
   #warning Not completely implemented yet!\
            The XSCL subrecord is still missing.

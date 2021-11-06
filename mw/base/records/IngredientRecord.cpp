@@ -79,7 +79,7 @@ void IngredientRecord::show()
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool IngredientRecord::saveToStream(std::ofstream& output) const
+bool IngredientRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cINGR, 4);
   uint32_t Size;
@@ -182,7 +182,7 @@ bool IngredientRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool IngredientRecord::loadFromStream(std::ifstream& in_File)
+bool IngredientRecord::loadFromStream(std::istream& in_File)
 {
   uint32_t Size;
   in_File.read((char*) &Size, 4);

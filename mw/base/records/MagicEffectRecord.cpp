@@ -54,7 +54,7 @@ bool MGEF_Data::equals(const MGEF_Data& other) const
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool MGEF_Data::saveToStream(std::ofstream& output) const
+bool MGEF_Data::saveToStream(std::ostream& output) const
 {
   //write MGEF
   output.write((const char*) &cMGEF, 4);
@@ -306,7 +306,7 @@ bool MGEF_Data::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool MGEF_Data::loadFromStream(std::ifstream& in_File)
+bool MGEF_Data::loadFromStream(std::istream& in_File)
 {
   uint32_t Size;
   in_File.read((char*) &Size, 4);

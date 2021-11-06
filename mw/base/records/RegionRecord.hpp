@@ -75,27 +75,27 @@ struct RegionRecord: public BasicRecord
   /* writes the record to the given output stream and returns true on success
 
     parameters:
-        output              - the output file stream
+        output              - the output stream
         forceBloodmoonStyle - if set to true, the written WEAT subrecord will
                               have a size of 10 bytes, even when it wouldn't be
                               necessary
   */
-  bool saveToStream(std::ofstream& output, const bool forceBloodmoonStyle) const;
+  bool saveToStream(std::ostream& output, const bool forceBloodmoonStyle) const;
 
   /* writes the record to the given output stream and returns true on success
 
     parameters:
-        output              - the output file stream
+        output - the output stream
   */
-  bool saveToStream(std::ofstream& output) const;
+  bool saveToStream(std::ostream& output) const override;
   #endif
 
   /* loads the record from the given input stream and returns true on success
 
     parameters:
-        in_File - the input file stream
+        in_File - the input stream
   */
-  bool loadFromStream(std::ifstream& in_File);
+  bool loadFromStream(std::istream& in_File);
 };//struct
 
 //comparison operator for ordered set

@@ -81,7 +81,7 @@ struct PreNPCRecord: public BasicRecord
     void copyAIPackages(const PreNPCRecord& source);
 
     #ifndef MW_UNSAVEABLE_RECORDS
-    bool writeItemsSpellsAIDataDestinations(std::ofstream& output) const;
+    bool writeItemsSpellsAIDataDestinations(std::ostream& output) const;
     #endif
 };//struct
 

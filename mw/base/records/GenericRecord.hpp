@@ -45,17 +45,17 @@ struct GenericRecord: public BasicRecord
     /* writes the record to the given output stream and returns true on success
 
       parameters:
-          output   - the output file stream
+          output - the output stream
     */
-    virtual bool saveToStream(std::ofstream& output) const;
+    bool saveToStream(std::ostream& output) const override;
     #endif
 
     /* loads the record from the given input stream and returns true on success
 
       parameters:
-          in_File - the input file stream
+          in_File - the input stream
     */
-    virtual bool loadFromStream(std::ifstream& in_File);
+    bool loadFromStream(std::istream& in_File) override;
 
     /* returns a pointer to the record data
 

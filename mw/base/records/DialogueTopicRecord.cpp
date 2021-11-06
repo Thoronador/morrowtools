@@ -45,7 +45,7 @@ bool DialogueTopicRecord::equals(const DialogueTopicRecord& other) const
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool DialogueTopicRecord::saveToStream(std::ofstream& output) const
+bool DialogueTopicRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cDIAL, 4);
   uint32_t Size;
@@ -88,7 +88,7 @@ bool DialogueTopicRecord::saveToStream(std::ofstream& output) const
 }
 #endif
 
-bool DialogueTopicRecord::loadFromStream(std::ifstream& in_File)
+bool DialogueTopicRecord::loadFromStream(std::istream& in_File)
 {
   uint32_t Size;
   in_File.read((char*) &Size, 4);

@@ -92,7 +92,7 @@ class Landscape
     */
     const LandscapeRecord& getLandscapeRecord(const LandscapeCoords& coords) const;
 
-    /* tries to read a landscape record from the given input file stream.
+    /* tries to read a landscape record from the given input stream.
 
        return value:
            If an error occurred, the function returns -1. Otherwise it returns
@@ -101,9 +101,9 @@ class Landscape
            returned.)
 
        parameters:
-           in_File  - the input file stream that is used to read the record
+           input - the input stream that is used to read the record
     */
-    int readRecordLAND(std::ifstream& in_File);
+    int readRecordLAND(std::istream& input);
 
     /* returns constant iterator to the beginning of the internal list */
     LandscapeListIterator getBegin() const;
@@ -115,10 +115,10 @@ class Landscape
        returns true on success, false on failure
 
        parameters:
-           output - the output file stream that shall be used to save the
+           output - the output stream that shall be used to save the
                     landscape records
     */
-    bool saveAllToStream(std::ofstream& output) const;
+    bool saveAllToStream(std::ostream& output) const;
 
     /* removes all landscape records from the list */
     void clearAll();

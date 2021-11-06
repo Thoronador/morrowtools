@@ -80,7 +80,7 @@ DialogueTopicListIterator DialogueTopics::getEnd() const
   return m_DialogueTopics.end();
 }
 
-bool DialogueTopics::saveAllToStream(std::ofstream& output) const
+bool DialogueTopics::saveAllToStream(std::ostream& output) const
 {
   if (!output.good())
   {
@@ -107,10 +107,10 @@ void DialogueTopics::clearAll()
   m_DialogueTopics.clear();
 }
 
-int DialogueTopics::readRecordDIAL(std::ifstream& in_File)
+int DialogueTopics::readRecordDIAL(std::istream& input)
 {
   DialogueTopicRecord temp;
-  if (!temp.loadFromStream(in_File))
+  if (!temp.loadFromStream(input))
   {
     std::cout << "DialogueTopics::readRecordDIAL: Error while reading dialogue "
               << "topic record.\n";

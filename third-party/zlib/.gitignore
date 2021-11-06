@@ -1,0 +1,11 @@
+# zlib headers
+zconf.h
+zlib.h
+
+# libraries
+*.dll
+*.lib
+*.pdb
+
+# Git repository of zlib
+source/

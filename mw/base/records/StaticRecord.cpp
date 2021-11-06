@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011, 2012, 2013  Thoronador
+    Copyright (C) 2009, 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -36,101 +36,96 @@ StaticRecord::StaticRecord()
 
 bool StaticRecord::equals(const StaticRecord& other) const
 {
-  return ((recordID==other.recordID) and (Mesh==other.Mesh));
+  return (recordID == other.recordID) && (Mesh == other.Mesh);
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
 bool StaticRecord::saveToStream(std::ostream& output) const
 {
-  output.write((const char*) &cSTAT, 4);
-  uint32_t Size;
-  Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +recordID.length()+1 /* length of ID +1 byte for NUL termination */
-        +4 /* MODL */ +4 /* 4 bytes for MODL's length */
-        +Mesh.length()+1 /*length of mesh plus one for NUL-termination */;
-  output.write((const char*) &Size, 4);
-  output.write((const char*) &HeaderOne, 4);
-  output.write((const char*) &HeaderFlags, 4);
+  output.write(reinterpret_cast<const char*>(&cSTAT), 4);
+  const uint32_t Size = 4 /* NAME */ + 4 /* 4 bytes for length */
+        + recordID.length() + 1 /* length of ID +1 byte for NUL termination */
+        + 4 /* MODL */ + 4 /* 4 bytes for MODL's length */
+        + Mesh.length() + 1 /*length of mesh plus one for NUL-termination */;
+  output.write(reinterpret_cast<const char*>(&Size), 4);
+  output.write(reinterpret_cast<const char*>(&HeaderOne), 4);
+  output.write(reinterpret_cast<const char*>(&HeaderFlags), 4);
 
   /*Static:
     NAME = ID string
     MODL = NIF model*/
 
-  //write NAME
-  output.write((const char*) &cNAME, 4);
-  uint32_t SubLength = recordID.length()+1;
-  //write NAME's length
-  output.write((const char*) &SubLength, 4);
-  //write NAME/ID
+  // write record ID (NAME)
+  output.write(reinterpret_cast<const char*>(&cNAME), 4);
+  uint32_t SubLength = recordID.length() + 1;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
   output.write(recordID.c_str() ,SubLength);
-  //write MODL
-  output.write((const char*) &cMODL, 4);
-  SubLength = Mesh.length()+1;
-  //write MODL's length
-  output.write((const char*) &SubLength, 4);
-  //write MODL/ mesh path
+
+  // write mesh path (MODL)
+  output.write(reinterpret_cast<const char*>(&cMODL), 4);
+  SubLength = Mesh.length() + 1;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
   output.write(Mesh.c_str() ,SubLength);
   return output.good();
 }
 #endif
 
-bool StaticRecord::loadFromStream(std::istream& in_File)
+bool StaticRecord::loadFromStream(std::istream& input)
 {
   uint32_t Size;
-  in_File.read((char*) &Size, 4);
-  in_File.read((char*) &HeaderOne, 4);
-  in_File.read((char*) &HeaderFlags, 4);
+  input.read(reinterpret_cast<char*>(&Size), 4);
+  input.read(reinterpret_cast<char*>(&HeaderOne), 4);
+  input.read(reinterpret_cast<char*>(&HeaderFlags), 4);
 
   /*Static:
     NAME = ID string
     MODL = NIF model*/
 
-  uint32_t SubRecName;
-  uint32_t SubLength;
-  SubRecName = SubLength = 0;
-  //read NAME
-  in_File.read((char*) &SubRecName, 4);
-  if (SubRecName!=cNAME)
+  uint32_t SubRecName = 0;
+  uint32_t SubLength = 0;
+  // read NAME
+  input.read(reinterpret_cast<char*>(&SubRecName), 4);
+  if (SubRecName != cNAME)
   {
     UnexpectedRecord(cNAME, SubRecName);
     return false;
   }
-  //NAME's length
-  in_File.read((char*) &SubLength, 4);
-  if (SubLength>255)
+  // NAME's length
+  input.read(reinterpret_cast<char*>(&SubLength), 4);
+  if (SubLength > 255)
   {
-    std::cout << "Error: subrecord NAME of STAT is longer than 255 characters.\n";
+    std::cout << "Error: Subrecord NAME of STAT is longer than 255 characters.\n";
     return false;
   }
-  //read NAME
+  // read NAME
   char Buffer[256];
   memset(Buffer, '\0', 256);
-  in_File.read(Buffer, SubLength);
-  if (!in_File.good())
+  input.read(Buffer, SubLength);
+  if (!input.good())
   {
     std::cout << "Error while reading subrecord NAME of STAT.\n";
     return false;
   }
   recordID = std::string(Buffer);
 
-  //read MODL
-  in_File.read((char*) &SubRecName, 4);
-  if (SubRecName!=cMODL)
+  // read MODL
+  input.read(reinterpret_cast<char*>(&SubRecName), 4);
+  if (SubRecName != cMODL)
   {
     UnexpectedRecord(cMODL, SubRecName);
     return false;
   }
-  //MODL's length
-  in_File.read((char*) &SubLength, 4);
-  if (SubLength>255)
+  // MODL's length
+  input.read(reinterpret_cast<char*>(&SubLength), 4);
+  if (SubLength > 255)
   {
-    std::cout << "Error: subrecord MODL of STAT is longer than 255 characters.\n";
+    std::cout << "Error: Subrecord MODL of STAT is longer than 255 characters.\n";
     return false;
   }
-  //read MODL
+  // read MODL
   memset(Buffer, '\0', 256);
-  in_File.read(Buffer, SubLength);
-  if (!in_File.good())
+  input.read(Buffer, SubLength);
+  if (!input.good())
   {
     std::cout << "Error while reading subrecord MODL of STAT.\n";
     return false;
@@ -139,4 +134,4 @@ bool StaticRecord::loadFromStream(std::istream& in_File)
   return true;
 }
 
-} //namespace
+} // namespace

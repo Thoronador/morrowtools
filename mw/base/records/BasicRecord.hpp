@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,61 +27,66 @@
 namespace MWTP
 {
 
+/** Abstract base class for all records in Morrowind's ESM files. */
 struct BasicRecord
 {
   public:
-    /* constructor */
     BasicRecord();
 
-    /* destructor */
     virtual ~BasicRecord();
 
     #ifndef MW_UNSAVEABLE_RECORDS
-    /* writes the record to the given output stream and returns true on success
-
-      parameters:
-          output - the output stream
-    */
+    /** \brief Writes the record to the given output stream.
+     *
+     * \param output  the output stream
+     * \return Returns true on success (record was written to stream).
+     *         Returns false, if an error occurred.
+     */
     virtual bool saveToStream(std::ostream& output) const = 0;
     #endif
 
-    /* loads the record from the given input stream and returns true on success
+    /** \brief Loads the record from the given input stream.
+     *
+     * \param input    the input stream
+     * \return Returns true on success (record was loaded from stream).
+     *         Returns false, if an error occurred.
+     */
+    virtual bool loadFromStream(std::istream& input) = 0;
 
-      parameters:
-          in_File - the input stream
-    */
-    virtual bool loadFromStream(std::istream& in_File) = 0;
-
-    //returns the first header part of this record
+    /** \brief Gets the first header part of this record. */
     int32_t getHeaderOne() const;
 
-    //returns the header flags of this record
+    /** \brief Gets the header flags of this record. */
     int32_t getHeaderFlags() const;
 
-    /* sets the first header part of this record
-
-       parameters:
-           newValue - the new value for this header part
-    */
+    /** \brief Sets the first header part of the record.
+     *
+     * \param newValue  the new value for this header part
+     */
     void setHeaderOne(const int32_t newValue);
 
-    /* sets the header flags of this record
-
-       parameters:
-           newValue - the new flag value
-    */
+    /** \brief Sets the header flags of the record.
+     *
+     * \param newValue  the new flag value
+     */
     void setHeaderFlags(const int32_t newValue);
 
-    //returns true, if the blocked flag for this record is set
+    /** \brief Checks whether the blocked flag is set.
+     *
+     * \return Returns true, if the blocked flag is set.
+     */
     bool isBlocked() const;
 
-    //returns true, if the "References Persist" flag for this record is set
+    /** \brief Checks whether the "References Persist" flag is set.
+     *
+     * \return Returns true, if the "References Persist" flag is set.
+     */
     bool isPersistent() const;
   protected:
      int32_t HeaderOne;
      int32_t HeaderFlags;
-}; //struct
+}; // struct
 
-} //namespace
+} // namespace
 
 #endif // MW_BASICRECORD_HPP

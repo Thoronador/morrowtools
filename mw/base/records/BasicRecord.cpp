@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -34,8 +34,6 @@ BasicRecord::BasicRecord()
 
 BasicRecord::~BasicRecord()
 {
-  //empty
-  //Purpose is to have a virtual destructor to get rid of compiler warnings.
 }
 
 int32_t BasicRecord::getHeaderOne() const
@@ -60,12 +58,12 @@ void BasicRecord::setHeaderFlags(const int32_t newValue)
 
 bool BasicRecord::isBlocked() const
 {
-  return ((HeaderFlags & FlagBlocked)!=0);
+  return (HeaderFlags & FlagBlocked) != 0;
 }
 
 bool BasicRecord::isPersistent() const
 {
-  return ((HeaderFlags & FlagPersists)!=0);
+  return (HeaderFlags & FlagPersists) != 0;
 }
 
-} //namespace
+} // namespace

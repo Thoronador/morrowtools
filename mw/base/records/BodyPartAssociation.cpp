@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2021 Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -23,10 +23,17 @@
 namespace MWTP
 {
 
-bool BodyPartAssociation::operator==(const BodyPartAssociation& other) const
+BodyPartAssociation::BodyPartAssociation()
+: Index(0),
+  MaleBodyPart(std::string()),
+  FemaleBodyPart(std::string())
 {
-  return ((Index==other.Index) and (MaleBodyPart==other.MaleBodyPart)
-      and (FemaleBodyPart==other.FemaleBodyPart));
 }
 
-} //namespace
+bool BodyPartAssociation::operator==(const BodyPartAssociation& other) const
+{
+  return (Index == other.Index) && (MaleBodyPart == other.MaleBodyPart)
+      && (FemaleBodyPart == other.FemaleBodyPart);
+}
+
+} // namespace

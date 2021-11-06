@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -33,9 +33,11 @@ struct BodyPartAssociation
   std::string MaleBodyPart;
   std::string FemaleBodyPart;
 
+  BodyPartAssociation();
+
   bool operator==(const BodyPartAssociation& other) const;
 };
 
-} //namespace
+} // namespace
 
 #endif // MW_BODYPARTASSOCIATION_HPP

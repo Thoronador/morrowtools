@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2013  Thoronador
+    Copyright (C) 2011, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,12 +24,13 @@ namespace MWTP
 {
 
 ItemRecord::ItemRecord()
-: Count(0), Item("")
+: Count(0),
+  Item(std::string())
 { }
 
 bool ItemRecord::operator==(const ItemRecord& other) const
 {
-  return ((Count==other.Count) and (Item==other.Item));
+  return (Count == other.Count) && (Item == other.Item);
 }
 
-} //namespace
+} // namespace

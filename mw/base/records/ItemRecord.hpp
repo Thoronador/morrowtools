@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2013 Thoronador
+    Copyright (C) 2011, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -32,13 +32,11 @@ struct ItemRecord
   int32_t Count;
   std::string Item;
 
-  /* constructor */
   ItemRecord();
 
-  /* operator */
   bool operator==(const ItemRecord& other) const;
-};//struct
+};
 
-} //namespace
+} // namespace
 
 #endif // MW_ITEMRECORD_HPP

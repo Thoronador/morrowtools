@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2013  Thoronador
+    Copyright (C) 2011, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -23,8 +23,6 @@
 namespace MWTP
 {
 
-/* **** TravelDestination's functions ****/
-
 TravelDestination::TravelDestination()
 : XPos(0.0f), YPos(0.0f), ZPos(0.0f),
   XRot(0.0f), YRot(0.0f), ZRot(0.0f),
@@ -33,9 +31,9 @@ TravelDestination::TravelDestination()
 
 bool TravelDestination::operator==(const TravelDestination& other) const
 {
-  return ((XPos==other.XPos) and (YPos==other.YPos) and (ZPos==other.ZPos)
-      and (XRot==other.XRot) and (YRot==other.YRot) and (ZRot==other.ZRot)
-      and (CellName==other.CellName));
+  return (XPos == other.XPos) && (YPos == other.YPos) && (ZPos == other.ZPos)
+      && (XRot == other.XRot) && (YRot == other.YRot) && (ZRot == other.ZRot)
+      && (CellName == other.CellName);
 }
 
-} //namespace
+} // namespace

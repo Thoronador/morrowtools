@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2013  Thoronador
+    Copyright (C) 2011, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,15 +30,13 @@ struct TravelDestination
 {
   float XPos, YPos, ZPos;
   float XRot, YRot, ZRot;
-  std::string CellName;//is usually empty for exterior cells
+  std::string CellName; // is usually empty for exterior cells
 
-  /* constructor */
   TravelDestination();
 
-  /* comparison operator */
   bool operator==(const TravelDestination& other) const;
-};//struct
+};
 
-} //namespace
+} // namespace
 
 #endif // MW_TRAVELDESTINATION_HPP

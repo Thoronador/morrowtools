@@ -64,3 +64,13 @@ if (ENABLE_LTO)
 endif()
 
 add_executable(data_cleaner ${data_cleaner_sources})
+
+# GNU GCC before 9.1.0 needs to link to libstdc++fs explicitly.
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "9.1.0")
+  target_link_libraries(data_cleaner stdc++fs)
+endif ()
+
+# Clang before 9.0 needs to link to libc++fs explicitly.
+if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "9.0")
+  target_link_libraries(data_cleaner c++fs)
+endif ()

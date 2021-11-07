@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012  Thoronador
+    Copyright (C) 2011, 2012, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,42 +30,48 @@ namespace MWTP
 
 struct BodyPartRecord: public BasicRecord
 {
-  std::string recordID; //formerly BodyPartID
+  std::string recordID;
   std::string MeshPath;
   std::string RaceID;
-  //body data
+  // body data
   uint8_t Part;
   uint8_t Vampire;
   uint8_t Flags;
   uint8_t PartType;
-  //end of body data
+  // end of body data
 
-  /* constructor */
   BodyPartRecord();
 
-  /* returns true, if the other record contains the same data */
+  /** \brief Checks whether another instance contains the same data.
+   *
+   * \param other   the other record to compare with
+   * \return Returns true, if @other contains the same data as instance.
+   *         Returns false otherwise.
+   */
   bool equals(const BodyPartRecord& other) const;
 
   #ifndef MW_UNSAVEABLE_RECORDS
-  /* writes the record to the given output stream and returns true on success
-
-    parameters:
-        output - the output stream
-  */
+  /** \brief Writes the record to the given output stream.
+   *
+   * \param output  the output stream
+   * \return Returns true on success (record was written to stream).
+   *         Returns false, if an error occurred.
+   */
   bool saveToStream(std::ostream& output) const override;
   #endif
 
-  /* loads the record from the given input stream and returns true on success
-
-    parameters:
-        in_File - the input stream
-  */
+  /** \brief Loads the record from the given input stream.
+   *
+   * \param in_File    the input stream
+   * \return Returns true on success (record was loaded from stream).
+   *         Returns false, if an error occurred.
+   */
   bool loadFromStream(std::istream& in_File) override;
-};//struct
+}; // struct
 
-//comparison operator for BodyPartRecords
+/// comparison operator for BodyPartRecords
 bool operator<(const BodyPartRecord& left, const BodyPartRecord& right);
 
-} //namespace
+} // namespace
 
 #endif // MW_BODYPARTRECORD_HPP

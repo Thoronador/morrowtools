@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011, 2012, 2013  Thoronador
+    Copyright (C) 2009, 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -29,10 +29,9 @@ namespace MWTP
 
 BodyPartRecord::BodyPartRecord()
 : BasicRecord(),
-  recordID(""),
-  MeshPath(""),
-  RaceID(""),
-  //body data
+  recordID(std::string()),
+  MeshPath(std::string()),
+  RaceID(std::string()),
   Part(0),
   Vampire(0),
   Flags(0),
@@ -41,27 +40,26 @@ BodyPartRecord::BodyPartRecord()
 
 bool BodyPartRecord::equals(const BodyPartRecord& other) const
 {
-  return ((recordID==other.recordID) and (MeshPath==other.MeshPath)
-      and (RaceID==other.RaceID) and (Part==other.Part)
-      and (Vampire==other.Vampire) and (Flags==other.Flags)
-      and (PartType==other.PartType));
+  return (recordID == other.recordID) && (MeshPath == other.MeshPath)
+      && (RaceID == other.RaceID) && (Part == other.Part)
+      && (Vampire == other.Vampire) && (Flags == other.Flags)
+      && (PartType == other.PartType);
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
 bool BodyPartRecord::saveToStream(std::ostream& output) const
 {
-  output.write((const char*) &cBODY, 4);
-  uint32_t Size;
-  Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +recordID.length()+1 /* length of ID +1 byte for NUL termination */
-        +4 /* MODL */ +4 /* 4 bytes for length */
-        +MeshPath.length()+1 /* length of ID +1 byte for NUL termination */
-        +4 /* FNAM */ +4 /* 4 bytes for length */
-        +RaceID.length()+1 /* length of ID +1 byte for NUL termination */
-        +4 /* BYDT */ +4 /* 4 bytes for BYDT's length */ +4 /* size of BYDT */;
-  output.write((const char*) &Size, 4);
-  output.write((const char*) &HeaderOne, 4);
-  output.write((const char*) &HeaderFlags, 4);
+  output.write(reinterpret_cast<const char*>(&cBODY), 4);
+  const uint32_t Size = 4 /* NAME */ +4 /* 4 bytes for length */
+        + recordID.length() + 1 /* length of ID +1 byte for NUL termination */
+        + 4 /* MODL */ + 4 /* 4 bytes for length */
+        + MeshPath.length() + 1 /* length of ID +1 byte for NUL termination */
+        + 4 /* FNAM */ + 4 /* 4 bytes for length */
+        + RaceID.length() + 1 /* length of ID +1 byte for NUL termination */
+        + 4 /* BYDT */ + 4 /* 4 bytes for BYDT's length */ + 4 /* size of BYDT */;
+  output.write(reinterpret_cast<const char*>(&Size), 4);
+  output.write(reinterpret_cast<const char*>(&HeaderOne), 4);
+  output.write(reinterpret_cast<const char*>(&HeaderFlags), 4);
 
   /*BodyParts:
     NAME = Body Part ID
@@ -94,51 +92,44 @@ bool BodyPartRecord::saveToStream(std::ostream& output) const
 			2 = Armor
   */
 
-  //write NAME
-  output.write((const char*) &cNAME, 4);
-  uint32_t SubLength = recordID.length()+1;
-  //write NAME's length
-  output.write((const char*) &SubLength, 4);
-  //write NAME/ID
+  // write ID (NAME)
+  output.write(reinterpret_cast<const char*>(&cNAME), 4);
+  uint32_t SubLength = recordID.length() + 1;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
   output.write(recordID.c_str(), SubLength);
 
-  //write MODL
-  output.write((const char*) &cMODL, 4);
-  SubLength = MeshPath.length()+1;
-  //write MODL's length
-  output.write((const char*) &SubLength, 4);
-  //write mesh path
+  // write mesh path (MODL)
+  output.write(reinterpret_cast<const char*>(&cMODL), 4);
+  SubLength = MeshPath.length() + 1;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
   output.write(MeshPath.c_str(), SubLength);
 
-  //write FNAM
-  output.write((const char*) &cFNAM, 4);
-  SubLength = RaceID.length()+1;
-  //write FNAM's length
-  output.write((const char*) &SubLength, 4);
-  //write race ID
+  // write race ID (FNAM)
+  output.write(reinterpret_cast<const char*>(&cFNAM), 4);
+  SubLength = RaceID.length() + 1;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
   output.write(RaceID.c_str(), SubLength);
 
-  //write BYDT
-  output.write((const char*) &cBYDT, 4);
-  SubLength = 4; /* fixed length is four bytes */
-  //write BYDT's length
-  output.write((const char*) &SubLength, 4);
-  //write BYDT
-  output.write((const char*) &Part, 1);
-  output.write((const char*) &Vampire, 1);
-  output.write((const char*) &Flags, 1);
-  output.write((const char*) &PartType, 1);
+  // write BYDT
+  output.write(reinterpret_cast<const char*>(&cBYDT), 4);
+  SubLength = 4;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
+  // write actual data
+  output.write(reinterpret_cast<const char*>(&Part), 1);
+  output.write(reinterpret_cast<const char*>(&Vampire), 1);
+  output.write(reinterpret_cast<const char*>(&Flags), 1);
+  output.write(reinterpret_cast<const char*>(&PartType), 1);
 
   return output.good();
 }
 #endif
 
-bool BodyPartRecord::loadFromStream(std::istream& in_File)
+bool BodyPartRecord::loadFromStream(std::istream& input)
 {
-  uint32_t Size;
-  in_File.read((char*) &Size, 4);
-  in_File.read((char*) &HeaderOne, 4);
-  in_File.read((char*) &HeaderFlags, 4);
+  uint32_t Size = 0;
+  input.read(reinterpret_cast<char*>(&Size), 4);
+  input.read(reinterpret_cast<char*>(&HeaderOne), 4);
+  input.read(reinterpret_cast<char*>(&HeaderFlags), 4);
 
   /*BodyParts:
     NAME = Body Part ID
@@ -170,109 +161,108 @@ bool BodyPartRecord::loadFromStream(std::istream& in_File)
 			1 = Clothing
 			2 = Armor
   */
-  uint32_t SubRecName;
-  uint32_t SubLength;
-  SubRecName = SubLength = 0;
+  uint32_t SubRecName = 0;
+  uint32_t SubLength = 0;
 
-  //read NAME
-  in_File.read((char*) &SubRecName, 4);
-  if (SubRecName!=cNAME)
+  // read NAME
+  input.read(reinterpret_cast<char*>(&SubRecName), 4);
+  if (SubRecName != cNAME)
   {
     UnexpectedRecord(cNAME, SubRecName);
     return false;
   }
-  //NAME's length
-  in_File.read((char*) &SubLength, 4);
-  if (SubLength>255)
+  // NAME's length
+  input.read(reinterpret_cast<char*>(&SubLength), 4);
+  if (SubLength > 255)
   {
-    std::cout << "Subrecord NAME of BODY is longer than 255 characters!\n";
+    std::cerr << "Subrecord NAME of BODY is longer than 255 characters!\n";
     return false;
   }
   char Buffer[256];
   memset(Buffer, '\0', 256);
-  //read name
-  in_File.read(Buffer, SubLength);
-  if (!in_File.good())
+  // read name
+  input.read(Buffer, SubLength);
+  if (!input.good())
   {
-    std::cout << "Error while reading subrecord NAME of BODY!\n";
+    std::cerr << "Error while reading subrecord NAME of BODY!\n";
     return false;
   }
   recordID = std::string(Buffer);
 
-  //read MODL
-  in_File.read((char*) &SubRecName, 4);
-  if (SubRecName!=cMODL)
+  // read MODL
+  input.read(reinterpret_cast<char*>(&SubRecName), 4);
+  if (SubRecName != cMODL)
   {
     UnexpectedRecord(cMODL, SubRecName);
     return false;
   }
-  //MODL's length
-  in_File.read((char*) &SubLength, 4);
-  if (SubLength>255)
+  // MODL's length
+  input.read(reinterpret_cast<char*>(&SubLength), 4);
+  if (SubLength > 255)
   {
-    std::cout << "Subrecord MODL of BODY is longer than 255 characters!\n";
+    std::cerr << "Subrecord MODL of BODY is longer than 255 characters!\n";
     return false;
   }
-  //read MODL
+  // read MODL
   memset(Buffer, '\0', 256);
-  in_File.read(Buffer, SubLength);
-  if (!in_File.good())
+  input.read(Buffer, SubLength);
+  if (!input.good())
   {
-    std::cout << "Error while reading subrecord MODL of BODY!\n";
+    std::cerr << "Error while reading subrecord MODL of BODY!\n";
     return false;
   }
   MeshPath = std::string(Buffer);
 
-  //read Race Name FNAM
-  in_File.read((char*) &SubRecName, 4);
-  if (SubRecName!=cFNAM)
+  // read Race Name FNAM
+  input.read(reinterpret_cast<char*>(&SubRecName), 4);
+  if (SubRecName != cFNAM)
   {
     UnexpectedRecord(cFNAM, SubRecName);
     return false;
   }
-  //FNAM's length
-  in_File.read((char*) &SubLength, 4);
-  if (SubLength>255)
+  // FNAM's length
+  input.read(reinterpret_cast<char*>(&SubLength), 4);
+  if (SubLength > 255)
   {
-    std::cout << "Subrecord FNAM of BODY is longer than 255 characters!\n";
+    std::cerr << "Subrecord FNAM of BODY is longer than 255 characters!\n";
     return false;
   }
-  //read FNAM
+  // read FNAM
   memset(Buffer, '\0', 256);
-  in_File.read(Buffer, SubLength);
-  if (!in_File.good())
+  input.read(Buffer, SubLength);
+  if (!input.good())
   {
-    std::cout << "Error while reading subrecord FNAM of BODY!\n";
+    std::cerr << "Error while reading subrecord FNAM of BODY!\n";
     return false;
   }
   RaceID = std::string(Buffer);
 
-  //read BYDT (Body part data)
-  in_File.read((char*) &SubRecName, 4);
-  if (SubRecName!=cBYDT)
+  // read BYDT (Body part data)
+  input.read(reinterpret_cast<char*>(&SubRecName), 4);
+  if (SubRecName != cBYDT)
   {
     UnexpectedRecord(cBYDT, SubRecName);
     return false;
   }
-  //BYDT's length
-  in_File.read((char*) &SubLength, 4);
+  // BYDT's length
+  input.read(reinterpret_cast<char*>(&SubLength), 4);
   if (SubLength != 4)
   {
-    std::cout << "Error: Sub record BYDT has invalid length ("<<SubLength
+    std::cerr << "Error: Sub record BYDT has invalid length (" << SubLength
               << " bytes), should be 4 bytes.\n";
     return false;
   }
-  //read BYDT
-  in_File.read((char*) &Part, 1);
-  in_File.read((char*) &Vampire, 1);
-  in_File.read((char*) &Flags, 1);
-  in_File.read((char*) &PartType, 1);
-  return in_File.good();
+  // read BYDT
+  input.read(reinterpret_cast<char*>(&Part), 1);
+  input.read(reinterpret_cast<char*>(&Vampire), 1);
+  input.read(reinterpret_cast<char*>(&Flags), 1);
+  input.read(reinterpret_cast<char*>(&PartType), 1);
+  return input.good();
 }
 
 bool operator<(const BodyPartRecord& left, const BodyPartRecord& right)
 {
-  return (left.recordID.compare(right.recordID)<0);
+  return left.recordID.compare(right.recordID) < 0;
 }
 
-} //namespace
+} // namespace

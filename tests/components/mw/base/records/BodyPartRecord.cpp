@@ -125,6 +125,39 @@ TEST_CASE("MWTP::BodyPartRecord")
     }
   }
 
+  SECTION("less")
+  {
+    BodyPartRecord a;
+    BodyPartRecord b;
+
+    SECTION("equal")
+    {
+      a.recordID = "Tree";
+      b.recordID = "Tree";
+
+      REQUIRE_FALSE( a < b );
+      REQUIRE_FALSE( b < a );
+    }
+
+    SECTION("less")
+    {
+      a.recordID = "Lindentree";
+      b.recordID = "Tree";
+
+      REQUIRE( a < b );
+      REQUIRE_FALSE( b < a );
+    }
+
+    SECTION("greater")
+    {
+      a.recordID = "Tree";
+      b.recordID = "Another tree";
+
+      REQUIRE_FALSE( a < b );
+      REQUIRE( b < a );
+    }
+  }
+
   SECTION("loadFromStream")
   {
     uint32_t dummy = 0;

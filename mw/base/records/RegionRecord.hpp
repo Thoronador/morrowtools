@@ -95,7 +95,7 @@ struct RegionRecord: public BasicRecord
     parameters:
         in_File - the input stream
   */
-  bool loadFromStream(std::istream& in_File);
+  bool loadFromStream(std::istream& in_File) override;
 };//struct
 
 //comparison operator for ordered set

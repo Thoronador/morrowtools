@@ -21,10 +21,8 @@
 #include "FileFunctions.hpp"
 #include <filesystem>
 #include <sys/stat.h> // stat()
-#include <utime.h> // utime(), struct utimbuf
 #include <cmath>   // std::round()
 #include "UtilityFunctions.hpp" // floatToString()
-#include <iostream>
 
 int64_t getFileSize64(const std::string& fileName)
 {
@@ -40,6 +38,26 @@ int64_t getFileSize64(const std::string& fileName)
   return static_cast<int64_t>(size);
 }
 
+template <typename FromTimeT, typename ToTimeT>
+ToTimeT clock_cast_simple(const FromTimeT tp)
+{
+  const auto from_now = FromTimeT::clock::now();
+  const auto to_now = ToTimeT::clock::now();
+  // This is not an exact conversion, i. e. it might be off by a few 100 nanoseconds.
+  // It depends on how much time is spent between the two calls to now().
+  // However, on some file systems the resolution for file time is one second,
+  // and even NTFS has just 10 ms resolution, so the error is at least one order
+  // of magnitude above the resolution the file system can handle.
+  return to_now + (tp - from_now);
+}
+
+std::filesystem::file_time_type time_t_to_file_time(const time_t _time)
+{
+  using namespace std::chrono;
+  const system_clock::time_point sys = system_clock::from_time_t(_time);
+  return clock_cast_simple<system_clock::time_point, std::filesystem::file_time_type>(sys);
+}
+
 bool setFileModificationTime(const std::string& FileName, const time_t new_mtime)
 {
   struct stat buffer;
@@ -49,10 +67,14 @@ bool setFileModificationTime(const std::string& FileName, const time_t new_mtime
     if (buffer.st_mtime == new_mtime)
       return true;
     // change time
-    struct utimbuf fileTimes;
-    fileTimes.actime = buffer.st_atime;
-    fileTimes.modtime = new_mtime;
-    return (utime(FileName.c_str(), &fileTimes) == 0);
+    namespace fs = std::filesystem;
+    const fs::path path(FileName);
+    // The codebase is still C++17 and not C++20, so some of the more advanced
+    // features to convert file system time are not available yet.
+    std::error_code error;
+    const auto new_file_time = time_t_to_file_time(new_mtime);
+    fs::last_write_time(path, new_file_time, error);
+    return !error;
   }
   // An error occurred, so return false.
   return false;

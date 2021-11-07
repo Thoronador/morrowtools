@@ -27,9 +27,9 @@
 namespace MWTP
 {
 
-BodyPartRecord::BodyPartRecord()
+BodyPartRecord::BodyPartRecord(const std::string& id)
 : BasicRecord(),
-  recordID(std::string()),
+  recordID(id),
   MeshPath(std::string()),
   RaceID(std::string()),
   Part(0),

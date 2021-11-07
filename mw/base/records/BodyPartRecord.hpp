@@ -40,7 +40,7 @@ struct BodyPartRecord: public BasicRecord
   uint8_t PartType;
   // end of body data
 
-  BodyPartRecord();
+  BodyPartRecord(const std::string& id = "");
 
   /** \brief Checks whether another instance contains the same data.
    *

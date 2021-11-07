@@ -39,18 +39,6 @@ BodyPartRecord::BodyPartRecord()
   PartType(0)
 {}
 
-BodyPartRecord::BodyPartRecord(const std::string& ID)
-: BasicRecord(),
-  recordID(ID),
-  MeshPath(""),
-  RaceID(""),
-  //body data
-  Part(0),
-  Vampire(0),
-  Flags(0),
-  PartType(0)
-{}
-
 bool BodyPartRecord::equals(const BodyPartRecord& other) const
 {
   return ((recordID==other.recordID) and (MeshPath==other.MeshPath)

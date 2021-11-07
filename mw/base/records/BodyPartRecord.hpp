@@ -43,9 +43,6 @@ struct BodyPartRecord: public BasicRecord
   /* constructor */
   BodyPartRecord();
 
-  /* alternative constructor */
-  BodyPartRecord(const std::string& ID);
-
   /* returns true, if the other record contains the same data */
   bool equals(const BodyPartRecord& other) const;
 

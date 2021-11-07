@@ -21,6 +21,7 @@
 #ifndef SR_TABLEUTILITIES_HPP
 #define SR_TABLEUTILITIES_HPP
 
+#include <optional>
 #include <string>
 #include <vector>
 #include "Localization.hpp"

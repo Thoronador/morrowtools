@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -18,21 +18,22 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef COMPARISONFUNCTOR_HPP
-#define COMPARISONFUNCTOR_HPP
+#ifndef MWTP_COMPARISONFUNCTOR_HPP
+#define MWTP_COMPARISONFUNCTOR_HPP
 
 #include "UtilityFunctions.hpp"
+#include <functional>
 
 namespace MWTP
 {
 
-struct ci_less : public std::binary_function<std::string, std::string, bool>
+struct ci_less : public std::function<bool(const std::string&, const std::string&)>
 {
   bool
   operator()(const std::string& __x, const std::string& __y) const
   { return (lowerCaseCompare(__x, __y)<0); }
 };
 
-} //namespace
+} // namespace
 
 #endif // COMPARISONFUNCTOR_HPP

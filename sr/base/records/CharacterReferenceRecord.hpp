@@ -79,7 +79,7 @@ struct CharacterReferenceRecord: public BasicRecord
       /* equality operator */
       inline bool operator==(const LinkedRef& other) const
       {
-        return ((keywordFormID==other.keywordFormID) and (referenceFormID==other.referenceFormID));
+        return (keywordFormID == other.keywordFormID) && (referenceFormID == other.referenceFormID);
       }
     };//struct
 

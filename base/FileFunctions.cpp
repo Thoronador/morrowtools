@@ -46,7 +46,8 @@ bool setFileModificationTime(const std::string& FileName, const time_t new_mtime
   if (stat(FileName.c_str(), &buffer) == 0)
   {
     // stat() was successful.
-    if (buffer.st_mtime == new_mtime) return true;
+    if (buffer.st_mtime == new_mtime)
+      return true;
     // change time
     struct utimbuf fileTimes;
     fileTimes.actime = buffer.st_atime;

@@ -21,6 +21,7 @@
 #ifndef SR_KEYRECORD_HPP
 #define SR_KEYRECORD_HPP
 
+#include <array>
 #include <string>
 #include <vector>
 #include "BasicRecord.hpp"

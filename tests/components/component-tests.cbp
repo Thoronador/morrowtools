@@ -57,6 +57,8 @@
 		<Unit filename="../../mw/base/records/BasicRecord.hpp" />
 		<Unit filename="../../mw/base/records/BodyPartAssociation.cpp" />
 		<Unit filename="../../mw/base/records/BodyPartAssociation.hpp" />
+		<Unit filename="../../mw/base/records/BodyPartRecord.cpp" />
+		<Unit filename="../../mw/base/records/BodyPartRecord.hpp" />
 		<Unit filename="../../mw/base/records/ItemRecord.cpp" />
 		<Unit filename="../../mw/base/records/ItemRecord.hpp" />
 		<Unit filename="../../mw/base/records/StaticRecord.cpp" />
@@ -235,6 +237,7 @@
 		<Unit filename="mw/base/HelperIO.cpp" />
 		<Unit filename="mw/base/records/BasicRecord.cpp" />
 		<Unit filename="mw/base/records/BodyPartAssociation.cpp" />
+		<Unit filename="mw/base/records/BodyPartRecord.cpp" />
 		<Unit filename="mw/base/records/ItemRecord.cpp" />
 		<Unit filename="mw/base/records/StaticRecord.cpp" />
 		<Unit filename="mw/base/records/TravelDestination.cpp" />

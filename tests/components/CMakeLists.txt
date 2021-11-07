@@ -17,6 +17,7 @@ set(component_tests_sources
     ../../mw/base/HelperIO.cpp
     ../../mw/base/records/BasicRecord.cpp
     ../../mw/base/records/BodyPartAssociation.cpp
+    ../../mw/base/records/BodyPartRecord.cpp
     ../../mw/base/records/ItemRecord.cpp
     ../../mw/base/records/StaticRecord.cpp
     ../../mw/base/records/TravelDestination.cpp
@@ -111,6 +112,7 @@ set(component_tests_sources
     mw/base/HelperIO.cpp
     mw/base/records/BasicRecord.cpp
     mw/base/records/BodyPartAssociation.cpp
+    mw/base/records/BodyPartRecord.cpp
     mw/base/records/ItemRecord.cpp
     mw/base/records/StaticRecord.cpp
     mw/base/records/TravelDestination.cpp

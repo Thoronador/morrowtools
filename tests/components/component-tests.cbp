@@ -61,6 +61,8 @@
 		<Unit filename="../../mw/base/records/BodyPartRecord.hpp" />
 		<Unit filename="../../mw/base/records/ItemRecord.cpp" />
 		<Unit filename="../../mw/base/records/ItemRecord.hpp" />
+		<Unit filename="../../mw/base/records/SkillRecord.cpp" />
+		<Unit filename="../../mw/base/records/SkillRecord.hpp" />
 		<Unit filename="../../mw/base/records/StaticRecord.cpp" />
 		<Unit filename="../../mw/base/records/StaticRecord.hpp" />
 		<Unit filename="../../mw/base/records/TravelDestination.cpp" />
@@ -239,6 +241,7 @@
 		<Unit filename="mw/base/records/BodyPartAssociation.cpp" />
 		<Unit filename="mw/base/records/BodyPartRecord.cpp" />
 		<Unit filename="mw/base/records/ItemRecord.cpp" />
+		<Unit filename="mw/base/records/SkillRecord.cpp" />
 		<Unit filename="mw/base/records/StaticRecord.cpp" />
 		<Unit filename="mw/base/records/TravelDestination.cpp" />
 		<Unit filename="sr/base/DependencyElement.cpp" />

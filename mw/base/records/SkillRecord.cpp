@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011, 2013  Thoronador
+    Copyright (C) 2010, 2011, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -51,8 +51,8 @@ bool SkillRecord::saveToStream(std::ostream& output) const
   uint32_t Size;
   Size = 4 /* INDX */ +4 /* 4 bytes for length */ +4 /* 4 bytes for index */
         +4 /* SKDT */ +4 /* 4 bytes for length */ +24 /* 24 bytes for Skill data */
-        +4 /* DESC */ +4 /* 4 bytes for length */
-        +Description.length()+1 /* length of description +1 for NUL-termination */;
+        + 4 /* DESC */ + 4 /* 4 bytes for length */
+        + Description.length() /* length of description, no NUL-termination */;
   output.write((const char*) &Size, 4);
   output.write((const char*) &HeaderOne, 4);
   output.write((const char*) &HeaderFlags, 4);
@@ -88,7 +88,7 @@ bool SkillRecord::saveToStream(std::ostream& output) const
   //write DESC
   output.write((const char*) &cDESC, 4);
   //write length
-  SubLength = Description.length()+1;
+  SubLength = Description.length();
   output.write((const char*) &SubLength, 4);
   //write description text
   output.write(Description.c_str(), SubLength);

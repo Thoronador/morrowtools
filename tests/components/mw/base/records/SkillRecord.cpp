@@ -37,10 +37,10 @@ TEST_CASE("MWTP::SkillRecord")
     REQUIRE( record.SkillIndex == 0 );
     REQUIRE( record.Attribute == 0 );
     REQUIRE( record.Specialization == 0 );
-    REQUIRE( record.UseValue[0] == 0.0f );
-    REQUIRE( record.UseValue[1] == 0.0f );
-    REQUIRE( record.UseValue[2] == 0.0f );
-    REQUIRE( record.UseValue[3] == 0.0f );
+    REQUIRE( record.UseValues[0] == 0.0f );
+    REQUIRE( record.UseValues[1] == 0.0f );
+    REQUIRE( record.UseValues[2] == 0.0f );
+    REQUIRE( record.UseValues[3] == 0.0f );
     REQUIRE( record.Description.empty() );
   }
 
@@ -87,37 +87,37 @@ TEST_CASE("MWTP::SkillRecord")
         REQUIRE_FALSE( b.equals(a) );
       }
 
-      SECTION("UseValue[0] mismatch")
+      SECTION("UseValues[0] mismatch")
       {
-        a.UseValue[0] = 0.1f;
-        b.UseValue[0] = 0.5f;
+        a.UseValues[0] = 0.1f;
+        b.UseValues[0] = 0.5f;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
       }
 
-      SECTION("UseValue[1] mismatch")
+      SECTION("UseValues[1] mismatch")
       {
-        a.UseValue[1] = 1.1f;
-        b.UseValue[1] = 0.5f;
+        a.UseValues[1] = 1.1f;
+        b.UseValues[1] = 0.5f;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
       }
 
-      SECTION("UseValue[2] mismatch")
+      SECTION("UseValues[2] mismatch")
       {
-        a.UseValue[2] = 2.1f;
-        b.UseValue[2] = 0.5f;
+        a.UseValues[2] = 2.1f;
+        b.UseValues[2] = 0.5f;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
       }
 
-      SECTION("UseValue[3] mismatch")
+      SECTION("UseValues[3] mismatch")
       {
-        a.UseValue[3] = 0.1f;
-        b.UseValue[3] = 0.5f;
+        a.UseValues[3] = 0.1f;
+        b.UseValues[3] = 0.5f;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
@@ -159,10 +159,10 @@ TEST_CASE("MWTP::SkillRecord")
       REQUIRE( record.SkillIndex == SkillSneak );
       REQUIRE( record.Attribute == 3 );
       REQUIRE( record.Specialization == cSpecializationStealth );
-      REQUIRE( record.UseValue[0] == 0.25f );
-      REQUIRE( record.UseValue[1] == 2.0f );
-      REQUIRE( record.UseValue[2] == 1.0f );
-      REQUIRE( record.UseValue[3] == 1.0f );
+      REQUIRE( record.UseValues[0] == 0.25f );
+      REQUIRE( record.UseValues[1] == 2.0f );
+      REQUIRE( record.UseValues[2] == 1.0f );
+      REQUIRE( record.UseValues[3] == 1.0f );
       REQUIRE( record.Description == "Diese Fertigkeit besteht darin, sich ungesehen und ungeh\xF6rt zu bewegen. Versierte Schleicher sind gleichzeitig meist gute Taschendiebe." );
 
       // Writing should succeed.

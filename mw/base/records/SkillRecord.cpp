@@ -32,30 +32,28 @@ SkillRecord::SkillRecord()
   SkillIndex(0),
   Attribute(0),
   Specialization(0),
+  UseValues({ 0.0f, 0.0f, 0.0f, 0.0f }),
   Description("")
 {
-  UseValue[0] = UseValue[1] = UseValue[2] = UseValue[3] = 0.0f;
 }
 
 bool SkillRecord::equals(const SkillRecord& other) const
 {
-  return ((Attribute==other.Attribute) and (Specialization==other.Specialization)
-         and (Description==other.Description) and (UseValue[0]==other.UseValue[0])
-         and (UseValue[1]==other.UseValue[1]) and (UseValue[2]==other.UseValue[2])
-         and (UseValue[3]==other.UseValue[3]) and (SkillIndex==other.SkillIndex));
+  return (Attribute == other.Attribute) && (Specialization == other.Specialization)
+      && (Description == other.Description) && (UseValues == other.UseValues)
+      && (SkillIndex == other.SkillIndex);
 }
 
 bool SkillRecord::saveToStream(std::ostream& output) const
 {
-  output.write((const char*) &cSKIL, 4);
-  uint32_t Size;
-  Size = 4 /* INDX */ +4 /* 4 bytes for length */ +4 /* 4 bytes for index */
-        +4 /* SKDT */ +4 /* 4 bytes for length */ +24 /* 24 bytes for Skill data */
+  output.write(reinterpret_cast<const char*>(&cSKIL), 4);
+  const uint32_t Size = 4 /* INDX */ + 4 /* 4 bytes for length */ + 4 /* 4 bytes for index */
+        + 4 /* SKDT */ + 4 /* 4 bytes for length */ + 24 /* 24 bytes for Skill data */
         + 4 /* DESC */ + 4 /* 4 bytes for length */
         + Description.length() /* length of description, no NUL-termination */;
-  output.write((const char*) &Size, 4);
-  output.write((const char*) &HeaderOne, 4);
-  output.write((const char*) &HeaderFlags, 4);
+  output.write(reinterpret_cast<const char*>(&Size), 4);
+  output.write(reinterpret_cast<const char*>(&HeaderOne), 4);
+  output.write(reinterpret_cast<const char*>(&HeaderFlags), 4);
 
   /*Skills:
     INDX = Skill ID (4 bytes, long)
@@ -66,41 +64,35 @@ bool SkillRecord::saveToStream(std::ostream& output) const
         float UseValue[4] (The use types for each skill are hard-coded.)
     DESC = Skill description string */
 
-  //write INDX
-  output.write((const char*) &cINDX, 4);
-  //write length
+  // write skill index (INDX)
+  output.write(reinterpret_cast<const char*>(&cINDX), 4);
   uint32_t SubLength = 4;
-  output.write((const char*) &SubLength, 4);
-  //write index
-  output.write((const char*) &SkillIndex, 4);
-  //write SKDT
-  output.write((const char*) &cSKDT, 4);
-  //write length
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
+  output.write(reinterpret_cast<const char*>(&SkillIndex), 4);
+
+  // write skill data (SKDT)
+  output.write(reinterpret_cast<const char*>(&cSKDT), 4);
   SubLength = 24;
-  output.write((const char*) &SubLength, 4);
-  //write skill data
-  output.write((const char*) &Attribute, 4);
-  output.write((const char*) &Specialization, 4);
-  output.write((const char*) &(UseValue[0]), 4);
-  output.write((const char*) &(UseValue[1]), 4);
-  output.write((const char*) &(UseValue[2]), 4);
-  output.write((const char*) &(UseValue[3]), 4);
-  //write DESC
-  output.write((const char*) &cDESC, 4);
-  //write length
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
+  // skill data
+  output.write(reinterpret_cast<const char*>(&Attribute), 4);
+  output.write(reinterpret_cast<const char*>(&Specialization), 4);
+  output.write(reinterpret_cast<const char*>(UseValues.data()), 16);
+
+  // write description text (DESC)
+  output.write(reinterpret_cast<const char*>(&cDESC), 4);
   SubLength = Description.length();
-  output.write((const char*) &SubLength, 4);
-  //write description text
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
   output.write(Description.c_str(), SubLength);
   return output.good();
 }
 
 bool SkillRecord::loadFromStream(std::istream& in_File)
 {
-  uint32_t Size;
-  in_File.read((char*) &Size, 4);
-  in_File.read((char*) &HeaderOne, 4);
-  in_File.read((char*) &HeaderFlags, 4);
+  uint32_t Size = 0;
+  in_File.read(reinterpret_cast<char*>(&Size), 4);
+  in_File.read(reinterpret_cast<char*>(&HeaderOne), 4);
+  in_File.read(reinterpret_cast<char*>(&HeaderFlags), 4);
 
   /*Skills:
     INDX = Skill ID (4 bytes, long)
@@ -111,87 +103,82 @@ bool SkillRecord::loadFromStream(std::istream& in_File)
         float UseValue[4] (The use types for each skill are hard-coded.)
     DESC = Skill description string */
 
-  uint32_t SubRecName;
-  uint32_t SubLength;
-  SubRecName = SubLength = 0;
+  uint32_t SubRecName = 0;
+  uint32_t SubLength = 0;
 
-  //read INDX
-  in_File.read((char*) &SubRecName, 4);
-  if (SubRecName!=cINDX)
+  // read INDX
+  in_File.read(reinterpret_cast<char*>(&SubRecName), 4);
+  if (SubRecName != cINDX)
   {
     UnexpectedRecord(cINDX, SubRecName);
     return false;
   }
-  //INDX's length
-  in_File.read((char*) &SubLength, 4);
-  if (SubLength!=4)
+  // INDX's length
+  in_File.read(reinterpret_cast<char*>(&SubLength), 4);
+  if (SubLength != 4)
   {
-    std::cout << "Error: sub record INDX of SKIL has invalid length ("
-              <<SubLength<< " bytes). Should be four bytes.\n";
+    std::cerr << "Error: sub record INDX of SKIL has invalid length ("
+              << SubLength << " bytes). Should be four bytes.\n";
     return false;
   }
   SkillIndex = -1;
-  in_File.read((char*) &SkillIndex, 4);//read the skill index
+  in_File.read(reinterpret_cast<char*>(&SkillIndex), 4);
   if (!in_File.good())
   {
-    std::cout << "Error while reading sub record INDX of SKIL.\n";
+    std::cerr << "Error while reading sub record INDX of SKIL.\n";
     return false;
   }
 
-  //read SKDT
-  in_File.read((char*) &SubRecName, 4);
-  if (SubRecName!=cSKDT)
+  // read SKDT
+  in_File.read(reinterpret_cast<char*>(&SubRecName), 4);
+  if (SubRecName != cSKDT)
   {
     UnexpectedRecord(cSKDT, SubRecName);
     return false;
   }
-  //SKDT's length
-  in_File.read((char*) &SubLength, 4);
-  if (SubLength!=24)
+  // SKDT's length
+  in_File.read(reinterpret_cast<char*>(&SubLength), 4);
+  if (SubLength != 24)
   {
-    std::cout << "Error: sub record SKDT of SKIL has invalid length ("
-              <<SubLength<< " bytes). Should be 24 bytes.\n";
+    std::cerr << "Error: sub record SKDT of SKIL has invalid length ("
+              << SubLength << " bytes). Should be 24 bytes.\n";
     return false;
   }
-  //read skill data
-  in_File.read((char*) &Attribute, 4);
-  in_File.read((char*) &Specialization, 4);
-  int i;
-  for (i=0; i<4; ++i)
-  {
-    in_File.read((char*) &(UseValue[i]), 4);
-  }
+  // read skill data
+  in_File.read(reinterpret_cast<char*>(&Attribute), 4);
+  in_File.read(reinterpret_cast<char*>(&Specialization), 4);
+  in_File.read(reinterpret_cast<char*>(UseValues.data()), 16);
   if (!in_File.good())
   {
-    std::cout << "Error while reading sub record SKDT of SKIL.\n";
+    std::cerr << "Error while reading sub record SKDT of SKIL.\n";
     return false;
   }
 
-  //read DESC
-  in_File.read((char*) &SubRecName, 4);
-  if (SubRecName!=cDESC)
+  // read DESC
+  in_File.read(reinterpret_cast<char*>(&SubRecName), 4);
+  if (SubRecName != cDESC)
   {
     UnexpectedRecord(cDESC, SubRecName);
     return false;
   }
-  //DESC's length
-  in_File.read((char*) &SubLength, 4);
-  if (SubLength>511)
+  // DESC's length
+  in_File.read(reinterpret_cast<char*>(&SubLength), 4);
+  if (SubLength > 511)
   {
-    std::cout << "Sub record DESC of SKIL is longer than 511 characters.\n";
+    std::cerr << "Sub record DESC of SKIL is longer than 511 characters.\n";
     return false;
   }
-  //read the skill description
+  // read the skill description
   char Buffer[512];
   memset(Buffer, '\0', 512);
   in_File.read(Buffer, SubLength);
   if (!in_File.good())
   {
-    std::cout << "Error while reading sub record DESC of SKIL.\n";
+    std::cerr << "Error while reading sub record DESC of SKIL.\n";
     return false;
   }
   Description = std::string(Buffer);
   return true;
 }
 
-} //namespace
+} // namespace

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011, 2013  Thoronador
+    Copyright (C) 2010, 2011, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 #ifndef MW_SKILLRECORD_HPP
 #define MW_SKILLRECORD_HPP
 
+#include <array>
 #include <string>
 #include <fstream>
 #include "BasicRecord.hpp"
@@ -69,30 +70,36 @@ struct SkillRecord: public BasicRecord
   int32_t SkillIndex;
   int32_t Attribute;
   int32_t Specialization;
-  float UseValue[4];
+  std::array<float, 4> UseValues;
   std::string Description;
 
-  /* constructor */
   SkillRecord();
 
-  /* returns true, if this record contains the same data as the other record */
+  /** \brief Checks whether another instance contains the same data.
+   *
+   * \param other   the other record to compare with
+   * \return Returns true, if @other contains the same data as instance.
+   *         Returns false otherwise.
+   */
   bool equals(const SkillRecord& other) const;
 
-  /* writes the record to the given output stream and returns true on success
+  /** \brief Writes the record to the given output stream.
+   *
+   * \param output  the output stream
+   * \return Returns true on success (record was written to stream).
+   *         Returns false, if an error occurred.
+   */
+  bool saveToStream(std::ostream& output) const final;
 
-    parameters:
-        output - the output stream
-  */
-  virtual bool saveToStream(std::ostream& output) const override;
-
-  /* loads the record from the given input stream and returns true on success
-
-    parameters:
-        in_File - the input stream
-  */
-  virtual bool loadFromStream(std::istream& in_File) override;
+  /** \brief Loads the record from the given input stream.
+   *
+   * \param in_File    the input stream
+   * \return Returns true on success (record was loaded from stream).
+   *         Returns false, if an error occurred.
+   */
+  bool loadFromStream(std::istream& in_File) final;
 };
 
-} //namespace
+} // namespace
 
 #endif // MW_SKILLRECORD_HPP

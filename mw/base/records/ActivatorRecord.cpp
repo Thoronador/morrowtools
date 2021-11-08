@@ -29,38 +29,37 @@ namespace MWTP
 
 ActivatorRecord::ActivatorRecord()
 : BasicRecord(),
-  recordID(""),
-  ModelPath(""),
-  ItemName(""),
-  ScriptName("")
+  recordID(std::string()),
+  ModelPath(std::string()),
+  ItemName(std::string()),
+  ScriptName(std::string())
 {
 }
 
 bool ActivatorRecord::equals(const ActivatorRecord& other) const
 {
-  return ((recordID==other.recordID) and (ModelPath==other.ModelPath)
-      and (ItemName==other.ItemName) and (ScriptName==other.ScriptName));
+  return (recordID == other.recordID) && (ModelPath == other.ModelPath)
+      && (ItemName == other.ItemName) && (ScriptName == other.ScriptName);
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
 bool ActivatorRecord::saveToStream(std::ostream& output) const
 {
-  output.write((const char*) &cACTI, 4);
-  uint32_t Size;
-  Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +recordID.length()+1 /* length of ID +1 byte for NUL termination */
-        +4 /* MODL */ +4 /* 4 bytes for MODL's length */
-        +ModelPath.length()+1 /*length of mesh plus one for NUL-termination */
-        +4 /* FNAM */ +4 /* 4 bytes for length */
-        +ItemName.length() +1 /* length of name +1 byte for NUL termination */;
+  output.write(reinterpret_cast<const char*>(&cACTI), 4);
+  uint32_t Size = 4 /* NAME */ + 4 /* 4 bytes for length */
+      + recordID.length() + 1 /* length of ID +1 byte for NUL termination */
+      + 4 /* MODL */ + 4 /* 4 bytes for MODL's length */
+      + ModelPath.length() + 1 /*length of mesh plus one for NUL-termination */
+      + 4 /* FNAM */ + 4 /* 4 bytes for length */
+      + ItemName.length() + 1 /* length of name +1 byte for NUL termination */;
   if (!ScriptName.empty())
   {
-    Size = Size + 4 /* SCRI */ +4 /* 4 bytes for length */
-          +ScriptName.length()+1 /*length of script ID + one byte for NUL-termination */;
+    Size = Size + 4 /* SCRI */ + 4 /* 4 bytes for length */
+          + ScriptName.length() + 1 /*length of script ID + NUL-terminator */;
   }
-  output.write((const char*) &Size, 4);
-  output.write((const char*) &HeaderOne, 4);
-  output.write((const char*) &HeaderFlags, 4);
+  output.write(reinterpret_cast<const char*>(&Size), 4);
+  output.write(reinterpret_cast<const char*>(&HeaderOne), 4);
+  output.write(reinterpret_cast<const char*>(&HeaderFlags), 4);
 
   /*Activators:
     NAME = Activator ID, required
@@ -68,47 +67,41 @@ bool ActivatorRecord::saveToStream(std::ostream& output) const
     FNAM = Item Name, required
     SCRI = Script Name (optional) */
 
-  //write NAME
-  output.write((const char*) &cNAME, 4);
-  uint32_t SubLength = recordID.length()+1;
-  //write NAME's length
-  output.write((const char*) &SubLength, 4);
-  //write NAME/ID
+  // write record ID (NAME)
+  output.write(reinterpret_cast<const char*>(&cNAME), 4);
+  uint32_t SubLength = recordID.length() + 1;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
   output.write(recordID.c_str(), SubLength);
-  //write MODL
-  output.write((const char*) &cMODL, 4);
-  SubLength = ModelPath.length()+1;
-  //write MODL's length
-  output.write((const char*) &SubLength, 4);
-  //write MODL/ mesh path
+
+  // write model path (MODL)
+  output.write(reinterpret_cast<const char*>(&cMODL), 4);
+  SubLength = ModelPath.length() + 1;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
   output.write(ModelPath.c_str(), SubLength);
-  //write FNAM
-  output.write((const char*) &cFNAM, 4);
-  SubLength = ItemName.length()+1;
-  //write FNAM's length
-  output.write((const char*) &SubLength, 4);
-  //write FNAM/ item name
+
+  //write item's name (FNAM)
+  output.write(reinterpret_cast<const char*>(&cFNAM), 4);
+  SubLength = ItemName.length() + 1;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
   output.write(ItemName.c_str(), SubLength);
   if (!ScriptName.empty())
   {
-    //write SCRI
-    output.write((const char*) &cSCRI, 4);
-    SubLength = ScriptName.length()+1;
-    //write SCRI's length
-    output.write((const char*) &SubLength, 4);
-    //write Script ID
+    // write script ID (SCRI)
+    output.write(reinterpret_cast<const char*>(&cSCRI), 4);
+    SubLength = ScriptName.length() + 1;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
     output.write(ScriptName.c_str(), SubLength);
-  }//if script ID present
+  } // if optional script ID is present
   return output.good();
 }
 #endif
 
 bool ActivatorRecord::loadFromStream(std::istream& in_File)
 {
-  uint32_t Size;
-  in_File.read((char*) &Size, 4);
-  in_File.read((char*) &HeaderOne, 4);
-  in_File.read((char*) &HeaderFlags, 4);
+  uint32_t Size = 0;
+  in_File.read(reinterpret_cast<char*>(&Size), 4);
+  in_File.read(reinterpret_cast<char*>(&HeaderOne), 4);
+  in_File.read(reinterpret_cast<char*>(&HeaderFlags), 4);
 
   /*Activators:
     NAME = Item ID, required
@@ -116,123 +109,123 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File)
     FNAM = Item Name, required
     SCRI = Script Name (optional) */
 
-  uint32_t SubRecName;
-  uint32_t SubLength, BytesRead;
-  SubRecName = SubLength = 0;
+  uint32_t SubRecName = 0;
+  uint32_t SubLength = 0;
+  uint32_t BytesRead = 0;
 
   //read NAME
-  in_File.read((char*) &SubRecName, 4);
+  in_File.read(reinterpret_cast<char*>(&SubRecName), 4);
   BytesRead = 4;
-  if (SubRecName!=cNAME)
+  if (SubRecName != cNAME)
   {
     UnexpectedRecord(cNAME, SubRecName);
     return false;
   }
   //NAME's length
-  in_File.read((char*) &SubLength, 4);
+  in_File.read(reinterpret_cast<char*>(&SubLength), 4);
   BytesRead += 4;
-  if (SubLength>255)
+  if (SubLength > 255)
   {
-    std::cout << "Subrecord NAME of ACTI is longer than 255 characters!\n";
+    std::cerr << "Subrecord NAME of ACTI is longer than 255 characters!\n";
     return false;
   }
   char Buffer[256];
   memset(Buffer, '\0', 256);
-  //read activator ID
+  // read activator ID
   in_File.read(Buffer, SubLength);
   BytesRead += SubLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord NAME of ACTI!\n";
+    std::cerr << "Error while reading subrecord NAME of ACTI!\n";
     return false;
   }
   recordID = std::string(Buffer);
 
-  //read MODL
-  in_File.read((char*) &SubRecName, 4);
+  // read MODL
+  in_File.read(reinterpret_cast<char*>(&SubRecName), 4);
   BytesRead += 4;
-  if (SubRecName!=cMODL)
+  if (SubRecName != cMODL)
   {
     UnexpectedRecord(cMODL, SubRecName);
     return false;
   }
-  //MODL's length
-  in_File.read((char*) &SubLength, 4);
+  // MODL's length
+  in_File.read(reinterpret_cast<char*>(&SubLength), 4);
   BytesRead += 4;
-  if (SubLength>255)
+  if (SubLength > 255)
   {
-    std::cout << "Subrecord MODL of ACTI is longer than 255 characters!\n";
+    std::cerr << "Subrecord MODL of ACTI is longer than 255 characters!\n";
     return false;
   }
-  //read model path
+  // read model path
   memset(Buffer, '\0', 256);
   in_File.read(Buffer, SubLength);
   BytesRead += SubLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord MODL of ACTI!\n";
+    std::cerr << "Error while reading subrecord MODL of ACTI!\n";
     return false;
   }
   ModelPath = std::string(Buffer);
 
-  //read FNAM
-  in_File.read((char*) &SubRecName, 4);
+  // read FNAM
+  in_File.read(reinterpret_cast<char*>(&SubRecName), 4);
   BytesRead += 4;
-  if (SubRecName!=cFNAM)
+  if (SubRecName != cFNAM)
   {
     UnexpectedRecord(cFNAM, SubRecName);
     return false;
   }
-  //FNAM's length
-  in_File.read((char*) &SubLength, 4);
+  // FNAM's length
+  in_File.read(reinterpret_cast<char*>(&SubLength), 4);
   BytesRead += 4;
-  if (SubLength>255)
+  if (SubLength > 255)
   {
-    std::cout << "Subrecord FNAM of ACTI is longer than 255 characters!\n";
+    std::cerr << "Subrecord FNAM of ACTI is longer than 255 characters!\n";
     return false;
   }
-  //read item name
+  // read item name
   memset(Buffer, '\0', 256);
   in_File.read(Buffer, SubLength);
   BytesRead += SubLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord FNAM of ACTI!\n";
+    std::cerr << "Error while reading subrecord FNAM of ACTI!\n";
     return false;
   }
   ItemName = std::string(Buffer);
 
-  if (BytesRead<Size)
+  if (BytesRead < Size)
   {
-    //read optional SCRI
-    in_File.read((char*) &SubRecName, 4);
-    if (SubRecName!=cSCRI)
+    // read optional SCRI
+    in_File.read(reinterpret_cast<char*>(&SubRecName), 4);
+    if (SubRecName != cSCRI)
     {
       UnexpectedRecord(cSCRI, SubRecName);
       return false;
     }
-    //SCRI's length
-    in_File.read((char*) &SubLength, 4);
-    if (SubLength>255)
+    // SCRI's length
+    in_File.read(reinterpret_cast<char*>(&SubLength), 4);
+    if (SubLength > 255)
     {
-      std::cout << "Subrecord SCRI of ACTI is longer than 255 characters!\n";
+      std::cerr << "Subrecord SCRI of ACTI is longer than 255 characters!\n";
       return false;
     }
-    //read script ID
+    // read script ID
     memset(Buffer, '\0', 256);
     in_File.read(Buffer, SubLength);
     if (!in_File.good())
     {
-      std::cout << "Error while reading subrecord SCRI of ACTI!\n";
+      std::cerr << "Error while reading subrecord SCRI of ACTI!\n";
       return false;
     }
     ScriptName = std::string(Buffer);
   }
   else
   {
-    ScriptName = "";
+    ScriptName.clear();
   }
   return in_File.good();
 }
 
-} //namespace
+} // namespace

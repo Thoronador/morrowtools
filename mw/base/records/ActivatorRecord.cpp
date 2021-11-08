@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011, 2012, 2013  Thoronador
+    Copyright (C) 2009, 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -200,6 +200,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File)
     std::cout << "Error while reading subrecord FNAM of ACTI!\n";
     return false;
   }
+  ItemName = std::string(Buffer);
 
   if (BytesRead<Size)
   {

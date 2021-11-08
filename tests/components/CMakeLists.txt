@@ -15,6 +15,7 @@ set(component_tests_sources
     ../../base/SlashFunctions.cpp
     ../../base/UtilityFunctions.cpp
     ../../mw/base/HelperIO.cpp
+    ../../mw/base/records/ActivatorRecord.cpp
     ../../mw/base/records/BasicRecord.cpp
     ../../mw/base/records/BodyPartAssociation.cpp
     ../../mw/base/records/BodyPartRecord.cpp
@@ -111,6 +112,7 @@ set(component_tests_sources
     base/SlashFunctions.cpp
     base/UtilityFunctions.cpp
     mw/base/HelperIO.cpp
+    mw/base/records/ActivatorRecord.cpp
     mw/base/records/BasicRecord.cpp
     mw/base/records/BodyPartAssociation.cpp
     mw/base/records/BodyPartRecord.cpp

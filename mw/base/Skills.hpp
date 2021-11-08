@@ -111,8 +111,8 @@ class Skills
     /* constructor - private due to singleton pattern */
     Skills();
 
-    /* copy constructor - empty due to singleton pattern */
-    Skills(const Skills& op) {}
+    /* no copy constructor due to singleton pattern */
+    Skills(const Skills& op) = delete;
 
     /* internal data list */
     std::map<int32_t, SkillRecord> m_Skills;

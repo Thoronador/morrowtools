@@ -314,15 +314,15 @@ int main(int argc, char **argv)
   }//if minimalistic
   else
   {
-    //non-minimalistic approach (like in plugin "More Morrowind")
+    // non-minimalistic approach (like in plugin "More Morrowind")
     MWTP::SkillListIterator iter = MWTP::Skills::getSingleton().getBegin();
     while (iter!=MWTP::Skills::getSingleton().getEnd())
     {
       MWTP::SkillRecord scaledSkill = iter->second;
-      scaledSkill.UseValue[0] = scaledSkill.UseValue[0]/scalingFactor;
-      scaledSkill.UseValue[1] = scaledSkill.UseValue[1]/scalingFactor;
-      scaledSkill.UseValue[2] = scaledSkill.UseValue[2]/scalingFactor;
-      scaledSkill.UseValue[3] = scaledSkill.UseValue[3]/scalingFactor;
+      scaledSkill.UseValues[0] /= scalingFactor;
+      scaledSkill.UseValues[1] /= scalingFactor;
+      scaledSkill.UseValues[2] /= scalingFactor;
+      scaledSkill.UseValues[3] /= scalingFactor;
       MWTP::Skills::getSingleton().addSkill(scaledSkill);
       ++iter;
     }//while

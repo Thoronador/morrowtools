@@ -43,8 +43,9 @@ fn to_sequence(byte: &u8) -> String
 
 fn is_safe_to_push(c: &char, prev_escaped: &bool, prev_nul: &bool) -> bool
 {
-  // "graphic" characters, except for backslash and double quote, ...
-  c.is_ascii_graphic() && *c != '\\' && *c != '"'
+  // "graphic" characters and space character, except for backslash and double
+  // quote, ...
+  (c.is_ascii_graphic() || *c == ' ') && *c != '\\' && *c != '"'
   // unless the previous character was escaped and the current is a hex digit
   && (!c.is_ascii_hexdigit() || !prev_escaped)
   // .. or the last char was NUL and the character is an octal digit
@@ -148,6 +149,15 @@ mod tests
   {
     let input = "4D 41 54 4F 57 02 00 00 00 00 00 00 26 F8 01 00 0A 50 25 00 12 00 01 00 45 44 49 44 15 00 53 68 61 64 65 72 54 65 73 74 73 53 68 61 64 65 72 42 6F 78 00 4D 4F 44 4C 1A 00 53 68 61 64 65 72 54 65 73 74 73 5C 53 68 61 64 65 72 42 6F 78 2E 6E 69 66 00";
     let expected: Result<String, String> = Ok("MATO\\x57\\x02\\0\\0\\0\\0\\0\\0\\x26\\xF8\\x01\\0\\x0A\\x50\\x25\\0\\x12\\0\\x01\\0EDID\\x15\\0ShaderTestsShaderBox\\0MODL\\x1A\\0ShaderTests\\\\ShaderBox.nif\\0".to_string());
+    let actual = hex_to_string_view(input);
+    assert_eq!(actual, expected);
+  }
+
+  #[test]
+  fn test_hex_to_string_view_space()
+  {
+    let input = "41 41 43 54 11 00 00 00 00 00 00 00 02 30 01 00 19 4B 0E 00 0F 00 01 00 45 44 49 44 0B 00 41 63 74 20 65 53 70 61 63 65 00";
+    let expected: Result<String, String> = Ok("AACT\\x11\\0\\0\\0\\0\\0\\0\\0\\x02\\x30\\x01\\0\\x19\\x4B\\x0E\\0\\x0F\\0\\x01\\0EDID\\x0B\\0Act eSpace\\0".to_string());
     let actual = hex_to_string_view(input);
     assert_eq!(actual, expected);
   }
@@ -259,6 +269,15 @@ mod tests
     assert_eq!(is_safe_to_push(&'"', &false, &true), false);
     assert_eq!(is_safe_to_push(&'"', &true, &false), false);
     assert_eq!(is_safe_to_push(&'"', &true, &true), false);
+  }
+
+  #[test]
+  fn test_is_safe_to_push_space()
+  {
+    assert_eq!(is_safe_to_push(&' ', &false, &false), true);
+    assert_eq!(is_safe_to_push(&' ', &false, &true), true);
+    assert_eq!(is_safe_to_push(&' ', &true, &false), true);
+    assert_eq!(is_safe_to_push(&' ', &true, &true), true);
   }
 
   #[test]

@@ -1,5 +1,11 @@
 # Version history of bsa-cli
 
+## Next Version (2021-11-??)
+
+__[bugfix]__
+The error message that is displayed when no recognized command is given did not
+include all the possible commands. It does now.
+
 ## Version 0.7.0 (2021-11-02)
 
 __[bugfix]__

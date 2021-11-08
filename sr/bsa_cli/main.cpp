@@ -97,8 +97,9 @@ int main(int argc, char **argv)
           if (!operation)
           {
             std::cerr << "Error: '" << param << "' is not an allowed command.\n"
-                      << "Allowed commands are 'commands', 'extract-file', "
-                      << "'help', list', or 'info'.\n";
+                      << "Allowed commands are 'commands', 'extract-all', "
+                      << "'extract-file', 'extract-folder', 'folders', "
+                      << "'help', 'info', or 'list'.\n";
             return SRTP::rcInvalidParameter;
           }
           break;

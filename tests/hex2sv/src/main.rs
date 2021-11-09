@@ -52,7 +52,14 @@ fn is_safe_to_push(c: &char, prev_escaped: &bool, prev_nul: &bool) -> bool
   && (!c.is_digit(8) || !prev_nul)
 }
 
-fn hex_to_string_view(octets: &str) -> Result<String, String>
+#[derive(PartialEq)]
+enum Game
+{
+  Morrowind,
+  Skyrim
+}
+
+fn hex_to_string_view(octets: &str, game: Game) -> Result<String, String>
 {
   let mut result = String::with_capacity(octets.len() / 3);
 
@@ -79,7 +86,7 @@ fn hex_to_string_view(octets: &str) -> Result<String, String>
       previous_was_escaped = false;
       previous_was_nul = false;
     }
-    else if index < 24
+    else if (game == Game::Skyrim && index < 24) || (game == Game::Morrowind && index < 16)
     {
       result.push_str(&to_sequence(&byte));
       previous_was_escaped = byte != 0u8;
@@ -107,6 +114,17 @@ fn hex_to_string_view(octets: &str) -> Result<String, String>
 }
 
 fn main() {
+    let args: Vec<String> = std::env::args().collect();
+    let one = if args.len() > 1 { &args[1] } else { "" };
+    let game = if one == "--mw" || one == "--morrowind" || one == "mw" || one == "morrowind"
+    {
+      Game::Morrowind
+    }
+    else
+    {
+      Game::Skyrim
+    };
+
     let mut input = String::new();
     if let Err(e) = std::io::stdin().read_to_string(&mut input)
     {
@@ -120,7 +138,7 @@ fn main() {
         return;
     }
 
-    let sv = hex_to_string_view(input);
+    let sv = hex_to_string_view(input, game);
     if let Err(e) = sv
     {
       eprintln!("Error: {}", e);
@@ -140,7 +158,7 @@ mod tests
   {
     let input = "41 41 43 54 11 00 00 00 00 00 00 00 02 30 01 00 19 4B 0E 00 0F 00 01 00 45 44 49 44 0B 00 41 63 74 69 6F 6E 49 64 6C 65 00";
     let expected: Result<String, String> = Ok("AACT\\x11\\0\\0\\0\\0\\0\\0\\0\\x02\\x30\\x01\\0\\x19\\x4B\\x0E\\0\\x0F\\0\\x01\\0EDID\\x0B\\0ActionIdle\\0".to_string());
-    let actual = hex_to_string_view(input);
+    let actual = hex_to_string_view(input, Game::Skyrim);
     assert_eq!(actual, expected);
   }
 
@@ -149,7 +167,16 @@ mod tests
   {
     let input = "4D 41 54 4F 57 02 00 00 00 00 00 00 26 F8 01 00 0A 50 25 00 12 00 01 00 45 44 49 44 15 00 53 68 61 64 65 72 54 65 73 74 73 53 68 61 64 65 72 42 6F 78 00 4D 4F 44 4C 1A 00 53 68 61 64 65 72 54 65 73 74 73 5C 53 68 61 64 65 72 42 6F 78 2E 6E 69 66 00";
     let expected: Result<String, String> = Ok("MATO\\x57\\x02\\0\\0\\0\\0\\0\\0\\x26\\xF8\\x01\\0\\x0A\\x50\\x25\\0\\x12\\0\\x01\\0EDID\\x15\\0ShaderTestsShaderBox\\0MODL\\x1A\\0ShaderTests\\\\ShaderBox.nif\\0".to_string());
-    let actual = hex_to_string_view(input);
+    let actual = hex_to_string_view(input, Game::Skyrim);
+    assert_eq!(actual, expected);
+  }
+
+  #[test]
+  fn test_hex_to_string_view_morrowind()
+  {
+    let input = "53 54 41 54 34 00 00 00 00 00 00 00 00 00 00 00 4E 41 4D 45 10 00 00 00 45 78 5F 56 69 76 65 63 5F 70 71 73 5F 30 32 00 4D 4F 44 4C 14 00 00 00 45 78 5F 56 69 76 65 63 5F 70 71 73 5F 30 32 2E 4E 49 46 00";
+    let expected: Result<String, String> = Ok("STAT\\x34\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0\\0NAME\\x10\\0\\0\\0Ex_Vivec_pqs_02\\0MODL\\x14\\0\\0\\0Ex_Vivec_pqs_02.NIF\\0".to_string());
+    let actual = hex_to_string_view(input, Game::Morrowind);
     assert_eq!(actual, expected);
   }
 
@@ -158,7 +185,7 @@ mod tests
   {
     let input = "41 41 43 54 11 00 00 00 00 00 00 00 02 30 01 00 19 4B 0E 00 0F 00 01 00 45 44 49 44 0B 00 41 63 74 20 65 53 70 61 63 65 00";
     let expected: Result<String, String> = Ok("AACT\\x11\\0\\0\\0\\0\\0\\0\\0\\x02\\x30\\x01\\0\\x19\\x4B\\x0E\\0\\x0F\\0\\x01\\0EDID\\x0B\\0Act eSpace\\0".to_string());
-    let actual = hex_to_string_view(input);
+    let actual = hex_to_string_view(input, Game::Skyrim);
     assert_eq!(actual, expected);
   }
 

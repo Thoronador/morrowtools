@@ -1,6 +1,6 @@
 [package]
 name = "hex2sv"
-version = "0.1.3"
+version = "0.2.0"
 description = "Small command-line program to turn hex digit sequences into C++ std::string_view literals"
 authors = ["Dirk Stolle <striezel-dev@web.de>"]
 edition = "2018"

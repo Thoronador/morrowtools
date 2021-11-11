@@ -19,7 +19,6 @@
 */
 
 #include "BodyPartRecord.hpp"
-#include <cstring>
 #include <iostream>
 #include "../MW_Constants.hpp"
 #include "../HelperIO.hpp"
@@ -163,79 +162,29 @@ bool BodyPartRecord::loadFromStream(std::istream& input)
   */
   uint32_t SubRecName = 0;
   uint32_t SubLength = 0;
+  uint32_t bytesRead = 0;
 
-  // read NAME
-  input.read(reinterpret_cast<char*>(&SubRecName), 4);
-  if (SubRecName != cNAME)
-  {
-    UnexpectedRecord(cNAME, SubRecName);
-    return false;
-  }
-  // NAME's length
-  input.read(reinterpret_cast<char*>(&SubLength), 4);
-  if (SubLength > 255)
-  {
-    std::cerr << "Subrecord NAME of BODY is longer than 255 characters!\n";
-    return false;
-  }
+  // read ID (NAME)
   char Buffer[256];
-  memset(Buffer, '\0', 256);
-  // read name
-  input.read(Buffer, SubLength);
-  if (!input.good())
+  if (!loadString256WithHeader(input, recordID, Buffer, cNAME, bytesRead))
   {
     std::cerr << "Error while reading subrecord NAME of BODY!\n";
     return false;
   }
-  recordID = std::string(Buffer);
 
   // read MODL
-  input.read(reinterpret_cast<char*>(&SubRecName), 4);
-  if (SubRecName != cMODL)
-  {
-    UnexpectedRecord(cMODL, SubRecName);
-    return false;
-  }
-  // MODL's length
-  input.read(reinterpret_cast<char*>(&SubLength), 4);
-  if (SubLength > 255)
-  {
-    std::cerr << "Subrecord MODL of BODY is longer than 255 characters!\n";
-    return false;
-  }
-  // read MODL
-  memset(Buffer, '\0', 256);
-  input.read(Buffer, SubLength);
-  if (!input.good())
+  if (!loadString256WithHeader(input, MeshPath, Buffer, cMODL, bytesRead))
   {
     std::cerr << "Error while reading subrecord MODL of BODY!\n";
     return false;
   }
-  MeshPath = std::string(Buffer);
 
   // read Race Name FNAM
-  input.read(reinterpret_cast<char*>(&SubRecName), 4);
-  if (SubRecName != cFNAM)
-  {
-    UnexpectedRecord(cFNAM, SubRecName);
-    return false;
-  }
-  // FNAM's length
-  input.read(reinterpret_cast<char*>(&SubLength), 4);
-  if (SubLength > 255)
-  {
-    std::cerr << "Subrecord FNAM of BODY is longer than 255 characters!\n";
-    return false;
-  }
-  // read FNAM
-  memset(Buffer, '\0', 256);
-  input.read(Buffer, SubLength);
-  if (!input.good())
+  if (!loadString256WithHeader(input, RaceID, Buffer, cFNAM, bytesRead))
   {
     std::cerr << "Error while reading subrecord FNAM of BODY!\n";
     return false;
   }
-  RaceID = std::string(Buffer);
 
   // read BYDT (Body part data)
   input.read(reinterpret_cast<char*>(&SubRecName), 4);

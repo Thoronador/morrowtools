@@ -19,8 +19,6 @@
 */
 
 #include "StaticRecord.hpp"
-#include <iostream>
-#include <cstring>
 #include "../MW_Constants.hpp"
 #include "../HelperIO.hpp"
 
@@ -81,57 +79,13 @@ bool StaticRecord::loadFromStream(std::istream& input)
     NAME = ID string
     MODL = NIF model*/
 
-  uint32_t SubRecName = 0;
-  uint32_t SubLength = 0;
-  // read NAME
-  input.read(reinterpret_cast<char*>(&SubRecName), 4);
-  if (SubRecName != cNAME)
-  {
-    UnexpectedRecord(cNAME, SubRecName);
-    return false;
-  }
-  // NAME's length
-  input.read(reinterpret_cast<char*>(&SubLength), 4);
-  if (SubLength > 255)
-  {
-    std::cout << "Error: Subrecord NAME of STAT is longer than 255 characters.\n";
-    return false;
-  }
-  // read NAME
-  char Buffer[256];
-  memset(Buffer, '\0', 256);
-  input.read(Buffer, SubLength);
-  if (!input.good())
-  {
-    std::cout << "Error while reading subrecord NAME of STAT.\n";
-    return false;
-  }
-  recordID = std::string(Buffer);
+  uint32_t bytesRead = 0;
 
+  char Buffer[256];
+  // read NAME
+  return loadString256WithHeader(input, recordID, Buffer, cNAME, bytesRead)
   // read MODL
-  input.read(reinterpret_cast<char*>(&SubRecName), 4);
-  if (SubRecName != cMODL)
-  {
-    UnexpectedRecord(cMODL, SubRecName);
-    return false;
-  }
-  // MODL's length
-  input.read(reinterpret_cast<char*>(&SubLength), 4);
-  if (SubLength > 255)
-  {
-    std::cout << "Error: Subrecord MODL of STAT is longer than 255 characters.\n";
-    return false;
-  }
-  // read MODL
-  memset(Buffer, '\0', 256);
-  input.read(Buffer, SubLength);
-  if (!input.good())
-  {
-    std::cout << "Error while reading subrecord MODL of STAT.\n";
-    return false;
-  }
-  Mesh = std::string(Buffer);
-  return true;
+      && loadString256WithHeader(input, Mesh, Buffer, cMODL, bytesRead);
 }
 
 } // namespace

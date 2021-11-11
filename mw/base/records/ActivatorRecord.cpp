@@ -20,7 +20,6 @@
 
 #include "ActivatorRecord.hpp"
 #include <iostream>
-#include <cstring>
 #include "../MW_Constants.hpp"
 #include "../HelperIO.hpp"
 
@@ -79,7 +78,7 @@ bool ActivatorRecord::saveToStream(std::ostream& output) const
   output.write(reinterpret_cast<const char*>(&SubLength), 4);
   output.write(ModelPath.c_str(), SubLength);
 
-  //write item's name (FNAM)
+  // write item's name (FNAM)
   output.write(reinterpret_cast<const char*>(&cFNAM), 4);
   SubLength = ItemName.length() + 1;
   output.write(reinterpret_cast<const char*>(&SubLength), 4);
@@ -109,117 +108,34 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File)
     FNAM = Item Name, required
     SCRI = Script Name (optional) */
 
-  uint32_t SubRecName = 0;
-  uint32_t SubLength = 0;
   uint32_t BytesRead = 0;
 
-  //read NAME
-  in_File.read(reinterpret_cast<char*>(&SubRecName), 4);
-  BytesRead = 4;
-  if (SubRecName != cNAME)
-  {
-    UnexpectedRecord(cNAME, SubRecName);
-    return false;
-  }
-  //NAME's length
-  in_File.read(reinterpret_cast<char*>(&SubLength), 4);
-  BytesRead += 4;
-  if (SubLength > 255)
-  {
-    std::cerr << "Subrecord NAME of ACTI is longer than 255 characters!\n";
-    return false;
-  }
+  // read activator ID (NAME)
   char Buffer[256];
-  memset(Buffer, '\0', 256);
-  // read activator ID
-  in_File.read(Buffer, SubLength);
-  BytesRead += SubLength;
-  if (!in_File.good())
+  if (!loadString256WithHeader(in_File, recordID, Buffer, cNAME, BytesRead))
   {
     std::cerr << "Error while reading subrecord NAME of ACTI!\n";
     return false;
   }
-  recordID = std::string(Buffer);
 
-  // read MODL
-  in_File.read(reinterpret_cast<char*>(&SubRecName), 4);
-  BytesRead += 4;
-  if (SubRecName != cMODL)
-  {
-    UnexpectedRecord(cMODL, SubRecName);
-    return false;
-  }
-  // MODL's length
-  in_File.read(reinterpret_cast<char*>(&SubLength), 4);
-  BytesRead += 4;
-  if (SubLength > 255)
-  {
-    std::cerr << "Subrecord MODL of ACTI is longer than 255 characters!\n";
-    return false;
-  }
-  // read model path
-  memset(Buffer, '\0', 256);
-  in_File.read(Buffer, SubLength);
-  BytesRead += SubLength;
-  if (!in_File.good())
+  // read model path (MODL)
+  if (!loadString256WithHeader(in_File, ModelPath, Buffer, cMODL, BytesRead))
   {
     std::cerr << "Error while reading subrecord MODL of ACTI!\n";
     return false;
   }
-  ModelPath = std::string(Buffer);
 
-  // read FNAM
-  in_File.read(reinterpret_cast<char*>(&SubRecName), 4);
-  BytesRead += 4;
-  if (SubRecName != cFNAM)
-  {
-    UnexpectedRecord(cFNAM, SubRecName);
-    return false;
-  }
-  // FNAM's length
-  in_File.read(reinterpret_cast<char*>(&SubLength), 4);
-  BytesRead += 4;
-  if (SubLength > 255)
-  {
-    std::cerr << "Subrecord FNAM of ACTI is longer than 255 characters!\n";
-    return false;
-  }
-  // read item name
-  memset(Buffer, '\0', 256);
-  in_File.read(Buffer, SubLength);
-  BytesRead += SubLength;
-  if (!in_File.good())
+  // read item name (FNAM)
+  if (!loadString256WithHeader(in_File, ItemName, Buffer, cFNAM, BytesRead))
   {
     std::cerr << "Error while reading subrecord FNAM of ACTI!\n";
     return false;
   }
-  ItemName = std::string(Buffer);
 
   if (BytesRead < Size)
   {
-    // read optional SCRI
-    in_File.read(reinterpret_cast<char*>(&SubRecName), 4);
-    if (SubRecName != cSCRI)
-    {
-      UnexpectedRecord(cSCRI, SubRecName);
-      return false;
-    }
-    // SCRI's length
-    in_File.read(reinterpret_cast<char*>(&SubLength), 4);
-    if (SubLength > 255)
-    {
-      std::cerr << "Subrecord SCRI of ACTI is longer than 255 characters!\n";
-      return false;
-    }
-    // read script ID
-    memset(Buffer, '\0', 256);
-    in_File.read(Buffer, SubLength);
-    if (!in_File.good())
-    {
-      std::cerr << "Error while reading subrecord SCRI of ACTI!\n";
-      return false;
-    }
-    ScriptName = std::string(Buffer);
+    // read optional script ID (SCRI)
+    return loadString256WithHeader(in_File, ScriptName, Buffer, cSCRI, BytesRead);
   }
   else
   {

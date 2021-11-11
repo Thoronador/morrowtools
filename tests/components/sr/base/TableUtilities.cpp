@@ -165,4 +165,24 @@ TEST_CASE("TableUtilities")
       REQUIRE( table.getNumberOfTableEntries() == 0 );
     }
   }
+
+  SECTION("getBsaName")
+  {
+    // well-known ESM file names
+    REQUIRE( getBsaName("Skyrim") == "Skyrim - Interface.bsa" );
+    REQUIRE( getBsaName("skyrim") == "Skyrim - Interface.bsa" );
+    REQUIRE( getBsaName("Dawnguard") == "Skyrim - Interface.bsa" );
+    REQUIRE( getBsaName("dawnguard") == "Skyrim - Interface.bsa" );
+    REQUIRE( getBsaName("HearthFires") == "Skyrim - Interface.bsa" );
+    REQUIRE( getBsaName("hearthfires") == "Skyrim - Interface.bsa" );
+    REQUIRE( getBsaName("Dragonborn") == "Skyrim - Interface.bsa" );
+    REQUIRE( getBsaName("dragonborn") == "Skyrim - Interface.bsa" );
+    REQUIRE( getBsaName("Update") == "Skyrim - Interface.bsa" );
+    REQUIRE( getBsaName("update") == "Skyrim - Interface.bsa" );
+    // some creation club ESM files
+    REQUIRE( getBsaName("ccBGSSSE001-Fish") == "ccBGSSSE001-Fish.bsa" );
+    REQUIRE( getBsaName("ccBGSSSE025-AdvDSGS") == "ccBGSSSE025-AdvDSGS.bsa" );
+    REQUIRE( getBsaName("ccBGSSSE037-Curios") == "ccBGSSSE037-Curios.bsa" );
+    REQUIRE( getBsaName("ccQDRSSE001-SurvivalMode") == "ccQDRSSE001-SurvivalMode.bsa" );
+  }
 }

@@ -68,6 +68,15 @@ int getAssociatedTableFiles(const std::string& fileName, std::vector<std::string
  */
 bool loadStringTables(const std::string& esmFileName, StringTable& table, const std::optional<Localization>& l10n);
 
+/** \brief Gets the name of the BSA file for a given ESM file name.
+ *
+ * \param esmFileNamePart  name of the ESM file without extension, e. g.
+ *                         "Skyrim" for Skyrim.esm or "Dawnguard" for Dawnguard.esm
+ * \return Returns the name of the related BSA file containing the string tables,
+ *         e. g. "Skyrim - Interface.bsa".
+ */
+std::string getBsaName(const std::string& esmFileNamePart);
+
 /** \brief Loads all associated string tables for an ESM / ESP file from the BSA.
  *
  * \param esmFileName  path of the master / plugin file

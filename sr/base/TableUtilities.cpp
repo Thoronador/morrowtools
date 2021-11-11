@@ -133,6 +133,17 @@ bool loadStringTables(const std::string& esmFileName, StringTable& table, const 
   return true;
 }
 
+std::string getBsaName(const std::string& esmFileNamePart)
+{
+  const auto lcNamePart = lowerCase(esmFileNamePart);
+  if (lcNamePart == "skyrim" || lcNamePart == "dawnguard"
+    || lcNamePart == "hearthfires" || lcNamePart == "dragonborn"
+    || lcNamePart == "update")
+  return "Skyrim - Interface.bsa";
+  // Not a default master file, try plugin name instead.
+  return esmFileNamePart + ".bsa";
+}
+
 std::filesystem::path getTemporaryDirectory()
 {
   namespace fs = std::filesystem;
@@ -190,7 +201,7 @@ bool loadStringTablesFromBSA(const std::string& esmFileName, StringTable& table,
 {
   std::string part_path, part_name, part_ext;
   splitPathFileExtension(esmFileName, MWTP::pathDelimiter, part_path, part_name, part_ext);
-  const std::string bsaFileName = part_path + "Skyrim - Interface.bsa";
+  const std::string bsaFileName = part_path + getBsaName(part_name);
 
   BSA bsa;
   if (!bsa.open(bsaFileName) || !bsa.grabAllStructureData())

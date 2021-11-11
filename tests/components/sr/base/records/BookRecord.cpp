@@ -43,6 +43,7 @@ TEST_CASE("BookRecord")
     REQUIRE_FALSE( record.title.isPresent() );
     REQUIRE( record.modelPath.empty() );
     REQUIRE_FALSE( record.unknownMODT.isPresent() );
+    REQUIRE_FALSE( record.unknownMODS.isPresent() );
     REQUIRE_FALSE( record.text.isPresent() );
     REQUIRE( record.pickupSoundFormID == 0 );
     REQUIRE( record.putdownSoundFormID == 0 );
@@ -129,6 +130,20 @@ TEST_CASE("BookRecord")
 
         a.unknownMODT.setPresence(false);
         b.unknownMODT.setPresence(true);
+
+        REQUIRE_FALSE( a.equals(b) );
+        REQUIRE_FALSE( b.equals(a) );
+      }
+
+      SECTION("MODS mismatch")
+      {
+        a.unknownMODS.setPresence(true);
+
+        REQUIRE_FALSE( a.equals(b) );
+        REQUIRE_FALSE( b.equals(a) );
+
+        a.unknownMODS.setPresence(false);
+        b.unknownMODS.setPresence(true);
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
@@ -317,6 +332,29 @@ TEST_CASE("BookRecord")
       REQUIRE( record.getWriteSize() == 85 );
     }
 
+    SECTION("size adjusts with length of MODS")
+    {
+      REQUIRE( record.getWriteSize() == 78 );
+
+      // Reading data from a stream is currently the only way to get a record
+      // with data, so we do that here.
+      {
+        const std::string_view data = "MODS\x12\0_23456789012345678"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+        REQUIRE( record.unknownMODS.loadFromStream(stream, cMODS, true) );
+      }
+      REQUIRE( record.getWriteSize() == 102 );
+
+      {
+        const std::string_view data = "MODS\x01\0_"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+        REQUIRE( record.unknownMODS.loadFromStream(stream, cMODS, true) );
+      }
+      REQUIRE( record.getWriteSize() == 85 );
+    }
+
     SECTION("size adjusts when text is present")
     {
       REQUIRE( record.getWriteSize() == 78 );
@@ -375,6 +413,8 @@ TEST_CASE("BookRecord")
     dummy_table.addString(0x0000DC0A, "bar");
     dummy_table.addString(0x00009D98, "baz");
     dummy_table.addString(0x0000FD83, "quux");
+    dummy_table.addString(0x000000F6, "fish");
+    dummy_table.addString(0x000001F0, "fishy");
 
     SECTION("default: load record with keyword + INAM")
     {
@@ -418,6 +458,7 @@ TEST_CASE("BookRecord")
       REQUIRE( record.unknownMODT.isPresent() );
       const auto MODT = std::string_view(reinterpret_cast<const char*>(record.unknownMODT.data()), record.unknownMODT.size());
       REQUIRE( MODT == "\x02\0\0\0\x04\0\0\0\0\0\0\0\x33\x2E\x65\x69\x64\x64\x73\0\xB5\x13\x9F\x09\x5E\x0C\x94\xBF\x64\x64\x73\0\xB5\x13\x9F\x09\xCD\x64\x72\xC9\x64\x64\x73\0\xB5\x13\x9F\x09\xF4\xC8\xA2\xA3\x64\x64\x73\0\xB5\x13\x9F\x09"sv );
+      REQUIRE_FALSE( record.unknownMODS.isPresent() );
       REQUIRE( record.text.isPresent() );
       REQUIRE( record.text.getType() == LocalizedString::Type::Index );
       REQUIRE( record.text.getIndex() == 0x0000DC0A );
@@ -483,6 +524,7 @@ TEST_CASE("BookRecord")
       REQUIRE( record.unknownMODT.isPresent() );
       const auto MODT = std::string_view(reinterpret_cast<const char*>(record.unknownMODT.data()), record.unknownMODT.size());
       REQUIRE( MODT == "\x02\0\0\0\x02\0\0\0\0\0\0\0\x7F\x86\x45\x0D\x64\x64\x73\0\xB5\x13\x9F\x09\xAD\x43\x55\x3B\x64\x64\x73\0\xB5\x13\x9F\x09"sv );
+      REQUIRE_FALSE( record.unknownMODS.isPresent() );
       REQUIRE( record.text.isPresent() );
       REQUIRE( record.text.getType() == LocalizedString::Type::Index );
       REQUIRE( record.text.getIndex() == 0x0000FD83 );
@@ -495,6 +537,72 @@ TEST_CASE("BookRecord")
       REQUIRE( record.bookValue == 0 );
       REQUIRE( record.weight == 0.0f );
       REQUIRE( record.inventoryArtFormID == 0x00097788 );
+      REQUIRE( record.unknownCNAM == 0 );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( record.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
+    }
+
+    SECTION("default: load record with MODS")
+    {
+      const auto data = "BOOK\xE6\0\0\0\0\0\0\0\x7F\x0E\0\x05\x3D\x2B\x1E\0\x2C\0\x01\0EDID\x17\0ccBGSSSE001_FishGuide1\0OBND\x0C\0\xF7\xFF\xF4\xFF\xFE\xFF\x08\0\x0C\0\x02\0FULL\x04\0\xF6\0\0\0MODL$\0Clutter\\Books\\Book02MG03LowPoly.nif\0MODT\x0C\0\x02\0\0\0\0\0\0\0\0\0\0\0MODS\x19\0\x01\0\0\0\x09\0\0\0Book01a:0\xB9\x30\x11\x05\0\0\0\0DESC\x04\0\xF0\x01\0\0YNAM\x04\0Tz\x0C\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0\xA2\x37\x09\0DATA\x10\0\0\0\0\0\xFF\xFF\xFF\xFF\x08\0\0\0\0\0\0\0INAM\x04\0\xB7\x30\x11\x05\x43NAM\x04\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read BOOK, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      BookRecord record;
+      REQUIRE( record.loadFromStream(stream, true, dummy_table) );
+      // Check data.
+      // -- header
+      REQUIRE( record.headerFlags == 0 );
+      REQUIRE( record.headerFormID == 0x05000E7F );
+      REQUIRE( record.headerRevision == 0x001E2B3D );
+      REQUIRE( record.headerVersion == 44 );
+      REQUIRE( record.headerUnknown5 == 0x0001 );
+      // -- record data
+      REQUIRE( record.editorID == "ccBGSSSE001_FishGuide1" );
+      REQUIRE_FALSE( record.unknownVMAD.isPresent() );
+      REQUIRE( record.unknownOBND[0] == 0xF7 );
+      REQUIRE( record.unknownOBND[1] == 0xFF );
+      REQUIRE( record.unknownOBND[2] == 0xF4 );
+      REQUIRE( record.unknownOBND[3] == 0xFF );
+      REQUIRE( record.unknownOBND[4] == 0xFE );
+      REQUIRE( record.unknownOBND[5] == 0xFF );
+      REQUIRE( record.unknownOBND[6] == 0x08 );
+      REQUIRE( record.unknownOBND[7] == 0x00 );
+      REQUIRE( record.unknownOBND[8] == 0x0C );
+      REQUIRE( record.unknownOBND[9] == 0x00 );
+      REQUIRE( record.unknownOBND[10] == 0x02 );
+      REQUIRE( record.unknownOBND[11] == 0x00 );
+      REQUIRE( record.title.isPresent() );
+      REQUIRE( record.title.getType() == LocalizedString::Type::Index );
+      REQUIRE( record.title.getIndex() == 0x000000F6 );
+      REQUIRE( record.modelPath == "Clutter\\Books\\Book02MG03LowPoly.nif" );
+      REQUIRE( record.unknownMODT.isPresent() );
+      const auto MODT = std::string_view(reinterpret_cast<const char*>(record.unknownMODT.data()), record.unknownMODT.size());
+      REQUIRE( MODT == "\x02\0\0\0\0\0\0\0\0\0\0\0"sv );
+      REQUIRE( record.unknownMODS.isPresent() );
+      const auto MODS = std::string_view(reinterpret_cast<const char*>(record.unknownMODS.data()), record.unknownMODS.size());
+      REQUIRE( MODS == "\x01\0\0\0\x09\0\0\0Book01a:0\xB9\x30\x11\x05\0\0\0\0"sv );
+      REQUIRE( record.text.isPresent() );
+      REQUIRE( record.text.getType() == LocalizedString::Type::Index );
+      REQUIRE( record.text.getIndex() == 0x000001F0 );
+      REQUIRE( record.pickupSoundFormID == 0x000C7A54 );
+      REQUIRE( record.putdownSoundFormID == 0 );
+      REQUIRE( record.keywords.size() == 1 );
+      REQUIRE( record.keywords[0] == 0x000937A2 );
+      REQUIRE( record.bookFlags == 0 );
+      REQUIRE( record.spellOrSkillID == 0xFFFFFFFF );
+      REQUIRE( record.bookValue == 8 );
+      REQUIRE( record.weight == 0.0f );
+      REQUIRE( record.inventoryArtFormID == 0x051130B7 );
       REQUIRE( record.unknownCNAM == 0 );
 
       // Writing should succeed.
@@ -787,6 +895,36 @@ TEST_CASE("BookRecord")
     SECTION("corrupt data: stream ends before all of MODT can be read")
     {
       const std::string_view data = "BOOK\xED\0\0\0\0\0\0\0\xCD\xAC\x01\0\x1B\x69\x55\0\x28\0\x01\0EDID\x1D\0Book2CommonGalerionTheMystic\0OBND\x0C\0\xF7\xFF\xF5\xFF\xFF\xFF\x09\0\x0B\0\x02\0FULL\x04\0\x4C\x1C\0\0MODL\x1E\0Clutter\\Books\\BasicBook06.nif\0MODT\x3C\0\x02\0\0\0\x04"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read BOOK, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      BookRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: multiple MODSs")
+    {
+      const auto data = "BOOK\x05\x01\0\0\0\0\0\0\x7F\x0E\0\x05\x3D\x2B\x1E\0\x2C\0\x01\0EDID\x17\0ccBGSSSE001_FishGuide1\0OBND\x0C\0\xF7\xFF\xF4\xFF\xFE\xFF\x08\0\x0C\0\x02\0FULL\x04\0\xF6\0\0\0MODL$\0Clutter\\Books\\Book02MG03LowPoly.nif\0MODT\x0C\0\x02\0\0\0\0\0\0\0\0\0\0\0MODS\x19\0\x01\0\0\0\x09\0\0\0Book01a:0\xB9\x30\x11\x05\0\0\0\0MODS\x19\0\x01\0\0\0\x09\0\0\0Book01a:0\xB9\x30\x11\x05\0\0\0\0DESC\x04\0\xF0\x01\0\0YNAM\x04\0Tz\x0C\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0\xA2\x37\x09\0DATA\x10\0\0\0\0\0\xFF\xFF\xFF\xFF\x08\0\0\0\0\0\0\0INAM\x04\0\xB7\x30\x11\x05\x43NAM\x04\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read BOOK, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      BookRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: stream ends before all of MODS can be read")
+    {
+      const auto data = "BOOK\xE6\0\0\0\0\0\0\0\x7F\x0E\0\x05\x3D\x2B\x1E\0\x2C\0\x01\0EDID\x17\0ccBGSSSE001_FishGuide1\0OBND\x0C\0\xF7\xFF\xF4\xFF\xFE\xFF\x08\0\x0C\0\x02\0FULL\x04\0\xF6\0\0\0MODL$\0Clutter\\Books\\Book02MG03LowPoly.nif\0MODT\x0C\0\x02\0\0\0\0\0\0\0\0\0\0\0MODS\x19\0\x01\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 

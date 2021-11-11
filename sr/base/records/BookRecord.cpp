@@ -39,6 +39,7 @@ BookRecord::BookRecord()
   title(LocalizedString()),
   modelPath(""),
   unknownMODT(BinarySubRecord()),
+  unknownMODS(BinarySubRecord()),
   text(LocalizedString()),
   pickupSoundFormID(0),
   putdownSoundFormID(0),
@@ -62,6 +63,7 @@ bool BookRecord::equals(const BookRecord& other) const
     && (unknownOBND == other.unknownOBND)
     && (title == other.title)
     && (modelPath == other.modelPath) && (unknownMODT == other.unknownMODT)
+    && (unknownMODS == other.unknownMODS)
     && (text == other.text) && (unknownCNAM == other.unknownCNAM)
     && (pickupSoundFormID == other.pickupSoundFormID)
     && (putdownSoundFormID == other.putdownSoundFormID)
@@ -98,6 +100,11 @@ uint32_t BookRecord::getWriteSize() const
   {
     writeSize = writeSize + 4 /* MODT */ + 2 /* 2 bytes for length */
                + unknownMODT.size() /* size of subrecord */;
+  }
+  if (unknownMODS.isPresent())
+  {
+    writeSize = writeSize + 4 /* MODS */ + 2 /* 2 bytes for length */
+               + unknownMODS.size() /* size of subrecord */;
   }
   if (pickupSoundFormID != 0)
   {
@@ -165,6 +172,13 @@ bool BookRecord::saveToStream(std::ostream& output) const
   if (!unknownMODT.saveToStream(output, cMODT))
   {
     std::cerr << "Error while writing subrecord MODT of BOOK!\n";
+    return false;
+  }
+
+  // write MODS
+  if (!unknownMODS.saveToStream(output, cMODS))
+  {
+    std::cerr << "Error while writing subrecord MODS of BOOK!\n";
     return false;
   }
 
@@ -305,6 +319,7 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
   keywords.clear();
 
   bool hasReadMODL = false;
+  unknownMODS.setPresence(false);
   text.reset();
   bool hasReadDATA = false;
   bool hasReadCNAM = false;
@@ -345,11 +360,27 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
            if (!unknownMODT.loadFromStream(in_File, cMODT, true))
              return false;
            bytesRead += (4 + 2 + unknownMODT.size());
-
-           // read DESC
-           if (!text.loadFromStream(in_File, cDESC, true, bytesRead, localized, table, buffer))
-             return false;
            hasReadMODL = true;
+           break;
+      case cMODS:
+           if (unknownMODS.isPresent())
+           {
+             std::cerr << "Error: BOOK seems to have more than one MODS subrecord.\n";
+             return false;
+           }
+           if (!unknownMODS.loadFromStream(in_File, cMODS, false))
+             return false;
+           bytesRead += (2 + unknownMODS.size());
+           break;
+      case cDESC:
+           if (text.isPresent())
+           {
+             std::cerr << "Error: BOOK seems to have more than one DESC subrecord.\n";
+             return false;
+           }
+           // read DESC
+           if (!text.loadFromStream(in_File, cDESC, false, bytesRead, localized, table, buffer))
+             return false;
            break;
       case cKSIZ:
            if (!loadKeywords(in_File, keywords, bytesRead))
@@ -452,7 +483,7 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
   }
 
   // check presence of all required subrecords
-  if (!hasReadMODL || !hasReadDATA || !hasReadCNAM)
+  if (!hasReadMODL || !text.isPresent() || !hasReadDATA || !hasReadCNAM)
   {
     std::cerr << "Error: At least one required subrecord of BOOK was not found!\n";
     return false;

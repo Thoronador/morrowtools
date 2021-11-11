@@ -88,6 +88,7 @@ struct BookRecord: public BasicRecord
     LocalizedString title; // subrecord FULL
     std::string modelPath;
     BinarySubRecord unknownMODT;
+    BinarySubRecord unknownMODS;
     LocalizedString text; // DESC
     uint32_t pickupSoundFormID; // subrecord YNAM
     uint32_t putdownSoundFormID; // subrecord ZNAM

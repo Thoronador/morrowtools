@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012  Thoronador
+    Copyright (C) 2011, 2012, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -32,17 +32,14 @@ struct DoorRecord: public BasicRecord
 {
   public:
     std::string recordID; //formerly DoorID
-    std::string Name;
     std::string ModelPath;
+    std::string Name;
     std::string Script;
     std::string SoundOpen;
     std::string SoundClose;
 
     /* constructor */
     DoorRecord();
-
-    /* destructor */
-    ~DoorRecord();
 
     /* returns true, if the other record contains the same data */
     bool equals(const DoorRecord& other) const;

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011, 2012, 2013  Thoronador
+    Copyright (C) 2009, 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,17 +30,12 @@ namespace MWTP
 DoorRecord::DoorRecord()
 : BasicRecord(),
   recordID(""),
-  Name(""),
   ModelPath(""),
+  Name(""),
   Script(""),
   SoundOpen(""),
   SoundClose("")
 {}
-
-DoorRecord::~DoorRecord()
-{
-  //empty
-}
 
 bool DoorRecord::equals(const DoorRecord& other) const
 {
@@ -84,8 +79,8 @@ bool DoorRecord::saveToStream(std::ostream& output) const
 
   /*Door:
     NAME = door ID
-    FNAM = door name (optional in some rare cases)
     MODL = NIF model filename
+    FNAM = door name (optional in some rare cases)
     SCRI = Script (optional)
     SNAM = Sound name open (optional)
     ANAM = Sound name close (optional)
@@ -100,6 +95,14 @@ bool DoorRecord::saveToStream(std::ostream& output) const
   //write ID
   output.write(recordID.c_str(), SubLength);
 
+  //write MODL
+  output.write((const char*) &cMODL, 4);
+  //MODL's length
+  SubLength = ModelPath.length()+1;//length of string plus one for NUL-termination
+  output.write((const char*) &SubLength, 4);
+  //write model path
+  output.write(ModelPath.c_str(), SubLength);
+
   if (!Name.empty())
   {
     //write FNAM
@@ -110,14 +113,6 @@ bool DoorRecord::saveToStream(std::ostream& output) const
     //write door name
     output.write(Name.c_str(), SubLength);
   }
-
-  //write MODL
-  output.write((const char*) &cMODL, 4);
-  //MODL's length
-  SubLength = ModelPath.length()+1;//length of string plus one for NUL-termination
-  output.write((const char*) &SubLength, 4);
-  //write model path
-  output.write(ModelPath.c_str(), SubLength);
 
   if (!Script.empty())
   {
@@ -188,8 +183,8 @@ bool DoorRecord::loadFromStream(std::istream& in_File)
   BytesRead += 4;
   if (SubLength>255)
   {
-    std::cout << "Error: subrecord NAME of DOOR is longer than 255 characters.\n";
-    std::cout << "File position: "<<in_File.tellg()<<" bytes.\n";
+    std::cerr << "Error: Subrecord NAME of DOOR is longer than 255 characters.\n";
+    std::cerr << "File position: "<<in_File.tellg()<<" bytes.\n";
     return false;
   }
   //read Door ID
@@ -199,7 +194,7 @@ bool DoorRecord::loadFromStream(std::istream& in_File)
   BytesRead += SubLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord NAME of DOOR!\n";
+    std::cerr << "Error while reading subrecord NAME of DOOR!\n";
     return false;
   }
   recordID = std::string(Buffer);
@@ -223,28 +218,28 @@ bool DoorRecord::loadFromStream(std::istream& in_File)
     BytesRead += 4;
     switch(SubRecName)
     {
-      case cFNAM:
-           if (hasFNAM)
-           {
-             std::cout << "Error: record DOOR seems to have two FNAM subrecords.\n";
-             return false;
-           }
-           success = readSubRecordString(in_File, Buffer, BytesRead, Name);
-           hasFNAM = true;
-           break;
       case cMODL:
            if (hasMODL)
            {
-             std::cout << "Error: record DOOR seems to have two MODL subrecords.\n";
+             std::cerr << "Error: Record DOOR seems to have two MODL subrecords.\n";
              return false;
            }
            success = readSubRecordString(in_File, Buffer, BytesRead, ModelPath);
            hasMODL = true;
            break;
+      case cFNAM:
+           if (hasFNAM)
+           {
+             std::cerr << "Error: Record DOOR seems to have two FNAM subrecords.\n";
+             return false;
+           }
+           success = readSubRecordString(in_File, Buffer, BytesRead, Name);
+           hasFNAM = true;
+           break;
       case cSCRI:
            if (hasSCRI)
            {
-             std::cout << "Error: record DOOR seems to have two SCRI subrecords.\n";
+             std::cerr << "Error: Record DOOR seems to have two SCRI subrecords.\n";
              return false;
            }
            success = readSubRecordString(in_File, Buffer, BytesRead, Script);
@@ -253,7 +248,7 @@ bool DoorRecord::loadFromStream(std::istream& in_File)
       case cSNAM:
            if (hasSNAM)
            {
-             std::cout << "Error: record DOOR seems to have two SNAM subrecords.\n";
+             std::cerr << "Error: Record DOOR seems to have two SNAM subrecords.\n";
              return false;
            }
            success = readSubRecordString(in_File, Buffer, BytesRead, SoundOpen);
@@ -262,14 +257,14 @@ bool DoorRecord::loadFromStream(std::istream& in_File)
       case cANAM:
            if (hasANAM)
            {
-             std::cout << "Error: record DOOR seems to have two ANAM subrecords.\n";
+             std::cerr << "Error: Record DOOR seems to have two ANAM subrecords.\n";
              return false;
            }
            success = readSubRecordString(in_File, Buffer, BytesRead, SoundClose);
            hasANAM = true;
            break;
       default:
-           std::cout << "Error while reading DOOR: expected record name SCRI, "
+           std::cerr << "Error while reading DOOR: Expected record name SCRI, "
                      << "SNAM or ANAM was not found. Instead, \""
                      << IntTo4Char(SubRecName)<<"\" was found.\n";
            return false;
@@ -277,7 +272,8 @@ bool DoorRecord::loadFromStream(std::istream& in_File)
     }//swi
     if (!success)
     {
-      std::cout << "Error while reading DOOR record. Subrecord was "<<IntTo4Char(SubRecName)<<".\n";
+      std::cout << "Error while reading DOOR record. Subrecord was "
+                << IntTo4Char(SubRecName) << ".\n";
       return false;
     }
   }//while BytesRead<Size
@@ -292,7 +288,7 @@ bool DoorRecord::readSubRecordString(std::istream& in_File, char* Buffer, uint32
   BytesRead += 4;
   if (SubLength>255)
   {
-    std::cout << "Error: subrecord of DOOR is longer than 255 characters.\n";
+    std::cerr << "Error: Subrecord of DOOR is longer than 255 characters.\n";
     return false;
   }
   //read string
@@ -301,7 +297,7 @@ bool DoorRecord::readSubRecordString(std::istream& in_File, char* Buffer, uint32
   BytesRead += SubLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord of DOOR!\n";
+    std::cerr << "Error while reading subrecord of DOOR!\n";
     return false;
   }
   Destination = std::string(Buffer);

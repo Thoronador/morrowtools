@@ -83,8 +83,32 @@ struct BasicRecord
      */
     bool isPersistent() const;
   protected:
-     int32_t HeaderOne;
-     int32_t HeaderFlags;
+    int32_t HeaderOne;
+    int32_t HeaderFlags;
+
+    /** \brief Tries to load a NUL-terminated string from the stream, without header.
+     *
+     * \param input       the input stream
+     * \param target      the string that will be used to store the read data
+     * \param buffer      a pre-allocated array of char that can hold at least 256 bytes
+     * \param subHeader   the expected header of that subrecord
+     * \param bytesRead   the variable that holds the number of bytes read so far
+     * \return Returns true on success (data was loaded successfully).
+     *         Returns false, if an error occurred.
+     */
+    bool loadString256(std::istream& input, std::string& target, char * buffer, const uint32_t subHeader, uint32_t& bytesRead) const;
+
+    /** \brief Tries to load a NUL-terminated string from the stream, including its header.
+     *
+     * \param input       the input stream
+     * \param target      the string that will be used to store the read data
+     * \param buffer      a pre-allocated array of char that can hold at least 256 bytes
+     * \param subHeader   the expected header of that subrecord
+     * \param bytesRead   the variable that holds the number of bytes read so far
+     * \return Returns true on success (data was loaded successfully).
+     *         Returns false, if an error occurred.
+     */
+    bool loadString256WithHeader(std::istream& input, std::string& target, char * buffer, const uint32_t subHeader, uint32_t& bytesRead) const;
 }; // struct
 
 } // namespace

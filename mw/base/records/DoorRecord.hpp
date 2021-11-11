@@ -31,48 +31,42 @@ namespace MWTP
 struct DoorRecord: public BasicRecord
 {
   public:
-    std::string recordID; //formerly DoorID
+    std::string recordID;
     std::string ModelPath;
     std::string Name;
     std::string Script;
     std::string SoundOpen;
     std::string SoundClose;
 
-    /* constructor */
     DoorRecord();
 
-    /* returns true, if the other record contains the same data */
+    /** \brief Checks whether another instance contains the same data.
+     *
+     * \param other   the other record to compare with
+     * \return Returns true, if @other contains the same data as instance.
+     *         Returns false otherwise.
+     */
     bool equals(const DoorRecord& other) const;
 
     #ifndef MW_UNSAVEABLE_RECORDS
-    /* writes the record to the given output stream and returns true on success
-
-      parameters:
-          output - the output stream
-    */
+    /** \brief Writes the record to the given output stream.
+     *
+     * \param output  the output stream
+     * \return Returns true on success (record was written to stream).
+     *         Returns false, if an error occurred.
+     */
     bool saveToStream(std::ostream& output) const override;
     #endif
 
-    /* loads the record from the given input stream and returns true on success
-
-      parameters:
-          in_File - the input stream
-    */
+    /** \brief Loads the record from the given input stream.
+     *
+     * \param in_File    the input stream
+     * \return Returns true on success (record was loaded from stream).
+     *         Returns false, if an error occurred.
+     */
     bool loadFromStream(std::istream& in_File) override;
+}; // struct
 
-  protected:
-    /*tries to read a string subrecord and returns true on success
-
-      parameters:
-          in_File     - the input stream
-          Buffer      - pointer to a buffer of at least 256 bytes length
-          BytesRead   - reference to a variable that counts the number of bytes
-                        that were read from the stream
-          Destination - the string that will hold the read string after success
-    */
-    bool readSubRecordString(std::istream& in_File, char* Buffer, uint32_t& BytesRead, std::string& Destination);
-};//struct
-
-} //namespace
+} // namespace
 
 #endif // MW_DOORRECORD_HPP

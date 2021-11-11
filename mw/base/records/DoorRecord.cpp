@@ -19,7 +19,6 @@
 */
 
 #include "DoorRecord.hpp"
-#include <cstring>
 #include <iostream>
 #include "../MW_Constants.hpp"
 #include "../HelperIO.hpp"
@@ -29,53 +28,52 @@ namespace MWTP
 
 DoorRecord::DoorRecord()
 : BasicRecord(),
-  recordID(""),
-  ModelPath(""),
-  Name(""),
-  Script(""),
-  SoundOpen(""),
-  SoundClose("")
+  recordID(std::string()),
+  ModelPath(std::string()),
+  Name(std::string()),
+  Script(std::string()),
+  SoundOpen(std::string()),
+  SoundClose(std::string())
 {}
 
 bool DoorRecord::equals(const DoorRecord& other) const
 {
-  return ((recordID==other.recordID) and (Name==other.Name)
-      and (ModelPath==other.ModelPath) and (Script==other.Script)
-      and (SoundOpen==other.SoundOpen) and (SoundClose==other.SoundClose));
+  return (recordID == other.recordID) && (ModelPath == other.ModelPath)
+      && (Name == other.Name) && (Script == other.Script)
+      && (SoundOpen == other.SoundOpen) && (SoundClose == other.SoundClose);
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
 bool DoorRecord::saveToStream(std::ostream& output) const
 {
-  output.write((const char*) &cDOOR, 4);
-  uint32_t Size;
-  Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +recordID.length()+1 /* length of ID +1 byte for NUL termination */
-        +4 /* MODL */ +4 /* 4 bytes for length */
-        +ModelPath.length()+1 /* length of path +1 byte for NUL termination */;
+  output.write(reinterpret_cast<const char*>(&cDOOR), 4);
+  uint32_t Size = 4 /* NAME */ + 4 /* 4 bytes for length */
+        + recordID.length() + 1 /* length of ID +1 byte for NUL termination */
+        + 4 /* MODL */ + 4 /* 4 bytes for length */
+        + ModelPath.length() + 1 /* length of path +1 byte for NUL termination */;
   if (!Name.empty())
   {
-    Size = Size+4 /* FNAM */ +4 /* 4 bytes for length */
-        +Name.length()+1 /* length of name +1 byte for NUL termination */;
+    Size = Size + 4 /* FNAM */ + 4 /* 4 bytes for length */
+        + Name.length() + 1 /* length of name +1 byte for NUL termination */;
   }
   if (!Script.empty())
   {
-    Size = Size +4 /* SCRI */ +4 /* 4 bytes for length */
-          +Script.length()+1; /* length of script ID +1 byte for NUL termination */;
+    Size = Size + 4 /* SCRI */ + 4 /* 4 bytes for length */
+          + Script.length() + 1; /* length of script ID +1 byte for NUL termination */;
   }
   if (!SoundOpen.empty())
   {
-    Size = Size +4 /* SNAM */ +4 /* 4 bytes for length */
-          +SoundOpen.length()+1; /* length of sound ID +1 byte for NUL termination */;
+    Size = Size + 4 /* SNAM */ + 4 /* 4 bytes for length */
+          + SoundOpen.length() + 1; /* length of sound ID +1 byte for NUL termination */;
   }
   if (!SoundClose.empty())
   {
-    Size = Size +4 /* ANAM */ +4 /* 4 bytes for length */
-          +SoundClose.length()+1; /* length of sound ID +1 byte for NUL termination */;
+    Size = Size + 4 /* ANAM */ + 4 /* 4 bytes for length */
+          + SoundClose.length() + 1; /* length of sound ID +1 byte for NUL termination */;
   }
-  output.write((const char*) &Size, 4);
-  output.write((const char*) &HeaderOne, 4);
-  output.write((const char*) &HeaderFlags, 4);
+  output.write(reinterpret_cast<const char*>(&Size), 4);
+  output.write(reinterpret_cast<const char*>(&HeaderOne), 4);
+  output.write(reinterpret_cast<const char*>(&HeaderFlags), 4);
 
   /*Door:
     NAME = door ID
@@ -86,64 +84,51 @@ bool DoorRecord::saveToStream(std::ostream& output) const
     ANAM = Sound name close (optional)
   */
 
-  //write NAME
-  output.write((const char*) &cNAME, 4);
-  //NAME's length
-  uint32_t SubLength;
-  SubLength = recordID.length()+1;//length of string plus one for NUL-termination
-  output.write((const char*) &SubLength, 4);
-  //write ID
+  // write ID (NAME)
+  output.write(reinterpret_cast<const char*>(&cNAME), 4);
+  uint32_t SubLength = recordID.length() + 1;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
   output.write(recordID.c_str(), SubLength);
 
-  //write MODL
-  output.write((const char*) &cMODL, 4);
-  //MODL's length
-  SubLength = ModelPath.length()+1;//length of string plus one for NUL-termination
-  output.write((const char*) &SubLength, 4);
-  //write model path
+  // write model path (MODL)
+  output.write(reinterpret_cast<const char*>(&cMODL), 4);
+  SubLength = ModelPath.length() + 1;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
   output.write(ModelPath.c_str(), SubLength);
 
   if (!Name.empty())
   {
-    //write FNAM
-    output.write((const char*) &cFNAM, 4);
-    //FNAM's length
-    SubLength = Name.length()+1;//length of string plus one for NUL-termination
-    output.write((const char*) &SubLength, 4);
-    //write door name
+    // write FNAM
+    output.write(reinterpret_cast<const char*>(&cFNAM), 4);
+    SubLength = Name.length() + 1;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
     output.write(Name.c_str(), SubLength);
   }
 
   if (!Script.empty())
   {
-    //write SCRI
-    output.write((const char*) &cSCRI, 4);
-    //SCRI's length
-    SubLength = Script.length()+1;//length of string plus one for NUL-termination
-    output.write((const char*) &SubLength, 4);
-    //write script ID
+    // write script ID (SCRI)
+    output.write(reinterpret_cast<const char*>(&cSCRI), 4);
+    SubLength = Script.length() + 1;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
     output.write(Script.c_str(), SubLength);
   }
 
   if (!SoundOpen.empty())
   {
-    //write SNAM
-    output.write((const char*) &cSNAM, 4);
-    //SNAM's length
-    SubLength = SoundOpen.length()+1;//length of string plus one for NUL-termination
-    output.write((const char*) &SubLength, 4);
-    //write sound ID
+    // write sound ID (SNAM)
+    output.write(reinterpret_cast<const char*>(&cSNAM), 4);
+    SubLength = SoundOpen.length() + 1;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
     output.write(SoundOpen.c_str(), SubLength);
   }
 
   if (!SoundClose.empty())
   {
-    //write ANAM
-    output.write((const char*) &cANAM, 4);
-    //SNAM's length
-    SubLength = SoundClose.length()+1;//length of string plus one for NUL-termination
-    output.write((const char*) &SubLength, 4);
-    //write sound ID
+    // write sound ID (ANAM)
+    output.write(reinterpret_cast<const char*>(&cANAM), 4);
+    SubLength = SoundClose.length() + 1;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
     output.write(SoundClose.c_str(), SubLength);
   }
   return output.good();
@@ -152,10 +137,10 @@ bool DoorRecord::saveToStream(std::ostream& output) const
 
 bool DoorRecord::loadFromStream(std::istream& in_File)
 {
-  uint32_t Size;
-  in_File.read((char*) &Size, 4);
-  in_File.read((char*) &HeaderOne, 4);
-  in_File.read((char*) &HeaderFlags, 4);
+  uint32_t Size = 0;
+  in_File.read(reinterpret_cast<char*>(&Size), 4);
+  in_File.read(reinterpret_cast<char*>(&HeaderOne), 4);
+  in_File.read(reinterpret_cast<char*>(&HeaderFlags), 4);
 
   /*Door:
     NAME = door ID
@@ -166,55 +151,29 @@ bool DoorRecord::loadFromStream(std::istream& in_File)
     ANAM = Sound name close (optional)
   */
 
-  uint32_t SubRecName;
-  uint32_t SubLength, BytesRead;
-  SubRecName = SubLength = 0;
+  uint32_t SubRecName = 0;
+  uint32_t BytesRead = 0;
 
-  //read NAME
-  in_File.read((char*) &SubRecName, 4);
-  BytesRead = 4;
-  if (SubRecName!=cNAME)
-  {
-    UnexpectedRecord(cNAME, SubRecName);
-    return false;
-  }
-  //NAME's length
-  in_File.read((char*) &SubLength, 4);
-  BytesRead += 4;
-  if (SubLength>255)
-  {
-    std::cerr << "Error: Subrecord NAME of DOOR is longer than 255 characters.\n";
-    std::cerr << "File position: "<<in_File.tellg()<<" bytes.\n";
-    return false;
-  }
-  //read Door ID
+  // read door ID (NAME)
   char Buffer[256];
-  memset(Buffer, '\0', 256);
-  in_File.read(Buffer, SubLength);
-  BytesRead += SubLength;
-  if (!in_File.good())
-  {
-    std::cerr << "Error while reading subrecord NAME of DOOR!\n";
+  if (!loadString256WithHeader(in_File, recordID, Buffer, cNAME, BytesRead))
     return false;
-  }
-  recordID = std::string(Buffer);
 
-  //read optional part and records with varying order
+  // read optional part and records with varying order
   Name.clear();
   ModelPath.clear();
   Script.clear();
   SoundOpen.clear();
   SoundClose.clear();
-  bool success = false;
   bool hasFNAM = false;
   bool hasMODL = false;
   bool hasSCRI = false;
   bool hasSNAM = false;
   bool hasANAM = false;
-  while (BytesRead<Size)
+  while (BytesRead < Size)
   {
-    //read next optional sub record name
-    in_File.read((char*) &SubRecName, 4);
+    // read next optional sub record name
+    in_File.read(reinterpret_cast<char*>(&SubRecName), 4);
     BytesRead += 4;
     switch(SubRecName)
     {
@@ -224,7 +183,8 @@ bool DoorRecord::loadFromStream(std::istream& in_File)
              std::cerr << "Error: Record DOOR seems to have two MODL subrecords.\n";
              return false;
            }
-           success = readSubRecordString(in_File, Buffer, BytesRead, ModelPath);
+           if (!loadString256(in_File, ModelPath, Buffer, cMODL, BytesRead))
+             return false;
            hasMODL = true;
            break;
       case cFNAM:
@@ -233,7 +193,8 @@ bool DoorRecord::loadFromStream(std::istream& in_File)
              std::cerr << "Error: Record DOOR seems to have two FNAM subrecords.\n";
              return false;
            }
-           success = readSubRecordString(in_File, Buffer, BytesRead, Name);
+           if (!loadString256(in_File, Name, Buffer, cFNAM, BytesRead))
+             return false;
            hasFNAM = true;
            break;
       case cSCRI:
@@ -242,7 +203,8 @@ bool DoorRecord::loadFromStream(std::istream& in_File)
              std::cerr << "Error: Record DOOR seems to have two SCRI subrecords.\n";
              return false;
            }
-           success = readSubRecordString(in_File, Buffer, BytesRead, Script);
+           if (!loadString256(in_File, Script, Buffer, cSCRI, BytesRead))
+             return false;
            hasSCRI = true;
            break;
       case cSNAM:
@@ -251,7 +213,8 @@ bool DoorRecord::loadFromStream(std::istream& in_File)
              std::cerr << "Error: Record DOOR seems to have two SNAM subrecords.\n";
              return false;
            }
-           success = readSubRecordString(in_File, Buffer, BytesRead, SoundOpen);
+           if (!loadString256(in_File, SoundOpen, Buffer, cSNAM, BytesRead))
+             return false;
            hasSNAM = true;
            break;
       case cANAM:
@@ -260,48 +223,19 @@ bool DoorRecord::loadFromStream(std::istream& in_File)
              std::cerr << "Error: Record DOOR seems to have two ANAM subrecords.\n";
              return false;
            }
-           success = readSubRecordString(in_File, Buffer, BytesRead, SoundClose);
+           if (!loadString256(in_File, SoundClose, Buffer, cANAM, BytesRead))
+             return false;
            hasANAM = true;
            break;
       default:
            std::cerr << "Error while reading DOOR: Expected record name SCRI, "
                      << "SNAM or ANAM was not found. Instead, \""
-                     << IntTo4Char(SubRecName)<<"\" was found.\n";
+                     << IntTo4Char(SubRecName) << "\" was found.\n";
            return false;
            break;
-    }//swi
-    if (!success)
-    {
-      std::cout << "Error while reading DOOR record. Subrecord was "
-                << IntTo4Char(SubRecName) << ".\n";
-      return false;
     }
-  }//while BytesRead<Size
+  }
   return in_File.good();
 }
 
-bool DoorRecord::readSubRecordString(std::istream& in_File, char* Buffer, uint32_t& BytesRead, std::string& Destination)
-{
-  uint32_t SubLength = 0;
-  //read string's length
-  in_File.read((char*) &SubLength, 4);
-  BytesRead += 4;
-  if (SubLength>255)
-  {
-    std::cerr << "Error: Subrecord of DOOR is longer than 255 characters.\n";
-    return false;
-  }
-  //read string
-  memset(Buffer, '\0', 256);
-  in_File.read(Buffer, SubLength);
-  BytesRead += SubLength;
-  if (!in_File.good())
-  {
-    std::cerr << "Error while reading subrecord of DOOR!\n";
-    return false;
-  }
-  Destination = std::string(Buffer);
-  return true;
-}
-
-} //namespace
+} // namespace

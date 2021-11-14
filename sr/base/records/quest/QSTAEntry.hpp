@@ -21,6 +21,9 @@
 #ifndef SR_QUEST_QSTAENTRY_HPP
 #define SR_QUEST_QSTAENTRY_HPP
 
+#ifndef SR_UNSAVEABLE_RECORDS
+#include <fstream>
+#endif // SR_UNSAVEABLE_RECORDS
 #include <vector>
 #include "../CTDAData.hpp"
 
@@ -43,6 +46,22 @@ struct QSTAEntry
   /* equality operator */
   bool operator==(const QSTAEntry& other) const;
   #endif // SR_NO_RECORD_EQUALITY
+
+  #ifndef SR_UNSAVEABLE_RECORDS
+  /** Tries to save the QSTAEntry to the given stream.
+   *
+   * \param output    the output stream
+   * \return Returns true in case of success, false on failure.
+   */
+  bool saveToStream(std::ostream& output) const;
+
+  /** Gets the size in bytes that the QSTAEntry's data would occupy.
+   *
+   * \return Returns the size in bytes that the QSTAEntry would occupy in a
+   *         file stream.
+   */
+  uint32_t getWriteSize() const;
+  #endif
 }; // struct
 
 } // namespace

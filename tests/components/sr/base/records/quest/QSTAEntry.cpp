@@ -82,4 +82,63 @@ TEST_CASE("QSTAEntry")
     REQUIRE( entry.unknownQSTA == 0 );
     REQUIRE( entry.unknownCTDA_CIS2s.empty() );
   }
+
+  SECTION("getWriteSize")
+  {
+    QSTAEntry entry;
+
+    entry.unknownQSTA = 0xF00BA12;
+
+    SECTION("size without CTDA/CIS2 pairs")
+    {
+      REQUIRE( entry.getWriteSize() == 14 );
+    }
+
+    SECTION("size adjusts with number of CTDA/CIS2 stuff")
+    {
+      REQUIRE( entry.getWriteSize() == 14 );
+
+      entry.unknownCTDA_CIS2s.push_back(CTDA_CIS2_compound());
+      REQUIRE( entry.getWriteSize() == 52 );
+
+      entry.unknownCTDA_CIS2s.push_back(CTDA_CIS2_compound());
+      REQUIRE( entry.getWriteSize() == 90 );
+
+      entry.unknownCTDA_CIS2s.back().unknownCISx = "foo";
+
+      REQUIRE( entry.getWriteSize() == 100 );
+    }
+  }
+
+  SECTION("saveToStream")
+  {
+    using namespace std::string_view_literals;
+
+    SECTION("default: no CTDA/CIS2")
+    {
+      QSTAEntry entry;
+      entry.unknownQSTA = 0x0123456789ABCDEF;
+
+      std::ostringstream stream;
+      REQUIRE( entry.saveToStream(stream) );
+      // Check written data.
+      REQUIRE( stream.str() == "QSTA\x08\0\xEF\xCD\xAB\x89\x67\x45\x23\x01"sv );
+    }
+
+    SECTION("default: with CTDA/CIS2")
+    {
+      QSTAEntry entry;
+      entry.unknownQSTA = 0x1122334489ABCDEF;
+      entry.unknownCTDA_CIS2s.push_back(CTDA_CIS2_compound());
+      entry.unknownCTDA_CIS2s.back().unknownCISx = "foo";
+      entry.unknownCTDA_CIS2s.push_back(CTDA_CIS2_compound());
+      entry.unknownCTDA_CIS2s.back().unknownCISx = "bar";
+
+      std::ostringstream stream;
+      REQUIRE( entry.saveToStream(stream) );
+      // Check written data.
+      const auto data = "QSTA\x08\0\xEF\xCD\xAB\x89\x44\x33\x22\x11\x43TDA\x20\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0CIS2\x04\0foo\0CTDA\x20\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0CIS2\x04\0bar\0"sv;
+      REQUIRE( stream.str() == data );
+    }
+  }
 }

@@ -42,4 +42,33 @@ bool QSTAEntry::operator==(const QSTAEntry& other) const
 }
 #endif // SR_NO_RECORD_EQUALITY
 
+#ifndef SR_UNSAVEABLE_RECORDS
+bool QSTAEntry::saveToStream(std::ostream& output) const
+{
+  // write QSTA
+  output.write(reinterpret_cast<const char*>(&cQSTA), 4);
+  const uint16_t subLength = 8;
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
+  output.write(reinterpret_cast<const char*>(&unknownQSTA), 8);
+
+  for (const auto& cc: unknownCTDA_CIS2s)
+  {
+    if (!cc.saveToStream(output))
+      return false;
+  }
+
+  return output.good();
+}
+
+uint32_t QSTAEntry::getWriteSize() const
+{
+  uint32_t writeSize = 4 /* QSTA */ + 2 /* 2 bytes for length */ + 8 /* size */;
+  for (const auto& cc: unknownCTDA_CIS2s)
+  {
+    writeSize += cc.getWriteSize();
+  }
+  return writeSize;
+}
+#endif
+
 } // namespace

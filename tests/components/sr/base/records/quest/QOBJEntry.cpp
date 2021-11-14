@@ -104,4 +104,81 @@ TEST_CASE("QOBJEntry")
     REQUIRE_FALSE( entry.displayText.isPresent() );
     REQUIRE( entry.theQSTAs.empty() );
   }
+
+  SECTION("getWriteSize")
+  {
+    QOBJEntry entry;
+
+    SECTION("size without any extra data")
+    {
+      REQUIRE( entry.getWriteSize() == 18 );
+    }
+
+    SECTION("size adjusts when FNAM is present")
+    {
+      REQUIRE( entry.getWriteSize() == 18 );
+
+      entry.displayText = LocalizedString(LocalizedString::Type::Index, 1, "");
+      REQUIRE( entry.getWriteSize() == 28 );
+    }
+
+    SECTION("size adjusts with length of QSTA entries")
+    {
+      REQUIRE( entry.getWriteSize() == 18 );
+
+      entry.theQSTAs.push_back(QSTAEntry());
+      REQUIRE( entry.getWriteSize() == 32 );
+
+      entry.theQSTAs.push_back(QSTAEntry());
+      REQUIRE( entry.getWriteSize() == 46 );
+    }
+  }
+
+  SECTION("saveToStream")
+  {
+    using namespace std::string_view_literals;
+
+    SECTION("default: no extra data")
+    {
+      QOBJEntry entry;
+      entry.unknownQOBJ = 0xABCD;
+      entry.unknownFNAM = 0xAABCDEF9;
+
+      std::ostringstream stream;
+      REQUIRE( entry.saveToStream(stream) );
+      // Check written data.
+      REQUIRE( stream.str() == "QOBJ\x02\0\xCD\xAB\x46NAM\x04\0\xF9\xDE\xBC\xAA"sv );
+    }
+
+    SECTION("default: entry with display text")
+    {
+      QOBJEntry entry;
+      entry.unknownQOBJ = 0x00CD;
+      entry.unknownFNAM = 0xAABCDEF9;
+      entry.displayText = LocalizedString(LocalizedString::Type::Index, 0x87654321, "");
+
+      std::ostringstream stream;
+      REQUIRE( entry.saveToStream(stream) );
+      // Check written data.
+      REQUIRE( stream.str() == "QOBJ\x02\0\xCD\0FNAM\x04\0\xF9\xDE\xBC\xAANNAM\x04\0\x21\x43\x65\x87"sv );
+    }
+
+    SECTION("default: entry with two QTSAs")
+    {
+      QOBJEntry entry;
+      entry.unknownQOBJ = 0x00CD;
+      entry.unknownFNAM = 0xAABCDEF9;
+
+      QSTAEntry qsta;
+      qsta.unknownQSTA = 0x0123456789ABCDEF;
+      entry.theQSTAs.push_back(qsta);
+      qsta.unknownQSTA = 0x001122334455CDEF;
+      entry.theQSTAs.push_back(qsta);
+
+      std::ostringstream stream;
+      REQUIRE( entry.saveToStream(stream) );
+      // Check written data.
+      REQUIRE( stream.str() == "QOBJ\x02\0\xCD\0FNAM\x04\0\xF9\xDE\xBC\xAAQSTA\x08\0\xEF\xCD\xAB\x89\x67\x45\x23\x01QSTA\x08\0\xEF\xCD\x55\x44\x33\x22\x11\x00"sv );
+    }
+  }
 }

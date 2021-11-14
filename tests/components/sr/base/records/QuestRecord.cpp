@@ -286,7 +286,38 @@ TEST_CASE("QuestRecord")
       REQUIRE( record.getWriteSize() == 120 );
     }
 
-    // TODO: Add tests for indices, aliases and QOBJs as soon as they are
+    SECTION("size adjusts with indices")
+    {
+      REQUIRE( record.getWriteSize() == 44 );
+
+      record.indices.push_back(IndexEntry());
+      REQUIRE( record.getWriteSize() == 54 );
+
+      record.indices.push_back(IndexEntry());
+      REQUIRE( record.getWriteSize() == 64 );
+
+      record.indices.push_back(IndexEntry());
+      REQUIRE( record.getWriteSize() == 74 );
+
+      record.indices.back().theQSDTs.push_back(QSDTRecord());
+      REQUIRE( record.getWriteSize() == 81 );
+    }
+
+    SECTION("size adjusts with QOBJs")
+    {
+      REQUIRE( record.getWriteSize() == 44 );
+
+      record.theQOBJs.push_back(QOBJEntry());
+      REQUIRE( record.getWriteSize() == 62 );
+
+      record.theQOBJs.push_back(QOBJEntry());
+      REQUIRE( record.getWriteSize() == 80 );
+
+      record.theQOBJs.back().displayText = LocalizedString(LocalizedString::Type::Index, 1, "");
+      REQUIRE( record.getWriteSize() == 90 );
+    }
+
+    // TODO: Add tests for aliases as soon as they are
     //       calculated properly in getWriteSize().
   }
 

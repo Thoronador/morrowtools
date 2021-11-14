@@ -29,24 +29,44 @@
 namespace SRTP
 {
 
-//struct for QOBJ
+/// Holds data of QOBJ in quest records.
 struct QOBJEntry
 {
   uint16_t unknownQOBJ;
   uint32_t unknownFNAM;
-  LocalizedString displayText; //subrecord NNAM
+  LocalizedString displayText; // subrecord NNAM
   std::vector<QSTAEntry> theQSTAs;
 
-  /* constructor */
   QOBJEntry();
 
-  /* clears all data members */
+  /** Clears all data members. */
   void clear();
 
   #ifndef SR_NO_RECORD_EQUALITY
-  /* equality operator */
+  /** \brief Checks whether another instance contains the same data.
+   *
+   * \param other   the other entry to compare with
+   * \return Returns true, if @other contains the same data as instance.
+   *         Returns false otherwise.
+   */
   bool operator==(const QOBJEntry& other) const;
   #endif // SR_NO_RECORD_EQUALITY
+
+  #ifndef SR_UNSAVEABLE_RECORDS
+  /** Tries to save the QOBJEntry to the given stream.
+   *
+   * \param output    the output stream
+   * \return Returns true in case of success, false on failure.
+   */
+  bool saveToStream(std::ostream& output) const;
+
+  /** Gets the size in bytes that the QOBJEntry's data would occupy.
+   *
+   * \return Returns the size in bytes that the QOBJEntry would occupy in a
+   *         file stream.
+   */
+  uint32_t getWriteSize() const;
+  #endif
 }; // struct
 
 } // namespace

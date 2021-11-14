@@ -85,14 +85,14 @@ uint32_t QuestRecord::getWriteSize() const
   {
     writeSize = writeSize + unknownQTGLs.size() * (4 /* QTGL */ + 2 /* 2 bytes for length */ + 4 /* fixed size */);
   }
-  for (const auto& condition: unknownCTDA_CIS2s)
-  {
-    writeSize += condition.getWriteSize();
-  }
   if (!filter.empty())
   {
     writeSize = writeSize + 4 /* FLTR */ + 2 /* 2 bytes for length */
         + filter.length() + 1 /* length of string +1 byte for NUL-termination */;
+  }
+  for (const auto& condition: unknownCTDA_CIS2s)
+  {
+    writeSize += condition.getWriteSize();
   }
   // indices
   for (const auto& index: indices)
@@ -103,8 +103,13 @@ uint32_t QuestRecord::getWriteSize() const
       writeSize += record.getWriteSize();
     }
   }
+  // objectives
+  for (const auto& objective: theQOBJs)
+  {
+    writeSize += objective.getWriteSize();
+  }
   /// ... more to come
-  #warning Size of QOBJ and alias are not properly calculated here!
+  #warning Size of aliases is not properly calculated here!
   return writeSize;
 }
 
@@ -203,14 +208,24 @@ bool QuestRecord::saveToStream(std::ostream& output) const
     }
   }
 
+  // objectives
+  for (const auto& objective: theQOBJs)
+  {
+    if (!objective.saveToStream(output))
+    {
+      std::cerr << "Error while writing QOBJ structure of QUST!\n";
+      return false;
+    }
+  }
+
   // write ANAM
   output.write(reinterpret_cast<const char*>(&cANAM), 4);
   subLength = 4;
   output.write(reinterpret_cast<const char*>(&subLength), 2);
   output.write(reinterpret_cast<const char*>(&unknownANAM), 4);
 
-  #warning Code more! (QOBJ and aliases are still missing.)
-  return theQOBJs.empty() && aliases.empty();
+  #warning Code more! (Aliases are still missing.)
+  return aliases.empty();
 }
 #endif
 

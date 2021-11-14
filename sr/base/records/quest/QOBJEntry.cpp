@@ -47,4 +47,45 @@ bool QOBJEntry::operator==(const QOBJEntry& other) const
 }
 #endif // SR_NO_RECORD_EQUALITY
 
+#ifndef SR_UNSAVEABLE_RECORDS
+bool QOBJEntry::saveToStream(std::ostream& output) const
+{
+  // write QOBJ
+  output.write(reinterpret_cast<const char*>(&cQOBJ), 4);
+  uint16_t subLength = 2;
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
+  output.write(reinterpret_cast<const char*>(&unknownQOBJ), 2);
+
+  // write FNAM
+  output.write(reinterpret_cast<const char*>(&cFNAM), 4);
+  subLength = 4;
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
+  output.write(reinterpret_cast<const char*>(&unknownFNAM), 4);
+
+  // write localized text
+  if (!displayText.saveToStream(output, cNNAM))
+    return false;
+
+  for (const auto& qsta: theQSTAs)
+  {
+    if (!qsta.saveToStream(output))
+      return false;
+  }
+
+  return output.good();
+}
+
+uint32_t QOBJEntry::getWriteSize() const
+{
+  uint32_t writeSize = 4 /* QOBJ */ + 2 /* 2 bytes for length */ + 2 /* size */
+                     + 4 /* FNAM */ + 2 /* 2 bytes for length */ + 4 /* size */
+                     + displayText.getWriteSize();
+  for (const auto& qsta: theQSTAs)
+  {
+    writeSize += qsta.getWriteSize();
+  }
+  return writeSize;
+}
+#endif
+
 } // namespace

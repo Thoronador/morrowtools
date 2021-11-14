@@ -58,6 +58,8 @@ struct AliasEntry
   uint32_t keywordFormID; // subrecord KNAM
   std::vector<CTDA_CIS2_compound> unknownCTDA_CIS2s;
   uint32_t spectatorOverridePackageListFormID; // subrecord SPOR
+  uint32_t observeDeadBodyOverridePackageListFormID; // subrecord OCOR
+  uint32_t guardWarnOverridePackageListFormID; // subrecord GWOR
   uint32_t combatOverridePackageListFormID; // subrecord ECOR
   std::vector<uint32_t> spellFormIDs; // subrecords ALSP
   std::vector<uint32_t> factionFormIDs; // subrecords ALFC

@@ -49,6 +49,8 @@ AliasEntry::AliasEntry()
   keywordFormID(0), // subrecord KNAM
   unknownCTDA_CIS2s(std::vector<CTDA_CIS2_compound>()),
   spectatorOverridePackageListFormID(0), // subrecord SPOR
+  observeDeadBodyOverridePackageListFormID(0), // subrecord OCOR
+  guardWarnOverridePackageListFormID(0), // subrecord GWOR
   combatOverridePackageListFormID(0), // subrecord ECOR
   spellFormIDs(std::vector<uint32_t>()), // subrecords ALSP
   factionFormIDs(std::vector<uint32_t>()), // subrecords ALFC
@@ -84,6 +86,8 @@ bool AliasEntry::operator==(const AliasEntry& other) const
       && (keywordFormID == other.keywordFormID)
       && (unknownCTDA_CIS2s == other.unknownCTDA_CIS2s)
       && (spectatorOverridePackageListFormID == other.spectatorOverridePackageListFormID)
+      && (observeDeadBodyOverridePackageListFormID == other.observeDeadBodyOverridePackageListFormID)
+      && (guardWarnOverridePackageListFormID == other.guardWarnOverridePackageListFormID)
       && (combatOverridePackageListFormID == other.combatOverridePackageListFormID)
       && (factionFormIDs == other.factionFormIDs)
       && (packageDataFormIDs == other.packageDataFormIDs)
@@ -118,6 +122,8 @@ void AliasEntry::clear()
   keywordFormID = 0;
   unknownCTDA_CIS2s.clear();
   spectatorOverridePackageListFormID = 0;
+  observeDeadBodyOverridePackageListFormID = 0;
+  guardWarnOverridePackageListFormID = 0;
   combatOverridePackageListFormID = 0;
   spellFormIDs.clear();
   factionFormIDs.clear();

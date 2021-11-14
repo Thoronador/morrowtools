@@ -54,6 +54,8 @@ TEST_CASE("AliasEntry")
     REQUIRE( entry.keywordFormID == 0 );
     REQUIRE( entry.unknownCTDA_CIS2s.empty() );
     REQUIRE( entry.spectatorOverridePackageListFormID == 0 );
+    REQUIRE( entry.observeDeadBodyOverridePackageListFormID == 0 );
+    REQUIRE( entry.guardWarnOverridePackageListFormID == 0 );
     REQUIRE( entry.combatOverridePackageListFormID == 0 );
     REQUIRE( entry.spellFormIDs.empty() );
     REQUIRE( entry.factionFormIDs.empty() );
@@ -431,6 +433,24 @@ TEST_CASE("AliasEntry")
         REQUIRE_FALSE( b == a );
       }
 
+      SECTION("observeDeadBodyOverridePackageListFormID mismatch")
+      {
+        a.observeDeadBodyOverridePackageListFormID = 1;
+        b.observeDeadBodyOverridePackageListFormID = 2;
+
+        REQUIRE_FALSE( a == b );
+        REQUIRE_FALSE( b == a );
+      }
+
+      SECTION("guardWarnOverridePackageListFormID mismatch")
+      {
+        a.guardWarnOverridePackageListFormID = 1;
+        b.guardWarnOverridePackageListFormID = 2;
+
+        REQUIRE_FALSE( a == b );
+        REQUIRE_FALSE( b == a );
+      }
+
       SECTION("combatOverridePackageListFormID mismatch")
       {
         a.combatOverridePackageListFormID = 1;
@@ -516,6 +536,8 @@ TEST_CASE("AliasEntry")
     entry.keywordFormID = 1;
     entry.unknownCTDA_CIS2s = { CTDA_CIS2_compound() };
     entry.spectatorOverridePackageListFormID = 1;
+    entry.observeDeadBodyOverridePackageListFormID = 1;
+    entry.guardWarnOverridePackageListFormID = 1;
     entry.combatOverridePackageListFormID = 1;
     entry.spellFormIDs = { 0x01234567 };
     entry.factionFormIDs = { 0x01234567 };
@@ -549,6 +571,8 @@ TEST_CASE("AliasEntry")
     REQUIRE( entry.keywordFormID == 0 );
     REQUIRE( entry.unknownCTDA_CIS2s.empty() );
     REQUIRE( entry.spectatorOverridePackageListFormID == 0 );
+    REQUIRE( entry.observeDeadBodyOverridePackageListFormID == 0 );
+    REQUIRE( entry.guardWarnOverridePackageListFormID == 0 );
     REQUIRE( entry.combatOverridePackageListFormID == 0 );
     REQUIRE( entry.spellFormIDs.empty() );
     REQUIRE( entry.factionFormIDs.empty() );

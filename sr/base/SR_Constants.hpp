@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -169,6 +169,7 @@ const uint32_t cGMST = 0x54534D47; //"GMST" = 47 4D 53 54
 const uint32_t cGNAM = 0x4D414E47; //"GNAM" = 47 4E 41 4D
 const uint32_t cGRAS = 0x53415247; //"GRAS" = 47 52 41 53
 const uint32_t cGRUP = 0x50555247; //"GRUP" = 47 52 55 50
+const uint32_t cGWOR = 0x524F5747; //"GWOR" = 47 57 4F 52
 const uint32_t cHAZD = 0x445A4148; //"HAZD" = 48 41 5A 44
 const uint32_t cHCLF = 0x464C4348; //"HCLF" = 48 43 4C 46
 const uint32_t cHDPT = 0x54504448; //"HDPT" = 48 44 50 54
@@ -263,6 +264,7 @@ const uint32_t cNVNM = 0x4D4E564E; //"NVNM" = 4E 56 4E 4D
 const uint32_t cNVPP = 0x5050564E; //"NVPP" = 4E 56 50 50
 const uint32_t cNVSI = 0x4953564E; //"NVSI" = 4E 56 53 49
 const uint32_t cOBND = 0x444E424F; //"OBND" = 4F 42 4E 44
+const uint32_t cOCOR = 0x524F434F; //"OCOR" = 4F 43 4F 52
 const uint32_t cOFST = 0x5453464F; //"OFST" = 4F 46 53 54
 const uint32_t cONAM = 0x4D414E4F; //"ONAM" = 4F 4E 41 4D
 const uint32_t cOTFT = 0x5446544F; //"OTFT" = 4F 54 46 54

@@ -1156,6 +1156,36 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                       return false;
                     }
                     break;
+               case cOCOR:
+                    if (al_entry.observeDeadBodyOverridePackageListFormID != 0)
+                    {
+                      std::cerr << "Error: QUST seems to have more than one OCOR subrecord per alias structure.\n";
+                      return false;
+                    }
+                    if (!loadUint32SubRecordFromStream(in_File, cOCOR, al_entry.observeDeadBodyOverridePackageListFormID, false))
+                      return false;
+                    bytesRead += 6;
+                    if (al_entry.observeDeadBodyOverridePackageListFormID == 0)
+                    {
+                      std::cerr << "Error: Subrecord OCOR of QUST is zero!\n";
+                      return false;
+                    }
+                    break;
+               case cGWOR:
+                    if (al_entry.guardWarnOverridePackageListFormID != 0)
+                    {
+                      std::cerr << "Error: QUST seems to have more than one GWOR subrecord per alias structure.\n";
+                      return false;
+                    }
+                    if (!loadUint32SubRecordFromStream(in_File, cOCOR, al_entry.guardWarnOverridePackageListFormID, false))
+                      return false;
+                    bytesRead += 6;
+                    if (al_entry.guardWarnOverridePackageListFormID == 0)
+                    {
+                      std::cerr << "Error: Subrecord GWOR of QUST is zero!\n";
+                      return false;
+                    }
+                    break;
                case cECOR:
                     if (al_entry.combatOverridePackageListFormID != 0)
                     {
@@ -1211,7 +1241,9 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                     std::cerr << "Error: Found unexpected subrecord \"" << IntTo4Char(subRecName)
                               << "\", but only ALID, FNAM, ALFA, ALRT, ALCO, "
                               << "ALCA, ALCL, ALDN, ALFE, ALFD, ALFI, ALFL, "
-                              << "ALFR, ALUA, ALEQ, ALEA, ALSP, KNAM, CTDA, CIS2, SPOR, ECOR, ALFC, ALPC, VTCK or ALED are allowed here!\n";
+                              << "ALFR, ALUA, ALEQ, ALEA, ALSP, KNAM, CTDA, "
+                              << "CIS2, SPOR, OCOR, GWOR, ECOR, ALFC, ALPC, "
+                              << "VTCK or ALED are allowed here!\n";
                     return false;
              } // switch (inner, for alias)
            } // while (inner, for alias)

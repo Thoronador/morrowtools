@@ -20,6 +20,8 @@
 
 #include <catch.hpp>
 #include "../../../../../../sr/base/records/quest/QSDTRecord.hpp"
+#include <sstream>
+#include <string_view>
 
 TEST_CASE("QSDTRecord")
 {
@@ -207,6 +209,37 @@ TEST_CASE("QSDTRecord")
 
       record.logEntry = LocalizedString(LocalizedString::Type::Index, 1, "");
       REQUIRE( record.getWriteSize() == 17 );
+    }
+  }
+
+  SECTION("saveToStream")
+  {
+    using namespace std::string_view_literals;
+
+    QSDTRecord record;
+    record.isFinisher = false;
+
+    SECTION("record with nextQuestFormID")
+    {
+      record.nextQuestFormID = 0x00112233;
+
+      // Writing should succeed.
+      std::ostringstream stream;
+      REQUIRE( record.saveToStream(stream) );
+      // Check written data.
+      REQUIRE( stream.str() == "QSDT\x01\0\0NAM0\x04\0\x33\x22\x11\0"sv );
+    }
+
+    SECTION("record with CTDA/CIS2")
+    {
+      record.unknownCTDA_CIS2s.push_back(CTDA_CIS2_compound());
+      record.unknownCTDA_CIS2s.back().unknownCISx = "abc";
+
+      // Writing should succeed.
+      std::ostringstream stream;
+      REQUIRE( record.saveToStream(stream) );
+      // Check written data.
+      REQUIRE( stream.str() == "QSDT\x01\0\0CTDA\x20\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0CIS2\x04\0abc\0"sv );
     }
   }
 }

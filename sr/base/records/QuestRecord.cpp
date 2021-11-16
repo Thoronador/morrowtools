@@ -988,12 +988,12 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                     al_entry.components.push_back(tempComp);
                     break;
                case cKSIZ:
-                    if (!al_entry.keywordArray.empty())
+                    if (!al_entry.keywords.empty())
                     {
                       std::cerr << "Error: QUST seems to have more than one KSIZ subrecord per alias structure.\n";
                       return false;
                     }
-                    if (!loadKeywords(in_File, al_entry.keywordArray, bytesRead))
+                    if (!loadKeywords(in_File, al_entry.keywords, bytesRead))
                       return false;
                     break;
                case cALFE:

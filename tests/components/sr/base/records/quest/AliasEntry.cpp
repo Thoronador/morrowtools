@@ -20,6 +20,8 @@
 
 #include <catch.hpp>
 #include "../../../../../../sr/base/records/quest/AliasEntry.hpp"
+#include <sstream>
+#include <string_view>
 
 TEST_CASE("AliasEntry")
 {
@@ -40,7 +42,7 @@ TEST_CASE("AliasEntry")
     REQUIRE_FALSE( entry.unknownALCL.has_value() );
     REQUIRE( entry.displayNameFormID == 0 );
     REQUIRE( entry.components.empty() );
-    REQUIRE( entry.keywordArray.empty() );
+    REQUIRE( entry.keywords.empty() );
     REQUIRE_FALSE( entry.unknownALFE.has_value() );
     REQUIRE_FALSE( entry.unknownALFD.has_value() );
     REQUIRE_FALSE( entry.forcedIntoAliasID.has_value() );
@@ -239,7 +241,7 @@ TEST_CASE("AliasEntry")
 
       SECTION("keywords mismatch")
       {
-        a.keywordArray.push_back(0x01234567);
+        a.keywords.push_back(0x01234567);
 
         REQUIRE_FALSE( a == b );
         REQUIRE_FALSE( b == a );
@@ -522,7 +524,7 @@ TEST_CASE("AliasEntry")
     entry.unknownALCL = 1;
     entry.displayNameFormID = 1;
     entry.components = { ComponentData(), ComponentData() };
-    entry.keywordArray = { 0x01234567 };
+    entry.keywords = { 0x01234567 };
     entry.unknownALFE = 1;
     entry.unknownALFD = 1;
     entry.forcedIntoAliasID = 1;
@@ -557,7 +559,7 @@ TEST_CASE("AliasEntry")
     REQUIRE_FALSE( entry.unknownALCL.has_value() );
     REQUIRE( entry.displayNameFormID == 0 );
     REQUIRE( entry.components.empty() );
-    REQUIRE( entry.keywordArray.empty() );
+    REQUIRE( entry.keywords.empty() );
     REQUIRE_FALSE( entry.unknownALFE.has_value() );
     REQUIRE_FALSE( entry.unknownALFD.has_value() );
     REQUIRE_FALSE( entry.forcedIntoAliasID.has_value() );
@@ -672,13 +674,13 @@ TEST_CASE("AliasEntry")
     {
       REQUIRE( entry.getWriteSize() == 26 );
 
-      entry.keywordArray.push_back(0x01234567);
+      entry.keywords.push_back(0x01234567);
       REQUIRE( entry.getWriteSize() == 46 );
 
-      entry.keywordArray.push_back(0x01234568);
+      entry.keywords.push_back(0x01234568);
       REQUIRE( entry.getWriteSize() == 50 );
 
-      entry.keywordArray.push_back(0x01234569);
+      entry.keywords.push_back(0x01234569);
       REQUIRE( entry.getWriteSize() == 54 );
     }
 
@@ -864,6 +866,147 @@ TEST_CASE("AliasEntry")
 
       entry.unknownVTCK = 0x01234567;
       REQUIRE( entry.getWriteSize() == 36 );
+    }
+  }
+
+  SECTION("saveToStream")
+  {
+    using namespace std::string_view_literals;
+
+    AliasEntry entry;
+    entry.unknownALST = 0x00112233;
+    entry.unknownFNAM = 2;
+
+    SECTION("entry with ALLS")
+    {
+      entry.unknownALST.reset();
+      entry.unknownALLS = 0x00112233;
+
+      // Writing should succeed.
+      std::ostringstream stream;
+      REQUIRE( entry.saveToStream(stream) );
+      // Check written data.
+      REQUIRE( stream.str() == "ALLS\x04\0\x33\x22\x11\0FNAM\x04\0\x02\0\0\0ALED\0\0"sv );
+    }
+
+    SECTION("entry with ALFA, ALRT, ALDN")
+    {
+      entry.unknownALFA = 0x00223344;
+      entry.locationRefTypeFormID = 0x00333333; // ALRT
+      entry.displayNameFormID = 0x00444444; // ALDN
+
+      // Writing should succeed.
+      std::ostringstream stream;
+      REQUIRE( entry.saveToStream(stream) );
+      // Check written data.
+      REQUIRE( stream.str() == "ALST\x04\0\x33\x22\x11\0FNAM\x04\0\x02\0\0\0ALFA\x04\0\x44\x33\x22\0ALRT\x04\0\x33\x33\x33\0ALDN\x04\0\x44\x44\x44\0ALED\0\0"sv );
+    }
+
+    SECTION("entry with components")
+    {
+      entry.components.push_back(ComponentData());
+      entry.components.back().formID = 0x00123456;
+      entry.components.back().count = 66;
+
+      entry.components.push_back(ComponentData());
+      entry.components.back().formID = 0x00222222;
+      entry.components.back().count = 2;
+
+      // Writing should succeed.
+      std::ostringstream stream;
+      REQUIRE( entry.saveToStream(stream) );
+      // Check written data.
+      const auto data = "ALST\x04\0\x33\x22\x11\0FNAM\x04\0\x02\0\0\0COCT\x04\0\x02\0\0\0CNTO\x08\0\x56\x34\x12\0\x42\0\0\0CNTO\x08\0\x22\x22\x22\0\x02\0\0\0ALED\0\0"sv;
+      REQUIRE( stream.str() == data );
+    }
+
+    SECTION("entry with keywords")
+    {
+      entry.keywords.push_back(0x00123456);
+      entry.keywords.push_back(0x00222222);
+
+      // Writing should succeed.
+      std::ostringstream stream;
+      REQUIRE( entry.saveToStream(stream) );
+      // Check written data.
+      const auto data = "ALST\x04\0\x33\x22\x11\0FNAM\x04\0\x02\0\0\0KSIZ\x04\0\x02\0\0\0KWDA\x08\0\x56\x34\x12\0\x22\x22\x22\0ALED\0\0"sv;
+      REQUIRE( stream.str() == data );
+    }
+
+    SECTION("entry with ALFE, ALFD, ALFI, ALFL")
+    {
+      entry.unknownALFE = 0x00223344;
+      entry.unknownALFD = 0x00333333;
+      entry.forcedIntoAliasID = 0x00444444; // ALFI
+      entry.specificLocationFormID = 0x00555555; // ALFL
+
+      // Writing should succeed.
+      std::ostringstream stream;
+      REQUIRE( entry.saveToStream(stream) );
+      // Check written data.
+      REQUIRE( stream.str() == "ALST\x04\0\x33\x22\x11\0FNAM\x04\0\x02\0\0\0ALFE\x04\0\x44\x33\x22\0ALFD\x04\0\x33\x33\x33\0ALFI\x04\0\x44\x44\x44\0ALFL\x04\0\x55\x55\x55\0ALED\0\0"sv );
+    }
+
+    SECTION("entry with ALNA, ALNT, ALUA, ALEQ, ALEA, KNAM")
+    {
+      entry.unknownALNA = 0x00223344;
+      entry.unknownALNT = 0x00333333;
+      entry.uniqueActorFormID = 0x00444444; // ALUA
+      entry.externalAliasReferenceFormID = 0x00555555; // ALEQ
+      entry.unknownALEA = 0x00111111;
+      entry.keywordFormID = 0x00777777; // KNAM
+
+      // Writing should succeed.
+      std::ostringstream stream;
+      REQUIRE( entry.saveToStream(stream) );
+      // Check written data.
+      const auto data = "ALST\x04\0\x33\x22\x11\0FNAM\x04\0\x02\0\0\0ALNA\x04\0\x44\x33\x22\0ALNT\x04\0\x33\x33\x33\0ALUA\x04\0\x44\x44\x44\0ALEQ\x04\0\x55\x55\x55\0ALEA\x04\0\x11\x11\x11\0KNAM\x04\0\x77\x77\x77\0ALED\0\0"sv;
+      REQUIRE( stream.str() == data );
+    }
+
+    SECTION("entry with CTDA/CIS2")
+    {
+      entry.unknownCTDA_CIS2s.push_back(CTDA_CIS2_compound());
+      entry.unknownCTDA_CIS2s.back().unknownCISx = "bla";
+
+      // Writing should succeed.
+      std::ostringstream stream;
+      REQUIRE( entry.saveToStream(stream) );
+      // Check written data.
+      const auto data = "ALST\x04\0\x33\x22\x11\0FNAM\x04\0\x02\0\0\0CTDA\x20\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0CIS2\x04\0bla\0ALED\0\0"sv;
+      REQUIRE( stream.str() == data );
+    }
+
+    SECTION("entry with ALSP")
+    {
+      entry.spellFormIDs.push_back(0x00223344);
+      entry.spellFormIDs.push_back(0x00333333);
+
+      // Writing should succeed.
+      std::ostringstream stream;
+      REQUIRE( entry.saveToStream(stream) );
+      // Check written data.
+      REQUIRE( stream.str() == "ALST\x04\0\x33\x22\x11\0FNAM\x04\0\x02\0\0\0ALSP\x04\0\x44\x33\x22\0ALSP\x04\0\x33\x33\x33\0ALED\0\0"sv );
+    }
+
+    SECTION("fail: ALST and ALLS")
+    {
+      entry.unknownALST = 1;
+      entry.unknownALLS = 1;
+
+      // Writing should fail.
+      std::ostringstream stream;
+      REQUIRE_FALSE( entry.saveToStream(stream) );
+    }
+
+    SECTION("fail: no ALST and no ALLS")
+    {
+      entry.unknownALST.reset();
+      entry.unknownALLS.reset();
+
+      // Writing should fail.
+      std::ostringstream stream;
+      REQUIRE_FALSE( entry.saveToStream(stream) );
     }
   }
 }

@@ -39,7 +39,7 @@ AliasEntry::AliasEntry()
   unknownALCL(std::nullopt),
   displayNameFormID(0), // subrecord ALDN
   components(std::vector<ComponentData>()),
-  keywordArray(std::vector<uint32_t>()),
+  keywords(std::vector<uint32_t>()),
   unknownALFE(std::nullopt),
   unknownALFD(std::nullopt),
   forcedIntoAliasID(std::nullopt), // subrecord ALFI
@@ -75,7 +75,7 @@ bool AliasEntry::operator==(const AliasEntry& other) const
       && (unknownALCA == other.unknownALCA)
       && (unknownALCL == other.unknownALCL)
       && (displayNameFormID == other.displayNameFormID)
-      && (components == other.components) && (keywordArray == other.keywordArray)
+      && (components == other.components) && (keywords == other.keywords)
       && (unknownALFE == other.unknownALFE)
       && (unknownALFD == other.unknownALFD)
       && (forcedIntoAliasID == other.forcedIntoAliasID)
@@ -112,7 +112,7 @@ void AliasEntry::clear()
   unknownALCL.reset();
   displayNameFormID = 0;
   components.clear();
-  keywordArray.clear();
+  keywords.clear();
   unknownALFE.reset();
   unknownALFD.reset();
   forcedIntoAliasID.reset();
@@ -184,10 +184,10 @@ uint32_t AliasEntry::getWriteSize() const
     writeSize += 4 /* COCT */ + 2 /* length bytes */ + 4 /* data size */
         + components.size() * (4 /* CNTO */ + 2 /* length bytes */ + 8 /* data size */);
   }
-  if (!keywordArray.empty())
+  if (!keywords.empty())
   {
     writeSize += 4 /* KSIZ */ + 2 /* length bytes */ + 4 /* data size */
-        + 4 /* KWDA */ + 2 /* length bytes */ + 4 * keywordArray.size();
+        + 4 /* KWDA */ + 2 /* length bytes */ + 4 * keywords.size();
   }
   if (unknownALFE.has_value())
   {
@@ -262,6 +262,13 @@ uint32_t AliasEntry::getWriteSize() const
 
 bool AliasEntry::saveToStream(std::ostream& output) const
 {
+  // Exactly one of ALST or ALLS must be set.
+  if (unknownALST.has_value() == unknownALLS.has_value())
+  {
+    std::cerr << "Error: Exactly one of either ALST or ALLS must be set in AliasEntry!\n";
+    return false;
+  }
+
   uint16_t subLength = 0;
   if (unknownALST.has_value())
   {
@@ -278,12 +285,6 @@ bool AliasEntry::saveToStream(std::ostream& output) const
     subLength = 4;
     output.write(reinterpret_cast<const char*>(&subLength), 2);
     output.write(reinterpret_cast<const char*>(&unknownALLS.value()), 4);
-  }
-  // Exactly one of ALST or ALLS must be set.
-  if (unknownALST.has_value() == unknownALLS.has_value())
-  {
-    std::cerr << "Error: Exactly one of either ALST or ALLS must be set in AliasEntry!\n";
-    return false;
   }
   if (!aliasID.empty())
   {
@@ -342,8 +343,8 @@ bool AliasEntry::saveToStream(std::ostream& output) const
   }
   if (displayNameFormID != 0)
   {
-    // write ALCO
-    output.write(reinterpret_cast<const char*>(&cALCO), 4);
+    // write ALDN
+    output.write(reinterpret_cast<const char*>(&cALDN), 4);
     subLength = 4;
     output.write(reinterpret_cast<const char*>(&subLength), 2);
     output.write(reinterpret_cast<const char*>(&displayNameFormID), 4);
@@ -366,21 +367,19 @@ bool AliasEntry::saveToStream(std::ostream& output) const
       output.write(reinterpret_cast<const char*>(&data.count), 4);
     }
   }
-  if (!keywordArray.empty())
+  if (!keywords.empty())
   {
     // write KSIZ
     output.write(reinterpret_cast<const char*>(&cKSIZ), 4);
     subLength = 4;
     output.write(reinterpret_cast<const char*>(&subLength), 2);
-    const uint32_t keywordCount = keywordArray.size();
+    const uint32_t keywordCount = keywords.size();
     output.write(reinterpret_cast<const char*>(&keywordCount), 4);
     // write KWDA
     output.write(reinterpret_cast<const char*>(&cKWDA), 4);
-    subLength = 4;
+    subLength = keywordCount * 4;
     output.write(reinterpret_cast<const char*>(&subLength), 2);
-    const uint32_t dataSize = keywordCount * 4;
-    output.write(reinterpret_cast<const char*>(&dataSize), 4);
-    for (const uint32_t kw: keywordArray)
+    for (const uint32_t kw: keywords)
     {
       output.write(reinterpret_cast<const char*>(&kw), 4);
     }
@@ -553,150 +552,7 @@ bool AliasEntry::saveToStream(std::ostream& output) const
 
 /*bool QuestRecord::AliasEntry::loadFromStream(std::istream& in_File, uint32_t& bytesRead, char * buffer)
 {
-  //ALST is always first
-  in_File.seekg(-4, std::ios_base::cur);
-  //read ALST
-  if (!loadUint32SubRecordFromStream(in_File, cALST, unknownALST)) return false;
-  bytesRead += 6;
-
-  bool toDo = false;
-  int32_t subRecName = 0;
-  uint16_t subLength = 0;
-
-  aliasID.clear();
-  bool hasReadFNAM = false;
-  hasALFE = false; unknownALFE = 0;
-  hasALFD = false; unknownALFD = 0;
-  hasALFR = false; unknownALFR = 0;
-  unknownCTDAs.clear();
-  CTDAData tempCTDA;
-  bool hasVTCK = false; unknownVTCK = 0;
-  while (toDo)
-  {
-    //read next subrecord
-    in_File.read((char*) &subRecName, 4);
-    bytesRead += 4;
-    switch (subRecName)
-    {
-      case cALID:
-           if (!aliasID.empty())
-           {
-             std::cerr << "Error: QUST seems to have more than one ALID subrecord per alias structure.\n";
-             return false;
-           }
-           //ALID's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength>511)
-           {
-             std::cerr <<"Error: Sub record ALID of QUST is longer than 511 characters!\n";
-             return false;
-           }
-           //read ALID's stuff
-           memset(buffer, 0, 512);
-           in_File.read(buffer, subLength);
-           bytesRead += subLength;
-           if (!in_File.good())
-           {
-             std::cerr << "Error while reading subrecord ALID of QUST!\n";
-             return false;
-           }
-           aliasID = std::string(buffer);
-           break;
-      case cFNAM:
-           if (hasReadFNAM)
-           {
-             std::cerr << "Error: QUST seems to have more than one FNAM subrecord per alias structure.\n";
-             return false;
-           }
-           in_File.seekg(-4, std::ios_base::cur);
-           //read FNAM
-           if (!loadUint32SubRecordFromStream(in_File, cFNAM, unknownFNAM)) return false;
-           bytesRead += 6;
-           hasReadFNAM = true;
-           break;
-      case cALFE:
-           if (hasALFE)
-           {
-             std::cerr << "Error: QUST seems to have more than one ALFE subrecord per alias structure.\n";
-             return false;
-           }
-           in_File.seekg(-4, std::ios_base::cur);
-           //read ALFE
-           if (!loadUint32SubRecordFromStream(in_File, cALFE, unknownALFE)) return false;
-           bytesRead += 6;
-           hasALFE = true;
-           break;
-      case cALFD:
-           if (hasALFD)
-           {
-             std::cerr << "Error: QUST seems to have more than one ALFD subrecord per alias structure.\n";
-             return false;
-           }
-           in_File.seekg(-4, std::ios_base::cur);
-           //read ALFD
-           if (!loadUint32SubRecordFromStream(in_File, cALFD, unknownALFD)) return false;
-           bytesRead += 6;
-           hasALFD = true;
-           break;
-      case cALFR:
-           if (hasALFR)
-           {
-             std::cerr << "Error: QUST seems to have more than one ALFR subrecord per alias structure.\n";
-             return false;
-           }
-           in_File.seekg(-4, std::ios_base::cur);
-           //read ALFR
-           if (!loadUint32SubRecordFromStream(in_File, cALFR, unknownALFR)) return false;
-           bytesRead += 6;
-           hasALFR = true;
-           break;
-      case cCTDA:
-           if (!tempCTDA.loadFromStream(in_File, bytesRead))
-           {
-             std::cerr << "Error while reading subrecord CTDA of QUST!\n";
-             return false;
-           }
-           unknownCTDAs.push_back(tempCTDA);
-           break;
-      case cVTCK:
-           if (hasReadVTCK)
-           {
-             std::cerr << "Error: QUST seems to have more than one VTCK subrecord per alias structure.\n";
-             return false;
-           }
-           in_File.seekg(-4, std::ios_base::cur);
-           //read VTCK
-           if (!loadUint32SubRecordFromStream(in_File, cVTCK, unknownVTCK)) return false;
-           bytesRead += 6;
-           hasReadVTCK = true;
-           break;
-      case cALED:
-           //end marker
-           //ALED's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength!=0)
-           {
-             std::cerr <<"Error: Sub record ALED of QUST has invalid length ("
-                       <<subLength<<" bytes). Should be zero bytes!\n";
-             return false;
-           }
-           toDo = false;
-           break;
-      default:
-           std::cerr << "Error: Found unexpected subrecord \""<<IntTo4Char(subRecName)
-                     << "\", but only ALID, FNAM, ALFE, ALFD, ALFR, CTDA, VTCK or ALED are allowed here!\n";
-           return false;
-    }//swi
-  }//while
-
-  //presence checks
-  if (!(hasReadFNAM and hasReadVTCK))
-  {
-    std::cerr << "Error: At least one required subrecord of alias structure in QUST is missing!\n";
-    return false;
-  }
+  ...
 
   return in_File.good();
 } */

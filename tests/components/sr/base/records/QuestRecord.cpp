@@ -628,7 +628,7 @@ TEST_CASE("QuestRecord")
       REQUIRE_FALSE( alias_0.unknownALCL.has_value() );
       REQUIRE( alias_0.displayNameFormID == 0 );
       REQUIRE( alias_0.components.empty() );
-      REQUIRE( alias_0.keywordArray.empty() );
+      REQUIRE( alias_0.keywords.empty() );
       REQUIRE_FALSE( alias_0.unknownALFE.has_value() );
       REQUIRE_FALSE( alias_0.unknownALFD.has_value() );
       REQUIRE_FALSE( alias_0.forcedIntoAliasID.has_value() );
@@ -666,7 +666,7 @@ TEST_CASE("QuestRecord")
       REQUIRE( alias_1.unknownALCL.value() == 0 );
       REQUIRE( alias_1.displayNameFormID == 0 );
       REQUIRE( alias_1.components.empty() );
-      REQUIRE( alias_1.keywordArray.empty() );
+      REQUIRE( alias_1.keywords.empty() );
       REQUIRE_FALSE( alias_1.unknownALFE.has_value() );
       REQUIRE_FALSE( alias_1.unknownALFD.has_value() );
       REQUIRE_FALSE( alias_1.forcedIntoAliasID.has_value() );
@@ -702,7 +702,7 @@ TEST_CASE("QuestRecord")
       REQUIRE_FALSE( alias_2.unknownALCL.has_value() );
       REQUIRE( alias_2.displayNameFormID == 0 );
       REQUIRE( alias_2.components.empty() );
-      REQUIRE( alias_2.keywordArray.empty() );
+      REQUIRE( alias_2.keywords.empty() );
       REQUIRE_FALSE( alias_2.unknownALFE.has_value() );
       REQUIRE_FALSE( alias_2.unknownALFD.has_value() );
       REQUIRE_FALSE( alias_2.forcedIntoAliasID.has_value() );
@@ -738,7 +738,7 @@ TEST_CASE("QuestRecord")
       REQUIRE_FALSE( alias_3.unknownALCL.has_value() );
       REQUIRE( alias_3.displayNameFormID == 0 );
       REQUIRE( alias_3.components.empty() );
-      REQUIRE( alias_3.keywordArray.empty() );
+      REQUIRE( alias_3.keywords.empty() );
       REQUIRE_FALSE( alias_3.unknownALFE.has_value() );
       REQUIRE_FALSE( alias_3.unknownALFD.has_value() );
       REQUIRE_FALSE( alias_3.forcedIntoAliasID.has_value() );

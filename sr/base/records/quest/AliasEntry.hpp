@@ -44,7 +44,7 @@ struct AliasEntry
   std::optional<uint32_t> unknownALCL;
   uint32_t displayNameFormID; // subrecord ALDN
   std::vector<ComponentData> components;
-  std::vector<uint32_t> keywordArray;
+  std::vector<uint32_t> keywords;
   std::optional<uint32_t> unknownALFE;
   std::optional<uint32_t> unknownALFD;
   std::optional<uint32_t> forcedIntoAliasID; // subrecord ALFI

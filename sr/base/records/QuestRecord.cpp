@@ -108,14 +108,16 @@ uint32_t QuestRecord::getWriteSize() const
   {
     writeSize += objective.getWriteSize();
   }
-  /// ... more to come
-  #warning Size of aliases is not properly calculated here!
+  // aliases
+  for (const auto& alias: aliases)
+  {
+    writeSize += alias.getWriteSize();
+  }
   return writeSize;
 }
 
 bool QuestRecord::saveToStream(std::ostream& output) const
 {
-  #warning Not completely implemented yet!
   output.write(reinterpret_cast<const char*>(&cQUST), 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize()))
     return false;
@@ -224,8 +226,16 @@ bool QuestRecord::saveToStream(std::ostream& output) const
   output.write(reinterpret_cast<const char*>(&subLength), 2);
   output.write(reinterpret_cast<const char*>(&unknownANAM), 4);
 
-  #warning Code more! (Aliases are still missing.)
-  return aliases.empty();
+  // aliases
+  for (const AliasEntry& alias: aliases)
+  {
+    if (!alias.saveToStream(output))
+    {
+      std::cerr << "Error while writing alias structure of QUST!\n";
+      return false;
+    }
+  }
+  return output.good();
 }
 #endif
 

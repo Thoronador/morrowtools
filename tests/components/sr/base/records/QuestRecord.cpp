@@ -763,12 +763,11 @@ TEST_CASE("QuestRecord")
       REQUIRE( alias_3.unknownVTCK.has_value() );
       REQUIRE( alias_3.unknownVTCK.value() == 0x00000000 );
 
-      // TODO: Implement saveToStream() for aliases.
-      /* // Writing should succeed.
+      // Writing should succeed.
       std::ostringstream streamOut;
       REQUIRE( record.saveToStream(streamOut) );
       // Check written data.
-      REQUIRE( streamOut.str() == data ); */
+      REQUIRE( streamOut.str() == data );
     }
 
     SECTION("corrupt data: stream ends before header can be read")

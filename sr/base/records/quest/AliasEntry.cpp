@@ -131,6 +131,138 @@ void AliasEntry::clear()
   unknownVTCK.reset();
 }
 
+#ifndef SR_UNSAVEABLE_RECORDS
+uint32_t AliasEntry::getWriteSize() const
+{
+  uint32_t writeSize = 4 /* FNAM */ + 2 /* length bytes */ + 4 /* data size */
+      + spellFormIDs.size() * (4 /* ALSP */ + 2 /* length bytes */ + 4)
+      + factionFormIDs.size() * (4 /* ALFC */ + 2 /* length bytes */ + 4)
+      + packageDataFormIDs.size() * (4 /* ALPC */ + 2 /* length bytes */ + 4)
+      + 4 /* ALED */ + 2 /* length bytes */ + 0 /* no data */;
+  if (unknownALST.has_value())
+  {
+    writeSize += 4 /* ALST */ + 2 /* length bytes */ + 4 /* data size */;
+  }
+  if (unknownALLS.has_value())
+  {
+    writeSize += 4 /* ALLS */ + 2 /* length bytes */ + 4 /* data size */;
+  }
+  if (!aliasID.empty())
+  {
+    writeSize += 4 /* ALLS */ + 2 /* length bytes */ + aliasID.size() + 1;
+  }
+  if (unknownALFA.has_value())
+  {
+    writeSize += 4 /* ALFA */ + 2 /* length bytes */ + 4 /* data size */;
+  }
+  if (locationRefTypeFormID != 0)
+  {
+    writeSize += 4 /* ALRT */ + 2 /* length bytes */ + 4 /* data size */;
+  }
+  if (createReferenceToObjectFormID != 0)
+  {
+    writeSize += 4 /* ALCO */ + 2 /* length bytes */ + 4 /* data size */;
+  }
+  if (unknownALCA.has_value())
+  {
+    writeSize += 4 /* ALCA */ + 2 /* length bytes */ + 4 /* data size */;
+  }
+  if (unknownALCL.has_value())
+  {
+    writeSize += 4 /* ALCL */ + 2 /* length bytes */ + 4 /* data size */;
+  }
+  if (displayNameFormID != 0)
+  {
+    writeSize += 4 /* ALCO */ + 2 /* length bytes */ + 4 /* data size */;
+  }
+  if (!components.empty())
+  {
+    writeSize += 4 /* COCT */ + 2 /* length bytes */ + 4 /* data size */
+        + components.size() * (4 /* CNTO */ + 2 /* length bytes */ + 8 /* data size */);
+  }
+  if (!keywordArray.empty())
+  {
+    writeSize += 4 /* KSIZ */ + 2 /* length bytes */ + 4 /* data size */
+        + 4 /* KWDA */ + 2 /* length bytes */ + 4 * keywordArray.size();
+  }
+  if (unknownALFE.has_value())
+  {
+    writeSize += 4 /* ALFE */ + 2 /* length bytes */ + 4 /* data size */;
+  }
+  if (unknownALFD.has_value())
+  {
+    writeSize += 4 /* ALFD */ + 2 /* length bytes */ + 4 /* data size */;
+  }
+  if (forcedIntoAliasID.has_value())
+  {
+    writeSize += 4 /* ALFI */ + 2 /* length bytes */ + 4 /* data size */;
+  }
+  if (specificLocationFormID != 0)
+  {
+    writeSize += 4 /* ALFL */ + 2 /* length bytes */ + 4 /* data size */;
+  }
+  if (specificReferenceID != 0)
+  {
+    writeSize += 4 /* ALFR */ + 2 /* length bytes */ + 4 /* data size */;
+  }
+  if (unknownALNA.has_value())
+  {
+    writeSize += 4 /* ALNA */ + 2 /* length bytes */ + 4 /* data size */;
+  }
+  if (unknownALNT.has_value())
+  {
+    writeSize += 4 /* ALNT */ + 2 /* length bytes */ + 4 /* data size */;
+  }
+  if (uniqueActorFormID != 0)
+  {
+    writeSize += 4 /* ALUA */ + 2 /* length bytes */ + 4 /* data size */;
+  }
+  if (externalAliasReferenceFormID != 0)
+  {
+    writeSize += 4 /* ALEQ */ + 2 /* length bytes */ + 4 /* data size */;
+  }
+  if (unknownALEA.has_value())
+  {
+    writeSize += 4 /* ALEA */ + 2 /* length bytes */ + 4 /* data size */;
+  }
+  if (keywordFormID != 0)
+  {
+    writeSize += 4 /* KNAM */ + 2 /* length bytes */ + 4 /* data size */;
+  }
+  for (const auto& cc: unknownCTDA_CIS2s)
+  {
+    writeSize += cc.getWriteSize();
+  }
+  if (spectatorOverridePackageListFormID != 0)
+  {
+    writeSize += 4 /* SPOR */ + 2 /* length bytes */ + 4 /* data size */;
+  }
+  if (observeDeadBodyOverridePackageListFormID != 0)
+  {
+    writeSize += 4 /* OCOR */ + 2 /* length bytes */ + 4 /* data size */;
+  }
+  if (guardWarnOverridePackageListFormID != 0)
+  {
+    writeSize += 4 /* GWOR */ + 2 /* length bytes */ + 4 /* data size */;
+  }
+  if (combatOverridePackageListFormID != 0)
+  {
+    writeSize += 4 /* ECOR */ + 2 /* length bytes */ + 4 /* data size */;
+  }
+  if (unknownVTCK.has_value())
+  {
+    writeSize += 4 /* VTCK */ + 2 /* length bytes */ + 4 /* data size */;
+  }
+  return writeSize;
+}
+
+bool AliasEntry::saveToStream(std::ostream& output) const
+{
+  #warning TODO: Implement!
+  return false;
+}
+#endif
+
 /*bool QuestRecord::AliasEntry::loadFromStream(std::istream& in_File, uint32_t& bytesRead, char * buffer)
 {
   //ALST is always first

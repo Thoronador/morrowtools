@@ -30,7 +30,7 @@
 namespace SRTP
 {
 
-// struct for alias-related data
+/// Holds for alias-related data of a quest record.
 struct AliasEntry
 {
   std::optional<uint32_t> unknownALST;
@@ -76,6 +76,22 @@ struct AliasEntry
   /* equality operator */
   bool operator==(const AliasEntry& other) const;
   #endif // SR_NO_RECORD_EQUALITY
+
+  #ifndef SR_UNSAVEABLE_RECORDS
+  /** Tries to save the AliasEntry to the given stream.
+   *
+   * \param output    the output stream
+   * \return Returns true in case of success, false on failure.
+   */
+  bool saveToStream(std::ostream& output) const;
+
+  /** Gets the size in bytes that the AliasEntry's data would occupy.
+   *
+   * \return Returns the size in bytes that the AliasEntry would occupy in a
+   *         file stream.
+   */
+  uint32_t getWriteSize() const;
+  #endif
 }; // struct
 
 } // namespace

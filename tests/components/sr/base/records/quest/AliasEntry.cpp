@@ -579,4 +579,291 @@ TEST_CASE("AliasEntry")
     REQUIRE( entry.packageDataFormIDs.empty() );
     REQUIRE_FALSE( entry.unknownVTCK.has_value() );
   }
+
+  SECTION("getWriteSize")
+  {
+    AliasEntry entry;
+    entry.unknownALST = 1;
+    entry.unknownFNAM = 2;
+
+    SECTION("size with ALST")
+    {
+      REQUIRE( entry.getWriteSize() == 26 );
+    }
+
+    SECTION("size with ALLS")
+    {
+      entry.unknownALST.reset();
+      entry.unknownALLS = 1;
+      REQUIRE( entry.getWriteSize() == 26 );
+    }
+
+    SECTION("size adjusts with length of ALID")
+    {
+      REQUIRE( entry.getWriteSize() == 26 );
+
+      entry.aliasID = "foo"; // three characters
+      REQUIRE( entry.getWriteSize() == 36 );
+
+      entry.aliasID = "foobarfoobarbaz"; // 15 characters
+      REQUIRE( entry.getWriteSize() == 48 );
+    }
+
+    SECTION("size adjusts when ALFA is present")
+    {
+      REQUIRE( entry.getWriteSize() == 26 );
+
+      entry.unknownALFA = 0x01234567;
+      REQUIRE( entry.getWriteSize() == 36 );
+    }
+
+    SECTION("size adjusts when locationRefTypeFormID is present")
+    {
+      REQUIRE( entry.getWriteSize() == 26 );
+
+      entry.locationRefTypeFormID = 0x01234567;
+      REQUIRE( entry.getWriteSize() == 36 );
+    }
+
+    SECTION("size adjusts when createReferenceToObjectFormID is present")
+    {
+      REQUIRE( entry.getWriteSize() == 26 );
+
+      entry.createReferenceToObjectFormID = 0x01234567;
+      REQUIRE( entry.getWriteSize() == 36 );
+    }
+
+    SECTION("size adjusts when ALCA is present")
+    {
+      REQUIRE( entry.getWriteSize() == 26 );
+
+      entry.unknownALCA = 0x01234567;
+      REQUIRE( entry.getWriteSize() == 36 );
+    }
+
+    SECTION("size adjusts when ALCL is present")
+    {
+      REQUIRE( entry.getWriteSize() == 26 );
+
+      entry.unknownALCL = 0x01234567;
+      REQUIRE( entry.getWriteSize() == 36 );
+    }
+
+    SECTION("size adjusts when displayNameFormID is present")
+    {
+      REQUIRE( entry.getWriteSize() == 26 );
+
+      entry.displayNameFormID = 0x01234567;
+      REQUIRE( entry.getWriteSize() == 36 );
+    }
+
+    SECTION("size adjusts with length of components")
+    {
+      REQUIRE( entry.getWriteSize() == 26 );
+
+      entry.components.push_back(ComponentData());
+      REQUIRE( entry.getWriteSize() == 50 );
+
+      entry.components.push_back(ComponentData());
+      REQUIRE( entry.getWriteSize() == 64 );
+    }
+
+    SECTION("size adjusts with length of keywords")
+    {
+      REQUIRE( entry.getWriteSize() == 26 );
+
+      entry.keywordArray.push_back(0x01234567);
+      REQUIRE( entry.getWriteSize() == 46 );
+
+      entry.keywordArray.push_back(0x01234568);
+      REQUIRE( entry.getWriteSize() == 50 );
+
+      entry.keywordArray.push_back(0x01234569);
+      REQUIRE( entry.getWriteSize() == 54 );
+    }
+
+    SECTION("size adjusts when ALFE is present")
+    {
+      REQUIRE( entry.getWriteSize() == 26 );
+
+      entry.unknownALFE = 0x01234567;
+      REQUIRE( entry.getWriteSize() == 36 );
+    }
+
+    SECTION("size adjusts when ALFD is present")
+    {
+      REQUIRE( entry.getWriteSize() == 26 );
+
+      entry.unknownALFD = 0x01234567;
+      REQUIRE( entry.getWriteSize() == 36 );
+    }
+
+    SECTION("size adjusts when ALFI is present")
+    {
+      REQUIRE( entry.getWriteSize() == 26 );
+
+      entry.forcedIntoAliasID = 0x01234567;
+      REQUIRE( entry.getWriteSize() == 36 );
+    }
+
+    SECTION("size adjusts when specificLocationFormID is present")
+    {
+      REQUIRE( entry.getWriteSize() == 26 );
+
+      entry.specificLocationFormID = 0x01234567;
+      REQUIRE( entry.getWriteSize() == 36 );
+    }
+
+    SECTION("size adjusts when specificReferenceID is present")
+    {
+      REQUIRE( entry.getWriteSize() == 26 );
+
+      entry.specificReferenceID = 0x01234567;
+      REQUIRE( entry.getWriteSize() == 36 );
+    }
+
+    SECTION("size adjusts when ALNA is present")
+    {
+      REQUIRE( entry.getWriteSize() == 26 );
+
+      entry.unknownALNA = 0x01234567;
+      REQUIRE( entry.getWriteSize() == 36 );
+    }
+
+    SECTION("size adjusts when ALNT is present")
+    {
+      REQUIRE( entry.getWriteSize() == 26 );
+
+      entry.unknownALNT = 0x01234567;
+      REQUIRE( entry.getWriteSize() == 36 );
+    }
+
+    SECTION("size adjusts when uniqueActorFormID is present")
+    {
+      REQUIRE( entry.getWriteSize() == 26 );
+
+      entry.uniqueActorFormID = 0x01234567;
+      REQUIRE( entry.getWriteSize() == 36 );
+    }
+
+    SECTION("size adjusts when externalAliasReferenceFormID is present")
+    {
+      REQUIRE( entry.getWriteSize() == 26 );
+
+      entry.externalAliasReferenceFormID = 0x01234567;
+      REQUIRE( entry.getWriteSize() == 36 );
+    }
+
+    SECTION("size adjusts when ALEA is present")
+    {
+      REQUIRE( entry.getWriteSize() == 26 );
+
+      entry.unknownALEA = 0x01234567;
+      REQUIRE( entry.getWriteSize() == 36 );
+    }
+
+    SECTION("size adjusts when keywordFormID is present")
+    {
+      REQUIRE( entry.getWriteSize() == 26 );
+
+      entry.keywordFormID = 0x01234567;
+      REQUIRE( entry.getWriteSize() == 36 );
+    }
+
+    SECTION("size adjusts with length of CTDA/CIS2")
+    {
+      REQUIRE( entry.getWriteSize() == 26 );
+
+      entry.unknownCTDA_CIS2s.push_back(CTDA_CIS2_compound());
+      REQUIRE( entry.getWriteSize() == 64 );
+
+      entry.unknownCTDA_CIS2s.push_back(CTDA_CIS2_compound());
+      REQUIRE( entry.getWriteSize() == 102 );
+
+      entry.unknownCTDA_CIS2s.back().unknownCISx = "foo";
+      REQUIRE( entry.getWriteSize() == 112 );
+    }
+
+    SECTION("size adjusts when spectatorOverridePackageListFormID is present")
+    {
+      REQUIRE( entry.getWriteSize() == 26 );
+
+      entry.spectatorOverridePackageListFormID = 0x01234567;
+      REQUIRE( entry.getWriteSize() == 36 );
+    }
+
+    SECTION("size adjusts when observeDeadBodyOverridePackageListFormID is present")
+    {
+      REQUIRE( entry.getWriteSize() == 26 );
+
+      entry.observeDeadBodyOverridePackageListFormID = 0x01234567;
+      REQUIRE( entry.getWriteSize() == 36 );
+    }
+
+    SECTION("size adjusts when guardWarnOverridePackageListFormID is present")
+    {
+      REQUIRE( entry.getWriteSize() == 26 );
+
+      entry.guardWarnOverridePackageListFormID = 0x01234567;
+      REQUIRE( entry.getWriteSize() == 36 );
+    }
+
+    SECTION("size adjusts when combatOverridePackageListFormID is present")
+    {
+      REQUIRE( entry.getWriteSize() == 26 );
+
+      entry.combatOverridePackageListFormID = 0x01234567;
+      REQUIRE( entry.getWriteSize() == 36 );
+    }
+
+    SECTION("size adjusts with length of spellFormIDs")
+    {
+      REQUIRE( entry.getWriteSize() == 26 );
+
+      entry.spellFormIDs.push_back(0x01234567);
+      REQUIRE( entry.getWriteSize() == 36 );
+
+      entry.spellFormIDs.push_back(0x01234568);
+      REQUIRE( entry.getWriteSize() == 46 );
+
+      entry.spellFormIDs.push_back(0x01234569);
+      REQUIRE( entry.getWriteSize() == 56 );
+    }
+
+    SECTION("size adjusts with length of factionFormIDs")
+    {
+      REQUIRE( entry.getWriteSize() == 26 );
+
+      entry.factionFormIDs.push_back(0x01234567);
+      REQUIRE( entry.getWriteSize() == 36 );
+
+      entry.factionFormIDs.push_back(0x01234568);
+      REQUIRE( entry.getWriteSize() == 46 );
+
+      entry.factionFormIDs.push_back(0x01234569);
+      REQUIRE( entry.getWriteSize() == 56 );
+    }
+
+    SECTION("size adjusts with length of packageDataFormIDs")
+    {
+      REQUIRE( entry.getWriteSize() == 26 );
+
+      entry.packageDataFormIDs.push_back(0x01234567);
+      REQUIRE( entry.getWriteSize() == 36 );
+
+      entry.packageDataFormIDs.push_back(0x01234568);
+      REQUIRE( entry.getWriteSize() == 46 );
+
+      entry.packageDataFormIDs.push_back(0x01234569);
+      REQUIRE( entry.getWriteSize() == 56 );
+    }
+
+    SECTION("size adjusts when VTCK is present")
+    {
+      REQUIRE( entry.getWriteSize() == 26 );
+
+      entry.unknownVTCK = 0x01234567;
+      REQUIRE( entry.getWriteSize() == 36 );
+    }
+  }
 }

@@ -20,6 +20,7 @@ set(component_tests_sources
     ../../mw/base/records/BodyPartAssociation.cpp
     ../../mw/base/records/BodyPartRecord.cpp
     ../../mw/base/records/DoorRecord.cpp
+    ../../mw/base/records/GenericRecord.cpp
     ../../mw/base/records/ItemRecord.cpp
     ../../mw/base/records/SkillRecord.cpp
     ../../mw/base/records/StaticRecord.cpp
@@ -118,6 +119,7 @@ set(component_tests_sources
     mw/base/records/BodyPartAssociation.cpp
     mw/base/records/BodyPartRecord.cpp
     mw/base/records/DoorRecord.cpp
+    mw/base/records/GenericRecord.cpp
     mw/base/records/ItemRecord.cpp
     mw/base/records/SkillRecord.cpp
     mw/base/records/StaticRecord.cpp

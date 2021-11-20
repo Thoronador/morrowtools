@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,9 +26,11 @@
 namespace MWTP
 {
 
-/* structure to hold the AI data of an NPC */
+/** Holds the AI data of an NPC or creature. */
 struct NPC_AIData
 {
+  NPC_AIData();
+
   uint8_t Hello;
   uint8_t Unknown1;
   uint8_t Fight;
@@ -41,13 +43,12 @@ struct NPC_AIData
 
   bool isPresent;
 
-  /* sets all members to zero */
+  /** Sets all members to zero. */
   void clear();
 
-  /* comparison operator */
   bool operator==(const NPC_AIData& other) const;
-};//struct
+}; // struct
 
-} //namespace
+} // namespace
 
 #endif // MW_AIDATA_HPP

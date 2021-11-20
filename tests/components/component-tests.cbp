@@ -53,6 +53,8 @@
 		<Unit filename="../../mw/base/HelperIO.cpp" />
 		<Unit filename="../../mw/base/HelperIO.hpp" />
 		<Unit filename="../../mw/base/MW_Constants.hpp" />
+		<Unit filename="../../mw/base/records/AIData.cpp" />
+		<Unit filename="../../mw/base/records/AIData.hpp" />
 		<Unit filename="../../mw/base/records/ActivatorRecord.cpp" />
 		<Unit filename="../../mw/base/records/ActivatorRecord.hpp" />
 		<Unit filename="../../mw/base/records/BasicRecord.cpp" />
@@ -243,6 +245,7 @@
 		<Unit filename="base/lz4Compression.cpp" />
 		<Unit filename="main.cpp" />
 		<Unit filename="mw/base/HelperIO.cpp" />
+		<Unit filename="mw/base/records/AIData.cpp" />
 		<Unit filename="mw/base/records/ActivatorRecord.cpp" />
 		<Unit filename="mw/base/records/BasicRecord.cpp" />
 		<Unit filename="mw/base/records/BodyPartAssociation.cpp" />

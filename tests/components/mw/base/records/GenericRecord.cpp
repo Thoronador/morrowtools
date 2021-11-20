@@ -36,8 +36,8 @@ TEST_CASE("MWTP::GenericRecord")
     REQUIRE( record.Header == 0 );
     REQUIRE( record.getHeaderOne() == 0 );
     REQUIRE( record.getHeaderFlags() == 0 );
-    REQUIRE( record.getDataSize() == 0 );
-    REQUIRE( record.getDataPointer() == nullptr );
+    REQUIRE( record.size() == 0 );
+    REQUIRE( record.data() == nullptr );
   }
 
   SECTION("copy constructor")
@@ -50,8 +50,8 @@ TEST_CASE("MWTP::GenericRecord")
       REQUIRE( copied.Header == 0 );
       REQUIRE( copied.getHeaderOne() == 0 );
       REQUIRE( copied.getHeaderFlags() == 0 );
-      REQUIRE( copied.getDataSize() == 0 );
-      REQUIRE( copied.getDataPointer() == nullptr );
+      REQUIRE( copied.size() == 0 );
+      REQUIRE( copied.data() == nullptr );
     }
 
     SECTION("loaded record")
@@ -75,16 +75,16 @@ TEST_CASE("MWTP::GenericRecord")
       REQUIRE( copied.Header == cACTI );
       REQUIRE( copied.getHeaderOne() == 0 );
       REQUIRE( copied.getHeaderFlags() == 0 );
-      REQUIRE( copied.getDataSize() == 83 );
-      REQUIRE_FALSE( copied.getDataPointer() == nullptr );
+      REQUIRE( copied.size() == 83 );
+      REQUIRE_FALSE( copied.data() == nullptr );
 
       // Data pointers should not match.
-      REQUIRE_FALSE( record.getDataPointer() == nullptr );
-      REQUIRE_FALSE( record.getDataPointer() == copied.getDataPointer() );
+      REQUIRE_FALSE( record.data() == nullptr );
+      REQUIRE_FALSE( record.data() == copied.data() );
       // But data should be the same.
       const auto content = "NAME\x14\0\0\0active_akula_shield\0MODL\x1A\0\0\0i\\active_akula_shield.NIF\0FNAM\x0D\0\0\0Akula-Schild\0"sv;
-      const auto copiedContent = std::string_view(reinterpret_cast<const char*>(copied.getDataPointer()), copied.getDataSize());
-      const auto originalContent = std::string_view(reinterpret_cast<const char*>(record.getDataPointer()), record.getDataSize());
+      const auto copiedContent = std::string_view(reinterpret_cast<const char*>(copied.data()), copied.size());
+      const auto originalContent = std::string_view(reinterpret_cast<const char*>(record.data()), record.size());
       REQUIRE( copiedContent == content );
       REQUIRE( originalContent == content );
     }
@@ -100,8 +100,8 @@ TEST_CASE("MWTP::GenericRecord")
       REQUIRE( assigned.Header == 0 );
       REQUIRE( assigned.getHeaderOne() == 0 );
       REQUIRE( assigned.getHeaderFlags() == 0 );
-      REQUIRE( assigned.getDataSize() == 0 );
-      REQUIRE( assigned.getDataPointer() == nullptr );
+      REQUIRE( assigned.size() == 0 );
+      REQUIRE( assigned.data() == nullptr );
     }
 
     SECTION("loaded record")
@@ -125,16 +125,16 @@ TEST_CASE("MWTP::GenericRecord")
       REQUIRE( assigned.Header == cACTI );
       REQUIRE( assigned.getHeaderOne() == 0 );
       REQUIRE( assigned.getHeaderFlags() == 0 );
-      REQUIRE( assigned.getDataSize() == 83 );
-      REQUIRE_FALSE( assigned.getDataPointer() == nullptr );
+      REQUIRE( assigned.size() == 83 );
+      REQUIRE_FALSE( assigned.data() == nullptr );
 
       // Data pointers should not match.
-      REQUIRE_FALSE( record.getDataPointer() == nullptr );
-      REQUIRE_FALSE( record.getDataPointer() == assigned.getDataPointer() );
+      REQUIRE_FALSE( record.data() == nullptr );
+      REQUIRE_FALSE( record.data() == assigned.data() );
       // But data should be the same.
       const auto content = "NAME\x14\0\0\0active_akula_shield\0MODL\x1A\0\0\0i\\active_akula_shield.NIF\0FNAM\x0D\0\0\0Akula-Schild\0"sv;
-      const auto assignedContent = std::string_view(reinterpret_cast<const char*>(assigned.getDataPointer()), assigned.getDataSize());
-      const auto originalContent = std::string_view(reinterpret_cast<const char*>(record.getDataPointer()), record.getDataSize());
+      const auto assignedContent = std::string_view(reinterpret_cast<const char*>(assigned.data()), assigned.size());
+      const auto originalContent = std::string_view(reinterpret_cast<const char*>(record.data()), record.size());
       REQUIRE( assignedContent == content );
       REQUIRE( originalContent == content );
     }
@@ -162,9 +162,9 @@ TEST_CASE("MWTP::GenericRecord")
       REQUIRE( record.getHeaderOne() == 0 );
       REQUIRE( record.getHeaderFlags() == 0 );
       // -- record data
-      REQUIRE( record.getDataPointer() != nullptr );
-      REQUIRE( record.getDataSize() == 83 );
-      const auto content = std::string_view(reinterpret_cast<const char*>(record.getDataPointer()), record.getDataSize());
+      REQUIRE( record.data() != nullptr );
+      REQUIRE( record.size() == 83 );
+      const auto content = std::string_view(reinterpret_cast<const char*>(record.data()), record.size());
       REQUIRE( content == "NAME\x14\0\0\0active_akula_shield\0MODL\x1A\0\0\0i\\active_akula_shield.NIF\0FNAM\x0D\0\0\0Akula-Schild\0"sv );
 
       // Writing should succeed.

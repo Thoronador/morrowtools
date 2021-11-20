@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2013  Thoronador
+    Copyright (C) 2011, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,54 +26,55 @@
 namespace MWTP
 {
 
+/** Record type that holds the record data as BLOB. */
 struct GenericRecord: public BasicRecord
 {
   public:
-    /* constructor */
+    /** Creates an empty record. */
     GenericRecord();
 
-    /* copy constructor */
     GenericRecord(const GenericRecord& op);
-
-    /* assignment operator */
     GenericRecord& operator=(const GenericRecord& other);
 
-    /* destructor */
     virtual ~GenericRecord();
 
     #ifndef MW_UNSAVEABLE_RECORDS
-    /* writes the record to the given output stream and returns true on success
-
-      parameters:
-          output - the output stream
-    */
+    /** \brief Writes the record to the given output stream.
+     *
+     * \param output  the output stream
+     * \return Returns true on success (record was written to stream).
+     *         Returns false, if an error occurred.
+     */
     bool saveToStream(std::ostream& output) const override;
     #endif
 
-    /* loads the record from the given input stream and returns true on success
+    /** \brief Loads the record from the given input stream.
+     *
+     * \param input    the input stream
+     * \return Returns true on success (record was loaded from stream).
+     *         Returns false, if an error occurred.
+     */
+    bool loadFromStream(std::istream& input) override;
 
-      parameters:
-          in_File - the input stream
-    */
-    bool loadFromStream(std::istream& in_File) override;
+    /** \brief Gets a pointer to the record data.
+     *
+     * \return Returns a pointer to the record data.
+     * \remark Can be nullptr, if no data was read yet.
+     */
+    const uint8_t* data() const;
 
-    /* returns a pointer to the record data
+    /** \brief Gets the size of the data in bytes.
+     *
+     * \return Returns the size of the data in bytes.
+     */
+    uint32_t size() const;
 
-       remarks:
-           Can be NULL; if no data was read yet.
-    */
-    const uint8_t* getDataPointer() const;
-
-    /* returns the size of the data in bytes */
-    uint32_t getDataSize() const;
-
-    /* holds the header for the record */
-    uint32_t Header;
+    uint32_t Header; /**< holds the header for the record */
   protected:
      uint32_t m_DataSize;
      uint8_t* m_Data;
-}; //struct
+}; // struct
 
-} //namespace
+} // namespace
 
 #endif // MW_GENERICRECORD_HPP

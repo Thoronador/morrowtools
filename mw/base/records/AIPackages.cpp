@@ -80,9 +80,9 @@ NPC_AIEscortFollow::NPC_AIEscortFollow()
 : NPC_BasicAIPackage(),
   X(0.0f), Y(0.0f), Z(0.0f),
   Duration(0),
-  TargetID(""),
+  TargetID(std::string()),
   Reset(0),
-  CellName("")
+  CellName(std::string())
 {
 }
 
@@ -103,55 +103,44 @@ bool NPC_AIEscortFollow::equals(const NPC_AIEscortFollow& other) const
            to another NaN, even if their internal bit representation is exactly
            the same. That's why we have expressions like (X!=X) down there, they
            catch the NaNs. */
-  return (((X==other.X) or ((X!=X) and (other.X!=other.X)))
-      and ((Y==other.Y) or ((Y!=Y) and (other.Y!=other.Y)))
-      and ((Z==other.Z) or ((Z!=Z) and (other.Z!=other.Z)))
-      and (Duration==other.Duration) and (TargetID==other.TargetID)
-      and (Reset==other.Reset) and (CellName==other.CellName));
+  return ((X == other.X) || ((X != X) && (other.X != other.X)))
+      && ((Y == other.Y) || ((Y != Y) && (other.Y != other.Y)))
+      && ((Z == other.Z) || ((Z != Z) && (other.Z != other.Z)))
+      && (Duration == other.Duration) && (TargetID == other.TargetID)
+      && (Reset == other.Reset) && (CellName == other.CellName);
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
 bool NPC_AIEscortFollow::saveToStream(std::ostream& output) const
 {
-  if (getPackageType() == PackageType::ptEscort)
-  {
-    // write AI_E
-    output.write((const char*) &cAI_E, 4);
-  }
-  else
-  {
-    // write AI_F
-    output.write((const char*) &cAI_F, 4);
-  }
-  uint32_t SubLength = 48; //fixed length of 48 bytes
-  //write AI_E's/AI_F's length
-  output.write((const char*) &SubLength, 4);
-  //write AI escort/follow data
-  output.write((const char*) &X, 4);
-  output.write((const char*) &Y, 4);
-  output.write((const char*) &Z, 4);
-  output.write((const char*) &Duration, 2);
+  const uint32_t typeHeader = (getPackageType() == PackageType::ptEscort) ? cAI_E : cAI_F;
+  // write AI_E or AI_F
+  output.write(reinterpret_cast<const char*>(&typeHeader), 4);
+  uint32_t SubLength = 48;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
+  // write AI escort/follow data
+  output.write(reinterpret_cast<const char*>(&X), 4);
+  output.write(reinterpret_cast<const char*>(&Y), 4);
+  output.write(reinterpret_cast<const char*>(&Z), 4);
+  output.write(reinterpret_cast<const char*>(&Duration), 2);
   // ---- write target ID
   unsigned int len = TargetID.length();
-  if (len>31)
+  if (len > 31)
   {
     len = 31;
   }
   output.write(TargetID.c_str(), len);
   // ---- fill rest with NUL
-  output.write(NULof32, 32-len);
+  output.write(NULof32, 32 - len);
   // ---- reset flag
-  output.write((const char*) &Reset, 2);
+  output.write(reinterpret_cast<const char*>(&Reset), 2);
 
-  //check for presence of cell
   if (!CellName.empty())
   {
-    //write CNDT
-    output.write((const char*) &cCNDT, 4);
-    SubLength = CellName.length()+1; //length of cell name +1 byte for NUL
-    //write CNDT's length
-    output.write((const char*) &SubLength, 4);
-    //write AI escort's/follow's cell name
+    // write AI escort's/follow's cell name (CNDT)
+    output.write(reinterpret_cast<const char*>(&cCNDT), 4);
+    SubLength = CellName.length() + 1;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
     output.write(CellName.c_str(), SubLength);
   }
 

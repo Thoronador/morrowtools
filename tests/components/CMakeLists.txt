@@ -125,6 +125,8 @@ set(component_tests_sources
     mw/base/records/GenericRecord.cpp
     mw/base/records/ItemRecord.cpp
     mw/base/records/NPC_AIActivate.cpp
+    mw/base/records/NPC_AIEscort.cpp
+    mw/base/records/NPC_AIFollow.cpp
     mw/base/records/SkillRecord.cpp
     mw/base/records/StaticRecord.cpp
     mw/base/records/TravelDestination.cpp

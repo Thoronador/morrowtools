@@ -17,6 +17,7 @@ set(component_tests_sources
     ../../mw/base/HelperIO.cpp
     ../../mw/base/records/ActivatorRecord.cpp
     ../../mw/base/records/AIData.cpp
+    ../../mw/base/records/AIPackages.cpp
     ../../mw/base/records/BasicRecord.cpp
     ../../mw/base/records/BodyPartAssociation.cpp
     ../../mw/base/records/BodyPartRecord.cpp
@@ -123,6 +124,7 @@ set(component_tests_sources
     mw/base/records/DoorRecord.cpp
     mw/base/records/GenericRecord.cpp
     mw/base/records/ItemRecord.cpp
+    mw/base/records/NPC_AIActivate.cpp
     mw/base/records/SkillRecord.cpp
     mw/base/records/StaticRecord.cpp
     mw/base/records/TravelDestination.cpp

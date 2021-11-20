@@ -200,11 +200,11 @@ bool NPCRecord::saveToStream(std::ostream& output) const
   {
     switch(AIPackages[i]->getPackageType())
     {
-      case ptActivate:
+      case PackageType::ptActivate:
            Size = Size + 4 /* AI_A */ + 4 /* 4 bytes for length */ +33 /* fixed length of 33 bytes */;
            break;
-      case ptEscort:
-      case ptFollow:
+      case PackageType::ptEscort:
+      case PackageType::ptFollow:
            Size = Size + 4 /* AI_E / AI_F */ + 4 /* 4 bytes for length */ +48 /* fixed length of 48 bytes */;
            if (!static_cast<NPC_AIEscortFollow*>(AIPackages[i])->CellName.empty())
            {
@@ -212,10 +212,10 @@ bool NPCRecord::saveToStream(std::ostream& output) const
                     +static_cast<NPC_AIEscortFollow*>(AIPackages[i])->CellName.length()+1 /* length of cell name +1 byte for NUL */;
            }
            break;
-      case ptTravel:
+      case PackageType::ptTravel:
            Size = Size + 4 /* AI_T */ + 4 /* 4 bytes for length */ +16 /* fixed length of 16 bytes */;
            break;
-      case ptWander:
+      case PackageType::ptWander:
            Size = Size + 4 /* AI_W */ + 4 /* 4 bytes for length */ +14 /* fixed length of 14 bytes */;
            break;
     }//swi

@@ -27,7 +27,8 @@ namespace MWTP
 
 bool translatePreNPCRecord(PreNPCRecord* c_rec, const CellListType& cells, unsigned int& changedRecords)
 {
-  if (c_rec==NULL) return false;
+  if (c_rec==NULL)
+    return false;
 
   bool changed = false;
   CellListType::const_iterator cells_iter;
@@ -47,13 +48,13 @@ bool translatePreNPCRecord(PreNPCRecord* c_rec, const CellListType& cells, unsig
   {
     switch (c_rec->AIPackages.at(i)->getPackageType())
     {
-      case ptActivate:
-      case ptTravel:
-      case ptWander:
-           //we need to do nothing here, those packages do not have cell names
+      case PackageType::ptActivate:
+      case PackageType::ptTravel:
+      case PackageType::ptWander:
+           // We need to do nothing here, those packages do not have cell names.
            break;
-      case ptEscort:
-      case ptFollow:
+      case PackageType::ptEscort:
+      case PackageType::ptFollow:
            cells_iter = cells.find(static_cast<NPC_AIEscortFollow*>(c_rec->AIPackages.at(i))->CellName);
            if (cells_iter!=cells.end())
            {
@@ -61,9 +62,10 @@ bool translatePreNPCRecord(PreNPCRecord* c_rec, const CellListType& cells, unsig
              changed = true;
            }
            break;
-    }//swi
-  }//for
-  if (changed) ++changedRecords;
+    }
+  }
+  if (changed)
+    ++changedRecords;
   return true;
 }
 

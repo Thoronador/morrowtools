@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -29,47 +29,46 @@ namespace MWTP
 
 NPC_BasicAIPackage::~NPC_BasicAIPackage()
 {
-  //empty - just here to get rid of compiler warnings
 }
 
 /* **** AIActivate's functions ****/
 
 NPC_AIActivate::NPC_AIActivate()
 : NPC_BasicAIPackage(),
-  TargetID(""),
+  TargetID(std::string()),
   Reset(0)
-{ }
+{
+}
 
 bool NPC_AIActivate::equals(const NPC_AIActivate& other) const
 {
-  return ((TargetID==other.TargetID) and (Reset==other.Reset));
+  return (TargetID == other.TargetID) && (Reset == other.Reset);
 }
 
 PackageType NPC_AIActivate::getPackageType() const
 {
-  return ptActivate;
+  return PackageType::ptActivate;
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
 bool NPC_AIActivate::saveToStream(std::ostream& output) const
 {
-  //write AI_A
-  output.write((const char*) &cAI_A, 4);
-  uint32_t SubLength = 33; //fixed length of 33 bytes
-  //write AI_A's length
-  output.write((const char*) &SubLength, 4);
-  //write AI activate data
+  // write AI_A
+  output.write(reinterpret_cast<const char*>(&cAI_A), 4);
+  const uint32_t SubLength = 33;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
+  // write AI activate data
   // ---- write target ID
-  unsigned int len = TargetID.length();
-  if (len>31)
+  auto len = TargetID.length();
+  if (len > 31)
   {
     len = 31;
   }
   output.write(TargetID.c_str(), len);
   // ---- fill rest with NUL
-  output.write(NULof32, 32-len);
+  output.write(NULof32, 32 - len);
   // ---- reset flag
-  output.write((const char*) &Reset, 1);
+  output.write(reinterpret_cast<const char*>(&Reset), 1);
 
   return output.good();
 }
@@ -114,14 +113,14 @@ bool NPC_AIEscortFollow::equals(const NPC_AIEscortFollow& other) const
 #ifndef MW_UNSAVEABLE_RECORDS
 bool NPC_AIEscortFollow::saveToStream(std::ostream& output) const
 {
-  if (getPackageType()==ptEscort)
+  if (getPackageType() == PackageType::ptEscort)
   {
-    //write AI_E
+    // write AI_E
     output.write((const char*) &cAI_E, 4);
   }
   else
   {
-    //write AI_F
+    // write AI_F
     output.write((const char*) &cAI_F, 4);
   }
   uint32_t SubLength = 48; //fixed length of 48 bytes
@@ -164,14 +163,14 @@ bool NPC_AIEscortFollow::saveToStream(std::ostream& output) const
 
 PackageType NPC_AIEscort::getPackageType() const
 {
-  return ptEscort;
+  return PackageType::ptEscort;
 }
 
 /* **** AIFollow functions ****/
 
 PackageType NPC_AIFollow::getPackageType() const
 {
-  return ptFollow;
+  return PackageType::ptFollow;
 }
 
 /* **** AITravel's functions ****/
@@ -205,7 +204,7 @@ bool NPC_AITravel::equals(const NPC_AITravel& other) const
 
 PackageType NPC_AITravel::getPackageType() const
 {
-  return ptTravel;
+  return PackageType::ptTravel;
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
@@ -257,7 +256,7 @@ bool NPC_AIWander::equals(const NPC_AIWander& other) const
 
 PackageType NPC_AIWander::getPackageType() const
 {
-  return ptWander;
+  return PackageType::ptWander;
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
@@ -279,4 +278,4 @@ bool NPC_AIWander::saveToStream(std::ostream& output) const
 }
 #endif
 
-} //namespace
+} // namespace

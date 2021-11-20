@@ -55,6 +55,8 @@
 		<Unit filename="../../mw/base/MW_Constants.hpp" />
 		<Unit filename="../../mw/base/records/AIData.cpp" />
 		<Unit filename="../../mw/base/records/AIData.hpp" />
+		<Unit filename="../../mw/base/records/AIPackages.cpp" />
+		<Unit filename="../../mw/base/records/AIPackages.hpp" />
 		<Unit filename="../../mw/base/records/ActivatorRecord.cpp" />
 		<Unit filename="../../mw/base/records/ActivatorRecord.hpp" />
 		<Unit filename="../../mw/base/records/BasicRecord.cpp" />
@@ -253,6 +255,7 @@
 		<Unit filename="mw/base/records/DoorRecord.cpp" />
 		<Unit filename="mw/base/records/GenericRecord.cpp" />
 		<Unit filename="mw/base/records/ItemRecord.cpp" />
+		<Unit filename="mw/base/records/NPC_AIActivate.cpp" />
 		<Unit filename="mw/base/records/SkillRecord.cpp" />
 		<Unit filename="mw/base/records/StaticRecord.cpp" />
 		<Unit filename="mw/base/records/TravelDestination.cpp" />

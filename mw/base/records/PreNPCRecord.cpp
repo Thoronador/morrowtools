@@ -64,24 +64,24 @@ bool PreNPCRecord::hasEqualAIPackages(const PreNPCRecord& other) const
       }
       switch (AIPackages.at(i)->getPackageType())
       {
-        case ptActivate:
+        case PackageType::ptActivate:
              if (!(static_cast<NPC_AIActivate*>(AIPackages.at(i)))->equals(*static_cast<NPC_AIActivate*>(other.AIPackages.at(i))))
                return false;
              break;
-        case ptEscort:
-        case ptFollow:
+        case PackageType::ptEscort:
+        case PackageType::ptFollow:
              if (!(static_cast<NPC_AIEscortFollow*>(AIPackages.at(i)))->equals(*static_cast<NPC_AIEscortFollow*>(other.AIPackages.at(i))))
                return false;
              break;
-        case ptTravel:
+        case PackageType::ptTravel:
              if (!(static_cast<NPC_AITravel*>(AIPackages.at(i)))->equals(*static_cast<NPC_AITravel*>(other.AIPackages.at(i))))
                return false;
              break;
-        case ptWander:
+        case PackageType::ptWander:
              if (!(static_cast<NPC_AIWander*>(AIPackages.at(i)))->equals(*static_cast<NPC_AIWander*>(other.AIPackages.at(i))))
                return false;
              break;
-      }//swi
+      }
     }//not NULL
   }//for
   return true;
@@ -104,27 +104,27 @@ void PreNPCRecord::copyAIPackages(const PreNPCRecord& source)
   {
     switch (source.AIPackages[i]->getPackageType())
     {
-      case ptActivate:
+      case PackageType::ptActivate:
            pkgPtr = new NPC_AIActivate;
            *pkgPtr = *(static_cast<NPC_AIActivate*>(source.AIPackages[i]));
            AIPackages.push_back(pkgPtr);
            break;
-      case ptEscort:
+      case PackageType::ptEscort:
            pkgPtr = new NPC_AIEscort;
            *pkgPtr = *(static_cast<NPC_AIEscort*>(source.AIPackages[i]));
            AIPackages.push_back(pkgPtr);
            break;
-      case ptFollow:
+      case PackageType::ptFollow:
            pkgPtr = new NPC_AIFollow;
            *pkgPtr = *(static_cast<NPC_AIFollow*>(source.AIPackages[i]));
            AIPackages.push_back(pkgPtr);
            break;
-      case ptTravel:
+      case PackageType::ptTravel:
            pkgPtr = new NPC_AITravel;
            *pkgPtr = *(static_cast<NPC_AITravel*>(source.AIPackages[i]));
            AIPackages.push_back(pkgPtr);
            break;
-      case ptWander:
+      case PackageType::ptWander:
            pkgPtr = new NPC_AIWander;
            *pkgPtr = *(static_cast<NPC_AIWander*>(source.AIPackages[i]));
            AIPackages.push_back(pkgPtr);

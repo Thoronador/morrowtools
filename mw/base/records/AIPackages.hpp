@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2013  Thoronador
+    Copyright (C) 2011, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,67 +22,76 @@
 #define MW_AIPACKAGES_HPP
 
 #include <cstdint>
-#include <string>
 #include <fstream>
+#include <string>
 
 namespace MWTP
 {
 
-/* enumeration type for types of AI packages */
-enum PackageType {ptActivate, ptEscort, ptFollow, ptTravel, ptWander};
+/** enumeration for possible types of AI packages */
+enum class PackageType { ptActivate, ptEscort, ptFollow, ptTravel, ptWander };
 
-//dummy structure for use as ancestor of real AI packages like NPC_AIWander or NPC_AITravel
+// pure virtual base class / interface for real AI packages like NPC_AIWander or NPC_AITravel
 struct NPC_BasicAIPackage
 {
-  /*destructor */
   virtual ~NPC_BasicAIPackage();
 
-  /* returns enum indicating the type
-
-     remarks:
-         Each derived class has to implement its own version of that function.
-  */
+  /** \brief Gets the type of the package.
+   *
+   * \return  Returns an enumeration value indicating the package type.
+   * \remarks Each derived class has to implement its own version of that
+   *          method.
+   */
   virtual PackageType getPackageType() const = 0;
 
   #ifndef MW_UNSAVEABLE_RECORDS
-  /* writes the package subrecord to the given output stream and returns true
-     on success
-
-     parameters:
-         output - the output stream
-  */
+  /** \brief Writes the package subrecord to the given output stream.
+   *
+   * \param output  the output stream
+   * \return  Returns true on success (package was written to stream).
+   *          Returns false, if an error occurred.
+   */
   virtual bool saveToStream(std::ostream& output) const = 0;
   #endif
-};//struct
+}; // struct
 
-/* structure to hold the AI activate data of an NPC */
+/** Holds the AI activate data of an NPC or creature. */
 struct NPC_AIActivate: public NPC_BasicAIPackage
 {
   std::string TargetID;
   int8_t Reset;
 
-  /* constructor */
   NPC_AIActivate();
 
-  /* "comparison operator" */
+  /** \brief Checks whether another package contains the same data.
+   *
+   * \param other   the other package to compare with
+   * \return Returns true, if @other contains the same data as this instance.
+   *         Returns false otherwise.
+   */
   bool equals(const NPC_AIActivate& other) const;
 
-  /* returns enum for type */
+  /** \brief Gets the type of the package.
+   *
+   * \return  Returns an enumeration value indicating the package type.
+   */
   PackageType getPackageType() const override;
 
   #ifndef MW_UNSAVEABLE_RECORDS
-  /* writes the package subrecord to the given output stream and returns true
-     on success
-
-     parameters:
-         output - the output stream
-  */
+  /** \brief Writes the package subrecord to the given output stream.
+   *
+   * \param output  the output stream
+   * \return  Returns true on success (package was written to stream).
+   *          Returns false, if an error occurred.
+   */
   bool saveToStream(std::ostream& output) const override;
   #endif
-};//struct
+}; // struct
 
-/* structure to hold the escort/follow data of an NPC (both escort and follow
-     have the same data members, so we need only one structure for both) */
+/** Holds the escort/follow data of an NPC or creature.
+ *  (Both escort and follow have the same data members, so we can use one
+ *   structure for both.)
+ */
 struct NPC_AIEscortFollow: public NPC_BasicAIPackage
 {
   float X, Y, Z;
@@ -91,68 +100,85 @@ struct NPC_AIEscortFollow: public NPC_BasicAIPackage
   int16_t Reset;
   std::string CellName;
 
-  /* constructor */
   NPC_AIEscortFollow();
 
-  /* sets all members to zero */
+  /** Sets all members to zero. */
   void clear();
 
-  /* "comparison operator" */
+  /** \brief Checks whether another package contains the same data.
+   *
+   * \param other   the other package to compare with
+   * \return Returns true, if @other contains the same data as this instance.
+   *         Returns false otherwise.
+   */
   bool equals(const NPC_AIEscortFollow& other) const;
 
   #ifndef MW_UNSAVEABLE_RECORDS
-  /* writes the package subrecord to the given output stream and returns true
-     on success
-
-     parameters:
-         output - the output stream
-  */
+  /** \brief Writes the package subrecord to the given output stream.
+   *
+   * \param output  the output stream
+   * \return  Returns true on success (package was written to stream).
+   *          Returns false, if an error occurred.
+   */
   bool saveToStream(std::ostream& output) const override;
   #endif
-};//struct
+}; // struct
 
 struct NPC_AIEscort: public NPC_AIEscortFollow
 {
-  /* returns enum for type */
+  /** \brief Gets the type of the package.
+   *
+   * \return  Returns an enumeration value indicating the package type.
+   */
   PackageType getPackageType() const override;
-};//struct
+};
 
 struct NPC_AIFollow: public NPC_AIEscortFollow
 {
-  /* returns enum for type */
+  /** \brief Gets the type of the package.
+   *
+   * \return  Returns an enumeration value indicating the package type.
+   */
   PackageType getPackageType() const override;
-};//struct
+};
 
-/* structure to hold the travel data of an NPC */
+/** Hold the AI travel data of an NPC or creature. */
 struct NPC_AITravel: public NPC_BasicAIPackage
 {
   float X, Y, Z;
   int32_t Reset;
 
-  /* constructor */
   NPC_AITravel();
 
-  /* sets all members to zero */
+  /** Sets all members to zero. */
   void clear();
 
-  /* "comparison operator" */
+  /** \brief Checks whether another package contains the same data.
+   *
+   * \param other   the other package to compare with
+   * \return Returns true, if @other contains the same data as this instance.
+   *         Returns false otherwise.
+   */
   bool equals(const NPC_AITravel& other) const;
 
-  /* returns enum for type */
+  /** \brief Gets the type of the package.
+   *
+   * \return  Returns an enumeration value indicating the package type.
+   */
   PackageType getPackageType() const override;
 
   #ifndef MW_UNSAVEABLE_RECORDS
-  /* writes the package subrecord to the given output stream and returns true
-     on success
-
-     parameters:
-         output - the output stream
-  */
+  /** \brief Writes the package subrecord to the given output stream.
+   *
+   * \param output  the output stream
+   * \return  Returns true on success (package was written to stream).
+   *          Returns false, if an error occurred.
+   */
   bool saveToStream(std::ostream& output) const override;
   #endif
-};//struct
+}; // struct
 
-/* structure to hold the wandering data of an NPC */
+/** Holds the AI wandering data of an NPC or creature. */
 struct NPC_AIWander: public NPC_BasicAIPackage
 {
   int16_t Distance;
@@ -161,29 +187,36 @@ struct NPC_AIWander: public NPC_BasicAIPackage
   uint8_t Idle[8];
   uint8_t Reset;
 
-  /* constructor */
   NPC_AIWander();
 
-  /* sets all members to zero */
+  /** Sets all members to zero. */
   void clear();
 
-  /* "comparison operator" */
+  /** \brief Checks whether another package contains the same data.
+   *
+   * \param other   the other package to compare with
+   * \return Returns true, if @other contains the same data as this instance.
+   *         Returns false otherwise.
+   */
   bool equals(const NPC_AIWander& other) const;
 
-  /* returns enum indicating the type */
+  /** \brief Gets the type of the package.
+   *
+   * \return  Returns an enumeration value indicating the package type.
+   */
   PackageType getPackageType() const override;
 
   #ifndef MW_UNSAVEABLE_RECORDS
-  /* writes the package subrecord to the given output stream and returns true
-     on success
-
-     parameters:
-         output - the output stream
-  */
+  /** \brief Writes the package subrecord to the given output stream.
+   *
+   * \param output  the output stream
+   * \return  Returns true on success (package was written to stream).
+   *          Returns false, if an error occurred.
+   */
   bool saveToStream(std::ostream& output) const override;
   #endif
-};//struct
+}; // struct
 
-} //namespace
+} // namespace
 
 #endif // MW_AIPACKAGES_HPP

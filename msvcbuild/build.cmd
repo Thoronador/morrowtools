@@ -59,4 +59,4 @@ cd %THIS_PATH%
 
 :: Now start the build here.
 "%CMAKER%" -DZLIB_INCLUDE_DIR="%ZLIB_INCLUDE_DIR%" -DZLIB_LIBRARY="%ZLIB_LIBRARY%"\zlib.lib ..
-nmake
+"%CMAKER%" --build .

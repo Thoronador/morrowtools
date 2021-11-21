@@ -258,6 +258,8 @@
 		<Unit filename="mw/base/records/NPC_AIActivate.cpp" />
 		<Unit filename="mw/base/records/NPC_AIEscort.cpp" />
 		<Unit filename="mw/base/records/NPC_AIFollow.cpp" />
+		<Unit filename="mw/base/records/NPC_AITravel.cpp" />
+		<Unit filename="mw/base/records/NPC_AIWander.cpp" />
 		<Unit filename="mw/base/records/SkillRecord.cpp" />
 		<Unit filename="mw/base/records/StaticRecord.cpp" />
 		<Unit filename="mw/base/records/TravelDestination.cpp" />

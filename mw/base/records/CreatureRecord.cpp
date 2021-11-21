@@ -926,7 +926,7 @@ bool CreatureRecord::loadFromStream(std::istream& in_File)
            in_File.read((char*) &(wanderPointer->Distance), 2);
            in_File.read((char*) &(wanderPointer->Duration), 2);
            in_File.read((char*) &(wanderPointer->Time), 1);
-           in_File.read((char*) (wanderPointer->Idle), 8);
+           in_File.read(reinterpret_cast<char*>(wanderPointer->Idle.data()), 8);
            in_File.read((char*) &(wanderPointer->Reset), 1);
            BytesRead += 14;
            if (!in_File.good())

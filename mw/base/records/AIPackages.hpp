@@ -21,6 +21,7 @@
 #ifndef MW_AIPACKAGES_HPP
 #define MW_AIPACKAGES_HPP
 
+#include <array>
 #include <cstdint>
 #include <fstream>
 #include <string>
@@ -184,7 +185,7 @@ struct NPC_AIWander: public NPC_BasicAIPackage
   int16_t Distance;
   int16_t Duration;
   int8_t Time;
-  uint8_t Idle[8];
+  std::array<uint8_t, 8> Idle;
   uint8_t Reset;
 
   NPC_AIWander();

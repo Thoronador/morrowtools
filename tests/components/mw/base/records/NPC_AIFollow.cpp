@@ -42,6 +42,29 @@ TEST_CASE("MWTP::NPC_AIFollow")
     REQUIRE( package.CellName.empty() );
   }
 
+  SECTION("clear")
+  {
+    NPC_AIFollow package;
+
+    package.X = 2.0f;
+    package.Y = 3.0f;
+    package.Z = 1.0f;
+    package.Duration = 123;
+    package.TargetID = "foo";
+    package.Reset = 1;
+    package.CellName = "Some Other Place";
+
+    package.clear();
+
+    REQUIRE( package.X == 0.0f );
+    REQUIRE( package.Y == 0.0f );
+    REQUIRE( package.Z == 0.0f );
+    REQUIRE( package.Duration == 0 );
+    REQUIRE( package.TargetID.empty() );
+    REQUIRE( package.Reset == 0 );
+    REQUIRE( package.CellName.empty() );
+  }
+
   SECTION("equals")
   {
     NPC_AIFollow a;

@@ -185,10 +185,10 @@ bool NPC_AITravel::equals(const NPC_AITravel& other) const
            to another NaN, even if their internal bit representation is exactly
            the same. That's why we have expressions like (X!=X) down there, they
            catch the NaNs. */
-  return (((X==other.X) or ((X!=X) and (other.X!=other.X)))
-      and ((Y==other.Y) or ((Y!=Y) and (other.Y!=other.Y)))
-      and ((Z==other.Z) or ((Z!=Z) and (other.Z!=other.Z)))
-      and (Reset==other.Reset));
+  return ((X == other.X) || ((X != X) && (other.X != other.X)))
+      && ((Y==other.Y) || ((Y != Y) && (other.Y != other.Y)))
+      && ((Z == other.Z) || ((Z != Z) && (other.Z != other.Z)))
+      && (Reset == other.Reset);
 }
 
 PackageType NPC_AITravel::getPackageType() const
@@ -199,16 +199,15 @@ PackageType NPC_AITravel::getPackageType() const
 #ifndef MW_UNSAVEABLE_RECORDS
 bool NPC_AITravel::saveToStream(std::ostream& output) const
 {
-  //write AI_T
-  output.write((const char*) &cAI_T, 4);
-  uint32_t SubLength = 16; //fixed length of 16 bytes
-  //write AI_T's length
-  output.write((const char*) &SubLength, 4);
-  //write AI travel data
-  output.write((const char*) &X, 4);
-  output.write((const char*) &Y, 4);
-  output.write((const char*) &Z, 4);
-  output.write((const char*) &Reset, 4);
+  // write AI_T
+  output.write(reinterpret_cast<const char*>(&cAI_T), 4);
+  const uint32_t SubLength = 16;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
+  // write AI travel data
+  output.write(reinterpret_cast<const char*>(&X), 4);
+  output.write(reinterpret_cast<const char*>(&Y), 4);
+  output.write(reinterpret_cast<const char*>(&Z), 4);
+  output.write(reinterpret_cast<const char*>(&Reset), 4);
 
   return output.good();
 }
@@ -221,26 +220,25 @@ NPC_AIWander::NPC_AIWander()
   Distance(0),
   Duration(0),
   Time(0),
+  Idle({ 0, 0, 0, 0, 0, 0, 0, 0 }),
   Reset(0)
 {
-  Idle[0] = Idle[1] = Idle[2] = Idle[3] =
-  Idle[4] = Idle[5] = Idle[6] = Idle[7] = 0;
 }
 
 void NPC_AIWander::clear()
 {
-  Distance = Duration = 0;
+  Distance = 0;
+  Duration = 0;
   Time = 0;
-  Idle[0] = Idle[1] = Idle[2] = Idle[3] = Idle[4] = Idle[5] = Idle[6] =
-    Idle[7] = 0;
+  Idle.fill(0);
   Reset = 0;
 }
 
 bool NPC_AIWander::equals(const NPC_AIWander& other) const
 {
-  return ((Distance==other.Distance) and (Duration==other.Duration)
-      and (Time==other.Time) and (Reset==other.Reset)
-      and (memcmp(Idle, other.Idle, 8)==0));
+  return (Distance == other.Distance) && (Duration == other.Duration)
+      && (Time == other.Time) && (Reset == other.Reset)
+      && (Idle == other.Idle);
 }
 
 PackageType NPC_AIWander::getPackageType() const
@@ -251,17 +249,16 @@ PackageType NPC_AIWander::getPackageType() const
 #ifndef MW_UNSAVEABLE_RECORDS
 bool NPC_AIWander::saveToStream(std::ostream& output) const
 {
-  //write AI_W
-  output.write((const char*) &cAI_W, 4);
-  uint32_t SubLength = 14; //fixed length of 14 bytes
-  //write AI_W's length
-  output.write((const char*) &SubLength, 4);
-  //write AI wander data
-  output.write((const char*) &Distance, 2);
-  output.write((const char*) &Duration, 2);
-  output.write((const char*) &Time, 1);
-  output.write((const char*) &Idle, 8);
-  output.write((const char*) &Reset, 1);
+  // write AI_W
+  output.write(reinterpret_cast<const char*>(&cAI_W), 4);
+  const uint32_t SubLength = 14;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
+  // write AI wander data
+  output.write(reinterpret_cast<const char*>(&Distance), 2);
+  output.write(reinterpret_cast<const char*>(&Duration), 2);
+  output.write(reinterpret_cast<const char*>(&Time), 1);
+  output.write(reinterpret_cast<const char*>(Idle.data()), 8);
+  output.write(reinterpret_cast<const char*>(&Reset), 1);
 
   return output.good();
 }

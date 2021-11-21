@@ -24,60 +24,45 @@
 #include <string_view>
 #include "../../../../../mw/base/records/AIPackages.hpp"
 
-TEST_CASE("MWTP::NPC_AIEscort")
+TEST_CASE("MWTP::NPC_AITravel")
 {
   using namespace MWTP;
   using namespace std::string_view_literals;
 
   SECTION("constructor")
   {
-    NPC_AIEscort package;
+    NPC_AITravel package;
 
     REQUIRE( package.X == 0.0f );
     REQUIRE( package.Y == 0.0f );
     REQUIRE( package.Z == 0.0f );
-    REQUIRE( package.Duration == 0 );
-    REQUIRE( package.TargetID.empty() );
     REQUIRE( package.Reset == 0 );
-    REQUIRE( package.CellName.empty() );
   }
 
   SECTION("clear")
   {
-    NPC_AIEscort package;
+    NPC_AITravel package;
 
     package.X = 1.0f;
-    package.Y = 1.0f;
-    package.Z = 1.0f;
-    package.Duration = 2;
-    package.TargetID = "foo";
+    package.Y = 1.5f;
+    package.Z = 9001.0f;
     package.Reset = 1;
-    package.CellName = "Some Place";
 
     package.clear();
 
     REQUIRE( package.X == 0.0f );
     REQUIRE( package.Y == 0.0f );
     REQUIRE( package.Z == 0.0f );
-    REQUIRE( package.Duration == 0 );
-    REQUIRE( package.TargetID.empty() );
     REQUIRE( package.Reset == 0 );
-    REQUIRE( package.CellName.empty() );
   }
 
   SECTION("equals")
   {
-    NPC_AIEscort a;
-    NPC_AIEscort b;
+    NPC_AITravel a;
+    NPC_AITravel b;
 
     SECTION("equal")
     {
-      a.TargetID = "foo";
-      a.Reset = 1;
-
-      b.TargetID = "foo";
-      b.Reset = 1;
-
       REQUIRE( a.equals(b) );
       REQUIRE( b.equals(a) );
 
@@ -132,37 +117,10 @@ TEST_CASE("MWTP::NPC_AIEscort")
         REQUIRE_FALSE( b.equals(a) );
       }
 
-      SECTION("Duration mismatch")
-      {
-        a.Duration = 1;
-        b.Duration = 42;
-
-        REQUIRE_FALSE( a.equals(b) );
-        REQUIRE_FALSE( b.equals(a) );
-      }
-
-      SECTION("TargetID mismatch")
-      {
-        a.TargetID = "foo";
-        b.TargetID = "bar";
-
-        REQUIRE_FALSE( a.equals(b) );
-        REQUIRE_FALSE( b.equals(a) );
-      }
-
       SECTION("Reset mismatch")
       {
         a.Reset = 1;
-        b.Reset = 42;
-
-        REQUIRE_FALSE( a.equals(b) );
-        REQUIRE_FALSE( b.equals(a) );
-      }
-
-      SECTION("CellName mismatch")
-      {
-        a.CellName = "foo";
-        b.CellName = "bar";
+        b.Reset = 0;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
@@ -172,67 +130,26 @@ TEST_CASE("MWTP::NPC_AIEscort")
 
   SECTION("getPackageType")
   {
-    NPC_AIEscort package;
+    NPC_AITravel package;
 
-    REQUIRE( package.getPackageType() == PackageType::ptEscort );
+    REQUIRE( package.getPackageType() == PackageType::ptTravel );
   }
 
   SECTION("saveToStream")
   {
     SECTION("default: save package")
     {
-      NPC_AIEscort package;
+      NPC_AITravel package;
       package.X = 1.0f;
       package.Y = 2.0f;
       package.Z = 3.0f;
-      package.Duration = 1025;
-      package.TargetID = "goo";
       package.Reset = 42;
-      package.CellName = "bar";
 
       // Writing should succeed.
       std::ostringstream stream;
       REQUIRE( package.saveToStream(stream) );
       // Check written data.
-      const auto data = "AI_E\x30\0\0\0\0\0\x80\x3F\0\0\0\x40\0\0\x40\x40\x01\x04goo\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x2A\0CNDT\x04\0\0\0bar\0"sv;
-      REQUIRE( stream.str() == data );
-    }
-
-    SECTION("default: save package without cell name")
-    {
-      NPC_AIEscort package;
-      package.X = 1.0f;
-      package.Y = 2.0f;
-      package.Z = 3.0f;
-      package.Duration = 1025;
-      package.TargetID = "goo";
-      package.Reset = 42;
-      package.CellName.clear();
-
-      // Writing should succeed.
-      std::ostringstream stream;
-      REQUIRE( package.saveToStream(stream) );
-      // Check written data.
-      const auto data = "AI_E\x30\0\0\0\0\0\x80\x3F\0\0\0\x40\0\0\x40\x40\x01\x04goo\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x2A\0"sv;
-      REQUIRE( stream.str() == data );
-    }
-
-    SECTION("default: save package with very long target ID")
-    {
-      NPC_AIEscort package;
-      package.X = 1.0f;
-      package.Y = 2.0f;
-      package.Z = 3.0f;
-      package.Duration = 1025;
-      package.TargetID = "goobarbazquux4567890abcdefghij123456789";
-      package.Reset = 42;
-      package.CellName.clear();
-
-      // Writing should succeed.
-      std::ostringstream stream;
-      REQUIRE( package.saveToStream(stream) );
-      // Check written data.
-      const auto data = "AI_E\x30\0\0\0\0\0\x80\x3F\0\0\0\x40\0\0\x40\x40\x01\x04goobarbazquux4567890abcdefghij1\0\x2A\0"sv;
+      const auto data = "AI_T\x10\0\0\0\0\0\x80\x3F\0\0\0\x40\0\0\x40\x40\x2A\0\0\0"sv;
       REQUIRE( stream.str() == data );
     }
   }

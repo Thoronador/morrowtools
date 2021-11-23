@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011, 2012, 2013, 2014  Thoronador
+    Copyright (C) 2009, 2011, 2012, 2013, 2014, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,7 +20,6 @@
 
 #include "GlobalRecord.hpp"
 #include <iostream>
-#include <cstring>
 #include <stdexcept>
 #include "../MW_Constants.hpp"
 #include "../HelperIO.hpp"
@@ -29,19 +28,10 @@
 namespace MWTP
 {
 
-GlobalRecord::GlobalRecord()
-: BasicRecord(),
-  recordID(""),
-  Type(globShort),
-  shortVal(0),
-  longVal(0),
-  floatVal(0.0f)
-{}
-
 GlobalRecord::GlobalRecord(const std::string& ID)
 : BasicRecord(),
   recordID(ID),
-  Type(globShort),
+  Type(GlobalType::Short),
   shortVal(0),
   longVal(0),
   floatVal(0.0f)
@@ -49,22 +39,22 @@ GlobalRecord::GlobalRecord(const std::string& ID)
 
 bool GlobalRecord::equals(const GlobalRecord& other) const
 {
-  if ((Type!=other.Type) or (lowerCaseCompare(other.recordID, recordID)!=0))
+  if ((Type != other.Type) || (lowerCaseCompare(other.recordID, recordID) != 0))
   {
     return false;
   }
   switch (Type)
   {
-    case globShort:
-         return (shortVal==other.shortVal);
+    case GlobalType::Short:
+         return shortVal == other.shortVal;
          break;
-    case globLong:
-         return (longVal==other.longVal);
+    case GlobalType::Long:
+         return longVal == other.longVal;
          break;
-    case globFloat:
-         return (floatVal==other.floatVal);
+    case GlobalType::Float:
+         return floatVal == other.floatVal;
          break;
-  }//swi
+  }
   std::cout << "Unhandled case in GlobalRecord::equals!\n";
   throw std::logic_error("Unhandled case in GlobalRecord::equals!");
 }
@@ -72,15 +62,14 @@ bool GlobalRecord::equals(const GlobalRecord& other) const
 #ifndef MW_UNSAVEABLE_RECORDS
 bool GlobalRecord::saveToStream(std::ostream& output) const
 {
-  output.write((const char*) &cGLOB, 4);
-  uint32_t Size;
-  Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +recordID.length()+1 /* length of ID +1 byte for NUL termination */
-        +4 /* FNAM */ +4 /* 4 bytes for length */ +1 /* length of FNAM */
-        +4 /* FLTV */ +4 /* 4 bytes for length */ +4 /* length of FLTV */;
-  output.write((const char*) &Size, 4);
-  output.write((const char*) &HeaderOne, 4);
-  output.write((const char*) &HeaderFlags, 4);
+  output.write(reinterpret_cast<const char*>(&cGLOB), 4);
+  uint32_t Size = 4 /* NAME */ + 4 /* 4 bytes for length */
+        + recordID.length() + 1 /* length of ID +1 byte for NUL termination */
+        + 4 /* FNAM */ + 4 /* 4 bytes for length */ + 1 /* length of FNAM */
+        + 4 /* FLTV */ + 4 /* 4 bytes for length */ + 4 /* length of FLTV */;
+  output.write(reinterpret_cast<const char*>(&Size), 4);
+  output.write(reinterpret_cast<const char*>(&HeaderOne), 4);
+  output.write(reinterpret_cast<const char*>(&HeaderFlags), 4);
 
   /*Global variable:
     NAME = Global ID
@@ -90,63 +79,61 @@ bool GlobalRecord::saveToStream(std::ostream& output) const
         'f' = float
     FLTV = Float data (4 bytes) */
 
-  //write NAME
-  output.write((const char*) &cNAME, 4);
-  uint32_t SubLength = recordID.length()+1;
-  //write NAME's length
-  output.write((const char*) &SubLength, 4);
-  //write ID
+  // write record ID (NAME)
+  output.write(reinterpret_cast<const char*>(&cNAME), 4);
+  uint32_t SubLength = recordID.length() + 1;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
   output.write(recordID.c_str(), SubLength);
-  //write FNAM
-  output.write((const char*) &cFNAM, 4);
+
+  // write variable type (FNAM)
+  output.write(reinterpret_cast<const char*>(&cFNAM), 4);
   SubLength = 1;
-  //write FNAM's length
   output.write((const char*) &SubLength, 4);
-  //write FNAM (type of global)
   char var_type = '\0';
   switch (Type)
   {
-    case globFloat:
+    case GlobalType::Float:
          var_type = 'f';
          break;
-    case globShort:
+    case GlobalType::Short:
          var_type = 's';
          break;
-    case globLong:
+    case GlobalType::Long:
          var_type = 'l';
          break;
-  }//swi
+  }
   output.write(&var_type, 1);
-  //write FLTV
-  output.write((const char*) &cFLTV, 4);
+
+  // write variable's value (FLTV)
+  output.write(reinterpret_cast<const char*>(&cFLTV), 4);
   SubLength = 4;
-  //write FLTV's length
-  output.write((const char*) &SubLength, 4);
-  //write FLTV (value of global var)
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
+  // Value is always written as float, even if it is a short or a long.
+  float data = floatVal;
   switch(Type)
   {
-    case globFloat:
-         output.write((const char*) &floatVal, 4);
+    case GlobalType::Float:
+         data = floatVal;
          break;
-    case globLong:
-         output.write((const char*) &longVal, 4);
+    case GlobalType::Long:
+         data = longVal;
          break;
-    case globShort:
-         SubLength = shortVal;
-         output.write((const char*) &SubLength, 4);
+    case GlobalType::Short:
+         data = shortVal;
          break;
-  }//swi
+  }
+  output.write(reinterpret_cast<const char*>(&data), 4);
   return output.good();
 }
 #endif
 
 
-bool GlobalRecord::loadFromStream(std::istream& in_File)
+bool GlobalRecord::loadFromStream(std::istream& input)
 {
-  uint32_t Size;
-  in_File.read((char*) &Size, 4);
-  in_File.read((char*) &HeaderOne, 4);
-  in_File.read((char*) &HeaderFlags, 4);
+  uint32_t Size = 0;
+  input.read(reinterpret_cast<char*>(&Size), 4);
+  input.read(reinterpret_cast<char*>(&HeaderOne), 4);
+  input.read(reinterpret_cast<char*>(&HeaderFlags), 4);
 
   /*Global variable:
     NAME = Global ID
@@ -155,105 +142,85 @@ bool GlobalRecord::loadFromStream(std::istream& in_File)
         'l' = long
         'f' = float
     FLTV = Float data (4 bytes) */
-  uint32_t SubRecName;
-  uint32_t SubLength;
-  SubRecName = SubLength = 0;
-  char TypeChar = '\0';
 
-  //read NAME
-  in_File.read((char*) &SubRecName, 4);
-  if (SubRecName!=cNAME)
-  {
-    UnexpectedRecord(cNAME, SubRecName);
-    return false;
-  }
-  //NAME's length
-  in_File.read((char*) &SubLength, 4);
-  if (SubLength>255)
-  {
-    std::cout << "GlobalRecord::loadFromStream: Error: ID is longer than 255 characters.\n";
-    std::cout << "File position: "<<in_File.tellg()<<" bytes.\n";
-    return false;
-  }
-  //read name
+  // read record ID (NAME)
+  uint32_t bytesRead = 0;
   char Buffer[256];
-  memset(Buffer, '\0', 256);
-  in_File.read(Buffer, SubLength);
-  if (!in_File.good())
+  if (!loadString256WithHeader(input, recordID, Buffer, cNAME, bytesRead))
   {
-    std::cout << "GlobalRecord::loadFromStream: Error while reading ID from stream.\n";
-    std::cout << "File position: "<<in_File.tellg()<<" bytes\n";
+    std::cerr << "GlobalRecord::loadFromStream: Error while reading ID from stream.\n";
     return false;
   }
-  recordID = std::string(Buffer);
 
-  //read FNAM
-  in_File.read((char*) &SubRecName, 4);
-  if (SubRecName!=cFNAM)
+  // read type (FNAM)
+  uint32_t SubRecName = 0;
+  input.read(reinterpret_cast<char*>(&SubRecName), 4);
+  if (SubRecName != cFNAM)
   {
     UnexpectedRecord(cFNAM, SubRecName);
     return false;
   }
-  //FNAM's length
-  in_File.read((char*) &SubLength, 4);
-  if (SubLength!=1)
+  // FNAM's length
+  uint32_t SubLength = 0;
+  input.read(reinterpret_cast<char*>(&SubLength), 4);
+  if (SubLength != 1)
   {
-    std::cout <<"Error: sub record FNAM of GLOB has invalid length ("<<SubLength
-              <<" bytes). Should be one byte.\n";
+    std::cerr << "Error: Sub record FNAM of GLOB has invalid length ("
+              << SubLength << " bytes). Should be one byte.\n";
     return false;
   }
-  in_File.read(&TypeChar, 1);
+  char TypeChar = '\0';
+  input.read(&TypeChar, 1);
   if ((TypeChar != 'f') && (TypeChar != 'l') && (TypeChar != 's'))
   {
-    std::cout <<"Error: sub record FNAM of GLOB has invalid value ("<<TypeChar
-              <<"). Should be 'f', 'l' or 's'.\n";
+    std::cerr << "Error: Sub record FNAM of GLOB has invalid value ("
+              << TypeChar << "). Should be 'f', 'l' or 's'.\n";
     return false;
   }
 
-  //read FLTV
-  in_File.read((char*) &SubRecName, 4);
-  if (SubRecName!=cFLTV)
+  // read value (FLTV)
+  input.read(reinterpret_cast<char*>(&SubRecName), 4);
+  if (SubRecName != cFLTV)
   {
     UnexpectedRecord(cFLTV, SubRecName);
     return false;
   }
-  //FLTV's length
-  in_File.read((char*) &SubLength, 4);
-  if (SubLength!=4)
+  // FLTV's length
+  input.read(reinterpret_cast<char*>(&SubLength), 4);
+  if (SubLength != 4)
   {
-    std::cout <<"Error: sub record FLTV of GLOB has invalid length ("<<SubLength
-              <<" bytes). Should be four bytes.\n";
+    std::cerr << "Error: Sub record FLTV of GLOB has invalid length ("
+              << SubLength << " bytes). Should be four bytes.\n";
     return false;
   }
-  //read value
+  // read value - it's always stored as float in the file
+  input.read(reinterpret_cast<char*>(&floatVal), 4);
   switch(TypeChar)
   {
     case 'f':
-         in_File.read((char*) &floatVal, 4);
-         Type = globFloat;
+         Type = GlobalType::Float;
          break;
     case 'l':
-         in_File.read((char*) &longVal, 4);
-         Type = globLong;
+         longVal = static_cast<int32_t>(floatVal);
+         Type = GlobalType::Long;
          break;
     case 's':
-         in_File.read((char*) &longVal, 4);
-         shortVal = longVal;
-         Type = globShort;
+         shortVal = static_cast<int16_t>(floatVal);;
+         Type = GlobalType::Short;
          break;
-  }//swi
+  }
 
-  if (!in_File.good())
+  if (!input.good())
   {
-    std::cout << "Error while reading data of record GLOB.\n";
+    std::cerr << "Error while reading data of record GLOB.\n";
     return false;
   }
   return true;
-} //loadFromStream
+}
 
 bool operator<(const GlobalRecord& left, const GlobalRecord& right)
 {
-  return (lowerCaseCompare(left.recordID, right.recordID)<0);
+  return lowerCaseCompare(left.recordID, right.recordID) < 0;
 }
 
-} //namespace
+} // namespace

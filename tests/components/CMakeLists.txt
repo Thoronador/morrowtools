@@ -23,6 +23,7 @@ set(component_tests_sources
     ../../mw/base/records/BodyPartRecord.cpp
     ../../mw/base/records/DoorRecord.cpp
     ../../mw/base/records/GenericRecord.cpp
+    ../../mw/base/records/GlobalRecord.cpp
     ../../mw/base/records/ItemRecord.cpp
     ../../mw/base/records/RepairItemRecord.cpp
     ../../mw/base/records/SkillRecord.cpp
@@ -124,6 +125,7 @@ set(component_tests_sources
     mw/base/records/BodyPartRecord.cpp
     mw/base/records/DoorRecord.cpp
     mw/base/records/GenericRecord.cpp
+    mw/base/records/GlobalRecord.cpp
     mw/base/records/ItemRecord.cpp
     mw/base/records/NPC_AIActivate.cpp
     mw/base/records/NPC_AIEscort.cpp

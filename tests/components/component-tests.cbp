@@ -69,6 +69,8 @@
 		<Unit filename="../../mw/base/records/DoorRecord.hpp" />
 		<Unit filename="../../mw/base/records/GenericRecord.cpp" />
 		<Unit filename="../../mw/base/records/GenericRecord.hpp" />
+		<Unit filename="../../mw/base/records/GlobalRecord.cpp" />
+		<Unit filename="../../mw/base/records/GlobalRecord.hpp" />
 		<Unit filename="../../mw/base/records/ItemRecord.cpp" />
 		<Unit filename="../../mw/base/records/ItemRecord.hpp" />
 		<Unit filename="../../mw/base/records/RepairItemRecord.cpp" />
@@ -256,6 +258,7 @@
 		<Unit filename="mw/base/records/BodyPartRecord.cpp" />
 		<Unit filename="mw/base/records/DoorRecord.cpp" />
 		<Unit filename="mw/base/records/GenericRecord.cpp" />
+		<Unit filename="mw/base/records/GlobalRecord.cpp" />
 		<Unit filename="mw/base/records/ItemRecord.cpp" />
 		<Unit filename="mw/base/records/NPC_AIActivate.cpp" />
 		<Unit filename="mw/base/records/NPC_AIEscort.cpp" />

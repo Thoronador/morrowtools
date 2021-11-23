@@ -24,6 +24,7 @@ set(component_tests_sources
     ../../mw/base/records/DoorRecord.cpp
     ../../mw/base/records/GenericRecord.cpp
     ../../mw/base/records/ItemRecord.cpp
+    ../../mw/base/records/RepairItemRecord.cpp
     ../../mw/base/records/SkillRecord.cpp
     ../../mw/base/records/StaticRecord.cpp
     ../../mw/base/records/TravelDestination.cpp
@@ -129,6 +130,7 @@ set(component_tests_sources
     mw/base/records/NPC_AIFollow.cpp
     mw/base/records/NPC_AITravel.cpp
     mw/base/records/NPC_AIWander.cpp
+    mw/base/records/RepairItemRecord.cpp
     mw/base/records/SkillRecord.cpp
     mw/base/records/StaticRecord.cpp
     mw/base/records/TravelDestination.cpp

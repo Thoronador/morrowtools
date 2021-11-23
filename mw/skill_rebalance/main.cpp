@@ -297,17 +297,17 @@ int main(int argc, char **argv)
     MWTP::Skills::getSingleton().clearAll();
     //add game settings
     // -- add fMajorSkillBonus (default: 0.75)
-    tempSetting.Type = MWTP::gtFloat;
+    tempSetting.Type = MWTP::GMSTType::Float;
     tempSetting.SettingName = "fMajorSkillBonus";
     tempSetting.fVal = 0.75*scalingFactor;
     MWTP::GameSettings::getSingleton().addSetting(tempSetting);
     // -- add fMinorSkillBonus (default: 1.00)
-    tempSetting.Type = MWTP::gtFloat;
+    tempSetting.Type = MWTP::GMSTType::Float;
     tempSetting.SettingName = "fMinorSkillBonus";
     tempSetting.fVal = 1.00*scalingFactor;
     MWTP::GameSettings::getSingleton().addSetting(tempSetting);
     // -- add fMiscSkillBonus (default: 1.25)
-    tempSetting.Type = MWTP::gtFloat;
+    tempSetting.Type = MWTP::GMSTType::Float;
     tempSetting.SettingName = "fMiscSkillBonus";
     tempSetting.fVal = 1.25*scalingFactor;
     MWTP::GameSettings::getSingleton().addSetting(tempSetting);
@@ -331,7 +331,7 @@ int main(int argc, char **argv)
   if (!noTraining)
   {
     //add training mod
-    tempSetting.Type = MWTP::gtInteger;
+    tempSetting.Type = MWTP::GMSTType::Integer;
     tempSetting.SettingName = "iTrainingMod";
     tempSetting.iVal = 25;
     MWTP::GameSettings::getSingleton().addSetting(tempSetting);

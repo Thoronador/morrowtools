@@ -391,7 +391,7 @@ int main(int argc, char **argv)
   if (GMSTs.hasSetting("sSchoolAlteration"))
   {
     record = GMSTs.getSetting("sSchoolAlteration");
-    if (record.Type!=MWTP::gtString)
+    if (record.Type != MWTP::GMSTType::String)
     {
       std::cout << "Error: GMST \"sSchoolAlteration\" does not seem to be a string.\n";
       return MWTP::rcDataError;
@@ -408,7 +408,7 @@ int main(int argc, char **argv)
   if (GMSTs.hasSetting("sSchoolConjuration"))
   {
     record = GMSTs.getSetting("sSchoolConjuration");
-    if (record.Type!=MWTP::gtString)
+    if (record.Type != MWTP::GMSTType::String)
     {
       std::cout << "Error: GMST \"sSchoolConjuration\" does not seem to be a string.\n";
       return MWTP::rcDataError;
@@ -425,7 +425,7 @@ int main(int argc, char **argv)
   if (GMSTs.hasSetting("sSchoolDestruction"))
   {
     record = GMSTs.getSetting("sSchoolDestruction");
-    if (record.Type!=MWTP::gtString)
+    if (record.Type != MWTP::GMSTType::String)
     {
       std::cout << "Error: GMST \"sSchoolDestruction\" does not seem to be a string.\n";
       return MWTP::rcDataError;
@@ -442,7 +442,7 @@ int main(int argc, char **argv)
   if (GMSTs.hasSetting("sSchoolIllusion"))
   {
     record = GMSTs.getSetting("sSchoolIllusion");
-    if (record.Type!=MWTP::gtString)
+    if (record.Type != MWTP::GMSTType::String)
     {
       std::cout << "Error: GMST \"sSchoolIllusion\" does not seem to be a string.\n";
       return MWTP::rcDataError;
@@ -459,7 +459,7 @@ int main(int argc, char **argv)
   if (GMSTs.hasSetting("sSchoolMysticism"))
   {
     record = GMSTs.getSetting("sSchoolMysticism");
-    if (record.Type!=MWTP::gtString)
+    if (record.Type != MWTP::GMSTType::String)
     {
       std::cout << "Error: GMST \"sSchoolMysticism\" does not seem to be a string.\n";
       return MWTP::rcDataError;
@@ -476,7 +476,7 @@ int main(int argc, char **argv)
   if (GMSTs.hasSetting("sSchoolRestoration"))
   {
     record = GMSTs.getSetting("sSchoolRestoration");
-    if (record.Type!=MWTP::gtString)
+    if (record.Type != MWTP::GMSTType::String)
     {
       std::cout << "Error: GMST \"sSchoolRestoration\" does not seem to be a string.\n";
       return MWTP::rcDataError;
@@ -511,7 +511,7 @@ int main(int argc, char **argv)
         if (MWTP::MagicEffects::getSingleton().hasEffect(rec.Enchs.at(0).EffectID))
         {
           const int school = MWTP::MagicEffects::getSingleton().getEffect(rec.Enchs.at(0).EffectID).SpellSchool;
-          if ((school<0) or (school>=prefixes.size()))
+          if ((school < 0) || (school >= prefixes.size()))
           {
             std::cout << "Error: effect "<<rec.Enchs.at(0).EffectID<<" has an "
                       << "invalid spell school index of "<<school<<".\n";

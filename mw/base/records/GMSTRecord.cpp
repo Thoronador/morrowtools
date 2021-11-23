@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011, 2013, 2014  Thoronador
+    Copyright (C) 2010, 2011, 2013, 2014, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,152 +30,142 @@ namespace MWTP
 
 GMSTRecord::GMSTRecord()
 : BasicRecord(),
-  SettingName(""),
-  Type(gtInteger),
+  SettingName(std::string()),
+  Type(GMSTType::Integer),
   iVal(0),
   fVal(0.0f),
-  sVal("")
+  sVal(std::string())
 {
 }
 
 bool GMSTRecord::equals(const GMSTRecord& other) const
 {
-  if ((Type!=other.Type) or (SettingName!=other.SettingName))
+  if ((Type != other.Type) || (SettingName != other.SettingName))
   {
     return false;
   }
   switch (Type)
   {
-    case gtInteger:
-         return (iVal==other.iVal);
+    case GMSTType::Integer:
+         return iVal == other.iVal;
          break;
-    case gtFloat:
-         //Is it really a good idea to use direct equality tests for floats here?
-         //Things like 4.0000000001 and 3.999999998 can basically be the same,
-         //but have a different bit representation.
-         return (fVal==other.fVal);
+    case GMSTType::Float:
+         // Is it really a good idea to use direct equality tests for floats here?
+         // Things like 4.0000000001 and 3.999999998 can basically be the same,
+         // but have a different bit representation.
+         return fVal == other.fVal;
          break;
-    case gtString:
-         return (sVal==other.sVal);
+    case GMSTType::String:
+         return sVal == other.sVal;
          break;
-  }//swi
-  //should never reach this point here
+  }
+  // should never reach this point here
   throw std::logic_error("MWTP::GMSTRecord::equals(): We should never reach this point!");
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
 bool GMSTRecord::saveToStream(std::ostream& output) const
 {
-  //write GMST
-  output.write((const char*) &cGMST, 4);
-  uint32_t Size;
-  Size = 4 /* NAME */ +4 /* four bytes for length */
-        +SettingName.length() /* length of ID */
-        +4 /* STRV/ INTV/ FLTV */ + 4 /* four bytes for length of data */;
+  // write GMST
+  output.write(reinterpret_cast<const char*>(&cGMST), 4);
+  uint32_t Size = 4 /* NAME */ + 4 /* four bytes for length */
+        + SettingName.length() /* length of ID */
+        + 4 /* STRV/ INTV/ FLTV */ + 4 /* four bytes for length of data */;
   switch(Type)
   {
-    case gtInteger:
-    case gtFloat:
+    case GMSTType::Integer:
+    case GMSTType::Float:
          Size = Size + 4 /* four bytes for integer/float value */;
          break;
-    case gtString:
+    case GMSTType::String:
          Size = Size + sVal.length();
          break;
-  }//swi
-  output.write((const char*) &Size, 4);
-  output.write((const char*) &HeaderOne, 4);
-  output.write((const char*) &HeaderFlags, 4);
+  }
+  output.write(reinterpret_cast<const char*>(&Size), 4);
+  output.write(reinterpret_cast<const char*>(&HeaderOne), 4);
+  output.write(reinterpret_cast<const char*>(&HeaderFlags), 4);
 
   /*GMST: Game Setting
     NAME = Setting ID string
     STRV = String value/ INTV = Integer value (4 btes)/FLTV = Float value (4 bytes)
   */
-  //write NAME
-  output.write((const char*) &cNAME, 4);
-  //NAME's length
-  uint32_t SubLength;
-  SubLength = SettingName.length(); //length of string
-  output.write((const char*) &SubLength, 4);
-  //write ID
+
+  // write settings's ID (NAME)
+  output.write(reinterpret_cast<const char*>(&cNAME), 4);
+  uint32_t SubLength = SettingName.length();
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
   output.write(SettingName.c_str(), SubLength);
-  //write STRV/ FLTV/ INTV
+
+  // write STRV / FLTV / INTV
   switch(Type)
   {
-    case gtInteger:
-         //write INTV
-         output.write((const char*) &cINTV, 4);
-         //write length
+    case GMSTType::Integer:
+         // write integer value (INTV)
+         output.write(reinterpret_cast<const char*>(&cINTV), 4);
          SubLength = 4;
-         output.write((const char*) &SubLength, 4);
-         //write integer
-         output.write((const char*) &iVal, 4);
+         output.write(reinterpret_cast<const char*>(&SubLength), 4);
+         output.write(reinterpret_cast<const char*>(&iVal), 4);
          break;
-    case gtFloat:
-         //write FLTV
-         output.write((const char*) &cFLTV, 4);
-         //write length
+    case GMSTType::Float:
+         // write floating point value (FLTV)
+         output.write(reinterpret_cast<const char*>(&cFLTV), 4);
          SubLength = 4;
-         output.write((const char*) &SubLength, 4);
-         //write float
-         output.write((const char*) &fVal, 4);
+         output.write(reinterpret_cast<const char*>(&SubLength), 4);
+         output.write(reinterpret_cast<const char*>(&fVal), 4);
          break;
-    case gtString:
-         //write STRV
-         output.write((const char*) &cSTRV, 4);
-         //write length
+    case GMSTType::String:
+         // write string value (STRV)
+         output.write(reinterpret_cast<const char*>(&cSTRV), 4);
          SubLength = sVal.length();
-         output.write((const char*) &SubLength, 4);
-         //write string
+         output.write(reinterpret_cast<const char*>(&SubLength), 4);
          output.write(sVal.c_str(), SubLength);
          break;
-  }//swi
+  }
   return output.good();
 }
 #endif
 
-bool GMSTRecord::loadFromStream(std::istream& in_File)
+bool GMSTRecord::loadFromStream(std::istream& input)
 {
-  uint32_t Size;
-  in_File.read((char*) &Size, 4);
-  in_File.read((char*) &HeaderOne, 4);
-  in_File.read((char*) &HeaderFlags, 4);
+  uint32_t Size = 0;
+  input.read(reinterpret_cast<char*>(&Size), 4);
+  input.read(reinterpret_cast<char*>(&HeaderOne), 4);
+  input.read(reinterpret_cast<char*>(&HeaderFlags), 4);
 
   /*GMST: Game Setting
     NAME = Setting ID string
     STRV = String value/ INTV = Integer value (4 btes)/FLTV = Float value (4 bytes)
   */
-  uint32_t SubRecName;
-  uint32_t SubLength, BytesRead;
-  SubRecName = SubLength = 0;
+  uint32_t SubRecName = 0;
+  uint32_t SubLength = 0;
 
-  //read NAME
-  in_File.read((char*) &SubRecName, 4);
-  BytesRead = 4;
-  if (SubRecName!=cNAME)
+  // read NAME
+  input.read(reinterpret_cast<char*>(&SubRecName), 4);
+  uint32_t BytesRead = 4;
+  if (SubRecName != cNAME)
   {
     UnexpectedRecord(cNAME, SubRecName);
     return false;
   }
-  //NAME's length
-  in_File.read((char*) &SubLength, 4);
+  input.read(reinterpret_cast<char*>(&SubLength), 4);
   BytesRead += 4;
-  if (SubLength>511)
+  if (SubLength > 511)
   {
-    std::cout << "Sub record NAME of GMST is longer than 511 characters!\n";
+    std::cerr << "Sub record NAME of GMST is longer than 511 characters!\n";
     return false;
   }
-  if (SubLength<=0)
+  if (SubLength <= 0)
   {
-    std::cout << "Sub record NAME of GMST is shorter than one character!\n";
+    std::cerr << "Sub record NAME of GMST is shorter than one character!\n";
     return false;
   }
   char Buffer[512];
   memset(Buffer, '\0', 512);
-  in_File.read(Buffer, SubLength);
+  input.read(Buffer, SubLength);
   BytesRead += SubLength;
-  if (!in_File.good())
+  if (!input.good())
   {
-    std::cout << "Error while reading sub record NAME of GMST!\n";
+    std::cerr << "Error while reading sub record NAME of GMST!\n";
     return false;
   }
   SettingName = std::string(Buffer);
@@ -183,78 +173,72 @@ bool GMSTRecord::loadFromStream(std::istream& in_File)
 
   fVal = 0.0f;
   iVal = 0;
-  sVal = "";
+  sVal.clear();
 
-  //read value record based on first character of setting name
+  // read value record based on first character of setting name
   switch(NameFirstChar)
   {
     case 'f':
-         //read FLTV
-         in_File.read((char*) &SubRecName, 4);
-         if (SubRecName!=cFLTV)
+         // read FLTV
+         input.read(reinterpret_cast<char*>(&SubRecName), 4);
+         if (SubRecName != cFLTV)
          {
            UnexpectedRecord(cFLTV, SubRecName);
            return false;
          }
-         //FLTV's length
-         in_File.read((char*) &SubLength, 4);
+         input.read(reinterpret_cast<char*>(&SubLength), 4);
          if (SubLength != 4)
          {
-           std::cout << "Error: sub record FLTV of GMST has invalid length ("
+           std::cerr << "Error: sub record FLTV of GMST has invalid length ("
                      << SubLength << " bytes). Should be 4 bytes.\n";
            return false;
          }
-         //read FLTV
-         in_File.read((char*) &fVal, 4);
-         Type = gtFloat;
+         input.read(reinterpret_cast<char*>(&fVal), 4);
+         Type = GMSTType::Float;
          break;
     case 'i':
-         //read INTV
-         in_File.read((char*) &SubRecName, 4);
-         if (SubRecName!=cINTV)
+         // read INTV
+         input.read(reinterpret_cast<char*>(&SubRecName), 4);
+         if (SubRecName != cINTV)
          {
            UnexpectedRecord(cINTV, SubRecName);
            return false;
          }
-         //INTV's length
-         in_File.read((char*) &SubLength, 4);
+         input.read(reinterpret_cast<char*>(&SubLength), 4);
          if (SubLength != 4)
          {
-           std::cout << "Error: sub record INTV of GMST has invalid length ("
+           std::cerr << "Error: sub record INTV of GMST has invalid length ("
                      << SubLength << " bytes). Should be 4 bytes.\n";
            return false;
          }
-         //read INTV
-         in_File.read((char*) &iVal, 4);
-         Type = gtInteger;
+         input.read(reinterpret_cast<char*>(&iVal), 4);
+         Type = GMSTType::Integer;
          break;
     default: //'s'
-         Type = gtString;
+         Type = GMSTType::String;
          // if string is empty, STRV sub-record may not be present at all
-         if (BytesRead<Size)
+         if (BytesRead < Size)
          {
-           //read STRV
-           in_File.read((char*) &SubRecName, 4);
-           if (SubRecName!=cSTRV)
+           // read STRV
+           input.read(reinterpret_cast<char*>(&SubRecName), 4);
+           if (SubRecName != cSTRV)
            {
              UnexpectedRecord(cSTRV, SubRecName);
              return false;
            }
-           //STRV's length
-           in_File.read((char*) &SubLength, 4);
-           if (SubLength>511)
+           input.read(reinterpret_cast<char*>(&SubLength), 4);
+           if (SubLength > 511)
            {
-             std::cout << "Sub record STRV of GMST is longer than 511 characters!\n";
+             std::cerr << "Sub record STRV of GMST is longer than 511 characters!\n";
              return false;
            }
-           //read STRV
            memset(Buffer, '\0', 512);
-           in_File.read(Buffer, SubLength);
+           input.read(Buffer, SubLength);
            sVal = std::string(Buffer);
          }
          break;
-  }//switch
-  return in_File.good();
+  }
+  return input.good();
 }
 
-} //namespace
+} // namespace

@@ -318,6 +318,21 @@ TEST_CASE("MWTP::GMSTRecord")
       REQUIRE_FALSE( record.loadFromStream(stream) );
     }
 
+    SECTION("corrupt data: length of NAME is zero")
+    {
+      const auto data = "GMST\x17\0\0\0\0\0\0\0\0\0\0\0NAME\0\0\0\0STRV\x07\0\0\0Acrobat"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read GMST, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      GMSTRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
     SECTION("corrupt data: first character of NAME is not s or f or i")
     {
       const auto data = "GMST\x21\0\0\0\0\0\0\0\0\0\0\0NAME\x0D\0\0\0kSneakUseDistFLTV\x04\0\0\0\0\0\xFA\x43"sv;

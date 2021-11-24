@@ -75,6 +75,10 @@
 		<Unit filename="../../mw/base/records/GlobalRecord.hpp" />
 		<Unit filename="../../mw/base/records/ItemRecord.cpp" />
 		<Unit filename="../../mw/base/records/ItemRecord.hpp" />
+		<Unit filename="../../mw/base/records/NPCRecord.cpp" />
+		<Unit filename="../../mw/base/records/NPCRecord.hpp" />
+		<Unit filename="../../mw/base/records/PreNPCRecord.cpp" />
+		<Unit filename="../../mw/base/records/PreNPCRecord.hpp" />
 		<Unit filename="../../mw/base/records/RepairItemRecord.cpp" />
 		<Unit filename="../../mw/base/records/RepairItemRecord.hpp" />
 		<Unit filename="../../mw/base/records/SkillRecord.cpp" />
@@ -268,6 +272,7 @@
 		<Unit filename="mw/base/records/NPC_AIFollow.cpp" />
 		<Unit filename="mw/base/records/NPC_AITravel.cpp" />
 		<Unit filename="mw/base/records/NPC_AIWander.cpp" />
+		<Unit filename="mw/base/records/PreNPCRecord.cpp" />
 		<Unit filename="mw/base/records/RepairItemRecord.cpp" />
 		<Unit filename="mw/base/records/SkillRecord.cpp" />
 		<Unit filename="mw/base/records/StaticRecord.cpp" />

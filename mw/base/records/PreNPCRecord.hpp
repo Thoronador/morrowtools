@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2013  Thoronador
+    Copyright (C) 2011, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -31,60 +31,67 @@
 namespace MWTP
 {
 
-/* the pre-NPC record - holds all (AI) data that is common to both NPCs and
-   creatures
-*/
+/** Holds all (AI) data that is common to both NPCs and creatures. */
 struct PreNPCRecord: public BasicRecord
 {
-  /* constructor */
   PreNPCRecord();
 
-  //Items and spells
   std::vector<ItemRecord> Items;
   std::vector<std::string> NPC_Spells;
-
-  //AI data
   NPC_AIData AIData;
   std::vector<NPC_BasicAIPackage*> AIPackages;
-
-  //travel destinations
   std::vector<TravelDestination> Destinations;
 
-  /* destructor */
+  /** Destructor takes care of freeing pointer data. */
   virtual ~PreNPCRecord();
 
-  /* returns true, if the other PreNPCRecord has the same AI packages*/
+  /** \brief Checks whether another instance contains the same AI packages.
+   *
+   * \param other   the other record to compare with
+   * \return Returns true, if @other contains the same AI packages.
+   *         Returns false otherwise.
+   */
   bool hasEqualAIPackages(const PreNPCRecord& other) const;
 
-  /* returns true, if the trainer flag is set in the creature's/NPC's AI
-     data flags */
+  /** \brief Checks whether the trainer flag is set in the AIData.
+   *
+   * \return Returns true, if the trainer flag is set in the AIData.
+   */
   bool isTrainer() const;
 
-  /* returns true, if the enchanting flag is set in the creature's/NPC's AI
-     data flags */
+  /** \brief Checks whether the enchanting flag is set in the AIData.
+   *
+   * \return Returns true, if the enchanting flag is set in the AIData.
+   */
   bool isEnchanter() const;
 
-  /* returns true, if the spellmaking flag is set in the creature's/NPC's AI
-     data flags */
+  /** \brief Checks whether the spellmaking flag is set in the AIData.
+   *
+   * \return Returns true, if the spellmaking flag is set in the AIData.
+   */
   bool isSpellmaker() const;
 
-  /* returns true, if the repair flag is set in the creature's/NPC's AI
-     data flags */
+  /** \brief Checks whether the repair flag is set in the AIData.
+   *
+   * \return Returns true, if the repair flag is set in the AIData.
+   */
   bool doesRepair() const;
 
   protected:
-    /* removes all AI packages from the vector and deletes the pointed to memory
-    */
+    /** Removes all AI packages and deletes the pointed to memory. */
     void removeAIPackages();
 
-    /* adds the AI packages from the source record to this record*/
+    /** Copies the AI packages from the source record to this record.
+     *
+     * \param source  the record to copy the packages from
+     */
     void copyAIPackages(const PreNPCRecord& source);
 
     #ifndef MW_UNSAVEABLE_RECORDS
     bool writeItemsSpellsAIDataDestinations(std::ostream& output) const;
     #endif
-};//struct
+}; // struct
 
-} //namespace
+} // namespace
 
 #endif // MW_PRENPCRECORD_HPP

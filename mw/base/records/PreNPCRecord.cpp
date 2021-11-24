@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -33,10 +33,8 @@ PreNPCRecord::PreNPCRecord()
 : BasicRecord(),
   Items(std::vector<ItemRecord>()),
   NPC_Spells(std::vector<std::string>()),
-  //AI data
   AIData(NPC_AIData()),
   AIPackages(std::vector<NPC_BasicAIPackage*>()),
-  //travel destinations
   Destinations(std::vector<TravelDestination>())
 {
 }
@@ -48,42 +46,42 @@ PreNPCRecord::~PreNPCRecord()
 
 bool PreNPCRecord::hasEqualAIPackages(const PreNPCRecord& other) const
 {
-  const size_t len = AIPackages.size();
-  if (other.AIPackages.size()!=len) return false;
-  unsigned int i;
-  for (i=0; i<len; ++i)
+  const auto len = AIPackages.size();
+  if (other.AIPackages.size() != len)
+    return false;
+  for (decltype(AIPackages)::size_type i = 0; i < len; ++i)
   {
-    if ((AIPackages.at(i) == NULL) ^ (other.AIPackages.at(i) == NULL))
+    if ((AIPackages[i] == nullptr) ^ (other.AIPackages[i] == nullptr))
       return false;
-    if (AIPackages.at(i)!=NULL)
+    if (AIPackages[i] != nullptr)
     {
-      //Do they have the same type?
-      if (AIPackages.at(i)->getPackageType()!=other.AIPackages.at(i)->getPackageType())
+      // Do they have the same type?
+      if (AIPackages[i]->getPackageType() != other.AIPackages[i]->getPackageType())
       {
         return false;
       }
-      switch (AIPackages.at(i)->getPackageType())
+      switch (AIPackages[i]->getPackageType())
       {
         case PackageType::ptActivate:
-             if (!(static_cast<NPC_AIActivate*>(AIPackages.at(i)))->equals(*static_cast<NPC_AIActivate*>(other.AIPackages.at(i))))
+             if (!(static_cast<NPC_AIActivate*>(AIPackages[i]))->equals(*static_cast<NPC_AIActivate*>(other.AIPackages[i])))
                return false;
              break;
         case PackageType::ptEscort:
         case PackageType::ptFollow:
-             if (!(static_cast<NPC_AIEscortFollow*>(AIPackages.at(i)))->equals(*static_cast<NPC_AIEscortFollow*>(other.AIPackages.at(i))))
+             if (!(static_cast<NPC_AIEscortFollow*>(AIPackages[i]))->equals(*static_cast<NPC_AIEscortFollow*>(other.AIPackages[i])))
                return false;
              break;
         case PackageType::ptTravel:
-             if (!(static_cast<NPC_AITravel*>(AIPackages.at(i)))->equals(*static_cast<NPC_AITravel*>(other.AIPackages.at(i))))
+             if (!(static_cast<NPC_AITravel*>(AIPackages[i]))->equals(*static_cast<NPC_AITravel*>(other.AIPackages[i])))
                return false;
              break;
         case PackageType::ptWander:
-             if (!(static_cast<NPC_AIWander*>(AIPackages.at(i)))->equals(*static_cast<NPC_AIWander*>(other.AIPackages.at(i))))
+             if (!(static_cast<NPC_AIWander*>(AIPackages[i]))->equals(*static_cast<NPC_AIWander*>(other.AIPackages[i])))
                return false;
              break;
       }
-    }//not NULL
-  }//for
+    }
+  }
   return true;
 }
 
@@ -93,14 +91,14 @@ void PreNPCRecord::removeAIPackages()
   {
     delete AIPackages.back();
     AIPackages.pop_back();
-  }//while
+  }
 }
 
 void PreNPCRecord::copyAIPackages(const PreNPCRecord& source)
 {
-  unsigned int i;
+  decltype(source.AIPackages)::size_type i;
   NPC_BasicAIPackage* pkgPtr;
-  for (i=0; i<source.AIPackages.size(); ++i)
+  for (i = 0; i < source.AIPackages.size(); ++i)
   {
     switch (source.AIPackages[i]->getPackageType())
     {
@@ -129,132 +127,127 @@ void PreNPCRecord::copyAIPackages(const PreNPCRecord& source)
            *pkgPtr = *(static_cast<NPC_AIWander*>(source.AIPackages[i]));
            AIPackages.push_back(pkgPtr);
            break;
-    }//swi
-  }//for
+    }
+  }
 }
 
 bool PreNPCRecord::isTrainer() const
 {
-  return (AIData.isPresent and ((AIData.Flags & pnfTraining)!=0));
+  return AIData.isPresent && ((AIData.Flags & pnfTraining) != 0);
 }
 
 bool PreNPCRecord::isEnchanter() const
 {
-  return (AIData.isPresent and ((AIData.Flags & pnfEnchanting)!=0));
+  return AIData.isPresent && ((AIData.Flags & pnfEnchanting) != 0);
 }
 
 bool PreNPCRecord::isSpellmaker() const
 {
-  return (AIData.isPresent and ((AIData.Flags & pnfSpellmaking)!=0));
+  return AIData.isPresent && ((AIData.Flags & pnfSpellmaking) != 0);
 }
 
 bool PreNPCRecord::doesRepair() const
 {
-  return (AIData.isPresent and ((AIData.Flags & pnfRepair)!=0));
+  return AIData.isPresent && ((AIData.Flags & pnfRepair) != 0);
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
 bool PreNPCRecord::writeItemsSpellsAIDataDestinations(std::ostream& output) const
 {
-  //items and spells
-  unsigned int i, len;
+  // items and spells
+  std::string::size_type len;
   uint32_t SubLength;
-  for (i=0; i<Items.size(); ++i)
+  for (const auto& item: Items)
   {
-    //Items
-    //write NPCO
-    output.write((const char*) &cNPCO, 4);
-    SubLength = 36; //fixed length of 36 bytes
-    //write NPCO's length
-    output.write((const char*) &SubLength, 4);
-    //write item stuff
+    // Items
+    // write NPCO
+    output.write(reinterpret_cast<const char*>(&cNPCO), 4);
+    SubLength = 36;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
+    // write item stuff
     // ---- count
-    output.write((const char*) &(Items[i].Count), 4);
+    output.write(reinterpret_cast<const char*>(&item.Count), 4);
     // ---- item ID
-    len = Items[i].Item.length();
-    if (len>31)
+    len = item.Item.length();
+    if (len > 31)
     {
       len = 31;
     }
-    output.write(Items[i].Item.c_str(), len);
-    //fill rest with NUL bytes
-    output.write(NULof32, 32-len);
-  }//for
+    output.write(item.Item.c_str(), len);
+    // fill rest with NUL bytes
+    output.write(NULof32, 32 - len);
+  }
 
-  for (i=0; i<NPC_Spells.size(); ++i)
+  for (const auto& spell: NPC_Spells)
   {
-    //Spells
-    //write NPCS
-    output.write((const char*) &cNPCS, 4);
-    SubLength = 32; //fixed length of 32 bytes
-    //write NPCS's length
-    output.write((const char*) &SubLength, 4);
-    //write spell ID
-    len = NPC_Spells[i].length();
-    if (len>31)
+    // Spells
+    // write spell ID (NPCS)
+    output.write(reinterpret_cast<const char*>(&cNPCS), 4);
+    SubLength = 32;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
+    // write spell ID
+    len = spell.length();
+    if (len > 31)
     {
       len = 31;
     }
-    output.write(NPC_Spells[i].c_str(), len);
-    //fill rest with NUL bytes
-    output.write(NULof32, 32-len);
-  }//for
+    output.write(spell.c_str(), len);
+    // fill rest with NUL bytes
+    output.write(NULof32, 32 - len);
+  }
 
   if (AIData.isPresent)
   {
-    //write AIDT
-    output.write((const char*) &cAIDT, 4);
-    SubLength = 12; //fixed length of 12 bytes
-    //write AIDT's length
-    output.write((const char*) &SubLength, 4);
-    //write AI data
-    output.write((const char*) &(AIData.Hello), 1);
-    output.write((const char*) &(AIData.Unknown1), 1);
-    output.write((const char*) &(AIData.Fight), 1);
-    output.write((const char*) &(AIData.Flee), 1);
-    output.write((const char*) &(AIData.Alarm), 1);
-    output.write((const char*) &(AIData.Unknown2), 1);
-    output.write((const char*) &(AIData.Unknown3), 1);
-    output.write((const char*) &(AIData.Unknown4), 1);
-    output.write((const char*) &(AIData.Flags), 4);
-  }//if AIData is present
+    // write AI data (AIDT)
+    output.write(reinterpret_cast<const char*>(&cAIDT), 4);
+    SubLength = 12;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
+    // write actual data
+    output.write(reinterpret_cast<const char*>(&AIData.Hello), 1);
+    output.write(reinterpret_cast<const char*>(&AIData.Unknown1), 1);
+    output.write(reinterpret_cast<const char*>(&AIData.Fight), 1);
+    output.write(reinterpret_cast<const char*>(&AIData.Flee), 1);
+    output.write(reinterpret_cast<const char*>(&AIData.Alarm), 1);
+    output.write(reinterpret_cast<const char*>(&AIData.Unknown2), 1);
+    output.write(reinterpret_cast<const char*>(&AIData.Unknown3), 1);
+    output.write(reinterpret_cast<const char*>(&AIData.Unknown4), 1);
+    output.write(reinterpret_cast<const char*>(&AIData.Flags), 4);
+  }
 
-  //AI packages
-  for (i=0; i<AIPackages.size(); ++i)
+  // AI packages
+  for (const auto& pkg: AIPackages)
   {
-    AIPackages[i]->saveToStream(output);
-  }//for AIPackages
+    if (!pkg->saveToStream(output))
+      return false;
+  }
 
-  //travel service destinations
-  for (i=0; i<Destinations.size(); ++i)
+  // travel service destinations
+  for (const auto& destination: Destinations)
   {
-    //write DODT
-    output.write((const char*) &cDODT, 4);
-    SubLength = 24; //fixed length of 24 bytes
-    //write DODT's length
-    output.write((const char*) &SubLength, 4);
-    //write destination data
-    output.write((const char*) &(Destinations[i].XPos), 4);
-    output.write((const char*) &(Destinations[i].YPos), 4);
-    output.write((const char*) &(Destinations[i].ZPos), 4);
-    output.write((const char*) &(Destinations[i].XRot), 4);
-    output.write((const char*) &(Destinations[i].YRot), 4);
-    output.write((const char*) &(Destinations[i].ZRot), 4);
-    //see if there's a cell name, too
-    if (!Destinations[i].CellName.empty())
+    // write DODT
+    output.write(reinterpret_cast<const char*>(&cDODT), 4);
+    SubLength = 24;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
+    // write destination data
+    output.write(reinterpret_cast<const char*>(&destination.XPos), 4);
+    output.write(reinterpret_cast<const char*>(&destination.YPos), 4);
+    output.write(reinterpret_cast<const char*>(&destination.ZPos), 4);
+    output.write(reinterpret_cast<const char*>(&destination.XRot), 4);
+    output.write(reinterpret_cast<const char*>(&destination.YRot), 4);
+    output.write(reinterpret_cast<const char*>(&destination.ZRot), 4);
+    // see if there's a cell name, too
+    if (!destination.CellName.empty())
     {
-      //write DNAM
-      output.write((const char*) &cDNAM, 4);
-      SubLength = Destinations[i].CellName.length()+1; //length of cell name +1 byte for NUL
-      //write DNAM's length
-      output.write((const char*) &SubLength, 4);
-      //write destination cell name
-      output.write(Destinations[i].CellName.c_str(), SubLength);
-    }//if
-  }//for
+      // write destination cell name (DNAM)
+      output.write(reinterpret_cast<const char*>(&cDNAM), 4);
+      SubLength = destination.CellName.length() + 1; // length of cell name +1 byte for NUL
+      output.write(reinterpret_cast<const char*>(&SubLength), 4);
+      output.write(destination.CellName.c_str(), SubLength);
+    }
+  }
 
   return output.good();
 }
 #endif
 
-} //namespace
+} // namespace

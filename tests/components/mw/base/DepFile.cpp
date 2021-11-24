@@ -101,6 +101,10 @@ TEST_CASE("MWTP::DepFile")
 
     df.name = "example.esp";
     REQUIRE_FALSE( df.isMasterFile() );
+    df.name = "example.ESP";
+    REQUIRE_FALSE( df.isMasterFile() );
+    df.name = "example.Esp";
+    REQUIRE_FALSE( df.isMasterFile() );
     df.name = "example.esm";
     REQUIRE( df.isMasterFile() );
     df.name = "example.ESM";

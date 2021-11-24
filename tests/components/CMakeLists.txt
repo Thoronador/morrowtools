@@ -28,6 +28,7 @@ set(component_tests_sources
     ../../mw/base/records/ItemRecord.cpp
     ../../mw/base/records/NPCRecord.cpp
     ../../mw/base/records/PreNPCRecord.cpp
+    ../../mw/base/records/ProbeRecord.cpp
     ../../mw/base/records/RepairItemRecord.cpp
     ../../mw/base/records/SkillRecord.cpp
     ../../mw/base/records/StaticRecord.cpp
@@ -137,6 +138,7 @@ set(component_tests_sources
     mw/base/records/NPC_AITravel.cpp
     mw/base/records/NPC_AIWander.cpp
     mw/base/records/PreNPCRecord.cpp
+    mw/base/records/ProbeRecord.cpp
     mw/base/records/RepairItemRecord.cpp
     mw/base/records/SkillRecord.cpp
     mw/base/records/StaticRecord.cpp

@@ -76,7 +76,7 @@ int getFilesFromMorrowindIni(const std::string& baseDir, DepFileList& files)
             const size_t pos = ini_line.find('=');
             if ((pos>8) &&  (pos!=std::string::npos))
             {
-              files.push_back(ini_line.substr(pos+1, std::string::npos));
+              files.push_back(DepFile(ini_line.substr(pos + 1, std::string::npos)));
             }
           }//if is GameFile line
         }//required minimum length?

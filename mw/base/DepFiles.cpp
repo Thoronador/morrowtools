@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -32,33 +32,25 @@ namespace MWTP
 */
 std::string minimalistLowerCase(std::string str1)
 {
-  unsigned int i;
-  for (i=0; i<str1.size(); ++i)
+  for (auto& c: str1)
   {
-    switch (str1.at(i))
+    switch (c)
     {
       case 'E':
-           str1.at(i) = 'e';
+           c = 'e';
            break;
       case 'S':
-           str1.at(i) = 's';
+           c = 's';
            break;
       case 'M':
-           str1.at(i) = 'm';
+           c = 'm';
            break;
       case 'P':
-           str1.at(i) = 'p';
+           c = 'p';
            break;
-    }//swi
-  }//for
+    }
+  }
   return str1;
-}
-
-DepFile::DepFile()
-: name(""),
-  size(-1),
-  modified(-1)
-{
 }
 
 DepFile::DepFile(const std::string& fileName)
@@ -68,39 +60,33 @@ DepFile::DepFile(const std::string& fileName)
 {
 }
 
-DepFile::DepFile(const char* fileName)
-: name(fileName),
-  size(-1),
-  modified(-1)
-{
-}
-
 bool DepFile::isMasterFile() const
 {
-  const size_t len = name.length();
-  if (len>3)
+  const auto len = name.length();
+  if (len > 3)
   {
-    return (minimalistLowerCase(name.substr(len-4,4))==".esm");
+    return minimalistLowerCase(name.substr(len -4, 4)) == ".esm";
   }
-  //too short for .esm extension
+  // too short for .esm extension
   return false;
 }
 
 bool DepFile::operator==(const DepFile& other) const
 {
-  return ((name==other.name) and (size==other.size) and (modified==other.modified));
+  return (name == other.name) && (size == other.size) && (modified == other.modified);
 }
 
 bool operator<(const DepFile& a, const DepFile& b)
 {
-  //master files go before plugin files
-  if (a.isMasterFile()!=b.isMasterFile())
+  // Master files go before plugin files.
+  const bool a_is_esm = a.isMasterFile();
+  if (a_is_esm != b.isMasterFile())
   {
-    return a.isMasterFile();
+    return a_is_esm;
   }
-  //now files are either both master or both plugin file
-  // So file time has to decide
-  return a.modified<b.modified;
+  // Now files are either both master or both plugin file.
+  // So file time has to decide.
+  return a.modified < b.modified;
 }
 
 
@@ -109,12 +95,6 @@ bool operator<(const DepFile& a, const DepFile& b)
 DepFileList::DepFileList()
 : m_List(std::vector<DepFile> ())
 {
-  //empty
-}
-
-DepFileList::~DepFileList()
-{
-  m_List.clear();
 }
 
 size_t DepFileList::getSize() const
@@ -149,79 +129,76 @@ void DepFileList::push_front(const DepFile& val)
 
 bool DepFileList::hasDepFile(const std::string& fileName) const
 {
-  unsigned int i;
-  for (i=0; i<m_List.size(); ++i)
+  for (const auto& element: m_List)
   {
-    if (m_List.at(i).name == fileName)
+    if (element.name == fileName)
     {
       return true;
     }
-  }//for
-  //file not found, return false
+  }
+  // file not found
   return false;
 }
 
 void DepFileList::writeDeps() const
 {
-  unsigned int i;
-  for (i=0; i<m_List.size(); ++i)
+  for (const auto& element: m_List)
   {
-    std::cout << "  "<<m_List.at(i).name<<"\n";
-  }//for
+    std::cout << "  " << element.name << "\n";
+  }
 }
 
 void DepFileList::sort()
 {
-  unsigned int i, j, smallest;
+  decltype(m_List)::size_type smallest;
   DepFile temp;
-  for (i=0; i<m_List.size(); ++i)
+  for (decltype(smallest) i = 0; i < m_List.size(); ++i)
   {
     smallest = i;
-    for (j=i+1; j<m_List.size(); ++j)
+    for (decltype(i) j = i + 1; j < m_List.size(); ++j)
     {
-      if (m_List.at(j)<m_List.at(smallest))
+      if (m_List[j] < m_List[smallest])
       {
         smallest = j;
-      }//if
-    }//for j
+      }
+    } // for j
     // now swap, if necessary
-    if (smallest!=i)
+    if (smallest != i)
     {
-      temp = m_List.at(i);
-      m_List.at(i) = m_List.at(smallest);
-      m_List.at(smallest) = temp;
+      temp = m_List[i];
+      m_List[i] = m_List[smallest];
+      m_List[smallest] = temp;
     }
-  }//for i
+  } // for i
 }
 
 unsigned int DepFileList::removeDuplicates()
 {
-  unsigned int i, ret;
-  ret = 0;
-  i = 0;
-  while(i+1<m_List.size())
+  unsigned int i = 0;
+  unsigned int ret = 0;
+  while(i + 1 < m_List.size())
   {
-    if (m_List.at(i).name==m_List.at(i+1).name)
+    if (m_List[i].name == m_List[i+1].name)
     {
-      m_List.erase(m_List.begin()+i);
+      m_List.erase(m_List.begin() + i);
       ++ret;
-    }//if same name
+    }
     else
     {
       ++i;
     }
-  }//while
+  }
   return ret;
 }
 
 bool DepFileList::removeEntry(const size_t index)
 {
-  if (index>=m_List.size())
+  if (index >= m_List.size())
   {
-    //index is out of range, we can't remove an entry
+    // index is out of range, we can't remove an entry
     return false;
   }
-  m_List.erase(m_List.begin()+index);
+  m_List.erase(m_List.begin() + index);
   return true;
 }
 
@@ -232,7 +209,7 @@ void DepFileList::clear()
 
 bool DepFileList::operator==(const DepFileList& other) const
 {
-  return (m_List==other.m_List);
+  return m_List == other.m_List;
 }
 
-} //namespace
+} // namespace

@@ -113,7 +113,7 @@ void getAllDataFiles(const std::string& dir, DepFileList& files)
         if ((lowerCase(dirFiles[i].FileName.substr(nameLen-4, 4))==".esp")
             or (lowerCase(dirFiles[i].FileName.substr(nameLen-4, 4))==".esm"))
         {
-          files.push_back(dirFiles[i].FileName);
+          files.push_back(DepFile(dirFiles[i].FileName));
         }
       }
     }

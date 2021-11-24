@@ -356,7 +356,7 @@ int main(int argc, char **argv)
     MorrowindSize = 80640776; //size of German Morrowind.esm of GOTY Edition
   }
   tes3Head.dependencies.clear();
-  tes3Head.dependencies.push_back("Morrowind.esm");
+  tes3Head.dependencies.push_back(MWTP::DepFile("Morrowind.esm"));
   tes3Head.dependencies.at(0).size = MorrowindSize;
 
   MWTP::ESMWriterSkillRebalance writer;

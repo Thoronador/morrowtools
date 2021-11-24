@@ -14,6 +14,7 @@ set(component_tests_sources
     ../../base/RegistryFunctions.cpp
     ../../base/SlashFunctions.cpp
     ../../base/UtilityFunctions.cpp
+    ../../mw/base/DepFiles.cpp
     ../../mw/base/HelperIO.cpp
     ../../mw/base/records/ActivatorRecord.cpp
     ../../mw/base/records/AIData.cpp
@@ -121,6 +122,8 @@ set(component_tests_sources
     base/RegistryFunctions.cpp
     base/SlashFunctions.cpp
     base/UtilityFunctions.cpp
+    mw/base/DepFile.cpp
+    mw/base/DepFileList.cpp
     mw/base/HelperIO.cpp
     mw/base/records/ActivatorRecord.cpp
     mw/base/records/AIData.cpp

@@ -212,7 +212,7 @@ int main(int argc, char **argv)
           {
             const std::string pluginFileName = std::string(argv[i+1]);
             ++i; //skip next parameter, because it's used as file name already
-            files.push_back(pluginFileName);
+            files.push_back(MWTP::DepFile(pluginFileName));
             std::cout << "Plugin file \""<<pluginFileName<<"\" was added.\n";
           }
           else
@@ -273,14 +273,14 @@ int main(int argc, char **argv)
   //check file list
   if (files.isEmpty())
   {
-    files.push_back("Morrowind.esm");
+    files.push_back(MWTP::DepFile("Morrowind.esm"));
     if (FileExists(baseDir+"Tribunal.esm"))
     {
-      files.push_back("Tribunal.esm");
+      files.push_back(MWTP::DepFile("Tribunal.esm"));
     }
     if (FileExists(baseDir+"Bloodmoon.esm"))
     {
-      files.push_back("Bloodmoon.esm");
+      files.push_back(MWTP::DepFile("Bloodmoon.esm"));
     }
   }
   else
@@ -288,15 +288,15 @@ int main(int argc, char **argv)
     //Let's add master files, if necessary.
     if (!files.hasDepFile("Bloodmoon.esm") and FileExists(baseDir+"Bloodmoon.esm"))
     {
-      files.push_front("Bloodmoon.esm");
+      files.push_front(MWTP::DepFile("Bloodmoon.esm"));
     }//if
     if (!files.hasDepFile("Tribunal.esm") and FileExists(baseDir+"Tribunal.esm"))
     {
-      files.push_front("Tribunal.esm");
+      files.push_front(MWTP::DepFile("Tribunal.esm"));
     }//if
     if (!files.hasDepFile("Morrowind.esm"))
     {
-      files.push_front("Morrowind.esm");
+      files.push_front(MWTP::DepFile("Morrowind.esm"));
     }//if
   }//else
 
@@ -573,7 +573,7 @@ int main(int argc, char **argv)
   {
     std::cout << "Output file \""<<baseDir+outputFileName<<"\" was created successfully.\n";
     //now check file time of created file
-    MWTP::DepFile outDep = outputFileName;
+    MWTP::DepFile outDep(outputFileName);
     if (getFileSizeAndModificationTime(baseDir+outputFileName, outDep.size, outDep.modified))
     {
       //only change, if last file isn't master, because plugins will be loaded

@@ -160,7 +160,7 @@ int main(int argc, char **argv)
             {
               const std::string pluginFileName = std::string(argv[i+1]);
               ++i; //skip next parameter, because it's used as file name already
-              files.push_back(pluginFileName);
+              files.push_back(MWTP::DepFile(pluginFileName));
               std::cout << "Plugin file \""<<pluginFileName<<"\" was added.\n";
             }
             else
@@ -263,15 +263,15 @@ int main(int argc, char **argv)
   //Let's add master files, if necessary.
   if (!files.hasDepFile("Bloodmoon.esm") and FileExists(baseDir+"Bloodmoon.esm"))
   {
-    files.push_front("Bloodmoon.esm");
+    files.push_front(MWTP::DepFile("Bloodmoon.esm"));
   }//if
   if (!files.hasDepFile("Tribunal.esm") and FileExists(baseDir+"Tribunal.esm"))
   {
-    files.push_front("Tribunal.esm");
+    files.push_front(MWTP::DepFile("Tribunal.esm"));
   }//if
   if (!files.hasDepFile("Morrowind.esm"))
   {
-    files.push_front("Morrowind.esm");
+    files.push_front(MWTP::DepFile("Morrowind.esm"));
   }//if
 
   //try to get file information

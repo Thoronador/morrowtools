@@ -550,7 +550,7 @@ TEST_CASE("MWTP::LockpickRecord")
       REQUIRE_FALSE( record.loadFromStream(stream) );
     }
 
-    SECTION("corrupt data: mulitple SCRI records")
+    SECTION("corrupt data: multiple SCRI records")
     {
       const auto data = "LOCK\x99\0\0\0\0\0\0\0\0\0\0\0NAME\x0D\0\0\0skeleton_key\0MODL\x13\0\0\0m\\Skeleton_key.NIF\0FNAM\x13\0\0\0Der Schlosswandler\0LKDT\x10\0\0\0\0\0\0?\xE8\x03\0\0\0\0\xA0@2\0\0\0ITEX\x16\0\0\0m\\tx_skeleton_key.tga\0SCRI\x04\0\0\0foo\0SCRI\x04\0\0\0foo\0"sv;
       std::istringstream stream;

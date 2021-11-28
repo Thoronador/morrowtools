@@ -27,6 +27,7 @@ set(component_tests_sources
     ../../mw/base/records/GlobalRecord.cpp
     ../../mw/base/records/GMSTRecord.cpp
     ../../mw/base/records/ItemRecord.cpp
+    ../../mw/base/records/LockpickRecord.cpp
     ../../mw/base/records/NPCRecord.cpp
     ../../mw/base/records/PreNPCRecord.cpp
     ../../mw/base/records/ProbeRecord.cpp
@@ -135,6 +136,7 @@ set(component_tests_sources
     mw/base/records/GlobalRecord.cpp
     mw/base/records/GMSTRecord.cpp
     mw/base/records/ItemRecord.cpp
+    mw/base/records/LockpickRecord.cpp
     mw/base/records/NPC_AIActivate.cpp
     mw/base/records/NPC_AIEscort.cpp
     mw/base/records/NPC_AIFollow.cpp

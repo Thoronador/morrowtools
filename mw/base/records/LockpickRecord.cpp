@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011, 2012, 2013  Thoronador
+    Copyright (C) 2009, 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,7 +19,6 @@
 */
 
 #include "LockpickRecord.hpp"
-#include <cstring>
 #include <iostream>
 #include "../MW_Constants.hpp"
 #include "../HelperIO.hpp"
@@ -29,51 +28,48 @@ namespace MWTP
 
 LockpickRecord::LockpickRecord()
 : BasicRecord(),
-  recordID(""),
-  Name(""),
-  ModelPath(""),
-  //lockpick data
+  recordID(std::string()),
+  Name(std::string()),
+  ModelPath(std::string()),
   Weight(0.0f),
   Value(0),
   Quality(0.0f),
   Uses(0),
-  //end of lockpick data
-  InventoryIcon(""),
-  ScriptID("")
+  InventoryIcon(std::string()),
+  ScriptID(std::string())
 {}
 
 bool LockpickRecord::equals(const LockpickRecord& other) const
 {
-  return ((recordID==other.recordID) and (Name==other.Name)
-      and (ModelPath==other.ModelPath) and (Weight==other.Weight)
-      and (Value==other.Value) and (Quality==other.Quality)
-      and (Uses==other.Uses) and (InventoryIcon==other.InventoryIcon)
-      and (ScriptID==other.ScriptID));
+  return (recordID == other.recordID) && (Name == other.Name)
+      && (ModelPath == other.ModelPath) && (Weight == other.Weight)
+      && (Value == other.Value) && (Quality == other.Quality)
+      && (Uses == other.Uses) && (InventoryIcon == other.InventoryIcon)
+      && (ScriptID == other.ScriptID);
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
 bool LockpickRecord::saveToStream(std::ostream& output) const
 {
-  output.write((const char*) &cLOCK, 4);
-  uint32_t Size;
-  Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +recordID.length()+1 /* length of mesh path +1 byte for NUL termination */
-        +4 /* MODL */ +4 /* 4 bytes for length */
-        +ModelPath.length()+1 /* length of mesh path +1 byte for NUL termination */
-        +4 /* FNAM */ +4 /* 4 bytes for length */
-        +Name.length()+1 /* length of mesh path +1 byte for NUL termination */
-        +4 /* LKDT */ +4 /* 4 bytes for length */ + 16 /* size of lockpick data */
-        +4 /* ITEX */ +4 /* 4 bytes for length */
-        +InventoryIcon.length()+1 /* length of mesh path +1 byte for NUL termination */;
+  output.write(reinterpret_cast<const char*>(&cLOCK), 4);
+  uint32_t Size = 4 /* NAME */ + 4 /* 4 bytes for length */
+    + recordID.length() + 1 /* length of ID +1 byte for NUL termination */
+    + 4 /* MODL */ + 4 /* 4 bytes for length */
+    + ModelPath.length() + 1 /* length of path +1 byte for NUL termination */
+    + 4 /* FNAM */ + 4 /* 4 bytes for length */
+    + Name.length() + 1 /* length of name +1 byte for NUL termination */
+    + 4 /* LKDT */ + 4 /* 4 bytes for length */ + 16 /* size of lockpick data */
+    + 4 /* ITEX */ + 4 /* 4 bytes for length */
+    + InventoryIcon.length() + 1 /* length of icon path +1 byte for NUL termination */;
 
   if (!ScriptID.empty())
   {
-    Size = Size + 4 /* SCRI */ +4 /* 4 bytes for length */
-          +ScriptID.length()+1 /* length of script ID +1 byte for NUL termination */;
+    Size = Size + 4 /* SCRI */ + 4 /* 4 bytes for length */
+          + ScriptID.length() + 1 /* length of script ID +1 byte for NUL termination */;
   }
-  output.write((const char*) &Size, 4);
-  output.write((const char*) &HeaderOne, 4);
-  output.write((const char*) &HeaderFlags, 4);
+  output.write(reinterpret_cast<const char*>(&Size), 4);
+  output.write(reinterpret_cast<const char*>(&HeaderOne), 4);
+  output.write(reinterpret_cast<const char*>(&HeaderFlags), 4);
 
   /*Lockpicks:
     NAME = Item ID, required
@@ -87,57 +83,45 @@ bool LockpickRecord::saveToStream(std::ostream& output) const
     ITEX = Inventory Icon
     SCRI = Script Name (optional) */
 
-  //write NAME
-  output.write((const char*) &cNAME, 4);
-  uint32_t SubLength = recordID.length()+1;
-  //write NAME's length
-  output.write((const char*) &SubLength, 4);
-  //write ID
+  // write ID (NAME)
+  output.write(reinterpret_cast<const char*>(&cNAME), 4);
+  uint32_t SubLength = recordID.length() + 1;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
   output.write(recordID.c_str(), SubLength);
 
-  //write MODL
-  output.write((const char*) &cMODL, 4);
-  SubLength = ModelPath.length()+1;
-  //write MODL's length
-  output.write((const char*) &SubLength, 4);
-  //write model path
+  // write model path (MODL)
+  output.write(reinterpret_cast<const char*>(&cMODL), 4);
+  SubLength = ModelPath.length() + 1;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
   output.write(ModelPath.c_str(), SubLength);
 
-  //write FNAM
-  output.write((const char*) &cFNAM, 4);
-  SubLength = Name.length()+1;
-  //write FNAM's length
-  output.write((const char*) &SubLength, 4);
-  //write lockpick's name
+  // write lock pick's name (FNAM)
+  output.write(reinterpret_cast<const char*>(&cFNAM), 4);
+  SubLength = Name.length() + 1;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
   output.write(Name.c_str(), SubLength);
 
-  //write LKDT
-  output.write((const char*) &cLKDT, 4);
-  SubLength = 16; /* length is always 16 bytes */
-  //write LKDT's length
-  output.write((const char*) &SubLength, 4);
-  //write lockpick data
-  output.write((const char*) &Weight, 4);
-  output.write((const char*) &Value, 4);
-  output.write((const char*) &Quality, 4);
-  output.write((const char*) &Uses, 4);
+  // write lock pick data (LKDT)
+  output.write(reinterpret_cast<const char*>(&cLKDT), 4);
+  SubLength = 16;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
+  output.write(reinterpret_cast<const char*>(&Weight), 4);
+  output.write(reinterpret_cast<const char*>(&Value), 4);
+  output.write(reinterpret_cast<const char*>(&Quality), 4);
+  output.write(reinterpret_cast<const char*>(&Uses), 4);
 
-  //write ITEX
-  output.write((const char*) &cITEX, 4);
-  SubLength = InventoryIcon.length()+1;
-  //write ITEX's length
-  output.write((const char*) &SubLength, 4);
-  //write inventory icon
+  // write inventory icon (ITEX)
+  output.write(reinterpret_cast<const char*>(&cITEX), 4);
+  SubLength = InventoryIcon.length() + 1;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
   output.write(InventoryIcon.c_str(), SubLength);
 
   if (!ScriptID.empty())
   {
-    //write SCRI
-    output.write((const char*) &cSCRI, 4);
-    SubLength = ScriptID.length()+1;
-    //write SCRI's length
-    output.write((const char*) &SubLength, 4);
-    //write script ID
+    // write script ID (SCRI)
+    output.write(reinterpret_cast<const char*>(&cSCRI), 4);
+    SubLength = ScriptID.length() + 1;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
     output.write(ScriptID.c_str(), SubLength);
   }
 
@@ -145,12 +129,12 @@ bool LockpickRecord::saveToStream(std::ostream& output) const
 }
 #endif
 
-bool LockpickRecord::loadFromStream(std::istream& in_File)
+bool LockpickRecord::loadFromStream(std::istream& input)
 {
-  uint32_t Size;
-  in_File.read((char*) &Size, 4);
-  in_File.read((char*) &HeaderOne, 4);
-  in_File.read((char*) &HeaderFlags, 4);
+  uint32_t Size = 0;
+  input.read(reinterpret_cast<char*>(&Size), 4);
+  input.read(reinterpret_cast<char*>(&HeaderOne), 4);
+  input.read(reinterpret_cast<char*>(&HeaderFlags), 4);
 
   /*Lockpicks:
     NAME = Item ID, required
@@ -167,118 +151,58 @@ bool LockpickRecord::loadFromStream(std::istream& in_File)
     Note: Sequence of ITEX and SCRI could also be changed.
   */
 
-  uint32_t SubRecName;
-  uint32_t SubLength, BytesRead;
-  SubRecName = SubLength = 0;
+  uint32_t BytesRead = 0;
 
-  //read NAME
-  in_File.read((char*) &SubRecName, 4);
-  BytesRead = 4;
-  if (SubRecName!=cNAME)
+  // read NAME
+  char buffer[256];
+  if (!loadString256WithHeader(input, recordID, buffer, cNAME, BytesRead))
   {
-    UnexpectedRecord(cNAME, SubRecName);
+    std::cerr << "Error while reading subrecord NAME of LOCK.\n";
     return false;
   }
-  //NAME's length
-  in_File.read((char*) &SubLength, 4);
-  BytesRead += 4;
-  if (SubLength>255)
-  {
-    std::cout << "Error: subrecord NAME of LOCK is longer than 255 bytes.\n";
-    return false;
-  }
-  //read lockpick's ID
-  char Buffer[256];
-  memset(Buffer, '\0', 256);
-  in_File.read(Buffer, SubLength);
-  BytesRead += SubLength;
-  if (!in_File.good())
-  {
-    std::cout << "Error while reading subrecord NAME of LOCK.\n";
-    return false;
-  }
-  recordID = std::string(Buffer);
 
-  //read MODL
-  in_File.read((char*) &SubRecName, 4);
-  BytesRead += 4;
-  if (SubRecName!=cMODL)
+  // read model path (MODL)
+  if (!loadString256WithHeader(input, ModelPath, buffer, cMODL, BytesRead))
   {
-    UnexpectedRecord(cMODL, SubRecName);
+    std::cerr << "Error while reading subrecord MODL of LOCK.\n";
     return false;
   }
-  //MODL's length
-  in_File.read((char*) &SubLength, 4);
-  BytesRead += 4;
-  if (SubLength>255)
-  {
-    std::cout << "Error: subrecord MODL of LOCK is longer than 255 bytes.\n";
-    return false;
-  }
-  //read lockpick's model path
-  memset(Buffer, '\0', 256);
-  in_File.read(Buffer, SubLength);
-  BytesRead += SubLength;
-  if (!in_File.good())
-  {
-    std::cout << "Error while reading subrecord MODL of LOCK.\n";
-    return false;
-  }
-  ModelPath = std::string(Buffer);
 
-  //read FNAM
-  in_File.read((char*) &SubRecName, 4);
-  BytesRead += 4;
-  if (SubRecName!=cFNAM)
+  // read object's name (FNAM)
+  if (!loadString256WithHeader(input, Name, buffer, cFNAM, BytesRead))
   {
-    UnexpectedRecord(cFNAM, SubRecName);
+    std::cerr << "Error while reading subrecord FNAM of LOCK.\n";
     return false;
   }
-  //FNAM's length
-  in_File.read((char*) &SubLength, 4);
-  BytesRead += 4;
-  if (SubLength>255)
-  {
-    std::cout << "Error: subrecord FNAM of LOCK is longer than 255 bytes.\n";
-    return false;
-  }
-  //read lockpick's real name
-  memset(Buffer, '\0', 256);
-  in_File.read(Buffer, SubLength);
-  BytesRead += SubLength;
-  if (!in_File.good())
-  {
-    std::cout << "Error while reading subrecord FNAM of LOCK.\n";
-    return false;
-  }
-  Name = std::string(Buffer);
 
-  //read LKDT
-  in_File.read((char*) &SubRecName, 4);
+  // read LKDT
+  uint32_t SubRecName = 0;
+  input.read(reinterpret_cast<char*>(&SubRecName), 4);
   BytesRead += 4;
-  if (SubRecName!=cLKDT)
+  if (SubRecName != cLKDT)
   {
     UnexpectedRecord(cLKDT, SubRecName);
     return false;
   }
-  //LKDT's length
-  in_File.read((char*) &SubLength, 4);
+  // LKDT's length
+  uint32_t SubLength = 0;
+  input.read(reinterpret_cast<char*>(&SubLength), 4);
   BytesRead += 4;
-  if (SubLength!=16)
+  if (SubLength != 16)
   {
-    std::cout <<"Error: sub record LKDT of LOCK has invalid length ("<<SubLength
-              <<" bytes). Should be 16 bytes.\n";
+    std::cerr << "Error: Sub record LKDT of LOCK has invalid length ("
+              << SubLength << " bytes). Should be 16 bytes.\n";
     return false;
   }
-  //read lockpick data
-  in_File.read((char*) &Weight, 4);
-  in_File.read((char*) &Value, 4);
-  in_File.read((char*) &Quality, 4);
-  in_File.read((char*) &Uses, 4);
+  // read lock pick data
+  input.read(reinterpret_cast<char*>(&Weight), 4);
+  input.read(reinterpret_cast<char*>(&Value), 4);
+  input.read(reinterpret_cast<char*>(&Quality), 4);
+  input.read(reinterpret_cast<char*>(&Uses), 4);
   BytesRead += 16;
-  if (!in_File.good())
+  if (!input.good())
   {
-    std::cout << "Error while reading subrecord LKDT of LOCK.\n";
+    std::cerr << "Error while reading subrecord LKDT of LOCK.\n";
     return false;
   }
 
@@ -287,82 +211,56 @@ bool LockpickRecord::loadFromStream(std::istream& in_File)
   bool hasITEX = false;
   bool hasSCRI = false;
 
-  while (BytesRead<Size)
+  while (BytesRead < Size)
   {
-    //read next subrecord
-    in_File.read((char*) &SubRecName, 4);
+    // read next subrecord
+    input.read(reinterpret_cast<char*>(&SubRecName), 4);
     BytesRead += 4;
     switch (SubRecName)
     {
       case cITEX:
            if (hasITEX)
            {
-             std::cout << "Error: record LOCK seems to have two ITEX subrecords.\n";
+             std::cerr << "Error: Record LOCK seems to have two ITEX subrecords.\n";
              return false;
            }
-           //ITEX's length
-           in_File.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength>255)
+           if (!loadString256(input, InventoryIcon, buffer, cITEX, BytesRead))
            {
-             std::cout << "Error: subrecord ITEX of LOCK is longer than 255 bytes.\n";
+             std::cerr << "Error while reading subrecord ITEX of LOCK.\n";
              return false;
            }
-           //read lockpick's icon texture path
-           memset(Buffer, '\0', 256);
-           in_File.read(Buffer, SubLength);
-           BytesRead += SubLength;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord ITEX of LOCK.\n";
-             return false;
-           }
-           InventoryIcon = std::string(Buffer);
            hasITEX = true;
            break;
       case cSCRI:
            if (hasSCRI)
            {
-             std::cout << "Error: record LOCK seems to have two SCRI subrecords.\n";
+             std::cerr << "Error: Record LOCK seems to have two SCRI subrecords.\n";
              return false;
            }
-           //SCRI's length
-           in_File.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength>255)
+           if (!loadString256(input, ScriptID, buffer, cSCRI, BytesRead))
            {
-             std::cout << "Error: subrecord SCRI of LOCK is longer than 255 bytes.\n";
+             std::cerr << "Error while reading subrecord SCRI of LOCK.\n";
              return false;
            }
-           //read lockpick's script name
-           memset(Buffer, '\0', 256);
-           in_File.read(Buffer, SubLength);
-           BytesRead += SubLength;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord SCRI of LOCK.\n";
-             return false;
-           }
-           ScriptID = std::string(Buffer);
            hasSCRI = true;
            break;
       default:
-           //unexpected record found
-           std::cout << "Error: expected record name ITEX or SCRI was not "
-                     << "found. Instead, \""<<IntTo4Char(SubRecName)
+           // unexpected record found
+           std::cerr << "Error: Expected record name ITEX or SCRI was not "
+                     << "found. Instead, \"" << IntTo4Char(SubRecName)
                      << "\" was found.\n";
            return false;
-    }//swi
-  }//while
+    }
+  }
 
-  //at least ITEX should have been present
+  // at least ITEX should have been present
   if (!hasITEX)
   {
-    std::cout << "Error: record LOCK seems to have no ITEX subrecord.\n";
+    std::cerr << "Error: Record LOCK seems to have no ITEX subrecord.\n";
     return false;
   }
 
-  return in_File.good();
+  return true;
 }
 
-} //namespace
+} // namespace

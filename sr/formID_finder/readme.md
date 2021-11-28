@@ -2,7 +2,7 @@
 
 formID_finder is a command-line tool to search for
 [form IDs](https://en.uesp.net/wiki/Skyrim:Form_ID) in TES V: Skyrim's game
-data, more specifially its ESM files. Form IDs are a kind of identifier used
+data, more specifically its ESM files. Form IDs are a kind of identifier used
 for everything in the game. They are mainly used in console commands on PC,
 e. g. as a workaround to fix broken quests or similar bugs.
 

@@ -79,6 +79,8 @@
 		<Unit filename="../../mw/base/records/ItemRecord.hpp" />
 		<Unit filename="../../mw/base/records/LockpickRecord.cpp" />
 		<Unit filename="../../mw/base/records/LockpickRecord.hpp" />
+		<Unit filename="../../mw/base/records/MiscItemRecord.cpp" />
+		<Unit filename="../../mw/base/records/MiscItemRecord.hpp" />
 		<Unit filename="../../mw/base/records/NPCRecord.cpp" />
 		<Unit filename="../../mw/base/records/NPCRecord.hpp" />
 		<Unit filename="../../mw/base/records/PreNPCRecord.cpp" />
@@ -276,6 +278,7 @@
 		<Unit filename="mw/base/records/GlobalRecord.cpp" />
 		<Unit filename="mw/base/records/ItemRecord.cpp" />
 		<Unit filename="mw/base/records/LockpickRecord.cpp" />
+		<Unit filename="mw/base/records/MiscItemRecord.cpp" />
 		<Unit filename="mw/base/records/NPC_AIActivate.cpp" />
 		<Unit filename="mw/base/records/NPC_AIEscort.cpp" />
 		<Unit filename="mw/base/records/NPC_AIFollow.cpp" />

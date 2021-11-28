@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011, 2013  Thoronador
+    Copyright (C) 2009, 2011, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -29,56 +29,50 @@ namespace MWTP
 
 MiscItemRecord::MiscItemRecord()
 : BasicRecord(),
-  recordID(""),
-  ModelPath(""),
-  MiscItemName(""),
-  //miscellaneous item data
+  recordID(std::string()),
+  ModelPath(std::string()),
+  Name(std::string()),
+  // miscellaneous item data
   Weight(0.0f),
-  Value(-1),
+  Value(0),
   OtherStuff(0),
-  //end of miscellaneous item data
-  InventoryIcon(""),
-  ScriptID("")
+  // end of miscellaneous item data
+  InventoryIcon(std::string()),
+  ScriptID(std::string())
 {}
-
-MiscItemRecord::~MiscItemRecord()
-{
-  //empty
-}
 
 bool MiscItemRecord::equals(const MiscItemRecord& other) const
 {
-  return ((recordID==other.recordID) and (ModelPath==other.ModelPath)
-      and (MiscItemName==other.MiscItemName) and (Weight==other.Weight)
-      and (Value==other.Value) and (OtherStuff==other.OtherStuff)
-      and (InventoryIcon==other.InventoryIcon) and (ScriptID==other.ScriptID));
+  return (recordID == other.recordID) && (ModelPath == other.ModelPath)
+      && (Name == other.Name) && (Weight == other.Weight)
+      && (Value == other.Value) && (OtherStuff == other.OtherStuff)
+      && (InventoryIcon == other.InventoryIcon) && (ScriptID == other.ScriptID);
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
 bool MiscItemRecord::saveToStream(std::ostream& output) const
 {
-  output.write((const char*) &cMISC, 4);
-  uint32_t Size;
-  Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +recordID.length()+1 /* length of ID +1 byte for NUL termination */
-        +4 /* MODL */ +4 /* 4 bytes for length */
-        +ModelPath.length()+1 /* length of name +1 byte for NUL termination */
-        +4 /* MCDT */ +4 /* 4 bytes for length */ + 12 /* size of misc. data */
-        +4 /* ITEX */ +4 /* 4 bytes for length */
-        +InventoryIcon.length()+1 /* length of icon path +1 byte for NUL termination */;
-  if (!MiscItemName.empty())
+  output.write(reinterpret_cast<const char*>(&cMISC), 4);
+  uint32_t Size = 4 /* NAME */ + 4 /* 4 bytes for length */
+    + recordID.length() + 1 /* length of ID +1 byte for NUL termination */
+    + 4 /* MODL */ + 4 /* 4 bytes for length */
+    + ModelPath.length() + 1 /* length of name +1 byte for NUL termination */
+    + 4 /* MCDT */ + 4 /* 4 bytes for length */ + 12 /* size of misc. data */
+    + 4 /* ITEX */ + 4 /* 4 bytes for length */
+    + InventoryIcon.length() + 1 /* length of path +1 byte for NUL termination */;
+  if (!Name.empty())
   {
-    Size = Size +4 /* FNAM */ +4 /* 4 bytes for length */
-          +MiscItemName.length()+1 /* length of name +1 byte for NUL termination */;
+    Size = Size + 4 /* FNAM */ + 4 /* 4 bytes for length */
+         + Name.length() + 1 /* length of name +1 byte for NUL termination */;
   }
   if (!ScriptID.empty())
   {
-    Size = Size+ 4 /* SCRI */ +4 /* 4 bytes for length */
-          +ScriptID.length()+1 /* length of script ID +1 byte for NUL termination */ ;
+    Size = Size + 4 /* SCRI */ + 4 /* 4 bytes for length */
+         + ScriptID.length() + 1 /* length of ID +1 byte for NUL termination */;
   }
-  output.write((const char*) &Size, 4);
-  output.write((const char*) &HeaderOne, 4);
-  output.write((const char*) &HeaderFlags, 4);
+  output.write(reinterpret_cast<const char*>(&Size), 4);
+  output.write(reinterpret_cast<const char*>(&HeaderOne), 4);
+  output.write(reinterpret_cast<const char*>(&HeaderFlags), 4);
 
   /*Misc. Items:
     NAME = item ID, required
@@ -92,59 +86,47 @@ bool MiscItemRecord::saveToStream(std::ostream& output) const
     SCRI = script ID string (optional)
   */
 
-  //write NAME
-  output.write((const char*) &cNAME, 4);
-  uint32_t SubLength = recordID.length()+1;
-  //write NAME's length
-  output.write((const char*) &SubLength, 4);
-  //write ID
+  // write ID (NAME)
+  output.write(reinterpret_cast<const char*>(&cNAME), 4);
+  uint32_t SubLength = recordID.length() + 1;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
   output.write(recordID.c_str(), SubLength);
 
-  //write MODL
-  output.write((const char*) &cMODL, 4);
-  SubLength = ModelPath.length()+1;
-  //write MODL's length
-  output.write((const char*) &SubLength, 4);
-  //write model path
+  // write model path (MODL)
+  output.write(reinterpret_cast<const char*>(&cMODL), 4);
+  SubLength = ModelPath.length() + 1;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
   output.write(ModelPath.c_str(), SubLength);
 
-  if (!MiscItemName.empty())
+  if (!Name.empty())
   {
-    //write FNAM
-    output.write((const char*) &cFNAM, 4);
-    SubLength = MiscItemName.length()+1;
-    //write FNAM's length
-    output.write((const char*) &SubLength, 4);
-    //write misc. items's name
-    output.write(MiscItemName.c_str(), SubLength);
+    // write misc. item's name (FNAM)
+    output.write(reinterpret_cast<const char*>(&cFNAM), 4);
+    SubLength = Name.length() + 1;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
+    output.write(Name.c_str(), SubLength);
   }
 
-  //write MCDT
-  output.write((const char*) &cMCDT, 4);
-  SubLength = 12; /* fixed length of 12 bytes */
-  //write MCDT's length
-  output.write((const char*) &SubLength, 4);
-  //write misc. data
-  output.write((const char*) &Weight, 4);
-  output.write((const char*) &Value, 4);
-  output.write((const char*) &OtherStuff, 4);
+  // write misc. data (MCDT)
+  output.write(reinterpret_cast<const char*>(&cMCDT), 4);
+  SubLength = 12;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
+  output.write(reinterpret_cast<const char*>(&Weight), 4);
+  output.write(reinterpret_cast<const char*>(&Value), 4);
+  output.write(reinterpret_cast<const char*>(&OtherStuff), 4);
 
-  //write ITEX
-  output.write((const char*) &cITEX, 4);
-  SubLength = InventoryIcon.length()+1;
-  //write ITEX's length
-  output.write((const char*) &SubLength, 4);
-  //write inventory icon
+  // write inventory icon (ITEX)
+  output.write(reinterpret_cast<const char*>(&cITEX), 4);
+  SubLength = InventoryIcon.length() + 1;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
   output.write(InventoryIcon.c_str(), SubLength);
 
   if (!ScriptID.empty())
   {
-    //write SCRI
-    output.write((const char*) &cSCRI, 4);
-    SubLength = ScriptID.length()+1;
-    //write SCRI's length
-    output.write((const char*) &SubLength, 4);
-    //write script ID
+    // write script ID (SCRI)
+    output.write(reinterpret_cast<const char*>(&cSCRI), 4);
+    SubLength = ScriptID.length() + 1;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
     output.write(ScriptID.c_str(), SubLength);
   }
 
@@ -152,12 +134,12 @@ bool MiscItemRecord::saveToStream(std::ostream& output) const
 }
 #endif
 
-bool MiscItemRecord::loadFromStream(std::istream& in_File)
+bool MiscItemRecord::loadFromStream(std::istream& input)
 {
-  uint32_t Size;
-  in_File.read((char*) &Size, 4);
-  in_File.read((char*) &HeaderOne, 4);
-  in_File.read((char*) &HeaderFlags, 4);
+  uint32_t Size = 0;
+  input.read(reinterpret_cast<char*>(&Size), 4);
+  input.read(reinterpret_cast<char*>(&HeaderOne), 4);
+  input.read(reinterpret_cast<char*>(&HeaderFlags), 4);
 
   /*Misc. Items:
     NAME = item ID, required
@@ -171,121 +153,70 @@ bool MiscItemRecord::loadFromStream(std::istream& in_File)
     SCRI = script ID string (optional)
   */
 
-  uint32_t SubRecName;
-  uint32_t SubLength, BytesRead;
-  SubRecName = SubLength = 0;
+  uint32_t bytesRead = 0;
 
-  //read NAME
-  in_File.read((char*) &SubRecName, 4);
-  if (SubRecName!=cNAME)
+  // read item ID (NAME)
+  char buffer[256];
+  if (!loadString256WithHeader(input, recordID, buffer, cNAME, bytesRead))
   {
-    UnexpectedRecord(cNAME, SubRecName);
+    std::cerr << "Error while reading subrecord NAME of MISC!\n";
     return false;
   }
-  //NAME's length
-  in_File.read((char*) &SubLength, 4);
-  BytesRead = 8;
-  if (SubLength>255)
-  {
-    std::cout << "Error: subrecord NAME of MISC is longer than 255 characters.\n";
-    return false;
-  }
-  //read Misc Item ID
-  char Buffer[256];
-  memset(Buffer, '\0', 256);
-  in_File.read(Buffer, SubLength);
-  BytesRead += SubLength;
-  if (!in_File.good())
-  {
-    std::cout << "Error while reading subrecord NAME of MISC!\n";
-    return false;
-  }
-  recordID = std::string(Buffer);
 
-  //read MODL
-  in_File.read((char*) &SubRecName, 4);
-  BytesRead += 4;
-  if (SubRecName!=cMODL)
+  // read model path (MODL)
+  if (!loadString256WithHeader(input, ModelPath, buffer, cMODL, bytesRead))
   {
-    UnexpectedRecord(cMODL, SubRecName);
+    std::cerr << "Error while reading subrecord MODL of MISC!\n";
     return false;
   }
-  //MODL's length
-  in_File.read((char*) &SubLength, 4);
-  BytesRead += 4;
-  if (SubLength>255)
-  {
-    std::cout << "Error: Subrecord MODL of MISC is longer than 255 characters.\n";
-    return false;
-  }
-  //read model path
-  memset(Buffer, '\0', 256);
-  in_File.read(Buffer, SubLength);
-  BytesRead += SubLength;
-  if (!in_File.good())
-  {
-    std::cout << "Error while reading subrecord MODL of MISC!\n";
-    return false;
-  }
-  ModelPath = std::string(Buffer);
 
-  //read FNAM (may not be present sometimes)
-  in_File.read((char*) &SubRecName, 4);
-  BytesRead += 4;
-  if (SubRecName==cFNAM)
+  // read FNAM (may not be present sometimes)
+  uint32_t SubRecName = 0;
+  input.read(reinterpret_cast<char*>(&SubRecName), 4);
+  bytesRead += 4;
+  if (SubRecName == cFNAM)
   {
-    //FNAM's length
-    in_File.read((char*) &SubLength, 4);
-    BytesRead += 4;
-    if (SubLength>255)
+    // read item's name (FNAM)
+    if (!loadString256(input, Name, buffer, cFNAM, bytesRead))
     {
-      std::cout << "Error: Subrecord FNAM of MISC is longer than 255 characters.\n";
+      std::cerr << "Error while reading subrecord FNAM of MISC!\n";
       return false;
     }
-    //read item's name
-    memset(Buffer, '\0', 256);
-    in_File.read(Buffer, SubLength);
-    BytesRead += SubLength;
-    if (!in_File.good())
-    {
-      std::cout << "Error while reading subrecord FNAM of MISC!\n";
-      return false;
-    }
-    MiscItemName = std::string(Buffer);
 
-    //read MCDT
-    in_File.read((char*) &SubRecName, 4);
-    BytesRead += 4;
+    // read MCDT
+    input.read(reinterpret_cast<char*>(&SubRecName), 4);
+    bytesRead += 4;
   }
   else
   {
-    MiscItemName.clear();
+    Name.clear();
   }
 
-  //read MCDT
-  //sub record name was already read above
-  if (SubRecName!=cMCDT)
+  // read MCDT
+  // sub record name was already read above
+  if (SubRecName != cMCDT)
   {
     UnexpectedRecord(cMCDT, SubRecName);
     return false;
   }
-  //MCDT's length
-  in_File.read((char*) &SubLength, 4);
-  BytesRead += 4;
-  if (SubLength!=12)
+  // MCDT's length
+  uint32_t SubLength = 0;
+  input.read(reinterpret_cast<char*>(&SubLength), 4);
+  bytesRead += 4;
+  if (SubLength != 12)
   {
-    std::cout << "Error: Subrecord MODL of MISC has invalid length ("<<SubLength
-              <<" bytes). Should be 12 bytes.\n";
+    std::cerr << "Error: Subrecord MODL of MISC has invalid length ("
+              << SubLength << " bytes). Should be 12 bytes.\n";
     return false;
   }
-  //read misc. data
-  in_File.read((char*) &Weight, 4);
-  in_File.read((char*) &Value, 4);
-  in_File.read((char*) &OtherStuff, 4);
-  BytesRead += 12;
-  if (!in_File.good())
+  // read misc. data
+  input.read(reinterpret_cast<char*>(&Weight), 4);
+  input.read(reinterpret_cast<char*>(&Value), 4);
+  input.read(reinterpret_cast<char*>(&OtherStuff), 4);
+  bytesRead += 12;
+  if (!input.good())
   {
-    std::cout << "Error while reading subrecord MCDT of MISC!\n";
+    std::cerr << "Error while reading subrecord MCDT of MISC!\n";
     return false;
   }
 
@@ -293,75 +224,51 @@ bool MiscItemRecord::loadFromStream(std::istream& in_File)
   ScriptID.clear();
   bool hasITEX = false;
   bool hasSCRI = false;
-  while (BytesRead<Size)
+  while (bytesRead < Size)
   {
-    //read next subrecord header
-    in_File.read((char*) &SubRecName, 4);
-    BytesRead += 4;
+    // read next subrecord header
+    input.read(reinterpret_cast<char*>(&SubRecName), 4);
+    bytesRead += 4;
     switch (SubRecName)
     {
       case cITEX:
            if (hasITEX)
            {
-             std::cout << "Error: record MISC seems to have two ITEX subrecords.\n";
+             std::cerr << "Error: Record MISC seems to have two ITEX subrecords.\n";
              return false;
            }
-           //ITEX's length
-           in_File.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength>255)
+           // read inventory icon (ITEX)
+           if (!loadString256(input, InventoryIcon, buffer, cITEX, bytesRead))
            {
-             std::cout << "Error: Subrecord ITEX of MISC is longer than 255 characters.\n";
+             std::cerr << "Error while reading subrecord ITEX of MISC!\n";
              return false;
            }
-           //read inventory icon
-           memset(Buffer, '\0', 256);
-           in_File.read(Buffer, SubLength);
-           BytesRead += SubLength;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord ITEX of MISC!\n";
-             return false;
-           }
-           InventoryIcon = std::string(Buffer);
            hasITEX = true;
            break;
       case cSCRI:
            if (hasSCRI)
            {
-             std::cout << "Error: record MISC seems to have two SCRI subrecords.\n";
+             std::cerr << "Error: Record MISC seems to have two SCRI subrecords.\n";
              return false;
            }
-           //SCRI's length
-           in_File.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength>255)
+           // read script ID (SCRI)
+           if (!loadString256(input, ScriptID, buffer, cSCRI, bytesRead))
            {
-             std::cout << "Error: Subrecord SCRI of MISC is longer than 255 characters.\n";
+             std::cerr << "Error while reading subrecord SCRI of MISC!\n";
              return false;
            }
-           //read script ID
-           memset(Buffer, '\0', 256);
-           in_File.read(Buffer, SubLength);
-           BytesRead += SubLength;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord SCRI of MISC!\n";
-             return false;
-           }
-           ScriptID = std::string(Buffer);
            hasSCRI = true;
            break;
       default:
-           std::cout << "Error while reading MISC: expected record name ITEX "
+           std::cerr << "Error while reading MISC: Expected record name ITEX "
                      << "or SCRI was not found. Instead, \""
-                     << IntTo4Char(SubRecName)<<"\" was found.\n";
+                     << IntTo4Char(SubRecName) << "\" was found.\n";
            return false;
            break;
-    }//swi
-  }//while
+    }
+  }
 
-  return in_File.good();
+  return true;
 }
 
-} //namespace
+} // namespace

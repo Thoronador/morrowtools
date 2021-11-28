@@ -476,6 +476,15 @@ int main(int argc, char **argv)
     if (FileExists(dataDir + "Dragonborn.esm"))
       esmNames.push_back("Dragonborn.esm");
 
+    if (FileExists(dataDir + "ccBGSSSE001-Fish.esm"))
+      esmNames.push_back("ccBGSSSE001-Fish.esm");
+    if (FileExists(dataDir + "ccBGSSSE025-AdvDSGS.esm"))
+      esmNames.push_back("ccBGSSSE025-AdvDSGS.esm");
+    if (FileExists(dataDir + "ccBGSSSE037-Curios.esl"))
+      esmNames.push_back("ccBGSSSE037-Curios.esl");
+    if (FileExists(dataDir + "ccQDRSSE001-SurvivalMode.esl"))
+      esmNames.push_back("ccQDRSSE001-SurvivalMode.esl");
+
     if (!SRTP::getLoadOrder(esmNames, dataDir, loadOrder))
     {
       std::cerr << "Error: could not determine load order of ESM files!\n";

@@ -1,5 +1,11 @@
 # Form ID Finder - version history
 
+## Version 0.25-pre3, 2021-11-??
+- The four free creations from the Skyrim Anniversary Edition update for Skyrim
+  Special Edition will now be searched, too, if they are present. Those are:
+  ccBGSSSE001-Fish.esm, ccBGSSSE025-AdvDSGS.esm, ccBGSSSE037-Curios.esl, and
+  ccQDRSSE001-SurvivalMode.esl.
+
 ## Version 0.25-pre2, 2021-11-06
 - fix a bug that could lead to crash when the program is used with Skyrim
   Special Edition

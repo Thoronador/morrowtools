@@ -5,6 +5,7 @@
 # object and binary directories
 bin/
 obj/
+build/
 
 # Git repository
 .git/

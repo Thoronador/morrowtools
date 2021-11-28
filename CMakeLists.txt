@@ -48,6 +48,12 @@ if (CODE_COVERAGE)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage -fprofile-arcs -ftest-coverage")
 endif ()
 
+# fix for failed MinGW detection on GitHub Actions
+if (NOT MINGW AND ${CMAKE_CXX_COMPILER} MATCHES "mingw")
+  message(STATUS "Note: Applying MinGW detection fix for GHA.")
+  set(MINGW 1)
+endif()
+
 # Recurse into subdirectory for Morrowind-related executables.
 add_subdirectory (mw)
 # Recurse into subdirectory for Skyrim-related executables.

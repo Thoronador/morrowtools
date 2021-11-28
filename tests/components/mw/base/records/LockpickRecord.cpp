@@ -445,6 +445,21 @@ TEST_CASE("MWTP::LockpickRecord")
       REQUIRE_FALSE( record.loadFromStream(stream) );
     }
 
+    SECTION("corrupt data: missing ITEX")
+    {
+      const auto data = "LOCK\x63\0\0\0\0\0\0\0\0\0\0\0NAME\x0D\0\0\0skeleton_key\0MODL\x13\0\0\0m\\Skeleton_key.NIF\0FNAM\x13\0\0\0Der Schlosswandler\0LKDT\x10\0\0\0\0\0\0?\xE8\x03\0\0\0\0\xA0@2\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read LOCK, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      LockpickRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
     SECTION("corrupt data: length of ITEX > 256")
     {
       const auto data = "LOCK\x81\0\0\0\0\0\0\0\0\0\0\0NAME\x0D\0\0\0skeleton_key\0MODL\x13\0\0\0m\\Skeleton_key.NIF\0FNAM\x13\0\0\0Der Schlosswandler\0LKDT\x10\0\0\0\0\0\0?\xE8\x03\0\0\0\0\xA0@2\0\0\0ITEX\x16\x01\0\0m\\tx_skeleton_key.tga\0"sv;
@@ -463,6 +478,21 @@ TEST_CASE("MWTP::LockpickRecord")
     SECTION("corrupt data: length of ITEX is beyond stream")
     {
       const auto data = "LOCK\x81\0\0\0\0\0\0\0\0\0\0\0NAME\x0D\0\0\0skeleton_key\0MODL\x13\0\0\0m\\Skeleton_key.NIF\0FNAM\x13\0\0\0Der Schlosswandler\0LKDT\x10\0\0\0\0\0\0?\xE8\x03\0\0\0\0\xA0@2\0\0\0ITEX\x1F\0\0\0m\\tx_skeleton_key.tga\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read LOCK, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      LockpickRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: multiple ITEX subrecords")
+    {
+      const auto data = "LOCK\x9F\0\0\0\0\0\0\0\0\0\0\0NAME\x0D\0\0\0skeleton_key\0MODL\x13\0\0\0m\\Skeleton_key.NIF\0FNAM\x13\0\0\0Der Schlosswandler\0LKDT\x10\0\0\0\0\0\0?\xE8\x03\0\0\0\0\xA0@2\0\0\0ITEX\x16\0\0\0m\\tx_skeleton_key.tga\0ITEX\x16\0\0\0m\\tx_skeleton_key.tga\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 
@@ -508,6 +538,21 @@ TEST_CASE("MWTP::LockpickRecord")
     SECTION("corrupt data: length of SCRI is beyond stream")
     {
       const auto data = "LOCK\x8D\0\0\0\0\0\0\0\0\0\0\0NAME\x0D\0\0\0skeleton_key\0MODL\x13\0\0\0m\\Skeleton_key.NIF\0FNAM\x13\0\0\0Der Schlosswandler\0LKDT\x10\0\0\0\0\0\0?\xE8\x03\0\0\0\0\xA0@2\0\0\0ITEX\x16\0\0\0m\\tx_skeleton_key.tga\0SCRI\x0F\0\0\0foo\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read LOCK, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      LockpickRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: mulitple SCRI records")
+    {
+      const auto data = "LOCK\x99\0\0\0\0\0\0\0\0\0\0\0NAME\x0D\0\0\0skeleton_key\0MODL\x13\0\0\0m\\Skeleton_key.NIF\0FNAM\x13\0\0\0Der Schlosswandler\0LKDT\x10\0\0\0\0\0\0?\xE8\x03\0\0\0\0\xA0@2\0\0\0ITEX\x16\0\0\0m\\tx_skeleton_key.tga\0SCRI\x04\0\0\0foo\0SCRI\x04\0\0\0foo\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 

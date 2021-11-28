@@ -29,8 +29,8 @@ namespace MWTP
 LockpickRecord::LockpickRecord()
 : BasicRecord(),
   recordID(std::string()),
-  Name(std::string()),
   ModelPath(std::string()),
+  Name(std::string()),
   Weight(0.0f),
   Value(0),
   Quality(0.0f),
@@ -41,8 +41,8 @@ LockpickRecord::LockpickRecord()
 
 bool LockpickRecord::equals(const LockpickRecord& other) const
 {
-  return (recordID == other.recordID) && (Name == other.Name)
-      && (ModelPath == other.ModelPath) && (Weight == other.Weight)
+  return (recordID == other.recordID) && (ModelPath == other.ModelPath)
+      && (Name == other.Name) && (Weight == other.Weight)
       && (Value == other.Value) && (Quality == other.Quality)
       && (Uses == other.Uses) && (InventoryIcon == other.InventoryIcon)
       && (ScriptID == other.ScriptID);

@@ -32,8 +32,8 @@ namespace MWTP
 struct LockpickRecord: public BasicRecord
 {
   std::string recordID;
-  std::string Name;
   std::string ModelPath;
+  std::string Name;
   // lockpick data
   float Weight;
   int32_t Value;

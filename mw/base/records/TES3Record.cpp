@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011, 2012, 2013  Thoronador
+    Copyright (C) 2010, 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -31,8 +31,8 @@ TES3Record::TES3Record()
 : BasicRecord(),
   Version(1.2f),
   FileFlag(0),
-  companyName(""),
-  description(""),
+  companyName(std::string()),
+  description(std::string()),
   NumRecords(0),
   dependencies(DepFileList())
 {
@@ -40,26 +40,24 @@ TES3Record::TES3Record()
 
 bool TES3Record::equals(const TES3Record& other) const
 {
-  return ((Version==other.Version) and (FileFlag==other.FileFlag)
-      and (companyName==other.companyName) and (description==other.description)
-      and (NumRecords==other.NumRecords) and (dependencies==other.dependencies));
+  return (Version == other.Version) && (FileFlag == other.FileFlag)
+      && (companyName == other.companyName) && (description == other.description)
+      && (NumRecords == other.NumRecords) && (dependencies == other.dependencies);
 }
 
 bool TES3Record::saveToStream(std::ostream& output) const
 {
-  output.write((const char*) &cTES3, 4);
-  uint32_t Size;
-  Size = 4 /* HEDR */ +4 /* 4 bytes for length */ +300 /* fixed length is 300 bytes */;
-  unsigned int i;
-  for (i=0; i<dependencies.getSize(); ++i)
+  output.write(reinterpret_cast<const char*>(&cTES3), 4);
+  uint32_t Size = 4 /* HEDR */ + 4 /* 4 bytes for length */ + 300 /* fixed length is 300 bytes */;
+  for (size_t i = 0; i < dependencies.getSize(); ++i)
   {
-    Size = Size + 4 /* MAST */ +4 /* 4 bytes for length */
-           + dependencies.at(i).name.length()+1 /*length of string +1 byte for NUL-termination */
-           + 4 /* MAST */ +4 /* 4 bytes for length */ +8 /* size of DATA (fixed at 8 bytes) */;
-  }//for
-  output.write((const char*) &Size, 4);
-  output.write((const char*) &HeaderOne, 4);
-  output.write((const char*) &HeaderFlags, 4);
+    Size = Size + 4 /* MAST */ + 4 /* 4 bytes for length */
+           + dependencies.at(i).name.length() + 1 /* length of string + NUL */
+           + 4 /* MAST */ + 4 /* 4 bytes for length */ + 8 /* size of DATA */;
+  }
+  output.write(reinterpret_cast<const char*>(&Size), 4);
+  output.write(reinterpret_cast<const char*>(&HeaderOne), 4);
+  output.write(reinterpret_cast<const char*>(&HeaderFlags), 4);
 
   /*TES3:
     HEDR (300 bytes)
@@ -77,20 +75,18 @@ bool TES3Record::saveToStream(std::ostream& output) const
         The MAST and DATA records are always found together, the DATA following the MAST record
         that it refers to. */
 
-  //write HEDR
-  output.write((const char*) &cHEDR, 4);
-  //HEDR's length
-  uint32_t SubLength;
-  SubLength = 300;//fixed length of 300 bytes
-  output.write((const char*) &SubLength, 4);
-  //write Header data
+  // write header data (HEDR)
+  output.write(reinterpret_cast<const char*>(&cHEDR), 4);
+  // HEDR's length
+  uint32_t SubLength = 300;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
   // ---- write version (usually 1.3 for Tribunal/Bloodmoon, 1.2 for Morrowind)
-  output.write((const char*) &Version, 4);
+  output.write(reinterpret_cast<const char*>(&Version), 4);
   // ---- write file flag
-  output.write((const char*) &FileFlag, 4);
+  output.write(reinterpret_cast<const char*>(&FileFlag), 4);
   // ---- write company name/ creator of the master file/ plugin file
-  const std::string::size_type comp_len = companyName.length();
-  if (comp_len>31)
+  const auto comp_len = companyName.length();
+  if (comp_len > 31)
   {
     output.write(companyName.c_str(), 31);
     output.write("\0", 1);
@@ -103,58 +99,52 @@ bool TES3Record::saveToStream(std::ostream& output) const
   }
   // ---- write description (256 Bytes)
   std::string real_description = description;
-  if (description.length()>255)
+  if (description.length() > 255)
   {
     real_description = description.substr(0,255);
     std::cout << "Info: Description of TES3 was too long and was shortened to 255 characters.\n";
   }
   else
   {
-    real_description = real_description + std::string(256-real_description.length(), '\0');
+    real_description = real_description + std::string(256 - real_description.length(), '\0');
   }
   output.write(real_description.c_str(), 256);
   // ---- write number of records
-  output.write((const char*) &NumRecords, 4);
+  output.write(reinterpret_cast<const char*>(&NumRecords), 4);
   if (!output.good())
   {
-    std::cout << "Error while writing subrecord HEDR of TES3!\n";
+    std::cerr << "Error while writing subrecord HEDR of TES3!\n";
     return false;
   }
   // ---- write dependencies
-  for (i=0; i<dependencies.getSize(); ++i)
+  for (size_t i = 0; i < dependencies.getSize(); ++i)
   {
     // write MAST subrecord
-    // -- MAST header
-    output.write((const char*) &cMAST, 4);
-    // -- size of file name
-    Size = dependencies.at(i).name.length()+1; //length of string + one byte for NUL-character
-    output.write((const char*) &Size, 4);
-    // -- file name itself
-    output.write(dependencies.at(i).name.c_str(), Size);
+    output.write(reinterpret_cast<const char*>(&cMAST), 4);
+    SubLength = dependencies.at(i).name.length() + 1;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
+    output.write(dependencies.at(i).name.c_str(), SubLength);
     // write DATA subrecord
-    // -- DATA header
-    output.write((const char*) &cDATA, 4);
-    // -- size (is always 8 bytes for an int64)
-    Size = 8;
-    output.write((const char*) &Size, 4);
-    // -- write file size
-    output.write((const char*) &(dependencies.at(i).size), 8);
-  }//for
+    output.write(reinterpret_cast<const char*>(&cDATA), 4);
+    SubLength = 8;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
+    output.write(reinterpret_cast<const char*>(&dependencies.at(i).size), 8);
+  }
 
   return output.good();
 }
 
-bool TES3Record::loadFromStream(std::istream& in_File)
+bool TES3Record::loadFromStream(std::istream& input)
 {
   uint32_t Size = 0;
-  in_File.read((char*) &Size, 4);
-  in_File.read((char*) &HeaderOne, 4);
-  in_File.read((char*) &HeaderFlags, 4);
+  input.read(reinterpret_cast<char*>(&Size), 4);
+  input.read(reinterpret_cast<char*>(&HeaderOne), 4);
+  input.read(reinterpret_cast<char*>(&HeaderFlags), 4);
 
-  if (Size<308)
+  if (Size < 308)
   {
-    std::cout << "Error while reading TES3: size of TES3 record is less than "
-              <<"308 bytes, it cannot contain a valid .esp/.esm file header.\n";
+    std::cerr << "Error while reading TES3: size of TES3 record is less than "
+              << "308 bytes, it cannot contain a valid .esp/.esm file header.\n";
     return false;
   }
 
@@ -174,128 +164,107 @@ bool TES3Record::loadFromStream(std::istream& in_File)
         The MAST and DATA records are always found together, the DATA following the MAST record
         that it refers to. */
 
-  uint32_t SubRecName;
-  uint32_t SubLength, BytesRead;
-  SubRecName = SubLength = 0;
+  uint32_t SubRecName = 0;
+  uint32_t SubLength = 0;
 
-  //read HEDR
-  in_File.read((char*) &SubRecName, 4);
-  BytesRead = 4;
-  if (SubRecName!=cHEDR)
+  // read HEDR
+  input.read(reinterpret_cast<char*>(&SubRecName), 4);
+  uint32_t BytesRead = 4;
+  if (SubRecName != cHEDR)
   {
     UnexpectedRecord(cHEDR, SubRecName);
     return false;
   }
-  //HEDR's length
-  in_File.read((char*) &SubLength, 4);
+  // HEDR's length
+  input.read(reinterpret_cast<char*>(&SubLength), 4);
   BytesRead += 4;
-  if (SubLength!=300)
+  if (SubLength != 300)
   {
-    std::cout << "Error: subrecord HEDR of TES3 has wrong size."
-              << " Actual size: "<<SubLength<<" bytes. Must-have size: 300 bytes.\n";
+    std::cerr << "Error: Subrecord HEDR of TES3 has wrong size."
+              << " Actual size: " << SubLength << " bytes. Must-have size: 300 bytes.\n";
     return false;
   }
   //read HEDR's stuff
   // ---- red version
-  in_File.read((char*) &Version, 4);//version of file
+  input.read(reinterpret_cast<char*>(&Version), 4);
   // ---- red flags
-  in_File.read((char*) &FileFlag, 4);//file flag
+  input.read(reinterpret_cast<char*>(&FileFlag), 4);
   BytesRead += 8;
-  if (!in_File.good())
+  if (!input.good())
   {
-    std::cout << "Error while reading subrecord HEDR of TES3!\n";
+    std::cerr << "Error while reading subrecord HEDR of TES3!\n";
     return false;
   }
   // ---- read company name
   char Buffer[257];
   memset(Buffer, '\0', 33);
-  in_File.read(Buffer, 32);//company name
-  if (!in_File.good())
+  input.read(Buffer, 32);
+  if (!input.good())
   {
-    std::cout << "Error while reading subrecord HEDR of TES3!\n";
+    std::cerr << "Error while reading subrecord HEDR of TES3!\n";
     return false;
   }
   companyName = std::string(Buffer);
   // ---- read description
   memset(Buffer, '\0', 257);
-  in_File.read(Buffer, 256);//file description
-  if (!in_File.good())
+  input.read(Buffer, 256);
+  if (!input.good())
   {
-    std::cout << "Error while reading subrecord HEDR of TES3!\n";
+    std::cerr << "Error while reading subrecord HEDR of TES3!\n";
     return false;
   }
   description = std::string(Buffer);
   // ---- read total number of records
-  in_File.read((char*) &NumRecords, 4);//total number of records
-  BytesRead += (32+256+4);
-  if (!in_File.good())
+  input.read(reinterpret_cast<char*>(&NumRecords), 4);
+  BytesRead += (32 + 256 + 4);
+  if (!input.good())
   {
-    std::cout << "Error while reading subrecord HEDR of TES3!\n";
+    std::cerr << "Error while reading subrecord HEDR of TES3!\n";
     return false;
   }
 
-  //read the master files
+  // read the master files
   dependencies.clear();
-  while (BytesRead<Size)
+  while (BytesRead < Size)
   {
     DepFile temp_file_info;
-    //read MAST
-    in_File.read((char*) &SubRecName, 4);
-    BytesRead += 4;
-    if (SubRecName!=cMAST)
+    // read MAST
+    if (!loadString256WithHeader(input, temp_file_info.name, Buffer, cMAST, BytesRead))
     {
-      UnexpectedRecord(cMAST, SubRecName);
+      std::cerr << "Error while reading subrecord MAST of TES3!\n";
       return false;
     }
-    //MAST's length
-    in_File.read((char*) &SubLength, 4);
-    BytesRead += 4;
-    if (SubLength>256)
-    {
-      std::cout << "Error: subrecord MAST of TES3 is longer than 256 characters.\n";
-      return false;
-    }
-    //read MAST file name
-    memset(Buffer, '\0', 256);
-    in_File.read(Buffer, SubLength);
-    BytesRead += SubLength;
-    if (!in_File.good())
-    {
-      std::cout << "Error while reading subrecord MAST of TES3!\n";
-      return false;
-    }
-    temp_file_info.name = std::string(Buffer);
 
-    //reading DATA record
-    in_File.read((char*) &SubRecName, 4);
+    // reading DATA record
+    input.read(reinterpret_cast<char*>(&SubRecName), 4);
     BytesRead += 4;
-    if (SubRecName!=cDATA)
+    if (SubRecName != cDATA)
     {
       UnexpectedRecord(cDATA, SubRecName);
       return false;
     }
-    //reading size of DATA record
-    in_File.read((char*) &SubLength, 4);
+    // reading size of DATA record
+    input.read(reinterpret_cast<char*>(&SubLength), 4);
     BytesRead += 4;
-    if (SubLength!=8)
+    if (SubLength != 8)
     {
-      std::cout << "Error: Subrecord DATA of TES3 has invalid size ("
-                << SubLength <<" bytes). Should be 8 bytes.\n";
+      std::cerr << "Error: Subrecord DATA of TES3 has invalid size ("
+                << SubLength << " bytes). Should be 8 bytes.\n";
       return false;
     }
-    //read 8 bytes of DATA
-    in_File.read((char*) &(temp_file_info.size), 8);
+    // read 8 bytes of DATA
+    input.read(reinterpret_cast<char*>(&temp_file_info.size), 8);
     BytesRead += 8;
-    if (!in_File.good())
+    if (!input.good())
     {
-      std::cout << "Error while reading subrecord DATA of TES3.\n";
+      std::cerr << "Error while reading subrecord DATA of TES3.\n";
       return false;
     }
-    temp_file_info.modified = -1; //guess/preset
+    temp_file_info.modified = -1; // guess / preset
     dependencies.push_back(temp_file_info);
-  }//while
+  }
 
-  return in_File.good();
+  return input.good();
 }
 
-} //namespace
+} // namespace

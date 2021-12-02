@@ -93,6 +93,8 @@
 		<Unit filename="../../mw/base/records/SkillRecord.hpp" />
 		<Unit filename="../../mw/base/records/StaticRecord.cpp" />
 		<Unit filename="../../mw/base/records/StaticRecord.hpp" />
+		<Unit filename="../../mw/base/records/TES3Record.cpp" />
+		<Unit filename="../../mw/base/records/TES3Record.hpp" />
 		<Unit filename="../../mw/base/records/TravelDestination.cpp" />
 		<Unit filename="../../mw/base/records/TravelDestination.hpp" />
 		<Unit filename="../../sr/base/DependencySolver.cpp" />
@@ -289,6 +291,7 @@
 		<Unit filename="mw/base/records/RepairItemRecord.cpp" />
 		<Unit filename="mw/base/records/SkillRecord.cpp" />
 		<Unit filename="mw/base/records/StaticRecord.cpp" />
+		<Unit filename="mw/base/records/TES3Record.cpp" />
 		<Unit filename="mw/base/records/TravelDestination.cpp" />
 		<Unit filename="sr/base/DependencyElement.cpp" />
 		<Unit filename="sr/base/ESMFileContents.cpp" />

@@ -35,6 +35,7 @@ set(component_tests_sources
     ../../mw/base/records/RepairItemRecord.cpp
     ../../mw/base/records/SkillRecord.cpp
     ../../mw/base/records/StaticRecord.cpp
+    ../../mw/base/records/TES3Record.cpp
     ../../mw/base/records/TravelDestination.cpp
     ../../sr/base/DependencySolver.cpp
     ../../sr/base/ESMFileContents.cpp
@@ -149,6 +150,7 @@ set(component_tests_sources
     mw/base/records/RepairItemRecord.cpp
     mw/base/records/SkillRecord.cpp
     mw/base/records/StaticRecord.cpp
+    mw/base/records/TES3Record.cpp
     mw/base/records/TravelDestination.cpp
     sr/base/DependencyElement.cpp
     sr/base/ESMFileContents.cpp

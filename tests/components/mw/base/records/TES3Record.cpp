@@ -395,4 +395,51 @@ TEST_CASE("MWTP::TES3Record")
       REQUIRE_FALSE( record.loadFromStream(stream) );
     }
   }
+
+  SECTION("saveToStream")
+  {
+    SECTION("long company name is cut off automatically")
+    {
+      TES3Record record;
+      record.Version = 1.2f;
+      record.FileFlag = 1;
+      record.companyName = "ACME, Very Long Name Division # 123456789";
+      record.description = "Hauptdatei f\xFCr Morrowind";
+      record.NumRecords = 5;
+      record.dependencies.clear();
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( record.saveToStream(streamOut) );
+      // Check written data.
+      const auto data = "TES3\x34\x01\0\0\0\0\0\0\0\0\0\0HEDR,\x01\0\0\x9A\x99\x99?\x01\0\0\0ACME, Very Long Name Division #\0Hauptdatei f\xFCr Morrowind\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x05\0\0\0"sv;
+      REQUIRE( streamOut.str() == data );
+    }
+
+    SECTION("long description is cut off automatically")
+    {
+      TES3Record record;
+      record.Version = 1.2f;
+      record.FileFlag = 1;
+      record.companyName = "ACME";
+      record.description = std::string("Description2345678901234567890") // 30
+                          .append("123456789012345678901234567890") // 60
+                          .append("123456789012345678901234567890") // 90
+                          .append("123456789012345678901234567890") // 120
+                          .append("123456789012345678901234567890") // 150
+                          .append("123456789012345678901234567890") // 180
+                          .append("123456789012345678901234567890") // 210
+                          .append("123456789012345678901234567890") // 240
+                          .append("123456789012345678901234567890"); // 270
+      record.NumRecords = 5;
+      record.dependencies.clear();
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( record.saveToStream(streamOut) );
+      // Check written data.
+      const auto data = "TES3\x34\x01\0\0\0\0\0\0\0\0\0\0HEDR,\x01\0\0\x9A\x99\x99?\x01\0\0\0ACME\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0Description2345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345\0\x05\0\0\0"sv;
+      REQUIRE( streamOut.str() == data );
+    }
+  }
 }

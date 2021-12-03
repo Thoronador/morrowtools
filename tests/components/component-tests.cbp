@@ -77,6 +77,8 @@
 		<Unit filename="../../mw/base/records/GlobalRecord.hpp" />
 		<Unit filename="../../mw/base/records/ItemRecord.cpp" />
 		<Unit filename="../../mw/base/records/ItemRecord.hpp" />
+		<Unit filename="../../mw/base/records/LightRecord.cpp" />
+		<Unit filename="../../mw/base/records/LightRecord.hpp" />
 		<Unit filename="../../mw/base/records/LockpickRecord.cpp" />
 		<Unit filename="../../mw/base/records/LockpickRecord.hpp" />
 		<Unit filename="../../mw/base/records/MiscItemRecord.cpp" />
@@ -279,6 +281,7 @@
 		<Unit filename="mw/base/records/GenericRecord.cpp" />
 		<Unit filename="mw/base/records/GlobalRecord.cpp" />
 		<Unit filename="mw/base/records/ItemRecord.cpp" />
+		<Unit filename="mw/base/records/LightRecord.cpp" />
 		<Unit filename="mw/base/records/LockpickRecord.cpp" />
 		<Unit filename="mw/base/records/MiscItemRecord.cpp" />
 		<Unit filename="mw/base/records/NPC_AIActivate.cpp" />

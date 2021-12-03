@@ -61,6 +61,8 @@
 		<Unit filename="../../mw/base/records/AIPackages.hpp" />
 		<Unit filename="../../mw/base/records/ActivatorRecord.cpp" />
 		<Unit filename="../../mw/base/records/ActivatorRecord.hpp" />
+		<Unit filename="../../mw/base/records/ApparatusRecord.cpp" />
+		<Unit filename="../../mw/base/records/ApparatusRecord.hpp" />
 		<Unit filename="../../mw/base/records/BasicRecord.cpp" />
 		<Unit filename="../../mw/base/records/BasicRecord.hpp" />
 		<Unit filename="../../mw/base/records/BodyPartAssociation.cpp" />
@@ -273,6 +275,7 @@
 		<Unit filename="mw/base/HelperIO.cpp" />
 		<Unit filename="mw/base/records/AIData.cpp" />
 		<Unit filename="mw/base/records/ActivatorRecord.cpp" />
+		<Unit filename="mw/base/records/ApparatusRecord.cpp" />
 		<Unit filename="mw/base/records/BasicRecord.cpp" />
 		<Unit filename="mw/base/records/BodyPartAssociation.cpp" />
 		<Unit filename="mw/base/records/BodyPartRecord.cpp" />

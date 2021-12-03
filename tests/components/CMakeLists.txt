@@ -19,6 +19,7 @@ set(component_tests_sources
     ../../mw/base/records/ActivatorRecord.cpp
     ../../mw/base/records/AIData.cpp
     ../../mw/base/records/AIPackages.cpp
+    ../../mw/base/records/ApparatusRecord.cpp
     ../../mw/base/records/BasicRecord.cpp
     ../../mw/base/records/BodyPartAssociation.cpp
     ../../mw/base/records/BodyPartRecord.cpp
@@ -131,6 +132,7 @@ set(component_tests_sources
     mw/base/HelperIO.cpp
     mw/base/records/ActivatorRecord.cpp
     mw/base/records/AIData.cpp
+    mw/base/records/ApparatusRecord.cpp
     mw/base/records/BasicRecord.cpp
     mw/base/records/BodyPartAssociation.cpp
     mw/base/records/BodyPartRecord.cpp

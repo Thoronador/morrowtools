@@ -54,18 +54,6 @@ class ESMReader
     static int skipRecord(std::istream& input);
 
     /* tries to read an .esm/.esp file and returns the number of relevant
-       records that were read. If an error occurred, -1 is returned. Note that
-       this function is deprecated, readESM() should be used instead.
-
-       parameters:
-           FileName - name of the .esm/.esp file
-           deps     - the list that will be used to store the dependency files
-           verbose  - if true, some additional information will be written to
-                      standard output
-    */
-    int oldStyleReadESM(const std::string& FileName, DepFileList& deps, const bool verbose);
-
-    /* tries to read an .esm/.esp file and returns the number of relevant
        records that were read. If an error occurred, -1 is returned.
 
        parameters:

@@ -57,14 +57,6 @@ int ESMReader::skipRecord(std::istream& input)
   return -1;
 }
 
-int ESMReader::oldStyleReadESM(const std::string& FileName, DepFileList& deps, const bool verbose)
-{
-  TES3Record headerTES3;
-  const int result = readESM(FileName, headerTES3, verbose);
-  deps = headerTES3.dependencies;
-  return result;
-}
-
 int ESMReader::readESM(const std::string& FileName, TES3Record& theHead, const bool verbose)
 {
   std::ifstream input;

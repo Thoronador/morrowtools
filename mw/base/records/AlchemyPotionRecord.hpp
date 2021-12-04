@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012  Thoronador
+    Copyright (C) 2011, 2012, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,95 +30,51 @@
 namespace MWTP
 {
 
+/** Holds information about a potion. */
 struct AlchemyPotionRecord: public BasicRecord
 {
   public:
-    std::string recordID; //formerly known as AlchemyID
+    std::string recordID;
     std::string ModelPath;
     std::string Name;
-    //alchemy data
+    // alchemy data
     float Weight;
-    int32_t Value;
-    int32_t AutoCalc;
-    //end alchemy data
+    uint32_t Value;
+    uint32_t AutoCalc;
+    // end of alchemy data
     std::vector<EnchantmentData> Enchs;
     std::string InventoryIcon;
-    std::string ScriptName;
+    std::string ScriptID;
 
-    /* constructor */
     AlchemyPotionRecord();
 
-    /* returns true, of content of other record is equal to this one */
+    /** \brief Checks whether another instance contains the same data.
+     *
+     * \param other   the other record to compare with
+     * \return Returns true, if @other contains the same data as this instance.
+     *         Returns false otherwise.
+     */
     bool equals(const AlchemyPotionRecord& other) const;
 
     #ifndef MW_UNSAVEABLE_RECORDS
-    /* writes the record to the given output stream and returns true on success
-
-      parameters:
-          output - the output stream
-    */
+    /** \brief Writes the record to the given output stream.
+     *
+     * \param output  the output stream
+     * \return Returns true on success (record was written to stream).
+     *         Returns false, if an error occurred.
+     */
     bool saveToStream(std::ostream& output) const override;
     #endif
 
-    /* loads the record from the given input stream and returns true on success
+    /** \brief Loads the record from the given input stream.
+     *
+     * \param input    the input stream
+     * \return Returns true on success (record was loaded from stream).
+     *         Returns false, if an error occurred.
+     */
+    bool loadFromStream(std::istream& input) override;
+}; // struct
 
-      parameters:
-          in_File - the input stream
-    */
-    bool loadFromStream(std::istream& in_File) override;
-  protected:
-    /*tries to read a subrecord for the alchemy data and returns true on success
-
-      parameters:
-          in_File   - the input stream
-          Buffer    - pointer to a buffer of at least 256 bytes length
-          BytesRead - reference to a variable that counts the number of bytes
-                      that were read from the stream
-    */
-    bool readSubRecordALDT(std::istream& in_File, char* Buffer, uint32_t& BytesRead);
-
-    /*tries to read a subrecord for the enchantment and returns true on success
-
-      parameters:
-          in_File   - the input stream
-          Buffer    - pointer to a buffer of at least 256 bytes length
-          BytesRead - reference to a variable that counts the number of bytes
-                      that were read from the stream
-    */
-    bool readSubRecordENAM(std::istream& in_File, char* Buffer, uint32_t& BytesRead);
-
-    /*tries to read a subrecord for the item name and returns true on success
-
-      parameters:
-          in_File   - the input stream
-          Buffer    - pointer to a buffer of at least 256 bytes length
-          BytesRead - reference to a variable that counts the number of bytes
-                      that were read from the stream
-    */
-    bool readSubRecordFNAM(std::istream& in_File, char* Buffer, uint32_t& BytesRead);
-
-    /*tries to read a subrecord for the script ID and returns true on success
-
-      parameters:
-          in_File   - the input stream
-          Buffer    - pointer to a buffer of at least 256 bytes length
-          BytesRead - reference to a variable that counts the number of bytes
-                      that were read from the stream
-    */
-    bool readSubRecordSCRI(std::istream& in_File, char* Buffer, uint32_t& BytesRead);
-
-    /*tries to read a subrecord for the inventory icon and returns true on
-      success
-
-      parameters:
-          in_File   - the input stream
-          Buffer    - pointer to a buffer of at least 256 bytes length
-          BytesRead - reference to a variable that counts the number of bytes
-                      that were read from the stream
-    */
-    bool readSubRecordTEXT(std::istream& in_File, char* Buffer, uint32_t& BytesRead);
-}; //struct
-
-} //namespace
+} // namespace
 
 #endif // MW_ALCHEMYPOTIONRECORD_HPP

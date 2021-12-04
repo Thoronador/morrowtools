@@ -20,6 +20,7 @@ set(component_tests_sources
     ../../mw/base/records/ActivatorRecord.cpp
     ../../mw/base/records/AIData.cpp
     ../../mw/base/records/AIPackages.cpp
+    ../../mw/base/records/AlchemyPotionRecord.cpp
     ../../mw/base/records/ApparatusRecord.cpp
     ../../mw/base/records/BasicRecord.cpp
     ../../mw/base/records/BodyPartAssociation.cpp
@@ -135,6 +136,7 @@ set(component_tests_sources
     mw/base/HelperIO.cpp
     mw/base/records/ActivatorRecord.cpp
     mw/base/records/AIData.cpp
+    mw/base/records/AlchemyPotionRecord.cpp
     mw/base/records/ApparatusRecord.cpp
     mw/base/records/BasicRecord.cpp
     mw/base/records/BodyPartAssociation.cpp

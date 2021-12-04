@@ -494,12 +494,12 @@ int main(int argc, char **argv)
   MWTP::Spells::ListIterator spell_cur = MWTP::Spells::getSingleton().getBegin();
   while (spell_cur!=spell_end)
   {
-    //Is it a spell?
-    if (spell_cur->second.Type!=MWTP::stSpell)
+    // Is it a spell?
+    if (spell_cur->second.Type != MWTP::SpellType::Spell)
     {
       const std::string temp = spell_cur->first;
       ++spell_cur;
-      //delete spell so we don't save it into the final plugin
+      // delete spell so we don't save it into the final plugin
       MWTP::Spells::getSingleton().removeRecord(temp);
     }//if not spell
     else
@@ -518,11 +518,11 @@ int main(int argc, char **argv)
             return MWTP::rcDataError;
           }//if school invalid
           const std::string newName = prefixes[school]+" "+rec.Name;
-          if (allowTruncatedName or (newName.length()<=MWTP::SpellRecord::cMaximumSpellNameLength))
+          if (allowTruncatedName || (newName.length() <= MWTP::SpellRecord::cMaximumSpellNameLength))
           {
             rec.Name = newName;
             MWTP::Spells::getSingleton().addRecord(rec);
-          }//if
+          }
           else
           {
             /*If it is not changed, then we don't need to include it in the

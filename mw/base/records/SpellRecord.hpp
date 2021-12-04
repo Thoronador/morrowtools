@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011, 2012, 2013  Thoronador
+    Copyright (C) 2010, 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,12 +30,16 @@
 namespace MWTP
 {
 
-const int32_t stSpell = 0;
-const int32_t stAbility = 1;
-const int32_t stBlight = 2;
-const int32_t stDisease = 3;
-const int32_t stCurse = 4;
-const int32_t stPower = 5;
+/** Enumeration for possible types of spells. */
+enum class SpellType: uint32_t
+{
+  Spell = 0,
+  Ability = 1,
+  Blight = 2,
+  Disease = 3,
+  Curse = 4,
+  Power = 5
+};
 
 const int32_t sfAutoCalcCosts = 1;
 const int32_t sfPCStartSpell = 2;
@@ -43,53 +47,67 @@ const int32_t sfAlwaysSucceeds = 4;
 
 struct SpellRecord: public BasicRecord
 {
-  /* constructor */
   SpellRecord();
 
-  std::string recordID; //formerly SpellID
+  std::string recordID;
   std::string Name;
-  //spell data
-  int32_t Type;
+  // spell data
+  SpellType Type;
   int32_t Cost;
   int32_t Flags;
-  //end of spell data
+  // end of spell data
   std::vector<EnchantmentData> Enchs;
 
   #ifndef MW_UNSAVEABLE_RECORDS
-  /* tries to save the spell record to an output stream and returns true
-     on success, false on failure.
-
-     parameters:
-         output - the output stream that is used to save the spell data
-  */
+  /** \brief Writes the record to the given output stream.
+   *
+   * \param output  the output stream
+   * \return Returns true on success (record was written to stream).
+   *         Returns false, if an error occurred.
+   */
   bool saveToStream(std::ostream& output) const override;
   #endif
 
-  /* loads the record from the given input stream and returns true on success
+  /** \brief Loads the record from the given input stream.
+   *
+   * \param input    the input stream
+   * \return Returns true on success (record was loaded from stream).
+   *         Returns false, if an error occurred.
+   */
+  bool loadFromStream(std::istream& input) override;
 
-    parameters:
-        in_File - the input stream
-  */
-  bool loadFromStream(std::istream& in_File) override;
-
-  /* returns true, if the other spell record contains the same data */
+  /** \brief Checks whether another instance contains the same data.
+   *
+   * \param other   the other record to compare with
+   * \return Returns true, if @other contains the same data as this instance.
+   *         Returns false otherwise.
+   */
   bool equals(const SpellRecord& other) const;
 
-  /* returns true, if the Auto Calculate Costs flag is set */
+  /** \brief Checks whether the "Auto Calculate Costs" flag is set.
+   *
+   * \return Returns true, if the "Auto Calculate Costs" flag is set.
+   */
   bool autoCalculateCosts() const;
 
-  /* returns true, if the spell is a start spell */
+  /** \brief Checks whether the spell is a start spell.
+   *
+   * \return Returns true, if the spell is a start spell.
+   */
   bool isPCStartSpell() const;
 
-  /* returns true, if the "always succeed" flag is set */
+  /** \brief Checks whether the "always succeed" flag is set.
+   *
+   * \return Returns true, if the "always succeed" flag is set.
+   */
   bool alwaysSucceeds() const;
 
-  /* constant that holds the maximum length of spell name, that Morrowind can
-     still handle properly (excluding terminating NUL character)
+  /** Holds the maximum length of spell name that Morrowind can
+      still handle properly (excluding terminating NUL character).
   */
   static const size_t cMaximumSpellNameLength;
-};//struct
+}; // struct
 
-} //namespace
+} // namespace
 
 #endif // MW_SPELLRECORD_HPP

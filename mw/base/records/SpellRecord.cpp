@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011, 2012, 2013  Thoronador
+    Copyright (C) 2010, 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,7 +20,6 @@
 
 #include "SpellRecord.hpp"
 #include <iostream>
-#include <cstring>
 #include "../MW_Constants.hpp"
 #include "../HelperIO.hpp"
 
@@ -31,9 +30,9 @@ const size_t SpellRecord::cMaximumSpellNameLength = 31;
 
 SpellRecord::SpellRecord()
 : BasicRecord(),
-  recordID(""),
-  Name(""),
-  Type(0),
+  recordID(std::string()),
+  Name(std::string()),
+  Type(SpellType::Spell),
   Cost(0),
   Flags(0),
   Enchs(std::vector<EnchantmentData>())
@@ -43,22 +42,21 @@ SpellRecord::SpellRecord()
 #ifndef MW_UNSAVEABLE_RECORDS
 bool SpellRecord::saveToStream(std::ostream& output) const
 {
-  output.write((const char*) &cSPEL, 4);
-  uint32_t Size;
-  Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +recordID.length()+1 /* length of ID +1 byte for NUL termination */
-        +4 /* SPDT */ +4 /* SPDT's length */ +12 /*size of spell data (SPDT)*/;
+  output.write(reinterpret_cast<const char*>(&cSPEL), 4);
+  uint32_t Size = 4 /* NAME */ + 4 /* 4 bytes for length */
+        + recordID.length() + 1 /* length of ID +1 byte for NUL termination */
+        + 4 /* SPDT */ + 4 /* SPDT's length */ + 12 /*size of spell data */;
   if (!Name.empty())
   {
-    Size = Size +4 /* FNAM */ +4 /* 4 bytes for FNAM's length */
-          +Name.length()+1 /*length of name plus one for NUL-termination */;
+    Size = Size + 4 /* FNAM */ + 4 /* 4 bytes for FNAM's length */
+         + Name.length() + 1 /*length of name plus one for NUL-termination */;
   }
-  //now calculate additional size of enchantment data
+  // now calculate additional size of enchantment data
   Size = Size + Enchs.size()
-         *(4 /*ENAM*/ +4 /*ENAM's length*/ +24 /*size of enchantment data*/);
-  output.write((const char*) &Size, 4);
-  output.write((const char*) &HeaderOne, 4);
-  output.write((const char*) &HeaderFlags, 4);
+       * (4 /*ENAM*/ + 4 /*ENAM's length*/ + 24 /*size of enchantment data*/);
+  output.write(reinterpret_cast<const char*>(&Size), 4);
+  output.write(reinterpret_cast<const char*>(&HeaderOne), 4);
+  output.write(reinterpret_cast<const char*>(&HeaderFlags), 4);
 
   /*Spell:
     NAME = Spell ID
@@ -70,83 +68,61 @@ bool SpellRecord::saveToStream(std::ostream& output) const
     ENAM = Enchantment data (24 bytes, 0 to 8) */
 
 
-  //write NAME
-  output.write((const char*) &cNAME, 4);
-  //NAME's length
-  uint32_t SubLength = recordID.length()+1; //length of string plus one for NUL-termination
-  output.write((const char*) &SubLength, 4);
-  //write ID
+  // write record ID (NAME)
+  output.write(reinterpret_cast<const char*>(&cNAME), 4);
+  uint32_t SubLength = recordID.length() + 1;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
   output.write(recordID.c_str(), SubLength);
 
   if (!Name.empty())
   {
-    //write FNAM
-    output.write((const char*) &cFNAM, 4);
-    //FNAM's length
-    SubLength = Name.length()+1; //length of string plus one for NUL-termination
-    output.write((const char*) &SubLength, 4);
-    //write spell name
+    // write spell name (FNAM)
+    output.write(reinterpret_cast<const char*>(&cFNAM), 4);
+    SubLength = Name.length() + 1;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
     output.write(Name.c_str(), SubLength);
   }
 
-  //write SPDT
-  output.write((const char*) &cSPDT, 4);
-  //SPDT's length
-  SubLength = 12; //length of SPDT (spell data) is always 12 bytes
-  output.write((const char*) &SubLength, 4);
-  // ---- write spell data
-  //type
-  output.write((const char*) &(this->Type), 4);
-  //cost
-  output.write((const char*) &(this->Cost), 4);
-  //flags
-  output.write((const char*) &(this->Flags), 4);
+  // write spell data (SPDT)
+  output.write(reinterpret_cast<const char*>(&cSPDT), 4);
+  SubLength = 12;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
+  output.write(reinterpret_cast<const char*>(&Type), 4);
+  output.write(reinterpret_cast<const char*>(&Cost), 4);
+  output.write(reinterpret_cast<const char*>(&Flags), 4);
   if (!output.good())
   {
-    std::cout << "Error while writing sub record SPDT of SPEL.\n";
+    std::cerr << "Error while writing sub record SPDT of SPEL.\n";
     return false;
   }
 
-  //write multiple ENAM records
-  unsigned int i;
-  for (i=0; i<Enchs.size(); ++i)
+  // write multiple ENAM records
+  for (const auto& enchantment: Enchs)
   {
-    output.write((const char*) &cENAM, 4);
-    //ENAM's length
-    SubLength = 24; //ENAM's length is fixed at 24 bytes
-    output.write((const char*) &SubLength, 4);
-    //write enchantment data
-    output.write((const char*) &(Enchs[i].EffectID), 2);
-    output.write((const char*) &(Enchs[i].SkillID), 1);
-    output.write((const char*) &(Enchs[i].AttributeID), 1);
-    output.write((const char*) &(Enchs[i].Range), 4);
-    output.write((const char*) &(Enchs[i].Area), 4);
-    output.write((const char*) &(Enchs[i].Duration), 4);
-    output.write((const char*) &(Enchs[i].MagnitudeMin), 4);
-    output.write((const char*) &(Enchs[i].MagnitudeMax), 4);
-    if (!output.good())
+    if (!enchantment.saveToStream(output))
     {
-      std::cout << "Error while writing sub record ENAM of SPEL.\n";
+      std::cerr << "Error while writing sub record ENAM of SPEL.\n";
       return false;
-    }//if
-  }//for
-  return output.good();
+    }
+  }
+
+  return true;
 }
 #endif
 
 bool SpellRecord::equals(const SpellRecord& other) const
 {
-  return ((recordID!=other.recordID) and (Name==other.Name) and (Type==other.Type)
-      and (Cost==other.Cost) and (Flags==other.Flags)
-      and (Enchs==other.Enchs));
+  return (recordID == other.recordID) && (Name == other.Name)
+      && (Type == other.Type) && (Cost == other.Cost) && (Flags == other.Flags)
+      && (Enchs == other.Enchs);
 }
 
-bool SpellRecord::loadFromStream(std::istream& in_File)
+bool SpellRecord::loadFromStream(std::istream& input)
 {
-  uint32_t Size;
-  in_File.read((char*) &Size, 4);
-  in_File.read((char*) &HeaderOne, 4);
-  in_File.read((char*) &HeaderFlags, 4);
+  uint32_t Size = 0;
+  input.read(reinterpret_cast<char*>(&Size), 4);
+  input.read(reinterpret_cast<char*>(&HeaderOne), 4);
+  input.read(reinterpret_cast<char*>(&HeaderFlags), 4);
 
   /*Spell:
     NAME = Spell ID
@@ -157,177 +133,114 @@ bool SpellRecord::loadFromStream(std::istream& in_File)
         long Flags (0x0001 = AutoCalc,0x0002 = PC Start,0x0004 = Always Succeeds)
     ENAM = Enchantment data (24 bytes, 0 to 8) */
 
-  uint32_t SubRecName;
-  uint32_t SubLength, BytesRead;
-  SubRecName = SubLength = BytesRead = 0;
+  uint32_t SubRecName = 0;
+  uint32_t SubLength = 0;
+  uint32_t BytesRead = 0;
 
-  //read NAME
-  in_File.read((char*) &SubRecName, 4);
-  if (SubRecName!=cNAME)
-  {
-    UnexpectedRecord(cNAME, SubRecName);
-    return false;
-  }
-  BytesRead += 4;
-  //NAME's length
-  in_File.read((char*) &SubLength, 4);
-  BytesRead += 4;
-  if (SubLength>255)
-  {
-    std::cout << "Error: ID of SPEL is longer than 255 characters.\n";
-    std::cout << "File position: "<<in_File.tellg()<<"\n";
-    return false;
-  }
+  // read record ID (NAME)
   char Buffer[256];
-  Buffer[0] = Buffer[255] = '\0';
-  memset(Buffer, '\0', 256);
-  //read ID
-  in_File.read(Buffer, SubLength);
-  if (!in_File.good())
+  if (!loadString256WithHeader(input, recordID, Buffer, cNAME, BytesRead))
   {
-    std::cout << "Error while reading subrecord NAME of SPEL from stream.\n";
-    std::cout << "File position: "<<in_File.tellg()<<"\n";
+    std::cerr << "Error while reading subrecord NAME of SPEL from stream.\n";
     return false;
   }
-  recordID = std::string(Buffer);
-  BytesRead += SubLength;
 
   //read FNAM (or SPDT in some rare cases)
-  in_File.read((char*) &SubRecName, 4);
+  input.read(reinterpret_cast<char*>(&SubRecName), 4);
   BytesRead += 4;
-  if (SubRecName==cFNAM)
+  if (SubRecName == cFNAM)
   {
-    //FNAM's length
-    in_File.read((char*) &SubLength, 4);
-    if (SubLength>255)
-    {
-      std::cout << "Error: subrecord FNAM of SPEL is longer than 255 characters.\n";
-      return false;
-    }
-    BytesRead += 4;
-    //read spell name
-    Buffer[0] = Buffer[255] = '\0';
-    in_File.read(Buffer, SubLength);
-    if (!in_File.good())
+    // read spell name (FNAM)
+    if (!loadString256(input, Name, Buffer, cFNAM, BytesRead))
     {
       std::cout << "Error while reading subrecord FNAM of SPEL.\n";
       return false;
     }
-    BytesRead += SubLength;
-    Name = std::string(Buffer);
 
-    //read SPDT
-    in_File.read((char*) &SubRecName, 4);
+    // read SPDT
+    input.read(reinterpret_cast<char*>(&SubRecName), 4);
     BytesRead += 4;
   }
   else
   {
-    //no name is present here
+    // no name is present here
     Name.clear();
   }
-  //read SPDT
+  // read SPDT
   //  -> was already read above
-  if (SubRecName!=cSPDT)
+  if (SubRecName != cSPDT)
   {
     UnexpectedRecord(cSPDT, SubRecName);
     return false;
   }
-  //SPDT's length
-  in_File.read((char*) &SubLength, 4);
-  if (SubLength!=12)
+  // SPDT's length
+  input.read(reinterpret_cast<char*>(&SubLength), 4);
+  if (SubLength != 12)
   {
-    std::cout << "Error: sub record SPDT of SPEL has invalid length ("
-              <<SubLength<< " bytes). Should be 12 bytes.\n";
+    std::cerr << "Error: Sub record SPDT of SPEL has invalid length ("
+              << SubLength << " bytes). Should be 12 bytes.\n";
     return false;
   }
   BytesRead += 4;
   // ---- read spell data
-  //type
-  in_File.read((char*) &Type, 4);
-  //cost
-  in_File.read((char*) &Cost, 4);
-  //flags
-  in_File.read((char*) &Flags, 4);
-  if (!in_File.good())
+  input.read(reinterpret_cast<char*>(&Type), 4);
+  input.read(reinterpret_cast<char*>(&Cost), 4);
+  input.read(reinterpret_cast<char*>(&Flags), 4);
+  if (!input.good())
   {
-    std::cout << "Error while reading sub record SPDT of SPEL.\n";
+    std::cerr << "Error while reading sub record SPDT of SPEL.\n";
     return false;
   }
   BytesRead += 12;
 
   Enchs.clear();
-  //read multiple ENAM records
-  while (BytesRead<Size)
+  // read multiple ENAM records
+  while (BytesRead < Size)
   {
-    //read ENAM
-    in_File.read((char*) &SubRecName, 4);
+    // read ENAM
+    input.read(reinterpret_cast<char*>(&SubRecName), 4);
     BytesRead += 4;
-    if (SubRecName!=cENAM)
+    if (SubRecName != cENAM)
     {
       UnexpectedRecord(cENAM, SubRecName);
       return false;
     }
-
-    //ENAM's length
-    in_File.read((char*) &SubLength, 4);
-    BytesRead += 4;
-    if (SubLength!=24)
-    {
-      std::cout << "Error: sub record ENAM of SPEL has invalid length ("
-                <<SubLength<< " bytes). Should be 24 bytes.\n";
-      return false;
-    }
-    //read enchantment data
+    // read enchantment data
     EnchantmentData ench;
-    in_File.read((char*) &(ench.EffectID), 2);
-    in_File.read((char*) &(ench.SkillID), 1);
-    in_File.read((char*) &(ench.AttributeID), 1);
-    in_File.read((char*) &(ench.Range), 4);
-    in_File.read((char*) &(ench.Area), 4);
-    in_File.read((char*) &(ench.Duration), 4);
-    in_File.read((char*) &(ench.MagnitudeMin), 4);
-    in_File.read((char*) &(ench.MagnitudeMax), 4);
-    BytesRead += 24;
-    if (in_File.good())
+    if (!ench.loadFromStream(input))
     {
-      Enchs.push_back(ench);
-    }
-    else
-    {
-      std::cout << "Error while reading sub record ENAM of SPEL.\n"
-                << "Current file position is "<<in_File.tellg()<<".\n";
+      std::cerr << "Error while reading sub record ENAM of SPEL.\n";
       return false;
     }
-    if (Enchs.size()>8)
+    BytesRead += 28;
+    Enchs.push_back(ench);
+
+    if (Enchs.size() > 8)
     {
       /* Although the current record structure allows an arbitrary number of
          enchantments, Morrowind only allows up to eight enchantments for one
          single spell. That's why we issue an error here. */
-      std::cout << "Error: record SPEL has more than eight ENAM subrecords.\n";
+      std::cerr << "Error: Record SPEL has more than eight ENAM subrecords.\n";
       return false;
     }
-  } //while
-  if (!in_File.good())
-  {
-    std::cout << "Error while reading spell data.\n";
-    return false;
   }
+
   return true;
 }
 
 bool SpellRecord::autoCalculateCosts() const
 {
-  return ((Flags & sfAutoCalcCosts)>0);
+  return (Flags & sfAutoCalcCosts) != 0;
 }
 
 bool SpellRecord::isPCStartSpell() const
 {
-  return ((Flags & sfPCStartSpell)>0);
+  return (Flags & sfPCStartSpell) != 0;
 }
 
 bool SpellRecord::alwaysSucceeds() const
 {
-  return ((Flags & sfAlwaysSucceeds)>0);
+  return (Flags & sfAlwaysSucceeds) != 0;
 }
 
-} //namespace
+} // namespace

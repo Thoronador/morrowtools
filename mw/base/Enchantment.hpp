@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011, 2012  Thoronador
+    Copyright (C) 2010, 2011, 2012, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,37 +22,54 @@
 #define MW_ENCHANTMENT_HPP
 
 #include <cstdint>
+#include <fstream>
 
 namespace MWTP
 {
 
-//range types
-const int32_t rtSelf = 0;
-const int32_t rtTouch = 1;
-const int32_t rtTarget = 2;
+/// Enumeration type for range of spells.
+enum class RangeType: uint32_t
+{
+  Self = 0,
+  Touch = 1,
+  Target = 2
+};
 
-//single enchantment data
-struct EnchantmentData //24 bytes
+/** Holds data of a single enchantment or spell effect. */
+struct EnchantmentData
 {
   int16_t EffectID;
-  char SkillID;
-  char AttributeID;
-  int32_t RangeType;
+  uint8_t SkillID;
+  uint8_t AttributeID;
+  RangeType Range;
   int32_t Area;
   int32_t Duration;
   int32_t MagnitudeMin;
   int32_t MagnitudeMax;
 
-  /* returns true, if the other enchantment is the same */
-  bool equals(const EnchantmentData& other) const;
+  EnchantmentData();
 
-  /* comparison operator */
-  inline bool operator==(const EnchantmentData& other) const
-  {
-    return equals(other);
-  }
-}; //struct
+  bool operator==(const EnchantmentData& other) const;
 
-} //namespace
+  #ifndef MW_UNSAVEABLE_RECORDS
+  /** \brief Writes the enchantment data to the given output stream.
+   *
+   * \param output  the output stream
+   * \return Returns true on success (data was written to stream).
+   *         Returns false, if an error occurred.
+   */
+  bool saveToStream(std::ostream& output) const;
+  #endif
+
+  /** \brief Loads the enchantment data from the given input stream.
+   *
+   * \param input    the input stream
+   * \return Returns true on success (data was loaded from stream).
+   *         Returns false, if an error occurred.
+   */
+  bool loadFromStream(std::istream& input);
+}; // struct
+
+} // namespace
 
 #endif // MW_ENCHANTMENT_HPP

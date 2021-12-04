@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,16 +19,72 @@
 */
 
 #include "Enchantment.hpp"
+#include <iostream>
+#include "MW_Constants.hpp"
 
 namespace MWTP
 {
 
-bool EnchantmentData::equals(const EnchantmentData& other) const
+EnchantmentData::EnchantmentData()
+: EffectID(0),
+  SkillID(0),
+  AttributeID(0),
+  Range(RangeType::Self),
+  Area(0),
+  Duration(0),
+  MagnitudeMin(0),
+  MagnitudeMax(0)
 {
-  return ((EffectID==other.EffectID) and (SkillID==other.SkillID)
-      and (AttributeID==other.AttributeID) and (RangeType==other.RangeType)
-      and (Area==other.Area) and (Duration==other.Duration)
-      and (MagnitudeMin==other.MagnitudeMin) and (MagnitudeMax==other.MagnitudeMax));
 }
 
-} //namespace
+bool EnchantmentData::operator==(const EnchantmentData& other) const
+{
+  return (EffectID == other.EffectID) && (SkillID == other.SkillID)
+      && (AttributeID == other.AttributeID) && (Range == other.Range)
+      && (Area == other.Area) && (Duration == other.Duration)
+      && (MagnitudeMin == other.MagnitudeMin) && (MagnitudeMax == other.MagnitudeMax);
+}
+
+#ifndef MW_UNSAVEABLE_RECORDS
+bool EnchantmentData::saveToStream(std::ostream& output) const
+{
+  output.write(reinterpret_cast<const char*>(&cENAM), 4);
+  const uint32_t SubLength = 24;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
+  // write enchantment data
+  output.write(reinterpret_cast<const char*>(&EffectID), 2);
+  output.write(reinterpret_cast<const char*>(&SkillID), 1);
+  output.write(reinterpret_cast<const char*>(&AttributeID), 1);
+  output.write(reinterpret_cast<const char*>(&Range), 4);
+  output.write(reinterpret_cast<const char*>(&Area), 4);
+  output.write(reinterpret_cast<const char*>(&Duration), 4);
+  output.write(reinterpret_cast<const char*>(&MagnitudeMin), 4);
+  output.write(reinterpret_cast<const char*>(&MagnitudeMax), 4);
+  return output.good();
+}
+#endif
+
+bool EnchantmentData::loadFromStream(std::istream& input)
+{
+  // ENAM's length
+  uint32_t SubLength = 0;
+  input.read(reinterpret_cast<char*>(&SubLength), 4);
+  if (SubLength != 24)
+  {
+    std::cerr << "Error: Enchanment data (ENAM) has invalid length ("
+              << SubLength << " bytes). Should be 24 bytes.\n";
+    return false;
+  }
+  // read enchantment data
+  input.read(reinterpret_cast<char*>(&EffectID), 2);
+  input.read(reinterpret_cast<char*>(&SkillID), 1);
+  input.read(reinterpret_cast<char*>(&AttributeID), 1);
+  input.read(reinterpret_cast<char*>(&Range), 4);
+  input.read(reinterpret_cast<char*>(&Area), 4);
+  input.read(reinterpret_cast<char*>(&Duration), 4);
+  input.read(reinterpret_cast<char*>(&MagnitudeMin), 4);
+  input.read(reinterpret_cast<char*>(&MagnitudeMax), 4);
+  return input.good();
+}
+
+} // namespace

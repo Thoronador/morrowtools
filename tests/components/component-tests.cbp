@@ -52,6 +52,8 @@
 		<Unit filename="../../base/lz4Compression.hpp" />
 		<Unit filename="../../mw/base/DepFiles.cpp" />
 		<Unit filename="../../mw/base/DepFiles.hpp" />
+		<Unit filename="../../mw/base/Enchantment.cpp" />
+		<Unit filename="../../mw/base/Enchantment.hpp" />
 		<Unit filename="../../mw/base/HelperIO.cpp" />
 		<Unit filename="../../mw/base/HelperIO.hpp" />
 		<Unit filename="../../mw/base/MW_Constants.hpp" />
@@ -272,6 +274,7 @@
 		<Unit filename="main.cpp" />
 		<Unit filename="mw/base/DepFile.cpp" />
 		<Unit filename="mw/base/DepFileList.cpp" />
+		<Unit filename="mw/base/EnchantmentData.cpp" />
 		<Unit filename="mw/base/HelperIO.cpp" />
 		<Unit filename="mw/base/records/AIData.cpp" />
 		<Unit filename="mw/base/records/ActivatorRecord.cpp" />

@@ -115,7 +115,7 @@ bool EnchantingRecord::saveToStream(std::ostream& output) const
     output.write((const char*) &(Enchs[i].EffectID), 2);
     output.write((const char*) &(Enchs[i].SkillID), 1);
     output.write((const char*) &(Enchs[i].AttributeID), 1);
-    output.write((const char*) &(Enchs[i].RangeType), 4);
+    output.write((const char*) &(Enchs[i].Range), 4);
     output.write((const char*) &(Enchs[i].Area), 4);
     output.write((const char*) &(Enchs[i].Duration), 4);
     output.write((const char*) &(Enchs[i].MagnitudeMin), 4);
@@ -244,7 +244,7 @@ bool EnchantingRecord::loadFromStream(std::istream& in_File)
     in_File.read((char*) &(temp.EffectID), 2);
     in_File.read((char*) &(temp.SkillID), 1);
     in_File.read((char*) &(temp.AttributeID), 1);
-    in_File.read((char*) &(temp.RangeType), 4);
+    in_File.read((char*) &(temp.Range), 4);
     in_File.read((char*) &(temp.Area), 4);
     in_File.read((char*) &(temp.Duration), 4);
     in_File.read((char*) &(temp.MagnitudeMin), 4);

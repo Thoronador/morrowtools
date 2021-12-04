@@ -119,7 +119,7 @@ bool SpellRecord::saveToStream(std::ostream& output) const
     output.write((const char*) &(Enchs[i].EffectID), 2);
     output.write((const char*) &(Enchs[i].SkillID), 1);
     output.write((const char*) &(Enchs[i].AttributeID), 1);
-    output.write((const char*) &(Enchs[i].RangeType), 4);
+    output.write((const char*) &(Enchs[i].Range), 4);
     output.write((const char*) &(Enchs[i].Area), 4);
     output.write((const char*) &(Enchs[i].Duration), 4);
     output.write((const char*) &(Enchs[i].MagnitudeMin), 4);
@@ -282,7 +282,7 @@ bool SpellRecord::loadFromStream(std::istream& in_File)
     in_File.read((char*) &(ench.EffectID), 2);
     in_File.read((char*) &(ench.SkillID), 1);
     in_File.read((char*) &(ench.AttributeID), 1);
-    in_File.read((char*) &(ench.RangeType), 4);
+    in_File.read((char*) &(ench.Range), 4);
     in_File.read((char*) &(ench.Area), 4);
     in_File.read((char*) &(ench.Duration), 4);
     in_File.read((char*) &(ench.MagnitudeMin), 4);

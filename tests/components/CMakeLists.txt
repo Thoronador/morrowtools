@@ -39,6 +39,7 @@ set(component_tests_sources
     ../../mw/base/records/RepairItemRecord.cpp
     ../../mw/base/records/SkillRecord.cpp
     ../../mw/base/records/SpellRecord.cpp
+    ../../mw/base/records/StartScriptRecord.cpp
     ../../mw/base/records/StaticRecord.cpp
     ../../mw/base/records/TES3Record.cpp
     ../../mw/base/records/TravelDestination.cpp
@@ -159,6 +160,7 @@ set(component_tests_sources
     mw/base/records/RepairItemRecord.cpp
     mw/base/records/SkillRecord.cpp
     mw/base/records/SpellRecord.cpp
+    mw/base/records/StartScriptRecord.cpp
     mw/base/records/StaticRecord.cpp
     mw/base/records/TES3Record.cpp
     mw/base/records/TravelDestination.cpp

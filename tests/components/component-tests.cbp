@@ -101,6 +101,8 @@
 		<Unit filename="../../mw/base/records/SkillRecord.hpp" />
 		<Unit filename="../../mw/base/records/SpellRecord.cpp" />
 		<Unit filename="../../mw/base/records/SpellRecord.hpp" />
+		<Unit filename="../../mw/base/records/StartScriptRecord.cpp" />
+		<Unit filename="../../mw/base/records/StartScriptRecord.hpp" />
 		<Unit filename="../../mw/base/records/StaticRecord.cpp" />
 		<Unit filename="../../mw/base/records/StaticRecord.hpp" />
 		<Unit filename="../../mw/base/records/TES3Record.cpp" />
@@ -305,6 +307,7 @@
 		<Unit filename="mw/base/records/RepairItemRecord.cpp" />
 		<Unit filename="mw/base/records/SkillRecord.cpp" />
 		<Unit filename="mw/base/records/SpellRecord.cpp" />
+		<Unit filename="mw/base/records/StartScriptRecord.cpp" />
 		<Unit filename="mw/base/records/StaticRecord.cpp" />
 		<Unit filename="mw/base/records/TES3Record.cpp" />
 		<Unit filename="mw/base/records/TravelDestination.cpp" />

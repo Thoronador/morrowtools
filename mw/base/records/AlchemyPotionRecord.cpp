@@ -19,7 +19,6 @@
 */
 
 #include "AlchemyPotionRecord.hpp"
-#include <cstring>
 #include <iostream>
 #include "../MW_Constants.hpp"
 #include "../HelperIO.hpp"

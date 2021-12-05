@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012  Thoronador
+    Copyright (C) 2011, 2012, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,23 +21,23 @@
 #ifndef MW_WEAPONRECORD_HPP
 #define MW_WEAPONRECORD_HPP
 
-#include <fstream>
 #include <string>
 #include "BasicRecord.hpp"
 
 namespace MWTP
 {
 
+/** Holds information about a weapon. */
 struct WeaponRecord: public BasicRecord
 {
-  std::string recordID; //formerly WeaponID
+  std::string recordID;
   std::string ModelPath;
   std::string Name;
-  //weapon data
+  // weapon data
   float Weight;
-  int32_t Value;
-  int16_t Type;
-  int16_t Health;
+  uint32_t Value;
+  uint16_t Type;
+  uint16_t Health;
   float Speed;
   float Reach;
   int16_t EnchantPts;
@@ -47,35 +47,41 @@ struct WeaponRecord: public BasicRecord
   uint8_t SlashMax;
   uint8_t ThrustMin;
   uint8_t ThrustMax;
-  int32_t WeaponFlags;
-  //end of weapon data
+  uint32_t WeaponFlags;
+  // end of weapon data
+  std::string ScriptID;
   std::string InventoryIcon;
   std::string EnchantmentID;
-  std::string ScriptID;
 
-  /* constructor */
   WeaponRecord();
 
-  /* returns true, if the other record contains the same data */
+  /** \brief Checks whether another instance contains the same data.
+   *
+   * \param other   the other record to compare with
+   * \return Returns true, if @other contains the same data as this instance.
+   *         Returns false otherwise.
+   */
   bool equals(const WeaponRecord& other) const;
 
   #ifndef MW_UNSAVEABLE_RECORDS
-  /* writes the record to the given output stream and returns true on success
-
-    parameters:
-        output - the output stream
-  */
+  /** \brief Writes the record to the given output stream.
+   *
+   * \param output  the output stream
+   * \return Returns true on success (record was written to stream).
+   *         Returns false, if an error occurred.
+   */
   bool saveToStream(std::ostream& output) const override;
   #endif
 
-  /* loads the record from the given input stream and returns true on success
+  /** \brief Loads the record from the given input stream.
+   *
+   * \param input    the input stream
+   * \return Returns true on success (record was loaded from stream).
+   *         Returns false, if an error occurred.
+   */
+  bool loadFromStream(std::istream& input) override;
+}; // struct
 
-    parameters:
-        in_File - the input stream
-  */
-  bool loadFromStream(std::istream& in_File) override;
-};//struct
-
-} //namespace
+} // namespace
 
 #endif // MW_WEAPONRECORD_HPP

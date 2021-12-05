@@ -43,6 +43,7 @@ set(component_tests_sources
     ../../mw/base/records/StaticRecord.cpp
     ../../mw/base/records/TES3Record.cpp
     ../../mw/base/records/TravelDestination.cpp
+    ../../mw/base/records/WeaponRecord.cpp
     ../../sr/base/DependencySolver.cpp
     ../../sr/base/ESMFileContents.cpp
     ../../sr/base/ESMReader.cpp
@@ -164,6 +165,7 @@ set(component_tests_sources
     mw/base/records/StaticRecord.cpp
     mw/base/records/TES3Record.cpp
     mw/base/records/TravelDestination.cpp
+    mw/base/records/WeaponRecord.cpp
     sr/base/DependencyElement.cpp
     sr/base/ESMFileContents.cpp
     sr/base/ESMReader.cpp

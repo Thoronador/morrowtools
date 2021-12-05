@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011, 2012, 2013  Thoronador
+    Copyright (C) 2009, 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,7 +19,6 @@
 */
 
 #include "WeaponRecord.hpp"
-#include <cstring>
 #include <iostream>
 #include "../MW_Constants.hpp"
 #include "../HelperIO.hpp"
@@ -28,73 +27,77 @@ namespace MWTP
 {
 
 WeaponRecord::WeaponRecord()
+: BasicRecord(),
+  recordID(std::string()),
+  ModelPath(std::string()),
+  Name(std::string()),
+  // weapon data
+  Weight(0.0f),
+  Value(0),
+  Type(0),
+  Health(0),
+  Speed(0.0f),
+  Reach(0.0f),
+  EnchantPts(0),
+  ChopMin(0),
+  ChopMax(0),
+  SlashMin(0),
+  SlashMax(0),
+  ThrustMin(0),
+  ThrustMax(0),
+  WeaponFlags(0),
+  // end of weapon data
+  ScriptID(std::string()),
+  InventoryIcon(std::string()),
+  EnchantmentID(std::string())
 {
-  recordID = ModelPath = Name = "";
-  //weapon data
-  Weight = 0.0f;
-  Value = 0;
-  Type = 0;
-  Health = 0;
-  Speed = 0.0f;
-  Reach = 0.0f;
-  EnchantPts = 0;
-  ChopMin = 0;
-  ChopMax = 0;
-  SlashMin = 0;
-  SlashMax = 0;
-  ThrustMin = 0;
-  ThrustMax = 0;
-  WeaponFlags = 0;
-  //end of weapon data
-  InventoryIcon = EnchantmentID = ScriptID = "";
 }
 
 bool WeaponRecord::equals(const WeaponRecord& other) const
 {
-  return ((recordID==other.recordID) and (ModelPath==other.ModelPath)
-      and (Name==other.Name) and (Weight==other.Weight) and (Value==other.Value)
-      and (Type==other.Type) and (Health==other.Health) and (Speed==other.Speed)
-      and (Reach==other.Reach) and (EnchantPts==other.EnchantPts)
-      and (ChopMin==other.ChopMin) and (ChopMax==other.ChopMax)
-      and (SlashMin==other.SlashMin) and (SlashMax==other.SlashMax)
-      and (ThrustMin==other.ThrustMin) and (ThrustMax==other.ThrustMax)
-      and (WeaponFlags==other.WeaponFlags) and (InventoryIcon==other.InventoryIcon)
-      and (EnchantmentID==other.EnchantmentID) and (ScriptID==other.ScriptID));
+  return (recordID == other.recordID) && (ModelPath == other.ModelPath)
+      && (Name == other.Name) && (Weight == other.Weight) && (Value == other.Value)
+      && (Type == other.Type) && (Health == other.Health) && (Speed == other.Speed)
+      && (Reach == other.Reach) && (EnchantPts == other.EnchantPts)
+      && (ChopMin == other.ChopMin) && (ChopMax == other.ChopMax)
+      && (SlashMin == other.SlashMin) && (SlashMax == other.SlashMax)
+      && (ThrustMin == other.ThrustMin) && (ThrustMax == other.ThrustMax)
+      && (WeaponFlags == other.WeaponFlags) && (InventoryIcon == other.InventoryIcon)
+      && (EnchantmentID == other.EnchantmentID) && (ScriptID == other.ScriptID);
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
 bool WeaponRecord::saveToStream(std::ostream& output) const
 {
-  output.write((const char*) &cWEAP, 4);
-  uint32_t Size;
-  Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +recordID.length()+1 /* length of mesh path +1 byte for NUL termination */
-        +4 /* MODL */ +4 /* 4 bytes for length */
-        +ModelPath.length()+1 /* length of mesh path +1 byte for NUL termination */
-        +4 /* WPDT */ +4 /* 4 bytes for length */ + 32 /* size of weapon data */;
+  output.write(reinterpret_cast<const char*>(&cWEAP), 4);
+  uint32_t Size = 4 /* NAME */ + 4 /* 4 bytes for length */
+      + recordID.length() + 1 /* length of ID +1 byte for NUL termination */
+      + 4 /* MODL */ + 4 /* 4 bytes for length */
+      + ModelPath.length() + 1 /* length of path +1 byte for NUL termination */
+      + 4 /* WPDT */ + 4 /* 4 bytes for length */ + 32 /* size of data */;
   if (!Name.empty())
   {
-    Size = Size +4 /* FNAM */ +4 /* 4 bytes for length */
-        +Name.length()+1 /* length of mesh path +1 byte for NUL termination */;
-  }
-  if (!InventoryIcon.empty())
-  {
-    Size = Size +4 /* ITEX */ +4 /* 4 bytes for length */
-        +InventoryIcon.length()+1 /* length of mesh path +1 byte for NUL termination */;
-  }
-  if (!EnchantmentID.empty())
-  {
-    Size = Size + 4 /* ENAM */ +4 /* 4 bytes for length */
-          +EnchantmentID.length()+1 /* length of enchantment ID +1 byte for NUL termination */;
+    Size = Size + 4 /* FNAM */ + 4 /* 4 bytes for length */
+         + Name.length() + 1 /* length of name +1 byte for NUL termination */;
   }
   if (!ScriptID.empty())
   {
-    Size = Size + 4 /* SCRI */ +4 /* 4 bytes for length */
-          +ScriptID.length()+1 /* length of script ID +1 byte for NUL termination */;
+    Size = Size + 4 /* SCRI */ + 4 /* 4 bytes for length */
+         + ScriptID.length() + 1 /* length of script ID +1 byte for NUL */;
   }
-  output.write((const char*) &Size, 4);
-  output.write((const char*) &HeaderOne, 4);
-  output.write((const char*) &HeaderFlags, 4);
+  if (!InventoryIcon.empty())
+  {
+    Size = Size + 4 /* ITEX */ + 4 /* 4 bytes for length */
+         + InventoryIcon.length() + 1 /* length of icon path +1 byte for NUL */;
+  }
+  if (!EnchantmentID.empty())
+  {
+    Size = Size + 4 /* ENAM */ + 4 /* 4 bytes for length */
+         + EnchantmentID.length() + 1 /* length of ID +1 byte for NUL */;
+  }
+  output.write(reinterpret_cast<const char*>(&Size), 4);
+  output.write(reinterpret_cast<const char*>(&HeaderOne), 4);
+  output.write(reinterpret_cast<const char*>(&HeaderFlags), 4);
   /*Weapons:
     NAME = item ID, required
     MODL = model filename, required
@@ -121,97 +124,84 @@ bool WeaponRecord::saveToStream(std::ostream& output) const
     ENAM = Enchantment ID string (optional)
     SCRI = script ID string (optional) */
 
-  //write NAME
-  output.write((const char*) &cNAME, 4);
-  uint32_t SubLength = recordID.length()+1;
-  //write NAME's length
-  output.write((const char*) &SubLength, 4);
-  //write ID
+  // write ID (NAME)
+  output.write(reinterpret_cast<const char*>(&cNAME), 4);
+  uint32_t SubLength = recordID.length() + 1;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
   output.write(recordID.c_str(), SubLength);
 
-  //write MODL
-  output.write((const char*) &cMODL, 4);
-  SubLength = ModelPath.length()+1;
-  //write MODL's length
-  output.write((const char*) &SubLength, 4);
-  //write model path
+  // write model path (MODL)
+  output.write(reinterpret_cast<const char*>(&cMODL), 4);
+  SubLength = ModelPath.length() + 1;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
   output.write(ModelPath.c_str(), SubLength);
 
   if (!Name.empty())
   {
-    //write FNAM
-    output.write((const char*) &cFNAM, 4);
-    SubLength = Name.length()+1;
-    //write FNAM's length
-    output.write((const char*) &SubLength, 4);
-    //write weapon's real name
+    // write weapon's real name (FNAM)
+    output.write(reinterpret_cast<const char*>(&cFNAM), 4);
+    SubLength = Name.length() + 1;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
     output.write(Name.c_str(), SubLength);
   }
 
-  //write WPDT
-  output.write((const char*) &cWPDT, 4);
-  SubLength = 32; //fixed size of 32 bytes
-  //write WPDT's length
-  output.write((const char*) &SubLength, 4);
-  //write weapon data
-  output.write((const char*) &Weight, 4);
-  output.write((const char*) &Value, 4);
-  output.write((const char*) &Type, 2);
-  output.write((const char*) &Health, 2);
-  output.write((const char*) &Speed, 4);
-  output.write((const char*) &Reach, 4);
-  output.write((const char*) &EnchantPts, 2);
-  output.write((const char*) &ChopMin, 1);
-  output.write((const char*) &ChopMax, 1);
-  output.write((const char*) &SlashMin, 1);
-  output.write((const char*) &SlashMax, 1);
-  output.write((const char*) &ThrustMin, 1);
-  output.write((const char*) &ThrustMax, 1);
-  output.write((const char*) &WeaponFlags, 4);
+  // write WPDT
+  output.write(reinterpret_cast<const char*>(&cWPDT), 4);
+  SubLength = 32;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
+  // write weapon data
+  output.write(reinterpret_cast<const char*>(&Weight), 4);
+  output.write(reinterpret_cast<const char*>(&Value), 4);
+  output.write(reinterpret_cast<const char*>(&Type), 2);
+  output.write(reinterpret_cast<const char*>(&Health), 2);
+  output.write(reinterpret_cast<const char*>(&Speed), 4);
+  output.write(reinterpret_cast<const char*>(&Reach), 4);
+  output.write(reinterpret_cast<const char*>(&EnchantPts), 2);
+  output.write(reinterpret_cast<const char*>(&ChopMin), 1);
+  output.write(reinterpret_cast<const char*>(&ChopMax), 1);
+  output.write(reinterpret_cast<const char*>(&SlashMin), 1);
+  output.write(reinterpret_cast<const char*>(&SlashMax), 1);
+  output.write(reinterpret_cast<const char*>(&ThrustMin), 1);
+  output.write(reinterpret_cast<const char*>(&ThrustMax), 1);
+  output.write(reinterpret_cast<const char*>(&WeaponFlags), 4);
+
+  if (!ScriptID.empty())
+  {
+    // write script ID (SCRI)
+    output.write(reinterpret_cast<const char*>(&cSCRI), 4);
+    SubLength = ScriptID.length() + 1;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
+    output.write(ScriptID.c_str(), SubLength);
+  }
 
   if (!InventoryIcon.empty())
   {
-    //write ITEX
-    output.write((const char*) &cITEX, 4);
-    SubLength = InventoryIcon.length()+1;
-    //write ITEX's length
-    output.write((const char*) &SubLength, 4);
-    //write inventory icon
+    // write inventory icon (ITEX)
+    output.write(reinterpret_cast<const char*>(&cITEX), 4);
+    SubLength = InventoryIcon.length() + 1;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
     output.write(InventoryIcon.c_str(), SubLength);
   }
 
   if (!EnchantmentID.empty())
   {
-    //write ENAM
-    output.write((const char*) &cENAM, 4);
-    SubLength = EnchantmentID.length()+1;
-    //write ENAM's length
-    output.write((const char*) &SubLength, 4);
-    //write enchantment ID
+    // write enchantment ID (ENAM)
+    output.write(reinterpret_cast<const char*>(&cENAM), 4);
+    SubLength = EnchantmentID.length() + 1;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
     output.write(EnchantmentID.c_str(), SubLength);
-  }
-
-  if (!ScriptID.empty())
-  {
-    //write SCRI
-    output.write((const char*) &cSCRI, 4);
-    SubLength = ScriptID.length()+1;
-    //write SCRI's length
-    output.write((const char*) &SubLength, 4);
-    //write script ID
-    output.write(ScriptID.c_str(), SubLength);
   }
 
   return output.good();
 }
 #endif
 
-bool WeaponRecord::loadFromStream(std::istream& in_File)
+bool WeaponRecord::loadFromStream(std::istream& input)
 {
-  uint32_t Size;
-  in_File.read((char*) &Size, 4);
-  in_File.read((char*) &HeaderOne, 4);
-  in_File.read((char*) &HeaderFlags, 4);
+  uint32_t Size = 0;
+  input.read(reinterpret_cast<char*>(&Size), 4);
+  input.read(reinterpret_cast<char*>(&HeaderOne), 4);
+  input.read(reinterpret_cast<char*>(&HeaderFlags), 4);
 
   /*Weapons:
     NAME = item ID, required
@@ -239,91 +229,39 @@ bool WeaponRecord::loadFromStream(std::istream& in_File)
     ENAM = Enchantment ID string (optional)
     SCRI = script ID string (optional) */
 
-  uint32_t SubRecName;
-  uint32_t SubLength, BytesRead;
-  SubRecName = SubLength = 0;
+  uint32_t SubRecName = 0;
+  uint32_t SubLength = 0;
+  uint32_t BytesRead = 0;
 
-  //read NAME
-  in_File.read((char*) &SubRecName, 4);
-  BytesRead = 4;
-  if (SubRecName!=cNAME)
-  {
-    UnexpectedRecord(cNAME, SubRecName);
-    return false;
-  }
-  //NAME's length
-  in_File.read((char*) &SubLength, 4);
-  BytesRead += 4;
-  if (SubLength>255)
-  {
-    std::cout << "Error: subrecord NAME of WEAP is longer than 255 bytes.\n";
-    return false;
-  }
-  //read ID
+  // read ID (NAME)
   char Buffer[256];
-  memset(Buffer, '\0', 256);
-  in_File.read(Buffer, SubLength);
-  BytesRead += SubLength;
-  if (!in_File.good())
+  if (!loadString256WithHeader(input, recordID, Buffer, cNAME, BytesRead))
   {
-    std::cout << "Error while reading subrecord NAME of WEAP.\n";
+    std::cerr << "Error while reading subrecord NAME of WEAP.\n";
     return false;
   }
-  recordID = std::string(Buffer);
 
-  //read MODL
-  in_File.read((char*) &SubRecName, 4);
-  BytesRead += 4;
-  if (SubRecName!=cMODL)
+  // read model path (MODL)
+  if (!loadString256WithHeader(input, ModelPath, Buffer, cMODL, BytesRead))
   {
-    UnexpectedRecord(cMODL, SubRecName);
+    std::cerr << "Error while reading subrecord MODL of WEAP.\n";
     return false;
   }
-  //MODL's length
-  in_File.read((char*) &SubLength, 4);
-  BytesRead += 4;
-  if (SubLength>255)
-  {
-    std::cout << "Error: subrecord MODL of WEAP is longer than 255 bytes.\n";
-    return false;
-  }
-  //read model path
-  memset(Buffer, '\0', 256);
-  in_File.read(Buffer, SubLength);
-  BytesRead += SubLength;
-  if (!in_File.good())
-  {
-    std::cout << "Error while reading subrecord MODL of WEAP.\n";
-    return false;
-  }
-  ModelPath = std::string(Buffer);
 
-  //read FNAM
-  in_File.read((char*) &SubRecName, 4);
+  // read FNAM
+  input.read(reinterpret_cast<char*>(&SubRecName), 4);
   BytesRead += 4;
-  if (SubRecName==cFNAM)
+  if (SubRecName == cFNAM)
   {
-    //FNAM's length
-    in_File.read((char*) &SubLength, 4);
-    BytesRead += 4;
-    if (SubLength>255)
+    // read weapon's name
+    if (!loadString256(input, Name, Buffer, cFNAM, BytesRead))
     {
-      std::cout << "Error: subrecord FNAM of WEAP is longer than 255 bytes.\n";
+      std::cerr << "Error while reading subrecord FNAM of WEAP.\n";
       return false;
     }
-    //read weapon name
-    memset(Buffer, '\0', 256);
-    in_File.read(Buffer, SubLength);
-    BytesRead += SubLength;
-    if (!in_File.good())
-    {
-      std::cout << "Error while reading subrecord FNAM of WEAP.\n";
-      return false;
-    }
-    Name = std::string(Buffer);
 
     //read next subrecord
-    in_File.read((char*) &SubRecName, 4);
+    input.read(reinterpret_cast<char*>(&SubRecName), 4);
     BytesRead += 4;
   }
   else
@@ -331,125 +269,119 @@ bool WeaponRecord::loadFromStream(std::istream& in_File)
     Name.clear();
   }
 
-  //read WPDT
-  //already read above
-  if (SubRecName!=cWPDT)
+  // read WPDT
+  // header already read above
+  if (SubRecName != cWPDT)
   {
     UnexpectedRecord(cWPDT, SubRecName);
     return false;
   }
-  in_File.read((char*) &SubLength, 4);//WPDT's length
+  input.read(reinterpret_cast<char*>(&SubLength), 4);
   BytesRead += 4;
-  if (SubLength!=32)
+  if (SubLength != 32)
   {
-    std::cout << "Error: sub record WPDT of WEAP has invalid length ("
-              <<SubLength<< " bytes). Should be 32 bytes.\n";
+    std::cerr << "Error: Sub record WPDT of WEAP has invalid length ("
+              << SubLength << " bytes). Should be 32 bytes.\n";
     return false;
   }
-  //read weapon data
-  in_File.read((char*) &Weight, 4);
-  in_File.read((char*) &Value, 4);
-  in_File.read((char*) &Type, 2);
-  in_File.read((char*) &Health, 2);
-  in_File.read((char*) &Speed, 4);
-  in_File.read((char*) &Reach, 4);
-  in_File.read((char*) &EnchantPts, 2);
-  in_File.read((char*) &ChopMin, 1);
-  in_File.read((char*) &ChopMax, 1);
-  in_File.read((char*) &SlashMin, 1);
-  in_File.read((char*) &SlashMax, 1);
-  in_File.read((char*) &ThrustMin, 1);
-  in_File.read((char*) &ThrustMax, 1);
-  in_File.read((char*) &WeaponFlags, 4);
+  // read weapon data
+  input.read(reinterpret_cast<char*>(&Weight), 4);
+  input.read(reinterpret_cast<char*>(&Value), 4);
+  input.read(reinterpret_cast<char*>(&Type), 2);
+  input.read(reinterpret_cast<char*>(&Health), 2);
+  input.read(reinterpret_cast<char*>(&Speed), 4);
+  input.read(reinterpret_cast<char*>(&Reach), 4);
+  input.read(reinterpret_cast<char*>(&EnchantPts), 2);
+  input.read(reinterpret_cast<char*>(&ChopMin), 1);
+  input.read(reinterpret_cast<char*>(&ChopMax), 1);
+  input.read(reinterpret_cast<char*>(&SlashMin), 1);
+  input.read(reinterpret_cast<char*>(&SlashMax), 1);
+  input.read(reinterpret_cast<char*>(&ThrustMin), 1);
+  input.read(reinterpret_cast<char*>(&ThrustMax), 1);
+  input.read(reinterpret_cast<char*>(&WeaponFlags), 4);
   BytesRead += 32;
-  if (!in_File.good())
+  if (!input.good())
   {
-    std::cout << "Error while reading subrecord WPDT of WEAP.\n";
+    std::cerr << "Error while reading subrecord WPDT of WEAP.\n";
     return false;
   }
 
-  //optional data
+  // optional data
+  ScriptID.clear();
   InventoryIcon.clear();
   EnchantmentID.clear();
-  ScriptID.clear();
-  while (BytesRead<Size)
+  while (BytesRead < Size)
   {
-    //read next (optional) record name
-    in_File.read((char*) &SubRecName, 4);
+    // read next (optional) record name
+    input.read(reinterpret_cast<char*>(&SubRecName), 4);
     BytesRead += 4;
     switch (SubRecName)
     {
       case cITEX:
-           //ITEX's length
-           in_File.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength>255)
+           if (!InventoryIcon.empty())
            {
-             std::cout << "Error: subrecord ITEX of WEAP is longer than 255 bytes.\n";
+             std::cerr << "Error: WEAP seems to have more than one ITEX subrecord!\n";
              return false;
            }
-           //read inventory icon
-           memset(Buffer, '\0', 256);
-           in_File.read(Buffer, SubLength);
-           BytesRead += SubLength;
-           if (!in_File.good())
+           // read inventory icon
+           if (!loadString256(input, InventoryIcon, Buffer, cITEX, BytesRead))
            {
-             std::cout << "Error while reading subrecord ITEX of WEAP.\n";
+             std::cerr << "Error while reading subrecord ITEX of WEAP.\n";
              return false;
            }
-           InventoryIcon = std::string(Buffer);
+           if (InventoryIcon.empty())
+           {
+             std::cerr << "Error: Subrecord ITEX of WEAP is empty!\n";
+             return false;
+           }
            break;
       case cENAM:
-           //ENAM's length
-           in_File.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength>255)
+           if (!EnchantmentID.empty())
            {
-             std::cout << "Error: subrecord ENAM of WEAP is longer than 255 bytes.\n";
+             std::cerr << "Error: WEAP seems to have more than one ENAM subrecord!\n";
              return false;
            }
-           //read enchantment name
-           memset(Buffer, '\0', 256);
-           in_File.read(Buffer, SubLength);
-           BytesRead += SubLength;
-           if (!in_File.good())
+           // read enchantment name
+           if (!loadString256(input, EnchantmentID, Buffer, cENAM, BytesRead))
            {
-             std::cout << "Error while reading subrecord ENAM of WEAP.\n";
+             std::cerr << "Error while reading subrecord ENAM of WEAP.\n";
              return false;
            }
-           EnchantmentID = std::string(Buffer);
+           if (EnchantmentID.empty())
+           {
+             std::cerr << "Error: Subrecord ENAM of WEAP is empty!\n";
+             return false;
+           }
            break;
       case cSCRI:
-           //SCRI's length
-           in_File.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength>255)
+           if (!ScriptID.empty())
            {
-             std::cout << "Error: subrecord SCRI of WEAP is longer than 255 bytes.\n";
+             std::cerr << "Error: WEAP seems to have more than one SCRI subrecord!\n";
              return false;
            }
-           //read script name
-           memset(Buffer, '\0', 256);
-           in_File.read(Buffer, SubLength);
-           BytesRead += SubLength;
-           if (!in_File.good())
+           // read script name
+           if (!loadString256(input, ScriptID, Buffer, cSCRI, BytesRead))
            {
-             std::cout << "Error while reading subrecord SCRI of WEAP.\n";
+             std::cerr << "Error while reading subrecord SCRI of WEAP.\n";
              return false;
            }
-           ScriptID = std::string(Buffer);
+           if (ScriptID.empty())
+           {
+             std::cerr << "Error: Subrecord SCRI of WEAP is empty!\n";
+             return false;
+           }
            break;
       default:
            // unknown / wrong subrecord encountered
-           std::cout << "Error: expected record name ENAM or SCRI was not "
-                     << "found. Instead, \""<<IntTo4Char(SubRecName)
-                     <<"\" was found.\n";
+           std::cerr << "Error: Expected record name ENAM, ITEX or SCRI was "
+                     << "not found. Instead, \"" << IntTo4Char(SubRecName)
+                     << "\" was found.\n";
            return false;
            break;
-    }//swi
-  }//while
+    }
+  }
 
-  return in_File.good();
+  return true;
 }
 
-} //namespace
+} // namespace

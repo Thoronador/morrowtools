@@ -109,6 +109,8 @@
 		<Unit filename="../../mw/base/records/TES3Record.hpp" />
 		<Unit filename="../../mw/base/records/TravelDestination.cpp" />
 		<Unit filename="../../mw/base/records/TravelDestination.hpp" />
+		<Unit filename="../../mw/base/records/WeaponRecord.cpp" />
+		<Unit filename="../../mw/base/records/WeaponRecord.hpp" />
 		<Unit filename="../../sr/base/DependencySolver.cpp" />
 		<Unit filename="../../sr/base/DependencySolver.hpp" />
 		<Unit filename="../../sr/base/ESMFileContents.cpp" />
@@ -311,6 +313,7 @@
 		<Unit filename="mw/base/records/StaticRecord.cpp" />
 		<Unit filename="mw/base/records/TES3Record.cpp" />
 		<Unit filename="mw/base/records/TravelDestination.cpp" />
+		<Unit filename="mw/base/records/WeaponRecord.cpp" />
 		<Unit filename="sr/base/DependencyElement.cpp" />
 		<Unit filename="sr/base/ESMFileContents.cpp" />
 		<Unit filename="sr/base/ESMReader.cpp" />

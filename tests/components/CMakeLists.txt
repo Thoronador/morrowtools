@@ -29,6 +29,7 @@ set(component_tests_sources
     ../../mw/base/records/GenericRecord.cpp
     ../../mw/base/records/GlobalRecord.cpp
     ../../mw/base/records/GMSTRecord.cpp
+    ../../mw/base/records/IngredientRecord.cpp
     ../../mw/base/records/ItemRecord.cpp
     ../../mw/base/records/LightRecord.cpp
     ../../mw/base/records/LockpickRecord.cpp
@@ -147,6 +148,7 @@ set(component_tests_sources
     mw/base/records/GenericRecord.cpp
     mw/base/records/GlobalRecord.cpp
     mw/base/records/GMSTRecord.cpp
+    mw/base/records/IngredientRecord.cpp
     mw/base/records/ItemRecord.cpp
     mw/base/records/LightRecord.cpp
     mw/base/records/LockpickRecord.cpp

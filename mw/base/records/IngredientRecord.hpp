@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011, 2012  Thoronador
+    Copyright (C) 2010, 2011, 2012, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,70 +21,59 @@
 #ifndef MW_INGREDIENTRECORD_HPP
 #define MW_INGREDIENTRECORD_HPP
 
+#include <array>
 #include <string>
-#include <fstream>
 #include "BasicRecord.hpp"
 
 namespace MWTP
 {
 
-/*Ingredients:
-    NAME = Item ID, required
-    MODL = Model Name, required
-    FNAM = Item Name, required
-    IRDT = Ingredient Data (56 bytes), required
-        float  Weight
-        long   Value
-        long   EffectID[4]	0 or -1 means no effect
-        long   SkillID[4]	only for Skill related effects, 0 or -1 otherwise
-        long   AttributeID[4]  only for Attribute related effects, 0 or -1 otherwise
-    ITEX = Inventory Icon
-    SCRI = Script Name (optional) */
-
+/** Holds information about an ingredient. */
 struct IngredientRecord: public BasicRecord
 {
   public:
-    /* constructor */
     IngredientRecord();
 
-    //data
-    std::string recordID; //formerly IngredientID
-    std::string ModelName;
-    std::string IngredientName;
-    //IngredientData
+    std::string recordID;
+    std::string ModelPath;
+    std::string Name;
+    // IngredientData
     float Weight;
     int32_t Value;
-    int32_t EffectID[4];
-    int32_t SkillID[4];
-    int32_t AttributeID[4];
+    std::array<int32_t, 4> EffectID;
+    std::array<int32_t, 4> SkillID;
+    std::array<int32_t, 4> AttributeID;
     // end of Ingredient data
     std::string InventoryIcon;
-    std::string ScriptName;
+    std::string ScriptID;
 
-    /* shows the content of the record by writing it to the standard output */
-    void show();
-
-    /* returns true, if the other record contains the same data */
+    /** \brief Checks whether another instance contains the same data.
+     *
+     * \param other   the other record to compare with
+     * \return Returns true, if @other contains the same data as this instance.
+     *         Returns false otherwise.
+     */
     bool equals(const IngredientRecord& other) const;
 
     #ifndef MW_UNSAVEABLE_RECORDS
-    /* tries to save the ingredient record to an output file stream and returns
-       true on success, false on failure.
-
-       parameters:
-           output - the output stream that is used to save the record
-    */
+    /** \brief Writes the record to the given output stream.
+     *
+     * \param output  the output stream
+     * \return Returns true on success (record was written to stream).
+     *         Returns false, if an error occurred.
+     */
     bool saveToStream(std::ostream& output) const override;
     #endif
 
-    /* loads the record from the given input stream and returns true on success
+    /** \brief Loads the record from the given input stream.
+     *
+     * \param input    the input stream
+     * \return Returns true on success (record was loaded from stream).
+     *         Returns false, if an error occurred.
+     */
+    bool loadFromStream(std::istream& input) override;
+}; // struct
 
-      parameters:
-          in_File - the input stream
-    */
-    bool loadFromStream(std::istream& in_File) override;
-};//struct
-
-} //namespace
+} // namespace
 
 #endif // MW_INGREDIENTRECORD_HPP

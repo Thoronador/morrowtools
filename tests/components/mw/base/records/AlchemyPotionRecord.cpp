@@ -170,7 +170,7 @@ TEST_CASE("MWTP::AlchemyPotionRecord")
       REQUIRE( record.recordID == "p_slowfall_s" );
       REQUIRE( record.ModelPath == "m\\Misc_Potion_Fresh_01.nif" );
       REQUIRE( record.Name == "Federflugtrank" );
-      // ALDT\x0C\0\0\0\0\0\x80?#\0\0\0\0\0\0\0
+
       REQUIRE( record.Weight == 1.0f );
       REQUIRE( record.Value == 35 );
       REQUIRE( record.AutoCalc == 0 );
@@ -271,7 +271,7 @@ TEST_CASE("MWTP::AlchemyPotionRecord")
       REQUIRE( record.recordID == "p_slowfall_s" );
       REQUIRE( record.ModelPath == "m\\Misc_Potion_Fresh_01.nif" );
       REQUIRE( record.Name == "Federflugtrank" );
-      // ALDT\x0C\0\0\0\0\0\x80?#\0\0\0\0\0\0\0
+
       REQUIRE( record.Weight == 1.0f );
       REQUIRE( record.Value == 35 );
       REQUIRE( record.AutoCalc == 0 );
@@ -569,6 +569,21 @@ TEST_CASE("MWTP::AlchemyPotionRecord")
     SECTION("corrupt data: no ALDT")
     {
       const auto data = "ALCH\xA4\0\0\0\0\0\0\0\0\0\0\0NAME\x0D\0\0\0p_slowfall_s\0MODL\x1B\0\0\0m\\Misc_Potion_Fresh_01.nif\0TEXT\x19\0\0\0m\\Tx_potion_fresh_01.tga\0FNAM\x0F\0\0\0Federflugtrank\0FAIL\x0C\0\0\0\0\0\x80?#\0\0\0\0\0\0\0ENAM\x18\0\0\0\x0B\0\xFF\xFF\0\0\0\0\0\0\0\0\x0F\0\0\0\x0A\0\0\0\x0A\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read ALCH, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      AlchemyPotionRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: missing ALDT")
+    {
+      const auto data = "ALCH\x90\0\0\0\0\0\0\0\0\0\0\0NAME\x0D\0\0\0p_slowfall_s\0MODL\x1B\0\0\0m\\Misc_Potion_Fresh_01.nif\0TEXT\x19\0\0\0m\\Tx_potion_fresh_01.tga\0FNAM\x0F\0\0\0Federflugtrank\0ENAM\x18\0\0\0\x0B\0\xFF\xFF\0\0\0\0\0\0\0\0\x0F\0\0\0\x0A\0\0\0\x0A\0\0\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 

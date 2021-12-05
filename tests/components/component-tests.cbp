@@ -81,6 +81,8 @@
 		<Unit filename="../../mw/base/records/GenericRecord.hpp" />
 		<Unit filename="../../mw/base/records/GlobalRecord.cpp" />
 		<Unit filename="../../mw/base/records/GlobalRecord.hpp" />
+		<Unit filename="../../mw/base/records/IngredientRecord.cpp" />
+		<Unit filename="../../mw/base/records/IngredientRecord.hpp" />
 		<Unit filename="../../mw/base/records/ItemRecord.cpp" />
 		<Unit filename="../../mw/base/records/ItemRecord.hpp" />
 		<Unit filename="../../mw/base/records/LightRecord.cpp" />
@@ -295,6 +297,7 @@
 		<Unit filename="mw/base/records/GMSTRecord.cpp" />
 		<Unit filename="mw/base/records/GenericRecord.cpp" />
 		<Unit filename="mw/base/records/GlobalRecord.cpp" />
+		<Unit filename="mw/base/records/IngredientRecord.cpp" />
 		<Unit filename="mw/base/records/ItemRecord.cpp" />
 		<Unit filename="mw/base/records/LightRecord.cpp" />
 		<Unit filename="mw/base/records/LockpickRecord.cpp" />

@@ -35,5 +35,5 @@ However, there are some notable exceptions:
   directory from the Windows registry. Obviously, that will only work on Windows
   systems.
 * `SetBasedRecordManager.hpp` contains a templated class that can manage all
-  records of a single type. Works like `MapBasedRecordManager` but used a
+  records of a single type. Works like `MapBasedRecordManager` but uses a
   `std::set` internally to manage the data.

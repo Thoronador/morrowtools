@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Morrowind Tools Project.
-    Copyright (C) 2021  Thoronador
+    Copyright (C) 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ TEST_CASE("MWTP::StaticRecord")
     StaticRecord record;
 
     REQUIRE( record.recordID.empty() );
-    REQUIRE( record.Mesh.empty() );
+    REQUIRE( record.ModelPath.empty() );
   }
 
   SECTION("equals")
@@ -44,10 +44,10 @@ TEST_CASE("MWTP::StaticRecord")
     SECTION("equal")
     {
       a.recordID = "Tree";
-      a.Mesh = "tree01.nif";
+      a.ModelPath = "tree01.nif";
 
       b.recordID = "Tree";
-      b.Mesh = "tree01.nif";
+      b.ModelPath = "tree01.nif";
 
       REQUIRE( a.equals(b) );
       REQUIRE( b.equals(a) );
@@ -64,10 +64,10 @@ TEST_CASE("MWTP::StaticRecord")
         REQUIRE_FALSE( b.equals(a) );
       }
 
-      SECTION("Mesh mismatch")
+      SECTION("ModelPath mismatch")
       {
-        a.Mesh = "mesh01.nif";
-        b.Mesh = "mesh02.nif";
+        a.ModelPath = "mesh01.nif";
+        b.ModelPath = "mesh02.nif";
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
@@ -98,7 +98,7 @@ TEST_CASE("MWTP::StaticRecord")
       REQUIRE( record.getHeaderFlags() == 0 );
       // -- record data
       REQUIRE( record.recordID == "in_redoran_hut_bfloor_02" );
-      REQUIRE( record.Mesh == "i\\In_redoran_hut_Bfloor_02.NIF" );
+      REQUIRE( record.ModelPath == "i\\In_redoran_hut_Bfloor_02.NIF" );
 
       // Writing should succeed.
       std::ostringstream streamOut;

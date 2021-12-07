@@ -116,7 +116,7 @@ int ESMReaderCleaner::processNextRecord(std::istream& in_File)
          baseRec = new BodyPartRecord;
          if (baseRec->loadFromStream(in_File))
          {
-           MeshSet.insert(baseDirMesh+static_cast<BodyPartRecord*>(baseRec)->MeshPath);
+           MeshSet.insert(baseDirMesh+static_cast<BodyPartRecord*>(baseRec)->ModelPath);
            delete baseRec;
            return 1;
          }
@@ -295,7 +295,7 @@ int ESMReaderCleaner::processNextRecord(std::istream& in_File)
          baseRec = new StaticRecord;
          if (baseRec->loadFromStream(in_File))
          {
-           MeshSet.insert(baseDirMesh+static_cast<StaticRecord*>(baseRec)->Mesh);
+           MeshSet.insert(baseDirMesh+static_cast<StaticRecord*>(baseRec)->ModelPath);
            delete baseRec;
            return 1;
          }

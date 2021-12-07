@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011, 2012, 2013, 2021  Thoronador
+    Copyright (C) 2009, 2011, 2012, 2013, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@ namespace MWTP
 BodyPartRecord::BodyPartRecord(const std::string& id)
 : BasicRecord(),
   recordID(id),
-  MeshPath(std::string()),
+  ModelPath(std::string()),
   RaceID(std::string()),
   Part(0),
   Vampire(0),
@@ -39,7 +39,7 @@ BodyPartRecord::BodyPartRecord(const std::string& id)
 
 bool BodyPartRecord::equals(const BodyPartRecord& other) const
 {
-  return (recordID == other.recordID) && (MeshPath == other.MeshPath)
+  return (recordID == other.recordID) && (ModelPath == other.ModelPath)
       && (RaceID == other.RaceID) && (Part == other.Part)
       && (Vampire == other.Vampire) && (Flags == other.Flags)
       && (PartType == other.PartType);
@@ -52,7 +52,7 @@ bool BodyPartRecord::saveToStream(std::ostream& output) const
   const uint32_t Size = 4 /* NAME */ +4 /* 4 bytes for length */
         + recordID.length() + 1 /* length of ID +1 byte for NUL termination */
         + 4 /* MODL */ + 4 /* 4 bytes for length */
-        + MeshPath.length() + 1 /* length of ID +1 byte for NUL termination */
+        + ModelPath.length() + 1 /* length of ID +1 byte for NUL termination */
         + 4 /* FNAM */ + 4 /* 4 bytes for length */
         + RaceID.length() + 1 /* length of ID +1 byte for NUL termination */
         + 4 /* BYDT */ + 4 /* 4 bytes for BYDT's length */ + 4 /* size of BYDT */;
@@ -99,9 +99,9 @@ bool BodyPartRecord::saveToStream(std::ostream& output) const
 
   // write mesh path (MODL)
   output.write(reinterpret_cast<const char*>(&cMODL), 4);
-  SubLength = MeshPath.length() + 1;
+  SubLength = ModelPath.length() + 1;
   output.write(reinterpret_cast<const char*>(&SubLength), 4);
-  output.write(MeshPath.c_str(), SubLength);
+  output.write(ModelPath.c_str(), SubLength);
 
   // write race ID (FNAM)
   output.write(reinterpret_cast<const char*>(&cFNAM), 4);
@@ -173,7 +173,7 @@ bool BodyPartRecord::loadFromStream(std::istream& input)
   }
 
   // read MODL
-  if (!loadString256WithHeader(input, MeshPath, Buffer, cMODL, bytesRead))
+  if (!loadString256WithHeader(input, ModelPath, Buffer, cMODL, bytesRead))
   {
     std::cerr << "Error while reading subrecord MODL of BODY!\n";
     return false;

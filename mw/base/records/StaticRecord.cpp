@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011, 2012, 2013, 2021  Thoronador
+    Copyright (C) 2009, 2011, 2012, 2013, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,14 +27,14 @@ namespace MWTP
 
 StaticRecord::StaticRecord()
 : BasicRecord(),
-  recordID(""),
-  Mesh("")
+  recordID(std::string()),
+  ModelPath(std::string())
 {
 }
 
 bool StaticRecord::equals(const StaticRecord& other) const
 {
-  return (recordID == other.recordID) && (Mesh == other.Mesh);
+  return (recordID == other.recordID) && (ModelPath == other.ModelPath);
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
@@ -44,7 +44,7 @@ bool StaticRecord::saveToStream(std::ostream& output) const
   const uint32_t Size = 4 /* NAME */ + 4 /* 4 bytes for length */
         + recordID.length() + 1 /* length of ID +1 byte for NUL termination */
         + 4 /* MODL */ + 4 /* 4 bytes for MODL's length */
-        + Mesh.length() + 1 /*length of mesh plus one for NUL-termination */;
+        + ModelPath.length() + 1 /* length of path plus one for NUL */;
   output.write(reinterpret_cast<const char*>(&Size), 4);
   output.write(reinterpret_cast<const char*>(&HeaderOne), 4);
   output.write(reinterpret_cast<const char*>(&HeaderFlags), 4);
@@ -61,16 +61,16 @@ bool StaticRecord::saveToStream(std::ostream& output) const
 
   // write mesh path (MODL)
   output.write(reinterpret_cast<const char*>(&cMODL), 4);
-  SubLength = Mesh.length() + 1;
+  SubLength = ModelPath.length() + 1;
   output.write(reinterpret_cast<const char*>(&SubLength), 4);
-  output.write(Mesh.c_str() ,SubLength);
+  output.write(ModelPath.c_str() ,SubLength);
   return output.good();
 }
 #endif
 
 bool StaticRecord::loadFromStream(std::istream& input)
 {
-  uint32_t Size;
+  uint32_t Size = 0;
   input.read(reinterpret_cast<char*>(&Size), 4);
   input.read(reinterpret_cast<char*>(&HeaderOne), 4);
   input.read(reinterpret_cast<char*>(&HeaderFlags), 4);
@@ -85,7 +85,7 @@ bool StaticRecord::loadFromStream(std::istream& input)
   // read NAME
   return loadString256WithHeader(input, recordID, Buffer, cNAME, bytesRead)
   // read MODL
-      && loadString256WithHeader(input, Mesh, Buffer, cMODL, bytesRead);
+      && loadString256WithHeader(input, ModelPath, Buffer, cMODL, bytesRead);
 }
 
 } // namespace

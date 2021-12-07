@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Morrowind Tools Project.
-    Copyright (C) 2021  Thoronador
+    Copyright (C) 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ TEST_CASE("MWTP::BodyPartRecord")
     BodyPartRecord record;
 
     REQUIRE( record.recordID.empty() );
-    REQUIRE( record.MeshPath.empty() );
+    REQUIRE( record.ModelPath.empty() );
     REQUIRE( record.RaceID.empty() );
     REQUIRE( record.Part == 0 );
     REQUIRE( record.Vampire == 0 );
@@ -49,10 +49,10 @@ TEST_CASE("MWTP::BodyPartRecord")
     SECTION("equal")
     {
       a.recordID = "Tree";
-      a.MeshPath = "tree01.nif";
+      a.ModelPath = "tree01.nif";
 
       b.recordID = "Tree";
-      b.MeshPath = "tree01.nif";
+      b.ModelPath = "tree01.nif";
 
       REQUIRE( a.equals(b) );
       REQUIRE( b.equals(a) );
@@ -69,10 +69,10 @@ TEST_CASE("MWTP::BodyPartRecord")
         REQUIRE_FALSE( b.equals(a) );
       }
 
-      SECTION("MeshPath mismatch")
+      SECTION("ModelPath mismatch")
       {
-        a.MeshPath = "mesh01.nif";
-        b.MeshPath = "mesh02.nif";
+        a.ModelPath = "mesh01.nif";
+        b.ModelPath = "mesh02.nif";
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
@@ -181,7 +181,7 @@ TEST_CASE("MWTP::BodyPartRecord")
       REQUIRE( record.getHeaderFlags() == 0 );
       // -- record data
       REQUIRE( record.recordID == "A_M_Chitin_pauldron_CL" );
-      REQUIRE( record.MeshPath == "a\\A_M_Chitin_pauldron_CL.NIF" );
+      REQUIRE( record.ModelPath == "a\\A_M_Chitin_pauldron_CL.NIF" );
       REQUIRE( record.RaceID == "Argonian" );
       REQUIRE( record.Part == 13 );
       REQUIRE( record.Vampire == 0 );

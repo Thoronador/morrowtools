@@ -1226,28 +1226,28 @@ SC_VarRef getScriptsVariableTypeWithIndex(const ScriptRecord& theScript, const s
 SC_VarRef getForeignVariableTypeWithIndex(const std::string& objectID, const std::string& varName)
 {
   std::string ScriptID = "";
-  if (Activators::getSingleton().hasRecord(objectID))
+  if (Activators::get().hasRecord(objectID))
   {
-    ScriptID = Activators::getSingleton().getRecord(objectID).ScriptName;
+    ScriptID = Activators::get().getRecord(objectID).ScriptName;
   }
-  else if (NPCs::getSingleton().hasRecord(objectID))
+  else if (NPCs::get().hasRecord(objectID))
   {
-    ScriptID = NPCs::getSingleton().getRecord(objectID).ScriptID;
+    ScriptID = NPCs::get().getRecord(objectID).ScriptID;
   }
-  else if (Creatures::getSingleton().hasRecord(objectID))
+  else if (Creatures::get().hasRecord(objectID))
   {
-    ScriptID = Creatures::getSingleton().getRecord(objectID).ScriptID;
+    ScriptID = Creatures::get().getRecord(objectID).ScriptID;
   }
-  else if (Containers::getSingleton().hasRecord(objectID))
+  else if (Containers::get().hasRecord(objectID))
   {
-    ScriptID = Containers::getSingleton().getRecord(objectID).ScriptName;
+    ScriptID = Containers::get().getRecord(objectID).ScriptName;
   }
   ///TODO: add more stuff (e.g. weapons) later
   if (!ScriptID.empty())
   {
-    if (Scripts::getSingleton().hasRecord(ScriptID))
+    if (Scripts::get().hasRecord(ScriptID))
     {
-      return getScriptsVariableTypeWithIndex(Scripts::getSingleton().getRecord(ScriptID), varName);
+      return getScriptsVariableTypeWithIndex(Scripts::get().getRecord(ScriptID), varName);
     }
   }
   return SC_VarRef(vtGlobal, 0);
@@ -1258,25 +1258,25 @@ SC_VarRef getForeignVariableTypeWithIndex(const std::string& objectID, const std
 */
 const std::string& getObjectsProperID(const std::string& objectID)
 {
-  if (Activators::getSingleton().hasRecord(objectID))
+  if (Activators::get().hasRecord(objectID))
   {
-    return Activators::getSingleton().getRecord(objectID).recordID;
+    return Activators::get().getRecord(objectID).recordID;
   }
-  if (NPCs::getSingleton().hasRecord(objectID))
+  if (NPCs::get().hasRecord(objectID))
   {
-    return NPCs::getSingleton().getRecord(objectID).recordID;
+    return NPCs::get().getRecord(objectID).recordID;
   }
-  if (Creatures::getSingleton().hasRecord(objectID))
+  if (Creatures::get().hasRecord(objectID))
   {
-    return Creatures::getSingleton().getRecord(objectID).recordID;
+    return Creatures::get().getRecord(objectID).recordID;
   }
-  if (Statics::getSingleton().hasRecord(objectID))
+  if (Statics::get().hasRecord(objectID))
   {
-    return Statics::getSingleton().getRecord(objectID).recordID;
+    return Statics::get().getRecord(objectID).recordID;
   }
-  if (Containers::getSingleton().hasRecord(objectID))
+  if (Containers::get().hasRecord(objectID))
   {
-    return Containers::getSingleton().getRecord(objectID).recordID;
+    return Containers::get().getRecord(objectID).recordID;
   }
   return objectID;
 }
@@ -3003,7 +3003,7 @@ bool ScriptFunctions_MessageBox(const std::vector<std::string>& params, Compiled
         //it's a local var
         ++arg_count;
       }
-      else if (Globals::getSingleton().hasRecord(params[i]))
+      else if (Globals::get().hasRecord(params[i]))
       {
         //It's a global var, that counts as argument.
         ++arg_count;
@@ -3035,7 +3035,7 @@ bool ScriptFunctions_MessageBox(const std::vector<std::string>& params, Compiled
         else
         {
           //push global
-          const std::string& globName = Globals::getSingleton().getRecord(params[i+2]).recordID;
+          const std::string& globName = Globals::get().getRecord(params[i+2]).recordID;
           //push G for global
           chunk.data.push_back('G');
           //push length (including null-terminating byte)
@@ -4587,7 +4587,7 @@ bool ScriptFunctions_TwoParameters(const std::vector<std::string>& params, Compi
       //it's a local var
       arg_count = 1;
     }
-    else if (Globals::getSingleton().hasRecord(params[2]))
+    else if (Globals::get().hasRecord(params[2]))
     {
       //It's a global var, that counts as argument.
       arg_count = 1;
@@ -4610,7 +4610,7 @@ bool ScriptFunctions_TwoParameters(const std::vector<std::string>& params, Compi
       else
       {
         //push global
-        const std::string& globName = Globals::getSingleton().getRecord(params[2]).recordID;
+        const std::string& globName = Globals::get().getRecord(params[2]).recordID;
         //push G for global
         chunk.data.push_back('G');
         //push length (including null-terminating byte)
@@ -5313,7 +5313,7 @@ bool ScriptFunctions_ThreeParameters(const std::vector<std::string>& params, Com
       //it's a local var
       arg_count = 1;
     }
-    else if (Globals::getSingleton().hasRecord(params[2]))
+    else if (Globals::get().hasRecord(params[2]))
     {
       //It's a global var, that counts as argument.
       arg_count = 1;
@@ -5333,7 +5333,7 @@ bool ScriptFunctions_ThreeParameters(const std::vector<std::string>& params, Com
         //it's a local var
         ++arg_count;
       }
-      else if (Globals::getSingleton().hasRecord(params[3]))
+      else if (Globals::get().hasRecord(params[3]))
       {
         //It's a global var, that counts as argument.
         ++arg_count;
@@ -5358,7 +5358,7 @@ bool ScriptFunctions_ThreeParameters(const std::vector<std::string>& params, Com
       else
       {
         //push global
-        const std::string& globName = Globals::getSingleton().getRecord(params[2]).recordID;
+        const std::string& globName = Globals::get().getRecord(params[2]).recordID;
         //push G for global
         chunk.data.push_back('G');
         //push length (including null-terminating byte)
@@ -5379,7 +5379,7 @@ bool ScriptFunctions_ThreeParameters(const std::vector<std::string>& params, Com
       else
       {
         //push global
-        const std::string& globName = Globals::getSingleton().getRecord(params[3]).recordID;
+        const std::string& globName = Globals::get().getRecord(params[3]).recordID;
         //push G for global
         chunk.data.push_back('G');
         //push length (including null-terminating byte)
@@ -7824,14 +7824,14 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
         //fill byte
         CompiledData.data.push_back(0);
       }
-      else if (Globals::getSingleton().hasRecord(varName))
+      else if (Globals::get().hasRecord(varName))
       {
         //global var identifier or more complex expression found
         // So we assume global here.
         //push type indicator - G for global
         CompiledData.data.push_back('G');
         //push length of global name
-        const std::string& vn_ref = Globals::getSingleton().getRecord(varName).recordID;
+        const std::string& vn_ref = Globals::get().getRecord(varName).recordID;
         CompiledData.data.push_back(vn_ref.length());
         //push name
         CompiledData.pushString(vn_ref);

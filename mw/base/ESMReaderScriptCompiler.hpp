@@ -35,9 +35,6 @@ class ESMReaderScriptCompiler: public ESMReader
   public:
     /* constructor */
     ESMReaderScriptCompiler();
-
-    /* destructor */
-    virtual ~ESMReaderScriptCompiler();
   protected:
     /* tries to read the next record from a stream and returns the number of
        relevant records that were read (usually one). If an error occurred,

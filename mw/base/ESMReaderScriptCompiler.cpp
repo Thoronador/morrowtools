@@ -36,12 +36,6 @@ namespace MWTP
 
 ESMReaderScriptCompiler::ESMReaderScriptCompiler()
 {
-  //empty
-}
-
-ESMReaderScriptCompiler::~ESMReaderScriptCompiler()
-{
-  //empty
 }
 
 int ESMReaderScriptCompiler::processNextRecord(std::istream& in_File)
@@ -54,7 +48,7 @@ int ESMReaderScriptCompiler::processNextRecord(std::istream& in_File)
   switch(RecordName)
   {
     case cACTI:
-         lastResult = Activators::getSingleton().readNextRecord(in_File);
+         lastResult = Activators::get().readNextRecord(in_File);
          break;
     case cALCH:
     case cAPPA:
@@ -68,10 +62,10 @@ int ESMReaderScriptCompiler::processNextRecord(std::istream& in_File)
          lastResult = ESMReader::skipRecord(in_File);
          break;
     case cCONT:
-         lastResult = Containers::getSingleton().readNextRecord(in_File);
+         lastResult = Containers::get().readNextRecord(in_File);
          break;
     case cCREA:
-         lastResult = Creatures::getSingleton().readNextRecord(in_File);
+         lastResult = Creatures::get().readNextRecord(in_File);
          break;
     case cDIAL:
     case cDOOR:
@@ -80,7 +74,7 @@ int ESMReaderScriptCompiler::processNextRecord(std::istream& in_File)
          lastResult = ESMReader::skipRecord(in_File);
          break;
     case cGLOB:
-         lastResult = Globals::getSingleton().readNextRecord(in_File);
+         lastResult = Globals::get().readNextRecord(in_File);
          break;
     case cGMST:
     case cINFO:
@@ -94,13 +88,13 @@ int ESMReaderScriptCompiler::processNextRecord(std::istream& in_File)
          lastResult = ESMReader::skipRecord(in_File);
          break;
     case cMGEF:
-         lastResult = MagicEffects::getSingleton().readRecordMGEF(in_File);
+         lastResult = MagicEffects::get().readRecordMGEF(in_File);
          break;
     case cMISC:
          lastResult = ESMReader::skipRecord(in_File);
          break;
     case cNPC_:
-         lastResult = NPCs::getSingleton().readNextRecord(in_File);
+         lastResult = NPCs::get().readNextRecord(in_File);
          break;
     case cPGRD:
     case cPROB:
@@ -110,7 +104,7 @@ int ESMReaderScriptCompiler::processNextRecord(std::istream& in_File)
          lastResult = ESMReader::skipRecord(in_File);
          break;
     case cSCPT:
-         lastResult = Scripts::getSingleton().readNextRecord(in_File);
+         lastResult = Scripts::get().readNextRecord(in_File);
          break;
     case cSKIL:
     case cSNDG:
@@ -120,7 +114,7 @@ int ESMReaderScriptCompiler::processNextRecord(std::istream& in_File)
          lastResult = ESMReader::skipRecord(in_File);
          break;
     case cSTAT:
-         lastResult = Statics::getSingleton().readNextRecord(in_File);
+         lastResult = Statics::get().readNextRecord(in_File);
          break;
     case cWEAP:
          lastResult = ESMReader::skipRecord(in_File);
@@ -131,8 +125,8 @@ int ESMReaderScriptCompiler::processNextRecord(std::istream& in_File)
                    << "Current file position: "<<in_File.tellg()<< " bytes.\n";
          lastResult = -1;
          break;
-  }//swi
+  }
   return lastResult;
-}//processNextRecord of ESMReaderScriptCompiler
+}
 
-} //namespace
+} // namespace

@@ -35,7 +35,7 @@ Skills::~Skills()
   m_Skills.clear();
 }
 
-Skills& Skills::getSingleton()
+Skills& Skills::get()
 {
   static Skills Instance;
   return Instance;
@@ -182,12 +182,12 @@ int Skills::readRecordSKIL(std::istream& input)
   return -1;
 }
 
-SkillListIterator Skills::getBegin() const
+SkillListIterator Skills::begin() const
 {
   return m_Skills.begin();
 }
 
-SkillListIterator Skills::getEnd() const
+SkillListIterator Skills::end() const
 {
   return m_Skills.end();
 }
@@ -214,7 +214,7 @@ bool Skills::saveAllToStream(std::ostream& output) const
   return output.good();
 }
 
-void Skills::clearAll()
+void Skills::clear()
 {
   m_Skills.clear();
 }

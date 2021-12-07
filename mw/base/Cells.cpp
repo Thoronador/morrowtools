@@ -59,15 +59,9 @@ std::string CellRef::toString() const
 Cells::Cells()
 : m_Cells(std::map<CellRef, CellRecord>())
 {
-  //empty
 }
 
-Cells::~Cells()
-{
-  //empty
-}
-
-Cells& Cells::getSingleton()
+Cells& Cells::get()
 {
   static Cells Instance;
   return Instance;
@@ -99,12 +93,12 @@ const CellRecord& Cells::getCell(const CellRef& ref) const
   throw std::runtime_error("Cells::hasCell(): No cell with the ref "+ref.toString()+" is present.");
 }
 
-CellListIterator Cells::getBegin() const
+CellListIterator Cells::begin() const
 {
   return m_Cells.begin();
 }
 
-CellListIterator Cells::getEnd() const
+CellListIterator Cells::end() const
 {
   return m_Cells.end();
 }
@@ -131,7 +125,7 @@ bool Cells::saveAllToStream(std::ostream& output) const
   return output.good();
 }
 
-void Cells::clearAll()
+void Cells::clear()
 {
   m_Cells.clear();
 }

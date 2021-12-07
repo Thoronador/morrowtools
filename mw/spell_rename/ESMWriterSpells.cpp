@@ -26,23 +26,17 @@ namespace MWTP
 
 ESMWriterSpells::ESMWriterSpells()
 {
-  //empty
-}
-
-ESMWriterSpells::~ESMWriterSpells()
-{
-  //empty
 }
 
 int32_t ESMWriterSpells::getTotalRecords() const
 {
-  //only writes spells
-  return Spells::getSingleton().getNumberOfRecords();
+  // only writes spells
+  return Spells::get().getNumberOfRecords();
 }
 
 bool ESMWriterSpells::writeRecords(std::ofstream& output) const
 {
-  return Spells::getSingleton().saveAllToStream(output);
+  return Spells::get().saveAllToStream(output);
 }
 
-} //namespace
+} // namespace

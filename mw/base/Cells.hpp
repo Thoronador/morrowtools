@@ -53,11 +53,8 @@ typedef std::map<CellRef, CellRecord>::const_iterator CellListIterator;
 class Cells
 {
   public:
-    /* destructor */
-    ~Cells();
-
     /* singleton access method */
-    static Cells& getSingleton();
+    static Cells& get();
 
     /* adds a cell to the list */
     void addCell(const CellRecord& record);
@@ -99,10 +96,10 @@ class Cells
     int readRecordCELL(std::istream& input);
 
     /* returns constant iterator to the beginning of the internal list */
-    CellListIterator getBegin() const;
+    CellListIterator begin() const;
 
     /* returns constant iterator to the end of the internal list */
-    CellListIterator getEnd() const;
+    CellListIterator end() const;
 
     /* tries to save all available cells to the given stream and returns
        true on success, false on failure
@@ -113,7 +110,7 @@ class Cells
     bool saveAllToStream(std::ostream& output) const;
 
     /* removes all cells from the list */
-    void clearAll();
+    void clear();
   private:
     /* constructor */
     Cells();

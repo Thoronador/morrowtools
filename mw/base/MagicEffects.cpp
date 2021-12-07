@@ -36,7 +36,7 @@ MagicEffects::~MagicEffects()
   m_Effects.clear();
 }
 
-MagicEffects& MagicEffects::getSingleton()
+MagicEffects& MagicEffects::get()
 {
   static MagicEffects Instance;
   return Instance;
@@ -531,12 +531,12 @@ int MagicEffects::readRecordMGEF(std::istream& input)
   return -1;
 }//readRecordMGEF (integer version of readMGEF)
 
-EffectListIterator MagicEffects::getBegin() const
+EffectListIterator MagicEffects::begin() const
 {
   return m_Effects.begin();
 }
 
-EffectListIterator MagicEffects::getEnd() const
+EffectListIterator MagicEffects::end() const
 {
   return m_Effects.end();
 }
@@ -562,7 +562,7 @@ bool MagicEffects::saveAllToStream(std::ostream& output) const
   return output.good();
 }
 
-void MagicEffects::clearAll()
+void MagicEffects::clear()
 {
   m_Effects.clear();
 }

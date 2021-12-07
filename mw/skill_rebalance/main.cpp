@@ -294,36 +294,36 @@ int main(int argc, char **argv)
   if (goMinimalistic)
   {
     //remove skill records, we won't need them
-    MWTP::Skills::getSingleton().clearAll();
+    MWTP::Skills::get().clear();
     //add game settings
     // -- add fMajorSkillBonus (default: 0.75)
     tempSetting.Type = MWTP::GMSTType::Float;
     tempSetting.SettingName = "fMajorSkillBonus";
     tempSetting.fVal = 0.75*scalingFactor;
-    MWTP::GameSettings::getSingleton().addSetting(tempSetting);
+    MWTP::GameSettings::get().addSetting(tempSetting);
     // -- add fMinorSkillBonus (default: 1.00)
     tempSetting.Type = MWTP::GMSTType::Float;
     tempSetting.SettingName = "fMinorSkillBonus";
     tempSetting.fVal = 1.00*scalingFactor;
-    MWTP::GameSettings::getSingleton().addSetting(tempSetting);
+    MWTP::GameSettings::get().addSetting(tempSetting);
     // -- add fMiscSkillBonus (default: 1.25)
     tempSetting.Type = MWTP::GMSTType::Float;
     tempSetting.SettingName = "fMiscSkillBonus";
     tempSetting.fVal = 1.25*scalingFactor;
-    MWTP::GameSettings::getSingleton().addSetting(tempSetting);
+    MWTP::GameSettings::get().addSetting(tempSetting);
   }//if minimalistic
   else
   {
     // non-minimalistic approach (like in plugin "More Morrowind")
-    MWTP::SkillListIterator iter = MWTP::Skills::getSingleton().getBegin();
-    while (iter!=MWTP::Skills::getSingleton().getEnd())
+    MWTP::SkillListIterator iter = MWTP::Skills::get().begin();
+    while (iter != MWTP::Skills::get().end())
     {
       MWTP::SkillRecord scaledSkill = iter->second;
       scaledSkill.UseValues[0] /= scalingFactor;
       scaledSkill.UseValues[1] /= scalingFactor;
       scaledSkill.UseValues[2] /= scalingFactor;
       scaledSkill.UseValues[3] /= scalingFactor;
-      MWTP::Skills::getSingleton().addSkill(scaledSkill);
+      MWTP::Skills::get().addSkill(scaledSkill);
       ++iter;
     }//while
   }//else (non-minimalistic)
@@ -334,7 +334,7 @@ int main(int argc, char **argv)
     tempSetting.Type = MWTP::GMSTType::Integer;
     tempSetting.SettingName = "iTrainingMod";
     tempSetting.iVal = 25;
-    MWTP::GameSettings::getSingleton().addSetting(tempSetting);
+    MWTP::GameSettings::get().addSetting(tempSetting);
   }
 
   //prepare header data for writing (yes, description is German)

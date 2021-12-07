@@ -27,25 +27,20 @@ namespace MWTP
 
 ESMWriterSkillRebalance::ESMWriterSkillRebalance()
 {
-  //empty
-}
-
-ESMWriterSkillRebalance::~ESMWriterSkillRebalance()
-{
-  //empty
 }
 
 int32_t ESMWriterSkillRebalance::getTotalRecords() const
 {
   //writes settings and skills
-  return GameSettings::getSingleton().getNumberOfSettings()
-        +Skills::getSingleton().getNumberOfSkills();
+  return GameSettings::get().getNumberOfSettings()
+       + Skills::get().getNumberOfSkills();
 }
 
 bool ESMWriterSkillRebalance::writeRecords(std::ofstream& output) const
 {
-  if (!GameSettings::getSingleton().saveAllToStream(output)) return false;
-  return Skills::getSingleton().saveAllToStream(output);
+  if (!GameSettings::get().saveAllToStream(output))
+    return false;
+  return Skills::get().saveAllToStream(output);
 }
 
 } //namespace

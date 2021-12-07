@@ -379,12 +379,12 @@ int main(int argc, char **argv)
   }//if
 
   std::cout << "Info: "<<files.getSize()<<" Master/ Plugin file(s) containing "
-            << MWTP::Spells::getSingleton().getNumberOfRecords()<<" spell(s) were read.\n";
+            << MWTP::Spells::get().getNumberOfRecords()<<" spell(s) were read.\n";
 
   std::vector<std::string> prefixes;
   prefixes.clear();
   //spell school settings present?
-  MWTP::GameSettings& GMSTs = MWTP::GameSettings::getSingleton();
+  MWTP::GameSettings& GMSTs = MWTP::GameSettings::get();
   MWTP::GMSTRecord record;
 
   //alteration -> 0
@@ -490,9 +490,9 @@ int main(int argc, char **argv)
   }
 
   //delete all non-spells (abilities, powers,...) and update spells with naming scheme
-  MWTP::Spells::ListIterator spell_end = MWTP::Spells::getSingleton().getEnd();
-  MWTP::Spells::ListIterator spell_cur = MWTP::Spells::getSingleton().getBegin();
-  while (spell_cur!=spell_end)
+  MWTP::Spells::ListIterator spell_end = MWTP::Spells::get().end();
+  MWTP::Spells::ListIterator spell_cur = MWTP::Spells::get().begin();
+  while (spell_cur != spell_end)
   {
     // Is it a spell?
     if (spell_cur->second.Type != MWTP::SpellType::Spell)
@@ -500,7 +500,7 @@ int main(int argc, char **argv)
       const std::string temp = spell_cur->first;
       ++spell_cur;
       // delete spell so we don't save it into the final plugin
-      MWTP::Spells::getSingleton().removeRecord(temp);
+      MWTP::Spells::get().removeRecord(temp);
     }//if not spell
     else
     {
@@ -508,9 +508,9 @@ int main(int argc, char **argv)
       MWTP::SpellRecord rec = spell_cur->second;
       if (!rec.Enchs.empty())
       {
-        if (MWTP::MagicEffects::getSingleton().hasEffect(rec.Enchs.at(0).EffectID))
+        if (MWTP::MagicEffects::get().hasEffect(rec.Enchs.at(0).EffectID))
         {
-          const int school = MWTP::MagicEffects::getSingleton().getEffect(rec.Enchs.at(0).EffectID).SpellSchool;
+          const int school = MWTP::MagicEffects::get().getEffect(rec.Enchs.at(0).EffectID).SpellSchool;
           if ((school < 0) || (school >= prefixes.size()))
           {
             std::cout << "Error: effect "<<rec.Enchs.at(0).EffectID<<" has an "
@@ -521,7 +521,7 @@ int main(int argc, char **argv)
           if (allowTruncatedName || (newName.length() <= MWTP::SpellRecord::cMaximumSpellNameLength))
           {
             rec.Name = newName;
-            MWTP::Spells::getSingleton().addRecord(rec);
+            MWTP::Spells::get().addRecord(rec);
           }
           else
           {
@@ -531,7 +531,7 @@ int main(int argc, char **argv)
             const std::string delete_ID = spell_cur->first;
             ++spell_cur;
             //delete spell so we don't save it into the final plugin
-            MWTP::Spells::getSingleton().removeRecord(delete_ID);
+            MWTP::Spells::get().removeRecord(delete_ID);
             //set unchanged flag to avoid iterator increase at the end
             unchanged = true;
           }//else
@@ -556,10 +556,10 @@ int main(int argc, char **argv)
     }
   }//while
 
-  std::cout << "Info: "<<MWTP::Spells::getSingleton().getNumberOfRecords()<<" spell(s) processed.\n";
+  std::cout << "Info: " << MWTP::Spells::get().getNumberOfRecords() << " spell(s) processed.\n";
 
-  //write spells to file
-  if (MWTP::Spells::getSingleton().getNumberOfRecords()==0)
+  // write spells to file
+  if (MWTP::Spells::get().getNumberOfRecords() == 0)
   {
     std::cout << "No spells available. No new file will be created.\n";
     return MWTP::rcNoSpells;

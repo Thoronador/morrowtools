@@ -53,11 +53,8 @@ typedef std::map<PathGridRef, PathGridRecord>::const_iterator PathGridListIterat
 class PathGrids
 {
   public:
-    /* destructor */
-    ~PathGrids();
-
     /* singleton access method */
-    static PathGrids& getSingleton();
+    static PathGrids& get();
 
     /* adds a path grid to the list */
     void addPathGrid(const PathGridRecord& record);
@@ -99,10 +96,10 @@ class PathGrids
     int readRecordPGRD(std::istream& input);
 
     /* returns constant iterator to the beginning of the internal list */
-    PathGridListIterator getBegin() const;
+    PathGridListIterator begin() const;
 
     /* returns constant iterator to the end of the internal list */
-    PathGridListIterator getEnd() const;
+    PathGridListIterator end() const;
 
     /* tries to save all available path grids to the given stream and returns
        true on success, false on failure
@@ -113,7 +110,7 @@ class PathGrids
     bool saveAllToStream(std::ostream& output) const;
 
     /* removes all path grids from the list */
-    void clearAll();
+    void clear();
   private:
     /* constructor */
     PathGrids();

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2012, 2013, 2014  Thoronador
+    Copyright (C) 2012, 2013, 2014, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -37,11 +37,8 @@ class SetBasedRecordManager
     //iterator type for record list/set
     typedef typename std::set<recT>::const_iterator ListIterator;
 
-    /* destructor */
-    ~SetBasedRecordManager();
-
     /* singleton access method */
-    static SetBasedRecordManager& getSingleton();
+    static SetBasedRecordManager& get();
 
     /* adds a record to the list */
     void addRecord(const recT& record);
@@ -90,10 +87,10 @@ class SetBasedRecordManager
     bool removeRecord(const std::string& ID);
 
     /* returns constant iterator to the beginning of the internal list */
-    ListIterator getBegin() const;
+    ListIterator begin() const;
 
     /* returns constant iterator to the end of the internal list */
-    ListIterator getEnd() const;
+    ListIterator end() const;
 
     #ifndef MW_UNSAVEABLE_RECORDS
     /* tries to save all available records to the given stream and returns
@@ -107,7 +104,7 @@ class SetBasedRecordManager
     #endif
 
     /* removes all records from the list */
-    void clearAll();
+    void clear();
   private:
     /* constructor */
     SetBasedRecordManager();
@@ -123,17 +120,10 @@ template<typename recT>
 SetBasedRecordManager<recT>::SetBasedRecordManager()
 : m_Records(std::set<recT>())
 {
-  //empty
 }
 
 template<typename recT>
-SetBasedRecordManager<recT>::~SetBasedRecordManager()
-{
-  //empty
-}
-
-template<typename recT>
-SetBasedRecordManager<recT>& SetBasedRecordManager<recT>::getSingleton()
+SetBasedRecordManager<recT>& SetBasedRecordManager<recT>::get()
 {
   static SetBasedRecordManager<recT> Instance;
   return Instance;
@@ -204,13 +194,13 @@ bool SetBasedRecordManager<recT>::removeRecord(const std::string& ID)
 }
 
 template<typename recT>
-typename SetBasedRecordManager<recT>::ListIterator SetBasedRecordManager<recT>::getBegin() const
+typename SetBasedRecordManager<recT>::ListIterator SetBasedRecordManager<recT>::begin() const
 {
   return m_Records.begin();
 }
 
 template<typename recT>
-typename SetBasedRecordManager<recT>::ListIterator SetBasedRecordManager<recT>::getEnd() const
+typename SetBasedRecordManager<recT>::ListIterator SetBasedRecordManager<recT>::end() const
 {
   return m_Records.end();
 }
@@ -241,7 +231,7 @@ bool SetBasedRecordManager<recT>::saveAllToStream(std::ostream& output) const
 #endif
 
 template<typename recT>
-void SetBasedRecordManager<recT>::clearAll()
+void SetBasedRecordManager<recT>::clear()
 {
   m_Records.clear();
 }

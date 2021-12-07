@@ -35,9 +35,6 @@ class ESMReaderAll: public ESMReader
   public:
     /* constructor */
     ESMReaderAll();
-
-    /* destructor */
-    virtual ~ESMReaderAll();
   protected:
     /* tries to read the next record from a stream and returns the number of
        relevant records that were read (usually one). If an error occurred,

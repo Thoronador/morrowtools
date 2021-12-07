@@ -39,7 +39,7 @@ class MagicEffects
     ~MagicEffects();
 
     /* singleton access */
-    static MagicEffects& getSingleton();
+    static MagicEffects& get();
 
     /* adds an effect to the list */
     void addEffect(const MGEF_Data& Data);
@@ -97,10 +97,10 @@ class MagicEffects
     int readRecordMGEF(std::istream& input);
 
     /* returns constant iterator to the beginning of the internal list */
-    EffectListIterator getBegin() const;
+    EffectListIterator begin() const;
 
     /* returns constant iterator to the end of the internal list */
-    EffectListIterator getEnd() const;
+    EffectListIterator end() const;
 
     /* tries to save all available magic effects to the given stream and returns
        true on success, false on failure
@@ -112,7 +112,7 @@ class MagicEffects
     bool saveAllToStream(std::ostream& output) const;
 
     /* deletes all effects */
-    void clearAll();
+    void clear();
   private:
     /* constructor */
     MagicEffects();

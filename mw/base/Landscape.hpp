@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -52,7 +52,7 @@ class Landscape
     ~Landscape();
 
     /* singleton access method */
-    static Landscape& getSingleton();
+    static Landscape& get();
 
     /* adds a landscape record to the list
 
@@ -106,10 +106,10 @@ class Landscape
     int readRecordLAND(std::istream& input);
 
     /* returns constant iterator to the beginning of the internal list */
-    LandscapeListIterator getBegin() const;
+    LandscapeListIterator begin() const;
 
     /* returns constant iterator to the end of the internal list */
-    LandscapeListIterator getEnd() const;
+    LandscapeListIterator end() const;
 
     /* tries to save all available landscape records to the given stream and
        returns true on success, false on failure
@@ -121,13 +121,13 @@ class Landscape
     bool saveAllToStream(std::ostream& output) const;
 
     /* removes all landscape records from the list */
-    void clearAll();
+    void clear();
   private:
     /* constructor */
     Landscape();
 
     /* empty copy constructor */
-    Landscape(const Landscape& op) {}
+    Landscape(const Landscape& op) = delete;
 
     /* internal data */
     std::map<LandscapeCoords, LandscapeRecord*> m_Landscape;

@@ -31,16 +31,16 @@ TEST_CASE("MWTP::MapBasedRecordManager")
 
   SECTION("get (Singleton)")
   {
-    auto& mgr = MapBasedRecordManager<StaticRecord>::getSingleton();
-    auto& mgr2 = MapBasedRecordManager<StaticRecord>::getSingleton();
+    auto& mgr = MapBasedRecordManager<StaticRecord>::get();
+    auto& mgr2 = MapBasedRecordManager<StaticRecord>::get();
 
     REQUIRE( &mgr == &mgr2 );
   }
 
   SECTION("addRecord / hasRecord / getRecord")
   {
-    auto& mgr = MapBasedRecordManager<StaticRecord>::getSingleton();
-    mgr.clearAll();
+    auto& mgr = MapBasedRecordManager<StaticRecord>::get();
+    mgr.clear();
 
     StaticRecord recordOne;
     recordOne.recordID = "TestOne";
@@ -67,8 +67,8 @@ TEST_CASE("MWTP::MapBasedRecordManager")
 
   SECTION("addRecord with empty ID does not add anything")
   {
-    auto& mgr = MapBasedRecordManager<StaticRecord>::getSingleton();
-    mgr.clearAll();
+    auto& mgr = MapBasedRecordManager<StaticRecord>::get();
+    mgr.clear();
 
     StaticRecord recordEmptyID;
     recordEmptyID.recordID = "";
@@ -82,8 +82,8 @@ TEST_CASE("MWTP::MapBasedRecordManager")
 
   SECTION("getRecord throws when ID is not present")
   {
-    auto& mgr = MapBasedRecordManager<StaticRecord>::getSingleton();
-    mgr.clearAll();
+    auto& mgr = MapBasedRecordManager<StaticRecord>::get();
+    mgr.clear();
 
     REQUIRE_FALSE( mgr.hasRecord("NIL_NotInList") );
     REQUIRE_THROWS( mgr.getRecord("NIL_NotInList") );
@@ -91,8 +91,8 @@ TEST_CASE("MWTP::MapBasedRecordManager")
 
   SECTION("removeRecord")
   {
-    auto& mgr = MapBasedRecordManager<StaticRecord>::getSingleton();
-    mgr.clearAll();
+    auto& mgr = MapBasedRecordManager<StaticRecord>::get();
+    mgr.clear();
 
     StaticRecord recordOne;
     recordOne.recordID = "TestOne";
@@ -111,8 +111,8 @@ TEST_CASE("MWTP::MapBasedRecordManager")
 
   SECTION("clear")
   {
-    auto& mgr = MapBasedRecordManager<StaticRecord>::getSingleton();
-    mgr.clearAll();
+    auto& mgr = MapBasedRecordManager<StaticRecord>::get();
+    mgr.clear();
 
     StaticRecord recordOne;
     recordOne.recordID = "TestOne";
@@ -133,7 +133,7 @@ TEST_CASE("MWTP::MapBasedRecordManager")
     REQUIRE( mgr.hasRecord("TestTwo") );
     REQUIRE( mgr.hasRecord("TestThree") );
 
-    mgr.clearAll();
+    mgr.clear();
     REQUIRE_FALSE( mgr.hasRecord("TestOne") );
     REQUIRE_FALSE( mgr.hasRecord("TestTwo") );
     REQUIRE_FALSE( mgr.hasRecord("TestThree") );
@@ -141,8 +141,8 @@ TEST_CASE("MWTP::MapBasedRecordManager")
 
   SECTION("getNumberOfRecords")
   {
-    auto& mgr = MapBasedRecordManager<StaticRecord>::getSingleton();
-    mgr.clearAll();
+    auto& mgr = MapBasedRecordManager<StaticRecord>::get();
+    mgr.clear();
 
     StaticRecord recordOne;
     recordOne.recordID = "TestOne";
@@ -180,8 +180,8 @@ TEST_CASE("MWTP::MapBasedRecordManager")
 
   SECTION("begin / end")
   {
-    auto& mgr = MapBasedRecordManager<StaticRecord>::getSingleton();
-    mgr.clearAll();
+    auto& mgr = MapBasedRecordManager<StaticRecord>::get();
+    mgr.clear();
 
     StaticRecord recordOne;
     recordOne.recordID = "TestOne";
@@ -195,25 +195,25 @@ TEST_CASE("MWTP::MapBasedRecordManager")
     recordThree.recordID = "TestThree";
     recordThree.ModelPath = "another.nif";
 
-    REQUIRE( mgr.getBegin() == mgr.getEnd() );
+    REQUIRE( mgr.begin() == mgr.end() );
 
     mgr.addRecord(recordOne);
     mgr.addRecord(recordTwo);
     mgr.addRecord(recordThree);
 
-    REQUIRE_FALSE( mgr.getBegin() == mgr.getEnd() );
+    REQUIRE_FALSE( mgr.begin() == mgr.end() );
 
-    auto iter = mgr.getBegin();
+    auto iter = mgr.begin();
     REQUIRE( iter->first == "TestOne" );
     ++iter;
     REQUIRE( iter->first == "TestThree" );
     ++iter;
     REQUIRE( iter->first == "TestTwo" );
     ++iter;
-    REQUIRE( iter == mgr.getEnd() );
+    REQUIRE( iter == mgr.end() );
 
-    mgr.clearAll();
-    REQUIRE( mgr.getBegin() == mgr.getEnd() );
+    mgr.clear();
+    REQUIRE( mgr.begin() == mgr.end() );
   }
 
   SECTION("readNextRecord + saveToStream: basic stuff")
@@ -225,8 +225,8 @@ TEST_CASE("MWTP::MapBasedRecordManager")
 
     uint32_t dummy = 0;
 
-    auto& mgr = MapBasedRecordManager<StaticRecord>::getSingleton();
-    mgr.clearAll();
+    auto& mgr = MapBasedRecordManager<StaticRecord>::get();
+    mgr.clear();
 
     // read STAT, because header is handled before loadFromStream.
     stream.read(reinterpret_cast<char*>(&dummy), 4);
@@ -254,8 +254,8 @@ TEST_CASE("MWTP::MapBasedRecordManager")
 
     uint32_t dummy = 0;
 
-    auto& mgr = MapBasedRecordManager<StaticRecord>::getSingleton();
-    mgr.clearAll();
+    auto& mgr = MapBasedRecordManager<StaticRecord>::get();
+    mgr.clear();
 
     // read STAT, because header is handled before loadFromStream.
     stream.read(reinterpret_cast<char*>(&dummy), 4);
@@ -283,8 +283,8 @@ TEST_CASE("MWTP::MapBasedRecordManager")
 
     uint32_t dummy = 0;
 
-    auto& mgr = MapBasedRecordManager<StaticRecord>::getSingleton();
-    mgr.clearAll();
+    auto& mgr = MapBasedRecordManager<StaticRecord>::get();
+    mgr.clear();
 
     // read STAT, because header is handled before loadFromStream.
     stream.read(reinterpret_cast<char*>(&dummy), 4);
@@ -322,8 +322,8 @@ TEST_CASE("MWTP::MapBasedRecordManager")
 
     uint32_t dummy = 0;
 
-    auto& mgr = MapBasedRecordManager<StaticRecord>::getSingleton();
-    mgr.clearAll();
+    auto& mgr = MapBasedRecordManager<StaticRecord>::get();
+    mgr.clear();
 
     // read STAT, because header is handled before loadFromStream.
     stream.read(reinterpret_cast<char*>(&dummy), 4);

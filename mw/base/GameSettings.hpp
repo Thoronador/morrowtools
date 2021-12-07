@@ -39,7 +39,7 @@ class GameSettings
     ~GameSettings();
 
     /* singleton access */
-    static GameSettings& getSingleton();
+    static GameSettings& get();
 
     /* adds a setting to the list */
     void addSetting(const GMSTRecord& value);
@@ -96,13 +96,13 @@ class GameSettings
     #endif
 
     /* returns constant iterator to the beginning of the internal list */
-    GMSTListIterator getBegin() const;
+    GMSTListIterator begin() const;
 
     /* returns constant iterator to the end of the internal list */
-    GMSTListIterator getEnd() const;
+    GMSTListIterator end() const;
 
     /* deletes all GMST data */
-    void clearAll();
+    void clear();
   private:
     /* constructor - private due to singleton pattern */
     GameSettings();

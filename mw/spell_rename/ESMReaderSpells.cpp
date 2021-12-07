@@ -31,12 +31,6 @@ namespace MWTP
 
 ESMReaderSpells::ESMReaderSpells()
 {
-  //empty
-}
-
-ESMReaderSpells::~ESMReaderSpells()
-{
-  //empty
 }
 
 int ESMReaderSpells::processNextRecord(std::istream& in_File)
@@ -68,7 +62,7 @@ int ESMReaderSpells::processNextRecord(std::istream& in_File)
          lastResult = ESMReader::skipRecord(in_File);
          break;
     case cGMST:
-         lastResult = GameSettings::getSingleton().readRecordGMST(in_File);
+         lastResult = GameSettings::get().readRecordGMST(in_File);
          break;
     case cINFO:
     case cINGR:
@@ -81,7 +75,7 @@ int ESMReaderSpells::processNextRecord(std::istream& in_File)
          lastResult = ESMReader::skipRecord(in_File);
          break;
     case cMGEF:
-         lastResult = MagicEffects::getSingleton().readRecordMGEF(in_File);
+         lastResult = MagicEffects::get().readRecordMGEF(in_File);
          break;
     case cMISC:
     case cNPC_:
@@ -97,7 +91,7 @@ int ESMReaderSpells::processNextRecord(std::istream& in_File)
          lastResult = ESMReader::skipRecord(in_File);
          break;
     case cSPEL:
-         lastResult = Spells::getSingleton().readNextRecord(in_File);
+         lastResult = Spells::get().readNextRecord(in_File);
          break;
     case cSSCR:
     case cSTAT:

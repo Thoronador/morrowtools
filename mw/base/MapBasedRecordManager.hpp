@@ -42,7 +42,7 @@ class MapBasedRecordManager
      *
      * \return Returns a reference to the singleton instance.
      */
-    static MapBasedRecordManager& getSingleton();
+    static MapBasedRecordManager& get();
 
     /** \brief Adds a record to the instance.
      *
@@ -96,10 +96,10 @@ class MapBasedRecordManager
     bool removeRecord(const std::string& ID);
 
     /** Returns constant iterator to the beginning of the internal structure. */
-    ListIterator getBegin() const;
+    ListIterator begin() const;
 
     /** Returns constant iterator to the end of the internal structure. */
-    ListIterator getEnd() const;
+    ListIterator end() const;
 
     #ifndef MW_UNSAVEABLE_RECORDS
     /** \brief Tries to save all available records to the given stream.
@@ -111,7 +111,7 @@ class MapBasedRecordManager
     #endif
 
     /** Removes all records from the instance. */
-    void clearAll();
+    void clear();
   private:
     /** Constructor. */
     MapBasedRecordManager();
@@ -132,7 +132,7 @@ MapBasedRecordManager<recT>::MapBasedRecordManager()
 }
 
 template<typename recT>
-MapBasedRecordManager<recT>& MapBasedRecordManager<recT>::getSingleton()
+MapBasedRecordManager<recT>& MapBasedRecordManager<recT>::get()
 {
   static MapBasedRecordManager<recT> Instance;
   return Instance;
@@ -205,13 +205,13 @@ bool MapBasedRecordManager<recT>::removeRecord(const std::string& ID)
 }
 
 template<typename recT>
-typename MapBasedRecordManager<recT>::ListIterator MapBasedRecordManager<recT>::getBegin() const
+typename MapBasedRecordManager<recT>::ListIterator MapBasedRecordManager<recT>::begin() const
 {
   return m_Records.begin();
 }
 
 template<typename recT>
-typename MapBasedRecordManager<recT>::ListIterator MapBasedRecordManager<recT>::getEnd() const
+typename MapBasedRecordManager<recT>::ListIterator MapBasedRecordManager<recT>::end() const
 {
   return m_Records.end();
 }
@@ -239,7 +239,7 @@ bool MapBasedRecordManager<recT>::saveAllToStream(std::ostream& output) const
 #endif
 
 template<typename recT>
-void MapBasedRecordManager<recT>::clearAll()
+void MapBasedRecordManager<recT>::clear()
 {
   m_Records.clear();
 }

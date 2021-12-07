@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -33,11 +33,8 @@ typedef std::map<std::string, DialogueTopicRecord>::const_iterator DialogueTopic
 class DialogueTopics
 {
   public:
-    /* destructor */
-    ~DialogueTopics();
-
     /* singleton access method */
-    static DialogueTopics& getSingleton();
+    static DialogueTopics& get();
 
     /* adds a dialogue topic to the list */
     void addDialogueTopic(const DialogueTopicRecord& record);
@@ -79,10 +76,10 @@ class DialogueTopics
     int readRecordDIAL(std::istream& input);
 
     /* returns constant iterator to the beginning of the internal list */
-    DialogueTopicListIterator getBegin() const;
+    DialogueTopicListIterator begin() const;
 
     /* returns constant iterator to the end of the internal list */
-    DialogueTopicListIterator getEnd() const;
+    DialogueTopicListIterator end() const;
 
     /* tries to save all available dialogue topics to the given stream and
        returns true on success, false on failure
@@ -94,7 +91,7 @@ class DialogueTopics
     bool saveAllToStream(std::ostream& output) const;
 
     /* removes all dialogue topics from the list */
-    void clearAll();
+    void clear();
   private:
     /* constructor */
     DialogueTopics();

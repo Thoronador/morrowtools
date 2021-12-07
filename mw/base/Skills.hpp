@@ -39,7 +39,7 @@ class Skills
     ~Skills();
 
     /* singleton access method */
-    static Skills& getSingleton();
+    static Skills& get();
 
     /* adds a new skill record to the list
 
@@ -92,10 +92,10 @@ class Skills
     int readRecordSKIL(std::istream& input);
 
     /* returns a constant iterator the the start of the list */
-    SkillListIterator getBegin() const;
+    SkillListIterator begin() const;
 
     /* returns a constant iterator to the end of the list */
-    SkillListIterator getEnd() const;
+    SkillListIterator end() const;
 
     /* tries to save all available skills to the given stream and returns true
        on success, false on failure
@@ -106,7 +106,7 @@ class Skills
     bool saveAllToStream(std::ostream& output) const;
 
     /* removes all skills from the list */
-    void clearAll();
+    void clear();
   private:
     /* constructor - private due to singleton pattern */
     Skills();

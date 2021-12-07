@@ -28,7 +28,6 @@ namespace MWTP
 GameSettings::GameSettings()
 : m_Settings(std::map<std::string, GMSTRecord>())
 {
-  //empty
 }
 
 GameSettings::~GameSettings()
@@ -36,7 +35,7 @@ GameSettings::~GameSettings()
   m_Settings.clear();
 }
 
-GameSettings& GameSettings::getSingleton()
+GameSettings& GameSettings::get()
 {
   static GameSettings Instance;
   return Instance;
@@ -112,17 +111,17 @@ bool GameSettings::saveAllToStream(std::ostream& output) const
 }
 #endif
 
-GMSTListIterator GameSettings::getBegin() const
+GMSTListIterator GameSettings::begin() const
 {
   return m_Settings.begin();
 }
 
-GMSTListIterator GameSettings::getEnd() const
+GMSTListIterator GameSettings::end() const
 {
   return m_Settings.end();
 }
 
-void GameSettings::clearAll()
+void GameSettings::clear()
 {
   m_Settings.clear();
 }

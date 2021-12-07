@@ -88,7 +88,7 @@ int ESMReaderSkillRebalance::processNextRecord(std::istream& input)
          return skipRecord(input);
          break;
     case cSKIL:
-         return Skills::getSingleton().readRecordSKIL(input);
+         return Skills::get().readRecordSKIL(input);
          break;
     default:
          std::cout << "processNextRecord: ERROR: unknown record type found: \""

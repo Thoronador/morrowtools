@@ -161,11 +161,11 @@ bool ParserNode::splitToTree(std::string expression, const CompiledChunk& chunkV
         binary_content.push_back(locRef.Index>>8);
       }
       //check for global
-      else if (Globals::getSingleton().hasRecord(expression))
+      else if (Globals::get().hasRecord(expression))
       {
         //found a global var
         type = ctGlobalVar;
-        content = Globals::getSingleton().getRecord(expression).recordID;
+        content = Globals::get().getRecord(expression).recordID;
         //push G for global
         binary_content.push_back('G');
         //push length of name

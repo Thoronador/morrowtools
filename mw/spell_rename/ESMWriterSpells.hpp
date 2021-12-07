@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef ESMWRITERSPELLS_H
-#define ESMWRITERSPELLS_H
+#ifndef MW_ESMWRITERSPELLS_HPP
+#define MW_ESMWRITERSPELLS_HPP
 
 #include "../base/ESMWriter.hpp"
 
@@ -31,9 +31,6 @@ class ESMWriterSpells: public ESMWriter
   public:
     /* constructor */
     ESMWriterSpells();
-
-    /* destructor */
-    virtual ~ESMWriterSpells();
   protected:
     /* returns the number of records that will be written to the stream */
     virtual int32_t getTotalRecords() const;
@@ -44,8 +41,8 @@ class ESMWriterSpells: public ESMWriter
            output - the output file stream that's used to write the records
     */
     virtual bool writeRecords(std::ofstream& output) const;
-}; //class
+}; // class
 
-} //namespace
+} // namespace
 
-#endif // ESMWRITERSPELLS_H
+#endif // MW_ESMWRITERSPELLS_HPP

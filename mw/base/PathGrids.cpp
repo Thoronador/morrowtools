@@ -59,15 +59,9 @@ std::string PathGridRef::toString() const
 PathGrids::PathGrids()
 : m_PathGrids(std::map<PathGridRef, PathGridRecord>())
 {
-  //empty
 }
 
-PathGrids::~PathGrids()
-{
-  //empty
-}
-
-PathGrids& PathGrids::getSingleton()
+PathGrids& PathGrids::get()
 {
   static PathGrids Instance;
   return Instance;
@@ -99,12 +93,12 @@ const PathGridRecord& PathGrids::getPathGrid(const PathGridRef& ref) const
   throw std::runtime_error("No path grid with the ref "+ref.toString()+" is present.");
 }
 
-PathGridListIterator PathGrids::getBegin() const
+PathGridListIterator PathGrids::begin() const
 {
   return m_PathGrids.begin();
 }
 
-PathGridListIterator PathGrids::getEnd() const
+PathGridListIterator PathGrids::end() const
 {
   return m_PathGrids.end();
 }
@@ -131,7 +125,7 @@ bool PathGrids::saveAllToStream(std::ostream& output) const
   return output.good();
 }
 
-void PathGrids::clearAll()
+void PathGrids::clear()
 {
   m_PathGrids.clear();
 }

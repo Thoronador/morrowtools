@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2014 Thoronador
+    Copyright (C) 2011, 2014, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -47,15 +47,14 @@ bool LandscapeCoords::operator<(const LandscapeCoords& rhs) const
 Landscape::Landscape()
 : m_Landscape(std::map<LandscapeCoords, LandscapeRecord*>())
 {
-  //empty
 }
 
 Landscape::~Landscape()
 {
-  clearAll();
+  clear();
 }
 
-Landscape& Landscape::getSingleton()
+Landscape& Landscape::get()
 {
   static Landscape Instance;
   return Instance;
@@ -101,12 +100,12 @@ const LandscapeRecord& Landscape::getLandscapeRecord(const LandscapeCoords& coor
   throw std::runtime_error("No landscape record with the given coordinates is present.");
 }
 
-LandscapeListIterator Landscape::getBegin() const
+LandscapeListIterator Landscape::begin() const
 {
   return m_Landscape.begin();
 }
 
-LandscapeListIterator Landscape::getEnd() const
+LandscapeListIterator Landscape::end() const
 {
   return m_Landscape.end();
 }
@@ -133,7 +132,7 @@ bool Landscape::saveAllToStream(std::ostream& output) const
   return output.good();
 }
 
-void Landscape::clearAll()
+void Landscape::clear()
 {
   std::map<LandscapeCoords, LandscapeRecord*>::iterator iter = m_Landscape.begin();
   while (iter!=m_Landscape.end())

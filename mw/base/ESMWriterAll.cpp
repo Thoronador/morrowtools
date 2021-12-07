@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012  Thoronador
+    Copyright (C) 2011, 2012, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -67,12 +67,6 @@ namespace MWTP
 
 ESMWriterAll::ESMWriterAll()
 {
-  //empty
-}
-
-ESMWriterAll::~ESMWriterAll()
-{
-  //empty
 }
 
 int32_t ESMWriterAll::getTotalRecords() const
@@ -84,217 +78,217 @@ int32_t ESMWriterAll::getTotalRecords() const
   //    lockpicks, magic effects, misc. items, NPCs, path grids, probes, races,
   //    regions, repair items, scripts, skills, spells, statics, start scripts,
   //    sounds, sound generators, weapons and game settings at the moment
-  return GameSettings::getSingleton().getNumberOfSettings()
-        +Activators::getSingleton().getNumberOfRecords()
-        +AlchemyPotions::getSingleton().getNumberOfRecords()
-        +Apparatuses::getSingleton().getNumberOfRecords()
-        +Armours::getSingleton().getNumberOfRecords()
-        +BirthSigns::getSingleton().getNumberOfRecords()
-        +BodyParts::getSingleton().getNumberOfRecords()
-        +Books::getSingleton().getNumberOfRecords()
-        +Cells::getSingleton().getNumberOfCells()
-        +Classes::getSingleton().getNumberOfRecords()
-        +Clothings::getSingleton().getNumberOfRecords()
-        +Containers::getSingleton().getNumberOfRecords()
-        +Creatures::getSingleton().getNumberOfRecords()
-        +DialogueInfos::getSingleton().getNumberOfRecords()
-        +DialogueTopics::getSingleton().getNumberOfDialogueTopics()
-        +Doors::getSingleton().getNumberOfRecords()
-        +Enchantings::getSingleton().getNumberOfRecords()
-        +Factions::getSingleton().getNumberOfRecords()
-        +Globals::getSingleton().getNumberOfRecords()
-        +Ingredients::getSingleton().getNumberOfRecords()
-        +Landscape::getSingleton().getNumberOfLandscapeRecords()
-        +LandscapeTextures::getSingleton().getNumberOfRecords()
-        +LeveledCreatures::getSingleton().getNumberOfRecords()
-        +LeveledItems::getSingleton().getNumberOfRecords()
-        +Lights::getSingleton().getNumberOfRecords()
-        +Lockpicks::getSingleton().getNumberOfRecords()
-        +MagicEffects::getSingleton().getNumberOfEffects()
-        +MiscItems::getSingleton().getNumberOfRecords()
-        +NPCs::getSingleton().getNumberOfRecords()
-        +PathGrids::getSingleton().getNumberOfPathGrids()
-        +Probes::getSingleton().getNumberOfRecords()
-        +Races::getSingleton().getNumberOfRecords()
-        +Regions::getSingleton().getNumberOfRecords()
-        +RepairItems::getSingleton().getNumberOfRecords()
-        +Scripts::getSingleton().getNumberOfRecords()
-        +Skills::getSingleton().getNumberOfSkills()
-        +Spells::getSingleton().getNumberOfRecords()
-        +Statics::getSingleton().getNumberOfRecords()
-        +StartScripts::getSingleton().getNumberOfRecords()
-        +Sounds::getSingleton().getNumberOfRecords()
-        +SoundGenerators::getSingleton().getNumberOfRecords()
-        +Weapons::getSingleton().getNumberOfRecords();
+  return GameSettings::get().getNumberOfSettings()
+       + Activators::get().getNumberOfRecords()
+       + AlchemyPotions::get().getNumberOfRecords()
+       + Apparatuses::get().getNumberOfRecords()
+       + Armours::get().getNumberOfRecords()
+       + BirthSigns::get().getNumberOfRecords()
+       + BodyParts::get().getNumberOfRecords()
+       + Books::get().getNumberOfRecords()
+       + Cells::get().getNumberOfCells()
+       + Classes::get().getNumberOfRecords()
+       + Clothings::get().getNumberOfRecords()
+       + Containers::get().getNumberOfRecords()
+       + Creatures::get().getNumberOfRecords()
+       + DialogueInfos::get().getNumberOfRecords()
+       + DialogueTopics::get().getNumberOfDialogueTopics()
+       + Doors::get().getNumberOfRecords()
+       + Enchantings::get().getNumberOfRecords()
+       + Factions::get().getNumberOfRecords()
+       + Globals::get().getNumberOfRecords()
+       + Ingredients::get().getNumberOfRecords()
+       + Landscape::get().getNumberOfLandscapeRecords()
+       + LandscapeTextures::get().getNumberOfRecords()
+       + LeveledCreatures::get().getNumberOfRecords()
+       + LeveledItems::get().getNumberOfRecords()
+       + Lights::get().getNumberOfRecords()
+       + Lockpicks::get().getNumberOfRecords()
+       + MagicEffects::get().getNumberOfEffects()
+       + MiscItems::get().getNumberOfRecords()
+       + NPCs::get().getNumberOfRecords()
+       + PathGrids::get().getNumberOfPathGrids()
+       + Probes::get().getNumberOfRecords()
+       + Races::get().getNumberOfRecords()
+       + Regions::get().getNumberOfRecords()
+       + RepairItems::get().getNumberOfRecords()
+       + Scripts::get().getNumberOfRecords()
+       + Skills::get().getNumberOfSkills()
+       + Spells::get().getNumberOfRecords()
+       + Statics::get().getNumberOfRecords()
+       + StartScripts::get().getNumberOfRecords()
+       + Sounds::get().getNumberOfRecords()
+       + SoundGenerators::get().getNumberOfRecords()
+       + Weapons::get().getNumberOfRecords();
 }
 
 bool ESMWriterAll::writeRecords(std::ofstream& output) const
 {
-  if (!GameSettings::getSingleton().saveAllToStream(output))
+  if (!GameSettings::get().saveAllToStream(output))
   {
     return false;
   }
-  if (!Activators::getSingleton().saveAllToStream(output))
+  if (!Activators::get().saveAllToStream(output))
   {
     return false;
   }
-  if (!AlchemyPotions::getSingleton().saveAllToStream(output))
+  if (!AlchemyPotions::get().saveAllToStream(output))
   {
     return false;
   }
-  if (!Apparatuses::getSingleton().saveAllToStream(output))
+  if (!Apparatuses::get().saveAllToStream(output))
   {
     return false;
   }
-  if (!Armours::getSingleton().saveAllToStream(output))
+  if (!Armours::get().saveAllToStream(output))
   {
     return false;
   }
-  if (!BirthSigns::getSingleton().saveAllToStream(output))
+  if (!BirthSigns::get().saveAllToStream(output))
   {
     return false;
   }
-  if (!BodyParts::getSingleton().saveAllToStream(output))
+  if (!BodyParts::get().saveAllToStream(output))
   {
     return false;
   }
-  if (!Books::getSingleton().saveAllToStream(output))
+  if (!Books::get().saveAllToStream(output))
   {
     return false;
   }
-  if (!Cells::getSingleton().saveAllToStream(output))
+  if (!Cells::get().saveAllToStream(output))
   {
     return false;
   }
-  if (!Classes::getSingleton().saveAllToStream(output))
+  if (!Classes::get().saveAllToStream(output))
   {
     return false;
   }
-  if (!Clothings::getSingleton().saveAllToStream(output))
+  if (!Clothings::get().saveAllToStream(output))
   {
     return false;
   }
-  if (!Containers::getSingleton().saveAllToStream(output))
+  if (!Containers::get().saveAllToStream(output))
   {
     return false;
   }
-  if (!Creatures::getSingleton().saveAllToStream(output))
+  if (!Creatures::get().saveAllToStream(output))
   {
     return false;
   }
-  if (!DialogueInfos::getSingleton().saveAllToStream(output))
+  if (!DialogueInfos::get().saveAllToStream(output))
   {
     return false;
   }
-  if (!DialogueTopics::getSingleton().saveAllToStream(output))
+  if (!DialogueTopics::get().saveAllToStream(output))
   {
     return false;
   }
-  if (!Doors::getSingleton().saveAllToStream(output))
+  if (!Doors::get().saveAllToStream(output))
   {
     return false;
   }
-  if (!Enchantings::getSingleton().saveAllToStream(output))
+  if (!Enchantings::get().saveAllToStream(output))
   {
     return false;
   }
-  if (!Factions::getSingleton().saveAllToStream(output))
+  if (!Factions::get().saveAllToStream(output))
   {
     return false;
   }
-  if (!Globals::getSingleton().saveAllToStream(output))
+  if (!Globals::get().saveAllToStream(output))
   {
     return false;
   }
-  if (!Ingredients::getSingleton().saveAllToStream(output))
+  if (!Ingredients::get().saveAllToStream(output))
   {
     return false;
   }
-  if (!Landscape::getSingleton().saveAllToStream(output))
+  if (!Landscape::get().saveAllToStream(output))
   {
     return false;
   }
-  if (!LandscapeTextures::getSingleton().saveAllToStream(output))
+  if (!LandscapeTextures::get().saveAllToStream(output))
   {
     return false;
   }
-  if (!LeveledCreatures::getSingleton().saveAllToStream(output))
+  if (!LeveledCreatures::get().saveAllToStream(output))
   {
     return false;
   }
-  if (!LeveledItems::getSingleton().saveAllToStream(output))
+  if (!LeveledItems::get().saveAllToStream(output))
   {
     return false;
   }
-  if (!Lights::getSingleton().saveAllToStream(output))
+  if (!Lights::get().saveAllToStream(output))
   {
     return false;
   }
-  if (!Lockpicks::getSingleton().saveAllToStream(output))
+  if (!Lockpicks::get().saveAllToStream(output))
   {
     return false;
   }
-  if (!MagicEffects::getSingleton().saveAllToStream(output))
+  if (!MagicEffects::get().saveAllToStream(output))
   {
     return false;
   }
-  if (!MiscItems::getSingleton().saveAllToStream(output))
+  if (!MiscItems::get().saveAllToStream(output))
   {
     return false;
   }
-  if (!NPCs::getSingleton().saveAllToStream(output))
+  if (!NPCs::get().saveAllToStream(output))
   {
     return false;
   }
-  if (!PathGrids::getSingleton().saveAllToStream(output))
+  if (!PathGrids::get().saveAllToStream(output))
   {
     return false;
   }
-  if (!Probes::getSingleton().saveAllToStream(output))
+  if (!Probes::get().saveAllToStream(output))
   {
     return false;
   }
-  if (!Races::getSingleton().saveAllToStream(output))
+  if (!Races::get().saveAllToStream(output))
   {
     return false;
   }
-  if (!Regions::getSingleton().saveAllToStream(output))
+  if (!Regions::get().saveAllToStream(output))
   {
     return false;
   }
-  if (!RepairItems::getSingleton().saveAllToStream(output))
+  if (!RepairItems::get().saveAllToStream(output))
   {
     return false;
   }
-  if (!Scripts::getSingleton().saveAllToStream(output))
+  if (!Scripts::get().saveAllToStream(output))
   {
     return false;
   }
-  if (!Skills::getSingleton().saveAllToStream(output))
+  if (!Skills::get().saveAllToStream(output))
   {
     return false;
   }
-  if (!Statics::getSingleton().saveAllToStream(output))
+  if (!Statics::get().saveAllToStream(output))
   {
     return false;
   }
-  if (!StartScripts::getSingleton().saveAllToStream(output))
+  if (!StartScripts::get().saveAllToStream(output))
   {
     return false;
   }
-  if (!Sounds::getSingleton().saveAllToStream(output))
+  if (!Sounds::get().saveAllToStream(output))
   {
     return false;
   }
-  if (!SoundGenerators::getSingleton().saveAllToStream(output))
+  if (!SoundGenerators::get().saveAllToStream(output))
   {
     return false;
   }
-  if (!Weapons::getSingleton().saveAllToStream(output))
+  if (!Weapons::get().saveAllToStream(output))
   {
     return false;
   }
-  return Spells::getSingleton().saveAllToStream(output);
+  return Spells::get().saveAllToStream(output);
 }
 
 } //namespace

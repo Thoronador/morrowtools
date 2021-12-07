@@ -31,9 +31,6 @@ class ESMWriterSkillRebalance: public ESMWriter
   public:
     /* constructor */
     ESMWriterSkillRebalance();
-
-    /* destructor */
-    virtual ~ESMWriterSkillRebalance();
   protected:
     /* returns the number of records that will be written to the stream */
     virtual int32_t getTotalRecords() const;

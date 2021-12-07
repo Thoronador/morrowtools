@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2012, 2013, 2014  Thoronador
+    Copyright (C) 2012, 2013, 2014, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -35,102 +35,100 @@ template<typename recT>
 class MapBasedRecordManager
 {
   public:
-    //iterator type for record list/map
+    /// iterator type for internal record map
     typedef typename std::map<std::string, recT, ci_less>::const_iterator ListIterator;
 
-    /* destructor */
-    ~MapBasedRecordManager();
-
-    /* singleton access method */
+    /** \brief Provides access to the singleton instance.
+     *
+     * \return Returns a reference to the singleton instance.
+     */
     static MapBasedRecordManager& getSingleton();
 
-    /* adds a record to the list */
+    /** \brief Adds a record to the instance.
+     *
+     * \param record   the record to add
+     * \remarks The record will NOT be added, if its record ID is empty.
+     *          An existing record with the same form ID will be replaced.
+     */
     void addRecord(const recT& record);
 
-    /* returns true, if a record with the given ID is present
-
-       parameters:
-           ID - the ID of the record
-    */
+    /** \brief Checks whether a record with the given record ID is present.
+     *
+     * \param ID  the record ID of the record object
+     * \return Returns true, if a record with the given record ID is present.
+     *         Returns false otherwise.
+     */
     bool hasRecord(const std::string& ID) const;
 
-    /* returns the number of records in the list */
+    /** Gets the number of records in the instance.
+     *
+     * \return Returns the number of records in the instance.
+     */
     unsigned int getNumberOfRecords() const;
 
-    /* returns a reference to the record with the given ID
-
-       parameters:
-           ID - the ID of the record
-
-       remarks:
-           If no record with the given ID is present, the function will throw
-           an exception. Use hasRecord() to determine, if a record with the
-           desired ID is present.
-    */
+    /** Gets a reference to the record with the given ID.
+     *
+     * \param ID  the ID of the record
+     * \return Returns a reference to the record with the given ID, if such a
+     *         record is present. Throws, if no such record exists.
+     * \remarks If no record with the given ID is present, the function will
+     *          throw an exception. Use hasRecord() to determine, if a record
+     *          with the desired ID is present.
+     */
     const recT& getRecord(const std::string& ID) const;
 
-    /* tries to read a record from the given input stream.
+    /** \brief Tries to read a record from the given input stream.
+     *
+     * \param input       the input stream that is used to read the record
+     * \return If an error occurred, the function returns -1. Otherwise it
+     *         returns the number of updated records. (Usually that is one.
+     *         If, however, the record that was read is equal to the one already
+     *         in the list, zero is returned and the existing record remains
+     *         unchanged.)
+     */
+    int readNextRecord(std::istream& input);
 
-       return value:
-           If an error occurred, the function returns -1. Otherwise it returns
-           the number of updated records. (Usually that is one. If, however, the
-           record that was read is equal to the one already in the list, zero is
-           returned.)
-
-       parameters:
-           input  - the input stream that is used to read the record
-    */
-    int readNextRecord(std::istream& in_File);
-
-    /* removes the record with the given ID from the internal list and returns
-       true, if such a record existed. Returns false otherwise.
-
-       parameters:
-           ID - the ID of the record to be removed
-    */
+    /** \brief Removes the record with the given ID from the instance.
+     *
+     * \param ID  the ID of the record to be removed
+     * \return Returns true, if a record was removed. Returns false otherwise.
+     */
     bool removeRecord(const std::string& ID);
 
-    /* returns constant iterator to the beginning of the internal list */
+    /** Returns constant iterator to the beginning of the internal structure. */
     ListIterator getBegin() const;
 
-    /* returns constant iterator to the end of the internal list */
+    /** Returns constant iterator to the end of the internal structure. */
     ListIterator getEnd() const;
 
     #ifndef MW_UNSAVEABLE_RECORDS
-    /* tries to save all available records to the given stream and returns
-       true on success, false on failure
-
-       parameters:
-           output - the output stream that shall be used to save the
-                    records
-    */
+    /** \brief Tries to save all available records to the given stream.
+     *
+     * \param output  the output stream that shall be used to save the records
+     * \return Returns true on success, false on failure.
+     */
     bool saveAllToStream(std::ostream& output) const;
     #endif
 
-    /* removes all records from the list */
+    /** Removes all records from the instance. */
     void clearAll();
   private:
-    /* constructor */
+    /** Constructor. */
     MapBasedRecordManager();
 
-    /* empty copy constructor */
-    MapBasedRecordManager(const MapBasedRecordManager& op) {}
+    /** Deleted copy constructor. */
+    MapBasedRecordManager(const MapBasedRecordManager& op) = delete;
 
-    /* internal data */
-    std::map<std::string, recT, ci_less> m_Records;
-};//class
+    /** Deleted move constructor. */
+    MapBasedRecordManager(MapBasedRecordManager&& op) = delete;
+
+    std::map<std::string, recT, ci_less> m_Records; /**< internal data */
+}; // class
 
 template<typename recT>
 MapBasedRecordManager<recT>::MapBasedRecordManager()
 : m_Records(std::map<std::string, recT, ci_less>())
 {
-  //empty
-}
-
-template<typename recT>
-MapBasedRecordManager<recT>::~MapBasedRecordManager()
-{
-  //empty
 }
 
 template<typename recT>
@@ -152,7 +150,7 @@ void MapBasedRecordManager<recT>::addRecord(const recT& record)
 template<typename recT>
 bool MapBasedRecordManager<recT>::hasRecord(const std::string& ID) const
 {
-  return (m_Records.find(ID)!=m_Records.end());
+  return m_Records.find(ID) != m_Records.end();
 }
 
 template<typename recT>
@@ -165,12 +163,14 @@ template<typename recT>
 const recT& MapBasedRecordManager<recT>::getRecord(const std::string& ID) const
 {
   const ListIterator iter = m_Records.find(ID);
-  if (iter!=m_Records.end())
+  if (iter != m_Records.end())
   {
     return iter->second;
   }
-  std::cout << "MapBasedRecordManager: Error! No record with the ID \""<<ID<<"\" is present.\n";
-  throw std::runtime_error("MapBasedRecordManager: Error! No record with the ID \""+ID+"\" is present.");
+  std::cerr << "MapBasedRecordManager: Error! No record with the ID \"" << ID
+            << "\" is present.\n";
+  throw std::runtime_error("MapBasedRecordManager: Error! No record with the ID \""
+                            + ID + "\" is present.");
 }
 
 template<typename recT>
@@ -179,21 +179,21 @@ int MapBasedRecordManager<recT>::readNextRecord(std::istream& input)
   recT temp;
   if(!temp.loadFromStream(input))
   {
-    std::cout << "MapBasedRecordManager::readNextRecord: Error while reading record.\n";
+    std::cerr << "MapBasedRecordManager::readNextRecord: Error while reading record.\n";
     return -1;
   }
 
   #if !defined(MW_NO_SINGLETON_EQUALITY_CHECK) && !defined(MW_NO_RECORD_EQUALITY)
-  //add it to the list, if not present with same data
+  // add it to the list, if not present with same data
   if (hasRecord(temp.recordID))
   {
     if (getRecord(temp.recordID).equals(temp))
     {
-      //same record with equal data is already present, return zero
+      // same record with equal data is already present, return zero
       return 0;
     }
-  }//if record present
-  #endif //MW_NO_SINGLETON_EQUALITY_CHECK
+  }
+  #endif // MW_NO_SINGLETON_EQUALITY_CHECK
   addRecord(temp);
   return 1;
 }
@@ -201,7 +201,7 @@ int MapBasedRecordManager<recT>::readNextRecord(std::istream& input)
 template<typename recT>
 bool MapBasedRecordManager<recT>::removeRecord(const std::string& ID)
 {
-  return (m_Records.erase(ID)!=0);
+  return m_Records.erase(ID) != 0;
 }
 
 template<typename recT>
@@ -222,22 +222,19 @@ bool MapBasedRecordManager<recT>::saveAllToStream(std::ostream& output) const
 {
   if (!output.good())
   {
-    std::cout << "MapBasedRecordManager::saveAllToStream: Error: bad stream.\n";
+    std::cerr << "MapBasedRecordManager::saveAllToStream: Error: Bad stream.\n";
     return false;
   }
-  ListIterator iter = m_Records.begin();
-  const ListIterator end_iter = m_Records.end();
-  while (iter!=end_iter)
+  for (const auto& [id, record]: m_Records)
   {
-    if (!iter->second.saveToStream(output))
+    if (!record.saveToStream(output))
     {
       std::cout << "MapBasedRecordManager::saveAllToStream: Error while writing record for \""
-                << iter->first <<"\".\n";
+                << id << "\".\n";
       return false;
     }
-    ++iter;
-  }//while
-  return output.good();
+  }
+  return true;
 }
 #endif
 
@@ -247,6 +244,6 @@ void MapBasedRecordManager<recT>::clearAll()
   m_Records.clear();
 }
 
-} //namespace
+} // namespace
 
 #endif // MW_MAPBASEDRECORDMANAGER_HPP

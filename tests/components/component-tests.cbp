@@ -57,6 +57,7 @@
 		<Unit filename="../../mw/base/HelperIO.cpp" />
 		<Unit filename="../../mw/base/HelperIO.hpp" />
 		<Unit filename="../../mw/base/MW_Constants.hpp" />
+		<Unit filename="../../mw/base/MapBasedRecordManager.hpp" />
 		<Unit filename="../../mw/base/records/AIData.cpp" />
 		<Unit filename="../../mw/base/records/AIData.hpp" />
 		<Unit filename="../../mw/base/records/AIPackages.cpp" />
@@ -286,6 +287,7 @@
 		<Unit filename="mw/base/DepFileList.cpp" />
 		<Unit filename="mw/base/EnchantmentData.cpp" />
 		<Unit filename="mw/base/HelperIO.cpp" />
+		<Unit filename="mw/base/MapBasedRecordManager.cpp" />
 		<Unit filename="mw/base/records/AIData.cpp" />
 		<Unit filename="mw/base/records/ActivatorRecord.cpp" />
 		<Unit filename="mw/base/records/AlchemyPotionRecord.cpp" />

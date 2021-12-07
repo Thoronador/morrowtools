@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2012 Thoronador
+    Copyright (C) 2012, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@
 #define MW_ESMREADERSKILLREBALANCE_HPP
 
 #include <vector>
-#include "../base/ESMReaderGeneric.hpp"
+#include "../base/ESMReader.hpp"
 #include "../base/records/BasicRecord.hpp"
 
 namespace MWTP
@@ -36,9 +36,6 @@ class ESMReaderSkillRebalance: public ESMReader
   public:
     /* constructor */
     ESMReaderSkillRebalance();
-
-    /* destructor */
-    virtual ~ESMReaderSkillRebalance();
   protected:
     /* tries to read the next record from a stream and returns the number of
        relevant records that were read (usually one). If an error occurred,

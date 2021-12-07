@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2012 Thoronador
+    Copyright (C) 2012, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -29,19 +29,13 @@ namespace MWTP
 
 ESMReaderSkillRebalance::ESMReaderSkillRebalance()
 {
-  //empty
-}
-
-ESMReaderSkillRebalance::~ESMReaderSkillRebalance()
-{
-  //empty
 }
 
 int ESMReaderSkillRebalance::processNextRecord(std::istream& input)
 {
   uint32_t RecordName = 0; // normally should be 4 char, but char is not eligible for switch
-  //read record name
-  input.read((char*) &RecordName, 4);
+  // read record name
+  input.read(reinterpret_cast<char*>(&RecordName), 4);
   switch(RecordName)
   {
     case cACTI:
@@ -91,7 +85,7 @@ int ESMReaderSkillRebalance::processNextRecord(std::istream& input)
          return Skills::get().readRecordSKIL(input);
          break;
     default:
-         std::cout << "processNextRecord: ERROR: unknown record type found: \""
+         std::cerr << "processNextRecord: ERROR: unknown record type found: \""
                    << IntTo4Char(RecordName) << "\".\n"
                    << "Current file position: " << input.tellg() << " bytes.\n";
          return -1;
@@ -99,4 +93,4 @@ int ESMReaderSkillRebalance::processNextRecord(std::istream& input)
   }
 }
 
-} //namespace
+} // namespace

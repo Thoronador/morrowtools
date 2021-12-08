@@ -136,8 +136,6 @@ parameter -d.
                            during the loading process of the plugin and/or names
                            that are just cut off at the end (i.e. they might be
                            missing the last few letters). You have been warned.
---verbose                - shows some information about the scanned plugin files
---silent                 - opposite of --verbose; does not show that information
 --help                   - displays a help text about the programme's parameters
                            and exits. All other parameters will be discarded and
                            no plugin file is created.

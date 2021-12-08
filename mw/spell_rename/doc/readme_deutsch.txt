@@ -143,10 +143,6 @@ Verzeichnis von Morrowind angeben, indem man den Parameter -d benutzt.
                             einige Buchstaben am Ende des Zaubernamens abge-
                             schnitten sind, oder dass es beim Laden des erstell-
                             ten Plugins zu Fehlermeldungen kommt.
---verbose                 - zeigt ein paar Informationen zu den verarbeiteten
-                            Plugindateien an.
---silent                  - Gegenteil von --verbose; zeigt jene Informationen
-                            nicht an.
 --help                    - zeigt einen Hilfetext zu den Parametern des Pro-
                             grammes an und beendet das Programm. Alle anderen
                             Parameter werden dann verworfen und es wird keine

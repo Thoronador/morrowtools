@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2012, 2013  Thoronador
+    Copyright (C) 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ void showHelp()
             << "options:\n"
             << "  --help           - displays this help message and quits\n"
             << "  -?               - same as --help\n"
-            << "  --version        - displays the version of the programme and quits\n"
+            << "  --version        - displays the version of the program and quits\n"
             << "  --scaling-factor - sets the scaling factor that determines how fast or slow\n"
             << "                     the skills advance after the activation of the created\n"
             << "                     plugin file. This parameter is mandatory!\n"
@@ -59,27 +59,27 @@ void showHelp()
 void showGPLNotice()
 {
   std::cout << "Skill Rebalancer for Morrowind\n"
-            << "  This programme is part of the Morrowind Tools Project.\n"
-            << "  Copyright (C) 2012, 2013  Thoronador\n"
+            << "  This program is part of the Morrowind Tools Project.\n"
+            << "  Copyright (C) 2012, 2013, 2021  Thoronador\n"
             << "\n"
-            << "  The Morrowind Tools are free software: you can redistribute them and/or\n"
-            << "  modify them under the terms of the GNU General Public License as published\n"
-            << "  by the Free Software Foundation, either version 3 of the License, or\n"
+            << "  This program is free software: you can redistribute it and/or modify\n"
+            << "  it under the terms of the GNU General Public License as published by\n"
+            << "  the Free Software Foundation, either version 3 of the License, or\n"
             << "  (at your option) any later version.\n"
             << "\n"
-            << "  The Morrowind Tools are distributed in the hope that they will be useful,\n"
+            << "  This program is distributed in the hope that they will be useful,\n"
             << "  but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
             << "  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the\n"
             << "  GNU General Public License for more details.\n"
             << "\n"
             << "  You should have received a copy of the GNU General Public License\n"
-            << "  along with the Morrowind Tools.  If not, see <http://www.gnu.org/licenses/>.\n"
+            << "  along with this program.  If not, see <http://www.gnu.org/licenses/>.\n"
             << "\n";
 }
 
 void showVersion()
 {
-  std::cout << "Skill Rebalancer for Morrowind, version 0.1.1, 2013-06-14\n";
+  std::cout << "Skill Rebalancer for Morrowind, version 0.1.2, 2021-12-08\n";
 }
 
 int main(int argc, char **argv)
@@ -91,12 +91,12 @@ int main(int argc, char **argv)
   std::string outputFileName = "out.esp";
   std::string baseDir = ""; //"C:\\Program Files\\Bethesda Softworks\\Morrowind\\Data Files\\";
 
-  if (argc>1 and argv!=NULL)
+  if (argc > 1 && argv != nullptr)
   {
-    int i=1;
-    while (i<argc)
+    int i = 1;
+    while (i < argc)
     {
-      if (argv[i]!=NULL)
+      if (argv[i] != nullptr)
       {
         const std::string param = std::string(argv[i]);
         // help parameter
@@ -104,144 +104,147 @@ int main(int argc, char **argv)
         {
           showHelp();
           return 0;
-        } // if help wanted
+        }
         // version information requested?
         else if (param == "--version")
         {
           showVersion();
           return 0;
         }
-        //create minimalistic plugin, using only game settings and not skills
-        else if (param=="--minimalistic")
+        // create minimalistic plugin, using only game settings and not skills
+        else if (param == "--minimalistic")
         {
           goMinimalistic = true;
-          std::cout << "Using minimalistic approach due to \""<<param<<"\".\n";
+          std::cout << "Using minimalistic approach due to \"" << param
+                    << "\".\n";
         }
-        //don't change training mod
-        else if (param=="--no-training")
+        // don't change training mod
+        else if (param == "--no-training")
         {
           noTraining = true;
-          std::cout << "Won't change iTrainingMod due to \""<<param<<"\".\n";
+          std::cout << "Won't change iTrainingMod due to \"" << param << "\".\n";
         }
-        //parameter for setting output file
-        else if ((param=="-o") or (param=="--output"))
+        // parameter for setting output file
+        else if ((param == "-o") || (param == "--output"))
         {
-          if ((i+1<argc) and (argv[i+1]!=NULL))
+          if ((i+1 < argc) && (argv[i+1] != nullptr))
           {
             outputFileName = std::string(argv[i+1]);
-            ++i; //skip next parameter, because it's used as file name already
-            std::cout << "Output file was set to \""<<outputFileName<<"\".\n";
+            ++i; // skip next parameter, because it's used as file name already
+            std::cout << "Output file was set to \"" << outputFileName
+                      << "\".\n";
           }
           else
           {
-            std::cout << "Error: You have to specify a file name after \""
+            std::cerr << "Error: You have to specify a file name after \""
                       << param<<"\".\n";
             return MWTP::rcInvalidParameter;
           }
-        }//output file
-        else if ((param=="-d") or (param=="-dir") or (param=="--data-files"))
+        }
+        // data files directory
+        else if ((param == "-d") || (param == "-dir") || (param == "--data-files"))
         {
-          if ((i+1<argc) and (argv[i+1]!=NULL))
+          if ((i+1 < argc) && (argv[i+1] != nullptr))
           {
             // Is it long enough to be a directory? (Minimum should be "./".)
-            if (std::string(argv[i+1]).size()>1)
+            if (std::string(argv[i+1]).size() > 1)
             {
               baseDir = std::string(argv[i+1]);
-              ++i; //skip next parameter, because it's used as directory name already
-              //Does it have a trailing (back)slash? If not, add one.
+              ++i; // skip next parameter, because it's used as directory name already
+              // Does it have a trailing (back)slash? If not, add one.
               baseDir = slashify(baseDir);
-              std::cout << "Data files directory was set to \""<<baseDir<<"\".\n";
+              std::cout << "Data files directory was set to \"" << baseDir << "\".\n";
             }
             else
             {
-              std::cout << "Parameter \""<<std::string(argv[i+1])<<"\" is too"
-                        << " short to be a proper directory path.\n";
+              std::cerr << "Parameter \"" << std::string(argv[i+1])
+                        << "\" is too short to be a proper directory path.\n";
               return MWTP::rcInvalidParameter;
-            }//else
+            }
           }
           else
           {
-            std::cout << "Error: You have to specify a directory name after \""
-                      << param<<"\".\n";
+            std::cerr << "Error: You have to specify a directory name after \""
+                      << param << "\".\n";
             return MWTP::rcInvalidParameter;
           }
-        }//data files directory
-        else if ((param=="-s") or (param=="--scale") or (param=="--scaling-factor"))
+        }
+        // scaling factor
+        else if ((param == "-s") || (param == "--scale") || (param == "--scaling-factor"))
         {
-          if ((i+1<argc) and (argv[i+1]!=NULL))
+          if ((i+1 < argc) && (argv[i+1] != nullptr))
           {
-            //Does it contain a floating point value?
+            // Does it contain a floating point value?
             if (stringToFloat(std::string(argv[i+1]), scalingFactor))
             {
-              if (scalingFactor<0.01f)
+              if (scalingFactor < 0.01f)
               {
                 std::cout << "Chosen scaling factor was too small, setting it to 0.01 instead.\n";
                 scalingFactor = 0.01f;
               }
-              else if (scalingFactor>100.0f)
+              else if (scalingFactor > 100.0f)
               {
                 std::cout << "Chosen scaling factor was too large, setting it to 100 instead.\n";
                 scalingFactor = 100.0f;
               }
-              ++i; //skip next parameter, because it's used as scaling factor already
-              std::cout << "Scaling factor was set to "<<scalingFactor<<".\n";
+              ++i; // skip next parameter, because it's used as scaling factor already
+              std::cout << "Scaling factor was set to " << scalingFactor << ".\n";
             }
             else
             {
-              std::cout << "Parameter \""<<std::string(argv[i+1])<<"\" is not"
-                        << " a proper floating point value.\n";
+              std::cerr << "Parameter \"" << std::string(argv[i+1])
+                        << "\" is not a proper floating point value.\n";
               return MWTP::rcInvalidParameter;
-            }//else
+            }
           }
           else
           {
-            std::cout << "Error: You have to specify a floating point value after \""
-                      << param <<"\".\n";
+            std::cerr << "Error: You have to specify a floating point value after \""
+                      << param << "\".\n";
             return MWTP::rcInvalidParameter;
           }
-        }//scaling factor
+        }
         else
         {
-          //unknown or wrong parameter
-          std::cout << "Invalid parameter given: \""<<param<<"\".\n"
+          // unknown or wrong parameter
+          std::cout << "Invalid parameter given: \"" << param << "\".\n"
                     << "Use --help to get a list of valid parameters.\n";
           return MWTP::rcInvalidParameter;
         }
-
-      }//parameter exists
+      }
       else
       {
-        std::cout << "Parameter at index "<<i<<" is NULL.\n";
+        std::cerr << "Parameter at index " << i << " is NULL.\n";
         return MWTP::rcInvalidParameter;
       }
-      ++i;//on to next parameter
-    }//while
-  }//if argc
+      ++i;
+    }
+  }
 
-  if (scalingFactor<=0.0f)
+  if (scalingFactor <= 0.0f)
   {
-    std::cout << "Error: You have to specify a scaling factor for this "
-              << "programme to run properly. Use the --scaling-factor parameter"
+    std::cerr << "Error: You have to specify a scaling factor for this "
+              << "program to run properly. Use the --scaling-factor parameter"
               << " for that purpose. Consult the help (parameter --help) for "
-              << " further information on parameters for this programme.\n";
+              << " further information on parameters for this program.\n";
     return MWTP::rcInvalidParameter;
   }
 
-  if ((lowerCaseCompare(outputFileName, "Morrowind.esm")==0) or
-     (lowerCaseCompare(outputFileName, "Tribunal.esm")==0) or
-     (lowerCaseCompare(outputFileName, "Bloodmoon.esm"))==0)
+  if ((lowerCaseCompare(outputFileName, "Morrowind.esm") == 0) ||
+     (lowerCaseCompare(outputFileName, "Tribunal.esm") == 0) ||
+     (lowerCaseCompare(outputFileName, "Bloodmoon.esm")) == 0)
   {
-    std::cout << "Error: Your specified output file name is the main master "
+    std::cerr << "Error: Your specified output file name is the main master "
               << "file of Morrowind, Tribunal or Bloodmoon. In order to "
-              << "prevent you from overwriting one of these files, the programme"
+              << "prevent you from overwriting one of these files, the program"
               << " will be aborted. Think again!\n";
     return MWTP::rcInvalidParameter;
   }
 
-  //Has the user specified a data directory?
+  // Has the user specified a data directory?
   if (baseDir.empty())
   {
-    //No, so let's search the registry first...
+    // No, so let's search the registry first...
     std::cout << "Warning: Data Files directory of Morrowind was not specified, "
               << "will try to read it from the registry.\n";
     if (!MWTP::getMorrowindPathFromRegistry(baseDir))
@@ -253,12 +256,13 @@ int main(int argc, char **argv)
     {
       if (!baseDir.empty())
       {
-        //Does it have a trailing (back)slash? If not, add one.
+        // Does it have a trailing (back)slash? If not, add one.
         baseDir = slashify(baseDir);
-        /*add data dir to path, because installed path points only to Morrowind's
-          main direkctory */
-        baseDir = baseDir +"Data Files" +MWTP::pathDelimiter;
-        std::cout << "Data files directory was set to \""<<baseDir<<"\" via registry.\n";
+        /* add data dir to path, because installed path points only to
+           Morrowind's main directory */
+        baseDir = baseDir + "Data Files" + MWTP::pathDelimiter;
+        std::cout << "Data files directory was set to \"" << baseDir
+                  << "\" via registry.\n";
       }
       else
       {
@@ -266,52 +270,52 @@ int main(int argc, char **argv)
       }
     }
 
-    //check again, in case registry failed
+    // check again, in case registry failed
     if (baseDir.empty())
     {
-      //empty, so let's try a default value.
+      // empty, so let's try a default value.
       baseDir = "C:\\Program Files\\Bethesda Softworks\\Morrowind\\Data Files\\";
       std::cout << "Warning: Data files directory of Morrowind was not specified, "
-                << "will use default path \""<<baseDir<<"\". This might not work"
+                << "will use default path \"" << baseDir << "\". This might not work"
                 << " properly on your machine, use the parameter -d to specify "
                 << "the proper path.\n";
     }
-  }//if no data dir is given
+  } // if no data dir is given
 
-  //next: read Morrowind.esm
+  // next: read Morrowind.esm
   MWTP::TES3Record tes3Head;
   MWTP::ESMReaderSkillRebalance reader;
 
-  const int readResult = reader.readESM(baseDir+"Morrowind.esm", tes3Head, false);
-  if (readResult<0)
+  const int readResult = reader.readESM(baseDir + "Morrowind.esm", tes3Head, false);
+  if (readResult < 0)
   {
-    std::cout << "Error while reading file \""<<baseDir<<"Morrowind.esm\".\nAborting.\n";
+    std::cerr << "Error while reading file \"" << baseDir << "Morrowind.esm\".\nAborting.\n";
     return MWTP::rcFileError;
-  }//if
+  }
 
-  //process stuff
+  // process stuff
   MWTP::GMSTRecord tempSetting;
   if (goMinimalistic)
   {
-    //remove skill records, we won't need them
+    // remove skill records, we won't need them
     MWTP::Skills::get().clear();
-    //add game settings
+    // add game settings
     // -- add fMajorSkillBonus (default: 0.75)
     tempSetting.Type = MWTP::GMSTType::Float;
     tempSetting.SettingName = "fMajorSkillBonus";
-    tempSetting.fVal = 0.75*scalingFactor;
+    tempSetting.fVal = 0.75f * scalingFactor;
     MWTP::GameSettings::get().addSetting(tempSetting);
     // -- add fMinorSkillBonus (default: 1.00)
     tempSetting.Type = MWTP::GMSTType::Float;
     tempSetting.SettingName = "fMinorSkillBonus";
-    tempSetting.fVal = 1.00*scalingFactor;
+    tempSetting.fVal = 1.00f * scalingFactor;
     MWTP::GameSettings::get().addSetting(tempSetting);
     // -- add fMiscSkillBonus (default: 1.25)
     tempSetting.Type = MWTP::GMSTType::Float;
     tempSetting.SettingName = "fMiscSkillBonus";
-    tempSetting.fVal = 1.25*scalingFactor;
+    tempSetting.fVal = 1.25f * scalingFactor;
     MWTP::GameSettings::get().addSetting(tempSetting);
-  }//if minimalistic
+  } // if minimalistic
   else
   {
     // non-minimalistic approach (like in plugin "More Morrowind")
@@ -325,47 +329,49 @@ int main(int argc, char **argv)
       scaledSkill.UseValues[3] /= scalingFactor;
       MWTP::Skills::get().addSkill(scaledSkill);
       ++iter;
-    }//while
-  }//else (non-minimalistic)
-  //training modifier
+    }
+  } // else (non-minimalistic)
+  // training modifier
   if (!noTraining)
   {
-    //add training mod
+    // add training mod
     tempSetting.Type = MWTP::GMSTType::Integer;
     tempSetting.SettingName = "iTrainingMod";
     tempSetting.iVal = 25;
     MWTP::GameSettings::get().addSetting(tempSetting);
   }
 
-  //prepare header data for writing (yes, description is German)
-  if (scalingFactor>1.0f)
+  // prepare header data for writing (yes, description is German)
+  if (scalingFactor > 1.0f)
   {
     tes3Head.description = "Leveln in Morrowind benoetigt mit diesem Plugin "
-                          +floatToString(scalingFactor)+" mal so lange wie normalerweise";
+                         + floatToString(scalingFactor) + " mal so lange wie normalerweise";
   }
   else
   {
     tes3Head.description = "Stufenaufstiege in Morrowind benoetigen mit diesem Plugin nur noch "
-                          +floatToString(scalingFactor*100.0f)+"% der ueblichen Zeit";
+                         + floatToString(scalingFactor * 100.0f) + "% der ueblichen Zeit";
   }
   tes3Head.companyName = "Thoronador";
-  //get size of Morrowind.esm, because we need Morrowind.esm as dependency
+  // get size of Morrowind.esm, because we need Morrowind.esm as dependency
   int64_t MorrowindSize = getFileSize64(baseDir+"Morrowind.esm");
-  if (MorrowindSize==-1)
+  if (MorrowindSize == -1)
   {
-    MorrowindSize = 80640776; //size of German Morrowind.esm of GOTY Edition
+    // use size of German Morrowind.esm of GOTY Edition as fallback
+    MorrowindSize = 80640776;
   }
   tes3Head.dependencies.clear();
   tes3Head.dependencies.push_back(MWTP::DepFile("Morrowind.esm"));
   tes3Head.dependencies.at(0).size = MorrowindSize;
 
   MWTP::ESMWriterSkillRebalance writer;
-  if (!writer.writeESM(baseDir+outputFileName, false, tes3Head))
+  if (!writer.writeESM(baseDir + outputFileName, false, tes3Head))
   {
-    std::cout << "Error while creating/ writing to file \""<<baseDir+outputFileName<<"\". Aborting!\n";
+    std::cerr << "Error while creating/ writing to file \""
+              << baseDir + outputFileName << "\". Aborting!\n";
     return MWTP::rcFileError;
   }
 
-  std::cout << "Plugin file \""<<baseDir+outputFileName<<"\" was created. Success!\n";
+  std::cout << "Plugin file \"" << baseDir + outputFileName << "\" was created. Success!\n";
   return 0;
 }

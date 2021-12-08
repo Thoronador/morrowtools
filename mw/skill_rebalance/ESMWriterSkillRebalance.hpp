@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2012 Thoronador
+    Copyright (C) 2012, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,23 +26,22 @@
 namespace MWTP
 {
 
+/** Specialization of ESMWrite for the skill_rebalance program. */
 class ESMWriterSkillRebalance: public ESMWriter
 {
-  public:
-    /* constructor */
-    ESMWriterSkillRebalance();
   protected:
-    /* returns the number of records that will be written to the stream */
-    virtual int32_t getTotalRecords() const;
+    /** Gets the number of records that will be written to the stream.
+     */
+    virtual int32_t getTotalRecords() const override;
 
-    /* tries to write all data records and returns true on success
+    /** \brief Tries to write all data records to the stream.
+     *
+     * \param output  the output file stream that's used to write the records
+     * \return Returns true on success. Returns false, if an error occurred.
+     */
+    virtual bool writeRecords(std::ofstream& output) const override;
+}; // class
 
-       parameters:
-           output - the output file stream that's used to write the records
-    */
-    virtual bool writeRecords(std::ofstream& output) const;
-}; //class
-
-} //namespace
+} // namespace
 
 #endif // MW_ESMWRITERSKILLREBALANCE_HPP

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2012 Thoronador
+    Copyright (C) 2012, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,13 +25,9 @@
 namespace MWTP
 {
 
-ESMWriterSkillRebalance::ESMWriterSkillRebalance()
-{
-}
-
 int32_t ESMWriterSkillRebalance::getTotalRecords() const
 {
-  //writes settings and skills
+  // writes settings and skills
   return GameSettings::get().getNumberOfSettings()
        + Skills::get().getNumberOfSkills();
 }
@@ -43,4 +39,4 @@ bool ESMWriterSkillRebalance::writeRecords(std::ofstream& output) const
   return Skills::get().saveAllToStream(output);
 }
 
-} //namespace
+} // namespace

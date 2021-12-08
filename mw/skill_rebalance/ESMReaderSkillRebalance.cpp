@@ -27,13 +27,10 @@
 namespace MWTP
 {
 
-ESMReaderSkillRebalance::ESMReaderSkillRebalance()
-{
-}
-
 int ESMReaderSkillRebalance::processNextRecord(std::istream& input)
 {
-  uint32_t RecordName = 0; // normally should be 4 char, but char is not eligible for switch
+  // Normally should be 4 chars, but char array is not eligible for switch.
+  uint32_t RecordName = 0;
   // read record name
   input.read(reinterpret_cast<char*>(&RecordName), 4);
   switch(RecordName)
@@ -85,7 +82,7 @@ int ESMReaderSkillRebalance::processNextRecord(std::istream& input)
          return Skills::get().readRecordSKIL(input);
          break;
     default:
-         std::cerr << "processNextRecord: ERROR: unknown record type found: \""
+         std::cerr << "processNextRecord: ERROR: Unknown record type found: \""
                    << IntTo4Char(RecordName) << "\".\n"
                    << "Current file position: " << input.tellg() << " bytes.\n";
          return -1;

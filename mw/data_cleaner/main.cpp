@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ void showHelp()
             << "options:\n"
             << "  --help           - displays this help message and quits\n"
             << "  -?               - same as --help\n"
-            << "  --version        - displays the version of the programme and quits\n"
+            << "  --version        - displays the version of the program and quits\n"
             << "  -d DIRECTORY     - path to the Data Files directory of Morrowind\n"
             << "  -dir DIRECTORY   - same as -d\n"
             << "  --all            - tries to load all master and plugin files from the given\n"
@@ -48,56 +48,53 @@ void showHelp()
             << "                     be searched for data files (only in explicit mode)\n"
             << "  --ini            - tries to load list of plugin files from Morrowind.ini\n"
             << "                     (only allowed in explicit mode)\n"
-            << "  -i               - same as --ini\n"
-            << "  --verbose        - shows some additional information about data files\n"
-            << "  --silent         - opposite of --verbose; does not show additional information\n";
+            << "  -i               - same as --ini\n";
 }
 
 void showGPLNotice()
 {
   std::cout << "Data Files Cleaner for Morrowind\n"
-            << "  This programme is part of the Morrowind Tools Project.\n"
-            << "  Copyright (C) 2011 Thoronador\n"
+            << "  This program is part of the Morrowind Tools Project.\n"
+            << "  Copyright (C) 2011, 2021  Thoronador\n"
             << "\n"
-            << "  The Morrowind Tools are free software: you can redistribute them and/or\n"
-            << "  modify them under the terms of the GNU General Public License as published\n"
-            << "  by the Free Software Foundation, either version 3 of the License, or\n"
+            << "  This program is free software: you can redistribute it and/or modify\n"
+            << "  it under the terms of the GNU General Public License as published by\n"
+            << "  the Free Software Foundation, either version 3 of the License, or\n"
             << "  (at your option) any later version.\n"
             << "\n"
-            << "  The Morrowind Tools are distributed in the hope that they will be useful,\n"
+            << "  This program is distributed in the hope that it will be useful,\n"
             << "  but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
             << "  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the\n"
             << "  GNU General Public License for more details.\n"
             << "\n"
             << "  You should have received a copy of the GNU General Public License\n"
-            << "  along with the Morrowind Tools.  If not, see <http://www.gnu.org/licenses/>.\n"
+            << "  along with this program.  If not, see <http://www.gnu.org/licenses/>.\n"
             << "\n";
 }
 
 void showVersion()
 {
-  std::cout << "Data Files Cleaner for Morrowind, version 0.1_rev255, 2011-05-30\n";
+  std::cout << "Data Files Cleaner for Morrowind, version 0.2, 2021-12-08\n";
 }
 
 int main(int argc, char **argv)
 {
   showGPLNotice();
   std::string baseDir = "C:\\Program Files\\Bethesda Softworks\\Morrowind\\Data Files\\";
-  bool verbose = false;
   bool doIni = false;
   bool doAllPlugins = true;
   bool specifiedMode = false;
 
-  //list of .esp files to consider for scan
+  // list of .esp files to consider for scan
   MWTP::DepFileList files;
   files.clear();
 
-  if (argc>1 and argv!=NULL)
+  if (argc > 1 && argv != nullptr)
   {
-    int i=1;
-    while (i<argc)
+    int i = 1;
+    while (i < argc)
     {
-      if (argv[i]!=NULL)
+      if (argv[i] != nullptr)
       {
         const std::string param = std::string(argv[i]);
         // help parameter
@@ -105,80 +102,69 @@ int main(int argc, char **argv)
         {
           showHelp();
           return 0;
-        } // if help wanted
+        }
         // version information requested?
         else if (param == "--version")
         {
           showVersion();
           return 0;
         }
-        //verbose mode
-        else if (param=="--verbose")
+        else if ((param == "-d") || (param == "-dir") || (param == "--data-files"))
         {
-          verbose = true;
-          std::cout << "Additional information allowed due to \"--verbose\".\n";
-        }
-        //silent mode
-        else if (param=="--silent")
-        {
-          verbose = false;
-          std::cout << "Don't show additional information due to \"--silent\".\n";
-        }
-        else if ((param=="-d") or (param=="-dir") or (param=="--data-files"))
-        {
-          if ((i+1<argc) and (argv[i+1]!=NULL))
+          if ((i+1 < argc) && (argv[i+1] != nullptr))
           {
-            //Is it long enough to be a directory? (Minimum should be "./".)
-            if (std::string(argv[i+1]).size()>1)
+            // Is it long enough to be a directory? (Minimum should be "./".)
+            if (std::string(argv[i+1]).size() > 1)
             {
               baseDir = std::string(argv[i+1]);
-              ++i; //skip next parameter, because it's used as directory name already
-              //Does it have a trailing (back)slash? If not, add one.
+              ++i; // skip next parameter, because it's used as directory name already
+              // Does it have a trailing (back)slash? If not, add one.
               baseDir = slashify(baseDir);
-              std::cout << "Data files directory was set to \""<<baseDir<<"\".\n";
+              std::cout << "Data files directory was set to \"" << baseDir
+                        << "\".\n";
             }
             else
             {
-              std::cout << "Parameter \""<<std::string(argv[i+1])<<"\" is too"
+              std::cerr << "Parameter \"" << std::string(argv[i+1]) << "\" is too"
                         << " short to be a proper directory path.\n";
               return MWTP::rcInvalidParameter;
-            }//else
+            }
           }
           else
           {
-            std::cout << "Error: You have to specify a directory name after \""
-                      << param<<"\".\n";
+            std::cerr << "Error: You have to specify a directory name after \""
+                      << param << "\".\n";
             return MWTP::rcInvalidParameter;
           }
-        }//data files directory
+        } // data files directory
         //add plugin file to list
-        else if ((param=="-f") or (param=="--add-file"))
+        else if ((param == "-f") || (param == "--add-file"))
         {
           if (!doAllPlugins)
           {
-            if ((i+1<argc) and (argv[i+1]!=NULL))
+            if ((i+1 < argc) && (argv[i+1] != nullptr))
             {
               const std::string pluginFileName = std::string(argv[i+1]);
-              ++i; //skip next parameter, because it's used as file name already
+              ++i; // skip next parameter, because it's used as file name already
               files.push_back(MWTP::DepFile(pluginFileName));
-              std::cout << "Plugin file \""<<pluginFileName<<"\" was added.\n";
+              std::cout << "Plugin file \"" << pluginFileName << "\" was added.\n";
             }
             else
             {
-              std::cout << "Error: You have to specify a file name after \""
-                        << param<<"\".\n";
+              std::cerr << "Error: You have to specify a file name after \""
+                        << param << "\".\n";
               return MWTP::rcInvalidParameter;
             }
           }
           else
           {
-            std::cout << "Error: parameter \""<<param<<"\" can only be specified"
-                      << " in explicit mode.\n";
+            std::cerr << "Error: Parameter \"" << param << "\" can only be "
+                      << "specified in explicit mode.\n";
             return MWTP::rcInvalidParameter;
           }
-        }//plugin file
-        //try to read from Morrowind.ini?
-        else if ((param=="-i") or (param=="--ini"))
+        } // plugin file
+        // try to read from Morrowind.ini?
+        else if ((param == "-i") || (param == "--ini"))
         {
           if (!doAllPlugins)
           {
@@ -188,20 +174,20 @@ int main(int argc, char **argv)
             }
             else
             {
-              std::cout << "Error: parameter \""<<param<<"\" has been specified"
-                        << " more than once.\n";
+              std::cerr << "Error: Parameter \"" << param << "\" has been "
+                        << "specified more than once.\n";
               return MWTP::rcInvalidParameter;
             }
           }
           else
           {
-            std::cout << "Error: parameter \""<<param<<"\" can only be specified"
-                      << " in explicit mode.\n";
+            std::cerr << "Error: Parameter \"" << param << "\" can only be "
+                      << "specified in explicit mode.\n";
             return MWTP::rcInvalidParameter;
           }
         }
-        //try to get all plugin and master files from Data Files directory
-        else if ((param=="--all-data-files") or (param=="--all"))
+        // try to get all plugin and master files from Data Files directory
+        else if ((param == "--all-data-files") || (param == "--all"))
         {
           if (!specifiedMode)
           {
@@ -210,13 +196,14 @@ int main(int argc, char **argv)
           }
           else
           {
-            std::cout << "Error: parameter \""<<param<<"\" is not allowed here,"
-                      << " because mode of operation has already been specified.\n";
+            std::cerr << "Error: Parameter \"" << param << "\" is not allowed "
+                      << "here, because mode of operation has already been "
+                      << "specified.\n";
             return MWTP::rcInvalidParameter;
           }
         }
-        //sets explicit mode
-        else if ((param=="--explicit") or (param=="-e"))
+        // sets explicit mode
+        else if ((param == "--explicit") || (param == "-e"))
         {
           if (!specifiedMode)
           {
@@ -225,164 +212,158 @@ int main(int argc, char **argv)
           }
           else
           {
-            std::cout << "Error: parameter \""<<param<<"\" is not allowed here,"
-                      << " because mode of operation has already been specified.\n";
+            std::cerr << "Error: Parameter \"" << param << "\" is not allowed "
+                      << "here, because mode of operation has already been "
+                      << "specified.\n";
             return MWTP::rcInvalidParameter;
           }
         }
         else
         {
-          //unknown or wrong parameter
-          std::cout << "Invalid parameter given: \""<<param<<"\".\n"
+          // unknown or wrong parameter
+          std::cout << "Invalid parameter given: \"" << param << "\".\n"
                     << "Use --help to get a list of valid parameters.\n";
           return MWTP::rcInvalidParameter;
         }
-      }//parameter exists
+      } // parameter exists
       else
       {
-        std::cout << "Parameter at index "<<i<<" is NULL.\n";
+        std::cerr << "Parameter at index " << i << " is NULL.\n";
         return MWTP::rcInvalidParameter;
       }
-      ++i;//on to next parameter
-    }//while
-  }//if argc
+      ++i; // on to next parameter
+    }
+  }
 
   if (doIni)
   {
     const int iniReturnCode = MWTP::getFilesFromMorrowindIni(baseDir, files);
-    if (iniReturnCode!=0)
+    if (iniReturnCode != 0)
     {
       return iniReturnCode;
     }
-  }//if
+  }
   if (doAllPlugins)
   {
     MWTP::getAllDataFiles(baseDir, files);
-  }//if
+  }
 
-  //Let's add master files, if necessary.
-  if (!files.hasDepFile("Bloodmoon.esm") and FileExists(baseDir+"Bloodmoon.esm"))
+  // Let's add master files, if necessary.
+  if (!files.hasDepFile("Bloodmoon.esm") && FileExists(baseDir + "Bloodmoon.esm"))
   {
     files.push_front(MWTP::DepFile("Bloodmoon.esm"));
-  }//if
-  if (!files.hasDepFile("Tribunal.esm") and FileExists(baseDir+"Tribunal.esm"))
+  }
+  if (!files.hasDepFile("Tribunal.esm") && FileExists(baseDir + "Tribunal.esm"))
   {
     files.push_front(MWTP::DepFile("Tribunal.esm"));
-  }//if
+  }
   if (!files.hasDepFile("Morrowind.esm"))
   {
     files.push_front(MWTP::DepFile("Morrowind.esm"));
-  }//if
+  }
 
-  //try to get file information
-  unsigned int i;
-  for (i=0; i<files.getSize(); ++i)
+  // try to get file information
+  for (unsigned int i = 0; i < files.getSize(); ++i)
   {
-    getFileSizeAndModificationTime(baseDir+files.at(i).name, files.at(i).size,
+    getFileSizeAndModificationTime(baseDir + files.at(i).name, files.at(i).size,
                                    files.at(i).modified);
-  }//for
+  }
 
-  //sort files according to Morrowind's load order
+  // sort files according to Morrowind's load order
   files.sort();
-  //remove duplicate entries in list
+  // remove duplicate entries in list
   const unsigned int duplicates = files.removeDuplicates();
-  if (duplicates!=0)
+  if (duplicates != 0)
   {
-    if (duplicates==1)
+    if (duplicates == 1)
     {
       std::cout << "One duplicate file has been removed from the list.\n";
     }
     else
     {
-      std::cout << duplicates <<" duplicates files have been removed from the list.\n";
+      std::cout << duplicates << " duplicates files have been removed from the list.\n";
     }
   }
 
   std::cout << "List of active files:\n";
   files.writeDeps();
 
-  //read all files
+  // read all files
   MWTP::ESMReaderCleaner reader(baseDir);
   std::cout << "Reading files, this may take a while.\n";
-  i = 0;
-  while (i<files.getSize())
+  unsigned int i = 0;
+  while (i < files.getSize())
   {
-    MWTP::TES3Record DummyHead;//It's not actually used after the read function,
+    MWTP::TES3Record DummyHead; // It's not actually used after the read function,
                                 // but readESM() needs one as parameter.
-    const int read_result = reader.readESM(baseDir+files.at(i).name, DummyHead, verbose);
-    if (read_result<0)
+    const int read_result = reader.readESM(baseDir + files.at(i).name, DummyHead, false);
+    if (read_result < 0)
     {
-      std::cout << "Error while reading file \""<<baseDir+files.at(i).name
-                <<"\".\nAborting.\n";
+      std::cerr << "Error while reading file \"" << baseDir + files.at(i).name
+                << "\".\nAborting.\n";
       return MWTP::rcFileError;
-    }//if
-    //something was read and file was not removed from list, so increase counter
+    }
+    // something was read and file was not removed from list, so increase counter
     ++i;
-  }//while
+  }
 
   std::cout << "Done reading. Checking for unused files...\n";
 
   std::set<std::string> DeletableMeshes;
   std::set<std::string> DeletableIcons;
 
-  //get mesh files
-  MWTP::getDeletableMeshes(baseDir+"Meshes\\", reader.MeshSet, DeletableMeshes);
-  MWTP::getDeletableIcons(baseDir+"Icons\\", reader.IconSet, DeletableIcons);
+  // get mesh files
+  MWTP::getDeletableMeshes(baseDir + "Meshes\\", reader.MeshSet, DeletableMeshes);
+  MWTP::getDeletableIcons(baseDir + "Icons\\", reader.IconSet, DeletableIcons);
 
-  if (!DeletableIcons.empty() or !DeletableMeshes.empty())
+  if (!DeletableIcons.empty() || !DeletableMeshes.empty())
   {
-    std::cout << "There are "<<DeletableMeshes.size()<<" meshes and "
-              <<DeletableIcons.size()<<" icons that could be deleted.\n";
-    i=0;
-    std::set<std::string>::const_iterator iter;
+    std::cout << "There are " << DeletableMeshes.size() << " meshes and "
+              << DeletableIcons.size() << " icons that could be deleted.\n";
 
-    //Try to get the cumulative size of all files in question.
+    // Try to get the cumulative size of all files in question.
     int64_t sizeSum = 0;
     // ---- the meshes first
-    iter = DeletableMeshes.begin();
-    while (iter!=DeletableMeshes.end())
+    for (const auto& mesh: DeletableMeshes)
     {
-      const int64_t fs = getFileSize64(*iter);
-      if (fs==-1)
+      const int64_t fs = getFileSize64(mesh);
+      if (fs == -1)
       {
-        iter = DeletableMeshes.end();
         sizeSum = -1;
+        break;
       }
       else
       {
         sizeSum += fs;
-        ++iter;
       }
-    }//while
+    }
     // ---- and the icons follow
-    if (sizeSum!=-1)
+    if (sizeSum != -1)
     {
-      iter = DeletableIcons.begin();
-      while (iter!=DeletableIcons.end())
+      for (const auto& icon: DeletableIcons)
       {
-        const int64_t fs = getFileSize64(*iter);
-        if (fs==-1)
+        const int64_t fs = getFileSize64(icon);
+        if (fs == -1)
         {
-          iter = DeletableIcons.end();
           sizeSum = -1;
+          break;
         }
         else
         {
           sizeSum += fs;
-          ++iter;
         }
-      }//while
-      if (sizeSum!=-1)
+      }
+      if (sizeSum != -1)
       {
         //print the size
-        std::cout << "This would free "<<getSizeString(sizeSum);
-        if (sizeSum>1024)
+        std::cout << "This would free " << getSizeString(sizeSum);
+        if (sizeSum > 1024)
         {
-          std::cout << " ("<<sizeSum<<" bytes)";
+          std::cout << " (" << sizeSum << " bytes)";
         }
-        std::cout <<".\n";
-      }//if
-    }//if no error occurred
+        std::cout << ".\n";
+      }
+    } // if no error occurred
 
     std::string input;
     do
@@ -391,39 +372,35 @@ int main(int argc, char **argv)
       std::cin >> input;
       trim(input);
       input = lowerCase(input);
-    } while ((input!="y") and (input!="yes") and (input!="j") and (input!="ja")
-         and (input!="n") and (input!="no") and (input!="nein"));
-    //Does the user want to delete the stuff?
-    if ((input=="y") or (input=="yes") or (input=="j") or (input=="ja"))
+    } while ((input != "y") && (input != "yes") && (input != "j") && (input != "ja")
+         && (input != "n") && (input != "no") && (input != "nein"));
+    // Does the user want to delete the stuff?
+    if ((input == "y") || (input == "yes") || (input == "j") || (input == "ja"))
     {
       std::cout << "Deleting files...\n";
-      //delete meshes
-      iter = DeletableMeshes.begin();
-      while (iter!=DeletableMeshes.end())
+      // delete meshes
+      for (const auto& mesh: DeletableMeshes)
       {
-        if (!deleteFile(*iter))
+        if (!deleteFile(mesh))
         {
-          std::cout << "Error: Could not delete file \""<<*iter<<"\".\n";
+          std::cout << "Error: Could not delete file \"" << mesh << "\".\n";
         }
-        ++iter;
-      }//while
-      //delete icons
-      iter = DeletableIcons.begin();
-      while (iter!=DeletableIcons.end())
+      }
+      // delete icons
+      for (const auto& icon: DeletableIcons)
       {
-        if (!deleteFile(*iter))
+        if (!deleteFile(icon))
         {
-          std::cout << "Error: Could not delete file \""<<*iter<<"\".\n";
+          std::cout << "Error: Could not delete file \"" << icon << "\".\n";
         }
-        ++iter;
-      }//while
+      }
       std::cout << "Done.\n";
     }
     else
     {
       std::cout << "You chose not to delete the unused files.\n";
     }
-  }//if there are any files that could be deleted
+  } // if there are any files that could be deleted
   else
   {
     std::cout << "There are no unused icons or meshes that could be deleted.\n";

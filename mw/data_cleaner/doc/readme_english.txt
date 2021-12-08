@@ -19,8 +19,8 @@ The programme works with every language version of Morrowind.
 Versions of the programme
 =========================
 
-All explanations in that document refer to the programme version 0.1_rev255 as
-of May 30th, 2011. Some features of the programme may change in future versions,
+All explanations in that document refer to the programme version 0.2 as of
+December 8th, 2021. Some features of the programme may change in future versions,
 or new features might be added, which aren't documented here yet.
 
 
@@ -87,8 +87,6 @@ of the Data Files directory of Morrowind by using the parameter -d.
                            files. This parameter is only allowed in explicit
                            mode.
 -i                       - short for --ini
---verbose                - shows some information about the scanned plugin files
---silent                 - opposite of --verbose; does not show that information
 
 
 Licence, disclaimer and source code

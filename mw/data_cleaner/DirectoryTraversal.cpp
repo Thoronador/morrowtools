@@ -21,12 +21,10 @@
 #include "DirectoryTraversal.hpp"
 #include <iostream>
 #include <vector>
-//includes for directory listing
+// includes for directory listing
 #if defined(_WIN32)
-  // Windows includes go here
   #include <io.h>
 #elif defined(__linux__) || defined(linux)
-  //Linux directory entries
   #include <dirent.h>
 #else
   #error "Unknown operating system!"
@@ -40,7 +38,7 @@ namespace MWTP
 struct FileEntry {
          std::string FileName;
          bool IsDirectory;
-};//struct
+}; // struct
 
 std::vector<FileEntry> getFilesInDirectory(const std::string& directory)
 {
@@ -99,109 +97,103 @@ std::vector<FileEntry> getFilesInDirectory(const std::string& directory)
 
 void getAllDataFiles(const std::string& dir, DepFileList& files)
 {
-  std::vector<FileEntry> dirFiles = getFilesInDirectory(dir);
-  unsigned int i;
-  const unsigned int len = dirFiles.size();
-  for (i=0; i<len; ++i)
+  const std::vector<FileEntry> dirFiles = getFilesInDirectory(dir);
+  for (const auto& entry: dirFiles)
   {
-    if (!dirFiles[i].IsDirectory)
+    if (!entry.IsDirectory)
     {
-      const unsigned int nameLen = dirFiles[i].FileName.length();
-      if (nameLen>4)
+      const auto nameLen = entry.FileName.length();
+      if (nameLen > 4)
       {
-        //check for .esm/.esp file
-        if ((lowerCase(dirFiles[i].FileName.substr(nameLen-4, 4))==".esp")
-            or (lowerCase(dirFiles[i].FileName.substr(nameLen-4, 4))==".esm"))
+        // check for .esm/.esp file
+        const auto lowerCaseExtension = lowerCase(entry.FileName.substr(nameLen - 4, 4));
+        if ((lowerCaseExtension == ".esp") || (lowerCaseExtension == ".esm"))
         {
-          files.push_back(DepFile(dirFiles[i].FileName));
+          files.push_back(DepFile(entry.FileName));
         }
       }
     }
-  }//for
+  }
 }
 
 void getDeletableMeshes(const std::string& dir, const std::set<std::string, ci_less>& positives, std::set<std::string>& deletables)
 {
-  std::vector<FileEntry> files = getFilesInDirectory(dir);
-  unsigned int i;
-  const unsigned int len = files.size();
-  for (i=0; i<len; ++i)
+  const std::vector<FileEntry> files = getFilesInDirectory(dir);
+  for (const auto& entry: files)
   {
-    if (files[i].IsDirectory)
+    if (entry.IsDirectory)
     {
-      //It's a directory, so check that one, too.
-      if ((files[i].FileName!="..") and (files[i].FileName!="."))
+      // It's a directory, so check that one, too.
+      if ((entry.FileName != "..") && (entry.FileName != "."))
       {
-        //go down in directory hierarchy
-        getDeletableMeshes(dir+files[i].FileName+"\\", positives, deletables);
+        // go down in directory hierarchy
+        getDeletableMeshes(dir + entry.FileName + "\\", positives, deletables);
       }
     }
     else
     {
-      //It's a file. Is it in the list of required files?
-      if (positives.find(dir+files[i].FileName)==positives.end())
+      // It's a file. Is it in the list of required files?
+      if (positives.find(dir + entry.FileName) == positives.end())
       {
-        //It's not in the list, so add it to the list of deletable files.
+        // It's not in the list, so add it to the list of deletable files.
         // ...if it's a .nif file!
-        const unsigned int nameLen = files[i].FileName.length();
-        if (nameLen>4)
+        const auto nameLen = entry.FileName.length();
+        if (nameLen > 4)
         {
-          if (lowerCase(files[i].FileName.substr(nameLen-4, 4))==".nif")
+          if (lowerCase(entry.FileName.substr(nameLen -4, 4)) == ".nif")
           {
-            deletables.insert(dir+files[i].FileName);
+            deletables.insert(dir + entry.FileName);
           }
-        }//name longer than four characters
+        }
       }
     }
-  }//for
-}//function getDeletableMeshes
+  }
+}
 
 void getDeletableIcons(const std::string& dir, const std::set<std::string, ci_less>& positives, std::set<std::string>& deletables)
 {
-  std::vector<FileEntry> files = getFilesInDirectory(dir);
-  unsigned int i;
-  const unsigned int len = files.size();
-  for (i=0; i<len; ++i)
+  const std::vector<FileEntry> files = getFilesInDirectory(dir);
+  for (const auto& entry: files)
   {
-    if (files[i].IsDirectory)
+    if (entry.IsDirectory)
     {
-      //It's a directory, so check that one, too.
-      if ((files[i].FileName!="..") and (files[i].FileName!="."))
+      // It's a directory, so check that one, too.
+      if ((entry.FileName != "..") && (entry.FileName != "."))
       {
         //go down in directory hierarchy
-        getDeletableIcons(dir+files[i].FileName+"\\", positives, deletables);
+        getDeletableIcons(dir + entry.FileName + "\\", positives, deletables);
       }
     }
     else
     {
-      //It's a file. Is it in the list of required files?
-      if (positives.find(dir+files[i].FileName)==positives.end())
+      // It's a file. Is it in the list of required files?
+      if (positives.find(dir + entry.FileName) == positives.end())
       {
-        //It's not in the list, so add it to the list of deletable files.
-        const unsigned int nameLen = files[i].FileName.length();
-        if (nameLen>4)
+        // It's not in the list, so add it to the list of deletable files.
+        const unsigned int nameLen = entry.FileName.length();
+        if (nameLen > 4)
         {
-          const std::string ext = lowerCase(files[i].FileName.substr(nameLen-4, 4));
-          if (ext==".dds")
+          const auto ext = lowerCase(entry.FileName.substr(nameLen - 4, 4));
+          if (ext == ".dds")
           {
-            //Maybe there is one as .tga instead?
-            if (positives.find(dir+files[i].FileName.substr(0,nameLen-4)+".tga")==positives.end())
+            // Maybe there is one as .tga instead?
+            if (positives.find(dir + entry.FileName.substr(0, nameLen - 4) + ".tga") == positives.end())
             {
-              deletables.insert(dir+files[i].FileName);
+              deletables.insert(dir + entry.FileName);
             }
           }
-          else if (ext==".tga")
+          else if (ext == ".tga")
           {
-            //Maybe it's a .dds instead?
-            if (positives.find(dir+files[i].FileName.substr(0,nameLen-4)+".dds")==positives.end())
+            // Maybe it's a .dds instead?
+            if (positives.find(dir + entry.FileName.substr(0, nameLen - 4) + ".dds") == positives.end())
             {
-              deletables.insert(dir+files[i].FileName);
+              deletables.insert(dir + entry.FileName);
             }
           }
-        }//if name is longer than four characters
+        } // if name is longer than four characters
       }
     }
-  }//for
-}//function getDeletableIcons
+  }
+}
 
-} //namespace
+} // namespace

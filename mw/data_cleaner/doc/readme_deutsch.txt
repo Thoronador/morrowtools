@@ -20,7 +20,7 @@ Programmversionen
 =================
 
 Wenn nichts anderes angegeben ist, so beziehen sich die Angaben in dieser Datei
-allesamt auf die Version 0.1_rev255 des Programmes, welche am 30. Mai 2011 er-
+allesamt auf die Version 0.2 des Programmes, welche am 08. Dezember 2021 er-
 stellt wurde. In neueren Programmversionen kann sich die Funktionalität des
 Programmes ändern oder neue Funktionen hinzukommen, die hier noch nicht doku-
 mentiert sind.
@@ -95,10 +95,6 @@ ben, indem man den Parameter -d benutzt.
                             keine Plugindatei. Dieser Parameter ist nur im ex-
                             pliziten Modus erlaubt.
 -i                        - Kurzform von --ini
---verbose                 - zeigt ein paar Informationen zu den verarbeiteten
-                            Plugindateien an.
---silent                  - Gegenteil von --verbose; zeigt jene Informationen
-                            nicht an.
 
 
 Lizenz und Quellcode

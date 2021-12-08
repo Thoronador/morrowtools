@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef ESMREADERSPELLS_H
-#define ESMREADERSPELLS_H
+#ifndef MW_ESMREADERSPELLS_HPP
+#define MW_ESMREADERSPELLS_HPP
 
 #include "../base/ESMReader.hpp"
 
@@ -28,21 +28,17 @@ namespace MWTP
 
 class ESMReaderSpells: public ESMReader
 {
-  public:
-    /* constructor */
-    ESMReaderSpells();
   protected:
-    /* tries to read the next record from a stream and returns the number of
-       relevant records that were read (usually one). If an error occurred,
-       -1 is returned. If the record was skipped or contained no relevant data,
-       zero is returned.
+    /** \brief Tries to read the next record from a stream.
+     *
+     * \param input  the input stream the record shall be read from
+     * \return Returns the number of relevant records that were read (usually
+     *         one). If an error occurred, -1 is returned. If the record was
+     *         skipped or contained no relevant data, zero is returned.
+     */
+    virtual int processNextRecord(std::istream& input) override;
+}; // class
 
-       parameters:
-           in_File  - the input stream the record shall be read from
-    */
-    virtual int processNextRecord(std::istream& in_File) override;
-};//class
+} // namespace
 
-} //namespace
-
-#endif // ESMREADERSPELLS_H
+#endif // MW_ESMREADERSPELLS_HPP

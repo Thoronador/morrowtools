@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012  Thoronador
+    Copyright (C) 2011, 2012, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -29,19 +29,20 @@
 namespace MWTP
 {
 
-ESMReaderSpells::ESMReaderSpells()
+int ESMReaderSpells::processNextRecord(std::istream& input)
 {
-}
-
-int ESMReaderSpells::processNextRecord(std::istream& in_File)
-{
-  int32_t RecordName = 0; //normally should be 4 char, but char is not eligible for switch
-  int lastResult = 0;
-
-  //read record name
-  in_File.read((char*) &RecordName, 4);
+  // Normally should be 4 chars, but char array is not eligible for switch.
+  uint32_t RecordName = 0;
+  // read record name
+  input.read(reinterpret_cast<char*>(&RecordName), 4);
   switch(RecordName)
   {
+    case cGMST:
+         return GameSettings::get().readRecordGMST(input);
+    case cMGEF:
+         return MagicEffects::get().readRecordMGEF(input);
+    case cSPEL:
+         return Spells::get().readNextRecord(input);
     case cACTI:
     case cALCH:
     case cAPPA:
@@ -59,11 +60,6 @@ int ESMReaderSpells::processNextRecord(std::istream& in_File)
     case cENCH:
     case cFACT:
     case cGLOB:
-         lastResult = ESMReader::skipRecord(in_File);
-         break;
-    case cGMST:
-         lastResult = GameSettings::get().readRecordGMST(in_File);
-         break;
     case cINFO:
     case cINGR:
     case cLAND:
@@ -72,11 +68,6 @@ int ESMReaderSpells::processNextRecord(std::istream& in_File)
     case cLIGH:
     case cLOCK:
     case cLTEX:
-         lastResult = ESMReader::skipRecord(in_File);
-         break;
-    case cMGEF:
-         lastResult = MagicEffects::get().readRecordMGEF(in_File);
-         break;
     case cMISC:
     case cNPC_:
     case cPGRD:
@@ -88,24 +79,16 @@ int ESMReaderSpells::processNextRecord(std::istream& in_File)
     case cSKIL:
     case cSNDG:
     case cSOUN:
-         lastResult = ESMReader::skipRecord(in_File);
-         break;
-    case cSPEL:
-         lastResult = Spells::get().readNextRecord(in_File);
-         break;
     case cSSCR:
     case cSTAT:
     case cWEAP:
-         lastResult = ESMReader::skipRecord(in_File);
-         break;
+         return ESMReader::skipRecord(input);
     default:
-         std::cout << "ProcessRecords: ERROR: unknown record type found: \""
-                   <<IntTo4Char(RecordName)<<"\".\n"
-                   << "Current file position: "<<in_File.tellg()<< " bytes.\n";
-         lastResult = -1;
-         break;
+         std::cout << "ProcessRecords: ERROR: Unknown record type found: \""
+                   << IntTo4Char(RecordName) << "\".\n"
+                   << "Current file position: " << input.tellg() << " bytes.\n";
+         return -1;
   }
-  return lastResult;
 }
 
-} //namespace
+} // namespace

@@ -28,19 +28,17 @@ namespace MWTP
 
 class ESMWriterSpells: public ESMWriter
 {
-  public:
-    /* constructor */
-    ESMWriterSpells();
   protected:
-    /* returns the number of records that will be written to the stream */
-    virtual int32_t getTotalRecords() const;
+    /** Gets the number of records that will be written to the stream.
+     */
+    virtual int32_t getTotalRecords() const override;
 
-    /* tries to write all data records and returns true on success
-
-       parameters:
-           output - the output file stream that's used to write the records
-    */
-    virtual bool writeRecords(std::ofstream& output) const;
+    /** \brief Tries to write all data records to the stream.
+     *
+     * \param output  the output file stream that's used to write the records
+     * \return Returns true on success. Returns false, if an error occurred.
+     */
+    virtual bool writeRecords(std::ofstream& output) const override;
 }; // class
 
 } // namespace

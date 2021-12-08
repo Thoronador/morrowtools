@@ -296,7 +296,7 @@ int main(int argc, char **argv)
   {
     MWTP::TES3Record DummyHead; // It's not actually used after the read function,
                                 // but readESM() needs one as parameter.
-    const int read_result = reader.readESM(baseDir + files.at(i).name, DummyHead, false);
+    const int read_result = reader.readESM(baseDir + files.at(i).name, DummyHead);
     if (read_result < 0)
     {
       std::cerr << "Error while reading file \"" << baseDir + files.at(i).name

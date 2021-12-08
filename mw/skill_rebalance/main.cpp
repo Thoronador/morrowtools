@@ -286,7 +286,7 @@ int main(int argc, char **argv)
   MWTP::TES3Record tes3Head;
   MWTP::ESMReaderSkillRebalance reader;
 
-  const int readResult = reader.readESM(baseDir + "Morrowind.esm", tes3Head, false);
+  const int readResult = reader.readESM(baseDir + "Morrowind.esm", tes3Head);
   if (readResult < 0)
   {
     std::cerr << "Error while reading file \"" << baseDir << "Morrowind.esm\".\nAborting.\n";

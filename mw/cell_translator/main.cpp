@@ -434,7 +434,7 @@ int main(int argc, char **argv)
   MWTP::ESMReaderTranslator reader(&recordVec);
   MWTP::TES3Record tes3Header;
   std::cout << "Reading plugin file and dependencies. This may take a while.\n";
-  if (reader.readESM(dataDir+pluginFile, tes3Header, false)<0)
+  if (reader.readESM(dataDir + pluginFile, tes3Header) < 0)
   {
     std::cout << "Error while reading file \""<<dataDir+pluginFile<<"\".\nAborting.\n";
     reader.deallocateRecordsInVector();
@@ -463,7 +463,7 @@ int main(int argc, char **argv)
     for (i=0; i<deps.getSize(); ++i)
     {
       MWTP::TES3Record dummy_head;
-      if (sc_reader.readESM(dataDir+deps.at(i).name, dummy_head, false)<0)
+      if (sc_reader.readESM(dataDir + deps.at(i).name, dummy_head) < 0)
       {
         std::cout << "Error while reading file \""<<dataDir+deps.at(i).name
                   << "\".\nAborting.\n";
@@ -473,7 +473,7 @@ int main(int argc, char **argv)
     }//for
 
     //feeding plugin file to script compiler
-    if (sc_reader.readESM(dataDir+pluginFile, tes3Header, false)<0)
+    if (sc_reader.readESM(dataDir + pluginFile, tes3Header) < 0)
     {
       std::cout << "Error while reading file \""<<dataDir+pluginFile<<"\".\nAborting.\n";
       reader.deallocateRecordsInVector();

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011, 2012 Thoronador
+    Copyright (C) 2010, 2011, 2012, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -59,10 +59,8 @@ class ESMReader
        parameters:
            FileName - name of the .esm/.esp file
            theHead  - the TES3Record that will be used to store the header data
-           verbose  - if true, some additional information will be written to
-                      standard output
     */
-    int readESM(const std::string& FileName, TES3Record& theHead, const bool verbose);
+    int readESM(const std::string& FileName, TES3Record& theHead);
 
     /* tries to read the TES3 record of an .esm/.esp file and returns true in
        case of success, false on failure.
@@ -91,8 +89,8 @@ class ESMReader
            zero.
     */
     virtual int processNextRecord(std::istream& in_File);
-};//class
+}; // class
 
-} //namespace
+} // namespace
 
 #endif // MW_ESMREADER_HPP

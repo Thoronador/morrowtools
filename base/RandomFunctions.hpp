@@ -26,7 +26,6 @@
 namespace MWTP
 {
 
-
 /** \brief Gets a pseudo-random sequence of alphanumeric characters.
  *
  * \param length   the desired length of the sequence

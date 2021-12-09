@@ -16,6 +16,7 @@ set(component_tests_sources
     ../../base/UtilityFunctions.cpp
     ../../mw/base/DepFiles.cpp
     ../../mw/base/Enchantment.cpp
+    ../../mw/base/ESMReader.cpp
     ../../mw/base/HelperIO.cpp
     ../../mw/base/MapBasedRecordManager.hpp
     ../../mw/base/records/ActivatorRecord.cpp
@@ -137,6 +138,7 @@ set(component_tests_sources
     mw/base/DepFile.cpp
     mw/base/DepFileList.cpp
     mw/base/EnchantmentData.cpp
+    mw/base/ESMReader.cpp
     mw/base/HelperIO.cpp
     mw/base/MapBasedRecordManager.cpp
     mw/base/records/ActivatorRecord.cpp

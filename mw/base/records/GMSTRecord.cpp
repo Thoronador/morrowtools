@@ -48,16 +48,13 @@ bool GMSTRecord::equals(const GMSTRecord& other) const
   {
     case GMSTType::Integer:
          return iVal == other.iVal;
-         break;
     case GMSTType::Float:
          // Is it really a good idea to use direct equality tests for floats here?
          // Things like 4.0000000001 and 3.999999998 can basically be the same,
          // but have a different bit representation.
          return fVal == other.fVal;
-         break;
     case GMSTType::String:
          return sVal == other.sVal;
-         break;
   }
   // should never reach this point here
   throw std::logic_error("MWTP::GMSTRecord::equals(): We should never reach this point!");

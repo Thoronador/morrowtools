@@ -25,7 +25,7 @@
 #include "../../../../sr/base/SR_Constants.hpp"
 #include "TestFactionsReader.hpp"
 
-TEST_CASE("ESMReader")
+TEST_CASE("SRTP::ESMReader")
 {
   using namespace SRTP;
   using namespace std::string_view_literals;

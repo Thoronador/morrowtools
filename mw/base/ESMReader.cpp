@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011, 2012, 2021  Thoronador
+    Copyright (C) 2010, 2011, 2012, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,25 +20,16 @@
 
 #include "ESMReader.hpp"
 #include <iostream>
-#include <cstring>
 #include "MW_Constants.hpp"
 #include "HelperIO.hpp"
 
 namespace MWTP
 {
 
-ESMReader::ESMReader()
-{
-}
-
-ESMReader::~ESMReader()
-{
-}
-
 int ESMReader::skipRecord(std::istream& input)
 {
   uint32_t Size = 0;
-  uint32_t HeaderOne, Flags;
+  uint32_t HeaderOne = 0, Flags = 0;
   input.read(reinterpret_cast<char*>(&Size), 4);
   input.read(reinterpret_cast<char*>(&HeaderOne), 4);
   input.read(reinterpret_cast<char*>(&Flags), 4);
@@ -54,8 +45,6 @@ int ESMReader::skipRecord(std::istream& input)
 int ESMReader::readESM(const std::string& FileName, TES3Record& theHead)
 {
   std::ifstream input;
-  char Buffer[4];
-
   input.open(FileName.c_str(), std::ios::in | std::ios::binary);
   if (!input)
   {
@@ -71,9 +60,9 @@ int ESMReader::readESM(const std::string& FileName, TES3Record& theHead)
 
   // read the header
   // TES3
-  Buffer[0] = Buffer[1] = Buffer[2] = Buffer[3] = '\0';
-  input.read(Buffer, 4);
-  if (Buffer[0]!='T' || Buffer[1]!='E' || Buffer[2]!='S' || Buffer[3]!='3')
+  uint32_t Buffer = 0;
+  input.read(reinterpret_cast<char*>(&Buffer), 4);
+  if (Buffer != cTES3)
   {
     std::cerr << "Error: File \"" << FileName << "\" is not a valid .esp/.esm file.\n";
     input.close();
@@ -91,13 +80,12 @@ int ESMReader::readESM(const std::string& FileName, TES3Record& theHead)
 
   if (!input.good())
   {
-    std::cout << "Error while reading header of file \""<<FileName<<"\".\n";
+    std::cerr << "Error while reading header of file \"" << FileName << "\".\n";
     input.close();
     return -1;
   }
 
   // Now we will read the real data records that follow after the header.
-  uint32_t Processed_Records = 0;
   int relevantRecords = 0;
   int lastResult = 0;
   int32_t lastGoodPosition = input.tellg();
@@ -105,7 +93,6 @@ int ESMReader::readESM(const std::string& FileName, TES3Record& theHead)
   while ((input.tellg() < FileSize) && (lastResult != -1))
   {
     lastResult = processNextRecord(input);
-    ++Processed_Records;
     if (lastResult != -1)
     {
       relevantRecords += lastResult;
@@ -117,41 +104,42 @@ int ESMReader::readESM(const std::string& FileName, TES3Record& theHead)
   input.close();
   if (!good_result)
   {
-    std::cout << "Error: readESM of file \""<<FileName<<"\" failed. Last known "
-              << "good position was "<<lastGoodPosition<<".\n";
+    std::cerr << "Error: readESM of file \"" << FileName << "\" failed. Last "
+              << "known good position was " << lastGoodPosition << ".\n";
     return -1;
   }
-  //save data and return
+  // save data and return
   return relevantRecords;
 }
 
 bool ESMReader::peekESMHeader(const std::string& FileName, TES3Record& theHead)
 {
   std::ifstream input;
-  char Buffer[4];
-
   input.open(FileName.c_str(), std::ios::in | std::ios::binary);
   if (!input)
   {
-    std::cout << "ESMReader::peekESMHeader: Error: could not open file \""<<FileName<<"\".\n";
+    std::cerr << "ESMReader::peekESMHeader: Error: could not open file \""
+              << FileName << "\".\n";
     return false;
   }
 
-  //read the header
-  //TES3
-  Buffer[0] = Buffer[1] = Buffer[2] = Buffer[3] = '\0';
-  input.read(Buffer, 4);
-  if (Buffer[0]!='T' || Buffer[1]!='E' || Buffer[2]!='S' || Buffer[3]!='3')
+  // read the header
+  // TES3
+  uint32_t Buffer = 0;
+  input.read(reinterpret_cast<char*>(&Buffer), 4);
+  if (Buffer != cTES3)
   {
-    std::cout << "ESMReader::peekESMHeader: Error: File \""<<FileName<<"\" is not a valid .esp/.esm file.\n";
+    std::cerr << "ESMReader::peekESMHeader: Error: File \"" << FileName
+              << "\" is not a valid .esp/.esm file.\n";
     input.close();
     return false;
   }
 
-  //read TES3 header record
+  // read TES3 header record
   if (!theHead.loadFromStream(input))
   {
-    std::cout << "ESMReader::peekESMHeader: Error while reading TES3 header from \""<<FileName<<"\".\n";
+    std::cerr << "ESMReader::peekESMHeader: Error while reading TES3 header from \""
+              << FileName << "\".\n";
     input.close();
     return false;
   }
@@ -160,13 +148,12 @@ bool ESMReader::peekESMHeader(const std::string& FileName, TES3Record& theHead)
   return input.good();
 }
 
-int ESMReader::processNextRecord(std::istream& in_File)
+int ESMReader::processNextRecord(std::istream& input)
 {
-  uint32_t RecordName = 0; //normally should be 4 char, but char is not eligible for switch
-  int lastResult = 0;
-
-  //read record name
-  in_File.read((char*) &RecordName, 4);
+  // Normally should be 4 chars, but char array is not eligible for switch.
+  uint32_t RecordName = 0;
+  // read record name
+  input.read(reinterpret_cast<char*>(&RecordName), 4);
   switch(RecordName)
   {
     case cACTI:
@@ -211,16 +198,13 @@ int ESMReader::processNextRecord(std::istream& in_File)
     case cSSCR:
     case cSTAT:
     case cWEAP:
-         lastResult = ESMReader::skipRecord(in_File);
-         break;
+         return ESMReader::skipRecord(input);
     default:
          std::cerr << "ESMReader::processNextRecord: ERROR: Unknown record type found: \""
                    << IntTo4Char(RecordName) << "\".\n"
-                   << "Current file position: " << in_File.tellg() << " bytes.\n";
-         lastResult = -1;
-         break;
+                   << "Current file position: " << input.tellg() << " bytes.\n";
+         return -1;
   }
-  return lastResult;
 }
 
 } // namespace

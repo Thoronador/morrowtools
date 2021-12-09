@@ -118,7 +118,7 @@ bool ESMReader::peekESMHeader(const std::string& FileName, TES3Record& theHead)
   input.open(FileName.c_str(), std::ios::in | std::ios::binary);
   if (!input)
   {
-    std::cerr << "ESMReader::peekESMHeader: Error: could not open file \""
+    std::cerr << "ESMReader::peekESMHeader: Error: Could not open file \""
               << FileName << "\".\n";
     return false;
   }

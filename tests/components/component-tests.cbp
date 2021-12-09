@@ -54,6 +54,8 @@
 		<Unit filename="../../mw/base/DepFiles.hpp" />
 		<Unit filename="../../mw/base/ESMReader.cpp" />
 		<Unit filename="../../mw/base/ESMReader.hpp" />
+		<Unit filename="../../mw/base/ESMReaderGeneric.cpp" />
+		<Unit filename="../../mw/base/ESMReaderGeneric.hpp" />
 		<Unit filename="../../mw/base/Enchantment.cpp" />
 		<Unit filename="../../mw/base/Enchantment.hpp" />
 		<Unit filename="../../mw/base/HelperIO.cpp" />
@@ -288,6 +290,7 @@
 		<Unit filename="mw/base/DepFile.cpp" />
 		<Unit filename="mw/base/DepFileList.cpp" />
 		<Unit filename="mw/base/ESMReader.cpp" />
+		<Unit filename="mw/base/ESMReaderGeneric.cpp" />
 		<Unit filename="mw/base/EnchantmentData.cpp" />
 		<Unit filename="mw/base/HelperIO.cpp" />
 		<Unit filename="mw/base/MapBasedRecordManager.cpp" />

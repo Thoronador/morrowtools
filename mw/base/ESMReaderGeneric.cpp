@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2013, 2014  Thoronador
+    Copyright (C) 2011, 2013, 2014, 2021  Thoronador
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -32,10 +32,10 @@ ESMReaderGeneric::ESMReaderGeneric(VectorType* vec)
 : ESMReader(),
   m_VectorPointer(vec)
 {
-  if (NULL==vec)
+  if (nullptr == vec)
   {
-    std::cout << "ESMReaderGeneric: Error: supplied pointer is NULL!\n";
-    throw std::runtime_error("ESMReaderGeneric: Error: supplied pointer is NULL!");
+    std::cerr << "ESMReaderGeneric: Error: Supplied pointer is NULL!\n";
+    throw std::runtime_error("ESMReaderGeneric: Error: Supplied pointer is NULL!");
   }
 }
 
@@ -44,14 +44,14 @@ ESMReaderGeneric::~ESMReaderGeneric()
   //NOTE: We should possibly call deallocateRecordsInVector() here!
 }
 
-int ESMReaderGeneric::processNextRecord(std::istream& in_File)
+int ESMReaderGeneric::processNextRecord(std::istream& input)
 {
-  uint32_t RecordName = 0; //normally should be 4 char, but char is not eligible for switch
-  int lastResult = 0;
+  // Normally should be 4 chars, but char array is not eligible for switch.
+  uint32_t RecordName = 0;
 
-  GenericRecord* genRec = NULL;
-  //read record name
-  in_File.read((char*) &RecordName, 4);
+  GenericRecord* genRec = nullptr;
+  // read record name
+  input.read(reinterpret_cast<char*>(&RecordName), 4);
   switch(RecordName)
   {
     case cACTI:
@@ -97,7 +97,7 @@ int ESMReaderGeneric::processNextRecord(std::istream& in_File)
     case cSTAT:
     case cWEAP:
          genRec = new GenericRecord;
-         if (genRec->loadFromStream(in_File))
+         if (genRec->loadFromStream(input))
          {
            genRec->Header = RecordName;
            m_VectorPointer->push_back(genRec);
@@ -106,30 +106,28 @@ int ESMReaderGeneric::processNextRecord(std::istream& in_File)
          else
          {
            delete genRec;
-           std::cout << "Error: failed to load generic record!\n!";
+           std::cerr << "Error: Failed to load generic record!\n";
            return -1;
          }
     default:
-         std::cout << "processNextRecord: ERROR: unknown record type found: \""
-                   <<IntTo4Char(RecordName)<<"\".\n"
-                   << "Current file position: "<<in_File.tellg()<< " bytes.\n";
-         lastResult = -1;
-         break;
-  }//swi
-  return lastResult;
-}//processNextRecord of ESMReaderGeneric class
+         std::cerr << "processNextRecord: ERROR: Unknown record type found: \""
+                   << IntTo4Char(RecordName) << "\".\n"
+                   << "Current file position: " << input.tellg() << " bytes.\n";
+         return -1;
+  }
+}
 
 void ESMReaderGeneric::deallocateRecordsInVector()
 {
-  while (!(m_VectorPointer->empty()))
+  while (!m_VectorPointer->empty())
   {
     BasicRecord* ptr = m_VectorPointer->back();
-    if (ptr!=NULL)
+    if (ptr != nullptr)
     {
       delete ptr;
     }
     m_VectorPointer->pop_back();
-  }//while
+  }
 }
 
-} //namespace
+} // namespace

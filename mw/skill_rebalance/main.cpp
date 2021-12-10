@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2012, 2013, 2021  Thoronador
+    Copyright (C) 2012, 2013, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
 #include "../../base/FileFunctions.hpp"
 #include "../../base/DirectoryFunctions.hpp"
 #include "../base/ReturnCodes.hpp"
-#include "../base/records/GMSTRecord.hpp"
+#include "../base/records/GameSettingRecord.hpp"
 #include "../base/records/SkillRecord.hpp"
 #include "../base/records/TES3Record.hpp"
 #include "../base/GameSettings.hpp"
@@ -294,7 +294,7 @@ int main(int argc, char **argv)
   }
 
   // process stuff
-  MWTP::GMSTRecord tempSetting;
+  MWTP::GameSettingRecord tempSetting;
   if (goMinimalistic)
   {
     // remove skill records, we won't need them
@@ -302,19 +302,19 @@ int main(int argc, char **argv)
     // add game settings
     // -- add fMajorSkillBonus (default: 0.75)
     tempSetting.Type = MWTP::GMSTType::Float;
-    tempSetting.SettingName = "fMajorSkillBonus";
+    tempSetting.recordID = "fMajorSkillBonus";
     tempSetting.fVal = 0.75f * scalingFactor;
-    MWTP::GameSettings::get().addSetting(tempSetting);
+    MWTP::GameSettings::get().addRecord(tempSetting);
     // -- add fMinorSkillBonus (default: 1.00)
     tempSetting.Type = MWTP::GMSTType::Float;
-    tempSetting.SettingName = "fMinorSkillBonus";
+    tempSetting.recordID = "fMinorSkillBonus";
     tempSetting.fVal = 1.00f * scalingFactor;
-    MWTP::GameSettings::get().addSetting(tempSetting);
+    MWTP::GameSettings::get().addRecord(tempSetting);
     // -- add fMiscSkillBonus (default: 1.25)
     tempSetting.Type = MWTP::GMSTType::Float;
-    tempSetting.SettingName = "fMiscSkillBonus";
+    tempSetting.recordID = "fMiscSkillBonus";
     tempSetting.fVal = 1.25f * scalingFactor;
-    MWTP::GameSettings::get().addSetting(tempSetting);
+    MWTP::GameSettings::get().addRecord(tempSetting);
   } // if minimalistic
   else
   {
@@ -336,9 +336,9 @@ int main(int argc, char **argv)
   {
     // add training mod
     tempSetting.Type = MWTP::GMSTType::Integer;
-    tempSetting.SettingName = "iTrainingMod";
+    tempSetting.recordID = "iTrainingMod";
     tempSetting.iVal = 25;
-    MWTP::GameSettings::get().addSetting(tempSetting);
+    MWTP::GameSettings::get().addRecord(tempSetting);
   }
 
   // prepare header data for writing (yes, description is German)

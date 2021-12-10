@@ -11,12 +11,12 @@ set(spell_rename_sources
     ../base/ESMReader.cpp
     ../base/ESMWriter.cpp
     ../base/Enchantment.cpp
-    ../base/GameSettings.cpp
     ../base/HelperIO.cpp
     ../base/IniFunctions.cpp
     ../base/MagicEffects.cpp
+    ../base/MapBasedRecordManager.hpp
     ../base/records/BasicRecord.cpp
-    ../base/records/GMSTRecord.cpp
+    ../base/records/GameSettingRecord.cpp
     ../base/records/MagicEffectRecord.cpp
     ../base/records/SpellRecord.cpp
     ../base/records/TES3Record.cpp

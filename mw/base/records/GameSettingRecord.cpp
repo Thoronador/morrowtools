@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011, 2013, 2014, 2021  Thoronador
+    Copyright (C) 2010, 2011, 2013, 2014, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include "GMSTRecord.hpp"
+#include "GameSettingRecord.hpp"
 #include <iostream>
 #include <cstring>
 #include <stdexcept>
@@ -28,9 +28,9 @@
 namespace MWTP
 {
 
-GMSTRecord::GMSTRecord()
+GameSettingRecord::GameSettingRecord()
 : BasicRecord(),
-  SettingName(std::string()),
+  recordID(std::string()),
   Type(GMSTType::Integer),
   iVal(0),
   fVal(0.0f),
@@ -38,9 +38,9 @@ GMSTRecord::GMSTRecord()
 {
 }
 
-bool GMSTRecord::equals(const GMSTRecord& other) const
+bool GameSettingRecord::equals(const GameSettingRecord& other) const
 {
-  if ((Type != other.Type) || (SettingName != other.SettingName))
+  if ((Type != other.Type) || (recordID != other.recordID))
   {
     return false;
   }
@@ -57,16 +57,16 @@ bool GMSTRecord::equals(const GMSTRecord& other) const
          return sVal == other.sVal;
   }
   // should never reach this point here
-  throw std::logic_error("MWTP::GMSTRecord::equals(): We should never reach this point!");
+  throw std::logic_error("MWTP::GameSettingRecord::equals(): We should never reach this point!");
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool GMSTRecord::saveToStream(std::ostream& output) const
+bool GameSettingRecord::saveToStream(std::ostream& output) const
 {
   // write GMST
   output.write(reinterpret_cast<const char*>(&cGMST), 4);
   uint32_t Size = 4 /* NAME */ + 4 /* four bytes for length */
-        + SettingName.length() /* length of ID */
+        + recordID.length() /* length of ID */
         + 4 /* STRV/ INTV/ FLTV */ + 4 /* four bytes for length of data */;
   switch(Type)
   {
@@ -89,9 +89,9 @@ bool GMSTRecord::saveToStream(std::ostream& output) const
 
   // write settings's ID (NAME)
   output.write(reinterpret_cast<const char*>(&cNAME), 4);
-  uint32_t SubLength = SettingName.length();
+  uint32_t SubLength = recordID.length();
   output.write(reinterpret_cast<const char*>(&SubLength), 4);
-  output.write(SettingName.c_str(), SubLength);
+  output.write(recordID.c_str(), SubLength);
 
   // write STRV / FLTV / INTV
   switch(Type)
@@ -122,7 +122,7 @@ bool GMSTRecord::saveToStream(std::ostream& output) const
 }
 #endif
 
-bool GMSTRecord::loadFromStream(std::istream& input)
+bool GameSettingRecord::loadFromStream(std::istream& input)
 {
   uint32_t Size = 0;
   input.read(reinterpret_cast<char*>(&Size), 4);
@@ -131,7 +131,7 @@ bool GMSTRecord::loadFromStream(std::istream& input)
 
   /*GMST: Game Setting
     NAME = Setting ID string
-    STRV = String value/ INTV = Integer value (4 btes)/FLTV = Float value (4 bytes)
+    STRV = String value/ INTV = Integer value (4 bytes)/FLTV = Float value (4 bytes)
   */
   uint32_t SubRecName = 0;
   uint32_t SubLength = 0;
@@ -165,8 +165,8 @@ bool GMSTRecord::loadFromStream(std::istream& input)
     std::cerr << "Error while reading sub record NAME of GMST!\n";
     return false;
   }
-  SettingName = std::string(Buffer);
-  const char NameFirstChar = SettingName.at(0);
+  recordID = std::string(Buffer);
+  const char NameFirstChar = recordID.at(0);
 
   fVal = 0.0f;
   iVal = 0;

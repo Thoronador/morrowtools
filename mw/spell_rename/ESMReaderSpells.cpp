@@ -38,7 +38,7 @@ int ESMReaderSpells::processNextRecord(std::istream& input)
   switch(RecordName)
   {
     case cGMST:
-         return GameSettings::get().readRecordGMST(input);
+         return GameSettings::get().readNextRecord(input);
     case cMGEF:
          return MagicEffects::get().readRecordMGEF(input);
     case cSPEL:

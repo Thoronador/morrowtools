@@ -40,7 +40,6 @@
 		<Unit filename="../base/ESMWriter.hpp" />
 		<Unit filename="../base/Enchantment.cpp" />
 		<Unit filename="../base/Enchantment.hpp" />
-		<Unit filename="../base/GameSettings.cpp" />
 		<Unit filename="../base/GameSettings.hpp" />
 		<Unit filename="../base/HelperIO.cpp" />
 		<Unit filename="../base/HelperIO.hpp" />
@@ -54,8 +53,8 @@
 		<Unit filename="../base/Spells.hpp" />
 		<Unit filename="../base/records/BasicRecord.cpp" />
 		<Unit filename="../base/records/BasicRecord.hpp" />
-		<Unit filename="../base/records/GMSTRecord.cpp" />
-		<Unit filename="../base/records/GMSTRecord.hpp" />
+		<Unit filename="../base/records/GameSettingRecord.cpp" />
+		<Unit filename="../base/records/GameSettingRecord.hpp" />
 		<Unit filename="../base/records/MagicEffectRecord.cpp" />
 		<Unit filename="../base/records/MagicEffectRecord.hpp" />
 		<Unit filename="../base/records/SpellRecord.cpp" />

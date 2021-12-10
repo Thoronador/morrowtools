@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -369,12 +369,12 @@ int main(int argc, char **argv)
   prefixes.clear();
   // spell school settings present?
   MWTP::GameSettings& GMSTs = MWTP::GameSettings::get();
-  MWTP::GMSTRecord record;
+  MWTP::GameSettingRecord record;
 
   // alteration -> 0
-  if (GMSTs.hasSetting("sSchoolAlteration"))
+  if (GMSTs.hasRecord("sSchoolAlteration"))
   {
-    record = GMSTs.getSetting("sSchoolAlteration");
+    record = GMSTs.getRecord("sSchoolAlteration");
     if (record.Type != MWTP::GMSTType::String)
     {
       std::cerr << "Error: GMST \"sSchoolAlteration\" does not seem to be a string.\n";
@@ -389,9 +389,9 @@ int main(int argc, char **argv)
   }
 
   // conjuration -> 1
-  if (GMSTs.hasSetting("sSchoolConjuration"))
+  if (GMSTs.hasRecord("sSchoolConjuration"))
   {
-    record = GMSTs.getSetting("sSchoolConjuration");
+    record = GMSTs.getRecord("sSchoolConjuration");
     if (record.Type != MWTP::GMSTType::String)
     {
       std::cerr << "Error: GMST \"sSchoolConjuration\" does not seem to be a string.\n";
@@ -406,9 +406,9 @@ int main(int argc, char **argv)
   }
 
   // destruction -> 2
-  if (GMSTs.hasSetting("sSchoolDestruction"))
+  if (GMSTs.hasRecord("sSchoolDestruction"))
   {
-    record = GMSTs.getSetting("sSchoolDestruction");
+    record = GMSTs.getRecord("sSchoolDestruction");
     if (record.Type != MWTP::GMSTType::String)
     {
       std::cerr << "Error: GMST \"sSchoolDestruction\" does not seem to be a string.\n";
@@ -423,9 +423,9 @@ int main(int argc, char **argv)
   }
 
   // illusion -> 3
-  if (GMSTs.hasSetting("sSchoolIllusion"))
+  if (GMSTs.hasRecord("sSchoolIllusion"))
   {
-    record = GMSTs.getSetting("sSchoolIllusion");
+    record = GMSTs.getRecord("sSchoolIllusion");
     if (record.Type != MWTP::GMSTType::String)
     {
       std::cerr << "Error: GMST \"sSchoolIllusion\" does not seem to be a string.\n";
@@ -440,9 +440,9 @@ int main(int argc, char **argv)
   }
 
   // mysticism -> 4
-  if (GMSTs.hasSetting("sSchoolMysticism"))
+  if (GMSTs.hasRecord("sSchoolMysticism"))
   {
-    record = GMSTs.getSetting("sSchoolMysticism");
+    record = GMSTs.getRecord("sSchoolMysticism");
     if (record.Type != MWTP::GMSTType::String)
     {
       std::cerr << "Error: GMST \"sSchoolMysticism\" does not seem to be a string.\n";
@@ -457,9 +457,9 @@ int main(int argc, char **argv)
   }
 
   //restoration -> 5
-  if (GMSTs.hasSetting("sSchoolRestoration"))
+  if (GMSTs.hasRecord("sSchoolRestoration"))
   {
-    record = GMSTs.getSetting("sSchoolRestoration");
+    record = GMSTs.getRecord("sSchoolRestoration");
     if (record.Type != MWTP::GMSTType::String)
     {
       std::cerr << "Error: GMST \"sSchoolRestoration\" does not seem to be a string.\n";

@@ -21,18 +21,18 @@
 #include <catch.hpp>
 #include <sstream>
 #include <string_view>
-#include "../../../../../mw/base/records/GMSTRecord.hpp"
+#include "../../../../../mw/base/records/GameSettingRecord.hpp"
 
-TEST_CASE("MWTP::GMSTRecord")
+TEST_CASE("MWTP::GameSettingRecord")
 {
   using namespace MWTP;
   using namespace std::string_view_literals;
 
   SECTION("constructor")
   {
-    GMSTRecord record;
+    GameSettingRecord record;
 
-    REQUIRE( record.SettingName.empty() );
+    REQUIRE( record.recordID.empty() );
     REQUIRE( record.Type == GMSTType::Integer );
     REQUIRE( record.iVal == 0 );
     REQUIRE( record.fVal == 0.0f );
@@ -41,16 +41,16 @@ TEST_CASE("MWTP::GMSTRecord")
 
   SECTION("equals")
   {
-    GMSTRecord a;
-    GMSTRecord b;
+    GameSettingRecord a;
+    GameSettingRecord b;
 
     SECTION("equal")
     {
-      a.SettingName = "VarOne";
+      a.recordID = "VarOne";
       a.Type = GMSTType::Integer;
       a.iVal = 5;
 
-      b.SettingName = "VarOne";
+      b.recordID = "VarOne";
       b.Type = GMSTType::Integer;
       b.iVal = 5;
 
@@ -60,10 +60,10 @@ TEST_CASE("MWTP::GMSTRecord")
 
     SECTION("unequal")
     {
-      SECTION("SettingName mismatch")
+      SECTION("recordID mismatch")
       {
-        a.SettingName = "foo";
-        b.SettingName = "bar";
+        a.recordID = "foo";
+        b.recordID = "bar";
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
@@ -182,14 +182,14 @@ TEST_CASE("MWTP::GMSTRecord")
       REQUIRE( stream.good() );
 
       // Reading should succeed.
-      GMSTRecord record;
+      GameSettingRecord record;
       REQUIRE( record.loadFromStream(stream) );
       // Check data.
       // -- header
       REQUIRE( record.getHeaderOne() == 0 );
       REQUIRE( record.getHeaderFlags() == 0 );
       // -- record data
-      REQUIRE( record.SettingName == "iGreetDuration" );
+      REQUIRE( record.recordID == "iGreetDuration" );
       REQUIRE( record.Type == GMSTType::Integer );
       REQUIRE( record.iVal == 4 );
 
@@ -211,14 +211,14 @@ TEST_CASE("MWTP::GMSTRecord")
       REQUIRE( stream.good() );
 
       // Reading should succeed.
-      GMSTRecord record;
+      GameSettingRecord record;
       REQUIRE( record.loadFromStream(stream) );
       // Check data.
       // -- header
       REQUIRE( record.getHeaderOne() == 0 );
       REQUIRE( record.getHeaderFlags() == 0 );
       // -- record data
-      REQUIRE( record.SettingName == "fSneakUseDist" );
+      REQUIRE( record.recordID == "fSneakUseDist" );
       REQUIRE( record.Type == GMSTType::Float );
       REQUIRE( record.fVal == 500.0f );
 
@@ -240,14 +240,14 @@ TEST_CASE("MWTP::GMSTRecord")
       REQUIRE( stream.good() );
 
       // Reading should succeed.
-      GMSTRecord record;
+      GameSettingRecord record;
       REQUIRE( record.loadFromStream(stream) );
       // Check data.
       // -- header
       REQUIRE( record.getHeaderOne() == 0 );
       REQUIRE( record.getHeaderFlags() == 0 );
       // -- record data
-      REQUIRE( record.SettingName == "sAcrobat" );
+      REQUIRE( record.recordID == "sAcrobat" );
       REQUIRE( record.Type == GMSTType::String );
       REQUIRE( record.sVal == "Acrobat" );
 
@@ -269,7 +269,7 @@ TEST_CASE("MWTP::GMSTRecord")
       REQUIRE( stream.good() );
 
       // Reading should fail.
-      GMSTRecord record;
+      GameSettingRecord record;
       REQUIRE_FALSE( record.loadFromStream(stream) );
     }
 
@@ -284,7 +284,7 @@ TEST_CASE("MWTP::GMSTRecord")
       REQUIRE( stream.good() );
 
       // Reading should fail.
-      GMSTRecord record;
+      GameSettingRecord record;
       REQUIRE_FALSE( record.loadFromStream(stream) );
     }
 
@@ -299,7 +299,7 @@ TEST_CASE("MWTP::GMSTRecord")
       REQUIRE( stream.good() );
 
       // Reading should fail.
-      GMSTRecord record;
+      GameSettingRecord record;
       REQUIRE_FALSE( record.loadFromStream(stream) );
     }
 
@@ -314,7 +314,7 @@ TEST_CASE("MWTP::GMSTRecord")
       REQUIRE( stream.good() );
 
       // Reading should fail.
-      GMSTRecord record;
+      GameSettingRecord record;
       REQUIRE_FALSE( record.loadFromStream(stream) );
     }
 
@@ -329,7 +329,7 @@ TEST_CASE("MWTP::GMSTRecord")
       REQUIRE( stream.good() );
 
       // Reading should fail.
-      GMSTRecord record;
+      GameSettingRecord record;
       REQUIRE_FALSE( record.loadFromStream(stream) );
     }
 
@@ -344,7 +344,7 @@ TEST_CASE("MWTP::GMSTRecord")
       REQUIRE( stream.good() );
 
       // Reading should fail.
-      GMSTRecord record;
+      GameSettingRecord record;
       REQUIRE_FALSE( record.loadFromStream(stream) );
     }
 
@@ -359,7 +359,7 @@ TEST_CASE("MWTP::GMSTRecord")
       REQUIRE( stream.good() );
 
       // Reading should fail.
-      GMSTRecord record;
+      GameSettingRecord record;
       REQUIRE_FALSE( record.loadFromStream(stream) );
     }
 
@@ -375,7 +375,7 @@ TEST_CASE("MWTP::GMSTRecord")
         REQUIRE( stream.good() );
 
         // Reading should fail.
-        GMSTRecord record;
+        GameSettingRecord record;
         REQUIRE_FALSE( record.loadFromStream(stream) );
       }
 
@@ -389,7 +389,7 @@ TEST_CASE("MWTP::GMSTRecord")
         REQUIRE( stream.good() );
 
         // Reading should fail.
-        GMSTRecord record;
+        GameSettingRecord record;
         REQUIRE_FALSE( record.loadFromStream(stream) );
       }
     }
@@ -405,7 +405,7 @@ TEST_CASE("MWTP::GMSTRecord")
       REQUIRE( stream.good() );
 
       // Reading should fail.
-      GMSTRecord record;
+      GameSettingRecord record;
       REQUIRE_FALSE( record.loadFromStream(stream) );
     }
 
@@ -420,7 +420,7 @@ TEST_CASE("MWTP::GMSTRecord")
       REQUIRE( stream.good() );
 
       // Reading should fail.
-      GMSTRecord record;
+      GameSettingRecord record;
       REQUIRE_FALSE( record.loadFromStream(stream) );
     }
 
@@ -436,7 +436,7 @@ TEST_CASE("MWTP::GMSTRecord")
         REQUIRE( stream.good() );
 
         // Reading should fail.
-        GMSTRecord record;
+        GameSettingRecord record;
         REQUIRE_FALSE( record.loadFromStream(stream) );
       }
 
@@ -450,7 +450,7 @@ TEST_CASE("MWTP::GMSTRecord")
         REQUIRE( stream.good() );
 
         // Reading should fail.
-        GMSTRecord record;
+        GameSettingRecord record;
         REQUIRE_FALSE( record.loadFromStream(stream) );
       }
     }
@@ -466,7 +466,7 @@ TEST_CASE("MWTP::GMSTRecord")
       REQUIRE( stream.good() );
 
       // Reading should fail.
-      GMSTRecord record;
+      GameSettingRecord record;
       REQUIRE_FALSE( record.loadFromStream(stream) );
     }
 
@@ -481,7 +481,7 @@ TEST_CASE("MWTP::GMSTRecord")
       REQUIRE( stream.good() );
 
       // Reading should fail.
-      GMSTRecord record;
+      GameSettingRecord record;
       REQUIRE_FALSE( record.loadFromStream(stream) );
     }
 
@@ -496,7 +496,7 @@ TEST_CASE("MWTP::GMSTRecord")
       REQUIRE( stream.good() );
 
       // Reading should fail.
-      GMSTRecord record;
+      GameSettingRecord record;
       REQUIRE_FALSE( record.loadFromStream(stream) );
     }
 
@@ -511,7 +511,7 @@ TEST_CASE("MWTP::GMSTRecord")
       REQUIRE( stream.good() );
 
       // Reading should fail.
-      GMSTRecord record;
+      GameSettingRecord record;
       REQUIRE_FALSE( record.loadFromStream(stream) );
     }
   }

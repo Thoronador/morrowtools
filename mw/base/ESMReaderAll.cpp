@@ -133,7 +133,7 @@ int ESMReaderAll::processNextRecord(std::istream& input)
          lastResult = Globals::get().readNextRecord(input);
          break;
     case cGMST:
-         lastResult = GameSettings::get().readRecordGMST(input);
+         lastResult = GameSettings::get().readNextRecord(input);
          break;
     case cINFO:
          lastResult = DialogueInfos::get().readNextRecord(input);

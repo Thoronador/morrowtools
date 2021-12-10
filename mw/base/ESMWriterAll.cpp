@@ -78,7 +78,7 @@ int32_t ESMWriterAll::getTotalRecords() const
   //    lockpicks, magic effects, misc. items, NPCs, path grids, probes, races,
   //    regions, repair items, scripts, skills, spells, statics, start scripts,
   //    sounds, sound generators, weapons and game settings at the moment
-  return GameSettings::get().getNumberOfSettings()
+  return GameSettings::get().getNumberOfRecords()
        + Activators::get().getNumberOfRecords()
        + AlchemyPotions::get().getNumberOfRecords()
        + Apparatuses::get().getNumberOfRecords()
@@ -291,4 +291,4 @@ bool ESMWriterAll::writeRecords(std::ofstream& output) const
   return Spells::get().saveAllToStream(output);
 }
 
-} //namespace
+} // namespace

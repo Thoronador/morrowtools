@@ -28,7 +28,7 @@ namespace MWTP
 int32_t ESMWriterSkillRebalance::getTotalRecords() const
 {
   // writes settings and skills
-  return GameSettings::get().getNumberOfSettings()
+  return GameSettings::get().getNumberOfRecords()
        + Skills::get().getNumberOfSkills();
 }
 

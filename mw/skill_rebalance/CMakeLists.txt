@@ -11,11 +11,11 @@ set(skill_rebalance_sources
     ../base/DepFiles.cpp
     ../base/ESMReader.cpp
     ../base/ESMWriter.cpp
-    ../base/GameSettings.cpp
     ../base/HelperIO.cpp
+    ../base/MapBasedRecordManager.hpp
     ../base/Skills.cpp
     ../base/records/BasicRecord.cpp
-    ../base/records/GMSTRecord.cpp
+    ../base/records/GameSettingRecord.cpp
     ../base/records/GenericRecord.cpp
     ../base/records/SkillRecord.cpp
     ../base/records/TES3Record.cpp

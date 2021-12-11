@@ -30,19 +30,16 @@ namespace MWTP
 {
 
 //iterator type for list
-typedef std::map<int32_t, MGEF_Data>::const_iterator EffectListIterator;
+typedef std::map<int32_t, MagicEffectRecord>::const_iterator EffectListIterator;
 
 class MagicEffects
 {
   public:
-    /* destructor */
-    ~MagicEffects();
-
     /* singleton access */
     static MagicEffects& get();
 
     /* adds an effect to the list */
-    void addEffect(const MGEF_Data& Data);
+    void addEffect(const MagicEffectRecord& Data);
 
     /* returns true, if an effect with the given index exists */
     bool hasEffect(const int32_t Index) const;
@@ -59,7 +56,7 @@ class MagicEffects
            If there is no effect with the given index, the function throws an
            error. Use hasEffect() to determine if an effect exists.
     */
-    const MGEF_Data& getEffect(const int32_t Index) const;
+    const MagicEffectRecord& getEffect(const int32_t Index) const;
 
     /* returns the name of the game setting that contains the name of the
        effect specified by the given index
@@ -117,12 +114,12 @@ class MagicEffects
     /* constructor */
     MagicEffects();
 
-    /* copy constructor - empty */
-    MagicEffects(const MGEF_Data& op)
-    : m_Effects(std::map<int32_t, MGEF_Data>()) {}
+    /* copy constructors - deleted */
+    MagicEffects(const MagicEffects& op) = delete;
+    MagicEffects(MagicEffects&& op) = delete;
 
     /* internal list of effects */
-    std::map<int32_t, MGEF_Data> m_Effects;
+    std::map<int32_t, MagicEffectRecord> m_Effects;
 }; //class
 
 } //namespace

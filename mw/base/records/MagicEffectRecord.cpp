@@ -27,7 +27,7 @@
 namespace MWTP
 {
 
-MGEF_Data::MGEF_Data()
+MagicEffectRecord::MagicEffectRecord()
 : Index(-1),
   SpellSchool(-1),
   BaseCost(0.0f),
@@ -39,7 +39,7 @@ MGEF_Data::MGEF_Data()
 {
 }
 
-bool MGEF_Data::equals(const MGEF_Data& other) const
+bool MagicEffectRecord::equals(const MagicEffectRecord& other) const
 {
   return ((Index==other.Index)
       and (SpellSchool==other.SpellSchool) and (BaseCost==other.BaseCost)
@@ -54,7 +54,7 @@ bool MGEF_Data::equals(const MGEF_Data& other) const
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool MGEF_Data::saveToStream(std::ostream& output) const
+bool MagicEffectRecord::saveToStream(std::ostream& output) const
 {
   //write MGEF
   output.write((const char*) &cMGEF, 4);
@@ -306,7 +306,7 @@ bool MGEF_Data::saveToStream(std::ostream& output) const
 }
 #endif
 
-bool MGEF_Data::loadFromStream(std::istream& in_File)
+bool MagicEffectRecord::loadFromStream(std::istream& in_File)
 {
   uint32_t Size;
   in_File.read((char*) &Size, 4);

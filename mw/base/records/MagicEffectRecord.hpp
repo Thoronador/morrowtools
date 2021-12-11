@@ -41,7 +41,7 @@ const int32_t FlagSpellmaking = 0x0200;
 const int32_t FlagEnchanting = 0x0400;
 const int32_t FlagNegative = 0x0800;
 
-struct MGEF_Data: public BasicRecord
+struct MagicEffectRecord: public BasicRecord
 {
   int32_t Index;
   int32_t SpellSchool;
@@ -66,10 +66,10 @@ struct MGEF_Data: public BasicRecord
   std::string AreaSound; //optional
 
   /* constructor */
-  MGEF_Data();
+  MagicEffectRecord();
 
   /* returns true, of content of other record is equal to this one */
-  bool equals(const MGEF_Data& other) const;
+  bool equals(const MagicEffectRecord& other) const;
 
   #ifndef MW_UNSAVEABLE_RECORDS
   /* writes the record to the given output stream and returns true on success

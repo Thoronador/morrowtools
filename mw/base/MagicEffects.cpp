@@ -26,14 +26,8 @@ namespace MWTP
 {
 
 MagicEffects::MagicEffects()
-: m_Effects(std::map<int32_t, MGEF_Data>())
+: m_Effects(std::map<int32_t, MagicEffectRecord>())
 {
-  //empty
-}
-
-MagicEffects::~MagicEffects()
-{
-  m_Effects.clear();
 }
 
 MagicEffects& MagicEffects::get()
@@ -42,14 +36,14 @@ MagicEffects& MagicEffects::get()
   return Instance;
 }
 
-void MagicEffects::addEffect(const MGEF_Data& Data)
+void MagicEffects::addEffect(const MagicEffectRecord& Data)
 {
   m_Effects[Data.Index] = Data;
 }
 
 bool MagicEffects::hasEffect(const int32_t Index) const
 {
-  return m_Effects.find(Index)!=m_Effects.end();
+  return m_Effects.find(Index) != m_Effects.end();
 }
 
 unsigned int MagicEffects::getNumberOfEffects() const
@@ -57,16 +51,15 @@ unsigned int MagicEffects::getNumberOfEffects() const
   return m_Effects.size();
 }
 
-const MGEF_Data& MagicEffects::getEffect(const int32_t Index) const
+const MagicEffectRecord& MagicEffects::getEffect(const int32_t Index) const
 {
-  std::map<int, MGEF_Data>::const_iterator iter;
-  iter = m_Effects.find(Index);
-  if (iter!=m_Effects.end())
+  const auto iter = m_Effects.find(Index);
+  if (iter != m_Effects.end())
   {
     return iter->second;
   }
-  //nothing found
-  std::cout << "No magic effect with index "<<Index<<" found!\n";
+  // nothing found
+  std::cout << "No magic effect with index " << Index << " found!\n";
   throw std::runtime_error("MagicEffects::getEffect(): No magic effect for given index found!");
 }
 
@@ -512,7 +505,7 @@ bool MagicEffects::isAttributeRelatedEffect(const int32_t Index)
 
 int MagicEffects::readRecordMGEF(std::istream& input)
 {
-  MGEF_Data tempData;
+  MagicEffectRecord tempData;
   if (tempData.loadFromStream(input))
   {
     if (hasEffect(tempData.Index))
@@ -529,7 +522,7 @@ int MagicEffects::readRecordMGEF(std::istream& input)
   }//read operation good
   std::cout << "readRecordMGEF: Error while reading record.\n";
   return -1;
-}//readRecordMGEF (integer version of readMGEF)
+}
 
 EffectListIterator MagicEffects::begin() const
 {

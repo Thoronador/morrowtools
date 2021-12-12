@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2021  Thoronador
+    Copyright (C) 2011, 2012, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,7 +22,6 @@
 #define MW_ACTIVATORRECORD_HPP
 
 #include <string>
-#include <fstream>
 #include "BasicRecord.hpp"
 
 namespace MWTP
@@ -40,7 +39,7 @@ struct ActivatorRecord: public BasicRecord
   /** \brief Checks whether another instance contains the same data.
    *
    * \param other   the other record to compare with
-   * \return Returns true, if @other contains the same data as instance.
+   * \return Returns true, if @other contains the same data as this instance.
    *         Returns false otherwise.
    */
   bool equals(const ActivatorRecord& other) const;

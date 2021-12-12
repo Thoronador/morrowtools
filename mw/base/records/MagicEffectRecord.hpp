@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011, 2012  Thoronador
+    Copyright (C) 2010, 2011, 2012, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,73 +22,81 @@
 #define MW_MAGICEFFECTRECORD_HPP
 
 #include <string>
-#include <fstream>
 #include "BasicRecord.hpp"
 
 namespace MWTP
 {
 
-//spell schools
-const int32_t cAlteration = 0;
-const int32_t cConjuration = 1;
-const int32_t cDestruction = 2;
-const int32_t cIllusion = 3;
-const int32_t cMysticism = 4;
-const int32_t cRestoration = 5;
+// spell schools
+enum class MagicSchool: uint32_t
+{
+  Alteration = 0,
+  Conjuration = 1,
+  Destruction = 2,
+  Illusion = 3,
+  Mysticism = 4,
+  Restoration = 5
+};
 
-//flags
-const int32_t FlagSpellmaking = 0x0200;
-const int32_t FlagEnchanting = 0x0400;
-const int32_t FlagNegative = 0x0800;
+// flags
+const uint32_t FlagSpellmaking = 0x0200;
+const uint32_t FlagEnchanting = 0x0400;
+const uint32_t FlagNegative = 0x0800;
 
 struct MagicEffectRecord: public BasicRecord
 {
   int32_t Index;
-  int32_t SpellSchool;
+  MagicSchool SpellSchool;
   float BaseCost;
-  int32_t Flags;
-  int32_t Red;
-  int32_t Green;
-  int32_t Blue;
+  uint32_t Flags;
+  uint32_t Red;
+  uint32_t Green;
+  uint32_t Blue;
   float SpeedX;
   float SizeX;
   float SizeCap;
   std::string EffectIcon;
   std::string ParticleTexture;
+  std::string BoltSound; //optional
+  std::string CastSound; //optional
+  std::string HitSound; //optional
+  std::string AreaSound; //optional
   std::string CastingVisual;
   std::string BoltVisual;
   std::string HitVisual;
   std::string AreaVisual;
   std::string Description;
-  std::string CastSound; //optional
-  std::string BoltSound; //optional
-  std::string HitSound; //optional
-  std::string AreaSound; //optional
 
-  /* constructor */
   MagicEffectRecord();
 
-  /* returns true, of content of other record is equal to this one */
+  /** \brief Checks whether another instance contains the same data.
+   *
+   * \param other   the other record to compare with
+   * \return Returns true, if @other contains the same data as this instance.
+   *         Returns false otherwise.
+   */
   bool equals(const MagicEffectRecord& other) const;
 
   #ifndef MW_UNSAVEABLE_RECORDS
-  /* writes the record to the given output stream and returns true on success
-
-    parameters:
-        output - the output stream
-  */
+  /** \brief Writes the record to the given output stream.
+   *
+   * \param output  the output stream
+   * \return Returns true on success (record was written to stream).
+   *         Returns false, if an error occurred.
+   */
   bool saveToStream(std::ostream& output) const override;
   #endif
 
-  /* loads the record from the given input stream and returns true on success
+  /** \brief Loads the record from the given input stream.
+   *
+   * \param input    the input stream
+   * \return Returns true on success (record was loaded from stream).
+   *         Returns false, if an error occurred.
+   */
+  bool loadFromStream(std::istream& input) override;
+}; // struct
 
-    parameters:
-        in_File - the input stream
-  */
-  bool loadFromStream(std::istream& in_File) override;
-}; //struct
-
-//spell effect indices (hard-coded in MW)
+// spell effect indices (hard-coded in MW)
 const int32_t EffectWaterBreathing = 0;
 const int32_t EffectSwiftSwim = 1;
 const int32_t EffectWaterWalking = 2;
@@ -227,6 +235,6 @@ const int32_t EffectSummonCenturionSphere = 134;
 const int32_t EffectSunDamage = 135;
 const int32_t EffectStuntedMagicka = 136;
 
-} //namespace
+} // namespace
 
 #endif // MW_MAGICEFFECTRECORD_HPP

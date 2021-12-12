@@ -494,8 +494,8 @@ int main(int argc, char **argv)
       {
         if (MWTP::MagicEffects::get().hasEffect(rec.Enchs.at(0).EffectID))
         {
-          const int school = MWTP::MagicEffects::get().getEffect(rec.Enchs.at(0).EffectID).SpellSchool;
-          if ((school < 0) || (school >= prefixes.size()))
+          const uint32_t school = static_cast<uint32_t>(MWTP::MagicEffects::get().getEffect(rec.Enchs.at(0).EffectID).SpellSchool);
+          if (school >= prefixes.size())
           {
             std::cerr << "Error: Effect " << rec.Enchs.at(0).EffectID
                       << " has an invalid spell school index of " << school
@@ -523,7 +523,7 @@ int main(int argc, char **argv)
         }
         else
         {
-          std::cerr << "Error: effect with ID " << rec.Enchs.at(0).EffectID
+          std::cerr << "Error: Effect with ID " << rec.Enchs.at(0).EffectID
                     << " does not exist.\n";
           return MWTP::rcDataError;
         }

@@ -94,6 +94,8 @@
 		<Unit filename="../../mw/base/records/LightRecord.hpp" />
 		<Unit filename="../../mw/base/records/LockpickRecord.cpp" />
 		<Unit filename="../../mw/base/records/LockpickRecord.hpp" />
+		<Unit filename="../../mw/base/records/MagicEffectRecord.cpp" />
+		<Unit filename="../../mw/base/records/MagicEffectRecord.hpp" />
 		<Unit filename="../../mw/base/records/MiscItemRecord.cpp" />
 		<Unit filename="../../mw/base/records/MiscItemRecord.hpp" />
 		<Unit filename="../../mw/base/records/NPCRecord.cpp" />
@@ -309,6 +311,7 @@
 		<Unit filename="mw/base/records/ItemRecord.cpp" />
 		<Unit filename="mw/base/records/LightRecord.cpp" />
 		<Unit filename="mw/base/records/LockpickRecord.cpp" />
+		<Unit filename="mw/base/records/MagicEffectRecord.cpp" />
 		<Unit filename="mw/base/records/MiscItemRecord.cpp" />
 		<Unit filename="mw/base/records/NPC_AIActivate.cpp" />
 		<Unit filename="mw/base/records/NPC_AIEscort.cpp" />

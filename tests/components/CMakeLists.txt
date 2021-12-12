@@ -36,6 +36,7 @@ set(component_tests_sources
     ../../mw/base/records/ItemRecord.cpp
     ../../mw/base/records/LightRecord.cpp
     ../../mw/base/records/LockpickRecord.cpp
+    ../../mw/base/records/MagicEffectRecord.cpp
     ../../mw/base/records/MiscItemRecord.cpp
     ../../mw/base/records/NPCRecord.cpp
     ../../mw/base/records/PreNPCRecord.cpp
@@ -158,6 +159,7 @@ set(component_tests_sources
     mw/base/records/ItemRecord.cpp
     mw/base/records/LightRecord.cpp
     mw/base/records/LockpickRecord.cpp
+    mw/base/records/MagicEffectRecord.cpp
     mw/base/records/MiscItemRecord.cpp
     mw/base/records/NPC_AIActivate.cpp
     mw/base/records/NPC_AIEscort.cpp

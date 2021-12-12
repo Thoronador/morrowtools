@@ -3318,10 +3318,10 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
     // be the weapon of choice.
     int16_t effectID = -1;
     const std::string lowerEffect = lowerCase(params[1]);
-    int i;
-    for (i=0; i<=136; ++i)
+    for (int i = 0; i <= 136; ++i)
     {
-      if (lowerEffect==lowerCase(MagicEffects::getSettingNameForEffect(i)))
+      const auto idx = static_cast<EffectIndex>(i);
+      if (lowerEffect == lowerCase(MagicEffects::getSettingNameForEffect(idx)))
       {
         //found it!
         effectID = i;

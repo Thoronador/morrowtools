@@ -28,7 +28,7 @@ namespace MWTP
 {
 
 MagicEffectRecord::MagicEffectRecord()
-: Index(-1),
+: Index(EffectIndex::WaterBreathing),
   SpellSchool(MagicSchool::Alteration),
   BaseCost(0.0f),
   Flags(0),
@@ -337,7 +337,7 @@ bool MagicEffectRecord::loadFromStream(std::istream& input)
     return false;
   }
 
-  Index = -1;
+  Index = EffectIndex::WaterBreathing; // index zero
   input.read(reinterpret_cast<char*>(&Index), 4);
   BytesRead += 4;
   if (!input.good())

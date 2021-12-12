@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011, 2013  Thoronador
+    Copyright (C) 2010, 2011, 2013, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -29,8 +29,8 @@
 namespace MWTP
 {
 
-//iterator type for list
-typedef std::map<int32_t, MagicEffectRecord>::const_iterator EffectListIterator;
+// iterator type for list
+typedef std::map<EffectIndex, MagicEffectRecord>::const_iterator EffectListIterator;
 
 class MagicEffects
 {
@@ -42,7 +42,7 @@ class MagicEffects
     void addEffect(const MagicEffectRecord& Data);
 
     /* returns true, if an effect with the given index exists */
-    bool hasEffect(const int32_t Index) const;
+    bool hasEffect(const EffectIndex Index) const;
 
     /* returns the number of different effects */
     unsigned int getNumberOfEffects() const;
@@ -56,7 +56,7 @@ class MagicEffects
            If there is no effect with the given index, the function throws an
            error. Use hasEffect() to determine if an effect exists.
     */
-    const MagicEffectRecord& getEffect(const int32_t Index) const;
+    const MagicEffectRecord& getEffect(const EffectIndex Index) const;
 
     /* returns the name of the game setting that contains the name of the
        effect specified by the given index
@@ -64,21 +64,21 @@ class MagicEffects
        parameters:
            Index - the index of the effect
     */
-    static std::string getSettingNameForEffect(const int32_t Index);
+    static std::string getSettingNameForEffect(const EffectIndex Index);
 
     /* returns true, if the given skill index identifies a skill-related effect
 
        parameters:
            Index - the index of the effect
     */
-    static bool isSkillRelatedEffect(const int32_t Index);
+    static bool isSkillRelatedEffect(const EffectIndex Index);
 
     /* returns true, if the given skill index identifies an attribute-related effect
 
        parameters:
            Index - the index of the effect
     */
-    static bool isAttributeRelatedEffect(const int32_t Index);
+    static bool isAttributeRelatedEffect(const EffectIndex Index);
 
     /* tries to read a magic effect record from the given input stream.
 
@@ -119,7 +119,7 @@ class MagicEffects
     MagicEffects(MagicEffects&& op) = delete;
 
     /* internal list of effects */
-    std::map<int32_t, MagicEffectRecord> m_Effects;
+    std::map<EffectIndex, MagicEffectRecord> m_Effects;
 }; //class
 
 } //namespace

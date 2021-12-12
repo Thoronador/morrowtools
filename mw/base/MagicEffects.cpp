@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011, 2014  Thoronador
+    Copyright (C) 2010, 2011, 2014, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ namespace MWTP
 {
 
 MagicEffects::MagicEffects()
-: m_Effects(std::map<int32_t, MagicEffectRecord>())
+: m_Effects(std::map<EffectIndex, MagicEffectRecord>())
 {
 }
 
@@ -41,7 +41,7 @@ void MagicEffects::addEffect(const MagicEffectRecord& Data)
   m_Effects[Data.Index] = Data;
 }
 
-bool MagicEffects::hasEffect(const int32_t Index) const
+bool MagicEffects::hasEffect(const EffectIndex Index) const
 {
   return m_Effects.find(Index) != m_Effects.end();
 }
@@ -51,7 +51,7 @@ unsigned int MagicEffects::getNumberOfEffects() const
   return m_Effects.size();
 }
 
-const MagicEffectRecord& MagicEffects::getEffect(const int32_t Index) const
+const MagicEffectRecord& MagicEffects::getEffect(const EffectIndex Index) const
 {
   const auto iter = m_Effects.find(Index);
   if (iter != m_Effects.end())
@@ -59,448 +59,313 @@ const MagicEffectRecord& MagicEffects::getEffect(const int32_t Index) const
     return iter->second;
   }
   // nothing found
-  std::cout << "No magic effect with index " << Index << " found!\n";
+  std::cerr << "No magic effect with index " << static_cast<uint32_t>(Index) << " found!\n";
   throw std::runtime_error("MagicEffects::getEffect(): No magic effect for given index found!");
 }
 
-std::string MagicEffects::getSettingNameForEffect(const int32_t Index)
+std::string MagicEffects::getSettingNameForEffect(const EffectIndex Index)
 {
-  if ((Index<0) or (Index>136))
+  if (static_cast<uint32_t>(Index) > 136)
   {
-    std::cout << "Error: No setting defined for effect "<<Index<<"!\n";
+    std::cerr << "Error: No setting defined for effect " << static_cast<uint32_t>(Index) << "!\n";
     throw std::runtime_error("Error: No setting defined for given effect ID!");
   }
 
   switch (Index)
   {
-    case EffectAbsorbAttribute:
+    case EffectIndex::AbsorbAttribute:
          return "sEffectAbsorbAttribute";
-         break;
-    case EffectAbsorbFatigue:
+    case EffectIndex::AbsorbFatigue:
          return "sEffectAbsorbSkill";
-         break;
-    case EffectAbsorbHealth:
+    case EffectIndex::AbsorbHealth:
          return "sEffectAbsorbHealth";
-         break;
-    case EffectAbsorbSkill:
+    case EffectIndex::AbsorbSkill:
          return "sEffectAbsorbSkill";
-         break;
-    case EffectAbsorbSpellPoints:
+    case EffectIndex::AbsorbSpellPoints:
          return "sEffectAbsorbSpellPoints";
-         break;
-    case EffectAlmsiviIntervention:
+    case EffectIndex::AlmsiviIntervention:
          return "sEffectAlmsiviIntervention";
-         break;
-    case EffectBlind:
+    case EffectIndex::Blind:
          return "sEffectBlind";
-         break;
-    case EffectBoundBattleAxe:
+    case EffectIndex::BoundBattleAxe:
          return "sEffectBoundBattleAxe";
-         break;
-    case EffectBoundBoots:
+    case EffectIndex::BoundBoots:
          return "sEffectBoundBoots";
-         break;
-    case EffectBoundCuirass:
+    case EffectIndex::BoundCuirass:
          return "sEffectBoundCuirass";
-         break;
-    case EffectBoundDagger:
+    case EffectIndex::BoundDagger:
          return "sEffectBoundDagger";
-         break;
-    case EffectBoundGloves:
+    case EffectIndex::BoundGloves:
          return "sEffectBoundGloves";
-         break;
-    case EffectBoundHelm:
+    case EffectIndex::BoundHelm:
          return "sEffectBoundHelm";
-         break;
-    case EffectBoundLongbow:
+    case EffectIndex::BoundLongbow:
          return "sEffectBoundLongbow";
-         break;
-    case EffectBoundLongsword:
+    case EffectIndex::BoundLongsword:
          return "sEffectBoundLongsword";
-         break;
-    case EffectBoundMace:
+    case EffectIndex::BoundMace:
          return "sEffectBoundMace";
-         break;
-    case EffectBoundShield:
+    case EffectIndex::BoundShield:
          return "sEffectBoundShield";
-         break;
-    case EffectBoundSpear:
+    case EffectIndex::BoundSpear:
          return "sEffectBoundSpear";
-         break;
-    case EffectBurden:
+    case EffectIndex::Burden:
          return "sEffectBurden";
-         break;
-    case EffectCalmCreature:
+    case EffectIndex::CalmCreature:
          return "sEffectCalmCreature";
-         break;
-    case EffectCalmHumanoid:
+    case EffectIndex::CalmHumanoid:
          return "sEffectCalmHumanoid";
-         break;
-    case EffectChameleon:
+    case EffectIndex::Chameleon:
          return "sEffectChameleon";
-         break;
-    case EffectCharm:
+    case EffectIndex::Charm:
          return "sEffectCharm";
-         break;
-    case EffectCommandCreatures:
+    case EffectIndex::CommandCreatures:
          return "sEffectCommandCreatures";
-         break;
-    case EffectCommandHumanoids:
+    case EffectIndex::CommandHumanoids:
          return "sEffectCommandHumanoids";
-         break;
-    case EffectCorprus:
+    case EffectIndex::Corprus:
          return "sEffectCorpus";
-         break;
-    case EffectCureBlightDisease:
+    case EffectIndex::CureBlightDisease:
          return "sEffectCureBlightDisease";
-         break;
-    case EffectCureCommonDisease:
+    case EffectIndex::CureCommonDisease:
          return "sEffectCureCommonDisease";
-         break;
-    case EffectCureCorprusDisease:
+    case EffectIndex::CureCorprusDisease:
          return "sEffectCureCorprusDisease";
-         break;
-    case EffectCureParalyzation:
+    case EffectIndex::CureParalyzation:
          return "sEffectCureParalyzation";
-         break;
-    case EffectCurePoison:
+    case EffectIndex::CurePoison:
          return "sEffectCurePoison";
-         break;
-    case EffectDamageAttribute:
+    case EffectIndex::DamageAttribute:
          return "sEffectDamageAttribute";
-         break;
-    case EffectDamageFatigue:
+    case EffectIndex::DamageFatigue:
          return "sEffectDamageFatigue";
-         break;
-    case EffectDamageHealth:
+    case EffectIndex::DamageHealth:
          return "sEffectDamageHealth";
-         break;
-    case EffectDamageMagicka:
+    case EffectIndex::DamageMagicka:
          return "sEffectDamageMagicka";
-         break;
-    case EffectDamageSkill:
+    case EffectIndex::DamageSkill:
          return "sEffectDamageSkill";
-         break;
-    case EffectDemoralizeCreature:
+    case EffectIndex::DemoralizeCreature:
          return "sEffectDemoralizeCreature";
-         break;
-    case EffectDemoralizeHumanoid:
+    case EffectIndex::DemoralizeHumanoid:
          return "sEffectDemoralizeHumanoid";
-         break;
-    case EffectDetectAnimal:
+    case EffectIndex::DetectAnimal:
          return "sEffectDetectAnimal";
-         break;
-    case EffectDetectEnchantment:
+    case EffectIndex::DetectEnchantment:
          return "sEffectDetectEnchantment";
-         break;
-    case EffectDetectKey:
+    case EffectIndex::DetectKey:
          return "sEffectDetectKey";
-         break;
-    case EffectDisintegrateWeapon:
+    case EffectIndex::DisintegrateWeapon:
          return "sEffectDisintegrateWeapon";
-         break;
-    case EffectDisintegrateArmor:
+    case EffectIndex::DisintegrateArmor:
          return "sEffectDisintegrateArmor";
-         break;
-    case EffectDispel:
+    case EffectIndex::Dispel:
          return "sEffectDispel";
-         break;
-    case EffectDivineIntervention:
+    case EffectIndex::DivineIntervention:
          return "sEffectDivineIntervention";
-         break;
-    case EffectDrainAttribute:
+    case EffectIndex::DrainAttribute:
          return "sEffectDrainAttribute";
-         break;
-    case EffectDrainFatigue:
+    case EffectIndex::DrainFatigue:
          return "sEffectDrainFatigue";
-         break;
-    case EffectDrainHealth:
+    case EffectIndex::DrainHealth:
          return "sEffectDrainHealth";
-         break;
-    case EffectDrainSkill:
+    case EffectIndex::DrainSkill:
          return "sEffectDrainSkill";
-         break;
-    case EffectDrainSpellpoints:
+    case EffectIndex::DrainSpellpoints:
          return "sEffectDrainSpellpoints";
-         break;
-    case EffectExtraSpell:
+    case EffectIndex::ExtraSpell:
          return "sEffectExtraSpell";
-         break;
-    case EffectFeather:
+    case EffectIndex::Feather:
          return "sEffectFeather";
-         break;
-    case EffectFireDamage:
+    case EffectIndex::FireDamage:
          return "sEffectFireDamage";
-         break;
-    case EffectFireShield:
+    case EffectIndex::FireShield:
          return "sEffectFireShield";
-         break;
-    case EffectFortifyAttackBonus:
+    case EffectIndex::FortifyAttackBonus:
          return "sEffectFortifyAttackBonus";
-         break;
-    case EffectFortifyAttribute:
+    case EffectIndex::FortifyAttribute:
          return "sEffectFortifyAttribute";
-         break;
-    case EffectFortifyFatigue:
+    case EffectIndex::FortifyFatigue:
          return "sEffectFortifyFatigue";
-         break;
-    case EffectFortifyHealth:
+    case EffectIndex::FortifyHealth:
          return "sEffectFortifyHealth";
-         break;
-    case EffectFortifyMagickaMultiplier:
+    case EffectIndex::FortifyMagickaMultiplier:
          return "sEffectFortifyMagickaMultiplier";
-         break;
-    case EffectFortifySkill:
+    case EffectIndex::FortifySkill:
          return "sEffectFortifySkill";
-         break;
-    case EffectFortifySpellpoints:
+    case EffectIndex::FortifySpellpoints:
          return "sEffectFortifySpellpoints";
-         break;
-    case EffectFrenzyCreature:
+    case EffectIndex::FrenzyCreature:
          return "sEffectFrenzyCreature";
-         break;
-    case EffectFrenzyHumanoid:
+    case EffectIndex::FrenzyHumanoid:
          return "sEffectFrenzyHumanoid";
-         break;
-    case EffectFrostDamage:
+    case EffectIndex::FrostDamage:
          return "sEffectFrostDamage";
-         break;
-    case EffectFrostShield:
+    case EffectIndex::FrostShield:
          return "sEffectFrostShield";
-         break;
-    case EffectInvisibility:
+    case EffectIndex::Invisibility:
          return "sEffectInvisibility";
-         break;
-    case EffectJump:
+    case EffectIndex::Jump:
          return "sEffectJump";
-         break;
-    case EffectLevitate:
+    case EffectIndex::Levitate:
          return "sEffectLevitate";
-         break;
-    case EffectLight:
+    case EffectIndex::Light:
          return "sEffectLight";
-         break;
-    case EffectLightningShield:
+    case EffectIndex::LightningShield:
          return "sEffectLightningShield";
-         break;
-    case EffectLock:
+    case EffectIndex::Lock:
          return "sEffectLock";
-         break;
-    case EffectMark:
+    case EffectIndex::Mark:
          return "sEffectMark";
-         break;
-    case EffectNightEye:
+    case EffectIndex::NightEye:
          return "sEffectNightEye";
-         break;
-    case EffectOpen:
+    case EffectIndex::Open:
          return "sEffectOpen";
-         break;
-    case EffectParalyze:
+    case EffectIndex::Paralyze:
          return "sEffectParalyze";
-         break;
-    case EffectPoison:
+    case EffectIndex::Poison:
          return "sEffectPoison";
-         break;
-    case EffectRallyCreature:
+    case EffectIndex::RallyCreature:
          return "sEffectRallyCreature";
-         break;
-    case EffectRallyHumanoid:
+    case EffectIndex::RallyHumanoid:
          return "sEffectRallyHumanoid";
-         break;
-    case EffectRecall:
+    case EffectIndex::Recall:
          return "sEffectRecall";
-         break;
-    case EffectReflect:
+    case EffectIndex::Reflect:
          return "sEffectReflect";
-         break;
-    case EffectRemoveCurse:
+    case EffectIndex::RemoveCurse:
          return "sEffectRemoveCurse";
-         break;
-    case EffectResistBlightDisease:
+    case EffectIndex::ResistBlightDisease:
          return "sEffectResistBlightDisease";
-         break;
-    case EffectResistCommonDisease:
+    case EffectIndex::ResistCommonDisease:
          return "sEffectResistCommonDisease";
-         break;
-    case EffectResistCorprusDisease:
+    case EffectIndex::ResistCorprusDisease:
          return "sEffectResistCorprusDisease";
-         break;
-    case EffectResistFire:
+    case EffectIndex::ResistFire:
          return "sEffectResistFire";
-         break;
-    case EffectResistFrost:
+    case EffectIndex::ResistFrost:
          return "sEffectResistFrost";
-         break;
-    case EffectResistMagicka:
+    case EffectIndex::ResistMagicka:
          return "sEffectResistMagicka";
-         break;
-    case EffectResistNormalWeapons:
+    case EffectIndex::ResistNormalWeapons:
          return "sEffectResistNormalWeapons";
-         break;
-    case EffectResistParalysis:
+    case EffectIndex::ResistParalysis:
          return "sEffectResistParalysis";
-         break;
-    case EffectResistPoison:
+    case EffectIndex::ResistPoison:
          return "sEffectResistPoison";
-         break;
-    case EffectResistShock:
+    case EffectIndex::ResistShock:
          return "sEffectResistShock";
-         break;
-    case EffectRestoreAttribute:
+    case EffectIndex::RestoreAttribute:
          return "sEffectRestoreAttribute";
-         break;
-    case EffectRestoreFatigue:
+    case EffectIndex::RestoreFatigue:
          return "sEffectRestoreFatigue";
-         break;
-    case EffectRestoreHealth:
+    case EffectIndex::RestoreHealth:
          return "sEffectRestoreHealth";
-         break;
-    case EffectRestoreSkill:
+    case EffectIndex::RestoreSkill:
          return "sEffectRestoreSkill";
-         break;
-    case EffectRestoreSpellPoints:
+    case EffectIndex::RestoreSpellPoints:
          return "sEffectRestoreSpellPoints";
-         break;
-    case EffectSanctuary:
+    case EffectIndex::Sanctuary:
          return "sEffectSanctuary";
-         break;
-    case EffectShield:
+    case EffectIndex::Shield:
          return "sEffectShield";
-         break;
-    case EffectShockDamage:
+    case EffectIndex::ShockDamage:
          return "sEffectShockDamage";
-         break;
-    case EffectSilence:
+    case EffectIndex::Silence:
          return "sEffectSilence";
-         break;
-    case EffectSlowFall:
+    case EffectIndex::SlowFall:
          return "sEffectSlowFall";
-         break;
-    case EffectSoultrap:
+    case EffectIndex::Soultrap:
          return "sEffectSoultrap";
-         break;
-    case EffectSound:
+    case EffectIndex::Sound:
          return "sEffectSound";
-         break;
-    case EffectSpellAbsorption:
+    case EffectIndex::SpellAbsorption:
          return "sEffectSpellAbsorption";
-         break;
-    case EffectStuntedMagicka:
+    case EffectIndex::StuntedMagicka:
          return "sEffectStuntedMagicka";
-         break;
-    case EffectSummonAncestralGhost:
+    case EffectIndex::SummonAncestralGhost:
          return "sEffectSummonAncestralGhost";
-         break;
-    case EffectSummonBonelord:
+    case EffectIndex::SummonBonelord:
          return "sEffectSummonBonelord";
-         break;
-    case EffectSummonCenturionSphere:
+    case EffectIndex::SummonCenturionSphere:
          return "sEffectSummonCenturionSphere";
-         break;
-    case EffectSummonClannfear:
+    case EffectIndex::SummonClannfear:
          return "sEffectSummonClannfear";
-         break;
-    case EffectSummonDaedroth:
+    case EffectIndex::SummonDaedroth:
          return "sEffectSummonDaedroth";
-         break;
-    case EffectSummonDremora:
+    case EffectIndex::SummonDremora:
          return "sEffectSummonDremora";
-         break;
-    case EffectSummonFlameAtronach:
+    case EffectIndex::SummonFlameAtronach:
          return "sEffectSummonFlameAtronach";
-         break;
-    case EffectSummonFrostAtronach:
+    case EffectIndex::SummonFrostAtronach:
          return "sEffectSummonFrostAtronach";
-         break;
-    case EffectSummonGoldenSaint:
+    case EffectIndex::SummonGoldenSaint:
          return "sEffectSummonGoldensaint";
-         break;
-    case EffectSummonGreaterBonewalker:
+    case EffectIndex::SummonGreaterBonewalker:
          return "sEffectSummonGreaterBonewalker";
-         break;
-    case EffectSummonHunger:
+    case EffectIndex::SummonHunger:
          return "sEffectSummonHunger";
-         break;
-    case EffectSummonLeastBonewalker:
+    case EffectIndex::SummonLeastBonewalker:
          return "sEffectSummonLeastBonewalker";
-         break;
-    case EffectSummonScamp:
+    case EffectIndex::SummonScamp:
          return "sEffectSummonScamp";
-         break;
-    case EffectSummonSkeletalMinion:
+    case EffectIndex::SummonSkeletalMinion:
          return "sEffectSummonSkeletalMinion";
-         break;
-    case EffectSummonStormAtronach:
+    case EffectIndex::SummonStormAtronach:
          return "sEffectSummonStormAtronach";
-         break;
-    case EffectSummonWingedTwilight:
+    case EffectIndex::SummonWingedTwilight:
          return "sEffectSummonWingedTwilight";
-         break;
-    case EffectSunDamage:
+    case EffectIndex::SunDamage:
          return "sEffectSunDamage";
-         break;
-    case EffectSwiftSwim:
+    case EffectIndex::SwiftSwim:
          return "sEffectSwiftSwim";
-         break;
-    case EffectTelekinesis:
+    case EffectIndex::Telekinesis:
          return "sEffectTelekinesis";
-         break;
-    case EffectTurnUndead:
+    case EffectIndex::TurnUndead:
          return "sEffectTurnUndead";
-         break;
-    case EffectVampirism:
+    case EffectIndex::Vampirism:
          return "sEffectVampirism";
-         break;
-    case EffectWaterBreathing:
+    case EffectIndex::WaterBreathing:
          return "sEffectWaterBreathing";
-         break;
-    case EffectWaterWalking:
+    case EffectIndex::WaterWalking:
          return "sEffectWaterWalking";
-         break;
-    case EffectWeaknessToBlightDisease:
+    case EffectIndex::WeaknessToBlightDisease:
          return "sEffectWeaknessToBlightDisease";
-         break;
-    case EffectWeaknessToCommonDisease:
+    case EffectIndex::WeaknessToCommonDisease:
          return "sEffectWeaknessToCommonDisease";
-         break;
-    case EffectWeaknessToCorprusDisease:
+    case EffectIndex::WeaknessToCorprusDisease:
          return "sEffectWeaknessToCorprusDisease";
-         break;
-    case EffectWeaknessToFire:
+    case EffectIndex::WeaknessToFire:
          return "sEffectWeaknessToFire";
-         break;
-    case EffectWeaknessToFrost:
+    case EffectIndex::WeaknessToFrost:
          return "sEffectWeaknessToFrost";
-         break;
-    case EffectWeaknessToMagicka:
+    case EffectIndex::WeaknessToMagicka:
          return "sEffectWeaknessToMagicka";
-         break;
-    case EffectWeaknessToNormalWeapons:
+    case EffectIndex::WeaknessToNormalWeapons:
          return "sEffectWeaknessToNormalWeapons";
-         break;
-    case EffectWeaknessToPoison:
+    case EffectIndex::WeaknessToPoison:
          return "sEffectWeaknessToPoison";
-         break;
-    case EffectWeaknessToShock:
+    case EffectIndex::WeaknessToShock:
          return "sEffectWeaknessToFire";
-         break;
-  }//swi
-  std::cout << "Error: No setting defined for effect "<<Index<<"!\n";
+  }
+  std::cerr << "Error: No setting defined for effect " << static_cast<uint32_t>(Index) << "!\n";
   throw std::runtime_error("MagicEffects::getSettingNameForEffect(): Error: No setting defined for effect index!\n");
 }
 
-bool MagicEffects::isSkillRelatedEffect(const int32_t Index)
+bool MagicEffects::isSkillRelatedEffect(const EffectIndex Index)
 {
-  return ((Index==EffectDrainSkill) or (Index==EffectDamageSkill)
-     or (Index==EffectRestoreSkill) or (Index==EffectFortifySkill)
-     or (Index==EffectAbsorbSkill));
+  return (Index == EffectIndex::DrainSkill) || (Index == EffectIndex::DamageSkill)
+     || (Index == EffectIndex::RestoreSkill) || (Index == EffectIndex::FortifySkill)
+     || (Index == EffectIndex::AbsorbSkill);
 }
 
-bool MagicEffects::isAttributeRelatedEffect(const int32_t Index)
+bool MagicEffects::isAttributeRelatedEffect(const EffectIndex Index)
 {
-  return ((Index==EffectDrainAttribute) or (Index==EffectDamageAttribute)
-       or (Index==EffectRestoreAttribute) or (Index==EffectFortifyAttribute)
-       or (Index==EffectAbsorbAttribute));
+  return (Index == EffectIndex::DrainAttribute)
+      || (Index == EffectIndex::DamageAttribute)
+      || (Index == EffectIndex::RestoreAttribute)
+      || (Index == EffectIndex::FortifyAttribute)
+      || (Index == EffectIndex::AbsorbAttribute);
 }
 
 int MagicEffects::readRecordMGEF(std::istream& input)

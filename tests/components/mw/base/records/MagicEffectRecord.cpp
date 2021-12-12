@@ -32,7 +32,7 @@ TEST_CASE("MWTP::MagicEffectRecord")
   {
     MagicEffectRecord record;
 
-    REQUIRE( record.Index == -1 );
+    REQUIRE( record.Index == EffectIndex::WaterBreathing );
     REQUIRE( record.SpellSchool == MagicSchool::Alteration );
     REQUIRE( record.BaseCost == 0.0f );
     REQUIRE( record.Flags == 0 );
@@ -62,10 +62,10 @@ TEST_CASE("MWTP::MagicEffectRecord")
 
     SECTION("equal")
     {
-      a.Index = 1;
+      a.Index = EffectIndex::SwiftSwim;
       a.SpellSchool = MagicSchool::Destruction;
 
-      b.Index = 1;
+      b.Index = EffectIndex::SwiftSwim;
       b.SpellSchool = MagicSchool::Destruction;
 
       REQUIRE( a.equals(b) );
@@ -76,8 +76,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
     {
       SECTION("Index mismatch")
       {
-        a.Index = 1;
-        b.Index = 2;
+        a.Index = EffectIndex::SwiftSwim;
+        b.Index = EffectIndex::WaterWalking;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
@@ -287,7 +287,7 @@ TEST_CASE("MWTP::MagicEffectRecord")
       REQUIRE( record.getHeaderOne() == 0 );
       REQUIRE( record.getHeaderFlags() == 0 );
       // -- record data
-      REQUIRE( record.Index == EffectRemoveCurse );
+      REQUIRE( record.Index == EffectIndex::RemoveCurse );
 
       REQUIRE( record.SpellSchool == MagicSchool::Restoration );
       REQUIRE( record.BaseCost == 15.0f );
@@ -336,7 +336,7 @@ TEST_CASE("MWTP::MagicEffectRecord")
       REQUIRE( record.getHeaderOne() == 0 );
       REQUIRE( record.getHeaderFlags() == 0 );
       // -- record data
-      REQUIRE( record.Index == EffectAbsorbSkill );
+      REQUIRE( record.Index == EffectIndex::AbsorbSkill );
 
       REQUIRE( record.SpellSchool == MagicSchool::Mysticism );
       REQUIRE( record.BaseCost == 2.0f );

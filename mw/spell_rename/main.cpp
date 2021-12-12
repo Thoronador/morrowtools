@@ -492,9 +492,10 @@ int main(int argc, char **argv)
       MWTP::SpellRecord rec = spell_cur->second;
       if (!rec.Enchs.empty())
       {
-        if (MWTP::MagicEffects::get().hasEffect(rec.Enchs.at(0).EffectID))
+        const auto effectIdx = static_cast<MWTP::EffectIndex>(rec.Enchs.at(0).EffectID);
+        if (MWTP::MagicEffects::get().hasEffect(effectIdx))
         {
-          const uint32_t school = static_cast<uint32_t>(MWTP::MagicEffects::get().getEffect(rec.Enchs.at(0).EffectID).SpellSchool);
+          const uint32_t school = static_cast<uint32_t>(MWTP::MagicEffects::get().getEffect(effectIdx).SpellSchool);
           if (school >= prefixes.size())
           {
             std::cerr << "Error: Effect " << rec.Enchs.at(0).EffectID

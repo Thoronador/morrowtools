@@ -88,7 +88,7 @@ int ESMReaderScriptCompiler::processNextRecord(std::istream& in_File)
          lastResult = ESMReader::skipRecord(in_File);
          break;
     case cMGEF:
-         lastResult = MagicEffects::get().readRecordMGEF(in_File);
+         lastResult = MagicEffects::get().readNextRecord(in_File);
          break;
     case cMISC:
          lastResult = ESMReader::skipRecord(in_File);

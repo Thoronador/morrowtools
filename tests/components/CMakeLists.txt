@@ -19,6 +19,7 @@ set(component_tests_sources
     ../../mw/base/ESMReader.cpp
     ../../mw/base/ESMReaderGeneric.cpp
     ../../mw/base/HelperIO.cpp
+    ../../mw/base/MagicEffects.cpp
     ../../mw/base/MapBasedRecordManager.hpp
     ../../mw/base/records/ActivatorRecord.cpp
     ../../mw/base/records/AIData.cpp
@@ -143,6 +144,7 @@ set(component_tests_sources
     mw/base/ESMReader.cpp
     mw/base/ESMReaderGeneric.cpp
     mw/base/HelperIO.cpp
+    mw/base/MagicEffects.cpp
     mw/base/MapBasedRecordManager.cpp
     mw/base/records/ActivatorRecord.cpp
     mw/base/records/AIData.cpp

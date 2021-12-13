@@ -48,7 +48,7 @@ class MapBasedRecordManager
      *
      * \param record   the record to add
      * \remarks The record will NOT be added, if its record ID is empty.
-     *          An existing record with the same form ID will be replaced.
+     *          An existing record with the same record ID will be replaced.
      */
     void addRecord(const recT& record);
 

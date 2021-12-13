@@ -29,99 +29,113 @@
 namespace MWTP
 {
 
-// iterator type for list
-typedef std::map<EffectIndex, MagicEffectRecord>::const_iterator EffectListIterator;
-
 class MagicEffects
 {
   public:
-    /* singleton access */
+    /** \brief Provides access to the singleton instance.
+     *
+     * \return Returns a reference to the singleton instance.
+     */
     static MagicEffects& get();
 
-    /* adds an effect to the list */
-    void addEffect(const MagicEffectRecord& Data);
+    /** \brief Adds an effect to the instance.
+     *
+     * \param effect   the effect to add
+     * \remarks An existing record with the same index will be replaced.
+     */
+    void addEffect(const MagicEffectRecord& effect);
 
-    /* returns true, if an effect with the given index exists */
-    bool hasEffect(const EffectIndex Index) const;
+    /** \brief Checks whether an effect with the given index is present.
+     *
+     * \param index  the index of the magic effect
+     * \return Returns true, if an effect with the given index is present.
+     *         Returns false otherwise.
+     */
+    bool hasEffect(const EffectIndex index) const;
 
-    /* returns the number of different effects */
+    /** Gets the number of effects in the instance.
+     *
+     * \return Returns the number of effects in the instance.
+     */
     unsigned int getNumberOfEffects() const;
 
-    /* retrieves data of a specific magic effect
+    /** Gets a reference to the effect with the given index.
+     *
+     * \param index  the index of the effect
+     * \return Returns a reference to the effect with the given index, if such
+     *         an effect is present. Throws, if no such effect exists.
+     * \remarks If no effect with the given index is present, the method will
+     *          throw an exception. Use hasEffect() to determine, if an effect
+     *          with the desired index is present.
+     */
+    const MagicEffectRecord& getEffect(const EffectIndex index) const;
 
-       parameters:
-           Index - the index of the effect
+    /** \brief Gets the name of the game setting that contains the name of the
+     * effect specified by the given index.
+     *
+     * \param index  the index of the effect
+     * \return Returns the name of the game setting that contains the name of
+     *         the effect.
+     */
+    static std::string getSettingNameForEffect(const EffectIndex index);
 
-       remarks:
-           If there is no effect with the given index, the function throws an
-           error. Use hasEffect() to determine if an effect exists.
-    */
-    const MagicEffectRecord& getEffect(const EffectIndex Index) const;
+    /** \brief Checks whether the given index identifies a skill-related effect.
+     *
+     * \param index  the index of the effect
+     * \return Returns true, if the index identifies a skill-related effect.
+     *         Returns false otherwise.
+     */
+    static bool isSkillRelatedEffect(const EffectIndex index);
 
-    /* returns the name of the game setting that contains the name of the
-       effect specified by the given index
+    /** \brief Checks whether the given index identifies an attribute-related
+     * effect.
+     *
+     * \param index  the index of the effect
+     * \return Returns true, if the index identifies an attribute-related
+     *         effect. Returns false otherwise.
+     */
+    static bool isAttributeRelatedEffect(const EffectIndex index);
 
-       parameters:
-           Index - the index of the effect
-    */
-    static std::string getSettingNameForEffect(const EffectIndex Index);
+    /** \brief Reads a magic effect record from the given input stream.
+     *
+     * \param input  the input stream that is used to read the record
+     * \return  If an error occurred, the function returns -1. Otherwise it
+     *          returns the number of updated records. (Usually that is one.
+     *          If, however, the record that was read is equal to the one
+     *          already in the list, zero is returned.)
+     */
+    int readNextRecord(std::istream& input);
 
-    /* returns true, if the given skill index identifies a skill-related effect
+    /// iterator type for list
+    typedef std::map<EffectIndex, MagicEffectRecord>::const_iterator Iterator;
 
-       parameters:
-           Index - the index of the effect
-    */
-    static bool isSkillRelatedEffect(const EffectIndex Index);
+    /** Returns a constant iterator to the beginning of the internal list. */
+    Iterator begin() const;
 
-    /* returns true, if the given skill index identifies an attribute-related effect
+    /** Returns a constant iterator to the end of the internal list. */
+    Iterator end() const;
 
-       parameters:
-           Index - the index of the effect
-    */
-    static bool isAttributeRelatedEffect(const EffectIndex Index);
-
-    /* tries to read a magic effect record from the given input stream.
-
-       return value:
-           If an error occurRed, the function returns -1. Otherwise it returns
-           the number of updated records. (Usually that is one. If, however, the
-           record that was read is equal to the one already in the list, zero is
-           returned.)
-
-       parameters:
-           input - the input stream that is used to read the record
-    */
-    int readRecordMGEF(std::istream& input);
-
-    /* returns constant iterator to the beginning of the internal list */
-    EffectListIterator begin() const;
-
-    /* returns constant iterator to the end of the internal list */
-    EffectListIterator end() const;
-
-    /* tries to save all available magic effects to the given stream and returns
-       true on success, false on failure
-
-       parameters:
-           output - the output stream that shall be used to save the magic
-                    effects
-    */
+    #ifndef MW_UNSAVEABLE_RECORDS
+    /** \brief Tries to save all available magic effects to the given stream.
+     *
+     * \param output  the output stream that shall be used to save the data
+     * \return Returns true on success, false on failure.
+     */
     bool saveAllToStream(std::ostream& output) const;
+    #endif // MW_UNSAVEABLE_RECORDS
 
-    /* deletes all effects */
+    /** Removes all effects from the instance. */
     void clear();
   private:
-    /* constructor */
     MagicEffects();
 
-    /* copy constructors - deleted */
+    /* copy + move constructor: deleted, because this is a singleton */
     MagicEffects(const MagicEffects& op) = delete;
     MagicEffects(MagicEffects&& op) = delete;
 
-    /* internal list of effects */
-    std::map<EffectIndex, MagicEffectRecord> m_Effects;
-}; //class
+    std::map<EffectIndex, MagicEffectRecord> m_Effects; /**< internal list */
+}; // class
 
-} //namespace
+} // namespace
 
 #endif // MW_MAGICEFFECTS_HPP

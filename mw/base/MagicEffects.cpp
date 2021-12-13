@@ -36,14 +36,14 @@ MagicEffects& MagicEffects::get()
   return Instance;
 }
 
-void MagicEffects::addEffect(const MagicEffectRecord& Data)
+void MagicEffects::addEffect(const MagicEffectRecord& effect)
 {
-  m_Effects[Data.Index] = Data;
+  m_Effects[effect.Index] = effect;
 }
 
-bool MagicEffects::hasEffect(const EffectIndex Index) const
+bool MagicEffects::hasEffect(const EffectIndex index) const
 {
-  return m_Effects.find(Index) != m_Effects.end();
+  return m_Effects.find(index) != m_Effects.end();
 }
 
 unsigned int MagicEffects::getNumberOfEffects() const
@@ -51,32 +51,26 @@ unsigned int MagicEffects::getNumberOfEffects() const
   return m_Effects.size();
 }
 
-const MagicEffectRecord& MagicEffects::getEffect(const EffectIndex Index) const
+const MagicEffectRecord& MagicEffects::getEffect(const EffectIndex index) const
 {
-  const auto iter = m_Effects.find(Index);
+  const auto iter = m_Effects.find(index);
   if (iter != m_Effects.end())
   {
     return iter->second;
   }
   // nothing found
-  std::cerr << "No magic effect with index " << static_cast<uint32_t>(Index) << " found!\n";
+  std::cerr << "No magic effect with index " << static_cast<uint32_t>(index) << " found!\n";
   throw std::runtime_error("MagicEffects::getEffect(): No magic effect for given index found!");
 }
 
-std::string MagicEffects::getSettingNameForEffect(const EffectIndex Index)
+std::string MagicEffects::getSettingNameForEffect(const EffectIndex index)
 {
-  if (static_cast<uint32_t>(Index) > 136)
-  {
-    std::cerr << "Error: No setting defined for effect " << static_cast<uint32_t>(Index) << "!\n";
-    throw std::runtime_error("Error: No setting defined for given effect ID!");
-  }
-
-  switch (Index)
+  switch (index)
   {
     case EffectIndex::AbsorbAttribute:
          return "sEffectAbsorbAttribute";
     case EffectIndex::AbsorbFatigue:
-         return "sEffectAbsorbSkill";
+         return "sEffectAbsorbFatigue";
     case EffectIndex::AbsorbHealth:
          return "sEffectAbsorbHealth";
     case EffectIndex::AbsorbSkill:
@@ -346,83 +340,86 @@ std::string MagicEffects::getSettingNameForEffect(const EffectIndex Index)
     case EffectIndex::WeaknessToPoison:
          return "sEffectWeaknessToPoison";
     case EffectIndex::WeaknessToShock:
-         return "sEffectWeaknessToFire";
+         return "sEffectWeaknessToShock";
   }
-  std::cerr << "Error: No setting defined for effect " << static_cast<uint32_t>(Index) << "!\n";
+  std::cerr << "Error: No setting defined for effect " << static_cast<uint32_t>(index) << "!\n";
   throw std::runtime_error("MagicEffects::getSettingNameForEffect(): Error: No setting defined for effect index!\n");
 }
 
-bool MagicEffects::isSkillRelatedEffect(const EffectIndex Index)
+bool MagicEffects::isSkillRelatedEffect(const EffectIndex index)
 {
-  return (Index == EffectIndex::DrainSkill) || (Index == EffectIndex::DamageSkill)
-     || (Index == EffectIndex::RestoreSkill) || (Index == EffectIndex::FortifySkill)
-     || (Index == EffectIndex::AbsorbSkill);
+  return (index == EffectIndex::DrainSkill)
+     || (index == EffectIndex::DamageSkill)
+     || (index == EffectIndex::RestoreSkill)
+     || (index == EffectIndex::FortifySkill)
+     || (index == EffectIndex::AbsorbSkill);
 }
 
-bool MagicEffects::isAttributeRelatedEffect(const EffectIndex Index)
+bool MagicEffects::isAttributeRelatedEffect(const EffectIndex index)
 {
-  return (Index == EffectIndex::DrainAttribute)
-      || (Index == EffectIndex::DamageAttribute)
-      || (Index == EffectIndex::RestoreAttribute)
-      || (Index == EffectIndex::FortifyAttribute)
-      || (Index == EffectIndex::AbsorbAttribute);
+  return (index == EffectIndex::DrainAttribute)
+      || (index == EffectIndex::DamageAttribute)
+      || (index == EffectIndex::RestoreAttribute)
+      || (index == EffectIndex::FortifyAttribute)
+      || (index == EffectIndex::AbsorbAttribute);
 }
 
-int MagicEffects::readRecordMGEF(std::istream& input)
+int MagicEffects::readNextRecord(std::istream& input)
 {
   MagicEffectRecord tempData;
-  if (tempData.loadFromStream(input))
+  if (!tempData.loadFromStream(input))
   {
-    if (hasEffect(tempData.Index))
+    std::cerr << "MagicEffects::readNextRecord: Error while reading record.\n";
+    return -1;
+  }
+  if (hasEffect(tempData.Index))
+  {
+    // Are the contents the same?
+    if (getEffect(tempData.Index).equals(tempData))
     {
-      //Are the contents the same?
-      if (getEffect(tempData.Index).equals(tempData))
-      {
-        return 0; //same content, nothing changed here
-      }
-    }//if
-    //no effect with that index present or different content, so just add it
-    addEffect(tempData);
-    return 1;
-  }//read operation good
-  std::cout << "readRecordMGEF: Error while reading record.\n";
-  return -1;
+      // same content, nothing changed here
+      return 0;
+    }
+  }
+  // no effect with that index present or different content, so just add it
+  addEffect(tempData);
+  return 1;
 }
 
-EffectListIterator MagicEffects::begin() const
+MagicEffects::Iterator MagicEffects::begin() const
 {
   return m_Effects.begin();
 }
 
-EffectListIterator MagicEffects::end() const
+MagicEffects::Iterator MagicEffects::end() const
 {
   return m_Effects.end();
 }
 
+#ifndef MW_UNSAVEABLE_RECORDS
 bool MagicEffects::saveAllToStream(std::ostream& output) const
 {
   if (!output.good())
   {
-    std::cout << "MagicEffects::saveAllToStream: Error: Bad stream.\n";
+    std::cerr << "MagicEffects::saveAllToStream: Error: Bad stream.\n";
     return false;
   }
-  EffectListIterator iter = m_Effects.begin();
-  const EffectListIterator end_iter = m_Effects.end();
-  while (iter!=end_iter)
+  for (const auto& [idx, effect]: m_Effects)
   {
-    if (!iter->second.saveToStream(output))
+    if (!effect.saveToStream(output))
     {
-      std::cout << "MagicEffects::saveAllToStream: Error while writing record.\n";
+      std::cerr << "MagicEffects::saveAllToStream: Error while writing record for index "
+                << static_cast<uint32_t>(idx) << ".\n";
       return false;
     }
-    ++iter;
-  }//while
-  return output.good();
+  }
+  return true;
 }
+#endif // MW_UNSAVEABLE_RECORDS
 
 void MagicEffects::clear()
 {
   m_Effects.clear();
 }
 
-} //namespace
+} // namespace

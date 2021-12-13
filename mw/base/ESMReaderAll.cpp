@@ -160,7 +160,7 @@ int ESMReaderAll::processNextRecord(std::istream& input)
          lastResult = LandscapeTextures::get().readNextRecord(input);
          break;
     case cMGEF:
-         lastResult = MagicEffects::get().readRecordMGEF(input);
+         lastResult = MagicEffects::get().readNextRecord(input);
          break;
     case cMISC:
          lastResult = MiscItems::get().readNextRecord(input);

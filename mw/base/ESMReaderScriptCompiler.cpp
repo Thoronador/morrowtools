@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012  Thoronador
+    Copyright (C) 2011, 2012, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -34,22 +34,30 @@
 namespace MWTP
 {
 
-ESMReaderScriptCompiler::ESMReaderScriptCompiler()
-{
-}
-
 int ESMReaderScriptCompiler::processNextRecord(std::istream& in_File)
 {
-  int32_t RecordName = 0; //normally should be 4 char, but char is not eligible for switch
-  int lastResult = 0;
-
-  //read record name
-  in_File.read((char*) &RecordName, 4);
+  // normally should be 4 chars, but char array is not eligible for switch
+  uint32_t RecordName = 0;
+  // read record name
+  in_File.read(reinterpret_cast<char*>(&RecordName), 4);
   switch(RecordName)
   {
     case cACTI:
-         lastResult = Activators::get().readNextRecord(in_File);
-         break;
+         return Activators::get().readNextRecord(in_File);
+    case cCONT:
+         return Containers::get().readNextRecord(in_File);
+    case cCREA:
+         return Creatures::get().readNextRecord(in_File);
+    case cGLOB:
+         return Globals::get().readNextRecord(in_File);
+    case cMGEF:
+         return MagicEffects::get().readNextRecord(in_File);
+    case cNPC_:
+         return NPCs::get().readNextRecord(in_File);
+    case cSCPT:
+         return Scripts::get().readNextRecord(in_File);
+    case cSTAT:
+         return Statics::get().readNextRecord(in_File);
     case cALCH:
     case cAPPA:
     case cARMO:
@@ -59,23 +67,10 @@ int ESMReaderScriptCompiler::processNextRecord(std::istream& in_File)
     case cCELL:
     case cCLAS:
     case cCLOT:
-         lastResult = ESMReader::skipRecord(in_File);
-         break;
-    case cCONT:
-         lastResult = Containers::get().readNextRecord(in_File);
-         break;
-    case cCREA:
-         lastResult = Creatures::get().readNextRecord(in_File);
-         break;
     case cDIAL:
     case cDOOR:
     case cENCH:
     case cFACT:
-         lastResult = ESMReader::skipRecord(in_File);
-         break;
-    case cGLOB:
-         lastResult = Globals::get().readNextRecord(in_File);
-         break;
     case cGMST:
     case cINFO:
     case cINGR:
@@ -85,48 +80,25 @@ int ESMReaderScriptCompiler::processNextRecord(std::istream& in_File)
     case cLIGH:
     case cLOCK:
     case cLTEX:
-         lastResult = ESMReader::skipRecord(in_File);
-         break;
-    case cMGEF:
-         lastResult = MagicEffects::get().readNextRecord(in_File);
-         break;
     case cMISC:
-         lastResult = ESMReader::skipRecord(in_File);
-         break;
-    case cNPC_:
-         lastResult = NPCs::get().readNextRecord(in_File);
-         break;
     case cPGRD:
     case cPROB:
     case cRACE:
     case cREGN:
     case cREPA:
-         lastResult = ESMReader::skipRecord(in_File);
-         break;
-    case cSCPT:
-         lastResult = Scripts::get().readNextRecord(in_File);
-         break;
     case cSKIL:
     case cSNDG:
     case cSOUN:
     case cSPEL:
     case cSSCR:
-         lastResult = ESMReader::skipRecord(in_File);
-         break;
-    case cSTAT:
-         lastResult = Statics::get().readNextRecord(in_File);
-         break;
     case cWEAP:
-         lastResult = ESMReader::skipRecord(in_File);
-         break;
+         return ESMReader::skipRecord(in_File);
     default:
-         std::cout << "ProcessRecords: ERROR: unknown record type found: \""
-                   <<IntTo4Char(RecordName)<<"\".\n"
-                   << "Current file position: "<<in_File.tellg()<< " bytes.\n";
-         lastResult = -1;
-         break;
-  }
-  return lastResult;
+         std::cerr << "ProcessRecords: ERROR: Unknown record type found: \""
+                   << IntTo4Char(RecordName) << "\".\n"
+                   << "Current file position: " << in_File.tellg() << " bytes.\n";
+         return -1;
+  };
 }
 
 } // namespace

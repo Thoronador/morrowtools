@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -32,9 +32,6 @@ namespace MWTP
 */
 class ESMReaderScriptCompiler: public ESMReader
 {
-  public:
-    /* constructor */
-    ESMReaderScriptCompiler();
   protected:
     /* tries to read the next record from a stream and returns the number of
        relevant records that were read (usually one). If an error occurred,
@@ -45,8 +42,8 @@ class ESMReaderScriptCompiler: public ESMReader
            in_File  - the input file stream the record shall be read from
     */
     virtual int processNextRecord(std::istream& in_File) override;
-};//class
+}; // class
 
-} //namespace
+} // namespace
 
 #endif // MW_ESMREADERSCRIPTCOMPILER_HPP

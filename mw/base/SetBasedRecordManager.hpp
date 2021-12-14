@@ -34,87 +34,90 @@ template<typename recT>
 class SetBasedRecordManager
 {
   public:
-    //iterator type for record list/set
-    typedef typename std::set<recT>::const_iterator ListIterator;
+    /// iterator type for internal record set
+    typedef typename std::set<recT>::const_iterator Iterator;
 
-    /* singleton access method */
+    /** \brief Provides access to the singleton instance.
+     *
+     * \return Returns a reference to the singleton instance.
+     */
     static SetBasedRecordManager& get();
 
-    /* adds a record to the list */
+    /** \brief Adds a record to the instance.
+     *
+     * \param record   the record to add
+     * \remarks The record will NOT be added, if its record ID is empty.
+     *          An existing record with the same record ID will be replaced.
+     */
     void addRecord(const recT& record);
 
-    /* returns true, if a record with the given ID is present
-
-       parameters:
-           ID - the ID of the record
-    */
+    /** \brief Checks whether a record with the given record ID is present.
+     *
+     * \param ID  the record ID of the record object
+     * \return Returns true, if a record with the given record ID is present.
+     *         Returns false otherwise.
+     */
     bool hasRecord(const std::string& ID) const;
 
-    /* returns the number of records in the list */
+    /** Gets the number of records in the instance.
+     *
+     * \return Returns the number of records in the instance.
+     */
     unsigned int getNumberOfRecords() const;
 
-    /* returns a reference to the record with the given ID
-
-       parameters:
-           ID - the ID of the record
-
-       remarks:
-           If no record with the given ID is present, the function will throw
-           an exception. Use hasRecord() to determine, if a record with the
-           desired ID is present.
-    */
+    /** Gets a reference to the record with the given ID.
+     *
+     * \param ID  the ID of the record
+     * \return Returns a reference to the record with the given ID, if such a
+     *         record is present. Throws, if no such record exists.
+     * \remarks If no record with the given ID is present, the method will
+     *          throw an exception. Use hasRecord() to determine, if a record
+     *          with the desired ID is present.
+     */
     const recT& getRecord(const std::string& ID) const;
 
-    /* tries to read a record from the given input stream.
-
-       return value:
-           If an error occurRed, the function returns -1. Otherwise it returns
-           the number of updated records. (Usually that is one. If, however, the
-           record that was read is equal to the one already in the list, zero is
-           returned.)
-
-       parameters:
-           input  - the input stream that is used to read the record
-    */
+    /** \brief Tries to read a record from the given input stream.
+     *
+     * \param input       the input stream that is used to read the record
+     * \return If an error occurred, the function returns -1. Otherwise it
+     *         returns the number of updated records. (Usually that is one.
+     *         If, however, the record that was read is equal to the one already
+     *         in the list, zero is returned and the existing record remains
+     *         unchanged.)
+     */
     int readNextRecord(std::istream& input);
 
-    /* removes the record with the given ID from the internal list and returns
-       true, if such a record existed. Returns false otherwise.
-
-       parameters:
-           ID - the ID of the record to be removed
-    */
+    /** \brief Removes the record with the given ID from the instance.
+     *
+     * \param ID  the ID of the record to be removed
+     * \return Returns true, if a record was removed. Returns false otherwise.
+     */
     bool removeRecord(const std::string& ID);
 
-    /* returns constant iterator to the beginning of the internal list */
-    ListIterator begin() const;
+    /** Returns constant iterator to the beginning of the internal structure. */
+    Iterator begin() const;
 
-    /* returns constant iterator to the end of the internal list */
-    ListIterator end() const;
+    /** Returns constant iterator to the end of the internal structure. */
+    Iterator end() const;
 
     #ifndef MW_UNSAVEABLE_RECORDS
-    /* tries to save all available records to the given stream and returns
-       true on success, false on failure
-
-       parameters:
-           output - the output stream that shall be used to save the
-                    records
-    */
+    /** \brief Tries to save all available records to the given stream.
+     *
+     * \param output  the output stream that shall be used to save the records
+     * \return Returns true on success, false on failure.
+     */
     bool saveAllToStream(std::ostream& output) const;
     #endif
 
-    /* removes all records from the list */
+    /** Removes all records from the instance. */
     void clear();
   private:
-    /* constructor */
     SetBasedRecordManager();
+    SetBasedRecordManager(const SetBasedRecordManager& op) = delete;
+    SetBasedRecordManager(SetBasedRecordManager&& op) = delete;
 
-    /* empty copy constructor */
-    SetBasedRecordManager(const SetBasedRecordManager& op) {}
-
-    /* internal data */
-    std::set<recT> m_Records;
-};//class
+    std::set<recT> m_Records; /**< internal data */
+}; // class
 
 template<typename recT>
 SetBasedRecordManager<recT>::SetBasedRecordManager()
@@ -141,7 +144,7 @@ void SetBasedRecordManager<recT>::addRecord(const recT& record)
 template<typename recT>
 bool SetBasedRecordManager<recT>::hasRecord(const std::string& ID) const
 {
-  return (m_Records.find(ID)!=m_Records.end());
+  return m_Records.find(ID) != m_Records.end();
 }
 
 template<typename recT>
@@ -153,13 +156,15 @@ unsigned int SetBasedRecordManager<recT>::getNumberOfRecords() const
 template<typename recT>
 const recT& SetBasedRecordManager<recT>::getRecord(const std::string& ID) const
 {
-  const ListIterator iter = m_Records.find(ID);
-  if (iter!=m_Records.end())
+  const auto iter = m_Records.find(ID);
+  if (iter != m_Records.end())
   {
     return *iter;
   }
-  std::cout << "SetBasedRecordManager: Error! No record with the ID \""<<ID<<"\" is present.\n";
-  throw std::runtime_error("SetBasedRecordManager: Error! No record with the ID \""+ID+"\" is present.\n");
+  std::cerr << "SetBasedRecordManager: Error! No record with the ID \"" << ID
+            << "\" is present.\n";
+  throw std::runtime_error("SetBasedRecordManager: Error! No record with the ID \""
+                           + ID + "\" is present.\n");
 }
 
 template<typename recT>
@@ -173,16 +178,16 @@ int SetBasedRecordManager<recT>::readNextRecord(std::istream& input)
   }
 
   #if !defined(MW_NO_SINGLETON_EQUALITY_CHECK) && !defined(MW_NO_RECORD_EQUALITY)
-  //add it to the list, if not present with same data
+  // add it to the list, if not present with same data
   if (hasRecord(temp.recordID))
   {
     if (getRecord(temp.recordID).equals(temp))
     {
-      //same record with equal data is already present, return zero
+      // same record with equal data is already present, return zero
       return 0;
     }
-  }//if record present
-  #endif //MW_NO_SINGLETON_EQUALITY_CHECK
+  }
+  #endif
   addRecord(temp);
   return 1;
 }
@@ -190,17 +195,17 @@ int SetBasedRecordManager<recT>::readNextRecord(std::istream& input)
 template<typename recT>
 bool SetBasedRecordManager<recT>::removeRecord(const std::string& ID)
 {
-  return (m_Records.erase(ID)!=0);
+  return m_Records.erase(ID) != 0;
 }
 
 template<typename recT>
-typename SetBasedRecordManager<recT>::ListIterator SetBasedRecordManager<recT>::begin() const
+typename SetBasedRecordManager<recT>::Iterator SetBasedRecordManager<recT>::begin() const
 {
   return m_Records.begin();
 }
 
 template<typename recT>
-typename SetBasedRecordManager<recT>::ListIterator SetBasedRecordManager<recT>::end() const
+typename SetBasedRecordManager<recT>::Iterator SetBasedRecordManager<recT>::end() const
 {
   return m_Records.end();
 }
@@ -211,21 +216,18 @@ bool SetBasedRecordManager<recT>::saveAllToStream(std::ostream& output) const
 {
   if (!output.good())
   {
-    std::cout << "SetBasedRecordManager::saveAllToStream: Error: Bad stream.\n";
+    std::cerr << "SetBasedRecordManager::saveAllToStream: Error: Bad stream.\n";
     return false;
   }
-  ListIterator iter = m_Records.begin();
-  const ListIterator end_iter = m_Records.end();
-  while (iter!=end_iter)
+  for (const auto& record: m_Records)
   {
-    if (!iter->saveToStream(output))
+    if (!record.saveToStream(output))
     {
-      std::cout << "SetBasedRecordManager::saveAllToStream: Error while writing record for \""
-                << iter->recordID <<"\".\n";
+      std::cerr << "SetBasedRecordManager::saveAllToStream: Error while writing record for \""
+                << record.recordID << "\".\n";
       return false;
     }
-    ++iter;
-  }//while
+  }
   return output.good();
 }
 #endif
@@ -236,6 +238,6 @@ void SetBasedRecordManager<recT>::clear()
   m_Records.clear();
 }
 
-} //namespace
+} // namespace
 
 #endif // MW_SETBASEDRECORDMANAGER_HPP

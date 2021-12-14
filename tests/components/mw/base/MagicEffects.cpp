@@ -298,7 +298,7 @@ TEST_CASE("MWTP::MagicEffects")
     REQUIRE( mgr.getNumberOfEffects() == 0 );
   }
 
-  SECTION("saveToStream: failure with bad stream")
+  SECTION("saveAllToStream: failure with bad stream")
   {
     std::stringstream stream;
     stream.str(std::string("bla"));

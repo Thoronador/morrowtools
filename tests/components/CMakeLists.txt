@@ -21,6 +21,7 @@ set(component_tests_sources
     ../../mw/base/HelperIO.cpp
     ../../mw/base/MagicEffects.cpp
     ../../mw/base/MapBasedRecordManager.hpp
+    ../../mw/base/SetBasedRecordManager.hpp
     ../../mw/base/records/ActivatorRecord.cpp
     ../../mw/base/records/AIData.cpp
     ../../mw/base/records/AIPackages.cpp
@@ -146,6 +147,7 @@ set(component_tests_sources
     mw/base/HelperIO.cpp
     mw/base/MagicEffects.cpp
     mw/base/MapBasedRecordManager.cpp
+    mw/base/SetBasedRecordManager.cpp
     mw/base/records/ActivatorRecord.cpp
     mw/base/records/AIData.cpp
     mw/base/records/AlchemyPotionRecord.cpp

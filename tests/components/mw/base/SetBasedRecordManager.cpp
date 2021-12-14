@@ -20,35 +20,36 @@
 
 #include <catch.hpp>
 #include <filesystem>
-#include <fstream>
 #include <string_view>
-#include "../../../../mw/base/MapBasedRecordManager.hpp"
-#include "../../../../mw/base/records/StaticRecord.hpp"
+#include "../../../../mw/base/SetBasedRecordManager.hpp"
+#include "../../../../mw/base/records/GlobalRecord.hpp"
 
-TEST_CASE("MWTP::MapBasedRecordManager")
+TEST_CASE("MWTP::SetBasedRecordManager")
 {
   using namespace MWTP;
 
   SECTION("get (Singleton)")
   {
-    auto& mgr = MapBasedRecordManager<StaticRecord>::get();
-    auto& mgr2 = MapBasedRecordManager<StaticRecord>::get();
+    auto& mgr = SetBasedRecordManager<GlobalRecord>::get();
+    auto& mgr2 = SetBasedRecordManager<GlobalRecord>::get();
 
     REQUIRE( &mgr == &mgr2 );
   }
 
   SECTION("addRecord / hasRecord / getRecord")
   {
-    auto& mgr = MapBasedRecordManager<StaticRecord>::get();
+    auto& mgr = SetBasedRecordManager<GlobalRecord>::get();
     mgr.clear();
 
-    StaticRecord recordOne;
+    GlobalRecord recordOne;
     recordOne.recordID = "TestOne";
-    recordOne.ModelPath = "foo.nif";
+    recordOne.Type = GlobalType::Short;
+    recordOne.shortVal = 5;
 
-    StaticRecord recordTwo;
+    GlobalRecord recordTwo;
     recordTwo.recordID = "TestTwo";
-    recordOne.ModelPath = "bar.nif";
+    recordOne.Type = GlobalType::Long;
+    recordOne.longVal = 9001;
 
     REQUIRE_FALSE( mgr.hasRecord("TestOne") );
     REQUIRE_FALSE( mgr.hasRecord("TestTwo") );
@@ -67,12 +68,13 @@ TEST_CASE("MWTP::MapBasedRecordManager")
 
   SECTION("id is not case-sensitive")
   {
-    auto& mgr = MapBasedRecordManager<StaticRecord>::get();
+    auto& mgr = SetBasedRecordManager<GlobalRecord>::get();
     mgr.clear();
 
-    StaticRecord recordOne;
+    GlobalRecord recordOne;
     recordOne.recordID = "TestOne";
-    recordOne.ModelPath = "foo.nif";
+    recordOne.Type = GlobalType::Short;
+    recordOne.shortVal = 5;
 
     REQUIRE_FALSE( mgr.hasRecord("TestOne") );
     REQUIRE_FALSE( mgr.hasRecord("TESTONE") );
@@ -90,12 +92,13 @@ TEST_CASE("MWTP::MapBasedRecordManager")
 
   SECTION("addRecord with empty ID does not add anything")
   {
-    auto& mgr = MapBasedRecordManager<StaticRecord>::get();
+    auto& mgr = SetBasedRecordManager<GlobalRecord>::get();
     mgr.clear();
 
-    StaticRecord recordEmptyID;
+    GlobalRecord recordEmptyID;
     recordEmptyID.recordID = "";
-    recordEmptyID.ModelPath = "zero.nif";
+    recordEmptyID.Type = GlobalType::Short;
+    recordEmptyID.shortVal = 5;
 
     REQUIRE( mgr.getNumberOfRecords() == 0 );
     mgr.addRecord(recordEmptyID);
@@ -105,7 +108,7 @@ TEST_CASE("MWTP::MapBasedRecordManager")
 
   SECTION("getRecord throws when ID is not present")
   {
-    auto& mgr = MapBasedRecordManager<StaticRecord>::get();
+    auto& mgr = SetBasedRecordManager<GlobalRecord>::get();
     mgr.clear();
 
     REQUIRE_FALSE( mgr.hasRecord("NIL_NotInList") );
@@ -114,12 +117,13 @@ TEST_CASE("MWTP::MapBasedRecordManager")
 
   SECTION("removeRecord")
   {
-    auto& mgr = MapBasedRecordManager<StaticRecord>::get();
+    auto& mgr = SetBasedRecordManager<GlobalRecord>::get();
     mgr.clear();
 
-    StaticRecord recordOne;
+    GlobalRecord recordOne;
     recordOne.recordID = "TestOne";
-    recordOne.ModelPath = "some.nif";
+    recordOne.Type = GlobalType::Short;
+    recordOne.shortVal = 5;
 
     REQUIRE_FALSE( mgr.hasRecord("TestOne") );
     mgr.addRecord(recordOne);
@@ -134,20 +138,23 @@ TEST_CASE("MWTP::MapBasedRecordManager")
 
   SECTION("clear")
   {
-    auto& mgr = MapBasedRecordManager<StaticRecord>::get();
+    auto& mgr = SetBasedRecordManager<GlobalRecord>::get();
     mgr.clear();
 
-    StaticRecord recordOne;
+    GlobalRecord recordOne;
     recordOne.recordID = "TestOne";
-    recordOne.ModelPath = "foo.nif";
+    recordOne.Type = GlobalType::Short;
+    recordOne.shortVal = 5;
 
-    StaticRecord recordTwo;
+    GlobalRecord recordTwo;
     recordTwo.recordID = "TestTwo";
-    recordTwo.ModelPath = "bar.nif";
+    recordOne.Type = GlobalType::Long;
+    recordOne.longVal = 9001;
 
-    StaticRecord recordThree;
+    GlobalRecord recordThree;
     recordThree.recordID = "TestThree";
-    recordThree.ModelPath = "another.nif";
+    recordThree.Type = GlobalType::Float;
+    recordThree.floatVal = 1.0f;
 
     mgr.addRecord(recordOne);
     mgr.addRecord(recordTwo);
@@ -164,20 +171,23 @@ TEST_CASE("MWTP::MapBasedRecordManager")
 
   SECTION("getNumberOfRecords")
   {
-    auto& mgr = MapBasedRecordManager<StaticRecord>::get();
+    auto& mgr = SetBasedRecordManager<GlobalRecord>::get();
     mgr.clear();
 
-    StaticRecord recordOne;
+    GlobalRecord recordOne;
     recordOne.recordID = "TestOne";
-    recordOne.ModelPath = "foo.nif";
+    recordOne.Type = GlobalType::Short;
+    recordOne.shortVal = 5;
 
-    StaticRecord recordTwo;
+    GlobalRecord recordTwo;
     recordTwo.recordID = "TestTwo";
-    recordTwo.ModelPath = "bar.nif";
+    recordOne.Type = GlobalType::Long;
+    recordOne.longVal = 9001;
 
-    StaticRecord recordThree;
+    GlobalRecord recordThree;
     recordThree.recordID = "TestThree";
-    recordThree.ModelPath = "another.nif";
+    recordThree.Type = GlobalType::Float;
+    recordThree.floatVal = 1.0f;
 
     REQUIRE( mgr.getNumberOfRecords() == 0 );
     mgr.addRecord(recordOne);
@@ -188,13 +198,15 @@ TEST_CASE("MWTP::MapBasedRecordManager")
     REQUIRE( mgr.getNumberOfRecords() == 3 );
 
 
-    StaticRecord recordFour;
+    GlobalRecord recordFour;
     recordFour.recordID = "Test4";
-    recordFour.ModelPath = "quattro.nif";
+    recordFour.Type = GlobalType::Short;
+    recordFour.shortVal = 4;
 
-    StaticRecord recordFive;
+    GlobalRecord recordFive;
     recordFive.recordID = "TestFive";
-    recordFour.ModelPath = "high_5.nif";
+    recordFive.Type = GlobalType::Short;
+    recordFive.shortVal = 4;
 
     mgr.addRecord(recordFour);
     mgr.addRecord(recordFive);
@@ -203,20 +215,23 @@ TEST_CASE("MWTP::MapBasedRecordManager")
 
   SECTION("begin / end")
   {
-    auto& mgr = MapBasedRecordManager<StaticRecord>::get();
+    auto& mgr = SetBasedRecordManager<GlobalRecord>::get();
     mgr.clear();
 
-    StaticRecord recordOne;
+    GlobalRecord recordOne;
     recordOne.recordID = "TestOne";
-    recordOne.ModelPath = "foo.nif";
+    recordOne.Type = GlobalType::Short;
+    recordOne.shortVal = 5;
 
-    StaticRecord recordTwo;
+    GlobalRecord recordTwo;
     recordTwo.recordID = "TestTwo";
-    recordTwo.ModelPath = "bar.nif";
+    recordOne.Type = GlobalType::Long;
+    recordOne.longVal = 9001;
 
-    StaticRecord recordThree;
+    GlobalRecord recordThree;
     recordThree.recordID = "TestThree";
-    recordThree.ModelPath = "another.nif";
+    recordThree.Type = GlobalType::Float;
+    recordThree.floatVal = 1.0f;
 
     REQUIRE( mgr.begin() == mgr.end() );
 
@@ -227,11 +242,11 @@ TEST_CASE("MWTP::MapBasedRecordManager")
     REQUIRE_FALSE( mgr.begin() == mgr.end() );
 
     auto iter = mgr.begin();
-    REQUIRE( iter->first == "TestOne" );
+    REQUIRE( iter->recordID == "TestOne" );
     ++iter;
-    REQUIRE( iter->first == "TestThree" );
+    REQUIRE( iter->recordID == "TestThree" );
     ++iter;
-    REQUIRE( iter->first == "TestTwo" );
+    REQUIRE( iter->recordID == "TestTwo" );
     ++iter;
     REQUIRE( iter == mgr.end() );
 
@@ -242,23 +257,24 @@ TEST_CASE("MWTP::MapBasedRecordManager")
   SECTION("readNextRecord + saveToStream: basic stuff")
   {
     using namespace std::string_view_literals;
-    const auto data = "STAT\x43\0\0\0\0\0\0\0\0\x04\0\0NAME\x18\0\0\0Active_MH_Forcefield_05\0MODL\x1B\0\0\0f\\Active_MH_Forcefield.NIF\0"sv;
+    const auto data = "GLOB\x2E\0\0\0\0\0\0\0\0\0\0\0NAME\x11\0\0\0NPCVoiceDistance\0FNAM\x01\0\0\0sFLTV\x04\0\0\0\0\x80;D"sv;
     std::istringstream stream;
     stream.str(std::string(data));
 
     uint32_t dummy = 0;
 
-    auto& mgr = MapBasedRecordManager<StaticRecord>::get();
+    auto& mgr = SetBasedRecordManager<GlobalRecord>::get();
     mgr.clear();
 
-    // read STAT, because header is handled before loadFromStream.
+    // read GLOB, because header is handled before loadFromStream.
     stream.read(reinterpret_cast<char*>(&dummy), 4);
     REQUIRE( stream.good() );
     // read record
     REQUIRE( mgr.readNextRecord(stream) ==  1 );
 
-    REQUIRE( mgr.hasRecord("Active_MH_Forcefield_05") );
-    REQUIRE( mgr.getRecord("Active_MH_Forcefield_05").ModelPath == "f\\Active_MH_Forcefield.NIF" );
+    REQUIRE( mgr.hasRecord("NPCVoiceDistance") );
+    REQUIRE( mgr.getRecord("NPCVoiceDistance").Type == GlobalType::Short );
+    REQUIRE( mgr.getRecord("NPCVoiceDistance").shortVal == 750 );
     REQUIRE( mgr.getNumberOfRecords() == 1 );
 
     // save it
@@ -271,62 +287,65 @@ TEST_CASE("MWTP::MapBasedRecordManager")
   SECTION("readNextRecord: reading the same record twice still yields only one record")
   {
     using namespace std::string_view_literals;
-    const std::string_view data = "STAT\x43\0\0\0\0\0\0\0\0\x04\0\0NAME\x18\0\0\0Active_MH_Forcefield_05\0MODL\x1B\0\0\0f\\Active_MH_Forcefield.NIF\0STAT\x43\0\0\0\0\0\0\0\0\x04\0\0NAME\x18\0\0\0Active_MH_Forcefield_05\0MODL\x1B\0\0\0f\\Active_MH_Forcefield.NIF\0"sv;
+    const std::string_view data = "GLOB\x2E\0\0\0\0\0\0\0\0\0\0\0NAME\x11\0\0\0NPCVoiceDistance\0FNAM\x01\0\0\0sFLTV\x04\0\0\0\0\x80;DGLOB\x2E\0\0\0\0\0\0\0\0\0\0\0NAME\x11\0\0\0NPCVoiceDistance\0FNAM\x01\0\0\0sFLTV\x04\0\0\0\0\x80;D"sv;
     std::istringstream stream;
     stream.str(std::string(data));
 
     uint32_t dummy = 0;
 
-    auto& mgr = MapBasedRecordManager<StaticRecord>::get();
+    auto& mgr = SetBasedRecordManager<GlobalRecord>::get();
     mgr.clear();
 
-    // read STAT, because header is handled before loadFromStream.
+    // read GLOB, because header is handled before loadFromStream.
     stream.read(reinterpret_cast<char*>(&dummy), 4);
     REQUIRE( stream.good() );
     // read record
     REQUIRE( mgr.readNextRecord(stream) ==  1 );
 
-    // read STAT, because header is handled before loadFromStream.
+    // read GLOB, because header is handled before loadFromStream.
     stream.read(reinterpret_cast<char*>(&dummy), 4);
     REQUIRE( stream.good() );
     // read record
     REQUIRE( mgr.readNextRecord(stream) ==  0 );
 
-    REQUIRE( mgr.hasRecord("Active_MH_Forcefield_05") );
-    REQUIRE( mgr.getRecord("Active_MH_Forcefield_05").ModelPath == "f\\Active_MH_Forcefield.NIF" );
+    REQUIRE( mgr.hasRecord("NPCVoiceDistance") );
+    REQUIRE( mgr.getRecord("NPCVoiceDistance").Type == GlobalType::Short );
+    REQUIRE( mgr.getRecord("NPCVoiceDistance").shortVal == 750 );
     REQUIRE( mgr.getNumberOfRecords() == 1 );
   }
 
   SECTION("readNextRecord + saveToStream: multiple records")
   {
     using namespace std::string_view_literals;
-    const auto data = "STAT\x43\0\0\0\0\0\0\0\0\x04\0\0NAME\x18\0\0\0Active_MH_Forcefield_05\0MODL\x1B\0\0\0f\\Active_MH_Forcefield.NIF\0STAT\x3C\0\0\0\0\0\0\0\0\0\0\0NAME\x13\0\0\0Ex_MH_Lantern_Post\0MODL\x19\0\0\0x\\Ex_MH_Lantern_Post.NIF\0"sv;
+    const auto data = "GLOB\x24\0\0\0\0\0\0\0\0\0\0\0NAME\x07\0\0\0PCGold\0FNAM\x01\0\0\0lFLTV\x04\0\0\0\0\0\0\0GLOB\x2E\0\0\0\0\0\0\0\0\0\0\0NAME\x11\0\0\0WerewolfClawMult\0FNAM\x01\0\0\0fFLTV\x04\0\0\0\0\0\xC8\x41"sv;
     std::istringstream stream;
     stream.str(std::string(data));
 
     uint32_t dummy = 0;
 
-    auto& mgr = MapBasedRecordManager<StaticRecord>::get();
+    auto& mgr = SetBasedRecordManager<GlobalRecord>::get();
     mgr.clear();
 
-    // read STAT, because header is handled before loadFromStream.
+    // read GLOB, because header is handled before loadFromStream.
     stream.read(reinterpret_cast<char*>(&dummy), 4);
     REQUIRE( stream.good() );
     // read record
     REQUIRE( mgr.readNextRecord(stream) ==  1 );
 
-    REQUIRE( mgr.hasRecord("Active_MH_Forcefield_05") );
-    REQUIRE( mgr.getRecord("Active_MH_Forcefield_05").ModelPath == "f\\Active_MH_Forcefield.NIF" );
+    REQUIRE( mgr.hasRecord("PCGold") );
+    REQUIRE( mgr.getRecord("PCGold").Type == GlobalType::Long );
+    REQUIRE( mgr.getRecord("PCGold").longVal == 0 );
     REQUIRE( mgr.getNumberOfRecords() == 1 );
 
-    // read STAT, because header is handled before loadFromStream.
+    // read GLOB, because header is handled before loadFromStream.
     stream.read(reinterpret_cast<char*>(&dummy), 4);
     REQUIRE( stream.good() );
     // read record
     REQUIRE( mgr.readNextRecord(stream) ==  1 );
 
-    REQUIRE( mgr.hasRecord("Ex_MH_Lantern_Post") );
-    REQUIRE( mgr.getRecord("Ex_MH_Lantern_Post").ModelPath == "x\\Ex_MH_Lantern_Post.NIF" );
+    REQUIRE( mgr.hasRecord("WerewolfClawMult") );
+    REQUIRE( mgr.getRecord("WerewolfClawMult").Type == GlobalType::Float );
+    REQUIRE( mgr.getRecord("WerewolfClawMult").floatVal == 25.0f );
     REQUIRE( mgr.getNumberOfRecords() == 2 );
 
     // save it
@@ -339,22 +358,22 @@ TEST_CASE("MWTP::MapBasedRecordManager")
   SECTION("readNextRecord: failure")
   {
     using namespace std::string_view_literals;
-    const std::string_view data = "STAT\x43\0\0\0\0\0\0\0\0\x04\0\0FAIL"sv;
+    const std::string_view data = "GLOB\x2E\0\0\0\0\0\0\0\0\0\0\0FAIL"sv;
     std::istringstream stream;
     stream.str(std::string(data));
 
     uint32_t dummy = 0;
 
-    auto& mgr = MapBasedRecordManager<StaticRecord>::get();
+    auto& mgr = SetBasedRecordManager<GlobalRecord>::get();
     mgr.clear();
 
-    // read STAT, because header is handled before loadFromStream.
+    // read GLOB, because header is handled before loadFromStream.
     stream.read(reinterpret_cast<char*>(&dummy), 4);
     REQUIRE( stream.good() );
     // read record
     REQUIRE( mgr.readNextRecord(stream) == -1 );
 
-    REQUIRE_FALSE( mgr.hasRecord("Active_MH_Forcefield_05") );
+    REQUIRE_FALSE( mgr.hasRecord("NPCVoiceDistance") );
     REQUIRE( mgr.getNumberOfRecords() == 0 );
   }
 
@@ -367,7 +386,7 @@ TEST_CASE("MWTP::MapBasedRecordManager")
     stream.read(reinterpret_cast<char*>(&dummy), 4);
     REQUIRE_FALSE( stream.good() );
     // Writing stuff should fail.
-    auto& mgr = MapBasedRecordManager<StaticRecord>::get();
+    auto& mgr = SetBasedRecordManager<GlobalRecord>::get();
     REQUIRE_FALSE( mgr.saveAllToStream(stream) );
   }
 }

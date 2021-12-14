@@ -474,8 +474,8 @@ int main(int argc, char **argv)
   }
 
   // delete all non-spells (abilities, powers,...) and update spells with naming scheme
-  MWTP::Spells::ListIterator spell_end = MWTP::Spells::get().end();
-  MWTP::Spells::ListIterator spell_cur = MWTP::Spells::get().begin();
+  auto spell_end = MWTP::Spells::get().end();
+  auto spell_cur = MWTP::Spells::get().begin();
   while (spell_cur != spell_end)
   {
     // Is it a spell?

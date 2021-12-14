@@ -36,7 +36,7 @@ class MapBasedRecordManager
 {
   public:
     /// iterator type for internal record map
-    typedef typename std::map<std::string, recT, ci_less>::const_iterator ListIterator;
+    typedef typename std::map<std::string, recT, ci_less>::const_iterator Iterator;
 
     /** \brief Provides access to the singleton instance.
      *
@@ -71,7 +71,7 @@ class MapBasedRecordManager
      * \param ID  the ID of the record
      * \return Returns a reference to the record with the given ID, if such a
      *         record is present. Throws, if no such record exists.
-     * \remarks If no record with the given ID is present, the function will
+     * \remarks If no record with the given ID is present, the method will
      *          throw an exception. Use hasRecord() to determine, if a record
      *          with the desired ID is present.
      */
@@ -96,10 +96,10 @@ class MapBasedRecordManager
     bool removeRecord(const std::string& ID);
 
     /** Returns constant iterator to the beginning of the internal structure. */
-    ListIterator begin() const;
+    Iterator begin() const;
 
     /** Returns constant iterator to the end of the internal structure. */
-    ListIterator end() const;
+    Iterator end() const;
 
     #ifndef MW_UNSAVEABLE_RECORDS
     /** \brief Tries to save all available records to the given stream.
@@ -162,7 +162,7 @@ unsigned int MapBasedRecordManager<recT>::getNumberOfRecords() const
 template<typename recT>
 const recT& MapBasedRecordManager<recT>::getRecord(const std::string& ID) const
 {
-  const ListIterator iter = m_Records.find(ID);
+  const auto iter = m_Records.find(ID);
   if (iter != m_Records.end())
   {
     return iter->second;
@@ -205,13 +205,13 @@ bool MapBasedRecordManager<recT>::removeRecord(const std::string& ID)
 }
 
 template<typename recT>
-typename MapBasedRecordManager<recT>::ListIterator MapBasedRecordManager<recT>::begin() const
+typename MapBasedRecordManager<recT>::Iterator MapBasedRecordManager<recT>::begin() const
 {
   return m_Records.begin();
 }
 
 template<typename recT>
-typename MapBasedRecordManager<recT>::ListIterator MapBasedRecordManager<recT>::end() const
+typename MapBasedRecordManager<recT>::Iterator MapBasedRecordManager<recT>::end() const
 {
   return m_Records.end();
 }
@@ -229,7 +229,7 @@ bool MapBasedRecordManager<recT>::saveAllToStream(std::ostream& output) const
   {
     if (!record.saveToStream(output))
     {
-      std::cout << "MapBasedRecordManager::saveAllToStream: Error while writing record for \""
+      std::cerr << "MapBasedRecordManager::saveAllToStream: Error while writing record for \""
                 << id << "\".\n";
       return false;
     }

@@ -131,6 +131,8 @@ std::string lz4Version()
            .append(std::to_string(minor)).append(".")
            .append(std::to_string(patch));
     #else
+    // Newer versions of the lz4 library provide a function that returns the
+    // library version as a string / char*, so we can use that.
     return std::string(LZ4_versionString());
     #endif // LZ4_VERSION_NUMBER
   #endif

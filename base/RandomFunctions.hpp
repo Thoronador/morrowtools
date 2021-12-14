@@ -28,7 +28,7 @@ namespace MWTP
 
 /** \brief Gets a pseudo-random sequence of alphanumeric characters.
  *
- * \param length   the desired length of the sequence
+ * \param length   the desired length of the sequence in characters
  * \return Returns a string containing pseudo-random alphanumeric characters.
  */
 std::string randomAlphaNumericSequence(const unsigned int length);

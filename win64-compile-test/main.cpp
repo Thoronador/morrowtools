@@ -27,6 +27,10 @@ int main(void)
   return 0;
   #else
   // Targeting something else, make compilation fail here.
+  // This failure is intentional, because we use CMake's try_compile() command
+  // (see <https://cmake.org/cmake/help/latest/command/try_compile.html>) to
+  // check whether the build is targeting a 64-bit Windows OS and it needs to
+  // fail when that is not the case.
   return fail->hard;
   #endif
 }

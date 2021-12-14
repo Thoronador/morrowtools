@@ -28,13 +28,14 @@ namespace MWTP
 {
 
 /** Tries to decompress the data pointed to by compressedData and stores the
- * decompressed bits in decompressionBuffer.
+ * decompressed bits in decompBuffer.
  *
  * \param compressedData   pointer to the buffer containing the compressed data
  * \param compressedSize   length of the compressed data buffer in bytes
  * \param decompBuffer     pre-allocated buffer that will hold the decompressed data
  * \param decompSize       size of decompBuffer in bytes
  * \return Returns true in case of success, or false if an error occurred.
+ * \todo  Wrap buffer pointers and corresponding sizes in a small class.
  */
 bool lz4Decompress(uint8_t * compressedData, const uint32_t compressedSize, uint8_t * decompBuffer, const uint32_t decompSize);
 

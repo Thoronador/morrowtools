@@ -1,6 +1,6 @@
 /*
  -------------------------------------------------------------------------------
-    This file is part of the test suite for Morrowind Tools Project.
+    This file is part of the test suite for Skyrim Tools Project.
     Copyright (C) 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify

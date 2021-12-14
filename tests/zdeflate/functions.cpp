@@ -1,6 +1,6 @@
 /*
  -------------------------------------------------------------------------------
-    This file is part of the Skyrim Tools Project.
+    This file is part of the test suite for the Skyrim Tools Project.
     Copyright (C) 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify

@@ -65,6 +65,8 @@
 		<Unit filename="../../mw/base/MagicEffects.hpp" />
 		<Unit filename="../../mw/base/MapBasedRecordManager.hpp" />
 		<Unit filename="../../mw/base/SetBasedRecordManager.hpp" />
+		<Unit filename="../../mw/base/Skills.cpp" />
+		<Unit filename="../../mw/base/Skills.hpp" />
 		<Unit filename="../../mw/base/records/AIData.cpp" />
 		<Unit filename="../../mw/base/records/AIData.hpp" />
 		<Unit filename="../../mw/base/records/AIPackages.cpp" />
@@ -301,6 +303,7 @@
 		<Unit filename="mw/base/MagicEffects.cpp" />
 		<Unit filename="mw/base/MapBasedRecordManager.cpp" />
 		<Unit filename="mw/base/SetBasedRecordManager.cpp" />
+		<Unit filename="mw/base/Skills.cpp" />
 		<Unit filename="mw/base/records/AIData.cpp" />
 		<Unit filename="mw/base/records/ActivatorRecord.cpp" />
 		<Unit filename="mw/base/records/AlchemyPotionRecord.cpp" />

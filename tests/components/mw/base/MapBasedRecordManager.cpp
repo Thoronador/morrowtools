@@ -48,7 +48,7 @@ TEST_CASE("MWTP::MapBasedRecordManager")
 
     StaticRecord recordTwo;
     recordTwo.recordID = "TestTwo";
-    recordOne.ModelPath = "bar.nif";
+    recordTwo.ModelPath = "bar.nif";
 
     REQUIRE_FALSE( mgr.hasRecord("TestOne") );
     REQUIRE_FALSE( mgr.hasRecord("TestTwo") );
@@ -194,7 +194,7 @@ TEST_CASE("MWTP::MapBasedRecordManager")
 
     StaticRecord recordFive;
     recordFive.recordID = "TestFive";
-    recordFour.ModelPath = "high_5.nif";
+    recordFive.ModelPath = "high_5.nif";
 
     mgr.addRecord(recordFour);
     mgr.addRecord(recordFive);

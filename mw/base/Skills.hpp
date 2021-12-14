@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011 Thoronador
+    Copyright (C) 2010, 2011, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -29,95 +29,96 @@
 namespace MWTP
 {
 
-//iterator type
-typedef std::map<int32_t, SkillRecord>::const_iterator SkillListIterator;
-
 class Skills
 {
   public:
-    /* destructor */
-    ~Skills();
-
-    /* singleton access method */
+    /** \brief Provides access to the singleton instance.
+     *
+     * \return Returns a reference to the singleton instance.
+     */
     static Skills& get();
 
-    /* adds a new skill record to the list
-
-       parameters:
-           SkillData - data record of the skill
-    */
+    /** \brief Adds a new skill to the instance.
+     *
+     * \param SkillData   the skill to add
+     */
     void addSkill(const SkillRecord& SkillData);
 
-    /* returns true, if the skill with the given index exists
-
-       parameters:
-           Index - the index of the skill
-    */
+    /** \brief Checks whether a skill with the given index is present.
+     *
+     * \param Index  the index of the skill
+     * \return Returns true, if a skill with the given index is present.
+     *         Returns false otherwise.
+     */
     bool hasSkill(const int32_t Index) const;
 
-    /* returns the data record of the skill with the given index
+    /** Gets a reference to the skill with the given index.
+     *
+     * \param Index  the index of the skill
+     * \return Returns a reference to the record with the given index, if such
+     *         a record is present. Throws, if no such record exists.
+     * \remarks If no record with the given index is present, the method will
+     *          throw an exception. Use hasSkill() to determine, if a skill
+     *          with the desired index is present.
+     */
+    const SkillRecord& getSkill(const int32_t Index) const;
 
-       parameters:
-           Index - the index of the skill
-
-       remarks:
-           If there is no skill with the given index, this function will throw
-           an exception. Therefore you should use hasSkill() to check for the
-           presence of a certain skill record first.
-    */
-    const SkillRecord& getSkillData(const int32_t Index) const;
-
-    /* returns the name of the game setting that contains the name of the
-       skill specified by the given index
-
-       parameters:
-           Index - the index of the skill
-    */
+    /** Gets the name of the game setting that contains the name of the skill.
+     *
+     * \param Index  the index of the skill
+     * \return Returns the name of the game setting that contains the name of
+     *         the skill specified by the given index.
+     */
     static std::string getSettingNameForSkill(const int32_t Index);
 
-    /* returns the number of current skills */
+    /** Gets the number of skills in the instance.
+     *
+     * \return Returns the number of skills in the instance.
+     */
     unsigned int getNumberOfSkills() const;
 
-    /* tries to read a skill record from the given input stream.
+    /** \brief Tries to read a skill record from the given input stream.
+     *
+     * \param input       the input stream that is used to read the record
+     * \return If an error occurred, the function returns -1. Otherwise it
+     *         returns the number of updated records. (Usually that is one.
+     *         If, however, the record that was read is equal to the one already
+     *         in the list, zero is returned and the existing record remains
+     *         unchanged.)
+     */
+    int readNextRecord(std::istream& input);
 
-       return value:
-           If an error occurred, the function returns -1. Otherwise it returns
-           the number of updated records. (Usually that is one. If, however, the
-           record that was read is equal to the one already in the list, zero is
-           returned.)
+    /// iterator type
+    typedef std::map<int32_t, SkillRecord>::const_iterator Iterator;
 
-       parameters:
-           input - the input stream that is used to read the record
-    */
-    int readRecordSKIL(std::istream& input);
+    /** Returns constant iterator to the beginning of the internal structure. */
+    Iterator begin() const;
 
-    /* returns a constant iterator the the start of the list */
-    SkillListIterator begin() const;
+    /** Returns constant iterator to the end of the internal structure. */
+    Iterator end() const;
 
-    /* returns a constant iterator to the end of the list */
-    SkillListIterator end() const;
-
-    /* tries to save all available skills to the given stream and returns true
-       on success, false on failure
-
-       parameters:
-           output - the output stream that shall be used to save the skills
-    */
+    #ifndef MW_UNSAVEABLE_RECORDS
+    /** \brief Tries to save all available records to the given stream.
+     *
+     * \param output  the output stream that shall be used to save the records
+     * \return Returns true on success, false on failure.
+     */
     bool saveAllToStream(std::ostream& output) const;
+    #endif // MW_UNSAVEABLE_RECORDS
 
-    /* removes all skills from the list */
+    /** Removes all records from the instance. */
     void clear();
   private:
-    /* constructor - private due to singleton pattern */
+    /** Constructor - private due to singleton pattern. */
     Skills();
 
     /* no copy constructor due to singleton pattern */
     Skills(const Skills& op) = delete;
+    Skills(Skills&& op) = delete;
 
-    /* internal data list */
-    std::map<int32_t, SkillRecord> m_Skills;
-}; //class
+    std::map<int32_t, SkillRecord> m_Skills; /**< internal data */
+}; // class
 
-} //namespace
+} // namespace
 
 #endif // MW_SKILLS_HPP

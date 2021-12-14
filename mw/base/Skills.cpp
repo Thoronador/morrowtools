@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011, 2013, 2014  Thoronador
+    Copyright (C) 2010, 2011, 2013, 2014, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,11 +30,6 @@ Skills::Skills()
 {
 }
 
-Skills::~Skills()
-{
-  m_Skills.clear();
-}
-
 Skills& Skills::get()
 {
   static Skills Instance;
@@ -51,109 +46,77 @@ bool Skills::hasSkill(const int Index) const
   return m_Skills.find(Index)!=m_Skills.end();
 }
 
-const SkillRecord& Skills::getSkillData(const int Index) const
+const SkillRecord& Skills::getSkill(const int Index) const
 {
-  const std::map<int, SkillRecord>::const_iterator iter = m_Skills.find(Index);
-  if (iter!=m_Skills.end())
+  const auto iter = m_Skills.find(Index);
+  if (iter != m_Skills.end())
   {
     return iter->second;
   }
-  throw std::runtime_error("Skills::getSkillData(): No skill data for given index!");
+  throw std::runtime_error("Skills::getSkill(): No skill data for given index!");
 }
 
 std::string Skills::getSettingNameForSkill(const int32_t Index)
 {
-  if ((Index<0) or (Index>26))
-  {
-    std::cout << "No setting defined for skill index "<<Index<<".\n";
-    throw std::runtime_error("Skills::getSettingNameForSkill(): No setting defined for given skill index.");
-  }
   switch(Index)
   {
     case SkillBlock:
          return "sSkillBlock";
-         break;
     case SkillArmorer:
          return "sSkillArmorer";
-         break;
     case SkillMediumArmor:
          return "sSkillMediumarmor";
-         break;
     case SkillHeavyArmor:
          return "sSkillHeavyarmor";
-         break;
     case SkillBluntWeapon:
          return "sSkillBluntweapon";
-         break;
     case SkillLongBlade:
          return "sSkillLongblade";
-         break;
     case SkillAxe:
          return "sSkillAxe";
-         break;
     case SkillSpear:
          return "sSkillSpear";
-         break;
     case SkillAthletics:
          return "sSkillAthletics";
-         break;
     case SkillEnchant:
          return "sSkillEnchant";
-         break;
     case SkillDestruction:
          return "sSkillDestruction";
-         break;
     case SkillAlteration:
          return "sSkillAlteration";
-         break;
     case SkillIllusion:
          return "sSkillIllusion";
-         break;
     case SkillConjuration:
          return "sSkillConjuration";
-         break;
     case SkillMysticism:
          return "sSkillMysticism";
-         break;
     case SkillRestoration:
          return "sSkillRestoration";
-         break;
     case SkillAlchemy:
          return "sSkillAlchemy";
-         break;
     case SkillUnarmored:
          return "sSkillUnarmored";
-         break;
     case SkillSecurity:
          return "sSkillSecurity";
-         break;
     case SkillSneak:
          return "sSkillSneak";
-         break;
     case SkillAcrobatics:
          return "sSkillAcrobatics";
-         break;
     case SkillLightArmor:
          return "sSkillLightarmor";
-         break;
     case SkillShortBlade:
          return "sSkillShortblade";
-         break;
     case SkillMarksman:
          return "sSkillMarksman";
-         break;
     case SkillMercantile:
          return "sSkillMercantile";
-         break;
     case SkillSpeechcraft:
          return "sSkillSpeechcraft";
-         break;
     case SkillHandToHand:
          return "sSkillHandtohand";
-         break;
-  }//swi
-  std::cout << "No setting defined for skill index "<<Index<<".\n";
-  throw std::runtime_error("Skills::getSettingNameForSkill(): No setting defined for given skill index. (2nd)");
+  }
+  std::cerr << "No setting defined for skill index " << Index << ".\n";
+  throw std::runtime_error("Skills::getSettingNameForSkill(): No setting defined for given skill index.");
 }
 
 unsigned int Skills::getNumberOfSkills() const
@@ -161,62 +124,61 @@ unsigned int Skills::getNumberOfSkills() const
   return m_Skills.size();
 }
 
-int Skills::readRecordSKIL(std::istream& input)
+int Skills::readNextRecord(std::istream& input)
 {
   SkillRecord temp;
-  if (temp.loadFromStream(input))
+  if (!temp.loadFromStream(input))
   {
-    if (hasSkill(temp.SkillIndex))
-    {
-      if (getSkillData(temp.SkillIndex).equals(temp))
-      {
-        //Skill is equal to the already present skill record, return zero.
-        return 0;
-      }
-    }//if skill present
-    //add new or changed skill
-    addSkill(temp);
-    return 1;
+    std::cerr << "Skills::readNextRecord: Error while reading record.\n";
+    return -1;
   }
-  std::cout << "readRecordSKIL: Error while reading record.\n";
-  return -1;
+  if (hasSkill(temp.SkillIndex))
+  {
+    if (getSkill(temp.SkillIndex).equals(temp))
+    {
+      // Skill is equal to the already present skill record, return zero.
+      return 0;
+    }
+  }
+  // add new or changed skill
+  addSkill(temp);
+  return 1;
 }
 
-SkillListIterator Skills::begin() const
+Skills::Iterator Skills::begin() const
 {
   return m_Skills.begin();
 }
 
-SkillListIterator Skills::end() const
+Skills::Iterator Skills::end() const
 {
   return m_Skills.end();
 }
 
+#ifndef MW_UNSAVEABLE_RECORDS
 bool Skills::saveAllToStream(std::ostream& output) const
 {
   if (!output.good())
   {
-    std::cout << "Skills::saveAllToStream: Error: Bad stream.\n";
+    std::cerr << "Skills::saveAllToStream: Error: Bad stream.\n";
     return false;
   }
-  SkillListIterator iter = m_Skills.begin();
-  const SkillListIterator end_iter = m_Skills.end();
-  while (iter!=end_iter)
+  for (const auto& [idx, record]: m_Skills)
   {
-    if (!iter->second.saveToStream(output))
+    if (!record.saveToStream(output))
     {
-      std::cout << "Skills::saveAllToStream: Error while writing record for "
-                << "skill index "<<iter->first<<".\n";
+      std::cerr << "Skills::saveAllToStream: Error while writing record for "
+                << "skill index " << idx << ".\n";
       return false;
     }
-    ++iter;
-  }//while
+  }
   return output.good();
 }
+#endif // MW_UNSAVEABLE_RECORDS
 
 void Skills::clear()
 {
   m_Skills.clear();
 }
 
-} //namespace
+} // namespace

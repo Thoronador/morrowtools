@@ -187,7 +187,7 @@ int ESMReaderAll::processNextRecord(std::istream& input)
          lastResult = Scripts::get().readNextRecord(input);
          break;
     case cSKIL:
-         lastResult = Skills::get().readRecordSKIL(input);
+         lastResult = Skills::get().readNextRecord(input);
          break;
     case cSNDG:
          lastResult = SoundGenerators::get().readNextRecord(input);

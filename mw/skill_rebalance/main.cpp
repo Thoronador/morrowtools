@@ -319,7 +319,7 @@ int main(int argc, char **argv)
   else
   {
     // non-minimalistic approach (like in plugin "More Morrowind")
-    MWTP::SkillListIterator iter = MWTP::Skills::get().begin();
+    auto iter = MWTP::Skills::get().begin();
     while (iter != MWTP::Skills::get().end())
     {
       MWTP::SkillRecord scaledSkill = iter->second;

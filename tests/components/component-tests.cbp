@@ -83,6 +83,8 @@
 		<Unit filename="../../mw/base/records/BodyPartAssociation.hpp" />
 		<Unit filename="../../mw/base/records/BodyPartRecord.cpp" />
 		<Unit filename="../../mw/base/records/BodyPartRecord.hpp" />
+		<Unit filename="../../mw/base/records/BookRecord.cpp" />
+		<Unit filename="../../mw/base/records/BookRecord.hpp" />
 		<Unit filename="../../mw/base/records/DoorRecord.cpp" />
 		<Unit filename="../../mw/base/records/DoorRecord.hpp" />
 		<Unit filename="../../mw/base/records/GameSettingRecord.cpp" />
@@ -311,6 +313,7 @@
 		<Unit filename="mw/base/records/BasicRecord.cpp" />
 		<Unit filename="mw/base/records/BodyPartAssociation.cpp" />
 		<Unit filename="mw/base/records/BodyPartRecord.cpp" />
+		<Unit filename="mw/base/records/BookRecord.cpp" />
 		<Unit filename="mw/base/records/DoorRecord.cpp" />
 		<Unit filename="mw/base/records/GameSettingRecord.cpp" />
 		<Unit filename="mw/base/records/GenericRecord.cpp" />

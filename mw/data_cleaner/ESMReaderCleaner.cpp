@@ -126,7 +126,7 @@ int ESMReaderCleaner::processNextRecord(std::istream& in_File)
          baseRec = new BookRecord;
          if (baseRec->loadFromStream(in_File))
          {
-           MeshSet.insert(baseDirMesh+static_cast<BookRecord*>(baseRec)->MeshPath);
+           MeshSet.insert(baseDirMesh+static_cast<BookRecord*>(baseRec)->ModelPath);
            IconSet.insert(baseDirIcon+static_cast<BookRecord*>(baseRec)->InventoryIcon);
            delete baseRec;
            return 1;

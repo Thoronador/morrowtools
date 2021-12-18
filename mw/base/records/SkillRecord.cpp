@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011, 2013, 2021  Thoronador
+    Copyright (C) 2010, 2011, 2013, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -31,9 +31,9 @@ SkillRecord::SkillRecord()
 : BasicRecord(),
   SkillIndex(0),
   Attribute(0),
-  Specialization(0),
+  Specialization(SkillSpecialization::Combat),
   UseValues({ 0.0f, 0.0f, 0.0f, 0.0f }),
-  Description("")
+  Description(std::string())
 {
 }
 
@@ -44,6 +44,7 @@ bool SkillRecord::equals(const SkillRecord& other) const
       && (SkillIndex == other.SkillIndex);
 }
 
+#ifndef MW_UNSAVEABLE_RECORDS
 bool SkillRecord::saveToStream(std::ostream& output) const
 {
   output.write(reinterpret_cast<const char*>(&cSKIL), 4);
@@ -86,13 +87,14 @@ bool SkillRecord::saveToStream(std::ostream& output) const
   output.write(Description.c_str(), SubLength);
   return output.good();
 }
+#endif // !MW_UNSAVEABLE_RECORDS
 
-bool SkillRecord::loadFromStream(std::istream& in_File)
+bool SkillRecord::loadFromStream(std::istream& input)
 {
   uint32_t Size = 0;
-  in_File.read(reinterpret_cast<char*>(&Size), 4);
-  in_File.read(reinterpret_cast<char*>(&HeaderOne), 4);
-  in_File.read(reinterpret_cast<char*>(&HeaderFlags), 4);
+  input.read(reinterpret_cast<char*>(&Size), 4);
+  input.read(reinterpret_cast<char*>(&HeaderOne), 4);
+  input.read(reinterpret_cast<char*>(&HeaderFlags), 4);
 
   /*Skills:
     INDX = Skill ID (4 bytes, long)
@@ -107,14 +109,14 @@ bool SkillRecord::loadFromStream(std::istream& in_File)
   uint32_t SubLength = 0;
 
   // read INDX
-  in_File.read(reinterpret_cast<char*>(&SubRecName), 4);
+  input.read(reinterpret_cast<char*>(&SubRecName), 4);
   if (SubRecName != cINDX)
   {
     UnexpectedRecord(cINDX, SubRecName);
     return false;
   }
   // INDX's length
-  in_File.read(reinterpret_cast<char*>(&SubLength), 4);
+  input.read(reinterpret_cast<char*>(&SubLength), 4);
   if (SubLength != 4)
   {
     std::cerr << "Error: sub record INDX of SKIL has invalid length ("
@@ -122,22 +124,22 @@ bool SkillRecord::loadFromStream(std::istream& in_File)
     return false;
   }
   SkillIndex = -1;
-  in_File.read(reinterpret_cast<char*>(&SkillIndex), 4);
-  if (!in_File.good())
+  input.read(reinterpret_cast<char*>(&SkillIndex), 4);
+  if (!input.good())
   {
     std::cerr << "Error while reading sub record INDX of SKIL.\n";
     return false;
   }
 
   // read SKDT
-  in_File.read(reinterpret_cast<char*>(&SubRecName), 4);
+  input.read(reinterpret_cast<char*>(&SubRecName), 4);
   if (SubRecName != cSKDT)
   {
     UnexpectedRecord(cSKDT, SubRecName);
     return false;
   }
   // SKDT's length
-  in_File.read(reinterpret_cast<char*>(&SubLength), 4);
+  input.read(reinterpret_cast<char*>(&SubLength), 4);
   if (SubLength != 24)
   {
     std::cerr << "Error: sub record SKDT of SKIL has invalid length ("
@@ -145,24 +147,24 @@ bool SkillRecord::loadFromStream(std::istream& in_File)
     return false;
   }
   // read skill data
-  in_File.read(reinterpret_cast<char*>(&Attribute), 4);
-  in_File.read(reinterpret_cast<char*>(&Specialization), 4);
-  in_File.read(reinterpret_cast<char*>(UseValues.data()), 16);
-  if (!in_File.good())
+  input.read(reinterpret_cast<char*>(&Attribute), 4);
+  input.read(reinterpret_cast<char*>(&Specialization), 4);
+  input.read(reinterpret_cast<char*>(UseValues.data()), 16);
+  if (!input.good())
   {
     std::cerr << "Error while reading sub record SKDT of SKIL.\n";
     return false;
   }
 
   // read DESC
-  in_File.read(reinterpret_cast<char*>(&SubRecName), 4);
+  input.read(reinterpret_cast<char*>(&SubRecName), 4);
   if (SubRecName != cDESC)
   {
     UnexpectedRecord(cDESC, SubRecName);
     return false;
   }
   // DESC's length
-  in_File.read(reinterpret_cast<char*>(&SubLength), 4);
+  input.read(reinterpret_cast<char*>(&SubLength), 4);
   if (SubLength > 511)
   {
     std::cerr << "Sub record DESC of SKIL is longer than 511 characters.\n";
@@ -171,8 +173,8 @@ bool SkillRecord::loadFromStream(std::istream& in_File)
   // read the skill description
   char Buffer[512];
   memset(Buffer, '\0', 512);
-  in_File.read(Buffer, SubLength);
-  if (!in_File.good())
+  input.read(Buffer, SubLength);
+  if (!input.good())
   {
     std::cerr << "Error while reading sub record DESC of SKIL.\n";
     return false;

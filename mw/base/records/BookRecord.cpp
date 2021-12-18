@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011, 2012, 2013  Thoronador
+    Copyright (C) 2009, 2011, 2012, 2013, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -29,64 +29,63 @@ namespace MWTP
 
 BookRecord::BookRecord()
 : BasicRecord(),
-  recordID(""),
-  MeshPath(""),
-  Name(""),
-  //book data
+  recordID(std::string()),
+  ModelPath(std::string()),
+  Name(std::string()),
+  // book data
   Weight(0.0f),
   Value(0),
   Scroll(0),
   SkillID (-1),
   EnchantPoints(0),
-  //end of book data
-  InventoryIcon(""),
-  ScriptID(""),
-  Text(""),
-  EnchantmentID("")
+  // end of book data
+  ScriptID(std::string()),
+  InventoryIcon(std::string()),
+  Text(std::string()),
+  EnchantmentID(std::string())
 {}
 
 bool BookRecord::equals(const BookRecord& other) const
 {
-  return ((recordID==other.recordID) and (MeshPath==other.MeshPath)
-      and (Name==other.Name) and (Weight==other.Weight) and (Value==other.Value)
-      and (Scroll==other.Scroll) and (SkillID==other.SkillID)
-      and (EnchantPoints==other.EnchantPoints) and (InventoryIcon==other.InventoryIcon)
-      and (ScriptID==other.ScriptID) and (Text==other.Text)
-      and (EnchantmentID==other.EnchantmentID));
+  return (recordID == other.recordID) && (ModelPath == other.ModelPath)
+      && (Name == other.Name) && (Weight == other.Weight) && (Value == other.Value)
+      && (Scroll == other.Scroll) && (SkillID == other.SkillID)
+      && (EnchantPoints == other.EnchantPoints) && (ScriptID == other.ScriptID)
+      && (InventoryIcon == other.InventoryIcon) && (Text == other.Text)
+      && (EnchantmentID == other.EnchantmentID);
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
 bool BookRecord::saveToStream(std::ostream& output) const
 {
-  output.write((const char*) &cBOOK, 4);
-  uint32_t Size;
-  Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +recordID.length()+1 /* length of ID +1 byte for NUL termination */
-        +4 /* MODL */ +4 /* 4 bytes for length */
-        +MeshPath.length()+1 /* length of mesh +1 byte for NUL termination */
-        +4 /* FNAM */ +4 /* 4 bytes for length */
-        +Name.length()+1 /* length of name +1 byte for NUL termination */
-        +4 /* BKDT */ +4 /* 4 bytes for length */ +20 /* length of BKDT */
-        +4 /* ITEX */ +4 /* 4 bytes for length */
-        +InventoryIcon.length()+1 /* length of mesh +1 byte for NUL termination */;
-  if (!Text.empty())
-  {
-    Size = Size +4 /* TEXT */ +4 /* 4 bytes for length */
-        +Text.length() /* length of text (no NUL termination, as far as I can see) */;
-  }
+  output.write(reinterpret_cast<const char*>(&cBOOK), 4);
+  uint32_t Size = 4 /* NAME */ + 4 /* 4 bytes for length */
+      + recordID.length() + 1 /* length of ID +1 byte for NUL termination */
+      + 4 /* MODL */ + 4 /* 4 bytes for length */
+      + ModelPath.length() + 1 /* length of path +1 byte for NUL byte */
+      + 4 /* FNAM */ + 4 /* 4 bytes for length */
+      + Name.length() + 1 /* length of name +1 byte for NUL termination */
+      + 4 /* BKDT */ + 4 /* 4 bytes for length */ + 20 /* length of BKDT */
+      + 4 /* ITEX */ + 4 /* 4 bytes for length */
+      + InventoryIcon.length() + 1 /* length of mesh +1 byte for NUL byte */;
   if (!ScriptID.empty())
   {
-    Size= Size +4 /* SCRI */ +4 /* 4 bytes for length */
-         +ScriptID.length()+1 /* length of script ID +1 byte for NUL termination */;
+    Size = Size + 4 /* SCRI */ + 4 /* 4 bytes for length */
+         + ScriptID.length() + 1 /* length of script ID +1 byte for NUL */;
+  }
+  if (!Text.empty())
+  {
+    Size = Size + 4 /* TEXT */ + 4 /* 4 bytes for length */
+        + Text.length() /* length of text (no NUL termination, as far as I can see) */;
   }
   if (!EnchantmentID.empty())
   {
-    Size= Size +4 /* ENAM */ +4 /* 4 bytes for length */
-         +EnchantmentID.length()+1 /* length of enchantment ID +1 byte for NUL termination */;
+    Size = Size + 4 /* ENAM */ + 4 /* 4 bytes for length */
+         + EnchantmentID.length() + 1 /* length of ID +1 byte for NUL */;
   }
-  output.write((const char*) &Size, 4);
-  output.write((const char*) &HeaderOne, 4);
-  output.write((const char*) &HeaderFlags, 4);
+  output.write(reinterpret_cast<const char*>(&Size), 4);
+  output.write(reinterpret_cast<const char*>(&HeaderOne), 4);
+  output.write(reinterpret_cast<const char*>(&HeaderFlags), 4);
 
   /*Books
 	NAME = Item ID, required
@@ -104,80 +103,65 @@ bool BookRecord::saveToStream(std::ostream& output) const
 	ENAM = name of enchantment (optional)
   */
 
-  //write NAME
-  output.write((const char*) &cNAME, 4);
-  uint32_t SubLength = recordID.length()+1;
-  //write NAME's length
-  output.write((const char*) &SubLength, 4);
-  //write ID
+  // write ID (NAME)
+  output.write(reinterpret_cast<const char*>(&cNAME), 4);
+  uint32_t SubLength = recordID.length() + 1;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
   output.write(recordID.c_str(), SubLength);
 
-  //write MODL
-  output.write((const char*) &cMODL, 4);
-  SubLength = MeshPath.length()+1;
-  //write MODL's length
-  output.write((const char*) &SubLength, 4);
-  //write mesh path
-  output.write(MeshPath.c_str(), SubLength);
+  // write mesh path (MODL)
+  output.write(reinterpret_cast<const char*>(&cMODL), 4);
+  SubLength = ModelPath.length() + 1;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
+  output.write(ModelPath.c_str(), SubLength);
 
-  //write FNAM
-  output.write((const char*) &cFNAM, 4);
-  SubLength = Name.length()+1;
-  //write FNAM's length
-  output.write((const char*) &SubLength, 4);
-  //write book's name
+  // write book's name (FNAM)
+  output.write(reinterpret_cast<const char*>(&cFNAM), 4);
+  SubLength = Name.length() + 1;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
   output.write(Name.c_str(), SubLength);
 
-  //write BKDT
-  output.write((const char*) &cBKDT, 4);
+  // write book data (BKDT)
+  output.write(reinterpret_cast<const char*>(&cBKDT), 4);
   SubLength = 20; /* fixed length: 20 bytes */
-  //write BKDT's length
-  output.write((const char*) &SubLength, 4);
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
   //write book data
-  output.write((const char*) &Weight, 4);
-  output.write((const char*) &Value, 4);
-  output.write((const char*) &Scroll, 4);
-  output.write((const char*) &SkillID, 4);
-  output.write((const char*) &EnchantPoints, 4);
-
-  //write ITEX
-  output.write((const char*) &cITEX, 4);
-  SubLength = InventoryIcon.length()+1;
-  //write ITEX's length
-  output.write((const char*) &SubLength, 4);
-  //write book's inventory icon
-  output.write(InventoryIcon.c_str(), SubLength);
+  output.write(reinterpret_cast<const char*>(&Weight), 4);
+  output.write(reinterpret_cast<const char*>(&Value), 4);
+  output.write(reinterpret_cast<const char*>(&Scroll), 4);
+  output.write(reinterpret_cast<const char*>(&SkillID), 4);
+  output.write(reinterpret_cast<const char*>(&EnchantPoints), 4);
 
   if (!ScriptID.empty())
   {
-    //write SCRI
-    output.write((const char*) &cSCRI, 4);
-    SubLength = ScriptID.length()+1;
-    //write SCRI's length
-    output.write((const char*) &SubLength, 4);
-    //write script ID
+    // write script ID (SCRI)
+    output.write(reinterpret_cast<const char*>(&cSCRI), 4);
+    SubLength = ScriptID.length() + 1;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
     output.write(ScriptID.c_str(), SubLength);
   }
 
+  // write inventory icon path (ITEX)
+  output.write(reinterpret_cast<const char*>(&cITEX), 4);
+  SubLength = InventoryIcon.length() + 1;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
+  output.write(InventoryIcon.c_str(), SubLength);
+
   if (!Text.empty())
   {
-    //write TEXT
-    output.write((const char*) &cTEXT, 4);
-    SubLength = Text.length()+1;
-    //write TEXT's length
-    output.write((const char*) &SubLength, 4);
-    //write book's text
+    // write book's text (TEXT)
+    output.write(reinterpret_cast<const char*>(&cTEXT), 4);
+    SubLength = Text.length(); // no NUL terminator is written
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
     output.write(Text.c_str(), SubLength);
   }
 
   if (!EnchantmentID.empty())
   {
-    //write ENAM
-    output.write((const char*) &cENAM, 4);
-    SubLength = EnchantmentID.length()+1;
-    //write ENAM's length
-    output.write((const char*) &SubLength, 4);
-    //write book's enchantment
+    // write enchantment (ENAM)
+    output.write(reinterpret_cast<const char*>(&cENAM), 4);
+    SubLength = EnchantmentID.length() + 1;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
     output.write(EnchantmentID.c_str(), SubLength);
   }
 
@@ -185,12 +169,12 @@ bool BookRecord::saveToStream(std::ostream& output) const
 }
 #endif
 
-bool BookRecord::loadFromStream(std::istream& in_File)
+bool BookRecord::loadFromStream(std::istream& input)
 {
-  uint32_t Size;
-  in_File.read((char*) &Size, 4);
-  in_File.read((char*) &HeaderOne, 4);
-  in_File.read((char*) &HeaderFlags, 4);
+  uint32_t Size = 0;
+  input.read(reinterpret_cast<char*>(&Size), 4);
+  input.read(reinterpret_cast<char*>(&HeaderOne), 4);
+  input.read(reinterpret_cast<char*>(&HeaderFlags), 4);
 
   /*Books:
     NAME = Item ID, required
@@ -207,119 +191,59 @@ bool BookRecord::loadFromStream(std::istream& in_File)
     TEXT = Book text (not always present, believe it or not!)
     ENAM = name of enchantment (optional) */
 
-  uint32_t SubRecName;
-  uint32_t SubLength, BytesRead;
-  SubRecName = SubLength = BytesRead = 0;
+  uint32_t SubRecName = 0;
+  uint32_t SubLength = 0;
+  uint32_t BytesRead = 0;
 
-  //read NAME
-  in_File.read((char*) &SubRecName, 4);
-  if (SubRecName!=cNAME)
-  {
-    UnexpectedRecord(cNAME, SubRecName);
-    return false;
-  }
-  BytesRead += 4;
-  //NAME's length
-  in_File.read((char*) &SubLength, 4);
-  BytesRead += 4;
-  if (SubLength>255)
-  {
-    std::cout << "Error: Subrecord NAME of BOOK is longer than 255 characters.\n";
-    return false;
-  }
+  // read NAME
   char Buffer[256];
-  //read book ID
-  memset(Buffer, '\0', 256);
-  in_File.read(Buffer, SubLength);
-  BytesRead += SubLength;
-  if (!in_File.good())
+  if (!loadString256WithHeader(input, recordID, Buffer, cNAME, BytesRead))
   {
-    std::cout << "Error while reading subrecord NAME of BOOK!\n";
+    std::cerr << "Error while reading subrecord NAME of BOOK!\n";
     return false;
   }
-  recordID = std::string(Buffer);
 
-  //read MODL
-  in_File.read((char*) &SubRecName, 4);
-  BytesRead += 4;
-  if (SubRecName!=cMODL)
+  // read MODL
+  if (!loadString256WithHeader(input, ModelPath, Buffer, cMODL, BytesRead))
   {
-    UnexpectedRecord(cMODL, SubRecName);
+    std::cerr << "Error while reading subrecord MODL of BOOK!\n";
     return false;
   }
-  //MODL's length
-  in_File.read((char*) &SubLength, 4);
-  BytesRead += 4;
-  if (SubLength>255)
-  {
-    std::cout << "Error: Subrecord MODL of BOOK is longer than 255 characters.\n";
-    return false;
-  }
-  //read model path
-  memset(Buffer, '\0', 256);
-  in_File.read(Buffer, SubLength);
-  BytesRead += SubLength;
-  if (!in_File.good())
-  {
-    std::cout << "Error while reading subrecord MODL of BOOK!\n";
-    return false;
-  }
-  MeshPath = std::string(Buffer);
 
-  //read FNAM
-  in_File.read((char*) &SubRecName, 4);
-  BytesRead += 4;
-  if (SubRecName!=cFNAM)
+  // read FNAM
+  if (!loadString256WithHeader(input, Name, Buffer, cFNAM, BytesRead))
   {
-    UnexpectedRecord(cFNAM, SubRecName);
+    std::cerr << "Error while reading subrecord FNAM of BOOK!\n";
     return false;
   }
-  //FNAM's length
-  in_File.read((char*) &SubLength, 4);
-  BytesRead += 4;
-  if (SubLength>255)
-  {
-    std::cout << "Error: Subrecord FNAM of BOOK is longer than 255 characters.\n";
-    return false;
-  }
-  //read book's name
-  memset(Buffer, '\0', 256);
-  in_File.read(Buffer, SubLength);
-  BytesRead += SubLength;
-  if (!in_File.good())
-  {
-    std::cout << "Error while reading subrecord FNAM of BOOK!\n";
-    return false;
-  }
-  Name = std::string(Buffer);
 
-  //read BKDT
-  in_File.read((char*) &SubRecName, 4);
+  // read BKDT
+  input.read(reinterpret_cast<char*>(&SubRecName), 4);
   BytesRead += 4;
-  if (SubRecName!=cBKDT)
+  if (SubRecName != cBKDT)
   {
     UnexpectedRecord(cBKDT, SubRecName);
     return false;
   }
-  //BKDT's length
-  in_File.read((char*) &SubLength, 4);
+  // BKDT's length
+  input.read(reinterpret_cast<char*>(&SubLength), 4);
   BytesRead += 4;
-  if (SubLength!=20)
+  if (SubLength != 20)
   {
-    std::cout << "Error: Subrecord BKDT of BOOK has wrong size ("<<SubLength
+    std::cerr << "Error: Subrecord BKDT of BOOK has wrong size (" << SubLength
               << " bytes), should be 20 bytes.\n";
     return false;
   }
-  //read book data
-  in_File.read((char*) &Weight, 4);
-  in_File.read((char*) &Value, 4);
-  in_File.read((char*) &Scroll, 4);
-  in_File.read((char*) &SkillID, 4);
-  in_File.read((char*) &EnchantPoints, 4);
+  // read book data
+  input.read(reinterpret_cast<char*>(&Weight), 4);
+  input.read(reinterpret_cast<char*>(&Value), 4);
+  input.read(reinterpret_cast<char*>(&Scroll), 4);
+  input.read(reinterpret_cast<char*>(&SkillID), 4);
+  input.read(reinterpret_cast<char*>(&EnchantPoints), 4);
   BytesRead += 20;
-  if (!in_File.good())
+  if (!input.good())
   {
-    std::cout << "Error while reading subrecord BKDT of BOOK!\n";
+    std::cerr << "Error while reading subrecord BKDT of BOOK!\n";
     return false;
   }
 
@@ -330,157 +254,116 @@ bool BookRecord::loadFromStream(std::istream& in_File)
   InventoryIcon.clear();
   Text.clear();
   EnchantmentID.clear();
-  char * TextBuffer = NULL;
-  //now enter a loop to read the records for inventory icon and script name
-  while (BytesRead<Size)
+  char * TextBuffer = nullptr;
+  while (BytesRead < Size)
   {
-    //read next record name
-    in_File.read((char*) &SubRecName, 4);
+    // read next record name
+    input.read(reinterpret_cast<char*>(&SubRecName), 4);
     BytesRead += 4;
     switch(SubRecName)
     {
       case cENAM:
            if (!EnchantmentID.empty())
            {
-             std::cout << "Error: BOOK seems to have more than one ENAM subrecord!\n";
+             std::cerr << "Error: BOOK seems to have more than one ENAM subrecord!\n";
              return false;
            }
-           //ENAM's length
-           in_File.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength>255)
-           {
-             std::cout << "Error: Subrecord ENAM of BOOK is longer than 255 characters.\n";
-             return false;
-           }
-           //read enchantment ID
-           memset(Buffer, '\0', 256);
-           in_File.read(Buffer, SubLength);
-           BytesRead += SubLength;
-           if (!in_File.good())
+           if (!loadString256(input, EnchantmentID, Buffer, cENAM, BytesRead))
            {
              std::cout << "Error while reading subrecord ENAM of BOOK!\n";
              return false;
            }
-           EnchantmentID = std::string(Buffer);
-           //content check
+           // content check
            if (EnchantmentID.empty())
            {
-             std::cout << "Error: subrecord ENAM of BOOK is empty!\n";
+             std::cerr << "Error: Subrecord ENAM of BOOK is empty!\n";
              return false;
            }
            break;
       case cITEX:
            if (!InventoryIcon.empty())
            {
-             std::cout << "Error: BOOK seems to have more than one ITEX subrecord!\n";
+             std::cerr << "Error: BOOK seems to have more than one ITEX subrecord!\n";
              return false;
            }
-           //ITEX's length
-           in_File.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength>255)
+           if (!loadString256(input, InventoryIcon, Buffer, cITEX, BytesRead))
            {
-             std::cout << "Error: Subrecord ITEX of BOOK is longer than 255 characters.\n";
+             std::cerr << "Error while reading subrecord ITEX of BOOK!\n";
              return false;
            }
-           //read inventory icon
-           memset(Buffer, '\0', 256);
-           in_File.read(Buffer, SubLength);
-           BytesRead += SubLength;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord ITEX of BOOK!\n";
-             return false;
-           }
-           InventoryIcon = std::string(Buffer);
-           //content check
+           // content check
            if (InventoryIcon.empty())
            {
-             std::cout << "Error: subrecord ITEX of BOOK is empty!\n";
+             std::cerr << "Error: Subrecord ITEX of BOOK is empty!\n";
              return false;
            }
            break;
       case cSCRI:
            if (!ScriptID.empty())
            {
-             std::cout << "Error: BOOK seems to have more than one SCRI subrecord!\n";
+             std::cerr << "Error: BOOK seems to have more than one SCRI subrecord!\n";
              return false;
            }
-           //SCRI's length
-           in_File.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength>255)
+           if (!loadString256(input, ScriptID, Buffer, cSCRI, BytesRead))
            {
-             std::cout << "Error: Subrecord SCRI of BOOK is longer than 255 characters.\n";
+             std::cerr << "Error while reading subrecord SCRI of BOOK!\n";
              return false;
            }
-           //read script name
-           memset(Buffer, '\0', 256);
-           in_File.read(Buffer, SubLength);
-           BytesRead += SubLength;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord SCRI of BOOK!\n";
-             return false;
-           }
-           ScriptID = std::string(Buffer);
-           //content check
+           // content check
            if (ScriptID.empty())
            {
-             std::cout << "Error: subrecord SCRI of BOOK is empty!\n";
+             std::cerr << "Error: Subrecord SCRI of BOOK is empty!\n";
              return false;
            }
            break;
       case cTEXT:
            if (!Text.empty())
            {
-             std::cout << "Error: BOOK seems to have more than one TEXT subrecord!\n";
+             std::cerr << "Error: BOOK seems to have more than one TEXT subrecord!\n";
              return false;
            }
-           //TEXT's length
-           in_File.read((char*) &SubLength, 4);
+           // TEXT's length
+           input.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
-           //check length to avoid exhausting memory allocation
-           if (SubLength>65535)
+           // check length to avoid exhausting memory allocation
+           if (SubLength > 65535)
            {
-             std::cout << "Error: Subrecord TEXT of BOOK is longer than 65535 characters.\n";
+             std::cerr << "Error: Subrecord TEXT of BOOK is longer than 65535 characters.\n";
              return false;
            }
-           //read text of book
+           // read text of book
            /*allocate buffer for text (could be more than 255 bytes, so we get
               a separate, larger buffer) */
-           TextBuffer = new char[SubLength+1];
-           memset(TextBuffer, '\0', SubLength+1);
-           in_File.read(TextBuffer, SubLength);
+           TextBuffer = new char[SubLength + 1];
+           memset(TextBuffer, '\0', SubLength + 1);
+           input.read(TextBuffer, SubLength);
            BytesRead += SubLength;
-           if (!in_File.good())
+           if (!input.good())
            {
-             std::cout << "Error while reading subrecord TEXT of BOOK!\n";
+             std::cerr << "Error while reading subrecord TEXT of BOOK!\n";
              delete[] TextBuffer;
              return false;
            }
            Text = std::string(TextBuffer);
            delete[] TextBuffer;
-           TextBuffer = NULL;
-           //content check
+           TextBuffer = nullptr;
+           // content check
            if (Text.empty())
            {
-             std::cout << "Error: subrecord TEXT of BOOK is empty!\n";
+             std::cerr << "Error: Subrecord TEXT of BOOK is empty!\n";
              return false;
            }
            break;
       default:
-           //other subrecord means error, so quit here
-           std::cout << "BookRecord: Error: expected record name ITEX or SCRI "
+           // other subrecord means error, so quit here
+           std::cerr << "BookRecord: Error: Expected record name ITEX or SCRI "
                      << "or TEXT or ENAM was not found. Instead, \""
-                     <<IntTo4Char(SubRecName)<<"\" was found.\nPosition is "
-                     <<in_File.tellg()<<".\n";
+                     << IntTo4Char(SubRecName) << "\" was found.\n";
            return false;
-    }//swi
-  }//while
+    }
+  }
 
-  return in_File.good();
+  return true;
 }
 
-} //namespace
+} // namespace

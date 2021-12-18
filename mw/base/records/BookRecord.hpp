@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012  Thoronador
+    Copyright (C) 2011, 2012, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -28,47 +28,54 @@
 namespace MWTP
 {
 
+/** Holds information about a book. */
 struct BookRecord: public BasicRecord
 {
   public:
-    std::string recordID; //formerly BookID
-    std::string MeshPath;
+    std::string recordID;
+    std::string ModelPath;
     std::string Name;
-    //book data
+    // book data
     float Weight;
-    int32_t Value;
+    uint32_t Value;
     int32_t Scroll;
     int32_t SkillID;
     int32_t EnchantPoints;
-    //end of book data
-    std::string InventoryIcon;
+    // end of book data
     std::string ScriptID;
+    std::string InventoryIcon;
     std::string Text;
     std::string EnchantmentID;
 
-    /* constructor */
     BookRecord();
 
-    /* returns true, if the other record contains the same data */
+    /** \brief Checks whether another instance contains the same data.
+     *
+     * \param other   the other record to compare with
+     * \return Returns true, if @other contains the same data as instance.
+     *         Returns false otherwise.
+     */
     bool equals(const BookRecord& other) const;
 
     #ifndef MW_UNSAVEABLE_RECORDS
-    /* writes the record to the given output stream and returns true on success
-
-      parameters:
-          output - the output stream
-    */
+    /** \brief Writes the record to the given output stream.
+     *
+     * \param output  the output stream
+     * \return Returns true on success (record was written to stream).
+     *         Returns false, if an error occurred.
+     */
     bool saveToStream(std::ostream& output) const override;
     #endif
 
-    /* loads the record from the given input stream and returns true on success
+    /** \brief Loads the record from the given input stream.
+     *
+     * \param input    the input stream
+     * \return Returns true on success (record was loaded from stream).
+     *         Returns false, if an error occurred.
+     */
+    bool loadFromStream(std::istream& input) override;
+}; // struct
 
-      parameters:
-          in_File - the input stream
-    */
-    bool loadFromStream(std::istream& in_File) override;
-};//struct
-
-} //namespace
+} // namespace
 
 #endif // MW_BOOKRECORD_HPP

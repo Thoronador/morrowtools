@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011, 2013, 2021  Thoronador
+    Copyright (C) 2010, 2011, 2013, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@
 namespace MWTP
 {
 
-//constants for skill indices
+// constants for skill indices
 const int32_t SkillBlock = 0;
 const int32_t SkillArmorer = 1;
 const int32_t SkillMediumArmor = 2;
@@ -59,17 +59,20 @@ const int32_t SkillSpeechcraft = 25;
 const int32_t SkillHandToHand = 26;
 
 
-//constants for specialization of skills
-const int32_t cSpecializationCombat = 0;
-const int32_t cSpecializationMagic = 1;
-const int32_t cSpecializationStealth = 2;
+// enumeration for specialization of skills
+enum SkillSpecialization: uint32_t
+{
+  Combat = 0,
+  Magic = 1,
+  Stealth = 2
+};
 
-//record type for skill data
+/** Holds information about a skill. */
 struct SkillRecord: public BasicRecord
 {
   int32_t SkillIndex;
   int32_t Attribute;
-  int32_t Specialization;
+  SkillSpecialization Specialization;
   std::array<float, 4> UseValues;
   std::string Description;
 
@@ -83,6 +86,7 @@ struct SkillRecord: public BasicRecord
    */
   bool equals(const SkillRecord& other) const;
 
+  #ifndef MW_UNSAVEABLE_RECORDS
   /** \brief Writes the record to the given output stream.
    *
    * \param output  the output stream
@@ -90,14 +94,15 @@ struct SkillRecord: public BasicRecord
    *         Returns false, if an error occurred.
    */
   bool saveToStream(std::ostream& output) const final;
+  #endif // MW_UNSAVEABLE_RECORDS
 
   /** \brief Loads the record from the given input stream.
    *
-   * \param in_File    the input stream
+   * \param input    the input stream
    * \return Returns true on success (record was loaded from stream).
    *         Returns false, if an error occurred.
    */
-  bool loadFromStream(std::istream& in_File) final;
+  bool loadFromStream(std::istream& input) final;
 };
 
 } // namespace

@@ -42,11 +42,11 @@ TEST_CASE("MWTP::Skills")
 
     SkillRecord recordOne;
     recordOne.SkillIndex = 1;
-    recordOne.Specialization = 1;
+    recordOne.Specialization = SkillSpecialization::Magic;
 
     SkillRecord recordTwo;
     recordTwo.SkillIndex = 2;
-    recordTwo.Specialization = 2;
+    recordTwo.Specialization = SkillSpecialization::Stealth;
 
     REQUIRE_FALSE( mgr.hasSkill(1) );
     REQUIRE_FALSE( mgr.hasSkill(2) );
@@ -79,15 +79,15 @@ TEST_CASE("MWTP::Skills")
 
     SkillRecord recordOne;
     recordOne.SkillIndex = 1;
-    recordOne.Specialization = 1;
+    recordOne.Specialization = SkillSpecialization::Magic;
 
     SkillRecord recordTwo;
     recordTwo.SkillIndex = 2;
-    recordTwo.Specialization = 2;
+    recordTwo.Specialization = SkillSpecialization::Stealth;
 
     SkillRecord recordThree;
     recordThree.SkillIndex = 3;
-    recordThree.Specialization = 0;
+    recordThree.Specialization = SkillSpecialization::Combat;
 
     mgr.addSkill(recordOne);
     mgr.addSkill(recordTwo);
@@ -109,15 +109,15 @@ TEST_CASE("MWTP::Skills")
 
     SkillRecord recordOne;
     recordOne.SkillIndex = 1;
-    recordOne.Specialization = 1;
+    recordOne.Specialization = SkillSpecialization::Magic;
 
     SkillRecord recordTwo;
     recordTwo.SkillIndex = 2;
-    recordTwo.Specialization = 2;
+    recordTwo.Specialization = SkillSpecialization::Stealth;
 
     SkillRecord recordThree;
     recordThree.SkillIndex = 3;
-    recordThree.Specialization = 0;
+    recordThree.Specialization = SkillSpecialization::Combat;
 
     REQUIRE( mgr.getNumberOfSkills() == 0 );
     mgr.addSkill(recordOne);
@@ -130,11 +130,11 @@ TEST_CASE("MWTP::Skills")
 
     SkillRecord recordFour;
     recordFour.SkillIndex = 4;
-    recordFour.Specialization = 1;
+    recordFour.Specialization = SkillSpecialization::Magic;
 
     SkillRecord recordFive;
     recordFive.SkillIndex = 5;
-    recordFive.Specialization = 2;
+    recordFive.Specialization = SkillSpecialization::Stealth;
 
     mgr.addSkill(recordFour);
     mgr.addSkill(recordFive);
@@ -148,15 +148,15 @@ TEST_CASE("MWTP::Skills")
 
     SkillRecord recordOne;
     recordOne.SkillIndex = 1;
-    recordOne.Specialization = 1;
+    recordOne.Specialization = SkillSpecialization::Magic;
 
     SkillRecord recordTwo;
     recordTwo.SkillIndex = 2;
-    recordTwo.Specialization = 2;
+    recordTwo.Specialization = SkillSpecialization::Stealth;
 
     SkillRecord recordThree;
     recordThree.SkillIndex = 3;
-    recordThree.Specialization = 0;
+    recordThree.Specialization = SkillSpecialization::Combat;
 
     REQUIRE( mgr.begin() == mgr.end() );
 

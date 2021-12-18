@@ -80,8 +80,8 @@ TEST_CASE("MWTP::SkillRecord")
 
       SECTION("Specialization mismatch")
       {
-        a.Specialization = cSpecializationMagic;
-        b.Specialization = cSpecializationStealth;
+        a.Specialization = SkillSpecialization::Magic;
+        b.Specialization = SkillSpecialization::Stealth;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
@@ -158,7 +158,7 @@ TEST_CASE("MWTP::SkillRecord")
       // -- record data
       REQUIRE( record.SkillIndex == SkillSneak );
       REQUIRE( record.Attribute == 3 );
-      REQUIRE( record.Specialization == cSpecializationStealth );
+      REQUIRE( record.Specialization == SkillSpecialization::Stealth );
       REQUIRE( record.UseValues[0] == 0.25f );
       REQUIRE( record.UseValues[1] == 2.0f );
       REQUIRE( record.UseValues[2] == 1.0f );

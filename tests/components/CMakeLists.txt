@@ -31,6 +31,7 @@ set(component_tests_sources
     ../../mw/base/records/BasicRecord.cpp
     ../../mw/base/records/BodyPartAssociation.cpp
     ../../mw/base/records/BodyPartRecord.cpp
+    ../../mw/base/records/BookRecord.cpp
     ../../mw/base/records/DoorRecord.cpp
     ../../mw/base/records/GenericRecord.cpp
     ../../mw/base/records/GlobalRecord.cpp
@@ -157,6 +158,7 @@ set(component_tests_sources
     mw/base/records/BasicRecord.cpp
     mw/base/records/BodyPartAssociation.cpp
     mw/base/records/BodyPartRecord.cpp
+    mw/base/records/BookRecord.cpp
     mw/base/records/DoorRecord.cpp
     mw/base/records/GameSettingRecord.cpp
     mw/base/records/GenericRecord.cpp

@@ -564,6 +564,21 @@ TEST_CASE("MWTP::BookRecord")
       REQUIRE_FALSE( record.loadFromStream(stream) );
     }
 
+    SECTION("corrupt data: empty SCRI")
+    {
+      const auto data = "BOOK\xE2\x01\0\0\0\0\0\0\0\0\0\0NAME\x0D\0\0\0bk_EggOfTime\0MODL\x14\0\0\0m\\Text_Folio_03.NIF\0FNAM\x10\0\0\0Das Ei der Zeit\0BKDT\x14\0\0\0\0\0\x80@\xE8\x03\0\0\0\0\0\0\xFF\xFF\xFF\xFF\0\0\0\0SCRI\x01\0\0\0\0ITEX\x12\0\0\0m\\Tx_folio_03.tga\0TEXTR\x01\0\0<DIV ALIGN=\"CENTER\"><FONT COLOR=\"000000\" SIZE=\"3\" FACE=\"Magic Cards\"><BR><IMG SRC=\"EggOfTime_Illust1.TGA\" WIDTH=\"240\" HEIGHT=\"240\"><BR><BR><IMG SRC=\"EggOfTime_Illust2.TGA\" WIDTH=\"240\" HEIGHT=\"240\"><BR><BR><IMG SRC=\"EggOfTime_Illust3.TGA\" WIDTH=\"240\" HEIGHT=\"240\"><BR><BR><IMG SRC=\"EggOfTime_Illust4.TGA\" WIDTH=\"240\" HEIGHT=\"240\"><BR><BR>\""sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read BOOK, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      BookRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
     SECTION("corrupt data: no ITEX")
     {
       const auto data = "BOOK\x84\0\0\0\0\0\0\0\0\0\0\0NAME\x0F\0\0\0sc_paper plain\0MODL\x1A\0\0\0m\\Misc_paper_plain_01.nif\0FNAM\x07\0\0\0Papier\0BKDT\x14\0\0\0\0\0\x80?\x03\0\0\0\x01\0\0\0\xFF\xFF\xFF\xFF\x32\0\0\0FAIL\x18\0\0\0m\\Tx_paper_plain_01.tga\0"sv;
@@ -612,6 +627,21 @@ TEST_CASE("MWTP::BookRecord")
     SECTION("corrupt data: length of ITEX is beyond stream")
     {
       const auto data = "BOOK\x84\0\0\0\0\0\0\0\0\0\0\0NAME\x0F\0\0\0sc_paper plain\0MODL\x1A\0\0\0m\\Misc_paper_plain_01.nif\0FNAM\x07\0\0\0Papier\0BKDT\x14\0\0\0\0\0\x80?\x03\0\0\0\x01\0\0\0\xFF\xFF\xFF\xFF\x32\0\0\0ITEX\x28\0\0\0m\\Tx_paper_plain_01.tga\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read BOOK, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      BookRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: empty ITEX")
+    {
+      const auto data = "BOOK\x6D\0\0\0\0\0\0\0\0\0\0\0NAME\x0F\0\0\0sc_paper plain\0MODL\x1A\0\0\0m\\Misc_paper_plain_01.nif\0FNAM\x07\0\0\0Papier\0BKDT\x14\0\0\0\0\0\x80?\x03\0\0\0\x01\0\0\0\xFF\xFF\xFF\xFF\x32\0\0\0ITEX\x01\0\0\0\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 
@@ -684,6 +714,21 @@ TEST_CASE("MWTP::BookRecord")
       REQUIRE_FALSE( record.loadFromStream(stream) );
     }
 
+    SECTION("corrupt data: empty TEXT")
+    {
+      const auto data = "BOOK\x9A\0\0\0\0\0\0\0\0\0\0\0NAME\x0D\0\0\0bk_EggOfTime\0MODL\x14\0\0\0m\\Text_Folio_03.NIF\0FNAM\x10\0\0\0Das Ei der Zeit\0BKDT\x14\0\0\0\0\0\x80@\xE8\x03\0\0\0\0\0\0\xFF\xFF\xFF\xFF\0\0\0\0SCRI\x0A\0\0\0eotScript\0ITEX\x12\0\0\0m\\Tx_folio_03.tga\0TEXT\x01\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read BOOK, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      BookRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
     SECTION("corrupt data: no ENAM")
     {
       const auto data = "BOOK\x1E\x01\0\0\0\0\0\0\0\0\0\0NAME\x16\0\0\0sc_ekashslocksplitter\0MODL\x15\0\0\0m\\text_scroll_01.nif\0FNAM\x1D\0\0\0Rolle 'Ekashs Schlossteiler'\0BKDT\x14\0\0\0\xCD\xCCL>W\x01\0\0\x01\0\0\0\xFF\xFF\xFF\xFF\0\0\0\0ITEX\x18\0\0\0m\\tx_scroll_open_01.tga\0TEXTY\0\0\0<DIV ALIGN=\"CENTER\"><FONT COLOR=\"000000\" SIZE=\"2\" FACE=\"Daedric\">WOE UPON YOU</FONT><BR>\"FAIL\x19\0\0\0sc_ekashslocksplitter_en\0"sv;
@@ -732,6 +777,21 @@ TEST_CASE("MWTP::BookRecord")
     SECTION("corrupt data: length of ENAM is beyond stream")
     {
       const auto data = "BOOK\x1E\x01\0\0\0\0\0\0\0\0\0\0NAME\x16\0\0\0sc_ekashslocksplitter\0MODL\x15\0\0\0m\\text_scroll_01.nif\0FNAM\x1D\0\0\0Rolle 'Ekashs Schlossteiler'\0BKDT\x14\0\0\0\xCD\xCCL>W\x01\0\0\x01\0\0\0\xFF\xFF\xFF\xFF\0\0\0\0ITEX\x18\0\0\0m\\tx_scroll_open_01.tga\0TEXTY\0\0\0<DIV ALIGN=\"CENTER\"><FONT COLOR=\"000000\" SIZE=\"2\" FACE=\"Daedric\">WOE UPON YOU</FONT><BR>\"ENAM\x29\0\0\0sc_ekashslocksplitter_en\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read BOOK, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      BookRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: empty ENAM")
+    {
+      const auto data = "BOOK\x06\x01\0\0\0\0\0\0\0\0\0\0NAME\x16\0\0\0sc_ekashslocksplitter\0MODL\x15\0\0\0m\\text_scroll_01.nif\0FNAM\x1D\0\0\0Rolle 'Ekashs Schlossteiler'\0BKDT\x14\0\0\0\xCD\xCCL>W\x01\0\0\x01\0\0\0\xFF\xFF\xFF\xFF\0\0\0\0ITEX\x18\0\0\0m\\tx_scroll_open_01.tga\0TEXTY\0\0\0<DIV ALIGN=\"CENTER\"><FONT COLOR=\"000000\" SIZE=\"2\" FACE=\"Daedric\">WOE UPON YOU</FONT><BR>\"ENAM\x01\0\0\0\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 

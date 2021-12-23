@@ -444,6 +444,21 @@ TEST_CASE("MWTP::ApparatusRecord")
       REQUIRE_FALSE( record.loadFromStream(stream) );
     }
 
+    SECTION("corrupt data: missing AADT")
+    {
+      const auto data = "APPA\x7F\0\0\0\0\0\0\0\0\0\0\0NAME\x17\0\0\0apparatus_sm_retort_01\0MODL\x1C\0\0\0m\\Apparatus_S_Retort_01.nif\0FNAM\x19\0\0\0Retorte des Erzmeisters \0ITEX\x13\0\0\0m\\Tx_retort_05.tga\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read APPA, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ApparatusRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
     SECTION("corrupt data: multiple AADT")
     {
       const auto data = "APPA\xAF\0\0\0\0\0\0\0\0\0\0\0NAME\x17\0\0\0apparatus_sm_retort_01\0MODL\x1C\0\0\0m\\Apparatus_S_Retort_01.nif\0FNAM\x19\0\0\0Retorte des Erzmeisters \0AADT\x10\0\0\0\x03\0\0\0\0\0\0@\0\0\0@\xE8\x03\0\0AADT\x10\0\0\0\x03\0\0\0\0\0\0@\0\0\0@\xE8\x03\0\0ITEX\x13\0\0\0m\\Tx_retort_05.tga\0"sv;

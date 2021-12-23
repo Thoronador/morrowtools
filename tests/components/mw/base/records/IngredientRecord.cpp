@@ -688,6 +688,21 @@ TEST_CASE("MWTP::IngredientRecord")
       REQUIRE_FALSE( record.loadFromStream(stream) );
     }
 
+    SECTION("corrupt data: missing ITEX")
+    {
+      const auto data = "INGR\x8E\0\0\0\0\0\0\0\0\0\0\0NAME\x13\0\0\0ingred_comberry_01\0MODL\x19\0\0\0n\\Ingred_Comberry_01.nif\0FNAM\x0A\0\0\0Cohmbeere\0IRDT8\0\0\0\xCD\xCC\xCC=\x02\0\0\0\x14\0\0\0L\0\0\0\x04\0\0\0D\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read INGR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      IngredientRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
     SECTION("corrupt data: multiple ITEX")
     {
       const auto data = "INGR\xC8\0\0\0\0\0\0\0\0\0\0\0NAME\x13\0\0\0ingred_comberry_01\0MODL\x19\0\0\0n\\Ingred_Comberry_01.nif\0FNAM\x0A\0\0\0Cohmbeere\0IRDT8\0\0\0\xCD\xCC\xCC=\x02\0\0\0\x14\0\0\0L\0\0\0\x04\0\0\0D\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0ITEX\x15\0\0\0n\\Tx_comberry_01.tga\0ITEX\x15\0\0\0n\\Tx_comberry_01.tga\0"sv;

@@ -185,9 +185,9 @@ bool TES3Record::loadFromStream(std::istream& input)
     return false;
   }
   //read HEDR's stuff
-  // ---- red version
+  // ---- read version
   input.read(reinterpret_cast<char*>(&Version), 4);
-  // ---- red flags
+  // ---- read flags
   input.read(reinterpret_cast<char*>(&FileFlag), 4);
   BytesRead += 8;
   if (!input.good())

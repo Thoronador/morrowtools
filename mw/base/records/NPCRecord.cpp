@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -1040,29 +1040,12 @@ bool NPCRecord::loadFromStream(std::istream& in_File)
     switch(SubRecName)
     {
       case cNPCO:
-           //NPCO's length
-           in_File.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength!=36)
+           if (!temp.loadFromStream(in_File, Buffer, BytesRead))
            {
-             std::cout << "Error: Subrecord NPCO of NPC_ has invalid length ("
-                       << SubLength<<" bytes). Should be 36 bytes.\n";
+             std::cerr << "Error while reading subrecord NPCO of NPC_!\n";
              return false;
            }
-           //read item data
-           // ---- read count
-           in_File.read((char*) &(temp.Count), 4);
-           // ---- read item ID
-           memset(Buffer, '\0', 33);
-           in_File.read(Buffer, 32);
-           BytesRead += 36;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord NPCO of NPC_!\n";
-             return false;
-           }
-           temp.Item = std::string(Buffer);
-           Items.push_back(temp);
+           Items.emplace_back(temp);
            previousSubRecord = cNPCO;
            break;
       case cNPCS:

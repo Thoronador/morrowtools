@@ -154,39 +154,22 @@ bool PreNPCRecord::doesRepair() const
 #ifndef MW_UNSAVEABLE_RECORDS
 bool PreNPCRecord::writeItemsSpellsAIDataDestinations(std::ostream& output) const
 {
-  // items and spells
-  std::string::size_type len;
-  uint32_t SubLength;
+  // Items
   for (const auto& item: Items)
   {
-    // Items
-    // write NPCO
-    output.write(reinterpret_cast<const char*>(&cNPCO), 4);
-    SubLength = 36;
-    output.write(reinterpret_cast<const char*>(&SubLength), 4);
-    // write item stuff
-    // ---- count
-    output.write(reinterpret_cast<const char*>(&item.Count), 4);
-    // ---- item ID
-    len = item.Item.length();
-    if (len > 31)
-    {
-      len = 31;
-    }
-    output.write(item.Item.c_str(), len);
-    // fill rest with NUL bytes
-    output.write(NULof32, 32 - len);
+    if (!item.saveToStream(output))
+      return false;
   }
 
+  // Spells
   for (const auto& spell: NPC_Spells)
   {
-    // Spells
     // write spell ID (NPCS)
     output.write(reinterpret_cast<const char*>(&cNPCS), 4);
-    SubLength = 32;
+    const uint32_t SubLength = 32;
     output.write(reinterpret_cast<const char*>(&SubLength), 4);
     // write spell ID
-    len = spell.length();
+    std::string::size_type len = spell.length();
     if (len > 31)
     {
       len = 31;
@@ -200,7 +183,7 @@ bool PreNPCRecord::writeItemsSpellsAIDataDestinations(std::ostream& output) cons
   {
     // write AI data (AIDT)
     output.write(reinterpret_cast<const char*>(&cAIDT), 4);
-    SubLength = 12;
+    const uint32_t SubLength = 12;
     output.write(reinterpret_cast<const char*>(&SubLength), 4);
     // write actual data
     output.write(reinterpret_cast<const char*>(&AIData.Hello), 1);
@@ -226,7 +209,7 @@ bool PreNPCRecord::writeItemsSpellsAIDataDestinations(std::ostream& output) cons
   {
     // write DODT
     output.write(reinterpret_cast<const char*>(&cDODT), 4);
-    SubLength = 24;
+    uint32_t SubLength = 24;
     output.write(reinterpret_cast<const char*>(&SubLength), 4);
     // write destination data
     output.write(reinterpret_cast<const char*>(&destination.XPos), 4);

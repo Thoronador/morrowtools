@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,7 +22,6 @@
 #define MW_CONTAINERRECORD_HPP
 
 #include <string>
-#include <fstream>
 #include <vector>
 #include "BasicRecord.hpp"
 #include "ItemRecord.hpp"
@@ -32,44 +31,56 @@ namespace MWTP
 
 struct ContainerRecord: public BasicRecord
 {
-  std::string recordID; //formerly ContainerID
+  std::string recordID;
   std::string ModelPath;
-  std::string ContainerName;
+  std::string Name;
   float Weight;
-  int32_t ContainerFlags;
-  std::string ScriptName;
-  //items
+  uint32_t Flags;
+  std::string ScriptID;
   std::vector<ItemRecord> Items;
 
-  /* constructor */
   ContainerRecord();
 
-  /* returns true, if the other record contains the same data */
+  /** \brief Checks whether another instance contains the same data.
+   *
+   * \param other   the other record to compare with
+   * \return Returns true, if @other contains the same data as instance.
+   *         Returns false otherwise.
+   */
   bool equals(const ContainerRecord& other) const;
 
   #ifndef MW_UNSAVEABLE_RECORDS
-  /* writes the record to the given output stream and returns true on success
-
-    parameters:
-        output - the output stream
-  */
+  /** \brief Writes the record to the given output stream.
+   *
+   * \param output  the output stream
+   * \return Returns true on success (record was written to stream).
+   *         Returns false, if an error occurred.
+   */
   bool saveToStream(std::ostream& output) const override;
   #endif
 
-  /* loads the record from the given input stream and returns true on success
+  /** \brief Loads the record from the given input stream.
+   *
+   * \param input    the input stream
+   * \return Returns true on success (record was loaded from stream).
+   *         Returns false, if an error occurred.
+   */
+  bool loadFromStream(std::istream& input) override;
 
-    parameters:
-        in_File - the input stream
-  */
-  bool loadFromStream(std::istream& in_File) override;
-
-  /* returns true, if the container is an organic container */
+  /** \brief Checks whether this is an organic container.
+   *
+   * \return Returns true, if the "organic" flag is set.
+   */
   bool isOrganic() const;
 
-  /* returns true, if the container content will respawn (organic containers only) */
+  /** \brief Checks whether the container contents respawn.
+   *
+   * This flag is usually only set on organic containers.
+   * \return Returns true, if the respawn flag is set.
+   */
   bool doesRespawn() const;
-};//struct
+}; // struct
 
-} //namespace
+} // namespace
 
 #endif // MW_CONTAINERRECORD_HPP

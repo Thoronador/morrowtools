@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2013, 2021  Thoronador
+    Copyright (C) 2011, 2013, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 
 #include <cstdint>
 #include <string>
+#include <fstream>
 
 namespace MWTP
 {
@@ -35,6 +36,26 @@ struct ItemRecord
   ItemRecord();
 
   bool operator==(const ItemRecord& other) const;
+
+  /** \brief Loads the record from the given input stream.
+   *
+   * \param input    the input stream
+   * \param buffer   pre-allocated buffer that can hold at least 33 chars
+   * \param bytesRead   the variable that holds the number of bytes read so far
+   * \return Returns true on success (record was loaded from stream).
+   *         Returns false, if an error occurred.
+   */
+  bool loadFromStream(std::istream& input, char* buffer, uint32_t& bytesRead);
+
+  #ifndef MW_UNSAVEABLE_RECORDS
+  /** \brief Writes the record to the given output stream.
+   *
+   * \param output  the output stream
+   * \return Returns true on success (record was written to stream).
+   *         Returns false, if an error occurred.
+   */
+  bool saveToStream(std::ostream& output) const;
+  #endif
 };
 
 } // namespace

@@ -1240,7 +1240,7 @@ SC_VarRef getForeignVariableTypeWithIndex(const std::string& objectID, const std
   }
   else if (Containers::get().hasRecord(objectID))
   {
-    ScriptID = Containers::get().getRecord(objectID).ScriptName;
+    ScriptID = Containers::get().getRecord(objectID).ScriptID;
   }
   ///TODO: add more stuff (e.g. weapons) later
   if (!ScriptID.empty())

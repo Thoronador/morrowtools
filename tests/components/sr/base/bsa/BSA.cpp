@@ -19,7 +19,20 @@
 */
 
 #include <catch.hpp>
+#include <filesystem>
 #include "../../../../../sr/base/bsa/BSA.hpp"
+
+void writeBsaHeaderForTest(const std::string& fileName)
+{
+  using namespace std::string_view_literals;
+  const auto data = "BSA\0\x68\0\0\0\x24\0\0\0\x03\0\0\0\x07\0\0\0\xC5\0\0\0\x88\0\0\0\x81\x0B\0\0\0\0\0\0"sv;
+
+  // write BSA header to file
+  std::ofstream file(fileName);
+  file.write(data.data(), data.size());
+  file.close();
+}
+
 
 TEST_CASE("BSA")
 {
@@ -42,6 +55,32 @@ TEST_CASE("BSA")
     {
       BSA bsa;
       REQUIRE_FALSE( bsa.open("/does-not/exist.bsa") );
+    }
+
+    SECTION("load header-only BSA")
+    {
+      const auto fileName = "test_sr_bsa_open_header-only.bsa";
+      writeBsaHeaderForTest(fileName);
+
+      BSA bsa;
+      REQUIRE( bsa.open(fileName) );
+      bsa.close();
+
+      REQUIRE( std::filesystem::remove(fileName) );
+    }
+
+    SECTION("try to re-open header-only BSA")
+    {
+      const auto fileName = "test_sr_bsa_open_-reopen-header-only.bsa";
+      writeBsaHeaderForTest(fileName);
+
+      BSA bsa;
+      REQUIRE( bsa.open(fileName) );
+      // Re-open attempt shall fail.
+      REQUIRE_FALSE( bsa.open(fileName) );
+      bsa.close();
+
+      REQUIRE( std::filesystem::remove(fileName) );
     }
   }
 

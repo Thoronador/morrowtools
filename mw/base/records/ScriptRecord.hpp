@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012  Thoronador
+    Copyright (C) 2011, 2012, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,50 +30,51 @@ namespace MWTP
 
 struct ScriptRecord: public BasicRecord
 {
-  //script header
-  std::string recordID; //formerly ScriptID
+  // script header
+  std::string recordID;
   uint32_t NumShorts;
   uint32_t NumLongs;
   uint32_t NumFloats;
   uint32_t ScriptDataSize;
   int32_t LocalVarSize;
-  //end of script header
+  // end of script header
   std::vector<std::string> LocalVars;
   char * ScriptData;
   std::string ScriptText;
 
-  /* constructor */
   ScriptRecord();
-
-  /* copy constructor */
   ScriptRecord(const ScriptRecord& source);
-
-  /* assignment operator */
   ScriptRecord& operator=(const ScriptRecord& rhs);
 
-  /* destructor */
   virtual ~ScriptRecord();
 
-  /* returns true, if the other record contains the same data */
+  /** \brief Checks whether another instance contains the same data.
+   *
+   * \param other   the other record to compare with
+   * \return Returns true, if @other contains the same data as instance.
+   *         Returns false otherwise.
+   */
   bool equals(const ScriptRecord& other) const;
 
   #ifndef MW_UNSAVEABLE_RECORDS
-  /* writes the record to the given output stream and returns true on success
-
-    parameters:
-        output - the output stream
-  */
+  /** \brief Writes the record to the given output stream.
+   *
+   * \param output  the output stream
+   * \return Returns true on success (record was written to stream).
+   *         Returns false, if an error occurred.
+   */
   bool saveToStream(std::ostream& output) const override;
   #endif
 
-  /* loads the record from the given input stream and returns true on success
+  /** \brief Loads the record from the given input stream.
+   *
+   * \param input    the input stream
+   * \return Returns true on success (record was loaded from stream).
+   *         Returns false, if an error occurred.
+   */
+  bool loadFromStream(std::istream& input) override;
+}; // struct
 
-    parameters:
-        in_File - the input stream
-  */
-  bool loadFromStream(std::istream& in_File) override;
-};//struct
-
-} //namespace
+} // namespace
 
 #endif // MW_SCRIPTRECORD_HPP

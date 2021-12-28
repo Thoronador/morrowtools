@@ -47,6 +47,7 @@ set(component_tests_sources
     ../../mw/base/records/PreNPCRecord.cpp
     ../../mw/base/records/ProbeRecord.cpp
     ../../mw/base/records/RepairItemRecord.cpp
+    ../../mw/base/records/ScriptRecord.cpp
     ../../mw/base/records/SkillRecord.cpp
     ../../mw/base/records/SpellRecord.cpp
     ../../mw/base/records/StartScriptRecord.cpp
@@ -179,6 +180,7 @@ set(component_tests_sources
     mw/base/records/PreNPCRecord.cpp
     mw/base/records/ProbeRecord.cpp
     mw/base/records/RepairItemRecord.cpp
+    mw/base/records/ScriptRecord.cpp
     mw/base/records/SkillRecord.cpp
     mw/base/records/SpellRecord.cpp
     mw/base/records/StartScriptRecord.cpp

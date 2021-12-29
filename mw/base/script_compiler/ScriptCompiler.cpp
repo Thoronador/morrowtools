@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2014  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2014  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -8294,24 +8294,20 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
   result.NumFloats = CompiledData.varsFloat.size();
   //variables
   result.LocalVars.clear();
-  result.LocalVarSize = 0;
   // ---- write shorts
   for (i=0; i<CompiledData.varsShort.size(); ++i)
   {
     result.LocalVars.push_back(CompiledData.varsShort.at(i));
-    result.LocalVarSize += CompiledData.varsShort.at(i).length()+1;
   }//for
   // ---- write longs
   for (i=0; i<CompiledData.varsLong.size(); ++i)
   {
     result.LocalVars.push_back(CompiledData.varsLong.at(i));
-    result.LocalVarSize += CompiledData.varsLong.at(i).length()+1;
   }//for
   // ---- write floats
   for (i=0; i<CompiledData.varsFloat.size(); ++i)
   {
     result.LocalVars.push_back(CompiledData.varsFloat.at(i));
-    result.LocalVarSize += CompiledData.varsFloat.at(i).length()+1;
   }//for
 
   //script's ID

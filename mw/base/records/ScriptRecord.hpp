@@ -36,7 +36,7 @@ struct ScriptRecord: public BasicRecord
   uint32_t NumLongs;
   uint32_t NumFloats;
   uint32_t ScriptDataSize;
-  int32_t LocalVarSize;
+  // Note: LocalVarSize is calculated on the fly by getLocalVarSize().
   // end of script header
   std::vector<std::string> LocalVars;
   char * ScriptData;
@@ -47,6 +47,13 @@ struct ScriptRecord: public BasicRecord
   ScriptRecord& operator=(const ScriptRecord& rhs);
 
   virtual ~ScriptRecord();
+
+  /** \brief Calculates the size of the local vars based on existing variables.
+   *
+   * \return Returns the amount of bytes that the local variable names would
+   *         need when they are written to the stream.
+   */
+  uint32_t getLocalVarSize() const;
 
   /** \brief Checks whether another instance contains the same data.
    *

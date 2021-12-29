@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011, 2012, 2013  Thoronador
+    Copyright (C) 2009, 2011, 2012, 2013, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -29,35 +29,33 @@ namespace MWTP
 
 ScriptRecord::ScriptRecord()
 : BasicRecord(),
-  //script header
+  // script header
   recordID(""),
   NumShorts(0),
   NumLongs(0),
   NumFloats(0),
   ScriptDataSize(0),
-  LocalVarSize(0),
-  //end of script header
+  // end of script header
   LocalVars(std::vector<std::string>()),
-  ScriptData(NULL),
+  ScriptData(nullptr),
   ScriptText("")
 {}
 
 ScriptRecord::ScriptRecord(const ScriptRecord& source)
 : BasicRecord(source),
-  //script header
+  // script header
   recordID(source.recordID),
   NumShorts(source.NumShorts),
   NumLongs(source.NumLongs),
   NumFloats(source.NumFloats),
   ScriptDataSize(source.ScriptDataSize),
-  LocalVarSize(source.LocalVarSize),
   //end of script header
   LocalVars(source.LocalVars),
-  ScriptData(NULL),
+  ScriptData(nullptr),
   ScriptText(source.ScriptText)
 {
   //copy the script data
-  if (source.ScriptData!=NULL)
+  if (source.ScriptData != nullptr)
   {
     ScriptData = new char[ScriptDataSize];
     memcpy(ScriptData, source.ScriptData, ScriptDataSize);
@@ -66,18 +64,18 @@ ScriptRecord::ScriptRecord(const ScriptRecord& source)
 
 ScriptRecord& ScriptRecord::operator=(const ScriptRecord& rhs)
 {
-  if (this==&rhs) return *this;
+  if (this == &rhs)
+    return *this;
   //script header
   recordID = rhs.recordID;
   NumShorts = rhs.NumShorts;
   NumLongs = rhs.NumLongs;
   NumFloats = rhs.NumFloats;
   ScriptDataSize = rhs.ScriptDataSize;
-  LocalVarSize = rhs.LocalVarSize;
   //end of script header
   LocalVars = rhs.LocalVars;
   //copy the script data
-  if (rhs.ScriptData==NULL)
+  if (rhs.ScriptData == nullptr)
   {
     /** I know there's a possible memory leak here in the next line, but
       changing that will crash the programme that uses lots of ScriptRecords
@@ -103,29 +101,40 @@ ScriptRecord& ScriptRecord::operator=(const ScriptRecord& rhs)
 ScriptRecord::~ScriptRecord()
 {
   //make sure the allocated memory will be freed
-  if (ScriptData!=NULL)
+  if (ScriptData != nullptr)
   {
     delete[] ScriptData;
-    ScriptData = NULL;
+    ScriptData = nullptr;
     ScriptDataSize = 0;
   }
+}
+
+uint32_t ScriptRecord::getLocalVarSize() const
+{
+  uint32_t varSize = 0;
+  for (const auto& name: LocalVars)
+  {
+    varSize += name.size() + 1;
+  }
+  return varSize;
 }
 
 bool ScriptRecord::equals(const ScriptRecord& other) const
 {
   if ((recordID == other.recordID) && (NumShorts == other.NumShorts)
     && (NumLongs == other.NumLongs) && (NumFloats == other.NumFloats)
-    && (ScriptDataSize == other.ScriptDataSize) && (LocalVarSize == other.LocalVarSize)
+    && (ScriptDataSize == other.ScriptDataSize)
     && (LocalVars == other.LocalVars) && (ScriptText == other.ScriptText))
   {
-    //check script data
-    //Is one NULL, the other not?
-    if ((ScriptData == NULL) ^ (other.ScriptData == NULL))
+    // check script data
+    // Is one nullptr, the other not?
+    if ((ScriptData == nullptr) ^ (other.ScriptData == nullptr))
         return false;
-    //So either both are NULL or none is NULL - if NULL, return true.
-    if (ScriptData==NULL) return true;
-    //compare memory
-    return (0==memcmp(ScriptData, other.ScriptData, ScriptDataSize));
+    // So either both are NULL or none is NULL - if NULL, return true.
+    if (ScriptData == nullptr)
+      return true;
+    // compare memory
+    return 0 == memcmp(ScriptData, other.ScriptData, ScriptDataSize);
   }
   return false;
 }
@@ -187,6 +196,7 @@ bool ScriptRecord::saveToStream(std::ostream& output) const
   output.write((const char*) &NumFloats, 4);
   // ---- write sizes
   output.write((const char*) &ScriptDataSize, 4);
+  const uint32_t LocalVarSize = getLocalVarSize();
   output.write((const char*) &LocalVarSize, 4);
 
   if (!LocalVars.empty())
@@ -297,6 +307,7 @@ bool ScriptRecord::loadFromStream(std::istream& in_File)
   in_File.read((char*) &NumFloats, 4);
   // ---- read sizes
   in_File.read((char*) &ScriptDataSize, 4);
+  uint32_t LocalVarSize = 0;
   in_File.read((char*) &LocalVarSize, 4);
   BytesRead += 20;
   if (!in_File.good())
@@ -304,13 +315,6 @@ bool ScriptRecord::loadFromStream(std::istream& in_File)
     std::cout << "Error while reading sub record SCHD of SCPT (2nd part).\n";
     return false;
   }
-  /* //won't occur with unsigned type any more
-  if (ScriptDataSize<0)
-  {
-    std::cout << "Error while reading sub record SCHD of SCPT: data size is "
-              << "negative!\n";
-    return false;
-  }*/
 
   uint32_t currentPos;
   //preset data
@@ -323,7 +327,7 @@ bool ScriptRecord::loadFromStream(std::istream& in_File)
   }
 
   //dynamic buffer pointer for script data and vars
-  char * dynamicBuffer = NULL;
+  char * dynamicBuffer = nullptr;
   uint32_t dynamicBufferSize = 0;
   //optional records/ records with unknown sequence
   //read script sub records
@@ -337,6 +341,24 @@ bool ScriptRecord::loadFromStream(std::istream& in_File)
            //SCVR's length
            in_File.read((char*) &SubLength, 4);
            BytesRead += 4;
+           if (LocalVarSize != SubLength)
+           {
+             std::cerr << "Error: Local variable size of script " << recordID
+                       << " should be " << LocalVarSize << " byte(s) "
+                       << "according to header data, but it is " << SubLength
+                       << " bytes instead!\n";
+             delete[] dynamicBuffer;
+             return false;
+           }
+           // More than 64 KB for variable names is unlikely.
+           // Check this to avoid huge memory allocations / out of memory.
+           if (SubLength > 65536)
+           {
+             std::cerr << "Error: Local variable size of script " << recordID
+                       << " exceeds 64 KB, it's " << SubLength << " bytes!\n";
+             delete[] dynamicBuffer;
+             return false;
+           }
            //Do we have to resize the buffer?
            if (dynamicBufferSize<=SubLength)
            {

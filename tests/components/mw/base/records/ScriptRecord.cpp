@@ -37,10 +37,31 @@ TEST_CASE("MWTP::ScriptRecord")
     REQUIRE( record.NumLongs == 0 );
     REQUIRE( record.NumFloats == 0 );
     REQUIRE( record.ScriptDataSize == 0 );
-    REQUIRE( record.LocalVarSize == 0 );
     REQUIRE( record.LocalVars.empty() );
     REQUIRE( record.ScriptData == nullptr );
     REQUIRE( record.ScriptText.empty() );
+  }
+
+  SECTION("getLocalVarSize")
+  {
+    ScriptRecord record;
+
+    SECTION("empty record")
+    {
+      REQUIRE( record.getLocalVarSize() == 0 );
+    }
+
+    SECTION("one variable name only")
+    {
+      record.LocalVars = { "doOnce" };
+      REQUIRE( record.getLocalVarSize() == 7 );
+    }
+
+    SECTION("multiple variable names")
+    {
+      record.LocalVars = { "doOnce", "an_otter", "fishingFish" };
+      REQUIRE( record.getLocalVarSize() == 28 );
+    }
   }
 
   SECTION("equals")
@@ -104,16 +125,16 @@ TEST_CASE("MWTP::ScriptRecord")
         REQUIRE_FALSE( b.equals(a) );
       }
 
-      SECTION("LocalVarSize mismatch")
+      SECTION("LocalVars content mismatch")
       {
-        a.LocalVarSize = 15;
-        b.LocalVarSize = 25;
+        a.LocalVars = { "foo" };
+        b.LocalVars = { "bar" };
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
       }
 
-      SECTION("LocalVars mismatch")
+      SECTION("LocalVars length mismatch")
       {
         a.LocalVars.push_back("once");
         b.LocalVars.clear();
@@ -171,7 +192,7 @@ TEST_CASE("MWTP::ScriptRecord")
       REQUIRE( record.NumLongs == 0 );
       REQUIRE( record.NumFloats == 0 );
       REQUIRE( record.ScriptDataSize == 37 );
-      REQUIRE( record.LocalVarSize == 0 );
+      REQUIRE( record.getLocalVarSize() == 0 );
       REQUIRE( record.LocalVars.empty() );
       REQUIRE( record.ScriptData != nullptr );
       const auto scdt = std::string_view(record.ScriptData, record.ScriptDataSize);
@@ -208,7 +229,7 @@ TEST_CASE("MWTP::ScriptRecord")
       REQUIRE( record.NumLongs == 0 );
       REQUIRE( record.NumFloats == 0 );
       REQUIRE( record.ScriptDataSize == 40 );
-      REQUIRE( record.LocalVarSize == 7 );
+      REQUIRE( record.getLocalVarSize() == 7 );
       REQUIRE( record.LocalVars.size() == 1 );
       REQUIRE( record.LocalVars[0] == "NoLore" );
       REQUIRE( record.ScriptData != nullptr );
@@ -302,6 +323,36 @@ TEST_CASE("MWTP::ScriptRecord")
     SECTION("corrupt data: no SCVR")
     {
       const auto data = "SCPT\xE9\0\0\0\0\0\0\0\0\0\0\0SCHD4\0\0\0zabamundNoLore\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0(\0\0\0\x07\0\0\0FAIL\x07\0\0\0NoLore\0SCDT(\0\0\0\x06\x01\x01\x09 X\xF0\x10 == 1\xCC\x10\x10\x42\x31_UrshilakuKill\x01\0\xFF\xFF\x09\x01\x01\x01SCTXf\0\0\0begin zabamundNoLore\x0D\x0A\x0D\x0AShort NoLore\x0D\x0A\x0D\x0Aif ( OnDeath == 1 )\x0D\x0A\x09Journal B1_UrshilakuKill 1\x0D\x0A\x65ndif\x0D\x0A\x0D\x0A\x65nd"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read SCPT, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ScriptRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: length of SCVR does not match value in header")
+    {
+      const auto data = "SCPT\xE9\0\0\0\0\0\0\0\0\0\0\0SCHD4\0\0\0zabamundNoLore\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0(\0\0\0\x12\0\0\0SCVR\x07\0\0\0NoLore\0SCDT(\0\0\0\x06\x01\x01\x09 X\xF0\x10 == 1\xCC\x10\x10\x42\x31_UrshilakuKill\x01\0\xFF\xFF\x09\x01\x01\x01SCTXf\0\0\0begin zabamundNoLore\x0D\x0A\x0D\x0AShort NoLore\x0D\x0A\x0D\x0Aif ( OnDeath == 1 )\x0D\x0A\x09Journal B1_UrshilakuKill 1\x0D\x0A\x65ndif\x0D\x0A\x0D\x0A\x65nd"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read SCPT, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ScriptRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: length of SCVR > 64 KB")
+    {
+      const auto data = "SCPT\xE9\0\0\0\0\0\0\0\0\0\0\0SCHD4\0\0\0zabamund_64KB_exceed\0\0\0\0\0\0\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0(\0\0\0\x07\0\x01\0SCVR\x07\0\x01\0NoLore\0SCDT(\0\0\0\x06\x01\x01\x09 X\xF0\x10 == 1\xCC\x10\x10\x42\x31_UrshilakuKill\x01\0\xFF\xFF\x09\x01\x01\x01SCTXf\0\0\0begin zabamundNoLore\x0D\x0A\x0D\x0AShort NoLore\x0D\x0A\x0D\x0Aif ( OnDeath == 1 )\x0D\x0A\x09Journal B1_UrshilakuKill 1\x0D\x0A\x65ndif\x0D\x0A\x0D\x0A\x65nd"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 

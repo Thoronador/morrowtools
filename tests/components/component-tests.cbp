@@ -33,6 +33,8 @@
 			<Add library="lz4" />
 		</Linker>
 		<Unit filename="../../base/BufferStream.hpp" />
+		<Unit filename="../../base/ByteBuffer.cpp" />
+		<Unit filename="../../base/ByteBuffer.hpp" />
 		<Unit filename="../../base/ComparisonFunctor.hpp" />
 		<Unit filename="../../base/CompressionFunctions.cpp" />
 		<Unit filename="../../base/CompressionFunctions.hpp" />
@@ -290,6 +292,7 @@
 		<Unit filename="../../sr/formID_finder/AuxFunctions.cpp" />
 		<Unit filename="../../sr/formID_finder/AuxFunctions.hpp" />
 		<Unit filename="base/BufferStream.cpp" />
+		<Unit filename="base/ByteBuffer.cpp" />
 		<Unit filename="base/ComparisonFunctor.cpp" />
 		<Unit filename="base/CompressionFunctions.cpp" />
 		<Unit filename="base/DirectoryFunctions.cpp" />

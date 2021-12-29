@@ -5,6 +5,7 @@ cmake_minimum_required (VERSION 3.8)
 project(component_tests)
 
 set(component_tests_sources
+    ../../base/ByteBuffer.cpp
     ../../base/ComparisonFunctor.hpp
     ../../base/CompressionFunctions.cpp
     ../../base/DirectoryFunctions.cpp
@@ -134,6 +135,7 @@ set(component_tests_sources
     ../../sr/bsa_cli/commands/Operations.cpp
     ../../sr/formID_finder/AuxFunctions.cpp
     base/BufferStream.cpp
+    base/ByteBuffer.cpp
     base/ComparisonFunctor.cpp
     base/CompressionFunctions.cpp
     base/DirectoryFunctions.cpp

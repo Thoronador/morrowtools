@@ -202,4 +202,66 @@ TEST_CASE("ByteBuffer")
       REQUIRE( bb.size() == 0 );
     }
   }
+
+  SECTION("equality operator")
+  {
+    SECTION("empty buffers")
+    {
+      ByteBuffer a;
+      ByteBuffer b;
+
+      REQUIRE( a == b );
+    }
+
+    SECTION("empty buffer and filled buffer")
+    {
+      ByteBuffer a;
+      ByteBuffer b;
+      b.copy_from(reinterpret_cast<const uint8_t*>("foo"), 4);
+
+      REQUIRE_FALSE( a == b );
+      REQUIRE_FALSE( b == a );
+    }
+
+    SECTION("two filled buffers with same content")
+    {
+      ByteBuffer a;
+      a.copy_from(reinterpret_cast<const uint8_t*>("foo"), 4);
+      ByteBuffer b;
+      b.copy_from(reinterpret_cast<const uint8_t*>("foo"), 4);
+
+      REQUIRE( a == b );
+    }
+
+    SECTION("two filled buffers with different content: same length")
+    {
+      ByteBuffer a;
+      a.copy_from(reinterpret_cast<const uint8_t*>("foo"), 4);
+      ByteBuffer b;
+      b.copy_from(reinterpret_cast<const uint8_t*>("nah"), 4);
+
+      REQUIRE_FALSE( a == b );
+    }
+
+    SECTION("two filled buffers with different content: different length but same prefix")
+    {
+      ByteBuffer a;
+      a.copy_from(reinterpret_cast<const uint8_t*>("foo"), 4);
+      ByteBuffer b;
+      b.copy_from(reinterpret_cast<const uint8_t*>("foo not here"), 13);
+
+      // not equal despite same prefix
+      REQUIRE_FALSE( a == b );
+    }
+
+    SECTION("two filled buffers with different content: different length and different prefix")
+    {
+      ByteBuffer a;
+      a.copy_from(reinterpret_cast<const uint8_t*>("foo"), 4);
+      ByteBuffer b;
+      b.copy_from(reinterpret_cast<const uint8_t*>("not the same"), 13);
+
+      REQUIRE_FALSE( a == b );
+    }
+  }
 }

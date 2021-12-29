@@ -4,6 +4,7 @@ cmake_minimum_required (VERSION 3.8)
 project(cell_translator)
 
 set(cell_translator_sources
+    ../../base/ByteBuffer.cpp
     ../../base/DirectoryFunctions.cpp
     ../../base/FileFunctions.cpp
     ../../base/RegistryFunctions.cpp

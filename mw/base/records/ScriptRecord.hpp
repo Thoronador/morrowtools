@@ -24,6 +24,7 @@
 #include <string>
 #include <vector>
 #include "BasicRecord.hpp"
+#include "../../../base/ByteBuffer.hpp"
 
 namespace MWTP
 {
@@ -35,18 +36,14 @@ struct ScriptRecord: public BasicRecord
   uint32_t NumShorts;
   uint32_t NumLongs;
   uint32_t NumFloats;
-  uint32_t ScriptDataSize;
+  // Note: ScriptDataSize is implicitly given by ScriptData::size().
   // Note: LocalVarSize is calculated on the fly by getLocalVarSize().
   // end of script header
   std::vector<std::string> LocalVars;
-  char * ScriptData;
+  ByteBuffer ScriptData;
   std::string ScriptText;
 
   ScriptRecord();
-  ScriptRecord(const ScriptRecord& source);
-  ScriptRecord& operator=(const ScriptRecord& rhs);
-
-  virtual ~ScriptRecord();
 
   /** \brief Calculates the size of the local vars based on existing variables.
    *

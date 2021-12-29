@@ -26,6 +26,8 @@
 			<Add option="-std=c++17" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="../../base/ByteBuffer.cpp" />
+		<Unit filename="../../base/ByteBuffer.hpp" />
 		<Unit filename="../../base/ComparisonFunctor.hpp" />
 		<Unit filename="../../base/DirectoryFunctions.cpp" />
 		<Unit filename="../../base/DirectoryFunctions.hpp" />

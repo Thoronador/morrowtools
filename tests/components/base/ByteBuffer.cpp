@@ -100,6 +100,42 @@ TEST_CASE("ByteBuffer")
     }
   }
 
+  SECTION("assignment operator")
+  {
+    SECTION("empty buffer")
+    {
+      const ByteBuffer a;
+      REQUIRE( a.data() == nullptr );
+      REQUIRE( a.size() == 0 );
+      ByteBuffer b = a;
+      REQUIRE( b.data() == nullptr );
+      REQUIRE( b.size() == 0 );
+    }
+
+    SECTION("filled buffer")
+    {
+      ByteBuffer a;
+      a.copy_from(reinterpret_cast<const uint8_t*>("foo"), 4);
+
+      REQUIRE( a.data() != nullptr );
+      REQUIRE( a.size() == 4 );
+
+      ByteBuffer b = a;
+
+      REQUIRE( a.data() != nullptr );
+      REQUIRE( a.size() == 4 );
+
+      const auto a_view = std::string_view(reinterpret_cast<const char*>(a.data()), a.size());
+      REQUIRE( a_view == "foo\0"sv );
+
+      REQUIRE( b.data() != nullptr );
+      REQUIRE( b.size() == 4 );
+
+      const auto b_view = std::string_view(reinterpret_cast<const char*>(b.data()), b.size());
+      REQUIRE( b_view == "foo\0"sv );
+    }
+  }
+
   SECTION("copy_from")
   {
     SECTION("buffer pointer is null and size is zero")

@@ -8314,17 +8314,9 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
   result.recordID = ScriptName;
   //text
   result.ScriptText = Text;
-  //data size
-  result.ScriptDataSize = CompiledData.data.size();
+  // script data
+  result.ScriptData.copy_from(CompiledData.data.data(), CompiledData.data.size());
 
-  /// TODO: properly transform data of CompiledChunk into result.ScriptData
-  /** possible memory leak here **/
-  result.ScriptData = new char[CompiledData.data.size()];
-  //fill
-  for (i=0; i<CompiledData.data.size(); ++i)
-  {
-    result.ScriptData[i] = CompiledData.data.at(i);
-  }//for
   #ifdef MW_SC_DEBUG
   std::cout << "ScriptCompiler: Warning: compiler is still far from complete! "
             << "The resulting script might not run at all or not as intended "

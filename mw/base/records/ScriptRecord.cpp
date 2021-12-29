@@ -34,80 +34,11 @@ ScriptRecord::ScriptRecord()
   NumShorts(0),
   NumLongs(0),
   NumFloats(0),
-  ScriptDataSize(0),
   // end of script header
   LocalVars(std::vector<std::string>()),
-  ScriptData(nullptr),
+  ScriptData(ByteBuffer()),
   ScriptText("")
 {}
-
-ScriptRecord::ScriptRecord(const ScriptRecord& source)
-: BasicRecord(source),
-  // script header
-  recordID(source.recordID),
-  NumShorts(source.NumShorts),
-  NumLongs(source.NumLongs),
-  NumFloats(source.NumFloats),
-  ScriptDataSize(source.ScriptDataSize),
-  //end of script header
-  LocalVars(source.LocalVars),
-  ScriptData(nullptr),
-  ScriptText(source.ScriptText)
-{
-  //copy the script data
-  if (source.ScriptData != nullptr)
-  {
-    ScriptData = new char[ScriptDataSize];
-    memcpy(ScriptData, source.ScriptData, ScriptDataSize);
-  }
-}
-
-ScriptRecord& ScriptRecord::operator=(const ScriptRecord& rhs)
-{
-  if (this == &rhs)
-    return *this;
-  //script header
-  recordID = rhs.recordID;
-  NumShorts = rhs.NumShorts;
-  NumLongs = rhs.NumLongs;
-  NumFloats = rhs.NumFloats;
-  ScriptDataSize = rhs.ScriptDataSize;
-  //end of script header
-  LocalVars = rhs.LocalVars;
-  //copy the script data
-  if (rhs.ScriptData == nullptr)
-  {
-    /** I know there's a possible memory leak here in the next line, but
-      changing that will crash the programme that uses lots of ScriptRecords
-      for no obvious reason.
-    */
-    #warning Memory leak possibility!
-    ScriptData = NULL;
-  }
-  else
-  {
-    /** I know there's a possible memory leak here in the next line, but
-      changing that will crash the programme that uses lots of ScriptRecords
-      for no obvious reason.
-    */
-    #warning Memory leak possibility!
-    ScriptData = new char[ScriptDataSize];
-    memcpy(ScriptData, rhs.ScriptData, ScriptDataSize);
-  }
-  ScriptText = rhs.ScriptText;
-  return *this;
-}
-
-ScriptRecord::~ScriptRecord()
-{
-  //make sure the allocated memory will be freed
-  if (ScriptData != nullptr)
-  {
-    delete[] ScriptData;
-    ScriptData = nullptr;
-    ScriptDataSize = 0;
-  }
-}
 
 uint32_t ScriptRecord::getLocalVarSize() const
 {
@@ -121,31 +52,20 @@ uint32_t ScriptRecord::getLocalVarSize() const
 
 bool ScriptRecord::equals(const ScriptRecord& other) const
 {
-  if ((recordID == other.recordID) && (NumShorts == other.NumShorts)
+  return (recordID == other.recordID) && (NumShorts == other.NumShorts)
     && (NumLongs == other.NumLongs) && (NumFloats == other.NumFloats)
-    && (ScriptDataSize == other.ScriptDataSize)
-    && (LocalVars == other.LocalVars) && (ScriptText == other.ScriptText))
-  {
-    // check script data
-    // Is one nullptr, the other not?
-    if ((ScriptData == nullptr) ^ (other.ScriptData == nullptr))
-        return false;
-    // So either both are NULL or none is NULL - if NULL, return true.
-    if (ScriptData == nullptr)
-      return true;
-    // compare memory
-    return 0 == memcmp(ScriptData, other.ScriptData, ScriptDataSize);
-  }
-  return false;
+    && (LocalVars == other.LocalVars) && (ScriptData == other.ScriptData)
+    && (ScriptText == other.ScriptText);
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
 bool ScriptRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cSCPT, 4);
+  const uint32_t ScriptDataSize = ScriptData.size();
   uint32_t Size;
   Size = 4 /* SCHD */ +4 /* 4 bytes for length */ +52 /* fixed length is 52 bytes */
-        +4 /* SCDT */ +4 /* 4 bytes for length */ +ScriptDataSize
+        +4 /* SCDT */ +4 /* 4 bytes for length */ + ScriptDataSize
         +4 /* SCTX */ +4 /* 4 bytes for length */
         +ScriptText.length() /* length of text (no NUL termination) */;
   if (!LocalVars.empty())
@@ -219,21 +139,11 @@ bool ScriptRecord::saveToStream(std::ostream& output) const
     }
   }
 
-  //check if data is present
-  if ((ScriptDataSize!=0) and (ScriptData==NULL))
-  {
-    std::cout << "Error while writing script record: script data is NULL, "
-              << "but size is not zero.\n";
-    return false;
-  }
-
-  //write SCDT
-  output.write((const char*) &cSCDT, 4);
+  // write compiled script data (SCDT)
+  output.write(reinterpret_cast<const char*>(&cSCDT), 4);
   SubLength = ScriptDataSize;
-  //write SCDT's length
-  output.write((const char*) &SubLength, 4);
-  //write script compiled data
-  output.write(ScriptData, SubLength);
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
+  output.write(reinterpret_cast<const char*>(ScriptData.data()), SubLength);
 
   //write SCTX
   output.write((const char*) &cSCTX, 4);
@@ -306,6 +216,7 @@ bool ScriptRecord::loadFromStream(std::istream& in_File)
   in_File.read((char*) &NumLongs, 4);
   in_File.read((char*) &NumFloats, 4);
   // ---- read sizes
+  uint32_t ScriptDataSize = 0;
   in_File.read((char*) &ScriptDataSize, 4);
   uint32_t LocalVarSize = 0;
   in_File.read((char*) &LocalVarSize, 4);
@@ -320,11 +231,7 @@ bool ScriptRecord::loadFromStream(std::istream& in_File)
   //preset data
   LocalVars.clear();
   ScriptText.clear();
-  if (ScriptData!=NULL)
-  {
-    delete[] ScriptData;
-    ScriptData = NULL;
-  }
+  ScriptData.reset();
 
   //dynamic buffer pointer for script data and vars
   char * dynamicBuffer = nullptr;
@@ -393,17 +300,24 @@ bool ScriptRecord::loadFromStream(std::istream& in_File)
            //LocalVars = std::string(dynamicBuffer);
            break;
       case cSCDT:
+           // check for existing script data
+           if (ScriptData.data() != nullptr)
+           {
+             std::cerr << "Error: Sub record SCDT of SCPT was read twice!\n";
+             delete[] dynamicBuffer;
+             return false;
+           }
            //SCDT's length
            in_File.read((char*) &SubLength, 4);
            BytesRead += 4;
-           if (SubLength!=ScriptDataSize)
+           if (SubLength != ScriptDataSize)
            {
-             std::cout << "Error: sub record SCDT of SCPT has not the proper "
-                       << "size as given in header. Actual size is "<<SubLength
-                       << " bytes, but it should be "<<ScriptDataSize<<"bytes.\n";
+             std::cerr << "Error: Sub record SCDT of SCPT has not the proper "
+                       << "size as given in header. Actual size is " << SubLength
+                       << " bytes, but it should be " << ScriptDataSize << "bytes.\n";
              delete[] dynamicBuffer;
              return false;
-           }//if
+           }
            //Do we have to resize the buffer?
            if (dynamicBufferSize<=SubLength)
            {
@@ -421,18 +335,8 @@ bool ScriptRecord::loadFromStream(std::istream& in_File)
              delete[] dynamicBuffer;
              return false;
            }
-           //check script data
-           if (ScriptData!=NULL)
-           {
-             std::cout << "Error: sub record SCDT of SCPT was read twice!\n";
-             delete[] dynamicBuffer;
-             return false;
-           }
-           //set script data
-           // ---- allocate memory
-           ScriptData = new char[ScriptDataSize];
-           // ---- copy data from read buffer
-           memcpy(ScriptData, dynamicBuffer, ScriptDataSize);
+           // set script data
+           ScriptData.copy_from(reinterpret_cast<uint8_t*>(dynamicBuffer), ScriptDataSize);
            break;
       case cSCTX:
            //SCTX's length

@@ -48,6 +48,16 @@ ByteBuffer::ByteBuffer(ByteBuffer&& other)
   other.mSize = 0;
 }
 
+ByteBuffer& ByteBuffer::operator=(const ByteBuffer& other)
+{
+  // avoid self-assignment
+  if (this == &other)
+    return *this;
+
+  copy_from(other.data(), other.size());
+  return *this;
+}
+
 ByteBuffer::~ByteBuffer()
 {
   delete[] mData;

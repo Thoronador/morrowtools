@@ -33,7 +33,7 @@ class ByteBuffer
     ByteBuffer();
     ByteBuffer(const ByteBuffer& other);
     ByteBuffer(ByteBuffer&& other);
-    ByteBuffer operator=(const ByteBuffer& other) = delete;
+    ByteBuffer& operator=(const ByteBuffer& other);
     ~ByteBuffer();
 
     bool operator==(const ByteBuffer& op) const;

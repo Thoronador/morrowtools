@@ -36,9 +36,9 @@ TEST_CASE("MWTP::ScriptRecord")
     REQUIRE( record.NumShorts == 0 );
     REQUIRE( record.NumLongs == 0 );
     REQUIRE( record.NumFloats == 0 );
-    REQUIRE( record.ScriptDataSize == 0 );
+    REQUIRE( record.ScriptData.size() == 0 );
     REQUIRE( record.LocalVars.empty() );
-    REQUIRE( record.ScriptData == nullptr );
+    REQUIRE( record.ScriptData.data() == nullptr );
     REQUIRE( record.ScriptText.empty() );
   }
 
@@ -116,15 +116,6 @@ TEST_CASE("MWTP::ScriptRecord")
         REQUIRE_FALSE( b.equals(a) );
       }
 
-      SECTION("ScriptDataSize mismatch")
-      {
-        a.ScriptDataSize = 5;
-        b.ScriptDataSize = 10;
-
-        REQUIRE_FALSE( a.equals(b) );
-        REQUIRE_FALSE( b.equals(a) );
-      }
-
       SECTION("LocalVars content mismatch")
       {
         a.LocalVars = { "foo" };
@@ -145,13 +136,23 @@ TEST_CASE("MWTP::ScriptRecord")
 
       SECTION("ScriptData mismatch")
       {
-        a.ScriptData = nullptr;
-        b.ScriptData = reinterpret_cast<char*>(&b);
+        SECTION("size mismatch")
+        {
+          a.ScriptData.reset();
+          b.ScriptData.copy_from(reinterpret_cast<const uint8_t*>("foo"), 4);
 
-        REQUIRE_FALSE( a.equals(b) );
-        REQUIRE_FALSE( b.equals(a) );
+          REQUIRE_FALSE( a.equals(b) );
+          REQUIRE_FALSE( b.equals(a) );
+        }
 
-        b.ScriptData = nullptr;
+        SECTION("content mismatch")
+        {
+          a.ScriptData.copy_from(reinterpret_cast<const uint8_t*>("bar"), 4);
+          b.ScriptData.copy_from(reinterpret_cast<const uint8_t*>("foo"), 4);
+
+          REQUIRE_FALSE( a.equals(b) );
+          REQUIRE_FALSE( b.equals(a) );
+        }
       }
 
       SECTION("ScriptText mismatch")
@@ -191,11 +192,11 @@ TEST_CASE("MWTP::ScriptRecord")
       REQUIRE( record.NumShorts == 0 );
       REQUIRE( record.NumLongs == 0 );
       REQUIRE( record.NumFloats == 0 );
-      REQUIRE( record.ScriptDataSize == 37 );
+      REQUIRE( record.ScriptData.size() == 37 );
       REQUIRE( record.getLocalVarSize() == 0 );
       REQUIRE( record.LocalVars.empty() );
-      REQUIRE( record.ScriptData != nullptr );
-      const auto scdt = std::string_view(record.ScriptData, record.ScriptDataSize);
+      REQUIRE( record.ScriptData.data() != nullptr );
+      const auto scdt = std::string_view(reinterpret_cast<const char*>(record.ScriptData.data()), record.ScriptData.size());
       REQUIRE( scdt == "\x06\x01\x01\x09 X\xF0\x10 == 1\xCC\x10\x0D\x42\x33_ZainabKill\x01\0\xFF\xFF\x09\x01\x01\x01"sv );
       REQUIRE( record.ScriptText == "begin ZainabKill\r\n\t\t\r\nif ( OnDeath == 1 )\r\n\tJournal B3_ZainabKill 1\r\nendif\r\n\r\nend"sv );
 
@@ -228,12 +229,12 @@ TEST_CASE("MWTP::ScriptRecord")
       REQUIRE( record.NumShorts == 1 );
       REQUIRE( record.NumLongs == 0 );
       REQUIRE( record.NumFloats == 0 );
-      REQUIRE( record.ScriptDataSize == 40 );
+      REQUIRE( record.ScriptData.size() == 40 );
       REQUIRE( record.getLocalVarSize() == 7 );
       REQUIRE( record.LocalVars.size() == 1 );
       REQUIRE( record.LocalVars[0] == "NoLore" );
-      REQUIRE( record.ScriptData != nullptr );
-      const auto scdt = std::string_view(record.ScriptData, record.ScriptDataSize);
+      REQUIRE( record.ScriptData.data() != nullptr );
+      const auto scdt = std::string_view(reinterpret_cast<const char*>(record.ScriptData.data()), record.ScriptData.size());
       REQUIRE( scdt == "\x06\x01\x01\x09 X\xF0\x10 == 1\xCC\x10\x10\x42\x31_UrshilakuKill\x01\0\xFF\xFF\x09\x01\x01\x01"sv );
       REQUIRE( record.ScriptText == "begin zabamundNoLore\r\n\r\nShort NoLore\r\n\r\nif ( OnDeath == 1 )\r\n\tJournal B1_UrshilakuKill 1\r\nendif\r\n\r\nend"sv );
 
@@ -383,6 +384,21 @@ TEST_CASE("MWTP::ScriptRecord")
     SECTION("corrupt data: no SCDT")
     {
       const auto data = "SCPT\xC2\0\0\0\0\0\0\0\0\0\0\0SCHD4\0\0\0ZainabKill\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0%\0\0\0\0\0\0\0FAIL%\0\0\0\x06\x01\x01\x09 X\xF0\x10 == 1\xCC\x10\x0D\x42\x33_ZainabKill\x01\0\xFF\xFF\x09\x01\x01\x01SCTXQ\0\0\0begin ZainabKill\r\n\t\t\r\nif ( OnDeath == 1 )\r\n\tJournal B3_ZainabKill 1\r\nendif\r\n\r\nend"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read SCPT, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ScriptRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: multiple SCDTs")
+    {
+      const auto data = "SCPT\xEF\0\0\0\0\0\0\0\0\0\0\0SCHD4\0\0\0ZainabKill\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0%\0\0\0\0\0\0\0SCDT%\0\0\0\x06\x01\x01\x09 X\xF0\x10 == 1\xCC\x10\x0D\x42\x33_ZainabKill\x01\0\xFF\xFF\x09\x01\x01\x01SCDT%\0\0\0\x06\x01\x01\x09 X\xF0\x10 == 1\xCC\x10\x0D\x42\x33_ZainabKill\x01\0\xFF\xFF\x09\x01\x01\x01SCTXQ\0\0\0begin ZainabKill\r\n\t\t\r\nif ( OnDeath == 1 )\r\n\tJournal B3_ZainabKill 1\r\nendif\r\n\r\nend"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 

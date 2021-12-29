@@ -45,10 +45,11 @@ enum SC_CompareType{compNone, compLess, compLessEqual, compEqual,
 
 void StripEnclosingQuotes(std::string& str1)
 {
-  if ((str1.empty()) or (str1.length()<2)) return;
-  if ((str1.at(0)=='"') and (str1.at(str1.length()-1)=='"'))
+  if (str1.empty() || (str1.length() < 2))
+    return;
+  if ((str1.at(0) == '"') && (str1.at(str1.length() - 1) == '"'))
   {
-    str1 = str1.substr(1, str1.length()-2);
+    str1 = str1.substr(1, str1.length() - 2);
   }
   return;
 }
@@ -58,19 +59,19 @@ std::string::size_type getCommentStart(const std::string& line)
   const std::string::size_type len = line.length();
   std::string::size_type look = 0;
   bool outsideQuote = true;
-  while (look<len)
+  while (look < len)
   {
-    if (line.at(look)=='"')
+    if (line.at(look) == '"')
     {
       outsideQuote = not outsideQuote;
     }
-    else if ((outsideQuote) and (line.at(look)==';'))
+    else if ((outsideQuote) && (line.at(look) == ';'))
     {
-      //found a place where comment starts
+      // found a place where comment starts
       return look;
-    }//else
+    }
     ++look;
-  }//while
+  }
   return std::string::npos;
 }
 
@@ -79,28 +80,29 @@ std::string::size_type getPosOf_To_(const std::string& line)
   const std::string::size_type len = line.length();
   std::string::size_type look = 0;
   bool outsideQuote = true;
-  while (look<len)
+  while (look < len)
   {
-    if (line.at(look)=='"')
+    if (line.at(look) == '"')
     {
-      outsideQuote = not outsideQuote;
+      outsideQuote = !outsideQuote;
     }
-    else if (outsideQuote and ((line.at(look)==' ') or (line.at(look)=='\t')))
+    else if (outsideQuote && ((line.at(look) == ' ') || (line.at(look) == '\t')))
     {
-      //found a place where " to " could start
-      if (look+3<len)
+      // found a place where " to " could start
+      if (look + 3 < len)
       {
-        if ((line.at(look+1)=='t') or (line.at(look+1)=='T'))
+        if ((line.at(look + 1) == 't') || (line.at(look + 1) == 'T'))
         {
-          if ((line.at(look+2)=='o') or (line.at(look+2)=='O'))
+          if ((line.at(look + 2) == 'o') || (line.at(look + 2) == 'O'))
           {
-            if ((line.at(look+3)==' ') or (line.at(look+3)=='\t')) return look;
-          }//'o' found
-        }//'t' found
+            if ((line.at(look + 3) == ' ') || (line.at(look + 3) == '\t'))
+              return look;
+          } // 'o' found
+        } // 't' found
       }
-    }//else
+    }
     ++look;
-  }//while
+  }
   return std::string::npos;
 }
 
@@ -109,24 +111,24 @@ std::string::size_type getQualifierStart(const std::string& line)
   const std::string::size_type len = line.length();
   std::string::size_type look = 0;
   bool outsideQuote = true;
-  while (look<len)
+  while (look < len)
   {
-    if (line.at(look)=='"')
+    if (line.at(look) == '"')
     {
-      outsideQuote = not outsideQuote;
+      outsideQuote = !outsideQuote;
     }
-    else if ((outsideQuote) and (line.at(look)=='-'))
+    else if (outsideQuote && (line.at(look) == '-'))
     {
-      //found a place where arrow could start
-      if (look+1<len)
+      // found a place where arrow could start
+      if (look + 1 < len)
       {
-        //check if next character is ">"
-        if (line.at(look+1)=='>')
+        // check if next character is ">"
+        if (line.at(look + 1) == '>')
           return look;
       }
-    }//else
+    }
     ++look;
-  }//while
+  }
   return std::string::npos;
 }
 
@@ -135,20 +137,20 @@ std::string::size_type getComparePos(const std::string& line, SC_CompareType& co
   const std::string::size_type len = line.length();
   std::string::size_type look = 0;
   bool outsideQuote = true;
-  while (look<len)
+  while (look < len)
   {
-    if (line.at(look)=='"')
+    if (line.at(look) == '"')
     {
-      outsideQuote = not outsideQuote;
+      outsideQuote = !outsideQuote;
     }
     else if (outsideQuote)
     {
       switch (line.at(look))
       {
         case '<':
-             if (look<len-1)
+             if (look < len - 1)
              {
-               if (line.at(look+1)=='=')
+               if (line.at(look + 1) == '=')
                {
                  comp = compLessEqual;
                  return look;
@@ -158,9 +160,9 @@ std::string::size_type getComparePos(const std::string& line, SC_CompareType& co
              return look;
              break;
         case '=':
-             if (look<len-1)
+             if (look < len - 1)
              {
-               if (line.at(look+1)=='=')
+               if (line.at(look + 1) == '=')
                {
                  comp = compEqual;
                  return look;
@@ -168,18 +170,18 @@ std::string::size_type getComparePos(const std::string& line, SC_CompareType& co
              }
              break;
         case '>':
-             if (look<len-1)
+             if (look < len - 1)
              {
-               if (line.at(look+1)=='=')
+               if (line.at(look + 1) == '=')
                {
                  comp = compGreaterEqual;
                  return look;
                }
              }
-             //make sure we don't split a qualifier ("->") here
-             if (look>0)
+             // make sure we don't split a qualifier ("->") here
+             if (look > 0)
              {
-               if (line.at(look-1)!='-')
+               if (line.at(look - 1) != '-')
                {
                  comp = compGreater;
                  return look;
@@ -192,19 +194,19 @@ std::string::size_type getComparePos(const std::string& line, SC_CompareType& co
              }
              break;
         case '!':
-             if (look<len-1)
+             if (look < len - 1)
              {
-               if (line.at(look+1)=='=')
+               if (line.at(look + 1) == '=')
                {
                  comp = compNotEqual;
                  return look;
                }
              }
              break;
-      }//swi
-    }//else
+      }
+    }
     ++look;
-  }//while
+  }
   comp = compNone;
   return std::string::npos;
 }
@@ -214,53 +216,54 @@ std::string::size_type getDotPosition(const std::string& line)
   const std::string::size_type len = line.length();
   std::string::size_type look = 0;
   bool outsideQuote = true;
-  while (look<len)
+  while (look < len)
   {
-    if (line.at(look)=='"')
+    if (line.at(look) == '"')
     {
-      outsideQuote = not outsideQuote;
+      outsideQuote = !outsideQuote;
     }
-    else if ((outsideQuote) and (line.at(look)=='.'))
+    else if (outsideQuote && (line.at(look) == '.'))
     {
-      //found a dot
+      // found a dot
       return look;
-    }//else
+    }
     ++look;
-  }//while
+  }
   return std::string::npos;
 }
 
 std::vector<std::string> explodeParams(const std::string& source)
 {
   std::vector<std::string> result;
-  if (source.empty()) return result;
+  if (source.empty())
+    return result;
 
   const unsigned int len = source.length();
   unsigned int look = 0;
   unsigned int offset = 0;
   bool insideQuote = false;
-  while (look<len)
+  while (look < len)
   {
-    if (source.at(look)=='"')
+    if (source.at(look) == '"')
     {
-      insideQuote = not insideQuote;
+      insideQuote = !insideQuote;
     }
-    else if ((not insideQuote) and ((source.at(look)==' ')
-              or (source.at(look)==',') or (source.at(look)=='\t')))
+    else if ((!insideQuote) && ((source.at(look) == ' ')
+              || (source.at(look) == ',') || (source.at(look) == '\t')))
     {
-      //found a place where to split
+      // found a place where to split
       unsigned int len = look-offset;
-      if (len>0)//skip empty params
+      if (len > 0) // skip empty params
       {
         result.push_back(source.substr(offset, len));
         StripEnclosingQuotes(result.back());
-      }//if
-      offset=look+1;
-    }//else
+      }
+      offset = look + 1;
+    }
     ++look;
-  }//while
-  //add the rest, if not finished yet
-  if (offset<len)
+  }
+  // add the rest, if not finished yet
+  if (offset < len)
   {
     result.push_back(source.substr(offset));
     StripEnclosingQuotes(result.back());
@@ -272,163 +275,168 @@ std::vector<std::string> explodeParams(const std::string& source)
   return result;
 }
 
-//returns true, if the given string is one piece that will not be divided
+// returns true, if the given string is one piece that will not be divided
 bool isSingleToken(const std::string& line)
 {
-  if ((getDotPosition(line)==std::string::npos)
-      and (getNextOperatorPos(line, 0)==std::string::npos))
+  if ((getDotPosition(line) == std::string::npos)
+      && (getNextOperatorPos(line, 0) == std::string::npos))
   {
-    //all things checked? I hope so.
-    return (explodeParams(line).size()<2);
+    // all things checked? I hope so.
+    return explodeParams(line).size() < 2;
   }
   return false;
-}//function
+}
 
 unsigned int getEndifForIf(const std::vector<std::string>& lines, const unsigned int start)
 {
   const std::vector<std::string>::size_type len = lines.size();
-  if (start>=len) return start;
-  unsigned int look = start+1;
-  while (look<len)
+  if (start >= len)
+    return start;
+  unsigned int look = start + 1;
+  while (look < len)
   {
     const std::string lowerLine = lowerCase(lines.at(look));
-    if (lowerLine=="endif")
+    if (lowerLine == "endif")
     {
       return look;
     }
     else if (lowerLine.substr(0,3) == "if ")
     {
       const unsigned int res = getEndifForIf(lines, look);
-      if (res==look)
+      if (res == look)
       {
-        //no match found
+        // no match found
         return start;
       }
-      //set look to the position of endif of the inner if block
+      // set look to the position of endif of the inner if block
       look = res;
-    }//else
+    }
     ++look;
-  }//while
-  //nothing found, return start (i.e. failure)
+  }
+  // nothing found, return start (i.e. failure)
   return start;
 }
 
 unsigned int getEndOfIf(const std::vector<std::string>& lines, const unsigned int start)
 {
   const std::vector<std::string>::size_type len = lines.size();
-  if (start>=len) return start;
-  unsigned int look = start+1;
-  while (look<len)
+  if (start >= len)
+    return start;
+  unsigned int look = start + 1;
+  while (look < len)
   {
     const std::string lowerLine = lowerCase(lines.at(look));
-    if ((lowerLine=="endif") or (lowerLine=="else")
-        or (lowerLine.substr(0,7)=="elseif "))
+    if ((lowerLine == "endif") || (lowerLine == "else")
+        || (lowerLine.substr(0,7) == "elseif "))
     {
       return look;
     }
     else if (lowerLine.substr(0,3) == "if ")
     {
       const unsigned int res = getEndifForIf(lines, look);
-      if (res==look)
+      if (res == look)
       {
-        //no match found
+        // no match found
         return start;
       }
-      //set look to the position of endif of the inner if block
+      // set look to the position of endif of the inner if block
       look = res;
-    }//else
+    }
     ++look;
-  }//while
-  //nothing found, return start (i.e. failure)
+  }
+  // nothing found, return start (i.e. failure)
   return start;
-}//func getEndOfIf
+}
 
 unsigned int getEndOfElse(const std::vector<std::string>& lines, const unsigned int start)
 {
   const std::vector<std::string>::size_type len = lines.size();
-  if (start>=len) return start;
-  unsigned int look = start+1;
-  while (look<len)
+  if (start >= len)
+    return start;
+  unsigned int look = start + 1;
+  while (look < len)
   {
     const std::string lowerLine = lowerCase(lines.at(look));
-    if (lowerLine=="endif")
+    if (lowerLine == "endif")
     {
       return look;
     }
     else if (lowerLine.substr(0,3) == "if ")
     {
       const unsigned int res = getEndifForIf(lines, look);
-      if (res==look)
+      if (res == look)
       {
-        //no match found
+        // no match found
         return start;
       }
-      //set look to the position of endif of the inner if block
+      // set look to the position of endif of the inner if block
       look = res;
-    }//else
+    }
     ++look;
-  }//while
-  //nothing found, return start (i.e. failure)
+  }
+  // nothing found, return start (i.e. failure)
   return start;
-}//function getEndOfElse
+}
 
 unsigned int getEndOfElseIf(const std::vector<std::string>& lines, const unsigned int start)
 {
   const std::vector<std::string>::size_type len = lines.size();
-  if (start>=len) return start;
-  unsigned int look = start+1;
-  while (look<len)
+  if (start >= len)
+    return start;
+  unsigned int look = start + 1;
+  while (look < len)
   {
     const std::string lowerLine = lowerCase(lines.at(look));
-    if ((lowerLine=="endif") or (lowerLine=="else")
-      or (lowerLine.substr(0,7)=="elseif "))
+    if ((lowerLine == "endif") || (lowerLine == "else")
+      || (lowerLine.substr(0,7) == "elseif "))
     {
       return look;
     }
     else if (lowerLine.substr(0,3) == "if ")
     {
       const unsigned int res = getEndifForIf(lines, look);
-      if (res==look)
+      if (res == look)
       {
-        //no match found
+        // no match found
         return start;
       }
-      //set look to the position of endif of the inner if block
+      // set look to the position of endif of the inner if block
       look = res;
-    }//else
+    }
     ++look;
-  }//while
-  //nothing found, return start (i.e. failure)
+  }
+  // nothing found, return start (i.e. failure)
   return start;
-}//func getEndOfElseIf
+}
 
 unsigned int getEndOfWhile(const std::vector<std::string>& lines, const unsigned int start)
 {
   const std::vector<std::string>::size_type len = lines.size();
-  if (start>=len) return start;
-  unsigned int look = start+1;
-  while (look<len)
+  if (start >= len)
+    return start;
+  unsigned int look = start + 1;
+  while (look < len)
   {
     const std::string lowerLine = lowerCase(lines.at(look));
-    //Is this the end of the loop?
-    if (lowerLine=="endwhile")
+    // Is this the end of the loop?
+    if (lowerLine == "endwhile")
     {
       return look;
     }
     else if (lowerLine.substr(0,6) == "while ")
     {
       const unsigned int res = getEndOfWhile(lines, look);
-      if (res==look)
+      if (res == look)
       {
-        //no match found
+        // no match found
         return start;
       }
-      //set look to the position of endwhile of the inner while loop
+      // set look to the position of endwhile of the inner while loop
       look = res;
-    }//else
+    }
     ++look;
-  }//while
-  //nothing found, return start (i.e. failure)
+  }
+  // nothing found, return start (i.e. failure)
   return start;
 }
 
@@ -1191,37 +1199,36 @@ bool getAnimationGroupIndex(const std::string& groupName, int16_t& result)
 
 SC_VarRef getScriptsVariableTypeWithIndex(const ScriptRecord& theScript, const std::string& varName)
 {
-  if (theScript.LocalVars.size()!=(theScript.NumShorts+theScript.NumLongs
-                                  +theScript.NumFloats))
+  if (theScript.LocalVars.size() != (theScript.NumShorts + theScript.NumLongs
+                                     + theScript.NumFloats))
   {
-    std::cout << "ScriptCompiler: Error: number of local vars of script \""
-              << theScript.recordID<<"\" does not match the variables inside.\n";
+    std::cerr << "ScriptCompiler: Error: Number of local vars of script \""
+              << theScript.recordID << "\" does not match the variables inside.\n";
     return SC_VarRef(vtGlobal, 0);
-  }//if
+  }
   const std::string lcName = lowerCase(varName);
-  unsigned int i;
-  for (i=0; i<theScript.LocalVars.size(); ++i)
+  for (unsigned int i = 0; i < theScript.LocalVars.size(); ++i)
   {
-    if (lcName==lowerCase(theScript.LocalVars.at(i)))
+    if (lcName == lowerCase(theScript.LocalVars.at(i)))
     {
-      //match found
-      //Is it a float var?
-      if (i>=theScript.NumShorts+theScript.NumLongs)
+      // match found
+      // Is it a float var?
+      if (i >= theScript.NumShorts+theScript.NumLongs)
       {
-        return SC_VarRef(vtFloat, i-(theScript.NumShorts+theScript.NumLongs)+1);
+        return SC_VarRef(vtFloat, i - (theScript.NumShorts + theScript.NumLongs) + 1);
       }
-      //Is it a long var?
-      if (i>=theScript.NumShorts)
+      // Is it a long var?
+      if (i >= theScript.NumShorts)
       {
-        return SC_VarRef(vtLong, i-theScript.NumShorts+1);
+        return SC_VarRef(vtLong, i - theScript.NumShorts + 1);
       }
-      //it's a short
-      else return SC_VarRef(vtShort, i+1);
-    }//if
-  }//for
-  //no match found
+      // it's a short
+      else return SC_VarRef(vtShort, i + 1);
+    }
+  }
+  // no match found
   return SC_VarRef(vtGlobal, 0);
-}//function getScriptsVariableTypeWithIndex
+}
 
 SC_VarRef getForeignVariableTypeWithIndex(const std::string& objectID, const std::string& varName)
 {
@@ -1251,7 +1258,7 @@ SC_VarRef getForeignVariableTypeWithIndex(const std::string& objectID, const std
     }
   }
   return SC_VarRef(vtGlobal, 0);
-}//func
+}
 
 /*returns the proper ID (with exact upper/lower case spelling) of an object, if
   present. If no object can be found, objectID is returned.
@@ -1283,865 +1290,865 @@ const std::string& getObjectsProperID(const std::string& objectID)
 
 bool ScriptFunctions_ZeroParameters(const std::vector<std::string>& params, CompiledChunk& chunk)
 {
-  //entry at index zero is the function's name
+  // entry at index zero is the function's name
   const std::string lowerFunction = lowerCase(params.at(0));
-  if (lowerFunction=="activate")
+  if (lowerFunction == "activate")
   {
     chunk.pushCode(CodeActivate);
     return true;
   }
-  if (lowerFunction=="becomewerewolf")
+  if (lowerFunction == "becomewerewolf")
   {
     chunk.pushCode(CodeBecomeWerewolf);
     return true;
   }
-  if (lowerFunction=="cellchanged")
+  if (lowerFunction == "cellchanged")
   {
     chunk.pushCode(CodeCellChanged);
     return true;
   }
-  if (lowerFunction=="cellupdate")
+  if (lowerFunction == "cellupdate")
   {
     chunk.pushCode(CodeCellUpdate);
     return true;
   }
-  if (lowerFunction=="clearforcejump")
+  if (lowerFunction == "clearforcejump")
   {
     chunk.pushCode(CodeClearForceJump);
     return true;
   }
-  if (lowerFunction=="clearforcemovejump")
+  if (lowerFunction == "clearforcemovejump")
   {
     chunk.pushCode(CodeClearForceMoveJump);
     return true;
   }
-  if (lowerFunction=="clearforcerun")
+  if (lowerFunction == "clearforcerun")
   {
     chunk.pushCode(CodeClearForceRun);
     return true;
   }
-  if (lowerFunction=="clearforcesneak")
+  if (lowerFunction == "clearforcesneak")
   {
     chunk.pushCode(CodeClearForceSneak);
     return true;
   }
-  if (lowerFunction=="clearinfoactor")
+  if (lowerFunction == "clearinfoactor")
   {
     chunk.pushCode(CodeClearInfoActor);
     return true;
   }
-  if (lowerFunction=="disable")
+  if (lowerFunction == "disable")
   {
     chunk.pushCode(CodeDisable);
     return true;
   }
-  if (lowerFunction=="disablelevitation")
+  if (lowerFunction == "disablelevitation")
   {
     chunk.pushCode(CodeDisableLevitation);
     return true;
   }
-  if (lowerFunction=="disableplayercontrols")
+  if (lowerFunction == "disableplayercontrols")
   {
     chunk.pushCode(CodeDisablePlayerControls);
     return true;
   }
-  if (lowerFunction=="disableplayerfighting")
+  if (lowerFunction == "disableplayerfighting")
   {
     chunk.pushCode(CodeDisablePlayerFighting);
     return true;
   }
-  if (lowerFunction=="disableplayerjumping")
+  if (lowerFunction == "disableplayerjumping")
   {
     chunk.pushCode(CodeDisablePlayerJumping);
     return true;
   }
-  if (lowerFunction=="disableplayerlooking")
+  if (lowerFunction == "disableplayerlooking")
   {
     chunk.pushCode(CodeDisablePlayerLooking);
     return true;
   }
-  if (lowerFunction=="disableplayermagic")
+  if (lowerFunction == "disableplayermagic")
   {
     chunk.pushCode(CodeDisablePlayerMagic);
     return true;
   }
-  if (lowerFunction=="disableplayerviewswitch")
+  if (lowerFunction == "disableplayerviewswitch")
   {
     chunk.pushCode(CodeDisablePlayerViewSwitch);
     return true;
   }
-  if (lowerFunction=="disableteleporting")
+  if (lowerFunction == "disableteleporting")
   {
     chunk.pushCode(CodeDisableTeleporting);
     return true;
   }
-  if (lowerFunction=="disablevanitymode")
+  if (lowerFunction == "disablevanitymode")
   {
     chunk.pushCode(CodeDisableVanityMode);
     return true;
   }
-  if (lowerFunction=="dontsaveobject")
+  if (lowerFunction == "dontsaveobject")
   {
     chunk.pushCode(CodeDontSaveObject);
     return true;
   }
-  if (lowerFunction=="enable")
+  if (lowerFunction == "enable")
   {
     chunk.pushCode(CodeEnable);
     return true;
   }
-  if (lowerFunction=="enablebirthmenu")
+  if (lowerFunction == "enablebirthmenu")
   {
     chunk.pushCode(CodeEnableBirthMenu);
     return true;
   }
-  if (lowerFunction=="enableclassmenu")
+  if (lowerFunction == "enableclassmenu")
   {
     chunk.pushCode(CodeEnableClassMenu);
     return true;
   }
-  if (lowerFunction=="enableinventorymenu")
+  if (lowerFunction == "enableinventorymenu")
   {
     chunk.pushCode(CodeEnableInventoryMenu);
     return true;
   }
-  if (lowerFunction=="enablelevelupmenu")
+  if (lowerFunction == "enablelevelupmenu")
   {
     chunk.pushCode(CodeEnableLevelUpMenu);
     return true;
   }
-  if (lowerFunction=="enablelevitation")
+  if (lowerFunction == "enablelevitation")
   {
     chunk.pushCode(CodeEnableLevitation);
     return true;
   }
-  if (lowerFunction=="enablemagicmenu")
+  if (lowerFunction == "enablemagicmenu")
   {
     chunk.pushCode(CodeEnableMagicMenu);
     return true;
   }
-  if (lowerFunction=="enablemapmenu")
+  if (lowerFunction == "enablemapmenu")
   {
     chunk.pushCode(CodeEnableMapMenu);
     return true;
   }
-  if (lowerFunction=="enablenamemenu")
+  if (lowerFunction == "enablenamemenu")
   {
     chunk.pushCode(CodeEnableNameMenu);
     return true;
   }
-  if (lowerFunction=="enableplayercontrols")
+  if (lowerFunction == "enableplayercontrols")
   {
     chunk.pushCode(CodeEnablePlayerControls);
     return true;
   }
-  if (lowerFunction=="enableplayerfighting")
+  if (lowerFunction == "enableplayerfighting")
   {
     chunk.pushCode(CodeEnablePlayerFighting);
     return true;
   }
-  if (lowerFunction=="enableplayerjumping")
+  if (lowerFunction == "enableplayerjumping")
   {
     chunk.pushCode(CodeEnablePlayerJumping);
     return true;
   }
-  if (lowerFunction=="enableplayerlooking")
+  if (lowerFunction == "enableplayerlooking")
   {
     chunk.pushCode(CodeEnablePlayerLooking);
     return true;
   }
-  if (lowerFunction=="enableplayermagic")
+  if (lowerFunction == "enableplayermagic")
   {
     chunk.pushCode(CodeEnablePlayerMagic);
     return true;
   }
-  if (lowerFunction=="enableplayerviewswitch")
+  if (lowerFunction == "enableplayerviewswitch")
   {
     chunk.pushCode(CodeEnablePlayerViewSwitch);
     return true;
   }
-  if (lowerFunction=="enableracemenu")
+  if (lowerFunction == "enableracemenu")
   {
     chunk.pushCode(CodeEnableRaceMenu);
     return true;
   }
-  if (lowerFunction=="enablerest")
+  if (lowerFunction == "enablerest")
   {
     chunk.pushCode(CodeEnableRest);
     return true;
   }
-  if (lowerFunction=="enablestatreviewmenu")
+  if (lowerFunction == "enablestatreviewmenu")
   {
     chunk.pushCode(CodeEnableStatReviewMenu);
     return true;
   }
-  if (lowerFunction=="enablestatsmenu")
+  if (lowerFunction == "enablestatsmenu")
   {
     chunk.pushCode(CodeEnableStatsMenu);
     return true;
   }
-  if (lowerFunction=="enableteleporting")
+  if (lowerFunction == "enableteleporting")
   {
     chunk.pushCode(CodeEnableTeleporting);
     return true;
   }
-  if (lowerFunction=="enablevanitymode")
+  if (lowerFunction == "enablevanitymode")
   {
     chunk.pushCode(CodeEnableVanityMode);
     return true;
   }
-  if (lowerFunction=="fall")
+  if (lowerFunction == "fall")
   {
     chunk.pushCode(CodeFall);
     return true;
   }
-  if (lowerFunction=="fillmap")
+  if (lowerFunction == "fillmap")
   {
     chunk.pushCode(CodeFillMap);
     return true;
   }
-  if (lowerFunction=="fixme")
+  if (lowerFunction == "fixme")
   {
     chunk.pushCode(CodeFixMe);
     return true;
   }
-  if (lowerFunction=="forcegreeting")
+  if (lowerFunction == "forcegreeting")
   {
     chunk.pushCode(CodeForceGreeting);
     return true;
   }
-  if (lowerFunction=="forcejump")
+  if (lowerFunction == "forcejump")
   {
     chunk.pushCode(CodeForceJump);
     return true;
   }
-  if (lowerFunction=="forcemovejump")
+  if (lowerFunction == "forcemovejump")
   {
     chunk.pushCode(CodeForceMoveJump);
     return true;
   }
-  if (lowerFunction=="forcerun")
+  if (lowerFunction == "forcerun")
   {
     chunk.pushCode(CodeForceRun);
     return true;
   }
-  if (lowerFunction=="forcesneak")
+  if (lowerFunction == "forcesneak")
   {
     chunk.pushCode(CodeForceSneak);
     return true;
   }
-  if ((lowerFunction.substr(0,3)=="get") and (lowerFunction.length()>3))
+  if ((lowerFunction.substr(0,3) == "get") && (lowerFunction.length() > 3))
   {
-    if (lowerFunction.at(3)=='a')
+    if (lowerFunction.at(3) == 'a')
     {
-      if (lowerFunction=="getacrobatics")
+      if (lowerFunction == "getacrobatics")
       {
         chunk.pushCode(CodeGetAcrobatics);
         return true;
       }
-      if (lowerFunction=="getagility")
+      if (lowerFunction == "getagility")
       {
         chunk.pushCode(CodeGetAgility);
         return true;
       }
-      if (lowerFunction=="getaipackagedone")
+      if (lowerFunction == "getaipackagedone")
       {
         chunk.pushCode(CodeGetAIPackageDone);
         return true;
       }
-      if (lowerFunction=="getalarm")
+      if (lowerFunction == "getalarm")
       {
         chunk.pushCode(CodeGetAlarm);
         return true;
       }
-      if (lowerFunction=="getalchemy")
+      if (lowerFunction == "getalchemy")
       {
         chunk.pushCode(CodeGetAlchemy);
         return true;
       }
-      if (lowerFunction=="getalteration")
+      if (lowerFunction == "getalteration")
       {
         chunk.pushCode(CodeGetAlteration);
         return true;
       }
-      if (lowerFunction=="getarmorbonus")
+      if (lowerFunction == "getarmorbonus")
       {
         chunk.pushCode(CodeGetArmorBonus);
         return true;
       }
-      if (lowerFunction=="getarmorer")
+      if (lowerFunction == "getarmorer")
       {
         chunk.pushCode(CodeGetArmorer);
         return true;
       }
-      if (lowerFunction=="getathletics")
+      if (lowerFunction == "getathletics")
       {
         chunk.pushCode(CodeGetAthletics);
         return true;
       }
-      if (lowerFunction=="getattackbonus")
+      if (lowerFunction == "getattackbonus")
       {
         chunk.pushCode(CodeGetAttackBonus);
         return true;
       }
-      if (lowerFunction=="getattacked")
+      if (lowerFunction == "getattacked")
       {
         chunk.pushCode(CodeGetAttacked);
         return true;
       }
-      if (lowerFunction=="getaxe")
+      if (lowerFunction == "getaxe")
       {
         chunk.pushCode(CodeGetAxe);
         return true;
       }
-      return false;//all zero argument functions with "GetA..." done
-    }//if fourth character is 'a'
-    if (lowerFunction=="getblightdisease")
+      return false; // all zero argument functions with "GetA..." done
+    } // if fourth character is 'a'
+    if (lowerFunction == "getblightdisease")
     {
       chunk.pushCode(CodeGetBlightDisease);
       return true;
     }
-    if (lowerFunction=="getblindness")
+    if (lowerFunction == "getblindness")
     {
       chunk.pushCode(CodeGetBlindness);
       return true;
     }
-    if (lowerFunction=="getblock")
+    if (lowerFunction == "getblock")
     {
       chunk.pushCode(CodeGetBlock);
       return true;
     }
-    if (lowerFunction=="getbluntweapon")
+    if (lowerFunction == "getbluntweapon")
     {
       chunk.pushCode(CodeGetBluntWeapon);
       return true;
     }
-    if (lowerFunction=="getbuttonpressed")
+    if (lowerFunction == "getbuttonpressed")
     {
       chunk.pushCode(CodeGetButtonPressed);
       return true;
     }
-    if (lowerFunction=="getcastpenalty")
+    if (lowerFunction == "getcastpenalty")
     {
       chunk.pushCode(CodeGetCastPenalty);
       return true;
     }
-    if (lowerFunction=="getchameleon")
+    if (lowerFunction == "getchameleon")
     {
       chunk.pushCode(CodeGetChameleon);
       return true;
     }
-    if (lowerFunction=="getcollidingactor")
+    if (lowerFunction == "getcollidingactor")
     {
       chunk.pushCode(CodeGetCollidingActor);
       return true;
     }
-    if (lowerFunction=="getcollidingpc")
+    if (lowerFunction == "getcollidingpc")
     {
       chunk.pushCode(CodeGetCollidingPC);
       return true;
     }
-    if (lowerFunction=="getcommondisease")
+    if (lowerFunction == "getcommondisease")
     {
       chunk.pushCode(CodeGetCommonDisease);
       return true;
     }
-    if (lowerFunction=="getconjuration")
+    if (lowerFunction == "getconjuration")
     {
       chunk.pushCode(CodeGetConjuration);
       return true;
     }
-    if (lowerFunction=="getcurrentaipackage")
+    if (lowerFunction == "getcurrentaipackage")
     {
       chunk.pushCode(CodeGetCurrentAIPackage);
       return true;
     }
-    if (lowerFunction=="getcurrenttime")
+    if (lowerFunction == "getcurrenttime")
     {
       chunk.pushCode(CodeGetCurrentTime);
       return true;
     }
-    if (lowerFunction=="getcurrentweather")
+    if (lowerFunction == "getcurrentweather")
     {
       chunk.pushCode(CodeGetCurrentWeather);
       return true;
     }
-    if (lowerFunction=="getdefendbonus")
+    if (lowerFunction == "getdefendbonus")
     {
       chunk.pushCode(CodeGetDefendBonus);
       return true;
     }
-    if (lowerFunction=="getdestruction")
+    if (lowerFunction == "getdestruction")
     {
       chunk.pushCode(CodeGetDestruction);
       return true;
     }
-    if (lowerFunction=="getdisabled")
+    if (lowerFunction == "getdisabled")
     {
       chunk.pushCode(CodeGetDisabled);
       return true;
     }
-    if (lowerFunction=="getdisposition")
+    if (lowerFunction == "getdisposition")
     {
       chunk.pushCode(CodeGetDisposition);
       return true;
     }
-    if (lowerFunction=="getenchant")
+    if (lowerFunction == "getenchant")
     {
       chunk.pushCode(CodeGetEnchant);
       return true;
     }
-    if (lowerFunction=="getendurance")
+    if (lowerFunction == "getendurance")
     {
       chunk.pushCode(CodeGetEndurance);
       return true;
     }
-    if (lowerFunction=="getfatigue")
+    if (lowerFunction == "getfatigue")
     {
       chunk.pushCode(CodeGetFatigue);
       return true;
     }
-    if (lowerFunction=="getfight")
+    if (lowerFunction == "getfight")
     {
       chunk.pushCode(CodeGetFight);
       return true;
     }
-    if (lowerFunction=="getflee")
+    if (lowerFunction == "getflee")
     {
       chunk.pushCode(CodeGetFlee);
       return true;
     }
-    if (lowerFunction=="getflying")
+    if (lowerFunction == "getflying")
     {
       chunk.pushCode(CodeGetFlying);
       return true;
     }
-    if (lowerFunction=="getforcejump")
+    if (lowerFunction == "getforcejump")
     {
       chunk.pushCode(CodeGetForceJump);
       return true;
     }
-    if (lowerFunction=="getforcemovejump")
+    if (lowerFunction == "getforcemovejump")
     {
       chunk.pushCode(CodeGetForceMoveJump);
       return true;
     }
-    if (lowerFunction=="getforcerun")
+    if (lowerFunction == "getforcerun")
     {
       chunk.pushCode(CodeGetForceRun);
       return true;
     }
-    if (lowerFunction=="getforcesneak")
+    if (lowerFunction == "getforcesneak")
     {
       chunk.pushCode(CodeGetForceSneak);
       return true;
     }
-    if (lowerFunction=="gethandtohand")
+    if (lowerFunction == "gethandtohand")
     {
       chunk.pushCode(CodeGetHandToHand);
       return true;
     }
-    if (lowerFunction=="gethealth")
+    if (lowerFunction == "gethealth")
     {
       chunk.pushCode(CodeGetHealth);
       return true;
     }
-    if (lowerFunction=="gethealthgetratio")
+    if (lowerFunction == "gethealthgetratio")
     {
       chunk.pushCode(CodeGetHealthGetRatio);
       return true;
     }
-    if (lowerFunction=="getheavyarmor")
+    if (lowerFunction == "getheavyarmor")
     {
       chunk.pushCode(CodeGetHeavyArmor);
       return true;
     }
-    if (lowerFunction=="gethello")
+    if (lowerFunction == "gethello")
     {
       chunk.pushCode(CodeGetHello);
       return true;
     }
-    if (lowerFunction=="getillusion")
+    if (lowerFunction == "getillusion")
     {
       chunk.pushCode(CodeGetIllusion);
       return true;
     }
-    if (lowerFunction=="getintelligence")
+    if (lowerFunction == "getintelligence")
     {
       chunk.pushCode(CodeGetIntelligence);
       return true;
     }
-    if (lowerFunction=="getinterior")
+    if (lowerFunction == "getinterior")
     {
       chunk.pushCode(CodeGetInterior);
       return true;
     }
-    //check for both correct and earlier misspelled version of function name
-    if ((lowerFunction=="getinvisible") or (lowerFunction=="getinvisibile"))
+    // check for both correct and earlier misspelled version of function name
+    if ((lowerFunction == "getinvisible") || (lowerFunction == "getinvisibile"))
     {
       chunk.pushCode(CodeGetInvisible);
       return true;
     }
-    if (lowerFunction=="getlevel")
+    if (lowerFunction == "getlevel")
     {
       chunk.pushCode(CodeGetLevel);
       return true;
     }
-    if (lowerFunction=="getlightarmor")
+    if (lowerFunction == "getlightarmor")
     {
       chunk.pushCode(CodeGetLightArmor);
       return true;
     }
-    if (lowerFunction=="getlocked")
+    if (lowerFunction == "getlocked")
     {
       chunk.pushCode(CodeGetLocked);
       return true;
     }
-    if (lowerFunction=="getlongblade")
+    if (lowerFunction == "getlongblade")
     {
       chunk.pushCode(CodeGetLongBlade);
       return true;
     }
-    if (lowerFunction=="getluck")
+    if (lowerFunction == "getluck")
     {
       chunk.pushCode(CodeGetLuck);
       return true;
     }
-    if (lowerFunction=="getmagicka")
+    if (lowerFunction == "getmagicka")
     {
       chunk.pushCode(CodeGetMagicka);
       return true;
     }
-    if (lowerFunction=="getmarksman")
+    if (lowerFunction == "getmarksman")
     {
       chunk.pushCode(CodeGetMarksman);
       return true;
     }
-    if (lowerFunction=="getmasserphase")
+    if (lowerFunction == "getmasserphase")
     {
       chunk.pushCode(CodeGetMasserPhase);
       return true;
     }
-    if (lowerFunction=="getmediumarmor")
+    if (lowerFunction == "getmediumarmor")
     {
       chunk.pushCode(CodeGetMediumArmor);
       return true;
     }
-    if (lowerFunction=="getmercantile")
+    if (lowerFunction == "getmercantile")
     {
       chunk.pushCode(CodeGetMercantile);
       return true;
     }
-    if (lowerFunction=="getmysticism")
+    if (lowerFunction == "getmysticism")
     {
       chunk.pushCode(CodeGetMysticism);
       return true;
     }
-    if (lowerFunction=="getparalysis")
+    if (lowerFunction == "getparalysis")
     {
       chunk.pushCode(CodeGetParalysis);
       return true;
     }
-    if (lowerFunction=="getpccrimelevel")
+    if (lowerFunction == "getpccrimelevel")
     {
       chunk.pushCode(CodeGetPCCrimeLevel);
       return true;
     }
-    if (lowerFunction=="getpcfacrep")
+    if (lowerFunction == "getpcfacrep")
     {
-      //push function code
+      // push function code
       chunk.pushCode(CodeGetPCFacRep);
-      //push NUL byte to indicate absence of optional parameter
+      // push NUL byte to indicate absence of optional parameter
       chunk.data.push_back(0);
       return true;
     }
-    if (lowerFunction=="getpcinjail")
+    if (lowerFunction == "getpcinjail")
     {
       chunk.pushCode(CodeGetPCInJail);
       return true;
     }
-    if (lowerFunction=="getpcjumping")
+    if (lowerFunction == "getpcjumping")
     {
       chunk.pushCode(CodeGetPCJumping);
       return true;
     }
-    if (lowerFunction=="getpcrank")
+    if (lowerFunction == "getpcrank")
     {
-      //push function code
+      // push function code
       chunk.pushCode(CodeGetPCRank);
-      //push NUL byte to indicate absence of optional parameter
+      // push NUL byte to indicate absence of optional parameter
       chunk.data.push_back(0);
       return true;
     }
-    if (lowerFunction=="getpcrunning")
+    if (lowerFunction == "getpcrunning")
     {
       chunk.pushCode(CodeGetPCRunning);
       return true;
     }
-    if (lowerFunction=="getpcsleep")
+    if (lowerFunction == "getpcsleep")
     {
       chunk.pushCode(CodeGetPCSleep);
       return true;
     }
-    if (lowerFunction=="getpcsneaking")
+    if (lowerFunction == "getpcsneaking")
     {
       chunk.pushCode(CodeGetPCSneaking);
       return true;
     }
-    if (lowerFunction=="getpctraveling")
+    if (lowerFunction == "getpctraveling")
     {
       chunk.pushCode(CodeGetPCTraveling);
       return true;
     }
-    if (lowerFunction=="getpcvisionbonus")
+    if (lowerFunction == "getpcvisionbonus")
     {
       chunk.pushCode(CodeGetPCVisionBonus);
       return true;
     }
-    if (lowerFunction=="getpersonality")
+    if (lowerFunction == "getpersonality")
     {
       chunk.pushCode(CodeGetPersonality);
       return true;
     }
-    if (lowerFunction=="getplayercontrolsdisabled")
+    if (lowerFunction == "getplayercontrolsdisabled")
     {
       chunk.pushCode(CodeGetPlayerControlsDisabled);
       return true;
     }
-    if (lowerFunction=="getplayerfightingdisabled")
+    if (lowerFunction == "getplayerfightingdisabled")
     {
       chunk.pushCode(CodeGetPlayerFightingDisabled);
       return true;
     }
-    if (lowerFunction=="getplayerjumpingdisabled")
+    if (lowerFunction == "getplayerjumpingdisabled")
     {
       chunk.pushCode(CodeGetPlayerJumpingDisabled);
       return true;
     }
-    if (lowerFunction=="getplayerlookingdisabled")
+    if (lowerFunction == "getplayerlookingdisabled")
     {
       chunk.pushCode(CodeGetPlayerLookingDisabled);
       return true;
     }
-    if (lowerFunction=="getplayermagicdisabled")
+    if (lowerFunction == "getplayermagicdisabled")
     {
       chunk.pushCode(CodeGetPlayerMagicDisabled);
       return true;
     }
-    if (lowerFunction=="getreputation")
+    if (lowerFunction == "getreputation")
     {
       chunk.pushCode(CodeGetReputation);
       return true;
     }
-    if (lowerFunction=="getresistblight")
+    if (lowerFunction == "getresistblight")
     {
       chunk.pushCode(CodeGetResistBlight);
       return true;
     }
-    if (lowerFunction=="getresistcorprus")
+    if (lowerFunction == "getresistcorprus")
     {
       chunk.pushCode(CodeGetResistCorprus);
       return true;
     }
-    if (lowerFunction=="getresistdisease")
+    if (lowerFunction == "getresistdisease")
     {
       chunk.pushCode(CodeGetResistDisease);
       return true;
     }
-    if (lowerFunction=="getresistfire")
+    if (lowerFunction == "getresistfire")
     {
       chunk.pushCode(CodeGetResistFire);
       return true;
     }
-    if (lowerFunction=="getresistfrost")
+    if (lowerFunction == "getresistfrost")
     {
       chunk.pushCode(CodeGetResistFrost);
       return true;
     }
-    if (lowerFunction=="getresistmagicka")
+    if (lowerFunction == "getresistmagicka")
     {
       chunk.pushCode(CodeGetResistMagicka);
       return true;
     }
-    if (lowerFunction=="getresistnormalweapons")
+    if (lowerFunction == "getresistnormalweapons")
     {
       chunk.pushCode(CodeGetResistNormalWeapons);
       return true;
     }
-    if (lowerFunction=="getresistparalysis")
+    if (lowerFunction == "getresistparalysis")
     {
       chunk.pushCode(CodeGetResistParalysis);
       return true;
     }
-    if (lowerFunction=="getresistpoison")
+    if (lowerFunction == "getresistpoison")
     {
       chunk.pushCode(CodeGetResistPoison);
       return true;
     }
-    if (lowerFunction=="getresistshock")
+    if (lowerFunction == "getresistshock")
     {
       chunk.pushCode(CodeGetResistShock);
       return true;
     }
-    if (lowerFunction=="getrestoration")
+    if (lowerFunction == "getrestoration")
     {
       chunk.pushCode(CodeGetRestoration);
       return true;
     }
-    if (lowerFunction=="getscale")
+    if (lowerFunction == "getscale")
     {
       chunk.pushCode(CodeGetScale);
       return true;
     }
-    if (lowerFunction=="getsecondspassed")
+    if (lowerFunction == "getsecondspassed")
     {
       chunk.pushCode(CodeGetSecondsPassed);
       return true;
     }
-    if (lowerFunction=="getsecundaphase")
+    if (lowerFunction == "getsecundaphase")
     {
       chunk.pushCode(CodeGetSecundaPhase);
       return true;
     }
-    if (lowerFunction=="getsecurity")
+    if (lowerFunction == "getsecurity")
     {
       chunk.pushCode(CodeGetSecurity);
       return true;
     }
-    if (lowerFunction=="getshortblade")
+    if (lowerFunction == "getshortblade")
     {
       chunk.pushCode(CodeGetShortBlade);
       return true;
     }
-    if (lowerFunction=="getsilence")
+    if (lowerFunction == "getsilence")
     {
       chunk.pushCode(CodeGetSilence);
       return true;
     }
-    if (lowerFunction=="getsneak")
+    if (lowerFunction == "getsneak")
     {
       chunk.pushCode(CodeGetSneak);
       return true;
     }
-    if (lowerFunction=="getspear")
+    if (lowerFunction == "getspear")
     {
       chunk.pushCode(CodeGetSpear);
       return true;
     }
-    if (lowerFunction=="getspeechcraft")
+    if (lowerFunction == "getspeechcraft")
     {
       chunk.pushCode(CodeGetSpeechcraft);
       return true;
     }
-    if (lowerFunction=="getspeed")
+    if (lowerFunction == "getspeed")
     {
       chunk.pushCode(CodeGetSpeed);
       return true;
     }
-    if (lowerFunction=="getspellreadied")
+    if (lowerFunction == "getspellreadied")
     {
       chunk.pushCode(CodeGetSpellReadied);
       return true;
     }
-    if (lowerFunction=="getstandingactor")
+    if (lowerFunction == "getstandingactor")
     {
       chunk.pushCode(CodeGetStandingActor);
       return true;
     }
-    if (lowerFunction=="getstandingpc")
+    if (lowerFunction == "getstandingpc")
     {
       chunk.pushCode(CodeGetStandingPC);
       return true;
     }
-    if (lowerFunction=="getstrength")
+    if (lowerFunction == "getstrength")
     {
       chunk.pushCode(CodeGetStrength);
       return true;
     }
-    if (lowerFunction=="getsuperjump")
+    if (lowerFunction == "getsuperjump")
     {
       chunk.pushCode(CodeGetSuperJump);
       return true;
     }
-    if (lowerFunction=="getswimspeed")
+    if (lowerFunction == "getswimspeed")
     {
       chunk.pushCode(CodeGetSwimSpeed);
       return true;
     }
-    if (lowerFunction=="getunarmored")
+    if (lowerFunction == "getunarmored")
     {
       chunk.pushCode(CodeGetUnarmored);
       return true;
     }
-    if (lowerFunction=="getvanitymodedisabled")
+    if (lowerFunction == "getvanitymodedisabled")
     {
       chunk.pushCode(CodeGetVanityModeDisabled);
       return true;
     }
-    if (lowerFunction=="getwaterbreathing")
+    if (lowerFunction == "getwaterbreathing")
     {
       chunk.pushCode(CodeGetWaterBreathing);
       return true;
     }
-    if (lowerFunction=="getwaterlevel")
+    if (lowerFunction == "getwaterlevel")
     {
       chunk.pushCode(CodeGetWaterLevel);
       return true;
     }
-    if (lowerFunction=="getwaterwalking")
+    if (lowerFunction == "getwaterwalking")
     {
       chunk.pushCode(CodeGetWaterWalking);
       return true;
     }
-    if (lowerFunction=="getweapondrawn")
+    if (lowerFunction == "getweapondrawn")
     {
       chunk.pushCode(CodeGetWeaponDrawn);
       return true;
     }
-    if (lowerFunction=="getweapontype")
+    if (lowerFunction == "getweapontype")
     {
       chunk.pushCode(CodeGetWeaponType);
       return true;
     }
-    if (lowerFunction=="getwerewolfkills")
+    if (lowerFunction == "getwerewolfkills")
     {
       chunk.pushCode(CodeGetWerewolfKills);
       return true;
     }
-    if (lowerFunction=="getwillpower")
+    if (lowerFunction == "getwillpower")
     {
       chunk.pushCode(CodeGetWillpower);
       return true;
     }
-    if (lowerFunction=="getwindspeed")
+    if (lowerFunction == "getwindspeed")
     {
       chunk.pushCode(CodeGetWindSpeed);
       return true;
     }
-    //no appropriate get function found, return here
+    // no appropriate get function found, return here
     return false;
-  }//get functions
-  if (lowerFunction=="goodbye")
+  } // get functions
+  if (lowerFunction == "goodbye")
   {
     chunk.pushCode(CodeGoodbye);
     return true;
   }
-  if (lowerFunction=="gotojail")
+  if (lowerFunction == "gotojail")
   {
     chunk.pushCode(CodeGotoJail);
     return true;
   }
-  if (lowerFunction=="iswerewolf")
+  if (lowerFunction == "iswerewolf")
   {
     chunk.pushCode(CodeIsWerewolf);
     return true;
   }
-  if (lowerFunction=="lowerrank")
+  if (lowerFunction == "lowerrank")
   {
     chunk.pushCode(CodeLowerRank);
     return true;
   }
-  if (lowerFunction=="menumode")
+  if (lowerFunction == "menumode")
   {
     chunk.pushCode(CodeMenuMode);
     return true;
@@ -2149,136 +2156,136 @@ bool ScriptFunctions_ZeroParameters(const std::vector<std::string>& params, Comp
   if (lowerFunction == "menutest")
   {
     chunk.pushCode(CodeMenuTest);
-    //parameter is usually a short value, but it's omitted in this variant
-    //push string's length as short (not byte)
+    // parameter is usually a short value, but it's omitted in this variant
+    // push string's length as short (not byte)
     chunk.pushShort(0);
     return true;
-  }//if
-  if (lowerFunction=="onactivate")
+  }
+  if (lowerFunction == "onactivate")
   {
     chunk.pushCode(CodeOnActivate);
     return true;
   }
-  if (lowerFunction=="ondeath")
+  if (lowerFunction == "ondeath")
   {
     chunk.pushCode(CodeOnDeath);
     return true;
   }
-  if (lowerFunction=="onknockout")
+  if (lowerFunction == "onknockout")
   {
     chunk.pushCode(CodeOnKnockout);
     return true;
   }
-  if (lowerFunction=="onmurder")
+  if (lowerFunction == "onmurder")
   {
     chunk.pushCode(CodeOnMurder);
     return true;
   }
-  if (lowerFunction=="payfine")
+  if (lowerFunction == "payfine")
   {
     chunk.pushCode(CodePayFine);
     return true;
   }
-  if (lowerFunction=="payfinethief")
+  if (lowerFunction == "payfinethief")
   {
     chunk.pushCode(CodePayFineThief);
     return true;
   }
-  if (lowerFunction=="pcforce1stperson")
+  if (lowerFunction == "pcforce1stperson")
   {
     chunk.pushCode(CodePCForce1stPerson);
     return true;
   }
-  if (lowerFunction=="pcforce3rdperson")
+  if (lowerFunction == "pcforce3rdperson")
   {
     chunk.pushCode(CodePCForce3rdPerson);
     return true;
   }
-  if (lowerFunction=="pcget3rdperson")
+  if (lowerFunction == "pcget3rdperson")
   {
     chunk.pushCode(CodePCGet3rdPerson);
     return true;
   }
   if (lowerFunction == "pcraiserank")
   {
-    //push function
+    // push function
     chunk.pushCode(CodePCRaiseRank);
-    //parameter is faction ID, but it's omitted here
-    //push IDs length
+    // parameter is faction ID, but it's omitted here
+    // push IDs length
     chunk.data.push_back(0);
     return true;
-  }//if PCRaiseRank
-  if (lowerFunction=="raiserank")
+  } // if PCRaiseRank
+  if (lowerFunction == "raiserank")
   {
     chunk.pushCode(CodeRaiseRank);
     return true;
   }
-  if (lowerFunction=="resurrect")
+  if (lowerFunction == "resurrect")
   {
     chunk.pushCode(CodeResurrect);
     return true;
   }
-  if (lowerFunction=="samefaction")
+  if (lowerFunction == "samefaction")
   {
     chunk.pushCode(CodeSameFaction);
     return true;
   }
-  if (lowerFunction=="saydone")
+  if (lowerFunction == "saydone")
   {
     chunk.pushCode(CodeSayDone);
     return true;
   }
-  if (lowerFunction=="setatstart")
+  if (lowerFunction == "setatstart")
   {
     chunk.pushCode(CodeSetAtStart);
     return true;
   }
-  if (lowerFunction=="setwerewolfacrobatics")
+  if (lowerFunction == "setwerewolfacrobatics")
   {
     chunk.pushCode(CodeSetWerewolfAcrobatics);
     return true;
   }
-  if (lowerFunction=="showrestmenu")
+  if (lowerFunction == "showrestmenu")
   {
     chunk.pushCode(CodeShowRestMenu);
     return true;
   }
-  if (lowerFunction=="skipanim")
+  if (lowerFunction == "skipanim")
   {
     chunk.pushCode(CodeSkipAnim);
     return true;
   }
-  if (lowerFunction=="stopcombat")
+  if (lowerFunction == "stopcombat")
   {
     chunk.pushCode(CodeStopCombat);
     return true;
   }
-  if (lowerFunction=="turnmoonred")
+  if (lowerFunction == "turnmoonred")
   {
     chunk.pushCode(CodeTurnMoonRed);
     return true;
   }
-  if (lowerFunction=="turnmoonwhite")
+  if (lowerFunction == "turnmoonwhite")
   {
     chunk.pushCode(CodeTurnMoonWhite);
     return true;
   }
-  if (lowerFunction=="undowerewolf")
+  if (lowerFunction == "undowerewolf")
   {
     chunk.pushCode(CodeUndoWerewolf);
     return true;
   }
-  if (lowerFunction=="unlock")
+  if (lowerFunction == "unlock")
   {
     chunk.pushCode(CodeUnlock);
     return true;
   }
-  if (lowerFunction=="wakeuppc")
+  if (lowerFunction == "wakeuppc")
   {
     chunk.pushCode(CodeWakeUpPC);
     return true;
   }
-  if (lowerFunction=="xbox")
+  if (lowerFunction == "xbox")
   {
     chunk.pushCode(CodeXBox);
     return true;
@@ -3388,9 +3395,9 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
     chunk.pushString(params[1]);
     return true;
   }//if
-  if ((lowerFunction == "getlineofsight") or (lowerFunction == "getlos"))
+  if ((lowerFunction == "getlineofsight") || (lowerFunction == "getlos"))
   {
-    if (params.size()<2)
+    if (params.size() < 2)
     {
       std::cout << "ScriptCompiler: Error: GetLineOfSight needs one parameter!\n";
       return false;
@@ -4039,7 +4046,7 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
        an effect that does not exist is kind of useless. We put a warning here,
        just in case.
     */
-    if ((effect_index<0) or (effect_index>136))
+    if ((effect_index < 0) || (effect_index > 136))
     {
       std::cout << "ScriptCompiler: Warning: given index for RemoveEffects is "
                 << effect_index <<", but valid range is [0;136].\n";
@@ -7661,16 +7668,16 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
     }
   }//while
 
-  //split lines like "else set var to 5" into two lines "else" and "set var to 5"
-  for (offset=0; offset<lines.size(); ++offset)
+  // split lines like "else set var to 5" into two lines "else" and "set var to 5"
+  for (offset = 0; offset < lines.size(); ++offset)
   {
-    if ((lines.at(offset).substr(0,5)=="else ") or (lines.at(offset).substr(0,5)=="else\t"))
+    if ((lines.at(offset).substr(0,5) == "else ") || (lines.at(offset).substr(0,5) == "else\t"))
     {
-      lines.insert(lines.begin()+offset+1, lines.at(offset).substr(5));
-      trimLeft(lines.at(offset+1));
+      lines.insert(lines.begin() + offset + 1, lines.at(offset).substr(5));
+      trimLeft(lines.at(offset + 1));
       lines.at(offset) = "else";
-    }//if
-  }//for
+    }
+  }
 
   std::string ScriptName = "";
   std::string WorkString;
@@ -7679,7 +7686,7 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
 
   //now check the lines of the script
   //first line should always be begin
-  if ((lowerCase(lines.at(0).substr(0,6))=="begin ") or (lowerCase(lines.at(0).substr(0,6))=="begin\t"))
+  if ((lowerCase(lines.at(0).substr(0,6)) == "begin ") || (lowerCase(lines.at(0).substr(0,6)) == "begin\t"))
   {
     ScriptName = lines.at(0).substr(6);
     trimLeft(ScriptName);//We only trim left side, because right side was
@@ -7703,7 +7710,7 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
   {
     const std::string::size_type qualStart = getQualifierStart(lines[i]);
     //check for shorts
-    if ((lowerCase(lines.at(i).substr(0,6))=="short ") or (lowerCase(lines.at(i).substr(0,6))=="short\t"))
+    if ((lowerCase(lines.at(i).substr(0,6)) == "short ") || (lowerCase(lines.at(i).substr(0,6)) == "short\t"))
     {
       WorkString = lines.at(i).substr(6);
       trim(WorkString);
@@ -7715,7 +7722,7 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       CompiledData.varsShort.push_back(WorkString);
     }//if short
     //check for longs
-    else if ((lowerCase(lines.at(i).substr(0,5))=="long ") or (lowerCase(lines.at(i).substr(0,5))=="long\t"))
+    else if ((lowerCase(lines.at(i).substr(0,5)) == "long ") || (lowerCase(lines.at(i).substr(0,5)) == "long\t"))
     {
       WorkString = lines.at(i).substr(5);
       trim(WorkString);
@@ -7727,7 +7734,7 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       CompiledData.varsLong.push_back(WorkString);
     }//if long
     //check for floats
-    else if ((lowerCase(lines.at(i).substr(0,6))=="float ") or (lowerCase(lines.at(i).substr(0,6))=="float\t"))
+    else if ((lowerCase(lines.at(i).substr(0,6)) == "float ") || (lowerCase(lines.at(i).substr(0,6)) == "float\t"))
     {
       WorkString = lines.at(i).substr(6);
       trim(WorkString);
@@ -7739,18 +7746,18 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       CompiledData.varsFloat.push_back(WorkString);
     }//if float
     //check for Set
-    else if (lowerCase(lines.at(i).substr(0,4))=="set ")
+    else if (lowerCase(lines.at(i).substr(0,4)) == "set ")
     {
       //erase "set " from the line
       WorkString = lines.at(i).substr(4);
       trimLeft(WorkString);
       //now select the bits of "set variable To value/expression"
       const std::string::size_type pos_of_to = getPosOf_To_(WorkString);
-      if (pos_of_to==std::string::npos)
+      if (pos_of_to == std::string::npos)
       {
         std::cout << "ScriptCompiler: Error: Set statement has to be like "
                   << "'set variable to value', but no 'to' was found.\n"
-                  << "Complete line was \""<<lines.at(i)<<"\".\n";
+                  << "Complete line was \"" << lines.at(i) << "\".\n";
         return false;
       }
 
@@ -7916,7 +7923,7 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       }
     }//if Set
     //check for choice (rarely present, but check anyway)
-    else if ((lowerCase(lines.at(i).substr(0,7))=="choice ") or (lowerCase(lines.at(i).substr(0,7))=="choice,"))
+    else if ((lowerCase(lines.at(i).substr(0,7)) == "choice ") || (lowerCase(lines.at(i).substr(0,7)) == "choice,"))
     {
       WorkString = lines.at(i).substr(7);
       trimLeft(WorkString);
@@ -7927,23 +7934,23 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       CompiledData.pushString(WorkString);
     }//if Choice found
     //check for return
-    else if (lowerCase(lines.at(i))=="return")
+    else if (lowerCase(lines.at(i)) == "return")
     {
       CompiledData.pushCode(CodeReturn);
     }//if return found
     //check for if
-    else if (lowerCase(lines.at(i).substr(0,3))=="if ")
+    else if (lowerCase(lines.at(i).substr(0,3)) == "if ")
     {
       unsigned int end_of_if = getEndOfIf(lines, i);
-      if (end_of_if==i)
+      if (end_of_if == i)
       {
-        std::cout << "ScriptCompiler: Error: if/elseif/endif does not match.\n";
+        std::cerr << "ScriptCompiler: Error: if/elseif/endif does not match.\n";
         return false;
       }
-      //Does the if-block contain more than 255 statements/lines?
-      if (end_of_if-i-1>255)
+      // Does the if-block contain more than 255 statements/lines?
+      if (end_of_if - i - 1 > 255)
       {
-        std::cout << "ScriptCompiler: Error: if-block contains more than 255"
+        std::cerr << "ScriptCompiler: Error: if-block contains more than 255"
                   << " statements, it cannot be handled properly!\n";
         return false;
       }
@@ -7963,10 +7970,10 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       const std::string::size_type comp_pos = getComparePos(WorkString, dummy);
       const std::string::size_type qual_pos = getQualifierStart(WorkString);
       //check if qualifier is before compare statement
-      if ((comp_pos!=std::string::npos) and (qual_pos!=std::string::npos) and
-          (qual_pos+2<comp_pos))
+      if ((comp_pos != std::string::npos) && (qual_pos != std::string::npos) &&
+          (qual_pos + 2 < comp_pos))
       {
-        //we have a qualifier on the left side, extract part before qualifier
+        // we have a qualifier on the left side, extract part before qualifier
         std::string leftist = WorkString.substr(0, qual_pos);
         if (isSingleToken(leftist))
         {
@@ -7993,7 +8000,7 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       //push if
       CompiledData.pushCode(CodeIf);
       //next is statement count (byte)
-      CompiledData.data.push_back(end_of_if-i-1);
+      CompiledData.data.push_back(end_of_if - i - 1);
 
       //process comparison statement
       std::vector<uint8_t> comparePart;
@@ -8016,18 +8023,18 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       }
     }//if IF found
     //check for elseif
-    else if (lowerCase(lines.at(i).substr(0,7))=="elseif ")
+    else if (lowerCase(lines.at(i).substr(0,7)) == "elseif ")
     {
       unsigned int end_of_elseif = getEndOfElseIf(lines, i);
-      if (end_of_elseif==i)
+      if (end_of_elseif == i)
       {
-        std::cout << "ScriptCompiler: Error: if/elseif/endif does not match.\n";
+        std::cerr << "ScriptCompiler: Error: if/elseif/endif does not match.\n";
         return false;
       }
-      //Does the elseif-block contain more than 255 statements/lines?
-      if (end_of_elseif-i-1>255)
+      // Does the elseif-block contain more than 255 statements/lines?
+      if (end_of_elseif - i - 1 > 255)
       {
-        std::cout << "ScriptCompiler: Error: elseif-block contains more than 255"
+        std::cerr << "ScriptCompiler: Error: elseif-block contains more than 255"
                   << " statements, it cannot be handled properly!\n";
         return false;
       }
@@ -8047,8 +8054,8 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       const std::string::size_type comp_pos = getComparePos(WorkString, dummy);
       const std::string::size_type qual_pos = getQualifierStart(WorkString);
       //check if qualifier is before compare statement
-      if ((comp_pos!=std::string::npos) and (qual_pos!=std::string::npos) and
-          (qual_pos+2<comp_pos))
+      if ((comp_pos != std::string::npos) && (qual_pos != std::string::npos) &&
+          (qual_pos + 2 < comp_pos))
       {
         //we have a qualifier on the left side, extract part before qualifier
         std::string leftist = WorkString.substr(0, qual_pos);

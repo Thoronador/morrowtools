@@ -79,6 +79,9 @@ void compileSingleScript(const std::string& scriptId)
   }
 
   const auto& originalScript = Scripts::get().getRecord(scriptId);
+
+  std::cout << "Script text:\n\n" << originalScript.ScriptText << "\n\n";
+
   ScriptRecord temp;
   if (!ScriptCompiler::CompileScript(originalScript.ScriptText, temp))
   {

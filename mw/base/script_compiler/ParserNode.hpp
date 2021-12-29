@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2013  Thoronador
+    Copyright (C) 2011, 2013, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -18,17 +18,14 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef PARSERNODE_H
-#define PARSERNODE_H
+#ifndef MWTP_PARSERNODE_HPP
+#define MWTP_PARSERNODE_HPP
 
 #include <string>
 #include <vector>
 #include "CompiledChunk.hpp"
 
-namespace MWTP
-{
-
-namespace ScriptCompiler
+namespace MWTP::ScriptCompiler
 {
 
 /* tries to find the next operator in the given string, starting at position offset
@@ -56,16 +53,9 @@ bool lowerOrEqualPrecedence(const char op1, const char op2);
 struct ParserNode
 {
   public:
-    /* constructor */
     ParserNode();
-
-    /* copy constructor */
     ParserNode(const ParserNode& op);
-
-    /* assignment operator */
     ParserNode& operator=(const ParserNode& op);
-
-    /* destructor */
     ~ParserNode();
 
     /* deletes all branches of the node, if they exist */
@@ -95,13 +85,11 @@ struct ParserNode
     //type of content
     ContentType type;
     std::vector<uint8_t> binary_content;
-    //pointers to the left and right branch
+    // pointers to the left and right branch
     ParserNode* left;
     ParserNode* right;
-};//struct
+}; // struct
 
-} //namespace ScriptCompiler
+} // namespace
 
-} //namespace MWTP
-
-#endif // PARSERNODE_H
+#endif // MWTP_PARSERNODE_HPP

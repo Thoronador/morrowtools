@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="bench_script_compile" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/bench_script_compile" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/bench_script_compile" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-std=c++17" />
+			<Add option="-fexceptions" />
+		</Compiler>
+		<Unit filename="../../base/ByteBuffer.cpp" />
+		<Unit filename="../../base/ByteBuffer.hpp" />
+		<Unit filename="../../base/DirectoryFunctions.cpp" />
+		<Unit filename="../../base/DirectoryFunctions.hpp" />
+		<Unit filename="../../base/RegistryFunctions.cpp" />
+		<Unit filename="../../base/RegistryFunctions.hpp" />
+		<Unit filename="../../base/UtilityFunctions.cpp" />
+		<Unit filename="../../base/UtilityFunctions.hpp" />
+		<Unit filename="../../mw/base/DepFiles.cpp" />
+		<Unit filename="../../mw/base/DepFiles.hpp" />
+		<Unit filename="../../mw/base/ESMReader.cpp" />
+		<Unit filename="../../mw/base/ESMReader.hpp" />
+		<Unit filename="../../mw/base/ESMReaderScriptCompiler.cpp" />
+		<Unit filename="../../mw/base/ESMReaderScriptCompiler.hpp" />
+		<Unit filename="../../mw/base/HelperIO.cpp" />
+		<Unit filename="../../mw/base/HelperIO.hpp" />
+		<Unit filename="../../mw/base/MagicEffects.cpp" />
+		<Unit filename="../../mw/base/MagicEffects.hpp" />
+		<Unit filename="../../mw/base/RegistryFunctions.hpp" />
+		<Unit filename="../../mw/base/ReturnCodes.hpp" />
+		<Unit filename="../../mw/base/Scripts.hpp" />
+		<Unit filename="../../mw/base/records/AIData.cpp" />
+		<Unit filename="../../mw/base/records/AIPackages.cpp" />
+		<Unit filename="../../mw/base/records/AIPackages.hpp" />
+		<Unit filename="../../mw/base/records/ActivatorRecord.cpp" />
+		<Unit filename="../../mw/base/records/ActivatorRecord.hpp" />
+		<Unit filename="../../mw/base/records/BasicRecord.cpp" />
+		<Unit filename="../../mw/base/records/BasicRecord.hpp" />
+		<Unit filename="../../mw/base/records/ContainerRecord.cpp" />
+		<Unit filename="../../mw/base/records/ContainerRecord.hpp" />
+		<Unit filename="../../mw/base/records/CreatureRecord.cpp" />
+		<Unit filename="../../mw/base/records/CreatureRecord.hpp" />
+		<Unit filename="../../mw/base/records/GlobalRecord.cpp" />
+		<Unit filename="../../mw/base/records/GlobalRecord.hpp" />
+		<Unit filename="../../mw/base/records/ItemRecord.cpp" />
+		<Unit filename="../../mw/base/records/ItemRecord.hpp" />
+		<Unit filename="../../mw/base/records/MagicEffectRecord.cpp" />
+		<Unit filename="../../mw/base/records/MagicEffectRecord.hpp" />
+		<Unit filename="../../mw/base/records/NPCRecord.cpp" />
+		<Unit filename="../../mw/base/records/NPCRecord.hpp" />
+		<Unit filename="../../mw/base/records/PreNPCRecord.cpp" />
+		<Unit filename="../../mw/base/records/PreNPCRecord.hpp" />
+		<Unit filename="../../mw/base/records/ScriptRecord.cpp" />
+		<Unit filename="../../mw/base/records/ScriptRecord.hpp" />
+		<Unit filename="../../mw/base/records/StaticRecord.cpp" />
+		<Unit filename="../../mw/base/records/StaticRecord.hpp" />
+		<Unit filename="../../mw/base/records/TES3Record.cpp" />
+		<Unit filename="../../mw/base/records/TES3Record.hpp" />
+		<Unit filename="../../mw/base/records/TravelDestination.cpp" />
+		<Unit filename="../../mw/base/records/TravelDestination.hpp" />
+		<Unit filename="../../mw/base/script_compiler/CompiledChunk.cpp" />
+		<Unit filename="../../mw/base/script_compiler/CompiledChunk.hpp" />
+		<Unit filename="../../mw/base/script_compiler/CompilerCodes.hpp" />
+		<Unit filename="../../mw/base/script_compiler/ParserNode.cpp" />
+		<Unit filename="../../mw/base/script_compiler/ParserNode.hpp" />
+		<Unit filename="../../mw/base/script_compiler/ScriptCompiler.cpp" />
+		<Unit filename="../../mw/base/script_compiler/ScriptCompiler.hpp" />
+		<Unit filename="main.cpp" />
+		<Extensions />
+	</Project>
+</CodeBlocks_project_file>

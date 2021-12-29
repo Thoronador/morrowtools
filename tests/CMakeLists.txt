@@ -9,3 +9,9 @@ add_subdirectory (mw)
 
 # Skyrim-related executable tests
 add_subdirectory (sr)
+
+
+# add script completion benchmark, but not on MinGW builds
+if (NOT MINGW)
+  add_subdirectory (bench_script_compile)
+endif()

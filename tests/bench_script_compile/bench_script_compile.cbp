@@ -90,6 +90,8 @@
 		<Unit filename="../../mw/base/script_compiler/ParserNode.hpp" />
 		<Unit filename="../../mw/base/script_compiler/ScriptCompiler.cpp" />
 		<Unit filename="../../mw/base/script_compiler/ScriptCompiler.hpp" />
+		<Unit filename="CompileStatistics.cpp" />
+		<Unit filename="CompileStatistics.hpp" />
 		<Unit filename="main.cpp" />
 		<Extensions />
 	</Project>

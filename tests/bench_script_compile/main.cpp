@@ -23,9 +23,7 @@
 #include "../../mw/base/ESMReaderScriptCompiler.hpp"
 #include "../../mw/base/RegistryFunctions.hpp"
 #include "../../mw/base/ReturnCodes.hpp"
-#include "../../mw/base/Scripts.hpp"
-#include "../../mw/base/records/ScriptRecord.hpp"
-#include "../../mw/base/script_compiler/ScriptCompiler.hpp"
+#include "CompileStatistics.hpp"
 
 void showHelp()
 {
@@ -38,25 +36,20 @@ void showHelp()
             << "  -d DIRECTORY       - set path to the Data Files directory of Morrowind to\n"
             << "                       DIRECTORY. If omitted, the path will be read from the\n"
             << "                       registry or a default value will be used.\n"
-            << "  -dir DIRECTORY     - same as -d\n";
+            << "  -dir DIRECTORY     - same as -d\n"
+            << " --analyze ScriptID  - compiles the script ScriptID and writes the original and\n"
+            << "                       the compiled version to separate files for analysis.\n";
 }
 
 void showVersion()
 {
-  std::cout << "Benchmark for script compiler for Morrowind, version 0.1.0, 2021-12-29\n";
-}
-
-bool canCompileScriptProperly(const MWTP::ScriptRecord& original)
-{
-  MWTP::ScriptRecord temp;
-  if (!MWTP::ScriptCompiler::CompileScript(original.ScriptText, temp))
-    return false;
-  return original.equals(temp);
+  std::cout << "Benchmark for script compiler for Morrowind, version 0.2.0, 2021-12-29\n";
 }
 
 int main(int argc, char **argv)
 {
   std::string dataDir;
+  std::string analyzeThis;
 
   if ((argc > 1) && (argv != nullptr))
   {
@@ -112,6 +105,29 @@ int main(int argc, char **argv)
         else
         {
           std::cerr << "Error: You have to specify a directory name after \""
+                    << param << "\".\n";
+          return MWTP::rcInvalidParameter;
+        }
+      }
+      else if ((param == "-a") || (param == "--analyze"))
+      {
+        // set more than once?
+        if (!analyzeThis.empty())
+        {
+          std::cerr << "Error: Script ID for analysis was already set!\n";
+          return MWTP::rcInvalidParameter;
+        }
+        // enough parameters?
+        if ((i + 1 < argc) && (argv[i + 1] != nullptr))
+        {
+          analyzeThis = std::string(argv[i+1]);
+          ++i; // skip next parameter, because it's used as script ID already
+          std::cout << "Script ID for analysis was set to \"" << analyzeThis
+                    << "\".\n";
+        }
+        else
+        {
+          std::cerr << "Error: You have to specify a script ID after \""
                     << param << "\".\n";
           return MWTP::rcInvalidParameter;
         }
@@ -182,37 +198,10 @@ int main(int argc, char **argv)
     return MWTP::rcFileError;
   }
 
-  const auto totalScripts = MWTP::Scripts::get().getNumberOfRecords();
-  if (totalScripts == 0)
-  {
-    std::cout << "Hint: There are no scripts, nothing to do here!\n";
-    return 0;
-  }
-  uint_least32_t successfulScripts = 0;
-  std::vector<std::string> failedScripts;
-
-  const auto sc_end = MWTP::Scripts::get().end();
-  auto sc_iter = MWTP::Scripts::get().begin();
-  while (sc_iter != sc_end)
-  {
-    if (canCompileScriptProperly(sc_iter->second))
-    {
-      ++successfulScripts;
-    }
-    else
-    {
-      failedScripts.push_back(sc_iter->first);
-      std::cout << "Warning: Could not compile script " << sc_iter->first << ".\n";
-    }
-    ++sc_iter;
-  }
-
-  const double percentageSuccess = static_cast<double>(successfulScripts) / totalScripts * 100.0;
-  const double percentageFail = 100.0 - percentageSuccess;
-  std::cout << "Status:\n"
-            << "    total number of scripts: " << totalScripts << "\n"
-            << "    successfully compiled:   " << successfulScripts << " (" << percentageSuccess << " %)\n"
-            << "    failed to compile:       " << failedScripts.size() << " (" << percentageFail << " %)\n";
+  if (analyzeThis.empty())
+    MWTP::displayCompileStatistics();
+  else
+    MWTP::compileSingleScript(analyzeThis);
 
   return 0;
 }

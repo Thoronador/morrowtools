@@ -35,6 +35,7 @@ set(bench_script_compile_sources
     ../../mw/base/script_compiler/CompilerCodes.hpp
     ../../mw/base/script_compiler/ParserNode.cpp
     ../../mw/base/script_compiler/ScriptCompiler.cpp
+    CompileStatistics.cpp
     main.cpp)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")

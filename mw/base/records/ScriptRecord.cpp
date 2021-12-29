@@ -19,8 +19,8 @@
 */
 
 #include "ScriptRecord.hpp"
-#include <iostream>
 #include <cstring>
+#include <iostream>
 #include "../MW_Constants.hpp"
 #include "../HelperIO.hpp"
 
@@ -29,12 +29,10 @@ namespace MWTP
 
 ScriptRecord::ScriptRecord()
 : BasicRecord(),
-  // script header
   recordID(""),
   NumShorts(0),
   NumLongs(0),
   NumFloats(0),
-  // end of script header
   LocalVars(std::vector<std::string>()),
   ScriptData(ByteBuffer()),
   ScriptText("")
@@ -61,25 +59,21 @@ bool ScriptRecord::equals(const ScriptRecord& other) const
 #ifndef MW_UNSAVEABLE_RECORDS
 bool ScriptRecord::saveToStream(std::ostream& output) const
 {
-  output.write((const char*) &cSCPT, 4);
+  output.write(reinterpret_cast<const char*>(&cSCPT), 4);
   const uint32_t ScriptDataSize = ScriptData.size();
-  uint32_t Size;
-  Size = 4 /* SCHD */ +4 /* 4 bytes for length */ +52 /* fixed length is 52 bytes */
-        +4 /* SCDT */ +4 /* 4 bytes for length */ + ScriptDataSize
-        +4 /* SCTX */ +4 /* 4 bytes for length */
-        +ScriptText.length() /* length of text (no NUL termination) */;
+  uint32_t Size = 4 /* SCHD */ + 4 /* 4 bytes for length */ + 52 /* data size */
+        + 4 /* SCDT */ + 4 /* 4 bytes for length */ + ScriptDataSize
+        + 4 /* SCTX */ + 4 /* 4 bytes for length */
+        + ScriptText.length() /* length of text (no NUL termination) */;
+  const uint32_t LocalVarSize = getLocalVarSize();
   if (!LocalVars.empty())
   {
-    Size = Size + 4 /* SCVR */ +4 /* 4 bytes for length */;
-    unsigned int i;
-    for (i=0; i<LocalVars.size(); ++i)
-    {
-      Size = Size + LocalVars.at(i).length()+1;/*length of string +1 for NUL termination*/
-    }
+    Size = Size + 4 /* SCVR */ + 4 /* 4 bytes for length */
+         + LocalVarSize;
   }
-  output.write((const char*) &Size, 4);
-  output.write((const char*) &HeaderOne, 4);
-  output.write((const char*) &HeaderFlags, 4);
+  output.write(reinterpret_cast<const char*>(&Size), 4);
+  output.write(reinterpret_cast<const char*>(&HeaderOne), 4);
+  output.write(reinterpret_cast<const char*>(&HeaderFlags), 4);
 
   /*Script:
     SCHD = Script Header (52 bytes)
@@ -95,47 +89,39 @@ bool ScriptRecord::saveToStream(std::ostream& output) const
       Note (thoronador): SCVR may not be present at all, if there are no local
           vars. Moreover, SCVR, SCDT and SCTX can occur in any order.*/
 
-  //write SCHD
-  output.write((const char*) &cSCHD, 4);
+  // write script header (SCHD)
+  output.write(reinterpret_cast<const char*>(&cSCHD), 4);
   uint32_t SubLength = 52; /* length is fixed at 52 bytes */
-  //write SCHD's length
   output.write((const char*) &SubLength, 4);
-  //write script header
   // ---- write ID
-  uint_fast32_t ID_len = recordID.length()+1;
-  if (ID_len>32) ID_len = 32;
+  uint_fast32_t ID_len = recordID.length() + 1;
+  if (ID_len > 32)
+    ID_len = 32;
   output.write(recordID.c_str(), ID_len);
-  //Do we need to fill the rest to reach 32 characters?
-  if (ID_len<32)
+  // Do we need to fill the rest to reach 32 characters?
+  if (ID_len < 32)
   {
     output.write(NULof32, 32 - ID_len);
   }
   // ---- write local var counts
-  output.write((const char*) &NumShorts, 4);
-  output.write((const char*) &NumLongs, 4);
-  output.write((const char*) &NumFloats, 4);
+  output.write(reinterpret_cast<const char*>(&NumShorts), 4);
+  output.write(reinterpret_cast<const char*>(&NumLongs), 4);
+  output.write(reinterpret_cast<const char*>(&NumFloats), 4);
   // ---- write sizes
-  output.write((const char*) &ScriptDataSize, 4);
-  const uint32_t LocalVarSize = getLocalVarSize();
-  output.write((const char*) &LocalVarSize, 4);
+  output.write(reinterpret_cast<const char*>(&ScriptDataSize), 4);
+  output.write(reinterpret_cast<const char*>(&LocalVarSize), 4);
 
   if (!LocalVars.empty())
   {
-    //write SCVR
-    output.write((const char*) &cSCVR, 4);
-    //length is sum of lengths of individual strings
-    SubLength = 0;
-    unsigned int i;
-    for (i=0; i<LocalVars.size(); ++i)
+    // write script's variable names (SCVR)
+    output.write(reinterpret_cast<const char*>(&cSCVR), 4);
+    SubLength = LocalVarSize;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
+    // write script's variable list
+    for (const auto& name: LocalVars)
     {
-      SubLength += LocalVars.at(i).length()+1;/*length of string +1 for NUL termination*/
-    }
-    //write SCVR's length
-    output.write((const char*) &SubLength, 4);
-    //write script's variable list
-    for (i=0; i<LocalVars.size(); ++i)
-    {
-      output.write(LocalVars.at(i).c_str(), LocalVars.at(i).length()+1);/*length of string +1 for NUL termination*/
+      // length of string +1 for NUL termination
+      output.write(name.c_str(), name.length() + 1);
     }
   }
 
@@ -145,24 +131,22 @@ bool ScriptRecord::saveToStream(std::ostream& output) const
   output.write(reinterpret_cast<const char*>(&SubLength), 4);
   output.write(reinterpret_cast<const char*>(ScriptData.data()), SubLength);
 
-  //write SCTX
-  output.write((const char*) &cSCTX, 4);
+  // write script text (SCTX)
+  output.write(reinterpret_cast<const char*>(&cSCTX), 4);
   SubLength = ScriptText.length(); /* length of text, no NUL-termination */
-  //write SCTX's length
-  output.write((const char*) &SubLength, 4);
-  //write script compiled data
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
   output.write(ScriptText.c_str(), SubLength);
 
   return output.good();
 }
 #endif
 
-bool ScriptRecord::loadFromStream(std::istream& in_File)
+bool ScriptRecord::loadFromStream(std::istream& input)
 {
-  uint32_t Size;
-  in_File.read((char*) &Size, 4);
-  in_File.read((char*) &HeaderOne, 4);
-  in_File.read((char*) &HeaderFlags, 4);
+  uint32_t Size = 0;
+  input.read(reinterpret_cast<char*>(&Size), 4);
+  input.read(reinterpret_cast<char*>(&HeaderOne), 4);
+  input.read(reinterpret_cast<char*>(&HeaderFlags), 4);
 
   /*Script:
     SCHD = Script Header (52 bytes)
@@ -178,75 +162,72 @@ bool ScriptRecord::loadFromStream(std::istream& in_File)
       Note (thoronador): SCVR may not be present at all, if there are no local
           vars. Moreover, SCVR, SCDT and SCTX can occur in any order.*/
 
-  uint32_t SubRecName;
-  uint32_t SubLength, BytesRead;
-  SubRecName = SubLength = 0;
+  uint32_t SubRecName = 0;
 
-  //read SCHD
-  in_File.read((char*) &SubRecName, 4);
-  BytesRead = 4;
-  if (SubRecName!=cSCHD)
+  // read SCHD
+  input.read(reinterpret_cast<char*>(&SubRecName), 4);
+  uint32_t BytesRead = 4;
+  if (SubRecName != cSCHD)
   {
     UnexpectedRecord(cSCHD, SubRecName);
     return false;
   }
-  //SCHD's length
-  in_File.read((char*) &SubLength, 4);
+  // SCHD's length
+  uint32_t SubLength = 0;
+  input.read(reinterpret_cast<char*>(&SubLength), 4);
   BytesRead += 4;
-  if (SubLength!=52)
+  if (SubLength != 52)
   {
-    std::cout <<"Error: sub record SCHD of SCPT has invalid length ("<<SubLength
-              <<" bytes). Should be 52 bytes.\n";
+    std::cerr << "Error: Sub record SCHD of SCPT has invalid length ("
+              << SubLength << " bytes). Should be 52 bytes.\n";
     return false;
   }
-  //read script header
+  // read script header
   char Buffer[256];
   memset(Buffer, '\0', 256);
   // ---- read script name
-  in_File.read(Buffer, 32);
+  input.read(Buffer, 32);
   BytesRead += 32;
-  if (!in_File.good())
+  if (!input.good())
   {
-    std::cout << "Error while reading sub record SCHD of SCPT.\n";
+    std::cerr << "Error while reading sub record SCHD of SCPT.\n";
     return false;
   }
   recordID = std::string(Buffer);
   // ---- read local var counts
-  in_File.read((char*) &NumShorts, 4);
-  in_File.read((char*) &NumLongs, 4);
-  in_File.read((char*) &NumFloats, 4);
+  input.read(reinterpret_cast<char*>(&NumShorts), 4);
+  input.read(reinterpret_cast<char*>(&NumLongs), 4);
+  input.read(reinterpret_cast<char*>(&NumFloats), 4);
   // ---- read sizes
   uint32_t ScriptDataSize = 0;
-  in_File.read((char*) &ScriptDataSize, 4);
+  input.read(reinterpret_cast<char*>(&ScriptDataSize), 4);
   uint32_t LocalVarSize = 0;
-  in_File.read((char*) &LocalVarSize, 4);
+  input.read(reinterpret_cast<char*>(&LocalVarSize), 4);
   BytesRead += 20;
-  if (!in_File.good())
+  if (!input.good())
   {
-    std::cout << "Error while reading sub record SCHD of SCPT (2nd part).\n";
+    std::cerr << "Error while reading sub record SCHD of SCPT!\n";
     return false;
   }
 
   uint32_t currentPos;
-  //preset data
+  // clear possibly existing data
   LocalVars.clear();
   ScriptText.clear();
   ScriptData.reset();
 
-  //dynamic buffer pointer for script data and vars
+  // dynamic buffer pointer for script data and vars
   char * dynamicBuffer = nullptr;
   uint32_t dynamicBufferSize = 0;
-  //optional records/ records with unknown sequence
-  //read script sub records
-  while (BytesRead<Size)
+  while (BytesRead < Size)
   {
-    in_File.read((char*) &SubRecName, 4);
+    input.read(reinterpret_cast<char*>(&SubRecName), 4);
     BytesRead += 4;
     switch(SubRecName)
     {
       case cSCVR:
-           //SCVR's length
-           in_File.read((char*) &SubLength, 4);
+           // SCVR's length
+           input.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
            if (LocalVarSize != SubLength)
            {
@@ -266,38 +247,37 @@ bool ScriptRecord::loadFromStream(std::istream& in_File)
              delete[] dynamicBuffer;
              return false;
            }
-           //Do we have to resize the buffer?
-           if (dynamicBufferSize<=SubLength)
+           // Do we have to resize the buffer?
+           if (dynamicBufferSize <= SubLength)
            {
              delete[] dynamicBuffer;
-             dynamicBuffer = new char[SubLength+1];
-             dynamicBufferSize = SubLength+1;
-           }//if
-           memset(dynamicBuffer, '\0', SubLength+1);
-           //read the var list
-           in_File.read(dynamicBuffer, SubLength);
+             dynamicBuffer = new char[SubLength + 1];
+             dynamicBufferSize = SubLength + 1;
+           }
+           memset(dynamicBuffer, '\0', SubLength + 1);
+           // read the var list
+           input.read(dynamicBuffer, SubLength);
            BytesRead += SubLength;
-           if (!in_File.good())
+           if (!input.good())
            {
-             std::cout << "Error while reading sub record SCVR of SCPT.\n";
+             std::cerr << "Error while reading sub record SCVR of SCPT.\n";
              delete[] dynamicBuffer;
              return false;
            }
-           //add local vars
+           // add local vars
            currentPos = 0;
            do
            {
-             //push next var
+             // push next var
              LocalVars.push_back(&dynamicBuffer[currentPos]);
-             //find end of previous var name in buffer
-             while (dynamicBuffer[currentPos]!='\0')
+             // find end of previous var name in buffer
+             while (dynamicBuffer[currentPos] != '\0')
              {
                ++currentPos;
-             }//while
+             }
              ++currentPos; //puts currentPos one after NUL, i.e. to the position
                            // where the next string starts
-           } while (currentPos<SubLength);
-           //LocalVars = std::string(dynamicBuffer);
+           } while (currentPos < SubLength);
            break;
       case cSCDT:
            // check for existing script data
@@ -307,31 +287,31 @@ bool ScriptRecord::loadFromStream(std::istream& in_File)
              delete[] dynamicBuffer;
              return false;
            }
-           //SCDT's length
-           in_File.read((char*) &SubLength, 4);
+           // SCDT's length
+           input.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
            if (SubLength != ScriptDataSize)
            {
              std::cerr << "Error: Sub record SCDT of SCPT has not the proper "
                        << "size as given in header. Actual size is " << SubLength
-                       << " bytes, but it should be " << ScriptDataSize << "bytes.\n";
+                       << " bytes, but it should be " << ScriptDataSize << " bytes.\n";
              delete[] dynamicBuffer;
              return false;
            }
-           //Do we have to resize the buffer?
-           if (dynamicBufferSize<=SubLength)
+           // Do we have to resize the buffer?
+           if (dynamicBufferSize <= SubLength)
            {
              delete[] dynamicBuffer;
-             dynamicBuffer = new char[SubLength+1];
-             dynamicBufferSize = SubLength+1;
-           }//if
-           memset(dynamicBuffer, '\0', SubLength+1);
-           //read the script data
-           in_File.read(dynamicBuffer, SubLength);
+             dynamicBuffer = new char[SubLength + 1];
+             dynamicBufferSize = SubLength + 1;
+           }
+           memset(dynamicBuffer, '\0', SubLength + 1);
+           // read the script data
+           input.read(dynamicBuffer, SubLength);
            BytesRead += SubLength;
-           if (!in_File.good())
+           if (!input.good())
            {
-             std::cout << "Error while reading sub record SCDT of SCPT.\n";
+             std::cerr << "Error while reading sub record SCDT of SCPT.\n";
              delete[] dynamicBuffer;
              return false;
            }
@@ -339,39 +319,38 @@ bool ScriptRecord::loadFromStream(std::istream& in_File)
            ScriptData.copy_from(reinterpret_cast<uint8_t*>(dynamicBuffer), ScriptDataSize);
            break;
       case cSCTX:
-           //SCTX's length
-           in_File.read((char*) &SubLength, 4);
+           // SCTX's length
+           input.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
-           //Do we have to resize the buffer?
-           if (dynamicBufferSize<=SubLength)
+           // Do we have to resize the buffer?
+           if (dynamicBufferSize <= SubLength)
            {
              delete[] dynamicBuffer;
-             dynamicBuffer = new char[SubLength+1];
-             dynamicBufferSize = SubLength+1;
-           }//if
-           memset(dynamicBuffer, '\0', SubLength+1);
-           //read script text
-           in_File.read(dynamicBuffer, SubLength);
+             dynamicBuffer = new char[SubLength + 1];
+             dynamicBufferSize = SubLength + 1;
+           }
+           memset(dynamicBuffer, '\0', SubLength + 1);
+           // read script text
+           input.read(dynamicBuffer, SubLength);
            BytesRead += SubLength;
-           if (!in_File.good())
+           if (!input.good())
            {
-             std::cout << "Error while reading sub record SCTX of SCPT.\n";
+             std::cerr << "Error while reading sub record SCTX of SCPT.\n";
              delete[] dynamicBuffer;
              return false;
            }
            ScriptText = std::string(dynamicBuffer);
            break;
-      default: //unknown record header, finish
-           std::cout << "Unexpected sub record found. Expected SCDT, SCTX or "
-                     << "SCVR, but "<<IntTo4Char(SubRecName)<<" was found.\n";
+      default: // unknown record header, failure
+           std::cerr << "Unexpected sub record found. Expected SCDT, SCTX or "
+                     << "SCVR, but " << IntTo4Char(SubRecName) << " was found.\n";
            delete[] dynamicBuffer;
            return false;
-           break;
-    }//switch
-  }//while
+    }
+  }
 
   delete[] dynamicBuffer;
-  return in_File.good();
+  return input.good();
 }
 
-} //namespace
+} // namespace

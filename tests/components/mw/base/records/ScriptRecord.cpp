@@ -306,7 +306,22 @@ TEST_CASE("MWTP::ScriptRecord")
       }
     }
 
-    SECTION("corrupt data: stream ends before SCHD can be read")
+    SECTION("corrupt data: stream ends before SCHD can be read, script name")
+    {
+      const auto data = "SCPT\xC2\0\0\0\0\0\0\0\0\0\0\0SCHD4\0\0\0Zai"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read SCPT, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ScriptRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: stream ends before SCHD can be read, int data")
     {
       const auto data = "SCPT\xC2\0\0\0\0\0\0\0\0\0\0\0SCHD4\0\0\0ZainabKill\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0%"sv;
       std::istringstream stream;

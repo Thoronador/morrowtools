@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2021  Thoronador
+    Copyright (C) 2011, 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -23,6 +23,9 @@
 
 #include <cstdint>
 #include <string>
+#ifndef MW_UNSAVEABLE_RECORDS
+#include <fstream>
+#endif
 
 namespace MWTP
 {
@@ -36,6 +39,22 @@ struct BodyPartAssociation
   BodyPartAssociation();
 
   bool operator==(const BodyPartAssociation& other) const;
+
+  #ifndef MW_UNSAVEABLE_RECORDS
+  /** \brief Gets the size in bytes that the data would occupy in a file stream.
+   *
+   * \return Returns the size in bytes that the association would need.
+   */
+  uint32_t getWriteSize() const;
+
+  /** \brief Writes the association to the given output stream.
+   *
+   * \param output  the output stream
+   * \return Returns true on success (data was written to stream).
+   *         Returns false, if an error occurred.
+   */
+  bool saveToStream(std::ostream& output) const;
+  #endif
 };
 
 } // namespace

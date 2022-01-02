@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Morrowind Tools Project.
-    Copyright (C) 2021  Dirk Stolle
+    Copyright (C) 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -81,6 +81,82 @@ TEST_CASE("MWTP::BodyPartAssociation")
         REQUIRE_FALSE( a == b );
         REQUIRE_FALSE( b == a );
       }
+    }
+  }
+
+  SECTION("getWriteSize")
+  {
+    BodyPartAssociation assoc;
+    assoc.Index = 1;
+
+    SECTION("size adjusts with length of male part name")
+    {
+      assoc.MaleBodyPart = "foo";
+      REQUIRE( assoc.getWriteSize() == 20 );
+
+      assoc.MaleBodyPart = "foo12345";
+      REQUIRE( assoc.getWriteSize() == 25 );
+
+      assoc.MaleBodyPart = "some_name_that_is_made_up";
+      REQUIRE( assoc.getWriteSize() == 42 );
+    }
+
+    SECTION("size adjusts with length of female part name")
+    {
+      assoc.FemaleBodyPart = "foo";
+      REQUIRE( assoc.getWriteSize() == 20 );
+
+      assoc.FemaleBodyPart = "foo12345";
+      REQUIRE( assoc.getWriteSize() == 25 );
+
+      assoc.FemaleBodyPart = "some_name_that_is_made_up";
+      REQUIRE( assoc.getWriteSize() == 42 );
+    }
+
+    SECTION("both part names go into the size calculation")
+    {
+      assoc.MaleBodyPart = "foo";
+      assoc.FemaleBodyPart = "bar";
+      REQUIRE( assoc.getWriteSize() == 31 );
+
+      assoc.MaleBodyPart = "foo12345";
+      assoc.FemaleBodyPart = "bar123456";
+      REQUIRE( assoc.getWriteSize() == 42 );
+    }
+  }
+
+  SECTION("save to stream")
+  {
+    using namespace std::string_view_literals;
+
+    SECTION("known example")
+    {
+      BodyPartAssociation assoc;
+      assoc.Index = 1;
+      assoc.MaleBodyPart = "A_Gondolier_M_Helmet";
+      assoc.FemaleBodyPart.clear();
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( assoc.saveToStream(streamOut) );
+      // Check written data.
+      const auto data = "INDX\x01\0\0\0\x01\x42NAM\x14\0\0\0A_Gondolier_M_Helmet"sv;
+      REQUIRE( streamOut.str() == data );
+    }
+
+    SECTION("with both parts")
+    {
+      BodyPartAssociation assoc;
+      assoc.Index = 1;
+      assoc.MaleBodyPart = "part_one";
+      assoc.FemaleBodyPart = "part_two";
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( assoc.saveToStream(streamOut) );
+      // Check written data.
+      const auto data = "INDX\x01\0\0\0\x01\x42NAM\x08\0\0\0part_oneCNAM\x08\0\0\0part_two"sv;
+      REQUIRE( streamOut.str() == data );
     }
   }
 }

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011, 2012, 2013  Thoronador
+    Copyright (C) 2009, 2011, 2012, 2013, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -74,22 +74,11 @@ bool ClothingRecord::saveToStream(std::ostream& output) const
     Size = Size +4 /* ITEX */ +4 /* 4 bytes for length */
           +InventoryIcon.length()+1 /* length of icon +1 byte for NUL termination */;
   }
-  unsigned int i;
-  //body part stuff
-  for (i=0; i<ClothingBodyParts.size(); ++i)
+  // body part stuff
+  for (const auto& part: ClothingBodyParts)
   {
-    Size = Size + 4 /* INDX */ +4 /* 4 bytes for length */ +1 /* fixed length of 1 byte */;
-    if (!ClothingBodyParts[i].MaleBodyPart.empty())
-    {
-      Size = Size + 4 /* BNAM */ +4 /* 4 bytes for length */
-            +ClothingBodyParts[i].MaleBodyPart.length()+1 /* length of ID +1 byte for NUL termination */;
-    }
-    if (!ClothingBodyParts[i].FemaleBodyPart.empty())
-    {
-      Size = Size + 4 /* CNAM */ +4 /* 4 bytes for length */
-            +ClothingBodyParts[i].FemaleBodyPart.length()+1 /* length of ID +1 byte for NUL termination */;
-    }
-  }//for
+    Size += part.getWriteSize();
+  }
 
   if (!ScriptID.empty())
   {
@@ -186,37 +175,11 @@ bool ClothingRecord::saveToStream(std::ostream& output) const
   }
 
   //body part associations
-  for (i=0; i<ClothingBodyParts.size(); ++i)
+  for (const auto& part: ClothingBodyParts)
   {
-    //write INDX
-    output.write((const char*) &cINDX, 4);
-    SubLength = 1; //fixed length of one byte
-    //write INDX's length
-    output.write((const char*) &SubLength, 4);
-    //write body part index
-    output.write((const char*) &(ClothingBodyParts[i].Index), 1);
-
-    if (!ClothingBodyParts[i].MaleBodyPart.empty())
-    {
-      //write BNAM
-      output.write((const char*) &cBNAM, 4);
-      SubLength = ClothingBodyParts[i].MaleBodyPart.length()+1 /* length of ID +1 byte for NUL termination */;
-      //write BNAM's length
-      output.write((const char*) &SubLength, 4);
-      //write male body part name
-      output.write(ClothingBodyParts[i].MaleBodyPart.c_str(), SubLength);
-    }
-    if (!ClothingBodyParts[i].FemaleBodyPart.empty())
-    {
-      //write CNAM
-      output.write((const char*) &cCNAM, 4);
-      SubLength = ClothingBodyParts[i].FemaleBodyPart.length()+1 /* length of ID +1 byte for NUL termination */;
-      //write BNAM's length
-      output.write((const char*) &SubLength, 4);
-      //write male body part name
-      output.write(ClothingBodyParts[i].FemaleBodyPart.c_str(), SubLength);
-    }
-  }//for
+    if (!part.saveToStream(output))
+      return false;
+  }
 
   if (!EnchantmentID.empty())
   {

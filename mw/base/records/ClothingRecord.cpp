@@ -19,7 +19,6 @@
 */
 
 #include "ClothingRecord.hpp"
-#include <cstring>
 #include <iostream>
 #include "../MW_Constants.hpp"
 #include "../HelperIO.hpp"
@@ -30,7 +29,7 @@ namespace MWTP
 ClothingRecord::ClothingRecord()
 : BasicRecord(),
   recordID(""),
-  Model(""),
+  ModelPath(""),
   Name(""),
   //clothing data
   ClothingType(0),
@@ -39,60 +38,59 @@ ClothingRecord::ClothingRecord()
   EnchantmentPoints(0),
   //end of clothing data
   InventoryIcon(""),
-  ClothingBodyParts(std::vector<BodyPartAssociation>()),
+  BodyParts(std::vector<BodyPartAssociation>()),
   ScriptID(""),
   EnchantmentID("")
 {}
 
 bool ClothingRecord::equals(const ClothingRecord& other) const
 {
-  return ((recordID==other.recordID) and (Model==other.Model)
-      and (Name==other.Name) and (ClothingType==other.ClothingType)
-      and (Weight==other.Weight) and (Value==other.Value)
-      and (EnchantmentPoints==other.EnchantmentPoints) and (InventoryIcon==other.InventoryIcon)
-      and (ClothingBodyParts==other.ClothingBodyParts) and (ScriptID==other.ScriptID)
-      and (EnchantmentID==other.EnchantmentID));
+  return (recordID == other.recordID) && (ModelPath == other.ModelPath)
+      && (Name == other.Name) && (ClothingType == other.ClothingType)
+      && (Weight == other.Weight) && (Value == other.Value)
+      && (EnchantmentPoints == other.EnchantmentPoints) && (InventoryIcon == other.InventoryIcon)
+      && (BodyParts == other.BodyParts) && (ScriptID == other.ScriptID)
+      && (EnchantmentID == other.EnchantmentID);
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
 bool ClothingRecord::saveToStream(std::ostream& output) const
 {
-  output.write((const char*) &cCLOT, 4);
-  uint32_t Size;
-  Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +recordID.length()+1 /* length of ID +1 byte for NUL termination */
-        +4 /* MODL */ +4 /* 4 bytes for length */
-        +Model.length()+1 /* length of model path +1 byte for NUL termination */
-        +4 /* CTDT */ +4 /* 4 bytes for length */ +12 /* fixed length of 12 bytes */;
+  output.write(reinterpret_cast<const char*>(&cCLOT), 4);
+  uint32_t Size = 4 /* NAME */ + 4 /* 4 bytes for length */
+        + recordID.length() + 1 /* length of ID +1 byte for NUL termination */
+        + 4 /* MODL */ + 4 /* 4 bytes for length */
+        + ModelPath.length() + 1 /* length of model path +1 byte for NUL */
+        + 4 /* CTDT */ + 4 /* 4 bytes for length */ + 12 /* data size */;
   if (!Name.empty())
   {
-    Size = Size +4 /* FNAM */ +4 /* 4 bytes for length */
-          +Name.length()+1 /* length of name +1 byte for NUL termination */;
+    Size = Size + 4 /* FNAM */ + 4 /* 4 bytes for length */
+         + Name.length() + 1 /* length of name +1 byte for NUL termination */;
   }
   if (!InventoryIcon.empty())
   {
-    Size = Size +4 /* ITEX */ +4 /* 4 bytes for length */
-          +InventoryIcon.length()+1 /* length of icon +1 byte for NUL termination */;
+    Size = Size + 4 /* ITEX */ + 4 /* 4 bytes for length */
+         + InventoryIcon.length() + 1 /* length of icon +1 byte for NUL */;
   }
   // body part stuff
-  for (const auto& part: ClothingBodyParts)
+  for (const auto& part: BodyParts)
   {
     Size += part.getWriteSize();
   }
 
   if (!ScriptID.empty())
   {
-    Size = Size + 4 /* SCRI */ +4 /* 4 bytes for length */
-          +ScriptID.length()+1 /* length of ID +1 byte for NUL termination */;
+    Size = Size + 4 /* SCRI */ + 4 /* 4 bytes for length */
+         + ScriptID.length() + 1 /* length of ID +1 byte for NUL termination */;
   }
   if (!EnchantmentID.empty())
   {
-    Size = Size + 4 /* ENAM */ +4 /* 4 bytes for length */
-          +EnchantmentID.length()+1 /* length of ID +1 byte for NUL termination */;
+    Size = Size + 4 /* ENAM */ + 4 /* 4 bytes for length */
+         + EnchantmentID.length() + 1 /* length of ID +1 byte for NUL */;
   }
-  output.write((const char*) &Size, 4);
-  output.write((const char*) &HeaderOne, 4);
-  output.write((const char*) &HeaderFlags, 4);
+  output.write(reinterpret_cast<const char*>(&Size), 4);
+  output.write(reinterpret_cast<const char*>(&HeaderOne), 4);
+  output.write(reinterpret_cast<const char*>(&HeaderFlags), 4);
 
   /*Clothing:
     NAME = Item ID, required
@@ -114,68 +112,57 @@ bool ClothingRecord::saveToStream(std::ostream& output) const
         Up to 7 pairs allowed.
     ENAM = Enchantment Name (optional) */
 
-  //write NAME
-  output.write((const char*) &cNAME, 4);
-  uint32_t SubLength = recordID.length()+1;
-  //write NAME's length
-  output.write((const char*) &SubLength, 4);
-  //write ID
+  // write record ID (NAME)
+  output.write(reinterpret_cast<const char*>(&cNAME), 4);
+  uint32_t SubLength = recordID.length() + 1;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
   output.write(recordID.c_str(), SubLength);
 
-  //write MODL
-  output.write((const char*) &cMODL, 4);
-  SubLength = Model.length()+1;
-  //write MODL's length
-  output.write((const char*) &SubLength, 4);
-  //write clothing's model path
-  output.write(Model.c_str(), SubLength);
+  // write clothing's model path (MODL)
+  output.write(reinterpret_cast<const char*>(&cMODL), 4);
+  SubLength = ModelPath.length() + 1;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
+  output.write(ModelPath.c_str(), SubLength);
 
   if (!Name.empty())
   {
-    //write FNAM
-    output.write((const char*) &cFNAM, 4);
-    SubLength = Name.length()+1;
-    //write FNAM's length
-    output.write((const char*) &SubLength, 4);
-    //write clothing's "real" name
+    // write displayed name (FNAM)
+    output.write(reinterpret_cast<const char*>(&cFNAM), 4);
+    SubLength = Name.length() + 1;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
     output.write(Name.c_str(), SubLength);
   }
 
-  //write CTDT
-  output.write((const char*) &cCTDT, 4);
-  SubLength = 12; //fixed length of 12 bytes
-  //write CTDT's length
-  output.write((const char*) &SubLength, 4);
-  //write clothing data
-  output.write((const char*) &ClothingType, 4);
-  output.write((const char*) &Weight, 4);
-  output.write((const char*) &Value, 2);
-  output.write((const char*) &EnchantmentPoints, 2);
+  // write clothing data (CTDT)
+  output.write(reinterpret_cast<const char*>(&cCTDT), 4);
+  SubLength = 12;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
+  // write clothing data
+  output.write(reinterpret_cast<const char*>(&ClothingType), 4);
+  output.write(reinterpret_cast<const char*>(&Weight), 4);
+  output.write(reinterpret_cast<const char*>(&Value), 2);
+  output.write(reinterpret_cast<const char*>(&EnchantmentPoints), 2);
 
   if (!ScriptID.empty())
   {
-    //write SCRI
-    output.write((const char*) &cSCRI, 4);
-    SubLength = ScriptID.length()+1;
-    //write SCRI's length
-    output.write((const char*) &SubLength, 4);
-    //write clothings's script ID
+    // write script ID (SCRI)
+    output.write(reinterpret_cast<const char*>(&cSCRI), 4);
+    SubLength = ScriptID.length() + 1;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
     output.write(ScriptID.c_str(), SubLength);
   }
 
   if (!InventoryIcon.empty())
   {
-    //write ITEX
-    output.write((const char*) &cITEX, 4);
-    SubLength = InventoryIcon.length()+1;
-    //write ITEX's length
-    output.write((const char*) &SubLength, 4);
-    //write clothing's inventory icon
+    // write inventory icon (ITEX)
+    output.write(reinterpret_cast<const char*>(&cITEX), 4);
+    SubLength = InventoryIcon.length() + 1;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
     output.write(InventoryIcon.c_str(), SubLength);
   }
 
-  //body part associations
-  for (const auto& part: ClothingBodyParts)
+  // body part associations
+  for (const auto& part: BodyParts)
   {
     if (!part.saveToStream(output))
       return false;
@@ -183,12 +170,10 @@ bool ClothingRecord::saveToStream(std::ostream& output) const
 
   if (!EnchantmentID.empty())
   {
-    //write ENAM
-    output.write((const char*) &cENAM, 4);
-    SubLength = EnchantmentID.length()+1;
-    //write ENAM's length
-    output.write((const char*) &SubLength, 4);
-    //write enchantment ID
+    // write enchantment ID (ENAM)
+    output.write(reinterpret_cast<const char*>(&cENAM), 4);
+    SubLength = EnchantmentID.length() + 1;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
     output.write(EnchantmentID.c_str(), SubLength);
   }
 
@@ -196,12 +181,12 @@ bool ClothingRecord::saveToStream(std::ostream& output) const
 }
 #endif
 
-bool ClothingRecord::loadFromStream(std::istream& in_File)
+bool ClothingRecord::loadFromStream(std::istream& input)
 {
-  uint32_t Size;
-  in_File.read((char*) &Size, 4);
-  in_File.read((char*) &HeaderOne, 4);
-  in_File.read((char*) &HeaderFlags, 4);
+  uint32_t Size = 0;
+  input.read(reinterpret_cast<char*>(&Size), 4);
+  input.read(reinterpret_cast<char*>(&HeaderOne), 4);
+  input.read(reinterpret_cast<char*>(&HeaderFlags), 4);
 
   /*Clothing:
     NAME = Item ID, required
@@ -223,91 +208,39 @@ bool ClothingRecord::loadFromStream(std::istream& in_File)
         Up to 7 pairs allowed.
     ENAM = Enchantment Name (optional) */
 
-  uint32_t SubRecName;
-  uint32_t SubLength, BytesRead;
-  SubRecName = SubLength = 0;
+  uint32_t SubRecName = 0;
+  uint32_t SubLength = 0;
+  uint32_t BytesRead = 0;
 
-  //read NAME
-  in_File.read((char*) &SubRecName, 4);
-  BytesRead = 4;
-  if (SubRecName!=cNAME)
-  {
-    UnexpectedRecord(cNAME, SubRecName);
-    return false;
-  }
-  //NAME's length
-  in_File.read((char*) &SubLength, 4);
-  BytesRead += 4;
-  if (SubLength>255)
-  {
-    std::cout << "Error: subrecord NAME of CLOT is longer than 255 characters.\n";
-    return false;
-  }
-  //read clothing ID
+  // read record ID (NAME)
   char Buffer[256];
-  memset(Buffer, '\0', 256);
-  in_File.read(Buffer, SubLength);
-  BytesRead += SubLength;
-  if (!in_File.good())
+  if (!loadString256WithHeader(input, recordID, Buffer, cNAME, BytesRead))
   {
-    std::cout << "Error while reading subrecord NAME of CLOT!\n";
+    std::cerr << "Error while reading subrecord NAME of CLOT!\n";
     return false;
   }
-  recordID = std::string(Buffer);
 
-  //read MODL
-  in_File.read((char*) &SubRecName, 4);
-  BytesRead += 4;
-  if (SubRecName!=cMODL)
+  // read MODL
+  if (!loadString256WithHeader(input, ModelPath, Buffer, cMODL, BytesRead))
   {
-    UnexpectedRecord(cMODL, SubRecName);
+    std::cerr << "Error while reading subrecord MODL of CLOT!\n";
     return false;
   }
-  //MODL's length
-  in_File.read((char*) &SubLength, 4);
-  BytesRead += 4;
-  if (SubLength>255)
-  {
-    std::cout << "Error: subrecord MODL of CLOT is longer than 255 characters.\n";
-    return false;
-  }
-  //read path to clothing model
-  memset(Buffer, '\0', 256);
-  in_File.read(Buffer, SubLength);
-  BytesRead += SubLength;
-  if (!in_File.good())
-  {
-    std::cout << "Error while reading subrecord MODL of CLOT!\n";
-    return false;
-  }
-  Model = std::string(Buffer);
 
   //read FNAM (optional) or CTDT
-  in_File.read((char*) &SubRecName, 4);
+  input.read(reinterpret_cast<char*>(&SubRecName), 4);
   BytesRead += 4;
-  if (SubRecName==cFNAM)
+  if (SubRecName == cFNAM)
   {
-    //FNAM's length
-    in_File.read((char*) &SubLength, 4);
-    BytesRead += 4;
-    if (SubLength>255)
+    // read clothing name (the real one, FNAM)
+    if (!loadString256(input, Name, Buffer, cFNAM, BytesRead))
     {
-      std::cout << "Error: subrecord FNAM of CLOT is longer than 255 characters.\n";
+      std::cerr << "Error while reading subrecord FNAM of CLOT!\n";
       return false;
     }
-    //read clothing name (the real one)
-    memset(Buffer, '\0', 256);
-    in_File.read(Buffer, SubLength);
-    BytesRead += SubLength;
-    if (!in_File.good())
-    {
-      std::cout << "Error while reading subrecord FNAM of CLOT!\n";
-      return false;
-    }
-    Name = std::string(Buffer);
 
-    //read CTDT
-    in_File.read((char*) &SubRecName, 4);
+    // read CTDT
+    input.read(reinterpret_cast<char*>(&SubRecName), 4);
     BytesRead += 4;
   }
   else
@@ -315,153 +248,116 @@ bool ClothingRecord::loadFromStream(std::istream& in_File)
     Name.clear();
   }
 
-  //read CTDT
-  //already read above
-  if (SubRecName!=cCTDT)
+  // read CTDT
+  // header was already read above
+  if (SubRecName != cCTDT)
   {
     UnexpectedRecord(cCTDT, SubRecName);
     return false;
   }
-  //CTDT's length
-  in_File.read((char*) &SubLength, 4);
+  // CTDT's length
+  input.read(reinterpret_cast<char*>(&SubLength), 4);
   BytesRead += 4;
-  if (SubLength!=12)
+  if (SubLength != 12)
   {
-    std::cout <<"Error: sub record CTDT of CLOT has invalid length ("<<SubLength
-              <<" bytes). Should be 12 bytes.\n";
+    std::cerr << "Error: Sub record CTDT of CLOT has invalid length ("
+              << SubLength << " bytes). Should be 12 bytes.\n";
     return false;
   }
-  //read clothing data
-  in_File.read((char*) &ClothingType, 4);
-  in_File.read((char*) &Weight, 4);
-  in_File.read((char*) &Value, 2);
-  in_File.read((char*) &EnchantmentPoints, 2);
+  // read clothing data
+  input.read(reinterpret_cast<char*>(&ClothingType), 4);
+  input.read(reinterpret_cast<char*>(&Weight), 4);
+  input.read(reinterpret_cast<char*>(&Value), 2);
+  input.read(reinterpret_cast<char*>(&EnchantmentPoints), 2);
   BytesRead += 12;
-  if (!in_File.good())
+  if (!input.good())
   {
-    std::cout << "Error while reading subrecord CTDT of CLOT!\n";
+    std::cerr << "Error while reading subrecord CTDT of CLOT!\n";
     return false;
   }
 
   EnchantmentID.clear();
   ScriptID .clear();
   InventoryIcon.clear();
-  ClothingBodyParts.clear();
+  BodyParts.clear();
   BodyPartAssociation tempAssoc;
   uint32_t prevSubrecord = 0;
-  while (BytesRead<Size)
+  while (BytesRead < Size)
   {
-    //read next subrecord's name
-    in_File.read((char*) &SubRecName, 4);
+    // read next subrecord's name
+    input.read(reinterpret_cast<char*>(&SubRecName), 4);
     BytesRead += 4;
     switch(SubRecName)
     {
       case cINDX:
-           //INDX's length
-           in_File.read((char*) &SubLength, 4);
+           // INDX's length
+           input.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
-           if (SubLength!=1)
+           if (SubLength != 1)
            {
-             std::cout <<"Error: sub record INDX of CLOT has invalid length ("
-                       << SubLength<<" bytes). Should be one byte only.\n";
+             std::cerr << "Error: sub record INDX of CLOT has invalid length ("
+                       << SubLength << " bytes). Should be one byte only.\n";
              return false;
            }
-           //read body part index
-           in_File.read((char*) &(tempAssoc.Index), 1);
+           // read body part index
+           input.read(reinterpret_cast<char*>(&tempAssoc.Index), 1);
            BytesRead += 1;
-           if (!in_File.good())
+           if (!input.good())
            {
-             std::cout << "Error while reading subrecord INDX of CLOT!\n";
+             std::cerr << "Error while reading subrecord INDX of CLOT!\n";
              return false;
            }
            tempAssoc.MaleBodyPart.clear();
            tempAssoc.FemaleBodyPart.clear();
-           ClothingBodyParts.push_back(tempAssoc);
+           BodyParts.push_back(tempAssoc);
            prevSubrecord = cINDX;
            break;
       case cBNAM:
-           if (prevSubrecord!=cINDX)
+           if (prevSubrecord != cINDX)
            {
-             std::cout << "Error: Subrecord before BNAM of CLOTH was not INDX, "
-                       << "but \""<<IntTo4Char(prevSubrecord)<< "\".\n";
+             std::cerr << "Error: Subrecord before BNAM of CLOTH was not INDX, "
+                       << "but \"" << IntTo4Char(prevSubrecord) << "\".\n";
              return false;
            }
-           //BNAM's length
-           in_File.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength>255)
+           // read male body part name (BNAM)
+           if (!loadString256(input, BodyParts.back().MaleBodyPart, Buffer, cBNAM, BytesRead))
            {
-             std::cout << "Error: subrecord BNAM of CLOT is longer than 255 characters.\n";
+             std::cerr << "Error while reading subrecord BNAM of CLOT!\n";
              return false;
            }
-           //read male body part name
-           memset(Buffer, '\0', 256);
-           in_File.read(Buffer, SubLength);
-           BytesRead += SubLength;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord BNAM of CLOT!\n";
-             return false;
-           }
-           ClothingBodyParts.back().MaleBodyPart = std::string(Buffer);
            prevSubrecord = cBNAM;
            break;
       case cCNAM:
-           if ((prevSubrecord!=cINDX) and (prevSubrecord!=cBNAM))
+           if ((prevSubrecord != cINDX) && (prevSubrecord != cBNAM))
            {
-             std::cout << "Error: Subrecord before CNAM of CLOT was neither "
-                       << "INDX nor BNAM, but \""<<IntTo4Char(prevSubrecord)
+             std::cerr << "Error: Subrecord before CNAM of CLOT was neither "
+                       << "INDX nor BNAM, but \"" << IntTo4Char(prevSubrecord)
                        << "\".\n";
              return false;
            }
-           //CNAM's length
-           in_File.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength>255)
+           // read female body part name (CNAM)
+           if (!loadString256(input, BodyParts.back().FemaleBodyPart, Buffer, cCNAM, BytesRead))
            {
-             std::cout << "Error: subrecord CNAM of CLOT is longer than 255 characters.\n";
+             std::cerr << "Error while reading subrecord CNAM of CLOT!\n";
              return false;
            }
-           //read female body part name
-           memset(Buffer, '\0', 256);
-           in_File.read(Buffer, SubLength);
-           BytesRead += SubLength;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord CNAM of CLOT!\n";
-             return false;
-           }
-           ClothingBodyParts.back().FemaleBodyPart = std::string(Buffer);
            prevSubrecord = cCNAM;
            break;
       case cITEX:
            if (!InventoryIcon.empty())
            {
-             std::cout << "Error: record CLOT seems to have two ITEX subrecords.\n";
+             std::cerr << "Error: record CLOT seems to have two ITEX subrecords.\n";
              return false;
            }
-           //ITEX's length
-           in_File.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength>255)
+           // read path to clothing icon texture (ITEX)
+           if (!loadString256(input, InventoryIcon, Buffer, cITEX, BytesRead))
            {
-             std::cout << "Error: subrecord ITEX of CLOT is longer than 255 characters.\n";
+             std::cerr << "Error while reading subrecord ITEX of CLOT!\n";
              return false;
            }
-           //read path to clothing icon texture
-           memset(Buffer, '\0', 256);
-           in_File.read(Buffer, SubLength);
-           BytesRead += SubLength;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord ITEX of CLOT!\n";
-             return false;
-           }
-           InventoryIcon = std::string(Buffer);
-           //content check
            if (InventoryIcon.empty())
            {
-             std::cout << "Error: subrecord ITEX of CLOT is empty!\n";
+             std::cerr << "Error: Subrecord ITEX of CLOT is empty!\n";
              return false;
            }
            prevSubrecord = cITEX;
@@ -469,31 +365,18 @@ bool ClothingRecord::loadFromStream(std::istream& in_File)
       case cENAM:
            if (!EnchantmentID.empty())
            {
-             std::cout << "Error: record CLOT seems to have two ENAM subrecords.\n";
+             std::cerr << "Error: Record CLOT seems to have two ENAM subrecords.\n";
              return false;
            }
-           //ENAM's length
-           in_File.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength>255)
+           // read clothing enchantment ID (ENAM)
+           if (!loadString256(input, EnchantmentID, Buffer, cENAM, BytesRead))
            {
-             std::cout << "Error: subrecord ENAM of CLOT is longer than 255 characters.\n";
+             std::cerr << "Error while reading subrecord ENAM of CLOT!\n";
              return false;
            }
-           //read clothing enchantment ID
-           memset(Buffer, '\0', 256);
-           in_File.read(Buffer, SubLength);
-           BytesRead += SubLength;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord ENAM of CLOT!\n";
-             return false;
-           }
-           EnchantmentID = std::string(Buffer);
-           //content check
            if (EnchantmentID.empty())
            {
-             std::cout << "Error: subrecord ENAM of CLOT is empty!\n";
+             std::cerr << "Error: Subrecord ENAM of CLOT is empty!\n";
              return false;
            }
            prevSubrecord = cENAM;
@@ -501,43 +384,30 @@ bool ClothingRecord::loadFromStream(std::istream& in_File)
       case cSCRI:
            if (!ScriptID.empty())
            {
-             std::cout << "Error: record CLOT seems to have two SCRI subrecords.\n";
+             std::cerr << "Error: Record CLOT seems to have two SCRI subrecords.\n";
              return false;
            }
-           //SCRI's length
-           in_File.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength>255)
+           // read clothing script ID (SCRI)
+           if (!loadString256(input, ScriptID, Buffer, cSCRI, BytesRead))
            {
-             std::cout << "Error: subrecord SCRI of CLOT is longer than 255 characters.\n";
+             std::cerr << "Error while reading subrecord SCRI of CLOT!\n";
              return false;
            }
-           //read clothing script ID
-           memset(Buffer, '\0', 256);
-           in_File.read(Buffer, SubLength);
-           BytesRead += SubLength;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord SCRI of CLOT!\n";
-             return false;
-           }
-           ScriptID = std::string(Buffer);
-           //content check
            if (ScriptID.empty())
            {
-             std::cout << "Error: subrecord SCRI of CLOT is empty!\n";
+             std::cerr << "Error: Subrecord SCRI of CLOT is empty!\n";
              return false;
            }
            prevSubrecord = cSCRI;
            break;
       default:
-           std::cout << "Unexpected record name \""<<IntTo4Char(SubRecName)
+           std::cerr << "Unexpected record name \"" << IntTo4Char(SubRecName)
                      << "\" found. Expected INDX, BNAM, CNAM or ENAM.\n";
            return false;
-    }//swi
-  }//while
+    }
+  }
 
-  return in_File.good();
+  return input.good();
 }
 
-} //namespace
+} // namespace

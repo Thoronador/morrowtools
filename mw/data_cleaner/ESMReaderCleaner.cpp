@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011 Thoronador
+    Copyright (C) 2010, 2011, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -142,7 +142,7 @@ int ESMReaderCleaner::processNextRecord(std::istream& in_File)
          baseRec = new ClothingRecord;
          if (baseRec->loadFromStream(in_File))
          {
-           MeshSet.insert(baseDirMesh+static_cast<ClothingRecord*>(baseRec)->Model);
+           MeshSet.insert(baseDirMesh+static_cast<ClothingRecord*>(baseRec)->ModelPath);
            IconSet.insert(baseDirIcon+static_cast<ClothingRecord*>(baseRec)->InventoryIcon);
            delete baseRec;
            return 1;
@@ -318,7 +318,7 @@ int ESMReaderCleaner::processNextRecord(std::istream& in_File)
                    << "Current file position: "<<in_File.tellg()<< " bytes.\n";
          return -1;
          break;
-  }//swi
-}//processNextRecord of ESMReaderCleaner class
+  }
+}
 
-} //namespace
+} // namespace

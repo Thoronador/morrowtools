@@ -29,6 +29,7 @@ set(component_tests_sources
     ../../mw/base/records/AIPackages.cpp
     ../../mw/base/records/AlchemyPotionRecord.cpp
     ../../mw/base/records/ApparatusRecord.cpp
+    ../../mw/base/records/ArmourRecord.cpp
     ../../mw/base/records/BasicRecord.cpp
     ../../mw/base/records/BodyPartAssociation.cpp
     ../../mw/base/records/BodyPartRecord.cpp
@@ -160,6 +161,7 @@ set(component_tests_sources
     mw/base/records/AIData.cpp
     mw/base/records/AlchemyPotionRecord.cpp
     mw/base/records/ApparatusRecord.cpp
+    mw/base/records/ArmourRecord.cpp
     mw/base/records/BasicRecord.cpp
     mw/base/records/BodyPartAssociation.cpp
     mw/base/records/BodyPartRecord.cpp

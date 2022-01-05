@@ -272,6 +272,52 @@ TEST_CASE("MWTP::ClothingRecord")
       REQUIRE( streamOut.str() == data );
     }
 
+    SECTION("default: load record with female body parts (from plugin)")
+    {
+      const auto data = "CLOT\xDA\0\0\0\0\0\0\0\0\0\0\0NAME\x18\0\0\0mand_divinerglovesfinal\0MODL\x1D\0\0\0Mand\\mand_diviner_gloGND.nif\0FNAM\x15\0\0\0G\xF6ttliche Handschuhe\0CTDT\x0C\0\0\0\x06\0\0\0\0\0\x80?P\0x\0ITEX\x1A\0\0\0Mand\\mand_diviner_glo.tga\0INDX\x01\0\0\0\x07\x43NAM\x10\0\0\0mand_diviner_gloINDX\x01\0\0\0\x06\x43NAM\x10\0\0\0mand_diviner_glo"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read CLOT, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      ClothingRecord record;
+      REQUIRE( record.loadFromStream(stream) );
+      // Check data.
+      // -- header
+      REQUIRE( record.getHeaderOne() == 0 );
+      REQUIRE( record.getHeaderFlags() == 0 );
+      // -- record data
+      REQUIRE( record.recordID == "mand_divinerglovesfinal" );
+      REQUIRE( record.ModelPath == "Mand\\mand_diviner_gloGND.nif" );
+      REQUIRE( record.Name == "G\xF6ttliche Handschuhe" );
+      REQUIRE( record.ClothingType == 6 );
+      REQUIRE( record.Weight == 1.0f );
+      REQUIRE( record.Value == 80 );
+      REQUIRE( record.EnchantmentPoints == 120 );
+      REQUIRE( record.InventoryIcon == "Mand\\mand_diviner_glo.tga" );
+      REQUIRE( record.BodyParts.size() == 2 );
+
+      REQUIRE( record.BodyParts[0].Index == 7 );
+      REQUIRE( record.BodyParts[0].MaleBodyPart.empty() );
+      REQUIRE( record.BodyParts[0].FemaleBodyPart == "mand_diviner_glo" );
+
+      REQUIRE( record.BodyParts[1].Index == 6 );
+      REQUIRE( record.BodyParts[1].MaleBodyPart.empty() );
+      REQUIRE( record.BodyParts[1].FemaleBodyPart == "mand_diviner_glo" );
+
+      REQUIRE( record.ScriptID.empty() );
+      REQUIRE( record.EnchantmentID.empty() );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( record.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
+    }
+
     SECTION("default: load record with a script")
     {
       const auto data = "CLOT\xA4\0\0\0\0\0\0\0\0\0\0\0NAME\x12\0\0\0Daedric_special01\0MODL\x16\0\0\0c\\Amulet_Madstone.NIF\0FNAM\x14\0\0\0Amulett von Tel Fyr\0CTDT\x0C\0\0\0\x09\0\0\0\0\0@@\x1C\x0C\x96\0SCRI\x13\0\0\0amuletTelFyrScript\0ITEX\x19\0\0\0c\\tx_amulet_Madstone.tga\0"sv;
@@ -583,6 +629,112 @@ TEST_CASE("MWTP::ClothingRecord")
     SECTION("corrupt data: empty ITEX")
     {
       const auto data = "CLOT\x88\0\0\0\0\0\0\0\0\0\0\0NAME\x14\0\0\0ring_shashev_unique\0MODL\x19\0\0\0c\\C_Ring_exquisite_1.NIF\0FNAM\x0E\0\0\0Shashevs Ring\0CTDT\x0C\0\0\0\x08\0\0\0\xCD\xCC\xCC=\xF0U,\x01ITEX\x01\0\0\0\0ENAM\x10\0\0\0devil's bite_en\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read CLOT, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ClothingRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: length of INDX is not one")
+    {
+      {
+        const auto data = "CLOT\x9A\x01\0\0\0\0\0\0\0\0\0\0NAME\x12\0\0\0common_shirt_03_c\0MODL\x1E\0\0\0c\\C_M_Shirt_Common_3c_GND.NIF\0FNAM\x12\0\0\0Gew\xF6hnliches Hemd\0CTDT\x0C\0\0\0\x02\0\0\0\0\0\0@\x04\0\x14\0ITEX\x17\0\0\0c\\tx_shirtcomm_3_c.tga\0INDX\0\0\0\0BNAM\x15\0\0\0c_m_shirt_common_3c_cINDX\x01\0\0\0\x0E\x42NAM\x16\0\0\0c_m_shirt_common_3c_uaINDX\x01\0\0\0\x0D\x42NAM\x16\0\0\0c_m_shirt_common_3c_uaINDX\x01\0\0\0\x0C\x42NAM\x16\0\0\0c_m_shirt_common_3c_faINDX\x01\0\0\0\x0B\x42NAM\x16\0\0\0c_m_shirt_common_3c_faINDX\x01\0\0\0\x09\x42NAM\x15\0\0\0c_m_shirt_common_3c_wINDX\x01\0\0\0\x08\x42NAM\x15\0\0\0c_m_shirt_common_3c_w"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read CLOT, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        ClothingRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream) );
+      }
+
+      {
+        const auto data = "CLOT\x9C\x01\0\0\0\0\0\0\0\0\0\0NAME\x12\0\0\0common_shirt_03_c\0MODL\x1E\0\0\0c\\C_M_Shirt_Common_3c_GND.NIF\0FNAM\x12\0\0\0Gew\xF6hnliches Hemd\0CTDT\x0C\0\0\0\x02\0\0\0\0\0\0@\x04\0\x14\0ITEX\x17\0\0\0c\\tx_shirtcomm_3_c.tga\0INDX\x02\0\0\0\x03\0BNAM\x15\0\0\0c_m_shirt_common_3c_cINDX\x01\0\0\0\x0E\x42NAM\x16\0\0\0c_m_shirt_common_3c_uaINDX\x01\0\0\0\x0D\x42NAM\x16\0\0\0c_m_shirt_common_3c_uaINDX\x01\0\0\0\x0C\x42NAM\x16\0\0\0c_m_shirt_common_3c_faINDX\x01\0\0\0\x0B\x42NAM\x16\0\0\0c_m_shirt_common_3c_faINDX\x01\0\0\0\x09\x42NAM\x15\0\0\0c_m_shirt_common_3c_wINDX\x01\0\0\0\x08\x42NAM\x15\0\0\0c_m_shirt_common_3c_w"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read CLOT, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        ClothingRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream) );
+      }
+    }
+
+    SECTION("corrupt data: stream ends before INDX can be read")
+    {
+      const auto data = "CLOT\x9B\x01\0\0\0\0\0\0\0\0\0\0NAME\x12\0\0\0common_shirt_03_c\0MODL\x1E\0\0\0c\\C_M_Shirt_Common_3c_GND.NIF\0FNAM\x12\0\0\0Gew\xF6hnliches Hemd\0CTDT\x0C\0\0\0\x02\0\0\0\0\0\0@\x04\0\x14\0ITEX\x17\0\0\0c\\tx_shirtcomm_3_c.tga\0INDX\x01\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read CLOT, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ClothingRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: BNAM without previous INDX")
+    {
+      const auto data = "CLOT\x92\x01\0\0\0\0\0\0\0\0\0\0NAME\x12\0\0\0common_shirt_03_c\0MODL\x1E\0\0\0c\\C_M_Shirt_Common_3c_GND.NIF\0FNAM\x12\0\0\0Gew\xF6hnliches Hemd\0CTDT\x0C\0\0\0\x02\0\0\0\0\0\0@\x04\0\x14\0ITEX\x17\0\0\0c\\tx_shirtcomm_3_c.tga\0BNAM\x15\0\0\0c_m_shirt_common_3c_cINDX\x01\0\0\0\x0E\x42NAM\x16\0\0\0c_m_shirt_common_3c_uaINDX\x01\0\0\0\x0D\x42NAM\x16\0\0\0c_m_shirt_common_3c_uaINDX\x01\0\0\0\x0C\x42NAM\x16\0\0\0c_m_shirt_common_3c_faINDX\x01\0\0\0\x0B\x42NAM\x16\0\0\0c_m_shirt_common_3c_faINDX\x01\0\0\0\x09\x42NAM\x15\0\0\0c_m_shirt_common_3c_wINDX\x01\0\0\0\x08\x42NAM\x15\0\0\0c_m_shirt_common_3c_w"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read CLOT, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ClothingRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: length of BNAM > 256")
+    {
+      const auto data = "CLOT\x9B\x01\0\0\0\0\0\0\0\0\0\0NAME\x12\0\0\0common_shirt_03_c\0MODL\x1E\0\0\0c\\C_M_Shirt_Common_3c_GND.NIF\0FNAM\x12\0\0\0Gew\xF6hnliches Hemd\0CTDT\x0C\0\0\0\x02\0\0\0\0\0\0@\x04\0\x14\0ITEX\x17\0\0\0c\\tx_shirtcomm_3_c.tga\0INDX\x01\0\0\0\x03\x42NAM\x15\0\0\0c_m_shirt_common_3c_cINDX\x01\0\0\0\x0E\x42NAM\x16\x01\0\0c_m_shirt_common_3c_uaINDX\x01\0\0\0\x0D\x42NAM\x16\0\0\0c_m_shirt_common_3c_uaINDX\x01\0\0\0\x0C\x42NAM\x16\0\0\0c_m_shirt_common_3c_faINDX\x01\0\0\0\x0B\x42NAM\x16\0\0\0c_m_shirt_common_3c_faINDX\x01\0\0\0\x09\x42NAM\x15\0\0\0c_m_shirt_common_3c_wINDX\x01\0\0\0\x08\x42NAM\x15\0\0\0c_m_shirt_common_3c_w"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read CLOT, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ClothingRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: CNAM without previous INDX")
+    {
+      const auto data = "CLOT\xD1\0\0\0\0\0\0\0\0\0\0\0NAME\x18\0\0\0mand_divinerglovesfinal\0MODL\x1D\0\0\0Mand\\mand_diviner_gloGND.nif\0FNAM\x15\0\0\0G\xF6ttliche Handschuhe\0CTDT\x0C\0\0\0\x06\0\0\0\0\0\x80?P\0x\0ITEX\x1A\0\0\0Mand\\mand_diviner_glo.tga\0CNAM\x10\0\0\0mand_diviner_gloINDX\x01\0\0\0\x06\x43NAM\x10\0\0\0mand_diviner_glo"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read CLOT, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ClothingRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: length of CNAM > 256")
+    {
+      const auto data = "CLOT\xDA\0\0\0\0\0\0\0\0\0\0\0NAME\x18\0\0\0mand_divinerglovesfinal\0MODL\x1D\0\0\0Mand\\mand_diviner_gloGND.nif\0FNAM\x15\0\0\0G\xF6ttliche Handschuhe\0CTDT\x0C\0\0\0\x06\0\0\0\0\0\x80?P\0x\0ITEX\x1A\0\0\0Mand\\mand_diviner_glo.tga\0INDX\x01\0\0\0\x07\x43NAM\x10\x01\0\0mand_diviner_gloINDX\x01\0\0\0\x06\x43NAM\x10\0\0\0mand_diviner_glo"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 

@@ -295,7 +295,7 @@ bool ClothingRecord::loadFromStream(std::istream& input)
            BytesRead += 4;
            if (SubLength != 1)
            {
-             std::cerr << "Error: sub record INDX of CLOT has invalid length ("
+             std::cerr << "Error: Sub record INDX of CLOT has invalid length ("
                        << SubLength << " bytes). Should be one byte only.\n";
              return false;
            }
@@ -346,7 +346,7 @@ bool ClothingRecord::loadFromStream(std::istream& input)
       case cITEX:
            if (!InventoryIcon.empty())
            {
-             std::cerr << "Error: record CLOT seems to have two ITEX subrecords.\n";
+             std::cerr << "Error: Record CLOT seems to have two ITEX subrecords.\n";
              return false;
            }
            // read path to clothing icon texture (ITEX)

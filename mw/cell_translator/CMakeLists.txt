@@ -32,6 +32,7 @@ set(cell_translator_sources
     ../base/records/NPCRecord.cpp
     ../base/records/PathGridRecord.cpp
     ../base/records/PreNPCRecord.cpp
+    ../base/records/ReferencedObject.cpp
     ../base/records/ScriptRecord.cpp
     ../base/records/StaticRecord.cpp
     ../base/records/TES3Record.cpp

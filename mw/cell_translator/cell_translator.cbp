@@ -95,6 +95,8 @@
 		<Unit filename="../base/records/PathGridRecord.hpp" />
 		<Unit filename="../base/records/PreNPCRecord.cpp" />
 		<Unit filename="../base/records/PreNPCRecord.hpp" />
+		<Unit filename="../base/records/ReferencedObject.cpp" />
+		<Unit filename="../base/records/ReferencedObject.hpp" />
 		<Unit filename="../base/records/ScriptRecord.cpp" />
 		<Unit filename="../base/records/ScriptRecord.hpp" />
 		<Unit filename="../base/records/StaticRecord.cpp" />

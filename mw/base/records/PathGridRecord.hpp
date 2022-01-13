@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2013  Thoronador
+    Copyright (C) 2011, 2013, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -28,61 +28,80 @@
 namespace MWTP
 {
 
+/** Represents a point in the path grid. */
 struct GridPointData
 {
   int32_t X;
   int32_t Y;
   int32_t Z;
-  int32_t Unknown;
+  uint8_t Flags;
+  uint8_t ConnectionCount;
+  uint16_t Unknown;
 
-  /* equality operator */
+  GridPointData();
+
   bool operator==(const GridPointData& other) const;
-};//struct
+}; // struct
 
+/** Represents a connection between two grid points, i. e. an edge. */
 struct GridConnection
 {
-  uint32_t Start;
-  uint32_t End;
+  uint32_t Start; /**< zero-based index of the point where the edge starts */
+  uint32_t End;   /**< zero-based index of the point where the edge ends */
 
-  /* equality operator */
+  GridConnection();
+
   bool operator==(const GridConnection& other) const;
-};//struct
+}; // struct
 
 struct PathGridRecord: public BasicRecord
 {
-  //path grid data
+  // path grid data
   int32_t GridX;
   int32_t GridY;
   uint16_t Granularity;
-  uint16_t NumQuads;
-  //end of path grid data
+  // end of path grid data
   std::string CellName;
   std::vector<GridPointData> Points;
   std::vector<GridConnection> Connections;
 
-  /* constructor */
   PathGridRecord();
 
-  /* returns true, if the other record contains the same data */
+  /** \brief Checks whether another instance contains the same data.
+   *
+   * \param other   the other record to compare with
+   * \return Returns true, if @other contains the same data as instance.
+   *         Returns false otherwise.
+   */
   bool equals(const PathGridRecord& other) const;
 
   #ifndef MW_UNSAVEABLE_RECORDS
-  /* writes the record to the given output stream and returns true on success
-
-    parameters:
-        output - the output stream
-  */
+  /** \brief Writes the record to the given output stream.
+   *
+   * \param output  the output stream
+   * \return Returns true on success (record was written to stream).
+   *         Returns false, if an error occurred.
+   */
   bool saveToStream(std::ostream& output) const override;
   #endif
 
-  /* loads the record from the given input stream and returns true on success
+  /** \brief Loads the record from the given input stream.
+   *
+   * \param input    the input stream
+   * \return Returns true on success (record was loaded from stream).
+   *         Returns false, if an error occurred.
+   */
+  bool loadFromStream(std::istream& input) override;
+private:
+  /** \brief Calculates the start indices of connections.
+   *
+   * \return Returns true on success.
+   *         Returns false on failure.
+   * \remarks This should not be called manually.
+   */
+  bool calculateStartIndices();
+}; // struct
 
-    parameters:
-        in_File - the input stream
-  */
-  bool loadFromStream(std::istream& in_File) override;
-};//struct
-
-} //namespace
+} // namespace
 
 #endif // MW_PATHGRIDRECORD_HPP

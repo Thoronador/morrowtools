@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,63 +19,78 @@
 */
 
 #include "PathGridRecord.hpp"
+#include <numeric>
 #include <iostream>
-#include <cstring>
 #include "../MW_Constants.hpp"
 #include "../HelperIO.hpp"
 
 namespace MWTP
 {
 
+GridPointData::GridPointData()
+: X(0),
+  Y(0),
+  Z(0),
+  Flags(0),
+  ConnectionCount(0),
+  Unknown(0)
+{
+}
+
 bool GridPointData::operator==(const GridPointData& other) const
 {
-  return ((X==other.X) and (Y==other.Y) and (Z==other.Z)
-      and (Unknown==other.Unknown));
+  return (X == other.X) && (Y == other.Y) && (Z == other.Z)
+      && (Flags == other.Flags) && (ConnectionCount == other.ConnectionCount)
+      && (Unknown == other.Unknown);
+}
+
+GridConnection::GridConnection()
+: Start(0),
+  End(0)
+{
 }
 
 bool GridConnection::operator==(const GridConnection& other) const
 {
-  return ((Start==other.Start) and (End==other.End));
+  return (Start == other.Start) && (End == other.End);
 }
 
 PathGridRecord::PathGridRecord()
 : BasicRecord(),
   GridX(0), GridY(0),
   Granularity(0),
-  NumQuads(0),
   CellName(""),
   Points(std::vector<GridPointData>()),
   Connections(std::vector<GridConnection>())
-{ }
+{
+}
 
 bool PathGridRecord::equals(const PathGridRecord& other) const
 {
-  return ((GridX==other.GridX) and (GridY==other.GridY)
-      and (Granularity==other.Granularity) and (NumQuads==other.NumQuads)
-      and (CellName==other.CellName) and (Points==other.Points)
-      and (Connections==other.Connections));
+  return (GridX == other.GridX) && (GridY == other.GridY)
+      && (Granularity == other.Granularity) && (CellName == other.CellName)
+      && (Points == other.Points) && (Connections == other.Connections);
 }
 
 bool PathGridRecord::saveToStream(std::ostream& output) const
 {
-  output.write((const char*) &cPGRD, 4);
-  uint32_t Size;
-  Size = 4 /* DATA */ +4 /* 4 bytes for length */ + 12 /* size of data */
-        +4 /* NAME */ +4 /* 4 bytes for length */
-        +CellName.length()+1 /* length of cell name +1 byte for NUL termination */;
+  output.write(reinterpret_cast<const char*>(&cPGRD), 4);
+  uint32_t Size = 4 /* DATA */ + 4 /* 4 bytes for length */ + 12 /* size of data */
+        + 4 /* NAME */ + 4 /* 4 bytes for length */
+        + CellName.length() + 1 /* length of cell name +1 byte for NUL byte */;
   if (!Points.empty())
   {
-    Size = Size + 4 /* PGRP */ +4 /* 4 bytes for length */
-           +16 * Points.size();
+    Size = Size + 4 /* PGRP */ + 4 /* 4 bytes for length */
+         + 16 * Points.size();
   }
   if (!Connections.empty())
   {
-    Size = Size + 4 /* PGRC */ +4 /* 4 bytes for length */
-           +8 * Connections.size();
+    Size = Size + 4 /* PGRC */ + 4 /* 4 bytes for length */
+         + 4 * Connections.size();
   }
-  output.write((const char*) &Size, 4);
-  output.write((const char*) &HeaderOne, 4);
-  output.write((const char*) &HeaderFlags, 4);
+  output.write(reinterpret_cast<const char*>(&Size), 4);
+  output.write(reinterpret_cast<const char*>(&HeaderOne), 4);
+  output.write(reinterpret_cast<const char*>(&HeaderFlags), 4);
 
   /*Path Grid:
     DATA = (path grid data, 12 bytes)
@@ -91,7 +106,9 @@ bool PathGridRecord::saveToStream(std::ostream& output) const
                int32_t X
                int32_t Y
                int32_t Z
-               int32_t Unknown
+               uint8_t Flags
+               uint8_t ConnectionCount
+               int16_t Unknown
              };
 
     PGRC = unknown data (length: ?)
@@ -101,71 +118,64 @@ bool PathGridRecord::saveToStream(std::ostream& output) const
              and second value is index of the end point.
   */
 
-  //write DATA
-  output.write((const char*) &cDATA, 4);
-  //DATA's length
-  uint32_t SubLength;
-  SubLength = 12; //length is always twelve bytes
-  output.write((const char*) &SubLength, 4);
-  //write path grid data
-  output.write((const char*) &GridX, 4);
-  output.write((const char*) &GridY, 4);
-  output.write((const char*) &Granularity, 2);
-  output.write((const char*) &NumQuads, 2);
+  // write path grid data (DATA)
+  output.write(reinterpret_cast<const char*>(&cDATA), 4);
+  uint32_t SubLength = 12;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
+  // write path grid data
+  output.write(reinterpret_cast<const char*>(&GridX), 4);
+  output.write(reinterpret_cast<const char*>(&GridY), 4);
+  output.write(reinterpret_cast<const char*>(&Granularity), 2);
+  const uint16_t num_of_points = static_cast<uint16_t>(Points.size());
+  output.write(reinterpret_cast<const char*>(&num_of_points), 2);
 
-  //write NAME
-  output.write((const char*) &cNAME, 4);
-  //NAME's length
-  SubLength = CellName.length()+1;//length of string plus one for NUL-termination
-  output.write((const char*) &SubLength, 4);
-  //write cell name
+  // write cell name (NAME)
+  output.write(reinterpret_cast<const char*>(&cNAME), 4);
+  SubLength = CellName.length() + 1;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
   output.write(CellName.c_str(), SubLength);
 
   if (!Points.empty())
   {
-    //write PGRP
-    output.write((const char*) &cPGRP, 4);
-    //PGRP's length
-    SubLength = Points.size()*16;//length is 16 bytes per point
-    output.write((const char*) &SubLength, 4);
-    //write points
-    unsigned int i;
-    for (i=0; i<Points.size(); ++i)
+    // write path grid points (PGRP)
+    output.write(reinterpret_cast<const char*>(&cPGRP), 4);
+    SubLength = Points.size() * 16; // length is 16 bytes per point
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
+    // write points
+    for (const auto& point: Points)
     {
-      //write next point
-      output.write((const char*) &(Points[i].X), 4);
-      output.write((const char*) &(Points[i].Y), 4);
-      output.write((const char*) &(Points[i].Z), 4);
-      output.write((const char*) &(Points[i].Unknown), 4);
-    }//for
-  }//Points
+      // write next point
+      output.write(reinterpret_cast<const char*>(&point.X), 4);
+      output.write(reinterpret_cast<const char*>(&point.Y), 4);
+      output.write(reinterpret_cast<const char*>(&point.Z), 4);
+      output.write(reinterpret_cast<const char*>(&point.Flags), 1);
+      output.write(reinterpret_cast<const char*>(&point.ConnectionCount), 1);
+      output.write(reinterpret_cast<const char*>(&point.Unknown), 2);
+    }
+  }
 
   if (!Connections.empty())
   {
-    //write PGRC
-    output.write((const char*) &cPGRC, 4);
-    //PGRC's length
-    SubLength = Connections.size()*8;//length is 8 bytes per connection
-    output.write((const char*) &SubLength, 4);
-    //write connections
-    unsigned int i;
-    for (i=0; i<Connections.size(); ++i)
+    // write path grid connections (PGRC)
+    output.write(reinterpret_cast<const char*>(&cPGRC), 4);
+    SubLength = Connections.size() * 4; // length is 4 bytes per connection
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
+    // write connections
+    for (const auto& conn: Connections)
     {
-      //write next point
-      output.write((const char*) &(Connections[i].Start), 4);
-      output.write((const char*) &(Connections[i].End), 4);
-    }//for
-  }//connections
+      output.write(reinterpret_cast<const char*>(&conn.End), 4);
+    }
+  }
 
   return output.good();
 }
 
-bool PathGridRecord::loadFromStream(std::istream& in_File)
+bool PathGridRecord::loadFromStream(std::istream& input)
 {
-  uint32_t Size;
-  in_File.read((char*) &Size, 4);
-  in_File.read((char*) &HeaderOne, 4);
-  in_File.read((char*) &HeaderFlags, 4);
+  uint32_t Size = 0;
+  input.read(reinterpret_cast<char*>(&Size), 4);
+  input.read(reinterpret_cast<char*>(&HeaderOne), 4);
+  input.read(reinterpret_cast<char*>(&HeaderFlags), 4);
 
   /*Path Grid:
     DATA = (path grid data, 12 bytes)
@@ -181,7 +191,9 @@ bool PathGridRecord::loadFromStream(std::istream& in_File)
                int32_t X
                int32_t Y
                int32_t Z
-               int32_t Unknown
+               uint8_t Flags
+               uint8_t ConnectionCount
+               int16_t Unknown
              };
 
     PGRC = unknown data (length: ?)
@@ -191,148 +203,172 @@ bool PathGridRecord::loadFromStream(std::istream& in_File)
              and second value is index of the end point.
   */
 
-  uint32_t SubRecName;
-  uint32_t SubLength, BytesRead;
-  SubRecName = SubLength = 0;
+  uint32_t SubRecName = 0;
 
-  //read DATA
-  in_File.read((char*) &SubRecName, 4);
-  BytesRead = 4;
-  if (SubRecName!=cDATA)
+  // read DATA
+  input.read(reinterpret_cast<char*>(&SubRecName), 4);
+  uint32_t  BytesRead = 4;
+  if (SubRecName != cDATA)
   {
     UnexpectedRecord(cDATA, SubRecName);
     return false;
   }
-  //DATA's length
-  in_File.read((char*) &SubLength, 4);
+  // DATA's length
+  uint32_t SubLength = 0;
+  input.read(reinterpret_cast<char*>(&SubLength), 4);
   BytesRead += 4;
-  if (SubLength!=12)
+  if (SubLength != 12)
   {
-    std::cout << "Error: subrecord DATA of PGRD is has invalid length ("
-              << SubLength<<" bytes). Should be 12 bytes.\n";
+    std::cerr << "Error: Subrecord DATA of PGRD is has invalid length ("
+              << SubLength << " bytes). Should be 12 bytes.\n";
     return false;
   }
-  //read path grid's data
-  in_File.read((char*) &GridX, 4);
-  in_File.read((char*) &GridY, 4);
-  in_File.read((char*) &Granularity, 2);
-  in_File.read((char*) &NumQuads, 2);
+  // read path grid's data
+  input.read(reinterpret_cast<char*>(&GridX), 4);
+  input.read(reinterpret_cast<char*>(&GridY), 4);
+  input.read(reinterpret_cast<char*>(&Granularity), 2);
+  uint16_t num_of_points = 0;
+  input.read(reinterpret_cast<char*>(&num_of_points), 2);
   BytesRead += 12;
-  if (!in_File.good())
+  if (!input.good())
   {
-    std::cout << "Error while reading subrecord DATA of PGRD.\n";
+    std::cerr << "Error while reading subrecord DATA of PGRD.\n";
     return false;
   }
 
-  //read NAME
-  in_File.read((char*) &SubRecName, 4);
-  BytesRead += 4;
-  if (SubRecName!=cNAME)
-  {
-    UnexpectedRecord(cNAME, SubRecName);
-    return false;
-  }
-  //NAME's length
-  in_File.read((char*) &SubLength, 4);
-  BytesRead += 4;
-  if (SubLength>255)
-  {
-    std::cout << "Error: subrecord NAME of PGRD is longer than 255 characters.\n";
-    return false;
-  }
-  //read cell ID
+  // read cell name (NAME)
   char Buffer[256];
-  memset(Buffer, '\0', 256);
-  in_File.read(Buffer, SubLength);
-  BytesRead += SubLength;
-  if (!in_File.good())
+  if (!loadString256WithHeader(input, CellName, Buffer, cNAME, BytesRead))
   {
-    std::cout << "Error while reading subrecord NAME of PGRD.\n";
+    std::cerr << "Error while reading subrecord NAME of PGRD.\n";
     return false;
   }
-  CellName = std::string(Buffer);
 
   Points.clear();
   Connections.clear();
-  while (BytesRead<Size)
+  while (BytesRead < Size)
   {
-    //read PGRP or PGRC
-    in_File.read((char*) &SubRecName, 4);
+    // read PGRP or PGRC
+    input.read(reinterpret_cast<char*>(&SubRecName), 4);
     BytesRead += 4;
-    if (SubRecName==cPGRP)
+    if (SubRecName == cPGRP)
     {
-      //PGRP's length
-      in_File.read((char*) &SubLength, 4);
+      // PGRP's length
+      input.read(reinterpret_cast<char*>(&SubLength), 4);
       BytesRead += 4;
-      if ((SubLength%16)!=0)
+      if ((SubLength % 16) != 0)
       {
-        std::cout << "Error: subrecord PGRP of PGRD has invalid length ("<<SubLength
-                  << " bytes). Should be a multiple of 16 bytes.\n";
+        std::cerr << "Error: Subrecord PGRP of PGRD has invalid length ("
+                  << SubLength << " bytes). Should be a multiple of 16 bytes.\n";
         return false;
       }
-      //read PGRP
+      // read PGRP
       const unsigned int point_count = SubLength / 16;
-      GridPointData temp_pt;
-      while (Points.size()<point_count)
+      if (point_count != num_of_points)
       {
-        //read next point
-        in_File.read((char*) &(temp_pt.X), 4);
-        in_File.read((char*) &(temp_pt.Y), 4);
-        in_File.read((char*) &(temp_pt.Z), 4);
-        in_File.read((char*) &(temp_pt.Unknown), 4);
+        std::cerr << "Error: PGRD seems to have " << point_count
+                  << " grid points, but according to header there should be "
+                  << num_of_points << " points.\n";
+        return false;
+      }
+      GridPointData temp_pt;
+      while (Points.size() < point_count)
+      {
+        // read next point
+        input.read(reinterpret_cast<char*>(&temp_pt.X), 4);
+        input.read(reinterpret_cast<char*>(&temp_pt.Y), 4);
+        input.read(reinterpret_cast<char*>(&temp_pt.Z), 4);
+        input.read(reinterpret_cast<char*>(&temp_pt.Flags), 1);
+        input.read(reinterpret_cast<char*>(&temp_pt.ConnectionCount), 1);
+        input.read(reinterpret_cast<char*>(&temp_pt.Unknown), 2);
         BytesRead += 16;
-        if (!in_File.good())
+        if (!input.good())
         {
-          std::cout << "Error while reading subrecord PGRP of PGRD.\n";
+          std::cerr << "Error while reading subrecord PGRP of PGRD.\n";
           return false;
         }
         Points.push_back(temp_pt);
-      }//while
-    }//if PGRP
-    else if (SubRecName==cPGRC)
+      }
+    } // if PGRP
+    else if (SubRecName == cPGRC)
     {
-      //PGRC's length
-      in_File.read((char*) &SubLength, 4);
+      // Points are required to calculate the start indices.
+      if (Points.empty())
+      {
+        std::cerr << "Error: Subrecord PGRC of PGRD appears without previous PGRP data.\n";
+        return false;
+      }
+      // PGRC's length
+      input.read(reinterpret_cast<char*>(&SubLength), 4);
       BytesRead += 4;
-      /*if ((SubLength%8)!=0)
+      if ((SubLength % 4) != 0)
       {
-        std::cout << "Warning: subrecord PGRC of PGRD has invalid length ("<<SubLength
-                  << " bytes). Should be a multiple of 8 bytes. The "<<(SubLength%8)
-                  << " byte(s) at the end will be discarded.\n";
-      }*/
-      //read PGRC
-      const unsigned int connect_count = SubLength / 8;
+        std::cerr << "Error: Subrecord PGRC of PGRD has invalid length ("
+                  << SubLength << " bytes). Should be a multiple of 4 bytes.\n";
+        return false;
+      }
+      // read PGRC
+      const unsigned int connect_count = SubLength / 4;
       GridConnection temp_con;
-      while (Connections.size()<connect_count)
+      while (Connections.size() < connect_count)
       {
-        //read next connection
-        in_File.read((char*) &(temp_con.Start), 4);
-        in_File.read((char*) &(temp_con.End), 4);
-        BytesRead += 8;
-        if (!in_File.good())
+        // read next connection index
+        // Start indices get adjusted later.
+        // Only end indices are part of the sub record's data, so the end
+        // indices have to be calculated from the point data.
+        temp_con.Start = 0;
+        input.read(reinterpret_cast<char*>(&temp_con.End), 4);
+        BytesRead += 4;
+        if (!input.good())
         {
-          std::cout << "Error while reading subrecord PGRC of PGRD.\n";
+          std::cerr << "Error while reading subrecord PGRC of PGRD.\n";
           return false;
         }
         Connections.push_back(temp_con);
-      }//while
-      //It's a bit of a dirty trick to skip the remainder, but I don't see why
-      // there should be an incomplete connection with just one point.
-      if ((SubLength%8)!=0)
-      {
-        in_File.seekg(SubLength%8, std::ios_base::cur);
-        BytesRead += (SubLength%8);
       }
-    }//if PGRC
+      if (!calculateStartIndices())
+        return false;
+    } // if PGRC
     else
     {
-      //unexpected record found
-      std::cout << "Error: expected record name PGRP or PGRC was not found. "
-                << "Instead, \""<<IntTo4Char(SubRecName)<<"\" was found.\n";
+      // unexpected record found
+      std::cerr << "Error: Expected record name PGRP or PGRC was not found. "
+                << "Instead, \"" << IntTo4Char(SubRecName) << "\" was found.\n";
       return false;
     }
-  }//while BytesRead<Size
-  return in_File.good();
+  }
+  return input.good();
 }
 
-} //namespace
+bool PathGridRecord::calculateStartIndices()
+{
+  auto sumConnectionCounts = [](const size_t& sum_so_far, const GridPointData& pt)
+  {
+    return sum_so_far + pt.ConnectionCount;
+  };
+  const auto totalConnections = std::accumulate(Points.begin(), Points.end(),
+                                  static_cast<size_t>(0), sumConnectionCounts);
+  if (totalConnections < Connections.size())
+  {
+    std::cerr << "Error: PGRD record has not enough grid points to construct all connections!\n";
+    return false;
+  }
+  if (Points.empty())
+    return true;
+  size_t ptIdx = 0;
+  size_t partialSum = Points[0].ConnectionCount;
+  const auto connSize = Connections.size();
+  for (size_t connIdx = 0; connIdx < connSize; ++connIdx)
+  {
+    while (connIdx >= partialSum)
+    {
+      ++ptIdx;
+      partialSum += Points.at(ptIdx).ConnectionCount;
+    }
+    Connections[connIdx].Start = ptIdx;
+  }
+
+  return true;
+}
+
+} // namespace

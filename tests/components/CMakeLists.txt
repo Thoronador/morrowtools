@@ -47,6 +47,7 @@ set(component_tests_sources
     ../../mw/base/records/MagicEffectRecord.cpp
     ../../mw/base/records/MiscItemRecord.cpp
     ../../mw/base/records/NPCRecord.cpp
+    ../../mw/base/records/PathGridRecord.cpp
     ../../mw/base/records/PreNPCRecord.cpp
     ../../mw/base/records/ProbeRecord.cpp
     ../../mw/base/records/RepairItemRecord.cpp
@@ -172,6 +173,8 @@ set(component_tests_sources
     mw/base/records/GameSettingRecord.cpp
     mw/base/records/GenericRecord.cpp
     mw/base/records/GlobalRecord.cpp
+    mw/base/records/GridConnection.cpp
+    mw/base/records/GridPointData.cpp
     mw/base/records/IngredientRecord.cpp
     mw/base/records/ItemRecord.cpp
     mw/base/records/LightRecord.cpp
@@ -183,6 +186,7 @@ set(component_tests_sources
     mw/base/records/NPC_AIFollow.cpp
     mw/base/records/NPC_AITravel.cpp
     mw/base/records/NPC_AIWander.cpp
+    mw/base/records/PathGridRecord.cpp
     mw/base/records/PreNPCRecord.cpp
     mw/base/records/ProbeRecord.cpp
     mw/base/records/RepairItemRecord.cpp

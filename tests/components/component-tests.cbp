@@ -115,6 +115,8 @@
 		<Unit filename="../../mw/base/records/MiscItemRecord.hpp" />
 		<Unit filename="../../mw/base/records/NPCRecord.cpp" />
 		<Unit filename="../../mw/base/records/NPCRecord.hpp" />
+		<Unit filename="../../mw/base/records/PathGridRecord.cpp" />
+		<Unit filename="../../mw/base/records/PathGridRecord.hpp" />
 		<Unit filename="../../mw/base/records/PreNPCRecord.cpp" />
 		<Unit filename="../../mw/base/records/PreNPCRecord.hpp" />
 		<Unit filename="../../mw/base/records/ProbeRecord.cpp" />
@@ -332,6 +334,8 @@
 		<Unit filename="mw/base/records/GameSettingRecord.cpp" />
 		<Unit filename="mw/base/records/GenericRecord.cpp" />
 		<Unit filename="mw/base/records/GlobalRecord.cpp" />
+		<Unit filename="mw/base/records/GridConnection.cpp" />
+		<Unit filename="mw/base/records/GridPointData.cpp" />
 		<Unit filename="mw/base/records/IngredientRecord.cpp" />
 		<Unit filename="mw/base/records/ItemRecord.cpp" />
 		<Unit filename="mw/base/records/LightRecord.cpp" />
@@ -343,6 +347,7 @@
 		<Unit filename="mw/base/records/NPC_AIFollow.cpp" />
 		<Unit filename="mw/base/records/NPC_AITravel.cpp" />
 		<Unit filename="mw/base/records/NPC_AIWander.cpp" />
+		<Unit filename="mw/base/records/PathGridRecord.cpp" />
 		<Unit filename="mw/base/records/PreNPCRecord.cpp" />
 		<Unit filename="mw/base/records/ProbeRecord.cpp" />
 		<Unit filename="mw/base/records/RepairItemRecord.cpp" />

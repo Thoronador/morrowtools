@@ -50,6 +50,7 @@ set(component_tests_sources
     ../../mw/base/records/PathGridRecord.cpp
     ../../mw/base/records/PreNPCRecord.cpp
     ../../mw/base/records/ProbeRecord.cpp
+    ../../mw/base/records/ReferencedObject.cpp
     ../../mw/base/records/RepairItemRecord.cpp
     ../../mw/base/records/ScriptRecord.cpp
     ../../mw/base/records/SkillRecord.cpp
@@ -189,6 +190,7 @@ set(component_tests_sources
     mw/base/records/PathGridRecord.cpp
     mw/base/records/PreNPCRecord.cpp
     mw/base/records/ProbeRecord.cpp
+    mw/base/records/RefDoorData.cpp
     mw/base/records/RepairItemRecord.cpp
     mw/base/records/ScriptRecord.cpp
     mw/base/records/SkillRecord.cpp

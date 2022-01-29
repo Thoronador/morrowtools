@@ -121,6 +121,8 @@
 		<Unit filename="../../mw/base/records/PreNPCRecord.hpp" />
 		<Unit filename="../../mw/base/records/ProbeRecord.cpp" />
 		<Unit filename="../../mw/base/records/ProbeRecord.hpp" />
+		<Unit filename="../../mw/base/records/ReferencedObject.cpp" />
+		<Unit filename="../../mw/base/records/ReferencedObject.hpp" />
 		<Unit filename="../../mw/base/records/RepairItemRecord.cpp" />
 		<Unit filename="../../mw/base/records/RepairItemRecord.hpp" />
 		<Unit filename="../../mw/base/records/ScriptRecord.cpp" />
@@ -350,6 +352,7 @@
 		<Unit filename="mw/base/records/PathGridRecord.cpp" />
 		<Unit filename="mw/base/records/PreNPCRecord.cpp" />
 		<Unit filename="mw/base/records/ProbeRecord.cpp" />
+		<Unit filename="mw/base/records/RefDoorData.cpp" />
 		<Unit filename="mw/base/records/RepairItemRecord.cpp" />
 		<Unit filename="mw/base/records/ScriptRecord.cpp" />
 		<Unit filename="mw/base/records/SkillRecord.cpp" />

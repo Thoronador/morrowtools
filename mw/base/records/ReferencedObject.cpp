@@ -37,8 +37,9 @@ RefDoorData::RefDoorData()
 
 bool RefDoorData::operator==(const RefDoorData& other) const
 {
-  return ((PosX==other.PosX) and (PosY==other.PosY) and (PosZ==other.PosZ)
-      and (RotX==other.RotX) and (RotY==other.RotY) and (RotZ==other.RotZ));
+  return (PosX == other.PosX) && (PosY == other.PosY) && (PosZ == other.PosZ)
+      && (RotX == other.RotX) && (RotY == other.RotY) && (RotZ == other.RotZ)
+      && (ExitName == other.ExitName);
 }
 
 /* ReferencedObject functions */

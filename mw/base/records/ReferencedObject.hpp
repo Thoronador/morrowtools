@@ -34,9 +34,8 @@ struct RefDoorData
 
   RefDoorData();
 
-  /* comparison operator */
   bool operator==(const RefDoorData& other) const;
-}; // struct;
+}; // struct
 
 struct ReferencedObject
 {

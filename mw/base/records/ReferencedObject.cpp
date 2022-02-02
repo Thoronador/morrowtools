@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2013  Dirk Stolle
+    Copyright (C) 2011, 2012, 2013, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -48,10 +48,10 @@ ReferencedObject::ReferencedObject()
 : ObjectIndex(0),
   ObjectID(""),
   Scale(1.0f),
-  //data
+  // data
   PosX(0.0f), PosY(0.0f), PosZ(0.0f),
   RotX(0.0f), RotY(0.0f), RotZ(0.0f),
-  //end of data
+  // end of data
   hasDoorData(false),
   DoorData(RefDoorData()),
   hasFLTV(false),
@@ -76,25 +76,26 @@ ReferencedObject::ReferencedObject()
 
 bool ReferencedObject::operator==(const ReferencedObject& other) const
 {
-  if ((ObjectIndex==other.ObjectIndex) and (ObjectID==other.ObjectID)
-      and (isDeleted==other.isDeleted))
+  if ((ObjectIndex == other.ObjectIndex) && (ObjectID == other.ObjectID)
+      && (isDeleted == other.isDeleted))
   {
-    //the part for deleted stuff is short
+    // the part for deleted stuff is short
     if (isDeleted)
     {
-      return (DeletionLong==other.DeletionLong);
+      return (DeletionLong == other.DeletionLong);
     }
-    //now the part for the references that aren't deleted
-    if ((Scale==other.Scale) and (PosX==other.PosX) and (PosY==other.PosY)
-      and (PosZ==other.PosZ) and (RotX==other.RotX) and (RotY==other.RotY)
-      and (RotZ==other.RotZ) and (hasFLTV==other.hasFLTV) and (KeyID==other.KeyID)
-      and (TrapID==other.TrapID) and (OwnerID==other.OwnerID)
-      and (OwnerFactionID==other.OwnerFactionID) and (FactionRank==other.FactionRank)
-      and (SoulCreatureID==other.SoulCreatureID) and (hasXCHG==other.hasXCHG)
-      and (NumberOfUses==other.NumberOfUses) and (hasNAM9==other.hasNAM9)
-      and (GlobalVarID==other.GlobalVarID) and (hasUNAM==other.hasUNAM))
+    // now the part for the references that aren't deleted
+    if ((Scale == other.Scale) && (PosX == other.PosX) && (PosY == other.PosY)
+      && (PosZ == other.PosZ) && (RotX == other.RotX) && (RotY == other.RotY)
+      && (RotZ == other.RotZ) && (hasFLTV == other.hasFLTV) && (KeyID == other.KeyID)
+      && (TrapID == other.TrapID) && (OwnerID == other.OwnerID)
+      && (OwnerFactionID == other.OwnerFactionID) && (FactionRank == other.FactionRank)
+      && (SoulCreatureID == other.SoulCreatureID) && (hasXCHG == other.hasXCHG)
+      && (NumberOfUses == other.NumberOfUses) && (hasNAM9 == other.hasNAM9)
+      && (GlobalVarID == other.GlobalVarID) && (hasUNAM == other.hasUNAM))
     {
-      if (hasDoorData!=other.hasDoorData) return false;
+      if (hasDoorData != other.hasDoorData)
+        return false;
       if (hasDoorData)
       {
         if (!(DoorData == other.DoorData))
@@ -102,26 +103,26 @@ bool ReferencedObject::operator==(const ReferencedObject& other) const
       }
       if (hasFLTV)
       {
-        if (LockLevel!=other.LockLevel)
+        if (LockLevel != other.LockLevel)
           return false;
       }
       if (hasNAM9)
       {
-        if (UnknownNAM9!=other.UnknownNAM9)
+        if (UnknownNAM9 != other.UnknownNAM9)
           return false;
       }
       if (hasUNAM)
       {
-        if (ReferenceBlockedByte!=other.ReferenceBlockedByte)
+        if (ReferenceBlockedByte != other.ReferenceBlockedByte)
           return false;
       }
       if (hasXCHG)
       {
-        return (EnchantCharge==other.EnchantCharge);
+        return EnchantCharge == other.EnchantCharge;
       }
       return true;
     }
-  }//if
+  }
   return false;
 }
 
@@ -168,47 +169,47 @@ bool ReferencedObject::loadFromStream(std::istream& in_File, uint32_t& BytesRead
 			float ZRotate
   */
 
-  //FRMR's length
-  in_File.read((char*) &SubLength, 4);
+  // FRMR's length
+  in_File.read(reinterpret_cast<char*>(&SubLength), 4);
   BytesRead += 4;
-  if (SubLength!=4)
+  if (SubLength != 4)
   {
-    std::cout << "Error: subrecord FRMR of CELL has invalid length ("<<SubLength
-              << " bytes). Should be four bytes.\n";
+    std::cerr << "Error: Subrecord FRMR of CELL has invalid length ("
+              << SubLength << " bytes). Should be four bytes.\n";
     return false;
   }
-  //read object index
-  in_File.read((char*) &ObjectIndex, 4);
+  // read object index
+  in_File.read(reinterpret_cast<char*>(&ObjectIndex), 4);
   BytesRead += 4;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord FRMR of CELL!\n";
+    std::cerr << "Error while reading subrecord FRMR of CELL!\n";
     return false;
   }
 
-  //read NAME
-  in_File.read((char*) &SubRecName, 4);
+  // read NAME
+  in_File.read(reinterpret_cast<char*>(&SubRecName), 4);
   BytesRead += 4;
-  if (SubRecName!=cNAME)
+  if (SubRecName != cNAME)
   {
     UnexpectedRecord(cNAME, SubRecName);
     return false;
   }
-  //NAME's length
-  in_File.read((char*) &SubLength, 4);
+  // NAME's length
+  in_File.read(reinterpret_cast<char*>(&SubLength), 4);
   BytesRead += 4;
-  if (SubLength>255)
+  if (SubLength > 255)
   {
-    std::cout << "Error: subrecord NAME (FRMR) of CELL is longer than 255 characters.\n";
+    std::cerr << "Error: Subrecord NAME (FRMR) of CELL is longer than 255 characters.\n";
     return false;
   }
-  //read object ID
+  // read object ID
   memset(Buffer, '\0', 256);
   in_File.read(Buffer, SubLength);
   BytesRead += SubLength;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord NAME (FRMR) of CELL!\n";
+    std::cerr << "Error while reading subrecord NAME (FRMR) of CELL!\n";
     return false;
   }
   ObjectID = std::string(Buffer);
@@ -232,89 +233,89 @@ bool ReferencedObject::loadFromStream(std::istream& in_File, uint32_t& BytesRead
   ReferenceBlockedByte = 0;
   DeletionLong = 0;
   isDeleted = false;
-  //let's assume that DATA is the last record
-  while (SubRecName!=cDATA)
+  // Let's assume that DATA is the last record.
+  while (SubRecName != cDATA)
   {
-    //read next subrecord
-    in_File.read((char*) &SubRecName, 4);
+    // read next header
+    in_File.read(reinterpret_cast<char*>(&SubRecName), 4);
     BytesRead += 4;
     switch(SubRecName)
     {
       case cXSCL:
-           if (Scale!=1.0f)
+           if (Scale != 1.0f)
            {
-             std::cout << "Error: reference of record CELL seems to have two XSCL subrecords.\n";
+             std::cerr << "Error: Reference of record CELL seems to have two XSCL subrecords.\n";
              return false;
            }
-           //XSCL's length
-           in_File.read((char*) &SubLength, 4);
+           // XSCL's length
+           in_File.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
-           if (SubLength!=4)
+           if (SubLength != 4)
            {
-             std::cout <<"Error: sub record XSCL of CELL has invalid length ("
-                       <<SubLength <<" bytes). Should be four bytes.\n";
+             std::cerr <<"Error: Sub record XSCL of CELL has invalid length ("
+                       << SubLength <<" bytes). Should be four bytes.\n";
              return false;
            }
-           //read object scale
-           in_File.read((char*) &Scale, 4);
+           // read object scale
+           in_File.read(reinterpret_cast<char*>(&Scale), 4);
            BytesRead += 4;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord XSCL of CELL!\n";
+             std::cerr << "Error while reading subrecord XSCL of CELL!\n";
              return false;
            }
            break;
       case cDATA:
-           //DATA's length
-           in_File.read((char*) &SubLength, 4);
+           // DATA's length
+           in_File.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
-           if (SubLength!=24)
+           if (SubLength != 24)
            {
-             std::cout << "Error: subrecord DATA of CELL has invalid length ("<<SubLength
-                       << " bytes). Should be 24 bytes.\n";
+             std::cerr << "Error: Subrecord DATA of CELL has invalid length ("
+                       << SubLength << " bytes). Should be 24 bytes.\n";
              return false;
            }
-           //read object position data
-           in_File.read((char*) &PosX, 4);
-           in_File.read((char*) &PosY, 4);
-           in_File.read((char*) &PosZ, 4);
-           in_File.read((char*) &RotX, 4);
-           in_File.read((char*) &RotY, 4);
-           in_File.read((char*) &RotZ, 4);
+           // read object position data
+           in_File.read(reinterpret_cast<char*>(&PosX), 4);
+           in_File.read(reinterpret_cast<char*>(&PosY), 4);
+           in_File.read(reinterpret_cast<char*>(&PosZ), 4);
+           in_File.read(reinterpret_cast<char*>(&RotX), 4);
+           in_File.read(reinterpret_cast<char*>(&RotY), 4);
+           in_File.read(reinterpret_cast<char*>(&RotZ), 4);
            BytesRead += 24;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord DATA of CELL!\n";
+             std::cerr << "Error while reading subrecord DATA of CELL!\n";
              return false;
            }
            break;
       case cDODT:
            if (hasDoorData)
            {
-             std::cout << "Error: reference of record CELL seems to have two DODT subrecords.\n";
+             std::cerr << "Error: Reference of record CELL seems to have two DODT subrecords.\n";
              return false;
            }
-           //DODT's length
-           in_File.read((char*) &SubLength, 4);
+           // DODT's length
+           in_File.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
-           if (SubLength!=24)
+           if (SubLength != 24)
            {
-             std::cout << "Error: subrecord DODT of CELL has invalid length ("<<SubLength
-                       << " bytes). Should be 24 bytes.\n";
+             std::cerr << "Error: Subrecord DODT of CELL has invalid length ("
+                       << SubLength << " bytes). Should be 24 bytes.\n";
              return false;
            }
-           //read object position data
-           in_File.read((char*) &(DoorData.PosX), 4);
-           in_File.read((char*) &(DoorData.PosY), 4);
-           in_File.read((char*) &(DoorData.PosZ), 4);
-           in_File.read((char*) &(DoorData.RotX), 4);
-           in_File.read((char*) &(DoorData.RotY), 4);
-           in_File.read((char*) &(DoorData.RotZ), 4);
+           // read object position data
+           in_File.read(reinterpret_cast<char*>(&DoorData.PosX), 4);
+           in_File.read(reinterpret_cast<char*>(&DoorData.PosY), 4);
+           in_File.read(reinterpret_cast<char*>(&DoorData.PosZ), 4);
+           in_File.read(reinterpret_cast<char*>(&DoorData.RotX), 4);
+           in_File.read(reinterpret_cast<char*>(&DoorData.RotY), 4);
+           in_File.read(reinterpret_cast<char*>(&DoorData.RotZ), 4);
            BytesRead += 24;
-           DoorData.ExitName = "";
+           DoorData.ExitName.clear();
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord DODT of CELL!\n";
+             std::cerr << "Error while reading subrecord DODT of CELL!\n";
              return false;
            }
            hasDoorData = true;
@@ -322,30 +323,30 @@ bool ReferencedObject::loadFromStream(std::istream& in_File, uint32_t& BytesRead
       case cDNAM:
            if (!hasDoorData)
            {
-             std::cout << "Error while reading CELL: there can't be a DNAM "
+             std::cerr << "Error while reading CELL: There can't be a DNAM "
                        << "without a previous DODT subrecord.\n";
              return false;
            }
            if (!DoorData.ExitName.empty())
            {
-             std::cout << "Error: reference of record CELL seems to have two DNAM subrecords.\n";
+             std::cerr << "Error: Reference of record CELL seems to have two DNAM subrecords.\n";
              return false;
            }
-           //DNAM's length
-           in_File.read((char*) &SubLength, 4);
+           // DNAM's length
+           in_File.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
-           if (SubLength>255)
+           if (SubLength > 255)
            {
-             std::cout << "Error: subrecord DNAM (FRMR) of CELL is longer than 255 characters.\n";
+             std::cerr << "Error: Subrecord DNAM (FRMR) of CELL is longer than 255 characters.\n";
              return false;
            }
-           //read exit name
+           // read exit name
            memset(Buffer, '\0', 256);
            in_File.read(Buffer, SubLength);
            BytesRead += SubLength;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord DNAM (FRMR) of CELL!\n";
+             std::cerr << "Error while reading subrecord DNAM (FRMR) of CELL!\n";
              return false;
            }
            DoorData.ExitName = std::string(Buffer);
@@ -353,56 +354,56 @@ bool ReferencedObject::loadFromStream(std::istream& in_File, uint32_t& BytesRead
       case cFLTV:
            if (hasFLTV)
            {
-             std::cout << "Error: reference of record CELL seems to have two FLTV subrecords.\n";
+             std::cerr << "Error: Reference of record CELL seems to have two FLTV subrecords.\n";
              return false;
            }
-           //FLTV's length
-           in_File.read((char*) &SubLength, 4);
+           // FLTV's length
+           in_File.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
-           if (SubLength!=4)
+           if (SubLength != 4)
            {
-             std::cout << "Error: subrecord FLTV (FRMR) of CELL has invalid length ("
-                       << SubLength<<" bytes). Should be four bytes.\n";
+             std::cerr << "Error: Subrecord FLTV (FRMR) of CELL has invalid length ("
+                       << SubLength << " bytes). Should be four bytes.\n";
              return false;
            }
-           //read lock level
-           in_File.read((char*) &LockLevel, 4);
+           // read lock level
+           in_File.read(reinterpret_cast<char*>(&LockLevel), 4);
            BytesRead += 4;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord FLTV (FRMR) of CELL!\n";
+             std::cerr << "Error while reading subrecord FLTV (FRMR) of CELL!\n";
              return false;
            }
            hasFLTV = true;
            break;
       case cINTV:
-           if (NumberOfUses!=0)
+           if (NumberOfUses != 0)
            {
-             std::cout << "Error: reference of record CELL seems to have two INTV subrecords.\n";
+             std::cerr << "Error: Reference of record CELL seems to have two INTV subrecords.\n";
              return false;
            }
-           //INTV's length
-           in_File.read((char*) &SubLength, 4);
+           // INTV's length
+           in_File.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
-           if (SubLength!=4)
+           if (SubLength != 4)
            {
-             std::cout << "Error: subrecord INTV (FRMR) of CELL has invalid length ("
-                       << SubLength<<" bytes). Should be four bytes.\n";
+             std::cerr << "Error: Subrecord INTV (FRMR) of CELL has invalid length ("
+                       << SubLength << " bytes). Should be four bytes.\n";
              return false;
            }
-           //read number of uses
-           in_File.read((char*) &NumberOfUses, 4);
+           // read number of uses
+           in_File.read(reinterpret_cast<char*>(&NumberOfUses), 4);
            BytesRead += 4;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord INTV (FRMR) of CELL!\n";
+             std::cerr << "Error while reading subrecord INTV (FRMR) of CELL!\n";
              return false;
            }
            break;
       case cKNAM:
-           if (not hasFLTV)
+           if (!hasFLTV)
            {
-             std::cout << "Error while reading CELL: there can't be a KNAM "
+             std::cerr << "Error while reading CELL: there can't be a KNAM "
                        << "without a previous FLTV subrecord.\n";
              return false;
            }
@@ -458,31 +459,31 @@ bool ReferencedObject::loadFromStream(std::istream& in_File, uint32_t& BytesRead
       case cANAM:
            if (!OwnerID.empty())
            {
-             std::cout << "Error: reference of record CELL seems to have two ANAM subrecords.\n";
+             std::cerr << "Error: Reference of record CELL seems to have two ANAM subrecords.\n";
              return false;
            }
            if (!OwnerFactionID.empty())
            {
-             std::cout << "Error: reference of record CELL seems to have both "
+             std::cerr << "Error: Reference of record CELL seems to have both "
                        << "ANAM and CNAM subrecords, but it should have only "
                        << "one of them.\n";
              return false;
            }
-           //ANAM's length
-           in_File.read((char*) &SubLength, 4);
+           // ANAM's length
+           in_File.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
-           if (SubLength>255)
+           if (SubLength > 255)
            {
-             std::cout << "Error: subrecord ANAM (FRMR) of CELL is longer than 255 characters.\n";
+             std::cerr << "Error: Subrecord ANAM (FRMR) of CELL is longer than 255 characters.\n";
              return false;
            }
-           //read owner ID
+           // read owner ID
            memset(Buffer, '\0', 256);
            in_File.read(Buffer, SubLength);
            BytesRead += SubLength;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord ANAM (FRMR) of CELL!\n";
+             std::cerr << "Error while reading subrecord ANAM (FRMR) of CELL!\n";
              return false;
            }
            OwnerID = std::string(Buffer);
@@ -623,24 +624,24 @@ bool ReferencedObject::loadFromStream(std::istream& in_File, uint32_t& BytesRead
       case cNAM9:
            if (hasNAM9)
            {
-             std::cout << "Error: reference of record CELL seems to have two NAM9 subrecords.\n";
+             std::cerr << "Error: Reference of record CELL seems to have two NAM9 subrecords.\n";
              return false;
            }
-           //NAM9's length
-           in_File.read((char*) &SubLength, 4);
+           // NAM9's length
+           in_File.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
-           if (SubLength!=4)
+           if (SubLength != 4)
            {
-             std::cout << "Error: subrecord NAM9 (FRMR) of CELL has invalid length ("
-                       << SubLength<<" bytes). Should be four bytes.\n";
+             std::cerr << "Error: Subrecord NAM9 (FRMR) of CELL has invalid length ("
+                       << SubLength << " bytes). Should be four bytes.\n";
              return false;
            }
-           //read unknown value
-           in_File.read((char*) &UnknownNAM9, 4);
+           // read unknown value
+           in_File.read(reinterpret_cast<char*>(&UnknownNAM9), 4);
            BytesRead += 4;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord NAM9 (FRMR) of CELL!\n";
+             std::cerr << "Error while reading subrecord NAM9 (FRMR) of CELL!\n";
              return false;
            }
            hasNAM9 = true;
@@ -691,16 +692,14 @@ bool ReferencedObject::loadFromStream(std::istream& in_File, uint32_t& BytesRead
            isDeleted = true;
            //DELE is the last subrecord of a reference, so we can return here
            return in_File.good();
-           break;
       default:
-           std::cout << "Error while reading CELL: expected record name XSCL, "
+           std::cerr << "Error while reading CELL: Expected record name XSCL, "
                      << "DODT, DNAM, FLTV, INTV, KNAM, TNAM, ANAM, BNAM, CNAM, "
                      << "XSOL, XCHG, NAM9, UNAM, DELE or DATA not found. Instead, \""
-                     << IntTo4Char(SubRecName)<<"\" was found.\n";
+                     << IntTo4Char(SubRecName) << "\" was found.\n";
            return false;
-           break;
-    }//swi
-  }//while
+    }
+  }
 
   return in_File.good();
 }
@@ -745,203 +744,178 @@ bool ReferencedObject::saveToStream(std::ostream& output) const
 			float ZRotate
   */
 
-  //write FRMR
-  output.write((const char*) &cFRMR, 4);
-  uint32_t SubLength = 4; //fixed length of four bytes
-  //write FRMR's length
-  output.write((const char*) &SubLength, 4);
-  //write object index
-  output.write((const char*) &ObjectIndex, 4);
+  // write object index (FRMR)
+  output.write(reinterpret_cast<const char*>(&cFRMR), 4);
+  uint32_t SubLength = 4;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
+  output.write(reinterpret_cast<const char*>(&ObjectIndex), 4);
 
-  //write NAME
-  output.write((const char*) &cNAME, 4);
-  SubLength = ObjectID.length()+1;
-  //write NAME's length
-  output.write((const char*) &SubLength, 4);
-  //write object ID
+  // write object ID (NAME)
+  output.write(reinterpret_cast<const char*>(&cNAME), 4);
+  SubLength = ObjectID.length() + 1;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
   output.write(ObjectID.c_str(), SubLength);
 
   if (isDeleted)
   {
-    //write DELE
-    output.write((const char*) &cDELE, 4);
-    SubLength = 4; //fixed length of four bytes
-    //write DELE's length
-    output.write((const char*) &SubLength, 4);
-    //write content of DELE (kind of useless, I guess)
-    output.write((const char*) &DeletionLong, 4);
+    // write deletion status (DELE)
+    output.write(reinterpret_cast<const char*>(&cDELE), 4);
+    SubLength = 4;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
+    // write content of DELE (kind of useless, I guess)
+    output.write(reinterpret_cast<const char*>(&DeletionLong), 4);
 
-    //return here, because we are done after that
+    // Return here, because we are done after that.
     return output.good();
   }
 
-  if (Scale!=1.0f)
+  if (Scale != 1.0f)
   {
-    //write XSCL
-    output.write((const char*) &cXSCL, 4);
-    SubLength = 4; //fixed length of four bytes
-    //write XSCL's length
-    output.write((const char*) &SubLength, 4);
-    //write object scale
-    output.write((const char*) &Scale, 4);
+    // write object scale (XSCL)
+    output.write(reinterpret_cast<const char*>(&cXSCL), 4);
+    SubLength = 4;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
+    output.write(reinterpret_cast<const char*>(&Scale), 4);
   }
 
   if (hasDoorData)
   {
-    //write DODT
-    output.write((const char*) &cDODT, 4);
-    SubLength = 24; //fixed length of 24 bytes
-    //write DODT's length
-    output.write((const char*) &SubLength, 4);
-    //write door position data
-    output.write((const char*) &(DoorData.PosX), 4);
-    output.write((const char*) &(DoorData.PosY), 4);
-    output.write((const char*) &(DoorData.PosZ), 4);
-    output.write((const char*) &(DoorData.RotX), 4);
-    output.write((const char*) &(DoorData.RotY), 4);
-    output.write((const char*) &(DoorData.RotZ), 4);
+    // write door position data (DODT)
+    output.write(reinterpret_cast<const char*>(&cDODT), 4);
+    SubLength = 24;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
+    output.write(reinterpret_cast<const char*>(&DoorData.PosX), 4);
+    output.write(reinterpret_cast<const char*>(&DoorData.PosY), 4);
+    output.write(reinterpret_cast<const char*>(&DoorData.PosZ), 4);
+    output.write(reinterpret_cast<const char*>(&DoorData.RotX), 4);
+    output.write(reinterpret_cast<const char*>(&DoorData.RotY), 4);
+    output.write(reinterpret_cast<const char*>(&DoorData.RotZ), 4);
 
     if (!DoorData.ExitName.empty())
     {
-      //write DNAM
-      output.write((const char*) &cDNAM, 4);
-      SubLength = DoorData.ExitName.length()+1; //length of string +1 for NUL
-      //write DNAM's length
-      output.write((const char*) &SubLength, 4);
-      //write door's exit name
+      // write door's exit name (DNAM)
+      output.write(reinterpret_cast<const char*>(&cDNAM), 4);
+      SubLength = DoorData.ExitName.length() + 1;
+      output.write(reinterpret_cast<const char*>(&SubLength), 4);
       output.write(DoorData.ExitName.c_str(), SubLength);
     }
   }
 
   if (hasFLTV)
   {
-    //write FLTV
-    output.write((const char*) &cFLTV, 4);
-    SubLength = 4; //fixed length of four bytes
-    //write FLTV's length
-    output.write((const char*) &SubLength, 4);
-    //write lock level
-    output.write((const char*) &LockLevel, 4);
+    // write lock level (FLTV)
+    output.write(reinterpret_cast<const char*>(&cFLTV), 4);
+    SubLength = 4;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
+    output.write(reinterpret_cast<const char*>(&LockLevel), 4);
 
     if (!KeyID.empty())
     {
-      //write KNAM
-      output.write((const char*) &cKNAM, 4);
-      SubLength = KeyID.length()+1; //length of string +1 for NUL
-      //write KNAM's length
-      output.write((const char*) &SubLength, 4);
-      //write key ID
+      // write key ID (KNAM)
+      output.write(reinterpret_cast<const char*>(&cKNAM), 4);
+      SubLength = KeyID.length() + 1;
+      output.write(reinterpret_cast<const char*>(&SubLength), 4);
       output.write(KeyID.c_str(), SubLength);
     }
   }
 
   if (!TrapID.empty())
   {
-    //write TNAM
-    output.write((const char*) &cTNAM, 4);
-    SubLength = TrapID.length()+1; //length of string +1 for NUL
-    //write TNAM's length
-    output.write((const char*) &SubLength, 4);
-    //write trap ID
+    // write trap ID (TNAM)
+    output.write(reinterpret_cast<const char*>(&cTNAM), 4);
+    SubLength = TrapID.length() + 1;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
     output.write(TrapID.c_str(), SubLength);
   }
 
   if (!OwnerID.empty())
   {
-    //write ANAM
-    output.write((const char*) &cANAM, 4);
-    SubLength = OwnerID.length()+1; //length of string +1 for NUL
-    //write ANAM's length
-    output.write((const char*) &SubLength, 4);
-    //write owner ID
+    // write owner ID (ANAM)
+    output.write(reinterpret_cast<const char*>(&cANAM), 4);
+    SubLength = OwnerID.length() + 1;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
     output.write(OwnerID.c_str(), SubLength);
   }
   else if (!OwnerFactionID.empty())
   {
-    //write CNAM
-    output.write((const char*) &cCNAM, 4);
-    SubLength = OwnerFactionID.length()+1; //length of string +1 for NUL
-    //write CNAM's length
-    output.write((const char*) &SubLength, 4);
-    //write owner faction ID
+    // write owner faction ID (CNAM)
+    output.write(reinterpret_cast<const char*>(&cCNAM), 4);
+    SubLength = OwnerFactionID.length() + 1;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
     output.write(OwnerFactionID.c_str(), SubLength);
 
-    //write INDX
-    output.write((const char*) &cINDX, 4);
-    SubLength = 4; //fixed length of four bytes
-    //write INDX's length
-    output.write((const char*) &SubLength, 4);
-    //write owner faction rank
-    output.write((const char*) &FactionRank, 4);
+    // write owner faction rank (INDX)
+    output.write(reinterpret_cast<const char*>(&cINDX), 4);
+    SubLength = 4;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
+    output.write(reinterpret_cast<const char*>(&FactionRank), 4);
   }
 
   if (!GlobalVarID.empty())
   {
-    //write BNAM
-    output.write((const char*) &cBNAM, 4);
-    SubLength = GlobalVarID.length()+1; //length of string +1 for NUL
-    //write BNAM's length
-    output.write((const char*) &SubLength, 4);
-    //write global var ID
+    // write global variable name (BNAM)
+    output.write(reinterpret_cast<const char*>(&cBNAM), 4);
+    SubLength = GlobalVarID.length() + 1;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
     output.write(GlobalVarID.c_str(), SubLength);
   }
 
   if (!SoulCreatureID.empty())
   {
-    //write XSOL
-    output.write((const char*) &cXSOL, 4);
-    SubLength = SoulCreatureID.length()+1; //length of string +1 for NUL
-    //write XSOL's length
-    output.write((const char*) &SubLength, 4);
-    //write ID of creature of captured soul
+    // write ID of creature of captured soul (XSOL)
+    output.write(reinterpret_cast<const char*>(&cXSOL), 4);
+    SubLength = SoulCreatureID.length() + 1;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
     output.write(SoulCreatureID.c_str(), SubLength);
   }
 
   if (hasXCHG)
   {
-    //write XCHG
-    output.write((const char*) &cXCHG, 4);
-    SubLength = 4; //fixed length of four bytes
-    //write XCHG's length
-    output.write((const char*) &SubLength, 4);
-    //write charges
-    output.write((const char*) &EnchantCharge, 4);
+    // write charges (XCHG)
+    output.write(reinterpret_cast<const char*>(&cXCHG), 4);
+    SubLength = 4;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
+    output.write(reinterpret_cast<const char*>(&EnchantCharge), 4);
+  }
+
+  if (NumberOfUses != 0)
+  {
+    // write number of uses (INTV)
+    output.write(reinterpret_cast<const char*>(&cINTV), 4);
+    SubLength = 4;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
+    output.write(reinterpret_cast<const char*>(&NumberOfUses), 4);
   }
 
   if (hasNAM9)
   {
-    //write NAM9
-    output.write((const char*) &cNAM9, 4);
-    SubLength = 4; //fixed length of four bytes
-    //write NAM9's length
-    output.write((const char*) &SubLength, 4);
-    //write NAM9
-    output.write((const char*) &UnknownNAM9, 4);
+    // write NAM9
+    output.write(reinterpret_cast<const char*>(&cNAM9), 4);
+    SubLength = 4;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
+    output.write(reinterpret_cast<const char*>(&UnknownNAM9), 4);
   }
 
   if (hasUNAM)
   {
-    //write UNAM
-    output.write((const char*) &cUNAM, 4);
-    SubLength = 1; //fixed length of one byte
-    //write UNAM's length
-    output.write((const char*) &SubLength, 4);
-    //write UNAM
-    output.write((const char*) &ReferenceBlockedByte, 1);
+    // write UNAM
+    output.write(reinterpret_cast<const char*>(&cUNAM), 4);
+    SubLength = 1;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
+    output.write(reinterpret_cast<const char*>(&ReferenceBlockedByte), 1);
   }
 
-  //write DATA
-  output.write((const char*) &cDATA, 4);
-  SubLength = 24; //fixed length of 24 bytes
-  //write DATA's length
-  output.write((const char*) &SubLength, 4);
-  //write object position data
-  output.write((const char*) &PosX, 4);
-  output.write((const char*) &PosY, 4);
-  output.write((const char*) &PosZ, 4);
-  output.write((const char*) &RotX, 4);
-  output.write((const char*) &RotY, 4);
-  output.write((const char*) &RotZ, 4);
+  // write object position data (DATA)
+  output.write(reinterpret_cast<const char*>(&cDATA), 4);
+  SubLength = 24;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
+  // write object position data
+  output.write(reinterpret_cast<const char*>(&PosX), 4);
+  output.write(reinterpret_cast<const char*>(&PosY), 4);
+  output.write(reinterpret_cast<const char*>(&PosZ), 4);
+  output.write(reinterpret_cast<const char*>(&RotX), 4);
+  output.write(reinterpret_cast<const char*>(&RotY), 4);
+  output.write(reinterpret_cast<const char*>(&RotZ), 4);
 
   return output.good();
 }

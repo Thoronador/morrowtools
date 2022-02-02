@@ -54,8 +54,7 @@ ReferencedObject::ReferencedObject()
   // end of data
   hasDoorData(false),
   DoorData(RefDoorData()),
-  hasFLTV(false),
-  LockLevel(0),
+  LockLevel(std::nullopt),
   KeyID(""),
   TrapID(""),
   OwnerID(""),
@@ -63,11 +62,9 @@ ReferencedObject::ReferencedObject()
   FactionRank(0),
   GlobalVarID(""),
   SoulCreatureID(""),
-  hasXCHG(false),
-  EnchantCharge(0.0f),
-  NumberOfUses(0),
-  hasNAM9(false),
-  UnknownNAM9(0),
+  EnchantCharge(std::nullopt),
+  NumberOfUses(std::nullopt),
+  UnknownNAM9(std::nullopt),
   hasUNAM(false),
   ReferenceBlockedByte(0),
   isDeleted(false),
@@ -87,11 +84,11 @@ bool ReferencedObject::operator==(const ReferencedObject& other) const
     // now the part for the references that aren't deleted
     if ((Scale == other.Scale) && (PosX == other.PosX) && (PosY == other.PosY)
       && (PosZ == other.PosZ) && (RotX == other.RotX) && (RotY == other.RotY)
-      && (RotZ == other.RotZ) && (hasFLTV == other.hasFLTV) && (KeyID == other.KeyID)
+      && (RotZ == other.RotZ) && (LockLevel == other.LockLevel) && (KeyID == other.KeyID)
       && (TrapID == other.TrapID) && (OwnerID == other.OwnerID)
       && (OwnerFactionID == other.OwnerFactionID) && (FactionRank == other.FactionRank)
-      && (SoulCreatureID == other.SoulCreatureID) && (hasXCHG == other.hasXCHG)
-      && (NumberOfUses == other.NumberOfUses) && (hasNAM9 == other.hasNAM9)
+      && (SoulCreatureID == other.SoulCreatureID) && (EnchantCharge == other.EnchantCharge)
+      && (NumberOfUses == other.NumberOfUses)
       && (GlobalVarID == other.GlobalVarID) && (hasUNAM == other.hasUNAM))
     {
       if (hasDoorData != other.hasDoorData)
@@ -101,24 +98,12 @@ bool ReferencedObject::operator==(const ReferencedObject& other) const
         if (!(DoorData == other.DoorData))
           return false;
       }
-      if (hasFLTV)
-      {
-        if (LockLevel != other.LockLevel)
-          return false;
-      }
-      if (hasNAM9)
-      {
-        if (UnknownNAM9 != other.UnknownNAM9)
-          return false;
-      }
+      if (UnknownNAM9 != other.UnknownNAM9)
+        return false;
       if (hasUNAM)
       {
         if (ReferenceBlockedByte != other.ReferenceBlockedByte)
           return false;
-      }
-      if (hasXCHG)
-      {
-        return EnchantCharge == other.EnchantCharge;
       }
       return true;
     }
@@ -216,8 +201,7 @@ bool ReferencedObject::loadFromStream(std::istream& in_File, uint32_t& BytesRead
 
   Scale = 1.0f;
   hasDoorData = false;
-  hasFLTV = false;
-  LockLevel = 0;
+  LockLevel.reset();
   KeyID = "";
   TrapID = "";
   OwnerID = "";
@@ -225,10 +209,9 @@ bool ReferencedObject::loadFromStream(std::istream& in_File, uint32_t& BytesRead
   FactionRank = -1;
   GlobalVarID = "";
   SoulCreatureID = "";
-  hasXCHG = false;
-  NumberOfUses = 0;
-  hasNAM9 = false;
-  UnknownNAM9 = 0;
+  EnchantCharge.reset();
+  NumberOfUses.reset();
+  UnknownNAM9.reset();
   hasUNAM = false;
   ReferenceBlockedByte = 0;
   DeletionLong = 0;
@@ -352,7 +335,7 @@ bool ReferencedObject::loadFromStream(std::istream& in_File, uint32_t& BytesRead
            DoorData.ExitName = std::string(Buffer);
            break;
       case cFLTV:
-           if (hasFLTV)
+           if (LockLevel.has_value())
            {
              std::cerr << "Error: Reference of record CELL seems to have two FLTV subrecords.\n";
              return false;
@@ -367,17 +350,17 @@ bool ReferencedObject::loadFromStream(std::istream& in_File, uint32_t& BytesRead
              return false;
            }
            // read lock level
-           in_File.read(reinterpret_cast<char*>(&LockLevel), 4);
+           LockLevel = 0;
+           in_File.read(reinterpret_cast<char*>(&LockLevel.value()), 4);
            BytesRead += 4;
            if (!in_File.good())
            {
              std::cerr << "Error while reading subrecord FLTV (FRMR) of CELL!\n";
              return false;
            }
-           hasFLTV = true;
            break;
       case cINTV:
-           if (NumberOfUses != 0)
+           if (NumberOfUses.has_value())
            {
              std::cerr << "Error: Reference of record CELL seems to have two INTV subrecords.\n";
              return false;
@@ -392,7 +375,8 @@ bool ReferencedObject::loadFromStream(std::istream& in_File, uint32_t& BytesRead
              return false;
            }
            // read number of uses
-           in_File.read(reinterpret_cast<char*>(&NumberOfUses), 4);
+           NumberOfUses = 0;
+           in_File.read(reinterpret_cast<char*>(&NumberOfUses.value()), 4);
            BytesRead += 4;
            if (!in_File.good())
            {
@@ -401,32 +385,32 @@ bool ReferencedObject::loadFromStream(std::istream& in_File, uint32_t& BytesRead
            }
            break;
       case cKNAM:
-           if (!hasFLTV)
+           if (!LockLevel.has_value())
            {
-             std::cerr << "Error while reading CELL: there can't be a KNAM "
+             std::cerr << "Error while reading CELL: There can't be a KNAM "
                        << "without a previous FLTV subrecord.\n";
              return false;
            }
            if (!KeyID.empty())
            {
-             std::cout << "Error: reference of record CELL seems to have two KNAM subrecords.\n";
+             std::cerr << "Error: Reference of record CELL seems to have two KNAM subrecords.\n";
              return false;
            }
-           //KNAM's length
-           in_File.read((char*) &SubLength, 4);
+           // KNAM's length
+           in_File.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
-           if (SubLength>255)
+           if (SubLength > 255)
            {
-             std::cout << "Error: subrecord KNAM (FRMR) of CELL is longer than 255 characters.\n";
+             std::cerr << "Error: Subrecord KNAM (FRMR) of CELL is longer than 255 characters.\n";
              return false;
            }
-           //read key ID
+           // read key ID
            memset(Buffer, '\0', 256);
            in_File.read(Buffer, SubLength);
            BytesRead += SubLength;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord KNAM (FRMR) of CELL!\n";
+             std::cerr << "Error while reading subrecord KNAM (FRMR) of CELL!\n";
              return false;
            }
            KeyID = std::string(Buffer);
@@ -434,24 +418,24 @@ bool ReferencedObject::loadFromStream(std::istream& in_File, uint32_t& BytesRead
       case cTNAM:
            if (!TrapID.empty())
            {
-             std::cout << "Error: reference of record CELL seems to have two TNAM subrecords.\n";
+             std::cerr << "Error: Reference of record CELL seems to have two TNAM subrecords.\n";
              return false;
            }
-           //TNAM's length
-           in_File.read((char*) &SubLength, 4);
+           // TNAM's length
+           in_File.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
-           if (SubLength>255)
+           if (SubLength > 255)
            {
-             std::cout << "Error: subrecord TNAM (FRMR) of CELL is longer than 255 characters.\n";
+             std::cerr << "Error: Subrecord TNAM (FRMR) of CELL is longer than 255 characters.\n";
              return false;
            }
-           //read trap ID
+           // read trap ID
            memset(Buffer, '\0', 256);
            in_File.read(Buffer, SubLength);
            BytesRead += SubLength;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord TNAM (FRMR) of CELL!\n";
+             std::cerr << "Error while reading subrecord TNAM (FRMR) of CELL!\n";
              return false;
            }
            TrapID = std::string(Buffer);
@@ -491,83 +475,83 @@ bool ReferencedObject::loadFromStream(std::istream& in_File, uint32_t& BytesRead
       case cCNAM:
            if (!OwnerFactionID.empty())
            {
-             std::cout << "Error: reference of record CELL seems to have two CNAM subrecords.\n";
+             std::cerr << "Error: Reference of record CELL seems to have two CNAM subrecords.\n";
              return false;
            }
            if (!OwnerID.empty())
            {
-             std::cout << "Error: reference of record CELL seems to have both "
+             std::cerr << "Error: Reference of record CELL seems to have both "
                        << "ANAM and CNAM subrecords, but it should have only "
                        << "one of them.\n";
              return false;
            }
-           //CNAM's length
-           in_File.read((char*) &SubLength, 4);
+           // CNAM's length
+           in_File.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
-           if (SubLength>255)
+           if (SubLength > 255)
            {
-             std::cout << "Error: subrecord CNAM (FRMR) of CELL is longer than 255 characters.\n";
+             std::cerr << "Error: Subrecord CNAM (FRMR) of CELL is longer than 255 characters.\n";
              return false;
            }
-           //read owner faction ID
+           // read owner faction ID
            memset(Buffer, '\0', 256);
            in_File.read(Buffer, SubLength);
            BytesRead += SubLength;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord CNAM (FRMR) of CELL!\n";
+             std::cerr << "Error while reading subrecord CNAM (FRMR) of CELL!\n";
              return false;
            }
            OwnerFactionID = std::string(Buffer);
 
-           //INDX should follow right now
-           //read INDX
+           // INDX should follow right now.
+           // read INDX
            in_File.read((char*) &SubRecName, 4);
            BytesRead += 4;
-           if (SubRecName!=cINDX)
+           if (SubRecName != cINDX)
            {
              UnexpectedRecord(cINDX, SubRecName);
              return false;
            }
-           //read INDX's length
-           in_File.read((char*) &SubLength, 4);
+           // read INDX's length
+           in_File.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
-           if (SubLength!=4)
+           if (SubLength != 4)
            {
-             std::cout << "Error: subrecord INDX (FRMR) of CELL has invalid length ("
-                       << SubLength<<" bytes). Should be four bytes.\n";
+             std::cerr << "Error: Subrecord INDX (FRMR) of CELL has invalid length ("
+                       << SubLength << " bytes). Should be four bytes.\n";
              return false;
            }
-           //read faction rank number
-           in_File.read((char*) &FactionRank, 4);
+           // read faction rank number
+           in_File.read(reinterpret_cast<char*>(&FactionRank), 4);
            BytesRead += 4;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord INDX (FRMR) of CELL!\n";
+             std::cerr << "Error while reading subrecord INDX (FRMR) of CELL!\n";
              return false;
            }
            break;
       case cBNAM:
            if (!GlobalVarID.empty())
            {
-             std::cout << "Error: reference of record CELL seems to have two BNAM subrecords.\n";
+             std::cerr << "Error: Reference of record CELL seems to have two BNAM subrecords.\n";
              return false;
            }
-           //BNAM's length
-           in_File.read((char*) &SubLength, 4);
+           // BNAM's length
+           in_File.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
-           if (SubLength>255)
+           if (SubLength > 255)
            {
-             std::cout << "Error: subrecord BNAM (FRMR) of CELL is longer than 255 characters.\n";
+             std::cerr << "Error: Subrecord BNAM (FRMR) of CELL is longer than 255 characters.\n";
              return false;
            }
-           //read global var ID
+           // read global var ID
            memset(Buffer, '\0', 256);
            in_File.read(Buffer, SubLength);
            BytesRead += SubLength;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord BNAM (FRMR) of CELL!\n";
+             std::cerr << "Error while reading subrecord BNAM (FRMR) of CELL!\n";
              return false;
            }
            GlobalVarID = std::string(Buffer);
@@ -575,54 +559,55 @@ bool ReferencedObject::loadFromStream(std::istream& in_File, uint32_t& BytesRead
       case cXSOL:
            if (!SoulCreatureID.empty())
            {
-             std::cout << "Error: reference of record CELL seems to have two XSOL subrecords.\n";
+             std::cerr << "Error: Reference of record CELL seems to have two XSOL subrecords.\n";
              return false;
            }
-           //XSOL's length
-           in_File.read((char*) &SubLength, 4);
+           // XSOL's length
+           in_File.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
-           if (SubLength>255)
+           if (SubLength > 255)
            {
-             std::cout << "Error: subrecord XSOL (FRMR) of CELL is longer than 255 characters.\n";
+             std::cerr << "Error: Subrecord XSOL (FRMR) of CELL is longer than 255 characters.\n";
              return false;
            }
-           //read soul creature's ID
+           // read soul creature's ID
            memset(Buffer, '\0', 256);
            in_File.read(Buffer, SubLength);
            BytesRead += SubLength;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord XSOL (FRMR) of CELL!\n";
+             std::cerr << "Error while reading subrecord XSOL (FRMR) of CELL!\n";
              return false;
            }
            SoulCreatureID = std::string(Buffer);
            break;
       case cXCHG:
-           if (hasXCHG)
+           if (EnchantCharge.has_value())
            {
-             std::cout << "Error: reference of record CELL seems to have two XCHG subrecords.\n";
+             std::cerr << "Error: Reference of record CELL seems to have two XCHG subrecords.\n";
              return false;
            }
-           //XCHG's length
-           in_File.read((char*) &SubLength, 4);
+           // XCHG's length
+           in_File.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
-           if (SubLength!=4)
+           if (SubLength != 4)
            {
-             std::cout << "Error: subrecord XCHG (FRMR) of CELL has invalid length ("
-                       << SubLength<<" bytes). Should be four bytes.\n";
+             std::cerr << "Error: Subrecord XCHG (FRMR) of CELL has invalid length ("
+                       << SubLength << " bytes). Should be four bytes.\n";
              return false;
            }
-           //read charged enchantment points
-           in_File.read((char*) &EnchantCharge, 4);
+           // read charged enchantment points
+           EnchantCharge = 0.0f;
+           in_File.read(reinterpret_cast<char*>(&EnchantCharge.value()), 4);
            BytesRead += 4;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord XCHG (FRMR) of CELL!\n";
+             std::cerr << "Error while reading subrecord XCHG (FRMR) of CELL!\n";
              return false;
            }
            break;
       case cNAM9:
-           if (hasNAM9)
+           if (UnknownNAM9.has_value())
            {
              std::cerr << "Error: Reference of record CELL seems to have two NAM9 subrecords.\n";
              return false;
@@ -637,14 +622,14 @@ bool ReferencedObject::loadFromStream(std::istream& in_File, uint32_t& BytesRead
              return false;
            }
            // read unknown value
-           in_File.read(reinterpret_cast<char*>(&UnknownNAM9), 4);
+           UnknownNAM9 = 0;
+           in_File.read(reinterpret_cast<char*>(&UnknownNAM9.value()), 4);
            BytesRead += 4;
            if (!in_File.good())
            {
              std::cerr << "Error while reading subrecord NAM9 (FRMR) of CELL!\n";
              return false;
            }
-           hasNAM9 = true;
            break;
       case cUNAM:
            if (hasUNAM)
@@ -801,13 +786,13 @@ bool ReferencedObject::saveToStream(std::ostream& output) const
     }
   }
 
-  if (hasFLTV)
+  if (LockLevel.has_value())
   {
     // write lock level (FLTV)
     output.write(reinterpret_cast<const char*>(&cFLTV), 4);
     SubLength = 4;
     output.write(reinterpret_cast<const char*>(&SubLength), 4);
-    output.write(reinterpret_cast<const char*>(&LockLevel), 4);
+    output.write(reinterpret_cast<const char*>(&LockLevel.value()), 4);
 
     if (!KeyID.empty())
     {
@@ -869,31 +854,31 @@ bool ReferencedObject::saveToStream(std::ostream& output) const
     output.write(SoulCreatureID.c_str(), SubLength);
   }
 
-  if (hasXCHG)
+  if (EnchantCharge.has_value())
   {
     // write charges (XCHG)
     output.write(reinterpret_cast<const char*>(&cXCHG), 4);
     SubLength = 4;
     output.write(reinterpret_cast<const char*>(&SubLength), 4);
-    output.write(reinterpret_cast<const char*>(&EnchantCharge), 4);
+    output.write(reinterpret_cast<const char*>(&EnchantCharge.value()), 4);
   }
 
-  if (NumberOfUses != 0)
+  if (NumberOfUses.has_value())
   {
     // write number of uses (INTV)
     output.write(reinterpret_cast<const char*>(&cINTV), 4);
     SubLength = 4;
     output.write(reinterpret_cast<const char*>(&SubLength), 4);
-    output.write(reinterpret_cast<const char*>(&NumberOfUses), 4);
+    output.write(reinterpret_cast<const char*>(&NumberOfUses.value()), 4);
   }
 
-  if (hasNAM9)
+  if (UnknownNAM9.has_value())
   {
     // write NAM9
     output.write(reinterpret_cast<const char*>(&cNAM9), 4);
     SubLength = 4;
     output.write(reinterpret_cast<const char*>(&SubLength), 4);
-    output.write(reinterpret_cast<const char*>(&UnknownNAM9), 4);
+    output.write(reinterpret_cast<const char*>(&UnknownNAM9.value()), 4);
   }
 
   if (hasUNAM)
@@ -949,13 +934,13 @@ uint32_t ReferencedObject::getWrittenSize() const
     }
   }
 
-  if (hasFLTV)
+  if (LockLevel.has_value())
   {
-    Result = Result +4 /* FLTV */ +4 /* 4 bytes for length */ +4 /* fixed size of 4 bytes */;
+    Result = Result + 4 /* FLTV */ + 4 /* 4 bytes for length */ + 4 /* fixed size of 4 bytes */;
     if (!KeyID.empty())
     {
-      Result = Result +4 /* KNAM */ +4 /* 4 bytes for length */
-              +KeyID.length()+1 /* length of string +1 byte for NUL */;
+      Result = Result + 4 /* KNAM */ + 4 /* 4 bytes for length */
+             + KeyID.length() + 1 /* length of string +1 byte for NUL */;
     }
   }
 
@@ -979,22 +964,22 @@ uint32_t ReferencedObject::getWrittenSize() const
 
   if (!GlobalVarID.empty())
   {
-    Result = Result +4 /* BNAM */ +4 /* 4 bytes for length */
-            +GlobalVarID.length()+1 /* length of string +1 byte for NUL */;
+    Result = Result + 4 /* BNAM */ + 4 /* 4 bytes for length */
+           + GlobalVarID.length() + 1 /* length of string +1 byte for NUL */;
   }
 
   if (!SoulCreatureID.empty())
   {
-    Result = Result +4 /* XSOL */ +4 /* 4 bytes for length */
-            +SoulCreatureID.length()+1 /* length of string +1 byte for NUL */;
+    Result = Result + 4 /* XSOL */ + 4 /* 4 bytes for length */
+           + SoulCreatureID.length() + 1 /* length of string +1 byte for NUL */;
   }
 
-  if (hasXCHG)
+  if (EnchantCharge.has_value())
   {
-    Result = Result +4 /* XCHG */ +4 /* 4 bytes for length */ +4 /* fixed size of 4 bytes */;
+    Result = Result + 4 /* XCHG */ + 4 /* 4 bytes for length */ + 4 /* fixed size of 4 bytes */;
   }
 
-  if (hasNAM9)
+  if (UnknownNAM9.has_value())
   {
     Result = Result +4 /* NAM9 */ +4 /* 4 bytes for length */ +4 /* fixed size of 4 bytes */;
   }

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2013  Dirk Stolle
+    Copyright (C) 2011, 2013, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 #ifndef MW_REFERENCEDOBJECT_HPP
 #define MW_REFERENCEDOBJECT_HPP
 
+#include <optional>
 #include <string>
 
 namespace MWTP
@@ -49,8 +50,7 @@ struct ReferencedObject
 
   bool hasDoorData;
   RefDoorData DoorData;
-  bool hasFLTV;
-  int32_t LockLevel;
+  std::optional<uint32_t> LockLevel;
   std::string KeyID;
   std::string TrapID;
 
@@ -59,11 +59,9 @@ struct ReferencedObject
   int32_t FactionRank;
   std::string GlobalVarID;
   std::string SoulCreatureID;
-  bool hasXCHG;
-  float EnchantCharge;
-  uint32_t NumberOfUses;
-  bool hasNAM9;
-  uint32_t UnknownNAM9;
+  std::optional<float> EnchantCharge;
+  std::optional<uint32_t> NumberOfUses;
+  std::optional<uint32_t> UnknownNAM9;
   bool hasUNAM;
   uint8_t ReferenceBlockedByte;
   bool isDeleted;
@@ -71,24 +69,25 @@ struct ReferencedObject
 
   ReferencedObject();
 
-  /* comparison operator */
   bool operator==(const ReferencedObject& other) const;
 
-  /* loads the object reference from the given input stream and returns true on success
-
-    parameters:
-        in_File   - the input stream
-        BytesRead - reference to the 32 bit unsigned int that counts the bytes read
-        Buffer    - pointer to a char array that can hold at least 256 bytes
-  */
+  /** \brief Loads the object reference from the given input stream.
+   *
+   * \param input    the input stream
+   * \param BytesRead  reference to the variable that counts the bytes read
+   * \param Buffer     pointer to a char array that can hold at least 256 bytes
+   * \return Returns true on success (reference was loaded from stream).
+   *         Returns false, if an error occurred.
+   */
   bool loadFromStream(std::istream& in_File, uint32_t& BytesRead, char* Buffer);
 
   #ifndef MW_UNSAVEABLE_RECORDS
-  /* writes the object reference to the given output stream and returns true on success
-
-    parameters:
-        output - the output stream
-  */
+  /** \brief Writes the object reference to the given output stream.
+   *
+   * \param output  the output stream
+   * \return Returns true on success (data was written to stream).
+   *         Returns false, if an error occurred.
+   */
   bool saveToStream(std::ostream& output) const;
   #endif
 

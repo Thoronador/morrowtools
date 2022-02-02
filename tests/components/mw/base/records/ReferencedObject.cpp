@@ -43,8 +43,7 @@ TEST_CASE("MWTP::ReferencedObject")
     REQUIRE( object.RotZ == 0.0f );
     REQUIRE_FALSE( object.hasDoorData );
     // DoorData is basically checked in test for RefDoorData.
-    REQUIRE_FALSE( object.hasFLTV );
-    REQUIRE( object.LockLevel == 0 );
+    REQUIRE_FALSE( object.LockLevel.has_value() );
     REQUIRE( object.KeyID.empty() );
     REQUIRE( object.TrapID.empty() );
     REQUIRE( object.OwnerID.empty() );
@@ -52,11 +51,9 @@ TEST_CASE("MWTP::ReferencedObject")
     REQUIRE( object.FactionRank == 0 );
     REQUIRE( object.GlobalVarID.empty() );
     REQUIRE( object.SoulCreatureID.empty() );
-    REQUIRE_FALSE( object.hasXCHG );
-    REQUIRE( object.EnchantCharge == 0.0f );
-    REQUIRE( object.NumberOfUses == 0 );
-    REQUIRE_FALSE( object.hasNAM9 );
-    REQUIRE( object.UnknownNAM9 == 0 );
+    REQUIRE_FALSE( object.EnchantCharge.has_value() );
+    REQUIRE_FALSE( object.NumberOfUses.has_value() );
+    REQUIRE_FALSE( object.UnknownNAM9.has_value() );
     REQUIRE_FALSE( object.hasUNAM );
     REQUIRE( object.ReferenceBlockedByte == 0 );
     REQUIRE_FALSE( object.isDeleted );
@@ -182,15 +179,13 @@ TEST_CASE("MWTP::ReferencedObject")
 
       SECTION("LockLevel mismatch")
       {
-        a.hasFLTV = false;
-        b.hasFLTV = true;
+        a.LockLevel.reset();
+        b.LockLevel = 10;
 
         REQUIRE_FALSE( a == b );
         REQUIRE_FALSE( b == a );
 
-        a.hasFLTV = true;
         a.LockLevel = 20;
-        b.hasFLTV = true;
         b.LockLevel = 30;
 
         REQUIRE_FALSE( a == b );
@@ -262,16 +257,14 @@ TEST_CASE("MWTP::ReferencedObject")
 
       SECTION("EnchantCharge mismatch")
       {
-        a.hasXCHG = false;
-        b.hasXCHG = true;
+        a.EnchantCharge.reset();
+        b.EnchantCharge = 1.25f;
 
         REQUIRE_FALSE( a == b );
         REQUIRE_FALSE( b == a );
 
-        a.hasXCHG = true;
-        a.EnchantCharge = 20;
-        b.hasXCHG = true;
-        b.EnchantCharge = 50;
+        a.EnchantCharge = 20.0f;
+        b.EnchantCharge = 50.0f;
 
         REQUIRE_FALSE( a == b );
         REQUIRE_FALSE( b == a );
@@ -279,6 +272,12 @@ TEST_CASE("MWTP::ReferencedObject")
 
       SECTION("NumberOfUses mismatch")
       {
+        a.NumberOfUses.reset();
+        a.NumberOfUses = 0;
+
+        REQUIRE_FALSE( a == b );
+        REQUIRE_FALSE( b == a );
+
         a.NumberOfUses = 1;
         b.NumberOfUses = 2;
 
@@ -288,15 +287,13 @@ TEST_CASE("MWTP::ReferencedObject")
 
       SECTION("NAM9 mismatch")
       {
-        a.hasNAM9 = false;
-        b.hasNAM9 = true;
+        a.UnknownNAM9.reset();
+        b.UnknownNAM9 = 0;
 
         REQUIRE_FALSE( a == b );
         REQUIRE_FALSE( b == a );
 
-        a.hasNAM9 = true;
         a.UnknownNAM9 = 1;
-        b.hasNAM9 = true;
         b.UnknownNAM9 = 234;
 
         REQUIRE_FALSE( a == b );
@@ -369,8 +366,7 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE( object.RotY == 0.0f );
       REQUIRE( object.RotZ == 0.0f );
       REQUIRE_FALSE( object.hasDoorData );
-      REQUIRE_FALSE( object.hasFLTV );
-      REQUIRE( object.LockLevel == 0 );
+      REQUIRE_FALSE( object.LockLevel.has_value() );
       REQUIRE( object.KeyID.empty() );
       REQUIRE( object.TrapID.empty() );
       REQUIRE( object.OwnerID.empty() );
@@ -378,11 +374,9 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE( object.FactionRank == -1 );
       REQUIRE( object.GlobalVarID.empty() );
       REQUIRE( object.SoulCreatureID.empty() );
-      REQUIRE_FALSE( object.hasXCHG );
-      REQUIRE( object.EnchantCharge == 0.0f );
-      REQUIRE( object.NumberOfUses == 0 );
-      REQUIRE_FALSE( object.hasNAM9 );
-      REQUIRE( object.UnknownNAM9 == 0 );
+      REQUIRE_FALSE( object.EnchantCharge.has_value() );
+      REQUIRE_FALSE( object.NumberOfUses.has_value() );
+      REQUIRE_FALSE( object.UnknownNAM9.has_value() );
       REQUIRE_FALSE( object.hasUNAM );
       REQUIRE( object.ReferenceBlockedByte == 0 );
       REQUIRE_FALSE( object.isDeleted );
@@ -419,8 +413,7 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE( object.RotY == 0.0f );
       REQUIRE( object.RotZ == 3.3999013900757f );
       REQUIRE_FALSE( object.hasDoorData );
-      REQUIRE_FALSE( object.hasFLTV );
-      REQUIRE( object.LockLevel == 0 );
+      REQUIRE_FALSE( object.LockLevel.has_value() );
       REQUIRE( object.KeyID.empty() );
       REQUIRE( object.TrapID.empty() );
       REQUIRE( object.OwnerID.empty() );
@@ -428,11 +421,9 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE( object.FactionRank == -1 );
       REQUIRE( object.GlobalVarID.empty() );
       REQUIRE( object.SoulCreatureID.empty() );
-      REQUIRE_FALSE( object.hasXCHG );
-      REQUIRE( object.EnchantCharge == 0.0f );
-      REQUIRE( object.NumberOfUses == 0 );
-      REQUIRE_FALSE( object.hasNAM9 );
-      REQUIRE( object.UnknownNAM9 == 0 );
+      REQUIRE_FALSE( object.EnchantCharge.has_value() );
+      REQUIRE_FALSE( object.NumberOfUses.has_value() );
+      REQUIRE_FALSE( object.UnknownNAM9.has_value() );
       REQUIRE_FALSE( object.hasUNAM );
       REQUIRE( object.ReferenceBlockedByte == 0 );
       REQUIRE_FALSE( object.isDeleted );
@@ -476,8 +467,7 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE( object.DoorData.RotY == 0.0f );
       REQUIRE( object.DoorData.RotZ == 3.0839967727661f );
       REQUIRE( object.DoorData.ExitName.empty() );
-      REQUIRE_FALSE( object.hasFLTV );
-      REQUIRE( object.LockLevel == 0 );
+      REQUIRE_FALSE( object.LockLevel.has_value() );
       REQUIRE( object.KeyID.empty() );
       REQUIRE( object.TrapID.empty() );
       REQUIRE( object.OwnerID.empty() );
@@ -485,11 +475,9 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE( object.FactionRank == -1 );
       REQUIRE( object.GlobalVarID.empty() );
       REQUIRE( object.SoulCreatureID.empty() );
-      REQUIRE_FALSE( object.hasXCHG );
-      REQUIRE( object.EnchantCharge == 0.0f );
-      REQUIRE( object.NumberOfUses == 0 );
-      REQUIRE_FALSE( object.hasNAM9 );
-      REQUIRE( object.UnknownNAM9 == 0 );
+      REQUIRE_FALSE( object.EnchantCharge.has_value() );
+      REQUIRE_FALSE( object.NumberOfUses.has_value() );
+      REQUIRE_FALSE( object.UnknownNAM9.has_value() );
       REQUIRE_FALSE( object.hasUNAM );
       REQUIRE( object.ReferenceBlockedByte == 0 );
       REQUIRE_FALSE( object.isDeleted );
@@ -533,8 +521,7 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE( object.DoorData.RotY == 1.5707963705063f );
       REQUIRE( object.DoorData.RotZ == 0.0f );
       REQUIRE( object.DoorData.ExitName == "Zerfallenes Schiffswrack, Oberdeck" );
-      REQUIRE_FALSE( object.hasFLTV );
-      REQUIRE( object.LockLevel == 0 );
+      REQUIRE_FALSE( object.LockLevel.has_value() );
       REQUIRE( object.KeyID.empty() );
       REQUIRE( object.TrapID.empty() );
       REQUIRE( object.OwnerID.empty() );
@@ -542,11 +529,9 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE( object.FactionRank == -1 );
       REQUIRE( object.GlobalVarID.empty() );
       REQUIRE( object.SoulCreatureID.empty() );
-      REQUIRE_FALSE( object.hasXCHG );
-      REQUIRE( object.EnchantCharge == 0.0f );
-      REQUIRE( object.NumberOfUses == 0 );
-      REQUIRE_FALSE( object.hasNAM9 );
-      REQUIRE( object.UnknownNAM9 == 0 );
+      REQUIRE_FALSE( object.EnchantCharge.has_value() );
+      REQUIRE_FALSE( object.NumberOfUses.has_value() );
+      REQUIRE_FALSE( object.UnknownNAM9.has_value() );
       REQUIRE_FALSE( object.hasUNAM );
       REQUIRE( object.ReferenceBlockedByte == 0 );
       REQUIRE_FALSE( object.isDeleted );
@@ -583,8 +568,8 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE( object.RotY == 4.8869218826294f );
       REQUIRE( object.RotZ == 3.2812190055847f );
       REQUIRE_FALSE( object.hasDoorData );
-      REQUIRE( object.hasFLTV );
-      REQUIRE( object.LockLevel == 15 );
+      REQUIRE( object.LockLevel.has_value() );
+      REQUIRE( object.LockLevel.value() == 15 );
       REQUIRE( object.KeyID.empty() );
       REQUIRE( object.TrapID.empty() );
       REQUIRE( object.OwnerID.empty() );
@@ -592,11 +577,9 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE( object.FactionRank == -1 );
       REQUIRE( object.GlobalVarID.empty() );
       REQUIRE( object.SoulCreatureID.empty() );
-      REQUIRE_FALSE( object.hasXCHG );
-      REQUIRE( object.EnchantCharge == 0.0f );
-      REQUIRE( object.NumberOfUses == 0 );
-      REQUIRE_FALSE( object.hasNAM9 );
-      REQUIRE( object.UnknownNAM9 == 0 );
+      REQUIRE_FALSE( object.EnchantCharge.has_value() );
+      REQUIRE_FALSE( object.NumberOfUses.has_value() );
+      REQUIRE_FALSE( object.UnknownNAM9.has_value() );
       REQUIRE_FALSE( object.hasUNAM );
       REQUIRE( object.ReferenceBlockedByte == 0 );
       REQUIRE_FALSE( object.isDeleted );
@@ -633,8 +616,7 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE( object.RotY == 0.0f );
       REQUIRE( object.RotZ == 4.3831872940063f );
       REQUIRE_FALSE( object.hasDoorData );
-      REQUIRE_FALSE( object.hasFLTV );
-      REQUIRE( object.LockLevel == 0 );
+      REQUIRE_FALSE( object.LockLevel.has_value() );
       REQUIRE( object.KeyID.empty() );
       REQUIRE( object.TrapID.empty() );
       REQUIRE( object.OwnerID == "kaushad" );
@@ -642,11 +624,256 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE( object.FactionRank == -1 );
       REQUIRE( object.GlobalVarID.empty() );
       REQUIRE( object.SoulCreatureID.empty() );
-      REQUIRE_FALSE( object.hasXCHG );
-      REQUIRE( object.EnchantCharge == 0.0f );
-      REQUIRE( object.NumberOfUses == 1 );
-      REQUIRE( object.hasNAM9 );
-      REQUIRE( object.UnknownNAM9 == 0x00000001 );
+      REQUIRE_FALSE( object.EnchantCharge.has_value() );
+      REQUIRE( object.NumberOfUses.has_value() );
+      REQUIRE( object.NumberOfUses.value() == 1 );
+      REQUIRE( object.UnknownNAM9.has_value() );
+      REQUIRE( object.UnknownNAM9.value() == 0x00000001 );
+      REQUIRE_FALSE( object.hasUNAM );
+      REQUIRE( object.ReferenceBlockedByte == 0 );
+      REQUIRE_FALSE( object.isDeleted );
+      REQUIRE( object.DeletionLong == 0 );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( object.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
+    }
+
+    SECTION("default: load reference with key and trap")
+    {
+      const auto data = "FRMR\x04\0\0\0\x3D\xAC\x16\0NAME\x17\0\0\0com_chest_Daed_crusher\0FLTV\x04\0\0\0P\0\0\0KNAM\x15\0\0\0key_Forge of Rolamus\0TNAM\x10\0\0\0trap_paralyze00\0DATA\x18\0\0\0\x0D\x9E=E\x8C\x38\xBF\x45K\x88W\xC4\0\0\0\0\0\0\0\0\xDB\x0F\xC9?"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FRMR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      ReferencedObject object;
+      REQUIRE( object.loadFromStream(stream, bytesRead, buffer) );
+      // Check data.
+      REQUIRE( object.ObjectIndex == 0x0016AC3D );
+      REQUIRE( object.ObjectID == "com_chest_Daed_crusher" );
+      REQUIRE( object.Scale == 1.0f );
+      REQUIRE( object.PosX == 3033.8781738281f );
+      REQUIRE( object.PosY == 6119.068359375f );
+      REQUIRE( object.PosZ == -862.12957763672f );
+      REQUIRE( object.RotX == 0.0f );
+      REQUIRE( object.RotY == 0.0f );
+      REQUIRE( object.RotZ == 1.5707963705063f );
+      REQUIRE_FALSE( object.hasDoorData );
+      REQUIRE( object.LockLevel.has_value() );
+      REQUIRE( object.LockLevel.value() == 80 );
+      REQUIRE( object.KeyID == "key_Forge of Rolamus" );
+      REQUIRE( object.TrapID == "trap_paralyze00" );
+      REQUIRE( object.OwnerID.empty() );
+      REQUIRE( object.OwnerFactionID.empty() );
+      REQUIRE( object.FactionRank == -1 );
+      REQUIRE( object.GlobalVarID.empty() );
+      REQUIRE( object.SoulCreatureID.empty() );
+      REQUIRE_FALSE( object.EnchantCharge.has_value() );
+      REQUIRE_FALSE( object.NumberOfUses.has_value() );
+      REQUIRE_FALSE( object.UnknownNAM9.has_value() );
+      REQUIRE_FALSE( object.hasUNAM );
+      REQUIRE( object.ReferenceBlockedByte == 0 );
+      REQUIRE_FALSE( object.isDeleted );
+      REQUIRE( object.DeletionLong == 0 );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( object.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
+    }
+
+    SECTION("default: load reference with owner faction")
+    {
+      const auto data = "FRMR\x04\0\0\0\x17\x14\x17\0NAME\x12\0\0\0active_de_bedroll\0CNAM\x0B\0\0\0Ashlanders\0INDX\x04\0\0\0\0\0\0\0INTV\x04\0\0\0\x01\0\0\0NAM9\x04\0\0\0\x01\0\0\0DATA\x18\0\0\0\xE0\xC4\xC0\xC2N (D9\x92x\xC3\0\0\0\0\0\0\0\0&\x86\x38@"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FRMR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      ReferencedObject object;
+      REQUIRE( object.loadFromStream(stream, bytesRead, buffer) );
+      // Check data.
+      REQUIRE( object.ObjectIndex == 0x00171417 );
+      REQUIRE( object.ObjectID == "active_de_bedroll" );
+      REQUIRE( object.Scale == 1.0f );
+      REQUIRE( object.PosX == -96.384521484375f );
+      REQUIRE( object.PosY == 672.50476074219f );
+      REQUIRE( object.PosZ == -248.57118225098f );
+      REQUIRE( object.RotX == 0.0f );
+      REQUIRE( object.RotY == 0.0f );
+      REQUIRE( object.RotZ == 2.8831877708435f );
+      REQUIRE_FALSE( object.hasDoorData );
+      REQUIRE_FALSE( object.LockLevel.has_value() );
+      REQUIRE( object.KeyID.empty() );
+      REQUIRE( object.TrapID.empty() );
+      REQUIRE( object.OwnerID.empty() );
+      REQUIRE( object.OwnerFactionID == "Ashlanders" );
+      REQUIRE( object.FactionRank == 0 );
+      REQUIRE( object.GlobalVarID.empty() );
+      REQUIRE( object.SoulCreatureID.empty() );
+      REQUIRE_FALSE( object.EnchantCharge.has_value() );
+      REQUIRE( object.NumberOfUses.has_value() );
+      REQUIRE( object.NumberOfUses.value() == 1 );
+      REQUIRE( object.UnknownNAM9.has_value() );
+      REQUIRE( object.UnknownNAM9.value() == 0x00000001 );
+      REQUIRE_FALSE( object.hasUNAM );
+      REQUIRE( object.ReferenceBlockedByte == 0 );
+      REQUIRE_FALSE( object.isDeleted );
+      REQUIRE( object.DeletionLong == 0 );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( object.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
+    }
+
+    SECTION("default: load reference with global variable")
+    {
+      const auto data = "FRMR\x04\0\0\0\x86\xFE\x16\0NAME\x12\0\0\0active_com_bed_07\0ANAM\x0C\0\0\0raril giral\0BNAM\x11\0\0\0Rent_Vivec_Black\0INTV\x04\0\0\0\0\0\0\0NAM9\x04\0\0\0\x01\0\0\0DATA\x18\0\0\0%\x14\xCF\x43\xFE\xA3\xBB\xC4\xAE\xD7\x8F\xC3\0\0\0\0\0\0\0\0\xDB\x0F\xC9?"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FRMR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      ReferencedObject object;
+      REQUIRE( object.loadFromStream(stream, bytesRead, buffer) );
+      // Check data.
+      REQUIRE( object.ObjectIndex == 0x0016FE86 );
+      REQUIRE( object.ObjectID == "active_com_bed_07" );
+      REQUIRE( object.Scale == 1.0f );
+      REQUIRE( object.PosX == 414.15737915039f );
+      REQUIRE( object.PosY == -1501.1247558594f );
+      REQUIRE( object.PosZ == -287.68499755859f );
+      REQUIRE( object.RotX == 0.0f );
+      REQUIRE( object.RotY == 0.0f );
+      REQUIRE( object.RotZ == 1.5707963705063f );
+      REQUIRE_FALSE( object.hasDoorData );
+      REQUIRE_FALSE( object.LockLevel.has_value() );
+      REQUIRE( object.KeyID.empty() );
+      REQUIRE( object.TrapID.empty() );
+      REQUIRE( object.OwnerID == "raril giral" );
+      REQUIRE( object.OwnerFactionID.empty() );
+      REQUIRE( object.FactionRank == -1 );
+      REQUIRE( object.GlobalVarID == "Rent_Vivec_Black" );
+      REQUIRE( object.SoulCreatureID.empty() );
+      REQUIRE_FALSE( object.EnchantCharge.has_value() );
+      REQUIRE( object.NumberOfUses.has_value() );
+      REQUIRE( object.NumberOfUses.value() == 0 );
+      REQUIRE( object.UnknownNAM9.has_value() );
+      REQUIRE( object.UnknownNAM9.value() == 0x00000001 );
+      REQUIRE_FALSE( object.hasUNAM );
+      REQUIRE( object.ReferenceBlockedByte == 0 );
+      REQUIRE_FALSE( object.isDeleted );
+      REQUIRE( object.DeletionLong == 0 );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( object.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
+    }
+
+    SECTION("default: load reference with soul creature ID")
+    {
+      const auto data = "FRMR\x04\0\0\0\x4D\x97\x16\0\x4E\x41\x4D\x45\x14\0\0\0Misc_SoulGem_Common\0XSOL\x06\0\0\0scamp\0INTV\x04\0\0\0\0\0\0\0NAM9\x04\0\0\0\x01\0\0\0DATA\x18\0\0\0\xA7\xDC\x98\x45\x90\x1F\xE1\x45\xEA\xD6\x46\x46\x43v\xAF@\x0F\x43\xBC@\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FRMR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      ReferencedObject object;
+      REQUIRE( object.loadFromStream(stream, bytesRead, buffer) );
+      // Check data.
+      REQUIRE( object.ObjectIndex == 0x0016974D );
+      REQUIRE( object.ObjectID == "Misc_SoulGem_Common" );
+      REQUIRE( object.Scale == 1.0f );
+      REQUIRE( object.PosX == 4891.5815429688f );
+      REQUIRE( object.PosY == 7203.9453125f );
+      REQUIRE( object.PosZ == 12725.728515625f );
+      REQUIRE( object.RotX == 5.4831862449646f );
+      REQUIRE( object.RotY == 5.8831858634949f );
+      REQUIRE( object.RotZ == 0.0f );
+      REQUIRE_FALSE( object.hasDoorData );
+      REQUIRE_FALSE( object.LockLevel.has_value() );
+      REQUIRE( object.KeyID.empty() );
+      REQUIRE( object.TrapID.empty() );
+      REQUIRE( object.OwnerID.empty() );
+      REQUIRE( object.OwnerFactionID.empty() );
+      REQUIRE( object.FactionRank == -1 );
+      REQUIRE( object.GlobalVarID.empty() );
+      REQUIRE( object.SoulCreatureID == "scamp" );
+      REQUIRE_FALSE( object.EnchantCharge.has_value() );
+      REQUIRE( object.NumberOfUses.has_value() );
+      REQUIRE( object.NumberOfUses.value() == 0 );
+      REQUIRE( object.UnknownNAM9.has_value() );
+      REQUIRE( object.UnknownNAM9.value() == 0x00000001 );
+      REQUIRE_FALSE( object.hasUNAM );
+      REQUIRE( object.ReferenceBlockedByte == 0 );
+      REQUIRE_FALSE( object.isDeleted );
+      REQUIRE( object.DeletionLong == 0 );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( object.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
+    }
+
+    SECTION("default: load reference with enchantment charge")
+    {
+      const auto data = "FRMR\x04\0\0\0\xBC\x0E\x17\0NAME\x11\0\0\0iron shardmauler\0ANAM\x0F\0\0\0trilam drolnor\0XCHG\x04\0\0\0\0\0 AINTV\x04\0\0\0\xD0\x07\0\0NAM9\x04\0\0\0\x01\0\0\0DATA\x18\0\0\0}J\xF9\x42\x9E\x9F\xA8\xC2\x8E\x1Dk\xC2\0\0\0\0\x99\xCC\xCC=t\xA9\xD2?"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FRMR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      ReferencedObject object;
+      REQUIRE( object.loadFromStream(stream, bytesRead, buffer) );
+      // Check data.
+      REQUIRE( object.ObjectIndex == 0x00170EBC );
+      REQUIRE( object.ObjectID == "iron shardmauler" );
+      REQUIRE( object.Scale == 1.0f );
+      REQUIRE( object.PosX == 124.64548492432f );
+      REQUIRE( object.PosY == -84.311752319336f );
+      REQUIRE( object.PosZ == -58.778861999512f );
+      REQUIRE( object.RotX == 0.0f );
+      REQUIRE( object.RotY == 0.099999614059925f );
+      REQUIRE( object.RotZ == 1.6457962989807f );
+      REQUIRE_FALSE( object.hasDoorData );
+      REQUIRE_FALSE( object.LockLevel.has_value() );
+      REQUIRE( object.KeyID.empty() );
+      REQUIRE( object.TrapID.empty() );
+      REQUIRE( object.OwnerID == "trilam drolnor" );
+      REQUIRE( object.OwnerFactionID.empty() );
+      REQUIRE( object.FactionRank == -1 );
+      REQUIRE( object.GlobalVarID.empty() );
+      REQUIRE( object.SoulCreatureID.empty() );
+      REQUIRE( object.EnchantCharge.has_value() );
+      REQUIRE( object.EnchantCharge.value() == 10.0f );
+      REQUIRE( object.NumberOfUses.has_value() );
+      REQUIRE( object.NumberOfUses.value() == 2000 );
+      REQUIRE( object.UnknownNAM9.has_value() );
+      REQUIRE( object.UnknownNAM9.value() == 0x00000001 );
       REQUIRE_FALSE( object.hasUNAM );
       REQUIRE( object.ReferenceBlockedByte == 0 );
       REQUIRE_FALSE( object.isDeleted );
@@ -1114,6 +1341,21 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE_FALSE( object.loadFromStream(stream, bytesRead, buffer) );
     }
 
+    SECTION("corrupt data: ANAM is present, but it already has CNAM")
+    {
+      const auto data = "FRMR\x04\0\0\0\x17\x14\x17\0NAME\x12\0\0\0active_de_bedroll\0CNAM\x0B\0\0\0Ashlanders\0INDX\x04\0\0\0\0\0\0\0ANAM\x08\0\0\0kaushad\0INTV\x04\0\0\0\x01\0\0\0NAM9\x04\0\0\0\x01\0\0\0DATA\x18\0\0\0\xE0\xC4\xC0\xC2N (D9\x92x\xC3\0\0\0\0\0\0\0\0&\x86\x38@"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FRMR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ReferencedObject object;
+      REQUIRE_FALSE( object.loadFromStream(stream, bytesRead, buffer) );
+    }
+
     SECTION("corrupt data: length of ANAM > 256")
     {
       const auto data = "FRMR\x04\0\0\0\x94\x15\x17\0NAME\x12\0\0\0misc_de_goblet_07\0ANAM\x08\x01\0\0kaushad\0INTV\x04\0\0\0\x01\0\0\0NAM9\x04\0\0\0\x01\0\0\0DATA\x18\0\0\0t\xED\xD4\xC0\x1E\xAF\x1C\x44\xEB\x10\x44\xC3\0\0\0\0\0\0\0\0\x12\x43\x8C@"sv;
@@ -1254,6 +1496,383 @@ TEST_CASE("MWTP::ReferencedObject")
     SECTION("corrupt data: multiple NAM9s")
     {
       const auto data = "FRMR\x04\0\0\0\x94\x15\x17\0NAME\x12\0\0\0misc_de_goblet_07\0ANAM\x08\0\0\0kaushad\0INTV\x04\0\0\0\x01\0\0\0NAM9\x04\0\0\0\x01\0\0\0NAM9\x04\0\0\0\x01\0\0\0DATA\x18\0\0\0t\xED\xD4\xC0\x1E\xAF\x1C\x44\xEB\x10\x44\xC3\0\0\0\0\0\0\0\0\x12\x43\x8C@"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FRMR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ReferencedObject object;
+      REQUIRE_FALSE( object.loadFromStream(stream, bytesRead, buffer) );
+    }
+
+    SECTION("corrupt data: KNAM without previous FLTV")
+    {
+      const auto data = "FRMR\x04\0\0\0\x3D\xAC\x16\0NAME\x17\0\0\0com_chest_Daed_crusher\0KNAM\x15\0\0\0key_Forge of Rolamus\0DATA\x18\0\0\0\x0D\x9E=E\x8C\x38\xBF\x45K\x88W\xC4\0\0\0\0\0\0\0\0\xDB\x0F\xC9?"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FRMR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ReferencedObject object;
+      REQUIRE_FALSE( object.loadFromStream(stream, bytesRead, buffer) );
+    }
+
+    SECTION("corrupt data: multiple KNAMs")
+    {
+      const auto data = "FRMR\x04\0\0\0\x3D\xAC\x16\0NAME\x17\0\0\0com_chest_Daed_crusher\0FLTV\x04\0\0\0P\0\0\0KNAM\x15\0\0\0key_Forge of Rolamus\0KNAM\x15\0\0\0key_Forge of Rolamus\0DATA\x18\0\0\0\x0D\x9E=E\x8C\x38\xBF\x45K\x88W\xC4\0\0\0\0\0\0\0\0\xDB\x0F\xC9?"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FRMR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ReferencedObject object;
+      REQUIRE_FALSE( object.loadFromStream(stream, bytesRead, buffer) );
+    }
+
+    SECTION("corrupt data: length of KNAM > 256")
+    {
+      const auto data = "FRMR\x04\0\0\0\x3D\xAC\x16\0NAME\x17\0\0\0com_chest_Daed_crusher\0FLTV\x04\0\0\0P\0\0\0KNAM\x15\x01\0\0key_Forge of Rolamus\0TNAM\x10\0\0\0trap_paralyze00\0DATA\x18\0\0\0\x0D\x9E=E\x8C\x38\xBF\x45K\x88W\xC4\0\0\0\0\0\0\0\0\xDB\x0F\xC9?"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FRMR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ReferencedObject object;
+      REQUIRE_FALSE( object.loadFromStream(stream, bytesRead, buffer) );
+    }
+
+    SECTION("corrupt data: length of KNAM is beyond stream")
+    {
+      const auto data = "FRMR\x04\0\0\0\x3D\xAC\x16\0NAME\x17\0\0\0com_chest_Daed_crusher\0FLTV\x04\0\0\0P\0\0\0KNAM\x95\0\0\0key_Forge of Rolamus\0TNAM\x10\0\0\0trap_paralyze00\0DATA\x18\0\0\0\x0D\x9E=E\x8C\x38\xBF\x45K\x88W\xC4\0\0\0\0\0\0\0\0\xDB\x0F\xC9?"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FRMR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ReferencedObject object;
+      REQUIRE_FALSE( object.loadFromStream(stream, bytesRead, buffer) );
+    }
+
+    SECTION("corrupt data: multiple TNAMs")
+    {
+      const auto data = "FRMR\x04\0\0\0\x3D\xAC\x16\0NAME\x17\0\0\0com_chest_Daed_crusher\0FLTV\x04\0\0\0P\0\0\0KNAM\x15\0\0\0key_Forge of Rolamus\0TNAM\x10\0\0\0trap_paralyze00\0TNAM\x10\0\0\0trap_paralyze00\0DATA\x18\0\0\0\x0D\x9E=E\x8C\x38\xBF\x45K\x88W\xC4\0\0\0\0\0\0\0\0\xDB\x0F\xC9?"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FRMR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ReferencedObject object;
+      REQUIRE_FALSE( object.loadFromStream(stream, bytesRead, buffer) );
+    }
+
+    SECTION("corrupt data: length of TNAM > 256")
+    {
+      const auto data = "FRMR\x04\0\0\0\x3D\xAC\x16\0NAME\x17\0\0\0com_chest_Daed_crusher\0FLTV\x04\0\0\0P\0\0\0KNAM\x15\0\0\0key_Forge of Rolamus\0TNAM\x10\x01\0\0trap_paralyze00\0DATA\x18\0\0\0\x0D\x9E=E\x8C\x38\xBF\x45K\x88W\xC4\0\0\0\0\0\0\0\0\xDB\x0F\xC9?"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FRMR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ReferencedObject object;
+      REQUIRE_FALSE( object.loadFromStream(stream, bytesRead, buffer) );
+    }
+
+    SECTION("corrupt data: length of TNAM is beyond stream")
+    {
+      const auto data = "FRMR\x04\0\0\0\x3D\xAC\x16\0NAME\x17\0\0\0com_chest_Daed_crusher\0FLTV\x04\0\0\0P\0\0\0KNAM\x15\0\0\0key_Forge of Rolamus\0TNAM\x90\0\0\0trap_paralyze00\0DATA\x18\0\0\0\x0D\x9E=E\x8C\x38\xBF\x45K\x88W\xC4\0\0\0\0\0\0\0\0\xDB\x0F\xC9?"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FRMR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ReferencedObject object;
+      REQUIRE_FALSE( object.loadFromStream(stream, bytesRead, buffer) );
+    }
+
+    SECTION("corrupt data: multiple CNAMs")
+    {
+      const auto data = "FRMR\x04\0\0\0\x17\x14\x17\0NAME\x12\0\0\0active_de_bedroll\0CNAM\x0B\0\0\0Ashlanders\0INDX\x04\0\0\0\0\0\0\0CNAM\x0B\0\0\0Ashlanders\0INDX\x04\0\0\0\0\0\0\0INTV\x04\0\0\0\x01\0\0\0NAM9\x04\0\0\0\x01\0\0\0DATA\x18\0\0\0\xE0\xC4\xC0\xC2N (D9\x92x\xC3\0\0\0\0\0\0\0\0&\x86\x38@"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FRMR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ReferencedObject object;
+      REQUIRE_FALSE( object.loadFromStream(stream, bytesRead, buffer) );
+    }
+
+    SECTION("corrupt data: CNAM is present, but it already has ANAM")
+    {
+      const auto data = "FRMR\x04\0\0\0\x17\x14\x17\0NAME\x12\0\0\0active_de_bedroll\0ANAM\x08\0\0\0kaushad\0CNAM\x0B\0\0\0Ashlanders\0INDX\x04\0\0\0\0\0\0\0INTV\x04\0\0\0\x01\0\0\0NAM9\x04\0\0\0\x01\0\0\0DATA\x18\0\0\0\xE0\xC4\xC0\xC2N (D9\x92x\xC3\0\0\0\0\0\0\0\0&\x86\x38@"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FRMR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ReferencedObject object;
+      REQUIRE_FALSE( object.loadFromStream(stream, bytesRead, buffer) );
+    }
+
+    SECTION("corrupt data: length of CNAM > 256")
+    {
+      const auto data = "FRMR\x04\0\0\0\x17\x14\x17\0NAME\x12\0\0\0active_de_bedroll\0CNAM\x0B\x01\0\0Ashlanders\0INDX\x04\0\0\0\0\0\0\0INTV\x04\0\0\0\x01\0\0\0NAM9\x04\0\0\0\x01\0\0\0DATA\x18\0\0\0\xE0\xC4\xC0\xC2N (D9\x92x\xC3\0\0\0\0\0\0\0\0&\x86\x38@"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FRMR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ReferencedObject object;
+      REQUIRE_FALSE( object.loadFromStream(stream, bytesRead, buffer) );
+    }
+
+    SECTION("corrupt data: length of CNAM is beyond stream")
+    {
+      const auto data = "FRMR\x04\0\0\0\x17\x14\x17\0NAME\x12\0\0\0active_de_bedroll\0CNAM\x9B\0\0\0Ashlanders\0INDX\x04\0\0\0\0\0\0\0INTV\x04\0\0\0\x01\0\0\0NAM9\x04\0\0\0\x01\0\0\0DATA\x18\0\0\0\xE0\xC4\xC0\xC2N (D9\x92x\xC3\0\0\0\0\0\0\0\0&\x86\x38@"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FRMR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ReferencedObject object;
+      REQUIRE_FALSE( object.loadFromStream(stream, bytesRead, buffer) );
+    }
+
+    SECTION("corrupt data: CNAM is not followed by INDX")
+    {
+      const auto data = "FRMR\x04\0\0\0\x17\x14\x17\0NAME\x12\0\0\0active_de_bedroll\0CNAM\x0B\0\0\0Ashlanders\0FAIL\x04\0\0\0\0\0\0\0INTV\x04\0\0\0\x01\0\0\0NAM9\x04\0\0\0\x01\0\0\0DATA\x18\0\0\0\xE0\xC4\xC0\xC2N (D9\x92x\xC3\0\0\0\0\0\0\0\0&\x86\x38@"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FRMR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ReferencedObject object;
+      REQUIRE_FALSE( object.loadFromStream(stream, bytesRead, buffer) );
+    }
+
+    SECTION("corrupt data: length of INDX is not four")
+    {
+      {
+        const auto data = "FRMR\x04\0\0\0\x17\x14\x17\0NAME\x12\0\0\0active_de_bedroll\0CNAM\x0B\0\0\0Ashlanders\0INDX\x03\0\0\0\0\0\0INTV\x04\0\0\0\x01\0\0\0NAM9\x04\0\0\0\x01\0\0\0DATA\x18\0\0\0\xE0\xC4\xC0\xC2N (D9\x92x\xC3\0\0\0\0\0\0\0\0&\x86\x38@"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read FRMR, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        ReferencedObject object;
+        REQUIRE_FALSE( object.loadFromStream(stream, bytesRead, buffer) );
+      }
+
+      {
+        const auto data = "FRMR\x04\0\0\0\x17\x14\x17\0NAME\x12\0\0\0active_de_bedroll\0CNAM\x0B\0\0\0Ashlanders\0INDX\x05\0\0\0\0\0\0\0\0INTV\x04\0\0\0\x01\0\0\0NAM9\x04\0\0\0\x01\0\0\0DATA\x18\0\0\0\xE0\xC4\xC0\xC2N (D9\x92x\xC3\0\0\0\0\0\0\0\0&\x86\x38@"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read FRMR, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        ReferencedObject object;
+        REQUIRE_FALSE( object.loadFromStream(stream, bytesRead, buffer) );
+      }
+    }
+
+    SECTION("corrupt data: stream ends before INDX can be read")
+    {
+      const auto data = "FRMR\x04\0\0\0\x17\x14\x17\0NAME\x12\0\0\0active_de_bedroll\0CNAM\x0B\0\0\0Ashlanders\0INDX\x04\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FRMR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ReferencedObject object;
+      REQUIRE_FALSE( object.loadFromStream(stream, bytesRead, buffer) );
+    }
+
+    SECTION("corrupt data: multiple BNAMs")
+    {
+      const auto data = "FRMR\x04\0\0\0\x86\xFE\x16\0NAME\x12\0\0\0active_com_bed_07\0ANAM\x0C\0\0\0raril giral\0BNAM\x11\0\0\0Rent_Vivec_Black\0BNAM\x11\0\0\0Rent_Vivec_Black\0INTV\x04\0\0\0\0\0\0\0NAM9\x04\0\0\0\x01\0\0\0DATA\x18\0\0\0%\x14\xCF\x43\xFE\xA3\xBB\xC4\xAE\xD7\x8F\xC3\0\0\0\0\0\0\0\0\xDB\x0F\xC9?"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FRMR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ReferencedObject object;
+      REQUIRE_FALSE( object.loadFromStream(stream, bytesRead, buffer) );
+    }
+
+    SECTION("corrupt data: length of BNAM > 256")
+    {
+      const auto data = "FRMR\x04\0\0\0\x86\xFE\x16\0NAME\x12\0\0\0active_com_bed_07\0ANAM\x0C\0\0\0raril giral\0BNAM\x11\x01\0\0Rent_Vivec_Black\0INTV\x04\0\0\0\0\0\0\0NAM9\x04\0\0\0\x01\0\0\0DATA\x18\0\0\0%\x14\xCF\x43\xFE\xA3\xBB\xC4\xAE\xD7\x8F\xC3\0\0\0\0\0\0\0\0\xDB\x0F\xC9?"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FRMR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ReferencedObject object;
+      REQUIRE_FALSE( object.loadFromStream(stream, bytesRead, buffer) );
+    }
+
+    SECTION("corrupt data: length of BNAM is beyond stream")
+    {
+      const auto data = "FRMR\x04\0\0\0\x86\xFE\x16\0NAME\x12\0\0\0active_com_bed_07\0ANAM\x0C\0\0\0raril giral\0BNAM\x91\0\0\0Rent_Vivec_Black\0INTV\x04\0\0\0\0\0\0\0NAM9\x04\0\0\0\x01\0\0\0DATA\x18\0\0\0%\x14\xCF\x43\xFE\xA3\xBB\xC4\xAE\xD7\x8F\xC3\0\0\0\0\0\0\0\0\xDB\x0F\xC9?"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FRMR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ReferencedObject object;
+      REQUIRE_FALSE( object.loadFromStream(stream, bytesRead, buffer) );
+    }
+
+    SECTION("corrupt data: multiple XSOLs")
+    {
+      const auto data = "FRMR\x04\0\0\0\x4D\x97\x16\0\x4E\x41\x4D\x45\x14\0\0\0Misc_SoulGem_Common\0XSOL\x06\0\0\0scamp\0XSOL\x06\0\0\0scamp\0INTV\x04\0\0\0\0\0\0\0NAM9\x04\0\0\0\x01\0\0\0DATA\x18\0\0\0\xA7\xDC\x98\x45\x90\x1F\xE1\x45\xEA\xD6\x46\x46\x43v\xAF@\x0F\x43\xBC@\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FRMR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ReferencedObject object;
+      REQUIRE_FALSE( object.loadFromStream(stream, bytesRead, buffer) );
+    }
+
+    SECTION("corrupt data: length of XSOL > 256")
+    {
+      const auto data = "FRMR\x04\0\0\0\x4D\x97\x16\0\x4E\x41\x4D\x45\x14\0\0\0Misc_SoulGem_Common\0XSOL\x06\x01\0\0scamp\0INTV\x04\0\0\0\0\0\0\0NAM9\x04\0\0\0\x01\0\0\0DATA\x18\0\0\0\xA7\xDC\x98\x45\x90\x1F\xE1\x45\xEA\xD6\x46\x46\x43v\xAF@\x0F\x43\xBC@\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FRMR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ReferencedObject object;
+      REQUIRE_FALSE( object.loadFromStream(stream, bytesRead, buffer) );
+    }
+
+    SECTION("corrupt data: length of XSOL is beyond stream")
+    {
+      const auto data = "FRMR\x04\0\0\0\x4D\x97\x16\0\x4E\x41\x4D\x45\x14\0\0\0Misc_SoulGem_Common\0XSOL\x96\0\0\0scamp\0INTV\x04\0\0\0\0\0\0\0NAM9\x04\0\0\0\x01\0\0\0DATA\x18\0\0\0\xA7\xDC\x98\x45\x90\x1F\xE1\x45\xEA\xD6\x46\x46\x43v\xAF@\x0F\x43\xBC@\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FRMR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ReferencedObject object;
+      REQUIRE_FALSE( object.loadFromStream(stream, bytesRead, buffer) );
+    }
+
+    SECTION("corrupt data: multiple XCHGs")
+    {
+      const auto data = "FRMR\x04\0\0\0\xBC\x0E\x17\0NAME\x11\0\0\0iron shardmauler\0ANAM\x0F\0\0\0trilam drolnor\0XCHG\x04\0\0\0\0\0 AXCHG\x04\0\0\0\0\0 AINTV\x04\0\0\0\xD0\x07\0\0NAM9\x04\0\0\0\x01\0\0\0DATA\x18\0\0\0}J\xF9\x42\x9E\x9F\xA8\xC2\x8E\x1Dk\xC2\0\0\0\0\x99\xCC\xCC=t\xA9\xD2?"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FRMR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ReferencedObject object;
+      REQUIRE_FALSE( object.loadFromStream(stream, bytesRead, buffer) );
+    }
+
+    SECTION("corrupt data: length of XCHG is not four")
+    {
+      {
+        const auto data = "FRMR\x04\0\0\0\xBC\x0E\x17\0NAME\x11\0\0\0iron shardmauler\0ANAM\x0F\0\0\0trilam drolnor\0XCHG\x03\0\0\0\0\0 INTV\x04\0\0\0\xD0\x07\0\0NAM9\x04\0\0\0\x01\0\0\0DATA\x18\0\0\0}J\xF9\x42\x9E\x9F\xA8\xC2\x8E\x1Dk\xC2\0\0\0\0\x99\xCC\xCC=t\xA9\xD2?"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read FRMR, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        ReferencedObject object;
+        REQUIRE_FALSE( object.loadFromStream(stream, bytesRead, buffer) );
+      }
+
+      {
+        const auto data = "FRMR\x04\0\0\0\xBC\x0E\x17\0NAME\x11\0\0\0iron shardmauler\0ANAM\x0F\0\0\0trilam drolnor\0XCHG\x05\0\0\0\0\0 ABINTV\x04\0\0\0\xD0\x07\0\0NAM9\x04\0\0\0\x01\0\0\0DATA\x18\0\0\0}J\xF9\x42\x9E\x9F\xA8\xC2\x8E\x1Dk\xC2\0\0\0\0\x99\xCC\xCC=t\xA9\xD2?"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read FRMR, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        ReferencedObject object;
+        REQUIRE_FALSE( object.loadFromStream(stream, bytesRead, buffer) );
+      }
+    }
+
+    SECTION("corrupt data: stream ends before XCHG can be read")
+    {
+      const auto data = "FRMR\x04\0\0\0\xBC\x0E\x17\0NAME\x11\0\0\0iron shardmauler\0ANAM\x0F\0\0\0trilam drolnor\0XCHG\x04\0\0\0\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 

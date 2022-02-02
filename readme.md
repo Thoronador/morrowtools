@@ -100,7 +100,7 @@ in the root directory of your source checkout.
 
 ## Copyright and Licensing
 
-Copyright 2011-2021  Dirk Stolle
+Copyright 2011-2022  Dirk Stolle
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

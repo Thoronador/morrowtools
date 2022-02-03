@@ -71,32 +71,33 @@ bool translatePreNPCRecord(PreNPCRecord* c_rec, const CellListType& cells, unsig
 
 bool translateCellRecord(CellRecord* c_rec, const CellListType& cells, unsigned int& changedRecords)
 {
-  if (c_rec==NULL) return false;
+  if (c_rec == nullptr)
+    return false;
 
   bool changed = false;
   CellListType::const_iterator cells_iter;
-  //translate cell name
+  // translate cell name
   cells_iter = cells.find(c_rec->CellID);
-  if (cells_iter!=cells.end())
+  if (cells_iter != cells.end())
   {
     c_rec->CellID = cells_iter->second;
     changed = true;
   }
-  //On to the references we go!
-  unsigned int i;
-  for (i=0; i<c_rec->References.size(); ++i)
+  // On to the references we go!
+  for (auto& current_reference: c_rec->References)
   {
-    if (c_rec->References.at(i).hasDoorData)
+    if (current_reference.DoorData.has_value())
     {
-      cells_iter = cells.find(c_rec->References.at(i).DoorData.ExitName);
-      if (cells_iter!=cells.end())
+      cells_iter = cells.find(current_reference.DoorData.value().ExitName);
+      if (cells_iter != cells.end())
       {
-        c_rec->References.at(i).DoorData.ExitName = cells_iter->second;
+        current_reference.DoorData.value().ExitName = cells_iter->second;
         changed = true;
       }
-    }//if
-  }//for
-  if (changed) ++changedRecords;
+    }
+  }
+  if (changed)
+    ++changedRecords;
   return true;
 }
 

@@ -41,7 +41,7 @@ TEST_CASE("MWTP::ReferencedObject")
     REQUIRE( object.RotX == 0.0f );
     REQUIRE( object.RotY == 0.0f );
     REQUIRE( object.RotZ == 0.0f );
-    REQUIRE_FALSE( object.hasDoorData );
+    REQUIRE_FALSE( object.DoorData.has_value() );
     // DoorData is basically checked in test for RefDoorData.
     REQUIRE_FALSE( object.LockLevel.has_value() );
     REQUIRE( object.KeyID.empty() );
@@ -161,16 +161,16 @@ TEST_CASE("MWTP::ReferencedObject")
 
       SECTION("DoorData mismatch")
       {
-        a.hasDoorData = false;
-        b.hasDoorData = true;
+        a.DoorData.reset();
+        b.DoorData = RefDoorData();
 
         REQUIRE_FALSE( a == b );
         REQUIRE_FALSE( b == a );
 
-        a.hasDoorData = true;
-        a.DoorData.PosX = 123.45f;
-        b.hasDoorData = true;
-        b.DoorData.PosX = 678.901f;
+        a.DoorData = RefDoorData();
+        a.DoorData.value().PosX = 123.45f;
+        b.DoorData = RefDoorData();
+        b.DoorData.value().PosX = 678.901f;
 
         REQUIRE_FALSE( a == b );
         REQUIRE_FALSE( b == a );
@@ -333,6 +333,167 @@ TEST_CASE("MWTP::ReferencedObject")
     }
   }
 
+  SECTION("getWrittenSize")
+  {
+    ReferencedObject object;
+    object.ObjectIndex = 0x01234567;
+    object.ObjectID = "foo";
+    object.Scale = 1.0f;
+    object.PosX = 1.0f;
+    object.PosY = 2.0f;
+    object.PosZ = 3.0f;
+    object.RotX = 0.5f;
+    object.RotY = 2.5f;
+    object.RotZ = 4.5f;
+
+    SECTION("default size")
+    {
+      REQUIRE( object.getWrittenSize() == 56 );
+    }
+
+    SECTION("size adjusts when reference is deleted")
+    {
+      REQUIRE( object.getWrittenSize() == 56 );
+
+      object.isDeleted = true;
+      object.DeletionLong = 0;
+      REQUIRE( object.getWrittenSize() == 36 );
+    }
+
+    SECTION("size adjusts when scale is not one")
+    {
+      REQUIRE( object.getWrittenSize() == 56 );
+
+      object.Scale = 2.5f;
+      REQUIRE( object.getWrittenSize() == 68 );
+    }
+
+    SECTION("size adjusts when door data is present")
+    {
+      REQUIRE( object.getWrittenSize() == 56 );
+
+      object.DoorData = RefDoorData();
+      REQUIRE( object.getWrittenSize() == 88 );
+
+      SECTION("size adjusts with length of exit name")
+      {
+        REQUIRE( object.getWrittenSize() == 88 );
+
+        object.DoorData.value().ExitName = "bar";
+        REQUIRE( object.getWrittenSize() == 100 );
+
+        object.DoorData.value().ExitName = "bar12345";
+        REQUIRE( object.getWrittenSize() == 105 );
+      }
+    }
+
+    SECTION("size adjusts when LockLevel is set")
+    {
+      REQUIRE( object.getWrittenSize() == 56 );
+
+      object.LockLevel = 25;
+      REQUIRE( object.getWrittenSize() == 68 );
+
+      SECTION("size adjusts with length of key ID")
+      {
+        REQUIRE( object.getWrittenSize() == 68 );
+
+        object.KeyID = "bar";
+        REQUIRE( object.getWrittenSize() == 80 );
+
+        object.KeyID = "bar12345";
+        REQUIRE( object.getWrittenSize() == 85 );
+      }
+    }
+
+    SECTION("size adjusts with length of trap ID")
+    {
+      REQUIRE( object.getWrittenSize() == 56 );
+
+      object.TrapID = "trap";
+      REQUIRE( object.getWrittenSize() == 69 );
+
+      object.TrapID = "Trap1234";
+      REQUIRE( object.getWrittenSize() == 73 );
+    }
+
+    SECTION("size adjusts with length of owner ID")
+    {
+      REQUIRE( object.getWrittenSize() == 56 );
+
+      object.OwnerID = "foo";
+      REQUIRE( object.getWrittenSize() == 68 );
+
+      object.OwnerID = "foo1234";
+      REQUIRE( object.getWrittenSize() == 72 );
+    }
+
+    SECTION("size adjusts with length of owner faction ID")
+    {
+      REQUIRE( object.getWrittenSize() == 56 );
+
+      object.OwnerFactionID = "foo";
+      REQUIRE( object.getWrittenSize() == 80 );
+
+      object.OwnerFactionID = "foo1234";
+      REQUIRE( object.getWrittenSize() == 84 );
+    }
+
+    SECTION("size adjusts with length of global variable ID")
+    {
+      REQUIRE( object.getWrittenSize() == 56 );
+
+      object.GlobalVarID = "foo";
+      REQUIRE( object.getWrittenSize() == 68 );
+
+      object.GlobalVarID = "foo1234";
+      REQUIRE( object.getWrittenSize() == 72 );
+    }
+
+    SECTION("size adjusts with length of soul creature ID")
+    {
+      REQUIRE( object.getWrittenSize() == 56 );
+
+      object.SoulCreatureID = "foo";
+      REQUIRE( object.getWrittenSize() == 68 );
+
+      object.SoulCreatureID = "foo_creature";
+      REQUIRE( object.getWrittenSize() == 77 );
+    }
+
+    SECTION("size adjusts when enchant charge is present")
+    {
+      REQUIRE( object.getWrittenSize() == 56 );
+
+      object.EnchantCharge = 25.0f;
+      REQUIRE( object.getWrittenSize() == 68 );
+    }
+
+    SECTION("size adjusts when number of uses is present")
+    {
+      REQUIRE( object.getWrittenSize() == 56 );
+
+      object.NumberOfUses = 1234;
+      REQUIRE( object.getWrittenSize() == 68 );
+    }
+
+    SECTION("size adjusts when NAM9 is present")
+    {
+      REQUIRE( object.getWrittenSize() == 56 );
+
+      object.UnknownNAM9 = 0x12345678;
+      REQUIRE( object.getWrittenSize() == 68 );
+    }
+
+    SECTION("size adjusts when ReferenceBlocked is present")
+    {
+      REQUIRE( object.getWrittenSize() == 56 );
+
+      object.ReferenceBlockedByte = 0x01;
+      REQUIRE( object.getWrittenSize() == 65 );
+    }
+  }
+
   SECTION("loadFromStream")
   {
     uint32_t dummy = 0;
@@ -362,7 +523,7 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE( object.RotX == 0.0f );
       REQUIRE( object.RotY == 0.0f );
       REQUIRE( object.RotZ == 0.0f );
-      REQUIRE_FALSE( object.hasDoorData );
+      REQUIRE_FALSE( object.DoorData.has_value() );
       REQUIRE_FALSE( object.LockLevel.has_value() );
       REQUIRE( object.KeyID.empty() );
       REQUIRE( object.TrapID.empty() );
@@ -383,6 +544,8 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE( object.saveToStream(streamOut) );
       // Check written data.
       REQUIRE( streamOut.str() == data );
+      // Check size and predicted size.
+      REQUIRE( data.size() == object.getWrittenSize() );
     }
 
     SECTION("default: load reference data with scale multiplier")
@@ -408,7 +571,7 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE( object.RotX == 0.0f );
       REQUIRE( object.RotY == 0.0f );
       REQUIRE( object.RotZ == 3.3999013900757f );
-      REQUIRE_FALSE( object.hasDoorData );
+      REQUIRE_FALSE( object.DoorData.has_value() );
       REQUIRE_FALSE( object.LockLevel.has_value() );
       REQUIRE( object.KeyID.empty() );
       REQUIRE( object.TrapID.empty() );
@@ -429,6 +592,8 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE( object.saveToStream(streamOut) );
       // Check written data.
       REQUIRE( streamOut.str() == data );
+      // Check size and predicted size.
+      REQUIRE( data.size() == object.getWrittenSize() );
     }
 
     SECTION("default: load reference with door data")
@@ -454,14 +619,14 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE( object.RotX == 0.0f );
       REQUIRE( object.RotY == 0.0f );
       REQUIRE( object.RotZ == 0.0f );
-      REQUIRE( object.hasDoorData );
-      REQUIRE( object.DoorData.PosX == 45036.90625f );
-      REQUIRE( object.DoorData.PosY == 126711.8828125f );
-      REQUIRE( object.DoorData.PosZ == 822.48498535156f );
-      REQUIRE( object.DoorData.RotX == 0.0f );
-      REQUIRE( object.DoorData.RotY == 0.0f );
-      REQUIRE( object.DoorData.RotZ == 3.0839967727661f );
-      REQUIRE( object.DoorData.ExitName.empty() );
+      REQUIRE( object.DoorData.has_value() );
+      REQUIRE( object.DoorData.value().PosX == 45036.90625f );
+      REQUIRE( object.DoorData.value().PosY == 126711.8828125f );
+      REQUIRE( object.DoorData.value().PosZ == 822.48498535156f );
+      REQUIRE( object.DoorData.value().RotX == 0.0f );
+      REQUIRE( object.DoorData.value().RotY == 0.0f );
+      REQUIRE( object.DoorData.value().RotZ == 3.0839967727661f );
+      REQUIRE( object.DoorData.value().ExitName.empty() );
       REQUIRE_FALSE( object.LockLevel.has_value() );
       REQUIRE( object.KeyID.empty() );
       REQUIRE( object.TrapID.empty() );
@@ -482,6 +647,8 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE( object.saveToStream(streamOut) );
       // Check written data.
       REQUIRE( streamOut.str() == data );
+      // Check size and predicted size.
+      REQUIRE( data.size() == object.getWrittenSize() );
     }
 
     SECTION("default: load reference with door data and exit name")
@@ -507,14 +674,14 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE( object.RotX == 0.0f );
       REQUIRE( object.RotY == 1.6999506950378f );
       REQUIRE( object.RotZ == 3.0839967727661f );
-      REQUIRE( object.hasDoorData );
-      REQUIRE( object.DoorData.PosX == 4040.9389648438f );
-      REQUIRE( object.DoorData.PosY == 3342.4580078125f );
-      REQUIRE( object.DoorData.PosZ == -423.58499145508f );
-      REQUIRE( object.DoorData.RotX == 0.0f );
-      REQUIRE( object.DoorData.RotY == 1.5707963705063f );
-      REQUIRE( object.DoorData.RotZ == 0.0f );
-      REQUIRE( object.DoorData.ExitName == "Zerfallenes Schiffswrack, Oberdeck" );
+      REQUIRE( object.DoorData.has_value() );
+      REQUIRE( object.DoorData.value().PosX == 4040.9389648438f );
+      REQUIRE( object.DoorData.value().PosY == 3342.4580078125f );
+      REQUIRE( object.DoorData.value().PosZ == -423.58499145508f );
+      REQUIRE( object.DoorData.value().RotX == 0.0f );
+      REQUIRE( object.DoorData.value().RotY == 1.5707963705063f );
+      REQUIRE( object.DoorData.value().RotZ == 0.0f );
+      REQUIRE( object.DoorData.value().ExitName == "Zerfallenes Schiffswrack, Oberdeck" );
       REQUIRE_FALSE( object.LockLevel.has_value() );
       REQUIRE( object.KeyID.empty() );
       REQUIRE( object.TrapID.empty() );
@@ -535,6 +702,8 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE( object.saveToStream(streamOut) );
       // Check written data.
       REQUIRE( streamOut.str() == data );
+      // Check size and predicted size.
+      REQUIRE( data.size() == object.getWrittenSize() );
     }
 
     SECTION("default: load reference with lock")
@@ -560,7 +729,7 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE( object.RotX == 6.1784653663635f );
       REQUIRE( object.RotY == 4.8869218826294f );
       REQUIRE( object.RotZ == 3.2812190055847f );
-      REQUIRE_FALSE( object.hasDoorData );
+      REQUIRE_FALSE( object.DoorData.has_value() );
       REQUIRE( object.LockLevel.has_value() );
       REQUIRE( object.LockLevel.value() == 15 );
       REQUIRE( object.KeyID.empty() );
@@ -582,6 +751,8 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE( object.saveToStream(streamOut) );
       // Check written data.
       REQUIRE( streamOut.str() == data );
+      // Check size and predicted size.
+      REQUIRE( data.size() == object.getWrittenSize() );
     }
 
     SECTION("default: load reference with ANAM, NAM9, INTV")
@@ -607,7 +778,7 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE( object.RotX == 0.0f );
       REQUIRE( object.RotY == 0.0f );
       REQUIRE( object.RotZ == 4.3831872940063f );
-      REQUIRE_FALSE( object.hasDoorData );
+      REQUIRE_FALSE( object.DoorData.has_value() );
       REQUIRE_FALSE( object.LockLevel.has_value() );
       REQUIRE( object.KeyID.empty() );
       REQUIRE( object.TrapID.empty() );
@@ -630,6 +801,8 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE( object.saveToStream(streamOut) );
       // Check written data.
       REQUIRE( streamOut.str() == data );
+      // Check size and predicted size.
+      REQUIRE( data.size() == object.getWrittenSize() );
     }
 
     SECTION("default: load reference with key and trap")
@@ -655,7 +828,7 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE( object.RotX == 0.0f );
       REQUIRE( object.RotY == 0.0f );
       REQUIRE( object.RotZ == 1.5707963705063f );
-      REQUIRE_FALSE( object.hasDoorData );
+      REQUIRE_FALSE( object.DoorData.has_value() );
       REQUIRE( object.LockLevel.has_value() );
       REQUIRE( object.LockLevel.value() == 80 );
       REQUIRE( object.KeyID == "key_Forge of Rolamus" );
@@ -677,6 +850,8 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE( object.saveToStream(streamOut) );
       // Check written data.
       REQUIRE( streamOut.str() == data );
+      // Check size and predicted size.
+      REQUIRE( data.size() == object.getWrittenSize() );
     }
 
     SECTION("default: load reference with owner faction")
@@ -702,7 +877,7 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE( object.RotX == 0.0f );
       REQUIRE( object.RotY == 0.0f );
       REQUIRE( object.RotZ == 2.8831877708435f );
-      REQUIRE_FALSE( object.hasDoorData );
+      REQUIRE_FALSE( object.DoorData.has_value() );
       REQUIRE_FALSE( object.LockLevel.has_value() );
       REQUIRE( object.KeyID.empty() );
       REQUIRE( object.TrapID.empty() );
@@ -725,6 +900,8 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE( object.saveToStream(streamOut) );
       // Check written data.
       REQUIRE( streamOut.str() == data );
+      // Check size and predicted size.
+      REQUIRE( data.size() == object.getWrittenSize() );
     }
 
     SECTION("default: load reference with global variable")
@@ -750,7 +927,7 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE( object.RotX == 0.0f );
       REQUIRE( object.RotY == 0.0f );
       REQUIRE( object.RotZ == 1.5707963705063f );
-      REQUIRE_FALSE( object.hasDoorData );
+      REQUIRE_FALSE( object.DoorData.has_value() );
       REQUIRE_FALSE( object.LockLevel.has_value() );
       REQUIRE( object.KeyID.empty() );
       REQUIRE( object.TrapID.empty() );
@@ -773,6 +950,8 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE( object.saveToStream(streamOut) );
       // Check written data.
       REQUIRE( streamOut.str() == data );
+      // Check size and predicted size.
+      REQUIRE( data.size() == object.getWrittenSize() );
     }
 
     SECTION("default: load reference with soul creature ID")
@@ -798,7 +977,7 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE( object.RotX == 5.4831862449646f );
       REQUIRE( object.RotY == 5.8831858634949f );
       REQUIRE( object.RotZ == 0.0f );
-      REQUIRE_FALSE( object.hasDoorData );
+      REQUIRE_FALSE( object.DoorData.has_value() );
       REQUIRE_FALSE( object.LockLevel.has_value() );
       REQUIRE( object.KeyID.empty() );
       REQUIRE( object.TrapID.empty() );
@@ -821,6 +1000,8 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE( object.saveToStream(streamOut) );
       // Check written data.
       REQUIRE( streamOut.str() == data );
+      // Check size and predicted size.
+      REQUIRE( data.size() == object.getWrittenSize() );
     }
 
     SECTION("default: load reference with enchantment charge")
@@ -846,7 +1027,7 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE( object.RotX == 0.0f );
       REQUIRE( object.RotY == 0.099999614059925f );
       REQUIRE( object.RotZ == 1.6457962989807f );
-      REQUIRE_FALSE( object.hasDoorData );
+      REQUIRE_FALSE( object.DoorData.has_value() );
       REQUIRE_FALSE( object.LockLevel.has_value() );
       REQUIRE( object.KeyID.empty() );
       REQUIRE( object.TrapID.empty() );
@@ -870,6 +1051,8 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE( object.saveToStream(streamOut) );
       // Check written data.
       REQUIRE( streamOut.str() == data );
+      // Check size and predicted size.
+      REQUIRE( data.size() == object.getWrittenSize() );
     }
 
     SECTION("default: load reference with UNAM")
@@ -895,7 +1078,7 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE( object.RotX == 0.0f );
       REQUIRE( object.RotY == 0.0f );
       REQUIRE( object.RotZ == 4.612389087677f );
-      REQUIRE_FALSE( object.hasDoorData );
+      REQUIRE_FALSE( object.DoorData.has_value() );
       REQUIRE_FALSE( object.LockLevel.has_value() );
       REQUIRE( object.KeyID.empty() );
       REQUIRE( object.TrapID.empty() );
@@ -917,6 +1100,8 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE( object.saveToStream(streamOut) );
       // Check written data.
       REQUIRE( streamOut.str() == data );
+      // Check size and predicted size.
+      REQUIRE( data.size() == object.getWrittenSize() );
     }
 
     SECTION("corrupt data: length of FRMR is not four")

@@ -48,8 +48,7 @@ struct ReferencedObject
   float RotX, RotY, RotZ;
   // end of data
 
-  bool hasDoorData;
-  RefDoorData DoorData;
+  std::optional<RefDoorData> DoorData;
   std::optional<uint32_t> LockLevel;
   std::string KeyID;
   std::string TrapID;
@@ -88,10 +87,14 @@ struct ReferencedObject
    *         Returns false, if an error occurred.
    */
   bool saveToStream(std::ostream& output) const;
-  #endif
 
-  /* returns the size in bytes of this reference's data written to a stream */
+  /** \brief Gets the size in bytes that the reference data would occupy in a
+   *         stream.
+   *
+   * \return Returns the size in bytes that the reference would need.
+   */
   uint32_t getWrittenSize() const;
+  #endif
 }; // struct
 
 } // namespace

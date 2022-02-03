@@ -52,8 +52,7 @@ ReferencedObject::ReferencedObject()
   PosX(0.0f), PosY(0.0f), PosZ(0.0f),
   RotX(0.0f), RotY(0.0f), RotZ(0.0f),
   // end of data
-  hasDoorData(false),
-  DoorData(RefDoorData()),
+  DoorData(std::nullopt),
   LockLevel(std::nullopt),
   KeyID(""),
   TrapID(""),
@@ -72,37 +71,30 @@ ReferencedObject::ReferencedObject()
 
 bool ReferencedObject::operator==(const ReferencedObject& other) const
 {
-  if ((ObjectIndex == other.ObjectIndex) && (ObjectID == other.ObjectID)
-      && (isDeleted == other.isDeleted))
+  // Deletion flags must be the same.
+  if (isDeleted != other.isDeleted)
+    return false;
+  // the part for deleted stuff is short
+  if (isDeleted)
   {
-    // the part for deleted stuff is short
-    if (isDeleted)
-    {
-      return (DeletionLong == other.DeletionLong);
-    }
-    // now the part for the references that aren't deleted
-    if ((Scale == other.Scale) && (PosX == other.PosX) && (PosY == other.PosY)
-      && (PosZ == other.PosZ) && (RotX == other.RotX) && (RotY == other.RotY)
-      && (RotZ == other.RotZ) && (LockLevel == other.LockLevel) && (KeyID == other.KeyID)
-      && (TrapID == other.TrapID) && (OwnerID == other.OwnerID)
-      && (OwnerFactionID == other.OwnerFactionID) && (FactionRank == other.FactionRank)
-      && (SoulCreatureID == other.SoulCreatureID) && (EnchantCharge == other.EnchantCharge)
-      && (NumberOfUses == other.NumberOfUses)
-      && (GlobalVarID == other.GlobalVarID) && (ReferenceBlockedByte == other.ReferenceBlockedByte))
-    {
-      if (hasDoorData != other.hasDoorData)
-        return false;
-      if (hasDoorData)
-      {
-        if (!(DoorData == other.DoorData))
-          return false;
-      }
-      if (UnknownNAM9 != other.UnknownNAM9)
-        return false;
-      return true;
-    }
+    return (ObjectIndex == other.ObjectIndex) && (ObjectID == other.ObjectID)
+        && (DeletionLong == other.DeletionLong);
   }
-  return false;
+  // now the part for the references that aren't deleted
+  return (ObjectIndex == other.ObjectIndex) && (ObjectID == other.ObjectID)
+      && (Scale == other.Scale) && (PosX == other.PosX) && (PosY == other.PosY)
+      && (PosZ == other.PosZ) && (RotX == other.RotX) && (RotY == other.RotY)
+      && (RotZ == other.RotZ) && (DoorData == other.DoorData)
+      && (LockLevel == other.LockLevel) && (KeyID == other.KeyID)
+      && (TrapID == other.TrapID) && (OwnerID == other.OwnerID)
+      && (OwnerFactionID == other.OwnerFactionID)
+      && (FactionRank == other.FactionRank)
+      && (GlobalVarID == other.GlobalVarID)
+      && (SoulCreatureID == other.SoulCreatureID)
+      && (EnchantCharge == other.EnchantCharge)
+      && (NumberOfUses == other.NumberOfUses)
+      && (UnknownNAM9 == other.UnknownNAM9)
+      && (ReferenceBlockedByte == other.ReferenceBlockedByte);
 }
 
 bool ReferencedObject::loadFromStream(std::istream& in_File, uint32_t& BytesRead, char* Buffer)
@@ -194,7 +186,7 @@ bool ReferencedObject::loadFromStream(std::istream& in_File, uint32_t& BytesRead
   ObjectID = std::string(Buffer);
 
   Scale = 1.0f;
-  hasDoorData = false;
+  DoorData.reset();
   LockLevel.reset();
   KeyID = "";
   TrapID = "";
@@ -266,7 +258,7 @@ bool ReferencedObject::loadFromStream(std::istream& in_File, uint32_t& BytesRead
            }
            break;
       case cDODT:
-           if (hasDoorData)
+           if (DoorData.has_value())
            {
              std::cerr << "Error: Reference of record CELL seems to have two DODT subrecords.\n";
              return false;
@@ -281,29 +273,29 @@ bool ReferencedObject::loadFromStream(std::istream& in_File, uint32_t& BytesRead
              return false;
            }
            // read object position data
-           in_File.read(reinterpret_cast<char*>(&DoorData.PosX), 4);
-           in_File.read(reinterpret_cast<char*>(&DoorData.PosY), 4);
-           in_File.read(reinterpret_cast<char*>(&DoorData.PosZ), 4);
-           in_File.read(reinterpret_cast<char*>(&DoorData.RotX), 4);
-           in_File.read(reinterpret_cast<char*>(&DoorData.RotY), 4);
-           in_File.read(reinterpret_cast<char*>(&DoorData.RotZ), 4);
+           DoorData = RefDoorData();
+           in_File.read(reinterpret_cast<char*>(&DoorData.value().PosX), 4);
+           in_File.read(reinterpret_cast<char*>(&DoorData.value().PosY), 4);
+           in_File.read(reinterpret_cast<char*>(&DoorData.value().PosZ), 4);
+           in_File.read(reinterpret_cast<char*>(&DoorData.value().RotX), 4);
+           in_File.read(reinterpret_cast<char*>(&DoorData.value().RotY), 4);
+           in_File.read(reinterpret_cast<char*>(&DoorData.value().RotZ), 4);
            BytesRead += 24;
-           DoorData.ExitName.clear();
+           DoorData.value().ExitName.clear();
            if (!in_File.good())
            {
              std::cerr << "Error while reading subrecord DODT of CELL!\n";
              return false;
            }
-           hasDoorData = true;
            break;
       case cDNAM:
-           if (!hasDoorData)
+           if (!DoorData.has_value())
            {
              std::cerr << "Error while reading CELL: There can't be a DNAM "
                        << "without a previous DODT subrecord.\n";
              return false;
            }
-           if (!DoorData.ExitName.empty())
+           if (!DoorData.value().ExitName.empty())
            {
              std::cerr << "Error: Reference of record CELL seems to have two DNAM subrecords.\n";
              return false;
@@ -325,7 +317,7 @@ bool ReferencedObject::loadFromStream(std::istream& in_File, uint32_t& BytesRead
              std::cerr << "Error while reading subrecord DNAM (FRMR) of CELL!\n";
              return false;
            }
-           DoorData.ExitName = std::string(Buffer);
+           DoorData.value().ExitName = std::string(Buffer);
            break;
       case cFLTV:
            if (LockLevel.has_value())
@@ -756,26 +748,27 @@ bool ReferencedObject::saveToStream(std::ostream& output) const
     output.write(reinterpret_cast<const char*>(&Scale), 4);
   }
 
-  if (hasDoorData)
+  if (DoorData.has_value())
   {
     // write door position data (DODT)
     output.write(reinterpret_cast<const char*>(&cDODT), 4);
     SubLength = 24;
     output.write(reinterpret_cast<const char*>(&SubLength), 4);
-    output.write(reinterpret_cast<const char*>(&DoorData.PosX), 4);
-    output.write(reinterpret_cast<const char*>(&DoorData.PosY), 4);
-    output.write(reinterpret_cast<const char*>(&DoorData.PosZ), 4);
-    output.write(reinterpret_cast<const char*>(&DoorData.RotX), 4);
-    output.write(reinterpret_cast<const char*>(&DoorData.RotY), 4);
-    output.write(reinterpret_cast<const char*>(&DoorData.RotZ), 4);
+    const auto& data = DoorData.value();
+    output.write(reinterpret_cast<const char*>(&data.PosX), 4);
+    output.write(reinterpret_cast<const char*>(&data.PosY), 4);
+    output.write(reinterpret_cast<const char*>(&data.PosZ), 4);
+    output.write(reinterpret_cast<const char*>(&data.RotX), 4);
+    output.write(reinterpret_cast<const char*>(&data.RotY), 4);
+    output.write(reinterpret_cast<const char*>(&data.RotZ), 4);
 
-    if (!DoorData.ExitName.empty())
+    if (!data.ExitName.empty())
     {
       // write door's exit name (DNAM)
       output.write(reinterpret_cast<const char*>(&cDNAM), 4);
-      SubLength = DoorData.ExitName.length() + 1;
+      SubLength = data.ExitName.length() + 1;
       output.write(reinterpret_cast<const char*>(&SubLength), 4);
-      output.write(DoorData.ExitName.c_str(), SubLength);
+      output.write(data.ExitName.c_str(), SubLength);
     }
   }
 
@@ -897,92 +890,87 @@ bool ReferencedObject::saveToStream(std::ostream& output) const
 
   return output.good();
 }
-#endif
 
 uint32_t ReferencedObject::getWrittenSize() const
 {
-  uint32_t Result = 4 /* FRMR */ +4 /* 4 bytes for length */ +4 /* fixed length of 4 bytes */
-                   +4 /* NAME */ +4 /* 4 bytes for length */
-                   +ObjectID.length()+1 /* length of string +1 byte for NUL */;
+  uint32_t Result = 4 /* FRMR */ + 4 /* 4 bytes for length */ + 4 /* fixed length */
+                  + 4 /* NAME */ + 4 /* 4 bytes for length */
+                  + ObjectID.length() + 1 /* length of string +1 byte for NUL */;
   if (isDeleted)
   {
-    Result = Result + 4 /* DELE */ +4 /* 4 bytes for length */ +4 /* fixed length of 4 bytes */;
+    Result += 4 /* DELE */ + 4 /* 4 bytes for length */ + 4 /* fixed length */;
     return Result;
   }
 
-  Result = Result +4 /* DATA */ +4 /* 4 bytes for length */ +24 /* fixed length of 24 bytes */;
+  Result += 4 /* DATA */ + 4 /* 4 bytes for length */ + 24 /* fixed length */;
 
-  if (Scale!=1.0f)
+  if (Scale != 1.0f)
   {
-    Result = Result +4 /* XSCL */ +4 /* 4 bytes for length */ +4 /* fixed length of 4 bytes */;
+    Result += 4 /* XSCL */ + 4 /* 4 bytes for length */ + 4 /* fixed length of 4 bytes */;
   }
-
-  if (hasDoorData)
+  if (DoorData.has_value())
   {
-    Result = Result +4 /* DODT */ +4 /* 4 bytes for length */ +24 /* fixed length of 24 bytes */;
-    if (!DoorData.ExitName.empty())
+    Result += 4 /* DODT */ + 4 /* 4 bytes for length */ + 24 /* fixed length of 24 bytes */;
+    if (!DoorData.value().ExitName.empty())
     {
-      Result = Result +4 /* DNAM */ +4 /* 4 bytes for length */
-              +DoorData.ExitName.length()+1 /* length of string +1 byte for NUL */;
+      Result += 4 /* DNAM */ + 4 /* 4 bytes for length */
+              + DoorData.value().ExitName.length() + 1 /* length +1 byte for NUL */;
     }
   }
-
   if (LockLevel.has_value())
   {
-    Result = Result + 4 /* FLTV */ + 4 /* 4 bytes for length */ + 4 /* fixed size of 4 bytes */;
+    Result += 4 /* FLTV */ + 4 /* 4 bytes for length */ + 4 /* fixed size of 4 bytes */;
     if (!KeyID.empty())
     {
-      Result = Result + 4 /* KNAM */ + 4 /* 4 bytes for length */
-             + KeyID.length() + 1 /* length of string +1 byte for NUL */;
+      Result += 4 /* KNAM */ + 4 /* 4 bytes for length */
+              + KeyID.length() + 1 /* length of string +1 byte for NUL */;
     }
   }
-
   if (!TrapID.empty())
   {
-    Result = Result +4 /* TNAM */ +4 /* 4 bytes for length */
-            +TrapID.length()+1 /* length of string +1 byte for NUL */;
+    Result += 4 /* TNAM */ + 4 /* 4 bytes for length */
+            + TrapID.length() + 1 /* length of string +1 byte for NUL */;
   }
-
   if (!OwnerID.empty())
   {
-    Result = Result +4 /* ANAM */ +4 /* 4 bytes for length */
-            +OwnerID.length()+1 /* length of string +1 byte for NUL */;
+    Result += 4 /* ANAM */ + 4 /* 4 bytes for length */
+            + OwnerID.length() + 1 /* length of string +1 byte for NUL */;
   }
   else if (!OwnerFactionID.empty())
   {
-    Result = Result +4 /* CNAM */ +4 /* 4 bytes for length */
-            +OwnerFactionID.length()+1 /* length of string +1 byte for NUL */
-            +4 /* INDX */ +4 /* 4 bytes for length */ +4 /* fixed length of four bytes*/;
+    Result += 4 /* CNAM */ + 4 /* 4 bytes for length */
+            + OwnerFactionID.length() + 1 /* length of string +1 byte for NUL */
+            + 4 /* INDX */ + 4 /* 4 bytes for length */ + 4 /* fixed length */;
   }
-
   if (!GlobalVarID.empty())
   {
-    Result = Result + 4 /* BNAM */ + 4 /* 4 bytes for length */
-           + GlobalVarID.length() + 1 /* length of string +1 byte for NUL */;
+    Result += 4 /* BNAM */ + 4 /* 4 bytes for length */
+            + GlobalVarID.length() + 1 /* length of string +1 byte for NUL */;
   }
-
   if (!SoulCreatureID.empty())
   {
-    Result = Result + 4 /* XSOL */ + 4 /* 4 bytes for length */
-           + SoulCreatureID.length() + 1 /* length of string +1 byte for NUL */;
+    Result += 4 /* XSOL */ + 4 /* 4 bytes for length */
+            + SoulCreatureID.length() + 1 /* length +1 byte for NUL */;
   }
-
   if (EnchantCharge.has_value())
   {
-    Result = Result + 4 /* XCHG */ + 4 /* 4 bytes for length */ + 4 /* fixed size of 4 bytes */;
+    Result += 4 /* XCHG */ + 4 /* 4 bytes for length */ + 4 /* fixed size */;
   }
-
+  if (NumberOfUses.has_value())
+  {
+    Result += 4 /* INTV */ + 4 /* 4 bytes for length */ + 4 /* fixed size */;
+  }
   if (UnknownNAM9.has_value())
   {
-    Result = Result +4 /* NAM9 */ +4 /* 4 bytes for length */ +4 /* fixed size of 4 bytes */;
+    Result += 4 /* NAM9 */ + 4 /* 4 bytes for length */ + 4 /* fixed size */;
   }
-
   if (ReferenceBlockedByte.has_value())
   {
-    Result = Result +4 /* UNAM */ +4 /* 4 bytes for length */ +1 /* fixed size of one byte */;
+    Result += 4 /* UNAM */ + 4 /* 4 bytes for length */ + 1 /* one byte only */;
   }
 
   return Result;
 }
+#endif
 
 } // namespace

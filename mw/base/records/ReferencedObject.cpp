@@ -491,7 +491,7 @@ bool ReferencedObject::loadFromStream(std::istream& in_File, uint32_t& BytesRead
 
            // INDX should follow right now.
            // read INDX
-           in_File.read((char*) &SubRecName, 4);
+           in_File.read(reinterpret_cast<char*>(&SubRecName), 4);
            BytesRead += 4;
            if (SubRecName != cINDX)
            {

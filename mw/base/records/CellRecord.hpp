@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2013  Dirk Stolle
+    Copyright (C) 2011, 2013, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -37,17 +37,19 @@ struct AmbientLight
   uint32_t FogColour;
   float FogDensity;
 
+  AmbientLight();
+
   bool operator==(const AmbientLight& other) const;
-};//struct
+}; // struct
 
 struct CellRecord: public BasicRecord
 {
   std::string CellID;
-  //cell data
+  // cell data
   uint32_t CellFlags;
   int32_t GridX;
   int32_t GridY;
-  //end of cell data
+  // end of cell data
   std::string RegionID;
   uint32_t NumReferences;
   uint32_t ColourRef;
@@ -86,8 +88,8 @@ struct CellRecord: public BasicRecord
 
   /* returns true, if the water flag is set */
   bool hasWater() const;
-};//struct
+}; // struct
 
-} //namespace
+} // namespace
 
 #endif // MW_CELLRECORD_HPP

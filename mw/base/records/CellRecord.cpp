@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2013  Dirk Stolle
+    Copyright (C) 2011, 2012, 2013, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -28,6 +28,15 @@ namespace MWTP
 {
 
 /* AmbientLight's functions */
+
+AmbientLight::AmbientLight()
+: isPresent(false),
+  AmbientColour(0),
+  SunlightColour(0),
+  FogColour(0),
+  FogDensity(0.0f)
+{
+}
 
 bool AmbientLight::operator==(const AmbientLight& other) const
 {

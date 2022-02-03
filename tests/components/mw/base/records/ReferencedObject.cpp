@@ -54,8 +54,7 @@ TEST_CASE("MWTP::ReferencedObject")
     REQUIRE_FALSE( object.EnchantCharge.has_value() );
     REQUIRE_FALSE( object.NumberOfUses.has_value() );
     REQUIRE_FALSE( object.UnknownNAM9.has_value() );
-    REQUIRE_FALSE( object.hasUNAM );
-    REQUIRE( object.ReferenceBlockedByte == 0 );
+    REQUIRE_FALSE( object.ReferenceBlockedByte.has_value() );
     REQUIRE_FALSE( object.isDeleted );
     REQUIRE( object.DeletionLong == 0 );
   }
@@ -302,15 +301,13 @@ TEST_CASE("MWTP::ReferencedObject")
 
       SECTION("ReferenceBlockedByte mismatch")
       {
-        a.hasUNAM = false;
-        b.hasUNAM = true;
+        a.ReferenceBlockedByte.reset();
+        b.ReferenceBlockedByte = 0;
 
         REQUIRE_FALSE( a == b );
         REQUIRE_FALSE( b == a );
 
-        a.hasUNAM = true;
         a.ReferenceBlockedByte = 0;
-        b.hasUNAM = true;
         b.ReferenceBlockedByte = 1;
 
         REQUIRE_FALSE( a == b );
@@ -377,8 +374,7 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE_FALSE( object.EnchantCharge.has_value() );
       REQUIRE_FALSE( object.NumberOfUses.has_value() );
       REQUIRE_FALSE( object.UnknownNAM9.has_value() );
-      REQUIRE_FALSE( object.hasUNAM );
-      REQUIRE( object.ReferenceBlockedByte == 0 );
+      REQUIRE_FALSE( object.ReferenceBlockedByte.has_value() );
       REQUIRE_FALSE( object.isDeleted );
       REQUIRE( object.DeletionLong == 0 );
 
@@ -424,8 +420,7 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE_FALSE( object.EnchantCharge.has_value() );
       REQUIRE_FALSE( object.NumberOfUses.has_value() );
       REQUIRE_FALSE( object.UnknownNAM9.has_value() );
-      REQUIRE_FALSE( object.hasUNAM );
-      REQUIRE( object.ReferenceBlockedByte == 0 );
+      REQUIRE_FALSE( object.ReferenceBlockedByte.has_value() );
       REQUIRE_FALSE( object.isDeleted );
       REQUIRE( object.DeletionLong == 0 );
 
@@ -478,8 +473,7 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE_FALSE( object.EnchantCharge.has_value() );
       REQUIRE_FALSE( object.NumberOfUses.has_value() );
       REQUIRE_FALSE( object.UnknownNAM9.has_value() );
-      REQUIRE_FALSE( object.hasUNAM );
-      REQUIRE( object.ReferenceBlockedByte == 0 );
+      REQUIRE_FALSE( object.ReferenceBlockedByte.has_value() );
       REQUIRE_FALSE( object.isDeleted );
       REQUIRE( object.DeletionLong == 0 );
 
@@ -532,8 +526,7 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE_FALSE( object.EnchantCharge.has_value() );
       REQUIRE_FALSE( object.NumberOfUses.has_value() );
       REQUIRE_FALSE( object.UnknownNAM9.has_value() );
-      REQUIRE_FALSE( object.hasUNAM );
-      REQUIRE( object.ReferenceBlockedByte == 0 );
+      REQUIRE_FALSE( object.ReferenceBlockedByte.has_value() );
       REQUIRE_FALSE( object.isDeleted );
       REQUIRE( object.DeletionLong == 0 );
 
@@ -580,8 +573,7 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE_FALSE( object.EnchantCharge.has_value() );
       REQUIRE_FALSE( object.NumberOfUses.has_value() );
       REQUIRE_FALSE( object.UnknownNAM9.has_value() );
-      REQUIRE_FALSE( object.hasUNAM );
-      REQUIRE( object.ReferenceBlockedByte == 0 );
+      REQUIRE_FALSE( object.ReferenceBlockedByte.has_value() );
       REQUIRE_FALSE( object.isDeleted );
       REQUIRE( object.DeletionLong == 0 );
 
@@ -629,8 +621,7 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE( object.NumberOfUses.value() == 1 );
       REQUIRE( object.UnknownNAM9.has_value() );
       REQUIRE( object.UnknownNAM9.value() == 0x00000001 );
-      REQUIRE_FALSE( object.hasUNAM );
-      REQUIRE( object.ReferenceBlockedByte == 0 );
+      REQUIRE_FALSE( object.ReferenceBlockedByte.has_value() );
       REQUIRE_FALSE( object.isDeleted );
       REQUIRE( object.DeletionLong == 0 );
 
@@ -677,8 +668,7 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE_FALSE( object.EnchantCharge.has_value() );
       REQUIRE_FALSE( object.NumberOfUses.has_value() );
       REQUIRE_FALSE( object.UnknownNAM9.has_value() );
-      REQUIRE_FALSE( object.hasUNAM );
-      REQUIRE( object.ReferenceBlockedByte == 0 );
+      REQUIRE_FALSE( object.ReferenceBlockedByte.has_value() );
       REQUIRE_FALSE( object.isDeleted );
       REQUIRE( object.DeletionLong == 0 );
 
@@ -726,8 +716,7 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE( object.NumberOfUses.value() == 1 );
       REQUIRE( object.UnknownNAM9.has_value() );
       REQUIRE( object.UnknownNAM9.value() == 0x00000001 );
-      REQUIRE_FALSE( object.hasUNAM );
-      REQUIRE( object.ReferenceBlockedByte == 0 );
+      REQUIRE_FALSE( object.ReferenceBlockedByte.has_value() );
       REQUIRE_FALSE( object.isDeleted );
       REQUIRE( object.DeletionLong == 0 );
 
@@ -775,8 +764,7 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE( object.NumberOfUses.value() == 0 );
       REQUIRE( object.UnknownNAM9.has_value() );
       REQUIRE( object.UnknownNAM9.value() == 0x00000001 );
-      REQUIRE_FALSE( object.hasUNAM );
-      REQUIRE( object.ReferenceBlockedByte == 0 );
+      REQUIRE_FALSE( object.ReferenceBlockedByte.has_value() );
       REQUIRE_FALSE( object.isDeleted );
       REQUIRE( object.DeletionLong == 0 );
 
@@ -824,8 +812,7 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE( object.NumberOfUses.value() == 0 );
       REQUIRE( object.UnknownNAM9.has_value() );
       REQUIRE( object.UnknownNAM9.value() == 0x00000001 );
-      REQUIRE_FALSE( object.hasUNAM );
-      REQUIRE( object.ReferenceBlockedByte == 0 );
+      REQUIRE_FALSE( object.ReferenceBlockedByte.has_value() );
       REQUIRE_FALSE( object.isDeleted );
       REQUIRE( object.DeletionLong == 0 );
 
@@ -874,8 +861,54 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE( object.NumberOfUses.value() == 2000 );
       REQUIRE( object.UnknownNAM9.has_value() );
       REQUIRE( object.UnknownNAM9.value() == 0x00000001 );
-      REQUIRE_FALSE( object.hasUNAM );
-      REQUIRE( object.ReferenceBlockedByte == 0 );
+      REQUIRE_FALSE( object.ReferenceBlockedByte.has_value() );
+      REQUIRE_FALSE( object.isDeleted );
+      REQUIRE( object.DeletionLong == 0 );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( object.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
+    }
+
+    SECTION("default: load reference with UNAM")
+    {
+      const auto data = "FRMR\x04\0\0\0\x26\x35\x15\0NAME\x13\0\0\0active_de_p_bed_04\0UNAM\x01\0\0\0\0DATA\x18\0\0\0\xAE\xF1\x19\xC3H\xA1\xEB\xC1`H\xC9\x42\0\0\0\0\0\0\0\0\xB1\x98\x93@"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FRMR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      ReferencedObject object;
+      REQUIRE( object.loadFromStream(stream, bytesRead, buffer) );
+      // Check data.
+      REQUIRE( object.ObjectIndex == 0x00153526 );
+      REQUIRE( object.ObjectID == "active_de_p_bed_04" );
+      REQUIRE( object.Scale == 1.0f );
+      REQUIRE( object.PosX == -153.9440612793f );
+      REQUIRE( object.PosY == -29.453750610352f );
+      REQUIRE( object.PosZ == 100.64135742188f );
+      REQUIRE( object.RotX == 0.0f );
+      REQUIRE( object.RotY == 0.0f );
+      REQUIRE( object.RotZ == 4.612389087677f );
+      REQUIRE_FALSE( object.hasDoorData );
+      REQUIRE_FALSE( object.LockLevel.has_value() );
+      REQUIRE( object.KeyID.empty() );
+      REQUIRE( object.TrapID.empty() );
+      REQUIRE( object.OwnerID.empty() );
+      REQUIRE( object.OwnerFactionID.empty() );
+      REQUIRE( object.FactionRank == -1 );
+      REQUIRE( object.GlobalVarID.empty() );
+      REQUIRE( object.SoulCreatureID.empty() );
+      REQUIRE_FALSE( object.EnchantCharge.has_value() );
+      REQUIRE_FALSE( object.NumberOfUses.has_value() );
+      REQUIRE_FALSE( object.UnknownNAM9.has_value() );
+      REQUIRE( object.ReferenceBlockedByte.has_value() );
+      REQUIRE( object.ReferenceBlockedByte.value() == 0 );
       REQUIRE_FALSE( object.isDeleted );
       REQUIRE( object.DeletionLong == 0 );
 
@@ -1873,6 +1906,67 @@ TEST_CASE("MWTP::ReferencedObject")
     SECTION("corrupt data: stream ends before XCHG can be read")
     {
       const auto data = "FRMR\x04\0\0\0\xBC\x0E\x17\0NAME\x11\0\0\0iron shardmauler\0ANAM\x0F\0\0\0trilam drolnor\0XCHG\x04\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FRMR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ReferencedObject object;
+      REQUIRE_FALSE( object.loadFromStream(stream, bytesRead, buffer) );
+    }
+
+    SECTION("corrupt data: multiple UNAMs")
+    {
+      const auto data = "FRMR\x04\0\0\0\x26\x35\x15\0NAME\x13\0\0\0active_de_p_bed_04\0UNAM\x01\0\0\0\0UNAM\x01\0\0\0\0DATA\x18\0\0\0\xAE\xF1\x19\xC3H\xA1\xEB\xC1`H\xC9\x42\0\0\0\0\0\0\0\0\xB1\x98\x93@"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read FRMR, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      ReferencedObject object;
+      REQUIRE_FALSE( object.loadFromStream(stream, bytesRead, buffer) );
+    }
+
+    SECTION("corrupt data: length of UNAM is not one")
+    {
+      {
+        const auto data = "FRMR\x04\0\0\0\x26\x35\x15\0NAME\x13\0\0\0active_de_p_bed_04\0UNAM\0\0\0\0DATA\x18\0\0\0\xAE\xF1\x19\xC3H\xA1\xEB\xC1`H\xC9\x42\0\0\0\0\0\0\0\0\xB1\x98\x93@"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read FRMR, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        ReferencedObject object;
+        REQUIRE_FALSE( object.loadFromStream(stream, bytesRead, buffer) );
+      }
+
+      {
+        const auto data = "FRMR\x04\0\0\0\x26\x35\x15\0NAME\x13\0\0\0active_de_p_bed_04\0UNAM\x02\0\0\0\0\0DATA\x18\0\0\0\xAE\xF1\x19\xC3H\xA1\xEB\xC1`H\xC9\x42\0\0\0\0\0\0\0\0\xB1\x98\x93@"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // read FRMR, because header is handled before loadFromStream.
+        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        ReferencedObject object;
+        REQUIRE_FALSE( object.loadFromStream(stream, bytesRead, buffer) );
+      }
+    }
+
+    SECTION("corrupt data: stream ends before UNAM can be read")
+    {
+      const auto data = "FRMR\x04\0\0\0\x26\x35\x15\0NAME\x13\0\0\0active_de_p_bed_04\0UNAM\x01\0\0\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 

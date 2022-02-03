@@ -62,8 +62,7 @@ struct ReferencedObject
   std::optional<float> EnchantCharge;
   std::optional<uint32_t> NumberOfUses;
   std::optional<uint32_t> UnknownNAM9;
-  bool hasUNAM;
-  uint8_t ReferenceBlockedByte;
+  std::optional<uint8_t> ReferenceBlockedByte;
   bool isDeleted;
   uint32_t DeletionLong;
 

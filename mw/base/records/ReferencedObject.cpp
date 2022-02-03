@@ -65,8 +65,7 @@ ReferencedObject::ReferencedObject()
   EnchantCharge(std::nullopt),
   NumberOfUses(std::nullopt),
   UnknownNAM9(std::nullopt),
-  hasUNAM(false),
-  ReferenceBlockedByte(0),
+  ReferenceBlockedByte(std::nullopt),
   isDeleted(false),
   DeletionLong(0)
 {}
@@ -89,7 +88,7 @@ bool ReferencedObject::operator==(const ReferencedObject& other) const
       && (OwnerFactionID == other.OwnerFactionID) && (FactionRank == other.FactionRank)
       && (SoulCreatureID == other.SoulCreatureID) && (EnchantCharge == other.EnchantCharge)
       && (NumberOfUses == other.NumberOfUses)
-      && (GlobalVarID == other.GlobalVarID) && (hasUNAM == other.hasUNAM))
+      && (GlobalVarID == other.GlobalVarID) && (ReferenceBlockedByte == other.ReferenceBlockedByte))
     {
       if (hasDoorData != other.hasDoorData)
         return false;
@@ -100,11 +99,6 @@ bool ReferencedObject::operator==(const ReferencedObject& other) const
       }
       if (UnknownNAM9 != other.UnknownNAM9)
         return false;
-      if (hasUNAM)
-      {
-        if (ReferenceBlockedByte != other.ReferenceBlockedByte)
-          return false;
-      }
       return true;
     }
   }
@@ -212,8 +206,7 @@ bool ReferencedObject::loadFromStream(std::istream& in_File, uint32_t& BytesRead
   EnchantCharge.reset();
   NumberOfUses.reset();
   UnknownNAM9.reset();
-  hasUNAM = false;
-  ReferenceBlockedByte = 0;
+  ReferenceBlockedByte.reset();
   DeletionLong = 0;
   isDeleted = false;
   // Let's assume that DATA is the last record.
@@ -632,50 +625,50 @@ bool ReferencedObject::loadFromStream(std::istream& in_File, uint32_t& BytesRead
            }
            break;
       case cUNAM:
-           if (hasUNAM)
+           if (ReferenceBlockedByte.has_value())
            {
-             std::cout << "Error: reference of record CELL seems to have two UNAM subrecords.\n";
+             std::cerr << "Error: Reference of record CELL seems to have two UNAM subrecords.\n";
              return false;
            }
-           //UNAM's length
-           in_File.read((char*) &SubLength, 4);
+           // UNAM's length
+           in_File.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
-           if (SubLength!=1)
+           if (SubLength != 1)
            {
-             std::cout <<"Error: sub record UNAM of CELL has invalid length ("
-                       <<SubLength <<" bytes). Should be one byte.\n";
+             std::cerr << "Error: Sub record UNAM of CELL has invalid length ("
+                       << SubLength << " bytes). Should be one byte.\n";
              return false;
            }
-           //read reference blocked
-           in_File.read((char*) &ReferenceBlockedByte, 1);
+           // read reference blocked
+           ReferenceBlockedByte = 0;
+           in_File.read(reinterpret_cast<char*>(&ReferenceBlockedByte.value()), 1);
            BytesRead += 1;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord UNAM of CELL!\n";
+             std::cerr << "Error while reading subrecord UNAM of CELL!\n";
              return false;
            }
-           hasUNAM = true;
            break;
       case cDELE:
-           //DELE's length
-           in_File.read((char*) &SubLength, 4);
+           // DELE's length
+           in_File.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
-           if (SubLength!=4)
+           if (SubLength != 4)
            {
-             std::cout << "Error: subrecord DELE (FRMR) of CELL has invalid length ("
-                       << SubLength<<" bytes). Should be four bytes.\n";
+             std::cerr << "Error: Subrecord DELE (FRMR) of CELL has invalid length ("
+                       << SubLength << " bytes). Should be four bytes.\n";
              return false;
            }
-           //read deletion value
-           in_File.read((char*) &DeletionLong, 4);
+           // read deletion value
+           in_File.read(reinterpret_cast<char*>(&DeletionLong), 4);
            BytesRead += 4;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord DELE (FRMR) of CELL!\n";
+             std::cerr << "Error while reading subrecord DELE (FRMR) of CELL!\n";
              return false;
            }
            isDeleted = true;
-           //DELE is the last subrecord of a reference, so we can return here
+           // DELE is the last subrecord of a reference, so we can return here.
            return in_File.good();
       default:
            std::cerr << "Error while reading CELL: Expected record name XSCL, "
@@ -881,13 +874,13 @@ bool ReferencedObject::saveToStream(std::ostream& output) const
     output.write(reinterpret_cast<const char*>(&UnknownNAM9.value()), 4);
   }
 
-  if (hasUNAM)
+  if (ReferenceBlockedByte.has_value())
   {
     // write UNAM
     output.write(reinterpret_cast<const char*>(&cUNAM), 4);
     SubLength = 1;
     output.write(reinterpret_cast<const char*>(&SubLength), 4);
-    output.write(reinterpret_cast<const char*>(&ReferenceBlockedByte), 1);
+    output.write(reinterpret_cast<const char*>(&ReferenceBlockedByte.value()), 1);
   }
 
   // write object position data (DATA)
@@ -984,7 +977,7 @@ uint32_t ReferencedObject::getWrittenSize() const
     Result = Result +4 /* NAM9 */ +4 /* 4 bytes for length */ +4 /* fixed size of 4 bytes */;
   }
 
-  if (hasUNAM)
+  if (ReferenceBlockedByte.has_value())
   {
     Result = Result +4 /* UNAM */ +4 /* 4 bytes for length */ +1 /* fixed size of one byte */;
   }

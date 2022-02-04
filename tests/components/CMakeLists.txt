@@ -170,6 +170,7 @@ set(component_tests_sources
     mw/base/records/BodyPartAssociation.cpp
     mw/base/records/BodyPartRecord.cpp
     mw/base/records/BookRecord.cpp
+    mw/base/records/CellRecord.cpp
     mw/base/records/ClothingRecord.cpp
     mw/base/records/ContainerRecord.cpp
     mw/base/records/DoorRecord.cpp

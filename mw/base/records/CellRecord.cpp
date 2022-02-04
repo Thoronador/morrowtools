@@ -20,7 +20,7 @@
 
 #include "CellRecord.hpp"
 #include <iostream>
-#include <cstring>
+#include <limits>
 #include "../MW_Constants.hpp"
 #include "../HelperIO.hpp"
 
@@ -53,85 +53,93 @@ bool AmbientLight::operator==(const AmbientLight& other) const
 
 /* **** CellRecord functions ****/
 
-const uint32_t cfInterior = 1;
-const uint32_t cfWater = 2;
+const uint32_t cfInterior = 0x00000001;
+const uint32_t cfWater = 0x00000002;
 
 CellRecord::CellRecord()
 : BasicRecord(),
   CellID(""),
-  //cell data
+  // cell data
   CellFlags(0),
   GridX(0),
   GridY(0),
-  //end of cell data
+  // end of cell data
   RegionID(""),
   NumReferences(0),
   ColourRef(0),
-  hasWHGT(false),
-  WaterHeight(0.0f),
+  WaterHeight(std::nullopt),
   Ambience(AmbientLight()),
-  References(std::vector<ReferencedObject>())
+  ReferencesPersistent(std::vector<ReferencedObject>()),
+  ReferencesOther(std::vector<ReferencedObject>())
 {
   Ambience.isPresent = false;
 }
 
 bool CellRecord::equals(const CellRecord& other) const
 {
-  return ((CellID==other.CellID) and (CellFlags==other.CellFlags)
-      and (GridX==other.GridX) and (GridY==other.GridY)
-      and (RegionID==other.RegionID) and (References==other.References)
-      and (NumReferences==other.NumReferences) and (ColourRef==other.ColourRef)
-      and (Ambience==other.Ambience) and (hasWHGT==other.hasWHGT)
-      and ((WaterHeight==other.WaterHeight) or (not hasWHGT)));
+  return (CellID == other.CellID) && (CellFlags == other.CellFlags)
+      && (GridX == other.GridX) && (GridY == other.GridY)
+      && (RegionID == other.RegionID) && (ReferencesPersistent == other.ReferencesPersistent)
+      && (NumReferences == other.NumReferences)
+      && (ReferencesOther == other.ReferencesOther)
+      && (ColourRef == other.ColourRef) && (Ambience == other.Ambience)
+      && (WaterHeight == other.WaterHeight);
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool CellRecord::saveToStream(std::ostream& output) const
+uint32_t CellRecord::getWriteSize() const
 {
-  output.write((const char*) &cCELL, 4);
-  uint32_t Size;
-  Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +CellID.length()+1 /* length of ID +1 byte for NUL termination */
-        +4 /* DATA */ +4 /* 4 bytes for length */ +12 /* fixed length of 12 bytes */;
+  uint32_t Size = 4 /* NAME */ + 4 /* 4 bytes for length */
+        + CellID.length() + 1 /* length of ID +1 byte for NUL termination */
+        + 4 /* DATA */ + 4 /* 4 bytes for length */ + 12 /* fixed length of 12 bytes */;
   if (!RegionID.empty())
   {
-    Size = Size +4 /* RGNN */ +4 /* 4 bytes for length */
-          +RegionID.length()+1 /* length of model path +1 byte for NUL termination */;
+    Size += 4 /* RGNN */ + 4 /* 4 bytes for length */
+         + RegionID.length() + 1 /* length of model path +1 byte for NUL */;
   }
   if (!isInterior())
   {
-    Size = Size +4 /* NAM5 */ +4 /* 4 bytes for length */
-                +4 /* fixed length of 4 bytes */;
+    Size += 4 /* NAM5 */ + 4 /* 4 bytes for length */
+          + 4 /* fixed length of 4 bytes */;
   }
   else
   {
-    //WHGT and AMBI is for interior cells only
-    if (hasWHGT)
+    // WHGT and AMBI is for interior cells only
+    if (WaterHeight.has_value())
     {
-      Size = Size +4 /* WHGT */ +4 /* 4 bytes for length */
-                  +4 /* fixed length of 4 bytes */;
+      Size += 4 /* WHGT */ + 4 /* 4 bytes for length */
+            + 4 /* fixed length of 4 bytes */;
     }
     if (Ambience.isPresent)
     {
-      Size = Size +4 /* AMBI */ +4 /* 4 bytes for length */
-                  +16 /* fixed length of 16 bytes */;
+      Size += 4 /* AMBI */ + 4 /* 4 bytes for length */
+            + 16 /* fixed length of 16 bytes */;
     }
   }
 
-  if (NumReferences!=0)
+  for (const auto& ref_elem: ReferencesPersistent)
   {
-    Size = Size +4 /* NAM0 */ +4 /* 4 bytes for length */
-                +4 /* fixed length of 4 bytes */;
+    Size += ref_elem.getWrittenSize();
   }
-  unsigned int i;
-  for (i=0; i<References.size(); ++i)
+  if (NumReferences != 0)
   {
-    Size = Size + References[i].getWrittenSize();
-  }//for
+    Size += 4 /* NAM0 */ + 4 /* 4 bytes for length */
+          + 4 /* fixed length of 4 bytes */;
+  }
+  for (const auto& ref_elem: ReferencesOther)
+  {
+    Size += ref_elem.getWrittenSize();
+  }
+  return Size;
+}
 
-  output.write((const char*) &Size, 4);
-  output.write((const char*) &HeaderOne, 4);
-  output.write((const char*) &HeaderFlags, 4);
+bool CellRecord::saveToStream(std::ostream& output) const
+{
+  output.write(reinterpret_cast<const char*>(&cCELL), 4);
+  const uint32_t Size = getWriteSize();
+  output.write(reinterpret_cast<const char*>(&Size), 4);
+  output.write(reinterpret_cast<const char*>(&HeaderOne), 4);
+  output.write(reinterpret_cast<const char*>(&HeaderFlags), 4);
 
   /*Cells:
     NAME = Cell ID string. Can be an empty string for exterior cells in which case
@@ -195,102 +203,97 @@ bool CellRecord::saveToStream(std::ostream& output) const
 			float ZRotate
   */
 
-  //write NAME
-  output.write((const char*) &cNAME, 4);
-  uint32_t SubLength = CellID.length()+1;
-  //write NAME's length
-  output.write((const char*) &SubLength, 4);
-  //write cell name
+  // write cell name (NAME)
+  output.write(reinterpret_cast<const char*>(&cNAME), 4);
+  uint32_t SubLength = CellID.length() + 1;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
   output.write(CellID.c_str(), SubLength);
 
-  //write DATA
-  output.write((const char*) &cDATA, 4);
-  SubLength = 12; //fixed length of 12 bytes
-  //write DATA's length
-  output.write((const char*) &SubLength, 4);
-  //write cell data
-  output.write((const char*) &CellFlags, 4);
-  output.write((const char*) &GridX, 4);
-  output.write((const char*) &GridY, 4);
+  // write cell data (DATA)
+  output.write(reinterpret_cast<const char*>(&cDATA), 4);
+  SubLength = 12;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
+  output.write(reinterpret_cast<const char*>(&CellFlags), 4);
+  output.write(reinterpret_cast<const char*>(&GridX), 4);
+  output.write(reinterpret_cast<const char*>(&GridY), 4);
 
   if (!RegionID.empty())
   {
-    //write RGNN
-    output.write((const char*) &cRGNN, 4);
-    SubLength = RegionID.length()+1;
-    //write RGNN's length
-    output.write((const char*) &SubLength, 4);
-    //write region ID
+    // write region ID (RGNN)
+    output.write(reinterpret_cast<const char*>(&cRGNN), 4);
+    SubLength = RegionID.length() + 1;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
     output.write(RegionID.c_str(), SubLength);
   }
 
   if (!isInterior())
   {
-    //write NAM5
-    output.write((const char*) &cNAM5, 4);
-    SubLength = 4; //fixed length of four bytes
-    //write NAM5's length
-    output.write((const char*) &SubLength, 4);
-    //write colour ref
-    output.write((const char*) &ColourRef, 4);
+    // write colour reference (NAM5)
+    output.write(reinterpret_cast<const char*>(&cNAM5), 4);
+    SubLength = 4;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
+    output.write(reinterpret_cast<const char*>(&ColourRef), 4);
   }
   else
   {
-    if (hasWHGT)
+    if (WaterHeight.has_value())
     {
-      //write WHGT
-      output.write((const char*) &cWHGT, 4);
-      SubLength = 4; //fixed length of four bytes
-      //write WHGT's length
-      output.write((const char*) &SubLength, 4);
-      //write water level
-      output.write((const char*) &WaterHeight, 4);
+      // write water level (WHGT)
+      output.write(reinterpret_cast<const char*>(&cWHGT), 4);
+      SubLength = 4;
+      output.write(reinterpret_cast<const char*>(&SubLength), 4);
+      output.write(reinterpret_cast<const char*>(&WaterHeight.value()), 4);
     }
     if (Ambience.isPresent)
     {
-      //write AMBI
-      output.write((const char*) &cAMBI, 4);
-      SubLength = 16; //fixed length of 16 bytes
-      //write AMBI's length
-      output.write((const char*) &SubLength, 4);
-      //write ambience data
-      output.write((const char*) &Ambience.AmbientColour, 4);
-      output.write((const char*) &Ambience.SunlightColour, 4);
-      output.write((const char*) &Ambience.FogColour, 4);
-      output.write((const char*) &Ambience.FogDensity, 4);
+      // write ambience data (AMBI)
+      output.write(reinterpret_cast<const char*>(&cAMBI), 4);
+      SubLength = 16;
+      output.write(reinterpret_cast<const char*>(&SubLength), 4);
+      output.write(reinterpret_cast<const char*>(&Ambience.AmbientColour), 4);
+      output.write(reinterpret_cast<const char*>(&Ambience.SunlightColour), 4);
+      output.write(reinterpret_cast<const char*>(&Ambience.FogColour), 4);
+      output.write(reinterpret_cast<const char*>(&Ambience.FogDensity), 4);
     }
   }
 
-  if (NumReferences!=0)
+  for (const auto& ref_elem: ReferencesPersistent)
   {
-    //write NAM0
-    output.write((const char*) &cNAM0, 4);
-    SubLength = 4; //fixed length of four bytes
-    //write NAM0's length
-    output.write((const char*) &SubLength, 4);
-    //write number of references
-    output.write((const char*) &NumReferences, 4);
-  }
-
-  for (i=0; i<References.size(); ++i)
-  {
-    if (!References[i].saveToStream(output))
+    if (!ref_elem.saveToStream(output))
     {
-      std::cout << "Error while writing reference data of CELL record.\n";
+      std::cerr << "Error while writing reference data of CELL record.\n";
       return false;
     }
-  }//for
+  }
+
+  if (NumReferences != 0)
+  {
+    // write next reference count / number of references (NAM0)
+    output.write(reinterpret_cast<const char*>(&cNAM0), 4);
+    SubLength = 4;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
+    output.write(reinterpret_cast<const char*>(&NumReferences), 4);
+  }
+
+  for (const auto& ref_elem: ReferencesOther)
+  {
+    if (!ref_elem.saveToStream(output))
+    {
+      std::cerr << "Error while writing reference data of CELL record.\n";
+      return false;
+    }
+  }
 
   return output.good();
 }
 #endif
 
-bool CellRecord::loadFromStream(std::istream& in_File)
+bool CellRecord::loadFromStream(std::istream& input)
 {
-  uint32_t Size;
-  in_File.read((char*) &Size, 4);
-  in_File.read((char*) &HeaderOne, 4);
-  in_File.read((char*) &HeaderFlags, 4);
+  uint32_t Size = 0;
+  input.read(reinterpret_cast<char*>(&Size), 4);
+  input.read(reinterpret_cast<char*>(&HeaderOne), 4);
+  input.read(reinterpret_cast<char*>(&HeaderFlags), 4);
 
   /*Cells:
     NAME = Cell ID string. Can be an empty string for exterior cells in which case
@@ -351,69 +354,50 @@ bool CellRecord::loadFromStream(std::istream& in_File)
 			float ZRotate
   */
 
-  uint32_t SubRecName;
-  uint32_t SubLength, BytesRead;
-  SubRecName = SubLength = 0;
+  uint32_t SubRecName = 0;
+  uint32_t SubLength = 0;
+  uint32_t BytesRead = 0;
 
-  //read NAME
-  in_File.read((char*) &SubRecName, 4);
-  BytesRead = 4;
-  if (SubRecName!=cNAME)
-  {
-    UnexpectedRecord(cNAME, SubRecName);
-    return false;
-  }
-  //NAME's length
-  in_File.read((char*) &SubLength, 4);
-  BytesRead += 4;
-  if (SubLength>255)
-  {
-    std::cout << "Error: subrecord NAME of CELL is longer than 255 characters.\n";
-    return false;
-  }
-  //read cell name
+  // read cell name (NAME)
   char Buffer[256];
-  memset(Buffer, '\0', 256);
-  in_File.read(Buffer, SubLength);
-  BytesRead += SubLength;
-  if (!in_File.good())
+  if (!loadString256WithHeader(input, CellID, Buffer, cNAME, BytesRead))
   {
-    std::cout << "Error while reading subrecord NAME of CELL!\n";
+    std::cerr << "Error while reading subrecord NAME of CELL!\n";
     return false;
   }
-  CellID = std::string(Buffer);
 
-  //read DATA
-  in_File.read((char*) &SubRecName, 4);
+  // read DATA
+  input.read(reinterpret_cast<char*>(&SubRecName), 4);
   BytesRead += 4;
-  if (SubRecName!=cDATA)
+  if (SubRecName != cDATA)
   {
     UnexpectedRecord(cDATA, SubRecName);
     return false;
   }
-  //DATA's length
-  in_File.read((char*) &SubLength, 4);
+  // DATA's length
+  input.read(reinterpret_cast<char*>(&SubLength), 4);
   BytesRead += 4;
-  if (SubLength!=12)
+  if (SubLength != 12)
   {
-    std::cout <<"Error: sub record DATA of CELL has invalid length ("<<SubLength
-              <<" bytes). Should be 12 bytes.\n";
+    std::cerr << "Error: Sub record DATA of CELL has invalid length ("
+              << SubLength << " bytes). Should be 12 bytes.\n";
     return false;
   }
-  //read cell data
-  in_File.read((char*) &CellFlags, 4);
-  in_File.read((char*) &GridX, 4);
-  in_File.read((char*) &GridY, 4);
+  // read cell data
+  input.read(reinterpret_cast<char*>(&CellFlags), 4);
+  input.read(reinterpret_cast<char*>(&GridX), 4);
+  input.read(reinterpret_cast<char*>(&GridY), 4);
   BytesRead += 12;
-  if (!in_File.good())
+  if (!input.good())
   {
-    std::cout << "Error while reading subrecord DATA of CELL!\n";
+    std::cerr << "Error while reading subrecord DATA of CELL!\n";
     return false;
   }
 
   RegionID = "";
   NumReferences = 0;
-  References.clear();
+  ReferencesPersistent.clear();
+  ReferencesOther.clear();
   ColourRef = 0;
   ReferencedObject newRef;
 
@@ -422,97 +406,89 @@ bool CellRecord::loadFromStream(std::istream& in_File)
   bool hasRGNN = false;
   bool hasUnknownINTV = false;
   Ambience.isPresent = false;
-  hasWHGT = false;
-  while (BytesRead<Size)
+  WaterHeight.reset();
+  bool refIsPersistent = true;
+  while (BytesRead < Size)
   {
-    //read next subrecord
-    in_File.read((char*) &SubRecName, 4);
+    // read next subrecord
+    input.read(reinterpret_cast<char*>(&SubRecName), 4);
     BytesRead += 4;
     switch(SubRecName)
     {
       case cFRMR:
-           if (!newRef.loadFromStream(in_File, BytesRead, Buffer))
+           if (!newRef.loadFromStream(input, BytesRead, Buffer))
            {
-             std::cout << "Error while reading reference data of CELL!\n";
+             std::cerr << "Error while reading reference data of CELL!\n";
              return false;
            }
-           References.push_back(newRef);
+           if (refIsPersistent)
+             ReferencesPersistent.emplace_back(newRef);
+           else
+             ReferencesOther.emplace_back(newRef);
            break;
       case cRGNN:
            if (hasRGNN)
            {
-             std::cout << "Error: record CELL seems to have two RGNN subrecords.\n";
+             std::cerr << "Error: Record CELL seems to have two RGNN subrecords.\n";
              return false;
            }
-           //RGNN's length
-           in_File.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength>255)
+           // read region name (RGNN)
+           if (!loadString256(input, RegionID, Buffer, cRGNN, BytesRead))
            {
-             std::cout << "Error: subrecord RGNN of CELL is longer than 255 characters.\n";
+             std::cerr << "Error while reading subrecord RGNN of CELL!\n";
              return false;
            }
-           //read region name
-           memset(Buffer, '\0', 256);
-           in_File.read(Buffer, SubLength);
-           BytesRead += SubLength;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord RGNN of CELL!\n";
-             return false;
-           }
-           RegionID = std::string(Buffer);
            hasRGNN = true;
            break;
       case cWHGT:
-           if (hasWHGT)
+           if (WaterHeight.has_value())
            {
-             std::cout << "Error: record CELL seems to have two WHGT subrecords.\n";
+             std::cerr << "Error: Record CELL seems to have two WHGT subrecords.\n";
              return false;
            }
-           //WHGT's length
-           in_File.read((char*) &SubLength, 4);
+           // WHGT's length
+           input.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
-           if (SubLength!=4)
+           if (SubLength != 4)
            {
-             std::cout << "Error: subrecord WHGT of CELL has invalid length ("<<SubLength
-                       << " bytes). Should be four bytes.\n";
+             std::cerr << "Error: Subrecord WHGT of CELL has invalid length ("
+                       << SubLength << " bytes). Should be four bytes.\n";
              return false;
            }
-           //read water height
-           in_File.read((char*) &WaterHeight, 4);
+           // read water height
+           WaterHeight = std::numeric_limits<float>::quiet_NaN();
+           input.read(reinterpret_cast<char*>(&WaterHeight), 4);
            BytesRead += 4;
-           if (!in_File.good())
+           if (!input.good())
            {
-             std::cout << "Error while reading subrecord WHGT of CELL!\n";
+             std::cerr << "Error while reading subrecord WHGT of CELL!\n";
              return false;
            }
-           hasWHGT = true;
            break;
       case cAMBI:
            if (Ambience.isPresent)
            {
-             std::cout << "Error: record CELL seems to have two AMBI subrecords.\n";
+             std::cerr << "Error: Record CELL seems to have two AMBI sub records.\n";
              return false;
            }
-           //AMBI's length
-           in_File.read((char*) &SubLength, 4);
+           // AMBI's length
+           input.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
-           if (SubLength!=16)
+           if (SubLength != 16)
            {
-             std::cout << "Error: subrecord AMBI of CELL has invalid length ("<<SubLength
-                       << " bytes). Should be 16 bytes.\n";
+             std::cerr << "Error: Subrecord AMBI of CELL has invalid length ("
+                       << SubLength << " bytes). Should be 16 bytes.\n";
              return false;
            }
-           //read ambient light data
-           in_File.read((char*) &Ambience.AmbientColour, 4);
-           in_File.read((char*) &Ambience.SunlightColour, 4);
-           in_File.read((char*) &Ambience.FogColour, 4);
-           in_File.read((char*) &Ambience.FogDensity, 4);
+           // read ambient light data
+           input.read(reinterpret_cast<char*>(&Ambience.AmbientColour), 4);
+           input.read(reinterpret_cast<char*>(&Ambience.SunlightColour), 4);
+           input.read(reinterpret_cast<char*>(&Ambience.FogColour), 4);
+           input.read(reinterpret_cast<char*>(&Ambience.FogDensity), 4);
            BytesRead += 16;
-           if (!in_File.good())
+           if (!input.good())
            {
-             std::cout << "Error while reading subrecord AMBI of CELL!\n";
+             std::cerr << "Error while reading subrecord AMBI of CELL!\n";
              return false;
            }
            Ambience.isPresent = true;
@@ -520,111 +496,101 @@ bool CellRecord::loadFromStream(std::istream& in_File)
       case cNAM0:
            if (hasNAM0)
            {
-             std::cout << "Error: record CELL seems to have two NAM0 subrecords.\n";
+             std::cerr << "Error: Record CELL seems to have two NAM0 subrecords.\n";
              return false;
            }
-           //NAM0's length
-           in_File.read((char*) &SubLength, 4);
+           // NAM0's length
+           input.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
-           if (SubLength!=4)
+           if (SubLength != 4)
            {
-             std::cout << "Error: subrecord NAM0 of CELL has invalid length ("<<SubLength
-                       << " bytes). Should be four bytes.\n";
+             std::cerr << "Error: Subrecord NAM0 of CELL has invalid length ("
+                       << SubLength << " bytes). Should be four bytes.\n";
              return false;
            }
            //read number of objects in cell
-           in_File.read((char*) &NumReferences, 4);
+           input.read(reinterpret_cast<char*>(&NumReferences), 4);
            BytesRead += 4;
-           if (!in_File.good())
+           if (!input.good())
            {
-             std::cout << "Error while reading subrecord NAM0 of CELL!\n";
+             std::cerr << "Error while reading subrecord NAM0 of CELL!\n";
              return false;
            }
            hasNAM0 = true;
+           refIsPersistent = false;
            break;
       case cNAM5:
            if (hasNAM5)
            {
-             std::cout << "Error: record CELL seems to have two NAM5 subrecords.\n";
+             std::cerr << "Error: Record CELL seems to have two NAM5 subrecords.\n";
              return false;
            }
-           //NAM5's length
-           in_File.read((char*) &SubLength, 4);
+           // NAM5's length
+           input.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
-           if (SubLength!=4)
+           if (SubLength != 4)
            {
-             std::cout << "Error: subrecord NAM5 of CELL has invalid length ("<<SubLength
-                       << " bytes). Should be four bytes.\n";
+             std::cerr << "Error: Subrecord NAM5 of CELL has invalid length ("
+                       << SubLength << " bytes). Should be four bytes.\n";
              return false;
            }
-           //read map color reference
-           in_File.read((char*) &ColourRef, 4);
+           // read map color reference
+           input.read(reinterpret_cast<char*>(&ColourRef), 4);
            BytesRead += 4;
-           if (!in_File.good())
+           if (!input.good())
            {
-             std::cout << "Error while reading subrecord NAM5 of CELL!\n";
+             std::cerr << "Error while reading subrecord NAM5 of CELL!\n";
              return false;
            }
            hasNAM5 = true;
            break;
-      case cINTV: //Somehow some of the english plugin files seem to have an
+      case cINTV: //Somehow some of the English plugin files seem to have an
                   //  INTV record after DATA and before AMBI, but I can't see
                   //  what value they represent in game, so we just skip it.
            if (hasUnknownINTV)
            {
-             std::cout << "Error: record CELL seems to have two INTV subrecords.\n";
+             std::cerr << "Error: Record CELL seems to have two INTV subrecords.\n";
              return false;
            }
            //INTV's length
-           in_File.read((char*) &SubLength, 4);
+           input.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
-           if (SubLength!=4)
+           if (SubLength != 4)
            {
-             std::cout << "Error: subrecord INTV of CELL has invalid length ("<<SubLength
-                       << " bytes). Should be four bytes.\n";
+             std::cerr << "Error: Subrecord INTV of CELL has invalid length ("
+                       << SubLength << " bytes). Should be four bytes.\n";
              return false;
            }
-           //read int value
-           in_File.read((char*) &SubLength, 4);//we don't actually use this value
+           // read int value
+           input.read(reinterpret_cast<char*>(&SubLength), 4); // We don't actually use this value.
            BytesRead += 4;
-           if (!in_File.good())
+           if (!input.good())
            {
-             std::cout << "Error while reading subrecord INTV of CELL!\n";
+             std::cerr << "Error while reading subrecord INTV of CELL!\n";
              return false;
            }
            hasUnknownINTV = true;
            break;
       default:
-           std::cout << "Error while reading CELL: expected record name FRMR, "
+           std::cerr << "Error while reading CELL: Expected record name FRMR, "
                      << "RGNN, WHGT, AMBI, NAM0, NAM5 or INTV not found. Instead, \""
-                     << IntTo4Char(SubRecName)<<"\" was found.\n";
+                     << IntTo4Char(SubRecName) << "\" was found.\n";
            return false;
            break;
-    }//swi
-  }//while
-
-  while (BytesRead<Size)
-  {
-    ReferencedObject newRef;
-    if (!newRef.loadFromStream(in_File, BytesRead, Buffer))
-    {
-      std::cout << "Error while reading reference data of CELL!\n";
-      return false;
     }
-    References.push_back(newRef);
-  }//while
+  }
 
-  return (in_File.good() and (BytesRead>=Size));
+  return input.good();
 }
 
 bool CellRecord::isInterior() const
 {
-  return ((CellFlags & cfInterior)!=0);
+  return (CellFlags & cfInterior) != 0;
 }
 
 bool CellRecord::hasWater() const
 {
-  return ((CellFlags & cfWater)!=0);
+  return (CellFlags & cfWater) != 0;
 }
 
-} //namespace
+} // namespace

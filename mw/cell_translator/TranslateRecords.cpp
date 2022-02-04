@@ -69,26 +69,14 @@ bool translatePreNPCRecord(PreNPCRecord* c_rec, const CellListType& cells, unsig
   return true;
 }
 
-bool translateCellRecord(CellRecord* c_rec, const CellListType& cells, unsigned int& changedRecords)
+bool translateReferences(std::vector<ReferencedObject>& references, const CellListType& cells)
 {
-  if (c_rec == nullptr)
-    return false;
-
   bool changed = false;
-  CellListType::const_iterator cells_iter;
-  // translate cell name
-  cells_iter = cells.find(c_rec->CellID);
-  if (cells_iter != cells.end())
-  {
-    c_rec->CellID = cells_iter->second;
-    changed = true;
-  }
-  // On to the references we go!
-  for (auto& current_reference: c_rec->References)
+  for (auto& current_reference: references)
   {
     if (current_reference.DoorData.has_value())
     {
-      cells_iter = cells.find(current_reference.DoorData.value().ExitName);
+      const auto cells_iter = cells.find(current_reference.DoorData.value().ExitName);
       if (cells_iter != cells.end())
       {
         current_reference.DoorData.value().ExitName = cells_iter->second;
@@ -96,6 +84,25 @@ bool translateCellRecord(CellRecord* c_rec, const CellListType& cells, unsigned 
       }
     }
   }
+  return changed;
+}
+
+bool translateCellRecord(CellRecord* c_rec, const CellListType& cells, unsigned int& changedRecords)
+{
+  if (c_rec == nullptr)
+    return false;
+
+  bool changed = false;
+  // translate cell name
+  const CellListType::const_iterator cells_iter = cells.find(c_rec->CellID);
+  if (cells_iter != cells.end())
+  {
+    c_rec->CellID = cells_iter->second;
+    changed = true;
+  }
+  // On to the references we go!
+  changed |= translateReferences(c_rec->ReferencesPersistent, cells);
+  changed |= translateReferences(c_rec->ReferencesOther, cells);
   if (changed)
     ++changedRecords;
   return true;

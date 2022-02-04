@@ -21,6 +21,7 @@
 #ifndef MW_CELLRECORD_HPP
 #define MW_CELLRECORD_HPP
 
+#include <optional>
 #include <string>
 #include <vector>
 #include "BasicRecord.hpp"
@@ -54,39 +55,58 @@ struct CellRecord: public BasicRecord
   uint32_t NumReferences;
   uint32_t ColourRef;
 
-  //WHGT
-  bool hasWHGT;
-  float WaterHeight;
-  //AMBI
-  AmbientLight Ambience;
+  std::optional<float> WaterHeight; // WHGT
+  AmbientLight Ambience; // AMBI
 
-  std::vector<ReferencedObject> References;
+  std::vector<ReferencedObject> ReferencesPersistent;
+  std::vector<ReferencedObject> ReferencesOther;
 
   CellRecord();
 
-  /* returns true, if the other record contains the same data */
+  /** \brief Checks whether another instance contains the same data.
+   *
+   * \param other   the other record to compare with
+   * \return Returns true, if @other contains the same data as instance.
+   *         Returns false otherwise.
+   */
   bool equals(const CellRecord& other) const;
 
   #ifndef MW_UNSAVEABLE_RECORDS
-  /* writes the record to the given output stream and returns true on success
+  /** \brief Gets the size in bytes that the record's data would occupy in a
+   *         stream, NOT including the header data.
+   *
+   * \return Returns the size in bytes that the record would need. Size of the
+   *         header is not included.
+   */
+  uint32_t getWriteSize() const;
 
-    parameters:
-        output - the output stream
-  */
+  /** \brief Writes the record to the given output stream.
+   *
+   * \param output  the output stream
+   * \return Returns true on success (record was written to stream).
+   *         Returns false, if an error occurred.
+   */
   bool saveToStream(std::ostream& output) const override;
   #endif
 
-  /* loads the record from the given input stream and returns true on success
+  /** \brief Loads the record from the given input stream.
+   *
+   * \param input    the input stream
+   * \return Returns true on success (record was loaded from stream).
+   *         Returns false, if an error occurred.
+   */
+  bool loadFromStream(std::istream& input) override;
 
-    parameters:
-        in_File - the input stream
-  */
-  bool loadFromStream(std::istream& in_File) override;
-
-  /* returns true, if the interior cell flag is set */
+  /** \brief Checks whether this is an interior cell.
+   *
+   * \return Returns true, if the interior cell flag is set.
+   */
   bool isInterior() const;
 
-  /* returns true, if the water flag is set */
+  /** \brief Checks whether this cell has water.
+   *
+   * \return Returns true, if the water flag is set.
+   */
   bool hasWater() const;
 }; // struct
 

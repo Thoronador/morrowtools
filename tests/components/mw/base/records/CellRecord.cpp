@@ -280,6 +280,54 @@ TEST_CASE("MWTP::CellRecord")
       REQUIRE( streamOut.str() == data );
     }
 
+    SECTION("default: load exterior cell with colour reference")
+    {
+      const auto data = "CELL\xB1\x0A\0\0\0\0\0\0\0\0\0\0NAME\x09\0\0\0Rotheran\0DATA\x0C\0\0\0B\0\0\0\x06\0\0\0\x12\0\0\0RGNN\x0A\0\0\0Sheogorad\0NAM5\x04\0\0\0\xCA\xA5`\0FRMR\x04\0\0\0\xFF\xF1\x01\0NAME\x11\0\0\0dolvasie veloren\0DATA\x18\0\0\0\0\x80SG\0\x80\x16H\0\0\xE0\x44\0\0\0\0\0\0\0\0Av\x8F@FRMR\x04\0\0\0\xFE\xF1\x01\0NAME\x10\0\0\0tirasie andalen\0DATA\x18\0\0\0\x16\x0AQG\xA1y\x15HM}\xDE\x44\0\0\0\0\0\0\0\0\xA8\xDC\xC5@FRMR\x04\0\0\0\xF3\xF1\x01\0NAME\x16\0\0\0in_strong_vaultdoor00\0DODT\x18\0\0\0s\x85\xD5\x43OR\x1F\x44\0\0\xB8\xC3\0\0\0\0\0\0\0\0\xE4\xCB\x96@DNAM\x1A\0\0\0Rotheran, Propylon-Kammer\0DATA\x18\0\0\0V]UG\x0Ci\x15H\xEF\xCC\xE6\x44\0\0\0\0\0\0\0\0\xDB\x0F\xC9?FRMR\x04\0\0\0\xFA\xF1\x01\0NAME\x16\0\0\0in_strong_vaultdoor00\0DODT\x18\0\0\0\x37\x89I@\xC9\x16\x65\x44%f\xD4\xC3\0\0\0\0\0\0\0\0\0\0\0\0DNAM\x18\0\0\0Rotheran, Gemeindeh\xFCtte\0DATA\x18\0\0\0\x1F@OG\x8C\xD0\x15H\x06n\xE6\x44\0\0\0\0\0\0\0\0\xA5\xFF\x12@FRMR\x04\0\0\0\xFC\xF1\x01\0NAME\x16\0\0\0in_strong_vaultdoor00\0DODT\x18\0\0\0)\x1A\x11\x45s\xA8>Dh\x11'\xC2\0\0\0\0\0\0\0\0\xD4\xD8\x95@DNAM\x10\0\0\0Rotheran, Arena\0DATA\x18\0\0\0X]TG\x8B\x8D\x16H\xEF\x8C\xE6\x44\0\0\0\0\0\0\0\0A`\xB0@NAM0\x04\0\0\0\x1E\0\0\0FRMR\x04\0\0\0\xF1\xF1\x01\0NAME\x15\0\0\0ex_stronghold_fort03\0DATA\x18\0\0\0X\x1DUG\x8B\x95\x14HxF\x0F\x45\0\0\0\0\0\0\0\0\xD6\x0F\xC9?FRMR\x04\0\0\0\xF2\xF1\x01\0NAME\x16\0\0\0ex_stronghold_enter00\0DATA\x18\0\0\0X\x1DUG\x8AK\x15H\xED\x8C\xEE\x44\0\0\0\0\0\0\0\0\xD6\x0F\xC9?FRMR\x04\0\0\0\xF4\xF1\x01\0NAME\x16\0\0\0ex_stronghold_pylon02\0DATA\x18\0\0\0X\x9DQG\x8B\x8D\x15H\xEF\x8C\xB6\x44\0\0\0\0\0\0\0\0\xDB\x0FI@FRMR\x04\0\0\0\xF5\xF1\x01\0NAME\x16\0\0\0ex_stronghold_pylon00\0DATA\x18\0\0\0T\x1DKG\x8A\x8D\x15H\xEB\x8C\xB6\x44\0\0\0\0\0\0\0\0\xDB\x0FI@FRMR\x04\0\0\0\xF6\xF1\x01\0NAME\x16\0\0\0ex_stronghold_pylon00\0DATA\x18\0\0\0R\x1DWG\x8B\x8D\x15H\xEB\x8C\xB6\x44\0\0\0\0\0\0\0\0\xDA\x0F\xC9@FRMR\x04\0\0\0\xF7\xF1\x01\0NAME\x18\0\0\0ex_stronghold_sandpit00\0DATA\x18\0\0\0\x9F\x9CMG\x14\xC1\x16H\xEF\x8C\xDE\x44\0\0\0\0\0\0\0\0\xDB\x0FI@FRMR\x04\0\0\0\xF8\xF1\x01\0NAME\x15\0\0\0ex_stronghold_dome00\0DATA\x18\0\0\0\xC3\x41MG*Y\x15H\xEF\x8C\xFE\x44\0\0\0\0\0\0\0\0\xEBRE@FRMR\x04\0\0\0\xF9\xF1\x01\0NAME\x16\0\0\0ex_stronghold_enter00\0DATA\x18\0\0\0\x86\xC0NG\xC4\xC4\x15Ha\x95\xEE\x44\0\0\0\0\0\0\0\0\xF2\x0E\x13@FRMR\x04\0\0\0\xFB\xF1\x01\0NAME\x18\0\0\0ex_stronghold_smdwell00\0DATA\x18\0\0\0j\xC3UG.\xCE\x16H\xC3\xAB\xEE\x44\0\0\0\0\0\0\0\0\xCD\xCCL?FRMR\x04\0\0\0\xFD\xF1\x01\0NAME\x16\0\0\0ex_stronghold_enter00\0DATA\x18\0\0\0\xDB\xDDTGq\x96\x16HI\xB4\xEE\x44\0\0\0\0\0\0\0\0|e\xB0@FRMR\x04\0\0\0\xB5\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0\xDD\x83RG\x9E-\x10HM1\x18\x44\0\0\0\0\0\0\0\0\x91/\xBB@FRMR\x04\0\0\0\xB6\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0$\x1CNG\xEDJ\x12H\xC3\xDA,D\0\0\0\0\0\0\0\0\xE8~\x88?FRMR\x04\0\0\0\xB7\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0\xB2ZPGO\"\x12H\xEB\xBC\x8C\x44\0\0\0\0\0\0\0\0\xEDR%@FRMR\x04\0\0\0\xB8\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0'\xC4JGB\x90\x11Hx\xD9\x98\x44\0\0\0\0\0\0\0\0^?\xE4?FRMR\x04\0\0\0\xB9\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0*\x94NG7|\x10H\xDA\xB4\x80\x44\0\0\0\0\0\0\0\0\x1C\x86\x98@FRMR\x04\0\0\0\xBA\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0^:GGo\x13\x12H\xEF\xD7\x42\x44\0\0\0\0\0\0\0\0e?\x04@FRMR\x04\0\0\0\xBB\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\xECQ\xB8?DATA\x18\0\0\0\xE9\x81GG\x9Bz\x11Hq\x03\xD0\x44\0\0\0\0\0\0\0\0\xDC\x30\xC4>FRMR\x04\0\0\0\xBC\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0l\x13\x44G\xBCy\x15H\xA3\x8FTD\0\0\0\0\0\0\0\0\xC5\x62\xAE@FRMR\x04\0\0\0\xBD\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0\xC2\xE7\x43G\xAD\xCB\x13H\x01\xC5\x81\x44\0\0\0\0\0\0\0\08q\xC7@FRMR\x04\0\0\0\xBE\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0\x0B\xD0^G\x11\xBA\x11Hq\xB0\xF9\x42\0\0\0\0\0\0\0\0\xA3\xDC\x95@FRMR\x04\0\0\0\xBF\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0w\xF6ZG\x89\xD9\x12H\x19QjC\0\0\0\0\0\0\0\09\x0C\xB1?FRMR\x04\0\0\0\xC0\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0\x93\x43\\G\x9E\xD1\x10H\x9C+\xAD\x42\0\0\0\0\0\0\0\0\x0E\xD9}@FRMR\x04\0\0\0\xC1\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0\x35\x81WG)4\x12H\x8C\x15@D\0\0\0\0\0\0\0\0\xC4\x62\xAE@FRMR\x04\0\0\0\xC2\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0\xA2\x9FYGi\xF4\x10H\x9A\x0E+D\0\0\0\0\0\0\0\0Cv\xAF@FRMR\x04\0\0\0\xC3\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0\xFB\x63]G-\xE7\x16H\xC2\xF7\xF8\x43\0\0\0\0\0\0\0\0\xAF\xD7??FRMR\x04\0\0\0\x17,\x06\0NAME\x1A\0\0\0ex_shore_cliffracer_lev+0\0DATA\x18\0\0\0\xCF\x01KG\xD9\xF3\x10HR\xF5\x30\x45\0\0\0\0\0\0\0\0\0\0\0\0FRMR\x04\0\0\0\x18,\x06\0NAME\x1A\0\0\0ex_shore_cliffracer_lev+0\0DATA\x18\0\0\0\x88\x1D[G\xCD\x1E\x12HM\x80\x07\x45\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      CellRecord record;
+      REQUIRE( record.loadFromStream(stream) );
+      // Check data.
+      // -- header
+      REQUIRE( record.getHeaderOne() == 0 );
+      REQUIRE( record.getHeaderFlags() == 0 );
+      // -- record data
+      REQUIRE( record.CellID == "Rotheran" );
+      REQUIRE( record.CellFlags == 0x00000042 );
+      REQUIRE( record.GridX == 6 );
+      REQUIRE( record.GridY == 18 );
+      REQUIRE_FALSE( record.isInterior() );
+      REQUIRE( record.RegionID == "Sheogorad" );
+      REQUIRE( record.NumReferences == 30 );
+      REQUIRE( record.ColourRef.has_value() );
+      REQUIRE( record.ColourRef.value() == 0x0060A5CA );
+      REQUIRE_FALSE( record.WaterHeight.has_value() );
+      REQUIRE_FALSE( record.Ambience.isPresent );
+      REQUIRE( record.ReferencesPersistent.size() == 5 );
+      REQUIRE( record.ReferencesPersistent[0].ObjectID == "dolvasie veloren" );
+      REQUIRE( record.ReferencesPersistent[1].ObjectID == "tirasie andalen" );
+      REQUIRE( record.ReferencesPersistent[2].ObjectID == "in_strong_vaultdoor00" );
+      REQUIRE( record.ReferencesPersistent[3].ObjectID == "in_strong_vaultdoor00" );
+      REQUIRE( record.ReferencesPersistent[4].ObjectID == "in_strong_vaultdoor00" );
+      REQUIRE( record.ReferencesOther.size() == 27 );
+      REQUIRE( record.ReferencesOther[0].ObjectID == "ex_stronghold_fort03" );
+      REQUIRE( record.ReferencesOther[1].ObjectID == "ex_stronghold_enter00" );
+      REQUIRE( record.ReferencesOther[2].ObjectID == "ex_stronghold_pylon02" );
+      REQUIRE( record.ReferencesOther[26].ObjectID == "ex_shore_cliffracer_lev+0" );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( record.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
+    }
+
     SECTION("corrupt data: stream ends before header can be read")
     {
       const auto data = "CELL\x12\x03\0\0\0"sv;
@@ -599,6 +647,21 @@ TEST_CASE("MWTP::CellRecord")
       REQUIRE_FALSE( record.loadFromStream(stream) );
     }
 
+    SECTION("corrupt data: no RGNN")
+    {
+      const auto data = "CELL\x3A\0\0\0\0\0\0\0\0\0\0\0NAME\x01\0\0\0\0DATA\x0C\0\0\0\x02\0\0\0\x17\0\0\0\x07\0\0\0FAIL\x15\0\0\0Azura's Coast Region\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      CellRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
     SECTION("corrupt data: multiple RGNNs")
     {
       const auto data = "CELL\x57\0\0\0\0\0\0\0\0\0\0\0NAME\x01\0\0\0\0DATA\x0C\0\0\0\x02\0\0\0\x17\0\0\0\x07\0\0\0RGNN\x15\0\0\0Azura's Coast Region\0RGNN\x15\0\0\0Azura's Coast Region\0"sv;
@@ -632,6 +695,67 @@ TEST_CASE("MWTP::CellRecord")
     SECTION("corrupt data: length of RGNN is beyond stream")
     {
       const auto data = "CELL\x3A\0\0\0\0\0\0\0\0\0\0\0NAME\x01\0\0\0\0DATA\x0C\0\0\0\x02\0\0\0\x17\0\0\0\x07\0\0\0RGNN\x25\0\0\0Azura's Coast Region\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      CellRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: multiple NAM5s")
+    {
+      const auto data = "CELL\xBD\x0A\0\0\0\0\0\0\0\0\0\0NAME\x09\0\0\0Rotheran\0DATA\x0C\0\0\0B\0\0\0\x06\0\0\0\x12\0\0\0RGNN\x0A\0\0\0Sheogorad\0NAM5\x04\0\0\0\xCA\xA5`\0NAM5\x04\0\0\0\xCA\xA5`\0FRMR\x04\0\0\0\xFF\xF1\x01\0NAME\x11\0\0\0dolvasie veloren\0DATA\x18\0\0\0\0\x80SG\0\x80\x16H\0\0\xE0\x44\0\0\0\0\0\0\0\0Av\x8F@FRMR\x04\0\0\0\xFE\xF1\x01\0NAME\x10\0\0\0tirasie andalen\0DATA\x18\0\0\0\x16\x0AQG\xA1y\x15HM}\xDE\x44\0\0\0\0\0\0\0\0\xA8\xDC\xC5@FRMR\x04\0\0\0\xF3\xF1\x01\0NAME\x16\0\0\0in_strong_vaultdoor00\0DODT\x18\0\0\0s\x85\xD5\x43OR\x1F\x44\0\0\xB8\xC3\0\0\0\0\0\0\0\0\xE4\xCB\x96@DNAM\x1A\0\0\0Rotheran, Propylon-Kammer\0DATA\x18\0\0\0V]UG\x0Ci\x15H\xEF\xCC\xE6\x44\0\0\0\0\0\0\0\0\xDB\x0F\xC9?FRMR\x04\0\0\0\xFA\xF1\x01\0NAME\x16\0\0\0in_strong_vaultdoor00\0DODT\x18\0\0\0\x37\x89I@\xC9\x16\x65\x44%f\xD4\xC3\0\0\0\0\0\0\0\0\0\0\0\0DNAM\x18\0\0\0Rotheran, Gemeindeh\xFCtte\0DATA\x18\0\0\0\x1F@OG\x8C\xD0\x15H\x06n\xE6\x44\0\0\0\0\0\0\0\0\xA5\xFF\x12@FRMR\x04\0\0\0\xFC\xF1\x01\0NAME\x16\0\0\0in_strong_vaultdoor00\0DODT\x18\0\0\0)\x1A\x11\x45s\xA8>Dh\x11'\xC2\0\0\0\0\0\0\0\0\xD4\xD8\x95@DNAM\x10\0\0\0Rotheran, Arena\0DATA\x18\0\0\0X]TG\x8B\x8D\x16H\xEF\x8C\xE6\x44\0\0\0\0\0\0\0\0A`\xB0@NAM0\x04\0\0\0\x1E\0\0\0FRMR\x04\0\0\0\xF1\xF1\x01\0NAME\x15\0\0\0ex_stronghold_fort03\0DATA\x18\0\0\0X\x1DUG\x8B\x95\x14HxF\x0F\x45\0\0\0\0\0\0\0\0\xD6\x0F\xC9?FRMR\x04\0\0\0\xF2\xF1\x01\0NAME\x16\0\0\0ex_stronghold_enter00\0DATA\x18\0\0\0X\x1DUG\x8AK\x15H\xED\x8C\xEE\x44\0\0\0\0\0\0\0\0\xD6\x0F\xC9?FRMR\x04\0\0\0\xF4\xF1\x01\0NAME\x16\0\0\0ex_stronghold_pylon02\0DATA\x18\0\0\0X\x9DQG\x8B\x8D\x15H\xEF\x8C\xB6\x44\0\0\0\0\0\0\0\0\xDB\x0FI@FRMR\x04\0\0\0\xF5\xF1\x01\0NAME\x16\0\0\0ex_stronghold_pylon00\0DATA\x18\0\0\0T\x1DKG\x8A\x8D\x15H\xEB\x8C\xB6\x44\0\0\0\0\0\0\0\0\xDB\x0FI@FRMR\x04\0\0\0\xF6\xF1\x01\0NAME\x16\0\0\0ex_stronghold_pylon00\0DATA\x18\0\0\0R\x1DWG\x8B\x8D\x15H\xEB\x8C\xB6\x44\0\0\0\0\0\0\0\0\xDA\x0F\xC9@FRMR\x04\0\0\0\xF7\xF1\x01\0NAME\x18\0\0\0ex_stronghold_sandpit00\0DATA\x18\0\0\0\x9F\x9CMG\x14\xC1\x16H\xEF\x8C\xDE\x44\0\0\0\0\0\0\0\0\xDB\x0FI@FRMR\x04\0\0\0\xF8\xF1\x01\0NAME\x15\0\0\0ex_stronghold_dome00\0DATA\x18\0\0\0\xC3\x41MG*Y\x15H\xEF\x8C\xFE\x44\0\0\0\0\0\0\0\0\xEBRE@FRMR\x04\0\0\0\xF9\xF1\x01\0NAME\x16\0\0\0ex_stronghold_enter00\0DATA\x18\0\0\0\x86\xC0NG\xC4\xC4\x15Ha\x95\xEE\x44\0\0\0\0\0\0\0\0\xF2\x0E\x13@FRMR\x04\0\0\0\xFB\xF1\x01\0NAME\x18\0\0\0ex_stronghold_smdwell00\0DATA\x18\0\0\0j\xC3UG.\xCE\x16H\xC3\xAB\xEE\x44\0\0\0\0\0\0\0\0\xCD\xCCL?FRMR\x04\0\0\0\xFD\xF1\x01\0NAME\x16\0\0\0ex_stronghold_enter00\0DATA\x18\0\0\0\xDB\xDDTGq\x96\x16HI\xB4\xEE\x44\0\0\0\0\0\0\0\0|e\xB0@FRMR\x04\0\0\0\xB5\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0\xDD\x83RG\x9E-\x10HM1\x18\x44\0\0\0\0\0\0\0\0\x91/\xBB@FRMR\x04\0\0\0\xB6\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0$\x1CNG\xEDJ\x12H\xC3\xDA,D\0\0\0\0\0\0\0\0\xE8~\x88?FRMR\x04\0\0\0\xB7\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0\xB2ZPGO\"\x12H\xEB\xBC\x8C\x44\0\0\0\0\0\0\0\0\xEDR%@FRMR\x04\0\0\0\xB8\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0'\xC4JGB\x90\x11Hx\xD9\x98\x44\0\0\0\0\0\0\0\0^?\xE4?FRMR\x04\0\0\0\xB9\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0*\x94NG7|\x10H\xDA\xB4\x80\x44\0\0\0\0\0\0\0\0\x1C\x86\x98@FRMR\x04\0\0\0\xBA\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0^:GGo\x13\x12H\xEF\xD7\x42\x44\0\0\0\0\0\0\0\0e?\x04@FRMR\x04\0\0\0\xBB\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\xECQ\xB8?DATA\x18\0\0\0\xE9\x81GG\x9Bz\x11Hq\x03\xD0\x44\0\0\0\0\0\0\0\0\xDC\x30\xC4>FRMR\x04\0\0\0\xBC\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0l\x13\x44G\xBCy\x15H\xA3\x8FTD\0\0\0\0\0\0\0\0\xC5\x62\xAE@FRMR\x04\0\0\0\xBD\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0\xC2\xE7\x43G\xAD\xCB\x13H\x01\xC5\x81\x44\0\0\0\0\0\0\0\08q\xC7@FRMR\x04\0\0\0\xBE\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0\x0B\xD0^G\x11\xBA\x11Hq\xB0\xF9\x42\0\0\0\0\0\0\0\0\xA3\xDC\x95@FRMR\x04\0\0\0\xBF\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0w\xF6ZG\x89\xD9\x12H\x19QjC\0\0\0\0\0\0\0\09\x0C\xB1?FRMR\x04\0\0\0\xC0\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0\x93\x43\\G\x9E\xD1\x10H\x9C+\xAD\x42\0\0\0\0\0\0\0\0\x0E\xD9}@FRMR\x04\0\0\0\xC1\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0\x35\x81WG)4\x12H\x8C\x15@D\0\0\0\0\0\0\0\0\xC4\x62\xAE@FRMR\x04\0\0\0\xC2\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0\xA2\x9FYGi\xF4\x10H\x9A\x0E+D\0\0\0\0\0\0\0\0Cv\xAF@FRMR\x04\0\0\0\xC3\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0\xFB\x63]G-\xE7\x16H\xC2\xF7\xF8\x43\0\0\0\0\0\0\0\0\xAF\xD7??FRMR\x04\0\0\0\x17,\x06\0NAME\x1A\0\0\0ex_shore_cliffracer_lev+0\0DATA\x18\0\0\0\xCF\x01KG\xD9\xF3\x10HR\xF5\x30\x45\0\0\0\0\0\0\0\0\0\0\0\0FRMR\x04\0\0\0\x18,\x06\0NAME\x1A\0\0\0ex_shore_cliffracer_lev+0\0DATA\x18\0\0\0\x88\x1D[G\xCD\x1E\x12HM\x80\x07\x45\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      CellRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: length of NAM5 is not four")
+    {
+      {
+        const auto data = "CELL\xB0\x0A\0\0\0\0\0\0\0\0\0\0NAME\x09\0\0\0Rotheran\0DATA\x0C\0\0\0B\0\0\0\x06\0\0\0\x12\0\0\0RGNN\x0A\0\0\0Sheogorad\0NAM5\x03\0\0\0\xCA\xA5`FRMR\x04\0\0\0\xFF\xF1\x01\0NAME\x11\0\0\0dolvasie veloren\0DATA\x18\0\0\0\0\x80SG\0\x80\x16H\0\0\xE0\x44\0\0\0\0\0\0\0\0Av\x8F@FRMR\x04\0\0\0\xFE\xF1\x01\0NAME\x10\0\0\0tirasie andalen\0DATA\x18\0\0\0\x16\x0AQG\xA1y\x15HM}\xDE\x44\0\0\0\0\0\0\0\0\xA8\xDC\xC5@FRMR\x04\0\0\0\xF3\xF1\x01\0NAME\x16\0\0\0in_strong_vaultdoor00\0DODT\x18\0\0\0s\x85\xD5\x43OR\x1F\x44\0\0\xB8\xC3\0\0\0\0\0\0\0\0\xE4\xCB\x96@DNAM\x1A\0\0\0Rotheran, Propylon-Kammer\0DATA\x18\0\0\0V]UG\x0Ci\x15H\xEF\xCC\xE6\x44\0\0\0\0\0\0\0\0\xDB\x0F\xC9?FRMR\x04\0\0\0\xFA\xF1\x01\0NAME\x16\0\0\0in_strong_vaultdoor00\0DODT\x18\0\0\0\x37\x89I@\xC9\x16\x65\x44%f\xD4\xC3\0\0\0\0\0\0\0\0\0\0\0\0DNAM\x18\0\0\0Rotheran, Gemeindeh\xFCtte\0DATA\x18\0\0\0\x1F@OG\x8C\xD0\x15H\x06n\xE6\x44\0\0\0\0\0\0\0\0\xA5\xFF\x12@FRMR\x04\0\0\0\xFC\xF1\x01\0NAME\x16\0\0\0in_strong_vaultdoor00\0DODT\x18\0\0\0)\x1A\x11\x45s\xA8>Dh\x11'\xC2\0\0\0\0\0\0\0\0\xD4\xD8\x95@DNAM\x10\0\0\0Rotheran, Arena\0DATA\x18\0\0\0X]TG\x8B\x8D\x16H\xEF\x8C\xE6\x44\0\0\0\0\0\0\0\0A`\xB0@NAM0\x04\0\0\0\x1E\0\0\0FRMR\x04\0\0\0\xF1\xF1\x01\0NAME\x15\0\0\0ex_stronghold_fort03\0DATA\x18\0\0\0X\x1DUG\x8B\x95\x14HxF\x0F\x45\0\0\0\0\0\0\0\0\xD6\x0F\xC9?FRMR\x04\0\0\0\xF2\xF1\x01\0NAME\x16\0\0\0ex_stronghold_enter00\0DATA\x18\0\0\0X\x1DUG\x8AK\x15H\xED\x8C\xEE\x44\0\0\0\0\0\0\0\0\xD6\x0F\xC9?FRMR\x04\0\0\0\xF4\xF1\x01\0NAME\x16\0\0\0ex_stronghold_pylon02\0DATA\x18\0\0\0X\x9DQG\x8B\x8D\x15H\xEF\x8C\xB6\x44\0\0\0\0\0\0\0\0\xDB\x0FI@FRMR\x04\0\0\0\xF5\xF1\x01\0NAME\x16\0\0\0ex_stronghold_pylon00\0DATA\x18\0\0\0T\x1DKG\x8A\x8D\x15H\xEB\x8C\xB6\x44\0\0\0\0\0\0\0\0\xDB\x0FI@FRMR\x04\0\0\0\xF6\xF1\x01\0NAME\x16\0\0\0ex_stronghold_pylon00\0DATA\x18\0\0\0R\x1DWG\x8B\x8D\x15H\xEB\x8C\xB6\x44\0\0\0\0\0\0\0\0\xDA\x0F\xC9@FRMR\x04\0\0\0\xF7\xF1\x01\0NAME\x18\0\0\0ex_stronghold_sandpit00\0DATA\x18\0\0\0\x9F\x9CMG\x14\xC1\x16H\xEF\x8C\xDE\x44\0\0\0\0\0\0\0\0\xDB\x0FI@FRMR\x04\0\0\0\xF8\xF1\x01\0NAME\x15\0\0\0ex_stronghold_dome00\0DATA\x18\0\0\0\xC3\x41MG*Y\x15H\xEF\x8C\xFE\x44\0\0\0\0\0\0\0\0\xEBRE@FRMR\x04\0\0\0\xF9\xF1\x01\0NAME\x16\0\0\0ex_stronghold_enter00\0DATA\x18\0\0\0\x86\xC0NG\xC4\xC4\x15Ha\x95\xEE\x44\0\0\0\0\0\0\0\0\xF2\x0E\x13@FRMR\x04\0\0\0\xFB\xF1\x01\0NAME\x18\0\0\0ex_stronghold_smdwell00\0DATA\x18\0\0\0j\xC3UG.\xCE\x16H\xC3\xAB\xEE\x44\0\0\0\0\0\0\0\0\xCD\xCCL?FRMR\x04\0\0\0\xFD\xF1\x01\0NAME\x16\0\0\0ex_stronghold_enter00\0DATA\x18\0\0\0\xDB\xDDTGq\x96\x16HI\xB4\xEE\x44\0\0\0\0\0\0\0\0|e\xB0@FRMR\x04\0\0\0\xB5\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0\xDD\x83RG\x9E-\x10HM1\x18\x44\0\0\0\0\0\0\0\0\x91/\xBB@FRMR\x04\0\0\0\xB6\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0$\x1CNG\xEDJ\x12H\xC3\xDA,D\0\0\0\0\0\0\0\0\xE8~\x88?FRMR\x04\0\0\0\xB7\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0\xB2ZPGO\"\x12H\xEB\xBC\x8C\x44\0\0\0\0\0\0\0\0\xEDR%@FRMR\x04\0\0\0\xB8\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0'\xC4JGB\x90\x11Hx\xD9\x98\x44\0\0\0\0\0\0\0\0^?\xE4?FRMR\x04\0\0\0\xB9\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0*\x94NG7|\x10H\xDA\xB4\x80\x44\0\0\0\0\0\0\0\0\x1C\x86\x98@FRMR\x04\0\0\0\xBA\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0^:GGo\x13\x12H\xEF\xD7\x42\x44\0\0\0\0\0\0\0\0e?\x04@FRMR\x04\0\0\0\xBB\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\xECQ\xB8?DATA\x18\0\0\0\xE9\x81GG\x9Bz\x11Hq\x03\xD0\x44\0\0\0\0\0\0\0\0\xDC\x30\xC4>FRMR\x04\0\0\0\xBC\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0l\x13\x44G\xBCy\x15H\xA3\x8FTD\0\0\0\0\0\0\0\0\xC5\x62\xAE@FRMR\x04\0\0\0\xBD\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0\xC2\xE7\x43G\xAD\xCB\x13H\x01\xC5\x81\x44\0\0\0\0\0\0\0\08q\xC7@FRMR\x04\0\0\0\xBE\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0\x0B\xD0^G\x11\xBA\x11Hq\xB0\xF9\x42\0\0\0\0\0\0\0\0\xA3\xDC\x95@FRMR\x04\0\0\0\xBF\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0w\xF6ZG\x89\xD9\x12H\x19QjC\0\0\0\0\0\0\0\09\x0C\xB1?FRMR\x04\0\0\0\xC0\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0\x93\x43\\G\x9E\xD1\x10H\x9C+\xAD\x42\0\0\0\0\0\0\0\0\x0E\xD9}@FRMR\x04\0\0\0\xC1\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0\x35\x81WG)4\x12H\x8C\x15@D\0\0\0\0\0\0\0\0\xC4\x62\xAE@FRMR\x04\0\0\0\xC2\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0\xA2\x9FYGi\xF4\x10H\x9A\x0E+D\0\0\0\0\0\0\0\0Cv\xAF@FRMR\x04\0\0\0\xC3\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0\xFB\x63]G-\xE7\x16H\xC2\xF7\xF8\x43\0\0\0\0\0\0\0\0\xAF\xD7??FRMR\x04\0\0\0\x17,\x06\0NAME\x1A\0\0\0ex_shore_cliffracer_lev+0\0DATA\x18\0\0\0\xCF\x01KG\xD9\xF3\x10HR\xF5\x30\x45\0\0\0\0\0\0\0\0\0\0\0\0FRMR\x04\0\0\0\x18,\x06\0NAME\x1A\0\0\0ex_shore_cliffracer_lev+0\0DATA\x18\0\0\0\x88\x1D[G\xCD\x1E\x12HM\x80\x07\x45\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // skip CELL, because header is handled before loadFromStream.
+        stream.seekg(4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        CellRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream) );
+      }
+
+      {
+        const auto data = "CELL\xB2\x0A\0\0\0\0\0\0\0\0\0\0NAME\x09\0\0\0Rotheran\0DATA\x0C\0\0\0B\0\0\0\x06\0\0\0\x12\0\0\0RGNN\x0A\0\0\0Sheogorad\0NAM5\x05\0\0\0\xCA\xA5`\0\0FRMR\x04\0\0\0\xFF\xF1\x01\0NAME\x11\0\0\0dolvasie veloren\0DATA\x18\0\0\0\0\x80SG\0\x80\x16H\0\0\xE0\x44\0\0\0\0\0\0\0\0Av\x8F@FRMR\x04\0\0\0\xFE\xF1\x01\0NAME\x10\0\0\0tirasie andalen\0DATA\x18\0\0\0\x16\x0AQG\xA1y\x15HM}\xDE\x44\0\0\0\0\0\0\0\0\xA8\xDC\xC5@FRMR\x04\0\0\0\xF3\xF1\x01\0NAME\x16\0\0\0in_strong_vaultdoor00\0DODT\x18\0\0\0s\x85\xD5\x43OR\x1F\x44\0\0\xB8\xC3\0\0\0\0\0\0\0\0\xE4\xCB\x96@DNAM\x1A\0\0\0Rotheran, Propylon-Kammer\0DATA\x18\0\0\0V]UG\x0Ci\x15H\xEF\xCC\xE6\x44\0\0\0\0\0\0\0\0\xDB\x0F\xC9?FRMR\x04\0\0\0\xFA\xF1\x01\0NAME\x16\0\0\0in_strong_vaultdoor00\0DODT\x18\0\0\0\x37\x89I@\xC9\x16\x65\x44%f\xD4\xC3\0\0\0\0\0\0\0\0\0\0\0\0DNAM\x18\0\0\0Rotheran, Gemeindeh\xFCtte\0DATA\x18\0\0\0\x1F@OG\x8C\xD0\x15H\x06n\xE6\x44\0\0\0\0\0\0\0\0\xA5\xFF\x12@FRMR\x04\0\0\0\xFC\xF1\x01\0NAME\x16\0\0\0in_strong_vaultdoor00\0DODT\x18\0\0\0)\x1A\x11\x45s\xA8>Dh\x11'\xC2\0\0\0\0\0\0\0\0\xD4\xD8\x95@DNAM\x10\0\0\0Rotheran, Arena\0DATA\x18\0\0\0X]TG\x8B\x8D\x16H\xEF\x8C\xE6\x44\0\0\0\0\0\0\0\0A`\xB0@NAM0\x04\0\0\0\x1E\0\0\0FRMR\x04\0\0\0\xF1\xF1\x01\0NAME\x15\0\0\0ex_stronghold_fort03\0DATA\x18\0\0\0X\x1DUG\x8B\x95\x14HxF\x0F\x45\0\0\0\0\0\0\0\0\xD6\x0F\xC9?FRMR\x04\0\0\0\xF2\xF1\x01\0NAME\x16\0\0\0ex_stronghold_enter00\0DATA\x18\0\0\0X\x1DUG\x8AK\x15H\xED\x8C\xEE\x44\0\0\0\0\0\0\0\0\xD6\x0F\xC9?FRMR\x04\0\0\0\xF4\xF1\x01\0NAME\x16\0\0\0ex_stronghold_pylon02\0DATA\x18\0\0\0X\x9DQG\x8B\x8D\x15H\xEF\x8C\xB6\x44\0\0\0\0\0\0\0\0\xDB\x0FI@FRMR\x04\0\0\0\xF5\xF1\x01\0NAME\x16\0\0\0ex_stronghold_pylon00\0DATA\x18\0\0\0T\x1DKG\x8A\x8D\x15H\xEB\x8C\xB6\x44\0\0\0\0\0\0\0\0\xDB\x0FI@FRMR\x04\0\0\0\xF6\xF1\x01\0NAME\x16\0\0\0ex_stronghold_pylon00\0DATA\x18\0\0\0R\x1DWG\x8B\x8D\x15H\xEB\x8C\xB6\x44\0\0\0\0\0\0\0\0\xDA\x0F\xC9@FRMR\x04\0\0\0\xF7\xF1\x01\0NAME\x18\0\0\0ex_stronghold_sandpit00\0DATA\x18\0\0\0\x9F\x9CMG\x14\xC1\x16H\xEF\x8C\xDE\x44\0\0\0\0\0\0\0\0\xDB\x0FI@FRMR\x04\0\0\0\xF8\xF1\x01\0NAME\x15\0\0\0ex_stronghold_dome00\0DATA\x18\0\0\0\xC3\x41MG*Y\x15H\xEF\x8C\xFE\x44\0\0\0\0\0\0\0\0\xEBRE@FRMR\x04\0\0\0\xF9\xF1\x01\0NAME\x16\0\0\0ex_stronghold_enter00\0DATA\x18\0\0\0\x86\xC0NG\xC4\xC4\x15Ha\x95\xEE\x44\0\0\0\0\0\0\0\0\xF2\x0E\x13@FRMR\x04\0\0\0\xFB\xF1\x01\0NAME\x18\0\0\0ex_stronghold_smdwell00\0DATA\x18\0\0\0j\xC3UG.\xCE\x16H\xC3\xAB\xEE\x44\0\0\0\0\0\0\0\0\xCD\xCCL?FRMR\x04\0\0\0\xFD\xF1\x01\0NAME\x16\0\0\0ex_stronghold_enter00\0DATA\x18\0\0\0\xDB\xDDTGq\x96\x16HI\xB4\xEE\x44\0\0\0\0\0\0\0\0|e\xB0@FRMR\x04\0\0\0\xB5\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0\xDD\x83RG\x9E-\x10HM1\x18\x44\0\0\0\0\0\0\0\0\x91/\xBB@FRMR\x04\0\0\0\xB6\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0$\x1CNG\xEDJ\x12H\xC3\xDA,D\0\0\0\0\0\0\0\0\xE8~\x88?FRMR\x04\0\0\0\xB7\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0\xB2ZPGO\"\x12H\xEB\xBC\x8C\x44\0\0\0\0\0\0\0\0\xEDR%@FRMR\x04\0\0\0\xB8\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0'\xC4JGB\x90\x11Hx\xD9\x98\x44\0\0\0\0\0\0\0\0^?\xE4?FRMR\x04\0\0\0\xB9\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0*\x94NG7|\x10H\xDA\xB4\x80\x44\0\0\0\0\0\0\0\0\x1C\x86\x98@FRMR\x04\0\0\0\xBA\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0^:GGo\x13\x12H\xEF\xD7\x42\x44\0\0\0\0\0\0\0\0e?\x04@FRMR\x04\0\0\0\xBB\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\xECQ\xB8?DATA\x18\0\0\0\xE9\x81GG\x9Bz\x11Hq\x03\xD0\x44\0\0\0\0\0\0\0\0\xDC\x30\xC4>FRMR\x04\0\0\0\xBC\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0l\x13\x44G\xBCy\x15H\xA3\x8FTD\0\0\0\0\0\0\0\0\xC5\x62\xAE@FRMR\x04\0\0\0\xBD\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0\xC2\xE7\x43G\xAD\xCB\x13H\x01\xC5\x81\x44\0\0\0\0\0\0\0\08q\xC7@FRMR\x04\0\0\0\xBE\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0\x0B\xD0^G\x11\xBA\x11Hq\xB0\xF9\x42\0\0\0\0\0\0\0\0\xA3\xDC\x95@FRMR\x04\0\0\0\xBF\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0w\xF6ZG\x89\xD9\x12H\x19QjC\0\0\0\0\0\0\0\09\x0C\xB1?FRMR\x04\0\0\0\xC0\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0\x93\x43\\G\x9E\xD1\x10H\x9C+\xAD\x42\0\0\0\0\0\0\0\0\x0E\xD9}@FRMR\x04\0\0\0\xC1\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0\x35\x81WG)4\x12H\x8C\x15@D\0\0\0\0\0\0\0\0\xC4\x62\xAE@FRMR\x04\0\0\0\xC2\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0\xA2\x9FYGi\xF4\x10H\x9A\x0E+D\0\0\0\0\0\0\0\0Cv\xAF@FRMR\x04\0\0\0\xC3\xB6\x04\0NAME\x11\0\0\0Ex_T_menhir_L_01\0XSCL\x04\0\0\0\0\0\0@DATA\x18\0\0\0\xFB\x63]G-\xE7\x16H\xC2\xF7\xF8\x43\0\0\0\0\0\0\0\0\xAF\xD7??FRMR\x04\0\0\0\x17,\x06\0NAME\x1A\0\0\0ex_shore_cliffracer_lev+0\0DATA\x18\0\0\0\xCF\x01KG\xD9\xF3\x10HR\xF5\x30\x45\0\0\0\0\0\0\0\0\0\0\0\0FRMR\x04\0\0\0\x18,\x06\0NAME\x1A\0\0\0ex_shore_cliffracer_lev+0\0DATA\x18\0\0\0\x88\x1D[G\xCD\x1E\x12HM\x80\x07\x45\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // skip CELL, because header is handled before loadFromStream.
+        stream.seekg(4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        CellRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream) );
+      }
+    }
+
+    SECTION("corrupt data: stream ends before NAM5 can be read")
+    {
+      const auto data = "CELL\xB1\x0A\0\0\0\0\0\0\0\0\0\0NAME\x09\0\0\0Rotheran\0DATA\x0C\0\0\0B\0\0\0\x06\0\0\0\x12\0\0\0RGNN\x0A\0\0\0Sheogorad\0NAM5\x04\0\0\0\xCA"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 

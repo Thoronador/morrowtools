@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="cell_reader" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Release">
+				<Option output="bin/Release/cell_reader" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Weffc++" />
+			<Add option="-pedantic" />
+			<Add option="-Wall" />
+			<Add option="-std=c++17" />
+			<Add option="-fexceptions" />
+		</Compiler>
+		<Unit filename="../../base/DirectoryFunctions.cpp" />
+		<Unit filename="../../base/DirectoryFunctions.hpp" />
+		<Unit filename="../../mw/base/Cells.cpp" />
+		<Unit filename="../../mw/base/Cells.hpp" />
+		<Unit filename="../../mw/base/DepFiles.cpp" />
+		<Unit filename="../../mw/base/DepFiles.hpp" />
+		<Unit filename="../../mw/base/ESMReader.cpp" />
+		<Unit filename="../../mw/base/ESMReader.hpp" />
+		<Unit filename="../../mw/base/HelperIO.cpp" />
+		<Unit filename="../../mw/base/HelperIO.hpp" />
+		<Unit filename="../../mw/base/MW_Constants.hpp" />
+		<Unit filename="../../mw/base/ReturnCodes.hpp" />
+		<Unit filename="../../mw/base/records/BasicRecord.cpp" />
+		<Unit filename="../../mw/base/records/BasicRecord.hpp" />
+		<Unit filename="../../mw/base/records/CellRecord.cpp" />
+		<Unit filename="../../mw/base/records/CellRecord.hpp" />
+		<Unit filename="../../mw/base/records/ReferencedObject.cpp" />
+		<Unit filename="../../mw/base/records/ReferencedObject.hpp" />
+		<Unit filename="../../mw/base/records/TES3Record.cpp" />
+		<Unit filename="../../mw/base/records/TES3Record.hpp" />
+		<Unit filename="ESMReaderCells.cpp" />
+		<Unit filename="ESMReaderCells.hpp" />
+		<Unit filename="main.cpp" />
+		<Extensions>
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

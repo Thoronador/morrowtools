@@ -53,7 +53,7 @@ ESMReaderTranslator::~ESMReaderTranslator()
 
 int ESMReaderTranslator::processNextRecord(std::istream& in_File)
 {
-  int32_t RecordName = 0; //normally should be 4 char, but char is not eligible for switch
+  uint32_t RecordName = 0; //normally should be 4 char, but char is not eligible for switch
   int lastResult = 0;
 
   GenericRecord* genRec = NULL;

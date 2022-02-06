@@ -53,7 +53,7 @@ struct CellRecord: public BasicRecord
   // end of cell data
   std::string RegionID;
   uint32_t NumReferences;
-  uint32_t ColourRef;
+  std::optional<uint32_t> ColourRef;
 
   std::optional<float> WaterHeight; // WHGT
   AmbientLight Ambience; // AMBI

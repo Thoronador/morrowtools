@@ -66,7 +66,7 @@ CellRecord::CellRecord()
   // end of cell data
   RegionID(""),
   NumReferences(0),
-  ColourRef(0),
+  ColourRef(std::nullopt),
   WaterHeight(std::nullopt),
   Ambience(AmbientLight()),
   ReferencesPersistent(std::vector<ReferencedObject>()),
@@ -97,24 +97,21 @@ uint32_t CellRecord::getWriteSize() const
     Size += 4 /* RGNN */ + 4 /* 4 bytes for length */
          + RegionID.length() + 1 /* length of model path +1 byte for NUL */;
   }
-  if (!isInterior())
+  if (ColourRef.has_value())
   {
     Size += 4 /* NAM5 */ + 4 /* 4 bytes for length */
           + 4 /* fixed length of 4 bytes */;
   }
-  else
+  // WHGT and AMBI is for interior cells only
+  if (WaterHeight.has_value())
   {
-    // WHGT and AMBI is for interior cells only
-    if (WaterHeight.has_value())
-    {
-      Size += 4 /* WHGT */ + 4 /* 4 bytes for length */
-            + 4 /* fixed length of 4 bytes */;
-    }
-    if (Ambience.isPresent)
-    {
-      Size += 4 /* AMBI */ + 4 /* 4 bytes for length */
-            + 16 /* fixed length of 16 bytes */;
-    }
+    Size += 4 /* WHGT */ + 4 /* 4 bytes for length */
+          + 4 /* fixed length of 4 bytes */;
+  }
+  if (Ambience.isPresent)
+  {
+    Size += 4 /* AMBI */ + 4 /* 4 bytes for length */
+          + 16 /* fixed length of 16 bytes */;
   }
 
   for (const auto& ref_elem: ReferencesPersistent)
@@ -226,35 +223,32 @@ bool CellRecord::saveToStream(std::ostream& output) const
     output.write(RegionID.c_str(), SubLength);
   }
 
-  if (!isInterior())
+  if (ColourRef.has_value())
   {
     // write colour reference (NAM5)
     output.write(reinterpret_cast<const char*>(&cNAM5), 4);
     SubLength = 4;
     output.write(reinterpret_cast<const char*>(&SubLength), 4);
-    output.write(reinterpret_cast<const char*>(&ColourRef), 4);
+    output.write(reinterpret_cast<const char*>(&ColourRef.value()), 4);
   }
-  else
+  if (WaterHeight.has_value())
   {
-    if (WaterHeight.has_value())
-    {
-      // write water level (WHGT)
-      output.write(reinterpret_cast<const char*>(&cWHGT), 4);
-      SubLength = 4;
-      output.write(reinterpret_cast<const char*>(&SubLength), 4);
-      output.write(reinterpret_cast<const char*>(&WaterHeight.value()), 4);
-    }
-    if (Ambience.isPresent)
-    {
-      // write ambience data (AMBI)
-      output.write(reinterpret_cast<const char*>(&cAMBI), 4);
-      SubLength = 16;
-      output.write(reinterpret_cast<const char*>(&SubLength), 4);
-      output.write(reinterpret_cast<const char*>(&Ambience.AmbientColour), 4);
-      output.write(reinterpret_cast<const char*>(&Ambience.SunlightColour), 4);
-      output.write(reinterpret_cast<const char*>(&Ambience.FogColour), 4);
-      output.write(reinterpret_cast<const char*>(&Ambience.FogDensity), 4);
-    }
+    // write water level (WHGT)
+    output.write(reinterpret_cast<const char*>(&cWHGT), 4);
+    SubLength = 4;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
+    output.write(reinterpret_cast<const char*>(&WaterHeight.value()), 4);
+  }
+  if (Ambience.isPresent)
+  {
+    // write ambience data (AMBI)
+    output.write(reinterpret_cast<const char*>(&cAMBI), 4);
+    SubLength = 16;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
+    output.write(reinterpret_cast<const char*>(&Ambience.AmbientColour), 4);
+    output.write(reinterpret_cast<const char*>(&Ambience.SunlightColour), 4);
+    output.write(reinterpret_cast<const char*>(&Ambience.FogColour), 4);
+    output.write(reinterpret_cast<const char*>(&Ambience.FogDensity), 4);
   }
 
   for (const auto& ref_elem: ReferencesPersistent)
@@ -402,7 +396,7 @@ bool CellRecord::loadFromStream(std::istream& input)
   ReferencedObject newRef;
 
   bool hasNAM0 = false;
-  bool hasNAM5 = false;
+  ColourRef.reset();
   bool hasRGNN = false;
   bool hasUnknownINTV = false;
   Ambience.isPresent = false;
@@ -520,7 +514,7 @@ bool CellRecord::loadFromStream(std::istream& input)
            refIsPersistent = false;
            break;
       case cNAM5:
-           if (hasNAM5)
+           if (ColourRef.has_value())
            {
              std::cerr << "Error: Record CELL seems to have two NAM5 subrecords.\n";
              return false;
@@ -535,6 +529,7 @@ bool CellRecord::loadFromStream(std::istream& input)
              return false;
            }
            // read map color reference
+           ColourRef = 0;
            input.read(reinterpret_cast<char*>(&ColourRef), 4);
            BytesRead += 4;
            if (!input.good())
@@ -542,7 +537,6 @@ bool CellRecord::loadFromStream(std::istream& input)
              std::cerr << "Error while reading subrecord NAM5 of CELL!\n";
              return false;
            }
-           hasNAM5 = true;
            break;
       case cINTV: //Somehow some of the English plugin files seem to have an
                   //  INTV record after DATA and before AMBI, but I can't see

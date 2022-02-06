@@ -37,7 +37,7 @@ TEST_CASE("MWTP::CellRecord")
     REQUIRE( record.GridY == 0 );
     REQUIRE( record.RegionID.empty() );
     REQUIRE( record.NumReferences == 0 );
-    REQUIRE( record.ColourRef == 0 );
+    REQUIRE_FALSE( record.ColourRef.has_value() );
     REQUIRE_FALSE( record.WaterHeight.has_value() );
     REQUIRE_FALSE( record.Ambience.isPresent );
     REQUIRE( record.ReferencesPersistent.empty() );
@@ -119,6 +119,12 @@ TEST_CASE("MWTP::CellRecord")
 
       SECTION("ColourRef mismatch")
       {
+        a.ColourRef.reset();
+        a.ColourRef = 0x00123456;
+
+        REQUIRE_FALSE( a.equals(b) );
+        REQUIRE_FALSE( b.equals(a) );
+
         a.ColourRef = 0x00123456;
         b.ColourRef = 0x00789ABC;
 
@@ -205,9 +211,10 @@ TEST_CASE("MWTP::CellRecord")
       // Grid coordinates are useless for interior cells.
       REQUIRE( record.GridX == 2631703 );
       REQUIRE( record.GridY == 1065353216 );
+      REQUIRE( record.isInterior() );
       REQUIRE( record.RegionID.empty() );
       REQUIRE( record.NumReferences == 10 );
-      REQUIRE( record.ColourRef == 0 );
+      REQUIRE_FALSE( record.ColourRef.has_value() );
       REQUIRE( record.WaterHeight.has_value() );
       REQUIRE( record.WaterHeight.value() == 0.0f );
       REQUIRE( record.Ambience.isPresent );
@@ -223,6 +230,48 @@ TEST_CASE("MWTP::CellRecord")
       REQUIRE( record.ReferencesOther[1].ObjectID == "barrel_01_float_food20" );
       REQUIRE( record.ReferencesOther[2].ObjectID == "in_de_ship_lowerlevel" );
       REQUIRE( record.ReferencesOther[8].ObjectID == "contain_corpse_water" );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( record.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
+    }
+
+    SECTION("default: load exterior cell with region but with empty name")
+    {
+      const auto data = "CELL\x3A\0\0\0\0\0\0\0\0\0\0\0NAME\x01\0\0\0\0DATA\x0C\0\0\0\x02\0\0\0\x17\0\0\0\x07\0\0\0RGNN\x15\0\0\0Azura's Coast Region\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      CellRecord record;
+      REQUIRE( record.loadFromStream(stream) );
+      // Check data.
+      // -- header
+      REQUIRE( record.getHeaderOne() == 0 );
+      REQUIRE( record.getHeaderFlags() == 0 );
+      // -- record data
+      REQUIRE( record.CellID.empty() );
+      REQUIRE( record.CellFlags == 0x00000002 );
+      REQUIRE( record.GridX == 23 );
+      REQUIRE( record.GridY == 7 );
+      REQUIRE_FALSE( record.isInterior() );
+      REQUIRE( record.RegionID == "Azura's Coast Region" );
+      REQUIRE( record.NumReferences == 0 );
+      REQUIRE_FALSE( record.ColourRef.has_value() );
+      REQUIRE_FALSE( record.WaterHeight.has_value() );
+      REQUIRE_FALSE( record.Ambience.isPresent );
+      REQUIRE( record.Ambience.AmbientColour == 0 );
+      REQUIRE( record.Ambience.SunlightColour == 0 );
+      REQUIRE( record.Ambience.FogColour == 0 );
+      REQUIRE( record.Ambience.FogDensity == 0.0f );
+      REQUIRE( record.ReferencesPersistent.empty() );
+      REQUIRE( record.ReferencesOther.empty() );
 
       // Writing should succeed.
       std::ostringstream streamOut;
@@ -538,6 +587,51 @@ TEST_CASE("MWTP::CellRecord")
     SECTION("corrupt data: stream ends before NAM0 can be read")
     {
       const auto data = "CELL\xE3\x03\0\0\0\0\0\0\0\0\0\0NAME$\0\0\0Zerfallenes Schiffswrack, Unterdeck\0DATA\x0C\0\0\0\x07\0\0\0\x17((\0\0\0\x80?WHGT\x04\0\0\0\0\0\0\0AMBI\x10\0\0\0#66\0\x17((\0\x17((\0\0\0\x80?FRMR\x04\0\0\0\x1F\x19\x17\0NAME\x14\0\0\0Slaughterfish_Small\0DATA\x18\0\0\0\x92\xDC\xF1\x44\x39\xA0\x80\x45\xB5\xE3\x66\xC4\0\0\0\0\0\0\0\0\0\0\0\0FRMR\x04\0\0\0 \x19\x17\0NAME\x18\0\0\0in_de_shipdoor_toplevel\0DODT\x18\0\0\0\x06\x8F|ET\xE7PE\xE1\xCA\xD3\xC3\0\0\0\0\xDB\x0F\xC9?\0\0\0\0DNAM#\0\0\0Zerfallenes Schiffswrack, Oberdeck\0DATA\x18\0\0\0\x8FR\xF7\x44\xE3\x15RE\xDB\xA1\x37\xC4\0\0\0\0\xFC\x97\xD9?4`E@NAM0\x04\0\0\0\x0A\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      CellRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: multiple RGNNs")
+    {
+      const auto data = "CELL\x57\0\0\0\0\0\0\0\0\0\0\0NAME\x01\0\0\0\0DATA\x0C\0\0\0\x02\0\0\0\x17\0\0\0\x07\0\0\0RGNN\x15\0\0\0Azura's Coast Region\0RGNN\x15\0\0\0Azura's Coast Region\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      CellRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: length of RGNN > 256")
+    {
+      const auto data = "CELL\x3A\0\0\0\0\0\0\0\0\0\0\0NAME\x01\0\0\0\0DATA\x0C\0\0\0\x02\0\0\0\x17\0\0\0\x07\0\0\0RGNN\x15\x01\0\0Azura's Coast Region\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      CellRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: length of RGNN is beyond stream")
+    {
+      const auto data = "CELL\x3A\0\0\0\0\0\0\0\0\0\0\0NAME\x01\0\0\0\0DATA\x0C\0\0\0\x02\0\0\0\x17\0\0\0\x07\0\0\0RGNN\x25\0\0\0Azura's Coast Region\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 

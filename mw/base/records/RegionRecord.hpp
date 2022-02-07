@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012  Thoronador
+    Copyright (C) 2011, 2012, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -32,13 +32,17 @@ struct SoundChanceRecord
 {
   std::string Sound;
   uint8_t Chance;
-};//struct
+
+  SoundChanceRecord();
+
+  bool operator==(const SoundChanceRecord& other) const;
+}; // struct
 
 struct RegionRecord: public BasicRecord
 {
-  std::string recordID; //formerly RegionID
+  std::string recordID;
   std::string RegionName;
-  //weather data
+  // weather data
   uint8_t Clear;
   uint8_t Cloudy;
   uint8_t Foggy;
@@ -47,60 +51,67 @@ struct RegionRecord: public BasicRecord
   uint8_t Thunder;
   uint8_t Ash;
   uint8_t Blight;
-  uint8_t Snow; //BM only
-  uint8_t Blizzard; //BM only
-  //end of weather data
+  uint8_t Snow; // Bloodmoon only
+  uint8_t Blizzard; // Bloodmoon only
+  // end of weather data
   std::string SleepCreature;
-  //Region Map Colour
+  // Region Map Colour
   uint8_t Red;
   uint8_t Green;
   uint8_t Blue;
   uint8_t Zero;
-  //sounds
   std::vector<SoundChanceRecord> SoundChances;
 
-  /* constructor */
   RegionRecord();
 
-  /* alternative constructor */
+  /** \brief Constructs a RegionRecord with the given region ID.
+   *
+   * \param ID  the region ID
+   */
   RegionRecord(const std::string& ID);
 
-  /* destructor */
-  ~RegionRecord();
-
-  /* returns true, if the other record contains the same data */
+  /** \brief Checks whether another instance contains the same data.
+   *
+   * \param other   the other record to compare with
+   * \return Returns true, if @other contains the same data as instance.
+   *         Returns false otherwise.
+   */
   bool equals(const RegionRecord& other) const;
 
   #ifndef MW_UNSAVEABLE_RECORDS
-  /* writes the record to the given output stream and returns true on success
-
-    parameters:
-        output              - the output stream
-        forceBloodmoonStyle - if set to true, the written WEAT subrecord will
-                              have a size of 10 bytes, even when it wouldn't be
-                              necessary
-  */
+  /** \brief Writes the record to the given output stream, enforcing
+   *         Bloodmoon-styled weather data.
+   *
+   * \param output  the output stream
+   * \param forceBloodmoonStyle  if set to true, the written WEAT subrecord will
+                                 have a size of 10 bytes, even when it wouldn't
+                                 be necessary.
+   * \return Returns true on success (record was written to stream).
+   *         Returns false, if an error occurred.
+   */
   bool saveToStream(std::ostream& output, const bool forceBloodmoonStyle) const;
 
-  /* writes the record to the given output stream and returns true on success
-
-    parameters:
-        output - the output stream
-  */
+  /** \brief Writes the record to the given output stream.
+   *
+   * \param output  the output stream
+   * \return Returns true on success (record was written to stream).
+   *         Returns false, if an error occurred.
+   */
   bool saveToStream(std::ostream& output) const override;
   #endif
 
-  /* loads the record from the given input stream and returns true on success
+  /** \brief Loads the record from the given input stream.
+   *
+   * \param input    the input stream
+   * \return Returns true on success (record was loaded from stream).
+   *         Returns false, if an error occurred.
+   */
+  bool loadFromStream(std::istream& input) override;
+}; // struct
 
-    parameters:
-        in_File - the input stream
-  */
-  bool loadFromStream(std::istream& in_File) override;
-};//struct
-
-//comparison operator for ordered set
+// comparison operator for ordered set
 bool operator<(const RegionRecord& left, const RegionRecord& right);
 
-} //namespace
+} // namespace
 
 #endif // MW_REGIONRECORD_HPP

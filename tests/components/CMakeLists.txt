@@ -52,6 +52,7 @@ set(component_tests_sources
     ../../mw/base/records/PreNPCRecord.cpp
     ../../mw/base/records/ProbeRecord.cpp
     ../../mw/base/records/ReferencedObject.cpp
+    ../../mw/base/records/RegionRecord.cpp
     ../../mw/base/records/RepairItemRecord.cpp
     ../../mw/base/records/ScriptRecord.cpp
     ../../mw/base/records/SkillRecord.cpp
@@ -195,9 +196,11 @@ set(component_tests_sources
     mw/base/records/ProbeRecord.cpp
     mw/base/records/RefDoorData.cpp
     mw/base/records/ReferencedObject.cpp
+    mw/base/records/RegionRecord.cpp
     mw/base/records/RepairItemRecord.cpp
     mw/base/records/ScriptRecord.cpp
     mw/base/records/SkillRecord.cpp
+    mw/base/records/SoundChanceRecord.cpp
     mw/base/records/SpellRecord.cpp
     mw/base/records/StartScriptRecord.cpp
     mw/base/records/StaticRecord.cpp

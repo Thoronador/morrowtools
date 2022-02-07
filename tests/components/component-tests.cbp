@@ -125,6 +125,8 @@
 		<Unit filename="../../mw/base/records/ProbeRecord.hpp" />
 		<Unit filename="../../mw/base/records/ReferencedObject.cpp" />
 		<Unit filename="../../mw/base/records/ReferencedObject.hpp" />
+		<Unit filename="../../mw/base/records/RegionRecord.cpp" />
+		<Unit filename="../../mw/base/records/RegionRecord.hpp" />
 		<Unit filename="../../mw/base/records/RepairItemRecord.cpp" />
 		<Unit filename="../../mw/base/records/RepairItemRecord.hpp" />
 		<Unit filename="../../mw/base/records/ScriptRecord.cpp" />
@@ -358,9 +360,11 @@
 		<Unit filename="mw/base/records/ProbeRecord.cpp" />
 		<Unit filename="mw/base/records/RefDoorData.cpp" />
 		<Unit filename="mw/base/records/ReferencedObject.cpp" />
+		<Unit filename="mw/base/records/RegionRecord.cpp" />
 		<Unit filename="mw/base/records/RepairItemRecord.cpp" />
 		<Unit filename="mw/base/records/ScriptRecord.cpp" />
 		<Unit filename="mw/base/records/SkillRecord.cpp" />
+		<Unit filename="mw/base/records/SoundChanceRecord.cpp" />
 		<Unit filename="mw/base/records/SpellRecord.cpp" />
 		<Unit filename="mw/base/records/StartScriptRecord.cpp" />
 		<Unit filename="mw/base/records/StaticRecord.cpp" />

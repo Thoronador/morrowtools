@@ -38,7 +38,7 @@ enum class DialogueTopicType: std::uint8_t
 
 struct DialogueTopicRecord: public BasicRecord
 {
-  std::string DialogueID;
+  std::string recordID; /**< name of the topic or ID of the greeting / journal / etc. */
   DialogueTopicType Type;
 
   DialogueTopicRecord();

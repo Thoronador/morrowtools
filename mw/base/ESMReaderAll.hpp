@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011 Thoronador
+    Copyright (C) 2010, 2011, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,27 +26,25 @@
 namespace MWTP
 {
 
-/* This descendant of the ESMReader class tries to read all records from the
-   given .esm/.esp file and uses the appropriate singleton classes to store the
-   read data records.
-*/
+/** This descendant of the ESMReader class tries to read all records from the
+ * given .esm/.esp file and uses the appropriate singleton classes to store the
+ * read data records.
+ */
 class ESMReaderAll: public ESMReader
 {
   public:
-    /* constructor */
     ESMReaderAll();
   protected:
-    /* tries to read the next record from a stream and returns the number of
-       relevant records that were read (usually one). If an error occurred,
-       -1 is returned. If the record was skipped or contained no relevant data,
-       zero is returned.
-
-       parameters:
-           input  - the input stream the record shall be read from
-    */
+    /** \brief Tries to read the next record from a stream.
+     *
+     * \param input  the input stream the record shall be read from
+     * \return Returns the number of relevant records that were read (usually
+     *         one). If an error occurred, -1 is returned. If the record was
+     *         skipped or contained no relevant data, zero is returned.
+     */
     virtual int processNextRecord(std::istream& input) override;
-};//class
+}; // class
 
-} //namespace
+} // namespace
 
 #endif // MW_ESMREADERALL_HPP

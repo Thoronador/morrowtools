@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2021  Dirk Stolle
+    Copyright (C) 2011, 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,88 +21,15 @@
 #ifndef MW_DIALOGUETOPICS_HPP
 #define MW_DIALOGUETOPICS_HPP
 
-#include <map>
+#include "MapBasedRecordManager.hpp"
 #include "records/DialogueTopicRecord.hpp"
 
 namespace MWTP
 {
 
-//iterator type for dialogue topic list
-typedef std::map<std::string, DialogueTopicRecord>::const_iterator DialogueTopicListIterator;
+// singleton type for dialogue topic records
+using DialogueTopics = MapBasedRecordManager<DialogueTopicRecord>;
 
-class DialogueTopics
-{
-  public:
-    /* singleton access method */
-    static DialogueTopics& get();
-
-    /* adds a dialogue topic to the list */
-    void addDialogueTopic(const DialogueTopicRecord& record);
-
-    /* returns true, if a dialogue topic with the given ID is present
-
-       parameters:
-           ID - the ID of the dialogue topic object
-    */
-    bool hasDialogueTopic(const std::string& ID) const;
-
-    /* returns the number of dialogue topics in the list */
-    unsigned int getNumberOfDialogueTopics() const;
-
-    /* returns a reference to the dialogue topic record of the dialogue topic
-       with the given ID
-
-       parameters:
-           ID - the ID of the dialogue topic
-
-       remarks:
-           If no dialogue topic with the given ID is present, the function will
-           throw an exception. Use hasDialogueTopic() to determine, if a
-           dialogue topic with the desired ID is present.
-    */
-    const DialogueTopicRecord& getDialogueTopic(const std::string& ID) const;
-
-    /* tries to read a dialogue topic record from the given input stream.
-
-       return value:
-           If an error occurred, the function returns -1. Otherwise it returns
-           the number of updated records. (Usually that is one. If, however, the
-           record that was read is equal to the one already in the list, zero is
-           returned.)
-
-       parameters:
-           input - the input stream that is used to read the record
-    */
-    int readRecordDIAL(std::istream& input);
-
-    /* returns constant iterator to the beginning of the internal list */
-    DialogueTopicListIterator begin() const;
-
-    /* returns constant iterator to the end of the internal list */
-    DialogueTopicListIterator end() const;
-
-    /* tries to save all available dialogue topics to the given stream and
-       returns true on success, false on failure
-
-       parameters:
-           output - the output stream that shall be used to save the
-                    dialogue topics
-    */
-    bool saveAllToStream(std::ostream& output) const;
-
-    /* removes all dialogue topics from the list */
-    void clear();
-  private:
-    /* constructor */
-    DialogueTopics();
-
-    /* empty copy constructor */
-    DialogueTopics(const DialogueTopics& op) {}
-
-    /* internal data */
-    std::map<std::string, DialogueTopicRecord> m_DialogueTopics;
-};//class
-
-} //namespace
+} // namespace
 
 #endif // MW_DIALOGUETOPICS_HPP

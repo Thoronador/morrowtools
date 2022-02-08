@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2021  Dirk Stolle
+    Copyright (C) 2011, 2012, 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -92,7 +92,7 @@ int32_t ESMWriterAll::getTotalRecords() const
        + Containers::get().getNumberOfRecords()
        + Creatures::get().getNumberOfRecords()
        + DialogueInfos::get().getNumberOfRecords()
-       + DialogueTopics::get().getNumberOfDialogueTopics()
+       + DialogueTopics::get().getNumberOfRecords()
        + Doors::get().getNumberOfRecords()
        + Enchantings::get().getNumberOfRecords()
        + Factions::get().getNumberOfRecords()

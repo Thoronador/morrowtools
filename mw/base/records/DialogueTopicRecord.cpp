@@ -28,13 +28,13 @@ namespace MWTP
 
 DialogueTopicRecord::DialogueTopicRecord()
 : BasicRecord(),
-  DialogueID(""),
+  recordID(""),
   Type(DialogueTopicType::Regular)
 {}
 
 bool DialogueTopicRecord::equals(const DialogueTopicRecord& other) const
 {
-  return (DialogueID == other.DialogueID) && (Type == other.Type);
+  return (recordID == other.recordID) && (Type == other.Type);
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
@@ -42,7 +42,7 @@ bool DialogueTopicRecord::saveToStream(std::ostream& output) const
 {
   output.write(reinterpret_cast<const char*>(&cDIAL), 4);
   const uint32_t Size = 4 /* NAME */ + 4 /* 4 bytes for length */
-        + DialogueID.length() + 1 /* length of ID +1 byte for NUL termination */
+        + recordID.length() + 1 /* length of ID +1 byte for NUL termination */
         + 4 /* DATA */ + 4 /* 4 bytes for length */ + 1 /* data is one byte */;
   output.write(reinterpret_cast<const char*>(&Size), 4);
   output.write(reinterpret_cast<const char*>(&HeaderOne), 4);
@@ -62,9 +62,9 @@ bool DialogueTopicRecord::saveToStream(std::ostream& output) const
 
   // write ID (NAME)
   output.write(reinterpret_cast<const char*>(&cNAME), 4);
-  uint32_t SubLength = DialogueID.length() + 1;
+  uint32_t SubLength = recordID.length() + 1;
   output.write(reinterpret_cast<const char*>(&SubLength), 4);
-  output.write(DialogueID.c_str(), SubLength);
+  output.write(recordID.c_str(), SubLength);
 
   // write type (DATA)
   output.write(reinterpret_cast<const char*>(&cDATA), 4);
@@ -99,7 +99,7 @@ bool DialogueTopicRecord::loadFromStream(std::istream& input)
 
   // read dialogue topic ID (NAME)
   char Buffer[256];
-  if (!loadString256WithHeader(input, DialogueID, Buffer, cNAME, BytesRead))
+  if (!loadString256WithHeader(input, recordID, Buffer, cNAME, BytesRead))
   {
     std::cerr << "Error while reading sub record NAME of DIAL!\n";
     return false;

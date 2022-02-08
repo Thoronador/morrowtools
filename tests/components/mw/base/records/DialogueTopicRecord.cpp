@@ -32,7 +32,7 @@ TEST_CASE("MWTP::DialogueTopicRecord")
   {
     DialogueTopicRecord record;
 
-    REQUIRE( record.DialogueID.empty() );
+    REQUIRE( record.recordID.empty() );
     REQUIRE( record.Type == DialogueTopicType::Regular );
   }
 
@@ -43,10 +43,10 @@ TEST_CASE("MWTP::DialogueTopicRecord")
 
     SECTION("equal")
     {
-      a.DialogueID = "Tree";
+      a.recordID = "Tree";
       a.Type = DialogueTopicType::Voice;
 
-      b.DialogueID = "Tree";
+      b.recordID = "Tree";
       b.Type = DialogueTopicType::Voice;
 
       REQUIRE( a.equals(b) );
@@ -57,8 +57,8 @@ TEST_CASE("MWTP::DialogueTopicRecord")
     {
       SECTION("recordID mismatch")
       {
-        a.DialogueID = "foo";
-        b.DialogueID = "bar";
+        a.recordID = "foo";
+        b.recordID = "bar";
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
@@ -95,7 +95,7 @@ TEST_CASE("MWTP::DialogueTopicRecord")
       REQUIRE( record.getHeaderOne() == 0 );
       REQUIRE( record.getHeaderFlags() == 0 );
       // -- record data
-      REQUIRE( record.DialogueID == "Alit" );
+      REQUIRE( record.recordID == "Alit" );
       REQUIRE( record.Type == DialogueTopicType::Regular );
 
       // Writing should succeed.
@@ -123,7 +123,7 @@ TEST_CASE("MWTP::DialogueTopicRecord")
       REQUIRE( record.getHeaderOne() == 0 );
       REQUIRE( record.getHeaderFlags() == 0 );
       // -- record data
-      REQUIRE( record.DialogueID == "Hello" );
+      REQUIRE( record.recordID == "Hello" );
       REQUIRE( record.Type == DialogueTopicType::Voice );
 
       // Writing should succeed.
@@ -151,7 +151,7 @@ TEST_CASE("MWTP::DialogueTopicRecord")
       REQUIRE( record.getHeaderOne() == 0 );
       REQUIRE( record.getHeaderFlags() == 0 );
       // -- record data
-      REQUIRE( record.DialogueID == "Greeting 7" );
+      REQUIRE( record.recordID == "Greeting 7" );
       REQUIRE( record.Type == DialogueTopicType::Greeting );
 
       // Writing should succeed.
@@ -179,7 +179,7 @@ TEST_CASE("MWTP::DialogueTopicRecord")
       REQUIRE( record.getHeaderOne() == 0 );
       REQUIRE( record.getHeaderFlags() == 0 );
       // -- record data
-      REQUIRE( record.DialogueID == "Taunt Fail" );
+      REQUIRE( record.recordID == "Taunt Fail" );
       REQUIRE( record.Type == DialogueTopicType::Persuasion );
 
       // Writing should succeed.
@@ -207,7 +207,7 @@ TEST_CASE("MWTP::DialogueTopicRecord")
       REQUIRE( record.getHeaderOne() == 0 );
       REQUIRE( record.getHeaderFlags() == 0 );
       // -- record data
-      REQUIRE( record.DialogueID == "FG_Vas" );
+      REQUIRE( record.recordID == "FG_Vas" );
       REQUIRE( record.Type == DialogueTopicType::Journal );
 
       // Writing should succeed.

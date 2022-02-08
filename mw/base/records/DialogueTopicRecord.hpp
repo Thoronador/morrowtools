@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,57 +22,52 @@
 #define MW_DIALOGUETOPICRECORD_HPP
 
 #include <string>
-#include <fstream>
 #include "BasicRecord.hpp"
 
 namespace MWTP
 {
 
+enum class DialogueTopicType: std::uint8_t
+{
+  Regular = 0,
+  Voice = 1,
+  Greeting = 2,
+  Persuasion = 3,
+  Journal = 4
+};
+
 struct DialogueTopicRecord: public BasicRecord
 {
   std::string DialogueID;
-  uint8_t Type;
+  DialogueTopicType Type;
 
-  /* constructor */
   DialogueTopicRecord();
 
-  /* returns true, if the other record contains the same data */
+  /** \brief Constructs a RegionRecord with the given region ID.
+   *
+   * \param ID  the region ID
+   */
   bool equals(const DialogueTopicRecord& other) const;
 
   #ifndef MW_UNSAVEABLE_RECORDS
-  /* writes the record to the given output stream and returns true on success
-
-    parameters:
-        output - the output stream
-  */
+  /** \brief Writes the record to the given output stream.
+   *
+   * \param output  the output stream
+   * \return Returns true on success (record was written to stream).
+   *         Returns false, if an error occurred.
+   */
   bool saveToStream(std::ostream& output) const override;
   #endif
 
-  /* loads the record from the given input stream and returns true on success
+  /** \brief Loads the record from the given input stream.
+   *
+   * \param input    the input stream
+   * \return Returns true on success (record was loaded from stream).
+   *         Returns false, if an error occurred.
+   */
+  bool loadFromStream(std::istream& input) override;
+}; // struct
 
-    parameters:
-        in_File - the input stream
-  */
-  bool loadFromStream(std::istream& in_File) override;
-
-  /* type constants to indicate the type of a topic (regular topic, voice,
-     greeting, persuasion, Journal) */
-  static const uint8_t dttRegular;
-  static const uint8_t dttVoice;
-  static const uint8_t dttGreeting;
-  static const uint8_t dttPersuasion;
-  static const uint8_t dttJournal;
-
-  /* returns true, if the topic type indicates a regular topic */
-  bool isRegularTopic() const;
-
-  /* returns true, if the topic type indicates a greeting entry */
-  bool isGreeting() const;
-
-  /* returns true, if the topic type indicates a journal entry */
-  bool isJournal() const;
-};//struct
-
-} //namespace
+} // namespace
 
 #endif // MW_DIALOGUETOPICRECORD_HPP

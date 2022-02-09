@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011, 2012, 2013, 2021  Thoronador
+    Copyright (C) 2010, 2011, 2012, 2013, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -141,7 +141,7 @@ bool SpellRecord::loadFromStream(std::istream& input)
   char Buffer[256];
   if (!loadString256WithHeader(input, recordID, Buffer, cNAME, BytesRead))
   {
-    std::cerr << "Error while reading subrecord NAME of SPEL from stream.\n";
+    std::cerr << "Error while reading sub record NAME of SPEL from stream.\n";
     return false;
   }
 
@@ -153,7 +153,7 @@ bool SpellRecord::loadFromStream(std::istream& input)
     // read spell name (FNAM)
     if (!loadString256(input, Name, Buffer, cFNAM, BytesRead))
     {
-      std::cout << "Error while reading subrecord FNAM of SPEL.\n";
+      std::cout << "Error while reading sub record FNAM of SPEL.\n";
       return false;
     }
 
@@ -220,7 +220,7 @@ bool SpellRecord::loadFromStream(std::istream& input)
       /* Although the current record structure allows an arbitrary number of
          enchantments, Morrowind only allows up to eight enchantments for one
          single spell. That's why we issue an error here. */
-      std::cerr << "Error: Record SPEL has more than eight ENAM subrecords.\n";
+      std::cerr << "Error: Record SPEL has more than eight ENAM sub records.\n";
       return false;
     }
   }

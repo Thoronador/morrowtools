@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011, 2012, 2013, 2021  Thoronador
+    Copyright (C) 2010, 2011, 2012, 2013, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,7 +21,6 @@
 #ifndef MW_SPELLRECORD_HPP
 #define MW_SPELLRECORD_HPP
 
-#include <fstream>
 #include <string>
 #include <vector>
 #include "../Enchantment.hpp"

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011, 2012, 2013, 2021  Thoronador
+    Copyright (C) 2009, 2011, 2012, 2013, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -211,14 +211,14 @@ bool LightRecord::loadFromStream(std::istream& input)
   char Buffer[256];
   if (!loadString256WithHeader(input, recordID, Buffer, cNAME, bytesRead))
   {
-    std::cerr << "Error while reading subrecord NAME of LIGH.\n";
+    std::cerr << "Error while reading sub record NAME of LIGH.\n";
     return false;
   }
 
   // read model path (MODL)
   if (!loadString256WithHeader(input, ModelPath, Buffer, cMODL, bytesRead))
   {
-    std::cerr << "Error while reading subrecord MODL of LIGH.\n";
+    std::cerr << "Error while reading sub record MODL of LIGH.\n";
     return false;
   }
 
@@ -230,7 +230,7 @@ bool LightRecord::loadFromStream(std::istream& input)
     // read light's "real" name
     if (!loadString256(input, Name, Buffer, cFNAM, bytesRead))
     {
-      std::cerr << "Error while reading subrecord FNAM of LIGH.\n";
+      std::cerr << "Error while reading sub record FNAM of LIGH.\n";
       return false;
     }
 
@@ -249,7 +249,7 @@ bool LightRecord::loadFromStream(std::istream& input)
     // read light's inventory icon path (ITEX)
     if (!loadString256(input, InventoryIcon, Buffer, cITEX, bytesRead))
     {
-      std::cerr << "Error while reading subrecord ITEX of LIGH.\n";
+      std::cerr << "Error while reading sub record ITEX of LIGH.\n";
       return false;
     }
 
@@ -290,7 +290,7 @@ bool LightRecord::loadFromStream(std::istream& input)
   bytesRead += 24;
   if (!input.good())
   {
-    std::cerr << "Error while reading subrecord LHDT of LIGH.\n";
+    std::cerr << "Error while reading sub record LHDT of LIGH.\n";
     return false;
   }
 
@@ -298,7 +298,7 @@ bool LightRecord::loadFromStream(std::istream& input)
   SoundID.clear();
   while (bytesRead < Size)
   {
-    // read next subrecord header
+    // read next sub record header
     input.read(reinterpret_cast<char*>(&SubRecName), 4);
     bytesRead += 4;
     switch (SubRecName)
@@ -307,7 +307,7 @@ bool LightRecord::loadFromStream(std::istream& input)
            // read light's script ID
            if (!loadString256(input, ScriptID, Buffer, cSCRI, bytesRead))
            {
-             std::cerr << "Error while reading subrecord SCRI of LIGH.\n";
+             std::cerr << "Error while reading sub record SCRI of LIGH.\n";
              return false;
            }
            break;
@@ -315,12 +315,12 @@ bool LightRecord::loadFromStream(std::istream& input)
            // read light's sound name
            if (!loadString256(input, SoundID, Buffer, cSNAM, bytesRead))
            {
-             std::cerr << "Error while reading subrecord SNAM of LIGH.\n";
+             std::cerr << "Error while reading sub record SNAM of LIGH.\n";
              return false;
            }
            break;
       default:
-           std::cerr << "Error: Found unexpected subrecord '"
+           std::cerr << "Error: Found unexpected sub record '"
                      << IntTo4Char(SubRecName)
                      << "', but only SCRI or SNAM are allowed here!\n";
            return false;

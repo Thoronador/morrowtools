@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011, 2012, 2013, 2021  Thoronador
+    Copyright (C) 2009, 2011, 2012, 2013, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -85,19 +85,19 @@ bool AlchemyPotionRecord::loadFromStream(std::istream& input)
   char Buffer[256];
   if (!loadString256WithHeader(input, recordID, Buffer, cNAME, BytesRead))
   {
-    std::cerr << "Error while reading subrecord NAME of ALCH.\n";
+    std::cerr << "Error while reading sub record NAME of ALCH.\n";
     return false;
   }
 
   // read potion's model path (MODL)
   if (!loadString256WithHeader(input, ModelPath, Buffer, cMODL, BytesRead))
   {
-    std::cerr << "Error while reading subrecord MODL of ALCH.\n";
+    std::cerr << "Error while reading sub record MODL of ALCH.\n";
     return false;
   }
   if (ModelPath.empty())
   {
-    std::cerr << "Error: ALCH has empty MODL subrecord!\n";
+    std::cerr << "Error: ALCH has empty MODL sub record!\n";
     return false;
   }
 

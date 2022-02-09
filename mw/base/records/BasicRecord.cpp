@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -88,7 +88,8 @@ bool BasicRecord::loadString256(std::istream& input, std::string& target, char *
   bytesRead += subLength;
   if (!input.good())
   {
-    std::cerr << "Error while reading subrecord " << IntTo4Char(subHeader) << "!\n";
+    std::cerr << "Error while reading sub record " << IntTo4Char(subHeader)
+              << "!\n";
     return false;
   }
   target = std::string(buffer);

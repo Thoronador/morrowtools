@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011, 2012, 2013, 2021  Thoronador
+    Copyright (C) 2009, 2011, 2012, 2013, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -156,7 +156,7 @@ bool ApparatusRecord::loadFromStream(std::istream& input)
   char buffer[256];
   if (!loadString256WithHeader(input, recordID, buffer, cNAME, BytesRead))
   {
-    std::cerr << "Error while reading subrecord NAME of APPA!\n";
+    std::cerr << "Error while reading sub record NAME of APPA!\n";
     return false;
   }
 
@@ -176,43 +176,43 @@ bool ApparatusRecord::loadFromStream(std::istream& input)
       case cMODL:
            if (!ModelPath.empty())
            {
-             std::cerr << "Error: APPA seems to have more than one MODL subrecord!\n";
+             std::cerr << "Error: APPA seems to have more than one MODL sub record!\n";
              return false;
            }
            // read model path
            if (!loadString256(input, ModelPath, buffer, cMODL, BytesRead))
            {
-             std::cerr << "Error while reading subrecord MODL of APPA!\n";
+             std::cerr << "Error while reading sub record MODL of APPA!\n";
              return false;
            }
            if (ModelPath.empty())
            {
-             std::cerr << "Error: Subrecord MODL of APPA is empty!\n";
+             std::cerr << "Error: Sub record MODL of APPA is empty!\n";
              return false;
            }
            break;
       case cFNAM:
            if (!Name.empty())
            {
-             std::cerr << "Error: APPA seems to have more than one FNAM subrecord!\n";
+             std::cerr << "Error: APPA seems to have more than one FNAM sub record!\n";
              return false;
            }
            // read apparatus name
            if (!loadString256(input, Name, buffer, cFNAM, BytesRead))
            {
-             std::cerr << "Error while reading subrecord FNAM of APPA!\n";
+             std::cerr << "Error while reading sub record FNAM of APPA!\n";
              return false;
            }
            if (Name.empty())
            {
-             std::cerr << "Error: Subrecord FNAM of APPA is empty!\n";
+             std::cerr << "Error: Sub record FNAM of APPA is empty!\n";
              return false;
            }
            break;
       case cAADT:
            if (hasReadAADT)
            {
-             std::cerr << "Error: APPA seems to have more than one AADT subrecord!\n";
+             std::cerr << "Error: APPA seems to have more than one AADT sub record!\n";
              return false;
            }
            // AADT's length
@@ -232,7 +232,7 @@ bool ApparatusRecord::loadFromStream(std::istream& input)
            BytesRead += 16;
            if (!input.good())
            {
-             std::cerr << "Error while reading subrecord AADT of APPA!\n";
+             std::cerr << "Error while reading sub record AADT of APPA!\n";
              return false;
            }
            hasReadAADT = true;
@@ -240,36 +240,36 @@ bool ApparatusRecord::loadFromStream(std::istream& input)
       case cITEX:
            if (!InventoryIcon.empty())
            {
-             std::cerr << "Error: APPA seems to have more than one ITEX subrecord!\n";
+             std::cerr << "Error: APPA seems to have more than one ITEX sub record!\n";
              return false;
            }
            // read apparatus icon path
            if (!loadString256(input, InventoryIcon, buffer, cITEX, BytesRead))
            {
-             std::cerr << "Error while reading subrecord ITEX of APPA!\n";
+             std::cerr << "Error while reading sub record ITEX of APPA!\n";
              return false;
            }
            if (InventoryIcon.empty())
            {
-             std::cerr << "Error: Subrecord ITEX of APPA is empty!\n";
+             std::cerr << "Error: Sub record ITEX of APPA is empty!\n";
              return false;
            }
            break;
       case cSCRI:
            if (!ScriptID.empty())
            {
-             std::cerr << "Error: APPA seems to have more than one SCRI subrecord!\n";
+             std::cerr << "Error: APPA seems to have more than one SCRI sub record!\n";
              return false;
            }
            // read script ID
            if (!loadString256(input, ScriptID, buffer, cSCRI, BytesRead))
            {
-             std::cerr << "Error while reading subrecord SCRI of APPA!\n";
+             std::cerr << "Error while reading sub record SCRI of APPA!\n";
              return false;
            }
            if (ScriptID.empty())
            {
-             std::cerr << "Error: Subrecord SCRI of APPA is empty!\n";
+             std::cerr << "Error: Sub record SCRI of APPA is empty!\n";
              return false;
            }
            break;
@@ -284,7 +284,7 @@ bool ApparatusRecord::loadFromStream(std::istream& input)
   // presence checks
   if (ModelPath.empty() || Name.empty() || !hasReadAADT || InventoryIcon.empty())
   {
-    std::cerr << "Error: At least one required subrecord of APPA is missing!\n";
+    std::cerr << "Error: At least one required sub record of APPA is missing!\n";
     return false;
   }
 

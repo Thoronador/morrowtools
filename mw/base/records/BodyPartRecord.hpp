@@ -45,7 +45,7 @@ struct BodyPartRecord: public BasicRecord
   /** \brief Checks whether another instance contains the same data.
    *
    * \param other   the other record to compare with
-   * \return Returns true, if @other contains the same data as instance.
+   * \return Returns true, if @other contains the same data as this instance.
    *         Returns false otherwise.
    */
   bool equals(const BodyPartRecord& other) const;
@@ -62,11 +62,11 @@ struct BodyPartRecord: public BasicRecord
 
   /** \brief Loads the record from the given input stream.
    *
-   * \param in_File    the input stream
+   * \param input    the input stream
    * \return Returns true on success (record was loaded from stream).
    *         Returns false, if an error occurred.
    */
-  bool loadFromStream(std::istream& in_File) override;
+  bool loadFromStream(std::istream& input) override;
 }; // struct
 
 /// comparison operator for BodyPartRecords

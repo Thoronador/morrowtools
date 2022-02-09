@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011, 2012, 2013, 2021  Thoronador
+    Copyright (C) 2009, 2011, 2012, 2013, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -157,21 +157,21 @@ bool LockpickRecord::loadFromStream(std::istream& input)
   char buffer[256];
   if (!loadString256WithHeader(input, recordID, buffer, cNAME, BytesRead))
   {
-    std::cerr << "Error while reading subrecord NAME of LOCK.\n";
+    std::cerr << "Error while reading sub record NAME of LOCK.\n";
     return false;
   }
 
   // read model path (MODL)
   if (!loadString256WithHeader(input, ModelPath, buffer, cMODL, BytesRead))
   {
-    std::cerr << "Error while reading subrecord MODL of LOCK.\n";
+    std::cerr << "Error while reading sub record MODL of LOCK.\n";
     return false;
   }
 
   // read object's name (FNAM)
   if (!loadString256WithHeader(input, Name, buffer, cFNAM, BytesRead))
   {
-    std::cerr << "Error while reading subrecord FNAM of LOCK.\n";
+    std::cerr << "Error while reading sub record FNAM of LOCK.\n";
     return false;
   }
 
@@ -202,7 +202,7 @@ bool LockpickRecord::loadFromStream(std::istream& input)
   BytesRead += 16;
   if (!input.good())
   {
-    std::cerr << "Error while reading subrecord LKDT of LOCK.\n";
+    std::cerr << "Error while reading sub record LKDT of LOCK.\n";
     return false;
   }
 
@@ -213,7 +213,7 @@ bool LockpickRecord::loadFromStream(std::istream& input)
 
   while (BytesRead < Size)
   {
-    // read next subrecord
+    // read next sub record
     input.read(reinterpret_cast<char*>(&SubRecName), 4);
     BytesRead += 4;
     switch (SubRecName)
@@ -221,12 +221,12 @@ bool LockpickRecord::loadFromStream(std::istream& input)
       case cITEX:
            if (hasITEX)
            {
-             std::cerr << "Error: Record LOCK seems to have two ITEX subrecords.\n";
+             std::cerr << "Error: Record LOCK seems to have two ITEX sub records.\n";
              return false;
            }
            if (!loadString256(input, InventoryIcon, buffer, cITEX, BytesRead))
            {
-             std::cerr << "Error while reading subrecord ITEX of LOCK.\n";
+             std::cerr << "Error while reading sub record ITEX of LOCK.\n";
              return false;
            }
            hasITEX = true;
@@ -234,12 +234,12 @@ bool LockpickRecord::loadFromStream(std::istream& input)
       case cSCRI:
            if (hasSCRI)
            {
-             std::cerr << "Error: Record LOCK seems to have two SCRI subrecords.\n";
+             std::cerr << "Error: Record LOCK seems to have two SCRI sub records.\n";
              return false;
            }
            if (!loadString256(input, ScriptID, buffer, cSCRI, BytesRead))
            {
-             std::cerr << "Error while reading subrecord SCRI of LOCK.\n";
+             std::cerr << "Error while reading sub record SCRI of LOCK.\n";
              return false;
            }
            hasSCRI = true;
@@ -256,7 +256,7 @@ bool LockpickRecord::loadFromStream(std::istream& input)
   // at least ITEX should have been present
   if (!hasITEX)
   {
-    std::cerr << "Error: Record LOCK seems to have no ITEX subrecord.\n";
+    std::cerr << "Error: Record LOCK seems to have no ITEX sub record.\n";
     return false;
   }
 

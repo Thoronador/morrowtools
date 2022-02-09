@@ -43,9 +43,11 @@ struct DialogueTopicRecord: public BasicRecord
 
   DialogueTopicRecord();
 
-  /** \brief Constructs a RegionRecord with the given region ID.
+  /** \brief Checks whether another instance contains the same data.
    *
-   * \param ID  the region ID
+   * \param other   the other record to compare with
+   * \return Returns true, if @other contains the same data as this instance.
+   *         Returns false otherwise.
    */
   bool equals(const DialogueTopicRecord& other) const;
 

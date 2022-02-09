@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011, 2012, 2013, 2021  Thoronador
+    Copyright (C) 2009, 2011, 2012, 2013, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -135,12 +135,12 @@ bool DoorRecord::saveToStream(std::ostream& output) const
 }
 #endif
 
-bool DoorRecord::loadFromStream(std::istream& in_File)
+bool DoorRecord::loadFromStream(std::istream& input)
 {
   uint32_t Size = 0;
-  in_File.read(reinterpret_cast<char*>(&Size), 4);
-  in_File.read(reinterpret_cast<char*>(&HeaderOne), 4);
-  in_File.read(reinterpret_cast<char*>(&HeaderFlags), 4);
+  input.read(reinterpret_cast<char*>(&Size), 4);
+  input.read(reinterpret_cast<char*>(&HeaderOne), 4);
+  input.read(reinterpret_cast<char*>(&HeaderFlags), 4);
 
   /*Door:
     NAME = door ID
@@ -156,7 +156,7 @@ bool DoorRecord::loadFromStream(std::istream& in_File)
 
   // read door ID (NAME)
   char Buffer[256];
-  if (!loadString256WithHeader(in_File, recordID, Buffer, cNAME, BytesRead))
+  if (!loadString256WithHeader(input, recordID, Buffer, cNAME, BytesRead))
     return false;
 
   // read optional part and records with varying order
@@ -173,7 +173,7 @@ bool DoorRecord::loadFromStream(std::istream& in_File)
   while (BytesRead < Size)
   {
     // read next optional sub record name
-    in_File.read(reinterpret_cast<char*>(&SubRecName), 4);
+    input.read(reinterpret_cast<char*>(&SubRecName), 4);
     BytesRead += 4;
     switch(SubRecName)
     {
@@ -183,7 +183,7 @@ bool DoorRecord::loadFromStream(std::istream& in_File)
              std::cerr << "Error: Record DOOR seems to have two MODL subrecords.\n";
              return false;
            }
-           if (!loadString256(in_File, ModelPath, Buffer, cMODL, BytesRead))
+           if (!loadString256(input, ModelPath, Buffer, cMODL, BytesRead))
              return false;
            hasMODL = true;
            break;
@@ -193,7 +193,7 @@ bool DoorRecord::loadFromStream(std::istream& in_File)
              std::cerr << "Error: Record DOOR seems to have two FNAM subrecords.\n";
              return false;
            }
-           if (!loadString256(in_File, Name, Buffer, cFNAM, BytesRead))
+           if (!loadString256(input, Name, Buffer, cFNAM, BytesRead))
              return false;
            hasFNAM = true;
            break;
@@ -203,7 +203,7 @@ bool DoorRecord::loadFromStream(std::istream& in_File)
              std::cerr << "Error: Record DOOR seems to have two SCRI subrecords.\n";
              return false;
            }
-           if (!loadString256(in_File, Script, Buffer, cSCRI, BytesRead))
+           if (!loadString256(input, Script, Buffer, cSCRI, BytesRead))
              return false;
            hasSCRI = true;
            break;
@@ -213,7 +213,7 @@ bool DoorRecord::loadFromStream(std::istream& in_File)
              std::cerr << "Error: Record DOOR seems to have two SNAM subrecords.\n";
              return false;
            }
-           if (!loadString256(in_File, SoundOpen, Buffer, cSNAM, BytesRead))
+           if (!loadString256(input, SoundOpen, Buffer, cSNAM, BytesRead))
              return false;
            hasSNAM = true;
            break;
@@ -223,7 +223,7 @@ bool DoorRecord::loadFromStream(std::istream& in_File)
              std::cerr << "Error: Record DOOR seems to have two ANAM subrecords.\n";
              return false;
            }
-           if (!loadString256(in_File, SoundClose, Buffer, cANAM, BytesRead))
+           if (!loadString256(input, SoundClose, Buffer, cANAM, BytesRead))
              return false;
            hasANAM = true;
            break;
@@ -235,7 +235,7 @@ bool DoorRecord::loadFromStream(std::istream& in_File)
            break;
     }
   }
-  return in_File.good();
+  return input.good();
 }
 
 } // namespace

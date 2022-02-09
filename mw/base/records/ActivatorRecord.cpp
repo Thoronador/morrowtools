@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011, 2012, 2013, 2021  Thoronador
+    Copyright (C) 2009, 2011, 2012, 2013, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -114,21 +114,21 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File)
   char Buffer[256];
   if (!loadString256WithHeader(in_File, recordID, Buffer, cNAME, BytesRead))
   {
-    std::cerr << "Error while reading subrecord NAME of ACTI!\n";
+    std::cerr << "Error while reading sub record NAME of ACTI!\n";
     return false;
   }
 
   // read model path (MODL)
   if (!loadString256WithHeader(in_File, ModelPath, Buffer, cMODL, BytesRead))
   {
-    std::cerr << "Error while reading subrecord MODL of ACTI!\n";
+    std::cerr << "Error while reading sub record MODL of ACTI!\n";
     return false;
   }
 
   // read item name (FNAM)
   if (!loadString256WithHeader(in_File, ItemName, Buffer, cFNAM, BytesRead))
   {
-    std::cerr << "Error while reading subrecord FNAM of ACTI!\n";
+    std::cerr << "Error while reading sub record FNAM of ACTI!\n";
     return false;
   }
 

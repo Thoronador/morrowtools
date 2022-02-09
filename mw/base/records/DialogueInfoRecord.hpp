@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,7 +22,6 @@
 #define MW_DIALOGUEINFORECORD_HPP
 
 #include <string>
-#include <fstream>
 #include <vector>
 #include "BasicRecord.hpp"
 
@@ -41,26 +40,24 @@ struct FuncVarRecord
   float fVal;
   int32_t iVal;
 
-  /* constructor */
   FuncVarRecord();
 
-  /* comparison operator */
   bool operator==(const FuncVarRecord& other) const;
-};//struct
+}; // struct
 
 struct DialogueInfoRecord: public BasicRecord
 {
-  std::string recordID; //formerly InfoID
+  std::string recordID;
   std::string PreviousInfoID;
   std::string NextInfoID;
-  //info data
+  // info data
   int32_t UnknownLong;
   int32_t Disposition;
   uint8_t Rank;
   uint8_t Gender;
   uint8_t PCRank;
   uint8_t UnknownByte;
-  //end of info data
+  // end of info data
   std::string ActorID;
   std::string RaceID;
   std::string ClassID;
@@ -75,29 +72,35 @@ struct DialogueInfoRecord: public BasicRecord
   std::vector<FuncVarRecord> Functions;
   std::string ResultString;
 
-  /* constructor */
   DialogueInfoRecord();
 
-  /* returns true, if the other record contains the same data */
+  /** \brief Checks whether another instance contains the same data.
+   *
+   * \param other   the other record to compare with
+   * \return Returns true, if @other contains the same data as this instance.
+   *         Returns false otherwise.
+   */
   bool equals(const DialogueInfoRecord& other) const;
 
   #ifndef MW_UNSAVEABLE_RECORDS
-  /* writes the record to the given output stream and returns true on success
-
-    parameters:
-        output - the output stream
-  */
+  /** \brief Writes the record to the given output stream.
+   *
+   * \param output  the output stream
+   * \return Returns true on success (record was written to stream).
+   *         Returns false, if an error occurred.
+   */
   bool saveToStream(std::ostream& output) const override;
   #endif
 
-  /* loads the record from the given input stream and returns true on success
+  /** \brief Loads the record from the given input stream.
+   *
+   * \param input    the input stream
+   * \return Returns true on success (record was loaded from stream).
+   *         Returns false, if an error occurred.
+   */
+  bool loadFromStream(std::istream& input) override;
+}; // struct
 
-    parameters:
-        in_File - the input stream
-  */
-  bool loadFromStream(std::istream& in_File) override;
-};//struct
-
-} //namespace
+} // namespace
 
 #endif // MW_DIALOGUEINFORECORD_HPP

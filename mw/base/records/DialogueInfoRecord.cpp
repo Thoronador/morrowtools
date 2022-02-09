@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -42,14 +42,10 @@ FuncVarRecord::FuncVarRecord()
 
 bool FuncVarRecord::operator==(const FuncVarRecord& other) const
 {
-  if ((Index==other.Index) and (Type==other.Type)
-      and (Function==other.Function) and (CompareOp==other.CompareOp)
-      and (Name==other.Name) and (isFloat==other.isFloat))
-  {
-    if (isFloat) return (fVal == other.fVal);
-    return (iVal == other.iVal);
-  }//if
-  return false;
+  return (Index == other.Index) && (Type == other.Type)
+      && (Function == other.Function) && (CompareOp == other.CompareOp)
+      && (Name == other.Name) && (isFloat == other.isFloat)
+      && ((isFloat && (fVal == other.fVal)) || (!isFloat && (iVal == other.iVal)));
 }
 
 /* DialogueInfoRecord's functions */
@@ -57,14 +53,14 @@ bool FuncVarRecord::operator==(const FuncVarRecord& other) const
 DialogueInfoRecord::DialogueInfoRecord()
 : BasicRecord(),
   recordID(""), PreviousInfoID(""), NextInfoID(""),
-  //info data
+  // info data
   UnknownLong(0),
   Disposition(0),
   Rank(0),
   Gender(0),
   PCRank(0),
   UnknownByte(0),
-  //end of info data
+  // end of info data
   ActorID(""), RaceID(""), ClassID(""), FactionID(""), CellID(""),
   PCFactionID(""), SoundFile(""),
   isQuestName(false),

@@ -95,6 +95,8 @@
 		<Unit filename="../../mw/base/records/ClothingRecord.hpp" />
 		<Unit filename="../../mw/base/records/ContainerRecord.cpp" />
 		<Unit filename="../../mw/base/records/ContainerRecord.hpp" />
+		<Unit filename="../../mw/base/records/DialogueInfoRecord.cpp" />
+		<Unit filename="../../mw/base/records/DialogueInfoRecord.hpp" />
 		<Unit filename="../../mw/base/records/DialogueTopicRecord.cpp" />
 		<Unit filename="../../mw/base/records/DialogueTopicRecord.hpp" />
 		<Unit filename="../../mw/base/records/DoorRecord.cpp" />
@@ -342,6 +344,7 @@
 		<Unit filename="mw/base/records/ContainerRecord.cpp" />
 		<Unit filename="mw/base/records/DialogueTopicRecord.cpp" />
 		<Unit filename="mw/base/records/DoorRecord.cpp" />
+		<Unit filename="mw/base/records/FuncVarRecord.cpp" />
 		<Unit filename="mw/base/records/GameSettingRecord.cpp" />
 		<Unit filename="mw/base/records/GenericRecord.cpp" />
 		<Unit filename="mw/base/records/GlobalRecord.cpp" />

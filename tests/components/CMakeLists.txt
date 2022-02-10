@@ -176,6 +176,7 @@ set(component_tests_sources
     mw/base/records/CellRecord.cpp
     mw/base/records/ClothingRecord.cpp
     mw/base/records/ContainerRecord.cpp
+    mw/base/records/DialogueInfoRecord.cpp
     mw/base/records/DialogueTopicRecord.cpp
     mw/base/records/DoorRecord.cpp
     mw/base/records/FuncVarRecord.cpp

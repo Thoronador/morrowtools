@@ -332,6 +332,198 @@ TEST_CASE("MWTP::DialogueInfoRecord")
       REQUIRE( streamOut.str() == data );
     }
 
+    SECTION("default: load info with actor id")
+    {
+      const auto data = "INFO\x6F\0\0\0\0\0\0\0\0\0\0\0INAM\x14\0\0\0\x37\x35\x32\x39\x31\x39\x39\x31\x35\x31\x30\x31\x39\x39\x32\x32\x36\x39\x30\0PNAM\x01\0\0\0\0NNAM\x13\0\0\0984727539316418937\0DATA\x0C\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\xFF\0ONAM\x08\0\0\0Rabinna\0NAME\x03\0\0\0Ja?"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip INFO, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      DialogueInfoRecord record;
+      REQUIRE( record.loadFromStream(stream) );
+      // Check data.
+      // -- header
+      REQUIRE( record.getHeaderOne() == 0 );
+      REQUIRE( record.getHeaderFlags() == 0 );
+      // -- record data
+      REQUIRE( record.recordID == "7529199151019922690" );
+      REQUIRE( record.PreviousInfoID.empty() );
+      REQUIRE( record.NextInfoID == "984727539316418937" );
+      REQUIRE( record.UnknownLong == 0 );
+      REQUIRE( record.Disposition == 0 );
+      REQUIRE( record.Rank == 0xFF );
+      REQUIRE( record.Gender == 0xFF );
+      REQUIRE( record.PCRank == 0xFF );
+      REQUIRE( record.UnknownByte == 0 );
+      REQUIRE( record.ActorID == "Rabinna" );
+      REQUIRE( record.RaceID.empty() );
+      REQUIRE( record.ClassID.empty() );
+      REQUIRE( record.FactionID.empty() );
+      REQUIRE( record.CellID.empty() );
+      REQUIRE( record.PCFactionID.empty() );
+      REQUIRE( record.SoundFile.empty() );
+      REQUIRE_FALSE( record.isQuestName );
+      REQUIRE_FALSE( record.isQuestFinished );
+      REQUIRE_FALSE( record.isQuestRestart );
+      REQUIRE( record.Response == "Ja?" );
+      REQUIRE( record.Functions.empty() );
+      REQUIRE( record.ResultString.empty() );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( record.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
+    }
+
+    SECTION("default: load info with race id and sound file")
+    {
+      const auto data = "INFO\x93\0\0\0\0\0\0\0\0\0\0\0INAM\x12\0\0\0\x32\x31\x35\x32\x36\x39\x31\x36\x39\x38\x37\x34\x31\x33\x32\x33\x33\0PNAM\x12\0\0\0\x33\x32\x33\x38\x32\x38\x33\x36\x31\x36\x34\x36\x36\x33\x36\x35\x38\0NNAM\x01\0\0\0\0DATA\x0C\0\0\0\x01\0\0\0\0\0\0\0\xFF\0\xFF\0RNAM\x09\0\0\0Imperial\0SNAM\x15\0\0\0vo\\i\\m\\Idl_IM001.mp3\0NAME\x0C\0\0\0[Schn\xFC\x66\x66\x65ln]"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip INFO, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      DialogueInfoRecord record;
+      REQUIRE( record.loadFromStream(stream) );
+      // Check data.
+      // -- header
+      REQUIRE( record.getHeaderOne() == 0 );
+      REQUIRE( record.getHeaderFlags() == 0 );
+      // -- record data
+      REQUIRE( record.recordID == "21526916987413233" );
+      REQUIRE( record.PreviousInfoID == "32382836164663658" );
+      REQUIRE( record.NextInfoID.empty() );
+      REQUIRE( record.UnknownLong == 0x00000001 );
+      REQUIRE( record.Disposition == 0 );
+      REQUIRE( record.Rank == 0xFF );
+      REQUIRE( record.Gender == 0x00 );
+      REQUIRE( record.PCRank == 0xFF );
+      REQUIRE( record.UnknownByte == 0 );
+      REQUIRE( record.ActorID.empty() );
+      REQUIRE( record.RaceID == "Imperial" );
+      REQUIRE( record.ClassID.empty() );
+      REQUIRE( record.FactionID.empty() );
+      REQUIRE( record.CellID.empty() );
+      REQUIRE( record.PCFactionID.empty() );
+      REQUIRE( record.SoundFile == "vo\\i\\m\\Idl_IM001.mp3" );
+      REQUIRE_FALSE( record.isQuestName );
+      REQUIRE_FALSE( record.isQuestFinished );
+      REQUIRE_FALSE( record.isQuestRestart );
+      REQUIRE( record.Response == "[Schn\xFC\x66\x66\x65ln]" );
+      REQUIRE( record.Functions.empty() );
+      REQUIRE( record.ResultString.empty() );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( record.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
+    }
+
+    SECTION("default: load info with class id and result string")
+    {
+      const auto data = "INFO\xA7\0\0\0\0\0\0\0\0\0\0\0INAM\x12\0\0\0\x31\x34\x36\x38\x32\x34\x38\x39\x34\x34\x30\x39\x32\x34\x39\x37\x36\0PNAM\x14\0\0\0\x32\x31\x38\x34\x31\x32\x39\x32\x38\x30\x32\x31\x36\x35\x34\x31\x35\x31\x35\0NNAM\x15\0\0\0\x31\x34\x33\x37\x38\x33\x31\x36\x35\x31\x32\x30\x30\x33\x35\x31\x35\x39\x37\x30\0DATA\x0C\0\0\0\x02\0\0\0\0\0\0\0\xFF\xFF\xFF\0CNAM\x09\0\0\0Publican\0NAME\x0E\0\0\0Was wollt Ihr?BNAM\x11\0\0\0;publican default"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip INFO, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      DialogueInfoRecord record;
+      REQUIRE( record.loadFromStream(stream) );
+      // Check data.
+      // -- header
+      REQUIRE( record.getHeaderOne() == 0 );
+      REQUIRE( record.getHeaderFlags() == 0 );
+      // -- record data
+      REQUIRE( record.recordID == "14682489440924976" );
+      REQUIRE( record.PreviousInfoID == "2184129280216541515" );
+      REQUIRE( record.NextInfoID == "14378316512003515970" );
+      REQUIRE( record.UnknownLong == 0x00000002 );
+      REQUIRE( record.Disposition == 0 );
+      REQUIRE( record.Rank == 0xFF );
+      REQUIRE( record.Gender == 0xFF );
+      REQUIRE( record.PCRank == 0xFF );
+      REQUIRE( record.UnknownByte == 0 );
+      REQUIRE( record.ActorID.empty() );
+      REQUIRE( record.RaceID.empty() );
+      REQUIRE( record.ClassID == "Publican" );
+      REQUIRE( record.FactionID.empty() );
+      REQUIRE( record.CellID.empty() );
+      REQUIRE( record.PCFactionID.empty() );
+      REQUIRE( record.SoundFile.empty() );
+      REQUIRE_FALSE( record.isQuestName );
+      REQUIRE_FALSE( record.isQuestFinished );
+      REQUIRE_FALSE( record.isQuestRestart );
+      REQUIRE( record.Response == "Was wollt Ihr?" );
+      REQUIRE( record.Functions.empty() );
+      REQUIRE( record.ResultString == ";publican default" );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( record.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
+    }
+
+    SECTION("default: load info with cell id and PC faction id")
+    {
+      const auto data = "INFO\xBF\0\0\0\0\0\0\0\0\0\0\0INAM\x12\0\0\0\x34\x39\x32\x34\x31\x32\x39\x34\x31\x33\x35\x34\x31\x35\x36\x37\x36\0PNAM\x12\0\0\099367325152192966\0NNAM\x13\0\0\0971627586828521359\0DATA\x0C\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\xFF\0ANAM#\0\0\0Sadrith Mora, Zur Dreckigen Muriel\0DNAM\x0E\0\0\0Thieves Guild\0NAME\x13\0\0\0Sie ist hier. Oben."sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip INFO, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      DialogueInfoRecord record;
+      REQUIRE( record.loadFromStream(stream) );
+      // Check data.
+      // -- header
+      REQUIRE( record.getHeaderOne() == 0 );
+      REQUIRE( record.getHeaderFlags() == 0 );
+      // -- record data
+      REQUIRE( record.recordID == "49241294135415676" );
+      REQUIRE( record.PreviousInfoID == "99367325152192966" );
+      REQUIRE( record.NextInfoID == "971627586828521359" );
+      REQUIRE( record.UnknownLong == 0x00000000 );
+      REQUIRE( record.Disposition == 0 );
+      REQUIRE( record.Rank == 0xFF );
+      REQUIRE( record.Gender == 0xFF );
+      REQUIRE( record.PCRank == 0xFF );
+      REQUIRE( record.UnknownByte == 0 );
+      REQUIRE( record.ActorID.empty() );
+      REQUIRE( record.RaceID.empty() );
+      REQUIRE( record.ClassID.empty() );
+      REQUIRE( record.FactionID.empty() );
+      REQUIRE( record.CellID == "Sadrith Mora, Zur Dreckigen Muriel" );
+      REQUIRE( record.PCFactionID == "Thieves Guild" );
+      REQUIRE( record.SoundFile.empty() );
+      REQUIRE_FALSE( record.isQuestName );
+      REQUIRE_FALSE( record.isQuestFinished );
+      REQUIRE_FALSE( record.isQuestRestart );
+      REQUIRE( record.Response == "Sie ist hier. Oben." );
+      REQUIRE( record.Functions.empty() );
+      REQUIRE( record.ResultString.empty() );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( record.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
+    }
+
     SECTION("corrupt data: stream ends before header can be read")
     {
       const auto data = "INFO\x45\x01\0\0\0\0\0"sv;
@@ -543,6 +735,141 @@ TEST_CASE("MWTP::DialogueInfoRecord")
       REQUIRE_FALSE( record.loadFromStream(stream) );
     }
 
+    SECTION("corrupt data: multiple ONAMs")
+    {
+      const auto data = "INFO\x7F\0\0\0\0\0\0\0\0\0\0\0INAM\x14\0\0\0\x37\x35\x32\x39\x31\x39\x39\x31\x35\x31\x30\x31\x39\x39\x32\x32\x36\x39\x30\0PNAM\x01\0\0\0\0NNAM\x13\0\0\0984727539316418937\0DATA\x0C\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\xFF\0ONAM\x08\0\0\0Rabinna\0ONAM\x08\0\0\0Rabinna\0NAME\x03\0\0\0Ja?"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip INFO, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      DialogueInfoRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: length of ONAM > 256")
+    {
+      const auto data = "INFO\x6F\0\0\0\0\0\0\0\0\0\0\0INAM\x14\0\0\0\x37\x35\x32\x39\x31\x39\x39\x31\x35\x31\x30\x31\x39\x39\x32\x32\x36\x39\x30\0PNAM\x01\0\0\0\0NNAM\x13\0\0\0984727539316418937\0DATA\x0C\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\xFF\0ONAM\x08\x01\0\0Rabinna\0NAME\x03\0\0\0Ja?"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip INFO, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      DialogueInfoRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: length of ONAM is beyond stream")
+    {
+      const auto data = "INFO\x6F\0\0\0\0\0\0\0\0\0\0\0INAM\x14\0\0\0\x37\x35\x32\x39\x31\x39\x39\x31\x35\x31\x30\x31\x39\x39\x32\x32\x36\x39\x30\0PNAM\x01\0\0\0\0NNAM\x13\0\0\0984727539316418937\0DATA\x0C\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\xFF\0ONAM\x58\0\0\0Rabinna\0NAME\x03\0\0\0Ja?"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip INFO, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      DialogueInfoRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: multiple RNAMs")
+    {
+      const auto data = "INFO\xA4\0\0\0\0\0\0\0\0\0\0\0INAM\x12\0\0\0\x32\x31\x35\x32\x36\x39\x31\x36\x39\x38\x37\x34\x31\x33\x32\x33\x33\0PNAM\x12\0\0\0\x33\x32\x33\x38\x32\x38\x33\x36\x31\x36\x34\x36\x36\x33\x36\x35\x38\0NNAM\x01\0\0\0\0DATA\x0C\0\0\0\x01\0\0\0\0\0\0\0\xFF\0\xFF\0RNAM\x09\0\0\0Imperial\0RNAM\x09\0\0\0Imperial\0SNAM\x15\0\0\0vo\\i\\m\\Idl_IM001.mp3\0NAME\x0C\0\0\0[Schn\xFC\x66\x66\x65ln]"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip INFO, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      DialogueInfoRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: length of RNAM > 256")
+    {
+      const auto data = "INFO\x93\0\0\0\0\0\0\0\0\0\0\0INAM\x12\0\0\0\x32\x31\x35\x32\x36\x39\x31\x36\x39\x38\x37\x34\x31\x33\x32\x33\x33\0PNAM\x12\0\0\0\x33\x32\x33\x38\x32\x38\x33\x36\x31\x36\x34\x36\x36\x33\x36\x35\x38\0NNAM\x01\0\0\0\0DATA\x0C\0\0\0\x01\0\0\0\0\0\0\0\xFF\0\xFF\0RNAM\x09\x01\0\0Imperial\0SNAM\x15\0\0\0vo\\i\\m\\Idl_IM001.mp3\0NAME\x0C\0\0\0[Schn\xFC\x66\x66\x65ln]"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip INFO, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      DialogueInfoRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: length of RNAM is beyond stream")
+    {
+      const auto data = "INFO\x93\0\0\0\0\0\0\0\0\0\0\0INAM\x12\0\0\0\x32\x31\x35\x32\x36\x39\x31\x36\x39\x38\x37\x34\x31\x33\x32\x33\x33\0PNAM\x12\0\0\0\x33\x32\x33\x38\x32\x38\x33\x36\x31\x36\x34\x36\x36\x33\x36\x35\x38\0NNAM\x01\0\0\0\0DATA\x0C\0\0\0\x01\0\0\0\0\0\0\0\xFF\0\xFF\0RNAM\x99\0\0\0Imperial\0SNAM\x15\0\0\0vo\\i\\m\\Idl_IM001.mp3\0NAME\x0C\0\0\0[Schn\xFC\x66\x66\x65ln]"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip INFO, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      DialogueInfoRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: multiple CNAMs")
+    {
+      const auto data = "INFO\xB8\0\0\0\0\0\0\0\0\0\0\0INAM\x12\0\0\0\x31\x34\x36\x38\x32\x34\x38\x39\x34\x34\x30\x39\x32\x34\x39\x37\x36\0PNAM\x14\0\0\0\x32\x31\x38\x34\x31\x32\x39\x32\x38\x30\x32\x31\x36\x35\x34\x31\x35\x31\x35\0NNAM\x15\0\0\0\x31\x34\x33\x37\x38\x33\x31\x36\x35\x31\x32\x30\x30\x33\x35\x31\x35\x39\x37\x30\0DATA\x0C\0\0\0\x02\0\0\0\0\0\0\0\xFF\xFF\xFF\0CNAM\x09\0\0\0Publican\0CNAM\x09\0\0\0Publican\0NAME\x0E\0\0\0Was wollt Ihr?BNAM\x11\0\0\0;publican default"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip INFO, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      DialogueInfoRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: length of CNAM > 256")
+    {
+      const auto data = "INFO\xA7\0\0\0\0\0\0\0\0\0\0\0INAM\x12\0\0\0\x31\x34\x36\x38\x32\x34\x38\x39\x34\x34\x30\x39\x32\x34\x39\x37\x36\0PNAM\x14\0\0\0\x32\x31\x38\x34\x31\x32\x39\x32\x38\x30\x32\x31\x36\x35\x34\x31\x35\x31\x35\0NNAM\x15\0\0\0\x31\x34\x33\x37\x38\x33\x31\x36\x35\x31\x32\x30\x30\x33\x35\x31\x35\x39\x37\x30\0DATA\x0C\0\0\0\x02\0\0\0\0\0\0\0\xFF\xFF\xFF\0CNAM\x09\x01\0\0Publican\0NAME\x0E\0\0\0Was wollt Ihr?BNAM\x11\0\0\0;publican default"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip INFO, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      DialogueInfoRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: length of CNAM is beyond stream")
+    {
+      const auto data = "INFO\xA7\0\0\0\0\0\0\0\0\0\0\0INAM\x12\0\0\0\x31\x34\x36\x38\x32\x34\x38\x39\x34\x34\x30\x39\x32\x34\x39\x37\x36\0PNAM\x14\0\0\0\x32\x31\x38\x34\x31\x32\x39\x32\x38\x30\x32\x31\x36\x35\x34\x31\x35\x31\x35\0NNAM\x15\0\0\0\x31\x34\x33\x37\x38\x33\x31\x36\x35\x31\x32\x30\x30\x33\x35\x31\x35\x39\x37\x30\0DATA\x0C\0\0\0\x02\0\0\0\0\0\0\0\xFF\xFF\xFF\0CNAM\x59\0\0\0Publican\0NAME\x0E\0\0\0Was wollt Ihr?BNAM\x11\0\0\0;publican default"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip INFO, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      DialogueInfoRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
     SECTION("corrupt data: no FNAM")
     {
       const auto data = "INFO\x45\x01\0\0\0\0\0\0\0\0\0\0INAM\x13\0\0\0\x32\x32\x36\x34\x37\x31\x34\x31\x31\x37\x35\x36\x38\x37\x33\x36\x39\x35\0PNAM\x01\0\0\0\0NNAM\x01\0\0\0\0DATA\x0C\0\0\0\0\0\0\0\0\0\0\0\x07\xFF\xFF\0FAIL\x0C\0\0\0Mages Guild\0NAME\xC1\0\0\0Es ist eine H\xF6hle an der Westk\xFCste von Sheogorad, westlich von Dagon Fel. Bevor man die K\xFCste erreicht, passiert man eine kleine Bucht westlich von Dagon Fel. Lasst Euch davon nicht irritieren.SCVR\x13\0\0\0\x33\x34JX4MG_AdvancementINTV\x04\0\0\0<\0\0\0"sv;
@@ -591,6 +918,141 @@ TEST_CASE("MWTP::DialogueInfoRecord")
     SECTION("corrupt data: length of FNAM is beyond stream")
     {
       const auto data = "INFO\x45\x01\0\0\0\0\0\0\0\0\0\0INAM\x13\0\0\0\x32\x32\x36\x34\x37\x31\x34\x31\x31\x37\x35\x36\x38\x37\x33\x36\x39\x35\0PNAM\x01\0\0\0\0NNAM\x01\0\0\0\0DATA\x0C\0\0\0\0\0\0\0\0\0\0\0\x07\xFF\xFF\0FNAM\xFE\0\0\0Mages Guild\0NAME\xC1\0\0\0Es ist eine H\xF6hle an der Westk\xFCste von Sheogorad, westlich von Dagon Fel. Bevor man die K\xFCste erreicht, passiert man eine kleine Bucht westlich von Dagon Fel. Lasst Euch davon nicht irritieren.SCVR\x13\0\0\0\x33\x34JX4MG_AdvancementINTV\x04\0\0\0<\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip INFO, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      DialogueInfoRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: multiple ANAMs")
+    {
+      const auto data = "INFO\xCB\0\0\0\0\0\0\0\0\0\0\0INAM\x12\0\0\0\x34\x39\x32\x34\x31\x32\x39\x34\x31\x33\x35\x34\x31\x35\x36\x37\x36\0PNAM\x12\0\0\099367325152192966\0NNAM\x13\0\0\0971627586828521359\0DATA\x0C\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\xFF\0ANAM#\0\0\0Sadrith Mora, Zur Dreckigen Muriel\0ANAM\x04\0\0\0foo\0DNAM\x0E\0\0\0Thieves Guild\0NAME\x13\0\0\0Sie ist hier. Oben."sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip INFO, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      DialogueInfoRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: length of ANAM > 256")
+    {
+      const auto data = "INFO\xBF\0\0\0\0\0\0\0\0\0\0\0INAM\x12\0\0\0\x34\x39\x32\x34\x31\x32\x39\x34\x31\x33\x35\x34\x31\x35\x36\x37\x36\0PNAM\x12\0\0\099367325152192966\0NNAM\x13\0\0\0971627586828521359\0DATA\x0C\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\xFF\0ANAM#\x01\0\0Sadrith Mora, Zur Dreckigen Muriel\0DNAM\x0E\0\0\0Thieves Guild\0NAME\x13\0\0\0Sie ist hier. Oben."sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip INFO, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      DialogueInfoRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: length of ANAM is beyond stream")
+    {
+      const auto data = "INFO\xBF\0\0\0\0\0\0\0\0\0\0\0INAM\x12\0\0\0\x34\x39\x32\x34\x31\x32\x39\x34\x31\x33\x35\x34\x31\x35\x36\x37\x36\0PNAM\x12\0\0\099367325152192966\0NNAM\x13\0\0\0971627586828521359\0DATA\x0C\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\xFF\0ANAM\x63\0\0\0Sadrith Mora, Zur Dreckigen Muriel\0DNAM\x0E\0\0\0Thieves Guild\0NAME\x13\0\0\0Sie ist hier. Oben."sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip INFO, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      DialogueInfoRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: multiple DNAMs")
+    {
+      const auto data = "INFO\xD5\0\0\0\0\0\0\0\0\0\0\0INAM\x12\0\0\0\x34\x39\x32\x34\x31\x32\x39\x34\x31\x33\x35\x34\x31\x35\x36\x37\x36\0PNAM\x12\0\0\099367325152192966\0NNAM\x13\0\0\0971627586828521359\0DATA\x0C\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\xFF\0ANAM#\0\0\0Sadrith Mora, Zur Dreckigen Muriel\0DNAM\x0E\0\0\0Thieves Guild\0DNAM\x0E\0\0\0Thieves Guild\0NAME\x13\0\0\0Sie ist hier. Oben."sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip INFO, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      DialogueInfoRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: length of DNAM > 256")
+    {
+      const auto data = "INFO\xBF\0\0\0\0\0\0\0\0\0\0\0INAM\x12\0\0\0\x34\x39\x32\x34\x31\x32\x39\x34\x31\x33\x35\x34\x31\x35\x36\x37\x36\0PNAM\x12\0\0\099367325152192966\0NNAM\x13\0\0\0971627586828521359\0DATA\x0C\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\xFF\0ANAM#\0\0\0Sadrith Mora, Zur Dreckigen Muriel\0DNAM\x0E\x01\0\0Thieves Guild\0NAME\x13\0\0\0Sie ist hier. Oben."sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip INFO, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      DialogueInfoRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: length of DNAM is beyond stream")
+    {
+      const auto data = "INFO\xBF\0\0\0\0\0\0\0\0\0\0\0INAM\x12\0\0\0\x34\x39\x32\x34\x31\x32\x39\x34\x31\x33\x35\x34\x31\x35\x36\x37\x36\0PNAM\x12\0\0\099367325152192966\0NNAM\x13\0\0\0971627586828521359\0DATA\x0C\0\0\0\0\0\0\0\0\0\0\0\xFF\xFF\xFF\0ANAM#\0\0\0Sadrith Mora, Zur Dreckigen Muriel\0DNAM\x3E\0\0\0Thieves Guild\0NAME\x13\0\0\0Sie ist hier. Oben."sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip INFO, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      DialogueInfoRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: multiple SNAMs")
+    {
+      const auto data = "INFO\xB0\0\0\0\0\0\0\0\0\0\0\0INAM\x12\0\0\0\x32\x31\x35\x32\x36\x39\x31\x36\x39\x38\x37\x34\x31\x33\x32\x33\x33\0PNAM\x12\0\0\0\x33\x32\x33\x38\x32\x38\x33\x36\x31\x36\x34\x36\x36\x33\x36\x35\x38\0NNAM\x01\0\0\0\0DATA\x0C\0\0\0\x01\0\0\0\0\0\0\0\xFF\0\xFF\0RNAM\x09\0\0\0Imperial\0SNAM\x15\0\0\0vo\\i\\m\\Idl_IM001.mp3\0SNAM\x15\0\0\0vo\\i\\m\\Idl_IM001.mp3\0NAME\x0C\0\0\0[Schn\xFC\x66\x66\x65ln]"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip INFO, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      DialogueInfoRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: length of SNAM > 256")
+    {
+      const auto data = "INFO\x93\0\0\0\0\0\0\0\0\0\0\0INAM\x12\0\0\0\x32\x31\x35\x32\x36\x39\x31\x36\x39\x38\x37\x34\x31\x33\x32\x33\x33\0PNAM\x12\0\0\0\x33\x32\x33\x38\x32\x38\x33\x36\x31\x36\x34\x36\x36\x33\x36\x35\x38\0NNAM\x01\0\0\0\0DATA\x0C\0\0\0\x01\0\0\0\0\0\0\0\xFF\0\xFF\0RNAM\x09\0\0\0Imperial\0SNAM\x15\x01\0\0vo\\i\\m\\Idl_IM001.mp3\0NAME\x0C\0\0\0[Schn\xFC\x66\x66\x65ln]"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip INFO, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      DialogueInfoRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: length of SNAM is beyond stream")
+    {
+      const auto data = "INFO\x93\0\0\0\0\0\0\0\0\0\0\0INAM\x12\0\0\0\x32\x31\x35\x32\x36\x39\x31\x36\x39\x38\x37\x34\x31\x33\x32\x33\x33\0PNAM\x12\0\0\0\x33\x32\x33\x38\x32\x38\x33\x36\x31\x36\x34\x36\x36\x33\x36\x35\x38\0NNAM\x01\0\0\0\0DATA\x0C\0\0\0\x01\0\0\0\0\0\0\0\xFF\0\xFF\0RNAM\x09\0\0\0Imperial\0SNAM\x35\0\0\0vo\\i\\m\\Idl_IM001.mp3\0NAME\x0C\0\0\0[Schn\xFC\x66\x66\x65ln]"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 
@@ -742,6 +1204,51 @@ TEST_CASE("MWTP::DialogueInfoRecord")
     SECTION("corrupt data: stream ends before INTV can be read")
     {
       const auto data = "INFO\x45\x01\0\0\0\0\0\0\0\0\0\0INAM\x13\0\0\0\x32\x32\x36\x34\x37\x31\x34\x31\x31\x37\x35\x36\x38\x37\x33\x36\x39\x35\0PNAM\x01\0\0\0\0NNAM\x01\0\0\0\0DATA\x0C\0\0\0\0\0\0\0\0\0\0\0\x07\xFF\xFF\0FNAM\x0C\0\0\0Mages Guild\0NAME\xC1\0\0\0Es ist eine H\xF6hle an der Westk\xFCste von Sheogorad, westlich von Dagon Fel. Bevor man die K\xFCste erreicht, passiert man eine kleine Bucht westlich von Dagon Fel. Lasst Euch davon nicht irritieren.SCVR\x13\0\0\0\x33\x34JX4MG_AdvancementINTV\x04\0\0\0<\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip INFO, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      DialogueInfoRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: multiple BNAMs")
+    {
+      const auto data = "INFO\xC0\0\0\0\0\0\0\0\0\0\0\0INAM\x12\0\0\0\x31\x34\x36\x38\x32\x34\x38\x39\x34\x34\x30\x39\x32\x34\x39\x37\x36\0PNAM\x14\0\0\0\x32\x31\x38\x34\x31\x32\x39\x32\x38\x30\x32\x31\x36\x35\x34\x31\x35\x31\x35\0NNAM\x15\0\0\0\x31\x34\x33\x37\x38\x33\x31\x36\x35\x31\x32\x30\x30\x33\x35\x31\x35\x39\x37\x30\0DATA\x0C\0\0\0\x02\0\0\0\0\0\0\0\xFF\xFF\xFF\0CNAM\x09\0\0\0Publican\0NAME\x0E\0\0\0Was wollt Ihr?BNAM\x11\0\0\0;publican defaultBNAM\x11\0\0\0;publican default"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip INFO, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      DialogueInfoRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: length of BNAM > 768")
+    {
+      const auto data = "INFO\xA7\0\0\0\0\0\0\0\0\0\0\0INAM\x12\0\0\0\x31\x34\x36\x38\x32\x34\x38\x39\x34\x34\x30\x39\x32\x34\x39\x37\x36\0PNAM\x14\0\0\0\x32\x31\x38\x34\x31\x32\x39\x32\x38\x30\x32\x31\x36\x35\x34\x31\x35\x31\x35\0NNAM\x15\0\0\0\x31\x34\x33\x37\x38\x33\x31\x36\x35\x31\x32\x30\x30\x33\x35\x31\x35\x39\x37\x30\0DATA\x0C\0\0\0\x02\0\0\0\0\0\0\0\xFF\xFF\xFF\0CNAM\x09\0\0\0Publican\0NAME\x0E\0\0\0Was wollt Ihr?BNAM\x11\x03\0\0;publican default"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip INFO, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      DialogueInfoRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: length of BNAM is beyond stream")
+    {
+      const auto data = "INFO\xA7\0\0\0\0\0\0\0\0\0\0\0INAM\x12\0\0\0\x31\x34\x36\x38\x32\x34\x38\x39\x34\x34\x30\x39\x32\x34\x39\x37\x36\0PNAM\x14\0\0\0\x32\x31\x38\x34\x31\x32\x39\x32\x38\x30\x32\x31\x36\x35\x34\x31\x35\x31\x35\0NNAM\x15\0\0\0\x31\x34\x33\x37\x38\x33\x31\x36\x35\x31\x32\x30\x30\x33\x35\x31\x35\x39\x37\x30\0DATA\x0C\0\0\0\x02\0\0\0\0\0\0\0\xFF\xFF\xFF\0CNAM\x09\0\0\0Publican\0NAME\x0E\0\0\0Was wollt Ihr?BNAM\x15\0\0\0;publican default"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 

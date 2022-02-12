@@ -158,7 +158,7 @@ uint32_t DialogueInfoRecord::getWriteSize() const
   if (!ResultString.empty())
   {
     Size += 4 /* BNAM */ + 4 /* 4 bytes for length */
-          + ResultString.length() + 1 /* length of result +1 byte for NUL */;
+          + ResultString.length() /* length of result (no NUL termination) */;
   }
   return Size;
 }
@@ -324,12 +324,6 @@ bool DialogueInfoRecord::saveToStream(std::ostream& output) const
     output.write(PCFactionID.c_str(), SubLength);
   }
 
-  // write response (NAME)
-  output.write(reinterpret_cast<const char*>(&cNAME), 4);
-  SubLength = Response.length();
-  output.write(reinterpret_cast<const char*>(&SubLength), 4);
-  output.write(Response.c_str(), SubLength);
-
   if (!SoundFile.empty())
   {
     // write sound file path (SNAM)
@@ -338,6 +332,12 @@ bool DialogueInfoRecord::saveToStream(std::ostream& output) const
     output.write(reinterpret_cast<const char*>(&SubLength), 4);
     output.write(SoundFile.c_str(), SubLength);
   }
+
+  // write response (NAME)
+  output.write(reinterpret_cast<const char*>(&cNAME), 4);
+  SubLength = Response.length();
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
+  output.write(Response.c_str(), SubLength);
 
   if (isQuestName)
   {
@@ -402,7 +402,7 @@ bool DialogueInfoRecord::saveToStream(std::ostream& output) const
   {
     // write result string/script (BNAM)
     output.write(reinterpret_cast<const char*>(&cBNAM), 4);
-    SubLength = ResultString.length() + 1;
+    SubLength = ResultString.length();
     output.write(reinterpret_cast<const char*>(&SubLength), 4);
     output.write(ResultString.c_str(), SubLength);
   }
@@ -411,12 +411,12 @@ bool DialogueInfoRecord::saveToStream(std::ostream& output) const
 }
 #endif
 
-bool DialogueInfoRecord::loadFromStream(std::istream& in_File)
+bool DialogueInfoRecord::loadFromStream(std::istream& input)
 {
   uint32_t Size = 0;
-  in_File.read(reinterpret_cast<char*>(&Size), 4);
-  in_File.read(reinterpret_cast<char*>(&HeaderOne), 4);
-  in_File.read(reinterpret_cast<char*>(&HeaderFlags), 4);
+  input.read(reinterpret_cast<char*>(&Size), 4);
+  input.read(reinterpret_cast<char*>(&HeaderOne), 4);
+  input.read(reinterpret_cast<char*>(&HeaderFlags), 4);
   /* Dialogue info record:
     Dialogue response record that belongs to previous DIAL record.
 	INAM = Info name string (unique sequence of #'s), ID
@@ -492,21 +492,21 @@ bool DialogueInfoRecord::loadFromStream(std::istream& in_File)
 
   // read info ID (INAM)
   char Buffer[768];
-  if (!loadString256WithHeader(in_File, recordID, Buffer, cINAM, BytesRead))
+  if (!loadString256WithHeader(input, recordID, Buffer, cINAM, BytesRead))
   {
     std::cerr << "Error while reading sub record INAM of INFO!\n";
     return false;
   }
 
   // read previous info's ID (PNAM)
-  if (!loadString256WithHeader(in_File, PreviousInfoID, Buffer, cPNAM, BytesRead))
+  if (!loadString256WithHeader(input, PreviousInfoID, Buffer, cPNAM, BytesRead))
   {
     std::cerr << "Error while reading sub record PNAM of INFO!\n";
     return false;
   }
 
   // read next info's ID (NNAM)
-  if (!loadString256WithHeader(in_File, NextInfoID, Buffer, cNNAM, BytesRead))
+  if (!loadString256WithHeader(input, NextInfoID, Buffer, cNNAM, BytesRead))
   {
     std::cerr << "Error while reading sub record NNAM of INFO!\n";
     return false;
@@ -515,7 +515,7 @@ bool DialogueInfoRecord::loadFromStream(std::istream& in_File)
   //read DATA
   uint32_t SubRecName = 0;
   uint32_t SubLength = 0;
-  in_File.read(reinterpret_cast<char*>(&SubRecName), 4);
+  input.read(reinterpret_cast<char*>(&SubRecName), 4);
   BytesRead += 4;
   if (SubRecName != cDATA)
   {
@@ -523,7 +523,7 @@ bool DialogueInfoRecord::loadFromStream(std::istream& in_File)
     return false;
   }
   // DATA's length
-  in_File.read(reinterpret_cast<char*>(&SubLength), 4);
+  input.read(reinterpret_cast<char*>(&SubLength), 4);
   BytesRead += 4;
   if (SubLength != 12)
   {
@@ -532,14 +532,14 @@ bool DialogueInfoRecord::loadFromStream(std::istream& in_File)
     return false;
   }
   // read data
-  in_File.read(reinterpret_cast<char*>(&UnknownLong), 4);
-  in_File.read(reinterpret_cast<char*>(&Disposition), 4);
-  in_File.read(reinterpret_cast<char*>(&Rank), 1);
-  in_File.read(reinterpret_cast<char*>(&Gender), 1);
-  in_File.read(reinterpret_cast<char*>(&PCRank), 1);
-  in_File.read(reinterpret_cast<char*>(&UnknownByte), 1);
+  input.read(reinterpret_cast<char*>(&UnknownLong), 4);
+  input.read(reinterpret_cast<char*>(&Disposition), 4);
+  input.read(reinterpret_cast<char*>(&Rank), 1);
+  input.read(reinterpret_cast<char*>(&Gender), 1);
+  input.read(reinterpret_cast<char*>(&PCRank), 1);
+  input.read(reinterpret_cast<char*>(&UnknownByte), 1);
   BytesRead += 12;
-  if (!in_File.good())
+  if (!input.good())
   {
     std::cerr << "Error while reading sub record DATA of INFO!\n";
     return false;
@@ -571,7 +571,7 @@ bool DialogueInfoRecord::loadFromStream(std::istream& in_File)
   while (BytesRead < Size)
   {
     // read next sub record
-    in_File.read(reinterpret_cast<char*>(&SubRecName), 4);
+    input.read(reinterpret_cast<char*>(&SubRecName), 4);
     BytesRead += 4;
     switch (SubRecName)
     {
@@ -581,24 +581,12 @@ bool DialogueInfoRecord::loadFromStream(std::istream& in_File)
              std::cerr << "Error: Record INFO seems to have two ONAM sub records.\n";
              return false;
            }
-           //ONAM's length
-           in_File.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength > 255)
-           {
-             std::cerr << "Error: Subrecord ONAM of INFO is longer than 255 characters.\n";
-             return false;
-           }
-           //read actor ID
-           memset(Buffer, '\0', 256);
-           in_File.read(Buffer, SubLength);
-           BytesRead += SubLength;
-           if (!in_File.good())
+           // read actor ID (ONAM)
+           if (!loadString256(input, ActorID, Buffer, cONAM, BytesRead))
            {
              std::cerr << "Error while reading sub record ONAM of INFO!\n";
              return false;
            }
-           ActorID = std::string(Buffer);
            hasONAM = true;
            break;
       case cRNAM:
@@ -607,24 +595,12 @@ bool DialogueInfoRecord::loadFromStream(std::istream& in_File)
              std::cerr << "Error: Record INFO seems to have two RNAM sub records.\n";
              return false;
            }
-           //RNAM's length
-           in_File.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength>255)
-           {
-             std::cout << "Error: subrecord RNAM of INFO is longer than 255 characters.\n";
-             return false;
-           }
-           //read race ID
-           memset(Buffer, '\0', 256);
-           in_File.read(Buffer, SubLength);
-           BytesRead += SubLength;
-           if (!in_File.good())
+           // read race ID (RNAM)
+           if (!loadString256(input, RaceID, Buffer, cRNAM, BytesRead))
            {
              std::cerr << "Error while reading sub record RNAM of INFO!\n";
              return false;
            }
-           RaceID = std::string(Buffer);
            hasRNAM = true;
            break;
       case cCNAM:
@@ -633,24 +609,12 @@ bool DialogueInfoRecord::loadFromStream(std::istream& in_File)
              std::cerr << "Error: Record INFO seems to have two CNAM sub records.\n";
              return false;
            }
-           //CNAM's length
-           in_File.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength>255)
-           {
-             std::cout << "Error: subrecord CNAM of INFO is longer than 255 characters.\n";
-             return false;
-           }
-           //read class ID
-           memset(Buffer, '\0', 256);
-           in_File.read(Buffer, SubLength);
-           BytesRead += SubLength;
-           if (!in_File.good())
+           // read class ID (CNAM)
+           if (!loadString256(input, ClassID, Buffer, cCNAM, BytesRead))
            {
              std::cerr << "Error while reading sub record CNAM of INFO!\n";
              return false;
            }
-           ClassID = std::string(Buffer);
            hasCNAM = true;
            break;
       case cFNAM:
@@ -660,7 +624,7 @@ bool DialogueInfoRecord::loadFromStream(std::istream& in_File)
              return false;
            }
            // read faction ID (FNAM)
-           if (!loadString256(in_File, FactionID, Buffer, cFNAM, BytesRead))
+           if (!loadString256(input, FactionID, Buffer, cFNAM, BytesRead))
            {
              std::cerr << "Error while reading sub record FNAM of INFO!\n";
              return false;
@@ -670,79 +634,43 @@ bool DialogueInfoRecord::loadFromStream(std::istream& in_File)
       case cANAM:
            if (hasANAM)
            {
-             std::cout << "Error: record INFO seems to have two ANAM subrecords.\n";
+             std::cerr << "Error: Record INFO seems to have two ANAM sub records.\n";
              return false;
            }
-           //ANAM's length
-           in_File.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength>255)
+           // read cell name (ANAM)
+           if (!loadString256(input, CellID, Buffer, cANAM, BytesRead))
            {
-             std::cout << "Error: subrecord ANAM of INFO is longer than 255 characters.\n";
+             std::cerr << "Error while reading sub record ANAM of INFO!\n";
              return false;
            }
-           //read cell name
-           memset(Buffer, '\0', 256);
-           in_File.read(Buffer, SubLength);
-           BytesRead += SubLength;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord ANAM of INFO!\n";
-             return false;
-           }
-           CellID = std::string(Buffer);
            hasANAM = true;
            break;
       case cDNAM:
            if (hasDNAM)
            {
-             std::cout << "Error: record INFO seems to have two DNAM subrecords.\n";
+             std::cerr << "Error: Record INFO seems to have two DNAM sub records.\n";
              return false;
            }
-           //DNAM's length
-           in_File.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength>255)
+           // read PC faction ID (DNAM)
+           if (!loadString256(input, PCFactionID, Buffer, cDNAM, BytesRead))
            {
-             std::cout << "Error: subrecord DNAM of INFO is longer than 255 characters.\n";
+             std::cerr << "Error while reading sub record DNAM of INFO!\n";
              return false;
            }
-           //read pc faction ID
-           memset(Buffer, '\0', 256);
-           in_File.read(Buffer, SubLength);
-           BytesRead += SubLength;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord DNAM of INFO!\n";
-             return false;
-           }
-           PCFactionID = std::string(Buffer);
            hasDNAM = true;
            break;
       case cSNAM:
            if (hasSNAM)
            {
-             std::cout << "Error: record INFO seems to have two SNAM subrecords.\n";
+             std::cerr << "Error: Record INFO seems to have two SNAM sub records.\n";
              return false;
            }
-           //SNAM's length
-           in_File.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength>255)
+           // read sound file path (SNAM)
+           if (!loadString256(input, SoundFile, Buffer, cSNAM, BytesRead))
            {
-             std::cout << "Error: subrecord SNAM of INFO is longer than 255 characters.\n";
+             std::cerr << "Error while reading sub record SNAM of INFO!\n";
              return false;
            }
-           //read sound file path
-           memset(Buffer, '\0', 256);
-           in_File.read(Buffer, SubLength);
-           BytesRead += SubLength;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord SNAM of INFO!\n";
-             return false;
-           }
-           SoundFile = std::string(Buffer);
            hasSNAM = true;
            break;
       case cNAME:
@@ -752,7 +680,7 @@ bool DialogueInfoRecord::loadFromStream(std::istream& in_File)
              return false;
            }
            // NAME's length
-           in_File.read(reinterpret_cast<char*>(&SubLength), 4);
+           input.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
            if (SubLength > 512)
            {
@@ -761,9 +689,9 @@ bool DialogueInfoRecord::loadFromStream(std::istream& in_File)
            }
            // read dialogue response
            memset(Buffer, '\0', 513);
-           in_File.read(Buffer, SubLength);
+           input.read(Buffer, SubLength);
            BytesRead += SubLength;
-           if (!in_File.good())
+           if (!input.good())
            {
              std::cerr << "Error while reading sub record NAME of INFO!\n";
              return false;
@@ -773,7 +701,7 @@ bool DialogueInfoRecord::loadFromStream(std::istream& in_File)
            break;
       case cSCVR:
            // SCVR's length
-           in_File.read(reinterpret_cast<char*>(&SubLength), 4);
+           input.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
            if (SubLength < 5)
            {
@@ -786,16 +714,16 @@ bool DialogueInfoRecord::loadFromStream(std::istream& in_File)
              return false;
            }
            //read function related stuff
-           in_File.read(reinterpret_cast<char*>(&temp.Index), 1);
-           in_File.read(reinterpret_cast<char*>(&temp.Type), 1);
-           in_File.read(reinterpret_cast<char*>(&temp.Function), 2);
-           in_File.read(reinterpret_cast<char*>(&temp.CompareOp), 1);
+           input.read(reinterpret_cast<char*>(&temp.Index), 1);
+           input.read(reinterpret_cast<char*>(&temp.Type), 1);
+           input.read(reinterpret_cast<char*>(&temp.Function), 2);
+           input.read(reinterpret_cast<char*>(&temp.CompareOp), 1);
            BytesRead += 5;
            // --- read var name, if present
            memset(Buffer, '\0', 513);
-           in_File.read(Buffer, SubLength - 5);
+           input.read(Buffer, SubLength - 5);
            BytesRead += (SubLength - 5);
-           if (!in_File.good())
+           if (!input.good())
            {
              std::cerr << "Error while reading sub record SCVR of INFO!\n";
              return false;
@@ -804,7 +732,7 @@ bool DialogueInfoRecord::loadFromStream(std::istream& in_File)
 
            // directly after SCVR comes INTV or FLTV
            // read INTV/FLTV
-           in_File.read(reinterpret_cast<char*>(&SubRecName), 4);
+           input.read(reinterpret_cast<char*>(&SubRecName), 4);
            BytesRead += 4;
            if ((SubRecName != cINTV) && (SubRecName != cFLTV))
            {
@@ -814,7 +742,7 @@ bool DialogueInfoRecord::loadFromStream(std::istream& in_File)
              return false;
            }
            // INTV's/FLTV's length
-           in_File.read(reinterpret_cast<char*>(&SubLength), 4);
+           input.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
            if (SubLength != 4)
            {
@@ -826,7 +754,7 @@ bool DialogueInfoRecord::loadFromStream(std::istream& in_File)
            {
              // It's an integer value.
              temp.isFloat = false;
-             in_File.read(reinterpret_cast<char*>(&temp.iVal), 4);
+             input.read(reinterpret_cast<char*>(&temp.iVal), 4);
              BytesRead += 4;
              temp.fVal = 0.0f;
            }
@@ -834,7 +762,7 @@ bool DialogueInfoRecord::loadFromStream(std::istream& in_File)
            {
              // It's a float value.
              temp.isFloat = true;
-             in_File.read(reinterpret_cast<char*>(&temp.fVal), 4);
+             input.read(reinterpret_cast<char*>(&temp.fVal), 4);
              BytesRead += 4;
              temp.iVal = 0;
            }
@@ -847,7 +775,7 @@ bool DialogueInfoRecord::loadFromStream(std::istream& in_File)
              return false;
            }
            // BNAM's length
-           in_File.read(reinterpret_cast<char*>(&SubLength), 4);
+           input.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
            if (SubLength > 767)
            {
@@ -856,9 +784,9 @@ bool DialogueInfoRecord::loadFromStream(std::istream& in_File)
            }
            // read result string
            memset(Buffer, '\0', 768);
-           in_File.read(Buffer, SubLength);
+           input.read(Buffer, SubLength);
            BytesRead += SubLength;
-           if (!in_File.good())
+           if (!input.good())
            {
              std::cerr << "Error while reading sub record BNAM of INFO!\n";
              return false;
@@ -873,7 +801,7 @@ bool DialogueInfoRecord::loadFromStream(std::istream& in_File)
              return false;
            }
            // QSTN's length
-           in_File.read(reinterpret_cast<char*>(&SubLength), 4);
+           input.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
            if (SubLength != 1)
            {
@@ -883,9 +811,9 @@ bool DialogueInfoRecord::loadFromStream(std::istream& in_File)
            }
            // read QSTN record
            Buffer[0] = '\0';
-           in_File.read(Buffer, 1);
+           input.read(Buffer, 1);
            BytesRead += 1;
-           if (!in_File.good())
+           if (!input.good())
            {
              std::cerr << "Error while reading sub record QSTN of INFO!\n";
              return false;
@@ -904,7 +832,7 @@ bool DialogueInfoRecord::loadFromStream(std::istream& in_File)
              return false;
            }
            //QSTF's length
-           in_File.read((char*) &SubLength, 4);
+           input.read((char*) &SubLength, 4);
            BytesRead += 4;
            if (SubLength!=1)
            {
@@ -914,9 +842,9 @@ bool DialogueInfoRecord::loadFromStream(std::istream& in_File)
            }
            //read QSTF record
            Buffer[0] = '\0';
-           in_File.read(Buffer, 1);
+           input.read(Buffer, 1);
            BytesRead += 1;
-           if (!in_File.good())
+           if (!input.good())
            {
              std::cout << "Error while reading subrecord QSTF of INFO!\n";
              return false;
@@ -935,7 +863,7 @@ bool DialogueInfoRecord::loadFromStream(std::istream& in_File)
              return false;
            }
            //QSTR's length
-           in_File.read((char*) &SubLength, 4);
+           input.read((char*) &SubLength, 4);
            BytesRead += 4;
            if (SubLength!=1)
            {
@@ -945,9 +873,9 @@ bool DialogueInfoRecord::loadFromStream(std::istream& in_File)
            }
            //read QSTR record
            Buffer[0] = '\0';
-           in_File.read(Buffer, 1);
+           input.read(Buffer, 1);
            BytesRead += 1;
-           if (!in_File.good())
+           if (!input.good())
            {
              std::cout << "Error while reading subrecord QSTR of INFO!\n";
              return false;
@@ -968,7 +896,7 @@ bool DialogueInfoRecord::loadFromStream(std::istream& in_File)
     }
   }
 
-  return in_File.good();
+  return input.good();
 }
 
 } // namespace

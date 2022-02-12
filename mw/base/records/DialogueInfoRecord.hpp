@@ -83,6 +83,14 @@ struct DialogueInfoRecord: public BasicRecord
   bool equals(const DialogueInfoRecord& other) const;
 
   #ifndef MW_UNSAVEABLE_RECORDS
+  /** \brief Gets the size in bytes that the record's data would occupy in a
+   *         stream, NOT including the header data.
+   *
+   * \return Returns the size in bytes that the record would need. Size of the
+   *         header is not included.
+   */
+  uint32_t getWriteSize() const;
+
   /** \brief Writes the record to the given output stream.
    *
    * \param output  the output stream

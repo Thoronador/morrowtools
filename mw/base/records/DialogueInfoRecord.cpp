@@ -87,9 +87,8 @@ bool DialogueInfoRecord::equals(const DialogueInfoRecord& other) const
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool DialogueInfoRecord::saveToStream(std::ostream& output) const
+uint32_t DialogueInfoRecord::getWriteSize() const
 {
-  output.write(reinterpret_cast<const char*>(&cINFO), 4);
   uint32_t Size = 4 /* INAM */ + 4 /* 4 bytes for length */
       + recordID.length() + 1 /* length of ID +1 byte for NUL termination */
       + 4 /* PNAM */ + 4 /* 4 bytes for length */
@@ -161,6 +160,12 @@ bool DialogueInfoRecord::saveToStream(std::ostream& output) const
     Size += 4 /* BNAM */ + 4 /* 4 bytes for length */
           + ResultString.length() + 1 /* length of result +1 byte for NUL */;
   }
+  return Size;
+}
+bool DialogueInfoRecord::saveToStream(std::ostream& output) const
+{
+  output.write(reinterpret_cast<const char*>(&cINFO), 4);
+  const uint32_t Size = getWriteSize();
   output.write(reinterpret_cast<const char*>(&Size), 4);
   output.write(reinterpret_cast<const char*>(&HeaderOne), 4);
   output.write(reinterpret_cast<const char*>(&HeaderFlags), 4);

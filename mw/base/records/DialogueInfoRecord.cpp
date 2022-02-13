@@ -411,6 +411,54 @@ bool DialogueInfoRecord::saveToStream(std::ostream& output) const
 }
 #endif
 
+/** \brief Tries to load a byte flag from the stream, without header.
+     *
+     * \param input       the input stream
+     * \param target      the boolean that will be used to store the flag
+     * \param buffer      a pre-allocated array of char that can hold at least one byte
+     * \param subHeader   the header of that sub record
+     * \param bytesRead   the variable that holds the number of bytes read so far
+     * \return Returns true on success (data was loaded successfully).
+     *         Returns false, if an error occurred.
+     */
+bool loadByteFlag(std::istream& input, bool& target, char * buffer, const uint32_t subHeader, uint32_t& bytesRead)
+{
+  if (target)
+  {
+    std::cerr << "Error: Record INFO seems to have two " << IntTo4Char(subHeader) << " sub records.\n";
+    return false;
+  }
+  // sub record's length
+  uint32_t subLength = 0;
+  input.read(reinterpret_cast<char*>(&subLength), 4);
+  bytesRead += 4;
+  if (subLength != 1)
+  {
+    std::cerr << "Error: Sub record " << IntTo4Char(subHeader)
+              << " of INFO has invalid length (" << subLength
+              << " bytes). Should be one byte only.\n";
+    return false;
+  }
+  // read flag record
+  buffer[0] = '\0';
+  input.read(buffer, 1);
+  bytesRead += 1;
+  if (!input.good())
+  {
+    std::cerr << "Error while reading sub record " << IntTo4Char(subHeader)
+              << " of INFO!\n";
+    return false;
+  }
+  if (buffer[0] != 1)
+  {
+    std::cerr << "Sub record " << IntTo4Char(subHeader)
+              << " of INFO does not have value 01!\n";
+    return false;
+  }
+  target = true;
+  return true;
+}
+
 bool DialogueInfoRecord::loadFromStream(std::istream& input)
 {
   uint32_t Size = 0;
@@ -795,97 +843,22 @@ bool DialogueInfoRecord::loadFromStream(std::istream& input)
            hasBNAM = true;
            break;
       case cQSTN:
-           if (isQuestName)
+           if (!loadByteFlag(input, isQuestName, Buffer, cQSTN, BytesRead))
            {
-             std::cerr << "Error: Record INFO seems to have two QSTN sub records.\n";
              return false;
            }
-           // QSTN's length
-           input.read(reinterpret_cast<char*>(&SubLength), 4);
-           BytesRead += 4;
-           if (SubLength != 1)
-           {
-             std::cerr << "Error: Sub record QSTN of INFO has invalid length ("
-                       << SubLength << " bytes). Should be one byte only.\n";
-             return false;
-           }
-           // read QSTN record
-           Buffer[0] = '\0';
-           input.read(Buffer, 1);
-           BytesRead += 1;
-           if (!input.good())
-           {
-             std::cerr << "Error while reading sub record QSTN of INFO!\n";
-             return false;
-           }
-           if (Buffer[0] != 1)
-           {
-             std::cerr << "Sub record QSTN of INFO does not have value 01!\n";
-             return false;
-           }
-           isQuestName = true;
            break;
       case cQSTF:
-           if (isQuestFinished)
+           if (!loadByteFlag(input, isQuestFinished, Buffer, cQSTF, BytesRead))
            {
-             std::cout << "Error: record INFO seems to have two QSTF subrecords.\n";
              return false;
            }
-           //QSTF's length
-           input.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength!=1)
-           {
-             std::cout << "Error: subrecord QSTF of INFO has invalid length ("
-                       << SubLength<<" bytes). Should be one byte only.\n";
-             return false;
-           }
-           //read QSTF record
-           Buffer[0] = '\0';
-           input.read(Buffer, 1);
-           BytesRead += 1;
-           if (!input.good())
-           {
-             std::cout << "Error while reading subrecord QSTF of INFO!\n";
-             return false;
-           }
-           if (Buffer[0]!=1)
-           {
-             std::cout << "Subrecord QSTF of INFO does not have value 01!\n";
-             return false;
-           }
-           isQuestFinished = true;
            break;
       case cQSTR:
-           if (isQuestRestart)
+           if (!loadByteFlag(input, isQuestRestart, Buffer, cQSTR, BytesRead))
            {
-             std::cout << "Error: record INFO seems to have two QSTR subrecords.\n";
              return false;
            }
-           //QSTR's length
-           input.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength!=1)
-           {
-             std::cout << "Error: subrecord QSTR of INFO has invalid length ("
-                       << SubLength<<" bytes). Should be one byte only.\n";
-             return false;
-           }
-           //read QSTR record
-           Buffer[0] = '\0';
-           input.read(Buffer, 1);
-           BytesRead += 1;
-           if (!input.good())
-           {
-             std::cout << "Error while reading subrecord QSTR of INFO!\n";
-             return false;
-           }
-           if (Buffer[0]!=1)
-           {
-             std::cout << "Subrecord QSTR of INFO does not have value 01!\n";
-             return false;
-           }
-           isQuestRestart = true;
            break;
       default:
            std::cerr << "Error while reading INFO: Expected record name ONAM, "

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2013, 2021  Dirk Stolle
+    Copyright (C) 2011, 2013, 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -35,6 +35,15 @@ struct TravelDestination
   TravelDestination();
 
   bool operator==(const TravelDestination& other) const;
+
+  #ifndef MW_UNSAVEABLE_RECORDS
+  /** \brief Gets the size in bytes that the instances's data would occupy in a
+   *         stream.
+   *
+   * \return Returns the size in bytes that the record data need.
+   */
+  uint32_t getStreamSize() const;
+  #endif // MW_UNSAVEABLE_RECORDS
 };
 
 } // namespace

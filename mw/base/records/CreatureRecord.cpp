@@ -176,16 +176,11 @@ bool CreatureRecord::saveToStream(std::ostream& output) const
     }
   }//for (AIPackages)
 
-  //travel service destinations
-  for (i=0; i<Destinations.size(); ++i)
+  // travel service destinations
+  for (const auto& dest: Destinations)
   {
-    Size = Size +4 /* DODT */ +4 /* 4 bytes for length */ +24 /*fixed length of 24 bytes */;
-    if (!Destinations[i].CellName.empty())
-    {
-      Size = Size +4 /* DNAM */ +4 /* 4 bytes for length */
-            +Destinations[i].CellName.length()+1 /*length of cell name +1 byte for NUL termination */;
-    }//if
-  }//for
+    Size += dest.getStreamSize();
+  }
   //scale?
   if (Scale!=1.0f)
   {

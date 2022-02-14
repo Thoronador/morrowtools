@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2013, 2021  Dirk Stolle
+    Copyright (C) 2011, 2013, 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -35,5 +35,18 @@ bool TravelDestination::operator==(const TravelDestination& other) const
       && (XRot == other.XRot) && (YRot == other.YRot) && (ZRot == other.ZRot)
       && (CellName == other.CellName);
 }
+
+#ifndef MW_UNSAVEABLE_RECORDS
+uint32_t TravelDestination::getStreamSize() const
+{
+  uint32_t Size = 4 /* DODT */ + 4 /* 4 bytes for length */ + 24 /*fixed length of 24 bytes */;
+  if (!CellName.empty())
+  {
+    Size += 4 /* DNAM */ + 4 /* 4 bytes for length */
+          + CellName.length() + 1 /* length of cell name +1 byte for NUL */;
+  }
+  return Size;
+}
+#endif // MW_UNSAVEABLE_RECORDS
 
 } // namespace

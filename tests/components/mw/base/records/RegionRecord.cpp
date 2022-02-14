@@ -798,6 +798,21 @@ TEST_CASE("MWTP::RegionRecord")
       RegionRecord record;
       REQUIRE_FALSE( record.loadFromStream(stream) );
     }
+
+    SECTION("corrupt data: stream ends before SNAM's chance value can be read")
+    {
+      const auto data = "REGN\x34\x01\0\0\0\0\0\0\0\0\0\0NAME\x12\0\0\0Grazelands Region\0FNAM\x0D\0\0\0Weidenl\xE4nder\0WEAT\x08\0\0\0\x1E(\x05\x05\x0A\x0A\0\0BNAM\x14\0\0\0ex_grazelands_sleep\0CNAM\x04\0\0\0\xFF\xB1 \0SNAM!\0\0\0wind calm1\0\0\0\0\0\0\xFC\xD6\xE8\0\x98\x09m\0\xA0\xF3U\0`m\xE8\0\x04SNAM!\0\0\0wind calm2\0\0\0\0\0\0\xFC\xD6\xE8\0\x98\x09m\0\xA0\xF3U\0`m\xE8\0\x04SNAM!\0\0\0wind calm3\0\0\0\0\0\0\xFC\xD6\xE8\0\x98\x09m\0\xA0\xF3U\0`m\xE8\0\x04SNAM!\0\0\0wind calm4\0\0\0\0\0\0\xFC\xD6\xE8\0\x98\x09m\0\xA0\xF3U\0`m\xE8\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip REGN, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      RegionRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
   }
 
   SECTION("saveToStream")

@@ -200,7 +200,7 @@ bool RegionRecord::saveToStream(std::ostream& output, const bool forceBloodmoonS
     auto len = element.Sound.length() + 1;
     if (len > 32)
     {
-      len = 32;
+      len = 31;
       std::cout << "RegionRecord::saveToStream: Warning: Sound name of region \""
                 << recordID<< "\" got truncated.\n";
     }

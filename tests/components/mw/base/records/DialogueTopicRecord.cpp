@@ -296,7 +296,7 @@ TEST_CASE("MWTP::DialogueTopicRecord")
     SECTION("corrupt data: length of DATA is not one")
     {
       {
-        const auto data = "DIAL\x15\0\0\0\0\0\0\0\0\0\0\0NAME\x05\x01\0\0Alit\0DATA\0\0\0\0"sv;
+        const auto data = "DIAL\x15\0\0\0\0\0\0\0\0\0\0\0NAME\x05\0\0\0Alit\0DATA\0\0\0\0"sv;
         std::istringstream stream;
         stream.str(std::string(data));
 
@@ -310,7 +310,7 @@ TEST_CASE("MWTP::DialogueTopicRecord")
       }
 
       {
-        const auto data = "DIAL\x17\0\0\0\0\0\0\0\0\0\0\0NAME\x05\x01\0\0Alit\0DATA\x02\0\0\0\0\0"sv;
+        const auto data = "DIAL\x17\0\0\0\0\0\0\0\0\0\0\0NAME\x05\0\0\0Alit\0DATA\x02\0\0\0\0\0"sv;
         std::istringstream stream;
         stream.str(std::string(data));
 

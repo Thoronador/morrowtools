@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2013, 2021  Dirk Stolle
+    Copyright (C) 2011, 2013, 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -58,7 +58,7 @@ bool ItemRecord::loadFromStream(std::istream& input, char* buffer, uint32_t& byt
   bytesRead += 36;
   if (!input.good())
   {
-    std::cerr << "Error while reading subrecord NPCO!\n";
+    std::cerr << "Error while reading sub record NPCO!\n";
     return false;
   }
   Item = std::string(buffer);
@@ -79,7 +79,7 @@ bool ItemRecord::saveToStream(std::ostream& output) const
   auto len = Item.length() + 1;
   if (len > 32)
   {
-    len = 32;
+    len = 31;
     std::clog << "ItemRecord::saveToStream: Warning: Item name \"" << Item
               << "\" got truncated.\n";
   }

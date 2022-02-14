@@ -71,4 +71,23 @@ TEST_CASE("MWTP::ItemRecord")
       }
     }
   }
+
+  SECTION("saveToStream")
+  {
+    using namespace std::string_view_literals;
+
+    SECTION("long id gets truncated")
+    {
+      ItemRecord item;
+      item.Count = 5;
+      item.Item = "veryLongIdentifierThatShouldBeCutDown";
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( item.saveToStream(streamOut) );
+      // Check written data.
+      const auto data = "NPCO$\0\0\0\x05\0\0\0veryLongIdentifierThatShouldBeC\0"sv;
+      REQUIRE( streamOut.str() == data );
+    }
+  }
 }

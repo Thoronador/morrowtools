@@ -799,4 +799,47 @@ TEST_CASE("MWTP::RegionRecord")
       REQUIRE_FALSE( record.loadFromStream(stream) );
     }
   }
+
+  SECTION("saveToStream")
+  {
+    SECTION("very long sound name gets truncated")
+    {
+      RegionRecord record;
+      // fill data
+      record.recordID = "Grazelands Region";
+      record.RegionName = "Weidenl\xE4nder";
+      record.Clear = 30;
+      record.Cloudy = 40;
+      record.Foggy = 5;
+      record.Overcast = 5;
+      record.Rain = 10;
+      record.Thunder = 10;
+      record.Ash = 0;
+      record.Blight = 0;
+      record.Snow = 0;
+      record.Blizzard = 0;
+      record.SleepCreature = "ex_grazelands_sleep";
+      record.Red = 255;
+      record.Green = 177;
+      record.Blue = 32;
+      record.Zero = 0;
+
+      SoundChanceRecord sc;
+
+      sc.Sound = "wind calm1";
+      sc.Chance = 4;
+      record.SoundChances.emplace_back(sc);
+
+      sc.Sound = "veryLongIdentifierThatShouldBeCutDown";
+      sc.Chance = 4;
+      record.SoundChances.emplace_back(sc);
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( record.saveToStream(streamOut) );
+      // Check written data.
+      const auto data = "REGN\xB9\0\0\0\0\0\0\0\0\0\0\0NAME\x12\0\0\0Grazelands Region\0FNAM\x0D\0\0\0Weidenl\xE4nder\0WEAT\x08\0\0\0\x1E(\x05\x05\x0A\x0A\0\0BNAM\x14\0\0\0ex_grazelands_sleep\0CNAM\x04\0\0\0\xFF\xB1 \0SNAM!\0\0\0wind calm1\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x04SNAM!\0\0\0veryLongIdentifierThatShouldBeC\0\x04"sv;
+      REQUIRE( streamOut.str() == data );
+    }
+  }
 }

@@ -209,6 +209,13 @@ TEST_CASE("MWTP::NPC_AIWander")
     REQUIRE( package.getPackageType() == PackageType::ptWander );
   }
 
+  SECTION("getStreamSize")
+  {
+    NPC_AIWander package;
+
+    REQUIRE( package.getStreamSize() == 22 );
+  }
+
   SECTION("saveToStream")
   {
     SECTION("default: save package")

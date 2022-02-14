@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Morrowind Tools Project.
-    Copyright (C) 2021  Dirk Stolle
+    Copyright (C) 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -119,6 +119,28 @@ TEST_CASE("MWTP::TravelDestination")
         REQUIRE_FALSE( a == b );
         REQUIRE_FALSE( b == a );
       }
+    }
+  }
+
+  SECTION("getStreamSize")
+  {
+    TravelDestination dest;
+
+    SECTION("without cell name")
+    {
+      REQUIRE( dest.getStreamSize() == 32 );
+    }
+
+    SECTION("with cell name")
+    {
+      dest.CellName = "foo";
+      REQUIRE( dest.getStreamSize() == 44 );
+
+      dest.CellName = "foobar";
+      REQUIRE( dest.getStreamSize() == 47 );
+
+      dest.CellName = "Foo's bar, upper level";
+      REQUIRE( dest.getStreamSize() == 63 );
     }
   }
 }

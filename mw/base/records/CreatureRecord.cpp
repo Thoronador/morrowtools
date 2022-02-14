@@ -149,32 +149,11 @@ bool CreatureRecord::saveToStream(std::ostream& output) const
           +ScriptID.length()+1 /* length of ID +1 byte for NUL termination */;
   }
 
-  //AI packages
-  unsigned int i;
-  for (i=0; i<AIPackages.size(); ++i)
+  // AI packages
+  for (const auto& package: AIPackages)
   {
-    switch(AIPackages[i]->getPackageType())
-    {
-      case PackageType::ptActivate:
-           Size = Size + 4 /* AI_A */ + 4 /* 4 bytes for length */ +33 /* fixed length of 33 bytes */;
-           break;
-      case PackageType::ptEscort:
-      case PackageType::ptFollow:
-           Size = Size + 4 /* AI_E / AI_F */ + 4 /* 4 bytes for length */ +48 /* fixed length of 48 bytes */;
-           if (!static_cast<NPC_AIEscortFollow*>(AIPackages[i])->CellName.empty())
-           {
-             Size = Size +4 /* CNDT */ +4 /* 4 bytes for length */
-                    +static_cast<NPC_AIEscortFollow*>(AIPackages[i])->CellName.length()+1 /* length of cell name +1 byte for NUL */;
-           }
-           break;
-      case PackageType::ptTravel:
-           Size = Size + 4 /* AI_T */ + 4 /* 4 bytes for length */ +16 /* fixed length of 16 bytes */;
-           break;
-      case PackageType::ptWander:
-           Size = Size + 4 /* AI_W */ + 4 /* 4 bytes for length */ +14 /* fixed length of 14 bytes */;
-           break;
-    }
-  }//for (AIPackages)
+    Size += package->getStreamSize();
+  }
 
   // travel service destinations
   for (const auto& dest: Destinations)

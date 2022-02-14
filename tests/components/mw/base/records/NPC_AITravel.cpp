@@ -135,6 +135,13 @@ TEST_CASE("MWTP::NPC_AITravel")
     REQUIRE( package.getPackageType() == PackageType::ptTravel );
   }
 
+  SECTION("getStreamSize")
+  {
+    NPC_AITravel package;
+
+    REQUIRE( package.getStreamSize() == 24 );
+  }
+
   SECTION("saveToStream")
   {
     SECTION("default: save package")

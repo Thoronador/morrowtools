@@ -170,6 +170,28 @@ TEST_CASE("MWTP::NPC_AIEscort")
     }
   }
 
+  SECTION("getStreamSize")
+  {
+    NPC_AIEscort package;
+
+    SECTION("without cell name")
+    {
+      REQUIRE( package.getStreamSize() == 56 );
+    }
+
+    SECTION("with cell name")
+    {
+      package.CellName = "foo";
+      REQUIRE( package.getStreamSize() == 68 );
+
+      package.CellName = "foobar";
+      REQUIRE( package.getStreamSize() == 71 );
+
+      package.CellName = "One Two Three";
+      REQUIRE( package.getStreamSize() == 78 );
+    }
+  }
+
   SECTION("getPackageType")
   {
     NPC_AIEscort package;

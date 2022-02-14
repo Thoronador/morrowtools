@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2013, 2021  Dirk Stolle
+    Copyright (C) 2011, 2013, 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -46,6 +46,13 @@ struct NPC_BasicAIPackage
   virtual PackageType getPackageType() const = 0;
 
   #ifndef MW_UNSAVEABLE_RECORDS
+  /** \brief Gets the size in bytes that the instances's data would occupy in a
+   *         stream.
+   *
+   * \return Returns the size in bytes that the instance's data needs.
+   */
+  virtual uint32_t getStreamSize() const = 0;
+
   /** \brief Writes the package subrecord to the given output stream.
    *
    * \param output  the output stream
@@ -79,6 +86,13 @@ struct NPC_AIActivate: public NPC_BasicAIPackage
   PackageType getPackageType() const override;
 
   #ifndef MW_UNSAVEABLE_RECORDS
+  /** \brief Gets the size in bytes that the instances's data would occupy in a
+   *         stream.
+   *
+   * \return Returns the size in bytes that the instance's data needs.
+   */
+  uint32_t getStreamSize() const override;
+
   /** \brief Writes the package subrecord to the given output stream.
    *
    * \param output  the output stream
@@ -115,6 +129,13 @@ struct NPC_AIEscortFollow: public NPC_BasicAIPackage
   bool equals(const NPC_AIEscortFollow& other) const;
 
   #ifndef MW_UNSAVEABLE_RECORDS
+  /** \brief Gets the size in bytes that the instances's data would occupy in a
+   *         stream.
+   *
+   * \return Returns the size in bytes that the instance's data needs.
+   */
+  uint32_t getStreamSize() const override;
+
   /** \brief Writes the package subrecord to the given output stream.
    *
    * \param output  the output stream
@@ -169,6 +190,13 @@ struct NPC_AITravel: public NPC_BasicAIPackage
   PackageType getPackageType() const override;
 
   #ifndef MW_UNSAVEABLE_RECORDS
+  /** \brief Gets the size in bytes that the instances's data would occupy in a
+   *         stream.
+   *
+   * \return Returns the size in bytes that the instance's data needs.
+   */
+  uint32_t getStreamSize() const override;
+
   /** \brief Writes the package subrecord to the given output stream.
    *
    * \param output  the output stream
@@ -208,6 +236,13 @@ struct NPC_AIWander: public NPC_BasicAIPackage
   PackageType getPackageType() const override;
 
   #ifndef MW_UNSAVEABLE_RECORDS
+  /** \brief Gets the size in bytes that the instances's data would occupy in a
+   *         stream.
+   *
+   * \return Returns the size in bytes that the instance's data needs.
+   */
+  uint32_t getStreamSize() const override;
+
   /** \brief Writes the package subrecord to the given output stream.
    *
    * \param output  the output stream

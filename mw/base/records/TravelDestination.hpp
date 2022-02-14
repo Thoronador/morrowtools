@@ -40,7 +40,7 @@ struct TravelDestination
   /** \brief Gets the size in bytes that the instances's data would occupy in a
    *         stream.
    *
-   * \return Returns the size in bytes that the record data need.
+   * \return Returns the size in bytes that the instance's data needs.
    */
   uint32_t getStreamSize() const;
   #endif // MW_UNSAVEABLE_RECORDS

@@ -82,6 +82,13 @@ TEST_CASE("MWTP::NPC_AIActivate")
     REQUIRE( package.getPackageType() == PackageType::ptActivate );
   }
 
+  SECTION("getStreamSize")
+  {
+    NPC_AIActivate package;
+
+    REQUIRE( package.getStreamSize() == 41 );
+  }
+
   SECTION("saveToStream")
   {
     SECTION("default: save package")

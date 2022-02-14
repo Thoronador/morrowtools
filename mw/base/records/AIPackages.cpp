@@ -51,6 +51,11 @@ PackageType NPC_AIActivate::getPackageType() const
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
+uint32_t NPC_AIActivate::getStreamSize() const
+{
+  return 4 /* AI_A */ + 4 /* 4 bytes for length */ +33 /* fixed length of 33 bytes */;
+}
+
 bool NPC_AIActivate::saveToStream(std::ostream& output) const
 {
   // write AI_A
@@ -111,6 +116,17 @@ bool NPC_AIEscortFollow::equals(const NPC_AIEscortFollow& other) const
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
+uint32_t NPC_AIEscortFollow::getStreamSize() const
+{
+  uint32_t Size = 4 /* AI_E / AI_F */ + 4 /* 4 bytes for length */ + 48 /* fixed length of 48 bytes */;
+  if (!CellName.empty())
+  {
+    Size += 4 /* CNDT */ + 4 /* 4 bytes for length */
+          + CellName.length() + 1 /* length of cell name +1 byte for NUL */;
+  }
+  return Size;
+}
+
 bool NPC_AIEscortFollow::saveToStream(std::ostream& output) const
 {
   const uint32_t typeHeader = (getPackageType() == PackageType::ptEscort) ? cAI_E : cAI_F;
@@ -197,6 +213,11 @@ PackageType NPC_AITravel::getPackageType() const
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
+uint32_t NPC_AITravel::getStreamSize() const
+{
+  return 4 /* AI_T */ + 4 /* 4 bytes for length */ +16 /* fixed length of 16 bytes */;
+}
+
 bool NPC_AITravel::saveToStream(std::ostream& output) const
 {
   // write AI_T
@@ -247,6 +268,11 @@ PackageType NPC_AIWander::getPackageType() const
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
+uint32_t NPC_AIWander::getStreamSize() const
+{
+  return 4 /* AI_W */ + 4 /* 4 bytes for length */ +14 /* fixed length of 14 bytes */;
+}
+
 bool NPC_AIWander::saveToStream(std::ostream& output) const
 {
   // write AI_W

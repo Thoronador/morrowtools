@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012  Thoronador
+    Copyright (C) 2011, 2012, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,8 +22,6 @@
 #define MW_NPCRECORD_HPP
 
 #include <string>
-#include <fstream>
-#include <vector>
 #include "PreNPCRecord.hpp"
 
 namespace MWTP
@@ -38,7 +36,7 @@ enum NPDT_Type {ndtNone, ndt12Bytes, ndt52Bytes};
 /* the NPC record - holds all data about an NPC */
 struct NPCRecord: public PreNPCRecord
 {
-  std::string recordID; //formerly NPCID
+  std::string recordID;
   std::string Name;
   std::string ModelPath;
   std::string RaceID;
@@ -47,7 +45,7 @@ struct NPCRecord: public PreNPCRecord
   std::string ClassID;
   std::string HairModel;
   std::string ScriptID;
-  //NPC data
+  // NPC data
   int16_t Level;
   uint8_t Strength;
   uint8_t Intelligence;
@@ -68,59 +66,89 @@ struct NPCRecord: public PreNPCRecord
   uint8_t Unknown1;
   int32_t Gold;
   NPDT_Type NPCDataType;
-  //end of NPC data
-  int32_t NPC_Flag;
+  // end of NPC data
+  uint32_t NPC_Flag;
   //Items and spells are now part of PreNPCRecord structure, search there.
   //AI data
   //This stuff is now part of PreNPCRecord structure, search there.
 
-  /* constructor */
   NPCRecord();
 
-  /* destructor */
   virtual ~NPCRecord();
 
-  /* assignment operator */
   NPCRecord& operator=(const NPCRecord& source);
 
-  /* returns true, if the other record contains the same data */
+  /** \brief Checks whether another instance contains the same data.
+   *
+   * \param other   the other record to compare with
+   * \return Returns true, if @other contains the same data as this instance.
+   *         Returns false otherwise.
+   */
   bool equals(const NPCRecord& other) const;
 
   #ifndef MW_UNSAVEABLE_RECORDS
-  /* writes the record to the given output stream and returns true on success
+  /** \brief Gets the size in bytes that the record's data would occupy in a
+   *         stream, NOT including the header data.
+   *
+   * \return Returns the size in bytes that the record would need. Size of the
+   *         header is not included.
+   */
+  uint32_t getWriteSize() const;
 
-    parameters:
-        output - the output stream
-  */
+  /** \brief Writes the record to the given output stream.
+   *
+   * \param output  the output stream
+   * \return Returns true on success (record was written to stream).
+   *         Returns false, if an error occurred.
+   */
   bool saveToStream(std::ostream& output) const override;
   #endif
 
-  /* loads the record from the given input stream and returns true on success
+  /** \brief Loads the record from the given input stream.
+   *
+   * \param input    the input stream
+   * \return Returns true on success (record was loaded from stream).
+   *         Returns false, if an error occurred.
+   */
+  bool loadFromStream(std::istream& input) override;
 
-    parameters:
-        in_File - the input stream
-  */
-  bool loadFromStream(std::istream& in_File) override;
-
-  /* returns true, if the female flag is set */
+  /** \brief Checks whether the female flag is set.
+   *
+   * \return Returns true, if the female flag is set.
+   */
   bool isFemale() const;
 
-  /* returns true, if the Essential flag is set */
+  /** \brief Checks whether the essential flag is set.
+   *
+   * \return Returns true, if the essential flag is set.
+   */
   bool isEssential() const;
 
-  /* returns true, if the Respawn flag is set */
+  /** \brief Checks whether the respawn flag is set.
+   *
+   * \return Returns true, if the respawn flag is set.
+   */
   bool doesRespawn() const;
 
-  /* returns true, if the Auto Calculate Stats flag is set */
+  /** \brief Checks whether the Auto Calculate Stats flag is set.
+   *
+   * \return Returns true, if the Auto Calculate Stats flag is set.
+   */
   bool hasAutoCalcStats() const;
 
-  /* returns true, if the white blood texture (skeleton) flag is set */
+  /** \brief Checks whether the white blood texture (skeleton) flag is set.
+   *
+   * \return Returns true, if the white blood texture (skeleton) flag is set.
+   */
   bool hasWhiteBloodTex() const;
 
-  /* returns true, if the gold blood texture (metal) flag is set */
+  /** \brief Checks whether the gold blood texture (metal) flag is set.
+   *
+   * \return Returns true, if the gold blood texture (metal) flag is set.
+   */
   bool hasGoldBloodTex() const;
-};//struct
+}; // struct
 
-} //namespace
+} // namespace
 
 #endif // MW_NPCRECORD_HPP

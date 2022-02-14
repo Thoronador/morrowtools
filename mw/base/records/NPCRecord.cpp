@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021  Dirk Stolle
+    Copyright (C) 2011, 2012, 2013, 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -29,12 +29,12 @@ namespace MWTP
 
 /* **** functions for NPCRecord ****/
 
-const int32_t nfFemale = 1;
-const int32_t nfEssential = 2;
-const int32_t nfRespawn = 4;
-const int32_t nfAutoCalcStats = 16;
-const int32_t nfSkeletonWhiteBloodTex = 1024;
-const int32_t nfMetalGoldBloodTex = 2048;
+const uint32_t nfFemale = 0x00000001;
+const uint32_t nfEssential = 0x00000002;
+const uint32_t nfRespawn = 0x00000004;
+const uint32_t nfAutoCalcStats = 0x00000010;
+const uint32_t nfSkeletonWhiteBloodTex = 0x00000400;
+const uint32_t nfMetalGoldBloodTex = 0x00000800;
 
 /*FLAG = NPC Flags (4 bytes, long)
         0x0001 = Female, 0x0002 = Essential, 0x0004 = Respawn, 0x0008 = None? (seems to be set always)
@@ -44,7 +44,7 @@ NPCRecord::NPCRecord()
 : PreNPCRecord(),
   recordID(""), Name(""), ModelPath(""), RaceID(""), FactionID(""), HeadModel(""), ClassID(""),
   HairModel(""), ScriptID(""),
-  //NPC data
+  // NPC data
   Level(0),
   Strength(0), Intelligence(0), Willpower(0), Agility(0), Speed(0), Endurance(0),
   Personality(0), Luck(0),
@@ -55,7 +55,7 @@ NPCRecord::NPCRecord()
   Unknown1(0),
   Gold(0),
   NPCDataType(ndtNone),
-  //end of NPC data
+  // end of NPC data
   NPC_Flag(0)
 {
   memset(Skills, 0, 27);
@@ -114,43 +114,41 @@ NPCRecord& NPCRecord::operator=(const NPCRecord& source)
 
 bool NPCRecord::equals(const NPCRecord& other) const
 {
-  return ((recordID==other.recordID) and (Name==other.Name)
-      and (ModelPath==other.ModelPath) and (RaceID==other.RaceID)
-      and (FactionID==other.FactionID) and (HeadModel==other.HeadModel)
-      and (ClassID==other.ClassID) and (HairModel==other.HairModel)
-      and (ScriptID==other.ScriptID)
-      and (Level==other.Level) and (Strength==other.Strength)
-      and (Intelligence==other.Intelligence) and (Willpower==other.Willpower)
-      and (Agility==other.Agility) and (Speed==other.Speed)
-      and (Endurance==other.Endurance) and (Personality==other.Personality)
-      and (Luck==other.Luck) and (memcmp(Skills, other.Skills, 27)==0)
-      and (Reputation==other.Reputation) and (Health==other.Health)
-      and (SpellPoints==other.SpellPoints) and (Fatigue==other.Fatigue)
-      and (Disposition==other.Disposition) and (Data_FactionID==other.Data_FactionID)
-      and (Rank==other.Rank) and (Unknown1==other.Unknown1)
-      and (Gold==other.Gold) and (NPCDataType==other.NPCDataType)
-      and (NPC_Flag==other.NPC_Flag) and (Items==other.Items)
-      and (NPC_Spells==other.NPC_Spells) and (AIData==other.AIData)
-      and (hasEqualAIPackages(other))
-      and (Destinations==other.Destinations));
+  return (recordID == other.recordID) && (Name == other.Name)
+      && (ModelPath == other.ModelPath) && (RaceID == other.RaceID)
+      && (FactionID == other.FactionID) && (HeadModel == other.HeadModel)
+      && (ClassID == other.ClassID) && (HairModel == other.HairModel)
+      && (ScriptID == other.ScriptID)
+      && (Level == other.Level) && (Strength == other.Strength)
+      && (Intelligence == other.Intelligence) && (Willpower == other.Willpower)
+      && (Agility == other.Agility) && (Speed == other.Speed)
+      && (Endurance == other.Endurance) && (Personality == other.Personality)
+      && (Luck == other.Luck) && (memcmp(Skills, other.Skills, 27) == 0)
+      && (Reputation == other.Reputation) && (Health == other.Health)
+      && (SpellPoints == other.SpellPoints) && (Fatigue == other.Fatigue)
+      && (Disposition == other.Disposition) && (Data_FactionID == other.Data_FactionID)
+      && (Rank == other.Rank) && (Unknown1 == other.Unknown1)
+      && (Gold == other.Gold) && (NPCDataType == other.NPCDataType)
+      && (NPC_Flag == other.NPC_Flag) && (Items == other.Items)
+      && (NPC_Spells == other.NPC_Spells) && (AIData == other.AIData)
+      && (hasEqualAIPackages(other))
+      && (Destinations == other.Destinations);
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool NPCRecord::saveToStream(std::ostream& output) const
+uint32_t NPCRecord::getWriteSize() const
 {
-  output.write((const char*) &cNPC_, 4);
-  uint32_t Size;
-  Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +recordID.length()+1 /* length of ID +1 byte for NUL termination */
-        +4 /* RNAM */ +4 /* 4 bytes for length */
-        +RaceID.length()+1 /* length of race ID +1 byte for NUL termination */
-        +4 /* ANAM */ +4 /* 4 bytes for length */
-        +FactionID.length()+1 /* length of faction ID +1 byte for NUL termination */
-        +4 /* BNAM */ +4 /* 4 bytes for length */
-        +HeadModel.length()+1 /* length of head model +1 byte for NUL termination */
-        +4 /* KNAM */ +4 /* 4 bytes for length */
-        +HairModel.length()+1 /* length of hair model +1 byte for NUL termination */
-        +4 /* NPDT */ +4 /* 4 bytes for length */;
+  uint32_t Size = 4 /* NAME */ + 4 /* 4 bytes for length */
+        + recordID.length() + 1 /* length of ID +1 byte for NUL terminator */
+        + 4 /* RNAM */ + 4 /* 4 bytes for length */
+        + RaceID.length() + 1 /* length of race ID +1 byte for NUL */
+        + 4 /* ANAM */ + 4 /* 4 bytes for length */
+        + FactionID.length() + 1 /* length of faction ID +1 byte for NUL */
+        + 4 /* BNAM */ + 4 /* 4 bytes for length */
+        + HeadModel.length() + 1 /* length of head model +1 byte for NUL */
+        + 4 /* KNAM */ + 4 /* 4 bytes for length */
+        + HairModel.length() + 1 /* length of hair model +1 byte for NUL */
+        + 4 /* NPDT */ + 4 /* 4 bytes for length */;
   switch (NPCDataType)
   {
     case ndt12Bytes:
@@ -160,39 +158,38 @@ bool NPCRecord::saveToStream(std::ostream& output) const
          Size += 52; //fixed length of 52 bytes
          break;
     case ndtNone:
-         std::cout << "Error: No data type specified for NPDT subrecord.\n";
-         return false;
+         std::cerr << "Error: No data type specified for NPDT subrecord.\n";
+         throw std::runtime_error("Error: No data type specified for NPDT subrecord.");
          break;
-  }//swi
-  Size = Size + 4 /* FLAG */ +4 /* 4 bytes for length */ +4 /* fixed length of four bytes */
-        +Items.size()*(4 /* NPCO */ +4 /* 4 bytes for length */ +36 /* fixed length of 36 bytes */)
-        +NPC_Spells.size()*(4 /* NPCS */ +4 /* 4 bytes for length */ +32 /* fixed length of 36 bytes */);
+  }
+  Size += 4 /* FLAG */ + 4 /* 4 bytes for length */ + 4 /* fixed length of four bytes */
+        + Items.size() * (4 /* NPCO */ + 4 /* 4 bytes for length */ + 36 /* fixed length of 36 bytes */)
+        + NPC_Spells.size() * (4 /* NPCS */ + 4 /* 4 bytes for length */ + 32 /* fixed length of 36 bytes */);
 
-
-  //add size of the optional stuff
+  // add size of the optional stuff
   if (!Name.empty())
   {
-    Size = Size +4 /* FNAM */ +4 /* 4 bytes for length */
-          +Name.length()+1 /* length of name +1 byte for NUL termination */;
+    Size += 4 /* FNAM */ + 4 /* 4 bytes for length */
+          + Name.length() + 1 /* length of name +1 byte for NUL terminator */;
   }
   if (!ModelPath.empty())
   {
-    Size = Size +4 /* MODL */ +4 /* 4 bytes for length */
-          +ModelPath.length()+1 /* length of path +1 byte for NUL termination */;
+    Size += 4 /* MODL */ + 4 /* 4 bytes for length */
+          + ModelPath.length() + 1 /* length of path +1 byte for NUL */;
   }
   if (!ClassID.empty())
   {
-    Size = Size +4 /* CNAM */ +4 /* 4 bytes for length */
-          +ClassID.length()+1 /* length of class ID +1 byte for NUL termination */;
+    Size += 4 /* CNAM */ + 4 /* 4 bytes for length */
+          + ClassID.length() + 1 /* length of class ID +1 byte for NUL */;
   }
   if (!ScriptID.empty())
   {
-    Size = Size +4 /* SCRI */ +4 /* 4 bytes for length */
-          +ScriptID.length()+1 /* length of script+1 byte for NUL termination */;
+    Size += 4 /* SCRI */ + 4 /* 4 bytes for length */
+          + ScriptID.length() + 1 /* length of script+1 byte for NUL */;
   }
   if (AIData.isPresent)
   {
-    Size = Size +4 /* AIDT */ +4 /* 4 bytes for length */ +12 /* fixed length of 12 bytes */;
+    Size += 4 /* AIDT */ + 4 /* 4 bytes for length */ + 12 /* fixed: 12 bytes */;
   }
 
   // AI packages
@@ -206,6 +203,13 @@ bool NPCRecord::saveToStream(std::ostream& output) const
   {
     Size += dest.getStreamSize();
   }
+  return Size;
+}
+
+bool NPCRecord::saveToStream(std::ostream& output) const
+{
+  output.write((const char*) &cNPC_, 4);
+  const uint32_t Size = getWriteSize();
   output.write((const char*) &Size, 4);
   output.write((const char*) &HeaderOne, 4);
   output.write((const char*) &HeaderFlags, 4);
@@ -1342,32 +1346,32 @@ bool NPCRecord::loadFromStream(std::istream& in_File)
 
 bool NPCRecord::isFemale() const
 {
-  return ((nfFemale & NPC_Flag)!=0);
+  return (nfFemale & NPC_Flag) !=0;
 }
 
 bool NPCRecord::isEssential() const
 {
-  return ((nfEssential & NPC_Flag)!=0);
+  return (nfEssential & NPC_Flag) != 0;
 }
 
 bool NPCRecord::doesRespawn() const
 {
-  return ((nfRespawn & NPC_Flag)!=0);
+  return (nfRespawn & NPC_Flag) != 0;
 }
 
 bool NPCRecord::hasAutoCalcStats() const
 {
-  return ((nfAutoCalcStats & NPC_Flag)!=0);
+  return (nfAutoCalcStats & NPC_Flag) != 0;
 }
 
 bool NPCRecord::hasWhiteBloodTex() const
 {
-  return ((nfSkeletonWhiteBloodTex & NPC_Flag)!=0);
+  return (nfSkeletonWhiteBloodTex & NPC_Flag) != 0;
 }
 
 bool NPCRecord::hasGoldBloodTex() const
 {
-  return ((nfMetalGoldBloodTex & NPC_Flag)!=0);
+  return (nfMetalGoldBloodTex & NPC_Flag) != 0;
 }
 
-} //namespace
+} // namespace

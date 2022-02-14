@@ -196,6 +196,7 @@ set(component_tests_sources
     mw/base/records/NPC_AIFollow.cpp
     mw/base/records/NPC_AITravel.cpp
     mw/base/records/NPC_AIWander.cpp
+    mw/base/records/NPCRecord.cpp
     mw/base/records/PathGridRecord.cpp
     mw/base/records/PreNPCRecord.cpp
     mw/base/records/ProbeRecord.cpp

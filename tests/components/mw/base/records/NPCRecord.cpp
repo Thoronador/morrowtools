@@ -93,6 +93,60 @@ TEST_CASE("MWTP::NPCRecord")
 
     SECTION("unequal")
     {
+      // PreNPCRecord's stuff
+      SECTION("Items mismatch")
+      {
+        a.Items.clear();
+        b.Items.push_back(ItemRecord());
+
+        REQUIRE_FALSE( a.equals(b) );
+        REQUIRE_FALSE( b.equals(a) );
+      }
+
+      SECTION("Spells mismatch")
+      {
+        a.NPC_Spells.clear();
+        b.NPC_Spells.push_back("SpellIdOne");
+
+        REQUIRE_FALSE( a.equals(b) );
+        REQUIRE_FALSE( b.equals(a) );
+      }
+
+      SECTION("AIData mismatch")
+      {
+        a.AIData.isPresent = true;
+        b.AIData.isPresent = false;
+
+        REQUIRE_FALSE( a.equals(b) );
+        REQUIRE_FALSE( b.equals(a) );
+      }
+
+      SECTION("AIPackages mismatch")
+      {
+        auto pkgA = new NPC_AIActivate();
+        pkgA->TargetID = "foo";
+        pkgA->Reset = 1;
+        a.AIPackages.push_back(pkgA);
+
+        auto pkgB = new NPC_AIActivate();
+        pkgB->TargetID = "bar";
+        pkgB->Reset = 0;
+        b.AIPackages.push_back(pkgB);
+
+        REQUIRE_FALSE( a.equals(b) );
+        REQUIRE_FALSE( b.equals(a) );
+      }
+
+      SECTION("Destinations mismatch")
+      {
+        a.Destinations.clear();
+        b.Destinations.push_back(TravelDestination());
+
+        REQUIRE_FALSE( a.equals(b) );
+        REQUIRE_FALSE( b.equals(a) );
+      }
+
+      // NPCRecord's stuff
       SECTION("recordID mismatch")
       {
         a.recordID = "foo";

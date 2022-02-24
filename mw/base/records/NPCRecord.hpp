@@ -64,6 +64,8 @@ struct NPCRecord: public PreNPCRecord
   uint8_t Data_FactionID;
   int8_t Rank;
   uint8_t Unknown1;
+  uint8_t Unknown2;
+  uint8_t Unknown3;
   int32_t Gold;
   NPDT_Type NPCDataType;
   // end of NPC data

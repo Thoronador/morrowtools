@@ -52,7 +52,7 @@ NPCRecord::NPCRecord()
   Health(0), SpellPoints(0), Fatigue(0),
   Disposition(0), Data_FactionID(0),
   Rank(0),
-  Unknown1(0),
+  Unknown1(0), Unknown2(0), Unknown3(0),
   Gold(0),
   NPCDataType(ndtNone),
   // end of NPC data
@@ -99,6 +99,8 @@ NPCRecord& NPCRecord::operator=(const NPCRecord& source)
   Data_FactionID = source.Data_FactionID;
   Rank = source.Rank;
   Unknown1 = source.Unknown1;
+  Unknown2 = source.Unknown2;
+  Unknown3 = source.Unknown3;
   Gold = source.Gold;
   NPCDataType = source.NPCDataType;
   //end of NPC data
@@ -128,6 +130,7 @@ bool NPCRecord::equals(const NPCRecord& other) const
       && (SpellPoints == other.SpellPoints) && (Fatigue == other.Fatigue)
       && (Disposition == other.Disposition) && (Data_FactionID == other.Data_FactionID)
       && (Rank == other.Rank) && (Unknown1 == other.Unknown1)
+      && (Unknown2 == other.Unknown2) && (Unknown3 == other.Unknown3)
       && (Gold == other.Gold) && (NPCDataType == other.NPCDataType)
       && (NPC_Flag == other.NPC_Flag) && (Items == other.Items)
       && (NPC_Spells == other.NPC_Spells) && (AIData == other.AIData)
@@ -208,11 +211,11 @@ uint32_t NPCRecord::getWriteSize() const
 
 bool NPCRecord::saveToStream(std::ostream& output) const
 {
-  output.write((const char*) &cNPC_, 4);
+  output.write(reinterpret_cast<const char*>(&cNPC_), 4);
   const uint32_t Size = getWriteSize();
-  output.write((const char*) &Size, 4);
-  output.write((const char*) &HeaderOne, 4);
-  output.write((const char*) &HeaderFlags, 4);
+  output.write(reinterpret_cast<const char*>(&Size), 4);
+  output.write(reinterpret_cast<const char*>(&HeaderOne), 4);
+  output.write(reinterpret_cast<const char*>(&HeaderFlags), 4);
   /*NPCs:
     NAME = NPC ID string
     FNAM = NPC name (optional, e.g. todwendy in DV)
@@ -317,163 +320,142 @@ bool NPCRecord::saveToStream(std::ostream& output) const
 	XSCL = Scale (4 bytes, float, optional)
 		Only present if the scale is not 1.0 */
 
-  //write NAME
-  output.write((const char*) &cNAME, 4);
-  uint32_t SubLength = recordID.length()+1;
-  //write NAME's length
+  // write record ID (NAME)
+  output.write(reinterpret_cast<const char*>(&cNAME), 4);
+  uint32_t SubLength = recordID.length() + 1;
   output.write((const char*) &SubLength, 4);
-  //write ID
   output.write(recordID.c_str(), SubLength);
 
   if (!Name.empty())
   {
-    //write FNAM
-    output.write((const char*) &cFNAM, 4);
-    SubLength = Name.length()+1;
-    //write FNAM's length
-    output.write((const char*) &SubLength, 4);
-    //write NPC's name
+    // write NPC's name (FNAM)
+    output.write(reinterpret_cast<const char*>(&cFNAM), 4);
+    SubLength = Name.length() + 1;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
     output.write(Name.c_str(), SubLength);
   }
 
   if (!ModelPath.empty())
   {
-    //write MODL
-    output.write((const char*) &cMODL, 4);
-    SubLength = ModelPath.length()+1;
-    //write MODL's length
-    output.write((const char*) &SubLength, 4);
-    //write NPC's model path
+    // write model path (MODL)
+    output.write(reinterpret_cast<const char*>(&cMODL), 4);
+    SubLength = ModelPath.length() + 1;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
     output.write(ModelPath.c_str(), SubLength);
   }
 
-  //write RNAM
-  output.write((const char*) &cRNAM, 4);
-  SubLength = RaceID.length()+1;
-  //write RNAM's length
-  output.write((const char*) &SubLength, 4);
-  //write race ID
+  // write race ID (RNAM)
+  output.write(reinterpret_cast<const char*>(&cRNAM), 4);
+  SubLength = RaceID.length() + 1;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
   output.write(RaceID.c_str(), SubLength);
-
-  //write ANAM
-  output.write((const char*) &cANAM, 4);
-  SubLength = FactionID.length()+1;
-  //write ANAM's length
-  output.write((const char*) &SubLength, 4);
-  //write faction ID
-  output.write(FactionID.c_str(), SubLength);
-
-  //write BNAM
-  output.write((const char*) &cBNAM, 4);
-  SubLength = HeadModel.length()+1;
-  //write BNAM's length
-  output.write((const char*) &SubLength, 4);
-  //write head model
-  output.write(HeadModel.c_str(), SubLength);
 
   if (!ClassID.empty())
   {
-    //write CNAM
-    output.write((const char*) &cCNAM, 4);
-    SubLength = ClassID.length()+1;
-    //write CNAM's length
-    output.write((const char*) &SubLength, 4);
-    //write class ID
+    // write class ID (CNAM)
+    output.write(reinterpret_cast<const char*>(&cCNAM), 4);
+    SubLength = ClassID.length() + 1;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
     output.write(ClassID.c_str(), SubLength);
   }
 
-  //write KNAM
-  output.write((const char*) &cKNAM, 4);
-  SubLength = HairModel.length()+1;
-  //write KNAM's length
-  output.write((const char*) &SubLength, 4);
-  //write hair model
+  // write faction ID (ANAM)
+  output.write(reinterpret_cast<const char*>(&cANAM), 4);
+  SubLength = FactionID.length() + 1;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
+  output.write(FactionID.c_str(), SubLength);
+
+  // write head model (BNAM)
+  output.write(reinterpret_cast<const char*>(&cBNAM), 4);
+  SubLength = HeadModel.length() + 1;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
+  output.write(HeadModel.c_str(), SubLength);
+
+  // write hair model (KNAM)
+  output.write(reinterpret_cast<const char*>(&cKNAM), 4);
+  SubLength = HairModel.length() + 1;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
   output.write(HairModel.c_str(), SubLength);
 
   if (!ScriptID.empty())
   {
-    //write SCRI
-    output.write((const char*) &cSCRI, 4);
-    SubLength = ScriptID.length()+1;
-    //write SCRI's length
-    output.write((const char*) &SubLength, 4);
-    //write script ID
+    // write script ID (SCRI)
+    output.write(reinterpret_cast<const char*>(&cSCRI), 4);
+    SubLength = ScriptID.length() + 1;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
     output.write(ScriptID.c_str(), SubLength);
   }
 
-  //write NPDT
-  output.write((const char*) &cNPDT, 4);
-  switch ( NPCDataType)
+  // write NPC data (NPDT)
+  output.write(reinterpret_cast<const char*>(&cNPDT), 4);
+  switch (NPCDataType)
   {
     case ndt12Bytes:
-         SubLength = 12; //fixed length of 12 bytes
+         SubLength = 12;
          break;
     case ndt52Bytes:
-         SubLength = 52; //fixed length of 52 bytes
+         SubLength = 52;
          break;
     case ndtNone:
-         std::cout << "Error: No data type specified for NPDT subrecord.\n";
+         std::cerr << "Error: No data type specified for NPDT subrecord.\n";
          return false;
-         break;
-  }//swi
-  //write NPDT's length
-  output.write((const char*) &SubLength, 4);
-  //write NPC data
-  if (SubLength==52)
+  }
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
+  // write NPC data
+  if (SubLength == 52)
   {
     // ---- level
-    output.write((const char*) &Level, 2);
+    output.write(reinterpret_cast<const char*>(&Level), 2);
     // ---- attributes
-    output.write((const char*) &Strength, 1);
-    output.write((const char*) &Intelligence, 1);
-    output.write((const char*) &Willpower, 1);
-    output.write((const char*) &Agility, 1);
-    output.write((const char*) &Speed, 1);
-    output.write((const char*) &Endurance, 1);
-    output.write((const char*) &Personality, 1);
-    output.write((const char*) &Luck, 1);
+    output.write(reinterpret_cast<const char*>(&Strength), 1);
+    output.write(reinterpret_cast<const char*>(&Intelligence), 1);
+    output.write(reinterpret_cast<const char*>(&Willpower), 1);
+    output.write(reinterpret_cast<const char*>(&Agility), 1);
+    output.write(reinterpret_cast<const char*>(&Speed), 1);
+    output.write(reinterpret_cast<const char*>(&Endurance), 1);
+    output.write(reinterpret_cast<const char*>(&Personality), 1);
+    output.write(reinterpret_cast<const char*>(&Luck), 1);
     // ---- skills
     output.write((const char*) Skills, 27);
     // ---- reputations
-    output.write((const char*) &Reputation, 1);
-    // ---- secondary attribs
-    output.write((const char*) &Health, 2);
-    output.write((const char*) &SpellPoints, 2);
-    output.write((const char*) &Fatigue, 2);
+    output.write(reinterpret_cast<const char*>(&Reputation), 1);
+    // ---- secondary attributes
+    output.write(reinterpret_cast<const char*>(&Health), 2);
+    output.write(reinterpret_cast<const char*>(&SpellPoints), 2);
+    output.write(reinterpret_cast<const char*>(&Fatigue), 2);
     // ---- disposition
-    output.write((const char*) &Disposition, 1);
+    output.write(reinterpret_cast<const char*>(&Disposition), 1);
     // ---- faction stuff
-    output.write((const char*) &Data_FactionID, 1);
-    output.write((const char*) &Rank, 1);
+    output.write(reinterpret_cast<const char*>(&Data_FactionID), 1);
+    output.write(reinterpret_cast<const char*>(&Rank), 1);
     // ---- others
-    output.write((const char*) &Unknown1, 1);
-    output.write((const char*) &Gold, 4);
+    output.write(reinterpret_cast<const char*>(&Unknown1), 1);
+    output.write(reinterpret_cast<const char*>(&Gold), 4);
   }
   else
   {
     //12 byte version
     // ---- level
-    output.write((const char*) &Level, 2);
+    output.write(reinterpret_cast<const char*>(&Level), 2);
     // ---- disposition
-    output.write((const char*) &Disposition, 1);
+    output.write(reinterpret_cast<const char*>(&Disposition), 1);
     // ---- faction stuff
-    output.write((const char*) &Data_FactionID, 1);
-    output.write((const char*) &Rank, 1);
+    output.write(reinterpret_cast<const char*>(&Data_FactionID), 1);
+    output.write(reinterpret_cast<const char*>(&Rank), 1);
     // ---- others
-    output.write((const char*) &Unknown1, 1);
-    output.write(NULof32, 2);//skip the two unknown bytes
-    output.write((const char*) &Gold, 4);
+    output.write(reinterpret_cast<const char*>(&Unknown1), 1);
+    output.write(reinterpret_cast<const char*>(&Unknown2), 1);
+    output.write(reinterpret_cast<const char*>(&Unknown3), 1);
+    output.write(reinterpret_cast<const char*>(&Gold), 4);
   }
 
-  //write FLAG
-  output.write((const char*) &cFLAG, 4);
-  SubLength = 4; //fixed length of four bytes
-  //write FLAG's length
-  output.write((const char*) &SubLength, 4);
-  //write NPC flag
-  output.write((const char*) &NPC_Flag, 4);
+  // write flags (FLAG)
+  output.write(reinterpret_cast<const char*>(&cFLAG), 4);
+  SubLength = 4;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
+  output.write(reinterpret_cast<const char*>(&NPC_Flag), 4);
 
-  //items and spells, AI data, AI packages, travel service destinations
+  // items and spells, AI data, AI packages, travel service destinations
   writeItemsSpellsAIDataDestinations(output);
 
   return output.good();
@@ -485,10 +467,10 @@ bool NPCRecord::loadFromStream(std::istream& in_File)
   #warning Not completely implemented yet!\
            The XSCL subrecord is still missing.
   #warning This function is a bit messy and could need a partial rewrite.
-  uint32_t Size;
-  in_File.read((char*) &Size, 4);
-  in_File.read((char*) &HeaderOne, 4);
-  in_File.read((char*) &HeaderFlags, 4);
+  uint32_t Size = 0;
+  in_File.read(reinterpret_cast<char*>(&Size), 4);
+  in_File.read(reinterpret_cast<char*>(&HeaderOne), 4);
+  in_File.read(reinterpret_cast<char*>(&HeaderFlags), 4);
   /*NPCs:
     NAME = NPC ID string
     FNAM = NPC name (optional, e.g. todwendy in DV)
@@ -593,37 +575,17 @@ bool NPCRecord::loadFromStream(std::istream& in_File)
     XSCL = Scale (4 bytes, float, optional)
         Only present if the scale is not 1.0 */
 
-  uint32_t SubRecName;
-  uint32_t SubLength, BytesRead;
-  SubRecName = SubLength = 0;
+  uint32_t SubRecName = 0;
+  uint32_t SubLength = 0;
+  uint32_t BytesRead = 0;
 
-  //read NAME
-  in_File.read((char*) &SubRecName, 4);
-  BytesRead = 4;
-  if (SubRecName!=cNAME)
-  {
-    UnexpectedRecord(cNAME, SubRecName);
-    return false;
-  }
-  //NAME's length
-  in_File.read((char*) &SubLength, 4);
-  BytesRead += 4;
-  if (SubLength>255)
-  {
-    std::cout << "Error: Subrecord NAME of NPC_ is longer than 255 characters.\n";
-    return false;
-  }
-  //read ID
+  // read ID (NAME)
   char Buffer[256];
-  memset(Buffer, '\0', 256);
-  in_File.read(Buffer, SubLength);
-  BytesRead += SubLength;
-  if (!in_File.good())
+  if (!loadString256WithHeader(in_File, recordID, Buffer, cNAME, BytesRead))
   {
-    std::cout << "Error while reading subrecord NAME of NPC_!\n";
+    std::cerr << "Error while reading subrecord NAME of NPC_!\n";
     return false;
   }
-  recordID = std::string(Buffer);
 
   bool hasANAM = false;
   bool hasBNAM = false;
@@ -643,15 +605,15 @@ bool NPCRecord::loadFromStream(std::istream& in_File)
 
   while (!(hasANAM and hasBNAM and hasKNAM and hasNPDT and hasRNAM))
   {
-    //read next subrecord
-    in_File.read((char*) &SubRecName, 4);
+    // read next subrecord
+    in_File.read(reinterpret_cast<char*>(&SubRecName), 4);
     BytesRead += 4;
     switch (SubRecName)
     {
       case cANAM:
            if (hasANAM)
            {
-             std::cout << "Error: record NPC_ seems to have two ANAM subrecords.\n";
+             std::cerr << "Error: Record NPC_ seems to have two ANAM subrecords.\n";
              return false;
            }
            //ANAM's length
@@ -729,27 +691,15 @@ bool NPCRecord::loadFromStream(std::istream& in_File)
       case cFNAM:
            if (hasFNAM)
            {
-             std::cout << "Error: record NPC_ seems to have two FNAM subrecords.\n";
+             std::cerr << "Error: Record NPC_ seems to have two FNAM subrecords.\n";
              return false;
            }
-           //FNAM's length
-           in_File.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength>255)
+           // NPC's name (FNAM)
+           if (!loadString256(in_File, Name, Buffer, cFNAM, BytesRead))
            {
-             std::cout << "Error: Subrecord FNAM of NPC_ is longer than 255 characters.\n";
+             std::cerr << "Error while reading subrecord FNAM of NPC_!\n";
              return false;
            }
-           //read NPC's name
-           memset(Buffer, '\0', 256);
-           in_File.read(Buffer, SubLength);
-           BytesRead += SubLength;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord FNAM of NPC_!\n";
-             return false;
-           }
-           Name = std::string(Buffer);
            hasFNAM = true;
            break;
       case cKNAM:
@@ -916,7 +866,8 @@ bool NPCRecord::loadFromStream(std::istream& in_File)
              in_File.read((char*) &Rank, 1);
              // ---- others
              in_File.read((char*) &Unknown1, 1);
-             in_File.seekg(2, std::ios_base::cur);//skip the two unknown bytes
+             in_File.read((char*) &Unknown2, 1);
+             in_File.read((char*) &Unknown3, 1);
              in_File.read((char*) &Gold, 4);
              NPCDataType = ndt12Bytes;
            }
@@ -929,11 +880,11 @@ bool NPCRecord::loadFromStream(std::istream& in_File)
            hasNPDT = true;
            break;
       default:
-           std::cout << "Unexpected record name \""<<IntTo4Char(SubRecName)
-                     <<"\" found. Expected ANAM, BNAM, CNAM or KNAM.\n";
+           std::cerr << "Unexpected record name \"" << IntTo4Char(SubRecName)
+                     << "\" found. Expected ANAM, BNAM, CNAM, FNAM or KNAM.\n";
            return false;
-    }//swi
-  }//while
+    }
+  }
 
   if (!hasCNAM)
   {

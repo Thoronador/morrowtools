@@ -606,6 +606,21 @@ TEST_CASE("MWTP::NPCRecord")
       REQUIRE_FALSE( record.loadFromStream(stream) );
     }
 
+    SECTION("corrupt data: multiple FNAMs")
+    {
+      const auto data = "NPC_\x0F\x01\0\0\0\0\0\0\0\0\0\0NAME\x10\0\0\0listien bierles\0FNAM\x10\0\0\0Listien Bierles\0FNAM\x10\0\0\0Listien Bierles\0RNAM\x07\0\0\0Breton\0CNAM\x09\0\0\0Sorcerer\0ANAM\x0C\0\0\0Mages Guild\0BNAM\x15\0\0\0b_n_breton_m_head_02\0KNAM\x15\0\0\0b_n_breton_m_hair_03\0SCRI\x07\0\0\0nolore\0NPDT\x0C\0\0\0\x02\0\x32\x04\x01\xD6\xE8\0\0\0\0\0FLAG\x04\0\0\0\x18\0\0\0AIDT\x0C\0\0\0\x1E\0\x1E\x14\0\xD6\xE8\0\0\0\0\0AI_W\x0E\0\0\0\0\0\x05\0\0(\x14\x14\x0A\0\0\x0A\0\x01"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip NPC_, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
     SECTION("corrupt data: length of FNAM > 256")
     {
       const auto data = "NPC_\xF7\0\0\0\0\0\0\0\0\0\0\0NAME\x10\0\0\0listien bierles\0FNAM\x10\x01\0\0Listien Bierles\0RNAM\x07\0\0\0Breton\0CNAM\x09\0\0\0Sorcerer\0ANAM\x0C\0\0\0Mages Guild\0BNAM\x15\0\0\0b_n_breton_m_head_02\0KNAM\x15\0\0\0b_n_breton_m_hair_03\0SCRI\x07\0\0\0nolore\0NPDT\x0C\0\0\0\x02\0\x32\x04\x01\xD6\xE8\0\0\0\0\0FLAG\x04\0\0\0\x18\0\0\0AIDT\x0C\0\0\0\x1E\0\x1E\x14\0\xD6\xE8\0\0\0\0\0AI_W\x0E\0\0\0\0\0\x05\0\0(\x14\x14\x0A\0\0\x0A\0\x01"sv;
@@ -624,6 +639,398 @@ TEST_CASE("MWTP::NPCRecord")
     SECTION("corrupt data: length of FNAM is beyond stream")
     {
       const auto data = "NPC_\xF7\0\0\0\0\0\0\0\0\0\0\0NAME\x10\0\0\0listien bierles\0FNAM\xF0\0\0\0Listien Bierles\0RNAM\x07\0\0\0Breton\0CNAM\x09\0\0\0Sorcerer\0ANAM\x0C\0\0\0Mages Guild\0BNAM\x15\0\0\0b_n_breton_m_head_02\0KNAM\x15\0\0\0b_n_breton_m_hair_03\0SCRI\x07\0\0\0nolore\0NPDT\x0C\0\0\0\x02\0\x32\x04\x01\xD6\xE8\0\0\0\0\0FLAG\x04\0\0\0\x18\0\0\0AIDT\x0C\0\0\0\x1E\0\x1E\x14\0\xD6\xE8\0\0\0\0\0AI_W\x0E\0\0\0\0\0\x05\0\0(\x14\x14\x0A\0\0\x0A\0\x01"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip NPC_, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: multiple ANAMs")
+    {
+      const auto data = "NPC_\x0B\x01\0\0\0\0\0\0\0\0\0\0NAME\x10\0\0\0listien bierles\0FNAM\x10\0\0\0Listien Bierles\0RNAM\x07\0\0\0Breton\0CNAM\x09\0\0\0Sorcerer\0ANAM\x0C\0\0\0Mages Guild\0ANAM\x0C\0\0\0Mages Guild\0BNAM\x15\0\0\0b_n_breton_m_head_02\0KNAM\x15\0\0\0b_n_breton_m_hair_03\0SCRI\x07\0\0\0nolore\0NPDT\x0C\0\0\0\x02\0\x32\x04\x01\xD6\xE8\0\0\0\0\0FLAG\x04\0\0\0\x18\0\0\0AIDT\x0C\0\0\0\x1E\0\x1E\x14\0\xD6\xE8\0\0\0\0\0AI_W\x0E\0\0\0\0\0\x05\0\0(\x14\x14\x0A\0\0\x0A\0\x01"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip NPC_, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: length of ANAM > 256")
+    {
+      const auto data = "NPC_\xF7\0\0\0\0\0\0\0\0\0\0\0NAME\x10\0\0\0listien bierles\0FNAM\x10\0\0\0Listien Bierles\0RNAM\x07\0\0\0Breton\0CNAM\x09\0\0\0Sorcerer\0ANAM\x0C\x01\0\0Mages Guild\0BNAM\x15\0\0\0b_n_breton_m_head_02\0KNAM\x15\0\0\0b_n_breton_m_hair_03\0SCRI\x07\0\0\0nolore\0NPDT\x0C\0\0\0\x02\0\x32\x04\x01\xD6\xE8\0\0\0\0\0FLAG\x04\0\0\0\x18\0\0\0AIDT\x0C\0\0\0\x1E\0\x1E\x14\0\xD6\xE8\0\0\0\0\0AI_W\x0E\0\0\0\0\0\x05\0\0(\x14\x14\x0A\0\0\x0A\0\x01"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip NPC_, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: length of ANAM is beyond stream")
+    {
+      const auto data = "NPC_\xF7\0\0\0\0\0\0\0\0\0\0\0NAME\x10\0\0\0listien bierles\0FNAM\x10\0\0\0Listien Bierles\0RNAM\x07\0\0\0Breton\0CNAM\x09\0\0\0Sorcerer\0ANAM\xF7\0\0\0Mages Guild\0BNAM\x15\0\0\0b_n_breton_m_head_02\0KNAM\x15\0\0\0b_n_breton_m_hair_03\0SCRI\x07\0\0\0nolore\0NPDT\x0C\0\0\0\x02\0\x32\x04\x01\xD6\xE8\0\0\0\0\0FLAG\x04\0\0\0\x18\0\0\0AIDT\x0C\0\0\0\x1E\0\x1E\x14\0\xD6\xE8\0\0\0\0\0AI_W\x0E\0\0\0\0\0\x05\0\0(\x14\x14\x0A\0\0\x0A\0\x01"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip NPC_, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: multiple BNAMs")
+    {
+      const auto data = "NPC_\xF7\0\0\0\0\0\0\0\0\0\0\0NAME\x10\0\0\0listien bierles\0FNAM\x10\0\0\0Listien Bierles\0RNAM\x07\0\0\0Breton\0CNAM\x09\0\0\0Sorcerer\0ANAM\x0C\0\0\0Mages Guild\0BNAM\x15\0\0\0b_n_breton_m_head_02\0BNAM\x15\0\0\0b_n_breton_m_head_02\0SCRI\x07\0\0\0nolore\0NPDT\x0C\0\0\0\x02\0\x32\x04\x01\xD6\xE8\0\0\0\0\0FLAG\x04\0\0\0\x18\0\0\0AIDT\x0C\0\0\0\x1E\0\x1E\x14\0\xD6\xE8\0\0\0\0\0AI_W\x0E\0\0\0\0\0\x05\0\0(\x14\x14\x0A\0\0\x0A\0\x01"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip NPC_, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: length of BNAM > 256")
+    {
+      const auto data = "NPC_\xF7\0\0\0\0\0\0\0\0\0\0\0NAME\x10\0\0\0listien bierles\0FNAM\x10\0\0\0Listien Bierles\0RNAM\x07\0\0\0Breton\0CNAM\x09\0\0\0Sorcerer\0ANAM\x0C\0\0\0Mages Guild\0BNAM\x15\x01\0\0b_n_breton_m_head_02\0KNAM\x15\0\0\0b_n_breton_m_hair_03\0SCRI\x07\0\0\0nolore\0NPDT\x0C\0\0\0\x02\0\x32\x04\x01\xD6\xE8\0\0\0\0\0FLAG\x04\0\0\0\x18\0\0\0AIDT\x0C\0\0\0\x1E\0\x1E\x14\0\xD6\xE8\0\0\0\0\0AI_W\x0E\0\0\0\0\0\x05\0\0(\x14\x14\x0A\0\0\x0A\0\x01"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip NPC_, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: length of BNAM is beyond stream")
+    {
+      const auto data = "NPC_\xF7\0\0\0\0\0\0\0\0\0\0\0NAME\x10\0\0\0listien bierles\0FNAM\x10\0\0\0Listien Bierles\0RNAM\x07\0\0\0Breton\0CNAM\x09\0\0\0Sorcerer\0ANAM\x0C\0\0\0Mages Guild\0BNAM\xF5\0\0\0b_n_breton_m_head_02\0KNAM\x15\0\0\0b_n_breton_m_hair_03\0SCRI\x07\0\0\0nolore\0NPDT\x0C\0\0\0\x02\0\x32\x04\x01\xD6\xE8\0\0\0\0\0FLAG\x04\0\0\0\x18\0\0\0AIDT\x0C\0\0\0\x1E\0\x1E\x14\0\xD6\xE8\0\0\0\0\0AI_W\x0E\0\0\0\0\0\x05\0\0(\x14\x14\x0A\0\0\x0A\0\x01"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip NPC_, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: multiple CNAMs")
+    {
+      const auto data = "NPC_\x08\x01\0\0\0\0\0\0\0\0\0\0NAME\x10\0\0\0listien bierles\0FNAM\x10\0\0\0Listien Bierles\0RNAM\x07\0\0\0Breton\0CNAM\x09\0\0\0Sorcerer\0CNAM\x09\0\0\0Sorcerer\0ANAM\x0C\0\0\0Mages Guild\0BNAM\x15\0\0\0b_n_breton_m_head_02\0KNAM\x15\0\0\0b_n_breton_m_hair_03\0SCRI\x07\0\0\0nolore\0NPDT\x0C\0\0\0\x02\0\x32\x04\x01\xD6\xE8\0\0\0\0\0FLAG\x04\0\0\0\x18\0\0\0AIDT\x0C\0\0\0\x1E\0\x1E\x14\0\xD6\xE8\0\0\0\0\0AI_W\x0E\0\0\0\0\0\x05\0\0(\x14\x14\x0A\0\0\x0A\0\x01"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip NPC_, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: length of CNAM > 256")
+    {
+      const auto data = "NPC_\xF7\0\0\0\0\0\0\0\0\0\0\0NAME\x10\0\0\0listien bierles\0FNAM\x10\0\0\0Listien Bierles\0RNAM\x07\0\0\0Breton\0CNAM\x09\x01\0\0Sorcerer\0ANAM\x0C\0\0\0Mages Guild\0BNAM\x15\0\0\0b_n_breton_m_head_02\0KNAM\x15\0\0\0b_n_breton_m_hair_03\0SCRI\x07\0\0\0nolore\0NPDT\x0C\0\0\0\x02\0\x32\x04\x01\xD6\xE8\0\0\0\0\0FLAG\x04\0\0\0\x18\0\0\0AIDT\x0C\0\0\0\x1E\0\x1E\x14\0\xD6\xE8\0\0\0\0\0AI_W\x0E\0\0\0\0\0\x05\0\0(\x14\x14\x0A\0\0\x0A\0\x01"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip NPC_, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: length of CNAM is beyond stream")
+    {
+      const auto data = "NPC_\xF7\0\0\0\0\0\0\0\0\0\0\0NAME\x10\0\0\0listien bierles\0FNAM\x10\0\0\0Listien Bierles\0RNAM\x07\0\0\0Breton\0CNAM\xF7\0\0\0Sorcerer\0ANAM\x0C\0\0\0Mages Guild\0BNAM\x15\0\0\0b_n_breton_m_head_02\0KNAM\x15\0\0\0b_n_breton_m_hair_03\0SCRI\x07\0\0\0nolore\0NPDT\x0C\0\0\0\x02\0\x32\x04\x01\xD6\xE8\0\0\0\0\0FLAG\x04\0\0\0\x18\0\0\0AIDT\x0C\0\0\0\x1E\0\x1E\x14\0\xD6\xE8\0\0\0\0\0AI_W\x0E\0\0\0\0\0\x05\0\0(\x14\x14\x0A\0\0\x0A\0\x01"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip NPC_, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: length of FLAG is not four")
+    {
+      {
+        const auto data = "NPC_\xF6\0\0\0\0\0\0\0\0\0\0\0NAME\x10\0\0\0listien bierles\0FNAM\x10\0\0\0Listien Bierles\0RNAM\x07\0\0\0Breton\0CNAM\x09\0\0\0Sorcerer\0ANAM\x0C\0\0\0Mages Guild\0BNAM\x15\0\0\0b_n_breton_m_head_02\0KNAM\x15\0\0\0b_n_breton_m_hair_03\0SCRI\x07\0\0\0nolore\0NPDT\x0C\0\0\0\x02\0\x32\x04\x01\xD6\xE8\0\0\0\0\0FLAG\x03\0\0\0\x18\0\0AIDT\x0C\0\0\0\x1E\0\x1E\x14\0\xD6\xE8\0\0\0\0\0AI_W\x0E\0\0\0\0\0\x05\0\0(\x14\x14\x0A\0\0\x0A\0\x01"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // Skip NPC_, because header is handled before loadFromStream.
+        stream.seekg(4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        NPCRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream) );
+      }
+
+      {
+        const auto data = "NPC_\xF8\0\0\0\0\0\0\0\0\0\0\0NAME\x10\0\0\0listien bierles\0FNAM\x10\0\0\0Listien Bierles\0RNAM\x07\0\0\0Breton\0CNAM\x09\0\0\0Sorcerer\0ANAM\x0C\0\0\0Mages Guild\0BNAM\x15\0\0\0b_n_breton_m_head_02\0KNAM\x15\0\0\0b_n_breton_m_hair_03\0SCRI\x07\0\0\0nolore\0NPDT\x0C\0\0\0\x02\0\x32\x04\x01\xD6\xE8\0\0\0\0\0FLAG\x05\0\0\0\x18\0\0\0\0AIDT\x0C\0\0\0\x1E\0\x1E\x14\0\xD6\xE8\0\0\0\0\0AI_W\x0E\0\0\0\0\0\x05\0\0(\x14\x14\x0A\0\0\x0A\0\x01"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // Skip NPC_, because header is handled before loadFromStream.
+        stream.seekg(4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        NPCRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream) );
+      }
+    }
+
+    SECTION("corrupt data: stream ends before FLAG can be read")
+    {
+      const auto data = "NPC_\xF7\0\0\0\0\0\0\0\0\0\0\0NAME\x10\0\0\0listien bierles\0FNAM\x10\0\0\0Listien Bierles\0RNAM\x07\0\0\0Breton\0CNAM\x09\0\0\0Sorcerer\0ANAM\x0C\0\0\0Mages Guild\0BNAM\x15\0\0\0b_n_breton_m_head_02\0KNAM\x15\0\0\0b_n_breton_m_hair_03\0SCRI\x07\0\0\0nolore\0NPDT\x0C\0\0\0\x02\0\x32\x04\x01\xD6\xE8\0\0\0\0\0FLAG\x04\0\0\0\x18\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip NPC_, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: multiple KNAMs")
+    {
+      const auto data = "NPC_\xF7\0\0\0\0\0\0\0\0\0\0\0NAME\x10\0\0\0listien bierles\0FNAM\x10\0\0\0Listien Bierles\0RNAM\x07\0\0\0Breton\0CNAM\x09\0\0\0Sorcerer\0ANAM\x0C\0\0\0Mages Guild\0KNAM\x15\0\0\0b_n_breton_m_head_02\0KNAM\x15\0\0\0b_n_breton_m_hair_03\0SCRI\x07\0\0\0nolore\0NPDT\x0C\0\0\0\x02\0\x32\x04\x01\xD6\xE8\0\0\0\0\0FLAG\x04\0\0\0\x18\0\0\0AIDT\x0C\0\0\0\x1E\0\x1E\x14\0\xD6\xE8\0\0\0\0\0AI_W\x0E\0\0\0\0\0\x05\0\0(\x14\x14\x0A\0\0\x0A\0\x01"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip NPC_, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: length of KNAM > 256")
+    {
+      const auto data = "NPC_\xF7\0\0\0\0\0\0\0\0\0\0\0NAME\x10\0\0\0listien bierles\0FNAM\x10\0\0\0Listien Bierles\0RNAM\x07\0\0\0Breton\0CNAM\x09\0\0\0Sorcerer\0ANAM\x0C\0\0\0Mages Guild\0BNAM\x15\0\0\0b_n_breton_m_head_02\0KNAM\x15\x01\0\0b_n_breton_m_hair_03\0SCRI\x07\0\0\0nolore\0NPDT\x0C\0\0\0\x02\0\x32\x04\x01\xD6\xE8\0\0\0\0\0FLAG\x04\0\0\0\x18\0\0\0AIDT\x0C\0\0\0\x1E\0\x1E\x14\0\xD6\xE8\0\0\0\0\0AI_W\x0E\0\0\0\0\0\x05\0\0(\x14\x14\x0A\0\0\x0A\0\x01"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip NPC_, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: length of KNAM is beyond stream")
+    {
+      const auto data = "NPC_\xF7\0\0\0\0\0\0\0\0\0\0\0NAME\x10\0\0\0listien bierles\0FNAM\x10\0\0\0Listien Bierles\0RNAM\x07\0\0\0Breton\0CNAM\x09\0\0\0Sorcerer\0ANAM\x0C\0\0\0Mages Guild\0BNAM\x15\0\0\0b_n_breton_m_head_02\0KNAM\xF5\0\0\0b_n_breton_m_hair_03\0SCRI\x07\0\0\0nolore\0NPDT\x0C\0\0\0\x02\0\x32\x04\x01\xD6\xE8\0\0\0\0\0FLAG\x04\0\0\0\x18\0\0\0AIDT\x0C\0\0\0\x1E\0\x1E\x14\0\xD6\xE8\0\0\0\0\0AI_W\x0E\0\0\0\0\0\x05\0\0(\x14\x14\x0A\0\0\x0A\0\x01"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip NPC_, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: multiple NPDTs")
+    {
+      const auto data = "NPC_\x0B\x01\0\0\0\0\0\0\0\0\0\0NAME\x10\0\0\0listien bierles\0FNAM\x10\0\0\0Listien Bierles\0RNAM\x07\0\0\0Breton\0CNAM\x09\0\0\0Sorcerer\0ANAM\x0C\0\0\0Mages Guild\0BNAM\x15\0\0\0b_n_breton_m_head_02\0KNAM\x15\0\0\0b_n_breton_m_hair_03\0SCRI\x07\0\0\0nolore\0NPDT\x0C\0\0\0\x02\0\x32\x04\x01\xD6\xE8\0\0\0\0\0NPDT\x0C\0\0\0\x02\0\x32\x04\x01\xD6\xE8\0\0\0\0\0FLAG\x04\0\0\0\x18\0\0\0AIDT\x0C\0\0\0\x1E\0\x1E\x14\0\xD6\xE8\0\0\0\0\0AI_W\x0E\0\0\0\0\0\x05\0\0(\x14\x14\x0A\0\0\x0A\0\x01"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip NPC_, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: length of NPDT is not twelve")
+    {
+      {
+        const auto data = "NPC_\xF6\0\0\0\0\0\0\0\0\0\0\0NAME\x10\0\0\0listien bierles\0FNAM\x10\0\0\0Listien Bierles\0RNAM\x07\0\0\0Breton\0CNAM\x09\0\0\0Sorcerer\0ANAM\x0C\0\0\0Mages Guild\0BNAM\x15\0\0\0b_n_breton_m_head_02\0KNAM\x15\0\0\0b_n_breton_m_hair_03\0SCRI\x07\0\0\0nolore\0NPDT\x0B\0\0\0\x02\0\x32\x04\x01\xD6\xE8\0\0\0\0FLAG\x04\0\0\0\x18\0\0\0AIDT\x0C\0\0\0\x1E\0\x1E\x14\0\xD6\xE8\0\0\0\0\0AI_W\x0E\0\0\0\0\0\x05\0\0(\x14\x14\x0A\0\0\x0A\0\x01"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // Skip NPC_, because header is handled before loadFromStream.
+        stream.seekg(4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        NPCRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream) );
+      }
+
+      {
+        const auto data = "NPC_\xF7\0\0\0\0\0\0\0\0\0\0\0NAME\x10\0\0\0listien bierles\0FNAM\x10\0\0\0Listien Bierles\0RNAM\x07\0\0\0Breton\0CNAM\x09\0\0\0Sorcerer\0ANAM\x0C\0\0\0Mages Guild\0BNAM\x15\0\0\0b_n_breton_m_head_02\0KNAM\x15\0\0\0b_n_breton_m_hair_03\0SCRI\x07\0\0\0nolore\0NPDT\x0D\0\0\0\x02\0\x32\x04\x01\xD6\xE8\0\0\0\0\0\0FLAG\x04\0\0\0\x18\0\0\0AIDT\x0C\0\0\0\x1E\0\x1E\x14\0\xD6\xE8\0\0\0\0\0AI_W\x0E\0\0\0\0\0\x05\0\0(\x14\x14\x0A\0\0\x0A\0\x01"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // Skip NPC_, because header is handled before loadFromStream.
+        stream.seekg(4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        NPCRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream) );
+      }
+    }
+
+    SECTION("corrupt data: stream ends before NPDT can be read")
+    {
+      const auto data = "NPC_\xF7\0\0\0\0\0\0\0\0\0\0\0NAME\x10\0\0\0listien bierles\0FNAM\x10\0\0\0Listien Bierles\0RNAM\x07\0\0\0Breton\0CNAM\x09\0\0\0Sorcerer\0ANAM\x0C\0\0\0Mages Guild\0BNAM\x15\0\0\0b_n_breton_m_head_02\0KNAM\x15\0\0\0b_n_breton_m_hair_03\0SCRI\x07\0\0\0nolore\0NPDT\x0C\0\0\0\x02\0\x32\x04\x01\xD6\xE8\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip NPC_, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: no RNAM")
+    {
+      const auto data = "NPC_\xF7\0\0\0\0\0\0\0\0\0\0\0NAME\x10\0\0\0listien bierles\0FNAM\x10\0\0\0Listien Bierles\0FAIL\x07\0\0\0Breton\0CNAM\x09\0\0\0Sorcerer\0ANAM\x0C\0\0\0Mages Guild\0BNAM\x15\0\0\0b_n_breton_m_head_02\0KNAM\x15\0\0\0b_n_breton_m_hair_03\0SCRI\x07\0\0\0nolore\0NPDT\x0C\0\0\0\x02\0\x32\x04\x01\xD6\xE8\0\0\0\0\0FLAG\x04\0\0\0\x18\0\0\0AIDT\x0C\0\0\0\x1E\0\x1E\x14\0\xD6\xE8\0\0\0\0\0AI_W\x0E\0\0\0\0\0\x05\0\0(\x14\x14\x0A\0\0\x0A\0\x01"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip NPC_, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: multiple RNAMs")
+    {
+      const auto data = "NPC_\x08\x01\0\0\0\0\0\0\0\0\0\0NAME\x10\0\0\0listien bierles\0FNAM\x10\0\0\0Listien Bierles\0RNAM\x07\0\0\0Breton\0RNAM\x07\0\0\0Breton\0CNAM\x09\0\0\0Sorcerer\0ANAM\x0C\0\0\0Mages Guild\0BNAM\x15\0\0\0b_n_breton_m_head_02\0KNAM\x15\0\0\0b_n_breton_m_hair_03\0SCRI\x07\0\0\0nolore\0NPDT\x0C\0\0\0\x02\0\x32\x04\x01\xD6\xE8\0\0\0\0\0FLAG\x04\0\0\0\x18\0\0\0AIDT\x0C\0\0\0\x1E\0\x1E\x14\0\xD6\xE8\0\0\0\0\0AI_W\x0E\0\0\0\0\0\x05\0\0(\x14\x14\x0A\0\0\x0A\0\x01"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip NPC_, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: length of RNAM > 256")
+    {
+      const auto data = "NPC_\xF7\0\0\0\0\0\0\0\0\0\0\0NAME\x10\0\0\0listien bierles\0FNAM\x10\0\0\0Listien Bierles\0RNAM\x07\x01\0\0Breton\0CNAM\x09\0\0\0Sorcerer\0ANAM\x0C\0\0\0Mages Guild\0BNAM\x15\0\0\0b_n_breton_m_head_02\0KNAM\x15\0\0\0b_n_breton_m_hair_03\0SCRI\x07\0\0\0nolore\0NPDT\x0C\0\0\0\x02\0\x32\x04\x01\xD6\xE8\0\0\0\0\0FLAG\x04\0\0\0\x18\0\0\0AIDT\x0C\0\0\0\x1E\0\x1E\x14\0\xD6\xE8\0\0\0\0\0AI_W\x0E\0\0\0\0\0\x05\0\0(\x14\x14\x0A\0\0\x0A\0\x01"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip NPC_, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: length of RNAM is beyond stream")
+    {
+      const auto data = "NPC_\xF7\0\0\0\0\0\0\0\0\0\0\0NAME\x10\0\0\0listien bierles\0FNAM\x10\0\0\0Listien Bierles\0RNAM\xF7\0\0\0Breton\0CNAM\x09\0\0\0Sorcerer\0ANAM\x0C\0\0\0Mages Guild\0BNAM\x15\0\0\0b_n_breton_m_head_02\0KNAM\x15\0\0\0b_n_breton_m_hair_03\0SCRI\x07\0\0\0nolore\0NPDT\x0C\0\0\0\x02\0\x32\x04\x01\xD6\xE8\0\0\0\0\0FLAG\x04\0\0\0\x18\0\0\0AIDT\x0C\0\0\0\x1E\0\x1E\x14\0\xD6\xE8\0\0\0\0\0AI_W\x0E\0\0\0\0\0\x05\0\0(\x14\x14\x0A\0\0\x0A\0\x01"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip NPC_, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: multiple SCRIs")
+    {
+      const auto data = "NPC_\x06\x01\0\0\0\0\0\0\0\0\0\0NAME\x10\0\0\0listien bierles\0FNAM\x10\0\0\0Listien Bierles\0RNAM\x07\0\0\0Breton\0CNAM\x09\0\0\0Sorcerer\0ANAM\x0C\0\0\0Mages Guild\0BNAM\x15\0\0\0b_n_breton_m_head_02\0KNAM\x15\0\0\0b_n_breton_m_hair_03\0SCRI\x07\0\0\0nolore\0SCRI\x07\0\0\0nolore\0NPDT\x0C\0\0\0\x02\0\x32\x04\x01\xD6\xE8\0\0\0\0\0FLAG\x04\0\0\0\x18\0\0\0AIDT\x0C\0\0\0\x1E\0\x1E\x14\0\xD6\xE8\0\0\0\0\0AI_W\x0E\0\0\0\0\0\x05\0\0(\x14\x14\x0A\0\0\x0A\0\x01"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip NPC_, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: length of SCRI > 256")
+    {
+      const auto data = "NPC_\xF7\0\0\0\0\0\0\0\0\0\0\0NAME\x10\0\0\0listien bierles\0FNAM\x10\0\0\0Listien Bierles\0RNAM\x07\0\0\0Breton\0CNAM\x09\0\0\0Sorcerer\0ANAM\x0C\0\0\0Mages Guild\0BNAM\x15\0\0\0b_n_breton_m_head_02\0KNAM\x15\0\0\0b_n_breton_m_hair_03\0SCRI\x07\x01\0\0nolore\0NPDT\x0C\0\0\0\x02\0\x32\x04\x01\xD6\xE8\0\0\0\0\0FLAG\x04\0\0\0\x18\0\0\0AIDT\x0C\0\0\0\x1E\0\x1E\x14\0\xD6\xE8\0\0\0\0\0AI_W\x0E\0\0\0\0\0\x05\0\0(\x14\x14\x0A\0\0\x0A\0\x01"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip NPC_, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: length of SCRI is beyond stream")
+    {
+      const auto data = "NPC_\xF7\0\0\0\0\0\0\0\0\0\0\0NAME\x10\0\0\0listien bierles\0FNAM\x10\0\0\0Listien Bierles\0RNAM\x07\0\0\0Breton\0CNAM\x09\0\0\0Sorcerer\0ANAM\x0C\0\0\0Mages Guild\0BNAM\x15\0\0\0b_n_breton_m_head_02\0KNAM\x15\0\0\0b_n_breton_m_hair_03\0SCRI\xF7\0\0\0nolore\0NPDT\x0C\0\0\0\x02\0\x32\x04\x01\xD6\xE8\0\0\0\0\0FLAG\x04\0\0\0\x18\0\0\0AIDT\x0C\0\0\0\x1E\0\x1E\x14\0\xD6\xE8\0\0\0\0\0AI_W\x0E\0\0\0\0\0\x05\0\0(\x14\x14\x0A\0\0\x0A\0\x01"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 

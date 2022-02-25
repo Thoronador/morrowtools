@@ -462,15 +462,15 @@ bool NPCRecord::saveToStream(std::ostream& output) const
 }
 #endif
 
-bool NPCRecord::loadFromStream(std::istream& in_File)
+bool NPCRecord::loadFromStream(std::istream& input)
 {
   #warning Not completely implemented yet!\
            The XSCL subrecord is still missing.
   #warning This function is a bit messy and could need a partial rewrite.
   uint32_t Size = 0;
-  in_File.read(reinterpret_cast<char*>(&Size), 4);
-  in_File.read(reinterpret_cast<char*>(&HeaderOne), 4);
-  in_File.read(reinterpret_cast<char*>(&HeaderFlags), 4);
+  input.read(reinterpret_cast<char*>(&Size), 4);
+  input.read(reinterpret_cast<char*>(&HeaderOne), 4);
+  input.read(reinterpret_cast<char*>(&HeaderFlags), 4);
   /*NPCs:
     NAME = NPC ID string
     FNAM = NPC name (optional, e.g. todwendy in DV)
@@ -581,7 +581,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File)
 
   // read ID (NAME)
   char Buffer[256];
-  if (!loadString256WithHeader(in_File, recordID, Buffer, cNAME, BytesRead))
+  if (!loadString256WithHeader(input, recordID, Buffer, cNAME, BytesRead))
   {
     std::cerr << "Error while reading subrecord NAME of NPC_!\n";
     return false;
@@ -603,101 +603,65 @@ bool NPCRecord::loadFromStream(std::istream& in_File)
   Name.clear();
   ModelPath.clear();
 
-  while (!(hasANAM and hasBNAM and hasKNAM and hasNPDT and hasRNAM))
+  while (!(hasANAM && hasBNAM && hasCNAM && hasKNAM && hasNPDT && hasRNAM))
   {
-    // read next subrecord
-    in_File.read(reinterpret_cast<char*>(&SubRecName), 4);
+    // read next sub record
+    input.read(reinterpret_cast<char*>(&SubRecName), 4);
     BytesRead += 4;
     switch (SubRecName)
     {
       case cANAM:
            if (hasANAM)
            {
-             std::cerr << "Error: Record NPC_ seems to have two ANAM subrecords.\n";
+             std::cerr << "Error: Record NPC_ seems to have two ANAM sub records.\n";
              return false;
            }
-           //ANAM's length
-           in_File.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength>255)
+           // read faction name (ANAM)
+           if (!loadString256(input, FactionID, Buffer, cANAM, BytesRead))
            {
-             std::cout << "Error: Subrecord ANAM of NPC_ is longer than 255 characters.\n";
+             std::cerr << "Error while reading sub record ANAM of NPC_!\n";
              return false;
            }
-           //read faction name
-           memset(Buffer, '\0', 256);
-           in_File.read(Buffer, SubLength);
-           BytesRead += SubLength;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord ANAM of NPC_!\n";
-             return false;
-           }
-           FactionID = std::string(Buffer);
            hasANAM = true;
            break;
       case cBNAM:
            if (hasBNAM)
            {
-             std::cout << "Error: record NPC_ seems to have two BNAM subrecords.\n";
+             std::cerr << "Error: Record NPC_ seems to have two BNAM sub records.\n";
              return false;
            }
-           //BNAM's length
-           in_File.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength>255)
+           // read head model (BNAM)
+           if (!loadString256(input, HeadModel, Buffer, cBNAM, BytesRead))
            {
-             std::cout << "Error: Subrecord BNAM of NPC_ is longer than 255 characters.\n";
+             std::cerr << "Error while reading sub record BNAM of NPC_!\n";
              return false;
            }
-           //read head model
-           memset(Buffer, '\0', 256);
-           in_File.read(Buffer, SubLength);
-           BytesRead += SubLength;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord BNAM of NPC_!\n";
-             return false;
-           }
-           HeadModel = std::string(Buffer);
            hasBNAM = true;
            break;
       case cCNAM:
            if (hasCNAM)
            {
-             std::cout << "Error: record NPC_ seems to have two CNAM subrecords.\n";
+             std::cerr << "Error: Record NPC_ seems to have two CNAM sub records.\n";
              return false;
            }
-           //CNAM's length
-           in_File.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength>255)
+           // read class ID (CNAM)
+           if (!loadString256(input, ClassID, Buffer, cCNAM, BytesRead))
            {
-             std::cout << "Error: Subrecord CNAM of NPC_ is longer than 255 characters.\n";
+             std::cerr << "Error while reading sub record CNAM of NPC_!\n";
              return false;
            }
-           //read class ID
-           memset(Buffer, '\0', 256);
-           in_File.read(Buffer, SubLength);
-           BytesRead += SubLength;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord CNAM of NPC_!\n";
-             return false;
-           }
-           ClassID = std::string(Buffer);
            hasCNAM = true;
            break;
       case cFNAM:
            if (hasFNAM)
            {
-             std::cerr << "Error: Record NPC_ seems to have two FNAM subrecords.\n";
+             std::cerr << "Error: Record NPC_ seems to have two FNAM sub records.\n";
              return false;
            }
            // NPC's name (FNAM)
-           if (!loadString256(in_File, Name, Buffer, cFNAM, BytesRead))
+           if (!loadString256(input, Name, Buffer, cFNAM, BytesRead))
            {
-             std::cerr << "Error while reading subrecord FNAM of NPC_!\n";
+             std::cerr << "Error while reading sub record FNAM of NPC_!\n";
              return false;
            }
            hasFNAM = true;
@@ -705,27 +669,15 @@ bool NPCRecord::loadFromStream(std::istream& in_File)
       case cKNAM:
            if (hasKNAM)
            {
-             std::cout << "Error: record NPC_ seems to have two KNAM subrecords.\n";
+             std::cerr << "Error: Record NPC_ seems to have two KNAM sub records.\n";
              return false;
            }
-           //KNAM's length
-           in_File.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength>255)
+           // read hair model (KNAM)
+           if (!loadString256(input, HairModel, Buffer, cKNAM, BytesRead))
            {
-             std::cout << "Error: Subrecord KNAM of NPC_ is longer than 255 characters.\n";
+             std::cerr << "Error while reading sub record KNAM of NPC_!\n";
              return false;
            }
-           //read hair model
-           memset(Buffer, '\0', 256);
-           in_File.read(Buffer, SubLength);
-           BytesRead += SubLength;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord KNAM of NPC_!\n";
-             return false;
-           }
-           HairModel = std::string(Buffer);
            hasKNAM = true;
            break;
       case cMODL:
@@ -735,7 +687,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File)
              return false;
            }
            //MODL's length
-           in_File.read((char*) &SubLength, 4);
+           input.read((char*) &SubLength, 4);
            BytesRead += 4;
            if (SubLength>255)
            {
@@ -744,9 +696,9 @@ bool NPCRecord::loadFromStream(std::istream& in_File)
            }
            //read model
            memset(Buffer, '\0', 256);
-           in_File.read(Buffer, SubLength);
+           input.read(Buffer, SubLength);
            BytesRead += SubLength;
-           if (!in_File.good())
+           if (!input.good())
            {
              std::cout << "Error while reading subrecord MODL of NPC_!\n";
              return false;
@@ -757,124 +709,99 @@ bool NPCRecord::loadFromStream(std::istream& in_File)
       case cRNAM:
            if (hasRNAM)
            {
-             std::cout << "Error: record NPC_ seems to have two RNAM subrecords.\n";
+             std::cerr << "Error: Record NPC_ seems to have two RNAM sub records.\n";
              return false;
            }
-           //RNAM's length
-           in_File.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength>255)
+           // read race name (RNAM)
+           if (!loadString256(input, RaceID, Buffer, cRNAM, BytesRead))
            {
-             std::cout << "Error: Subrecord RNAM of NPC_ is longer than 255 characters.\n";
+             std::cerr << "Error while reading sub record RNAM of NPC_!\n";
              return false;
            }
-           //read race name
-           memset(Buffer, '\0', 256);
-           in_File.read(Buffer, SubLength);
-           BytesRead += SubLength;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord RNAM of NPC_!\n";
-             return false;
-           }
-           RaceID = std::string(Buffer);
            hasRNAM = true;
            break;
       case cSCRI:
            if (hasSCRI)
            {
-             std::cout << "Error: record NPC_ seems to have two SCRI subrecords.\n";
+             std::cerr << "Error: Record NPC_ seems to have two SCRI sub records.\n";
              return false;
            }
-           //SCRI's length
-           in_File.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength>255)
+           // read script ID (SCRI)
+           if (!loadString256(input, ScriptID, Buffer, cSCRI, BytesRead))
            {
-             std::cout << "Error: Subrecord SCRI of NPC_ is longer than 255 characters.\n";
+             std::cerr << "Error while reading sub record SCRI of NPC_!\n";
              return false;
            }
-           //read script ID
-           memset(Buffer, '\0', 256);
-           in_File.read(Buffer, SubLength);
-           BytesRead += SubLength;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord SCRI of NPC_!\n";
-             return false;
-           }
-           ScriptID = std::string(Buffer);
            hasSCRI = true;
            break;
       case cNPDT:
            if (hasNPDT)
            {
-             std::cout << "Error: record NPC_ seems to have two NPDT subrecords.\n";
+             std::cerr << "Error: Record NPC_ seems to have two NPDT sub records.\n";
              return false;
            }
-           //NPDT's length
-           in_File.read((char*) &SubLength, 4);
+           // NPDT's length
+           input.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
-           if ((SubLength!=52) and (SubLength!=12))
+           if ((SubLength != 52) && (SubLength != 12))
            {
-             std::cout << "Error: Subrecord NPDT of NPC_ has invalid length ("<<SubLength
-                       << " bytes). Should be 12 or 52 bytes.\n";
+             std::cerr << "Error: Sub record NPDT of NPC_ has invalid length ("
+                       << SubLength << " bytes). Should be 12 or 52 bytes.\n";
              return false;
            }
-           //read NPC data
-           //now read it
-           if (SubLength==52)
+           // read NPC data
+           if (SubLength == 52)
            {
              // ---- level
-             in_File.read((char*) &Level, 2);
+             input.read(reinterpret_cast<char*>(&Level), 2);
              // ---- attributes
-             in_File.read((char*) &Strength, 1);
-             in_File.read((char*) &Intelligence, 1);
-             in_File.read((char*) &Willpower, 1);
-             in_File.read((char*) &Agility, 1);
-             in_File.read((char*) &Speed, 1);
-             in_File.read((char*) &Endurance, 1);
-             in_File.read((char*) &Personality, 1);
-             in_File.read((char*) &Luck, 1);
+             input.read(reinterpret_cast<char*>(&Strength), 1);
+             input.read(reinterpret_cast<char*>(&Intelligence), 1);
+             input.read(reinterpret_cast<char*>(&Willpower), 1);
+             input.read(reinterpret_cast<char*>(&Agility), 1);
+             input.read(reinterpret_cast<char*>(&Speed), 1);
+             input.read(reinterpret_cast<char*>(&Endurance), 1);
+             input.read(reinterpret_cast<char*>(&Personality), 1);
+             input.read(reinterpret_cast<char*>(&Luck), 1);
              // ---- skills
-             in_File.read((char*) Skills, 27);
+             input.read(reinterpret_cast<char*>(Skills), 27);
              // ---- reputations
-             in_File.read((char*) &Reputation, 1);
-             // ---- secondary attribs
-             in_File.read((char*) &Health, 2);
-             in_File.read((char*) &SpellPoints, 2);
-             in_File.read((char*) &Fatigue, 2);
+             input.read(reinterpret_cast<char*>(&Reputation), 1);
+             // ---- secondary attributes
+             input.read(reinterpret_cast<char*>(&Health), 2);
+             input.read(reinterpret_cast<char*>(&SpellPoints), 2);
+             input.read(reinterpret_cast<char*>(&Fatigue), 2);
              // ---- disposition
-             in_File.read((char*) &Disposition, 1);
+             input.read(reinterpret_cast<char*>(&Disposition), 1);
              // ---- faction stuff
-             in_File.read((char*) &Data_FactionID, 1);
-             in_File.read((char*) &Rank, 1);
+             input.read(reinterpret_cast<char*>(&Data_FactionID), 1);
+             input.read(reinterpret_cast<char*>(&Rank), 1);
              // ---- others
-             in_File.read((char*) &Unknown1, 1);
-             in_File.read((char*) &Gold, 4);
+             input.read(reinterpret_cast<char*>(&Unknown1), 1);
+             input.read(reinterpret_cast<char*>(&Gold), 4);
              NPCDataType = ndt52Bytes;
            }
            else
            {
-             //12 byte version
+             // 12 byte version
              // ---- level
-             in_File.read((char*) &Level, 2);
+             input.read(reinterpret_cast<char*>(&Level), 2);
              // ---- disposition
-             in_File.read((char*) &Disposition, 1);
+             input.read(reinterpret_cast<char*>(&Disposition), 1);
              // ---- faction stuff
-             in_File.read((char*) &Data_FactionID, 1);
-             in_File.read((char*) &Rank, 1);
+             input.read(reinterpret_cast<char*>(&Data_FactionID), 1);
+             input.read(reinterpret_cast<char*>(&Rank), 1);
              // ---- others
-             in_File.read((char*) &Unknown1, 1);
-             in_File.read((char*) &Unknown2, 1);
-             in_File.read((char*) &Unknown3, 1);
-             in_File.read((char*) &Gold, 4);
+             input.read(reinterpret_cast<char*>(&Unknown1), 1);
+             input.read(reinterpret_cast<char*>(&Unknown2), 1);
+             input.read(reinterpret_cast<char*>(&Unknown3), 1);
+             input.read(reinterpret_cast<char*>(&Gold), 4);
              NPCDataType = ndt12Bytes;
            }
            BytesRead += SubLength; //should be 12 or 52 bytes
-           if (!in_File.good())
+           if (!input.good())
            {
-             std::cout << "Error while reading subrecord NPDT of NPC_!\n";
+             std::cerr << "Error while reading sub record NPDT of NPC_!\n";
              return false;
            }
            hasNPDT = true;
@@ -886,59 +813,29 @@ bool NPCRecord::loadFromStream(std::istream& in_File)
     }
   }
 
-  if (!hasCNAM)
-  {
-    //read CNAM
-    in_File.read((char*) &SubRecName, 4);
-    BytesRead += 4;
-    if (SubRecName!=cCNAM)
-    {
-      UnexpectedRecord(cCNAM, SubRecName);
-      return false;
-    }
-    //CNAM's length
-    in_File.read((char*) &SubLength, 4);
-    BytesRead += 4;
-    if (SubLength>255)
-    {
-      std::cout << "Error: Subrecord CNAM of NPC_ is longer than 255 characters.\n";
-      return false;
-    }
-    //read class ID
-    memset(Buffer, '\0', 256);
-    in_File.read(Buffer, SubLength);
-    BytesRead += SubLength;
-    if (!in_File.good())
-    {
-      std::cout << "Error while reading subrecord CNAM of NPC_!\n";
-      return false;
-    }
-    ClassID = std::string(Buffer);
-  }
-
-  //read FLAG
-  in_File.read((char*) &SubRecName, 4);
+  // read flag bits (FLAG)
+  input.read(reinterpret_cast<char*>(&SubRecName), 4);
   BytesRead += 4;
-  if (SubRecName!=cFLAG)
+  if (SubRecName != cFLAG)
   {
     UnexpectedRecord(cFLAG, SubRecName);
     return false;
   }
-  //FLAG's length
-  in_File.read((char*) &SubLength, 4);
+  // FLAG's length
+  input.read(reinterpret_cast<char*>(&SubLength), 4);
   BytesRead += 4;
-  if (SubLength!=4)
+  if (SubLength != 4)
   {
-    std::cout << "Error: Subrecord FLAG of NPC_ has invalid length ("<<SubLength
-              << " bytes). Should be four bytes.\n";
+    std::cerr << "Error: Sub record FLAG of NPC_ has invalid length ("
+              << SubLength << " bytes). Should be four bytes.\n";
     return false;
   }
-  //read NPC flag
-  in_File.read((char*) &NPC_Flag, 4);
+  // read NPC flag
+  input.read(reinterpret_cast<char*>(&NPC_Flag), 4);
   BytesRead += 4;
-  if (!in_File.good())
+  if (!input.good())
   {
-    std::cout << "Error while reading subrecord FLAG of NPC_!\n";
+    std::cerr << "Error while reading sub record FLAG of NPC_!\n";
     return false;
   }
 
@@ -948,28 +845,27 @@ bool NPCRecord::loadFromStream(std::istream& in_File)
   NPC_Spells.clear();
   AIData.clear();
   removeAIPackages();
-  //AIPackages.clear();
   Destinations.clear();
 
   bool hasAIDT = false;
   bool hasReadDestination = false;
   TravelDestination tempDest;
 
-  NPC_AIActivate* activatePointer = NULL;
-  NPC_AIEscortFollow* escortFollowPointer = NULL;
-  NPC_AITravel* travelPointer = NULL;
-  NPC_AIWander* wanderPointer = NULL;
+  NPC_AIActivate* activatePointer = nullptr;
+  NPC_AIEscortFollow* escortFollowPointer = nullptr;
+  NPC_AITravel* travelPointer = nullptr;
+  NPC_AIWander* wanderPointer = nullptr;
   uint32_t previousSubRecord = 0;
 
-  while (BytesRead<Size)
+  while (BytesRead < Size)
   {
-    //read next subrecord
-    in_File.read((char*) &SubRecName, 4);
+    // read next sub record
+    input.read(reinterpret_cast<char*>(&SubRecName), 4);
     BytesRead += 4;
     switch(SubRecName)
     {
       case cNPCO:
-           if (!temp.loadFromStream(in_File, Buffer, BytesRead))
+           if (!temp.loadFromStream(input, Buffer, BytesRead))
            {
              std::cerr << "Error while reading subrecord NPCO of NPC_!\n";
              return false;
@@ -978,22 +874,22 @@ bool NPCRecord::loadFromStream(std::istream& in_File)
            previousSubRecord = cNPCO;
            break;
       case cNPCS:
-           //NPCS's length
-           in_File.read((char*) &SubLength, 4);
+           // NPCS's length
+           input.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
-           if (SubLength!=32)
+           if (SubLength != 32)
            {
-             std::cout << "Error: Subrecord NPCS of NPC_ has invalid length ("
-                       << SubLength<<" bytes). Should be 32 bytes.\n";
+             std::cerr << "Error: Sub record NPCS of NPC_ has invalid length ("
+                       << SubLength << " bytes). Should be 32 bytes.\n";
              return false;
            }
-           //read spell ID
+           // read spell ID
            memset(Buffer, '\0', 33);
-           in_File.read(Buffer, 32);
+           input.read(Buffer, 32);
            BytesRead += 32;
-           if (!in_File.good())
+           if (!input.good())
            {
-             std::cout << "Error while reading subrecord NPCS of NPC_!\n";
+             std::cerr << "Error while reading sub record NPCS of NPC_!\n";
              return false;
            }
            NPC_Spells.push_back(std::string(Buffer));
@@ -1006,7 +902,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File)
              return false;
            }
            //AIDT's length
-           in_File.read((char*) &SubLength, 4);
+           input.read((char*) &SubLength, 4);
            BytesRead += 4;
            if (SubLength!=12)
            {
@@ -1015,17 +911,17 @@ bool NPCRecord::loadFromStream(std::istream& in_File)
              return false;
            }
            //read AI data
-           in_File.read((char*) &(AIData.Hello), 1);
-           in_File.read((char*) &(AIData.Unknown1), 1);
-           in_File.read((char*) &(AIData.Fight), 1);
-           in_File.read((char*) &(AIData.Flee), 1);
-           in_File.read((char*) &(AIData.Alarm), 1);
-           in_File.read((char*) &(AIData.Unknown2), 1);
-           in_File.read((char*) &(AIData.Unknown3), 1);
-           in_File.read((char*) &(AIData.Unknown4), 1);
-           in_File.read((char*) &(AIData.Flags), 4);
+           input.read((char*) &(AIData.Hello), 1);
+           input.read((char*) &(AIData.Unknown1), 1);
+           input.read((char*) &(AIData.Fight), 1);
+           input.read((char*) &(AIData.Flee), 1);
+           input.read((char*) &(AIData.Alarm), 1);
+           input.read((char*) &(AIData.Unknown2), 1);
+           input.read((char*) &(AIData.Unknown3), 1);
+           input.read((char*) &(AIData.Unknown4), 1);
+           input.read((char*) &(AIData.Flags), 4);
            BytesRead += 12;
-           if (!in_File.good())
+           if (!input.good())
            {
              std::cout << "Error while reading subrecord AIDT of NPC_!\n";
              return false;
@@ -1036,7 +932,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File)
            break;
       case cAI_A:
            //AI_A's length
-           in_File.read((char*) &SubLength, 4);
+           input.read((char*) &SubLength, 4);
            BytesRead += 4;
            if (SubLength!=33)
            {
@@ -1048,11 +944,11 @@ bool NPCRecord::loadFromStream(std::istream& in_File)
            activatePointer = new NPC_AIActivate;
            // ---- read target ID
            memset(Buffer, '\0', 33);
-           in_File.read(Buffer, 32);
+           input.read(Buffer, 32);
            // ---- reset flag
-           in_File.read((char*) &(activatePointer->Reset), 1);
+           input.read((char*) &(activatePointer->Reset), 1);
            BytesRead += 33;
-           if (!in_File.good())
+           if (!input.good())
            {
              std::cout << "Error while reading subrecord AI_A of NPC_!\n";
              delete activatePointer;
@@ -1065,7 +961,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File)
            break;
       case cAI_E:
            //AI_E's length
-           in_File.read((char*) &SubLength, 4);
+           input.read((char*) &SubLength, 4);
            BytesRead += 4;
            if (SubLength!=48)
            {
@@ -1075,17 +971,17 @@ bool NPCRecord::loadFromStream(std::istream& in_File)
            }
            //read AI escort data
            escortFollowPointer = new NPC_AIEscort;
-           in_File.read((char*) &(escortFollowPointer->X), 4);
-           in_File.read((char*) &(escortFollowPointer->Y), 4);
-           in_File.read((char*) &(escortFollowPointer->Z), 4);
-           in_File.read((char*) &(escortFollowPointer->Duration), 2);
+           input.read((char*) &(escortFollowPointer->X), 4);
+           input.read((char*) &(escortFollowPointer->Y), 4);
+           input.read((char*) &(escortFollowPointer->Z), 4);
+           input.read((char*) &(escortFollowPointer->Duration), 2);
            // ---- read target ID
            memset(Buffer, '\0', 33);
-           in_File.read(Buffer, 32);
+           input.read(Buffer, 32);
            escortFollowPointer->TargetID = std::string(Buffer);
-           in_File.read((char*) &(escortFollowPointer->Reset), 2);
+           input.read((char*) &(escortFollowPointer->Reset), 2);
            BytesRead += 48;
-           if (!in_File.good())
+           if (!input.good())
            {
              std::cout << "Error while reading subrecord AI_E of NPC_!\n";
              delete escortFollowPointer;
@@ -1098,7 +994,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File)
            break;
       case cAI_F:
            //AI_F's length
-           in_File.read((char*) &SubLength, 4);
+           input.read((char*) &SubLength, 4);
            BytesRead += 4;
            if (SubLength!=48)
            {
@@ -1108,17 +1004,17 @@ bool NPCRecord::loadFromStream(std::istream& in_File)
            }
            //read AI follow data
            escortFollowPointer = new NPC_AIFollow;
-           in_File.read((char*) &(escortFollowPointer->X), 4);
-           in_File.read((char*) &(escortFollowPointer->Y), 4);
-           in_File.read((char*) &(escortFollowPointer->Z), 4);
-           in_File.read((char*) &(escortFollowPointer->Duration), 2);
+           input.read((char*) &(escortFollowPointer->X), 4);
+           input.read((char*) &(escortFollowPointer->Y), 4);
+           input.read((char*) &(escortFollowPointer->Z), 4);
+           input.read((char*) &(escortFollowPointer->Duration), 2);
            // ---- read target ID
            memset(Buffer, '\0', 33);
-           in_File.read(Buffer, 32);
+           input.read(Buffer, 32);
            escortFollowPointer->TargetID = std::string(Buffer);
-           in_File.read((char*) &(escortFollowPointer->Reset), 2);
+           input.read((char*) &(escortFollowPointer->Reset), 2);
            BytesRead += 48;
-           if (!in_File.good())
+           if (!input.good())
            {
              std::cout << "Error while reading subrecord AI_F of NPC_!\n";
              delete escortFollowPointer;
@@ -1131,7 +1027,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File)
            break;
       case cAI_T:
            //AI_T's length
-           in_File.read((char*) &SubLength, 4);
+           input.read((char*) &SubLength, 4);
            BytesRead += 4;
            if (SubLength!=16)
            {
@@ -1141,12 +1037,12 @@ bool NPCRecord::loadFromStream(std::istream& in_File)
            }
            //read AI travel data
            travelPointer = new NPC_AITravel;
-           in_File.read((char*) &(travelPointer->X), 4);
-           in_File.read((char*) &(travelPointer->Y), 4);
-           in_File.read((char*) &(travelPointer->Z), 4);
-           in_File.read((char*) &(travelPointer->Reset), 4);
+           input.read((char*) &(travelPointer->X), 4);
+           input.read((char*) &(travelPointer->Y), 4);
+           input.read((char*) &(travelPointer->Z), 4);
+           input.read((char*) &(travelPointer->Reset), 4);
            BytesRead += 16;
-           if (!in_File.good())
+           if (!input.good())
            {
              std::cout << "Error while reading subrecord AI_T of NPC_!\n";
              delete travelPointer;
@@ -1158,7 +1054,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File)
            break;
       case cAI_W:
            //AI_W's length
-           in_File.read((char*) &SubLength, 4);
+           input.read((char*) &SubLength, 4);
            BytesRead += 4;
            if (SubLength!=14)
            {
@@ -1168,13 +1064,13 @@ bool NPCRecord::loadFromStream(std::istream& in_File)
            }
            //read AI wander data
            wanderPointer = new NPC_AIWander;
-           in_File.read((char*) &(wanderPointer->Distance), 2);
-           in_File.read((char*) &(wanderPointer->Duration), 2);
-           in_File.read((char*) &(wanderPointer->Time), 1);
-           in_File.read(reinterpret_cast<char*>(wanderPointer->Idle.data()), 8);
-           in_File.read((char*) &(wanderPointer->Reset), 1);
+           input.read((char*) &(wanderPointer->Distance), 2);
+           input.read((char*) &(wanderPointer->Duration), 2);
+           input.read((char*) &(wanderPointer->Time), 1);
+           input.read(reinterpret_cast<char*>(wanderPointer->Idle.data()), 8);
+           input.read((char*) &(wanderPointer->Reset), 1);
            BytesRead += 14;
-           if (!in_File.good())
+           if (!input.good())
            {
              std::cout << "Error while reading subrecord AI_W of NPC_!\n";
              delete wanderPointer;
@@ -1186,7 +1082,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File)
            break;
       case cCNDT:
            //CNDT's length
-           in_File.read((char*) &SubLength, 4);
+           input.read((char*) &SubLength, 4);
            BytesRead += 4;
            if (SubLength>255)
            {
@@ -1195,9 +1091,9 @@ bool NPCRecord::loadFromStream(std::istream& in_File)
            }
            //read escort/follow cell name
            memset(Buffer, '\0', 256);
-           in_File.read(Buffer, SubLength);
+           input.read(Buffer, SubLength);
            BytesRead += SubLength;
-           if (!in_File.good())
+           if (!input.good())
            {
              std::cout << "Error while reading subrecord CNDT of NPC_!\n";
              return false;
@@ -1223,7 +1119,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File)
              hasReadDestination = false;
            }
            //DODT's length
-           in_File.read((char*) &SubLength, 4);
+           input.read((char*) &SubLength, 4);
            BytesRead += 4;
            if (SubLength!=24)
            {
@@ -1232,14 +1128,14 @@ bool NPCRecord::loadFromStream(std::istream& in_File)
              return false;
            }
            //read destination data
-           in_File.read((char*) &(tempDest.XPos), 4);
-           in_File.read((char*) &(tempDest.YPos), 4);
-           in_File.read((char*) &(tempDest.ZPos), 4);
-           in_File.read((char*) &(tempDest.XRot), 4);
-           in_File.read((char*) &(tempDest.YRot), 4);
-           in_File.read((char*) &(tempDest.ZRot), 4);
+           input.read((char*) &(tempDest.XPos), 4);
+           input.read((char*) &(tempDest.YPos), 4);
+           input.read((char*) &(tempDest.ZPos), 4);
+           input.read((char*) &(tempDest.XRot), 4);
+           input.read((char*) &(tempDest.YRot), 4);
+           input.read((char*) &(tempDest.ZRot), 4);
            BytesRead += 24;
-           if (!in_File.good())
+           if (!input.good())
            {
              std::cout << "Error while reading subrecord DODT of NPC_!\n";
              return false;
@@ -1256,7 +1152,7 @@ bool NPCRecord::loadFromStream(std::istream& in_File)
              return false;
            }
            //DNAM's length
-           in_File.read((char*) &SubLength, 4);
+           input.read((char*) &SubLength, 4);
            BytesRead += 4;
            if (SubLength>255)
            {
@@ -1265,9 +1161,9 @@ bool NPCRecord::loadFromStream(std::istream& in_File)
            }
            //read destination data
            memset(Buffer, '\0', 256);
-           in_File.read(Buffer, SubLength);
+           input.read(Buffer, SubLength);
            BytesRead += SubLength;
-           if (!in_File.good())
+           if (!input.good())
            {
              std::cout << "Error while reading subrecord DNAM of NPC_!\n";
              return false;
@@ -1279,20 +1175,20 @@ bool NPCRecord::loadFromStream(std::istream& in_File)
            previousSubRecord = cDNAM;
            break;
       default:
-           std::cout << "Unexpected record name \""<<IntTo4Char(SubRecName)
+           std::cerr << "Unexpected record name \"" << IntTo4Char(SubRecName)
                      << "\" found. Expected NPCO, NPCS, AIDT, AI_E, AI_F, AI_T,"
                      << " AI_W, DODT or DNAM.\n";
            return false;
-    }//swi
-  }//while
-  //check for destination record
+    }
+  }
+  // check for destination record
   if (hasReadDestination)
   {
     Destinations.push_back(tempDest);
     hasReadDestination = false;
   }
 
-  return in_File.good();
+  return input.good();
 }
 
 bool NPCRecord::isFemale() const

@@ -35,7 +35,7 @@ TEST_CASE("MWTP::NPCRecord")
     // stuff from PreNPCRecord
     REQUIRE( record.Items.empty() );
     REQUIRE( record.NPC_Spells.empty() );
-    REQUIRE_FALSE( record.AIData.isPresent );
+    REQUIRE_FALSE( record.AIData.has_value() );
     REQUIRE( record.AIPackages.empty() );
     REQUIRE( record.Destinations.empty() );
     // stuff from NPCRecord
@@ -116,8 +116,8 @@ TEST_CASE("MWTP::NPCRecord")
 
       SECTION("AIData mismatch")
       {
-        a.AIData.isPresent = true;
-        b.AIData.isPresent = false;
+        a.AIData = NPC_AIData();
+        b.AIData.reset();
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
@@ -496,16 +496,16 @@ TEST_CASE("MWTP::NPCRecord")
       // stuff from PreNPCRecord
       REQUIRE( record.Items.empty() );
       REQUIRE( record.NPC_Spells.empty() );
-      REQUIRE( record.AIData.isPresent );
-      REQUIRE( record.AIData.Hello == 30 );
-      REQUIRE( record.AIData.Unknown1 == 0 );
-      REQUIRE( record.AIData.Fight == 30 );
-      REQUIRE( record.AIData.Flee == 20 );
-      REQUIRE( record.AIData.Alarm == 0 );
-      REQUIRE( record.AIData.Unknown2 == 0xD6 );
-      REQUIRE( record.AIData.Unknown3 == 0xE8 );
-      REQUIRE( record.AIData.Unknown4 == 0 );
-      REQUIRE( record.AIData.Flags == 0 );
+      REQUIRE( record.AIData.has_value() );
+      REQUIRE( record.AIData.value().Hello == 30 );
+      REQUIRE( record.AIData.value().Unknown1 == 0 );
+      REQUIRE( record.AIData.value().Fight == 30 );
+      REQUIRE( record.AIData.value().Flee == 20 );
+      REQUIRE( record.AIData.value().Alarm == 0 );
+      REQUIRE( record.AIData.value().Unknown2 == 0xD6 );
+      REQUIRE( record.AIData.value().Unknown3 == 0xE8 );
+      REQUIRE( record.AIData.value().Unknown4 == 0 );
+      REQUIRE( record.AIData.value().Flags == 0 );
       REQUIRE( record.AIPackages.size() == 1 );
       REQUIRE( record.AIPackages[0]->getPackageType() == PackageType::ptWander );
       const auto package_one = static_cast<NPC_AIWander*>(record.AIPackages[0]);
@@ -591,16 +591,16 @@ TEST_CASE("MWTP::NPCRecord")
       REQUIRE( record.Items[1].Count == 1 );
       REQUIRE( record.Items[1].Item == "common_pants_02" );
       REQUIRE( record.NPC_Spells.empty() );
-      REQUIRE( record.AIData.isPresent );
-      REQUIRE( record.AIData.Hello == 20 );
-      REQUIRE( record.AIData.Unknown1 == 0 );
-      REQUIRE( record.AIData.Fight == 10 );
-      REQUIRE( record.AIData.Flee == 50 );
-      REQUIRE( record.AIData.Alarm == 0 );
-      REQUIRE( record.AIData.Unknown2 == 0x09 );
-      REQUIRE( record.AIData.Unknown3 == 0x6D );
-      REQUIRE( record.AIData.Unknown4 == 0 );
-      REQUIRE( record.AIData.Flags == 0 );
+      REQUIRE( record.AIData.has_value() );
+      REQUIRE( record.AIData.value().Hello == 20 );
+      REQUIRE( record.AIData.value().Unknown1 == 0 );
+      REQUIRE( record.AIData.value().Fight == 10 );
+      REQUIRE( record.AIData.value().Flee == 50 );
+      REQUIRE( record.AIData.value().Alarm == 0 );
+      REQUIRE( record.AIData.value().Unknown2 == 0x09 );
+      REQUIRE( record.AIData.value().Unknown3 == 0x6D );
+      REQUIRE( record.AIData.value().Unknown4 == 0 );
+      REQUIRE( record.AIData.value().Flags == 0 );
       REQUIRE( record.AIPackages.size() == 1 );
       REQUIRE( record.AIPackages[0]->getPackageType() == PackageType::ptWander );
       const auto package_one = static_cast<NPC_AIWander*>(record.AIPackages[0]);

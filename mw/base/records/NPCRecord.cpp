@@ -190,7 +190,7 @@ uint32_t NPCRecord::getWriteSize() const
     Size += 4 /* SCRI */ + 4 /* 4 bytes for length */
           + ScriptID.length() + 1 /* length of script+1 byte for NUL */;
   }
-  if (AIData.isPresent)
+  if (AIData.has_value())
   {
     Size += 4 /* AIDT */ + 4 /* 4 bytes for length */ + 12 /* fixed: 12 bytes */;
   }
@@ -843,11 +843,10 @@ bool NPCRecord::loadFromStream(std::istream& input)
   Items.clear();
   ItemRecord temp;
   NPC_Spells.clear();
-  AIData.clear();
+  AIData.reset();
   removeAIPackages();
   Destinations.clear();
 
-  bool hasAIDT = false;
   bool hasReadDestination = false;
   TravelDestination tempDest;
 
@@ -896,38 +895,18 @@ bool NPCRecord::loadFromStream(std::istream& input)
            previousSubRecord = cNPCS;
            break;
       case cAIDT:
-           if (hasAIDT)
+           if (AIData.has_value())
            {
              std::cerr << "Error: Record NPC_ seems to have two AIDT sub records.\n";
              return false;
            }
-           // AIDT's length
-           input.read(reinterpret_cast<char*>(&SubLength), 4);
-           BytesRead += 4;
-           if (SubLength != 12)
-           {
-             std::cerr << "Error: Sub record AIDT of NPC_ has invalid length ("
-                       << SubLength << " bytes). Should be 12 bytes.\n";
-             return false;
-           }
            // read AI data
-           input.read(reinterpret_cast<char*>(&AIData.Hello), 1);
-           input.read(reinterpret_cast<char*>(&AIData.Unknown1), 1);
-           input.read(reinterpret_cast<char*>(&AIData.Fight), 1);
-           input.read(reinterpret_cast<char*>(&AIData.Flee), 1);
-           input.read(reinterpret_cast<char*>(&AIData.Alarm), 1);
-           input.read(reinterpret_cast<char*>(&AIData.Unknown2), 1);
-           input.read(reinterpret_cast<char*>(&AIData.Unknown3), 1);
-           input.read(reinterpret_cast<char*>(&AIData.Unknown4), 1);
-           input.read(reinterpret_cast<char*>(&AIData.Flags), 4);
-           BytesRead += 12;
-           if (!input.good())
+           AIData = NPC_AIData();
+           if (!AIData.value().loadFromStream(input, BytesRead))
            {
              std::cerr << "Error while reading sub record AIDT of NPC_!\n";
              return false;
            }
-           AIData.isPresent = true;
-           hasAIDT = true;
            previousSubRecord = cAIDT;
            break;
       case cAI_A:

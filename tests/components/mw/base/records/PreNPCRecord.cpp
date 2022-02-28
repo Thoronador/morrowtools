@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Morrowind Tools Project.
-    Copyright (C) 2021  Dirk Stolle
+    Copyright (C) 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ TEST_CASE("MWTP::PreNPCRecord")
 
     REQUIRE( record.Items.empty() );
     REQUIRE( record.NPC_Spells.empty() );
-    REQUIRE_FALSE( record.AIData.isPresent );
+    REQUIRE_FALSE( record.AIData.has_value() );
     REQUIRE( record.AIPackages.empty() );
     REQUIRE( record.Destinations.empty() );
   }
@@ -252,68 +252,68 @@ TEST_CASE("MWTP::PreNPCRecord")
     SECTION("doesRepair")
     {
       // AIData is not present.
-      record.AIData.Flags = 131072;
       REQUIRE_FALSE( record.doesRepair() );
 
       // AIData is present.
-      record.AIData.isPresent = true;
+      record.AIData = NPC_AIData();
+      record.AIData.value().Flags = 131072;
       REQUIRE( record.doesRepair() );
 
-      record.AIData.Flags = 1;
+      record.AIData.value().Flags = 1;
       REQUIRE_FALSE( record.doesRepair() );
 
-      record.AIData.Flags = 1 + 131072;
+      record.AIData.value().Flags = 1 + 131072;
       REQUIRE( record.doesRepair() );
     }
 
     SECTION("isEnchanter")
     {
       // AIData is not present.
-      record.AIData.Flags = 65536;
       REQUIRE_FALSE( record.isEnchanter() );
 
       // AIData is present.
-      record.AIData.isPresent = true;
+      record.AIData = NPC_AIData();
+      record.AIData.value().Flags = 65536;
       REQUIRE( record.isEnchanter() );
 
-      record.AIData.Flags = 1;
+      record.AIData.value().Flags = 1;
       REQUIRE_FALSE( record.isEnchanter() );
 
-      record.AIData.Flags = 1 + 65536;
+      record.AIData.value().Flags = 1 + 65536;
       REQUIRE( record.isEnchanter() );
     }
 
     SECTION("isSpellmaker")
     {
       // AIData is not present.
-      record.AIData.Flags = 32768;
       REQUIRE_FALSE( record.isSpellmaker() );
 
       // AIData is present.
-      record.AIData.isPresent = true;
+      record.AIData = NPC_AIData();
+      record.AIData.value().Flags = 32768;
       REQUIRE( record.isSpellmaker() );
 
-      record.AIData.Flags = 3;
+      record.AIData.value().Flags = 3;
       REQUIRE_FALSE( record.isSpellmaker() );
 
-      record.AIData.Flags = 3 + 32768;
+      record.AIData.value().Flags = 3 + 32768;
       REQUIRE( record.isSpellmaker() );
     }
 
     SECTION("isTrainer")
     {
       // AIData is not present.
-      record.AIData.Flags = 16384;
       REQUIRE_FALSE( record.isTrainer() );
 
       // AIData is present.
-      record.AIData.isPresent = true;
+      record.AIData = NPC_AIData();
+      record.AIData.value().Flags = 16384;
       REQUIRE( record.isTrainer() );
 
-      record.AIData.Flags = 1;
+      record.AIData.value().Flags = 1;
       REQUIRE_FALSE( record.isTrainer() );
 
-      record.AIData.Flags = 1 + 16384;
+      record.AIData.value().Flags = 1 + 16384;
       REQUIRE( record.isTrainer() );
     }
   }

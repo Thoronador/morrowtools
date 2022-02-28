@@ -139,9 +139,9 @@ bool CreatureRecord::saveToStream(std::ostream& output) const
     Size = Size + 4 /* CNAM */ +4 /* 4 bytes for length */
           +SoundGenCreature.length()+1 /* length of ID +1 byte for NUL termination */;
   }
-  if (AIData.isPresent)
+  if (AIData.has_value())
   {
-    Size = Size +4 /* AIDT */ +4 /* 4 bytes for length */ +12 /* fixed length of 12 bytes */;
+    Size += 4 /* AIDT */ + 4 /* 4 bytes for length */ + 12 /* fixed length of 12 bytes */;
   }
   if (!ScriptID.empty())
   {
@@ -708,7 +708,7 @@ bool CreatureRecord::loadFromStream(std::istream& in_File)
   Items.clear();
   ItemRecord temp;
   TravelDestination tempDest;
-  AIData.clear();
+  AIData.reset();
   removeAIPackages();
   Destinations.clear();
   NPC_AIActivate* activatePointer = NULL;
@@ -716,12 +716,11 @@ bool CreatureRecord::loadFromStream(std::istream& in_File)
   NPC_AITravel* travelPointer = NULL;
   NPC_AIWander* wanderPointer = NULL;
   Scale = 1.0f;
-  bool hasAIDT = false;
   bool hasXSCL = false;
   bool hasReadDestination = false;
   uint32_t previousSubRecord = 0;
 
-  while (BytesRead<Size)
+  while (BytesRead < Size)
   {
     //read next subrecord
     in_File.read((char*) &SubRecName, 4);
@@ -729,38 +728,18 @@ bool CreatureRecord::loadFromStream(std::istream& in_File)
     switch(SubRecName)
     {
       case cAIDT:
-           if (hasAIDT)
+           if (AIData.has_value())
            {
-             std::cout << "Error: record CREA seems to have two AIDT subrecords.\n";
+             std::cerr << "Error: Record CREA seems to have two AIDT sub records.\n";
              return false;
            }
-           //AIDT's length
-           in_File.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength!=12)
+           // read AI data (AIDT)
+           AIData = NPC_AIData();
+           if (AIData.value().loadFromStream(in_File, BytesRead))
            {
-             std::cout << "Error: Subrecord AIDT of CREA has invalid length ("
-                       << SubLength << " bytes). Should be 12 bytes.\n";
+             std::cerr << "Error while reading sub record AIDT of CREA!\n";
              return false;
            }
-           //read AI data
-           in_File.read((char*) &(AIData.Hello), 1);
-           in_File.read((char*) &(AIData.Unknown1), 1);
-           in_File.read((char*) &(AIData.Fight), 1);
-           in_File.read((char*) &(AIData.Flee), 1);
-           in_File.read((char*) &(AIData.Alarm), 1);
-           in_File.read((char*) &(AIData.Unknown2), 1);
-           in_File.read((char*) &(AIData.Unknown3), 1);
-           in_File.read((char*) &(AIData.Unknown4), 1);
-           in_File.read((char*) &(AIData.Flags), 4);
-           BytesRead += 12;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord AIDT of CREA!\n";
-             return false;
-           }
-           AIData.isPresent = true;
-           hasAIDT = true;
            previousSubRecord = cAIDT;
            break;
       case cAI_A:

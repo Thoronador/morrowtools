@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2021  Dirk Stolle
+    Copyright (C) 2011, 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,6 +22,8 @@
 #define MW_AIDATA_HPP
 
 #include <cstdint>
+#include <istream>
+#include <ostream>
 
 namespace MWTP
 {
@@ -41,12 +43,28 @@ struct NPC_AIData
   uint8_t Unknown4;
   int32_t Flags;
 
-  bool isPresent;
-
   /** Sets all members to zero. */
   void clear();
 
   bool operator==(const NPC_AIData& other) const;
+
+  /** \brief Loads the data from the given input stream.
+   *
+   * \param input    the input stream
+   * \return Returns true on success (data was loaded from stream).
+   *         Returns false, if an error occurred.
+   */
+  bool loadFromStream(std::istream& input, uint32_t& bytesRead);
+
+  #ifndef MW_UNSAVEABLE_RECORDS
+  /** \brief Writes the data to the given output stream.
+   *
+   * \param output  the output stream
+   * \return Returns true on success (data was written to stream).
+   *         Returns false, if an error occurred.
+   */
+  bool saveToStream(std::ostream& output) const;
+  #endif
 }; // struct
 
 } // namespace

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021  Dirk Stolle
+    Copyright (C) 2011, 2012, 2013, 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ PreNPCRecord::PreNPCRecord()
 : BasicRecord(),
   Items(std::vector<ItemRecord>()),
   NPC_Spells(std::vector<std::string>()),
-  AIData(NPC_AIData()),
+  AIData(std::nullopt),
   AIPackages(std::vector<NPC_BasicAIPackage*>()),
   Destinations(std::vector<TravelDestination>())
 {
@@ -133,22 +133,22 @@ void PreNPCRecord::copyAIPackages(const PreNPCRecord& source)
 
 bool PreNPCRecord::isTrainer() const
 {
-  return AIData.isPresent && ((AIData.Flags & pnfTraining) != 0);
+  return AIData.has_value() && ((AIData.value().Flags & pnfTraining) != 0);
 }
 
 bool PreNPCRecord::isEnchanter() const
 {
-  return AIData.isPresent && ((AIData.Flags & pnfEnchanting) != 0);
+  return AIData.has_value() && ((AIData.value().Flags & pnfEnchanting) != 0);
 }
 
 bool PreNPCRecord::isSpellmaker() const
 {
-  return AIData.isPresent && ((AIData.Flags & pnfSpellmaking) != 0);
+  return AIData.has_value() && ((AIData.value().Flags & pnfSpellmaking) != 0);
 }
 
 bool PreNPCRecord::doesRepair() const
 {
-  return AIData.isPresent && ((AIData.Flags & pnfRepair) != 0);
+  return AIData.has_value() && ((AIData.value().Flags & pnfRepair) != 0);
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
@@ -179,22 +179,11 @@ bool PreNPCRecord::writeItemsSpellsAIDataDestinations(std::ostream& output) cons
     output.write(NULof32, 32 - len);
   }
 
-  if (AIData.isPresent)
+  if (AIData.has_value())
   {
     // write AI data (AIDT)
-    output.write(reinterpret_cast<const char*>(&cAIDT), 4);
-    const uint32_t SubLength = 12;
-    output.write(reinterpret_cast<const char*>(&SubLength), 4);
-    // write actual data
-    output.write(reinterpret_cast<const char*>(&AIData.Hello), 1);
-    output.write(reinterpret_cast<const char*>(&AIData.Unknown1), 1);
-    output.write(reinterpret_cast<const char*>(&AIData.Fight), 1);
-    output.write(reinterpret_cast<const char*>(&AIData.Flee), 1);
-    output.write(reinterpret_cast<const char*>(&AIData.Alarm), 1);
-    output.write(reinterpret_cast<const char*>(&AIData.Unknown2), 1);
-    output.write(reinterpret_cast<const char*>(&AIData.Unknown3), 1);
-    output.write(reinterpret_cast<const char*>(&AIData.Unknown4), 1);
-    output.write(reinterpret_cast<const char*>(&AIData.Flags), 4);
+    if (!AIData.value().saveToStream(output))
+      return false;
   }
 
   // AI packages

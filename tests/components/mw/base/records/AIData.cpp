@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Morrowind Tools Project.
-    Copyright (C) 2021  Dirk Stolle
+    Copyright (C) 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,7 +30,6 @@ TEST_CASE("MWTP::NPC_AIData")
   {
     NPC_AIData data;
 
-    REQUIRE_FALSE( data.isPresent );
     REQUIRE( data.Hello == 0 );
     REQUIRE( data.Unknown1 == 0 );
     REQUIRE( data.Fight == 0 );
@@ -49,17 +48,8 @@ TEST_CASE("MWTP::NPC_AIData")
 
     SECTION("equal")
     {
-      a.isPresent = true;
       a.Hello = 1;
-
-      b.isPresent = true;
       b.Hello = 1;
-
-      REQUIRE( a == b );
-      REQUIRE( b == a );
-
-      a.isPresent = false;
-      b.isPresent = false;
 
       REQUIRE( a == b );
       REQUIRE( b == a );
@@ -67,24 +57,6 @@ TEST_CASE("MWTP::NPC_AIData")
 
     SECTION("unequal")
     {
-      a.isPresent = true;
-      b.isPresent = true;
-
-      SECTION("presence mismatch")
-      {
-        a.isPresent = true;
-        b.isPresent = false;
-
-        REQUIRE_FALSE( a == b );
-        REQUIRE_FALSE( b == a );
-
-        a.isPresent = false;
-        b.isPresent = true;
-
-        REQUIRE_FALSE( a == b );
-        REQUIRE_FALSE( b == a );
-      }
-
       SECTION("Hello mismatch")
       {
         a.Hello = 1;
@@ -172,7 +144,6 @@ TEST_CASE("MWTP::NPC_AIData")
   {
     NPC_AIData data;
 
-    data.isPresent = true;
     data.Hello = 1;
     data.Unknown1 = 1;
     data.Fight = 1;
@@ -185,7 +156,6 @@ TEST_CASE("MWTP::NPC_AIData")
 
     data.clear();
 
-    REQUIRE_FALSE( data.isPresent );
     REQUIRE( data.Hello == 0 );
     REQUIRE( data.Unknown1 == 0 );
     REQUIRE( data.Fight == 0 );

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2013, 2021  Dirk Stolle
+    Copyright (C) 2011, 2013, 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 #ifndef MW_PRENPCRECORD_HPP
 #define MW_PRENPCRECORD_HPP
 
+#include <optional>
 #include <vector>
 #include "BasicRecord.hpp"
 #include "ItemRecord.hpp"
@@ -38,7 +39,7 @@ struct PreNPCRecord: public BasicRecord
 
   std::vector<ItemRecord> Items;
   std::vector<std::string> NPC_Spells;
-  NPC_AIData AIData;
+  std::optional<NPC_AIData> AIData;
   std::vector<NPC_BasicAIPackage*> AIPackages;
   std::vector<TravelDestination> Destinations;
 

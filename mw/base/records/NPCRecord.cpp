@@ -867,7 +867,7 @@ bool NPCRecord::loadFromStream(std::istream& input)
       case cNPCO:
            if (!temp.loadFromStream(input, Buffer, BytesRead))
            {
-             std::cerr << "Error while reading subrecord NPCO of NPC_!\n";
+             std::cerr << "Error while reading sub record NPCO of NPC_!\n";
              return false;
            }
            Items.emplace_back(temp);
@@ -898,32 +898,32 @@ bool NPCRecord::loadFromStream(std::istream& input)
       case cAIDT:
            if (hasAIDT)
            {
-             std::cout << "Error: record NPC_ seems to have two AIDT subrecords.\n";
+             std::cerr << "Error: Record NPC_ seems to have two AIDT sub records.\n";
              return false;
            }
-           //AIDT's length
-           input.read((char*) &SubLength, 4);
+           // AIDT's length
+           input.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
-           if (SubLength!=12)
+           if (SubLength != 12)
            {
-             std::cout << "Error: Subrecord AIDT of NPC_ has invalid length ("<<SubLength
-                       << " bytes). Should be 12 bytes.\n";
+             std::cerr << "Error: Sub record AIDT of NPC_ has invalid length ("
+                       << SubLength << " bytes). Should be 12 bytes.\n";
              return false;
            }
-           //read AI data
-           input.read((char*) &(AIData.Hello), 1);
-           input.read((char*) &(AIData.Unknown1), 1);
-           input.read((char*) &(AIData.Fight), 1);
-           input.read((char*) &(AIData.Flee), 1);
-           input.read((char*) &(AIData.Alarm), 1);
-           input.read((char*) &(AIData.Unknown2), 1);
-           input.read((char*) &(AIData.Unknown3), 1);
-           input.read((char*) &(AIData.Unknown4), 1);
-           input.read((char*) &(AIData.Flags), 4);
+           // read AI data
+           input.read(reinterpret_cast<char*>(&AIData.Hello), 1);
+           input.read(reinterpret_cast<char*>(&AIData.Unknown1), 1);
+           input.read(reinterpret_cast<char*>(&AIData.Fight), 1);
+           input.read(reinterpret_cast<char*>(&AIData.Flee), 1);
+           input.read(reinterpret_cast<char*>(&AIData.Alarm), 1);
+           input.read(reinterpret_cast<char*>(&AIData.Unknown2), 1);
+           input.read(reinterpret_cast<char*>(&AIData.Unknown3), 1);
+           input.read(reinterpret_cast<char*>(&AIData.Unknown4), 1);
+           input.read(reinterpret_cast<char*>(&AIData.Flags), 4);
            BytesRead += 12;
            if (!input.good())
            {
-             std::cout << "Error while reading subrecord AIDT of NPC_!\n";
+             std::cerr << "Error while reading sub record AIDT of NPC_!\n";
              return false;
            }
            AIData.isPresent = true;

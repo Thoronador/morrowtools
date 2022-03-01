@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Morrowind Tools Project.
-    Copyright (C) 2021  Dirk Stolle
+    Copyright (C) 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -214,6 +214,91 @@ TEST_CASE("MWTP::NPC_AIWander")
     NPC_AIWander package;
 
     REQUIRE( package.getStreamSize() == 22 );
+  }
+
+  SECTION("loadFromStream")
+  {
+    uint32_t BytesRead = 0;
+
+    SECTION("default: load AI wander package")
+    {
+      const auto data = "AI_W\x0E\0\0\0\x80\0\x05\0\0\x3C\x14\x0A\x0A\0\0\0\0\x01"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip AI_W, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      NPC_AIWander package;
+      REQUIRE( package.loadFromStream(stream, BytesRead) );
+      // Check data.
+      REQUIRE( package.Distance == 128 );
+      REQUIRE( package.Duration == 5 );
+      REQUIRE( package.Time == 0 );
+      REQUIRE( package.Idle[0] == 60 );
+      REQUIRE( package.Idle[1] == 20 );
+      REQUIRE( package.Idle[2] == 10 );
+      REQUIRE( package.Idle[3] == 10 );
+      REQUIRE( package.Idle[4] == 0 );
+      REQUIRE( package.Idle[5] == 0 );
+      REQUIRE( package.Idle[6] == 0 );
+      REQUIRE( package.Idle[7] == 0 );
+      REQUIRE( package.Reset == 1 );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( package.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
+    }
+
+    SECTION("corrupt data: length of AI_W is not 14")
+    {
+      {
+        const auto data = "AI_W\x0D\0\0\0\x80\0\x05\0\0\x3C\x14\x0A\x0A\0\0\0\x01"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // Skip AI_W, because header is handled before loadFromStream.
+        stream.seekg(4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        NPC_AIWander package;
+        REQUIRE_FALSE( package.loadFromStream(stream, BytesRead) );
+      }
+
+      {
+        const auto data = "AI_W\x0F\0\0\0\x80\0\x05\0\0\x3C\x14\x0A\x0A\0\0\0\0\x01\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // Skip AI_W, because header is handled before loadFromStream.
+        stream.seekg(4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        NPC_AIWander package;
+        REQUIRE_FALSE( package.loadFromStream(stream, BytesRead) );
+      }
+    }
+
+    SECTION("corrupt data: stream ends before AI_W can be read")
+    {
+      const auto data = "AI_W\x0E\0\0\0\x80\0\x05"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip AI_W, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPC_AIWander package;
+      REQUIRE_FALSE( package.loadFromStream(stream, BytesRead) );
+    }
   }
 
   SECTION("saveToStream")

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Morrowind Tools Project.
-    Copyright (C) 2021  Dirk Stolle
+    Copyright (C) 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -196,6 +196,87 @@ TEST_CASE("MWTP::NPC_AIFollow")
 
       package.CellName = "One Two Three";
       REQUIRE( package.getStreamSize() == 78 );
+    }
+  }
+
+  SECTION("loadFromStream")
+  {
+    char Buffer[33];
+    uint32_t BytesRead = 0;
+
+    SECTION("default: load AI Follow package")
+    {
+      const auto data = "AI_F\x30\0\0\0\0\0\x80\x3F\0\0\0\x40\0\0\x40\x40\x01\x04goose town\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip AI_F, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      NPC_AIFollow package;
+      REQUIRE( package.loadFromStream(stream, Buffer, BytesRead) );
+      // Check data.
+      REQUIRE( package.X == 1.0f );
+      REQUIRE( package.Y == 2.0f );
+      REQUIRE( package.Z == 3.0f );
+      REQUIRE( package.Duration == 1025 );
+      REQUIRE( package.TargetID == "goose town" );
+      REQUIRE( package.Reset == 1 );
+      REQUIRE( package.CellName.empty() );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( package.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
+    }
+
+    SECTION("corrupt data: length of AI_F is not 48")
+    {
+      {
+        const auto data = "AI_F\x2F\0\0\0\0\0\x80\x3F\0\0\0\x40\0\0\x40\x40\x01\x04goose town\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // Skip AI_F, because header is handled before loadFromStream.
+        stream.seekg(4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        NPC_AIFollow package;
+        REQUIRE_FALSE( package.loadFromStream(stream, Buffer, BytesRead) );
+      }
+
+      {
+        const auto data = "AI_F\x31\0\0\0\0\0\x80\x3F\0\0\0\x40\0\0\x40\x40\x01\x04goose town\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // Skip AI_F, because header is handled before loadFromStream.
+        stream.seekg(4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        NPC_AIFollow package;
+        REQUIRE_FALSE( package.loadFromStream(stream, Buffer, BytesRead) );
+      }
+    }
+
+    SECTION("corrupt data: stream ends before AI_F can be read")
+    {
+      const auto data = "AI_F\x30\0\0\0\0\0\x80\x3F"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip AI_F, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPC_AIFollow package;
+      REQUIRE_FALSE( package.loadFromStream(stream, Buffer, BytesRead) );
     }
   }
 

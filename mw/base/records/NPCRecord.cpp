@@ -949,58 +949,29 @@ bool NPCRecord::loadFromStream(std::istream& input)
            previousSubRecord = cAI_F;
            break;
       case cAI_T:
-           //AI_T's length
-           input.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength!=16)
-           {
-             std::cout << "Error: Subrecord AI_T of NPC_ has invalid length ("
-                       << SubLength<< " bytes). Should be 16 bytes.\n";
-             return false;
-           }
-           //read AI travel data
+           // read AI travel data (AI_T)
            travelPointer = new NPC_AITravel;
-           input.read((char*) &(travelPointer->X), 4);
-           input.read((char*) &(travelPointer->Y), 4);
-           input.read((char*) &(travelPointer->Z), 4);
-           input.read((char*) &(travelPointer->Reset), 4);
-           BytesRead += 16;
-           if (!input.good())
+           if (!travelPointer->loadFromStream(input, BytesRead))
            {
-             std::cout << "Error while reading subrecord AI_T of NPC_!\n";
+             std::cerr << "Error while reading sub record AI_T of NPC_!\n";
              delete travelPointer;
              return false;
            }
            AIPackages.push_back(travelPointer);
-           travelPointer = NULL; //just to be safe later
+           travelPointer = nullptr; // just to be safe later
            previousSubRecord = cAI_T;
            break;
       case cAI_W:
-           //AI_W's length
-           input.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength!=14)
-           {
-             std::cout << "Error: Subrecord AI_W of NPC_ has invalid length ("
-                       << SubLength<< " bytes). Should be 14 bytes.\n";
-             return false;
-           }
-           //read AI wander data
+           // read AI wander data (AI_W)
            wanderPointer = new NPC_AIWander;
-           input.read((char*) &(wanderPointer->Distance), 2);
-           input.read((char*) &(wanderPointer->Duration), 2);
-           input.read((char*) &(wanderPointer->Time), 1);
-           input.read(reinterpret_cast<char*>(wanderPointer->Idle.data()), 8);
-           input.read((char*) &(wanderPointer->Reset), 1);
-           BytesRead += 14;
-           if (!input.good())
+           if (!wanderPointer->loadFromStream(input, BytesRead))
            {
-             std::cout << "Error while reading subrecord AI_W of NPC_!\n";
+             std::cerr << "Error while reading sub record AI_W of NPC_!\n";
              delete wanderPointer;
              return false;
            }
            AIPackages.push_back(wanderPointer);
-           wanderPointer = NULL; //just to be safe later
+           wanderPointer = nullptr; // just to be safe later
            previousSubRecord = cAI_W;
            break;
       case cCNDT:

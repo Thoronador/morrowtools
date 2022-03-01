@@ -120,7 +120,7 @@ struct NPC_AIActivate: public NPC_BasicAIPackage
 struct NPC_AIEscortFollow: public NPC_BasicAIPackage
 {
   float X, Y, Z;
-  int16_t Duration;
+  uint16_t Duration;
   std::string TargetID;
   int16_t Reset;
   std::string CellName;
@@ -211,6 +211,15 @@ struct NPC_AITravel: public NPC_BasicAIPackage
    */
   PackageType getPackageType() const override;
 
+  /** \brief Loads the package from the given input stream.
+   *
+   * \param input   the input stream
+   * \param bytesRead  the variable that holds the number of bytes read so far
+   * \return Returns true on success (package was loaded from stream).
+   *         Returns false, if an error occurred.
+   */
+  bool loadFromStream(std::istream& input, uint32_t& bytesRead);
+
   #ifndef MW_UNSAVEABLE_RECORDS
   /** \brief Gets the size in bytes that the instances's data would occupy in a
    *         stream.
@@ -232,8 +241,8 @@ struct NPC_AITravel: public NPC_BasicAIPackage
 /** Holds the AI wandering data of an NPC or creature. */
 struct NPC_AIWander: public NPC_BasicAIPackage
 {
-  int16_t Distance;
-  int16_t Duration;
+  uint16_t Distance;
+  uint16_t Duration;
   int8_t Time;
   std::array<uint8_t, 8> Idle;
   uint8_t Reset;
@@ -256,6 +265,15 @@ struct NPC_AIWander: public NPC_BasicAIPackage
    * \return  Returns an enumeration value indicating the package type.
    */
   PackageType getPackageType() const override;
+
+  /** \brief Loads the package from the given input stream.
+   *
+   * \param input   the input stream
+   * \param bytesRead  the variable that holds the number of bytes read so far
+   * \return Returns true on success (package was loaded from stream).
+   *         Returns false, if an error occurred.
+   */
+  bool loadFromStream(std::istream& input, uint32_t& bytesRead);
 
   #ifndef MW_UNSAVEABLE_RECORDS
   /** \brief Gets the size in bytes that the instances's data would occupy in a

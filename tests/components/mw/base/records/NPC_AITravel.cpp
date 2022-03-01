@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Morrowind Tools Project.
-    Copyright (C) 2021  Dirk Stolle
+    Copyright (C) 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -140,6 +140,83 @@ TEST_CASE("MWTP::NPC_AITravel")
     NPC_AITravel package;
 
     REQUIRE( package.getStreamSize() == 24 );
+  }
+
+  SECTION("loadFromStream")
+  {
+    uint32_t BytesRead = 0;
+
+    SECTION("default: load AI travel package")
+    {
+      const auto data = "AI_T\x10\0\0\0\0\x80\x4E\x44\0\xC0\x60\xC4\0\0\x04\x42\x01\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip AI_T, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      NPC_AITravel package;
+      REQUIRE( package.loadFromStream(stream, BytesRead) );
+      // Check data.
+      REQUIRE( package.X == 826.0f );
+      REQUIRE( package.Y == -899.0f );
+      REQUIRE( package.Z == 33.0f );
+      REQUIRE( package.Reset == 1 );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( package.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
+    }
+
+    SECTION("corrupt data: length of AI_T is not 16")
+    {
+      {
+        const auto data = "AI_T\x0F\0\0\0\0\x80\x4E\x44\0\xC0\x60\xC4\0\0\x04\x42\x01\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // Skip AI_T, because header is handled before loadFromStream.
+        stream.seekg(4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        NPC_AITravel package;
+        REQUIRE_FALSE( package.loadFromStream(stream, BytesRead) );
+      }
+
+      {
+        const auto data = "AI_T\x11\0\0\0\0\x80\x4E\x44\0\xC0\x60\xC4\0\0\x04\x42\x01\0\0\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // Skip AI_T, because header is handled before loadFromStream.
+        stream.seekg(4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        NPC_AITravel package;
+        REQUIRE_FALSE( package.loadFromStream(stream, BytesRead) );
+      }
+    }
+
+    SECTION("corrupt data: stream ends before AI_T can be read")
+    {
+      const auto data = "AI_T\x10\0\0\0\0\x80"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip AI_T, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPC_AITravel package;
+      REQUIRE_FALSE( package.loadFromStream(stream, BytesRead) );
+    }
   }
 
   SECTION("saveToStream")

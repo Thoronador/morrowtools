@@ -782,59 +782,30 @@ bool CreatureRecord::loadFromStream(std::istream& in_File)
            escortFollowPointer = nullptr; // just to be safe
            break;
       case cAI_T:
-           //AI_T's length
-           in_File.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength!=16)
-           {
-             std::cout << "Error: Subrecord AI_T of CREA has invalid length ("
-                       << SubLength<< " bytes). Should be 16 bytes.\n";
-             return false;
-           }
-           //read AI travel data
+           // read AI travel data (AI_T)
            travelPointer = new NPC_AITravel;
-           in_File.read((char*) &(travelPointer->X), 4);
-           in_File.read((char*) &(travelPointer->Y), 4);
-           in_File.read((char*) &(travelPointer->Z), 4);
-           in_File.read((char*) &(travelPointer->Reset), 4);
-           BytesRead += 16;
-           if (!in_File.good())
+           if (!travelPointer->loadFromStream(in_File, BytesRead))
            {
-             std::cout << "Error while reading subrecord AI_T of CREA!\n";
+             std::cerr << "Error while reading sub record AI_T of CREA!\n";
              delete travelPointer;
              return false;
            }
            AIPackages.push_back(travelPointer);
            previousSubRecord = cAI_T;
-           travelPointer = NULL; //just to be safe later
+           travelPointer = nullptr; // just to be safe later
            break;
       case cAI_W:
-           //AI_W's length
-           in_File.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength!=14)
-           {
-             std::cout << "Error: Subrecord AI_W of CREA has invalid length ("
-                       << SubLength<< " bytes). Should be 14 bytes.\n";
-             return false;
-           }
-           //read AI wander data
+           // read AI wander data (AI_W)
            wanderPointer = new NPC_AIWander;
-           in_File.read((char*) &(wanderPointer->Distance), 2);
-           in_File.read((char*) &(wanderPointer->Duration), 2);
-           in_File.read((char*) &(wanderPointer->Time), 1);
-           in_File.read(reinterpret_cast<char*>(wanderPointer->Idle.data()), 8);
-           in_File.read((char*) &(wanderPointer->Reset), 1);
-           BytesRead += 14;
-           if (!in_File.good())
+           if (!wanderPointer->loadFromStream(in_File, BytesRead))
            {
-             std::cout << "Error while reading subrecord AI_W of CREA!\n";
+             std::cerr << "Error while reading sub record AI_W of CREA!\n";
              delete wanderPointer;
              return false;
            }
            AIPackages.push_back(wanderPointer);
            previousSubRecord = cAI_W;
-           wanderPointer = NULL; //just to be safe later
+           wanderPointer = nullptr; // just to be safe later
            break;
       case cNPCO:
            if (!temp.loadFromStream(in_File, Buffer, BytesRead))

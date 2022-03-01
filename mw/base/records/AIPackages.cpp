@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021  Dirk Stolle
+    Copyright (C) 2011, 2012, 2013, 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -150,7 +150,7 @@ bool NPC_AIEscortFollow::loadFromStream(std::istream& input, char * buffer, uint
   bytesRead += 4;
   if (subLength != 48)
   {
-    std::cerr << "Error: Sub record AI_F of NPC_ or CRA has invalid length ("
+    std::cerr << "Error: Sub record AI_F of NPC_ or CREA has invalid length ("
               << subLength << " bytes). Should be 48 bytes.\n";
     return false;
   }
@@ -272,10 +272,29 @@ PackageType NPC_AITravel::getPackageType() const
   return PackageType::ptTravel;
 }
 
+bool NPC_AITravel::loadFromStream(std::istream& input, uint32_t& bytesRead)
+{
+  uint32_t subLength = 0;
+  input.read(reinterpret_cast<char*>(&subLength), 4);
+  bytesRead += 4;
+  if (subLength != 16)
+  {
+    std::cerr << "Error: Sub record AI_T of NPC_ or CREA has invalid length ("
+              << subLength << " bytes). Should be 16 bytes.\n";
+    return false;
+  }
+  input.read(reinterpret_cast<char*>(&X), 4);
+  input.read(reinterpret_cast<char*>(&Y), 4);
+  input.read(reinterpret_cast<char*>(&Z), 4);
+  input.read(reinterpret_cast<char*>(&Reset), 4);
+  bytesRead += 16;
+  return input.good();
+}
+
 #ifndef MW_UNSAVEABLE_RECORDS
 uint32_t NPC_AITravel::getStreamSize() const
 {
-  return 4 /* AI_T */ + 4 /* 4 bytes for length */ +16 /* fixed length of 16 bytes */;
+  return 4 /* AI_T */ + 4 /* 4 bytes for length */ + 16 /* fixed: 16 bytes */;
 }
 
 bool NPC_AITravel::saveToStream(std::ostream& output) const
@@ -325,6 +344,26 @@ bool NPC_AIWander::equals(const NPC_AIWander& other) const
 PackageType NPC_AIWander::getPackageType() const
 {
   return PackageType::ptWander;
+}
+
+bool NPC_AIWander::loadFromStream(std::istream& input, uint32_t& bytesRead)
+{
+  uint32_t subLength = 0;
+  input.read(reinterpret_cast<char*>(&subLength), 4);
+  bytesRead += 4;
+  if (subLength != 14)
+  {
+    std::cerr << "Error: Sub record AI_W of NPC_ or CREA has invalid length ("
+              << subLength << " bytes). Should be 14 bytes.\n";
+    return false;
+  }
+  input.read(reinterpret_cast<char*>(&Distance), 2);
+  input.read(reinterpret_cast<char*>(&Duration), 2);
+  input.read(reinterpret_cast<char*>(&Time), 1);
+  input.read(reinterpret_cast<char*>(Idle.data()), 8);
+  input.read(reinterpret_cast<char*>(&Reset), 1);
+  bytesRead += 14;
+  return input.good();
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS

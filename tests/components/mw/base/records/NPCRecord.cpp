@@ -530,6 +530,120 @@ TEST_CASE("MWTP::NPCRecord")
       REQUIRE( streamOut.str() == data );
     }
 
+    SECTION("default: load record with 52-byte NPDT")
+    {
+      const auto data = "NPC_\x41\x01\0\0\0\0\0\0\0\0\0\0NAME\x0C\0\0\0j'othri_dar\0MODL\x11\0\0\0base_animKnA.nif\0FNAM\x0C\0\0\0Jo'Thri-Dar\0RNAM\x08\0\0\0Khajiit\0CNAM\x06\0\0\0Thief\0ANAM\x01\0\0\0\0BNAM\x16\0\0\0b_n_khajiit_m_head_02\0KNAM\x15\0\0\0b_n_khajiit_m_hair01\0NPDT4\0\0\0\x03\0#-*094,(\x05\x05\x05\x05\x05\x05\x05\x05\x17\x05\x05\x05\x05\x05\x05\x05\x05\x05((2((\x14\x14\x14\x18\0:\0\x16\0\xB1\0\x32\0\0\0\0\0\0\0FLAG\x04\0\0\0\x08\0\0\0NPCO$\0\0\0\x01\0\0\0common_pants_04\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0AIDT\x0C\0\0\0\x1E\0\x1E\x1E\0\0\0\0\0\0\0\0AI_W\x0E\0\0\0\0\0\x05\0\0<\x14\x0A\x0A\0\x0A\0\0\x01"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip NPC_, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      NPCRecord record;
+      REQUIRE( record.loadFromStream(stream) );
+      // Check data.
+      // -- header
+      REQUIRE( record.getHeaderOne() == 0 );
+      REQUIRE( record.getHeaderFlags() == 0 );
+      // -- record data
+      // stuff from NPCRecord
+      REQUIRE( record.recordID == "j'othri_dar" );
+      REQUIRE( record.Name == "Jo'Thri-Dar" );
+      REQUIRE( record.ModelPath == "base_animKnA.nif" );
+      REQUIRE( record.RaceID == "Khajiit" );
+      REQUIRE( record.FactionID.empty() );
+      REQUIRE( record.HeadModel == "b_n_khajiit_m_head_02" );
+      REQUIRE( record.ClassID == "Thief" );
+      REQUIRE( record.HairModel == "b_n_khajiit_m_hair01" );
+      REQUIRE( record.ScriptID.empty() );
+      REQUIRE( record.Level == 3 );
+      REQUIRE( record.Strength == 35 );
+      REQUIRE( record.Intelligence == 45 );
+      REQUIRE( record.Willpower == 42 );
+      REQUIRE( record.Agility == 48 );
+      REQUIRE( record.Speed == 57 );
+      REQUIRE( record.Endurance == 52 );
+      REQUIRE( record.Personality == 44 );
+      REQUIRE( record.Luck == 40 );
+      REQUIRE( record.Skills[0] == 5 );
+      REQUIRE( record.Skills[1] == 5 );
+      REQUIRE( record.Skills[2] == 5 );
+      REQUIRE( record.Skills[3] == 5 );
+      REQUIRE( record.Skills[4] == 5 );
+      REQUIRE( record.Skills[5] == 5 );
+      REQUIRE( record.Skills[6] == 5 );
+      REQUIRE( record.Skills[7] == 5 );
+      REQUIRE( record.Skills[8] == 23 );
+      REQUIRE( record.Skills[9] == 5 );
+      REQUIRE( record.Skills[10] == 5 );
+      REQUIRE( record.Skills[11] == 5 );
+      REQUIRE( record.Skills[12] == 5 );
+      REQUIRE( record.Skills[13] == 5 );
+      REQUIRE( record.Skills[14] == 5 );
+      REQUIRE( record.Skills[15] == 5 );
+      REQUIRE( record.Skills[16] == 5 );
+      REQUIRE( record.Skills[17] == 5 );
+      REQUIRE( record.Skills[18] == 40 );
+      REQUIRE( record.Skills[19] == 40 );
+      REQUIRE( record.Skills[20] == 50 );
+      REQUIRE( record.Skills[21] == 40 );
+      REQUIRE( record.Skills[22] == 40 );
+      REQUIRE( record.Skills[23] == 20 );
+      REQUIRE( record.Skills[24] == 20 );
+      REQUIRE( record.Skills[25] == 20 );
+      REQUIRE( record.Skills[26] == 24 );
+      REQUIRE( record.Reputation == 0 );
+      REQUIRE( record.Health == 58 );
+      REQUIRE( record.SpellPoints == 22 );
+      REQUIRE( record.Fatigue == 177 );
+      REQUIRE( record.Disposition == 50 );
+      REQUIRE( record.Data_FactionID == 0 );
+      REQUIRE( record.Rank == 0 );
+      REQUIRE( record.Unknown1 == 0x00 );
+      REQUIRE( record.Gold == 0 );
+      REQUIRE( record.NPCDataType == NPDT_Type::ndt52Bytes );
+      REQUIRE( record.NPC_Flag == 0x00000008 );
+      // stuff from PreNPCRecord
+      REQUIRE( record.Items.size() == 1 );
+      REQUIRE( record.Items[0].Count == 1 );
+      REQUIRE( record.Items[0].Item == "common_pants_04" );
+      REQUIRE( record.NPC_Spells.empty() );
+      REQUIRE( record.AIData.has_value() );
+      REQUIRE( record.AIData.value().Hello == 30 );
+      REQUIRE( record.AIData.value().Unknown1 == 0 );
+      REQUIRE( record.AIData.value().Fight == 30 );
+      REQUIRE( record.AIData.value().Flee == 30 );
+      REQUIRE( record.AIData.value().Alarm == 0 );
+      REQUIRE( record.AIData.value().Unknown2 == 0x00 );
+      REQUIRE( record.AIData.value().Unknown3 == 0x00 );
+      REQUIRE( record.AIData.value().Unknown4 == 0x00 );
+      REQUIRE( record.AIData.value().Flags == 0 );
+      REQUIRE( record.AIPackages.size() == 1 );
+      REQUIRE( record.AIPackages[0]->getPackageType() == PackageType::ptWander );
+      const auto package_one = static_cast<NPC_AIWander*>(record.AIPackages[0]);
+      REQUIRE( package_one->Distance == 0 );
+      REQUIRE( package_one->Duration == 5 );
+      REQUIRE( package_one->Time == 0 );
+      REQUIRE( package_one->Idle[0] == 60 );
+      REQUIRE( package_one->Idle[1] == 20 );
+      REQUIRE( package_one->Idle[2] == 10 );
+      REQUIRE( package_one->Idle[3] == 10 );
+      REQUIRE( package_one->Idle[4] == 0 );
+      REQUIRE( package_one->Idle[5] == 10 );
+      REQUIRE( package_one->Idle[6] == 0 );
+      REQUIRE( package_one->Idle[7] == 0 );
+      REQUIRE( package_one->Reset == 1 );
+      REQUIRE( record.Destinations.empty() );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( record.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
+    }
+
     SECTION("default: load record with items")
     {
       const auto data = "NPC_\x31\x01\0\0\0\0\0\0\0\0\0\0NAME\x0C\0\0\0galthragoth\0FNAM\x0C\0\0\0Galthragoth\0RNAM\x09\0\0\0Wood Elf\0CNAM\x07\0\0\0Pauper\0ANAM\x01\0\0\0\0BNAM\x17\0\0\0B_N_Wood Elf_M_Head_06\0KNAM\x17\0\0\0b_n_wood elf_m_hair_03\0NPDT\x0C\0\0\0\x05\0\x32\0\0\x09m\0\0\0\0\0FLAG\x04\0\0\0\x18\0\0\0NPCO$\0\0\0\x01\0\0\0common_shirt_02\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0NPCO$\0\0\0\x01\0\0\0common_pants_02\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0AIDT\x0C\0\0\0\x14\0\x0A\x32\0\x09m\0\0\0\0\0AI_W\x0E\0\0\0\0\x01\x05\0\0<\x14\x0A\x0A\0\0\0\0\x01"sv;
@@ -604,7 +718,6 @@ TEST_CASE("MWTP::NPCRecord")
       REQUIRE( record.AIPackages.size() == 1 );
       REQUIRE( record.AIPackages[0]->getPackageType() == PackageType::ptWander );
       const auto package_one = static_cast<NPC_AIWander*>(record.AIPackages[0]);
-      // AI_W\x0E\0\0\0 \0\x01\x05\0\0<\x14\x0A\x0A\0\0\0\0\x01
       REQUIRE( package_one->Distance == 256 );
       REQUIRE( package_one->Duration == 5 );
       REQUIRE( package_one->Time == 0 );
@@ -1021,6 +1134,51 @@ TEST_CASE("MWTP::NPCRecord")
     SECTION("corrupt data: length of KNAM is beyond stream")
     {
       const auto data = "NPC_\xF7\0\0\0\0\0\0\0\0\0\0\0NAME\x10\0\0\0listien bierles\0FNAM\x10\0\0\0Listien Bierles\0RNAM\x07\0\0\0Breton\0CNAM\x09\0\0\0Sorcerer\0ANAM\x0C\0\0\0Mages Guild\0BNAM\x15\0\0\0b_n_breton_m_head_02\0KNAM\xF5\0\0\0b_n_breton_m_hair_03\0SCRI\x07\0\0\0nolore\0NPDT\x0C\0\0\0\x02\0\x32\x04\x01\xD6\xE8\0\0\0\0\0FLAG\x04\0\0\0\x18\0\0\0AIDT\x0C\0\0\0\x1E\0\x1E\x14\0\xD6\xE8\0\0\0\0\0AI_W\x0E\0\0\0\0\0\x05\0\0(\x14\x14\x0A\0\0\x0A\0\x01"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip NPC_, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: multiple MODLs")
+    {
+      const auto data = "NPC_\x5A\x01\0\0\0\0\0\0\0\0\0\0NAME\x0C\0\0\0j'othri_dar\0MODL\x11\0\0\0base_animKnA.nif\0MODL\x11\0\0\0base_animKnA.nif\0FNAM\x0C\0\0\0Jo'Thri-Dar\0RNAM\x08\0\0\0Khajiit\0CNAM\x06\0\0\0Thief\0ANAM\x01\0\0\0\0BNAM\x16\0\0\0b_n_khajiit_m_head_02\0KNAM\x15\0\0\0b_n_khajiit_m_hair01\0NPDT4\0\0\0\x03\0#-*094,(\x05\x05\x05\x05\x05\x05\x05\x05\x17\x05\x05\x05\x05\x05\x05\x05\x05\x05((2((\x14\x14\x14\x18\0:\0\x16\0\xB1\0\x32\0\0\0\0\0\0\0FLAG\x04\0\0\0\x08\0\0\0NPCO$\0\0\0\x01\0\0\0common_pants_04\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0AIDT\x0C\0\0\0\x1E\0\x1E\x1E\0\0\0\0\0\0\0\0AI_W\x0E\0\0\0\0\0\x05\0\0<\x14\x0A\x0A\0\x0A\0\0\x01"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip NPC_, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: length of MODL > 256")
+    {
+      const auto data = "NPC_\x41\x01\0\0\0\0\0\0\0\0\0\0NAME\x0C\0\0\0j'othri_dar\0MODL\x11\x01\0\0base_animKnA.nif\0FNAM\x0C\0\0\0Jo'Thri-Dar\0RNAM\x08\0\0\0Khajiit\0CNAM\x06\0\0\0Thief\0ANAM\x01\0\0\0\0BNAM\x16\0\0\0b_n_khajiit_m_head_02\0KNAM\x15\0\0\0b_n_khajiit_m_hair01\0NPDT4\0\0\0\x03\0#-*094,(\x05\x05\x05\x05\x05\x05\x05\x05\x17\x05\x05\x05\x05\x05\x05\x05\x05\x05((2((\x14\x14\x14\x18\0:\0\x16\0\xB1\0\x32\0\0\0\0\0\0\0FLAG\x04\0\0\0\x08\0\0\0NPCO$\0\0\0\x01\0\0\0common_pants_04\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0AIDT\x0C\0\0\0\x1E\0\x1E\x1E\0\0\0\0\0\0\0\0AI_W\x0E\0\0\0\0\0\x05\0\0<\x14\x0A\x0A\0\x0A\0\0\x01"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip NPC_, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: stream end before MODL can be read completely")
+    {
+      const auto data = "NPC_\x41\x01\0\0\0\0\0\0\0\0\0\0NAME\x0C\0\0\0j'othri_dar\0MODL\x11\0\0\0base"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 

@@ -48,6 +48,9 @@ NPCRecord::NPCRecord()
   Level(0),
   Strength(0), Intelligence(0), Willpower(0), Agility(0), Speed(0), Endurance(0),
   Personality(0), Luck(0),
+  Skills({ 0, 0, 0, 0, 0, 0, 0, 0, 0,
+           0, 0, 0, 0, 0, 0, 0, 0, 0,
+           0, 0, 0, 0, 0, 0, 0, 0, 0 }),
   Reputation(0),
   Health(0), SpellPoints(0), Fatigue(0),
   Disposition(0), Data_FactionID(0),
@@ -58,7 +61,6 @@ NPCRecord::NPCRecord()
   // end of NPC data
   NPC_Flag(0)
 {
-  memset(Skills, 0, 27);
 }
 
 NPCRecord::~NPCRecord()
@@ -90,7 +92,7 @@ NPCRecord& NPCRecord::operator=(const NPCRecord& source)
   Endurance = source.Endurance;
   Personality =source.Personality;
   Luck = source.Luck;
-  memcpy(Skills, source.Skills, 27);
+  Skills = source.Skills;
   Reputation = source.Reputation;
   Health = source.Health;
   SpellPoints = source.SpellPoints;
@@ -125,7 +127,7 @@ bool NPCRecord::equals(const NPCRecord& other) const
       && (Intelligence == other.Intelligence) && (Willpower == other.Willpower)
       && (Agility == other.Agility) && (Speed == other.Speed)
       && (Endurance == other.Endurance) && (Personality == other.Personality)
-      && (Luck == other.Luck) && (memcmp(Skills, other.Skills, 27) == 0)
+      && (Luck == other.Luck) && (Skills == other.Skills)
       && (Reputation == other.Reputation) && (Health == other.Health)
       && (SpellPoints == other.SpellPoints) && (Fatigue == other.Fatigue)
       && (Disposition == other.Disposition) && (Data_FactionID == other.Data_FactionID)
@@ -326,15 +328,6 @@ bool NPCRecord::saveToStream(std::ostream& output) const
   output.write((const char*) &SubLength, 4);
   output.write(recordID.c_str(), SubLength);
 
-  if (!Name.empty())
-  {
-    // write NPC's name (FNAM)
-    output.write(reinterpret_cast<const char*>(&cFNAM), 4);
-    SubLength = Name.length() + 1;
-    output.write(reinterpret_cast<const char*>(&SubLength), 4);
-    output.write(Name.c_str(), SubLength);
-  }
-
   if (!ModelPath.empty())
   {
     // write model path (MODL)
@@ -342,6 +335,15 @@ bool NPCRecord::saveToStream(std::ostream& output) const
     SubLength = ModelPath.length() + 1;
     output.write(reinterpret_cast<const char*>(&SubLength), 4);
     output.write(ModelPath.c_str(), SubLength);
+  }
+
+  if (!Name.empty())
+  {
+    // write NPC's name (FNAM)
+    output.write(reinterpret_cast<const char*>(&cFNAM), 4);
+    SubLength = Name.length() + 1;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
+    output.write(Name.c_str(), SubLength);
   }
 
   // write race ID (RNAM)
@@ -416,7 +418,7 @@ bool NPCRecord::saveToStream(std::ostream& output) const
     output.write(reinterpret_cast<const char*>(&Personality), 1);
     output.write(reinterpret_cast<const char*>(&Luck), 1);
     // ---- skills
-    output.write((const char*) Skills, 27);
+    output.write(reinterpret_cast<const char*>(Skills.data()), 27);
     // ---- reputations
     output.write(reinterpret_cast<const char*>(&Reputation), 1);
     // ---- secondary attributes
@@ -683,27 +685,15 @@ bool NPCRecord::loadFromStream(std::istream& input)
       case cMODL:
            if (hasMODL)
            {
-             std::cout << "Error: record NPC_ seems to have two MODL subrecords.\n";
+             std::cerr << "Error: Record NPC_ seems to have two MODL sub records.\n";
              return false;
            }
-           //MODL's length
-           input.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength>255)
+           // read model (MODL)
+           if (!loadString256(input, ModelPath, Buffer, cMODL, BytesRead))
            {
-             std::cout << "Error: Subrecord MODL of NPC_ is longer than 255 characters.\n";
+             std::cerr << "Error while reading sub record MODL of NPC_!\n";
              return false;
            }
-           //read model
-           memset(Buffer, '\0', 256);
-           input.read(Buffer, SubLength);
-           BytesRead += SubLength;
-           if (!input.good())
-           {
-             std::cout << "Error while reading subrecord MODL of NPC_!\n";
-             return false;
-           }
-           ModelPath = std::string(Buffer);
            hasMODL = true;
            break;
       case cRNAM:
@@ -764,7 +754,7 @@ bool NPCRecord::loadFromStream(std::istream& input)
              input.read(reinterpret_cast<char*>(&Personality), 1);
              input.read(reinterpret_cast<char*>(&Luck), 1);
              // ---- skills
-             input.read(reinterpret_cast<char*>(Skills), 27);
+             input.read(reinterpret_cast<char*>(Skills.data()), 27);
              // ---- reputations
              input.read(reinterpret_cast<char*>(&Reputation), 1);
              // ---- secondary attributes
@@ -797,6 +787,18 @@ bool NPCRecord::loadFromStream(std::istream& input)
              input.read(reinterpret_cast<char*>(&Unknown3), 1);
              input.read(reinterpret_cast<char*>(&Gold), 4);
              NPCDataType = ndt12Bytes;
+             // Reset attributes and skills to zero, because we have no data.
+             // TODO: Maybe the auto-calculation feature can be implemented to
+             //       fill those with the same data that Morrowind sets them to.
+             Strength = 0;
+             Intelligence = 0;
+             Willpower = 0;
+             Agility = 0;
+             Speed = 0;
+             Endurance = 0;
+             Personality = 0;
+             Luck = 0;
+             Skills.fill(0);
            }
            BytesRead += SubLength; //should be 12 or 52 bytes
            if (!input.good())

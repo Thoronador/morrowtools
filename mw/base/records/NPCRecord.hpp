@@ -21,6 +21,7 @@
 #ifndef MW_NPCRECORD_HPP
 #define MW_NPCRECORD_HPP
 
+#include <array>
 #include <string>
 #include "PreNPCRecord.hpp"
 
@@ -55,7 +56,7 @@ struct NPCRecord: public PreNPCRecord
   uint8_t Endurance;
   uint8_t Personality;
   uint8_t Luck;
-  uint8_t Skills[27];
+  std::array<uint8_t, 27> Skills;
   uint8_t Reputation;
   int16_t Health;
   int16_t SpellPoints;

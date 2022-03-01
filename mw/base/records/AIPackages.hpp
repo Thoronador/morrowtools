@@ -53,7 +53,7 @@ struct NPC_BasicAIPackage
    */
   virtual uint32_t getStreamSize() const = 0;
 
-  /** \brief Writes the package subrecord to the given output stream.
+  /** \brief Writes the package to the given output stream.
    *
    * \param output  the output stream
    * \return  Returns true on success (package was written to stream).
@@ -85,6 +85,16 @@ struct NPC_AIActivate: public NPC_BasicAIPackage
    */
   PackageType getPackageType() const override;
 
+  /** \brief Loads the package from the given input stream.
+   *
+   * \param input   the input stream
+   * \param buffer  a pre-allocated array of char that can hold at least 33 bytes
+   * \param bytesRead  the variable that holds the number of bytes read so far
+   * \return Returns true on success (package was loaded from stream).
+   *         Returns false, if an error occurred.
+   */
+  bool loadFromStream(std::istream& input, char * buffer, uint32_t& bytesRead);
+
   #ifndef MW_UNSAVEABLE_RECORDS
   /** \brief Gets the size in bytes that the instances's data would occupy in a
    *         stream.
@@ -93,7 +103,7 @@ struct NPC_AIActivate: public NPC_BasicAIPackage
    */
   uint32_t getStreamSize() const override;
 
-  /** \brief Writes the package subrecord to the given output stream.
+  /** \brief Writes the package to the given output stream.
    *
    * \param output  the output stream
    * \return  Returns true on success (package was written to stream).
@@ -128,6 +138,18 @@ struct NPC_AIEscortFollow: public NPC_BasicAIPackage
    */
   bool equals(const NPC_AIEscortFollow& other) const;
 
+  /** \brief Loads the package (excluding cell name) from the given input stream.
+   *
+   * \param input   the input stream
+   * \param buffer  a pre-allocated array of char that can hold at least 33 bytes
+   * \param bytesRead  the variable that holds the number of bytes read so far
+   * \return Returns true on success (package was loaded from stream).
+   *         Returns false, if an error occurred.
+   * \remarks The CellName is NOT loaded by calling this method, even if there
+   *          is one.
+   */
+  bool loadFromStream(std::istream& input, char * buffer, uint32_t& bytesRead);
+
   #ifndef MW_UNSAVEABLE_RECORDS
   /** \brief Gets the size in bytes that the instances's data would occupy in a
    *         stream.
@@ -136,7 +158,7 @@ struct NPC_AIEscortFollow: public NPC_BasicAIPackage
    */
   uint32_t getStreamSize() const override;
 
-  /** \brief Writes the package subrecord to the given output stream.
+  /** \brief Writes the package to the given output stream.
    *
    * \param output  the output stream
    * \return  Returns true on success (package was written to stream).
@@ -197,7 +219,7 @@ struct NPC_AITravel: public NPC_BasicAIPackage
    */
   uint32_t getStreamSize() const override;
 
-  /** \brief Writes the package subrecord to the given output stream.
+  /** \brief Writes the package to the given output stream.
    *
    * \param output  the output stream
    * \return  Returns true on success (package was written to stream).
@@ -243,7 +265,7 @@ struct NPC_AIWander: public NPC_BasicAIPackage
    */
   uint32_t getStreamSize() const override;
 
-  /** \brief Writes the package subrecord to the given output stream.
+  /** \brief Writes the package to the given output stream.
    *
    * \param output  the output stream
    * \return  Returns true on success (package was written to stream).

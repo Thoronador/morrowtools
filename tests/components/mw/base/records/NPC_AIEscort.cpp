@@ -199,6 +199,87 @@ TEST_CASE("MWTP::NPC_AIEscort")
     REQUIRE( package.getPackageType() == PackageType::ptEscort );
   }
 
+  SECTION("loadFromStream")
+  {
+    char Buffer[33];
+    uint32_t BytesRead = 0;
+
+    SECTION("default: load AI Escort package")
+    {
+      const auto data = "AI_E\x30\0\0\0\0\0\x80\x3F\0\0\0\x40\0\0\x40\x40\x01\x04goose town\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip AI_E, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      NPC_AIEscort package;
+      REQUIRE( package.loadFromStream(stream, Buffer, BytesRead) );
+      // Check data.
+      REQUIRE( package.X == 1.0f );
+      REQUIRE( package.Y == 2.0f );
+      REQUIRE( package.Z == 3.0f );
+      REQUIRE( package.Duration == 1025 );
+      REQUIRE( package.TargetID == "goose town" );
+      REQUIRE( package.Reset == 1 );
+      REQUIRE( package.CellName.empty() );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( package.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
+    }
+
+    SECTION("corrupt data: length of AI_E is not 48")
+    {
+      {
+        const auto data = "AI_E\x2F\0\0\0\0\0\x80\x3F\0\0\0\x40\0\0\x40\x40\x01\x04goose town\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // Skip AI_E, because header is handled before loadFromStream.
+        stream.seekg(4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        NPC_AIEscort package;
+        REQUIRE_FALSE( package.loadFromStream(stream, Buffer, BytesRead) );
+      }
+
+      {
+        const auto data = "AI_E\x31\0\0\0\0\0\x80\x3F\0\0\0\x40\0\0\x40\x40\x01\x04goose town\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0\0"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // Skip AI_E, because header is handled before loadFromStream.
+        stream.seekg(4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        NPC_AIEscort package;
+        REQUIRE_FALSE( package.loadFromStream(stream, Buffer, BytesRead) );
+      }
+    }
+
+    SECTION("corrupt data: stream ends before AI_E can be read")
+    {
+      const auto data = "AI_E\x30\0\0\0\0\0\x80\x3F"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip AI_E, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPC_AIEscort package;
+      REQUIRE_FALSE( package.loadFromStream(stream, Buffer, BytesRead) );
+    }
+  }
+
   SECTION("saveToStream")
   {
     SECTION("default: save package")

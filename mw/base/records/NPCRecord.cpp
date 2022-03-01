@@ -910,98 +910,42 @@ bool NPCRecord::loadFromStream(std::istream& input)
            previousSubRecord = cAIDT;
            break;
       case cAI_A:
-           //AI_A's length
-           input.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength!=33)
-           {
-             std::cout << "Error: Subrecord AI_A of NPC_ has invalid length ("
-                       << SubLength<< " bytes). Should be 33 bytes.\n";
-             return false;
-           }
-           //read AI activate data
+           //read AI activate data (AI_A)
            activatePointer = new NPC_AIActivate;
-           // ---- read target ID
-           memset(Buffer, '\0', 33);
-           input.read(Buffer, 32);
-           // ---- reset flag
-           input.read((char*) &(activatePointer->Reset), 1);
-           BytesRead += 33;
-           if (!input.good())
+           if (!activatePointer->loadFromStream(input, Buffer, BytesRead))
            {
-             std::cout << "Error while reading subrecord AI_A of NPC_!\n";
+             std::cerr << "Error while reading sub record AI_A of NPC_!\n";
              delete activatePointer;
              return false;
            }
-           activatePointer->TargetID = std::string(Buffer);
            AIPackages.push_back(activatePointer);
-           activatePointer = NULL; //just to be safe
+           activatePointer = nullptr;
            previousSubRecord = cAI_A;
            break;
       case cAI_E:
-           //AI_E's length
-           input.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength!=48)
-           {
-             std::cout << "Error: Subrecord AI_E of NPC_ has invalid length ("
-                       << SubLength<< " bytes). Should be 48 bytes.\n";
-             return false;
-           }
-           //read AI escort data
+           // read AI escort data (AI_E)
            escortFollowPointer = new NPC_AIEscort;
-           input.read((char*) &(escortFollowPointer->X), 4);
-           input.read((char*) &(escortFollowPointer->Y), 4);
-           input.read((char*) &(escortFollowPointer->Z), 4);
-           input.read((char*) &(escortFollowPointer->Duration), 2);
-           // ---- read target ID
-           memset(Buffer, '\0', 33);
-           input.read(Buffer, 32);
-           escortFollowPointer->TargetID = std::string(Buffer);
-           input.read((char*) &(escortFollowPointer->Reset), 2);
-           BytesRead += 48;
-           if (!input.good())
+           if (!escortFollowPointer->loadFromStream(input, Buffer, BytesRead))
            {
-             std::cout << "Error while reading subrecord AI_E of NPC_!\n";
+             std::cerr << "Error while reading sub record AI_E of NPC_!\n";
              delete escortFollowPointer;
              return false;
            }
-           escortFollowPointer->CellName = "";
            AIPackages.push_back(escortFollowPointer);
-           escortFollowPointer = NULL; //just to be safe
+           escortFollowPointer = nullptr; // just to be safe
            previousSubRecord = cAI_E;
            break;
       case cAI_F:
-           //AI_F's length
-           input.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength!=48)
-           {
-             std::cout << "Error: Subrecord AI_F of NPC_ has invalid length ("
-                       << SubLength<< " bytes). Should be 48 bytes.\n";
-             return false;
-           }
-           //read AI follow data
+           // read AI follow data (AI_F)
            escortFollowPointer = new NPC_AIFollow;
-           input.read((char*) &(escortFollowPointer->X), 4);
-           input.read((char*) &(escortFollowPointer->Y), 4);
-           input.read((char*) &(escortFollowPointer->Z), 4);
-           input.read((char*) &(escortFollowPointer->Duration), 2);
-           // ---- read target ID
-           memset(Buffer, '\0', 33);
-           input.read(Buffer, 32);
-           escortFollowPointer->TargetID = std::string(Buffer);
-           input.read((char*) &(escortFollowPointer->Reset), 2);
-           BytesRead += 48;
-           if (!input.good())
+           if (!escortFollowPointer->loadFromStream(input, Buffer, BytesRead))
            {
-             std::cout << "Error while reading subrecord AI_F of NPC_!\n";
+             std::cerr << "Error while reading sub record AI_F of NPC_!\n";
              delete escortFollowPointer;
              return false;
            }
-           escortFollowPointer->CellName = "";
            AIPackages.push_back(escortFollowPointer);
-           escortFollowPointer = NULL; //just to be safe
+           escortFollowPointer = nullptr; // just to be safe
            previousSubRecord = cAI_F;
            break;
       case cAI_T:
@@ -1077,9 +1021,9 @@ bool NPCRecord::loadFromStream(std::istream& input)
              std::cout << "Error while reading subrecord CNDT of NPC_!\n";
              return false;
            }
-           if ((previousSubRecord==cAI_E) or (previousSubRecord==cAI_F))
+           if ((previousSubRecord == cAI_E) || (previousSubRecord == cAI_F))
            {
-             //last record was AI escort or follow, so set it's cell name
+             // last record was AI escort or follow, so set it's cell name
              (static_cast<NPC_AIEscortFollow*>(AIPackages.back()))->CellName = std::string(Buffer);
            }
            else

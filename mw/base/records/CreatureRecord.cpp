@@ -743,99 +743,43 @@ bool CreatureRecord::loadFromStream(std::istream& in_File)
            previousSubRecord = cAIDT;
            break;
       case cAI_A:
-           //AI_A's length
-           in_File.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength!=33)
-           {
-             std::cout << "Error: Subrecord AI_A of CREA has invalid length ("
-                       << SubLength<< " bytes). Should be 33 bytes.\n";
-             return false;
-           }
-           //read AI activate data
+           // read AI activate data
            activatePointer = new NPC_AIActivate;
-           // ---- read target ID
-           memset(Buffer, '\0', 33);
-           in_File.read(Buffer, 32);
-           // ---- reset flag
-           in_File.read((char*) &(activatePointer->Reset), 1);
-           BytesRead += 33;
-           if (!in_File.good())
+           if (!activatePointer->loadFromStream(in_File, Buffer, BytesRead))
            {
-             std::cout << "Error while reading subrecord AI_A of CREA!\n";
+             std::cerr << "Error while reading sub record AI_A of CREA!\n";
              delete activatePointer;
              return false;
            }
-           activatePointer->TargetID = std::string(Buffer);
            AIPackages.push_back(activatePointer);
            previousSubRecord = cAI_A;
-           activatePointer = NULL; //just to be safe
+           activatePointer = nullptr; // just to be safe
            break;
       case cAI_E:
-           //AI_E's length
-           in_File.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength!=48)
-           {
-             std::cout << "Error: Subrecord AI_E of CREA has invalid length ("
-                       << SubLength<< " bytes). Should be 48 bytes.\n";
-             return false;
-           }
-           //read AI escort data
+           // read AI escort data (AI_E)
            escortFollowPointer = new NPC_AIEscort;
-           in_File.read((char*) &(escortFollowPointer->X), 4);
-           in_File.read((char*) &(escortFollowPointer->Y), 4);
-           in_File.read((char*) &(escortFollowPointer->Z), 4);
-           in_File.read((char*) &(escortFollowPointer->Duration), 2);
-           // ---- read target ID
-           memset(Buffer, '\0', 33);
-           in_File.read(Buffer, 32);
-           escortFollowPointer->TargetID = std::string(Buffer);
-           in_File.read((char*) &(escortFollowPointer->Reset), 2);
-           BytesRead += 48;
-           if (!in_File.good())
+           if (!escortFollowPointer->loadFromStream(in_File, Buffer, BytesRead))
            {
-             std::cout << "Error while reading subrecord AI_E of CREA!\n";
+             std::cerr << "Error while reading sub record AI_E of CREA!\n";
              delete escortFollowPointer;
              return false;
            }
-           escortFollowPointer->CellName.clear();
            AIPackages.push_back(escortFollowPointer);
            previousSubRecord = cAI_E;
-           escortFollowPointer = NULL; //just to be safe
+           escortFollowPointer = nullptr; // just to be safe
            break;
       case cAI_F:
-           //AI_F's length
-           in_File.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength!=48)
-           {
-             std::cout << "Error: Subrecord AI_F of CREA has invalid length ("
-                       << SubLength<< " bytes). Should be 48 bytes.\n";
-             return false;
-           }
-           //read AI follow data
+           // read AI follow data (AI_F)
            escortFollowPointer = new NPC_AIFollow;
-           in_File.read((char*) &(escortFollowPointer->X), 4);
-           in_File.read((char*) &(escortFollowPointer->Y), 4);
-           in_File.read((char*) &(escortFollowPointer->Z), 4);
-           in_File.read((char*) &(escortFollowPointer->Duration), 2);
-           // ---- read target ID
-           memset(Buffer, '\0', 33);
-           in_File.read(Buffer, 32);
-           escortFollowPointer->TargetID = std::string(Buffer);
-           in_File.read((char*) &(escortFollowPointer->Reset), 2);
-           BytesRead += 48;
-           if (!in_File.good())
+           if (!escortFollowPointer->loadFromStream(in_File, Buffer, BytesRead))
            {
-             std::cout << "Error while reading subrecord AI_F of CREA!\n";
+             std::cerr << "Error while reading sub record AI_F of CREA!\n";
              delete escortFollowPointer;
              return false;
            }
-           escortFollowPointer->CellName.clear();
            AIPackages.push_back(escortFollowPointer);
            previousSubRecord = cAI_F;
-           escortFollowPointer = NULL; //just to be safe
+           escortFollowPointer = nullptr; // just to be safe
            break;
       case cAI_T:
            //AI_T's length

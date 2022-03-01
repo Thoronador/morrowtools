@@ -20,6 +20,7 @@
 
 #include "AIPackages.hpp"
 #include <cstring>
+#include <iostream>
 #include "../MW_Constants.hpp"
 
 namespace MWTP
@@ -48,6 +49,33 @@ bool NPC_AIActivate::equals(const NPC_AIActivate& other) const
 PackageType NPC_AIActivate::getPackageType() const
 {
   return PackageType::ptActivate;
+}
+
+bool NPC_AIActivate::loadFromStream(std::istream& input, char * buffer, uint32_t& bytesRead)
+{
+  uint32_t subLength = 0;
+  input.read(reinterpret_cast<char*>(&subLength), 4);
+  bytesRead += 4;
+  if (subLength != 33)
+  {
+    std::cerr << "Error: Sub record AI_A of NPC_ or CREA has invalid length ("
+              << subLength << " bytes). Should be 33 bytes.\n";
+    return false;
+  }
+  // read AI activate data
+  // ---- read target ID
+  memset(buffer, '\0', 33);
+  input.read(buffer, 32);
+  // ---- reset flag
+  input.read(reinterpret_cast<char*>(&Reset), 1);
+  bytesRead += 33;
+  if (!input.good())
+  {
+    std::cerr << "Error while reading sub record AI_A of NPC_ or CREA!\n";
+    return false;
+  }
+  TargetID = std::string(buffer);
+  return true;
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
@@ -113,6 +141,38 @@ bool NPC_AIEscortFollow::equals(const NPC_AIEscortFollow& other) const
       && ((Z == other.Z) || ((Z != Z) && (other.Z != other.Z)))
       && (Duration == other.Duration) && (TargetID == other.TargetID)
       && (Reset == other.Reset) && (CellName == other.CellName);
+}
+
+bool NPC_AIEscortFollow::loadFromStream(std::istream& input, char * buffer, uint32_t& bytesRead)
+{
+  uint32_t subLength = 0;
+  input.read(reinterpret_cast<char*>(&subLength), 4);
+  bytesRead += 4;
+  if (subLength != 48)
+  {
+    std::cerr << "Error: Sub record AI_F of NPC_ or CRA has invalid length ("
+              << subLength << " bytes). Should be 48 bytes.\n";
+    return false;
+  }
+  // read AI escort/follow data
+  input.read(reinterpret_cast<char*>(&X), 4);
+  input.read(reinterpret_cast<char*>(&Y), 4);
+  input.read(reinterpret_cast<char*>(&Z), 4);
+  input.read(reinterpret_cast<char*>(&Duration), 2);
+  // ---- read target ID
+  memset(buffer, '\0', 33);
+  input.read(buffer, 32);
+  TargetID = std::string(buffer);
+  input.read(reinterpret_cast<char*>(&Reset), 2);
+  bytesRead += 48;
+  if (!input.good())
+  {
+    std::cerr << "Error while reading sub record AI_F of NPC_ or CREA!\n";
+    return false;
+  }
+  // Note: CellName is not loaded here, because it may not be present.
+  CellName = "";
+  return true;
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS

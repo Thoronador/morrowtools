@@ -89,6 +89,82 @@ TEST_CASE("MWTP::NPC_AIActivate")
     REQUIRE( package.getStreamSize() == 41 );
   }
 
+  SECTION("loadFromStream")
+  {
+    char Buffer[33];
+    uint32_t BytesRead = 0;
+
+    SECTION("default: load AI Activate package")
+    {
+      const auto data = "AI_A\x21\0\0\0foobar was here\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip AI_A, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      NPC_AIActivate package;
+      REQUIRE( package.loadFromStream(stream, Buffer, BytesRead) );
+      // Check data.
+      REQUIRE( package.TargetID == "foobar was here" );
+      REQUIRE( package.Reset == 1 );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( package.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
+    }
+
+    SECTION("corrupt data: length of AI_A is not 33")
+    {
+      {
+        const auto data = "AI_A\x20\0\0\0foobar was here\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // Skip AI_A, because header is handled before loadFromStream.
+        stream.seekg(4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        NPC_AIActivate package;
+        REQUIRE_FALSE( package.loadFromStream(stream, Buffer, BytesRead) );
+      }
+
+      {
+        const auto data = "AI_A\x22\0\0\0foobar was here\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // Skip AI_A, because header is handled before loadFromStream.
+        stream.seekg(4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        NPC_AIActivate package;
+        REQUIRE_FALSE( package.loadFromStream(stream, Buffer, BytesRead) );
+      }
+    }
+
+    SECTION("corrupt data: stream ends before AI_A can be read")
+    {
+      const auto data = "AI_A\x21\0\0\0foo"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip AI_A, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPC_AIActivate package;
+      REQUIRE_FALSE( package.loadFromStream(stream, Buffer, BytesRead) );
+    }
+  }
+
   SECTION("saveToStream")
   {
     SECTION("default: save package")

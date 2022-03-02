@@ -1014,45 +1014,45 @@ bool NPCRecord::loadFromStream(std::istream& input)
              Destinations.push_back(tempDest);
              hasReadDestination = false;
            }
-           //DODT's length
-           input.read((char*) &SubLength, 4);
+           // DODT's length
+           input.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
-           if (SubLength!=24)
+           if (SubLength != 24)
            {
-             std::cout << "Error: Subrecord DODT of NPC_ has invalid length ("
-                       << SubLength<< " bytes). Should be 24 bytes.\n";
+             std::cerr << "Error: Sub record DODT of NPC_ has invalid length ("
+                       << SubLength << " bytes). Should be 24 bytes.\n";
              return false;
            }
-           //read destination data
-           input.read((char*) &(tempDest.XPos), 4);
-           input.read((char*) &(tempDest.YPos), 4);
-           input.read((char*) &(tempDest.ZPos), 4);
-           input.read((char*) &(tempDest.XRot), 4);
-           input.read((char*) &(tempDest.YRot), 4);
-           input.read((char*) &(tempDest.ZRot), 4);
+           // read destination data
+           input.read(reinterpret_cast<char*>(&tempDest.XPos), 4);
+           input.read(reinterpret_cast<char*>(&tempDest.YPos), 4);
+           input.read(reinterpret_cast<char*>(&tempDest.ZPos), 4);
+           input.read(reinterpret_cast<char*>(&tempDest.XRot), 4);
+           input.read(reinterpret_cast<char*>(&tempDest.YRot), 4);
+           input.read(reinterpret_cast<char*>(&tempDest.ZRot), 4);
            BytesRead += 24;
            if (!input.good())
            {
-             std::cout << "Error while reading subrecord DODT of NPC_!\n";
+             std::cerr << "Error while reading sub record DODT of NPC_!\n";
              return false;
            }
-           tempDest.CellName = "";
+           tempDest.CellName.clear();
            hasReadDestination = true;
            previousSubRecord = cDODT;
            break;
       case cDNAM:
            if (!hasReadDestination)
            {
-             std::cout << "Error while reading NPC record: DNAM subrecord "
-                       << "without previous DODT subrecord.\n";
+             std::cerr << "Error while reading NPC record: DNAM sub record "
+                       << "without previous DODT sub record.\n";
              return false;
            }
            //DNAM's length
            input.read((char*) &SubLength, 4);
            BytesRead += 4;
-           if (SubLength>255)
+           if (SubLength > 255)
            {
-             std::cout << "Error: Subrecord DNAM of NPC_ is longer than 255 characters.\n";
+             std::cerr << "Error: Sub record DNAM of NPC_ is longer than 255 characters.\n";
              return false;
            }
            //read destination data
@@ -1061,7 +1061,7 @@ bool NPCRecord::loadFromStream(std::istream& input)
            BytesRead += SubLength;
            if (!input.good())
            {
-             std::cout << "Error while reading subrecord DNAM of NPC_!\n";
+             std::cerr << "Error while reading sub record DNAM of NPC_!\n";
              return false;
            }
            tempDest.CellName = std::string(Buffer);

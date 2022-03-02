@@ -186,13 +186,6 @@ bool PreNPCRecord::writeItemsSpellsAIDataDestinations(std::ostream& output) cons
       return false;
   }
 
-  // AI packages
-  for (const auto& pkg: AIPackages)
-  {
-    if (!pkg->saveToStream(output))
-      return false;
-  }
-
   // travel service destinations
   for (const auto& destination: Destinations)
   {
@@ -216,6 +209,13 @@ bool PreNPCRecord::writeItemsSpellsAIDataDestinations(std::ostream& output) cons
       output.write(reinterpret_cast<const char*>(&SubLength), 4);
       output.write(destination.CellName.c_str(), SubLength);
     }
+  }
+
+  // AI packages
+  for (const auto& pkg: AIPackages)
+  {
+    if (!pkg->saveToStream(output))
+      return false;
   }
 
   return output.good();

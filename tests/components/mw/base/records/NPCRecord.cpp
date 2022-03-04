@@ -19,6 +19,7 @@
 */
 
 #include <catch.hpp>
+#include <limits>
 #include <sstream>
 #include <string_view>
 #include "../../../../../mw/base/records/NPCRecord.hpp"
@@ -436,6 +437,17 @@ TEST_CASE("MWTP::NPCRecord")
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
       }
+    }
+  }
+
+  SECTION("getWriteSize")
+  {
+    SECTION("throws when NPDT size is 'none'")
+    {
+      NPCRecord record;
+      record.NPCDataType = NPDT_Type::ndtNone;
+
+      REQUIRE_THROWS( record.getWriteSize() );
     }
   }
 
@@ -968,6 +980,191 @@ TEST_CASE("MWTP::NPCRecord")
       REQUIRE( streamOut.str() == data );
     }
 
+    SECTION("default: load record with AI follow package")
+    {
+      const auto data = "NPC_\x81\x01\0\0\0\0\0\0\0\0\0\0NAME\x0B\0\0\0dals sadri\0FNAM\x0B\0\0\0Dals Sadri\0RNAM\x09\0\0\0Dark Elf\0CNAM\x05\0\0\0Mage\0ANAM\x07\0\0\0Hlaalu\0BNAM\x17\0\0\0b_n_dark elf_m_head_12\0KNAM\x17\0\0\0b_n_dark elf_m_hair_12\0NPDT\x0C\0\0\0\x09\0\x32\x04\x01\0\0\0\0\0\0\0FLAG\x04\0\0\0\x18\0\0\0NPCO$\0\0\0\x01\0\0\0common_robe_03_a\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0NPCO$\0\0\0\x01\0\0\0common_shoes_03\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0NPCO$\0\0\0\x01\0\0\0l_m_wpn_melee_short blade\0\0\0\0\0\0\0AIDT\x0C\0\0\0\x1E\0\x1E\x1EZ\0\0\0\0\0\0\0AI_F0\0\0\0\xFF\xFF\x7F\x7F\xFF\xFF\x7F\x7F\xFF\xFF\x7F\x7F\0\0mavon drenim\0\0\x0C\0\0\0\xA8\xD4\xE8\0\xF1HO\0$\xF6\x12\0\x0C\0\x01\0"sv;
+      const auto data_clean = "NPC_\x81\x01\0\0\0\0\0\0\0\0\0\0NAME\x0B\0\0\0dals sadri\0FNAM\x0B\0\0\0Dals Sadri\0RNAM\x09\0\0\0Dark Elf\0CNAM\x05\0\0\0Mage\0ANAM\x07\0\0\0Hlaalu\0BNAM\x17\0\0\0b_n_dark elf_m_head_12\0KNAM\x17\0\0\0b_n_dark elf_m_hair_12\0NPDT\x0C\0\0\0\x09\0\x32\x04\x01\0\0\0\0\0\0\0FLAG\x04\0\0\0\x18\0\0\0NPCO$\0\0\0\x01\0\0\0common_robe_03_a\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0NPCO$\0\0\0\x01\0\0\0common_shoes_03\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0NPCO$\0\0\0\x01\0\0\0l_m_wpn_melee_short blade\0\0\0\0\0\0\0AIDT\x0C\0\0\0\x1E\0\x1E\x1EZ\0\0\0\0\0\0\0AI_F0\0\0\0\xFF\xFF\x7F\x7F\xFF\xFF\x7F\x7F\xFF\xFF\x7F\x7F\0\0mavon drenim\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip NPC_, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      NPCRecord record;
+      REQUIRE( record.loadFromStream(stream) );
+      // Check data.
+      // -- header
+      REQUIRE( record.getHeaderOne() == 0 );
+      REQUIRE( record.getHeaderFlags() == 0 );
+      // -- record data
+      // stuff from NPCRecord
+      REQUIRE( record.recordID == "dals sadri" );
+      REQUIRE( record.Name == "Dals Sadri" );
+      REQUIRE( record.ModelPath.empty() );
+      REQUIRE( record.RaceID == "Dark Elf" );
+      REQUIRE( record.FactionID == "Hlaalu" );
+      REQUIRE( record.HeadModel == "b_n_dark elf_m_head_12" );
+      REQUIRE( record.ClassID == "Mage" );
+      REQUIRE( record.HairModel == "b_n_dark elf_m_hair_12" );
+      REQUIRE( record.ScriptID.empty() );
+      REQUIRE( record.Level == 9 );
+      REQUIRE( record.Strength == 0 );
+      REQUIRE( record.Intelligence == 0 );
+      REQUIRE( record.Willpower == 0 );
+      REQUIRE( record.Agility == 0 );
+      REQUIRE( record.Speed == 0 );
+      REQUIRE( record.Endurance == 0 );
+      REQUIRE( record.Personality == 0 );
+      REQUIRE( record.Luck == 0 );
+      for (int i = 0; i < 27; ++i)
+      {
+        REQUIRE( record.Skills[i] == 0 );
+      }
+      REQUIRE( record.Reputation == 0 );
+      REQUIRE( record.Health == 0 );
+      REQUIRE( record.SpellPoints == 0 );
+      REQUIRE( record.Fatigue == 0 );
+      REQUIRE( record.Disposition == 50 );
+      REQUIRE( record.Data_FactionID == 4 );
+      REQUIRE( record.Rank == 1 );
+      REQUIRE( record.Unknown1 == 0x00 );
+      REQUIRE( record.Unknown2 == 0x00 );
+      REQUIRE( record.Unknown3 == 0x00 );
+      REQUIRE( record.Gold == 0 );
+      REQUIRE( record.NPCDataType == NPDT_Type::ndt12Bytes );
+      REQUIRE( record.NPC_Flag == 0x00000018 );
+      // stuff from PreNPCRecord
+      REQUIRE( record.Items.size() == 3 );
+      REQUIRE( record.Items[0].Count == 1 );
+      REQUIRE( record.Items[0].Item == "common_robe_03_a" );
+      REQUIRE( record.Items[1].Count == 1 );
+      REQUIRE( record.Items[1].Item == "common_shoes_03" );
+      REQUIRE( record.Items[2].Count == 1 );
+      REQUIRE( record.Items[2].Item == "l_m_wpn_melee_short blade" );
+      REQUIRE( record.NPC_Spells.empty() );
+      REQUIRE( record.AIData.has_value() );
+      REQUIRE( record.AIData.value().Hello == 30 );
+      REQUIRE( record.AIData.value().Unknown1 == 0 );
+      REQUIRE( record.AIData.value().Fight == 30 );
+      REQUIRE( record.AIData.value().Flee == 30 );
+      REQUIRE( record.AIData.value().Alarm == 90 );
+      REQUIRE( record.AIData.value().Unknown2 == 0 );
+      REQUIRE( record.AIData.value().Unknown3 == 0 );
+      REQUIRE( record.AIData.value().Unknown4 == 0 );
+      REQUIRE( record.AIData.value().Flags == 0x00000000 );
+      REQUIRE( record.AIPackages.size() == 1 );
+      REQUIRE( record.AIPackages[0]->getPackageType() == PackageType::ptFollow );
+      const auto package_one = static_cast<NPC_AIFollow*>(record.AIPackages[0]);
+      REQUIRE( package_one->X == std::numeric_limits<float>::max() );
+      REQUIRE( package_one->Y == std::numeric_limits<float>::max() );
+      REQUIRE( package_one->Z == std::numeric_limits<float>::max() );
+      REQUIRE( package_one->Duration == 0 );
+      REQUIRE( package_one->TargetID == "mavon drenim" );
+      REQUIRE( package_one->Reset == 1 );
+      REQUIRE( package_one->CellName.empty() );
+      REQUIRE( record.Destinations.size() == 0 );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( record.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data_clean );
+    }
+
+    SECTION("default: load record with AI escort package")
+    {
+      const auto data = "NPC_\x81\x01\0\0\0\0\0\0\0\0\0\0NAME\x0B\0\0\0dals sadri\0FNAM\x0B\0\0\0Dals Sadri\0RNAM\x09\0\0\0Dark Elf\0CNAM\x05\0\0\0Mage\0ANAM\x07\0\0\0Hlaalu\0BNAM\x17\0\0\0b_n_dark elf_m_head_12\0KNAM\x17\0\0\0b_n_dark elf_m_hair_12\0NPDT\x0C\0\0\0\x09\0\x32\x04\x01\0\0\0\0\0\0\0FLAG\x04\0\0\0\x18\0\0\0NPCO$\0\0\0\x01\0\0\0common_robe_03_a\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0NPCO$\0\0\0\x01\0\0\0common_shoes_03\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0NPCO$\0\0\0\x01\0\0\0l_m_wpn_melee_short blade\0\0\0\0\0\0\0AIDT\x0C\0\0\0\x1E\0\x1E\x1EZ\0\0\0\0\0\0\0AI_E0\0\0\0\xFF\xFF\x7F\x7F\xFF\xFF\x7F\x7F\xFF\xFF\x7F\x7F\0\0mavon drenim\0\0\x0C\0\0\0\xA8\xD4\xE8\0\xF1HO\0$\xF6\x12\0\x0C\0\x01\0"sv;
+      const auto data_clean = "NPC_\x81\x01\0\0\0\0\0\0\0\0\0\0NAME\x0B\0\0\0dals sadri\0FNAM\x0B\0\0\0Dals Sadri\0RNAM\x09\0\0\0Dark Elf\0CNAM\x05\0\0\0Mage\0ANAM\x07\0\0\0Hlaalu\0BNAM\x17\0\0\0b_n_dark elf_m_head_12\0KNAM\x17\0\0\0b_n_dark elf_m_hair_12\0NPDT\x0C\0\0\0\x09\0\x32\x04\x01\0\0\0\0\0\0\0FLAG\x04\0\0\0\x18\0\0\0NPCO$\0\0\0\x01\0\0\0common_robe_03_a\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0NPCO$\0\0\0\x01\0\0\0common_shoes_03\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0NPCO$\0\0\0\x01\0\0\0l_m_wpn_melee_short blade\0\0\0\0\0\0\0AIDT\x0C\0\0\0\x1E\0\x1E\x1EZ\0\0\0\0\0\0\0AI_E0\0\0\0\xFF\xFF\x7F\x7F\xFF\xFF\x7F\x7F\xFF\xFF\x7F\x7F\0\0mavon drenim\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip NPC_, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      NPCRecord record;
+      REQUIRE( record.loadFromStream(stream) );
+      // Check data.
+      // -- header
+      REQUIRE( record.getHeaderOne() == 0 );
+      REQUIRE( record.getHeaderFlags() == 0 );
+      // -- record data
+      REQUIRE( record.recordID == "dals sadri" );
+      REQUIRE( record.Name == "Dals Sadri" );
+      // Skip other stuff, except for package.
+      REQUIRE( record.AIPackages.size() == 1 );
+      REQUIRE( record.AIPackages[0]->getPackageType() == PackageType::ptEscort );
+      const auto package_one = static_cast<NPC_AIEscort*>(record.AIPackages[0]);
+      REQUIRE( package_one->X == std::numeric_limits<float>::max() );
+      REQUIRE( package_one->Y == std::numeric_limits<float>::max() );
+      REQUIRE( package_one->Z == std::numeric_limits<float>::max() );
+      REQUIRE( package_one->Duration == 0 );
+      REQUIRE( package_one->TargetID == "mavon drenim" );
+      REQUIRE( package_one->Reset == 1 );
+      REQUIRE( package_one->CellName.empty() );
+      REQUIRE( record.Destinations.size() == 0 );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( record.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data_clean );
+    }
+
+    SECTION("default: load record with AI travel packages")
+    {
+      const auto data = "NPC_\x95\x01\0\0\0\0\0\0\0\x04\0\0NAME\x07\0\0\0indrel\0FNAM\x07\0\0\0Indrel\0RNAM\x09\0\0\0Wood Elf\0CNAM\x05\0\0\0Monk\0ANAM\x01\0\0\0\0BNAM\x17\0\0\0b_n_wood elf_f_head_05\0KNAM\x17\0\0\0b_n_wood elf_f_hair_04\0NPDT4\0\0\0\x05\0 )3++=\x1F(\x05\x05\x05\x05\x05\x05\x05\x10\x1F\x05\x05\x10\x05\x05\x05\x05\x0A\x1F\x06*$\x1A\x06.\x06\x10\x10\0\0\0\x14\0\xBB\0\x32\0\0\0\0\0\0\0FLAG\x04\0\0\0\x09\0\0\0NPCO$\0\0\0\x01\0\0\0common_robe_02_t\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0NPCO$\0\0\0\x01\0\0\0common_shoes_02\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0AIDT\x0C\0\0\0\x1E\0(2\x1E\0\0\0\0\0\0\0AI_W\x0E\0\0\0\0\0\x05\0\0<\x14\x0A\x0A\0\0\0\0\x01\x41I_T\x10\0\0\0\0\x80\x84\xC3\0\xE0;E\0\xE0\x8B\xC4\x01\x01\0\0AI_T\x10\0\0\0\0\0w\xC3\0 WE\0\xE0\x9B\xC4\x01\x01\0\0AI_T\x10\0\0\0\0\0\xC0\x42\0\x30XE\0\xE0\x9B\xC4\x01\x01\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip NPC_, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      NPCRecord record;
+      REQUIRE( record.loadFromStream(stream) );
+      // Check data.
+      // -- header
+      REQUIRE( record.getHeaderOne() == 0 );
+      REQUIRE( record.getHeaderFlags() == 0x00000400 );
+      // -- record data
+      REQUIRE( record.recordID == "indrel" );
+      REQUIRE( record.Name == "Indrel" );
+      // Skip other stuff, except for package.
+      REQUIRE( record.AIPackages.size() == 4 );
+      // First package is AI Wander, so we do not test it.
+      // There are already other tests with AI Wander.
+      REQUIRE( record.AIPackages[1]->getPackageType() == PackageType::ptTravel );
+      const auto package_one = static_cast<NPC_AITravel*>(record.AIPackages[1]);
+      REQUIRE( package_one->X == -265.0f );
+      REQUIRE( package_one->Y == 3006.0f );
+      REQUIRE( package_one->Z == -1119.0f );
+      REQUIRE( package_one->Reset == 257 );
+      REQUIRE( record.AIPackages[2]->getPackageType() == PackageType::ptTravel );
+      const auto package_two = static_cast<NPC_AITravel*>(record.AIPackages[2]);
+      REQUIRE( package_two->X == -247.0f );
+      REQUIRE( package_two->Y == 3442.0f );
+      REQUIRE( package_two->Z == -1247.0f );
+      REQUIRE( package_two->Reset == 257 );
+      REQUIRE( record.AIPackages[2]->getPackageType() == PackageType::ptTravel );
+      const auto package_three = static_cast<NPC_AITravel*>(record.AIPackages[3]);
+      REQUIRE( package_three->X == 96.0f );
+      REQUIRE( package_three->Y == 3459.0f );
+      REQUIRE( package_three->Z == -1247.0f );
+      REQUIRE( package_three->Reset == 257 );
+      REQUIRE( record.Destinations.size() == 0 );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( record.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
+    }
+
     SECTION("corrupt data: stream ends before header can be read")
     {
       const auto data = "NPC_\xF7\0\0\0\0\0\0"sv;
@@ -1137,6 +1334,66 @@ TEST_CASE("MWTP::NPCRecord")
     SECTION("corrupt data: stream ends before AIDT can be read")
     {
       const auto data = "NPC_\xF7\0\0\0\0\0\0\0\0\0\0\0NAME\x10\0\0\0listien bierles\0FNAM\x10\0\0\0Listien Bierles\0RNAM\x07\0\0\0Breton\0CNAM\x09\0\0\0Sorcerer\0ANAM\x0C\0\0\0Mages Guild\0BNAM\x15\0\0\0b_n_breton_m_head_02\0KNAM\x15\0\0\0b_n_breton_m_hair_03\0SCRI\x07\0\0\0nolore\0NPDT\x0C\0\0\0\x02\0\x32\x04\x01\xD6\xE8\0\0\0\0\0FLAG\x04\0\0\0\x18\0\0\0AIDT\x0C\0\0\0\x1E\0\x1E"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip NPC_, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: stream ends before AI_A can be read")
+    {
+      const auto data = "NPC_\x95\x01\0\0\0\0\0\0\0\x04\0\0NAME\x07\0\0\0indrel\0FNAM\x07\0\0\0Indrel\0RNAM\x09\0\0\0Wood Elf\0CNAM\x05\0\0\0Monk\0ANAM\x01\0\0\0\0BNAM\x17\0\0\0b_n_wood elf_f_head_05\0KNAM\x17\0\0\0b_n_wood elf_f_hair_04\0NPDT4\0\0\0\x05\0 )3++=\x1F(\x05\x05\x05\x05\x05\x05\x05\x10\x1F\x05\x05\x10\x05\x05\x05\x05\x0A\x1F\x06*$\x1A\x06.\x06\x10\x10\0\0\0\x14\0\xBB\0\x32\0\0\0\0\0\0\0FLAG\x04\0\0\0\x09\0\0\0NPCO$\0\0\0\x01\0\0\0common_robe_02_t\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0NPCO$\0\0\0\x01\0\0\0common_shoes_02\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0AIDT\x0C\0\0\0\x1E\0(2\x1E\0\0\0\0\0\0\0AI_A\x21\0\0\0fail\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip NPC_, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: stream ends before AI_E can be read")
+    {
+      const auto data = "NPC_\x81\x01\0\0\0\0\0\0\0\0\0\0NAME\x0B\0\0\0dals sadri\0FNAM\x0B\0\0\0Dals Sadri\0RNAM\x09\0\0\0Dark Elf\0CNAM\x05\0\0\0Mage\0ANAM\x07\0\0\0Hlaalu\0BNAM\x17\0\0\0b_n_dark elf_m_head_12\0KNAM\x17\0\0\0b_n_dark elf_m_hair_12\0NPDT\x0C\0\0\0\x09\0\x32\x04\x01\0\0\0\0\0\0\0FLAG\x04\0\0\0\x18\0\0\0NPCO$\0\0\0\x01\0\0\0common_robe_03_a\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0NPCO$\0\0\0\x01\0\0\0common_shoes_03\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0NPCO$\0\0\0\x01\0\0\0l_m_wpn_melee_short blade\0\0\0\0\0\0\0AIDT\x0C\0\0\0\x1E\0\x1E\x1EZ\0\0\0\0\0\0\0AI_E0\0\0\0\xFF\xFF\x7F\x7F"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip NPC_, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: stream ends before AI_F can be read")
+    {
+      const auto data = "NPC_\x81\x01\0\0\0\0\0\0\0\0\0\0NAME\x0B\0\0\0dals sadri\0FNAM\x0B\0\0\0Dals Sadri\0RNAM\x09\0\0\0Dark Elf\0CNAM\x05\0\0\0Mage\0ANAM\x07\0\0\0Hlaalu\0BNAM\x17\0\0\0b_n_dark elf_m_head_12\0KNAM\x17\0\0\0b_n_dark elf_m_hair_12\0NPDT\x0C\0\0\0\x09\0\x32\x04\x01\0\0\0\0\0\0\0FLAG\x04\0\0\0\x18\0\0\0NPCO$\0\0\0\x01\0\0\0common_robe_03_a\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0NPCO$\0\0\0\x01\0\0\0common_shoes_03\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0NPCO$\0\0\0\x01\0\0\0l_m_wpn_melee_short blade\0\0\0\0\0\0\0AIDT\x0C\0\0\0\x1E\0\x1E\x1EZ\0\0\0\0\0\0\0AI_F0\0\0\0\xFF\xFF\x7F\x7F"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip NPC_, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      NPCRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: stream ends before AI_T can be read")
+    {
+      const auto data = "NPC_\x95\x01\0\0\0\0\0\0\0\x04\0\0NAME\x07\0\0\0indrel\0FNAM\x07\0\0\0Indrel\0RNAM\x09\0\0\0Wood Elf\0CNAM\x05\0\0\0Monk\0ANAM\x01\0\0\0\0BNAM\x17\0\0\0b_n_wood elf_f_head_05\0KNAM\x17\0\0\0b_n_wood elf_f_hair_04\0NPDT4\0\0\0\x05\0 )3++=\x1F(\x05\x05\x05\x05\x05\x05\x05\x10\x1F\x05\x05\x10\x05\x05\x05\x05\x0A\x1F\x06*$\x1A\x06.\x06\x10\x10\0\0\0\x14\0\xBB\0\x32\0\0\0\0\0\0\0FLAG\x04\0\0\0\x09\0\0\0NPCO$\0\0\0\x01\0\0\0common_robe_02_t\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0NPCO$\0\0\0\x01\0\0\0common_shoes_02\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0AIDT\x0C\0\0\0\x1E\0(2\x1E\0\0\0\0\0\0\0AI_W\x0E\0\0\0\0\0\x05\0\0<\x14\x0A\x0A\0\0\0\0\x01\x41I_T\x10\0\0\0\0\x80"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 

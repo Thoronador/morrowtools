@@ -163,13 +163,13 @@ uint32_t NPCRecord::getWriteSize() const
          Size += 52; //fixed length of 52 bytes
          break;
     case ndtNone:
-         std::cerr << "Error: No data type specified for NPDT subrecord.\n";
-         throw std::runtime_error("Error: No data type specified for NPDT subrecord.");
+         std::cerr << "Error: No data type specified for NPDT sub record.\n";
+         throw std::runtime_error("Error: No data type specified for NPDT sub record.");
          break;
   }
   Size += 4 /* FLAG */ + 4 /* 4 bytes for length */ + 4 /* fixed length of four bytes */
         + Items.size() * (4 /* NPCO */ + 4 /* 4 bytes for length */ + 36 /* fixed length of 36 bytes */)
-        + NPC_Spells.size() * (4 /* NPCS */ + 4 /* 4 bytes for length */ + 32 /* fixed length of 36 bytes */);
+        + NPC_Spells.size() * (4 /* NPCS */ + 4 /* 4 bytes for length */ + 32 /* fixed length of 32 bytes */);
 
   // add size of the optional stuff
   if (!Name.empty())
@@ -977,33 +977,17 @@ bool NPCRecord::loadFromStream(std::istream& input)
            previousSubRecord = cAI_W;
            break;
       case cCNDT:
-           //CNDT's length
-           input.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength>255)
+           if ((previousSubRecord != cAI_E) && (previousSubRecord != cAI_F))
            {
-             std::cout << "Error: Subrecord CNDT of NPC_ is longer than 255 characters.\n";
-             return false;
-           }
-           //read escort/follow cell name
-           memset(Buffer, '\0', 256);
-           input.read(Buffer, SubLength);
-           BytesRead += SubLength;
-           if (!input.good())
-           {
-             std::cout << "Error while reading subrecord CNDT of NPC_!\n";
-             return false;
-           }
-           if ((previousSubRecord == cAI_E) || (previousSubRecord == cAI_F))
-           {
-             // last record was AI escort or follow, so set it's cell name
-             (static_cast<NPC_AIEscortFollow*>(AIPackages.back()))->CellName = std::string(Buffer);
-           }
-           else
-           {
-             std::cout << "Error: Subrecord before CNDT of NPC_ was neither "
-                       << "AI_E nor AI_F, but \""<<IntTo4Char(previousSubRecord)
+             std::cerr << "Error: Sub record before CNDT of NPC_ was neither "
+                       << "AI_E nor AI_F, but \"" << IntTo4Char(previousSubRecord)
                        << "\".\n";
+             return false;
+           }
+           // previous record was AI escort or follow, so set it's cell name
+           if (!loadString256(input, static_cast<NPC_AIEscortFollow*>(AIPackages.back())->CellName, Buffer, cCNDT, BytesRead))
+           {
+             std::cerr << "Error while reading sub record CNDT of NPC_!\n";
              return false;
            }
            previousSubRecord = cCNDT;
@@ -1047,25 +1031,13 @@ bool NPCRecord::loadFromStream(std::istream& input)
                        << "without previous DODT sub record.\n";
              return false;
            }
-           //DNAM's length
-           input.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength > 255)
-           {
-             std::cerr << "Error: Sub record DNAM of NPC_ is longer than 255 characters.\n";
-             return false;
-           }
-           //read destination data
-           memset(Buffer, '\0', 256);
-           input.read(Buffer, SubLength);
-           BytesRead += SubLength;
-           if (!input.good())
+           // read destination cell name (DNAM)
+           if (!loadString256(input, tempDest.CellName, Buffer, cDNAM, BytesRead))
            {
              std::cerr << "Error while reading sub record DNAM of NPC_!\n";
              return false;
            }
-           tempDest.CellName = std::string(Buffer);
-           //push record
+           // push record
            Destinations.push_back(tempDest);
            hasReadDestination = false;
            previousSubRecord = cDNAM;

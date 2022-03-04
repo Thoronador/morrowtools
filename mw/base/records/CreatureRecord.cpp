@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021  Dirk Stolle
+    Copyright (C) 2011, 2012, 2013, 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -29,8 +29,8 @@ namespace MWTP
 
 CreatureRecord::CreatureRecord()
 : PreNPCRecord(),
-  recordID(""), Model(""), Name(""), SoundGenCreature(""),
-  //creature data
+  recordID(""), ModelPath(""), Name(""), SoundGenCreature(""),
+  // creature data
   CreatureType(0),
   Level(0),
   Strength(0), Intelligence(0), Willpower(0), Agility(0),
@@ -40,7 +40,7 @@ CreatureRecord::CreatureRecord()
   Combat(0), Magic(0), Stealth(0),
   AttackMin1(0), AttackMax1(0), AttackMin2(0), AttackMax2(0), AttackMin3(0), AttackMax3(0),
   Gold(0),
-  //end of creature data
+  // end of creature data
   CreatureFlag(0),
   ScriptID(""),
   Scale(1.0f)
@@ -53,12 +53,13 @@ CreatureRecord::~CreatureRecord()
 
 CreatureRecord& CreatureRecord::operator=(const CreatureRecord& source)
 {
-  if (this==&source) return *this;
+  if (this==&source)
+    return *this;
   recordID = source.recordID;
-  Model = source.Model;
+  ModelPath = source.ModelPath;
   Name = source.Name;
   SoundGenCreature = source.SoundGenCreature;
-  //creature data
+  // creature data
   CreatureType = source.CreatureType;
   Level = source.Level;
   Strength = source.Strength;
@@ -83,12 +84,12 @@ CreatureRecord& CreatureRecord::operator=(const CreatureRecord& source)
   AttackMin3 = source.AttackMin3;
   AttackMax3 = source.AttackMax3;
   Gold = source.Gold;
-  //end of creature data
+  // end of creature data
   CreatureFlag = source.CreatureFlag;
   Items = source.Items;
   NPC_Spells = source.NPC_Spells;
   AIData = source.AIData;
-  //AI packages
+  // AI packages
   removeAIPackages();
   copyAIPackages(source);
   Destinations = source.Destinations;
@@ -99,45 +100,43 @@ CreatureRecord& CreatureRecord::operator=(const CreatureRecord& source)
 
 bool CreatureRecord::equals(const CreatureRecord& other) const
 {
-  return ((recordID==other.recordID) and (Model==other.Model)
-      and (Name==other.Name) and (SoundGenCreature==other.SoundGenCreature)
-      and (CreatureType==other.CreatureType) and (Level==other.Level)
-      and (Strength==other.Strength) and (Intelligence==other.Intelligence)
-      and (Willpower==other.Willpower) and (Agility==other.Agility)
-      and (Speed==other.Speed) and (Endurance==other.Endurance)
-      and (Personality==other.Personality) and (Luck==other.Luck)
-      and (Health==other.Health) and (SpellPoints==other.SpellPoints)
-      and (Fatigue==other.Fatigue) and (Soul==other.Soul)
-      and (Combat==other.Combat) and (Magic==other.Magic)
-      and (Stealth==other.Stealth) and (AttackMin1==other.AttackMin1)
-      and (AttackMax1==other.AttackMax1) and (AttackMin2==other.AttackMin2)
-      and (AttackMax2==other.AttackMax2) and (AttackMin3==other.AttackMin3)
-      and (AttackMax3==other.AttackMax3) and (Gold==other.Gold)
-      and (CreatureFlag==other.CreatureFlag) and (Items==other.Items)
-      and (NPC_Spells==other.NPC_Spells) and (AIData==other.AIData)
-      and (hasEqualAIPackages(other)) and (Destinations==other.Destinations)
-      and (ScriptID==other.ScriptID) and (Scale==other.Scale));
+  return (recordID == other.recordID) && (ModelPath == other.ModelPath)
+      && (Name == other.Name) && (SoundGenCreature == other.SoundGenCreature)
+      && (CreatureType == other.CreatureType) && (Level == other.Level)
+      && (Strength == other.Strength) && (Intelligence == other.Intelligence)
+      && (Willpower == other.Willpower) && (Agility == other.Agility)
+      && (Speed == other.Speed) && (Endurance == other.Endurance)
+      && (Personality == other.Personality) && (Luck == other.Luck)
+      && (Health == other.Health) && (SpellPoints == other.SpellPoints)
+      && (Fatigue == other.Fatigue) && (Soul == other.Soul)
+      && (Combat == other.Combat) && (Magic == other.Magic)
+      && (Stealth == other.Stealth) && (AttackMin1 == other.AttackMin1)
+      && (AttackMax1 == other.AttackMax1) && (AttackMin2 == other.AttackMin2)
+      && (AttackMax2 == other.AttackMax2) && (AttackMin3 == other.AttackMin3)
+      && (AttackMax3 == other.AttackMax3) && (Gold == other.Gold)
+      && (CreatureFlag == other.CreatureFlag) && (Items == other.Items)
+      && (NPC_Spells == other.NPC_Spells) && (AIData == other.AIData)
+      && (hasEqualAIPackages(other)) && (Destinations == other.Destinations)
+      && (ScriptID == other.ScriptID) && (Scale == other.Scale);
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
-bool CreatureRecord::saveToStream(std::ostream& output) const
+uint32_t CreatureRecord::getWriteSize() const
 {
-  output.write((const char*) &cCREA, 4);
-  uint32_t Size;
-  Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +recordID.length()+1 /* length of ID +1 byte for NUL termination */
-        +4 /* MODL */ +4 /* 4 bytes for length */
-        +Model.length()+1 /* length of model path +1 byte for NUL termination */
-        +4 /* FNAM */ +4 /* 4 bytes for length */
-        +Name.length()+1 /* length of name +1 byte for NUL termination */
-        +4 /* NPDT */ +4 /* 4 bytes for length */ +96 /* fixed length of 96 bytes */
-        +4 /* FLAG */ +4 /* 4 bytes for length */ +4 /* fixed length of 96 bytes */
-        +Items.size()*(4 /* NPCO */ +4 /* 4 bytes for length */ +36 /* fixed length of 36 bytes */)
-        +NPC_Spells.size()*(4 /* NPCS */ +4 /* 4 bytes for length */ +32 /* fixed length of 32 bytes */);
+  uint32_t Size = 4 /* NAME */ + 4 /* 4 bytes for length */
+        + recordID.length() + 1 /* length of ID +1 byte for NUL termination */
+        + 4 /* MODL */ +4 /* 4 bytes for length */
+        + ModelPath.length() + 1 /* length of model path +1 byte for NUL */
+        + 4 /* FNAM */ + 4 /* 4 bytes for length */
+        + Name.length() + 1 /* length of name +1 byte for NUL termination */
+        + 4 /* NPDT */ + 4 /* 4 bytes for length */ + 96 /* fixed length of 96 bytes */
+        + 4 /* FLAG */ + 4 /* 4 bytes for length */ + 4 /* fixed length of 96 bytes */
+        + Items.size() * (4 /* NPCO */ + 4 /* 4 bytes for length */ + 36 /* fixed length of 36 bytes */)
+        + NPC_Spells.size()*(4 /* NPCS */ + 4 /* 4 bytes for length */ + 32 /* fixed length of 32 bytes */);
   if (!SoundGenCreature.empty())
   {
-    Size = Size + 4 /* CNAM */ +4 /* 4 bytes for length */
-          +SoundGenCreature.length()+1 /* length of ID +1 byte for NUL termination */;
+    Size += 4 /* CNAM */ + 4 /* 4 bytes for length */
+          + SoundGenCreature.length() + 1 /* length of ID +1 byte for NUL */;
   }
   if (AIData.has_value())
   {
@@ -145,8 +144,8 @@ bool CreatureRecord::saveToStream(std::ostream& output) const
   }
   if (!ScriptID.empty())
   {
-    Size = Size + 4 /* SCRI */ +4 /* 4 bytes for length */
-          +ScriptID.length()+1 /* length of ID +1 byte for NUL termination */;
+    Size += 4 /* SCRI */ + 4 /* 4 bytes for length */
+          + ScriptID.length() + 1 /* length of ID +1 byte for NUL terminator */;
   }
 
   // AI packages
@@ -160,15 +159,19 @@ bool CreatureRecord::saveToStream(std::ostream& output) const
   {
     Size += dest.getStreamSize();
   }
-  //scale?
-  if (Scale!=1.0f)
+  // scale?
+  if (Scale != 1.0f)
   {
-    Size = Size +4 /* XSCL */ +4 /* 4 bytes for length */ +4 /*fixed length of 4 bytes */;
+    Size += 4 /* XSCL */ + 4 /* 4 bytes for length */ + 4 /* fixed: 4 bytes */;
   }
-
-  output.write((const char*) &Size, 4);
-  output.write((const char*) &HeaderOne, 4);
-  output.write((const char*) &HeaderFlags, 4);
+}
+bool CreatureRecord::saveToStream(std::ostream& output) const
+{
+  output.write(reinterpret_cast<const char*>(&cCREA), 4);
+  const uint32_t Size = getWriteSize();
+  output.write(reinterpret_cast<const char*>(&Size), 4);
+  output.write(reinterpret_cast<const char*>(&HeaderOne), 4);
+  output.write(reinterpret_cast<const char*>(&HeaderFlags), 4);
 
   /*Creature:
     NAME = ID
@@ -280,11 +283,11 @@ bool CreatureRecord::saveToStream(std::ostream& output) const
 
   //write MODL
   output.write((const char*) &cMODL, 4);
-  SubLength = Model.length()+1;
+  SubLength = ModelPath.length() + 1;
   //write MODL's length
   output.write((const char*) &SubLength, 4);
   //write creature's model path
-  output.write(Model.c_str(), SubLength);
+  output.write(ModelPath.c_str(), SubLength);
 
   if (!SoundGenCreature.empty())
   {
@@ -537,7 +540,7 @@ bool CreatureRecord::loadFromStream(std::istream& in_File)
     std::cout << "Error while reading subrecord MODL of CREA!\n";
     return false;
   }
-  Model = std::string(Buffer);
+  ModelPath = std::string(Buffer);
 
   //read next subrecord
   in_File.read((char*) &SubRecName, 4);

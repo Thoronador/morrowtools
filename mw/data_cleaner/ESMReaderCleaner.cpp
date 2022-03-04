@@ -163,7 +163,7 @@ int ESMReaderCleaner::processNextRecord(std::istream& in_File)
          baseRec = new CreatureRecord;
          if (baseRec->loadFromStream(in_File))
          {
-           MeshSet.insert(baseDirMesh+static_cast<CreatureRecord*>(baseRec)->Model);
+           MeshSet.insert(baseDirMesh+static_cast<CreatureRecord*>(baseRec)->ModelPath);
            delete baseRec;
            return 1;
          }

@@ -44,7 +44,8 @@ CreatureRecord::CreatureRecord()
   CreatureFlag(0),
   ScriptID(""),
   Scale(1.0f)
-{ }
+{
+}
 
 CreatureRecord::~CreatureRecord()
 {
@@ -53,7 +54,7 @@ CreatureRecord::~CreatureRecord()
 
 CreatureRecord& CreatureRecord::operator=(const CreatureRecord& source)
 {
-  if (this==&source)
+  if (this == &source)
     return *this;
   recordID = source.recordID;
   ModelPath = source.ModelPath;
@@ -164,6 +165,7 @@ uint32_t CreatureRecord::getWriteSize() const
   {
     Size += 4 /* XSCL */ + 4 /* 4 bytes for length */ + 4 /* fixed: 4 bytes */;
   }
+  return Size;
 }
 bool CreatureRecord::saveToStream(std::ostream& output) const
 {
@@ -273,103 +275,88 @@ bool CreatureRecord::saveToStream(std::ostream& output) const
         Only present if the scale is not 1.0
   */
 
-  //write NAME
-  output.write((const char*) &cNAME, 4);
-  uint32_t SubLength = recordID.length()+1;
-  //write NAME's length
-  output.write((const char*) &SubLength, 4);
-  //write ID
+  // write ID (NAME)
+  output.write(reinterpret_cast<const char*>(&cNAME), 4);
+  uint32_t SubLength = recordID.length() + 1;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
   output.write(recordID.c_str(), SubLength);
 
-  //write MODL
-  output.write((const char*) &cMODL, 4);
+  // write model path (MODL)
+  output.write(reinterpret_cast<const char*>(&cMODL), 4);
   SubLength = ModelPath.length() + 1;
-  //write MODL's length
-  output.write((const char*) &SubLength, 4);
-  //write creature's model path
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
   output.write(ModelPath.c_str(), SubLength);
 
   if (!SoundGenCreature.empty())
   {
-    //write CNAM
-    output.write((const char*) &cCNAM, 4);
-    SubLength = SoundGenCreature.length()+1;
-    //write CNAM's length
-    output.write((const char*) &SubLength, 4);
-    //write sound gen creature's ID
+    // write sound gen creature's ID (CNAM)
+    output.write(reinterpret_cast<const char*>(&cCNAM), 4);
+    SubLength = SoundGenCreature.length() + 1;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
     output.write(SoundGenCreature.c_str(), SubLength);
   }
 
-  //write FNAM
-  output.write((const char*) &cFNAM, 4);
-  SubLength = Name.length()+1;
-  //write FNAM's length
-  output.write((const char*) &SubLength, 4);
-  //write creature's name
+  // write creature's displayed name (FNAM)
+  output.write(reinterpret_cast<const char*>(&cFNAM), 4);
+  SubLength = Name.length() + 1;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
   output.write(Name.c_str(), SubLength);
 
   if (!ScriptID.empty())
   {
-    //write SCRI
-    output.write((const char*) &cSCRI, 4);
-    SubLength = ScriptID.length()+1;
-    //write SCRI's length
-    output.write((const char*) &SubLength, 4);
-    //write creature's script ID
+    // write script ID (SCRI)
+    output.write(reinterpret_cast<const char*>(&cSCRI), 4);
+    SubLength = ScriptID.length() + 1;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
     output.write(ScriptID.c_str(), SubLength);
   }
 
-  //write NPDT
-  output.write((const char*) &cNPDT, 4);
-  SubLength = 96; //fixed length of 96 bytes
-  //write NPDT's length
-  output.write((const char*) &SubLength, 4);
-  //write creature data
-  output.write((const char*) &CreatureType, 4);
-  output.write((const char*) &Level, 4);
-  output.write((const char*) &Strength, 4);
-  output.write((const char*) &Intelligence, 4);
-  output.write((const char*) &Willpower, 4);
-  output.write((const char*) &Agility, 4);
-  output.write((const char*) &Speed, 4);
-  output.write((const char*) &Endurance, 4);
-  output.write((const char*) &Personality, 4);
-  output.write((const char*) &Luck, 4);
-  output.write((const char*) &Health, 4);
-  output.write((const char*) &SpellPoints, 4);
-  output.write((const char*) &Fatigue, 4);
-  output.write((const char*) &Soul, 4);
-  output.write((const char*) &Combat, 4);
-  output.write((const char*) &Magic, 4);
-  output.write((const char*) &Stealth, 4);
-  output.write((const char*) &AttackMin1, 4);
-  output.write((const char*) &AttackMax1, 4);
-  output.write((const char*) &AttackMin2, 4);
-  output.write((const char*) &AttackMax2, 4);
-  output.write((const char*) &AttackMin3, 4);
-  output.write((const char*) &AttackMax3, 4);
-  output.write((const char*) &Gold, 4);
+  // write creature data (NPDT)
+  output.write(reinterpret_cast<const char*>(&cNPDT), 4);
+  SubLength = 96;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
+  // write creature data
+  output.write(reinterpret_cast<const char*>(&CreatureType), 4);
+  output.write(reinterpret_cast<const char*>(&Level), 4);
+  output.write(reinterpret_cast<const char*>(&Strength), 4);
+  output.write(reinterpret_cast<const char*>(&Intelligence), 4);
+  output.write(reinterpret_cast<const char*>(&Willpower), 4);
+  output.write(reinterpret_cast<const char*>(&Agility), 4);
+  output.write(reinterpret_cast<const char*>(&Speed), 4);
+  output.write(reinterpret_cast<const char*>(&Endurance), 4);
+  output.write(reinterpret_cast<const char*>(&Personality), 4);
+  output.write(reinterpret_cast<const char*>(&Luck), 4);
+  output.write(reinterpret_cast<const char*>(&Health), 4);
+  output.write(reinterpret_cast<const char*>(&SpellPoints), 4);
+  output.write(reinterpret_cast<const char*>(&Fatigue), 4);
+  output.write(reinterpret_cast<const char*>(&Soul), 4);
+  output.write(reinterpret_cast<const char*>(&Combat), 4);
+  output.write(reinterpret_cast<const char*>(&Magic), 4);
+  output.write(reinterpret_cast<const char*>(&Stealth), 4);
+  output.write(reinterpret_cast<const char*>(&AttackMin1), 4);
+  output.write(reinterpret_cast<const char*>(&AttackMax1), 4);
+  output.write(reinterpret_cast<const char*>(&AttackMin2), 4);
+  output.write(reinterpret_cast<const char*>(&AttackMax2), 4);
+  output.write(reinterpret_cast<const char*>(&AttackMin3), 4);
+  output.write(reinterpret_cast<const char*>(&AttackMax3), 4);
+  output.write(reinterpret_cast<const char*>(&Gold), 4);
 
-  //write FLAG
-  output.write((const char*) &cFLAG, 4);
-  SubLength = 4; //fixed length of four bytes
-  //write FLAG's length
-  output.write((const char*) &SubLength, 4);
-  //write creature flag
-  output.write((const char*) &CreatureFlag, SubLength);
+  // write flag (FLAG)
+  output.write(reinterpret_cast<const char*>(&cFLAG), 4);
+  SubLength = 4;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
+  output.write(reinterpret_cast<const char*>(&CreatureFlag), SubLength);
 
-  //items and spells, AI data, AI packages, travel service destinations
+  // items and spells, AI data, AI packages, travel service destinations
   writeItemsSpellsAIDataDestinations(output);
 
-  if (Scale!=1.0f)
+  if (Scale != 1.0f)
   {
-    //write XSCL
-    output.write((const char*) &cXSCL, 4);
-    SubLength = 4; //fixed length of four bytes
-    //write XSCL's length
-    output.write((const char*) &SubLength, 4);
-    //write creature's scale
-    output.write((const char*) &Scale, SubLength);
+    // write scale (XSCL)
+    output.write(reinterpret_cast<const char*>(&cXSCL), 4);
+    SubLength = 4;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
+    output.write(reinterpret_cast<const char*>(&Scale), SubLength);
   }
 
   return output.good();
@@ -378,10 +365,10 @@ bool CreatureRecord::saveToStream(std::ostream& output) const
 
 bool CreatureRecord::loadFromStream(std::istream& in_File)
 {
-  uint32_t Size;
-  in_File.read((char*) &Size, 4);
-  in_File.read((char*) &HeaderOne, 4);
-  in_File.read((char*) &HeaderFlags, 4);
+  uint32_t Size = 0;
+  in_File.read(reinterpret_cast<char*>(&Size), 4);
+  in_File.read(reinterpret_cast<char*>(&HeaderOne), 4);
+  in_File.read(reinterpret_cast<char*>(&HeaderFlags), 4);
 
   /*Creature:
     NAME = ID
@@ -483,228 +470,152 @@ bool CreatureRecord::loadFromStream(std::istream& in_File)
         Only present if the scale is not 1.0
   */
 
-  uint32_t SubRecName;
-  uint32_t SubLength, BytesRead;
-  SubRecName = SubLength = 0;
+  uint32_t SubRecName = 0;
+  uint32_t SubLength = 0;
+  uint32_t BytesRead = 0;
 
-  //read NAME
-  in_File.read((char*) &SubRecName, 4);
-  BytesRead = 4;
-  if (SubRecName!=cNAME)
-  {
-    UnexpectedRecord(cNAME, SubRecName);
-    return false;
-  }
-  //NAME's length
-  in_File.read((char*) &SubLength, 4);
-  BytesRead += 4;
-  if (SubLength>255)
-  {
-    std::cout << "Error: subrecord NAME of CREA is longer than 255 characters.\n";
-    return false;
-  }
-  //read creature ID
+  // read creature ID (NAME)
   char Buffer[256];
-  memset(Buffer, '\0', 256);
-  in_File.read(Buffer, SubLength);
-  BytesRead += SubLength;
-  if (!in_File.good())
+  if (!loadString256WithHeader(in_File, recordID, Buffer, cNAME, BytesRead))
   {
-    std::cout << "Error while reading subrecord NAME of CREA!\n";
+    std::cerr << "Error while reading sub record NAME of CREA!\n";
     return false;
   }
-  recordID = std::string(Buffer);
 
-  //read MODL
+  // read model path (MODL)
+  if (!loadString256WithHeader(in_File, ModelPath, Buffer, cMODL, BytesRead))
+  {
+    std::cerr << "Error while reading sub record MODL of CREA!\n";
+    return false;
+  }
+
+  // read next sub record
   in_File.read((char*) &SubRecName, 4);
   BytesRead += 4;
-  if (SubRecName!=cMODL)
+  if (SubRecName == cCNAM)
   {
-    UnexpectedRecord(cMODL, SubRecName);
-    return false;
-  }
-  //MODL's length
-  in_File.read((char*) &SubLength, 4);
-  BytesRead += 4;
-  if (SubLength>255)
-  {
-    std::cout << "Error: subrecord MODL of CREA is longer than 255 characters.\n";
-    return false;
-  }
-  //read model path
-  memset(Buffer, '\0', 256);
-  in_File.read(Buffer, SubLength);
-  BytesRead += SubLength;
-  if (!in_File.good())
-  {
-    std::cout << "Error while reading subrecord MODL of CREA!\n";
-    return false;
-  }
-  ModelPath = std::string(Buffer);
-
-  //read next subrecord
-  in_File.read((char*) &SubRecName, 4);
-  BytesRead += 4;
-  if (SubRecName==cCNAM)
-  {
-    //CNAM's length
-    in_File.read((char*) &SubLength, 4);
-    BytesRead += 4;
-    if (SubLength>255)
+    // read creature's sound gen creature ID (CNAM)
+    if (!loadString256(in_File, SoundGenCreature, Buffer, cCNAM, BytesRead))
     {
-      std::cout << "Error: subrecord CNAM of CREA is longer than 255 characters.\n";
+      std::cerr << "Error while reading sub record CNAM of CREA!\n";
       return false;
     }
-    //read creature's sound gen creature ID
-    memset(Buffer, '\0', 256);
-    in_File.read(Buffer, SubLength);
-    BytesRead += SubLength;
-    if (!in_File.good())
-    {
-      std::cout << "Error while reading subrecord CNAM of CREA!\n";
-      return false;
-    }
-    SoundGenCreature = std::string(Buffer);
 
-    //read FNAM
-    in_File.read((char*) &SubRecName, 4);
+    // read FNAM
+    in_File.read(reinterpret_cast<char*>(&SubRecName), 4);
     BytesRead += 4;
-  }//if SoundGenCreature subrecord
+  }
   else
   {
     SoundGenCreature.clear();
   }
 
-  //read FNAM
-  //was already read above
-  if (SubRecName!=cFNAM)
+  // read FNAM
+  // header was already read above
+  if (SubRecName != cFNAM)
   {
     UnexpectedRecord(cFNAM, SubRecName);
     return false;
   }
-  //FNAM's length
-  in_File.read((char*) &SubLength, 4);
-  BytesRead += 4;
-  if (SubLength>255)
+  // read creature's name (FNAM)
+  if (!loadString256(in_File, Name, Buffer, cFNAM, BytesRead))
   {
-    std::cout << "Error: subrecord FNAM of CREA is longer than 255 characters.\n";
+    std::cerr << "Error while reading sub record FNAM of CREA!\n";
     return false;
   }
-  //read creature's name
-  memset(Buffer, '\0', 256);
-  in_File.read(Buffer, SubLength);
-  BytesRead += SubLength;
-  if (!in_File.good())
-  {
-    std::cout << "Error while reading subrecord FNAM of CREA!\n";
-    return false;
-  }
-  Name = std::string(Buffer);
 
-  //read next subrecord
-  in_File.read((char*) &SubRecName, 4);
+  // read next sub record
+  in_File.read(reinterpret_cast<char*>(&SubRecName), 4);
   BytesRead += 4;
-  if (SubRecName==cSCRI)
+  if (SubRecName == cSCRI)
   {
-    //SCRI's length
-    in_File.read((char*) &SubLength, 4);
-    BytesRead += 4;
-    if (SubLength>255)
+    // read creature's script ID (SCRI)
+    if (!loadString256(in_File, ScriptID, Buffer, cSCRI, BytesRead))
     {
-      std::cout << "Error: subrecord SCRI of CREA is longer than 255 characters.\n";
+      std::cerr << "Error while reading sub record SCRI of CREA!\n";
       return false;
     }
-    //read creature's script ID
-    memset(Buffer, '\0', 256);
-    in_File.read(Buffer, SubLength);
-    BytesRead += SubLength;
-    if (!in_File.good())
-    {
-      std::cout << "Error while reading subrecord SCRI of CREA!\n";
-      return false;
-    }
-    ScriptID = std::string(Buffer);
 
-    //read NPDT
-    in_File.read((char*) &SubRecName, 4);
+    // read NPDT
+    in_File.read(reinterpret_cast<char*>(&SubRecName), 4);
     BytesRead += 4;
-  }//if Script subrecord
+  }
   else
   {
     ScriptID.clear();
   }
 
-  //read NPDT
-  //was already read above
-  if (SubRecName!=cNPDT)
+  // read NPDT
+  // was already read above
+  if (SubRecName != cNPDT)
   {
     UnexpectedRecord(cNPDT, SubRecName);
     return false;
   }
-  //NPDT's length
-  in_File.read((char*) &SubLength, 4);
+  // NPDT's length
+  in_File.read(reinterpret_cast<char*>(&SubLength), 4);
   BytesRead += 4;
-  if (SubLength!=96)
+  if (SubLength != 96)
   {
-    std::cout << "Error: Subrecord NPDT of CREA has invalid length ("<<SubLength
-              << "bytes), should be 96 bytes.\n";
+    std::cerr << "Error: Sub record NPDT of CREA has invalid length ("
+              << SubLength << "bytes), should be 96 bytes.\n";
     return false;
   }
-  //read creature data
-  in_File.read((char*) &CreatureType, 4);
-  in_File.read((char*) &Level, 4);
-  in_File.read((char*) &Strength, 4);
-  in_File.read((char*) &Intelligence, 4);
-  in_File.read((char*) &Willpower, 4);
-  in_File.read((char*) &Agility, 4);
-  in_File.read((char*) &Speed, 4);
-  in_File.read((char*) &Endurance, 4);
-  in_File.read((char*) &Personality, 4);
-  in_File.read((char*) &Luck, 4);
-  in_File.read((char*) &Health, 4);
-  in_File.read((char*) &SpellPoints, 4);
-  in_File.read((char*) &Fatigue, 4);
-  in_File.read((char*) &Soul, 4);
-  in_File.read((char*) &Combat, 4);
-  in_File.read((char*) &Magic, 4);
-  in_File.read((char*) &Stealth, 4);
-  in_File.read((char*) &AttackMin1, 4);
-  in_File.read((char*) &AttackMax1, 4);
-  in_File.read((char*) &AttackMin2, 4);
-  in_File.read((char*) &AttackMax2, 4);
-  in_File.read((char*) &AttackMin3, 4);
-  in_File.read((char*) &AttackMax3, 4);
-  in_File.read((char*) &Gold, 4);
+  // read creature data
+  in_File.read(reinterpret_cast<char*>(&CreatureType), 4);
+  in_File.read(reinterpret_cast<char*>(&Level), 4);
+  in_File.read(reinterpret_cast<char*>(&Strength), 4);
+  in_File.read(reinterpret_cast<char*>(&Intelligence), 4);
+  in_File.read(reinterpret_cast<char*>(&Willpower), 4);
+  in_File.read(reinterpret_cast<char*>(&Agility), 4);
+  in_File.read(reinterpret_cast<char*>(&Speed), 4);
+  in_File.read(reinterpret_cast<char*>(&Endurance), 4);
+  in_File.read(reinterpret_cast<char*>(&Personality), 4);
+  in_File.read(reinterpret_cast<char*>(&Luck), 4);
+  in_File.read(reinterpret_cast<char*>(&Health), 4);
+  in_File.read(reinterpret_cast<char*>(&SpellPoints), 4);
+  in_File.read(reinterpret_cast<char*>(&Fatigue), 4);
+  in_File.read(reinterpret_cast<char*>(&Soul), 4);
+  in_File.read(reinterpret_cast<char*>(&Combat), 4);
+  in_File.read(reinterpret_cast<char*>(&Magic), 4);
+  in_File.read(reinterpret_cast<char*>(&Stealth), 4);
+  in_File.read(reinterpret_cast<char*>(&AttackMin1), 4);
+  in_File.read(reinterpret_cast<char*>(&AttackMax1), 4);
+  in_File.read(reinterpret_cast<char*>(&AttackMin2), 4);
+  in_File.read(reinterpret_cast<char*>(&AttackMax2), 4);
+  in_File.read(reinterpret_cast<char*>(&AttackMin3), 4);
+  in_File.read(reinterpret_cast<char*>(&AttackMax3), 4);
+  in_File.read(reinterpret_cast<char*>(&Gold), 4);
   BytesRead += 96;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord NPDT of CREA!\n";
+    std::cerr << "Error while reading sub record NPDT of CREA!\n";
     return false;
   }
 
-  //read FLAG
-  in_File.read((char*) &SubRecName, 4);
+  // read FLAG
+  in_File.read(reinterpret_cast<char*>(&SubRecName), 4);
   BytesRead += 4;
-  if (SubRecName!=cFLAG)
+  if (SubRecName != cFLAG)
   {
     UnexpectedRecord(cFLAG, SubRecName);
     return false;
   }
   //FLAG's length
-  in_File.read((char*) &SubLength, 4);
+  in_File.read(reinterpret_cast<char*>(&SubLength), 4);
   BytesRead += 4;
-  if (SubLength!=4)
+  if (SubLength != 4)
   {
-    std::cout << "Error: Subrecord FLAG of CREA has invalid length ("<<SubLength
-              << "bytes), should be four bytes.\n";
+    std::cerr << "Error: Sub record FLAG of CREA has invalid length ("
+              << SubLength << "bytes), should be four bytes.\n";
     return false;
   }
-  //read creature flag
-  in_File.read((char*) &CreatureFlag, 4);
+  // read creature flag
+  in_File.read(reinterpret_cast<char*>(&CreatureFlag), 4);
   BytesRead += 4;
   if (!in_File.good())
   {
-    std::cout << "Error while reading subrecord FLAG of CREA!\n";
+    std::cerr << "Error while reading sub record FLAG of CREA!\n";
     return false;
   }
 
@@ -714,10 +625,10 @@ bool CreatureRecord::loadFromStream(std::istream& in_File)
   AIData.reset();
   removeAIPackages();
   Destinations.clear();
-  NPC_AIActivate* activatePointer = NULL;
-  NPC_AIEscortFollow* escortFollowPointer = NULL;
-  NPC_AITravel* travelPointer = NULL;
-  NPC_AIWander* wanderPointer = NULL;
+  NPC_AIActivate* activatePointer = nullptr;
+  NPC_AIEscortFollow* escortFollowPointer = nullptr;
+  NPC_AITravel* travelPointer = nullptr;
+  NPC_AIWander* wanderPointer = nullptr;
   Scale = 1.0f;
   bool hasXSCL = false;
   bool hasReadDestination = false;
@@ -725,8 +636,8 @@ bool CreatureRecord::loadFromStream(std::istream& in_File)
 
   while (BytesRead < Size)
   {
-    //read next subrecord
-    in_File.read((char*) &SubRecName, 4);
+    // read next sub record
+    in_File.read(reinterpret_cast<char*>(&SubRecName), 4);
     BytesRead += 4;
     switch(SubRecName)
     {
@@ -738,7 +649,7 @@ bool CreatureRecord::loadFromStream(std::istream& in_File)
            }
            // read AI data (AIDT)
            AIData = NPC_AIData();
-           if (AIData.value().loadFromStream(in_File, BytesRead))
+           if (!AIData.value().loadFromStream(in_File, BytesRead))
            {
              std::cerr << "Error while reading sub record AIDT of CREA!\n";
              return false;
@@ -821,54 +732,38 @@ bool CreatureRecord::loadFromStream(std::istream& in_File)
            break;
       case cNPCS:
            //NPCS's length
-           in_File.read((char*) &SubLength, 4);
+           in_File.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
-           if (SubLength!=32)
+           if (SubLength != 32)
            {
-             std::cout << "Error: Subrecord NPCS of CREA has invalid length ("
-                       << SubLength<<" bytes). Should be 32 bytes.\n";
+             std::cerr << "Error: Sub record NPCS of CREA has invalid length ("
+                       << SubLength << " bytes). Should be 32 bytes.\n";
              return false;
            }
-           //read spell ID
+           // read spell ID
            memset(Buffer, '\0', 33);
            in_File.read(Buffer, 32);
            BytesRead += 32;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord NPCS of CREA!\n";
+             std::cerr << "Error while reading sub record NPCS of CREA!\n";
              return false;
            }
            NPC_Spells.push_back(std::string(Buffer));
            previousSubRecord = cNPCS;
            break;
       case cCNDT:
-           //CNDT's length
-           in_File.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength>255)
+           if ((previousSubRecord != cAI_E) && (previousSubRecord != cAI_F))
            {
-             std::cout << "Error: Subrecord CNDT of CREA is longer than 255 characters.\n";
-             return false;
-           }
-           //read escort/follow cell name
-           memset(Buffer, '\0', 256);
-           in_File.read(Buffer, SubLength);
-           BytesRead += SubLength;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord CNDT of CREA!\n";
-             return false;
-           }
-           if ((previousSubRecord==cAI_E) or (previousSubRecord==cAI_F))
-           {
-             //last record was AI escort or follow, so set it's cell name
-             (static_cast<NPC_AIEscortFollow*>(AIPackages.back()))->CellName = std::string(Buffer);
-           }
-           else
-           {
-             std::cout << "Error: Subrecord before CNDT of CREA was neither "
-                       << "AI_E nor AI_F, but \""<<IntTo4Char(previousSubRecord)
+             std::cerr << "Error: Sub record before CNDT of CREA was neither "
+                       << "AI_E nor AI_F, but \"" << IntTo4Char(previousSubRecord)
                        << "\".\n";
+             return false;
+           }
+           // read escort/follow cell name (CNDT)
+           if (!loadString256(in_File, static_cast<NPC_AIEscortFollow*>(AIPackages.back())->CellName, Buffer, cCNDT, BytesRead))
+           {
+             std::cerr << "Error while reading sub record CNDT of CREA!\n";
              return false;
            }
            previousSubRecord = cCNDT;
@@ -880,25 +775,25 @@ bool CreatureRecord::loadFromStream(std::istream& in_File)
              hasReadDestination = false;
            }
            //DODT's length
-           in_File.read((char*) &SubLength, 4);
+           in_File.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
-           if (SubLength!=24)
+           if (SubLength != 24)
            {
-             std::cout << "Error: Subrecord DODT of CREA has invalid length ("
-                       << SubLength<< " bytes). Should be 24 bytes.\n";
+             std::cerr << "Error: Sub record DODT of CREA has invalid length ("
+                       << SubLength << " bytes). Should be 24 bytes.\n";
              return false;
            }
            //read destination data
-           in_File.read((char*) &(tempDest.XPos), 4);
-           in_File.read((char*) &(tempDest.YPos), 4);
-           in_File.read((char*) &(tempDest.ZPos), 4);
-           in_File.read((char*) &(tempDest.XRot), 4);
-           in_File.read((char*) &(tempDest.YRot), 4);
-           in_File.read((char*) &(tempDest.ZRot), 4);
+           in_File.read(reinterpret_cast<char*>(&tempDest.XPos), 4);
+           in_File.read(reinterpret_cast<char*>(&tempDest.YPos), 4);
+           in_File.read(reinterpret_cast<char*>(&tempDest.ZPos), 4);
+           in_File.read(reinterpret_cast<char*>(&tempDest.XRot), 4);
+           in_File.read(reinterpret_cast<char*>(&tempDest.YRot), 4);
+           in_File.read(reinterpret_cast<char*>(&tempDest.ZRot), 4);
            BytesRead += 24;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord DODT of CREA!\n";
+             std::cerr << "Error while reading sub record DODT of CREA!\n";
              return false;
            }
            tempDest.CellName.clear();
@@ -908,29 +803,17 @@ bool CreatureRecord::loadFromStream(std::istream& in_File)
       case cDNAM:
            if (!hasReadDestination)
            {
-             std::cout << "Error while reading CREA record: DNAM subrecord "
-                       << "without previous DODT subrecord.\n";
+             std::cerr << "Error while reading CREA record: DNAM sub record "
+                       << "without previous DODT sub record.\n";
              return false;
            }
-           //DNAM's length
-           in_File.read((char*) &SubLength, 4);
-           BytesRead += 4;
-           if (SubLength>255)
+           //read destination data cell name (DNAM)
+           if (!loadString256(in_File, tempDest.CellName, Buffer, cDNAM, BytesRead))
            {
-             std::cout << "Error: Subrecord DNAM of CREA is longer than 255 characters.\n";
+             std::cout << "Error while reading sub record DNAM of CREA!\n";
              return false;
            }
-           //read destination data
-           memset(Buffer, '\0', 256);
-           in_File.read(Buffer, SubLength);
-           BytesRead += SubLength;
-           if (!in_File.good())
-           {
-             std::cout << "Error while reading subrecord DNAM of CREA!\n";
-             return false;
-           }
-           tempDest.CellName = std::string(Buffer);
-           //push record
+           // push record
            Destinations.push_back(tempDest);
            hasReadDestination = false;
            previousSubRecord = cDNAM;
@@ -938,37 +821,38 @@ bool CreatureRecord::loadFromStream(std::istream& in_File)
       case cXSCL:
            if (hasXSCL)
            {
-             std::cout << "Error: record CREA seems to have two XSCL subrecords.\n";
+             std::cerr << "Error: Record CREA seems to have two XSCL sub records.\n";
              return false;
            }
-           //XSCL's length
-           in_File.read((char*) &SubLength, 4);
+           // XSCL's length
+           in_File.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
-           if (SubLength!=4)
+           if (SubLength != 4)
            {
-             std::cout << "Error: Subrecord XSCL of CREA has invalid length ("
-                       << SubLength<<" bytes). Should be four bytes.\n";
+             std::cerr << "Error: Sub record XSCL of CREA has invalid length ("
+                       << SubLength << " bytes). Should be four bytes.\n";
              return false;
            }
-           //read scale
-           in_File.read((char*) &Scale, 4);
+           // read scale
+           in_File.read(reinterpret_cast<char*>(&Scale), 4);
            BytesRead += 4;
            if (!in_File.good())
            {
-             std::cout << "Error while reading subrecord XSCL of CREA!\n";
+             std::cerr << "Error while reading sub record XSCL of CREA!\n";
              return false;
            }
            hasXSCL = true;
            previousSubRecord = cXSCL;
            break;
       default:
-           std::cout << "Unexpected record name \""<<IntTo4Char(SubRecName)
+           std::cerr << "Unexpected record name \"" << IntTo4Char(SubRecName)
                      << "\" found. Expected AIDT, AI_A, AI_E, AI_F, AI_T, AI_W,"
                      << " CNDT, DODT, DNAM, NPCO, NPCS, or XSCL.\n";
            return false;
-    }//swi
-  }//while
-  //check for destination record
+    }
+  }
+
+  // check for destination record
   if (hasReadDestination)
   {
     Destinations.push_back(tempDest);
@@ -976,6 +860,6 @@ bool CreatureRecord::loadFromStream(std::istream& in_File)
   }
 
   return in_File.good();
-}//function CreatureRecord::loadFromStream
+}
 
-} //namespace
+} // namespace

@@ -189,26 +189,8 @@ bool PreNPCRecord::writeItemsSpellsAIDataDestinations(std::ostream& output) cons
   // travel service destinations
   for (const auto& destination: Destinations)
   {
-    // write DODT
-    output.write(reinterpret_cast<const char*>(&cDODT), 4);
-    uint32_t SubLength = 24;
-    output.write(reinterpret_cast<const char*>(&SubLength), 4);
-    // write destination data
-    output.write(reinterpret_cast<const char*>(&destination.XPos), 4);
-    output.write(reinterpret_cast<const char*>(&destination.YPos), 4);
-    output.write(reinterpret_cast<const char*>(&destination.ZPos), 4);
-    output.write(reinterpret_cast<const char*>(&destination.XRot), 4);
-    output.write(reinterpret_cast<const char*>(&destination.YRot), 4);
-    output.write(reinterpret_cast<const char*>(&destination.ZRot), 4);
-    // see if there's a cell name, too
-    if (!destination.CellName.empty())
-    {
-      // write destination cell name (DNAM)
-      output.write(reinterpret_cast<const char*>(&cDNAM), 4);
-      SubLength = destination.CellName.length() + 1; // length of cell name +1 byte for NUL
-      output.write(reinterpret_cast<const char*>(&SubLength), 4);
-      output.write(destination.CellName.c_str(), SubLength);
-    }
+    if (!destination.saveToStream(output))
+      return false;
   }
 
   // AI packages

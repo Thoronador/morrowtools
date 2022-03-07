@@ -799,6 +799,143 @@ TEST_CASE("MWTP::CreatureRecord")
       REQUIRE( streamOut.str() == data );
     }
 
+    SECTION("default: load record with travel destinations")
+    {
+      const auto data = "CREA\\\x01\0\0\0\0\0\0\0\0\0\0NAME\x05\0\0\0alit\0MODL\x10\0\0\0r\\DuskyAlit.NIF\0FNAM\x05\0\0\0Alit\0NPDT`\0\0\0\0\0\0\0\x03\0\0\0\x32\0\0\0\x32\0\0\0(\0\0\0\x32\0\0\0*\0\0\0\x32\0\0\0\x32\0\0\0\x32\0\0\0\x1E\0\0\0K\0\0\0\x90\x01\0\0\x14\0\0\0\x1E\0\0\0P\0\0\0\x14\0\0\0\x01\0\0\0\x09\0\0\0\x01\0\0\0\x09\0\0\0\x01\0\0\0\x09\0\0\0\0\0\0\0FLAG\x04\0\0\0H\0\0\0NPCO$\0\0\0\x01\0\0\0random_alit_hide\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0AIDT\x0C\0\0\0\0\0Z\x1E\0\0\0\0\0\0\xA0\0DODT\x18\0\0\0\0\0\xE0\xC3\0\0\x80\x43\0\0\x18\x44\0\0\0\0\0\0\0\0\0\0\0\0DNAM\x0A\0\0\0Abernanit\0DODT\x18\0\0\0\xD5z\x88\x44\x06\xE8\x8D\xC5\xB5\x38\x08\xC4\0\0\0\0\0\0\0\0\0\0\0\0DNAM\x06\0\0\0Yakin\0AI_W\x0E\0\0\0\xE8\x03\x05\0\0\x1E\x32\x1E\0\0\0\0\0\x01"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip CREA, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      CreatureRecord record;
+      REQUIRE( record.loadFromStream(stream) );
+      // Check data.
+      // -- header
+      REQUIRE( record.getHeaderOne() == 0 );
+      REQUIRE( record.getHeaderFlags() == 0 );
+      // -- record data
+      // stuff from CreatureRecord
+      REQUIRE( record.recordID == "alit" );
+      REQUIRE( record.ModelPath == "r\\DuskyAlit.NIF" );
+      REQUIRE( record.Name == "Alit" );
+      REQUIRE( record.SoundGenCreature.empty() );
+      REQUIRE( record.CreatureType == 0 );
+      REQUIRE( record.Level == 3 );
+      REQUIRE( record.Strength == 50 );
+      REQUIRE( record.Intelligence == 50 );
+      // Skip some stuff ...
+      REQUIRE( record.AttackMin1 == 1 );
+      REQUIRE( record.AttackMax1 == 9 );
+      REQUIRE( record.AttackMin2 == 1 );
+      REQUIRE( record.AttackMax2 == 9 );
+      REQUIRE( record.AttackMin3 == 1 );
+      REQUIRE( record.AttackMax3 == 9 );
+      REQUIRE( record.Gold == 0 );
+      REQUIRE( record.CreatureFlag == 0x00000048 );
+      REQUIRE( record.ScriptID.empty() );
+      REQUIRE( record.Scale == 1.0f );
+      // stuff from PreNPCRecord
+      REQUIRE( record.Items.size() == 1 );
+      REQUIRE( record.Items[0].Count == 1 );
+      REQUIRE( record.Items[0].Item == "random_alit_hide" );
+      REQUIRE( record.NPC_Spells.empty() );
+      // AIData and AI packagschecks are skipped.
+      REQUIRE( record.Destinations.size() == 2 );
+
+      REQUIRE( record.Destinations[0].XPos == -448.0f );
+      REQUIRE( record.Destinations[0].YPos == 256.0f );
+      REQUIRE( record.Destinations[0].ZPos == 608.0f );
+      REQUIRE( record.Destinations[0].XRot == 0.0f );
+      REQUIRE( record.Destinations[0].YRot == 0.0f );
+      REQUIRE( record.Destinations[0].ZRot == 0.0f );
+      REQUIRE( record.Destinations[0].CellName == "Abernanit" );
+
+      REQUIRE( record.Destinations[1].XPos == 1091.8385009766f );
+      REQUIRE( record.Destinations[1].YPos == -4541.0029296875f );
+      REQUIRE( record.Destinations[1].ZPos == -544.88604736328f );
+      REQUIRE( record.Destinations[1].XRot == 0.0f );
+      REQUIRE( record.Destinations[1].YRot == 0.0f );
+      REQUIRE( record.Destinations[1].ZRot == 0.0f );
+      REQUIRE( record.Destinations[1].CellName == "Yakin" );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( record.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
+    }
+
+    SECTION("default: load record with activate package and scale")
+    {
+      const auto data = "CREA\xA6\x01\0\0\0\0\0\0\0\0\0\0NAME\x0D\0\0\0bonelord_scl\0MODL\x0F\0\0\0r\\BoneLord.NIF\0FNAM\x0D\0\0\0Skelettf\xFCrst\0NPDT`\0\0\0\x02\0\0\0\x08\0\0\0d\0\0\0d\0\0\0P\0\0\0\x32\0\0\0(\0\0\0\x32\0\0\0\x32\0\0\0\x32\0\0\0Z\0\0\0\x90\x01\0\0\xF4\x01\0\0d\0\0\0<\0\0\0Z\0\0\0\x14\0\0\0\x08\0\0\0\x18\0\0\0\x08\0\0\0\x18\0\0\0\x08\0\0\0\x18\0\0\0\0\0\0\0FLAG\x04\0\0\0H\x04\0\0XSCL\x04\0\0\0\x01\0\xC0?NPCO$\0\0\0\x01\0\0\0random_loot_bonewalker_greater\0\0NPCO$\0\0\0\x0A\0\0\0random_bonemeal\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0NPCS \0\0\0grave curse: speed\0\0\0\0\0\0\0\0\0\0\0\0\0\0NPCS \0\0\0immune to normal weapons\0\0\0\0\0\0\0\0AIDT\x0C\0\0\0\0\0d\0\08\x08\xC4\0\0\0\0AI_A!\0\0\0alit\0\xF5\x19\0\x0C\0\0\0\xA8q\x9F\x09&}O\0\xA0\xF5\x19\0\x0C\0\0\0\x0C\0\0\0\x01"sv;
+      const auto data_clean = "CREA\xA6\x01\0\0\0\0\0\0\0\0\0\0NAME\x0D\0\0\0bonelord_scl\0MODL\x0F\0\0\0r\\\x42oneLord.NIF\0FNAM\x0D\0\0\0Skelettf\xFCrst\0NPDT`\0\0\0\x02\0\0\0\x08\0\0\0d\0\0\0d\0\0\0P\0\0\0\x32\0\0\0(\0\0\0\x32\0\0\0\x32\0\0\0\x32\0\0\0Z\0\0\0\x90\x01\0\0\xF4\x01\0\0d\0\0\0<\0\0\0Z\0\0\0\x14\0\0\0\x08\0\0\0\x18\0\0\0\x08\0\0\0\x18\0\0\0\x08\0\0\0\x18\0\0\0\0\0\0\0FLAG\x04\0\0\0H\x04\0\0XSCL\x04\0\0\0\x01\0\xC0?NPCO$\0\0\0\x01\0\0\0random_loot_bonewalker_greater\0\0NPCO$\0\0\0\x0A\0\0\0random_bonemeal\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0NPCS \0\0\0grave curse: speed\0\0\0\0\0\0\0\0\0\0\0\0\0\0NPCS \0\0\0immune to normal weapons\0\0\0\0\0\0\0\0AIDT\x0C\0\0\0\0\0d\0\08\x08\xC4\0\0\0\0AI_A!\0\0\0alit\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip CREA, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      CreatureRecord record;
+      REQUIRE( record.loadFromStream(stream) );
+      // Check data.
+      // -- header
+      REQUIRE( record.getHeaderOne() == 0 );
+      REQUIRE( record.getHeaderFlags() == 0 );
+      // -- record data
+      // stuff from CreatureRecord
+      REQUIRE( record.recordID == "bonelord_scl" );
+      REQUIRE( record.ModelPath == "r\\BoneLord.NIF" );
+      REQUIRE( record.Name == "Skelettf\xFCrst" );
+      REQUIRE( record.SoundGenCreature.empty() );
+      REQUIRE( record.CreatureType == 2 );
+      REQUIRE( record.Level == 8 );
+      REQUIRE( record.Strength == 100 );
+      REQUIRE( record.Intelligence == 100 );
+      REQUIRE( record.Willpower == 80 );
+      REQUIRE( record.Agility == 50 );
+      REQUIRE( record.Speed == 40 );
+      // Skip some stuff ...
+      REQUIRE( record.CreatureFlag == 0x00000448 );
+      REQUIRE( record.ScriptID.empty() );
+      REQUIRE( record.Scale == 1.5000001192093f );
+      // stuff from PreNPCRecord
+      REQUIRE( record.Items.size() == 2 );
+      REQUIRE( record.Items[0].Count == 1 );
+      REQUIRE( record.Items[0].Item == "random_loot_bonewalker_greater" );
+      REQUIRE( record.Items[1].Count == 10 );
+      REQUIRE( record.Items[1].Item == "random_bonemeal" );
+      REQUIRE( record.NPC_Spells.size() == 2 );
+      REQUIRE( record.NPC_Spells[0] == "grave curse: speed" );
+      REQUIRE( record.NPC_Spells[1] == "immune to normal weapons" );
+      REQUIRE( record.AIData.has_value() );
+      REQUIRE( record.AIData.value().Hello == 0 );
+      REQUIRE( record.AIData.value().Unknown1 == 0 );
+      REQUIRE( record.AIData.value().Fight == 100 );
+      REQUIRE( record.AIData.value().Flee == 0 );
+      REQUIRE( record.AIData.value().Alarm == 0 );
+      REQUIRE( record.AIData.value().Unknown2 == 0x38 );
+      REQUIRE( record.AIData.value().Unknown3 == 0x08 );
+      REQUIRE( record.AIData.value().Unknown4 == 0xC4 );
+      REQUIRE( record.AIData.value().Flags == 0x00000000 );
+      REQUIRE( record.AIPackages.size() == 1 );
+      REQUIRE( record.AIPackages[0]->getPackageType() == PackageType::ptActivate );
+      const auto package_one = static_cast<NPC_AIActivate*>(record.AIPackages[0]);
+      REQUIRE( package_one->TargetID == "alit" );
+      REQUIRE( package_one->Reset == 1 );
+      REQUIRE( record.Destinations.empty() );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( record.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data_clean );
+    }
+
     SECTION("corrupt data: stream ends before header can be read")
     {
       const auto data = "CREA\xF7\0\0\0\0\0\0"sv;
@@ -1145,6 +1282,112 @@ TEST_CASE("MWTP::CreatureRecord")
       REQUIRE_FALSE( record.loadFromStream(stream) );
     }
 
+    SECTION("corrupt data: length of DODT is not 24")
+    {
+      {
+        const auto data = "CREA\x5B\x01\0\0\0\0\0\0\0\0\0\0NAME\x05\0\0\0alit\0MODL\x10\0\0\0r\\DuskyAlit.NIF\0FNAM\x05\0\0\0Alit\0NPDT`\0\0\0\0\0\0\0\x03\0\0\0\x32\0\0\0\x32\0\0\0(\0\0\0\x32\0\0\0*\0\0\0\x32\0\0\0\x32\0\0\0\x32\0\0\0\x1E\0\0\0K\0\0\0\x90\x01\0\0\x14\0\0\0\x1E\0\0\0P\0\0\0\x14\0\0\0\x01\0\0\0\x09\0\0\0\x01\0\0\0\x09\0\0\0\x01\0\0\0\x09\0\0\0\0\0\0\0FLAG\x04\0\0\0H\0\0\0NPCO$\0\0\0\x01\0\0\0random_alit_hide\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0AIDT\x0C\0\0\0\0\0Z\x1E\0\0\0\0\0\0\xA0\0DODT\x17\0\0\0\0\0\xE0\xC3\0\0\x80\x43\0\0\x18\x44\0\0\0\0\0\0\0\0\0\0\0DNAM\x0A\0\0\0Abernanit\0DODT\x18\0\0\0\xD5z\x88\x44\x06\xE8\x8D\xC5\xB5\x38\x08\xC4\0\0\0\0\0\0\0\0\0\0\0\0DNAM\x06\0\0\0Yakin\0AI_W\x0E\0\0\0\xE8\x03\x05\0\0\x1E\x32\x1E\0\0\0\0\0\x01"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // Skip CREA, because header is handled before loadFromStream.
+        stream.seekg(4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        CreatureRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream) );
+      }
+
+      {
+        const auto data = "CREA\x5D\x01\0\0\0\0\0\0\0\0\0\0NAME\x05\0\0\0alit\0MODL\x10\0\0\0r\\DuskyAlit.NIF\0FNAM\x05\0\0\0Alit\0NPDT`\0\0\0\0\0\0\0\x03\0\0\0\x32\0\0\0\x32\0\0\0(\0\0\0\x32\0\0\0*\0\0\0\x32\0\0\0\x32\0\0\0\x32\0\0\0\x1E\0\0\0K\0\0\0\x90\x01\0\0\x14\0\0\0\x1E\0\0\0P\0\0\0\x14\0\0\0\x01\0\0\0\x09\0\0\0\x01\0\0\0\x09\0\0\0\x01\0\0\0\x09\0\0\0\0\0\0\0FLAG\x04\0\0\0H\0\0\0NPCO$\0\0\0\x01\0\0\0random_alit_hide\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0AIDT\x0C\0\0\0\0\0Z\x1E\0\0\0\0\0\0\xA0\0DODT\x19\0\0\0\0\0\xE0\xC3\0\0\x80\x43\0\0\x18\x44\0\0\0\0\0\0\0\0\0\0\0\0\0DNAM\x0A\0\0\0Abernanit\0DODT\x18\0\0\0\xD5z\x88\x44\x06\xE8\x8D\xC5\xB5\x38\x08\xC4\0\0\0\0\0\0\0\0\0\0\0\0DNAM\x06\0\0\0Yakin\0AI_W\x0E\0\0\0\xE8\x03\x05\0\0\x1E\x32\x1E\0\0\0\0\0\x01"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // Skip CREA, because header is handled before loadFromStream.
+        stream.seekg(4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        CreatureRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream) );
+      }
+    }
+
+    SECTION("corrupt data: stream ends before DODT can be read")
+    {
+      const auto data = "CREA\\\x01\0\0\0\0\0\0\0\0\0\0NAME\x05\0\0\0alit\0MODL\x10\0\0\0r\\DuskyAlit.NIF\0FNAM\x05\0\0\0Alit\0NPDT`\0\0\0\0\0\0\0\x03\0\0\0\x32\0\0\0\x32\0\0\0(\0\0\0\x32\0\0\0*\0\0\0\x32\0\0\0\x32\0\0\0\x32\0\0\0\x1E\0\0\0K\0\0\0\x90\x01\0\0\x14\0\0\0\x1E\0\0\0P\0\0\0\x14\0\0\0\x01\0\0\0\x09\0\0\0\x01\0\0\0\x09\0\0\0\x01\0\0\0\x09\0\0\0\0\0\0\0FLAG\x04\0\0\0H\0\0\0NPCO$\0\0\0\x01\0\0\0random_alit_hide\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0AIDT\x0C\0\0\0\0\0Z\x1E\0\0\0\0\0\0\xA0\0DODT\x18\0\0\0\0\0\xE0\xC3"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip CREA, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      CreatureRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: no DNAM")
+    {
+      const auto data = "CREA\\\x01\0\0\0\0\0\0\0\0\0\0NAME\x05\0\0\0alit\0MODL\x10\0\0\0r\\DuskyAlit.NIF\0FNAM\x05\0\0\0Alit\0NPDT`\0\0\0\0\0\0\0\x03\0\0\0\x32\0\0\0\x32\0\0\0(\0\0\0\x32\0\0\0*\0\0\0\x32\0\0\0\x32\0\0\0\x32\0\0\0\x1E\0\0\0K\0\0\0\x90\x01\0\0\x14\0\0\0\x1E\0\0\0P\0\0\0\x14\0\0\0\x01\0\0\0\x09\0\0\0\x01\0\0\0\x09\0\0\0\x01\0\0\0\x09\0\0\0\0\0\0\0FLAG\x04\0\0\0H\0\0\0NPCO$\0\0\0\x01\0\0\0random_alit_hide\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0AIDT\x0C\0\0\0\0\0Z\x1E\0\0\0\0\0\0\xA0\0DODT\x18\0\0\0\0\0\xE0\xC3\0\0\x80\x43\0\0\x18\x44\0\0\0\0\0\0\0\0\0\0\0\0DNAM\x0A\0\0\0Abernanit\0DODT\x18\0\0\0\xD5z\x88\x44\x06\xE8\x8D\xC5\xB5\x38\x08\xC4\0\0\0\0\0\0\0\0\0\0\0\0FAIL\x06\0\0\0Yakin\0AI_W\x0E\0\0\0\xE8\x03\x05\0\0\x1E\x32\x1E\0\0\0\0\0\x01"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip CREA, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      CreatureRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: length of DNAM > 256")
+    {
+      const auto data = "CREA\\\x01\0\0\0\0\0\0\0\0\0\0NAME\x05\0\0\0alit\0MODL\x10\0\0\0r\\DuskyAlit.NIF\0FNAM\x05\0\0\0Alit\0NPDT`\0\0\0\0\0\0\0\x03\0\0\0\x32\0\0\0\x32\0\0\0(\0\0\0\x32\0\0\0*\0\0\0\x32\0\0\0\x32\0\0\0\x32\0\0\0\x1E\0\0\0K\0\0\0\x90\x01\0\0\x14\0\0\0\x1E\0\0\0P\0\0\0\x14\0\0\0\x01\0\0\0\x09\0\0\0\x01\0\0\0\x09\0\0\0\x01\0\0\0\x09\0\0\0\0\0\0\0FLAG\x04\0\0\0H\0\0\0NPCO$\0\0\0\x01\0\0\0random_alit_hide\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0AIDT\x0C\0\0\0\0\0Z\x1E\0\0\0\0\0\0\xA0\0DODT\x18\0\0\0\0\0\xE0\xC3\0\0\x80\x43\0\0\x18\x44\0\0\0\0\0\0\0\0\0\0\0\0DNAM\x0A\0\0\0Abernanit\0DODT\x18\0\0\0\xD5z\x88\x44\x06\xE8\x8D\xC5\xB5\x38\x08\xC4\0\0\0\0\0\0\0\0\0\0\0\0DNAM\x06\x01\0\0Yakin\0AI_W\x0E\0\0\0\xE8\x03\x05\0\0\x1E\x32\x1E\0\0\0\0\0\x01"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip CREA, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      CreatureRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: stream ends before DNAM can be read")
+    {
+      const auto data = "CREA\\\x01\0\0\0\0\0\0\0\0\0\0NAME\x05\0\0\0alit\0MODL\x10\0\0\0r\\DuskyAlit.NIF\0FNAM\x05\0\0\0Alit\0NPDT`\0\0\0\0\0\0\0\x03\0\0\0\x32\0\0\0\x32\0\0\0(\0\0\0\x32\0\0\0*\0\0\0\x32\0\0\0\x32\0\0\0\x32\0\0\0\x1E\0\0\0K\0\0\0\x90\x01\0\0\x14\0\0\0\x1E\0\0\0P\0\0\0\x14\0\0\0\x01\0\0\0\x09\0\0\0\x01\0\0\0\x09\0\0\0\x01\0\0\0\x09\0\0\0\0\0\0\0FLAG\x04\0\0\0H\0\0\0NPCO$\0\0\0\x01\0\0\0random_alit_hide\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0AIDT\x0C\0\0\0\0\0Z\x1E\0\0\0\0\0\0\xA0\0DODT\x18\0\0\0\0\0\xE0\xC3\0\0\x80\x43\0\0\x18\x44\0\0\0\0\0\0\0\0\0\0\0\0DNAM\x0A\0\0\0Aber"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip CREA, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      CreatureRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: DNAM without previous DODT")
+    {
+      const auto data = "CREA\\\x01\0\0\0\0\0\0\0\0\0\0NAME\x05\0\0\0alit\0MODL\x10\0\0\0r\\DuskyAlit.NIF\0FNAM\x05\0\0\0Alit\0NPDT`\0\0\0\0\0\0\0\x03\0\0\0\x32\0\0\0\x32\0\0\0(\0\0\0\x32\0\0\0*\0\0\0\x32\0\0\0\x32\0\0\0\x32\0\0\0\x1E\0\0\0K\0\0\0\x90\x01\0\0\x14\0\0\0\x1E\0\0\0P\0\0\0\x14\0\0\0\x01\0\0\0\x09\0\0\0\x01\0\0\0\x09\0\0\0\x01\0\0\0\x09\0\0\0\0\0\0\0FLAG\x04\0\0\0H\0\0\0NPCO$\0\0\0\x01\0\0\0random_alit_hide\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0AIDT\x0C\0\0\0\0\0Z\x1E\0\0\0\0\0\0\xA0\0DNAM\x0A\0\0\0Abernanit\0DODT\x18\0\0\0\0\0\xE0\xC3\0\0\x80\x43\0\0\x18\x44\0\0\0\0\0\0\0\0\0\0\0\0DODT\x18\0\0\0\xD5z\x88\x44\x06\xE8\x8D\xC5\xB5\x38\x08\xC4\0\0\0\0\0\0\0\0\0\0\0\0DNAM\x06\0\0\0Yakin\0AI_W\x0E\0\0\0\xE8\x03\x05\0\0\x1E\x32\x1E\0\0\0\0\0\x01"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip CREA, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      CreatureRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
     SECTION("corrupt data: no FLAG")
     {
       const auto data = "CREA\xE1\0\0\0\0\0\0\0\0\0\0\0NAME\x11\0\0\0clannfear_summon\0MODL\x10\0\0\0r\\Clannfear.NIF\0FNAM\x0A\0\0\0Clannbann\0NPDT`\0\0\0\x01\0\0\0\x07\0\0\0n\0\0\0\x14\0\0\0F\0\0\0P\0\0\0\x0E\0\0\0\xFF\0\0\0<\0\0\0\x14\0\0\0q\0\0\0d\0\0\0\xF4\x01\0\0d\0\0\0<\0\0\0Z\0\0\0d\0\0\0\x06\0\0\0\x12\0\0\0\x06\0\0\0\x12\0\0\0\x06\0\0\0\x12\0\0\0\0\0\0\0FAIL\x04\0\0\0H\0\0\0AIDT\x0C\0\0\0\0\0\x32\x1E\0\0\0\0\0\0\xA0\0AI_W\x0E\0\0\0\xE8\x03\x05\0\0\x32\x14\x1E\0\0\0\0\0\x01"sv;
@@ -1194,6 +1437,67 @@ TEST_CASE("MWTP::CreatureRecord")
     SECTION("corrupt data: stream ends before FLAG can be read")
     {
       const auto data = "CREA\xE1\0\0\0\0\0\0\0\0\0\0\0NAME\x11\0\0\0clannfear_summon\0MODL\x10\0\0\0r\\Clannfear.NIF\0FNAM\x0A\0\0\0Clannbann\0NPDT`\0\0\0\x01\0\0\0\x07\0\0\0n\0\0\0\x14\0\0\0F\0\0\0P\0\0\0\x0E\0\0\0\xFF\0\0\0<\0\0\0\x14\0\0\0q\0\0\0d\0\0\0\xF4\x01\0\0d\0\0\0<\0\0\0Z\0\0\0d\0\0\0\x06\0\0\0\x12\0\0\0\x06\0\0\0\x12\0\0\0\x06\0\0\0\x12\0\0\0\0\0\0\0FLAG\x04\0\0\0H\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip CREA, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      CreatureRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: multiple XSCLs")
+    {
+      const auto data = "CREA\xB2\x01\0\0\0\0\0\0\0\0\0\0NAME\x0D\0\0\0bonelord_scl\0MODL\x0F\0\0\0r\\\x42oneLord.NIF\0FNAM\x0D\0\0\0Skelettf\xFCrst\0NPDT`\0\0\0\x02\0\0\0\x08\0\0\0d\0\0\0d\0\0\0P\0\0\0\x32\0\0\0(\0\0\0\x32\0\0\0\x32\0\0\0\x32\0\0\0Z\0\0\0\x90\x01\0\0\xF4\x01\0\0d\0\0\0<\0\0\0Z\0\0\0\x14\0\0\0\x08\0\0\0\x18\0\0\0\x08\0\0\0\x18\0\0\0\x08\0\0\0\x18\0\0\0\0\0\0\0FLAG\x04\0\0\0H\x04\0\0XSCL\x04\0\0\0\x01\0\xC0?XSCL\x04\0\0\0\x01\0\xC0?NPCO$\0\0\0\x01\0\0\0random_loot_bonewalker_greater\0\0NPCO$\0\0\0\x0A\0\0\0random_bonemeal\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0NPCS \0\0\0grave curse: speed\0\0\0\0\0\0\0\0\0\0\0\0\0\0NPCS \0\0\0immune to normal weapons\0\0\0\0\0\0\0\0AIDT\x0C\0\0\0\0\0d\0\08\x08\xC4\0\0\0\0AI_A!\0\0\0alit\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip CREA, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      CreatureRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream) );
+    }
+
+    SECTION("corrupt data: length of XSCL is not four")
+    {
+      {
+        const auto data = "CREA\xA5\x01\0\0\0\0\0\0\0\0\0\0NAME\x0D\0\0\0bonelord_scl\0MODL\x0F\0\0\0r\\\x42oneLord.NIF\0FNAM\x0D\0\0\0Skelettf\xFCrst\0NPDT`\0\0\0\x02\0\0\0\x08\0\0\0d\0\0\0d\0\0\0P\0\0\0\x32\0\0\0(\0\0\0\x32\0\0\0\x32\0\0\0\x32\0\0\0Z\0\0\0\x90\x01\0\0\xF4\x01\0\0d\0\0\0<\0\0\0Z\0\0\0\x14\0\0\0\x08\0\0\0\x18\0\0\0\x08\0\0\0\x18\0\0\0\x08\0\0\0\x18\0\0\0\0\0\0\0FLAG\x04\0\0\0H\x04\0\0XSCL\x03\0\0\0\x01\0?NPCO$\0\0\0\x01\0\0\0random_loot_bonewalker_greater\0\0NPCO$\0\0\0\x0A\0\0\0random_bonemeal\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0NPCS \0\0\0grave curse: speed\0\0\0\0\0\0\0\0\0\0\0\0\0\0NPCS \0\0\0immune to normal weapons\0\0\0\0\0\0\0\0AIDT\x0C\0\0\0\0\0d\0\08\x08\xC4\0\0\0\0AI_A!\0\0\0alit\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // Skip CREA, because header is handled before loadFromStream.
+        stream.seekg(4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        CreatureRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream) );
+      }
+
+      {
+        const auto data = "CREA\xA7\x01\0\0\0\0\0\0\0\0\0\0NAME\x0D\0\0\0bonelord_scl\0MODL\x0F\0\0\0r\\\x42oneLord.NIF\0FNAM\x0D\0\0\0Skelettf\xFCrst\0NPDT`\0\0\0\x02\0\0\0\x08\0\0\0d\0\0\0d\0\0\0P\0\0\0\x32\0\0\0(\0\0\0\x32\0\0\0\x32\0\0\0\x32\0\0\0Z\0\0\0\x90\x01\0\0\xF4\x01\0\0d\0\0\0<\0\0\0Z\0\0\0\x14\0\0\0\x08\0\0\0\x18\0\0\0\x08\0\0\0\x18\0\0\0\x08\0\0\0\x18\0\0\0\0\0\0\0FLAG\x04\0\0\0H\x04\0\0XSCL\x05\0\0\0\x01\0\xC0?\0NPCO$\0\0\0\x01\0\0\0random_loot_bonewalker_greater\0\0NPCO$\0\0\0\x0A\0\0\0random_bonemeal\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0NPCS \0\0\0grave curse: speed\0\0\0\0\0\0\0\0\0\0\0\0\0\0NPCS \0\0\0immune to normal weapons\0\0\0\0\0\0\0\0AIDT\x0C\0\0\0\0\0d\0\08\x08\xC4\0\0\0\0AI_A!\0\0\0alit\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01"sv;
+        std::istringstream stream;
+        stream.str(std::string(data));
+
+        // Skip CREA, because header is handled before loadFromStream.
+        stream.seekg(4);
+        REQUIRE( stream.good() );
+
+        // Reading should fail.
+        CreatureRecord record;
+        REQUIRE_FALSE( record.loadFromStream(stream) );
+      }
+    }
+
+    SECTION("corrupt data: stream ends before XSCL can be read")
+    {
+      const auto data = "CREA\xA6\x01\0\0\0\0\0\0\0\0\0\0NAME\x0D\0\0\0bonelord_scl\0MODL\x0F\0\0\0r\\\x42oneLord.NIF\0FNAM\x0D\0\0\0Skelettf\xFCrst\0NPDT`\0\0\0\x02\0\0\0\x08\0\0\0d\0\0\0d\0\0\0P\0\0\0\x32\0\0\0(\0\0\0\x32\0\0\0\x32\0\0\0\x32\0\0\0Z\0\0\0\x90\x01\0\0\xF4\x01\0\0d\0\0\0<\0\0\0Z\0\0\0\x14\0\0\0\x08\0\0\0\x18\0\0\0\x08\0\0\0\x18\0\0\0\x08\0\0\0\x18\0\0\0\0\0\0\0FLAG\x04\0\0\0H\x04\0\0XSCL\x04\0\0\0\x01\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 

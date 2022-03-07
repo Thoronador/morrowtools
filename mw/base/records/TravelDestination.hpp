@@ -21,6 +21,7 @@
 #ifndef MW_TRAVELDESTINATION_HPP
 #define MW_TRAVELDESTINATION_HPP
 
+#include <fstream>
 #include <string>
 
 namespace MWTP
@@ -36,6 +37,18 @@ struct TravelDestination
 
   bool operator==(const TravelDestination& other) const;
 
+  /** \brief Loads the destination data from the given input stream, except
+   *         for the cell name. The cell name has to be read separately by
+   *         the caller, if a cell name (DNAM) follows.
+   *
+   * \param input   the input stream
+   * \param bytesRead  the variable that holds the number of bytes read so far
+   * \return Returns true on success (data was loaded from stream). Cell name
+   *         will be empty in that case, but it may follow next in the stream.
+   *         Returns false, if an error occurred.
+   */
+  bool partialLoadFromStream(std::istream& input, uint32_t& bytesRead);
+
   #ifndef MW_UNSAVEABLE_RECORDS
   /** \brief Gets the size in bytes that the instances's data would occupy in a
    *         stream.
@@ -43,6 +56,14 @@ struct TravelDestination
    * \return Returns the size in bytes that the instance's data needs.
    */
   uint32_t getStreamSize() const;
+
+  /** \brief Writes the destination data to the given output stream.
+   *
+   * \param output  the output stream
+   * \return  Returns true on success (data was written to stream).
+   *          Returns false, if an error occurred.
+   */
+  bool saveToStream(std::ostream& output) const;
   #endif // MW_UNSAVEABLE_RECORDS
 };
 

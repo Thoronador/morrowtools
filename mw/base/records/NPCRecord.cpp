@@ -912,7 +912,7 @@ bool NPCRecord::loadFromStream(std::istream& input)
            previousSubRecord = cAIDT;
            break;
       case cAI_A:
-           //read AI activate data (AI_A)
+           // read AI activate data (AI_A)
            activatePointer = new NPC_AIActivate;
            if (!activatePointer->loadFromStream(input, Buffer, BytesRead))
            {
@@ -998,29 +998,12 @@ bool NPCRecord::loadFromStream(std::istream& input)
              Destinations.push_back(tempDest);
              hasReadDestination = false;
            }
-           // DODT's length
-           input.read(reinterpret_cast<char*>(&SubLength), 4);
-           BytesRead += 4;
-           if (SubLength != 24)
-           {
-             std::cerr << "Error: Sub record DODT of NPC_ has invalid length ("
-                       << SubLength << " bytes). Should be 24 bytes.\n";
-             return false;
-           }
            // read destination data
-           input.read(reinterpret_cast<char*>(&tempDest.XPos), 4);
-           input.read(reinterpret_cast<char*>(&tempDest.YPos), 4);
-           input.read(reinterpret_cast<char*>(&tempDest.ZPos), 4);
-           input.read(reinterpret_cast<char*>(&tempDest.XRot), 4);
-           input.read(reinterpret_cast<char*>(&tempDest.YRot), 4);
-           input.read(reinterpret_cast<char*>(&tempDest.ZRot), 4);
-           BytesRead += 24;
-           if (!input.good())
+           if (!tempDest.partialLoadFromStream(input, BytesRead))
            {
              std::cerr << "Error while reading sub record DODT of NPC_!\n";
              return false;
            }
-           tempDest.CellName.clear();
            hasReadDestination = true;
            previousSubRecord = cDODT;
            break;

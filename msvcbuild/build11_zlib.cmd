@@ -2,7 +2,7 @@
 
 ::------------------------------------------------------------------------------
 ::  This file is part of the Morrowind Tools Project.
-::  Copyright (C) 2021  Dirk Stolle
+::  Copyright (C) 2021, 2022  Dirk Stolle
 
 ::  This program is free software: you can redistribute it and/or modify
 ::  it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ IF %ERRORLEVEL% == 1 (
 IF EXIST source\zlib.h (
   echo zlib source already exists.
 ) ELSE (
-  git clone https://github.com/madler/zlib.git --depth=1 --branch=v1.2.11 .\source
+  git clone https://github.com/madler/zlib.git --depth=1 --branch=v1.2.12 .\source
   IF %ERRORLEVEL% == 1 (
     echo Could not get zlib sources via Git!
     exit /B 1

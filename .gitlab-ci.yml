@@ -1,14 +1,21 @@
-#build_docker_image:
-#  image: docker:20
-#  stage: build
-#  services:
-#    - docker:20-dind
-#  script:
-#    - cd ci/
-#    - docker build -t $CI_REGISTRY/striezel/morrowtools/ci-cross-win64:10.2-deb11 . -f Dockerfile_cross_win64
-#    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-#    - docker push $CI_REGISTRY/striezel/morrowtools/ci-cross-win64:10.2-deb11
-#    - docker logout $CI_REGISTRY
+build_docker_image:
+  image: docker:20
+  stage: build
+  services:
+    - docker:20-dind
+  script:
+    - cd ci/
+    - docker build -t $CI_REGISTRY/striezel/morrowtools/ci-cross-win64:10.2-deb11 . -f Dockerfile_cross_win64
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker push $CI_REGISTRY/striezel/morrowtools/ci-cross-win64:10.2-deb11
+    - docker logout $CI_REGISTRY
+  # Only build new image when the Dockerfile or the GitLab CI configuration
+  # changes.
+  only:
+    changes:
+      - ci/Dockerfile_cross_win64
+      - .gitlab-ci.yml
+
 win64_cross:
   image: registry.gitlab.com/striezel/morrowtools/ci-cross-win64:10.2-deb11
   stage: build

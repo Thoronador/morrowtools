@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       # Checks-out the repository under $GITHUB_WORKSPACE.
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Install Debian packages
         run: |
           sudo apt-get update
@@ -44,7 +44,7 @@ jobs:
           cp sr/formID_finder/formID_finder.exe artifacts/
           cp sr/race_resize/race_resize.exe artifacts/
       - name: Archive build artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: build-artifacts-dynamic-linking
           path: |
@@ -54,7 +54,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       # Checks-out the repository under $GITHUB_WORKSPACE.
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Install Debian packages
         run: |
           sudo apt-get update
@@ -86,7 +86,7 @@ jobs:
           cp sr/formID_finder/formID_finder.exe artifacts/
           cp sr/race_resize/race_resize.exe artifacts/
       - name: Archive build artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: build-artifacts-static-linking
           path: |

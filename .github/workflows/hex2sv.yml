@@ -6,7 +6,7 @@ jobs:
   build:
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Install Rust packages
       run: |
         sudo apt-get update
@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-20.04
     name: Clippy lints
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Install packages
       run: sudo apt-get install -y wget
     - name: Rustup

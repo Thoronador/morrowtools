@@ -1,29 +1,33 @@
-name: GitHub CI with GCC 8, 9, 10
+name: Clang
 
 on: push
 
 jobs:
-  build_ubuntu_gcc:
-    runs-on: ubuntu-20.04
+  ubuntu_clang:
     strategy:
       matrix:
         version: [8, 9, 10]
+    runs-on: ubuntu-20.04
     steps:
       # Checks-out the repository under $GITHUB_WORKSPACE.
       - uses: actions/checkout@v3
       - name: Install Debian packages
         run: |
           sudo apt-get update
-          sudo apt-get install -y catch cmake g++-${{ matrix.version }} liblz4-dev pkg-config zlib1g-dev
+          sudo apt-get install -y catch cmake clang-${{ matrix.version }} liblz4-dev pkg-config zlib1g-dev
+      - name: Install LLVM C++ Standard Library
+        run: |
+          sudo apt-get install -y libc++-${{ matrix.version }}-dev
+        if: matrix.version == 8
       - name: Syntax check
         run: |
-          export CXX=g++-${{ matrix.version }}
+          export CXX=clang++-${{ matrix.version }}
           ./ci/cpplint.sh
         if: matrix.version == 10
-      - name: Build with GNU GCC ${{ matrix.version }}
+      - name: Build with Clang ${{ matrix.version }}
         run: |
-          export CXX=g++-${{ matrix.version }}
-          export CC=gcc-${{ matrix.version }}
+          export CXX=clang++-${{ matrix.version }}
+          export CC=clang-${{ matrix.version }}
           cd $GITHUB_WORKSPACE
           mkdir build
           cd build
@@ -33,7 +37,7 @@ jobs:
         run: |
           cd "$GITHUB_WORKSPACE"/build
           ctest -V
-  build_gcc10_lto_static:
+  clang10_lto_static:
     runs-on: ubuntu-20.04
     steps:
       # Checks-out the repository under $GITHUB_WORKSPACE.
@@ -41,11 +45,11 @@ jobs:
       - name: Install Debian packages
         run: |
           sudo apt-get update
-          sudo apt-get install -y catch cmake g++-10 liblz4-dev pkg-config zlib1g-dev
-      - name: Build with GNU GCC 10
+          sudo apt-get install -y catch cmake clang-10 liblz4-dev pkg-config zlib1g-dev
+      - name: Build with Clang 10
         run: |
-          export CXX=g++-10
-          export CC=gcc-10
+          export CXX=clang++-10
+          export CC=clang-10
           cd $GITHUB_WORKSPACE
           mkdir build
           cd build

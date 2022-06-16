@@ -1,0 +1,17 @@
+# Visual Studio files
+.vs/
+*.vcxproj
+*.vcxproj.filters
+*.sln
+
+# CMake files
+CMakeCache.txt
+CMakeFiles/
+*.cmake
+Testing/
+
+# build directories
+mw/
+sr/
+tests/
+x64/

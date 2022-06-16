@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012  Thoronador
+    Copyright (C) 2011, 2012, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -64,11 +64,11 @@ bool readCellListFromXML(const std::string& fileName, CellListType& cells, const
   }
 
   //now go to work
-  cells.clear();//clear old entries
+  cells.clear(); // clear old entries
   ParserToken result;
   std::string next = "";
   result = parser.parse(next);
-  if ((result!=ptOpeningTag) or (next!="cellnames"))
+  if ((result != ptOpeningTag) || (next != "cellnames"))
     return false;
   enum {plNone, plCellnames, plCell, plEn, plDe} level;
   level = plCellnames;
@@ -82,7 +82,7 @@ bool readCellListFromXML(const std::string& fileName, CellListType& cells, const
       case ptNone:
            break;
       case ptError:
-           std::cout << "Error while parsing \""<<fileName<<"\".\n";
+           std::cout << "Error while parsing \"" << fileName << "\".\n";
            return false;
            break;
       case ptOpeningTag:
@@ -91,18 +91,18 @@ bool readCellListFromXML(const std::string& fileName, CellListType& cells, const
              case plCellnames:
                   if (next!="cell")
                   {
-                    std::cout << "Error: Element \""<<next<<"\" is not allowed here.\n";
+                    std::cout << "Error: Element \"" << next << "\" is not allowed here.\n";
                     return false;
                   }
                   level = plCell;
                   break;
              case plCell:
-                  if ((next!="de") and (next!="en"))
+                  if ((next != "de") && (next != "en"))
                   {
-                    std::cout << "Error: Element \""<<next<<"\" is not allowed here.\n";
+                    std::cout << "Error: Element \"" << next << "\" is not allowed here.\n";
                     return false;
                   }
-                  if (next=="de")
+                  if (next == "de")
                   {
                     level = plDe;
                   }
@@ -124,7 +124,7 @@ bool readCellListFromXML(const std::string& fileName, CellListType& cells, const
              case plEn:
                   if (next!="en")
                   {
-                    std::cout << "Error: Closing tag \""<<next<<"\" is not allowed here.\n";
+                    std::cout << "Error: Closing tag \"" << next << "\" is not allowed here.\n";
                     return false;
                   }
                   level = plCell;
@@ -132,7 +132,7 @@ bool readCellListFromXML(const std::string& fileName, CellListType& cells, const
              case plDe:
                   if (next!="de")
                   {
-                    std::cout << "Error: Closing tag \""<<next<<"\" is not allowed here.\n";
+                    std::cout << "Error: Closing tag \"" << next << "\" is not allowed here.\n";
                     return false;
                   }
                   level = plCell;
@@ -140,12 +140,12 @@ bool readCellListFromXML(const std::string& fileName, CellListType& cells, const
              case plCell:
                   if (next!="cell")
                   {
-                    std::cout << "Error: Closing tag \""<<next<<"\" is not allowed here.\n";
+                    std::cout << "Error: Closing tag \"" << next << "\" is not allowed here.\n";
                     return false;
                   }
                   //now push the stuff into the list/map
-                  if ((!de_cell.empty() and !en_cell.empty())
-                     and (!noIdentity or (lowerCase(de_cell)!=lowerCase(en_cell))))
+                  if ((!de_cell.empty() && !en_cell.empty())
+                     && (!noIdentity || (lowerCase(de_cell) != lowerCase(en_cell))))
                   {
                     switch (direction)
                     {
@@ -211,7 +211,7 @@ bool readCellListFromXML(const std::string& fileName, CellListType& cells, const
              case plCell:
              case plCellnames:
              case plNone:
-                  //shouldn't happen in a valid file
+                  // shouldn't happen in a valid file
                   std::cout << "Error: Text outside tags is not allowed here.\n";
                   return false;
                   break;
@@ -219,9 +219,9 @@ bool readCellListFromXML(const std::string& fileName, CellListType& cells, const
            break;
     }//swi
   } while (result!=ptNone);
-  //if everything went well, the last result should have been ptNone and the
-  //  last level should be plNone
-  return ((result==ptNone) and (level==plNone));
+  // If everything went well, the last result should have been ptNone and the
+  // last level should be plNone.
+  return ((result == ptNone) && (level == plNone));
 }
 
-} //namespace
+} // namespace

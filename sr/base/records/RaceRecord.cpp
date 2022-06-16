@@ -44,11 +44,11 @@ RaceRecord::RaceData::RaceData()
 
 bool RaceRecord::RaceData::operator==(const RaceRecord::RaceData& other) const
 {
-  return ((memcmp(unknown16, other.unknown16, 16)==0) and (heightMale==other.heightMale)
-      and (heightFemale==other.heightFemale) and (weightMale==other.weightMale)
-      and (weightFemale==other.weightFemale)
-      and (memcmp(unknown96, other.unknown96, 96)==0)
-      and (has36==other.has36) and ((memcmp(unknown36, other.unknown36, 36)==0) or (!has36))
+  return ((memcmp(unknown16, other.unknown16, 16) == 0) && (heightMale == other.heightMale)
+      && (heightFemale == other.heightFemale) && (weightMale == other.weightMale)
+      && (weightFemale == other.weightFemale)
+      && (memcmp(unknown96, other.unknown96, 96) == 0)
+      && (has36 == other.has36) && ((memcmp(unknown36, other.unknown36, 36) == 0) || (!has36))
     );
 }
 
@@ -88,13 +88,13 @@ RaceRecord::~RaceRecord()
 #ifndef SR_NO_RECORD_EQUALITY
 bool RaceRecord::equals(const RaceRecord& other) const
 {
-  return ((equalsBasic(other)) and (editorID==other.editorID)
-      and (name==other.name)
-      and (description==other.description) and (spellFormIDs==other.spellFormIDs)
-      and (hasWNAM==other.hasWNAM) and ((unknownWNAM==other.unknownWNAM) or (!hasWNAM))
-      and (unknownBODT==other.unknownBODT) and (unknownBOD2==other.unknownBOD2)
-      and (keywordArray==other.keywordArray) and (data==other.data)
-      and (subBlocks==other.subBlocks));
+  return ((equalsBasic(other)) && (editorID == other.editorID)
+      && (name == other.name)
+      && (description == other.description) && (spellFormIDs == other.spellFormIDs)
+      && (hasWNAM == other.hasWNAM) && ((unknownWNAM == other.unknownWNAM) || (!hasWNAM))
+      && (unknownBODT == other.unknownBODT) && (unknownBOD2 == other.unknownBOD2)
+      && (keywordArray == other.keywordArray) && (data == other.data)
+      && (subBlocks == other.subBlocks));
 }
 #endif
 
@@ -326,9 +326,9 @@ bool RaceRecord::loadFromStream(std::istream& in_File, const bool localized, con
   keywordArray.clear();
   bool hasReadDATA = false;
   subBlocks.clear();
-  while ((bytesRead<readSize) and (!((unknownBODT.isPresent() or unknownBOD2.isPresent()) and hasReadDATA and description.isPresent())))
+  while ((bytesRead < readSize) && (!((unknownBODT.isPresent() || unknownBOD2.isPresent()) && hasReadDATA && description.isPresent())))
   {
-    //read next subrecord name
+    // read next subrecord name
     in_File.read((char*) &subRecName, 4);
     bytesRead += 4;
     switch (subRecName)
@@ -501,10 +501,11 @@ bool RaceRecord::loadFromStream(std::istream& in_File, const bool localized, con
            //KWDA's length
            in_File.read((char*) &subLength, 2);
            bytesRead += 2;
-           if (subLength!=4*spell_count)
+           if (subLength != 4 * spell_count)
            {
-             std::cerr <<"Error: sub record KWDA of RACE has invalid length("
-                       <<subLength<<" bytes). Should be "<<4*spell_count<<" bytes!\n";
+             std::cerr << "Error: sub record KWDA of RACE has invalid length("
+                       << subLength << " bytes). Should be " << 4 * spell_count
+                       << " bytes!\n";
              return false;
            }
 
@@ -568,8 +569,8 @@ bool RaceRecord::loadFromStream(std::istream& in_File, const bool localized, con
     }//swi
   }//while
 
-  //presence checks
-  if (!((unknownBODT.isPresent() or unknownBOD2.isPresent()) and hasReadDATA and description.isPresent()))
+  // presence checks
+  if (!((unknownBODT.isPresent() || unknownBOD2.isPresent()) && hasReadDATA && description.isPresent()))
   {
     std::cerr << "Error: subrecord BODT/BOD2, DATA or DESC of RACE is missing!\n";
     return false;
@@ -579,7 +580,7 @@ bool RaceRecord::loadFromStream(std::istream& in_File, const bool localized, con
   //now read the rest
   subBlocks.clear();
   SubBlock tempBlock;
-  while (bytesRead<readSize)
+  while (bytesRead < readSize)
   {
     //read next subrecord's name
     in_File.read((char*) &subRecName, 4);
@@ -606,8 +607,10 @@ uint32_t RaceRecord::getRecordType() const
 
 uint32_t RaceRecord::getDataLength() const
 {
-  if (headerVersion<43) return 128;
-  return 164;
+  if (headerVersion < 43)
+    return 128;
+  else
+    return 164;
 }
 
 } //namespace

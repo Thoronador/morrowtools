@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2013  Thoronador
+    Copyright (C) 2011, 2013, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -52,7 +52,7 @@ ParserToken XMLParser::parse(std::string& Content)
   }
   std::string::size_type len = m_Buffer.length();
   std::string::size_type look = 0;
-  //remove spaces (i.e. space, tab, line feed, carriage return
+  // remove spaces (i.e. space, tab, line feed, carriage return)
   bool go_on = true;
   while (go_on)
   {
@@ -65,75 +65,75 @@ ParserToken XMLParser::parse(std::string& Content)
     {
       go_on = false;
     }
-  }//while
-  if (look>=len)
+  }
+  if (look >= len)
   {
     m_Buffer = "";
     return ptNone;
   }
   m_Buffer.erase(0, look);
-  //shouldn't be empty, so go on
+  // shouldn't be empty, so go on
   len = m_Buffer.length();
-  if (m_Buffer.at(0)=='<')
+  if (m_Buffer.at(0) == '<')
   {
     //possible tag start
     ParserToken result = ptOpeningTag;
-    if (len>1)
+    if (len > 1)
     {
       if (isspace(m_Buffer.at(1)))
       {
-        //shouldn't be space but alphanumeric
+        // shouldn't be space but alphanumeric
         Content = "Error: Space after tag start!";
         return ptError;
       }
-      if (m_Buffer.at(1)=='/')
+      if (m_Buffer[1] == '/')
       {
         result = ptClosingTag;
       }
-    }//if len>1
+    } // if len > 1
 
-    //search for end of tag
+    // search for end of tag
     go_on = true;
     look = 0;
     while (go_on)
     {
-      if (m_Buffer.at(look)=='>')
+      if (m_Buffer.at(look) == '>')
       {
-        //tag ends here
-        Content = m_Buffer.substr(1, look-1);
-        //remove closing tag's slash
-        if (result==ptClosingTag)
+        // tag ends here
+        Content = m_Buffer.substr(1, look - 1);
+        // remove closing tag's slash
+        if (result == ptClosingTag)
         {
           Content.erase(0,1);
         }
         //delete processed stuff from buffer
-        m_Buffer.erase(0, look+1);
+        m_Buffer.erase(0, look + 1);
         return result;
       }
       ++look;
-      go_on = (look<len);
-    }//while
-    //no > found, so buffer is too short yet
+      go_on = (look < len);
+    }
+    // no > found, so buffer is too short yet
     return ptNone;
-  }//if possible opening tag found
+  } // if possible opening tag found
   else
   {
-    //probably text only, so go on until next tag start
+    // probably text only, so go on until next tag start
     look = 0;
     go_on = true;
     while (go_on)
     {
-      if (m_Buffer.at(look)=='<')
+      if (m_Buffer.at(look) == '<')
       {
-        //text ends here
+        // text ends here
         Content = m_Buffer.substr(0, look);
         m_Buffer.erase(0, look);
         return ptText;
       }
       ++look;
       go_on = (look<len);
-    }//while
-    //all stuff seems to be text, get it
+    }
+    // all stuff seems to be text, get it
     Content = m_Buffer;
     m_Buffer.clear();
     return ptText;
@@ -142,5 +142,5 @@ ParserToken XMLParser::parse(std::string& Content)
 
 bool XMLParser::isXMLSpace(const char c) const
 {
-  return ((c==' ') or (c=='\t') or (c=='\r') or (c=='\n'));
+  return ((c == ' ') || (c == '\t') || (c == '\r') || (c == '\n'));
 }

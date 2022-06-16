@@ -343,7 +343,7 @@ std::string::size_type getNextOperatorPos(const std::string& expr, const std::st
   {
     if (expr.at(look) == '"')
     {
-      outsideQuote = not outsideQuote;
+      outsideQuote = !outsideQuote;
     }
     ++look;
   }
@@ -354,7 +354,7 @@ std::string::size_type getNextOperatorPos(const std::string& expr, const std::st
   {
     if (expr.at(look) == '"')
     {
-      outsideQuote = not outsideQuote;
+      outsideQuote = !outsideQuote;
     }
     else if (outsideQuote)
     {

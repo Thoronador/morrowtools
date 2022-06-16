@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2011, 2012, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -118,23 +118,23 @@ bool getNextScriptParameter(const std::string& scriptText, size_t& start, std::s
   bool insideQuote = false;
   while (look<len)
   {
-    if (scriptText.at(look)=='"')
+    if (scriptText.at(look) == '"')
     {
-      insideQuote = not insideQuote;
+      insideQuote = !insideQuote;
     }
-    else if ((not insideQuote) and ((scriptText.at(look)==' ')
-              or (scriptText.at(look)==',') or (scriptText.at(look)=='\t')))
+    else if ((!insideQuote) && ((scriptText[look] == ' ')
+              || (scriptText[look] == ',') || (scriptText[look] == '\t')))
     {
-      //found a place where to split
+      // found a place where to split
       const unsigned int param_len = look-offset;
-      if (param_len>0)//skip empty params
+      if (param_len > 0) // skip empty params
       {
         param = scriptText.substr(offset, param_len);
         stripEnclosingQuotes(param);
-        start = look+1;
+        start = look + 1;
         return true;
       }//if
-      offset=look+1;
+      offset = look + 1;
     }//else
     ++look;
   }//while
@@ -166,7 +166,7 @@ bool replaceCellsInScriptText(std::string& scriptText, const CellListType& cells
     std::string::size_type pos_PlaceItemCell = lowerText.find("placeitemcell", offset);
     std::string::size_type pos_PositionCell = lowerText.find("positioncell", offset);
 
-    if ((std::string::npos!=pos_AIEscortCell) or (std::string::npos!=pos_AIFollowCell))
+    if ((std::string::npos != pos_AIEscortCell) || (std::string::npos != pos_AIFollowCell))
     {
       //replace cell name in AIEscortCell/AIFollowCell command
       //params: 6 or 7: target ID, cell ID, duration, x, y, z[, reset]

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -119,31 +119,31 @@ int main(int argc, char **argv)
   bool translationDirectionSpecified = false;
   MWTP::TransDir translationDirection = MWTP::td_en_de;
 
-  if ((argc>1) and (argv!=NULL))
+  if ((argc > 1) && (argv != NULL))
   {
-    int i=1;
-    while (i<argc)
+    int i = 1;
+    while (i < argc)
     {
-      if (argv[i]!=NULL)
+      if (argv[i] != NULL)
       {
         const std::string param = std::string(argv[i]);
         //help parameter
-        if ((param=="--help") or (param=="-?") or (param=="/?"))
+        if ((param == "--help") || (param == "-?") || (param == "/?"))
         {
           showHelp();
           return 0;
         }//if help wanted
         //version information requested?
-        else if (param=="--version")
+        else if (param == "--version")
         {
           showVersion();
           return 0;
         }//version
-        else if (param=="--version-with-exitcode")
+        else if (param == "--version-with-exitcode")
         {
           return showVersionExitcode();
         }//version + exitcode
-        else if ((param=="-d") or (param=="-dir") or (param=="--data-files"))
+        else if ((param == "-d") || (param == "-dir") || (param == "--data-files"))
         {
           //set more than once?
           if (!dataDir.empty())
@@ -152,7 +152,7 @@ int main(int argc, char **argv)
             return MWTP::rcInvalidParameter;
           }
           //enough parameters?
-          if ((i+1<argc) and (argv[i+1]!=NULL))
+          if ((i+1 < argc) && (argv[i+1] != NULL))
           {
             // Is it long enough to be a directory? (Minimum should be "./".)
             if (std::string(argv[i+1]).size()>1)
@@ -177,9 +177,9 @@ int main(int argc, char **argv)
             return MWTP::rcInvalidParameter;
           }
         }//data files directory
-        else if (param=="-f")
+        else if (param == "-f")
         {
-          if ((i+1<argc) and (argv[i+1]!=NULL))
+          if ((i+1 < argc) && (argv[i+1] != NULL))
           {
             if (!pluginFile.empty())
             {
@@ -187,19 +187,19 @@ int main(int argc, char **argv)
               return MWTP::rcInvalidParameter;
             }
             pluginFile = std::string(argv[i+1]);
-            ++i; //skip next parameter, because it's used as file name already
-            std::cout << "Plugin file was set to \""<<pluginFile<<"\".\n";
+            ++i; // skip next parameter, because it's used as file name already
+            std::cout << "Plugin file was set to \"" << pluginFile << "\".\n";
           }
           else
           {
             std::cout << "Error: You have to specify a file name after \""
-                      << param <<"\".\n";
+                      << param << "\".\n";
             return MWTP::rcInvalidParameter;
           }
         }//plugin file name
-        else if ((param=="-o") or (param=="--output"))
+        else if ((param == "-o") || (param == "--output"))
         {
-          if ((i+1<argc) and (argv[i+1]!=NULL))
+          if ((i+1 < argc) && (argv[i+1] != NULL))
           {
             if (!outputFileName.empty())
             {
@@ -208,12 +208,12 @@ int main(int argc, char **argv)
             }
             outputFileName = std::string(argv[i+1]);
             ++i; //skip next parameter, because it's used as file name already
-            std::cout << "Output file was set to \""<<outputFileName<<"\".\n";
+            std::cout << "Output file was set to \"" << outputFileName << "\".\n";
           }
           else
           {
             std::cout << "Error: You have to specify a file name after \""
-                      << param <<"\".\n";
+                      << param << "\".\n";
             return MWTP::rcInvalidParameter;
           }
         }//output file name
@@ -228,7 +228,7 @@ int main(int argc, char **argv)
         }// force
         else if (param=="-xml")
         {
-          if ((i+1<argc) and (argv[i+1]!=NULL))
+          if ((i + 1 < argc) && (argv[i+1] != NULL))
           {
             if (!pathToCellsXML.empty())
             {
@@ -237,16 +237,16 @@ int main(int argc, char **argv)
             }
             pathToCellsXML = std::string(argv[i+1]);
             ++i; //skip next parameter, because it's used as file name already
-            std::cout << "XML file was set to \""<<pathToCellsXML<<"\".\n";
+            std::cout << "XML file was set to \"" << pathToCellsXML << "\".\n";
           }
           else
           {
             std::cout << "Error: You have to specify a file name after \""
-                      << param <<"\".\n";
+                      << param << "\".\n";
             return MWTP::rcInvalidParameter;
           }
         }//XML file
-        else if (param=="--no-scripts")
+        else if (param == "--no-scripts")
         {
           if (!process_scripts)
           {
@@ -257,19 +257,19 @@ int main(int argc, char **argv)
           process_scripts = false;
           std::cout << "Scripts will not be processed, as requested via --no-scripts.\n";
         }// no scripts
-        else if ((param=="--dare") or (param=="--try-harder"))
+        else if ((param == "--dare") || (param == "--try-harder"))
         {
           if (tryHarder)
           {
-            std::cout << "Error: parameter "<<param<<" was given more than once.\n";
+            std::cout << "Error: parameter " << param << " was given more than once.\n";
             return MWTP::rcInvalidParameter;
           }
           tryHarder = true;
           std::cout << "Will try harder to compile scripts, as requested via "
-                    << param <<". However, be aware that this might increase "
+                    << param << ". However, be aware that this might increase "
                     << "instability of Morrowind, as long as you use the generated file!\n";
         }//daring script compiler
-        else if ((param=="-de") or (param=="--deutsch"))
+        else if ((param == "-de") || (param == "--deutsch"))
         {
           if (translationDirectionSpecified)
           {
@@ -280,7 +280,7 @@ int main(int argc, char **argv)
           translationDirectionSpecified = true;
           std::cout << "Translation mode was set: English to German.\n";
         }//if de
-        else if ((param=="-en") or (param=="--english"))
+        else if ((param == "-en") || (param == "--english"))
         {
           if (translationDirectionSpecified)
           {
@@ -293,20 +293,20 @@ int main(int argc, char **argv)
         }//if de
         else
         {
-          //unknown or wrong parameter
-          std::cout << "Invalid parameter given: \""<<param<<"\".\n"
+          // unknown or wrong parameter
+          std::cout << "Invalid parameter given: \"" << param << "\".\n"
                     << "Use --help to get a list of valid parameters.\n";
           return MWTP::rcInvalidParameter;
         }
       }//parameter exists
       else
       {
-        std::cout << "Parameter at index "<<i<<" is NULL.\n";
+        std::cout << "Parameter at index " << i << " is NULL.\n";
         return MWTP::rcInvalidParameter;
       }
-      ++i;//on to next parameter
-    }//while
-  }//if arguments present
+      ++i; // on to next parameter
+    } // while
+  } // if arguments present
   else
   {
     std::cout << "You have to specify certain parameters for this programme to run properly.\n"
@@ -353,7 +353,7 @@ int main(int argc, char **argv)
   }
   //avoid overwriting main ESM files (better be safe than sorry)
   const std::string lcOutput = lowerCase(outputFileName);
-  if ((lcOutput=="morrowind.esm") or (lcOutput=="tribunal.esm") or (lcOutput=="bloodmoon.esm"))
+  if ((lcOutput == "morrowind.esm") || (lcOutput == "tribunal.esm") || (lcOutput == "bloodmoon.esm"))
   {
     std::cout << "Error: You have given Morrowind.esm, Tribunal.esm or "
               << "Bloodmoon.esm as desired output file name!\nAre you nuts? "
@@ -382,7 +382,7 @@ int main(int argc, char **argv)
         /*add Data Files dir to path, because installed path points only to
           Morrowinds's main direkctory */
         dataDir = dataDir +"Data Files" +MWTP::pathDelimiter;
-        std::cout << "Data Files directory was set to \""<<dataDir<<"\" via registry.\n";
+        std::cout << "Data Files directory was set to \"" << dataDir << "\" via registry.\n";
       }
       else
       {
@@ -396,14 +396,14 @@ int main(int argc, char **argv)
       //empty, so let's try a default value.
       dataDir = "C:\\Program Files\\Bethesda Softworks\\Morrowind\\Data Files\\";
       std::cout << "Warning: Data files directory of Morrowind was not specified, "
-                << "will use default path \""<<dataDir<<"\". This might not work"
+                << "will use default path \"" << dataDir << "\". This might not work"
                 << " properly on your machine, use the parameter -d to specify "
                 << "the proper path.\n";
     }
   }//if no data dir is given
 
-  //avoid overwriting any existing plugin files
-  if (FileExists(dataDir+outputFileName) and !forceOutput)
+  // avoid overwriting any existing plugin files
+  if (FileExists(dataDir + outputFileName) && !forceOutput)
   {
     std::cout << "Error: You have given the name of a file that already exists"
               << " as desired output file name! Aborting to avoid potential "
@@ -494,39 +494,39 @@ int main(int argc, char **argv)
   while (v_iter!=recordVec.end())
   {
     const std::string type_name = typeid(**v_iter).name();
-    if (type_name==pathgridID)
+    if (type_name == pathgridID)
     {
       cell_iter = cells.find(dynamic_cast<MWTP::PathGridRecord*>(*v_iter)->CellName);
-      if (cell_iter!=cells.end())
+      if (cell_iter != cells.end())
       {
         dynamic_cast<MWTP::PathGridRecord*>(*v_iter)->CellName = cell_iter->second;
         ++changedRecords;
       }
     }//if path grid
-    else if (type_name==cellID)
+    else if (type_name == cellID)
     {
       if (!translateCellRecord(dynamic_cast<MWTP::CellRecord*>(*v_iter), cells, changedRecords))
       {
         std::cout << "Error: couldn't translate cell record.\n";
       }
     }
-    else if ((type_name==creatureID) or (type_name==npcID))
+    else if ((type_name == creatureID) || (type_name == npcID))
     {
       translatePreNPCRecord(dynamic_cast<MWTP::PreNPCRecord*>(*v_iter), cells, changedRecords);
-    }//if creature or NPC
-    else if (type_name==infoID)
+    }
+    else if (type_name == infoID)
     {
       translateInfoRecord(dynamic_cast<MWTP::DialogueInfoRecord*>(*v_iter), cells, changedRecords);
     }
-    else if ((type_name==scriptID) and (process_scripts))
+    else if ((type_name == scriptID) && (process_scripts))
     {
-      //get original script text
+      // get original script text
       std::string changedText = dynamic_cast<MWTP::ScriptRecord*>(*v_iter)->ScriptText;
-      //Do we need to change anything?
+      // Do we need to change anything?
       if (replaceCellsInScriptText(changedText, cells))
       {
-        //yes, change needed
-        if (!canCompileScriptProperly(*dynamic_cast<MWTP::ScriptRecord*>(*v_iter)) and !tryHarder)
+        // yes, change needed
+        if (!canCompileScriptProperly(*dynamic_cast<MWTP::ScriptRecord*>(*v_iter)) && !tryHarder)
         {
           std::cout << "Error: cannot properly compile script \""
                     << dynamic_cast<MWTP::ScriptRecord*>(*v_iter)->recordID
@@ -543,40 +543,41 @@ int main(int argc, char **argv)
           return MWTP::rcScriptError;
         }
         ++changedRecords;
-      }//if change needed
-    }//if script record
+      } // if change needed
+    } // if script record
     /// TODO: Maybe translate region names, too.
     ++v_iter;
-  }//while
+  } // while
 
-  if (changedRecords==0)
+  if (changedRecords == 0)
   {
-    std::cout << "No records of the file \""<<pluginFile<<"\" were changed.";
+    std::cout << "No records of the file \"" << pluginFile << "\" were changed.";
     reader.deallocateRecordsInVector();
     return MWTP::rcNoChange;
   }
-  else if (changedRecords==1)
+  else if (changedRecords == 1)
   {
     std::cout << "One single record was changed during the translation "
               << "process.\n";
   }
   else
   {
-    std::cout << changedRecords<<" records were changed during the translation "
+    std::cout << changedRecords << " records were changed during the translation "
               << "process.\n";
   }
 
-  //try to write stuff to the output file
+  // try to write stuff to the output file
   MWTP::ESMWriterGeneric writer(&recordVec);
   //TODO: adjust description before writing
   tes3Header.description = "(TODO: put description here)";
   if (!writer.writeESM(dataDir+outputFileName, false /* no master */, tes3Header))
   {
-    std::cout << "Error: Could not create or write to output file \""<<dataDir+outputFileName<<"\".\n";
+    std::cout << "Error: Could not create or write to output file \""
+              << dataDir + outputFileName << "\".\n";
     reader.deallocateRecordsInVector();
     return MWTP::rcOutputFailed;
   }
   reader.deallocateRecordsInVector();
-  std::cout << "Success!\nFile was saved as \""<<dataDir+outputFileName<<"\".\n";
+  std::cout << "Success!\nFile was saved as \"" << dataDir + outputFileName << "\".\n";
   return 0;
 }

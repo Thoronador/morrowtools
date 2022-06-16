@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2014  Dirk Stolle
+    Copyright (C) 2011, 2012, 2013, 2014, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -63,7 +63,7 @@ std::string::size_type getCommentStart(const std::string& line)
   {
     if (line.at(look) == '"')
     {
-      outsideQuote = not outsideQuote;
+      outsideQuote = !outsideQuote;
     }
     else if ((outsideQuote) && (line.at(look) == ';'))
     {
@@ -3231,7 +3231,7 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
       any letter, as it seems. I'm not sure about the consequences in-game.
       We should put a warning at least.
     */
-    if ((Axis!='X') and (Axis!='Y') and (Axis!='Z'))
+    if ((Axis != 'X') && (Axis != 'Y') && (Axis != 'Z'))
     {
       std::cout << "ScriptCompiler: Warning: invalid parameter to GetAngle.\n";
     }
@@ -3478,7 +3478,7 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
       any letter, as it seems. I'm not sure about the consequences in-game.
       We should put a warning at least.
     */
-    if ((Axis!='X') and (Axis!='Y') and (Axis!='Z'))
+    if ((Axis != 'X') && (Axis != 'Y') && (Axis != 'Z'))
     {
       std::cout << "ScriptCompiler: Warning: invalid parameter to GetPos.\n";
     }
@@ -3607,7 +3607,7 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
       any letter, as it seems. I'm not sure about the consequences in-game.
       We should put a warning at least.
     */
-    if ((Axis!='X') and (Axis!='Y') and (Axis!='Z'))
+    if ((Axis != 'X') && (Axis != 'Y') && (Axis != 'Z'))
     {
       std::cout << "ScriptCompiler: Warning: invalid parameter to GetStartingAngle.\n";
     }
@@ -3629,7 +3629,7 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
       any letter, as it seems. I'm not sure about the consequences in-game.
       We should put a warning at least.
     */
-    if ((Axis!='X') and (Axis!='Y') and (Axis!='Z'))
+    if ((Axis != 'X') && (Axis != 'Y') && (Axis != 'Z'))
     {
       std::cout << "ScriptCompiler: Warning: invalid parameter to GetStartingPos.\n";
     }
@@ -4158,13 +4158,13 @@ bool ScriptFunctions_OneParameter(const std::vector<std::string>& params, Compil
       if (!stringToShort(params[1], delete_flag))
       {
         std::cout << "ScriptCompiler: Error: SetDelete requires a short value, "
-                  << "but \""<<params[1]<<"\" is no short.\n";
+                  << "but \"" << params[1] << "\" is no short.\n";
         return false;
       }//if
-      if ((delete_flag!=0) and (delete_flag!=1))
+      if ((delete_flag != 0) && (delete_flag != 1))
       {
-        std::cout << "ScriptCompiler: Error: SetDelete's flaghas to be 0 or 1, "
-                  << "but the given value is "<<delete_flag<<".\n";
+        std::cout << "ScriptCompiler: Error: SetDelete's flag has to be 0 or 1, "
+                  << "but the given value is " << delete_flag << ".\n";
         return false;
       }
       //push function
@@ -4692,7 +4692,7 @@ bool ScriptFunctions_TwoParameters(const std::vector<std::string>& params, Compi
       any letter and even longer strings, as it seems. I'm not sure about the
       consequences in-game. We should put a warning at least.
     */
-    if ((Axis!='X') and (Axis!='Y') and (Axis!='Z'))
+    if ((Axis != 'X') && (Axis != 'Y') && (Axis != 'Z'))
     {
       std::cout << "ScriptCompiler: Warning: invalid parameter to Move.\n";
     }
@@ -4725,7 +4725,7 @@ bool ScriptFunctions_TwoParameters(const std::vector<std::string>& params, Compi
       any letter and even longer strings, as it seems. I'm not sure about the
       consequences in-game. We should put a warning at least.
     */
-    if ((Axis!='X') and (Axis!='Y') and (Axis!='Z'))
+    if ((Axis != 'X') && (Axis != 'Y') && (Axis != 'Z'))
     {
       std::cout << "ScriptCompiler: Warning: invalid parameter to MoveWorld.\n";
     }
@@ -4856,7 +4856,7 @@ bool ScriptFunctions_TwoParameters(const std::vector<std::string>& params, Compi
       any letter, as it seems. I'm not sure about the consequences in-game.
       We should put a warning at least.
     */
-    if ((Axis!='X') and (Axis!='Y') and (Axis!='Z'))
+    if ((Axis != 'X') && (Axis != 'Y') && (Axis != 'Z'))
     {
       std::cout << "ScriptCompiler: Warning: invalid axis parameter to Rotate.\n";
     }
@@ -4864,7 +4864,7 @@ bool ScriptFunctions_TwoParameters(const std::vector<std::string>& params, Compi
     float amount;
     if (!stringToFloat(params[2], amount))
     {
-      std::cout << "ScriptCompiler: Error: \""<<params[2]<<"\" is not a float.\n";
+      std::cout << "ScriptCompiler: Error: \"" << params[2] << "\" is not a float.\n";
       return false;
     }
     //push function
@@ -4890,7 +4890,7 @@ bool ScriptFunctions_TwoParameters(const std::vector<std::string>& params, Compi
       any letter, as it seems. I'm not sure about the consequences in-game.
       We should put a warning at least.
     */
-    if ((Axis!='X') and (Axis!='Y') and (Axis!='Z'))
+    if ((Axis != 'X') && (Axis != 'Y') && (Axis != 'Z'))
     {
       std::cout << "ScriptCompiler: Warning: invalid axis parameter to RotateWorld.\n";
     }
@@ -4945,7 +4945,7 @@ bool ScriptFunctions_TwoParameters(const std::vector<std::string>& params, Compi
       any letter, as it seems. I'm not sure about the consequences in-game.
       We should put a warning at least.
     */
-    if ((Axis!='X') and (Axis!='Y') and (Axis!='Z'))
+    if ((Axis != 'X') && (Axis != 'Y') && (Axis != 'Z'))
     {
       std::cout << "ScriptCompiler: Warning: invalid parameter to SetAngle.\n";
     }
@@ -5045,7 +5045,7 @@ bool ScriptFunctions_TwoParameters(const std::vector<std::string>& params, Compi
       any letter, as it seems. I'm not sure about the consequences in-game.
       We should put a warning at least.
     */
-    if ((Axis!='X') and (Axis!='Y') and (Axis!='Z'))
+    if ((Axis != 'X') && (Axis != 'Y') && (Axis != 'Z'))
     {
       std::cout << "ScriptCompiler: Warning: invalid parameter to SetPos.\n";
     }
@@ -8163,8 +8163,8 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       const std::string::size_type comp_pos = getComparePos(WorkString, dummy);
       const std::string::size_type qual_pos = getQualifierStart(WorkString);
       //check if qualifier is before compare statement
-      if ((comp_pos!=std::string::npos) and (qual_pos!=std::string::npos) and
-          (qual_pos+2<comp_pos))
+      if ((comp_pos != std::string::npos) && (qual_pos != std::string::npos) &&
+          (qual_pos + 2 < comp_pos))
       {
         //we have a qualifier on the left side, extract part before qualifier
         std::string leftist = WorkString.substr(0, qual_pos);
@@ -8227,8 +8227,8 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       CompiledData.pushCode(CodeEndWhile);
     }//if EndWhile found
     //check for end of script
-    else if ((lowerCase(lines.at(i))=="end") or (lowerCase(lines.at(i).substr(0,4))=="end ")
-             or (lowerCase(lines.at(i).substr(0,4))=="end\t"))
+    else if ((lowerCase(lines.at(i)) == "end") || (lowerCase(lines.at(i).substr(0,4)) == "end ")
+             || (lowerCase(lines.at(i).substr(0,4)) == "end\t"))
     {
       CompiledData.pushCode(CodeEnd);
       EndLineFound = true;
@@ -8246,12 +8246,12 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       //part before qualifier should be object name
       WorkString = lines.at(i).substr(0, qualStart);
       StripEnclosingQuotes(WorkString);
-      if ((WorkString.empty()) or (qualStart+2>=lines.at(i).length()))
+      if (WorkString.empty() || (qualStart + 2 >= lines[i].length()))
       {
         std::cout << "ScriptCompiler: Error: invalid position of -> encountered.\n"
-                  << "String is \""<<WorkString<<"\", pos. of qual. is "
-                  <<qualStart<<" and line's length is "<<lines.at(i).length()
-                  <<".\nThe line itself is \""<<lines.at(i)<<"\".\n";
+                  << "String is \"" << WorkString << "\", pos. of qual. is "
+                  << qualStart << " and line's length is " << lines[i].length()
+                  <<".\nThe line itself is \"" << lines[i] << "\".\n";
         return false;
       }
       //push qualifier code
@@ -8264,10 +8264,10 @@ bool CompileScript(const std::string& Text, ScriptRecord& result)
       CompiledData.pushString(WorkString);
       //Now the rest of the expression after -> should be a function. If not,
       // return false/error.
-      if (not ScriptFunctions(lines.at(i).substr(qualStart+2) , CompiledData, false))
+      if (!ScriptFunctions(lines[i].substr(qualStart+2) , CompiledData, false))
       {
         std::cout << "ScriptCompiler: Error: could not handle part after "
-                  << "qualifier in line \""<<lines.at(i)<<"\".\n";
+                  << "qualifier in line \"" << lines[i] << "\".\n";
         return false;
       }
     }//if qualifier found

@@ -33,7 +33,10 @@ TEST_CASE("RegistryFunctions")
 
       REQUIRE( MWTP::getRegistryStringValueHKLM(data,
                "Software\\Microsoft\\Windows\\CurrentVersion\\Installer", "InstallerLocation") );
-      REQUIRE( lowerCase(data) == "c:\\windows\\system32");
+      const auto lc_data = lowerCase(data);
+      const bool with_slash = lc_data == "c:\\windows\\system32\\";
+      const bool no_slash = lc_data == "c:\\windows\\system32";
+      REQUIRE( (with_slash || no_slash) );
     }
 
     SECTION("get non-existing key")

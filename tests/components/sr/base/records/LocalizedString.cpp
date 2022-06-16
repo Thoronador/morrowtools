@@ -35,8 +35,8 @@ TEST_CASE("LocalizedString")
 
     REQUIRE_FALSE( localized.isPresent() );
     REQUIRE( localized.getType() == LocalizedString::Type::None );
-    REQUIRE_THROWS_AS( localized.getIndex(), WrongStringType& );
-    REQUIRE_THROWS_AS( localized.getString(), WrongStringType& );
+    REQUIRE_THROWS_AS( localized.getIndex(), WrongStringType );
+    REQUIRE_THROWS_AS( localized.getString(), WrongStringType );
     REQUIRE( localized.getWriteSize() == 0 );
   }
 
@@ -157,7 +157,7 @@ TEST_CASE("LocalizedString")
       REQUIRE( localized.getType() == LocalizedString::Type::String );
       REQUIRE( localized.getString() == "foo bar 3" );
       REQUIRE( localized.isPresent() );
-      REQUIRE_THROWS_AS( localized.getIndex(), WrongStringType& );
+      REQUIRE_THROWS_AS( localized.getIndex(), WrongStringType );
 
       // Check write size.
       REQUIRE( localized.getWriteSize() == 16 );
@@ -189,7 +189,7 @@ TEST_CASE("LocalizedString")
       // Check data.
       REQUIRE( localized.getType() == LocalizedString::Type::String );
       REQUIRE( localized.getString() == "foo bar 42" );
-      REQUIRE_THROWS_AS( localized.getIndex(), WrongStringType& );
+      REQUIRE_THROWS_AS( localized.getIndex(), WrongStringType );
       REQUIRE( localized.isPresent() );
 
       // Check write size.

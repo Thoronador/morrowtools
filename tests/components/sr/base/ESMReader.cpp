@@ -41,7 +41,7 @@ TEST_CASE("SRTP::ESMReader")
       // write "ESM file"
       {
         const std::string_view data = "TES4\xF6\0\0\0\x81\0\0\0\0\0\0\0\0\0\0\0\x2B\0\0\0HEDR\x0C\0\x9A\x99\xD9\x3F\x69\x05\0\0\xDF\x09\x00\xFF\x43NAM\x09\0bnesmith\0MAST\x0B\0Skyrim.esm\0DATA\x08\0\0\0\0\0\0\0\0\0ONAM\x9C\0\xFE\x48\x07\x00\xA4\xFE\x10\x00\x9B\xF4\x0D\x00\x5E\x6D\x0A\x00\x04\x8A\x0E\x00\xA0\xFE\x10\x00\x71\x6D\x0A\x00\x65\xBA\x09\x00\xA7\xFE\x10\x00\x46\xE9\x0F\x00\x27\x4D\x10\x00\x60\x6D\x0A\x00\xAC\x0E\x0C\x00\x72\x6D\x0A\x00\x74\xBA\x09\x00\x50\xE9\x0F\x00\x60\xBD\x02\x00\xA3\xFE\x10\x00\xD9\x0E\x0C\x00\xA6\xFE\x10\x00\xE9\x6C\x10\x00\x79\x19\x08\x00\x61\x6D\x0A\x00\xA2\xFE\x10\x00\x73\x6D\x0A\x00\xEF\x89\x0E\x00\x48\xE9\x0F\x00\x6C\xBA\x09\x00\x2D\x4F\x0C\x00\xD2\x2E\x10\x00\xEA\x6C\x10\x00\x2F\xEF\x09\x00\xA5\xFE\x10\x00\x4B\xE9\x0F\x00\x5F\x6D\x0A\x00\xEC\x89\x0E\x00\x70\x6D\x0A\x00\xA1\xFE\x10\x00\xD2\x9C\x10\0INTV\x04\0\x21\0\0\0INCC\x04\0\x17\0\0\0"sv;
-        std::ofstream file("FullHeaderOnly.esm");
+        std::ofstream file("FullHeaderOnly.esm", std::ios_base::out | std::ios_base::binary);
         file.write(data.data(), data.size());
         file.close();
       }
@@ -101,7 +101,7 @@ TEST_CASE("SRTP::ESMReader")
       // write "ESM" file
       {
         const std::string_view data = "TES4\xF6\0\0\0\x81"sv;
-        std::ofstream file("incompleteHeader.esm");
+        std::ofstream file("incompleteHeader.esm", std::ios_base::out | std::ios_base::binary);
         file.write(data.data(), data.size());
         file.close();
       }
@@ -123,7 +123,7 @@ TEST_CASE("SRTP::ESMReader")
       // write "ESM file"
       {
         const std::string_view data = "TES4\x2C\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x28\0\0\0HEDR\x0C\0\xD7\xA3\x70\x3F\x02\0\0\0\x92\x0F\0\0CNAM\x0A\0mcarofano\0INTV\x04\0\xC5\x26\x01\x00GRUP\x81\0\0\0FACT\0\0\0\0\x16\x6E\x32\0\0\0\0\0FACT\x51\0\0\0\0\0\0\0\x44\x09\0\x01\x16\x6E\x32\0\x28\0\x01\0EDID\x15\0CR08ExclusionFaction\0DATA\x04\0\0\0\0\0CRVA\x14\0\x01\x01\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0VENV\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
-        std::ofstream file("readESM-sample.esm");
+        std::ofstream file("readESM-sample.esm", std::ios_base::out | std::ios_base::binary);
         file.write(data.data(), data.size());
         file.close();
       }
@@ -164,7 +164,7 @@ TEST_CASE("SRTP::ESMReader")
     {
       // write "ESM" file
       {
-        std::ofstream file("readESM-not-valid-tes4-header.esm");
+        std::ofstream file("readESM-not-valid-tes4-header.esm", std::ios_base::out | std::ios_base::binary);
         file.write("FAIL1234", 8);
         file.close();
       }
@@ -179,7 +179,7 @@ TEST_CASE("SRTP::ESMReader")
       // write "ESM" file
       {
         const std::string_view data = "TES4\xF6\0\0\0\x81"sv;
-        std::ofstream file("readESM-incompleteHeader.esm");
+        std::ofstream file("readESM-incompleteHeader.esm", std::ios_base::out | std::ios_base::binary);
         file.write(data.data(), data.size());
         file.close();
       }

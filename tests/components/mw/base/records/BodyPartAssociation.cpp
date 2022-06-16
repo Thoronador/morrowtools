@@ -18,6 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
+#include <sstream>
 #include "../../../locate_catch.hpp"
 #include "../../../../../mw/base/records/BodyPartAssociation.hpp"
 

@@ -126,8 +126,6 @@ TEST_CASE("CTDA_CISx_compound")
   {
     using namespace std::string_view_literals;
 
-    uint32_t dummy = 0;
-
     SECTION("save compound without CISx")
     {
       std::ostringstream stream;

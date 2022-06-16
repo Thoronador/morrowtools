@@ -18,6 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
+#include <sstream>
 #include "../../../../locate_catch.hpp"
 #include "../../../../../../sr/base/records/quest/QSTAEntry.hpp"
 

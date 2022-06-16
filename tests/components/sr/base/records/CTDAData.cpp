@@ -186,8 +186,6 @@ TEST_CASE("CTDAData")
   {
     using namespace std::string_view_literals;
 
-    uint32_t dummy = 0;
-
     SECTION("save record")
     {
       std::ostringstream stream;

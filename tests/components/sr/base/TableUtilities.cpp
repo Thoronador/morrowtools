@@ -64,12 +64,16 @@ TEST_CASE("TableUtilities")
       REQUIRE( getAssociatedTableFiles(glcDirectory + "only_two.esm", files) != 0 );
     }
 
+    // Four string table files required a file system with case-sensitive names,
+    // but that is usually not available on Windows platforms.
+    #if !defined(_WIN32)
     SECTION("failure: too much string files exist")
     {
       std::vector<std::string> files;
 
       REQUIRE( getAssociatedTableFiles(glcDirectory + "four.esm", files) != 0 );
     }
+    #endif
   }
 
   SECTION("getLanguageComponent")
@@ -109,6 +113,9 @@ TEST_CASE("TableUtilities")
                    "only_two", component, files) != 0 );
     }
 
+    // Four string table files required a file system with case-sensitive names,
+    // but that is usually not available on Windows platforms.
+    #if !defined(_WIN32)
     SECTION("failure: too much string files exist")
     {
       std::string component;
@@ -117,6 +124,7 @@ TEST_CASE("TableUtilities")
       REQUIRE( getLanguageComponent(glcDirectory,
                    "four", component, files) != 0 );
     }
+    #endif
   }
 
   SECTION("loadStringTables")

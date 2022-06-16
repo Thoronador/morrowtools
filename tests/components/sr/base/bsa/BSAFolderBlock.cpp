@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include <catch.hpp>
+#include "../../../locate_catch.hpp"
 #include "../../../../../sr/base/bsa/BSAFolderBlock.hpp"
 
 TEST_CASE("BSAFolderBlock")

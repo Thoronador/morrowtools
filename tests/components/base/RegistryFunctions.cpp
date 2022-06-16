@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include <catch.hpp>
+#include "../locate_catch.hpp"
 #include "../../../base/RegistryFunctions.hpp"
 #include "../../../base/UtilityFunctions.hpp"
 

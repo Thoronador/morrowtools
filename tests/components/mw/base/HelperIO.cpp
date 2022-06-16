@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include <catch.hpp>
+#include "../../locate_catch.hpp"
 #include "../../../../mw/base/HelperIO.hpp"
 #include "../../../../mw/base/MW_Constants.hpp"
 

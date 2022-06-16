@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include <catch.hpp>
+#include "../../../../locate_catch.hpp"
 #include "../../../../../../sr/base/records/quest/QSDTRecord.hpp"
 #include <sstream>
 #include <string_view>

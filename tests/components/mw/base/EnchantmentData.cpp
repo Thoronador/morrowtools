@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include <catch.hpp>
+#include "../../locate_catch.hpp"
 #include "../../../../mw/base/Enchantment.hpp"
 #include <sstream>
 #include <string_view>

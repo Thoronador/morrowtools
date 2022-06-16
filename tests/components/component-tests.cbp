@@ -320,6 +320,7 @@
 		<Unit filename="base/SlashFunctions.cpp" />
 		<Unit filename="base/UtilityFunctions.cpp" />
 		<Unit filename="base/lz4Compression.cpp" />
+		<Unit filename="locate_catch.hpp" />
 		<Unit filename="main.cpp" />
 		<Unit filename="mw/base/DepFile.cpp" />
 		<Unit filename="mw/base/DepFileList.cpp" />

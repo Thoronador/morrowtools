@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include <catch.hpp>
+#include "../../locate_catch.hpp"
 #include <ctime>
 #include <fstream>
 #include "../../../../base/DirectoryFunctions.hpp"

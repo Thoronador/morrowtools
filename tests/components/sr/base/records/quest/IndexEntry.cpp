@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include <catch.hpp>
+#include "../../../../locate_catch.hpp"
 #include "../../../../../../sr/base/records/quest/IndexEntry.hpp"
 
 TEST_CASE("IndexEntry")

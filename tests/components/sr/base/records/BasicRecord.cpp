@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include <catch.hpp>
+#include "../../../locate_catch.hpp"
 #include "../../../../../sr/base/records/ActionRecord.hpp"
 
 TEST_CASE("BasicRecord")

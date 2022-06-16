@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include <catch.hpp>
+#include "../locate_catch.hpp"
 #include <string_view>
 #include "../../../base/ByteBuffer.hpp"
 

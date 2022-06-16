@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include <catch.hpp>
+#include "../../../locate_catch.hpp"
 #include "../../../../../sr/bsa_cli/commands/Operations.hpp"
 
 TEST_CASE("bsa_cli::Operations")

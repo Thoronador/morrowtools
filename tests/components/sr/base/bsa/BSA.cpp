@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include <catch.hpp>
+#include "../../../locate_catch.hpp"
 #include <filesystem>
 #include "../../../../../sr/base/bsa/BSA.hpp"
 

@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include <catch.hpp>
+#include "../../locate_catch.hpp"
 #include <iostream>
 #include "../../../../sr/base/ESMFileContents.hpp"
 

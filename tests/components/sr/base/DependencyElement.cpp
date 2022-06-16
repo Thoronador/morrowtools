@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include <catch.hpp>
+#include "../../locate_catch.hpp"
 #include "../../../../sr/base/DependencySolver.hpp"
 
 TEST_CASE("DependencyElement")

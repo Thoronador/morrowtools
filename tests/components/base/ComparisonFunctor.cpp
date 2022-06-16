@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include <catch.hpp>
+#include "../locate_catch.hpp"
 #include <string>
 #include "../../../base/ComparisonFunctor.hpp"
 

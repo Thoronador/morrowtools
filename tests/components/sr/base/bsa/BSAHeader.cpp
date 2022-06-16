@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include <catch.hpp>
+#include "../../../locate_catch.hpp"
 #include "../../../../../sr/base/bsa/BSAHeader.hpp"
 
 TEST_CASE("BSAHeader")

@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include <catch.hpp>
+#include "../../locate_catch.hpp"
 #include "../../../../mw/base/DepFiles.hpp"
 
 TEST_CASE("MWTP::DepFile")

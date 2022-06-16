@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include <catch.hpp>
+#include "../../locate_catch.hpp"
 #include <filesystem>
 #include <string_view>
 #include "../../../../mw/base/ESMReader.hpp"

@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include <catch.hpp>
+#include "../../../locate_catch.hpp"
 #include <array>
 #include "../../../../../sr/bsa_cli/commands/Commands.hpp"
 

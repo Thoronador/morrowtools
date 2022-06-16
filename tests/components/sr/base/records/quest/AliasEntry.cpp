@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include <catch.hpp>
+#include "../../../../locate_catch.hpp"
 #include "../../../../../../sr/base/records/quest/AliasEntry.hpp"
 #include <sstream>
 #include <string_view>

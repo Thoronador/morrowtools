@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include <catch.hpp>
+#include "../../../locate_catch.hpp"
 #include "../../../../../sr/base/records/CellRecord.hpp"
 
 TEST_CASE("CellRecord::SubrecordXCLC")

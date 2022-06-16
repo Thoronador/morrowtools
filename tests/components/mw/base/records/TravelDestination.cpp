@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include <catch.hpp>
+#include "../../../locate_catch.hpp"
 #include "../../../../../mw/base/records/TravelDestination.hpp"
 
 TEST_CASE("MWTP::TravelDestination")

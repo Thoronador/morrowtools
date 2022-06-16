@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include <catch.hpp>
+#include "../../../locate_catch.hpp"
 #include "../../../../../sr/bsa_cli/commands/CommandFactory.hpp"
 #include "../../../../../sr/bsa_cli/commands/Commands.hpp"
 #include "../../../../../sr/bsa_cli/commands/ExtractAll.hpp"

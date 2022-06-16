@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include <catch.hpp>
+#include "../../../locate_catch.hpp"
 #include <sstream>
 #include <string_view>
 #include "../../../../../mw/base/records/WeaponRecord.hpp"

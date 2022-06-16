@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include <catch.hpp>
+#include "../../../locate_catch.hpp"
 #include <array>
 #include <fstream>
 #include "../../../../../base/FileFunctions.hpp"

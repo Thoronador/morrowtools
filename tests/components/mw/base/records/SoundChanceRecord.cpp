@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include <catch.hpp>
+#include "../../../locate_catch.hpp"
 #include "../../../../../mw/base/records/RegionRecord.hpp"
 
 TEST_CASE("MWTP::SoundChanceRecord")

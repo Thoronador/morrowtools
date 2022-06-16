@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include <catch.hpp>
+#include "../../../locate_catch.hpp"
 #include "../../../../../mw/base/records/BodyPartAssociation.hpp"
 
 TEST_CASE("MWTP::BodyPartAssociation")

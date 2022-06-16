@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include <catch.hpp>
+#include "../locate_catch.hpp"
 #include <cstring>
 #include <fstream>
 #include "../../../base/CompressionFunctions.hpp"

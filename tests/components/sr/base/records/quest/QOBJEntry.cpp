@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include <catch.hpp>
+#include "../../../../locate_catch.hpp"
 #include "../../../../../../sr/base/records/quest/QOBJEntry.hpp"
 
 TEST_CASE("QOBJEntry")

@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include <catch.hpp>
+#include "../locate_catch.hpp"
 #include "../../../base/SlashFunctions.hpp"
 
 TEST_CASE("SlashFunctions")

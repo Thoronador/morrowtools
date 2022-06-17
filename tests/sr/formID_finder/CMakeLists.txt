@@ -16,8 +16,10 @@ add_test(NAME formID_finder_help_question_mark
          COMMAND $<TARGET_FILE:formID_finder> -?)
 
 # Windows-style help parameter "/?"
-add_test(NAME formID_finder_help_question_mark_windows
-         COMMAND $<TARGET_FILE:formID_finder> /?)
+if (NOT DEFINED ENV{GITHUB_ACTIONS} OR NOT MINGW)
+    add_test(NAME formID_finder_help_question_mark_windows
+             COMMAND $<TARGET_FILE:formID_finder> /?)
+endif ()
 
 # parameter to show version number
 add_test(NAME formID_finder_version

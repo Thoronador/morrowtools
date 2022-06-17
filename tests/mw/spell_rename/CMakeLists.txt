@@ -15,8 +15,10 @@ add_test(NAME spell_rename_help_question_mark
          COMMAND $<TARGET_FILE:spell_rename> -?)
 
 # Windows-style help parameter "/?"
-add_test(NAME spell_rename_help_question_mark_windows
-         COMMAND $<TARGET_FILE:spell_rename> /?)
+if (NOT DEFINED ENV{GITHUB_ACTIONS} OR NOT MINGW)
+    add_test(NAME spell_rename_help_question_mark_windows
+             COMMAND $<TARGET_FILE:spell_rename> /?)
+endif ()
 
 # parameter to show version number
 add_test(NAME spell_rename_version

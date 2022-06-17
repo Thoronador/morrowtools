@@ -15,8 +15,10 @@ add_test(NAME skill_rebalance_help_question_mark
          COMMAND $<TARGET_FILE:skill_rebalance> -?)
 
 # Windows-style help parameter "/?"
-add_test(NAME skill_rebalance_help_question_mark_windows
-         COMMAND $<TARGET_FILE:skill_rebalance> /?)
+if (NOT DEFINED ENV{GITHUB_ACTIONS} OR NOT MINGW)
+    add_test(NAME skill_rebalance_help_question_mark_windows
+             COMMAND $<TARGET_FILE:skill_rebalance> /?)
+endif ()
 
 # parameter to show version number
 add_test(NAME skill_rebalance_version

@@ -15,8 +15,10 @@ add_test(NAME data_cleaner_help_question_mark
          COMMAND $<TARGET_FILE:data_cleaner> -?)
 
 # Windows-style help parameter "/?"
-add_test(NAME data_cleaner_help_question_mark_windows
-         COMMAND $<TARGET_FILE:data_cleaner> /?)
+if (NOT DEFINED ENV{GITHUB_ACTIONS} OR NOT MINGW)
+    add_test(NAME data_cleaner_help_question_mark_windows
+             COMMAND $<TARGET_FILE:data_cleaner> /?)
+endif ()
 
 # parameter to show version number
 add_test(NAME data_cleaner_version

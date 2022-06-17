@@ -16,8 +16,10 @@ add_test(NAME comv_cams_help_question_mark
          COMMAND $<TARGET_FILE:conv_cams> -?)
 
 # Windows-style help parameter "/?"
-add_test(NAME conv_cams_help_question_mark_windows
-         COMMAND $<TARGET_FILE:conv_cams> /?)
+if (NOT DEFINED ENV{GITHUB_ACTIONS} OR NOT MINGW)
+    add_test(NAME conv_cams_help_question_mark_windows
+             COMMAND $<TARGET_FILE:conv_cams> /?)
+endif ()
 
 # parameter to show version number
 add_test(NAME comv_cams_version

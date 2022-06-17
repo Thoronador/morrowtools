@@ -16,8 +16,10 @@ add_test(NAME bsa_cli_help_question_mark
          COMMAND $<TARGET_FILE:bsa-cli> -?)
 
 # Windows-style help parameter "/?"
-add_test(NAME bsa_cli_help_question_mark_windows
-         COMMAND $<TARGET_FILE:bsa-cli> /?)
+if (NOT DEFINED ENV{GITHUB_ACTIONS} OR NOT MINGW)
+    add_test(NAME bsa_cli_help_question_mark_windows
+             COMMAND $<TARGET_FILE:bsa-cli> /?)
+endif ()
 
 # parameter to show version number
 add_test(NAME bsa_cli_version

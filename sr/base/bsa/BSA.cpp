@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2014, 2021  Thoronador
+    Copyright (C) 2011, 2012, 2014, 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,8 +26,8 @@
 #include "../../../base/UtilityFunctions.hpp"
 #include "../../../base/DirectoryFunctions.hpp"
 #include "../../../base/CompressionFunctions.hpp"
-#if !defined(_WIN32)
-  // Currently, this class has no lz4 support for Windows yet.
+#if !defined(MWTP_NO_LZ4)
+  // Only include lz4 support when it is not disabled.
   #include "../../../base/lz4Compression.hpp"
 #endif
 
@@ -582,14 +582,12 @@ bool BSA::extractFile(const uint32_t folderIndex, const uint32_t fileIndex, cons
   {
     const bool compressionUsesLZ4 = m_Header.version >= 105;
     // bsa-cli cannot handle LZ4 decompression for Windows systems, yet.
-    #if defined(_WIN32)
+    #if defined(MWTP_NO_LZ4)
     if (compressionUsesLZ4)
     {
       std::cerr << "BSA::extractFile: Error: This archive uses LZ4 for "
-                << "compressed data, but LZ4 decompression is not yet "
-                << "implemented in the Windows operating system version of "
-                << "this program!\n";
-                // a.k.a. classic "That wouldn't have happened with Linux."
+                << "compressed data, but LZ4 decompression is not enabled "
+                << "in the current build of this program!\n";
       return false;
     }
     #endif
@@ -617,7 +615,7 @@ bool BSA::extractFile(const uint32_t folderIndex, const uint32_t fileIndex, cons
     }
     // allocate buffer for decompressed data
     buffer = new uint8_t[decompSize];
-    #if defined(_WIN32)
+    #if defined(MWTP_NO_LZ4)
     const bool success = MWTP::zlibDecompress(compressedBuffer, extractedFileSize - 4, buffer, decompSize);
     #else
     const bool success = compressionUsesLZ4 ?

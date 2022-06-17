@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Morrowind Tools Project.
-    Copyright (C) 2021  Dirk Stolle
+    Copyright (C) 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@ TEST_CASE("lz4Compression")
   const std::string test_directory = currentFile.substr(0, currentFile.size() - std::string("lz4Compression.cpp").size())
           .append("test_files").append(delim);
 
+  #if !defined(MWTP_NO_LZ4)
   SECTION("lz4Decompress")
   {
     SECTION("normal data")
@@ -147,6 +148,7 @@ TEST_CASE("lz4Compression")
                                          reinterpret_cast<uint8_t*>(decompression), 555) );
     }
   }
+  #endif
 
   SECTION("lz4Version")
   {

@@ -54,6 +54,38 @@ if (NOT MINGW AND ${CMAKE_CXX_COMPILER} MATCHES "mingw")
   set(MINGW 1)
 endif()
 
+# option to disable LZ4 features
+option(DISABLE_LZ4 "Disables any features using the lz4 library." OFF)
+# If DISABLE_LZ4 is on (e. g. via `cmake -DDISABLE_LZ4=ON`),
+# then all liblz4 calls are avoided, reducing BSA decompression functionality.
+# The option is off by default.
+
+# option to auto-detect liblz4
+OPTION(AUTODETECT_LZ4 "Automatically detect availability of liblz4." ON)
+# If AUTODETECT_LZ4 is off (e. g. via `cmake -DAUTODETECT_LZ4=OFF`), then the
+# build will not try to detect liblz4 automatically.
+# The option is on by default.
+#
+# Note that you should also explicitly set DISABLE_LZ4 to ON or OFF when
+# disabling the detection mechanism.
+
+# detect liblz4 based on the environment
+if (AUTODETECT_LZ4)
+    if (MINGW AND CMAKE_HOST_UNIX)
+        # Cross-compiler with MingGW has not LZ4 yet, so disable it.
+        set (DISABLE_LZ4 ON)
+    elseif (MSVC)
+        # MSVC build have no LZ4 yet, so disable it.
+        set (DISABLE_LZ4 ON)
+    else ()
+        # Other builds usually provide LZ4, so enable it.
+        set (DISABLE_LZ4 OFF)
+    endif ()
+    message(STATUS "Auto-detection of lz4 set DISABLE_LZ4 to ${DISABLE_LZ4}.")
+else ()
+    message(STATUS "Auto-detection of lz4 is not active.")
+endif (AUTODETECT_LZ4)
+
 # Recurse into subdirectory for Morrowind-related executables.
 add_subdirectory (mw)
 # Recurse into subdirectory for Skyrim-related executables.

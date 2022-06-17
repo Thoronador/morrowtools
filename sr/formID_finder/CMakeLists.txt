@@ -125,8 +125,8 @@ else()
   endif (ZLIB_FOUND)
 endif()
 
-# lz4 integration is non-trivial on Windows, so only use it on Linux.
-if (NOT MINGW AND NOT MSVC)
+# Only use lz4 when it is not disabled.
+if (NOT DISABLE_LZ4)
   set(LZ4_DIR "../../cmake/" )
 
   find_package (LZ4)
@@ -136,6 +136,12 @@ if (NOT MINGW AND NOT MSVC)
   else ()
     message ( FATAL_ERROR "liblz4 was not found!" )
   endif (LZ4_FOUND)
+else ()
+  if (NOT MSVC)
+    add_definitions(-DMWTP_NO_LZ4)
+  else ()
+    add_definitions( /DMWTP_NO_LZ4=1 )
+  endif ()
 endif ()
 
 # GNU GCC before 9.1.0 needs to link to libstdc++fs explicitly.

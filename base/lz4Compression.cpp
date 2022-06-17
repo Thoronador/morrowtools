@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2021  Dirk Stolle
+    Copyright (C) 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 
 #include "lz4Compression.hpp"
 #include <iostream>
-#if !defined(_WIN32)
+#if !defined(MWTP_NO_LZ4)
 #include <lz4.h>
 #include <lz4frame.h>
 #endif
@@ -30,8 +30,8 @@ namespace MWTP
 
 bool lz4Decompress(uint8_t * compressedData, const uint32_t compressedSize, uint8_t * decompBuffer, const uint32_t decompSize)
 {
-  #if defined(_WIN32)
-  // No Windows builds with liblz4, yet.
+  #if defined(MWTP_NO_LZ4)
+  // This is a build without liblz4.
   return false;
   #else
   if ((compressedData == nullptr) || (compressedSize == 0)
@@ -116,8 +116,8 @@ bool lz4Decompress(uint8_t * compressedData, const uint32_t compressedSize, uint
 
 std::string lz4Version()
 {
-  #if defined(_WIN32)
-  // No Windows builds with liblz4, yet.
+  #if defined(MWTP_NO_LZ4)
+  // This is a build without liblz4.
   return std::string("none");
   #else
     #if LZ4_VERSION_NUMBER < 10703

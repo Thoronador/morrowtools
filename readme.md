@@ -27,6 +27,7 @@ list some of the work that still has to be done for that specific directory.
 [![GitHub CI Clang status](https://github.com/Thoronador/morrowtools/workflows/Clang/badge.svg)](https://github.com/Thoronador/morrowtools/actions)
 [![GitHub CI GCC status](https://github.com/Thoronador/morrowtools/workflows/GCC/badge.svg)](https://github.com/Thoronador/morrowtools/actions)
 [![GitHub CI Cross-compiling for Win32 status](https://github.com/Thoronador/morrowtools/workflows/Cross-compile%20for%20Win32/badge.svg)](https://github.com/Thoronador/morrowtools/actions)
+[![GitHub CI MSYS2 status](https://github.com/Thoronador/morrowtools/workflows/MSYS2/badge.svg)](https://github.com/Thoronador/morrowtools/actions)
 [![GitLab CI Win64 cross-compile](https://gitlab.com/striezel/morrowtools/badges/master/pipeline.svg?ignore_skipped=true&key_text=Cross-compile%20for%20Win64&key_width=145)](https://gitlab.com/striezel/morrowtools/-/pipelines)
 
 ## Building from source

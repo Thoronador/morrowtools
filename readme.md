@@ -99,6 +99,11 @@ type
 
 in the root directory of your source checkout.
 
+## Building from source on Windows
+
+For information how to build natively on Windows, see the
+[MSYS2 build instructions](./documentation/msys2-build.md).
+
 ## Copyright and Licensing
 
 Copyright 2011-2022  Dirk Stolle

@@ -40,3 +40,41 @@ jobs:
           export MSYSTEM=MINGW64
           cd "$GITHUB_WORKSPACE"/build
           ctest -V
+      - name: Build statically linked binaries
+        run: |
+          export MSYSTEM=MINGW64
+          export CXX=g++
+          export CC=gcc
+          cd "$GITHUB_WORKSPACE"
+          mkdir build-static
+          cd build-static
+          cmake ../ -DENABLE_LTO=ON -DENABLE_STATIC_LINKING=ON
+          # Skyrim tools
+          cmake --build . -j4 --target bsa-cli
+          cmake --build . -j4 --target conv_cams
+          cmake --build . -j4 --target formID_finder
+          cmake --build . -j4 --target race_resize
+          # Morrowind tools
+          cmake --build . -j4 --target cell_translator
+          cmake --build . -j4 --target data_cleaner
+          cmake --build . -j4 --target skill_rebalance
+          cmake --build . -j4 --target spell_rename
+      - name: Collect statically linked artifacts
+        run: |
+          export MSYSTEM=MINGW64
+          mkdir -p "$GITHUB_WORKSPACE"/artifacts
+          cd "$GITHUB_WORKSPACE"
+          cp build-static/mw/cell_translator/cell_translator.exe artifacts/
+          cp build-static/mw/data_cleaner/data_cleaner.exe artifacts/
+          cp build-static/mw/skill_rebalance/skill_rebalance.exe artifacts/
+          cp build-static/mw/spell_rename/spell_rename.exe artifacts/
+          cp build-static/sr/bsa_cli/bsa-cli.exe artifacts/
+          cp build-static/sr/conv_cams/conv_cams.exe artifacts/
+          cp build-static/sr/formID_finder/formID_finder.exe artifacts/
+          cp build-static/sr/race_resize/race_resize.exe artifacts/
+      - name: Archive build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: msys2-artifacts-static-linking
+          path: |
+            artifacts/*.exe

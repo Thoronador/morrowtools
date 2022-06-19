@@ -1,6 +1,6 @@
 # Version history of bsa-cli
 
-## Next version (2022-06-??)
+## Version 0.7.2 (2022-06-19)
 
 __[feature]__
 The `info` command will now show whether the archive's flag for embedded file

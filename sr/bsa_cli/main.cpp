@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2021  Thoronador
+    Copyright (C) 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@
 
 void showVersion()
 {
-  std::cout << "BSA Command Line Tool for Skyrim, version 0.7.1, 2021-11-08\n"
+  std::cout << "BSA Command Line Tool for Skyrim, version 0.7.2, 2022-06-19\n"
             << "\nLibrary versions:\n"
             << " * lz4:  " << MWTP::lz4Version() << "\n"
             << " * zlib: " << MWTP::zlibVersion() << "\n";

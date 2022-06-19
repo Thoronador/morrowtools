@@ -1,5 +1,15 @@
 # Version history of bsa-cli
 
+## Next version (2022-06-??)
+
+__[feature]__
+The `info` command will now show whether the archive's flag for embedded file
+names is set.
+
+_(Note that `bsa-cli` is not yet able to extract archive files when the embedded
+file name flag is set. This feature may become available in a later version of
+`bsa-cli`.)_
+
 ## Version 0.7.1 (2021-11-08)
 
 __[bugfix]__

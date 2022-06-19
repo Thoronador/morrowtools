@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2021  Thoronador
+    Copyright (C) 2011, 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -76,6 +76,12 @@ struct BSAHeader
      */
     bool isXboxArchive() const;
 
+    /** \brief Checks whether file names are embedded, according to flags.
+     *
+     * \return Returns true, if file names are embedded.
+     */
+    bool hasEmbeddedFileNames() const;
+
     /** \brief Checks whether the file is an Xbox archive, according to flags.
      *
      * \return Returns true, the file is an Xbox archive.
@@ -99,7 +105,7 @@ struct BSAHeader
     /** \brief Checks whether the file contains certain types of content, according to flags.
      *
      * \param content   the content type to test for
-     * \return Returns true, the contains te given content type.
+     * \return Returns true, the contains the given content type.
      */
     bool contains(const ContentType content) const;
 }; // struct

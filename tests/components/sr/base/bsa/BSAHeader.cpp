@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Skyrim Tools Project.
-    Copyright (C) 2021  Dirk Stolle
+    Copyright (C) 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -321,6 +321,23 @@ TEST_CASE("BSAHeader")
 
     header.archiveFlags = 255;
     REQUIRE( header.isXboxArchive() );
+  }
+
+  SECTION("hasEmbeddedFileNames")
+  {
+    BSAHeader header;
+
+    header.archiveFlags = 0;
+    REQUIRE_FALSE( header.hasEmbeddedFileNames() );
+
+    header.archiveFlags = 256;
+    REQUIRE( header.hasEmbeddedFileNames() );
+
+    header.archiveFlags = 2;
+    REQUIRE_FALSE( header.hasEmbeddedFileNames() );
+
+    header.archiveFlags = 65535;
+    REQUIRE( header.hasEmbeddedFileNames() );
   }
 
   SECTION("usesXMemCodec, BSA version 103")

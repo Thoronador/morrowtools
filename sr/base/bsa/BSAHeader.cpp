@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2021  Thoronador
+    Copyright (C) 2011, 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -106,6 +106,11 @@ bool BSAHeader::filesCompressedByDefault() const
 bool BSAHeader::isXboxArchive() const
 {
   return (archiveFlags & (1 << 6)) != 0;
+}
+
+bool BSAHeader::hasEmbeddedFileNames() const
+{
+  return (archiveFlags & (1 << 8)) != 0;
 }
 
 bool BSAHeader::usesXMemCodec() const

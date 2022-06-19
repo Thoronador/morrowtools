@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2021  Thoronador
+    Copyright (C) 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -70,6 +70,7 @@ int Info::run()
   }
   std::cout << "\n"
     << "  Xbox archive:          " << (header.isXboxArchive() ? "yes" : "no") << "\n"
+    << "  embedded file names:   " << (header.hasEmbeddedFileNames() ? "yes" : "no") << "\n"
     << "  uses XMem compression: " << (header.usesXMemCodec() ? "yes" : "no") << "\n"
     << "Number of folders:       " << header.folderCount << "\n"
     << "Number of files:         " << header.fileCount << "\n"

@@ -73,7 +73,7 @@ bool lz4Decompress(uint8_t * compressedData, const uint32_t compressedSize, uint
     if (LZ4F_isError(expectedBytes))
     {
       std::cerr << "lz4Decompress: Error: Failed to decompress more data!\n"
-                << "Error message: " << LZ4F_getErrorName(errorCode) << "\n";
+                << "Error message: " << LZ4F_getErrorName(expectedBytes) << "\n";
       LZ4F_freeDecompressionContext(context);
       return false;
     }

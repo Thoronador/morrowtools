@@ -139,17 +139,6 @@ TEST_CASE("BSA")
     }
   }
 
-  SECTION("getFilesOfDirectory")
-  {
-    using namespace std::string_view_literals;
-
-    SECTION("BSA has not been opened / no structure data")
-    {
-      BSA bsa;
-      REQUIRE( bsa.getFilesOfDirectory(1, false).empty() );
-    }
-  }
-
   SECTION("getIndexOfFolder")
   {
     using namespace std::string_view_literals;

@@ -195,29 +195,6 @@ struct BSA
      */
     std::vector<DirectoryStruct> getDirectories() const;
 
-    // structure to contain both indexes for a file and its name
-    struct FileStruct
-    {
-      std::string name;
-      uint32_t folderIndex;
-      uint32_t fileIndex;
-      bool compressed;
-
-      FileStruct();
-    };
-
-    /** \brief Gets a list of all file names within a certain directory.
-     *
-     * \param folderIndex  the index of the folder whose files are requested
-     * \param fullName     if set to true, the returned names will contain the
-     *                     full directory path. Otherwise they will be the plain
-     *                     file name only.
-     * \return Returns a vector of all file names within the directory.
-     * \remarks Only works properly, if grabAllStructureData() has been called
-     *          with success.
-     */
-    std::vector<FileStruct> getFilesOfDirectory(const uint32_t folderIndex, const bool fullName) const;
-
     /** \brief Extracts the file with the given indexes and writes it to the
      *         specified destination.
      *

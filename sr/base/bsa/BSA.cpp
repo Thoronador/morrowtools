@@ -42,14 +42,6 @@ BSA::DirectoryStruct::DirectoryStruct()
 {
 }
 
-BSA::FileStruct::FileStruct()
-: name(std::string()),
-  folderIndex(cIndexNotFound),
-  fileIndex(cIndexNotFound),
-  compressed(false)
-{
-}
-
 BSA::BSA()
 : m_Status(Status::Fresh),
   m_Stream(std::ifstream()),
@@ -174,7 +166,7 @@ bool BSA::grabFolderBlocks()
   BSAFolderBlock tempFolderBlock;
   for (uint32_t i = 0; i < m_Folders.size(); ++i)
   {
-    if (!tempFolderBlock.loadFromStream(m_Stream, m_Folders.at(i).count))
+    if (!tempFolderBlock.loadFromStream(m_Stream, m_Folders[i].count))
     {
       std::cerr << "BSA::grabFolderBlocks: Error while reading!\n";
       m_Status = Status::Failed;
@@ -358,37 +350,6 @@ std::vector<BSA::DirectoryStruct> BSA::getDirectories() const
   return result;
 }
 
-std::vector<BSA::FileStruct> BSA::getFilesOfDirectory(const uint32_t folderIndex, const bool fullName) const
-{
-  std::vector<FileStruct> result;
-  if (!hasAllStructureData())
-  {
-    std::cerr << "BSA::getFilesOfDirectory: Error: Not all structure data is "
-              << "present to properly fulfill the requested operation!\n";
-    return result;
-  }
-  if (folderIndex >= m_FolderBlocks.size())
-  {
-    std::cerr << "BSA::getFilesOfDirectory: Error: Invalid folder index!\n";
-    return result;
-  }
-  FileStruct tempStruct;
-  const unsigned int count = m_FolderBlocks[folderIndex].files.size();
-  for (unsigned int i = 0; i < count; ++i)
-  {
-    tempStruct.folderIndex = folderIndex;
-    tempStruct.fileIndex = i;
-    tempStruct.name = m_FolderBlocks[folderIndex].files[i].fileName;
-    if (fullName)
-    {
-      tempStruct.name = m_FolderBlocks[folderIndex].folderName+'\\'+tempStruct.name;
-    }
-    tempStruct.compressed = isFileCompressed(folderIndex, i);
-    result.push_back(tempStruct);
-  }
-  return result;
-}
-
 void BSA::close()
 {
   if ((m_Status != Status::Fresh) && (Status::Closed != m_Status))
@@ -438,7 +399,7 @@ uint32_t BSA::getIndexOfFolder(std::string folderName) const
   folderName = lowerCase(folderName);
   for (uint32_t i = 0; i < m_FolderBlocks.size(); ++i)
   {
-    if (m_FolderBlocks.at(i).folderName == folderName)
+    if (m_FolderBlocks[i].folderName == folderName)
       return i;
   }
   return cIndexNotFound;
@@ -462,7 +423,7 @@ uint32_t BSA::getIndexOfFile(const uint32_t folderIndex, std::string fileName) c
   fileName = lowerCase(fileName);
   for (uint32_t i = 0; i < m_FolderBlocks[folderIndex].files.size(); ++i)
   {
-    if (m_FolderBlocks[folderIndex].files.at(i).fileName == fileName)
+    if (m_FolderBlocks[folderIndex].files[i].fileName == fileName)
       return i;
   }
 
@@ -525,7 +486,7 @@ bool BSA::isValidIndexPair(const uint32_t folderIndex, const uint32_t fileIndex)
     return false;
   }
 
-  if (m_FolderBlocks.at(folderIndex).files.size() <= fileIndex)
+  if (m_FolderBlocks[folderIndex].files.size() <= fileIndex)
   {
     return false;
   }

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2021  Thoronador
+    Copyright (C) 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -68,20 +68,6 @@ std::string operationToString(const Operation op)
     default:
          return "";
   }
-}
-
-std::array<Operation, 8> allOperations()
-{
-  return {
-    Operation::Commands,
-    Operation::ExtractAll,
-    Operation::ExtractFile,
-    Operation::ExtractFolder,
-    Operation::Folders,
-    Operation::Help,
-    Operation::Info,
-    Operation::List
-  };
 }
 
 } // namespace

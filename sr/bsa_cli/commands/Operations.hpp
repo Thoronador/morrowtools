@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2021  Thoronador
+    Copyright (C) 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -28,6 +28,7 @@
 namespace SRTP
 {
 
+/// enumeration type for possible operations of bsa-cli
 enum class Operation
 {
   Commands,
@@ -60,7 +61,19 @@ std::string operationToString(const Operation op);
  * \remarks There is no real reflection in C++, so we use this instead.
  * \return Returns an array containing all possible operations.
  */
-std::array<Operation, 8> allOperations();
+constexpr std::array<Operation, 8> allOperations()
+{
+  return {
+    Operation::Commands,
+    Operation::ExtractAll,
+    Operation::ExtractFile,
+    Operation::ExtractFolder,
+    Operation::Folders,
+    Operation::Help,
+    Operation::Info,
+    Operation::List
+  };
+}
 
 } // namespace
 

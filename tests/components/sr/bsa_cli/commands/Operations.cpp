@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Skyrim Tools Project.
-    Copyright (C) 2021  Dirk Stolle
+    Copyright (C) 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -46,6 +46,13 @@ TEST_CASE("bsa_cli::Operations")
     {
       REQUIRE_FALSE( operationToString(op).empty() );
     }
+  }
+
+  SECTION("operationToString - invalid enumeration")
+  {
+    const Operation op = static_cast<Operation>(static_cast<int>(Operation::List) + 42);
+
+    REQUIRE( operationToString(op).empty() );
   }
 
   SECTION("operationToString - parseOperation - roundtrip")

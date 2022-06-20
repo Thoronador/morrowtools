@@ -51,7 +51,7 @@ BSA::FileStruct::FileStruct()
 }
 
 BSA::BSA()
-: m_Status(bsFresh),
+: m_Status(Status::Fresh),
   m_Stream(std::ifstream()),
   m_Header(BSAHeader()),
   m_Folders(std::vector<BSAFolderRecord>()),
@@ -66,7 +66,7 @@ BSA::~BSA()
 
 bool BSA::open(const std::string& FileName)
 {
-  if ((m_Status != bsFresh) && (m_Status != bsClosed))
+  if ((m_Status != Status::Fresh) && (m_Status != Status::Closed))
   {
     std::cerr << "BSA::open: Error: BSA was already opened!\n";
     return false;
@@ -75,7 +75,7 @@ bool BSA::open(const std::string& FileName)
   if (!m_Stream)
   {
     std::cerr << "BSA::open: Error while opening file \"" << FileName << "\".\n";
-    m_Status = bsClosed;
+    m_Status = Status::Closed;
     return false;
   }
   // file opened, now read the header
@@ -83,12 +83,12 @@ bool BSA::open(const std::string& FileName)
   {
     std::cerr << "BSA::open: Error while reading header!\n";
     m_Stream.close();
-    m_Status = bsClosed;
+    m_Status = Status::Closed;
     return false;
   }
 
   // header was read successfully
-  m_Status = bsOpen;
+  m_Status = Status::Open;
   return true;
 }
 
@@ -123,12 +123,12 @@ bool BSA::grabAllStructureData()
 
 bool BSA::grabFolderData()
 {
-  if ((m_Status == bsFresh) || (m_Status == bsClosed))
+  if ((m_Status == Status::Fresh) || (m_Status == Status::Closed))
   {
     std::cerr << "BSA::grabFolderData: Error: BSA was not opened!\n";
     return false;
   }
-  if (m_Status != bsOpen)
+  if (m_Status != Status::Open)
   {
     std::cerr << "BSA::grabFolderData: Error: BSA has wrong status!\n";
     return false;
@@ -147,24 +147,24 @@ bool BSA::grabFolderData()
     if (!tempFolder.loadFromStream(m_Stream, m_Header.version))
     {
       std::cerr << "BSA::grabFolderData: Error while reading folders!\n";
-      m_Status = bsFailed;
+      m_Status = Status::Failed;
       return false;
     }
     m_Folders.push_back(tempFolder);
   }
 
-  m_Status = bsOpenFolderData;
+  m_Status = Status::OpenFolderData;
   return m_Stream.good();
 }
 
 bool BSA::grabFolderBlocks()
 {
-  if ((m_Status == bsFresh) || (m_Status == bsClosed))
+  if ((m_Status == Status::Fresh) || (m_Status == Status::Closed))
   {
     std::cerr << "BSA::grabFolderBlocks: Error: BSA was not opened!\n";
     return false;
   }
-  if (m_Status != bsOpenFolderData)
+  if (m_Status != Status::OpenFolderData)
   {
     std::cerr << "BSA::grabFolderBlocks: Error: BSA has wrong status!\n";
     return false;
@@ -177,24 +177,24 @@ bool BSA::grabFolderBlocks()
     if (!tempFolderBlock.loadFromStream(m_Stream, m_Folders.at(i).count))
     {
       std::cerr << "BSA::grabFolderBlocks: Error while reading!\n";
-      m_Status = bsFailed;
+      m_Status = Status::Failed;
       return false;
     }
     m_FolderBlocks.push_back(tempFolderBlock);
   }
 
-  m_Status = bsOpenFolderBlocks;
+  m_Status = Status::OpenFolderBlocks;
   return m_Stream.good();
 }
 
 bool BSA::grabFileNames()
 {
-  if ((m_Status == bsFresh) || (m_Status == bsClosed))
+  if ((m_Status == Status::Fresh) || (m_Status == Status::Closed))
   {
     std::cerr << "BSA::grabFileNames: Error: BSA was not opened!\n";
     return false;
   }
-  if (m_Status != bsOpenFolderBlocks)
+  if (m_Status != Status::OpenFolderBlocks)
   {
     std::cerr << "BSA::grabFileNames: Error: BSA has wrong status!\n";
     return false;
@@ -233,7 +233,7 @@ bool BSA::grabFileNames()
     std::cerr << "BSA::grabFileNames: Error while reading name list!\n";
     delete[] namesPointer;
     namesPointer = nullptr;
-    m_Status = bsFailed;
+    m_Status = Status::Failed;
     return false;
   }
 
@@ -256,7 +256,7 @@ bool BSA::grabFileNames()
                 << m_FolderBlocks.size() << "\n";
       delete[] namesPointer;
       namesPointer = nullptr;
-      m_Status = bsFailed;
+      m_Status = Status::Failed;
       return false;
     }
     // enough files?
@@ -274,7 +274,7 @@ bool BSA::grabFileNames()
                   << "names done: " << namesRead << "\n";
         delete[] namesPointer;
         namesPointer = nullptr;
-        m_Status = bsFailed;
+        m_Status = Status::Failed;
         return false;
       }
     } // if next folder
@@ -292,17 +292,17 @@ bool BSA::grabFileNames()
     std::cerr << "BSA::grabFileNames: Error: number of read file names does not "
               << "match the number given in the header. " << m_Header.fileCount
               << " files should be there, but " << namesRead << " were found!\n";
-    m_Status = bsFailed;
+    m_Status = Status::Failed;
     return false;
   }
 
-  m_Status = bsOpenFileNames;
+  m_Status = Status::OpenFileNames;
   return true;
 }
 
 void BSA::listFileNames(bool withCompressionStatus)
 {
-  if (m_Status != bsOpenFileNames)
+  if (m_Status != Status::OpenFileNames)
   {
     std::cerr << "BSA::listFileNames: Error: BSA has wrong status for that operation!\n";
     return;
@@ -340,7 +340,7 @@ void BSA::listFileNames(bool withCompressionStatus)
 std::vector<BSA::DirectoryStruct> BSA::getDirectories() const
 {
   std::vector<DirectoryStruct> result;
-  if ((m_Status != bsOpenFolderBlocks) && (m_Status != bsOpenFileNames))
+  if ((m_Status != Status::OpenFolderBlocks) && (m_Status != Status::OpenFileNames))
   {
     std::cerr << "BSA::getDirectories: Error: Not all folder data is present "
               << "to properly fulfill the requested operation!\n";
@@ -391,10 +391,10 @@ std::vector<BSA::FileStruct> BSA::getFilesOfDirectory(const uint32_t folderIndex
 
 void BSA::close()
 {
-  if ((m_Status != bsFresh) && (bsClosed != m_Status))
+  if ((m_Status != Status::Fresh) && (Status::Closed != m_Status))
   {
     m_Stream.close();
-    m_Status = bsClosed;
+    m_Status = Status::Closed;
   }
 }
 
@@ -415,7 +415,7 @@ const std::vector<BSAFolderBlock>& BSA::getFolderBlocks() const
 
 bool BSA::hasAllStructureData() const
 {
-  return m_Status == bsOpenFileNames;
+  return m_Status == Status::OpenFileNames;
 }
 
 bool BSA::hasFolder(const std::string& folderName) const
@@ -540,15 +540,13 @@ bool BSA::isFileCompressed(const uint32_t folderIndex, const uint32_t fileIndex)
     std::cerr << "BSA::isFileCompressed: Error: Not all structure data is "
               << "present to properly fulfill the requested operation!\n";
     throw std::runtime_error(std::string("BSA::isFileCompressed: Error: Not ")
-              +"all structure data is present to properly fulfill the requested operation!");
-    return false;
+              + "all structure data is present to properly fulfill the requested operation!");
   }
 
   if (!isValidIndexPair(folderIndex, fileIndex))
   {
     std::cerr << "BSA::isFileCompressed: Error: Invalid indices given!\n";
     throw std::invalid_argument("BSA::isFileCompressed: Error: Invalid indices given!");
-    return false;
   }
 
   return m_Header.filesCompressedByDefault() ^ m_FolderBlocks.at(folderIndex).files.at(fileIndex).isCompressionToggled();

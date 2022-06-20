@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2011, 2012, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -32,133 +32,160 @@ namespace SRTP
 struct BSA
 {
   public:
-    /* constructor */
     BSA();
 
-    /* destructor */
     ~BSA();
 
-    /* tries to open the given BSA file and reads its header. Returns true in
-       case of success.
-
-       parameters:
-           FileName - name of the BSA file that shall be opened
-    */
+    /** \brief Opens the given BSA file and reads its header.
+     *
+     * \param FileName name of the BSA file that shall be opened
+     * \return Returns true in case of success. Returns false otherwise.
+     */
     bool open(const std::string& FileName);
 
     void close();
 
-    /* function to access the header record - read-only */
+    /** \brief Gets the header data. Note that this is only
+     *
+     * \return Returns the header data.
+     * \remarks Note that this information is only accurate, after open() has
+     *          been called successfully.
+     */
     const BSAHeader& getHeader() const;
 
-    /* function to access the folder records - read-only */
+    /** \brief Gets the folder record information.
+     *
+     * \return Returns the folder record information.
+     * \remarks This information is only accurate, if either grabFolderData() or
+     *          grabAllStructureData() has been called successfully.
+     */
     const std::vector<BSAFolderRecord>& getFolders() const;
 
-    /* function to access the folder blocks - read-only */
+    /** \brief Gets the folder block information.
+     *
+     * \return Returns the folder block information.
+     * \remarks This information is only accurate, if either grabFolderBlocks() or
+     *          grabAllStructureData() has been called successfully.
+     */
     const std::vector<BSAFolderBlock>& getFolderBlocks() const;
 
-    /* returns true, if all structural data was read and the BSA is ready for
-       file extractions
-    */
+    /** \brief Checks whether all structural data was read and the BSA is ready
+     *         for file extractions.
+     *
+     * \return Returns true, if the BSA has all structural data.
+     *         Returns false otherwise.
+     */
     bool hasAllStructureData() const;
 
-    /* tries to read all structural data and returns true in case of success
-
-       remarks:
-           That function basically calls grabFolderData(), grabFolderBlocks()
-           and grabFileNames() in sequence and returns once they are all done
-           or when an error occurs - whichever comes first.
-    */
+    /** \brief Reads all structural data. and returns true in case of success
+     *
+     * \return Returns true in case of success. Returns false, if an error
+     *         occurred.
+     * \remarks The function basically calls grabFolderData(), grabFolderBlocks()
+     *          and grabFileNames() in sequence and returns once they are all
+     *          done or when an error occurs - whichever comes first.
+     */
     bool grabAllStructureData();
 
-    /* returns true, if the given folder is in the archive
-
-       parameters:
-           folderName - name of the folder (should be all lower case)
-    */
+    /** \brief Checks whether the given folder is in the archive.
+     *
+     * \param folderName  name of the folder (should be all lower case)
+     * \return Returns true, if the folder exists in the archive.
+     *         Returns false otherwise.
+     */
     bool hasFolder(const std::string& folderName) const;
 
-    // constant representing the index for "not found"
+    /// constant representing the index for "not found"
     static const uint32_t cIndexNotFound;
 
-    /* returns the index of the folder, if the given folder is in the archive.
-       Returns cIndexNotFound otherwise.
-
-       parameters:
-           folderName - name of the folder (should be all lower case)
-    */
+    /** \brief Gets the index of the give folder in the archive.
+     *
+     * \param folderName  name of the folder (should be all lower case)
+     * \return Returns the index of the folder, if the given folder is in the
+     *         archive. Returns cIndexNotFound otherwise.
+     */
     uint32_t getIndexOfFolder(std::string folderName) const;
 
-    /* returns the index of the file within the given folder block, if the
-       given folder and file are in the archive. Returns cIndexNotFound
-       otherwise.
-
-       parameters:
-           folderIndex - the index of the folder block
-           fileName    - name of the file without directory path (should be all
-                         lower case)
-    */
+    /** \brief Gets the index of the file within the given folder block.
+     *
+     * \param folderIndex  the index of the folder block
+     * \param fileName     name of the file without directory path (should be
+     *                     all lower case)
+     * \return Returns the index of the file within the given folder block, if
+     *         the given folder and file are in the archive.
+     *         Returns cIndexNotFound otherwise.
+     */
     uint32_t getIndexOfFile(const uint32_t folderIndex, std::string fileName) const;
 
-    /* will set folderIndex and fileIndex to the given folder and file indexes
-       for the specified file and return true in case of success. Returns false
-       in case of error, e.g. if the archive has not been opened yet.
-
-       parameters:
-           fileName    - name of the file in the archive, including full path
-           folderIndex - uint32 that will hold the folder's index
-           fileIndex   - uint32 that will hold the file's index within that folder
-
-       remarks:
-           The boolean return value does NOT indicate, whether the specified
-           file is in the archive or not; it just indicates, whether or not the
-           function could be executed successfully.
-           If the given file exists in the archive, both folderIndex and
-           fileIndex will not be cIndexNotFound.
-    */
+    /** \brief Set @folderIndex and @fileIndex to the folder and file indexes
+     *         for the specified file.
+     *
+     * \param fileName     name of the file in the archive, including full path
+     * \param folderIndex  uint32 that will hold the folder's index
+     * \param fileIndex   - uint32 that will hold the file's index within that folder
+     * \return Returns true in case of success. Returns false in case of error,
+     *         e.g. if the archive has not been opened yet.
+     * \remark The boolean return value does NOT indicate, whether the specified
+     *         file is in the archive or not; it just indicates, whether or not
+     *         the function could be executed successfully.
+     *         If the given file exists in the archive, both @folderIndex and
+     *         @fileIndex will not be cIndexNotFound.
+     */
     bool getIndexPairForFile(const std::string& fileName, uint32_t& folderIndex, uint32_t& fileIndex) const;
 
-    /* returns true, if the given file is in the archive
-
-       parameters:
-           fileName - name of the file, including directory path (should be all lower case)
-    */
+    /** \brief Checks whether the given file is in the archive.
+     *
+     * \param fileName  name of the file, including directory path (should be
+     *        all lower case)
+     * \return Returns true, if the given file is in the archive.
+     *         Returns false otherwise.
+     */
     bool hasFile(const std::string& fileName) const;
 
-    /* returns true, if the file at the given indexes is compressed, returns
-       false otherwise
-
-       parameters:
-           folderIndex - index of the folder
-           fileIndex   - index of the file within the folder
-    */
+    /** \brief Checks whether a given file is compressed.
+     *
+     * \param folderIndex  index of the folder
+     * \param fileIndex    index of the file within the folder
+     * \return Returns true, if the file at the given indexes is compressed.
+     *         Returns false otherwise.
+     * \throws std::runtime_error if indices are invalid or the structural data
+     *         required to determine the compression status is missing
+     */
     bool isFileCompressed(const uint32_t folderIndex, const uint32_t fileIndex) const;
 
-    /* tries to read the folder records and returns true in case of success */
+    /** \brief Reads the folder records.
+     *
+     * \return Returns true in case of success. Returns false otherwise.
+     */
     bool grabFolderData();
 
-    /* tries to read the folder blocks and returns true in case of success */
+    /** \brief Reads the folder blocks.
+     *
+     * \return Returns true in case of success. Returns false otherwise.
+     */
     bool grabFolderBlocks();
 
-    /* tries to read the file names and returns true in case of success */
+    /** \brief Reads the file names.
+     *
+     * \return Returns true in case of success. Returns false otherwise.
+     */
     bool grabFileNames();
 
-    /* lists all files within the archive
-
-       parameters:
-           withCompression status - if set to true, it will also be listed, if
-                                    a file is compressed or not
-    */
+    /** \brief Lists all files within the archive.
+     *
+     * \param withCompressionStatus  if set to true, it will also be listed,
+     *                               whether or not a file is compressed
+     */
     void listFileNames(bool withCompressionStatus);
 
-    //structure to contain both index and name of directory
+    // structure to contain both index and name of directory
     struct DirectoryStruct
     {
       std::string name;
       uint32_t index;
 
       DirectoryStruct();
-    }; //struct
+    };
 
     /** Returns a list of all directories within the archive.
      *
@@ -168,7 +195,7 @@ struct BSA
      */
     std::vector<DirectoryStruct> getDirectories() const;
 
-    //structure to contain both indexes for a file and its name
+    // structure to contain both indexes for a file and its name
     struct FileStruct
     {
       std::string name;
@@ -177,102 +204,100 @@ struct BSA
       bool compressed;
 
       FileStruct();
-    }; //struct
+    };
 
-    /* returns a list of all file names within a certain directory.
-
-       parameters:
-           folderIndex - the index of the folder whose files are requested
-           fullName    - if set to true, the returned names will contain the
-                         full directory path. Otherwise they will be the plain
-                         file name only.
-
-       remarks:
-           Only works properly, if grabAllStructureData() has been called with
-           success.
-    */
+    /** \brief Gets a list of all file names within a certain directory.
+     *
+     * \param folderIndex  the index of the folder whose files are requested
+     * \param fullName     if set to true, the returned names will contain the
+     *                     full directory path. Otherwise they will be the plain
+     *                     file name only.
+     * \return Returns a vector of all file names within the directory.
+     * \remarks Only works properly, if grabAllStructureData() has been called
+     *          with success.
+     */
     std::vector<FileStruct> getFilesOfDirectory(const uint32_t folderIndex, const bool fullName) const;
 
-    /* tries to extract the file with the given indexes and writes it to the
-       specified destination. Returns true in case of success, false on failure.
-
-       parameters:
-           folderIndex    - folder index of the wanted file
-           fileIndex      - file index of the wanted file
-           outputFileName - name of the destination file on HDD
-    */
+    /** \brief Extracts the file with the given indexes and writes it to the
+     *         specified destination.
+     *
+     * \param folderIndex     folder index of the wanted file
+     * \param fileIndex       file index of the wanted file
+     * \param outputFileName  name of the destination file on HDD
+     * \return Returns true in case of success, false on failure.
+     */
     bool extractFile(const uint32_t folderIndex, const uint32_t fileIndex, const std::string& outputFileName);
 
-    /* tries to extract the file with the given file name and writes it to the
-       specified destination. Returns true in case of success, false on failure.
-
-       parameters:
-           inArchiveFileName - name of the file in the archive, including full path
-           outputFileName    - name of the destination file on HDD
-    */
+    /** \brief Extracts the file with the given file name and writes it to the
+     * specified destination.
+     *
+     * \param inArchiveFileName  name of the file in the archive, including full path
+     * \param outputFileName     name of the destination file on HDD
+     * \return Returns true in case of success. Returns false on failure.
+     */
     bool extractFile(const std::string& inArchiveFileName, const std::string& outputFileName);
 
-    /* tries to extract all files from the given archive folder and places them
-       in the given output directory. Returns true in case of success, false if
-       an error occurred.
-
-       parameters:
-           folderIndex        - index of the folder
-           outputDirName      - path of the output directory, without
-                                (back)slash at the end
-           extractedFileCount - variable that will contain the number of
-                                extracted files
-    */
+    /** \brief Extracts all files from the given archive folder and places them
+     * in the given output directory.
+     *
+     * \param folderIndex         index of the folder
+     * \param outputDirName       path of the output directory, without
+     *                            (back)slash at the end
+     * \param extractedFileCount  variable that will contain the number of
+     *                            extracted files
+     * \return Returns true in case of success.
+     *         Returns false if an error occurred.
+     */
     bool extractFolder(const uint32_t folderIndex, const std::string& outputDirName, uint32_t& extractedFileCount);
 
-    /* tries to extract all files from the given archive folder and places them
-       in the given output directory. Returns true in case of success, false if
-       an error occurred.
-
-       parameters:
-           folderName         - name of the folder in the archive
-           outputDirName      - path of the output directory, without
-                                (back)slash at the end
-           extractedFileCount - variable that will contain the number of
-                                extracted files
-    */
+    /** \brief Extracts all files from the given archive folder and places them
+     * in the given output directory.
+     *
+     * \param folderName          name of the folder in the archive
+     * \param outputDirName       path of the output directory, without
+     *                            (back)slash at the end
+     * \param extractedFileCount  variable that will contain the number of
+     *                            extracted files
+     * \return Returns true in case of success.
+     *         Returns false if an error occurred.
+     */
     bool extractFolder(const std::string& folderName, const std::string& outputDirName, uint32_t& extractedFileCount);
 
-    /* tries to extract all files from the archive and places them in the given
-       output directory. Returns true in case of success, false if an error occurred.
-
-       parameters:
-           outputDirName      - path of the output directory, without
-                                (back)slash at the end
-           extractedFileCount - variable that will contain the number of
-                                extracted files
-    */
+    /** \brief Extracts all files from the archive and places them in the given
+     * output directory.
+     *
+     * \param outputDirName       path of the output directory, without
+     *                            (back)slash at the end
+     * \param extractedFileCount  variable that will contain the number of
+     *                            extracted files
+     * \return Returns true in case of success.
+     *         Returns false if an error occurred.
+     */
     bool extractAll(const std::string& outputDirName, uint32_t& extractedFileCount);
   protected:
-    /* returns true, if the given indexes identify a valid index pair
-
-       parameters:
-           folderIndex - index of the folder
-           fileIndex   - index of the file within the folder
-    */
+    /** \brief Check whether the given indexes identify a valid index pair.
+     *
+     * \param folderIndex  index of the folder
+     * \param fileIndex    index of the file within the folder
+     * \return Returns true, if the given indexes identify a valid index pair.
+     *         Returns false otherwise.
+     */
     bool isValidIndexPair(const uint32_t folderIndex, const uint32_t fileIndex) const;
 
-    //enumeration for internal status
-    enum Status {bsFresh, bsOpen, bsOpenFolderData, bsOpenFolderBlocks,
-                 bsOpenFileNames, bsClosed, bsFailed};
+    /// enumeration type for internal status
+    enum class Status { Fresh, Open, OpenFolderData, OpenFolderBlocks,
+                        OpenFileNames, Closed, Failed };
 
-    //the internal status
-    Status m_Status;
+    Status m_Status; /**< internal status */
 
-    //the file stream associated with the file after open() was called
-    std::ifstream m_Stream;
+    std::ifstream m_Stream; /**< file stream associated with the archive after open() was called */
 
-    //data read from the stream...
+    // data read from the stream...
     BSAHeader m_Header;
     std::vector<BSAFolderRecord> m_Folders;
     std::vector<BSAFolderBlock> m_FolderBlocks;
-}; //struct
+}; // struct
 
-} //namespace
+} // namespace
 
 #endif // SR_BSA_HPP

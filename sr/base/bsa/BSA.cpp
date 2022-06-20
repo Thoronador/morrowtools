@@ -529,7 +529,6 @@ bool BSA::extractFile(const uint32_t folderIndex, const uint32_t fileIndex, cons
   if (isFileCompressed(folderIndex, fileIndex))
   {
     const bool compressionUsesLZ4 = m_Header.version >= 105;
-    // bsa-cli cannot handle LZ4 decompression for Windows systems, yet.
     #if defined(MWTP_NO_LZ4)
     if (compressionUsesLZ4)
     {

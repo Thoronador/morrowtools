@@ -86,6 +86,8 @@
 		<Unit filename="commands/Info.hpp" />
 		<Unit filename="commands/List.cpp" />
 		<Unit filename="commands/List.hpp" />
+		<Unit filename="commands/Metadata.cpp" />
+		<Unit filename="commands/Metadata.hpp" />
 		<Unit filename="commands/Operations.cpp" />
 		<Unit filename="commands/Operations.hpp" />
 		<Unit filename="main.cpp" />

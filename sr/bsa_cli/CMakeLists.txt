@@ -26,6 +26,7 @@ set(bsa_cli_sources
     commands/Help.cpp
     commands/Info.cpp
     commands/List.cpp
+    commands/Metadata.cpp
     commands/Operations.cpp
     main.cpp)
 

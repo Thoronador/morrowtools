@@ -141,6 +141,7 @@ set(component_tests_sources
     ../../sr/bsa_cli/commands/Help.cpp
     ../../sr/bsa_cli/commands/Info.cpp
     ../../sr/bsa_cli/commands/List.cpp
+    ../../sr/bsa_cli/commands/Metadata.cpp
     ../../sr/bsa_cli/commands/Operations.cpp
     ../../sr/formID_finder/AuxFunctions.cpp
     base/BufferStream.cpp
@@ -301,6 +302,7 @@ set(component_tests_sources
     sr/bsa_cli/commands/Help.cpp
     sr/bsa_cli/commands/Info.cpp
     sr/bsa_cli/commands/List.cpp
+    sr/bsa_cli/commands/Metadata.cpp
     sr/bsa_cli/commands/Operations.cpp
     sr/formID_finder/AuxFunctions.cpp
     main.cpp)

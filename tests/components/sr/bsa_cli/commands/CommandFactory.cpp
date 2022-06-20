@@ -28,6 +28,7 @@
 #include "../../../../../sr/bsa_cli/commands/Help.hpp"
 #include "../../../../../sr/bsa_cli/commands/Info.hpp"
 #include "../../../../../sr/bsa_cli/commands/List.hpp"
+#include "../../../../../sr/bsa_cli/commands/Metadata.hpp"
 #include "../../../../../sr/bsa_cli/commands/Operations.hpp"
 
 TEST_CASE("bsa_cli::CommandFactory")
@@ -138,6 +139,17 @@ TEST_CASE("bsa_cli::CommandFactory")
 
       REQUIRE_FALSE( ptr == nullptr );
       const auto typed = dynamic_cast<List*>(ptr.get());
+      REQUIRE_FALSE( typed == nullptr );
+      const auto wrongType = dynamic_cast<Info*>(ptr.get());
+      REQUIRE( wrongType == nullptr );
+    }
+
+    SECTION("metadata")
+    {
+      const auto ptr = createCommand(Operation::Metadata);
+
+      REQUIRE_FALSE( ptr == nullptr );
+      const auto typed = dynamic_cast<Metadata*>(ptr.get());
       REQUIRE_FALSE( typed == nullptr );
       const auto wrongType = dynamic_cast<Info*>(ptr.get());
       REQUIRE( wrongType == nullptr );

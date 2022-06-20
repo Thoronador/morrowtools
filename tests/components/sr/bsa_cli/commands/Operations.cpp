@@ -37,6 +37,7 @@ TEST_CASE("bsa_cli::Operations")
     REQUIRE( std::find(all.begin(), all.end(), Operation::Help) != all.end() );
     REQUIRE( std::find(all.begin(), all.end(), Operation::Info) != all.end() );
     REQUIRE( std::find(all.begin(), all.end(), Operation::List) != all.end() );
+    REQUIRE( std::find(all.begin(), all.end(), Operation::Metadata) != all.end() );
   }
 
   SECTION("operationToString")
@@ -76,6 +77,7 @@ TEST_CASE("bsa_cli::Operations")
     REQUIRE( parseOperation("help") == Operation::Help );
     REQUIRE( parseOperation("list") == Operation::List );
     REQUIRE( parseOperation("info") == Operation::Info );
+    REQUIRE( parseOperation("metadata") == Operation::Metadata );
 
     REQUIRE( parseOperation("CoMMaNdS") == std::nullopt );
     REQUIRE( parseOperation("eXtRacT") == std::nullopt );
@@ -86,5 +88,6 @@ TEST_CASE("bsa_cli::Operations")
     REQUIRE( parseOperation("hELp") == std::nullopt );
     REQUIRE( parseOperation("LiSt") == std::nullopt );
     REQUIRE( parseOperation("InFo") == std::nullopt );
+    REQUIRE( parseOperation("MeTaDaTa") == std::nullopt );
   }
 }

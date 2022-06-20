@@ -24,6 +24,7 @@
 			<Add option="-Weffc++" />
 			<Add option="-Wzero-as-null-pointer-constant" />
 			<Add option="-pedantic" />
+			<Add option="-Wextra" />
 			<Add option="-Wall" />
 			<Add option="-std=c++17" />
 			<Add option="-fexceptions" />
@@ -305,6 +306,8 @@
 		<Unit filename="../../sr/bsa_cli/commands/Info.hpp" />
 		<Unit filename="../../sr/bsa_cli/commands/List.cpp" />
 		<Unit filename="../../sr/bsa_cli/commands/List.hpp" />
+		<Unit filename="../../sr/bsa_cli/commands/Metadata.cpp" />
+		<Unit filename="../../sr/bsa_cli/commands/Metadata.hpp" />
 		<Unit filename="../../sr/bsa_cli/commands/Operations.cpp" />
 		<Unit filename="../../sr/bsa_cli/commands/Operations.hpp" />
 		<Unit filename="../../sr/formID_finder/AuxFunctions.cpp" />
@@ -470,6 +473,7 @@
 		<Unit filename="sr/bsa_cli/commands/Help.cpp" />
 		<Unit filename="sr/bsa_cli/commands/Info.cpp" />
 		<Unit filename="sr/bsa_cli/commands/List.cpp" />
+		<Unit filename="sr/bsa_cli/commands/Metadata.cpp" />
 		<Unit filename="sr/bsa_cli/commands/Operations.cpp" />
 		<Unit filename="sr/formID_finder/AuxFunctions.cpp" />
 		<Extensions>

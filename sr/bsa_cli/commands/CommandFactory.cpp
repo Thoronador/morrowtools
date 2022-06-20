@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2021  Thoronador
+    Copyright (C) 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,6 +27,7 @@
 #include "Help.hpp"
 #include "Info.hpp"
 #include "List.hpp"
+#include "Metadata.hpp"
 
 namespace SRTP::bsa_cli::CommandFactory
 {
@@ -49,6 +50,8 @@ std::unique_ptr<Command> createCommand(const Operation op)
          return std::unique_ptr<Command>(new Info());
     case Operation::Commands:
          return std::unique_ptr<Command>(new Commands());
+    case Operation::Metadata:
+         return std::unique_ptr<Command>(new Metadata());
     case Operation::Help:
          return std::unique_ptr<Command>(new Help());
     default:

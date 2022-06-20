@@ -37,8 +37,9 @@ enum class Operation
   ExtractFolder,
   Folders,
   Help,
+  Info,
   List,
-  Info
+  Metadata
 };
 
 /** \brief Parses a string containing an operation into an enumeration.
@@ -61,7 +62,7 @@ std::string operationToString(const Operation op);
  * \remarks There is no real reflection in C++, so we use this instead.
  * \return Returns an array containing all possible operations.
  */
-constexpr std::array<Operation, 8> allOperations()
+constexpr std::array<Operation, 9> allOperations()
 {
   return {
     Operation::Commands,
@@ -71,7 +72,8 @@ constexpr std::array<Operation, 8> allOperations()
     Operation::Folders,
     Operation::Help,
     Operation::Info,
-    Operation::List
+    Operation::List,
+    Operation::Metadata
   };
 }
 

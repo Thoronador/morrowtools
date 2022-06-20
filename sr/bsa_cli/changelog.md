@@ -1,5 +1,11 @@
 # Version history of bsa-cli
 
+## Next version (2022-06-??)
+
+The new `metadata` command to show metadata of the files in a BSA file is added.
+Metadata contains the name hash, the file size, the file offset, the compression
+flag and the file name.
+
 ## Version 0.7.2 (2022-06-19)
 
 __[feature]__

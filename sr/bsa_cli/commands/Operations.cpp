@@ -41,6 +41,8 @@ std::optional<Operation> parseOperation(const std::string_view op)
     return Operation::Info;
   if (op == "commands")
     return Operation::Commands;
+  if (op == "metadata")
+    return Operation::Metadata;
 
   return std::nullopt;
 }
@@ -65,6 +67,8 @@ std::string operationToString(const Operation op)
          return "info";
     case Operation::Commands:
          return "commands";
+    case Operation::Metadata:
+         return "metadata";
     default:
          return "";
   }

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2021  Thoronador
+    Copyright (C) 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -86,7 +86,7 @@ int Help::parseArguments(int argc, char** argv)
 int Help::run()
 {
   auto command = CommandFactory::createCommand(cmd.value());
-  std::cout << command->helpFull("bsa-cli");
+  std::cout << command->helpLong("bsa-cli");
   return 0;
 }
 
@@ -95,7 +95,7 @@ std::string Help::helpShort() const
   return "Shows help for a command.";
 }
 
-std::string Help::helpFull(const std::string_view binaryName) const
+std::string Help::helpLong(const std::string_view binaryName) const
 {
   return std::string(binaryName).append(" help\n")
       .append("Shows help for a command.\n\n")

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Skyrim Tools Project.
-    Copyright (C) 2021  Dirk Stolle
+    Copyright (C) 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -107,9 +107,9 @@ TEST_CASE("bsa_cli::ExtractAll")
     REQUIRE_FALSE( command.helpShort().empty() );
   }
 
-  SECTION("helpFull returns non-empty string")
+  SECTION("helpLong returns non-empty string")
   {
     ExtractAll command;
-    REQUIRE_FALSE( command.helpFull("foo").empty() );
+    REQUIRE_FALSE( command.helpLong("foo").empty() );
   }
 }

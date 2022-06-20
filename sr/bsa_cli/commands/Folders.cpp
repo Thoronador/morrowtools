@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2021  Thoronador
+    Copyright (C) 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -68,7 +68,7 @@ std::string Folders::helpShort() const
   return "Lists all folders in the archive.";
 }
 
-std::string Folders::helpFull(const std::string_view binaryName) const
+std::string Folders::helpLong(const std::string_view binaryName) const
 {
   return std::string(binaryName).append(" folders\n")
       .append("Lists all folders in the archive.\n\n")

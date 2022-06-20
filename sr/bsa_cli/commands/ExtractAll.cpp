@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2021  Thoronador
+    Copyright (C) 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -120,7 +120,7 @@ std::string ExtractAll::helpShort() const
   return "Extracts all files from the archive.";
 }
 
-std::string ExtractAll::helpFull(const std::string_view binaryName) const
+std::string ExtractAll::helpLong(const std::string_view binaryName) const
 {
   return std::string(binaryName).append(" extract-all\n")
       .append("Extracts everything from an archive.\n\n")

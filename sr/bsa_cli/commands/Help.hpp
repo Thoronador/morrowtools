@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2021  Thoronador
+    Copyright (C) 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -63,7 +63,7 @@ class Help: public Command
      * \param  binaryName  name of the binary file
      * \return Returns a help message describing the command in detail.
      */
-    std::string helpFull(const std::string_view binaryName) const final;
+    std::string helpLong(const std::string_view binaryName) const final;
   private:
     std::string executableName; /**< name of the program */
     std::optional<Operation> cmd; /**< the command for which to show the help */

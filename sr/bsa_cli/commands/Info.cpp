@@ -94,7 +94,7 @@ std::string Info::helpShort() const
   return "Shows header information of the archive.";
 }
 
-std::string Info::helpFull(const std::string_view binaryName) const
+std::string Info::helpLong(const std::string_view binaryName) const
 {
   return std::string(binaryName).append(" info\n")
       .append("Shows header information of an archive.\n\n")

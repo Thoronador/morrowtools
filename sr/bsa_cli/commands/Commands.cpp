@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2021  Thoronador
+    Copyright (C) 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -73,7 +73,7 @@ std::string Commands::helpShort() const
   return "Lists available commands.";
 }
 
-std::string Commands::helpFull(const std::string_view binaryName) const
+std::string Commands::helpLong(const std::string_view binaryName) const
 {
   return std::string(binaryName).append(" commands\n")
       .append("Lists all available commands.\n\n")

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Skyrim Tools Project.
-    Copyright (C) 2021  Dirk Stolle
+    Copyright (C) 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -46,6 +46,13 @@ TEST_CASE("bsa_cli::CommandFactory")
         const auto ptr = createCommand(op);
         REQUIRE_FALSE( ptr == nullptr );
       }
+    }
+
+    SECTION("invalid operation returns a null pointer")
+    {
+      const Operation invalid = static_cast<Operation>(static_cast<int>(Operation::List) + 50);
+      const auto ptr = createCommand(invalid);
+      REQUIRE( ptr == nullptr );
     }
 
     SECTION("commands")

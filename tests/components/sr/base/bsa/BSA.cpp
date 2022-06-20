@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Skyrim Tools Project.
-    Copyright (C) 2021  Dirk Stolle
+    Copyright (C) 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -146,7 +146,7 @@ TEST_CASE("BSA")
     SECTION("no structure data")
     {
       BSA bsa;
-      REQUIRE( bsa.getIndexOfFolder("foo/bar") == BSA::cIndexNotFound );
+      REQUIRE_FALSE( bsa.getIndexOfFolder("foo/bar").has_value() );
     }
   }
 
@@ -157,7 +157,7 @@ TEST_CASE("BSA")
     SECTION("no structure data")
     {
       BSA bsa;
-      REQUIRE( bsa.getIndexOfFile(1, "foo.bar") == BSA::cIndexNotFound );
+      REQUIRE_FALSE( bsa.getIndexOfFile(1, "foo.bar").has_value() );
     }
   }
 
@@ -168,11 +168,11 @@ TEST_CASE("BSA")
     SECTION("no structure data")
     {
       BSA bsa;
-      uint32_t folderIndex = 0;
-      uint32_t fileIndex = 0;
+      std::optional<uint32_t> folderIndex = 0xDEADBEEF;
+      std::optional<uint32_t> fileIndex = 0xDEADBEEF;
       REQUIRE_FALSE( bsa.getIndexPairForFile("baz\\foo.bar", folderIndex, fileIndex) );
-      REQUIRE( folderIndex == BSA::cIndexNotFound );
-      REQUIRE( fileIndex == BSA::cIndexNotFound );
+      REQUIRE_FALSE( folderIndex.has_value() );
+      REQUIRE_FALSE( fileIndex.has_value() );
     }
   }
 

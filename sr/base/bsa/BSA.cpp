@@ -34,14 +34,6 @@
 namespace SRTP
 {
 
-const uint32_t BSA::cIndexNotFound = 0xFFFFFFFF;
-
-BSA::DirectoryStruct::DirectoryStruct()
-: name(std::string()),
-  index(cIndexNotFound)
-{
-}
-
 BSA::BSA()
 : m_Status(Status::Fresh),
   m_Stream(std::ifstream()),
@@ -56,17 +48,18 @@ BSA::~BSA()
   close();
 }
 
-bool BSA::open(const std::string& FileName)
+bool BSA::open(const std::filesystem::path& fileName)
 {
   if ((m_Status != Status::Fresh) && (m_Status != Status::Closed))
   {
     std::cerr << "BSA::open: Error: BSA was already opened!\n";
     return false;
   }
-  m_Stream.open(FileName, std::ios_base::in | std::ios_base::binary);
+  m_Stream.open(fileName, std::ios_base::in | std::ios_base::binary);
   if (!m_Stream)
   {
-    std::cerr << "BSA::open: Error while opening file \"" << FileName << "\".\n";
+    std::cerr << "BSA::open: Error while opening file \"" << fileName.string()
+              << "\".\n";
     m_Status = Status::Closed;
     return false;
   }
@@ -329,23 +322,19 @@ void BSA::listFileNames(bool withCompressionStatus)
   }
 }
 
-std::vector<BSA::DirectoryStruct> BSA::getDirectories() const
+std::vector<std::string> BSA::getDirectories() const
 {
-  std::vector<DirectoryStruct> result;
+  std::vector<std::string> result;
   if ((m_Status != Status::OpenFolderBlocks) && (m_Status != Status::OpenFileNames))
   {
     std::cerr << "BSA::getDirectories: Error: Not all folder data is present "
               << "to properly fulfill the requested operation!\n";
     return result;
   }
-  const auto count = m_FolderBlocks.size();
-  result.reserve(count);
-  DirectoryStruct tempStruct;
-  for (std::vector<BSAFolderBlock>::size_type i = 0; i < count; ++i)
+  result.reserve(m_FolderBlocks.size());
+  for (const auto& elem: m_FolderBlocks)
   {
-    tempStruct.index = i;
-    tempStruct.name = m_FolderBlocks[i].folderName;
-    result.emplace_back(tempStruct);
+    result.emplace_back(elem.folderName);
   }
   return result;
 }
@@ -381,20 +370,20 @@ bool BSA::hasAllStructureData() const
 
 bool BSA::hasFolder(const std::string& folderName) const
 {
-  return getIndexOfFolder(folderName) != cIndexNotFound;
+  return getIndexOfFolder(folderName).has_value();
 }
 
-uint32_t BSA::getIndexOfFolder(std::string folderName) const
+std::optional<uint32_t> BSA::getIndexOfFolder(std::string folderName) const
 {
   if (!hasAllStructureData())
   {
     std::cerr << "BSA::getIndexOfFolder: Error: Not all structure data is "
               << "present to properly fulfill the requested operation!\n";
-    return cIndexNotFound;
+    return std::nullopt;
   }
 
   if (folderName.empty())
-    return cIndexNotFound;
+    return std::nullopt;
   // transform to lower case
   folderName = lowerCase(folderName);
   for (uint32_t i = 0; i < m_FolderBlocks.size(); ++i)
@@ -402,22 +391,22 @@ uint32_t BSA::getIndexOfFolder(std::string folderName) const
     if (m_FolderBlocks[i].folderName == folderName)
       return i;
   }
-  return cIndexNotFound;
+  return std::nullopt;
 }
 
-uint32_t BSA::getIndexOfFile(const uint32_t folderIndex, std::string fileName) const
+std::optional<uint32_t> BSA::getIndexOfFile(const uint32_t folderIndex, std::string fileName) const
 {
   if (!hasAllStructureData())
   {
     std::cerr << "BSA::getIndexOfFile: Error: Not all structure data is "
               << "present to properly fulfill the requested operation!\n";
-    return cIndexNotFound;
+    return std::nullopt;
   }
 
   if (folderIndex >= m_FolderBlocks.size())
   {
     std::cerr << "BSA::getIndexOfFile: Error: Folder index exceeds allowed maximum!\n";
-    return cIndexNotFound;
+    return std::nullopt;
   }
 
   fileName = lowerCase(fileName);
@@ -427,17 +416,17 @@ uint32_t BSA::getIndexOfFile(const uint32_t folderIndex, std::string fileName) c
       return i;
   }
 
-  return cIndexNotFound;
+  return std::nullopt;
 }
 
-bool BSA::getIndexPairForFile(const std::string& fileName, uint32_t& folderIndex, uint32_t& fileIndex) const
+bool BSA::getIndexPairForFile(const std::string& fileName, std::optional<uint32_t>& folderIndex, std::optional<uint32_t>& fileIndex) const
 {
   if (!hasAllStructureData())
   {
     std::cerr << "BSA::getIndexPairForFile: Error: Not all structure data is "
               << "present to properly fulfill the requested operation!\n";
-    folderIndex = cIndexNotFound;
-    fileIndex = cIndexNotFound;
+    folderIndex.reset();
+    fileIndex.reset();
     return false;
   }
 
@@ -445,43 +434,43 @@ bool BSA::getIndexPairForFile(const std::string& fileName, uint32_t& folderIndex
   if (delimPos == std::string::npos)
   {
     std::cerr << "BSA::getIndexPairForFile: Error: File name contains no folder!\n";
-    folderIndex = cIndexNotFound;
-    fileIndex = cIndexNotFound;
+    folderIndex.reset();
+    fileIndex.reset();
     return false;
   }
   if (delimPos == fileName.length() - 1)
   {
     std::cerr << "BSA::getIndexPairForFile: Error: Given file name only contains directory!\n";
-    folderIndex = cIndexNotFound;
-    fileIndex = cIndexNotFound;
+    folderIndex.reset();
+    fileIndex.reset();
     return false;
   }
 
   folderIndex = getIndexOfFolder(fileName.substr(0, delimPos));
-  if (folderIndex == cIndexNotFound)
+  if (!folderIndex.has_value())
   {
     // no such folder, thus no file in that folder
-    fileIndex = cIndexNotFound;
+    fileIndex.reset();
     return true;
   }
 
-  fileIndex = getIndexOfFile(folderIndex, fileName.substr(delimPos + 1));
+  fileIndex = getIndexOfFile(folderIndex.value(), fileName.substr(delimPos + 1));
   return true;
 }
 
 bool BSA::hasFile(const std::string& fileName) const
 {
-  uint32_t folderIdx = cIndexNotFound, fileIdx = cIndexNotFound;
+  std::optional<uint32_t> folderIdx;
+  std::optional<uint32_t> fileIdx;
   if (!getIndexPairForFile(fileName, folderIdx, fileIdx))
     return false;
 
-  return (folderIdx != cIndexNotFound) && (fileIdx != cIndexNotFound);
+  return folderIdx.has_value() && fileIdx.has_value();
 }
 
 bool BSA::isValidIndexPair(const uint32_t folderIndex, const uint32_t fileIndex) const
 {
-  if ((folderIndex == cIndexNotFound) || (fileIndex == cIndexNotFound)
-      || (folderIndex >= m_FolderBlocks.size()))
+  if (folderIndex >= m_FolderBlocks.size())
   {
     return false;
   }
@@ -644,11 +633,17 @@ bool BSA::extractFile(const std::string& inArchiveFileName, const std::string& o
     return false;
   }
 
-  uint32_t folderIndex, fileIndex;
+  std::optional<uint32_t> folderIndex, fileIndex;
   getIndexPairForFile(inArchiveFileName, folderIndex, fileIndex);
+  if (!folderIndex.has_value() || !fileIndex.has_value())
+  {
+    std::cerr << "BSA::extractFile: Hint: File " << inArchiveFileName
+              << " is not in the archive!\n";
+    return false;
+  }
 
   // use the above function for the rest
-  return extractFile(folderIndex, fileIndex, outputFileName);
+  return extractFile(folderIndex.value(), fileIndex.value(), outputFileName);
 }
 
 bool BSA::extractFolder(const uint32_t folderIndex, const std::string& outputDirName, uint32_t& extractedFileCount)
@@ -661,7 +656,7 @@ bool BSA::extractFolder(const uint32_t folderIndex, const std::string& outputDir
     return false;
   }
 
-  if ((folderIndex == cIndexNotFound) || (folderIndex >= m_FolderBlocks.size()))
+  if (folderIndex >= m_FolderBlocks.size())
   {
     std::cerr << "BSA::extractFolder: Error: Invalid folder index!\n";
     return false;
@@ -705,15 +700,15 @@ bool BSA::extractFolder(const std::string& folderName, const std::string& output
     return false;
   }
 
-  const uint32_t fIdx = getIndexOfFolder(folderName);
-  if (fIdx == cIndexNotFound)
+  const std::optional<uint32_t> fIdx = getIndexOfFolder(folderName);
+  if (!fIdx.has_value())
   {
     std::cerr << "BSA::extractFolder: Error: Archive has no folder named \""
               << folderName <<"\", thus it cannot be extracted!\n";
     return false;
   }
 
-  return extractFolder(fIdx, outputDirName, extractedFileCount);
+  return extractFolder(fIdx.value(), outputDirName, extractedFileCount);
 }
 
 bool BSA::extractAll(const std::string& outputDirName, uint32_t& extractedFileCount)

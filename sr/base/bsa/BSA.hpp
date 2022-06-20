@@ -24,6 +24,8 @@
 #include "BSAHeader.hpp"
 #include "BSAFolderRecord.hpp"
 #include "BSAFolderBlock.hpp"
+#include <filesystem>
+#include <optional>
 #include <vector>
 
 namespace SRTP
@@ -38,10 +40,10 @@ struct BSA
 
     /** \brief Opens the given BSA file and reads its header.
      *
-     * \param FileName name of the BSA file that shall be opened
+     * \param fileName name of the BSA file that shall be opened
      * \return Returns true in case of success. Returns false otherwise.
      */
-    bool open(const std::string& FileName);
+    bool open(const std::filesystem::path& fileName);
 
     void close();
 
@@ -95,16 +97,13 @@ struct BSA
      */
     bool hasFolder(const std::string& folderName) const;
 
-    /// constant representing the index for "not found"
-    static const uint32_t cIndexNotFound;
-
     /** \brief Gets the index of the give folder in the archive.
      *
      * \param folderName  name of the folder (should be all lower case)
      * \return Returns the index of the folder, if the given folder is in the
-     *         archive. Returns cIndexNotFound otherwise.
+     *         archive. Returns an empty optional otherwise.
      */
-    uint32_t getIndexOfFolder(std::string folderName) const;
+    std::optional<uint32_t> getIndexOfFolder(std::string folderName) const;
 
     /** \brief Gets the index of the file within the given folder block.
      *
@@ -113,25 +112,25 @@ struct BSA
      *                     all lower case)
      * \return Returns the index of the file within the given folder block, if
      *         the given folder and file are in the archive.
-     *         Returns cIndexNotFound otherwise.
+     *         Returns an empty optional otherwise.
      */
-    uint32_t getIndexOfFile(const uint32_t folderIndex, std::string fileName) const;
+    std::optional<uint32_t> getIndexOfFile(const uint32_t folderIndex, std::string fileName) const;
 
     /** \brief Set @folderIndex and @fileIndex to the folder and file indexes
      *         for the specified file.
      *
      * \param fileName     name of the file in the archive, including full path
-     * \param folderIndex  uint32 that will hold the folder's index
-     * \param fileIndex   - uint32 that will hold the file's index within that folder
+     * \param folderIndex  optional of uint32_t that will hold the folder's index
+     * \param fileIndex    optional of uint32_t that will hold the file's index within that folder
      * \return Returns true in case of success. Returns false in case of error,
      *         e.g. if the archive has not been opened yet.
      * \remark The boolean return value does NOT indicate, whether the specified
      *         file is in the archive or not; it just indicates, whether or not
      *         the function could be executed successfully.
      *         If the given file exists in the archive, both @folderIndex and
-     *         @fileIndex will not be cIndexNotFound.
+     *         @fileIndex will not be empty optionals.
      */
-    bool getIndexPairForFile(const std::string& fileName, uint32_t& folderIndex, uint32_t& fileIndex) const;
+    bool getIndexPairForFile(const std::string& fileName, std::optional<uint32_t>& folderIndex, std::optional<uint32_t>& fileIndex) const;
 
     /** \brief Checks whether the given file is in the archive.
      *
@@ -178,22 +177,14 @@ struct BSA
      */
     void listFileNames(bool withCompressionStatus);
 
-    // structure to contain both index and name of directory
-    struct DirectoryStruct
-    {
-      std::string name;
-      uint32_t index;
-
-      DirectoryStruct();
-    };
-
-    /** Returns a list of all directories within the archive.
+    /** Gets all directories within the archive.
      *
+     * \returns Returns a vector containing all directory names within the archive.
      * \remarks Only works properly, if either grabAllStructureData() or both of
      *          grabFolderData() and grabFolderBlocks() have been called with
      *          success.
      */
-    std::vector<DirectoryStruct> getDirectories() const;
+    std::vector<std::string> getDirectories() const;
 
     /** \brief Extracts the file with the given indexes and writes it to the
      *         specified destination.

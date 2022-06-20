@@ -58,7 +58,7 @@ int Folders::run()
   const auto folders = bsa.getDirectories();
   for (const auto& element: folders)
   {
-    std::cout << element.name << "\n";
+    std::cout << element << "\n";
   }
   return 0;
 }

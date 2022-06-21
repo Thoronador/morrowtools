@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@ struct BasicRecord
     BasicRecord();
 
     /** Destructor. */
-    virtual ~BasicRecord();
+    virtual ~BasicRecord() = default;
 
     #ifndef SR_UNSAVEABLE_RECORDS
     /** \brief Gets the size in bytes that the record's data would occupy in a stream.

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -31,12 +31,6 @@ BasicRecord::BasicRecord()
 : headerFlags(0), headerFormID(0), headerRevision(0),
   headerVersion(0), headerUnknown5(0)
 {
-}
-
-BasicRecord::~BasicRecord()
-{
-  //empty
-  //Purpose is to have a virtual destructor to get rid of compiler warnings.
 }
 
 void BasicRecord::copyBasicMembers(const BasicRecord& other)
@@ -111,7 +105,7 @@ bool BasicRecord::loadUint32SubRecordFromStream(std::istream& input, const uint3
       return false;
     }
   }
-  // subrecord's length
+  // sub record's length
   uint16_t subLength = 0;
   input.read(reinterpret_cast<char*>(&subLength), 2);
   if (subLength != 4)
@@ -125,7 +119,7 @@ bool BasicRecord::loadUint32SubRecordFromStream(std::istream& input, const uint3
   input.read(reinterpret_cast<char*>(&target), 4);
   if (!input.good())
   {
-    std::cerr << "BasicRecord::loadUint32: Error while reading subrecord "
+    std::cerr << "BasicRecord::loadUint32: Error while reading sub record "
               << IntTo4Char(subHeader) << " of " << IntTo4Char(getRecordType())
               << "!\n";
     return false;
@@ -147,7 +141,7 @@ bool BasicRecord::loadString512FromStream(std::istream& input, std::string& targ
       return false;
     }
   }
-  // subrecord's length
+  // sub record's length
   uint16_t subLength = 0;
   input.read(reinterpret_cast<char*>(&subLength), 2);
   bytesRead += 2;
@@ -164,7 +158,7 @@ bool BasicRecord::loadString512FromStream(std::istream& input, std::string& targ
   bytesRead += subLength;
   if (!input.good())
   {
-    std::cerr << "Error while reading subrecord " << IntTo4Char(subHeader)
+    std::cerr << "Error while reading sub record " << IntTo4Char(subHeader)
               << " of " << IntTo4Char(getRecordType()) << "!\n";
     return false;
   }
@@ -177,7 +171,7 @@ bool BasicRecord::loadKeywords(std::istream& input, std::vector<uint32_t>& keywo
   if (!keywords.empty())
   {
     std::cerr << "Error: Record " << IntTo4Char(getRecordType())
-              << " seems to have more than one KSIZ subrecord!\n";
+              << " seems to have more than one KSIZ sub record!\n";
     return false;
   }
   // KSIZ's length
@@ -186,7 +180,7 @@ bool BasicRecord::loadKeywords(std::istream& input, std::vector<uint32_t>& keywo
   bytesRead += 2;
   if (subLength != 4)
   {
-    std::cerr << "Error: Subrecord KSIZ of " << IntTo4Char(getRecordType())
+    std::cerr << "Error: Sub record KSIZ of " << IntTo4Char(getRecordType())
               << " has invalid length (" << subLength
               << " bytes). Should be four bytes!\n";
     return false;
@@ -197,7 +191,7 @@ bool BasicRecord::loadKeywords(std::istream& input, std::vector<uint32_t>& keywo
   bytesRead += 4;
   if (!input.good())
   {
-    std::cerr << "Error while reading subrecord KSIZ of "
+    std::cerr << "Error while reading sub record KSIZ of "
               << IntTo4Char(getRecordType()) << "!\n";
     return false;
   }
@@ -236,7 +230,7 @@ bool BasicRecord::loadKeywords(std::istream& input, std::vector<uint32_t>& keywo
   bytesRead += 4 * k_Size;
   if (!input.good())
   {
-    std::cerr << "Error while reading subrecord KWDA of "
+    std::cerr << "Error while reading sub record KWDA of "
               << IntTo4Char(getRecordType()) << "!\n";
     return false;
   }
@@ -257,7 +251,7 @@ bool BasicRecord::loadBufferFromStream(std::istream& in_File, const uint16_t len
       return false;
     }
   }
-  // subrecord's length
+  // sub record's length
   uint16_t subLength = 0;
   in_File.read(reinterpret_cast<char*>(&subLength), 2);
   bytesRead += 2;
@@ -272,7 +266,7 @@ bool BasicRecord::loadBufferFromStream(std::istream& in_File, const uint16_t len
   bytesRead += len;
   if (!in_File.good())
   {
-    std::cerr << "Error while reading subrecord " << IntTo4Char(subHeader)
+    std::cerr << "Error while reading sub record " << IntTo4Char(subHeader)
               << " of " << IntTo4Char(getRecordType()) << "!\n";
     return false;
   }

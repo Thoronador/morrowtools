@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -36,10 +36,10 @@ struct KeywordRecord: public BasicRecord
     KeywordRecord();
 
     #ifndef SR_NO_RECORD_EQUALITY
-    /** \brief Checks whether another instances contains the same data.
+    /** \brief Checks whether another instance contains the same data.
      *
      * \param other   the other record to compare with
-     * \return Returns true, if @other contains the same data as instance.
+     * \return Returns true, if @other contains the same data as this instance.
      *         Returns false otherwise.
      */
     bool equals(const KeywordRecord& other) const;
@@ -65,13 +65,13 @@ struct KeywordRecord: public BasicRecord
 
     /** \brief Loads the record from the given input stream.
      *
-     * \param in_File    the input stream
+     * \param input    the input stream
      * \param localized  whether the file to read from is localized or not
      * \param table      the associated string table for localized files
      * \return Returns true on success (record was loaded from stream).
      *         Returns false, if an error occurred.
      */
-    virtual bool loadFromStream(std::istream& in_File, const bool localized, const StringTable& table);
+    virtual bool loadFromStream(std::istream& input, const bool localized, const StringTable& table);
 
     /** \brief Gets the record's type, usually its header.
      *

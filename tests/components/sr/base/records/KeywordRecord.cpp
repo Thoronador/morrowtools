@@ -197,7 +197,7 @@ TEST_CASE("KeywordRecord")
       REQUIRE( record.unknownCNAM.value_or(0) == 0 );
     }
 
-    SECTION("corrupt data: stream end before header can be read")
+    SECTION("corrupt data: stream ends before header can be read")
     {
       const std::string_view data = "KYWD\x10\0\0\0\0\0\0\0\xC3\xC6"sv;
       std::istringstream stream;

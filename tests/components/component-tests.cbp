@@ -250,6 +250,8 @@
 		<Unit filename="../../sr/base/records/PerkRecord.hpp" />
 		<Unit filename="../../sr/base/records/QuestRecord.cpp" />
 		<Unit filename="../../sr/base/records/QuestRecord.hpp" />
+		<Unit filename="../../sr/base/records/RaceRecord.cpp" />
+		<Unit filename="../../sr/base/records/RaceRecord.hpp" />
 		<Unit filename="../../sr/base/records/ScrollRecord.cpp" />
 		<Unit filename="../../sr/base/records/ScrollRecord.hpp" />
 		<Unit filename="../../sr/base/records/ShoutRecord.cpp" />
@@ -445,6 +447,8 @@
 		<Unit filename="sr/base/records/NPCRecord_TINXstructure.cpp" />
 		<Unit filename="sr/base/records/PerkRecord.cpp" />
 		<Unit filename="sr/base/records/QuestRecord.cpp" />
+		<Unit filename="sr/base/records/RaceRecord.cpp" />
+		<Unit filename="sr/base/records/RaceRecord_RaceData.cpp" />
 		<Unit filename="sr/base/records/ScrollRecord.cpp" />
 		<Unit filename="sr/base/records/ShoutRecord.cpp" />
 		<Unit filename="sr/base/records/SimplifiedReferenceRecord.cpp" />

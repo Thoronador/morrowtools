@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,7 +21,9 @@
 #ifndef SR_RACERECORD_HPP
 #define SR_RACERECORD_HPP
 
+#include <array>
 #include <cstdint>
+#include <optional>
 #include <string>
 #include <vector>
 #include "BasicRecord.hpp"
@@ -35,81 +37,90 @@ namespace SRTP
 struct RaceRecord: public BasicRecord
 {
   public:
-    /* constructor */
+    /** Creates an empty record. */
     RaceRecord();
 
-    /* destructor */
-    virtual ~RaceRecord();
-
     #ifndef SR_NO_RECORD_EQUALITY
-    /* returns true, if the other record contains the same data */
+    /** \brief Checks whether another instance contains the same data.
+     *
+     * \param other   the other record to compare with
+     * \return Returns true, if @other contains the same data as this instance.
+     *         Returns false otherwise.
+     */
     bool equals(const RaceRecord& other) const;
     #endif
 
     #ifndef SR_UNSAVEABLE_RECORDS
-    /* returns the size in bytes that the record's data would occupy in a file
-       stream, NOT including the header data
-    */
+    /** \brief Gets the size in bytes that the record's data would occupy in a file
+     *         stream, NOT including the header data.
+     *
+     * \return Returns the size in bytes that the record would need. Size of the
+     *         header is not included.
+     */
     virtual uint32_t getWriteSize() const;
 
-    /* writes the record to the given output stream and returns true on success
-
-      parameters:
-          output   - the output stream
-    */
+    /** \brief Writes the record to the given output stream.
+     *
+     * \param output  the output stream
+     * \return Returns true on success (record was written to stream).
+     *         Returns false, if an error occurred.
+     */
     virtual bool saveToStream(std::ostream& output) const;
     #endif
 
-    /* loads the record from the given input stream and returns true on success
+    /** \brief Loads the record from the given input stream.
+     *
+     * \param input    the input stream
+     * \param localized  whether the file to read from is localized or not
+     * \param table      the associated string table for localized files
+     * \return Returns true on success (record was loaded from stream).
+     *         Returns false, if an error occurred.
+     */
+    virtual bool loadFromStream(std::istream& input, const bool localized, const StringTable& table);
 
-      parameters:
-          in_File   - the input stream
-          localized - whether the file to read from is localized or not
-          table     - the associated string table for localized files
-    */
-    virtual bool loadFromStream(std::istream& in_File, const bool localized, const StringTable& table);
-
-    /* returns the record's type, usually its header */
+    /** \brief Gets the record's type, usually its header.
+     *
+     * \return Returns the record's type.
+     */
     virtual uint32_t getRecordType() const;
 
-    /* returns the length of the DATA record in bytes */
+    /** \brief Gets the length of the DATA record in bytes.
+     *
+     * \return Returns the length of the DATA record in bytes.
+     */
     uint32_t getDataLength() const;
 
-    //type for data subrecord
+    /// type for data sub-record
     struct RaceData
     {
-      uint8_t unknown16[16];
+      std::array<std::uint8_t, 16> unknown16;
       float heightMale;
       float heightFemale;
       float weightMale;
       float weightFemale;
-      uint8_t unknown96[96];
-      bool has36;
-      uint8_t unknown36[36];
+      std::array<uint8_t, 96> unknown96;
+      std::optional<std::array<uint8_t, 36> > unknown36;
 
-      /* constructor */
       RaceData();
 
-      /* comparison operator */
       bool operator==(const RaceData& other) const;
 
-      /* initialisation/ reset data */
+      /** \brief Resets all data. */
       void clear();
-    };//struct
+    };
 
     std::string editorID;
-    LocalizedString name; //subrecord FULL
-    LocalizedString description; //subrecord DESC
+    LocalizedString name; // subrecord FULL
+    LocalizedString description; // subrecord DESC
     std::vector<uint32_t> spellFormIDs;
-    bool hasWNAM;
-    uint32_t unknownWNAM;
+    std::optional<uint32_t> unknownWNAM;
     BinarySubRecord unknownBODT;
     BinarySubRecord unknownBOD2;
-    std::vector<uint32_t> keywordArray;
+    std::vector<uint32_t> keywords;
     RaceData data;
     std::vector<SubBlock> subBlocks;
-}; //struct
+}; // struct
 
-} //namespace
+} // namespace
 
 #endif // SR_RACERECORD_HPP

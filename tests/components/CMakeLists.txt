@@ -114,6 +114,7 @@ set(component_tests_sources
     ../../sr/base/records/NPCRecord.cpp
     ../../sr/base/records/PerkRecord.cpp
     ../../sr/base/records/QuestRecord.cpp
+    ../../sr/base/records/RaceRecord.cpp
     ../../sr/base/records/ScrollRecord.cpp
     ../../sr/base/records/ShoutRecord.cpp
     ../../sr/base/records/SimplifiedReferenceRecord.cpp
@@ -279,6 +280,8 @@ set(component_tests_sources
     sr/base/records/quest/QOBJEntry.cpp
     sr/base/records/quest/QSDTRecord.cpp
     sr/base/records/quest/QSTAEntry.cpp
+    sr/base/records/RaceRecord.cpp
+    sr/base/records/RaceRecord_RaceData.cpp
     sr/base/records/ScrollRecord.cpp
     sr/base/records/ShoutRecord.cpp
     sr/base/records/SimplifiedReferenceRecord.cpp

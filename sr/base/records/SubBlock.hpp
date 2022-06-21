@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2013  Thoronador
+    Copyright (C) 2011, 2013, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,23 +27,21 @@
 namespace SRTP
 {
 
-//type for undefinded subrecord blocks
+/// wrapper type for unknown sub-record blocks
 struct SubBlock
 {
-  uint32_t subType;
-  BinarySubRecord subData;
+  uint32_t subType; /**< header of the sub-record */
+  BinarySubRecord subData; /**< sub-record data */
 
-  /* constructor */
   SubBlock()
   : subType(0), subData(BinarySubRecord())
   {  }
 
-  /* comparison operator */
   inline bool operator==(const SubBlock& other) const
   {
-    return ((subType == other.subType) && (subData == other.subData));
+    return (subType == other.subType) && (subData == other.subData);
   }
-}; //struct
+};
 
-} //namespace
+} // namespace
 #endif // SR_SUBBLOCK_HPP

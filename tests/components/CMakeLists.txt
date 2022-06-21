@@ -288,6 +288,7 @@ set(component_tests_sources
     sr/base/records/SoulGemRecord.cpp
     sr/base/records/SpellItem.cpp
     sr/base/records/SpellRecord.cpp
+    sr/base/records/SubBlock.cpp
     sr/base/records/TalkingActivatorRecord.cpp
     sr/base/records/Tes4HeaderRecord.cpp
     sr/base/records/TreeRecord.cpp

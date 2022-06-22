@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -40,11 +40,6 @@ EyeRecord::EyeRecord()
 
 }
 
-EyeRecord::~EyeRecord()
-{
-  //empty
-}
-
 uint32_t EyeRecord::getRecordType() const
 {
   return cEYES;
@@ -53,27 +48,28 @@ uint32_t EyeRecord::getRecordType() const
 #ifndef SR_NO_RECORD_EQUALITY
 bool EyeRecord::equals(const EyeRecord& other) const
 {
-  return ((editorID==other.editorID) and (name==other.name)
-      and (iconPath==other.iconPath) and (flags==other.flags)
-      and equalsBasic(other));
+  return (editorID == other.editorID) && (name == other.name)
+      && (iconPath == other.iconPath) && (flags == other.flags)
+      && equalsBasic(other);
 }
 #endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t EyeRecord::getWriteSize() const
 {
-  return (4 /* EDID */ +2 /* 2 bytes for length */
-        +editorID.length()+1 /* length of name +1 byte for NUL termination */
-        +name.getWriteSize() /* FULL */
-        +4 /* ICON */ +2 /* 2 bytes for length */
-        +iconPath.length()+1 /* length of name +1 byte for NUL termination */
-        +4 /* DATA */ +2 /* 2 bytes for length */ +1 /* fixed length of one byte */);
+  return 4 /* EDID */ + 2 /* 2 bytes for length */
+        + editorID.length() + 1 /* length of name +1 byte for NUL termination */
+        + name.getWriteSize() /* FULL */
+        + 4 /* ICON */ + 2 /* 2 bytes for length */
+        + iconPath.length() + 1 /* length of name +1 byte for NUL termination */
+        + 4 /* DATA */ + 2 /* 2 bytes for length */ +1 /* fixed length of one byte */;
 }
 
 bool EyeRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cEYES, 4);
-  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
+  if (!saveSizeAndUnknownValues(output, getWriteSize()))
+    return false;
 
   //write EDID
   output.write((const char*) &cEDID, 4);
@@ -110,10 +106,10 @@ bool EyeRecord::saveToStream(std::ostream& output) const
 bool EyeRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
-  if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
-  uint32_t subRecName;
-  uint16_t subLength;
-  subRecName = subLength = 0;
+  if (!loadSizeAndUnknownValues(in_File, readSize))
+    return false;
+  uint32_t subRecName = 0;
+  uint16_t subLength = 0;
 
   //read EDID
   in_File.read((char*) &subRecName, 4);
@@ -215,7 +211,7 @@ bool EyeRecord::isPlayable() const
 
 bool EyeRecord::canBeMale() const
 {
-  return ((((flags & FlagMale) != 0) and (flags!=0x07)) or (flags<0x01));
+  return ((((flags & FlagMale) != 0) && (flags != 0x07)) || (flags < 0x01));
 }
 
 bool EyeRecord::canBeFemale() const
@@ -223,4 +219,4 @@ bool EyeRecord::canBeFemale() const
   return (flags <= 0x03);
 }
 
-} //namespace
+} // namespace

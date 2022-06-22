@@ -363,7 +363,7 @@ TEST_CASE("RaceRecord")
     dummy_table.addString(0x00004699, "foo");
     dummy_table.addString(0x0001052F, "bar");
 
-    SECTION("default: load record")
+    SECTION("default: load record with short DATA sub-record")
     {
       const auto data = "RACE\x61\x04\0\0\0\0\0\0\x3C\xAA\x09\0\x1B\x69\x55\0\x28\0\x0A\0EDID\x0A\0SwarmRace\0FULL\x04\0\x99\x46\0\0DESC\x04\0\0\0\0\0SPCT\x04\0\x01\0\0\0SPLO\x04\0\xD1\xCD\x08\0WNAM\x04\0Bo\x08\0BODT\x0C\0\0\0\0\0\0/V\0\x02\0\0\0KSIZ\x04\0\x02\0\0\0KWDA\x08\0\x95\x37\x01\0\xFB\xF6\x06\0DATA\x80\0\xFF\0\xFF\0\xFF\0\xFF\0\xFF\0\xFF\0\xFF\0\0\0\0\0\x80?\0\0\x80?\0\0\x80?\0\0\x80?\0\x09\x04\0\0\0HB\0\0HB\0\0HB\0\0HC\xCD\xCC\xCC=\0\0\xC0?\0\0\0@\0\0\0\0\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\0\0\0\0\xFF\xFF\xFF\xFF\0\0\0\0\0\0 A\0\0 A\0\0\x80?\0\0\x80\x42\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x80>\0\0\xA0@\0\0\0\0MNAM\0\0ANAM0\0Actors\\Witchlight\\Character Assets\\skeleton.nif\0MODT\x0C\0\x02\0\0\0\0\0\0\0\0\0\0\0FNAM\0\0MTNM\x04\0WALKMTNM\x04\0RUN1MTNM\x04\0SNEKMTNM\x04\0BLDOMTNM\x04\0SWIMVTCK\x08\0\xA5\xF6\x01\0\xDD:\x01\0PNAM\x04\0\0\0\xA0@UNAM\x04\0\0\0@@ATKD,\0\0\0\x80?\0\0\x80?x\x1F\x09\0\0\0\0\0\0\0\0\0\0\0\x0C\x42\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x80?ATKE\x14\0attackStart_Attack1\0NAM1\0\0MNAM\0\0INDX\x04\0\0\0\0\0MODL(\0Actors\\Character\\UpperBodyHumanMale.egt\0MODT\x0C\0\x02\0\0\0\0\0\0\0\0\0\0\0FNAM\0\0INDX\x04\0\0\0\0\0MODL*\0Actors\\Character\\UpperBodyHumanFemale.egt\0MODT\x0C\0\x02\0\0\0\0\0\0\0\0\0\0\0GNAM\x04\0Co\x08\0NAM3\0\0MNAM\0\0MODL(\0Actors\\Witchlight\\WitchlightProject.hkx\0MODT\x0C\0\x02\0\0\0\0\0\0\0\0\0\0\0FNAM\0\0MODL!\0Actors\\Character\\DefaultMale.hkx\0MODT\x0C\0\x02\0\0\0\0\0\0\0\0\0\0\0NAM4\x04\0@/\x01\0NAM5\x04\0*\xF8\x01\0ONAM\x04\0\x13P\x0A\0LNAM\x04\0\x14P\x0A\0NAME\x05\0BODY\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0VNAM\x04\0\x01\xF2\xFF\xFFQNAM\x04\0B?\x01\0UNES\x04\0B?\x01\0WKMV\x04\0Go\x08\0RNMV\x04\0Go\x08\0"sv;
       std::istringstream stream;
@@ -425,6 +425,94 @@ TEST_CASE("RaceRecord")
       const auto unk96 = std::string_view(reinterpret_cast<const char*>(&record.data.unknown96[0]), 96);
       REQUIRE( unk96 == "\0\x09\x04\0\0\0\x48\x42\0\0\x48\x42\0\0\x48\x42\0\0HC\xCD\xCC\xCC=\0\0\xC0?\0\0\0@\0\0\0\0\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\0\0\0\0\xFF\xFF\xFF\xFF\0\0\0\0\0\0 A\0\0 A\0\0\x80?\0\0\x80\x42\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x80>\0\0\xA0@\0\0\0\0"sv );
       REQUIRE_FALSE( record.data.unknown36.has_value() );
+      REQUIRE( record.subBlocks.size() == 72 );
+      REQUIRE( record.subBlocks[0].subType == cMNAM );
+      REQUIRE( record.subBlocks[0].subData.size() == 0 );
+      REQUIRE( record.subBlocks[1].subType == cANAM );
+      REQUIRE( record.subBlocks[1].subData.size() == 48 );
+      const auto ANAM = std::string_view(reinterpret_cast<const char*>(record.subBlocks[1].subData.data()), record.subBlocks[1].subData.size());
+      REQUIRE( ANAM == "Actors\\Witchlight\\Character Assets\\skeleton.nif\0"sv );
+      REQUIRE( record.subBlocks[2].subType == cMODT );
+      REQUIRE( record.subBlocks[2].subData.size() == 12 );
+      const auto MODT = std::string_view(reinterpret_cast<const char*>(record.subBlocks[2].subData.data()), record.subBlocks[2].subData.size());
+      REQUIRE( MODT == "\x02\0\0\0\0\0\0\0\0\0\0\0"sv );
+      // some more records, not checking all of them, just the last one
+      REQUIRE( record.subBlocks[71].subType == 0x564D4E52 );
+      REQUIRE( record.subBlocks[71].subData.size() == 4 );
+      const auto RNMV = std::string_view(reinterpret_cast<const char*>(record.subBlocks[71].subData.data()), record.subBlocks[71].subData.size());
+      REQUIRE( RNMV == "\x47\x6F\x08\0"sv );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( record.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
+    }
+
+    SECTION("default: load record with long DATA sub-record")
+    {
+      const auto data = "RACE\x81\x04\0\0\0\0\0\0\x3C\xAA\x09\0\x8E\x2B\x1E\0\x2C\0\x0A\0EDID\x0A\0SwarmRace\0FULL\x04\0\x99\x46\0\0DESC\x04\0\0\0\0\0SPCT\x04\0\x01\0\0\0SPLO\x04\0\xD1\xCD\x08\0WNAM\x04\0Bo\x08\0BOD2\x08\0\0\0\0\0\x02\0\0\0KSIZ\x04\0\x02\0\0\0KWDA\x08\0\x95\x37\x01\0\xFB\xF6\x06\0DATA\xA4\0\xFF\0\xFF\0\xFF\0\xFF\0\xFF\0\xFF\0\xFF\0\0\0\0\0\x80?\0\0\x80?\0\0\x80?\0\0\x80?\0\x09\x04\0\0\0HB\0\0HB\0\0HB\0\0HC\xCD\xCC\xCC=\0\0\xC0?\0\0\0@\0\0\0\0\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\0\0\0\0\xFF\xFF\xFF\xFF\0\0\0\0\0\0 A\0\0 A\0\0\x80?\0\0\x80\x42\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x80>\0\0\xA0@\0\0\0\0\x7F\xEA}\xC2\0\0\0\0\0\0\0\0\0\0H\xC2\0\0\0\0\0\0\x82\x42\0\0\0\0\0\0\x96\xC3\0\0\0\0MNAM\0\0ANAM0\0Actors\\Witchlight\\Character Assets\\skeleton.nif\0MODT\x0C\0\x02\0\0\0\0\0\0\0\0\0\0\0FNAM\0\0MTNM\x04\0WALKMTNM\x04\0RUN1MTNM\x04\0SNEKMTNM\x04\0BLDOMTNM\x04\0SWIMVTCK\x08\0\xA5\xF6\x01\0\xDD:\x01\0PNAM\x04\0\0\0\xA0@UNAM\x04\0\0\0@@ATKD,\0\0\0\x80?\0\0\x80?x\x1F\x09\0\0\0\0\0\0\0\0\0\0\0\x0C\x42\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x80?ATKE\x14\0attackStart_Attack1\0NAM1\0\0MNAM\0\0INDX\x04\0\0\0\0\0MODL(\0Actors\\Character\\UpperBodyHumanMale.egt\0MODT\x0C\0\x02\0\0\0\0\0\0\0\0\0\0\0FNAM\0\0INDX\x04\0\0\0\0\0MODL*\0Actors\\Character\\UpperBodyHumanFemale.egt\0MODT\x0C\0\x02\0\0\0\0\0\0\0\0\0\0\0GNAM\x04\0Co\x08\0NAM3\0\0MNAM\0\0MODL(\0Actors\\Witchlight\\WitchlightProject.hkx\0MODT\x0C\0\x02\0\0\0\0\0\0\0\0\0\0\0FNAM\0\0MODL!\0Actors\\Character\\DefaultMale.hkx\0MODT\x0C\0\x02\0\0\0\0\0\0\0\0\0\0\0NAM4\x04\0@/\x01\0NAM5\x04\0*\xF8\x01\0ONAM\x04\0\x13P\x0A\0LNAM\x04\0\x14P\x0A\0NAME\x05\0BODY\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0NAME\x01\0\0VNAM\x04\0\x01\xE2\xFF\xFFQNAM\x04\0B?\x01\0UNES\x04\0B?\x01\0WKMV\x04\0Go\x08\0RNMV\x04\0Go\x08\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // skip RACE, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      RaceRecord record;
+      REQUIRE( record.loadFromStream(stream, true, dummy_table) );
+      // Check data.
+      // -- header
+      REQUIRE( record.headerFlags == 0 );
+      REQUIRE( record.headerFormID == 0x0009AA3C );
+      REQUIRE( record.headerRevision == 0x001E2B8E );
+      REQUIRE( record.headerVersion == 44 );
+      REQUIRE( record.headerUnknown5 == 0x000A );
+      // -- record data
+      REQUIRE( record.editorID == "SwarmRace" );
+      REQUIRE( record.name.isPresent() );
+      REQUIRE( record.name.getType() == LocalizedString::Type::Index );
+      REQUIRE( record.name.getIndex() == 0x00004699 );
+      REQUIRE( record.description.isPresent() );
+      REQUIRE( record.description.getType() == LocalizedString::Type::Index );
+      REQUIRE( record.description.getIndex() == 0x00000000 );
+      REQUIRE( record.spellFormIDs.size() == 1 );
+      REQUIRE( record.spellFormIDs[0] == 0x0008CDD1 );
+      REQUIRE( record.unknownWNAM.has_value() );
+      REQUIRE( record.unknownWNAM.value() == 0x00086F42);
+      REQUIRE_FALSE( record.unknownBODT.isPresent() );
+      REQUIRE( record.unknownBOD2.isPresent() );
+      const auto BOD2 = std::string_view(reinterpret_cast<const char*>(record.unknownBOD2.data()), record.unknownBOD2.size());
+      REQUIRE( BOD2 == "\0\0\0\0\x02\0\0\0"sv );
+      REQUIRE( record.keywords.size() == 2 );
+      REQUIRE( record.keywords[0] == 0x00013795 );
+      REQUIRE( record.keywords[1] == 0x0006F6FB );
+      REQUIRE( record.data.unknown16[0] == 0xFF );
+      REQUIRE( record.data.unknown16[1] == 0x00 );
+      REQUIRE( record.data.unknown16[2] == 0xFF );
+      REQUIRE( record.data.unknown16[3] == 0x00 );
+      REQUIRE( record.data.unknown16[4] == 0xFF );
+      REQUIRE( record.data.unknown16[5] == 0x00 );
+      REQUIRE( record.data.unknown16[6] == 0xFF );
+      REQUIRE( record.data.unknown16[7] == 0x00 );
+      REQUIRE( record.data.unknown16[8] == 0xFF );
+      REQUIRE( record.data.unknown16[9] == 0x00 );
+      REQUIRE( record.data.unknown16[10] == 0xFF );
+      REQUIRE( record.data.unknown16[11] == 0x00 );
+      REQUIRE( record.data.unknown16[12] == 0xFF );
+      REQUIRE( record.data.unknown16[13] == 0x00 );
+      REQUIRE( record.data.unknown16[14] == 0x00 );
+      REQUIRE( record.data.unknown16[15] == 0x00 );
+      REQUIRE( record.data.heightMale == 1.0f );
+      REQUIRE( record.data.heightFemale == 1.0f );
+      REQUIRE( record.data.weightMale == 1.0f );
+      REQUIRE( record.data.weightFemale == 1.0f );
+      const auto unk96 = std::string_view(reinterpret_cast<const char*>(&record.data.unknown96[0]), 96);
+      REQUIRE( unk96 == "\0\x09\x04\0\0\0\x48\x42\0\0\x48\x42\0\0\x48\x42\0\0HC\xCD\xCC\xCC=\0\0\xC0?\0\0\0@\0\0\0\0\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\0\0\0\0\xFF\xFF\xFF\xFF\0\0\0\0\0\0 A\0\0 A\0\0\x80?\0\0\x80\x42\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x80>\0\0\xA0@\0\0\0\0"sv );
+      REQUIRE( record.data.unknown36.has_value() );
+      const auto unk36 = std::string_view(reinterpret_cast<const char*>(record.data.unknown36.value().data()), 36);
+      REQUIRE( unk36 == "\x7F\xEA}\xC2\0\0\0\0\0\0\0\0\0\0H\xC2\0\0\0\0\0\0\x82\x42\0\0\0\0\0\0\x96\xC3\0\0\0\0"sv );
       REQUIRE( record.subBlocks.size() == 72 );
       REQUIRE( record.subBlocks[0].subType == cMNAM );
       REQUIRE( record.subBlocks[0].subData.size() == 0 );
@@ -763,7 +851,7 @@ TEST_CASE("RaceRecord")
 
     SECTION("corrupt data: stream ends before all of WNAM can be read")
     {
-      const auto data = "RACE\x6B\x04\0\0\0\0\0\0\x3C\xAA\x09\0\x1B\x69\x55\0\x28\0\x0A\0EDID\x0A\0SwarmRace\0FULL\x04\0\x99\x46\0\0DESC\x04\0\0\0\0\0SPCT\x04\0\x01\0\0\0SPLO\x04\0\xD1\xCD\x08\0WNAM\x04\0Bo\x08\0WNAM\x04\0Bo"sv;
+      const auto data = "RACE\x6B\x04\0\0\0\0\0\0\x3C\xAA\x09\0\x1B\x69\x55\0\x28\0\x0A\0EDID\x0A\0SwarmRace\0FULL\x04\0\x99\x46\0\0DESC\x04\0\0\0\0\0SPCT\x04\0\x01\0\0\0SPLO\x04\0\xD1\xCD\x08\0WNAM\x04\0Bo"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 

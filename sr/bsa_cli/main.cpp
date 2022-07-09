@@ -57,6 +57,7 @@ void showHelp()
             << "                   help           - shows help for a command\n"
             << "                   info           - shows BSA header information\n"
             << "                   list           - lists all folders and files in the archive\n"
+            << "                   metadata       - shows metadata of the files in the archive\n"
             << "\n"
             << "               More commands may be added in the future.\n"
             << "               The command must be given in most cases.\n"

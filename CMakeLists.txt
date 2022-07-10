@@ -72,10 +72,10 @@ OPTION(AUTODETECT_LZ4 "Automatically detect availability of liblz4." ON)
 # detect liblz4 based on the environment
 if (AUTODETECT_LZ4)
     if (MINGW AND CMAKE_HOST_UNIX)
-        # Cross-compiler with MingGW has not LZ4 yet, so disable it.
+        # Cross-compiler with MinGW has not LZ4 yet, so disable it.
         set (DISABLE_LZ4 ON)
     elseif (MSVC)
-        # MSVC build have no LZ4 yet, so disable it.
+        # MSVC builds have no LZ4 yet, so disable it.
         set (DISABLE_LZ4 ON)
     else ()
         # Other builds usually provide LZ4, so enable it.

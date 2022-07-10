@@ -34,7 +34,7 @@ jobs:
           mkdir build
           cd build
           cmake ../
-          cmake --build . -j4
+          cmake --build . -j2
       - name: Tests
         run: |
           export MSYSTEM=MINGW64
@@ -50,15 +50,15 @@ jobs:
           cd build-static
           cmake ../ -DENABLE_LTO=ON -DENABLE_STATIC_LINKING=ON
           # Skyrim tools
-          cmake --build . -j4 --target bsa-cli
-          cmake --build . -j4 --target conv_cams
-          cmake --build . -j4 --target formID_finder
-          cmake --build . -j4 --target race_resize
+          cmake --build . -j2 --target bsa-cli
+          cmake --build . -j2 --target conv_cams
+          cmake --build . -j2 --target formID_finder
+          cmake --build . -j2 --target race_resize
           # Morrowind tools
-          cmake --build . -j4 --target cell_translator
-          cmake --build . -j4 --target data_cleaner
-          cmake --build . -j4 --target skill_rebalance
-          cmake --build . -j4 --target spell_rename
+          cmake --build . -j2 --target cell_translator
+          cmake --build . -j2 --target data_cleaner
+          cmake --build . -j2 --target skill_rebalance
+          cmake --build . -j2 --target spell_rename
       - name: Collect statically linked artifacts
         run: |
           export MSYSTEM=MINGW64

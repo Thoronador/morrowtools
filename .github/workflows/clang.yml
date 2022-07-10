@@ -32,7 +32,7 @@ jobs:
           mkdir build
           cd build
           cmake ../
-          make -j4
+          make -j2
       - name: Tests
         run: |
           cd "$GITHUB_WORKSPACE"/build
@@ -54,7 +54,7 @@ jobs:
           mkdir build
           cd build
           cmake -DENABLE_LTO=ON -DENABLE_STATIC_LINKING=ON ../
-          make -j4
+          make -j2
       - name: Tests
         run: |
           cd "$GITHUB_WORKSPACE"/build

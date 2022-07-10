@@ -18,7 +18,7 @@ build_docker_image:
 
 win64_cross:
   image: registry.gitlab.com/striezel/morrowtools/ci-cross-win64:10.2-deb11
-  stage: build
+  stage: test
   before_script:
     - apt-get update && apt-get -y upgrade
   script:
@@ -28,7 +28,7 @@ win64_cross:
     - mkdir build
     - cd build
     - cmake -DENABLE_LTO=ON -DENABLE_STATIC_LINKING=ON ../
-    - make -j4
+    - make -j2
     # tests
     - ctest -V
     # Collect build artifacts in one place.
@@ -59,7 +59,7 @@ coverage:
     - mkdir build-coverage
     - cd build-coverage
     - cmake -DCODE_COVERAGE=ON ../
-    - make -j4
+    - make -j2
     # tests
     - ctest -V
     # collect code coverage data

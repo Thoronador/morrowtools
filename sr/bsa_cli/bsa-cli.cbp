@@ -63,6 +63,8 @@
 		<Unit filename="../base/bsa/BSAFolderBlock.hpp" />
 		<Unit filename="../base/bsa/BSAFolderRecord.cpp" />
 		<Unit filename="../base/bsa/BSAFolderRecord.hpp" />
+		<Unit filename="../base/bsa/BSAHash.cpp" />
+		<Unit filename="../base/bsa/BSAHash.hpp" />
 		<Unit filename="../base/bsa/BSAHeader.cpp" />
 		<Unit filename="../base/bsa/BSAHeader.hpp" />
 		<Unit filename="commands/ArgumentParsingUtilities.cpp" />

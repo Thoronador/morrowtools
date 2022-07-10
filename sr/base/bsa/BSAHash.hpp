@@ -22,12 +22,21 @@
 #define SR_BSAHASH_HPP
 
 #include <cstdint>
+#include <filesystem>
 
 namespace SRTP
 {
 
 // define hash type
 using BSAHash = uint64_t;
+
+/** \brief Calculates the hash value for a file name.
+ *
+ * \param path   path containing the file name, e. g. "foo.dds"
+ * \return Returns the corresponding hash value.
+ * \remarks This is currently not tested for directories, only for files.
+ */
+BSAHash calculateHash(const std::filesystem::path& path);
 
 } // namespace
 

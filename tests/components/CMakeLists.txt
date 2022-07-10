@@ -79,6 +79,7 @@ set(component_tests_sources
     ../../sr/base/bsa/BSAFileRecord.cpp
     ../../sr/base/bsa/BSAFolderBlock.cpp
     ../../sr/base/bsa/BSAFolderRecord.cpp
+    ../../sr/base/bsa/BSAHash.cpp
     ../../sr/base/bsa/BSAHeader.cpp
     ../../sr/base/records/AcousticSpaceRecord.cpp
     ../../sr/base/records/ActionRecord.cpp
@@ -230,6 +231,7 @@ set(component_tests_sources
     sr/base/bsa/BSAFileRecord.cpp
     sr/base/bsa/BSAFolderBlock.cpp
     sr/base/bsa/BSAFolderRecord.cpp
+    sr/base/bsa/BSAHash.cpp
     sr/base/bsa/BSAHeader.cpp
     sr/base/records/AcousticSpaceRecord.cpp
     sr/base/records/ActionRecord.cpp

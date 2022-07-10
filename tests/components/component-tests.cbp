@@ -180,6 +180,8 @@
 		<Unit filename="../../sr/base/bsa/BSAFolderBlock.hpp" />
 		<Unit filename="../../sr/base/bsa/BSAFolderRecord.cpp" />
 		<Unit filename="../../sr/base/bsa/BSAFolderRecord.hpp" />
+		<Unit filename="../../sr/base/bsa/BSAHash.cpp" />
+		<Unit filename="../../sr/base/bsa/BSAHash.hpp" />
 		<Unit filename="../../sr/base/bsa/BSAHeader.cpp" />
 		<Unit filename="../../sr/base/bsa/BSAHeader.hpp" />
 		<Unit filename="../../sr/base/records/AcousticSpaceRecord.cpp" />
@@ -402,6 +404,7 @@
 		<Unit filename="sr/base/bsa/BSAFileRecord.cpp" />
 		<Unit filename="sr/base/bsa/BSAFolderBlock.cpp" />
 		<Unit filename="sr/base/bsa/BSAFolderRecord.cpp" />
+		<Unit filename="sr/base/bsa/BSAHash.cpp" />
 		<Unit filename="sr/base/bsa/BSAHeader.cpp" />
 		<Unit filename="sr/base/records/AcousticSpaceRecord.cpp" />
 		<Unit filename="sr/base/records/ActionRecord.cpp" />

@@ -41,8 +41,8 @@ std::optional<Operation> parseOperation(const std::string_view op)
     return Operation::Info;
   if (op == "commands")
     return Operation::Commands;
-  if (op == "metadata")
-    return Operation::Metadata;
+  if (op == "file-metadata")
+    return Operation::FileMetadata;
   if (op == "directory-metadata")
     return Operation::DirectoryMetadata;
 
@@ -69,8 +69,8 @@ std::string operationToString(const Operation op)
          return "info";
     case Operation::Commands:
          return "commands";
-    case Operation::Metadata:
-         return "metadata";
+    case Operation::FileMetadata:
+         return "file-metadata";
     case Operation::DirectoryMetadata:
          return "directory-metadata";
     default:

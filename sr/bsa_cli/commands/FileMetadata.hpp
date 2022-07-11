@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SRTP_BSACLI_COMMAND_METADATA_HPP
-#define SRTP_BSACLI_COMMAND_METADATA_HPP
+#ifndef SRTP_BSACLI_COMMAND_FILEMETADATA_HPP
+#define SRTP_BSACLI_COMMAND_FILEMETADATA_HPP
 
 #include <string>
 #include "Command.hpp"
@@ -27,10 +27,10 @@
 namespace SRTP::bsa_cli
 {
 
-class Metadata: public Command
+class FileMetadata: public Command
 {
   public:
-    Metadata();
+    FileMetadata();
 
     /** \brief Parses command line arguments.
      *
@@ -68,4 +68,4 @@ class Metadata: public Command
 
 } // namespace
 
-#endif // SRTP_BSACLI_COMMAND_METADATA_HPP
+#endif // SRTP_BSACLI_COMMAND_FILEMETADATA_HPP

@@ -82,6 +82,8 @@
 		<Unit filename="commands/ExtractFile.hpp" />
 		<Unit filename="commands/ExtractFolder.cpp" />
 		<Unit filename="commands/ExtractFolder.hpp" />
+		<Unit filename="commands/FileMetadata.cpp" />
+		<Unit filename="commands/FileMetadata.hpp" />
 		<Unit filename="commands/Folders.cpp" />
 		<Unit filename="commands/Folders.hpp" />
 		<Unit filename="commands/Help.cpp" />
@@ -90,8 +92,6 @@
 		<Unit filename="commands/Info.hpp" />
 		<Unit filename="commands/List.cpp" />
 		<Unit filename="commands/List.hpp" />
-		<Unit filename="commands/Metadata.cpp" />
-		<Unit filename="commands/Metadata.hpp" />
 		<Unit filename="commands/Operations.cpp" />
 		<Unit filename="commands/Operations.hpp" />
 		<Unit filename="main.cpp" />

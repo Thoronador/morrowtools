@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include "Metadata.hpp"
+#include "FileMetadata.hpp"
 #include <iostream>
 #include "../../base/ReturnCodes.hpp"
 #include "../../base/bsa/BSA.hpp"
@@ -27,17 +27,17 @@
 namespace SRTP::bsa_cli
 {
 
-Metadata::Metadata()
+FileMetadata::FileMetadata()
 : bsaFileName(std::string())
 {
 }
 
-int Metadata::parseArguments(int argc, char** argv)
+int FileMetadata::parseArguments(int argc, char** argv)
 {
   return parseArgumentsBsaFileNameOnly(argc, argv, bsaFileName);
 }
 
-int Metadata::run()
+int FileMetadata::run()
 {
   BSA bsa;
   if (!bsa.open(bsaFileName))
@@ -81,17 +81,17 @@ int Metadata::run()
   return 0;
 }
 
-std::string Metadata::helpShort() const
+std::string FileMetadata::helpShort() const
 {
   return "Shows metadata of the files in the archive.";
 }
 
-std::string Metadata::helpLong(const std::string_view binaryName) const
+std::string FileMetadata::helpLong(const std::string_view binaryName) const
 {
-  return std::string(binaryName).append(" metadata\n")
+  return std::string(binaryName).append(" file-metadata\n")
       .append("Shows metadata of the files in an archive.\n\n")
       .append("Usage:\n    ")
-      .append(binaryName).append(" metadata BSA_FILE\n\n")
+      .append(binaryName).append(" file-metadata BSA_FILE\n\n")
       .append("Options:\n    BSA_FILE    - set path to the BSA file to operate on to BSA_FILE.\n")
       .append("                  The BSA_FILE must be given.\n");
 }

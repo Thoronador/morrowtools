@@ -24,11 +24,11 @@
 #include "ExtractAll.hpp"
 #include "ExtractFile.hpp"
 #include "ExtractFolder.hpp"
+#include "FileMetadata.hpp"
 #include "Folders.hpp"
 #include "Help.hpp"
 #include "Info.hpp"
 #include "List.hpp"
-#include "Metadata.hpp"
 
 namespace SRTP::bsa_cli::CommandFactory
 {
@@ -51,8 +51,8 @@ std::unique_ptr<Command> createCommand(const Operation op)
          return std::unique_ptr<Command>(new Info());
     case Operation::Commands:
          return std::unique_ptr<Command>(new Commands());
-    case Operation::Metadata:
-         return std::unique_ptr<Command>(new Metadata());
+    case Operation::FileMetadata:
+         return std::unique_ptr<Command>(new FileMetadata());
     case Operation::DirectoryMetadata:
          return std::unique_ptr<Command>(new DirectoryMetadata());
     case Operation::Help:

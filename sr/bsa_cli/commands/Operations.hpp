@@ -36,11 +36,11 @@ enum class Operation
   ExtractAll,
   ExtractFile,
   ExtractFolder,
+  FileMetadata,
   Folders,
   Help,
   Info,
-  List,
-  Metadata
+  List
 };
 
 /** \brief Parses a string containing an operation into an enumeration.
@@ -71,11 +71,11 @@ constexpr std::array<Operation, 10> allOperations()
     Operation::ExtractAll,
     Operation::ExtractFile,
     Operation::ExtractFolder,
+    Operation::FileMetadata,
     Operation::Folders,
     Operation::Help,
     Operation::Info,
-    Operation::List,
-    Operation::Metadata
+    Operation::List
   };
 }
 

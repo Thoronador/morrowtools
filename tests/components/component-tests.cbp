@@ -304,6 +304,8 @@
 		<Unit filename="../../sr/bsa_cli/commands/ExtractFile.hpp" />
 		<Unit filename="../../sr/bsa_cli/commands/ExtractFolder.cpp" />
 		<Unit filename="../../sr/bsa_cli/commands/ExtractFolder.hpp" />
+		<Unit filename="../../sr/bsa_cli/commands/FileMetadata.cpp" />
+		<Unit filename="../../sr/bsa_cli/commands/FileMetadata.hpp" />
 		<Unit filename="../../sr/bsa_cli/commands/Folders.cpp" />
 		<Unit filename="../../sr/bsa_cli/commands/Folders.hpp" />
 		<Unit filename="../../sr/bsa_cli/commands/Help.cpp" />
@@ -312,8 +314,6 @@
 		<Unit filename="../../sr/bsa_cli/commands/Info.hpp" />
 		<Unit filename="../../sr/bsa_cli/commands/List.cpp" />
 		<Unit filename="../../sr/bsa_cli/commands/List.hpp" />
-		<Unit filename="../../sr/bsa_cli/commands/Metadata.cpp" />
-		<Unit filename="../../sr/bsa_cli/commands/Metadata.hpp" />
 		<Unit filename="../../sr/bsa_cli/commands/Operations.cpp" />
 		<Unit filename="../../sr/bsa_cli/commands/Operations.hpp" />
 		<Unit filename="../../sr/formID_finder/AuxFunctions.cpp" />
@@ -480,11 +480,11 @@
 		<Unit filename="sr/bsa_cli/commands/ExtractAll.cpp" />
 		<Unit filename="sr/bsa_cli/commands/ExtractFile.cpp" />
 		<Unit filename="sr/bsa_cli/commands/ExtractFolder.cpp" />
+		<Unit filename="sr/bsa_cli/commands/FileMetadata.cpp" />
 		<Unit filename="sr/bsa_cli/commands/Folders.cpp" />
 		<Unit filename="sr/bsa_cli/commands/Help.cpp" />
 		<Unit filename="sr/bsa_cli/commands/Info.cpp" />
 		<Unit filename="sr/bsa_cli/commands/List.cpp" />
-		<Unit filename="sr/bsa_cli/commands/Metadata.cpp" />
 		<Unit filename="sr/bsa_cli/commands/Operations.cpp" />
 		<Unit filename="sr/formID_finder/AuxFunctions.cpp" />
 		<Extensions>

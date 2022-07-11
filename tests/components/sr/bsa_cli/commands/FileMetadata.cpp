@@ -22,9 +22,9 @@
 #include <array>
 #include <fstream>
 #include "../../../../../base/FileFunctions.hpp"
-#include "../../../../../sr/bsa_cli/commands/Metadata.hpp"
+#include "../../../../../sr/bsa_cli/commands/FileMetadata.hpp"
 
-TEST_CASE("bsa_cli::Metadata")
+TEST_CASE("bsa_cli::FileMetadata")
 {
   using namespace std::string_view_literals;
   using namespace std::string_literals;
@@ -32,21 +32,21 @@ TEST_CASE("bsa_cli::Metadata")
 
   SECTION("parseArguments")
   {
-    const auto arguments = std::string("a.out\0metadata\0foo_metadata.bsa\0fail\0"sv);
+    const auto arguments = std::string("a.out\0file-metadata\0foo_metadata.bsa\0fail\0"sv);
     std::array<char*, 4> argArr = {
         const_cast<char*>(&arguments.c_str()[0]),
         const_cast<char*>(&arguments.c_str()[6]),
-        const_cast<char*>(&arguments.c_str()[15]),
-        const_cast<char*>(&arguments.c_str()[32])
+        const_cast<char*>(&arguments.c_str()[20]),
+        const_cast<char*>(&arguments.c_str()[37])
     };
     char ** argv = argArr.data();
 
     REQUIRE( argv[0] == "a.out"s );
-    REQUIRE( argv[1] == "metadata"s );
+    REQUIRE( argv[1] == "file-metadata"s );
     REQUIRE( argv[2] == "foo_metadata.bsa"s );
     REQUIRE( argv[3] == "fail"s );
 
-    Metadata command;
+    FileMetadata command;
 
     REQUIRE( command.parseArguments(1, argv) != 0 );
     REQUIRE( command.parseArguments(2, argv) != 0 );
@@ -64,19 +64,19 @@ TEST_CASE("bsa_cli::Metadata")
 
   SECTION("run: fail with empty file")
   {
-    const auto arguments = std::string("a.out\0metadata\0foo_metadata_run.bsa\0"sv);
+    const auto arguments = std::string("a.out\0file-metadata\0foo_metadata_run.bsa\0"sv);
     std::array<char*, 3> argArr = {
         const_cast<char*>(&arguments.c_str()[0]),
         const_cast<char*>(&arguments.c_str()[6]),
-        const_cast<char*>(&arguments.c_str()[15])
+        const_cast<char*>(&arguments.c_str()[20])
     };
     char ** argv = argArr.data();
 
     REQUIRE( argv[0] == "a.out"s );
-    REQUIRE( argv[1] == "metadata"s );
+    REQUIRE( argv[1] == "file-metadata"s );
     REQUIRE( argv[2] == "foo_metadata_run.bsa"s );
 
-    Metadata command;
+    FileMetadata command;
 
     // create "BSA" file
     std::ofstream bsa("foo_metadata_run.bsa", std::ios::trunc | std::ios::out);
@@ -91,13 +91,13 @@ TEST_CASE("bsa_cli::Metadata")
 
   SECTION("helpShort returns non-empty string")
   {
-    Metadata command;
+    FileMetadata command;
     REQUIRE_FALSE( command.helpShort().empty() );
   }
 
   SECTION("helpLong returns non-empty string")
   {
-    Metadata command;
+    FileMetadata command;
     REQUIRE_FALSE( command.helpLong("foo").empty() );
   }
 }

@@ -2,9 +2,9 @@
 
 ## Next version (2022-07-??)
 
-The new `metadata` command to show metadata of the files in a BSA file is added.
-Metadata contains the name hash, the file size, the file offset, the compression
-flag and the file name.
+The new `file-metadata` command to show metadata of the files in a BSA file is
+added. Metadata contains the name hash, the file size, the file offset, the
+compression flag and the file name.
 
 The new `directory-metadata` command to show metadata of the directories in a
 BSA file is added. Metadata contains the name hash, the number of files in the

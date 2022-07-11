@@ -34,11 +34,11 @@ TEST_CASE("bsa_cli::Operations")
     REQUIRE( std::find(all.begin(), all.end(), Operation::ExtractAll) != all.end() );
     REQUIRE( std::find(all.begin(), all.end(), Operation::ExtractFile) != all.end() );
     REQUIRE( std::find(all.begin(), all.end(), Operation::ExtractFolder) != all.end() );
+    REQUIRE( std::find(all.begin(), all.end(), Operation::FileMetadata) != all.end() );
     REQUIRE( std::find(all.begin(), all.end(), Operation::Folders) != all.end() );
     REQUIRE( std::find(all.begin(), all.end(), Operation::Help) != all.end() );
     REQUIRE( std::find(all.begin(), all.end(), Operation::Info) != all.end() );
     REQUIRE( std::find(all.begin(), all.end(), Operation::List) != all.end() );
-    REQUIRE( std::find(all.begin(), all.end(), Operation::Metadata) != all.end() );
   }
 
   SECTION("operationToString")
@@ -75,11 +75,11 @@ TEST_CASE("bsa_cli::Operations")
     REQUIRE( parseOperation("extract-all") == Operation::ExtractAll );
     REQUIRE( parseOperation("extract-file") == Operation::ExtractFile );
     REQUIRE( parseOperation("extract-folder") == Operation::ExtractFolder );
+    REQUIRE( parseOperation("file-metadata") == Operation::FileMetadata );
     REQUIRE( parseOperation("folders") == Operation::Folders );
     REQUIRE( parseOperation("help") == Operation::Help );
     REQUIRE( parseOperation("list") == Operation::List );
     REQUIRE( parseOperation("info") == Operation::Info );
-    REQUIRE( parseOperation("metadata") == Operation::Metadata );
 
     REQUIRE( parseOperation("CoMMaNdS") == std::nullopt );
     REQUIRE( parseOperation("DiReCtOrY-MeTaDaTa") == std::nullopt );
@@ -87,10 +87,10 @@ TEST_CASE("bsa_cli::Operations")
     REQUIRE( parseOperation("eXtRacT-AlL") == std::nullopt );
     REQUIRE( parseOperation("EXTRACT-file") == std::nullopt );
     REQUIRE( parseOperation("EXTRACT-FoLdEr") == std::nullopt );
+    REQUIRE( parseOperation("FiLe-MeTaDaTa") == std::nullopt );
     REQUIRE( parseOperation("FoLdErS") == std::nullopt );
     REQUIRE( parseOperation("hELp") == std::nullopt );
     REQUIRE( parseOperation("LiSt") == std::nullopt );
     REQUIRE( parseOperation("InFo") == std::nullopt );
-    REQUIRE( parseOperation("MeTaDaTa") == std::nullopt );
   }
 }

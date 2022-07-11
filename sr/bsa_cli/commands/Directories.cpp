@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include "Folders.hpp"
+#include "Directories.hpp"
 #include <iostream>
 #include "../../base/ReturnCodes.hpp"
 #include "../../base/bsa/BSA.hpp"
@@ -27,17 +27,17 @@
 namespace SRTP::bsa_cli
 {
 
-Folders::Folders()
+Directories::Directories()
 : bsaFileName(std::string())
 {
 }
 
-int Folders::parseArguments(int argc, char** argv)
+int Directories::parseArguments(int argc, char** argv)
 {
   return parseArgumentsBsaFileNameOnly(argc, argv, bsaFileName);
 }
 
-int Folders::run()
+int Directories::run()
 {
   BSA bsa;
   if (!bsa.open(bsaFileName))
@@ -63,17 +63,17 @@ int Folders::run()
   return 0;
 }
 
-std::string Folders::helpShort() const
+std::string Directories::helpShort() const
 {
-  return "Lists all folders in the archive.";
+  return "Lists all directories in the archive.";
 }
 
-std::string Folders::helpLong(const std::string_view binaryName) const
+std::string Directories::helpLong(const std::string_view binaryName) const
 {
-  return std::string(binaryName).append(" folders\n")
-      .append("Lists all folders in the archive.\n\n")
+  return std::string(binaryName).append(" directories\n")
+      .append("Lists all directories in the archive.\n\n")
       .append("Usage:\n    ")
-      .append(binaryName).append(" folders BSA_FILE\n\n")
+      .append(binaryName).append(" directories BSA_FILE\n\n")
       .append("Options:\n    BSA_FILE    - set path to the BSA file to operate on to BSA_FILE.\n")
       .append("                  The BSA_FILE must be given.\n");
 }

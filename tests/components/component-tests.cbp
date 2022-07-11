@@ -296,6 +296,8 @@
 		<Unit filename="../../sr/bsa_cli/commands/CommandFactory.hpp" />
 		<Unit filename="../../sr/bsa_cli/commands/Commands.cpp" />
 		<Unit filename="../../sr/bsa_cli/commands/Commands.hpp" />
+		<Unit filename="../../sr/bsa_cli/commands/Directories.cpp" />
+		<Unit filename="../../sr/bsa_cli/commands/Directories.hpp" />
 		<Unit filename="../../sr/bsa_cli/commands/DirectoryMetadata.cpp" />
 		<Unit filename="../../sr/bsa_cli/commands/DirectoryMetadata.hpp" />
 		<Unit filename="../../sr/bsa_cli/commands/ExtractAll.cpp" />
@@ -306,8 +308,6 @@
 		<Unit filename="../../sr/bsa_cli/commands/ExtractFolder.hpp" />
 		<Unit filename="../../sr/bsa_cli/commands/FileMetadata.cpp" />
 		<Unit filename="../../sr/bsa_cli/commands/FileMetadata.hpp" />
-		<Unit filename="../../sr/bsa_cli/commands/Folders.cpp" />
-		<Unit filename="../../sr/bsa_cli/commands/Folders.hpp" />
 		<Unit filename="../../sr/bsa_cli/commands/Help.cpp" />
 		<Unit filename="../../sr/bsa_cli/commands/Help.hpp" />
 		<Unit filename="../../sr/bsa_cli/commands/Info.cpp" />
@@ -476,12 +476,12 @@
 		<Unit filename="sr/bsa_cli/commands/ArgumentParsingUtilities.cpp" />
 		<Unit filename="sr/bsa_cli/commands/CommandFactory.cpp" />
 		<Unit filename="sr/bsa_cli/commands/Commands.cpp" />
+		<Unit filename="sr/bsa_cli/commands/Directories.cpp" />
 		<Unit filename="sr/bsa_cli/commands/DirectoryMetadata.cpp" />
 		<Unit filename="sr/bsa_cli/commands/ExtractAll.cpp" />
 		<Unit filename="sr/bsa_cli/commands/ExtractFile.cpp" />
 		<Unit filename="sr/bsa_cli/commands/ExtractFolder.cpp" />
 		<Unit filename="sr/bsa_cli/commands/FileMetadata.cpp" />
-		<Unit filename="sr/bsa_cli/commands/Folders.cpp" />
 		<Unit filename="sr/bsa_cli/commands/Help.cpp" />
 		<Unit filename="sr/bsa_cli/commands/Info.cpp" />
 		<Unit filename="sr/bsa_cli/commands/List.cpp" />

@@ -22,9 +22,9 @@
 #include <array>
 #include <fstream>
 #include "../../../../../base/FileFunctions.hpp"
-#include "../../../../../sr/bsa_cli/commands/Folders.hpp"
+#include "../../../../../sr/bsa_cli/commands/Directories.hpp"
 
-TEST_CASE("bsa_cli::Folders")
+TEST_CASE("bsa_cli::Directories")
 {
   using namespace std::string_view_literals;
   using namespace std::string_literals;
@@ -32,21 +32,21 @@ TEST_CASE("bsa_cli::Folders")
 
   SECTION("parseArguments")
   {
-    const auto arguments = std::string("a.out\0folders\0foo_folders.bsa\0fail\0"sv);
+    const auto arguments = std::string("a.out\0directories\0foo_folders.bsa\0fail\0"sv);
     std::array<char*, 4> argArr = {
         const_cast<char*>(&arguments.c_str()[0]),
         const_cast<char*>(&arguments.c_str()[6]),
-        const_cast<char*>(&arguments.c_str()[14]),
-        const_cast<char*>(&arguments.c_str()[30])
+        const_cast<char*>(&arguments.c_str()[18]),
+        const_cast<char*>(&arguments.c_str()[34])
     };
     char ** argv = argArr.data();
 
     REQUIRE( argv[0] == "a.out"s );
-    REQUIRE( argv[1] == "folders"s );
+    REQUIRE( argv[1] == "directories"s );
     REQUIRE( argv[2] == "foo_folders.bsa"s );
     REQUIRE( argv[3] == "fail"s );
 
-    Folders command;
+    Directories command;
 
     REQUIRE( command.parseArguments(1, argv) != 0 );
     REQUIRE( command.parseArguments(2, argv) != 0 );
@@ -64,19 +64,19 @@ TEST_CASE("bsa_cli::Folders")
 
   SECTION("run: fail with empty file")
   {
-    const auto arguments = std::string("a.out\0folders\0foo_folders_run.bsa\0"sv);
+    const auto arguments = std::string("a.out\0directories\0foo_folders_run.bsa\0"sv);
     std::array<char*, 3> argArr = {
         const_cast<char*>(&arguments.c_str()[0]),
         const_cast<char*>(&arguments.c_str()[6]),
-        const_cast<char*>(&arguments.c_str()[14])
+        const_cast<char*>(&arguments.c_str()[18])
     };
     char ** argv = argArr.data();
 
     REQUIRE( argv[0] == "a.out"s );
-    REQUIRE( argv[1] == "folders"s );
+    REQUIRE( argv[1] == "directories"s );
     REQUIRE( argv[2] == "foo_folders_run.bsa"s );
 
-    Folders command;
+    Directories command;
 
     // create "BSA" file
     std::ofstream bsa("foo_folders_run.bsa", std::ios::trunc | std::ios::out);
@@ -91,13 +91,13 @@ TEST_CASE("bsa_cli::Folders")
 
   SECTION("helpShort returns non-empty string")
   {
-    Folders command;
+    Directories command;
     REQUIRE_FALSE( command.helpShort().empty() );
   }
 
   SECTION("helpLong returns non-empty string")
   {
-    Folders command;
+    Directories command;
     REQUIRE_FALSE( command.helpLong("foo").empty() );
   }
 }

@@ -136,12 +136,12 @@ set(component_tests_sources
     ../../sr/bsa_cli/commands/ArgumentParsingUtilities.cpp
     ../../sr/bsa_cli/commands/CommandFactory.cpp
     ../../sr/bsa_cli/commands/Commands.cpp
+    ../../sr/bsa_cli/commands/Directories.cpp
     ../../sr/bsa_cli/commands/DirectoryMetadata.cpp
     ../../sr/bsa_cli/commands/ExtractAll.cpp
     ../../sr/bsa_cli/commands/ExtractFile.cpp
     ../../sr/bsa_cli/commands/ExtractFolder.cpp
     ../../sr/bsa_cli/commands/FileMetadata.cpp
-    ../../sr/bsa_cli/commands/Folders.cpp
     ../../sr/bsa_cli/commands/Help.cpp
     ../../sr/bsa_cli/commands/Info.cpp
     ../../sr/bsa_cli/commands/List.cpp
@@ -302,12 +302,12 @@ set(component_tests_sources
     sr/bsa_cli/commands/ArgumentParsingUtilities.cpp
     sr/bsa_cli/commands/CommandFactory.cpp
     sr/bsa_cli/commands/Commands.cpp
+    sr/bsa_cli/commands/Directories.cpp
     sr/bsa_cli/commands/DirectoryMetadata.cpp
     sr/bsa_cli/commands/ExtractAll.cpp
     sr/bsa_cli/commands/ExtractFile.cpp
     sr/bsa_cli/commands/ExtractFolder.cpp
     sr/bsa_cli/commands/FileMetadata.cpp
-    sr/bsa_cli/commands/Folders.cpp
     sr/bsa_cli/commands/Help.cpp
     sr/bsa_cli/commands/Info.cpp
     sr/bsa_cli/commands/List.cpp

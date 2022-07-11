@@ -20,12 +20,12 @@ set(bsa_cli_sources
     commands/ArgumentParsingUtilities.cpp
     commands/CommandFactory.cpp
     commands/Commands.cpp
+    commands/Directories.cpp
     commands/DirectoryMetadata.cpp
     commands/ExtractAll.cpp
     commands/ExtractFile.cpp
     commands/ExtractFolder.cpp
     commands/FileMetadata.cpp
-    commands/Folders.cpp
     commands/Help.cpp
     commands/Info.cpp
     commands/List.cpp

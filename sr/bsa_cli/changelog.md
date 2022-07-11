@@ -2,13 +2,20 @@
 
 ## Next version (2022-07-??)
 
+__[feature]__
 The new `file-metadata` command to show metadata of the files in a BSA file is
 added. Metadata contains the name hash, the file size, the file offset, the
 compression flag and the file name.
 
+__[feature]__
 The new `directory-metadata` command to show metadata of the directories in a
 BSA file is added. Metadata contains the name hash, the number of files in the
 directory, the file offset, and the directory name.
+
+__[breaking change]__
+The `folders` command is renamed to `directories`.
+This means that invocations like `bsa-cli folders path\to\file.bsa` should be
+replaced by something like `bsa-cli directories path\to\file.bsa`.
 
 ## Version 0.7.2 (2022-06-19)
 

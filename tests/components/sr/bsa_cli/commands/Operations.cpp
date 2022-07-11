@@ -30,12 +30,12 @@ TEST_CASE("bsa_cli::Operations")
     const auto all = allOperations();
 
     REQUIRE( std::find(all.begin(), all.end(), Operation::Commands) != all.end() );
+    REQUIRE( std::find(all.begin(), all.end(), Operation::Directories) != all.end() );
     REQUIRE( std::find(all.begin(), all.end(), Operation::DirectoryMetadata) != all.end() );
     REQUIRE( std::find(all.begin(), all.end(), Operation::ExtractAll) != all.end() );
     REQUIRE( std::find(all.begin(), all.end(), Operation::ExtractFile) != all.end() );
     REQUIRE( std::find(all.begin(), all.end(), Operation::ExtractFolder) != all.end() );
     REQUIRE( std::find(all.begin(), all.end(), Operation::FileMetadata) != all.end() );
-    REQUIRE( std::find(all.begin(), all.end(), Operation::Folders) != all.end() );
     REQUIRE( std::find(all.begin(), all.end(), Operation::Help) != all.end() );
     REQUIRE( std::find(all.begin(), all.end(), Operation::Info) != all.end() );
     REQUIRE( std::find(all.begin(), all.end(), Operation::List) != all.end() );
@@ -70,13 +70,13 @@ TEST_CASE("bsa_cli::Operations")
   {
     REQUIRE( parseOperation("") == std::nullopt );
     REQUIRE( parseOperation("commands") == Operation::Commands );
+    REQUIRE( parseOperation("directories") == Operation::Directories );
     REQUIRE( parseOperation("directory-metadata") == Operation::DirectoryMetadata );
     REQUIRE( parseOperation("extract") == Operation::ExtractAll );
     REQUIRE( parseOperation("extract-all") == Operation::ExtractAll );
     REQUIRE( parseOperation("extract-file") == Operation::ExtractFile );
     REQUIRE( parseOperation("extract-folder") == Operation::ExtractFolder );
     REQUIRE( parseOperation("file-metadata") == Operation::FileMetadata );
-    REQUIRE( parseOperation("folders") == Operation::Folders );
     REQUIRE( parseOperation("help") == Operation::Help );
     REQUIRE( parseOperation("list") == Operation::List );
     REQUIRE( parseOperation("info") == Operation::Info );
@@ -88,7 +88,7 @@ TEST_CASE("bsa_cli::Operations")
     REQUIRE( parseOperation("EXTRACT-file") == std::nullopt );
     REQUIRE( parseOperation("EXTRACT-FoLdEr") == std::nullopt );
     REQUIRE( parseOperation("FiLe-MeTaDaTa") == std::nullopt );
-    REQUIRE( parseOperation("FoLdErS") == std::nullopt );
+    REQUIRE( parseOperation("DiReCtOrIeS") == std::nullopt );
     REQUIRE( parseOperation("hELp") == std::nullopt );
     REQUIRE( parseOperation("LiSt") == std::nullopt );
     REQUIRE( parseOperation("InFo") == std::nullopt );

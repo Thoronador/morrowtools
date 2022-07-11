@@ -32,12 +32,12 @@ namespace SRTP
 enum class Operation
 {
   Commands,
+  Directories,
   DirectoryMetadata,
   ExtractAll,
   ExtractFile,
   ExtractFolder,
   FileMetadata,
-  Folders,
   Help,
   Info,
   List
@@ -67,12 +67,12 @@ constexpr std::array<Operation, 10> allOperations()
 {
   return {
     Operation::Commands,
+    Operation::Directories,
     Operation::DirectoryMetadata,
     Operation::ExtractAll,
     Operation::ExtractFile,
     Operation::ExtractFolder,
     Operation::FileMetadata,
-    Operation::Folders,
     Operation::Help,
     Operation::Info,
     Operation::List

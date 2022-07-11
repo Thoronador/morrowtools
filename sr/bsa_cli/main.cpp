@@ -50,6 +50,7 @@ void showHelp()
             << "               file. Allowed commands are:\n"
             << "\n"
             << "                   commands           - lists available commands\n"
+            << "                   directories        - lists all directories in the archive\n"
             << "                   directory-metadata - shows metadata of the directories in\n"
             << "                                        the archive\n"
             << "                   extract-all        - extracts everything from the archive\n"
@@ -58,10 +59,9 @@ void showHelp()
             << "                                        archive\n"
             << "                   file-metadata      - shows metadata of the files in the\n"
             << "                                        archive\n"
-            << "                   folders            - lists all folders in the archive\n"
             << "                   help               - shows help for a command\n"
             << "                   info               - shows BSA header information\n"
-            << "                   list               - lists all folders and files in the\n"
+            << "                   list               - lists all directories and files in the\n"
             << "                                        archive\n"
             << "\n"
             << "               More commands may be added in the future.\n"
@@ -103,9 +103,10 @@ int main(int argc, char **argv)
           if (!operation)
           {
             std::cerr << "Error: '" << param << "' is not an allowed command.\n"
-                      << "Allowed commands are 'commands', 'directory-metadata',"
-                      << " 'extract-all', 'extract-file', 'extract-folder', "
-                      << "'file-metadata', folders', 'help', 'info', and 'list'.\n";
+                      << "Allowed commands are 'commands', 'directories',"
+                      << " 'directory-metadata', 'extract-all', 'extract-file',"
+                      << " 'extract-folder', 'file-metadata', 'help', 'info',"
+                      << " and 'list'.\n";
             return SRTP::rcInvalidParameter;
           }
           break;

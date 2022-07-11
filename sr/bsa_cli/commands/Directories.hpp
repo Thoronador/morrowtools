@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SRTP_BSACLI_COMMAND_FOLDERS_HPP
-#define SRTP_BSACLI_COMMAND_FOLDERS_HPP
+#ifndef SRTP_BSACLI_COMMAND_DIRECTORIES_HPP
+#define SRTP_BSACLI_COMMAND_DIRECTORIES_HPP
 
 #include <string>
 #include "Command.hpp"
@@ -27,10 +27,10 @@
 namespace SRTP::bsa_cli
 {
 
-class Folders: public Command
+class Directories: public Command
 {
   public:
-    Folders();
+    Directories();
 
     /** \brief Parses command line arguments.
      *
@@ -42,7 +42,7 @@ class Folders: public Command
      */
     int parseArguments(int argc, char** argv) final;
 
-    /** \brief List folder names of the BSA.
+    /** \brief List directory names of the BSA.
      *
      * \return Returns zero in case of success.
      *         Returns a non-zero exit code in case of failure.
@@ -68,4 +68,4 @@ class Folders: public Command
 
 } // namespace
 
-#endif // SRTP_BSACLI_COMMAND_FOLDERS_HPP
+#endif // SRTP_BSACLI_COMMAND_DIRECTORIES_HPP

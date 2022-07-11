@@ -85,4 +85,51 @@ TEST_CASE("BSAHash")
       }
     }
   }
+
+  SECTION("calculateDirectoryHash")
+  {
+    SECTION("calculation is case insensitive")
+    {
+      const BSAHash hash = calculateDirectoryHash("foo\\bar\\bazinga");
+
+      REQUIRE( calculateDirectoryHash("Foo\\Bar\\Bazinga") == hash );
+      REQUIRE( calculateDirectoryHash("FOO\\BAR\\BAZINGA") == hash );
+      REQUIRE( calculateDirectoryHash("FOO\\bar\\BAZinga") == hash );
+    }
+
+    SECTION("calculation is insensitive to forward slashes")
+    {
+      const BSAHash hash = calculateDirectoryHash("foo\\bar\\baz");
+
+      REQUIRE( calculateDirectoryHash("foo/bar/baz") == hash );
+      REQUIRE( calculateDirectoryHash("foo\\bar/baz") == hash );
+      REQUIRE( calculateDirectoryHash("foo/bar\\baz") == hash );
+    }
+
+    SECTION("test against known values")
+    {
+      SECTION("single directory level")
+      {
+        REQUIRE( calculateDirectoryHash("grass") == 0x00721c6f67057373 );
+        REQUIRE( calculateDirectoryHash("interface") == 0xe1e631ce69096365 );
+        REQUIRE( calculateDirectoryHash("music") == 0x00751d3e6d056963 );
+        REQUIRE( calculateDirectoryHash("scripts") == 0x36aebb9673077473 );
+        REQUIRE( calculateDirectoryHash("seq") == 0x0000000073036571 );
+        REQUIRE( calculateDirectoryHash("strings") == 0x4da2984373076773 );
+        REQUIRE( calculateDirectoryHash("textures") == 0xd507789e74086573 );
+      }
+
+      SECTION("multiple directory levels")
+      {
+        REQUIRE( calculateDirectoryHash("interface\\exported") == 0x4b5abe2069126564 );
+        REQUIRE( calculateDirectoryHash("interface\\controls\\pc") == 0xe5a2baba69157063 );
+        REQUIRE( calculateDirectoryHash("meshes\\actors\\cow\\characters") == 0x052e72646d1c7273 );
+        REQUIRE( calculateDirectoryHash("meshes\\dungeons\\dwemer\\animated\\astrolabe\\lexiconstand") == 0x1c7263416d366e64 );
+        REQUIRE( calculateDirectoryHash("meshes\\landscape") == 0xff7c9b926d107065 );
+        REQUIRE( calculateDirectoryHash("sound\\fx") == 0xeda95b2073086678 );
+        REQUIRE( calculateDirectoryHash("textures\\actors\\character\\eyes") == 0x70ca23b5741e6573 );
+        REQUIRE( calculateDirectoryHash("textures\\actors\\dlc01\\spriggan") == 0x7b3a1922741e616e );
+      }
+    }
+  }
 }

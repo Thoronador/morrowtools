@@ -34,9 +34,19 @@ using BSAHash = uint64_t;
  *
  * \param path   path containing the file name, e. g. "foo.dds"
  * \return Returns the corresponding hash value.
- * \remarks This is currently not tested for directories, only for files.
+ * \remarks This should not be used for directories, only for files.
+ *          If you want to hash a directory name, use the function
+ *          calculateDirectoryHash() instead, because it will treat directories
+ *          correctly.
  */
 BSAHash calculateHash(const std::filesystem::path& path);
+
+/** \brief Calculates the hash value for a directory name.
+ *
+ * \param path   path containing the directory name, e. g. "foo\\bar\\baz"
+ * \return Returns the corresponding hash value.
+ */
+BSAHash calculateDirectoryHash(std::string directoryName);
 
 } // namespace
 

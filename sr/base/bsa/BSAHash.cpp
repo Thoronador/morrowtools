@@ -29,8 +29,8 @@ namespace SRTP
 
 BSAHash calculateHash(const std::filesystem::path& path)
 {
-  std::string stem = path.stem().string();
   std::string ext = path.extension().string();
+  std::string stem = path.stem().string();
 
   auto lower_case = [](unsigned char c)
   {
@@ -82,6 +82,17 @@ BSAHash calculateHash(const std::filesystem::path& path)
   }
   second_hash += third_hash;
   return (static_cast<BSAHash>(second_hash) << 32) + first_hash;
+}
+
+BSAHash calculateDirectoryHash(std::string directoryName)
+{
+  // Replace slashes by backslashes. That's what BSA archives use and expect.
+  for (auto pos = directoryName.find('/'); pos != std::string::npos; pos = directoryName.find('/', pos))
+  {
+     directoryName.replace(pos, 1, 1, '\\');
+  }
+  // Use normal hash for the rest.
+  return calculateHash(directoryName);
 }
 
 }

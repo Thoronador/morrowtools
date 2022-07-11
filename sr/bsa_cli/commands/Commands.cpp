@@ -60,8 +60,8 @@ int Commands::run()
   {
     const auto command = CommandFactory::createCommand(operation);
     const auto name = operationToString(operation);
-    std::cout << "\t" << operationToString(operation)
-              << std::string(maxNameLength - name.size(), ' ') << "\t"
+    std::cout << "    " << name
+              << std::string(maxNameLength - name.size(), ' ') << "    "
               << command->helpShort() << "\n";
   }
   std::cout << "\nUse 'bsa-cli help <command>' for more information on a specific command.\n";

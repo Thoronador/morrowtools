@@ -30,7 +30,9 @@ namespace SRTP
 BSAHash calculateHash(const std::filesystem::path& path)
 {
   std::string ext = path.extension().string();
-  std::string stem = path.stem().string();
+  std::string stem = path.string();
+  // Remove the extension from "stem".
+  stem.erase(stem.size() - ext.size());
 
   auto lower_case = [](unsigned char c)
   {

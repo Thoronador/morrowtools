@@ -106,6 +106,14 @@ TEST_CASE("BSAHash")
       REQUIRE( calculateDirectoryHash("foo/bar\\baz") == hash );
     }
 
+    SECTION("calculation considers whole path")
+    {
+      const BSAHash hash_full = calculateDirectoryHash("foo\\bar\\baz");
+      const BSAHash hash_last = calculateDirectoryHash("baz");
+
+      REQUIRE_FALSE( hash_full == hash_last );
+    }
+
     SECTION("test against known values")
     {
       SECTION("single directory level")

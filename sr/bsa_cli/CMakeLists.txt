@@ -23,8 +23,8 @@ set(bsa_cli_sources
     commands/Directories.cpp
     commands/DirectoryMetadata.cpp
     commands/ExtractAll.cpp
+    commands/ExtractDirectory.cpp
     commands/ExtractFile.cpp
-    commands/ExtractFolder.cpp
     commands/FileMetadata.cpp
     commands/Help.cpp
     commands/Info.cpp

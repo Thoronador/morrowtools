@@ -22,9 +22,9 @@
 #include <array>
 #include <fstream>
 #include "../../../../../base/FileFunctions.hpp"
-#include "../../../../../sr/bsa_cli/commands/ExtractFolder.hpp"
+#include "../../../../../sr/bsa_cli/commands/ExtractDirectory.hpp"
 
-TEST_CASE("bsa_cli::ExtractFolder")
+TEST_CASE("bsa_cli::ExtractDirectory")
 {
   using namespace std::string_view_literals;
   using namespace std::string_literals;
@@ -32,29 +32,29 @@ TEST_CASE("bsa_cli::ExtractFolder")
 
   SECTION("parseArguments with nullptr")
   {
-    ExtractFolder command;
+    ExtractDirectory command;
     REQUIRE( command.parseArguments(5, nullptr) != 0 );
   }
 
   SECTION("parseArguments")
   {
-    const auto arguments = std::string("a.out\0extract-folder\0foo_extract_folder.bsa\0dir\\file.dat\0foo.dat"sv);
+    const auto arguments = std::string("a.out\0extract-directory\0foo_extract_directory.bsa\0dir\\file.dat\0foo.dat"sv);
     std::array<char*, 5> argArr = {
         const_cast<char*>(&arguments.c_str()[0]),
         const_cast<char*>(&arguments.c_str()[6]),
-        const_cast<char*>(&arguments.c_str()[21]),
-        const_cast<char*>(&arguments.c_str()[44]),
-        const_cast<char*>(&arguments.c_str()[57])
+        const_cast<char*>(&arguments.c_str()[24]),
+        const_cast<char*>(&arguments.c_str()[50]),
+        const_cast<char*>(&arguments.c_str()[63])
     };
     char ** argv = argArr.data();
 
     REQUIRE( argv[0] == "a.out"s );
-    REQUIRE( argv[1] == "extract-folder"s );
-    REQUIRE( argv[2] == "foo_extract_folder.bsa"s );
+    REQUIRE( argv[1] == "extract-directory"s );
+    REQUIRE( argv[2] == "foo_extract_directory.bsa"s );
     REQUIRE( argv[3] == "dir\\file.dat"s );
     REQUIRE( argv[4] == "foo.dat"s );
 
-    ExtractFolder command;
+    ExtractDirectory command;
 
     REQUIRE( command.parseArguments(1, argv) != 0 );
     REQUIRE( command.parseArguments(2, argv) != 0 );
@@ -63,55 +63,55 @@ TEST_CASE("bsa_cli::ExtractFolder")
     REQUIRE( command.parseArguments(5, argv) != 0 );
 
     // create "BSA" file
-    std::ofstream bsa("foo_extract_folder.bsa", std::ios::trunc | std::ios::out);
+    std::ofstream bsa("foo_extract_directory.bsa", std::ios::trunc | std::ios::out);
     bsa.close();
 
     REQUIRE( command.parseArguments(5, argv) == 0 );
 
     // cleanup: delete file
-    REQUIRE( deleteFile("foo_extract_folder.bsa") );
+    REQUIRE( deleteFile("foo_extract_directory.bsa") );
   }
 
   SECTION("run: fail with empty file")
   {
-    const auto arguments = std::string("a.out\0extract-folder\0foo_extract_folder.bsa\0dir\\file.dat\0foo.dat"sv);
+    const auto arguments = std::string("a.out\0extract-directory\0foo_extract_directory.bsa\0dir\\file.dat\0foo.dat"sv);
     std::array<char*, 5> argArr = {
         const_cast<char*>(&arguments.c_str()[0]),
         const_cast<char*>(&arguments.c_str()[6]),
-        const_cast<char*>(&arguments.c_str()[21]),
-        const_cast<char*>(&arguments.c_str()[44]),
-        const_cast<char*>(&arguments.c_str()[57])
+        const_cast<char*>(&arguments.c_str()[24]),
+        const_cast<char*>(&arguments.c_str()[50]),
+        const_cast<char*>(&arguments.c_str()[63])
     };
     char ** argv = argArr.data();
 
     REQUIRE( argv[0] == "a.out"s );
-    REQUIRE( argv[1] == "extract-folder"s );
-    REQUIRE( argv[2] == "foo_extract_folder.bsa"s );
+    REQUIRE( argv[1] == "extract-directory"s );
+    REQUIRE( argv[2] == "foo_extract_directory.bsa"s );
     REQUIRE( argv[3] == "dir\\file.dat"s );
     REQUIRE( argv[4] == "foo.dat"s );
 
-    ExtractFolder command;
+    ExtractDirectory command;
 
     // create "BSA" file
-    std::ofstream bsa("foo_extract_folder.bsa", std::ios::trunc | std::ios::out);
+    std::ofstream bsa("foo_extract_directory.bsa", std::ios::trunc | std::ios::out);
     bsa.close();
     // parse arguments to get file name of BSA
     REQUIRE( command.parseArguments(5, argv) == 0 );
     // Run should fail.
     REQUIRE( command.run() != 0 );
     // cleanup: delete file
-    REQUIRE( deleteFile("foo_extract_folder.bsa") );
+    REQUIRE( deleteFile("foo_extract_directory.bsa") );
   }
 
   SECTION("helpShort returns non-empty string")
   {
-    ExtractFolder command;
+    ExtractDirectory command;
     REQUIRE_FALSE( command.helpShort().empty() );
   }
 
   SECTION("helpLong returns non-empty string")
   {
-    ExtractFolder command;
+    ExtractDirectory command;
     REQUIRE_FALSE( command.helpLong("foo").empty() );
   }
 }

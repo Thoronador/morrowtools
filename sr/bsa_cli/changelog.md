@@ -17,6 +17,13 @@ The `folders` command is renamed to `directories`.
 This means that invocations like `bsa-cli folders path\to\file.bsa` should be
 replaced by something like `bsa-cli directories path\to\file.bsa`.
 
+__[breaking change]__
+The `extract-folder` command is renamed to `extract-directory`.
+This means that invocations like
+`bsa-cli extract-folder file.bsa archive\path C:\temp`
+should be replaced by something like
+`bsa-cli extract-directory file.bsa archive\path C:\temp`.
+
 ## Version 0.7.2 (2022-06-19)
 
 __[feature]__

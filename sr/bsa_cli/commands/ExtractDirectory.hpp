@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SRTP_BSACLI_COMMAND_EXTRACTFOLDER_HPP
-#define SRTP_BSACLI_COMMAND_EXTRACTFOLDER_HPP
+#ifndef SRTP_BSACLI_COMMAND_EXTRACTDIRECTORY_HPP
+#define SRTP_BSACLI_COMMAND_EXTRACTDIRECTORY_HPP
 
 #include <string>
 #include "Command.hpp"
@@ -27,10 +27,10 @@
 namespace SRTP::bsa_cli
 {
 
-class ExtractFolder: public Command
+class ExtractDirectory: public Command
 {
   public:
-    ExtractFolder();
+    ExtractDirectory();
 
     /** \brief Parses command line arguments.
      *
@@ -42,7 +42,7 @@ class ExtractFolder: public Command
      */
     int parseArguments(int argc, char** argv) final;
 
-    /** \brief Extracts a folder and its contents from the BSA.
+    /** \brief Extracts a directory and its contents from the BSA.
      *
      * \return Returns zero in case of success.
      *         Returns a non-zero exit code in case of failure.
@@ -64,10 +64,10 @@ class ExtractFolder: public Command
     std::string helpLong(const std::string_view binaryName) const final;
   private:
     std::string bsaFileName; /**< name of the BSA file */
-    std::string archiveFolderName; /**< name of the folder inside the BSA */
+    std::string archiveDirectoryName; /**< name of the directory inside the BSA */
     std::string outputDirectoryName; /**< destination for extraction */
 };
 
 } // namespace
 
-#endif // SRTP_BSACLI_COMMAND_EXTRACTFOLDER_HPP
+#endif // SRTP_BSACLI_COMMAND_EXTRACTDIRECTORY_HPP

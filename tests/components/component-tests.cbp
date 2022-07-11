@@ -302,10 +302,10 @@
 		<Unit filename="../../sr/bsa_cli/commands/DirectoryMetadata.hpp" />
 		<Unit filename="../../sr/bsa_cli/commands/ExtractAll.cpp" />
 		<Unit filename="../../sr/bsa_cli/commands/ExtractAll.hpp" />
+		<Unit filename="../../sr/bsa_cli/commands/ExtractDirectory.cpp" />
+		<Unit filename="../../sr/bsa_cli/commands/ExtractDirectory.hpp" />
 		<Unit filename="../../sr/bsa_cli/commands/ExtractFile.cpp" />
 		<Unit filename="../../sr/bsa_cli/commands/ExtractFile.hpp" />
-		<Unit filename="../../sr/bsa_cli/commands/ExtractFolder.cpp" />
-		<Unit filename="../../sr/bsa_cli/commands/ExtractFolder.hpp" />
 		<Unit filename="../../sr/bsa_cli/commands/FileMetadata.cpp" />
 		<Unit filename="../../sr/bsa_cli/commands/FileMetadata.hpp" />
 		<Unit filename="../../sr/bsa_cli/commands/Help.cpp" />
@@ -479,8 +479,8 @@
 		<Unit filename="sr/bsa_cli/commands/Directories.cpp" />
 		<Unit filename="sr/bsa_cli/commands/DirectoryMetadata.cpp" />
 		<Unit filename="sr/bsa_cli/commands/ExtractAll.cpp" />
+		<Unit filename="sr/bsa_cli/commands/ExtractDirectory.cpp" />
 		<Unit filename="sr/bsa_cli/commands/ExtractFile.cpp" />
-		<Unit filename="sr/bsa_cli/commands/ExtractFolder.cpp" />
 		<Unit filename="sr/bsa_cli/commands/FileMetadata.cpp" />
 		<Unit filename="sr/bsa_cli/commands/Help.cpp" />
 		<Unit filename="sr/bsa_cli/commands/Info.cpp" />

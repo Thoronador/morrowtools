@@ -54,9 +54,9 @@ void showHelp()
             << "                   directory-metadata - shows metadata of the directories in\n"
             << "                                        the archive\n"
             << "                   extract-all        - extracts everything from the archive\n"
-            << "                   extract-file       - extracts a single file from the archive\n"
-            << "                   extract-folder     - extracts a single folder from the\n"
+            << "                   extract-directory  - extracts a single directory from the\n"
             << "                                        archive\n"
+            << "                   extract-file       - extracts a single file from the archive\n"
             << "                   file-metadata      - shows metadata of the files in the\n"
             << "                                        archive\n"
             << "                   help               - shows help for a command\n"
@@ -105,7 +105,7 @@ int main(int argc, char **argv)
             std::cerr << "Error: '" << param << "' is not an allowed command.\n"
                       << "Allowed commands are 'commands', 'directories',"
                       << " 'directory-metadata', 'extract-all', 'extract-file',"
-                      << " 'extract-folder', 'file-metadata', 'help', 'info',"
+                      << " 'extract-directory', 'file-metadata', 'help', 'info',"
                       << " and 'list'.\n";
             return SRTP::rcInvalidParameter;
           }

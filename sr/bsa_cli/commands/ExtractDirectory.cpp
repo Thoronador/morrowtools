@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include "ExtractFolder.hpp"
+#include "ExtractDirectory.hpp"
 #include <iostream>
 #include "../../../base/FileFunctions.hpp"
 #include "../../base/ReturnCodes.hpp"
@@ -27,14 +27,14 @@
 namespace SRTP::bsa_cli
 {
 
-ExtractFolder::ExtractFolder()
+ExtractDirectory::ExtractDirectory()
 : bsaFileName(std::string()),
-  archiveFolderName(std::string()),
+  archiveDirectoryName(std::string()),
   outputDirectoryName(std::string())
 {
 }
 
-int ExtractFolder::parseArguments(int argc, char** argv)
+int ExtractDirectory::parseArguments(int argc, char** argv)
 {
   if (argv == nullptr)
   {
@@ -56,9 +56,9 @@ int ExtractFolder::parseArguments(int argc, char** argv)
         }
         bsaFileName = param;
       }
-      else if (archiveFolderName.empty())
+      else if (archiveDirectoryName.empty())
       {
-        archiveFolderName = param;
+        archiveDirectoryName = param;
       }
       else if (outputDirectoryName.empty())
       {
@@ -89,10 +89,10 @@ int ExtractFolder::parseArguments(int argc, char** argv)
               << "command!\n";
     return SRTP::rcInvalidParameter;
   }
-  if (archiveFolderName.empty())
+  if (archiveDirectoryName.empty())
   {
-    std::cerr << "Error: The name of the folder inside the archive has to be "
-              << "specified after the BSA file name!\n";
+    std::cerr << "Error: The name of the directory inside the archive has to "
+              << "be specified after the BSA file name!\n";
     return SRTP::rcInvalidParameter;
   }
   if (outputDirectoryName.empty())
@@ -104,12 +104,12 @@ int ExtractFolder::parseArguments(int argc, char** argv)
   return 0;
 }
 
-int ExtractFolder::run()
+int ExtractDirectory::run()
 {
   BSA bsa;
   if (!bsa.open(bsaFileName))
     return SRTP::rcFileError;
-  // Some BSA files do not contain information about folder and file names.
+  // Some BSA files do not contain information about directory and file names.
   // These are useless for us.
   const auto& header = bsa.getHeader();
   if (!header.hasNamesForDirectories() || !header.hasNamesForFiles())
@@ -121,25 +121,25 @@ int ExtractFolder::run()
   if (!bsa.grabAllStructureData())
     return SRTP::rcFileError;
   uint32_t extractedFiles = 0;
-  if (bsa.extractDirectory(archiveFolderName, outputDirectoryName, extractedFiles))
+  if (bsa.extractDirectory(archiveDirectoryName, outputDirectoryName, extractedFiles))
     return 0;
   return SRTP::rcFileError;
 }
 
-std::string ExtractFolder::helpShort() const
+std::string ExtractDirectory::helpShort() const
 {
-  return "Extracts a single folder from the archive.";
+  return "Extracts a single directory from the archive.";
 }
 
-std::string ExtractFolder::helpLong(const std::string_view binaryName) const
+std::string ExtractDirectory::helpLong(const std::string_view binaryName) const
 {
-  return std::string(binaryName).append(" extract-folder\n")
-      .append("Extracts a single folder from an archive.\n\n")
+  return std::string(binaryName).append(" extract-directory\n")
+      .append("Extracts a single directory from an archive.\n\n")
       .append("Usage:\n    ")
-      .append(binaryName).append(" extract-folder BSA_FILE ARCHIVE_FOLDER EXTRACT_DESTINATION\n\n")
+      .append(binaryName).append(" extract-directory BSA_FILE ARCHIVE_DIRECTORY EXTRACT_DESTINATION\n\n")
       .append("Options:\n    BSA_FILE            - set path to the BSA file to operate on to BSA_FILE.\n")
       .append("                          The BSA_FILE must be given.\n")
-      .append("    ARCHIVE_FOLDER      - full path of the folder from the archive to extract.\n")
+      .append("    ARCHIVE_DIRECTORY   - full path of the directory from the archive to extract.\n")
       .append("                          This option must be present.\n")
       .append("    EXTRACT_DESTINATION - destination directory name for extraction. This\n")
       .append("                          option must be present. The destination directory\n")

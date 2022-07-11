@@ -23,8 +23,8 @@
 #include "Directories.hpp"
 #include "DirectoryMetadata.hpp"
 #include "ExtractAll.hpp"
+#include "ExtractDirectory.hpp"
 #include "ExtractFile.hpp"
-#include "ExtractFolder.hpp"
 #include "FileMetadata.hpp"
 #include "Help.hpp"
 #include "Info.hpp"
@@ -41,8 +41,8 @@ std::unique_ptr<Command> createCommand(const Operation op)
          return std::unique_ptr<Command>(new ExtractAll());
     case Operation::ExtractFile:
          return std::unique_ptr<Command>(new ExtractFile());
-    case Operation::ExtractFolder:
-         return std::unique_ptr<Command>(new ExtractFolder());
+    case Operation::ExtractDirectory:
+         return std::unique_ptr<Command>(new ExtractDirectory());
     case Operation::List:
          return std::unique_ptr<Command>(new List());
     case Operation::Directories:

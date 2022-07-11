@@ -24,9 +24,9 @@ options:
                    directory-metadata - shows metadata of the directories in
                                         the archive
                    extract-all        - extracts everything from the archive
-                   extract-file       - extracts a single file from the archive
-                   extract-folder     - extracts a single folder from the
+                   extract-directory  - extracts a single directory from the
                                         archive
+                   extract-file       - extracts a single file from the archive
                    file-metadata      - shows metadata of the files in the
                                         archive
                    help               - shows help for a command

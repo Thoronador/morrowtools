@@ -29,8 +29,8 @@ std::optional<Operation> parseOperation(const std::string_view op)
     return Operation::ExtractAll;
   if (op == "extract-file")
     return Operation::ExtractFile;
-  if (op == "extract-folder")
-    return Operation::ExtractFolder;
+  if (op == "extract-directory")
+    return Operation::ExtractDirectory;
   if (op == "help")
     return Operation::Help;
   if (op == "list")
@@ -59,8 +59,8 @@ std::string operationToString(const Operation op)
          return "extract-all";
     case Operation::ExtractFile:
          return "extract-file";
-    case Operation::ExtractFolder:
-         return "extract-folder";
+    case Operation::ExtractDirectory:
+         return "extract-directory";
     case Operation::Help:
          return "help";
     case Operation::List:

@@ -80,10 +80,10 @@
 		<Unit filename="commands/DirectoryMetadata.hpp" />
 		<Unit filename="commands/ExtractAll.cpp" />
 		<Unit filename="commands/ExtractAll.hpp" />
+		<Unit filename="commands/ExtractDirectory.cpp" />
+		<Unit filename="commands/ExtractDirectory.hpp" />
 		<Unit filename="commands/ExtractFile.cpp" />
 		<Unit filename="commands/ExtractFile.hpp" />
-		<Unit filename="commands/ExtractFolder.cpp" />
-		<Unit filename="commands/ExtractFolder.hpp" />
 		<Unit filename="commands/FileMetadata.cpp" />
 		<Unit filename="commands/FileMetadata.hpp" />
 		<Unit filename="commands/Help.cpp" />

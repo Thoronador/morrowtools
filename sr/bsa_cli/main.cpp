@@ -50,6 +50,8 @@ void showHelp()
             << "               file. Allowed commands are:\n"
             << "\n"
             << "                   commands           - lists available commands\n"
+            << "                   check-hashes       - checks hashes of files and directories\n"
+            << "                                        in the archive\n"
             << "                   directories        - lists all directories in the archive\n"
             << "                   directory-metadata - shows metadata of the directories in\n"
             << "                                        the archive\n"
@@ -103,10 +105,12 @@ int main(int argc, char **argv)
           if (!operation)
           {
             std::cerr << "Error: '" << param << "' is not an allowed command.\n"
-                      << "Allowed commands are 'commands', 'directories',"
-                      << " 'directory-metadata', 'extract-all', 'extract-file',"
-                      << " 'extract-directory', 'file-metadata', 'help', 'info',"
-                      << " and 'list'.\n";
+                      << "Allowed commands are:\n";
+            const auto all = SRTP::allOperations();
+            for (const auto op: all)
+            {
+              std::cerr << '\t' << SRTP::operationToString(op) << '\n';
+            }
             return SRTP::rcInvalidParameter;
           }
           break;

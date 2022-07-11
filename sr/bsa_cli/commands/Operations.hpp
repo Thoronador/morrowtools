@@ -31,6 +31,7 @@ namespace SRTP
 /// enumeration type for possible operations of bsa-cli
 enum class Operation
 {
+  CheckHashes,
   Commands,
   Directories,
   DirectoryMetadata,
@@ -63,9 +64,10 @@ std::string operationToString(const Operation op);
  * \remarks There is no real reflection in C++, so we use this instead.
  * \return Returns an array containing all possible operations.
  */
-constexpr std::array<Operation, 10> allOperations()
+constexpr std::array<Operation, 11> allOperations()
 {
   return {
+    Operation::CheckHashes,
     Operation::Commands,
     Operation::Directories,
     Operation::DirectoryMetadata,

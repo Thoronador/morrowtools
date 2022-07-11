@@ -134,6 +134,7 @@ set(component_tests_sources
     ../../sr/base/records/quest/QSDTRecord.cpp
     ../../sr/base/records/quest/QSTAEntry.cpp
     ../../sr/bsa_cli/commands/ArgumentParsingUtilities.cpp
+    ../../sr/bsa_cli/commands/CheckHashes.cpp
     ../../sr/bsa_cli/commands/CommandFactory.cpp
     ../../sr/bsa_cli/commands/Commands.cpp
     ../../sr/bsa_cli/commands/Directories.cpp
@@ -300,6 +301,7 @@ set(component_tests_sources
     sr/base/records/WorldSpaceRecord.cpp
     sr/base/records/WrongStringType.cpp
     sr/bsa_cli/commands/ArgumentParsingUtilities.cpp
+    sr/bsa_cli/commands/CheckHashes.cpp
     sr/bsa_cli/commands/CommandFactory.cpp
     sr/bsa_cli/commands/Commands.cpp
     sr/bsa_cli/commands/Directories.cpp

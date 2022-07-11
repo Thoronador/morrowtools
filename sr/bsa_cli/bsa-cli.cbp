@@ -69,6 +69,8 @@
 		<Unit filename="../base/bsa/BSAHeader.hpp" />
 		<Unit filename="commands/ArgumentParsingUtilities.cpp" />
 		<Unit filename="commands/ArgumentParsingUtilities.hpp" />
+		<Unit filename="commands/CheckHashes.cpp" />
+		<Unit filename="commands/CheckHashes.hpp" />
 		<Unit filename="commands/Command.hpp" />
 		<Unit filename="commands/CommandFactory.cpp" />
 		<Unit filename="commands/CommandFactory.hpp" />

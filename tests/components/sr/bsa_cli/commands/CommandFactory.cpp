@@ -20,6 +20,7 @@
 
 #include "../../../locate_catch.hpp"
 #include "../../../../../sr/bsa_cli/commands/CommandFactory.hpp"
+#include "../../../../../sr/bsa_cli/commands/CheckHashes.hpp"
 #include "../../../../../sr/bsa_cli/commands/Commands.hpp"
 #include "../../../../../sr/bsa_cli/commands/DirectoryMetadata.hpp"
 #include "../../../../../sr/bsa_cli/commands/ExtractAll.hpp"
@@ -55,6 +56,17 @@ TEST_CASE("bsa_cli::CommandFactory")
       const Operation invalid = static_cast<Operation>(static_cast<int>(Operation::List) + 50);
       const auto ptr = createCommand(invalid);
       REQUIRE( ptr == nullptr );
+    }
+
+    SECTION("check-hashes")
+    {
+      const auto ptr = createCommand(Operation::CheckHashes);
+
+      REQUIRE_FALSE( ptr == nullptr );
+      const auto typed = dynamic_cast<CheckHashes*>(ptr.get());
+      REQUIRE_FALSE( typed == nullptr );
+      const auto wrongType = dynamic_cast<Info*>(ptr.get());
+      REQUIRE( wrongType == nullptr );
     }
 
     SECTION("commands")

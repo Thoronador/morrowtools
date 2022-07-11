@@ -45,6 +45,8 @@ std::optional<Operation> parseOperation(const std::string_view op)
     return Operation::FileMetadata;
   if (op == "directory-metadata")
     return Operation::DirectoryMetadata;
+  if (op == "check-hashes")
+    return Operation::CheckHashes;
 
   return std::nullopt;
 }
@@ -73,6 +75,8 @@ std::string operationToString(const Operation op)
          return "file-metadata";
     case Operation::DirectoryMetadata:
          return "directory-metadata";
+    case Operation::CheckHashes:
+         return "check-hashes";
     default:
          return "";
   }

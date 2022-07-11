@@ -29,6 +29,7 @@ TEST_CASE("bsa_cli::Operations")
   {
     const auto all = allOperations();
 
+    REQUIRE( std::find(all.begin(), all.end(), Operation::CheckHashes) != all.end() );
     REQUIRE( std::find(all.begin(), all.end(), Operation::Commands) != all.end() );
     REQUIRE( std::find(all.begin(), all.end(), Operation::Directories) != all.end() );
     REQUIRE( std::find(all.begin(), all.end(), Operation::DirectoryMetadata) != all.end() );
@@ -69,6 +70,7 @@ TEST_CASE("bsa_cli::Operations")
   SECTION("parseOperation")
   {
     REQUIRE( parseOperation("") == std::nullopt );
+    REQUIRE( parseOperation("check-hashes") == Operation::CheckHashes );
     REQUIRE( parseOperation("commands") == Operation::Commands );
     REQUIRE( parseOperation("directories") == Operation::Directories );
     REQUIRE( parseOperation("directory-metadata") == Operation::DirectoryMetadata );
@@ -81,6 +83,7 @@ TEST_CASE("bsa_cli::Operations")
     REQUIRE( parseOperation("list") == Operation::List );
     REQUIRE( parseOperation("info") == Operation::Info );
 
+    REQUIRE( parseOperation("ChEcK-HaShEs") == std::nullopt );
     REQUIRE( parseOperation("CoMMaNdS") == std::nullopt );
     REQUIRE( parseOperation("DiReCtOrY-MeTaDaTa") == std::nullopt );
     REQUIRE( parseOperation("eXtRacT") == std::nullopt );

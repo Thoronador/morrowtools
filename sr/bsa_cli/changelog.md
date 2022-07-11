@@ -12,6 +12,10 @@ The new `directory-metadata` command to show metadata of the directories in a
 BSA file is added. Metadata contains the name hash, the number of files in the
 directory, the file offset, and the directory name.
 
+__[feature]__
+The new `check-hashes` command to check the name hashes of files and directories
+in a BSA file is added. It will report any unexpected hash values.
+
 __[breaking change]__
 The `folders` command is renamed to `directories`.
 This means that invocations like `bsa-cli folders path\to\file.bsa` should be

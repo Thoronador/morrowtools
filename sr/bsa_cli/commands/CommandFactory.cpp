@@ -19,6 +19,7 @@
 */
 
 #include "CommandFactory.hpp"
+#include "CheckHashes.hpp"
 #include "Commands.hpp"
 #include "Directories.hpp"
 #include "DirectoryMetadata.hpp"
@@ -55,6 +56,8 @@ std::unique_ptr<Command> createCommand(const Operation op)
          return std::unique_ptr<Command>(new FileMetadata());
     case Operation::DirectoryMetadata:
          return std::unique_ptr<Command>(new DirectoryMetadata());
+    case Operation::CheckHashes:
+         return std::unique_ptr<Command>(new CheckHashes());
     case Operation::Help:
          return std::unique_ptr<Command>(new Help());
     default:

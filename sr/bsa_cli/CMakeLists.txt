@@ -18,6 +18,7 @@ set(bsa_cli_sources
     ../base/bsa/BSAHash.cpp
     ../base/bsa/BSAHeader.cpp
     commands/ArgumentParsingUtilities.cpp
+    commands/CheckHashes.cpp
     commands/CommandFactory.cpp
     commands/Commands.cpp
     commands/Directories.cpp

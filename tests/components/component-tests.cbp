@@ -291,6 +291,8 @@
 		<Unit filename="../../sr/base/records/quest/QSTAEntry.hpp" />
 		<Unit filename="../../sr/bsa_cli/commands/ArgumentParsingUtilities.cpp" />
 		<Unit filename="../../sr/bsa_cli/commands/ArgumentParsingUtilities.hpp" />
+		<Unit filename="../../sr/bsa_cli/commands/CheckHashes.cpp" />
+		<Unit filename="../../sr/bsa_cli/commands/CheckHashes.hpp" />
 		<Unit filename="../../sr/bsa_cli/commands/Command.hpp" />
 		<Unit filename="../../sr/bsa_cli/commands/CommandFactory.cpp" />
 		<Unit filename="../../sr/bsa_cli/commands/CommandFactory.hpp" />
@@ -474,6 +476,7 @@
 		<Unit filename="sr/base/records/quest/QSDTRecord.cpp" />
 		<Unit filename="sr/base/records/quest/QSTAEntry.cpp" />
 		<Unit filename="sr/bsa_cli/commands/ArgumentParsingUtilities.cpp" />
+		<Unit filename="sr/bsa_cli/commands/CheckHashes.cpp" />
 		<Unit filename="sr/bsa_cli/commands/CommandFactory.cpp" />
 		<Unit filename="sr/bsa_cli/commands/Commands.cpp" />
 		<Unit filename="sr/bsa_cli/commands/Directories.cpp" />

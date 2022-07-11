@@ -69,4 +69,4 @@ class ExtractAll: public Command
 
 } // namespace
 
-#endif // SRTP_BSACLI_COMMAND_EXTRACTFOLDER_HPP
+#endif // SRTP_BSACLI_COMMAND_EXTRACTALL_HPP

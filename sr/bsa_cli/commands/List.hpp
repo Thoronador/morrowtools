@@ -42,7 +42,7 @@ class List: public Command
      */
     int parseArguments(int argc, char** argv) final;
 
-    /** \brief List contents (folder names and file names) of the BSA.
+    /** \brief List contents (directory names and file names) of the BSA.
      *
      * \return Returns zero in case of success.
      *         Returns a non-zero exit code in case of failure.

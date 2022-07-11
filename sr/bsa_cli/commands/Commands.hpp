@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SRTP_BSACLI_OPERATIONCOMMANDS_HPP
-#define SRTP_BSACLI_OPERATIONCOMMANDS_HPP
+#ifndef SRTP_BSACLI_COMMAND_COMMANDS_HPP
+#define SRTP_BSACLI_COMMAND_COMMANDS_HPP
 
 #include <string>
 #include "Command.hpp"
@@ -42,7 +42,7 @@ class Commands: public Command
      */
     int parseArguments(int argc, char** argv) final;
 
-    /** \brief List contents (folder names and file names) of the BSA.
+    /** \brief List available commands for bsa-cli.
      *
      * \param fileName  name of the BSA file
      * \return Returns zero in case of success.
@@ -67,4 +67,4 @@ class Commands: public Command
 
 } // namespace
 
-#endif // SRTP_BSACLI_OPERATIONCOMMANDS_HPP
+#endif // SRTP_BSACLI_COMMAND_COMMANDS_HPP

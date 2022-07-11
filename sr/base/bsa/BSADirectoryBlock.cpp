@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2021  Thoronador
+    Copyright (C) 2011, 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -18,45 +18,45 @@
  -------------------------------------------------------------------------------
 */
 
-#include "BSAFolderBlock.hpp"
+#include "BSADirectoryBlock.hpp"
 #include <iostream>
 #include <cstring>
 
 namespace SRTP
 {
 
-BSAFolderBlock::BSAFolderBlock()
-: folderName(std::string()),
+BSADirectoryBlock::BSADirectoryBlock()
+: name(std::string()),
   files(std::vector<BSAFileRecord>())
 {
 }
 
-bool BSAFolderBlock::loadFromStream(std::istream& input, const uint32_t fileCount)
+bool BSADirectoryBlock::loadFromStream(std::istream& input, const uint32_t fileCount)
 {
   if (!input.good())
   {
-    std::cerr << "BSAFolderBlock::loadFromStream: Error: Bad stream given!\n";
+    std::cerr << "BSADirectoryBlock::loadFromStream: Error: Bad stream given!\n";
     return false;
   }
   uint8_t byteLen = 0;
-  // read length of folder name
+  // read length of directory name
   input.read(reinterpret_cast<char*>(&byteLen), 1);
   if (!input.good())
   {
-    std::cerr << "BSAFolderBlock::loadFromStream: Error while reading length byte!\n";
+    std::cerr << "BSADirectoryBlock::loadFromStream: Error while reading length byte!\n";
     return false;
   }
   char * buffer = new char[byteLen + 1];
   memset(buffer, 0, byteLen + 1);
-  // read folder's name
+  // read directory's name
   input.read(buffer, byteLen);
   if (!input.good())
   {
-    std::cerr << "BSAFolderBlock::loadFromStream: Error while reading folder's name!\n";
+    std::cerr << "BSADirectoryBlock::loadFromStream: Error while reading directory's name!\n";
     delete[] buffer;
     return false;
   }
-  folderName = std::string(buffer);
+  name = std::string(buffer);
   delete[] buffer;
   buffer = nullptr;
 
@@ -67,7 +67,7 @@ bool BSAFolderBlock::loadFromStream(std::istream& input, const uint32_t fileCoun
   {
     if (!tempFileRecord.loadFromStream(input))
     {
-      std::cerr << "BSAFolderBlock::loadFromStream: Error while reading file records!\n";
+      std::cerr << "BSADirectoryBlock::loadFromStream: Error while reading file records!\n";
       return false;
     }
     files.emplace_back(tempFileRecord);

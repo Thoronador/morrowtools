@@ -112,16 +112,16 @@ int ExtractFolder::run()
   // Some BSA files do not contain information about folder and file names.
   // These are useless for us.
   const auto& header = bsa.getHeader();
-  if (!header.hasNamesForFolders() || !header.hasNamesForFiles())
+  if (!header.hasNamesForDirectories() || !header.hasNamesForFiles())
   {
     std::cout << "Info: The file " << bsaFileName << " does not contain "
-              << "information about its folder names and file names.\n";
+              << "information about its directory names and file names.\n";
     return 0;
   }
   if (!bsa.grabAllStructureData())
     return SRTP::rcFileError;
   uint32_t extractedFiles = 0;
-  if (bsa.extractFolder(archiveFolderName, outputDirectoryName, extractedFiles))
+  if (bsa.extractDirectory(archiveFolderName, outputDirectoryName, extractedFiles))
     return 0;
   return SRTP::rcFileError;
 }

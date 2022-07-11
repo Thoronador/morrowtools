@@ -23,9 +23,9 @@ set(formID_finder_sources
     ../base/StringTable.cpp
     ../base/TableUtilities.cpp
     ../base/bsa/BSA.cpp
+    ../base/bsa/BSADirectoryBlock.cpp
+    ../base/bsa/BSADirectoryRecord.cpp
     ../base/bsa/BSAFileRecord.cpp
-    ../base/bsa/BSAFolderBlock.cpp
-    ../base/bsa/BSAFolderRecord.cpp
     ../base/bsa/BSAHeader.cpp
     ../base/records/ActivatorRecord.cpp
     ../base/records/AlchemyPotionRecord.cpp

@@ -47,7 +47,7 @@ int Info::run()
   std::cout
     << "BSA version:             " << header.version << "\n"
     << "Archive flags:           0x" << SRTP::getFormIDAsString(header.archiveFlags) << "\n"
-    << "  has folder names:      " << (header.hasNamesForFolders() ? "yes" : "no") << "\n"
+    << "  has directory names:   " << (header.hasNamesForDirectories() ? "yes" : "no") << "\n"
     << "  has file names:        " << (header.hasNamesForFiles() ? "yes" : "no") << "\n"
     << "  compressed by default: ";
   if (header.filesCompressedByDefault())
@@ -72,9 +72,9 @@ int Info::run()
     << "  Xbox archive:          " << (header.isXboxArchive() ? "yes" : "no") << "\n"
     << "  embedded file names:   " << (header.hasEmbeddedFileNames() ? "yes" : "no") << "\n"
     << "  uses XMem compression: " << (header.usesXMemCodec() ? "yes" : "no") << "\n"
-    << "Number of folders:       " << header.folderCount << "\n"
+    << "Number of directories:   " << header.directoryCount << "\n"
     << "Number of files:         " << header.fileCount << "\n"
-    << "Folder name length:      " << header.totalFolderNameLength << "\n"
+    << "Directory name length:   " << header.totalDirectoryNameLength << "\n"
     << "File name length:        " << header.totalFileNameLength << "\n"
     << "File flags:              0x" << SRTP::getFormIDAsString(header.fileFlags) << "\n"
     << "  Meshes:                " << (header.contains(ContentType::Meshes) ? "yes" : "no") << "\n"

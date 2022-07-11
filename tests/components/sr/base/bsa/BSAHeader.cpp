@@ -34,9 +34,9 @@ TEST_CASE("BSAHeader")
     REQUIRE( header.version == 0 );
     REQUIRE( header.offset == 0 );
     REQUIRE( header.archiveFlags == 0 );
-    REQUIRE( header.folderCount == 0 );
+    REQUIRE( header.directoryCount == 0 );
     REQUIRE( header.fileCount == 0 );
-    REQUIRE( header.totalFolderNameLength == 0 );
+    REQUIRE( header.totalDirectoryNameLength == 0 );
     REQUIRE( header.totalFileNameLength == 0 );
     REQUIRE( header.fileFlags == 0 );
   }
@@ -60,9 +60,9 @@ TEST_CASE("BSAHeader")
       REQUIRE( header.version == 104 );
       REQUIRE( header.offset == 36 );
       REQUIRE( header.archiveFlags == 0x00000003 );
-      REQUIRE( header.folderCount == 7 );
+      REQUIRE( header.directoryCount == 7 );
       REQUIRE( header.fileCount == 197 );
-      REQUIRE( header.totalFolderNameLength == 136 );
+      REQUIRE( header.totalDirectoryNameLength == 136 );
       REQUIRE( header.totalFileNameLength == 0x00000B81 );
       REQUIRE( header.fileFlags == 0 );
     }
@@ -194,7 +194,7 @@ TEST_CASE("BSAHeader")
       REQUIRE_FALSE( header.loadFromStream(stream) );
     }
 
-    SECTION("corrupt data: stream ends before folder count can be read")
+    SECTION("corrupt data: stream ends before directory count can be read")
     {
       const auto data = "BSA\0\x68\0\0\0\x24\0\0\0\x03\0\0\0\x07\0"sv;
       std::istringstream stream;
@@ -218,7 +218,7 @@ TEST_CASE("BSAHeader")
       REQUIRE_FALSE( header.loadFromStream(stream) );
     }
 
-    SECTION("corrupt data: stream ends before folder name length can be read")
+    SECTION("corrupt data: stream ends before directory name length can be read")
     {
       const auto data = "BSA\0\x68\0\0\0\x24\0\0\0\x03\0\0\0\x07\0\0\0\xC5\0\0\0\x88\0\0"sv;
       std::istringstream stream;
@@ -255,21 +255,21 @@ TEST_CASE("BSAHeader")
     }
   }
 
-  SECTION("hasNamesForFolders")
+  SECTION("hasNamesForDirectories")
   {
     BSAHeader header;
 
     header.archiveFlags = 0;
-    REQUIRE_FALSE( header.hasNamesForFolders() );
+    REQUIRE_FALSE( header.hasNamesForDirectories() );
 
     header.archiveFlags = 1;
-    REQUIRE( header.hasNamesForFolders() );
+    REQUIRE( header.hasNamesForDirectories() );
 
     header.archiveFlags = 2;
-    REQUIRE_FALSE( header.hasNamesForFolders() );
+    REQUIRE_FALSE( header.hasNamesForDirectories() );
 
     header.archiveFlags = 255;
-    REQUIRE( header.hasNamesForFolders() );
+    REQUIRE( header.hasNamesForDirectories() );
   }
 
   SECTION("hasNamesForFiles")

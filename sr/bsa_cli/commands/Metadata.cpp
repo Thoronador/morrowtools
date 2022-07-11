@@ -45,7 +45,7 @@ int Metadata::run()
   // Some BSA files do not contain information about folder and file names.
   // These are useless for us.
   const auto& header = bsa.getHeader();
-  if (!header.hasNamesForFolders() || !header.hasNamesForFiles())
+  if (!header.hasNamesForDirectories() || !header.hasNamesForFiles())
   {
     std::cout << "Info: The file " << bsaFileName << " does not contain "
               << "information about its folder names and file names.\n";
@@ -56,10 +56,10 @@ int Metadata::run()
 
   std::cout << "hash|file size|offset|compression toggled|file name\n"
             << "---------------------------------------------------\n";
-  const auto& folders = bsa.getFolderBlocks();
-  for (const auto& folder: folders)
+  const auto& directories = bsa.getDirectoryBlocks();
+  for (const auto& directory: directories)
   {
-    for (const BSAFileRecord& file: folder.files)
+    for (const BSAFileRecord& file: directory.files)
     {
       std::cout << "0x" << std::hex;
       // Set width and fill character for hash values.
@@ -74,7 +74,7 @@ int Metadata::run()
       std::cout << "|" << std::dec << file.getRealFileSize()
                 << "|" << file.offset << "|"
                 << (file.isCompressionToggled() ? "yes" : "no") << "|"
-                << folder.folderName << '\\' << file.fileName << "\n";
+                << directory.name << '\\' << file.fileName << "\n";
     }
   }
 

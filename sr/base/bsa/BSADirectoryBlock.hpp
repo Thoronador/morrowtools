@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2021  Thoronador
+    Copyright (C) 2011, 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SR_BSAFOLDERBLOCK_HPP
-#define SR_BSAFOLDERBLOCK_HPP
+#ifndef SR_BSADIRECTORYBLOCK_HPP
+#define SR_BSADIRECTORYBLOCK_HPP
 
 #include <string>
 #include <vector>
@@ -28,16 +28,16 @@
 namespace SRTP
 {
 
-/** Holds name of a folder inside a BSA and metadata of files in that folder. */
-struct BSAFolderBlock
+/** Holds name of a directory inside a BSA and metadata of files in that directory. */
+struct BSADirectoryBlock
 {
   public:
-    BSAFolderBlock();
+    BSADirectoryBlock();
 
-    std::string folderName; /**< name of the folder, may contain several hierarchy levels */
-    std::vector<BSAFileRecord> files; /**< metadata of files in the folder */
+    std::string name; /**< name of the directory, may contain several hierarchy levels */
+    std::vector<BSAFileRecord> files; /**< metadata of files in the directory */
 
-    /** \brief Tries to read the folder record from the given stream.
+    /** \brief Tries to read the directory block from the given stream.
      *
      * \param input  the input stream to read from
      * \return Returns true in case of success, false in case of failure.
@@ -47,4 +47,4 @@ struct BSAFolderBlock
 
 } // namespace
 
-#endif // SR_BSAFOLDERBLOCK_HPP
+#endif // SR_BSADIRECTORYBLOCK_HPP

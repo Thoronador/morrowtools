@@ -76,9 +76,9 @@ set(component_tests_sources
     ../../sr/base/StringTable.cpp
     ../../sr/base/TableUtilities.cpp
     ../../sr/base/bsa/BSA.cpp
+    ../../sr/base/bsa/BSADirectoryBlock.cpp
+    ../../sr/base/bsa/BSADirectoryRecord.cpp
     ../../sr/base/bsa/BSAFileRecord.cpp
-    ../../sr/base/bsa/BSAFolderBlock.cpp
-    ../../sr/base/bsa/BSAFolderRecord.cpp
     ../../sr/base/bsa/BSAHash.cpp
     ../../sr/base/bsa/BSAHeader.cpp
     ../../sr/base/records/AcousticSpaceRecord.cpp
@@ -229,9 +229,9 @@ set(component_tests_sources
     sr/base/TableUtilities.cpp
     sr/base/TestFactionsReader.cpp
     sr/base/bsa/BSA.cpp
+    sr/base/bsa/BSADirectoryBlock.cpp
+    sr/base/bsa/BSADirectoryRecord.cpp
     sr/base/bsa/BSAFileRecord.cpp
-    sr/base/bsa/BSAFolderBlock.cpp
-    sr/base/bsa/BSAFolderRecord.cpp
     sr/base/bsa/BSAHash.cpp
     sr/base/bsa/BSAHeader.cpp
     sr/base/records/AcousticSpaceRecord.cpp

@@ -38,9 +38,9 @@ struct BSAHeader
     uint32_t version; /**< BSA version, usually 104 or 105 for Skyrim */
     uint32_t offset;
     uint32_t archiveFlags; /**< contains flag bits for the archive */
-    uint32_t folderCount; /**< number of folders in the archive */
+    uint32_t directoryCount; /**< number of directories in the archive */
     uint32_t fileCount; /**< number of files in the archive */
-    uint32_t totalFolderNameLength;
+    uint32_t totalDirectoryNameLength;
     uint32_t totalFileNameLength;
     uint32_t fileFlags; /**< content type flags */
 
@@ -52,11 +52,11 @@ struct BSAHeader
     bool loadFromStream(std::istream& input);
 
     /* flag stuff */
-    /** \brief Checks whether the archive has folder names, according to flags.
+    /** \brief Checks whether the archive has directory names, according to flags.
      *
-     * \return Returns true, if the archive has folder names.
+     * \return Returns true, if the archive has directory names.
      */
-    bool hasNamesForFolders() const;
+    bool hasNamesForDirectories() const;
 
     /** \brief Checks whether the archive has file names, according to flags.
      *

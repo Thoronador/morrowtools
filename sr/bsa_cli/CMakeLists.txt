@@ -12,9 +12,9 @@ set(bsa_cli_sources
     ../../base/UtilityFunctions.cpp
     ../base/FormIDFunctions.cpp
     ../base/bsa/BSA.cpp
+    ../base/bsa/BSADirectoryBlock.cpp
+    ../base/bsa/BSADirectoryRecord.cpp
     ../base/bsa/BSAFileRecord.cpp
-    ../base/bsa/BSAFolderBlock.cpp
-    ../base/bsa/BSAFolderRecord.cpp
     ../base/bsa/BSAHash.cpp
     ../base/bsa/BSAHeader.cpp
     commands/ArgumentParsingUtilities.cpp

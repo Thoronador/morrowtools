@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Skyrim Tools Project.
-    Copyright (C) 2021  Dirk Stolle
+    Copyright (C) 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,17 +20,17 @@
 
 #include <sstream>
 #include "../../../locate_catch.hpp"
-#include "../../../../../sr/base/bsa/BSAFolderBlock.hpp"
+#include "../../../../../sr/base/bsa/BSADirectoryBlock.hpp"
 
-TEST_CASE("BSAFolderBlock")
+TEST_CASE("BSADirectoryBlock")
 {
   using namespace SRTP;
 
   SECTION("constructor")
   {
-    BSAFolderBlock block;
+    BSADirectoryBlock block;
 
-    REQUIRE( block.folderName.empty() );
+    REQUIRE( block.name.empty() );
     REQUIRE( block.files.empty() );
   }
 
@@ -46,10 +46,10 @@ TEST_CASE("BSAFolderBlock")
       REQUIRE( stream.good() );
 
       // Reading should succeed.
-      BSAFolderBlock block;
+      BSADirectoryBlock block;
       REQUIRE( block.loadFromStream(stream, 2) );
       // Check data.
-      REQUIRE( block.folderName == "interface\\controls\\360" );
+      REQUIRE( block.name == "interface\\controls\\360" );
       REQUIRE( block.files.size() == 2 );
       REQUIRE( block.files[0].nameHash == 0x1FDC44B06B107368 );
       REQUIRE( block.files[0].fileSize == 2362 );
@@ -69,10 +69,10 @@ TEST_CASE("BSAFolderBlock")
       REQUIRE( stream.good() );
 
       // Reading should succeed.
-      BSAFolderBlock block;
+      BSADirectoryBlock block;
       REQUIRE( block.loadFromStream(stream, 1) );
       // Check data.
-      REQUIRE( block.folderName == "interface\\controls\\360" );
+      REQUIRE( block.name == "interface\\controls\\360" );
       REQUIRE( block.files.size() == 1 );
       REQUIRE( block.files[0].nameHash == 0x1FDC44B06B107368 );
       REQUIRE( block.files[0].fileSize == 2362 );
@@ -90,7 +90,7 @@ TEST_CASE("BSAFolderBlock")
       REQUIRE_FALSE( stream.good() );
 
       // Reading should fail.
-      BSAFolderBlock block;
+      BSADirectoryBlock block;
       REQUIRE_FALSE( block.loadFromStream(stream, 2) );
     }
 
@@ -101,7 +101,7 @@ TEST_CASE("BSAFolderBlock")
       REQUIRE( stream.good() );
 
       // Reading should fail.
-      BSAFolderBlock block;
+      BSADirectoryBlock block;
       REQUIRE_FALSE( block.loadFromStream(stream, 2) );
     }
 
@@ -113,7 +113,7 @@ TEST_CASE("BSAFolderBlock")
       REQUIRE( stream.good() );
 
       // Reading should fail.
-      BSAFolderBlock block;
+      BSADirectoryBlock block;
       REQUIRE_FALSE( block.loadFromStream(stream, 2) );
     }
 
@@ -125,7 +125,7 @@ TEST_CASE("BSAFolderBlock")
       REQUIRE( stream.good() );
 
       // Reading should fail.
-      BSAFolderBlock block;
+      BSADirectoryBlock block;
       REQUIRE_FALSE( block.loadFromStream(stream, 1) );
     }
   }

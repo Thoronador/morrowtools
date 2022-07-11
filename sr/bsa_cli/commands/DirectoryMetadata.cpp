@@ -42,13 +42,13 @@ int DirectoryMetadata::run()
   BSA bsa;
   if (!bsa.open(bsaFileName))
     return SRTP::rcFileError;
-  // Some BSA files do not contain information about folder.
+  // Some BSA files do not contain information about directories.
   // These are useless for us.
   const auto& header = bsa.getHeader();
-  if (!header.hasNamesForFolders())
+  if (!header.hasNamesForDirectories())
   {
     std::cout << "Info: The file " << bsaFileName << " does not contain "
-              << "information about its folder names.\n";
+              << "information about its directory names.\n";
     return 0;
   }
   if (!bsa.grabAllStructureData())
@@ -56,30 +56,30 @@ int DirectoryMetadata::run()
 
   std::cout << "hash|file count|offset|name\n"
             << "---------------------------\n";
-  const auto& folder_records = bsa.getFolders();
-  const auto& folder_blocks = bsa.getFolderBlocks();
-  const auto folder_length = folder_records.size();
-  if (folder_blocks.size() != folder_length)
+  const auto& directory_records = bsa.getDirectories();
+  const auto& directory_blocks = bsa.getDirectoryBlocks();
+  const auto dir_length = directory_records.size();
+  if (directory_blocks.size() != dir_length)
   {
-    std::cerr << "Error: Record and block size for folders do not match.\n"
+    std::cerr << "Error: Record and block size for directories do not match.\n"
               << "BSA file may be damaged or incomplete." << std::endl;
     return SRTP::rcDataError;
   }
-  for (std::vector<BSAFolderRecord>::size_type i = 0; i < folder_length; ++i)
+  for (std::vector<BSADirectoryRecord>::size_type i = 0; i < dir_length; ++i)
   {
     std::cout << "0x" << std::hex;
     // Set width and fill character for hash values.
     const auto prev_width = std::cout.width(16);
     std::cout.fill('0');
     // Print hash to stream.
-    std::cout << folder_records[i].nameHash;
+    std::cout << directory_records[i].nameHash;
     // Reset width and fill character.
     std::cout.width(prev_width);
     std::cout.fill(' ');
     // Display rest of the information.
-    std::cout << "|" << std::dec << folder_records[i].count
-              << "|" << folder_records[i].offset << "|"
-              << folder_blocks[i].folderName << "\n";
+    std::cout << "|" << std::dec << directory_records[i].count
+              << "|" << directory_records[i].offset << "|"
+              << directory_blocks[i].name << "\n";
   }
 
   return 0;

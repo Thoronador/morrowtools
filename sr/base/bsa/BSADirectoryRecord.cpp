@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2021  Thoronador
+    Copyright (C) 2011, 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -18,31 +18,31 @@
  -------------------------------------------------------------------------------
 */
 
-#include "BSAFolderRecord.hpp"
+#include "BSADirectoryRecord.hpp"
 #include <iostream>
 
 namespace SRTP
 {
 
-BSAFolderRecord::BSAFolderRecord()
+BSADirectoryRecord::BSADirectoryRecord()
 : nameHash(0),
   count(0),
   offset(0)
 {
 }
 
-bool BSAFolderRecord::loadFromStream(std::istream& input, const uint32_t bsaVersion)
+bool BSADirectoryRecord::loadFromStream(std::istream& input, const uint32_t bsaVersion)
 {
   if (!input.good())
   {
-    std::cerr << "BSAFolderRecord::loadFromStream: Error: Bad stream given!\n";
+    std::cerr << "BSADirectoryRecord::loadFromStream: Error: Bad stream given!\n";
     return false;
   }
-  // read folder record's stuff
+  // read directory record's stuff
   input.read(reinterpret_cast<char*>(&nameHash), sizeof(BSAHash));
   if (!input.good())
   {
-    std::cerr << "BSAFolderRecord::loadFromStream: Error: Could not read hash!\n";
+    std::cerr << "BSADirectoryRecord::loadFromStream: Error: Could not read hash!\n";
     return false;
   }
   input.read(reinterpret_cast<char*>(&count), 4);
@@ -59,7 +59,7 @@ bool BSAFolderRecord::loadFromStream(std::istream& input, const uint32_t bsaVers
   }
   if (!input.good())
   {
-    std::cerr << "BSAFolderRecord::loadFromStream: Error while reading data!\n";
+    std::cerr << "BSADirectoryRecord::loadFromStream: Error while reading data!\n";
     return false;
   }
   // All is well.

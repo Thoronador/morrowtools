@@ -57,12 +57,12 @@
 		<Unit filename="../base/ReturnCodes.hpp" />
 		<Unit filename="../base/bsa/BSA.cpp" />
 		<Unit filename="../base/bsa/BSA.hpp" />
+		<Unit filename="../base/bsa/BSADirectoryBlock.cpp" />
+		<Unit filename="../base/bsa/BSADirectoryBlock.hpp" />
+		<Unit filename="../base/bsa/BSADirectoryRecord.cpp" />
+		<Unit filename="../base/bsa/BSADirectoryRecord.hpp" />
 		<Unit filename="../base/bsa/BSAFileRecord.cpp" />
 		<Unit filename="../base/bsa/BSAFileRecord.hpp" />
-		<Unit filename="../base/bsa/BSAFolderBlock.cpp" />
-		<Unit filename="../base/bsa/BSAFolderBlock.hpp" />
-		<Unit filename="../base/bsa/BSAFolderRecord.cpp" />
-		<Unit filename="../base/bsa/BSAFolderRecord.hpp" />
 		<Unit filename="../base/bsa/BSAHash.cpp" />
 		<Unit filename="../base/bsa/BSAHash.hpp" />
 		<Unit filename="../base/bsa/BSAHeader.cpp" />

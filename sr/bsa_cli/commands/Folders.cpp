@@ -43,20 +43,20 @@ int Folders::run()
   if (!bsa.open(bsaFileName))
     return SRTP::rcFileError;
 
-  // Some BSA files do not contain information about folder and file names.
+  // Some BSA files do not contain information about directory and file names.
   // These are useless for us.
   const auto& header = bsa.getHeader();
-  if (!header.hasNamesForFolders())
+  if (!header.hasNamesForDirectories())
   {
     std::cout << "Info: The file " << bsaFileName << " does not contain "
-              << "information about its folder names.\n";
+              << "information about its directory names.\n";
     return 0;
   }
-  if (!bsa.grabFolderData() || !bsa.grabFolderBlocks())
+  if (!bsa.grabDirectoryData() || !bsa.grabDirectoryBlocks())
     return SRTP::rcFileError;
 
-  const auto folders = bsa.getDirectories();
-  for (const auto& element: folders)
+  const auto directories = bsa.getDirectoryNames();
+  for (const auto& element: directories)
   {
     std::cout << element << "\n";
   }

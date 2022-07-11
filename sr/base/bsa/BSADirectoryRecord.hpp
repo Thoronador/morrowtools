@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2021  Thoronador
+    Copyright (C) 2011, 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef SR_BSAFOLDERRECORD_HPP
-#define SR_BSAFOLDERRECORD_HPP
+#ifndef SR_BSADIRECTORYRECORD_HPP
+#define SR_BSADIRECTORYRECORD_HPP
 
 #include "BSAHash.hpp"
 #include <fstream>
@@ -27,16 +27,16 @@
 namespace SRTP
 {
 
-struct BSAFolderRecord
+struct BSADirectoryRecord
 {
   public:
-    BSAFolderRecord();
+    BSADirectoryRecord();
 
     BSAHash nameHash;
     uint32_t count;
     uint32_t offset;
 
-    /** \brief Tries to read the folder record from the given stream.
+    /** \brief Tries to read the directory record from the given stream.
      *
      * \param  input       the input stream
      * \param  bsaVersion  version from the BSA header
@@ -47,4 +47,4 @@ struct BSAFolderRecord
 
 } // namespace
 
-#endif // SR_BSAFOLDERRECORD_HPP
+#endif // SR_BSADIRECTORYRECORD_HPP

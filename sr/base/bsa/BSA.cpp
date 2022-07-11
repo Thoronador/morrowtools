@@ -38,8 +38,8 @@ BSA::BSA()
 : m_Status(Status::Fresh),
   m_Stream(std::ifstream()),
   m_Header(BSAHeader()),
-  m_Folders(std::vector<BSAFolderRecord>()),
-  m_FolderBlocks(std::vector<BSAFolderBlock>())
+  m_Directories(std::vector<BSADirectoryRecord>()),
+  m_DirectoryBlocks(std::vector<BSADirectoryBlock>())
 {
 }
 
@@ -85,15 +85,15 @@ bool BSA::grabAllStructureData()
     return true;
   }
 
-  if (!grabFolderData())
+  if (!grabDirectoryData())
   {
-    std::cerr << "BSA::grabAllStructureData: Could not read folder data!\n";
+    std::cerr << "BSA::grabAllStructureData: Could not read directory data!\n";
     return false;
   }
 
-  if (!grabFolderBlocks())
+  if (!grabDirectoryBlocks())
   {
-    std::cerr << "BSA::grabAllStructureData: Could not read folder blocks!\n";
+    std::cerr << "BSA::grabAllStructureData: Could not read directory blocks!\n";
     return false;
   }
 
@@ -106,69 +106,69 @@ bool BSA::grabAllStructureData()
   return true;
 }
 
-bool BSA::grabFolderData()
+bool BSA::grabDirectoryData()
 {
   if ((m_Status == Status::Fresh) || (m_Status == Status::Closed))
   {
-    std::cerr << "BSA::grabFolderData: Error: BSA was not opened!\n";
+    std::cerr << "BSA::grabDirectoryData: Error: BSA was not opened!\n";
     return false;
   }
   if (m_Status != Status::Open)
   {
-    std::cerr << "BSA::grabFolderData: Error: BSA has wrong status!\n";
+    std::cerr << "BSA::grabDirectoryData: Error: BSA has wrong status!\n";
     return false;
   }
   if ((m_Header.version < 104) || (m_Header.version > 105))
   {
-    std::clog << "BSAHeader::grabFolderData: Warning: Unknown BSA version ("
+    std::clog << "BSAHeader::grabDirectoryData: Warning: Unknown BSA version ("
               << m_Header.version << ") detected! This may have unknown side "
               << "effects and could cause errors. But let's give it a try anyway.\n";
   }
 
-  m_Folders.clear();
-  BSAFolderRecord tempFolder;
-  for (uint32_t i = 0; i < m_Header.folderCount; ++i)
+  m_Directories.clear();
+  BSADirectoryRecord temp;
+  for (uint32_t i = 0; i < m_Header.directoryCount; ++i)
   {
-    if (!tempFolder.loadFromStream(m_Stream, m_Header.version))
+    if (!temp.loadFromStream(m_Stream, m_Header.version))
     {
-      std::cerr << "BSA::grabFolderData: Error while reading folders!\n";
+      std::cerr << "BSA::grabDirectoryData: Error while reading directories!\n";
       m_Status = Status::Failed;
       return false;
     }
-    m_Folders.push_back(tempFolder);
+    m_Directories.push_back(temp);
   }
 
-  m_Status = Status::OpenFolderData;
+  m_Status = Status::OpenDirectoryData;
   return m_Stream.good();
 }
 
-bool BSA::grabFolderBlocks()
+bool BSA::grabDirectoryBlocks()
 {
   if ((m_Status == Status::Fresh) || (m_Status == Status::Closed))
   {
-    std::cerr << "BSA::grabFolderBlocks: Error: BSA was not opened!\n";
+    std::cerr << "BSA::grabDirectoryBlocks: Error: BSA was not opened!\n";
     return false;
   }
-  if (m_Status != Status::OpenFolderData)
+  if (m_Status != Status::OpenDirectoryData)
   {
-    std::cerr << "BSA::grabFolderBlocks: Error: BSA has wrong status!\n";
+    std::cerr << "BSA::grabDirectoryBlocks: Error: BSA has wrong status!\n";
     return false;
   }
 
-  m_FolderBlocks.clear();
-  BSAFolderBlock tempFolderBlock;
-  for (uint32_t i = 0; i < m_Folders.size(); ++i)
+  m_DirectoryBlocks.clear();
+  BSADirectoryBlock tempBlock;
+  for (uint32_t i = 0; i < m_Directories.size(); ++i)
   {
-    if (!tempFolderBlock.loadFromStream(m_Stream, m_Folders[i].count))
+    if (!tempBlock.loadFromStream(m_Stream, m_Directories[i].count))
     {
-      std::cerr << "BSA::grabFolderBlocks: Error while reading!\n";
+      std::cerr << "BSA::grabDirectoryBlocks: Error while reading!\n";
       m_Status = Status::Failed;
       return false;
     }
-    m_FolderBlocks.push_back(tempFolderBlock);
+    m_DirectoryBlocks.push_back(tempBlock);
   }
 
-  m_Status = Status::OpenFolderBlocks;
+  m_Status = Status::OpenDirectoryBlocks;
   return m_Stream.good();
 }
 
@@ -179,7 +179,7 @@ bool BSA::grabFileNames()
     std::cerr << "BSA::grabFileNames: Error: BSA was not opened!\n";
     return false;
   }
-  if (m_Status != Status::OpenFolderBlocks)
+  if (m_Status != Status::OpenDirectoryBlocks)
   {
     std::cerr << "BSA::grabFileNames: Error: BSA has wrong status!\n";
     return false;
@@ -192,17 +192,17 @@ bool BSA::grabFileNames()
   }
 
   // check for existence of file blocks
-  if (m_FolderBlocks.empty())
+  if (m_DirectoryBlocks.empty())
   {
-    std::cerr << "BSA::grabFileNames: Error: Internal folder blocks are missing!\n";
+    std::cerr << "BSA::grabFileNames: Error: Internal directory blocks are missing!\n";
     return false;
   }
   // ...and now check for files
-  for (unsigned int i = 0; i < m_FolderBlocks.size(); ++i)
+  for (unsigned int i = 0; i < m_DirectoryBlocks.size(); ++i)
   {
-    if (m_FolderBlocks[i].files.empty())
+    if (m_DirectoryBlocks[i].files.empty())
     {
-      std::cerr << "BSA::grabFileNames: Error: Internal folder block #" << i
+      std::cerr << "BSA::grabFileNames: Error: Internal directory block #" << i
                 << " contains no files!\n";
       return false;
     }
@@ -234,27 +234,27 @@ bool BSA::grabFileNames()
     // set names until no more data is left
     nextName = &namesPointer[charOffset];
     charOffset = charOffset + nextName.length() + 1;
-    if (dirIndex >= m_FolderBlocks.size())
+    if (dirIndex >= m_DirectoryBlocks.size())
     {
       std::cerr << "BSA::grabFileNames: Error: Not enough file blocks!\n"
                 << "dir idx: " << dirIndex << ", #blocks: "
-                << m_FolderBlocks.size() << "\n";
+                << m_DirectoryBlocks.size() << "\n";
       delete[] namesPointer;
       namesPointer = nullptr;
       m_Status = Status::Failed;
       return false;
     }
     // enough files?
-    if (fileIndex >= m_FolderBlocks.at(dirIndex).files.size())
+    if (fileIndex >= m_DirectoryBlocks.at(dirIndex).files.size())
     {
-      // set to start of next folder block
+      // set to start of next directory block
       ++dirIndex;
       fileIndex = 0;
       // another check is necessary here
-      if (dirIndex >= m_FolderBlocks.size())
+      if (dirIndex >= m_DirectoryBlocks.size())
       {
         std::cerr << "BSA::grabFileNames: Error: Not enough file blocks (2)!\n"
-                  << "dir idx: " << dirIndex << ", #blocks: " << m_FolderBlocks.size() << "\n"
+                  << "dir idx: " << dirIndex << ", #blocks: " << m_DirectoryBlocks.size() << "\n"
                   << "char offset: " << charOffset << ", ptr. len.: " << m_Header.totalFileNameLength << "\n"
                   << "names done: " << namesRead << "\n";
         delete[] namesPointer;
@@ -262,9 +262,9 @@ bool BSA::grabFileNames()
         m_Status = Status::Failed;
         return false;
       }
-    } // if next folder
+    } // if next directory
     // now finally set it
-    m_FolderBlocks.at(dirIndex).files.at(fileIndex).fileName = nextName;
+    m_DirectoryBlocks[dirIndex].files[fileIndex].fileName = nextName;
     ++fileIndex;
     ++namesRead;
   }
@@ -294,14 +294,14 @@ void BSA::listFileNames(bool withCompressionStatus)
   }
   uint32_t compressedFiles = 0;
   uint32_t rawFiles = 0;
-  for (uint32_t folderIdx = 0; folderIdx < m_FolderBlocks.size(); ++folderIdx)
+  for (uint32_t directoryIdx = 0; directoryIdx < m_DirectoryBlocks.size(); ++directoryIdx)
   {
-    const std::string folder = m_FolderBlocks[folderIdx].folderName + "\\";
-    for (uint32_t fileIdx = 0; fileIdx < m_FolderBlocks[folderIdx].files.size(); ++fileIdx)
+    const std::string directory = m_DirectoryBlocks[directoryIdx].name + "\\";
+    for (uint32_t fileIdx = 0; fileIdx < m_DirectoryBlocks[directoryIdx].files.size(); ++fileIdx)
     {
       if (withCompressionStatus)
       {
-        if (isFileCompressed(folderIdx, fileIdx))
+        if (isFileCompressed(directoryIdx, fileIdx))
         {
           std::cout << "(cmp) ";
           ++compressedFiles;
@@ -312,7 +312,7 @@ void BSA::listFileNames(bool withCompressionStatus)
           ++rawFiles;
         }
       } // if compression info requested
-      std::cout << folder << m_FolderBlocks[folderIdx].files[fileIdx].fileName << "\n";
+      std::cout << directory << m_DirectoryBlocks[directoryIdx].files[fileIdx].fileName << "\n";
     }
   }
   if (withCompressionStatus)
@@ -322,19 +322,19 @@ void BSA::listFileNames(bool withCompressionStatus)
   }
 }
 
-std::vector<std::string> BSA::getDirectories() const
+std::vector<std::string> BSA::getDirectoryNames() const
 {
   std::vector<std::string> result;
-  if ((m_Status != Status::OpenFolderBlocks) && (m_Status != Status::OpenFileNames))
+  if ((m_Status != Status::OpenDirectoryBlocks) && (m_Status != Status::OpenFileNames))
   {
-    std::cerr << "BSA::getDirectories: Error: Not all folder data is present "
-              << "to properly fulfill the requested operation!\n";
+    std::cerr << "BSA::getDirectoryNames: Error: Not all directory data is "
+              << "present to properly fulfill the requested operation!\n";
     return result;
   }
-  result.reserve(m_FolderBlocks.size());
-  for (const auto& elem: m_FolderBlocks)
+  result.reserve(m_DirectoryBlocks.size());
+  for (const auto& elem: m_DirectoryBlocks)
   {
-    result.emplace_back(elem.folderName);
+    result.emplace_back(elem.name);
   }
   return result;
 }
@@ -353,14 +353,14 @@ const BSAHeader& BSA::getHeader() const
   return m_Header;
 }
 
-const std::vector<BSAFolderRecord>& BSA::getFolders() const
+const std::vector<BSADirectoryRecord>& BSA::getDirectories() const
 {
-  return m_Folders;
+  return m_Directories;
 }
 
-const std::vector<BSAFolderBlock>& BSA::getFolderBlocks() const
+const std::vector<BSADirectoryBlock>& BSA::getDirectoryBlocks() const
 {
-  return m_FolderBlocks;
+  return m_DirectoryBlocks;
 }
 
 bool BSA::hasAllStructureData() const
@@ -368,33 +368,33 @@ bool BSA::hasAllStructureData() const
   return m_Status == Status::OpenFileNames;
 }
 
-bool BSA::hasFolder(const std::string& folderName) const
+bool BSA::hasDirectory(const std::string& directoryName) const
 {
-  return getIndexOfFolder(folderName).has_value();
+  return getIndexOfDirectory(directoryName).has_value();
 }
 
-std::optional<uint32_t> BSA::getIndexOfFolder(std::string folderName) const
+std::optional<uint32_t> BSA::getIndexOfDirectory(std::string directoryName) const
 {
   if (!hasAllStructureData())
   {
-    std::cerr << "BSA::getIndexOfFolder: Error: Not all structure data is "
+    std::cerr << "BSA::getIndexOfDirectory: Error: Not all structure data is "
               << "present to properly fulfill the requested operation!\n";
     return std::nullopt;
   }
 
-  if (folderName.empty())
+  if (directoryName.empty())
     return std::nullopt;
   // transform to lower case
-  folderName = lowerCase(folderName);
-  for (uint32_t i = 0; i < m_FolderBlocks.size(); ++i)
+  directoryName = lowerCase(directoryName);
+  for (uint32_t i = 0; i < m_DirectoryBlocks.size(); ++i)
   {
-    if (m_FolderBlocks[i].folderName == folderName)
+    if (m_DirectoryBlocks[i].name == directoryName)
       return i;
   }
   return std::nullopt;
 }
 
-std::optional<uint32_t> BSA::getIndexOfFile(const uint32_t folderIndex, std::string fileName) const
+std::optional<uint32_t> BSA::getIndexOfFile(const uint32_t directoryIndex, std::string fileName) const
 {
   if (!hasAllStructureData())
   {
@@ -403,29 +403,29 @@ std::optional<uint32_t> BSA::getIndexOfFile(const uint32_t folderIndex, std::str
     return std::nullopt;
   }
 
-  if (folderIndex >= m_FolderBlocks.size())
+  if (directoryIndex >= m_DirectoryBlocks.size())
   {
-    std::cerr << "BSA::getIndexOfFile: Error: Folder index exceeds allowed maximum!\n";
+    std::cerr << "BSA::getIndexOfFile: Error: Directory index exceeds allowed maximum!\n";
     return std::nullopt;
   }
 
   fileName = lowerCase(fileName);
-  for (uint32_t i = 0; i < m_FolderBlocks[folderIndex].files.size(); ++i)
+  for (uint32_t i = 0; i < m_DirectoryBlocks[directoryIndex].files.size(); ++i)
   {
-    if (m_FolderBlocks[folderIndex].files[i].fileName == fileName)
+    if (m_DirectoryBlocks[directoryIndex].files[i].fileName == fileName)
       return i;
   }
 
   return std::nullopt;
 }
 
-bool BSA::getIndexPairForFile(const std::string& fileName, std::optional<uint32_t>& folderIndex, std::optional<uint32_t>& fileIndex) const
+bool BSA::getIndexPairForFile(const std::string& fileName, std::optional<uint32_t>& directoryIndex, std::optional<uint32_t>& fileIndex) const
 {
   if (!hasAllStructureData())
   {
     std::cerr << "BSA::getIndexPairForFile: Error: Not all structure data is "
               << "present to properly fulfill the requested operation!\n";
-    folderIndex.reset();
+    directoryIndex.reset();
     fileIndex.reset();
     return false;
   }
@@ -433,49 +433,49 @@ bool BSA::getIndexPairForFile(const std::string& fileName, std::optional<uint32_
   const std::string::size_type delimPos = fileName.rfind('\\');
   if (delimPos == std::string::npos)
   {
-    std::cerr << "BSA::getIndexPairForFile: Error: File name contains no folder!\n";
-    folderIndex.reset();
+    std::cerr << "BSA::getIndexPairForFile: Error: File name contains no directory!\n";
+    directoryIndex.reset();
     fileIndex.reset();
     return false;
   }
   if (delimPos == fileName.length() - 1)
   {
     std::cerr << "BSA::getIndexPairForFile: Error: Given file name only contains directory!\n";
-    folderIndex.reset();
+    directoryIndex.reset();
     fileIndex.reset();
     return false;
   }
 
-  folderIndex = getIndexOfFolder(fileName.substr(0, delimPos));
-  if (!folderIndex.has_value())
+  directoryIndex = getIndexOfDirectory(fileName.substr(0, delimPos));
+  if (!directoryIndex.has_value())
   {
-    // no such folder, thus no file in that folder
+    // no such directory, thus no file in that directoty
     fileIndex.reset();
     return true;
   }
 
-  fileIndex = getIndexOfFile(folderIndex.value(), fileName.substr(delimPos + 1));
+  fileIndex = getIndexOfFile(directoryIndex.value(), fileName.substr(delimPos + 1));
   return true;
 }
 
 bool BSA::hasFile(const std::string& fileName) const
 {
-  std::optional<uint32_t> folderIdx;
+  std::optional<uint32_t> directoryIdx;
   std::optional<uint32_t> fileIdx;
-  if (!getIndexPairForFile(fileName, folderIdx, fileIdx))
+  if (!getIndexPairForFile(fileName, directoryIdx, fileIdx))
     return false;
 
-  return folderIdx.has_value() && fileIdx.has_value();
+  return directoryIdx.has_value() && fileIdx.has_value();
 }
 
-bool BSA::isValidIndexPair(const uint32_t folderIndex, const uint32_t fileIndex) const
+bool BSA::isValidIndexPair(const uint32_t directoryIndex, const uint32_t fileIndex) const
 {
-  if (folderIndex >= m_FolderBlocks.size())
+  if (directoryIndex >= m_DirectoryBlocks.size())
   {
     return false;
   }
 
-  if (m_FolderBlocks[folderIndex].files.size() <= fileIndex)
+  if (m_DirectoryBlocks[directoryIndex].files.size() <= fileIndex)
   {
     return false;
   }
@@ -483,7 +483,7 @@ bool BSA::isValidIndexPair(const uint32_t folderIndex, const uint32_t fileIndex)
   return true;
 }
 
-bool BSA::isFileCompressed(const uint32_t folderIndex, const uint32_t fileIndex) const
+bool BSA::isFileCompressed(const uint32_t directoryIndex, const uint32_t fileIndex) const
 {
   if (!hasAllStructureData())
   {
@@ -493,16 +493,16 @@ bool BSA::isFileCompressed(const uint32_t folderIndex, const uint32_t fileIndex)
               + "all structure data is present to properly fulfill the requested operation!");
   }
 
-  if (!isValidIndexPair(folderIndex, fileIndex))
+  if (!isValidIndexPair(directoryIndex, fileIndex))
   {
     std::cerr << "BSA::isFileCompressed: Error: Invalid indices given!\n";
     throw std::invalid_argument("BSA::isFileCompressed: Error: Invalid indices given!");
   }
 
-  return m_Header.filesCompressedByDefault() ^ m_FolderBlocks.at(folderIndex).files.at(fileIndex).isCompressionToggled();
+  return m_Header.filesCompressedByDefault() ^ m_DirectoryBlocks.at(directoryIndex).files.at(fileIndex).isCompressionToggled();
 }
 
-bool BSA::extractFile(const uint32_t folderIndex, const uint32_t fileIndex, const std::string& outputFileName)
+bool BSA::extractFile(const uint32_t directoryIndex, const uint32_t fileIndex, const std::string& outputFileName)
 {
   if (!hasAllStructureData())
   {
@@ -511,14 +511,14 @@ bool BSA::extractFile(const uint32_t folderIndex, const uint32_t fileIndex, cons
     return false;
   }
 
-  if (!isValidIndexPair(folderIndex, fileIndex))
+  if (!isValidIndexPair(directoryIndex, fileIndex))
   {
     std::cerr << "BSA::extractFile: Hint: File is not in the archive!\n";
     return false;
   }
 
-  uint32_t extractedFileSize = m_FolderBlocks[folderIndex].files[fileIndex].getRealFileSize();
-  m_Stream.seekg(m_FolderBlocks[folderIndex].files[fileIndex].offset, std::ios_base::beg);
+  uint32_t extractedFileSize = m_DirectoryBlocks[directoryIndex].files[fileIndex].getRealFileSize();
+  m_Stream.seekg(m_DirectoryBlocks[directoryIndex].files[fileIndex].offset, std::ios_base::beg);
   if (!m_Stream.good())
   {
     std::cerr << "BSA::extractFile: Error: Bad internal stream, could not jump to file's offset!\n";
@@ -526,7 +526,7 @@ bool BSA::extractFile(const uint32_t folderIndex, const uint32_t fileIndex, cons
   }
 
   uint8_t * buffer = nullptr; // buffer for output data
-  if (isFileCompressed(folderIndex, fileIndex))
+  if (isFileCompressed(directoryIndex, fileIndex))
   {
     const bool compressionUsesLZ4 = m_Header.version >= 105;
     #if defined(MWTP_NO_LZ4)
@@ -632,9 +632,9 @@ bool BSA::extractFile(const std::string& inArchiveFileName, const std::string& o
     return false;
   }
 
-  std::optional<uint32_t> folderIndex, fileIndex;
-  getIndexPairForFile(inArchiveFileName, folderIndex, fileIndex);
-  if (!folderIndex.has_value() || !fileIndex.has_value())
+  std::optional<uint32_t> directoryIndex, fileIndex;
+  getIndexPairForFile(inArchiveFileName, directoryIndex, fileIndex);
+  if (!directoryIndex.has_value() || !fileIndex.has_value())
   {
     std::cerr << "BSA::extractFile: Hint: File " << inArchiveFileName
               << " is not in the archive!\n";
@@ -642,22 +642,22 @@ bool BSA::extractFile(const std::string& inArchiveFileName, const std::string& o
   }
 
   // use the above function for the rest
-  return extractFile(folderIndex.value(), fileIndex.value(), outputFileName);
+  return extractFile(directoryIndex.value(), fileIndex.value(), outputFileName);
 }
 
-bool BSA::extractFolder(const uint32_t folderIndex, const std::string& outputDirName, uint32_t& extractedFileCount)
+bool BSA::extractDirectory(const uint32_t directoryIndex, const std::string& outputDirName, uint32_t& extractedFileCount)
 {
   extractedFileCount = 0;
   if (!hasAllStructureData())
   {
-    std::cerr << "BSA::extractFolder: Error: Not all structure data is present "
+    std::cerr << "BSA::extractDirectory: Error: Not all structure data is present "
               << "to properly fulfill the requested operation!\n";
     return false;
   }
 
-  if (folderIndex >= m_FolderBlocks.size())
+  if (directoryIndex >= m_DirectoryBlocks.size())
   {
-    std::cerr << "BSA::extractFolder: Error: Invalid folder index!\n";
+    std::cerr << "BSA::extractDirectory: Error: Invalid directory index!\n";
     return false;
   }
 
@@ -666,21 +666,21 @@ bool BSA::extractFolder(const uint32_t folderIndex, const std::string& outputDir
   {
     if (!createDirectoryRecursive(outputDirName))
     {
-      std::cerr << "BSA::extractFolder: Error: Could not create destination directory \""
+      std::cerr << "BSA::extractDirectory: Error: Could not create destination directory \""
                 << outputDirName << "\".\n";
       return false;
     }
   }
 
   // now extract each file in that directory
-  for (uint32_t file_index = 0; file_index < m_FolderBlocks[folderIndex].files.size(); ++file_index)
+  for (uint32_t file_index = 0; file_index < m_DirectoryBlocks[directoryIndex].files.size(); ++file_index)
   {
-    if (!extractFile(folderIndex, file_index, outputDirName + MWTP::pathDelimiter
-         + m_FolderBlocks[folderIndex].files[file_index].fileName))
+    if (!extractFile(directoryIndex, file_index, outputDirName + MWTP::pathDelimiter
+         + m_DirectoryBlocks[directoryIndex].files[file_index].fileName))
     {
-      std::cerr << "BSA::extractFolder: Error: Could not extract file \""
-                << m_FolderBlocks[folderIndex].folderName + MWTP::pathDelimiter
-                  + m_FolderBlocks[folderIndex].files[file_index].fileName << "\".\n";
+      std::cerr << "BSA::extractDirectory: Error: Could not extract file \""
+                << m_DirectoryBlocks[directoryIndex].name + MWTP::pathDelimiter
+                  + m_DirectoryBlocks[directoryIndex].files[file_index].fileName << "\".\n";
       return false;
     }
     ++extractedFileCount;
@@ -689,25 +689,25 @@ bool BSA::extractFolder(const uint32_t folderIndex, const std::string& outputDir
   return true;
 }
 
-bool BSA::extractFolder(const std::string& folderName, const std::string& outputDirName, uint32_t& extractedFileCount)
+bool BSA::extractDirectory(const std::string& directoryName, const std::string& outputDirName, uint32_t& extractedFileCount)
 {
   extractedFileCount = 0;
   if (!hasAllStructureData())
   {
-    std::cerr << "BSA::extractFolder: Error: Not all structure data is present "
+    std::cerr << "BSA::extractDirectory: Error: Not all structure data is present "
               << "to properly fulfill the requested operation!\n";
     return false;
   }
 
-  const std::optional<uint32_t> fIdx = getIndexOfFolder(folderName);
-  if (!fIdx.has_value())
+  const std::optional<uint32_t> dirIdx = getIndexOfDirectory(directoryName);
+  if (!dirIdx.has_value())
   {
-    std::cerr << "BSA::extractFolder: Error: Archive has no folder named \""
-              << folderName <<"\", thus it cannot be extracted!\n";
+    std::cerr << "BSA::extractDirectory: Error: Archive has no directory named \""
+              << directoryName <<"\", thus it cannot be extracted!\n";
     return false;
   }
 
-  return extractFolder(fIdx.value(), outputDirName, extractedFileCount);
+  return extractDirectory(dirIdx.value(), outputDirName, extractedFileCount);
 }
 
 bool BSA::extractAll(const std::string& outputDirName, uint32_t& extractedFileCount)
@@ -731,16 +731,16 @@ bool BSA::extractAll(const std::string& outputDirName, uint32_t& extractedFileCo
     }
   }
 
-  for (uint32_t i = 0; i < m_FolderBlocks.size(); ++i)
+  for (uint32_t i = 0; i < m_DirectoryBlocks.size(); ++i)
   {
     #if defined(_WIN32)
-    // Windows file systems take backslashes in folderName directly, because
+    // Windows file systems take backslashes in directory name directly, because
     // that is their usual directory separator.
-    const auto directoryPath = outputDirName + MWTP::pathDelimiter + m_FolderBlocks[i].folderName;
+    const auto directoryPath = outputDirName + MWTP::pathDelimiter + m_DirectoryBlocks[i].name;
     #else
     // Unix-like file systems use slash instead of backslash, so it has to be
-    // replaced in folderName.
-    const auto directoryPath = outputDirName + MWTP::pathDelimiter + MWTP::flipBackslashes(m_FolderBlocks[i].folderName);
+    // replaced in directory name.
+    const auto directoryPath = outputDirName + MWTP::pathDelimiter + MWTP::flipBackslashes(m_DirectoryBlocks[i].name);
     #endif
     // create output directory, if necessary
     if (!directoryExists(directoryPath))
@@ -753,14 +753,14 @@ bool BSA::extractAll(const std::string& outputDirName, uint32_t& extractedFileCo
       }
     }
     // now extract each file in that directory
-    for (uint32_t j = 0; j < m_FolderBlocks[i].files.size(); ++j)
+    for (uint32_t j = 0; j < m_DirectoryBlocks[i].files.size(); ++j)
     {
       if (!extractFile(i, j, directoryPath + MWTP::pathDelimiter
-                             + m_FolderBlocks[i].files[j].fileName))
+                             + m_DirectoryBlocks[i].files[j].fileName))
       {
         std::cerr << "BSA::extractAll: Error: Could not extract file \""
-                  << m_FolderBlocks[i].folderName + MWTP::pathDelimiter
-                    + m_FolderBlocks[i].files[j].fileName << "\".\n";
+                  << m_DirectoryBlocks[i].name + MWTP::pathDelimiter
+                    + m_DirectoryBlocks[i].files[j].fileName << "\".\n";
         return false;
       }
       ++extractedFileCount;

@@ -31,9 +31,9 @@ BSAHeader::BSAHeader()
   version(0),
   offset(0),
   archiveFlags(0),
-  folderCount(0),
+  directoryCount(0),
   fileCount(0),
-  totalFolderNameLength(0),
+  totalDirectoryNameLength(0),
   totalFileNameLength(0),
   fileFlags(0)
 {
@@ -74,9 +74,9 @@ bool BSAHeader::loadFromStream(std::istream& input)
   }
   // read rest
   input.read(reinterpret_cast<char*>(&archiveFlags), 4);
-  input.read(reinterpret_cast<char*>(&folderCount), 4);
+  input.read(reinterpret_cast<char*>(&directoryCount), 4);
   input.read(reinterpret_cast<char*>(&fileCount), 4);
-  input.read(reinterpret_cast<char*>(&totalFolderNameLength), 4);
+  input.read(reinterpret_cast<char*>(&totalDirectoryNameLength), 4);
   input.read(reinterpret_cast<char*>(&totalFileNameLength), 4);
   input.read(reinterpret_cast<char*>(&fileFlags), 4);
   if (!input.good())
@@ -88,7 +88,7 @@ bool BSAHeader::loadFromStream(std::istream& input)
   return true;
 }
 
-bool BSAHeader::hasNamesForFolders() const
+bool BSAHeader::hasNamesForDirectories() const
 {
   return (archiveFlags & 1) != 0;
 }

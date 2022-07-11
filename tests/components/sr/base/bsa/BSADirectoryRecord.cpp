@@ -20,19 +20,19 @@
 
 #include <sstream>
 #include "../../../locate_catch.hpp"
-#include "../../../../../sr/base/bsa/BSAFolderRecord.hpp"
+#include "../../../../../sr/base/bsa/BSADirectoryRecord.hpp"
 
-TEST_CASE("BSAFolderRecord")
+TEST_CASE("BSADirectoryRecord")
 {
   using namespace SRTP;
 
   SECTION("constructor")
   {
-    BSAFolderRecord folder;
+    BSADirectoryRecord directory;
 
-    REQUIRE( folder.nameHash == 0 );
-    REQUIRE( folder.count == 0 );
-    REQUIRE( folder.offset == 0 );
+    REQUIRE( directory.nameHash == 0 );
+    REQUIRE( directory.count == 0 );
+    REQUIRE( directory.offset == 0 );
   }
 
   SECTION("loadFromStream")
@@ -47,12 +47,12 @@ TEST_CASE("BSAFolderRecord")
       REQUIRE( stream.good() );
 
       // Reading should succeed.
-      BSAFolderRecord folder;
-      REQUIRE( folder.loadFromStream(stream, 104) );
+      BSADirectoryRecord directory;
+      REQUIRE( directory.loadFromStream(stream, 104) );
       // Check data.
-      REQUIRE( folder.nameHash == 0x3DC5F3F969163630 );
-      REQUIRE( folder.count == 3 );
-      REQUIRE( folder.offset == 3093 );
+      REQUIRE( directory.nameHash == 0x3DC5F3F969163630 );
+      REQUIRE( directory.count == 3 );
+      REQUIRE( directory.offset == 3093 );
     }
 
     SECTION("default: load record version 105")
@@ -63,12 +63,12 @@ TEST_CASE("BSAFolderRecord")
       REQUIRE( stream.good() );
 
       // Reading should succeed.
-      BSAFolderRecord folder;
-      REQUIRE( folder.loadFromStream(stream, 105) );
+      BSADirectoryRecord directory;
+      REQUIRE( directory.loadFromStream(stream, 105) );
       // Check data.
-      REQUIRE( folder.nameHash == 0x3DC5F3F969163630 );
-      REQUIRE( folder.count == 3 );
-      REQUIRE( folder.offset == 6464 );
+      REQUIRE( directory.nameHash == 0x3DC5F3F969163630 );
+      REQUIRE( directory.count == 3 );
+      REQUIRE( directory.offset == 6464 );
     }
 
     SECTION("corrupt state: bad stream on entry")
@@ -81,8 +81,8 @@ TEST_CASE("BSAFolderRecord")
       REQUIRE_FALSE( stream.good() );
 
       // Reading should fail.
-      BSAFolderRecord folder;
-      REQUIRE_FALSE( folder.loadFromStream(stream, 104) );
+      BSADirectoryRecord directory;
+      REQUIRE_FALSE( directory.loadFromStream(stream, 104) );
     }
 
     SECTION("corrupt data: stream ends before hash can be read")
@@ -93,8 +93,8 @@ TEST_CASE("BSAFolderRecord")
       REQUIRE( stream.good() );
 
       // Reading should fail.
-      BSAFolderRecord folder;
-      REQUIRE_FALSE( folder.loadFromStream(stream, 104) );
+      BSADirectoryRecord directory;
+      REQUIRE_FALSE( directory.loadFromStream(stream, 104) );
     }
 
     SECTION("corrupt data: stream ends before count can be read, version 104")
@@ -105,8 +105,8 @@ TEST_CASE("BSAFolderRecord")
       REQUIRE( stream.good() );
 
       // Reading should fail.
-      BSAFolderRecord folder;
-      REQUIRE_FALSE( folder.loadFromStream(stream, 104) );
+      BSADirectoryRecord directory;
+      REQUIRE_FALSE( directory.loadFromStream(stream, 104) );
     }
 
     SECTION("corrupt data: stream ends before count can be read, version 105")
@@ -117,8 +117,8 @@ TEST_CASE("BSAFolderRecord")
       REQUIRE( stream.good() );
 
       // Reading should fail.
-      BSAFolderRecord folder;
-      REQUIRE_FALSE( folder.loadFromStream(stream, 105) );
+      BSADirectoryRecord directory;
+      REQUIRE_FALSE( directory.loadFromStream(stream, 105) );
     }
 
     SECTION("corrupt data: stream ends before offset can be read, version 104")
@@ -129,8 +129,8 @@ TEST_CASE("BSAFolderRecord")
       REQUIRE( stream.good() );
 
       // Reading should fail.
-      BSAFolderRecord folder;
-      REQUIRE_FALSE( folder.loadFromStream(stream, 104) );
+      BSADirectoryRecord directory;
+      REQUIRE_FALSE( directory.loadFromStream(stream, 104) );
     }
 
     SECTION("corrupt data: stream ends before offset can be read, version 105")
@@ -141,8 +141,8 @@ TEST_CASE("BSAFolderRecord")
       REQUIRE( stream.good() );
 
       // Reading should fail.
-      BSAFolderRecord folder;
-      REQUIRE_FALSE( folder.loadFromStream(stream, 105) );
+      BSADirectoryRecord directory;
+      REQUIRE_FALSE( directory.loadFromStream(stream, 105) );
     }
   }
 }

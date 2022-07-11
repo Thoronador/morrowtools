@@ -43,8 +43,8 @@ TEST_CASE("BSA")
     BSA bsa;
 
     REQUIRE_FALSE( bsa.hasAllStructureData() );
-    REQUIRE( bsa.getFolders().empty() );
-    REQUIRE( bsa.getFolderBlocks().empty() );
+    REQUIRE( bsa.getDirectories().empty() );
+    REQUIRE( bsa.getDirectoryBlocks().empty() );
   }
 
   SECTION("open")
@@ -95,25 +95,25 @@ TEST_CASE("BSA")
     }
   }
 
-  SECTION("grabFolderData")
+  SECTION("grabDirectoryData")
   {
     using namespace std::string_view_literals;
 
     SECTION("BSA has not been opened")
     {
       BSA bsa;
-      REQUIRE_FALSE( bsa.grabFolderData() );
+      REQUIRE_FALSE( bsa.grabDirectoryData() );
     }
   }
 
-  SECTION("grabFolderBlocks")
+  SECTION("grabDirectoryBlocks")
   {
     using namespace std::string_view_literals;
 
     SECTION("BSA has not been opened")
     {
       BSA bsa;
-      REQUIRE_FALSE( bsa.grabFolderBlocks() );
+      REQUIRE_FALSE( bsa.grabDirectoryBlocks() );
     }
   }
 
@@ -128,25 +128,25 @@ TEST_CASE("BSA")
     }
   }
 
-  SECTION("getDirectories")
+  SECTION("getDirectoryNames")
   {
     using namespace std::string_view_literals;
 
     SECTION("BSA has not been opened / no structure data")
     {
       BSA bsa;
-      REQUIRE( bsa.getDirectories().empty() );
+      REQUIRE( bsa.getDirectoryNames().empty() );
     }
   }
 
-  SECTION("getIndexOfFolder")
+  SECTION("getIndexOfDirectory")
   {
     using namespace std::string_view_literals;
 
     SECTION("no structure data")
     {
       BSA bsa;
-      REQUIRE_FALSE( bsa.getIndexOfFolder("foo/bar").has_value() );
+      REQUIRE_FALSE( bsa.getIndexOfDirectory("foo\\bar").has_value() );
     }
   }
 
@@ -168,10 +168,10 @@ TEST_CASE("BSA")
     SECTION("no structure data")
     {
       BSA bsa;
-      std::optional<uint32_t> folderIndex = 0xDEADBEEF;
+      std::optional<uint32_t> directoryIndex = 0xDEADBEEF;
       std::optional<uint32_t> fileIndex = 0xDEADBEEF;
-      REQUIRE_FALSE( bsa.getIndexPairForFile("baz\\foo.bar", folderIndex, fileIndex) );
-      REQUIRE_FALSE( folderIndex.has_value() );
+      REQUIRE_FALSE( bsa.getIndexPairForFile("baz\\foo.bar", directoryIndex, fileIndex) );
+      REQUIRE_FALSE( directoryIndex.has_value() );
       REQUIRE_FALSE( fileIndex.has_value() );
     }
   }
@@ -220,7 +220,7 @@ TEST_CASE("BSA")
     }
   }
 
-  SECTION("extractFolder (with index parameter)")
+  SECTION("extractDirectory (with index parameter)")
   {
     using namespace std::string_view_literals;
 
@@ -228,12 +228,12 @@ TEST_CASE("BSA")
     {
       BSA bsa;
       uint32_t counter = 42;
-      REQUIRE_FALSE( bsa.extractFolder(1, "/tmp/directory-out", counter) );
+      REQUIRE_FALSE( bsa.extractDirectory(1, "/tmp/directory-out", counter) );
       REQUIRE( counter == 0 );
     }
   }
 
-  SECTION("extractFolder (with folder name parameter)")
+  SECTION("extractDirectory (with folder name parameter)")
   {
     using namespace std::string_view_literals;
 
@@ -241,7 +241,7 @@ TEST_CASE("BSA")
     {
       BSA bsa;
       uint32_t counter = 42;
-      REQUIRE_FALSE( bsa.extractFolder("foo\\bar", "/tmp/directory-out", counter) );
+      REQUIRE_FALSE( bsa.extractDirectory("foo\\bar", "/tmp/directory-out", counter) );
       REQUIRE( counter == 0 );
     }
   }

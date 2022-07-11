@@ -20,7 +20,6 @@
 
 #include "Metadata.hpp"
 #include <iostream>
-#include "../../base/FormIDFunctions.hpp"
 #include "../../base/ReturnCodes.hpp"
 #include "../../base/bsa/BSA.hpp"
 #include "ArgumentParsingUtilities.hpp"
@@ -62,20 +61,20 @@ int Metadata::run()
   {
     for (const BSAFileRecord& file: folder.files)
     {
-       std::cout << "0x" << std::hex;
-       // Set width and fill character for hash values.
-       const auto prev_width = std::cout.width(16);
-       std::cout.fill('0');
-       // Print hash to stream.
-       std::cout << file.nameHash;
-       // Reset width and fill character.
-       std::cout.width(prev_width);
-       std::cout.fill(' ');
-       // Display rest of the information.
-       std::cout << "|" << std::dec << file.getRealFileSize()
-                 << "|" << file.offset << "|"
-                 << (file.isCompressionToggled() ? "yes" : "no") << "|"
-                 << folder.folderName << '\\' << file.fileName << "\n";
+      std::cout << "0x" << std::hex;
+      // Set width and fill character for hash values.
+      const auto prev_width = std::cout.width(16);
+      std::cout.fill('0');
+      // Print hash to stream.
+      std::cout << file.nameHash;
+      // Reset width and fill character.
+      std::cout.width(prev_width);
+      std::cout.fill(' ');
+      // Display rest of the information.
+      std::cout << "|" << std::dec << file.getRealFileSize()
+                << "|" << file.offset << "|"
+                << (file.isCompressionToggled() ? "yes" : "no") << "|"
+                << folder.folderName << '\\' << file.fileName << "\n";
     }
   }
 

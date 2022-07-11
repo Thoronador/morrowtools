@@ -43,6 +43,8 @@ std::optional<Operation> parseOperation(const std::string_view op)
     return Operation::Commands;
   if (op == "metadata")
     return Operation::Metadata;
+  if (op == "directory-metadata")
+    return Operation::DirectoryMetadata;
 
   return std::nullopt;
 }
@@ -69,6 +71,8 @@ std::string operationToString(const Operation op)
          return "commands";
     case Operation::Metadata:
          return "metadata";
+    case Operation::DirectoryMetadata:
+         return "directory-metadata";
     default:
          return "";
   }

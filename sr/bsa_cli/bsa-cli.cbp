@@ -74,6 +74,8 @@
 		<Unit filename="commands/CommandFactory.hpp" />
 		<Unit filename="commands/Commands.cpp" />
 		<Unit filename="commands/Commands.hpp" />
+		<Unit filename="commands/DirectoryMetadata.cpp" />
+		<Unit filename="commands/DirectoryMetadata.hpp" />
 		<Unit filename="commands/ExtractAll.cpp" />
 		<Unit filename="commands/ExtractAll.hpp" />
 		<Unit filename="commands/ExtractFile.cpp" />

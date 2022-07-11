@@ -30,6 +30,7 @@ TEST_CASE("bsa_cli::Operations")
     const auto all = allOperations();
 
     REQUIRE( std::find(all.begin(), all.end(), Operation::Commands) != all.end() );
+    REQUIRE( std::find(all.begin(), all.end(), Operation::DirectoryMetadata) != all.end() );
     REQUIRE( std::find(all.begin(), all.end(), Operation::ExtractAll) != all.end() );
     REQUIRE( std::find(all.begin(), all.end(), Operation::ExtractFile) != all.end() );
     REQUIRE( std::find(all.begin(), all.end(), Operation::ExtractFolder) != all.end() );
@@ -56,7 +57,7 @@ TEST_CASE("bsa_cli::Operations")
     REQUIRE( operationToString(op).empty() );
   }
 
-  SECTION("operationToString - parseOperation - roundtrip")
+  SECTION("operationToString - parseOperation - round trip")
   {
     const auto all = allOperations();
     for (const auto op: all)
@@ -69,6 +70,7 @@ TEST_CASE("bsa_cli::Operations")
   {
     REQUIRE( parseOperation("") == std::nullopt );
     REQUIRE( parseOperation("commands") == Operation::Commands );
+    REQUIRE( parseOperation("directory-metadata") == Operation::DirectoryMetadata );
     REQUIRE( parseOperation("extract") == Operation::ExtractAll );
     REQUIRE( parseOperation("extract-all") == Operation::ExtractAll );
     REQUIRE( parseOperation("extract-file") == Operation::ExtractFile );
@@ -80,6 +82,7 @@ TEST_CASE("bsa_cli::Operations")
     REQUIRE( parseOperation("metadata") == Operation::Metadata );
 
     REQUIRE( parseOperation("CoMMaNdS") == std::nullopt );
+    REQUIRE( parseOperation("DiReCtOrY-MeTaDaTa") == std::nullopt );
     REQUIRE( parseOperation("eXtRacT") == std::nullopt );
     REQUIRE( parseOperation("eXtRacT-AlL") == std::nullopt );
     REQUIRE( parseOperation("EXTRACT-file") == std::nullopt );

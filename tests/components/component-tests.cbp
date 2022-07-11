@@ -296,6 +296,8 @@
 		<Unit filename="../../sr/bsa_cli/commands/CommandFactory.hpp" />
 		<Unit filename="../../sr/bsa_cli/commands/Commands.cpp" />
 		<Unit filename="../../sr/bsa_cli/commands/Commands.hpp" />
+		<Unit filename="../../sr/bsa_cli/commands/DirectoryMetadata.cpp" />
+		<Unit filename="../../sr/bsa_cli/commands/DirectoryMetadata.hpp" />
 		<Unit filename="../../sr/bsa_cli/commands/ExtractAll.cpp" />
 		<Unit filename="../../sr/bsa_cli/commands/ExtractAll.hpp" />
 		<Unit filename="../../sr/bsa_cli/commands/ExtractFile.cpp" />
@@ -474,6 +476,7 @@
 		<Unit filename="sr/bsa_cli/commands/ArgumentParsingUtilities.cpp" />
 		<Unit filename="sr/bsa_cli/commands/CommandFactory.cpp" />
 		<Unit filename="sr/bsa_cli/commands/Commands.cpp" />
+		<Unit filename="sr/bsa_cli/commands/DirectoryMetadata.cpp" />
 		<Unit filename="sr/bsa_cli/commands/ExtractAll.cpp" />
 		<Unit filename="sr/bsa_cli/commands/ExtractFile.cpp" />
 		<Unit filename="sr/bsa_cli/commands/ExtractFolder.cpp" />

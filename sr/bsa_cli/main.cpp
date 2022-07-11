@@ -49,15 +49,20 @@ void showHelp()
             << "  COMMAND    - sets the command that shall be performed on the BSA\n"
             << "               file. Allowed commands are:\n"
             << "\n"
-            << "                   commands       - lists available commands\n"
-            << "                   extract-all    - extracts everything from the archive\n"
-            << "                   extract-file   - extracts a single file from the archive\n"
-            << "                   extract-folder - extracts a single folder from the archive\n"
-            << "                   folders        - lists all folders in the archive\n"
-            << "                   help           - shows help for a command\n"
-            << "                   info           - shows BSA header information\n"
-            << "                   list           - lists all folders and files in the archive\n"
-            << "                   metadata       - shows metadata of the files in the archive\n"
+            << "                   commands           - lists available commands\n"
+            << "                   directory-metadata - shows metadata of the directories in\n"
+            << "                                        the archive\n"
+            << "                   extract-all        - extracts everything from the archive\n"
+            << "                   extract-file       - extracts a single file from the archive\n"
+            << "                   extract-folder     - extracts a single folder from the\n"
+            << "                                        archive\n"
+            << "                   folders            - lists all folders in the archive\n"
+            << "                   help               - shows help for a command\n"
+            << "                   info               - shows BSA header information\n"
+            << "                   list               - lists all folders and files in the\n"
+            << "                                        archive\n"
+            << "                   metadata           - shows metadata of the files in the\n"
+            << "                                        archive\n"
             << "\n"
             << "               More commands may be added in the future.\n"
             << "               The command must be given in most cases.\n"
@@ -98,9 +103,9 @@ int main(int argc, char **argv)
           if (!operation)
           {
             std::cerr << "Error: '" << param << "' is not an allowed command.\n"
-                      << "Allowed commands are 'commands', 'extract-all', "
-                      << "'extract-file', 'extract-folder', 'folders', "
-                      << "'help', 'info', or 'list'.\n";
+                      << "Allowed commands are 'commands', 'directory-metadata',"
+                      << " 'extract-all', 'extract-file', 'extract-folder', "
+                      << "'folders', 'help', 'info', 'list', and 'metadata'.\n";
             return SRTP::rcInvalidParameter;
           }
           break;

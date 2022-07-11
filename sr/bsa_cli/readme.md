@@ -19,14 +19,20 @@ options:
   COMMAND    - sets the command that shall be performed on the BSA
                file. Allowed commands are:
 
-                   commands       - lists available commands
-                   extract-all    - extracts everything from the archive
-                   extract-file   - extracts a single file from the archive
-                   extract-folder - extracts a single folder from the archive
-                   folders        - lists all folders in the archive
-                   help           - shows help for a command
-                   info           - shows BSA header information
-                   list           - lists all folders and files in the archive
+                   commands           - lists available commands
+                   directories        - lists all directories in the archive
+                   directory-metadata - shows metadata of the directories in
+                                        the archive
+                   extract-all        - extracts everything from the archive
+                   extract-file       - extracts a single file from the archive
+                   extract-folder     - extracts a single folder from the
+                                        archive
+                   file-metadata      - shows metadata of the files in the
+                                        archive
+                   help               - shows help for a command
+                   info               - shows BSA header information
+                   list               - lists all directories and files in the
+                                        archive
 
                More commands may be added in the future.
                The command must be given in most cases.
@@ -38,7 +44,7 @@ Use 'bsa-cli help <command>' for more information on a specific command.
 
 ## History of changes
 
-A changelog is provided as [separate file](./changelog.md).
+A changelog is available in [changelog.md](./changelog.md).
 
 ## Copyright and Licensing
 

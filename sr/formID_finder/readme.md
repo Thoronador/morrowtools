@@ -19,7 +19,7 @@ formID_finder [-d DIRECTORY] -p PATTERN
 options:
   --help           - displays this help message and quits
   -?               - same as --help
-  --version        - displays the version of the programme and quits
+  --version        - displays the version of the program and quits
   -v               - same as --version
   -d DIRECTORY     - set path to the Data Files directory of Skyrim to
                      DIRECTORY
@@ -34,8 +34,22 @@ options:
   --faction-ranks  - shows the ranks of matching factions, too.
   --ranks          - same as --faction-ranks
   --ref-id         - try to find reference IDs, too. With this parameter the
-                     programme will need a significantly longer amount of time
+                     program will need a significantly longer amount of time
                      to complete a search.
+  --skyrim-se      - assume that Skyrim Special Edition is installed and use
+                     that installation.
+  --oldrim         - assume that the old Skyrim of 2011 is installed and use
+                     that installation.
+  --english | --en - set the language to load to English. This only triggers,
+                     if there are no lose string table files and loading from
+                     the BSA file takes place. Same holds for other language
+                     options.  Default is German, if no language is set.
+  --french | --fr  - set the language to load to French.
+  --german | --de  - set the language to load to German.
+  --italian | --it - set the language to load to Italian.
+  --polish | --pl  - set the language to load to Polish.
+  --russian | --ru - set the language to load to Russian.
+  --spanish | --es - set the language to load to Spanish.
 ```
 
 ## History of changes

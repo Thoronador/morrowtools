@@ -20,6 +20,8 @@ options:
                file. Allowed commands are:
 
                    commands           - lists available commands
+                   check-hashes       - checks hashes of files and directories
+                                        in the archive
                    directories        - lists all directories in the archive
                    directory-metadata - shows metadata of the directories in
                                         the archive

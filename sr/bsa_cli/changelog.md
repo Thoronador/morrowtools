@@ -1,6 +1,6 @@
 # Version history of bsa-cli
 
-## Next version (2022-07-??)
+## Version 0.8.0 (2022-07-12)
 
 __[feature]__
 The new `file-metadata` command to show metadata of the files in a BSA file is

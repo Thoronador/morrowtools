@@ -78,3 +78,32 @@ jobs:
           name: msys2-artifacts-static-linking
           path: |
             artifacts/*.exe
+      - name: Collect files for bsa-cli
+        run: |
+          export MSYSTEM=MINGW64
+          mkdir -p "$GITHUB_WORKSPACE"/bsa-cli
+          cd "$GITHUB_WORKSPACE"
+          cp build-static/sr/bsa_cli/bsa-cli.exe bsa-cli/
+          cp sr/bsa_cli/readme.md bsa-cli/
+          cp sr/bsa_cli/changelog.md bsa-cli/
+      - name: Create bsa-cli artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: bsa-cli-static-msys2
+          path: |
+            bsa-cli/*
+      - name: Collect files for Form ID finder
+        run: |
+          export MSYSTEM=MINGW64
+          mkdir -p "$GITHUB_WORKSPACE"/formID_finder
+          cd "$GITHUB_WORKSPACE"
+          cp build-static/sr/formID_finder/formID_finder.exe formID_finder/
+          cp sr/formID_finder/readme.md formID_finder/
+          cp sr/formID_finder/ChangeLog.de.md formID_finder/
+          cp sr/formID_finder/ChangeLog.en.md formID_finder/
+      - name: Create Form ID finder artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: formID-finder-static-msys2
+          path: |
+            formID_finder/*

@@ -37,6 +37,22 @@ jobs:
         run: |
           cd "$GITHUB_WORKSPACE"/build
           ctest -V
+      - name: Build without LZ4 support on Clang ${{ matrix.version }}
+        run: |
+          export CXX=clang++-${{ matrix.version }}
+          export CC=clang-${{ matrix.version }}
+          cd $GITHUB_WORKSPACE
+          mkdir build-no-lz4
+          cd build-no-lz4
+          cmake ../ -DAUTODETECT_LZ4=OFF -DDISABLE_LZ4=ON
+          make -j2
+        if: matrix.version == 9
+      - name: Test build without LZ4 support
+        run: |
+          cd "$GITHUB_WORKSPACE"/build-no-lz4
+          ctest -V
+        if: matrix.version == 9
+
   clang10_lto_static:
     runs-on: ubuntu-20.04
     steps:

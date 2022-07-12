@@ -20,7 +20,7 @@ jobs:
           export CXX=g++-${{ matrix.version }}
           ./ci/cpplint.sh
         if: matrix.version == 10
-      - name: Build with GNU GCC ${{ matrix.version }}
+      - name: Build with GCC ${{ matrix.version }}
         run: |
           export CXX=g++-${{ matrix.version }}
           export CC=gcc-${{ matrix.version }}
@@ -33,6 +33,22 @@ jobs:
         run: |
           cd "$GITHUB_WORKSPACE"/build
           ctest -V
+      - name: Build without LZ4 support on GCC ${{ matrix.version }}
+        run: |
+          export CXX=g++-${{ matrix.version }}
+          export CC=gcc-${{ matrix.version }}
+          cd $GITHUB_WORKSPACE
+          mkdir build-no-lz4
+          cd build-no-lz4
+          cmake ../ -DAUTODETECT_LZ4=OFF -DDISABLE_LZ4=ON
+          make -j2
+        if: matrix.version == 9
+      - name: Test build without LZ4 support
+        run: |
+          cd "$GITHUB_WORKSPACE"/build-no-lz4
+          ctest -V
+        if: matrix.version == 9
+
   gcc10_lto_static:
     runs-on: ubuntu-20.04
     steps:
@@ -42,7 +58,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y catch cmake g++-10 liblz4-dev pkg-config zlib1g-dev
-      - name: Build with GNU GCC 10
+      - name: Build with GCC 10
         run: |
           export CXX=g++-10
           export CC=gcc-10

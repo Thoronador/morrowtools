@@ -41,4 +41,4 @@ jobs:
     - name: Lint with clippy
       run: |
         cd "$GITHUB_WORKSPACE/tests/hex2sv"
-        cargo clippy -- -D warnings -A clippy::suspicious_else_formatting
+        cargo clippy -- -D warnings

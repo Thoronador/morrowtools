@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2012, 2021  Dirk Stolle
+    Copyright (C) 2012, 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -47,13 +47,15 @@ struct TES3Record: public BasicRecord
    */
   bool equals(const TES3Record& other) const;
 
+  #ifndef MW_UNSAVEABLE_RECORDS
   /** \brief Writes the record to the given output stream.
    *
    * \param output  the output stream
    * \return Returns true on success (record was written to stream).
    *         Returns false, if an error occurred.
    */
-  bool saveToStream(std::ostream& output) const;
+  bool saveToStream(std::ostream& output) const override;
+  #endif
 
   /** \brief Loads the record from the given input stream.
    *

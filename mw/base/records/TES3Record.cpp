@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011, 2012, 2013, 2021  Dirk Stolle
+    Copyright (C) 2010, 2011, 2012, 2013, 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -45,6 +45,7 @@ bool TES3Record::equals(const TES3Record& other) const
       && (NumRecords == other.NumRecords) && (dependencies == other.dependencies);
 }
 
+#ifndef MW_UNSAVEABLE_RECORDS
 bool TES3Record::saveToStream(std::ostream& output) const
 {
   output.write(reinterpret_cast<const char*>(&cTES3), 4);
@@ -133,6 +134,7 @@ bool TES3Record::saveToStream(std::ostream& output) const
 
   return output.good();
 }
+#endif
 
 bool TES3Record::loadFromStream(std::istream& input)
 {

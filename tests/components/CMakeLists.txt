@@ -1,4 +1,3 @@
-# We might support earlier versions, too, but try to use a more recent one.
 cmake_minimum_required (VERSION 3.8)
 
 # test binary for components and functions
@@ -368,6 +367,12 @@ else ()
   else ()
     add_definitions( /DMWTP_NO_LZ4=1 )
   endif ()
+endif ()
+
+# Link to static library of Catch2 v3, if necessary.
+if (HAS_CATCH_V3)
+    find_package(Catch2 3 REQUIRED)
+    target_link_libraries(component_tests Catch2::Catch2WithMain)
 endif ()
 
 # GNU GCC before 9.1.0 needs to link to libstdc++fs explicitly.

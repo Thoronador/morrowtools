@@ -53,7 +53,7 @@ struct TES3Record: public BasicRecord
    * \return Returns true on success (record was written to stream).
    *         Returns false, if an error occurred.
    */
-  bool saveToStream(std::ostream& output) const override;
+  bool saveToStream(std::ostream& output) const;
 
   /** \brief Loads the record from the given input stream.
    *

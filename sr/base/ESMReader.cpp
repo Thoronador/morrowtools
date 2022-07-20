@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -32,11 +32,6 @@ ESMReader::ESMReader()
 {
 }
 
-ESMReader::~ESMReader()
-{
-}
-
-/* skips a record and returns 0 on success, and -1 on error */
 int ESMReader::skipRecord(std::istream& input)
 {
   uint32_t Size = 0;
@@ -49,7 +44,6 @@ int ESMReader::skipRecord(std::istream& input)
   return -1;
 }
 
-/* skips a group and returns 0 on success, and -1 on error */
 int ESMReader::skipGroup(std::istream& input, const GroupData& g_data)
 {
   if (g_data.size() < 24)
@@ -229,7 +223,7 @@ int ESMReader::processGroup(std::istream& input, const bool withHeader, const bo
 
 int ESMReader::readGroup(std::istream& input, const GroupData& g_data, const bool localized, const StringTable& table)
 {
-  //actually read the group
+  // actually read the group
   const auto endPosition = input.tellg() + static_cast<std::ifstream::pos_type>(g_data.size() - 24);
   int recordsRead = 0;
   int lastResult = 0;

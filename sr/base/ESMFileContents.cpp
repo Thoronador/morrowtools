@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -71,7 +71,7 @@ void ESMFileContents::traverseGroups(traverseFunction func) const
 {
   if (func == nullptr)
   {
-    std::cerr << "ESMFileContents::traverseGroups: ERROR: pointer to function"
+    std::cerr << "ESMFileContents::traverseGroups: ERROR: Pointer to function"
               << " is NULL!\n";
     return;
   }

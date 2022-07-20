@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2021  Thoronador
+    Copyright (C) 2011, 2012, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -34,19 +34,20 @@ class ESMFileContents
   public:
     ESMFileContents();
 
-    /** Adds a new group to the internal list and returns a reference to it.
+    /** \brief Adds a new group to the internal list.
      *
      * \return Returns a reference to the new group.
      */
     Group& addNewGroup();
 
-    /** Returns the number of (top level) groups in the internal list. */
+    /** \brief Gets the number of (top level) groups in the internal list.
+     */
     unsigned int getNumberOfGroups() const;
 
     /** Removes all contents. */
     void removeContents();
 
-    /** Removes all empty groups.
+    /** \brief Removes all empty groups.
      *
      * \return Returns the number of groups that were removed.
      */
@@ -66,7 +67,7 @@ class ESMFileContents
   //private:
     std::vector<Group> m_Groups; /**< internal group list */
 
-    /** Determines the latest group according to the given group nesting level.
+    /** \brief Determines the latest group according to the given group nesting level.
      *
      * \param level   the one-based nesting level; top-level group is level one,
      *                the next sub-group is level one, its sub groups level 2,

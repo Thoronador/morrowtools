@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ class ESMReaderFinder: public ESMReaderReIndexMod
   public:
     /** Constructor.
      *
-     * \param loadOrder   file names of ESM file in load order
+     * \param loadOrder   file names of ESM files in load order
      */
     ESMReaderFinder(const std::vector<std::string>& loadOrder);
   protected:

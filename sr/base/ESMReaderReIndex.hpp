@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2013  Thoronador
+    Copyright (C) 2013, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,61 +27,63 @@
 namespace SRTP
 {
 
-/* class ESMReaderReIndexMod:
-     This descendant of the ESMReader class provides some basic functions and
-     data members to allow re-indexing the mod index of the read records,
-     depending on their load order.
-
-     Still not complete yet. And not tested.
+/** This descendant of the ESMReader class provides some basic functions and
+    data members to allow re-indexing the mod index of the read records,
+    depending on their load order.
 */
 class ESMReaderReIndexMod: public ESMReader
 {
   public:
-    /* constructor */
+    /** Constructor.
+     *
+     * \param loadOrder   file names of ESM files in load order
+     */
     ESMReaderReIndexMod(const std::vector<std::string>& loadOrder);
 
-    /* destructor */
-    virtual ~ESMReaderReIndexMod();
+    virtual ~ESMReaderReIndexMod() = default;
 
-    /* non-binding request to update/re-calculate the index map for the current
-       file header. It is up to the class whether and when the update is
-       performed, because the ESMReaderReindexMod class itself does not
-       implement any mechanism to process this request in a timely manner.
-       It is up to the derived classes to do that. Or in other words:
-       It's implementation-dependent if and when the request is fulfilled.
-
-       parameters:
-           currentModFile - name of the current .esm file without directory path
-    */
+    /** \brief Non-binding request to update/re-calculate the index map for the current file header.
+     *
+     * \param currentModFile  name of the current .esm file without directory path
+     * \remarks It is up to the class whether and when the update is performed,
+     *          because the ESMReaderReIndexMod class itself does not implement
+     *          any mechanism to process this request in a timely manner.
+     *          It is up to the derived classes to do that. Or in other words:
+     *          It's implementation-dependent if and when the request is
+     *          fulfilled.
+     */
     void requestIndexMapUpdate(const std::string& currentModFile);
 
-    /* returns true, if the index map is flagged for update but has not been
-       updated yet
-    */
+    /** \brief Checks whether the index map is flagged for update but has not
+     * been updated yet.
+     *
+     * \return Returns true, if the index map is flagged for update but has not
+     * been updated yet.
+     */
     bool indexMapsNeedsUpdate() const;
   protected:
-    /* updates the index map for the current file header and returns true, if
-       all went well. Returns false, if an error occurred.
-
-       parameters:
-           currentModFile - name of the current .esm file without directory path
-    */
+    /** \brief Updates the index map for the current file header.
+     *
+     * \param currentModFile  name of the current .esm file without directory path
+     * \return Returns true, if all went well.
+     *         Returns false, if an error occurred.
+     */
     bool updateIndexMap(const std::string& currentModFile);
-    std::string m_CurrentMod;
 
-    /* tries to remap the mod index of the given form ID and returns true in
-       case of success, false in case of error.
+    std::string m_CurrentMod; /**< name of the current .esm file (no directory path) */
 
-       parameters:
-           formID - the form ID that needs to be changed
-    */
+    /** \brief Tries to remap the mod index of the given form ID in place.
+     *
+     * \param formID  the form ID that needs to be changed
+     * \return Returns true in case of success, false in case of error.
+     */
     bool reIndex(uint32_t& formID) const;
   private:
-    std::vector<std::string> m_LoadOrder;
-    bool m_MapIsUpToDate;
-    std::map<uint8_t, uint8_t> m_IndexMap;
-}; //class
+    std::vector<std::string> m_LoadOrder; /**< global load order, including all ESM/ESP files */
+    bool m_MapIsUpToDate; /**< whether the index map is current */
+    std::map<uint8_t, uint8_t> m_IndexMap; /**< maps mod index of current mod to global mod index */
+}; // class
 
-} //namespace
+} // namespace
 
 #endif // SR_ESMREADERREINDEX_HPP

@@ -67,6 +67,7 @@ set(component_tests_sources
     ../../sr/base/DependencySolver.cpp
     ../../sr/base/ESMFileContents.cpp
     ../../sr/base/ESMReader.cpp
+    ../../sr/base/ESMReaderReIndex.cpp
     ../../sr/base/ESMReaderSingleType.hpp
     ../../sr/base/FormIDFunctions.cpp
     ../../sr/base/Group.cpp
@@ -222,12 +223,14 @@ set(component_tests_sources
     sr/base/DependencyElement.cpp
     sr/base/ESMFileContents.cpp
     sr/base/ESMReader.cpp
+    sr/base/ESMReaderReIndexMod.cpp
     sr/base/FormIDFunctions.cpp
     sr/base/Localization.cpp
     sr/base/MapBasedRecordManager.cpp
     sr/base/StringTable.cpp
     sr/base/TableUtilities.cpp
     sr/base/TestFactionsReader.cpp
+    sr/base/TestReaderReIndexMod.cpp
     sr/base/bsa/BSA.cpp
     sr/base/bsa/BSADirectoryBlock.cpp
     sr/base/bsa/BSADirectoryRecord.cpp

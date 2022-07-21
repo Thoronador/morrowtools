@@ -158,6 +158,8 @@
 		<Unit filename="../../sr/base/ESMFileContents.hpp" />
 		<Unit filename="../../sr/base/ESMReader.cpp" />
 		<Unit filename="../../sr/base/ESMReader.hpp" />
+		<Unit filename="../../sr/base/ESMReaderReIndex.cpp" />
+		<Unit filename="../../sr/base/ESMReaderReIndex.hpp" />
 		<Unit filename="../../sr/base/ESMReaderSingleType.hpp" />
 		<Unit filename="../../sr/base/Factions.hpp" />
 		<Unit filename="../../sr/base/FormIDFunctions.cpp" />
@@ -397,6 +399,7 @@
 		<Unit filename="sr/base/DependencyElement.cpp" />
 		<Unit filename="sr/base/ESMFileContents.cpp" />
 		<Unit filename="sr/base/ESMReader.cpp" />
+		<Unit filename="sr/base/ESMReaderReIndexMod.cpp" />
 		<Unit filename="sr/base/FormIDFunctions.cpp" />
 		<Unit filename="sr/base/Localization.cpp" />
 		<Unit filename="sr/base/MapBasedRecordManager.cpp" />
@@ -404,6 +407,8 @@
 		<Unit filename="sr/base/TableUtilities.cpp" />
 		<Unit filename="sr/base/TestFactionsReader.cpp" />
 		<Unit filename="sr/base/TestFactionsReader.hpp" />
+		<Unit filename="sr/base/TestReaderReIndexMod.cpp" />
+		<Unit filename="sr/base/TestReaderReIndexMod.hpp" />
 		<Unit filename="sr/base/bsa/BSA.cpp" />
 		<Unit filename="sr/base/bsa/BSADirectoryBlock.cpp" />
 		<Unit filename="sr/base/bsa/BSADirectoryRecord.cpp" />

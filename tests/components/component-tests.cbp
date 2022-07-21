@@ -465,6 +465,7 @@
 		<Unit filename="sr/base/records/SubBlock.cpp" />
 		<Unit filename="sr/base/records/TalkingActivatorRecord.cpp" />
 		<Unit filename="sr/base/records/Tes4HeaderRecord.cpp" />
+		<Unit filename="sr/base/records/Tes4HeaderRecord__MasterFile.cpp" />
 		<Unit filename="sr/base/records/TreeRecord.cpp" />
 		<Unit filename="sr/base/records/WeaponRecord.cpp" />
 		<Unit filename="sr/base/records/WordOfPowerRecord.cpp" />

@@ -294,6 +294,7 @@ set(component_tests_sources
     sr/base/records/SubBlock.cpp
     sr/base/records/TalkingActivatorRecord.cpp
     sr/base/records/Tes4HeaderRecord.cpp
+    sr/base/records/Tes4HeaderRecord__MasterFile.cpp
     sr/base/records/TreeRecord.cpp
     sr/base/records/WeaponRecord.cpp
     sr/base/records/WordOfPowerRecord.cpp

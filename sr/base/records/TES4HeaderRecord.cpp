@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,7 +20,6 @@
 
 #include "TES4HeaderRecord.hpp"
 #include <iostream>
-#include <cstring>
 #include "../SR_Constants.hpp"
 #include "../../../mw/base/HelperIO.hpp"
 
@@ -30,11 +29,12 @@ namespace SRTP
 Tes4HeaderRecord::MasterFile::MasterFile()
 : fileName(""),
   data(0)
-{ }
+{
+}
 
 bool Tes4HeaderRecord::MasterFile::operator==(const Tes4HeaderRecord::MasterFile& other) const
 {
-  return ((data == other.data) && (fileName == other.fileName));
+  return (data == other.data) && (fileName == other.fileName);
 }
 
 Tes4HeaderRecord::Tes4HeaderRecord()
@@ -54,14 +54,13 @@ Tes4HeaderRecord::Tes4HeaderRecord()
 #ifndef SR_NO_RECORD_EQUALITY
 bool Tes4HeaderRecord::equals(const Tes4HeaderRecord& other) const
 {
-  return (equalsBasic(other) && (version == other.version)
+  return equalsBasic(other) && (version == other.version)
     && (numRecordsAndGroups == other.numRecordsAndGroups)
     && (nextObjectID == other.nextObjectID)
     && (authorName == other.authorName) && (summary == other.summary)
     && (dependencies == other.dependencies) && (unknownONAM == other.unknownONAM)
     && (unknownIntValue == other.unknownIntValue)
-    && (unknownINCC == other.unknownINCC)
-  );
+    && (unknownINCC == other.unknownINCC);
 }
 #endif
 
@@ -123,7 +122,7 @@ bool Tes4HeaderRecord::saveToStream(std::ostream& output) const
   output.write(reinterpret_cast<const char*>(&nextObjectID), 4);
   if (!output.good())
   {
-    std::cerr << "Error while writing subrecord HEDR of TES4!\n";
+    std::cerr << "Error while writing sub record HEDR of TES4!\n";
     return false;
   }
 
@@ -191,12 +190,12 @@ bool Tes4HeaderRecord::saveToStream(std::ostream& output) const
   if (unknownINCC.has_value())
   {
     // write INCC
-    output.write((const char*) &cINCC, 4);
+    output.write(reinterpret_cast<const char*>(&cINCC), 4);
     // INCC's length
     subLength = 4; // fixed size for uint32_t
     output.write(reinterpret_cast<const char*>(&subLength), 2);
     // write integer value
-    output.write(reinterpret_cast<const char*>(&unknownINCC), 4);
+    output.write(reinterpret_cast<const char*>(&unknownINCC.value()), 4);
   }
 
   return output.good();
@@ -253,7 +252,7 @@ bool Tes4HeaderRecord::loadFromStream(std::istream& in_File, const bool localize
   uint32_t tempUint32;
   unsigned int count;
   bool hasDoneINTV = false;
-  unknownINCC = {};
+  unknownINCC = std::nullopt;
   while (BytesRead < readSize)
   {
     // read next subrecord
@@ -264,7 +263,7 @@ bool Tes4HeaderRecord::loadFromStream(std::istream& in_File, const bool localize
       case cSNAM:
            if (!summary.empty())
            {
-             std::cerr << "Error: Record TES4 seems to have more than one SNAM subrecord!\n";
+             std::cerr << "Error: Record TES4 seems to have more than one SNAM sub record!\n";
              return false;
            }
            if (!loadString512FromStream(in_File, summary, buffer, cSNAM, false, BytesRead))
@@ -272,7 +271,7 @@ bool Tes4HeaderRecord::loadFromStream(std::istream& in_File, const bool localize
            // check: empty strings not allowed
            if (summary.empty())
            {
-             std::cerr << "Error: Subrecord SNAM of TES4 is empty!\n";
+             std::cerr << "Error: Sub record SNAM of TES4 is empty!\n";
              return false;
            }
            break;
@@ -304,7 +303,7 @@ bool Tes4HeaderRecord::loadFromStream(std::istream& in_File, const bool localize
            BytesRead += 8;
            if (!in_File.good())
            {
-             std::cerr << "Error while reading subrecord DATA of TES4!\n";
+             std::cerr << "Error while reading sub record DATA of TES4!\n";
              return false;
            }
            dependencies.emplace_back(depEntry);
@@ -312,7 +311,7 @@ bool Tes4HeaderRecord::loadFromStream(std::istream& in_File, const bool localize
       case cONAM:
            if (!unknownONAM.empty())
            {
-             std::cerr << "Error: Record TES4 seems to have more than one ONAM subrecord!\n";
+             std::cerr << "Error: Record TES4 seems to have more than one ONAM sub record!\n";
              return false;
            }
            // ONAM's length
@@ -320,7 +319,7 @@ bool Tes4HeaderRecord::loadFromStream(std::istream& in_File, const bool localize
            BytesRead += 2;
            if ((SubLength <= 0) || ((SubLength % 4) != 0))
            {
-             std::cerr << "Error: Subrecord ONAM of TES4 has invalid length ("
+             std::cerr << "Error: Sub record ONAM of TES4 has invalid length ("
                        << SubLength << " bytes). Should be an integral multiple"
                        << " of four bytes and larger than zero.\n";
              return false;
@@ -328,11 +327,11 @@ bool Tes4HeaderRecord::loadFromStream(std::istream& in_File, const bool localize
            count = SubLength / 4;
            for (unsigned int i = 0; i < count; ++i)
            {
-             in_File.read((char*) &tempUint32, 4);
+             in_File.read(reinterpret_cast<char*>(&tempUint32), 4);
              BytesRead += 4;
              if (!in_File.good())
              {
-               std::cerr << "Error while reading subrecord ONAM of TES4!\n";
+               std::cerr << "Error while reading sub record ONAM of TES4!\n";
                return false;
              }
              unknownONAM.push_back(tempUint32);
@@ -341,7 +340,7 @@ bool Tes4HeaderRecord::loadFromStream(std::istream& in_File, const bool localize
       case cINTV:
            if (hasDoneINTV)
            {
-             std::cerr << "Error: Record TES4 seems to have more than one INTV subrecord!\n";
+             std::cerr << "Error: Record TES4 seems to have more than one INTV sub record!\n";
              return false;
            }
            // read INTV
@@ -353,7 +352,7 @@ bool Tes4HeaderRecord::loadFromStream(std::istream& in_File, const bool localize
       case cINCC:
            if (unknownINCC.has_value())
            {
-             std::cerr << "Error: Record TES4 seems to have more than one INCC subrecord!\n";
+             std::cerr << "Error: Record TES4 seems to have more than one INCC sub record!\n";
              return false;
            }
            // read INCC
@@ -363,7 +362,7 @@ bool Tes4HeaderRecord::loadFromStream(std::istream& in_File, const bool localize
            BytesRead += 6;
            break;
       default:
-           std::cerr << "Error: Found unexpected subrecord \"" << IntTo4Char(SubRecName)
+           std::cerr << "Error: Found unexpected sub record \"" << IntTo4Char(SubRecName)
                      << "\", but only SNAM, MAST, DATA, ONAM, INTV or INCC are allowed here!\n";
            return false;
            break;

@@ -35,8 +35,9 @@ list some of the work that still has to be done for that specific directory.
 ### Prerequisites
 
 To build these tools from source you need a C++ compiler with support for C++17,
-CMake 3.8 or later and the zlib library (>=1.2.7). pkg-config is required to
-make it easier to find compiler options for the installed libraries.
+CMake 3.8 or later, the LZ4 library and the zlib library (>=1.2.7). pkg-config
+is required to make it easier to find compiler options for the installed
+libraries.
 Additionally, the program uses Catch (C++ Automated Test Cases in Headers) to
 perform some tests.
 
@@ -45,11 +46,11 @@ system to get the latest source code directly from the Git repository.
 
 All of that can usually be installed be typing
 
-    apt-get install catch cmake g++ git pkg-config zlib1g-dev
+    apt-get install catch cmake g++ git liblz4-dev pkg-config zlib1g-dev
 
 or
 
-    yum install catch cmake gcc-c++ git pkgconfig zlib-devel
+    yum install catch cmake gcc-c++ git lz4-devel pkgconfig zlib-devel
 
 into a root terminal.
 

@@ -2,7 +2,7 @@
  -------------------------------------------------------------------------------
     This file is part of hex2sv.
 
-    Copyright (C) 2021  Dirk Stolle
+    Copyright (C) 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -38,7 +38,7 @@ fn to_sequence(byte: &u8) -> String
   {
     return "\\\\".to_string();
   }
-  return format!("\\x{:0>2X}", byte);
+  format!("\\x{:0>2X}", byte)
 }
 
 fn is_safe_to_push(c: &char, prev_escaped: &bool, prev_nul: &bool) -> bool

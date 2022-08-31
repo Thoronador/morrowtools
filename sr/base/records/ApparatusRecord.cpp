@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -40,11 +40,11 @@ ApparatusRecord::ApparatusRecord()
 #ifndef SR_NO_RECORD_EQUALITY
 bool ApparatusRecord::equals(const ApparatusRecord& other) const
 {
-  return (equalsBasic(other) && (editorID == other.editorID)
+  return equalsBasic(other) && (editorID == other.editorID)
       && (unknownOBND == other.unknownOBND)
       && (name == other.name) && (quality == other.quality)
       && (description == other.description)
-      && (value == other.value) && (weight == other.weight));
+      && (value == other.value) && (weight == other.weight);
 }
 #endif
 

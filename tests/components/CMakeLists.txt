@@ -103,6 +103,7 @@ set(component_tests_sources
     ../../sr/base/records/EffectBlock.cpp
     ../../sr/base/records/FactionRecord.cpp
     ../../sr/base/records/FloraRecord.cpp
+    ../../sr/base/records/FormListRecord.cpp
     ../../sr/base/records/FurnitureRecord.cpp
     ../../sr/base/records/GenericRecord.cpp
     ../../sr/base/records/GroupData.cpp
@@ -265,6 +266,7 @@ set(component_tests_sources
     sr/base/records/FactionRecord_RankData.cpp
     sr/base/records/FactionRecord_VendorData.cpp
     sr/base/records/FloraRecord.cpp
+    sr/base/records/FormListRecord.cpp
     sr/base/records/FurnitureRecord.cpp
     sr/base/records/GenericRecord.cpp
     sr/base/records/GroupData.cpp

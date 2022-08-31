@@ -230,6 +230,8 @@
 		<Unit filename="../../sr/base/records/FactionRecord.hpp" />
 		<Unit filename="../../sr/base/records/FloraRecord.cpp" />
 		<Unit filename="../../sr/base/records/FloraRecord.hpp" />
+		<Unit filename="../../sr/base/records/FormListRecord.cpp" />
+		<Unit filename="../../sr/base/records/FormListRecord.hpp" />
 		<Unit filename="../../sr/base/records/FurnitureRecord.cpp" />
 		<Unit filename="../../sr/base/records/FurnitureRecord.hpp" />
 		<Unit filename="../../sr/base/records/GenericRecord.cpp" />
@@ -443,6 +445,7 @@
 		<Unit filename="sr/base/records/FactionRecord_RankData.cpp" />
 		<Unit filename="sr/base/records/FactionRecord_VendorData.cpp" />
 		<Unit filename="sr/base/records/FloraRecord.cpp" />
+		<Unit filename="sr/base/records/FormListRecord.cpp" />
 		<Unit filename="sr/base/records/FurnitureRecord.cpp" />
 		<Unit filename="sr/base/records/GenericRecord.cpp" />
 		<Unit filename="sr/base/records/GroupData.cpp" />

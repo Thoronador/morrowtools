@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,7 +20,6 @@
 
 #include "FormListRecord.hpp"
 #include <iostream>
-#include <cstring>
 #include "../SR_Constants.hpp"
 #include "../../../mw/base/HelperIO.hpp"
 
@@ -28,141 +27,105 @@ namespace SRTP
 {
 
 FormListRecord::FormListRecord()
-: BasicRecord(), editorID(""),
+: BasicRecord(),
+  editorID(""),
   listFormIDs(std::vector<uint32_t>())
 {
-
-}
-
-FormListRecord::~FormListRecord()
-{
-  //empty
 }
 
 #ifndef SR_NO_RECORD_EQUALITY
 bool FormListRecord::equals(const FormListRecord& other) const
 {
-  return ((equalsBasic(other)) and (editorID==other.editorID)
-      and (listFormIDs==other.listFormIDs));
+  return equalsBasic(other) && (editorID == other.editorID)
+      && (listFormIDs == other.listFormIDs);
 }
 #endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t FormListRecord::getWriteSize() const
 {
-  uint32_t writeSize;
-  writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
-             +editorID.length()+1 /* length of string +1 byte for NUL-termination */;
-  if (!listFormIDs.empty())
-  {
-    writeSize = writeSize + listFormIDs.size()*
-                (4 /* LNAM */ +2 /* 2 bytes for length */ +4 /* fixed size */);
-  }
+  uint32_t writeSize = 4 /* EDID */ + 2 /* 2 bytes for length */
+      + editorID.length() + 1 /* length of string +1 byte for NUL-termination */
+      + listFormIDs.size() *
+            (4 /* LNAM */ + 2 /* 2 bytes for length */ + 4 /* fixed size */);
   return writeSize;
 }
 
 bool FormListRecord::saveToStream(std::ostream& output) const
 {
-  output.write((const char*) &cFLST, 4);
-  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
+  output.write(reinterpret_cast<const char*>(&cFLST), 4);
+  if (!saveSizeAndUnknownValues(output, getWriteSize()))
+    return false;
 
-  //write EDID
-  output.write((const char*) &cEDID, 4);
-  //EDID's length
-  uint16_t subLength = editorID.length()+1;
-  output.write((const char*) &subLength, 2);
-  //write editor ID
+  // write editor ID (EDID)
+  output.write(reinterpret_cast<const char*>(&cEDID), 4);
+  uint16_t subLength = editorID.length() + 1;
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
   output.write(editorID.c_str(), subLength);
 
-  if (!listFormIDs.empty())
+  for (const uint32_t id: listFormIDs)
   {
-    unsigned int i;
-    const unsigned int count = listFormIDs.size();
-    for (i=0; i<count; ++i)
-    {
-      //write LNAM
-      output.write((const char*) &cLNAM, 4);
-      //LNAM's length
-      subLength = 4; //fixed
-      //write form ID
-      output.write((const char*) &listFormIDs[i], 4);
-    }//for
-  }//if form IDs present
+    // write form ID (LNAM)
+    output.write(reinterpret_cast<const char*>(&cLNAM), 4);
+    subLength = 4;
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    output.write(reinterpret_cast<const char*>(&id), 4);
+  }
 
   return output.good();
 }
 #endif
 
-bool FormListRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
+bool FormListRecord::loadFromStream(std::istream& input, [[maybe_unused]] const bool localized, [[maybe_unused]] const StringTable& table)
 {
   uint32_t readSize = 0;
-  if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
-  uint32_t subRecName;
-  uint16_t subLength;
-  subRecName = subLength = 0;
-  uint32_t bytesRead;
+  if (!loadSizeAndUnknownValues(input, readSize))
+    return false;
+  uint32_t bytesRead = 0;
 
   //read EDID
-  in_File.read((char*) &subRecName, 4);
-  bytesRead = 4;
-  if (subRecName!=cEDID)
-  {
-    UnexpectedRecord(cEDID, subRecName);
-    return false;
-  }
-  //EDID's length
-  in_File.read((char*) &subLength, 2);
-  bytesRead += 2;
-  if (subLength>511)
-  {
-    std::cerr <<"Error: sub record EDID of FLST is longer than 511 characters!\n";
-    return false;
-  }
-  //read EDID's stuff
   char buffer[512];
-  memset(buffer, 0, 512);
-  in_File.read(buffer, subLength);
-  bytesRead += subLength;
-  if (!in_File.good())
+  if (!loadString512FromStream(input, editorID, buffer, cEDID, true, bytesRead))
   {
-    std::cerr << "Error while reading subrecord EDID of FLST!\n";
+    std::cerr << "Error while reading sub record EDID of FLST!\n";
     return false;
   }
-  editorID = std::string(buffer);
 
+  uint32_t subRecName = 0;
+  uint16_t subLength = 0;
   listFormIDs.clear();
   uint32_t temp_fID;
-  while (bytesRead<readSize)
+  while (bytesRead < readSize)
   {
-    //read LNAM
-    in_File.read((char*) &subRecName, 4);
+    // read LNAM
+    input.read(reinterpret_cast<char*>(&subRecName), 4);
     bytesRead += 4;
-    if (subRecName!=cLNAM)
+    if (subRecName != cLNAM)
     {
       UnexpectedRecord(cLNAM, subRecName);
       return false;
     }
-    //LNAM's length
-    in_File.read((char*) &subLength, 2);
+    // LNAM's length
+    input.read(reinterpret_cast<char*>(&subLength), 2);
     bytesRead += 2;
-    if (subLength!=4)
+    if (subLength != 4)
     {
-      std::cerr <<"Error: sub record LNAM of RELA has invalid length("<<subLength
-                <<" bytes). Should be four bytes!\n";
+      std::cerr << "Error: Sub record LNAM of FLST has invalid length("
+                << subLength << " bytes). Should be four bytes!\n";
       return false;
     }
-    //read LNAM's stuff
-    in_File.read((char*) &temp_fID, 4);
+    // read LNAM's stuff
+    input.read(reinterpret_cast<char*>(&temp_fID), 4);
     bytesRead += 4;
-    if (!in_File.good())
+    if (!input.good())
     {
-      std::cerr << "Error while reading subrecord LNAM of FLST!\n";
+      std::cerr << "Error while reading sub record LNAM of FLST!\n";
       return false;
-    }//if
+    }
     listFormIDs.push_back(temp_fID);
-  }//while
+  }
 
-  return in_File.good();
+  return input.good();
 }
 
 uint32_t FormListRecord::getRecordType() const
@@ -170,4 +133,4 @@ uint32_t FormListRecord::getRecordType() const
   return cFLST;
 }
 
-} //namespace
+} // namespace

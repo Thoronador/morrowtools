@@ -76,7 +76,9 @@ int Help::parseArguments(int argc, char** argv)
   {
     std::cerr << "Error: A command has to be specified to show the help, e. g. '"
               << executableName << " help list' to show the help for the list"
-              << " command.\n";
+              << " command.\n"
+              << "If you want to show the generic help text instead, then type '"
+              << executableName << " --help' (without the quotation marks).\n";
     return SRTP::rcInvalidParameter;
   }
 

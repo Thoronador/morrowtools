@@ -449,7 +449,7 @@ bool BSA::getIndexPairForFile(const std::string& fileName, std::optional<uint32_
   directoryIndex = getIndexOfDirectory(fileName.substr(0, delimPos));
   if (!directoryIndex.has_value())
   {
-    // no such directory, thus no file in that directoty
+    // no such directory, thus no file in that directory
     fileIndex.reset();
     return true;
   }

@@ -2,6 +2,10 @@
 *.depend
 *.layout
 
-# object and binary directories
+# object and binary directories (Code::Blocks)
 bin/
 obj/
+
+# build directories (shell)
+build/
+build-coverage/

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,9 +27,9 @@
 namespace SRTP
 {
 
-//singleton for acoustic space records
-typedef MapBasedRecordManager<AcousticSpaceRecord> AcousticSpaces;
+// singleton for acoustic space records
+using AcousticSpaces = MapBasedRecordManager<AcousticSpaceRecord>;
 
-} //namespace
+} // namespace
 
 #endif // SR_ACOUSTICSPACES_HPP

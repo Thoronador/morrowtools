@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2013  Thoronador
+    Copyright (C) 2013, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,9 +27,9 @@
 namespace SRTP
 {
 
-//singleton for furniture records
-typedef MapBasedRecordManager<FurnitureRecord> Furniture;
+// singleton for furniture records
+using Furniture = MapBasedRecordManager<FurnitureRecord>;
 
-} //namespace
+} // namespace
 
 #endif // SR_FURNITURE_HPP

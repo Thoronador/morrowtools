@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012 Thoronador
+    Copyright (C) 2012, 2022 Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,9 +27,9 @@
 namespace SRTP
 {
 
-//singleton for cell records
-typedef MapBasedRecordManager<CellRecord> Cells;
+// singleton for cell records
+using Cells = MapBasedRecordManager<CellRecord>;
 
-} //namespace
+} // namespace
 
 #endif // SR_CELLS_HPP

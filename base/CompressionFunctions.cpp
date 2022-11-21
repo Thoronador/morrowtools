@@ -96,7 +96,6 @@ bool zlibDecompress(uint8_t * compressedData, const uint32_t compressedSize, uin
   return (z_return == Z_STREAM_END);
 }
 
-#ifdef MWTP_ZLIB_COMPRESS
 bool zlibCompress(uint8_t * rawData, const uint32_t rawSize, uint8_t*& compBuffer, uint32_t& compSize, uint32_t& usedSize, const int level)
 {
   if ((rawData == nullptr) || (rawSize == 0) || (compBuffer == nullptr) || (compSize == 0))
@@ -170,7 +169,6 @@ bool zlibCompress(uint8_t * rawData, const uint32_t rawSize, uint8_t*& compBuffe
          return false;
   }
 }
-#endif // MWTP_ZLIB_COMPRESS
 
 std::string zlibVersion()
 {

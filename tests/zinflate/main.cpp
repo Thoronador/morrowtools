@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for the Skyrim Tools Project.
-    Copyright (C) 2022  Dirk Stolle
+    Copyright (C) 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 
 #include <iostream>
 #include <memory>
-#include "../zdeflate/codes.hpp"
+#include "codes.hpp"
 #include "functions.hpp"
 
 void showUsage()
@@ -45,18 +45,18 @@ int main(int argc, char** argv)
 
   std::unique_ptr<uint8_t[]> data(nullptr);
   uint32_t dataSize = 0;
+  uint32_t decompressedSize = 0;
 
-  // Gather raw input data from file.
-  int rc = zinflate::getRawData(sourceFileName, data, dataSize);
+  // Gather compressed input data from file.
+  int rc = getCompressedData(sourceFileName, data, dataSize, decompressedSize);
   if (rc != 0)
   {
     return rc;
   }
 
-  // Compress the data.
-  std::unique_ptr<uint8_t[]> compressedData(new uint8_t[128]);
-  std::uint32_t compressedSize = 128;
-  rc = zinflate::compress(data, dataSize, compressedData, compressedSize);
+  // Decompress the data.
+  std::unique_ptr<uint8_t[]> decompressedData(nullptr);
+  rc = decompress(data, dataSize, decompressedData, decompressedSize);
   if (rc != 0)
   {
     return rc;
@@ -66,18 +66,18 @@ int main(int argc, char** argv)
   data.reset();
 
   // Find a suitable file name to save the data.
-  const auto destinationFileName = zinflate::getDestinationFileName(sourceFileName);
+  const auto destinationFileName = getDestinationFileName(sourceFileName);
   if (!destinationFileName.has_value())
     return rcIO;
 
   // Write decompressed data to destination.
-  rc = zinflate::writeBufferToFile(destinationFileName.value(), dataSize, compressedData, compressedSize);
+  rc = writeBufferToFile(destinationFileName.value(), decompressedData, decompressedSize);
   if (rc != 0)
   {
     return rc;
   }
 
-  std::cout << "Compressed data was written to "
+  std::cout << "Decompressed data was written to "
             << destinationFileName.value() << "." << std::endl;
   return 0;
 }

@@ -38,7 +38,6 @@ namespace MWTP
  */
 bool zlibDecompress(uint8_t * compressedData, const uint32_t compressedSize, uint8_t * decompBuffer, const uint32_t decompSize);
 
-#ifdef MWTP_ZLIB_COMPRESS
 /** Tries to compress the data pointed to by rawData and stores the compressed
  * bits in compBuffer.
  *
@@ -56,7 +55,6 @@ bool zlibDecompress(uint8_t * compressedData, const uint32_t compressedSize, uin
  * used in that buffer. This value may be less than compSize.
  */
 bool zlibCompress(uint8_t * rawData, const uint32_t rawSize, uint8_t*& compBuffer, uint32_t& compSize, uint32_t& usedSize, const int level = 6);
-#endif // MWTP_ZLIB_COMPRESS
 
 /** \brief Gets version of the zlib library
  *

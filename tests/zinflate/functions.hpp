@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for the Skyrim Tools Project.
-    Copyright (C) 2022  Dirk Stolle
+    Copyright (C) 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,27 +26,25 @@
 #include <string>
 #include <memory>
 
-namespace zinflate
-{
-
-/** \brief Reads raw (uncompressed) data from a file.
+/** \brief Reads compressed data from a file.
  *
  * \param fileName   name of the file to read
- * \param data       (output parameter) pointer to the raw data
- * \param dataSize   (output parameter) stores the size of the read raw data
+ * \param data       (output parameter) pointer to the compressed data
+ * \param dataSize   (output parameter) stores the size of the read compressed data
+ * \param decompressedSize  (output parameter) stores the expected size of the data when decompressed
  * \return Returns zero on success. Returns non-zero exit code on error.
  */
-int getRawData(const std::string& fileName, std::unique_ptr<uint8_t[]>& data, uint32_t& dataSize);
+int getCompressedData(const std::string& fileName, std::unique_ptr<uint8_t[]>& data, uint32_t& dataSize, uint32_t& decompressedSize);
 
-/** \brief Performs zlib compression (deflate).
+/** \brief Performs zlib decompression (inflate).
  *
- * \param data              pointer to the raw (uncompressed) data
- * \param dataSize          size of the raw data in bytes
- * \param compressedData  (output parameter) pointer to the compressed data
- * \param compressedSize  (in/out) the size in bytes of the compressedData buffer
+ * \param data              pointer to the compressed data
+ * \param dataSize          size of the compressed data in bytes
+ * \param decompressedData  (output parameter) pointer to the decompressed data
+ * \param decompressedSize  the expected size in bytes of the data when decompressed
  * \return Returns zero on success. Returns non-zero exit code on error.
  */
-int compress(const std::unique_ptr<uint8_t[]>& data, const uint32_t dataSize, std::unique_ptr<uint8_t[]>& compressedData, uint32_t& compressedSize);
+int decompress(const std::unique_ptr<uint8_t[]>& data, const uint32_t dataSize,  std::unique_ptr<uint8_t[]>& decompressedData, const uint32_t decompressedSize);
 
 /** \brief Determines a suitable destination file name.
  *
@@ -56,16 +54,13 @@ int compress(const std::unique_ptr<uint8_t[]>& data, const uint32_t dataSize, st
  */
 std::optional<std::string> getDestinationFileName(const std::string& sourceFileName);
 
-/** \brief Writes given pointer data to a file, prefixed by uncompressed size value.
+/** \brief Writes given pointer data to a file.
  *
  * \param fileName   destination file name to write to
- * \param rawSize    size of the data before compression
  * \param data       pointer to the data that shall be written
  * \param dataSize   size of the data pointed to be @data
  * \return Returns zero on success. Returns non-zero exit code on error.
  */
-int writeBufferToFile(const std::string& fileName, const uint32_t rawSize, const std::unique_ptr<uint8_t[]>& data, const uint32_t dataSize);
-
-} // namespace
+int writeBufferToFile(const std::string& fileName, const std::unique_ptr<uint8_t[]>& data, const uint32_t dataSize);
 
 #endif // SRTP_ZINFLATE_FUNCTIONS_HPP

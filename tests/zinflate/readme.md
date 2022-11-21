@@ -1,12 +1,11 @@
-# zdeflate
+# zinflate
 
-This directory contains a C++ command line application that can compress the
-uncompressed data part of a Skyrim ESM record. It's not intended for direct use
+This directory contains a C++ command line application that can decompress the
+compressed data part of a Skyrim ESM record. It's not intended for direct use
 but only for development purposes.
 
-It reads the raw data from the file given as its first argument and writes it
-out as a four byte size value indicating the decompressed size, followed by the
-compressed data.
+It reads the compresses part, a four byte size value indicating the decompressed
+size, followed by the compressed data, for the file given as its first argument.
 
 ## Building the application from source
 
@@ -47,11 +46,11 @@ That's it.
 
 ## Using the application
 
-This is not intended for production use.
+TODO
 
 ## Copyright and Licensing
 
-Copyright 2022  Dirk Stolle
+Copyright 2021, 2022  Dirk Stolle
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

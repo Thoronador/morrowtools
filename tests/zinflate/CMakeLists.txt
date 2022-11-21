@@ -1,11 +1,11 @@
 # We might support earlier versions, too, but try to use a recent one.
 cmake_minimum_required (VERSION 3.8)
 
-project(zdeflate)
+project(zinflate)
 
-set(zdeflate_sources
+set(zinflate_sources
     ../../base/CompressionFunctions.cpp
-    ../zinflate/codes.hpp
+    codes.hpp
     functions.cpp
     main.cpp)
 
@@ -15,17 +15,14 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clan
     set( CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -s" )
 endif ()
 
-# enable compression function
-add_definitions (-DMWTP_ZLIB_COMPRESS)
-
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 if (ENABLE_LTO)
-  set(TARGET zdeflate PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
+  set(TARGET zinflate PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 endif()
 
-add_executable(zdeflate ${zdeflate_sources})
+add_executable(zinflate ${zinflate_sources})
 
 if (MINGW AND CMAKE_HOST_UNIX)
   # If compiler is some kind of MinGW, but the CMake host is Unix, then this is
@@ -45,13 +42,13 @@ if (MINGW AND CMAKE_HOST_UNIX)
     include_directories( /usr/i686-w64-mingw32/include/ )
     link_directories( /usr/i686-w64-mingw32/lib )
   endif ()
-  target_link_libraries (zdeflate z)
+  target_link_libraries (zinflate z)
 else()
   # use default method to find zlib
   find_package (ZLIB)
   if (ZLIB_FOUND)
     include_directories(${ZLIB_INCLUDE_DIRS})
-    target_link_libraries (zdeflate ${ZLIB_LIBRARIES})
+    target_link_libraries (zinflate ${ZLIB_LIBRARIES})
   else ()
     message ( FATAL_ERROR "zlib was not found!" )
   endif (ZLIB_FOUND)
@@ -59,10 +56,10 @@ endif()
 
 # GNU GCC before 9.1.0 needs to link to libstdc++fs explicitly.
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "9.1.0")
-  target_link_libraries(zdeflate stdc++fs)
+  target_link_libraries(zinflate stdc++fs)
 endif ()
 
 # Clang before 9.0 needs to link to libc++fs explicitly.
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "9.0")
-  target_link_libraries(zdeflate c++fs)
+  target_link_libraries(zinflate c++fs)
 endif ()

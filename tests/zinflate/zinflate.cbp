@@ -20,20 +20,16 @@
 			</Target>
 		</Build>
 		<Compiler>
-			<Add option="-Weffc++" />
-			<Add option="-pedantic" />
-			<Add option="-Wextra" />
 			<Add option="-Wall" />
 			<Add option="-std=c++17" />
 			<Add option="-fexceptions" />
-			<Add option="-DMWTP_ZLIB_COMPRESS" />
 		</Compiler>
 		<Linker>
 			<Add library="z" />
 		</Linker>
 		<Unit filename="../../base/CompressionFunctions.cpp" />
 		<Unit filename="../../base/CompressionFunctions.hpp" />
-		<Unit filename="../zdeflate/codes.hpp" />
+		<Unit filename="codes.hpp" />
 		<Unit filename="functions.cpp" />
 		<Unit filename="functions.hpp" />
 		<Unit filename="main.cpp" />

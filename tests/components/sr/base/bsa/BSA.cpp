@@ -173,6 +173,22 @@ TEST_CASE("BSA")
 
       REQUIRE( bsa.hasAllStructureData() );
     }
+
+    SECTION("grabbing data twice does not do any harm")
+    {
+      const std::filesystem::path path{"test_sr_bsa_grabAllStructureData_twice.bsa"};
+      FileGuard guard{path};
+      const auto data = "BSA\0\x68\0\0\0\x24\0\0\0\x03\0\0\0\x02\0\0\0\x03\0\0\0\x1A\0\0\0\x19\0\0\0\0\x01\0\0gn\x0As@r\xBE\x0B\x01\0\0\0]\0\0\0es\x0Es\xDC\x92\x84Z\x02\0\0\0y\0\0\0\x0Bsome\\thing\0ts\x04t'\xA7\xD0\x95\x10\0\0\0\xA9\0\0\0\x0Fsomething\\\x65lse\0ra\x03\x62\xC2\xA6\xD0\x95\x07\0\0\0\xB9\0\0\0oo\x03\x66\xC2\xA6\xD0\x95\x0E\0\0\0\xC0\0\0\0test.txt\0bar.txt\0foo.txt\0"sv;
+      REQUIRE( writeBsa(data, path) );
+
+      BSA bsa;
+      REQUIRE( bsa.open(path.string()) );
+      REQUIRE( bsa.grabAllStructureData() );
+      // Second attempt also succeeds, but it's a no-op.
+      REQUIRE( bsa.grabAllStructureData() );
+      // Data is still present.
+      REQUIRE( bsa.hasAllStructureData() );
+    }
   }
 
   SECTION("grabDirectoryData")
@@ -182,6 +198,20 @@ TEST_CASE("BSA")
     SECTION("BSA has not been opened")
     {
       BSA bsa;
+      REQUIRE_FALSE( bsa.grabDirectoryData() );
+    }
+
+    SECTION("failure: wrong internal status - data has already been read")
+    {
+      const std::filesystem::path path{"test_sr_bsa_grabDirectoryData_wrong_status.bsa"};
+      FileGuard guard{path};
+      const auto content = "BSA\0\x68\0\0\0\x24\0\0\0\x03\0\0\0\x02\0\0\0\x03\0\0\0\x1A\0\0\0\x19\0\0\0\0\x01\0\0gn\x0As@r\xBE\x0B\x01\0\0\0]\0\0\0es\x0Es\xDC\x92\x84Z\x02\0\0\0y\0\0\0"sv;
+      REQUIRE( writeBsa(content, path) );
+
+      BSA bsa;
+      REQUIRE( bsa.open(path.string()) );
+      REQUIRE( bsa.grabDirectoryData() );
+      // Grabbing data again fails.
       REQUIRE_FALSE( bsa.grabDirectoryData() );
     }
 
@@ -196,6 +226,29 @@ TEST_CASE("BSA")
       REQUIRE( bsa.open(path.string()) );
       REQUIRE_FALSE( bsa.grabDirectoryData() );
       REQUIRE( bsa.getDirectories().empty() );
+    }
+
+    SECTION("BSA version before 104 can be read, if rest matches v104 layout")
+    {
+      const std::filesystem::path path{"test_sr_bsa_grabDirectoryData_v103_fine.bsa"};
+      FileGuard guard{path};
+      const auto content = "BSA\0\x67\0\0\0\x24\0\0\0\x03\0\0\0\x02\0\0\0\x03\0\0\0\x1A\0\0\0\x19\0\0\0\0\x01\0\0gn\x0As@r\xBE\x0B\x01\0\0\0]\0\0\0es\x0Es\xDC\x92\x84Z\x02\0\0\0y\0\0\0"sv;
+      REQUIRE( writeBsa(content, path) );
+
+      BSA bsa;
+      REQUIRE( bsa.open(path.string()) );
+      REQUIRE( bsa.grabDirectoryData() );
+      REQUIRE( bsa.getDirectories().size() == 2 );
+      // Check first directory.
+      REQUIRE( bsa.getDirectories().at(0).nameHash == 0x0bbe7240730a6e67ULL );
+      REQUIRE( bsa.getDirectories().at(0).count == 1 );
+      REQUIRE( bsa.getDirectories().at(0).offset == 93 );
+      // Check second directory.
+      REQUIRE( bsa.getDirectories().at(1).nameHash == 0x5a8492dc730e7365ULL );
+      REQUIRE( bsa.getDirectories().at(1).count == 2 );
+      REQUIRE( bsa.getDirectories().at(1).offset == 121 );
+
+      REQUIRE_FALSE( bsa.hasAllStructureData() );
     }
 
     SECTION("successful read of version 104 BSA")
@@ -226,6 +279,29 @@ TEST_CASE("BSA")
       const std::filesystem::path path{"test_sr_bsa_grabDirectoryData_v105_fine.bsa"};
       FileGuard guard{path};
       const auto content = "BSA\0\x69\0\0\0\x24\0\0\0\x03\0\0\0\x02\0\0\0\x03\0\0\0\x1A\0\0\0\x19\0\0\0\0\x01\0\0gn\x0As@r\xBE\x0B\x01\0\0\0\0\0\0\0]\0\0\0\0\0\0\0es\x0Es\xDC\x92\x84Z\x02\0\0\0\0\0\0\0y\0\0\0\0\0\0\0"sv;
+      REQUIRE( writeBsa(content, path) );
+
+      BSA bsa;
+      REQUIRE( bsa.open(path.string()) );
+      REQUIRE( bsa.grabDirectoryData() );
+      REQUIRE( bsa.getDirectories().size() == 2 );
+      // Check first directory.
+      REQUIRE( bsa.getDirectories().at(0).nameHash == 0x0bbe7240730a6e67ULL );
+      REQUIRE( bsa.getDirectories().at(0).count == 1 );
+      REQUIRE( bsa.getDirectories().at(0).offset == 93 );
+      // Check second directory.
+      REQUIRE( bsa.getDirectories().at(1).nameHash == 0x5a8492dc730e7365ULL );
+      REQUIRE( bsa.getDirectories().at(1).count == 2 );
+      REQUIRE( bsa.getDirectories().at(1).offset == 121 );
+
+      REQUIRE_FALSE( bsa.hasAllStructureData() );
+    }
+
+    SECTION("BSA version newer than 105 can be read, if remaining layout matches v105")
+    {
+      const std::filesystem::path path{"test_sr_bsa_grabDirectoryData_v106_fine.bsa"};
+      FileGuard guard{path};
+      const auto content = "BSA\0\x6A\0\0\0\x24\0\0\0\x03\0\0\0\x02\0\0\0\x03\0\0\0\x1A\0\0\0\x19\0\0\0\0\x01\0\0gn\x0As@r\xBE\x0B\x01\0\0\0\0\0\0\0]\0\0\0\0\0\0\0es\x0Es\xDC\x92\x84Z\x02\0\0\0\0\0\0\0y\0\0\0\0\0\0\0"sv;
       REQUIRE( writeBsa(content, path) );
 
       BSA bsa;
@@ -322,6 +398,34 @@ TEST_CASE("BSA")
 
       BSA bsa;
       REQUIRE( bsa.open(path.string()) );
+      REQUIRE_FALSE( bsa.grabFileNames() );
+    }
+
+    SECTION("failure: file block count mismatch")
+    {
+      const std::filesystem::path path{"test_sr_bsa_grabFileNames_file_block_mismatch.bsa"};
+      FileGuard guard{path};
+      const auto data = "BSA\0\x68\0\0\0\x24\0\0\0\x03\0\0\0\x02\0\0\0\x03\0\0\0\x1A\0\0\0\x19\0\0\0\0\x01\0\0gn\x0As@r\xBE\x0B\x01\0\0\0]\0\0\0es\x0Es\xDC\x92\x84Z\x02\0\0\0y\0\0\0\x0Bsome\\thing\0ts\x04t'\xA7\xD0\x95\x10\0\0\0\xA9\0\0\0\x0Fsomething\\\x65lse\0ra\x03\x62\xC2\xA6\xD0\x95\x07\0\0\0\xB9\0\0\0oo\x03\x66\xC2\xA6\xD0\x95\x0E\0\0\0\xC0\0\0\0test.txt\0bar\0txt\0foo.txt\0"sv;
+      REQUIRE( writeBsa(data, path) );
+
+      BSA bsa;
+      REQUIRE( bsa.open(path.string()) );
+      REQUIRE( bsa.grabDirectoryData() );
+      REQUIRE( bsa.grabDirectoryBlocks() );
+      REQUIRE_FALSE( bsa.grabFileNames() );
+    }
+
+    SECTION("failure: mismatch with file count in header")
+    {
+      const std::filesystem::path path{"test_sr_bsa_grabFileNames_file_count_mismatch.bsa"};
+      FileGuard guard{path};
+      const auto data = "BSA\0\x68\0\0\0\x24\0\0\0\x03\0\0\0\x02\0\0\0\x33\0\0\0\x1A\0\0\0\x19\0\0\0\0\x01\0\0gn\x0As@r\xBE\x0B\x01\0\0\0]\0\0\0es\x0Es\xDC\x92\x84Z\x02\0\0\0y\0\0\0\x0Bsome\\thing\0ts\x04t'\xA7\xD0\x95\x10\0\0\0\xA9\0\0\0\x0Fsomething\\\x65lse\0ra\x03\x62\xC2\xA6\xD0\x95\x07\0\0\0\xB9\0\0\0oo\x03\x66\xC2\xA6\xD0\x95\x0E\0\0\0\xC0\0\0\0test.txt\0bar.txt\0foo.txt\0"sv;
+      REQUIRE( writeBsa(data, path) );
+
+      BSA bsa;
+      REQUIRE( bsa.open(path.string()) );
+      REQUIRE( bsa.grabDirectoryData() );
+      REQUIRE( bsa.grabDirectoryBlocks() );
       REQUIRE_FALSE( bsa.grabFileNames() );
     }
 
@@ -788,6 +892,102 @@ TEST_CASE("BSA")
       REQUIRE_FALSE( bsa.extractFile(0, over9000, "/tmp/cannot.extract") );
     }
 
+    SECTION("data corruption: offset is out of range")
+    {
+      const std::filesystem::path path{"test_sr_bsa_extractFile_idx_offset_out_of_range.bsa"};
+      FileGuard guard{path};
+      const auto data = "BSA\0\x68\0\0\0\x24\0\0\0\x03\0\0\0\x02\0\0\0\x03\0\0\0\x1A\0\0\0\x19\0\0\0\0\x01\0\0gn\x0As@r\xBE\x0B\x01\0\0\0]\0\0\0es\x0Es\xDC\x92\x84Z\x02\0\0\0y\0\0\0\x0Bsome\\thing\0ts\x04t'\xA7\xD0\x95\x10\0\0\0\xA9\xFF\0\0\x0Fsomething\\\x65lse\0ra\x03\x62\xC2\xA6\xD0\x95\x07\0\0\0\xB9\0\0\0oo\x03\x66\xC2\xA6\xD0\x95\x0E\0\0\0\xC0\0\0\0test.txt\0bar.txt\0foo.txt\0This is a test.\x0A\x66oobar\x0A\x66oo was here.\x0A"sv;
+      REQUIRE( writeBsa(data, path) );
+
+      BSA bsa;
+      REQUIRE( bsa.open(path.string()) );
+      REQUIRE( bsa.grabAllStructureData() );
+
+      const auto destination { std::filesystem::temp_directory_path() / "extract_test_fail.txt" };
+      FileGuard guard_destination{destination};
+      REQUIRE_FALSE( bsa.extractFile(0, 0, destination.string()) );
+    }
+
+    SECTION("data corruption: file data is too short")
+    {
+      const std::filesystem::path path{"test_sr_bsa_extractFile_idx_file_data_truncated.bsa"};
+      FileGuard guard{path};
+      const auto data = "BSA\0\x68\0\0\0\x24\0\0\0\x03\0\0\0\x02\0\0\0\x03\0\0\0\x1A\0\0\0\x19\0\0\0\0\x01\0\0gn\x0As@r\xBE\x0B\x01\0\0\0]\0\0\0es\x0Es\xDC\x92\x84Z\x02\0\0\0y\0\0\0\x0Bsome\\thing\0ts\x04t'\xA7\xD0\x95\x10\0\0\0\xA9\0\0\0\x0Fsomething\\\x65lse\0ra\x03\x62\xC2\xA6\xD0\x95\x07\0\0\0\xB9\0\0\0oo\x03\x66\xC2\xA6\xD0\x95\x0E\0\0\0\xC0\0\0\0test.txt\0bar.txt\0foo.txt\0This fails."sv;
+      REQUIRE( writeBsa(data, path) );
+
+      BSA bsa;
+      REQUIRE( bsa.open(path.string()) );
+      REQUIRE( bsa.grabAllStructureData() );
+
+      const auto destination { std::filesystem::temp_directory_path() / "extract_test_fail.txt" };
+      FileGuard guard_destination{destination};
+      REQUIRE_FALSE( bsa.extractFile(0, 0, destination.string()) );
+    }
+
+    SECTION("data corruption: data size of compressed data is too small")
+    {
+      const std::filesystem::path path{"test_sr_bsa_extractFile_idx_compressed_data_truncated.bsa"};
+      FileGuard guard{path};
+      const auto data = "BSA\0\x68\0\0\0\x24\0\0\0\x07\0\0\0\x02\0\0\0\x03\0\0\0\x1A\0\0\0\x19\0\0\0\0\0\0\0gn\x0As@r\xBE\x0B\x01\0\0\0]\0\0\0es\x0Es\xDC\x92\x84Z\x02\0\0\0y\0\0\0\x0Bsome\\thing\0ts\x04t'\xA7\xD0\x95\x03\0\0\0\xA9\0\0\0\x0Fsomething\\\x65lse\0ra\x03\x62\xC2\xA6\xD0\x95\x07\0\0@\xC3\0\0\0oo\x03\x66\xC2\xA6\xD0\x95\x1A\0\0\0\xCA\0\0\0test.txt\0bar.txt\0foo.txt\0\x10\0\0\0x\x9C\x0B\xC9\xC8,V\0\xA2\x44\x85\x92\xD4\xE2\x12=.\0.\xC5\x05.foobar\x0A\x0E\0\0\0x\x9CK\xCB\xCFW(O,V\xC8H-J\xD5\xE3\x02\0&&\x04\xAC"sv;
+      REQUIRE( writeBsa(data, path) );
+
+      BSA bsa;
+      REQUIRE( bsa.open(path.string()) );
+      REQUIRE( bsa.grabAllStructureData() );
+
+      const auto destination { std::filesystem::temp_directory_path() / "extract_test_fail.txt" };
+      FileGuard guard_destination{destination};
+      REQUIRE_FALSE( bsa.extractFile(0, 0, destination.string()) );
+    }
+
+    SECTION("data corruption: fail to read decompressed size value")
+    {
+      const std::filesystem::path path{"test_sr_bsa_extractFile_idx_decompressed_size_truncated.bsa"};
+      FileGuard guard{path};
+      const auto data = "BSA\0\x68\0\0\0\x24\0\0\0\x07\0\0\0\x02\0\0\0\x03\0\0\0\x1A\0\0\0\x19\0\0\0\0\0\0\0gn\x0As@r\xBE\x0B\x01\0\0\0]\0\0\0es\x0Es\xDC\x92\x84Z\x02\0\0\0y\0\0\0\x0Bsome\\thing\0ts\x04t'\xA7\xD0\x95\x1A\0\0\0\xA9\0\0\0\x0Fsomething\\\x65lse\0ra\x03\x62\xC2\xA6\xD0\x95\x07\0\0@\xC3\0\0\0oo\x03\x66\xC2\xA6\xD0\x95\x1A\0\0\0\xCA\0\0\0test.txt\0bar.txt\0foo.txt\0\x10\0"sv;
+      REQUIRE( writeBsa(data, path) );
+
+      BSA bsa;
+      REQUIRE( bsa.open(path.string()) );
+      REQUIRE( bsa.grabAllStructureData() );
+
+      const auto destination { std::filesystem::temp_directory_path() / "extract_test_fail.txt" };
+      FileGuard guard_destination{destination};
+      REQUIRE_FALSE( bsa.extractFile(0, 0, destination.string()) );
+    }
+
+    SECTION("data corruption: compressed data is too short")
+    {
+      const std::filesystem::path path{"test_sr_bsa_extractFile_idx_compressed_data_truncated.bsa"};
+      FileGuard guard{path};
+      const auto data = "BSA\0\x68\0\0\0\x24\0\0\0\x07\0\0\0\x02\0\0\0\x03\0\0\0\x1A\0\0\0\x19\0\0\0\0\0\0\0gn\x0As@r\xBE\x0B\x01\0\0\0]\0\0\0es\x0Es\xDC\x92\x84Z\x02\0\0\0y\0\0\0\x0Bsome\\thing\0ts\x04t'\xA7\xD0\x95\x1A\0\0\0\xA9\0\0\0\x0Fsomething\\\x65lse\0ra\x03\x62\xC2\xA6\xD0\x95\x07\0\0@\xC3\0\0\0oo\x03\x66\xC2\xA6\xD0\x95\x1A\0\0\0\xCA\0\0\0test.txt\0bar.txt\0foo.txt\0\x10\0\0\0x\x9C\x0B\xC9"sv;
+      REQUIRE( writeBsa(data, path) );
+
+      BSA bsa;
+      REQUIRE( bsa.open(path.string()) );
+      REQUIRE( bsa.grabAllStructureData() );
+
+      const auto destination { std::filesystem::temp_directory_path() / "extract_test_fail.txt" };
+      FileGuard guard_destination{destination};
+      REQUIRE_FALSE( bsa.extractFile(0, 0, destination.string()) );
+    }
+
+    SECTION("data corruption: decompression fails")
+    {
+      const std::filesystem::path path{"test_sr_bsa_extractFile_idx_decompression_failure.bsa"};
+      FileGuard guard{path};
+      const auto data = "BSA\0\x68\0\0\0\x24\0\0\0\x07\0\0\0\x02\0\0\0\x03\0\0\0\x1A\0\0\0\x19\0\0\0\0\0\0\0gn\x0As@r\xBE\x0B\x01\0\0\0]\0\0\0es\x0Es\xDC\x92\x84Z\x02\0\0\0y\0\0\0\x0Bsome\\thing\0ts\x04t'\xA7\xD0\x95\x1A\0\0\0\xA9\0\0\0\x0Fsomething\\\x65lse\0ra\x03\x62\xC2\xA6\xD0\x95\x07\0\0@\xC3\0\0\0oo\x03\x66\xC2\xA6\xD0\x95\x1A\0\0\0\xCA\0\0\0test.txt\0bar.txt\0foo.txt\0\x10\0\0\0x\x9C\xFF\xFF\xFF\xAA\xAA\x11\x11\x44\x85\x92\xD4\xE2\x12=.\0.\xC5\x05.foobar\x0A\x0E\0\0\0x\x9CK\xCB\xCFW(O,V\xC8H-J\xD5\xE3\x02\0&&\x04\xAC"sv;
+      REQUIRE( writeBsa(data, path) );
+
+      BSA bsa;
+      REQUIRE( bsa.open(path.string()) );
+      REQUIRE( bsa.grabAllStructureData() );
+
+      const auto destination { std::filesystem::temp_directory_path() / "extract_test_fail.txt" };
+      FileGuard guard_destination{destination};
+      REQUIRE_FALSE( bsa.extractFile(0, 0, destination.string()) );
+    }
+
     SECTION("extract uncompressed files from v104 archive")
     {
       const std::filesystem::path path{"test_sr_bsa_extractFile_idx_no_compression.bsa"};
@@ -1042,6 +1242,23 @@ TEST_CASE("BSA")
       REQUIRE_FALSE( bsa.extractDirectory(1, "/tmp/directory-out", counter) );
       REQUIRE( counter == 0 );
     }
+
+    SECTION("index is out of range")
+    {
+      const std::filesystem::path path{"test_sr_bsa_extractDirectory_by_index_out_of_range.bsa"};
+      FileGuard guard{path};
+      const auto data = "BSA\0\x68\0\0\0\x24\0\0\0\x03\0\0\0\x02\0\0\0\x03\0\0\0\x1A\0\0\0\x19\0\0\0\0\x01\0\0gn\x0As@r\xBE\x0B\x01\0\0\0]\0\0\0es\x0Es\xDC\x92\x84Z\x02\0\0\0y\0\0\0\x0Bsome\\thing\0ts\x04t'\xA7\xD0\x95\x10\0\0\0\xA9\0\0\0\x0Fsomething\\\x65lse\0ra\x03\x62\xC2\xA6\xD0\x95\x07\0\0\0\xB9\0\0\0oo\x03\x66\xC2\xA6\xD0\x95\x0E\0\0\0\xC0\0\0\0test.txt\0bar.txt\0foo.txt\0This is a test.\x0A\x66oobar\x0A\x66oo was here.\x0A"sv;
+      REQUIRE( writeBsa(data, path) );
+
+      BSA bsa;
+      REQUIRE( bsa.open(path.string()) );
+      REQUIRE( bsa.grabAllStructureData() );
+
+      const int over9000 = 9001;
+      uint32_t counter = 42;
+      REQUIRE_FALSE( bsa.extractDirectory(over9000, "/tmp/directory-out", counter) );
+      REQUIRE( counter == 0 );
+    }
   }
 
   SECTION("extractDirectory (with folder name parameter)")
@@ -1053,6 +1270,22 @@ TEST_CASE("BSA")
       BSA bsa;
       uint32_t counter = 42;
       REQUIRE_FALSE( bsa.extractDirectory("foo\\bar", "/tmp/directory-out", counter) );
+      REQUIRE( counter == 0 );
+    }
+
+    SECTION("directory does not exist")
+    {
+      const std::filesystem::path path{"test_sr_bsa_extractDirectory_by_name_unknown_directory.bsa"};
+      FileGuard guard{path};
+      const auto data = "BSA\0\x68\0\0\0\x24\0\0\0\x03\0\0\0\x02\0\0\0\x03\0\0\0\x1A\0\0\0\x19\0\0\0\0\x01\0\0gn\x0As@r\xBE\x0B\x01\0\0\0]\0\0\0es\x0Es\xDC\x92\x84Z\x02\0\0\0y\0\0\0\x0Bsome\\thing\0ts\x04t'\xA7\xD0\x95\x10\0\0\0\xA9\0\0\0\x0Fsomething\\\x65lse\0ra\x03\x62\xC2\xA6\xD0\x95\x07\0\0\0\xB9\0\0\0oo\x03\x66\xC2\xA6\xD0\x95\x0E\0\0\0\xC0\0\0\0test.txt\0bar.txt\0foo.txt\0This is a test.\x0A\x66oobar\x0A\x66oo was here.\x0A"sv;
+      REQUIRE( writeBsa(data, path) );
+
+      BSA bsa;
+      REQUIRE( bsa.open(path.string()) );
+      REQUIRE( bsa.grabAllStructureData() );
+
+      uint32_t counter = 42;
+      REQUIRE_FALSE( bsa.extractDirectory("does\\not\\exist", "/tmp/directory-out", counter) );
       REQUIRE( counter == 0 );
     }
   }

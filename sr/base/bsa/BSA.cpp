@@ -187,7 +187,7 @@ bool BSA::grabFileNames()
 
   if (!m_Stream.good())
   {
-    std::cerr << "BSA::grabFileNames: Error: bad stream!\n";
+    std::cerr << "BSA::grabFileNames: Error: Bad stream!\n";
     return false;
   }
 
@@ -274,7 +274,7 @@ bool BSA::grabFileNames()
 
   if (namesRead != m_Header.fileCount)
   {
-    std::cerr << "BSA::grabFileNames: Error: number of read file names does not "
+    std::cerr << "BSA::grabFileNames: Error: Number of read file names does not "
               << "match the number given in the header. " << m_Header.fileCount
               << " files should be there, but " << namesRead << " were found!\n";
     m_Status = Status::Failed;
@@ -589,7 +589,7 @@ bool BSA::extractFile(const uint32_t directoryIndex, const uint32_t fileIndex, c
     m_Stream.read(reinterpret_cast<char*>(buffer), extractedFileSize);
     if (!m_Stream.good())
     {
-      std::cerr << "BSA::extractFile: Error: Bad internal stream, could read file data from archive!\n";
+      std::cerr << "BSA::extractFile: Error: Bad internal stream, could not read file data from archive!\n";
       delete[] buffer;
       buffer = nullptr;
       return false;

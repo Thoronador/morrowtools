@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2013  Thoronador
+    Copyright (C) 2013, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,9 +27,9 @@
 namespace SRTP
 {
 
-//singleton for nav mesh records
-typedef MapBasedRecordManager<NavMeshRecord> NavMeshes;
+// singleton for nav mesh records
+using NavMeshes = MapBasedRecordManager<NavMeshRecord>;
 
-} //namespace
+}
 
 #endif // SR_NAVMESHES_HPP

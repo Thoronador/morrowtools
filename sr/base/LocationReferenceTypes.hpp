@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,9 +27,9 @@
 namespace SRTP
 {
 
-//singleton for location reference type records
-typedef MapBasedRecordManager<LocationReferenceTypeRecord> LocationReferenceTypes;
+// singleton for location reference type records
+using LocationReferenceTypes = MapBasedRecordManager<LocationReferenceTypeRecord>;
 
-} //namespace
+}
 
 #endif // SR_LOCATIONREFERENCETYPES_HPP

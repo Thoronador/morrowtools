@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012 Thoronador
+    Copyright (C) 2012, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,9 +27,9 @@
 namespace SRTP
 {
 
-//singleton for class records
-typedef MapBasedRecordManager<HeadPartRecord> HeadParts;
+// singleton for class records
+using HeadParts = MapBasedRecordManager<HeadPartRecord>;
 
-} //namespace
+}
 
 #endif // SR_HEADPARTS_HPP

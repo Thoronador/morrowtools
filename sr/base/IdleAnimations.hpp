@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2013  Thoronador
+    Copyright (C) 2013, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,9 +27,9 @@
 namespace SRTP
 {
 
-//singleton for idle animation records
-typedef MapBasedRecordManager<IdleAnimationRecord> IdleAnimations;
+// singleton for idle animation records
+using IdleAnimations = MapBasedRecordManager<IdleAnimationRecord>;
 
-} //namespace
+}
 
 #endif // SR_IDLEANIMATIONS_HPP

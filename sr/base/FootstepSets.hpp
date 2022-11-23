@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,9 +27,9 @@
 namespace SRTP
 {
 
-//singleton for footstep set records
-typedef MapBasedRecordManager<FootstepSetRecord> FootstepSets;
+// singleton for footstep set records
+using FootstepSets = MapBasedRecordManager<FootstepSetRecord>;
 
-} //namespace
+}
 
 #endif // SR_FOOTSTEPSETS_HPP

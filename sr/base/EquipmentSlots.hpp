@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,9 +27,9 @@
 namespace SRTP
 {
 
-//singleton for equipment slot records
-typedef MapBasedRecordManager<EquipmentSlotRecord> EquipmentSlots;
+// singleton for equipment slot records
+using EquipmentSlots = MapBasedRecordManager<EquipmentSlotRecord>;
 
-} //namespace
+}
 
 #endif // SR_EQUIPMENTSLOTS_HPP

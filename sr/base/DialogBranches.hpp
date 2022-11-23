@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012 Thoronador
+    Copyright (C) 2012, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,9 +27,9 @@
 namespace SRTP
 {
 
-//singleton for dialog branch records
-typedef MapBasedRecordManager<DialogBranchRecord> DialogBranches;
+// singleton for dialog branch records
+using DialogBranches = MapBasedRecordManager<DialogBranchRecord>;
 
-} //namespace
+}
 
 #endif // SR_DIALOGBRANCHES_HPP

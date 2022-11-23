@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012 Thoronador
+    Copyright (C) 2012, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,9 +27,9 @@
 namespace SRTP
 {
 
-//singleton for effect shader records
-typedef MapBasedRecordManager<EffectShaderRecord> EffectShaders;
+// singleton for effect shader records
+using EffectShaders = MapBasedRecordManager<EffectShaderRecord>;
 
-} //namespace
+}
 
 #endif // SR_EFFECTSHADERS_HPP

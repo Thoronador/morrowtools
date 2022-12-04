@@ -28,12 +28,18 @@
 namespace MWTP
 {
 
+#if defined(MWTP_NO_LZ4)
+bool lz4Decompress([[maybe_unused]] uint8_t * compressedData,
+                   [[maybe_unused]] const uint32_t compressedSize,
+                   [[maybe_unused]] uint8_t * decompBuffer,
+                   [[maybe_unused]] const uint32_t decompSize)
+{
+  // This is a build without liblz4, decompression is not available.
+  return false;
+}
+#else
 bool lz4Decompress(uint8_t * compressedData, const uint32_t compressedSize, uint8_t * decompBuffer, const uint32_t decompSize)
 {
-  #if defined(MWTP_NO_LZ4)
-  // This is a build without liblz4.
-  return false;
-  #else
   if ((compressedData == nullptr) || (compressedSize == 0)
      || (decompBuffer == nullptr) || (decompSize == 0))
   {
@@ -111,8 +117,8 @@ bool lz4Decompress(uint8_t * compressedData, const uint32_t compressedSize, uint
   }
 
   return true;
-  #endif
 }
+#endif
 
 std::string lz4Version()
 {

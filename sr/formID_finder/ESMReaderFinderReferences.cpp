@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2013, 2021  Thoronador
+    Copyright (C) 2012, 2013, 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -50,7 +50,7 @@ bool ESMReaderFinderReferences::needGroup(const GroupData& g_data) const
         || (g_data.type() != GroupData::cTopicChildren);
 }
 
-bool ESMReaderFinderReferences::nextGroupStarted(const GroupData& g_data, const bool sub)
+bool ESMReaderFinderReferences::nextGroupStarted(const GroupData& g_data, [[maybe_unused]] const bool sub)
 {
   if (indexMapsNeedsUpdate())
   {
@@ -63,7 +63,7 @@ bool ESMReaderFinderReferences::nextGroupStarted(const GroupData& g_data, const 
     uint32_t cellFormID = g_data.label();
     if (!reIndex(cellFormID))
     {
-      std::cerr << "ESMReaderFinderReferences::nextGroupStarted: Warning: could not adjust mod index for cell!\n";
+      std::cerr << "ESMReaderFinderReferences::nextGroupStarted: Warning: Could not adjust mod index for cell!\n";
       return false;
     }
     m_CellStack.push_back(cellFormID);

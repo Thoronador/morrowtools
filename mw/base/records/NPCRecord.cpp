@@ -466,9 +466,10 @@ bool NPCRecord::saveToStream(std::ostream& output) const
 
 bool NPCRecord::loadFromStream(std::istream& input)
 {
-  #warning Not completely implemented yet!\
-           The XSCL subrecord is still missing.
-  #warning This function is a bit messy and could need a partial rewrite.
+  /* TODO #1: Not completely implemented yet!
+              The XSCL subrecord is still missing.
+     TODO #2: This function is a bit messy and could need a partial rewrite.
+  */
   uint32_t Size = 0;
   input.read(reinterpret_cast<char*>(&Size), 4);
   input.read(reinterpret_cast<char*>(&HeaderOne), 4);
@@ -841,7 +842,7 @@ bool NPCRecord::loadFromStream(std::istream& input)
     return false;
   }
 
-  //items, spells and AI data
+  // items, spells and AI data
   Items.clear();
   ItemRecord temp;
   NPC_Spells.clear();
@@ -1044,7 +1045,7 @@ bool NPCRecord::loadFromStream(std::istream& input)
 
 bool NPCRecord::isFemale() const
 {
-  return (nfFemale & NPC_Flag) !=0;
+  return (nfFemale & NPC_Flag) != 0;
 }
 
 bool NPCRecord::isEssential() const

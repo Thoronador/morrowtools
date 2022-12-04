@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -37,17 +37,8 @@ template<typename recT, typename singleT, uint32_t headerT>
 class ESMReaderSingleType: public ESMReader
 {
   public:
-    /* constructor */
-    ESMReaderSingleType()
-    {
-      //empty
-    }
-
-    /* destructor */
-    virtual ~ESMReaderSingleType()
-    {
-      //empty
-    }
+    ESMReaderSingleType() = default;
+    virtual ~ESMReaderSingleType() = default;
   protected:
     /* returns true, if the given group may contains some data that the reader
        wants to read. Returns false otherwise.
@@ -111,14 +102,14 @@ bool ESMReaderSingleType<recT, singleT, headerT>::needGroup(const GroupData& g_d
 }
 
 template<typename recT, typename singleT, uint32_t headerT>
-bool ESMReaderSingleType<recT, singleT, headerT>::nextGroupStarted(const GroupData& g_data, const bool sub)
+bool ESMReaderSingleType<recT, singleT, headerT>::nextGroupStarted([[maybe_unused]] const GroupData& g_data, [[maybe_unused]] const bool sub)
 {
   // empty, because we don't need to care about new groups anyway
   return true;
 }
 
 template<typename recT, typename singleT, uint32_t headerT>
-bool ESMReaderSingleType<recT, singleT, headerT>::groupFinished(const GroupData& g_data)
+bool ESMReaderSingleType<recT, singleT, headerT>::groupFinished([[maybe_unused]] const GroupData& g_data)
 {
   // empty, because we don't need to care about new groups anyway
   return true;

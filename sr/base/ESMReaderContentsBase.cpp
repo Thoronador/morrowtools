@@ -83,7 +83,7 @@ bool ESMReaderContentsBase::nextGroupStarted(const GroupData& g_data, const bool
   return true;
 }
 
-bool ESMReaderContentsBase::groupFinished(const GroupData& g_data)
+bool ESMReaderContentsBase::groupFinished([[maybe_unused]] const GroupData& g_data)
 {
   if (m_InternalGroupLevel > 0)
   {

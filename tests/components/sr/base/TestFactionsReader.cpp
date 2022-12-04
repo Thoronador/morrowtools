@@ -34,13 +34,13 @@ int TestFactionsReader::readGroup(std::istream& input, const GroupData& g_data, 
 }
 
 
-bool TestFactionsReaderGroupStartFails::nextGroupStarted(const GroupData& g_data, const bool sub)
+bool TestFactionsReaderGroupStartFails::nextGroupStarted([[maybe_unused]] const GroupData& g_data, [[maybe_unused]] const bool sub)
 {
   return false;
 }
 
 
-bool TestFactionsReaderGroupFinishFails::groupFinished(const GroupData& g_data)
+bool TestFactionsReaderGroupFinishFails::groupFinished([[maybe_unused]] const GroupData& g_data)
 {
   return false;
 }

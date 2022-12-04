@@ -88,7 +88,9 @@ bool KeywordRecord::saveToStream(std::ostream& output) const
 }
 #endif
 
-bool KeywordRecord::loadFromStream(std::istream& input, const bool localized, const StringTable& table)
+bool KeywordRecord::loadFromStream(std::istream& input,
+                                   [[maybe_unused]] const bool localized,
+                                   [[maybe_unused]] const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(input, readSize))

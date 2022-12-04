@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2021  Thoronador
+    Copyright (C) 2011, 2012, 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ namespace SRTP
  *
  * \remarks This function will always return false on non-Windows-OSes.
  */
-inline bool getSkryrimPathFromRegistry(std::string& pathData, const std::optional<Edition> edition)
+inline bool getSkryrimPathFromRegistry(std::string& pathData, [[maybe_unused]] const std::optional<Edition> edition)
 {
   #if defined(_WIN64)
   if (edition.has_value())

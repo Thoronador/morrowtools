@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -87,7 +87,8 @@ bool ESMReaderFinder::needGroup(const GroupData& g_data) const
   return false;
 }
 
-bool ESMReaderFinder::nextGroupStarted(const GroupData& g_data, const bool sub)
+bool ESMReaderFinder::nextGroupStarted([[maybe_unused]] const GroupData& g_data,
+                                       [[maybe_unused]] const bool sub)
 {
   if (indexMapsNeedsUpdate())
   {
@@ -96,7 +97,7 @@ bool ESMReaderFinder::nextGroupStarted(const GroupData& g_data, const bool sub)
   return true;
 }
 
-bool ESMReaderFinder::groupFinished(const GroupData& g_data)
+bool ESMReaderFinder::groupFinished([[maybe_unused]] const GroupData& g_data)
 {
   return true;
 }
@@ -269,7 +270,7 @@ int ESMReaderFinder::readNextRecord(std::istream& input, const uint32_t recName,
          WordsOfPower::get().addRecord(*static_cast<WordOfPowerRecord*>(recPtr));
          break;
     default:
-         std::cerr << "ESMReaderFinder::readNextRecord: cannot add unknown record type!\n";
+         std::cerr << "ESMReaderFinder::readNextRecord: Cannot add unknown record type!\n";
          delete recPtr;
          return -1;
   }

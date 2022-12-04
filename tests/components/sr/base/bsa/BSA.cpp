@@ -990,13 +990,13 @@ TEST_CASE("BSA")
 
     SECTION("extract uncompressed files from v104 archive")
     {
-      const std::filesystem::path path{"test_sr_bsa_extractFile_idx_no_compression.bsa"};
-      FileGuard guard{path};
+      const std::filesystem::path bsa_path{"test_sr_bsa_extractFile_idx_no_compression.bsa"};
+      FileGuard bsa_guard{bsa_path};
       const auto data = "BSA\0\x68\0\0\0\x24\0\0\0\x03\0\0\0\x02\0\0\0\x03\0\0\0\x1A\0\0\0\x19\0\0\0\0\x01\0\0gn\x0As@r\xBE\x0B\x01\0\0\0]\0\0\0es\x0Es\xDC\x92\x84Z\x02\0\0\0y\0\0\0\x0Bsome\\thing\0ts\x04t'\xA7\xD0\x95\x10\0\0\0\xA9\0\0\0\x0Fsomething\\\x65lse\0ra\x03\x62\xC2\xA6\xD0\x95\x07\0\0\0\xB9\0\0\0oo\x03\x66\xC2\xA6\xD0\x95\x0E\0\0\0\xC0\0\0\0test.txt\0bar.txt\0foo.txt\0This is a test.\x0A\x66oobar\x0A\x66oo was here.\x0A"sv;
-      REQUIRE( writeBsa(data, path) );
+      REQUIRE( writeBsa(data, bsa_path) );
 
       BSA bsa;
-      REQUIRE( bsa.open(path.string()) );
+      REQUIRE( bsa.open(bsa_path.string()) );
       REQUIRE( bsa.grabAllStructureData() );
 
       const char eof = static_cast<char>(std::char_traits<char>::eof());
@@ -1043,13 +1043,13 @@ TEST_CASE("BSA")
 
     SECTION("extract compressed files from v104 archive")
     {
-      const std::filesystem::path path{"test_sr_bsa_extractFile_idx_with_compression_v104.bsa"};
-      FileGuard guard{path};
+      const std::filesystem::path bsa_path{"test_sr_bsa_extractFile_idx_with_compression_v104.bsa"};
+      FileGuard bsa_guard{bsa_path};
       const auto data = "BSA\0\x68\0\0\0\x24\0\0\0\x07\0\0\0\x02\0\0\0\x03\0\0\0\x1A\0\0\0\x19\0\0\0\0\0\0\0gn\x0As@r\xBE\x0B\x01\0\0\0]\0\0\0es\x0Es\xDC\x92\x84Z\x02\0\0\0y\0\0\0\x0Bsome\\thing\0ts\x04t'\xA7\xD0\x95\x1A\0\0\0\xA9\0\0\0\x0Fsomething\\\x65lse\0ra\x03\x62\xC2\xA6\xD0\x95\x07\0\0@\xC3\0\0\0oo\x03\x66\xC2\xA6\xD0\x95\x1A\0\0\0\xCA\0\0\0test.txt\0bar.txt\0foo.txt\0\x10\0\0\0x\x9C\x0B\xC9\xC8,V\0\xA2\x44\x85\x92\xD4\xE2\x12=.\0.\xC5\x05.foobar\x0A\x0E\0\0\0x\x9CK\xCB\xCFW(O,V\xC8H-J\xD5\xE3\x02\0&&\x04\xAC"sv;
-      REQUIRE( writeBsa(data, path) );
+      REQUIRE( writeBsa(data, bsa_path) );
 
       BSA bsa;
-      REQUIRE( bsa.open(path.string()) );
+      REQUIRE( bsa.open(bsa_path.string()) );
       REQUIRE( bsa.grabAllStructureData() );
 
       const char eof = static_cast<char>(std::char_traits<char>::eof());
@@ -1115,13 +1115,13 @@ TEST_CASE("BSA")
 
     SECTION("extract uncompressed files from v104 archive")
     {
-      const std::filesystem::path path{"test_sr_bsa_extractFile_by_name_no_compression.bsa"};
-      FileGuard guard{path};
+      const std::filesystem::path bsa_path{"test_sr_bsa_extractFile_by_name_no_compression.bsa"};
+      FileGuard bsa_guard{bsa_path};
       const auto data = "BSA\0\x68\0\0\0\x24\0\0\0\x03\0\0\0\x02\0\0\0\x03\0\0\0\x1A\0\0\0\x19\0\0\0\0\x01\0\0gn\x0As@r\xBE\x0B\x01\0\0\0]\0\0\0es\x0Es\xDC\x92\x84Z\x02\0\0\0y\0\0\0\x0Bsome\\thing\0ts\x04t'\xA7\xD0\x95\x10\0\0\0\xA9\0\0\0\x0Fsomething\\\x65lse\0ra\x03\x62\xC2\xA6\xD0\x95\x07\0\0\0\xB9\0\0\0oo\x03\x66\xC2\xA6\xD0\x95\x0E\0\0\0\xC0\0\0\0test.txt\0bar.txt\0foo.txt\0This is a test.\x0A\x66oobar\x0A\x66oo was here.\x0A"sv;
-      REQUIRE( writeBsa(data, path) );
+      REQUIRE( writeBsa(data, bsa_path) );
 
       BSA bsa;
-      REQUIRE( bsa.open(path.string()) );
+      REQUIRE( bsa.open(bsa_path.string()) );
       REQUIRE( bsa.grabAllStructureData() );
 
       const char eof = static_cast<char>(std::char_traits<char>::eof());
@@ -1172,13 +1172,13 @@ TEST_CASE("BSA")
 
     SECTION("extract compressed files from v104 archive")
     {
-      const std::filesystem::path path{"test_sr_bsa_extractFile_by_name_with_compression_v104.bsa"};
-      FileGuard guard{path};
+      const std::filesystem::path bsa_path{"test_sr_bsa_extractFile_by_name_with_compression_v104.bsa"};
+      FileGuard guard_bsa{bsa_path};
       const auto data = "BSA\0\x68\0\0\0\x24\0\0\0\x07\0\0\0\x02\0\0\0\x03\0\0\0\x1A\0\0\0\x19\0\0\0\0\0\0\0gn\x0As@r\xBE\x0B\x01\0\0\0]\0\0\0es\x0Es\xDC\x92\x84Z\x02\0\0\0y\0\0\0\x0Bsome\\thing\0ts\x04t'\xA7\xD0\x95\x1A\0\0\0\xA9\0\0\0\x0Fsomething\\\x65lse\0ra\x03\x62\xC2\xA6\xD0\x95\x07\0\0@\xC3\0\0\0oo\x03\x66\xC2\xA6\xD0\x95\x1A\0\0\0\xCA\0\0\0test.txt\0bar.txt\0foo.txt\0\x10\0\0\0x\x9C\x0B\xC9\xC8,V\0\xA2\x44\x85\x92\xD4\xE2\x12=.\0.\xC5\x05.foobar\x0A\x0E\0\0\0x\x9CK\xCB\xCFW(O,V\xC8H-J\xD5\xE3\x02\0&&\x04\xAC"sv;
-      REQUIRE( writeBsa(data, path) );
+      REQUIRE( writeBsa(data, bsa_path) );
 
       BSA bsa;
-      REQUIRE( bsa.open(path.string()) );
+      REQUIRE( bsa.open(bsa_path.string()) );
       REQUIRE( bsa.grabAllStructureData() );
 
       const char eof = static_cast<char>(std::char_traits<char>::eof());

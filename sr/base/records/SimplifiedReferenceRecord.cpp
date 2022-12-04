@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2013, 2021  Thoronador
+    Copyright (C) 2012, 2013, 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -57,13 +57,16 @@ bool SimplifiedReferenceRecord::saveToStream(std::ostream& output) const
     output.write(reinterpret_cast<const char*>(&cREFR), 4);
     return saveSizeAndUnknownValues(output, 0);
   }
-  #warning This record type is not writable!
+  // This is a case where the record cannot be written, because data is missing
+  // by design to keep it small. This record type is not writable here!
   std::cerr << "Error: Simplified reference records cannot be saved to stream!\n";
   return false;
 }
 #endif
 
-bool SimplifiedReferenceRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
+bool SimplifiedReferenceRecord::loadFromStream(std::istream& in_File,
+                                               [[maybe_unused]] const bool localized,
+                                               [[maybe_unused]] const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize))
@@ -75,7 +78,7 @@ bool SimplifiedReferenceRecord::loadFromStream(std::istream& in_File, const bool
   baseObjectFormID = 0;
   while (bytesRead < readSize)
   {
-    // read next subrecord header
+    // read next sub record header
     in_File.read(reinterpret_cast<char*>(&subRecName), 4);
     bytesRead += 4;
     switch (subRecName)
@@ -91,21 +94,21 @@ bool SimplifiedReferenceRecord::loadFromStream(std::istream& in_File, const bool
              in_File.seekg(readSize - bytesRead, std::ios_base::cur);
              if (!in_File.good())
              {
-               std::cerr << "Error while skipping subrecords of REFR!\n";
+               std::cerr << "Error while skipping sub records of REFR!\n";
                return false;
              }
            }
            return true;
            break;
       default:
-           // read subrecord's length
+           // read sub record's length
            in_File.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
-           // skip whole subrecord
+           // skip whole sub record
            in_File.seekg(subLength, std::ios_base::cur);
            if (!in_File.good())
            {
-             std::cerr << "Error while skipping subrecord of REFR!\n";
+             std::cerr << "Error while skipping sub record of REFR!\n";
              return false;
            }
            bytesRead += subLength;
@@ -114,7 +117,7 @@ bool SimplifiedReferenceRecord::loadFromStream(std::istream& in_File, const bool
   }
 
   // If we get to this point, no NAME has been seen so far.
-  std::cerr << "Error: Subrecord NAME of REFR is missing!\n";
+  std::cerr << "Error: Sub record NAME of REFR is missing!\n";
   return false;
 }
 

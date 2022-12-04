@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2013, 2021  Thoronador
+    Copyright (C) 2012, 2013, 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -105,7 +105,9 @@ bool AnimatedObjectRecord::saveToStream(std::ostream& output) const
 }
 #endif
 
-bool AnimatedObjectRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
+bool AnimatedObjectRecord::loadFromStream(std::istream& in_File,
+                                          [[maybe_unused]] const bool localized,
+                                          [[maybe_unused]] const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize))
@@ -131,7 +133,7 @@ bool AnimatedObjectRecord::loadFromStream(std::istream& in_File, const bool loca
       case cMODL:
            if (!modelPath.empty())
            {
-             std::cerr << "Error: ANIO seems to have more than one MODL subrecord.\n";
+             std::cerr << "Error: ANIO seems to have more than one MODL sub record.\n";
              return false;
            }
            // read model path
@@ -139,14 +141,14 @@ bool AnimatedObjectRecord::loadFromStream(std::istream& in_File, const bool loca
              return false;
            if (modelPath.empty())
            {
-             std::cerr << "Error: ANIO seems to have empty MODL subrecord.\n";
+             std::cerr << "Error: ANIO seems to have empty MODL sub record.\n";
              return false;
            }
            break;
       case cMODT:
            if (unknownMODT.isPresent())
            {
-             std::cerr << "Error: ANIO seems to have more than one MODT subrecord.\n";
+             std::cerr << "Error: ANIO seems to have more than one MODT sub record.\n";
              return false;
            }
            // read MODT
@@ -157,7 +159,7 @@ bool AnimatedObjectRecord::loadFromStream(std::istream& in_File, const bool loca
       case cBNAM:
            if (!unknownBNAM.empty())
            {
-             std::cerr << "Error: ANIO seems to have more than one BNAM subrecord.\n";
+             std::cerr << "Error: ANIO seems to have more than one BNAM sub record.\n";
              return false;
            }
            // read BNAM
@@ -165,12 +167,12 @@ bool AnimatedObjectRecord::loadFromStream(std::istream& in_File, const bool loca
              return false;
            if (unknownBNAM.empty())
            {
-             std::cerr << "Error: ANIO seems to have empty BNAM subrecord.\n";
+             std::cerr << "Error: ANIO seems to have empty BNAM sub record.\n";
              return false;
            }
            break;
       default:
-           std::cerr << "Error: found unexpected subrecord \"" << IntTo4Char(subRecName)
+           std::cerr << "Error: Found unexpected sub record \"" << IntTo4Char(subRecName)
                      << "\", but only MODL, MODT or BNAM are allowed here!\n";
            return false;
     }
@@ -179,7 +181,7 @@ bool AnimatedObjectRecord::loadFromStream(std::istream& in_File, const bool loca
   // presence checks
   if (modelPath.empty())
   {
-    std::cerr << "Error: At least one required subrecord of ANIO was not found!\n";
+    std::cerr << "Error: At least one required sub record of ANIO was not found!\n";
     return false;
   }
 

@@ -28,27 +28,33 @@ TestReaderReIndexMod::TestReaderReIndexMod(const std::vector<std::string>& loadO
 {
 }
 
-bool TestReaderReIndexMod::needGroup(const GroupData& g_data) const
+bool TestReaderReIndexMod::needGroup([[maybe_unused]] const GroupData& g_data) const
 {
   return false;
 }
 
-bool TestReaderReIndexMod::nextGroupStarted(const GroupData& g_data, const bool sub)
+bool TestReaderReIndexMod::nextGroupStarted([[maybe_unused]] const GroupData& g_data,
+                                            [[maybe_unused]] const bool sub)
 {
   return true;
 }
 
-int TestReaderReIndexMod::readGroup(std::istream& input, const GroupData& g_data, const bool localized, const StringTable& table)
+int TestReaderReIndexMod::readGroup(std::istream& input, const GroupData& g_data,
+                                    [[maybe_unused]] const bool localized,
+                                    [[maybe_unused]] const StringTable& table)
 {
   return ESMReader::skipGroup(input, g_data);
 }
 
-bool TestReaderReIndexMod::groupFinished(const GroupData& g_data)
+bool TestReaderReIndexMod::groupFinished([[maybe_unused]] const GroupData& g_data)
 {
   return true;
 }
 
-int TestReaderReIndexMod::readNextRecord(std::istream& input, const uint32_t recName, const bool localized, const StringTable& table)
+int TestReaderReIndexMod::readNextRecord(std::istream& input,
+                                         [[maybe_unused]] const uint32_t recName,
+                                         [[maybe_unused]] const bool localized,
+                                         [[maybe_unused]] const StringTable& table)
 {
   return ESMReader::skipRecord(input);
 }

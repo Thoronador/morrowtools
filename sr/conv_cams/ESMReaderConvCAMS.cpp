@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2013, 2021  Thoronador
+    Copyright (C) 2012, 2013, 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ ESMReaderConvCAMS::~ESMReaderConvCAMS()
   contents.removeContents();
 }
 
-bool ESMReaderConvCAMS::needGroup(const GroupData& g_data) const
+bool ESMReaderConvCAMS::needGroup([[maybe_unused]] const GroupData& g_data) const
 {
   // We want all the stuff.
   return true;

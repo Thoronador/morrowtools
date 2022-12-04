@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2021  Thoronador
+    Copyright (C) 2011, 2012, 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,20 +24,20 @@
 #if defined(_WIN32) || defined(_WIN64)
   // Windows includes
   #include <windows.h>
-#else
-  #warning There is no Windows Registry on that OS! Registry related functions \
-           will always fail here!
 #endif
 
 namespace MWTP
 {
 
-bool getRegistryStringValueHKLM(std::string& theString, const std::string& subKey, const std::string& valueName)
+#if !defined(_WIN32) && !defined(_WIN64)
+bool getRegistryStringValueHKLM([[maybe_unused]] std::string& theString, [[maybe_unused]] const std::string& subKey, [[maybe_unused]] const std::string& valueName)
 {
-  #if !defined(_WIN32) && !defined(_WIN64)
   std::cout << "Info: There is no registry on non-Windows OSes.\n";
   return false;
-  #else
+}
+#else
+bool getRegistryStringValueHKLM(std::string& theString,const std::string& subKey, const std::string& valueName)
+{
   HKEY resultingHKEY;
   LONG res = RegOpenKeyExA(HKEY_LOCAL_MACHINE, subKey.c_str(), 0, KEY_READ, &resultingHKEY);
   if (res == ERROR_FILE_NOT_FOUND)
@@ -58,13 +58,13 @@ bool getRegistryStringValueHKLM(std::string& theString, const std::string& subKe
   res = RegQueryValueExA(resultingHKEY, valueName.c_str(), NULL, &valueType, buffer, &valueSize);
   if (res == ERROR_MORE_DATA)
   {
-    //buffer is too small, allocate the required size
+    // buffer is too small, allocate the required size
     delete[] buffer;
     buffer = new unsigned char[valueSize+1];
-    memset(buffer, 0, valueSize+1);
-    //... and do it again!
+    memset(buffer, 0, valueSize + 1);
+    // ... and do it again!
     res = RegQueryValueExA(resultingHKEY, valueName.c_str(), NULL, &valueType, buffer, &valueSize);
-  }//if
+  }
   if (res == ERROR_FILE_NOT_FOUND)
   {
     std::cerr << "Error: Registry value \"" << valueName << "\" was not found in HKLM!\n";
@@ -78,7 +78,7 @@ bool getRegistryStringValueHKLM(std::string& theString, const std::string& subKe
   delete[] buffer;
   buffer = nullptr;
   return true;
-  #endif
 }
+#endif
 
 } // namespace

@@ -325,7 +325,7 @@ bool replaceCellsInScriptText(std::string& scriptText, const CellListType& cells
       //break out of loop
       break;
     }
-    #warning Might not work properly yet!
+    /// TODO: Might not work properly yet!
   }//while
 
   if (changed)

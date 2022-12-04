@@ -248,14 +248,14 @@ std::vector<std::string> explodeParams(const std::string& source)
     {
       insideQuote = !insideQuote;
     }
-    else if ((!insideQuote) && ((source.at(look) == ' ')
-              || (source.at(look) == ',') || (source.at(look) == '\t')))
+    else if ((!insideQuote) && ((source[look] == ' ')
+              || (source[look] == ',') || (source[look] == '\t')))
     {
       // found a place where to split
-      unsigned int len = look-offset;
-      if (len > 0) // skip empty params
+      const unsigned int length = look - offset;
+      if (length > 0) // skip empty params
       {
-        result.push_back(source.substr(offset, len));
+        result.push_back(source.substr(offset, length));
         StripEnclosingQuotes(result.back());
       }
       offset = look + 1;
@@ -3000,8 +3000,7 @@ bool ScriptFunctions_MessageBox(const std::vector<std::string>& params, Compiled
     uint8_t button_count = 0;
     std::vector<SC_VarRef> refArray(params.size()-2, SC_VarRef());
 
-    uint16_t i;
-    for (i=2; i<params.size(); ++i)
+    for (uint16_t i=2; i<params.size(); ++i)
     {
       //check for vars
       refArray[i-2] = chunk.getVariableTypeWithIndex(params[i]);
@@ -3030,13 +3029,13 @@ bool ScriptFunctions_MessageBox(const std::vector<std::string>& params, Compiled
     //push number of arguments
     chunk.data.push_back(arg_count);
     //push arguments, if present
-    if (arg_count>0)
+    if (arg_count > 0)
     {
-      for (i=0; i<arg_count; ++i)
+      for (unsigned int i = 0; i < arg_count; ++i)
       {
-        if (refArray[i].Type!=vtGlobal)
+        if (refArray[i].Type != vtGlobal)
         {
-          //push local ref
+          // push local ref
           chunk.pushNonGlobalRef(refArray[i]);
         }
         else
@@ -3057,13 +3056,12 @@ bool ScriptFunctions_MessageBox(const std::vector<std::string>& params, Compiled
     //push number of buttons
     chunk.data.push_back(button_count);
     //push buttons, if present
-    if (button_count>0)
+    if (button_count > 0)
     {
-      unsigned int i;
-      for (i=2+arg_count; i<params.size(); ++i)
+      for (unsigned int i = 2 + arg_count; i < params.size(); ++i)
       {
         //push length of string + one byte for NUL
-        chunk.data.push_back(params[i].length()+1);
+        chunk.data.push_back(params[i].length() + 1);
         //push the string
         chunk.pushString(params[i]);
         //push NUL byte

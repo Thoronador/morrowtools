@@ -202,7 +202,9 @@ bool Tes4HeaderRecord::saveToStream(std::ostream& output) const
 }
 #endif
 
-bool Tes4HeaderRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
+bool Tes4HeaderRecord::loadFromStream(std::istream& in_File,
+                                      [[maybe_unused]] const bool localized,
+                                      [[maybe_unused]] const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize))

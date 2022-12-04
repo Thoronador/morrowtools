@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -112,7 +112,9 @@ bool GenericRecord::saveToStream(std::ostream& output) const
 }
 #endif
 
-bool GenericRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
+bool GenericRecord::loadFromStream(std::istream& in_File,
+                                   [[maybe_unused]] const bool localized,
+                                   [[maybe_unused]] const StringTable& table)
 {
   uint32_t Size;
   if (!loadSizeAndUnknownValues(in_File, Size))
@@ -120,7 +122,7 @@ bool GenericRecord::loadFromStream(std::istream& in_File, const bool localized, 
   // prevent excessive memory usage
   if (Size > 256 * 1024)
   {
-    std::cerr << "GenericRecord::loadFromStream: Error: record size is larger than 256 KB, aborting.\n";
+    std::cerr << "GenericRecord::loadFromStream: Error: Record size is larger than 256 KB, aborting.\n";
     return false;
   }
   // allocate new memory

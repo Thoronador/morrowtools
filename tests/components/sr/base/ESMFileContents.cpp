@@ -107,7 +107,7 @@ TEST_CASE("ESMFileContents")
       contents.addNewGroup();
       contents.addNewGroup().addSubGroup(GroupData());
 
-      auto fun = [](const Group& current, const Group* parent) {
+      auto fun = []([[maybe_unused]] const Group& current, [[maybe_unused]] const Group* parent) {
           std::cout << "This is fun.\n";
           return true;
       };
@@ -120,7 +120,7 @@ TEST_CASE("ESMFileContents")
       contents.addNewGroup().addSubGroup(GroupData());
       contents.addNewGroup();
 
-      auto fun = [](const Group& current, const Group* parent) {
+      auto fun = []([[maybe_unused]] const Group& current, const Group* parent) {
           return parent == nullptr;
       };
 
@@ -132,7 +132,7 @@ TEST_CASE("ESMFileContents")
       contents.addNewGroup().addSubGroup(GroupData());
       contents.addNewGroup();
 
-      auto fun = [](const Group& current, const Group* parent) {
+      auto fun = []([[maybe_unused]] const Group& current, const Group* parent) {
           return parent != nullptr;
       };
 

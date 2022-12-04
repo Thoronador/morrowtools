@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -40,7 +40,7 @@ uint32_t ActionRecord::getRecordType() const
 #ifndef SR_NO_RECORD_EQUALITY
 bool ActionRecord::equals(const ActionRecord& other) const
 {
-  return (equalsBasic(other) && (editorID == other.editorID));
+  return equalsBasic(other) && (editorID == other.editorID);
 }
 #endif
 
@@ -73,7 +73,9 @@ bool ActionRecord::saveToStream(std::ostream& output) const
 }
 #endif
 
-bool ActionRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
+bool ActionRecord::loadFromStream(std::istream& in_File,
+                                  [[maybe_unused]] const bool localized,
+                                  [[maybe_unused]] const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize))
@@ -94,7 +96,7 @@ bool ActionRecord::loadFromStream(std::istream& in_File, const bool localized, c
   in_File.read(reinterpret_cast<char*>(&subLength), 2);
   if (subLength > 511)
   {
-    std::cerr << "Error: sub record EDID of AACT is longer than 511 characters!\n";
+    std::cerr << "Error: Sub record EDID of AACT is longer than 511 characters!\n";
     return false;
   }
   // read EDID's stuff
@@ -103,7 +105,7 @@ bool ActionRecord::loadFromStream(std::istream& in_File, const bool localized, c
   in_File.read(buffer, subLength);
   if (!in_File.good())
   {
-    std::cerr << "Error while reading subrecord EDID of AACT!\n";
+    std::cerr << "Error while reading sub record EDID of AACT!\n";
     return false;
   }
   editorID = std::string(buffer);

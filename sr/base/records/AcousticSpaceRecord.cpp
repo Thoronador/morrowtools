@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -38,11 +38,11 @@ AcousticSpaceRecord::AcousticSpaceRecord()
 #ifndef SR_NO_RECORD_EQUALITY
 bool AcousticSpaceRecord::equals(const AcousticSpaceRecord& other) const
 {
-  return ((equalsBasic(other)) && (editorID == other.editorID)
+  return equalsBasic(other) && (editorID == other.editorID)
       && (unknownOBND == other.unknownOBND)
       && (loopingSoundFormID == other.loopingSoundFormID)
       && (regionFormID == other.regionFormID)
-      && (environmentTypeFormID == other.environmentTypeFormID));
+      && (environmentTypeFormID == other.environmentTypeFormID);
 }
 #endif
 
@@ -130,7 +130,9 @@ bool AcousticSpaceRecord::saveToStream(std::ostream& output) const
 }
 #endif
 
-bool AcousticSpaceRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
+bool AcousticSpaceRecord::loadFromStream(std::istream& in_File,
+                                         [[maybe_unused]] const bool localized,
+                                         [[maybe_unused]] const StringTable& table)
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(in_File, readSize))
@@ -157,7 +159,7 @@ bool AcousticSpaceRecord::loadFromStream(std::istream& in_File, const bool local
   bytesRead += 2;
   if (subLength != 12)
   {
-    std::cerr << "Error: sub record OBND of ASPC has invalid length ("
+    std::cerr << "Error: Sub record OBND of ASPC has invalid length ("
               << subLength << " bytes). Should be 12 bytes.\n";
     return false;
   }
@@ -166,7 +168,7 @@ bool AcousticSpaceRecord::loadFromStream(std::istream& in_File, const bool local
   bytesRead += 12;
   if (!in_File.good())
   {
-    std::cerr << "Error while reading subrecord OBND of ASPC!\n";
+    std::cerr << "Error while reading sub record OBND of ASPC!\n";
     return false;
   }
 
@@ -183,7 +185,7 @@ bool AcousticSpaceRecord::loadFromStream(std::istream& in_File, const bool local
       case cSNAM:
            if (loopingSoundFormID != 0)
            {
-             std::cerr << "Error: ASPC seems to have more than one SNAM subrecord.\n";
+             std::cerr << "Error: ASPC seems to have more than one SNAM sub record.\n";
              return false;
            }
            // read SNAM
@@ -193,14 +195,14 @@ bool AcousticSpaceRecord::loadFromStream(std::istream& in_File, const bool local
            // check value
            if (loopingSoundFormID == 0)
            {
-             std::cerr << "Error: subrecord SNAM of ASPC has value zero!\n";
+             std::cerr << "Error: Sub record SNAM of ASPC has value zero!\n";
              return false;
            }
            break;
       case cRDAT:
            if (regionFormID != 0)
            {
-             std::cerr << "Error: ASPC seems to have more than one RDAT subrecord.\n";
+             std::cerr << "Error: ASPC seems to have more than one RDAT sub record.\n";
              return false;
            }
            // read RDAT
@@ -210,14 +212,14 @@ bool AcousticSpaceRecord::loadFromStream(std::istream& in_File, const bool local
            // check value
            if (regionFormID == 0)
            {
-             std::cerr << "Error: subrecord RDAT of ASPC has value zero!\n";
+             std::cerr << "Error: Sub record RDAT of ASPC has value zero!\n";
              return false;
            }
            break;
       case cBNAM:
            if (environmentTypeFormID != 0)
            {
-             std::cerr << "Error: ASPC seems to have more than one BNAM subrecord.\n";
+             std::cerr << "Error: ASPC seems to have more than one BNAM sub record.\n";
              return false;
            }
            // read BNAM
@@ -227,12 +229,12 @@ bool AcousticSpaceRecord::loadFromStream(std::istream& in_File, const bool local
            // check value
            if (environmentTypeFormID == 0)
            {
-             std::cerr << "Error: subrecord BNAM of ASPC has value zero!\n";
+             std::cerr << "Error: Sub record BNAM of ASPC has value zero!\n";
              return false;
            }
            break;
       default:
-           std::cerr << "Error: found unexpected subrecord \"" << IntTo4Char(subRecName)
+           std::cerr << "Error: found unexpected sub record \"" << IntTo4Char(subRecName)
                      << "\", but only SNAM, RDAT or BNAM are allowed here!\n";
            return false;
     } // swi

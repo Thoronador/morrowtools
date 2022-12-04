@@ -74,7 +74,6 @@ bool zlibDecompress(uint8_t * compressedData, const uint32_t compressedSize, uin
   switch (z_return)
   {
     case Z_NEED_DICT:
-         z_return = Z_DATA_ERROR;     /* and fall through */
     case Z_DATA_ERROR:
     case Z_STREAM_ERROR: //stream state
     case Z_MEM_ERROR:

@@ -37,6 +37,16 @@ bool lz4Decompress([[maybe_unused]] uint8_t * compressedData,
   // This is a build without liblz4, decompression is not available.
   return false;
 }
+
+bool lz4Compress([[maybe_unused]] uint8_t * rawData,
+                 [[maybe_unused]] const uint32_t rawSize,
+                 [[maybe_unused]] uint8_t*& compBuffer,
+                 [[maybe_unused]] uint32_t& compSize,
+                 [[maybe_unused]] uint32_t& usedSize)
+{
+  // This is a build without liblz4, compression is not available.
+  return false;
+}
 #else
 bool lz4Decompress(uint8_t * compressedData, const uint32_t compressedSize, uint8_t * decompBuffer, const uint32_t decompSize)
 {
@@ -118,6 +128,37 @@ bool lz4Decompress(uint8_t * compressedData, const uint32_t compressedSize, uint
 
   return true;
 }
+
+bool lz4Compress(uint8_t * rawData, const uint32_t rawSize, uint8_t*& compBuffer, uint32_t& compSize, uint32_t& usedSize)
+{
+  if ((rawData == nullptr) || (rawSize == 0) || (compBuffer == nullptr) || (compSize == 0))
+  {
+    usedSize = 0;
+    std::cerr << "lz4Compress: Error: Invalid buffer values given!\n";
+    return false;
+  }
+
+  const auto bound = LZ4F_compressFrameBound(rawSize, nullptr);
+  if (bound > compSize)
+  {
+    // re-allocate buffer
+    delete[] compBuffer;
+    compBuffer = new uint8_t[bound];
+    compSize = bound;
+  }
+
+  auto bytesWritten = LZ4F_compressFrame(compBuffer, compSize, rawData, rawSize, nullptr);
+  if (LZ4F_isError(bytesWritten))
+  {
+    std::cerr << "lz4Compress: Error: Failed to compress data into frame!\n"
+              << "Error message: " << LZ4F_getErrorName(bytesWritten) << "\n";
+    return false;
+  }
+
+  usedSize = bytesWritten;
+  return true;
+}
+
 #endif
 
 std::string lz4Version()

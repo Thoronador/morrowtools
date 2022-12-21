@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2021  Dirk Stolle
+    Copyright (C) 2021, 2022  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -38,6 +38,22 @@ namespace MWTP
  * \todo  Wrap buffer pointers and corresponding sizes in a small class.
  */
 bool lz4Decompress(uint8_t * compressedData, const uint32_t compressedSize, uint8_t * decompBuffer, const uint32_t decompSize);
+
+/** Tries to compress the data pointed to by rawData and stores the compressed
+ * bits in compBuffer.
+ *
+ * \param rawData     pointer to the buffer containing the uncompressed data
+ * \param rawSize     length of the buffer in bytes
+ * \param compBuffer  pre-allocated buffer that will hold the compressed data
+ * \param compSize    size of compBuffer in bytes
+ * \param usedSize    actual size of the compressed data
+ * \return  Returns true in case of success, or false if an error occurred.
+ * \remarks The buffer pointed to by compBuffer will be re-allocated, if it is
+ * too small to hold all compressed data. The new size of the buffer will be
+ * stored in compSize. usedSize will hold the actual number of bytes that are
+ * used in that buffer. This value may be less than compSize.
+ */
+bool lz4Compress(uint8_t * rawData, const uint32_t rawSize, uint8_t*& compBuffer, uint32_t& compSize, uint32_t& usedSize);
 
 /** \brief Gets version of the lz4 library.
  *
